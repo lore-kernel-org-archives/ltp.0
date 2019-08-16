@@ -1,184 +1,164 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 16 Aug 2019 16:54:09 +0200
-Subject: [LTP] [PATCH v1 4/5] libs/libltpuinput: Add uinput library.
+Date: Fri, 16 Aug 2019 16:54:10 +0200
+Subject: [LTP] [PATCH v1 5/5] kernel/uevent: Add uevent03
 In-Reply-To: <20190816145410.8681-1-chrubis@suse.cz>
 References: <20190816145410.8681-1-chrubis@suse.cz>
-Message-ID: <20190816145410.8681-5-chrubis@suse.cz>
+Message-ID: <20190816145410.8681-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I to be used in the uevent03 test.
+This time we create a virtual input device and validate the result.
 
-Also I will convert the uinput testcases to new library and make use of
-this library as well.
+Note that this test is unfinished, we only validate the addition of the
+virtual input and not the device itself. I will finish this test later
+on.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_uinput.h           | 31 ++++++++++++
- libs/libltpuinput/Makefile     | 12 +++++
- libs/libltpuinput/tst_uinput.c | 93 ++++++++++++++++++++++++++++++++++
- 3 files changed, 136 insertions(+)
- create mode 100644 include/tst_uinput.h
- create mode 100644 libs/libltpuinput/Makefile
- create mode 100644 libs/libltpuinput/tst_uinput.c
+ runtest/uevent                      |  1 +
+ testcases/kernel/uevents/.gitignore |  1 +
+ testcases/kernel/uevents/Makefile   |  4 ++
+ testcases/kernel/uevents/uevent03.c | 98 +++++++++++++++++++++++++++++
+ 4 files changed, 104 insertions(+)
+ create mode 100644 testcases/kernel/uevents/uevent03.c
 
-diff --git a/include/tst_uinput.h b/include/tst_uinput.h
+diff --git a/runtest/uevent b/runtest/uevent
+index 30b1114a4..0b59c8723 100644
+--- a/runtest/uevent
++++ b/runtest/uevent
+@@ -1,2 +1,3 @@
+ uevent01 uevent01
+ uevent02 uevent02
++uevent03 uevent03
+diff --git a/testcases/kernel/uevents/.gitignore b/testcases/kernel/uevents/.gitignore
+index 0afc95534..7818f7308 100644
+--- a/testcases/kernel/uevents/.gitignore
++++ b/testcases/kernel/uevents/.gitignore
+@@ -1,2 +1,3 @@
+ uevent01
+ uevent02
++uevent03
+diff --git a/testcases/kernel/uevents/Makefile b/testcases/kernel/uevents/Makefile
+index cba769739..d5ceb0719 100644
+--- a/testcases/kernel/uevents/Makefile
++++ b/testcases/kernel/uevents/Makefile
+@@ -2,5 +2,9 @@
+ 
+ top_srcdir			?= ../../..
+ 
++LTPLIBS = ltpuinput
++
++uevent03: LDLIBS += -lltpuinput
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
 new file mode 100644
-index 000000000..1d5b5215a
+index 000000000..463322c2c
 --- /dev/null
-+++ b/include/tst_uinput.h
-@@ -0,0 +1,31 @@
++++ b/testcases/kernel/uevents/uevent03.c
+@@ -0,0 +1,98 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
-+#ifndef TST_UINPUT_H__
-+#define TST_UINPUT_H__
-+
-+/**
-+ * Tries to open the uinput device.
-+ *
-+ * Returns file descriptor on success, -1 on failure.
-+ */
-+int open_uinput(void);
-+
-+/**
-+ * Creates virtual input device.
-+ *
-+ * @fd File descriptor returned by open_uinput().
-+ */
-+void create_input_device(int fd);
-+
-+
-+/**
-+ * Destroys virtual input device.
-+ *
-+ * @fd File descriptor returned by open_uinput().
-+ */
-+void destroy_input_device(int fd);
-+
-+#endif	/* TST_UINPUT_H__ */
-diff --git a/libs/libltpuinput/Makefile b/libs/libltpuinput/Makefile
-new file mode 100644
-index 000000000..dd2a6c096
---- /dev/null
-+++ b/libs/libltpuinput/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (C) Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+LIB			:= libltpuinput.a
-+
-+include $(top_srcdir)/include/mk/lib.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/libs/libltpuinput/tst_uinput.c b/libs/libltpuinput/tst_uinput.c
-new file mode 100644
-index 000000000..41a1f7eb0
---- /dev/null
-+++ b/libs/libltpuinput/tst_uinput.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-+ * Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++ * Very simple uevent netlink socket test.
++ *
++ * We fork a child that listens for a kernel events while parents creates and removes
++ * a tun network device which should produce two several add and remove events.
 + */
 +
-+#include <linux/input.h>
-+#include <linux/uinput.h>
 +#include <stdio.h>
++#include <stdlib.h>
++#include <sys/wait.h>
 +
-+#define TST_NO_DEFAULT_MAIN
++#include <linux/uinput.h>
++
 +#include "tst_test.h"
-+
 +#include "tst_uinput.h"
++#include "uevent.h"
 +
-+#define VIRTUAL_DEVICE "virtual-device-ltp"
-+
-+static const char *uinput_paths[] = {
-+	"/dev/input/uinput",
-+	"/dev/uinput",
-+};
-+
-+int open_uinput(void)
++static void generate_input_uevents(char *buf, size_t buf_len)
 +{
-+	unsigned int i;
-+	int fd;
++	int fd = open_uinput();
 +
-+	for (i = 0; i < ARRAY_SIZE(uinput_paths); i++) {
-+		fd = open(uinput_paths[i], O_WRONLY | O_NONBLOCK);
-+
-+		if (fd > 0) {
-+			tst_res(TINFO, "Found uinput dev at %s", uinput_paths[i]);
-+			return fd;
-+		}
-+
-+		if (fd < 0 && errno != ENOENT) {
-+			tst_brk(TBROK | TERRNO, "open(%s)", uinput_paths[i]);
-+		}
-+	}
-+
-+	return -1;
++	create_input_device(fd);
++	SAFE_IOCTL(fd, UI_GET_SYSNAME(buf_len), buf);
++	destroy_input_device(fd);
 +}
 +
-+static int check_device(void)
++static void verify_uevent(void)
 +{
-+	FILE *file;
-+	char line[256];
++	int pid, fd;
++	char sysname[64];
++	char add_msg[1024];
++	char rem_msg[1024];
++	char dev_path[1024];
 +
-+	file = fopen("/proc/bus/input/devices", "r");
-+	if (!file)
-+		return 0;
-+
-+	while (fgets(line, 256, file)) {
-+		if (strstr(line, VIRTUAL_DEVICE))
-+			return 1;
-+	}
-+
-+	fclose(file);
-+
-+	return 0;
-+}
-+
-+void destroy_input_device(int fd)
-+{
-+	SAFE_IOCTL(fd, UI_DEV_DESTROY, NULL);
-+	SAFE_CLOSE(fd);
-+}
-+
-+void create_input_device(int fd)
-+{
-+	int nb;
-+	struct uinput_user_dev uidev = {
-+		.name = VIRTUAL_DEVICE,
-+		.id = {
-+			.bustype = BUS_USB,
-+			.vendor = 0x1,
-+			.product = 0x1,
-+			.version = 1,
++	struct uevent_desc add = {
++		.msg = add_msg,
++		.value_cnt = 6,
++		.values = (const char*[]) {
++			"ACTION=add",
++			dev_path,
++			"SUBSYSTEM=input",
++			"NAME=\"virtual-device-ltp\"",
++			"PROP=0",
++			"EV=1",
 +		}
 +	};
 +
-+	SAFE_WRITE(1, fd, &uidev, sizeof(uidev));
-+	SAFE_IOCTL(fd, UI_DEV_CREATE, NULL);
++	struct uevent_desc rem = {
++		.msg = rem_msg,
++		.value_cnt = 6,
++		.values = (const char*[]) {
++			"ACTION=remove",
++			dev_path,
++			"SUBSYSTEM=input",
++			"NAME=\"virtual-device-ltp\"",
++			"PROP=0",
++			"EV=1",
++		}
++	};
 +
-+	for (nb = 100; nb > 0; nb--) {
-+		if (check_device())
-+			return;
-+		usleep(10000);
-+	}
++	const struct uevent_desc *const uevents[] = {
++		&add,
++		&rem,
++		NULL
++	};
 +
-+	destroy_input_device(fd);
-+	tst_brk(TBROK, "Failed to create device");
++	fd = open_uevent_netlink();
++
++	generate_input_uevents(sysname, sizeof(sysname));
++
++	snprintf(add_msg, sizeof(add_msg), "add@/devices/virtual/input/%s", sysname);
++	snprintf(rem_msg, sizeof(rem_msg), "remove@/devices/virtual/input/%s", sysname);
++	snprintf(dev_path, sizeof(dev_path), "DEVPATH=/devices/virtual/input/%s", sysname);
++
++	pid = SAFE_FORK();
++	if (!pid)
++		wait_for_uevents(fd, uevents);
++
++	SAFE_CLOSE(fd);
++	wait_for_pid(pid);
 +}
++
++static struct tst_test test = {
++	.test_all = verify_uevent,
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.needs_checkpoints = 1,
++	.needs_drivers = (const char *const[]) {
++		"uinput",
++		NULL
++	},
++	.needs_root = 1,
++};
 -- 
 2.21.0
 
