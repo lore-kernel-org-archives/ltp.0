@@ -1,124 +1,60 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 19 Aug 2019 11:44:40 +0200
-Subject: [LTP] [PATCH v2 03/11] doc: Add guarded buffers documentation
-In-Reply-To: <20190812143941.8119-4-chrubis@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 19 Aug 2019 14:42:00 +0200
+Subject: [LTP] [PATCH v2 01/11] lib: Add support for guarded buffers
+In-Reply-To: <877e79wmme.fsf@rpws.prws.suse.cz>
 References: <20190812143941.8119-1-chrubis@suse.cz>
- <20190812143941.8119-4-chrubis@suse.cz>
-Message-ID: <875zmtwktz.fsf@rpws.prws.suse.cz>
+ <20190812143941.8119-2-chrubis@suse.cz>
+ <877e79wmme.fsf@rpws.prws.suse.cz>
+Message-ID: <20190819124159.GA11715@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> We could add guarded buffers to huge numbers of tests by wrapping the
+> user supplied buffer in various calls to SAFE_* macros and tst_*
+> functions. This could be configurable at compile time and it should be
+> detectable if a buffer is already guarded, so double wrapping should not
+> be an issue.
 
-Just nitpicking...
+Fair point. The detection would however be O(n), well we can do a little
+trick like maintaing the memory range in which all the mmaps were done
+and rule out any heap based allocation in O(1) easily, but anything that
+crosses the malloc threshold would be O(n).
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+> However I am not sure the current API makes this easy. We should
+> probably have a tst_free(void *buf) and/or tst_buffer_alloc(struct
+> tst_buffer *buf) and tst_buffer_free(struct tst_buffer *buf) (which
+> could just put the buffer on a free list for reuse).
 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  doc/test-writing-guidelines.txt | 68 +++++++++++++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 573dd08d9..e5ee2fef0 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -1699,6 +1699,74 @@ struct tst_test test = {
->  };
->  -------------------------------------------------------------------------------
->  
-> +2.2.31 Guarded buffers
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +The test library also supports guarded buffers, which are buffers allocated so
-> +that:
+I guess that this calls for completely different API since 99% time we
+will do with just single buffer.
 
-Don't need 'also'
+Unless we are:
 
-> +
-> +* The end of the buffer is followed by PROT_NONE page
-                                         ^ a
-> +
-> +* The rest of the page before the buffer is filled with random canary
-         ^ remainder                                                     ^data
+* The test is compiled with pthreads
+  and we managed to run two SAFE_MACROS() concurently
 
-> +
-> +Which means that the any access after the buffer with yield Segmentation
-                                                    ^ will    ^ a
-> +fault or EFAULT depending on if the access happened in userspace or kernel
-                                                                      ^the
-> +respectively. The canary before the buffer will also catch any write access
-> +outside of the buffer.
-> +
-> +The purpose of the patch is to catch off-by-one bugs happening while buffers
-                                                      ^ which happen
-                                                      when buffers ...
+* The buffer is bigger than one page
 
-> +and structures are passed to syscalls. New tests should allocate guarded
-> +buffers for all data passed to the tested syscall which are passed by a
-> +pointer.
-> +
-> +[source,c]
-> +-------------------------------------------------------------------------------
-> +#include "tst_test.h"
-> +
-> +static struct foo *foo_ptr;
-> +static struct iovec *iov;
-> +static void *buf_ptr;
-> +static char *id;
-> +...
-> +
-> +static void run(void)
-> +{
-> +	...
-> +
-> +	foo_ptr->bar = 1;
-> +	foo_ptr->buf = buf_ptr;
-> +
-> +	...
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	...
-> +
-> +	id = tst_strdup(string);
-> +
-> +	...
-> +}
-> +
-> +static struct tst_test test = {
-> +	...
-> +	.bufs = (struct tst_buffers []) {
-> +		{&foo_ptr, .size = sizeof(*foo_ptr)},
-> +		{&buf_ptr, .size = BUF_SIZE},
-> +		{&iov, .iov_sizes = (int[]){128, 32, -1},
-> +		{}
-> +	}
-> +};
-> +-------------------------------------------------------------------------------
-> +
-> +Guarded buffers can be allocated on runtime in a test setup() by a
-                                    ^ at                        ^ function
-> +'tst_alloc()' or by 'tst_strdup()' as well as by filling up the .bufs array in
-^ call to
+* We call SAFE_MACROS() recursively, which we don't
 
-> +the tst_test structure.
-> +
-> +So far the tst_test structure supports allocating either a plain buffer by
-> +setting up the size or struct iovec, which is allocated recursively including
-> +the individual buffers as described by an '-1' terminated array of buffer
-> +sizes.
->  
->  2.3 Writing a testcase in shell
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> -- 
-> 2.21.0
+So all of this could be done by a tst_temp_alloc() and tst_temp_free()
+that would attempt to grab single pre-allocated buffer and only fall
+back to allocating/freeing new buffer when the buffer is currently in
+use.
 
+> I am not sure if this is something which needs to be addressed now or
+> can be left for another patch set. My main concern is that one of the
+> existing API functions will need to be changed.
+
+I guess that it would be easier to make these changes incrementally,
+because adding more functionality to this patchset would only make it
+harder to review and I would like to get this API in so that we can
+star making use of it.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
