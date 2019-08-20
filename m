@@ -1,112 +1,82 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 20 Aug 2019 11:17:27 -0400 (EDT)
-Subject: [LTP] [PATCH] cve: Fix kernel symbol finding for meltdown case
-In-Reply-To: <1566311128-454547-1-git-send-email-zhe.he@windriver.com>
-References: <1566311128-454547-1-git-send-email-zhe.he@windriver.com>
-Message-ID: <1181420641.7386594.1566314247400.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Aug 2019 17:18:27 +0200
+Subject: [LTP] [PATCH v2 1/5] lib/tst_device: Export more functions.
+In-Reply-To: <20190820151831.7418-1-chrubis@suse.cz>
+References: <20190820151831.7418-1-chrubis@suse.cz>
+Message-ID: <20190820151831.7418-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Export tst_attach_device() and tst_deteach_device() which will be later
+on used by a kernel netlink uevent tests.
 
------ Original Message -----
-> From: He Zhe <zhe.he@windriver.com>
-> 
-> meltdown case failed as below.
-> safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_device.h | 7 +++++++
+ lib/tst_device.c     | 8 ++++----
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-What line doesn't match current pattern?
-I'm not seeing any changes in kallsyms output:
+diff --git a/include/tst_device.h b/include/tst_device.h
+index f0ddc3e93..c6e7b45b1 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -50,6 +50,13 @@ int tst_clear_device(const char *dev);
+  *
+  */
+ int tst_find_free_loopdev(const char *path, size_t path_len);
++
++
++int tst_attach_device(const char *dev_path, const char *file_path);
++
++
++int tst_detach_device(const char *dev_path);
++
+ /*
+  * Reads test block device stat file and returns the bytes written since the
+  * last call of this function.
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 22abdef46..10f71901d 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -139,7 +139,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 	return -1;
+ }
+ 
+-static int attach_device(const char *dev, const char *file)
++int tst_attach_device(const char *dev, const char *file)
+ {
+ 	int dev_fd, file_fd;
+ 	struct loop_info loopinfo;
+@@ -185,7 +185,7 @@ static int attach_device(const char *dev, const char *file)
+ 	return 0;
+ }
+ 
+-static int detach_device(const char *dev)
++int tst_detach_device(const char *dev)
+ {
+ 	int dev_fd, ret, i;
+ 
+@@ -284,7 +284,7 @@ const char *tst_acquire_device__(unsigned int size)
+ 	if (tst_find_free_loopdev(dev_path, sizeof(dev_path)) == -1)
+ 		return NULL;
+ 
+-	if (attach_device(dev_path, DEV_FILE))
++	if (tst_attach_device(dev_path, DEV_FILE))
+ 		return NULL;
+ 
+ 	device_acquired = 1;
+@@ -329,7 +329,7 @@ int tst_release_device(const char *dev)
+ 	 *
+ 	 * The file image is deleted in tst_rmdir();
+ 	 */
+-	ret = detach_device(dev);
++	ret = tst_detach_device(dev);
+ 
+ 	device_acquired = 0;
+ 
+-- 
+2.21.0
 
-kernel: "%px %c %s\n"
-        "%px %c %s\t[%s]\n"
-LTP:    "%lx %c SYMBOL%c"
-
-> 
-> The case used SAFE_FILE_LINES_SCANF which is a wrapper of vsscanf which
-> cannot
-> extract the symbol name from the following line pattern of kernel symbol
-> table.
-
-Did you mean "extract symbol address"?
-
-> 
-> 01234567 T SYMBOL_NAME
-> 
-> Also the original format pattern is not correct.
-> 
-> This patch re-writes the symbol extraction process and adds a NULL pointer
-> check.
-> 
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
->  testcases/cve/meltdown.c | 38 +++++++++++++++++++++++++++++++-------
->  1 file changed, 31 insertions(+), 7 deletions(-)
-> 
-> diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-> index f78c38b..4c3f3b2 100644
-> --- a/testcases/cve/meltdown.c
-> +++ b/testcases/cve/meltdown.c
-> @@ -248,15 +248,34 @@ set_cache_hit_threshold(void)
->  static unsigned long
->  find_symbol_in_file(const char *filename, const char *symname)
->  {
-> -	unsigned long addr;
-> -	char type;
-> -	int ret, read;
-> -	char fmt[strlen(symname) + 64];
-> +	unsigned long addr = 0;
-> +	int found = 0;
-> +	char line[BUFSIZ] = {0};
-> +	FILE *fp = NULL;
-> +	char *p = NULL;
-> +
-> +	fp = fopen(filename, "r");
-> +	if (fp == NULL) {
-> +		tst_res(TBROK | TERRNO,
-> +			"Failed to open file:%s for symbol:%s",
-> +			filename, symname);
-> +		return 0;
-> +	}
->  
-> -	sprintf(fmt, "%%lx %%c %s%%c", symname);
-> +	while (fgets(line, BUFSIZ, fp) != NULL) {
-> +		p = strstr(line, symname);
-> +		/* Make sure this line is exactly for this symbol.
-> +		 * Substract the EOL added by fgets for each line.
-> +		 */
-> +		if (p && ((strlen(p) - 1) == strlen(symname))) {
-> +			found = sscanf(line, "%lx", &addr);
-> +			if (found == 1)
-> +				break;
-> +		}
-> +	}
-> +	fclose(fp);
->  
-> -	ret = SAFE_FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
-> -	if (ret)
-> +	if (found != 1)
->  		return 0;
->  
->  	return addr;
-> @@ -322,6 +341,11 @@ static void run(void)
->  
->  	/* read address of saved_cmdline_addr */
->  	addr = saved_cmdline_addr;
-> +	if (!addr) {
-> +		tst_res(TBROK | TERRNO, "saved_cmdline_addr is 0\n");
-> +		return;
-> +	}
-> +
->  	size = sizeof(addr);
->  	for (i = 0; i < size; i++) {
->  		ret = readbyte(spec_fd, addr);
-> --
-> 2.7.4
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
