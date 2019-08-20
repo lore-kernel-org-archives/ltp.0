@@ -1,98 +1,91 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Tue, 20 Aug 2019 20:20:16 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/ioprio_set01.c: Stop decreasing priority
- continuously in loops
-Message-ID: <20190820122017.26015-1-ice_yangxiao@163.com>
+From: zhe.he@windriver.com <zhe.he@windriver.com>
+Date: Tue, 20 Aug 2019 22:25:28 +0800
+Subject: [LTP] [PATCH] cve: Fix kernel symbol finding for meltdown case
+Message-ID: <1566311128-454547-1-git-send-email-zhe.he@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Running ioprio_set01 -i 5 gets the following error:
--------------------------------------------------
-...
-ioprio_set01.c:29: INFO: ioprio_get returned class BEST-EFFORT prio 1
-ioprio.h:89: PASS: ioprio_set new class BEST-EFFORT, new prio 2
-ioprio.h:89: PASS: ioprio_set new class BEST-EFFORT, new prio 0
-ioprio_set01.c:29: INFO: ioprio_get returned class BEST-EFFORT prio 0
-ioprio.h:89: PASS: ioprio_set new class BEST-EFFORT, new prio 1
-ioprio_set01.c:49: FAIL: ioprio increase out of range (-1)
-...
--------------------------------------------------
+From: He Zhe <zhe.he@windriver.com>
 
-The I/O scheduling priority of process is decreased by 1 continuously
-in loops so that it is out of range(i.e. 0~7) finally.  We fix the
-issue by setting priority to original value before running test.
+meltdown case failed as below.
+safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
 
-Also fix a typo because second subtest actually decreases priority.
+The case used SAFE_FILE_LINES_SCANF which is a wrapper of vsscanf which cannot
+extract the symbol name from the following line pattern of kernel symbol table.
 
-Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+01234567 T SYMBOL_NAME
+
+Also the original format pattern is not correct.
+
+This patch re-writes the symbol extraction process and adds a NULL pointer
+check.
+
+Signed-off-by: He Zhe <zhe.he@windriver.com>
 ---
- .../kernel/syscalls/ioprio/ioprio_set01.c     | 33 +++++++++++--------
- 1 file changed, 20 insertions(+), 13 deletions(-)
+ testcases/cve/meltdown.c | 38 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set01.c b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-index 24bf8a9ca..5b89ac81e 100644
---- a/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-+++ b/testcases/kernel/syscalls/ioprio/ioprio_set01.c
-@@ -14,20 +14,12 @@
- #include "lapi/syscalls.h"
- #include "ioprio.h"
- 
-+static int orig_class;
-+static int orig_prio;
-+
- static void run(void)
+diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+index f78c38b..4c3f3b2 100644
+--- a/testcases/cve/meltdown.c
++++ b/testcases/cve/meltdown.c
+@@ -248,15 +248,34 @@ set_cache_hit_threshold(void)
+ static unsigned long
+ find_symbol_in_file(const char *filename, const char *symname)
  {
--	int class, prio;
--
--	/* Get the I/O priority for the current process */
--	TEST(sys_ioprio_get(IOPRIO_WHO_PROCESS, 0));
--
--	if (TST_RET == -1)
--		tst_brk(TBROK | TTERRNO, "ioprio_get failed");
--
--	class = IOPRIO_PRIO_CLASS(TST_RET);
--	prio = IOPRIO_PRIO_LEVEL(TST_RET);
--	tst_res(TINFO, "ioprio_get returned class %s prio %d",
--		to_class_str[class], prio);
-+	int class = orig_class, prio = orig_prio;
- 
- 	/* Bump prio to what it was + 1 */
- 	class = IOPRIO_CLASS_BE;
-@@ -46,7 +38,7 @@ static void run(void)
- 
- 	/* Bump prio down two notches */
- 	if (!prio_in_range(prio - 2)) {
--		tst_res(TFAIL, "ioprio increase out of range (%d)", prio - 2);
-+		tst_res(TFAIL, "ioprio decrease out of range (%d)", prio - 2);
- 		return;
- 	}
- 	prio = (prio - 2);
-@@ -58,6 +50,21 @@ static void run(void)
- 		ioprio_check_setting(class, prio, 1);
- }
- 
-+static void setup(void)
-+{
-+	/* Get the I/O priority for the current process */
-+	TEST(sys_ioprio_get(IOPRIO_WHO_PROCESS, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "ioprio_get failed");
+-	unsigned long addr;
+-	char type;
+-	int ret, read;
+-	char fmt[strlen(symname) + 64];
++	unsigned long addr = 0;
++	int found = 0;
++	char line[BUFSIZ] = {0};
++	FILE *fp = NULL;
++	char *p = NULL;
 +
-+	orig_class = IOPRIO_PRIO_CLASS(TST_RET);
-+	orig_prio = IOPRIO_PRIO_LEVEL(TST_RET);
++	fp = fopen(filename, "r");
++	if (fp == NULL) {
++		tst_res(TBROK | TERRNO,
++			"Failed to open file:%s for symbol:%s",
++			filename, symname);
++		return 0;
++	}
+ 
+-	sprintf(fmt, "%%lx %%c %s%%c", symname);
++	while (fgets(line, BUFSIZ, fp) != NULL) {
++		p = strstr(line, symname);
++		/* Make sure this line is exactly for this symbol.
++		 * Substract the EOL added by fgets for each line.
++		 */
++		if (p && ((strlen(p) - 1) == strlen(symname))) {
++			found = sscanf(line, "%lx", &addr);
++			if (found == 1)
++				break;
++		}
++	}
++	fclose(fp);
+ 
+-	ret = SAFE_FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
+-	if (ret)
++	if (found != 1)
+ 		return 0;
+ 
+ 	return addr;
+@@ -322,6 +341,11 @@ static void run(void)
+ 
+ 	/* read address of saved_cmdline_addr */
+ 	addr = saved_cmdline_addr;
++	if (!addr) {
++		tst_res(TBROK | TERRNO, "saved_cmdline_addr is 0\n");
++		return;
++	}
 +
-+	tst_res(TINFO, "ioprio_get returned class %s prio %d",
-+		to_class_str[orig_class], orig_prio);
-+}
-+
- static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = run,
- };
+ 	size = sizeof(addr);
+ 	for (i = 0; i < size; i++) {
+ 		ret = readbyte(spec_fd, addr);
 -- 
-2.21.0
-
+2.7.4
 
