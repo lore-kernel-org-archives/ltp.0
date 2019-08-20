@@ -1,101 +1,67 @@
-From: Li Wang <wangli.ahau@gmail.com>
-Date: Tue, 20 Aug 2019 15:38:30 +0800
-Subject: [LTP] [PATCH] tst_res: Print errno number in addition to error
- name
-In-Reply-To: <20190819133618.7538-1-rpalethorpe@suse.com>
-References: <20190819133618.7538-1-rpalethorpe@suse.com>
-Message-ID: <CAE1O6mj=XSBmjV2rfu7o0rcRi0ZNcfQehJsrjxRJy5um=uyWeA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 20 Aug 2019 10:25:06 +0200
+Subject: [LTP] [PATCH v2 01/11] lib: Add support for guarded buffers
+In-Reply-To: <20190819124159.GA11715@rei.lan>
+References: <20190812143941.8119-1-chrubis@suse.cz>
+ <20190812143941.8119-2-chrubis@suse.cz> <877e79wmme.fsf@rpws.prws.suse.cz>
+ <20190819124159.GA11715@rei.lan>
+Message-ID: <8736hww8f1.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I think this patch makes sense. Only have tiny comments in below.
+Hello,
 
-  Acked-by: Li Wang <liwang@redhat.com>
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-On Mon, 19 Aug 2019 at 21:36, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> Hi!
+>> We could add guarded buffers to huge numbers of tests by wrapping the
+>> user supplied buffer in various calls to SAFE_* macros and tst_*
+>> functions. This could be configurable at compile time and it should be
+>> detectable if a buffer is already guarded, so double wrapping should not
+>> be an issue.
 >
-> Occasionally new error numbers are added to the kernel (maybe by
-> accident). Currently if we do not know the name of them then we just print
-> ???.
+> Fair point. The detection would however be O(n), well we can do a little
+> trick like maintaing the memory range in which all the mmaps were done
+> and rule out any heap based allocation in O(1) easily, but anything that
+> crosses the malloc threshold would be O(n).
 >
-> This commit simply always prints the error number to aid with debugging.
+>> However I am not sure the current API makes this easy. We should
+>> probably have a tst_free(void *buf) and/or tst_buffer_alloc(struct
+>> tst_buffer *buf) and tst_buffer_free(struct tst_buffer *buf) (which
+>> could just put the buffer on a free list for reuse).
 >
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
+> I guess that this calls for completely different API since 99% time we
+> will do with just single buffer.
 >
-> It appears we are atleast missing ENOTSUPP (524) which is probably returned by
-> create_timer for some alarm clocks on none x86 arches. This isn't entirely
-> clear, but what is clear is that it would help to know what the error number
-> is without using strace.
+> Unless we are:
 >
->  lib/tst_test.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
+> * The test is compiled with pthreads
+>   and we managed to run two SAFE_MACROS() concurently
 >
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 245e287fa..46481ca3f 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -177,7 +177,7 @@ static void print_result(const char *file, const int lineno, int ttype,
->  {
->         char buf[1024];
->         char *str = buf;
-> -       int ret, size = sizeof(buf), ssize;
-> +       int ret, size = sizeof(buf), ssize, int_errno;
->         const char *str_errno = NULL;
->         const char *res;
+> * The buffer is bigger than one page
 >
-> @@ -205,15 +205,19 @@ static void print_result(const char *file, const int lineno, int ttype,
->                 abort();
->         }
+> * We call SAFE_MACROS() recursively, which we don't
 >
-> -       if (ttype & TERRNO)
-> +       if (ttype & TERRNO) {
->                 str_errno = tst_strerrno(errno);
-> +               int_errno = errno;
+> So all of this could be done by a tst_temp_alloc() and tst_temp_free()
+> that would attempt to grab single pre-allocated buffer and only fall
+> back to allocating/freeing new buffer when the buffer is currently in
+> use.
+>
+>> I am not sure if this is something which needs to be addressed now or
+>> can be left for another patch set. My main concern is that one of the
+>> existing API functions will need to be changed.
+>
+> I guess that it would be easier to make these changes incrementally,
+> because adding more functionality to this patchset would only make it
+> harder to review and I would like to get this API in so that we can
+> star making use of it.
 
-Can we just reverse the order of these two statements for better typesetting?
-
-> +       }
->
-> -       if (ttype & TTERRNO)
-> +       if (ttype & TTERRNO) {
->                 str_errno = tst_strerrno(TST_ERR);
-> +               int_errno = TST_ERR;
-
-And this two.
-
-> +       }
->
->         if (ttype & TRERRNO) {
-> -               ret = TST_RET < 0 ? -(int)TST_RET : (int)TST_RET;
-> -               str_errno = tst_strerrno(ret);
-> +               int_errno = TST_RET < 0 ? -(int)TST_RET : (int)TST_RET;
-> +               str_errno = tst_strerrno(int_errno);
->         }
->
->         ret = snprintf(str, size, "%s:%i: ", file, lineno);
-> @@ -237,7 +241,7 @@ static void print_result(const char *file, const int lineno, int ttype,
->                                 "Next message is too long and truncated:");
->         } else if (str_errno) {
->                 ssize = size - 2;
-> -               ret = snprintf(str, size, ": %s", str_errno);
-> +               ret = snprintf(str, size, ": %s (%d)", str_errno, int_errno);
->                 str += MIN(ret, ssize);
->                 size -= MIN(ret, ssize);
->                 if (ret >= ssize)
-> --
-> 2.22.0
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
-
+OK, I am happy with this patchset except for the few minor comments on
+the docs.
 
 -- 
-Regards,
-Li Wang
-Email: wangli.ahau@gmail.com
+Thank you,
+Richard.
