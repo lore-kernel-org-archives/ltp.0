@@ -1,12 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Aug 2019 12:27:11 +0200
+Date: Tue, 20 Aug 2019 12:28:28 +0200
 Subject: [LTP] [PATCH] tst_res: Print errno number in addition to error
  name
-In-Reply-To: <CAEemH2cX1CO=zLzf1ZHQM+MUNS=FLKpGD1ypx=2uGst5qXn4YQ@mail.gmail.com>
+In-Reply-To: <CAEemH2eCNk7tUadvcKcsyGZB+_Hgijg7-yd8Aw-RFtqrQhNLQQ@mail.gmail.com>
 References: <20190819133618.7538-1-rpalethorpe@suse.com>
- <20190820095521.GA22253@rei.lan>
- <CAEemH2cX1CO=zLzf1ZHQM+MUNS=FLKpGD1ypx=2uGst5qXn4YQ@mail.gmail.com>
-Message-ID: <20190820102711.GA22483@rei.lan>
+ <20190820095521.GA22253@rei.lan> <20190820095602.GB22253@rei.lan>
+ <CAEemH2eCNk7tUadvcKcsyGZB+_Hgijg7-yd8Aw-RFtqrQhNLQQ@mail.gmail.com>
+Message-ID: <20190820102828.GB22483@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,20 +14,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > It appears we are atleast missing ENOTSUPP (524) which is probably returned by
-> > > create_timer for some alarm clocks on none x86 arches. This isn't entirely
-> > > clear, but what is clear is that it would help to know what the error number
-> > > is without using strace.
+> > > > It appears we are atleast missing ENOTSUPP (524) which is probably returned by
+> > > > create_timer for some alarm clocks on none x86 arches. This isn't entirely
+> > > > clear, but what is clear is that it would help to know what the error number
+> > > > is without using strace.
+> > >
+> > > Can we please also patch the lib/errnos.h so that the ENOTSUPP is
+> > > included there as well?
 > >
-> > Can we please also patch the lib/errnos.h so that the ENOTSUPP is
-> > included there as well?
+> > And also patch the timer_create() tests to return TCONF if we got
+> > ENOTSUPP?
 > 
-> Not sure if we should do that since it(from google) says ENOTSUPP is
-> not intended to used in userland.
+> I think we shouldn't TCONF this until we get clear the problem.
 
-Looks like there are two of these ENOTSUP and ENOTSUPP so the syscall
-returning ENOTSUPP is a bug itself since it should return ENOTSUP. Also
-btw ENOTSUP == EOPNOTSUPP and we do have EOPNOTSUPP in errnos.h.
+Indeed, if nothing else it should return ENOTSUP/EOPNOTSUPP instead.
 
 -- 
 Cyril Hrubis
