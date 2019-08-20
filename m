@@ -1,82 +1,51 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Aug 2019 17:18:27 +0200
-Subject: [LTP] [PATCH v2 1/5] lib/tst_device: Export more functions.
-In-Reply-To: <20190820151831.7418-1-chrubis@suse.cz>
-References: <20190820151831.7418-1-chrubis@suse.cz>
-Message-ID: <20190820151831.7418-2-chrubis@suse.cz>
+Date: Tue, 20 Aug 2019 17:18:26 +0200
+Subject: [LTP] [PATCH v1 0/5] Add basic test for uevent netlink socket
+Message-ID: <20190820151831.7418-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Export tst_attach_device() and tst_deteach_device() which will be later
-on used by a kernel netlink uevent tests.
+This patchset adds three basic test for uevent netlink socket.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_device.h | 7 +++++++
- lib/tst_device.c     | 8 ++++----
- 2 files changed, 11 insertions(+), 4 deletions(-)
+v2:
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index f0ddc3e93..c6e7b45b1 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -50,6 +50,13 @@ int tst_clear_device(const char *dev);
-  *
-  */
- int tst_find_free_loopdev(const char *path, size_t path_len);
-+
-+
-+int tst_attach_device(const char *dev_path, const char *file_path);
-+
-+
-+int tst_detach_device(const char *dev_path);
-+
- /*
-  * Reads test block device stat file and returns the bytes written since the
-  * last call of this function.
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 22abdef46..10f71901d 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -139,7 +139,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
- 	return -1;
- }
- 
--static int attach_device(const char *dev, const char *file)
-+int tst_attach_device(const char *dev, const char *file)
- {
- 	int dev_fd, file_fd;
- 	struct loop_info loopinfo;
-@@ -185,7 +185,7 @@ static int attach_device(const char *dev, const char *file)
- 	return 0;
- }
- 
--static int detach_device(const char *dev)
-+int tst_detach_device(const char *dev)
- {
- 	int dev_fd, ret, i;
- 
-@@ -284,7 +284,7 @@ const char *tst_acquire_device__(unsigned int size)
- 	if (tst_find_free_loopdev(dev_path, sizeof(dev_path)) == -1)
- 		return NULL;
- 
--	if (attach_device(dev_path, DEV_FILE))
-+	if (tst_attach_device(dev_path, DEV_FILE))
- 		return NULL;
- 
- 	device_acquired = 1;
-@@ -329,7 +329,7 @@ int tst_release_device(const char *dev)
- 	 *
- 	 * The file image is deleted in tst_rmdir();
- 	 */
--	ret = detach_device(dev);
-+	ret = tst_detach_device(dev);
- 
- 	device_acquired = 0;
- 
+Finished the input event test, now we match all events.
+
+Cyril Hrubis (5):
+  lib/tst_device: Export more functions.
+  kernel/uevent: Add uevent01
+  kernel/uevent: Add uevent02
+  libs/libltpuinput: Add uinput library.
+  kernel/uevent: Add uevent03
+
+ include/tst_device.h                |   7 ++
+ include/tst_uinput.h                |  31 +++++
+ lib/tst_device.c                    |   8 +-
+ libs/libltpuinput/Makefile          |  12 ++
+ libs/libltpuinput/tst_uinput.c      |  93 +++++++++++++++
+ runtest/uevent                      |   3 +
+ scenario_groups/default             |   1 +
+ testcases/kernel/uevents/.gitignore |   3 +
+ testcases/kernel/uevents/Makefile   |  10 ++
+ testcases/kernel/uevents/uevent.h   | 176 ++++++++++++++++++++++++++++
+ testcases/kernel/uevents/uevent01.c |  90 ++++++++++++++
+ testcases/kernel/uevents/uevent02.c | 141 ++++++++++++++++++++++
+ testcases/kernel/uevents/uevent03.c |  98 ++++++++++++++++
+ 13 files changed, 669 insertions(+), 4 deletions(-)
+ create mode 100644 include/tst_uinput.h
+ create mode 100644 libs/libltpuinput/Makefile
+ create mode 100644 libs/libltpuinput/tst_uinput.c
+ create mode 100644 runtest/uevent
+ create mode 100644 testcases/kernel/uevents/.gitignore
+ create mode 100644 testcases/kernel/uevents/Makefile
+ create mode 100644 testcases/kernel/uevents/uevent.h
+ create mode 100644 testcases/kernel/uevents/uevent01.c
+ create mode 100644 testcases/kernel/uevents/uevent02.c
+ create mode 100644 testcases/kernel/uevents/uevent03.c
+
 -- 
 2.21.0
 
