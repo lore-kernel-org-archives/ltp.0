@@ -1,67 +1,124 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 21 Aug 2019 16:14:45 +0800
-Subject: [LTP] [PATCH] lapi/fs.h: Replace MAX_LFS_FILESIZE constant with
- own implementation
-In-Reply-To: <CAEemH2d_CKOwE3mHEXZKi1BkMBw5dn95aMJtkrSRciH2PU6NJA@mail.gmail.com>
-References: <20190815083630.26975-1-pvorel@suse.cz>
- <20190816085309.fqvip4exe4mvtv2o@XZHOUW.usersys.redhat.com>
- <CAEemH2d7TYn4sZ7kkjRsPc-yBnTrN9LC+w84MAO6pDxYpfiFcw@mail.gmail.com>
- <5D5BB8DC.6070900@cn.fujitsu.com>
- <CAEemH2d_CKOwE3mHEXZKi1BkMBw5dn95aMJtkrSRciH2PU6NJA@mail.gmail.com>
-Message-ID: <5D5CFD75.3050506@cn.fujitsu.com>
+From: He Zhe <zhe.he@windriver.com>
+Date: Wed, 21 Aug 2019 16:26:50 +0800
+Subject: [LTP] [PATCH] cve: Fix kernel symbol finding for meltdown case
+In-Reply-To: <1181420641.7386594.1566314247400.JavaMail.zimbra@redhat.com>
+References: <1566311128-454547-1-git-send-email-zhe.he@windriver.com>
+ <1181420641.7386594.1566314247400.JavaMail.zimbra@redhat.com>
+Message-ID: <ebb19cf0-02e8-30b4-9e17-1eae1effaba5@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/21 15:27, Li Wang wrote:
 
-> On Tue, Aug 20, 2019 at 5:10 PM Yang Xu<xuyang2018.jy@cn.fujitsu.com>  wrote:
-> ...
->>> But I don't understand why to define MAX_OFF as (MAX_LEN - MIN_OFF),
->>> the failure indicates that not to write at a position past the maximum
->>> allowed offset. Shouldn't we give a dst_off large than
->>> MAX_LFS_FILESIZE?
->> Yes, we should use a dst_off large than MAX_LFS_FILESIZE because it used pos to compare
->> in kernel code as below:
->>
->> mm/filemap.c
->>    static int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
->> ...
->> if (unlikely(pos>= max_size))
->>     return -EFBIG;
->> ...
->>
->> I strace xfstest generic/564 code( I follow this test code to ltp), as below:
->> #max_off=$((8 * 2**60 - 65536 - 1))
->> #min_off=65537
->> #xfs_io -f -c "pwrite -S 0x61 0 128k" file
->> #touch copy
->> #strace xfs_io -c "copy_range -l $min_off -s 0 -d $max_off file" copy
->> ....
->>    openat(AT_FDCWD, "file", O_RDONLY)      = 4
->>    copy_file_range(4, [0], 3, [9223372036854710271], 65537, 0) = 65536
->>    copy_file_range(4, [65536], 3, [9223372036854775807], 1, 0) = -1 EFBIG (File too large)
->> ....
->>
->> xfsprogs used a loop to call copy_file_range, and get EFBIG when pos greater than LLONG_MAX.
->>
->> I think we should  use tst_max_lfs_filesize instead of (tst_max_lfs_filesize -MIN_OFF)
->> and this case will pass whether xfs,btrfs and ext4.
-> Good job, Xu. I think you can format a new patch to fix this problem.
-> Because Petr's patch is used for solving the cross-compiling issue and
-> looks good.
-Hi Li
 
-OK. I will send a new patch to fix this problem. But copy_file_range02.c still has a problem as Murphy found,
-we set all_filesystem but use the same tmpdir instead of mntpoint.  I think we can remove all_filesystem and mountpoint.
-
-@Murphy Zhou  Hi Murphy, would you like to send a new patch to remove useless all_filesystem or I do it in my
-new patch by adding your signed-off-by tag? What do you think about it?
-
-> @Petr Vorel Hi Petr, what do you think? any more comments?
+On 8/20/19 11:17 PM, Jan Stancek wrote:
+> ----- Original Message -----
+>> From: He Zhe <zhe.he@windriver.com>
+>>
+>> meltdown case failed as below.
+>> safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
+> What line doesn't match current pattern?
+> I'm not seeing any changes in kallsyms output:
 >
+> kernel: "%px %c %s\n"
+>         "%px %c %s\t[%s]\n"
+> LTP:    "%lx %c SYMBOL%c"
 
+Thanks and yes, you're correct.
 
+I just found the root cause and I'll send v2.
+
+find_kernel_symbol is defined to try twice with each of /proc/kallsyms and
+/boot/System.map-%s. Currently if the symbol is not found in /proc/kallsyms,
+when kernel option CONFIG_KALLSYMS_ALL is disabled, it would stop the case
+immediately due to SAFE_FILE_LINES_SCANF.
+
+Zhe
+
+>
+>> The case used SAFE_FILE_LINES_SCANF which is a wrapper of vsscanf which
+>> cannot
+>> extract the symbol name from the following line pattern of kernel symbol
+>> table.
+> Did you mean "extract symbol address"?
+>
+>> 01234567 T SYMBOL_NAME
+>>
+>> Also the original format pattern is not correct.
+>>
+>> This patch re-writes the symbol extraction process and adds a NULL pointer
+>> check.
+>>
+>> Signed-off-by: He Zhe <zhe.he@windriver.com>
+>> ---
+>>  testcases/cve/meltdown.c | 38 +++++++++++++++++++++++++++++++-------
+>>  1 file changed, 31 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+>> index f78c38b..4c3f3b2 100644
+>> --- a/testcases/cve/meltdown.c
+>> +++ b/testcases/cve/meltdown.c
+>> @@ -248,15 +248,34 @@ set_cache_hit_threshold(void)
+>>  static unsigned long
+>>  find_symbol_in_file(const char *filename, const char *symname)
+>>  {
+>> -	unsigned long addr;
+>> -	char type;
+>> -	int ret, read;
+>> -	char fmt[strlen(symname) + 64];
+>> +	unsigned long addr = 0;
+>> +	int found = 0;
+>> +	char line[BUFSIZ] = {0};
+>> +	FILE *fp = NULL;
+>> +	char *p = NULL;
+>> +
+>> +	fp = fopen(filename, "r");
+>> +	if (fp == NULL) {
+>> +		tst_res(TBROK | TERRNO,
+>> +			"Failed to open file:%s for symbol:%s",
+>> +			filename, symname);
+>> +		return 0;
+>> +	}
+>>  
+>> -	sprintf(fmt, "%%lx %%c %s%%c", symname);
+>> +	while (fgets(line, BUFSIZ, fp) != NULL) {
+>> +		p = strstr(line, symname);
+>> +		/* Make sure this line is exactly for this symbol.
+>> +		 * Substract the EOL added by fgets for each line.
+>> +		 */
+>> +		if (p && ((strlen(p) - 1) == strlen(symname))) {
+>> +			found = sscanf(line, "%lx", &addr);
+>> +			if (found == 1)
+>> +				break;
+>> +		}
+>> +	}
+>> +	fclose(fp);
+>>  
+>> -	ret = SAFE_FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
+>> -	if (ret)
+>> +	if (found != 1)
+>>  		return 0;
+>>  
+>>  	return addr;
+>> @@ -322,6 +341,11 @@ static void run(void)
+>>  
+>>  	/* read address of saved_cmdline_addr */
+>>  	addr = saved_cmdline_addr;
+>> +	if (!addr) {
+>> +		tst_res(TBROK | TERRNO, "saved_cmdline_addr is 0\n");
+>> +		return;
+>> +	}
+>> +
+>>  	size = sizeof(addr);
+>>  	for (i = 0; i < size; i++) {
+>>  		ret = readbyte(spec_fd, addr);
+>> --
+>> 2.7.4
+>>
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
 
