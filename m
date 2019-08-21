@@ -1,302 +1,59 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Aug 2019 17:18:31 +0200
-Subject: [LTP] [PATCH v2 5/5] kernel/uevent: Add uevent03
-In-Reply-To: <20190820151831.7418-1-chrubis@suse.cz>
-References: <20190820151831.7418-1-chrubis@suse.cz>
-Message-ID: <20190820151831.7418-6-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 21 Aug 2019 15:27:00 +0800
+Subject: [LTP] [PATCH] lapi/fs.h: Replace MAX_LFS_FILESIZE constant with
+ own implementation
+In-Reply-To: <5D5BB8DC.6070900@cn.fujitsu.com>
+References: <20190815083630.26975-1-pvorel@suse.cz>
+ <20190816085309.fqvip4exe4mvtv2o@XZHOUW.usersys.redhat.com>
+ <CAEemH2d7TYn4sZ7kkjRsPc-yBnTrN9LC+w84MAO6pDxYpfiFcw@mail.gmail.com>
+ <5D5BB8DC.6070900@cn.fujitsu.com>
+Message-ID: <CAEemH2d_CKOwE3mHEXZKi1BkMBw5dn95aMJtkrSRciH2PU6NJA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This time we create a virtual input device, a mouse, and validate the result.
+On Tue, Aug 20, 2019 at 5:10 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+...
+> >
+> > But I don't understand why to define MAX_OFF as (MAX_LEN - MIN_OFF),
+> > the failure indicates that not to write at a position past the maximum
+> > allowed offset. Shouldn't we give a dst_off large than
+> > MAX_LFS_FILESIZE?
+> Yes, we should use a dst_off large than MAX_LFS_FILESIZE because it used pos to compare
+> in kernel code as below:
+>
+> mm/filemap.c
+>   static int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
+> ...
+> if (unlikely(pos>= max_size))
+>    return -EFBIG;
+> ...
+>
+> I strace xfstest generic/564 code( I follow this test code to ltp), as below:
+> #max_off=$((8 * 2**60 - 65536 - 1))
+> #min_off=65537
+> #xfs_io -f -c "pwrite -S 0x61 0 128k" file
+> #touch copy
+> #strace xfs_io -c "copy_range -l $min_off -s 0 -d $max_off file" copy
+> ....
+>   openat(AT_FDCWD, "file", O_RDONLY)      = 4
+>   copy_file_range(4, [0], 3, [9223372036854710271], 65537, 0) = 65536
+>   copy_file_range(4, [65536], 3, [9223372036854775807], 1, 0) = -1 EFBIG (File too large)
+> ....
+>
+> xfsprogs used a loop to call copy_file_range, and get EFBIG when pos greater than LLONG_MAX.
+>
+> I think we should  use tst_max_lfs_filesize instead of (tst_max_lfs_filesize -MIN_OFF)
+> and this case will pass whether xfs,btrfs and ext4.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- runtest/uevent                      |   1 +
- testcases/kernel/uevents/.gitignore |   1 +
- testcases/kernel/uevents/Makefile   |   4 +
- testcases/kernel/uevents/uevent03.c | 240 ++++++++++++++++++++++++++++
- 4 files changed, 246 insertions(+)
- create mode 100644 testcases/kernel/uevents/uevent03.c
+Good job, Xu. I think you can format a new patch to fix this problem.
+Because Petr's patch is used for solving the cross-compiling issue and
+looks good.
 
-diff --git a/runtest/uevent b/runtest/uevent
-index 30b1114a4..0b59c8723 100644
---- a/runtest/uevent
-+++ b/runtest/uevent
-@@ -1,2 +1,3 @@
- uevent01 uevent01
- uevent02 uevent02
-+uevent03 uevent03
-diff --git a/testcases/kernel/uevents/.gitignore b/testcases/kernel/uevents/.gitignore
-index 0afc95534..7818f7308 100644
---- a/testcases/kernel/uevents/.gitignore
-+++ b/testcases/kernel/uevents/.gitignore
-@@ -1,2 +1,3 @@
- uevent01
- uevent02
-+uevent03
-diff --git a/testcases/kernel/uevents/Makefile b/testcases/kernel/uevents/Makefile
-index cba769739..d5ceb0719 100644
---- a/testcases/kernel/uevents/Makefile
-+++ b/testcases/kernel/uevents/Makefile
-@@ -2,5 +2,9 @@
- 
- top_srcdir			?= ../../..
- 
-+LTPLIBS = ltpuinput
-+
-+uevent03: LDLIBS += -lltpuinput
-+
- include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
-new file mode 100644
-index 000000000..26790967c
---- /dev/null
-+++ b/testcases/kernel/uevents/uevent03.c
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+/*
-+ * Very simple uevent netlink socket test.
-+ *
-+ * We fork a child that listens for a kernel events while parents creates and
-+ * removes a virtual mouse which produces add and remove event for the device
-+ * itself and for two event handlers called eventX and mouseY.
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+#include <sys/sysmacros.h>
-+
-+#include <linux/uinput.h>
-+
-+#include "tst_test.h"
-+#include "tst_uinput.h"
-+#include "uevent.h"
-+
-+static int mouse_fd;
-+
-+static void create_uinput_mouse(void)
-+{
-+	mouse_fd = open_uinput();
-+	setup_mouse_events(mouse_fd);
-+	create_input_device(mouse_fd);
-+}
-+
-+static void destroy_uinput_mouse(void)
-+{
-+	destroy_input_device(mouse_fd);
-+}
-+
-+static void get_minor_major(char *device, char *minor, char *major, size_t buf_sizes)
-+{
-+	char path[1024];
-+	struct stat stbuf;
-+
-+	snprintf(path, sizeof(path), "/dev/input/%s", device);
-+
-+	SAFE_STAT(path, &stbuf);
-+
-+	snprintf(major, buf_sizes, "MAJOR=%i", major(stbuf.st_rdev));
-+	snprintf(minor, buf_sizes, "MINOR=%i", minor(stbuf.st_rdev));
-+}
-+
-+#define MINOR_MAJOR_SIZE 32
-+
-+static void verify_uevent(void)
-+{
-+	int pid, fd;
-+	char sysname[64];
-+	char add_msg[1024];
-+	char rem_msg[1024];
-+	char dev_path[1024];
-+	char add_msg_event1[1024];
-+	char rem_msg_event1[1024];
-+	char dev_path_event1[1024];
-+	char add_msg_event2[1024];
-+	char rem_msg_event2[1024];
-+	char dev_path_event2[1024];
-+	char dev_name1[1024];
-+	char dev_name2[1024];
-+
-+	char minor_event1[MINOR_MAJOR_SIZE];
-+	char minor_event2[MINOR_MAJOR_SIZE];
-+	char major_event1[MINOR_MAJOR_SIZE];
-+	char major_event2[MINOR_MAJOR_SIZE];
-+
-+	char *handlers, *handler1, *handler2;
-+
-+	struct uevent_desc add = {
-+		.msg = add_msg,
-+		.value_cnt = 7,
-+		.values = (const char*[]) {
-+			"ACTION=add",
-+			dev_path,
-+			"SUBSYSTEM=input",
-+			"NAME=\"virtual-device-ltp\"",
-+			"PROP=0",
-+			"EV=7",
-+			"REL=3",
-+		}
-+	};
-+
-+	struct uevent_desc add_event1 = {
-+		.msg = add_msg_event1,
-+		.value_cnt = 6,
-+		.values = (const char*[]) {
-+			"ACTION=add",
-+			"SUBSYSTEM=input",
-+			dev_name1,
-+			dev_path_event1,
-+			minor_event1,
-+			major_event1,
-+		}
-+	};
-+
-+	struct uevent_desc add_event2 = {
-+		.msg = add_msg_event2,
-+		.value_cnt = 6,
-+		.values = (const char*[]) {
-+			"ACTION=add",
-+			"SUBSYSTEM=input",
-+			dev_name2,
-+			dev_path_event2,
-+			minor_event2,
-+			major_event2,
-+		}
-+	};
-+
-+	struct uevent_desc rem_event1 = {
-+		.msg = rem_msg_event1,
-+		.value_cnt = 6,
-+		.values = (const char*[]) {
-+			"ACTION=remove",
-+			"SUBSYSTEM=input",
-+			dev_name1,
-+			dev_path_event1,
-+			minor_event1,
-+			major_event1,
-+		}
-+	};
-+
-+	struct uevent_desc rem_event2 = {
-+		.msg = rem_msg_event2,
-+		.value_cnt = 6,
-+		.values = (const char*[]) {
-+			"ACTION=remove",
-+			"SUBSYSTEM=input",
-+			dev_name2,
-+			dev_path_event2,
-+			minor_event2,
-+			major_event2,
-+		}
-+	};
-+
-+	struct uevent_desc rem = {
-+		.msg = rem_msg,
-+		.value_cnt = 7,
-+		.values = (const char*[]) {
-+			"ACTION=remove",
-+			dev_path,
-+			"SUBSYSTEM=input",
-+			"NAME=\"virtual-device-ltp\"",
-+			"PROP=0",
-+			"EV=7",
-+			"REL=3",
-+		}
-+	};
-+
-+	const struct uevent_desc *const uevents[] = {
-+		&add,
-+		&add_event1,
-+		&add_event2,
-+		&rem_event1,
-+		&rem_event2,
-+		&rem,
-+		NULL
-+	};
-+
-+	fd = open_uevent_netlink();
-+
-+	create_uinput_mouse();
-+
-+	SAFE_IOCTL(mouse_fd, UI_GET_SYSNAME(sizeof(sysname)), sysname);
-+	handlers = get_input_handlers();
-+
-+	handler1 = strtok(handlers, " ");
-+	get_minor_major(handler1, minor_event1, major_event1, MINOR_MAJOR_SIZE);
-+
-+	handler2 = strtok(NULL, " ");
-+	get_minor_major(handler2, minor_event2, major_event2, MINOR_MAJOR_SIZE);
-+
-+	destroy_uinput_mouse();
-+
-+	tst_res(TINFO, "Sysname: %s", sysname);
-+	tst_res(TINFO, "Handlers: %s", handlers);
-+
-+	snprintf(add_msg, sizeof(add_msg),
-+	         "add@/devices/virtual/input/%s", sysname);
-+
-+	snprintf(rem_msg, sizeof(rem_msg),
-+	         "remove@/devices/virtual/input/%s", sysname);
-+
-+	snprintf(dev_path, sizeof(dev_path),
-+	         "DEVPATH=/devices/virtual/input/%s", sysname);
-+
-+
-+	snprintf(add_msg_event1, sizeof(add_msg_event1),
-+	         "add@/devices/virtual/input/%s/%s", sysname, handler1);
-+
-+	snprintf(rem_msg_event1, sizeof(rem_msg_event1),
-+	         "remove@/devices/virtual/input/%s/%s", sysname, handler1);
-+
-+	snprintf(dev_path_event1, sizeof(dev_path_event1),
-+	         "DEVPATH=/devices/virtual/input/%s/%s", sysname, handler1);
-+
-+	snprintf(dev_name1, sizeof(dev_name1),
-+	         "DEVNAME=input/%s", handler1);
-+
-+
-+	snprintf(add_msg_event2, sizeof(add_msg_event2),
-+	         "add@/devices/virtual/input/%s/%s", sysname, handler2);
-+
-+	snprintf(rem_msg_event2, sizeof(rem_msg_event2),
-+	         "remove@/devices/virtual/input/%s/%s", sysname, handler2);
-+
-+	snprintf(dev_path_event2, sizeof(dev_path_event2),
-+	         "DEVPATH=/devices/virtual/input/%s/%s", sysname, handler2);
-+
-+	snprintf(dev_name2, sizeof(dev_name2),
-+	         "DEVNAME=input/%s", handler2);
-+
-+	free(handlers);
-+
-+	pid = SAFE_FORK();
-+	if (!pid)
-+		wait_for_uevents(fd, uevents);
-+
-+	SAFE_CLOSE(fd);
-+	wait_for_pid(pid);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_uevent,
-+	.forks_child = 1,
-+	.needs_tmpdir = 1,
-+	.needs_checkpoints = 1,
-+	.needs_drivers = (const char *const[]) {
-+		"uinput",
-+		NULL
-+	},
-+	.needs_root = 1,
-+};
+@Petr Vorel Hi Petr, what do you think? any more comments?
+
 -- 
-2.21.0
-
+Regards,
+Li Wang
