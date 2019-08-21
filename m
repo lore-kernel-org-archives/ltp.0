@@ -1,44 +1,50 @@
-From: zhe.he@windriver.com <zhe.he@windriver.com>
-Date: Wed, 21 Aug 2019 16:27:24 +0800
-Subject: [LTP] [PATCH v2] cve: Fix kernel symbol finding for meltdown case
-Message-ID: <1566376044-175216-1-git-send-email-zhe.he@windriver.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 21 Aug 2019 10:36:50 +0200
+Subject: [LTP] [PATCH] tst_res: Print errno number in addition to error
+ name
+In-Reply-To: <87y2znuf0a.fsf@rpws.prws.suse.cz>
+References: <20190819133618.7538-1-rpalethorpe@suse.com>
+ <20190820095521.GA22253@rei.lan>
+ <CAEemH2cX1CO=zLzf1ZHQM+MUNS=FLKpGD1ypx=2uGst5qXn4YQ@mail.gmail.com>
+ <20190820102711.GA22483@rei.lan> <87y2znuf0a.fsf@rpws.prws.suse.cz>
+Message-ID: <20190821083650.GA26334@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: He Zhe <zhe.he@windriver.com>
+Hi!
+> >> > > It appears we are atleast missing ENOTSUPP (524) which is probably returned by
+> >> > > create_timer for some alarm clocks on none x86 arches. This isn't entirely
+> >> > > clear, but what is clear is that it would help to know what the error number
+> >> > > is without using strace.
+> >> >
+> >> > Can we please also patch the lib/errnos.h so that the ENOTSUPP is
+> >> > included there as well?
+> >>
+> >> Not sure if we should do that since it(from google) says ENOTSUPP is
+> >> not intended to used in userland.
+> 
+> I suppose we could print a warning/fail if any error value over 512
+> (ERESTARTSYS) is seen by tst_res(). We can define these error numbers in
+> user land for debugging purposes.
 
-meltdown case fails as below.
-safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
+Sounds good to me, I wouldn't do it a fail, even simple TINFO message
+that would say that we got unexpected errno.
 
-find_kernel_symbol is defined to try twice with each of /proc/kallsyms and
-/boot/System.map-%s. Currently if the symbol is not found in /proc/kallsyms,
-when kernel option CONFIG_KALLSYMS_ALL is disabled, it would stop the case
-immediately due to SAFE_FILE_LINES_SCANF.
+And we should btw do that for the tst_strerrno() as well.
 
-This patch turns to use FILE_LINES_SCANF to give find_kernel_symbol second
-chance.
+> > Looks like there are two of these ENOTSUP and ENOTSUPP so the syscall
+> > returning ENOTSUPP is a bug itself since it should return ENOTSUP. Also
+> > btw ENOTSUP == EOPNOTSUPP and we do have EOPNOTSUPP in errnos.h.
+> 
+> I think there is quite a lot of stuff missing. Maybe it is time to
+> create a script for generating this list?
 
-Signed-off-by: He Zhe <zhe.he@windriver.com>
----
- testcases/cve/meltdown.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We can but I would just commit the resulting header to LTP since the
+list will not change frequently or at all.
 
-diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
-index f78c38b..2d66c1e 100644
---- a/testcases/cve/meltdown.c
-+++ b/testcases/cve/meltdown.c
-@@ -255,7 +255,7 @@ find_symbol_in_file(const char *filename, const char *symname)
- 
- 	sprintf(fmt, "%%lx %%c %s%%c", symname);
- 
--	ret = SAFE_FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
-+	ret = FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
- 	if (ret)
- 		return 0;
- 
 -- 
-2.7.4
-
+Cyril Hrubis
+chrubis@suse.cz
