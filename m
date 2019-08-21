@@ -1,62 +1,60 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 21 Aug 2019 13:43:34 +0200
+Date: Wed, 21 Aug 2019 13:56:43 +0200
 Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
-In-Reply-To: <20190809122741.GC32115@rei.lan>
+In-Reply-To: <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
 References: <20190808153825.18363-1-rpalethorpe@suse.com>
  <20190808153825.18363-2-rpalethorpe@suse.com>
- <20190809122741.GC32115@rei.lan>
-Message-ID: <87wof6vj4p.fsf@rpws.prws.suse.cz>
+ <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
+Message-ID: <87v9uqviis.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+hi,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
->> +
->> +struct tst_cap_user_header {
->> +	uint32_t version;
->> +	int pid;
->> +};
->> +
->> +struct tst_cap_user_data {
->> +	uint32_t effective;
->> +	uint32_t permitted;
->> +	uint32_t inheritable;
->> +};
+> It does not work for this simple cap_test.c, did I miss anything?
 >
-> This two should probably go to lapi as well.
+> # whoami
+> root
+>
+> # ./cap_test
+> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
+> tst_capability.c:42: INFO: Dropping CAP_SYS_ADMIN(21)
+> tst_capability.c:65: BROK: tst_capset(CAP_SYS_ADMIN): EPERM
 
-Ah, but the naming of the original structures is so bad.
-
-typedef struct __user_cap_header_struct {
-        ...
-} __user *cap_user_header_t.
-
-Well not necessarily bad, but against current naming guidelines. I would
-rather just use our own definitions and keep them separate from any
-fallback definitions for test writers.
+Not sure why this fails for you.
 
 >
->> +struct tst_cap {
->> +	uint32_t action;
->> +	uint32_t id;
->> +	char *name;
->> +};
+> # ./cap_test
+> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
+> tst_capability.c:51: CONF: Need CAP_SYS_ADMIN(21)
+
+Ah, I probably got the binary ops wrong.
+
 >
-> I wonder if we should build a table of capability names for translation
-> just as we do errnos and signals instead of storing the name here. But I
-> guess that unless we will need a function to translate capabilitities
-> into strings on runtime this approach is simpler.
+> # cat cap_test.c
+> #include "tst_test.h"
+> #include "linux/capability.h"
+>
+> static void do_test(void)
+> {
+>         tst_res(TPASS, "Hello");
+> }
+>
+> static struct tst_test test = {
+>         .test_all = do_test,
+>         .needs_root = 1,
+>         .caps = (struct tst_cap []) {
+> //                TST_CAP(TST_DROP, CAP_SYS_ADMIN),
+>                 TST_CAP(TST_REQUIRE, CAP_SYS_ADMIN),
+>                 {},
+>         },
+> };
 
-I suppose if we want to print all the current capabilities then we need
-this. Which I can imagine would be useful, but I would rather wait until
-someone actually needs it.
+I will add a test like this, thanks.
 
-
---
+-- 
 Thank you,
 Richard.
