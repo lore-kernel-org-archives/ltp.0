@@ -1,60 +1,58 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 21 Aug 2019 13:56:43 +0200
-Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
-In-Reply-To: <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
-References: <20190808153825.18363-1-rpalethorpe@suse.com>
- <20190808153825.18363-2-rpalethorpe@suse.com>
- <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
-Message-ID: <87v9uqviis.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 21 Aug 2019 12:01:33 -0400 (EDT)
+Subject: [LTP] [PATCH v2] cve: Fix kernel symbol finding for meltdown
+ case
+In-Reply-To: <1566376044-175216-1-git-send-email-zhe.he@windriver.com>
+References: <1566376044-175216-1-git-send-email-zhe.he@windriver.com>
+Message-ID: <145293056.7577705.1566403293117.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-hi,
 
-> It does not work for this simple cap_test.c, did I miss anything?
->
-> # whoami
-> root
->
-> # ./cap_test
-> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
-> tst_capability.c:42: INFO: Dropping CAP_SYS_ADMIN(21)
-> tst_capability.c:65: BROK: tst_capset(CAP_SYS_ADMIN): EPERM
 
-Not sure why this fails for you.
+----- Original Message -----
+> From: He Zhe <zhe.he@windriver.com>
+> 
+> meltdown case fails as below.
+> safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
+> 
+> find_kernel_symbol is defined to try twice with each of /proc/kallsyms and
+> /boot/System.map-%s. Currently if the symbol is not found in /proc/kallsyms,
+> when kernel option CONFIG_KALLSYMS_ALL is disabled, it would stop the case
+> immediately due to SAFE_FILE_LINES_SCANF.
+> 
+> This patch turns to use FILE_LINES_SCANF to give find_kernel_symbol second
+> chance.
 
->
-> # ./cap_test
-> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
-> tst_capability.c:51: CONF: Need CAP_SYS_ADMIN(21)
+That explains it, thanks for the patch.
 
-Ah, I probably got the binary ops wrong.
+We should also tweak TCONF condition in find_kernel_symbol - no need
+to re-post for that, I can add that.
 
->
-> # cat cap_test.c
-> #include "tst_test.h"
-> #include "linux/capability.h"
->
-> static void do_test(void)
-> {
->         tst_res(TPASS, "Hello");
-> }
->
-> static struct tst_test test = {
->         .test_all = do_test,
->         .needs_root = 1,
->         .caps = (struct tst_cap []) {
-> //                TST_CAP(TST_DROP, CAP_SYS_ADMIN),
->                 TST_CAP(TST_REQUIRE, CAP_SYS_ADMIN),
->                 {},
->         },
-> };
-
-I will add a test like this, thanks.
-
--- 
-Thank you,
-Richard.
+> 
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+>  testcases/cve/meltdown.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+> index f78c38b..2d66c1e 100644
+> --- a/testcases/cve/meltdown.c
+> +++ b/testcases/cve/meltdown.c
+> @@ -255,7 +255,7 @@ find_symbol_in_file(const char *filename, const char
+> *symname)
+>  
+>  	sprintf(fmt, "%%lx %%c %s%%c", symname);
+>  
+> -	ret = SAFE_FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
+> +	ret = FILE_LINES_SCANF(filename, fmt, &addr, &type, &read);
+>  	if (ret)
+>  		return 0;
+>  
+> --
+> 2.7.4
+> 
+> 
