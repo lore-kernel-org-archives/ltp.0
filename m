@@ -1,267 +1,331 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 22 Aug 2019 16:41:53 +0800
-Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
-In-Reply-To: <20190808153825.18363-2-rpalethorpe@suse.com>
-References: <20190808153825.18363-1-rpalethorpe@suse.com>
- <20190808153825.18363-2-rpalethorpe@suse.com>
-Message-ID: <5D5E5551.9050308@cn.fujitsu.com>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Thu, 22 Aug 2019 11:00:35 +0200
+Subject: [LTP] [PATCH v2 5/5] kernel/uevent: Add uevent03
+In-Reply-To: <20190820151831.7418-6-chrubis@suse.cz>
+References: <20190820151831.7418-1-chrubis@suse.cz>
+ <20190820151831.7418-6-chrubis@suse.cz>
+Message-ID: <1566464435.3467.4.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/08 23:38, Richard Palethorpe wrote:
+Hi Cyril,
+works nice, just minor thing and a question.
 
+On Tue, 2019-08-20 at 17:18 +0200, Cyril Hrubis wrote:
+> This time we create a virtual input device, a mouse, and validate the
+> result.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 > ---
->   include/tst_capability.h | 56 +++++++++++++++++++++++++++++
->   include/tst_test.h       |  6 ++++
->   lib/tst_capability.c     | 78 ++++++++++++++++++++++++++++++++++++++++
->   lib/tst_test.c           |  3 ++
->   4 files changed, 143 insertions(+)
->   create mode 100644 include/tst_capability.h
->   create mode 100644 lib/tst_capability.c
->
-> diff --git a/include/tst_capability.h b/include/tst_capability.h
+>  runtest/uevent                      |   1 +
+>  testcases/kernel/uevents/.gitignore |   1 +
+>  testcases/kernel/uevents/Makefile   |   4 +
+>  testcases/kernel/uevents/uevent03.c | 240
+> ++++++++++++++++++++++++++++
+>  4 files changed, 246 insertions(+)
+>  create mode 100644 testcases/kernel/uevents/uevent03.c
+> 
+> diff --git a/runtest/uevent b/runtest/uevent
+> index 30b1114a4..0b59c8723 100644
+> --- a/runtest/uevent
+> +++ b/runtest/uevent
+> @@ -1,2 +1,3 @@
+>  uevent01 uevent01
+>  uevent02 uevent02
+> +uevent03 uevent03
+> diff --git a/testcases/kernel/uevents/.gitignore
+> b/testcases/kernel/uevents/.gitignore
+> index 0afc95534..7818f7308 100644
+> --- a/testcases/kernel/uevents/.gitignore
+> +++ b/testcases/kernel/uevents/.gitignore
+> @@ -1,2 +1,3 @@
+>  uevent01
+>  uevent02
+> +uevent03
+> diff --git a/testcases/kernel/uevents/Makefile
+> b/testcases/kernel/uevents/Makefile
+> index cba769739..d5ceb0719 100644
+> --- a/testcases/kernel/uevents/Makefile
+> +++ b/testcases/kernel/uevents/Makefile
+> @@ -2,5 +2,9 @@
+>  
+>  top_srcdir			?= ../../..
+>  
+> +LTPLIBS = ltpuinput
+> +
+> +uevent03: LDLIBS += -lltpuinput
+> +
+>  include $(top_srcdir)/include/mk/testcases.mk
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/uevents/uevent03.c
+> b/testcases/kernel/uevents/uevent03.c
 > new file mode 100644
-> index 000000000..6342b667e
+> index 000000000..26790967c
 > --- /dev/null
-> +++ b/include/tst_capability.h
-> @@ -0,0 +1,56 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +++ b/testcases/kernel/uevents/uevent03.c
+> @@ -0,0 +1,240 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
-> + * Copyright (c) 2019 Richard Palethorpe<rpalethorpe@suse.com>
+> + * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
 > + */
-> +/**
-> + * @file tst_capability.h
+> +
+> +/*
+> + * Very simple uevent netlink socket test.
 > + *
-> + * Limited capability operations without libcap.
+> + * We fork a child that listens for a kernel events while parents
+> creates and
+> + * removes a virtual mouse which produces add and remove event for
+> the device
+> + * itself and for two event handlers called eventX and mouseY.
 > + */
 > +
-> +#include<stdint.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/wait.h>
+> +#include <sys/sysmacros.h>
 > +
-> +#include "lapi/syscalls.h"
+> +#include <linux/uinput.h>
 > +
-> +#ifndef TST_CAPABILITY_H
-> +#define TST_CAPABILITY_H
-> +
-> +#ifndef CAP_SYS_ADMIN
-> +# define CAP_SYS_ADMIN        21
-> +#endif
-> +
-> +#ifndef CAP_TO_MASK
-> +# define CAP_TO_MASK(x)      (1<<  ((x)&  31))
-> +#endif
-> +
-> +#define TST_DROP 1
-> +#define TST_REQUIRE 1<<  1
-> +
-> +#define TST_CAP(action, capability) {action, capability, #capability}
-> +
-> +struct tst_cap_user_header {
-> +	uint32_t version;
-> +	int pid;
-> +};
-> +
-> +struct tst_cap_user_data {
-> +	uint32_t effective;
-> +	uint32_t permitted;
-> +	uint32_t inheritable;
-> +};
-> +
-> +struct tst_cap {
-> +	uint32_t action;
-> +	uint32_t id;
-> +	char *name;
-> +};
-> +
-> +int tst_capget(struct tst_cap_user_header *hdr,
-> +	       struct tst_cap_user_data *data);
-> +int tst_capset(struct tst_cap_user_header *hdr,
-> +	       const struct tst_cap_user_data *data);
-> +
-> +void tst_cap_action(struct tst_cap *cap);
-> +void tst_cap_setup(struct tst_cap *cap);
-> +
-> +#endif
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index cdeaf6ad0..84acf2c59 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -36,6 +36,7 @@
->   #include "tst_sys_conf.h"
->   #include "tst_coredump.h"
->   #include "tst_buffers.h"
-> +#include "tst_capability.h"
->
->   /*
->    * Reports testcase result.
-> @@ -206,6 +207,11 @@ struct tst_test {
->   	 * NULL-terminated array to be allocated buffers.
->   	 */
->   	struct tst_buffers *bufs;
-> +
-> +	/*
-> +	 * NULL-terminated array of capability settings
-> +	 */
-> +	struct tst_cap *caps;
->   };
->
->   /*
-> diff --git a/lib/tst_capability.c b/lib/tst_capability.c
-> new file mode 100644
-> index 000000000..d229491ae
-> --- /dev/null
-> +++ b/lib/tst_capability.c
-> @@ -0,0 +1,78 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2019 Richard Palethorpe<rpalethorpe@suse.com>
-> + */
-> +
-> +#define TST_NO_DEFAULT_MAIN
 > +#include "tst_test.h"
-> +#include "tst_capability.h"
+> +#include "tst_uinput.h"
+> +#include "uevent.h"
 > +
-> +int tst_capget(struct tst_cap_user_header *hdr,
-> +	       struct tst_cap_user_data *data)
+> +static int mouse_fd;
+> +
+> +static void create_uinput_mouse(void)
 > +{
-> +	return tst_syscall(__NR_capget, hdr, data);
+> +	mouse_fd = open_uinput();
+> +	setup_mouse_events(mouse_fd);
+> +	create_input_device(mouse_fd);
 > +}
 > +
-> +int tst_capset(struct tst_cap_user_header *hdr,
-> +	       const struct tst_cap_user_data *data)
+> +static void destroy_uinput_mouse(void)
 > +{
-> +	return tst_syscall(__NR_capset, hdr, data);
+> +	destroy_input_device(mouse_fd);
 > +}
 > +
-> +void tst_cap_action(struct tst_cap *cap)
+> +static void get_minor_major(char *device, char *minor, char *major,
+> size_t buf_sizes)
 > +{
-> +	struct tst_cap_user_header hdr = {
-> +		.version = 0x20080522,
-> +		.pid = tst_syscall(__NR_gettid),
+> +	char path[1024];
+> +	struct stat stbuf;
+> +
+> +	snprintf(path, sizeof(path), "/dev/input/%s", device);
+> +
+> +	SAFE_STAT(path, &stbuf);
+> +
+> +	snprintf(major, buf_sizes, "MAJOR=%i",
+> major(stbuf.st_rdev));
+> +	snprintf(minor, buf_sizes, "MINOR=%i",
+> minor(stbuf.st_rdev));
+> +}
+> +
+> +#define MINOR_MAJOR_SIZE 32
+> +
+> +static void verify_uevent(void)
+> +{
+> +	int pid, fd;
+> +	char sysname[64];
+> +	char add_msg[1024];
+> +	char rem_msg[1024];
+> +	char dev_path[1024];
+> +	char add_msg_event1[1024];
+> +	char rem_msg_event1[1024];
+> +	char dev_path_event1[1024];
+> +	char add_msg_event2[1024];
+> +	char rem_msg_event2[1024];
+> +	char dev_path_event2[1024];
+> +	char dev_name1[1024];
+> +	char dev_name2[1024];
+> +
+> +	char minor_event1[MINOR_MAJOR_SIZE];
+> +	char minor_event2[MINOR_MAJOR_SIZE];
+> +	char major_event1[MINOR_MAJOR_SIZE];
+> +	char major_event2[MINOR_MAJOR_SIZE];
+> +
+> +	char *handlers, *handler1, *handler2;
+> +
+> +	struct uevent_desc add = {
+> +		.msg = add_msg,
+> +		.value_cnt = 7,
+> +		.values = (const char*[]) {
+> +			"ACTION=add",
+> +			dev_path,
+> +			"SUBSYSTEM=input",
+> +			"NAME=\"virtual-device-ltp\"",
+> +			"PROP=0",
+> +			"EV=7",
+> +			"REL=3",
+> +		}
 > +	};
-Hi Richard
-
-If we use _LINUX_CAPABILITY_VERSION_1, kernel will report the following warning: `cap_test' uses 32-bit capabilities (legacy support in use)
-
-_LINUX_CAPABILITY_VERSION_2 has been deprecated since kernel 2.6.25, so we can only use _LINUX_CAPABILITY_VERSION_3.
-
-But _LINUX_CAPABILITY_VERSION_3 uses 64-bit capabilities as man-page said, effective defined as uint32_t in tst_cap_usr_data is not enough.
-I guess we need to define cur[2] ,new[2] and compare. Also, it can slove the EPERM failure as Li wang's cap_test.c found.
-  
-ps: I changed  kernel code to track this problem.
-diff --git a/security/commoncap.c b/security/commoncap.c
-index f4ee0ae106b2..291eb4e71031 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -247,24 +247,31 @@ int cap_capset(struct cred *new,
-         if (cap_inh_is_capped()&&
-             !cap_issubset(*inheritable,
-                           cap_combine(old->cap_inheritable,
--                                     old->cap_permitted)))
-+                                     old->cap_permitted))) {
-                 /* incapable of using this inheritable set */
-+               printk("xuyang 0\n");
-                 return -EPERM;
-+       }
-
-         if (!cap_issubset(*inheritable,
-                           cap_combine(old->cap_inheritable,
--                                     old->cap_bset)))
-+                                     old->cap_bset))) {
-                 /* no new pI capabilities outside bounding set */
-+               printk("xuyang 1\n");
-                 return -EPERM;
-+       }
-
-         /* verify restrictions on target's new Permitted set */
--       if (!cap_issubset(*permitted, old->cap_permitted))
-+       if (!cap_issubset(*permitted, old->cap_permitted)) {
-+               printk("xuyang  2\n");
-                 return -EPERM;
-+       }
-
-         /* verify the _new_Effective_ is a subset of the _new_Permitted_ */
--       if (!cap_issubset(*effective, *permitted))
-+       if (!cap_issubset(*effective, *permitted)) {
-+               printk("xuyang 3\n");
-                 return -EPERM;
--
-+       }
-         new->cap_effective   = *effective;
-         new->cap_inheritable = *inheritable;
-
-#./cap_test  (dmesg will report "xuyang 3",return EPERM if use version 3)
-
-Thanks
-Yang Xu
-
-> +	struct tst_cap_user_data cur = { 0 };
-> +	struct tst_cap_user_data new = { 0 };
-> +	uint32_t mask = CAP_TO_MASK(cap->id);
-> +	uint32_t act = cap->action;
 > +
-> +	if (tst_capget(&hdr,&cur))
-> +		tst_brk(TBROK | TTERRNO, "tst_capget()");
-> +
-> +	new = cur;
-> +
-> +	switch (act) {
-> +	case TST_DROP:
-> +		if (cur.effective&  mask) {
-> +			tst_res(TINFO, "Dropping %s(%d)",
-> +				cap->name, cap->id);
-> +			new.effective&= ~mask;
-> +			new.permitted&= ~mask;
-> +			new.inheritable&= ~mask;
+> +	struct uevent_desc add_event1 = {
+> +		.msg = add_msg_event1,
+> +		.value_cnt = 6,
+> +		.values = (const char*[]) {
+> +			"ACTION=add",
+> +			"SUBSYSTEM=input",
+> +			dev_name1,
+> +			dev_path_event1,
+> +			minor_event1,
+> +			major_event1,
 > +		}
-> +		break;
-> +	case TST_REQUIRE:
-> +		if (cur.permitted ^ mask) {
-> +			tst_brk(TCONF, "Need %s(%d)",
-> +				cap->name, cap->id);
-> +		} else if (cur.effective ^ mask) {
-> +			tst_res(TINFO, "Permitting %s(%d)",
-> +				cap->name, cap->id);
-> +			new.effective |= mask;
-> +			new.inheritable |= mask;
-> +		}
-> +		break;
-> +	default:
-> +		tst_brk(TBROK, "Unrecognised action %d", cap->action);
-> +	}
+> +	};
 > +
-> +	if (cur.effective != new.effective) {
-> +		if (tst_capset(&hdr,&new))
-> +			tst_brk(TBROK | TERRNO, "tst_capset(%s)", cap->name);
-> +	} else {
-> +		tst_res(TINFO, "No capability changes needed");
-> +	}
+> +	struct uevent_desc add_event2 = {
+> +		.msg = add_msg_event2,
+> +		.value_cnt = 6,
+> +		.values = (const char*[]) {
+> +			"ACTION=add",
+> +			"SUBSYSTEM=input",
+> +			dev_name2,
+> +			dev_path_event2,
+> +			minor_event2,
+> +			major_event2,
+> +		}
+> +	};
+> +
+> +	struct uevent_desc rem_event1 = {
+> +		.msg = rem_msg_event1,
+> +		.value_cnt = 6,
+> +		.values = (const char*[]) {
+> +			"ACTION=remove",
+> +			"SUBSYSTEM=input",
+> +			dev_name1,
+> +			dev_path_event1,
+> +			minor_event1,
+> +			major_event1,
+> +		}
+> +	};
+> +
+> +	struct uevent_desc rem_event2 = {
+> +		.msg = rem_msg_event2,
+> +		.value_cnt = 6,
+> +		.values = (const char*[]) {
+> +			"ACTION=remove",
+> +			"SUBSYSTEM=input",
+> +			dev_name2,
+> +			dev_path_event2,
+> +			minor_event2,
+> +			major_event2,
+> +		}
+> +	};
+> +
+> +	struct uevent_desc rem = {
+> +		.msg = rem_msg,
+> +		.value_cnt = 7,
+> +		.values = (const char*[]) {
+> +			"ACTION=remove",
+> +			dev_path,
+> +			"SUBSYSTEM=input",
+> +			"NAME=\"virtual-device-ltp\"",
+> +			"PROP=0",
+> +			"EV=7",
+> +			"REL=3",
+> +		}
+> +	};
+> +
+> +	const struct uevent_desc *const uevents[] = {
+> +		&add,
+> +		&add_event1,
+> +		&add_event2,
+> +		&rem_event1,
+> +		&rem_event2,
+> +		&rem,
+> +		NULL
+> +	};
+> +
+> +	fd = open_uevent_netlink();
+> +
+> +	create_uinput_mouse();
+> +
+> +	SAFE_IOCTL(mouse_fd, UI_GET_SYSNAME(sizeof(sysname)),
+> sysname);
+> +	handlers = get_input_handlers();
+> +
+> +	handler1 = strtok(handlers, " ");
+Not sure if it's possible that we will get none or only one handler?
+
+> +	get_minor_major(handler1, minor_event1, major_event1,
+> MINOR_MAJOR_SIZE);
+> +
+> +	handler2 = strtok(NULL, " ");
+> +	get_minor_major(handler2, minor_event2, major_event2,
+> MINOR_MAJOR_SIZE);
+> +
+> +	destroy_uinput_mouse();
+> +
+> +	tst_res(TINFO, "Sysname: %s", sysname);
+> +	tst_res(TINFO, "Handlers: %s", handlers);
+Because of strtok(), we do not see all handlers here.
+
+> +
+> +	snprintf(add_msg, sizeof(add_msg),
+> +	         "add@/devices/virtual/input/%s", sysname);
+> +
+> +	snprintf(rem_msg, sizeof(rem_msg),
+> +	         "remove@/devices/virtual/input/%s", sysname);
+> +
+> +	snprintf(dev_path, sizeof(dev_path),
+> +	         "DEVPATH=/devices/virtual/input/%s", sysname);
+> +
+> +
+> +	snprintf(add_msg_event1, sizeof(add_msg_event1),
+> +	         "add@/devices/virtual/input/%s/%s", sysname,
+> handler1);
+> +
+> +	snprintf(rem_msg_event1, sizeof(rem_msg_event1),
+> +	         "remove@/devices/virtual/input/%s/%s", sysname,
+> handler1);
+> +
+> +	snprintf(dev_path_event1, sizeof(dev_path_event1),
+> +	         "DEVPATH=/devices/virtual/input/%s/%s", sysname,
+> handler1);
+> +
+> +	snprintf(dev_name1, sizeof(dev_name1),
+> +	         "DEVNAME=input/%s", handler1);
+> +
+> +
+> +	snprintf(add_msg_event2, sizeof(add_msg_event2),
+> +	         "add@/devices/virtual/input/%s/%s", sysname,
+> handler2);
+> +
+> +	snprintf(rem_msg_event2, sizeof(rem_msg_event2),
+> +	         "remove@/devices/virtual/input/%s/%s", sysname,
+> handler2);
+> +
+> +	snprintf(dev_path_event2, sizeof(dev_path_event2),
+> +	         "DEVPATH=/devices/virtual/input/%s/%s", sysname,
+> handler2);
+> +
+> +	snprintf(dev_name2, sizeof(dev_name2),
+> +	         "DEVNAME=input/%s", handler2);
+> +
+> +	free(handlers);
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid)
+> +		wait_for_uevents(fd, uevents);
+> +
+> +	SAFE_CLOSE(fd);
+> +	wait_for_pid(pid);
 > +}
 > +
-> +void tst_cap_setup(struct tst_cap *caps)
-> +{
-> +	struct tst_cap *cap;
-> +
-> +	for (cap = caps; cap->action; cap++) {
-> +		tst_cap_action(cap);
-> +	}
-> +}
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 8dc71dbb3..62e54d071 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -893,6 +893,9 @@ static void do_test_setup(void)
->
->   	if (main_pid != getpid())
->   		tst_brk(TBROK, "Runaway child in setup()!");
-> +
-> +	if (tst_test->caps)
-> +		tst_cap_setup(tst_test->caps);
->   }
->
->   static void do_cleanup(void)
-
-
-
+> +static struct tst_test test = {
+> +	.test_all = verify_uevent,
+> +	.forks_child = 1,
+> +	.needs_tmpdir = 1,
+> +	.needs_checkpoints = 1,
+> +	.needs_drivers = (const char *const[]) {
+> +		"uinput",
+> +		NULL
+> +	},
+> +	.needs_root = 1,
+> +};
+> -- 
+> 2.21.0
+> 
+> 
