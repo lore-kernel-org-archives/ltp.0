@@ -1,390 +1,222 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Wed, 21 Aug 2019 18:35:22 +0200
-Subject: [LTP] [PATCH v2 2/5] kernel/uevent: Add uevent01
-In-Reply-To: <20190820151831.7418-3-chrubis@suse.cz>
-References: <20190820151831.7418-1-chrubis@suse.cz>
- <20190820151831.7418-3-chrubis@suse.cz>
-Message-ID: <1566405322.3587.21.camel@suse.de>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 22 Aug 2019 13:56:33 +0800
+Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
+In-Reply-To: <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
+References: <20190808153825.18363-1-rpalethorpe@suse.com>
+ <20190808153825.18363-2-rpalethorpe@suse.com>
+ <CAEemH2czBk5KKgFB0_4bWtnwdnJdq0sJNmo=q3_u1UipEhaOJw@mail.gmail.com>
+Message-ID: <5D5E2E91.1060805@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+? 2019/08/15 15:10, Li Wang ??:
+> On Thu, Aug 8, 2019 at 11:39 PM Richard Palethorpe<rpalethorpe@suse.com>  wrote:
+>> ---
+>>   include/tst_capability.h | 56 +++++++++++++++++++++++++++++
+>>   include/tst_test.h       |  6 ++++
+>>   lib/tst_capability.c     | 78 ++++++++++++++++++++++++++++++++++++++++
+>>   lib/tst_test.c           |  3 ++
+>>   4 files changed, 143 insertions(+)
+>>   create mode 100644 include/tst_capability.h
+>>   create mode 100644 lib/tst_capability.c
+>>
+>> diff --git a/include/tst_capability.h b/include/tst_capability.h
+>> new file mode 100644
+>> index 000000000..6342b667e
+>> --- /dev/null
+>> +++ b/include/tst_capability.h
+>> @@ -0,0 +1,56 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+>> +/*
+>> + * Copyright (c) 2019 Richard Palethorpe<rpalethorpe@suse.com>
+>> + */
+>> +/**
+>> + * @file tst_capability.h
+>> + *
+>> + * Limited capability operations without libcap.
+>> + */
+>> +
+>> +#include<stdint.h>
+>> +
+>> +#include "lapi/syscalls.h"
+>> +
+>> +#ifndef TST_CAPABILITY_H
+>> +#define TST_CAPABILITY_H
+>> +
+>> +#ifndef CAP_SYS_ADMIN
+>> +# define CAP_SYS_ADMIN        21
+>> +#endif
+>> +
+>> +#ifndef CAP_TO_MASK
+>> +# define CAP_TO_MASK(x)      (1<<  ((x)&  31))
+>> +#endif
+>> +
+>> +#define TST_DROP 1
+>> +#define TST_REQUIRE 1<<  1
+>> +
+>> +#define TST_CAP(action, capability) {action, capability, #capability}
+>> +
+>> +struct tst_cap_user_header {
+>> +       uint32_t version;
+>> +       int pid;
+>> +};
+>> +
+>> +struct tst_cap_user_data {
+>> +       uint32_t effective;
+>> +       uint32_t permitted;
+>> +       uint32_t inheritable;
+>> +};
+>> +
+>> +struct tst_cap {
+>> +       uint32_t action;
+>> +       uint32_t id;
+>> +       char *name;
+>> +};
+>> +
+>> +int tst_capget(struct tst_cap_user_header *hdr,
+>> +              struct tst_cap_user_data *data);
+>> +int tst_capset(struct tst_cap_user_header *hdr,
+>> +              const struct tst_cap_user_data *data);
+>> +
+>> +void tst_cap_action(struct tst_cap *cap);
+>> +void tst_cap_setup(struct tst_cap *cap);
+>> +
+>> +#endif
+>> diff --git a/include/tst_test.h b/include/tst_test.h
+>> index cdeaf6ad0..84acf2c59 100644
+>> --- a/include/tst_test.h
+>> +++ b/include/tst_test.h
+>> @@ -36,6 +36,7 @@
+>>   #include "tst_sys_conf.h"
+>>   #include "tst_coredump.h"
+>>   #include "tst_buffers.h"
+>> +#include "tst_capability.h"
+>>
+>>   /*
+>>    * Reports testcase result.
+>> @@ -206,6 +207,11 @@ struct tst_test {
+>>           * NULL-terminated array to be allocated buffers.
+>>           */
+>>          struct tst_buffers *bufs;
+>> +
+>> +       /*
+>> +        * NULL-terminated array of capability settings
+>> +        */
+>> +       struct tst_cap *caps;
+>>   };
+>>
+>>   /*
+>> diff --git a/lib/tst_capability.c b/lib/tst_capability.c
+>> new file mode 100644
+>> index 000000000..d229491ae
+>> --- /dev/null
+>> +++ b/lib/tst_capability.c
+>> @@ -0,0 +1,78 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+>> +/*
+>> + * Copyright (c) 2019 Richard Palethorpe<rpalethorpe@suse.com>
+>> + */
+>> +
+>> +#define TST_NO_DEFAULT_MAIN
+>> +#include "tst_test.h"
+>> +#include "tst_capability.h"
+>> +
+>> +int tst_capget(struct tst_cap_user_header *hdr,
+>> +              struct tst_cap_user_data *data)
+>> +{
+>> +       return tst_syscall(__NR_capget, hdr, data);
+>> +}
+>> +
+>> +int tst_capset(struct tst_cap_user_header *hdr,
+>> +              const struct tst_cap_user_data *data)
+>> +{
+>> +       return tst_syscall(__NR_capset, hdr, data);
+>> +}
+>> +
+>> +void tst_cap_action(struct tst_cap *cap)
+>> +{
+>> +       struct tst_cap_user_header hdr = {
+>> +               .version = 0x20080522,
+>> +               .pid = tst_syscall(__NR_gettid),
+>> +       };
+>> +       struct tst_cap_user_data cur = { 0 };
+>> +       struct tst_cap_user_data new = { 0 };
+>> +       uint32_t mask = CAP_TO_MASK(cap->id);
+>> +       uint32_t act = cap->action;
+>> +
+>> +       if (tst_capget(&hdr,&cur))
+>> +               tst_brk(TBROK | TTERRNO, "tst_capget()");
+>> +
+>> +       new = cur;
+>> +
+>> +       switch (act) {
+>> +       case TST_DROP:
+>> +               if (cur.effective&  mask) {
+>> +                       tst_res(TINFO, "Dropping %s(%d)",
+>> +                               cap->name, cap->id);
+>> +                       new.effective&= ~mask;
+>> +                       new.permitted&= ~mask;
+>> +                       new.inheritable&= ~mask;
+>> +               }
+>> +               break;
+>> +       case TST_REQUIRE:
+>> +               if (cur.permitted ^ mask) {
+>> +                       tst_brk(TCONF, "Need %s(%d)",
+>> +                               cap->name, cap->id);
+>> +               } else if (cur.effective ^ mask) {
+>> +                       tst_res(TINFO, "Permitting %s(%d)",
+>> +                               cap->name, cap->id);
+>> +                       new.effective |= mask;
+>> +                       new.inheritable |= mask;
+>> +               }
+>> +               break;
+>> +       default:
+>> +               tst_brk(TBROK, "Unrecognised action %d", cap->action);
+>> +       }
+>> +
+>> +       if (cur.effective != new.effective) {
+>> +               if (tst_capset(&hdr,&new))
+>> +                       tst_brk(TBROK | TERRNO, "tst_capset(%s)", cap->name);
+> It does not work for this simple cap_test.c, did I miss anything?
+>
+> # whoami
+> root
+>
+> # ./cap_test
+> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
+> tst_capability.c:42: INFO: Dropping CAP_SYS_ADMIN(21)
+> tst_capability.c:65: BROK: tst_capset(CAP_SYS_ADMIN): EPERM
+>
+Hi Li
+I have tried it and have the same failure. The _LINUX_CAPABILITY_VERSION_3 seem not support on my system causes fail.
+If I use _LINUX_CAPABILITY_VERSION_1, cap_test will pass.  I am still looking into _LINUX_CAPABILITY_VERSION_3 dependence.
 
-On Tue, 2019-08-20 at 17:18 +0200, Cyril Hrubis wrote:
-> Simple test that attached and detaches a file to a loop device and
-> checks that kernel broadcasts correct events to the kernel uevent
-> broadcast group.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  runtest/uevent                      |   1 +
->  scenario_groups/default             |   1 +
->  testcases/kernel/uevents/.gitignore |   1 +
->  testcases/kernel/uevents/Makefile   |   6 +
->  testcases/kernel/uevents/uevent.h   | 176
-> ++++++++++++++++++++++++++++
->  testcases/kernel/uevents/uevent01.c |  90 ++++++++++++++
->  6 files changed, 275 insertions(+)
->  create mode 100644 runtest/uevent
->  create mode 100644 testcases/kernel/uevents/.gitignore
->  create mode 100644 testcases/kernel/uevents/Makefile
->  create mode 100644 testcases/kernel/uevents/uevent.h
->  create mode 100644 testcases/kernel/uevents/uevent01.c
-> 
-> diff --git a/runtest/uevent b/runtest/uevent
-> new file mode 100644
-> index 000000000..e9cdf26b8
-> --- /dev/null
-> +++ b/runtest/uevent
-> @@ -0,0 +1 @@
-> +uevent01 uevent01
-> diff --git a/scenario_groups/default b/scenario_groups/default
-> index 093f5f706..62ae0759d 100644
-> --- a/scenario_groups/default
-> +++ b/scenario_groups/default
-> @@ -29,3 +29,4 @@ input
->  cve
->  crypto
->  kernel_misc
-> +uevent
-> diff --git a/testcases/kernel/uevents/.gitignore
-> b/testcases/kernel/uevents/.gitignore
-> new file mode 100644
-> index 000000000..53d0b546a
-> --- /dev/null
-> +++ b/testcases/kernel/uevents/.gitignore
-> @@ -0,0 +1 @@
-> +uevent01
-> diff --git a/testcases/kernel/uevents/Makefile
-> b/testcases/kernel/uevents/Makefile
-> new file mode 100644
-> index 000000000..cba769739
-> --- /dev/null
-> +++ b/testcases/kernel/uevents/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir			?= ../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/uevents/uevent.h
-> b/testcases/kernel/uevents/uevent.h
-> new file mode 100644
-> index 000000000..2c32dd534
-> --- /dev/null
-> +++ b/testcases/kernel/uevents/uevent.h
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +#ifndef UEVENT_H__
-> +#define UEVENT_H__
-> +
-> +#include "tst_netlink.h"
-> +
-> +/*
-> + * There are two broadcast groups defined for the
-> NETLINK_KOBJECT_UEVENT. The
-> + * primary consument of the KERNEL group is udev which handles the
-> hotplug
-> + * events and then, once udev does it's magic the events are
-> rebroadcasted to
-> + * the UDEV group which is consumed by various daemons in the
-> userspace.
-> + */
-> +enum monitor_netlink_group {
-> +	MONITOR_GROUP_NONE,
-> +	MONITOR_GROUP_KERNEL,
-> +	MONITOR_GROUP_UDEV,
-> +};
-> +
-> +/*
-> + * The messages received from the NETLINK_KOBJECT_UEVENT socket are
-> stored as a
-> + * sequence of a null-terminated strings. First in the buffer is a
-> summary of a
-> + * action i.e. "$ACTION@$DEVPATH" which is then followed by a bunch
-> of
-> + * key-value pairs.
-> + *
-> + * For example attaching a file to loopback device generates event:
-> + *
-> + * "change@/devices/virtual/block/loop0\0
-> + *  ACTION=change\0
-> + *  DEVPATH=/devices/virtual/block/loop0\0
-> + *  SUBSYSTEM=block\0
-> + *  MAJOR=7\0
-> + *  MINOR=0\0
-> + *  DEVNAME=loop0\0
-> + *  DEVTYPE=disk\0
-> + *  SEQNUM=2677\0"
-> + */
-> +
-> +/*
-> + * Prints uevent.
-> + */
-> +static inline void print_uevent(const char *event, int len)
-> +{
-> +	int consumed = 0;
-> +
-> +	tst_res(TINFO, "Got uevent:");
-> +
-> +	while (consumed < len) {
-> +		tst_res(TINFO, "%s", event);
-> +		int l = strlen(event) + 1;
-> +		consumed += l;
-> +		event += l;
-> +	}
-> +}
-> +
-> +/*
-> + * Uevents read from the socket are matched against this
-> description.
-> + *
-> + * The msg is the overall action description e.g.
-> + * "add@/class/input/input4/mouse1" which has to be matched exactly
-> before we
-> + * event attempt to check the key-value pairs stored in the values
-> array. The
-> + * event is considered to match if all key-value pairs in the values
-> has been
-> + * found in the received event.
-> + */
-> +struct uevent_desc {
-> +	const char *msg;
-> +	int value_cnt;
-> +	const char **values;
-> +};
-> +
-> +static inline int uevent_match(const char *event, int len,
-> +                               const struct uevent_desc *uevent)
-> +{
-> +	int consumed = 0;
-> +	int val_matches = 0;
-> +
-> +	if (memcmp(event, uevent->msg, strlen(uevent->msg)))
-> +		return 0;
-> +
-> +	int l = strlen(event) + 1;
-> +
-> +	consumed += l;
-> +	event += l;
-> +
-> +	while (consumed < len) {
-> +		int i;
-> +		for (i = 0; i < uevent->value_cnt; i++) {
-> +			if (!strcmp(event, uevent->values[i])) {
-> +				val_matches++;
-> +				break;
-> +			}
-> +		}
-> +
-> +		l = strlen(event) + 1;
-> +		consumed += l;
-> +		event += l;
-> +	}
-> +
-> +	return val_matches == uevent->value_cnt;
-> +}
-> +
-> +static inline int open_uevent_netlink(void)
-> +{
-> +	int fd;
-> +	struct sockaddr_nl nl_addr = {
-> +		.nl_family = AF_NETLINK,
-> +		.nl_groups = MONITOR_GROUP_KERNEL,
-> +	};
-> +
-> +	fd = SAFE_SOCKET(AF_NETLINK, SOCK_RAW,
-> NETLINK_KOBJECT_UEVENT);
-> +
-> +	SAFE_BIND(fd, (struct sockaddr *)&nl_addr, sizeof(nl_addr));
-> +
-> +	return fd;
-> +}
-> +
-> +/*
-> + * Reads events from uevent netlink socket until all expected events
-> passed in
-> + * the uevent array are matched.
-> + */
-> +static inline void wait_for_uevents(int fd, const struct uevent_desc
-> *const uevents[])
-> +{
-> +	int i = 0;
-> +
-> +	while (1) {
-> +		int len;
-> +		char buf[4096];
-> +
-> +		len = recv(fd, &buf, sizeof(buf), 0);
-> +
-> +		if (len == 0)
-> +			continue;
-> +
-> +		print_uevent(buf, len);
-> +
-> +		if (uevent_match(buf, len, uevents[i])) {
-> +			tst_res(TPASS, "Got expected UEVENT");
-> +			if (!uevents[++i]) {
-> +				close(fd);
-> +				exit(0);
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +/*
-> + * Waits 5 seconds for a child to exit, kills the child after a
-> timeout.
-> + */
-> +static inline void wait_for_pid(int pid)
-> +{
-> +	int status, ret;
-> +	int retries = 5000;
-> +
-> +	do {
-> +		ret = waitpid(pid, &status, WNOHANG);
-> +		usleep(1000);
-> +	} while (ret == 0 && retries--);
-> +
-> +	if (ret == pid) {
-> +		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-> +			return;
-> +
-> +		tst_res(TFAIL, "Child exitted with %s",
-> tst_strstatus(status));
-> +	}
-> +
-> +	SAFE_KILL(pid, SIGKILL);
-> +
-> +	SAFE_WAITPID(pid, NULL, 0);
-> +
-> +	tst_res(TFAIL, "Did not get all expected UEVENTS");
-> +}
-> +
-> +#endif /* UEVENT_H__ */
-> diff --git a/testcases/kernel/uevents/uevent01.c
-> b/testcases/kernel/uevents/uevent01.c
-> new file mode 100644
-> index 000000000..41cd01b1f
-> --- /dev/null
-> +++ b/testcases/kernel/uevents/uevent01.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*
-> + * Very simple uevent netlink socket test.
-> + *
-> + * We fork a child that listens for a kernel events while parents 
-> attaches and
-> + * detaches a loop device which should produce two change events.
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/wait.h>
-> +#include "tst_test.h"
-> +
-> +#include "uevent.h"
-> +
-> +static void generate_device_events(const char *dev_path)
-> +{
-> +	tst_fill_file("loop.img", 0, 1024, 1024);
-> +
-> +	tst_res(TINFO, "Attaching device %s", dev_path);
-> +	tst_attach_device(dev_path, "loop.img");
-> +	tst_res(TINFO, "Detaching device %s", dev_path);
-> +	tst_detach_device(dev_path);
-> +}
-> +
-> +static void verify_uevent(void)
-> +{
-> +	int pid, fd, dev_num;
-> +	char dev_path[1024];
-> +	char ev_msg[1024];
-> +	char ev_dev_path[1024];
-> +	char ev_dev_minor[128];
-> +	char ev_dev_name[128];
-> +
-> +	struct uevent_desc desc = {
-> +		.msg = ev_msg,
-> +		.value_cnt = 7,
-> +		.values = (const char*[]) {
-> +			"ACTION=change",
-> +			ev_dev_path,
-> +			"SUBSYSTEM=block",
-> +			"MAJOR=7",
-> +			ev_dev_minor,
-> +			ev_dev_name,
-> +			"DEVTYPE=disk",
-> +		}
-> +	};
-> +
-> +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+> # ./cap_test
+> tst_test.c:1111: INFO: Timeout per run is 0h 05m 00s
+> tst_capability.c:51: CONF: Need CAP_SYS_ADMIN(21)
+>
+> # cat cap_test.c
+> #include "tst_test.h"
+> #include "linux/capability.h"
+>
+> static void do_test(void)
+> {
+>          tst_res(TPASS, "Hello");
+> }
+>
+> static struct tst_test test = {
+>          .test_all = do_test,
+>          .needs_root = 1,
+>          .caps = (struct tst_cap []) {
+> //                TST_CAP(TST_DROP, CAP_SYS_ADMIN),
+>                  TST_CAP(TST_REQUIRE, CAP_SYS_ADMIN),
+>                  {},
+>          },
+> };
+>
 
-Maybe it isn't worth to check if dev_num is a valid number.
 
-> +
-> +	snprintf(ev_msg, sizeof(ev_msg),
-> +	         "change@/devices/virtual/block/loop%i", dev_num);
-> +
-> +	snprintf(ev_dev_path, sizeof(ev_dev_path),
-> +	         "DEVPATH=/devices/virtual/block/loop%i", dev_num);
-> +
-> +	snprintf(ev_dev_minor, sizeof(ev_dev_minor), "MINOR=%i",
-> dev_num);
-> +	snprintf(ev_dev_name, sizeof(ev_dev_name), "DEVNAME=loop%i",
-> dev_num);
-> +
-> +	const struct uevent_desc *const uevents[] = {
-> +		&desc,
-> +		&desc,
-> +		NULL
-> +	};
-> +
-> +	pid = SAFE_FORK();
-> +	if (!pid) {
-> +		fd = open_uevent_netlink();
-> +		TST_CHECKPOINT_WAKE(0);
-> +		wait_for_uevents(fd, uevents);
 
-For me it wasn't obvious that wait_for_uevents() does the exit(). Not
-sure if we should do the exit better here or name the function like
-exit_on_uevents().
-
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	generate_device_events(dev_path);
-> +
-> +	wait_for_pid(pid);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_uevent,
-> +	.forks_child = 1,
-> +	.needs_tmpdir = 1,
-
-Just curious, where do we need the tmpdir?
-
-> +	.needs_checkpoints = 1,
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.21.0
-> 
-> 
-
-thx
-Clemens
