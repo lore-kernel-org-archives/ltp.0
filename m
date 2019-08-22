@@ -1,77 +1,44 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 22 Aug 2019 11:35:35 +0200
-Subject: [LTP] [RFC PATCH 1/1] capability: Introduce capability API
-In-Reply-To: <5D5E5551.9050308@cn.fujitsu.com>
-References: <20190808153825.18363-1-rpalethorpe@suse.com>
- <20190808153825.18363-2-rpalethorpe@suse.com>
- <5D5E5551.9050308@cn.fujitsu.com>
-Message-ID: <87tva9v8yg.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 22 Aug 2019 08:37:47 -0400 (EDT)
+Subject: [LTP] [PATCH v2] cve: Fix kernel symbol finding for meltdown
+ case
+In-Reply-To: <145293056.7577705.1566403293117.JavaMail.zimbra@redhat.com>
+References: <1566376044-175216-1-git-send-email-zhe.he@windriver.com>
+ <145293056.7577705.1566403293117.JavaMail.zimbra@redhat.com>
+Message-ID: <1053175586.7790160.1566477467514.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-> Hi Richard
->
-> If we use _LINUX_CAPABILITY_VERSION_1, kernel will report the following warning: `cap_test' uses 32-bit capabilities (legacy support in use)
->
-> _LINUX_CAPABILITY_VERSION_2 has been deprecated since kernel 2.6.25, so we can only use _LINUX_CAPABILITY_VERSION_3.
->
-> But _LINUX_CAPABILITY_VERSION_3 uses 64-bit capabilities as man-page said, effective defined as uint32_t in tst_cap_usr_data is not enough.
-> I guess we need to define cur[2] ,new[2] and compare. Also, it can slove the EPERM failure as Li wang's cap_test.c found.
->  ps: I changed  kernel code to track this problem.
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index f4ee0ae106b2..291eb4e71031 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -247,24 +247,31 @@ int cap_capset(struct cred *new,
->         if (cap_inh_is_capped()&&
->             !cap_issubset(*inheritable,
->                           cap_combine(old->cap_inheritable,
-> -                                     old->cap_permitted)))
-> +                                     old->cap_permitted))) {
->                 /* incapable of using this inheritable set */
-> +               printk("xuyang 0\n");
->                 return -EPERM;
-> +       }
->
->         if (!cap_issubset(*inheritable,
->                           cap_combine(old->cap_inheritable,
-> -                                     old->cap_bset)))
-> +                                     old->cap_bset))) {
->                 /* no new pI capabilities outside bounding set */
-> +               printk("xuyang 1\n");
->                 return -EPERM;
-> +       }
->
->         /* verify restrictions on target's new Permitted set */
-> -       if (!cap_issubset(*permitted, old->cap_permitted))
-> +       if (!cap_issubset(*permitted, old->cap_permitted)) {
-> +               printk("xuyang  2\n");
->                 return -EPERM;
-> +       }
->
->         /* verify the _new_Effective_ is a subset of the _new_Permitted_ */
-> -       if (!cap_issubset(*effective, *permitted))
-> +       if (!cap_issubset(*effective, *permitted)) {
-> +               printk("xuyang 3\n");
->                 return -EPERM;
-> -
-> +       }
->         new->cap_effective   = *effective;
->         new->cap_inheritable = *inheritable;
->
-> #./cap_test  (dmesg will report "xuyang 3",return EPERM if use version 3)
->
-> Thanks
-> Yang Xu
 
-Yes, sorry I should have said earlier. I am converting it to use 64bit
-capabilities. Also I have created some tests for this and will try to
-use the upper bits.
 
--- 
-Thank you,
-Richard.
+----- Original Message -----
+> 
+> 
+> ----- Original Message -----
+> > From: He Zhe <zhe.he@windriver.com>
+> > 
+> > meltdown case fails as below.
+> > safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
+> > 
+> > find_kernel_symbol is defined to try twice with each of /proc/kallsyms and
+> > /boot/System.map-%s. Currently if the symbol is not found in
+> > /proc/kallsyms,
+> > when kernel option CONFIG_KALLSYMS_ALL is disabled, it would stop the case
+> > immediately due to SAFE_FILE_LINES_SCANF.
+> > 
+> > This patch turns to use FILE_LINES_SCANF to give find_kernel_symbol second
+> > chance.
+> 
+> That explains it, thanks for the patch.
+> 
+> We should also tweak TCONF condition in find_kernel_symbol - no need
+> to re-post for that, I can add that.
+
+Pushed, also with tweak for commit 7709d2ae92ea, so we try System.map,
+even if kallsyms are completely disabled.
+
+Regards,
+Jan
