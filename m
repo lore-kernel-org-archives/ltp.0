@@ -1,44 +1,32 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 22 Aug 2019 08:37:47 -0400 (EDT)
-Subject: [LTP] [PATCH v2] cve: Fix kernel symbol finding for meltdown
- case
-In-Reply-To: <145293056.7577705.1566403293117.JavaMail.zimbra@redhat.com>
-References: <1566376044-175216-1-git-send-email-zhe.he@windriver.com>
- <145293056.7577705.1566403293117.JavaMail.zimbra@redhat.com>
-Message-ID: <1053175586.7790160.1566477467514.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 22 Aug 2019 14:45:12 +0200
+Subject: [LTP] (no subject)
+In-Reply-To: <CAJwJstDWVJ8HG=Fe1VZtPDTAsCawfoKkdLAikFMQZ-hXhOprvA@mail.gmail.com>
+References: <CAJwJstDWVJ8HG=Fe1VZtPDTAsCawfoKkdLAikFMQZ-hXhOprvA@mail.gmail.com>
+Message-ID: <20190822124512.GB6325@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> I want to ask if I can use ltp for stressing CPU and Memory with Linux OS?
 
+What kind of stress do you have in mind?
 
------ Original Message -----
-> 
-> 
-> ----- Original Message -----
-> > From: He Zhe <zhe.he@windriver.com>
-> > 
-> > meltdown case fails as below.
-> > safe_file_ops.c:219: BROK: Expected 3 conversions got 2 at meltdown.c:272
-> > 
-> > find_kernel_symbol is defined to try twice with each of /proc/kallsyms and
-> > /boot/System.map-%s. Currently if the symbol is not found in
-> > /proc/kallsyms,
-> > when kernel option CONFIG_KALLSYMS_ALL is disabled, it would stop the case
-> > immediately due to SAFE_FILE_LINES_SCANF.
-> > 
-> > This patch turns to use FILE_LINES_SCANF to give find_kernel_symbol second
-> > chance.
-> 
-> That explains it, thanks for the patch.
-> 
-> We should also tweak TCONF condition in find_kernel_symbol - no need
-> to re-post for that, I can add that.
+I guess that for CPU stress something as compiling kernel in a loop with
+large enough -j parameter will suffice.
 
-Pushed, also with tweak for commit 7709d2ae92ea, so we try System.map,
-even if kallsyms are completely disabled.
+There are some test for OOM and memory overcommit, these are part of the
+mm runtest file.
 
-Regards,
-Jan
+> If the answer is yes, Can I get the detailed explanation about the hierachy
+> of ltp because I think the document of ltp did not explain that.
+
+Unforunately that part of LTP is undercommented, you have to mostly
+explore on your own, sorry.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
