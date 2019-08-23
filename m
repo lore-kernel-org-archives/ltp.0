@@ -1,57 +1,52 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 23 Aug 2019 12:33:37 +0800
-Subject: [LTP] [PATCH v2 2/2] capability: library tests
-In-Reply-To: <20190822141713.26825-2-rpalethorpe@suse.com>
-References: <20190808153825.18363-2-rpalethorpe@suse.com>
- <20190822141713.26825-1-rpalethorpe@suse.com>
- <20190822141713.26825-2-rpalethorpe@suse.com>
-Message-ID: <5D5F6CA1.8010305@cn.fujitsu.com>
+Date: Fri, 23 Aug 2019 14:22:54 +0800
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: use .needs_tmpdir and
+ MAX_LEN
+Message-ID: <1566541374-2225-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/22 22:17, Richard Palethorpe wrote:
+Since commit bc514b22, we have removed EXDEV test. all_filesystem
+,mount_device and mntpoint make no sense. Remove it and use tmpdir.
 
-> diff --git a/lib/newlib_tests/tst_capability01.c b/lib/newlib_tests/tst_capability01.c
-> new file mode 100644
-> index 000000000..1a9cb0568
-> --- /dev/null
-> +++ b/lib/newlib_tests/tst_capability01.c
-> @@ -0,0 +1,50 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2019 Richard Palethorpe<rpalethorpe@suse.com>
-> + *
-> + * The user or file requires CAP_NET_RAW for this test to work.
-> + * e.g use "$ setcap cap_net_raw=pei tst_capability"
-> + */
-> +
-> +#include<unistd.h>
-> +#include<sys/types.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_capability.h"
-> +#include "tst_safe_net.h"
-> +
-> +#include "lapi/socket.h"
-> +
-> +static void run(void)
-> +{
-> +	TEST(socket(AF_INET, SOCK_RAW, 1));
-> +	if (TST_RET>  -1) {
-> +		tst_res(TFAIL, "Created raw socket");
-                         SAFE_CLOSE(TST_RET);
+As man-page said, when we plan to write at a position past the maximum
+allowed offset, it will return EFBIG. So we should USE MAX_LEN as pos
+instead of MAX_OFF.
 
-> +	} else if (TST_ERR != EPERM) {
-> +		tst_res(TBROK | TTERRNO,
-> +			"Failed to create socket for wrong reason");
-> +	} else {
-> +		tst_res(TPASS | TTERRNO, "Didn't create raw socket");
-> +	}
-> +}
-> +
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+---
+ .../kernel/syscalls/copy_file_range/copy_file_range02.c     | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+index 9004c4a40..f502c75c0 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+@@ -74,7 +74,7 @@ static struct tcase {
+ 	{&fd_chrdev,    0,   EINVAL,     0,     CONTSIZE, "char device"},
+ 	{&fd_fifo,      0,   EINVAL,     0,     CONTSIZE, "fifo"},
+ 	{&fd_copy,      0,   EOVERFLOW,  MAX_OFF, ULLONG_MAX, "max length lenght"},
+-	{&fd_copy,      0,   EFBIG,      MAX_OFF, MIN_OFF, "max file size"},
++	{&fd_copy,      0,   EFBIG,      MAX_LEN, MIN_OFF, "max file size"},
+ };
+ 
+ static int run_command(char *command, char *option, char *file)
+@@ -219,8 +219,6 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_root = 1,
+-	.mount_device = 1,
+-	.mntpoint = MNTPOINT,
+-	.all_filesystems = 1,
++	.needs_tmpdir = 1,
+ 	.test_variants = TEST_VARIANTS,
+ };
+-- 
+2.18.1
 
 
 
