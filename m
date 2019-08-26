@@ -1,207 +1,91 @@
 From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Mon, 26 Aug 2019 17:55:29 +0200
-Subject: [LTP] [PATCH v3 3/5] kernel/uevent: Add uevent02
-In-Reply-To: <20190826140124.24681-4-chrubis@suse.cz>
+Date: Mon, 26 Aug 2019 17:57:33 +0200
+Subject: [LTP] [PATCH v3 1/5] lib/tst_device: Export more functions.
+In-Reply-To: <20190826140124.24681-2-chrubis@suse.cz>
 References: <20190826140124.24681-1-chrubis@suse.cz>
- <20190826140124.24681-4-chrubis@suse.cz>
-Message-ID: <1566834929.15851.13.camel@suse.de>
+ <20190826140124.24681-2-chrubis@suse.cz>
+Message-ID: <1566835053.15851.15.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reviewed-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Hi Cyril,
+I just realized that copyright date might need an update
+and there are no function desc in tst_device.h.
 
 On Mon, 2019-08-26 at 16:01 +0200, Cyril Hrubis wrote:
-> Similar to uevent01 but we create and remove a tun network card
-> instead.
+> Export tst_attach_device() and tst_deteach_device() which will be
+> later
+> on used by a kernel netlink uevent tests.
 > 
 > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> Reviewed-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 > ---
->  runtest/uevent                      |   1 +
->  testcases/kernel/uevents/.gitignore |   1 +
->  testcases/kernel/uevents/uevent02.c | 143
-> ++++++++++++++++++++++++++++
->  3 files changed, 145 insertions(+)
->  create mode 100644 testcases/kernel/uevents/uevent02.c
+>  include/tst_device.h | 7 +++++++
+>  lib/tst_device.c     | 8 ++++----
+>  2 files changed, 11 insertions(+), 4 deletions(-)
 > 
-> diff --git a/runtest/uevent b/runtest/uevent
-> index e9cdf26b8..30b1114a4 100644
-> --- a/runtest/uevent
-> +++ b/runtest/uevent
-> @@ -1 +1,2 @@
->  uevent01 uevent01
-> +uevent02 uevent02
-> diff --git a/testcases/kernel/uevents/.gitignore
-> b/testcases/kernel/uevents/.gitignore
-> index 53d0b546a..0afc95534 100644
-> --- a/testcases/kernel/uevents/.gitignore
-> +++ b/testcases/kernel/uevents/.gitignore
-> @@ -1 +1,2 @@
->  uevent01
-> +uevent02
-> diff --git a/testcases/kernel/uevents/uevent02.c
-> b/testcases/kernel/uevents/uevent02.c
-> new file mode 100644
-> index 000000000..b94748c51
-> --- /dev/null
-> +++ b/testcases/kernel/uevents/uevent02.c
-> @@ -0,0 +1,143 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2019 Cyril Hrubis <chrubis@suse.cz>
-> + */
+> diff --git a/include/tst_device.h b/include/tst_device.h
+> index f0ddc3e93..c6e7b45b1 100644
+> --- a/include/tst_device.h
+> +++ b/include/tst_device.h
+> @@ -50,6 +50,13 @@ int tst_clear_device(const char *dev);
+>   *
+>   */
+>  int tst_find_free_loopdev(const char *path, size_t path_len);
 > +
-> +/*
-> + * Very simple uevent netlink socket test.
-> + *
-> + * We fork a child that listens for a kernel events while parents
-> creates and
-> + * removes a tun network device which should produce two several add
-> and remove
-> + * events.
-> + */
 > +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/wait.h>
-> +#include <linux/if.h>
-> +#include <linux/if_tun.h>
+> +int tst_attach_device(const char *dev_path, const char *file_path);
 > +
-> +#include "tst_test.h"
 > +
-> +#include "uevent.h"
+> +int tst_detach_device(const char *dev_path);
 > +
-> +#define TUN_PATH "/dev/net/tun"
-> +
-> +static void generate_tun_uevents(void)
-> +{
-> +	int fd = SAFE_OPEN(TUN_PATH, O_RDWR);
-> +
-> +	struct ifreq ifr = {
-> +		.ifr_flags = IFF_TUN,
-> +		.ifr_name = "ltp-tun0",
-> +	};
-> +
-> +	SAFE_IOCTL(fd, TUNSETIFF, (void*)&ifr);
-> +
-> +	SAFE_IOCTL(fd, TUNSETPERSIST, 0);
-> +
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void verify_uevent(void)
-> +{
-> +	int pid, fd;
-> +
-> +	struct uevent_desc add = {
-> +		.msg = "add@/devices/virtual/net/ltp-tun0",
-> +		.value_cnt = 4,
-> +		.values = (const char*[]) {
-> +			"ACTION=add",
-> +			"DEVPATH=/devices/virtual/net/ltp-tun0",
-> +			"SUBSYSTEM=net",
-> +			"INTERFACE=ltp-tun0",
-> +		}
-> +	};
-> +
-> +	struct uevent_desc add_rx = {
-> +		.msg = "add@/devices/virtual/net/ltp-tun0/queues/rx-
-> 0",
-> +		.value_cnt = 3,
-> +		.values = (const char*[]) {
-> +			"ACTION=add",
-> +			"DEVPATH=/devices/virtual/net/ltp-
-> tun0/queues/rx-0",
-> +			"SUBSYSTEM=queues",
-> +		}
-> +	};
-> +
-> +	struct uevent_desc add_tx = {
-> +		.msg = "add@/devices/virtual/net/ltp-tun0/queues/tx-
-> 0",
-> +		.value_cnt = 3,
-> +		.values = (const char*[]) {
-> +			"ACTION=add",
-> +			"DEVPATH=/devices/virtual/net/ltp-
-> tun0/queues/tx-0",
-> +			"SUBSYSTEM=queues",
-> +		}
-> +	};
-> +
-> +	struct uevent_desc rem_rx = {
-> +		.msg = "remove@/devices/virtual/net/ltp-
-> tun0/queues/rx-0",
-> +		.value_cnt = 3,
-> +		.values = (const char*[]) {
-> +			"ACTION=remove",
-> +			"DEVPATH=/devices/virtual/net/ltp-
-> tun0/queues/rx-0",
-> +			"SUBSYSTEM=queues",
-> +		}
-> +	};
-> +
-> +	struct uevent_desc rem_tx = {
-> +		.msg = "remove@/devices/virtual/net/ltp-
-> tun0/queues/tx-0",
-> +		.value_cnt = 3,
-> +		.values = (const char*[]) {
-> +			"ACTION=remove",
-> +			"DEVPATH=/devices/virtual/net/ltp-
-> tun0/queues/tx-0",
-> +			"SUBSYSTEM=queues",
-> +		}
-> +	};
-> +
-> +	struct uevent_desc rem = {
-> +		.msg = "remove@/devices/virtual/net/ltp-tun0",
-> +		.value_cnt = 4,
-> +		.values = (const char*[]) {
-> +			"ACTION=remove",
-> +			"DEVPATH=/devices/virtual/net/ltp-tun0",
-> +			"SUBSYSTEM=net",
-> +			"INTERFACE=ltp-tun0",
-> +		}
-> +	};
-> +
-> +	const struct uevent_desc *const uevents[] = {
-> +		&add,
-> +		&add_rx,
-> +		&add_tx,
-> +		&rem_rx,
-> +		&rem_tx,
-> +		&rem,
-> +		NULL
-> +	};
-> +
-> +	pid = SAFE_FORK();
-> +	if (!pid) {
-> +		fd = open_uevent_netlink();
-> +		TST_CHECKPOINT_WAKE(0);
-> +		wait_for_uevents(fd, uevents);
-> +		exit(0);
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	generate_tun_uevents();
-> +
-> +	wait_for_pid(pid);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_uevent,
-> +	.forks_child = 1,
-> +	.needs_tmpdir = 1,
-> +	.needs_checkpoints = 1,
-> +	.needs_drivers = (const char *const []) {
-> +		"tun",
-> +		NULL
-> +	},
-> +	.needs_root = 1
-> +};
-> -- 
-> 2.21.0
-> 
-> 
+>  /*
+>   * Reads test block device stat file and returns the bytes written
+> since the
+>   * last call of this function.
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index 22abdef46..10f71901d 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -139,7 +139,7 @@ int tst_find_free_loopdev(char *path, size_t
+> path_len)
+>  	return -1;
+>  }
+>  
+> -static int attach_device(const char *dev, const char *file)
+> +int tst_attach_device(const char *dev, const char *file)
+>  {
+>  	int dev_fd, file_fd;
+>  	struct loop_info loopinfo;
+> @@ -185,7 +185,7 @@ static int attach_device(const char *dev, const
+> char *file)
+>  	return 0;
+>  }
+>  
+> -static int detach_device(const char *dev)
+> +int tst_detach_device(const char *dev)
+>  {
+>  	int dev_fd, ret, i;
+>  
+> @@ -284,7 +284,7 @@ const char *tst_acquire_device__(unsigned int
+> size)
+>  	if (tst_find_free_loopdev(dev_path, sizeof(dev_path)) == -1)
+>  		return NULL;
+>  
+> -	if (attach_device(dev_path, DEV_FILE))
+> +	if (tst_attach_device(dev_path, DEV_FILE))
+>  		return NULL;
+>  
+>  	device_acquired = 1;
+> @@ -329,7 +329,7 @@ int tst_release_device(const char *dev)
+>  	 *
+>  	 * The file image is deleted in tst_rmdir();
+>  	 */
+> -	ret = detach_device(dev);
+> +	ret = tst_detach_device(dev);
+>  
+>  	device_acquired = 0;
+>  
