@@ -1,34 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Aug 2019 11:21:15 +0200
-Subject: [LTP] [PATCH v2] syscalls/copy_file_range02: use .needs_tmpdir
- and MAX_LEN
-In-Reply-To: <1566547679-2771-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1566547679-2771-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190826092115.GC9788@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 26 Aug 2019 15:17:16 +0530
+Subject: [LTP] Linux-next-20190823: x86_64/i386: prot_hsymlinks.c:325:
+ Failed to run cmd: useradd hsym
+Message-ID: <CA+G9fYtN2tjHZtjtc8isdsD5hF76teeh2-pngUp+uj3WYdj7jA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Do you see this LTP prot_hsymlinks failure on linux next 20190823 on
+x86_64 and i386 devices?
 
-> Since commit bc514b22, we have removed EXDEV test. all_filesystem
-> ,mount_device and mntpoint make no sense. Remove it and use tmpdir.
+test output log,
+useradd: failure while writing changes to /etc/passwd
+useradd: /home/hsym was created, but could not be removed
+userdel: user 'hsym' does not exist
+prot_hsymlinks    1  TBROK  :  prot_hsymlinks.c:325: Failed to run
+cmd: useradd hsym
+prot_hsymlinks    2  TBROK  :  prot_hsymlinks.c:325: Remaining cases broken
+prot_hsymlinks    3  TBROK  :  prot_hsymlinks.c:325: Failed to run
+cmd: userdel -r hsym
+prot_hsymlinks    4  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks    5  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks    6  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks    7  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks    8  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks    9  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
+prot_hsymlinks   10  TBROK  :  tst_sig.c:234: unexpected signal
+SIGIOT/SIGABRT(6) received (pid = 8324).
 
-> As man-page said, when we plan to write at a position past the maximum
-> allowed offset, it will return EFBIG. We should USE tst_max_lfs_filesize 
-> as dst instead of (tst_max_lfs_fileszie - MIN_OFF). Also, it doesn't affect 
-> EOVERFLOW.
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190823/testrun/886412/log
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
-Thanks for the fix. I tempted to split these 2 changes into 2 commits,
-but in the end kept it in single commit.
+Linux version:
+Linux version 5.3.0-rc5-next-20190823 (oe-user@oe-host) (gcc version
+7.3.0 (GCC)) #1 SMP Fri Aug 23 09:35:54 UTC 2019
 
-Merged (with adjusted commit message and
-Reported-by for Murphy Zhou and Signed-off-by for Li as he did a review for
-previous version).
+steps to reproduce:
+   cd /opt/ltp
+   ./runltp -s prot_hsymlinks
 
-Kind regards,
-Petr
+metadata:
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: 9733a7c62c66722bcfdb1a6fe4d35c497312d59a
+  git describe: next-20190823
+  make_kernelversion: 5.3.0-rc5
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-next/591/config
+  build-location:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-next/591
+  toolchain: x86_64-linaro-linux 7.%
+  series: lkft
+  ltp-syscalls-tests__url: git://github.com/linux-test-project/ltp.git
+  ltp-syscalls-tests__version: '20190517'
+
+Best regards
+Naresh Kamboju
