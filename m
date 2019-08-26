@@ -1,51 +1,162 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 26 Aug 2019 20:42:05 +0800
-Subject: [LTP] [COMMITTED] [PATCH] move_pages12: add comment for a new
- regression
-Message-ID: <20190826124205.14943-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 26 Aug 2019 08:52:18 -0400 (EDT)
+Subject: [LTP] [PATCH v4 2/4] BPF: Sanity check creating and updating
+ maps
+In-Reply-To: <20190826111024.19053-3-chrubis@suse.cz>
+References: <20190826111024.19053-1-chrubis@suse.cz>
+ <20190826111024.19053-3-chrubis@suse.cz>
+Message-ID: <456316863.8154593.1566823938723.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- .../kernel/syscalls/move_pages/move_pages12.c      | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/move_pages/move_pages12.c b/testcases/kernel/syscalls/move_pages/move_pages12.c
-index 5d7afad8e..c2927fb86 100644
---- a/testcases/kernel/syscalls/move_pages/move_pages12.c
-+++ b/testcases/kernel/syscalls/move_pages/move_pages12.c
-@@ -25,6 +25,7 @@
-  *   mm/hugetlb: take page table lock in follow_huge_pmd()
-  *
-  *  Test #2:
-+ *   #2.1:
-  *   This is a regression test for the race condition, where move_pages()
-  *   and soft offline are called on a single hugetlb page concurrently.
-  *
-@@ -36,6 +37,19 @@
-  *
-  *   mm, hugetlb: use pte_present() instead of pmd_present() in
-  *   follow_huge_pmd()
-+ *
-+ *   #2.2:
-+ *   This is also a regression test for an race condition causing SIGBUS
-+ *   in hugepage migration/fault.
-+ *
-+ *   This bug was fixed by:
-+ *
-+ *   commit 4643d67e8cb0b3536ef0ab5cddd1cedc73fa14ad
-+ *   Author: Mike Kravetz <mike.kravetz@oracle.com>
-+ *   Date:   Tue Aug 13 15:38:00 2019 -0700
-+ *
-+ *   hugetlbfs: fix hugetlb page migration/fault race causing SIGBUS
-+ *
-  */
- 
- #include <errno.h>
--- 
-2.20.1
 
+----- Original Message -----
+> +
+> +static const struct map_type map_types[] = {
+> +	{BPF_MAP_TYPE_HASH, "hash", 8, &key8},
+> +	{BPF_MAP_TYPE_ARRAY, "array", 4, &key4}
+> +};
+> +
+> +void run(unsigned int n)
+> +{
+> +	int fd, i;
+> +	void *key = *map_types[n].key;
+> +
+> +	memset(attr, 0, sizeof(*attr));
+> +	attr->map_type = map_types[n].id;
+> +	attr->key_size = map_types[n].key_size;
+> +	attr->value_size = VAL_SZ;
+> +	attr->max_entries = 1;
+> +
+> +	TEST(bpf(BPF_MAP_CREATE, attr, sizeof(*attr)));
+> +	if (TST_RET == -1) {
+> +		if (TST_ERR == EPERM) {
+> +			tst_brk(TCONF | TTERRNO,
+> +				"bpf() requires CAP_SYS_ADMIN on this system");
+> +		} else {
+> +			tst_res(TFAIL | TTERRNO, "Failed to create %s map",
+> +				map_types[n].name);
+> +			return;
+> +		}
+> +	}
+> +	tst_res(TPASS, "Created %s map", map_types[n].name);
+> +	fd = TST_RET;
+> +
+> +	memset(attr, 0, sizeof(*attr));
+> +	attr->map_fd = fd;
+> +	attr->key = ptr_to_u64(key);
+> +	attr->value = ptr_to_u64(val_get);
+> +
+> +	TEST(bpf(BPF_MAP_LOOKUP_ELEM, attr, sizeof(*attr)));
+> +
+> +	switch (n) {
+
+Small nit (maybe personal preference), I'd rather make this check for
+map_types.attr, as opposed to test number / some position in array.
+
+> +	case 0:
+> +		if (TST_RET != -1 || TST_ERR != ENOENT) {
+> +			tst_res(TFAIL | TTERRNO,
+> +				"Empty hash map lookup should fail with ENOENT");
+> +		} else {
+> +			tst_res(TPASS | TTERRNO, "Empty hash map lookup");
+> +		}
+> +	break;
+> +	case 1:
+> +		if (TST_RET != -1) {
+> +			for (i = 0;;) {
+> +				if (val_get[i] != 0) {
+> +					tst_res(TFAIL,
+> +						"Preallocated array map val not zero");
+
+If we hit this TFAIL, will the loop terminate?
+
+> +				} else if (++i >= VAL_SZ) {
+> +					tst_res(TPASS,
+> +						"Preallocated array map lookup");
+> +					break;
+> +				}
+> +			}
+> +		} else {
+> +			tst_res(TFAIL | TERRNO, "Prellocated array map lookup");
+> +		}
+> +	break;
+> +	}
+> +
+> +	memset(attr, 0, sizeof(*attr));
+> +	attr->map_fd = fd;
+> +	attr->key = ptr_to_u64(key);
+> +	attr->value = ptr_to_u64(val_set);
+> +	attr->flags = BPF_ANY;
+> +
+> +	TEST(bpf(BPF_MAP_UPDATE_ELEM, attr, sizeof(*attr)));
+> +	if (TST_RET == -1) {
+> +		tst_brk(TFAIL | TTERRNO,
+> +			"Update %s map element",
+> +			map_types[n].name);
+> +	} else {
+> +		tst_res(TPASS,
+> +			"Update %s map element",
+> +			map_types[n].name);
+> +	}
+> +
+> +	memset(attr, 0, sizeof(*attr));
+> +	attr->map_fd = fd;
+> +	attr->key = ptr_to_u64(key);
+> +	attr->value = ptr_to_u64(val_get);
+> +
+> +	TEST(bpf(BPF_MAP_LOOKUP_ELEM, attr, sizeof(*attr)));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO,
+> +			"%s map lookup missing",
+> +			map_types[n].name);
+> +	} else if (memcmp(val_set, val_get, (size_t) VAL_SZ)) {
+> +		tst_res(TFAIL,
+> +			"%s map lookup returned different value",
+> +			map_types[n].name);
+> +	} else {
+> +		tst_res(TPASS, "%s map lookup", map_types[n].name);
+> +	}
+> +
+> +	SAFE_CLOSE(fd);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	unsigned int i;
+> +
+> +	memcpy(key8, "12345678", 8);
+> +	memset(key4, 0, 4);
+> +
+> +	for (i = 0; i < VAL_SZ; i++)
+> +		val_set[i] = i % 256;
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tcnt = 2,
+
+Nit, ARRAY_SIZE(map_types) ?
+
+> +	.test = run,
+> +	.setup = setup,
+> +	.min_kver = "3.18",
+> +	.bufs = (struct tst_buffers []) {
+> +		{&key4, .size = 4},
+> +		{&key8, .size = 8},
+> +		{&val_set, .size = VAL_SZ},
+> +		{&val_get, .size = VAL_SZ},
+> +		{&attr, .size = sizeof(*attr)},
+> +		{},
+> +	},
+> +};
+> --
+> 2.21.0
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
