@@ -1,19 +1,18 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Aug 2019 14:10:16 +0200
-Subject: [LTP] [PATCH 1/1] sethostname: Convert to new API
-In-Reply-To: <20190717173120.4700-1-pvorel@suse.cz>
-References: <20190717173120.4700-1-pvorel@suse.cz>
-Message-ID: <20190826121016.GA31138@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 26 Aug 2019 20:41:57 +0800
+Subject: [LTP] [PATCH v3] move_pages12: handle errno EBUSY for
+ madvise(..., MADV_SOFT_OFFLINE)
+In-Reply-To: <20190808054513.31041-1-liwang@redhat.com>
+References: <20190808054513.31041-1-liwang@redhat.com>
+Message-ID: <CAEemH2fLGt3oYdt6k5uN5pE+3LZQHQabJ+CG-Tj=zphWadjTVQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Pushed.
 
-> by using code of setdomainname() tests
-Merged.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
