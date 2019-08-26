@@ -1,57 +1,52 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Aug 2019 16:11:01 +0200
-Subject: [LTP] [PATCH] tst_net.sh: Fix root detection on netns on new shell
- API
-Message-ID: <20190826141101.10144-1-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 26 Aug 2019 10:29:21 -0400 (EDT)
+Subject: [LTP] [PATCH v4 0/4] Basic eBPF tests
+In-Reply-To: <20190826111024.19053-1-chrubis@suse.cz>
+References: <20190826111024.19053-1-chrubis@suse.cz>
+Message-ID: <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When using LTP with netns ("Single Host Configuration"),
-init_ltp_netspace before running test which performs checking for
-TST_NEEDS_ROOT=1, therefore adding it is not enough.
-It fails on adding netns:
 
-RTNETLINK answers: Operation not permitted
-sctp01 1 TBROK: ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2 failed
 
-NOTE: tst_restore_ipaddr is called before running tests only on netns,
-in init_ltp_netspace, therefore tst_require_root_ as a check is enough.
+----- Original Message -----
+> I've ended up playing with the patchset and fixed a few loose ends on
+> the map test and as I had the code at hand I decided to send v4 instead
+> of pointing out the mistakes in a review.
+> 
+> There were numerous small changes for the map test:
+> 
+> * Make sure the key buffer is sized exactly for the content
+> 
+> * Initialized the array/hash element value in test setup
+> 
+> * Made the code flow a bit more obvious, it was hard to tell which
+>   part was run for n == 0 and which for n == 1
+> 
+> Also it looks that for me the test that loads the eBPF program ends up
+> with EPERM randomly at about 10th iteration both as unpriviledged and
+> priviledged user, which is really strange.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi Alexey,
+There's one EPERM I can reproduce reliably with bpf_map test, which appears
+to originate from "bpf_charge_memlock".
 
-I also wanted to move variable setup (everything after
-tst_default_max_pkt() definition) to separate function and call it
-inside tst_net_setup() for new shell API, but all TST_* setup
-(currently at least TST_TMPDIR_RHOST=1 and TST_NEEDS_ROOT=1)
-would not work (we'd need to use tst_cleanup_rhost and _tst_require_root
-directly, which is IMHO not good).
+There's a deferred component to map freeing, and unchange appears to be part of it:
+  bpf_map_release
+    bpf_map_put
+      INIT_WORK(&map->work, bpf_map_free_deferred);
+        (deferred) bpf_uncharge_memlock
 
-+ We might want to cleanup variables (prefix library internal variables
-with _tst_net, use lower case), at least these two:
-s/ping6_warn_printed/_tst_net_ping6_warn_printed/g
-s/TST_PARSE_VARIABLES/_tst_net_parse_variables/g
+When I lower max locked memory, it's easy to hit:
+# ulimit  -l 128; ./bpf_map01 -i 100
+...
+bpf_map01.c:52: CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
 
- testcases/lib/tst_net.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Can you try bumping max locked memory to some high value and check
+if that helps your case?
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 1678bcfda..5a149530c 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -105,7 +105,7 @@ tst_require_root_()
- init_ltp_netspace()
- {
- 	tst_test_cmds ip
--	tst_require_root_
-+	[ -z "$TST_USE_LEGACY_API" ] && _tst_require_root || tst_require_root
- 
- 	local pid=
- 
--- 
-2.22.0
+Regards,
+Jan
 
