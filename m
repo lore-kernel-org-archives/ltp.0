@@ -1,9 +1,13 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 26 Aug 2019 10:29:21 -0400 (EDT)
-Subject: [LTP] [PATCH v4 0/4] Basic eBPF tests
-In-Reply-To: <20190826111024.19053-1-chrubis@suse.cz>
-References: <20190826111024.19053-1-chrubis@suse.cz>
-Message-ID: <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
+Date: Mon, 26 Aug 2019 10:38:05 -0400 (EDT)
+Subject: [LTP] Linux-next-20190823: x86_64/i386: prot_hsymlinks.c:325:
+ Failed to run cmd: useradd hsym
+In-Reply-To: <CA+G9fYsHpNKFHr=ZukVvj+uMJDyHj2Xwb9bCfzPQyYzMjZ0rCw@mail.gmail.com>
+References: <CA+G9fYtN2tjHZtjtc8isdsD5hF76teeh2-pngUp+uj3WYdj7jA@mail.gmail.com>
+ <20190826104127.GA14729@haruka>
+ <1264279239.8133737.1566817520787.JavaMail.zimbra@redhat.com>
+ <CA+G9fYsHpNKFHr=ZukVvj+uMJDyHj2Xwb9bCfzPQyYzMjZ0rCw@mail.gmail.com>
+Message-ID: <203971593.8175020.1566830285708.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,42 +15,132 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-
 ----- Original Message -----
-> I've ended up playing with the patchset and fixed a few loose ends on
-> the map test and as I had the code at hand I decided to send v4 instead
-> of pointing out the mistakes in a review.
+> Hi Jan and Cyril,
 > 
-> There were numerous small changes for the map test:
+> On Mon, 26 Aug 2019 at 16:35, Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >
+> >
+> > ----- Original Message -----
+> > > Hi!
+> > > > Do you see this LTP prot_hsymlinks failure on linux next 20190823 on
+> > > > x86_64 and i386 devices?
+> > > >
+> > > > test output log,
+> > > > useradd: failure while writing changes to /etc/passwd
+> > > > useradd: /home/hsym was created, but could not be removed
+> > >
+> > > This looks like an unrelated problem, failure to write to /etc/passwd
+> > > probably means that filesystem is full or some problem happend and how
+> > > is remounted RO.
+> >
+> > In Naresh' example, root is on NFS:
+> >   root=/dev/nfs rw
+> >   nfsroot=10.66.16.123:/var/lib/lava/dispatcher/tmp/886412/extract-nfsrootfs-tyuevoxm,tcp,hard,intr
 > 
-> * Make sure the key buffer is sized exactly for the content
+> Right !
+> root is mounted on NFS.
 > 
-> * Initialized the array/hash element value in test setup
+> >
+> > 10.66.16.123:/var/lib/lava/dispatcher/tmp/886412/extract-nfsrootfs-tyuevoxm
+> > on / type nfs
+> > (rw,relatime,vers=2,rsize=4096,wsize=4096,namlen=255,hard,nolock,proto=tcp,timeo=600,retrans=2,sec=sys,mountaddr=10.66.16.123,mountvers=1,mountproto=tcp,local_lock=all,addr=10.66.16.123)
+> > devtmpfs on /dev type devtmpfs
+> > (rw,relatime,size=3977640k,nr_inodes=994410,mode=755)
+> >
+> > Following message repeats couple times in logs:
+> >   NFS: Server wrote zero bytes, expected XXX
+> >
+> > Naresh, can you check if there are any errors on NFS server side?
 > 
-> * Made the code flow a bit more obvious, it was hard to tell which
->   part was run for n == 0 and which for n == 1
+> I have re-tested the failed tests on next-20190822 and all get pass
+> which is also
+> using same NFS server [1] [2].
+
+Thanks, that suggests some client side change between next-20190822 and next-20190823
+might introduced it.
+
 > 
-> Also it looks that for me the test that loads the eBPF program ends up
-> with EPERM randomly at about 10th iteration both as unpriviledged and
-> priviledged user, which is really strange.
+> > Maybe run NFS cthon against that server with client running next-20190822
+> > and next-20190823.
+> 
+> Thanks for the pointers.
+> I will setup and run NFS cthon on next-20190822 and next-20190823.
 
-There's one EPERM I can reproduce reliably with bpf_map test, which appears
-to originate from "bpf_charge_memlock".
+I'll try to reproduce too.
 
-There's a deferred component to map freeing, and unchange appears to be part of it:
-  bpf_map_release
-    bpf_map_put
-      INIT_WORK(&map->work, bpf_map_free_deferred);
-        (deferred) bpf_uncharge_memlock
-
-When I lower max locked memory, it's easy to hit:
-# ulimit  -l 128; ./bpf_map01 -i 100
-...
-bpf_map01.c:52: CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
-
-Can you try bumping max locked memory to some high value and check
-if that helps your case?
-
-Regards,
-Jan
-
+> 
+> >
+> > >
+> > > I do not see the kernel messages from this job anywhere at the job
+> > > pages, is it stored somewhere?
+> >
+> > It appears to be mixed in same log file:
+> >   https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190823/testrun/886412/log
+> 
+> For the record the following tests failed on linux -next-20190823 on x86_64
+> and i386. The filesystem is mounted on NFS and tests are using
+> locally mounted hard drive ( with -d /scratch ).
+> 
+> Juno-r2 device filesystem mounted on NFS and did not see these errors
+> and test getting pass on -next-20190823.
+> 
+> These failures are reproducible all time on next-20190823 kernel on x86_64
+> and i386 device with root mounted on NFS [3] [4] [5] [6].
+> 
+> I will git bisect to find out which is bad commit.
+> 
+> prot_hsymlinks: [3]
+> ------------------
+> useradd: failure while writing changes to /etc/passwd
+> useradd: /home/hsym was created, but could not be removed
+> userdel: user 'hsym' does not exist
+> prot_hsymlinks    1  TBROK  :  prot_hsymlinks.c:325: Failed to run
+> cmd: useradd hsym
+> prot_hsymlinks    2  TBROK  :  prot_hsymlinks.c:325: Remaining cases broken
+> prot_hsymlinks    3  TBROK  :  prot_hsymlinks.c:325: Failed to run
+> cmd: userdel -r hsym
+> prot_hsymlinks    4  TBROK  :  tst_sig.c:234: unexpected signal
+> SIGIOT/SIGABRT(6) received (pid = 8324).
+> 
+> logrotate01: [4]
+> -------------
+> compressing log with: /bin/gzip
+> error: error creating temp state file /var/lib/logrotate.status.tmp:
+> Input/output error
+> logrotate01    1  TFAIL  :  ltpapicmd.c:154: Test #1: logrotate
+> command exited with 1 return code. Output:
+> 
+> sem_unlink_2-2: [5]
+> ------------------
+> make[3]: Entering directory
+> '/opt/ltp/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink'
+> cat: write error: Input/output error
+> conformance/interfaces/sem_unlink/sem_unlink_2-2: execution: FAILED
+> 
+> syslog{01 ...10} [6]
+> -------------------
+> cp: failed to close '/etc/syslog.conf.ltpback': Input/output error
+> syslog01    1  TBROK  :  ltpapicmd.c:188: failed to backup /etc/syslog.conf
+> 
+> cp: failed to close '/etc/syslog.conf.ltpback': Input/output error
+> syslog02    1  TBROK  :  ltpapicmd.c:188: failed to backup /etc/syslog.conf
+> 
+> ...
+> cp: failed to close '/etc/syslog.conf.ltpback': Input/output error
+> syslog10    1  TBROK  :  ltpapicmd.c:188: failed to backup /etc/syslog.conf
+> 
+> ref:
+> PASS on 20190222:
+> [1] https://lkft.validation.linaro.org/scheduler/job/890446#L1232
+> [2] https://lkft.validation.linaro.org/scheduler/job/890454
+> 
+> FAILED on 20190823:
+> [3] https://lkft.validation.linaro.org/scheduler/job/890404#L1245
+> [4] https://lkft.validation.linaro.org/scheduler/job/886408#L2544
+> [5] https://lkft.validation.linaro.org/scheduler/job/886409#L3088
+> [6] https://lkft.validation.linaro.org/scheduler/job/890400#L1234
+> 
+>  - Naresh
+> 
