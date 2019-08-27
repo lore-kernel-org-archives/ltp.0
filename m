@@ -1,33 +1,28 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Aug 2019 11:41:55 +0200
-Subject: [LTP] [PATCH v3 LTP] Skip the test if "htop" is used.
-In-Reply-To: <20190814091545.147098-1-siliangx.yu@intel.com>
-References: <20190814091545.147098-1-siliangx.yu@intel.com>
-Message-ID: <20190827094154.GA32175@dell5510>
+Date: Tue, 27 Aug 2019 11:58:58 +0200
+Subject: [LTP] [PATCH v2] syscalls/statx04: use stx_attributes_mask
+ before test
+In-Reply-To: <20190827092520.GA28859@dell5510>
+References: <20190802115046.GB27727@rei>
+ <1566282838-2980-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190827092520.GA28859@dell5510>
+Message-ID: <20190827095858.GB28859@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> From: "Yu,Siliang" <siliangx.yu@intel.com>
+Hi Yang,
 
-> In clear linux os, "htop" is used instead "top", which doesn't support '-b'. Skip the test on clear linux.
-There is a bug report in Clear Linux OS [1]:
-original top program is named top2, maybe it'd make sense to test for it as well.
+also Cyril noted on Github issue #557 [1]:
+"However I'm not sure that we should do this since kernel devs declared this to be bug after all."
 
-> Signed-off-by: Yu,Siliang <siliangx.yu@intel.com>
-Acked-by: Petr Vorel <pvorel@suse.cz>
+So maybe we should wait before applying it.
 
->  .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh     | 4 ++++
-...
-
-> +if top -v | grep -q htop; then
-> +	tst_brkm TCONF "htop is used instead of top, Skip the test..."
-	tst_brkm TCONF "htop is used instead of top, skip the test"
-...
+@Cyril: can you please post link to discussion in LKML?
 
 Kind regards,
 Petr
 
-[1] https://github.com/clearlinux/distribution/issues/277#issuecomment-442340322
+[1] https://github.com/linux-test-project/ltp/issues/557#issuecomment-522593891
