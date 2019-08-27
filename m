@@ -1,102 +1,69 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 27 Aug 2019 09:20:03 -0400 (EDT)
-Subject: [LTP] Linux-next-20190823: x86_64/i386: prot_hsymlinks.c:325:
- Failed to run cmd: useradd hsym
-In-Reply-To: <294428f05e4dba1a6b10b8744cfa5da0637f84a4.camel@hammerspace.com>
-References: <CA+G9fYtN2tjHZtjtc8isdsD5hF76teeh2-pngUp+uj3WYdj7jA@mail.gmail.com>
- <CA+G9fYsHpNKFHr=ZukVvj+uMJDyHj2Xwb9bCfzPQyYzMjZ0rCw@mail.gmail.com>
- <203971593.8175020.1566830285708.JavaMail.zimbra@redhat.com>
- <fcd20866bb836d45b1e384dd68080c671bcde938.camel@hammerspace.com>
- <2039173876.8300255.1566861172742.JavaMail.zimbra@redhat.com>
- <566e862d9bfaf88cdde6d66f0f59033fe6225a22.camel@hammerspace.com>
- <866876796.8349197.1566901536625.JavaMail.zimbra@redhat.com>
- <294428f05e4dba1a6b10b8744cfa5da0637f84a4.camel@hammerspace.com>
-Message-ID: <241383129.8399897.1566912003912.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Aug 2019 16:42:00 +0200
+Subject: [LTP] [COMMITTED][PATCH] net/if-lib.sh: Use ip command as default
+Message-ID: <20190827144200.22794-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+instead of requiring to specify command with -c.
+It makes sense to have it as the default as ifconfig and route
+(alternative commands from net-tools) has been deprecated long time ago.
 
+This also fixes misleading TBROK message when -c was not set:
+"IF_CMD variable not defined"
 
------ Original Message -----
-> On Tue, 2019-08-27 at 06:25 -0400, Jan Stancek wrote:
-> > That theory is probably not correct for this case, since EIO I see
-> > appears
-> > to originate from write and nfs_writeback_result(). This function
-> > also
-> > produces message we saw in logs from Naresh.
-> > 
-> > I can't find where/how is resp->count updated on WRITE reply in
-> > NFSv2.
-> > Issue also goes away with patch below, though I can't speak about its
-> > correctness:
-> > 
-> > NFS version     Type    Test    Return code
-> > nfsvers=2       tcp     -b:base         0
-> > nfsvers=2       tcp     -g:general      0
-> > nfsvers=2       tcp     -s:special      0
-> > nfsvers=2       tcp     -l:lock         0
-> > Total time: 141
-> > 
-> > diff --git a/fs/nfs/nfs2xdr.c b/fs/nfs/nfs2xdr.c
-> > index cbc17a203248..4913c6da270b 100644
-> > --- a/fs/nfs/nfs2xdr.c
-> > +++ b/fs/nfs/nfs2xdr.c
-> > @@ -897,6 +897,16 @@ static int nfs2_xdr_dec_writeres(struct rpc_rqst
-> > *req, struct xdr_stream *xdr,
-> >                                  void *data)
-> >  {
-> >         struct nfs_pgio_res *result = data;
-> > +       struct rpc_task *rq_task  = req->rq_task;
-> > +
-> > +       if (rq_task) {
-> > +               struct nfs_pgio_args *args = rq_task-
-> > >tk_msg.rpc_argp;
-> > +
-> > +               if (args) {
-> > +                       result->count = args->count;
-> > +               }
-> > +       }
-> >  
-> >         /* All NFSv2 writes are "file sync" writes */
-> >         result->verf->committed = NFS_FILE_SYNC;
-> 
-> Thanks! I've moved the above to nfs_write_done() so that we do it only
-> on success (see
-> http://git.linux-nfs.org/?p=trondmy/linux-nfs.git;a=commitdiff;h=3ba5688da709dd0f7d917029c206bc1848a6ae74
-> )
++ move test variables to the top.
 
-Thanks, retested with 3ba5688da, all PASS:
+Fixes: d1291fda8 ("network/interface: Split tests to test only one command per test")
 
-NFS version     Type    Test    Return code
-nfsvers=2       tcp     -b:base         0
-nfsvers=2       tcp     -g:general      0
-nfsvers=2       tcp     -s:special      0
-nfsvers=2       tcp     -l:lock         0
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/stress/interface/if-lib.sh | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-NFS version     Type    Test    Return code
-nfsvers=3       tcp     -b:base         0
-nfsvers=3       tcp     -g:general      0
-nfsvers=3       tcp     -s:special      0
-nfsvers=3       tcp     -l:lock         0
-nfsvers=3       tcp6    -b:base         0
-nfsvers=3       tcp6    -g:general      0
-nfsvers=3       tcp6    -s:special      0
-nfsvers=3       tcp6    -l:lock         0
+diff --git a/testcases/network/stress/interface/if-lib.sh b/testcases/network/stress/interface/if-lib.sh
+index 9bf36e421..90030a146 100644
+--- a/testcases/network/stress/interface/if-lib.sh
++++ b/testcases/network/stress/interface/if-lib.sh
+@@ -3,6 +3,15 @@
+ # Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
+ # Author: Petr Vorel <pvorel@suse.cz>
+ 
++CMD="${CMD:-ip}"
++
++TST_SETUP="${TST_SETUP:-if_setup}"
++TST_TESTFUNC="test_body"
++TST_PARSE_ARGS="if_parse_args"
++TST_USAGE="if_usage"
++TST_OPTS="c:"
++. tst_net_stress.sh
++
+ if_usage()
+ {
+ 	echo "-c      Test command (ip, $IF_CMD)"
+@@ -17,7 +26,6 @@ if_parse_args()
+ 
+ if_setup()
+ {
+-	[ -n "$CMD" ] || tst_brk TBROK "IF_CMD variable not defined"
+ 	if [ "$CMD" != 'ip' -a "$CMD" != "$IF_CMD" ]; then
+ 		tst_brk TBROK "Missing or wrong -c parameter: '$CMD', use 'ip' or '$IF_CMD'"
+ 	fi
+@@ -33,11 +41,3 @@ if_cleanup_restore()
+ 	restore_ipaddr
+ 	restore_ipaddr rhost
+ }
+-
+-TST_SETUP="${TST_SETUP:-if_setup}"
+-TST_TESTFUNC="test_body"
+-TST_PARSE_ARGS="if_parse_args"
+-TST_USAGE="if_usage"
+-TST_OPTS="c:"
+-
+-. tst_net_stress.sh
+-- 
+2.22.0
 
-NFS version     Type    Test    Return code
-nfsvers=4       tcp     -b:base         0
-nfsvers=4       tcp     -g:general      0
-nfsvers=4       tcp     -s:special      0
-nfsvers=4       tcp     -l:lock         0
-nfsvers=4       tcp6    -b:base         0
-nfsvers=4       tcp6    -g:general      0
-nfsvers=4       tcp6    -s:special      0
-nfsvers=4       tcp6    -l:lock         0
-
-Feel free to add also:
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Tested-by: Jan Stancek <jstancek@redhat.com>
