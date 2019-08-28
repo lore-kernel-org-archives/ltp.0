@@ -1,51 +1,30 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 28 Aug 2019 18:25:30 +0800
-Subject: [LTP] [PATCH 1/2] runtest/syscalls: add set_mempolicy*
-In-Reply-To: <1566987255-3010-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1566987255-3010-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5D66569A.6030909@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 28 Aug 2019 18:43:16 +0800
+Subject: [LTP] [PATCH v3 1/2] capability: Introduce capability API
+In-Reply-To: <20190823094621.21747-1-rpalethorpe@suse.com>
+References: <20190823094621.21747-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dVf66_sKT4iBSEOXg+yFhpL7mAp4Uar5OT6vmbiMa0ZQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> The capability will be dropped in between 'setup' and 'run'.
 
-This patch set looks good to me.
-Just one comment, migrate_pages should be added before move_pages in 
-alphabetical order.
+I'm not sure to put this cap function behind 'setup' is a better choice.
 
-Reviewed-by: Xiao Yang <ice_yangxiao@163.com>
+Although it provides more capability in different test phase and makes
+test flexible, that also involves more complexity for LTP users,
+sometimes test needs to spawn children in the 'setup' and do more
+testing in next 'run' phase, which obviously makes us have to consider
+more in this case writing.
 
-Best Regards,
-Xiao Yang
-On 2019/08/28 18:14, Yang Xu wrote:
-> Since commit 55ee8a5ad ("syscalls: Add set_mempolicy numa tests"),
-> these cases have been added into runtests/numa, but forget to add it
-> in runtest/syscalls.
->
-> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> ---
->   runtest/syscalls | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index c41ba2a0d..1694ef147 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1177,6 +1177,11 @@ setitimer01 setitimer01
->   setitimer02 setitimer02
->   setitimer03 setitimer03
->
-> +set_mempolicy01 set_mempolicy01
-> +set_mempolicy02 set_mempolicy02
-> +set_mempolicy03 set_mempolicy03
-> +set_mempolicy04 set_mempolicy04
-> +
->   setns01 setns01
->   setns02 setns02
->
+Anyway, the patchset looks good. We can do some improvements in real
+situations then.
 
+    Acked-by: Li Wang <liwang@redhat.com>
 
-
+-- 
+Regards,
+Li Wang
