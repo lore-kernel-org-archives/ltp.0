@@ -1,72 +1,89 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 27 Aug 2019 15:26:19 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls: rt_sigwaitinfo01: Fix failure for MIPS
- arches
-In-Reply-To: <1566544121-147769-1-git-send-email-zhe.he@windriver.com>
-References: <1566544121-147769-1-git-send-email-zhe.he@windriver.com>
-Message-ID: <4200333.8516580.1566933979370.JavaMail.zimbra@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 28 Aug 2019 11:56:37 +0800
+Subject: [LTP] [PATCH v2] syscalls/statx04: use stx_attributes_mask
+ before test
+In-Reply-To: <20190827092520.GA28859@dell5510>
+References: <20190802115046.GB27727@rei>
+ <1566282838-2980-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190827092520.GA28859@dell5510>
+Message-ID: <5D65FB75.6070800@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+on 2019/08/27 17:25, Petr Vorel wrote:
+
+> Hi Yang,
+>
+>> stx_attributes_mask shows what's supported in stx_attributes.
+>> we should check four attrbutes whether supports on tested filesystem
+> typo attrbutes
+>> and only test supported flags on tested filesystem.
+> I'd change it to
+> Set supp_{append,compr,immutable,nodump} attributes only on filesystems which
+> actually support them.
+>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+> Reviewed-by: Petr Vorel<pvorel@suse.cz>
+Hi Petr
+
+Thanks for your review.
+
+>> ---
+>>   testcases/kernel/syscalls/statx/statx04.c | 124 ++++++++++++++++------
+> ...
+>
+>> -	attr |= FS_COMPR_FL | FS_APPEND_FL | FS_IMMUTABLE_FL | FS_NODUMP_FL;
+>> +	if (supp_compr)
+>> +		attr |= FS_COMPR_FL;
+>> +	if (supp_append)
+>> +		attr |= FS_APPEND_FL;
+>> +	if (supp_immutable)
+>> +		attr |= FS_IMMUTABLE_FL;
+>> +	if (supp_nodump)
+>> +		attr |= FS_NODUMP_FL;
+>>   	ret = ioctl(fd, FS_IOC_SETFLAGS,&attr);
+>>   	if (ret<  0) {
+>> @@ -149,12 +176,43 @@ static void caid_flags_setup(void)
+> Current code...
+> 	if (supp_append)
+> 		attr |= FS_APPEND_FL;
+> 	if (supp_compr)
+> 		attr |= FS_COMPR_FL;
+> 	if (supp_immutable)
+> 		attr |= FS_IMMUTABLE_FL;
+> 	if (supp_nodump)
+> 		attr |= FS_NODUMP_FL;
+>
+> 	ret = ioctl(fd, FS_IOC_SETFLAGS,&attr);
+> 	if (ret<  0) {
+> I wonder, if this check is still needed. Probably it's still useful to have
+> sanity check, but "Flags not supported" has been caught
+> by supp_{append,compr,immutable,nodump} variables.
+It seems this check is redundant. In principle, if attributes_mask support these flags, the attribute should also
+support them. Even though xfs filesystem missed attributes_mask after[1] and doesn't add it until [2]. But we don't
+have the situation of having attribute_mask but not having attribute. So I think we can remove it.
+
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5f955f26f3d42d
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1b9598c8fb9965
+
+Thanks
+Yang Xu
+
+> 		if (errno == EOPNOTSUPP)
+> 			tst_brk(TCONF, "Flags not supported");
+> 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_SETFLAGS, %i)", fd, attr);
+> 	}
+> ...
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
 
 
------ Original Message -----
-> From: He Zhe <zhe.he@windriver.com>
-> 
-> rt_sigtimedwait01 fails as follow on MIPS arches
-> rt_sigtimedwait01    1  TFAIL  :  .../sigwaitinfo01.c:58: test_empty_set
-> (.../sigwaitinfo01.c: 148): Unexpected failure:
-> TEST_ERRNO=EINVAL(22): Invalid argument
-> 
-> As this case purposely bypasses glibc, it should align with the size of
-> kernel
-> definition of sigset_t which is different from other arches.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/mips/include/uapi/asm/signal.h#n15
-> 
-> This patch adds specific case for MIPS.
-> 
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
->  testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> index 5a32ce1..5c2fa99 100644
-> --- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> @@ -128,9 +128,16 @@ static int my_sigtimedwait(const sigset_t * set,
-> siginfo_t * info,
->  static int my_rt_sigtimedwait(const sigset_t * set, siginfo_t * info,
->  			      struct timespec *timeout)
->  {
-> -
-> -	/* The last argument is (number_of_signals)/(bits_per_byte), which are 64
-> and 8, resp. */
-> -	return ltp_syscall(__NR_rt_sigtimedwait, set, info, timeout, 8);
-> +	/* The last argument is (number_of_signals)/(bits_per_byte), which are 64
-> and 8, resp,
-> +	 * except for MIPS which are 128 and 8, resp.
-> +	 */
-> +	return ltp_syscall(__NR_rt_sigtimedwait, set, info, timeout,
-> +#ifdef __mips__
-> +		16
-> +#else
-> +		8
-> +#endif
 
-Hi,
-
-looking at kernel SYSCALL_DEFINE4(rt_sigtimedwait,..), the size is
-used in this check:
-        if (sigsetsize != sizeof(sigset_t))                                                                                                                   
-                return -EINVAL; 
-
-So I'm wondering if need to have an absolute value here, and if we can't
-replace it with sizeof(sigset_t) or _NSIG / 8?
-
-Regards,
-Jan
