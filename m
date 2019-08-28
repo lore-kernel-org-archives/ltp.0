@@ -1,89 +1,87 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 28 Aug 2019 11:56:37 +0800
-Subject: [LTP] [PATCH v2] syscalls/statx04: use stx_attributes_mask
- before test
-In-Reply-To: <20190827092520.GA28859@dell5510>
-References: <20190802115046.GB27727@rei>
- <1566282838-2980-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190827092520.GA28859@dell5510>
-Message-ID: <5D65FB75.6070800@cn.fujitsu.com>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Wed, 28 Aug 2019 09:26:23 +0200
+Subject: [LTP] [PATCH v4 0/4] Basic eBPF tests
+In-Reply-To: <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
+References: <20190826111024.19053-1-chrubis@suse.cz>
+ <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
+Message-ID: <1566977183.6539.10.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/27 17:25, Petr Vorel wrote:
-
-> Hi Yang,
->
->> stx_attributes_mask shows what's supported in stx_attributes.
->> we should check four attrbutes whether supports on tested filesystem
-> typo attrbutes
->> and only test supported flags on tested filesystem.
-> I'd change it to
-> Set supp_{append,compr,immutable,nodump} attributes only on filesystems which
-> actually support them.
->
->> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> Reviewed-by: Petr Vorel<pvorel@suse.cz>
-Hi Petr
-
-Thanks for your review.
-
->> ---
->>   testcases/kernel/syscalls/statx/statx04.c | 124 ++++++++++++++++------
+On Mon, 2019-08-26 at 10:29 -0400, Jan Stancek wrote:
+> 
+> ----- Original Message -----
+> > I've ended up playing with the patchset and fixed a few loose ends
+> > on
+> > the map test and as I had the code at hand I decided to send v4
+> > instead
+> > of pointing out the mistakes in a review.
+> > 
+> > There were numerous small changes for the map test:
+> > 
+> > * Make sure the key buffer is sized exactly for the content
+> > 
+> > * Initialized the array/hash element value in test setup
+> > 
+> > * Made the code flow a bit more obvious, it was hard to tell which
+> >   part was run for n == 0 and which for n == 1
+> > 
+> > Also it looks that for me the test that loads the eBPF program ends
+> > up
+> > with EPERM randomly at about 10th iteration both as unpriviledged
+> > and
+> > priviledged user, which is really strange.
+> 
+> There's one EPERM I can reproduce reliably with bpf_map test, which
+> appears
+> to originate from "bpf_charge_memlock".
+> 
+> There's a deferred component to map freeing, and unchange appears to
+> be part of it:
+>   bpf_map_release
+>     bpf_map_put
+>       INIT_WORK(&map->work, bpf_map_free_deferred);
+>         (deferred) bpf_uncharge_memlock
+> 
+> When I lower max locked memory, it's easy to hit:
+> # ulimit  -l 128; ./bpf_map01 -i 100
 > ...
->
->> -	attr |= FS_COMPR_FL | FS_APPEND_FL | FS_IMMUTABLE_FL | FS_NODUMP_FL;
->> +	if (supp_compr)
->> +		attr |= FS_COMPR_FL;
->> +	if (supp_append)
->> +		attr |= FS_APPEND_FL;
->> +	if (supp_immutable)
->> +		attr |= FS_IMMUTABLE_FL;
->> +	if (supp_nodump)
->> +		attr |= FS_NODUMP_FL;
->>   	ret = ioctl(fd, FS_IOC_SETFLAGS,&attr);
->>   	if (ret<  0) {
->> @@ -149,12 +176,43 @@ static void caid_flags_setup(void)
-> Current code...
-> 	if (supp_append)
-> 		attr |= FS_APPEND_FL;
-> 	if (supp_compr)
-> 		attr |= FS_COMPR_FL;
-> 	if (supp_immutable)
-> 		attr |= FS_IMMUTABLE_FL;
-> 	if (supp_nodump)
-> 		attr |= FS_NODUMP_FL;
->
-> 	ret = ioctl(fd, FS_IOC_SETFLAGS,&attr);
-> 	if (ret<  0) {
-> I wonder, if this check is still needed. Probably it's still useful to have
-> sanity check, but "Flags not supported" has been caught
-> by supp_{append,compr,immutable,nodump} variables.
-It seems this check is redundant. In principle, if attributes_mask support these flags, the attribute should also
-support them. Even though xfs filesystem missed attributes_mask after[1] and doesn't add it until [2]. But we don't
-have the situation of having attribute_mask but not having attribute. So I think we can remove it.
+> bpf_map01.c:52: CONF: bpf() requires CAP_SYS_ADMIN on this system:
+> EPERM
+> 
+> Can you try bumping max locked memory to some high value and check
+> if that helps your case?
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5f955f26f3d42d
-[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1b9598c8fb9965
+# for i in 64 128 256 1024; do
+    echo $i; 
+    ulimit -l $i;
+    ./bpf_prog01 -i 100 |& grep -P 'passed|CONF'; 
+done
 
-Thanks
-Yang Xu
+64
+CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
+passed   16
 
-> 		if (errno == EOPNOTSUPP)
-> 			tst_brk(TCONF, "Flags not supported");
-> 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_SETFLAGS, %i)", fd, attr);
-> 	}
-> ...
->
-> Kind regards,
-> Petr
->
->
-> .
->
+128
+CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
+passed   16
+
+256
+CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
+passed   32
+
+1024
+CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
+passed   192
 
 
+Which produce almost the same results.
+Same approach with `bpf_map01` differs a lot. Sometimes all pass,
+sometimes none.
+
+
+/Clemens
 
