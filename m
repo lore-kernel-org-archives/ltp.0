@@ -1,33 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 29 Aug 2019 21:21:22 +0200
-Subject: [LTP] [PATCH] tst_net.sh: Fix root detection on netns on new
- shell API
-In-Reply-To: <888e8f74-278c-ae3f-c8c5-3b8790f634d3@oracle.com>
-References: <20190826141101.10144-1-pvorel@suse.cz>
- <888e8f74-278c-ae3f-c8c5-3b8790f634d3@oracle.com>
-Message-ID: <20190829192120.GA14614@dell5510>
+Date: Thu, 29 Aug 2019 21:25:18 +0200
+Subject: [LTP] [PATCH 1/2] tst_net.sh: Move variable and link setup to
+ separate function
+In-Reply-To: <20190829190709.30834-1-pvorel@suse.cz>
+References: <20190829190709.30834-1-pvorel@suse.cz>
+Message-ID: <20190829192518.GA1197@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi,
 
-> >  init_ltp_netspace()
-> >  {
-> >  	tst_test_cmds ip
-> > -	tst_require_root_
-> > +	[ -z "$TST_USE_LEGACY_API" ] && _tst_require_root || tst_require_root
+> When using LTP with netns ("Single Host Configuration"),
+> init_ltp_netspace before running test which performs checking for
+> TST_NEEDS_ROOT=1, therefore adding it is not enough.
+> It fails on adding netns:
 
-> Can we fix tst_require_root_() instead?
-I'll do.
-I wanted to use API variable than call internal function. It's not a big issue
-and this function is called in _tst_require_root anyway.
+> RTNETLINK answers: Operation not permitted
+> sctp01 1 TBROK: ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2 failed
 
-NOTE: I've posted a patch which move variable and link setup to separate
-function, but I'm going to reject it myself. It's not an improvement and does
-not solve this solution. Sorry for the noise.
+> NOTE: tst_restore_ipaddr is called before running tests only on netns,
+> in init_ltp_netspace, therefore tst_require_root_ as a check is enough.
+
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+Rejecting it myself, as it's not an improvement.
 
 Kind regards,
 Petr
