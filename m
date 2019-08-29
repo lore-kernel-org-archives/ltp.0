@@ -1,35 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 29 Aug 2019 23:18:39 +0200
-Subject: [LTP] [PATCH v3 2/2] capability: library tests
-In-Reply-To: <20190823094621.21747-2-rpalethorpe@suse.com>
-References: <20190823094621.21747-1-rpalethorpe@suse.com>
- <20190823094621.21747-2-rpalethorpe@suse.com>
-Message-ID: <20190829211839.GD5711@dell5510>
+Date: Fri, 30 Aug 2019 00:50:29 +0200
+Subject: [LTP] [COMMITTED][PATCH] tst_test.sh: Always return 0 from
+ _tst_require_root()
+Message-ID: <20190829225029.29506-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+8722680b6 ("tst_net.sh: Use _tst_require_root instead of TST_NEEDS_ROOT=1")
+is broken _tst_require_root() returns non zero value therefore
+tst_require_root() is called as well:
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+/opt/ltp/testcases/bin/if4-addr-change.sh: 102: /opt/ltp/testcases/bin/tst_net.sh: tst_require_root: not found
 
-> +++ b/lib/newlib_tests/tst_capability01.c
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (c) 2019 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * The user or file requires CAP_NET_RAW for this test to work.
-> + * e.g use "$ setcap cap_net_raw=pei tst_capability"
+While code should not expect functions returning always zero, in this
+case it's an unwanted side effect, therefore fix it by wrapping
+_tst_require_root() code with if clause.
 
-It'd be nice if our build system supported setting capabilities during make
-install. It's probably not worth of doing just for single LTP library test,
-but I still plan to implement 'make check' for lib/newlib_tests/ content,
-so this will have to be handled manually.
+Fixes: e7b804df6 ("shell: Add tst_security.sh helper")
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
+
+sorry for this old bug and for overlooking this error in tst_net.sh
+change.
 
 Kind regards,
 Petr
+
+ testcases/lib/tst_test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index f779cc471..e0b24c6b9 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -391,7 +391,9 @@ _tst_setup_timer()
+ 
+ _tst_require_root()
+ {
+-	[ "$(id -ru)" != 0 ] && tst_brk TCONF "Must be super/root for this test!"
++	if [ "$(id -ru)" != 0 ]; then
++		tst_brk TCONF "Must be super/root for this test!"
++	fi
+ }
+ 
+ tst_run()
+-- 
+2.22.1
+
