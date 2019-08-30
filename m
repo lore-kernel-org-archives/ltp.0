@@ -1,11 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 30 Aug 2019 12:54:59 +0200
-Subject: [LTP] [PATCH 2/2] runtest/numa: add migrate_pages*
-In-Reply-To: <5D687F5A.80002@cn.fujitsu.com>
+Date: Fri, 30 Aug 2019 12:57:29 +0200
+Subject: [LTP] [PATCH 1/2] runtest/syscalls: add set_mempolicy*
+In-Reply-To: <5D688449.3080906@cn.fujitsu.com>
 References: <1566987255-3010-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1566987255-3010-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190829204149.GB5711@dell5510> <5D687F5A.80002@cn.fujitsu.com>
-Message-ID: <20190830105459.GB9330@dell5510>
+ <20190829203826.GA5711@dell5510> <5D688449.3080906@cn.fujitsu.com>
+Message-ID: <20190830105729.GC9330@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,21 +13,47 @@ To: ltp@lists.linux.it
 
 Hi Yang,
 
-> On 2019/08/30 4:41, Petr Vorel wrote:
-> > Hi Xu,
+> On 2019/08/30 4:38, Petr Vorel wrote:
+> > Hi,
 
-> > > Since migrate_pages must depend on numa, add it into
-> > > runtest/numa.
+> > > Since commit 55ee8a5ad ("syscalls: Add set_mempolicy numa tests"),
+> > > these cases have been added into runtests/numa, but forget to add it
+> > > in runtest/syscalls.
 > > > Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> > Thanks for the patch, merged.
+> > Reviewed-by: Petr Vorel<pvorel@suse.cz>
+> > > ---
+> > >   runtest/syscalls | 5 +++++
+> > >   1 file changed, 5 insertions(+)
+> > > diff --git a/runtest/syscalls b/runtest/syscalls
+> > > index c41ba2a0d..1694ef147 100644
+> > > --- a/runtest/syscalls
+> > > +++ b/runtest/syscalls
+> > > @@ -1177,6 +1177,11 @@ setitimer01 setitimer01
+> > >   setitimer02 setitimer02
+> > >   setitimer03 setitimer03
+> > > +set_mempolicy01 set_mempolicy01
+> > > +set_mempolicy02 set_mempolicy02
+> > > +set_mempolicy03 set_mempolicy03
+> > > +set_mempolicy04 set_mempolicy04
+> > > +
+> > >   setns01 setns01
+> > >   setns02 setns02
+> > Wouldn't be better to move all NUMA tests out of syscalls?
+> > Syscalls are big already.
 > Hi Petr,
 
-> Why don't sort numa tests alphabetically as my replied?
-I'm sorry. I overlooked it as you put your commend to 1st commit
-(this is a second commit). Feel free to fix it or I'll do it later today.
+> all NUMA tests actually verify the functionality of syscalls(move_pages(2),
+> set_mempolicy(2), etc)
+> so I think that they can be added into syscalls group.
 
-BTW I suggest also sort alphabetically Numa-testcases numa01.sh
-and rename it to numa_testcases numa01.sh
+> PS: If someone want to run syscalls from LTP as many as possible, they just
+> need to run syscalls group directly.
+OK, ack.
+
+PS: I'd prefer syscalls to be just includes of other runtests (otherwise we keep
+forgetting to add testcases), but that won't happen until docparse & new runner
+are released.
+
 
 Kind regards,
 Petr
