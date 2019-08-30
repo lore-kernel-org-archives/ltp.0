@@ -1,67 +1,64 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 30 Aug 2019 17:50:49 +0800
-Subject: [LTP] [PATCH 1/2] runtest/syscalls: add set_mempolicy*
-In-Reply-To: <5D688449.3080906@cn.fujitsu.com>
-References: <1566987255-3010-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190829203826.GA5711@dell5510> <5D688449.3080906@cn.fujitsu.com>
-Message-ID: <5D68F179.3000402@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 30 Aug 2019 12:46:10 +0200
+Subject: [LTP] [PATCH] memcg_stress_test.sh: Respect LTP_TIMEOUT_MUL set
+ by user
+In-Reply-To: <9e518589-9c98-1513-2c19-bae0268b8a81@arm.com>
+References: <20190829181146.20261-1-pvorel@suse.cz>
+ <CAEemH2dzn92GYwiw2tP101wNkYfM30rfL=cmPU+B1iH-8UWoDw@mail.gmail.com>
+ <20190830085036.GA27453@dell5510>
+ <9e518589-9c98-1513-2c19-bae0268b8a81@arm.com>
+Message-ID: <20190830104609.GA9330@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/08/30 10:04, Xiao Yang wrote:
+Hi Cristian,
 
-> On 2019/08/30 4:38, Petr Vorel wrote:
->> Hi,
->>> Since commit 55ee8a5ad ("syscalls: Add set_mempolicy numa tests"),
->>> these cases have been added into runtests/numa, but forget to add it
->>> in runtest/syscalls.
->>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->> Reviewed-by: Petr Vorel<pvorel@suse.cz>
->>> ---
->>>    runtest/syscalls | 5 +++++
->>>    1 file changed, 5 insertions(+)
->>> diff --git a/runtest/syscalls b/runtest/syscalls
->>> index c41ba2a0d..1694ef147 100644
->>> --- a/runtest/syscalls
->>> +++ b/runtest/syscalls
->>> @@ -1177,6 +1177,11 @@ setitimer01 setitimer01
->>>    setitimer02 setitimer02
->>>    setitimer03 setitimer03
->>> +set_mempolicy01 set_mempolicy01
->>> +set_mempolicy02 set_mempolicy02
->>> +set_mempolicy03 set_mempolicy03
->>> +set_mempolicy04 set_mempolicy04
->>> +
->>>    setns01 setns01
->>>    setns02 setns02
->> Wouldn't be better to move all NUMA tests out of syscalls?
->> Syscalls are big already.
-> Hi Petr,
-> all NUMA tests actually verify the functionality of
-> syscalls(move_pages(2), set_mempolicy(2), etc)
-> so I think that they can be added into syscalls group.
-> PS: If someone want to run syscalls from LTP as many as possible, they
-> just need to run syscalls group directly.
-+1 , set_mempolicy syscall should belong to numa and syscall group.
+> On 30/08/2019 09:50, Petr Vorel wrote:
+> > Hi Li,
 
-> Best Regards,
-> Xiao Yang
->> BTW I'm looking forward to the new testrunner [1][2], which also solve problem
->> of runtest files :)
-Hi Petr
+> > Good point. Something like this could do it:
+> > -LTP_TIMEOUT_MUL=7
+> > +min_timeout=7
+> > +[ -z "$LTP_TIMEOUT_MUL" -o "$LTP_TIMEOUT_MUL" -lt $min_timeout ] && LTP_TIMEOUT_MUL=$min_timeout
 
-For new testrunner,  I think it is a good improvement to save test time by parallel running case.
-I am also looking forward to it.
-
->> Kind regards,
->> Petr
->> [1] https://people.kernel.org/metan/towards-parallel-kernel-test-runs
->> [2] https://github.com/metan-ucw/ltp/tree/master/docparse
->> .
-> .
+> > Unless we test only integers:
+> > +[ is_int "$LTP_TIMEOUT_MUL" -o "$LTP_TIMEOUT_MUL" -lt $min_timeout ] && LTP_TIMEOUT_MUL=$min_timeout
 
 
+> I would certainly introduce a check on the minimum allowed test-timeout and just stick to integers.
+> (is it really needed to worry for float multipliers ?)
+Not sure, but it'd be good to have it same for C and for shell. Otherwise
+working variable for C would fail on shell.
 
+> I also wonder if it is worth somehow put this minimum-enforce mechanism inside the framework itself
+> instead that hardcoding it in this specific test (unless you already mean to do it this way...
+> and I misunderstood)
+Yes, I was thinking about it as well.
+LTP_TIMEOUT_MUL should be reserved for users, tests should use LTP_TIMEOUT_MUL_MIN,
+check for LTP_TIMEOUT_MUL being higher than LTP_TIMEOUT_MUL_MIN would be in
+_tst_setup_timer(). Similar mechanism I introduced in 9d6a960d9 (VIRT_PERF_THRESHOLD_MIN).
+
+I wonder if it'd be useful to have some functionality in C (ltp_timeout_mul_min
+as a struct tst_test, default 1).
+
+> So that, roughly, in the test
+
+> LTP_TIMEOUT_MUL_MIN=7
+> LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-7}
+
+> and somewhere in framework test initialization you enforce it (maybe with a warning for the user when overriding its setup)
+
+> [ -z "$LTP_TIMEOUT_MUL" -o "$LTP_TIMEOUT_MUL" -lt $LTP_TIMEOUT_MUL_MIN ] && LTP_TIMEOUT_MUL=$LTP_TIMEOUT_MUL_MIN
++1. Feel free to send a patch.
+
+> (but my LTP framework memories are a bit blurred now...so feel free to ignore if it is not feasible or practical)
+
+> Thanks
+
+> Cristian
+
+Kind regards,
+Petr
