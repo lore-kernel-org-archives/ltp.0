@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 2 Sep 2019 16:05:32 +0200
-Subject: [LTP] [PATCH v4 2/4] BPF: Sanity check creating and updating
- maps
-In-Reply-To: <456316863.8154593.1566823938723.JavaMail.zimbra@redhat.com>
+Date: Mon, 2 Sep 2019 16:55:24 +0200
+Subject: [LTP] [PATCH v4 0/4] Basic eBPF tests
+In-Reply-To: <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
 References: <20190826111024.19053-1-chrubis@suse.cz>
- <20190826111024.19053-3-chrubis@suse.cz>
- <456316863.8154593.1566823938723.JavaMail.zimbra@redhat.com>
-Message-ID: <20190902140531.GA10860@rei.lan>
+ <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
+Message-ID: <20190902145524.GB10860@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,29 +12,26 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Small nit (maybe personal preference), I'd rather make this check for
-> map_types.attr, as opposed to test number / some position in array.
-
-Sounds good.
-
-> > +	case 0:
-> > +		if (TST_RET != -1 || TST_ERR != ENOENT) {
-> > +			tst_res(TFAIL | TTERRNO,
-> > +				"Empty hash map lookup should fail with ENOENT");
-> > +		} else {
-> > +			tst_res(TPASS | TTERRNO, "Empty hash map lookup");
-> > +		}
-> > +	break;
-> > +	case 1:
-> > +		if (TST_RET != -1) {
-> > +			for (i = 0;;) {
-> > +				if (val_get[i] != 0) {
-> > +					tst_res(TFAIL,
-> > +						"Preallocated array map val not zero");
+> There's one EPERM I can reproduce reliably with bpf_map test, which appears
+> to originate from "bpf_charge_memlock".
 > 
-> If we hit this TFAIL, will the loop terminate?
+> There's a deferred component to map freeing, and unchange appears to be part of it:
+>   bpf_map_release
+>     bpf_map_put
+>       INIT_WORK(&map->work, bpf_map_free_deferred);
+>         (deferred) bpf_uncharge_memlock
+> 
+> When I lower max locked memory, it's easy to hit:
+> # ulimit  -l 128; ./bpf_map01 -i 100
+> ...
+> bpf_map01.c:52: CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
+> 
+> Can you try bumping max locked memory to some high value and check
+> if that helps your case?
 
-My bad, I will change this to use proper for() loop.
+Looks like this was the case, with high enough value the tests works
+without a problem. The question is if and/or what should be done about
+this...
 
 -- 
 Cyril Hrubis
