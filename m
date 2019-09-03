@@ -1,231 +1,268 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  3 Sep 2019 16:16:06 +0200
-Subject: [LTP] [PATCH v4 3/7] tst_net.sh: Add (mostly) HOST_ID related
- options to tst_ipaddr_un
+Date: Tue,  3 Sep 2019 16:16:07 +0200
+Subject: [LTP] [PATCH v4 4/7] net: Add tst_ipaddr_un.sh test
 In-Reply-To: <20190903141610.28887-1-pvorel@suse.cz>
 References: <20190903141610.28887-1-pvorel@suse.cz>
-Message-ID: <20190903141610.28887-4-pvorel@suse.cz>
+Message-ID: <20190903141610.28887-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These options are important for looping over max HOST_ID (255 resp.
-0xffff for IPv6), when different than the default range.
-
-Added -b, -h -l, -m, -n and -p options:
--b: use also *broadcast* address (HOST_ID: IPv4: 255, IPv6: 0xffff),
-equivalent of -m 255 or -m 65535, cannot be combined with -f, -h, -l, -m, -n
-
--c COUNTER: integer value for counting HOST_ID and NET_ID (default: 1)
-
--f: use *full* address range (<0,255> resp. <0,65535>), cannot be combined
-with -b, -h, -l, -m, -n
-
--h: use only *host* address range (<1,254> resp. <1,65534>), default for
-counter mode, cannot be combined with -b, -f, -l, -m, -n
-
--l MIN_HOST_ID: specify minimal allowed HOST_ID allowed minimal HOST_ID,
-cannot be combined with -b, -f, -h, -n
-
--m MAX_HOST_ID: specify max allowed HOST_ID (default NET_ID -1), cannot be
-combined with -b, -f, -h, -n
-
--n: use also *network* address (HOST_ID: 0), equivalent of -l 0, cannot be
-combined with -b, -f, -h, -l, -m
-
--p: print also prefix
-
-NOTE: The default range for host_id & net_id changed from <0, 254 resp. 65534> to
-<0, 254 resp. 65535>: broadcast bit was added.
-For backwards compatibility -n must be used.
-But non of the code used host_id & net_id in loop => no change needed.
+Testing tst_ipaddr_un() function from network shell API (tst_net.sh).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Hi,
+ lib/newlib_tests/net/tst_ipaddr_un.sh | 239 ++++++++++++++++++++++++++
+ 1 file changed, 239 insertions(+)
+ create mode 100755 lib/newlib_tests/net/tst_ipaddr_un.sh
 
-changes make API a bit complex, but affect only HOST_ID, but sometimes
-NET_ID changes are needed (route-change-if.sh). Maybe simple
-[ -n MIN_NET_ID,MAX_NET_ID ] [ -h MIN_HOST_ID,MAX_HOST_ID ] would be
-better. Comments are welcome.
-
-Note: sometimes we call prefix as mask in the code.
-
-Kind regards,
-Petr
-
- testcases/lib/tst_net.sh | 123 +++++++++++++++++++++++++++++++++------
- 1 file changed, 105 insertions(+), 18 deletions(-)
-
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index a4183e013..baeac6e10 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -355,48 +355,135 @@ tst_ipaddr()
- 	fi
- }
- 
--# Get IP address of unused network, specified either by type and counter
-+# Get IP address of unused network, specified either counter and type
- # or by net and host.
--# tst_ipaddr_un [-cCOUNTER] [-p] [TYPE]
--# tst_ipaddr_un [-p] NET_ID [HOST_ID]
-+# counter mode:
-+# tst_ipaddr_un [-b|-f|-n|[-l MIN_HOST_ID][-m MAX_HOST_ID]] [-p] [-c COUNTER] [TYPE]
-+# net & host mode:
-+# tst_ipaddr_un [-b|-f|-n|[-l MIN_HOST_ID][-m MAX_HOST_ID]] [-p] NET_ID [HOST_ID]
- #
- # TYPE: { lhost | rhost } (default: 'lhost')
--# NET_ID: integer or hex value of net (IPv4: 3rd octet, IPv6: 3rd hextet)
--# HOST_ID: integer or hex value of host (IPv4: 4th octet, IPv6: the last
--# hextet, default: 0)
-+# NET_ID: integer or hex value of net (IPv4: 3rd octet <0,255>, IPv6: 3rd
-+# hextet <0,65535>)
-+# HOST_ID: integer or hex value of host (IPv4: 4th octet <0,255>, IPv6: the
-+# last hextet <0, 65535>, default: 0)
-+#
-+# RANGES for HOST_ID
-+#       |<-------------- -f -------------->|
-+#       |  |<----------- -b -------------->|
-+#       |<-------------- -n -------->|     |
-+#       |  |<----------- -h -------->|     |
-+#       |  |    |<- -l L -m M ->|    |     |
-+#       |  |    |               |    |     |
-+# IPv4: 0  1    L               M   254   255
-+# IPv6: 0  1    L               M  65534 65535
- #
- # OPTIONS
-+# -b: use also *broadcast* address (HOST_ID: IPv4: 255, IPv6: 0xffff),
-+# equivalent of -m 255 or -m 65535, cannot be combined with -f, -h, -l, -m, -n
-+#
- # -c COUNTER: integer value for counting HOST_ID and NET_ID (default: 1)
-+#
-+# -f: use *full* address range (<0,255> resp. <0,65535>), cannot be combined
-+# with -b, -h, -l, -m, -n
-+#
-+# -h: use only *host* address range (<1,254> resp. <1,65534>), default for
-+# counter mode, cannot be combined with -b, -f, -l, -m, -n
-+#
-+# -l MIN_HOST_ID: specify minimal allowed HOST_ID allowed minimal HOST_ID,
-+# cannot be combined with -b, -f, -h, -n
-+#
-+# -m MAX_HOST_ID: specify max allowed HOST_ID (default NET_ID -1), cannot be
-+# combined with -b, -f, -h, -n
-+#
-+# -n: use also *network* address (HOST_ID: 0), equivalent of -l 0, cannot be
-+# combined with -b, -f, -h, -l, -m
-+#
- # -p: print also prefix
- tst_ipaddr_un()
- {
--	local counter host_id max_host_id max_net_id net_id prefix tmp type
--	local OPTIND
-+	local counter host_id is_counter max_host_id min_host_id max_net_id net_id prefix tmp type
-+	local b_arg f_arg h_arg lm_arg n_arg
- 
--	while getopts "c:p" opt; do
-+	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
+diff --git a/lib/newlib_tests/net/tst_ipaddr_un.sh b/lib/newlib_tests/net/tst_ipaddr_un.sh
+new file mode 100755
+index 000000000..3570bd26f
+--- /dev/null
++++ b/lib/newlib_tests/net/tst_ipaddr_un.sh
+@@ -0,0 +1,239 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
 +
-+	local OPTIND
-+	while getopts "bc:fhl:m:np" opt; do
- 		case $opt in
-+			b)
-+				[ "$f_arg" -o "$h_arg" -o "$lm_arg" -o "$n_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -b cannot be combined with -f, -h, -l, -m, -n"
-+				max_host_id=$max_net_id
-+				b_arg=1
-+				;;
- 			c) counter="$OPTARG";;
-+			h)
-+				[ "$b_arg" -o "$f_arg" -o "$lm_arg" -o "$n_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -h cannot be combined with -b -f, -l, -m, -n"
-+				min_host_id=1
-+				max_host_id=$((max_net_id-1))
-+				h_arg=1
-+				;;
-+			f)
-+				[ "$b_arg" -o "$h_arg" -o "$lm_arg" -o "$n_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -f cannot be combined with -b, -h, -l, -m, -n"
-+				min_host_id=0
-+				max_host_id=$max_net_id
-+				f_arg=1
-+				;;
-+			l)
-+				[ "$b_arg" -o "$f_arg" -o "$h_arg" -o "$n_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -l cannot be combined with -b, -f, -h, -n"
-+				! tst_is_int "$OPTARG" || [ $OPTARG -lt 0 ] && \
-+					tst_brk TBROK "tst_ipaddr_un: -l must be integer <0,$max_net_id> ($OPTARG)"
-+				min_host_id="$OPTARG"
-+				lm_arg=1
-+				;;
-+			m)
-+				[ "$b_arg" -o "$f_arg" -o "$h_arg" -o "$n_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -m cannot be combined with -b, -f, -h, -n"
-+				! tst_is_int "$OPTARG" || [ "$OPTARG" -lt 0 ]|| [ "$OPTARG" -gt $max_net_id ] && \
-+					tst_brk TBROK "tst_ipaddr_un: -m must be integer <0,$max_net_id> ($OPTARG)"
-+				[ "$OPTARG" -gt $max_net_id ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -m cannot be higher than $max_net_id ($OPTARG)"
-+				max_host_id="$OPTARG"
-+				lm_arg=1
-+				;;
-+			n)
-+				[ "$b_arg" -o "$f_arg" -o "$h_arg" -o "$lm_arg" ] && \
-+					tst_brk_ TBROK "tst_ipaddr_un: -n cannot be combined with -b, -f, -h, -l, -m"
-+				min_host_id=0
-+				n_arg=1
-+				;;
- 			p) [ "$TST_IPV6" ] && prefix="/64" || prefix="/24";;
- 		esac
- 	done
- 	shift $(($OPTIND - 1))
-+	[ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ] && is_counter=1
- 
--	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
-+	if [ -z "$min_host_id" ]; then
-+		[ "$is_counter" ] && min_host_id=1 || min_host_id=0
-+	fi
++TST_TESTFUNC=do_test
++TST_CNT=2
++TST_NEEDS_CMDS="cut"
++. tst_net.sh
 +
-+	if [ -z "$max_host_id" ]; then
-+		[ "$is_counter" ] && max_host_id=$((max_net_id - 1)) || max_host_id=$max_net_id
-+	fi
++IPV4_DATA="
++0 0|10.23.0.0
++0 1|10.23.0.1
++1 0|10.23.1.0
++1 1|10.23.1.1
++1 2|10.23.1.2
++2 2|10.23.2.2
++1 3|10.23.1.3
++3 3|10.23.3.3
++1 128|10.23.1.128
++128 128|10.23.128.128
++1 254|10.23.1.254
++254 254|10.23.254.254
++1 255|10.23.1.255
++255 255|10.23.255.255
++1 256|10.23.1.0
++256 256|10.23.0.0
++1 257|10.23.1.1
++257 257|10.23.1.1
 +
-+	[ $min_host_id -gt $max_host_id ] && \
-+		tst_brk TBROK "tst_ipaddr_un: max HOST_ID ($max_host_id) must be >= min HOST_ID ($min_host_id)"
- 
- 	# counter
--	if [ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ]; then
-+	if [ "$is_counter" ]; then
- 		[ -z "$counter" ] && counter=1
- 		[ $counter -lt 1 ] && counter=1
- 		type="${1:-lhost}"
--		max_host_id=$((max_net_id - 1))
- 		tmp=$((counter * 2))
- 		[ "$type" = "rhost" ] && tmp=$((tmp - 1))
--
--		host_id=$((tmp % max_host_id))
-+		host_id=$((tmp % max_host_id - 1))
- 		net_id=$((tmp / max_host_id))
- 
--		if [ $host_id -eq 0 ]; then
--			host_id=$max_host_id
-+		if [ $host_id -lt 0 ]; then
-+			host_id=$((max_host_id-1))
- 			net_id=$((net_id - 1))
- 		fi
- 	else # net_id & host_id
-@@ -410,8 +497,8 @@ tst_ipaddr_un()
- 		[ $host_id -lt 0 ] && host_id=1
- 	fi
- 
--	net_id=$((net_id % max_net_id))
--	host_id=$((host_id % max_net_id))
-+	net_id=$((net_id % (max_net_id + 1)))
-+	host_id=$((host_id % (max_host_id - min_host_id + 1) + min_host_id)) # orig, but also bad
- 
- 	if [ -z "$TST_IPV6" ]; then
- 		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}${prefix}"
++-c 0|10.23.0.2
++-c 0 rhost|10.23.0.1
++-c 1|10.23.0.2
++-c 1 rhost|10.23.0.1
++-c 2|10.23.0.4
++-c 2 rhost|10.23.0.3
++-c 127|10.23.0.254
++-c 127 rhost|10.23.0.253
++-c 128|10.23.1.2
++-c 128 rhost|10.23.1.1
++-c 254|10.23.1.254
++-c 254 rhost|10.23.1.253
++-c 255|10.23.2.2
++-c 255 rhost|10.23.2.1
++
++-c 0 -b|10.23.0.2
++-c 0 -b rhost|10.23.0.1
++-c 1 -b|10.23.0.2
++-c 1 -b rhost|10.23.0.1
++-c 127 -b|10.23.0.254
++-c 127 -b rhost|10.23.0.253
++-c 128 -b|10.23.1.1
++-c 128 -b rhost|10.23.0.255
++-c 255 -b|10.23.1.255
++-c 255 -b rhost|10.23.1.254
++-c 256 -b|10.23.2.2
++-c 256 -b rhost|10.23.2.1
++
++-c 0 -f|10.23.0.1
++-c 0 -f rhost|10.23.0.0
++-c 1 -f|10.23.0.1
++-c 1 -f rhost|10.23.0.0
++-c 127 -f|10.23.0.253
++-c 127 -f rhost|10.23.0.252
++-c 128 -f|10.23.1.0
++-c 128 -f rhost|10.23.0.254
++-c 255 -f|10.23.1.254
++-c 255 -f rhost|10.23.1.253
++-c 256 -f|10.23.2.1
++-c 256 -f rhost|10.23.2.0
++
++-c 0 -n|10.23.0.1
++-c 0 -n rhost|10.23.0.0
++-c 1 -n|10.23.0.1
++-c 1 -n rhost|10.23.0.0
++-c 127 -n|10.23.0.253
++-c 127 -n rhost|10.23.0.252
++-c 128 -n|10.23.1.1
++-c 128 -n rhost|10.23.1.0
++-c 255 -n|10.23.2.1
++-c 255 -n rhost|10.23.2.0
++-c 256 -n|10.23.2.3
++-c 256 -n rhost|10.23.2.2
++
++-l 5 -m 253 0 0|10.23.0.5
++-l 5 -m 253 0 0 -c 0|10.23.0.5
++-l 5 -m 253 0 0 -c 0 rhost|10.23.0.5
++-l 5 -m 253 1 1|10.23.1.6
++-l 5 -m 253 1 1 -c 1|10.23.1.6
++-l 5 -m 253 1 1 -c 1 rhost|10.23.1.6
++-l 5 -m 253 248 248|10.23.248.253
++-l 5 -m 253 248 248 -c 248|10.23.248.253
++-l 5 -m 253 248 248 -c 248 rhost|10.23.248.253
++-l 5 -m 253 249 249|10.23.249.5
++-l 5 -m 253 249 249 -c 249|10.23.249.5
++-l 5 -m 253 249 249 -c 249 rhost|10.23.249.5
++
++-c 0 -l 3 -m 6|10.23.0.4
++-c 0 -l 3 -m 6 rhost|10.23.0.3
++-c 1 -l 3 -m 6|10.23.0.4
++-c 1 -l 3 -m 6 rhost|10.23.0.3
++-c 2 -l 3 -m 6|10.23.0.6
++-c 2 -l 3 -m 6 rhost|10.23.0.5
++-c 3 -l 3 -m 6|10.23.0.4
++-c 3 -l 3 -m 6 rhost|10.23.0.3
++-c 255 -l 3 -m 6|10.23.84.4
++-c 255 -l 3 -m 6 rhost|10.23.84.3
++"
++
++IPV6_DATA="
++0 0|fd00:23::
++0 1|fd00:23::1
++1 0|fd00:23:1::
++1 1|fd00:23:1::1
++1 2|fd00:23:1::2
++2 2|fd00:23:2::2
++1 3|fd00:23:1::3
++3 3|fd00:23:3::3
++1 32767|fd00:23:1::7fff
++32767 32767|fd00:23:7fff::7fff
++1 65534|fd00:23:1::fffe
++65534 65534|fd00:23:fffe::fffe
++1 65535|fd00:23:1::ffff
++65535 65535|fd00:23:ffff::ffff
++1 65536|fd00:23:1::
++65536 65536|fd00:23::
++1 65537|fd00:23:1::1
++65537 65537|fd00:23:1::1
++
++-c 0|fd00:23::2
++-c 0 rhost|fd00:23::1
++-c 1|fd00:23::2
++-c 1 rhost|fd00:23::1
++-c 2|fd00:23::4
++-c 2 rhost|fd00:23::3
++-c 32767|fd00:23::fffe
++-c 32767 rhost|fd00:23::fffd
++-c 32768|fd00:23:1::2
++-c 32768 rhost|fd00:23:1::1
++-c 65534|fd00:23:1::fffe
++-c 65534 rhost|fd00:23:1::fffd
++-c 65535|fd00:23:2::2
++-c 65535 rhost|fd00:23:2::1
++
++-c 0 -b|fd00:23::2
++-c 0 -b rhost|fd00:23::1
++-c 1 -b|fd00:23::2
++-c 1 -b rhost|fd00:23::1
++-c 32767 -b|fd00:23::fffe
++-c 32767 -b rhost|fd00:23::fffd
++-c 32768 -b|fd00:23:1::1
++-c 32768 -b rhost|fd00:23::ffff
++-c 65535 -b|fd00:23:1::ffff
++-c 65535 -b rhost|fd00:23:1::fffe
++-c 65536 -b|fd00:23:2::2
++-c 65536 -b rhost|fd00:23:2::1
++
++-c 0 -f|fd00:23::1
++-c 0 -f rhost|fd00:23::
++-c 1 -f|fd00:23::1
++-c 1 -f rhost|fd00:23::
++-c 32767 -f|fd00:23::fffd
++-c 32767 -f rhost|fd00:23::fffc
++-c 32768 -f|fd00:23:1::
++-c 32768 -f rhost|fd00:23::fffe
++-c 65535 -f|fd00:23:1::fffe
++-c 65535 -f rhost|fd00:23:1::fffd
++-c 65536 -f|fd00:23:2::1
++-c 65536 -f rhost|fd00:23:2::
++
++-c 0 -n|fd00:23::1
++-c 0 -n rhost|fd00:23::
++-c 1 -n|fd00:23::1
++-c 1 -n rhost|fd00:23::
++-c 32767 -n|fd00:23::fffd
++-c 32767 -n rhost|fd00:23::fffc
++-c 32768 -n|fd00:23:1::1
++-c 32768 -n rhost|fd00:23:1::
++-c 65535 -n|fd00:23:2::1
++-c 65535 -n rhost|fd00:23:2::
++-c 65536 -n|fd00:23:2::3
++-c 65536 -n rhost|fd00:23:2::2
++
++-l 5 -m 253 0 0|fd00:23::5
++-l 5 -m 253 0 0 -c 0|fd00:23::5
++-l 5 -m 253 0 0 -c 0 rhost|fd00:23::5
++-l 5 -m 253 1 1|fd00:23:1::6
++-l 5 -m 253 1 1 -c 1|fd00:23:1::6
++-l 5 -m 253 1 1 -c 1 rhost|fd00:23:1::6
++-l 5 -m 253 0 0|fd00:23::5
++-l 5 -m 253 0 0 -c 0|fd00:23::5
++-l 5 -m 253 0 0 -c 0 rhost|fd00:23::5
++-l 5 -m 253 1 1|fd00:23:1::6
++-l 5 -m 253 249 249 -c 249|fd00:23:f9::5
++-l 5 -m 253 249 249 -c 249 rhost|fd00:23:f9::5
++
++-c 0 -l 3 -m 6|fd00:23::4
++-c 0 -l 3 -m 6 rhost|fd00:23::3
++-c 1 -l 3 -m 6|fd00:23::4
++-c 1 -l 3 -m 6 rhost|fd00:23::3
++-c 2 -l 3 -m 6|fd00:23::6
++-c 2 -l 3 -m 6 rhost|fd00:23::5
++-c 3 -l 3 -m 6|fd00:23::4
++-c 3 -l 3 -m 6 rhost|fd00:23::3
++-c 65535 -l 3 -m 6|fd00:23:5554::4
++-c 65535 -l 3 -m 6 rhost|fd00:23:5554::3
++"
++
++test_tst_ipaddr_un()
++{
++	local data cmd i result
++	local var="$1"
++
++	tst_res TINFO "Testing for IPv${TST_IPVER}, data: \$$var"
++
++	eval data="\$$var"
++	IFS="
++"
++	for i in $data; do
++		cmd="tst_ipaddr_un $(echo $i | cut -d'|' -f 1)"
++		result="$(echo $i | cut -d'|' -f 2)"
++		tst_res TINFO "testing $cmd"
++		EXPECT_PASS "[ '$(eval $cmd)' = '$result' ]"
++	done
++}
++
++do_test2()
++{
++	test_tst_ipaddr_un "IPV${TST_IPVER}_DATA"
++}
++
++do_test()
++{
++	case $1 in
++	 1) TST_IPV6= TST_IPVER=4 do_test2;;
++	 2) TST_IPV6=6 TST_IPVER=6 do_test2;;
++	esac
++}
++
++tst_run
 -- 
 2.22.1
 
