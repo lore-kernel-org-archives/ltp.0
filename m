@@ -1,61 +1,42 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 3 Sep 2019 05:51:23 -0400 (EDT)
-Subject: [LTP] [PATCH v4 0/4] Basic eBPF tests
-In-Reply-To: <20190903085814.GA23372@rei.lan>
-References: <20190826111024.19053-1-chrubis@suse.cz>
- <1492475067.8173800.1566829761941.JavaMail.zimbra@redhat.com>
- <20190902145524.GB10860@rei.lan>
- <494040796.9629252.1567489841971.JavaMail.zimbra@redhat.com>
- <20190903085814.GA23372@rei.lan>
-Message-ID: <234819244.9657867.1567504283131.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue,  3 Sep 2019 13:15:31 +0200
+Subject: [LTP] [PATCH v5 0/4] Basic eBPF tests
+Message-ID: <20190903111535.27565-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+v5:
 
+Fixed problems pointed out by Jan.
 
------ Original Message -----
-> Hi!
-> > > > There's one EPERM I can reproduce reliably with bpf_map test, which
-> > > > appears
-> > > > to originate from "bpf_charge_memlock".
-> > > > 
-> > > > There's a deferred component to map freeing, and unchange appears to be
-> > > > part of it:
-> > > >   bpf_map_release
-> > > >     bpf_map_put
-> > > >       INIT_WORK(&map->work, bpf_map_free_deferred);
-> > > >         (deferred) bpf_uncharge_memlock
-> > > > 
-> > > > When I lower max locked memory, it's easy to hit:
-> > > > # ulimit  -l 128; ./bpf_map01 -i 100
-> > > > ...
-> > > > bpf_map01.c:52: CONF: bpf() requires CAP_SYS_ADMIN on this system:
-> > > > EPERM
-> > > > 
-> > > > Can you try bumping max locked memory to some high value and check
-> > > > if that helps your case?
-> > > 
-> > > Looks like this was the case, with high enough value the tests works
-> > > without a problem. The question is if and/or what should be done about
-> > > this...
-> > 
-> > We can try asking on bpf@vger.kernel.org, if they see it as bug.
-> 
-> Let's start with this, it would be a bit nicer if it returned EAGAIN
-> instead of EPERM at least. Will you send the email or should I?
+Richard Palethorpe (4):
+  BPF: Essential headers for map creation
+  BPF: Sanity check creating and updating maps
+  BPF: Essential headers for a basic program
+  BPF: Sanity check creating a program
 
-If you don't mind please send the email. You know those tests better,
-and your environment seems to have lower (/lowest) default value.
+ include/lapi/bpf.h                         | 526 +++++++++++++++++++++
+ include/lapi/socket.h                      |   4 +
+ include/lapi/syscalls/aarch64.in           |   1 +
+ include/lapi/syscalls/i386.in              |   1 +
+ include/lapi/syscalls/s390.in              |   1 +
+ include/lapi/syscalls/sparc.in             |   1 +
+ include/lapi/syscalls/x86_64.in            |   1 +
+ runtest/syscalls                           |   3 +
+ testcases/kernel/syscalls/bpf/.gitignore   |   2 +
+ testcases/kernel/syscalls/bpf/Makefile     |  10 +
+ testcases/kernel/syscalls/bpf/bpf_map01.c  | 163 +++++++
+ testcases/kernel/syscalls/bpf/bpf_prog01.c | 166 +++++++
+ 12 files changed, 879 insertions(+)
+ create mode 100644 include/lapi/bpf.h
+ create mode 100644 testcases/kernel/syscalls/bpf/.gitignore
+ create mode 100644 testcases/kernel/syscalls/bpf/Makefile
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_map01.c
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog01.c
 
-> 
-> > I'd push tests with a comment. Or setup() that bumps the limit: whatever
-> > current limit is, add 2MB to it, so single/few iteration(s) should always
-> > work.
-> 
-> Let's go with a comment for now, we can add code later on once we are
-> clear on what is the expected outcome.
+-- 
+2.21.0
 
-Sounds good.
