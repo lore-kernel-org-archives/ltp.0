@@ -1,72 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Sep 2019 16:35:13 +0200
-Subject: [LTP] [PATCH 2/2] uevents/uevent03.c: Check if "UI_GET_SYSNAME"
- is supported
-In-Reply-To: <1567514890-1216-2-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1567514890-1216-1-git-send-email-huangjh.jy@cn.fujitsu.com>
- <1567514890-1216-2-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <20190903143513.GA14511@rei.lan>
+From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
+Date: Wed,  4 Sep 2019 14:00:23 +0800
+Subject: [LTP] [PATCH] madvise09:Change PAGES size to the value more than 32
+Message-ID: <1567576823-10080-1-git-send-email-shuang.qiu@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Jinhui huang <huangjh.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/uevents/uevent03.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
-> index 9b901dc..f676984 100644
-> --- a/testcases/kernel/uevents/uevent03.c
-> +++ b/testcases/kernel/uevents/uevent03.c
-> @@ -52,7 +52,7 @@ static void get_minor_major(char *device, char *minor, char *major, size_t buf_s
->  
->  static void verify_uevent(void)
->  {
-> -	int pid, fd;
-> +	int pid, fd, ret;
->  	char sysname[64];
->  	char add_msg[1024];
->  	char rem_msg[1024];
-> @@ -167,7 +167,18 @@ static void verify_uevent(void)
->  
->  	create_uinput_mouse();
->  
-> -	SAFE_IOCTL(mouse_fd, UI_GET_SYSNAME(sizeof(sysname)), sysname);
-> +	ret = ioctl(mouse_fd, UI_GET_SYSNAME(sizeof(sysname)), sysname);
-> +	if (ret < 0) {
-> +		if (errno == EINVAL) {
-> +			tst_brk(TCONF,
-> +				"kernel does not support UI_GET_SYSNAME");
-> +		} else {
-> +			tst_brk(TBROK,
-> +				"ioctl(%d, %s,...) failed",
-> +				mouse_fd, "UI_GET_SYSNAME");
-> +		}
-> +	}
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-I do wonder if it makes sense to add a fallback that reads the sysname
-from /proc/bus/input/devices.
+In upstream patch 1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state()),
+it modify the lruvec state in batch,equal and less than 32 MADV_FREE pages will not trigger
+the account of lruvec_stat,and will not be free in memory pressure either.
+So the testcase may fail with:
+...
+madvise09.c:219: INFO: Memory hungry child 6178 started, try 10
+madvise09.c:254: INFO: Memory map: pppppppppppppppppppppppppppppppp
+madvise09.c:259: FAIL: No MADV_FREE page was freed on low memory
+...
+Change the PAGES to the value more than 32 can fix such issue.
 
-We do have the sysname as the last component of the SysFs= path.
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess that it's probably not worth of the effort.
-
->  	handlers = get_input_handlers();
->  
->  	tst_res(TINFO, "Sysname: %s", sysname);
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 01075f6..3759053 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -57,7 +57,7 @@ static int sleep_between_faults;
+ 
+ static int swap_accounting_enabled;
+ 
+-#define PAGES 32
++#define PAGES 64
+ #define TOUCHED_PAGE1 0
+ #define TOUCHED_PAGE2 10
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
