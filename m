@@ -1,60 +1,88 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Wed, 4 Sep 2019 11:32:25 -0300
-Subject: [LTP] [PATCH] madvise09:Change PAGES size to the value more
- than 32
-In-Reply-To: <1567576823-10080-1-git-send-email-shuang.qiu@oracle.com>
-References: <1567576823-10080-1-git-send-email-shuang.qiu@oracle.com>
-Message-ID: <20190904143224.GH4101@calabresa>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Thu, 5 Sep 2019 14:34:33 +0800
+Subject: [LTP] [PATCH] controllers/cpuset: improve the node number
+ calculation for N_NODES
+In-Reply-To: <20190712120505.28953-1-po-hsu.lin@canonical.com>
+References: <20190712120505.28953-1-po-hsu.lin@canonical.com>
+Message-ID: <CAMy_GT-FZEV5khfYz8xg19sEX=JG0+S_otTivs7NpOFWQmfFBw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Sep 04, 2019 at 02:00:23PM +0800, shuang.qiu@oracle.com wrote:
-> From: Shuang Qiu <shuang.qiu@oracle.com>
-> 
-> In upstream patch 1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state()),
-> it modify the lruvec state in batch,equal and less than 32 MADV_FREE pages will not trigger
-> the account of lruvec_stat,and will not be free in memory pressure either.
-> So the testcase may fail with:
-> ...
-> madvise09.c:219: INFO: Memory hungry child 6178 started, try 10
-> madvise09.c:254: INFO: Memory map: pppppppppppppppppppppppppppppppp
-> madvise09.c:259: FAIL: No MADV_FREE page was freed on low memory
-> ...
-> Change the PAGES to the value more than 32 can fix such issue.
-> 
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+Hello,
 
-On ppc64le, I was getting retries, as OOM was getting hit. The test would
-ultimately time out. This fixes it for me.
+This issue is causing multiple failures when the test needs the cpuset_funcs.sh
+  * cpuset_base_ops
+  * cpuset_exclusive
+  * cpuset_hierarchy
+  * cpuset_hotplug cpuset_inherit
+  * cpuset_load_balance
+  * cpuset_memory cpuset_memory_pressure
+  * cpuset_memory_spread
+  * cpuset_sched_domains
+  * cpuset_syscall
 
-Thanks.
-Cascardo.
+It will be great if we can have this patch reviewed.
 
-Tested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+For the record, mail to the original author "miaox" has failed, server repies:
+    unknown user: "miaox"
 
+On Fri, Jul 12, 2019 at 8:05 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> BugLink: https://bugs.launchpad.net/bugs/1836188
+>
+> It was spotted on a Power9 system with Ubuntu Cosmic installed, the
+> N_NODES obtained from the file contains only "0,8":
+>     $ cat /sys/devices/system/node/has_normal_memory
+>     0,8
+>
+> This will cause the N_NODES calculation in cpuset_funcs.sh to fail with:
+>     cpuset_funcs.sh: arithmetic expression: expecting EOF: "0,8 + 1"
+>
+> As it was not designed for counting the number of comma seperated nodes.
+>
+> Improve this by splitting the file output with newlines, iterate through
+> them to count the number of nodes. If we ever encounter a sequence
+> format like "3-6", use shell substitution to get these two numbers and
+> with their difference plus 1 to get the number of nodes in this range.
+>
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 > ---
->  testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-> index 01075f6..3759053 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise09.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise09.c
-> @@ -57,7 +57,7 @@ static int sleep_between_faults;
->  
->  static int swap_accounting_enabled;
->  
-> -#define PAGES 32
-> +#define PAGES 64
->  #define TOUCHED_PAGE1 0
->  #define TOUCHED_PAGE2 10
->  
-> -- 
-> 1.9.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>  .../kernel/controllers/cpuset/cpuset_funcs.sh   | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> index 935a41ed0..6861b8dbd 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> @@ -28,12 +28,21 @@
+>
+>  NR_CPUS=`tst_ncpus`
+>  if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+> -       N_NODES="`cat /sys/devices/system/node/has_high_memory`"
+> +       N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' '\n'`"
+>  else
+> -       N_NODES="`cat /sys/devices/system/node/has_normal_memory`"
+> +       N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' '\n'`"
+>  fi
+> -N_NODES=${N_NODES#*-*}
+> -N_NODES=$(($N_NODES + 1))
+> +i=0
+> +while read item; do
+> +       count=1
+> +       if [ "${item#*-*}" != "$item" ]; then
+> +               count=$((${item#*-*} - ${item%*-*} + 1))
+> +       fi
+> +       i=$((i + $count))
+> +done <<EOL
+> +$N_NODES
+> +EOL
+> +N_NODES=$i
+>
+>  CPUSET="/dev/cpuset"
+>  CPUSET_TMP="/tmp/cpuset_tmp"
+> --
+> 2.17.1
+>
