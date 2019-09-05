@@ -1,70 +1,60 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 5 Sep 2019 18:29:58 +0800
-Subject: [LTP] [PATCH] madvise09:Change PAGES size to the value more
- than 32
-In-Reply-To: <18fd25c6-857f-e049-8c8d-9640f4deba68@oracle.com>
-References: <1567576823-10080-1-git-send-email-shuang.qiu@oracle.com>
- <CAEemH2fiJkau0A3yQH+nHVPXMwtTzyV3_weTQRniZFR+EJqN_g@mail.gmail.com>
- <18fd25c6-857f-e049-8c8d-9640f4deba68@oracle.com>
-Message-ID: <CAEemH2eLnTQ4obrpSOzoBE4OQ3x47DLNZdAGyE91CnwQ7TOVsw@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu,  5 Sep 2019 14:08:36 +0200
+Subject: [LTP] [PATCH v2] fzsync: drop pair->spins_avg.avg check
+In-Reply-To: <2ded10ab8d989ba7ee0cc1e9f1ac28acdf14c947.1567606698.git.jstancek@redhat.com>
+References: <2ded10ab8d989ba7ee0cc1e9f1ac28acdf14c947.1567606698.git.jstancek@redhat.com>
+Message-ID: <750a63b18523493412cb53e748b519b7dfbd70b0.1567685224.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Sep 5, 2019 at 6:02 PM Shuang Qiu <shuang.qiu@oracle.com> wrote:
->
-> On 09/05/2019 04:29 PM, Li Wang wrote:
-> > On Wed, Sep 4, 2019 at 2:01 PM <shuang.qiu@oracle.com> wrote:
-> >> From: Shuang Qiu <shuang.qiu@oracle.com>
-> >>
-> >> In upstream patch 1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state()),
-> >> it modify the lruvec state in batch,equal and less than 32 MADV_FREE pages will not trigger
-> >> the account of lruvec_stat,and will not be free in memory pressure either.
-> >> So the testcase may fail with:
-> >> ...
-> >> madvise09.c:219: INFO: Memory hungry child 6178 started, try 10
-> >> madvise09.c:254: INFO: Memory map: pppppppppppppppppppppppppppppppp
-> >> madvise09.c:259: FAIL: No MADV_FREE page was freed on low memory
-> >> ...
-> >> Change the PAGES to the value more than 32 can fix such issue.
-> >>
-> >> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
-> >> ---
-> >>   testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-> >> index 01075f6..3759053 100644
-> >> --- a/testcases/kernel/syscalls/madvise/madvise09.c
-> >> +++ b/testcases/kernel/syscalls/madvise/madvise09.c
-> >> @@ -57,7 +57,7 @@ static int sleep_between_faults;
-> >>
-> >>   static int swap_accounting_enabled;
-> >>
-> >> -#define PAGES 32
-> >> +#define PAGES 64
-> > I'm not sure why 64 pages is a proper value? Can you explain more?
-> I think any value which larger than 32 is ok.
-> So I tested 64 and works fine.
+tst_fzsync_pair.spins is increased at least by one on every iteration.
+If during all calibration loops, both A and B manage to complete at
+nearly same time, then spins is increased only by one.
 
-I just tried with '42' randomly, but it doesn't work. I guess that
-might have a waterline to trigger this memory page reclaiming.
+spins_avg starts as 0, and tst_exp_moving_avg() will move it closer
+and closer to 1, but it will never be 1:
+        float f = 0; int i;
+        for (i = 0; i < 4096; i++)
+                f = tst_exp_moving_avg(0.25f, 1, f);
+        printf("%.15f %d\n", f, f >= 1);
+	$ 0.999999880790710 0
+which on rare occasion can cause: "Can't calculate random delay".
 
-I looked at the code calling path, it seems the 'sc->nr_reclaimed' is
-the key value to control that, but still not 100% sure, I will keep
-debugging it for a while.
+Drop check and use MAX(pair->spins_avg.avg, 1f) to calculate per_spin_time.
+Also print stats one more time when we hit the warning.
 
-try_to_free_mem_cgroup_pages
-  do_try_to_free_pages
-    shrink_zone
-      shrink_node
-        shrink_node_memcg
-          get_scan_count
-            lruvec_lru_size
-              lruvec_page_state
+Suggested-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_fuzzy_sync.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index de0402c9bbe9..f9a1947c7542 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -477,8 +477,8 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+ 			tst_res(TINFO, "Minimum sampling period ended");
+ 			tst_fzsync_pair_info(pair);
+ 		}
+-	} else if (fabsf(pair->diff_ab.avg) >= 1 && pair->spins_avg.avg >= 1) {
+-		per_spin_time = fabsf(pair->diff_ab.avg) / pair->spins_avg.avg;
++	} else if (fabsf(pair->diff_ab.avg) >= 1) {
++		per_spin_time = fabsf(pair->diff_ab.avg) / MAX(pair->spins_avg.avg, 1.0f);
+ 		time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg)
+ 			- pair->diff_sb.avg;
+ 		pair->delay += (int)(time_delay / per_spin_time);
+@@ -495,6 +495,7 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+ 		}
+ 	} else if (!pair->sampling) {
+ 		tst_res(TWARN, "Can't calculate random delay");
++		tst_fzsync_pair_info(pair);
+ 		pair->sampling = -1;
+ 	}
+ 
 -- 
-Regards,
-Li Wang
+1.8.3.1
+
