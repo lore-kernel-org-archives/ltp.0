@@ -1,10 +1,10 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Thu, 5 Sep 2019 14:34:33 +0800
-Subject: [LTP] [PATCH] controllers/cpuset: improve the node number
- calculation for N_NODES
-In-Reply-To: <20190712120505.28953-1-po-hsu.lin@canonical.com>
-References: <20190712120505.28953-1-po-hsu.lin@canonical.com>
-Message-ID: <CAMy_GT-FZEV5khfYz8xg19sEX=JG0+S_otTivs7NpOFWQmfFBw@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 05 Sep 2019 09:23:00 +0200
+Subject: [LTP] [PATCH] fzsync: don't compare spins_avg (float) against 1
+ (int)
+In-Reply-To: <2ded10ab8d989ba7ee0cc1e9f1ac28acdf14c947.1567606698.git.jstancek@redhat.com>
+References: <2ded10ab8d989ba7ee0cc1e9f1ac28acdf14c947.1567606698.git.jstancek@redhat.com>
+Message-ID: <87woenky0b.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,76 +13,71 @@ To: ltp@lists.linux.it
 
 Hello,
 
-This issue is causing multiple failures when the test needs the cpuset_funcs.sh
-  * cpuset_base_ops
-  * cpuset_exclusive
-  * cpuset_hierarchy
-  * cpuset_hotplug cpuset_inherit
-  * cpuset_load_balance
-  * cpuset_memory cpuset_memory_pressure
-  * cpuset_memory_spread
-  * cpuset_sched_domains
-  * cpuset_syscall
+Jan Stancek <jstancek@redhat.com> writes:
 
-It will be great if we can have this patch reviewed.
+> tst_fzsync_pair.spins is increased at least by one on every iteration.
+> If during all calibration loops, both A and B manage to complete at
+> nearly same time, then spins is increased only by one.
+>
+> spins_avg starts as 0, and tst_exp_moving_avg() will move it closer
+> and closer to 1, but it will never be 1:
+>         float f = 0; int i;
+>         for (i = 0; i < 4096; i++)
+>                 f = tst_exp_moving_avg(0.25f, 1, f);
+>         printf("%.15f %d\n", f, f >= 1);
+> 	$ 0.999999880790710 0
+>
+> which on rare occasion can cause: "Can't calculate random delay".
 
-For the record, mail to the original author "miaox" has failed, server repies:
-    unknown user: "miaox"
+I'm surprised that you have seen this. Out of interest, does this happen
+on a particular setup, or just randomly?
 
-On Fri, Jul 12, 2019 at 8:05 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
 >
-> BugLink: https://bugs.launchpad.net/bugs/1836188
+> Compare against float slightly smaller than 1.
+> Also print stats one more time when we hit the warning.
 >
-> It was spotted on a Power9 system with Ubuntu Cosmic installed, the
-> N_NODES obtained from the file contains only "0,8":
->     $ cat /sys/devices/system/node/has_normal_memory
->     0,8
->
-> This will cause the N_NODES calculation in cpuset_funcs.sh to fail with:
->     cpuset_funcs.sh: arithmetic expression: expecting EOF: "0,8 + 1"
->
-> As it was not designed for counting the number of comma seperated nodes.
->
-> Improve this by splitting the file output with newlines, iterate through
-> them to count the number of nodes. If we ever encounter a sequence
-> format like "3-6", use shell substitution to get these two numbers and
-> with their difference plus 1 to get the number of nodes in this range.
->
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 > ---
->  .../kernel/controllers/cpuset/cpuset_funcs.sh   | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
+>  include/tst_fuzzy_sync.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> index 935a41ed0..6861b8dbd 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> @@ -28,12 +28,21 @@
+> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> index de0402c9bbe9..2c0389c5d63e 100644
+> --- a/include/tst_fuzzy_sync.h
+> +++ b/include/tst_fuzzy_sync.h
+> @@ -73,6 +73,8 @@
+>  /* how much of exec time is sampling allowed to take */
+>  #define SAMPLING_SLICE 0.5f
 >
->  NR_CPUS=`tst_ncpus`
->  if [ -f "/sys/devices/system/node/has_high_memory" ]; then
-> -       N_NODES="`cat /sys/devices/system/node/has_high_memory`"
-> +       N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' '\n'`"
->  else
-> -       N_NODES="`cat /sys/devices/system/node/has_normal_memory`"
-> +       N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' '\n'`"
->  fi
-> -N_NODES=${N_NODES#*-*}
-> -N_NODES=$(($N_NODES + 1))
-> +i=0
-> +while read item; do
-> +       count=1
-> +       if [ "${item#*-*}" != "$item" ]; then
-> +               count=$((${item#*-*} - ${item%*-*} + 1))
-> +       fi
-> +       i=$((i + $count))
-> +done <<EOL
-> +$N_NODES
-> +EOL
-> +N_NODES=$i
->
->  CPUSET="/dev/cpuset"
->  CPUSET_TMP="/tmp/cpuset_tmp"
-> --
-> 2.17.1
->
+> +#define EPSILON 0.999f
+> +
+>  /** Some statistics for a variable */
+>  struct tst_fzsync_stat {
+>  	float avg;
+> @@ -477,7 +479,7 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+>  			tst_res(TINFO, "Minimum sampling period ended");
+>  			tst_fzsync_pair_info(pair);
+>  		}
+> -	} else if (fabsf(pair->diff_ab.avg) >= 1 && pair->spins_avg.avg >= 1) {
+> +	} else if (fabsf(pair->diff_ab.avg) > EPSILON && pair->spins_avg.avg > EPSILON) {
+>  		per_spin_time = fabsf(pair->diff_ab.avg) / pair->spins_avg.avg;
+
+I suppose you could also use MAX(pair->spins_avg.avg, 1f) and drop the
+check. It might even be OK to only check that it is greater than
+zero. I'm not sure if the number of delay spins will be sane either way,
+but it probably can't do any harm.
+
+>  		time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg)
+>  			- pair->diff_sb.avg;
+> @@ -495,6 +497,7 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+>  		}
+>  	} else if (!pair->sampling) {
+>  		tst_res(TWARN, "Can't calculate random delay");
+> +		tst_fzsync_pair_info(pair);
+>  		pair->sampling = -1;
+>  	}
+
+
+--
+Thank you,
+Richard.
