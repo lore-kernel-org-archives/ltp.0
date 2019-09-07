@@ -1,11 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 7 Sep 2019 05:31:40 -0400 (EDT)
-Subject: [LTP] [PATCH v2] fzsync: drop pair->spins_avg.avg check
-In-Reply-To: <87sgpbkjst.fsf@rpws.prws.suse.cz>
-References: <2ded10ab8d989ba7ee0cc1e9f1ac28acdf14c947.1567606698.git.jstancek@redhat.com>
- <750a63b18523493412cb53e748b519b7dfbd70b0.1567685224.git.jstancek@redhat.com>
- <87sgpbkjst.fsf@rpws.prws.suse.cz>
-Message-ID: <1901271176.10519481.1567848700739.JavaMail.zimbra@redhat.com>
+Date: Sat, 7 Sep 2019 06:19:02 -0400 (EDT)
+Subject: [LTP] [PATCH v5 0/4] Basic eBPF tests
+In-Reply-To: <20190903111535.27565-1-chrubis@suse.cz>
+References: <20190903111535.27565-1-chrubis@suse.cz>
+Message-ID: <1108769731.10519822.1567851542307.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,58 +13,42 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Hello,
+> v5:
 > 
-> Jan Stancek <jstancek@redhat.com> writes:
-> 
-> > tst_fzsync_pair.spins is increased at least by one on every iteration.
-> > If during all calibration loops, both A and B manage to complete at
-> > nearly same time, then spins is increased only by one.
-> >
-> > spins_avg starts as 0, and tst_exp_moving_avg() will move it closer
-> > and closer to 1, but it will never be 1:
-> >         float f = 0; int i;
-> >         for (i = 0; i < 4096; i++)
-> >                 f = tst_exp_moving_avg(0.25f, 1, f);
-> >         printf("%.15f %d\n", f, f >= 1);
-> > 	$ 0.999999880790710 0
-> > which on rare occasion can cause: "Can't calculate random delay".
-> >
-> > Drop check and use MAX(pair->spins_avg.avg, 1f) to calculate per_spin_time.
-> > Also print stats one more time when we hit the warning.
-> >
-> > Suggested-by: Richard Palethorpe <rpalethorpe@suse.com>
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  include/tst_fuzzy_sync.h | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-> > index de0402c9bbe9..f9a1947c7542 100644
-> > --- a/include/tst_fuzzy_sync.h
-> > +++ b/include/tst_fuzzy_sync.h
-> > @@ -477,8 +477,8 @@ static void tst_fzsync_pair_update(struct
-> > tst_fzsync_pair *pair)
-> >  			tst_res(TINFO, "Minimum sampling period ended");
-> >  			tst_fzsync_pair_info(pair);
-> >  		}
-> > -	} else if (fabsf(pair->diff_ab.avg) >= 1 && pair->spins_avg.avg >= 1) {
-> > -		per_spin_time = fabsf(pair->diff_ab.avg) / pair->spins_avg.avg;
-> > +	} else if (fabsf(pair->diff_ab.avg) >= 1) {
-> > +		per_spin_time = fabsf(pair->diff_ab.avg) / MAX(pair->spins_avg.avg,
-> > 1.0f);
-> >  		time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg)
-> >  			- pair->diff_sb.avg;
-> >  		pair->delay += (int)(time_delay / per_spin_time);
-> > @@ -495,6 +495,7 @@ static void tst_fzsync_pair_update(struct
-> > tst_fzsync_pair *pair)
-> >  		}
-> >  	} else if (!pair->sampling) {
-> >  		tst_res(TWARN, "Can't calculate random delay");
-> > +		tst_fzsync_pair_info(pair);
-> >  		pair->sampling = -1;
-> >  	}
-> 
-> LGTM
+> Fixed problems pointed out by Jan.
 
-Pushed.
+ack
+
+> 
+> Richard Palethorpe (4):
+>   BPF: Essential headers for map creation
+>   BPF: Sanity check creating and updating maps
+>   BPF: Essential headers for a basic program
+>   BPF: Sanity check creating a program
+> 
+>  include/lapi/bpf.h                         | 526 +++++++++++++++++++++
+>  include/lapi/socket.h                      |   4 +
+>  include/lapi/syscalls/aarch64.in           |   1 +
+>  include/lapi/syscalls/i386.in              |   1 +
+>  include/lapi/syscalls/s390.in              |   1 +
+>  include/lapi/syscalls/sparc.in             |   1 +
+>  include/lapi/syscalls/x86_64.in            |   1 +
+>  runtest/syscalls                           |   3 +
+>  testcases/kernel/syscalls/bpf/.gitignore   |   2 +
+>  testcases/kernel/syscalls/bpf/Makefile     |  10 +
+>  testcases/kernel/syscalls/bpf/bpf_map01.c  | 163 +++++++
+>  testcases/kernel/syscalls/bpf/bpf_prog01.c | 166 +++++++
+>  12 files changed, 879 insertions(+)
+>  create mode 100644 include/lapi/bpf.h
+>  create mode 100644 testcases/kernel/syscalls/bpf/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/bpf/Makefile
+>  create mode 100644 testcases/kernel/syscalls/bpf/bpf_map01.c
+>  create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog01.c
+> 
+> --
+> 2.21.0
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
