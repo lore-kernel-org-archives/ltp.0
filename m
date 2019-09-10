@@ -1,37 +1,110 @@
-From: SiliangYu <siliangx.yu@intel.com>
-Date: Tue, 10 Sep 2019 16:23:37 +0000
-Subject: [LTP] [PATCH v4 LTP] Skip the test if "htop" is used.
-Message-ID: <20190910162337.60664-1-siliangx.yu@intel.com>
+From: frequent <frequentemail@126.com>
+Date: Tue, 10 Sep 2019 18:20:33 +0800 (CST)
+Subject: [LTP] [PATCH] buffer overflow detected ***: dup201 terminated
+Message-ID: <424f5bc4.776d.16d1ab07134.Coremail.frequentemail@126.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: "Yu,Siliang" <siliangx.yu@intel.com>
+Issues related to this mail: https://github.com/linux-test-project/ltp/issues/570
 
-In clear linux os, "htop" is used instead "top", which doesn't support '-b'. Skip the test on clear linux.
 
-Signed-off-by: Yu,Siliang <siliangx.yu@intel.com>
----
- .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh     | 4 ++++
- 1 file changed, 4 insertions(+)
+According to the bactrace in the issue description, we could easily find out that the problem is due to the codes in dup201.c  line 80 and 142. 
+As metan-cuw commented, the loop at line 142 is of no use and probablely is a leftover.  So we could safely remove these codes. 
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-index 18a11197e..74a3dd2b1 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-@@ -49,6 +49,10 @@ done
- 
- LOOP_COUNT=1
- 
-+if top -v | grep -q htop; then
-+	tst_brkm TCONF "htop is used instead of top, Skip the test(workaround: alias top='/path/to/real/top')"
-+fi
-+
- if [ $(get_present_cpus_num) -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
--- 
-2.23.0
 
+This patch does :
+        1).  remove the leftover, and of course, the issue 570 will be eventually go over.
+        2).  removed unused global variables.
+
+
+The patch goes as:
+
+
+diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
+index 4507ac1..762ad86 100644
+--- a/testcases/kernel/syscalls/dup2/dup201.c
++++ b/testcases/kernel/syscalls/dup2/dup201.c
+@@ -75,9 +75,6 @@ int maxfd;
+ int goodfd = 5;
+ int badfd = -1;
+ int mystdout = 0;
+-int fd, fd1;
+-int mypid;
+-char fname[20];
+
+
+ struct test_case_t {
+        int *ofd;
+@@ -86,22 +83,19 @@ struct test_case_t {
+        void (*setupfunc) ();
+ } TC[] = {
+        /* First fd argument is less than 0 - EBADF */
+-       {
+-       &badfd, &goodfd, EBADF, NULL},
+-           /* First fd argument is getdtablesize() - EBADF */
+-       {
+-       &maxfd, &goodfd, EBADF, NULL},
+-           /* Second fd argument is less than 0 - EBADF */
+-       {
+-       &mystdout, &badfd, EBADF, NULL},
+-           /* Second fd argument is getdtablesize() - EBADF */
+-       {
+-&mystdout, &maxfd, EBADF, NULL},};
++       {&badfd, &goodfd, EBADF, NULL},
++       /* First fd argument is getdtablesize() - EBADF */
++       {&maxfd, &goodfd, EBADF, NULL},
++       /* Second fd argument is less than 0 - EBADF */
++       {&mystdout, &badfd, EBADF, NULL},
++       /* Second fd argument is getdtablesize() - EBADF */
++       {&mystdout, &maxfd, EBADF, NULL},
++};
+
+
+ int main(int ac, char **av)
+ {
+        int lc;
+-       int i, j;
++       int i;
+
+
+        tst_parse_opts(ac, av, NULL, NULL);
+
+
+@@ -137,12 +131,6 @@ int main(int ac, char **av)
+                                         strerror(TC[i].error));
+                        }
+                }
+-               /* cleanup things in case we are looping */
+-               for (j = fd1; j < maxfd; j++) {
+-                       sprintf(fname, "dup201.%d.%d", j, mypid);
+-                       (void)close(j);
+-                       (void)unlink(fname);
+-               }
+        }
+        cleanup();
+
+
+@@ -163,7 +151,6 @@ void setup(void)
+
+
+        /* get some test specific values */
+        maxfd = getdtablesize();
+-       mypid = getpid();
+ }
+
+
+ /*
+@@ -172,6 +159,5 @@ void setup(void)
+  */
+ void cleanup(void)
+ {
+-
+        tst_rmdir();
+ }
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190910/35edc0c8/attachment.htm>
