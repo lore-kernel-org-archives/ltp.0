@@ -1,83 +1,51 @@
-From: Wu,Haiqiang <frequentemail@126.com>
-Date: Wed, 11 Sep 2019 20:21:41 +0800
-Subject: [LTP] [PATCH] [Fixes]:#570
-Message-ID: <20190911122141.28113-1-frequentemail@126.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 11 Sep 2019 14:47:14 +0200
+Subject: [LTP] [PATCH v2] syscalls/statx04: use stx_attributes_mask
+ before test
+In-Reply-To: <05330771-04f6-0fe4-f99d-eb55ff8b733c@cn.fujitsu.com>
+References: <20190802115046.GB27727@rei>
+ <1566282838-2980-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20190827092520.GA28859@dell5510> <20190827095858.GB28859@dell5510>
+ <20190827101644.GA30582@rei>
+ <05330771-04f6-0fe4-f99d-eb55ff8b733c@cn.fujitsu.com>
+Message-ID: <20190911124714.GA21670@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Wu,Haiqiang <frequentemail@126.com>
----
- testcases/kernel/syscalls/dup2/dup201.c | 24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+Hi!
+> Do you mean use getxattr to ensure bitflags are enable or a functions test?
+> I am confused.
 
-diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
-index 4507ac19a..066428edf 100644
---- a/testcases/kernel/syscalls/dup2/dup201.c
-+++ b/testcases/kernel/syscalls/dup2/dup201.c
-@@ -75,9 +75,6 @@ int maxfd;
- int goodfd = 5;
- int badfd = -1;
- int mystdout = 0;
--int fd, fd1;
--int mypid;
--char fname[20];
- 
- struct test_case_t {
- 	int *ofd;
-@@ -86,17 +83,14 @@ struct test_case_t {
- 	void (*setupfunc) ();
- } TC[] = {
- 	/* First fd argument is less than 0 - EBADF */
--	{
--	&badfd, &goodfd, EBADF, NULL},
-+	{&badfd, &goodfd, EBADF, NULL},
- 	    /* First fd argument is getdtablesize() - EBADF */
--	{
--	&maxfd, &goodfd, EBADF, NULL},
-+	{&maxfd, &goodfd, EBADF, NULL},
- 	    /* Second fd argument is less than 0 - EBADF */
--	{
--	&mystdout, &badfd, EBADF, NULL},
-+	{&mystdout, &badfd, EBADF, NULL},
- 	    /* Second fd argument is getdtablesize() - EBADF */
--	{
--&mystdout, &maxfd, EBADF, NULL},};
-+	{&mystdout, &maxfd, EBADF, NULL},
-+};
- 
- int main(int ac, char **av)
- {
-@@ -137,12 +131,6 @@ int main(int ac, char **av)
- 					 strerror(TC[i].error));
- 			}
- 		}
--		/* cleanup things in case we are looping */
--		for (j = fd1; j < maxfd; j++) {
--			sprintf(fname, "dup201.%d.%d", j, mypid);
--			(void)close(j);
--			(void)unlink(fname);
--		}
- 	}
- 	cleanup();
- 
-@@ -163,7 +151,6 @@ void setup(void)
- 
- 	/* get some test specific values */
- 	maxfd = getdtablesize();
--	mypid = getpid();
- }
- 
- /*
-@@ -172,6 +159,5 @@ void setup(void)
-  */
- void cleanup(void)
- {
--
- 	tst_rmdir();
- }
+For a given filesystem the support for filling in these flags was added
+at some point to the kernel. If any kernel newer that this version fails
+to fill them up it's a bug.
+
+For ext2 it has been added in:
+
+commit 93bc420ed41df63a18ae794101f7cbf45226a6ef
+Author: yangerkun <yangerkun@huawei.com>
+Date:   Mon Feb 18 09:07:02 2019 +0800
+
+    ext2: support statx syscall
+
+Hence starting kernel 5.0 ext2 (with ext2 driver) has to set the mask.
+
+For ext4 it has been added in:
+
+commit 3209f68b3ca4667069923a325c88b21131bfdf9f
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Mar 31 18:32:17 2017 +0100
+
+	statx: Include a mask for stx_attributes in struct statx
+
+
+Hence for ext4 the flags should be enabled since kernel 4.11
+
+etc.
+
 -- 
-Wu,Haiqiang<frequentemail@126.com>
-
+Cyril Hrubis
+chrubis@suse.cz
