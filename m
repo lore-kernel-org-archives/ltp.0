@@ -1,75 +1,107 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 10 Sep 2019 16:06:48 +0200
-Subject: [LTP] [PATCH v2] BPF: Regression test for 64bit arithmetic
-In-Reply-To: <20190910132338.GB29865@rei>
-References: <20190905124504.24909-1-rpalethorpe@suse.com>
- <496221419.11145941.1568120105161.JavaMail.zimbra@redhat.com>
- <20190910132338.GB29865@rei>
-Message-ID: <87d0g8kzyf.fsf@rpws.prws.suse.cz>
+From: frequent <frequentemail@126.com>
+Date: Wed, 11 Sep 2019 11:37:31 +0800 (CST)
+Subject: [LTP] [PATCH] syscalls/dup2/dup201.c: buffer overflow detected ***:
+ dup201 terminated
+Message-ID: <9146674.351f.16d1e65cf38.Coremail.frequentemail@126.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+From: Wu,Haiqiang <frequentemail@126.com>
 
-Cyril Hrubis <chrubis@suse.cz> writes:
 
-> Hi!
->> > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> > +static int load_prog(int fd)
->> > +{
->> > +	struct bpf_insn *prog;
->> > +	struct bpf_insn insn[] = {
->> > +		BPF_MOV64_IMM(BPF_REG_6, 1),            /* r6 = 1 */
->> > +
->> > +		BPF_LD_MAP_FD(BPF_REG_1, fd),	        /* r1 = &fd */
->> > +		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),   /* r2 = fp */
->> > +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),  /* r2 = r2 - 8 */
->> > +		BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),    /* *r2 = 0 */
->> > +		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
->> > +		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 17), /* if(!r0) goto exit */
->>
->> Patch looks good to me.
->>
->> But I keep thinking if there's way to make it more obvious where
->> offset (e.g. 17) came from.
->>
->> Idea 1: use multiple lines per instruction to denote length
->>   BPF_LD_IMM64(BPF_REG_4,
->>                A64INT),
->>
->> Idea 2: prefix commented instructions with offset
->>         /* 1: r3 = r0 */
->>         /* 2: r4 = 2^61 */
->
-> I guess I like the Idea 2 better.
->
-> Another option would be having eBPF assembler included in the LTP build
-> system. I guess that it may be useful later on and there seems to be one
-> written in python:
->
-> https://github.com/solarflarecom/ebpf_asm
->
-> But for the short term I would go with adding the offset to the
-> comments.
+fixes:#570
 
-Another idea I had was to use place holder values in the instruction
-array which can be substituted.
 
-Infact we could use an invalid instruction code to indicate a goto
-instruction and another code for a tag. Then replace the tag with a NOP
-and replace the goto with a valid jump statement.
+Signed-off-by: Wu,Haiqiang <frequentemail@126.com>
 
-I decided not to try any of that because it seemed like overkill at the
-time. However for a more complex program I can see this getting very
-confusing.
 
-I wonder if an assembler will make things better in some tests and worse
-in others. Sometimes the assembler has pseudo instructions where it is
-not clear what the resulting machine instructions will be.
 
---
-Thank you,
-Richard.
+
+diff --git a/testcases/kernel/syscalls/dup2/dup201.c b/testcases/kernel/syscalls/dup2/dup201.c
+index 4507ac1..762ad86 100644
+--- a/testcases/kernel/syscalls/dup2/dup201.c
++++ b/testcases/kernel/syscalls/dup2/dup201.c
+@@ -75,9 +75,6 @@ int maxfd;
+ int goodfd = 5;
+ int badfd = -1;
+ int mystdout = 0;
+-int fd, fd1;
+-int mypid;
+-char fname[20];
+
+
+ struct test_case_t {
+        int *ofd;
+@@ -86,22 +83,19 @@ struct test_case_t {
+        void (*setupfunc) ();
+ } TC[] = {
+        /* First fd argument is less than 0 - EBADF */
+-       {
+-       &badfd, &goodfd, EBADF, NULL},
+-           /* First fd argument is getdtablesize() - EBADF */
+-       {
+-       &maxfd, &goodfd, EBADF, NULL},
+-           /* Second fd argument is less than 0 - EBADF */
+-       {
+-       &mystdout, &badfd, EBADF, NULL},
+-           /* Second fd argument is getdtablesize() - EBADF */
+-       {
+-&mystdout, &maxfd, EBADF, NULL},};
++       {&badfd, &goodfd, EBADF, NULL},
++       /* First fd argument is getdtablesize() - EBADF */
++       {&maxfd, &goodfd, EBADF, NULL},
++       /* Second fd argument is less than 0 - EBADF */
++       {&mystdout, &badfd, EBADF, NULL},
++       /* Second fd argument is getdtablesize() - EBADF */
++       {&mystdout, &maxfd, EBADF, NULL},
++};
+
+
+ int main(int ac, char **av)
+ {
+        int lc;
+-       int i, j;
++       int i;
+
+
+        tst_parse_opts(ac, av, NULL, NULL);
+
+
+@@ -137,12 +131,6 @@ int main(int ac, char **av)
+                                         strerror(TC[i].error));
+                        }
+                }
+-               /* cleanup things in case we are looping */
+-               for (j = fd1; j < maxfd; j++) {
+-                       sprintf(fname, "dup201.%d.%d", j, mypid);
+-                       (void)close(j);
+-                       (void)unlink(fname);
+-               }
+        }
+        cleanup();
+
+
+@@ -163,7 +151,6 @@ void setup(void)
+
+
+        /* get some test specific values */
+        maxfd = getdtablesize();
+-       mypid = getpid();
+ }
+
+
+ /*
+@@ -172,6 +159,5 @@ void setup(void)
+  */
+ void cleanup(void)
+ {
+-
+        tst_rmdir();
+ }
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190911/e57e12b4/attachment.htm>
