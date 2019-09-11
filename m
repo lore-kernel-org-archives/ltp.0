@@ -1,13 +1,14 @@
 From: Wu,Haiqiang <frequentemail@126.com>
-Date: Wed, 11 Sep 2019 20:13:39 +0800
+Date: Wed, 11 Sep 2019 20:21:41 +0800
 Subject: [LTP] [PATCH] [Fixes]:#570
-Message-ID: <20190911121339.1359-1-frequentemail@126.com>
+Message-ID: <20190911122141.28113-1-frequentemail@126.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Wu,Haiqiang <frequentemail@126.com>
 ---
  testcases/kernel/syscalls/dup2/dup201.c | 24 +++++-------------------
  1 file changed, 5 insertions(+), 19 deletions(-)
