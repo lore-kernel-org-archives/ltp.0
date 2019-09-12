@@ -1,27 +1,38 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Thu, 12 Sep 2019 21:46:51 +0200
-Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
- TST_RETRY_FN()
-In-Reply-To: <1568306963.3621.34.camel@suse.de>
-References: <20190911085536.25546-1-cfamullaconrad@suse.de>
- <20190911165225.2122-1-cfamullaconrad@suse.de>
- <CAEemH2fy0hQc0yXJY0BXf8-9nnzkDW9LEsydyhtHC3Jboc_tFA@mail.gmail.com>
- <1568278363.3621.6.camel@suse.de> <20190912145539.GC22246@dell5510>
- <1568306963.3621.34.camel@suse.de>
-Message-ID: <1568317611.3621.36.camel@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Sep 2019 22:13:15 +0200
+Subject: [LTP] [PATCH 0/3] LTP_TIMEOUT for shell API
+Message-ID: <20190912201318.30931-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2019-09-12 at 18:49 +0200, Clemens Famulla-Conrad wrote:
-> On Thu, 2019-09-12 at 16:55 +0200, Petr Vorel wrote:
-> > 
-> > BTW: I haven't finish patchset doing the same [1]. Feel free to
-> > include docs
-> > from [2].
-> 
-> Thx for that hint, was aware of that patchset [1].
-                        ^
-                        not (important detail :)
+Hi,
+
+patchset replaces LTP_TIMEOUT_MUL for shell and C [1]
+and memcg_stress_test.sh timeout fix [2].
+
+It's also related to Clements fix for TST_RETRY_FN() and tst_adjust_timeout().
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/project/ltp/list/?series=120151&state=*
+[2] https://patchwork.ozlabs.org/patch/1155460/
+[3] https://patchwork.ozlabs.org/project/ltp/list/?submitter=74899
+
+Petr Vorel (3):
+  shell: Add tst_is_num()
+  shell: Introduce LTP_TIMEOUT variable
+  net/if-mtu-change.sh: set LTP_TIMEOUT
+
+ doc/test-writing-guidelines.txt               | 89 ++++++++++++-------
+ .../memcg/stress/memcg_stress_test.sh         |  2 +-
+ testcases/lib/tst_test.sh                     | 31 ++++++-
+ .../network/stress/interface/if-mtu-change.sh |  4 +-
+ 4 files changed, 90 insertions(+), 36 deletions(-)
+
+-- 
+2.22.1
+
