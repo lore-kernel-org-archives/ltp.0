@@ -1,52 +1,27 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Sep 2019 19:01:27 +0200
-Subject: [LTP] [PATCH] memcg_stress_test.sh: Respect LTP_TIMEOUT_MUL set
- by user
-In-Reply-To: <1568306840.3621.32.camel@suse.de>
-References: <CAEemH2dzn92GYwiw2tP101wNkYfM30rfL=cmPU+B1iH-8UWoDw@mail.gmail.com>
- <20190830085036.GA27453@dell5510>
- <9e518589-9c98-1513-2c19-bae0268b8a81@arm.com>
- <20190830104609.GA9330@dell5510>
- <CAEemH2ch1+asP7OKikqrM4Sea2f2xvVB4JPbUqDkm41cFJ+kdg@mail.gmail.com>
- <1568279073.3621.12.camel@suse.de>
- <CAEemH2cw+O5ZrZyQV5qy7wp6-h1SSinu3ENueRG7Gr--xJCRfA@mail.gmail.com>
- <e07d08e2-df58-2114-0278-8f1e50f2ac3a@arm.com>
- <20190912152820.GB1064@dell5510> <1568306840.3621.32.camel@suse.de>
-Message-ID: <20190912170127.GA3035@dell5510>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Thu, 12 Sep 2019 21:46:51 +0200
+Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
+ TST_RETRY_FN()
+In-Reply-To: <1568306963.3621.34.camel@suse.de>
+References: <20190911085536.25546-1-cfamullaconrad@suse.de>
+ <20190911165225.2122-1-cfamullaconrad@suse.de>
+ <CAEemH2fy0hQc0yXJY0BXf8-9nnzkDW9LEsydyhtHC3Jboc_tFA@mail.gmail.com>
+ <1568278363.3621.6.camel@suse.de> <20190912145539.GC22246@dell5510>
+ <1568306963.3621.34.camel@suse.de>
+Message-ID: <1568317611.3621.36.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clements,
-
-> On Thu, 2019-09-12 at 17:28 +0200, Petr Vorel wrote:
-> > Hi,
-
-> > LTP_TIMEOUT_MUL is only for user, LTP_TIMEOUT_MUL_MIN is only for
-> > library.
-> > It's similar to way which is used in virt_lib.sh
-> > (VIRT_PERF_THRESHOLD_MIN).
-
-> Agree that LTP_TIMEOUT_MUL is for the user and the initial timeout
-> value comes from library.
-> I only say, that a LTP_TIMEOUT_MUL_MIN isn't needed from my
-> perspective, if we allow to set a absolute timeout value like
-> TST_TIMEOUT (as we already do in c). Because it has the same effect,
-> setting a minimum timeout value which the user cannot reduce.
-OK, replace LTP_TIMEOUT_MUL_MIN with TST_TIMEOUT set by test, make sense.
-Thanks for a hint :).
-
-
-> > See
-> > https://patchwork.ozlabs.org/patch/1155460/
-
-> > I'll probably sent this patch today although so you can base the work
-> > on it.
-> > Is that ok?
-> sure it is.
-:)
-
-Kind regards,
-Petr
+On Thu, 2019-09-12 at 18:49 +0200, Clemens Famulla-Conrad wrote:
+> On Thu, 2019-09-12 at 16:55 +0200, Petr Vorel wrote:
+> > 
+> > BTW: I haven't finish patchset doing the same [1]. Feel free to
+> > include docs
+> > from [2].
+> 
+> Thx for that hint, was aware of that patchset [1].
+                        ^
+                        not (important detail :)
