@@ -1,36 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 12 Sep 2019 15:56:16 +0300
-Subject: [LTP] [PATCH v4 0/7] net/route: rewrite route-change-{dst, gw,
- if} into new API
-In-Reply-To: <20190903141610.28887-1-pvorel@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Sep 2019 15:26:59 +0200
+Subject: [LTP] [PATCH v4 1/7] tst_net.sh: enhance tst_add_ipaddr(),
+ add tst_del_ipaddr()
+In-Reply-To: <867402c7-9a38-9646-6936-1eb6988a48b8@oracle.com>
 References: <20190903141610.28887-1-pvorel@suse.cz>
-Message-ID: <df197557-8f95-52d5-813e-a5abc73a1af6@oracle.com>
+ <20190903141610.28887-2-pvorel@suse.cz>
+ <867402c7-9a38-9646-6936-1eb6988a48b8@oracle.com>
+Message-ID: <20190912132659.GA22246@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 9/3/19 5:16 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> this version address functionality problems you pointed out.
-> But yet there might need to be another version as I'm not sure about
-> tst_ipaddr_un() API changes.
-> 
-> Changes v3-v4:
-> * enhanced tst_ipaddr_un() with -b, -h -l, -m, -n and -p options (-p was
-> previous -m)
-> * use tst_ipaddr_un() options to fix address clash on host_id, net_id clash fix
-> by adjusting $1 in test (this is really inconsistent, see note at 3/7).
-> * added tests for tst_ipaddr_un()
-> * quiet EXPECT_PASS ping$TST_IPV6
-> 
+Hi Alexey,
 
-The patch-set looks good, the only concerns are:
+> Hi Petr,
+> On 03.09.2019 17:16, Petr Vorel wrote:
+> > These changes are intended for easier handling with IP addresses
+> > (not have to calculate dad for IPv6 when adding IP address).
+> > Add -a IP and -s options to tst_add_ipaddr()
 
-* complicated tst_ipaddr_un(), may be add another high-level function
-  to use raw tst_ipadd_un(), if -b, -f, -n options are really needed?
+> > tst_del_ipaddr() (which uses internally tst_add_ipaddr()) is defined
+> > mainly for better code readability.
+> ...
 
-* if NS_TIMES is large, there are a lot of messages in a test output
-  (it seems NS_TIMES * 4), could we minimize the number of them?
+> > -	tst_res_ TINFO "set remote addr $(tst_ipaddr rhost)/$mask"
+> > -	tst_rhost_run -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface $dad"
+> > +	tst_res_ TINFO "set remote addr $addr"
+
+>                          ^
+>                   Should be $action here?
+Sure, thanks!
+
+
+Kind regards,
+Petr
