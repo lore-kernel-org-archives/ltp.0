@@ -1,47 +1,68 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Thu, 12 Sep 2019 13:37:15 +0800
-Subject: [LTP] [PATCH V2] madvise09:Update PAGES to a larger value
-Message-ID: <1568266635-17666-1-git-send-email-shuang.qiu@oracle.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 12 Sep 2019 13:42:08 +0800
+Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
+ TST_RETRY_FN()
+In-Reply-To: <20190911165225.2122-1-cfamullaconrad@suse.de>
+References: <20190911085536.25546-1-cfamullaconrad@suse.de>
+ <20190911165225.2122-1-cfamullaconrad@suse.de>
+Message-ID: <CAEemH2fy0hQc0yXJY0BXf8-9nnzkDW9LEsydyhtHC3Jboc_tFA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+On Thu, Sep 12, 2019 at 12:52 AM Clemens Famulla-Conrad <
+cfamullaconrad@suse.de> wrote:
 
-In upstream patch 1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state()),
-it modify the lruvec state in batch,equal and less than 32 MADV_FREE pages will not trigger
-the account of lruvec_stat,and will not be free in memory pressure either.
-So the testcase may fail with:
-...
-madvise09.c:219: INFO: Memory hungry child 6178 started, try 10
-madvise09.c:254: INFO: Memory map: pppppppppppppppppppppppppppppppp
-madvise09.c:259: FAIL: No MADV_FREE page was freed on low memory
-...
-We should allocate several megabytes to avoid depending kernel implementation details, 
-which would mean allocating thousands of pages.
-Setting PAGES=970 so that it will just avoid hitting the WARN that "message is too long" 
-in tst_res(TINFO, "Memory map: %s", map).
+> Because of timeout problems when using TST_RETRY_FN() we do now use
+> LTP_TIMEOUT_MUL to adopt the timeout value.
+>
+> Introduced tst_adjut_timeout function to have a generic place to
+> adopt timeout values.
+>
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What about using tst_multipy_timeout as the function name? Since it only
+raises the timeout value with a multiplier.
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-index 01075f6..3759053 100644
---- a/testcases/kernel/syscalls/madvise/madvise09.c
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -57,7 +57,7 @@ static int sleep_between_faults;
- 
- static int swap_accounting_enabled;
- 
--#define PAGES 32
-+#define PAGES 970
- #define TOUCHED_PAGE1 0
- #define TOUCHED_PAGE2 10
- 
+
+>
+> Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+> ---
+>  testcases/lib/tst_test.sh | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index e0b24c6b9..03692e503 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -164,7 +164,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+>  {
+>         local tst_fun="$1"
+>         local tst_exp=$2
+> -       local tst_sec=$(expr $3 \* 1000000)
+> +       local tst_sec=$(tst_adjust_timeout $(expr $3 \* 1000000))
+>         local tst_delay=1
+>
+>         if [ $# -ne 3 ]; then
+> @@ -371,12 +371,16 @@ _tst_rescmp()
+>         fi
+>  }
+>
+> -
+> -_tst_setup_timer()
+> +tst_adjust_timeout()
+>  {
+>         LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+> +       local timeout=$1
+> +       echo $(( timeout * LTP_TIMEOUT_MUL))
+>
+
+Shouldn't we check the LTP_TIMEOUT_MUL > 1 before using it?
+
 -- 
-1.9.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190912/d28e6372/attachment.htm>
