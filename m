@@ -1,53 +1,58 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Sep 2019 17:07:40 +0200
-Subject: [LTP] [PATCH v4 0/7] net/route: rewrite route-change-{dst, gw,
- if} into new API
-In-Reply-To: <ed511992-8853-b7ca-9a8a-84c98f26887d@oracle.com>
-References: <20190903141610.28887-1-pvorel@suse.cz>
- <df197557-8f95-52d5-813e-a5abc73a1af6@oracle.com>
- <20190912134826.GB22246@dell5510>
- <ed511992-8853-b7ca-9a8a-84c98f26887d@oracle.com>
-Message-ID: <20190912150740.GA1064@dell5510>
+Date: Thu, 12 Sep 2019 17:28:20 +0200
+Subject: [LTP] [PATCH] memcg_stress_test.sh: Respect LTP_TIMEOUT_MUL set
+ by user
+In-Reply-To: <e07d08e2-df58-2114-0278-8f1e50f2ac3a@arm.com>
+References: <20190829181146.20261-1-pvorel@suse.cz>
+ <CAEemH2dzn92GYwiw2tP101wNkYfM30rfL=cmPU+B1iH-8UWoDw@mail.gmail.com>
+ <20190830085036.GA27453@dell5510>
+ <9e518589-9c98-1513-2c19-bae0268b8a81@arm.com>
+ <20190830104609.GA9330@dell5510>
+ <CAEemH2ch1+asP7OKikqrM4Sea2f2xvVB4JPbUqDkm41cFJ+kdg@mail.gmail.com>
+ <1568279073.3621.12.camel@suse.de>
+ <CAEemH2cw+O5ZrZyQV5qy7wp6-h1SSinu3ENueRG7Gr--xJCRfA@mail.gmail.com>
+ <e07d08e2-df58-2114-0278-8f1e50f2ac3a@arm.com>
+Message-ID: <20190912152820.GB1064@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi,
 
-> > Another option is to have single option for adding both MAX and MIN:
+> > @Petr and @Cristian, If I misunderstand anything, please correct me.
 
-> > -h MIN,MAX # for HOST_ID
-> > -n MIN,MAX # for NET_ID
+> my understanding was that:
 
-> > (e.g. -n5,255 -h1,255)
+> - we should already be able to set a non default per-test timeout using
+>   the existing global LTP_TIMEOUT_MUL (and we are)
 
-> It can be the best option,
+> - in this test we hardcoded such LTP_TIMEOUT_MUL to 7 because is the minimum sane
+>   value for this test (less than 7 and it fails 100%)
 
+> - we want to allow again the user to specify its own LTP_TIMEOUT_MUL if he wants
+>   BUT also being able to enforce on a test by test basis a MINIMUM allowed value:
+>   so we would define LTP_TIMEOUT_MUL_MIN=7 here, and then a user would be free to 
+>   run LTP with a different global LTP_TIMEOUT_MUL but when running this test
 
-> > But it looks to me a bit uncomfortable having to always to add both min and max.
+>   + if LTP_TIMEOUT_MUL < LTP_TIMEOUT_MUL_MIN ===> use local LTP_TIMEOUT_MUL_MIN
+>   + if LTP_TIMEOUT_MUL >= LTP_TIMEOUT_MUL_MIN  ===> use global LTP_TIMEOUT_MUL
 
-> max "-n ,254" or min "-n 2"?
-Great, thanks! How simple and elegant solution :).
+LTP_TIMEOUT_MUL is only for user, LTP_TIMEOUT_MUL_MIN is only for library.
+It's similar to way which is used in virt_lib.sh (VIRT_PERF_THRESHOLD_MIN).
+See
+https://patchwork.ozlabs.org/patch/1155460/
 
-
-> >> * if NS_TIMES is large, there are a lot of messages in a test output
-> >>   (it seems NS_TIMES * 4), could we minimize the number of them?
-
-> > I can add -q option to tst_add_ipaddr() which usage will make it NS_TIMES * 2. (1)
-> > If it's still too much I'll drop "testing route over ..." (2)
-> > Other option would be to print only even Nth iteration (I don't think it's a
-> > good idea) or even has only single TPASS/TFAIL.
-
-> > BTW don't we want end testing on first failure?
-
-> Agree, why not.
-OK, it'll be in v5.
-
-I'd prefer to change EXPECT_{PASS,FAIL} to return exit value so we can detect
-the failure, but that would expect tst_res to return exit code as well.
-(not sure, if it's a radical change).
+I'll probably sent this patch today although so you can base the work on it.
+Is that ok?
 
 Kind regards,
 Petr
+
+> This way you don't break specific tests' needs while allowing the user to global reduce
+> run-time....now basically the user cannot enforce a higher timeout on this test
+> using the global LTP_TIMEOUT_MUL even if it should be allowed to since this wouldn't
+> break the test.
+
+> ...unless I misunderstood too o_O :D
