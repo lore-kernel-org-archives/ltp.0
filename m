@@ -1,82 +1,91 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 12 Sep 2019 17:18:17 +0300
-Subject: [LTP] [PATCH v4 0/7] net/route: rewrite route-change-{dst, gw,
- if} into new API
-In-Reply-To: <20190912134826.GB22246@dell5510>
-References: <20190903141610.28887-1-pvorel@suse.cz>
- <df197557-8f95-52d5-813e-a5abc73a1af6@oracle.com>
- <20190912134826.GB22246@dell5510>
-Message-ID: <ed511992-8853-b7ca-9a8a-84c98f26887d@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Sep 2019 16:55:39 +0200
+Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
+ TST_RETRY_FN()
+In-Reply-To: <1568278363.3621.6.camel@suse.de>
+References: <20190911085536.25546-1-cfamullaconrad@suse.de>
+ <20190911165225.2122-1-cfamullaconrad@suse.de>
+ <CAEemH2fy0hQc0yXJY0BXf8-9nnzkDW9LEsydyhtHC3Jboc_tFA@mail.gmail.com>
+ <1568278363.3621.6.camel@suse.de>
+Message-ID: <20190912145539.GC22246@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 9/12/19 4:48 PM, Petr Vorel wrote:
-> Hi Alexey,
-> 
-> first, thanks for your review.
-> 
-> ..
->>> this version address functionality problems you pointed out.
->>> But yet there might need to be another version as I'm not sure about
->>> tst_ipaddr_un() API changes.
-> 
->>> Changes v3-v4:
->>> * enhanced tst_ipaddr_un() with -b, -h -l, -m, -n and -p options (-p was
->>> previous -m)
->>> * use tst_ipaddr_un() options to fix address clash on host_id, net_id clash fix
->>> by adjusting $1 in test (this is really inconsistent, see note at 3/7).
->>> * added tests for tst_ipaddr_un()
->>> * quiet EXPECT_PASS ping$TST_IPV6
-> 
-> 
->> The patch-set looks good, the only concerns are:
-> 
->> * complicated tst_ipaddr_un(), may be add another high-level function
->>   to use raw tst_ipadd_un(), if -b, -f, -n options are really needed?
-> Sure. I'll keep only -l and -m and drop -b, -f, -n and -h as not needed ATM.
-> And add them via high-level function only if needed.
-> 
-> In that case I'd like to have -l and -m functionality also for NET_ID (already
-> needed in route-change-dst.sh). But not sure which options would be for it
-> (it'd be easy with long opts, but we don't want to depend on /usr/bin/getopt,
-> nor to parse it manually although of course doable)
-> 
-> Another option is to have single option for adding both MAX and MIN:
-> 
-> -h MIN,MAX # for HOST_ID
-> -n MIN,MAX # for NET_ID
-> 
-> (e.g. -n5,255 -h1,255)
->
+Hi Clemens,
 
-It can be the best option,
+> On Thu, 2019-09-12 at 13:42 +0800, Li Wang wrote:
+> > On Thu, Sep 12, 2019 at 12:52 AM Clemens Famulla-Conrad <
+> > cfamullaconrad@suse.de> wrote:
 
- 
-> But it looks to me a bit uncomfortable having to always to add both min and max.
+> > > Because of timeout problems when using TST_RETRY_FN() we do now use
+> > > LTP_TIMEOUT_MUL to adopt the timeout value.
 
-max "-n ,254" or min "-n 2"?
+> > > Introduced tst_adjut_timeout function to have a generic place to
+> > > adopt timeout values.
 
 
-> 
->> * if NS_TIMES is large, there are a lot of messages in a test output
->>   (it seems NS_TIMES * 4), could we minimize the number of them?
-> 
-> I can add -q option to tst_add_ipaddr() which usage will make it NS_TIMES * 2. (1)
-> If it's still too much I'll drop "testing route over ..." (2)
-> Other option would be to print only even Nth iteration (I don't think it's a
-> good idea) or even has only single TPASS/TFAIL.
-> 
-> BTW don't we want end testing on first failure?
+> > What about using tst_multipy_timeout as the function name? Since it
+> > only
+> > raises the timeout value with a multiplier.
++1.
 
-Agree, why not.
+> I had a this patchset [1] in my mind. 
+> Maybe we will also apply a minimum. But we would still just multiply :)
+> so Sure we can name it tst_multiply_timeout().
+
+> [1]https://patchwork.ozlabs.org/patch/1155460
 
 
-> 
-> 
-> Kind regards,
-> Petr
-> 
 
+> > > Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+> > > ---
+> > >  testcases/lib/tst_test.sh | 12 ++++++++----
+> > >  1 file changed, 8 insertions(+), 4 deletions(-)
+
+> > > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> > > index e0b24c6b9..03692e503 100644
+> > > --- a/testcases/lib/tst_test.sh
+> > > +++ b/testcases/lib/tst_test.sh
+> > > @@ -164,7 +164,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+> > >  {
+> > >         local tst_fun="$1"
+> > >         local tst_exp=$2
+> > > -       local tst_sec=$(expr $3 \* 1000000)
+> > > +       local tst_sec=$(tst_adjust_timeout $(expr $3 \* 1000000))
+> > >         local tst_delay=1
+
+> > >         if [ $# -ne 3 ]; then
+> > > @@ -371,12 +371,16 @@ _tst_rescmp()
+> > >         fi
+> > >  }
+
+> > > -
+> > > -_tst_setup_timer()
+> > > +tst_adjust_timeout()
+> > >  {
+> > >         LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+> > > +       local timeout=$1
+> > > +       echo $(( timeout * LTP_TIMEOUT_MUL))
+
+> > Shouldn't we check the LTP_TIMEOUT_MUL > 1 before using it?
+Also timeout should be checked.
+I'd tst_brk TBROK if either of them is < 0.
+
+> Yes, thx for the hint.
+
+BTW: I haven't finish patchset doing the same [1]. Feel free to include docs
+from [2].
+
+I'll also sent tonight LTP_TIMEOUT_MUL_MIN (as part of v2 for [3]).
+But it should be trivial to rebase changes of the later commit (whoever gets merged first).
+
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/project/ltp/list/?series=120151&state=*
+[2] https://patchwork.ozlabs.org/patch/1133627/
+[3] https://patchwork.ozlabs.org/patch/1155460/
