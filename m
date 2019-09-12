@@ -1,46 +1,99 @@
 From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Thu, 12 Sep 2019 18:47:20 +0200
-Subject: [LTP] [PATCH] memcg_stress_test.sh: Respect LTP_TIMEOUT_MUL set
- by user
-In-Reply-To: <20190912152820.GB1064@dell5510>
-References: <20190829181146.20261-1-pvorel@suse.cz>
- <CAEemH2dzn92GYwiw2tP101wNkYfM30rfL=cmPU+B1iH-8UWoDw@mail.gmail.com>
- <20190830085036.GA27453@dell5510>
- <9e518589-9c98-1513-2c19-bae0268b8a81@arm.com>
- <20190830104609.GA9330@dell5510>
- <CAEemH2ch1+asP7OKikqrM4Sea2f2xvVB4JPbUqDkm41cFJ+kdg@mail.gmail.com>
- <1568279073.3621.12.camel@suse.de>
- <CAEemH2cw+O5ZrZyQV5qy7wp6-h1SSinu3ENueRG7Gr--xJCRfA@mail.gmail.com>
- <e07d08e2-df58-2114-0278-8f1e50f2ac3a@arm.com>
- <20190912152820.GB1064@dell5510>
-Message-ID: <1568306840.3621.32.camel@suse.de>
+Date: Thu, 12 Sep 2019 18:49:23 +0200
+Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
+ TST_RETRY_FN()
+In-Reply-To: <20190912145539.GC22246@dell5510>
+References: <20190911085536.25546-1-cfamullaconrad@suse.de>
+ <20190911165225.2122-1-cfamullaconrad@suse.de>
+ <CAEemH2fy0hQc0yXJY0BXf8-9nnzkDW9LEsydyhtHC3Jboc_tFA@mail.gmail.com>
+ <1568278363.3621.6.camel@suse.de> <20190912145539.GC22246@dell5510>
+Message-ID: <1568306963.3621.34.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2019-09-12 at 17:28 +0200, Petr Vorel wrote:
-> Hi,
+On Thu, 2019-09-12 at 16:55 +0200, Petr Vorel wrote:
+> Hi Clemens,
 > 
-> LTP_TIMEOUT_MUL is only for user, LTP_TIMEOUT_MUL_MIN is only for
-> library.
-> It's similar to way which is used in virt_lib.sh
-> (VIRT_PERF_THRESHOLD_MIN).
-
-Agree that LTP_TIMEOUT_MUL is for the user and the initial timeout
-value comes from library.
-I only say, that a LTP_TIMEOUT_MUL_MIN isn't needed from my
-perspective, if we allow to set a absolute timeout value like
-TST_TIMEOUT (as we already do in c). Because it has the same effect,
-setting a minimum timeout value which the user cannot reduce.
-
-
-> See
-> https://patchwork.ozlabs.org/patch/1155460/
+> > On Thu, 2019-09-12 at 13:42 +0800, Li Wang wrote:
+> > > On Thu, Sep 12, 2019 at 12:52 AM Clemens Famulla-Conrad <
+> > > cfamullaconrad@suse.de> wrote:
+> > > > Because of timeout problems when using TST_RETRY_FN() we do now
+> > > > use
+> > > > LTP_TIMEOUT_MUL to adopt the timeout value.
+> > > > Introduced tst_adjut_timeout function to have a generic place
+> > > > to
+> > > > adopt timeout values.
 > 
-> I'll probably sent this patch today although so you can base the work
-> on it.
-> Is that ok?
-sure it is.
+> 
+> > > What about using tst_multipy_timeout as the function name? Since
+> > > it
+> > > only
+> > > raises the timeout value with a multiplier.
+> 
+> +1.
+> 
+> > I had a this patchset [1] in my mind. 
+> > Maybe we will also apply a minimum. But we would still just
+> > multiply :)
+> > so Sure we can name it tst_multiply_timeout().
+> > [1]https://patchwork.ozlabs.org/patch/1155460
+> 
+> 
+> 
+> > > > Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+> > > > ---
+> > > >  testcases/lib/tst_test.sh | 12 ++++++++----
+> > > >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > > > diff --git a/testcases/lib/tst_test.sh
+> > > > b/testcases/lib/tst_test.sh
+> > > > index e0b24c6b9..03692e503 100644
+> > > > --- a/testcases/lib/tst_test.sh
+> > > > +++ b/testcases/lib/tst_test.sh
+> > > > @@ -164,7 +164,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+> > > >  {
+> > > >         local tst_fun="$1"
+> > > >         local tst_exp=$2
+> > > > -       local tst_sec=$(expr $3 \* 1000000)
+> > > > +       local tst_sec=$(tst_adjust_timeout $(expr $3 \*
+> > > > 1000000))
+> > > >         local tst_delay=1
+> > > >         if [ $# -ne 3 ]; then
+> > > > @@ -371,12 +371,16 @@ _tst_rescmp()
+> > > >         fi
+> > > >  }
+> > > > -
+> > > > -_tst_setup_timer()
+> > > > +tst_adjust_timeout()
+> > > >  {
+> > > >         LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+> > > > +       local timeout=$1
+> > > > +       echo $(( timeout * LTP_TIMEOUT_MUL))
+> > > Shouldn't we check the LTP_TIMEOUT_MUL > 1 before using it?
+> 
+> Also timeout should be checked.
+> I'd tst_brk TBROK if either of them is < 0.
+> 
+> > Yes, thx for the hint.
+> 
+> BTW: I haven't finish patchset doing the same [1]. Feel free to
+> include docs
+> from [2].
+
+Thx for that hint, was aware of that patchset [1].
+
+> I'll also sent tonight LTP_TIMEOUT_MUL_MIN (as part of v2 for [3]).
+> But it should be trivial to rebase changes of the later commit
+> (whoever gets merged first).
+> 
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://patchwork.ozlabs.org/project/ltp/list/?series=120151&stat
+> e=*
+> [2] https://patchwork.ozlabs.org/patch/1133627/
+> [3] https://patchwork.ozlabs.org/patch/1155460/
 
