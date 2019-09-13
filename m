@@ -1,30 +1,19 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Sep 2019 15:07:28 +0200
-Subject: [LTP] LTP Release
-In-Reply-To: <20190906130707.GA7515@rei.lan>
-References: <20190906130707.GA7515@rei.lan>
-Message-ID: <20190913130728.GA335@dell5510>
+From: Patricia Mikando <patmika28@gmail.com>
+Date: Fri, 13 Sep 2019 04:16:16 +0000
+Subject: [LTP] wish you all the best
+Message-ID: <CAMFDpzUZjFfoq81at_ob35prOzDsSTcYuzBQTrcj4BLS2UiFVw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-
-> Hi!
-> As usually we should start prepare for a release somewhere at the end of
-> the September.
-
-> I will try to review as much patches as possible next week, then I would
-> like to start the pre-release testing. So if there is something that
-> really should go in before the release let me know.
-I'd like to have shell timeout fixes + enhancements [1].
-I hope I'll send route shell tests rewrite v5, tst_res return exit value [2] is a preparation
-for it (if acceptable).
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=130562&state=*
-[2] https://patchwork.ozlabs.org/patch/1161773/
+I hope this email finds you.
+I want to know if you received the last message I sent you?
+I really want to hear from you.
+wish you all the best.
+Patricia Mikando......
+I look forward to your response.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190913/65c2732a/attachment.htm>
