@@ -1,47 +1,46 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Sep 2019 15:58:04 +0200
-Subject: [LTP] Kdump update required
-In-Reply-To: <VI1PR0101MB2557DC78E7B6994F8429AE11F0B30@VI1PR0101MB2557.eurprd01.prod.exchangelabs.com>
-References: <VI1PR0101MB2557DC78E7B6994F8429AE11F0B30@VI1PR0101MB2557.eurprd01.prod.exchangelabs.com>
-Message-ID: <20190913135803.GC7939@rei>
+Date: Fri, 13 Sep 2019 16:05:41 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/madvise09: Workaround failures
+ on newer kernels
+Message-ID: <20190913140541.2753-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I am writing to you about the kdump. I am trying to run kdump on Debian 9 (Stretch), but the "setup.sh" has a small error as you can see below, based on the error received:
-> 
->   CC      /root/Desktop/ltp/testcases/kdump/lib/lkdtm/lkdtm.mod.o
->   LD [M]  /root/Desktop/ltp/testcases/kdump/lib/lkdtm/lkdtm.ko
-> make[3]: Leaving directory '/usr/src/linux-headers-4.9.0-9-amd64'
-> make[2]: Leaving directory '/root/Desktop/ltp/testcases/kdump/lib/lkdtm'
-> make[1]: Leaving directory '/root/Desktop/ltp/testcases/kdump/lib'
-> + echo Modify Boot Loader.
-> Modify Boot Loader.
-> + [ x86_64 = ppc64 ]
-> + [ x86_64 = i686 ]
-> + [ x86_64 = ia64 ]
-> + args=crashkernel=256M@128M
-> + [ -x /sbin/grubby ]
-> + echo Warn: please make sure the following arguments are in Boot Loader:
-> Warn: please make sure the following arguments are in Boot Loader:
-> + echo crashkernel=256M@128M
-> crashkernel=256M@128M
-> + echo Hit any key when ready.
+This is a short term workaround that bumps the number of allocated pages
+to 128 because which is needed since kernel commit:
 
-This tells you to modify the bootloader command line by hand.
+1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state())
 
-> Hit any key when ready.
-> + read
-> ./setup.sh: 105: read: arg count
-> Makefile:2: recipe for target 'all' failed
-> make: *** [all] Error 2
+After a discussion with kernel developers we concluded that in order to
+avoid depending on kernel internal implementation details we have to
+allocate a dozen of megabytes instead, but that would require a more
+complex changes to the test. As we are getting close to a LTP release we
+decided to put this workaround in first, then we can rewrite the test
+after the release.
 
-This is a harmless error caused by the fact that debian uses dash as a
-default shell.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+Acked-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 01075f641..cd556920c 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -57,7 +57,7 @@ static int sleep_between_faults;
+ 
+ static int swap_accounting_enabled;
+ 
+-#define PAGES 32
++#define PAGES 128
+ #define TOUCHED_PAGE1 0
+ #define TOUCHED_PAGE2 10
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0
+
