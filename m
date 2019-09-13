@@ -1,64 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Sep 2019 14:58:21 +0200
-Subject: [LTP] [PATCH v2 1/3] shell: Add tst_is_num()
-In-Reply-To: <20190913125823.17314-1-pvorel@suse.cz>
-References: <20190913125823.17314-1-pvorel@suse.cz>
-Message-ID: <20190913125823.17314-2-pvorel@suse.cz>
+Date: Fri, 13 Sep 2019 14:58:20 +0200
+Subject: [LTP] [PATCH v2 0/3] LTP_TIMEOUT for shell API
+Message-ID: <20190913125823.17314-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using grep -E, which more portable than using awk or anything else.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/test-writing-guidelines.txt | 6 ++++++
- testcases/lib/tst_test.sh       | 7 ++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+changes v1->v2:
+addressed issues reported by Clemens and Cristian (thanks!)
+* s/LTP_TIMEOUT/TST_TIMEOUT in whole patchset (assume for test variable
+is better to stick with TST_ prefix)
+* fix int/float $LTP_TIMEOUT_MUL detection algorithm (added missing parameter "$LTP_TIMEOUT_MUL"
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a735b43bb..2d118578f 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2259,6 +2259,12 @@ Checking for integers
- tst_is_int "$FOO"
- -------------------------------------------------------------------------------
- 
-+Checking for integers and floating point numbers
-+++++++++++++++++++++++++++++++++++++++++++++++++
-+# returns zero if passed an integer or floating point number parameter, non-zero otherwise
-+tst_is_num "$FOO"
-+-------------------------------------------------------------------------------
-+
- Obtaining random numbers
- ++++++++++++++++++++++++
- 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index e0b24c6b9..ca63745fd 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) Linux Test Project, 2014-2018
-+# Copyright (c) Linux Test Project, 2014-2019
- # Author: Cyril Hrubis <chrubis@suse.cz>
- #
- # LTP test library for shell.
-@@ -344,6 +344,11 @@ tst_is_int()
- 	return $?
- }
- 
-+tst_is_num()
-+{
-+	echo "$1" | grep -Eq '^[-+]?[0-9]+\.?[0-9]*$'
-+}
-+
- tst_usage()
- {
- 	if [ -n "$TST_USAGE" ]; then
++ other fixes:
+* add "TIMEOUT" to filter in tst_run() (to filter out TST_TIMEOUT)
+* round $sec off to make it being int, so that for $h $m $s calculations
+it's possible to use $(( )).
+
+Questions:
+* I don't know how to detect TST_TIMEOUT settings made by user. That's
+the difference from C, where user cannot overwrite tst_test->test.
+Am I missing something or it's not possible to detect whether variable
+was set in code or by user?
+Maybe that was the reason TST_TIMEOUT wasn't set, but rather fixed.
+
+* Code allowing $LTP_TIMEOUT_MUL being also float making code a bit
+complex. If you don't like it, I suggest to change $LTP_TIMEOUT_MUL
+being for both C and shell integer, but I'd prefer the possibility to be float.
+(it's might be handy being able to set timeout 1.33x which is far less
+than 2x for int).
+
+Kind regards,
+Petr
+
+Petr Vorel (3):
+  shell: Add tst_is_num()
+  shell: Introduce TST_TIMEOUT variable
+  net/if-mtu-change.sh: set TST_TIMEOUT
+
+ doc/test-writing-guidelines.txt               | 89 ++++++++++++-------
+ .../memcg/stress/memcg_stress_test.sh         |  2 +-
+ testcases/lib/tst_test.sh                     | 43 ++++++++-
+ .../network/stress/interface/if-mtu-change.sh |  4 +-
+ 4 files changed, 101 insertions(+), 37 deletions(-)
+
 -- 
 2.22.1
 
