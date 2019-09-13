@@ -1,46 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Sep 2019 16:05:41 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/madvise09: Workaround failures
- on newer kernels
-Message-ID: <20190913140541.2753-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Sep 2019 18:07:13 +0200
+Subject: [LTP] acct02 failure [was: Re:  LTP Release]
+In-Reply-To: <20190910130549.GC18210@rei.lan>
+References: <20190906130707.GA7515@rei.lan>
+ <CAEemH2frzqyUmgm2mXTG3dusUtggwX4Y3oRBr34p+NCUJFW7_g@mail.gmail.com>
+ <20190910130549.GC18210@rei.lan>
+Message-ID: <20190913160713.GA25195@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a short term workaround that bumps the number of allocated pages
-to 128 because which is needed since kernel commit:
+Hi,
 
-1a61ab (mm: memcontrol: replace zone summing with lruvec_page_state())
+> > acct02 (s390x):
+> > acct02.c:174: INFO: Verifying using 'struct acct_v3'
+> > acct02.c:140: INFO: Number of accounting file entries tested: 2
+> > acct02.c:145: FAIL: acct() wrote incorrect file contents!
 
-After a discussion with kernel developers we concluded that in order to
-avoid depending on kernel internal implementation details we have to
-allocate a dozen of megabytes instead, but that would require a more
-complex changes to the test. As we are getting close to a LTP release we
-decided to put this workaround in first, then we can rewrite the test
-after the release.
+> I can reproduce it here as well, no idea what is wrong there. I guess
+> that modifying the test to be more verbose, i.e. to print if we haven't
+> matched the pid or if the contents of the structure were wrong would be
+> a good start.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
-Acked-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/madvise/madvise09.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I discovered failure on x86_64 on kernel 5.3.0-rc6-3.g8b30bf3-default (openSUSE)
+and 5.2.9 (Debian), which or might not be related.
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-index 01075f641..cd556920c 100644
---- a/testcases/kernel/syscalls/madvise/madvise09.c
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -57,7 +57,7 @@ static int sleep_between_faults;
- 
- static int swap_accounting_enabled;
- 
--#define PAGES 32
-+#define PAGES 128
- #define TOUCHED_PAGE1 0
- #define TOUCHED_PAGE2 10
- 
--- 
-2.21.0
-
+Kind regards,
+Petr
