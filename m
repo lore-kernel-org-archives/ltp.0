@@ -1,121 +1,64 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Sep 2019 13:46:14 +0200
-Subject: [LTP] [PATCH v3] BPF: Regression test for 64bit arithmetic
-In-Reply-To: <1568372120.3306.13.camel@suse.de>
-References: <20190911095422.11767-1-rpalethorpe@suse.com>
- <1568372120.3306.13.camel@suse.de>
-Message-ID: <20190913114613.GA7939@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Sep 2019 14:58:21 +0200
+Subject: [LTP] [PATCH v2 1/3] shell: Add tst_is_num()
+In-Reply-To: <20190913125823.17314-1-pvorel@suse.cz>
+References: <20190913125823.17314-1-pvorel@suse.cz>
+Message-ID: <20190913125823.17314-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +		BPF_LD_IMM64(BPF_REG_4, A64INT),        /* 21: r4 =
-> > 2^61 */
->   ^
->   I think 2^61 is different to 1<<60
+Using grep -E, which more portable than using awk or anything else.
 
-Agreed, 1<<60 is 2^60
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/test-writing-guidelines.txt | 6 ++++++
+ testcases/lib/tst_test.sh       | 7 ++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-> > +		BPF_ALU64_REG(BPF_SUB, BPF_REG_4, BPF_REG_6), /* 23:
-> > r4 -= r6 */
-> > +		BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_4, 0), /* 24:
-> > *r3 = r4 */
-> > +
-> > +		BPF_MOV64_IMM(BPF_REG_0, 0),            /* 25: r0 =
-> > 0 */
-> > +		BPF_EXIT_INSN(),		        /* 26:
-> > return r0 */
-> > +	};
-> > +
-> > +	/* Leaks memory when -i is specified */
-> > +	prog = tst_alloc(sizeof(insn));
-> > +	memcpy(prog, insn, sizeof(insn));
-> > +
-> > +	memset(attr, 0, sizeof(*attr));
-> > +	attr->prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-> > +	attr->insns = ptr_to_u64(prog);
-> > +	attr->insn_cnt = ARRAY_SIZE(insn);
-> > +	attr->license = ptr_to_u64("GPL");
-> > +	attr->log_buf = ptr_to_u64(log);
-> > +	attr->log_size = BUFSIZ;
-> > +	attr->log_level = 1;
-> > +
-> > +	TEST(bpf(BPF_PROG_LOAD, attr, sizeof(*attr)));
-> > +	if (TST_RET == -1) {
-> > +		if (log[0] != 0) {
-> > +			tst_res(TINFO, "Verification log:");
-> > +			fputs(log, stderr);
-> > +			tst_brk(TBROK | TTERRNO, "Failed
-> > verification");
-> > +		} else {
-> > +			tst_brk(TBROK | TTERRNO, "Failed to load
-> > program");
-> > +		}
-> > +	}
-> > +
-> > +	return TST_RET;
-> > +}
-> > +
-> > +static void setup(void)
-> > +{
-> > +	memcpy(msg, MSG, sizeof(MSG));
-> > +}
-> > +
-> > +static void run(void)
-> > +{
-> > +	int map_fd, prog_fd;
-> > +	int sk[2];
-> > +
-> > +	memset(attr, 0, sizeof(*attr));
-> > +	attr->map_type = BPF_MAP_TYPE_ARRAY;
-> > +	attr->key_size = 4;
-> > +	attr->value_size = 8;
-> > +	attr->max_entries = 2;
-> > +
-> > +	TEST(bpf(BPF_MAP_CREATE, attr, sizeof(*attr)));
-> > +	if (TST_RET == -1) {
-> > +		if (TST_ERR == EPERM) {
-> > +			tst_brk(TCONF | TTERRNO,
-> > +				"bpf() requires CAP_SYS_ADMIN on
-> > this system");
-> > +		} else {
-> > +			tst_brk(TBROK | TTERRNO, "Failed to create
-> > array map");
-> > +		}
-> > +	}
-> > +	map_fd = TST_RET;
-> > +
-> > +	prog_fd = load_prog(map_fd);
-> > +
-> > +	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
-> > +	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
-> > +			&prog_fd, sizeof(prog_fd));
-> > +
-> > +	SAFE_WRITE(1, sk[0], msg, sizeof(MSG));
-> > +
-> > +	memset(attr, 0, sizeof(*attr));
-> > +	attr->map_fd = map_fd;
-> > +	attr->key = ptr_to_u64(key);
-> > +	attr->value = ptr_to_u64(val);
-> > +	*key = 0;
-> > +
-> > +	TEST(bpf(BPF_MAP_LOOKUP_ELEM, attr, sizeof(*attr)));
-> > +	if (TST_RET == -1) {
-> > +		tst_res(TFAIL | TTERRNO, "array map lookup");
-> > +	} else if (*val != A64INT + 1) {
-> > +		tst_res(TFAIL,
-> > +			"val = %lu, but should be val = %lu + 1",
->                                 ^
-> Not sure if it is really needed but I would use %llu here. If so, other
-> places as well.
-
-Technically we should be using PRIu64 which expands to %lu on 64 bit and
-to %llu on 32 bit. But given that sizeof(long long) == sizeof(long) on
-64 bit on Linux %llu should work as well.
-
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index a735b43bb..2d118578f 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -2259,6 +2259,12 @@ Checking for integers
+ tst_is_int "$FOO"
+ -------------------------------------------------------------------------------
+ 
++Checking for integers and floating point numbers
++++++++++++++++++++++++++++++++++++++++++++++++++
++# returns zero if passed an integer or floating point number parameter, non-zero otherwise
++tst_is_num "$FOO"
++-------------------------------------------------------------------------------
++
+ Obtaining random numbers
+ ++++++++++++++++++++++++
+ 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index e0b24c6b9..ca63745fd 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) Linux Test Project, 2014-2018
++# Copyright (c) Linux Test Project, 2014-2019
+ # Author: Cyril Hrubis <chrubis@suse.cz>
+ #
+ # LTP test library for shell.
+@@ -344,6 +344,11 @@ tst_is_int()
+ 	return $?
+ }
+ 
++tst_is_num()
++{
++	echo "$1" | grep -Eq '^[-+]?[0-9]+\.?[0-9]*$'
++}
++
+ tst_usage()
+ {
+ 	if [ -n "$TST_USAGE" ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.22.1
+
