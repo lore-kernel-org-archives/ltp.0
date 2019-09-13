@@ -1,53 +1,46 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Sep 2019 14:58:20 +0200
-Subject: [LTP] [PATCH v2 0/3] LTP_TIMEOUT for shell API
-Message-ID: <20190913125823.17314-1-pvorel@suse.cz>
+Date: Fri, 13 Sep 2019 14:58:23 +0200
+Subject: [LTP] [PATCH v2 3/3] net/if-mtu-change.sh: set TST_TIMEOUT
+In-Reply-To: <20190913125823.17314-1-pvorel@suse.cz>
+References: <20190913125823.17314-1-pvorel@suse.cz>
+Message-ID: <20190913125823.17314-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+The default setup (100 * 5 seconds just for sleep) is longer than default timeout.
+30 sec for each iteration should be more than enough as a default.
 
-changes v1->v2:
-addressed issues reported by Clemens and Cristian (thanks!)
-* s/LTP_TIMEOUT/TST_TIMEOUT in whole patchset (assume for test variable
-is better to stick with TST_ prefix)
-* fix int/float $LTP_TIMEOUT_MUL detection algorithm (added missing parameter "$LTP_TIMEOUT_MUL"
+Fixes: fbea02ab5 ("lib/tst_test.sh: setup timeout per test run for the shell tests")
 
-+ other fixes:
-* add "TIMEOUT" to filter in tst_run() (to filter out TST_TIMEOUT)
-* round $sec off to make it being int, so that for $h $m $s calculations
-it's possible to use $(( )).
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/stress/interface/if-mtu-change.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Questions:
-* I don't know how to detect TST_TIMEOUT settings made by user. That's
-the difference from C, where user cannot overwrite tst_test->test.
-Am I missing something or it's not possible to detect whether variable
-was set in code or by user?
-Maybe that was the reason TST_TIMEOUT wasn't set, but rather fixed.
-
-* Code allowing $LTP_TIMEOUT_MUL being also float making code a bit
-complex. If you don't like it, I suggest to change $LTP_TIMEOUT_MUL
-being for both C and shell integer, but I'd prefer the possibility to be float.
-(it's might be handy being able to set timeout 1.33x which is far less
-than 2x for int).
-
-Kind regards,
-Petr
-
-Petr Vorel (3):
-  shell: Add tst_is_num()
-  shell: Introduce TST_TIMEOUT variable
-  net/if-mtu-change.sh: set TST_TIMEOUT
-
- doc/test-writing-guidelines.txt               | 89 ++++++++++++-------
- .../memcg/stress/memcg_stress_test.sh         |  2 +-
- testcases/lib/tst_test.sh                     | 43 ++++++++-
- .../network/stress/interface/if-mtu-change.sh |  4 +-
- 4 files changed, 101 insertions(+), 37 deletions(-)
-
+diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
+index 30c013214..b945fb6ce 100755
+--- a/testcases/network/stress/interface/if-mtu-change.sh
++++ b/testcases/network/stress/interface/if-mtu-change.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
+ # Copyright (c) International Business Machines  Corp., 2005
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+@@ -13,6 +13,8 @@ TST_CLEANUP="do_cleanup"
+ # The interval of the mtu change [second]
+ CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
+ 
++TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
++
+ # The array of the value which MTU is changed into sequentially
+ # 552 - net.ipv4.route.min_pmtu
+ CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
 -- 
 2.22.1
 
