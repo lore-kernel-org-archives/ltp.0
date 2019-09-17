@@ -1,145 +1,59 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 17 Sep 2019 14:16:27 +0200
-Subject: [LTP] [PATCH v2 2/2] Improve coverage in syscalls/fsync03
-In-Reply-To: <20190917121627.6294-1-mdoucha@suse.cz>
-References: <20190917121627.6294-1-mdoucha@suse.cz>
-Message-ID: <20190917121627.6294-2-mdoucha@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 17 Sep 2019 09:21:30 -0400 (EDT)
+Subject: [LTP] Running kdump on Debian
+In-Reply-To: <VI1PR0101MB2557E0698D03D10A8A95D71BF08F0@VI1PR0101MB2557.eurprd01.prod.exchangelabs.com>
+References: <VI1PR0101MB2557E0698D03D10A8A95D71BF08F0@VI1PR0101MB2557.eurprd01.prod.exchangelabs.com>
+Message-ID: <2111602431.467047.1568726490174.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adds the following test cases where fsync is supposed to fail:
-- Closed non-negative file descriptor (EBADF)
-- FIFO (EINVAL)
-- Socket (EINVAL)
 
-Signed-off-by: Martin Doucha <mdoucha@suse.com>
----
- testcases/kernel/syscalls/fsync/fsync03.c | 83 ++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 18 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fsync/fsync03.c b/testcases/kernel/syscalls/fsync/fsync03.c
-index 82fd52070..a2d5ab50c 100644
---- a/testcases/kernel/syscalls/fsync/fsync03.c
-+++ b/testcases/kernel/syscalls/fsync/fsync03.c
-@@ -7,31 +7,75 @@
- /*
-  * Test Description:
-  *  Testcase to check that fsync(2) sets errno correctly.
-- *  1. Call fsync() with an invalid fd, and test for EBADF.
-- *  2. Call fsync() on a pipe(fd), and expect EINVAL.
-+ *  1. Call fsync() on a pipe(fd), and expect EINVAL.
-+ *  2. Call fsync() on a socket(fd), and expect EINVAL.
-+ *  3. Call fsync() on a closed fd, and test for EBADF.
-+ *  4. Call fsync() on an invalid fd, and test for EBADF.
-+ *  5. Call fsync() on a fifo(fd), and expect EINVAL.
-  */
- 
- #include <unistd.h>
- #include <errno.h>
- #include "tst_test.h"
- 
--static int pfd[2];		/* fd's for the pipe() call in setup()  */
--static int bfd = -1;		/* an invalid fd                        */
-+#define FIFO_PATH "fifo"
-+
-+#define PIPE_CASE 0
-+#define SOCKET_CASE 1
-+#define CLOSED_CASE 2
-+
-+/* fd's for the pipe() call in setup()  */
-+static int pfd[2];
-+/* FIFO must be opened for reading first, otherwise open(fifo, O_WRONLY)
-+   will block. */
-+static int fifo_rfd;
- 
- struct test_case {
--	int *fd;
-+	int fd;
- 	int error;
--} TC[] = {
--	/* EBADF - fd is invalid (-1) */
--	{&bfd, EBADF},
-+	const char *path;
-+} testcase_list[] = {
- 	/* EINVAL - fsync() on pipe should not succeed. */
--	{pfd, EINVAL}
-+	{-1, EINVAL, NULL},
-+	/* EINVAL - fsync() on socket should not succeed. */
-+	{-1, EINVAL, NULL},
-+	/* EBADF - fd is closed */
-+	{-1, EBADF, NULL},
-+	/* EBADF - fd is invalid (-1) */
-+	{-1, EBADF, NULL},
-+	/* EINVAL - fsync() on fifo should not succeed. */
-+	{-1, EINVAL, FIFO_PATH},
- };
- 
-+static void setup(void) {
-+	SAFE_MKFIFO(FIFO_PATH, 0644);
-+	SAFE_PIPE(pfd);
-+
-+	testcase_list[CLOSED_CASE].fd = pfd[0];
-+	testcase_list[PIPE_CASE].fd = pfd[1];
-+	fifo_rfd = SAFE_OPEN(FIFO_PATH, O_RDONLY | O_NONBLOCK);
-+	testcase_list[SOCKET_CASE].fd = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
-+
-+	// Do not open any file descriptors after this line unless you close
-+	// them before the next test run.
-+	SAFE_CLOSE(testcase_list[CLOSED_CASE].fd);
-+}
-+
- static void test_fsync(unsigned int n) {
--	struct test_case *tc = TC + n;
-+	struct test_case *tc = testcase_list + n;
-+	int fd = tc->fd, result;
- 
--	if (!fsync(*tc->fd)) {
-+	if (tc->path) {
-+		fd = SAFE_OPEN(tc->path, O_WRONLY);
-+	}
-+
-+	result = fsync(fd);
-+
-+	if (tc->path) {
-+		SAFE_CLOSE(fd);
-+	}
-+
-+	if (!result) {
- 		tst_res(TFAIL, "fsync() succeeded unexpectedly");
- 	} else if (errno != tc->error) {
- 		tst_res(TFAIL | TERRNO, "Unexpected error");
-@@ -40,18 +84,21 @@ static void test_fsync(unsigned int n) {
- 	}
- }
- 
--static void setup(void) {
--	SAFE_PIPE(pfd);
--}
--
- static void cleanup(void) {
--	close(pfd[0]);
--	close(pfd[1]);
-+	// close fifo_rfd instead of the already closed test FD
-+	testcase_list[CLOSED_CASE].fd = fifo_rfd;
-+
-+	for (unsigned i = 0; i < ARRAY_SIZE(testcase_list); i++) {
-+		if (testcase_list[i].fd >= 0) {
-+			close(testcase_list[i].fd);
-+		}
-+	}
- }
- 
- static struct tst_test test = {
- 	.test = test_fsync,
--	.tcnt = ARRAY_SIZE(TC),
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.needs_tmpdir = 1,
- 	.setup = setup,
- 	.cleanup = cleanup
- };
--- 
-2.22.1
+----- Original Message -----
+> Hello,
+> 
+> I am trying to run the kdump testsuite on a Debian 9 distribution, but every
+> test fails with "vmcore NOT FOUND".
+> From what I understand, it is because /proc/vmcore is missing from my machine
+> configuration.
+> 
+> I have the "crashkernel=256M@128M" parameter inside /etc/default/grub, and
+> also nmi_watchdog=1.
+> I also have inside the kernel configuration:
+> CONFIG_PROC_VMCORE=y
+> CONFIG_DEBUG_INFO=y
+> CONFIG_KEXEC=y
+> CONFIG_CRASH_DUMP=y
+> and everything described in the documents as needed.
+> 
+> Also, for example, when trying to simulate with the SysRq it doesn't even
+> finish as at some point it hangs and you have to close and restart manually
+> the machine.
+> A snapshot is attached.
 
+Looks like kernel bug. If manual kdump doesn't work, then this is
+outside of scope for LTP.
+
+Panic is in virtualbox module, I'd try blacklisting it in kdump kernel,
+and also consider trying different kernel version(s).
+
+> 
+> Can anyone please offer some support for this?
+> Nothing I found on google worked until now!
+> 
+> Best regards,
+> 
+> Emanuel-Vladut Magas
+> 
+> L4B Software, Iasi, Romania
+> E-mail: vladut.m@l4b-software.com
+> 
+> 
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
