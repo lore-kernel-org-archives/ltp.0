@@ -1,200 +1,54 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 17 Sep 2019 12:17:05 +0200
-Subject: [LTP] [PATCH 1/2] Update syscalls/fsync03 to new API
-In-Reply-To: <20190917101706.10013-1-mdoucha@suse.cz>
-References: <20190917101706.10013-1-mdoucha@suse.cz>
-Message-ID: <20190917101706.10013-2-mdoucha@suse.cz>
+From: Vladut Magas <vladut.m@l4b-software.com>
+Date: Tue, 17 Sep 2019 10:59:42 +0000
+Subject: [LTP] Running kdump on Debian
+Message-ID: <VI1PR0101MB2557E0698D03D10A8A95D71BF08F0@VI1PR0101MB2557.eurprd01.prod.exchangelabs.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Martin Doucha <mdoucha@suse.com>
----
- testcases/kernel/syscalls/fsync/fsync03.c | 152 +++++-----------------
- 1 file changed, 34 insertions(+), 118 deletions(-)
+Hello,
 
-diff --git a/testcases/kernel/syscalls/fsync/fsync03.c b/testcases/kernel/syscalls/fsync/fsync03.c
-index 60d15f429..82fd52070 100644
---- a/testcases/kernel/syscalls/fsync/fsync03.c
-+++ b/testcases/kernel/syscalls/fsync/fsync03.c
-@@ -1,141 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   Copyright (c) Wayne Boyer, International Business Machines  Corp., 2001
-+ *   Copyright (c) 2019 Martin Doucha <mdoucha@suse.cz>
-  */
- 
- /*
-- * NAME
-- *	fsync03.c
-- *
-- * DESCRIPTION
-- *	Testcase to check that fsync(2) sets errno correctly.
-- *
-- * ALGORITHM
-- *	1. Call fsync() with an invalid fd, and test for EBADF.
-- *	2. Call fsync() on a pipe(fd), and expect EINVAL.
-- *
-- * USAGE:  <for command-line>
-- *  fsync03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	NONE
-+ * Test Description:
-+ *  Testcase to check that fsync(2) sets errno correctly.
-+ *  1. Call fsync() with an invalid fd, and test for EBADF.
-+ *  2. Call fsync() on a pipe(fd), and expect EINVAL.
-  */
- 
- #include <unistd.h>
- #include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
- 
--void setup(void);
--void cleanup(void);
-+static int pfd[2];		/* fd's for the pipe() call in setup()  */
-+static int bfd = -1;		/* an invalid fd                        */
- 
--int fd[2];			/* fd's for the pipe() call in setup()  */
--int pfd;			/* holds the value for fd[1]            */
--int bfd = -1;			/* an invalid fd                        */
--
--struct test_case_t {
-+struct test_case {
- 	int *fd;
- 	int error;
- } TC[] = {
- 	/* EBADF - fd is invalid (-1) */
--	{
--	&bfd, EBADF},
--	    /* EINVAL - fsync() on pipe should not succeed. */
--	{
--	&pfd, EINVAL}
-+	{&bfd, EBADF},
-+	/* EINVAL - fsync() on pipe should not succeed. */
-+	{pfd, EINVAL}
- };
- 
--char *TCID = "fsync03";
--int TST_TOTAL = 2;
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
-+static void test_fsync(unsigned int n) {
-+	struct test_case *tc = TC + n;
- 
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(fsync(*(TC[i].fd)));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
-+	if (!fsync(*tc->fd)) {
-+		tst_res(TFAIL, "fsync() succeeded unexpectedly");
-+	} else if (errno != tc->error) {
-+		tst_res(TFAIL | TERRNO, "Unexpected error");
-+	} else {
-+		tst_res(TPASS, "fsync() failed as expected");
- 	}
--	cleanup();
--
--	tst_exit();
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* make a temporary directory and cd to it */
--	tst_tmpdir();
--
--	SAFE_PIPE(cleanup, fd);
--
--	pfd = fd[1];
-+static void setup(void) {
-+	SAFE_PIPE(pfd);
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
--{
--
--	/* delete the test directory created in setup() */
--	tst_rmdir();
--
-+static void cleanup(void) {
-+	close(pfd[0]);
-+	close(pfd[1]);
- }
-+
-+static struct tst_test test = {
-+	.test = test_fsync,
-+	.tcnt = ARRAY_SIZE(TC),
-+	.setup = setup,
-+	.cleanup = cleanup
-+};
--- 
-2.22.1
+I am trying to run the kdump  testsuite on a Debian 9 distribution, but every test  fails with "vmcore NOT FOUND".
+From what I understand, it is because /proc/vmcore is missing from my machine configuration.
 
+I have the "crashkernel=256M@128M" parameter inside /etc/default/grub, and also nmi_watchdog=1.
+I also have inside the kernel configuration:
+CONFIG_PROC_VMCORE=y
+CONFIG_DEBUG_INFO=y
+CONFIG_KEXEC=y
+CONFIG_CRASH_DUMP=y
+and everything described in the documents as needed.
+
+Also, for example, when trying to simulate with the SysRq it doesn't even finish as at some point it hangs and you have to close and restart manually the machine.
+A snapshot is attached.
+
+Can anyone please offer some support for this?
+Nothing I found on google worked until now!
+
+Best regards,
+
+        Emanuel-Vladut Magas
+
+L4B Software, Iasi, Romania
+E-mail: vladut.m@l4b-software.com
+
+[cid:92784aba-bde0-48c9-940d-44af7ece18a6]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190917/6bf98529/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Outlook-zpwbmyue.png
+Type: image/png
+Size: 13801 bytes
+Desc: Outlook-zpwbmyue.png
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190917/6bf98529/attachment-0002.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: kdump crash.png
+Type: image/png
+Size: 31928 bytes
+Desc: kdump crash.png
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190917/6bf98529/attachment-0003.png>
