@@ -1,94 +1,37 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 18 Sep 2019 18:14:13 +0800
-Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <20190918095023.GA31233@x230>
-References: <20190913125823.17314-1-pvorel@suse.cz>
- <20190913125823.17314-3-pvorel@suse.cz>
- <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
- <20190917165520.GA30320@x230>
- <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
- <20190918082421.GA11711@x230>
- <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
- <20190918095023.GA31233@x230>
-Message-ID: <CAEemH2d5imKVecBv_jB7VifdXbf9HZPFX=NAvT7Hgtjjq6VQdA@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 17 Sep 2019 19:39:16 +0800
+Subject: [LTP] [PATCH] crypto/af_alg05: add comment for a regression
+Message-ID: <1568720356-29641-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/crypto/af_alg05.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On Wed, Sep 18, 2019 at 5:50 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-> Hi Li,
->
-> > On Wed, Sep 18, 2019 at 4:24 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> > > ...
->
-> > > > So, maybe that could be as a reason to disable float support for
-> > > > $LTP_TIMEOUT_MUL?
->
-> > > Maybe I'm missing something, therefore explaining the intent of the
-> code.
-> > > (int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
->
-> > I'm not blaming the int/float judgment, there is no problem. My concern
-> is:
->
-> > If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
-> > will be going?
->
-> > It will break at:
-> >     tst_test_cmds awk
-> > right?
-> Yes. The concern is described in the commit message (but it should also be
-> in
-> wiki page I guess): you want float => you need awk. You don't have float,
-> just
-> set it as int (which will affect also C).
-> Does it make sense? Is it useful?
->
-
-It's working, but not elegant. Not sure how many people will go through the
-documents for such tiny issues.
-
-Is there any possibility to handle float by default, and if no awk
-supporting, just round up the float to integer and use it do testing
-automatically?
-
-
->
-> > Given that break on float number handling, why not declare only support
-> > integer for $LTP_TIMEOUT_MUL?
-> Sure, we can do it. But I propose to do it for C as well otherwise setup
-> valid
-> for C will be breaking shell. But that's a backward incompatibility change.
-> That's why I suggested IMHO the least intrusive change (but maybe I'm
-> wrong).
-> Anyone else having strong opinion?
->
-
-No more concerns.
-
-
->
-> > I hope I explained clearly this time, haha ;-)
-> Sure, sorry to be slow :).
->
-
-Never mind, I need to enhance my expression too.
-
-
->
-> Kind regards,
-> Petr
->
-
+diff --git a/testcases/kernel/crypto/af_alg05.c b/testcases/kernel/crypto/af_alg05.c
+index 419c65eab..964adffcc 100644
+--- a/testcases/kernel/crypto/af_alg05.c
++++ b/testcases/kernel/crypto/af_alg05.c
+@@ -10,6 +10,12 @@
+  * block size, and where the destination buffer starts exactly at a page
+  * boundary.  Based on the reproducer from the commit message.  Note that this
+  * issue only reproduces on certain architectures, such as arm and arm64.
++ *
++ * On some older kernel without commit 160544075f2 ("crypto: scatterwalk - Hide
++ * PageSlab call to optimise away flush_dcache_page") , it doesn't use
++ * ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macro. It can crash on all architectures.
++ * Without skcipher walk interface, it is also a regresstion test for commit
++ * 0868def3e410("crypto: blkcipher - fix crash flushing dcache in error path").
+  */
+ 
+ #include <errno.h>
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190918/cbc2e4d6/attachment.htm>
+2.18.1
+
+
+
