@@ -1,47 +1,65 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Sep 2019 15:53:27 +0200
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.com>
+Date: Wed, 18 Sep 2019 17:16:51 +0000
 Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <CAEemH2d5imKVecBv_jB7VifdXbf9HZPFX=NAvT7Hgtjjq6VQdA@mail.gmail.com>
+In-Reply-To: <20190918094039.GB11711@x230>
 References: <20190913125823.17314-1-pvorel@suse.cz>
- <20190913125823.17314-3-pvorel@suse.cz>
- <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
- <20190917165520.GA30320@x230>
- <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
- <20190918082421.GA11711@x230>
- <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
- <20190918095023.GA31233@x230>
- <CAEemH2d5imKVecBv_jB7VifdXbf9HZPFX=NAvT7Hgtjjq6VQdA@mail.gmail.com>
-Message-ID: <20190918135327.GA20793@x230>
+ <20190913125823.17314-3-pvorel@suse.cz> <1568629595.3028.13.camel@suse.de>
+ <20190918094039.GB11711@x230>
+Message-ID: <1568827010.6619.2.camel@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Petr,
 
-> > > If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
-> > > will be going?
+On Wed, 2019-09-18 at 11:40 +0200, Petr Vorel wrote:
+> Hi Clements,
+> 
+> > Hi Petr,
+> > only some small comments below.
+> > On Fri, 2019-09-13 at 14:58 +0200, Petr Vorel wrote:
+> > > <snip>
+> > > -2.3.2 Library variables
+> > > -^^^^^^^^^^^^^^^^^^^^^^^
+> > > +2.3.2 Library environment variables for shell
+> > > +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > >  Similarily to the C library various checks and preparations can
+> > > be
+> > > requested
+> > >  simply by setting right '$TST_NEEDS_FOO'.
+> > > @@ -2047,6 +2058,14 @@ simply by setting right '$TST_NEEDS_FOO'.
+> > >                         the test (see below).
+> > >  | 'TST_NEEDS_MODULE' | Test module name needed for the test (see
+> > > below).
+> > >  | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the
+> > > test.
+> > > +| 'TST_TIMEOUT'      | Maximum timeout set for the test in sec.
+> > > Must
+> > > be float
+> >       ^
+> > I think TST_TIMEOUT isn't evaluated in c at all. There we have
+> > `(struct
+> > tst_test*)->timeout` which is `int`,
+> > tst_test*)->timeout (BTW it's *unsigned* int).
+> 
+> Correct, thanks!
+> This is a proposed description, which I'll post to v3.
+> (using tst_test.timeout to be short enough, is that ok?):
+> > 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must
+> > be int >= 1,
+> 
+>                        or -1 (special value to disable timeout),
+> default is 300.
+>                        Variable is meant be set in tests, not by
+> user.
+>                        It's equivalent of `tst_test.timeout` in C.
+> > 'LTP_TIMEOUT_MUL'  | Multiply timeout, must be number >= 1 (> 1 is
+> > useful for
+> 
+>                        slow machines to avoid unexpected timeout).
+>                        Variable is also used in C tests.
+>                        It's meant to be set by user, not in tests.
 
-> > > It will break at:
-> > >     tst_test_cmds awk
-> > > right?
-> > Yes. The concern is described in the commit message (but it should also be
-> > in
-> > wiki page I guess): you want float => you need awk. You don't have float,
-> > just
-> > set it as int (which will affect also C).
-> > Does it make sense? Is it useful?
-
-
-> It's working, but not elegant. Not sure how many people will go through the
-> documents for such tiny issues.
-
-> Is there any possibility to handle float by default, and if no awk
-> supporting, just round up the float to integer and use it do testing
-> automatically?
-Yep, that's better idea, thanks!
-I'll print some info in case of forcing to round to int in v3.
-
-Kind regards,
-Petr
+ACK
