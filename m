@@ -1,7 +1,7 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Sep 2019 11:50:23 +0200
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 18 Sep 2019 18:14:13 +0800
 Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
+In-Reply-To: <20190918095023.GA31233@x230>
 References: <20190913125823.17314-1-pvorel@suse.cz>
  <20190913125823.17314-3-pvorel@suse.cz>
  <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
@@ -9,47 +9,86 @@ References: <20190913125823.17314-1-pvorel@suse.cz>
  <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
  <20190918082421.GA11711@x230>
  <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
-Message-ID: <20190918095023.GA31233@x230>
+ <20190918095023.GA31233@x230>
+Message-ID: <CAEemH2d5imKVecBv_jB7VifdXbf9HZPFX=NAvT7Hgtjjq6VQdA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Petr,
 
-> On Wed, Sep 18, 2019 at 4:24 PM Petr Vorel <pvorel@suse.cz> wrote:
+On Wed, Sep 18, 2019 at 5:50 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> > ...
+> Hi Li,
+>
+> > On Wed, Sep 18, 2019 at 4:24 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> > > ...
+>
+> > > > So, maybe that could be as a reason to disable float support for
+> > > > $LTP_TIMEOUT_MUL?
+>
+> > > Maybe I'm missing something, therefore explaining the intent of the
+> code.
+> > > (int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
+>
+> > I'm not blaming the int/float judgment, there is no problem. My concern
+> is:
+>
+> > If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
+> > will be going?
+>
+> > It will break at:
+> >     tst_test_cmds awk
+> > right?
+> Yes. The concern is described in the commit message (but it should also be
+> in
+> wiki page I guess): you want float => you need awk. You don't have float,
+> just
+> set it as int (which will affect also C).
+> Does it make sense? Is it useful?
+>
 
-> > > So, maybe that could be as a reason to disable float support for
-> > > $LTP_TIMEOUT_MUL?
+It's working, but not elegant. Not sure how many people will go through the
+documents for such tiny issues.
 
-> > Maybe I'm missing something, therefore explaining the intent of the code.
-> > (int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
+Is there any possibility to handle float by default, and if no awk
+supporting, just round up the float to integer and use it do testing
+automatically?
 
-> I'm not blaming the int/float judgment, there is no problem. My concern is:
 
-> If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
-> will be going?
+>
+> > Given that break on float number handling, why not declare only support
+> > integer for $LTP_TIMEOUT_MUL?
+> Sure, we can do it. But I propose to do it for C as well otherwise setup
+> valid
+> for C will be breaking shell. But that's a backward incompatibility change.
+> That's why I suggested IMHO the least intrusive change (but maybe I'm
+> wrong).
+> Anyone else having strong opinion?
+>
 
-> It will break at:
->     tst_test_cmds awk
-> right?
-Yes. The concern is described in the commit message (but it should also be in
-wiki page I guess): you want float => you need awk. You don't have float, just
-set it as int (which will affect also C).
-Does it make sense? Is it useful?
+No more concerns.
 
-> Given that break on float number handling, why not declare only support
-> integer for $LTP_TIMEOUT_MUL?
-Sure, we can do it. But I propose to do it for C as well otherwise setup valid
-for C will be breaking shell. But that's a backward incompatibility change.
-That's why I suggested IMHO the least intrusive change (but maybe I'm wrong).
-Anyone else having strong opinion?
 
-> I hope I explained clearly this time, haha ;-)
-Sure, sorry to be slow :).
+>
+> > I hope I explained clearly this time, haha ;-)
+> Sure, sorry to be slow :).
+>
 
-Kind regards,
-Petr
+Never mind, I need to enhance my expression too.
+
+
+>
+> Kind regards,
+> Petr
+>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190918/cbc2e4d6/attachment.htm>
