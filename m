@@ -1,65 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Sep 2019 10:24:21 +0200
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 18 Sep 2019 16:46:01 +0800
 Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
+In-Reply-To: <20190918082421.GA11711@x230>
 References: <20190913125823.17314-1-pvorel@suse.cz>
  <20190913125823.17314-3-pvorel@suse.cz>
  <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
  <20190917165520.GA30320@x230>
  <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
-Message-ID: <20190918082421.GA11711@x230>
+ <20190918082421.GA11711@x230>
+Message-ID: <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Petr,
 
-> > > Here as well, why we need to distinguish the float and int, is the float
-> > > expression does not work for integer?
-> > Because it brings awk dependency on whole library, which I'm not sure if we
-> > want (awk is a must on linux distros, it's in busybox; it's missing on
-> > android
-> > toolsbox, but android project concentrates on syscalls, probably nobody
-> > uses
-> > shell tests on android). Also I'm not sure about containers, JeOS etc. (it
-> > sometimes miss a basic dependency).
-> > If awk dependency is ok, it'd simplify test a bit.
+On Wed, Sep 18, 2019 at 4:24 PM Petr Vorel <pvorel@suse.cz> wrote:
 
+> ...
+>
+> > So, maybe that could be as a reason to disable float support for
+> > $LTP_TIMEOUT_MUL?
+>
+> Maybe I'm missing something, therefore explaining the intent of the code.
+> (int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
+>
+I'm not blaming the int/float judgment, there is no problem. My concern is:
 
-> But it doesn't solve the dependency issue because, if the awk is missing,
-> it will still tst_brk on float $LTP_TIMEOUT_MUL at:
->     tst_test_cmds awk
-No, int was handled previously in:
-      if tst_is_int "$LTP_TIMEOUT_MUL"; then
-> and never goes to the integer expression branch.
+If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
+will be going?
 
-> So, maybe that could be as a reason to disable float support for
-> $LTP_TIMEOUT_MUL?
+It will break at:
+    tst_test_cmds awk
+right?
 
-Maybe I'm missing something, therefore explaining the intent of the code.
-(int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
+Given that break on float number handling, why not declare only support
+integer for $LTP_TIMEOUT_MUL?
 
-+	local err is_float
-+	if tst_is_num "$LTP_TIMEOUT_MUL"; then
-		# it's int or float
-+		if tst_is_int "$LTP_TIMEOUT_MUL"; then
-			# it's int only
-+			[ "$LTP_TIMEOUT_MUL" -ge 1 ] || err=1
-+		else
-            # it's float only
-+			tst_test_cmds awk
-+			echo | awk '{if ('"$LTP_TIMEOUT_MUL"' < 1) {exit 1}}' || err=1
-+			is_float=1
-+		fi
-+	else
-        # NaN
-+		err=1
-+	fi
-+	if [ "$err" ]; then
-+		tst_brk TCONF "LTP_TIMEOUT_MUL must be number >= 1! ($LTP_TIMEOUT_MUL)"
-+	fi
+I hope I explained clearly this time, haha ;-)
 
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190918/a860ca1b/attachment-0001.htm>
