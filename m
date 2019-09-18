@@ -1,71 +1,55 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Sep 2019 11:40:39 +0200
+Date: Wed, 18 Sep 2019 11:50:23 +0200
 Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <1568629595.3028.13.camel@suse.de>
+In-Reply-To: <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
 References: <20190913125823.17314-1-pvorel@suse.cz>
  <20190913125823.17314-3-pvorel@suse.cz>
- <1568629595.3028.13.camel@suse.de>
-Message-ID: <20190918094039.GB11711@x230>
+ <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
+ <20190917165520.GA30320@x230>
+ <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
+ <20190918082421.GA11711@x230>
+ <CAEemH2duVbDqZ3UG3aHi4rQPFr-g-yxy3q-Jfw8p+2KV9ta=Tw@mail.gmail.com>
+Message-ID: <20190918095023.GA31233@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clements,
+Hi Li,
 
-> Hi Petr,
-> only some small comments below.
+> On Wed, Sep 18, 2019 at 4:24 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> On Fri, 2019-09-13 at 14:58 +0200, Petr Vorel wrote:
-> > <snip>
-> > -2.3.2 Library variables
-> > -^^^^^^^^^^^^^^^^^^^^^^^
-> > +2.3.2 Library environment variables for shell
-> > +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > ...
 
-> >  Similarily to the C library various checks and preparations can be
-> > requested
-> >  simply by setting right '$TST_NEEDS_FOO'.
-> > @@ -2047,6 +2058,14 @@ simply by setting right '$TST_NEEDS_FOO'.
-> >                         the test (see below).
-> >  | 'TST_NEEDS_MODULE' | Test module name needed for the test (see
-> > below).
-> >  | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
-> > +| 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must
-> > be float
+> > > So, maybe that could be as a reason to disable float support for
+> > > $LTP_TIMEOUT_MUL?
 
->       ^
-> I think TST_TIMEOUT isn't evaluated in c at all. There we have `(struct
-> tst_test*)->timeout` which is `int`,
-> tst_test*)->timeout (BTW it's *unsigned* int).
-Correct, thanks!
-This is a proposed description, which I'll post to v3.
-(using tst_test.timeout to be short enough, is that ok?):
-| 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be int >= 1,
-                       or -1 (special value to disable timeout), default is 300.
-                       Variable is meant be set in tests, not by user.
-                       It's equivalent of `tst_test.timeout` in C.
-| 'LTP_TIMEOUT_MUL'  | Multiply timeout, must be number >= 1 (> 1 is useful for
-                       slow machines to avoid unexpected timeout).
-                       Variable is also used in C tests.
-                       It's meant to be set by user, not in tests.
-...
-> > +	local sec
-> > +	if [ "$is_float" ]; then
-> > +		sec=`echo |awk '{printf("%d\n", '$TST_TIMEOUT' * 
+> > Maybe I'm missing something, therefore explaining the intent of the code.
+> > (int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
 
->                           ^
->                           nit, space after |
-Sure :).
+> I'm not blaming the int/float judgment, there is no problem. My concern is:
 
-> > '$LTP_TIMEOUT_MUL')}'`
+> If the $LTP_TIMEOUT_MUL is float and awk command is missing, how things
+> will be going?
 
->                    ^
->                    + 0.5
-> In C implementation we round up. Maybe we should do the same in shell.
-Correct, thanks!
+> It will break at:
+>     tst_test_cmds awk
+> right?
+Yes. The concern is described in the commit message (but it should also be in
+wiki page I guess): you want float => you need awk. You don't have float, just
+set it as int (which will affect also C).
+Does it make sense? Is it useful?
 
+> Given that break on float number handling, why not declare only support
+> integer for $LTP_TIMEOUT_MUL?
+Sure, we can do it. But I propose to do it for C as well otherwise setup valid
+for C will be breaking shell. But that's a backward incompatibility change.
+That's why I suggested IMHO the least intrusive change (but maybe I'm wrong).
+Anyone else having strong opinion?
+
+> I hope I explained clearly this time, haha ;-)
+Sure, sorry to be slow :).
 
 Kind regards,
 Petr
