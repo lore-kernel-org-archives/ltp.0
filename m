@@ -1,79 +1,65 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 18 Sep 2019 13:56:17 +0800
-Subject: [LTP] [RFC PATCH] tst_taint: TCONF when kernel is alreay tainted
-In-Reply-To: <20190918053519.26244-1-liwang@redhat.com>
-References: <20190918053519.26244-1-liwang@redhat.com>
-Message-ID: <CAEemH2de4T6+rRuBrYaQDA-ubXaX6nfCykY+EbGi-Sj_tu-3Sw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Sep 2019 10:24:21 +0200
+Subject: [LTP] [PATCH v2 2/3] shell: Introduce TST_TIMEOUT variable
+In-Reply-To: <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
+References: <20190913125823.17314-1-pvorel@suse.cz>
+ <20190913125823.17314-3-pvorel@suse.cz>
+ <CAEemH2f4oeSvN-p7xSzjo2ZFvndxjX2sQ+M9f6fYV_bN2ewn=A@mail.gmail.com>
+ <20190917165520.GA30320@x230>
+ <CAEemH2cHYS6jd4DCzJsy-vKLqShcFO6fU_-Rk=zxu=yD=7YLVg@mail.gmail.com>
+Message-ID: <20190918082421.GA11711@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Sep 18, 2019 at 1:35 PM Li Wang <liwang@redhat.com> wrote:
+Hi Li,
 
-> As the tst_taint_init comments described, If the tainted-flags are already
-> set
-> by the kernel, there is no reason to continue and TCONF is generated. But
-> in
-> the function achieve, it uses TBROK.
->
->   cmdline="cve-2017-17053"
->   tst_test.c:1096: INFO: Timeout per run is 0h 10m 00s
->   tst_taint.c:88: BROK: Kernel is already tainted: 536871424
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Chang Yin <cyin@redhat.com>
-> Cc: Michael Moese <mmoese@suse.de>
-> ---
->
-> Notes:
->     Hi Cyril & Michael,
->
->     I'm not sure if that's a good choice to skip whole test if the kernel
-> already
->     tainted, so maybe we could also perform it but not do a strict
-> tainted-flags
->     check after testing? The reason I think is it probably have chance to
-> find
->     new issue even with a tainted kernel.
->
-
-Something maybe change like below, which way is better?
-
---- a/lib/tst_taint.c
-+++ b/lib/tst_taint.c
-@@ -7,6 +7,7 @@
- #define TAINT_FILE "/proc/sys/kernel/tainted"
-
- static unsigned int taint_mask = -1;
-+static unsigned int taint_check = 1;
-
- static unsigned int tst_taint_read(void)
- {
-@@ -84,8 +85,10 @@ void tst_taint_init(unsigned int mask)
-        taint_mask = mask;
-
-        taint = tst_taint_read();
--       if ((taint & mask) != 0)
--               tst_brk(TCONF, "Kernel is already tainted: %u", taint);
-+       if ((taint & mask) != 0) {
-+               tst_res(TINFO, "Kernel is already tainted: %u", taint);
-+               taint_check = 0;
-+       }
- }
+> > > Here as well, why we need to distinguish the float and int, is the float
+> > > expression does not work for integer?
+> > Because it brings awk dependency on whole library, which I'm not sure if we
+> > want (awk is a must on linux distros, it's in busybox; it's missing on
+> > android
+> > toolsbox, but android project concentrates on syscalls, probably nobody
+> > uses
+> > shell tests on android). Also I'm not sure about containers, JeOS etc. (it
+> > sometimes miss a basic dependency).
+> > If awk dependency is ok, it'd simplify test a bit.
 
 
-@@ -98,5 +101,5 @@ unsigned int tst_taint_check(void)
+> But it doesn't solve the dependency issue because, if the awk is missing,
+> it will still tst_brk on float $LTP_TIMEOUT_MUL at:
+>     tst_test_cmds awk
+No, int was handled previously in:
+      if tst_is_int "$LTP_TIMEOUT_MUL"; then
+> and never goes to the integer expression branch.
 
-        taint = tst_taint_read();
+> So, maybe that could be as a reason to disable float support for
+> $LTP_TIMEOUT_MUL?
 
--       return (taint & taint_mask);
-+       return (taint & taint_mask & taint_check);
- }
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20190918/2a2f7a28/attachment.htm>
+Maybe I'm missing something, therefore explaining the intent of the code.
+(int was handled in if tst_is_int "$LTP_TIMEOUT_MUL"; then):
+
++	local err is_float
++	if tst_is_num "$LTP_TIMEOUT_MUL"; then
+		# it's int or float
++		if tst_is_int "$LTP_TIMEOUT_MUL"; then
+			# it's int only
++			[ "$LTP_TIMEOUT_MUL" -ge 1 ] || err=1
++		else
+            # it's float only
++			tst_test_cmds awk
++			echo | awk '{if ('"$LTP_TIMEOUT_MUL"' < 1) {exit 1}}' || err=1
++			is_float=1
++		fi
++	else
+        # NaN
++		err=1
++	fi
++	if [ "$err" ]; then
++		tst_brk TCONF "LTP_TIMEOUT_MUL must be number >= 1! ($LTP_TIMEOUT_MUL)"
++	fi
+
+Kind regards,
+Petr
