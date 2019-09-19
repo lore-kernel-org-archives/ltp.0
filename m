@@ -1,32 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 19 Sep 2019 16:09:31 +0200
-Subject: [LTP] [PATCH v2] cgroup_regression_test.sh: Remove obselte
- test_5
-In-Reply-To: <1568889488-4032-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190919094544.GA21345@rei>
- <1568889488-4032-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20190919140931.GA14614@x230>
+Date: Thu, 19 Sep 2019 16:26:45 +0200
+Subject: [LTP] [RFC PATCH v2 0/1] Add automated tests for shell lib
+In-Reply-To: <cover.1566500817.git.clanig@suse.com>
+References: <20181003113215.GB21139@dell5510>
+ <cover.1566500817.git.clanig@suse.com>
+Message-ID: <20190919142644.GA20853@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Hi Christian,
 
-> test_5 is a very old regresstion test and kernel code has been
-> rewritten completely since 2.6. No user will use such old kernel
-> code to test. So I think we can remove it.
+> Hi,
 
-> Also rename test10 as test5, modify TST_CNT.
+> I am sorry that my reply took so long. Thank you very much for your comments
+> which helped me to improve the code.
+> I have made an overhaul of the code based on your suggestions but an option to
+> pass parameters to the tests is still not implemented. 
+> I'm sending you what I have so far because it would help me when you could
+> provide me more information regarding this.
 
-Merged, with additional note, why it's safe to remove it:
+> I agree that it is difficult to find a way to process text the way needed here
+> without disregarding the Linux Kernel Coding Style that asks for code which is
+> transparent and easy to read when we only consider Shell commands. To address
+> this issue I have drafted a Python script that might go in the tools folder and
+> may perhaps be helpful in other cases as well. Since there are already Python
+> files in the project it might be a valid option.
 
-    [ pvorel: test_5 is testing 839ec5452ebf ("cgroup: fix root_count when
-    mount fails due to busy subsystem") from v2.6.29-rc4 which fixes
-    e5f6a8609bab ("cgroups: make root_list contains active hierarchies
-    only") from v2.6.24-rc1. While there are still people testing LTP on
-    2.6.x, nobody should be using -rc version now. ]
+> Thank you very much for your patience.
+No problem, thanks continue for it.
+
+I'm also not sure if we should put them into separate testcases/ directory.
+I'd put them into shell/ directory and rename test_sh_newlib.sh to run.sh or
+something simple.
+
+BTW (nit, no hard feeling :) as lib/newlib_tests/test.*.sh are based on my
+previous work, you could might mention it in the change log. You updated them to
+have timeout output, so it's your work, (if not, it'd be better to send them as
+mine separate
 
 Kind regards,
 Petr
