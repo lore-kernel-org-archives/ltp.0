@@ -1,43 +1,50 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 20 Sep 2019 09:19:10 +0800
-Subject: [LTP] [PATCH v2] cgroup_regression_test.sh: Remove obselte
- test_5
-In-Reply-To: <20190919140931.GA14614@x230>
-References: <20190919094544.GA21345@rei>
- <1568889488-4032-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20190919140931.GA14614@x230>
-Message-ID: <02ed63c6-102d-4aeb-39db-b9ea8f561b9c@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 20 Sep 2019 11:00:14 +0800
+Subject: [LTP] [RFC PATCH] tst_taint: TCONF when kernel is alreay tainted
+In-Reply-To: <20190919100205.GA26642@rei>
+References: <20190918053519.26244-1-liwang@redhat.com>
+ <20190919100205.GA26642@rei>
+Message-ID: <CAEemH2eD5fcYYcK06Jyp-bxOwO-tzk1zdLyruu5U-VfyouTXaA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Thu, Sep 19, 2019 at 6:02 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-on 2019/09/19 22:09, Petr Vorel wrote:
-> Hi Xu,
-> 
->> test_5 is a very old regresstion test and kernel code has been
->> rewritten completely since 2.6. No user will use such old kernel
->> code to test. So I think we can remove it.
-> 
->> Also rename test10 as test5, modify TST_CNT.
-> 
-> Merged, with additional note, why it's safe to remove it:
-> 
->      [ pvorel: test_5 is testing 839ec5452ebf ("cgroup: fix root_count when
->      mount fails due to busy subsystem") from v2.6.29-rc4 which fixes
->      e5f6a8609bab ("cgroups: make root_list contains active hierarchies
->      only") from v2.6.24-rc1. While there are still people testing LTP on
->      2.6.x, nobody should be using -rc version now. ]
-I think your wrote v2.6.24-rc1 unexpectedly. commit e5f6a8609bab fixes 
-the bug since v2.6.29-rc1 not v2.6.24-rc1. In addition to this typo, 
-this reason looks good to me.
+> Hi!
+> > As the tst_taint_init comments described, If the tainted-flags are
+> already set
+> > by the kernel, there is no reason to continue and TCONF is generated.
+> But in
+> > the function achieve, it uses TBROK.
+> >
+> >   cmdline="cve-2017-17053"
+> >   tst_test.c:1096: INFO: Timeout per run is 0h 10m 00s
+> >   tst_taint.c:88: BROK: Kernel is already tainted: 536871424
+>
+> There is a reason for generating TBROK, we do not want the test to be
+> skipped silently in this case. If kernel is tainted something went wrong
+> anyways and we are looking only for a specific flags.
+>
 
-> 
-> Kind regards,
-> Petr
-> 
-> 
+That's true. The TBROK can highlight the tainted kernel as a good reminder
+to the tester.
 
+But in a real testing situation, LTP sometimes not being run in the first,
+after we go here cve-2017-17053, the kernel very probably has already been
+tainted and reported by other tests. So this new TBROK will drive tester to
+double-check if something wrong as new.
 
+Imagine that, if there are many test cases invoke a tainted checking(e.g.
+TST_TAINT_W) in LTP, then all of them will be skipped and report TBORK on
+such tainted-kernel, that seems not to be friendly to the tester to review
+the result.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190920/7ebf5063/attachment.htm>
