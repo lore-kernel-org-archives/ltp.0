@@ -1,59 +1,49 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 23 Sep 2019 10:11:40 +0200
-Subject: [LTP] 12abeb544d: ltp.read_all_dev.fail
-In-Reply-To: <20190923003846.GB15734@shao2-debian>
-References: <20190923003846.GB15734@shao2-debian>
-Message-ID: <871rw7l9dv.fsf@rpws.prws.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 23 Sep 2019 11:52:03 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/getxattr01: Fix rare failures
+Message-ID: <20190923095203.30362-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+The test was observed to fail on s390x, the cause is obviously that we
+use strcmp() for something that is not guaranteed to be null terminated.
+That is because we store the string without the terminating null into
+the extended attribute and the allocated buffer we read the attribute to
+is not initialized either.
 
-kernel test robot <rong.a.chen@intel.com> writes:
+Fix the test by checking the returned size first then using memcmp()
+instead of strcmp(). This change is just pre-release band-aid with
+minimal changes, I've opened issue #583 so that we don't forget to
+rewrite the test later on.
 
-> FYI, we noticed the following commit (built with gcc-7):
->
-> commit: 12abeb544d548f55f56323fc6e5e6c0fb74f58e1 ("horrible test hack")
-> https://kernel.googlesource.com/pub/scm/linux/kernel/git/luto/linux.git random/kill-it
->
-> in testcase: ltp
-> with following parameters:
->
-> 	disk: 1HDD
-> 	fs: ext4
-> 	test: fs-02
->
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
->
->
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
->
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->
->
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
->
-> <<<test_start>>>
-> tag=read_all_dev stime=1569106866
-> cmdline="read_all -d /dev -p -q -r 10"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> tst_test.c:1108: INFO: Timeout per run is 0h 05m 00s
-> Test timeouted, sending SIGKILL!
-> tst_test.c:1148: INFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-> tst_test.c:1149: BROK: Test killed! (timeout?)
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/getxattr/getxattr01.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-So perhaps this is caused by reads of /dev/random hanging? At any rate,
-I suppose this is intended to deliberately break something, so we can
-ignore it.
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
+index be410a536..54ca65390 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr01.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+@@ -121,7 +121,14 @@ int main(int argc, char *argv[])
+ 			}
+ 		}
+ 
+-		if (strcmp(tc[i - 1].value, XATTR_TEST_VALUE))
++		if (TEST_RETURN != XATTR_TEST_VALUE_SIZE) {
++			tst_resm(TFAIL,
++				 "getxattr() returned wrong size %ld expected %d",
++				 TEST_RETURN, XATTR_TEST_VALUE_SIZE);
++			continue;
++		}
++
++		if (memcmp(tc[i - 1].value, XATTR_TEST_VALUE, XATTR_TEST_VALUE_SIZE))
+ 			tst_resm(TFAIL, "Wrong value, expect \"%s\" got \"%s\"",
+ 				 XATTR_TEST_VALUE, tc[i - 1].value);
+ 		else
+-- 
+2.21.0
 
---
-Thank you,
-Richard.
