@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 23 Sep 2019 18:11:32 +0200
-Subject: [LTP] [PATCH 1/2] Update syscalls/bind02 to new API
-In-Reply-To: <20190919145911.22278-2-mdoucha@suse.cz>
+Date: Mon, 23 Sep 2019 19:02:25 +0200
+Subject: [LTP] [PATCH 2/2] Add connection tests for bind()
+In-Reply-To: <20190919145911.22278-3-mdoucha@suse.cz>
 References: <20190919145911.22278-1-mdoucha@suse.cz>
- <20190919145911.22278-2-mdoucha@suse.cz>
-Message-ID: <20190923161131.GA4779@dell5510>
+ <20190919145911.22278-3-mdoucha@suse.cz>
+Message-ID: <20190923170225.GA10355@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,67 +13,35 @@ To: ltp@lists.linux.it
 
 Hi Martin,
 
+> Add two new test programs to verify that bind() will open sockets for incoming
+> connections. Both programs follow the same test scenario:
+> - Create and bind() a socket
+> - Wait for connection from peer thread
+> - Send request to peer thread
+> - Receive and verify response from peer thread
+
+> bind04 tests stream-oriented sockets (SOCK_STREAM and SOCK_SEQPACKET).
+> bind05 tests datagram-oriented sockets (SOCK_DGRAM).
+
+> Both programs test the following socket types:
+> - AF_UNIX (pathname and abstract addresses)
+> - AF_INET (loopback)
+> - AF_INET6 (loopback)
+
+I'd drop libbind.c and move content into libbind.h, using inline functions.
+
+Both tests also share a lot of code. I understand you don't want to mix TCP and
+UDP tests (I would probably do), but could you at least move setup() and constants into libbind.h?
+
+I'd also test:
+IPPROTO_SCTP (SOCK_STREAM) for TCP and
+IPPROTO_UDPLITE (SOCK_DGRAM) for UDP.
+
++ test some protocols for other sock types: 
+IPPROTO_SCTP (SOCK_STREAM).
+
 > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Apart from unimportant nit style formatting which can be changed
-by maintainer before import this is nice.
-
-Although it'd be perfectly safe to merge it I guess we wait after LTP release.
-
->  testcases/kernel/syscalls/bind/bind02.c | 153 +++++++-----------------
-...
-> +	if (!TST_RET) {
-> +		tst_res(TFAIL, "bind() succeeded unexpectedly.");
-Please, don't use dot.
-> +	} else if (TST_ERR == EACCES) {
-> +		tst_res(TPASS, "bind() failed as expected");
-> +	} else {
-> +		tst_res(TFAIL | TERRNO, "Unexpected error");
->  	}
-> -
->  }
-
-> -int main(int argc, char *argv[])
-> +void setup(void)
->  {
-> -	char *username = "nobody";
-> -
-> -	tst_parse_opts(argc, argv, NULL, NULL);
-> +	struct passwd *pw;
-> +	struct group *gr;
-
-> -	tst_require_root();
-> +	pw = SAFE_GETPWNAM(TEST_USERNAME);
-> +	gr = SAFE_GETGRGID(pw->pw_gid);
-
-> -	if ((pw = getpwnam(username)) == NULL) {
-> -		tst_brkm(TBROK, 0, "Username - %s - not found", username);
-> -	}
-> -
-> -	if ((gr = getgrgid(pw->pw_gid)) == NULL) {
-> -		tst_brkm(TBROK | TERRNO, 0, "getgrgid(%u) failed", pw->pw_gid);
-> -	}
-> -
-> -	uid = pw->pw_uid;
-> -	gid = gr->gr_gid;
-> -
-> -	tst_resm(TINFO, "Socket will try to be bind by user: %s, group: %s",
-> -		 pw->pw_name, gr->gr_name);
-> +	tst_res(TINFO, "Switching credentials to user: %s, group: %s",
-> +		pw->pw_name, gr->gr_name);
-> +	SAFE_SETEGID(gr->gr_gid);
-> +	SAFE_SETEUID(pw->pw_uid);
-> +}
-
-> -	try_bind();
-> -	tst_exit();
-> +void cleanup(void) {
-Bracket should be on separate line.
-> +	SAFE_SETEGID(0);
-> +	SAFE_SETEUID(0);
->  }
-
 
 Kind regards,
 Petr
