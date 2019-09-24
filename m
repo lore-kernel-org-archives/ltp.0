@@ -1,47 +1,32 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 23 Sep 2019 19:02:25 +0200
-Subject: [LTP] [PATCH 2/2] Add connection tests for bind()
-In-Reply-To: <20190919145911.22278-3-mdoucha@suse.cz>
-References: <20190919145911.22278-1-mdoucha@suse.cz>
- <20190919145911.22278-3-mdoucha@suse.cz>
-Message-ID: <20190923170225.GA10355@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 24 Sep 2019 15:01:14 +0800
+Subject: [LTP] [PATCH v3 0/3] shell: Introduce TST_TIMEOUT variable
+In-Reply-To: <1568987303.3024.7.camel@suse.de>
+References: <20190919135043.14359-1-pvorel@suse.cz>
+ <1568987303.3024.7.camel@suse.de>
+Message-ID: <CAEemH2caTOuR_oa_h727bz2pb4oo_W223gJNK6YDkdC4m3vpJA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Clemens Famulla-Conrad <cfamullaconrad@suse.de> wrote:
 
-> Add two new test programs to verify that bind() will open sockets for incoming
-> connections. Both programs follow the same test scenario:
-> - Create and bind() a socket
-> - Wait for connection from peer thread
-> - Send request to peer thread
-> - Receive and verify response from peer thread
+> ...
+> > * add 2 tests for TST_TIMEOUT (it'd be more useful to test
+> >   LTP_TIMEOUT_MUL, but I'd wait for Christian's shell test
+> >   patch [1] being merged)
+>
+> lets place them in `lib/newlib_tests/shell/testcases` as Christian is
+> doing and add the `# output: ` tag so it might work then.
+>
 
-> bind04 tests stream-oriented sockets (SOCK_STREAM and SOCK_SEQPACKET).
-> bind05 tests datagram-oriented sockets (SOCK_DGRAM).
+Agree on this. ACK.
 
-> Both programs test the following socket types:
-> - AF_UNIX (pathname and abstract addresses)
-> - AF_INET (loopback)
-> - AF_INET6 (loopback)
-
-I'd drop libbind.c and move content into libbind.h, using inline functions.
-
-Both tests also share a lot of code. I understand you don't want to mix TCP and
-UDP tests (I would probably do), but could you at least move setup() and constants into libbind.h?
-
-I'd also test:
-IPPROTO_SCTP (SOCK_STREAM) for TCP and
-IPPROTO_UDPLITE (SOCK_DGRAM) for UDP.
-
-+ test some protocols for other sock types: 
-IPPROTO_SCTP (SOCK_STREAM).
-
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190924/6aec5469/attachment-0001.htm>
