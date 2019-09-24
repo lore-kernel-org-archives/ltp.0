@@ -1,7 +1,7 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 24 Sep 2019 13:32:26 +0200
-Subject: [LTP] [PATCH] shm_test: Fix parameter passing to threads
-Message-ID: <20190924113226.59960-1-lkml@jv-coder.de>
+Date: Tue, 24 Sep 2019 13:44:12 +0200
+Subject: [LTP] [PATCH v2] shm_test: Fix parameter passing to threads
+Message-ID: <20190924114412.61462-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
