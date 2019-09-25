@@ -1,98 +1,34 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 25 Sep 2019 18:38:13 +0800
-Subject: [LTP] [Patch v4] fzsync: revoke thread_b if parent hits accidental
- break
-Message-ID: <20190925103813.16078-1-liwang@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 25 Sep 2019 13:22:36 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <20190906130707.GA7515@rei.lan>
+References: <20190906130707.GA7515@rei.lan>
+Message-ID: <20190925112236.GA17496@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We shouldn't rely entirely on the pair->exit flag in tst_fzsync_pair_cleanup()
-since there is possible to call tst_brk() at anyplace of thread_a, that will
-lead to timeout eventually because of thread_b(tst_fzsync_wait_b) fall into
-an infinite(no explicit condition to exit) loop.
+Hi!
+I did a few testruns and so far it looks good.
 
-Thread_a path trace:
-  tst_brk()
-    cleanup()
-      tst_fzsync_pair_cleanup()
-        SAFE_PTHREAD_JOIN(pair->thread_b, NULL)
-        #Or pthread_cancel(pair->thread_b)
+I've send one patch for acct02, which is mostly cosmetic, that I would
+like to get merged.
 
-We fix the problem via a way to kill thread_b with pthread_cancel. With new
-wrap_run_b involves enabling thread cancel at the start of the thread B,
-then do asynchronous cancellation in tst_fzsync_pair_cleanup if pair->exit
-is not being set to 1.
+I would still consider merging the eBPF regression test, does anybody
+have a strong opinion on this?
 
-Workaround: [commit 2e74d996: Check recvmmsg exists before entering fuzzy loop]
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_fuzzy_sync.h | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+Apart from this preadv203 sometimes fails to trigger EAGAIN on virtual
+machines, but I doubt we can fix this before the release, I will try to
+do so later on.
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index f9a1947c7..00c74e951 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -63,6 +63,7 @@
- #include <time.h>
- #include <math.h>
- #include <stdlib.h>
-+#include <pthread.h>
- #include "tst_atomic.h"
- #include "tst_timer.h"
- #include "tst_safe_pthread.h"
-@@ -218,12 +219,36 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
- static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
- {
- 	if (pair->thread_b) {
--		tst_atomic_store(1, &pair->exit);
-+		/* Revoke thread B if parent hits accidental break */
-+		if (!pair->exit) {
-+			tst_atomic_store(1, &pair->exit);
-+			usleep(100000);
-+			pthread_cancel(pair->thread_b);
-+			pair->thread_b = 0;
-+			return;
-+		}
- 		SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
- 		pair->thread_b = 0;
- 	}
- }
- 
-+/**
-+ * Wrap run_b for tst_fzsync_pair_reset to enable pthread cancel
-+ * at the start of the thread B.
-+ */
-+static void *wrap_run_b(void *run_b)
-+{
-+       void *(*real_run_b)(void *) = run_b;
-+
-+       if (real_run_b) {
-+	       pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-+	       pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-+	       (*real_run_b)(NULL);
-+       }
-+
-+       return NULL;
-+}
-+
- /**
-  * Zero some stat fields
-  *
-@@ -272,7 +297,7 @@ static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
- 	pair->b_cntr = 0;
- 	pair->exit = 0;
- 	if (run_b)
--		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, run_b, 0);
-+		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, wrap_run_b, run_b);
- 
- 	pair->exec_time_start = (float)tst_timeout_remaining();
- }
+The rest seems to be good, i.e. failures does not seem to be bugs in
+tests.
+
+What is the status from rest of you? Is there anything that should be
+considered for the release? Is something failing unexpectedly?
+
 -- 
-2.20.1
-
+Cyril Hrubis
+chrubis@suse.cz
