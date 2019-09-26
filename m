@@ -1,64 +1,134 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Sep 2019 18:14:57 +0200
-Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
-In-Reply-To: <20190925135634.GA32581@dell5510>
-References: <20190925094721.18932-1-chrubis@suse.cz>
- <20190925135634.GA32581@dell5510>
-Message-ID: <20190925161456.GA28071@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 26 Sep 2019 13:48:44 +0800
+Subject: [LTP] [PATCH v3] fzsync: revoke thread_b if parent hits an
+ accidental break
+In-Reply-To: <87d0foy3nm.fsf@rpws.prws.suse.cz>
+References: <20190924105801.7616-1-liwang@redhat.com>
+ <87wodxkgr4.fsf@rpws.prws.suse.cz>
+ <CAEemH2f-5zcvrHep30tWubA7LTqOgKbeBbuN7PO+1h70e3B0hA@mail.gmail.com>
+ <87ef04ycxv.fsf@rpws.prws.suse.cz>
+ <CAEemH2fmTHzWh=dnzFfPCrJ8-3WuXUHa_VheGj73WjcJfuiwKA@mail.gmail.com>
+ <87d0foy3nm.fsf@rpws.prws.suse.cz>
+Message-ID: <CAEemH2e-xAdBiTGuswcPhrw30bEoYTj4OHN0jBgUVpyEUJgXjQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >  	do {
-> > -		tst_res(TINFO, "== entry %d ==", ++i);
-> > -
-> >  		read_bytes = SAFE_READ(0, fd, &acct_struct, acct_size);
-> 
-> > +		if (i == 0 && read_bytes == 0) {
-> > +			tst_res(TFAIL, "acct file is empty");
-> > +			goto exit;
-> > +		}
-> > +
-> > +		if (read_bytes != acct_size) {
-> > +			tst_res(TFAIL, "incomplete read %i bytes, expected %i",
-> > +			        read_bytes, acct_size);
-> > +			goto exit;
-> > +		}
-> > +
-> > +		tst_res(TINFO, "== entry %d ==", ++i);
-> > +
-> >  		if (v3)
-> >  			ret = verify_acct(&acct_struct.v3, acct_struct.v3.ac_etime);
-> >  		else
-> > @@ -192,6 +203,7 @@ static void run(void)
-> >  	else
-> >  		tst_res(TPASS, "acct() wrote correct file contents!");
-> 
-> > +exit:
-> >  	SAFE_CLOSE(fd);
-> >  }
-> 
-> OK, on s390 where it's failing it actually catches "incomplete read":
-> 
-> tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
-> tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
-> tst_kconfig.c:62: INFO: Parsing kernel config '/proc/config.gz'
-> acct02.c:234: INFO: Verifying using 'struct acct_v3'
-> acct02.c:187: INFO: == entry 1 ==
-> acct02.c:147: INFO: ac_version != 3 (131)
-> acct02.c:187: INFO: == entry 2 ==
-> acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
-> acct02.c:133: INFO: ac_exitcode != 32768 (0)
-> acct02.c:141: INFO: ac_ppid != 54783 (54781)
-> acct02.c:147: INFO: ac_version != 3 (131)
-> acct02.c:183: FAIL: incomplete read 0 bytes, expected 64
+On Wed, Sep 25, 2019 at 8:13 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-Isn't that just end-of-file? I guess that we should just break the loop
-if i != 0 and read returned 0.
+> ...
+> I'm not sure what you are saying. However you could do something like
+> this (I haven't tested it):
+>
+
+I misunderstood your words in the last mail, sorry about that.
+
+
+>
+> struct tst_fzsync_run_thread
+> {
+>         void *(*run)(void *);
+>         void *arg;
+> };
+>
+> static void tst_fzsync_thread_wrapper(void *arg)
+> {
+>         struct tst_fzsync_run_thread t = *(struct tst_fzsync_run_thread
+> *)arg;
+>
+>         pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS);
+>         pthread_setcancelstate(PTHREAD_CANCEL_ENABLE);
+>
+>         t.run(t.arg);
+> }
+>
+> static void tst_fzsync_pair_reset(..., struct tst_fzsync_run_thread *run_b)
+>
+
+I'd like to keep the tst_fzync_pair_reset() API no change to user.
+
+The patch v4.1 like below, is there any improper place in usage?
+
+@@ -218,12 +219,36 @@ static void tst_fzsync_pair_init(struct
+tst_fzsync_pair *pair)
+ static void tst_fzsync_pair_cleanup(struct tst_fzsync_pair *pair)
+ {
+        if (pair->thread_b) {
+-               tst_atomic_store(1, &pair->exit);
++               /* Revoke thread B if parent hits accidental break */
++               if (!pair->exit) {
++                       tst_atomic_store(1, &pair->exit);
++                       usleep(100000);
++                       pthread_cancel(pair->thread_b);
++               }
+                SAFE_PTHREAD_JOIN(pair->thread_b, NULL);
+                pair->thread_b = 0;
+        }
+ }
+
++/** To store the run_b pointer and pass to tst_fzsync_thread_wrapper */
++struct tst_fzsync_run_thread {
++       void *(*func)(void *);
++       void *arg;
++};
++
++/**
++ * Wrap run_b for tst_fzsync_pair_reset to enable pthread cancel
++ * at the start of the thread B.
++ */
++static void *tst_fzsync_thread_wrapper(void *run_thread)
++{
++       struct tst_fzsync_run_thread t = *(struct tst_fzsync_run_thread
+*)run_thread;
++
++       pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
++       pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
++       return t.func(t.arg);
++}
++
+ /**
+  * Zero some stat fields
+  *
+@@ -271,8 +296,10 @@ static void tst_fzsync_pair_reset(struct
+tst_fzsync_pair *pair,
+        pair->a_cntr = 0;
+        pair->b_cntr = 0;
+        pair->exit = 0;
+-       if (run_b)
+-               SAFE_PTHREAD_CREATE(&pair->thread_b, 0, run_b, 0);
++       if (run_b) {
++               struct tst_fzsync_run_thread wrap_run_b = {.func = run_b,
+.arg = NULL};
++               SAFE_PTHREAD_CREATE(&pair->thread_b, 0,
+tst_fzsync_thread_wrapper, &wrap_run_b);
++       }
+
+        pair->exec_time_start = (float)tst_timeout_remaining();
+ }
+
+
+> Note that in any case you can't reliably cast a function pointer to a
+> void pointer without some magic. I am guessing wrapping it in a struct
+> is the clearest way to do it.
+>
+
+Good to know this, I searched on google and confirmed that the C standard
+does not allow to cast function pointer to void*, thanks!
+
+
+>
+> You can remove the arg altogether, but I kept it because we have a
+> struct anyway to wrap the function pointer.
+>
+
+Yes, to keep it make the wrapper struct is clear to understand.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20190926/36531b52/attachment.htm>
