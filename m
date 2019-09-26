@@ -1,67 +1,109 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Thu, 26 Sep 2019 07:43:08 -0300
-Subject: [LTP] LTP Release
-In-Reply-To: <20190910130549.GC18210@rei.lan>
-References: <20190906130707.GA7515@rei.lan>
- <CAEemH2frzqyUmgm2mXTG3dusUtggwX4Y3oRBr34p+NCUJFW7_g@mail.gmail.com>
- <20190910130549.GC18210@rei.lan>
-Message-ID: <20190926104308.GN3877@calabresa>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 26 Sep 2019 13:15:58 +0200
+Subject: [LTP] [PATCH] syscalls/bpf: auto bump RLIMIT_MEMLOCK
+Message-ID: <a9fc2ff0c27317ae8ac2d56a819eeac5a281dd86.1569496399.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 10, 2019 at 03:05:53PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > The one to print errno number.
-> >     [PATCH] tst_res: Print errno number in addition to error name
-> 
-> Pushed the patch as it was, I do not think that reordering the
-> statements was important enough.
-> 
-> > Some test failures:
-> > ==============
-> > 
-> > acct02 (s390x):
-> > acct02.c:174: INFO: Verifying using 'struct acct_v3'
-> > acct02.c:140: INFO: Number of accounting file entries tested: 2
-> > acct02.c:145: FAIL: acct() wrote incorrect file contents!
-> 
-> I can reproduce it here as well, no idea what is wrong there. I guess
-> that modifying the test to be more verbose, i.e. to print if we haven't
-> matched the pid or if the contents of the structure were wrong would be
-> a good start.
-> 
-> > timer_create01 (s390x, ppc64le, aarch64):
-> > timer_create01.c:48: INFO: Testing notification type: SIGEV_THREAD_ID
-> > timer_create01.c:93: PASS: Timer successfully created for CLOCK_REALTIME
-> > timer_create01.c:93: PASS: Timer successfully created for CLOCK_MONOTONIC
-> > timer_create01.c:93: PASS: Timer successfully created for
-> > CLOCK_PROCESS_CPUTIME_ID
-> > timer_create01.c:93: PASS: Timer successfully created for
-> > CLOCK_THREAD_CPUTIME_ID
-> > timer_create01.c:93: PASS: Timer successfully created for CLOCK_BOOTTIME
-> > timer_create01.c:87: FAIL: Failed to create timer for CLOCK_BOOTTIME_ALARM:
-> > ???
-> > timer_create01.c:87: FAIL: Failed to create timer for CLOCK_REALTIME_ALARM:
-> > ???
-> > timer_create01.c:93: PASS: Timer successfully created for CLOCK_TAI
-> 
-> I'm pretty sure that we concluded that this is a kernel bug since it
-> returns kernel internal errno.
-> 
+eBPF tests may fail (-EPERM) if max locked memory limit is too low.
+User-space tools such as perf started increasing MELOCK limit to
+avoid this problem.
 
-And a pull request has already been sent to Linus to fix this. [1]
+LTP follows same approach and will attempt to raise RLIMIT_MEMLOCK
+if possible, otherwise prints an info message.
 
-Now, the test also needs to check for EOPNOTSUPP instead of only EINVAL. I'll
-prepare a patch.
+Link: http://lists.linux.it/pipermail/ltp/2019-August/013349.html
+Link: https://lkml.org/lkml/2019/7/17/714
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/bpf/bpf_common.h | 31 ++++++++++++++++++++++++++++++
+ testcases/kernel/syscalls/bpf/bpf_map01.c  |  3 +++
+ testcases/kernel/syscalls/bpf/bpf_prog01.c |  3 +++
+ 3 files changed, 37 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_common.h
 
-[1] https://lore.kernel.org/lkml/156864062018.3407.10822767012822306757.tglx@nanos.tec.linutronix.de/
+diff --git a/testcases/kernel/syscalls/bpf/bpf_common.h b/testcases/kernel/syscalls/bpf/bpf_common.h
+new file mode 100644
+index 000000000000..03e46c5d427e
+--- /dev/null
++++ b/testcases/kernel/syscalls/bpf/bpf_common.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (c) 2019 Linux Test Project
++ */
++
++#ifndef LTP_BPF_COMMON_H
++#define LTP_BPF_COMMON_H
++
++#define BPF_MEMLOCK_ADD (256*1024)
++
++void rlimit_bump_memlock(void)
++{
++	struct rlimit memlock_r;
++
++	SAFE_GETRLIMIT(RLIMIT_MEMLOCK, &memlock_r);
++	memlock_r.rlim_cur += BPF_MEMLOCK_ADD;
++	tst_res(TINFO, "Raising RLIMIT_MEMLOCK to %ld",
++		(long)memlock_r.rlim_cur);
++
++	if (memlock_r.rlim_cur <= memlock_r.rlim_max) {
++		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &memlock_r);
++	} else if ((geteuid() == 0)) {
++		memlock_r.rlim_max += BPF_MEMLOCK_ADD;
++		SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &memlock_r);
++	} else {
++		tst_res(TINFO, "Can't raise RLIMIT_MEMLOCK, test may fail "
++			"due to lack of max locked memory");
++	}
++}
++
++#endif
+diff --git a/testcases/kernel/syscalls/bpf/bpf_map01.c b/testcases/kernel/syscalls/bpf/bpf_map01.c
+index 13dde0b4e12f..49d32776ef41 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_map01.c
++++ b/testcases/kernel/syscalls/bpf/bpf_map01.c
+@@ -17,6 +17,7 @@
+ #include "config.h"
+ #include "tst_test.h"
+ #include "lapi/bpf.h"
++#include "bpf_common.h"
+ 
+ #define VAL_SZ 1024
+ 
+@@ -140,6 +141,8 @@ static void setup(void)
+ {
+ 	unsigned int i;
+ 
++	rlimit_bump_memlock();
++
+ 	memcpy(key8, "12345678", 8);
+ 	memset(key4, 0, 4);
+ 
+diff --git a/testcases/kernel/syscalls/bpf/bpf_prog01.c b/testcases/kernel/syscalls/bpf/bpf_prog01.c
+index 3252f92774d1..46a909fe2ec4 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_prog01.c
++++ b/testcases/kernel/syscalls/bpf/bpf_prog01.c
+@@ -27,6 +27,7 @@
+ #include "tst_test.h"
+ #include "lapi/socket.h"
+ #include "lapi/bpf.h"
++#include "bpf_common.h"
+ 
+ const char MSG[] = "Ahoj!";
+ static char *msg;
+@@ -94,6 +95,8 @@ int load_prog(int fd)
+ 
+ void setup(void)
+ {
++	rlimit_bump_memlock();
++
+ 	memcpy(prog, PROG, sizeof(PROG));
+ 	memcpy(msg, MSG, sizeof(MSG));
+ }
+-- 
+1.8.3.1
 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
