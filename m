@@ -1,68 +1,43 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu, 26 Sep 2019 14:37:08 +0200
-Subject: [LTP] [PATCH] open_posix/conformance/clock/1.1: Deterministic
- timing
-In-Reply-To: <20190926122546.GA27993@rei>
-References: <20190925092958.125325-1-lkml@jv-coder.de>
- <20190926122546.GA27993@rei>
-Message-ID: <ae7daebd-0a33-823c-1434-56a081480c0e@jv-coder.de>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Thu, 26 Sep 2019 11:45:07 -0300
+Subject: [LTP] [PATCH] timer_create01: accept ENOTSUP
+Message-ID: <20190926144507.15765-1-cascardo@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+CLOCK_REALTIME_ALARM and CLOCK_BOOTTIME_ALARM require an RTC with alarm
+support, which may not be present on a system. In that case, the kernel
+will return EOPNOTSUPP, which is defined as ENOTSUP in userspace.
 
-Am 26.09.2019 um 14:25 schrieb Cyril Hrubis:
-> Hi!
->> On some systems the loop with 8 million iterations takes a very long time.
->> This patches changes it to busy loop for five seconds.
->>
->> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
->> ---
->>   .../conformance/interfaces/clock/1-1.c                 | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/clock/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/clock/1-1.c
->> index 9c48cd979..cce5beea9 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/clock/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/clock/1-1.c
->> @@ -17,20 +17,22 @@
->>   #include <time.h>
->>   #include <stdio.h>
->>   #include <unistd.h>
->> +#include <time.h>
->>   #include "posixtest.h"
->>   
->> -#define LARGENUMBER 8000000
->> +#define BUSY_LOOP_SECONDS 5
->>   int main(void)
->>   {
->>   	clock_t c1, c2;
->>   	double sec1, sec2;
->> -	int i;
->> +	time_t end;
->>   
->>   	c1 = clock();
->>   	sec1 = c1 / CLOCKS_PER_SEC;
->>   
->> -	for (i = 0; i < LARGENUMBER; i++) {
->> -		// keep busy so CPU time increases
->> +	end = time(NULL) + BUSY_LOOP_SECONDS;
->> +
->> +	while (end >= time(NULL)) {
->>   		clock();
->>   	}
-> clock_gettime() with CLOCK_MONOTONIC would be better fit there, since
-> the wall clock can be changed by ntp and generally is not guaranteed to
-> be monotonic...
-I was actually thinking the same, but decided to use time() because of 
-a) it doesn't matter much as long as some time passes by and b) 
-monotonic clocks are an optional feature in posix.
->>   
->> -- 
->> 2.20.1
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+As these clocks are already possibly unsupported, accept that as an error
+code besides the EINVAL code.
+
+Note that previously the kernel would incorrectly return the ENOTSUPP code,
+which is undefined in userspace. With these unfixed kernels, the test will
+fail when those RTCs are not present.
+
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ testcases/kernel/syscalls/timer_create/timer_create01.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/timer_create/timer_create01.c b/testcases/kernel/syscalls/timer_create/timer_create01.c
+index 258b6444c362..1ae5b9b2d1c2 100644
+--- a/testcases/kernel/syscalls/timer_create/timer_create01.c
++++ b/testcases/kernel/syscalls/timer_create/timer_create01.c
+@@ -77,7 +77,8 @@ static void run(unsigned int n)
+ 				&created_timer_id));
+ 
+ 		if (TST_RET != 0) {
+-			if (possibly_unsupported(clock) && TST_ERR == EINVAL) {
++			if (possibly_unsupported(clock) &&
++			    (TST_ERR == EINVAL || TST_ERR == ENOTSUP)) {
+ 				tst_res(TPASS | TTERRNO,
+ 					"%s unsupported, failed as expected",
+ 					get_clock_str(clock));
+-- 
+2.20.1
+
