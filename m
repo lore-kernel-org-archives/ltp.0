@@ -1,8 +1,8 @@
 From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Fri, 27 Sep 2019 11:19:30 +0800
-Subject: [LTP] [PATCH tbt_cases] umip_basic_test.c: update umip basic test
- for new kernel v5.4
-Message-ID: <20190927031930.27425-1-pengfei.xu@intel.com>
+Date: Fri, 27 Sep 2019 11:46:35 +0800
+Subject: [LTP] [PATCH] umip_basic_test.c: update umip basic test for new
+ kernel v5.4
+Message-ID: <20190927034635.28521-1-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
