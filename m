@@ -1,40 +1,24 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 27 Sep 2019 14:34:44 +0200
-Subject: [LTP] [PATCH] syscalls/shmat03: Remove it from runtest/cve
-In-Reply-To: <20190814121328.22999-1-chrubis@suse.cz>
-References: <20190814121328.22999-1-chrubis@suse.cz>
-Message-ID: <20190927123444.GA28245@dell5510>
+Date: Fri, 27 Sep 2019 14:48:37 +0200
+Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
+In-Reply-To: <20190927113826.GC17233@rei.lan>
+References: <20190925094721.18932-1-chrubis@suse.cz>
+ <20190925135634.GA32581@dell5510> <20190927113826.GC17233@rei.lan>
+Message-ID: <20190927124837.GA28734@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
-> The original POC[1] and CVE-2017-5669 are not tested by this test
-> anymore as it turned out that the CVE was bogus.
-Could you put the link, please? Is it this one?
-https://marc.info/?l=linux-mm&m=152510978123755&w=2
+> Hi!
+> I've just pushed this patch + one more special case for read_bytes == 0,
+> can you please give it a try and check that at least the test works
+> where it was working previously?
 
-> And the test became regression test for:
-
-> commit 8f89c007b6dec16a1793cb88de88fcc02117bbbc
-> Author: Davidlohr Bueso <dave@stgolabs.net>
-> Date:   Fri May 25 14:47:30 2018 -0700
-
->     ipc/shm: fix shmat() nil address after round-down when remapping
-
-> Hence we will keep the test but remove it from the CVE runtest file and adjust
-> the top level comment in the test code.
-
-> [1] https://bugzilla.kernel.org/attachment.cgi?id=252511
->     from https://bugzilla.kernel.org/show_bug.cgi?id=192931
-
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Davidlohr Bueso <dave@stgolabs.net>
-Acked-by: Petr Vorel <pvorel@suse.cz>
-(based on https://marc.info/?l=linux-mm&m=152510978123755&w=2)
+Yep, confirm that it's working as expected :).
 
 Kind regards,
 Petr
