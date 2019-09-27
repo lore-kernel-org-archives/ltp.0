@@ -1,56 +1,71 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 26 Sep 2019 21:07:07 +0300
-Subject: [LTP] copy_file_range() errno changes introduced in v5.3-rc1
-In-Reply-To: <20190926175700.GA12619@x230>
-References: <20190926155608.GC23296@dell5510> <20190926160432.GC9916@magnolia>
- <20190926161906.GD23296@dell5510>
- <CAOQ4uxixSy7Wp7yWYOMpp8R5tFXD2SWR9t3koYO4jBE-Wnt8sQ@mail.gmail.com>
- <20190926175700.GA12619@x230>
-Message-ID: <CAOQ4uxisQx1C7DXrcmq0gma4-bxbaPS5UNwpwnoDOtjYVypXwA@mail.gmail.com>
+From: Pengfei Xu <pengfei.xu@intel.com>
+Date: Fri, 27 Sep 2019 11:19:30 +0800
+Subject: [LTP] [PATCH tbt_cases] umip_basic_test.c: update umip basic test
+ for new kernel v5.4
+Message-ID: <20190927031930.27425-1-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Sep 26, 2019 at 8:57 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Amir,
->
-> > > > > * 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") started to return -EXDEV.
->
-> > Started to return EXDEV?? quite the opposite.
-> > But LTP tests where already adapted to that behavior AFAICT:
-> > 15cac7b46 syscalls/copy_file_range01: add cross-device test
-> I'm talking about copy_file_range02 (15cac7b46 changes copy_file_range01).
->
-> Anyway, the problem which I want to fix is a backward compatibility for v5.2 and
-> older to fix errors like this:
->
-> copy_file_range02.c:102: INFO: Test #7: overlaping range
-> copy_file_range02.c:134: FAIL: copy_file_range returned wrong value: 16
-> copy_file_range02.c:102: INFO: Test #8: block device
-> copy_file_range02.c:128: FAIL: copy_file_range failed unexpectedly; expected EINVAL, but got: EXDEV (18)
-> copy_file_range02.c:102: INFO: Test #9: char device
-> copy_file_range02.c:128: FAIL: copy_file_range failed unexpectedly; expected EINVAL, but got: EXDEV (18)
-> ...
-> copy_file_range02.c:102: INFO: Test #11: max length lenght
-> copy_file_range02.c:128: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EINVAL (22)
-> copy_file_range02.c:102: INFO: Test #12: max file size
-> copy_file_range02.c:128: FAIL: copy_file_range failed unexpectedly; expected EFBIG, but got: EINVAL (22)
->
-> LTP hasn't defined yet any policy about changing errnos,
-> as it's probably best to check whether change was intentional
-> (like your obvious fixes) or not.
->
+After linux kernel v5.4 mainline, 64bit SGDT SIDT SMSW will return
+dummy value and not trigger SIGSEGV due to kernel code change.
+For detailed kernel update info, you could check v5.4 commit:
+x86/umip: Add emulation (spoofing) for UMIP covered instructions in
+64-bit processes as well
 
-IIUC, copy_file_range02 was written after v5.3 changes to verify that
-copy_file_range
-stays unbroken.
-As such, I would suggest that you check if kernel supports cross-fs copy, like
-copy_file_range01 does and if it doesn't, skip the test entirely.
-If some one ever backports cross-fs copy to any distro stable kernel, then one
-would better also backkport all of those API fixes, otherwise test will fail.
+Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+---
+ testcases/kernel/security/umip/umip_basic_test.c | 25 ++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
-Thanks,
-Amir.
+diff --git a/testcases/kernel/security/umip/umip_basic_test.c b/testcases/kernel/security/umip/umip_basic_test.c
+index 37850ef9f..278ae92f6 100644
+--- a/testcases/kernel/security/umip/umip_basic_test.c
++++ b/testcases/kernel/security/umip/umip_basic_test.c
+@@ -21,6 +21,7 @@
+ #include <string.h>
+ #include <sys/wait.h>
+ #include <signal.h>
++#include <linux/version.h>
+ 
+ #include "tst_test.h"
+ #include "tst_safe_stdio.h"
+@@ -112,11 +113,31 @@ static void verify_umip_instruction(unsigned int n)
+ 
+ 	SAFE_WAITPID(pid, &status, 0);
+ 
++	switch (n) {
++	case 0:
++	case 1:
++	case 3:
++		/* after linux kernel v5.4 mainline, 64bit SGDT SIDT SMSW will return
++		   dummy value and not trigger SIGSEGV due to kernel code change */
++		#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
++			tst_res(TINFO, "Linux kernel version is after than v5.4");
++			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
++				tst_res(TFAIL, "Got SIGSEGV\n\n");
++				return;
++			}
++			tst_res(TPASS, "Didn't receive SIGSEGV, child exited with %s\n\n",
++				tst_strstatus(status));
++				return;
++		#else
++			tst_res(TINFO, "Linux kernel version is before than v5.4");
++		#endif
++	}
++
+ 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
+-		tst_res(TPASS, "Got SIGSEGV");
++		tst_res(TPASS, "Got SIGSEGV\n\n");
+ 		return;
+ 	}
+-	tst_res(TFAIL, "Didn't receive SIGSEGV, child exited with %s",
++	tst_res(TFAIL, "Didn't receive SIGSEGV, child exited with %s\n\n",
+ 		tst_strstatus(status));
+ }
+ 
+-- 
+2.14.1
+
