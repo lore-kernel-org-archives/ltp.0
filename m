@@ -1,66 +1,107 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Sep 2019 16:59:12 +0200
-Subject: [LTP] [RFC PATCH v4 1/5] shell: Add tst_is_num()
+Date: Mon, 30 Sep 2019 16:59:14 +0200
+Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
 In-Reply-To: <20190930145916.20465-1-pvorel@suse.cz>
 References: <20190930145916.20465-1-pvorel@suse.cz>
-Message-ID: <20190930145916.20465-2-pvorel@suse.cz>
+Message-ID: <20190930145916.20465-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using grep -E, which more portable than using awk or anything else.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/test-writing-guidelines.txt | 6 ++++++
- testcases/lib/tst_test.sh       | 7 ++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ lib/newlib_tests/shell/test_timeout.sh | 38 ++++++++++++++++++++++++++
+ lib/newlib_tests/shell/timeout01.sh    | 13 +++++++++
+ lib/newlib_tests/shell/timeout02.sh    | 13 +++++++++
+ 3 files changed, 64 insertions(+)
+ create mode 100755 lib/newlib_tests/shell/test_timeout.sh
+ create mode 100755 lib/newlib_tests/shell/timeout01.sh
+ create mode 100755 lib/newlib_tests/shell/timeout02.sh
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index cd0d28b8e..6643fc7c1 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2338,6 +2338,12 @@ Checking for integers
- tst_is_int "$FOO"
- -------------------------------------------------------------------------------
- 
-+Checking for integers and floating point numbers
-+++++++++++++++++++++++++++++++++++++++++++++++++
-+# returns zero if passed an integer or floating point number parameter, non-zero otherwise
-+tst_is_num "$FOO"
-+-------------------------------------------------------------------------------
+diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
+new file mode 100755
+index 000000000..7e296f9e9
+--- /dev/null
++++ b/lib/newlib_tests/shell/test_timeout.sh
+@@ -0,0 +1,38 @@
++#!/bin/sh
 +
- Obtaining random numbers
- ++++++++++++++++++++++++
- 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index e0b24c6b9..ca63745fd 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) Linux Test Project, 2014-2018
-+# Copyright (c) Linux Test Project, 2014-2019
- # Author: Cyril Hrubis <chrubis@suse.cz>
- #
- # LTP test library for shell.
-@@ -344,6 +344,11 @@ tst_is_int()
- 	return $?
- }
- 
-+tst_is_num()
++PATH="$(dirname $0)/../../../testcases/lib/:$PATH"
++
++DATA="
++timeout01.sh||0
++timeout02.sh||0
++timeout02.sh|foo|32
++timeout02.sh|2|0
++timeout02.sh|1.1|0
++timeout02.sh|-10|32
++"
++
++echo "Testing timeout in shell API"
++echo
++
++failed=0
++IFS="
++"
++for i in $DATA; do
++	file=$(echo $i | cut -d'|' -f1)
++	timeout=$(echo $i | cut -d'|' -f2)
++	exp_exit=$(echo $i | cut -d'|' -f3)
++
++	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
++	LTP_TIMEOUT_MUL=$timeout ./$file
++	ret=$?
++	if [ $ret -ne $exp_exit ]; then
++		echo "FAILED (exit code: $ret, expected $exp_exit)"
++		failed=$((failed+1))
++	else
++		echo "PASSED"
++	fi
++	echo
++done
++
++echo "Failed tests: $failed"
++exit $failed
+diff --git a/lib/newlib_tests/shell/timeout01.sh b/lib/newlib_tests/shell/timeout01.sh
+new file mode 100755
+index 000000000..ab7428a2d
+--- /dev/null
++++ b/lib/newlib_tests/shell/timeout01.sh
+@@ -0,0 +1,13 @@
++#!/bin/sh
++
++TST_TESTFUNC=do_test
++
++TST_TIMEOUT=-1
++. tst_test.sh
++
++do_test()
 +{
-+	echo "$1" | grep -Eq '^[-+]?[0-9]+\.?[0-9]*$'
++	tst_res TPASS "timeout $TST_TIMEOUT set"
 +}
 +
- tst_usage()
- {
- 	if [ -n "$TST_USAGE" ]; then
++tst_run
+diff --git a/lib/newlib_tests/shell/timeout02.sh b/lib/newlib_tests/shell/timeout02.sh
+new file mode 100755
+index 000000000..73af09125
+--- /dev/null
++++ b/lib/newlib_tests/shell/timeout02.sh
+@@ -0,0 +1,13 @@
++#!/bin/sh
++
++TST_TESTFUNC=do_test
++
++TST_TIMEOUT=2
++. tst_test.sh
++
++do_test()
++{
++	tst_res TPASS "timeout $TST_TIMEOUT set (LTP_TIMEOUT_MUL='$LTP_TIMEOUT_MUL')"
++}
++
++tst_run
 -- 
 2.23.0
 
