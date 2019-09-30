@@ -1,1503 +1,189 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Sep 2019 13:58:51 +0200
-Subject: [LTP] [RFC PATCH 1/2] doc: Removed outdated ltp-howto.{txt,lyx}
-In-Reply-To: <20190930115852.21672-1-pvorel@suse.cz>
-References: <20190930115852.21672-1-pvorel@suse.cz>
-Message-ID: <20190930115852.21672-2-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 30 Sep 2019 14:33:56 +0200
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ SEPTEMBER 2019
+Message-ID: <20190930123355.GA27508@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This should be replaced by more up-to-date text.
+Good news everyone,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/ltp-howto.lyx | 978 ----------------------------------------------
- doc/ltp-howto.txt | 488 -----------------------
- 2 files changed, 1466 deletions(-)
- delete mode 100644 doc/ltp-howto.lyx
- delete mode 100644 doc/ltp-howto.txt
+the Linux Test Project test suite stable release for *September 2019* has been
+released.
 
-diff --git a/doc/ltp-howto.lyx b/doc/ltp-howto.lyx
-deleted file mode 100644
-index ae898fada..000000000
---- a/doc/ltp-howto.lyx
-+++ /dev/null
-@@ -1,978 +0,0 @@
--#LyX 1.1 created this file. For more info see http://www.lyx.org/
--\lyxformat 2.16
--\textclass docbook
--\begin_preamble
--<!entity header system "header.sgml">
--\end_preamble
--\language default
--\inputencoding default
--\fontscheme default
--\graphics default
--\paperfontsize default
--\spacing single
--\papersize Default
--\paperpackage a4
--\use_geometry 0
--\use_amsmath 0
--\paperorientation portrait
--\secnumdepth 3
--\tocdepth 3
--\paragraph_separation indent
--\defskip medskip
--\quotes_language english
--\quotes_times 2
--\papercolumns 1
--\papersides 1
--\paperpagestyle default
--
--\layout Title
--\added_space_top vfill \added_space_bottom vfill
--Linux Test Project HOWTO
--\layout Date
--
--10 October 2000
--\layout Author
--
--Nate Straz
--\layout Abstract
--
--This document explains some of the more in depth topics of the Linux Test
-- Project and related testing issues.
-- It does not cover basic installation procedures.
-- See the INSTALL and README files in the tarball for that information.
--\layout Section
--
--Preface
--\layout Standard
--
--This document was written to help bring the community up to speed on the
-- ins and outs of the Linux Test Project.
--\layout Subsection
--
--Copyright
--\layout Standard
--
--Copyright (c) 2000 by SGI, Inc.
--
--\layout Standard
--
--Please freely copy and distribute (sell or give away) this document in any
-- format.
--  It's requested that corrections and/or comments be fowarded to the document
-- maintainer.
-- You may create a derivative work and distribute it provided that you:
--\layout Itemize
--
--Send your derivative work (in the most suitable format such as sgml) to
-- the LDP (Linux Documentation Project) or the like for posting on the Internet.
--  If not the LDP, then let the LDP know where it is available.
--
--\layout Itemize
--
--License the derivative work with this same license or use GPL.
-- Include a copyright notice and at least a pointer to the license used.
--
--\layout Itemize
--
--Give due credit to previous authors and major contributors.
--
--\layout Standard
--
--If you're considering making a derived work other than a translation, it's
-- requested that you discuss your plans with the current maintainer.
--
--\layout Subsection
--
--Disclaimer
--\layout Standard
--
--Use the information in this document at your own risk.
-- I disavow any potential liability for the contents of this document.
-- Use of the concepts, examples, and/or other content of this document is
-- entirely at your own risk.
--
--\layout Standard
--
--All copyrights are owned by their owners, unless specifically noted otherwise.
--  Use of a term in this document should not be regarded as affecting the
-- validity of any trademark or service mark.
--
--\layout Standard
--
--Naming of particular products or brands should not be seen as endorsements.
--
--\layout Standard
--
--You are strongly recommended to take a backup of your system before major
-- installation and backups at regular intervals.
--
--\layout Section
--
--Introduction
--\layout Subsection
--
--What is the Linux Test Project?
--\layout Standard
--
--The Linux Test Project (LTP) is an effort to create a set of tools and tests
-- to verify the functionality and stability of the Linux kernel.
-- We hope this will support Linux development by making unit testing more
-- complete and minimizing user impact by building a barrier to keep bugs
-- from making it to the user.
--
--\layout Subsection
--
--What is wrong with the current testing model?
--\layout Standard
--
--The Linux development community utilizes two important (some out argue most
-- important) testing techniques in its normal operations: Design and Code
-- Inspections.
-- The intent of LTP is to support this by giving developers an ever growing
-- set of tools to help identify any operational problems in their code that
-- may be missed by human review.
-- One of the toughest categories of problems to catch with inspection is
-- that of interaction of features.
-- With a continuously improving set of tests and tools, developers can get
-- an indication of whether their changes may have broken some other functionality.
--
--\layout Standard
--
--There is no such thing as a perfect test base.
--  It is only useful it if keeps up with new and changing functionality,
-- and if it actually gets used.
--
--\layout Subsection
--
--Are you doing benchmarking?
--\layout Standard
--
--Not at  this time.
-- We are more interested in functional, regression, and stress testing the
-- Linux kernel.
-- Benchmarking may be workable to compare the performance among kernel versions.
--
--\layout Subsection
--
--Are you doing standards testing?
--\layout Standard
--
--No, we are leaving that to the Linux Standards Base (LSB).
--  See the Linux Standards Base
--\begin_inset LatexCommand \htmlurl[web site]{http://www.linuxbase.org/}
--
--\end_inset
--
-- for more information.
--
--\layout Section
--
--Structure
--\layout Standard
--
--The basic building block of the test project is a
--\series bold
--test case
--\series default
-- that consists of a single action and a verification that the action worked.
--  The result of the test case is usually restricted to PASS/FAIL.
--
--\layout Standard
--
--A
--\series bold
--test program
--\series default
-- is a runnable program that contains one or more test cases.
-- Test programs often understand command line options which alter their behavior.
-- The options could determine the amount of memory tested, the location of
-- temporary files, the type of network packet used, or any other useful parameter.
--\layout Standard
--
--
--\series bold
--Test tags
--\series default
-- are used to pair a unique identifier with a test program and a set of command
-- line options.
-- Test tags are the basis for test suites.
--\layout Section
--
--Writing Tests
--\layout Standard
--
--Writing a test case is a lot easier than most people think.
--  Any code that you write to examine how a part of the kernel works can
-- be adapted into a test case.
--  All that is needed is a way to report the result of the action to the
-- rest of the world.
--  There are several ways of doing this, some more involved than others.
--
--\layout Subsection
--
--Exit Style Tests
--\layout Standard
--
--Probably the simplest way of reporting the results of a test case is the
-- exit status of your program.
--  If your test program encounters unexpected or incorrect results, exit
-- the test program with a non-zero exit status, i.e.
--
--\family typewriter
--exit(1)
--\family default
--.
-- Conversely, if your program completes as expected, return a zero exit status,
-- i.e.
--
--\family typewriter
--exit(0)
--\family default
--.
-- Any test driver should be able to handle this type of error reporting.
-- If a test program has multiple test cases you won't know which test case
-- failed, but you will know the program that failed.
--
--\layout Subsection
--
--Formatted Output Tests
--\layout Standard
--
--The next easiest way of reporting the results is to write the results of
-- each test case to standard output.
-- This allows for the testing results to be more understandable to both the
-- tester and the analysis tools.
-- When the results are written in a standard way, tools can be used to analyze
-- the results.
--
--\layout Section
--
--Testing Tools
--\layout Standard
--
--The Linux Test Project has not yet decided on a "final" test harness.
--  We have provided a simple solution with
--\family typewriter
--ltp-pan
--\family default
-- to make due until a complete solution has been found/created that compliments
-- the Linux kernel development process.
--  Several people have said we should use such and such a test harness.
-- Until we find we need a large complex test harness, we will apply the KISS
-- concept.
--
--\layout Subsection
--
--Ltp-pan
--\layout Standard
--
--
--\family typewriter
--ltp-pan
--\family default
-- is a simple test driver with the ability to keep track of orphaned processes
-- and capture test output.
-- It works by reading a list of test tags and command lines and runs them.
-- By default ltp-pan will select a command randomly from the list of test tags,
-- wait for it to finish.
-- Through command line options you can run through the entire list sequentially,
-- run n tests, keep n test running at all times, and buffer test output.
-- Ltp-pan can be nested to create very complex test environments.
--\layout Standard
--
--Ltp-pan uses an
--\emph on
--active file
--\emph default
--, also called a
--\emph on
--zoo file
--\emph default
-- to keep track of which tests are currently running.
-- This file holds the pid, tag, and a portion of the command line.
-- When you start ltp-pan it becomes a test tag in itself, thus it requires a
-- name for itself.
-- Ltp-pan updates the active file to show which test tags are currently running.
-- When a test tag exits, ltp-pan will overwrite the first character with a '#'.
-- The active file can be shared between multiple instances of ltp-pan so you
-- know which tests were running when the system crashes by looking at one
-- file.
--
--\layout Standard
--
--A
--\emph on
--ltp-pan file
--\emph default
-- contains a list of test tags for ltp-pan to run.
-- The format of a ltp-pan file is as follows:
--\layout Code
--
--
--\latex no_latex
--testtag testprogram -o one -p two other command line options
--\layout Code
--
--
--\latex no_latex
--# This is a comment.
-- It is a good idea to describe the test
--\layout Code
--
--
--\latex no_latex
--# tags in your ltp-pan file.
-- Tests programs can have different
--\layout Code
--
--
--\latex no_latex
--# behaviors depending on the command line options so it is
--\layout Code
--
--
--\latex no_latex
--# helpful to describe what each test tag is meant to verify or # provoke.
--\layout Code
--
--
--\latex no_latex
--# Some more test cases
--\layout Code
--
--
--\latex no_latex
--mm01 mmap001 -m 10000
--\layout Code
--
--
--\latex no_latex
--# 40 Mb mmap() test.
--\layout Code
--
--
--\latex no_latex
--# Creates a 10000 page mmap, touches all of the map, sync's
--\layout Code
--
--
--\latex no_latex
--# it, and munmap()s it.
--\layout Code
--
--
--\latex no_latex
--mm03 mmap001 -i 0 -I 1 -m 100
--\layout Code
--
--
--\latex no_latex
--# repetitive mmapping test.
--\layout Code
--
--
--\latex no_latex
--# Creates a one page map repetitively for one minute.
--\layout Code
--
--
--\latex no_latex
--dup02 dup02
--\layout Code
--
--
--\latex no_latex
--# Negative test for dup(2) with bad fd
--\layout Code
--
--
--\latex no_latex
--kill09 kill09
--\layout Code
--
--
--\latex no_latex
--# Basic test for kill(2)
--\layout Code
--
--
--\latex no_latex
--fs-suite01 ltp-pan -e -a fs-suite01.zoo -n fs-suite01 -f runtest/fs
--\layout Code
--
--
--\latex no_latex
--# run the entire set of file system tests
--\layout Standard
--
--The test tags are simple identifiers, no spaces are allowed.
-- The test of the line is the program to run, which is done using execvp(3).
-- Lines starting with '#' are comments and ignored by ltp-pan.
-- It is a good practice to include descriptions with your test tags so you
-- can have a reminder what a certain obscure test tag tries to do.
--\layout Subsubsection
--
--Examples
--\layout Standard
--
--The most basic way to run ltp-pan is by passing the test program and parameters
-- on the command line.
-- This will run the single program once and wrap the output.
--
--\layout Code
--
--
--\latex no_latex
--$ ltp-pan -a ltp.zoo -n tutor sleep 4
--\layout Code
--
--
--\latex no_latex
--<<<test_start>>>
--\layout Code
--
--
--\latex no_latex
--tag=cmdln stime=971450564
--\layout Code
--
--
--\latex no_latex
--cmdline="sleep 4"
--\layout Code
--
--
--\latex no_latex
--contacts=""
--\layout Code
--
--
--\latex no_latex
--analysis=exit
--\layout Code
--
--
--\latex no_latex
--initiation_status="ok"
--\layout Code
--
--
--\latex no_latex
--<<<test_output>>>
--\layout Code
--
--
--\latex no_latex
--<<<execution_status>>>
--\layout Code
--
--
--\latex no_latex
--duration=103341903 termination_type=exited termination_id=0 corefile=no
-- cutime=0 cstime=0
--\layout Code
--
--
--\latex no_latex
--<<<test_end>>>
--\layout Code
--
--
--\latex no_latex
--$ cat ltp.zoo
--\layout Code
--
--
--\latex no_latex
--#9357,tutor,pan/ltp-pan -a ltp.zoo -n tutor sleep 4
--\layout Code
--
--
--\latex no_latex
--#9358,cmdln,sleep 4
--\layout Code
--
--
--\latex no_latex
--$
--\layout Paragraph
--
--How it works
--\layout Standard
--
--This example shows the two parameters that are always required by ltp-pan, the
-- active file and a test tag for ltp-pan.
-- The
--\begin_inset Quotes eld
--\end_inset
--
--sleep 4
--\begin_inset Quotes erd
--\end_inset
--
-- on the end of the command line is a test program and parameters that ltp-pan
-- should run.
-- This test is given the tag
--\begin_inset Quotes eld
--\end_inset
--
--cmdln.
--\begin_inset Quotes erd
--\end_inset
--
-- Ltp-pan will run one test randomly, which ends up being cmdln since it is the
-- only test that we told ltp-pan about.
--
--\layout Standard
--
--In the active file,
--\family typewriter
--ltp.zoo
--\family default
--, ltp-pan writes the pid, test tag, and part of the command line for the currently
-- running tests.
-- The command lines are truncated so each line will fit on an 80 column display.
-- When a test tag finishes, ltp-pan will place a '#' at the beginning of the
-- line to mark it as available.
-- Here you can see that cmdln and tutor, the name we gave ltp-pan, ran to completion.
-- If the computer hangs, you can read this file to see which test programs
-- were running.
--\layout Standard
--
--We have run one test once.
-- Let's do something a little more exciting.
-- Let's run one test several times, at the same time.
--
--\layout Code
--
--
--\latex no_latex
--$ ltp-pan -a ltp.zoo -n tutor -x 3 -s 3 -O /tmp sleep 1
--\layout Code
--
--
--\latex no_latex
--<<<test_start>>>
--\layout Code
--
--
--\latex no_latex
--tag=cmdln stime=971465653
--\layout Code
--
--
--\latex no_latex
--cmdline="sleep 1"
--\layout Code
--
--
--\latex no_latex
--contacts=""
--\layout Code
--
--
--\latex no_latex
--analysis=exit
--\layout Code
--
--
--\latex no_latex
--initiation_status="ok"
--\layout Code
--
--
--\latex no_latex
--<<<test_output>>>
--\layout Code
--
--
--\latex no_latex
--
--\layout Code
--
--
--\latex no_latex
--<<<execution_status>>>
--\layout Code
--
--
--\latex no_latex
--duration=103326814 termination_type=exited termination_id=0 corefile=no
--\layout Code
--
--
--\latex no_latex
--cutime=1 cstime=0
--\layout Code
--
--
--\latex no_latex
--<<<test_end>>>
--\layout Code
--
--
--\latex no_latex
--<<<test_start>>>
--\layout Code
--
--
--\latex no_latex
--tag=cmdln stime=971465653
--\layout Code
--
--
--\latex no_latex
--cmdline="sleep 1"
--\layout Code
--
--
--\latex no_latex
--contacts=""
--\layout Code
--
--
--\latex no_latex
--analysis=exit
--\layout Code
--
--
--\latex no_latex
--initiation_status="ok"
--\layout Code
--
--
--\latex no_latex
--<<<test_output>>>
--\layout Code
--
--
--\latex no_latex
--
--\layout Code
--
--
--\latex no_latex
--<<<execution_status>>>
--\layout Code
--
--
--\latex no_latex
--duration=103326814 termination_type=exited termination_id=0 corefile=no
--\layout Code
--
--
--\latex no_latex
--cutime=0 cstime=1
--\layout Code
--
--
--\latex no_latex
--<<<test_end>>>
--\layout Code
--
--
--\latex no_latex
--<<<test_start>>>
--\layout Code
--
--
--\latex no_latex
--tag=cmdln stime=971465653
--\layout Code
--
--
--\latex no_latex
--cmdline="sleep 1"
--\layout Code
--
--
--\latex no_latex
--contacts=""
--\layout Code
--
--
--\latex no_latex
--analysis=exit
--\layout Code
--
--
--\latex no_latex
--initiation_status="ok"
--\layout Code
--
--
--\latex no_latex
--<<<test_output>>>
--\layout Code
--
--
--\latex no_latex
--
--\layout Code
--
--
--\latex no_latex
--<<<execution_status>>>
--\layout Code
--
--
--\latex no_latex
--duration=103326814 termination_type=exited termination_id=0 corefile=no
--\layout Code
--
--
--\latex no_latex
--cutime=0 cstime=0
--\layout Code
--
--
--\latex no_latex
--<<<test_end>>>
--\layout Paragraph
--
--How it works
--\layout Standard
--
--In this example we run another fake test from the command line, but we run
-- it three times (-s 3) and keep three test tags active at the same time
-- (-x 3).
-- The -O parameter is a directory where temporary files can be created to
-- buffer the output of each test tag.
-- You can see in the output that cmdln ran three times.
-- If the -O option were omitted, your test output would be mixed, making
-- it almost worthless.
--
--\layout Itemize
--
--Using a ltp-pan file to run multiple tests
--\layout Itemize
--
--Nesting ltp-pan
--\layout Standard
--
--For more information on ltp-pan see the man page
--\family typewriter
--doc/man1/ltp-pan.1
--\family default
--.
--\layout Subsection
--
--Scanner
--\layout Standard
--
--
--\family typewriter
--Ltp-scanner
--\family default
-- is a results analysis tool that understands the
--\emph on
--rts
--\emph default
-- style output which
--\family typewriter
--ltp-pan
--\family default
-- generates by default.
-- It will produce a table summarizing which tests passed and which failed.
--
--\layout Subsection
--
--The Quick-hitter Package
--\layout Standard
--
--Many of the tests released use the Quick-hitter test package to perform
-- tasks like create and move to a temporary directory, handle some common
-- command line parameters, loop, run in parallel, handle signals, and clean
-- up.
--
--\layout Standard
--
--There is an example test case,
--\family typewriter
--doc/examples/quickhit.c
--\family default
--, which shows how the quick-hitter package can be used.
-- The file is meant to be a supplement to the documentation, not a working
-- test case.
-- Use any of the tests in
--\family typewriter
--tests/
--\family default
-- as a template.
--\layout Section
--
--To Do
--\layout Standard
--
--There are a lot of things that still need to be done to make this a complete
-- kernel testing system.
-- The following sections will discuss some of the to do items in detail.
--
--\layout Subsection
--
--Configuration Analysis
--\layout Standard
--
--While the number of configuration options for the Linux kernel is seen as
-- a strength to developers and users alike, it is a curse to testers.
--  To create a powerful automated testing system, we need to be able to determine
-- what the configuration on the booted box is and then determine which tests
-- should be run on that box.
--
--\layout Standard
--
--The Linux kernel has hundreds of configuration options that can be set to
-- compile the kernel.
--  There are more options that can be set when you boot the kernel and while
-- it is running.
--  There are also many patches that can be applied to the kernel to add functiona
--lity or change behavior.
--
--\layout Subsection
--
--Result Comparison
--\layout Standard
--
--A lot of testing will be done in the life of the Linux Test Project.
-- Keeping track of the results from all the testing will require some infrastruct
--ure.
-- It would be nice to take that output from a test machine, feed it to a
-- program and receive a list of items that broke since the last run on that
-- machine, or were fixed, or work on another test machine but not on this
-- one.
--
--\layout Section
--
--Contact information and updates
--\layout Literal
--
--URL: http://ltp.sourceforge.net/
--\layout Literal
--
--mailing list: ltp@lists.linux.it
--\layout Literal
--
--list archive: http://lists.linux.it/pipermail/ltp/
--\layout Standard
--
--Questions and comments should be sent to the LTP mailing
-- list at ltp@lists.linux.it. To subscribe, please go to
-- http://lists.linux.it/pipermail/ltp/.
--
--\layout Standard
--
--The source is also available via CVS.
--  See the web site for a web interface and check out instructions.
--
--\layout Section
--
--Glossary
--\layout Description
--
--Test IEEE/ANSI
--\begin_float footnote
--\layout Standard
--
--Kit, Edward, Software Testing in the Real World: Improving the Process.
-- P.
-- 82.
-- ACM Press, 1995.
--\end_float
--:
--\shape italic
--
--\newline
--
--\shape default
--
--\shape italic
--(i)
--\shape default
-- An activity in which a system or component is executed under specified
-- conditions, the results are observed or record, and an evaluation is made
-- of some aspect of the system or component.
--
--\shape italic
--
--\newline
--
--\shape default
--
--\shape italic
--(ii)
--\shape default
-- A set of one or more test cases.
--
--\layout Description
--
--Test\SpecialChar ~
--Case A test assertion with a single result that is being verified.
-- This allows designations such as PASS or FAIL to be applied to a single
-- bit of functionality.
--  A single test case may be one of many test cases for testing the complete
-- functionality of a system.
--
--\newline
--IEEE/ANSI:
--\shape italic
--
--\newline
--(i)
--\shape default
--A set of test inputs, execution conditions, and expected results developed
-- for a particular objective.
--
--\shape italic
--
--\newline
--(ii)
--\shape default
-- The smallest entity that is always executed as a unit, from beginning to
-- end.
--
--\layout Description
--
--Test\SpecialChar ~
--Driver A program that handles the execution of test programs.
-- It is responsible for starting the test programs, capturing their output,
-- and recording their results.
-- Ltp-pan is an example of a test driver.
--\layout Description
--
--Test\SpecialChar ~
--Framework A mechanism for organizing a group of tests.
--  Frameworks may have complex or very simple API's, drivers and result logging
-- mechanisms.
-- Examples of frameworks are TETware and DejaGnu.
--
--\layout Description
--
--Test\SpecialChar ~
--Harness A Test harness is the mechanism that connects a test program
-- to a test framework.
--  It may be a specification of exit codes,  or a set of libraries for formatting
-- messages and determining exit codes.
--  In TETware, the tet_result() API is the test harness.
--
--\layout Description
--
--Test\SpecialChar ~
--Program A single invokable program.
--  A test program can contain one or more test cases.
-- The test harness's API allows for reporting/analysis of the individual
-- test cases.
--
--\layout Description
--
--Test\SpecialChar ~
--Suite A collection of tests programs, assertions, cases grouped together
-- under a framework.
--
--\layout Description
--
--Test\SpecialChar ~
--Tag An identifier that corresponds to a command line which runs a test.
--  The tag is a single word that matches a test program with a set of command
-- line arguments.
--
--\the_end
-diff --git a/doc/ltp-howto.txt b/doc/ltp-howto.txt
-deleted file mode 100644
-index 9f1a573f5..000000000
---- a/doc/ltp-howto.txt
-+++ /dev/null
-@@ -1,488 +0,0 @@
--
--
--Linux Test Project HOWTO
--
--10 October 2000
--
--Nate Straz
--
--Abstract
--
--This document explains some of the more in depth topics of
--the Linux Test Project and related testing issues. It does
--not cover basic installation procedures. See the INSTALL
--and README files in the tarball for that information.
--
--1 Preface
--
--This document was written to help bring the community up
--to speed on the ins and outs of the Linux Test Project.
--
--1.1 Copyright
--
--Copyright (c) 2000 by SGI, Inc.
--
--Please freely copy and distribute (sell or give away) this
--document in any format.  It's requested that corrections
--and/or comments be forwarded to the document maintainer.
--You may create a derivative work and distribute it provided
--that you:
--
--* Send your derivative work (in the most suitable format
--  such as sgml) to the LDP (Linux Documentation Project)
--  or the like for posting on the Internet.  If not the LDP,
--  then let the LDP know where it is available.
--
--* License the derivative work with this same license or use
--  GPL. Include a copyright notice and at least a pointer
--  to the license used.
--
--* Give due credit to previous authors and major contributors.
--
--If you're considering making a derived work other than a
--translation, it's requested that you discuss your plans
--with the current maintainer.
--
--1.2 Disclaimer
--
--Use the information in this document at your own risk. I
--disavow any potential liability for the contents of this
--document. Use of the concepts, examples, and/or other content
--of this document is entirely at your own risk.
--
--All copyrights are owned by their owners, unless specifically
--noted otherwise.  Use of a term in this document should
--not be regarded as affecting the validity of any trademark
--or service mark.
--
--Naming of particular products or brands should not be seen
--as endorsements.
--
--You are strongly recommended to take a backup of your system
--before major installation and backups at regular intervals.
--
--2 Introduction
--
--2.1 What is the Linux Test Project?
--
--The Linux Test Project (LTP) is an effort to create a set
--of tools and tests to verify the functionality and stability
--of the Linux kernel. We hope this will support Linux development
--by making unit testing more complete and minimizing user
--impact by building a barrier to keep bugs from making it
--to the user.
--
--2.2 What is wrong with the current testing model?
--
--The Linux development community utilizes two important (some
--out argue most important) testing techniques in its normal
--operations: Design and Code Inspections. The intent of LTP
--is to support this by giving developers an ever growing
--set of tools to help identify any operational problems in
--their code that may be missed by human review. One of the
--toughest categories of problems to catch with inspection
--is that of interaction of features. With a continuously
--improving set of tests and tools, developers can get an
--indication of whether their changes may have broken some
--other functionality.
--
--There is no such thing as a perfect test base.  It is only
--useful it if keeps up with new and changing functionality,
--and if it actually gets used.
--
--2.3 Are you doing benchmarking?
--
--Not at  this time. We are more interested in functional,
--regression, and stress testing the Linux kernel. Benchmarking
--may be workable to compare the performance among kernel
--versions.
--
--2.4 Are you doing standards testing?
--
--No, we are leaving that to the Linux Standards Base (LSB).
-- See the Linux Standards Base [http://www.linuxbase.org/||web site]
--for more information.
--
--3 Structure
--
--The basic building block of the test project is a test case
--that consists of a single action and a verification that
--the action worked.  The result of the test case is usually
--restricted to PASS/FAIL.
--
--A test program is a runnable program that contains one or
--more test cases. Test programs often understand command
--line options which alter their behavior. The options could
--determine the amount of memory tested, the location of temporary
--files, the type of network packet used, or any other useful
--parameter.
--
--Test tags are used to pair a unique identifier with a test
--program and a set of command line options. Test tags are
--the basis for test suites.
--
--4 Writing Tests
--
--Writing a test case is a lot easier than most people think.
-- Any code that you write to examine how a part of the kernel
--works can be adapted into a test case.  All that is needed
--is a way to report the result of the action to the rest
--of the world.  There are several ways of doing this, some
--more involved than others.
--
--4.1 Exit Style Tests
--
--Probably the simplest way of reporting the results of a test
--case is the exit status of your program.  If your test program
--encounters unexpected or incorrect results, exit the test
--program with a non-zero exit status, i.e. exit(1). Conversely,
--if your program completes as expected, return a zero exit
--status, i.e. exit(0). Any test driver should be able to
--handle this type of error reporting. If a test program has
--multiple test cases you won't know which test case failed,
--but you will know the program that failed.
--
--4.2 Formatted Output Tests
--
--The next easiest way of reporting the results is to write
--the results of each test case to standard output. This allows
--for the testing results to be more understandable to both
--the tester and the analysis tools. When the results are
--written in a standard way, tools can be used to analyze
--the results.
--
--5 Testing Tools
--
--The Linux Test Project has not yet decided on a "final" test
--harness.  We have provided a simple solution with ltp-pan to
--make due until a complete solution has been found/created
--that compliments the Linux kernel development process.
--Several people have said we should use such and such a test
--harness. Until we find we need a large complex test harness,
--we will apply the KISS concept.
--
--5.1 Ltp-pan
--
--Ltp-pan is a simple test driver with the ability to keep track
--of orphaned processes and capture test output. It works
--by reading a list of test tags and command lines and runs
--them. By default ltp-pan will select a command randomly from
--the list of test tags, wait for it to finish. Through command
--line options you can run through the entire list sequentially,
--run n tests, keep n test running at all times, and buffer
--test output. Ltp-pan can be nested to create very complex test
--environments.
--
--Ltp-pan uses an active file, also called a zoo file to keep track
--of which tests are currently running. This file holds the
--pid, tag, and a portion of the command line. When you start
--ltp-pan it becomes a test tag in itself, thus it requires a
--name for itself. Ltp-pan updates the active file to show which
--test tags are currently running. When a test tag exits,
--ltp-pan will overwrite the first character with a '#'. The active
--file can be shared between multiple instances of ltp-pan so
--you know which tests were running when the system crashes
--by looking at one file.
--
--A ltp-pan file contains a list of test tags for ltp-pan to run. The
--format of a ltp-pan file is as follows:
--
--testtag testprogram -o one -p two other command line options
--
--# This is a comment. It is a good idea to describe the test
--
--# tags in your ltp-pan file. Tests programs can have different
--
--# behaviors depending on the command line options so it is
--
--# helpful to describe what each test tag is meant to verify
--or # provoke.
--
--# Some more test cases
--
--mm01 mmap001 -m 10000
--
--# 40 Mb mmap() test.
--
--# Creates a 10000 page mmap, touches all of the map, sync's
--
--# it, and munmap()s it.
--
--mm03 mmap001 -i 0 -I 1 -m 100
--
--# repetitive mmapping test.
--
--# Creates a one page map repetitively for one minute.
--
--dup02 dup02
--
--# Negative test for dup(2) with bad fd
--
--kill09 kill09
--
--# Basic test for kill(2)
--
--fs-suite01 ltp-pan -e -a fs-suite01.zoo -n fs-suite01 -f runtest/fs
--
--# run the entire set of file system tests
--
--The test tags are simple identifiers, no spaces are allowed.
--The test of the line is the program to run, which is done
--using execvp(3). Lines starting with '#' are comments and
--ignored by ltp-pan. It is a good practice to include descriptions
--with your test tags so you can have a reminder what a certain
--obscure test tag tries to do.
--
--5.1.1 Examples
--
--The most basic way to run ltp-pan is by passing the test program
--and parameters on the command line. This will run the single
--program once and wrap the output.
--
--$ ltp-pan -a ltp.zoo -n tutor sleep 4
--
--<<<test_start>>>
--
--tag=cmdln stime=971450564
--
--cmdline="sleep 4"
--
--contacts=""
--
--analysis=exit
--
--initiation_status="ok"
--
--<<<test_output>>>
--
--<<<execution_status>>>
--
--duration=103341903 termination_type=exited termination_id=0
--corefile=no cutime=0 cstime=0
--
--<<<test_end>>>
--
--$ cat ltp.zoo
--
--#9357,tutor,pan/ltp-pan -a ltp.zoo -n tutor sleep 4
--
--#9358,cmdln,sleep 4
--
--$
--
--How it works
--
--This example shows the two parameters that are always required
--by ltp-pan, the active file and a test tag for ltp-pan. The "sleep
--4" on the end of the command line is a test program and
--parameters that ltp-pan should run. This test is given the tag
--"cmdln." Ltp-pan will run one test randomly, which ends
--up being cmdln since it is the only test that we told ltp-pan
--about.
--
--In the active file, ltp.zoo, ltp-pan writes the pid, test tag,
--and part of the command line for the currently running tests.
--The command lines are truncated so each line will fit on
--an 80 column display. When a test tag finishes, ltp-pan will
--place a '#' at the beginning of the line to mark it as available.
--Here you can see that cmdln and tutor, the name we gave
--ltp-pan, ran to completion. If the computer hangs, you can read
--this file to see which test programs were running.
--
--We have run one test once. Let's do something a little more
--exciting. Let's run one test several times, at the same
--time.
--
--$ ltp-pan -a ltp.zoo -n tutor -x 3 -s 3 -O /tmp sleep 1
--
--<<<test_start>>>
--
--tag=cmdln stime=971465653
--
--cmdline="sleep 1"
--
--contacts=""
--
--analysis=exit
--
--initiation_status="ok"
--
--<<<test_output>>>
--
--
--
--<<<execution_status>>>
--
--duration=103326814 termination_type=exited termination_id=0
--corefile=no
--
--cutime=1 cstime=0
--
--<<<test_end>>>
--
--<<<test_start>>>
--
--tag=cmdln stime=971465653
--
--cmdline="sleep 1"
--
--contacts=""
--
--analysis=exit
--
--initiation_status="ok"
--
--<<<test_output>>>
--
--
--
--<<<execution_status>>>
--
--duration=103326814 termination_type=exited termination_id=0
--corefile=no
--
--cutime=0 cstime=1
--
--<<<test_end>>>
--
--<<<test_start>>>
--
--tag=cmdln stime=971465653
--
--cmdline="sleep 1"
--
--contacts=""
--
--analysis=exit
--
--initiation_status="ok"
--
--<<<test_output>>>
--
--
--
--<<<execution_status>>>
--
--duration=103326814 termination_type=exited termination_id=0
--corefile=no
--
--cutime=0 cstime=0
--
--<<<test_end>>>
--
--How it works
--
--In this example we run another fake test from the command
--line, but we run it three times (-s 3) and keep three test
--tags active at the same time (-x 3). The -O parameter is
--a directory where temporary files can be created to buffer
--the output of each test tag. You can see in the output that
--cmdln ran three times. If the -O option were omitted, your
--test output would be mixed, making it almost worthless.
--
--* Using a ltp-pan file to run multiple tests
--
--* Nesting ltp-pan
--
--For more information on ltp-pan see the man page doc/man1/ltp-pan.1.
--
--5.2 Scanner
--
--Ltp-scanner is a results analysis tool that understands the rts
--style output which ltp-pan generates by default. It will produce
--a table summarizing which tests passed and which failed.
--
--6 To Do
--
--There are a lot of things that still need to be done to make
--this a complete kernel testing system. The following sections
--will discuss some of the to do items in detail.
--
--6.1 Configuration Analysis
--
--While the number of configuration options for the Linux kernel
--is seen as a strength to developers and users alike, it
--is a curse to testers.  To create a powerful automated testing
--system, we need to be able to determine what the configuration
--on the booted box is and then determine which tests should
--be run on that box.
--
--The Linux kernel has hundreds of configuration options that
--can be set to compile the kernel.  There are more options
--that can be set when you boot the kernel and while it is
--running.  There are also many patches that can be applied
--to the kernel to add functionality or change behavior.
--
--6.2 Result Comparison
--
--A lot of testing will be done in the life of the Linux Test
--Project. Keeping track of the results from all the testing
--will require some infrastructure. It would be nice to take
--that output from a test machine, feed it to a program and
--receive a list of items that broke since the last run on
--that machine, or were fixed, or work on another test machine
--but not on this one.
--
--7 Contact information and updates
--
--URL: http://ltp.sourceforge.net/
--
--mailing list: ltp@lists.linux.it
--
--list archive: http://lists.linux.it/pipermail/ltp/
--
--Questions and comments should be sent to the LTP mailing
--list at ltp@lists.linux.it. To subscribe, please go to
--http://lists.linux.it/listinfo/ltp.
--
--The source is also available via CVS.  See the web site for
--a web interface and check out instructions.
--
--8 Glossary
--
--Test IEEE/ANSI([footnote] Kit, Edward, Software Testing in the Real World:
--Improving the Process. P. 82. ACM Press, 1995.) :
-- (i) An activity in which a system or component is executed
--under specified conditions, the results are observed or
--record, and an evaluation is made of some aspect of the
--system or component.
-- (ii) A set of one or more test cases.
--
--Test Case A test assertion with a single result that
--  is being verified. This allows designations such as PASS
--  or FAIL to be applied to a single bit of functionality.
--   A single test case may be one of many test cases for
--  testing the complete functionality of a system.
--  IEEE/ANSI:
--  (i)A set of test inputs, execution conditions, and expected
--  results developed for a particular objective.
--  (ii) The smallest entity that is always executed as a unit,
--  from beginning to end.
--
--Test Driver A program that handles the execution of
--  test programs. It is responsible for starting the test
--  programs, capturing their output, and recording their
--  results. Ltp-pan is an example of a test driver.
--
--Test Framework A mechanism for organizing a group of
--  tests.  Frameworks may have complex or very simple API's,
--  drivers and result logging mechanisms. Examples of frameworks
--  are TETware and DejaGnu.
--
--Test Harness A Test harness is the mechanism that connects
--  a test program to a test framework.  It may be a specification
--  of exit codes,  or a set of libraries for formatting messages
--  and determining exit codes.  In TETware, the tet_result()
--  API is the test harness.
--
--Test Program A single invokable program.  A test program
--  can contain one or more test cases. The test harness's
--  API allows for reporting/analysis of the individual test
--  cases.
--
--Test Suite A collection of tests programs, assertions,
--  cases grouped together under a framework.
--
--Test Tag An identifier that corresponds to a command
--  line which runs a test.  The tag is a single word that
--  matches a test program with a set of command line arguments.
+Since the last release 267 patches by 41 authors were merged.
+
+NOTABLE CHANGES
+===============
+
+* New tests
+  - Basic eBPF map and program load tests
+  - Netlink uevent socket tests
+  - Basic ioprio() tests
+  - Basic sendmmsg() test
+  - mbind() tests
+  - Memory protection (pkey) tests
+  - prctl() with PR_CAP_AMBIENT
+  - prctl() with PR_{GET,SET}_NO_NEW_PRIVS
+  - prctl() with PR_{SET,GET}_NAME
+  - prctl() with PR_{SET,GET}_SECCOMP
+  - futext_cmp_requeue() tests
+  - fanotify FAN_REPORT_FID tests
+  - fanotify overlayfs tests
+  - pidfd_send_signal() tests
+  - IMA overlay tests
+  - acct() tests
+  - preadv2() RWF_NOWAIT tests
+
+* New tests variants for
+  - clock_getres()
+
+* New regression tests
+  - bpf_prog02: regression test for 3612af783cf52c (bpf: fix sanitation rewrite in case of non-pointers)
+  - timer_create() aka CVE-2017-18344
+  - alsa timer race aka CVE-2017-1000380
+  - accept02 aka CVE-2017-8890
+  - setsockopt04 aka CVE-2016-9793
+  - move_pages12: regression tests for:
+    e66f17ff7177 (mm/hugetlb: take page table lock in follow_huge_pmd())
+    c9d398fa2378 (mm, hugetlb: use pte_present() instead of pmd_present() in follow_huge_pmd())
+    4643d67e8cb0 (hugetlbfs: fix hugetlb page migration/fault race causing SIGBUS)
+  - crypto_user02: regression test for 21d4120ec6f5 ("crypto: user - prevent operating on larval algorithms")
+  - sysctl02: regression test for 32a5ad9c2285 ("sysctl: handle overflow for file-max")
+
+* Increased coverage
+  - copy_file_range()
+     - tests for cross device copy
+     - tests for invalid files (swapfile, pipe, ...)
+  - intel PT tests
+  - sync_file_range()
+     - added partial range sync
+
+* Added syscall tables for MIPS
+
+* Guarded buffers, which are pages followed by a PROT_NONE and preceeded by a
+  canary were introduced and 8 tests were changed to make use of the new
+  feature. Also newly implemented tests are using the same buffers as well.
+
+* Additional 36 tests were converted to the new test library
+
+
+NOTABLE CHANGES IN NETWORK TESTS
+================================
+brought to you by Peter Vorel
+
+* New net features:
+  - introduce TST_GET_UNUSED_PORT() macro into C API
+
+* Rewritten to new API:
+  - tst_get_unused_port
+  - bind01
+  - setdomainname
+  - sethostname
+
+
++ The usuall amount of fixes and cleanups.
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20190930
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+git shortlog -s -e -n 20190517..
+
+    68  Petr Vorel <pvorel@suse.cz>
+    45  Cyril Hrubis <chrubis@suse.cz>
+    27  Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+    19  Christian Amann <camann@suse.com>
+    17  Jan Stancek <jstancek@redhat.com>
+     9  Richard Palethorpe <rpalethorpe@suse.com>
+     8  Li Wang <liwang@redhat.com>
+     7  Murphy Zhou <xzhou@redhat.com>
+     6  Jinhui huang <huangjh.jy@cn.fujitsu.com>
+     5  Amir Goldstein <amir73il@gmail.com>
+     5  Po-Hsu Lin <po-hsu.lin@canonical.com>
+     5  Sandeep Patil <sspatil@android.com>
+     5  Yixin Zhang <yixin.zhang@intel.com>
+     4  Joerg Vehlow <joerg.vehlow@aox-tech.de>
+     4  Xiao Yang <ice_yangxiao@163.com>
+     3  He Zhe <zhe.he@windriver.com>
+     3  Matthew Bobrowski <mbobrowski@mbobrowski.org>
+     2  Caspar Zhang <caspar@linux.alibaba.com>
+     2  Eric Biggers <ebiggers@google.com>
+     2  Steve Muckle <smuckle@google.com>
+     1  Alexey Kodanev <alexey.kodanev@oracle.com>
+     1  Ammy Yi <ammy.yi@intel.com>
+     1  Hongzhi.Song <hongzhi.song@windriver.com>
+     1  Khem Raj <raj.khem@gmail.com>
+     1  Linus Walleij <linus.walleij@linaro.org>
+     1  Martin Doucha <martin.doucha@suse.com>
+     1  Mathias Fiedler <mathias.fiedler@aox-tech.de>
+     1  Michael Moese <mmoese@suse.de>
+     1  Murphy Zhou <jencce.kernel@gmail.com>
+     1  Petr Cervinka <pcervinka@suse.com>
+     1  Ping Fang <pifang@redhat.com>
+     1  Piotr Gawel <piotr.krzysztof.gawel@gmail.com>
+     1  Steven Price <steven.price@arm.com>
+     1  Sultan Alsawaf <sultan@kerneltoast.com>
+     1  Sumit Garg <sumit.garg@linaro.org>
+     1  Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+     1  Tobias Jordan <knilch-ltp@cdqe.de>
+     1  Wu,Haiqiang <frequentemail@126.com>
+     1  Yann Sionneau <ysionneau@kalray.eu>
+     1  Yi Zhao <yi.zhao@windriver.com>
+     1  Yu,Siliang <siliangx.yu@intel.com>
+
+
+And also thanks to patch reviewers:
+
+git log 20190517.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+     94 Cyril Hrubis <chrubis@suse.cz>
+     42 Li Wang <liwang@redhat.com>
+     16 Amir Goldstein <amir73il@gmail.com>
+     13 Jan Stancek <jstancek@redhat.com>
+     11 Richard Palethorpe <rpalethorpe@suse.de>
+      7 Petr Vorel <pvorel@suse.cz>
+      6 Xiao Yang <ice_yangxiao@163.com>
+      6 Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+      5 Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+      4 Mimi Zohar <zohar@linux.ibm.com>
+      4 Alexey Kodanev <alexey.kodanev@oracle.com>
+      3 Sumit Garg <sumit.garg@linaro.org>
+      2 Murphy Zhou <jencce.kernel@gmail.com>
+      2 Ignaz Forster <iforster@suse.de>
+      1 Sandeep Patil <sspatil@android.com>
+      1 Richard Palethorpe <rpalethorpe@suse.com>
+      1 Enji Cooper <yaneurabeya@gmail.com>
+      1 Christian Amann <camann@suse.com>
+
 -- 
-2.23.0
-
+Cyril Hrubis
+chrubis@suse.cz
