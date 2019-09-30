@@ -1,107 +1,121 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Sep 2019 16:59:14 +0200
-Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
+Date: Mon, 30 Sep 2019 16:59:13 +0200
+Subject: [LTP] [RFC PATCH v4 2/5] shell: Introduce TST_TIMEOUT variable,
+ add checks
 In-Reply-To: <20190930145916.20465-1-pvorel@suse.cz>
 References: <20190930145916.20465-1-pvorel@suse.cz>
-Message-ID: <20190930145916.20465-4-pvorel@suse.cz>
+Message-ID: <20190930145916.20465-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+to unify shell API with C API.
+
+TST_TIMEOUT should be set in tests only, it's equivalent
+of tst_test->timeout in C API.
+
+Add checks requiring both TST_TIMEOUT and LTP_TIMEOUT_MUL >= 1,
+that allow to set TST_TIMEOUT lower than the default 300 sec
+(might be useful for some case).
+
+LTP_TIMEOUT_MUL can be float, but will be ceiled to int.
+Using float would require awk/bc, which is unnecessary dependency
+and code complication (we do not care that much if it's multiplied
+precisely as far as the resulting timeout is never smaller than
+the precise calculation).
+
+Also added cut dependency to _tst_setup_timer(), but that's not
+a problem as it was already required for shell API in tst_run().
+
+Suggested-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/newlib_tests/shell/test_timeout.sh | 38 ++++++++++++++++++++++++++
- lib/newlib_tests/shell/timeout01.sh    | 13 +++++++++
- lib/newlib_tests/shell/timeout02.sh    | 13 +++++++++
- 3 files changed, 64 insertions(+)
- create mode 100755 lib/newlib_tests/shell/test_timeout.sh
- create mode 100755 lib/newlib_tests/shell/timeout01.sh
- create mode 100755 lib/newlib_tests/shell/timeout02.sh
+ doc/test-writing-guidelines.txt |  8 ++++++--
+ testcases/lib/tst_test.sh       | 32 ++++++++++++++++++++++++++++++--
+ 2 files changed, 36 insertions(+), 4 deletions(-)
 
-diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
-new file mode 100755
-index 000000000..7e296f9e9
---- /dev/null
-+++ b/lib/newlib_tests/shell/test_timeout.sh
-@@ -0,0 +1,38 @@
-+#!/bin/sh
-+
-+PATH="$(dirname $0)/../../../testcases/lib/:$PATH"
-+
-+DATA="
-+timeout01.sh||0
-+timeout02.sh||0
-+timeout02.sh|foo|32
-+timeout02.sh|2|0
-+timeout02.sh|1.1|0
-+timeout02.sh|-10|32
-+"
-+
-+echo "Testing timeout in shell API"
-+echo
-+
-+failed=0
-+IFS="
-+"
-+for i in $DATA; do
-+	file=$(echo $i | cut -d'|' -f1)
-+	timeout=$(echo $i | cut -d'|' -f2)
-+	exp_exit=$(echo $i | cut -d'|' -f3)
-+
-+	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
-+	LTP_TIMEOUT_MUL=$timeout ./$file
-+	ret=$?
-+	if [ $ret -ne $exp_exit ]; then
-+		echo "FAILED (exit code: $ret, expected $exp_exit)"
-+		failed=$((failed+1))
-+	else
-+		echo "PASSED"
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 6643fc7c1..69da6c495 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -2109,8 +2109,8 @@ tst_run
+ '$TST_TEST_DATA' can be used with '$TST_CNT'. If '$TST_TEST_DATA_IFS' not specified,
+ space as default value is used. Of course, it's possible to use separate functions.
+ 
+-2.3.2 Library variables
+-^^^^^^^^^^^^^^^^^^^^^^^
++2.3.2 Library environment variables for shell
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+ Similarily to the C library various checks and preparations can be requested
+ simply by setting right '$TST_NEEDS_FOO'.
+@@ -2126,6 +2126,10 @@ simply by setting right '$TST_NEEDS_FOO'.
+                        the test (see below).
+ | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
+ | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
++| 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be int >= 1,
++                       or -1 (special value to disable timeout), default is 300.
++                       Variable is meant be set in tests, not by user.
++                       It's equivalent of `tst_test.timeout` in C.
+ |=============================================================================
+ 
+ NOTE: Network tests (see testcases/network/README.md) use additional variables
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index ca63745fd..977ffd97e 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -379,9 +379,37 @@ _tst_rescmp()
+ 
+ _tst_setup_timer()
+ {
++	TST_TIMEOUT=${TST_TIMEOUT:-300}
+ 	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+ 
+-	local sec=$((300 * LTP_TIMEOUT_MUL))
++	if [ "$TST_TIMEOUT" = -1 ]; then
++		tst_res TINFO "Timeout per run is disabled"
++		return
 +	fi
-+	echo
-+done
 +
-+echo "Failed tests: $failed"
-+exit $failed
-diff --git a/lib/newlib_tests/shell/timeout01.sh b/lib/newlib_tests/shell/timeout01.sh
-new file mode 100755
-index 000000000..ab7428a2d
---- /dev/null
-+++ b/lib/newlib_tests/shell/timeout01.sh
-@@ -0,0 +1,13 @@
-+#!/bin/sh
++	local err="LTP_TIMEOUT_MUL must be number >= 1!"
 +
-+TST_TESTFUNC=do_test
++	tst_is_num "$LTP_TIMEOUT_MUL" || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
 +
-+TST_TIMEOUT=-1
-+. tst_test.sh
++	if ! tst_is_int "$LTP_TIMEOUT_MUL"; then
++		tst_test_cmds cut
++		LTP_TIMEOUT_MUL=$(echo "$LTP_TIMEOUT_MUL" | cut -d. -f1)
++		LTP_TIMEOUT_MUL=$((LTP_TIMEOUT_MUL+1))
++		tst_res TINFO "ceiling LTP_TIMEOUT_MUL to $LTP_TIMEOUT_MUL"
++	fi
++	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
 +
-+do_test()
-+{
-+	tst_res TPASS "timeout $TST_TIMEOUT set"
-+}
++	if ! tst_is_int "$TST_TIMEOUT" || [ "$TST_TIMEOUT" -lt 1 ]; then
++		tst_brk TBROK "TST_TIMEOUT must be int >= 1! ($TST_TIMEOUT)"
++	fi
 +
-+tst_run
-diff --git a/lib/newlib_tests/shell/timeout02.sh b/lib/newlib_tests/shell/timeout02.sh
-new file mode 100755
-index 000000000..73af09125
---- /dev/null
-+++ b/lib/newlib_tests/shell/timeout02.sh
-@@ -0,0 +1,13 @@
-+#!/bin/sh
++	local sec
++	if [ "$is_float" ]; then
++		sec=`echo | awk '{printf("%d\n", '$TST_TIMEOUT' * '$LTP_TIMEOUT_MUL'+ 0.5)}'`
++	else
++		sec=$((TST_TIMEOUT * LTP_TIMEOUT_MUL))
++	fi
 +
-+TST_TESTFUNC=do_test
-+
-+TST_TIMEOUT=2
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TPASS "timeout $TST_TIMEOUT set (LTP_TIMEOUT_MUL='$LTP_TIMEOUT_MUL')"
-+}
-+
-+tst_run
+ 	local h=$((sec / 3600))
+ 	local m=$((sec / 60 % 60))
+ 	local s=$((sec % 60))
+@@ -418,7 +446,7 @@ tst_run()
+ 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
+ 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
+ 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
+-			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
++			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
+ 			NET_MAX_PKT);;
+ 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+ 			esac
 -- 
 2.23.0
 
