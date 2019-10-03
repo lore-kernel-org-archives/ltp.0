@@ -1,74 +1,113 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 2 Oct 2019 12:46:17 +0200
-Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
-In-Reply-To: <20190930145916.20465-4-pvorel@suse.cz>
-References: <20190930145916.20465-1-pvorel@suse.cz>
- <20190930145916.20465-4-pvorel@suse.cz>
-Message-ID: <20191002104617.GA8313@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Oct 2019 12:39:44 +0200
+Subject: [LTP] [PATCH] Convert ptrace01.c to new library
+In-Reply-To: <ECADFF3FD767C149AD96A924E7EA6EAF977BF7B1@USCULXMSG01.am.sony.com>
+References: <20191001070111.31369-1-jcronenberg@suse.de>
+ <ECADFF3FD767C149AD96A924E7EA6EAF977BF7B1@USCULXMSG01.am.sony.com>
+Message-ID: <20191003103944.GA1858@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> > /**********************************************************
+> > - *
+> > - *    TEST IDENTIFIER	: ptrace01
+> > - *
+> > - *    EXECUTED BY	: anyone
+> > - *
+> > - *    TEST TITLE	: functionality test for ptrace(2)
+> > - *
+> > - *    TEST CASE TOTAL	: 2
+> > - *
+> > - *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+> > - *
+> > - *    SIGNALS
+> > - * 	Uses SIGUSR1 to pause before test if option set.
+> > - * 	(See the parse_opts(3) man page).
+> > - *
+> > - *    DESCRIPTION
+> > + * DESCRIPTION
+> >   *	This test case tests the functionality of ptrace() for
+> >   *	PTRACE_TRACEME & PTRACE_KILL requests.
+> >   *	Here, we fork a child & the child does ptrace(PTRACE_TRACEME, ...).
+> > @@ -44,243 +21,114 @@
+> >   * 		In both cases, child should stop & notify parent on reception
+> >   * 		of SIGUSR2
+> >   *
+> > - * 	Setup:
+> > - * 	  Setup signal handling.
+> > - *	  Pause for SIGUSR1 if option specified.
+> > - *
+> > - * 	Test:
+> > - *	 Loop if the proper options are given.
+> > - *	 setup signal handler for SIGUSR2 signal
+> > - *	 fork a child
+> > - *
+> > - *	 CHILD:
+> > - *		setup signal handler for SIGUSR2 signal
+> > - *		call ptrace() with PTRACE_TRACEME request
+> > - *		send SIGUSR2 signal to self
+> > - *	 PARENT:
+> > - *		wait() for child.
+> > - *		if parent is notified when child gets a signal through wait(),
+> > - *		then
+> > - *			do  ptrace(PTRACE_KILL, ..) on child
+> > - * 			wait() for child to finish,
+> > - * 			if child exited abnormaly,
+> > - *				TEST passed
+> > - * 			else
+> > - * 				TEST failed
+> > - *		else
+> > - *			TEST failed
+> > - *
+> > - * 	Cleanup:
+> > - * 	  Print errno log and/or timing stats if options given
+> > - *
+> > - * USAGE:  <for command-line>
+> > - *  ptrace01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+> > - *			where,  -c n : Run n copies concurrently.
+> > - *				-e   : Turn on errno logging.
+> > - *				-h   : Show help screen
+> > - *				-f   : Turn off functional testing
+> > - *				-i n : Execute test n times.
+> > - *				-I x : Execute test for x seconds.
+> > - *				-p   : Pause for SIGUSR1 before starting
+> > - *				-P x : Pause for x seconds between iterations.
+> > - *				-t   : Turn on syscall timing.
+> > - *
+> > -
+> > **********************************************************
+> > ******/
+> > + */
+> 
+> It looks like the old comment had some nicely structured meta-data.  I'm not
+> familiar with the process for converting to the new library.  Is it intentional to
+> eliminate this meta-data?  (This is more of a question for the LTP leaders
+> than for Jorik).
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  lib/newlib_tests/shell/test_timeout.sh | 38 ++++++++++++++++++++++++++
->  lib/newlib_tests/shell/timeout01.sh    | 13 +++++++++
->  lib/newlib_tests/shell/timeout02.sh    | 13 +++++++++
->  3 files changed, 64 insertions(+)
->  create mode 100755 lib/newlib_tests/shell/test_timeout.sh
->  create mode 100755 lib/newlib_tests/shell/timeout01.sh
->  create mode 100755 lib/newlib_tests/shell/timeout02.sh
+Well most of the old data is unfortunatelly garbage, for instance it
+lists the USAGE lists flags implemented in the test library, repeating
+these in each test is actually doing a harm. So we tend to keep carefuly
+selected subset.
 
-> diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
-> new file mode 100755
-> index 000000000..7e296f9e9
-> --- /dev/null
-> +++ b/lib/newlib_tests/shell/test_timeout.sh
-> @@ -0,0 +1,38 @@
-> +#!/bin/sh
-> +
-> +PATH="$(dirname $0)/../../../testcases/lib/:$PATH"
-I put PATH here, as it's the only runner and not prolong this fix.
-If we want more sophisticated functionality from these test of the library
-itself runners, we could create some common.sh library here, which would set
-PATH and do other things (counting failures and report them etc).
+I suspect that there was some kind of silly template that had to be
+filled up in order to get test accepted in the old days, which resulted
+in long and mostly useless comments on the top of the testcases.
 
-> +
-> +DATA="
-> +timeout01.sh||0
-> +timeout02.sh||0
-> +timeout02.sh|foo|32
-> +timeout02.sh|2|0
-> +timeout02.sh|1.1|0
-> +timeout02.sh|-10|32
-> +"
-> +
-> +echo "Testing timeout in shell API"
-> +echo
-> +
-> +failed=0
-> +IFS="
-> +"
-> +for i in $DATA; do
-> +	file=$(echo $i | cut -d'|' -f1)
-> +	timeout=$(echo $i | cut -d'|' -f2)
-> +	exp_exit=$(echo $i | cut -d'|' -f3)
-> +
-> +	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
-> +	LTP_TIMEOUT_MUL=$timeout ./$file
-> +	ret=$?
-> +	if [ $ret -ne $exp_exit ]; then
-> +		echo "FAILED (exit code: $ret, expected $exp_exit)"
-> +		failed=$((failed+1))
-> +	else
-> +		echo "PASSED"
-> +	fi
-> +	echo
-> +done
-> +
-> +echo "Failed tests: $failed"
-> +exit $failed
+> I know that Cyril is working on a new meta-data system.  If this meta-data is eliminated
+> now, does it make adding it back into the new system harder?
+> 
+> Personally, I find it useful to see the pseudo-code outline when I'm debugging a
+> test.  So I hate to see those be eliminated.  But maybe those are hard to trust
+> as they tend to not be maintained along with the code?
+
+Well in this case the patch actually keeps the test description, which
+is the same as the pseudo-code but in a paragraph of a text, so as far
+as I can tell it's fine.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
