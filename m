@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Oct 2019 15:21:35 +0200
-Subject: [LTP] [RFC PATCH 2/2] doc: Add user-guide.txt
-In-Reply-To: <20191003164347.GA2061@dell5510>
-References: <20190930115852.21672-1-pvorel@suse.cz>
- <20190930115852.21672-3-pvorel@suse.cz> <20191003114428.GC1858@rei>
- <20191003164347.GA2061@dell5510>
-Message-ID: <20191004132129.GE5442@rei.lan>
+Date: Fri, 4 Oct 2019 15:33:14 +0200
+Subject: [LTP] [PATCH v2] lsmod01: Add kernel module
+In-Reply-To: <20191004105040.GF1231@rei>
+References: <20190927092024.97928-1-lkml@jv-coder.de>
+ <20191004103414.GE1231@rei>
+ <635c345d-18f8-6f2e-e658-648251d32e65@jv-coder.de>
+ <20191004105040.GF1231@rei>
+Message-ID: <20191004133313.GA7517@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,25 +14,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > >  ```
-> > > -$ LTPROOT=/opt/ltp PATH="$PATH:$LTPROOT/testcases/bin" testcases/bin/wc01.sh
-> > > +$ LTPROOT=/opt/ltp PATH="$PATH:$LTPROOT/bin:$LTPROOT/testcases/bin" testcases/bin/wc01.sh
-> > >  ```
+> > No, if no TST_SETUP is defined, the library will not call it.
+> > See tst_test.sh:31:
+> > if[ -n "$TST_SETUP_STARTED" -a -n "$TST_CLEANUP" -a \
+> >  ?????? ???????? -z "$TST_NO_CLEANUP" ]; then
+> >  ?????? $TST_CLEANUP
+> > fi
 > 
-> > This looks like an unrelated change at best and should probably be part
-> > of a separate patch.
-> 
-> > Also the only thing that seems to be installed in $LTPROOT/bin/ that
-> > could be potentially used by tests is the ffsb tool, that we are going
-> > to get rid anyways. So I would have avoided including it in the example
-> > anyways.
-> 
-> Yep, I'm aware ffsb is needed from $LTPROOT/bin. I haven't forced to send
-> proposal about ffbs adding into separate repository, that why I included it.
-> But sure, I'll drop this part.
-> Ack the rest?
+> That sounds like a bug in the test library, I will have a look at it
+> later on.
 
-Yes, the rest is fine.
+I've created GitHub issue #586 so that we do not forget to deal with
+this, see https://github.com/linux-test-project/ltp/issues/586
 
 -- 
 Cyril Hrubis
