@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Oct 2019 14:36:36 +0200
-Subject: [LTP] [PATCH v2 1/4] Update syscalls/bind02 to new API
-In-Reply-To: <20190926151331.25070-2-mdoucha@suse.cz>
+Date: Fri, 4 Oct 2019 14:40:58 +0200
+Subject: [LTP] [PATCH v2 2/4] Create separate .c file for
+ include/tst_net.h
+In-Reply-To: <20190926151331.25070-3-mdoucha@suse.cz>
 References: <20190926151331.25070-1-mdoucha@suse.cz>
- <20190926151331.25070-2-mdoucha@suse.cz>
-Message-ID: <20191004123636.GA5442@rei.lan>
+ <20190926151331.25070-3-mdoucha@suse.cz>
+Message-ID: <20191004124057.GB5442@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,80 +13,298 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with minor changes, thanks.
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  include/tst_net.h | 118 +++-------------------------------------
+>  lib/tst_net.c     | 134 ++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 142 insertions(+), 110 deletions(-)
+>  create mode 100644 lib/tst_net.c
 
-* The new test library runs the test in a forked process, there is no
-  need to reset the effective GID and UID in the cleanup anymore, so
-  I've removed the cleanup function.
+What is the reason for this change?
 
-* Changed the test to explicitly test for -1 as a return value. We have
-  to be pedantic here. We had bugs where syscalls returned non-zero
-  value which was != -1 which broke programs that were explicitly
-  testing for -1.
+With this you are polluting the LTP test library with symbols that are
+not prefixed by tst_. If nothing else these functions has to be prefixed
+in order to avoid conflicts with functions declared in the testcases.
 
-+ Minor things such as:
-  - using TTERRNO instead of TERRNO, which means that you print the
-    value of TST_ERR instead of errno which could be clobbered because
-    you call close() after bind()
-  - declared run() and setup() as a static functions
-  - make use of SAFE_CLOSE() instead of close()
-
-Full diff:
-
-diff --git a/testcases/kernel/syscalls/bind/bind02.c b/testcases/kernel/syscalls/bind/bind02.c
-index 532831265..65944cbe3 100644
---- a/testcases/kernel/syscalls/bind/bind02.c
-+++ b/testcases/kernel/syscalls/bind/bind02.c
-@@ -26,7 +26,7 @@
- #define TCP_PRIVILEGED_PORT 463
- #define TEST_USERNAME "nobody"
- 
--void run(void)
-+static void run(void)
- {
- 	struct sockaddr_in servaddr;
- 	int sockfd;
-@@ -37,18 +37,18 @@ void run(void)
- 	servaddr.sin_port = htons(TCP_PRIVILEGED_PORT);
- 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
- 	TEST(bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)));
--	close(sockfd);
-+	SAFE_CLOSE(sockfd);
- 
--	if (!TST_RET) {
--		tst_res(TFAIL, "bind() succeeded unexpectedly");
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "bind() returned %li, expected -1", TST_RET);
- 	} else if (TST_ERR == EACCES) {
--		tst_res(TPASS, "bind() failed as expected");
-+		tst_res(TPASS | TTERRNO, "bind() failed as expected");
- 	} else {
--		tst_res(TFAIL | TERRNO, "Unexpected error");
-+		tst_res(TFAIL | TTERRNO, "Unexpected error");
- 	}
- }
- 
--void setup(void)
-+static void setup(void)
- {
- 	struct passwd *pw;
- 	struct group *gr;
-@@ -62,15 +62,8 @@ void setup(void)
- 	SAFE_SETEUID(pw->pw_uid);
- }
- 
--void cleanup(void)
--{
--	SAFE_SETEGID(0);
--	SAFE_SETEUID(0);
--}
--
- static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
- 	.setup = setup,
--	.cleanup = cleanup
- };
+> diff --git a/include/tst_net.h b/include/tst_net.h
+> index cb97b7b61..740f25bac 100644
+> --- a/include/tst_net.h
+> +++ b/include/tst_net.h
+> @@ -16,7 +16,7 @@
+>   */
+>  
+>  #include <arpa/inet.h>
+> -#include <errno.h>
+> +#include <stdio.h>
+>  
+>  #define MAX_IPV4_PREFIX 32
+>  #define MAX_IPV6_PREFIX 128
+> @@ -42,112 +42,10 @@ static inline void print_svar_change(const char *name, const char *val)
+>  		printf("export %s=\"${%s:-%s}\"\n", name, name, val);
+>  }
+>  
+> -/*
+> - * Function bit_count is from ipcalc project, ipcalc.c.
+> - */
+> -static int bit_count(uint32_t i)
+> -{
+> -	int c = 0;
+> -	unsigned int seen_one = 0;
+> -
+> -	while (i > 0) {
+> -		if (i & 1) {
+> -			seen_one = 1;
+> -			c++;
+> -		} else {
+> -			if (seen_one)
+> -				return -1;
+> -		}
+> -		i >>= 1;
+> -	}
+> -
+> -	return c;
+> -}
+> -
+> -/*
+> - * Function mask2prefix is from ipcalc project, ipcalc.c.
+> - */
+> -static int mask2prefix(struct in_addr mask)
+> -{
+> -	return bit_count(ntohl(mask.s_addr));
+> -}
+> -
+> -/*
+> - * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
+> - */
+> -static int ipv4_mask_to_int(const char *prefix)
+> -{
+> -	int ret;
+> -	struct in_addr in;
+> -
+> -	ret = inet_pton(AF_INET, prefix, &in);
+> -	if (ret == 0)
+> -		return -1;
+> -
+> -	return mask2prefix(in);
+> -}
+> -
+> -/*
+> - * Function safe_atoi is from ipcalc project, ipcalc.c.
+> - */
+> -static int safe_atoi(const char *s, int *ret_i)
+> -{
+> -	char *x = NULL;
+> -	long l;
+> -
+> -	errno = 0;
+> -	l = strtol(s, &x, 0);
+> -
+> -	if (!x || x == s || *x || errno)
+> -		return errno > 0 ? -errno : -EINVAL;
+> -
+> -	if ((long)(int)l != l)
+> -		return -ERANGE;
+> -
+> -	*ret_i = (int)l;
+> -
+> -	return 0;
+> -}
+> -
+> -/*
+> - * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
+> - */
+> -static int get_prefix(const char *ip_str, int is_ipv6)
+> -{
+> -	char *prefix_str = NULL;
+> -	int prefix = -1, r;
+> -
+> -	prefix_str = strchr(ip_str, '/');
+> -	if (!prefix_str)
+> -		return -1;
+> -
+> -	*(prefix_str++) = '\0';
+> -
+> -	if (!is_ipv6 && strchr(prefix_str, '.'))
+> -		prefix = ipv4_mask_to_int(prefix_str);
+> -	else {
+> -		r = safe_atoi(prefix_str, &prefix);
+> -		if (r != 0)
+> -			tst_brk_comment("conversion error: '%s' is not integer",
+> -					prefix_str);
+> -	}
+> -
+> -	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
+> -		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
+> -		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
+> -				prefix_str);
+> -
+> -	return prefix;
+> -}
+> -
+> -static void get_in_addr(const char *ip_str, struct in_addr *ip)
+> -{
+> -	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+> -		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
+> -}
+> -
+> -static void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
+> -{
+> -	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
+> -		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
+> -}
+> +int bit_count(uint32_t i);
+> +int mask2prefix(struct in_addr mask);
+> +int ipv4_mask_to_int(const char *prefix);
+> +int safe_atoi(const char *s, int *ret_i);
+> +int get_prefix(const char *ip_str, int is_ipv6);
+> +void get_in_addr(const char *ip_str, struct in_addr *ip);
+> +void get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+> diff --git a/lib/tst_net.c b/lib/tst_net.c
+> new file mode 100644
+> index 000000000..4166641f1
+> --- /dev/null
+> +++ b/lib/tst_net.c
+> @@ -0,0 +1,134 @@
+> +/*
+> + * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <stdlib.h>
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +#include "tst_net.h"
+> +
+> +/*
+> + * Function bit_count is from ipcalc project, ipcalc.c.
+> + */
+> +int bit_count(uint32_t i)
+> +{
+> +	int c = 0;
+> +	unsigned int seen_one = 0;
+> +
+> +	while (i > 0) {
+> +		if (i & 1) {
+> +			seen_one = 1;
+> +			c++;
+> +		} else {
+> +			if (seen_one)
+> +				return -1;
+> +		}
+> +		i >>= 1;
+> +	}
+> +
+> +	return c;
+> +}
+> +
+> +/*
+> + * Function mask2prefix is from ipcalc project, ipcalc.c.
+> + */
+> +int mask2prefix(struct in_addr mask)
+> +{
+> +	return bit_count(ntohl(mask.s_addr));
+> +}
+> +
+> +/*
+> + * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
+> + */
+> +int ipv4_mask_to_int(const char *prefix)
+> +{
+> +	int ret;
+> +	struct in_addr in;
+> +
+> +	ret = inet_pton(AF_INET, prefix, &in);
+> +	if (ret == 0)
+> +		return -1;
+> +
+> +	return mask2prefix(in);
+> +}
+> +
+> +/*
+> + * Function safe_atoi is from ipcalc project, ipcalc.c.
+> + */
+> +int safe_atoi(const char *s, int *ret_i)
+> +{
+> +	char *x = NULL;
+> +	long l;
+> +
+> +	errno = 0;
+> +	l = strtol(s, &x, 0);
+> +
+> +	if (!x || x == s || *x || errno)
+> +		return errno > 0 ? -errno : -EINVAL;
+> +
+> +	if ((long)(int)l != l)
+> +		return -ERANGE;
+> +
+> +	*ret_i = (int)l;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
+> + */
+> +int get_prefix(const char *ip_str, int is_ipv6)
+> +{
+> +	char *prefix_str = NULL;
+> +	int prefix = -1, r;
+> +
+> +	prefix_str = strchr(ip_str, '/');
+> +	if (!prefix_str)
+> +		return -1;
+> +
+> +	*(prefix_str++) = '\0';
+> +
+> +	if (!is_ipv6 && strchr(prefix_str, '.'))
+> +		prefix = ipv4_mask_to_int(prefix_str);
+> +	else {
+> +		r = safe_atoi(prefix_str, &prefix);
+> +		if (r != 0)
+> +			tst_brk_comment("conversion error: '%s' is not integer",
+> +					prefix_str);
+> +	}
+> +
+> +	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
+> +		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
+> +		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
+> +				prefix_str);
+> +
+> +	return prefix;
+> +}
+> +
+> +void get_in_addr(const char *ip_str, struct in_addr *ip)
+> +{
+> +	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+> +		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
+> +}
+> +
+> +void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
+> +{
+> +	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
+> +		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
+> +}
+> -- 
+> 2.23.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
