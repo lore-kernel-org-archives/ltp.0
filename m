@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 4 Oct 2019 12:50:40 +0200
-Subject: [LTP] [PATCH v2] lsmod01: Add kernel module
-In-Reply-To: <635c345d-18f8-6f2e-e658-648251d32e65@jv-coder.de>
-References: <20190927092024.97928-1-lkml@jv-coder.de>
- <20191004103414.GE1231@rei>
- <635c345d-18f8-6f2e-e658-648251d32e65@jv-coder.de>
-Message-ID: <20191004105040.GF1231@rei>
+Date: Fri, 4 Oct 2019 14:36:36 +0200
+Subject: [LTP] [PATCH v2 1/4] Update syscalls/bind02 to new API
+In-Reply-To: <20190926151331.25070-2-mdoucha@suse.cz>
+References: <20190926151331.25070-1-mdoucha@suse.cz>
+ <20190926151331.25070-2-mdoucha@suse.cz>
+Message-ID: <20191004123636.GA5442@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +12,80 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > If you define the cleanup in TST_CLEANUP the library will call it for
-> > you, do not call it yourself here.
-> 
-> No, if no TST_SETUP is defined, the library will not call it.
-> See tst_test.sh:31:
-> if[ -n "$TST_SETUP_STARTED" -a -n "$TST_CLEANUP" -a \
->  ?????? ???????? -z "$TST_NO_CLEANUP" ]; then
->  ?????? $TST_CLEANUP
-> fi
+Pushed with minor changes, thanks.
 
-That sounds like a bug in the test library, I will have a look at it
-later on.
+* The new test library runs the test in a forked process, there is no
+  need to reset the effective GID and UID in the cleanup anymore, so
+  I've removed the cleanup function.
+
+* Changed the test to explicitly test for -1 as a return value. We have
+  to be pedantic here. We had bugs where syscalls returned non-zero
+  value which was != -1 which broke programs that were explicitly
+  testing for -1.
+
++ Minor things such as:
+  - using TTERRNO instead of TERRNO, which means that you print the
+    value of TST_ERR instead of errno which could be clobbered because
+    you call close() after bind()
+  - declared run() and setup() as a static functions
+  - make use of SAFE_CLOSE() instead of close()
+
+Full diff:
+
+diff --git a/testcases/kernel/syscalls/bind/bind02.c b/testcases/kernel/syscalls/bind/bind02.c
+index 532831265..65944cbe3 100644
+--- a/testcases/kernel/syscalls/bind/bind02.c
++++ b/testcases/kernel/syscalls/bind/bind02.c
+@@ -26,7 +26,7 @@
+ #define TCP_PRIVILEGED_PORT 463
+ #define TEST_USERNAME "nobody"
+ 
+-void run(void)
++static void run(void)
+ {
+ 	struct sockaddr_in servaddr;
+ 	int sockfd;
+@@ -37,18 +37,18 @@ void run(void)
+ 	servaddr.sin_port = htons(TCP_PRIVILEGED_PORT);
+ 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+ 	TEST(bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)));
+-	close(sockfd);
++	SAFE_CLOSE(sockfd);
+ 
+-	if (!TST_RET) {
+-		tst_res(TFAIL, "bind() succeeded unexpectedly");
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "bind() returned %li, expected -1", TST_RET);
+ 	} else if (TST_ERR == EACCES) {
+-		tst_res(TPASS, "bind() failed as expected");
++		tst_res(TPASS | TTERRNO, "bind() failed as expected");
+ 	} else {
+-		tst_res(TFAIL | TERRNO, "Unexpected error");
++		tst_res(TFAIL | TTERRNO, "Unexpected error");
+ 	}
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	struct passwd *pw;
+ 	struct group *gr;
+@@ -62,15 +62,8 @@ void setup(void)
+ 	SAFE_SETEUID(pw->pw_uid);
+ }
+ 
+-void cleanup(void)
+-{
+-	SAFE_SETEGID(0);
+-	SAFE_SETEUID(0);
+-}
+-
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
+ 	.setup = setup,
+-	.cleanup = cleanup
+ };
 
 -- 
 Cyril Hrubis
