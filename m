@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 7 Oct 2019 15:17:03 +0200
-Subject: [LTP] [PATCH v3] lsmod01: Add kernel module
-In-Reply-To: <20191007065017.86054-1-lkml@jv-coder.de>
-References: <20191007065017.86054-1-lkml@jv-coder.de>
-Message-ID: <20191007131702.GC20170@rei.lan>
+Date: Mon, 7 Oct 2019 16:03:21 +0200
+Subject: [LTP] [PATCH] Update dynamic_debug grep check
+In-Reply-To: <20191004184436.30922-1-rasibley@redhat.com>
+References: <20191004184436.30922-1-rasibley@redhat.com>
+Message-ID: <20191007140321.GA23368@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,103 +11,38 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
-> index ad170dcd4..c761a91af 100755
-> --- a/testcases/commands/lsmod/lsmod01.sh
-> +++ b/testcases/commands/lsmod/lsmod01.sh
-> @@ -5,11 +5,43 @@
->  #
->  # Test basic functionality of lsmod command.
->  
-> +TST_CLEANUP=cleanup
-> +TST_SETUP=setup
->  TST_TESTFUNC=lsmod_test
->  TST_NEEDS_TMPDIR=1
->  TST_NEEDS_CMDS="lsmod"
-> +TST_NEEDS_MODULE="ltp_lsmod01.ko"
+> If running on debug kernel this check will fail on EDAC DEBUG messages,
+> update grep to ignore such cases like this.
 
-Sigh, there is another problem here, this causes the library to exit the
-test if the module does not exist, which disables the test in a case
-that the module wasn't compiled i.e. kernel-devel wasn't installed, but
-in the most cases the test will run just fine on such configuration.
+You are missing the Signed-off-by: line here, see:
 
-I guess that we need to patch the library so that we can get a path to a
-module without exitting the test. Maybe we should add
-TST_GET_MODPATH="foo.ko" which will do the same as TST_NEEDS_MODULE but
-will not exit the test if not found. Then we can check if "$TST_MODPATH"
-is empty in the test setup just before we attempt insmod.
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
 
->  . tst_test.sh
->  
-> +inserted=0
-> +
-> +setup()
-> +{
-> +	if [ -z "$(cat /proc/modules)" ]; then
-> +		tst_res TINFO "Loading dummy kernel module"
-> +		insmod "$TST_MODPATH"
-> +		if [ $? -ne 0 ]; then
-> +			tst_res TBROK "insmod failed"
-> +			return
-> +		fi
-> +
-> +		inserted=1
-> +	fi
-> +}
-> +
-> +cleanup()
-> +{
-> +	if [ $inserted -ne 0 ]; then
-> +		tst_res TINFO "Unloading dummy kernel module"
-> +		rmmod ltp_lsmod01
-> +		if [ $? -ne 0 ]; then
-> +			tst_res TWARN "rmmod failed"
-> +		fi
-> +		inserted=0
-> +	fi
-> +}
-> +
-> +
->  lsmod_test()
->  {
->  	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
-> diff --git a/testcases/commands/lsmod/ltp_lsmod01.c b/testcases/commands/lsmod/ltp_lsmod01.c
-> new file mode 100644
-> index 000000000..19f9d9145
-> --- /dev/null
-> +++ b/testcases/commands/lsmod/ltp_lsmod01.c
-> @@ -0,0 +1,28 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0-or-later
-> + * Copyright (c) 2016 Fujitsu Ltd.
-> + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> + *
-> + * Description:
-> + *  This is a kernel loadable module programme used by lssmod01.sh
-> + *  testcase which inserts this module for test of lsmod command.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +
-> +static int test_init(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void test_exit(void)
-> +{
-> +
-> +}
-> +
-> +MODULE_LICENSE("GPL");
-> +
-> +module_init(test_init);
-> +module_exit(test_exit);
+Otherwise the patch is Ok.
+
+> ---
+>  testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+> index f39d67d0a..7f06c2488 100755
+> --- a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+> +++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+> @@ -127,7 +127,7 @@ ddebug_test()
+>  	sed -i -e 1,`wc -l < ./dmesg.old`d ./dmesg.new
+>  	if grep -q -e "Kernel panic" -e "Oops" -e "general protection fault" \
+>  		-e "general protection handler: wrong gs" -e "\(XEN\) Panic" \
+> -		-e "fault" -e "warn" -e "BUG" ./dmesg.new ; then
+> +		-e "fault" -e "warn" -e "\<BUG\>" ./dmesg.new ; then
+>  		tst_res TFAIL "Issues found in dmesg!"
+>  	else
+>  		tst_res TPASS "Dynamic debug OK"
 > -- 
 > 2.20.1
 > 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
