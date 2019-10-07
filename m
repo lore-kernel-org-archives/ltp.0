@@ -1,33 +1,93 @@
-From: Christian Lanig <clanig@suse.com>
-Date: Mon, 30 Sep 2019 20:27:59 +0200
-Subject: [LTP] [RFC PATCH v2 1/1] Add automated tests for shell lib
-In-Reply-To: <20190919164151.GB20853@x230>
-References: <20181003113215.GB21139@dell5510>
- <cover.1566500817.git.clanig@suse.com>
- <ce675759672af52bea02c11d51bd7d10f0bcb5cb.1566500817.git.clanig@suse.com>
- <20190919164151.GB20853@x230>
-Message-ID: <ce127270-9575-623b-2505-5975db0ea645@suse.com>
-List-Id: <ltp.lists.linux.it>
+Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from [172.30.20.202] (helo=mx.sourceforge.net)
+ by sfs-ml-4.v29.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ (envelope-from <prabhakar.kushwaha@outlook.com>) id 1iHVWZ-0003R2-SP
+ for ltp-list@lists.sourceforge.net; Mon, 07 Oct 2019 16:06:16 +0000
+Received: from mail-oln040092253101.outbound.protection.outlook.com
+ ([40.92.253.101] helo=APC01-SG2-obe.outbound.protection.outlook.com)
+ by sfi-mx-4.v28.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.92.2)
+ id 1iHVWW-002ETu-AM
+ for ltp-list@lists.sourceforge.net; Mon, 07 Oct 2019 16:06:15 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@outlook.com>
+Date: Mon, 7 Oct 2019 16:06:04 +0000
+Message-ID: <MA1PR0101MB18158F49D6204452E7EFA9EC989B0@MA1PR0101MB1815.INDPRD01.PROD.OUTLOOK.COM>
+Content-Language: en-US
+Content-ID: <41A7EBBD24406641A6E1D7FE6AE0473B@INDPRD01.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ltp@lists.linux.it
+Subject: [LTP] LTP-cpuset test cases
+List-Id: Linux Test Project General Discussions
+ <ltp-list.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/ltp-list>,
+ <mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
+List-Post: <mailto:ltp-list@lists.sourceforge.net>
+List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+ <mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi Petr and Clemens,
-
-thank you for the reasonable comments and suggestions.
-
-I just want to tell you that I will not be able to work on this until
-next week. I appreciate your patience very much.
-
-Regards,
-
-Christian
-
--- 
-Christian Lanig - SUSE Engineering Apprentice
-SUSE Linux GmbH, Maxfeldstra?e 5, D-90409 N?rnberg
-Tel: +49-911-74053-0; Fax: +49-911-7417755;  https://www.suse.com/
-GF: Felix Imend?rffer, Jane Smithard, Graham Norton, HRB 21284 (AG N?rnberg)
-
-
+SGkgQWxsLA0KDQpJIGFtIHJ1bm5pbmcgTFRQIHRvIHRlc3QgY3B1c2V0IHRlc3QgY2FzZXMuIEkg
+aGF2ZSBjcmVhdGVkIG5ldyBjb21tYW5kIA0KZmlsZSBhZnRlciBjb3B5aW5nIDIgY29tbWFuZHMg
+ZnJvbSBydW5sdHAuDQoNCiDCoCBjcHVzZXRfbG9hZF9iYWxhbmNlIGNwdXNldF9sb2FkX2JhbGFu
+Y2VfdGVzdC5zaA0KIMKgIGNwdXNldF9iYXNlX29wcyBjcHVzZXRfYmFzZV9vcHNfdGVzdHNldC5z
+aA0KDQp3aXRoIGFib3ZlIHNlcXVlbmNlLCBjcmFzaCBpcyBoYXBwZW5pbmcNCg0KWzEwNTQ2LjU4
+NzQ2M10gV29ya3F1ZXVlOiBjZ3JvdXBfZGVzdHJveSBjc3Nfa2lsbGVkX3dvcmtfZm4NClsxMDU0
+Ni41OTI3NjJdIHBzdGF0ZTogODA0MDAwMDkgKE56Y3YgZGFpZiArUEFOIC1VQU8pDQpbMTA1NDYu
+NTk3NTUwXSBwYyA6IGJ1aWxkX3NjaGVkX2RvbWFpbnMrMHgyNDQvMHhiNDgNClsxMDU0Ni42MDIx
+NTRdIGxyIDogYnVpbGRfc2NoZWRfZG9tYWlucysweDIyOC8weGI0OA0KWzEwNTQ2LjYwNjc1N10g
+c3AgOiBmZmZmMDAwMDMxZmMzYjcwDQpbMTA1NDYuNjEwMDU5XSB4Mjk6IGZmZmYwMDAwMzFmYzNi
+NzAgeDI4OiBmZmZmMDAwMDExNTdkNzMwDQpbMTA1NDYuNjE1MzU3XSB4Mjc6IGZmZmYwMDAwMTE1
+YTcwMDAgeDI2OiBmZmZmMDAwMDExMThkMDAwDQpbMTA1NDYuNjIwNjU1XSB4MjU6IDAwMDAwMDAw
+MDAwMDAwZTAgeDI0OiAwMDAwMDAwMDAwMDAwMDAwDQpbMTA1NDYuNjI1OTUzXSB4MjM6IGZmZmYw
+MDAwMTExOGRjODAgeDIyOiBmZmZmMDAwMDExNTdkNzMwDQpbMTA1NDYuNjMxMjUxXSB4MjE6IGZm
+ZmY4MGJmNTQ3MjM5NDAgeDIwOiBmZmZmODBiZGVkM2FlZjAwDQpbMTA1NDYuNjM2NTQ5XSB4MTk6
+IGZmZmYwMDAwMTE1N2YxZTQgeDE4OiAwMDAwMDAwMDAwMDAwMDAwDQpbMTA1NDYuNjQxODQ4XSB4
+MTc6IDAwMDAwMDAwMDAwMDAwMDAgeDE2OiAwMDAwMDAwMDAwMDAwMDAwDQouNTQ2DQogwqAga2Vy
+bmVsOkludGVybmFsIGVycm9yOiBPb3BzOiA5NjAwMDAwNyBbIzFdIFNNUA0KWzEwNTQ2LjY2MTkw
+NV0geDEzOiAwMDAwMDAwMGZmZmZmZmZmIHgxMjogZmZmZmZmZmYwMDAwMDAwMA0KWzEwNTQ2LjY2
+NzIwM10geDExOiAwMDAwMDAwMDAwMDAwMDAwIHgxMDogMDAwMDAwMDAwMDAwMDAwMA0KWzEwNTQ2
+LjY3MjUwMV0geDkgOiAwMDAwMDAwMDAwMDAwMDAwIHg4IDogZmZmZjgwYmRlZDQ1YzAwMA0KWzEw
+NTQ2LjY3Nzc5OV0geDcgOiAwMDAwMDAwMDAwMDAwMDAwIHg2IDogMDAwMDAwMDAwMDAwMDAzZg0K
+WzEwNTQ2LjY4MzA5N10geDUgOiAwMDAwMDAwMDAwMDAwMDQwIHg0IDogMDAwMDAwMDAwMDAwMDAw
+MA0KWzEwNTQ2LjY4ODM5NV0geDMgOiAwMDAwMDAwMDAwMDAwMDAwIHgyIDogMDAwMDAwMDAwMDAw
+MDAwMA0KWzEwNTQ2LjY5MzY5M10geDEgOiBmZmZmMDAwMDExMThkYzgwIHgwIDogMDAwMDAwMDBm
+ZmZmZmZmZg0KWzEwNTQ2LjY5ODk5MV0gQ2FsbCB0cmFjZToNClsxMDU0Ni43MDE0MjZdwqAgYnVp
+bGRfc2NoZWRfZG9tYWlucysweDI0NC8weGI0OA0KWzEwNTQ2LjcwNTY4NF3CoCBwYXJ0aXRpb25f
+c2NoZWRfZG9tYWlucysweDFkYy8weDJkYw0KWzEwNTQ2LjcxMDMwMF3CoCByZWJ1aWxkX3NjaGVk
+X2RvbWFpbnNfbG9ja2VkKzB4NjQvMHhhOA0KWzEwNTQ2LjcxNTE2Nl3CoCB1cGRhdGVfZmxhZysw
+eDE3NC8weDE5MA0KWzEwNTQ2LjcxODcyOV3CoCBjcHVzZXRfY3NzX29mZmxpbmUrMHhiMC8weGM4
+DQpbMTA1NDYuNzIyNzI1XcKgIGNzc19raWxsZWRfd29ya19mbisweDU0LzB4MTE4DQpbMTA1NDYu
+NzI2ODExXcKgIHByb2Nlc3Nfb25lX3dvcmsrMHgxYjQvMHgzZDgNClsxMDU0Ni43MzA4MDddwqAg
+d29ya2VyX3RocmVhZCsweDRjLzB4NDIwDQpbMTA1NDYuNzM0NDYzXcKgIGt0aHJlYWQrMHgxMDgv
+MHgxMzgNClsxMDU0Ni43Mzc2ODVdwqAgcmV0X2Zyb21fZm9yaysweDEwLzB4MTgNClsxMDU0Ni43
+NDEyNDldIENvZGU6IGFhMDAwM2UxIDEyODAwMDAwIGY4NjJkYWMyIGFhMDEwM2Y3IChmODYxNjg1
+NSkNClsxMDU0Ni43NDczMzBdIC0tLVsgZW5kIHRyYWNlIGM0ZjE0OTdmYjRhODYwYzggXS0tLQ0K
+DQoNClN0cmFuZ2VseSwgSWYgSSBydW4gc2VxdWVuY2UgWzFdIG9yIFsyXSBubyBjcmFzaCBpcyBo
+YXBwZW5pbmcNClsxXQ0KY3B1c2V0X2xvYWRfYmFsYW5jZcKgwqDCoMKgIGNwdXNldF9sb2FkX2Jh
+bGFuY2VfdGVzdC5zaA0KY3B1c2V0X2xvYWRfYmFsYW5jZcKgwqDCoMKgIGNwdXNldF9sb2FkX2Jh
+bGFuY2VfdGVzdC5zaA0KDQpbMl0NCmNwdXNldF9sb2FkX2JhbGFuY2XCoMKgwqDCoCBjcHVzZXRf
+bG9hZF9iYWxhbmNlX3Rlc3Quc2gNCmNwdXNldF9zY2hlZF9kb21haW5zwqDCoMKgIGNwdXNldF9z
+Y2hlZF9kb21haW5zX3Rlc3Quc2gNCmNwdXNldF9ob3RwbHVnwqAgY3B1c2V0X2hvdHBsdWdfdGVz
+dC5zaA0KDQpXaGF0IEkgY2FuIGluZmVyIHRoYXQgdGhlIGNwdXNldF9sb2FkX2JhbGFuY2UsIGNw
+dXNldF9zY2hlZF9kb21haW5zLCANCmNwdXNldF9ob3RwbHVnIGFyZSB1c2lnIGNwdXNldF9zZXQo
+KS4gV2hpbGUgY3B1c2V0X2Jhc2Vfb3BzIGRvZXNudCB1c2UgDQpjcHVzZXRfc2V0KCkuDQpBbHNv
+LCBjb21iaW5hdGlvbiBvZiBjcHVzZXRfbG9hZF9iYWxhbmNlIHdpdGggYW55IGNwdXNldCB0ZXN0
+cyAqbm90KiANCnVzaW5nIGNwdXNldF9zZXQoKSBjYXVzaW5nIGFib3ZlIHR5cGUgb2YgY3Jhc2gu
+DQoNCkkgaGF2ZSBzZWVuIHRoaXMgY3Jhc2ggb24gTGludXggNS4wOSBhbmQgNS40LnJjMCBrZXJu
+ZWwuDQoNCg0KQW55IGNsdWUgd2lsbCBoZWxwIG1lIGluIG1vdmluZyBmb3J3YXJkLg0KDQoNCmh0
+dHBzOi8vZ2l0aHViLmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwLmdpdA0KdG9wIGNvbW1pdDoN
+CmNvbW1pdCBmZjNjOTc4MDQzODA0MGFiOTU1ZmRmNDE2N2ZmYWU0ZTYxMmEzMTFkIChIRUFEIC0+
+IG1hc3RlciwgDQpvcmlnaW4vbWFzdGVyLCBvcmlnaW4vSEVBRCkNCkF1dGhvcjogUGV0ciBWb3Jl
+bCA8cHZvcmVsQHN1c2UuY3o+DQpEYXRlOsKgwqAgV2VkIE9jdCAyIDEyOjUxOjA0IDIwMTkgKzAy
+MDANCg0KIMKgwqDCoCBsaWI6IFJlcGxhY2UgR1BMIHZlcmJvc2UgdGV4dCBieSBTUERYIGxpY2Vu
+c2UgaWRlbnRpZmllcg0KDQogwqDCoMKgIGZyb20gbGlicmFyeSBzb3VyY2VzIGZvciBuZXcgQVBJ
+Lg0KDQogwqDCoMKgIFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pg0K
+DQotLXByYWJoYWthcg0KDQoNCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
