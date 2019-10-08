@@ -1,46 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 8 Oct 2019 13:51:52 +0200
-Subject: [LTP] LTP-cpuset test cases
-In-Reply-To: <MA1PR0101MB1815CC5CCC0A10DA6F658DE6989A0@MA1PR0101MB1815.INDPRD01.PROD.OUTLOOK.COM>
-References: <MA1PR0101MB18158831A03644C622793C6B989B0@MA1PR0101MB1815.INDPRD01.PROD.OUTLOOK.COM>
- <20191007183111.GA26203@rei.lan>
- <MA1PR0101MB1815CC5CCC0A10DA6F658DE6989A0@MA1PR0101MB1815.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <20191008115151.GC13411@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 8 Oct 2019 14:56:26 +0200
+Subject: [LTP] [Patch v4.1] fzsync: revoke thread_b if parent hits
+ accidental break
+In-Reply-To: <20190926093921.21247-1-liwang@redhat.com>
+References: <20190926093921.21247-1-liwang@redhat.com>
+Message-ID: <20191008125625.GA6180@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> cleanup(): Looks like removing /dev/cpuset folder or subfolders are not making load-balance state of system to be normal.
-> With below fix, no more crash are being observed.
-> 
-> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> @@ -154,6 +154,9 @@ cleanup()
->                                                         "$pid in the cpuset"
->                         fi
->                 done < "$subdir/tasks"
-> +
-> +               /bin/echo 0 > $subdir/cpuset.sched_load_balance
-> +
->                 rmdir "$subdir"
->                 if [ $? -ne 0 ]; then
->                         tst_brkm TFAIL "Couldn't remove subdir - "
-> @@ -161,6 +164,9 @@ cleanup()
->                 fi
->         done
-> 
-> +       /bin/echo 0 > $CPUSET/cpuset.sched_load_balance
-> +       /bin/echo 0 > $CPUSET_TMP/cpuset.sched_load_balance
-> +
->         umount "$CPUSET"
->         if [ $? -ne 0 ]; then
->                 tst_brkm TFAIL "Couldn't umount cgroup filesystem with"
+Hi LI,
 
-Looks like a kernel bug to me.
+> We shouldn't rely entirely on the pair->exit flag in tst_fzsync_pair_cleanup()
+> since there is possible to call tst_brk() at anyplace of thread_a, that will
+> lead to timeout eventually because of thread_b(tst_fzsync_wait_b) fall into
+> an infinite(no explicit condition to exit) loop.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Thread_a path trace:
+>   tst_brk()
+>     cleanup()
+>       tst_fzsync_pair_cleanup()
+>         SAFE_PTHREAD_JOIN(pair->thread_b, NULL)
+>         #Or pthread_cancel(pair->thread_b)
+
+> We fix the problem via a way to kill thread_b with pthread_cancel. With new
+> thread wrapper involves enabling thread cancel at the start of the thread B,
+> then do asynchronous cancellation in tst_fzsync_pair_cleanup if pair->exit
+> is not being set to 1.
+
+> Workaround: [commit 2e74d996: Check recvmmsg exists before entering fuzzy loop]
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
