@@ -1,55 +1,151 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed,  9 Oct 2019 08:23:00 +0200
-Subject: [LTP] [PATCH] tst_net.sh: Allow execution if xfrm is disabled
-Message-ID: <20191009062300.50219-1-lkml@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  9 Oct 2019 08:39:28 +0200
+Subject: [LTP] [PATCH v3] pkeys: Fix uclibc build caused by conflicting
+ signature
+Message-ID: <20191009063928.27270-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Removing static fixes the problem.
 
-If the kernel is configured without xfrm support, the setup of the
-interfaces for communication between local and remote host fails,
-because it tries to flush xfrm state and policy.
-There is no need to flush, if the system doesn't even support xfrm.
+uClibc defines pkey_{alloc,free,mprotect} signatures in
+<bits/mman-shared.h>, which is included by <bits/mman-linux.h>. Because
+it does not implement them, our implementation signature conflicts, as
+it uses static. Add 'ltp_' prefix to our helper functions (suggested by Jan).
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Fixed build error:
+In file included from pkey01.c:32:0:
+pkey.h:18:19: error: static declaration of ?pkey_mprotect? follows non-static declaration
+ static inline int pkey_mprotect(void *addr, size_t len, int prot, int pkey)
+                   ^
+In file included from /opt/br-test-pkg/br-arm-full/host/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/bits/mman-linux.h:115:0,
+                 from /opt/br-test-pkg/br-arm-full/host/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/bits/mman.h:40,
+                 from /opt/br-test-pkg/br-arm-full/host/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/sys/mman.h:41,
+                 from pkey01.c:29:
+/opt/br-test-pkg/br-arm-full/host/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/bits/mman-shared.h:73:5: note: previous declaration of ?pkey_mprotect? was here
+ int pkey_mprotect (void *__addr, size_t __len, int __prot, int __pkey) __THROW;
+     ^
+In file included from pkey01.c:32:0:
+
+Found with test-pkg tool from Buildroot distribution.
+
+Fixes: 90c2dc89f ("pkey: add test for memory protection keys")
+
+Reported-by: Petr Vorel <petr.vorel@gmail.com>
+Suggested-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_net.sh | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Changes v2->v3:
+* Fix build failure on #ifndef HAVE_PKEY_MPROTECT caused by some
+direct calls to pkey_* instead of using ltp_pkey_*.
+Sorry for the noise.
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 6c3ae708d..3aaf21cb5 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -430,8 +430,10 @@ tst_init_iface()
- 	tst_res_ TINFO "initialize '$type' '$iface' interface"
+Changes v1->v4:
+* Added ltp_ prefix and definitions instead simple removing static keyword
+(suggested by Jan).
+
+Kind regards,
+Petr
+
+ testcases/kernel/syscalls/pkeys/pkey.h   | 15 ++++++++++-----
+ testcases/kernel/syscalls/pkeys/pkey01.c |  8 ++++----
+ 2 files changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
+index d623244eb..3c1204978 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey.h
++++ b/testcases/kernel/syscalls/pkeys/pkey.h
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2019 Red Hat, Inc.
++ * Copyright (c) Linux Test Project, 2019
+  */
  
- 	if [ "$type" = "lhost" ]; then
--		ip xfrm policy flush || return $?
--		ip xfrm state flush || return $?
-+		if ip xfrm state 1>/dev/null 2>&1; then
-+			ip xfrm policy flush || return $?
-+			ip xfrm state flush || return $?
-+		fi
- 		ip link set $iface down || return $?
- 		ip route flush dev $iface || return $?
- 		ip addr flush dev $iface || return $?
-@@ -439,8 +441,10 @@ tst_init_iface()
- 		return $?
- 	fi
+ #ifndef PKEYS_H
+@@ -15,25 +16,29 @@
+ #endif
  
--	tst_rhost_run -c "ip xfrm policy flush" || return $?
--	tst_rhost_run -c "ip xfrm state flush" || return $?
-+	if tst_rhost_run -c "ip xfrm state 1>/dev/null 2>&1"; then
-+		tst_rhost_run -c "ip xfrm policy flush" || return $?
-+		tst_rhost_run -c "ip xfrm state flush" || return $?
-+	fi
- 	tst_rhost_run -c "ip link set $iface down" || return $?
- 	tst_rhost_run -c "ip route flush dev $iface" || return $?
- 	tst_rhost_run -c "ip addr flush dev $iface" || return $?
+ #ifndef HAVE_PKEY_MPROTECT
+-static inline int pkey_mprotect(void *addr, size_t len, int prot, int pkey)
++inline int ltp_pkey_mprotect(void *addr, size_t len, int prot, int pkey)
+ {
+ 	return tst_syscall(__NR_pkey_mprotect, addr, len, prot, pkey);
+ }
+ 
+-static inline int pkey_alloc(unsigned int flags, unsigned int access_rights)
++inline int ltp_pkey_alloc(unsigned int flags, unsigned int access_rights)
+ {
+ 	return tst_syscall(__NR_pkey_alloc, flags, access_rights);
+ }
+ 
+-static inline int pkey_free(int pkey)
++inline int ltp_pkey_free(int pkey)
+ {
+ 	return tst_syscall(__NR_pkey_free, pkey);
+ }
++#else
++#define ltp_pkey_alloc pkey_alloc
++#define ltp_pkey_free pkey_free
++#define ltp_pkey_mprotect pkey_mprotect
+ #endif /* HAVE_PKEY_MPROTECT */
+ 
+ static inline void check_pkey_support(void)
+ {
+-	int pkey = pkey_alloc(0, 0);
++	int pkey = ltp_pkey_alloc(0, 0);
+ 
+ 	if (pkey == -1) {
+ 		if (errno == ENOSYS)
+@@ -44,7 +49,7 @@ static inline void check_pkey_support(void)
+ 			tst_brk(TCONF, "pkeys are not available for test");
+ 	}
+ 
+-	pkey_free(pkey);
++	ltp_pkey_free(pkey);
+ }
+ 
+ #endif /* PKEYS_H */
+diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
+index b6b7e5cba..fa84e71f3 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey01.c
++++ b/testcases/kernel/syscalls/pkeys/pkey01.c
+@@ -157,12 +157,12 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+ 
+ 	buffer = SAFE_MMAP(NULL, size, mpa->prot, mpa->flags, fd, 0);
+ 
+-	pkey = pkey_alloc(tc->flags, tc->access_rights);
++	pkey = ltp_pkey_alloc(tc->flags, tc->access_rights);
+ 	if (pkey == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_alloc failed");
+ 
+ 	tst_res(TINFO, "Set %s on (%s) buffer", tc->name, flag_to_str(mpa->flags));
+-	if (pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
++	if (ltp_pkey_mprotect(buffer, size, mpa->prot, pkey) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
+ 
+ 	pid = SAFE_FORK();
+@@ -189,7 +189,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+                 tst_res(TFAIL, "Child: %s", tst_strstatus(status));
+ 
+ 	tst_res(TINFO, "Remove %s from the buffer", tc->name);
+-	if (pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
++	if (ltp_pkey_mprotect(buffer, size, mpa->prot, 0x0) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_mprotect failed");
+ 
+ 	switch (mpa->prot) {
+@@ -211,7 +211,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+ 
+ 	SAFE_MUNMAP(buffer, size);
+ 
+-	if (pkey_free(pkey) == -1)
++	if (ltp_pkey_free(pkey) == -1)
+ 		tst_brk(TBROK | TERRNO, "pkey_free failed");
+ }
+ 
 -- 
-2.20.1
+2.23.0
 
