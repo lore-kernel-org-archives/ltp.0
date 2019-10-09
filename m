@@ -1,97 +1,45 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed,  9 Oct 2019 16:42:54 +0200
-Subject: [LTP] [PATCH v2] read_all: retry to queue work for any worker
-In-Reply-To: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
-References: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
-Message-ID: <8c5d507fd19bc3110561ed1c666b7ac47442e09e.1570632125.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 9 Oct 2019 16:54:16 +0200
+Subject: [LTP] [RFC PATCH] LTP Wrapper for Syzkaller reproducers
+In-Reply-To: <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
+References: <20191009142446.6997-1-rpalethorpe@suse.com>
+ <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
+Message-ID: <20191009145416.GA5014@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-read_all is currently retrying only for short time period and it's
-retrying to queue for same worker. If that worker is busy, it easily
-hits timeout.
+Hi!
+> I don't have prior experience with LTP tests, but from reading the
+> code it looks reasonable to me.
+> 
+> I assume that .needs_tmpdir = 1 ensures that each test runs in its own
+> new temp dir, which is later removed.
 
-For example 'kernel_page_tables' on aarch64 can take long time to open/read:
-  # time dd if=/sys/kernel/debug/kernel_page_tables of=/dev/null count=1 bs=1024
-  1+0 records in
-  1+0 records out
-  1024 bytes (1.0 kB, 1.0 KiB) copied, 13.0531 s, 0.1 kB/s
+Indeed, it's removed recursively by the test library.
 
-  real    0m13.066s
-  user    0m0.000s
-  sys     0m13.059s
+> I've stared for a while at "rem / exec_time_start < 0.98" trying to
+> understand what is that tst_timeout_remaining() returns that we want
+> to kill that process when the ratio is < 0.98... provided that we
+> convert 1 to float but not the other var. I failed to come up with the
+> answer. I have potential answers for "<0.02" and ">0.98". But I assume
+> you know what you are doing :)
 
-Rather than retrying to queue for specific worker, pick any that can accept
-the work and keep trying until we succeed or hit test timeout.
+The tst_timeout_remaining() returns remaining test timeout, so at test
+start it returns something close to 300 seconds, since that is a default
+for a LTP tests, so this would probably kill a process quite fast, if
+I'm reading right, after a bit more than five seconds. I guess that this
+is something intended for a quick v1 hack rather than for later use.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/fs/read_all/read_all.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+> Re tst_res(TINFO, "Timeout; killing reproducer"). Not sure how much it
+> pollutes output on 3000 tests. If it is, it can make sense to remove
+> it. Lots of tests run forever, killing it is not something of
+> particular interest generally.
 
-v2: Increase sleep gradually.
+I guess so.
 
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index 3dac20e02638..7beb08ccf712 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -282,6 +282,35 @@ static void spawn_workers(void)
- 	}
- }
- 
-+static void work_push_retry(int worker, const char *buf)
-+{
-+	int i, ret, worker_min, worker_max, usleep_time = 100;
-+
-+	if (worker < 0) {
-+		/* pick any, try -worker first */
-+		worker_min = worker * (-1);
-+		worker_max = worker_count;
-+	} else {
-+		/* keep trying worker */
-+		worker_min = worker;
-+		worker_max = worker + 1;
-+	}
-+	i = worker_min;
-+
-+	for (;;) {
-+		ret = queue_push(workers[i].q, buf);
-+		if (ret == 1)
-+			break;
-+
-+		if (++i >= worker_max) {
-+			i = worker_min;
-+			if (usleep_time < 100000)
-+				usleep_time *= 2;
-+			usleep(usleep_time);
-+		}
-+	}
-+}
-+
- static void stop_workers(void)
- {
- 	const char stop_code[1] = { '\0' };
-@@ -292,7 +321,7 @@ static void stop_workers(void)
- 
- 	for (i = 0; i < worker_count; i++) {
- 		if (workers[i].q)
--			TST_RETRY_FUNC(queue_push(workers[i].q, stop_code), 1);
-+			work_push_retry(i, stop_code);
- 	}
- 
- 	for (i = 0; i < worker_count; i++) {
-@@ -310,7 +339,7 @@ static void rep_sched_work(const char *path, int rep)
- 	for (i = j = 0; i < rep; i++, j++) {
- 		if (j >= worker_count)
- 			j = 0;
--		TST_RETRY_FUNC(queue_push(workers[j].q, path), 1);
-+		work_push_retry(-j, path);
- 	}
- }
- 
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
