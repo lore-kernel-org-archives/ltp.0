@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Oct 2019 16:34:34 +0200
-Subject: [LTP] [RFC PATCH v4 2/5] shell: Introduce TST_TIMEOUT variable,
- add checks
-In-Reply-To: <20190930145916.20465-3-pvorel@suse.cz>
+Date: Wed, 9 Oct 2019 16:36:35 +0200
+Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
+In-Reply-To: <20190930145916.20465-4-pvorel@suse.cz>
 References: <20190930145916.20465-1-pvorel@suse.cz>
- <20190930145916.20465-3-pvorel@suse.cz>
-Message-ID: <20191009143434.GE7561@rei.lan>
+ <20190930145916.20465-4-pvorel@suse.cz>
+Message-ID: <20191009143635.GF7561@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,59 +12,83 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  _tst_setup_timer()
->  {
-> +	TST_TIMEOUT=${TST_TIMEOUT:-300}
->  	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
->  
-> -	local sec=$((300 * LTP_TIMEOUT_MUL))
-> +	if [ "$TST_TIMEOUT" = -1 ]; then
-> +		tst_res TINFO "Timeout per run is disabled"
-> +		return
-> +	fi
+> +DATA="
+> +timeout01.sh||0
+> +timeout02.sh||0
+> +timeout02.sh|foo|32
+> +timeout02.sh|2|0
+> +timeout02.sh|1.1|0
+> +timeout02.sh|-10|32
+> +"
 > +
-> +	local err="LTP_TIMEOUT_MUL must be number >= 1!"
+> +echo "Testing timeout in shell API"
+> +echo
 > +
-> +	tst_is_num "$LTP_TIMEOUT_MUL" || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
-> +
-> +	if ! tst_is_int "$LTP_TIMEOUT_MUL"; then
-> +		tst_test_cmds cut
+> +failed=0
+> +IFS="
+> +"
 
-I do not think that it's necessary to check for the presense of the cut
-command.
+Do we have to change IFS here? It should be set to space, tab, and
+newline by default, so the loop over $DATA should work correctly
+anyways.
 
-> +		LTP_TIMEOUT_MUL=$(echo "$LTP_TIMEOUT_MUL" | cut -d. -f1)
-> +		LTP_TIMEOUT_MUL=$((LTP_TIMEOUT_MUL+1))
-> +		tst_res TINFO "ceiling LTP_TIMEOUT_MUL to $LTP_TIMEOUT_MUL"
-> +	fi
-> +	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
+> +for i in $DATA; do
+> +	file=$(echo $i | cut -d'|' -f1)
+> +	timeout=$(echo $i | cut -d'|' -f2)
+> +	exp_exit=$(echo $i | cut -d'|' -f3)
 > +
-> +	if ! tst_is_int "$TST_TIMEOUT" || [ "$TST_TIMEOUT" -lt 1 ]; then
-> +		tst_brk TBROK "TST_TIMEOUT must be int >= 1! ($TST_TIMEOUT)"
-> +	fi
-> +
-> +	local sec
-> +	if [ "$is_float" ]; then
-> +		sec=`echo | awk '{printf("%d\n", '$TST_TIMEOUT' * '$LTP_TIMEOUT_MUL'+ 0.5)}'`
+> +	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
+> +	LTP_TIMEOUT_MUL=$timeout ./$file
+> +	ret=$?
+> +	if [ $ret -ne $exp_exit ]; then
+> +		echo "FAILED (exit code: $ret, expected $exp_exit)"
+> +		failed=$((failed+1))
 > +	else
-> +		sec=$((TST_TIMEOUT * LTP_TIMEOUT_MUL))
+> +		echo "PASSED"
 > +	fi
-
-Is this a leftover? Now that LTP_TIMEOUT_MUL has been converted to int
-we can simply do what is done in the else branch.
-
->  	local h=$((sec / 3600))
->  	local m=$((sec / 60 % 60))
->  	local s=$((sec % 60))
-> @@ -418,7 +446,7 @@ tst_run()
->  			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
->  			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
->  			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
-> -			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
-> +			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
->  			NET_MAX_PKT);;
->  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
->  			esac
+> +	echo
+> +done
+> +
+> +echo "Failed tests: $failed"
+> +exit $failed
+> diff --git a/lib/newlib_tests/shell/timeout01.sh b/lib/newlib_tests/shell/timeout01.sh
+> new file mode 100755
+> index 000000000..ab7428a2d
+> --- /dev/null
+> +++ b/lib/newlib_tests/shell/timeout01.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +
+> +TST_TESTFUNC=do_test
+> +
+> +TST_TIMEOUT=-1
+> +. tst_test.sh
+> +
+> +do_test()
+> +{
+> +	tst_res TPASS "timeout $TST_TIMEOUT set"
+> +}
+> +
+> +tst_run
+> diff --git a/lib/newlib_tests/shell/timeout02.sh b/lib/newlib_tests/shell/timeout02.sh
+> new file mode 100755
+> index 000000000..73af09125
+> --- /dev/null
+> +++ b/lib/newlib_tests/shell/timeout02.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +
+> +TST_TESTFUNC=do_test
+> +
+> +TST_TIMEOUT=2
+> +. tst_test.sh
+> +
+> +do_test()
+> +{
+> +	tst_res TPASS "timeout $TST_TIMEOUT set (LTP_TIMEOUT_MUL='$LTP_TIMEOUT_MUL')"
+> +}
+> +
+> +tst_run
 > -- 
 > 2.23.0
 > 
