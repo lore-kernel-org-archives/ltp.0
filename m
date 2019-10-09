@@ -1,9 +1,9 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed,  9 Oct 2019 08:16:18 +0200
-Subject: [LTP] [PATCH 1/2] tst_test.sh: Add TST_USES_MODULE
+Date: Wed,  9 Oct 2019 08:16:19 +0200
+Subject: [LTP] [PATCH 2/2] tst_test.sh: Add public tst_test_root command
 In-Reply-To: <20191009061619.48677-1-lkml@jv-coder.de>
 References: <20191009061619.48677-1-lkml@jv-coder.de>
-Message-ID: <20191009061619.48677-2-lkml@jv-coder.de>
+Message-ID: <20191009061619.48677-3-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,110 +12,53 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-Adds a new library variable TST_USES_MODULE, that can be used, when a
-test may need a module, but should not fail, if the module is not available.
+If a test requires root only under certan circumstances, TST_NEEDS_ROOT
+is not sufficient, because it always requires root.
 ---
- doc/test-writing-guidelines.txt |  4 ++-
- testcases/lib/tst_test.sh       | 50 ++++++++++++++++++++++-----------
- 2 files changed, 36 insertions(+), 18 deletions(-)
+ testcases/lib/tst_test.sh | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index cd0d28b8e..4a0652a8d 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2125,6 +2125,8 @@ simply by setting right '$TST_NEEDS_FOO'.
- | 'TST_NEEDS_CMDS'   | String with command names that has to be present for
-                        the test (see below).
- | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
-+| 'TST_USES_MODULE'  | Same as TST_NEEDS_MODULE, except that a missing module
-+|                    | is not an error.
- | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
- |=============================================================================
- 
-@@ -2174,7 +2176,7 @@ Locating kernel modules
- +++++++++++++++++++++++
- 
- The LTP build system can build kernel modules as well, setting
--'$TST_NEEDS_MODULE' to module name will cause to library to look for the
-+'$TST_NEEDS_MODULE' to module name will cause the library to look for the
- module in a few possible paths.
- 
- If module was found the path to it will be stored into '$TST_MODPATH'
 diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index e0b24c6b9..c70a5abbe 100644
+index c70a5abbe..07712670d 100644
 --- a/testcases/lib/tst_test.sh
 +++ b/testcases/lib/tst_test.sh
-@@ -396,6 +396,32 @@ _tst_require_root()
- 	fi
+@@ -326,6 +326,13 @@ tst_check_cmds()
+ 	return 0
  }
  
-+_tst_find_module()
++tst_test_root()
 +{
-+	local _tst_module=$1
-+	local _tst_is_required=${2:-0}
-+
-+	for tst_module in "$_tst_module" \
-+						"$LTPROOT/testcases/bin/$_tst_module" \
-+						"$TST_STARTWD/$_tst_module"; do
-+
-+			if [ -f "$tst_module" ]; then
-+				TST_MODPATH="$tst_module"
-+				break
-+			fi
-+	done
-+
-+	if [ -z "$TST_MODPATH" ]; then
-+		if [ $_tst_is_required -eq 1 ]; then
-+			tst_brk TCONF "Failed to find module '$_tst_module'"
-+		else
-+			tst_res TINFO "Module '$_tst_module' not found."
-+		fi
-+	else
-+		tst_res TINFO "Found module at '$TST_MODPATH'"
++	if [ "$(id -ru)" != 0 ]; then
++		tst_brk TCONF "Must be super/root for this test!"
 +	fi
 +}
 +
- tst_run()
+ tst_test_drivers()
  {
- 	local _tst_i
-@@ -410,7 +436,7 @@ tst_run()
- 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
--			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
-+			NEEDS_CMDS|NEEDS_MODULE|USES_MODULE|MODPATH|DATAROOT);;
- 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
-@@ -487,22 +513,12 @@ tst_run()
- 		TST_DEVICE_FLAG=1
+ 	[ $# -eq 0 ] && return 0
+@@ -389,13 +396,6 @@ _tst_setup_timer()
+ 	_tst_setup_timer_pid=$!
+ }
+ 
+-_tst_require_root()
+-{
+-	if [ "$(id -ru)" != 0 ]; then
+-		tst_brk TCONF "Must be super/root for this test!"
+-	fi
+-}
+-
+ _tst_find_module()
+ {
+ 	local _tst_module=$1
+@@ -469,7 +469,7 @@ tst_run()
+ 		tst_brk TBROK "Number of iterations (-i) must be > 0"
  	fi
  
--	if [ -n "$TST_NEEDS_MODULE" ]; then
--		for tst_module in "$TST_NEEDS_MODULE" \
--		                  "$LTPROOT/testcases/bin/$TST_NEEDS_MODULE" \
--		                  "$TST_STARTWD/$TST_NEEDS_MODULE"; do
--
--				if [ -f "$tst_module" ]; then
--					TST_MODPATH="$tst_module"
--					break
--				fi
--		done
--
--		if [ -z "$TST_MODPATH" ]; then
--			tst_brk TCONF "Failed to find module '$TST_NEEDS_MODULE'"
--		else
--			tst_res TINFO "Found module at '$TST_MODPATH'"
--		fi
-+	if [ -n "$TST_NEEDS_MODULE" ] && [ -n "$TST_USES_MODULE" ]; then
-+		tst_brk TBROK "Setting TST_NEEDS_MODULE and TST_USES_MODULE at the same time is not allowed"
-+	elif [ -n "$TST_NEEDS_MODULE" ]; then
-+		_tst_find_module "$TST_NEEDS_MODULE" 1
-+	elif [ -n "$TST_USES_MODULE" ]; then
-+		_tst_find_module "$TST_USES_MODULE" 0
- 	fi
+-	[ "$TST_NEEDS_ROOT" = 1 ] && _tst_require_root
++	[ "$TST_NEEDS_ROOT" = 1 ] && tst_test_root
  
- 	if [ -n "$TST_SETUP" ]; then
+ 	[ "$TST_DISABLE_APPARMOR" = 1 ] && tst_disable_apparmor
+ 	[ "$TST_DISABLE_SELINUX" = 1 ] && tst_disable_selinux
 -- 
 2.20.1
 
