@@ -1,9 +1,7 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed,  9 Oct 2019 08:16:19 +0200
-Subject: [LTP] [PATCH 2/2] tst_test.sh: Add public tst_test_root command
-In-Reply-To: <20191009061619.48677-1-lkml@jv-coder.de>
-References: <20191009061619.48677-1-lkml@jv-coder.de>
-Message-ID: <20191009061619.48677-3-lkml@jv-coder.de>
+Date: Wed,  9 Oct 2019 08:21:12 +0200
+Subject: [LTP] [PATCH] ext4-new-features: Fix paths to ffsb-config files
+Message-ID: <20191009062112.49947-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,53 +10,49 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-If a test requires root only under certan circumstances, TST_NEEDS_ROOT
-is not sufficient, because it always requires root.
----
- testcases/lib/tst_test.sh | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+The path to the ffsb-config files was just plain wrong (they are copied to
+$LTPROOT/testcases/data/ext4-ffsb, but searched in cwd.
+This is the same fix as in 4ae5699d, only for other tests.
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index c70a5abbe..07712670d 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -326,6 +326,13 @@ tst_check_cmds()
- 	return 0
- }
- 
-+tst_test_root()
-+{
-+	if [ "$(id -ru)" != 0 ]; then
-+		tst_brk TCONF "Must be super/root for this test!"
-+	fi
-+}
-+
- tst_test_drivers()
- {
- 	[ $# -eq 0 ] && return 0
-@@ -389,13 +396,6 @@ _tst_setup_timer()
- 	_tst_setup_timer_pid=$!
- }
- 
--_tst_require_root()
--{
--	if [ "$(id -ru)" != 0 ]; then
--		tst_brk TCONF "Must be super/root for this test!"
--	fi
--}
--
- _tst_find_module()
- {
- 	local _tst_module=$1
-@@ -469,7 +469,7 @@ tst_run()
- 		tst_brk TBROK "Number of iterations (-i) must be > 0"
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
+ .../ext4-journal-checksum/ext4_journal_checksum.sh            | 2 +-
+ .../ext4-uninit-groups/ext4_uninit_groups_test.sh             | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index 9edb89397..822c94a8c 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -69,7 +69,7 @@ ext4_test_journal_checksum()
+ 		return
  	fi
  
--	[ "$TST_NEEDS_ROOT" = 1 ] && _tst_require_root
-+	[ "$TST_NEEDS_ROOT" = 1 ] && tst_test_root
- 
- 	[ "$TST_DISABLE_APPARMOR" = 1 ] && tst_disable_apparmor
- 	[ "$TST_DISABLE_SELINUX" = 1 ] && tst_disable_selinux
+-	ffsb ffsb-config2 > /dev/null
++	ffsb $LTPROOT/testcases/data/ext4-ffsb/ffsb-config2 > /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		tst_resm TFAIL "ffsb returned failure"
+ 		umount mnt_point
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index d39afae56..cf4c354d9 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -34,13 +34,13 @@ age_filesystem()
+ {
+ 	if [ $1 -eq $EMPTY ]; then
+ 		# aging, then del
+-		ffsb ffsb-config3 > /dev/null
++		ffsb $LTPROOT/testcases/data/ext4-ffsb/ffsb-config3 > /dev/null
+ 		rm -rf mnt_point/*
+ 	elif [ $1 -eq $SMALL ]; then
+ 		# age filesystem from 0.0 to 0.2 -> 0.4 -> 0.6 -> 0.8 -> 1.0
+ 		for ((n = 3; n < 8; n++))
+ 		{
+-			ffsb ffsb-config$n > /dev/null
++			ffsb $LTPROOT/testcases/data/ext4-ffsb/ffsb-config$n > /dev/null
+ 			mv mnt_point/data mnt_point/data$n
+ 		}
+ 	elif [ $1 -eq $LARGE ]; then
 -- 
 2.20.1
 
