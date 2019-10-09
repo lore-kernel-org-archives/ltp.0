@@ -1,87 +1,75 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 9 Oct 2019 10:29:48 -0400 (EDT)
-Subject: [LTP] [PATCH] read_all: retry to queue work for any worker
-In-Reply-To: <20191009135656.GD7561@rei.lan>
-References: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
- <20191009135656.GD7561@rei.lan>
-Message-ID: <1367025665.5372558.1570631388627.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 9 Oct 2019 16:34:34 +0200
+Subject: [LTP] [RFC PATCH v4 2/5] shell: Introduce TST_TIMEOUT variable,
+ add checks
+In-Reply-To: <20190930145916.20465-3-pvorel@suse.cz>
+References: <20190930145916.20465-1-pvorel@suse.cz>
+ <20190930145916.20465-3-pvorel@suse.cz>
+Message-ID: <20191009143434.GE7561@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+>  _tst_setup_timer()
+>  {
+> +	TST_TIMEOUT=${TST_TIMEOUT:-300}
+>  	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
+>  
+> -	local sec=$((300 * LTP_TIMEOUT_MUL))
+> +	if [ "$TST_TIMEOUT" = -1 ]; then
+> +		tst_res TINFO "Timeout per run is disabled"
+> +		return
+> +	fi
+> +
+> +	local err="LTP_TIMEOUT_MUL must be number >= 1!"
+> +
+> +	tst_is_num "$LTP_TIMEOUT_MUL" || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
+> +
+> +	if ! tst_is_int "$LTP_TIMEOUT_MUL"; then
+> +		tst_test_cmds cut
 
+I do not think that it's necessary to check for the presense of the cut
+command.
 
------ Original Message -----
-> Hi!
-> > +static void work_push_retry(int worker, const char *buf)
-> > +{
-> > +	int i, ret, worker_min, worker_max;
-> > +
-> > +	if (worker < 0) {
-> > +		/* pick any, try -worker first */
-> > +		worker_min = worker * (-1);
-> > +		worker_max = worker_count;
-> > +	} else {
-> > +		/* keep trying worker */
-> > +		worker_min = worker;
-> > +		worker_max = worker + 1;
-> > +	}
-> > +	i = worker_min;
-> > +
-> > +	for (;;) {
-> > +		ret = queue_push(workers[i].q, buf);
-> > +		if (ret == 1)
-> > +			break;
-> > +
-> > +		if (++i >= worker_max) {
-> > +			i = worker_min;
-> > +			usleep(100000);
-> 
-> 
-> My only concern is that we sleep for too long here. Maybe we should
-> start with smaller sleep here and increase it after a while.
-> 
-> Or have you checked that the tests runs as fast as if we had smaller
-> sleep here?
+> +		LTP_TIMEOUT_MUL=$(echo "$LTP_TIMEOUT_MUL" | cut -d. -f1)
+> +		LTP_TIMEOUT_MUL=$((LTP_TIMEOUT_MUL+1))
+> +		tst_res TINFO "ceiling LTP_TIMEOUT_MUL to $LTP_TIMEOUT_MUL"
+> +	fi
+> +	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
+> +
+> +	if ! tst_is_int "$TST_TIMEOUT" || [ "$TST_TIMEOUT" -lt 1 ]; then
+> +		tst_brk TBROK "TST_TIMEOUT must be int >= 1! ($TST_TIMEOUT)"
+> +	fi
+> +
+> +	local sec
+> +	if [ "$is_float" ]; then
+> +		sec=`echo | awk '{printf("%d\n", '$TST_TIMEOUT' * '$LTP_TIMEOUT_MUL'+ 0.5)}'`
+> +	else
+> +		sec=$((TST_TIMEOUT * LTP_TIMEOUT_MUL))
+> +	fi
 
-Small benchmark shows that smaller sleep can complete faster. I'll send v2.
+Is this a leftover? Now that LTP_TIMEOUT_MUL has been converted to int
+we can simply do what is done in the else branch.
 
+>  	local h=$((sec / 3600))
+>  	local m=$((sec / 60 % 60))
+>  	local s=$((sec % 60))
+> @@ -418,7 +446,7 @@ tst_run()
+>  			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
+>  			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
+>  			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
+> -			RETRY_FUNC|RETRY_FN_EXP_BACKOFF);;
+> +			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
+>  			NET_MAX_PKT);;
+>  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+>  			esac
+> -- 
+> 2.23.0
 > 
-> > +		}
-> > +	}
-> > +}
-> > +
-> >  static void stop_workers(void)
-> >  {
-> >  	const char stop_code[1] = { '\0' };
-> > @@ -292,7 +319,7 @@ static void stop_workers(void)
-> >  
-> >  	for (i = 0; i < worker_count; i++) {
-> >  		if (workers[i].q)
-> > -			TST_RETRY_FUNC(queue_push(workers[i].q, stop_code), 1);
-> > +			work_push_retry(i, stop_code);
-> >  	}
-> >  
-> >  	for (i = 0; i < worker_count; i++) {
-> > @@ -310,7 +337,7 @@ static void rep_sched_work(const char *path, int rep)
-> >  	for (i = j = 0; i < rep; i++, j++) {
-> >  		if (j >= worker_count)
-> >  			j = 0;
-> > -		TST_RETRY_FUNC(queue_push(workers[j].q, path), 1);
-> > +		work_push_retry(-j, path);
-> >  	}
-> >  }
-> >  
-> > --
-> > 1.8.3.1
-> > 
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
