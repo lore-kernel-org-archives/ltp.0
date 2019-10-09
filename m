@@ -1,98 +1,97 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Oct 2019 16:36:35 +0200
-Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
-In-Reply-To: <20190930145916.20465-4-pvorel@suse.cz>
-References: <20190930145916.20465-1-pvorel@suse.cz>
- <20190930145916.20465-4-pvorel@suse.cz>
-Message-ID: <20191009143635.GF7561@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  9 Oct 2019 16:42:54 +0200
+Subject: [LTP] [PATCH v2] read_all: retry to queue work for any worker
+In-Reply-To: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
+References: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
+Message-ID: <8c5d507fd19bc3110561ed1c666b7ac47442e09e.1570632125.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +DATA="
-> +timeout01.sh||0
-> +timeout02.sh||0
-> +timeout02.sh|foo|32
-> +timeout02.sh|2|0
-> +timeout02.sh|1.1|0
-> +timeout02.sh|-10|32
-> +"
-> +
-> +echo "Testing timeout in shell API"
-> +echo
-> +
-> +failed=0
-> +IFS="
-> +"
+read_all is currently retrying only for short time period and it's
+retrying to queue for same worker. If that worker is busy, it easily
+hits timeout.
 
-Do we have to change IFS here? It should be set to space, tab, and
-newline by default, so the loop over $DATA should work correctly
-anyways.
+For example 'kernel_page_tables' on aarch64 can take long time to open/read:
+  # time dd if=/sys/kernel/debug/kernel_page_tables of=/dev/null count=1 bs=1024
+  1+0 records in
+  1+0 records out
+  1024 bytes (1.0 kB, 1.0 KiB) copied, 13.0531 s, 0.1 kB/s
 
-> +for i in $DATA; do
-> +	file=$(echo $i | cut -d'|' -f1)
-> +	timeout=$(echo $i | cut -d'|' -f2)
-> +	exp_exit=$(echo $i | cut -d'|' -f3)
-> +
-> +	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
-> +	LTP_TIMEOUT_MUL=$timeout ./$file
-> +	ret=$?
-> +	if [ $ret -ne $exp_exit ]; then
-> +		echo "FAILED (exit code: $ret, expected $exp_exit)"
-> +		failed=$((failed+1))
-> +	else
-> +		echo "PASSED"
-> +	fi
-> +	echo
-> +done
-> +
-> +echo "Failed tests: $failed"
-> +exit $failed
-> diff --git a/lib/newlib_tests/shell/timeout01.sh b/lib/newlib_tests/shell/timeout01.sh
-> new file mode 100755
-> index 000000000..ab7428a2d
-> --- /dev/null
-> +++ b/lib/newlib_tests/shell/timeout01.sh
-> @@ -0,0 +1,13 @@
-> +#!/bin/sh
-> +
-> +TST_TESTFUNC=do_test
-> +
-> +TST_TIMEOUT=-1
-> +. tst_test.sh
-> +
-> +do_test()
-> +{
-> +	tst_res TPASS "timeout $TST_TIMEOUT set"
-> +}
-> +
-> +tst_run
-> diff --git a/lib/newlib_tests/shell/timeout02.sh b/lib/newlib_tests/shell/timeout02.sh
-> new file mode 100755
-> index 000000000..73af09125
-> --- /dev/null
-> +++ b/lib/newlib_tests/shell/timeout02.sh
-> @@ -0,0 +1,13 @@
-> +#!/bin/sh
-> +
-> +TST_TESTFUNC=do_test
-> +
-> +TST_TIMEOUT=2
-> +. tst_test.sh
-> +
-> +do_test()
-> +{
-> +	tst_res TPASS "timeout $TST_TIMEOUT set (LTP_TIMEOUT_MUL='$LTP_TIMEOUT_MUL')"
-> +}
-> +
-> +tst_run
-> -- 
-> 2.23.0
-> 
+  real    0m13.066s
+  user    0m0.000s
+  sys     0m13.059s
 
+Rather than retrying to queue for specific worker, pick any that can accept
+the work and keep trying until we succeed or hit test timeout.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/fs/read_all/read_all.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
+
+v2: Increase sleep gradually.
+
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index 3dac20e02638..7beb08ccf712 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -282,6 +282,35 @@ static void spawn_workers(void)
+ 	}
+ }
+ 
++static void work_push_retry(int worker, const char *buf)
++{
++	int i, ret, worker_min, worker_max, usleep_time = 100;
++
++	if (worker < 0) {
++		/* pick any, try -worker first */
++		worker_min = worker * (-1);
++		worker_max = worker_count;
++	} else {
++		/* keep trying worker */
++		worker_min = worker;
++		worker_max = worker + 1;
++	}
++	i = worker_min;
++
++	for (;;) {
++		ret = queue_push(workers[i].q, buf);
++		if (ret == 1)
++			break;
++
++		if (++i >= worker_max) {
++			i = worker_min;
++			if (usleep_time < 100000)
++				usleep_time *= 2;
++			usleep(usleep_time);
++		}
++	}
++}
++
+ static void stop_workers(void)
+ {
+ 	const char stop_code[1] = { '\0' };
+@@ -292,7 +321,7 @@ static void stop_workers(void)
+ 
+ 	for (i = 0; i < worker_count; i++) {
+ 		if (workers[i].q)
+-			TST_RETRY_FUNC(queue_push(workers[i].q, stop_code), 1);
++			work_push_retry(i, stop_code);
+ 	}
+ 
+ 	for (i = 0; i < worker_count; i++) {
+@@ -310,7 +339,7 @@ static void rep_sched_work(const char *path, int rep)
+ 	for (i = j = 0; i < rep; i++, j++) {
+ 		if (j >= worker_count)
+ 			j = 0;
+-		TST_RETRY_FUNC(queue_push(workers[j].q, path), 1);
++		work_push_retry(-j, path);
+ 	}
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
