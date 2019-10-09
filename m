@@ -1,50 +1,57 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 9 Oct 2019 12:39:37 -0400 (EDT)
-Subject: [LTP] systemd v243 and OOMs // Was: CKI moving to Fedora 31 for
- upstream jobs
-In-Reply-To: <441865364.5393998.1570638574134.JavaMail.zimbra@redhat.com>
-References: <1d51b701-2210-360f-588b-f25fc22b09b3@redhat.com>
- <1909680792.5387095.1570635404942.JavaMail.zimbra@redhat.com>
- <441865364.5393998.1570638574134.JavaMail.zimbra@redhat.com>
-Message-ID: <1307292443.5395186.1570639177003.JavaMail.zimbra@redhat.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Wed, 9 Oct 2019 19:20:06 +0200
+Subject: [LTP] [RFC PATCH] LTP Wrapper for Syzkaller reproducers
+In-Reply-To: <20191009145416.GA5014@rei.lan>
+References: <20191009142446.6997-1-rpalethorpe@suse.com>
+ <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
+ <20191009145416.GA5014@rei.lan>
+Message-ID: <CACT4Y+ZL8ocQPpwR-_8+0PdF=r3AkFZKvOR==+P0y0GF67w1Vg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> ----- Original Message -----
-> > * LTP aborts after max_map_count
-> > [10885.979005] LTP: starting max_map_count (max_map_count -i 10)
-> > [-- MARK -- Tue Oct? 8 15:05:00 2019]
-> > [-- MARK -- Tue Oct? 8 15:10:00 2019]
-> > [-- MARK -- Tue Oct? 8 15:15:00 2019]
-> > [-- MARK -- Tue Oct? 8 15:20:00 2019]
-> 
-> This is strange.
-> 
-> It looks kind-of OOM related, because 'restraintd' process just disappears
-> while running oom01. There's no message from OOM that it was killed.
+On Wed, Oct 9, 2019 at 4:54 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+> > I don't have prior experience with LTP tests, but from reading the
+> > code it looks reasonable to me.
+> >
+> > I assume that .needs_tmpdir = 1 ensures that each test runs in its own
+> > new temp dir, which is later removed.
+>
+> Indeed, it's removed recursively by the test library.
 
-(forwarding to LTP for fyi)
+:popcorn:
 
-New systemd (v243) has a feature, which appears to be killing our test harness by default.
+It took me several years to figure out how to more or less reliably
+remove dirs after the fuzzer ;)
+(no, unlink won't do ;))
 
-https://www.freedesktop.org/software/systemd/man/systemd.service.html#
-  "OOMPolicy= ... If set to stop the event is logged but the service is terminated cleanly by the service manager."
+> > I've stared for a while at "rem / exec_time_start < 0.98" trying to
+> > understand what is that tst_timeout_remaining() returns that we want
+> > to kill that process when the ratio is < 0.98... provided that we
+> > convert 1 to float but not the other var. I failed to come up with the
+> > answer. I have potential answers for "<0.02" and ">0.98". But I assume
+> > you know what you are doing :)
 
-Harness process (started by systemd) starts LTP. LTP runs oom01, where child process gets
-killed by OOM and then systemd "cleans up" harness service and job aborts:
+Ah, I see, it's not full timeout, then it makes sense.
+Probably a comment won't harm.
 
-Oct 09 12:08:44 hp-dl180-02.khw.lab.eng.bos.redhat.com restraintd[830]: *** Current Time: Wed Oct 09 12:08:44 2019 Localwatchdog at: Wed Oct 09 15:13:43 2019
-Oct 09 12:09:44 hp-dl180-02.khw.lab.eng.bos.redhat.com restraintd[830]: *** Current Time: Wed Oct 09 12:09:44 2019 Localwatchdog at: Wed Oct 09 15:13:43 2019
-Oct 09 12:10:48 hp-dl180-02.khw.lab.eng.bos.redhat.com systemd[1]: restraintd.service: A process of this unit has been killed by the OOM killer.
-Oct 09 12:12:51 hp-dl180-02.khw.lab.eng.bos.redhat.com restraintd[830]: *** Current Time: Wed Oct 09 12:10:51 2019 Localwatchdog at: Wed Oct 09 15:13:43 2019
-Oct 09 12:12:54 hp-dl180-02.khw.lab.eng.bos.redhat.com systemd[1]: restraintd.service: A process of this unit has been killed by the OOM killer.
-Oct 09 12:13:04 hp-dl180-02.khw.lab.eng.bos.redhat.com restraintd[830]: Modules Loaded         nls_utf8 isofs dummy veth minix nfsv3 nfs_acl nfs lockd grace >
-Oct 09 12:12:54 hp-dl180-02.khw.lab.eng.bos.redhat.com systemd[1]: restraintd.service: Killing process 830 (restraintd) with signal SIGKILL.
-Oct 09 12:13:03 hp-dl180-02.khw.lab.eng.bos.redhat.com systemd[1]: restraintd.service: Main process exited, code=killed, status=9/KILL
-Oct 09 12:13:03 hp-dl180-02.khw.lab.eng.bos.redhat.com systemd[1]: restraintd.service: Failed with result 'oom-kill'.
-
-Regards,
-Jan
+> The tst_timeout_remaining() returns remaining test timeout, so at test
+> start it returns something close to 300 seconds, since that is a default
+> for a LTP tests, so this would probably kill a process quite fast, if
+> I'm reading right, after a bit more than five seconds. I guess that this
+> is something intended for a quick v1 hack rather than for later use.
+>
+> > Re tst_res(TINFO, "Timeout; killing reproducer"). Not sure how much it
+> > pollutes output on 3000 tests. If it is, it can make sense to remove
+> > it. Lots of tests run forever, killing it is not something of
+> > particular interest generally.
+>
+> I guess so.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
