@@ -1,10 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 9 Oct 2019 04:17:53 -0400 (EDT)
-Subject: [LTP] [PATCH v3] pkeys: Fix uclibc build caused by conflicting
- signature
-In-Reply-To: <20191009063928.27270-1-pvorel@suse.cz>
-References: <20191009063928.27270-1-pvorel@suse.cz>
-Message-ID: <1403093401.5306645.1570609073953.JavaMail.zimbra@redhat.com>
+Date: Wed, 9 Oct 2019 04:36:16 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: Add check for pipe
+In-Reply-To: <20191008151624.19815-1-chrubis@suse.cz>
+References: <20191008151624.19815-1-chrubis@suse.cz>
+Message-ID: <1365327078.5308904.1570610176976.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,10 +12,17 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Removing static fixes the problem.
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Tuesday, 8 October, 2019 5:16:24 PM
+> Subject: [LTP] [PATCH] syscalls/copy_file_range02: Add check for pipe
+> 
+> The original patch that was adding this fell under a table:
+> 
+> http://patchwork.ozlabs.org/patch/1112976/
+> 
+> I guess there is no harm checking that we get EINVAL for pipe as well,
+> or does anyone disagree?
 
-This comment seems out of place for current patch,
-rest looks good to me.
-
-Thanks,
-Jan
+Do you know what is kernel behaviour prior to commit 11cbfb10775a ?
+Does it pass/fail/crash/different errno?
