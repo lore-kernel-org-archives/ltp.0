@@ -1,19 +1,20 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Oct 2019 13:06:02 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 10 Oct 2019 13:26:42 +0200
 Subject: [LTP] [PATCH v2] acct: fix version check on big endian system
 In-Reply-To: <20191010081752.11334-1-pifang@redhat.com>
 References: <20191010081752.11334-1-pifang@redhat.com>
-Message-ID: <20191010110602.GB2508@rei.lan>
+Message-ID: <20191010112642.GA21498@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Hi Ping,
+
 > ac_version = ACCT_VERION | ACCT_BYTEORDER
 > which is 0x83 (131) on big endian system.
-> 
+
 > failure output:
 > tst_kconfig.c:62: INFO: Parsing kernel config
 > '/boot/config-4.18.0-147.el8.s390x'
@@ -30,11 +31,10 @@ Hi!
 > acct02.c:147: INFO: ac_version != 3 (131)
 > acct02.c:182: FAIL: end of file reached
 
-Looks good, acked.
+> Signed-off-by: Ping Fang <pifang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Also please consider a patch to the man 5 acct, it says that the version
-is always set to 3 for acct_v3 structure.
+Thanks for fixing the issue.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
