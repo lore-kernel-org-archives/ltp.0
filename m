@@ -1,36 +1,51 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Wed, 9 Oct 2019 20:21:59 +0200
-Subject: [LTP] [RFC PATCH] LTP Wrapper for Syzkaller reproducers
-In-Reply-To: <20191009180447.GD15291@rei.lan>
-References: <20191009142446.6997-1-rpalethorpe@suse.com>
- <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
- <20191009145416.GA5014@rei.lan>
- <CACT4Y+ZL8ocQPpwR-_8+0PdF=r3AkFZKvOR==+P0y0GF67w1Vg@mail.gmail.com>
- <20191009180447.GD15291@rei.lan>
-Message-ID: <CACT4Y+ZABX2z4Lxrvokf5DHz351xTys-gJPNhFjP+Zx6Qd2zsg@mail.gmail.com>
+From: Ping Fang <pifang@redhat.com>
+Date: Thu, 10 Oct 2019 14:37:50 +0800
+Subject: [LTP] [PATCH] acct: fix version check on big endian system
+Message-ID: <20191010063750.9605-1-pifang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 9, 2019 at 8:04 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > > Indeed, it's removed recursively by the test library.
-> >
-> > :popcorn:
-> >
-> > It took me several years to figure out how to more or less reliably
-> > remove dirs after the fuzzer ;)
-> > (no, unlink won't do ;))
->
-> I guess that there are things such as immutable file attributes that has
-> to be cleared and many more. Do you have piece of code somewhere that we
-> can look into to spare us from reinventing the wheel?
+ac_version = ACCT_VERION | ACCT_BYTEORDER
+which is 0x83 (131) on big endian system.
 
-Here is what we have:
-https://github.com/google/syzkaller/blob/c4b9981b5f5b70dc03eb3f76c618398510101a1d/executor/common_linux.h#L2358-L2461
-Maybe it can be simplified, but that's what we ended up with after
-some organic evolution. At least the comments may give some hints as
-to what may go wrong.
+failure output:
+tst_kconfig.c:62: INFO: Parsing kernel config
+'/boot/config-4.18.0-147.el8.s390x'
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_kconfig.c:62: INFO: Parsing kernel config
+'/boot/config-4.18.0-147.el8.s390x'
+acct02.c:239: INFO: Verifying using 'struct acct_v3'
+acct02.c:192: INFO: == entry 1 ==
+acct02.c:147: INFO: ac_version != 3 (131)
+acct02.c:192: INFO: == entry 2 ==
+acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
+acct02.c:133: INFO: ac_exitcode != 32768 (0)
+acct02.c:141: INFO: ac_ppid != 34501 (34500)
+acct02.c:147: INFO: ac_version != 3 (131)
+acct02.c:182: FAIL: end of file reached
+
+Signed-off-by: Ping Fang <pifang@redhat.com>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index 7c2a27046..c513b2145 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -142,7 +142,8 @@ static int verify_acct(void *acc, int elap_time)
+ 		ret = 1;
+ 	}
+ 
+-	if (ACCT_MEMBER_V3(ac_version) != 3) {
++	/* In big endian system accout version have a ACCT_BYTEORDER 0x80 flag*/
++	if (ACCT_MEMBER_V3(ac_version) != 3 || ACC_MEMBER_V3(ac_version) != 131) {
+ 		tst_res(TINFO, "ac_version != 3 (%d)",
+ 			ACCT_MEMBER_V3(ac_version));
+ 		ret = 1;
+-- 
+2.21.0
+
