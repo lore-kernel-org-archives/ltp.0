@@ -1,56 +1,45 @@
-From: Li Wang <liwan@redhat.com>
-Date: Thu, 10 Oct 2019 17:13:12 +0800
-Subject: [LTP] [PATCH v2] acct: fix version check on big endian system
-In-Reply-To: <CAEemH2dNjGXpw87wLqLc8jcEoT_Zc6yap4CfjPxmU=y1JyZ9oA@mail.gmail.com>
-References: <20191010081752.11334-1-pifang@redhat.com>
- <CAEemH2dNjGXpw87wLqLc8jcEoT_Zc6yap4CfjPxmU=y1JyZ9oA@mail.gmail.com>
-Message-ID: <CAEemH2e-ASzAAPgkh2JFn8qZLgAL=2em5kZWk=2G0CYrAnuMAg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 10 Oct 2019 11:30:11 +0200
+Subject: [LTP] [RFC PATCH] LTP Wrapper for Syzkaller reproducers
+In-Reply-To: <CACT4Y+ZABX2z4Lxrvokf5DHz351xTys-gJPNhFjP+Zx6Qd2zsg@mail.gmail.com>
+References: <20191009142446.6997-1-rpalethorpe@suse.com>
+ <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
+ <20191009145416.GA5014@rei.lan>
+ <CACT4Y+ZL8ocQPpwR-_8+0PdF=r3AkFZKvOR==+P0y0GF67w1Vg@mail.gmail.com>
+ <20191009180447.GD15291@rei.lan>
+ <CACT4Y+ZABX2z4Lxrvokf5DHz351xTys-gJPNhFjP+Zx6Qd2zsg@mail.gmail.com>
+Message-ID: <20191010093011.GA2508@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 10, 2019 at 4:33 PM Li Wang <liwan@redhat.com> wrote:
+Hi!
+> > > > Indeed, it's removed recursively by the test library.
+> > >
+> > > :popcorn:
+> > >
+> > > It took me several years to figure out how to more or less reliably
+> > > remove dirs after the fuzzer ;)
+> > > (no, unlink won't do ;))
+> >
+> > I guess that there are things such as immutable file attributes that has
+> > to be cleared and many more. Do you have piece of code somewhere that we
+> > can look into to spare us from reinventing the wheel?
+> 
+> Here is what we have:
+> https://github.com/google/syzkaller/blob/c4b9981b5f5b70dc03eb3f76c618398510101a1d/executor/common_linux.h#L2358-L2461
+> Maybe it can be simplified, but that's what we ended up with after
+> some organic evolution. At least the comments may give some hints as
+> to what may go wrong.
 
->
-> Ping Fang <pifang@redhat.com> wrote:
->
-> ac_version = ACCT_VERION | ACCT_BYTEORDER
->> which is 0x83 (131) on big endian system.
->>
->> failure output:
->> tst_kconfig.c:62: INFO: Parsing kernel config
->> '/boot/config-4.18.0-147.el8.s390x'
->> tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
->> tst_kconfig.c:62: INFO: Parsing kernel config
->> '/boot/config-4.18.0-147.el8.s390x'
->> acct02.c:239: INFO: Verifying using 'struct acct_v3'
->> acct02.c:192: INFO: == entry 1 ==
->> acct02.c:147: INFO: ac_version != 3 (131)
->> acct02.c:192: INFO: == entry 2 ==
->> acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
->> acct02.c:133: INFO: ac_exitcode != 32768 (0)
->> acct02.c:141: INFO: ac_ppid != 34501 (34500)
->> acct02.c:147: INFO: ac_version != 3 (131)
->> acct02.c:182: FAIL: end of file reached
->>
->
-> I'm wondering that is there any necessary to use do{}...while loop for
-> entry many times? Since the verify_acct() only check the dummy
-> program(acct02_helper) accounting struct. So in the error logs, we could
-> see some meaningless data(acct02) in entry 2.
->
+Thanks a lot!
 
-It turns out I was wrong, if accounting is turned on, system records for
-each terminating process but not only for that process, so we need to pick
-up the correct acct_struct in acct_file via the while loop.
-
-Sorry for making noise, I pull back my comments here.
+Also I see that you are using namespaces, and much more, to sandbox the
+fuzzer, I was wondering if we should do that, at least separate user and
+pid namespace sounds like a good idea to me.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191010/43cf5f53/attachment-0001.htm>
+Cyril Hrubis
+chrubis@suse.cz
