@@ -1,48 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Oct 2019 11:54:42 +0200
-Subject: [LTP] [PATCH v5 5/5] net/if-mtu-change.sh: set TST_TIMEOUT
-In-Reply-To: <20191011095442.10541-1-pvorel@suse.cz>
-References: <20191011095442.10541-1-pvorel@suse.cz>
-Message-ID: <20191011095442.10541-6-pvorel@suse.cz>
+Date: Fri, 11 Oct 2019 12:06:06 +0200
+Subject: [LTP] Rename tst_test_* to tst_require_*
+In-Reply-To: <20191011090737.17997-1-lkml@jv-coder.de>
+References: <20191011090737.17997-1-lkml@jv-coder.de>
+Message-ID: <20191011100604.GA11441@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The default setup (100 * 5 seconds just for sleep) is longer than default timeout.
-30 sec for each iteration should be more than enough as a default.
+Hi,
 
-Fixes: fbea02ab5 ("lib/tst_test.sh: setup timeout per test run for the shell tests")
+Cc: Li and Clemens
 
-Reviewed-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/stress/interface/if-mtu-change.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> these patches rename tst_test_* to tst_require_*, to better describe
+> their use. There is also tst_require_root, that has the same
+> behavior: It also calls tst_brk in case of a failing requirement.
 
-diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
-index 30c013214..b945fb6ce 100755
---- a/testcases/network/stress/interface/if-mtu-change.sh
-+++ b/testcases/network/stress/interface/if-mtu-change.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
- # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) International Business Machines  Corp., 2005
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
-@@ -13,6 +13,8 @@ TST_CLEANUP="do_cleanup"
- # The interval of the mtu change [second]
- CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
- 
-+TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
-+
- # The array of the value which MTU is changed into sequentially
- # 552 - net.ipv4.route.min_pmtu
- CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
--- 
-2.23.0
+> You can also get this patch from the following repo:
+> https://github.com/MofX/ltp/commits/rename_tst_test-tst_require
 
+sorry for not thinking first, I wonder if we want to sync
+tst_test_* (function name) vs $TST_NEEDS_* (test API variable name),
+e.g.: tst_require_drivers $TST_NEEDS_DRIVERS
+
+i.e. either of these:
+s/tst_test_/tst_needs_/
+s/TST_NEEDS_/TST_REQUIRE_/
+
+I consider *require* as more descriptive than *needs*,
+but changing to *require* would require more work :).
+
+Kind regards,
+Petr
