@@ -1,49 +1,29 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Oct 2019 10:17:35 +0200
-Subject: [LTP] [RFC PATCH v4 3/5] shell: Add timeout shell API tests
-In-Reply-To: <20191009143635.GF7561@rei.lan>
-References: <20190930145916.20465-1-pvorel@suse.cz>
- <20190930145916.20465-4-pvorel@suse.cz>
- <20191009143635.GF7561@rei.lan>
-Message-ID: <20191011081735.GB31207@dell5510>
+Date: Fri, 11 Oct 2019 10:20:43 +0200
+Subject: [LTP] [PATCH 2/2] tst_test.sh: Add public tst_test_root command
+In-Reply-To: <20191009113919.GB7561@rei.lan>
+References: <20191009061619.48677-1-lkml@jv-coder.de>
+ <20191009061619.48677-3-lkml@jv-coder.de>
+ <20191009113919.GB7561@rei.lan>
+Message-ID: <20191011082043.GA746@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> > +DATA="
-> > +timeout01.sh||0
-> > +timeout02.sh||0
-> > +timeout02.sh|foo|32
-> > +timeout02.sh|2|0
-> > +timeout02.sh|1.1|0
-> > +timeout02.sh|-10|32
-> > +"
-> > +
-> > +echo "Testing timeout in shell API"
-> > +echo
-> > +
-> > +failed=0
-> > +IFS="
-> > +"
+> > +tst_test_root()
+> > +{
+> > +	if [ "$(id -ru)" != 0 ]; then
+> > +		tst_brk TCONF "Must be super/root for this test!"
+> > +	fi
+> > +}
 
-> Do we have to change IFS here? It should be set to space, tab, and
-> newline by default, so the loop over $DATA should work correctly
-> anyways.
-Again, thanks for catching this.
-It's a left over from prototyping, where I had spaces in some data rows,
-therefore it was needed.
-
-> > +for i in $DATA; do
-> > +	file=$(echo $i | cut -d'|' -f1)
-> > +	timeout=$(echo $i | cut -d'|' -f2)
-> > +	exp_exit=$(echo $i | cut -d'|' -f3)
-
-Unless you want me to do else with tst_test_cmds in tst_test.sh,
-I'll merge with changes you found.
+> Can we keep the name to be tst_require_root() please?
+> Historically this function has been always named like this in LTP.
++1
 
 Kind regards,
 Petr
