@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 Oct 2019 14:06:34 +0200
-Subject: [LTP] [PATCH v5 0/5] shell: Introduce TST_TIMEOUT variable
-In-Reply-To: <20191011095442.10541-1-pvorel@suse.cz>
-References: <20191011095442.10541-1-pvorel@suse.cz>
-Message-ID: <20191011120633.GC2591@rei>
+Date: Fri, 11 Oct 2019 14:36:15 +0200
+Subject: [LTP] Rename tst_test_* to tst_require_*
+In-Reply-To: <20191011100604.GA11441@dell5510>
+References: <20191011090737.17997-1-lkml@jv-coder.de>
+ <20191011100604.GA11441@dell5510>
+Message-ID: <20191011123614.GD2591@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,31 +12,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Changes v4->v5:
-> * remove float related code (left from v3)
-> * remove "tst_test_cmds cut" check from tst_test.sh (there is check for
-> cut and other later => it should be probably removed as well, but as a
-> separate patch) (Cyril)
-> * remove unneeded IFS from test (Cyril)
-> * mention ceiling LTP_TIMEOUT_MUL in doc/user-guide.txt
+> > these patches rename tst_test_* to tst_require_*, to better describe
+> > their use. There is also tst_require_root, that has the same
+> > behavior: It also calls tst_brk in case of a failing requirement.
 > 
-> Here is the diff:
-> diff --git doc/user-guide.txt doc/user-guide.txt
-> index 8913c3221..7f6334ec2 100644
-> --- doc/user-guide.txt
-> +++ doc/user-guide.txt
-> @@ -15,7 +15,7 @@ For running LTP network tests see `testcases/network/README.md`.
->                            'n' or '0': never colorize.
->  | 'LTP_TIMEOUT_MUL'     | Multiply timeout, must be number >= 1 (> 1 is useful for
->                            slow machines to avoid unexpected timeout).
-> -                          Variable is also used in shell tests.
-> +                          Variable is also used in shell tests, but here ceiled to int.
-                                                                        ^
-									Drop
-									the
-									"here"
+> > You can also get this patch from the following repo:
+> > https://github.com/MofX/ltp/commits/rename_tst_test-tst_require
+> 
+> sorry for not thinking first, I wonder if we want to sync
+> tst_test_* (function name) vs $TST_NEEDS_* (test API variable name),
+> e.g.: tst_require_drivers $TST_NEEDS_DRIVERS
+> 
+> i.e. either of these:
+> s/tst_test_/tst_needs_/
+> s/TST_NEEDS_/TST_REQUIRE_/
 
-Other than that it's fine, you can add my Reviewed-by:
+I guess that I started bike-shedding here, I should have been silent I
+guess...
+
+I do consider this names to mean something different in the contexts,
+i.e. "needs" is something that is expressed in metadata, while "require"
+is part of a function name. But hey I'm by no means native speaker, so
+who know, and also I would prefer to work on the actual code, which is
+more fruitful than API renames.
 
 -- 
 Cyril Hrubis
