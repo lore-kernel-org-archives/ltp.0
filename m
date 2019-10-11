@@ -1,90 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 11 Oct 2019 16:24:52 +0800
-Subject: [LTP] [PATCH v2] read_all: retry to queue work for any worker
-In-Reply-To: <8c5d507fd19bc3110561ed1c666b7ac47442e09e.1570632125.git.jstancek@redhat.com>
-References: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
- <8c5d507fd19bc3110561ed1c666b7ac47442e09e.1570632125.git.jstancek@redhat.com>
-Message-ID: <CAEemH2d82pP2mwHnw42h-17HipGsVeYesfzg7o4axvCiRKU0=Q@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 11 Oct 2019 10:36:14 +0200
+Subject: [LTP] [PATCH 2/2] tst_test.sh: Add public tst_test_root command
+In-Reply-To: <20191009122802.GB7677@rei.lan>
+References: <20191009061619.48677-1-lkml@jv-coder.de>
+ <20191009061619.48677-3-lkml@jv-coder.de>
+ <20191009113919.GB7561@rei.lan>
+ <64bb824c-d577-86e5-bfa5-17a8cfbf4174@jv-coder.de>
+ <20191009114854.GC7561@rei.lan>
+ <22bc4865-295c-3147-8e26-f258fac472f8@jv-coder.de>
+ <20191009122802.GB7677@rei.lan>
+Message-ID: <20191011083612.GA1315@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 9, 2019 at 10:43 PM Jan Stancek <jstancek@redhat.com> wrote:
+Hi Cyril,
 
-> read_all is currently retrying only for short time period and it's
-> retrying to queue for same worker. If that worker is busy, it easily
-> hits timeout.
->
-> For example 'kernel_page_tables' on aarch64 can take long time to
-> open/read:
->   # time dd if=/sys/kernel/debug/kernel_page_tables of=/dev/null count=1
-> bs=1024
->   1+0 records in
->   1+0 records out
->   1024 bytes (1.0 kB, 1.0 KiB) copied, 13.0531 s, 0.1 kB/s
->
->   real    0m13.066s
->   user    0m0.000s
->   sys     0m13.059s
->
-> Rather than retrying to queue for specific worker, pick any that can accept
-> the work and keep trying until we succeed or hit test timeout.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/fs/read_all/read_all.c | 33
-> +++++++++++++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 2 deletions(-)
->
-> v2: Increase sleep gradually.
->
-> diff --git a/testcases/kernel/fs/read_all/read_all.c
-> b/testcases/kernel/fs/read_all/read_all.c
-> index 3dac20e02638..7beb08ccf712 100644
-> --- a/testcases/kernel/fs/read_all/read_all.c
-> +++ b/testcases/kernel/fs/read_all/read_all.c
-> @@ -282,6 +282,35 @@ static void spawn_workers(void)
->         }
->  }
->
-> +static void work_push_retry(int worker, const char *buf)
-> +{
-> +       int i, ret, worker_min, worker_max, usleep_time = 100;
-> +
-> +       if (worker < 0) {
-> +               /* pick any, try -worker first */
-> +               worker_min = worker * (-1);
-> +               worker_max = worker_count;
-> +       } else {
-> +               /* keep trying worker */
-> +               worker_min = worker;
-> +               worker_max = worker + 1;
-> +       }
-> +       i = worker_min;
-> +
-> +       for (;;) {
-> +               ret = queue_push(workers[i].q, buf);
-> +               if (ret == 1)
-> +                       break;
-> +
-> +               if (++i >= worker_max) {
-> +                       i = worker_min;
-> +                       if (usleep_time < 100000)
-> +                               usleep_time *= 2;
-> +                       usleep(usleep_time);
->
+> > >> 2. I wanted to make it consistent with other functions, that do similar
+> > >> stuff like
+> > >>   ???? tst_test_drivers and tst_test_cmds. Both also call tst_brk in case
+> > >> of unsuccessful tests.
+> > > Well I do not like these names either, it's less descriptive that it
+> > > would have been with tst_require_cmds and tst_require_drivers, so if
+> > > anything I would be for renaming the tst_test_* ones.
+> > Fair enough, that makes sense. But then we require a change to 
+> > tst_test_* first,
+> > otherwise the api names are inconsistent. And I'm not sure if changing the
+> > other functions is really worth it.
 
-At first, I thought of TST_RETRY_FN_EXP_BACKOFF, but it seems not easy to
-find the proper value of MAX_DELAY, so you method looks more stable to
-read_all.
+> Should be easy for tst_test_drivers, that one is only used to implement
+> the NEEDS_DRIVERS variable. And for the second one, we would have to
+> change a few tests and one line of documentation, but that would be just
+> a simple script. I can do that if we agree on the change.
 
-   Acked-by: Li Wang <liwang@redhat.com>
+> @Jan @Peter what do you think?
+We already did rename once (0567a8958 shell: Rename
+s/tst_check_cmds/tst_test_cmds/), but even if we didn't;
+I'm for renaming tst_test_* to tst_require_* - clear names are important
+(consistency with names as well).
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191011/aae2d179/attachment.htm>
+Kind regards,
+Petr
