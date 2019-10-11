@@ -1,38 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Oct 2019 14:02:03 +0200
-Subject: [LTP] [PATCH v2 1/3] tst_test.sh: Use LTP_TIMEOUT_MUL in
- TST_RETRY_FN()
-In-Reply-To: <20190911165225.2122-1-cfamullaconrad@suse.de>
-References: <20190911085536.25546-1-cfamullaconrad@suse.de>
- <20190911165225.2122-1-cfamullaconrad@suse.de>
-Message-ID: <20191011120201.GA26698@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 11 Oct 2019 14:06:34 +0200
+Subject: [LTP] [PATCH v5 0/5] shell: Introduce TST_TIMEOUT variable
+In-Reply-To: <20191011095442.10541-1-pvorel@suse.cz>
+References: <20191011095442.10541-1-pvorel@suse.cz>
+Message-ID: <20191011120633.GC2591@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clemens,
+Hi!
+> Changes v4->v5:
+> * remove float related code (left from v3)
+> * remove "tst_test_cmds cut" check from tst_test.sh (there is check for
+> cut and other later => it should be probably removed as well, but as a
+> separate patch) (Cyril)
+> * remove unneeded IFS from test (Cyril)
+> * mention ceiling LTP_TIMEOUT_MUL in doc/user-guide.txt
+> 
+> Here is the diff:
+> diff --git doc/user-guide.txt doc/user-guide.txt
+> index 8913c3221..7f6334ec2 100644
+> --- doc/user-guide.txt
+> +++ doc/user-guide.txt
+> @@ -15,7 +15,7 @@ For running LTP network tests see `testcases/network/README.md`.
+>                            'n' or '0': never colorize.
+>  | 'LTP_TIMEOUT_MUL'     | Multiply timeout, must be number >= 1 (> 1 is useful for
+>                            slow machines to avoid unexpected timeout).
+> -                          Variable is also used in shell tests.
+> +                          Variable is also used in shell tests, but here ceiled to int.
+                                                                        ^
+									Drop
+									the
+									"here"
 
-> Because of timeout problems when using TST_RETRY_FN() we do now use
-> LTP_TIMEOUT_MUL to adopt the timeout value.
+Other than that it's fine, you can add my Reviewed-by:
 
-> Introduced tst_adjut_timeout function to have a generic place to
-> adopt timeout values.
-
-@Li, Cyril, Jan acking this?
-
-Acked-by: Petr Vorel <pvorel@suse.cz>
-for whole patchset, with suggestion to use $(( )) instead of $(expr ) [1].
-(was used originaly, but when you're touching the code, could you please change it?)
-
-I'm for merging this patchset, but I'd rather merge my "v5 shell: Introduce
-TST_TIMEOUT variable" [2] [3] patchset first.
-I can rebase this patchset before merge.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/patch/1161157/#2258600
-[2] https://patchwork.ozlabs.org/patch/1175082/
-[3] https://patchwork.ozlabs.org/project/ltp/list/?series=135548&state=*
+-- 
+Cyril Hrubis
+chrubis@suse.cz
