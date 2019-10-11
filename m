@@ -1,75 +1,212 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Oct 2019 15:22:49 +0200
-Subject: [LTP] [RFC PATCH] LTP Wrapper for Syzkaller reproducers
-In-Reply-To: <CACT4Y+ZARc3gK9rweQnLr26Aa_8j9OrpAs-wfTVP2owqmXm+kQ@mail.gmail.com>
-References: <20191009142446.6997-1-rpalethorpe@suse.com>
- <CACT4Y+b0tTAQ0r_2gCVjjRh--Xwv=aLzh6MY=ciXMMrK+cAQsA@mail.gmail.com>
- <20191009145416.GA5014@rei.lan>
- <CACT4Y+ZL8ocQPpwR-_8+0PdF=r3AkFZKvOR==+P0y0GF67w1Vg@mail.gmail.com>
- <20191009180447.GD15291@rei.lan>
- <CACT4Y+ZABX2z4Lxrvokf5DHz351xTys-gJPNhFjP+Zx6Qd2zsg@mail.gmail.com>
- <20191010093011.GA2508@rei.lan>
- <CACT4Y+ZARc3gK9rweQnLr26Aa_8j9OrpAs-wfTVP2owqmXm+kQ@mail.gmail.com>
-Message-ID: <20191010132249.GB9416@rei.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 11 Oct 2019 12:23:17 +0800
+Subject: [LTP] [PATCH v4 1/2] syscalls/prctl08: New test for prctl() with
+ PR_{SET, GET}_TIMERSLACK
+In-Reply-To: <20191009121906.GA7677@rei.lan>
+References: <20191009121906.GA7677@rei.lan>
+Message-ID: <1570767798-26685-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > > > > Indeed, it's removed recursively by the test library.
-> > > > >
-> > > > > :popcorn:
-> > > > >
-> > > > > It took me several years to figure out how to more or less reliably
-> > > > > remove dirs after the fuzzer ;)
-> > > > > (no, unlink won't do ;))
-> > > >
-> > > > I guess that there are things such as immutable file attributes that has
-> > > > to be cleared and many more. Do you have piece of code somewhere that we
-> > > > can look into to spare us from reinventing the wheel?
-> > >
-> > > Here is what we have:
-> > > https://github.com/google/syzkaller/blob/c4b9981b5f5b70dc03eb3f76c618398510101a1d/executor/common_linux.h#L2358-L2461
-> > > Maybe it can be simplified, but that's what we ended up with after
-> > > some organic evolution. At least the comments may give some hints as
-> > > to what may go wrong.
-> >
-> > Thanks a lot!
-> >
-> > Also I see that you are using namespaces, and much more, to sandbox the
-> > fuzzer, I was wondering if we should do that, at least separate user and
-> > pid namespace sounds like a good idea to me.
-> 
-> I don't know how far you want to go. This sandboxing definitely helps
-> us to isolate processes and make tests more repeatable by avoiding
-> interference (I don't know if LTP, say, runs tests in parallel).
+------
+v3->v4:
+split it into two cases, prctl08 test read/set timer slack value and
+prctl09 is a timer samle test.
+Also, in prctl08, I split into 5 point(0,1,middle,max and inherit).
+-----
 
-Not yet, but we are slowly getting to a point where LTP tests could be
-run in parallel. It's a bit more complicated for functional tests, since
-there are number of constraints, for which tests should not be run in
-parallel. And for number of these sandboxing wouldn't help either, since
-it's more of a matter of available resources than isolation.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/prctl.h                       |   5 +
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/prctl/.gitignore |   1 +
+ testcases/kernel/syscalls/prctl/prctl08.c  | 135 +++++++++++++++++++++
+ 4 files changed, 142 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl08.c
 
-I'm close to solving first half of the problem, i.e. propagating the
-test constraints from tests to the testrunner. I also wrote a blog post
-about this, you can read it at:
-
-https://people.kernel.org/metan/towards-parallel-kernel-test-runs
-
-But even without running tests in parallel there are resources that have
-kernel persistence and will outlive the process, such as SysV IPC. So I
-guess that at least some sandboxing has to be done even for non-parallel
-runs.
-
-> mount namespaces are useful to later drop all of test mounts at once,
-> this would solve a significant part of the remote_dir logic. If the
-> temp dir is on tmpfs in the mount namespace as well, then it will be
-> automatically dropped altogether with all contents.
-
-Again, thanks for the hint!
-
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index 8ee492259..0b4e196c3 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -19,6 +19,11 @@
+ # define PR_SET_SECCOMP  22
+ #endif
+ 
++#ifndef PR_SET_TIMERSLACK
++# define PR_SET_TIMERSLACK 29
++# define PR_GET_TIMERSLACK 30
++#endif
++
+ #ifndef PR_SET_CHILD_SUBREAPER
+ # define PR_SET_CHILD_SUBREAPER	36
+ # define PR_GET_CHILD_SUBREAPER	37
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4e6310193..76961a684 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -878,6 +878,7 @@ prctl04 prctl04
+ prctl05 prctl05
+ prctl06 prctl06
+ prctl07 prctl07
++prctl08 prctl08
+ 
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+index 2178db366..fe36a8e0f 100644
+--- a/testcases/kernel/syscalls/prctl/.gitignore
++++ b/testcases/kernel/syscalls/prctl/.gitignore
+@@ -6,3 +6,4 @@
+ /prctl06
+ /prctl06_execve
+ /prctl07
++/prctl08
+diff --git a/testcases/kernel/syscalls/prctl/prctl08.c b/testcases/kernel/syscalls/prctl/prctl08.c
+new file mode 100644
+index 000000000..9aa15b06d
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl08.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ * Test PR_GET_TIMERSLACK and PR_SET_TIMERSLACK of prctl(2).
++ * 1)Each thread has two associated timer slack values: a "default"
++ *   value, and a "current" value. PR_SET_TIMERSLACK sets the "current"
++ *   timer slack value for the calling thread.
++ * 2)When a new thread is created, the two timer slack values are made
++ *   the same as the "current" value of the creating thread.
++ * 3)The maximum timer slack value is ULONG_MAX. On 32bit machines, it
++ *   is a valid value(about 4s). On 64bit machines, it is about 500 years
++ *   and no person will set this over 4s.  prctl return value is int, so
++ *   we test themaximum value is INT_MAX.
++ * 4)we also check current value via /proc/self/timerslack_ns if it is
++ *  supported.
++ */
++
++#include <sys/prctl.h>
++#include <string.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <linux/limits.h>
++#include "lapi/syscalls.h"
++#include "lapi/prctl.h"
++#include "tst_test.h"
++
++#define PROC_TIMERSLACK_PATH "/proc/self/timerslack_ns"
++
++static void check_get_timerslack(char *message, unsigned long value);
++static void check_inherit_timerslack(char *message, unsigned long value);
++
++static struct tcase {
++	void (*func_check)();
++	unsigned long setvalue;
++	unsigned long expvalue;
++	char message[50];
++} tcases[] = {
++	{check_get_timerslack, 0, 50000, "Reset"},
++	{check_get_timerslack, 1, 1, "Min"},
++	{check_get_timerslack, 70000, 70000, "Middle"},
++	{check_get_timerslack, INT_MAX, INT_MAX, "Max"},
++	{check_inherit_timerslack, 70000, 70000, "Child process"},
++};
++
++static int proc_flag = 1;
++
++static void check_proc_timerslack(char *message, unsigned long value)
++{
++	unsigned long proc_value;
++
++	SAFE_FILE_SCANF(PROC_TIMERSLACK_PATH, "%lu", &proc_value);
++	if (proc_value == value)
++		tst_res(TPASS, "%s %s  got %lu expectedly",
++				message, PROC_TIMERSLACK_PATH, proc_value);
++	else
++		tst_res(TFAIL, "%s %s expected %lu got %lu",
++				message, PROC_TIMERSLACK_PATH, value, proc_value);
++}
++
++static void check_get_timerslack(char *message, unsigned long value)
++{
++	TEST(prctl(PR_GET_TIMERSLACK));
++	if ((unsigned long)TST_RET == value)
++		tst_res(TPASS, "%s prctl(PR_GET_TIMERSLACK) got %lu expectedly",
++				message, value);
++	else
++		tst_res(TFAIL, "%s prctl(PR_GET_TIMERSLACK) expected %lu got %lu",
++				message, value, TST_RET);
++
++	if (proc_flag)
++		check_proc_timerslack(message, value);
++
++}
++
++static void check_inherit_timerslack(char *message, unsigned long value)
++{
++	int pid;
++	unsigned long current_value;
++	unsigned long default_value;
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		current_value = prctl(PR_GET_TIMERSLACK);
++		prctl(PR_SET_TIMERSLACK, 0);
++		default_value = prctl(PR_GET_TIMERSLACK);
++		if (current_value == value && default_value == value)
++			tst_res(TPASS,
++				"%s two timer slack values are made the same as the current value(%lu) of the creating thread.",
++				message, value);
++		else
++			tst_res(TFAIL,
++				"%s current_value is %lu, default value is %lu, the parent current value is %lu",
++				message, current_value, default_value, value);
++	}
++
++}
++
++static void verify_prctl(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_TIMERSLACK, %lu) failed",
++					  tc->setvalue);
++		return;
++	}
++
++	tst_res(TPASS, "prctl(PR_SET_TIMERSLACK, %lu) succeed", tc->setvalue);
++	tc->func_check(tc->message, tc->expvalue);
++}
++
++static void setup(void)
++{
++	if (access(PROC_TIMERSLACK_PATH, F_OK) == -1) {
++		tst_res(TCONF, "proc doesn't support timerslack_ns interface");
++		proc_flag = 0;
++	}
++
++	TEST(prctl(PR_GET_TIMERSLACK));
++	if (TST_RET == 50000)
++		tst_res(TINFO, "current timerslack value is 50us");
++	else
++		tst_brk(TCONF,
++			"current environment doesn't meet test, please set timerslack to 50us");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = verify_prctl,
++	.tcnt = ARRAY_SIZE(tcases),
++	.forks_child = 1,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.18.1
+
+
+
