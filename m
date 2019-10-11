@@ -1,196 +1,68 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Oct 2019 15:24:29 +0200
-Subject: [LTP] [PATCH v5 4/8] net: Add tst_ipaddr_un.sh test
-In-Reply-To: <20191011132433.24197-1-pvorel@suse.cz>
-References: <20191011132433.24197-1-pvorel@suse.cz>
-Message-ID: <20191011132433.24197-5-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 11 Oct 2019 21:28:46 +0800
+Subject: [LTP] Rename tst_test_* to tst_require_*
+In-Reply-To: <1570799029.4238.15.camel@suse.de>
+References: <20191011090737.17997-1-lkml@jv-coder.de>
+ <20191011100604.GA11441@dell5510>
+ <1570799029.4238.15.camel@suse.de>
+Message-ID: <CAEemH2fSuRR-7HFeLBMw_6zo2bhWW88ckq468S9XhgzAG_mPFw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Testing tst_ipaddr_un() function from network shell API (tst_net.sh).
+On Fri, Oct 11, 2019 at 9:03 PM Clemens Famulla-Conrad <
+cfamullaconrad@suse.de> wrote:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- lib/newlib_tests/shell/net/tst_ipaddr_un.sh | 167 ++++++++++++++++++++
- 1 file changed, 167 insertions(+)
- create mode 100755 lib/newlib_tests/shell/net/tst_ipaddr_un.sh
+> On Fri, 2019-10-11 at 12:06 +0200, Petr Vorel wrote:
+> > Hi,
+> >
+> > Cc: Li and Clemens
+> >
+> > > these patches rename tst_test_* to tst_require_*, to better
+> > > describe
+> > > their use. There is also tst_require_root, that has the same
+> > > behavior: It also calls tst_brk in case of a failing requirement.
+> > > You can also get this patch from the following repo:
+> > > https://github.com/MofX/ltp/commits/rename_tst_test-tst_require
+> >
+> > sorry for not thinking first, I wonder if we want to sync
+> > tst_test_* (function name) vs $TST_NEEDS_* (test API variable name),
+> > e.g.: tst_require_drivers $TST_NEEDS_DRIVERS
+>
+> I fully agree with Petr that we must be consistent in naming between
+> variable- and function-name.
+>
 
-diff --git a/lib/newlib_tests/shell/net/tst_ipaddr_un.sh b/lib/newlib_tests/shell/net/tst_ipaddr_un.sh
-new file mode 100755
-index 000000000..a9d95f975
---- /dev/null
-+++ b/lib/newlib_tests/shell/net/tst_ipaddr_un.sh
-@@ -0,0 +1,167 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-+
-+TST_TESTFUNC=do_test
-+TST_CNT=2
-+TST_NEEDS_CMDS="cut"
-+
-+PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
-+
-+RHOST="foo"
-+. tst_net.sh
-+
-+IPV4_DATA="
-+0 0|10.23.0.0
-+0 1|10.23.0.1
-+1 0|10.23.1.0
-+1 1|10.23.1.1
-+1 2|10.23.1.2
-+2 2|10.23.2.2
-+1 3|10.23.1.3
-+3 3|10.23.3.3
-+1 128|10.23.1.128
-+128 128|10.23.128.128
-+1 254|10.23.1.254
-+254 254|10.23.254.254
-+1 255|10.23.1.255
-+255 255|10.23.255.255
-+1 256|10.23.1.0
-+256 256|10.23.0.0
-+1 257|10.23.1.1
-+257 257|10.23.1.1
-+
-+-c 0|10.23.0.2
-+-c 0 lhost|10.23.0.2
-+-c 0 rhost|10.23.0.1
-+
-+-c 1|10.23.0.2
-+-c 1 rhost|10.23.0.1
-+-c 2|10.23.0.4
-+-c 2 rhost|10.23.0.3
-+-c 127|10.23.0.254
-+-c 127 rhost|10.23.0.253
-+-c 128|10.23.1.2
-+-c 128 rhost|10.23.1.1
-+-c 254|10.23.1.254
-+-c 254 rhost|10.23.1.253
-+-c 255|10.23.2.2
-+-c 255 rhost|10.23.2.1
-+
-+-c 0 -h1,255|10.23.0.2
-+-c 0 -h1,255 rhost|10.23.0.1
-+-c 1 -h1,255|10.23.0.2
-+-c 1 -h1,255 rhost|10.23.0.1
-+-c 127 -h1,255|10.23.0.254
-+-c 127 -h1,255 rhost|10.23.0.253
-+-c 128 -h1,255|10.23.1.1
-+-c 128 -h1,255 rhost|10.23.0.255
-+-c 255 -h1,255|10.23.1.255
-+-c 255 -h1,255 rhost|10.23.1.254
-+-c 256 -h1,255|10.23.2.2
-+-c 256 -h1,255 rhost|10.23.2.1
-+
-+-c1 -h 2,8 -n 2,8|10.23.2.3
-+-c1 -h 2,8 -n 2,8 rhost|10.23.2.2
-+-c2 -h 2,8 -n 2,8|10.23.2.5
-+-c2 -h 2,8 -n 2,8 rhost|10.23.2.4
-+
-+-c1 -n 22,44|10.23.22.2
-+-c1 -n 22,44 rhost|10.23.22.1
-+-c2 -n 22,44|10.23.22.4
-+-c2 -n 22,44 rhost|10.23.22.3
-+"
-+
-+IPV6_DATA="
-+0 0|fd00:23::
-+0 1|fd00:23::1
-+1 0|fd00:23:1::
-+1 1|fd00:23:1::1
-+1 2|fd00:23:1::2
-+2 2|fd00:23:2::2
-+1 3|fd00:23:1::3
-+3 3|fd00:23:3::3
-+1 32767|fd00:23:1::7fff
-+32767 32767|fd00:23:7fff::7fff
-+1 65534|fd00:23:1::fffe
-+65534 65534|fd00:23:fffe::fffe
-+1 65535|fd00:23:1::ffff
-+65535 65535|fd00:23:ffff::ffff
-+1 65536|fd00:23:1::
-+65536 65536|fd00:23::
-+1 65537|fd00:23:1::1
-+65537 65537|fd00:23:1::1
-+
-+-c 0|fd00:23::2
-+-c 0 lhost|fd00:23::2
-+-c 0 rhost|fd00:23::1
-+
-+-c 1|fd00:23::2
-+-c 1 rhost|fd00:23::1
-+-c 2|fd00:23::4
-+-c 2 rhost|fd00:23::3
-+-c 32767|fd00:23::fffe
-+-c 32767 rhost|fd00:23::fffd
-+-c 32768|fd00:23:1::2
-+-c 32768 rhost|fd00:23:1::1
-+-c 65534|fd00:23:1::fffe
-+-c 65534 rhost|fd00:23:1::fffd
-+-c 65535|fd00:23:2::2
-+-c 65535 rhost|fd00:23:2::1
-+
-+-c 0 -h1,65535|fd00:23::2
-+-c 0 -h1,65535 rhost|fd00:23::1
-+-c 1 -h1,65535|fd00:23::2
-+-c 1 -h1,65535 rhost|fd00:23::1
-+-c 32767 -h1,65535|fd00:23::fffe
-+-c 32767 -h1,65535 rhost|fd00:23::fffd
-+-c 32768 -h1,65535|fd00:23:1::1
-+-c 32768 -h1,65535 rhost|fd00:23::ffff
-+-c 65535 -h1,65535|fd00:23:1::ffff
-+-c 65535 -h1,65535 rhost|fd00:23:1::fffe
-+-c 65536 -h1,65535|fd00:23:2::2
-+-c 65536 -h1,65535 rhost|fd00:23:2::1
-+
-+-c1 -h 2,8 -n 2,8|fd00:23:2::3
-+-c1 -h 2,8 -n 2,8 rhost|fd00:23:2::2
-+-c2 -h 2,8 -n 2,8|fd00:23:2::5
-+-c2 -h 2,8 -n 2,8 rhost|fd00:23:2::4
-+
-+-c1 -n 22,44|fd00:23:16::2
-+-c1 -n 22,44 rhost|fd00:23:16::1
-+-c2 -n 22,44|fd00:23:16::4
-+-c2 -n 22,44 rhost|fd00:23:16::3
-+"
-+
-+test_tst_ipaddr_un()
-+{
-+	local data cmd i result
-+	local var="$1"
-+
-+	tst_res TINFO "Testing for IPv${TST_IPVER}, data: \$$var"
-+
-+	eval data="\$$var"
-+	IFS="
-+"
-+	for i in $data; do
-+		cmd="tst_ipaddr_un $(echo $i | cut -d'|' -f 1)"
-+		result="$(echo $i | cut -d'|' -f 2)"
-+		tst_res TINFO "testing $cmd"
-+		EXPECT_PASS "[ '$(eval $cmd)' = '$result' ]"
-+	done
-+}
-+
-+do_test2()
-+{
-+	test_tst_ipaddr_un "IPV${TST_IPVER}_DATA"
-+}
-+
-+do_test()
-+{
-+	case $1 in
-+	 1) TST_IPV6= TST_IPVER=4 do_test2;;
-+	 2) TST_IPV6=6 TST_IPVER=6 do_test2;;
-+	esac
-+}
-+
-+tst_run
++1
+
+
+>
+> >
+> > i.e. either of these:
+> > s/tst_test_/tst_needs_/
+> > s/TST_NEEDS_/TST_REQUIRE_/
+> >
+> > I consider *require* as more descriptive than *needs*,
+> > but changing to *require* would require more work :).
+>
+> If we use needs or require ? Hard question - when I search for synonyms
+> from one or the other, I don't see a big different. Without looking on
+> the impact, require sounds also more descriptive.
+>
+
+Yes, I have the same feeling here.
+
+FYI:
+  needs: because it's important
+  require: because it's a necessity
+
+https://www.englishcurrent.com/grammar/difference-need-require-verbs/
+
 -- 
-2.23.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191011/f0a81006/attachment-0001.htm>
