@@ -1,68 +1,85 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 11 Oct 2019 21:28:46 +0800
-Subject: [LTP] Rename tst_test_* to tst_require_*
-In-Reply-To: <1570799029.4238.15.camel@suse.de>
-References: <20191011090737.17997-1-lkml@jv-coder.de>
- <20191011100604.GA11441@dell5510>
- <1570799029.4238.15.camel@suse.de>
-Message-ID: <CAEemH2fSuRR-7HFeLBMw_6zo2bhWW88ckq468S9XhgzAG_mPFw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 11 Oct 2019 15:31:46 +0200
+Subject: [LTP] [PATCH v5 3/5] shell: Add timeout shell API tests
+In-Reply-To: <20191011125648.GF2591@rei>
+References: <20191011095442.10541-1-pvorel@suse.cz>
+ <20191011095442.10541-4-pvorel@suse.cz>
+ <1570797394.4238.7.camel@suse.de> <20191011125413.GA30000@dell5510>
+ <20191011125648.GF2591@rei>
+Message-ID: <20191011133129.GA23391@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 11, 2019 at 9:03 PM Clemens Famulla-Conrad <
-cfamullaconrad@suse.de> wrote:
+Hi,
 
-> On Fri, 2019-10-11 at 12:06 +0200, Petr Vorel wrote:
-> > Hi,
-> >
-> > Cc: Li and Clemens
-> >
-> > > these patches rename tst_test_* to tst_require_*, to better
-> > > describe
-> > > their use. There is also tst_require_root, that has the same
-> > > behavior: It also calls tst_brk in case of a failing requirement.
-> > > You can also get this patch from the following repo:
-> > > https://github.com/MofX/ltp/commits/rename_tst_test-tst_require
-> >
-> > sorry for not thinking first, I wonder if we want to sync
-> > tst_test_* (function name) vs $TST_NEEDS_* (test API variable name),
-> > e.g.: tst_require_drivers $TST_NEEDS_DRIVERS
->
-> I fully agree with Petr that we must be consistent in naming between
-> variable- and function-name.
->
+> > timeout02 1 TCONF: LTP_TIMEOUT_MUL must be number >= 1! (0)
+> > BTW I wonder if TBROK shouldn't be used instead of TCONF.
+> > Anybody strong opinion?
 
-+1
+> If we fail to run a test because user passed wrong input data it has to
+> be TBROK because TCONF can end up unnoticed.
++1.
 
+I'd like to merge v5 with following diff:
+Please let me know if anything else is problematic.
 
->
-> >
-> > i.e. either of these:
-> > s/tst_test_/tst_needs_/
-> > s/TST_NEEDS_/TST_REQUIRE_/
-> >
-> > I consider *require* as more descriptive than *needs*,
-> > but changing to *require* would require more work :).
->
-> If we use needs or require ? Hard question - when I search for synonyms
-> from one or the other, I don't see a big different. Without looking on
-> the impact, require sounds also more descriptive.
->
+Kind regards,
+Petr
 
-Yes, I have the same feeling here.
-
-FYI:
-  needs: because it's important
-  require: because it's a necessity
-
-https://www.englishcurrent.com/grammar/difference-need-require-verbs/
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191011/f0a81006/attachment-0001.htm>
+diff --git lib/newlib_tests/shell/test_timeout.sh lib/newlib_tests/shell/test_timeout.sh
+index 2cbc66412..948c7f02d 100755
+--- lib/newlib_tests/shell/test_timeout.sh
++++ lib/newlib_tests/shell/test_timeout.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-PATH="$(dirname $0)/../../../testcases/lib/:$PATH"
++PATH="$(dirname $0):$(dirname $0)/../../../testcases/lib/:$PATH"
+ 
+ DATA="
+ timeout01.sh||0
+@@ -9,6 +9,11 @@ timeout02.sh|foo|32
+ timeout02.sh|2|0
+ timeout02.sh|1.1|0
+ timeout02.sh|-10|32
++
++timeout01.sh|2|0
++timeout02.sh|-1.1|32
++timeout02.sh|-10.1|32
++timeout02.sh|-0.1|0
+ "
+ 
+ echo "Testing timeout in shell API"
+@@ -21,7 +26,7 @@ for i in $DATA; do
+ 	exp_exit=$(echo $i | cut -d'|' -f3)
+ 
+ 	echo "=== $test (LTP_TIMEOUT_MUL='$timeout') ==="
+-	LTP_TIMEOUT_MUL=$timeout ./$file
++	LTP_TIMEOUT_MUL=$timeout $file
+ 	ret=$?
+ 	if [ $ret -ne $exp_exit ]; then
+ 		echo "FAILED (exit code: $ret, expected $exp_exit)"
+diff --git testcases/lib/tst_test.sh testcases/lib/tst_test.sh
+index 8713c1cdd..d8071cb10 100644
+--- testcases/lib/tst_test.sh
++++ testcases/lib/tst_test.sh
+@@ -389,14 +389,14 @@ _tst_setup_timer()
+ 
+ 	local err="LTP_TIMEOUT_MUL must be number >= 1!"
+ 
+-	tst_is_num "$LTP_TIMEOUT_MUL" || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
++	tst_is_num "$LTP_TIMEOUT_MUL" || tst_brk TBROK "$err ($LTP_TIMEOUT_MUL)"
+ 
+ 	if ! tst_is_int "$LTP_TIMEOUT_MUL"; then
+ 		LTP_TIMEOUT_MUL=$(echo "$LTP_TIMEOUT_MUL" | cut -d. -f1)
+ 		LTP_TIMEOUT_MUL=$((LTP_TIMEOUT_MUL+1))
+ 		tst_res TINFO "ceiling LTP_TIMEOUT_MUL to $LTP_TIMEOUT_MUL"
+ 	fi
+-	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TCONF "$err ($LTP_TIMEOUT_MUL)"
++	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TBROK "$err ($LTP_TIMEOUT_MUL)"
+ 
+ 	if ! tst_is_int "$TST_TIMEOUT" || [ "$TST_TIMEOUT" -lt 1 ]; then
+ 		tst_brk TBROK "TST_TIMEOUT must be int >= 1! ($TST_TIMEOUT)"
