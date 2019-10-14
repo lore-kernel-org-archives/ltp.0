@@ -1,135 +1,302 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Oct 2019 14:50:15 +0200
-Subject: [LTP] [PATCH] mlock_8-1,
- munlock_10-1: don't use LONG_MAX as invalid pointer
-In-Reply-To: <2e51e5453562001b5b6992ccc897d9177e6673ca.1571053661.git.jstancek@redhat.com>
-References: <2e51e5453562001b5b6992ccc897d9177e6673ca.1571053661.git.jstancek@redhat.com>
-Message-ID: <20191014125015.GA25950@rei.lan>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 14 Oct 2019 15:06:54 +0200
+Subject: [LTP] [PATCH] Add a regression test for cve-2017-15649
+In-Reply-To: <20190924112159.18845-1-mmoese@suse.de>
+References: <20190924112159.18845-1-mmoese@suse.de>
+Message-ID: <87v9srwk5t.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> arm64 kernel with commit 057d3389108e ("mm: untag user pointers passed to
-> memory syscalls") will assume this is tagged user pointer and will
-> attempt to clear first byte. This leads to test hitting different error
-> (EINVAL instead of ENOMEM).
-> 
-> Add a helper function which provides invalid/unused pointer from user
-> address space.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hello,
+
+Michael Moese <mmoese@suse.de> writes:
+
+> net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local
+> users to gain privileges via crafted system calls that trigger
+> mishandling of packet_fanout data structures, because of a race
+> condition (involving fanout_add and packet_do_bind) that leads to a
+> use-after-free.
+>
+> See https://ssd-disclosure.com/archives/3484 for more detail.
+>
+> Signed-off-by: Michael Moese <mmoese@suse.de>
 > ---
->  .../conformance/interfaces/mlock/8-1.c             | 11 ++--------
->  .../conformance/interfaces/munlock/10-1.c          | 11 ++--------
->  .../open_posix_testsuite/include/invalid_helpers.h | 25 ++++++++++++++++++++++
->  3 files changed, 29 insertions(+), 18 deletions(-)
->  create mode 100644 testcases/open_posix_testsuite/include/invalid_helpers.h
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
-> index d9569008b82b..5883ff8ec162 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
-> @@ -20,22 +20,15 @@
->  #include <errno.h>
->  #include <limits.h>
->  #include "posixtest.h"
-> +#include "invalid_helpers.h"
+>  runtest/cve                    |   1 +
+>  testcases/cve/.gitignore       |   1 +
+>  testcases/cve/Makefile         |   1 +
+>  testcases/cve/cve-2017-15649.c | 192 +++++++++++++++++++++++++++++++++
+>  4 files changed, 195 insertions(+)
+>  create mode 100644 testcases/cve/cve-2017-15649.c
+>
+> diff --git a/runtest/cve b/runtest/cve
+> index 33c9196e0..6c0597e71 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -40,3 +40,4 @@ cve-2017-1000380 snd_timer01
+>  cve-2018-5803 sctp_big_chunk
+>  cve-2018-1000001 realpath01
+>  cve-2018-19854 crypto_user01
+> +cve-2017-15649 cve-2017-15649
+
+I like having these in date order
+
+> diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+> index 01a3e4c8f..94415b4e4 100644
+> --- a/testcases/cve/.gitignore
+> +++ b/testcases/cve/.gitignore
+> @@ -10,3 +10,4 @@ stack_clash
+>  cve-2017-17052
+>  cve-2017-16939
+>  cve-2017-17053
+> +cve-2017-15649
+> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+> index da44fff60..6cf3b5af9 100644
+> --- a/testcases/cve/Makefile
+> +++ b/testcases/cve/Makefile
+> @@ -46,5 +46,6 @@ cve-2017-17052:	CFLAGS += -pthread
+>  cve-2017-17053:	CFLAGS += -pthread
 >  
->  #define BUFSIZE 8
+>  cve-2015-3290:	CFLAGS += -pthread
+> +cve-2017-15649: CFLAGS += -pthread
 >  
->  int main(void)
->  {
->  	int result;
-> -	long page_size;
-> -	void *page_ptr;
-> +	void *page_ptr = get_invalid_ptr();
->  
-> -	page_size = sysconf(_SC_PAGESIZE);
-> -	if (errno) {
-> -		perror("An error occurs when calling sysconf()");
-> -		return PTS_UNRESOLVED;
-> -	}
-> -
-> -	page_ptr = (void *)(LONG_MAX - (LONG_MAX % page_size));
->  	result = mlock(page_ptr, BUFSIZE);
->  
->  	if (result == -1 && errno == ENOMEM) {
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
-> index cf870289b512..1bc3d8015808 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
-> @@ -20,22 +20,15 @@
->  #include <errno.h>
->  #include <limits.h>
->  #include "posixtest.h"
-> +#include "invalid_helpers.h"
->  
->  #define BUFSIZE 8
->  
->  int main(void)
->  {
->  	int result;
-> -	long page_size;
-> -	void *page_ptr;
-> +	void *page_ptr = get_invalid_ptr();
->  
-> -	page_size = sysconf(_SC_PAGESIZE);
-> -	if (errno) {
-> -		perror("An error occurs when calling sysconf()");
-> -		return PTS_UNRESOLVED;
-> -	}
-> -
-> -	page_ptr = (void *)(LONG_MAX - (LONG_MAX % page_size));
->  	result = munlock(page_ptr, BUFSIZE);
->  
->  	if (result == -1 && errno == ENOMEM) {
-> diff --git a/testcases/open_posix_testsuite/include/invalid_helpers.h b/testcases/open_posix_testsuite/include/invalid_helpers.h
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/cve/cve-2017-15649.c b/testcases/cve/cve-2017-15649.c
 > new file mode 100644
-> index 000000000000..7882c783abf6
+> index 000000000..c19b5bdd4
 > --- /dev/null
-> +++ b/testcases/open_posix_testsuite/include/invalid_helpers.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later
-> + * Copyright (c) 2019 Linux Test Project
+> +++ b/testcases/cve/cve-2017-15649.c
+> @@ -0,0 +1,192 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + *   Copyright (c) 2019 Michael Moese <mmoese@suse.com>
+> + */
+> +/* Regression test for CVE-2017-15649
+> + * based on the reproducer at https://ssd-disclosure.com/archives/3484
+> + *
+> + * net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local users
+> + * to gain privileges via crafted system calls that trigger mishandling of
+> + * packet_fanout data structures, because of a race condition (involving
+> + * fanout_add and packet_do_bind) that leads to a use-after-free.
+> + *
+> + * Be careful! This test may crash your kernel!
 > + */
 > +
-> +#ifndef __INVALID_HELPERS_H__
-> +#define __INVALID_HELPERS_H__
-            ^
-	    Strictly speaking the double underscores are reserved for
-	    low level code i.e. libc and related code so we should avoid
-	    them.
-
-> +#include <stdlib.h>
-> +#include "safe_helpers.h"
+> +#include <pthread.h>
+> +#include <stdio.h>
+> +#include <sched.h>
+> +#include <string.h>
+> +#include <time.h>
+> +#include <net/if.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
 > +
-> +#define DISTANT_AREA_SIZE (128*1024*1024)
+> +#include "tst_test.h"
+> +#include "tst_taint.h"
+> +#include "tst_safe_pthread.h"
+> +#include "tst_fuzzy_sync.h"
+> +#include "tst_capability.h"
+> +#include "lapi/syscalls.h"
 > +
-> +static void *get_invalid_ptr(void)
+> +#define TEST_RUNTIME 15 /* seconds */
+> +
+> +static struct tst_fzsync_pair fzsync_pair;
+> +static int fd;
+> +static struct ifreq ifr;
+> +
+> +struct sockaddr_ll {
+> +	unsigned short	sll_family;
+> +	short		sll_protocol;
+> +	int		sll_ifindex;
+> +	unsigned short	sll_hatype;
+> +	unsigned char	sll_pkttype;
+> +	unsigned char	sll_halen;
+> +	unsigned char	sll_addr[8];
+> +};
+> +static struct sockaddr_ll addr;
+> +
+> +void *task1(void *unused)
 > +{
-> +	int page_size;
-> +	void *ptr;
+> +	int fanout = 0x3;
 > +
-> +	page_size = sysconf(_SC_PAGESIZE);
-> +	SAFE_PFUNC(posix_memalign(&ptr, page_size, DISTANT_AREA_SIZE));
-> +	free(ptr);
-> +
-> +	return (char *)ptr + (DISTANT_AREA_SIZE / 2);
+> +	if (tst_fzsync_run_a(&fzsync_pair)) {
+> +		setsockopt(fd, 0x107, 18, &fanout, sizeof(fanout));
+> +		tst_fzsync_end_race_a(&fzsync_pair);
+> +	}
+> +	return unused;
 > +}
 
-Maybe it's worth of a comment what is the idea behind this code here.
+This is not the intended usage. I suppose it may work to some extent,
+but the randomisation will either never be used or will be broken when
+it is activated. Also see comments below.
 
-> +#endif
+You need to restructure the test to look more like:
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2233-reproducing-race-conditions
+
+> +
+> +void *task2(void *unused)
+> +{
+> +	if (tst_fzsync_run_b(&fzsync_pair)) {
+> +		bind(fd, (struct sockaddr *)&addr, sizeof(addr));
+> +		tst_fzsync_end_race_b(&fzsync_pair);
+> +	}
+> +	return unused;
+> +}
+> +
+> +static int write_file(const char *file, const char *what, ...)
+
+I think this is more or less what FILE_PRINTF does in the LTP lib.
+
+> +{
+> +	char buf[1024];
+> +	va_list args;
+> +	int len;
+> +	int my_fd;
+> +
+> +	va_start(args, what);
+> +	vsnprintf(buf, sizeof(buf), what, args);
+> +	va_end(args);
+> +
+> +	buf[sizeof(buf) - 1] = 0;
+> +	len = strlen(buf);
+> +
+> +	my_fd = SAFE_OPEN(file, O_WRONLY | O_CLOEXEC);
+> +
+> +	SAFE_WRITE(1, my_fd, buf, len);
+> +
+> +	SAFE_CLOSE(my_fd);
+> +
+> +	return 0;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int real_uid = getuid();
+> +	int real_gid = getgid();
+> +
+> +	tst_fzsync_pair_init(&fzsync_pair);
+> +	tst_taint_init(TST_TAINT_W | TST_TAINT_D | TST_TAINT_L);
+> +
+> +	if (unshare(CLONE_NEWUSER) != 0) {
+> +		printf("[!] unprivileged user namespaces are not available\n");
+> +		perror("[-] unshare(CLONE_NEWUSER)");
+> +		exit(EXIT_FAILURE);
+
+You should use tst_res(TINFO, ...) and tst_brk(TBROK, ...).
+
+> +	}
+> +
+> +	if (unshare(CLONE_NEWNET) != 0) {
+> +		perror("[-] unshare(CLONE_NEWUSER)");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	if (write_file("/proc/self/setgroups", "deny")) {
+> +		perror("[-] write_file(/proc/self/set_groups)");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	if (write_file("/proc/self/uid_map", "0 %d 1\n", real_uid)) {
+> +		perror("[-] write_file(/proc/self/uid_map)");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	if (write_file("/proc/self/gid_map", "0 %d 1\n", real_gid)) {
+> +		perror("[-] write_file(/proc/self/gid_map)");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +}
+> +
+> +
+> +static void run(void)
+> +{
+> +	int index;
+> +	struct timespec start, now;
+> +	struct tst_cap_user_data before[2] = { {0} };
+> +	struct tst_cap_user_data after[2] = { {0} };
+> +
+> +	struct tst_cap_user_header hdr = {
+> +		.version = 0x20080522,
+> +		.pid = tst_syscall(__NR_gettid),
+> +	};
+> +
+> +	if (tst_capget(&hdr, before))
+> +		tst_brk(TBROK | TTERRNO, "tst_capget()");
+> +
+> +	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+
+You should probably have tst_fzysync_reset here then...
+
+> +
+> +	while (1) {
+
+tst_fzsync_run_a here in the while condition which will also handle the timeout
+
+> +		pthread_t thread1, thread2;
+> +
+> +
+> +		fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, PF_PACKET);
+> +
+> +		strcpy((char *) &ifr.ifr_name, "lo");
+> +		SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
+> +		index = ifr.ifr_ifindex;
+> +
+> +		SAFE_IOCTL(fd, SIOCGIFFLAGS, &ifr);
+> +		ifr.ifr_flags &= ~(short) IFF_UP;
+> +
+> +		SAFE_IOCTL(fd, SIOCSIFFLAGS, &ifr);
+> +
+> +		addr.sll_family = AF_PACKET;
+> +		addr.sll_protocol = 0x0;
+> +		addr.sll_ifindex = index;
+
+then start and end race down here. I suppose if you really need three
+threads then there could be a problem. However it will be a lot faster
+if you just have two long running threads.
+
+You can use pairs of tst_fzysnc_wait_a/b to add extra synchronisation
+before the race to setup the socket if necessary.
+
+> +
+> +		SAFE_PTHREAD_CREATE(&thread1, NULL, task1, NULL);
+> +		SAFE_PTHREAD_CREATE(&thread2, NULL, task2, NULL);
+> +		SAFE_PTHREAD_JOIN(thread1, NULL);
+> +		SAFE_PTHREAD_JOIN(thread2, NULL);
+> +
+> +		SAFE_CLOSE(fd);
+> +
+> +		if (tst_capget(&hdr, after))
+> +			tst_brk(TBROK | TTERRNO, "tst_capget()");
+> +
+> +		if (memcmp(before, after, sizeof(after)) || tst_taint_check())
+> +			tst_res(TFAIL, "kernel is vulnerable");
+> +
+> +		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
+> +		if ((now.tv_sec - start.tv_sec) > TEST_RUNTIME)
+> +			tst_res(TPASS, "kernel seems to be not
+> vulnerable");
+
+this should be handled by the fzsync library in the run_a function.
+
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.caps = (struct tst_cap []) {
+> +		TST_CAP(TST_CAP_REQ, CAP_SYS_ADMIN),
+> +		TST_CAP(TST_CAP_REQ, CAP_NET_RAW),
+> +		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
+> +		{},
+> +	},
+> +};
 > -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 2.23.0
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
