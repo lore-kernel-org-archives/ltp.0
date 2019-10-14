@@ -1,90 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 14 Oct 2019 14:31:14 +0800
-Subject: [LTP] [PATCH v2] read_all: retry to queue work for any worker
-In-Reply-To: <1498901254.5980601.1570953247355.JavaMail.zimbra@redhat.com>
-References: <26d555b1d9deddb5a6f0a93a7c7d3b00e8abc1ff.1570616598.git.jstancek@redhat.com>
- <8c5d507fd19bc3110561ed1c666b7ac47442e09e.1570632125.git.jstancek@redhat.com>
- <CAEemH2d82pP2mwHnw42h-17HipGsVeYesfzg7o4axvCiRKU0=Q@mail.gmail.com>
- <CAEemH2eYc1VVtavWKTE-x1gqY6q7qyMVZ-bETXJytPkdvHJriw@mail.gmail.com>
- <1445930938.5951899.1570861051806.JavaMail.zimbra@redhat.com>
- <CAEemH2f2_5wNfNB=a-+=E+KevFOVvjCQ0sjBEG-eS27dwQxarw@mail.gmail.com>
- <23965038.5952515.1570862960195.JavaMail.zimbra@redhat.com>
- <CAEemH2cuxbW55Y_mv9t0u7PEJyQVr9dgtZVFrDYKLi51MSsLmg@mail.gmail.com>
- <1498901254.5980601.1570953247355.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2cCi5y9PPKnynF5DMwV4Wiyx1jYCvqpTTa-duBNH1CbFw@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 14 Oct 2019 03:28:59 -0400 (EDT)
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E0-rc2-d6c2c23=2Ecki_=28stable-next=29?=
+In-Reply-To: <cki.B4A567748F.PFM8G4WKXI@redhat.com>
+References: <cki.B4A567748F.PFM8G4WKXI@redhat.com>
+Message-ID: <805988176.6044584.1571038139105.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sun, Oct 13, 2019 at 3:54 PM Jan Stancek <jstancek@redhat.com> wrote:
-
->
->
-> ----- Original Message -----
-> > On Sat, Oct 12, 2019 at 2:49 PM Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > > ...
-> > > > > > Base on your patch, I'm thinking to achieve a new macro
-> > > TST_INFILOOP_FUNC
-> > > > > > which can repeat the @FUNC infinitely. Do you feel it satisfies
-> your
-> > > > > > requirements to some degree or meaningful to LTP?
-> > > > >
-> > > > > I'm OK with concept. I'd like more some variation of *RETRY* for
-> name.
-> > > > > Comments below.
-> > > > >
-> > > >
-> > > > Thanks, what about naming: TST_INFI_RETRY_FUNC?
-> > >
-> > > Or just keep TST_RETRY_FUNC and add parameter to it?
-> > >
-> >
-> > Sounds better, we could add parameter @INFI to control the retry as a
-> knob.
-> >
-> > /* @INFI - 1: retry infinitely, 0: retry in limit times */
-> >
-> > #define TST_RETRY_FUNC(FUNC, ERET, INFI) \
-> >         TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, 1, INFI)
->
-> Other option is we use directly TST_RETRY_FN_EXP_BACKOFF.
->
-
-I'm ok for either. I will have a try when I get a chance since mkswap01.sh
-sometimes timed out in the one-second retrying.
 
 
->
-> >
-> >
-> > > >
-> > > > And do you mind use it to replace your function work_push_retry()? I
-> know
-> > > > it may be not smarter than work_push_retry() but it looks tiny for
-> code.
-> > >
-> > > It may need some wrapper, because work_push_retry() may be passing
-> > > different
-> > > argument to function on each retry, which was one of reasons for the
-> patch.
-> > >
-> >
-> > I was not meaning to hack the work_push_retry() function, I mean to
-> change
-> > your patch as below after we improve the TST_RETRY_FUNC.
->
-> Why not? Wouldn't we get better performance if we don't wait on specific
-> worker
-> to complete?
->
-Well, right! You can merge this patch as it is.
+----- Original Message -----
+> 
+> Hello,
+> 
+> We ran automated tests on a recent commit from this kernel tree:
+> 
+>        Kernel repo:
+>        git://git.kernel.org/pub/scm/linux/kernel/git/sashal/linux-stable.git
+>             Commit: d6c2c23a29f4 - Merge branch 'stable-next' of
+>             ssh://chubbybox:/home/sasha/data/next into stable-next
+> 
+> The results of these automated tests are provided below.
+> 
+>     Overall result: FAILED (see details below)
+>              Merge: OK
+>            Compile: OK
+>              Tests: FAILED
+> 
+> All kernel binaries, config files, and logs are available for download here:
+> 
+>   https://artifacts.cki-project.org/pipelines/223563
+> 
+> One or more kernel tests failed:
+> 
+>     aarch64:
+>       ? LTP: openposix test suite
+> 
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191014/37921d27/attachment.htm>
+Test [1] is passing value close to LONG_MAX, which on arm64 is now treated as tagged userspace ptr:
+  057d3389108e ("mm: untag user pointers passed to memory syscalls")
+
+And now seems to hit overflow check after sign extension (EINVAL).
+Test should probably find different way to choose invalid pointer.
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
