@@ -1,55 +1,39 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 15 Oct 2019 15:30:36 +0200
-Subject: [LTP] [PATCH] pcrypt_aead01: break early when approaching timeout
-Message-ID: <031b8dbecf1c08d3b00f876943b744274e6a5785.1571146155.git.jstancek@redhat.com>
+Date: Tue, 15 Oct 2019 10:00:27 -0400 (EDT)
+Subject: [LTP] [RFC PATCH] tst_taint: TCONF when kernel is alreay tainted
+In-Reply-To: <20190919100205.GA26642@rei>
+References: <20190918053519.26244-1-liwang@redhat.com>
+ <20190919100205.GA26642@rei>
+Message-ID: <679691068.6290837.1571148027820.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-PowerNV (P9 witherspoon, 176CPUs) systems running latest upstream
-kernel (5.3.6) have been observed to come very close to test timeout
-and also sporadically fail, because they couldn't complete 10000
-iterations in time.
 
-Each iteration of test leads to modprobe of cryptomgr and crypto
-framework running number of tests, taking up to ~70ms per iteration.
 
-Looking at traces, a significant contributor is wakeup time. After
-one crypto test is done, it takes ~0.5ms for other tests to resume:
-  (gettimeofday_us)
-  1571141551769329      7 kworker/1:1(897):<-crypto_req_done
-  1571141551769843   1603 cryptomgr_test(3813):
+----- Original Message -----
+> Hi!
+> > As the tst_taint_init comments described, If the tainted-flags are already
+> > set
+> > by the kernel, there is no reason to continue and TCONF is generated. But
+> > in
+> > the function achieve, it uses TBROK.
+> > 
+> >   cmdline="cve-2017-17053"
+> >   tst_test.c:1096: INFO: Timeout per run is 0h 10m 00s
+> >   tst_taint.c:88: BROK: Kernel is already tainted: 536871424
+> 
+> There is a reason for generating TBROK, we do not want the test to be
+> skipped silently in this case.
 
-Booting with powersave=off cuts this latency significantly, single
-iteration of test completes in ~10ms.
+It can still run and maybe trigger worse problem. IMO if test wants
+to report taint flags it should only report _new_ taint flags.
 
-But changing kernel defaults isn't very practical solution, hence patch
-is watching for timeout approaching and breaks the loop early.
+We could add a dummy test to end of runtest file, which would check
+selected taint flags and report WARN/FAIL, so they are guaranteed
+to appear on report.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/crypto/pcrypt_aead01.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
-index d9c27f69dce7..3dc8c58c2817 100644
---- a/testcases/kernel/crypto/pcrypt_aead01.c
-+++ b/testcases/kernel/crypto/pcrypt_aead01.c
-@@ -54,6 +54,12 @@ void run(void)
- 		TEST(tst_crypto_del_alg(&ses, &a));
- 		if (TST_RET)
- 			tst_brk(TBROK | TRERRNO, "del_alg");
-+
-+		if (tst_timeout_remaining() < 10) {
-+			tst_res(TINFO, "Time limit reached, stopping@"
-+				"%d iterations", i);
-+			break;
-+		}
- 	}
- 
- 	tst_res(TPASS, "Nothing bad appears to have happened");
--- 
-1.8.3.1
-
+Regards,
+Jan
