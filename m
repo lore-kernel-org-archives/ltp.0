@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Oct 2019 11:52:25 +0200
-Subject: [LTP] [PATCH 2/2] testcases/kernel: Add linux git and CVE tags
-In-Reply-To: <CAEemH2f0ZXYEwsvcxWhdE33EzLJKr=EeeG91Uq_8rBZOsx57NQ@mail.gmail.com>
+Date: Tue, 15 Oct 2019 11:54:05 +0200
+Subject: [LTP] [PATCH 1/2] lib: Add support for test tags
+In-Reply-To: <CAEemH2e+xD2OCFZs14ejmppKu2rLXKsr16Vfc3tqw-YoesWuJg@mail.gmail.com>
 References: <20191014112522.24548-1-chrubis@suse.cz>
- <20191014112522.24548-3-chrubis@suse.cz>
- <CAEemH2f0ZXYEwsvcxWhdE33EzLJKr=EeeG91Uq_8rBZOsx57NQ@mail.gmail.com>
-Message-ID: <20191015095225.GA14021@rei>
+ <20191014112522.24548-2-chrubis@suse.cz>
+ <CAEemH2e+xD2OCFZs14ejmppKu2rLXKsr16Vfc3tqw-YoesWuJg@mail.gmail.com>
+Message-ID: <20191015095405.GB14021@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,25 +13,38 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > diff --git a/testcases/cve/cve-2014-0196.c b/testcases/cve/cve-2014-0196.c
-> > index 6997fffe4..012cbb7cd 100644
-> > --- a/testcases/cve/cve-2014-0196.c
-> > +++ b/testcases/cve/cve-2014-0196.c
-> > @@ -141,4 +141,9 @@ static struct tst_test test = {
-> >         .setup = setup,
-> >         .cleanup = cleanup,
-> >         .test_all = run,
-> > +       .tags = (const struct tst_tag[]) {
-> > +               {"linux-git", "4291086b1f08"},
-> > +               {"CVE", "2014-0196"},
-> > +               {}
+> > +static void print_test_info(void)
 > >
 > 
-> Some of the tests use {NULL, NULL} to terminate tag array but some not,
-> maybe we need to keep consistent in usage.
+> print_test_info sounds like general information for the test, maybe
+> print_tags() is a better/precise name?
 
-I guess I missed some when I was converting {NULL, NULL} to just {}. I
-will fix that in v2.
+I named it as such in a case that we will add anything else there, but I
+do not have a strong opinion, I can change that if you insist.
+
+> > +static void print_failure_hints(void)
+> > +{
+> > +       unsigned int i;
+> > +       const struct tst_tag *tags = tst_test->tags;
+> > +
+> > +       if (!tags)
+> > +               return;
+> > +
+> > +       for (i = 0; tags[i].name; i++) {
+> > +               if (!strcmp(tags[i].name, "linux-git")) {
+> > +                       printf("\n");
+> > +                       print_colored("HINT: ");
+> 
+> +                       printf("This is a regression test for linux kernel,
+> > see commit:\n\n"
+> > +                              LINUX_GIT_URL "%s\n", tags[i].value);
+> >
+> 
+> This sentence 'HINT: This is a ...' will be printed many times if there are
+> many commits in tags, I prefer to see only once in front of these
+> linux-kernel links.
+
+Good catch, I will do something about this.
 
 -- 
 Cyril Hrubis
