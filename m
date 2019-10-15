@@ -1,76 +1,55 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 15 Oct 2019 15:02:59 +0200
-Subject: [LTP] [PATCH] include: undefine _LINUX_TYPES_H if including
- sys/capability.h
-In-Reply-To: <20191015101534.17691-1-liwang@redhat.com>
-References: <20191015101534.17691-1-liwang@redhat.com>
-Message-ID: <87sgnuw48s.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 15 Oct 2019 15:30:36 +0200
+Subject: [LTP] [PATCH] pcrypt_aead01: break early when approaching timeout
+Message-ID: <031b8dbecf1c08d3b00f876943b744274e6a5785.1571146155.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+PowerNV (P9 witherspoon, 176CPUs) systems running latest upstream
+kernel (5.3.6) have been observed to come very close to test timeout
+and also sporadically fail, because they couldn't complete 10000
+iterations in time.
 
-Li Wang <liwang@redhat.com> writes:
+Each iteration of test leads to modprobe of cryptomgr and crypto
+framework running number of tests, taking up to ~70ms per iteration.
 
-> In some of the libcap-devel(1.96~2.16) versions, it defines the _LINUX_TYPES_H
-> macro to make ltp-lib cann't include linux/types.h essentially.
->
->     # cat -n /usr/include/sys/capability.h
->     ...
->     25  /*
->     26   * Make sure we can be included from userland by preventing
->     27   * capability.h from including other kernel headers
->     28   */
->     29  #define _LINUX_TYPES_H
->
-> To get rid of this compiling errors on rhel6(libcap-devel-2.16) series platform,
-> here undefine _LINUX_TYPES_H if included that sys/capability.h.
->
->   == Error log ==
->   In file included from ../include/tst_netlink.h:26,
->                  from tst_crypto.c:13:
->   /usr/include/linux/netlink.h:45: error: expected specifier-qualifier-list before ?__u16?
->   /usr/include/linux/netlink.h:135: error: expected specifier-qualifier-list before ?__u16?
->   tst_crypto.c: In function ?tst_crypto_recv_ack?:
->   tst_crypto.c:46: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c:55: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c: In function ?tst_crypto_add_alg?:
->   ...
->   make: *** [tst_crypto.o] Error 1
->
-> Reported-by: Ping Fang <pifang@redhat.com>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Ping Fang <pifang@redhat.com>
-> Cc: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  include/lapi/capability.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
-> index dac233d84..3c2ee7937 100644
-> --- a/include/lapi/capability.h
-> +++ b/include/lapi/capability.h
-> @@ -10,6 +10,7 @@
->  
->  #ifdef HAVE_SYS_CAPABILITY_H
->  # include <sys/capability.h>
-> +# undef _LINUX_TYPES_H
+Looking at traces, a significant contributor is wakeup time. After
+one crypto test is done, it takes ~0.5ms for other tests to resume:
+  (gettimeofday_us)
+  1571141551769329      7 kworker/1:1(897):<-crypto_req_done
+  1571141551769843   1603 cryptomgr_test(3813):
 
-My concern here is if linux/types.h has already been included. Then this
-could cause a redefinition error if it is included again.
+Booting with powersave=off cuts this latency significantly, single
+iteration of test completes in ~10ms.
 
->  #endif
->  
->  #ifndef CAP_NET_RAW
+But changing kernel defaults isn't very practical solution, hence patch
+is watching for timeout approaching and breaks the loop early.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/crypto/pcrypt_aead01.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
+index d9c27f69dce7..3dc8c58c2817 100644
+--- a/testcases/kernel/crypto/pcrypt_aead01.c
++++ b/testcases/kernel/crypto/pcrypt_aead01.c
+@@ -54,6 +54,12 @@ void run(void)
+ 		TEST(tst_crypto_del_alg(&ses, &a));
+ 		if (TST_RET)
+ 			tst_brk(TBROK | TRERRNO, "del_alg");
++
++		if (tst_timeout_remaining() < 10) {
++			tst_res(TINFO, "Time limit reached, stopping@"
++				"%d iterations", i);
++			break;
++		}
+ 	}
+ 
+ 	tst_res(TPASS, "Nothing bad appears to have happened");
 -- 
-Thank you,
-Richard.
+1.8.3.1
+
