@@ -1,10 +1,12 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 15 Oct 2019 11:08:36 -0400 (EDT)
-Subject: [LTP] [PATCH] open_posix/timer_getoverrun/2-3: Fix test for
- systems with low timer precision
-In-Reply-To: <20191011053134.18416-1-lkml@jv-coder.de>
-References: <20191011053134.18416-1-lkml@jv-coder.de>
-Message-ID: <2097000229.6302768.1571152116580.JavaMail.zimbra@redhat.com>
+Date: Tue, 15 Oct 2019 11:19:36 -0400 (EDT)
+Subject: [LTP] [RFC PATCH] tst_taint: TCONF when kernel is alreay tainted
+In-Reply-To: <20191015143852.GA8454@rei.lan>
+References: <20190918053519.26244-1-liwang@redhat.com>
+ <20190919100205.GA26642@rei>
+ <679691068.6290837.1571148027820.JavaMail.zimbra@redhat.com>
+ <20191015143852.GA8454@rei.lan>
+Message-ID: <701658846.6304240.1571152776451.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,75 +14,49 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+
 ----- Original Message -----
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> Hi!
+> > > > As the tst_taint_init comments described, If the tainted-flags are
+> > > > already
+> > > > set
+> > > > by the kernel, there is no reason to continue and TCONF is generated.
+> > > > But
+> > > > in
+> > > > the function achieve, it uses TBROK.
+> > > > 
+> > > >   cmdline="cve-2017-17053"
+> > > >   tst_test.c:1096: INFO: Timeout per run is 0h 10m 00s
+> > > >   tst_taint.c:88: BROK: Kernel is already tainted: 536871424
+> > > 
+> > > There is a reason for generating TBROK, we do not want the test to be
+> > > skipped silently in this case.
+> > 
+> > It can still run and maybe trigger worse problem. IMO if test wants
+> > to report taint flags it should only report _new_ taint flags.
 > 
+> IMHO this is more complex than this, we look for a specific subset of
+> taint flags. One is the warn flag, that is not well defined and may be
+> harmless and the second is the died flag, which is set on OOPS or BUG. I
+> I would say that in case of the died flag any subseqent testing is
+> pointless since the machine is in inconsistent state and has to be
+> rebooted anyways. Hence we may weaken the check for a warning flag, i.e.
+> ignore it if it was set at the start of the test, but certainly not for
+> the died flag, which would solve this problem as well.
 
-Hi,
-
-> On systems with low timer precision the test always fails, because the
-> allowed
-> maximum number of overruns is calculated from the expected overruns + 10%.
-
-Did you mean 1% here?
-  fudge = expectedoverruns / 100;
-
-> If the expected overruns is less than 200, there is no tollerance.
-> This happens, if the precision of the timer is less than or equal to 4ms.
-> E.g. qemu-arm64 without high resolution timer the accuracy is only 4ms.
-
-Would tweaking tolerance work too? E.g. use float, round up.
+OK, I'd vote for getting rid of warn flag then or ignore it on test start.
+Upstream devel trees tend to trigger lot of random warnings during boot,
+e.g. a random driver warning from device that isn't even used by LTP.
 
 > 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
->  .../conformance/interfaces/timer_getoverrun/2-3.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+> > We could add a dummy test to end of runtest file, which would check
+> > selected taint flags and report WARN/FAIL, so they are guaranteed
+> > to appear on report.
 > 
-> diff --git
-> a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-> index 96b7d01e6..3df3a9f01 100644
-> ---
-> a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-> +++
-> b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-> @@ -55,6 +55,7 @@ int main(void)
->  	int overruns;
->  	int valuensec, intervalnsec, expectedoverruns;
->  	int fudge;
-> +	int duration;
->  
->  	if (sigemptyset(&set) != 0) {
->  		perror("sigemptyset() did not return success\n");
-> @@ -94,11 +95,15 @@ int main(void)
->  
->  	valuensec = tsres.tv_nsec;
->  	intervalnsec = 2 * valuensec;
-> -	//expectedoverruns = (1000000000 - valuensec) / intervalnsec;
-> -	expectedoverruns = 1000000000 / intervalnsec - 1;
-> +	expectedoverruns = 0;
-> +	duration = 0;
-> +	while (expectedoverruns < 1000) {
-> +		duration++;
-> +		expectedoverruns = duration * (1000000000 / intervalnsec - 1);
+> Actually the new testrunner runltp-ng checks the taint flags after each
+> test and reboots the machine if needed, which is, as far as I can tell,
+> the right place for such checks.
 
-I was assuming -1 in original code is to cope with final timer expiration of tssleep.tv_sec,
-which might not be counted as "overrun". What does the -1 do in your formula?
-Why is it inside brackets?
-
-When I try to force different interval values, it fails for me (on x86):
-3ms
-# ./timer_getoverrun_2-3.run-test 
-duration = 7 sec, interval = 6000000 nsec, expected overruns = 1155
-1166 overruns occurred
-FAIL:  1166 overruns sent; expected 1155
-
-5ms
-# ./timer_getoverrun_2-3.run-test 
-duration = 11 sec, interval = 10000000 nsec, expected overruns = 1089
-1100 overruns occurred
-FAIL:  1100 overruns sent; expected 1089
-
-Regards,
-Jan
+It is right place, but I think it (reboot) should be configurable behavior.
+Some harnesses might want to handle it themselves or just stop testing.
+For example on 1TB box that takes 45min to boot, I'd probably turn it off.
