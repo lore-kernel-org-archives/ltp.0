@@ -1,55 +1,85 @@
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Date: Wed, 16 Oct 2019 09:18:36 +0100
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E0-rc2-d6c2c23=2Ecki_=28stable-next=29?=
-In-Reply-To: <20191016042933.bemrrurjbghuiw73@willie-the-truck>
-References: <cki.B4A567748F.PFM8G4WKXI@redhat.com>
- <805988176.6044584.1571038139105.JavaMail.zimbra@redhat.com>
- <CAAeHK+zxFWvCOgTYrMuD-oHJAFMn5DVYmQ6-RvU8NrapSz01mQ@mail.gmail.com>
- <20191014162651.GF19200@arrakis.emea.arm.com>
- <20191014213332.mmq7narumxtkqumt@willie-the-truck>
- <20191015152651.GG13874@arrakis.emea.arm.com>
- <20191015161453.lllrp2gfwa5evd46@willie-the-truck>
- <20191016042933.bemrrurjbghuiw73@willie-the-truck>
-Message-ID: <0ea36d3b-1e24-fe15-9fea-2570790eb9b9@arm.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 16 Oct 2019 10:38:22 +0200
+Subject: [LTP] [PATCH] open_posix/timer_getoverrun/2-3: Fix test for
+ systems with low timer precision
+In-Reply-To: <3c5988d6-0e37-6ca8-2567-a98d2ff84dce@jv-coder.de>
+References: <20191011053134.18416-1-lkml@jv-coder.de>
+ <2097000229.6302768.1571152116580.JavaMail.zimbra@redhat.com>
+ <3c5988d6-0e37-6ca8-2567-a98d2ff84dce@jv-coder.de>
+Message-ID: <20191016083822.GA11593@dustball.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/16/19 5:29 AM, Will Deacon wrote:
-> From 517d979e84191ae9997c9513a88a5b798af6912f Mon Sep 17 00:00:00 2001
-> From: Will Deacon <will@kernel.org>
-> Date: Tue, 15 Oct 2019 21:04:18 -0700
-> Subject: [PATCH] arm64: tags: Preserve tags for addresses translated via TTBR1
-> 
-> Sign-extending TTBR1 addresses when converting to an untagged address
-> breaks the documented POSIX semantics for mlock() in some obscure error
-> cases where we end up returning -EINVAL instead of -ENOMEM as a direct
-> result of rewriting the upper address bits.
-> 
-> Rework the untagged_addr() macro to preserve the upper address bits for
-> TTBR1 addresses and only clear the tag bits for user addresses. This
-> matches the behaviour of the 'clear_address_tag' assembly macro, so
-> rename that and align the implementations at the same time so that they
-> use the same instruction sequences for the tag manipulation.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Link: https://lore.kernel.org/stable/20191014162651.GF19200@arrakis.emea.arm.com/
-> Reported-by: Jan Stancek <jstancek@redhat.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/include/asm/asm-uaccess.h |  7 +++----
->  arch/arm64/include/asm/memory.h      | 10 ++++++++--
->  arch/arm64/kernel/entry.S            |  4 ++--
->  3 files changed, 13 insertions(+), 8 deletions(-)
-> 
+On Wed, Oct 16, 2019 at 07:39:52AM +0200, Joerg Vehlow wrote:
+>Actually rounding up would not work. I tried it with a timer accuracy 
+>of 4ms and I needed
+>at least a fudge of two. Rounding up would only result in one. That 
+>it why I decided to
+>go for extending the duration
+>>
+>>I was assuming -1 in original code is to cope with final timer expiration of tssleep.tv_sec,
+>>which might not be counted as "overrun". What does the -1 do in your formula?
+>>Why is it inside brackets?
+>You may be right. I am not completely sure what it is used for, but I 
+>guess you are right.
+>>
+>>When I try to force different interval values, it fails for me (on x86):
+>>3ms
+>># ./timer_getoverrun_2-3.run-test
+>>duration = 7 sec, interval = 6000000 nsec, expected overruns = 1155
+>>1166 overruns occurred
+>>FAIL:  1166 overruns sent; expected 1155
+>>
+>>5ms
+>># ./timer_getoverrun_2-3.run-test
+>>duration = 11 sec, interval = 10000000 nsec, expected overruns = 1089
+>>1100 overruns occurred
+>>FAIL:  1100 overruns sent; expected 1089
+>How is it possible to force the timer resolution? I tested on qemu
+>with aarch64 and x86_64 with and without highres=off and ir worked.
 
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Tested-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+I didn't change timer resolution, I only used larger interval values
+as multiple of timer resolution:
+   intervalnsec = largeX * timer_resolution
 
--- 
-Regards,
-Vincenzo
+I'd prefer we tweak the tolerance rather than make test run longer.
+I'm thinking just allow ~50ms of extra overruns, and don't be so
+strict about absolute number of overruns. (KVM guests and s390 lpars
+tend to suffer from higher steal time).
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
+index 96b7d01e6ffe..66f8b583a5a6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
+@@ -94,11 +94,17 @@ int main(void)
+  
+         valuensec = tsres.tv_nsec;
+         intervalnsec = 2 * valuensec;
+-       //expectedoverruns = (1000000000 - valuensec) / intervalnsec;
+         expectedoverruns = 1000000000 / intervalnsec - 1;
+  
++       /*
++        * waking up from sleep isn't instant, we can overshoot.
++        * Allow up to ~50ms worth of extra overruns.
++        */
++       fudge = 50000000 / intervalnsec + 1;
++
+         printf("value = %d sec, interval = %d nsec, "
+-              "expected overruns = %d\n", 1, intervalnsec, expectedoverruns);
++              "expected overruns = %d, fudge = %d\n", 1,
++              intervalnsec, expectedoverruns, fudge);
+  
+         its.it_interval.tv_sec = 0;
+         its.it_interval.tv_nsec = intervalnsec;
+@@ -146,7 +152,6 @@ int main(void)
+          * extra expiries after the nanosleep completes so do
+          * a range check.
+          */
+-       fudge = expectedoverruns / 100;
+         if (overruns >= expectedoverruns && overruns < expectedoverruns + fudge) {
+                 printf("Test PASSED\n");
+                 return PTS_PASS;
+
