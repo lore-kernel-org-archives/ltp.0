@@ -1,51 +1,19 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 16 Oct 2019 08:42:40 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] perf_event_open02: make test more reliable on
- -rt kernels
-In-Reply-To: <20191016114424.GB27278@rei.lan>
-References: <9c5134dc4b39f870f6e6cfab55c193f05b204b78.1571225074.git.jstancek@redhat.com>
- <51dce875f4ad2c234031101cd5c7a85eace53caa.1571225074.git.jstancek@redhat.com>
- <20191016114424.GB27278@rei.lan>
-Message-ID: <1321370412.6455436.1571229760838.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 16 Oct 2019 15:03:24 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/ioprio_set01.c: Stop decreasing
+ priority continuously in loops
+In-Reply-To: <20190820122017.26015-1-ice_yangxiao@163.com>
+References: <20190820122017.26015-1-ice_yangxiao@163.com>
+Message-ID: <20191016130323.GC27278@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Both patches pushed, thanks.
 
------ Original Message -----
-> Hi!
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  .../kernel/syscalls/perf_event_open/perf_event_open02.c   | 15
-> >  +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> > 
-> > diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-> > b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-> > index 1cfe29bb3d8a..6fc6f4afa119 100644
-> > --- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-> > +++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-> > @@ -52,6 +52,7 @@ Usage is: ./performance_counter02  [-v]
-> >  The -v flag makes it print out the values of each counter.
-> >  */
-> >  
-> > +#define _GNU_SOURCE
-> >  #include <stdio.h>
-> >  #include <stddef.h>
-> >  #include <stdlib.h>
-> > @@ -222,6 +223,20 @@ static void setup(void)
-> >  	int i;
-> >  	struct perf_event_attr tsk_event, hw_event;
-> >  
-> > +#ifdef HAVE_SCHED_GETCPU
-> > +	cpu_set_t mask;
-> 
-> Don't we have to allocate the mask dynamically so that we do not fail on
-> systems with more than CPU_SETSIZE (1024) CPUs?
-> 
-> We already have fallback macros for older libc in include/lapi/cpuset.h
-> so that we can use CPU_ALLOC() unconditionally.
-
-Haven't thought of that. I'll look into adding that for v2.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
