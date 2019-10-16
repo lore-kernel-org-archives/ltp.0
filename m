@@ -1,36 +1,36 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 16 Oct 2019 23:15:01 +0200
-Subject: [LTP] [PATCH 1/1] fanotify: Fix missing __kernel_fsid_t definition
-Message-ID: <20191016211501.3777-1-petr.vorel@gmail.com>
+Date: Wed, 16 Oct 2019 23:30:01 +0200
+Subject: [LTP] [PATCH 1/1] setxattr03: define _GNU_SOURCE to fix build on
+ musl
+Message-ID: <20191016213001.23047-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-which is missing at least on musl which doesn't have FAN_REPORT_FID
-support.
+From: Petr Vorel <pvorel@suse.cz>
+
+musl defines loff_t in <fcntl.h> (already included) and guard it under _GNU_SOURCE.
+NOTE: glibc and others define it in <sys/types.h>
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ testcases/kernel/syscalls/setxattr/setxattr03.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 1c7623d3b..01a2d52bd 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -35,6 +35,10 @@
- #include <errno.h>
- #include <fcntl.h>
+diff --git a/testcases/kernel/syscalls/setxattr/setxattr03.c b/testcases/kernel/syscalls/setxattr/setxattr03.c
+index bb511d5ba..58ee0f880 100644
+--- a/testcases/kernel/syscalls/setxattr/setxattr03.c
++++ b/testcases/kernel/syscalls/setxattr/setxattr03.c
+@@ -13,6 +13,7 @@
+  *    -1 and set errno to EPERM
+  */
  
-+#if !defined(FAN_REPORT_FID) && defined(HAVE_NAME_TO_HANDLE_AT)
-+#include <asm/posix_types.h> // __kernel_fsid_t
-+#endif
-+
- #if defined(HAVE_SYS_FANOTIFY_H)
- 
- #include <sys/fanotify.h>
++#define _GNU_SOURCE
+ #include "config.h"
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
 -- 
 2.23.0
 
