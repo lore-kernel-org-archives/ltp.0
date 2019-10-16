@@ -1,66 +1,82 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 16 Oct 2019 10:03:42 -0400 (EDT)
-Subject: [LTP] [PATCH] lib: tst_taint: Ignore WARN taint flag if already
- set
-In-Reply-To: <bc2f54f1-3be1-cf77-7475-3c08cbd24850@suse.de>
-References: <20191016131506.17193-1-chrubis@suse.cz>
- <bc2f54f1-3be1-cf77-7475-3c08cbd24850@suse.de>
-Message-ID: <1535033044.6472706.1571234622819.JavaMail.zimbra@redhat.com>
+Date: Wed, 16 Oct 2019 16:05:54 +0200
+Subject: [LTP] [PATCH v2] perf_event_open02: make test more reliable on -rt
+ kernels
+In-Reply-To: <1321370412.6455436.1571229760838.JavaMail.zimbra@redhat.com>
+References: <1321370412.6455436.1571229760838.JavaMail.zimbra@redhat.com>
+Message-ID: <94fbf60008417c187c1d9b4640d84af6c25afa29.1571234702.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Test is failing on -rt kernels quite reliably as reported here:
+  https://lkml.org/lkml/2019/8/14/714
 
+Suspected cause is extra time spend in scheduler, which counts towards
+test process hw counters.
 
------ Original Message -----
-> Hi,
-> 
-> On 16.10.19 15:15, Cyril Hrubis wrote:
-> > This commit changes the library so that it ignores the taint warn flag
-> > if it was set prior to the test run. It turns out that the warn taint
-> > flag is not well defined and could be easily set on a freshly booted
-> > kernel for example when buggy BIOS is detected.>
-> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> > CC: Jan Stancek <jstancek@redhat.com>
-> > CC: Chang Yin <cyin@redhat.com>
-> > ---
-> > 
-> > I haven't tested this, since I don't have a system where the flag is set
-> > at hand, but it's simple enough so that it should work as expected.
-> > 
-> >  lib/tst_taint.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/lib/tst_taint.c b/lib/tst_taint.c
-> > index a5dbf77d2..3de6d72f4 100644
-> > --- a/lib/tst_taint.c
-> > +++ b/lib/tst_taint.c
-> > @@ -82,8 +82,13 @@ void tst_taint_init(unsigned int mask)
-> >  		tst_res(TCONF, "Kernel is too old for requested mask");
-> >  
-> >  	taint_mask = mask;
-> > -
-> >  	taint = tst_taint_read();
-> > +
-> > +	if (mask & TST_TAINT_W && taint & TST_TAINT_W) {
-> > +		tst_res(TCONF, "Ignoring already set kernel warning taint");
-> > +		mask &= ~TST_TAINT_W;
-> > +	}
-> > +
-> >  	if ((taint & mask) != 0)
-> >  		tst_brk(TBROK, "Kernel is already tainted: %u", taint);
-> >  }
-> > 
-> 
-> Tests may rely on TAINT_W to decide the result.
-> If we need TAINT_W, we can only run the test when it was not set before. For example,
-> testcases/cve/cve-2017-17053.c relies on this.
-> This may render this testcase unusable, or do I get this wrong?
+Pin test process to single CPU (doesn't matter which one) to lessen
+effects from scheduling:
 
-Patch masks TAINT_W if that taint flag was set before test started. In such case,
-test can't determine result accurately anyway.
+ratio     Before        After
+mean      5.02582       4.99844
+stdev     0.0090435     0.0000272
+          95+% FAIL     100% PASS
 
-I wonder if there is more specific way for cve-2017-17053 to determine
-error condition. For example by inspecting new messages in dmesg.
+Tested with "perf_event_open02: stop groups with hw counters first" patch
+on RHEL8 kernel-rt 4.18.0-147.rt24.93.el8.x86_64 (HP dl380g7).
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../syscalls/perf_event_open/perf_event_open02.c      | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+index 1cfe29bb3d8a..c2831aa20d40 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+@@ -52,6 +52,7 @@ Usage is: ./performance_counter02  [-v]
+ The -v flag makes it print out the values of each counter.
+ */
+ 
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <stddef.h>
+ #include <stdlib.h>
+@@ -72,6 +73,7 @@ The -v flag makes it print out the values of each counter.
+ 
+ #include "test.h"
+ #include "safe_macros.h"
++#include "lapi/cpuset.h"
+ #include "lapi/syscalls.h"
+ 
+ char *TCID = "perf_event_open02";
+@@ -222,6 +224,23 @@ static void setup(void)
+ 	int i;
+ 	struct perf_event_attr tsk_event, hw_event;
+ 
++#ifdef HAVE_SCHED_GETCPU
++	int cpu = sched_getcpu();
++	size_t mask_size;
++	cpu_set_t *mask;
++
++	if (cpu == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "sched_getcpu() failed");
++
++	mask = CPU_ALLOC(cpu + 1);
++	mask_size = CPU_ALLOC_SIZE(cpu + 1);
++	CPU_ZERO_S(mask_size, mask);
++	CPU_SET(cpu, mask);
++	if (sched_setaffinity(0, mask_size, mask) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "sched_setaffinity() failed");
++	CPU_FREE(mask);
++#endif
++
+ 	/*
+ 	 * According to perf_event_open's manpage, the official way of
+ 	 * knowing if perf_event_open() support is enabled is checking for
+-- 
+1.8.3.1
+
