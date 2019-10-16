@@ -1,107 +1,238 @@
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Date: Tue, 15 Oct 2019 17:02:31 +0100
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E0-rc2-d6c2c23=2Ecki_=28stable-next=29?=
-In-Reply-To: <20191015152651.GG13874@arrakis.emea.arm.com>
-References: <cki.B4A567748F.PFM8G4WKXI@redhat.com>
- <805988176.6044584.1571038139105.JavaMail.zimbra@redhat.com>
- <CAAeHK+zxFWvCOgTYrMuD-oHJAFMn5DVYmQ6-RvU8NrapSz01mQ@mail.gmail.com>
- <20191014162651.GF19200@arrakis.emea.arm.com>
- <20191014213332.mmq7narumxtkqumt@willie-the-truck>
- <20191015152651.GG13874@arrakis.emea.arm.com>
-Message-ID: <342a9218-d840-f56d-2349-a5cfaafb6e16@arm.com>
+From: Caspar Zhang <caspar@casparzhang.com>
+Date: Wed, 16 Oct 2019 10:54:05 +0800
+Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
+ sync test-cases
+In-Reply-To: <CAFA6WYNNyeU-tL4vg5PddwDOmU1gaGZJj3hRLYUCnJCY=MYNMw@mail.gmail.com>
+References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
+ <20190929132749.GB73158@casparzhang.com>
+ <CAFA6WYNNyeU-tL4vg5PddwDOmU1gaGZJj3hRLYUCnJCY=MYNMw@mail.gmail.com>
+Message-ID: <20191016025405.GA86846@casparzhang.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Catalin,
+Hi Sumit,
 
-On 10/15/19 4:26 PM, Catalin Marinas wrote:
-> Adding Szabolcs and Dave from ARM as we've discussed this internally
-> briefly but we should include the wider audience.
-> 
-> On Mon, Oct 14, 2019 at 10:33:32PM +0100, Will Deacon wrote:
->> On Mon, Oct 14, 2019 at 05:26:51PM +0100, Catalin Marinas wrote:
->>> On Mon, Oct 14, 2019 at 02:54:17PM +0200, Andrey Konovalov wrote:
->>>> On Mon, Oct 14, 2019 at 9:29 AM Jan Stancek <jstancek@redhat.com> wrote:
->>>>>> We ran automated tests on a recent commit from this kernel tree:
->>>>>>
->>>>>>        Kernel repo:
->>>>>>        git://git.kernel.org/pub/scm/linux/kernel/git/sashal/linux-stable.git
->>>>>>             Commit: d6c2c23a29f4 - Merge branch 'stable-next' of
->>>>>>             ssh://chubbybox:/home/sasha/data/next into stable-next
->>>>>>
->>>>>> The results of these automated tests are provided below.
->>>>>>
->>>>>>     Overall result: FAILED (see details below)
->>>>>>              Merge: OK
->>>>>>            Compile: OK
->>>>>>              Tests: FAILED
->>>>>>
->>>>>> All kernel binaries, config files, and logs are available for download here:
->>>>>>
->>>>>>   https://artifacts.cki-project.org/pipelines/223563
->>>>>>
->>>>>> One or more kernel tests failed:
->>>>>>
->>>>>>     aarch64:
->>>>>>       ? LTP: openposix test suite
->>>>>>
->>>>>
->>>>> Test [1] is passing value close to LONG_MAX, which on arm64 is now treated as tagged userspace ptr:
->>>>>   057d3389108e ("mm: untag user pointers passed to memory syscalls")
->>>>>
->>>>> And now seems to hit overflow check after sign extension (EINVAL).
->>>>> Test should probably find different way to choose invalid pointer.
->>>>>
->>>>> [1] https://github.com/linux-test-project/ltp/blob/master/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
->>>>
-
-[...]
-
->>> The options I see:
->>>
->>> 1. Revert commit 057d3389108e and try again to document that the memory
->>>    syscalls do not support tagged pointers
->>>
->>> 2. Change untagged_addr() to only 0-extend from bit 55 or leave the
->>>    tag unchanged if bit 55 is 1. We could mask out the tag (0 rather
->>>    than sign-extend) but if we had an mlock test passing ULONG_MASK,
->>>    then we get -ENOMEM instead of -EINVAL
->>>
->>> 3. Make untagged_addr() depend on the TIF_TAGGED_ADDR bit and we only
->>>    break the ABI for applications opting in to this new ABI. We did look
->>>    at this but the ptrace(PEEK/POKE_DATA) needs a bit more thinking on
->>>    whether we check the ptrace'd process or the debugger flags
->>>
->>> 4. Leave things as they are, consider the address space 56-bit and
->>>    change the test to not use LONG_MAX on arm64. This needs to be passed
->>>    by the sparc guys since they probably have a similar issue
->>
->> I'm in favour of (2) or (4) as long as there's also an update to the docs.
-> 
-> With (4) we'd start differing from other architectures supported by
-> Linux. This works if we consider the test to be broken. However, reading
-> the mlock man page:
-> 
->        EINVAL The result of the addition addr+len was less than addr
->        (e.g., the addition may have resulted in an overflow).
-> 
->        ENOMEM Some of the specified address range does not correspond to
->        mapped pages in the address space of the process.
-> 
-> There is no mention of EINVAL outside the TASK_SIZE, seems to fall more
-> within the ENOMEM description above.
+On Fri, Oct 04, 2019 at 01:03:19PM +0530, Sumit Garg wrote:
+> Hi Caspar,
 >
+> On Sun, 29 Sep 2019 at 18:58, Caspar Zhang <caspar@casparzhang.com> wrote:
+> >
+> > Hi Sumit,
+> >
+> > On Mon, Jun 10, 2019 at 03:43:16PM +0530, Sumit Garg wrote:
+> >
+> > <snip>
+> >
+> > >
+> > > -     if (written >= FILE_SIZE)
+> > > +     if ((written >= tc->exp_sync_size) &&
+> > > +         (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
+> >
+> > May I ask why it is +1/10 of expected sync_size as upper bound here,
+> > since it looks like a magic number to me.
+>
+> It was an outcome of discussion here [1]. The reason being to test
+> that only particular portion of file is written to device for whom
+> sync has been invoked and +1/10 as upper bound to incorporate for any
+> metadata.
 
-I agree with your analysis and vote for option (2) as well, because of what you
-reported about mlock() error meanings and because being this ABI I would prefer
-where possible to not diverge from other architectures.
- [...]
+I see, thanks for explanation.
 
--- 
-Regards,
-Vincenzo
+>
+> [1] https://patchwork.ozlabs.org/patch/1051647/
+>
+> >
+> > We encountered test failure in the second case in a debug kernel,
+> > reproducible about once out of 20 times run.
+>
+> Interesting case. Can you share results after applying below patch?
+
+Tested this patch, no TFAIL occured in debug kernel after 200+ times
+run, looks good to me. Thanks! Please add my
+
+Reviewed-by: Caspar Zhang <caspar@linux.alibaba.com>
+
+directly if you're going to make a formal patch later.
+
+Thanks,
+Caspar
+
+>
+> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> index eb08143..1bc1a44 100644
+> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> @@ -42,7 +42,7 @@ struct testcase {
+>  static void verify_sync_file_range(struct testcase *tc)
+>  {
+>         int fd;
+> -       unsigned long written;
+> +       unsigned long written, written_pre;
+>
+>         fd = SAFE_OPEN(tc->fname, O_RDWR|O_CREAT, MODE);
+>
+> @@ -52,6 +52,8 @@ static void verify_sync_file_range(struct testcase *tc)
+>
+>         tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
+>
+> +       written_pre = tst_dev_bytes_written(tst_device->dev);
+> +
+>         TEST(sync_file_range(fd, tc->sync_off, tc->sync_size,
+>                              SYNC_FILE_RANGE_WAIT_BEFORE |
+>                              SYNC_FILE_RANGE_WRITE |
+> @@ -70,8 +72,8 @@ static void verify_sync_file_range(struct testcase *tc)
+>             (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
+>                 tst_res(TPASS, "%s", tc->desc);
+>         else
+> -               tst_res(TFAIL, "%s: Synced %li, expected %li", tc->desc,
+> -                       written, tc->exp_sync_size);
+> +               tst_res(TFAIL, "%s: Synced %li, expected %li, pre-sync %li",
+> +                       tc->desc, written, tc->exp_sync_size, written_pre);
+>  }
+>
+>  static struct testcase testcases[] = {
+>
+> -Sumit
+>
+> >
+> > The reason is unclear yet, however my guess is that more pages could be
+> > written to disk in a debug kernel than a release kernel.
+> >
+> > My codes and config as below:
+> >
+> > tree: https://github.com/alibaba/cloud-kernel :: ck-4.19.67 branch;
+> > config: https://github.com/alibaba/cloud-kernel/blob/master/config-4.19.y-x86_64-debug
+> >
+> > If you like you can build a test kernel on a KVM guest and try to
+> > reproduce, or just run a RHEL8 kernel I guess (@Li Wang, you can have a
+> > try on RHEL8 debug kernel if possible).
+> >
+> > a sample output:
+> >
+> > tst_device.c:87: INFO: Found free device 0 '/dev/loop0'
+> > tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+> > tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+> > tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+> > tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+> > tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+> > tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+> > tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+> > tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+> > tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+> > tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+> > tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+> > tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+> > tst_supported_fs_types.c:83: INFO: Filesystem exfat is not supported
+> > tst_supported_fs_types.c:83: INFO: Filesystem ntfs is not supported
+> > tst_test.c:1179: INFO: Testing on ext2
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> > mke2fs 1.43.5 (04-Aug-2017)
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:71: PASS: Sync inside of write
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> > tst_test.c:1179: INFO: Testing on ext3
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+> > mke2fs 1.43.5 (04-Aug-2017)
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:71: PASS: Sync inside of write
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> > tst_test.c:1179: INFO: Testing on ext4
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+> > mke2fs 1.43.5 (04-Aug-2017)
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:74: FAIL: Sync inside of write: Synced 19658752, expected 16777216
+> >                         ^^^^
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> > tst_test.c:1179: INFO: Testing on xfs
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:71: PASS: Sync inside of write
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> > tst_test.c:1179: INFO: Testing on btrfs
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:71: PASS: Sync inside of write
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> > tst_test.c:1179: INFO: Testing on vfat
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+> > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > sync_file_range02.c:111: INFO: Pre-filling file
+> > sync_file_range02.c:71: PASS: Sync equals write
+> > sync_file_range02.c:71: PASS: Sync inside of write
+> > sync_file_range02.c:71: PASS: Sync overlaps with write
+> >
+> > Summary:
+> > passed   17
+> > failed   1
+> > skipped  0
+> > warnings 0
+> >
+> > Any thoughts would be appreicated.
+> >
+> > Thanks,
+> > Caspar
+> >
+> >
+> > >               tst_res(TPASS, "Test file range synced to device");
+> > >       else
+> > > -             tst_res(TFAIL, "Synced %li, expected %i", written, FILE_SIZE);
+> > > +             tst_res(TFAIL, "Synced %li, expected %li", written,
+> > > +                     tc->exp_sync_size);
+> > > +}
+> > > +
+> > > +static struct testcase testcases[] = {
+> > > +     { FNAME1, 0, FILE_SZ, FILE_SZ, 0, FILE_SZ_MB },
+> > > +     { FNAME2, FILE_SZ/4, FILE_SZ/2, FILE_SZ/2, 0, FILE_SZ_MB },
+> > > +     { FNAME3, FILE_SZ/4, FILE_SZ/2, FILE_SZ/4, FILE_SZ/2, FILE_SZ_MB/4 },
+> > > +};
+> > > +
+> > > +static void run(unsigned int i)
+> > > +{
+> > > +     verify_sync_file_range(&testcases[i]);
+> > >  }
+> > >
+> > >  static void setup(void)
+> > >  {
+> > >       if (!check_sync_file_range())
+> > >               tst_brk(TCONF, "sync_file_range() not supported");
+> > > +
+> > > +     if (!strcmp(tst_device->fs_type, "vfat")) {
+> > > +             tst_res(TINFO, "Pre-filling file");
+> > > +             tst_fill_file(FNAME3, 0, TST_MB, FILE_SZ_MB);
+> > > +             sync();
+> > > +     }
+> > >  }
+> > >
+> > >  static struct tst_test test = {
+> > > +     .tcnt = ARRAY_SIZE(testcases),
+> > >       .needs_root = 1,
+> > >       .mount_device = 1,
+> > >       .all_filesystems = 1,
+> > >       .mntpoint = MNTPOINT,
+> > >       .setup = setup,
+> > > -     .test_all = verify_sync_file_range,
+> > > +     .test = run,
+> > >  };
+> > > --
+> > > 2.7.4
+> > >
+> > >
+> > > --
+> > > Mailing list info: https://lists.linux.it/listinfo/ltp
+> >
+> > --
+> >         Thanks,
+> >         Caspar
+
+--
+        Thanks,
+        Caspar
