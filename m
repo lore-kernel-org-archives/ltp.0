@@ -1,104 +1,83 @@
 From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Wed, 16 Oct 2019 18:15:17 +0200
-Subject: [LTP] [PATCH v3 2/4] tst_test.c: Add tst_multiply_timeout()
+Date: Wed, 16 Oct 2019 18:15:19 +0200
+Subject: [LTP] [PATCH v3 4/4] Add newlib shell test for
+ tst_multiply_timeout()
 In-Reply-To: <20191016161519.11256-1-cfamullaconrad@suse.de>
 References: <1571225126.8494.1.camel@suse.de>
  <20191016161519.11256-1-cfamullaconrad@suse.de>
-Message-ID: <20191016161519.11256-2-cfamullaconrad@suse.de>
+Message-ID: <20191016161519.11256-4-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This function is used to adjust timeout values with environment
-variables like LTP_TIMEOUT_MUL.
-
-Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Simple test for different kinds of calls from tst_multiply_timeout()
 ---
- include/tst_test.h |  1 +
- lib/tst_test.c     | 41 ++++++++++++++++++++++++++++++-----------
- 2 files changed, 31 insertions(+), 11 deletions(-)
+ lib/newlib_tests/shell/test_timeout_mul.sh | 54 ++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100755 lib/newlib_tests/shell/test_timeout_mul.sh
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 84acf2c59..aaea128ba 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -267,6 +267,7 @@ const char *tst_strsig(int sig);
- const char *tst_strstatus(int status);
- 
- unsigned int tst_timeout_remaining(void);
-+unsigned int tst_multiply_timeout(unsigned int timeout);
- void tst_set_timeout(int timeout);
- 
- 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 6239acf89..6d92d8775 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -36,6 +36,7 @@ struct tst_test *tst_test;
- static const char *tid;
- static int iterations = 1;
- static float duration = -1;
-+static int timeout_mul = -1;
- static pid_t main_pid, lib_pid;
- static int mntpoint_mounted;
- static int ovl_mounted;
-@@ -1093,25 +1094,43 @@ unsigned int tst_timeout_remaining(void)
- 	return 0;
- }
- 
--void tst_set_timeout(int timeout)
-+unsigned int tst_multiply_timeout(unsigned int timeout)
- {
--	char *mul = getenv("LTP_TIMEOUT_MUL");
-+	char *mul;
-+	float mul_float;
+diff --git a/lib/newlib_tests/shell/test_timeout_mul.sh b/lib/newlib_tests/shell/test_timeout_mul.sh
+new file mode 100755
+index 000000000..8397df25c
+--- /dev/null
++++ b/lib/newlib_tests/shell/test_timeout_mul.sh
+@@ -0,0 +1,54 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2019 Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 +
-+	if (timeout_mul == -1){
-+		mul = getenv("LTP_TIMEOUT_MUL");
-+		if (mul) {
-+			timeout_mul = mul_float = atof(mul);
-+			if (timeout_mul != mul_float){
-+				timeout_mul++;
-+				tst_res(TINFO, "ceiling LTP_TIMEOUT_MUL to %d", timeout_mul);
-+			}
-+		} else {
-+			timeout_mul = 1;
-+		}
-+	}
-+	if (timeout_mul < 1)
-+		tst_brk(TBROK, "LTP_TIMEOUT_MUL need to be int >= 1! (%d)", timeout_mul);
++TST_TESTFUNC=do_test
++. tst_test.sh
 +
-+	if (timeout < 1)
-+		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
 +
-+	return timeout * timeout_mul;
-+}
- 
-+void tst_set_timeout(int timeout)
++call_it()
 +{
- 	if (timeout == -1) {
- 		tst_res(TINFO, "Timeout per run is disabled");
- 		return;
- 	}
- 
--	results->timeout = timeout;
-+	if (timeout < 1)
-+		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
- 
--	if (mul) {
--		float m = atof(mul);
--
--		if (m < 1)
--			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
--
--		results->timeout = results->timeout * m + 0.5;
--	}
-+	results->timeout = tst_multiply_timeout(timeout);
- 
- 	tst_res(TINFO, "Timeout per run is %uh %02um %02us",
- 		results->timeout/3600, (results->timeout%3600)/60,
++	local SAVE_MUL=${LTP_TIMEOUT_MUL}
++	$1
++	if [ "${!2}" -ne "$3" ]; then
++		tst_brk TBROK "LTP_TIMEOUT_MUL=$SAVE_MUL $1 (${!2} != $3)"
++	else
++		tst_res TPASS "LTP_TIMEOUT_MUL=$SAVE_MUL $1 (${!2} == $3)"
++	fi
++}
++
++do_test()
++{
++	LTP_TIMEOUT_MUL=2
++	local sec=1
++
++        call_it 'tst_multiply_timeout sec' 'sec' 2
++        call_it 'tst_multiply_timeout foo 1000' 'foo' 2000
++
++	sec=1
++        call_it 'tst_multiply_timeout sec 500' 'sec' 1000
++
++	sec=1
++	LTP_TIMEOUT_MUL="1.5"
++        call_it 'tst_multiply_timeout sec' 'sec' 2
++
++	sec=1
++	LTP_TIMEOUT_MUL=0.5
++        call_it 'tst_multiply_timeout sec' 'sec' 1
++
++	sec=1
++	LTP_TIMEOUT_MUL=1.5
++        call_it 'tst_multiply_timeout sec 5' 'sec' 10
++
++	sec=1
++	LTP_TIMEOUT_MUL=0.5
++        call_it 'tst_multiply_timeout sec 5' 'sec' 5
++
++	sec=1
++	LTP_TIMEOUT_MUL=2
++        call_it 'tst_multiply_timeout sec' 'sec' 2
++        call_it 'tst_multiply_timeout sec' 'sec' 4
++        call_it 'tst_multiply_timeout sec' 'sec' 8
++}
++
++tst_run;
 -- 
 2.16.4
 
