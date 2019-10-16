@@ -1,34 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 Oct 2019 21:43:48 +0200
-Subject: [LTP] [PATCH 1/2] lib: Add support for test tags
-In-Reply-To: <20191016144624.GB19517@rei.lan>
-References: <20191014112522.24548-1-chrubis@suse.cz>
- <20191014112522.24548-2-chrubis@suse.cz>
- <20191016133039.GA6842@dell5510> <20191016144624.GB19517@rei.lan>
-Message-ID: <20191016194348.GA4308@dell5510>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 16 Oct 2019 23:15:01 +0200
+Subject: [LTP] [PATCH 1/1] fanotify: Fix missing __kernel_fsid_t definition
+Message-ID: <20191016211501.3777-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+which is missing at least on musl which doesn't have FAN_REPORT_FID
+support.
 
-> > > +	if (tags) {
-> > > +		for (i = 0; tags[i].name; i++) {
-> > > +			if (!strcmp(tags[i].name, "CVE"))
-> > > +				printf(CVE_DB_URL "%s\n", tags[i].value);
-> > > +			else if (!strcmp(tags[i].name, "linux-git"))
-> > Not sure if it's worth of defining some enums instead of "CVE", "linux-git"
-> > (would catch typos).
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ testcases/kernel/syscalls/fanotify/fanotify.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> I wanted to avoid enums because they are not flexible enough. The plan
-> here is that docparse would do sanity checks on test metadata and fail
-> the compilation if it founds typos there. With the checks in the
-> docparse tool we can easily check for tags that looks like typos, i.e.
-> check the levenshtein distance from all known tags and print a nice
-> looking error message...
-OK, sounds good :).
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 1c7623d3b..01a2d52bd 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -35,6 +35,10 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ 
++#if !defined(FAN_REPORT_FID) && defined(HAVE_NAME_TO_HANDLE_AT)
++#include <asm/posix_types.h> // __kernel_fsid_t
++#endif
++
+ #if defined(HAVE_SYS_FANOTIFY_H)
+ 
+ #include <sys/fanotify.h>
+-- 
+2.23.0
 
-Kind regards,
-Petr
