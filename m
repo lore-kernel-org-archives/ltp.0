@@ -1,167 +1,59 @@
-From: Will Deacon <will@kernel.org>
-Date: Wed, 16 Oct 2019 05:29:33 +0100
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E0-rc2-d6c2c23=2Ecki_=28stable-next=29?=
-In-Reply-To: <20191015161453.lllrp2gfwa5evd46@willie-the-truck>
-References: <cki.B4A567748F.PFM8G4WKXI@redhat.com>
- <805988176.6044584.1571038139105.JavaMail.zimbra@redhat.com>
- <CAAeHK+zxFWvCOgTYrMuD-oHJAFMn5DVYmQ6-RvU8NrapSz01mQ@mail.gmail.com>
- <20191014162651.GF19200@arrakis.emea.arm.com>
- <20191014213332.mmq7narumxtkqumt@willie-the-truck>
- <20191015152651.GG13874@arrakis.emea.arm.com>
- <20191015161453.lllrp2gfwa5evd46@willie-the-truck>
-Message-ID: <20191016042933.bemrrurjbghuiw73@willie-the-truck>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 16 Oct 2019 07:39:52 +0200
+Subject: [LTP] [PATCH] open_posix/timer_getoverrun/2-3: Fix test for
+ systems with low timer precision
+In-Reply-To: <2097000229.6302768.1571152116580.JavaMail.zimbra@redhat.com>
+References: <20191011053134.18416-1-lkml@jv-coder.de>
+ <2097000229.6302768.1571152116580.JavaMail.zimbra@redhat.com>
+Message-ID: <3c5988d6-0e37-6ca8-2567-a98d2ff84dce@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Oct 15, 2019 at 05:14:53PM +0100, Will Deacon wrote:
-> On Tue, Oct 15, 2019 at 04:26:51PM +0100, Catalin Marinas wrote:
-> > On Mon, Oct 14, 2019 at 10:33:32PM +0100, Will Deacon wrote:
-> > > On Mon, Oct 14, 2019 at 05:26:51PM +0100, Catalin Marinas wrote:
-> > > > The options I see:
-> > > > 
-> > > > 1. Revert commit 057d3389108e and try again to document that the memory
-> > > >    syscalls do not support tagged pointers
-> > > > 
-> > > > 2. Change untagged_addr() to only 0-extend from bit 55 or leave the
-> > > >    tag unchanged if bit 55 is 1. We could mask out the tag (0 rather
-> > > >    than sign-extend) but if we had an mlock test passing ULONG_MASK,
-> > > >    then we get -ENOMEM instead of -EINVAL
-> > > > 
-> > > > 3. Make untagged_addr() depend on the TIF_TAGGED_ADDR bit and we only
-> > > >    break the ABI for applications opting in to this new ABI. We did look
-> > > >    at this but the ptrace(PEEK/POKE_DATA) needs a bit more thinking on
-> > > >    whether we check the ptrace'd process or the debugger flags
-> > > > 
-> > > > 4. Leave things as they are, consider the address space 56-bit and
-> > > >    change the test to not use LONG_MAX on arm64. This needs to be passed
-> > > >    by the sparc guys since they probably have a similar issue
-> > > 
-> > > I'm in favour of (2) or (4) as long as there's also an update to the docs.
-> > 
-> > With (4) we'd start differing from other architectures supported by
-> > Linux. This works if we consider the test to be broken. However, reading
-> > the mlock man page:
-> > 
-> >        EINVAL The result of the addition addr+len was less than addr
-> >        (e.g., the addition may have resulted in an overflow).
-> > 
-> >        ENOMEM Some of the specified address range does not correspond to
-> >        mapped pages in the address space of the process.
-> > 
-> > There is no mention of EINVAL outside the TASK_SIZE, seems to fall more
-> > within the ENOMEM description above.
-> 
-> Sorry, I was being too vague in my wording. What I was trying to say is I'm
-> ok with (2) or (4), but either way we need to update our ABI documentation
-> under Documentation/arm64/.
+Hi,
+>> On systems with low timer precision the test always fails, because the
+>> allowed
+>> maximum number of overruns is calculated from the expected overruns + 10%.
+> Did you mean 1% here?
+>    fudge = expectedoverruns / 100;
+Of course, you are right
+>
+>> If the expected overruns is less than 200, there is no tollerance.
+>> This happens, if the precision of the timer is less than or equal to 4ms.
+>> E.g. qemu-arm64 without high resolution timer the accuracy is only 4ms.
+> Would tweaking tolerance work too? E.g. use float, round up.
+Actually rounding up would not work. I tried it with a timer accuracy of 
+4ms and I needed
+at least a fudge of two. Rounding up would only result in one. That it 
+why I decided to
+go for extending the duration
+>
+> I was assuming -1 in original code is to cope with final timer expiration of tssleep.tv_sec,
+> which might not be counted as "overrun". What does the -1 do in your formula?
+> Why is it inside brackets?
+You may be right. I am not completely sure what it is used for, but I 
+guess you are right.
+>
+> When I try to force different interval values, it fails for me (on x86):
+> 3ms
+> # ./timer_getoverrun_2-3.run-test
+> duration = 7 sec, interval = 6000000 nsec, expected overruns = 1155
+> 1166 overruns occurred
+> FAIL:  1166 overruns sent; expected 1155
+>
+> 5ms
+> # ./timer_getoverrun_2-3.run-test
+> duration = 11 sec, interval = 10000000 nsec, expected overruns = 1089
+> 1100 overruns occurred
+> FAIL:  1100 overruns sent; expected 1089
+How is it possible to force the timer resolution? I tested on qemu
+with aarch64 and x86_64 with and without highres=off and ir worked.
 
-Having looked at making that change, I actually think the text is ok as-is
-if we go with option (2). We only make guarantees about "valid tagged
-pointer", which are defined to "reference an address in the user process
-address space" and therefore must have bit 55 == 0.
+If the -1 is outside the brackets, it would fix both of your test cases.
+(1155 + 7 - 1)? = 1161; +1% = 1172 -> expected overruns [1161, 1172)
+(1089 + 11 - 1) = 1099; +1% = 1109 ->expected overruns [1099, 1109)
 
-Untested patch below.
-
-Will
-
---->8
-
-From 517d979e84191ae9997c9513a88a5b798af6912f Mon Sep 17 00:00:00 2001
-From: Will Deacon <will@kernel.org>
-Date: Tue, 15 Oct 2019 21:04:18 -0700
-Subject: [PATCH] arm64: tags: Preserve tags for addresses translated via TTBR1
-
-Sign-extending TTBR1 addresses when converting to an untagged address
-breaks the documented POSIX semantics for mlock() in some obscure error
-cases where we end up returning -EINVAL instead of -ENOMEM as a direct
-result of rewriting the upper address bits.
-
-Rework the untagged_addr() macro to preserve the upper address bits for
-TTBR1 addresses and only clear the tag bits for user addresses. This
-matches the behaviour of the 'clear_address_tag' assembly macro, so
-rename that and align the implementations at the same time so that they
-use the same instruction sequences for the tag manipulation.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/stable/20191014162651.GF19200@arrakis.emea.arm.com/
-Reported-by: Jan Stancek <jstancek@redhat.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/asm-uaccess.h |  7 +++----
- arch/arm64/include/asm/memory.h      | 10 ++++++++--
- arch/arm64/kernel/entry.S            |  4 ++--
- 3 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/include/asm/asm-uaccess.h b/arch/arm64/include/asm/asm-uaccess.h
-index f74909ba29bd..5bf963830b17 100644
---- a/arch/arm64/include/asm/asm-uaccess.h
-+++ b/arch/arm64/include/asm/asm-uaccess.h
-@@ -78,10 +78,9 @@ alternative_else_nop_endif
- /*
-  * Remove the address tag from a virtual address, if present.
-  */
--	.macro	clear_address_tag, dst, addr
--	tst	\addr, #(1 << 55)
--	bic	\dst, \addr, #(0xff << 56)
--	csel	\dst, \dst, \addr, eq
-+	.macro	untagged_addr, dst, addr
-+	sbfx	\dst, \addr, #0, #56
-+	and	\dst, \dst, \addr
- 	.endm
- 
- #endif
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index b61b50bf68b1..c23c47360664 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -215,12 +215,18 @@ static inline unsigned long kaslr_offset(void)
-  * up with a tagged userland pointer. Clear the tag to get a sane pointer to
-  * pass on to access_ok(), for instance.
-  */
--#define untagged_addr(addr)	\
-+#define __untagged_addr(addr)	\
- 	((__force __typeof__(addr))sign_extend64((__force u64)(addr), 55))
- 
-+#define untagged_addr(addr)	({					\
-+	u64 __addr = (__force u64)addr;					\
-+	__addr &= __untagged_addr(__addr);				\
-+	(__force __typeof__(addr))__addr;				\
-+})
-+
- #ifdef CONFIG_KASAN_SW_TAGS
- #define __tag_shifted(tag)	((u64)(tag) << 56)
--#define __tag_reset(addr)	untagged_addr(addr)
-+#define __tag_reset(addr)	__untagged_addr(addr)
- #define __tag_get(addr)		(__u8)((u64)(addr) >> 56)
- #else
- #define __tag_shifted(tag)	0UL
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index e304fe04b098..9ae336cc5833 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -604,7 +604,7 @@ el1_da:
- 	 */
- 	mrs	x3, far_el1
- 	inherit_daif	pstate=x23, tmp=x2
--	clear_address_tag x0, x3
-+	untagged_addr	x0, x3
- 	mov	x2, sp				// struct pt_regs
- 	bl	do_mem_abort
- 
-@@ -808,7 +808,7 @@ el0_da:
- 	mrs	x26, far_el1
- 	ct_user_exit_irqoff
- 	enable_daif
--	clear_address_tag x0, x26
-+	untagged_addr	x0, x26
- 	mov	x1, x25
- 	mov	x2, sp
- 	bl	do_mem_abort
--- 
-2.23.0.700.g56cf767bdb-goog
+J?rg
 
