@@ -1,60 +1,114 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 16 Oct 2019 11:51:30 +0200
-Subject: [LTP] [PATCH] timer_getoverrun/2-3: increase tolerance for overshoot
-In-Reply-To: <77c71c80-0ca2-6f67-d628-d337a13539d7@jv-coder.de>
-References: <77c71c80-0ca2-6f67-d628-d337a13539d7@jv-coder.de>
-Message-ID: <81c89bbde27ede0ef4291df60186bdcd293a3db5.1571219422.git.jstancek@redhat.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 16 Oct 2019 12:01:02 +0200
+Subject: [LTP] [PATCH v2] include: undefine _LINUX_TYPES_H if including
+ old sys/capability.h
+In-Reply-To: <20191016080146.18657-1-liwang@redhat.com>
+References: <20191016080146.18657-1-liwang@redhat.com>
+Message-ID: <87pnixvwkh.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Joerg reports that test fails on systems with low timer precision (qemu-arm64,
-4ms timer precision) due to way we calculate maximum number of overruns.
-If the expected overruns is less than 200, there is no tollerance.
+Hello,
 
-Allow up to ~50ms of extra overruns.
+Li Wang <liwang@redhat.com> writes:
 
-Reported-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Acked-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../conformance/interfaces/timer_getoverrun/2-3.c             | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> In some of the libcap-devel(1.96~2.16) versions, it defines the _LINUX_TYPES_H
+> macro that makes ltp-lib can not include linux/types.h essentially.
+>
+>     # cat -n /usr/include/sys/capability.h
+>     ...
+>     25  /*
+>     26   * Make sure we can be included from userland by preventing
+>     27   * capability.h from including other kernel headers
+>     28   */
+>     29  #define _LINUX_TYPES_H
+>
+> To get rid of this compiling errors on rhel6(libcap-devel-2.16) series platform,
+> here undefine _LINUX_TYPES_H if test included that old sys/capability.h.
+>
+>   == Error log ==
+>   In file included from ../include/tst_netlink.h:26,
+>                  from tst_crypto.c:13:
+>   /usr/include/linux/netlink.h:45: error: expected specifier-qualifier-list before ?__u16?
+>   /usr/include/linux/netlink.h:135: error: expected specifier-qualifier-list before ?__u16?
+>   tst_crypto.c: In function ?tst_crypto_recv_ack?:
+>   tst_crypto.c:46: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+>   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+>   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+>   tst_crypto.c:55: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+>   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+>   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+>   tst_crypto.c: In function ?tst_crypto_add_alg?:
+>   ...
+>   make: *** [tst_crypto.o] Error 1
+>
+> Reported-by: Ping Fang <pifang@redhat.com>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Ping Fang <pifang@redhat.com>
+> Cc: Richard Palethorpe <rpalethorpe@suse.com>
+> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  include/lapi/capability.h |  8 ++++++++
+>  m4/ltp-cap.m4             | 17 ++++++++++++++++-
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+> index dac233d84..8833f0605 100644
+> --- a/include/lapi/capability.h
+> +++ b/include/lapi/capability.h
+> @@ -10,6 +10,14 @@
+>  
+>  #ifdef HAVE_SYS_CAPABILITY_H
+>  # include <sys/capability.h>
+> +/**
+> + * Some old libcap-devel(1.96~2.16) define _LINUX_TYPES_H in
+> + * sys/capability.h that makes ltp-lib cann't include linux/types.h
+> + * essentially. Here undefine it if include such old header-file.
+> + */
+> +# ifndef HAVE_NEWER_LIBCAP
+> +#  undef _LINUX_TYPES_H
+> +# endif
+>  #endif
+>  
+>  #ifndef CAP_NET_RAW
+> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
+> index 02d3cac8c..4981e843d 100644
+> --- a/m4/ltp-cap.m4
+> +++ b/m4/ltp-cap.m4
+> @@ -1,6 +1,6 @@
+>  dnl SPDX-License-Identifier: GPL-2.0-or-later
+>  dnl Copyright (c) Cisco Systems Inc., 2009
+> -dnl Copyright (c) Linux Test Project, 2010
+> +dnl Copyright (c) Linux Test Project, 2019
+>  dnl Author: Ngie Cooper <yaneurabeya@gmail.com>
+>  
+>  AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
+> @@ -14,4 +14,19 @@ if test "x$cap_libs" != x; then
+>  	AC_DEFINE(HAVE_LIBCAP)
+>  fi
+>  AC_SUBST(CAP_LIBS,$cap_libs)
+> +
+> +AH_TEMPLATE(HAVE_NEWER_LIBCAP,
+> +[Define to 1 if you have newer libcap-2 installed.])
+> +AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+> +#include <sys/capability.h>
+> +#include <linux/types.h>
+> +int main(void) {
+> +	__u16 a;
+> +	__u32 b;
+> +	return 0;
+> +}])],[has_newer_libcap="yes"])
+> +
+> +if test "x$has_newer_libcap" = xyes; then
+> +	AC_DEFINE(HAVE_NEWER_LIBCAP)
+> +fi
+>  ])
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-index 96b7d01e6ffe..66f8b583a5a6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/2-3.c
-@@ -94,11 +94,17 @@ int main(void)
- 
- 	valuensec = tsres.tv_nsec;
- 	intervalnsec = 2 * valuensec;
--	//expectedoverruns = (1000000000 - valuensec) / intervalnsec;
- 	expectedoverruns = 1000000000 / intervalnsec - 1;
- 
-+	/*
-+	 * waking up from sleep isn't instant, we can overshoot.
-+	 * Allow up to ~50ms worth of extra overruns.
-+	 */
-+	fudge = 50000000 / intervalnsec + 1;
-+
- 	printf("value = %d sec, interval = %d nsec, "
--	       "expected overruns = %d\n", 1, intervalnsec, expectedoverruns);
-+	       "expected overruns = %d, fudge = %d\n", 1,
-+	       intervalnsec, expectedoverruns, fudge);
- 
- 	its.it_interval.tv_sec = 0;
- 	its.it_interval.tv_nsec = intervalnsec;
-@@ -146,7 +152,6 @@ int main(void)
- 	 * extra expiries after the nanosleep completes so do
- 	 * a range check.
- 	 */
--	fudge = expectedoverruns / 100;
- 	if (overruns >= expectedoverruns && overruns < expectedoverruns + fudge) {
- 		printf("Test PASSED\n");
- 		return PTS_PASS;
+Ack.
+
 -- 
-1.8.3.1
-
+Thank you,
+Richard.
