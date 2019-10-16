@@ -1,114 +1,50 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 16 Oct 2019 12:01:02 +0200
-Subject: [LTP] [PATCH v2] include: undefine _LINUX_TYPES_H if including
- old sys/capability.h
-In-Reply-To: <20191016080146.18657-1-liwang@redhat.com>
-References: <20191016080146.18657-1-liwang@redhat.com>
-Message-ID: <87pnixvwkh.fsf@rpws.prws.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 16 Oct 2019 13:24:44 +0200
+Subject: [LTP] [PATCH 1/2] perf_event_open02: stop groups with hw counters
+ first
+Message-ID: <9c5134dc4b39f870f6e6cfab55c193f05b204b78.1571225074.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Nick reports that prctl(PR_TASK_PERF_EVENTS_DISABLE) doesn't stop tsk0
+as last one, which sometimes causes test to fail, because of way test
+calculates 'ratio' value and very low tolerance.
 
-Li Wang <liwang@redhat.com> writes:
+Looking at implementation, prctl() walks the list and does appear to
+disable events in order they were created (tsk0 first).
 
-> In some of the libcap-devel(1.96~2.16) versions, it defines the _LINUX_TYPES_H
-> macro that makes ltp-lib can not include linux/types.h essentially.
->
->     # cat -n /usr/include/sys/capability.h
->     ...
->     25  /*
->     26   * Make sure we can be included from userland by preventing
->     27   * capability.h from including other kernel headers
->     28   */
->     29  #define _LINUX_TYPES_H
->
-> To get rid of this compiling errors on rhel6(libcap-devel-2.16) series platform,
-> here undefine _LINUX_TYPES_H if test included that old sys/capability.h.
->
->   == Error log ==
->   In file included from ../include/tst_netlink.h:26,
->                  from tst_crypto.c:13:
->   /usr/include/linux/netlink.h:45: error: expected specifier-qualifier-list before ?__u16?
->   /usr/include/linux/netlink.h:135: error: expected specifier-qualifier-list before ?__u16?
->   tst_crypto.c: In function ?tst_crypto_recv_ack?:
->   tst_crypto.c:46: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c:55: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
->   tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
->   tst_crypto.c: In function ?tst_crypto_add_alg?:
->   ...
->   make: *** [tst_crypto.o] Error 1
->
-> Reported-by: Ping Fang <pifang@redhat.com>
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Ping Fang <pifang@redhat.com>
-> Cc: Richard Palethorpe <rpalethorpe@suse.com>
-> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  include/lapi/capability.h |  8 ++++++++
->  m4/ltp-cap.m4             | 17 ++++++++++++++++-
->  2 files changed, 24 insertions(+), 1 deletion(-)
->
-> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
-> index dac233d84..8833f0605 100644
-> --- a/include/lapi/capability.h
-> +++ b/include/lapi/capability.h
-> @@ -10,6 +10,14 @@
->  
->  #ifdef HAVE_SYS_CAPABILITY_H
->  # include <sys/capability.h>
-> +/**
-> + * Some old libcap-devel(1.96~2.16) define _LINUX_TYPES_H in
-> + * sys/capability.h that makes ltp-lib cann't include linux/types.h
-> + * essentially. Here undefine it if include such old header-file.
-> + */
-> +# ifndef HAVE_NEWER_LIBCAP
-> +#  undef _LINUX_TYPES_H
-> +# endif
->  #endif
->  
->  #ifndef CAP_NET_RAW
-> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
-> index 02d3cac8c..4981e843d 100644
-> --- a/m4/ltp-cap.m4
-> +++ b/m4/ltp-cap.m4
-> @@ -1,6 +1,6 @@
->  dnl SPDX-License-Identifier: GPL-2.0-or-later
->  dnl Copyright (c) Cisco Systems Inc., 2009
-> -dnl Copyright (c) Linux Test Project, 2010
-> +dnl Copyright (c) Linux Test Project, 2019
->  dnl Author: Ngie Cooper <yaneurabeya@gmail.com>
->  
->  AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
-> @@ -14,4 +14,19 @@ if test "x$cap_libs" != x; then
->  	AC_DEFINE(HAVE_LIBCAP)
->  fi
->  AC_SUBST(CAP_LIBS,$cap_libs)
-> +
-> +AH_TEMPLATE(HAVE_NEWER_LIBCAP,
-> +[Define to 1 if you have newer libcap-2 installed.])
-> +AC_COMPILE_IFELSE([AC_LANG_SOURCE([
-> +#include <sys/capability.h>
-> +#include <linux/types.h>
-> +int main(void) {
-> +	__u16 a;
-> +	__u32 b;
-> +	return 0;
-> +}])],[has_newer_libcap="yes"])
-> +
-> +if test "x$has_newer_libcap" = xyes; then
-> +	AC_DEFINE(HAVE_NEWER_LIBCAP)
-> +fi
->  ])
+Stop groups with hw counters before tsk0.
 
-Ack.
+ratio     Before        After
+mean      4.99921       4.99871
+stdev     0.00006315    0.0000746
 
+Fixes: #588
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+index 95e30519fe42..1cfe29bb3d8a 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
+@@ -324,6 +324,12 @@ static void verify(void)
+ 
+ 	do_work();
+ 
++	/* stop groups with hw counters first before tsk0 */
++	for (i = 0; i < n; i++) {
++		ioctl(hwfd[i], PERF_EVENT_IOC_DISABLE);
++		ioctl(tskfd[i], PERF_EVENT_IOC_DISABLE);
++	}
++
+ 	if (prctl(PR_TASK_PERF_EVENTS_DISABLE) == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			 "prctl(PR_TASK_PERF_EVENTS_DISABLE) failed");
 -- 
-Thank you,
-Richard.
+1.8.3.1
+
