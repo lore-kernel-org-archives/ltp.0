@@ -1,94 +1,105 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 16 Oct 2019 09:28:45 +0200
-Subject: [LTP] [PATCH] include: undefine _LINUX_TYPES_H if including
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 16 Oct 2019 16:01:46 +0800
+Subject: [LTP] [PATCH v2] include: undefine _LINUX_TYPES_H if including old
  sys/capability.h
-In-Reply-To: <CAEemH2dfHM7ExwYwdc-_oEw9_DftgfRw3mn2pnAEf1CKxyyn2A@mail.gmail.com>
-References: <20191015101534.17691-1-liwang@redhat.com>
- <87sgnuw48s.fsf@rpws.prws.suse.cz>
- <CAEemH2dfHM7ExwYwdc-_oEw9_DftgfRw3mn2pnAEf1CKxyyn2A@mail.gmail.com>
-Message-ID: <87r23dw3ma.fsf@rpws.prws.suse.cz>
+Message-ID: <20191016080146.18657-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+In some of the libcap-devel(1.96~2.16) versions, it defines the _LINUX_TYPES_H
+macro that makes ltp-lib can not include linux/types.h essentially.
 
-Li Wang <liwang@redhat.com> writes:
+    # cat -n /usr/include/sys/capability.h
+    ...
+    25  /*
+    26   * Make sure we can be included from userland by preventing
+    27   * capability.h from including other kernel headers
+    28   */
+    29  #define _LINUX_TYPES_H
 
-> Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> ...
->> >  #ifdef HAVE_SYS_CAPABILITY_H
->> >  # include <sys/capability.h>
->> > +# undef _LINUX_TYPES_H
->>
->> My concern here is if linux/types.h has already been included. Then this
->> could cause a redefinition error if it is included again.
->>
->
-> Hmm, it looks tricky to solve this, because I didn't find a macro to show
-> version in libcap files.
->
-> Another method I can think of is to build a small program to check if that
-> libcap version is newer or not during the configure phase. If yes, then
-> export a new macro HAVE_NEWER_LIBCAP to be used in /lapi/capability.h.
+To get rid of this compiling errors on rhel6(libcap-devel-2.16) series platform,
+here undefine _LINUX_TYPES_H if test included that old sys/capability.h.
 
-Yes, this could work.
+  == Error log ==
+  In file included from ../include/tst_netlink.h:26,
+                 from tst_crypto.c:13:
+  /usr/include/linux/netlink.h:45: error: expected specifier-qualifier-list before ?__u16?
+  /usr/include/linux/netlink.h:135: error: expected specifier-qualifier-list before ?__u16?
+  tst_crypto.c: In function ?tst_crypto_recv_ack?:
+  tst_crypto.c:46: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+  tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+  tst_crypto.c:47: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+  tst_crypto.c:55: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+  tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_type?
+  tst_crypto.c:58: error: ?struct nlmsghdr? has no member named ?nlmsg_seq?
+  tst_crypto.c: In function ?tst_crypto_add_alg?:
+  ...
+  make: *** [tst_crypto.o] Error 1
 
->
-> The following patch has been verified on both rhel6 and rhel8, any comments?
-> [I'm not familiar with m4 syntax, just copy from other places]
+Reported-by: Ping Fang <pifang@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Ping Fang <pifang@redhat.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/lapi/capability.h |  8 ++++++++
+ m4/ltp-cap.m4             | 17 ++++++++++++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-m4 all looks ugly to me ;-)
-
->
-> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
-> index 3c2ee7937..3607179b5 100644
-> --- a/include/lapi/capability.h
-> +++ b/include/lapi/capability.h
-> @@ -10,7 +10,9 @@
->
->  #ifdef HAVE_SYS_CAPABILITY_H
->  # include <sys/capability.h>
-> -# undef _LINUX_TYPES_H
-> +# ifndef HAVE_NEWER_LIBCAP
-> +#  undef _LINUX_TYPES_H
-> +# endif
->  #endif
-
-This is so wierd it maybe deserves a comment. Otherwise, this looks good
-to me.
-
->
->  #ifndef CAP_NET_RAW
-> diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
-> index 02d3cac8c..8b1546401 100644
-> --- a/m4/ltp-cap.m4
-> +++ b/m4/ltp-cap.m4
-> @@ -14,4 +14,20 @@ if test "x$cap_libs" != x; then
->         AC_DEFINE(HAVE_LIBCAP)
->  fi
->  AC_SUBST(CAP_LIBS,$cap_libs)
-> +
-> +AH_TEMPLATE(HAVE_NEWER_LIBCAP,
-> +[Define to 1 if you have newer libcap-2 installed.])
-> +AC_COMPILE_IFELSE([AC_LANG_SOURCE([
-> +#include <sys/capability.h>
-> +#include <linux/types.h>
-> +int main(void) {
-> +       __u16 a;
-> +       __u32 b;
-> +       return 0;
-> +}])],[has_newer_libcap="yes"])
-> +
-> +if test "x$has_newer_libcap" = xyes; then
-> +       AC_DEFINE(HAVE_NEWER_LIBCAP)
-> +fi
->  ])
-
-
+diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+index dac233d84..8833f0605 100644
+--- a/include/lapi/capability.h
++++ b/include/lapi/capability.h
+@@ -10,6 +10,14 @@
+ 
+ #ifdef HAVE_SYS_CAPABILITY_H
+ # include <sys/capability.h>
++/**
++ * Some old libcap-devel(1.96~2.16) define _LINUX_TYPES_H in
++ * sys/capability.h that makes ltp-lib cann't include linux/types.h
++ * essentially. Here undefine it if include such old header-file.
++ */
++# ifndef HAVE_NEWER_LIBCAP
++#  undef _LINUX_TYPES_H
++# endif
+ #endif
+ 
+ #ifndef CAP_NET_RAW
+diff --git a/m4/ltp-cap.m4 b/m4/ltp-cap.m4
+index 02d3cac8c..4981e843d 100644
+--- a/m4/ltp-cap.m4
++++ b/m4/ltp-cap.m4
+@@ -1,6 +1,6 @@
+ dnl SPDX-License-Identifier: GPL-2.0-or-later
+ dnl Copyright (c) Cisco Systems Inc., 2009
+-dnl Copyright (c) Linux Test Project, 2010
++dnl Copyright (c) Linux Test Project, 2019
+ dnl Author: Ngie Cooper <yaneurabeya@gmail.com>
+ 
+ AC_DEFUN([LTP_CHECK_CAPABILITY_SUPPORT],[
+@@ -14,4 +14,19 @@ if test "x$cap_libs" != x; then
+ 	AC_DEFINE(HAVE_LIBCAP)
+ fi
+ AC_SUBST(CAP_LIBS,$cap_libs)
++
++AH_TEMPLATE(HAVE_NEWER_LIBCAP,
++[Define to 1 if you have newer libcap-2 installed.])
++AC_COMPILE_IFELSE([AC_LANG_SOURCE([
++#include <sys/capability.h>
++#include <linux/types.h>
++int main(void) {
++	__u16 a;
++	__u32 b;
++	return 0;
++}])],[has_newer_libcap="yes"])
++
++if test "x$has_newer_libcap" = xyes; then
++	AC_DEFINE(HAVE_NEWER_LIBCAP)
++fi
+ ])
 -- 
-Thank you,
-Richard.
+2.20.1
+
