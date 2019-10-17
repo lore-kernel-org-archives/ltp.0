@@ -1,16 +1,15 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 17 Oct 2019 04:50:45 -0400 (EDT)
+Date: Thu, 17 Oct 2019 04:56:47 -0400 (EDT)
 Subject: [LTP] [PATCH 1/1] fanotify: Fix missing __kernel_fsid_t
  definition
 In-Reply-To: <20191016211501.3777-1-petr.vorel@gmail.com>
 References: <20191016211501.3777-1-petr.vorel@gmail.com>
-Message-ID: <1176394938.6589443.1571302245730.JavaMail.zimbra@redhat.com>
+Message-ID: <1170755640.6589868.1571302607540.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
-
 
 
 ----- Original Message -----
@@ -32,20 +31,14 @@ To: ltp@lists.linux.it
 >  #include <fcntl.h>
 >  
 > +#if !defined(FAN_REPORT_FID) && defined(HAVE_NAME_TO_HANDLE_AT)
-
-Will FAN_REPORT_FID ever be defined at this point, when include of
-sys/fanotify.h is below?
-
 > +#include <asm/posix_types.h> // __kernel_fsid_t
 > +#endif
-> +
->  #if defined(HAVE_SYS_FANOTIFY_H)
->  
->  #include <sys/fanotify.h>
-> --
-> 2.23.0
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+
+Would an alternative that adds this type to lapi work?
+(just looking if we can avoid extra kernel include)
+
+typedef struct {
+        int     val[2];
+} lapi_fsid_t;
+
+#define __kernel_fsid_t lapi_fsid_t
