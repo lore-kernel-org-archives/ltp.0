@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 Oct 2019 10:39:36 +0200
-Subject: [LTP] [PATCH v3 1/4] tst_test.sh: Use LTP_TIMEOUT_MUL in
- TST_RETRY_FN()
-In-Reply-To: <20191016161519.11256-1-cfamullaconrad@suse.de>
+Date: Thu, 17 Oct 2019 10:47:52 +0200
+Subject: [LTP] [PATCH v3 2/4] tst_test.c: Add tst_multiply_timeout()
+In-Reply-To: <20191016161519.11256-2-cfamullaconrad@suse.de>
 References: <1571225126.8494.1.camel@suse.de>
  <20191016161519.11256-1-cfamullaconrad@suse.de>
-Message-ID: <20191017083935.GA21011@dell5510>
+ <20191016161519.11256-2-cfamullaconrad@suse.de>
+Message-ID: <20191017084751.GA12047@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,55 +14,45 @@ To: ltp@lists.linux.it
 
 Hi Clemens,
 
+> This function is used to adjust timeout values with environment
+> variables like LTP_TIMEOUT_MUL.
+
+> Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+LGTM, minor formatting/wording bellow.
+
 ...
-> -_tst_setup_timer()
-> +tst_multiply_timeout()
-Private function, it should have underscore prefix.
+> -void tst_set_timeout(int timeout)
+> +unsigned int tst_multiply_timeout(unsigned int timeout)
 >  {
-> -	TST_TIMEOUT=${TST_TIMEOUT:-300}
-> -	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
-> +	# first parameter is used as return value
-> +	local timeout="${!1}"
-Bashism, this will not work on dash, busybox shell ('busybox sh'), etc.
-
-checkbashisms.pl is your friend :).
-https://salsa.debian.org/debian/devscripts/raw/master/scripts/checkbashisms.pl
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
-
-Variable variable is possible to do portable way with eval.
-eval timeout=\$$1
-
-> +	[ $# -gt 1 ] && timeout="$2"
-> -	if [ "$TST_TIMEOUT" = -1 ]; then
-> -		tst_res TINFO "Timeout per run is disabled"
-> -		return
-> -	fi
-> +	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
-
->  	local err="LTP_TIMEOUT_MUL must be number >= 1!"
-
-> @@ -396,13 +395,29 @@ _tst_setup_timer()
->  		LTP_TIMEOUT_MUL=$((LTP_TIMEOUT_MUL+1))
->  		tst_res TINFO "ceiling LTP_TIMEOUT_MUL to $LTP_TIMEOUT_MUL"
->  	fi
+> -	char *mul = getenv("LTP_TIMEOUT_MUL");
+> +	char *mul;
+> +	float mul_float;
 > +
->  	[ "$LTP_TIMEOUT_MUL" -ge 1 ] || tst_brk TBROK "$err ($LTP_TIMEOUT_MUL)"
-> +	[ "$timeout" -ge 1 ] || tst_brk TBROK "timeout need to be >= 1 ($timeout)"
+> +	if (timeout_mul == -1){
+Please add space before { (on more places + unnecessary { }).
+linux/scripts/checkpatch.pl --terse --no-tree -f lib/tst_test.c
+would tell you :)
+([1] but we don't follow it fully - common sense is applied, but we try).
+
+> +		mul = getenv("LTP_TIMEOUT_MUL");
+> +		if (mul) {
+> +			timeout_mul = mul_float = atof(mul);
+> +			if (timeout_mul != mul_float){
+> +				timeout_mul++;
+> +				tst_res(TINFO, "ceiling LTP_TIMEOUT_MUL to %d", timeout_mul);
+> +			}
+> +		} else {
+> +			timeout_mul = 1;
+> +		}
+> +	}
+> +	if (timeout_mul < 1)
+> +		tst_brk(TBROK, "LTP_TIMEOUT_MUL need to be int >= 1! (%d)", timeout_mul);
 > +
-> +	eval "$1='$(( timeout * LTP_TIMEOUT_MUL))'"
-Eval on input, eval on output :).
-
-> +	return 0
-You don't use return value anywhere. + There is no return 1.
-> +}
-
-Passing timeout variable name and optionally timeout value works and allows
-TBROK messages not to be mangled/hidden (which would be if function echo the
-result, which is then read the usual way: timeout=$(tst_multiply_timeout 100) ),
-but I'm not sure if all this is worth of just error handling.
-Having 2x eval, $2 optionally used (but only in tests) makes code a bit complex.
-
-How about just simply save the result into global variable $TST_TIMEOUT?
+> +	if (timeout < 1)
+> +		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
+nit: need => maybe must/needs ?
 
 Kind regards,
 Petr
+[1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style
