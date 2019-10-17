@@ -1,75 +1,68 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 17 Oct 2019 14:46:57 +0300
-Subject: [LTP] [PATCH v5 0/8] net/route: rewrite route-change-{dst, gw,
- if} into new API
-In-Reply-To: <20191011132433.24197-1-pvorel@suse.cz>
-References: <20191011132433.24197-1-pvorel@suse.cz>
-Message-ID: <f5b4a42f-fb20-e085-1250-c0e2b171c01f@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 17 Oct 2019 14:08:30 +0200
+Subject: [LTP] [PATCH] doc: Add very simple library API writing
+ guidelines docs
+In-Reply-To: <20190924183325.6143-1-pvorel@suse.cz>
+References: <20190924183325.6143-1-pvorel@suse.cz>
+Message-ID: <20191017120829.GA31415@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11.10.2019 16:24, Petr Vorel wrote:
-> Hi,
-> 
-> changes v4->v5:
-> addressed these Alexey's requests:
-> * tst_ipadd_un() now handles both host_id and net_id, with
-> -h MIN,MAX, -n MIN,MAX
-> (instead of -b, -f, -n which handled only host_id)
-> 
-> * add -q to tst_add_ipaddr() (silence test output)
-> 
-> * introduce EXPECT_{FAIL,PASS}_BRK() to shell API and use it to stop
-> test on first error.
+Hi!
+> Feel free to write more useful docs than my stub.
 
-The patches look great, thanks Petr!
+It's a good stub actually, there is a lot that is not described at all.
 
+We should probably draft a longer readme that describes why we also
+have a mechanism for additional libraries in place and when to use it.
+Generally we lack a lot of documentation.
+
+Now we only need someone to volunteer to write it down.
+
+> [1] https://patchwork.ozlabs.org/patch/1151766/
 > 
-> @Cyril the only commit for you: "shell: Introduce EXPECT_{FAIL,PASS}_BRK()"
+>  doc/library-api-writing-guidelines.txt | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 doc/library-api-writing-guidelines.txt
 > 
-> Kind regards,
-> Petr
-> 
-> Petr Vorel (8):
->   tst_net.sh: enhance tst_add_ipaddr(), add tst_del_ipaddr()
->   tst_net.sh: Add -p option to return prefix in tst_ipaddr_un()
->   tst_net.sh: Add -h -n options to tst_ipaddr_un()
->   net: Add tst_ipaddr_un.sh test
->   shell: Introduce EXPECT_{FAIL,PASS}_BRK()
->   network/route: Rewrite route{4,6}-change-dst into new shell API
->   network/route: Rewrite route{4,6}-change-gw into new shell API
->   network/route: Rewrite route{4,6}-change-if into new API
-> 
->  doc/test-writing-guidelines.txt               |   5 +-
->  lib/newlib_tests/shell/net/tst_ipaddr_un.sh   | 167 +++++++++
->  runtest/net_stress.route                      |  15 +-
->  testcases/lib/tst_net.sh                      | 173 +++++++---
->  testcases/lib/tst_test.sh                     |  34 +-
->  .../network/stress/route/00_Descriptions.txt  |  54 +--
->  .../network/stress/route/route-change-dst.sh  |  34 ++
->  .../network/stress/route/route-change-gw.sh   |  39 +++
->  .../network/stress/route/route-change-if.sh   |  90 +++++
->  testcases/network/stress/route/route-lib.sh   |  17 +
->  .../network/stress/route/route4-change-dst    | 276 ---------------
->  .../network/stress/route/route4-change-gw     | 292 ----------------
->  .../network/stress/route/route4-change-if     | 324 ------------------
->  .../network/stress/route/route6-change-dst    | 272 ---------------
->  .../network/stress/route/route6-change-gw     | 292 ----------------
->  .../network/stress/route/route6-change-if     | 323 -----------------
->  16 files changed, 528 insertions(+), 1879 deletions(-)
->  create mode 100755 lib/newlib_tests/shell/net/tst_ipaddr_un.sh
->  create mode 100755 testcases/network/stress/route/route-change-dst.sh
->  create mode 100755 testcases/network/stress/route/route-change-gw.sh
->  create mode 100755 testcases/network/stress/route/route-change-if.sh
->  create mode 100644 testcases/network/stress/route/route-lib.sh
->  delete mode 100644 testcases/network/stress/route/route4-change-dst
->  delete mode 100644 testcases/network/stress/route/route4-change-gw
->  delete mode 100644 testcases/network/stress/route/route4-change-if
->  delete mode 100644 testcases/network/stress/route/route6-change-dst
->  delete mode 100644 testcases/network/stress/route/route6-change-gw
->  delete mode 100644 testcases/network/stress/route/route6-change-if
+> diff --git a/doc/library-api-writing-guidelines.txt b/doc/library-api-writing-guidelines.txt
+> new file mode 100644
+> index 000000000..a238ee046
+> --- /dev/null
+> +++ b/doc/library-api-writing-guidelines.txt
+> @@ -0,0 +1,25 @@
+> +LTP Library API Writing Guidelines
+> +==================================
+> +
+> +1. General Rules
+> +----------------
+> +
+> +For extending library API it applies the same general rules as for writing tests
+> +(see test-writing-guidelines.txt), with strong focus on readability and simplicity.
+> +
+> +Library tests are in lib/newlib_tests directory.
+> +
+> +2. C API
+> +--------
+> +
+> +API source code is in headers include/*.h, include/lapi/*.h (backward compatibility)
+> +and C sources in lib/*.c. Files have tst_ prefix.
+> +
+> +3. Shell API
+> +------------
+> +
+> +API source code is in tst_test.sh, tst_security.sh and tst_net.sh
+> +(all in testcases/lib directory).
+> +
+> +Changes in the shell API should not introduce uncommon dependencies
+> +(use basic commands installed everywhere by default).
+> -- 
+> 2.22.1
 > 
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
