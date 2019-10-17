@@ -1,25 +1,75 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 17 Oct 2019 06:02:28 -0400 (EDT)
-Subject: [LTP] [PATCH 1/1] setxattr03: define _GNU_SOURCE to fix build
- on musl
-In-Reply-To: <20191016213001.23047-1-petr.vorel@gmail.com>
-References: <20191016213001.23047-1-petr.vorel@gmail.com>
-Message-ID: <184868574.6595050.1571306548992.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 17 Oct 2019 14:46:57 +0300
+Subject: [LTP] [PATCH v5 0/8] net/route: rewrite route-change-{dst, gw,
+ if} into new API
+In-Reply-To: <20191011132433.24197-1-pvorel@suse.cz>
+References: <20191011132433.24197-1-pvorel@suse.cz>
+Message-ID: <f5b4a42f-fb20-e085-1250-c0e2b171c01f@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: Petr Vorel <pvorel@suse.cz>
+On 11.10.2019 16:24, Petr Vorel wrote:
+> Hi,
 > 
-> musl defines loff_t in <fcntl.h> (already included) and guard it under
-> _GNU_SOURCE.
-> NOTE: glibc and others define it in <sys/types.h>
+> changes v4->v5:
+> addressed these Alexey's requests:
+> * tst_ipadd_un() now handles both host_id and net_id, with
+> -h MIN,MAX, -n MIN,MAX
+> (instead of -b, -f, -n which handled only host_id)
 > 
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> * add -q to tst_add_ipaddr() (silence test output)
+> 
+> * introduce EXPECT_{FAIL,PASS}_BRK() to shell API and use it to stop
+> test on first error.
 
-ACK
+The patches look great, thanks Petr!
+
+> 
+> @Cyril the only commit for you: "shell: Introduce EXPECT_{FAIL,PASS}_BRK()"
+> 
+> Kind regards,
+> Petr
+> 
+> Petr Vorel (8):
+>   tst_net.sh: enhance tst_add_ipaddr(), add tst_del_ipaddr()
+>   tst_net.sh: Add -p option to return prefix in tst_ipaddr_un()
+>   tst_net.sh: Add -h -n options to tst_ipaddr_un()
+>   net: Add tst_ipaddr_un.sh test
+>   shell: Introduce EXPECT_{FAIL,PASS}_BRK()
+>   network/route: Rewrite route{4,6}-change-dst into new shell API
+>   network/route: Rewrite route{4,6}-change-gw into new shell API
+>   network/route: Rewrite route{4,6}-change-if into new API
+> 
+>  doc/test-writing-guidelines.txt               |   5 +-
+>  lib/newlib_tests/shell/net/tst_ipaddr_un.sh   | 167 +++++++++
+>  runtest/net_stress.route                      |  15 +-
+>  testcases/lib/tst_net.sh                      | 173 +++++++---
+>  testcases/lib/tst_test.sh                     |  34 +-
+>  .../network/stress/route/00_Descriptions.txt  |  54 +--
+>  .../network/stress/route/route-change-dst.sh  |  34 ++
+>  .../network/stress/route/route-change-gw.sh   |  39 +++
+>  .../network/stress/route/route-change-if.sh   |  90 +++++
+>  testcases/network/stress/route/route-lib.sh   |  17 +
+>  .../network/stress/route/route4-change-dst    | 276 ---------------
+>  .../network/stress/route/route4-change-gw     | 292 ----------------
+>  .../network/stress/route/route4-change-if     | 324 ------------------
+>  .../network/stress/route/route6-change-dst    | 272 ---------------
+>  .../network/stress/route/route6-change-gw     | 292 ----------------
+>  .../network/stress/route/route6-change-if     | 323 -----------------
+>  16 files changed, 528 insertions(+), 1879 deletions(-)
+>  create mode 100755 lib/newlib_tests/shell/net/tst_ipaddr_un.sh
+>  create mode 100755 testcases/network/stress/route/route-change-dst.sh
+>  create mode 100755 testcases/network/stress/route/route-change-gw.sh
+>  create mode 100755 testcases/network/stress/route/route-change-if.sh
+>  create mode 100644 testcases/network/stress/route/route-lib.sh
+>  delete mode 100644 testcases/network/stress/route/route4-change-dst
+>  delete mode 100644 testcases/network/stress/route/route4-change-gw
+>  delete mode 100644 testcases/network/stress/route/route4-change-if
+>  delete mode 100644 testcases/network/stress/route/route6-change-dst
+>  delete mode 100644 testcases/network/stress/route/route6-change-gw
+>  delete mode 100644 testcases/network/stress/route/route6-change-if
+> 
+
