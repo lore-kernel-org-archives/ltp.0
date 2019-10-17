@@ -1,34 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 Oct 2019 17:29:07 +0200
-Subject: [LTP] [PATCH] doc: Add very simple library API writing
- guidelines docs
-In-Reply-To: <20191017120829.GA31415@rei.lan>
-References: <20190924183325.6143-1-pvorel@suse.cz>
- <20191017120829.GA31415@rei.lan>
-Message-ID: <20191017152906.GA28447@dell5510>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Thu, 17 Oct 2019 22:16:12 +0200
+Subject: [LTP] [PATCH 1/1] setxattr03: define _GNU_SOURCE to fix build
+ on musl
+In-Reply-To: <20191017091533.GA20152@rei.lan>
+References: <20191016213001.23047-1-petr.vorel@gmail.com>
+ <20191017091533.GA20152@rei.lan>
+Message-ID: <20191017201611.GA4840@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Cyril, Jan,
 
-> > Feel free to write more useful docs than my stub.
+> Hi!
+> > musl defines loff_t in <fcntl.h> (already included) and guard it under _GNU_SOURCE.
+> > NOTE: glibc and others define it in <sys/types.h>
 
-> It's a good stub actually, there is a lot that is not described at all.
+> I would say that this is obvious enough to go in without a review, acked
+> nevertheless.
 
-> We should probably draft a longer readme that describes why we also
-> have a mechanism for additional libraries in place and when to use it.
-"additional libraries" do you mean tst_net.sh or what?
-Or a text "put useful things into library"?
-Or "try to keep synced shell and C API?
-
-> Generally we lack a lot of documentation.
-Yep.
-
-> Now we only need someone to volunteer to write it down.
-:).
+Thanks for review, pushed.
+Sorry for taking your time with obvious fix, next time I'll push it.
 
 Kind regards,
 Petr
