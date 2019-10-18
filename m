@@ -1,22 +1,87 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 18 Oct 2019 10:29:31 +0200
-Subject: [LTP] [PATCH v3 1/4] tst_test.sh: Use LTP_TIMEOUT_MUL in
- TST_RETRY_FN()
-In-Reply-To: <1571314999.4128.3.camel@suse.de>
-References: <1571225126.8494.1.camel@suse.de>
- <20191016161519.11256-1-cfamullaconrad@suse.de>
- <20191017083935.GA21011@dell5510> <1571314999.4128.3.camel@suse.de>
-Message-ID: <20191018075137.GB4755@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 18 Oct 2019 12:05:17 +0200
+Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower false
+ positives
+Message-ID: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clemens,
+Test sporadically fails with:
+  lsmod01 1 TFAIL: lsmod output different from /proc/modules.
+  36c36
+  < loop 42057 2
+  ---
+  > loop 42057 1
 
-I wonder if we want to note in docs that LTP_TIMEOUT_MUL in used in
-TST_RETRY_FN().
+commands runtest file runs mkswap01 before this test. That test is
+using loop device, and udev is presumably still holding a reference
+by the time lsmod01 test starts.
 
-Kind regards,
-Petr
+Repeat the test couple times to avoid racing with rest of the system.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/commands/lsmod/lsmod01.sh | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
+index ad170dcd41b8..38ba8e0c94ad 100755
+--- a/testcases/commands/lsmod/lsmod01.sh
++++ b/testcases/commands/lsmod/lsmod01.sh
+@@ -10,31 +10,41 @@ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_CMDS="lsmod"
+ . tst_test.sh
+ 
+-lsmod_test()
++lsmod_matches_proc_modules()
+ {
+ 	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
+ 	if [ -z "$lsmod_output" ]; then
+-		tst_res TFAIL "Failed to parse the output from lsmod"
+-		return
++		tst_brk TBROK "Failed to parse the output from lsmod"
+ 	fi
+ 
+-	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
++	modules_output=$(awk '{print $1, $2, $3} 1' /proc/modules | sort)
+ 	if [ -z "$modules_output" ]; then
+-		tst_res TFAIL "Failed to parse /proc/modules"
+-		return
++		tst_brk TBROK "Failed to parse /proc/modules"
+ 	fi
+ 
+ 	if [ "$lsmod_output" != "$modules_output" ]; then
+-		tst_res TFAIL "lsmod output different from /proc/modules."
++		tst_res TINFO "lsmod output different from /proc/modules."
+ 
+ 		echo "$lsmod_output" > temp1
+ 		echo "$modules_output" > temp2
+ 		diff temp1 temp2
+ 
+-		return
++		return 1
+ 	fi
++	return 0
++}
+ 
+-	tst_res TPASS "'lsmod' passed."
++lsmod_test()
++{
++	for i in $(seq 1 5); do
++		if lsmod_matches_proc_modules; then
++			tst_res TPASS "'lsmod' passed."
++			return
++		fi
++		tst_res TINFO "Trying again"
++		sleep 1
++	done
++	tst_res TFAIL "'lsmod' doesn't match /proc/modules output"
+ }
+ 
+ tst_run
+-- 
+1.8.3.1
+
