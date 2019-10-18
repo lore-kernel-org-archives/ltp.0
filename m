@@ -1,21 +1,22 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 18 Oct 2019 04:12:38 -0400 (EDT)
-Subject: [LTP] [PATCH v2] perf_event_open02: make test more reliable on
- -rt kernels
-In-Reply-To: <20191016141439.GB19297@rei.lan>
-References: <1321370412.6455436.1571229760838.JavaMail.zimbra@redhat.com>
- <94fbf60008417c187c1d9b4640d84af6c25afa29.1571234702.git.jstancek@redhat.com>
- <20191016141439.GB19297@rei.lan>
-Message-ID: <228677570.6936043.1571386358654.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 18 Oct 2019 10:29:31 +0200
+Subject: [LTP] [PATCH v3 1/4] tst_test.sh: Use LTP_TIMEOUT_MUL in
+ TST_RETRY_FN()
+In-Reply-To: <1571314999.4128.3.camel@suse.de>
+References: <1571225126.8494.1.camel@suse.de>
+ <20191016161519.11256-1-cfamullaconrad@suse.de>
+ <20191017083935.GA21011@dell5510> <1571314999.4128.3.camel@suse.de>
+Message-ID: <20191018075137.GB4755@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Clemens,
 
------ Original Message -----
-> Hi!
-> This version looks good, acked.
+I wonder if we want to note in docs that LTP_TIMEOUT_MUL in used in
+TST_RETRY_FN().
 
-Both pushed.
+Kind regards,
+Petr
