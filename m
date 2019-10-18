@@ -1,106 +1,70 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Fri, 18 Oct 2019 14:44:59 +0200
-Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
-In-Reply-To: <20191018124502.25599-1-cfamullaconrad@suse.de>
-References: <20191018124502.25599-1-cfamullaconrad@suse.de>
-Message-ID: <20191018124502.25599-3-cfamullaconrad@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 18 Oct 2019 15:23:00 +0200
+Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
+ false positives
+In-Reply-To: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+Message-ID: <20191018132300.GA27956@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This function is used to adjust timeout values with environment
-variables like LTP_TIMEOUT_MUL.
+Hi Jan,
 
-Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+> Test sporadically fails with:
+>   lsmod01 1 TFAIL: lsmod output different from /proc/modules.
+>   36c36
+>   < loop 42057 2
+>   ---
+>   > loop 42057 1
+
+> commands runtest file runs mkswap01 before this test. That test is
+> using loop device, and udev is presumably still holding a reference
+> by the time lsmod01 test starts.
+
+> Repeat the test couple times to avoid racing with rest of the system.
+
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- include/tst_test.h |  1 +
- lib/tst_test.c     | 43 ++++++++++++++++++++++++++++++++-----------
- 2 files changed, 33 insertions(+), 11 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 84acf2c59..aaea128ba 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -267,6 +267,7 @@ const char *tst_strsig(int sig);
- const char *tst_strstatus(int status);
- 
- unsigned int tst_timeout_remaining(void);
-+unsigned int tst_multiply_timeout(unsigned int timeout);
- void tst_set_timeout(int timeout);
- 
- 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 6239acf89..5f43b1e0b 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -36,6 +36,7 @@ struct tst_test *tst_test;
- static const char *tid;
- static int iterations = 1;
- static float duration = -1;
-+static int timeout_mul = -1;
- static pid_t main_pid, lib_pid;
- static int mntpoint_mounted;
- static int ovl_mounted;
-@@ -1093,25 +1094,45 @@ unsigned int tst_timeout_remaining(void)
- 	return 0;
- }
- 
--void tst_set_timeout(int timeout)
-+unsigned int tst_multiply_timeout(unsigned int timeout)
- {
--	char *mul = getenv("LTP_TIMEOUT_MUL");
-+	char *mul;
-+	float mul_float;
-+
-+	if (timeout_mul == -1) {
-+		mul = getenv("LTP_TIMEOUT_MUL");
-+		if (mul) {
-+			timeout_mul = mul_float = atof(mul);
-+			if (timeout_mul != mul_float) {
-+				timeout_mul++;
-+				tst_res(TINFO, "ceiling LTP_TIMEOUT_MUL to %d",
-+						timeout_mul);
-+			}
-+		} else {
-+			timeout_mul = 1;
-+		}
-+	}
-+	if (timeout_mul < 1)
-+		tst_brk(TBROK, "LTP_TIMEOUT_MUL must to be int >= 1! (%d)",
-+				timeout_mul);
-+
-+	if (timeout < 1)
-+		tst_brk(TBROK, "timeout must to be >= 1! (%d)", timeout);
-+
-+	return timeout * timeout_mul;
-+}
- 
-+void tst_set_timeout(int timeout)
-+{
- 	if (timeout == -1) {
- 		tst_res(TINFO, "Timeout per run is disabled");
- 		return;
- 	}
- 
--	results->timeout = timeout;
-+	if (timeout < 1)
-+		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
- 
--	if (mul) {
--		float m = atof(mul);
--
--		if (m < 1)
--			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
--
--		results->timeout = results->timeout * m + 0.5;
--	}
-+	results->timeout = tst_multiply_timeout(timeout);
- 
- 	tst_res(TINFO, "Timeout per run is %uh %02um %02us",
- 		results->timeout/3600, (results->timeout%3600)/60,
--- 
-2.16.4
+...
+> +++ b/testcases/commands/lsmod/lsmod01.sh
+> @@ -10,31 +10,41 @@ TST_NEEDS_TMPDIR=1
+>  TST_NEEDS_CMDS="lsmod"
+>  . tst_test.sh
 
+> -lsmod_test()
+> +lsmod_matches_proc_modules()
+>  {
+>  	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
+>  	if [ -z "$lsmod_output" ]; then
+> -		tst_res TFAIL "Failed to parse the output from lsmod"
+> -		return
+> +		tst_brk TBROK "Failed to parse the output from lsmod"
+>  	fi
+
+> -	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
+> +	modules_output=$(awk '{print $1, $2, $3} 1' /proc/modules | sort)
+This is a regression. Please keep the old version (without 1).
+
+
+-	modules_output=$(awk '{print $1, $2, $3} 1' /proc/modules | sort)
++	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
+
+>  	if [ -z "$modules_output" ]; then
+> -		tst_res TFAIL "Failed to parse /proc/modules"
+> -		return
+> +		tst_brk TBROK "Failed to parse /proc/modules"
+>  	fi
+
+>  	if [ "$lsmod_output" != "$modules_output" ]; then
+> -		tst_res TFAIL "lsmod output different from /proc/modules."
+> +		tst_res TINFO "lsmod output different from /proc/modules."
+nit: please remove dots at the end of messages, when you're touching that file.
+
+The rest looks good to me.
+
+Kind regards,
+Petr
