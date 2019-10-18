@@ -1,35 +1,106 @@
 From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Fri, 18 Oct 2019 14:45:02 +0200
-Subject: [LTP] [PATCH v4 5/5] Adopt doc for TST_RETRY_FUNC for
- LTP_TIMEOUT_MUL
+Date: Fri, 18 Oct 2019 14:44:59 +0200
+Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
 In-Reply-To: <20191018124502.25599-1-cfamullaconrad@suse.de>
 References: <20191018124502.25599-1-cfamullaconrad@suse.de>
-Message-ID: <20191018124502.25599-6-cfamullaconrad@suse.de>
+Message-ID: <20191018124502.25599-3-cfamullaconrad@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Mention that time limit is mulitplied with LTP_TIMEOUT_MUL.
----
- doc/test-writing-guidelines.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This function is used to adjust timeout values with environment
+variables like LTP_TIMEOUT_MUL.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index efff4d40c..905a4baa5 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2313,7 +2313,8 @@ Retry a function in limited time
- Sometimes LTP test needs retrying a function for many times to get success.
- This achievement makes that possible via keeping it retrying if the return
- value of the function is NOT as we expected. After exceeding a limited time,
--test will break from the retries immediately.
-+test will break from the retries immediately. The time limit is multiplied
-+with LTP_TIMEOUT_MUL.
+Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_test.h |  1 +
+ lib/tst_test.c     | 43 ++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 33 insertions(+), 11 deletions(-)
+
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 84acf2c59..aaea128ba 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -267,6 +267,7 @@ const char *tst_strsig(int sig);
+ const char *tst_strstatus(int status);
  
- [source,c]
- -------------------------------------------------------------------------------
+ unsigned int tst_timeout_remaining(void);
++unsigned int tst_multiply_timeout(unsigned int timeout);
+ void tst_set_timeout(int timeout);
+ 
+ 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 6239acf89..5f43b1e0b 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -36,6 +36,7 @@ struct tst_test *tst_test;
+ static const char *tid;
+ static int iterations = 1;
+ static float duration = -1;
++static int timeout_mul = -1;
+ static pid_t main_pid, lib_pid;
+ static int mntpoint_mounted;
+ static int ovl_mounted;
+@@ -1093,25 +1094,45 @@ unsigned int tst_timeout_remaining(void)
+ 	return 0;
+ }
+ 
+-void tst_set_timeout(int timeout)
++unsigned int tst_multiply_timeout(unsigned int timeout)
+ {
+-	char *mul = getenv("LTP_TIMEOUT_MUL");
++	char *mul;
++	float mul_float;
++
++	if (timeout_mul == -1) {
++		mul = getenv("LTP_TIMEOUT_MUL");
++		if (mul) {
++			timeout_mul = mul_float = atof(mul);
++			if (timeout_mul != mul_float) {
++				timeout_mul++;
++				tst_res(TINFO, "ceiling LTP_TIMEOUT_MUL to %d",
++						timeout_mul);
++			}
++		} else {
++			timeout_mul = 1;
++		}
++	}
++	if (timeout_mul < 1)
++		tst_brk(TBROK, "LTP_TIMEOUT_MUL must to be int >= 1! (%d)",
++				timeout_mul);
++
++	if (timeout < 1)
++		tst_brk(TBROK, "timeout must to be >= 1! (%d)", timeout);
++
++	return timeout * timeout_mul;
++}
+ 
++void tst_set_timeout(int timeout)
++{
+ 	if (timeout == -1) {
+ 		tst_res(TINFO, "Timeout per run is disabled");
+ 		return;
+ 	}
+ 
+-	results->timeout = timeout;
++	if (timeout < 1)
++		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
+ 
+-	if (mul) {
+-		float m = atof(mul);
+-
+-		if (m < 1)
+-			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
+-
+-		results->timeout = results->timeout * m + 0.5;
+-	}
++	results->timeout = tst_multiply_timeout(timeout);
+ 
+ 	tst_res(TINFO, "Timeout per run is %uh %02um %02us",
+ 		results->timeout/3600, (results->timeout%3600)/60,
 -- 
 2.16.4
 
