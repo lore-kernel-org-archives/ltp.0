@@ -1,34 +1,30 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 18 Oct 2019 09:39:41 -0400 (EDT)
-Subject: [LTP] [PATCH] mlock_8-1,
- munlock_10-1: don't use LONG_MAX as invalid pointer
-In-Reply-To: <20191018133733.GA31681@dell5510>
-References: <2e51e5453562001b5b6992ccc897d9177e6673ca.1571053661.git.jstancek@redhat.com>
- <20191018133733.GA31681@dell5510>
-Message-ID: <1403291253.6979626.1571405981736.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 18 Oct 2019 15:45:26 +0200
+Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
+ false positives
+In-Reply-To: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+Message-ID: <20191018134525.GA2589@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan,
 
------ Original Message -----
-> Hi Jan,
-> 
-> > arm64 kernel with commit 057d3389108e ("mm: untag user pointers passed to
-> > memory syscalls") will assume this is tagged user pointer and will
-> > attempt to clear first byte. This leads to test hitting different error
-> > (EINVAL instead of ENOMEM).
-> 
-> > Add a helper function which provides invalid/unused pointer from user
-> > address space.
-> 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+...
+>  	if [ "$lsmod_output" != "$modules_output" ]; then
+> -		tst_res TFAIL "lsmod output different from /proc/modules."
+> +		tst_res TINFO "lsmod output different from /proc/modules."
 
-Thanks, discussion in:
-  http://lists.linux.it/pipermail/ltp/2019-October/013993.html
-is still going, so maybe this will be fixed on kernel side
-after all.
+>  		echo "$lsmod_output" > temp1
+>  		echo "$modules_output" > temp2
+>  		diff temp1 temp2
+Also this code could be wrapped with
+if tst_cmd_available diff; then
 
+(I wouldn't add it to TST_NEEDS_CMDS)
+
+Kind regards,
+Petr
