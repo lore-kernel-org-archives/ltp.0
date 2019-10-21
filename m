@@ -1,32 +1,58 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 19 Oct 2019 03:41:15 -0400 (EDT)
-Subject: [LTP] [bug?] LTP pt_test failing after 38bb8d77d0b9
- "perf/x86/intel/pt: Split ToPA metadata and page layout"
-In-Reply-To: <1953570088.7121417.1571470108567.JavaMail.zimbra@redhat.com>
-Message-ID: <1311286607.7121481.1571470875734.JavaMail.zimbra@redhat.com>
+From: Pengfei Xu <pengfei.xu@intel.com>
+Date: Mon, 21 Oct 2019 09:29:40 +0800
+Subject: [LTP] [PATCH] umip_basic_test.c: remove useless new lines print
+Message-ID: <20191021012940.31678-1-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+---
+ testcases/kernel/security/umip/umip_basic_test.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-All variants of pt_test:
-  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/tracing/pt_test/pt_test.c
-started failing after:
-  38bb8d77d0b9 ("perf/x86/intel/pt: Split ToPA metadata and page layout")
+diff --git a/testcases/kernel/security/umip/umip_basic_test.c b/testcases/kernel/security/umip/umip_basic_test.c
+index 5a2b71013..1baa26c52 100644
+--- a/testcases/kernel/security/umip/umip_basic_test.c
++++ b/testcases/kernel/security/umip/umip_basic_test.c
+@@ -47,7 +47,7 @@ static void asm_sidt(void)
+ 	unsigned char val[IDT_LEN];
+ 
+ 	memset(val, 0, sizeof(val));
+-	tst_res(TINFO, "TEST sidt, sidt result save at [%p]\n", val);
++	tst_res(TINFO, "TEST sidt, sidt result save at [%p]", val);
+ 	asm volatile("sidt %0\n" : "=m" (val));
+ 	exit(0);
+ }
+@@ -56,7 +56,7 @@ static void asm_sldt(void)
+ {
+ 	unsigned long val;
+ 
+-	tst_res(TINFO, "TEST sldt, sldt result save at [%p]\n", &val);
++	tst_res(TINFO, "TEST sldt, sldt result save at [%p]", &val);
+ 	asm volatile("sldt %0\n" : "=m" (val));
+ 	exit(0);
+ }
+@@ -65,7 +65,7 @@ static void asm_smsw(void)
+ {
+ 	unsigned long val;
+ 
+-	tst_res(TINFO, "TEST smsw, smsw result save at [%p]\n", &val);
++	tst_res(TINFO, "TEST smsw, smsw result save at [%p]", &val);
+ 	asm volatile("smsw %0\n" : "=m" (val));
+ 	exit(0);
+ }
+@@ -74,7 +74,7 @@ static void asm_str(void)
+ {
+ 	unsigned long val;
+ 
+-	tst_res(TINFO, "TEST str, str result save at [%p]\n", &val);
++	tst_res(TINFO, "TEST str, str result save at [%p]", &val);
+ 	asm volatile("str %0\n" : "=m" (val));
+ 	exit(0);
+ }
+-- 
+2.14.1
 
-with following error on console/dmesg:
-  pt: ToPA ERROR encountered, trying to recover
-
-on Broadwell-EP:
-
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 79
-model name      : Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz
-stepping        : 1
-
-Regards,
-Jan
