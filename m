@@ -1,27 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 21 Oct 2019 16:46:02 +0200
-Subject: [LTP] [PATCH v4 5/5] Adopt doc for TST_RETRY_FUNC for
- LTP_TIMEOUT_MUL
-In-Reply-To: <87h842o2pp.fsf@rpws.prws.suse.cz>
+From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
+Date: Mon, 21 Oct 2019 17:31:41 +0200
+Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
+In-Reply-To: <20191021143703.GA27848@rei>
 References: <20191018124502.25599-1-cfamullaconrad@suse.de>
- <20191018124502.25599-6-cfamullaconrad@suse.de>
- <87h842o2pp.fsf@rpws.prws.suse.cz>
-Message-ID: <20191021144601.GC27848@rei>
+ <20191018124502.25599-3-cfamullaconrad@suse.de>
+ <20191021143703.GA27848@rei>
+Message-ID: <1571671901.4633.17.camel@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I think the function tst_multiply_timeout also needs documenting.
+On Mon, 2019-10-21 at 16:37 +0200, Cyril Hrubis wrote:
+> Hi!
+> > +	if (timeout_mul == -1) {
+> > +		mul = getenv("LTP_TIMEOUT_MUL");
+> > +		if (mul) {
+> > +			timeout_mul = mul_float = atof(mul);
+> > +			if (timeout_mul != mul_float) {
+> > +				timeout_mul++;
+> > +				tst_res(TINFO, "ceiling
+> > LTP_TIMEOUT_MUL to %d",
+> > +						timeout_mul);
+> > +			}
+> 
+> Huh, why are we ceiling the timeout multiplier?
 
-That depends on if we want to export it or not.
+Hm, I just understood the discussion about TST_TIMEOUT/LTP_TIMEOUT_MUL
+in that way, that we tried to keep both implementations more or less
+the same.
 
-We may as well keep it in API and create a helper under testcases/lib/
-tehn we could use the C code that can multiply precisely in the shell as
-well. But I do not care that much either way...
+So we keep float for LTP_TIMEOUT_MUL in c implementation?
+Maybe a v5 is then needed, pvorel?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+thanks
+Clemens
+
