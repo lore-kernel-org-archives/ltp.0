@@ -1,47 +1,27 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 21 Oct 2019 20:08:55 +0200
-Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
-In-Reply-To: <1571671901.4633.17.camel@suse.de>
+Date: Mon, 21 Oct 2019 20:10:16 +0200
+Subject: [LTP] [PATCH v4 5/5] Adopt doc for TST_RETRY_FUNC for
+ LTP_TIMEOUT_MUL
+In-Reply-To: <20191021144601.GC27848@rei>
 References: <20191018124502.25599-1-cfamullaconrad@suse.de>
- <20191018124502.25599-3-cfamullaconrad@suse.de>
- <20191021143703.GA27848@rei> <1571671901.4633.17.camel@suse.de>
-Message-ID: <20191021180854.GA32537@x230>
+ <20191018124502.25599-6-cfamullaconrad@suse.de>
+ <87h842o2pp.fsf@rpws.prws.suse.cz> <20191021144601.GC27848@rei>
+Message-ID: <20191021181016.GA2279@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> Hi!
+> > I think the function tst_multiply_timeout also needs documenting.
 
-> On Mon, 2019-10-21 at 16:37 +0200, Cyril Hrubis wrote:
-> > Hi!
-> > > +	if (timeout_mul == -1) {
-> > > +		mul = getenv("LTP_TIMEOUT_MUL");
-> > > +		if (mul) {
-> > > +			timeout_mul = mul_float = atof(mul);
-> > > +			if (timeout_mul != mul_float) {
-> > > +				timeout_mul++;
-> > > +				tst_res(TINFO, "ceiling
-> > > LTP_TIMEOUT_MUL to %d",
-> > > +						timeout_mul);
-> > > +			}
+> That depends on if we want to export it or not.
 
-> > Huh, why are we ceiling the timeout multiplier?
-I didn't notice Cyril's comment.
-I'm sorry to overlook this. I agree with Cyril to keep float for C.
-> Hm, I just understood the discussion about TST_TIMEOUT/LTP_TIMEOUT_MUL
-> in that way, that we tried to keep both implementations more or less
-> the same.
-
-> So we keep float for LTP_TIMEOUT_MUL in c implementation?
-> Maybe a v5 is then needed, pvorel?
-Yes please. Can you please document float vs int in LTP_TIMEOUT_MUL
-in the last commit.
-
-> thanks
-> Clemens
-
+> We may as well keep it in API and create a helper under testcases/lib/
+> tehn we could use the C code that can multiply precisely in the shell as
+> well. But I do not care that much either way...
++1. I wouldn't export it unless it's needed.
 
 Kind regards,
 Petr
