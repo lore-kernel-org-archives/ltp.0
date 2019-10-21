@@ -1,59 +1,214 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 21 Oct 2019 14:50:53 +0200
-Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
-In-Reply-To: <20191018124502.25599-3-cfamullaconrad@suse.de>
-References: <20191018124502.25599-1-cfamullaconrad@suse.de>
- <20191018124502.25599-3-cfamullaconrad@suse.de>
-Message-ID: <20191021125053.GA18513@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 21 Oct 2019 21:00:12 +0800
+Subject: [LTP] [PATCH v4 1/2] syscalls/prctl08: New test for prctl()
+ with PR_{SET, GET}_TIMERSLACK
+In-Reply-To: <1570767798-26685-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20191009121906.GA7677@rei.lan>
+ <1570767798-26685-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <daf671d8-b3e7-6486-f895-b9fcf7c13907@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clements,
+Hi Cyril
+Ping.
 
-> +	if (timeout_mul < 1)
-> +		tst_brk(TBROK, "LTP_TIMEOUT_MUL must to be int >= 1! (%d)",
-> +				timeout_mul);
+> ------
+> v3->v4:
+> split it into two cases, prctl08 test read/set timer slack value and
+> prctl09 is a timer samle test.
+> Also, in prctl08, I split into 5 point(0,1,middle,max and inherit).
+> -----
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>   include/lapi/prctl.h                       |   5 +
+>   runtest/syscalls                           |   1 +
+>   testcases/kernel/syscalls/prctl/.gitignore |   1 +
+>   testcases/kernel/syscalls/prctl/prctl08.c  | 135 +++++++++++++++++++++
+>   4 files changed, 142 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/prctl/prctl08.c
+> 
+> diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+> index 8ee492259..0b4e196c3 100644
+> --- a/include/lapi/prctl.h
+> +++ b/include/lapi/prctl.h
+> @@ -19,6 +19,11 @@
+>   # define PR_SET_SECCOMP  22
+>   #endif
+>   
+> +#ifndef PR_SET_TIMERSLACK
+> +# define PR_SET_TIMERSLACK 29
+> +# define PR_GET_TIMERSLACK 30
+> +#endif
 > +
-> +	if (timeout < 1)
-> +		tst_brk(TBROK, "timeout must to be >= 1! (%d)", timeout);
+>   #ifndef PR_SET_CHILD_SUBREAPER
+>   # define PR_SET_CHILD_SUBREAPER	36
+>   # define PR_GET_CHILD_SUBREAPER	37
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 4e6310193..76961a684 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -878,6 +878,7 @@ prctl04 prctl04
+>   prctl05 prctl05
+>   prctl06 prctl06
+>   prctl07 prctl07
+> +prctl08 prctl08
+>   
+>   pread01 pread01
+>   pread01_64 pread01_64
+> diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+> index 2178db366..fe36a8e0f 100644
+> --- a/testcases/kernel/syscalls/prctl/.gitignore
+> +++ b/testcases/kernel/syscalls/prctl/.gitignore
+> @@ -6,3 +6,4 @@
+>   /prctl06
+>   /prctl06_execve
+>   /prctl07
+> +/prctl08
+> diff --git a/testcases/kernel/syscalls/prctl/prctl08.c b/testcases/kernel/syscalls/prctl/prctl08.c
+> new file mode 100644
+> index 000000000..9aa15b06d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/prctl/prctl08.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> + *
+> + * Test PR_GET_TIMERSLACK and PR_SET_TIMERSLACK of prctl(2).
+> + * 1)Each thread has two associated timer slack values: a "default"
+> + *   value, and a "current" value. PR_SET_TIMERSLACK sets the "current"
+> + *   timer slack value for the calling thread.
+> + * 2)When a new thread is created, the two timer slack values are made
+> + *   the same as the "current" value of the creating thread.
+> + * 3)The maximum timer slack value is ULONG_MAX. On 32bit machines, it
+> + *   is a valid value(about 4s). On 64bit machines, it is about 500 years
+> + *   and no person will set this over 4s.  prctl return value is int, so
+> + *   we test themaximum value is INT_MAX.
+> + * 4)we also check current value via /proc/self/timerslack_ns if it is
+> + *  supported.
+> + */
 > +
-> +	return timeout * timeout_mul;
-> +}
-
-> +void tst_set_timeout(int timeout)
+> +#include <sys/prctl.h>
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <linux/limits.h>
+> +#include "lapi/syscalls.h"
+> +#include "lapi/prctl.h"
+> +#include "tst_test.h"
+> +
+> +#define PROC_TIMERSLACK_PATH "/proc/self/timerslack_ns"
+> +
+> +static void check_get_timerslack(char *message, unsigned long value);
+> +static void check_inherit_timerslack(char *message, unsigned long value);
+> +
+> +static struct tcase {
+> +	void (*func_check)();
+> +	unsigned long setvalue;
+> +	unsigned long expvalue;
+> +	char message[50];
+> +} tcases[] = {
+> +	{check_get_timerslack, 0, 50000, "Reset"},
+> +	{check_get_timerslack, 1, 1, "Min"},
+> +	{check_get_timerslack, 70000, 70000, "Middle"},
+> +	{check_get_timerslack, INT_MAX, INT_MAX, "Max"},
+> +	{check_inherit_timerslack, 70000, 70000, "Child process"},
+> +};
+> +
+> +static int proc_flag = 1;
+> +
+> +static void check_proc_timerslack(char *message, unsigned long value)
 > +{
->  	if (timeout == -1) {
->  		tst_res(TINFO, "Timeout per run is disabled");
->  		return;
->  	}
+> +	unsigned long proc_value;
+> +
+> +	SAFE_FILE_SCANF(PROC_TIMERSLACK_PATH, "%lu", &proc_value);
+> +	if (proc_value == value)
+> +		tst_res(TPASS, "%s %s  got %lu expectedly",
+> +				message, PROC_TIMERSLACK_PATH, proc_value);
+> +	else
+> +		tst_res(TFAIL, "%s %s expected %lu got %lu",
+> +				message, PROC_TIMERSLACK_PATH, value, proc_value);
+> +}
+> +
+> +static void check_get_timerslack(char *message, unsigned long value)
+> +{
+> +	TEST(prctl(PR_GET_TIMERSLACK));
+> +	if ((unsigned long)TST_RET == value)
+> +		tst_res(TPASS, "%s prctl(PR_GET_TIMERSLACK) got %lu expectedly",
+> +				message, value);
+> +	else
+> +		tst_res(TFAIL, "%s prctl(PR_GET_TIMERSLACK) expected %lu got %lu",
+> +				message, value, TST_RET);
+> +
+> +	if (proc_flag)
+> +		check_proc_timerslack(message, value);
+> +
+> +}
+> +
+> +static void check_inherit_timerslack(char *message, unsigned long value)
+> +{
+> +	int pid;
+> +	unsigned long current_value;
+> +	unsigned long default_value;
+> +
+> +	pid = SAFE_FORK();
+> +	if (pid == 0) {
+> +		current_value = prctl(PR_GET_TIMERSLACK);
+> +		prctl(PR_SET_TIMERSLACK, 0);
+> +		default_value = prctl(PR_GET_TIMERSLACK);
+> +		if (current_value == value && default_value == value)
+> +			tst_res(TPASS,
+> +				"%s two timer slack values are made the same as the current value(%lu) of the creating thread.",
+> +				message, value);
+> +		else
+> +			tst_res(TFAIL,
+> +				"%s current_value is %lu, default value is %lu, the parent current value is %lu",
+> +				message, current_value, default_value, value);
+> +	}
+> +
+> +}
+> +
+> +static void verify_prctl(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_TIMERSLACK, %lu) failed",
+> +					  tc->setvalue);
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS, "prctl(PR_SET_TIMERSLACK, %lu) succeed", tc->setvalue);
+> +	tc->func_check(tc->message, tc->expvalue);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if (access(PROC_TIMERSLACK_PATH, F_OK) == -1) {
+> +		tst_res(TCONF, "proc doesn't support timerslack_ns interface");
+> +		proc_flag = 0;
+> +	}
+> +
+> +	TEST(prctl(PR_GET_TIMERSLACK));
+> +	if (TST_RET == 50000)
+> +		tst_res(TINFO, "current timerslack value is 50us");
+> +	else
+> +		tst_brk(TCONF,
+> +			"current environment doesn't meet test, please set timerslack to 50us");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = verify_prctl,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.forks_child = 1,
+> +};
+> 
 
-> -	results->timeout = timeout;
-> +	if (timeout < 1)
-> +		tst_brk(TBROK, "timeout need to be >= 1! (%d)", timeout);
-need => needs, but better to use must (to be consistent with the previous one:
-		tst_brk(TBROK, "timeout must to be >= 1! (%d)", timeout);
 
-I also wonder, if this check is needed, next step is
-results->timeout = tst_multiply_timeout(timeout);
-which does the same check.
-
-Can be changed with the committer (unless you plan to do v5 for some reason).
-
-> -	if (mul) {
-> -		float m = atof(mul);
-> -
-> -		if (m < 1)
-> -			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul);
-> -
-> -		results->timeout = results->timeout * m + 0.5;
-> -	}
-> +	results->timeout = tst_multiply_timeout(timeout);
-
->  	tst_res(TINFO, "Timeout per run is %uh %02um %02us",
->  		results->timeout/3600, (results->timeout%3600)/60,
-
-Kind regards,
-Petr
