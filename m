@@ -1,39 +1,34 @@
-From: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Date: Tue, 22 Oct 2019 14:31:44 +0200
-Subject: [LTP] [PATCH v4 4/5] Add newlib shell test for
- tst_multiply_timeout()
-In-Reply-To: <20191022080830.GA17235@dell5510>
-References: <20191018124502.25599-1-cfamullaconrad@suse.de>
- <20191018124502.25599-5-cfamullaconrad@suse.de>
- <20191022080830.GA17235@dell5510>
-Message-ID: <1571747504.24936.2.camel@suse.de>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 22 Oct 2019 08:39:59 -0400 (EDT)
+Subject: [LTP] [PATCH] thp02: simplify test to lower memory requirements
+In-Reply-To: <20191022113704.GA13757@rei>
+References: <651aa5d59504efe89ee8428afd95fe90a9bbea38.1571412608.git.jstancek@redhat.com>
+ <20191022113704.GA13757@rei>
+Message-ID: <2016228785.8155247.1571747999778.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 2019-10-22 at 10:08 +0200, Petr Vorel wrote:
-> Hi,
-> 
-> > +do_test()
-> > +{
-> > +	LTP_TIMEOUT_MUL=2
-> > +	local sec=1
-> > +
-> > +	call_it 'tst_multiply_timeout sec' 'sec' 2
-> 
-> still some issue with this patchset. Making the function private
-> (_tst_multiply_timeout), we obviously get warning:
-> test_timeout_mul 1 TWARN: Private variable or function
-> _tst_multiply_timeout used!
-> 
-> Unless we want to to add some special variable for library tests
-> (i.e. TST_IGNORE_WARN), the function cannot be used directly
-> 
-> I suggest to push the patchset change to use float (not to be
-> postponed even
-> more), but without this patchset. Tests should be later added.
 
-+1
+
+----- Original Message -----
+> Hi!
+> > Test is using 4 hugepages per allocation, and makes 4*3 allocations
+> > in total. This is problem for aarch64, where default huge page size
+> > is 512M. Systems are running into unexpected OOMs, because there
+> > is no check for available memory.
+> > 
+> > Simplify test by:
+> > - dropping 3rd allocation, it's used only for pattern comparison
+> > - run test function in new child process, so we don't need to worry
+> >   about cleaning up after mremap() and it lowers overall memory
+> >   requirements
+> > - add a simple check if there's enough memory to setup()
+> > - drop .needs_root, there's no need for it
+> 
+> Looks good, acked.
+
+Pushed.
 
