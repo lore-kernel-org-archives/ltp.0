@@ -1,23 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 22 Oct 2019 15:14:48 +0200
-Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
-In-Reply-To: <20191021144226.GA17885@x230>
-References: <20191018124502.25599-1-cfamullaconrad@suse.de>
- <20191018124502.25599-3-cfamullaconrad@suse.de>
- <20191021125053.GA18513@x230> <1571667476.4633.13.camel@suse.de>
- <20191021144226.GA17885@x230>
-Message-ID: <20191022131448.GA2207@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 22 Oct 2019 16:07:55 +0200
+Subject: [LTP] [PATCH v2 0/2] Add support for a test tags
+Message-ID: <20191022140757.29713-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+This is a newest version of the test tags, first patch adds a support
+for test tags to a test library, the second one annotates tests with
+tags. Not everything is annotated at the moment but fair amount of tests
+is included.
 
-merged with previously announced changes (keep float for C, add underscore to
-tst_multiply_timeout function, fix some formatting, drop 4th commit).
-Thanks all for patience.
+These patches are also a stepping stone for the test metadata project
+that will allow us to do much more than this. You can have a look at:
 
-Kind regards,
-Petr
+https://github.com/metan-ucw/ltp/tree/master/docparse
+
+Also if you run a make in the docparse directory it will generate test
+metadata along with a single html page with nice test metadata
+description.
+
+While the whole project is work-in-progress, the test tags are finished
+and may add a value even without the rest of the changes, see the first
+commit for details.
+
+Changes for v2:
+
+- Made the output more compact both for the -h flag as well as for the
+  failure annotation (see the first commit for example output)
+
+- Changed function name from print_test_info() to print_test_tags()
+
+- Converted two more {NULL, NULL} into {}
+
+Cyril Hrubis (2):
+  lib: Add support for test tags
+  testcases/kernel: Add linux git and CVE tags
+
+ include/tst_test.h                            | 10 ++
+ lib/tst_test.c                                | 91 +++++++++++++++++--
+ testcases/cve/cve-2014-0196.c                 |  5 +
+ testcases/cve/cve-2015-3290.c                 |  5 +
+ testcases/cve/cve-2016-10044.c                |  5 +
+ testcases/cve/cve-2016-7042.c                 |  5 +
+ testcases/cve/cve-2016-7117.c                 |  5 +
+ testcases/cve/cve-2017-16939.c                |  5 +
+ testcases/cve/cve-2017-17052.c                |  5 +
+ testcases/cve/cve-2017-17053.c                |  5 +
+ testcases/cve/cve-2017-2618.c                 |  5 +
+ testcases/cve/cve-2017-2671.c                 |  5 +
+ testcases/cve/meltdown.c                      |  6 +-
+ testcases/cve/stack_clash.c                   |  4 +
+ testcases/kernel/crypto/af_alg01.c            |  5 +
+ testcases/kernel/crypto/af_alg02.c            |  5 +
+ testcases/kernel/crypto/af_alg03.c            |  4 +
+ testcases/kernel/crypto/af_alg04.c            |  4 +
+ testcases/kernel/crypto/af_alg05.c            |  8 +-
+ testcases/kernel/crypto/af_alg06.c            |  4 +
+ testcases/kernel/crypto/crypto_user01.c       |  6 ++
+ testcases/kernel/crypto/crypto_user02.c       |  4 +
+ testcases/kernel/crypto/pcrypt_aead01.c       |  5 +
+ testcases/kernel/sound/snd_timer01.c          |  6 ++
+ testcases/kernel/syscalls/accept/accept02.c   |  5 +
+ testcases/kernel/syscalls/acct/acct02.c       |  4 +
+ testcases/kernel/syscalls/add_key/add_key02.c |  5 +
+ testcases/kernel/syscalls/bpf/bpf_prog02.c    |  4 +
+ testcases/kernel/syscalls/bpf/bpf_prog03.c    |  5 +
+ .../syscalls/futex/futex_cmp_requeue02.c      |  5 +
+ testcases/kernel/syscalls/keyctl/keyctl02.c   |  4 +
+ testcases/kernel/syscalls/keyctl/keyctl04.c   |  5 +
+ testcases/kernel/syscalls/keyctl/keyctl05.c   |  4 +
+ .../kernel/syscalls/move_pages/move_pages12.c |  6 ++
+ .../kernel/syscalls/realpath/realpath01.c     |  4 +
+ .../syscalls/request_key/request_key05.c      |  4 +
+ testcases/kernel/syscalls/sbrk/sbrk03.c       |  4 +
+ testcases/kernel/syscalls/sendto/sendto02.c   |  4 +
+ .../kernel/syscalls/setrlimit/setrlimit06.c   |  4 +
+ 39 files changed, 270 insertions(+), 9 deletions(-)
+
+-- 
+2.21.0
+
