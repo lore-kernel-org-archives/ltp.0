@@ -1,34 +1,23 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 22 Oct 2019 08:39:59 -0400 (EDT)
-Subject: [LTP] [PATCH] thp02: simplify test to lower memory requirements
-In-Reply-To: <20191022113704.GA13757@rei>
-References: <651aa5d59504efe89ee8428afd95fe90a9bbea38.1571412608.git.jstancek@redhat.com>
- <20191022113704.GA13757@rei>
-Message-ID: <2016228785.8155247.1571747999778.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 22 Oct 2019 15:14:48 +0200
+Subject: [LTP] [PATCH v4 2/5] tst_test.c: Add tst_multiply_timeout()
+In-Reply-To: <20191021144226.GA17885@x230>
+References: <20191018124502.25599-1-cfamullaconrad@suse.de>
+ <20191018124502.25599-3-cfamullaconrad@suse.de>
+ <20191021125053.GA18513@x230> <1571667476.4633.13.camel@suse.de>
+ <20191021144226.GA17885@x230>
+Message-ID: <20191022131448.GA2207@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
+merged with previously announced changes (keep float for C, add underscore to
+tst_multiply_timeout function, fix some formatting, drop 4th commit).
+Thanks all for patience.
 
------ Original Message -----
-> Hi!
-> > Test is using 4 hugepages per allocation, and makes 4*3 allocations
-> > in total. This is problem for aarch64, where default huge page size
-> > is 512M. Systems are running into unexpected OOMs, because there
-> > is no check for available memory.
-> > 
-> > Simplify test by:
-> > - dropping 3rd allocation, it's used only for pattern comparison
-> > - run test function in new child process, so we don't need to worry
-> >   about cleaning up after mremap() and it lowers overall memory
-> >   requirements
-> > - add a simple check if there's enough memory to setup()
-> > - drop .needs_root, there's no need for it
-> 
-> Looks good, acked.
-
-Pushed.
-
+Kind regards,
+Petr
