@@ -1,41 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 22 Oct 2019 16:19:46 +0200
-Subject: [LTP] [PATCH v2 1/2] lib: Add support for test tags
-In-Reply-To: <20191022140757.29713-2-chrubis@suse.cz>
-References: <20191022140757.29713-1-chrubis@suse.cz>
- <20191022140757.29713-2-chrubis@suse.cz>
-Message-ID: <20191022141946.GA16121@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 22 Oct 2019 16:36:04 +0200
+Subject: [LTP] EPERM failures for repeated runs
+Message-ID: <20191022143604.GA18468@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+Lately we started to write BPF testcases for LTP and after writing a
+first few tests we found out that running more than a few in a row
+causes them to fail with EPERM.
 
-> +	fprintf(stderr, "Options\n");
-> +	fprintf(stderr, "-------\n\n");
-I still would remove this extra new line:
-	fprintf(stderr, "-------\n");
-> +
->  	for (i = 0; i < ARRAY_SIZE(options); i++)
->  		fprintf(stderr, "%s\n", options[i].help);
+The culprit is deferred cleanup of the bpf maps that are locked in the
+memory, see:
 
-> @@ -424,6 +430,28 @@ static void print_help(void)
->  		fprintf(stderr, "%s\n", tst_test->options[i].help);
->  }
+http://lists.linux.it/pipermail/ltp/2019-August/013349.html
 
-> +static void print_test_tags(void)
-> +{
-> +	unsigned int i;
-> +	const struct tst_tag *tags = tst_test->tags;
-> +
-> +	printf("\nTags\n");
-> +	printf("----\n\n");
-And here:
-	printf("----\n");
+We worked around that by bumping the limit for the tests in:
 
-Otherwise LGTM.
+https://github.com/linux-test-project/ltp/commit/85c4e886b357f7844f6ab8ec5719168c38703a76
 
-Kind regards,
-Petr
+But it looks like this value will not scale, especially for
+architectures that have larger than 4k pages, running four BPF tests in
+a row still fails on ppc64le even with the increased limit.
+
+Perhaps I'm naive but can't we check, in the kernel, if there is
+deferred cleanup in progress if we fail to lock memory for a map and
+retry once it's done?
+
+Or is this intended behavior and should we retry on EPERM in userspace?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
