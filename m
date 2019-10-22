@@ -1,85 +1,225 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Oct 2019 16:07:55 +0200
-Subject: [LTP] [PATCH v2 0/2] Add support for a test tags
-Message-ID: <20191022140757.29713-1-chrubis@suse.cz>
+Date: Tue, 22 Oct 2019 16:07:56 +0200
+Subject: [LTP] [PATCH v2 1/2] lib: Add support for test tags
+In-Reply-To: <20191022140757.29713-1-chrubis@suse.cz>
+References: <20191022140757.29713-1-chrubis@suse.cz>
+Message-ID: <20191022140757.29713-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a newest version of the test tags, first patch adds a support
-for test tags to a test library, the second one annotates tests with
-tags. Not everything is annotated at the moment but fair amount of tests
-is included.
+The newly introduced test tags are generic name-value pairs that can
+hold test metadata, the intended use for now is to store kernel commit
+hashes for kernel reproducers as well as CVE ids. The mechanism is
+however choosen to be very generic so that it's easy to add basically
+any information later on.
 
-These patches are also a stepping stone for the test metadata project
-that will allow us to do much more than this. You can have a look at:
+As it is the main purpose is to print hints for a test failures. If a
+test that has been written as a kernel reproducer fails it prints nice
+URL pointing to a kernel commit that may be missing.
 
-https://github.com/metan-ucw/ltp/tree/master/docparse
+Example output:
 
-Also if you run a make in the docparse directory it will generate test
-metadata along with a single html page with nice test metadata
-description.
+--------------------------------------------------------------------------
+snd_timer01.c:134: FAIL: kernel seems vulnerable
 
-While the whole project is work-in-progress, the test tags are finished
-and may add a value even without the rest of the changes, see the first
-commit for details.
+HINT: You _MAY_ be missing kernel fixes, see:
 
-Changes for v2:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d11662f4f798
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ba3021b2c79b
 
-- Made the output more compact both for the -h flag as well as for the
-  failure annotation (see the first commit for example output)
+HINT: You _MAY_ be vunerable to CVE(s), see:
 
-- Changed function name from print_test_info() to print_test_tags()
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000380
 
-- Converted two more {NULL, NULL} into {}
+Summary:
+passed   0
+failed   1
+skipped  0
+warnings 0
+--------------------------------------------------------------------------
 
-Cyril Hrubis (2):
-  lib: Add support for test tags
-  testcases/kernel: Add linux git and CVE tags
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
- include/tst_test.h                            | 10 ++
- lib/tst_test.c                                | 91 +++++++++++++++++--
- testcases/cve/cve-2014-0196.c                 |  5 +
- testcases/cve/cve-2015-3290.c                 |  5 +
- testcases/cve/cve-2016-10044.c                |  5 +
- testcases/cve/cve-2016-7042.c                 |  5 +
- testcases/cve/cve-2016-7117.c                 |  5 +
- testcases/cve/cve-2017-16939.c                |  5 +
- testcases/cve/cve-2017-17052.c                |  5 +
- testcases/cve/cve-2017-17053.c                |  5 +
- testcases/cve/cve-2017-2618.c                 |  5 +
- testcases/cve/cve-2017-2671.c                 |  5 +
- testcases/cve/meltdown.c                      |  6 +-
- testcases/cve/stack_clash.c                   |  4 +
- testcases/kernel/crypto/af_alg01.c            |  5 +
- testcases/kernel/crypto/af_alg02.c            |  5 +
- testcases/kernel/crypto/af_alg03.c            |  4 +
- testcases/kernel/crypto/af_alg04.c            |  4 +
- testcases/kernel/crypto/af_alg05.c            |  8 +-
- testcases/kernel/crypto/af_alg06.c            |  4 +
- testcases/kernel/crypto/crypto_user01.c       |  6 ++
- testcases/kernel/crypto/crypto_user02.c       |  4 +
- testcases/kernel/crypto/pcrypt_aead01.c       |  5 +
- testcases/kernel/sound/snd_timer01.c          |  6 ++
- testcases/kernel/syscalls/accept/accept02.c   |  5 +
- testcases/kernel/syscalls/acct/acct02.c       |  4 +
- testcases/kernel/syscalls/add_key/add_key02.c |  5 +
- testcases/kernel/syscalls/bpf/bpf_prog02.c    |  4 +
- testcases/kernel/syscalls/bpf/bpf_prog03.c    |  5 +
- .../syscalls/futex/futex_cmp_requeue02.c      |  5 +
- testcases/kernel/syscalls/keyctl/keyctl02.c   |  4 +
- testcases/kernel/syscalls/keyctl/keyctl04.c   |  5 +
- testcases/kernel/syscalls/keyctl/keyctl05.c   |  4 +
- .../kernel/syscalls/move_pages/move_pages12.c |  6 ++
- .../kernel/syscalls/realpath/realpath01.c     |  4 +
- .../syscalls/request_key/request_key05.c      |  4 +
- testcases/kernel/syscalls/sbrk/sbrk03.c       |  4 +
- testcases/kernel/syscalls/sendto/sendto02.c   |  4 +
- .../kernel/syscalls/setrlimit/setrlimit06.c   |  4 +
- 39 files changed, 270 insertions(+), 9 deletions(-)
+---
+ include/tst_test.h | 10 +++++
+ lib/tst_test.c     | 91 ++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 94 insertions(+), 7 deletions(-)
 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 84acf2c59..4a51b6d16 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -108,6 +108,11 @@ int tst_parse_int(const char *str, int *val, int min, int max);
+ int tst_parse_long(const char *str, long *val, long min, long max);
+ int tst_parse_float(const char *str, float *val, float min, float max);
+ 
++struct tst_tag {
++	const char *name;
++	const char *value;
++};
++
+ extern unsigned int tst_variant;
+ 
+ struct tst_test {
+@@ -212,6 +217,11 @@ struct tst_test {
+ 	 * NULL-terminated array of capability settings
+ 	 */
+ 	struct tst_cap *caps;
++
++	/*
++	 * {NULL, NULL} terminated array of tags.
++	 */
++	const struct tst_tag *tags;
+ };
+ 
+ /*
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 6239acf89..639939ca0 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -31,6 +31,9 @@
+ #include "old_device.h"
+ #include "old_tmpdir.h"
+ 
++#define LINUX_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id="
++#define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
++
+ struct tst_test *tst_test;
+ 
+ static const char *tid;
+@@ -414,6 +417,9 @@ static void print_help(void)
+ {
+ 	unsigned int i;
+ 
++	fprintf(stderr, "Options\n");
++	fprintf(stderr, "-------\n\n");
++
+ 	for (i = 0; i < ARRAY_SIZE(options); i++)
+ 		fprintf(stderr, "%s\n", options[i].help);
+ 
+@@ -424,6 +430,28 @@ static void print_help(void)
+ 		fprintf(stderr, "%s\n", tst_test->options[i].help);
+ }
+ 
++static void print_test_tags(void)
++{
++	unsigned int i;
++	const struct tst_tag *tags = tst_test->tags;
++
++	printf("\nTags\n");
++	printf("----\n\n");
++
++	if (tags) {
++		for (i = 0; tags[i].name; i++) {
++			if (!strcmp(tags[i].name, "CVE"))
++				printf(CVE_DB_URL "%s\n", tags[i].value);
++			else if (!strcmp(tags[i].name, "linux-git"))
++				printf(LINUX_GIT_URL "%s\n", tags[i].value);
++			else
++				printf("%s: %s\n", tags[i].name, tags[i].value);
++		}
++	}
++
++	printf("\n");
++}
++
+ static void check_option_collision(void)
+ {
+ 	unsigned int i, j;
+@@ -499,6 +527,7 @@ static void parse_opts(int argc, char *argv[])
+ 		break;
+ 		case 'h':
+ 			print_help();
++			print_test_tags();
+ 			exit(0);
+ 		case 'i':
+ 			iterations = atoi(optarg);
+@@ -584,26 +613,74 @@ int tst_parse_float(const char *str, float *val, float min, float max)
+ 	return 0;
+ }
+ 
++static void print_colored(const char *str)
++{
++	if (tst_color_enabled(STDOUT_FILENO))
++		printf("%s%s%s", ANSI_COLOR_YELLOW, str, ANSI_COLOR_RESET);
++	else
++		printf("%s", str);
++}
++
++static void print_failure_hints(void)
++{
++	unsigned int i;
++	const struct tst_tag *tags = tst_test->tags;
++
++	if (!tags)
++		return;
++
++	int hint_printed = 0;
++	for (i = 0; tags[i].name; i++) {
++		if (!strcmp(tags[i].name, "linux-git")) {
++			if (!hint_printed) {
++				hint_printed = 1;
++				printf("\n");
++				print_colored("HINT: ");
++				printf("You _MAY_ be missing kernel fixes, see:\n\n");
++			}
++
++			printf(LINUX_GIT_URL "%s\n", tags[i].value);
++		}
++
++	}
++
++	hint_printed = 0;
++	for (i = 0; tags[i].name; i++) {
++		if (!strcmp(tags[i].name, "CVE")) {
++			if (!hint_printed) {
++				hint_printed = 1;
++				printf("\n");
++				print_colored("HINT: ");
++				printf("You _MAY_ be vunerable to CVE(s), see:\n\n");
++			}
++
++			printf(CVE_DB_URL "%s\n", tags[i].value);
++		}
++	}
++}
++
+ static void do_exit(int ret)
+ {
+ 	if (results) {
+-		printf("\nSummary:\n");
+-		printf("passed   %d\n", results->passed);
+-		printf("failed   %d\n", results->failed);
+-		printf("skipped  %d\n", results->skipped);
+-		printf("warnings %d\n", results->warnings);
+-
+ 		if (results->passed && ret == TCONF)
+ 			ret = 0;
+ 
+-		if (results->failed)
++		if (results->failed) {
+ 			ret |= TFAIL;
++			print_failure_hints();
++		}
+ 
+ 		if (results->skipped && !results->passed)
+ 			ret |= TCONF;
+ 
+ 		if (results->warnings)
+ 			ret |= TWARN;
++
++		printf("\nSummary:\n");
++		printf("passed   %d\n", results->passed);
++		printf("failed   %d\n", results->failed);
++		printf("skipped  %d\n", results->skipped);
++		printf("warnings %d\n", results->warnings);
+ 	}
+ 
+ 	do_cleanup();
 -- 
 2.21.0
 
