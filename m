@@ -1,37 +1,71 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Oct 2019 16:36:04 +0200
-Subject: [LTP] EPERM failures for repeated runs
-Message-ID: <20191022143604.GA18468@rei>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Tue, 22 Oct 2019 14:44:53 -0300
+Subject: [LTP] [PATCH] fs/binfmt_misc02.sh: Fix local variable
+ assignment for dash
+In-Reply-To: <20191022025456.15711-1-ice_yangxiao@163.com>
+References: <20191022025456.15711-1-ice_yangxiao@163.com>
+Message-ID: <20191022174452.GB4055@calabresa>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Lately we started to write BPF testcases for LTP and after writing a
-first few tests we found out that running more than a few in a row
-causes them to fail with EPERM.
+On Tue, Oct 22, 2019 at 10:54:56AM +0800, Xiao Yang wrote:
+> Only the first one can be accepted if more than one string are assigned
+> to local valiable.  For example, only "This" is assigned to $string:
+> ------------------------------------
+> tstring="This is test for extension"
+> ...
+> local string=$tstring
+> ------------------------------------
+> 
+> We add a pair of quotes to fix the issue now. Besides we can also fix
+> the issue by splitting declaration and assignment(e.g. local string &
+> string=$tstring).
+> 
+> See the explanation from:
+> https://wiki.ubuntu.com/DashAsBinSh#local
+> 
+> Fixes: #601
+> Reported-by: limingyu <limingyu@deepin.com>
+> Suggested-by: limingyu <limingyu@deepin.com>
+> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
 
-The culprit is deferred cleanup of the bpf maps that are locked in the
-memory, see:
+This fixes a problem we have been seeing.
 
-http://lists.linux.it/pipermail/ltp/2019-August/013349.html
+Tested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 
-We worked around that by bumping the limit for the tests in:
-
-https://github.com/linux-test-project/ltp/commit/85c4e886b357f7844f6ab8ec5719168c38703a76
-
-But it looks like this value will not scale, especially for
-architectures that have larger than 4k pages, running four BPF tests in
-a row still fails on ppc64le even with the increased limit.
-
-Perhaps I'm naive but can't we check, in the kernel, if there is
-deferred cleanup in progress if we fail to lock memory for a map and
-retry once it's done?
-
-Or is this intended behavior and should we retry on EPERM in userspace?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
+> index 8d0ecd895..9dbcd68cc 100755
+> --- a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
+> +++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
+> @@ -26,7 +26,7 @@ TST_NEEDS_CMDS="which cat head"
+>  recognised_unrecognised()
+>  {
+>  	local file=$1
+> -	local string=$2
+> +	local string="$2"
+>  
+>  	eval $file >temp 2>&1
+>  	if [ $? -ne 0 ] || ! grep -q "$string" temp; then
+> @@ -52,7 +52,7 @@ recognised_unrecognised()
+>  unrecognised()
+>  {
+>  	local file=$1
+> -	local string=$2
+> +	local string="$2"
+>  
+>  	eval $file >temp 2>&1
+>  	if [ $? -eq 0 ] || grep -q "$string" temp; then
+> -- 
+> 2.21.0
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
