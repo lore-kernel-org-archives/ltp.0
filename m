@@ -1,41 +1,75 @@
-From: Xiang Li <lixian@qti.qualcomm.com>
-Date: Wed, 23 Oct 2019 10:10:08 +0000
-Subject: [LTP] Bug report in read_all.c
-In-Reply-To: <20191023100534.GA17426@rei.lan>
-References: <0641c15377874db893088e4f65102ec6@aptaiexm02f.ap.qualcomm.com>
- <20191022121222.GA15798@rei>
- <382857de8dca46e996b06ceb482cb911@apsanexr02f.ap.qualcomm.com>
- <20191023100534.GA17426@rei.lan>
-Message-ID: <a4fd7012860d4c989e491ee54c1a3ada@aptaiexm02f.ap.qualcomm.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 23 Oct 2019 14:19:03 +0200
+Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
+ false positives
+In-Reply-To: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+Message-ID: <20191023121901.GA25868@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Okay, I'll keep that in mind.
-Thanks for your reply.
+Hi Jan,
 
-Regards,
-Xiang
+...
+> -lsmod_test()
+> +lsmod_matches_proc_modules()
+>  {
+>  	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
+>  	if [ -z "$lsmod_output" ]; then
+> -		tst_res TFAIL "Failed to parse the output from lsmod"
+> -		return
+> +		tst_brk TBROK "Failed to parse the output from lsmod"
+>  	fi
 
------Original Message-----
-From: Cyril Hrubis <chrubis@suse.cz> 
-Sent: Wednesday, October 23, 2019 6:06 PM
-To: Xiang Li <lixian@qti.qualcomm.com>
-Cc: ltp@lists.linux.it; Richard Palethorpe <rpalethorpe@suse.de>
-Subject: [EXT] Re: [LTP] Bug report in read_all.c
+> -	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
+> +	modules_output=$(awk '{print $1, $2, $3} 1' /proc/modules | sort)
+>  	if [ -z "$modules_output" ]; then
+> -		tst_res TFAIL "Failed to parse /proc/modules"
+> -		return
+> +		tst_brk TBROK "Failed to parse /proc/modules"
+>  	fi
 
-Hi!
-> Thanks for Richard's suggestion. I've put it in the patch.
-> Please check the attached patch file for review. 
+>  	if [ "$lsmod_output" != "$modules_output" ]; then
+> -		tst_res TFAIL "lsmod output different from /proc/modules."
+> +		tst_res TINFO "lsmod output different from /proc/modules."
 
-Pushed.
+>  		echo "$lsmod_output" > temp1
+>  		echo "$modules_output" > temp2
+>  		diff temp1 temp2
 
-I've adjusted the commit message and got rid of the trailing whitespaces in the patch as well.
+> -		return
+> +		return 1
+>  	fi
+> +	return 0
+> +}
 
-Also as Ritchie said, patches are usually send inline and not as attached, and this could be done with git send-email.
+> -	tst_res TPASS "'lsmod' passed."
+> +lsmod_test()
+> +{
+> +	for i in $(seq 1 5); do
+> +		if lsmod_matches_proc_modules; then
+> +			tst_res TPASS "'lsmod' passed."
+> +			return
+> +		fi
+> +		tst_res TINFO "Trying again"
+> +		sleep 1
+> +	done
+This is similar pattern to TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF()
+(for both shell and C). I wonder if we also have use for TPASS/TFAIL
+instead of just TBROK and specifying number of tries instead of time to be
+setup.
+C and shell usage is a bit different, so maybe
+TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF() doesn't make much sense for shell
+(actually nothing uses them in shell) and I don't see much usage for my proposal
+in C.
 
---
-Cyril Hrubis
-chrubis@suse.cz
+> +	tst_res TFAIL "'lsmod' doesn't match /proc/modules output"
+
++ we forget to use local (for lsmod_outputa and i), but that's not that
+important.
+
+Kind regards,
+Petr
