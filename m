@@ -1,74 +1,74 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Oct 2019 18:06:40 +0200
-Subject: [LTP] [PATCH v2 1/2] lib: Add support for test tags
-In-Reply-To: <CAEemH2f2D4PjaMaOE_ADUqg5igEi97nHBsH6A7qXtO-2KO7btg@mail.gmail.com>
-References: <20191022140757.29713-1-chrubis@suse.cz>
- <20191022140757.29713-2-chrubis@suse.cz>
- <CAEemH2eCpbAuU2xYNtiv9Wq4VwHJE2dZRXnO9v+2H=1=JQJUXQ@mail.gmail.com>
- <1270016842.8517878.1571817492480.JavaMail.zimbra@redhat.com>
- <CAEemH2f2D4PjaMaOE_ADUqg5igEi97nHBsH6A7qXtO-2KO7btg@mail.gmail.com>
-Message-ID: <20191023160640.GA17663@rei>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Wed, 23 Oct 2019 14:50:31 -0300
+Subject: [LTP] [PATCH] timer_create01: accept kernel ENOTSUPP
+In-Reply-To: <20191023153631.GA12897@rei>
+References: <cb6173ec393a23949ec40c9747fc7f75fed2591f.1571838908.git.jstancek@redhat.com>
+ <1714198769.8739783.1571839133168.JavaMail.zimbra@redhat.com>
+ <20191023140408.GC4055@calabresa>
+ <6089b924-8dbe-c43d-72d9-a4086a13b0d5@suse.cz>
+ <20191023143510.GA10116@rei> <20191023145640.GD4055@calabresa>
+ <20191023153631.GA12897@rei>
+Message-ID: <20191023175030.GE4055@calabresa>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Sorry, thanks for the reminder.
-> [I copied the below code to gmail, it always lost the indent]
+On Wed, Oct 23, 2019 at 05:36:31PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > Beware that kernel defines ENOTSUP that is not equal to EOPNOTSUPP and
+> > > in this case this value leaked to userspace leading to invalid userspace
+> > > errno value.
+> > 
+> > That was ENOTSUPP (the internal kernel error, defined as 524). ENOTSUP, defined
+> > as EOPNOTSUPP, is the userspace error I guess Martin is saying should not be
+> > used either.
 > 
-> static void print_failure_hints(void)
-> {
->         unsigned int i;
->         int hint_printed = 0;
->         const struct tst_tag *tags = tst_test->tags;
+> Ah, right, I misunderstand that.
 > 
->         if (!tags)
->                 return;
+> > In that case, we need to fix the kernel to return EINVAL instead. Looking at
+> > older changes here, I see commit 98d6f4dd84a134d942827584a3c5f67ffd8ec35f
+> > ("alarmtimer: return EINVAL instead of ENOTSUPP if rtcdev doesn't exist")
+> > claiming exactly this. Though it was about clock_getres and clock_gettime,
+> > quoting from that commit:
+> > 
+> > "
+> >     Second, Posix and Linux man pages agree that clock_gettime and
+> >     clock_getres should return EINVAL if clk_id argument is invalid.
+> >     While the arugment that the clockid is valid, but just not supported
+> >     on this hardware could be made, this is just a technicality that
+> >     doesn't help userspace applicaitons, and only complicates error
+> >     handling.
+> > "
 > 
->         for (i = 0; tags[i].name; i++) {
->                 if (!strcmp(tags[i].name, "linux-git")) {
->                         if (hint_printed != 1) {
->                                 hint_printed = 1;
->                                 print_colored("\nHINT: ");
->                                 printf("You _MAY_ be missing kernel fixes,
-> see:\n\n");
->                         }
+> I would disagree, if you check latest POSIX it has:
 > 
->                         printf(LINUX_GIT_URL "%s\n", tags[i].value);
->                 } else if (!strcmp(tags[i].name, "CVE")) {
->                          if (hint_printed != 2) {
->                                  hint_printed = 2;
->                                  print_colored("\nHINT: ");
->                                  printf("You _MAY_ be vunerable to CVE(s),
-> see:\n\n");
->                           }
+> [ENOTSUP]
+>     The implementation does not support the creation of a timer attached
+>     to the CPU-time clock that is specified by clock_id and associated
+>     with a process or thread different from the process or thread
+>     invoking timer_create().
 > 
->                         printf(CVE_DB_URL "%s\n", tags[i].value);
+> https://pubs.opengroup.org/onlinepubs/9699919799/
+> 
+> So the implementation is required to return ENOTSUPP in certain cases
+> anyways so applying it to CLOCK_REALTIME_ALARM and
+> CLOCK_BOOTTIME_ALARM certainly makes sense.
+> 
 
-This would produce intermixed CVE and linux-git lines unless the tags
-are sorted correctly in the source code, I do not want to depend on the
-order hence the two loops.
+So, if this is a matter of EOPNOTSUPP versus ENOTSUP (the userspace ones), then
+the code that is applied to LTP uses ENOTSUP, which is what POSIX uses, so all
+fine from the LTP standpoint.
 
->                 } else {
->                         print_colored("\nERROR: ");
->                         printf("tags[%d].name should be linux-git or
-> CVE\n", i);
->                         return;
+To be honest, I am relieved about not getting to go through the process of
+fixing this in the kernel once again.
 
-I've tried to explain to pvorel already that this is a wrong place to
-assert the tag names. If nothing else this piece of code will be rarely
-triggered and the error would end up ignored.
+Maybe we should even do the opposite and make clock_gettime and clock_getres
+return ENOTSUP/EOPNOTSUPP.
 
-I plan to assert the tag names in the docparse tool that will build the
-test metadata during the LTP build, so that wrong metadata will actually
-fail the LTP build.
+Cascardo.
 
->                 }
->         }
-> }
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
