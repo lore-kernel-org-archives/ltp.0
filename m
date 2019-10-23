@@ -1,14 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Oct 2019 17:38:03 +0200
-Subject: [LTP] [PATCH] timer_create01: accept kernel ENOTSUPP
-In-Reply-To: <20191023153631.GA12897@rei>
-References: <cb6173ec393a23949ec40c9747fc7f75fed2591f.1571838908.git.jstancek@redhat.com>
- <1714198769.8739783.1571839133168.JavaMail.zimbra@redhat.com>
- <20191023140408.GC4055@calabresa>
- <6089b924-8dbe-c43d-72d9-a4086a13b0d5@suse.cz>
- <20191023143510.GA10116@rei> <20191023145640.GD4055@calabresa>
- <20191023153631.GA12897@rei>
-Message-ID: <20191023153802.GB12897@rei>
+Date: Wed, 23 Oct 2019 18:06:40 +0200
+Subject: [LTP] [PATCH v2 1/2] lib: Add support for test tags
+In-Reply-To: <CAEemH2f2D4PjaMaOE_ADUqg5igEi97nHBsH6A7qXtO-2KO7btg@mail.gmail.com>
+References: <20191022140757.29713-1-chrubis@suse.cz>
+ <20191022140757.29713-2-chrubis@suse.cz>
+ <CAEemH2eCpbAuU2xYNtiv9Wq4VwHJE2dZRXnO9v+2H=1=JQJUXQ@mail.gmail.com>
+ <1270016842.8517878.1571817492480.JavaMail.zimbra@redhat.com>
+ <CAEemH2f2D4PjaMaOE_ADUqg5igEi97nHBsH6A7qXtO-2KO7btg@mail.gmail.com>
+Message-ID: <20191023160640.GA17663@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,29 +15,59 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I would disagree, if you check latest POSIX it has:
+> Sorry, thanks for the reminder.
+> [I copied the below code to gmail, it always lost the indent]
 > 
-> [ENOTSUP]
->     The implementation does not support the creation of a timer attached
->     to the CPU-time clock that is specified by clock_id and associated
->     with a process or thread different from the process or thread
->     invoking timer_create().
+> static void print_failure_hints(void)
+> {
+>         unsigned int i;
+>         int hint_printed = 0;
+>         const struct tst_tag *tags = tst_test->tags;
 > 
-> https://pubs.opengroup.org/onlinepubs/9699919799/
+>         if (!tags)
+>                 return;
 > 
-> So the implementation is required to return ENOTSUPP in certain cases
-                                               ^
-					       And again, should have
-					       been ENOTSUP!
-> anyways so applying it to CLOCK_REALTIME_ALARM and
-> CLOCK_BOOTTIME_ALARM certainly makes sense.
+>         for (i = 0; tags[i].name; i++) {
+>                 if (!strcmp(tags[i].name, "linux-git")) {
+>                         if (hint_printed != 1) {
+>                                 hint_printed = 1;
+>                                 print_colored("\nHINT: ");
+>                                 printf("You _MAY_ be missing kernel fixes,
+> see:\n\n");
+>                         }
 > 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+>                         printf(LINUX_GIT_URL "%s\n", tags[i].value);
+>                 } else if (!strcmp(tags[i].name, "CVE")) {
+>                          if (hint_printed != 2) {
+>                                  hint_printed = 2;
+>                                  print_colored("\nHINT: ");
+>                                  printf("You _MAY_ be vunerable to CVE(s),
+> see:\n\n");
+>                           }
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>                         printf(CVE_DB_URL "%s\n", tags[i].value);
+
+This would produce intermixed CVE and linux-git lines unless the tags
+are sorted correctly in the source code, I do not want to depend on the
+order hence the two loops.
+
+>                 } else {
+>                         print_colored("\nERROR: ");
+>                         printf("tags[%d].name should be linux-git or
+> CVE\n", i);
+>                         return;
+
+I've tried to explain to pvorel already that this is a wrong place to
+assert the tag names. If nothing else this piece of code will be rarely
+triggered and the error would end up ignored.
+
+I plan to assert the tag names in the docparse tool that will build the
+test metadata during the LTP build, so that wrong metadata will actually
+fail the LTP build.
+
+>                 }
+>         }
+> }
 
 -- 
 Cyril Hrubis
