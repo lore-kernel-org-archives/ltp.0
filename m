@@ -1,74 +1,60 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Wed, 23 Oct 2019 14:50:31 -0300
-Subject: [LTP] [PATCH] timer_create01: accept kernel ENOTSUPP
-In-Reply-To: <20191023153631.GA12897@rei>
-References: <cb6173ec393a23949ec40c9747fc7f75fed2591f.1571838908.git.jstancek@redhat.com>
- <1714198769.8739783.1571839133168.JavaMail.zimbra@redhat.com>
- <20191023140408.GC4055@calabresa>
- <6089b924-8dbe-c43d-72d9-a4086a13b0d5@suse.cz>
- <20191023143510.GA10116@rei> <20191023145640.GD4055@calabresa>
- <20191023153631.GA12897@rei>
-Message-ID: <20191023175030.GE4055@calabresa>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 23 Oct 2019 20:28:47 +0200
+Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
+ false positives
+In-Reply-To: <463301336.8732968.1571837306503.JavaMail.zimbra@redhat.com>
+References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
+ <20191023121901.GA25868@dell5510>
+ <463301336.8732968.1571837306503.JavaMail.zimbra@redhat.com>
+Message-ID: <20191023182845.GA2863@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 23, 2019 at 05:36:31PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > Beware that kernel defines ENOTSUP that is not equal to EOPNOTSUPP and
-> > > in this case this value leaked to userspace leading to invalid userspace
-> > > errno value.
-> > 
-> > That was ENOTSUPP (the internal kernel error, defined as 524). ENOTSUP, defined
-> > as EOPNOTSUPP, is the userspace error I guess Martin is saying should not be
-> > used either.
-> 
-> Ah, right, I misunderstand that.
-> 
-> > In that case, we need to fix the kernel to return EINVAL instead. Looking at
-> > older changes here, I see commit 98d6f4dd84a134d942827584a3c5f67ffd8ec35f
-> > ("alarmtimer: return EINVAL instead of ENOTSUPP if rtcdev doesn't exist")
-> > claiming exactly this. Though it was about clock_getres and clock_gettime,
-> > quoting from that commit:
-> > 
-> > "
-> >     Second, Posix and Linux man pages agree that clock_gettime and
-> >     clock_getres should return EINVAL if clk_id argument is invalid.
-> >     While the arugment that the clockid is valid, but just not supported
-> >     on this hardware could be made, this is just a technicality that
-> >     doesn't help userspace applicaitons, and only complicates error
-> >     handling.
-> > "
-> 
-> I would disagree, if you check latest POSIX it has:
-> 
-> [ENOTSUP]
->     The implementation does not support the creation of a timer attached
->     to the CPU-time clock that is specified by clock_id and associated
->     with a process or thread different from the process or thread
->     invoking timer_create().
-> 
-> https://pubs.opengroup.org/onlinepubs/9699919799/
-> 
-> So the implementation is required to return ENOTSUPP in certain cases
-> anyways so applying it to CLOCK_REALTIME_ALARM and
-> CLOCK_BOOTTIME_ALARM certainly makes sense.
-> 
+Hi Jan,
 
-So, if this is a matter of EOPNOTSUPP versus ENOTSUP (the userspace ones), then
-the code that is applied to LTP uses ENOTSUP, which is what POSIX uses, so all
-fine from the LTP standpoint.
+> > > -	tst_res TPASS "'lsmod' passed."
+> > > +lsmod_test()
+> > > +{
+> > > +	for i in $(seq 1 5); do
+> > > +		if lsmod_matches_proc_modules; then
+> > > +			tst_res TPASS "'lsmod' passed."
+> > > +			return
+> > > +		fi
+> > > +		tst_res TINFO "Trying again"
+> > > +		sleep 1
+> > > +	done
+> > This is similar pattern to TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF()
+> > (for both shell and C). I wonder if we also have use for TPASS/TFAIL
+> > instead of just TBROK and specifying number of tries instead of time to be
+> > setup.
 
-To be honest, I am relieved about not getting to go through the process of
-fixing this in the kernel once again.
+> I think TFAIL fits more here, it's outcome of what we are testing.
+> TBROK in my mind is failure unrelated to subject of test.
+I express myself wrong. Sure, I meant to have TPASS/TFAIL,
+just to use some helper function instead of writing the wrapper in the test.
 
-Maybe we should even do the opposite and make clock_gettime and clock_getres
-return ENOTSUP/EOPNOTSUPP.
+> But functionally TST_RETRY_FUNC should work too. 
 
-Cascardo.
+> > C and shell usage is a bit different, so maybe
+> > TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF() doesn't make much sense for shell
 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> I see it used in mkswap01.sh and numa01.sh.
+Sorry, I searched just TST_RETRY_FN_EXP_BACKOFF.
+Correct, TST_RETRY_FUNC is used there.
+
+> I wonder if we need to TBROK in TST_RETRY_FUNC(). We could just return
+> what the FUNC returns and let the test decide.
+> TST_RETRY_FUNC_BRK() could be a wrapper that TBROKs on timeout.
+That could work (apart from the fact it diverges the functionality from C).
++ there could be the third one, which TPASS/TFAIL (instead of nothing/TBROK).
+
+But this should be based on TST_RETRY_FN_EXP_BACKOFF (TST_RETRY_FUNC is reusing
+TST_RETRY_FN_EXP_BACKOFF) + add also TST_RETRY_FUNC wrappers.
+
+Do we need similar functionality in C?
+
+Kind regards,
+Petr
