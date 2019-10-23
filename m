@@ -1,34 +1,46 @@
-From: Ping Fang <pifang@redhat.com>
-Date: Wed, 23 Oct 2019 10:56:06 +0800
-Subject: [LTP] [PATCH] syscalls/pkeys/pkey01: build fail MAP_HUGETLB undefine
-Message-ID: <20191023025606.24449-1-pifang@redhat.com>
+From: Xiang Li <lixian@qti.qualcomm.com>
+Date: Wed, 23 Oct 2019 03:23:42 +0000
+Subject: [LTP] Bug report in read_all.c
+In-Reply-To: <20191022121222.GA15798@rei>
+References: <0641c15377874db893088e4f65102ec6@aptaiexm02f.ap.qualcomm.com>
+ <20191022121222.GA15798@rei>
+Message-ID: <382857de8dca46e996b06ceb482cb911@apsanexr02f.ap.qualcomm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-build fail on old distro(based glibc-2.12.1 2010-08-03)
-MAP_HUGELTB introduced in glibc-2.11.3 2010-11-30.
-include lapi/mmap.h to fix it.
+Hi,
 
-Signed-off-by: Ping Fang <pifang@redhat.com>
----
- testcases/kernel/syscalls/pkeys/pkey.h | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for Richard's suggestion. I've put it in the patch.
+Please check the attached patch file for review. 
 
-diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
-index 3c1204978..6e32326b6 100644
---- a/testcases/kernel/syscalls/pkeys/pkey.h
-+++ b/testcases/kernel/syscalls/pkeys/pkey.h
-@@ -9,6 +9,7 @@
- 
- #include "tst_test.h"
- #include "lapi/syscalls.h"
-+#include "lapi/mmap.h"
- 
- #ifndef PKEY_DISABLE_ACCESS
- # define PKEY_DISABLE_ACCESS 0x1
--- 
-2.21.0
+Regards,
+Xiang
 
+
+-----Original Message-----
+From: Cyril Hrubis <chrubis@suse.cz> 
+Sent: Tuesday, October 22, 2019 8:12 PM
+To: Xiang Li <lixian@qti.qualcomm.com>
+Cc: ltp@lists.linux.it
+Subject: [EXT] Re: [LTP] Bug report in read_all.c
+
+Hi!
+> Modifying i + 1 to (i + 1) % QUEUE_SIZE at the source code Line#123 can easily fix it.
+> This bug is not triggered on every machine because the files are different between target machine.
+> Adjust the length of the QUEUE_SIZE will help you reproduce this bug.
+
+Can you send a patch that I can apply (ideally with the suggestion from Ritchie as well)?
+
+--
+Cyril Hrubis
+chrubis@suse.cz
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-memory-read-overflow-when-a-full-file-path-store.patch
+Type: application/octet-stream
+Size: 1234 bytes
+Desc: 0001-Fix-memory-read-overflow-when-a-full-file-path-store.patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191023/9572d1a1/attachment.obj>
