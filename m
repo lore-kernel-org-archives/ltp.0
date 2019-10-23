@@ -1,47 +1,61 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 23 Oct 2019 09:28:26 -0400 (EDT)
-Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
- false positives
-In-Reply-To: <20191023121901.GA25868@dell5510>
-References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
- <20191023121901.GA25868@dell5510>
-Message-ID: <463301336.8732968.1571837306503.JavaMail.zimbra@redhat.com>
+Date: Wed, 23 Oct 2019 15:56:04 +0200
+Subject: [LTP] [PATCH] timer_create01: accept kernel ENOTSUPP
+Message-ID: <cb6173ec393a23949ec40c9747fc7f75fed2591f.1571838908.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+ENOTSUP in userspace is alias for EOPNOTSUPP, so the test still fails.
+Add definition of kernel's ENOTSUPP and use that.
 
------ Original Message -----
-> 
-> > -	tst_res TPASS "'lsmod' passed."
-> > +lsmod_test()
-> > +{
-> > +	for i in $(seq 1 5); do
-> > +		if lsmod_matches_proc_modules; then
-> > +			tst_res TPASS "'lsmod' passed."
-> > +			return
-> > +		fi
-> > +		tst_res TINFO "Trying again"
-> > +		sleep 1
-> > +	done
-> This is similar pattern to TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF()
-> (for both shell and C). I wonder if we also have use for TPASS/TFAIL
-> instead of just TBROK and specifying number of tries instead of time to be
-> setup.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/lapi/errno.h                                    | 11 +++++++++++
+ testcases/kernel/syscalls/timer_create/timer_create01.c |  3 ++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 include/lapi/errno.h
 
-I think TFAIL fits more here, it's outcome of what we are testing.
-TBROK in my mind is failure unrelated to subject of test.
-
-But functionally TST_RETRY_FUNC should work too. 
-
-> C and shell usage is a bit different, so maybe
-> TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF() doesn't make much sense for shell
-
-I see it used in mkswap01.sh and numa01.sh.
-
-I wonder if we need to TBROK in TST_RETRY_FUNC(). We could just return
-what the FUNC returns and let the test decide.
-TST_RETRY_FUNC_BRK() could be a wrapper that TBROKs on timeout.
+diff --git a/include/lapi/errno.h b/include/lapi/errno.h
+new file mode 100644
+index 000000000000..22c2d4d279d8
+--- /dev/null
++++ b/include/lapi/errno.h
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Linux Test Project
++ */
++
++#ifndef _LAPI_ERRNO_H_
++#define _LAPI_ERRNO_H_
++
++#define K_ENOTSUPP	524	/* Operation is not supported */
++
++#endif
+diff --git a/testcases/kernel/syscalls/timer_create/timer_create01.c b/testcases/kernel/syscalls/timer_create/timer_create01.c
+index 1d0e400d3260..968f917e7876 100644
+--- a/testcases/kernel/syscalls/timer_create/timer_create01.c
++++ b/testcases/kernel/syscalls/timer_create/timer_create01.c
+@@ -27,6 +27,7 @@
+ #include <time.h>
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
++#include "lapi/errno.h"
+ #include "lapi/common_timers.h"
+ 
+ static struct notif_type {
+@@ -81,7 +82,7 @@ static void run(unsigned int n)
+ 
+ 		if (TST_RET != 0) {
+ 			if (possibly_unsupported(clock) &&
+-			    (TST_ERR == EINVAL || TST_ERR == ENOTSUP)) {
++			    (TST_ERR == EINVAL || TST_ERR == K_ENOTSUPP)) {
+ 				tst_res(TPASS | TTERRNO,
+ 					"%s unsupported, failed as expected",
+ 					get_clock_str(clock));
+-- 
+1.8.3.1
 
