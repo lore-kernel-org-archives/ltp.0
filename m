@@ -1,237 +1,370 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 23 Oct 2019 17:00:26 +0800
-Subject: [LTP] [PATCH v2 1/6] syscalls/quotactl: Don't use ltp-quota.m4
+Date: Wed, 23 Oct 2019 17:00:29 +0800
+Subject: [LTP] [PATCH v2 4/6] syscalls/quotactl02.c: Add Q_XGETQSTATV and
+ Q_XQUOTARM test
 In-Reply-To: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1571821231-3846-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1571821231-3846-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current quotactl01.c has logic problem. There is no relation between
-Q_GETINFO and quota format. The format should depend on quotacheck -F and
-kernel config such as CONFIG_QFMT_V1 or CONFIG_QFMT_V2(most linux distributions
-use the v2).
+Q_XGETQSTATV returns XFS filesystem-specific quota information in the fs_quota_statv
+pointed to by addr. The qs_version field of the structure should be filled with
+the version of the structure supported by the caller (for now, only FS_QSTAT_VERSION1
+is supported).
 
-Q_GETINFO cmd was introduced since Linux 2.4.22, we don't need to
-check it now.  Also, specfiy quota format to QFMT_VFS_V0 by quotacheck
--F and check CONFIG_QFMT_V2 in kernel config to avoid issue such as#189[1].
-So in quotactl01.c, we don't need to use the macro of ltp-quota.m4.
-In quotactl0[2-3].c, we don't need to check very basic header <sys/quota.h>
-(it was introdued in glibc since 1997). Remove quota version macro.
+Q_XQUOTARM free the disk space taken by disk quotas and quotas must have already been
+turned off.
 
-Don't remove ltp-quota.m4 because I will rewrite it to detect
-if_nextdqblk struct for Q_GETNEXTQUOTA cmd on the coming patch.
-
-[1]https://github.com/linux-test-project/ltp/issues/189
+Also increase coverage to test group quota.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- .../kernel/syscalls/quotactl/quotactl01.c     | 47 +++++++------------
- .../kernel/syscalls/quotactl/quotactl02.c     |  8 +---
- .../kernel/syscalls/quotactl/quotactl03.c     |  9 ++--
- 3 files changed, 22 insertions(+), 42 deletions(-)
+ include/lapi/quotactl.h                       |   8 +
+ m4/ltp-quota.m4                               |   2 +
+ .../kernel/syscalls/quotactl/quotactl02.c     | 200 +++++++++++++++---
+ 3 files changed, 182 insertions(+), 28 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
-index bcb1b842c..b0be525d6 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-@@ -39,26 +39,12 @@
+diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
+index 99f4e5fc5..f1e404256 100644
+--- a/include/lapi/quotactl.h
++++ b/include/lapi/quotactl.h
+@@ -10,6 +10,14 @@
  
- #include "tst_test.h"
+ #include <linux/quota.h>
  
--#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
- # include <sys/quota.h>
- 
--# if defined(HAVE_QUOTAV2)
--#  define _LINUX_QUOTA_VERSION  2
--#  ifndef QFMT_VFS_V0
--#   define QFMT_VFS_V0     2
--#  endif
-+#  define QFMT_VFS_V0     2
- #  define USRPATH MNTPOINT "/aquota.user"
- #  define GRPPATH MNTPOINT "/aquota.group"
- #  define FMTID	QFMT_VFS_V0
--# else
--#  define _LINUX_QUOTA_VERSION  1
--#  ifndef QFMT_VFS_OLD
--#   define QFMT_VFS_OLD    1
--#  endif
--#  define USRPATH MNTPOINT "/quota.user"
--#  define GRPPATH MNTPOINT "/quota.group"
--#  define FMTID	QFMT_VFS_OLD
--# endif
- 
- # define MNTPOINT	"mntpoint"
- 
-@@ -69,14 +55,13 @@ static struct dqblk set_dq = {
- 	.dqb_valid = QIF_BLIMITS
- };
- static struct dqblk res_dq;
--# if defined(HAVE_QUOTAV2)
++# ifndef Q_XQUOTARM
++#  define Q_XQUOTARM XQM_CMD(6)
++# endif
 +
- static struct dqinfo set_qf = {
- 	.dqi_bgrace = 80,
- 	.dqi_valid = IIF_BGRACE
- };
- static struct dqinfo res_qf;
- static int32_t fmt_buf;
--# endif
- 
- static struct tcase {
- 	int cmd;
-@@ -96,7 +81,7 @@ static struct tcase {
- 	{QCMD(Q_GETQUOTA, USRQUOTA), &test_id, &res_dq,
- 	&set_dq.dqb_bsoftlimit, &res_dq.dqb_bsoftlimit,
- 	sizeof(res_dq.dqb_bsoftlimit), "get disk quota limit for user"},
--# if defined(HAVE_QUOTAV2)
++# ifndef Q_XGETQSTATV
++#  define Q_XGETQSTATV XQM_CMD(8)
++# endif
 +
- 	{QCMD(Q_SETINFO, USRQUOTA), &test_id, &set_qf,
- 	NULL, NULL, 0, "set information about quotafile for user"},
+ # ifndef Q_XGETNEXTQUOTA
+ #  define Q_XGETNEXTQUOTA XQM_CMD(9)
+ # endif
+diff --git a/m4/ltp-quota.m4 b/m4/ltp-quota.m4
+index 964c34925..688c7c5f7 100644
+--- a/m4/ltp-quota.m4
++++ b/m4/ltp-quota.m4
+@@ -4,4 +4,6 @@ dnl Copyright (c) 2019 Fujitsu Ltd.
  
-@@ -107,7 +92,7 @@ static struct tcase {
- 	{QCMD(Q_GETFMT, USRQUOTA), &test_id, &fmt_buf,
- 	&fmt_id, &fmt_buf, sizeof(fmt_buf),
- 	"get quota format for user"},
--# endif
+ AC_DEFUN([LTP_CHECK_SYSCALL_QUOTACTL],[
+ AC_CHECK_TYPES([struct if_nextdqblk],,,[#include <linux/quota.h>])
++AC_CHECK_TYPES([struct fs_quota_statv],,,[#include <xfs/xqm.h>])
 +
- 	{QCMD(Q_SYNC, USRQUOTA), &test_id, &res_dq,
- 	NULL, NULL, 0, "update quota usages for user"},
- 
-@@ -123,7 +108,7 @@ static struct tcase {
- 	{QCMD(Q_GETQUOTA, GRPQUOTA), &test_id, &res_dq, &set_dq.dqb_bsoftlimit,
- 	&res_dq.dqb_bsoftlimit, sizeof(res_dq.dqb_bsoftlimit),
- 	"set disk quota limit for group"},
--# if defined(HAVE_QUOTAV2)
-+
- 	{QCMD(Q_SETINFO, GRPQUOTA), &test_id, &set_qf,
- 	NULL, NULL, 0, "set information about quotafile for group"},
- 
-@@ -133,7 +118,7 @@ static struct tcase {
- 
- 	{QCMD(Q_GETFMT, GRPQUOTA), &test_id, &fmt_buf,
- 	&fmt_id, &fmt_buf, sizeof(fmt_buf), "get quota format for group"},
--# endif
-+
- 	{QCMD(Q_SYNC, GRPQUOTA), &test_id, &res_dq,
- 	NULL, NULL, 0, "update quota usages for group"},
- 
-@@ -143,22 +128,21 @@ static struct tcase {
- 
- static void setup(void)
- {
--	const char *const cmd[] = {"quotacheck", "-ug", MNTPOINT, NULL};
-+	const char *const cmd[] = {"quotacheck", "-ugF", "vfsv0", MNTPOINT, NULL};
- 	int ret;
- 
--
- 	ret = tst_run_cmd(cmd, NULL, NULL, 1);
- 	switch (ret) {
-+	case 0:
-+		break;
- 	case 255:
--		tst_brk(TCONF, "quotacheck binary not installed");
-+		tst_brk(TBROK, "quotacheck binary not installed");
-+		break;
- 	default:
- 		tst_brk(TBROK, "quotacheck exited with %i", ret);
--	case 0:
--	break;
- 	}
- 
- 	test_id = geteuid();
--
- 	if (access(USRPATH, F_OK) == -1)
- 		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
- 
-@@ -190,9 +174,15 @@ static void verify_quota(unsigned int n)
- 	tst_res(TPASS, "quotactl succeeded to %s", tc->des);
- }
- 
-+static const char *kconfigs[] = {
-+	"CONFIG_QFMT_V2",
-+	NULL
-+};
-+
- static struct tst_test test = {
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
-+	.needs_kconfigs = kconfigs,
- 	.test = verify_quota,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.mount_device = 1,
-@@ -202,6 +192,3 @@ static struct tst_test test = {
- 	.setup = setup,
- };
- 
--#else
--	TST_TEST_TCONF("This system didn't support quota");
--#endif
+ ])
 diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
-index 7e74840e4..0593b965f 100644
+index 021833411..da431a41d 100644
 --- a/testcases/kernel/syscalls/quotactl/quotactl02.c
 +++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
-@@ -23,10 +23,6 @@
- #include <sys/quota.h>
- #include "config.h"
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) 2013 Fujitsu Ltd.
++ * Copyright (c) 2016-2019 FUJITSU LIMITED. All rights reserved
+  * Author: DAN LI <li.dan@cn.fujitsu.com>
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+  */
  
--#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
--# include <sys/quota.h>
--#endif
--
- #if defined(HAVE_XFS_QUOTA)
- # include <xfs/xqm.h>
- #endif
-@@ -34,7 +30,7 @@
- #include "tst_test.h"
- #include "lapi/quotactl.h"
+ /*
+@@ -9,12 +10,32 @@
+  *
+  * Description:
+  * This testcase checks basic flags of quotactl(2) for an XFS file system:
+- * 1) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status.
+- * 2) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status.
++ * 1) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status
++ *    for user.
++ * 2) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status
++ *    for user.
+  * 3) quotactl(2) succeeds to set and use Q_XGETQUOTA to get xfs disk quota
+- *    limits.
++ *    limits for user.
+  * 4) quotactl(2) succeeds to set and use Q_XGETNEXTQUOTA to get xfs disk
+- *    quota limits.
++ *    quota limits Cgreater than or equal to ID for user.
++ * 5) quotactl(2) succeeds to turn off xfs quota and get xfs quota off statv
++ *    for user.
++ * 6) quotactl(2) succeeds to turn on xfs quota and get xfs quota on statv
++ *    for user.
++ * 7) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status
++ *    for group.
++ * 8) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status
++ *    for group.
++ * 9) quotactl(2) succeeds to set and use Q_XGETQUOTA to get xfs disk quota
++ *    limits for group.
++ * 10) quotactl(2) succeeds to set and use Q_XGETNEXTQUOTA to get xfs disk
++ *    quota limits for group.
++ * 11) quotactl(2) succeeds to turn off xfs quota and get xfs quota off statv
++ *    for group.
++ * 12) quotactl(2) succeeds to turn on xfs quota and get xfs quota on statv
++ *    for group.
++ * 13)quotactl(2) succeeds to turn off xfs_quota and use Q_XQUOTARM to free
++ *    disk space taken by disk quotas.
+  */
+ #define _GNU_SOURCE
+ #include <errno.h>
+@@ -27,16 +48,25 @@
  
--#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
-+#if defined(HAVE_XFS_QUOTA)
- static void check_qoff(int, char *);
- static void check_qon(int, char *);
+ #if defined(HAVE_XFS_XQM_H)
+ #include <xfs/xqm.h>
+-static void check_qoff(int, char *);
+-static void check_qon(int, char *);
++static void check_qoff(int, char *, int);
++static void check_qon(int, char *, int);
++
++#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
++static void check_qoffv(int, char *, int);
++static void check_qonv(int, char *, int);
++#endif
++
  static void check_qlim(int, char *);
-@@ -172,5 +168,5 @@ static struct tst_test test = {
++static void check_qrm(int, char *);
+ 
+ static uint32_t test_id;
+ static struct fs_disk_quota set_dquota = {
+ 	.d_rtb_softlimit = 1000,
+ 	.d_fieldmask = FS_DQ_RTBSOFT
+ };
+-static uint32_t qflag = XFS_QUOTA_UDQ_ENFD;
++static uint32_t qflagu = XFS_QUOTA_UDQ_ENFD;
++static uint32_t qflagg = XFS_QUOTA_GDQ_ENFD;
++static uint32_t qflag_acct = XFS_QUOTA_UDQ_ACCT | XFS_QUOTA_GDQ_ACCT;
+ static const char mntpoint[] = "mnt_point";
+ 
+ static struct t_case {
+@@ -44,32 +74,78 @@ static struct t_case {
+ 	void *addr;
+ 	void (*func_check)();
+ 	int check_subcmd;
++	int flag;
+ 	char *des;
+ } tcases[] = {
+-	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflag, check_qoff, Q_XGETQSTAT,
+-	"turn off xfs quota and get xfs quota off status"},
+-	{QCMD(Q_XQUOTAON, USRQUOTA), &qflag, check_qon, Q_XGETQSTAT,
+-	"turn on xfs quota and get xfs quota on status"},
+-	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim, Q_XGETQUOTA,
+-	"Q_XGETQUOTA"},
+-	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim, Q_XGETNEXTQUOTA,
+-	"Q_XGETNEXTQUOTA"},
++	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflagu, check_qoff,
++	QCMD(Q_XGETQSTAT, USRQUOTA), 1,
++	"turn off xfs quota and get xfs quota off status for user"},
++
++	{QCMD(Q_XQUOTAON, USRQUOTA), &qflagu, check_qon,
++	QCMD(Q_XGETQSTAT, USRQUOTA), 1,
++	"turn on xfs quota and get xfs quota on status for user"},
++
++	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim,
++	QCMD(Q_XGETQUOTA, USRQUOTA), 0,
++	"Q_XGETQUOTA for user"},
++
++	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim,
++	QCMD(Q_XGETNEXTQUOTA, USRQUOTA), 0,
++	"Q_XGETNEXTQUOTA for user"},
++
++#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
++	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflagu, check_qoffv,
++	QCMD(Q_XGETQSTATV, USRQUOTA), 1,
++	"turn off xfs quota and get xfs quota off statv for user"},
++
++	{QCMD(Q_XQUOTAON, USRQUOTA), &qflagu, check_qonv,
++	QCMD(Q_XGETQSTATV, USRQUOTA), 1,
++	"turn on xfs quota and get xfs quota on statv for user"},
++#endif
++
++	{QCMD(Q_XQUOTAOFF, GRPQUOTA), &qflagg, check_qoff,
++	QCMD(Q_XGETQSTAT, GRPQUOTA), 1,
++	"turn off xfs quota and get xfs quota off status for group"},
++
++	{QCMD(Q_XQUOTAON, GRPQUOTA), &qflagg, check_qon,
++	QCMD(Q_XGETQSTAT, GRPQUOTA), 1,
++	"turn on xfs quota and get xfs quota on status for group"},
++
++	{QCMD(Q_XSETQLIM, GRPQUOTA), &set_dquota, check_qlim,
++	QCMD(Q_XGETQUOTA, GRPQUOTA), 0,
++	"Q_XGETQUOTA for group"},
++
++	{QCMD(Q_XSETQLIM, GRPQUOTA), &set_dquota, check_qlim,
++	QCMD(Q_XGETNEXTQUOTA, GRPQUOTA), 0,
++	"Q_XGETNEXTQUOTA for group"},
++
++#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
++	{QCMD(Q_XQUOTAOFF, GRPQUOTA), &qflagg, check_qoffv,
++	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
++	"turn off xfs quota and get xfs quota off statv for group"},
++
++	{QCMD(Q_XQUOTAON, GRPQUOTA), &qflagg, check_qonv,
++	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
++	"turn on xfs quota and get xfs quota on statv for group"},
++#endif
++
++	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflag_acct, check_qrm, Q_XQUOTARM, 1,
++	"turn off xfs quota and free disk spaces taken by disk quotas"},
+ };
+ 
+-static void check_qoff(int subcmd, char *desp)
++static void check_qoff(int subcmd, char *desp, int flag)
+ {
+ 	int res;
+ 	struct fs_quota_stat res_qstat;
+ 
+-	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
+-	               test_id, (void*) &res_qstat);
++	res = quotactl(subcmd, tst_device->dev, test_id, (void *) &res_qstat);
+ 	if (res == -1) {
+ 		tst_res(TFAIL | TERRNO,
+ 			"quotactl() failed to get xfs quota off status");
+ 		return;
+ 	}
+ 
+-	if (res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
++	if (res_qstat.qs_flags & flag) {
+ 		tst_res(TFAIL, "xfs quota enforcement was on unexpectedly");
+ 		return;
+ 	}
+@@ -77,20 +153,43 @@ static void check_qoff(int subcmd, char *desp)
+ 	tst_res(TPASS, "quoactl() succeeded to %s", desp);
+ }
+ 
+-static void check_qon(int subcmd, char *desp)
++#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
++static void check_qoffv(int subcmd, char *desp, int flag)
++{
++	int res;
++	struct fs_quota_statv res_qstatv = {
++		.qs_version = FS_QSTATV_VERSION1,
++	};
++
++	res = quotactl(subcmd, tst_device->dev, test_id, (void *) &res_qstatv);
++	if (res == -1) {
++		tst_res(TFAIL | TERRNO,
++			"quotactl() failed to get xfs quota off stav");
++		return;
++	}
++
++	if (res_qstatv.qs_flags & flag) {
++		tst_res(TFAIL, "xfs quota enforcement was on unexpectedly");
++		return;
++	}
++
++	tst_res(TPASS, "quoactl() succeeded to %s", desp);
++}
++#endif
++
++static void check_qon(int subcmd, char *desp, int flag)
+ {
+ 	int res;
+ 	struct fs_quota_stat res_qstat;
+ 
+-	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
+-	               test_id, (void*) &res_qstat);
++	res = quotactl(subcmd, tst_device->dev, test_id, (void *) &res_qstat);
+ 	if (res == -1) {
+ 		tst_res(TFAIL | TERRNO,
+ 			"quotactl() failed to get xfs quota on status");
+ 		return;
+ 	}
+ 
+-	if (!(res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
++	if (!(res_qstat.qs_flags & flag)) {
+ 		tst_res(TFAIL, "xfs quota enforcement was off unexpectedly");
+ 		return;
+ 	}
+@@ -98,6 +197,30 @@ static void check_qon(int subcmd, char *desp)
+ 	tst_res(TPASS, "quoactl() succeeded to %s", desp);
+ }
+ 
++#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
++static void check_qonv(int subcmd, char *desp, int flag)
++{
++	int res;
++	struct fs_quota_statv res_qstatv = {
++		.qs_version = FS_QSTATV_VERSION1
++	};
++
++	res = quotactl(subcmd, tst_device->dev, test_id, (void *) &res_qstatv);
++	if (res == -1) {
++		tst_res(TFAIL | TERRNO,
++			"quotactl() failed to get xfs quota on statv");
++		return;
++	}
++
++	if (!(res_qstatv.qs_flags & flag)) {
++		tst_res(TFAIL, "xfs quota enforcement was off unexpectedly");
++		return;
++	}
++
++	tst_res(TPASS, "quoactl() succeeded to %s", desp);
++}
++#endif
++
+ static void check_qlim(int subcmd, char *desp)
+ {
+ 	int res;
+@@ -105,8 +228,7 @@ static void check_qlim(int subcmd, char *desp)
+ 
+ 	res_dquota.d_rtb_softlimit = 0;
+ 
+-	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
+-	               test_id, (void*) &res_dquota);
++	res = quotactl(subcmd, tst_device->dev,	test_id, (void *) &res_dquota);
+ 	if (res == -1) {
+ 		if (errno == EINVAL) {
+ 			tst_brk(TCONF | TERRNO,
+@@ -134,6 +256,25 @@ static void check_qlim(int subcmd, char *desp)
+ 		"quota limits", desp);
+ }
+ 
++static void check_qrm(int subcmd, char *desp)
++{
++	int res;
++
++	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
++			test_id, (void *) &qflag_acct);
++	if (res == -1) {
++		if (errno == EINVAL) {
++			tst_brk(TCONF | TERRNO,
++				"Q_XQUOTARM wasn't supported in quotactl()");
++		}
++		tst_res(TFAIL | TERRNO,
++			"quotactl() failed to free disk spaces taken by disk quotas");
++		return;
++	}
++
++	tst_res(TPASS, "quoactl() succeeded to %s", desp);
++}
++
+ static void setup(void)
+ {
+ 	test_id = geteuid();
+@@ -149,7 +290,10 @@ static void verify_quota(unsigned int n)
+ 		return;
+ 	}
+ 
+-	tc->func_check(tc->check_subcmd, tc->des);
++	if (tc->flag)
++		tc->func_check(tc->check_subcmd, tc->des, *(int *)(tc->addr));
++	else
++		tc->func_check(tc->check_subcmd, tc->des);
+ }
+ 
+ static const char *kconfigs[] = {
+@@ -166,7 +310,7 @@ static struct tst_test test = {
+ 	.mount_device = 1,
+ 	.dev_fs_type = "xfs",
+ 	.mntpoint = mntpoint,
+-	.mnt_data = "usrquota",
++	.mnt_data = "usrquota,grpquota",
  	.setup = setup,
  };
  #else
--	TST_TEST_TCONF("This system didn't support quota or xfs quota");
-+	TST_TEST_TCONF("This system didn't support xfs quota");
- #endif
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl03.c b/testcases/kernel/syscalls/quotactl/quotactl03.c
-index 32a281482..cf73231a9 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl03.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl03.c
-@@ -29,10 +29,7 @@
- #include <stdio.h>
- #include <sys/quota.h>
- #include "config.h"
--
--#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
--# include <sys/quota.h>
--#endif
-+#include <sys/quota.h>
- 
- #if defined(HAVE_XFS_QUOTA)
- # include <xfs/xqm.h>
-@@ -41,7 +38,7 @@
- #include "tst_test.h"
- #include "lapi/quotactl.h"
- 
--#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
-+#if defined(HAVE_XFS_QUOTA)
- 
- static const char mntpoint[] = "mnt_point";
- static uint32_t test_id = 0xfffffffc;
-@@ -84,5 +81,5 @@ static struct tst_test test = {
- };
- 
- #else
--	TST_TEST_TCONF("This system didn't support quota or xfs quota");
-+	TST_TEST_TCONF("This system didn't support xfs quota");
- #endif
 -- 
 2.18.0
 
