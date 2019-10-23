@@ -1,21 +1,30 @@
-From: Li Wang <liwan@redhat.com>
-Date: Wed, 23 Oct 2019 11:36:02 +0800
-Subject: [LTP] [PATCH] syscalls/pkeys/pkey01: build fail MAP_HUGETLB
- undefine
-In-Reply-To: <20191023025606.24449-1-pifang@redhat.com>
-References: <20191023025606.24449-1-pifang@redhat.com>
-Message-ID: <CAEemH2cTA8nad9iwh--r5mHX7Eru2UsbJ1reMYK2ZKx2XoGYtg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 23 Oct 2019 15:18:08 +0800
+Subject: [LTP] [PATCH v2 2/2] testcases/kernel: Add linux git and CVE
+ tags
+In-Reply-To: <20191022140757.29713-3-chrubis@suse.cz>
+References: <20191022140757.29713-1-chrubis@suse.cz>
+ <20191022140757.29713-3-chrubis@suse.cz>
+Message-ID: <CAEemH2egMr_zqWxbuLAAg8etCgcaBX3Wd_tr3egB1_jA7nW72A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Merged.
+On Tue, Oct 22, 2019 at 10:08 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+
+> Not all tests are annotated at the moment but the majority has been
+> finished for now.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191023/4da79ee9/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191023/e3032fd4/attachment.htm>
