@@ -1,51 +1,50 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 23 Oct 2019 10:11:47 +0200
-Subject: [LTP] Bug report in read_all.c
-In-Reply-To: <382857de8dca46e996b06ceb482cb911@apsanexr02f.ap.qualcomm.com>
-References: <0641c15377874db893088e4f65102ec6@aptaiexm02f.ap.qualcomm.com>
- <20191022121222.GA15798@rei>
- <382857de8dca46e996b06ceb482cb911@apsanexr02f.ap.qualcomm.com>
-Message-ID: <87d0enop8c.fsf@rpws.prws.suse.cz>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 23 Oct 2019 17:00:25 +0800
+Subject: [LTP] [PATCH v2 0/6] optimize quotactl test code
+Message-ID: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+I cleanup the quotactl code and add project quota test for quotactl.
+Thanks to Jan Kara with support about quota.
 
-Xiang Li <lixian@qti.qualcomm.com> writes:
 
-> Hi,
->
-> Thanks for Richard's suggestion. I've put it in the patch.
-> Please check the attached patch file for review.
+------------
+v1->v2:
+for quotactl02.c, add group quota test and add Q_XQUTOARM test
 
-Thanks, LGTM.
+add quotactl04.c and add quota05.c to test project quota.
+------------
 
-However please do not send patches as attachments; we like to respond
-with review comments inline.
+Yang Xu (6):
+  syscalls/quotactl: Don't use ltp-quota.m4
+  m4/ltp-xfs_quota.m4: Remove useless ltp?xfs_quota.m4
+  syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
+  syscalls/quotactl02.c: Add Q_XGETQSTATV and Q_XQUOTARM test
+  syscalls/quotactl04: add project quota test for non-xfs filesystem
+  syscalls/quotactl05: add project quota test for xfs filesystem
 
->
-> Regards,
-> Xiang
->
->
-> -----Original Message-----
-> From: Cyril Hrubis <chrubis@suse.cz> 
-> Sent: Tuesday, October 22, 2019 8:12 PM
-> To: Xiang Li <lixian@qti.qualcomm.com>
-> Cc: ltp@lists.linux.it
-> Subject: [EXT] Re: [LTP] Bug report in read_all.c
->
-> Hi!
->> Modifying i + 1 to (i + 1) % QUEUE_SIZE at the source code Line#123 can easily fix it.
->> This bug is not triggered on every machine because the files are different between target machine.
->> Adjust the length of the QUEUE_SIZE will help you reproduce this bug.
->
-> Can you send a patch that I can apply (ideally with the suggestion from Ritchie as well)?
-
+ configure.ac                                  |   2 +-
+ include/lapi/quotactl.h                       |  35 ++-
+ m4/ltp-quota.m4                               |  36 +--
+ m4/ltp-xfs_quota.m4                           |  23 --
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/quotactl/.gitignore |   2 +
+ .../kernel/syscalls/quotactl/quotactl01.c     | 133 +++++----
+ .../kernel/syscalls/quotactl/quotactl02.c     | 218 +++++++++++---
+ .../kernel/syscalls/quotactl/quotactl03.c     |  22 +-
+ .../kernel/syscalls/quotactl/quotactl04.c     | 159 ++++++++++
+ .../kernel/syscalls/quotactl/quotactl05.c     | 276 ++++++++++++++++++
+ 11 files changed, 727 insertions(+), 181 deletions(-)
+ delete mode 100644 m4/ltp-xfs_quota.m4
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl05.c
 
 -- 
-Thank you,
-Richard.
+2.18.0
+
+
+
