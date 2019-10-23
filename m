@@ -1,84 +1,34 @@
-From: root <ice_yangxiao@163.com>
-Date: Wed, 23 Oct 2019 09:27:35 +0800
-Subject: [LTP] [PATCH] fs/binfmt_misc02.sh: Fix local variable
- assignment for dash
-In-Reply-To: <20191022174452.GB4055@calabresa>
-References: <20191022025456.15711-1-ice_yangxiao@163.com>
- <20191022174452.GB4055@calabresa>
-Message-ID: <9a14acf0-bdfc-bbc7-680e-6e132124fdd0@163.com>
+From: Ping Fang <pifang@redhat.com>
+Date: Wed, 23 Oct 2019 10:56:06 +0800
+Subject: [LTP] [PATCH] syscalls/pkeys/pkey01: build fail MAP_HUGETLB undefine
+Message-ID: <20191023025606.24449-1-pifang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/23/19 1:44 AM, Thadeu Lima de Souza Cascardo wrote:
-> On Tue, Oct 22, 2019 at 10:54:56AM +0800, Xiao Yang wrote:
->> Only the first one can be accepted if more than one string are assigned
->> to local valiable.  For example, only "This" is assigned to $string:
->> ------------------------------------
->> tstring="This is test for extension"
->> ...
->> local string=$tstring
->> ------------------------------------
->>
->> We add a pair of quotes to fix the issue now. Besides we can also fix
->> the issue by splitting declaration and assignment(e.g. local string &
->> string=$tstring).
->>
->> See the explanation from:
->> https://wiki.ubuntu.com/DashAsBinSh#local
->>
->> Fixes: #601
->> Reported-by: limingyu <limingyu@deepin.com>
->> Suggested-by: limingyu <limingyu@deepin.com>
->> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
-> This fixes a problem we have been seeing.
->
-> Tested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+build fail on old distro(based glibc-2.12.1 2010-08-03)
+MAP_HUGELTB introduced in glibc-2.11.3 2010-11-30.
+include lapi/mmap.h to fix it.
 
-Hi Thadeu,
+Signed-off-by: Ping Fang <pifang@redhat.com>
+---
+ testcases/kernel/syscalls/pkeys/pkey.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Pushed, thanks for your test.
-
-
-Best Regards,
-
-Xiao Yang
-
->
->> ---
->>   testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
->> index 8d0ecd895..9dbcd68cc 100755
->> --- a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
->> +++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
->> @@ -26,7 +26,7 @@ TST_NEEDS_CMDS="which cat head"
->>   recognised_unrecognised()
->>   {
->>   	local file=$1
->> -	local string=$2
->> +	local string="$2"
->>   
->>   	eval $file >temp 2>&1
->>   	if [ $? -ne 0 ] || ! grep -q "$string" temp; then
->> @@ -52,7 +52,7 @@ recognised_unrecognised()
->>   unrecognised()
->>   {
->>   	local file=$1
->> -	local string=$2
->> +	local string="$2"
->>   
->>   	eval $file >temp 2>&1
->>   	if [ $? -eq 0 ] || grep -q "$string" temp; then
->> -- 
->> 2.21.0
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
+index 3c1204978..6e32326b6 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey.h
++++ b/testcases/kernel/syscalls/pkeys/pkey.h
+@@ -9,6 +9,7 @@
+ 
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
++#include "lapi/mmap.h"
+ 
+ #ifndef PKEY_DISABLE_ACCESS
+ # define PKEY_DISABLE_ACCESS 0x1
+-- 
+2.21.0
 
