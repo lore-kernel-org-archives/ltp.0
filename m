@@ -1,33 +1,23 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Fri, 25 Oct 2019 18:48:29 +0800
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/prctl02.c: Fix wrong type of
- test result
-Message-ID: <20191025104829.8988-1-ice_yangxiao@163.com>
+From: Jason Gunthorpe <jgg@ziepe.ca>
+Date: Thu, 24 Oct 2019 15:20:05 -0300
+Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
+In-Reply-To: <20191024172023.GA7948@linux.intel.com>
+References: <1558041162.3971.2.camel@linux.ibm.com>
+ <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
+ <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
+ <20191024172023.GA7948@linux.intel.com>
+Message-ID: <20191024182005.GZ23952@ziepe.ca>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reported-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
----
- testcases/kernel/syscalls/prctl/prctl02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Oct 24, 2019 at 08:20:23PM +0300, Jarkko Sakkinen wrote:
+> Also replicants for durations and timeouts files would make sense for
+> TPM 2.0.
 
-diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
-index a6a852011..ec45911fd 100644
---- a/testcases/kernel/syscalls/prctl/prctl02.c
-+++ b/testcases/kernel/syscalls/prctl/prctl02.c
-@@ -38,7 +38,7 @@ static void verify_prctl(unsigned int n)
- 	if (tc->exp_errno == TST_ERR) {
- 		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
- 	} else {
--		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, expected %s",
-+		tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
- 				tst_strerrno(tc->exp_errno));
- 	}
- }
--- 
-2.21.0
+These ones don't meet the sysfs standard of one value per file, which
+is why they didn't make it to tpm2
 
+Jason
