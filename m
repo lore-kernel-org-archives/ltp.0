@@ -1,60 +1,94 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 23 Oct 2019 20:28:47 +0200
-Subject: [LTP] [PATCH] lsmod01.sh: retry test couple times to lower
- false positives
-In-Reply-To: <463301336.8732968.1571837306503.JavaMail.zimbra@redhat.com>
-References: <c8843f2f4a325e820d030d9c7c36d7624f1baa82.1571393044.git.jstancek@redhat.com>
- <20191023121901.GA25868@dell5510>
- <463301336.8732968.1571837306503.JavaMail.zimbra@redhat.com>
-Message-ID: <20191023182845.GA2863@x230>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 24 Oct 2019 10:45:30 +0800
+Subject: [LTP] [PATCH v2 1/2] lib: Add support for test tags
+In-Reply-To: <20191023160640.GA17663@rei>
+References: <20191022140757.29713-1-chrubis@suse.cz>
+ <20191022140757.29713-2-chrubis@suse.cz>
+ <CAEemH2eCpbAuU2xYNtiv9Wq4VwHJE2dZRXnO9v+2H=1=JQJUXQ@mail.gmail.com>
+ <1270016842.8517878.1571817492480.JavaMail.zimbra@redhat.com>
+ <CAEemH2f2D4PjaMaOE_ADUqg5igEi97nHBsH6A7qXtO-2KO7btg@mail.gmail.com>
+ <20191023160640.GA17663@rei>
+Message-ID: <CAEemH2fFhEwuDXbmJ7mN-L_wjidz0XX1wXhMMVX1o_UPcQnjHA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+On Thu, Oct 24, 2019 at 12:06 AM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> > > -	tst_res TPASS "'lsmod' passed."
-> > > +lsmod_test()
-> > > +{
-> > > +	for i in $(seq 1 5); do
-> > > +		if lsmod_matches_proc_modules; then
-> > > +			tst_res TPASS "'lsmod' passed."
-> > > +			return
-> > > +		fi
-> > > +		tst_res TINFO "Trying again"
-> > > +		sleep 1
-> > > +	done
-> > This is similar pattern to TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF()
-> > (for both shell and C). I wonder if we also have use for TPASS/TFAIL
-> > instead of just TBROK and specifying number of tries instead of time to be
-> > setup.
+> Hi!
+> > Sorry, thanks for the reminder.
+> > [I copied the below code to gmail, it always lost the indent]
+> >
+> > static void print_failure_hints(void)
+> > {
+> >         unsigned int i;
+> >         int hint_printed = 0;
+> >         const struct tst_tag *tags = tst_test->tags;
+> >
+> >         if (!tags)
+> >                 return;
+> >
+> >         for (i = 0; tags[i].name; i++) {
+> >                 if (!strcmp(tags[i].name, "linux-git")) {
+> >                         if (hint_printed != 1) {
+> >                                 hint_printed = 1;
+> >                                 print_colored("\nHINT: ");
+> >                                 printf("You _MAY_ be missing kernel
+> fixes,
+> > see:\n\n");
+> >                         }
+> >
+> >                         printf(LINUX_GIT_URL "%s\n", tags[i].value);
+> >                 } else if (!strcmp(tags[i].name, "CVE")) {
+> >                          if (hint_printed != 2) {
+> >                                  hint_printed = 2;
+> >                                  print_colored("\nHINT: ");
+> >                                  printf("You _MAY_ be vunerable to
+> CVE(s),
+> > see:\n\n");
+> >                           }
+> >
+> >                         printf(CVE_DB_URL "%s\n", tags[i].value);
+>
+> This would produce intermixed CVE and linux-git lines unless the tags
+> are sorted correctly in the source code, I do not want to depend on the
+> order hence the two loops.
+>
 
-> I think TFAIL fits more here, it's outcome of what we are testing.
-> TBROK in my mind is failure unrelated to subject of test.
-I express myself wrong. Sure, I meant to have TPASS/TFAIL,
-just to use some helper function instead of writing the wrapper in the test.
+Yes. But personally I suggest the tags sorted in order. I'm OK with two
+loops, it depends on you.
 
-> But functionally TST_RETRY_FUNC should work too. 
 
-> > C and shell usage is a bit different, so maybe
-> > TST_RETRY_FUNC()/TST_RETRY_FN_EXP_BACKOFF() doesn't make much sense for shell
+>
+> >                 } else {
+> >                         print_colored("\nERROR: ");
+> >                         printf("tags[%d].name should be linux-git or
+> > CVE\n", i);
+> >                         return;
+>
+> I've tried to explain to pvorel already that this is a wrong place to
+> assert the tag names. If nothing else this piece of code will be rarely
+> triggered and the error would end up ignored.
+>
 
-> I see it used in mkswap01.sh and numa01.sh.
-Sorry, I searched just TST_RETRY_FN_EXP_BACKOFF.
-Correct, TST_RETRY_FUNC is used there.
+Agree, it seems like too late to see this error in a test fails.
 
-> I wonder if we need to TBROK in TST_RETRY_FUNC(). We could just return
-> what the FUNC returns and let the test decide.
-> TST_RETRY_FUNC_BRK() could be a wrapper that TBROKs on timeout.
-That could work (apart from the fact it diverges the functionality from C).
-+ there could be the third one, which TPASS/TFAIL (instead of nothing/TBROK).
 
-But this should be based on TST_RETRY_FN_EXP_BACKOFF (TST_RETRY_FUNC is reusing
-TST_RETRY_FN_EXP_BACKOFF) + add also TST_RETRY_FUNC wrappers.
+>
+> I plan to assert the tag names in the docparse tool that will build the
+> test metadata during the LTP build, so that wrong metadata will actually
+> fail the LTP build.
+>
 
-Do we need similar functionality in C?
+Cool~ That sounds better.
 
-Kind regards,
-Petr
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191024/bb52de50/attachment-0001.htm>
