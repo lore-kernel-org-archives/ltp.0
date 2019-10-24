@@ -1,44 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 24 Oct 2019 14:26:10 +0200
-Subject: [LTP] [RFC PATCH] Delete New ext4 features tests and ffsb tool
-In-Reply-To: <20191024110502.GA27782@rei.lan>
-References: <20191024090753.16789-1-pvorel@suse.cz>
- <20191024110502.GA27782@rei.lan>
-Message-ID: <20191024122610.GA7865@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 24 Oct 2019 14:28:14 +0200
+Subject: [LTP] Rename tst_test_* to tst_require_*
+In-Reply-To: <20191011140015.GA27627@dell5510>
+References: <20191011090737.17997-1-lkml@jv-coder.de>
+ <20191011100604.GA11441@dell5510>
+ <1570799029.4238.15.camel@suse.de> <20191011131041.GA18363@rei>
+ <20191011140015.GA27627@dell5510>
+Message-ID: <20191024122814.GC27782@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> > > If we use needs or require ? Hard question - when I search for synonyms
+> > > from one or the other, I don't see a big different. Without looking on
+> > > the impact, require sounds also more descriptive.
+> 
+> > There is about thousand of uses of *NEEDS_FOO and *needs_foo in the new
+> > library tests, so renaming to tst_needs_foo would be the least painful.
+> +1.
+> 
+> Sorry for starting such a big discussion just about API naming.
+> I care about these things, because good docs and consistent API are less
+> important than good quality code, but helps new users.
+> 
+> Thank you for all your input, I agree with points other raised, but getting it
+> right would be to intrusive change (touching every test is a bit too much).
 
-> Hi!
-> > The main reason is that these tests [1] (contributed in 2009)
-> > are mostly outdated and irrelevant. According to Theodore Y. Tso [2]
-> > and Jan Kara [3] the only partly valid tests are
-> > ext4_nsec_timestamps_test.sh and ext4_subdir_limit_test.sh,
-> > but even these would be better to migrate to xfstests,
-> > which Yong Sun is planning to do.
+I would like to end the bikeshedding now and also get the tests fixed so
+here is the proposal. If anyone wants to send a patch that unifies the
+API on tst_needs_* please do so. If no one starts at least working on
+that in a week or two, let's merge this patchset. Does that sound
+reasonable to everyone?
 
-> > Also, some of the tests weren't in any runtest file anyway
-> > (ext4-alloc-test.sh, ext4_inode_version_test.sh,
-> > ext4_journal_checksum.sh, ext4_online_defrag_test.sh)
-
-> > ffsb tool was used only in these New ext4 features tests.
-
-> > [1] http://ext4.wiki.kernel.org/index.php/New_ext4_features
-> > [2] https://marc.info/?l=linux-fsdevel&m=157187153211649&w=2
-> > [3] https://marc.info/?l=linux-ext4&m=157190318618555&w=2
-
-> > Closes: #560
-
-> Acked.
-
-> The ffsb adds quite a bit of complexity to the LTP build with a very
-> little added value. As far as the meaningful parts of the ext4 suite
-> would be migrated to xfstests everyone should be happy about this.
-Thanks for ack, merged.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
