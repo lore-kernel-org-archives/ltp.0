@@ -1,69 +1,41 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 24 Oct 2019 17:55:03 +0800
-Subject: [LTP] [PATCH v2 5/6] syscalls/quotactl04: add project quota
- test for non-xfs filesystem
-In-Reply-To: <20191024081438.GJ31271@quack2.suse.cz>
-References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1571821231-3846-6-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191024081438.GJ31271@quack2.suse.cz>
-Message-ID: <90c377ff-900a-8384-49bc-e697e33d8316@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 24 Oct 2019 13:05:02 +0200
+Subject: [LTP] [RFC PATCH] Delete New ext4 features tests and ffsb tool
+In-Reply-To: <20191024090753.16789-1-pvorel@suse.cz>
+References: <20191024090753.16789-1-pvorel@suse.cz>
+Message-ID: <20191024110502.GA27782@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> The main reason is that these tests [1] (contributed in 2009)
+> are mostly outdated and irrelevant. According to Theodore Y. Tso [2]
+> and Jan Kara [3] the only partly valid tests are
+> ext4_nsec_timestamps_test.sh and ext4_subdir_limit_test.sh,
+> but even these would be better to migrate to xfstests,
+> which Yong Sun is planning to do.
+> 
+> Also, some of the tests weren't in any runtest file anyway
+> (ext4-alloc-test.sh, ext4_inode_version_test.sh,
+> ext4_journal_checksum.sh, ext4_online_defrag_test.sh)
+> 
+> ffsb tool was used only in these New ext4 features tests.
+> 
+> [1] http://ext4.wiki.kernel.org/index.php/New_ext4_features
+> [2] https://marc.info/?l=linux-fsdevel&m=157187153211649&w=2
+> [3] https://marc.info/?l=linux-ext4&m=157190318618555&w=2
+> 
+> Closes: #560
 
-on 2019/10/24 16:14, Jan Kara wrote:
+Acked.
 
-> On Wed 23-10-19 17:00:30, Yang Xu wrote:
->> This is a variant about quotactl01. It is used to test project quota.
->> I split it into a new case instead of adding it in quotaclt01 because
->> two points:
->> 1)before linux 4.10, ext4 doesn't support project quota
->> 2)on old kernel, kernel doesn't permit mount both prjquota and grpquota together
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> Suggested-by: Jan Kara <jack@suse.cz>
->>
-> ...
->> @@ -0,0 +1,159 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
->> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> + *
->> + * This testcase checks the basic flag of quotactl(2) for project quota on
->> + * non-XFS filesystems.
->> + *
->> + * 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for project.
->> + * 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
->> + *    for project.
->> + * 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
->> + *    for project.
->> + * 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
->> + *    flag for project.
->> + * 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
->> + *    flag for project.
->> + * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for project.
->> + * 7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for project.
-> Testing Q_SYNC is mostly pointless for project quota as it will just do
-> nothing (the quota changes are journalled).
+The ffsb adds quite a bit of complexity to the LTP build with a very
+little added value. As far as the meaningful parts of the ext4 suite
+would be migrated to xfstests everyone should be happy about this.
 
-I have no objection about removint Q_SYNC.
-
->
->> + * 8) quotactl(2) succeeds to get disk quota limit greater than or equal to
->> + *    ID with Q_GETNEXTQUOTA flag for project.
->> + * 9) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
->> + */
-> Otherwise the set of checks looks sensible to do basic sanity check of
-> quotactl(2) syscall.
->
-> 								Honza
->
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191024/35c20053/attachment.htm>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
