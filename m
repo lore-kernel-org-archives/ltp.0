@@ -1,39 +1,33 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 25 Oct 2019 13:15:03 +0300
-Subject: [LTP] [PATCH] syscalls/copy_file_range02: skip new error tests
- if cross-fs isn't supported
-In-Reply-To: <20191025083738.GA13022@x230>
-References: <1571968780-4810-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191025083738.GA13022@x230>
-Message-ID: <CAOQ4uxiV56cNFXoJp4qYjoCDQ2pFEn8G9mgV_j8pMG2LkC=vfg@mail.gmail.com>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Fri, 25 Oct 2019 18:48:29 +0800
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/prctl02.c: Fix wrong type of
+ test result
+Message-ID: <20191025104829.8988-1-ice_yangxiao@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 25, 2019 at 11:37 AM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Xu,
->
-> > We should not skip the whole error test if cross-fs isn't support because
-> > old errors should be tested on all version. Even we use .mount_device = 1
-> > and .mntpoint = MNTPOINT, the src and dest file are still in tmp directory
-> > instead of mntpoint.
->
-> > ps: I doubt whether we should skip new error test because it indeed exposed this
-> > unreasonable copy_file_range behavior of the user.
->
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Tested-by: Petr Vorel <pvorel@suse.cz>
->
-> LGTM, but I'd like to have Amir's review/ack.
->
+Reported-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+---
+ testcases/kernel/syscalls/prctl/prctl02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ACK. I'm fine with the test code.
-If you tested it and it passed on both new and old kernel,
-it's fine by me.
+diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
+index a6a852011..ec45911fd 100644
+--- a/testcases/kernel/syscalls/prctl/prctl02.c
++++ b/testcases/kernel/syscalls/prctl/prctl02.c
+@@ -38,7 +38,7 @@ static void verify_prctl(unsigned int n)
+ 	if (tc->exp_errno == TST_ERR) {
+ 		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
+ 	} else {
+-		tst_res(TPASS | TTERRNO, "prctl() failed unexpectedly, expected %s",
++		tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
+ 				tst_strerrno(tc->exp_errno));
+ 	}
+ }
+-- 
+2.21.0
 
-Thanks,
-Amir.
