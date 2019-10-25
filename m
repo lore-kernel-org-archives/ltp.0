@@ -1,127 +1,158 @@
-From: Jerry Snitselaar <jsnitsel@redhat.com>
-Date: Thu, 24 Oct 2019 19:11:59 -0700
-Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
-In-Reply-To: <1571964420.5173.12.camel@linux.ibm.com>
-References: <1558041162.3971.2.camel@linux.ibm.com>
- <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
- <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
- <20191024172023.GA7948@linux.intel.com>
- <20191024213842.c6cl4tlnsi56pgcy@cantor>
- <1571964420.5173.12.camel@linux.ibm.com>
-Message-ID: <20191025021159.dt7ifgnebnke6ca7@cantor>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 25 Oct 2019 20:39:43 +0800
+Subject: [LTP] [PATCH] syscalls/prctl02: add more error tests
+Message-ID: <1572007183-13661-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu Oct 24 19, Mimi Zohar wrote:
->On Thu, 2019-10-24 at 14:38 -0700, Jerry Snitselaar wrote:
->> On Thu Oct 24 19, Jarkko Sakkinen wrote:
->> >On Thu, Oct 24, 2019 at 02:18:48PM +0200, Petr Vorel wrote:
->> >> Hi all,
->> >>
->> >> I wonder what to do with this patch "ima: skip verifying TPM 2.0 PCR values" [1].
->> >> Is it a correct way to differentiate between TPM 1.2 and TPM 2.0?
->> >> Or something else should be applied?
->> >>
->> >> How is the work on TPM 2.0 Linux sysfs interface?
->> >> But even it's done in near future, we'd still need some way for older kernels.
->> >>
->> >> Kind regards,
->> >> Petr
->> >>
->> >> [1] https://patchwork.ozlabs.org/patch/1100733/
->> >
->> >version_major sysfs file would be acceptable if someone wants to proceed
->> >and send such patch.
->> >
->> >Also replicants for durations and timeouts files would make sense for
->> >TPM 2.0.
->> >
->> >/Jarkko
->>
->> Is it as simple as doing this?
->>
->> diff --git a/drivers/char/tpm/tpm-sysfs.c b/drivers/char/tpm/tpm-sysfs.c
->> index edfa89160010..fd8eb8d8945c 100644
->> --- a/drivers/char/tpm/tpm-sysfs.c
->> +++ b/drivers/char/tpm/tpm-sysfs.c
->> @@ -309,7 +309,17 @@ static ssize_t timeouts_show(struct device *dev, struct device_attribute *attr,
->>  }
->>  static DEVICE_ATTR_RO(timeouts);
->>
->> -static struct attribute *tpm_dev_attrs[] = {
->> +static ssize_t version_major_show(struct device *dev,
->> +                                 struct device_attribute *attr, char *buf)
->> +{
->> +       struct tpm_chip *chip = to_tpm_chip(dev);
->> +
->> +       return sprintf(buf, "TPM%s\n", chip->flags & TPM_CHIP_FLAG_TPM2
->> +                      ? "2.0" : "1.2");
->> +}
->> +static DEVICE_ATTR_RO(version_major);
->> +
->> +static struct attribute *tpm12_dev_attrs[] = {
->>         &dev_attr_pubek.attr,
->>         &dev_attr_pcrs.attr,
->>         &dev_attr_enabled.attr,
->> @@ -320,18 +330,28 @@ static struct attribute *tpm_dev_attrs[] = {
->>         &dev_attr_cancel.attr,
->>         &dev_attr_durations.attr,
->>         &dev_attr_timeouts.attr,
->> +       &dev_attr_version_major.attr,
->>         NULL,
->>  };
->>
->
->The TPM version seems to be included in "dev_attr_caps.attr".
->
->> -static const struct attribute_group tpm_dev_group = {
->> -       .attrs = tpm_dev_attrs,
->> +static struct attribute *tpm20_dev_attrs[] = {
->> +       &dev_attr_version_major.attr,
->> +       NULL
->> +};
->
->This should work, but wouldn't exporting this information under
->security/tpmX, like the binary_bios_measurements, be a lot easier to
->find and use?
->
->Mimi
->
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/prctl.h                      | 10 ++++
+ testcases/kernel/syscalls/prctl/prctl02.c | 68 ++++++++++++++++++++---
+ 2 files changed, 71 insertions(+), 7 deletions(-)
 
-/sys/kernel/security/tpmX/major_version (on fedora and rhel at least, is it elsewhere on other distros?)
+diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+index 8ee492259..ea52ecac3 100644
+--- a/include/lapi/prctl.h
++++ b/include/lapi/prctl.h
+@@ -29,6 +29,11 @@
+ # define PR_GET_NO_NEW_PRIVS 39
+ #endif
+ 
++#ifndef PR_SET_THP_DISABLE
++# define PR_SET_THP_DISABLE 41
++# define PR_GET_THP_DISABLE 42
++#endif
++
+ #ifndef PR_CAP_AMBIENT
+ # define PR_CAP_AMBIENT             47
+ # define PR_CAP_AMBIENT_IS_SET      1
+@@ -37,4 +42,9 @@
+ # define PR_CAP_AMBIENT_CLEAR_ALL   4
+ #endif
+ 
++#ifndef PR_GET_SPECULATION_CTRL
++# define PR_GET_SPECULATION_CTRL 52
++# define PR_SET_SPECULATION_CTRL 53
++#endif
++
+ #endif /* LAPI_PRCTL_H__ */
+diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
+index ec45911fd..8739b4fab 100644
+--- a/testcases/kernel/syscalls/prctl/prctl02.c
++++ b/testcases/kernel/syscalls/prctl/prctl02.c
+@@ -4,32 +4,77 @@
+  *
+  * 1) prctl() fails with EINVAL when an invalid value is given for option
+  * 2) prctl() fails with EINVAL when option is PR_SET_PDEATHSIG & arg2 is
+- * not zero or a valid signal number
++ * not zero or a valid signal number.
++ * 3) prctl() fails with EINVAL when option is PR_SET_DUMPABLE & arg2 is
++ * neither SUID_DUMP_DISABLE nor SUID_DUMP_USER.
++ * 4) prctl() fails with EFAULT when arg2 is an invalid address.
++ * 5) prctl() fails with EFAULT when option is PR_SET_SECCOMP & arg2 is
++ * SECCOMP_MODE_FILTER & arg3 is an invalid address.
++ * 6) prctl() fails with EINVAL when option is PR_SET_TIMING & arg2 is not
++ * not PR_TIMING_STATISTICAL.
++ * 7,8) prctl() fails with EINVAL when option is PR_SET_NO_NEW_PRIVS & arg2
++ * is not equal to 1 or arg3 is nonzero.
++ * 9) prctl() fails with EINVAL when options is PR_GET_NO_NEW_PRIVS & arg2,
++ * arg3, arg4, or arg5 is nonzero.
++ * 10) prctl() fails with EINVAL when options is PR_SET_THP_DISABLE & arg3,
++ * arg4, arg5 is non-zero.
++ * 11) prctl() fails with EINVAL when options is PR_GET_THP_DISABLE & arg2,
++ * arg3, arg4, or arg5 is nonzero.
++ * 12) prctl() fails with EINVAL when options is PR_CAP_AMBIENT & an unused
++ * argument such as arg4 is nonzero.
++ * 13) prctl() fails with EINVAL when option is PR_GET_SPECULATION_CTRL and
++ * unused arguments is nonzero.
++ * 14) prctl() fails with EPERM when option is PR_SET_SECUREBITS and the
++ * caller does not have the CAP_SETPCAP capability.
++ * 15) prctl() fails with EPERM when option is PR_CAPBSET_DROP and the caller
++ * does not have the CAP_SETPCAP capability.
+  */
+ 
+ #include <errno.h>
+ #include <signal.h>
+ #include <sys/prctl.h>
+-
++#include "lapi/prctl.h"
++#include "lapi/seccomp.h"
+ #include "tst_test.h"
++#include "tst_capability.h"
+ 
+ #define OPTION_INVALID 999
+ #define INVALID_ARG 999
+-
+ static struct tcase {
+ 	int option;
+ 	unsigned long arg2;
++	unsigned long arg3;
+ 	int exp_errno;
++	int bad_addr;
+ } tcases[] = {
+-	{OPTION_INVALID, 0, EINVAL},
+-	{PR_SET_PDEATHSIG, INVALID_ARG, EINVAL},
++	{OPTION_INVALID, 0, 0, EINVAL, 0},
++	{PR_SET_PDEATHSIG, INVALID_ARG, 0, EINVAL, 0},
++	{PR_SET_DUMPABLE, 2, 0, EINVAL, 0},
++	{PR_SET_NAME, 0, 0, EFAULT, 1},
++	{PR_SET_SECCOMP, 2, 0, EFAULT, 1},
++	{PR_SET_TIMING, 1, 0, EINVAL, 0},
++	{PR_SET_NO_NEW_PRIVS, 0, 0, EINVAL, 0},
++	{PR_SET_NO_NEW_PRIVS, 1, 1, EINVAL, 0},
++	{PR_GET_NO_NEW_PRIVS, 1, 0, EINVAL, 0},
++	{PR_SET_THP_DISABLE, 0, 1, EINVAL, 0},
++	{PR_GET_THP_DISABLE, 1, 0, EINVAL, 0},
++	{PR_CAP_AMBIENT, 2, 1, EINVAL, 0},
++	{PR_GET_SPECULATION_CTRL, 1, 0, EINVAL, 0},
++	{PR_SET_SECUREBITS, 0, 0, EPERM, 0},
++	{PR_CAPBSET_DROP, 1, 0, EPERM, 0},
+ };
+ 
+ static void verify_prctl(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 
+-	TEST(prctl(tc->option, tc->arg2));
++	if (tc->bad_addr) {
++		if (tc->arg2)
++			tc->arg3 = (unsigned long)tst_get_bad_addr(NULL);
++		else
++			tc->arg2 = (unsigned long)tst_get_bad_addr(NULL);
++	}
++	TEST(prctl(tc->option, tc->arg2, tc->arg3));
+ 	if (TST_RET == 0) {
+ 		tst_res(TFAIL, "prctl() succeeded unexpectedly");
+ 		return;
+@@ -38,7 +83,11 @@ static void verify_prctl(unsigned int n)
+ 	if (tc->exp_errno == TST_ERR) {
+ 		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
+ 	} else {
+-		tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
++		if (TST_ERR == ENOSYS)
++			tst_res(TINFO,
++				"This prctl() option is not supported on current system");
++		else
++			tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
+ 				tst_strerrno(tc->exp_errno));
+ 	}
+ }
+@@ -46,4 +95,9 @@ static void verify_prctl(unsigned int n)
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_prctl,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_REQ, CAP_SYS_ADMIN),
++		TST_CAP(TST_CAP_DROP, CAP_SETPCAP),
++		{}
++	},
+ };
+-- 
+2.18.0
 
-versus
 
-/sys/class/tpm/tpmX/major_version
-
-I don't know that it is any easier to find.
-
->> +
->> +static const struct attribute_group tpm12_dev_group = {
->> +       .attrs = tpm12_dev_attrs,
->> +};
->> +
->> +static const struct attribute_group tpm20_dev_group = {
->> +       .attrs = tpm20_dev_attrs,
->>  };
->>
->>  void tpm_sysfs_add_device(struct tpm_chip *chip)
->>  {
->> -       if (chip->flags & TPM_CHIP_FLAG_TPM2)
->> -               return;
->> -
->>         WARN_ON(chip->groups_cnt != 0);
->> -       chip->groups[chip->groups_cnt++] = &tpm_dev_group;
->> +       if (chip->flags & TPM_CHIP_FLAG_TPM2)
->> +               chip->groups[chip->groups_cnt++] = &tpm20_dev_group;
->> +       else
->> +               chip->groups[chip->groups_cnt++] = &tpm12_dev_group;
->>  }
->>
->>
->> Did a quick test on 2 systems here.
->
 
