@@ -1,99 +1,241 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 25 Oct 2019 09:59:40 +0800
-Subject: [LTP] [PATCH] syscalls/copy_file_range02: skip new error tests if
- cross-fs isn't supported
-Message-ID: <1571968780-4810-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 25 Oct 2019 11:53:45 +0800
+Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before test
+In-Reply-To: <20190911124714.GA21670@rei.lan>
+References: <20190911124714.GA21670@rei.lan>
+Message-ID: <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We should not skip the whole error test if cross-fs isn't support because
-old errors should be tested on all version. Even we use .mount_device = 1
-and .mntpoint = MNTPOINT, the src and dest file are still in tmp directory
-instead of mntpoint.
+stx_attributes_mask shows what's supported in stx_attributes.
+Set supp_{append,compr,immutable,nodump} attributes only on filesystems
+which actually support it.
 
-ps: I doubt whether we should skip new error test because it indeed exposed this
-unreasonable copy_file_range behavior of the user.
+Also merge duplicate code.
+
+---------------
+v2->v3:
+1.add kernel version check for stx_attributes_mask
+2. use test_flag(int) instead of test_flagged and test_unflagged
+---------------
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../copy_file_range/copy_file_range02.c       | 39 +++++++++++--------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ testcases/kernel/syscalls/statx/statx04.c | 158 +++++++++++++---------
+ 1 file changed, 93 insertions(+), 65 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-index a55de4111..e4159cad7 100644
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
-@@ -55,6 +55,7 @@ static int need_unlink;
+diff --git a/testcases/kernel/syscalls/statx/statx04.c b/testcases/kernel/syscalls/statx/statx04.c
+index 71de734f5..c0fa06d46 100644
+--- a/testcases/kernel/syscalls/statx/statx04.c
++++ b/testcases/kernel/syscalls/statx/statx04.c
+@@ -34,85 +34,70 @@
+ #define TESTDIR_UNFLAGGED MOUNT_POINT"/test_dir2"
  
- static int chattr_i_nsup;
- static int swap_nsup;
-+static int cross_sup;
- static int loop_devn;
+ static int fd, clear_flags;
++static int supp_compr;
++static int supp_append;
++static int supp_immutable;
++static int supp_nodump;
  
- static struct tcase {
-@@ -63,21 +64,22 @@ static struct tcase {
- 	int	exp_err;
- 	loff_t     len;
- 	const char *tname;
-+	int     new_error;
+-static void test_flagged(void)
++static void test_flag(int flag)
+ {
+ 	struct statx buf;
+ 
+-	TEST(statx(AT_FDCWD, TESTDIR_FLAGGED, 0, 0, &buf));
+-	if (TST_RET == 0)
+-		tst_res(TPASS,
+-			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
+-	else
+-		tst_brk(TFAIL | TTERRNO,
+-			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
+-
+-	if (buf.stx_attributes & STATX_ATTR_COMPRESSED)
+-		tst_res(TPASS, "STATX_ATTR_COMPRESSED flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_COMPRESSED flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_APPEND)
+-		tst_res(TPASS, "STATX_ATTR_APPEND flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_APPEND flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_IMMUTABLE)
+-		tst_res(TPASS, "STATX_ATTR_IMMUTABLE flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_IMMUTABLE flag is not set");
+-
+-	if (buf.stx_attributes & STATX_ATTR_NODUMP)
+-		tst_res(TPASS, "STATX_ATTR_NODUMP flag is set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_NODUMP flag is not set");
+-}
+-
+-static void test_unflagged(void)
+-{
+-	struct statx buf;
+-
+-	TEST(statx(AT_FDCWD, TESTDIR_UNFLAGGED, 0, 0, &buf));
++	TEST(statx(AT_FDCWD, flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED, 0, 0, &buf));
+ 	if (TST_RET == 0)
+ 		tst_res(TPASS,
+ 			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
+-			TESTDIR_UNFLAGGED);
++			flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED);
+ 	else
+ 		tst_brk(TFAIL | TTERRNO,
+ 			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)",
+-			TESTDIR_UNFLAGGED);
+-
+-	if ((buf.stx_attributes & STATX_ATTR_COMPRESSED) == 0)
+-		tst_res(TPASS, "STATX_ATTR_COMPRESSED flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_COMPRESSED flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_APPEND) == 0)
+-		tst_res(TPASS, "STATX_ATTR_APPEND flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_APPEND flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_IMMUTABLE) == 0)
+-		tst_res(TPASS, "STATX_ATTR_IMMUTABLE flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_IMMUTABLE flag is set");
+-
+-	if ((buf.stx_attributes & STATX_ATTR_NODUMP) == 0)
+-		tst_res(TPASS, "STATX_ATTR_NODUMP flag is not set");
+-	else
+-		tst_res(TFAIL, "STATX_ATTR_NODUMP flag is set");
++			flag ? TESTDIR_FLAGGED : TESTDIR_UNFLAGGED);
++
++	if (supp_compr) {
++		if (buf.stx_attributes & STATX_ATTR_COMPRESSED)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_COMPRESSED flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_COMPRESSED flag is not set");
++	}
++	if (supp_append) {
++		if (buf.stx_attributes & STATX_ATTR_APPEND)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_APPEND flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_APPEND flag is not set");
++	}
++	if (supp_immutable) {
++		if (buf.stx_attributes & STATX_ATTR_IMMUTABLE)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_IMMUTABLE flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_IMMUTABLE flag is not set");
++	}
++	if (supp_nodump) {
++		if (buf.stx_attributes & STATX_ATTR_NODUMP)
++			tst_res(flag ? TPASS : TFAIL,
++				"STATX_ATTR_NODUMP flag is set");
++		else
++			tst_res(flag ? TFAIL : TPASS,
++				"STATX_ATTR_NODUMP flag is not set");
++	}
+ }
+ 
+ struct test_cases {
+-	void (*tfunc)(void);
++	void (*tfunc)(int);
++	int set_flag;
  } tcases[] = {
--	{&fd_rdonly,	0,	EBADF,		CONTSIZE,	"readonly file"},
--	{&fd_dir,	0,	EISDIR,		CONTSIZE,	"directory"},
--	{&fd_append,	0,	EBADF,		CONTSIZE,	"append to file"},
--	{&fd_closed,	0,	EBADF,		CONTSIZE,	"closed file descriptor"},
--	{&fd_dest,	-1,	EINVAL,		CONTSIZE,	"invalid flags"},
--	{&fd_immutable,	0,	EPERM,		CONTSIZE,	"immutable file"},
--	{&fd_swapfile,	0,	ETXTBSY,	CONTSIZE,	"swap file"},
--	{&fd_dup,	0,	EINVAL,		CONTSIZE/2,	"overlaping range"},
--	{&fd_blkdev,	0,	EINVAL,		CONTSIZE,	"block device"},
--	{&fd_chrdev,	0,	EINVAL,		CONTSIZE,	"char device"},
--	{&fd_fifo,	0,	EINVAL,		CONTSIZE,	"fifo"},
--	{&fd_pipe[0],	0,	EINVAL,		CONTSIZE,	"pipe"},
--	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length lenght"},
--	{&fd_copy,	0,	EFBIG,		MIN_OFF,	"max file size"},
-+	{&fd_rdonly,	0,	EBADF,		CONTSIZE,	"readonly file",	0},
-+	{&fd_dir,	0,	EISDIR,		CONTSIZE,	"directory",	0},
-+	{&fd_append,	0,	EBADF,		CONTSIZE,	"append to file",	0},
-+	{&fd_closed,	0,	EBADF,		CONTSIZE,	"closed file descriptor",	0},
-+	{&fd_dest,	-1,	EINVAL,		CONTSIZE,	"invalid flags",	0},
-+	{&fd_immutable,	0,	EPERM,		CONTSIZE,	"immutable file",	1},
-+	{&fd_swapfile,	0,	ETXTBSY,	CONTSIZE,	"swap file",	1},
-+	{&fd_dup,	0,	EINVAL,		CONTSIZE/2,	"overlaping range",	1},
-+	{&fd_blkdev,	0,	EINVAL,		CONTSIZE,	"block device", 	0},
-+	{&fd_chrdev,	0,	EINVAL,		CONTSIZE,	"char device",	0},
-+	{&fd_fifo,	0,	EINVAL,		CONTSIZE,	"fifo", 	0},
-+	{&fd_pipe[0],	0,	EINVAL,		CONTSIZE,	"pipe", 	0},
-+	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length lenght", 	1},
-+	{&fd_copy,	0,	EFBIG,		MIN_OFF,	"max file size", 	1},
+-	{&test_flagged},
+-	{&test_unflagged},
++	{&test_flag, 1},
++	{&test_flag, 0},
  };
  
- static int run_command(char *command, char *option, char *file)
-@@ -105,6 +107,11 @@ static void verify_copy_file_range(unsigned int n)
+ static void run(unsigned int i)
+ {
+-	tcases[i].tfunc();
++	tcases[i].tfunc(tcases[i].set_flag);
+ }
  
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ static void caid_flags_setup(void)
+@@ -135,12 +120,17 @@ static void caid_flags_setup(void)
+ 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_GETFLAGS, ...)", fd);
+ 	}
  
-+	if (tc->new_error && !cross_sup) {
-+		tst_res(TCONF,
-+			"copy_file_range() doesn't support cross-device, skip it");
-+		return;
+-	attr |= FS_COMPR_FL | FS_APPEND_FL | FS_IMMUTABLE_FL | FS_NODUMP_FL;
++	if (supp_compr)
++		attr |= FS_COMPR_FL;
++	if (supp_append)
++		attr |= FS_APPEND_FL;
++	if (supp_immutable)
++		attr |= FS_IMMUTABLE_FL;
++	if (supp_nodump)
++		attr |= FS_NODUMP_FL;
+ 
+ 	ret = ioctl(fd, FS_IOC_SETFLAGS, &attr);
+ 	if (ret < 0) {
+-		if (errno == EOPNOTSUPP)
+-			tst_brk(TCONF, "Flags not supported");
+ 		tst_brk(TBROK | TERRNO, "ioctl(%i, FS_IOC_SETFLAGS, %i)", fd, attr);
+ 	}
+ 
+@@ -149,11 +139,49 @@ static void caid_flags_setup(void)
+ 
+ static void setup(void)
+ {
++	struct statx buf;
++
++	supp_compr = 1;
++	supp_append = 1;
++	supp_immutable = 1;
++	supp_nodump = 1;
+ 	SAFE_MKDIR(TESTDIR_FLAGGED, 0777);
+ 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
+ 
++	// don't check ext4 because ext4 supports statx since 4.11.
+ 	if (!strcmp(tst_device->fs_type, "btrfs") && tst_kvercmp(4, 13, 0) < 0)
+-		tst_brk(TCONF, "Btrfs statx() supported since 4.13");
++		tst_brk(TCONF, "Btrfs statx() stx_attributes_mask supported since 4.13");
++
++	if (!strcmp(tst_device->fs_type, "xfs") && tst_kvercmp(5, 1, 0) < 0)
++		tst_brk(TCONF, "xfs statx() stx_attributes_mask supported since 5.1");
++
++	if (!strcmp(tst_device->fs_type, "ext2") && tst_kvercmp(5, 1, 0) < 0)
++		tst_brk(TCONF, "ext2 statx() stx_attributes_mask supported since 5.1");
++
++	TEST(statx(AT_FDCWD, TESTDIR_FLAGGED, 0, 0, &buf));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO,
++			"sys_statx(AT_FDCWD, %s, 0, 0, &buf)", TESTDIR_FLAGGED);
++
++	if ((buf.stx_attributes_mask & FS_COMPR_FL) == 0) {
++		supp_compr = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_COMPR_FL");
 +	}
- 	if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup) {
- 		tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
- 		return;
-@@ -178,9 +185,7 @@ static void setup(void)
- 	syscall_info();
- 	char dev_path[1024];
++	if ((buf.stx_attributes_mask & FS_APPEND_FL) == 0) {
++		supp_append = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_APPEND_FL");
++	}
++	if ((buf.stx_attributes_mask & FS_IMMUTABLE_FL) == 0) {
++		supp_immutable = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_IMMUTABLE_FL");
++	}
++	if ((buf.stx_attributes_mask & FS_NODUMP_FL) == 0) {
++		supp_nodump = 0;
++		tst_res(TCONF, "filesystem doesn't support FS_NODUMP_FL");
++	}
++	if (!(supp_compr || supp_append || supp_immutable || supp_nodump))
++		tst_brk(TCONF,
++			"filesystem doesn't support the above any attr, skip it");
  
--	if (!verify_cross_fs_copy_support(FILE_SRC_PATH, FILE_MNTED_PATH))
--		tst_brk(TCONF,
--			"copy_file_range() doesn't support cross-device, skip it");
-+	cross_sup = verify_cross_fs_copy_support(FILE_SRC_PATH, FILE_MNTED_PATH);
- 
- 	if (access(FILE_DIR_PATH, F_OK) == -1)
- 		SAFE_MKDIR(FILE_DIR_PATH, 0777);
+ 	caid_flags_setup();
+ }
 -- 
 2.18.0
 
