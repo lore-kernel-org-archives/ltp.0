@@ -1,34 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 Oct 2019 10:56:17 +0200
-Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
-In-Reply-To: <20191025021159.dt7ifgnebnke6ca7@cantor>
-References: <1558041162.3971.2.camel@linux.ibm.com>
- <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
- <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
- <20191024172023.GA7948@linux.intel.com>
- <20191024213842.c6cl4tlnsi56pgcy@cantor>
- <1571964420.5173.12.camel@linux.ibm.com>
- <20191025021159.dt7ifgnebnke6ca7@cantor>
-Message-ID: <20191025085617.GA13329@x230>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 25 Oct 2019 13:15:03 +0300
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: skip new error tests
+ if cross-fs isn't supported
+In-Reply-To: <20191025083738.GA13022@x230>
+References: <1571968780-4810-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191025083738.GA13022@x230>
+Message-ID: <CAOQ4uxiV56cNFXoJp4qYjoCDQ2pFEn8G9mgV_j8pMG2LkC=vfg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Fri, Oct 25, 2019 at 11:37 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Xu,
+>
+> > We should not skip the whole error test if cross-fs isn't support because
+> > old errors should be tested on all version. Even we use .mount_device = 1
+> > and .mntpoint = MNTPOINT, the src and dest file are still in tmp directory
+> > instead of mntpoint.
+>
+> > ps: I doubt whether we should skip new error test because it indeed exposed this
+> > unreasonable copy_file_range behavior of the user.
+>
+> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+>
+> LGTM, but I'd like to have Amir's review/ack.
+>
 
-> /sys/kernel/security/tpmX/major_version (on fedora and rhel at least, is it elsewhere on other distros?)
+ACK. I'm fine with the test code.
+If you tested it and it passed on both new and old kernel,
+it's fine by me.
 
-> versus
-
-> /sys/class/tpm/tpmX/major_version
-
-Is it more HW related (/sys/class/tpm/tpmX) or LSM related
-(/sys/kernel/security/tpmX)?
-I guess /sys/kernel/security/tpmX might be better.
-
-Thanks for implementing this, I'll try to test it soon.
-
-Kind regards,
-Petr
+Thanks,
+Amir.
