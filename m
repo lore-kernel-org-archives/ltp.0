@@ -1,115 +1,101 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Thu, 24 Oct 2019 20:47:00 -0400
-Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
-In-Reply-To: <20191024213842.c6cl4tlnsi56pgcy@cantor>
-References: <1558041162.3971.2.camel@linux.ibm.com>
- <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
- <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
- <20191024172023.GA7948@linux.intel.com>
- <20191024213842.c6cl4tlnsi56pgcy@cantor>
-Message-ID: <1571964420.5173.12.camel@linux.ibm.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 25 Oct 2019 09:59:40 +0800
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: skip new error tests if
+ cross-fs isn't supported
+Message-ID: <1571968780-4810-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2019-10-24 at 14:38 -0700, Jerry Snitselaar wrote:
-> On Thu Oct 24 19, Jarkko Sakkinen wrote:
-> >On Thu, Oct 24, 2019 at 02:18:48PM +0200, Petr Vorel wrote:
-> >> Hi all,
-> >>
-> >> I wonder what to do with this patch "ima: skip verifying TPM 2.0 PCR values" [1].
-> >> Is it a correct way to differentiate between TPM 1.2 and TPM 2.0?
-> >> Or something else should be applied?
-> >>
-> >> How is the work on TPM 2.0 Linux sysfs interface?
-> >> But even it's done in near future, we'd still need some way for older kernels.
-> >>
-> >> Kind regards,
-> >> Petr
-> >>
-> >> [1] https://patchwork.ozlabs.org/patch/1100733/
-> >
-> >version_major sysfs file would be acceptable if someone wants to proceed
-> >and send such patch.
-> >
-> >Also replicants for durations and timeouts files would make sense for
-> >TPM 2.0.
-> >
-> >/Jarkko
-> 
-> Is it as simple as doing this?
-> 
-> diff --git a/drivers/char/tpm/tpm-sysfs.c b/drivers/char/tpm/tpm-sysfs.c
-> index edfa89160010..fd8eb8d8945c 100644
-> --- a/drivers/char/tpm/tpm-sysfs.c
-> +++ b/drivers/char/tpm/tpm-sysfs.c
-> @@ -309,7 +309,17 @@ static ssize_t timeouts_show(struct device *dev, struct device_attribute *attr,
->  }
->  static DEVICE_ATTR_RO(timeouts);
->  
-> -static struct attribute *tpm_dev_attrs[] = {
-> +static ssize_t version_major_show(struct device *dev,
-> +                                 struct device_attribute *attr, char *buf)
-> +{
-> +       struct tpm_chip *chip = to_tpm_chip(dev);
-> +
-> +       return sprintf(buf, "TPM%s\n", chip->flags & TPM_CHIP_FLAG_TPM2
-> +                      ? "2.0" : "1.2");
-> +}
-> +static DEVICE_ATTR_RO(version_major);
-> +
-> +static struct attribute *tpm12_dev_attrs[] = {
->         &dev_attr_pubek.attr,
->         &dev_attr_pcrs.attr,
->         &dev_attr_enabled.attr,
-> @@ -320,18 +330,28 @@ static struct attribute *tpm_dev_attrs[] = {
->         &dev_attr_cancel.attr,
->         &dev_attr_durations.attr,
->         &dev_attr_timeouts.attr,
-> +       &dev_attr_version_major.attr,
->         NULL,
->  };
->  
+We should not skip the whole error test if cross-fs isn't support because
+old errors should be tested on all version. Even we use .mount_device = 1
+and .mntpoint = MNTPOINT, the src and dest file are still in tmp directory
+instead of mntpoint.
 
-The TPM version seems to be included in "dev_attr_caps.attr".
+ps: I doubt whether we should skip new error test because it indeed exposed this
+unreasonable copy_file_range behavior of the user.
 
-> -static const struct attribute_group tpm_dev_group = {
-> -       .attrs = tpm_dev_attrs,
-> +static struct attribute *tpm20_dev_attrs[] = {
-> +       &dev_attr_version_major.attr,
-> +       NULL
-> +};
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../copy_file_range/copy_file_range02.c       | 39 +++++++++++--------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
-This should work, but wouldn't exporting this information under
-security/tpmX, like the binary_bios_measurements, be a lot easier to
-find and use?
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+index a55de4111..e4159cad7 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+@@ -55,6 +55,7 @@ static int need_unlink;
+ 
+ static int chattr_i_nsup;
+ static int swap_nsup;
++static int cross_sup;
+ static int loop_devn;
+ 
+ static struct tcase {
+@@ -63,21 +64,22 @@ static struct tcase {
+ 	int	exp_err;
+ 	loff_t     len;
+ 	const char *tname;
++	int     new_error;
+ } tcases[] = {
+-	{&fd_rdonly,	0,	EBADF,		CONTSIZE,	"readonly file"},
+-	{&fd_dir,	0,	EISDIR,		CONTSIZE,	"directory"},
+-	{&fd_append,	0,	EBADF,		CONTSIZE,	"append to file"},
+-	{&fd_closed,	0,	EBADF,		CONTSIZE,	"closed file descriptor"},
+-	{&fd_dest,	-1,	EINVAL,		CONTSIZE,	"invalid flags"},
+-	{&fd_immutable,	0,	EPERM,		CONTSIZE,	"immutable file"},
+-	{&fd_swapfile,	0,	ETXTBSY,	CONTSIZE,	"swap file"},
+-	{&fd_dup,	0,	EINVAL,		CONTSIZE/2,	"overlaping range"},
+-	{&fd_blkdev,	0,	EINVAL,		CONTSIZE,	"block device"},
+-	{&fd_chrdev,	0,	EINVAL,		CONTSIZE,	"char device"},
+-	{&fd_fifo,	0,	EINVAL,		CONTSIZE,	"fifo"},
+-	{&fd_pipe[0],	0,	EINVAL,		CONTSIZE,	"pipe"},
+-	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length lenght"},
+-	{&fd_copy,	0,	EFBIG,		MIN_OFF,	"max file size"},
++	{&fd_rdonly,	0,	EBADF,		CONTSIZE,	"readonly file",	0},
++	{&fd_dir,	0,	EISDIR,		CONTSIZE,	"directory",	0},
++	{&fd_append,	0,	EBADF,		CONTSIZE,	"append to file",	0},
++	{&fd_closed,	0,	EBADF,		CONTSIZE,	"closed file descriptor",	0},
++	{&fd_dest,	-1,	EINVAL,		CONTSIZE,	"invalid flags",	0},
++	{&fd_immutable,	0,	EPERM,		CONTSIZE,	"immutable file",	1},
++	{&fd_swapfile,	0,	ETXTBSY,	CONTSIZE,	"swap file",	1},
++	{&fd_dup,	0,	EINVAL,		CONTSIZE/2,	"overlaping range",	1},
++	{&fd_blkdev,	0,	EINVAL,		CONTSIZE,	"block device", 	0},
++	{&fd_chrdev,	0,	EINVAL,		CONTSIZE,	"char device",	0},
++	{&fd_fifo,	0,	EINVAL,		CONTSIZE,	"fifo", 	0},
++	{&fd_pipe[0],	0,	EINVAL,		CONTSIZE,	"pipe", 	0},
++	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length lenght", 	1},
++	{&fd_copy,	0,	EFBIG,		MIN_OFF,	"max file size", 	1},
+ };
+ 
+ static int run_command(char *command, char *option, char *file)
+@@ -105,6 +107,11 @@ static void verify_copy_file_range(unsigned int n)
+ 
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
++	if (tc->new_error && !cross_sup) {
++		tst_res(TCONF,
++			"copy_file_range() doesn't support cross-device, skip it");
++		return;
++	}
+ 	if (tc->copy_to_fd == &fd_immutable && chattr_i_nsup) {
+ 		tst_res(TCONF, "filesystem doesn't support chattr +i, skip it");
+ 		return;
+@@ -178,9 +185,7 @@ static void setup(void)
+ 	syscall_info();
+ 	char dev_path[1024];
+ 
+-	if (!verify_cross_fs_copy_support(FILE_SRC_PATH, FILE_MNTED_PATH))
+-		tst_brk(TCONF,
+-			"copy_file_range() doesn't support cross-device, skip it");
++	cross_sup = verify_cross_fs_copy_support(FILE_SRC_PATH, FILE_MNTED_PATH);
+ 
+ 	if (access(FILE_DIR_PATH, F_OK) == -1)
+ 		SAFE_MKDIR(FILE_DIR_PATH, 0777);
+-- 
+2.18.0
 
-Mimi
 
-> +
-> +static const struct attribute_group tpm12_dev_group = {
-> +       .attrs = tpm12_dev_attrs,
-> +};
-> +
-> +static const struct attribute_group tpm20_dev_group = {
-> +       .attrs = tpm20_dev_attrs,
->  };
->  
->  void tpm_sysfs_add_device(struct tpm_chip *chip)
->  {
-> -       if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> -               return;
-> -
->         WARN_ON(chip->groups_cnt != 0);
-> -       chip->groups[chip->groups_cnt++] = &tpm_dev_group;
-> +       if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> +               chip->groups[chip->groups_cnt++] = &tpm20_dev_group;
-> +       else
-> +               chip->groups[chip->groups_cnt++] = &tpm12_dev_group;
->  }
-> 
-> 
-> Did a quick test on 2 systems here.
 
