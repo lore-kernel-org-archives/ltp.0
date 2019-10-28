@@ -1,70 +1,38 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 28 Oct 2019 14:33:26 +0100
-Subject: [LTP] [PATCH] pt_test: skip pt_disable_branch on Broadwell CPUs
-Message-ID: <a5174e749dd7b6089fa861b5369baf9f80c51ef8.1572269566.git.jstancek@redhat.com>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Mon, 28 Oct 2019 22:51:22 +0200
+Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
+In-Reply-To: <20191024233602.GF23952@ziepe.ca>
+References: <1558041162.3971.2.camel@linux.ibm.com>
+ <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
+ <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
+ <20191024172023.GA7948@linux.intel.com>
+ <20191024182005.GZ23952@ziepe.ca>
+ <20191024191402.GB12038@linux.intel.com>
+ <20191024233602.GF23952@ziepe.ca>
+Message-ID: <20191028205122.GG8279@linux.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-commit d35869ba348d ("perf/x86/intel/pt: Allow the disabling of branch tracing")
-disallows not setting BRANCH_EN due to erratum BDM106 on Broadwell CPUs.
+On Thu, Oct 24, 2019 at 08:36:02PM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 24, 2019 at 10:14:02PM +0300, Jarkko Sakkinen wrote:
+> > On Thu, Oct 24, 2019 at 03:20:05PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Oct 24, 2019 at 08:20:23PM +0300, Jarkko Sakkinen wrote:
+> > > > Also replicants for durations and timeouts files would make sense for
+> > > > TPM 2.0.
+> > > 
+> > > These ones don't meet the sysfs standard of one value per file, which
+> > > is why they didn't make it to tpm2
+> > 
+> > They would be still useful to have available in some form as there is
+> > no way deduce them from the user space.
+> 
+> Why? Userspace doesn't refer to these values since the kernel handles
+> all the timeouts, right?
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/tracing/pt_test/pt_test.c | 31 ++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+For debugging at least would be definitely a nice to have what
+values the driver ended up setting.
 
-diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
-index 1095e800f721..f9903fdcd396 100644
---- a/testcases/kernel/tracing/pt_test/pt_test.c
-+++ b/testcases/kernel/tracing/pt_test/pt_test.c
-@@ -124,6 +124,32 @@ static void intel_pt_trace_check(void)
- 	tst_res(TPASS, "perf trace test passed");
- }
- 
-+static int is_affected_by_erratum_BDM106(void)
-+{
-+	int family = -1, model = -1;
-+
-+	if (FILE_LINES_SCANF("/proc/cpuinfo", "cpu family%*s%d", &family)
-+		|| family != 6)
-+		return 0;
-+
-+	if (!FILE_LINES_SCANF("/proc/cpuinfo", "model%*s%d", &model)) {
-+		tst_res(TINFO, "Intel FAM6 model %d", model);
-+
-+		switch (model) {
-+		case 0x3D: /* INTEL_FAM6_BROADWELL */
-+		/* fallthrough */
-+		case 0x47: /* INTEL_FAM6_BROADWELL_G */
-+		/* fallthrough */
-+		case 0x4F: /* INTEL_FAM6_BROADWELL_X */
-+		/* fallthrough */
-+		case 0x56: /* INTEL_FAM6_BROADWELL_D */
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static void setup(void)
- {
- 	struct perf_event_attr attr = {};
-@@ -145,6 +171,11 @@ static void setup(void)
- 	attr.size	= sizeof(struct perf_event_attr);
- 	attr.mmap			= 1;
- 	if (str_branch_flag) {
-+		if (is_affected_by_erratum_BDM106()) {
-+			tst_brk(TCONF, "erratum BDM106 disallows not "
-+				"setting BRANCH_EN on this CPU");
-+		}
-+
- 		tst_res(TINFO, "Intel PT will disable branch trace");
- 		attr.config |= 1;
- 	}
--- 
-1.8.3.1
-
+/Jarkko
