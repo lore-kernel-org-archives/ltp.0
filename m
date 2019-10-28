@@ -1,45 +1,31 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 28 Oct 2019 15:47:58 +0800
-Subject: [LTP] [PATCH] syscalls/copy_file_range02: skip new error tests
- if cross-fs isn't supported
-In-Reply-To: <20191025083738.GA13022@x230>
-References: <1571968780-4810-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191025083738.GA13022@x230>
-Message-ID: <202a3595-fd14-3a6c-ea02-8ba20aee9223@cn.fujitsu.com>
+From: Song Jian <songjian15@huawei.com>
+Date: Mon, 28 Oct 2019 17:31:32 +0800
+Subject: [LTP] [PATCH]kernel/mem/mtest01:Fix mtest01's options
+Message-ID: <1572255092-105929-1-git-send-email-songjian15@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Song Jian <songjian15@huawei.com>
+---
+ testcases/kernel/mem/mtest01/mtest01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-on 2019/10/25 16:37, Petr Vorel wrote:
-> Hi Xu,
-> 
->> We should not skip the whole error test if cross-fs isn't support because
->> old errors should be tested on all version. Even we use .mount_device = 1
->> and .mntpoint = MNTPOINT, the src and dest file are still in tmp directory
->> instead of mntpoint.
-> 
->> ps: I doubt whether we should skip new error test because it indeed exposed this
->> unreasonable copy_file_range behavior of the user.
-> 
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Tested-by: Petr Vorel <pvorel@suse.cz>
-> 
-> LGTM, but I'd like to have Amir's review/ack.
-Hi Petr
-
-Now, I think it can be merged if you don't have other doubt.
-
-Thanks
-Yang Xu
-> 
-> Kind regards,
-> Petr
-> 
-> 
-
+diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
+index eaf1026..960a2ce 100644
+--- a/testcases/kernel/mem/mtest01/mtest01.c
++++ b/testcases/kernel/mem/mtest01/mtest01.c
+@@ -58,7 +58,7 @@ static char *opt_chunksize, *opt_maxbytes, *opt_maxpercent;
+ static struct tst_option mtest_options[] = {
+ 	{"c:", &opt_chunksize,	"-c  size of chunk in bytes to malloc on each pass"},
+ 	{"b:", &opt_maxbytes,	"-b  maximum number of bytes to allocate before stopping"},
+-	{"p:", &opt_maxpercent, "-u  percent of total memory used at which the program stops"},
++	{"p:", &opt_maxpercent, "-p  percent of total memory used at which the program stops"},
+ 	{"w",  &dowrite,   	"-w  write to the memory after allocating"},
+ 	{"v",  &verbose,     	"-v  verbose"},
+ 	{NULL, NULL, 		NULL}
+--
+2.6.2
 
