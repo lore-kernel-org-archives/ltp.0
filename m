@@ -1,58 +1,70 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 Oct 2019 20:50:12 +0800
-Subject: [LTP] [PATCH]kernel/mem/mtest01:Fix mtest01's options
-In-Reply-To: <1572255092-105929-1-git-send-email-songjian15@huawei.com>
-References: <1572255092-105929-1-git-send-email-songjian15@huawei.com>
-Message-ID: <CAEemH2dHX0vry_p=RRwRGbMe2NYf_7_PB4LG5sUpDSXDFB2g1Q@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 28 Oct 2019 14:33:26 +0100
+Subject: [LTP] [PATCH] pt_test: skip pt_disable_branch on Broadwell CPUs
+Message-ID: <a5174e749dd7b6089fa861b5369baf9f80c51ef8.1572269566.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Oct 28, 2019 at 5:30 PM Song Jian <songjian15@huawei.com> wrote:
+commit d35869ba348d ("perf/x86/intel/pt: Allow the disabling of branch tracing")
+disallows not setting BRANCH_EN due to erratum BDM106 on Broadwell CPUs.
 
-> Signed-off-by: Song Jian <songjian15@huawei.com>
-> ---
->  testcases/kernel/mem/mtest01/mtest01.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/mem/mtest01/mtest01.c
-> b/testcases/kernel/mem/mtest01/mtest01.c
-> index eaf1026..960a2ce 100644
-> --- a/testcases/kernel/mem/mtest01/mtest01.c
-> +++ b/testcases/kernel/mem/mtest01/mtest01.c
-> @@ -58,7 +58,7 @@ static char *opt_chunksize, *opt_maxbytes,
-> *opt_maxpercent;
->  static struct tst_option mtest_options[] = {
->         {"c:", &opt_chunksize,  "-c  size of chunk in bytes to malloc on
-> each pass"},
->         {"b:", &opt_maxbytes,   "-b  maximum number of bytes to allocate
-> before stopping"},
-> -       {"p:", &opt_maxpercent, "-u  percent of total memory used at which
-> the program stops"},
-> +       {"p:", &opt_maxpercent, "-p  percent of total memory used at which
-> the program stops"},
->
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/tracing/pt_test/pt_test.c | 31 ++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-Good catch. Pushed.
-
->         {"w",  &dowrite,        "-w  write to the memory after
-> allocating"},
->         {"v",  &verbose,        "-v  verbose"},
->         {NULL, NULL,            NULL}
-> --
-> 2.6.2
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
-
-
+diff --git a/testcases/kernel/tracing/pt_test/pt_test.c b/testcases/kernel/tracing/pt_test/pt_test.c
+index 1095e800f721..f9903fdcd396 100644
+--- a/testcases/kernel/tracing/pt_test/pt_test.c
++++ b/testcases/kernel/tracing/pt_test/pt_test.c
+@@ -124,6 +124,32 @@ static void intel_pt_trace_check(void)
+ 	tst_res(TPASS, "perf trace test passed");
+ }
+ 
++static int is_affected_by_erratum_BDM106(void)
++{
++	int family = -1, model = -1;
++
++	if (FILE_LINES_SCANF("/proc/cpuinfo", "cpu family%*s%d", &family)
++		|| family != 6)
++		return 0;
++
++	if (!FILE_LINES_SCANF("/proc/cpuinfo", "model%*s%d", &model)) {
++		tst_res(TINFO, "Intel FAM6 model %d", model);
++
++		switch (model) {
++		case 0x3D: /* INTEL_FAM6_BROADWELL */
++		/* fallthrough */
++		case 0x47: /* INTEL_FAM6_BROADWELL_G */
++		/* fallthrough */
++		case 0x4F: /* INTEL_FAM6_BROADWELL_X */
++		/* fallthrough */
++		case 0x56: /* INTEL_FAM6_BROADWELL_D */
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
+ static void setup(void)
+ {
+ 	struct perf_event_attr attr = {};
+@@ -145,6 +171,11 @@ static void setup(void)
+ 	attr.size	= sizeof(struct perf_event_attr);
+ 	attr.mmap			= 1;
+ 	if (str_branch_flag) {
++		if (is_affected_by_erratum_BDM106()) {
++			tst_brk(TCONF, "erratum BDM106 disallows not "
++				"setting BRANCH_EN on this CPU");
++		}
++
+ 		tst_res(TINFO, "Intel PT will disable branch trace");
+ 		attr.config |= 1;
+ 	}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191028/2fe78383/attachment.htm>
+1.8.3.1
+
