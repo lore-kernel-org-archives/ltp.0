@@ -1,38 +1,100 @@
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Date: Mon, 28 Oct 2019 22:51:22 +0200
-Subject: [LTP] [PATCH] ima: skip verifying TPM 2.0 PCR values
-In-Reply-To: <20191024233602.GF23952@ziepe.ca>
-References: <1558041162.3971.2.camel@linux.ibm.com>
- <fccc3abd-f3ce-fdb1-55d7-c18ce116446c@linux.vnet.ibm.com>
- <20190517150456.GA11796@dell5510> <20191024121848.GA5908@dell5510>
- <20191024172023.GA7948@linux.intel.com>
- <20191024182005.GZ23952@ziepe.ca>
- <20191024191402.GB12038@linux.intel.com>
- <20191024233602.GF23952@ziepe.ca>
-Message-ID: <20191028205122.GG8279@linux.intel.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 29 Oct 2019 11:38:51 +0530
+Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
+ sync test-cases
+In-Reply-To: <20191017073653.GA2590@casparzhang.com>
+References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
+ <20190929132749.GB73158@casparzhang.com>
+ <CAFA6WYNNyeU-tL4vg5PddwDOmU1gaGZJj3hRLYUCnJCY=MYNMw@mail.gmail.com>
+ <20191016025405.GA86846@casparzhang.com>
+ <CAFA6WYNCHNyPb=GX-jLDHc2m=NGxH-Pgi10Dvvbc65stnV5VMA@mail.gmail.com>
+ <20191017073653.GA2590@casparzhang.com>
+Message-ID: <CA+G9fYst7ZgkUE0+3YXx0o=ZW+XsxD6AFOpnZHwixBrgr43LJA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 24, 2019 at 08:36:02PM -0300, Jason Gunthorpe wrote:
-> On Thu, Oct 24, 2019 at 10:14:02PM +0300, Jarkko Sakkinen wrote:
-> > On Thu, Oct 24, 2019 at 03:20:05PM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Oct 24, 2019 at 08:20:23PM +0300, Jarkko Sakkinen wrote:
-> > > > Also replicants for durations and timeouts files would make sense for
-> > > > TPM 2.0.
-> > > 
-> > > These ones don't meet the sysfs standard of one value per file, which
-> > > is why they didn't make it to tpm2
-> > 
-> > They would be still useful to have available in some form as there is
-> > no way deduce them from the user space.
-> 
-> Why? Userspace doesn't refer to these values since the kernel handles
-> all the timeouts, right?
+Hi Caspar and Sumit,
 
-For debugging at least would be definitely a nice to have what
-values the driver ended up setting.
+> > > > > We encountered test failure in the second case in a debug kernel,
+> > > > > reproducible about once out of 20 times run.
+> > > >
+> > > > Interesting case. Can you share results after applying below patch?
+> > >
+> > > Tested this patch, no TFAIL occured in debug kernel after 200+ times
+> > > run, looks good to me. Thanks! Please add my
+> >
+> > From these results, the reason for the failure that you reported
+> > earlier seems to be writes to the device during "tst_fill_fd()"
+> > operation (they were found negligible/zero with normal kernel). But
+> > it's strange to know that you didn't get any TFAIL after the patch as
+> > I expected "Sync equals write" to fail.
+> >
+> > So can you also put following debug print and share logs of your test run?
+>
+> Retested with debug print, during my 1000-times run, pre-sync remains 0
+> in all the other fs types except only ext4. For ext4 cases, pre-sync
+> could be non-zero, e.g.:
+>
+>     Sync equals write: Synced 33554432, expected 33554432, pre-sync 0
+>     Sync inside of write: Synced 17301504, expected 16777216, pre-sync 1308672
+>     Sync overlaps with write: Synced 8650752, expected 8388608, pre-sync 1310720
+>
+> Note that pre-sync could be non-zero in `equals writes` case sometimes
+> too, like another round below:
+>
+>     Sync equals write: Synced 34078720, expected 33554432, pre-sync 260096
+>     Sync inside of write: Synced 17039360, expected 16777216, pre-sync 4980736
+>     Sync overlaps with write: Synced 8912896, expected 8388608, pre-sync 1048576
+>
+> Such non-zero situation in ext4 case is reproducible ~10% of my
+> 1000-times run.
 
-/Jarkko
+sync_file_range02 test failure reproduced on mainline and stable rc branches
+5.3, 4.19, 4.14 on arm64 and arm devices while testing on ext4.
+
+output log,
+--------------
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.8 (1-Jan-2018)
+tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.8 (1-Jan-2018)
+Listened to connection for namespace 'tlxc' done
+[ 1349.061989] EXT4-fs (loop0): mounting ext3 file system using the
+ext4 subsystem
+[ 1349.099564] EXT4-fs (loop0): mounted filesystem with ordered data
+mode. Opts: (null)
+tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
+sync_file_range02.c:71: PASS: Sync equals write
+Listened to connection for namespace 'tlxc' done
+sync_file_range02.c:71: PASS: Sync inside of write
+sync_file_range02.c:71: PASS: Sync overlaps with write
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.8 (1-Jan-2018)
+[ 1362.579639] EXT4-fs (loop0): mounted filesystem with ordered data
+mode. Opts: (null)
+tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
+sync_file_range02.c:74: FAIL: Sync equals write: Synced 36960256,
+expected 33554432
+Listened to connection for namespace 'tlxc' done
+sync_file_range02.c:74: FAIL: Sync inside of write: Synced 20185088,
+expected 16777216
+sync_file_range02.c:71: PASS: Sync overlaps with write
+Summary:
+passed   7
+failed   2
+
+Full output log,
+--------------------
+https://lkft.validation.linaro.org/scheduler/job/983166#L15067
+
+- Naresh
