@@ -1,62 +1,118 @@
-From: Ma Feng <mafeng.ma@huawei.com>
-Date: Tue, 29 Oct 2019 14:19:08 +0800
-Subject: [LTP] [PATCH] testcases/kernel/fs/ftest:Fix some comment errors
-Message-ID: <1572329948-97062-1-git-send-email-mafeng.ma@huawei.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 29 Oct 2019 11:51:26 +0530
+Subject: [LTP] [PATCH 4.19 00/93] 4.19.81-stable review
+In-Reply-To: <20191027203251.029297948@linuxfoundation.org>
+References: <20191027203251.029297948@linuxfoundation.org>
+Message-ID: <CA+G9fYuA+kLqLo1_ev0=QRvYtMrVhwRvm+QO-tOCVYca2Mt97Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I found some comment errors may cause misunderstandings
-when I simply read ftest's descriptions
+On Mon, 28 Oct 2019 at 02:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.81 release.
+> There are 93 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue 29 Oct 2019 08:27:02 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.81-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Signed-off-by: Ma Feng <mafeng.ma@huawei.com>
----
- testcases/kernel/fs/ftest/ftest06.c | 2 +-
- testcases/kernel/fs/ftest/ftest07.c | 2 +-
- testcases/kernel/fs/ftest/ftest08.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Results from Linaro?s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
-index b434067..c3aebe5 100644
---- a/testcases/kernel/fs/ftest/ftest06.c
-+++ b/testcases/kernel/fs/ftest/ftest06.c
-@@ -25,7 +25,7 @@
-  * 	this is the same as ftest2, except that it uses lseek64
-  *
-  * CALLS
-- *	open, close,  read, write, llseek,
-+ *	open, close,  read, write, lseek64,
-  *	unlink, chdir
-  *
-  *
-diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
-index e5998b5..3b5b2a4 100644
---- a/testcases/kernel/fs/ftest/ftest07.c
-+++ b/testcases/kernel/fs/ftest/ftest07.c
-@@ -23,7 +23,7 @@
-  *	ftest07.c -- test file I/O with readv and writev (ported from SPIE,
-  *		    section2/filesuite/ftest9.c
-  *
-- * 	this is the same as ftest4, except that it uses lseek64
-+ * 	this is the same as ftest3, except that it uses lseek64
-  *
-  * CALLS
-  *	lseek64, readv, writev,
-diff --git a/testcases/kernel/fs/ftest/ftest08.c b/testcases/kernel/fs/ftest/ftest08.c
-index 5e46248..e7fb56f 100644
---- a/testcases/kernel/fs/ftest/ftest08.c
-+++ b/testcases/kernel/fs/ftest/ftest08.c
-@@ -23,7 +23,7 @@
-  *	ftest08.c -- test single file io (tsfio.c by rbk) (ported from SPIE,
-  *		     section2/filesuite/ftest10.c, by Airong Zhang)
-  *
-- * 	this is the same as ftest5, except that it uses lseek64
-+ * 	this is the same as ftest4, except that it uses lseek64
-  *
-  * CALLS
-  *	fsync, sync, lseek64, read, write
+Note:
+The new test case  from LTP version upgrade syscalls sync_file_range02 is an
+intermittent failure. We are investigating this case.
+The listed fixes in the below section are due to LTP upgrade to v20190930.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.81-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+git branch: linux-4.19.y
+git commit: b74869f752bfa7ad50c55349ee2f0bbd61a45f0c
+git describe: v4.19.80-94-gb74869f752bf
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/build/v4.19.80-94-gb74869f752bf
+
+No regressions (compared to build v4.19.79-82-g99661e9ccf92)
+
+Fixes (compared to build v4.19.79-82-g99661e9ccf92)
+------------------------------------------------------------------------
+
+ltp-syscalls-tests:
+    * ioctl_ns05
+    * ioctl_ns06
+    * ustat02
+
+Ran 20491 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+* ltp-fs-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* ssuite
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
 -- 
-2.6.2
-
+Linaro LKFT
+https://lkft.linaro.org
