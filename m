@@ -1,20 +1,20 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 29 Oct 2019 11:51:26 +0530
-Subject: [LTP] [PATCH 4.19 00/93] 4.19.81-stable review
-In-Reply-To: <20191027203251.029297948@linuxfoundation.org>
-References: <20191027203251.029297948@linuxfoundation.org>
-Message-ID: <CA+G9fYuA+kLqLo1_ev0=QRvYtMrVhwRvm+QO-tOCVYca2Mt97Q@mail.gmail.com>
+Date: Tue, 29 Oct 2019 12:45:53 +0530
+Subject: [LTP] [PATCH 4.14 000/119] 4.14.151-stable review
+In-Reply-To: <20191027203259.948006506@linuxfoundation.org>
+References: <20191027203259.948006506@linuxfoundation.org>
+Message-ID: <CA+G9fYvGEEjnf0paJLS7UDJt0hJg8G+MOD+7hPdyyORVnGkoDw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 28 Oct 2019 at 02:44, Greg Kroah-Hartman
+On Mon, 28 Oct 2019 at 02:38, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.19.81 release.
-> There are 93 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.14.151 release.
+> There are 119 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -22,15 +22,14 @@ On Mon, 28 Oct 2019 at 02:44, Greg Kroah-Hartman
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.81-rc1.gz
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.151-rc1.gz
 > or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
->
 
 Results from Linaro?s test farm.
 No regressions on arm64, arm, x86_64, and i386.
@@ -43,24 +42,25 @@ The listed fixes in the below section are due to LTP upgrade to v20190930.
 Summary
 ------------------------------------------------------------------------
 
-kernel: 4.19.81-rc1
+kernel: 4.14.151-rc2
 git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-git branch: linux-4.19.y
-git commit: b74869f752bfa7ad50c55349ee2f0bbd61a45f0c
-git describe: v4.19.80-94-gb74869f752bf
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/build/v4.19.80-94-gb74869f752bf
+git branch: linux-4.14.y
+git commit: 80117985de0635c8d7fa58fa198b7bbbd465542d
+git describe: v4.14.150-118-g80117985de06
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/build/v4.14.150-118-g80117985de06
 
-No regressions (compared to build v4.19.79-82-g99661e9ccf92)
+No regressions (compared to build v4.14.149-66-g66f69184d722)
 
-Fixes (compared to build v4.19.79-82-g99661e9ccf92)
+
+Fixes (compared to build v4.14.149-66-g66f69184d722)
 ------------------------------------------------------------------------
 
 ltp-syscalls-tests:
+    * ustat02
     * ioctl_ns05
     * ioctl_ns06
-    * ustat02
 
-Ran 20491 total tests in the following environments and test suites.
+Ran 17364 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -89,6 +89,7 @@ Test Suites
 * ltp-dio-tests
 * ltp-fcntl-locktests-tests
 * ltp-filecaps-tests
+* ltp-fs-tests
 * ltp-fs_bind-tests
 * ltp-fs_perms_simple-tests
 * ltp-fsx-tests
@@ -105,13 +106,12 @@ Test Suites
 * perf
 * spectre-meltdown-checker-test
 * v4l2-compliance
-* ltp-fs-tests
 * network-basic-tests
 * ltp-open-posix-tests
-* kvm-unit-tests
 * ssuite
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
+* kvm-unit-tests
 
 -- 
 Linaro LKFT
