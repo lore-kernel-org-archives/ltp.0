@@ -1,62 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Oct 2019 15:35:25 +0100
-Subject: [LTP] [PATCH] tst_net.sh: Allow execution if xfrm is disabled
-In-Reply-To: <20191009062300.50219-1-lkml@jv-coder.de>
-References: <20191009062300.50219-1-lkml@jv-coder.de>
-Message-ID: <20191029143525.GA4187@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 30 Oct 2019 11:47:59 +0530
+Subject: [LTP] LTP: accept02: BROK: accept02.c:52: setsockopt(6, 0, 42,
+ 0xffff9c56df78, 136) failed: ENODEV (19)
+Message-ID: <CA+G9fYv+-dz11fSjMNt8SHaAhRpu1F=8MF7ieS4ZASAwDzH7Eg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+LTP syscall accept02 test failed intermittently on hikey arm64 device,
+qemu_x86_64 and qemu_i386.
 
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Do you see this intermittent failure at your end ?
 
-> If the kernel is configured without xfrm support, the setup of the
-> interfaces for communication between local and remote host fails,
-> because it tries to flush xfrm state and policy.
-> There is no need to flush, if the system doesn't even support xfrm.
+hikey arm64 output log,
 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
+tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
+tst_buffers.c:55: INFO: Test is using guarded buffers
+accept02.c:127: INFO: Starting listener on port: 35903
+safe_net.c:186: BROK: accept02.c:52: setsockopt(6, 0, 42,
+0xffff9c56df78, 136) failed: ENODEV (19)
 
-> ---
->  testcases/lib/tst_net.sh | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+qemu_x86_64 output log,
 
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index 6c3ae708d..3aaf21cb5 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -430,8 +430,10 @@ tst_init_iface()
->  	tst_res_ TINFO "initialize '$type' '$iface' interface"
+tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
+tst_buffers.c:55: INFO: Test is using guarded buffers
+accept02.c:127: INFO: Starting listener on port: 47245
+safe_net.c:186: BROK: accept02.c:52: setsockopt(6, 0, 42,
+0x7f5397ca3f78, 136) failed: ENODEV (19)
 
->  	if [ "$type" = "lhost" ]; then
-> -		ip xfrm policy flush || return $?
-> -		ip xfrm state flush || return $?
-> +		if ip xfrm state 1>/dev/null 2>&1; then
-> +			ip xfrm policy flush || return $?
-> +			ip xfrm state flush || return $?
-> +		fi
->  		ip link set $iface down || return $?
->  		ip route flush dev $iface || return $?
->  		ip addr flush dev $iface || return $?
-> @@ -439,8 +441,10 @@ tst_init_iface()
->  		return $?
->  	fi
+Test results comparison,
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/accept02
 
-> -	tst_rhost_run -c "ip xfrm policy flush" || return $?
-> -	tst_rhost_run -c "ip xfrm state flush" || return $?
-> +	if tst_rhost_run -c "ip xfrm state 1>/dev/null 2>&1"; then
-> +		tst_rhost_run -c "ip xfrm policy flush" || return $?
-> +		tst_rhost_run -c "ip xfrm state flush" || return $?
-> +	fi
->  	tst_rhost_run -c "ip link set $iface down" || return $?
->  	tst_rhost_run -c "ip route flush dev $iface" || return $?
->  	tst_rhost_run -c "ip addr flush dev $iface" || return $?
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/976363
+https://lkft.validation.linaro.org/scheduler/job/977681
 
-Kind regards,
-Petr
+Best regards
+Naresh Kamboju
