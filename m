@@ -1,43 +1,35 @@
-From: Rachel Sibley <rasibley@redhat.com>
-Date: Thu, 31 Oct 2019 09:52:57 -0400
-Subject: [LTP] Send CKI test reports to LTP list ?
-In-Reply-To: <20191031131026.GA27945@dell5510>
-References: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
- <20191031131026.GA27945@dell5510>
-Message-ID: <9a8bed00-e2e3-7fc9-1c94-ad900a8e083c@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 31 Oct 2019 15:02:47 +0100
+Subject: [LTP] [PATCH v2 1/6] syscalls/quotactl: Don't use ltp-quota.m4
+In-Reply-To: <1571821231-3846-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1571821231-3846-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20191031140247.GA6011@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks for the feedback everyone ! We will enable this soon.
+Hi Xu,
 
--Rachel
+> Current quotactl01.c has logic problem. There is no relation between
+> Q_GETINFO and quota format. The format should depend on quotacheck -F and
+> kernel config such as CONFIG_QFMT_V1 or CONFIG_QFMT_V2(most linux distributions
+> use the v2).
 
-On 10/31/19 9:10 AM, Petr Vorel wrote:
-> Hi Rachel,
->
->> Hello,
->> As part of the CKI project [1] we are responsible for testing upstream
->> kernels, you may have been cc'd
->> on some of our reports in the past :-)
->> We test from a recent commit from ltp versus using the latest stable version
->> to be able to pull in recent
->> fixes and new cases as needed. We update about once a month, and test out
->> changes before merging.
->> We were hoping we could start cc'ing the LTP ML on failures going forward to
->> help troubleshoot and
->> review new failures as we find them in CKI. This would also help promote
->> better collaboration between
->> CKI and LTP upstream community. Curious to know your thoughts on this and if
->> your ok with this approach?
-> +1. Thanks!
->
->> Thanks!
->> Rachel
-> Kind regards,
-> Petr
->
->> [1] https://cki-project.org/
+> Q_GETINFO cmd was introduced since Linux 2.4.22, we don't need to
+> check it now.  Also, specfiy quota format to QFMT_VFS_V0 by quotacheck
+> -F and check CONFIG_QFMT_V2 in kernel config to avoid issue such as#189[1].
+> So in quotactl01.c, we don't need to use the macro of ltp-quota.m4.
+> In quotactl0[2-3].c, we don't need to check very basic header <sys/quota.h>
+> (it was introdued in glibc since 1997). Remove quota version macro.
 
+> Don't remove ltp-quota.m4 because I will rewrite it to detect
+> if_nextdqblk struct for Q_GETNEXTQUOTA cmd on the coming patch.
+I'm going to merge 1st and 2nd commit as these are obviously ok.
+With one change: I'll remove ltp-quota.m4, I see no problem to remove it in 1st
+commit and later introduce different macro with the same name.
+
+Kind regards,
+Petr
