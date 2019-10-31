@@ -1,29 +1,41 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 31 Oct 2019 10:08:12 -0400 (EDT)
-Subject: [LTP] Unable to run eventfd test,
- even the libaio-dev installed on debian 10.
-In-Reply-To: <tencent_01F277DA0DC3756E3C6BE5D9@qq.com>
-References: <tencent_4D69C182358CFFEA3F0A95F7@qq.com>
- <1615187401.9901286.1572514591876.JavaMail.zimbra@redhat.com>
- <tencent_28D2BF821D50F4EC33C1EF97@qq.com>
- <246485198.9905451.1572515620925.JavaMail.zimbra@redhat.com>
- <tencent_01F277DA0DC3756E3C6BE5D9@qq.com>
-Message-ID: <1646437889.9970187.1572530892483.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 31 Oct 2019 15:10:33 +0100
+Subject: [LTP] [PATCH v2 3/6] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
+ test
+In-Reply-To: <20191024082525.GK31271@quack2.suse.cz>
+References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1571821231-3846-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191024082525.GK31271@quack2.suse.cz>
+Message-ID: <20191031141032.GB6011@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan,
 
+> On Wed 23-10-19 17:00:28, Yang Xu wrote:
+> > Q_GETNEXTQUOTA was introduced since linux 4.6, this operation is the
+> > same as Q_GETQUOTA, but it returns quota information for the next ID
+> > greater than or equal to id that has a quota set.
 
------ Original Message -----
-> It works, thanks a lot.
+> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
-Reporter answered privately it's resolved.
+> I was thinking about how much these tests are actually needed. The thing is
+> that fstests have also quota tests. And as part of these tests we do run
+> e.g. repquota(8) and verify its output and that uses Q_GETNEXTQUOTA inside.
+> So Q_GETNEXTQUOTA gets testing as part of fstests. On the other hand
+> fstests are focused on testing the general quota functionality as user
+> would use it so we don't really try to make sure all quotactl calls are
+> covered. So there's still some value in low level testing of each
+> quotactl like you do here.
 
->
-> > Above looks OK. Please do also "make clean" on everything, just to be sure
-> > you're not using old binaries. I don't see eventfd01 being rebuilt in your
-> > first email.
+Agree that testing quotactl as syscall in LTP makes sense (unlike testing
+filesystem features or performance, that was the reason why we deleted "New
+ext4 features" tests).
 
+Thank you for the review!
+
+Kind regards,
+Petr
