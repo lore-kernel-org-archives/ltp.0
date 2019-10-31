@@ -1,40 +1,26 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 14:10:26 +0100
-Subject: [LTP] Send CKI test reports to LTP list ?
-In-Reply-To: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
-References: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
-Message-ID: <20191031131026.GA27945@dell5510>
+Date: Thu, 31 Oct 2019 14:12:31 +0100
+Subject: [LTP] [PATCH v3] Port ptrace01 to new library
+In-Reply-To: <20191031082808.13485-1-jcronenberg@suse.de>
+References: <20191031082808.13485-1-jcronenberg@suse.de>
+Message-ID: <20191031131231.GA28424@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Rachel,
+Hi Jorik,
 
-> Hello,
+> Ported ptrace01 to the new library
 
-> As part of the CKI project [1] we are responsible for testing upstream
-> kernels, you may have been cc'd
-> on some of our reports in the past :-)
+> Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
+> ---
+>  testcases/kernel/syscalls/ptrace/ptrace01.c | 313 ++++++----------------------
+>  1 file changed, 68 insertions(+), 245 deletions(-)
 
-> We test from a recent commit from ltp versus using the latest stable version
-> to be able to pull in recent
-> fixes and new cases as needed. We update about once a month, and test out
-> changes before merging.
-
-> We were hoping we could start cc'ing the LTP ML on failures going forward to
-> help troubleshoot and
-> review new failures as we find them in CKI. This would also help promote
-> better collaboration between
-> CKI and LTP upstream community. Curious to know your thoughts on this and if
-> your ok with this approach?
-+1. Thanks!
-
-> Thanks!
-> Rachel
+>  v3: Implemented changes suggested by Petr.
+Thanks, merged.
 
 Kind regards,
 Petr
-
-> [1] https://cki-project.org/
