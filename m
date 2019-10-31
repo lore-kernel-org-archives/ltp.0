@@ -1,34 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 31 Oct 2019 11:04:40 +0100
-Subject: [LTP] Send CKI test reports to LTP list ?
-In-Reply-To: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
-References: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
-Message-ID: <20191031100440.GA24319@rei>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 31 Oct 2019 11:21:14 +0100
+Subject: [LTP] [PATCH v3 0/2] Increase fsync() coverage - GH#452
+In-Reply-To: <20191009152459.GB15291@rei.lan>
+References: <20191009152459.GB15291@rei.lan>
+Message-ID: <20191031102116.10592-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> As part of the CKI project [1] we are responsible for testing upstream 
-> kernels, you may have been cc'd
-> on some of our reports in the past :-)
-> 
-> We test from a recent commit from ltp versus using the latest stable 
-> version to be able to pull in recent
-> fixes and new cases as needed. We update about once a month, and test 
-> out changes before merging.
-> 
-> We were hoping we could start cc'ing the LTP ML on failures going 
-> forward to help troubleshoot and
-> review new failures as we find them in CKI. This would also help promote 
-> better collaboration between
-> CKI and LTP upstream community. Curious to know your thoughts on this 
-> and if your ok with this approach?
+This patchset partially solves GH issue #452. New test cases: Call fsync()
+on open socket, fifo, and closed non-negative file descriptor.
 
-Sounds good to me.
+What is not tested (yet): fsync() calls which produce EINTR, EIO, ENOSPC,
+EROFS or EDQUOT errors. These errors can only happen while data in kernel
+buffers is being written to disk. Producing these errors reliably would
+require some control over the block device underlying the file system.
+
+Changes since v2:
+- coding style fixes
+- cleaner setup() and cleanup()
+- use TEST() macro for checking fsync() result
+- pedantic check of fsync() return value
+
+Martin Doucha (2):
+  Update syscalls/fsync03 to new API
+  Improve coverage in syscalls/fsync03
+
+ testcases/kernel/syscalls/fsync/fsync03.c | 178 ++++++++--------------
+ 1 file changed, 63 insertions(+), 115 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.23.0
+
