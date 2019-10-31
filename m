@@ -1,57 +1,73 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 30 Oct 2019 19:02:00 -0400 (EDT)
-Subject: [LTP] LTP: accept02: BROK: accept02.c:52: setsockopt(6, 0, 42,
- 0xffff9c56df78, 136) failed: ENODEV (19)
-In-Reply-To: <CA+G9fYv+-dz11fSjMNt8SHaAhRpu1F=8MF7ieS4ZASAwDzH7Eg@mail.gmail.com>
-References: <CA+G9fYv+-dz11fSjMNt8SHaAhRpu1F=8MF7ieS4ZASAwDzH7Eg@mail.gmail.com>
-Message-ID: <1277217234.9839643.1572476520526.JavaMail.zimbra@redhat.com>
+From: Eric Lin <tesheng@andestech.com>
+Date: Thu, 31 Oct 2019 14:44:51 +0800
+Subject: [LTP] [PATCH] hugetlb: Initialize orig_shmmax and orig_shmmni value
+Message-ID: <20191031064451.14966-1-tesheng@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+When doing save_nr_hugepages() in setup() and there
+is no Huge page support in system, it will call
+cleanup() and write wrong orig_shmmax and orig_shmmni
+value back to file.
 
+To fix it, we initialize the orig_shmmax and
+orig_shmmni to -1 and check it in cleanup().
 
------ Original Message -----
-> LTP syscall accept02 test failed intermittently on hikey arm64 device,
-> qemu_x86_64 and qemu_i386.
-> 
-> Do you see this intermittent failure at your end ?
+Signed-off-by: Eric Lin <tesheng@andestech.com>
+---
+ testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c   | 5 +++--
+ testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-I'm not. What does the network look like on these systems?
-Is there a default route? Is 224.0.0.0 reachable?
-
-Can you check with?
-
-# ip route 
-# ip route get 224.0.0.0
-
-> 
-> hikey arm64 output log,
-> 
-> tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
-> tst_buffers.c:55: INFO: Test is using guarded buffers
-> accept02.c:127: INFO: Starting listener on port: 35903
-> safe_net.c:186: BROK: accept02.c:52: setsockopt(6, 0, 42,
-> 0xffff9c56df78, 136) failed: ENODEV (19)
-> 
-> qemu_x86_64 output log,
-> 
-> tst_test.c:1118: INFO: Timeout per run is 0h 15m 00s
-> tst_buffers.c:55: INFO: Test is using guarded buffers
-> accept02.c:127: INFO: Starting listener on port: 47245
-> safe_net.c:186: BROK: accept02.c:52: setsockopt(6, 0, 42,
-> 0x7f5397ca3f78, 136) failed: ENODEV (19)
-> 
-> Test results comparison,
-> https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/accept02
-> 
-> Full test log,
-> https://lkft.validation.linaro.org/scheduler/job/976363
-> https://lkft.validation.linaro.org/scheduler/job/977681
-> 
-> Best regards
-> Naresh Kamboju
-> 
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+index d375810cb..c76e4167f 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+@@ -38,7 +38,7 @@
+ static long huge_free;
+ static long huge_free2;
+ static long hugepages;
+-static long orig_shmmax, new_shmmax;
++static long orig_shmmax = -1, new_shmmax;
+ 
+ static void shared_hugepage(void);
+ 
+@@ -106,7 +106,8 @@ static void setup(void)
+ static void cleanup(void)
+ {
+ 	restore_nr_hugepages();
+-	SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
++	if (orig_shmmax != -1)
++		SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index d5255228b..f2ecc465d 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -39,7 +39,7 @@ static int num_shms;
+ static int shm_id_arr[MAXIDS];
+ 
+ static long hugepages = 128;
+-static long orig_shmmni;
++static long orig_shmmni = -1;
+ static struct tst_option options[] = {
+ 	{"s:", &nr_opt, "-s   num  Set the number of the been allocated hugepages"},
+ 	{NULL, NULL, NULL}
+@@ -105,7 +105,8 @@ static void cleanup(void)
+ 	for (i = 0; i < num_shms; i++)
+ 		rm_shm(shm_id_arr[i]);
+ 
+-	FILE_PRINTF(PATH_SHMMNI, "%ld", orig_shmmni);
++	if (orig_shmmni != -1)
++		FILE_PRINTF(PATH_SHMMNI, "%ld", orig_shmmni);
+ 	restore_nr_hugepages();
+ }
+ 
+-- 
+2.17.0
 
