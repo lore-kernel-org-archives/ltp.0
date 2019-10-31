@@ -1,27 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 14:21:53 +0100
-Subject: [LTP] [PATCH] net/dhcp: Don't start dhclient when wicked is
- running
-In-Reply-To: <20191022140745.12777-1-pvorel@suse.cz>
-References: <20191022140745.12777-1-pvorel@suse.cz>
-Message-ID: <20191031132153.GC28424@dell5510>
+From: Rachel Sibley <rasibley@redhat.com>
+Date: Thu, 31 Oct 2019 09:52:57 -0400
+Subject: [LTP] Send CKI test reports to LTP list ?
+In-Reply-To: <20191031131026.GA27945@dell5510>
+References: <f0844da9-2ed8-ee52-121d-ab97df7aff81@redhat.com>
+ <20191031131026.GA27945@dell5510>
+Message-ID: <9a8bed00-e2e3-7fc9-1c94-ad900a8e083c@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Thanks for the feedback everyone ! We will enable this soon.
 
-> This is a rework of wicked workaround. Commit f5b28dbb0 stopped wicked
-> (if running) as it's conflicting with dhclient. But for systems which
-> use wicked is better to actually test wicked as client side, because
-> dhclient is not actually used.
+-Rachel
 
-> Fixes: f5b28dbb0 ("net/dhcp: Add support for wicked")
+On 10/31/19 9:10 AM, Petr Vorel wrote:
+> Hi Rachel,
+>
+>> Hello,
+>> As part of the CKI project [1] we are responsible for testing upstream
+>> kernels, you may have been cc'd
+>> on some of our reports in the past :-)
+>> We test from a recent commit from ltp versus using the latest stable version
+>> to be able to pull in recent
+>> fixes and new cases as needed. We update about once a month, and test out
+>> changes before merging.
+>> We were hoping we could start cc'ing the LTP ML on failures going forward to
+>> help troubleshoot and
+>> review new failures as we find them in CKI. This would also help promote
+>> better collaboration between
+>> CKI and LTP upstream community. Curious to know your thoughts on this and if
+>> your ok with this approach?
+> +1. Thanks!
+>
+>> Thanks!
+>> Rachel
+> Kind regards,
+> Petr
+>
+>> [1] https://cki-project.org/
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Merged.
-
-Kind regards,
-Petr
