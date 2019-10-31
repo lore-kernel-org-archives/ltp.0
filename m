@@ -1,118 +1,68 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 31 Oct 2019 16:43:20 +0800
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 31 Oct 2019 04:53:09 -0400 (EDT)
 Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
-In-Reply-To: <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
+In-Reply-To: <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
 References: <20190925094721.18932-1-chrubis@suse.cz>
  <20190925135634.GA32581@dell5510>
  <575273995.9684474.1572426415443.JavaMail.zimbra@redhat.com>
  <1665612504.9724602.1572440600772.JavaMail.zimbra@redhat.com>
  <20191030144649.GA25642@dell5510>
  <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
+ <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
+Message-ID: <2003376860.9886044.1572511989903.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 31, 2019 at 1:41 AM Jan Stancek <jstancek@redhat.com> wrote:
 
->
->
-> ----- Original Message -----
-> > Hi Jan,
+----- Original Message -----
+> > Above was RHEL7. Do you expect different outcome on RHEL8?
+> > I was looking at upstream sources too and it looked similar.
 > >
-> > > > I'm seeing similar failure:
+> > Anyway, I don't think this part is an issue, test will skip it
+> > because "comm" doesn't match.
 > >
-> > > > tst_kconfig.c:62: INFO: Parsing kernel config
-> > > > '/boot/config-3.10.0-1106.el7.cki.s390x'
-> > > > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
-> > > > tst_kconfig.c:62: INFO: Parsing kernel config
-> > > > '/boot/config-3.10.0-1106.el7.cki.s390x'
-> > > > acct02.c:239: INFO: Verifying using 'struct acct_v3'
-> > > > acct02.c:192: INFO: == entry 1 ==
-> > > > acct02.c:88: INFO: ac_btime < 1572367954 (1572367953)
+> > We can tweak 'ac_btime' condition, but I think the test will remain
 > >
-> > > ^^ This is 'acct02_helper', which seemingly started before
-> 'start_time'.
-> >
-> > > ac_btime is calculated back from current time and elapsed time at
-> > > fill_ac():
-> >
-> > >   ac->ac_btime = get_seconds() - elapsed;
-> >
-> > > s390s are slower, so my guess is another second ticks before btime gets
-> > > calculated,
-> > > and it appears to have started later.
-> > Agree.
-> >
-> > > > acct02.c:192: INFO: == entry 2 ==
-> > > > acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
-> > > > acct02.c:88: INFO: ac_btime < 1572367954 (1572367953)
-> > > > acct02.c:133: INFO: ac_exitcode != 32768 (0)
-> > > > acct02.c:141: INFO: ac_ppid != 25608 (25607)
-> >
-> > > The 2nd record is filled at acct(NULL), even though process still runs:
-> >
-> > > [ 1156.025654] CPU: 0 PID: 11772 Comm: acct02_helper Tainted: G
-> > > OE  ------------   3.10.0-1106.el7.s390x #1
-> > > <>
-> > > [ 1156.027105]  [<00000000001dd630>] fill_ac+0x0/0x440
-> > > [ 1156.027108] ([<00000000001ddae8>] do_acct_process+0x78/0x1a0)
-> > > [ 1156.027110]  [<00000000001de3ae>] acct_process+0xf6/0x140
-> > > [ 1156.027112]  [<000000000014de32>] do_exit+0x752/0xa38
-> > > [ 1156.027116]  [<000000000014e216>] do_group_exit+0x66/0xf8
-> > > [ 1156.027118]  [<000000000014e2ea>] SyS_exit_group+0x42/0x48
-> >
-> > > [ 1157.033294] CPU: 1 PID: 11771 Comm: acct02 Tainted: G           OE
-> > > ------------   3.10.0-1106.el7.s390x #1
-> > > <>
-> > > [ 1157.033384]  [<00000000001dd630>] fill_ac+0x0/0x440
-> > > [ 1157.033386] ([<00000000001ddae8>] do_acct_process+0x78/0x1a0)
-> > > [ 1157.033389]  [<00000000001ddcda>] acct_pin_kill+0x52/0xa8
-> > > [ 1157.033391]  [<000000000034a83e>] pin_kill+0xb6/0x178
-> > > [ 1157.033395]  [<00000000001ddfe8>] SyS_acct+0x2b8/0x350
-> >
-> > Hm, did you reproduce it on 4.18 (rhel8)?
->
-> Above was RHEL7. Do you expect different outcome on RHEL8?
-> I was looking at upstream sources too and it looked similar.
->
-> Anyway, I don't think this part is an issue, test will skip it
-> because "comm" doesn't match.
->
-> We can tweak 'ac_btime' condition, but I think the test will remain
->
+> 
+> How much time of the ac_btime shaking to be tolerated is proper?
 
-How much time of the ac_btime shaking to be tolerated is proper?
+I wanted to go with 1 sec:
 
-> race-y in environments with higher steal time:
->
+@@ -83,7 +83,7 @@ static int verify_acct(void *acc, int elap_time)
+                ret = 1;
+        }
+ 
+-       if (ACCT_MEMBER(ac_btime) < start_time) {
++       if (ACCT_MEMBER(ac_btime) + 1 < start_time) {
+                tst_res(TINFO, "ac_btime < %d (%d)", start_time,
+                        ACCT_MEMBER(ac_btime));
+                ret = 1;
 
-I'm sorry, what does it mean here?
+> 
+> > race-y in environments with higher steal time:
+> >
+> 
+> I'm sorry, what does it mean here?
 
+I was referring to failed check below. s390 is scarce resource
+and when over-committed, sleeps are less consistent.
+E.g. sleep(1) taking 2+ seconds:
+  nanosleep({1, 0}, NULL) = 0 <1.926617>
 
+> 
+> 
+> 
+> >
+> > acct02.c:239: INFO: Verifying using 'struct acct_v3'
+> > acct02.c:192: INFO: == entry 1 ==
+> > acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
+> > acct02.c:192: INFO: == entry 2 ==
+> > acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
+> > acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
+> > acct02.c:133: INFO: ac_exitcode != 32768 (0)
+> > acct02.c:141: INFO: ac_ppid != 43213 (43212)
+> > acct02.c:182: FAIL: end of file reached
 
->
-> acct02.c:239: INFO: Verifying using 'struct acct_v3'
-> acct02.c:192: INFO: == entry 1 ==
-> acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
-> acct02.c:192: INFO: == entry 2 ==
-> acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
-> acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
-> acct02.c:133: INFO: ac_exitcode != 32768 (0)
-> acct02.c:141: INFO: ac_ppid != 43213 (43212)
-> acct02.c:182: FAIL: end of file reached
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
-
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191031/b174faa0/attachment.htm>
