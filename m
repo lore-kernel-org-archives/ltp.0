@@ -1,11 +1,12 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 15:31:50 +0100
-Subject: [LTP] [PATCH v2 3/6] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
- test
-In-Reply-To: <1571821231-3846-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 31 Oct 2019 16:26:46 +0100
+Subject: [LTP] 
+ =?utf-8?q?=5BPATCH_v2_2/6=5D_m4/ltp-xfs=5Fquota=2Em4=3A_Re?=
+ =?utf-8?q?move_useless_ltp=E2=80=94xfs=5Fquota=2Em4?=
+In-Reply-To: <1571821231-3846-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1571821231-3846-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191031143148.GA6781@dell5510>
+ <1571821231-3846-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20191031152646.GA7078@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,43 +15,23 @@ To: ltp@lists.linux.it
 
 Hi Xu,
 
-> Q_GETNEXTQUOTA was introduced since linux 4.6, this operation is the
-> same as Q_GETQUOTA, but it returns quota information for the next ID
-> greater than or equal to id that has a quota set.
+> We can detect <xfs/xqm.h> in configure.ac instead of using
+> ltp-xfs_quota.m4. Also we should need to check CONFIG_XFS_QUOTA
+> whether enable in kernel config.
 
 > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  include/lapi/quotactl.h                       | 23 ++---
->  m4/ltp-quota.m4                               | 36 +-------
->  .../kernel/syscalls/quotactl/quotactl01.c     | 86 ++++++++++++-------
->  3 files changed, 67 insertions(+), 78 deletions(-)
 
-> diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-...
->  #ifndef LAPI_QUOTACTL_H__
->  # define LAPI_QUOTACTL_H__
+Merge these 2 commits with minor changes.
 
-> +#include <linux/quota.h>
-I'd prefer to add autotools check for <linux/quota.h configure.ac
-(I guess we ignore include/config.h.default atm).
+Could you please send new version, where you rebase the rest of this patchset,
+fix issue including <linux/quota.h> with <sys/quota.h> causing failure on
+centos6 [1] remove Q_SYNC from quotactl04.c [2] and add quotactl06 [3].
 
-But, more important, I'd prefer to include <sys/quota.h> here as well:
-
-#ifdef HAVE_LINUX_QUOTA_H
-# include <linux/quota.h>
-#else
-# include <sys/quota.h>
-#endif
-
-=> move it from quotactl0*.c (there is not yet agreement to include headers in
-lapi files, but later lapi files does it).
-
-The reason is that old distros fail when both headers are included at the same
-time (probably <linux/quota.h> got fixed later, maybe there is an workaround,
-but the easiest way is to handle this in header anyway).
+Thanks a lot!
 
 Kind regards,
 Petr
 
-[1] https://travis-ci.org/pevik/ltp/jobs/605507690
-[2] https://api.travis-ci.org/v3/job/605507690/log.txt
+[1] https://patchwork.ozlabs.org/patch/1181923/#2292956
+[2] https://patchwork.ozlabs.org/patch/1181925/#2287412
+[3] https://patchwork.ozlabs.org/patch/1185189/
