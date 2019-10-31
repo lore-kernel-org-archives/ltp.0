@@ -1,288 +1,97 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 08:35:58 +0100
-Subject: [LTP] [PATCH v2] Port ptrace01 to new library
-In-Reply-To: <20191030141617.31446-1-jcronenberg@suse.de>
-References: <20191030141617.31446-1-jcronenberg@suse.de>
-Message-ID: <20191031073557.GA9065@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 31 Oct 2019 16:17:34 +0800
+Subject: [LTP] [PATCH] hugetlb: Initialize orig_shmmax and orig_shmmni
+ value
+In-Reply-To: <20191031064451.14966-1-tesheng@andestech.com>
+References: <20191031064451.14966-1-tesheng@andestech.com>
+Message-ID: <CAEemH2dOwoE2YMXn-+Ugb=-3=V5b-Q-X0KU+xDdRogWF-5ViWQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jorik,
+On Thu, Oct 31, 2019 at 2:45 PM Eric Lin <tesheng@andestech.com> wrote:
 
-> Ported ptrace01 to the new library
+> When doing save_nr_hugepages() in setup() and there
+> is no Huge page support in system, it will call
+> cleanup() and write wrong orig_shmmax and orig_shmmni
+> value back to file.
+>
+> To fix it, we initialize the orig_shmmax and
+> orig_shmmni to -1 and check it in cleanup().
+>
+> Signed-off-by: Eric Lin <tesheng@andestech.com>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-> Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Good work, almost ready. I suggest some changes.
 > ---
->  testcases/kernel/syscalls/ptrace/ptrace01.c | 296 ++++++----------------------
->  1 file changed, 63 insertions(+), 233 deletions(-)
-
->  v2: Implemented changes suggested by Cyril.
-
-> diff --git a/testcases/kernel/syscalls/ptrace/ptrace01.c b/testcases/kernel/syscalls/ptrace/ptrace01.c
-...
-> - *    DESCRIPTION
-> + * DESCRIPTION
->   *	This test case tests the functionality of ptrace() for
->   *	PTRACE_TRACEME & PTRACE_KILL requests.
->   *	Here, we fork a child & the child does ptrace(PTRACE_TRACEME, ...).
-> @@ -39,248 +16,101 @@
->   *	to kill the child. Again parent wait() for child to finish.
->   *	If child finished abnormally, test passes.
->   *		We test two cases
-> - * 			1) By telling child to ignore SIGUSR2 signal
-> - * 			2) By installing a signal handler for child for SIGUSR2
-> - * 		In both cases, child should stop & notify parent on reception
-> - * 		of SIGUSR2
-> - *
-> - * 	Setup:
-> - * 	  Setup signal handling.
-> - *	  Pause for SIGUSR1 if option specified.
-> + *			1) By telling child to ignore SIGUSR2 signal
-> + *			2) By installing a signal handler for child for SIGUSR2
-> + *		In both cases, child should stop & notify parent on reception
-> + *		of SIGUSR2
-
-Reword and reformatting the test description and remove "DESCRIPTION", added
-your copyright (actually I don't like using that date in ported to new library,
-we have git these days, this was used 10-20 years ago, but that's just my opinion):
-
-// SPDX-License-Identifier: GPL-2.0
-/*
- * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
- * Copyright (c) 2019 Jorik Cronenberg <jcronenberg@suse.de>
- *
- * Author:	Saji Kumar.V.R <saji.kumar@wipro.com>
- * Ported to new library:
- * 10/2019	Jorik Cronenberg <jcronenberg@suse.de>
- *
- * Test the functionality of ptrace() for PTRACE_TRACEME & PTRACE_KILL requests.
- * Forked child does ptrace(PTRACE_TRACEME, ...).
- * Then a signal is delivered to the child and verified that parent
- * is notified via wait().
- * After parent does ptrace(PTRACE_KILL, ..) to kill the child
- * and parent wait() for child to finish.
- * Test passes if child finished abnormally.
- *
- * Testing two cases:
- * 1) child ignore SIGUSR2 signal
- * 2) using a signal handler for child for SIGUSR2
- * In both cases, child should stop & notify parent on reception of SIGUSR2.
- */
-
-...
-> +static void child_handler(void)
+>  testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c   | 5 +++--
+>  testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> index d375810cb..c76e4167f 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> @@ -38,7 +38,7 @@
+>  static long huge_free;
+>  static long huge_free2;
+>  static long hugepages;
+> -static long orig_shmmax, new_shmmax;
+> +static long orig_shmmax = -1, new_shmmax;
+>
+>  static void shared_hugepage(void);
+>
+> @@ -106,7 +106,8 @@ static void setup(void)
+>  static void cleanup(void)
 >  {
-> +	SAFE_KILL(getppid(), SIGUSR2);
-> +}
-You get a warning: assignment to ?__sighandler_t? {aka ?void (*)(int)?} from
-incompatible pointer type ?void (*)(void)? [-Wincompatible-pointer-types]
-
-We try to avoid warnings, so use:
-static void child_handler(int sig LTP_ATTRIBUTE_UNUSED)
-
-...
-> +static void parent_handler(void)
-> +{
-> +	got_signal = 1;
+>         restore_nr_hugepages();
+> -       SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
+> +       if (orig_shmmax != -1)
+> +               SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
 >  }
-The same here:
-static void parent_handler(int sig LTP_ATTRIBUTE_UNUSED)
-
-> -/* do_child() */
-> -void do_child(void)
-> +static void do_child(unsigned int i)
->  {
->  	struct sigaction child_act;
-
-> -	/* Setup signal handler for child */
-> -	if (i == 0) {
-> +	if (i == 0)
->  		child_act.sa_handler = SIG_IGN;
-> -	} else {
-> +	else
->  		child_act.sa_handler = child_handler;
-> -	}
-> +
->  	child_act.sa_flags = SA_RESTART;
->  	sigemptyset(&child_act.sa_mask);
-
-> -	if ((sigaction(SIGUSR2, &child_act, NULL)) == -1) {
-> -		tst_resm(TWARN, "sigaction() failed in child");
-> -		exit(1);
-> -	}
-> +	SAFE_SIGACTION(SIGUSR2, &child_act, NULL);
-
->  	if ((ptrace(PTRACE_TRACEME, 0, 0, 0)) == -1) {
-> -		tst_resm(TWARN, "ptrace() failed in child");
-> -		exit(1);
-> -	}
-> -	/* ensure that child bypasses signal handler */
-> -	if ((kill(getpid(), SIGUSR2)) == -1) {
-> -		tst_resm(TWARN, "kill() failed in child");
-> +		tst_res(TWARN, "ptrace() failed in child");
->  		exit(1);
->  	}
-> +	SAFE_KILL(getpid(), SIGUSR2);
->  	exit(1);
+>
+>  static struct tst_test test = {
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> index d5255228b..f2ecc465d 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> @@ -39,7 +39,7 @@ static int num_shms;
+>  static int shm_id_arr[MAXIDS];
+>
+>  static long hugepages = 128;
+> -static long orig_shmmni;
+> +static long orig_shmmni = -1;
+>  static struct tst_option options[] = {
+>         {"s:", &nr_opt, "-s   num  Set the number of the been allocated
+> hugepages"},
+>         {NULL, NULL, NULL}
+> @@ -105,7 +105,8 @@ static void cleanup(void)
+>         for (i = 0; i < num_shms; i++)
+>                 rm_shm(shm_id_arr[i]);
+>
+> -       FILE_PRINTF(PATH_SHMMNI, "%ld", orig_shmmni);
+> +       if (orig_shmmni != -1)
+> +               FILE_PRINTF(PATH_SHMMNI, "%ld", orig_shmmni);
+>         restore_nr_hugepages();
 >  }
+>
+> --
+> 2.17.0
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
-> -/* setup() - performs all ONE TIME setup for this test */
-> -void setup(void)
-> +static void run(unsigned int i)
->  {
-> +	pid_t child_pid;
-> +	int status;
-> +	struct sigaction parent_act;
 
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	got_signal = 0;
-
-> -	TEST_PAUSE;
-> +	if (i == 1) {
-> +		parent_act.sa_handler = parent_handler;
-> +		parent_act.sa_flags = SA_RESTART;
-> +		sigemptyset(&parent_act.sa_mask);
-
-> -}
-> +		SAFE_SIGACTION(SIGUSR2, &parent_act, NULL);
-> +	}
-
-> -/*
-> - *cleanup() -  performs all ONE TIME cleanup for this test at
-> - *		completion or premature exit.
-> - */
-> -void cleanup(void)
-> -{
-> +	child_pid = SAFE_FORK();
-
-> -}
-> +	if (!child_pid)
-> +		do_child(i);
-
-> -/*
-> - * child_handler() - Signal handler for child
-> - */
-> -void child_handler(void)
-> -{
-> +	SAFE_WAITPID(child_pid, &status, 0);
-
-> -	if ((kill(getppid(), SIGUSR2)) == -1) {
-> -		tst_resm(TWARN, "kill() failed in child_handler()");
-> -		exit(1);
-> +	if (((WIFEXITED(status))
-> +		&& (WEXITSTATUS(status)))
-> +		 || (got_signal == 1)) {
-> +		tst_res(TFAIL, "Test Failed");
-> +	} else {
-> +		if ((ptrace(PTRACE_KILL, child_pid, 0, 0)) == -1) {
-> +			tst_res(TFAIL | TERRNO,
-> +			    "ptrace(PTRACE_KILL, %i, 0, 0) failed",
-> +				child_pid);
-
-Also some code simplification:
-	if (((WIFEXITED(status)) && (WEXITSTATUS(status)))
-		 || (got_signal == 1))
-		tst_res(TFAIL, "Test Failed");
-	else if ((ptrace(PTRACE_KILL, child_pid, 0, 0)) == -1)
-		tst_res(TFAIL | TERRNO, "ptrace(PTRACE_KILL, %i, 0, 0) failed",
-				child_pid);
-
-Below is the final diff I suggest to apply.
-
-Kind regards,
-Petr
-
-diff --git testcases/kernel/syscalls/ptrace/ptrace01.c testcases/kernel/syscalls/ptrace/ptrace01.c
-index 9fa365d76..526bf2060 100644
---- testcases/kernel/syscalls/ptrace/ptrace01.c
-+++ testcases/kernel/syscalls/ptrace/ptrace01.c
-@@ -1,26 +1,24 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-+ * Copyright (c) 2019 Jorik Cronenberg <jcronenberg@suse.de>
-  *
-  * Author:	Saji Kumar.V.R <saji.kumar@wipro.com>
-- *
-  * Ported to new library:
-  * 10/2019	Jorik Cronenberg <jcronenberg@suse.de>
-  *
-- * DESCRIPTION
-- *	This test case tests the functionality of ptrace() for
-- *	PTRACE_TRACEME & PTRACE_KILL requests.
-- *	Here, we fork a child & the child does ptrace(PTRACE_TRACEME, ...).
-- *	Then a signal is delivered to the child & verified that parent
-- *	is notified via wait(). then parent does ptrace(PTRACE_KILL, ..)
-- *	to kill the child. Again parent wait() for child to finish.
-- *	If child finished abnormally, test passes.
-- *		We test two cases
-- *			1) By telling child to ignore SIGUSR2 signal
-- *			2) By installing a signal handler for child for SIGUSR2
-- *		In both cases, child should stop & notify parent on reception
-- *		of SIGUSR2
-+ * Test the functionality of ptrace() for PTRACE_TRACEME & PTRACE_KILL requests.
-+ * Forked child does ptrace(PTRACE_TRACEME, ...).
-+ * Then a signal is delivered to the child and verified that parent
-+ * is notified via wait().
-+ * After parent does ptrace(PTRACE_KILL, ..) to kill the child
-+ * and parent wait() for child to finish.
-+ * Test passes if child finished abnormally.
-  *
-+ * Testing two cases:
-+ * 1) child ignore SIGUSR2 signal
-+ * 2) using a signal handler for child for SIGUSR2
-+ * In both cases, child should stop & notify parent on reception of SIGUSR2.
-  */
- 
- #include <stdlib.h>
-@@ -33,12 +31,12 @@
- 
- static volatile int got_signal;
- 
--static void child_handler(void)
-+static void child_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	SAFE_KILL(getppid(), SIGUSR2);
- }
- 
--static void parent_handler(void)
-+static void parent_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- 	got_signal = 1;
- }
-@@ -77,7 +75,6 @@ static void run(unsigned int i)
- 		parent_act.sa_handler = parent_handler;
- 		parent_act.sa_flags = SA_RESTART;
- 		sigemptyset(&parent_act.sa_mask);
--
- 		SAFE_SIGACTION(SIGUSR2, &parent_act, NULL);
- 	}
- 
-@@ -88,17 +85,12 @@ static void run(unsigned int i)
- 
- 	SAFE_WAITPID(child_pid, &status, 0);
- 
--	if (((WIFEXITED(status))
--		&& (WEXITSTATUS(status)))
--		 || (got_signal == 1)) {
-+	if (((WIFEXITED(status)) && (WEXITSTATUS(status)))
-+		 || (got_signal == 1))
- 		tst_res(TFAIL, "Test Failed");
--	} else {
--		if ((ptrace(PTRACE_KILL, child_pid, 0, 0)) == -1) {
--			tst_res(TFAIL | TERRNO,
--			    "ptrace(PTRACE_KILL, %i, 0, 0) failed",
-+	else if ((ptrace(PTRACE_KILL, child_pid, 0, 0)) == -1)
-+		tst_res(TFAIL | TERRNO, "ptrace(PTRACE_KILL, %i, 0, 0) failed",
- 				child_pid);
--		}
--	}
- 
- 	SAFE_WAITPID(child_pid, &status, 0);
- 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191031/8515c390/attachment-0001.htm>
