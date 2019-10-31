@@ -1,35 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 15:02:47 +0100
-Subject: [LTP] [PATCH v2 1/6] syscalls/quotactl: Don't use ltp-quota.m4
-In-Reply-To: <1571821231-3846-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1571821231-3846-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191031140247.GA6011@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 31 Oct 2019 10:08:12 -0400 (EDT)
+Subject: [LTP] Unable to run eventfd test,
+ even the libaio-dev installed on debian 10.
+In-Reply-To: <tencent_01F277DA0DC3756E3C6BE5D9@qq.com>
+References: <tencent_4D69C182358CFFEA3F0A95F7@qq.com>
+ <1615187401.9901286.1572514591876.JavaMail.zimbra@redhat.com>
+ <tencent_28D2BF821D50F4EC33C1EF97@qq.com>
+ <246485198.9905451.1572515620925.JavaMail.zimbra@redhat.com>
+ <tencent_01F277DA0DC3756E3C6BE5D9@qq.com>
+Message-ID: <1646437889.9970187.1572530892483.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
 
-> Current quotactl01.c has logic problem. There is no relation between
-> Q_GETINFO and quota format. The format should depend on quotacheck -F and
-> kernel config such as CONFIG_QFMT_V1 or CONFIG_QFMT_V2(most linux distributions
-> use the v2).
 
-> Q_GETINFO cmd was introduced since Linux 2.4.22, we don't need to
-> check it now.  Also, specfiy quota format to QFMT_VFS_V0 by quotacheck
-> -F and check CONFIG_QFMT_V2 in kernel config to avoid issue such as#189[1].
-> So in quotactl01.c, we don't need to use the macro of ltp-quota.m4.
-> In quotactl0[2-3].c, we don't need to check very basic header <sys/quota.h>
-> (it was introdued in glibc since 1997). Remove quota version macro.
+----- Original Message -----
+> It works, thanks a lot.
 
-> Don't remove ltp-quota.m4 because I will rewrite it to detect
-> if_nextdqblk struct for Q_GETNEXTQUOTA cmd on the coming patch.
-I'm going to merge 1st and 2nd commit as these are obviously ok.
-With one change: I'll remove ltp-quota.m4, I see no problem to remove it in 1st
-commit and later introduce different macro with the same name.
+Reporter answered privately it's resolved.
 
-Kind regards,
-Petr
+>
+> > Above looks OK. Please do also "make clean" on everything, just to be sure
+> > you're not using old binaries. I don't see eventfd01 being rebuilt in your
+> > first email.
+
