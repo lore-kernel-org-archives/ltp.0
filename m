@@ -1,26 +1,29 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 31 Oct 2019 14:12:31 +0100
-Subject: [LTP] [PATCH v3] Port ptrace01 to new library
-In-Reply-To: <20191031082808.13485-1-jcronenberg@suse.de>
-References: <20191031082808.13485-1-jcronenberg@suse.de>
-Message-ID: <20191031131231.GA28424@dell5510>
+Date: Thu, 31 Oct 2019 14:18:04 +0100
+Subject: [LTP] [PATCH] tst_net.sh: Allow execution if xfrm is disabled
+In-Reply-To: <20191029143525.GA4187@dell5510>
+References: <20191009062300.50219-1-lkml@jv-coder.de>
+ <20191029143525.GA4187@dell5510>
+Message-ID: <20191031131803.GB28424@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jorik,
+Hi Joerg,
 
-> Ported ptrace01 to the new library
+> > From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-> Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
-> ---
->  testcases/kernel/syscalls/ptrace/ptrace01.c | 313 ++++++----------------------
->  1 file changed, 68 insertions(+), 245 deletions(-)
+> > If the kernel is configured without xfrm support, the setup of the
+> > interfaces for communication between local and remote host fails,
+> > because it tries to flush xfrm state and policy.
+> > There is no need to flush, if the system doesn't even support xfrm.
 
->  v3: Implemented changes suggested by Petr.
-Thanks, merged.
+> > Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks, merged!
 
 Kind regards,
 Petr
