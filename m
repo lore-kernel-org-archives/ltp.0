@@ -1,381 +1,118 @@
-From: Jorik Cronenberg <jcronenberg@suse.de>
-Date: Thu, 31 Oct 2019 09:28:08 +0100
-Subject: [LTP] [PATCH v3] Port ptrace01 to new library
-Message-ID: <20191031082808.13485-1-jcronenberg@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 31 Oct 2019 16:43:20 +0800
+Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
+In-Reply-To: <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
+References: <20190925094721.18932-1-chrubis@suse.cz>
+ <20190925135634.GA32581@dell5510>
+ <575273995.9684474.1572426415443.JavaMail.zimbra@redhat.com>
+ <1665612504.9724602.1572440600772.JavaMail.zimbra@redhat.com>
+ <20191030144649.GA25642@dell5510>
+ <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Ported ptrace01 to the new library
+On Thu, Oct 31, 2019 at 1:41 AM Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
----
- testcases/kernel/syscalls/ptrace/ptrace01.c | 313 ++++++----------------------
- 1 file changed, 68 insertions(+), 245 deletions(-)
+>
+>
+> ----- Original Message -----
+> > Hi Jan,
+> >
+> > > > I'm seeing similar failure:
+> >
+> > > > tst_kconfig.c:62: INFO: Parsing kernel config
+> > > > '/boot/config-3.10.0-1106.el7.cki.s390x'
+> > > > tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+> > > > tst_kconfig.c:62: INFO: Parsing kernel config
+> > > > '/boot/config-3.10.0-1106.el7.cki.s390x'
+> > > > acct02.c:239: INFO: Verifying using 'struct acct_v3'
+> > > > acct02.c:192: INFO: == entry 1 ==
+> > > > acct02.c:88: INFO: ac_btime < 1572367954 (1572367953)
+> >
+> > > ^^ This is 'acct02_helper', which seemingly started before
+> 'start_time'.
+> >
+> > > ac_btime is calculated back from current time and elapsed time at
+> > > fill_ac():
+> >
+> > >   ac->ac_btime = get_seconds() - elapsed;
+> >
+> > > s390s are slower, so my guess is another second ticks before btime gets
+> > > calculated,
+> > > and it appears to have started later.
+> > Agree.
+> >
+> > > > acct02.c:192: INFO: == entry 2 ==
+> > > > acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
+> > > > acct02.c:88: INFO: ac_btime < 1572367954 (1572367953)
+> > > > acct02.c:133: INFO: ac_exitcode != 32768 (0)
+> > > > acct02.c:141: INFO: ac_ppid != 25608 (25607)
+> >
+> > > The 2nd record is filled at acct(NULL), even though process still runs:
+> >
+> > > [ 1156.025654] CPU: 0 PID: 11772 Comm: acct02_helper Tainted: G
+> > > OE  ------------   3.10.0-1106.el7.s390x #1
+> > > <>
+> > > [ 1156.027105]  [<00000000001dd630>] fill_ac+0x0/0x440
+> > > [ 1156.027108] ([<00000000001ddae8>] do_acct_process+0x78/0x1a0)
+> > > [ 1156.027110]  [<00000000001de3ae>] acct_process+0xf6/0x140
+> > > [ 1156.027112]  [<000000000014de32>] do_exit+0x752/0xa38
+> > > [ 1156.027116]  [<000000000014e216>] do_group_exit+0x66/0xf8
+> > > [ 1156.027118]  [<000000000014e2ea>] SyS_exit_group+0x42/0x48
+> >
+> > > [ 1157.033294] CPU: 1 PID: 11771 Comm: acct02 Tainted: G           OE
+> > > ------------   3.10.0-1106.el7.s390x #1
+> > > <>
+> > > [ 1157.033384]  [<00000000001dd630>] fill_ac+0x0/0x440
+> > > [ 1157.033386] ([<00000000001ddae8>] do_acct_process+0x78/0x1a0)
+> > > [ 1157.033389]  [<00000000001ddcda>] acct_pin_kill+0x52/0xa8
+> > > [ 1157.033391]  [<000000000034a83e>] pin_kill+0xb6/0x178
+> > > [ 1157.033395]  [<00000000001ddfe8>] SyS_acct+0x2b8/0x350
+> >
+> > Hm, did you reproduce it on 4.18 (rhel8)?
+>
+> Above was RHEL7. Do you expect different outcome on RHEL8?
+> I was looking at upstream sources too and it looked similar.
+>
+> Anyway, I don't think this part is an issue, test will skip it
+> because "comm" doesn't match.
+>
+> We can tweak 'ac_btime' condition, but I think the test will remain
+>
 
- v3: Implemented changes suggested by Petr.
+How much time of the ac_btime shaking to be tolerated is proper?
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace01.c b/testcases/kernel/syscalls/ptrace/ptrace01.c
-index 5a7ed5ffd..edbeeb5e1 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace01.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace01.c
-@@ -1,286 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * Copyright (c) 2019 Jorik Cronenberg <jcronenberg@suse.de>
-+ *
-+ * Author:
-+ * 	Saji Kumar.V.R <saji.kumar@wipro.com>
-+ * Ported to new library:
-+ * 	Jorik Cronenberg <jcronenberg@suse.de>
-+ *
-+ * Test the functionality of ptrace() for PTRACE_TRACEME & PTRACE_KILL requests.
-+ * Forked child does ptrace(PTRACE_TRACEME, ...).
-+ * Then a signal is delivered to the child and verified that parent
-+ * is notified via wait().
-+ * After parent does ptrace(PTRACE_KILL, ..) to kill the child
-+ * and parent wait() for child to finish.
-+ * Test passes if child finished abnormally.
-+ *
-+ * Testing two cases:
-+ * 1) child ignore SIGUSR2 signal
-+ * 2) using a signal handler for child for SIGUSR2
-+ * In both cases, child should stop & notify parent on reception of SIGUSR2.
-  */
--/**********************************************************
-- *
-- *    TEST IDENTIFIER	: ptrace01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: functionality test for ptrace(2)
-- *
-- *    TEST CASE TOTAL	: 2
-- *
-- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- *	This test case tests the functionality of ptrace() for
-- *	PTRACE_TRACEME & PTRACE_KILL requests.
-- *	Here, we fork a child & the child does ptrace(PTRACE_TRACEME, ...).
-- *	Then a signal is delivered to the child & verified that parent
-- *	is notified via wait(). then parent does ptrace(PTRACE_KILL, ..)
-- *	to kill the child. Again parent wait() for child to finish.
-- *	If child finished abnormally, test passes.
-- *		We test two cases
-- * 			1) By telling child to ignore SIGUSR2 signal
-- * 			2) By installing a signal handler for child for SIGUSR2
-- * 		In both cases, child should stop & notify parent on reception
-- * 		of SIGUSR2
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	 setup signal handler for SIGUSR2 signal
-- *	 fork a child
-- *
-- *	 CHILD:
-- *		setup signal handler for SIGUSR2 signal
-- *		call ptrace() with PTRACE_TRACEME request
-- *		send SIGUSR2 signal to self
-- *	 PARENT:
-- *		wait() for child.
-- *		if parent is notified when child gets a signal through wait(),
-- *		then
-- *			do  ptrace(PTRACE_KILL, ..) on child
-- * 			wait() for child to finish,
-- * 			if child exited abnormaly,
-- *				TEST passed
-- * 			else
-- * 				TEST failed
-- *		else
-- *			TEST failed
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- * USAGE:  <for command-line>
-- *  ptrace01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *			where,  -c n : Run n copies concurrently.
-- *				-e   : Turn on errno logging.
-- *				-h   : Show help screen
-- *				-f   : Turn off functional testing
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
-- *
-- ****************************************************************/
- 
-+#include <stdlib.h>
- #include <errno.h>
- #include <signal.h>
- #include <sys/wait.h>
--
- #include <config.h>
- #include "ptrace.h"
-+#include "tst_test.h"
- 
--#include "test.h"
--
--static void do_child(void);
--static void setup(void);
--static void cleanup(void);
--static void child_handler();
--static void parent_handler();
-+static volatile int got_signal;
- 
--static int got_signal = 0;
--
--char *TCID = "ptrace01";
--static int i;			/* loop test case counter, shared with do_child */
--
--int TST_TOTAL = 2;
--
--int main(int ac, char **av)
-+static void child_handler(int sig LTP_ATTRIBUTE_UNUSED)
- {
-+	SAFE_KILL(getppid(), SIGUSR2);
-+}
- 
--	int lc;
--	pid_t child_pid;
--	int status;
--	struct sigaction parent_act;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--#ifdef UCLINUX
--	maybe_run_child(&do_child, "d", &i);
--#endif
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; ++i) {
--			got_signal = 0;
--
--			/* Setup signal handler for parent */
--			if (i == 1) {
--				parent_act.sa_handler = parent_handler;
--				parent_act.sa_flags = SA_RESTART;
--				sigemptyset(&parent_act.sa_mask);
--
--				if ((sigaction(SIGUSR2, &parent_act, NULL))
--				    == -1) {
--					tst_resm(TWARN, "sigaction() failed"
--						 " in parent");
--					continue;
--				}
--			}
--
--			switch (child_pid = FORK_OR_VFORK()) {
--
--			case -1:
--				/* fork() failed */
--				tst_resm(TFAIL, "fork() failed");
--				continue;
--
--			case 0:
--				/* Child */
--#ifdef UCLINUX
--				if (self_exec(av[0], "d", i) < 0) {
--					tst_resm(TFAIL, "self_exec failed");
--					continue;
--				}
--#else
--				do_child();
--#endif
--
--			default:
--				/* Parent */
--				if ((waitpid(child_pid, &status, 0)) < 0) {
--					tst_resm(TFAIL, "waitpid() failed");
--					continue;
--				}
--
--				/*
--				 * Check the exit status of child. If (it exits
--				 * normally with exit value 1) OR (child came
--				 * through signal handler), Test Failed
--				 */
--
--				if (((WIFEXITED(status)) &&
--				     (WEXITSTATUS(status))) ||
--				    (got_signal == 1)) {
--					tst_resm(TFAIL, "Test Failed");
--					continue;
--				} else {
--					/* Kill child */
--					if ((ptrace(PTRACE_KILL, child_pid,
--						    0, 0)) == -1) {
--						tst_resm(TFAIL, "Test Failed:"
--							 " Parent was not able to kill"
--							 " child");
--						continue;
--					}
--				}
--
--				if ((waitpid(child_pid, &status, 0)) < 0) {
--					tst_resm(TFAIL, "waitpid() failed");
--					continue;
--				}
--
--				if (WIFEXITED(status)) {
--					/* Child exits normally */
--					tst_resm(TFAIL, "Test failed");
--				} else {
--					tst_resm(TPASS, "Test Passed");
--				}
--
--			}
--		}
--	}
--
--	/* cleanup and exit */
--	cleanup();
--	tst_exit();
--
-+static void parent_handler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	got_signal = 1;
- }
- 
--/* do_child() */
--void do_child(void)
-+static void do_child(unsigned int i)
- {
- 	struct sigaction child_act;
- 
--	/* Setup signal handler for child */
--	if (i == 0) {
-+	if (i == 0)
- 		child_act.sa_handler = SIG_IGN;
--	} else {
-+	else
- 		child_act.sa_handler = child_handler;
--	}
-+
- 	child_act.sa_flags = SA_RESTART;
- 	sigemptyset(&child_act.sa_mask);
- 
--	if ((sigaction(SIGUSR2, &child_act, NULL)) == -1) {
--		tst_resm(TWARN, "sigaction() failed in child");
--		exit(1);
--	}
-+	SAFE_SIGACTION(SIGUSR2, &child_act, NULL);
- 
- 	if ((ptrace(PTRACE_TRACEME, 0, 0, 0)) == -1) {
--		tst_resm(TWARN, "ptrace() failed in child");
--		exit(1);
--	}
--	/* ensure that child bypasses signal handler */
--	if ((kill(getpid(), SIGUSR2)) == -1) {
--		tst_resm(TWARN, "kill() failed in child");
-+		tst_res(TWARN, "ptrace() failed in child");
- 		exit(1);
- 	}
-+	SAFE_KILL(getpid(), SIGUSR2);
- 	exit(1);
- }
- 
--/* setup() - performs all ONE TIME setup for this test */
--void setup(void)
-+static void run(unsigned int i)
- {
-+	pid_t child_pid;
-+	int status;
-+	struct sigaction parent_act;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	got_signal = 0;
- 
--	TEST_PAUSE;
-+	if (i == 1) {
-+		parent_act.sa_handler = parent_handler;
-+		parent_act.sa_flags = SA_RESTART;
-+		sigemptyset(&parent_act.sa_mask);
-+		SAFE_SIGACTION(SIGUSR2, &parent_act, NULL);
-+	}
- 
--}
-+	child_pid = SAFE_FORK();
- 
--/*
-- *cleanup() -  performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup(void)
--{
-+	if (!child_pid)
-+		do_child(i);
- 
--}
-+	SAFE_WAITPID(child_pid, &status, 0);
- 
--/*
-- * child_handler() - Signal handler for child
-- */
--void child_handler(void)
--{
-+	if (((WIFEXITED(status)) && (WEXITSTATUS(status)))
-+		 || (got_signal == 1))
-+		tst_res(TFAIL, "Test Failed");
-+	else if ((ptrace(PTRACE_KILL, child_pid, 0, 0)) == -1)
-+		tst_res(TFAIL | TERRNO, "ptrace(PTRACE_KILL, %i, 0, 0) failed",
-+				child_pid);
- 
--	if ((kill(getppid(), SIGUSR2)) == -1) {
--		tst_resm(TWARN, "kill() failed in child_handler()");
--		exit(1);
--	}
--}
-+	SAFE_WAITPID(child_pid, &status, 0);
- 
--/*
-- * parent_handler() - Signal handler for parent
-- */
--void parent_handler(void)
--{
-+	if (WTERMSIG(status) == 9)
-+		tst_res(TPASS, "Child %s as expected", tst_strstatus(status));
-+	else
-+		tst_res(TFAIL, "Child %s unexpectedly", tst_strstatus(status));
- 
--	got_signal = 1;
- }
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
-+	.forks_child = 1,
-+};
+> race-y in environments with higher steal time:
+>
+
+I'm sorry, what does it mean here?
+
+
+
+>
+> acct02.c:239: INFO: Verifying using 'struct acct_v3'
+> acct02.c:192: INFO: == entry 1 ==
+> acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
+> acct02.c:192: INFO: == entry 2 ==
+> acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
+> acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
+> acct02.c:133: INFO: ac_exitcode != 32768 (0)
+> acct02.c:141: INFO: ac_ppid != 43213 (43212)
+> acct02.c:182: FAIL: end of file reached
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
+
 -- 
-2.16.4
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191031/b174faa0/attachment.htm>
