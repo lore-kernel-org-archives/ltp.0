@@ -1,41 +1,44 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 1 Nov 2019 09:49:34 +0100
-Subject: [LTP] [PATCH v2] syscalls/prctl02: add more error tests
-In-Reply-To: <1572512347-30116-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1572007183-13661-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1572512347-30116-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191101084933.GA14639@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 1 Nov 2019 04:54:33 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
+In-Reply-To: <CAEemH2eT1aAujLbt7HtuBo1gpE2OadYFuBCf5fiaVKxboj7TtQ@mail.gmail.com>
+References: <20190925094721.18932-1-chrubis@suse.cz>
+ <575273995.9684474.1572426415443.JavaMail.zimbra@redhat.com>
+ <1665612504.9724602.1572440600772.JavaMail.zimbra@redhat.com>
+ <20191030144649.GA25642@dell5510>
+ <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
+ <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
+ <2003376860.9886044.1572511989903.JavaMail.zimbra@redhat.com>
+ <CAEemH2eT1aAujLbt7HtuBo1gpE2OadYFuBCf5fiaVKxboj7TtQ@mail.gmail.com>
+Message-ID: <53174843.10094606.1572598473354.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
->  static struct tst_test test = {
->  	.tcnt = ARRAY_SIZE(tcases),
->  	.test = verify_prctl,
-> +	.caps = (struct tst_cap []) {
-> +		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-> +		TST_CAP(TST_CAP_DROP, CAP_SETPCAP),
-This fails on some old distros (Debian stable [1], CentOS 6 [2]),
-but also on new (Fedora latest [3]):
+----- Original Message -----
+> On Thu, Oct 31, 2019 at 4:53 PM Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> >
+> > ----- Original Message -----
+> > > > Above was RHEL7. Do you expect different outcome on RHEL8?
+> > > > I was looking at upstream sources too and it looked similar.
+> > > >
+> > > > Anyway, I don't think this part is an issue, test will skip it
+> > > > because "comm" doesn't match.
+> > > >
+> > > > We can tweak 'ac_btime' condition, but I think the test will remain
+> > > >
+> > >
+> > > How much time of the ac_btime shaking to be tolerated is proper?
+> >
+> > I wanted to go with 1 sec:
+> >
+> 
+> I'm ok with that. Seems no better way so far.
 
-undeclared identifier 'CAP_SETPCAP'
+I want to look at this a bit more, and add some extra traces to kernel.
 
-Could you please setup travis for your LTP fork and validate builds before
-posting to ML?
-
-BTW it'd be nice to have this feature in our patchwork [4], but not sure if this
-is available and configurable on our patchwork instance (we don't host it).
-
-Kind regards,
-Petr
-
-[1] https://travis-ci.org/pevik/ltp/jobs/605881703
-[2] https://travis-ci.org/pevik/ltp/jobs/605881705
-[3] https://travis-ci.org/pevik/ltp/jobs/605881704
-[4] https://github.com/linux-test-project/ltp/issues/599
