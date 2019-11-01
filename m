@@ -1,229 +1,212 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 1 Nov 2019 20:55:57 +0800
-Subject: [LTP] [PATCH v3 3/5] syscalls/quotactl04: add project quota test
- for non-xfs filesystem
+Date: Fri, 1 Nov 2019 20:55:55 +0800
+Subject: [LTP] [PATCH v3 1/5] syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
 In-Reply-To: <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <20191031152646.GA7078@dell5510>
  <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1572612959-20577-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1572612959-20577-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a variant about quotactl01. It is used to test project quota.
-I split it into a new case instead of adding it in quotaclt01 because
-two points:
-1)before linux 4.10, ext4 doesn't support project quota
-2)on old kernel, kernel doesn't permit mount both prjquota and grpquota together
+Q_GETNEXTQUOTA was introduced since linux 4.6, this operation is the
+same as Q_GETQUOTA, but it returns quota information for the next ID
+greater than or equal to id that has a quota set.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- include/lapi/quotactl.h                       |   4 +
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/quotactl/.gitignore |   1 +
- .../kernel/syscalls/quotactl/quotactl04.c     | 155 ++++++++++++++++++
- 4 files changed, 161 insertions(+)
- create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
+ configure.ac                                  |  1 +
+ include/lapi/quotactl.h                       | 26 +++++----
+ m4/ltp-quota.m4                               |  7 +++
+ .../kernel/syscalls/quotactl/quotactl01.c     | 53 ++++++++++++++-----
+ 4 files changed, 61 insertions(+), 26 deletions(-)
+ create mode 100644 m4/ltp-quota.m4
 
+diff --git a/configure.ac b/configure.ac
+index 62c5a0bb4..31999cd7a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -248,6 +248,7 @@ AC_DEFINE_UNQUOTED(NUMA_ERROR_MSG, ["$numa_error_msg"], [Error message when no N
+ 
+ 
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
++LTP_CHECK_SYSCALL_QUOTACTL
+ LTP_CHECK_SYSCALL_SIGNALFD
+ LTP_CHECK_SYSCALL_UTIMENSAT
+ LTP_CHECK_TASKSTATS
 diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-index 787f4691e..b9ab54483 100644
+index 729472f69..afce865bc 100644
 --- a/include/lapi/quotactl.h
 +++ b/include/lapi/quotactl.h
-@@ -13,6 +13,10 @@
- #endif
- #include <sys/quota.h>
- 
-+#ifndef PRJQUOTA
-+# define PRJQUOTA 2
-+#endif
-+
- # ifndef Q_XGETQSTATV
- #  define Q_XGETQSTATV XQM_CMD(8)
- # endif
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 12d3e0d3b..c30e9e620 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -953,6 +953,7 @@ pwritev202_64 pwritev202_64
- quotactl01 quotactl01
- quotactl02 quotactl02
- quotactl03 quotactl03
-+quotactl04 quotactl04
- 
- read01 read01
- read02 read02
-diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-index b0ef075e7..1db7c5d98 100644
---- a/testcases/kernel/syscalls/quotactl/.gitignore
-+++ b/testcases/kernel/syscalls/quotactl/.gitignore
-@@ -1,3 +1,4 @@
- /quotactl01
- /quotactl02
- /quotactl03
-+/quotactl04
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-new file mode 100644
-index 000000000..25ab016cf
---- /dev/null
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -0,0 +1,155 @@
+@@ -1,26 +1,24 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ *
-+ * This testcase checks the basic flag of quotactl(2) for project quota on
-+ * non-XFS filesystems.
-+ *
-+ * 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for project.
-+ * 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
-+ *    for project.
-+ * 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
-+ *    for project.
-+ * 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
-+ *    flag for project.
-+ * 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
-+ *    flag for project.
-+ * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for project.
-+ * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
-+ *    ID with Q_GETNEXTQUOTA flag for project.
-+ * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
-+ */
-+
-+#include <errno.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <sys/stat.h>
-+#include "config.h"
-+#include "lapi/quotactl.h"
-+#include "tst_test.h"
-+
-+#ifndef QFMT_VFS_V1
-+# define QFMT_VFS_V1 4
+ /*
+- * Copyright (c) 2017 Fujitsu Ltd.
++ * Copyright (c) 2017-2019 Fujitsu Ltd.
+  * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation, either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+  */
+ 
+ #ifndef LAPI_QUOTACTL_H__
+ # define LAPI_QUOTACTL_H__
+ 
++#ifdef HAVE_STRUCT_IF_NEXTDQBLK
++# include <linux/quota.h>
 +#endif
-+#define FMTID QFMT_VFS_V1
-+#define MNTPOINT	"mntpoint"
-+static int32_t fmt_id = FMTID;
-+static int test_id, mount_flag;
-+static struct dqblk set_dq = {
-+	.dqb_bsoftlimit = 100,
-+	.dqb_valid = QIF_BLIMITS
-+};
-+static struct dqblk res_dq;
-+static struct dqinfo set_qf = {
-+	.dqi_bgrace = 80,
-+	.dqi_valid = IIF_BGRACE
-+};
++#include <sys/quota.h>
 +
-+static struct dqinfo res_qf;
-+static int32_t fmt_buf;
+ # ifndef Q_XGETNEXTQUOTA
+ #  define Q_XGETNEXTQUOTA XQM_CMD(9)
+ # endif
+ 
++# ifndef Q_GETNEXTQUOTA
++#  define Q_GETNEXTQUOTA 0x800009 /* get disk limits and usage >= ID */
++# endif
 +
+ #endif /* LAPI_QUOTACTL_H__ */
+diff --git a/m4/ltp-quota.m4 b/m4/ltp-quota.m4
+new file mode 100644
+index 000000000..e8d08c6b7
+--- /dev/null
++++ b/m4/ltp-quota.m4
+@@ -0,0 +1,7 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2019 Fujitsu Ltd.
++dnl Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++
++AC_DEFUN([LTP_CHECK_SYSCALL_QUOTACTL],[
++AC_CHECK_TYPES([struct if_nextdqblk],,,[#include <linux/quota.h>])
++])
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+index 2f563515d..7dda58417 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+ * Copyright (c) Crackerjack Project., 2007
+-* Copyright (c) 2016 Fujitsu Ltd.
++* Copyright (c) 2016-2019 FUJITSU LIMITED. All rights reserved
+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+ *
+ * This testcase checks the basic flag of quotactl(2) for non-XFS filesystems:
+@@ -16,19 +16,23 @@
+ *    flag for user.
+ * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for user.
+ * 7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for user.
+-* 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
+-* 9) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
+-* 10) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
++* 8) quotactl(2) succeeds to get disk quota limit greater than or equal to
++*    ID with Q_GETNEXTSTAT flag for user.
++* 9) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
++* 10) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
++* 11) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
+ *     for group.
+-* 11) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
++* 12) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
+ *     for group.
+-* 12) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
++* 13) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
+ *     flag for group.
+-* 13) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
++* 14) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
+ *     flag for group.
+-* 14) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
+-* 15) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
+-* 16) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
++* 15) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
++* 16) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
++* 17) quotactl(2) succeeds to get disk quota limit greater than or equal to
++*     ID with Q_GETNEXTSTAT flag for group.
++* 18) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
+ */
+ 
+ #include "config.h"
+@@ -36,11 +40,13 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <stdio.h>
+-#include <sys/quota.h>
++#include "lapi/quotactl.h"
+ 
+ #include "tst_test.h"
+ 
+-#define QFMT_VFS_V0	2
++#ifndef QFMT_VFS_V0
++# define QFMT_VFS_V0	2
++#endif
+ #define USRPATH MNTPOINT "/aquota.user"
+ #define GRPPATH MNTPOINT "/aquota.group"
+ #define FMTID	QFMT_VFS_V0
+@@ -61,6 +67,10 @@ static struct dqinfo set_qf = {
+ static struct dqinfo res_qf;
+ static int32_t fmt_buf;
+ 
 +#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
 +static struct if_nextdqblk res_ndq;
 +#endif
 +
-+static struct tcase {
-+	int cmd;
-+	int *id;
-+	void *addr;
-+	void *set_data;
-+	void *res_data;
-+	int sz;
-+	char *des;
-+} tcases[] = {
-+	{QCMD(Q_QUOTAON, PRJQUOTA), &fmt_id, NULL,
-+	NULL, NULL, 0, "turn on quota for project"},
-+
-+	{QCMD(Q_SETQUOTA, PRJQUOTA), &test_id, &set_dq,
-+	NULL, NULL, 0, "set disk quota limit for project"},
-+
-+	{QCMD(Q_GETQUOTA, PRJQUOTA), &test_id, &res_dq,
-+	&set_dq.dqb_bsoftlimit, &res_dq.dqb_bsoftlimit,
-+	sizeof(res_dq.dqb_bsoftlimit), "get disk quota limit for project"},
-+
-+	{QCMD(Q_SETINFO, PRJQUOTA), &test_id, &set_qf,
-+	NULL, NULL, 0, "set information about quotafile for project"},
-+
-+	{QCMD(Q_GETINFO, PRJQUOTA), &test_id, &res_qf,
-+	&set_qf.dqi_bgrace, &res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace),
-+	"get information about quotafile for project"},
-+
-+	{QCMD(Q_GETFMT, PRJQUOTA), &test_id, &fmt_buf,
-+	&fmt_id, &fmt_buf, sizeof(fmt_buf),
-+	"get quota format for project"},
-+
+ static struct tcase {
+ 	int cmd;
+ 	int *id;
+@@ -94,6 +104,12 @@ static struct tcase {
+ 	{QCMD(Q_SYNC, USRQUOTA), &test_id, &res_dq,
+ 	NULL, NULL, 0, "update quota usages for user"},
+ 
 +#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
-+	{QCMD(Q_GETNEXTQUOTA, PRJQUOTA), &test_id, &res_ndq,
++	{QCMD(Q_GETNEXTQUOTA, USRQUOTA), &test_id, &res_ndq,
 +	&test_id, &res_ndq.dqb_id, sizeof(res_ndq.dqb_id),
-+	"get next disk quota limit for project"},
++	"get next disk quota limit for user"},
 +#endif
 +
-+	{QCMD(Q_QUOTAOFF, PRJQUOTA), &test_id, NULL,
-+	NULL, NULL, 0, "turn off quota for project"},
+ 	{QCMD(Q_QUOTAOFF, USRQUOTA), &test_id, USRPATH,
+ 	NULL, NULL, 0, "turn off quota for user"},
+ 
+@@ -120,6 +136,12 @@ static struct tcase {
+ 	{QCMD(Q_SYNC, GRPQUOTA), &test_id, &res_dq,
+ 	NULL, NULL, 0, "update quota usages for group"},
+ 
++#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
++	{QCMD(Q_GETNEXTQUOTA, GRPQUOTA), &test_id, &res_ndq,
++	&test_id, &res_ndq.dqb_id, sizeof(res_ndq.dqb_id),
++	"get next disk quota limit for group"},
++#endif
 +
-+};
-+
-+static void setup(void)
-+{
-+	const char *const extra_opts[] = {"-O quota,project", NULL};
-+
-+	test_id = geteuid();
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, extra_opts);
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-+	mount_flag = 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (mount_flag && tst_umount(MNTPOINT))
-+	tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
-+}
-+
-+static void verify_quota(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	res_dq.dqb_bsoftlimit = 0;
-+	res_qf.dqi_igrace = 0;
-+	fmt_buf = 0;
-+
-+	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "quotactl failed to %s", tc->des);
+ 	{QCMD(Q_QUOTAOFF, GRPQUOTA), &test_id, GRPPATH,
+ 	NULL, NULL, 0, "turn off quota for group"}
+ };
+@@ -155,8 +177,15 @@ static void verify_quota(unsigned int n)
+ 	res_dq.dqb_bsoftlimit = 0;
+ 	res_qf.dqi_igrace = 0;
+ 	fmt_buf = 0;
++#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
++	res_ndq.dqb_id = -1;
++#endif
+ 
+ 	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
++	if (TST_ERR == EINVAL) {
++		tst_res(TCONF, "Current system doesn't support this cmd");
 +		return;
 +	}
-+
-+	if (memcmp(tc->res_data, tc->set_data, tc->sz)) {
-+		tst_res(TFAIL, "quotactl failed to %s", tc->des);
-+		tst_res_hexd(TINFO, tc->res_data, tc->sz, "retval:   ");
-+		tst_res_hexd(TINFO, tc->set_data, tc->sz, "expected: ");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "quotactl succeeded to %s", tc->des);
-+}
-+
-+static const char *kconfigs[] = {
-+	"CONFIG_QFMT_V2",
-+	NULL
-+};
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.needs_kconfigs = kconfigs,
-+	.min_kver = "4.10", /* commit 689c958cbe6b (ext4: add project quota support) */
-+	.test = verify_quota,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_device = 1,
-+	.dev_fs_type = "ext4",
-+	.mntpoint = MNTPOINT,
-+};
+ 	if (TST_RET == -1) {
+ 		tst_res(TFAIL | TTERRNO, "quotactl failed to %s", tc->des);
+ 		return;
 -- 
 2.18.0
 
