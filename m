@@ -1,88 +1,41 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 1 Nov 2019 14:03:15 +0800
-Subject: [LTP] [PATCH] syscalls/acct02: Check read size.
-In-Reply-To: <2003376860.9886044.1572511989903.JavaMail.zimbra@redhat.com>
-References: <20190925094721.18932-1-chrubis@suse.cz>
- <20190925135634.GA32581@dell5510>
- <575273995.9684474.1572426415443.JavaMail.zimbra@redhat.com>
- <1665612504.9724602.1572440600772.JavaMail.zimbra@redhat.com>
- <20191030144649.GA25642@dell5510>
- <116299070.9793183.1572457283737.JavaMail.zimbra@redhat.com>
- <CAEemH2dO95d2_CZyMpE4fM8CcC+p0ou9XfA43sS9fX0LmQBWoQ@mail.gmail.com>
- <2003376860.9886044.1572511989903.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2eT1aAujLbt7HtuBo1gpE2OadYFuBCf5fiaVKxboj7TtQ@mail.gmail.com>
+Date: Fri, 1 Nov 2019 14:13:55 +0800
+Subject: [LTP] [PATCH] hugetlb: Initialize orig_shmmax and orig_shmmni
+ value
+In-Reply-To: <CAEemH2dOwoE2YMXn-+Ugb=-3=V5b-Q-X0KU+xDdRogWF-5ViWQ@mail.gmail.com>
+References: <20191031064451.14966-1-tesheng@andestech.com>
+ <CAEemH2dOwoE2YMXn-+Ugb=-3=V5b-Q-X0KU+xDdRogWF-5ViWQ@mail.gmail.com>
+Message-ID: <CAEemH2cxrKbYF2k6__MQmpfsbWQ6Xez+xcFSwReP_wjxNi-gCw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 31, 2019 at 4:53 PM Jan Stancek <jstancek@redhat.com> wrote:
+On Thu, Oct 31, 2019 at 4:17 PM Li Wang <liwang@redhat.com> wrote:
 
 >
-> ----- Original Message -----
-> > > Above was RHEL7. Do you expect different outcome on RHEL8?
-> > > I was looking at upstream sources too and it looked similar.
-> > >
-> > > Anyway, I don't think this part is an issue, test will skip it
-> > > because "comm" doesn't match.
-> > >
-> > > We can tweak 'ac_btime' condition, but I think the test will remain
-> > >
-> >
-> > How much time of the ac_btime shaking to be tolerated is proper?
 >
-> I wanted to go with 1 sec:
+> On Thu, Oct 31, 2019 at 2:45 PM Eric Lin <tesheng@andestech.com> wrote:
 >
-
-I'm ok with that. Seems no better way so far.
-
-
+>> When doing save_nr_hugepages() in setup() and there
+>> is no Huge page support in system, it will call
+>> cleanup() and write wrong orig_shmmax and orig_shmmni
+>> value back to file.
+>>
+>> To fix it, we initialize the orig_shmmax and
+>> orig_shmmni to -1 and check it in cleanup().
+>>
+>> Signed-off-by: Eric Lin <tesheng@andestech.com>
 >
-> @@ -83,7 +83,7 @@ static int verify_acct(void *acc, int elap_time)
->                 ret = 1;
->         }
->
-> -       if (ACCT_MEMBER(ac_btime) < start_time) {
-> +       if (ACCT_MEMBER(ac_btime) + 1 < start_time) {
->                 tst_res(TINFO, "ac_btime < %d (%d)", start_time,
->                         ACCT_MEMBER(ac_btime));
->                 ret = 1;
->
-> >
-> > > race-y in environments with higher steal time:
-> > >
-> >
-> > I'm sorry, what does it mean here?
->
-> I was referring to failed check below. s390 is scarce resource
-> and when over-committed, sleeps are less consistent.
-> E.g. sleep(1) taking 2+ seconds:
->   nanosleep({1, 0}, NULL) = 0 <1.926617>
+> Reviewed-by: Li Wang <liwang@redhat.com>
 >
 
-Okay.
-
->
-> >
-> >
-> >
-> > >
-> > > acct02.c:239: INFO: Verifying using 'struct acct_v3'
-> > > acct02.c:192: INFO: == entry 1 ==
-> > > acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
-> > > acct02.c:192: INFO: == entry 2 ==
-> > > acct02.c:82: INFO: ac_comm != 'acct02_helper' ('acct02')
-> > > acct02.c:127: INFO: elap_time/clock_ticks >= 2 (236/100: 2.00)
-> > > acct02.c:133: INFO: ac_exitcode != 32768 (0)
-> > > acct02.c:141: INFO: ac_ppid != 43213 (43212)
-> > > acct02.c:182: FAIL: end of file reached
->
-
+Pushed.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191101/eb7d8888/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191101/3ce2e419/attachment.htm>
