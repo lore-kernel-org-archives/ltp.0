@@ -1,41 +1,33 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 1 Nov 2019 14:13:55 +0800
-Subject: [LTP] [PATCH] hugetlb: Initialize orig_shmmax and orig_shmmni
- value
-In-Reply-To: <CAEemH2dOwoE2YMXn-+Ugb=-3=V5b-Q-X0KU+xDdRogWF-5ViWQ@mail.gmail.com>
-References: <20191031064451.14966-1-tesheng@andestech.com>
- <CAEemH2dOwoE2YMXn-+Ugb=-3=V5b-Q-X0KU+xDdRogWF-5ViWQ@mail.gmail.com>
-Message-ID: <CAEemH2cxrKbYF2k6__MQmpfsbWQ6Xez+xcFSwReP_wjxNi-gCw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 1 Nov 2019 08:12:44 +0100
+Subject: [LTP] [PATCH] pt_test: skip pt_disable_branch on Broadwell CPUs
+In-Reply-To: <a5174e749dd7b6089fa861b5369baf9f80c51ef8.1572269566.git.jstancek@redhat.com>
+References: <a5174e749dd7b6089fa861b5369baf9f80c51ef8.1572269566.git.jstancek@redhat.com>
+Message-ID: <20191101071244.GA4930@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 31, 2019 at 4:17 PM Li Wang <liwang@redhat.com> wrote:
+Hi Jan,
 
->
->
-> On Thu, Oct 31, 2019 at 2:45 PM Eric Lin <tesheng@andestech.com> wrote:
->
->> When doing save_nr_hugepages() in setup() and there
->> is no Huge page support in system, it will call
->> cleanup() and write wrong orig_shmmax and orig_shmmni
->> value back to file.
->>
->> To fix it, we initialize the orig_shmmax and
->> orig_shmmni to -1 and check it in cleanup().
->>
->> Signed-off-by: Eric Lin <tesheng@andestech.com>
->
-> Reviewed-by: Li Wang <liwang@redhat.com>
->
+> commit d35869ba348d ("perf/x86/intel/pt: Allow the disabling of branch tracing")
+> disallows not setting BRANCH_EN due to erratum BDM106 on Broadwell CPUs.
 
-Pushed.
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191101/3ce2e419/attachment.htm>
+...
+> @@ -145,6 +171,11 @@ static void setup(void)
+>  	attr.size	= sizeof(struct perf_event_attr);
+>  	attr.mmap			= 1;
+>  	if (str_branch_flag) {
+> +		if (is_affected_by_erratum_BDM106()) {
+> +			tst_brk(TCONF, "erratum BDM106 disallows not "
+> +				"setting BRANCH_EN on this CPU");
+I'd join string (to be on single line), even it's longer than 80.
+(better for grep)
+
+Kind regards,
+Petr
