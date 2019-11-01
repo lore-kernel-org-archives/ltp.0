@@ -1,82 +1,59 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 1 Nov 2019 20:44:45 +0800
-Subject: [LTP] [PATCH v2 3/6] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
- test
-In-Reply-To: <20191031143148.GA6781@dell5510>
-References: <1571821231-3846-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1571821231-3846-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191031143148.GA6781@dell5510>
-Message-ID: <dc5a87c6-512e-b9fc-66ca-987e9e88f9ae@cn.fujitsu.com>
+Date: Fri, 1 Nov 2019 20:55:54 +0800
+Subject: [LTP] [PATCH v3 0/5] optimize quotactl test code
+In-Reply-To: <20191031152646.GA7078@dell5510>
+References: <20191031152646.GA7078@dell5510>
+Message-ID: <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-on 2019/10/31 22:31, Petr Vorel wrote:
-
-> Hi Xu,
->
->> Q_GETNEXTQUOTA was introduced since linux 4.6, this operation is the
->> same as Q_GETQUOTA, but it returns quota information for the next ID
->> greater than or equal to id that has a quota set.
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> ---
->>   include/lapi/quotactl.h                       | 23 ++---
->>   m4/ltp-quota.m4                               | 36 +-------
->>   .../kernel/syscalls/quotactl/quotactl01.c     | 86 ++++++++++++-------
->>   3 files changed, 67 insertions(+), 78 deletions(-)
->> diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-> ...
->>   #ifndef LAPI_QUOTACTL_H__
->>   # define LAPI_QUOTACTL_H__
->> +#include <linux/quota.h>
-> I'd prefer to add autotools check for <linux/quota.h configure.ac
-> (I guess we ignore include/config.h.default atm).
->
-> But, more important, I'd prefer to include <sys/quota.h> here as well:
->
-> #ifdef HAVE_LINUX_QUOTA_H
-> # include <linux/quota.h>
-> #else
-> # include <sys/quota.h>
-> #endif
-
-Hi Petr
-
-It still has problems that sys/quota.h has some struct defintion as struct dqblk ,struct dqinfo.
-Also, now linux/quota.h doesn't have quotactl function declaration.
-
-I think we can use HAVE_STRUCT_IF_NEXTDQBLK macro in lapi/quotactl.h to decide whether include <linux/quota.h> because
-I add <linux/quota.h> for finding struct if_netxdqblk defintion.
-
-  
-
-ps: In my ltp fork, it passed.
-
-[1]https://travis-ci.org/xuyang0410/ltp/builds/605963472?utm_medium=notification&utm_source=github_status
-
-Thanks
-Yang Xu
-
->
-> => move it from quotactl0*.c (there is not yet agreement to include headers in
-> lapi files, but later lapi files does it).
->
-> The reason is that old distros fail when both headers are included at the same
-> time (probably <linux/quota.h> got fixed later, maybe there is an workaround,
-> but the easiest way is to handle this in header anyway).
->
-> Kind regards,
-> Petr
->
-> [1] https://travis-ci.org/pevik/ltp/jobs/605507690
-> [2] https://api.travis-ci.org/v3/job/605507690/log.txt
->
->
+I cleanup the quotactl code and add project quota test for quotactl.
+Thanks to Jan Kara with support about quota.
 
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191101/06f679de/attachment.htm>
+------------
+v2->v3:
+1.for quotactl02.c, add group quota test
+2.add quotactl04.c and add quota05.c to test project quota.
+3.add quotactl06.c to test error
+4. fix build erro on centos6 
+ps:don't test Q_XQUOTARM in quotactl02,04 because cycle running will
+report ENOSYS (quota feture has been off). I will introduce a
+new test to test it and also a regression test for commit[1].
+[1]https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=for-next&id=3dd4d40b420846dd35869ccc8f8627feef2cff32
+[2]https://travis-ci.org/xuyang0410/ltp/builds/605963472?utm_medium=notification&utm_source=github_status
+------------
+
+Yang Xu (5):
+  syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
+  syscalls/quotactl02.c: Add Q_XGETQSTATV test
+  syscalls/quotactl04: add project quota test for non-xfs filesystem
+  syscalls/quotactl05: add project quota test for xfs filesystem
+  syscalls/quotactl06: Add new testcase
+
+ configure.ac                                  |   1 +
+ include/lapi/quotactl.h                       |  34 +--
+ m4/ltp-quota.m4                               |   8 +
+ runtest/syscalls                              |   3 +
+ testcases/kernel/syscalls/quotactl/.gitignore |   4 +
+ .../kernel/syscalls/quotactl/quotactl01.c     |  53 +++--
+ .../kernel/syscalls/quotactl/quotactl02.c     | 193 +++++++-----------
+ .../kernel/syscalls/quotactl/quotactl02.h     | 152 ++++++++++++++
+ .../kernel/syscalls/quotactl/quotactl04.c     | 155 ++++++++++++++
+ .../kernel/syscalls/quotactl/quotactl05.c     |  99 +++++++++
+ .../kernel/syscalls/quotactl/quotactl06.c     | 183 +++++++++++++++++
+ 11 files changed, 745 insertions(+), 140 deletions(-)
+ create mode 100644 m4/ltp-quota.m4
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl02.h
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl05.c
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl06.c
+
+-- 
+2.18.0
+
+
+
