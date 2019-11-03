@@ -1,41 +1,137 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 4 Nov 2019 15:45:42 +0800
-Subject: [LTP] question about the EPERM error of LTP bpf test
-Message-ID: <008a677b-644d-615f-6c4f-0961af928700@cn.fujitsu.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Sun, 03 Nov 2019 22:24:14 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E0-rc5-3a69c9e=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
+Message-ID: <cki.6C94830761.U42EB9BZOK@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All
 
-Now, I test bpf_prog02 and bpf_prog03 in my system(4.18.0-107.el8.x86_64).
+Hello,
 
-#./bpf_prog03
-tst_buffers.c:55: INFO: Test is using guarded buffers
-tst_test.c:1137: INFO: Timeout per run is 0h 05m 00s
-bpf_common.h:18: INFO: Raising RLIMIT_MEMLOCK to 262143
-tst_capability.c:29: INFO: Dropping CAP_SYS_ADMIN(21)
-bpf_common.h:37: CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM (1)
-#
+We ran automated tests on a recent commit from this kernel tree:
 
-Jan Stancek has added rlimit_bump_memlock function to avoid EPERM errno,
-but I still can meet this problem every time even though I have increased BPF_MEMLOCK_ADD limit.
+       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+            Commit: 3a69c9e52295 - Merge tag 'usb-5.4-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
 
-How can I run the two cases normally? Also, this error log(requires CAP_SYS_ADMIN on this system: EPERM
-) makes me confused in this situation(because case drops CAP_SYS_ADMIN, but log reports need CAP_SYS_ADMIN)
-and I think we may change it into "require CAP_SYS_ADMIN or max locked memory limit is too low".
+The results of these automated tests are provided below.
 
-Or, can I keep CAP_SYS_ADMIN cap in bpf_prog02/[3]?
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
+
+All kernel binaries, config files, and logs are available for download here:
+
+  https://artifacts.cki-project.org/pipelines/262184
+
+One or more kernel tests failed:
+
+    x86_64:
+     ? LTP lite
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 1 architecture:
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
 
 
-Thanks
-Yang Xu
-  
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
 
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP lite
+       ??? Loopdev Sanity
+       ??? jvm test suite
+       ??? Memory function: memfd_create
+       ??? Memory function: kaslr
+       ??? AMTU (Abstract Machine Test Utility)
+       ??? LTP: openposix test suite
+       ??? Ethernet drivers sanity
+       ??? Networking MACsec: sanity
+       ??? Networking socket: fuzz
+       ??? Networking sctp-auth: sockopts test
+       ??? Networking: igmp conformance test
+       ??? Networking route: pmtu
+       ??? Networking TCP: keepalive test
+       ??? Networking UDP: socket
+       ??? Networking tunnel: geneve basic test
+       ??? Networking tunnel: gre basic
+       ??? Networking tunnel: vxlan basic
+       ??? audit: audit testsuite test
+       ??? httpd: mod_ssl smoke sanity
+       ??? iotop: sanity
+       ??? tuned: tune-processes-through-perf
+       ??? pciutils: sanity smoke test
+       ??? ALSA PCM loopback test
+       ??? ALSA Control (mixer) Userspace Element test
+       ??? Usex - version 1.9-29
+       ??? storage: SCSI VPD
+       ??? stress: stress-ng
+       ??? trace: ftrace/tracer
+       ? ??? CIFS Connectathon
+       ? ??? POSIX pjd-fstest suites
+       ? ??? Networking bridge: sanity
+       ? ??? Networking route_func: local
+       ??? Networking route_func: forward
+       ? ??? L2TP basic test
+       ? ??? Networking vnic: ipvlan/basic
+       ? ??? storage: dm/common
+       ? ??? Networking ipsec: basic netns transport
+       ? ??? Networking ipsec: basic netns tunnel
 
+    Host 2:
+       ? Boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191104/b9d1b09a/attachment.htm>
+    Host 3:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? Storage blktests
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
