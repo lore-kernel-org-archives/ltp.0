@@ -1,92 +1,60 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat,  2 Nov 2019 00:39:24 +0100
-Subject: [LTP] [PATCH] kernel: use ktime_get_real_ts64() to calculate
- acct.ac_btime
-Message-ID: <a87876829697e1b3c63601b1401a07af79eddae6.1572651216.git.jstancek@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 4 Nov 2019 13:40:44 +0800
+Subject: [LTP] [RFC] Remove {config.h,config.mk,features.mk,}.default ?
+In-Reply-To: <20191101073528.GA22452@dell5510>
+References: <20191101073528.GA22452@dell5510>
+Message-ID: <332232ad-3b46-332d-c917-3175ff56868d@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-fill_ac() calculates process creation time from current time as:
-   ac->ac_btime = get_seconds() - elapsed
 
-get_seconds() doesn't accumulate nanoseconds as regular time getters.
-This creates race for user-space (e.g. LTP acct02), which typically
-uses gettimeofday(), because process creation time sometimes appear
-to be dated 'in past':
+on 2019/11/01 15:35, Petr Vorel wrote:
 
-    acct("myfile");
-    time_t start_time = time(NULL);
-    if (fork()==0) {
-        sleep(1);
-        exit(0);
-    }
-    waitpid(NULL);
-    acct(NULL);
+> Hi,
+>
+> I wonder if anybody uses include/config.h.default, include/mk/config.mk.default,
+> include/mk/features.mk.default. Is it their purpose for people who, for some
+> reason can't run ./configure? (I wonder who'd need it) Can we just drop them?
 
-    // acct.ac_btime == 1572616777
-    // start_time == 1572616778
+Hi Petr
 
-Testing: 10 hours of LTP acct02 on s390x with CONFIG_HZ=100,
-         test failed on unpatched kernel in 15 minutes
+Yes. Reading LTP/INSTALL[1], these files are used when we don't use autoconf.
+as below:
+Using autoconf (preferred):
+	$ make autotools # This must be run from "$TOP_SRCDIR"!
+	$ test -d "$TOP_BUILDDIR" || mkdir -p "$TOP_BUILDDIR"
+	$ cd "$TOP_BUILDDIR" && "$TOP_SRCDIR/configure" \
+	  # [configure args go here, e.g. CC=$CC, LDFLAGS=$LDFLAGS, etc]
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Richard Fontana <rfontana@redhat.com>
----
- kernel/acct.c   | 4 +++-
- kernel/tsacct.c | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+Not using autoconf:
 
-diff --git a/kernel/acct.c b/kernel/acct.c
-index 81f9831a7859..991c898160cd 100644
---- a/kernel/acct.c
-+++ b/kernel/acct.c
-@@ -417,6 +417,7 @@ static void fill_ac(acct_t *ac)
- 	struct pacct_struct *pacct = &current->signal->pacct;
- 	u64 elapsed, run_time;
- 	struct tty_struct *tty;
-+	struct timespec64 ts;
- 
- 	/*
- 	 * Fill the accounting struct with the needed info as recorded
-@@ -448,7 +449,8 @@ static void fill_ac(acct_t *ac)
- 	}
- #endif
- 	do_div(elapsed, AHZ);
--	ac->ac_btime = get_seconds() - elapsed;
-+	ktime_get_real_ts64(&ts);
-+	ac->ac_btime = ts.tv_sec - elapsed;
- #if ACCT_VERSION==2
- 	ac->ac_ahz = AHZ;
- #endif
-diff --git a/kernel/tsacct.c b/kernel/tsacct.c
-index 7be3e7530841..4d10854255ab 100644
---- a/kernel/tsacct.c
-+++ b/kernel/tsacct.c
-@@ -24,6 +24,7 @@ void bacct_add_tsk(struct user_namespace *user_ns,
- 	const struct cred *tcred;
- 	u64 utime, stime, utimescaled, stimescaled;
- 	u64 delta;
-+	struct timespec64 ts;
- 
- 	BUILD_BUG_ON(TS_COMM_LEN < TASK_COMM_LEN);
- 
-@@ -34,7 +35,8 @@ void bacct_add_tsk(struct user_namespace *user_ns,
- 	stats->ac_etime = delta;
- 	/* Convert to seconds for btime */
- 	do_div(delta, USEC_PER_SEC);
--	stats->ac_btime = get_seconds() - delta;
-+	ktime_get_real_ts64(&ts);
-+	stats->ac_btime = ts.tv_sec - delta;
- 	if (thread_group_leader(tsk)) {
- 		stats->ac_exitcode = tsk->exit_code;
- 		if (tsk->flags & PF_FORKNOEXEC)
--- 
-1.8.3.1
+	$ test -d "$TOP_BUILDDIR" || mkdir -p "$TOP_BUILDDIR"
+	$ cp "$TOP_SRCDIR/include/config.h.default" \
+	     "$TOP_BUILDDIR/include/config.h"
+	$ cp "$TOP_SRCDIR/include/mk/config.mk.default" \
+	     "$TOP_BUILDDIR/include/mk/config.mk"
+	$ cp "$TOP_SRCDIR/include/mk/features.mk.default" \
+	     "$TOP_BUILDDIR/include/mk/features.mk"
 
+[1]https://github.com/linux-test-project/ltp/blob/master/INSTAL
+
+ps:IMO, I don't use these files. Now most distributions have auotconf and we can remove these files.
+
+Thanks
+Yang Xu
+
+>
+> include/config.h.default is out of sync with include/config.h.in;
+> include/mk/config.mk.default and include/mk/features.mk.default are synced.
+>
+> Kind regards,
+> Petr
+>
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191104/fa15eda5/attachment.htm>
