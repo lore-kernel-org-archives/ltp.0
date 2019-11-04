@@ -1,77 +1,46 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Nov 2019 06:25:31 -0500 (EST)
-Subject: [LTP] question about the EPERM error of LTP bpf test
-In-Reply-To: <77525b33-67e5-2cfd-e735-6fc9485087e4@cn.fujitsu.com>
-References: <008a677b-644d-615f-6c4f-0961af928700@cn.fujitsu.com>
- <1706711917.10302442.1572864628434.JavaMail.zimbra@redhat.com>
- <77525b33-67e5-2cfd-e735-6fc9485087e4@cn.fujitsu.com>
-Message-ID: <623915519.10305094.1572866731625.JavaMail.zimbra@redhat.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon,  4 Nov 2019 13:52:27 +0100
+Subject: [LTP] [PATCH 0/1] Fix zram01.sh
+Message-ID: <20191104125228.17173-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+The compression ratio check in zram01.sh is completely broken:
+- It uses `free -m` to *guess* zram memory usage which is distorted by all
+  other processes running on the system.
+- It calculates memory usage backwards ($before - $after; which should
+  produce a negative value if the two values weren't nonsense).
+- It mixes bytes with megabytes when calculating the final ratio.
 
+Here's a patch to calculate the compression ratio correctly using sysfs memory
+usage statistics for each zram device. I currently calculate it as
+$bytes_written / $mm_stat_compr_data_size.
 
------ Original Message -----
-> 
-> on 2019/11/04 18:50, Jan Stancek wrote:
-> 
-> >
-> > ----- Original Message -----
-> >> Hi All
-> >>
-> >> Now, I test bpf_prog02 and bpf_prog03 in my system(4.18.0-107.el8.x86_64).
-> >>
-> >> #./bpf_prog03
-> >> tst_buffers.c:55: INFO: Test is using guarded buffers
-> >> tst_test.c:1137: INFO: Timeout per run is 0h 05m 00s
-> >> bpf_common.h:18: INFO: Raising RLIMIT_MEMLOCK to 262143
-> >> tst_capability.c:29: INFO: Dropping CAP_SYS_ADMIN(21)
-> >> bpf_common.h:37: CONF: bpf() requires CAP_SYS_ADMIN on this system: EPERM
-> >> (1)
-> >> #
-> >>
-> >> Jan Stancek has added rlimit_bump_memlock function to avoid EPERM errno,
-> >> but I still can meet this problem every time even though I have increased
-> >> BPF_MEMLOCK_ADD limit.
-> > This is likely not related to rlimit. Can you check if unprivileged bpf is
-> > allowed:
-> >    cat /proc/sys/kernel/unprivileged_bpf_disabled
-> 
-> Hi Jan
-> 
-> Thanks for your quick reply. this value in my system is 1.
-> unprivileged bpf isn't allowed. Do we need to check it before run in case?
+One question for debate is whether I should use a different formula:
+- $bytes_written / $mm_stat_mem_used_total
+  (mem_used_total includes internal zram memory management overhead)
+- $mm_stat_orig_data_size / $mm_stat_compr_data_size
+  (zram01.sh fills the zram device with binary zeroes so the data will be
+  compacted even before compression; orig_data_size << bytes_written)
+- $mm_stat_orig_data_size / $mm_stat_mem_used_total)
+  (this could easily produce ratio <100% due to page compacting)
+See https://www.kernel.org/doc/Documentation/blockdev/zram.txt
 
-Yes, we should check that and TCONF, or better still run test without
-dropping CAP_SYS_ADMIN.
+The mm_stat sysfs file is available since kernel 4.1. Unfortunately,
+I couldn't test the TCONF branch when mm_stat doesn't exist because there's
+no SLE release with kernel version between 3.14 and 4.1.
 
-> 
-> >
-> >> How can I run the two cases normally? Also, this error log(requires
-> >> CAP_SYS_ADMIN on this system: EPERM
-> >> ) makes me confused in this situation(because case drops CAP_SYS_ADMIN,
-> >> but
-> >> log reports need CAP_SYS_ADMIN)
-> >> and I think we may change it into "require CAP_SYS_ADMIN or max locked
-> >> memory
-> >> limit is too low".
-> >>
-> >> Or, can I keep CAP_SYS_ADMIN cap in bpf_prog02/[3]?
-> >>
-> >>
-> >> Thanks
-> >> Yang Xu
-> >>    
-> >>
-> >>
-> >>
-> >>
-> >
-> >
-> 
-> 
-> 
+Verifcation run: https://openqa.suse.de/tests/3552880#step/zram01/6
+
+Martin Doucha (1):
+  Fix compression ratio calculation in zram01
+
+ .../kernel/device-drivers/zram/zram01.sh      | 36 +++++++++----------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
+
+-- 
+2.23.0
 
