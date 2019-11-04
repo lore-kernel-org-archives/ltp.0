@@ -1,95 +1,58 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Date: Mon, 4 Nov 2019 15:59:47 +0100
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E9-rc1-dfe283e=2Ecki_=28stable=29?=
-In-Reply-To: <1341418315.10342806.1572877690830.JavaMail.zimbra@redhat.com>
-References: <cki.1210A7ECB0.BD9Q3APV4K@redhat.com>
- <2029139028.10333037.1572874551626.JavaMail.zimbra@redhat.com>
- <20191104135135.GA2162401@kroah.com>
- <1341418315.10342806.1572877690830.JavaMail.zimbra@redhat.com>
-Message-ID: <20191104145947.GA2211991@kroah.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 4 Nov 2019 16:16:49 +0100
+Subject: [LTP] [PATCH 1/1] Fix compression ratio calculation in zram01
+In-Reply-To: <20191104125228.17173-2-mdoucha@suse.cz>
+References: <20191104125228.17173-1-mdoucha@suse.cz>
+ <20191104125228.17173-2-mdoucha@suse.cz>
+Message-ID: <20191104151647.GA15477@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Nov 04, 2019 at 09:28:10AM -0500, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
-> > On Mon, Nov 04, 2019 at 08:35:51AM -0500, Jan Stancek wrote:
-> > > 
-> > > 
-> > > ----- Original Message -----
-> > > > 
-> > > > Hello,
-> > > > 
-> > > > We ran automated tests on a recent commit from this kernel tree:
-> > > > 
-> > > >        Kernel repo:
-> > > >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > >             Commit: dfe283e9fdac - Linux 5.3.9-rc1
-> > > > 
-> > > > The results of these automated tests are provided below.
-> > > > 
-> > > >     Overall result: FAILED (see details below)
-> > > >              Merge: OK
-> > > >            Compile: OK
-> > > >              Tests: FAILED
-> > > > 
-> > > > All kernel binaries, config files, and logs are available for download
-> > > > here:
-> > > > 
-> > > >   https://artifacts.cki-project.org/pipelines/262380
-> > > > 
-> > > > One or more kernel tests failed:
-> > > > 
-> > > >     x86_64:
-> > > >      ? LTP lite
-> > > >
-> > > 
-> > > Not a 5.3 -stable regression.
-> > > 
-> > > Failure comes from test that sanity checks all /proc files by doing
-> > > 1k read from each. There are couple issues it hits wrt. snd_hda_*.
-> > > 
-> > > Example reproducer:
-> > >   dd if=/sys/kernel/debug/regmap/hdaudioC0D3-hdaudio/access of=out.txt
-> > >   count=1 bs=1024 iflag=nonblock
-> > 
-> > That's not a proc file :)
-> 
-> Right. It's same test that's used for /proc too.
-> 
-> > 
-> > > It's slow and triggers soft lockups [1]. And it also requires lot
-> > > of memory, triggering OOMs on smaller VMs:
-> > > 0x0000000024f0437b-0x000000001a32b1c8 1073745920 seq_read+0x131/0x400
-> > > pages=262144 vmalloc vpages N0=262144
-> > > 
-> > > I'm leaning towards skipping all regmap entries in this test.
-> > > Comments are welcomed.
-> > 
-> > Randomly poking around in debugfs is a sure way to cause crashes and
-> > major problems.  Also, debugfs files are NOT stable and only for
-> > debugging and should never be enabled on "real" systems.
-> > 
-> > So what exactly is the test trying to do here?
-> 
-> It's (unprivileged) user trying to open/read anything it can (/proc, /sys)
-> to see if that triggers anything bad.
-> 
-> It can run as privileged user too, which was the case above.
+Hi Martin,
 
-Sure, you can do tons of bad things as root poking around in sysfs,
-debugfs, and procfs.  What exactly are you trying to do, break the
-system?
+> zram01 uses `free -m` to measure zram memory usage. The results are nonsense
+> because they are polluted by all running processes on the system.
 
-That sounds like a horrible test that is just setting itself up to lock
-the system up, you should revisit it...
+> Use /sys/block/zram<id>/mm_stat to measure memory usage instead. The file is
+> available since kernel 4.1.
++1 even older kernels won't be covered.
+Thanks!
 
-thanks,
+...
+> --- a/testcases/kernel/device-drivers/zram/zram01.sh
+>  zram_fill_fs()
+>  {
+> -	tst_test_cmds awk bc dd free
+> -	local mem_free0=$(free -m | awk 'NR==2 {print $4}')
+> +	tst_test_cmds awk bc dd
 
-greg k-h
+>  	for i in $(seq 0 $(($dev_num - 1))); do
+>  		tst_resm TINFO "fill zram$i..."
+> @@ -75,29 +74,26 @@ zram_fill_fs()
+>  			tst_brkm TBROK "cannot fill zram"
+>  		fi
+>  		tst_resm TINFO "zram$i can be filled with '$b' KB"
+> -	done
+> -
+> -	local mem_free1=$(free -m | awk 'NR==2 {print $4}')
+> -	local used_mem=$(($mem_free0 - $mem_free1))
+> -
+> -	local total_size=0
+> -	for sm in $zram_sizes; do
+> -		local s=$(echo $sm | sed 's/M//')
+> -		total_size=$(($total_size + $s))
+> -	done
+
+> -	[ $used_mem -eq 0 ] && tst_brkm TBROK "no memory used by zram"
+> +		if [ ! -f "/sys/block/zram$i/mm_stat" ]; then
+> +			if [ $i -eq 0 ]; then
+> +				tst_resm TCONF "zram compression ratio test requires zram mm_stat sysfs file"
+I wonder if /sys/block/zram0/mm_stat is missing whether it can be on any other
+zram<id>. Is it it's presence file system specific? Shouldn't we just quit whole
+test wit tst_brk TCONF.
+
+Kind regards,
+Petr
