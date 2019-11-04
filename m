@@ -1,36 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  4 Nov 2019 16:36:29 +0100
-Subject: [LTP] [PATCH] read_all_sys: skip debugfs
-Message-ID: <4e93b0d943960d957b71bdb998b33ad30424b07c.1572881777.git.jstancek@redhat.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 4 Nov 2019 16:51:42 +0100
+Subject: [LTP] [PATCH 1/1] Fix compression ratio calculation in zram01
+In-Reply-To: <20191104151647.GA15477@dell5510>
+References: <20191104125228.17173-1-mdoucha@suse.cz>
+ <20191104125228.17173-2-mdoucha@suse.cz> <20191104151647.GA15477@dell5510>
+Message-ID: <7c68a69d-8edd-d4d5-de1d-39d2cb8e4f03@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-debugfs is meant for debugging, it exposes also device registers
-and can pretty much do anything:
-  https://lore.kernel.org/linux-arm-kernel/1507592549.3785589.1570404050459.JavaMail.zimbra@redhat.com/
-  https://lore.kernel.org/stable/2029139028.10333037.1572874551626.JavaMail.zimbra@redhat.com/
+On 11/4/19 4:16 PM, Petr Vorel wrote:
+> I wonder if /sys/block/zram0/mm_stat is missing whether it can be on any other
+> zram<id>. Is it it's presence file system specific? Shouldn't we just quit whole
+> test wit tst_brk TCONF.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/fs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If /sys/block/zram0/mm_stat is missing then all /sys/block/zram*/mm_stat
+files should be missing. But I don't want to terminate the test there
+because the remaining 3 write tests could still find a regression. So
+print a TCONF message on the first pass and silently skip the remaining
+compression ratio checks.
 
-diff --git a/runtest/fs b/runtest/fs
-index 07d6e2b67964..fba19cae03e8 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -71,7 +71,7 @@ proc01 proc01 -m 128
- 
- read_all_dev read_all -d /dev -p -q -r 10
- read_all_proc read_all -d /proc -q -r 10
--read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count
-+read_all_sys read_all -d /sys -q -r 10 -e /sys/power/wakeup_count -e '/sys/kernel/debug/*'
- 
- #Run the File System Race Condition Check tests as well
- fs_racer fs_racer.sh -t 5
+I was also thinking about checking whether the write test filled the
+test file at least up to 50% of memory limit if mm_stat doesn't exist.
+But it'd mostly add unnecessary complexity.
+
 -- 
-1.8.3.1
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
