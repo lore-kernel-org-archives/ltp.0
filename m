@@ -1,13 +1,12 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Nov 2019 09:28:10 -0500 (EST)
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E9-rc1-dfe283e=2Ecki_=28stable=29?=
-In-Reply-To: <20191104135135.GA2162401@kroah.com>
-References: <cki.1210A7ECB0.BD9Q3APV4K@redhat.com>
- <2029139028.10333037.1572874551626.JavaMail.zimbra@redhat.com>
- <20191104135135.GA2162401@kroah.com>
-Message-ID: <1341418315.10342806.1572877690830.JavaMail.zimbra@redhat.com>
+Date: Mon, 4 Nov 2019 09:50:25 -0500 (EST)
+Subject: [LTP] question about the EPERM error of LTP bpf test
+In-Reply-To: <623915519.10305094.1572866731625.JavaMail.zimbra@redhat.com>
+References: <008a677b-644d-615f-6c4f-0961af928700@cn.fujitsu.com>
+ <1706711917.10302442.1572864628434.JavaMail.zimbra@redhat.com>
+ <77525b33-67e5-2cfd-e735-6fc9485087e4@cn.fujitsu.com>
+ <623915519.10305094.1572866731625.JavaMail.zimbra@redhat.com>
+Message-ID: <1850082269.10349939.1572879025707.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,71 +14,46 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-
 ----- Original Message -----
-> On Mon, Nov 04, 2019 at 08:35:51AM -0500, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
 > > 
+> > on 2019/11/04 18:50, Jan Stancek wrote:
 > > 
-> > ----- Original Message -----
-> > > 
-> > > Hello,
-> > > 
-> > > We ran automated tests on a recent commit from this kernel tree:
-> > > 
-> > >        Kernel repo:
-> > >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > >             Commit: dfe283e9fdac - Linux 5.3.9-rc1
-> > > 
-> > > The results of these automated tests are provided below.
-> > > 
-> > >     Overall result: FAILED (see details below)
-> > >              Merge: OK
-> > >            Compile: OK
-> > >              Tests: FAILED
-> > > 
-> > > All kernel binaries, config files, and logs are available for download
-> > > here:
-> > > 
-> > >   https://artifacts.cki-project.org/pipelines/262380
-> > > 
-> > > One or more kernel tests failed:
-> > > 
-> > >     x86_64:
-> > >      ? LTP lite
 > > >
+> > > ----- Original Message -----
+> > >> Hi All
+> > >>
+> > >> Now, I test bpf_prog02 and bpf_prog03 in my
+> > >> system(4.18.0-107.el8.x86_64).
+> > >>
+> > >> #./bpf_prog03
+> > >> tst_buffers.c:55: INFO: Test is using guarded buffers
+> > >> tst_test.c:1137: INFO: Timeout per run is 0h 05m 00s
+> > >> bpf_common.h:18: INFO: Raising RLIMIT_MEMLOCK to 262143
+> > >> tst_capability.c:29: INFO: Dropping CAP_SYS_ADMIN(21)
+> > >> bpf_common.h:37: CONF: bpf() requires CAP_SYS_ADMIN on this system:
+> > >> EPERM
+> > >> (1)
+> > >> #
+> > >>
+> > >> Jan Stancek has added rlimit_bump_memlock function to avoid EPERM errno,
+> > >> but I still can meet this problem every time even though I have
+> > >> increased
+> > >> BPF_MEMLOCK_ADD limit.
+> > > This is likely not related to rlimit. Can you check if unprivileged bpf
+> > > is
+> > > allowed:
+> > >    cat /proc/sys/kernel/unprivileged_bpf_disabled
 > > 
-> > Not a 5.3 -stable regression.
+> > Hi Jan
 > > 
-> > Failure comes from test that sanity checks all /proc files by doing
-> > 1k read from each. There are couple issues it hits wrt. snd_hda_*.
-> > 
-> > Example reproducer:
-> >   dd if=/sys/kernel/debug/regmap/hdaudioC0D3-hdaudio/access of=out.txt
-> >   count=1 bs=1024 iflag=nonblock
+> > Thanks for your quick reply. this value in my system is 1.
+> > unprivileged bpf isn't allowed. Do we need to check it before run in case?
 > 
-> That's not a proc file :)
+> Yes, we should check that and TCONF, or better still run test without
+> dropping CAP_SYS_ADMIN.
 
-Right. It's same test that's used for /proc too.
-
-> 
-> > It's slow and triggers soft lockups [1]. And it also requires lot
-> > of memory, triggering OOMs on smaller VMs:
-> > 0x0000000024f0437b-0x000000001a32b1c8 1073745920 seq_read+0x131/0x400
-> > pages=262144 vmalloc vpages N0=262144
-> > 
-> > I'm leaning towards skipping all regmap entries in this test.
-> > Comments are welcomed.
-> 
-> Randomly poking around in debugfs is a sure way to cause crashes and
-> major problems.  Also, debugfs files are NOT stable and only for
-> debugging and should never be enabled on "real" systems.
-> 
-> So what exactly is the test trying to do here?
-
-It's (unprivileged) user trying to open/read anything it can (/proc, /sys)
-to see if that triggers anything bad.
-
-It can run as privileged user too, which was the case above.
-
-[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/read_all/read_all.c
+I added a hint to TCONF message, to have a look at unprivileged_bpf_disabled.
 
