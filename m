@@ -1,44 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Nov 2019 09:23:23 +0100
-Subject: [LTP] [PATCH 1/1] Fix compression ratio calculation in zram01
-In-Reply-To: <7c68a69d-8edd-d4d5-de1d-39d2cb8e4f03@suse.cz>
-References: <20191104125228.17173-1-mdoucha@suse.cz>
- <20191104125228.17173-2-mdoucha@suse.cz>
- <20191104151647.GA15477@dell5510>
- <7c68a69d-8edd-d4d5-de1d-39d2cb8e4f03@suse.cz>
-Message-ID: <20191105082322.GA16218@dell5510>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 5 Nov 2019 14:09:05 +0530
+Subject: [LTP] stable-rc-5.3.9-rc1: regressions detected -
+ remove_proc_entry: removing non-empty directory 'net/dev_snmp6',
+ leaking at least 'lo'
+In-Reply-To: <20191105080614.GB2611856@kroah.com>
+References: <CA+G9fYsWTFQZTHXUDPToaepnKGBoh61SsA_8SHcYgYZXN_L+mg@mail.gmail.com>
+ <CA+G9fYu+6A3pYQGs2rydYtHNSCf1t9+OTRqrZeCbpc2ARLx2zA@mail.gmail.com>
+ <20191105073459.GB2588562@kroah.com>
+ <CA+G9fYvau-CY8eeXM=atzQBjYbmUPg78MXu_GNjCyKDkW_CcVQ@mail.gmail.com>
+ <20191105080614.GB2611856@kroah.com>
+Message-ID: <CA+G9fYtWc+6XzWZtG76T7+TdF+tAyUqJPQT8-ykZRTy1sCgEPQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+On Tue, 5 Nov 2019 at 13:36, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> > > > These reported failures got fixed on latest stable-rc 5.3.y after
+> > > > dropping a patch [1].
+> > >
+> > > What is the subject of the patch?
+> >
+> > blackhole_netdev: fix syzkaller reported issue
+> > upstream commit b0818f80c8c1bc215bba276bd61c216014fab23b
+>
+> That commit is not in any stable queue or tree at the moment, are you
+> sure this is still an issue?
 
-> On 11/4/19 4:16 PM, Petr Vorel wrote:
-> > I wonder if /sys/block/zram0/mm_stat is missing whether it can be on any other
-> > zram<id>. Is it it's presence file system specific? Shouldn't we just quit whole
-> > test wit tst_brk TCONF.
+Since it has been dropped, the issue is gone now.
 
-> If /sys/block/zram0/mm_stat is missing then all /sys/block/zram*/mm_stat
-> files should be missing. But I don't want to terminate the test there
-> because the remaining 3 write tests could still find a regression. So
-> print a TCONF message on the first pass and silently skip the remaining
-> compression ratio checks.
-Do you mean that dd filling zram could find a regression?
+>
+> > > > The kernel warning is also gone now.
+> > > >
+> > > > metadata:
+> > > >   git branch: linux-5.3.y
+> > > >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > > >   git commit: 75c9913bbf6e9e64cb669236571e6af45cddfd68
+> > >
+> > > The -rc tree is rebased all the time, can I get a "real" subject line to
+> > > get a chance to figure out what you are trying to refer to here?
+> >
+> > Linux 5.3.9-rc1 is good candidate on branch linux-5.3.y and
+> > linux-stable-rc tree.
+>
+> I can not parse this, what do you mean?
 
-I'm asking because it's a bit strange to have test,
-which doesn't lead to any result (TPASS/TFAIL/TBROK/TCONF), which will be
+linux-stable-rc linux-5.3.y branch and make kernel version 5.3.9-rc1
+is been tested and
+no regresion found.
 
-If this part is also a test, maybe following TINFO should be changed to TPASS.
-+ Also new shell API allows to use loop in API (code simplify), but that
-requires for each run to produce a result.
-
-
-> I was also thinking about checking whether the write test filled the
-> test file at least up to 50% of memory limit if mm_stat doesn't exist.
-> But it'd mostly add unnecessary complexity.
-Agree.
-
-Kind regards,
-Petr
+- Naresh
