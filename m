@@ -1,36 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 5 Nov 2019 14:05:05 +0100
-Subject: [LTP] [PATCH] lib/tst_test: Warn on repeated options
-In-Reply-To: <20191105120053.9173-1-chrubis@suse.cz>
-References: <20191105120053.9173-1-chrubis@suse.cz>
-Message-ID: <20191105130505.GD8511@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 5 Nov 2019 08:11:21 -0500 (EST)
+Subject: [LTP] [PATCH 2/2] fanotify: Rename fanotify_event_info_fid
+ struct
+In-Reply-To: <20191105005341.19033-3-petr.vorel@gmail.com>
+References: <20191105005341.19033-1-petr.vorel@gmail.com>
+ <20191105005341.19033-3-petr.vorel@gmail.com>
+Message-ID: <1570001833.10536641.1572959481303.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Jan Stancek <jstancek@redhat.com>
-> ---
->  lib/tst_test.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index c7b46d0d5..f41baf3cf 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -468,6 +468,9 @@ static void parse_topt(unsigned int topts_len, int opt, char *optarg)
->  	if (i >= topts_len)
->  		tst_brk(TBROK, "Invalid option '%c' (should not happen)", opt);
+
+----- Original Message -----
+> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+> @@ -133,17 +133,15 @@ struct fanotify_event_info_header {
+>  	uint8_t pad;
+>  	uint16_t len;
+>  };
+> +#endif /* ! FAN_REPORT_FID */
 >  
-> +	if (*toptions[i].arg)
-> +		tst_res(TWARN, "Option passed -%c multiple times", opt);
+>  #ifdef HAVE_NAME_TO_HANDLE_AT
+> -struct fanotify_event_info_fid {
+> +struct lapi_fanotify_event_info_fid {
+>  	struct fanotify_event_info_header hdr;
+>  	__kernel_fsid_t fsid;
+>  	unsigned char handle[0];
+>  };
 
-Obviously the -%c and passed should be swapped, I can do that before
-pushing if the patch gets ack.
+I think I see what you mean by "mixing glibc/lapi/kernel types".
+This structure could be combination of various types and now it's
+used even if sys/fanotify.h provides one.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+As alternative idea, we could add some accessor macro for that 'val' field.
+On musl macro would return '__val', and elsewhere 'val'.
+
