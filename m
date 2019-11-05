@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 5 Nov 2019 13:58:19 +0100
-Subject: [LTP] [PATCH 1/2] fanotify: Move __kernel_fsid_t definition to
- correct place
-In-Reply-To: <20191105005341.19033-2-petr.vorel@gmail.com>
+Date: Tue, 5 Nov 2019 14:04:12 +0100
+Subject: [LTP] [PATCH 2/2] fanotify: Rename fanotify_event_info_fid
+ struct
+In-Reply-To: <20191105005341.19033-3-petr.vorel@gmail.com>
 References: <20191105005341.19033-1-petr.vorel@gmail.com>
- <20191105005341.19033-2-petr.vorel@gmail.com>
-Message-ID: <20191105125819.GB8511@rei.lan>
+ <20191105005341.19033-3-petr.vorel@gmail.com>
+Message-ID: <20191105130412.GC8511@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,43 +13,26 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Fixes: b8aebc835 ("fanotify: Fix missing __kernel_fsid_t definition")
-
-Looks good, one minor comment below.
-
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify.h | 20 ++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
+> To fix build on musl, which also defines fanotify_event_info_fid,
+> but uses fsid_t type for fsid instead of __kernel_fsid_t.
 > 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index 435f100d8..563a4eb5b 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -116,6 +116,15 @@ struct fanotify_mark_type {
->  	const char * name;
->  };
->  
-> +#ifdef HAVE_NAME_TO_HANDLE_AT
-> +#ifndef __kernel_fsid_t
-> +typedef struct {
-> +	int	val[2];
-> +} lapi_fsid_t;
-> +#define __kernel_fsid_t lapi_fsid_t
-> +#endif
-> +#endif /* HAVE_NAME_TO_HANDLE_AT */
+> This fixes errors:
+> 
+> fanotify13.c: In function ???do_test???:
+> fanotify13.c:278:20: error: ???fsid_t??? {aka ???struct __fsid_t???} has no member named ???val???; did you mean ???__val????
+>     event_fid->fsid.val[0],
+>                     ^~~
+> ../../../../include/tst_test.h:49:53: note: in definition of macro ???tst_res???
+>   tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+>                                                      ^~~~~~~~~~~
+> fanotify13.c:279:20: error: ???fsid_t??? {aka ???struct __fsid_t???} has no member named ???val???; did you mean ???__val????
+>     event_fid->fsid.val[1],
+> 
+> musl (unlike glibc and uclibc-ng) defines fanotify_event_info_fid in
+> fanotify.h and uses fsid_t as type for fanotify_event_info_fid.fsid
+> member, which defines __val[2] (unlike val[2] in __kernel_fsid_t).
 
-Can we please indent the inner ifdef/endif/define statements?
-
-It's done by spaces after the hash, so it should look like:
-
-#ifndef FOO
-# define bar
-# ifdef BAR
-code comes here
-and here
-# endif
-#endif
+I don't know, this really sounds like a bug in musl.
 
 -- 
 Cyril Hrubis
