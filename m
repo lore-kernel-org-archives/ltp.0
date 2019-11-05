@@ -1,37 +1,129 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 5 Nov 2019 14:35:09 +0530
-Subject: [LTP] [PATCH v4] syscalls/sync_file_range: add partial file
- sync test-cases
-In-Reply-To: <CAFA6WYO_xaOqYmyx39OpvJDmjoMi_Cqn09t9+orvTbO2Lrzt-A@mail.gmail.com>
-References: <1560161596-30156-1-git-send-email-sumit.garg@linaro.org>
- <20190929132749.GB73158@casparzhang.com>
- <CAFA6WYNNyeU-tL4vg5PddwDOmU1gaGZJj3hRLYUCnJCY=MYNMw@mail.gmail.com>
- <20191016025405.GA86846@casparzhang.com>
- <CAFA6WYNCHNyPb=GX-jLDHc2m=NGxH-Pgi10Dvvbc65stnV5VMA@mail.gmail.com>
- <20191017073653.GA2590@casparzhang.com>
- <CA+G9fYst7ZgkUE0+3YXx0o=ZW+XsxD6AFOpnZHwixBrgr43LJA@mail.gmail.com>
- <CAFA6WYO_xaOqYmyx39OpvJDmjoMi_Cqn09t9+orvTbO2Lrzt-A@mail.gmail.com>
-Message-ID: <CA+G9fYs7mSi__a9i9OpmjNW_mX8BDXO3gntHjPpH05iKBvrGSw@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Date: Tue, 05 Nov 2019 09:15:31 +0100
+Subject: [LTP] 
+ =?utf-8?q?=5Balsa-devel=5D_=E2=9D=8C_FAIL=3A_Test_report_f?=
+ =?utf-8?q?or_kernel_5=2E3=2E9-rc1-dfe283e=2Ecki_=28stable=29?=
+In-Reply-To: <2029139028.10333037.1572874551626.JavaMail.zimbra@redhat.com>
+References: <cki.1210A7ECB0.BD9Q3APV4K@redhat.com>
+ <2029139028.10333037.1572874551626.JavaMail.zimbra@redhat.com>
+Message-ID: <s5ha79abuxo.wl-tiwai@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Sumit,
+On Mon, 04 Nov 2019 14:35:51 +0100,
+Jan Stancek wrote:
+> 
+> 
+> 
+> ----- Original Message -----
+> > 
+> > Hello,
+> > 
+> > We ran automated tests on a recent commit from this kernel tree:
+> > 
+> >        Kernel repo:
+> >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> >             Commit: dfe283e9fdac - Linux 5.3.9-rc1
+> > 
+> > The results of these automated tests are provided below.
+> > 
+> >     Overall result: FAILED (see details below)
+> >              Merge: OK
+> >            Compile: OK
+> >              Tests: FAILED
+> > 
+> > All kernel binaries, config files, and logs are available for download here:
+> > 
+> >   https://artifacts.cki-project.org/pipelines/262380
+> > 
+> > One or more kernel tests failed:
+> > 
+> >     x86_64:
+> >      ? LTP lite
+> >
+> 
+> Not a 5.3 -stable regression.
+> 
+> Failure comes from test that sanity checks all /proc files by doing
+> 1k read from each. There are couple issues it hits wrt. snd_hda_*.
 
-On Wed, 30 Oct 2019 at 15:15, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> Hi Naresh,
->
-> Can you test again with the fix proposed here [1]?
+Yes, the debugfs access for HD-audio may easily lead to the OOM or
+such because HD-audio provides a pretty sparse register maps and the
+regmap debugfs iterates all possible register values.
 
-I have tested with patch applied but still test fails intermittently.
-https://lkft.validation.linaro.org/scheduler/job/991437#L3683
+I'm going to push a patch to disable the regmap internal locking,
+which eventually disables the whole regmap debugfs exposure of the
+device.
 
->
-> [1] http://lists.linux.it/pipermail/ltp/2019-October/014157.html
->
-> -Sumit
+But, as Greg already suggested, the whole debugfs access can't be
+treated as safe at all, no matter which device is handled, so it
+should be avoided.  It's the interface allowing you to touch the
+hardware internals directly, so you can screw up the system very
+easily.
 
-- Naresh
+
+thanks,
+
+Takashi
+
+> 
+> Example reproducer:
+>   dd if=/sys/kernel/debug/regmap/hdaudioC0D3-hdaudio/access of=out.txt count=1 bs=1024 iflag=nonblock
+> 
+> It's slow and triggers soft lockups [1]. And it also requires lot
+> of memory, triggering OOMs on smaller VMs:
+> 0x0000000024f0437b-0x000000001a32b1c8 1073745920 seq_read+0x131/0x400 pages=262144 vmalloc vpages N0=262144
+> 
+> I'm leaning towards skipping all regmap entries in this test.
+> Comments are welcomed.
+> 
+> Regards,
+> Jan
+> 
+> [1]
+> [15341.137116] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [dd:636573]
+> [15341.144141] Modules linked in: nls_utf8 isofs dummy minix binfmt_misc nfsv3 nfs_acl nfs lockd grace fscache sctp rds brd vfat fat btrfs xor zstd_compress raid6_pq zstd_decompress loop tu
+> n ip6table_nat ip6_tables xt_conntrack iptable_filter xt_MASQUERADE xt_comment iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 veth bridge stp llc overlay fuse snd_hda_codec_r
+> ealtek snd_hda_codec_generic sunrpc ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_hda_codec edac_mce_amd kvm_amd snd_hda_core ccp snd_hwdep snd_pcm kvm snd_timer irqbypass joydev snd c
+> rct10dif_pclmul crc32_pclmul soundcore broadcom bcm_phy_lib ghash_clmulni_intel sp5100_tco fam15h_power k10temp tg3 wmi_bmof pcspkr i2c_piix4 acpi_cpufreq ip_tables xfs libcrc32c radeon ata
+> _generic i2c_algo_bit pata_acpi drm_kms_helper firewire_ohci ttm crc32c_intel serio_raw pata_atiixp firewire_core drm crc_itu_t wmi [last unloaded: can]
+> [15341.223635] CPU: 2 PID: 636573 Comm: dd Tainted: G             L    5.3.9-rc1-dfe283e.cki #1
+> [15341.232073] Hardware name: AMD Pike/Pike, BIOS RPK1506A 09/03/2014
+> [15341.238467] RIP: 0010:regmap_readable+0x15/0x60
+> [15341.242996] Code: 25 28 00 00 00 75 07 48 83 c4 10 5b 5d c3 e8 92 08 a6 ff 66 90 0f 1f 44 00 00 48 83 bf b0 01 00 00 00 74 31 8b 97 48 01 00 00 <39> f2 0f 92 c0 85 d2 0f 95 c2 20 d0 75 1
+> d 48 83 7f 70 00 74 01 c3
+> [15341.261765] RSP: 0018:ffffb3b100697dc8 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
+> [15341.269330] RAX: 0000000000000000 RBX: ffff8d1a63773400 RCX: 0000000000000b41
+> [15341.276723] RDX: 000000000fffffff RSI: 000000000f3b4139 RDI: ffff8d1a63773400
+> [15341.283858] RBP: 000000000f3b4139 R08: 0000000000000000 R09: 0000000000000000
+> [15341.290989] R10: 000000000000000f R11: ffff8d19901fffff R12: 0000000000000079
+> [15341.298114] R13: 000000000f3b4139 R14: 00000000ffffffff R15: 000000000000006e
+> [15341.305501] FS:  00007f4e067a0580(0000) GS:ffff8d1a6aa80000(0000) knlGS:0000000000000000
+> [15341.313583] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [15341.319322] CR2: 00007f5083682dc0 CR3: 00000001287dc000 CR4: 00000000000406e0
+> [15341.326462] Call Trace:
+> [15341.328912]  regmap_volatile+0x4f/0xa0
+> [15341.332667]  regmap_access_show+0x70/0x100
+> [15341.336997]  seq_read+0xcd/0x400
+> [15341.340247]  full_proxy_read+0x57/0x70
+> [15341.343997]  vfs_read+0x9d/0x150
+> [15341.347231]  ksys_read+0x5f/0xe0
+> [15341.350473]  do_syscall_64+0x5f/0x1a0
+> [15341.354166]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [15341.359216] RIP: 0033:0x7f4e066823c2
+> [15341.362795] Code: c0 e9 c2 fe ff ff 50 48 8d 3d c2 0d 0a 00 e8 b5 f1 01 00 0f 1f 44 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 0
+> 0 48 83 ec 28 48 89 54 24
+> [15341.381852] RSP: 002b:00007ffc6ad30e88 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15341.389427] RAX: ffffffffffffffda RBX: 0000000000000400 RCX: 00007f4e066823c2
+> [15341.396568] RDX: 0000000000000400 RSI: 0000561bc69f0000 RDI: 0000000000000000
+> [15341.403979] RBP: 0000561bc69f0000 R08: 0000561bc69efb60 R09: 00000000000000c0
+> [15341.411111] R10: 0000561bc69f0000 R11: 0000000000000246 R12: ffffffffffffffff
+> [15341.418244] R13: 0000000000000000 R14: 0000000000000000 R15: ffffffffffffffff
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
