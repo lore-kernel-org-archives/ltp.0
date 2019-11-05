@@ -1,12 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 5 Nov 2019 08:29:57 -0500 (EST)
-Subject: [LTP] [PATCH v2 1/2] read_all: move blacklist to source
-In-Reply-To: <20191105131459.GA10912@rei.lan>
-References: <4647b3bced96c66c040078a32c13dab65558816d.1572956488.git.jstancek@redhat.com>
- <20191105123849.GA8511@rei.lan>
- <937999891.10536811.1572959541272.JavaMail.zimbra@redhat.com>
- <20191105131459.GA10912@rei.lan>
-Message-ID: <674546373.10539143.1572960597030.JavaMail.zimbra@redhat.com>
+Date: Tue, 5 Nov 2019 08:32:13 -0500 (EST)
+Subject: [LTP] [PATCH] lib/tst_test: Warn on repeated options
+In-Reply-To: <20191105130505.GD8511@rei.lan>
+References: <20191105120053.9173-1-chrubis@suse.cz>
+ <20191105130505.GD8511@rei.lan>
+Message-ID: <1812268654.10539806.1572960733575.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,11 +12,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+
 ----- Original Message -----
 > Hi!
-> > OK to push both, or is this only for first patch?
+> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> > CC: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >  lib/tst_test.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/lib/tst_test.c b/lib/tst_test.c
+> > index c7b46d0d5..f41baf3cf 100644
+> > --- a/lib/tst_test.c
+> > +++ b/lib/tst_test.c
+> > @@ -468,6 +468,9 @@ static void parse_topt(unsigned int topts_len, int opt,
+> > char *optarg)
+> >  	if (i >= topts_len)
+> >  		tst_brk(TBROK, "Invalid option '%c' (should not happen)", opt);
+> >  
+> > +	if (*toptions[i].arg)
+> > +		tst_res(TWARN, "Option passed -%c multiple times", opt);
 > 
-> Both of them, sorry for not being clear.
+> Obviously the -%c and passed should be swapped, I can do that before
+> pushing if the patch gets ack.
 
-Thanks, both pushed.
+Acked-by: Jan Stancek <jstancek@redhat.com>
 
