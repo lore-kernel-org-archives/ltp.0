@@ -1,38 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 6 Nov 2019 18:12:01 +0100
-Subject: [LTP] [PATCH v1] cgroup_fj_stress: Avoid killall
-In-Reply-To: <1572961744.4619.20.camel@suse.de>
-References: <20191105112000.20633-1-cfamullaconrad@suse.de>
- <20191105132004.GA20849@dell5510>
- <1572961744.4619.20.camel@suse.de>
-Message-ID: <20191106171201.GA22894@dell5510>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 6 Nov 2019 19:41:48 +0100
+Subject: [LTP] [PATCH 1/2] fanotify: Move __kernel_fsid_t definition to
+ correct place
+In-Reply-To: <20191105125819.GB8511@rei.lan>
+References: <20191105005341.19033-1-petr.vorel@gmail.com>
+ <20191105005341.19033-2-petr.vorel@gmail.com>
+ <20191105125819.GB8511@rei.lan>
+Message-ID: <20191106184148.GA25671@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clemens,
+Hi,
 
-> > I wonder if we also want to kill cgroup_fj_proc this way (see
-> > cgroup_fj_common.sh).
+> Hi!
+> > Fixes: b8aebc835 ("fanotify: Fix missing __kernel_fsid_t definition")
 
-> I'm not sure if I understand you. We do kill cgroup_fj_proc this way.
-> The `killall -9 cgroup_fj_proc` call in cgrouip_fj_common.sh looks for
-> me like a cleaner and there is no `wait` or similar afterwards, so I
-> would guess we are not facing the problem here. And I would keep
-> killall here.
-> As far as I can see, all other `cgroup_fj_proc&` calls already kill
-> them separately.
-OK, merged :).
-Thanks!
+> Looks good, one minor comment below.
 
-> > I guess you're not planning to create minimal reproducer to prove the
-> > problem of
-> > left processes after killall, are you?
+> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> > ---
+> >  testcases/kernel/syscalls/fanotify/fanotify.h | 20 ++++++++++---------
+> >  1 file changed, 11 insertions(+), 9 deletions(-)
 
-> Sure nice idea, I can give it a try. But not within this patchset.
-Thanks!
+> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+> > index 435f100d8..563a4eb5b 100644
+> > --- a/testcases/kernel/syscalls/fanotify/fanotify.h
+> > +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+> > @@ -116,6 +116,15 @@ struct fanotify_mark_type {
+> >  	const char * name;
+> >  };
+
+> > +#ifdef HAVE_NAME_TO_HANDLE_AT
+> > +#ifndef __kernel_fsid_t
+> > +typedef struct {
+> > +	int	val[2];
+> > +} lapi_fsid_t;
+> > +#define __kernel_fsid_t lapi_fsid_t
+> > +#endif
+> > +#endif /* HAVE_NAME_TO_HANDLE_AT */
+
+> Can we please indent the inner ifdef/endif/define statements?
+
+> It's done by spaces after the hash, so it should look like:
+
+> #ifndef FOO
+> # define bar
+> # ifdef BAR
+> code comes here
+> and here
+> # endif
+> #endif
+Sure, sorry for not remembering it.
+I'll probably push this one once we agree on second patch.
 
 Kind regards,
 Petr
