@@ -1,7 +1,8 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed,  6 Nov 2019 07:18:08 +0100
-Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove memory limitation
-Message-ID: <20191106061808.67330-1-lkml@jv-coder.de>
+Date: Wed,  6 Nov 2019 08:36:21 +0100
+Subject: [LTP] [PATCH] memcg_lib/memcg_process: Better synchronization of
+ signal USR1
+Message-ID: <20191106073621.58738-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,75 +11,106 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-The test is supposed to verify, that memory used by a task
-is not migrated to a subgroup, when the task is migrated.
-In order to test this, it is not required, to limit
-the memory at all, because accounting is done anyway and
-the test checks the memory statistics.
+memcg_process is triggered by memcg_lib to do allocations and
+deallocations. These work was done in the signal handler.
+In some cases it could happen, that memcg_lib send multiple
+signals (e.g. in function warmup). This lead to signals getting
+lost and failed tests.
 
-Therefore all memory limiting is removed. This also gets
-rid of a faulty assumption when writing the test:
-The test allocates 33 pages using mmap. It is expected,
-that it does not need more than 33 * pagesize of memory.
-But sometimes the kernel has to allocate new page tables.
-This is accounted as kmem AND user memory.
-(See kernel doc cgroup-v1/memory.txt section 2.7)
-If this happend, the test failed, if the system has no swap,
-because the oom killer kills the process.
+The patch moves the allocation and deallocation to the main
+function, triggered by a flag set by the signal handler.
+Additionally TST_CHECKPOINT_WAKE/TST_CHECKPOINT_WAIT is
+used to make memcg_lib wait until memcg_process is done
+allocating/deallocating.
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- .../kernel/controllers/memcg/functional/memcg_lib.sh |  4 ----
- .../memcg/functional/memcg_subgroup_charge.sh        | 12 +-----------
- 2 files changed, 1 insertion(+), 15 deletions(-)
+ .../controllers/memcg/functional/memcg_lib.sh |  1 +
+ .../memcg/functional/memcg_process.c          | 44 +++++++++++--------
+ 2 files changed, 27 insertions(+), 18 deletions(-)
 
 diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index aadaae4d2..aec8a00ab 100755
+index aadaae4d2..7440e1eee 100755
 --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
 +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -404,13 +404,9 @@ test_hugepage()
- }
+@@ -124,6 +124,7 @@ signal_memcg_process()
+ 	local usage_start=$(cat ${path}memory.usage_in_bytes)
  
- # Test the memory charge won't move to subgroup
--# $1 - memory.limit_in_bytes in parent group
--# $2 - memory.limit_in_bytes in sub group
- test_subgroup()
+ 	kill -s USR1 $pid 2> /dev/null
++	TST_CHECKPOINT_WAIT 1
+ 
+ 	if [ -z "$size" ]; then
+ 		return
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+index 0e671f566..8e846879d 100644
+--- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
++++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+@@ -24,7 +24,8 @@
+ static int fd;
+ 
+ static volatile int flag_exit;
+-static volatile int flag_allocated;
++static volatile int flag_do_work;
++static int flag_allocated;
+ 
+ static int opt_mmap_anon;
+ static int opt_mmap_file;
+@@ -257,22 +258,7 @@ static void sigint_handler(int __attribute__ ((unused)) signo)
+  */
+ static void sigusr_handler(int __attribute__ ((unused)) signo)
  {
- 	mkdir subgroup
--	echo $1 > memory.limit_in_bytes
--	echo $2 > subgroup/memory.limit_in_bytes
- 
- 	tst_resm TINFO "Running memcg_process --mmap-anon -s $PAGESIZES"
- 	memcg_process --mmap-anon -s $PAGESIZES &
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-index 9b11f7b58..98e5ad68d 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-@@ -26,7 +26,7 @@
- ################################################################################
- 
- TCID="memcg_subgroup_charge"
--TST_TOTAL=3
-+TST_TOTAL=1
- 
- . memcg_lib.sh
- 
-@@ -36,15 +36,5 @@ testcase_1()
- 	test_subgroup $PAGESIZES $((2*PAGESIZES))
+-	if (opt_mmap_anon)
+-		mmap_anon();
+-
+-	if (opt_mmap_file)
+-		mmap_file();
+-
+-	if (opt_mmap_lock1)
+-		mmap_lock1();
+-
+-	if (opt_mmap_lock2)
+-		mmap_lock2();
+-
+-	if (opt_shm)
+-		shm();
+-
+-	flag_allocated = !flag_allocated;
++	flag_do_work++;
  }
  
--testcase_2()
--{
--	test_subgroup $PAGESIZES $PAGESIZES
--}
--
--testcase_3()
--{
--	test_subgroup $PAGESIZES 0
--}
--
- run_tests
- tst_exit
+ int main(int argc, char *argv[])
+@@ -302,8 +288,30 @@ int main(int argc, char *argv[])
+ 
+ 	TST_CHECKPOINT_WAKE(0);
+ 
+-	while (!flag_exit)
++	while (!flag_exit) {
++		if (flag_do_work) {
++			flag_do_work--;
++			if (opt_mmap_anon)
++				mmap_anon();
++
++			if (opt_mmap_file)
++				mmap_file();
++
++			if (opt_mmap_lock1)
++				mmap_lock1();
++
++			if (opt_mmap_lock2)
++				mmap_lock2();
++
++			if (opt_shm)
++				shm();
++
++			flag_allocated = !flag_allocated;
++
++			TST_CHECKPOINT_WAKE(1);
++		}
+ 		sleep(1);
++	}
+ 
+ 	close(fd);
+ 
 -- 
 2.20.1
 
