@@ -1,109 +1,74 @@
 From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu, 7 Nov 2019 13:32:24 +0100
+Date: Thu, 7 Nov 2019 13:46:15 +0100
 Subject: [LTP] [PATCH] kernel: use ktime_get_real_ts64() to calculate
  acct.ac_btime
-In-Reply-To: <a87876829697e1b3c63601b1401a07af79eddae6.1572651216.git.jstancek@redhat.com>
+In-Reply-To: <alpine.DEB.2.21.1911071335320.4256@nanos.tec.linutronix.de>
 References: <a87876829697e1b3c63601b1401a07af79eddae6.1572651216.git.jstancek@redhat.com>
-Message-ID: <20191107123224.GA6315@hirez.programming.kicks-ass.net>
+ <20191107123224.GA6315@hirez.programming.kicks-ass.net>
+ <alpine.DEB.2.21.1911071335320.4256@nanos.tec.linutronix.de>
+Message-ID: <20191107124615.GG4131@hirez.programming.kicks-ass.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, Nov 02, 2019 at 12:39:24AM +0100, Jan Stancek wrote:
-> fill_ac() calculates process creation time from current time as:
->    ac->ac_btime = get_seconds() - elapsed
-> 
-> get_seconds() doesn't accumulate nanoseconds as regular time getters.
-> This creates race for user-space (e.g. LTP acct02), which typically
-> uses gettimeofday(), because process creation time sometimes appear
-> to be dated 'in past':
-> 
->     acct("myfile");
->     time_t start_time = time(NULL);
->     if (fork()==0) {
->         sleep(1);
->         exit(0);
->     }
->     waitpid(NULL);
->     acct(NULL);
-> 
->     // acct.ac_btime == 1572616777
->     // start_time == 1572616778
-> 
+On Thu, Nov 07, 2019 at 01:40:47PM +0100, Thomas Gleixner wrote:
+> Typing real_start_time makes me really cringe.
 
-Lets start by saying this accounting stuff is terrible crap and it
-deserves to fail and burn.
-
-The only spec I found for what it actually wants in those fields is
-Documentation/accounting/taskstats-struct.rst, that states:
-
-	/* The time when a task begins, in [secs] since 1970. */
-	__u32   ac_btime;               /* Begin time [sec since 1970] */
-
-	/* The elapsed time of a task, in [usec]. */
-	__u64   ac_etime;               /* Elapsed time [usec] */
-
-But that is not really well defined. As implemented etime does not
-include suspend time (maybe on purpose, maybe not).
-
-And what does btime want? As implemented it jumps around if you ask the
-question twice with an adjtime() call or suspend in between. Of course,
-if we take an actual CLOCK_REALTIME timestamp at fork() the value
-doesn't change, but then it can be in the future (DST,adjtime()), which
-is exactly the reason why CLOCK_REALTIME is absolute shit for timestamps
-(logging, accounting, etc.).
-
-And your 'fix' is pretty terible too. Arguably ktime_get_seconds() wants
-fixing for not having the ns accumulation and actually differing from
-tv_sec, but now you accrue one source of ns while still disregarding
-another (also, I friggin hate timespec, it's a terrible interface for
-time).
-
-All in all, I'm tempted to just declare this stuff broken and -EWONTFIX,
-but if we have to do something, something like the below is at least
-internally consistent.
+I have a patch fixing that...
 
 ---
-diff --git a/kernel/tsacct.c b/kernel/tsacct.c
-index 7be3e7530841..76d6325c2724 100644
---- a/kernel/tsacct.c
-+++ b/kernel/tsacct.c
-@@ -23,18 +23,31 @@ void bacct_add_tsk(struct user_namespace *user_ns,
- {
- 	const struct cred *tcred;
- 	u64 utime, stime, utimescaled, stimescaled;
--	u64 delta;
-+	u64 mono, real, btime;
+Subject: kernel: Rename tsk->real_start_time
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu Nov  7 11:07:58 CET 2019
+
+Since it stores CLOCK_BOOTTIME, not, as the name suggests,
+CLOCK_REALTIME, let's rename real_start_time.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1132,7 +1132,7 @@ static int de_thread(struct task_struct
+ 		 * also take its birthdate (always earlier than our own).
+ 		 */
+ 		tsk->start_time = leader->start_time;
+-		tsk->real_start_time = leader->real_start_time;
++		tsk->start_boottime = leader->start_boottime;
  
- 	BUILD_BUG_ON(TS_COMM_LEN < TASK_COMM_LEN);
+ 		BUG_ON(!same_thread_group(leader, tsk));
+ 		BUG_ON(has_group_leader_pid(tsk));
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -533,7 +533,7 @@ static int do_task_stat(struct seq_file
+ 	nice = task_nice(task);
  
-+	mono = ktime_get_ns();
-+	real = ktime_get_real_ns();
-+
- 	/* calculate task elapsed time in nsec */
--	delta = ktime_get_ns() - tsk->start_time;
-+	delta = mono - tsk->start_time;
- 	/* Convert to micro seconds */
- 	do_div(delta, NSEC_PER_USEC);
- 	stats->ac_etime = delta;
--	/* Convert to seconds for btime */
--	do_div(delta, USEC_PER_SEC);
--	stats->ac_btime = get_seconds() - delta;
-+
-+	/*
-+	 * Compute btime by subtracting the elapsed time from the current
-+	 * CLOCK_REALTIME.
-+	 *
-+	 * XXX totally buggered, because it changes results across
-+	 * adjtime() calls and suspend/resume.
-+	 */
-+	delta = mono - tsk->start_time; // elapsed in ns
-+	btime = real - delta;		// real ns - elapsed ns
-+	do_div(btime, NSEC_PER_SEC);	// truncated to seconds
-+	stats->ac_btime = btime;
-+
- 	if (thread_group_leader(tsk)) {
- 		stats->ac_exitcode = tsk->exit_code;
- 		if (tsk->flags & PF_FORKNOEXEC)
+ 	/* convert nsec -> ticks */
+-	start_time = nsec_to_clock_t(task->real_start_time);
++	start_time = nsec_to_clock_t(task->start_boottime);
+ 
+ 	seq_put_decimal_ull(m, "", pid_nr_ns(pid, ns));
+ 	seq_puts(m, " (");
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -879,7 +879,7 @@ struct task_struct {
+ 	u64				start_time;
+ 
+ 	/* Boot based time in nsecs: */
+-	u64				real_start_time;
++	u64				start_boottime;
+ 
+ 	/* MM fault and swap info: this can arguably be seen as either mm-specific or thread-specific: */
+ 	unsigned long			min_flt;
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2130,7 +2130,7 @@ static __latent_entropy struct task_stru
+ 	 */
+ 
+ 	p->start_time = ktime_get_ns();
+-	p->real_start_time = ktime_get_boottime_ns();
++	p->start_boottime = ktime_get_boottime_ns();
+ 
+ 	/*
+ 	 * Make it visible to the rest of the system, but dont wake it up yet.
