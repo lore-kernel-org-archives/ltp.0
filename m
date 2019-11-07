@@ -1,87 +1,47 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 7 Nov 2019 09:56:12 +0100 (CET)
-Subject: [LTP] [PATCH] kernel: use ktime_get_real_ts64() to calculate
- acct.ac_btime
-In-Reply-To: <a87876829697e1b3c63601b1401a07af79eddae6.1572651216.git.jstancek@redhat.com>
-References: <a87876829697e1b3c63601b1401a07af79eddae6.1572651216.git.jstancek@redhat.com>
-Message-ID: <alpine.DEB.2.21.1911051304420.17054@nanos.tec.linutronix.de>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 07 Nov 2019 11:33:11 +0100
+Subject: [LTP] [PATCH v2 1/2] read_all: move blacklist to source
+In-Reply-To: <2124877733.10763434.1573054117742.JavaMail.zimbra@redhat.com>
+References: <4647b3bced96c66c040078a32c13dab65558816d.1572956488.git.jstancek@redhat.com>
+ <87o8xpdw0l.fsf@rpws.prws.suse.cz>
+ <2124877733.10763434.1573054117742.JavaMail.zimbra@redhat.com>
+Message-ID: <87lfssdli0.fsf@rpws.prws.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Jan,
+Hello,
 
-The subsystem prefix for acct is surely not 'kernel.'. Try:
+Jan Stancek <jstancek@redhat.com> writes:
 
- git log --oneline kernel/acct.c
+> ----- Original Message -----
+>> > +static char *blacklist[] = {
+>> > +	NULL, /* reserved for -e parameter */
+>> > +	"/sys/power/wakeup_count",
+>> > +};
+>>
+>> The problem with this is that it is only required if we are running as a
+>> privileged user. If -p is specified then it would be a bug if nobody can
+>> read from any of these files.
+>>
+>> So I guess we could disable the builtin blacklist if drop_privs (switch
+>> to nobody) is specified
+>
+> Good point. I just saw your reply that you plan to send a patch, thank
+> you.
 
-On Sat, 2 Nov 2019, Jan Stancek wrote:
-> diff --git a/kernel/acct.c b/kernel/acct.c
-> index 81f9831a7859..991c898160cd 100644
-> --- a/kernel/acct.c
-> +++ b/kernel/acct.c
-> @@ -417,6 +417,7 @@ static void fill_ac(acct_t *ac)
->  	struct pacct_struct *pacct = &current->signal->pacct;
->  	u64 elapsed, run_time;
->  	struct tty_struct *tty;
-> +	struct timespec64 ts;
->  
->  	/*
->  	 * Fill the accounting struct with the needed info as recorded
-> @@ -448,7 +449,8 @@ static void fill_ac(acct_t *ac)
->  	}
->  #endif
->  	do_div(elapsed, AHZ);
-> -	ac->ac_btime = get_seconds() - elapsed;
-> +	ktime_get_real_ts64(&ts);
-> +	ac->ac_btime = ts.tv_sec - elapsed;
+Thanks!
 
-So the calculation goes like this:
+>
+>> and run this test twice on /sys with and without
+>> -p.
+>
+> greg-kh wasn't very happy to hear about privileged runs in the other thread.
+> He was suggesting whitelist approach, but I don't know how we would keep it
+> up to date, deal with different configs, etc.
 
-   runtime = ktime_get_ns() - current->...->start_time;
-
-   elapsed = ns_to_ahz(runtime)
-   
-   elapsed /= AHZ	-> runtime in seconds
-   
-And then you retrieve the current wall time and just use the seconds
-portion for building the delta. That still can fail in corner cases when
-the runtime to seconds conversion does not have truncation in the
-conversions and the timespec nanoseconds part is close to 1e9.
-
-There is another issue related to suspend. If the system suspends then
-runtime is accurate vs. clock MONOTONIC, but the offset between clock
-MONOTONIC and clock REALTIME is not longer the same due to the
-suspend/resume which has the same issue as what you are trying to solve
-because
-
-   runtime = totaltime - time_in_suspend
-
-so your ac_btime will be off by time_in_suspend.
-
-Something like this should work:
-
-   runtime = ktime_get_ns() - current->...->start_time;
-   ....
-   runtime_boot = ktime_get_boot_ns() - current->...->real_start_time;
-   start_ns = ktime_get_real_ns() - runtime_boot;
-   start_s = startns / NSEC_PER_SEC;
-
-current->...->real_start_time is clearly a misnomer as it suggests
-CLOCK_REALTIME at first sight ...
-
-But it would be way simpler just to store the CLOCK_REALTIME start time
-along with BOOT and MONOTONIC and just get rid of all these horrible
-calculations which are bound to be wrong.
-
-Peter?
-
-Thanks,
-
-	tglx
-
-   
-
-
+--
+Thank you,
+Richard.
