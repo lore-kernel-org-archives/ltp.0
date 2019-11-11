@@ -1,127 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 11 Nov 2019 17:31:50 +0100
-Subject: [LTP] [PATCH v4] syscalls/prctl02: add more error tests
-In-Reply-To: <1573462752-6679-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20191108142434.GA5913@rei>
- <1573462752-6679-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191111163144.GB16894@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 11 Nov 2019 12:00:04 -0500 (EST)
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E0-rc6-dd89262=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
+In-Reply-To: <cki.ECB352932E.9FL0Q68EC2@redhat.com>
+References: <cki.ECB352932E.9FL0Q68EC2@redhat.com>
+Message-ID: <232041279.11531466.1573491604178.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static const struct sock_fprog strict = {
-> +	.len = (unsigned short)ARRAY_SIZE(strict_filter),
-> +	.filter = (struct sock_filter *)strict_filter
-> +};
-> +
-> +static const struct sock_fprog *strict_addr = &strict;
 
-This should be:
+----- Original Message -----
+>      ? LTP lite
 
-static unsigned long strict_addr = (unsigned long)&strict;
+perf_event_open02 again:
 
-> +static unsigned long bad_addr;
-> +static unsigned long num_0;
-> +static unsigned long num_1 = 1;
-> +static unsigned long num_2 = 2;
-> +static unsigned long num_invalid = 999;
->  
->  static struct tcase {
->  	int option;
-> -	unsigned long arg2;
-> +	unsigned long *arg2;
-> +	unsigned long *arg3;
->  	int exp_errno;
->  } tcases[] = {
-> -	{OPTION_INVALID, 0, EINVAL},
-> -	{PR_SET_PDEATHSIG, INVALID_ARG, EINVAL},
-> +	{OPTION_INVALID, &num_1, &num_0, EINVAL},
-> +	{PR_SET_PDEATHSIG, &num_invalid, &num_0, EINVAL},
-> +	{PR_SET_DUMPABLE, &num_2, &num_0, EINVAL},
-> +	{PR_SET_NAME, &bad_addr, &num_0, EFAULT},
-> +	{PR_SET_SECCOMP, &num_2, &bad_addr, EFAULT},
-> +	{PR_SET_SECCOMP, &num_2, &strict_addr, EACCES},
-> +	{PR_SET_TIMING, &num_1, &num_0, EINVAL},
-> +#ifdef HAVE_DECL_PR_SET_NO_NEW_PRIVS
-> +	{PR_SET_NO_NEW_PRIVS, &num_0, &num_0, EINVAL},
-> +	{PR_SET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL},
-> +	{PR_GET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL},
-> +#endif
-> +#ifdef HAVE_DECL_PR_SET_THP_DISABLE
-> +	{PR_SET_THP_DISABLE, &num_0, &num_1, EINVAL},
-> +	{PR_GET_THP_DISABLE, &num_1, &num_1, EINVAL},
-> +#endif
-> +#ifdef HAVE_DECL_PR_CAP_AMBIENT
-> +	{PR_CAP_AMBIENT, &num_2, &num_1, EINVAL},
-> +#endif
-> +#ifdef HAVE_DECL_PR_GET_SPECULATION_CTRL
-> +	{PR_GET_SPECULATION_CTRL, &num_1, &num_0, EINVAL},
-> +#endif
+<<<test_start>>>
+tag=perf_event_open02 stime=1573434398
+cmdline="perf_event_open02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+perf_event_open02    0  TINFO  :  overall task clock: 54172980
+perf_event_open02    0  TINFO  :  hw sum: 1423341410, task clock sum: 255289913
+perf_event_open02    0  TINFO  :  ratio: 4.712495
+perf_event_open02    1  TFAIL  :  perf_event_open02.c:394: test failed (ratio was greater than )
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=17 cstime=0
+<<<test_end>>>
 
-Why the ifdefs, you have even added a fallback definitions into the lapi
-header?
+I ran it by hand on same system with same kernel. It's giving ratio close to 9
+for past couple hours:
 
-The usuall way how to deal with these is to:
+perf_event_open02    0  TINFO  :  overall task clock: 32829317
+perf_event_open02    0  TINFO  :  hw sum: 2701673973, task clock sum: 295085628
+perf_event_open02    0  TINFO  :  ratio: 8.988479
+perf_event_open02    1  TPASS  :  test passed
 
-1) Add fallback definitions to lapi
-2) Ensure these tests does not fail on older kernels
-
-   We do expect EINVAL in these cases anyways, which is what we would
-   get if the prctl() option is unknown to the kernel anyways, so here
-   we can just get rid of these ifdefs and things should work fine.
-
-> +	{PR_SET_SECUREBITS, &num_0, &num_0, EPERM},
-> +	{PR_CAPBSET_DROP, &num_1, &num_0, EPERM},
->  };
->  
->  static void verify_prctl(unsigned int n)
->  {
->  	struct tcase *tc = &tcases[n];
->  
-> -	TEST(prctl(tc->option, tc->arg2));
-> +	TEST(prctl(tc->option, *tc->arg2, *tc->arg3));
->  	if (TST_RET == 0) {
->  		tst_res(TFAIL, "prctl() succeeded unexpectedly");
->  		return;
->  	}
->  
->  	if (tc->exp_errno == TST_ERR) {
-> -		tst_res(TPASS | TTERRNO, "prctl() failed as expected");
-> +		tst_res(TPASS | TTERRNO, "prctl() %d failed as expected", tc->option);
->  	} else {
-> -		tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
-> +		if (tc->option == PR_SET_SECCOMP && TST_ERR == EINVAL)
-> +			tst_res(TCONF, "current system was not built with CONFIG_SECCOMP.");
-> +		else
-> +			tst_res(TFAIL | TTERRNO, "prctl() failed unexpectedly, expected %s",
->  				tst_strerrno(tc->exp_errno));
->  	}
->  }
->  
-> +static void setup(void)
-> +{
-> +	bad_addr = (unsigned long)tst_get_bad_addr(NULL);
-> +}
-> +
->  static struct tst_test test = {
-> +	.setup = setup,
->  	.tcnt = ARRAY_SIZE(tcases),
->  	.test = verify_prctl,
-> +	.caps = (struct tst_cap []) {
-> +		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-> +		TST_CAP(TST_CAP_DROP, CAP_SETPCAP),
-> +		{}
-> +	},
->  };
-> -- 
-> 2.18.0
-> 
-> 
-> 
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
