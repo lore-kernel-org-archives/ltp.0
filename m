@@ -1,61 +1,33 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 11 Nov 2019 11:28:10 +0100
-Subject: [LTP] [PATCH] iomap: fix return value of iomap_dio_bio_actor on
- 32bit systems
+Date: Mon, 11 Nov 2019 05:38:54 -0500 (EST)
+Subject: [LTP] LTP: diotest4.c:476: read to read-only space. returns 0:
+ Success
 In-Reply-To: <20191111083815.GA29540@infradead.org>
-References: <20191111083815.GA29540@infradead.org>
-Message-ID: <b757ff64ddf68519fc3d55b66fcd8a1d4b436395.1573467154.git.jstancek@redhat.com>
+References: <CA+G9fYtmA5F174nTAtyshr03wkSqMS7+7NTDuJMd_DhJF6a4pw@mail.gmail.com>
+ <852514139.11036267.1573172443439.JavaMail.zimbra@redhat.com>
+ <20191111012614.GC6235@magnolia>
+ <1751469294.11431533.1573460380206.JavaMail.zimbra@redhat.com>
+ <20191111083815.GA29540@infradead.org>
+Message-ID: <1757087132.11450258.1573468734360.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Naresh reported LTP diotest4 failing for 32bit x86 and arm -next
-kernels on ext4. Same problem exists in 5.4-rc7 on xfs.
 
-The failure comes down to:
-  openat(AT_FDCWD, "testdata-4.5918", O_RDWR|O_DIRECT) = 4
-  mmap2(NULL, 4096, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7f7b000
-  read(4, 0xb7f7b000, 4096)              = 0 // expects -EFAULT
+----- Original Message -----
+> Is this a new test?
 
-Problem is conversion at iomap_dio_bio_actor() return. Ternary
-operator has a return type and an attempt is made to convert each
-of operands to the type of the other. In this case "ret" (int)
-is converted to type of "copied" (unsigned long). Both have size
-of 4 bytes:
-    size_t copied = 0;
-    int ret = -14;
-    long long actor_ret = copied ? copied : ret;
+No, it's not new.
 
-    On x86_64: actor_ret == -14;
-    On x86   : actor_ret == 4294967282
+> If not why was this never reported?  Sounds like
+> we should add this test case to xfstests.
 
-Replace ternary operator with 2 return statements to avoid this
-unwanted conversion.
+I'm guessing not that many users still run 32bit kernels.
+Naresh' setup is using ext4, so I assume he noticed only
+after recent changes in linux-next wrt. directio and ext4.
 
-Fixes: 4721a6010990 ("iomap: dio data corruption and spurious errors when pipes fill")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- fs/iomap/direct-io.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 1fc28c2da279..7c58f51d7da7 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -318,7 +318,9 @@ static void iomap_dio_bio_end_io(struct bio *bio)
- 		if (pad)
- 			iomap_dio_zero(dio, iomap, pos, fs_block_size - pad);
- 	}
--	return copied ? copied : ret;
-+	if (copied)
-+		return copied;
-+	return ret;
- }
- 
- static loff_t
--- 
-1.8.3.1
+Regards,
+Jan
 
