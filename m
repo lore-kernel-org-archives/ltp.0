@@ -1,8 +1,12 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Mon, 11 Nov 2019 08:05:36 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E0-rc6-dd89262=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
-Message-ID: <cki.ECB352932E.9FL0Q68EC2@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 11 Nov 2019 03:19:40 -0500 (EST)
+Subject: [LTP] LTP: diotest4.c:476: read to read-only space. returns 0:
+ Success
+In-Reply-To: <20191111012614.GC6235@magnolia>
+References: <CA+G9fYtmA5F174nTAtyshr03wkSqMS7+7NTDuJMd_DhJF6a4pw@mail.gmail.com>
+ <852514139.11036267.1573172443439.JavaMail.zimbra@redhat.com>
+ <20191111012614.GC6235@magnolia>
+Message-ID: <1751469294.11431533.1573460380206.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,134 +14,43 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Hello,
+----- Original Message -----
+> I can't do a whole lot with a code snippet that lacks a proper SOB
+> header.
 
-We ran automated tests on a recent commit from this kernel tree:
+I'll resend as a patch, maybe split it to 2 returns instead.
 
-       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-            Commit: dd892625d0e2 - Merge tag 'staging-5.4-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index 2f88d64c2a4d..8615b1f78389 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -318,7 +318,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos,
+> > loff_t length,
+> >                 if (pad)
+> >                         iomap_dio_zero(dio, iomap, pos, fs_block_size -
+> >                         pad);
+> >         }
+> > -       return copied ? copied : ret;
+> > +       return copied ? (loff_t) copied : ret;
+> 
+> I'm a little confused on this proposed fix -- why does casting size_t
+> (aka unsigned long) to loff_t (long long) on a 32-bit system change the
+> test outcome?
 
-The results of these automated tests are provided below.
+Ternary operator has a return type and an attempt is made to convert
+each of operands to the type of the other. So, in this case "ret"
+appears to be converted to type of "copied" first. Both have size of
+4 bytes on 32-bit x86:
 
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
+size_t copied = 0;
+int ret = -14;
+long long actor_ret = copied ? copied : ret;
 
-All kernel binaries, config files, and logs are available for download here:
+On x86_64: actor_ret == -14;
+On x86   : actor_ret == 4294967282
 
-  https://artifacts.cki-project.org/pipelines/277487
+> Does this same diotest4 failure happen with XFS?  I ask
+> because XFS has been using iomap for directio for ages.
 
-One or more kernel tests failed:
-
-    x86_64:
-     ? selinux-policy: serge-testsuite
-     ? LTP lite
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 1 architecture:
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  x86_64:
-    Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IOMMU boot test
-       ? ??? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-
-    Host 3:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP lite
-       ? Loopdev Sanity
-       ? jvm test suite
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? LTP: openposix test suite
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns transport
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? iotop: sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? Usex - version 1.9-29
-       ? storage: SCSI VPD
-       ? stress: stress-ng
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? Networking vnic: ipvlan/basic
-       ? ? storage: dm/common
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running are marked with ?. Reports for non-upstream kernels have
-a Beaker recipe linked to next to each host.
+Yes, it fails on XFS too.
 
