@@ -1,93 +1,143 @@
-From: Darrick J. Wong <darrick.wong@oracle.com>
-Date: Sun, 10 Nov 2019 17:26:14 -0800
-Subject: [LTP] LTP: diotest4.c:476: read to read-only space. returns 0:
- Success
-In-Reply-To: <852514139.11036267.1573172443439.JavaMail.zimbra@redhat.com>
-References: <CA+G9fYtmA5F174nTAtyshr03wkSqMS7+7NTDuJMd_DhJF6a4pw@mail.gmail.com>
- <852514139.11036267.1573172443439.JavaMail.zimbra@redhat.com>
-Message-ID: <20191111012614.GC6235@magnolia>
+From: CKI Project <cki-project@redhat.com>
+Date: Mon, 11 Nov 2019 08:05:36 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E0-rc6-dd89262=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
+Message-ID: <cki.ECB352932E.9FL0Q68EC2@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-[add the other iomap maintainer to cc]
-[add the ext4 list to cc since they just added iomap directio support]
-[add the ext4 maintainer for the same reason]
 
-On Thu, Nov 07, 2019 at 07:20:43PM -0500, Jan Stancek wrote:
-> 
-> 
-> ----- Original Message -----
-> > LTP test case dio04 test failed on 32bit kernel running linux next
-> > 20191107 kernel.
-> > Linux version 5.4.0-rc6-next-20191107.
-> > 
-> > diotest4    1  TPASS  :  Negative Offset
-> > diotest4    2  TPASS  :  removed
-> > diotest4    3  TPASS  :  Odd count of read and write
-> > diotest4    4  TPASS  :  Read beyond the file size
-> > diotest4    5  TPASS  :  Invalid file descriptor
-> > diotest4    6  TPASS  :  Out of range file descriptor
-> > diotest4    7  TPASS  :  Closed file descriptor
-> > diotest4    8  TPASS  :  removed
-> > diotest4    9  TCONF  :  diotest4.c:345: Direct I/O on /dev/null is
-> > not supported
-> > diotest4   10  TPASS  :  read, write to a mmaped file
-> > diotest4   11  TPASS  :  read, write to an unmapped file
-> > diotest4   12  TPASS  :  read from file not open for reading
-> > diotest4   13  TPASS  :  write to file not open for writing
-> > diotest4   14  TPASS  :  read, write with non-aligned buffer
-> > diotest4   15  TFAIL  :  diotest4.c:476: read to read-only space.
-> > returns 0: Success
-> > diotest4   16  TFAIL  :  diotest4.c:180: read, write buffer in read-only
-> > space
-> > diotest4   17  TFAIL  :  diotest4.c:114: read allows  nonexistant
-> > space. returns 0: Success
-> > diotest4   18  TFAIL  :  diotest4.c:129: write allows  nonexistant
-> > space.returns -1: Invalid argument
-> > diotest4   19  TFAIL  :  diotest4.c:180: read, write in non-existant space
-> > diotest4   20  TPASS  :  read, write for file with O_SYNC
-> > diotest4    0  TINFO  :  2/15 test blocks failed
-> 
-> Smaller reproducer for 32-bit system and ext4 is:
->   openat(AT_FDCWD, "testdata-4.5918", O_RDWR|O_DIRECT) = 4
->   mmap2(NULL, 4096, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7f7b000
->   read(4, 0xb7f7b000, 4096)              = 0 // expects -EFAULT
-> 
-> Problem appears to be conversion in ternary operator at
-> iomap_dio_bio_actor() return. Test passes for me with
-> following tweak:
+Hello,
 
-I can't do a whole lot with a code snippet that lacks a proper SOB
-header.
+We ran automated tests on a recent commit from this kernel tree:
 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 2f88d64c2a4d..8615b1f78389 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -318,7 +318,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
->                 if (pad)
->                         iomap_dio_zero(dio, iomap, pos, fs_block_size - pad);
->         }
-> -       return copied ? copied : ret;
-> +       return copied ? (loff_t) copied : ret;
+       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+            Commit: dd892625d0e2 - Merge tag 'staging-5.4-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
 
-I'm a little confused on this proposed fix -- why does casting size_t
-(aka unsigned long) to loff_t (long long) on a 32-bit system change the
-test outcome?  Does this same diotest4 failure happen with XFS?  I ask
-because XFS has been using iomap for directio for ages.
+The results of these automated tests are provided below.
 
-AFAICT @copied is a simple byte counter, and the other variable @n that
-gets added to @copied is also a simple byte counter -- nobody should
-ever be trying to stuff a negative value in there?
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-(Or is this a bug with the ext4 code that calls iomap_dio_rw?)
+All kernel binaries, config files, and logs are available for download here:
 
---D
+  https://artifacts.cki-project.org/pipelines/277487
 
->  }
-> 
->  static loff_t
-> 
+One or more kernel tests failed:
+
+    x86_64:
+     ? selinux-policy: serge-testsuite
+     ? LTP lite
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 1 architecture:
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  x86_64:
+    Host 1:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ??? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+
+    Host 3:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP lite
+       ? Loopdev Sanity
+       ? jvm test suite
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? LTP: openposix test suite
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? iotop: sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? Usex - version 1.9-29
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? Networking vnic: ipvlan/basic
+       ? ? storage: dm/common
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
