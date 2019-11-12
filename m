@@ -1,64 +1,62 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 12 Nov 2019 16:05:48 +0800
-Subject: [LTP] [PATCH v3 0/5] optimize quotactl test code
-In-Reply-To: <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20191031152646.GA7078@dell5510>
- <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <421bebaf-d8c0-380f-2a25-a2212058d476@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 12 Nov 2019 10:15:18 +0100
+Subject: [LTP] [PATCH] acct02: relax ac_btime checks
+Message-ID: <95d94fede00533a07fc604de3252636b094fc8f8.1573550061.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All
+ac_btime is calculated back from current time and isn't accurate.
+Problems include nanoseconds accumulation (lags behind gettimeofday),
+suspend/resume isn't taken into account and any adjtime() (like DST
+change) will cause ac_btime to jump as well.
 
-ping.
+Relax the condition to ~2h around gettimeofday value at start of
+the test. That should be enough to cover usual DST time jumps.
 
-> I cleanup the quotactl code and add project quota test for quotactl.
-> Thanks to Jan Kara with support about quota.
->
->
-> ------------
-> v2->v3:
-> 1.for quotactl02.c, add group quota test
-> 2.add quotactl04.c and add quota05.c to test project quota.
-> 3.add quotactl06.c to test error
-> 4. fix build erro on centos6
-> ps:don't test Q_XQUOTARM in quotactl02,04 because cycle running will
-> report ENOSYS (quota feture has been off). I will introduce a
-> new test to test it and also a regression test for commit[1].
-> [1]https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=for-next&id=3dd4d40b420846dd35869ccc8f8627feef2cff32
-> [2]https://travis-ci.org/xuyang0410/ltp/builds/605963472?utm_medium=notification&utm_source=github_status
-> ------------
->
-> Yang Xu (5):
->    syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
->    syscalls/quotactl02.c: Add Q_XGETQSTATV test
->    syscalls/quotactl04: add project quota test for non-xfs filesystem
->    syscalls/quotactl05: add project quota test for xfs filesystem
->    syscalls/quotactl06: Add new testcase
->
->   configure.ac                                  |   1 +
->   include/lapi/quotactl.h                       |  34 +--
->   m4/ltp-quota.m4                               |   8 +
->   runtest/syscalls                              |   3 +
->   testcases/kernel/syscalls/quotactl/.gitignore |   4 +
->   .../kernel/syscalls/quotactl/quotactl01.c     |  53 +++--
->   .../kernel/syscalls/quotactl/quotactl02.c     | 193 +++++++-----------
->   .../kernel/syscalls/quotactl/quotactl02.h     | 152 ++++++++++++++
->   .../kernel/syscalls/quotactl/quotactl04.c     | 155 ++++++++++++++
->   .../kernel/syscalls/quotactl/quotactl05.c     |  99 +++++++++
->   .../kernel/syscalls/quotactl/quotactl06.c     | 183 +++++++++++++++++
->   11 files changed, 745 insertions(+), 140 deletions(-)
->   create mode 100644 m4/ltp-quota.m4
->   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl02.h
->   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
->   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl05.c
->   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl06.c
->
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index 890568b08774..2f1290fa287f 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -74,7 +74,8 @@ static int verify_acct(void *acc, int elap_time)
+ {
+ 	int sys_time  = UNPACK(ACCT_MEMBER(ac_stime));
+ 	int user_time = UNPACK(ACCT_MEMBER(ac_stime));
+-	int ret = 0, tmp;
++	unsigned int btime_diff;
++	int ret = 0;
+ 	float tmp2;
+ 
+ 	if (strcmp(ACCT_MEMBER(ac_comm), COMMAND)) {
+@@ -83,15 +84,13 @@ static int verify_acct(void *acc, int elap_time)
+ 		ret = 1;
+ 	}
+ 
+-	if (ACCT_MEMBER(ac_btime) < start_time) {
+-		tst_res(TINFO, "ac_btime < %d (%d)", start_time,
+-			ACCT_MEMBER(ac_btime));
+-		ret = 1;
+-	}
++	if (start_time > ACCT_MEMBER(ac_btime))
++		btime_diff = start_time - ACCT_MEMBER(ac_btime);
++	else
++		btime_diff = ACCT_MEMBER(ac_btime) - start_time;
+ 
+-	tmp = ACCT_MEMBER(ac_btime) - start_time;
+-	if (tmp > 1) {
+-		tst_res(TINFO, "ac_btime - %d > 1 (%d)", start_time, tmp);
++	if (btime_diff > 7200) {
++		tst_res(TINFO, "ac_btime_diff %u", btime_diff);
+ 		ret = 1;
+ 	}
+ 
+-- 
+1.8.3.1
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191112/93f0dbfc/attachment.htm>
