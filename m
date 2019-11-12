@@ -1,56 +1,61 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 12 Nov 2019 18:25:30 +0800
+Date: Tue, 12 Nov 2019 18:31:09 +0800
 Subject: [LTP] [PATCH v4] syscalls/prctl02: add more error tests
-In-Reply-To: <20191112101054.GA9373@rei.lan>
+In-Reply-To: <20191112101512.GB9373@rei.lan>
 References: <20191108142434.GA5913@rei>
  <1573462752-6679-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
  <20191111163144.GB16894@rei.lan>
  <43e4f419-0100-dc52-7159-2355e9de1639@cn.fujitsu.com>
- <20191112101054.GA9373@rei.lan>
-Message-ID: <6c171124-c9fe-2384-bf01-d08c666013df@cn.fujitsu.com>
+ <5DCA5206.3040508@cn.fujitsu.com>
+ <ac6040e3-d561-cd53-e538-e3e6c8953ecc@cn.fujitsu.com>
+ <20191112101512.GB9373@rei.lan>
+Message-ID: <a41ad6e5-3ee0-e87a-3a2c-5ccd2fa0c396@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on 2019/11/12 18:10, Cyril Hrubis wrote:
+
+on 2019/11/12 18:15, Cyril Hrubis wrote:
 
 > Hi!
->>> 1) Add fallback definitions to lapi
->>> 2) Ensure these tests does not fail on older kernels
->>>
->>>      We do expect EINVAL in these cases anyways, which is what we would
->>>      get if the prctl() option is unknown to the kernel anyways, so here
->>>      we can just get rid of these ifdefs and things should work fine.
->> For me, a fallback definitions into the lapi header is only for fixing undefined error on old kernel.
+>>> 1) Can undefined error be triggered on old kernel if you use ifdef?  It seems unnecessary for ifdef method to include lapi header.
+>> Yes. It can be triggered and it should use #if HAVE_DECL_PR_GET_SPECULATION_CTRL instead of #ifdef.
+>> Yes. And we should add more check( such as PR_SET_SECCOMP undefined 2.6.18-398.el5) in m4/ltp-prctl.m4 so that we cannot include lapi header.
 >>
->> IMO, we only test options that kernel supports.
->> If we test an unsupported option, our case reports EINVAL that will give user a false impression(kernel
->> supports it, but argument or environment is bad). I think we should check they whether supported before run
->> (ifdef is a way).
-> However using ifdefs to assert kernel features never worked at all. The
-> kernel headers usally lag behind the installed kernel in distribution
-> and it's even more wrong when you are testing latest kernel on any given
-> distro.
+>>> 2) Undfined option in glibc doesn't mean that kernel doesn't support it as well.
+>> options definitions is in linux/prctl.h. For most distributions, I think if it is in supported in kernel-header, it should also been
+>> supported on kernel.
+> That is usually the case, but there are cons that I explained in the
+> previous email.
+
+OK.
+
 >
-> If you want to check for kernel support the best thing is to use the
-> tst_kvercmp() that checks the kernel version and even that does not work
-> 100% reliably.
+>>>> IMO, we only test options that kernel supports.
+>>>> If we test an unsupported option, our case reports EINVAL that will give user a false impression(kernel
+>>>> supports it, but argument or environment is bad). I think we should check they whether supported before run
+>>>> (ifdef is a way).
+>>>>
+>>>> ps: If we test EPERM error(cap is not in PI or PP) of PR_CAP_AMBIENT on old kernel,  they will report EINVAL.
+>>>> So, I think ifdef is needed.
+>>> Why don't we check if the specified option is supported by calling it
+>>> with correct args?(i.e. don't mix unsupported option up with wrong args).
+>>>
+>> It sounds reasonable.  I will try it in verify_prctl function if you and cyril have strong opposition to #if.
+> Okay, that will work. Calling it with correct parameters in test setup
+> is 100% correct way how to find out if kernel implements the
+> functionality.
 
-Yes. most distros backport upstream kernel patch and tst_kvercmp maybe useless.
+OK. I will use correct parameters to check whether kernel implements the functionality in setup.
+Thanks for your patiently explation.
 
->> ps: If we test EPERM error(cap is not in PI or PP) of PR_CAP_AMBIENT on old kernel,  they will report EINVAL.
->> So, I think ifdef is needed.
-> No, ifdefs are never solution here. It will still fail if you compiled
-> the test on newer distro and booted it up with older kernel.
-
-Now, I agree with you. If new distro and booted it with older kernel, the ifdef is useless. I think we should use correct argument
-as xiao said to check whether kernel supports these options.
+ps: I will make v5 patch tomorrow.
 
 >
 
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191112/0bf02da8/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191112/c64c5257/attachment.htm>
