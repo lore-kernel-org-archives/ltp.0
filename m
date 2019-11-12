@@ -1,105 +1,50 @@
-From: Ian Kent <raven@themaw.net>
-Date: Tue, 12 Nov 2019 16:39:50 +0800
-Subject: [LTP] [xfs] 73e5fff98b: kmsg.dev/zero:Can't_open_blockdev
-In-Reply-To: <20191111010022.GH29418@shao2-debian>
-References: <20191111010022.GH29418@shao2-debian>
-Message-ID: <3fb8b1b04dd7808b45caf5262ee629c09c71e0b6.camel@themaw.net>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Nov 2019 11:15:12 +0100
+Subject: [LTP] [PATCH v4] syscalls/prctl02: add more error tests
+In-Reply-To: <ac6040e3-d561-cd53-e538-e3e6c8953ecc@cn.fujitsu.com>
+References: <20191108142434.GA5913@rei>
+ <1573462752-6679-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191111163144.GB16894@rei.lan>
+ <43e4f419-0100-dc52-7159-2355e9de1639@cn.fujitsu.com>
+ <5DCA5206.3040508@cn.fujitsu.com>
+ <ac6040e3-d561-cd53-e538-e3e6c8953ecc@cn.fujitsu.com>
+Message-ID: <20191112101512.GB9373@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 2019-11-11 at 09:00 +0800, kernel test robot wrote:
-> FYI, we noticed the following commit (built with gcc-7):
+Hi!
+> > 1) Can undefined error be triggered on old kernel if you use ifdef?  It seems unnecessary for ifdef method to include lapi header.
 > 
-> commit: 73e5fff98b6446de1490a8d7809121b0108d49f4 ("xfs: switch to use
-> the new mount-api")
-> https://git.kernel.org/cgit/fs/xfs/xfs-linux.git xfs-5.5-merge
+> Yes. It can be triggered and it should use #if HAVE_DECL_PR_GET_SPECULATION_CTRL instead of #ifdef.
+> Yes. And we should add more check( such as PR_SET_SECCOMP undefined 2.6.18-398.el5) in m4/ltp-prctl.m4 so that we cannot include lapi header.
 > 
-> in testcase: ltp
-> with following parameters:
+> > 2) Undfined option in glibc doesn't mean that kernel doesn't support it as well.
 > 
-> 	disk: 1HDD
-> 	fs: xfs
-> 	test: fs-03
-> 
-> test-description: The LTP testsuite contains a collection of tools
-> for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp
-> 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire
-> log/backtrace):
-> 
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> [  135.976643] LTP: starting fs_fill
-> [  135.993912] /dev/zero: Can't open blockdev
+> options definitions is in linux/prctl.h. For most distributions, I think if it is in supported in kernel-header, it should also been
+> supported on kernel.
 
-I've looked at the github source but I don't see how to find out what
-command was used when this error occurred so I don't know even how to
-start to work out what might have caused this.
+That is usually the case, but there are cons that I explained in the
+previous email.
 
-Can you help me to find the test script source please.
+> >> IMO, we only test options that kernel supports.
+> >> If we test an unsupported option, our case reports EINVAL that will give user a false impression(kernel
+> >> supports it, but argument or environment is bad). I think we should check they whether supported before run
+> >> (ifdef is a way).
+> >>
+> >> ps: If we test EPERM error(cap is not in PI or PP) of PR_CAP_AMBIENT on old kernel,  they will report EINVAL.
+> >> So, I think ifdef is needed.
+> > Why don't we check if the specified option is supported by calling it 
+> > with correct args?(i.e. don't mix unsupported option up with wrong args).
+> >
+> It sounds reasonable.  I will try it in verify_prctl function if you and cyril have strong opposition to #if.
 
-> [  136.020327] raid6: sse2x4   gen() 14769 MB/s
-> [  136.037281] raid6: sse2x4   xor()  8927 MB/s
-> [  136.054236] raid6: sse2x2   gen() 12445 MB/s
-> [  136.071397] raid6: sse2x2   xor()  7441 MB/s
-> [  136.089313] raid6: sse2x1   gen() 10089 MB/s
-> [  136.107334] raid6: sse2x1   xor()  7201 MB/s
-> [  136.108198] raid6: using algorithm sse2x4 gen() 14769 MB/s
-> [  136.109320] raid6: .... xor() 8927 MB/s, rmw enabled
-> [  136.111966] raid6: using ssse3x2 recovery algorithm
-> [  136.122740] xor: automatically using best checksumming
-> function   avx       
-> [  136.187956] Btrfs loaded, crc32c=crc32c-intel
-> [  136.216946] fuse: init (API version 7.31)
-> [  136.327654] EXT4-fs (loop0): mounting ext2 file system using the
-> ext4 subsystem
-> [  136.334974] EXT4-fs (loop0): mounted filesystem without journal.
-> Opts: (null)
-> [  136.338933] Mounted ext2 file system at /tmp/ltp-
-> bl4kncm4Ti/g2oJfj/mntpoint supports timestamps until 2038
-> (0x7fffffff)
-> [  137.897422] EXT4-fs (loop0): mounting ext3 file system using the
-> ext4 subsystem
-> [  137.908242] EXT4-fs (loop0): mounted filesystem with ordered data
-> mode. Opts: (null)
-> [  137.910111] Mounted ext3 file system at /tmp/ltp-
-> bl4kncm4Ti/g2oJfj/mntpoint supports timestamps until 2038
-> (0x7fffffff)
-> 
-> 
-> To reproduce:
-> 
->         # build kernel
-> 	cd linux
-> 	cp config-5.4.0-rc3-00117-g73e5fff98b644 .config
-> 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig prepare
-> modules_prepare bzImage modules
-> 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 INSTALL_MOD_PATH=<mod-
-> install-dir> modules_install
-> 	cd <mod-install-dir>
-> 	find lib/ | cpio -o -H newc --quiet | gzip > modules.cgz
-> 
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> -m modules.cgz job-script # job-
-> script is attached in this email
-> 
-> 
-> 
-> Thanks,
-> Rong Chen
-> 
+Okay, that will work. Calling it with correct parameters in test setup
+is 100% correct way how to find out if kernel implements the
+functionality.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
