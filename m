@@ -1,40 +1,104 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 13 Nov 2019 01:16:45 -0500 (EST)
-Subject: [LTP] [xfs] 73e5fff98b: kmsg.dev/zero:Can't_open_blockdev
-In-Reply-To: <e38bc7a8505571bbb750fc0198ec85c892ac7b3a.camel@themaw.net>
-References: <20191111010022.GH29418@shao2-debian>
- <3fb8b1b04dd7808b45caf5262ee629c09c71e0b6.camel@themaw.net>
- <1108442397.11662343.1573560143066.JavaMail.zimbra@redhat.com>
- <20191112120818.GA8858@lst.de>
- <5f758be455bb8f761d028ea078b3e2a618dfd4b1.camel@themaw.net>
- <e38bc7a8505571bbb750fc0198ec85c892ac7b3a.camel@themaw.net>
-Message-ID: <975334005.11814790.1573625805426.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 13 Nov 2019 14:27:16 +0800
+Subject: [LTP] [PATCH 1/2] Wrapper for Syzkaller reproducers
+In-Reply-To: <CAEemH2eAnkr-n+DxtioUY1M3nbLN8sORWO2k2LBgacPTgGMKhA@mail.gmail.com>
+References: <20191107153458.16917-1-rpalethorpe@suse.com>
+ <20191107153458.16917-2-rpalethorpe@suse.com>
+ <CACT4Y+aYVH=e+ZJhF2b-b92dkJZwjnPP4keup509twcQqK+wMg@mail.gmail.com>
+ <CAEemH2eVR4U8dHR6anmirX_X5Y3hXKgL4cHxekeVXH_wSHnnpA@mail.gmail.com>
+ <87ftitdwjq.fsf@rpws.prws.suse.cz>
+ <CAEemH2eAnkr-n+DxtioUY1M3nbLN8sORWO2k2LBgacPTgGMKhA@mail.gmail.com>
+Message-ID: <CAEemH2e_8_DZrhA6wSxy68vjv+F+q9fyeHq3RK=3WXC=j+teYg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Richard,
 
+On Tue, Nov 12, 2019 at 10:10 PM Li Wang <liwang@redhat.com> wrote:
 
------ Original Message -----
-> > > > # mount -t xfs /dev/zero /mnt/xfs
-> > 
-> > Assuming that is what is being done ...
-> 
-> Arrrh, of course, a difference between get_tree_bdev() and
-> mount_bdev() is that get_tree_bdev() prints this message when
-> blkdev_get_by_path() fails whereas mount_bdev() doesn't.
-> 
-> Both however do return an error in this case so the behaviour
-> is the same.
-> 
-> So I'm calling this not a problem with the subject patch.
-> 
-> What needs to be done to resolve this in ltp I don't know?
+>
+>
+> On Tue, Nov 12, 2019 at 10:00 PM Richard Palethorpe <rpalethorpe@suse.de>
+> wrote:
+>
+>> Hello,
+>>
+>> Li Wang <liwang@redhat.com> writes:
+>>
+>> >
+>> >
+>> > Just to try build it in LTP and hit errors:
+>> >
+>> > # cd ltp-new/
+>> > # make autotools
+>> > # ./configure --with-syzkaller-repros
+>> > # make -j32
+>> > ...
+>> > error: pathspec '/root/ltp-new/testcases/linux-arts' did not match any
+>> > file(s) known to git
+>> > make[3]: ***
+>> [/root/ltp-new/testcases/kernel/syzkaller-repros/Makefile:26:
+>> > /root/ltp-new/testcases/linux-arts/syzkaller-repros/linux] Error 1
+>> > make[3]: Leaving directory
+>> '/root/ltp-new/testcases/kernel/syzkaller-repros'
+>> > make[2]: *** [../../include/mk/generic_trunk_target.inc:93: all] Error 2
+>> > make[2]: Leaving directory '/root/ltp-new/testcases/kernel'
+>> > make[1]: *** [../include/mk/generic_trunk_target.inc:93: all] Error 2
+>> > make[1]: Leaving directory '/root/ltp-new/testcases'
+>> > make: *** [Makefile:108: testcases-all] Error 2
+>> >
+>> >
+>>
+>> What happens if you try to pull the git submodule manually?
+>>
+> # pwd
+> /root/ltp-new
+>
+> # git submodule update --init testcases/linux-arts
+> error: pathspec 'testcases/linux-arts' did not match any file(s) known to
+> git
+>
+>
+>>
+>> i.e. do git submodule update --init testcases/linux-arts
+>>
+>> It looks like it failed on the line where it gets the submodule, so I am
+>> wondering if you have an old git version?
+>
+>
+> Not sure if that related to git-version, I'm trying to look into it.
+>
 
-I think that's question for kernel test robot, which has this extra
-check built on top. ltp itself doesn't treat this extra message as FAIL.
+I have tried many times with different systems but still not working.
 
-Jan
+My question is did you add the submodule via 'git-submodule add' commands?
+or just modify the .gitmodules file by hand?
 
+i.e: `git submodule add
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-arts.git
+testcases/linux-arts`
+
+I don't understand why I can't see the subproject commit-id in your patch.
+I have to perform git-submodule-add locally again then it could compile for
+me.
+
+i.e:
+diff --git a/testcases/linux-arts b/testcases/linux-arts
+new file mode 160000
+index 0000000..07759b8
+--- /dev/null
++++ b/testcases/linux-arts
+@@ -0,0 +1 @@
++Subproject commit 07759b820a9cbf01333d861d8eb2613b20d1ede4
+
+Or did I missing anything?
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191113/9ab76791/attachment.htm>
