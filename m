@@ -1,114 +1,100 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 13 Nov 2019 01:56:26 +0100
-Subject: [LTP] [PATCH v2 3/3] fanotify: Detect val vs. __val
- fanotify_event_info_fid.fsid member
+Date: Wed, 13 Nov 2019 01:56:25 +0100
+Subject: [LTP] [PATCH v2 2/3] fanotify: Rework checks for fallback
+ definitions
 In-Reply-To: <20191113005626.19585-1-petr.vorel@gmail.com>
 References: <20191113005626.19585-1-petr.vorel@gmail.com>
-Message-ID: <20191113005626.19585-4-petr.vorel@gmail.com>
+Message-ID: <20191113005626.19585-3-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-via FSID_VAL_MEMBER() macro and autotools detection.
+Add autoconf checks for struct fanotify_event_info_fid
+and struct fanotify_event_info_header.
 
-This fixes build on musl, which also defines fanotify_event_info_fid,
-but uses fsid_t type for fsid instead of __kernel_fsid_t.
-fsid_t type has __val[2] member (unlike val[2] in __kernel_fsid_t).
-
-Fixed error:
-
-fanotify13.c: In function ?do_test?:
-fanotify13.c:278:20: error: ?fsid_t? {aka ?struct __fsid_t?} has no member named ?val?; did you mean ?__val??
-    event_fid->fsid.val[0],
-		    ^~~
-../../../../include/tst_test.h:49:53: note: in definition of macro ?tst_res?
-  tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
-						     ^~~~~~~~~~~
-fanotify13.c:279:20: error: ?fsid_t? {aka ?struct __fsid_t?} has no member named ?val?; did you mean ?__val??
-    event_fid->fsid.val[1],
+Instead of detecting via FAN_REPORT_FID or HAVE_NAME_TO_HANDLE_AT.
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
 Changes v1->v2:
-* access members via macro FSID_VAL_MEMBER()
-* use autotools detection 
+New commit.
 
- m4/ltp-fanotify.m4                              | 1 +
- testcases/kernel/syscalls/fanotify/fanotify.h   | 6 ++++++
- testcases/kernel/syscalls/fanotify/fanotify13.c | 8 ++++----
- testcases/kernel/syscalls/fanotify/fanotify15.c | 4 ++--
- 4 files changed, 13 insertions(+), 6 deletions(-)
+ configure.ac                                  |  1 +
+ m4/ltp-fanotify.m4                            |  7 +++++++
+ testcases/kernel/syscalls/fanotify/fanotify.h | 14 ++++++++------
+ 3 files changed, 16 insertions(+), 6 deletions(-)
+ create mode 100644 m4/ltp-fanotify.m4
 
+diff --git a/configure.ac b/configure.ac
+index 62c5a0bb4..71738b72d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -212,6 +212,7 @@ LTP_CHECK_CAPABILITY_SUPPORT
+ LTP_CHECK_CC_WARN_OLDSTYLE
+ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ LTP_CHECK_CRYPTO
++LTP_CHECK_FANOTIFY
+ LTP_CHECK_FIDEDUPE
+ LTP_CHECK_FORTIFY_SOURCE
+ LTP_CHECK_FTS_H
 diff --git a/m4/ltp-fanotify.m4 b/m4/ltp-fanotify.m4
-index e7b77d8a4..f2e31eb68 100644
---- a/m4/ltp-fanotify.m4
+new file mode 100644
+index 000000000..e7b77d8a4
+--- /dev/null
 +++ b/m4/ltp-fanotify.m4
-@@ -4,4 +4,5 @@ dnl Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
- AC_DEFUN([LTP_CHECK_FANOTIFY],[
- AC_CHECK_TYPES([struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
- AC_CHECK_TYPES([struct fanotify_event_info_fid],,,[#include <sys/fanotify.h>])
-+AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
- ])
+@@ -0,0 +1,7 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
++
++AC_DEFUN([LTP_CHECK_FANOTIFY],[
++AC_CHECK_TYPES([struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
++AC_CHECK_TYPES([struct fanotify_event_info_fid],,,[#include <sys/fanotify.h>])
++])
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 9d2fded13..5370e30bb 100644
+index 573ed5f59..9d2fded13 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -143,6 +143,12 @@ struct fanotify_event_info_fid {
- };
- #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+@@ -101,6 +101,10 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
+ #define FAN_OPEN_EXEC_PERM	0x00040000
+ #endif
  
-+#ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
-+# define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
-+#else
-+# define FSID_VAL_MEMBER(fsid, i) (fsid.val[i])
-+#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL */
++#ifndef FAN_REPORT_FID
++#define FAN_REPORT_FID		0x00000200
++#endif
 +
+ /*
+  * FAN_ALL_PERM_EVENTS has been deprecated, so any new permission events
+  * are not to be added to it. To cover the instance where a new permission
+@@ -123,23 +127,21 @@ typedef struct {
+ #define __kernel_fsid_t lapi_fsid_t
+ #endif /* __kernel_fsid_t */
+ 
+-#ifndef FAN_REPORT_FID
+-#define FAN_REPORT_FID		0x00000200
+-
++#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER
+ struct fanotify_event_info_header {
+ 	uint8_t info_type;
+ 	uint8_t pad;
+ 	uint16_t len;
+ };
++#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_HEADER */
+ 
+-#ifdef HAVE_NAME_TO_HANDLE_AT
++#ifndef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID
+ struct fanotify_event_info_fid {
+ 	struct fanotify_event_info_header hdr;
+ 	__kernel_fsid_t fsid;
+ 	unsigned char handle[0];
+ };
+-#endif /* HAVE_NAME_TO_HANDLE_AT */
+-#endif /* ! FAN_REPORT_FID */
++#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+ 
  #ifdef HAVE_NAME_TO_HANDLE_AT
  /*
-  * Helper function used to obtain fsid and file_handle for a given path.
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 030734285..b0d9fb5b6 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -130,8 +130,8 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
- 					"kernel");
- 				return 1;
- 			} else if (errno == ENODEV &&
--					!event_set[i].fsid.val[0] &&
--					!event_set[i].fsid.val[1]) {
-+					!FSID_VAL_MEMBER(event_set[i].fsid, 0) &&
-+					!FSID_VAL_MEMBER(event_set[i].fsid, 1)) {
- 				tst_res(TCONF,
- 					"FAN_REPORT_FID not supported on "
- 					"filesystem type %s",
-@@ -275,8 +275,8 @@ static void do_test(unsigned int number)
- 			"and name_to_handle_at(2)",
- 			metadata->mask,
- 			getpid(),
--			event_fid->fsid.val[0],
--			event_fid->fsid.val[1],
-+			FSID_VAL_MEMBER(event_fid->fsid, 0),
-+			FSID_VAL_MEMBER(event_fid->fsid, 1),
- 			*(unsigned long *) event_file_handle->f_handle);
- 	}
- out:
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-index e9e926078..48ed368ae 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify15.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-@@ -192,8 +192,8 @@ static void do_test(void)
- 				"fid=%x.%x.%lx values",
- 				metadata->mask,
- 				getpid(),
--				event_fid->fsid.val[0],
--				event_fid->fsid.val[1],
-+				FSID_VAL_MEMBER(event_fid->fsid, 0),
-+				FSID_VAL_MEMBER(event_fid->fsid, 1),
- 				*(unsigned long *)
- 				event_file_handle->f_handle);
- 		}
 -- 
 2.24.0
 
