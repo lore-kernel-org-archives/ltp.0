@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Nov 2019 10:48:01 +0100
-Subject: [LTP] [PATCH v2 0/3] fanotify musl fixes
-In-Reply-To: <20191113005626.19585-1-petr.vorel@gmail.com>
-References: <20191113005626.19585-1-petr.vorel@gmail.com>
-Message-ID: <20191113094801.GB31052@rei>
+Date: Wed, 13 Nov 2019 11:33:21 +0100
+Subject: [LTP] [PATCH v5] syscalls/prctl02: add more error tests
+In-Reply-To: <1573622581-10247-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20191112101512.GB9373@rei.lan>
+ <1573622581-10247-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20191113103321.GC31052@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +12,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-This version looks good to me as well, acked.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
