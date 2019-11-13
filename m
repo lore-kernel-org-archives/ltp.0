@@ -1,41 +1,114 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 13 Nov 2019 01:56:23 +0100
-Subject: [LTP] [PATCH v2 0/3] fanotify musl fixes
-Message-ID: <20191113005626.19585-1-petr.vorel@gmail.com>
+Date: Wed, 13 Nov 2019 01:56:26 +0100
+Subject: [LTP] [PATCH v2 3/3] fanotify: Detect val vs. __val
+ fanotify_event_info_fid.fsid member
+In-Reply-To: <20191113005626.19585-1-petr.vorel@gmail.com>
+References: <20191113005626.19585-1-petr.vorel@gmail.com>
+Message-ID: <20191113005626.19585-4-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+via FSID_VAL_MEMBER() macro and autotools detection.
 
-I generalized previous patch set a bit via autotools checks and also add
-other cleanup (base decisions whether to define fallback definitions on
-autotools checks).
+This fixes build on musl, which also defines fanotify_event_info_fid,
+but uses fsid_t type for fsid instead of __kernel_fsid_t.
+fsid_t type has __val[2] member (unlike val[2] in __kernel_fsid_t).
 
-BTW I tempted to use <linux/fanotify.h>, but not only we'd have to
-define fanotify_mark(), but we'd also lost libc header testing.
+Fixed error:
 
-https://travis-ci.org/pevik/ltp/builds/611138280
-(openSUSE Tumbleweed failure is not related to this change)
+fanotify13.c: In function ?do_test?:
+fanotify13.c:278:20: error: ?fsid_t? {aka ?struct __fsid_t?} has no member named ?val?; did you mean ?__val??
+    event_fid->fsid.val[0],
+		    ^~~
+../../../../include/tst_test.h:49:53: note: in definition of macro ?tst_res?
+  tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+						     ^~~~~~~~~~~
+fanotify13.c:279:20: error: ?fsid_t? {aka ?struct __fsid_t?} has no member named ?val?; did you mean ?__val??
+    event_fid->fsid.val[1],
 
-Kind regards,
-Petr
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+Changes v1->v2:
+* access members via macro FSID_VAL_MEMBER()
+* use autotools detection 
 
-Petr Vorel (3):
-  fanotify: Move __kernel_fsid_t definition to correct place
-  fanotify: Rework checks for fallback definitions
-  fanotify: Detect val vs. __val fanotify_event_info_fid.fsid member
+ m4/ltp-fanotify.m4                              | 1 +
+ testcases/kernel/syscalls/fanotify/fanotify.h   | 6 ++++++
+ testcases/kernel/syscalls/fanotify/fanotify13.c | 8 ++++----
+ testcases/kernel/syscalls/fanotify/fanotify15.c | 4 ++--
+ 4 files changed, 13 insertions(+), 6 deletions(-)
 
- configure.ac                                  |  1 +
- m4/ltp-fanotify.m4                            |  8 +++++
- testcases/kernel/syscalls/fanotify/fanotify.h | 32 ++++++++++++-------
- .../kernel/syscalls/fanotify/fanotify13.c     |  8 ++---
- .../kernel/syscalls/fanotify/fanotify15.c     |  4 +--
- 5 files changed, 35 insertions(+), 18 deletions(-)
- create mode 100644 m4/ltp-fanotify.m4
-
+diff --git a/m4/ltp-fanotify.m4 b/m4/ltp-fanotify.m4
+index e7b77d8a4..f2e31eb68 100644
+--- a/m4/ltp-fanotify.m4
++++ b/m4/ltp-fanotify.m4
+@@ -4,4 +4,5 @@ dnl Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
+ AC_DEFUN([LTP_CHECK_FANOTIFY],[
+ AC_CHECK_TYPES([struct fanotify_event_info_header],,,[#include <sys/fanotify.h>])
+ AC_CHECK_TYPES([struct fanotify_event_info_fid],,,[#include <sys/fanotify.h>])
++AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
+ ])
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 9d2fded13..5370e30bb 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -143,6 +143,12 @@ struct fanotify_event_info_fid {
+ };
+ #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+ 
++#ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
++# define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
++#else
++# define FSID_VAL_MEMBER(fsid, i) (fsid.val[i])
++#endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL */
++
+ #ifdef HAVE_NAME_TO_HANDLE_AT
+ /*
+  * Helper function used to obtain fsid and file_handle for a given path.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 030734285..b0d9fb5b6 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -130,8 +130,8 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
+ 					"kernel");
+ 				return 1;
+ 			} else if (errno == ENODEV &&
+-					!event_set[i].fsid.val[0] &&
+-					!event_set[i].fsid.val[1]) {
++					!FSID_VAL_MEMBER(event_set[i].fsid, 0) &&
++					!FSID_VAL_MEMBER(event_set[i].fsid, 1)) {
+ 				tst_res(TCONF,
+ 					"FAN_REPORT_FID not supported on "
+ 					"filesystem type %s",
+@@ -275,8 +275,8 @@ static void do_test(unsigned int number)
+ 			"and name_to_handle_at(2)",
+ 			metadata->mask,
+ 			getpid(),
+-			event_fid->fsid.val[0],
+-			event_fid->fsid.val[1],
++			FSID_VAL_MEMBER(event_fid->fsid, 0),
++			FSID_VAL_MEMBER(event_fid->fsid, 1),
+ 			*(unsigned long *) event_file_handle->f_handle);
+ 	}
+ out:
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
+index e9e926078..48ed368ae 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify15.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
+@@ -192,8 +192,8 @@ static void do_test(void)
+ 				"fid=%x.%x.%lx values",
+ 				metadata->mask,
+ 				getpid(),
+-				event_fid->fsid.val[0],
+-				event_fid->fsid.val[1],
++				FSID_VAL_MEMBER(event_fid->fsid, 0),
++				FSID_VAL_MEMBER(event_fid->fsid, 1),
+ 				*(unsigned long *)
+ 				event_file_handle->f_handle);
+ 		}
 -- 
 2.24.0
 
