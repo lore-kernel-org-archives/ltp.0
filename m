@@ -1,52 +1,222 @@
-From: Rong Chen <rong.a.chen@intel.com>
-Date: Thu, 14 Nov 2019 08:44:01 +0800
-Subject: [LTP] [xfs] 73e5fff98b: kmsg.dev/zero:Can't_open_blockdev
-In-Reply-To: <975334005.11814790.1573625805426.JavaMail.zimbra@redhat.com>
-References: <20191111010022.GH29418@shao2-debian>
- <3fb8b1b04dd7808b45caf5262ee629c09c71e0b6.camel@themaw.net>
- <1108442397.11662343.1573560143066.JavaMail.zimbra@redhat.com>
- <20191112120818.GA8858@lst.de>
- <5f758be455bb8f761d028ea078b3e2a618dfd4b1.camel@themaw.net>
- <e38bc7a8505571bbb750fc0198ec85c892ac7b3a.camel@themaw.net>
- <975334005.11814790.1573625805426.JavaMail.zimbra@redhat.com>
-Message-ID: <d0db75cc-440d-6de8-f6d2-ddf399a3bdb7@intel.com>
+From: Murphy Zhou <xzhou@redhat.com>
+Date: Thu, 14 Nov 2019 10:07:59 +0800
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
+ =?utf-8?q?=2E11-200=2Efc30_=28fedora-30=29?=
+In-Reply-To: <cki.0.8DBA9TRM0T@redhat.com>
+References: <cki.0.8DBA9TRM0T@redhat.com>
+Message-ID: <20191114020759.n5kaxsz6yyazz2f6@xzhoux.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Wed, Nov 13, 2019 at 07:47:31PM -0000, CKI Project wrote:
+> Hello jforbes,
+> 
+> We ran automated tests on a kernel build that you sent to Koji:
+> 
+>     Kernel package: kernel-5.3.11-200.fc30
+>          Koji task: https://koji.fedoraproject.org/koji/taskinfo?taskID=38948735
+> 
+> The results of these automated tests are provided below.
+> 
+>     Overall result: FAILED (see details below)
+>              Tests: FAILED
+> 
+> One or more kernel tests failed:
+> 
+>     ppc64le:
+>      ? xfstests: ext4
 
+It's bus error, may caused by unaligned memory access. Probably
+one time thing.
 
-On 11/13/19 2:16 PM, Jan Stancek wrote:
->
-> ----- Original Message -----
->>>>> # mount -t xfs /dev/zero /mnt/xfs
->>> Assuming that is what is being done ...
->> Arrrh, of course, a difference between get_tree_bdev() and
->> mount_bdev() is that get_tree_bdev() prints this message when
->> blkdev_get_by_path() fails whereas mount_bdev() doesn't.
->>
->> Both however do return an error in this case so the behaviour
->> is the same.
->>
->> So I'm calling this not a problem with the subject patch.
->>
->> What needs to be done to resolve this in ltp I don't know?
-> I think that's question for kernel test robot, which has this extra
-> check built on top. ltp itself doesn't treat this extra message as FAIL.
->
-> Jan
->
+>      ? LTP lite
 
-Hi all,
+soft lockup in dmesg. Not a real failure.
 
-Thanks for your help, kernel test robot bisected automatically for new 
-error:
+Thanks,
+Xiong
+> 
+>     x86_64:
+>      ? Memory function: kaslr
+> 
+> 
+>     Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/282059
+> 
+> We hope that these logs can help you find the problem quickly. For the full
+> detail on our testing procedures, please scroll to the bottom of this message.
+> 
+> Please reply to this email if you have any questions about the tests that we
+> ran or if you have any suggestions on how to make future tests more effective.
+> 
+>         ,-.   ,-.
+>        ( C ) ( K )  Continuous
+>         `-',-.`-'   Kernel
+>           ( I )     Integration
+>            `-'
+> ______________________________________________________________________________
+> 
+> Hardware testing
+> ----------------
+> All the testing jobs are listed here:
+> 
+>   https://beaker.engineering.redhat.com/jobs/?jobsearch-0.table=Whiteboard&jobsearch-0.operation=contains&jobsearch-0.value=cki%40gitlab%3A282059
+> 
+> We booted each kernel and ran the following tests:
+> 
+>   aarch64:
+>     Host 1: https://beaker.engineering.redhat.com/recipes/7563483
+>        ? Boot test
+>        ? xfstests: ext4
+>        ? xfstests: xfs
+>        ? lvm thinp sanity
+>        ? storage: software RAID testing
+>        ? ? Storage blktests
+> 
+>     Host 2: https://beaker.engineering.redhat.com/recipes/7566546
+>        ? Boot test
+>        ? LTP lite
+>        ? Loopdev Sanity
+>        ? Memory function: memfd_create
+>        ? Memory function: kaslr
+>        ? AMTU (Abstract Machine Test Utility)
+>        ? LTP: openposix test suite
+>        ? Networking bridge: sanity
+>        ? Ethernet drivers sanity
+>        ? Networking MACsec: sanity
+>        ? Networking socket: fuzz
+>        ? Networking sctp-auth: sockopts test
+>        ? Networking: igmp conformance test
+>        ? Networking route: pmtu
+>        ? Networking route_func: local
+>        ? Networking route_func: forward
+>        ? Networking TCP: keepalive test
+>        ? Networking UDP: socket
+>        ? Networking tunnel: geneve basic test
+>        ? Networking tunnel: gre basic
+>        ? L2TP basic test
+>        ? Networking tunnel: vxlan basic
+>        ? Networking ipsec: basic netns transport
+>        ? Networking ipsec: basic netns tunnel
+>        ? ALSA PCM loopback test
+>        ? ALSA Control (mixer) Userspace Element test
+>        ? Usex - version 1.9-29
+>        ? storage: SCSI VPD
+>        ? trace: ftrace/tracer
+>        ? ? CIFS Connectathon
+>        ? ? POSIX pjd-fstest suites
+>        ? ? Networking vnic: ipvlan/basic
+>        ? ? storage: dm/common
+> 
+>   ppc64le:
+>     Host 1: https://beaker.engineering.redhat.com/recipes/7563485
+>        ? Boot test
+>        ? xfstests: ext4
+>        ? xfstests: xfs
+>        ? lvm thinp sanity
+>        ? storage: software RAID testing
+>        ? ? Storage blktests
+> 
+>     Host 2: https://beaker.engineering.redhat.com/recipes/7563484
+> 
+>        ? Internal infrastructure issues prevented one or more tests (marked
+>        with ???) from running on this architecture.
+>        This is not the fault of the kernel that was tested.
+> 
+>        ? Boot test
+>        ? LTP lite
+>        ? Loopdev Sanity
+>        ? Memory function: memfd_create
+>        ? Memory function: kaslr
+>        ? AMTU (Abstract Machine Test Utility)
+>        ? LTP: openposix test suite
+>        ? Networking bridge: sanity
+>        ? Ethernet drivers sanity
+>        ? Networking MACsec: sanity
+>        ? Networking socket: fuzz
+>        ? Networking sctp-auth: sockopts test
+>        ? Networking route: pmtu
+>        ? Networking route_func: local
+>        ? Networking route_func: forward
+>        ? Networking TCP: keepalive test
+>        ? Networking UDP: socket
+>        ? Networking tunnel: geneve basic test
+>        ? Networking tunnel: gre basic
+>        ? L2TP basic test
+>        ? Networking tunnel: vxlan basic
+>        ? Networking ipsec: basic netns tunnel
+>        ? ALSA PCM loopback test
+>        ? ALSA Control (mixer) Userspace Element test
+>        ? Usex - version 1.9-29
+>        ? trace: ftrace/tracer
+>        ? ? CIFS Connectathon
+>        ? ??? POSIX pjd-fstest suites
+>        ? ? Networking vnic: ipvlan/basic
+>        ? ? storage: dm/common
+> 
+>   x86_64:
+>     Host 1: https://beaker.engineering.redhat.com/recipes/7563481
+>        ? Boot test
+>        ? xfstests: ext4
+>        ? xfstests: xfs
+>        ? lvm thinp sanity
+>        ? storage: software RAID testing
+>        ? ? IOMMU boot test
+>        ? ? Storage blktests
+> 
+>     Host 2: https://beaker.engineering.redhat.com/recipes/7563480
+>        ? Boot test
+>        ? LTP lite
+>        ? Loopdev Sanity
+>        ? Memory function: memfd_create
+>        ? Memory function: kaslr
+>        ? AMTU (Abstract Machine Test Utility)
+>        ? LTP: openposix test suite
+>        ? Networking bridge: sanity
+>        ? Ethernet drivers sanity
+>        ? Networking MACsec: sanity
+>        ? Networking socket: fuzz
+>        ? Networking sctp-auth: sockopts test
+>        ? Networking: igmp conformance test
+>        ? Networking route: pmtu
+>        ? Networking route_func: local
+>        ? Networking route_func: forward
+>        ? Networking TCP: keepalive test
+>        ? Networking UDP: socket
+>        ? Networking tunnel: geneve basic test
+>        ? Networking tunnel: gre basic
+>        ? L2TP basic test
+>        ? Networking tunnel: vxlan basic
+>        ? Networking ipsec: basic netns transport
+>        ? Networking ipsec: basic netns tunnel
+>        ? pciutils: sanity smoke test
+>        ? ALSA PCM loopback test
+>        ? ALSA Control (mixer) Userspace Element test
+>        ? Usex - version 1.9-29
+>        ? storage: SCSI VPD
+>        ? stress: stress-ng
+>        ? trace: ftrace/tracer
+>        ? ? CIFS Connectathon
+>        ? ? POSIX pjd-fstest suites
+>        ? ? Networking vnic: ipvlan/basic
+>        ? ? storage: dm/common
+> 
+>   Test sources: https://github.com/CKI-project/tests-beaker
+>     ? Pull requests are welcome for new tests or improvements to existing tests!
+> 
+> Waived tests
+> ------------
+> If the test run included waived tests, they are marked with ?. Such tests are
+> executed but their results are not taken into account. Tests are waived when
+> their results are not reliable enough, e.g. when they're just introduced or are
+> being fixed.
+> 
+> Testing timeout
+> ---------------
+> We aim to provide a report within reasonable timeframe. Tests that haven't
+> finished running are marked with ?. Reports for non-upstream kernels have
+> a Beaker recipe linked to next to each host.
 
- ?? kern? :err?? : [? 135.993912] /dev/zero: Can't open blockdev
-
-Please ignore the report if it's not a problem.
-
-Best Regards,
-Rong Chen
