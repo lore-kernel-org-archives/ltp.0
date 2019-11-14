@@ -1,69 +1,19 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 Nov 2019 11:42:22 +0100
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 14 Nov 2019 06:43:33 -0500 (EST)
 Subject: [LTP] [PATCH] mbind04: terminate child processes
-In-Reply-To: <51aabb2e4680d830b5ba7b7623e0c7697bcb6338.1573675056.git.jstancek@redhat.com>
+In-Reply-To: <20191114104221.GB30308@rei>
 References: <51aabb2e4680d830b5ba7b7623e0c7697bcb6338.1573675056.git.jstancek@redhat.com>
-Message-ID: <20191114104221.GB30308@rei>
+ <20191114104221.GB30308@rei>
+Message-ID: <560257538.12094870.1573731813438.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> verify_policy() forks a child, which continues to run
-> pass end of function and into same loop in verify_mbind()
-> as parent, effectively creating fork bomb. With 2 nodes,
-> there's 45 forked children. With 4 nodes, 765 processes.
-> 
-> Terminate child process at the end of verify_policy();
+> I find the name for the variable quite confusing here, because it
+> suggests that the parent exits here, while the opposite is true. Can we
+> please just use pid or something less confusing for the variable name?
 
-Good catch, thanks for fixing this.
+Pushed with renamed variable.
 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/mbind/mbind04.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mbind/mbind04.c b/testcases/kernel/syscalls/mbind/mbind04.c
-> index 6a7a2a2321a8..aaad8a988bad 100644
-> --- a/testcases/kernel/syscalls/mbind/mbind04.c
-> +++ b/testcases/kernel/syscalls/mbind/mbind04.c
-> @@ -47,6 +47,7 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
->  	struct bitmask *bm = numa_allocate_nodemask();
->  	unsigned int i;
->  	void *ptr;
-> +	pid_t child;
->  	unsigned long size = PAGES_ALLOCATED * page_size;
->  
->  	numa_bitmask_setbit(bm, node);
-> @@ -69,7 +70,8 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
->  
->  	const char *prefix = "child: ";
->  
-> -	if (SAFE_FORK()) {
-> +	child = SAFE_FORK();
-> +	if (child) {
->  		prefix = "parent: ";
->  		tst_reap_children();
->  	}
-> @@ -104,6 +106,9 @@ static void verify_policy(unsigned int node, int mode, unsigned flag)
->  
->  	if (fail)
->  		tst_nodemap_print_counters(nodes);
-> +
-> +	if (!child)
-> +		exit(0);
->  }
-
-I find the name for the variable quite confusing here, because it
-suggests that the parent exits here, while the opposite is true. Can we
-please just use pid or something less confusing for the variable name?
-
-Other than that it's fine.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
