@@ -1,11 +1,11 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 15 Nov 2019 17:01:29 +0800
-Subject: [LTP] [PATCH v5 1/2] syscalls/prctl08: New test for prctl()
- with PR_{SET, GET}_TIMERSLACK
-In-Reply-To: <1573214419-15435-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20191107130543.GD22352@rei.lan>
- <1573214419-15435-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <2fb9d9c1-8c08-55bc-52a0-459249a86134@cn.fujitsu.com>
+Date: Fri, 15 Nov 2019 17:02:48 +0800
+Subject: [LTP] [PATCH v3 0/5] optimize quotactl test code
+In-Reply-To: <421bebaf-d8c0-380f-2a25-a2212058d476@cn.fujitsu.com>
+References: <20191031152646.GA7078@dell5510>
+ <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <421bebaf-d8c0-380f-2a25-a2212058d476@cn.fujitsu.com>
+Message-ID: <01929f2e-8a55-1f2e-cd23-3f47cd3877bc@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,202 +13,54 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi
-Does anyone have some comments for this two patches?
+Does anyone have some comments for this patch set?
 
-
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->   include/lapi/prctl.h                       |   5 +
->   runtest/syscalls                           |   1 +
->   testcases/kernel/syscalls/prctl/.gitignore |   1 +
->   testcases/kernel/syscalls/prctl/prctl08.c  | 139 +++++++++++++++++++++
->   4 files changed, 146 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/prctl/prctl08.c
->
-> diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
-> index 8ee492259..0b4e196c3 100644
-> --- a/include/lapi/prctl.h
-> +++ b/include/lapi/prctl.h
-> @@ -19,6 +19,11 @@
->   # define PR_SET_SECCOMP  22
->   #endif
->   
-> +#ifndef PR_SET_TIMERSLACK
-> +# define PR_SET_TIMERSLACK 29
-> +# define PR_GET_TIMERSLACK 30
-> +#endif
-> +
->   #ifndef PR_SET_CHILD_SUBREAPER
->   # define PR_SET_CHILD_SUBREAPER	36
->   # define PR_GET_CHILD_SUBREAPER	37
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 12d3e0d3b..fee91f909 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -879,6 +879,7 @@ prctl04 prctl04
->   prctl05 prctl05
->   prctl06 prctl06
->   prctl07 prctl07
-> +prctl08 prctl08
->   
->   pread01 pread01
->   pread01_64 pread01_64
-> diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
-> index 2178db366..fe36a8e0f 100644
-> --- a/testcases/kernel/syscalls/prctl/.gitignore
-> +++ b/testcases/kernel/syscalls/prctl/.gitignore
-> @@ -6,3 +6,4 @@
->   /prctl06
->   /prctl06_execve
->   /prctl07
-> +/prctl08
-> diff --git a/testcases/kernel/syscalls/prctl/prctl08.c b/testcases/kernel/syscalls/prctl/prctl08.c
-> new file mode 100644
-> index 000000000..fd8ccb6ad
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/prctl/prctl08.c
-> @@ -0,0 +1,139 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> + *
-> + * Test PR_GET_TIMERSLACK and PR_SET_TIMERSLACK of prctl(2).
-> + * 1)Each thread has two associated timer slack values: a "default"
-> + *   value, and a "current" value. PR_SET_TIMERSLACK sets the "current"
-> + *   timer slack value for the calling thread.
-> + * 2)When a new thread is created, the two timer slack values are made
-> + *   the same as the "current" value of the creating thread.
-> + * 3)The maximum timer slack value is ULONG_MAX. On 32bit machines, it
-> + *   is a valid value(about 4s). On 64bit machines, it is about 500 years
-> + *   and no person will set this over 4s.  prctl return value is int, so
-> + *   we test themaximum value is INT_MAX.
-> + * 4)we also check current value via /proc/self/timerslack_ns if it is
-> + *  supported.
-> + */
-> +
-> +#include <sys/prctl.h>
-> +#include <string.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <linux/limits.h>
-> +#include "lapi/syscalls.h"
-> +#include "lapi/prctl.h"
-> +#include "tst_test.h"
-> +
-> +#define PROC_TIMERSLACK_PATH "/proc/self/timerslack_ns"
-> +
-> +static void check_reset_timerslack(char *message);
-> +static void check_get_timerslack(char *message, unsigned long value);
-> +static void check_inherit_timerslack(char *message, unsigned long value);
-> +static unsigned long origin_value;
-> +
-> +static struct tcase {
-> +	void (*func_check)();
-> +	unsigned long setvalue;
-> +	unsigned long expvalue;
-> +	char message[50];
-> +} tcases[] = {
-> +	{check_reset_timerslack, 0, 50000, "Reset"},
-> +	{check_get_timerslack, 1, 1, "Min"},
-> +	{check_get_timerslack, 70000, 70000, "Middle"},
-> +	{check_get_timerslack, INT_MAX, INT_MAX, "Max"},
-> +	{check_inherit_timerslack, 70000, 70000, "Child process"},
-> +};
-> +
-> +static int proc_flag = 1;
-> +
-> +static void check_reset_timerslack(char *message)
-> +{
-> +	check_get_timerslack(message, origin_value);
-> +}
-> +
-> +static void check_proc_timerslack(char *message, unsigned long value)
-> +{
-> +	unsigned long proc_value;
-> +
-> +	SAFE_FILE_SCANF(PROC_TIMERSLACK_PATH, "%lu", &proc_value);
-> +	if (proc_value == value)
-> +		tst_res(TPASS, "%s %s  got %lu expectedly",
-> +				message, PROC_TIMERSLACK_PATH, proc_value);
-> +	else
-> +		tst_res(TFAIL, "%s %s expected %lu got %lu",
-> +				message, PROC_TIMERSLACK_PATH, value, proc_value);
-> +}
-> +
-> +static void check_get_timerslack(char *message, unsigned long value)
-> +{
-> +	TEST(prctl(PR_GET_TIMERSLACK));
-> +	if ((unsigned long)TST_RET == value)
-> +		tst_res(TPASS, "%s prctl(PR_GET_TIMERSLACK) got %lu expectedly",
-> +				message, value);
-> +	else
-> +		tst_res(TFAIL, "%s prctl(PR_GET_TIMERSLACK) expected %lu got %lu",
-> +				message, value, TST_RET);
-> +
-> +	if (proc_flag)
-> +		check_proc_timerslack(message, value);
-> +
-> +}
-> +
-> +static void check_inherit_timerslack(char *message, unsigned long value)
-> +{
-> +	int pid;
-> +	unsigned long current_value;
-> +	unsigned long default_value;
-> +
-> +	pid = SAFE_FORK();
-> +	if (pid == 0) {
-> +		current_value = prctl(PR_GET_TIMERSLACK);
-> +		prctl(PR_SET_TIMERSLACK, 0);
-> +		default_value = prctl(PR_GET_TIMERSLACK);
-> +		if (current_value == value && default_value == value)
-> +			tst_res(TPASS,
-> +				"%s two timer slack values are made the same as the current value(%lu) of the creating thread.",
-> +				message, value);
-> +		else
-> +			tst_res(TFAIL,
-> +				"%s current_value is %lu, default value is %lu, the parent current value is %lu",
-> +				message, current_value, default_value, value);
-> +	}
-> +
-> +}
-> +
-> +static void verify_prctl(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	TEST(prctl(PR_SET_TIMERSLACK, tc->setvalue));
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "prctl(PR_SET_TIMERSLACK, %lu) failed",
-> +					  tc->setvalue);
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "prctl(PR_SET_TIMERSLACK, %lu) succeed", tc->setvalue);
-> +	tc->func_check(tc->message, tc->expvalue);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	if (access(PROC_TIMERSLACK_PATH, F_OK) == -1) {
-> +		tst_res(TCONF, "proc doesn't support timerslack_ns interface");
-> +		proc_flag = 0;
-> +	}
-> +
-> +	TEST(prctl(PR_GET_TIMERSLACK));
-> +	origin_value = TST_RET;
-> +	tst_res(TINFO, "current timerslack value is %lu", origin_value);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test = verify_prctl,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.forks_child = 1,
-> +};
+> Hi All
+> ping.
+>> I cleanup the quotactl code and add project quota test for quotactl.
+>> Thanks to Jan Kara with support about quota.
+>>
+>>
+>> ------------
+>> v2->v3:
+>> 1.for quotactl02.c, add group quota test
+>> 2.add quotactl04.c and add quota05.c to test project quota.
+>> 3.add quotactl06.c to test error
+>> 4. fix build erro on centos6
+>> ps:don't test Q_XQUOTARM in quotactl02,04 because cycle running will
+>> report ENOSYS (quota feture has been off). I will introduce a
+>> new test to test it and also a regression test for commit[1].
+>> [1]https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=for-next&id=3dd4d40b420846dd35869ccc8f8627feef2cff32
+>> [2]https://travis-ci.org/xuyang0410/ltp/builds/605963472?utm_medium=notification&utm_source=github_status
+>> ------------
+>>
+>> Yang Xu (5):
+>>    syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
+>>    syscalls/quotactl02.c: Add Q_XGETQSTATV test
+>>    syscalls/quotactl04: add project quota test for non-xfs filesystem
+>>    syscalls/quotactl05: add project quota test for xfs filesystem
+>>    syscalls/quotactl06: Add new testcase
+>>
+>>   configure.ac                                  |   1 +
+>>   include/lapi/quotactl.h                       |  34 +--
+>>   m4/ltp-quota.m4                               |   8 +
+>>   runtest/syscalls                              |   3 +
+>>   testcases/kernel/syscalls/quotactl/.gitignore |   4 +
+>>   .../kernel/syscalls/quotactl/quotactl01.c     |  53 +++--
+>>   .../kernel/syscalls/quotactl/quotactl02.c     | 193 +++++++-----------
+>>   .../kernel/syscalls/quotactl/quotactl02.h     | 152 ++++++++++++++
+>>   .../kernel/syscalls/quotactl/quotactl04.c     | 155 ++++++++++++++
+>>   .../kernel/syscalls/quotactl/quotactl05.c     |  99 +++++++++
+>>   .../kernel/syscalls/quotactl/quotactl06.c     | 183 +++++++++++++++++
+>>   11 files changed, 745 insertions(+), 140 deletions(-)
+>>   create mode 100644 m4/ltp-quota.m4
+>>   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl02.h
+>>   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
+>>   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl05.c
+>>   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl06.c
+>>
 
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191115/5b6e3ef4/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191115/7541d7ae/attachment.htm>
