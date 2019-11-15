@@ -1,27 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 Nov 2019 17:35:17 +0100
-Subject: [LTP] [PATCH v5 2/2] syscalls/prctl09: New timer sample test
- for PR_SET_TIMERSLACK
-In-Reply-To: <1573214419-15435-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20191107130543.GD22352@rei.lan>
- <1573214419-15435-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1573214419-15435-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191115163517.GB25964@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 Nov 2019 17:48:44 +0100
+Subject: [LTP] [PATCH v3 1/5] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
+ test
+In-Reply-To: <1572612959-20577-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20191031152646.GA7078@dell5510>
+ <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1572612959-20577-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20191115164844.GA22234@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> It also moves test setup function before timer setup function,
-> so we can get this set value.
+Subject: [PATCH v3 1/5] syscalls/quotactl01.c: Add Q_GETNEXQUOTA test
+=> s/Q_GETNEXQUOTA/Q_GETNEXTQUOTA/ :)
+Generally there are more typos in docs and formatting issues. As these are just
+a small details, I usually fix them during merge, but copy paste on constants is
+you friend.
 
-Can we please change the library code in a separate patch with
-appropripate description of the change?
-
-Otherwise it looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
