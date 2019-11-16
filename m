@@ -1,55 +1,84 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 Nov 2019 18:41:10 +0100
-Subject: [LTP] [PATCH v3 2/5] syscalls/quotactl02.c: Add Q_XGETQSTATV
- test
-In-Reply-To: <1572612959-20577-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20191031152646.GA7078@dell5510>
- <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1572612959-20577-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191115174110.GB22234@x230>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Sat, 16 Nov 2019 01:20:03 +0100
+Subject: [LTP] [PATCH 1/1] fanotify: Fix for musl
+Message-ID: <20191116002003.13013-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+FSID_VAL_MEMBER() wrapper was meant to be only for struct
+fanotify_event_info_fid, it was used also for struct event_t
+(which has also __kernel_fsid_t fsid, but shouldn't be redefined).
 
-> Q_XGETQSTATV returns XFS filesystem-specific quota information in the fs_quota_statv
-> pointed to by addr. The qs_version field of the structure should be filled with
-> the version of the structure supported by the caller (for now, only FS_QSTAT_VERSION1
-> is supported).
-nit: one would think you add 1 test case. But you added 8 test cases, all of
-them are XFS related, but only 4 related to Q_XGETQSTATV.
+This caused error on recent musl v1.1.23 (with f67b3c17),
+which has struct fanotify_event_info_fid.
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Nice work, thanks!
+Fixes: 0498fc0a8 ("fanotify: Detect val vs. __val
+fanotify_event_info_fid.fsid member")
 
-Nit: I'd just extract quotactl02.h later in the commit, where
-the code needs to be reused (i.e. in 0cc1dc512 ("syscalls/quotactl05: add
-project quota test for xfs filesystem")) or at least mention why you do it now.
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+Hi,
 
-...
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
-...
-> +#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
-> +	{QCMD(Q_XQUOTAOFF, GRPQUOTA), &qflagg, check_qoffv,
-> +	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
-> +	"turn off xfs quota and get xfs quota off statv for group"},
+I'm sorry, one more error sneaked in.
+I accidentally tested it on toolchains which has older musl release.
 
-> -	tst_res(TPASS, "quoactl() succeeded to set and use %s to get xfs disk quota limits",
-> -			desp);
-> -}
-> +	{QCMD(Q_XQUOTAON, GRPQUOTA), &qflagg, check_qonv,
-> +	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
-> +	"turn on xfs quota and get xfs quota on statv for group"},
-> +#endif
-> +};
-Hm, we don't report some TCONF: Q_XGETQSTATV not supported.
-But that's probably not important.
+Helper should have obvious name to show it's just for fanotify_event_info_fid,
+but something like EVENT_INFO_FID_FSID_VAL_MEMBER() is too long.
+Posting just in case you prefer renaming (fanotify.h is getting a bit
+complicated).
 
-...
+NOTE: I also find in various uclibc arch dependent kernel_types.h headers
+libc/sysdeps/linux/x86_64/bits/kernel_types.h (19 of 29 archs)
+typedef struct {
+#ifdef __USE_ALL
+	int val[2];
+#else
+	int __val[2];
+#endif
+} __kernel_fsid_t;
+
+which would suggest we need also detection and helper for general
+__kernel_fsid_t usage. But I'd ignore it unless anybody reports it's
+really needed. I haven't found whether __USE_ALL is set as default, but
+I expect it so.
 
 Kind regards,
 Petr
+
+ testcases/kernel/syscalls/fanotify/fanotify.h   | 1 +
+ testcases/kernel/syscalls/fanotify/fanotify13.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 5370e30bb..9c98aaa1d 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -143,6 +143,7 @@ struct fanotify_event_info_fid {
+ };
+ #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
+ 
++/* NOTE: only for struct fanotify_event_info_fid */
+ #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
+ # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
+ #else
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index 26212ab62..3d8de6009 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -130,8 +130,8 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
+ 					"kernel");
+ 				return 1;
+ 			} else if (errno == ENODEV &&
+-					!FSID_VAL_MEMBER(event_set[i].fsid, 0) &&
+-					!FSID_VAL_MEMBER(event_set[i].fsid, 1)) {
++					!event_set[i].fsid.val[0] &&
++					!event_set[i].fsid.val[1]) {
+ 				tst_res(TCONF,
+ 					"FAN_REPORT_FID not supported on "
+ 					"filesystem type %s",
+-- 
+2.24.0
+
