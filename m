@@ -1,84 +1,152 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Sat, 16 Nov 2019 01:20:03 +0100
-Subject: [LTP] [PATCH 1/1] fanotify: Fix for musl
-Message-ID: <20191116002003.13013-1-petr.vorel@gmail.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Sat, 16 Nov 2019 04:04:30 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E0-rc7-875fef4=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
+Message-ID: <cki.492ED7396B.CQPXHDBTDS@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-FSID_VAL_MEMBER() wrapper was meant to be only for struct
-fanotify_event_info_fid, it was used also for struct event_t
-(which has also __kernel_fsid_t fsid, but shouldn't be redefined).
 
-This caused error on recent musl v1.1.23 (with f67b3c17),
-which has struct fanotify_event_info_fid.
+Hello,
 
-Fixes: 0498fc0a8 ("fanotify: Detect val vs. __val
-fanotify_event_info_fid.fsid member")
+We ran automated tests on a recent commit from this kernel tree:
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Hi,
+       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+            Commit: 875fef493f21 - Merge tag 'ceph-for-5.4-rc8' of git://github.com/ceph/ceph-client
 
-I'm sorry, one more error sneaked in.
-I accidentally tested it on toolchains which has older musl release.
+The results of these automated tests are provided below.
 
-Helper should have obvious name to show it's just for fanotify_event_info_fid,
-but something like EVENT_INFO_FID_FSID_VAL_MEMBER() is too long.
-Posting just in case you prefer renaming (fanotify.h is getting a bit
-complicated).
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-NOTE: I also find in various uclibc arch dependent kernel_types.h headers
-libc/sysdeps/linux/x86_64/bits/kernel_types.h (19 of 29 archs)
-typedef struct {
-#ifdef __USE_ALL
-	int val[2];
-#else
-	int __val[2];
-#endif
-} __kernel_fsid_t;
+All kernel binaries, config files, and logs are available for download here:
 
-which would suggest we need also detection and helper for general
-__kernel_fsid_t usage. But I'd ignore it unless anybody reports it's
-really needed. I haven't found whether __USE_ALL is set as default, but
-I expect it so.
+  https://artifacts.cki-project.org/pipelines/287844
 
-Kind regards,
-Petr
+One or more kernel tests failed:
 
- testcases/kernel/syscalls/fanotify/fanotify.h   | 1 +
- testcases/kernel/syscalls/fanotify/fanotify13.c | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+    x86_64:
+     ? LTP lite
+     ? Loopdev Sanity
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 5370e30bb..9c98aaa1d 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -143,6 +143,7 @@ struct fanotify_event_info_fid {
- };
- #endif /* HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID */
- 
-+/* NOTE: only for struct fanotify_event_info_fid */
- #ifdef HAVE_STRUCT_FANOTIFY_EVENT_INFO_FID_FSID___VAL
- # define FSID_VAL_MEMBER(fsid, i) (fsid.__val[i])
- #else
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 26212ab62..3d8de6009 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -130,8 +130,8 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
- 					"kernel");
- 				return 1;
- 			} else if (errno == ENODEV &&
--					!FSID_VAL_MEMBER(event_set[i].fsid, 0) &&
--					!FSID_VAL_MEMBER(event_set[i].fsid, 1)) {
-+					!event_set[i].fsid.val[0] &&
-+					!event_set[i].fsid.val[1]) {
- 				tst_res(TCONF,
- 					"FAN_REPORT_FID not supported on "
- 					"filesystem type %s",
--- 
-2.24.0
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 1 architecture:
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP lite
+       ? Loopdev Sanity
+       ? jvm test suite
+       ? Memory function: memfd_create
+       ??? Memory function: kaslr
+       ??? AMTU (Abstract Machine Test Utility)
+       ??? LTP: openposix test suite
+       ??? Networking bridge: sanity
+       ??? Ethernet drivers sanity
+       ??? Networking MACsec: sanity
+       ??? Networking socket: fuzz
+       ??? Networking sctp-auth: sockopts test
+       ??? Networking: igmp conformance test
+       ??? Networking route: pmtu
+       ??? Networking route_func: local
+       ??? Networking route_func: forward
+       ??? Networking TCP: keepalive test
+       ??? Networking UDP: socket
+       ??? Networking tunnel: geneve basic test
+       ??? Networking tunnel: gre basic
+       ??? L2TP basic test
+       ??? Networking tunnel: vxlan basic
+       ??? Networking ipsec: basic netns transport
+       ??? Networking ipsec: basic netns tunnel
+       ??? audit: audit testsuite test
+       ??? httpd: mod_ssl smoke sanity
+       ??? iotop: sanity
+       ??? tuned: tune-processes-through-perf
+       ??? pciutils: sanity smoke test
+       ??? ALSA PCM loopback test
+       ??? ALSA Control (mixer) Userspace Element test
+       ??? Usex - version 1.9-29
+       ??? storage: SCSI VPD
+       ??? stress: stress-ng
+       ??? trace: ftrace/tracer
+       ? ??? CIFS Connectathon
+       ? ??? POSIX pjd-fstest suites
+       ? ??? Networking vnic: ipvlan/basic
+       ? ??? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
+       ? Boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+
+    Host 4:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 5:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? xfstests: ext4
+       ??? xfstests: xfs
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ? ??? IOMMU boot test
+       ? ??? selinux-policy: serge-testsuite
+       ? ??? power-management: cpupower/sanity test
+       ? ??? Storage blktests
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
 
