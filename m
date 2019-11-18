@@ -1,40 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Nov 2019 09:59:27 +0100
-Subject: [LTP] [PATCH] configure.ac: Fix --with* options
-In-Reply-To: <4e9d5014-baea-98ba-c042-a65e5eca64e1@jv-coder.de>
-References: <20191113104149.42407-1-lkml@jv-coder.de>
- <CAEemH2eP-ibqs=Mc-aMYUxj7CJ-u9CUZnkD8=Ro_2td9StPVZQ@mail.gmail.com>
- <e506bf38-f1d9-6f9e-e4cd-6edf24f74cd9@jv-coder.de>
- <CAEemH2dWkKyx38HFNKDk6Lt1KiDYry9WVDx9Xzg7fVAkp3kOww@mail.gmail.com>
- <1c4d8fb5-58e4-5483-26c7-7ab38b5fbd9c@jv-coder.de>
- <CAEemH2dPwqX1FtNvF7=hxbAfVMz7i_u+TpUBaU1mqKhY-G0Vig@mail.gmail.com>
- <20191118061634.GA21536@x230>
- <4e9d5014-baea-98ba-c042-a65e5eca64e1@jv-coder.de>
-Message-ID: <20191118085927.GC8415@dell5510>
+From: Dylan Chung <dylan@andestech.com>
+Date: Mon, 18 Nov 2019 17:58:58 +0800
+Subject: [LTP] [PATCH v2] pan/ltp-pan.c: Add file parsing protection
+Message-ID: <20191118095858.22067-1-dylan@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+------------------
+v1->v2:
+1.replace "strlen(a)==0" with "a[0]== 0".
+2.Add more detail description in commit message.
+------------------
 
-> Hi Petr,
-> > I'm for merging this. I just wonder if it's not better to remove $with_bash and
-> > $with_python (as part of this patch), if they're not working.
-> I think you misunderstood. I did not say, that Bash and Python switches were
-> not working,
-> just that the dependency of bash and python for realtime tests did not work
-> -> it was not a dependency.
-> The realtime testsuite could be enabled without bash and python enabled.
-I understood :). It's just that this whole Bash and Python switches are meant to
-be just for realtime testsuite (therefore completely useless, if they're not
-working for the only use). As we generally don't want to depend on either
-python nor bash, this switches will be removed sooner or later.
-And our autoconf needs more love, it's obscure.
-https://github.com/linux-test-project/ltp/issues/508
+This patch adds protection and print warning when the command part
+of the tests is empty.
+A segmentation fault occurs when given the wrong format in test cases file.
+for example:
+    name  command line
+    ----- -----------------
+    dio10 diotest4 -b 65536    (O)
+    dio10                      (X)
+    dio10    diotest4 -b 65536 (X)
+In this patch, ltp-pan will return empty collection when the given
+testcase files are wrongly formatted and cause ltp-pan to abort.
+The warning message will indicate the name of the error testcase.
 
-But ok, it's a separate problem, I'm for merging it as it is.
+Signed-off-by: Dylan Chung <dylan@andestech.com>
+---
+ pan/ltp-pan.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Kind regards,
-Petr
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index 8ac484ec6..e3d2e619d 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -1200,6 +1200,14 @@ static struct collection *get_collection(char *file, int optind, int argc,
+ 				n->pcnt_f[1] = 's';
+ 			}
+ 			n->name = strdup(strsep(&a, " \t"));
++			while (a != NULL && isspace(*a))
++				a++;
++			if (a == NULL || a[0] == 0) {
++				fprintf(stderr,
++					"pan(%s): Testcase '%s' requires a command to execute.\n",
++					panname, n->name);
++				return NULL;
++			}
+ 			n->cmdline = strdup(a);
+ 			n->next = NULL;
+ 
+-- 
+2.17.0
+
