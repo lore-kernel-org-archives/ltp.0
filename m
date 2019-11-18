@@ -1,54 +1,37 @@
-From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
-Date: Fri, 15 Nov 2019 23:10:38 +0100
-Subject: [LTP] [PATCH] Fix static linking with musl-fts
-Message-ID: <20191115221038.14383-1-fontaine.fabrice@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Nov 2019 15:54:19 +0100
+Subject: [LTP] [PATCH v1] travis: add ppc64le and s390x builds (issue:
+ #615)
+In-Reply-To: <20191118105735.15012-1-cfamullaconrad@suse.de>
+References: <20191118105735.15012-1-cfamullaconrad@suse.de>
+Message-ID: <20191118145419.GA26714@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Don't append libraries to LDLIBS but prepend them in cpuset_lib/Makefile
-and cpuset/Makefile.inc to allow the user to provide its FTS library
-such as -lfts for musl/uclibc through LDLIBS
+Hi Clemens,
 
-This will fix static build of ltp with musl-fts on uclibc
+thanks a lot!
+> Travis started to support ppc64le and s390x
+> https://blog.travis-ci.com/2019-11-12-multi-cpu-architecture-ibm-power-ibm-z
 
-Fixes:
- - http://autobuild.buildroot.org/results/9155326e1ff7c2bb2218122c453872c2fc76f65e
+> This patch enable ppc64le and s390x build on debian:stable.
 
-Signed-off-by: Fabrice Fontaine <fontaine.fabrice@gmail.com>
----
- testcases/kernel/controllers/cpuset/Makefile.inc        | 2 +-
- testcases/kernel/controllers/cpuset/cpuset_lib/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> Remove `-i` switch from docker command as it isn't needed and caused
+> trouble running docker 'The input device is not a tty'.
+Interesting. Indeed, fails with -i. Don't remember, why I needed it.
 
-diff --git a/testcases/kernel/controllers/cpuset/Makefile.inc b/testcases/kernel/controllers/cpuset/Makefile.inc
-index db6a84305..c03dd77d7 100644
---- a/testcases/kernel/controllers/cpuset/Makefile.inc
-+++ b/testcases/kernel/controllers/cpuset/Makefile.inc
-@@ -41,7 +41,7 @@ MAKE_DEPS		:= $(LIBCONTROLLERS) $(LIBCPUSET)
- 
- LDFLAGS			+= -L$(abs_builddir)/$(LIBCPUSET_DIR) -L$(abs_builddir)/$(LIBCONTROLLERS_DIR)
- 
--LDLIBS			+= -lcpu_set -lcontrollers -lltp
-+LDLIBS			:= -lcpu_set -lcontrollers -lltp $(LDLIBS)
- 
- INSTALL_TARGETS		?= *.sh
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile b/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-index 322d03cac..069ebc38c 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-@@ -25,7 +25,7 @@ top_srcdir 		?= ../../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS			+= -lm -lcontrollers -lltp
-+LDLIBS			:= -lm -lcontrollers -lltp $(LDLIBS)
- 
- LIB			:= libcpu_set.a
- 
--- 
-2.24.0
+LGTM, I'd just move these 2 jobs higher (above fedora), as these builds are not
+usual so have higher priority to find a bug.
+Change ppc64le to to debian:testing (we already have stable build for ppc64le
+cross compilation).
 
+Something like: 
+https://travis-ci.org/pevik/ltp/builds/613539454
+https://github.com/pevik/ltp/commit/2b69957b5838eb9f27e65ba172a71c24f15af6bd
+(No need to resend a patch, both can do during merge.)
+
+Kind regards,
+Petr
