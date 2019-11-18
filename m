@@ -1,64 +1,40 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Nov 2019 09:25:10 +0100
-Subject: [LTP] [PATCH v3 2/5] syscalls/quotactl02.c: Add Q_XGETQSTATV
- test
-In-Reply-To: <791f40c927114eb8b9ce5320d8c33447@G08CNEXMBPEKD04.g08.fujitsu.local>
-References: <20191031152646.GA7078@dell5510>
- <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1572612959-20577-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191115174110.GB22234@x230>
- <791f40c927114eb8b9ce5320d8c33447@G08CNEXMBPEKD04.g08.fujitsu.local>
-Message-ID: <20191118082510.GA8415@dell5510>
+Date: Mon, 18 Nov 2019 09:59:27 +0100
+Subject: [LTP] [PATCH] configure.ac: Fix --with* options
+In-Reply-To: <4e9d5014-baea-98ba-c042-a65e5eca64e1@jv-coder.de>
+References: <20191113104149.42407-1-lkml@jv-coder.de>
+ <CAEemH2eP-ibqs=Mc-aMYUxj7CJ-u9CUZnkD8=Ro_2td9StPVZQ@mail.gmail.com>
+ <e506bf38-f1d9-6f9e-e4cd-6edf24f74cd9@jv-coder.de>
+ <CAEemH2dWkKyx38HFNKDk6Lt1KiDYry9WVDx9Xzg7fVAkp3kOww@mail.gmail.com>
+ <1c4d8fb5-58e4-5483-26c7-7ab38b5fbd9c@jv-coder.de>
+ <CAEemH2dPwqX1FtNvF7=hxbAfVMz7i_u+TpUBaU1mqKhY-G0Vig@mail.gmail.com>
+ <20191118061634.GA21536@x230>
+ <4e9d5014-baea-98ba-c042-a65e5eca64e1@jv-coder.de>
+Message-ID: <20191118085927.GC8415@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Hi Joerg,
 
-> > >Q_XGETQSTATV returns XFS filesystem-specific quota information in the 
-> > >fs_quota_statv pointed to by addr. The qs_version field of the 
-> > >structure should be filled with the version of the structure supported 
-> > >by the caller (for now, only FS_QSTAT_VERSION1 is supported).
-> >nit: one would think you add 1 test case. But you added 8 test cases, all of them are XFS related, but only 4 related to Q_XGETQSTATV.
-> For user quota, I add 2 test cases to use Q_XGETQSTATV to get status for Q_XQUOTAOFF and Q_XQUOTAOFF . 
-> Also, I add group quota for this case as quotactl01.c.  so I add 8 (2+6) test cases.  I will update group coverage in commit info. 
+> Hi Petr,
+> > I'm for merging this. I just wonder if it's not better to remove $with_bash and
+> > $with_python (as part of this patch), if they're not working.
+> I think you misunderstood. I did not say, that Bash and Python switches were
+> not working,
+> just that the dependency of bash and python for realtime tests did not work
+> -> it was not a dependency.
+> The realtime testsuite could be enabled without bash and python enabled.
+I understood :). It's just that this whole Bash and Python switches are meant to
+be just for realtime testsuite (therefore completely useless, if they're not
+working for the only use). As we generally don't want to depend on either
+python nor bash, this switches will be removed sooner or later.
+And our autoconf needs more love, it's obscure.
+https://github.com/linux-test-project/ltp/issues/508
 
-> Ps: I want to use Q_XGETQSTAT to test  Q_XQUOTAOFF, Q_XGETQSTATV to test Q_XQUOTAON. So it can be only 8 test cases. But Q_XGETQSTATV
-> is introduced since v3.12-rc1 commit[1]. We should use a pair (on,off )to test Q_XGETQSTATV.
-
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d5e3d57605e77708685e8d20a40fe86891db299
-Thanks for info.
-
-> >> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> >Reviewed-by: Petr Vorel <pvorel@suse.cz> Nice work, thanks!
-> Thanks for your review.
-
-> >>Nit: I'd just extract quotactl02.h later in the commit, where the code needs to be reused (i.e. in 0cc1dc512 ("syscalls/quotactl05: add project quota test for xfs filesystem")) or at least mention why you do it now.
-> I will mention it in commit info.
-OK, I'll review the rest of v3 and wait for v4.
-
-> >> +++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
-> >...
-> >> +#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
-> >> +	{QCMD(Q_XQUOTAOFF, GRPQUOTA), &qflagg, check_qoffv,
-> >> +	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
-> > >+	"turn off xfs quota and get xfs quota off statv for group"},
-
-> >> -	tst_res(TPASS, "quoactl() succeeded to set and use %s to get xfs disk quota limits",
-> > >-			desp);
-> > >-}
-> > >+	{QCMD(Q_XQUOTAON, GRPQUOTA), &qflagg, check_qonv,
-> > >+	QCMD(Q_XGETQSTATV, GRPQUOTA), 1,
-> > >+	"turn on xfs quota and get xfs quota on statv for group"}, #endif };
-> >Hm, we don't report some TCONF: Q_XGETQSTATV not supported.
-> >But that's probably not important
-> This cmd was introduced since 2013,  I think we should check it. Also,  if we 
-> Use a new kernel but boot with a older kernel header, HAVE_STRUCT_FS_QUOTA_STATV may be undefined.
-> But in kernel, it is implemented. So I think we may define a fs_quota_statv struct in ltp, so we can detect whether Q_XGETQSTAT is implemented. 
-> What do you think about it?
-+1, IMHO this makes sense.
+But ok, it's a separate problem, I'm for merging it as it is.
 
 Kind regards,
 Petr
