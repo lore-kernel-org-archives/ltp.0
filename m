@@ -1,32 +1,31 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Nov 2019 21:32:41 +0100
-Subject: [LTP] [PATCH] Fix static linking with musl-fts
-In-Reply-To: <20191115221038.14383-1-fontaine.fabrice@gmail.com>
-References: <20191115221038.14383-1-fontaine.fabrice@gmail.com>
-Message-ID: <20191118203241.GC2531@x230>
+Date: Mon, 18 Nov 2019 21:33:42 +0100
+Subject: [LTP] [PATCH 1/1] fanotify: Fix for musl
+In-Reply-To: <20191117100401.GB22986@x230>
+References: <20191116002003.13013-1-petr.vorel@gmail.com>
+ <977310824.12699736.1573924977430.JavaMail.zimbra@redhat.com>
+ <20191117100401.GB22986@x230>
+Message-ID: <20191118203342.GD2531@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Fabrice,
+Hi,
 
-> Don't append libraries to LDLIBS but prepend them in cpuset_lib/Makefile
-> and cpuset/Makefile.inc to allow the user to provide its FTS library
-> such as -lfts for musl/uclibc through LDLIBS
+> > If it's needed for __kernel_fsid_t we'll need to come up with better names.
+> +1. But hope this is not needed.
 
-> This will fix static build of ltp with musl-fts on uclibc
+> > This basically reverts part of previous patch, which looks ok to me.
+> Yep. I'll add this to commit message, to be obvious.
 
-> Fixes:
->  - http://autobuild.buildroot.org/results/9155326e1ff7c2bb2218122c453872c2fc76f65e
+> > Acked-by: Jan Stancek <jstancek@redhat.com>
 
-> Signed-off-by: Fabrice Fontaine <fontaine.fabrice@gmail.com>
+> Thanks for your review.
+> I'll wait with merge till Monday (if Cyril has some comments).
 
-> -LDLIBS			+= -lcpu_set -lcontrollers -lltp
-> +LDLIBS			:= -lcpu_set -lcontrollers -lltp $(LDLIBS)
-
-Thanks a lot, merged!
+Merged.
 
 Kind regards,
 Petr
