@@ -1,42 +1,2515 @@
-From: Xu, Yang <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 18 Nov 2019 06:42:21 +0000
-Subject: [LTP] [PATCH v3 1/5] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
- test
-In-Reply-To: <20191115155123.GA658@x230>
-References: <20191031152646.GA7078@dell5510>
- <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1572612959-20577-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191115155123.GA658@x230>
-Message-ID: <989b7cbfa4cf4d7bb65c9b7df45b8c37@G08CNEXMBPEKD04.g08.fujitsu.local>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 18 Nov 2019 08:44:55 +0100
+Subject: [LTP] [PATCH] open_posix/pi_test*: Remove all tests
+Message-ID: <20191118074455.42014-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
->> Q_GETNEXTQUOTA was introduced since linux 4.6, this operation is the 
->>same as Q_GETQUOTA, but it returns quota information for the next ID 
->> greater than or equal to id that has a quota set.
->
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->Reviewed-by: Petr Vorel <pvorel@suse.cz> LGTM, minor note below.
-Thanks for your review.
+There are several reasons, why these tests should be removed.
+Most important: They do not really test anything. The result of these
+tests has to be inspected manually do check, if the behavior is correct,
+but the manual inspection using the given tools is not possible, because
+these tests were written for systems much slower than todays systems.
+The problems are described in more detail in
+https://github.com/linux-test-project/ltp/issues/584
 
->> +#ifdef HAVE_STRUCT_IF_NEXTDQBLK
->> +# include <linux/quota.h>
->You test <linux/quota.h> in LTP_CHECK_SYSCALL_QUOTACTL (indirectly via AC_CHECK_TYPES, but that should be ok)
-...
->>  	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
->>+	if (TST_ERR == EINVAL) {
->> +		tst_res(TCONF, "Current system doesn't support this cmd");
->nit: cmd? Maybe something like "quotactl() syscall does not support this command"
->or "quotactl() syscall does not support to %s", tc->des to follow other messages. I'd actually prefer to have some macro, which prints QCMD flags, but that's a detail which we can >ignore.
-I think we can add some info before each run (such as prctl02.c and copy_file_range02.c, make error cases more clear ), as below:
-	tst_res(TINFO, "Test #%d: %s", n, tc->tname);  // this tname is a QCMD_string
->Kind regards,
->Petr
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
+ .../functional/threads/README                 |   5 -
+ .../functional/threads/include/pitest.h       |  85 ----
+ .../functional/threads/include/test.h         |  26 --
+ .../functional/threads/pi_test/CFLAGS         |   1 -
+ .../functional/threads/pi_test/LDLIBS         |   1 -
+ .../functional/threads/pi_test/README         |  98 -----
+ .../functional/threads/pi_test/do-plot        |  71 ----
+ .../functional/threads/pi_test/pitest-1.c     | 327 ---------------
+ .../functional/threads/pi_test/pitest-2.c     | 361 -----------------
+ .../functional/threads/pi_test/pitest-3.c     | 373 ------------------
+ .../functional/threads/pi_test/pitest-4.c     | 337 ----------------
+ .../functional/threads/pi_test/pitest-5.c     | 345 ----------------
+ .../functional/threads/pi_test/pitest-6.c     | 328 ---------------
+ .../functional/threads/tools/watchdogtimer.sh |  17 -
+ 14 files changed, 2375 deletions(-)
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/include/pitest.h
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/include/test.h
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/CFLAGS
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/LDLIBS
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/README
+ delete mode 100755 testcases/open_posix_testsuite/functional/threads/pi_test/do-plot
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-5.c
+ delete mode 100644 testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
+ delete mode 100755 testcases/open_posix_testsuite/functional/threads/tools/watchdogtimer.sh
 
-
-
+diff --git a/testcases/open_posix_testsuite/functional/threads/README b/testcases/open_posix_testsuite/functional/threads/README
+index af99bad73..9490caff3 100644
+--- a/testcases/open_posix_testsuite/functional/threads/README
++++ b/testcases/open_posix_testsuite/functional/threads/README
+@@ -11,8 +11,3 @@ Currently it contains:
+ 
+ condvar - Test cases by Abhijeet Bisain. Testing pthread_cond_wait()
+ scheduling behavior when threads has realtime priority.
+-
+-pi_test - Test Priority Inheritence.
+-
+-robust_test - This suite is not proper to exist in PTS, since
+-the work of adding Robust Mutex to POSIX is still ongoing.
+diff --git a/testcases/open_posix_testsuite/functional/threads/include/pitest.h b/testcases/open_posix_testsuite/functional/threads/include/pitest.h
+deleted file mode 100644
+index dd7a48f9d..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/include/pitest.h
++++ /dev/null
+@@ -1,85 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file at the top level of this
+- *  source tree.
+- */
+-
+-#include <sys/time.h>
+-#include <string.h>
+-#include "test.h"
+-
+-#define PROTOCOL                PTHREAD_PRIO_INHERIT
+-
+-static inline
+-double seconds_read(void)
+-{
+-	struct timeval tv;
+-	gettimeofday(&tv, 0);
+-	return tv.tv_sec + 1e-6 * tv.tv_usec;
+-}
+-
+-static inline
+-int test_set_priority(pthread_t pid, unsigned policy, unsigned prio)
+-{
+-	struct sched_param sched_param;
+-	memset(&sched_param, 0, sizeof(sched_param));
+-	sched_param.sched_priority = prio;
+-	if (pthread_setschedparam(pid, policy, &sched_param) == -1)
+-	{
+-		EPRINTF("UNRESOLVED: Can't set policy to %d and prio to %d",
+-		  	policy, prio);
+-  	  	exit(UNRESOLVED);
+-  	}
+-	return 0;
+-}
+-
+-static inline
+-void mutex_attr_init(pthread_mutexattr_t *attr)
+-{
+-	unsigned rc;
+-
+-	rc = pthread_mutexattr_init(attr);
+-        if (rc != 0) {
+-                EPRINTF("UNRESOLVED: pthread_mutexattr_init: %d %s",
+-                        rc, strerror(rc));
+-                exit(UNRESOLVED);
+-        }
+-
+-	rc = pthread_mutexattr_setprotocol(attr, PROTOCOL);
+-        if (rc != 0) {
+-                EPRINTF("UNRESOLVED: pthread_mutexattr_setprotocol: %d %s",
+-	                rc, strerror(rc));
+-                exit(UNRESOLVED);
+-        }
+-}
+-
+-static inline
+-int mutex_init(pthread_mutex_t *mutex, pthread_mutexattr_t *attr)
+-{
+-	unsigned rc;
+-
+-	rc = pthread_mutex_init(mutex, attr);
+-        if (rc != 0) {
+-                EPRINTF("UNRESOLVED: pthread_mutex_init: %d %s",
+-                        rc, strerror(rc));
+-                exit(UNRESOLVED);
+-        }
+-	return 0;
+-}
+-
+-static inline
+-int threadattr_init(pthread_attr_t *threadattr)
+-{
+-	unsigned rc;
+-	rc = pthread_attr_init(threadattr);
+-	if (rc != 0) {
+-                EPRINTF("UNRESOLVED: pthread_attr_init: %d %s",
+-                        rc, strerror(rc));
+-	        exit(UNRESOLVED);
+-        }
+-	return 0;
+-}
+-
+diff --git a/testcases/open_posix_testsuite/functional/threads/include/test.h b/testcases/open_posix_testsuite/functional/threads/include/test.h
+deleted file mode 100644
+index 1ebb64a72..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/include/test.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file at the top level of this
+- *  source tree.
+- */
+-
+-#include <errno.h>
+-#include <string.h>
+-
+-#ifndef EOWNERDEAD
+-#define EOWNERDEAD	ESRCH
+-#endif
+-#ifndef ENOTRECOVERABLE
+-#define ENOTRECOVERABLE	EBADR
+-#endif
+-
+-#define PASS	0
+-#define FAIL	1
+-#define UNRESOLVED 2
+-
+-#define DPRINTF(a, x, args...)     fprintf(a, x , ##args);
+-#define EPRINTF(x, args...)	fprintf(stderr, "%s: %d: " x "\n",__FILE__, __LINE__, ##args);
+-
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/CFLAGS b/testcases/open_posix_testsuite/functional/threads/pi_test/CFLAGS
+deleted file mode 100644
+index a1e2b5ca4..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/CFLAGS
++++ /dev/null
+@@ -1 +0,0 @@
+--I"$(srcdir)/../include"
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/LDLIBS b/testcases/open_posix_testsuite/functional/threads/pi_test/LDLIBS
+deleted file mode 100644
+index 1d2c98f43..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/LDLIBS
++++ /dev/null
+@@ -1 +0,0 @@
+--lpthread
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/README b/testcases/open_posix_testsuite/functional/threads/pi_test/README
+deleted file mode 100644
+index ae644c96c..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/README
++++ /dev/null
+@@ -1,98 +0,0 @@
+-Real Time NPTL(rt-nptl) test suite README
+-=========================================
+-
+-The document describes what rt-nptl tests are, how they are created,
+-how to make and run the tests and how to analysis the result.
+-
+-rt-nptl tests include two parts, one is robust mutex tests, the other
+-is priority inheritance(pi) mutex tests.
+-
+-In the document, <rtnptl-tests> stands for the directory where
+-rtnptl-tests was extracted.
+-
+-
+-Building the tests
+--------------------
+-If you use the build method outlined in INSTALL-rtnptl, then just
+-change the top Makefile and the two Makefile under pi_test and
+-robust_test to include the Makefile.inc generated by INSTALL-rtnptl.
+-
+-Otherwise, you need to set the CFLAGS and LDFLAGS of the Makefile to
+-point to where your copy of glibc+RTNPTL is built.
+-
+-Run the tests
+-----------------
+-Use ./run.sh to run the tests; this makes sure there is a basic
+-watchdog timer to kill the pi mutex tests if they fail.
+-
+-For different tests, there are different result analysis methods. The
+-following two sections will describe this in detail.
+-
+-Priority Inheritance Mutex Tests
+---------------------------
+-The tests are under <rtnptl-tests>/pi_test directory.
+-
+-rt-nptl supports priority inheritance, if task TL with priority P(TL)
+-held a mutex, task TB with priority P(TB) claims the mutex and becomes
+-a waiter, P(TB)>P(TL), TL will boost to TB's priority until it
+-releases the lock. The pi mutex tests create several scenarios to test
+-this functionality. Please refer to the description in the tests for
+-the detailed information.
+-
+-Currently pi mutex tests don't provide automatic PASS or FAIL result
+-display. Although users can use run.sh under <rtnptl-tests>/pi_test to
+-run the pi mutex tests, they need to analyze the output to get the
+-PASS or FAIL test result manually. After executing run.sh, the output
+-files will be generated with the name output.<testcasename>, such as
+-output.pitest-1.
+-
+-If users use run.sh from ssh, to avoid the priority inversion
+-problem happened occasionally, users can use "chrt -p -f $PRIORITY
+-$$PPID" to increase the priority of sshd, if use run.sh from console,
+-users can use "chrt -p -f $PRIORITY $$" to increase the shell priority
+-before executing run.sh.
+-
+-A sampling thread will sample the progress of working threads (TL, TPs
+-and TFs) at a specified interval and print out an integer value.
+-Progress of TL and TP is measured by how many times they execute a
+-busy loop; the output of this count indicates how far they progress
+-with respect to each other.
+-
+-The first column of the output is the time when sampling happens. The
+-second column indicates the progress of TL thread at that time. The
+-third column indicates the progress of TP at that time. For pitest-2
+-and pitest-3, the second column is TP1 and the third column is TP2.
+-The remaining columns indicate the progress of TF (if any).
+-
+-If the priority of TL is higher than (or equal to) the priority of TP,
+-TP will make not progress (the output of TP will not increase, since
+-it will not be scheduled to execute). Otherwise, TP and TL will both
+-make progress. As a result, Users can observe the priority change of
+-TL by the progress of TP.
+-
+-Users can also use 'do-plot' utility under <rtnptl-tests>/pi_test to
+-generate a diagram using the output of test case. To do so:
+-
+-1. Redirect the output of test case into a file, e.g:
+-	pitest-1 > output.pitest-1
+-
+-2. Under X term, run:
+-	do-plot output.pitest-1
+-
+-do-plot will invoke 'gnuplot' to generate a diagram showing the
+-progress of TL and TP. ('gnuplot has to be installed in the system').
+-
+-Given pitest-1 as an example:
+-If the pi function works, TF's progress should be a straight line
+-constantly going up; TP's progress should start at about 10 seconds
+-and should be parallel to TF's until ten seconds later (20 seconds)
+-when TL is created; at this time TP's slope should go down a wee bit
+-and TL's slope should not be zero. After 10 seconds (30 seconds), TB
+-is created and TL boosted. At this moment, TP's slope should go down
+-to zero and TL's should be parallel to TF's. After TB timeouts on
+-waiting the mutex (50 seconds), TL and TP's slope will change back to
+-the original trend during 20~30 seconds.
+-
+-You can refer to
+-http://developer.osdl.org/dev/robustmutexes/pitest-1-0.5.png for the
+-diagram generated by do-plot for pitest-1.
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/do-plot b/testcases/open_posix_testsuite/functional/threads/pi_test/do-plot
+deleted file mode 100755
+index 17a1ccc14..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/do-plot
++++ /dev/null
+@@ -1,71 +0,0 @@
+-#! /bin/sh
+-
+-FILE=$1
+-TMP=$(mktemp -d /tmp/tmp.XXXXXX)
+-function error
+-{
+-    cat 1>&2
+-    exit 1
+-    rm -rf $TMP
+-}
+-
+-if ! cols=$(grep "#[ ]*COLUMNS" $FILE)
+-then
+-    error <<EOF
+-E: $FILE: Cannot locate the COLUMNS descriptor
+-EOF
+-fi
+-cols=$(echo $cols | sed 's/#//')
+-columns=$(echo $cols | awk '{print $2;}')
+-count=1
+-while [ $count -le $columns ]
+-do
+-  column[$count]=$(echo $cols | awk -vcount=$count '{print $(2 + count);}')
+-  if [ -z "${column[$count]}" ]
+-      then
+-      column[$count]=$count;
+-  fi
+-  count=$(($count + 1))
+-done
+-
+-# Set up the plot area
+-count=2
+-with="with dots"
+-cat > $TMP/gnuplot.script <<EOF
+-set xlabel "${column[1]} (s)"
+-set ylabel "Progress"
+-EOF
+-
+-# Plot the events
+-height=15
+-grep "#[ ]*EVENT" $FILE | sed 's/#//' > $TMP/events
+-cat $TMP/events | while read event x text
+-do
+-  if ! [ $event = "EVENT" ]
+-      then
+-      cat 1>&2 <<EOF
+-E: Unknown event type "$event", ignoring
+-EOF
+-      continue;
+-  fi
+-  height_text=$(($height + 2))
+-  echo "set arrow from $x, graph 0 to $x, graph 0.$height" >> $TMP/gnuplot.script
+-  echo "set label \"$text\" at $x, graph 0.$height_text center" >> $TMP/gnuplot.script
+-  height=$(($height + 8))
+-done
+-
+-# Set Key
+-echo "set key left top box lt 0" >> $TMP/gnuplot.script
+-# Plot the data
+-echo "plot '$FILE' using 1:2 title \"${column[$count]}\" $with" >> $TMP/gnuplot.script
+-count=3
+-while [ $count -le $columns ]
+-do
+-  echo "replot '$FILE' using 1:$count title \"${column[$count]}\" $with" \
+-      >> $TMP/gnuplot.script
+-  count=$(($count + 1))
+-done
+-
+-
+-( cat $TMP/gnuplot.script; cat ) | gnuplot
+-rm -rf $TMP
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
+deleted file mode 100644
+index 581edeec1..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-1.c
++++ /dev/null
+@@ -1,327 +0,0 @@
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file at the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 3. A
+- * TL thread with lower priority 1 is created, which locks a mutex and
+- * does workload. A TB thread with higher priority 4 is created and try
+- * to lock TL's mutex. A TP thread with priority 2 is created to reflect the
+- * priority change of TL. Main thread has the highest priority 6, which will
+- * control the running steps of those threads, including creating threads,
+- * stopping threads. There is another thread to collect the sample data with
+- * priority 5.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 1 TP thread and do workload. The thread will keep running when
+- * 	TL is created.
+- * 3.	Create 1 TL thread to lock a mutex. TL will get a chance to run
+- *      when TP sleep a wee bit in between.
+- * 4.	Create 1 TB thread to lock the mutex. TL's priority will boost to
+- *  	TB's priority, which will cause TP having no chance to run.
+- * 5.	TB timeout from the lock, TL's priority will decrease, so TP and TL
+- * 	will keep working as before.
+- * 5.	Keep running for a while to let TL stabilize.
+- * 6.	Stop these threads.
+- *
+- * Thanks Inaky.Perez-Gonzalez's suggestion and code
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <errno.h>
+-#include <pthread.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "posixtest.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex;
+-
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 50, 2, SCHED_FIFO, "TP", 0, 0, 0, 0}, {
+-	2, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	3, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	4, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	5, 0, 0, 3, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	6, 0, 0, 3, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	7, 0, 0, 3, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f %s Thread Started\n",
+-		seconds_read() - base_time, tp->name);
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s \n", tp->name, tp->index, rc,
+-				strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f %s Thread Stopped\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_tl(void *param)
+-{
+-	struct thread_param *tp = param;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-	int rc;
+-
+-	rc = sched_setaffinity((pid_t) 0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF
+-		    ("UNRESOLVED: Thread %s index %d: Can't set affinity: %d %s",
+-		     tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TL Started\n",
+-		seconds_read() - base_time);
+-	tp->progress = 0;
+-	pthread_mutex_lock(&mutex);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-	}
+-	pthread_mutex_unlock(&mutex);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TL Stopped\n",
+-		seconds_read() - base_time);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 250;
+-	double newtime;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 5);
+-	DPRINTF(stderr, "Thread Sampler: started \n");
+-	DPRINTF(stdout, "# COLUMNS %d Time TL TP ", 2 + cpus);
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-	while (!ts_stop) {
+-		newtime = seconds_read();
+-		size = snprintf(buffer, 1023, "%f ", newtime - base_time);
+-		for (i = 0; i < cpus + 1; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s \n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb(void *arg)
+-{
+-	struct timespec boost_time;
+-	double seconds, t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 4);
+-
+-	DPRINTF(stdout, "#EVENT %f TB Starts\n", seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *((time_t *) arg);
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex, &boost_time);
+-	t1 = seconds_read();
+-	seconds = t1 - t0;
+-
+-	DPRINTF(stdout, "#EVENT %f TB Waited for %.2f s\n",
+-		t1 - base_time, seconds);
+-
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB: lock returned %d %s, ", rc,
+-			strerror(rc));
+-		exit(FAIL);
+-	}
+-	DPRINTF(stderr, "Thread TB: DONE. lock returned %d %s, "
+-		"slept %f \n", rc, strerror(rc), seconds)
+-
+-	    return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1], threadsample, threadtp, threadtl, threadtb;
+-
+-	int multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-	base_time = seconds_read();
+-
+-	/* Initialize a mutex with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: start sample thread \n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: start %d TF thread\n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 2]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP thread */
+-
+-	DPRINTF(stderr, "Main Thread: start TP thread\n");
+-	rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[1]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: start TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_tl, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB thread (boosting thread) */
+-	DPRINTF(stderr, "Main Thread: start TB thread\n");
+-	time_t timeout = multiplier * 20;
+-	rc = pthread_create(&threadtb, &threadattr, thread_tb, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 60 - seconds_read());
+-
+-	/* Stop TL thread */
+-
+-	DPRINTF(stderr, "Main Thread: stop TL thread\n");
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 70 - seconds_read());
+-
+-	/* Stop TP thread */
+-	DPRINTF(stderr, "Main Thread: stop TP thread\n");
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 80 - seconds_read());
+-
+-	/* Stop TF threads */
+-	DPRINTF(stderr, "Main Thread: stop TF threads\n");
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread \n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
+deleted file mode 100644
+index 19ac67bef..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-2.c
++++ /dev/null
+@@ -1,361 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file@the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 3. A
+- * TL thread with lower priority 1 is created, which locks a mutex and
+- * does workload. One TB1 and one TB2 thread with higher priority 4, 6 are
+- * created and try to lock TL's mutex. One TP1 and one TP2 thread with priority
+- * 2, 5 are created to reflect the priority change of TL. Main thread
+- * has the highest priority 8, which will control the running steps of
+- * those threads, including creating threads, stopping threads. There is
+- * another thread to collect the sample data with priority 7.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 2 TP threads(TP1, TP2) and do workload. The 2 threads will
+- * 	keep running when TL is created.
+- * 3.	Create 1 TL thread to lock a mutex. TL will get a chance to run
+- *      when TPs sleep a wee bit in between.
+- * 4.	Create 1 TB1 thread with higher priority than TP1 to lock the mutex.
+- * 	TL's priority will boost to TB1's priority, which will cause TP1 having
+- * 	no chance to run.
+- * 5.	Create 1 TB2 thread with higher priority than TP2 to lock the mutex,
+- * 	TL's priority will boost to TB2's priority, which wll cause TP2 having
+- * 	no chance to run.
+- * 6.	TB1, TL will timeout later.
+- * 7.	Stop these threads.
+- *
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <errno.h>
+-#include <pthread.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "posixtest.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex;
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 500, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
+-	2, 0, 500, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
+-	3, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	4, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	5, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	6, 0, 0, 3, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	7, 0, 0, 3, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	8, 0, 0, 3, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-	DPRINTF(stderr, "Thread %s index %d: started \n", tp->name, tp->index);
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	DPRINTF(stdout, "#EVENT %f Thread %s Stopped\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_tl(void *param)
+-{
+-	struct thread_param *tp = param;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-	int rc;
+-
+-	rc = sched_setaffinity((pid_t) 0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF
+-		    ("UNRESOLVED: Thread %s index %d: Can't set affinity: %d %s",
+-		     tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TL Started\n",
+-		seconds_read() - base_time);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-	tp->progress = 0;
+-	pthread_mutex_lock(&mutex);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-	}
+-	pthread_mutex_unlock(&mutex);
+-	DPRINTF(stdout, "#EVENT %f Thread TL Stoped\n",
+-		seconds_read() - base_time);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 300;
+-	double newtime;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 7);
+-	DPRINTF(stderr, "Thread Sampler: started \n");
+-	DPRINTF(stdout, "# COLUMNS %d Time TL TP1 TP2 ", 3 + cpus);
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-	while (!ts_stop) {
+-		newtime = seconds_read();
+-		size = snprintf(buffer, 1023, "%f ", newtime - base_time);
+-		for (i = 0; i < cpus + 2; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s \n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb1(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 4);
+-
+-	DPRINTF(stderr, "Thread TB1: started\n");
+-	DPRINTF(stdout, "#EVENT %f TB1 Thread Started\n",
+-		seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex, &boost_time);
+-	t1 = seconds_read();
+-	DPRINTF(stdout, "#EVENT %f TB1 Thread Waited for %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB1: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb2(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-
+-	DPRINTF(stderr, "Thread TB2: started\n");
+-	DPRINTF(stdout, "#EVENT %f TB2 Thread Started\n",
+-		seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex, &boost_time);
+-	t1 = seconds_read();
+-	DPRINTF(stdout, "#EVENT %f TB2 Thread Waited for %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB2: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-	return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1];
+-	pthread_t threadsample, threadtp, threadtl, threadtb1, threadtb2;
+-
+-	time_t multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 8);
+-	base_time = seconds_read();
+-
+-	/* Initialize a mutex with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: Creating sample thread \n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: Creating %d TF threads \n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 3]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP1, TP2 thread */
+-	DPRINTF(stderr, "Main Thread: Creating TP1, TP2 thread \n");
+-	for (i = 1; i <= 2; i++) {
+-		rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[i]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: Creating TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_tl, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB1 thread (boosting thread) */
+-	time_t timeout = multiplier * 20;
+-	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 60 - seconds_read());
+-
+-	/* Start TB2 thread (boosting thread) */
+-	rc = pthread_create(&threadtb2, &threadattr, thread_tb2, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 90 - seconds_read());
+-
+-	/* Stop TL thread */
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 100 - seconds_read());
+-
+-	/* Stop TP thread */
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 110 - seconds_read());
+-
+-	tp[2].stop = 1;
+-	sleep(base_time + multiplier * 120 - seconds_read());
+-
+-	/* Stop TF threads */
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread \n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
+deleted file mode 100644
+index 586785bfb..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-3.c
++++ /dev/null
+@@ -1,373 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file@the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 3. A
+- * TL thread with lower priority 1 is created, which locks 2 mutex and
+- * does workload. A TB1 thread with high priority 4 is created and try
+- * to lock mutex1 of TL. A TB2 thread with high priority 6 is created and
+- * try to lock mutex2 of TL. TL's priority should boost to TB2's priority.
+- * There are another 2 threads TP1 and TP2, which are used to check the
+- * priority change of TL, P(TP1)<P(TB1)<P(TP2)<P(TB2), P(TH) stands for
+- * the priority of TH thread. Main thread has the highest priority 8,
+- * which will control the running steps of those threads, including
+- * creating threads, stopping threads. There is another thread to collect
+- * the sample data with priority 7.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 2 TP threads: TP1 and TP2 and do workload. The 2 threads
+- * 	will keep running when TL is created.
+- * 3.	Create 1 TL thread to lock 2 mutex: mutex1 and mutex2. TL will get
+- * 	a chance to run when TP sleep a wee bit in between.
+- * 4.	Create 1 TB1 thread to lock mutex1. TL's priority will boost to
+- *  	TB1's priority, which will cause TP1 having no chance to run.
+- * 5.	Create 1 TB2 thread to lock mutex2. TL's priority will boost to
+- *  	TB2's priority, which will cause TP1, TP2 having no chance to run.
+- * 6.	Stop these threads.
+- *
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <pthread.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <stdlib.h>
+-#include <time.h>
+-#include <sched.h>
+-#include <errno.h>
+-#include "test.h"
+-#include "posixtest.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex1;
+-pthread_mutex_t mutex2;
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 500, 2, SCHED_FIFO, "TP1", 0, 0, 0, 0}, {
+-	1, 0, 500, 5, SCHED_FIFO, "TP2", 0, 0, 0, 0}, {
+-	2, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	3, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	4, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	5, 0, 0, 3, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	6, 0, 0, 3, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	7, 0, 0, 3, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s Stopped\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_tl(void *param)
+-{
+-	struct thread_param *tp = param;
+-
+-#if __linux__
+-	int rc;
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity((pid_t) 0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF
+-		    ("UNRESOLVED: Thread %s index %d: Can't set affinity: %d %s",
+-		     tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-	DPRINTF(stdout, "#EVENT %f Thread TL Started\n",
+-		seconds_read() - base_time);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-
+-	tp->progress = 0;
+-	pthread_mutex_lock(&mutex1);
+-	pthread_mutex_lock(&mutex2);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-	}
+-
+-	pthread_mutex_unlock(&mutex1);
+-	pthread_mutex_unlock(&mutex2);
+-	DPRINTF(stdout, "#EVENT %f Thread TL Stopped\n",
+-		seconds_read() - base_time);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 300;
+-	double newtime;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 7);
+-	DPRINTF(stderr, "Thread Sampler: started\n");
+-
+-	DPRINTF(stdout, "# COLUMNS %d Time TL TP1 TP2  ", 3 + cpus);
+-
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-	while (!ts_stop) {
+-		newtime = seconds_read();
+-		size = snprintf(buffer, 1023, "%f ", newtime - base_time);
+-		for (i = 0; i < cpus + 2; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s\n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb1(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 4);
+-	DPRINTF(stderr, "Thread TB1: started\n");
+-	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
+-		seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex1, &boost_time);
+-	t1 = seconds_read();
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TB1 Waited for %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB1: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb2(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-	DPRINTF(stderr, "Thread TB2: started\n");
+-	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+-		seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex2, &boost_time);
+-	t1 = seconds_read();
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TB2 waited %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB2: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-
+-	return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1];
+-	pthread_t threadsample, threadtp, threadtl, threadtb1, threadtb2;
+-
+-	time_t multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 8);
+-	base_time = seconds_read();
+-
+-	/* Initialize mutex1, mutex2 with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex1, &mutex_attr);
+-	mutex_init(&mutex2, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: Creating sample thread\n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: Creating %d TF threads\n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 3]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP1, TP2 thread */
+-	DPRINTF(stderr, "Main Thread: Creating TP1, TP2 thread\n");
+-	for (i = 1; i <= 2; i++) {
+-		rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[i]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: Creating TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_tl, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB1 thread (boosting thread) */
+-	time_t timeout = multiplier * 20;
+-	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 60 - seconds_read());
+-
+-	/* Start TB2 thread (boosting thread) */
+-	rc = pthread_create(&threadtb2, &threadattr, thread_tb2, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 90 - seconds_read());
+-
+-	/* Stop TL thread */
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 100 - seconds_read());
+-
+-	/* Stop TP thread */
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 110 - seconds_read());
+-
+-	tp[2].stop = 1;
+-	sleep(base_time + multiplier * 120 - seconds_read());
+-
+-	/* Stop TF threads */
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread\n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
+deleted file mode 100644
+index 2d81b286b..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-4.c
++++ /dev/null
+@@ -1,337 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file@the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 4. A
+- * TL thread with priority 1 is created, which locks mutex1 and
+- * does workload. A TB1 thread with higher priority 2 is created and try
+- * to lock mutex1 of TL, TB1 will also lock another mutex mutex2. A TB2 thread
+- * with high priority 5 is created and try to lock mutex2 of TB1. Then TB's
+- * priority will boost to TB2's, and TL's priority will boost to TB1's.
+- * There are another 1 thread TP, which is used to check the
+- * priority change of TL, P(TB1)<P(TL)<P(TP)<P(TB2), P(TH) stands for
+- * the priority of TH thread. Main thread has the highest priority 8,
+- * which will control the running steps of those threads, including
+- * creating threads, stopping threads. There is another thread to collect
+- * the sample data with priority 7.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 1 TP threads and do workload. The thread
+- * 	will keep running when TL is created.
+- * 3.	Create 1 TL thread to lock mutex1. TL will get a chance to
+- * 	run when TP sleep a wee bit in between.
+- * 4.	Create 1 TB1 thread to lock mutex2 and try to lock mutex1, TL's priority will
+- *	be boosted to TB1
+- * 5.	Create 1 TB2 thread to lock mutex2. TB1's priority will boost to
+- *  	TB2's priority, then TL's priority will boost to TB1's new priority.
+- * 6.	Stop these threads.
+- *
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <errno.h>
+-#include <pthread.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include "posixtest.h"
+-#include "test.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex1;
+-pthread_mutex_t mutex2;
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 100, 4, SCHED_FIFO, "TP", 0, 0, 0, 0}, {
+-	2, 0, 0, 2, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	3, 0, 0, 2, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	4, 0, 0, 2, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	5, 0, 0, 2, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	6, 0, 0, 2, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	7, 0, 0, 2, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	if (tp->index == 0)
+-		pthread_mutex_lock(&mutex1);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	if (tp->index == 0)
+-		pthread_mutex_unlock(&mutex1);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s Stopped\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 300;
+-	double newtime;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-	DPRINTF(stderr, "Thread Sampler: started\n");
+-	DPRINTF(stdout, "# COLUMNS %d Time TL TP ", 2 + cpus);
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-	while (!ts_stop) {
+-		newtime = seconds_read();
+-		size = snprintf(buffer, 1023, "%f ", newtime - base_time);
+-		for (i = 0; i < cpus + 1; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s\n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb1(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 3);
+-	DPRINTF(stderr, "Thread TB1: started\n");
+-	DPRINTF(stdout, "#EVENT %f Thread TB1 Started\n",
+-		seconds_read() - base_time);
+-
+-	pthread_mutex_lock(&mutex2);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex1, &boost_time);
+-	t1 = seconds_read();
+-
+-	DPRINTF(stdout, "#EVENT %f TB1 Waited on mutex1 for %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB1: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-
+-	pthread_mutex_unlock(&mutex2);
+-	return NULL;
+-}
+-
+-void *thread_tb2(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 5);
+-	DPRINTF(stderr, "Thread TB2: started\n");
+-	DPRINTF(stdout, "#EVENT %f Thread TB2 Started\n",
+-		seconds_read() - base_time);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex2, &boost_time);
+-	t1 = seconds_read();
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TB2 Waited on mutex2 for %.2f s\n",
+-		t1 - base_time, t1 - t0);
+-
+-	if (rc != ETIMEDOUT) {
+-		EPRINTF("FAIL: Thread TB2: lock mutex2 returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-	return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1];
+-	pthread_t threadsample, threadtp, threadtl, threadtb1, threadtb2;
+-
+-	time_t multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 8);
+-	base_time = seconds_read();
+-
+-	/* Initialize mutex1, mutex2 with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex1, &mutex_attr);
+-	mutex_init(&mutex2, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: Creating sample thread\n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: Creating %d TF threads\n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 2]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP thread */
+-	DPRINTF(stderr, "Main Thread: Creating TP thread\n");
+-	rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[1]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: Creating TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_fn, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB1 thread (the lowest priority thread) */
+-	time_t timeout = multiplier * 40;
+-	rc = pthread_create(&threadtb1, &threadattr, thread_tb1, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 40 - seconds_read());
+-
+-	/* Start TB2 thread (boosting thread) */
+-	timeout = multiplier * 20;
+-	rc = pthread_create(&threadtb2, &threadattr, thread_tb2, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 75 - seconds_read());
+-
+-	/* Stop TL thread */
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 85 - seconds_read());
+-
+-	/* Stop TP thread */
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 95 - seconds_read());
+-
+-	/* Stop TF threads */
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread\n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-5.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-5.c
+deleted file mode 100644
+index 2568b0562..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-5.c
++++ /dev/null
+@@ -1,345 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file@the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 3. A
+- * TL thread with lower priority 1 is created, which locks a mutex and
+- * does workload. A TB thread with higher priority 4 is created and try
+- * to lock TL's mutex. A TP thread with priority 2 is created to reflect the
+- * priority change of TL. Main thread has the highest priority 6, which will
+- * control the running steps of those threads, including creating threads,
+- * stopping threads. There is another thread to collect the sample data
+- * with priority 5.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 1 TP thread and do workload. The thread will keep running when
+- * 	TL is created.
+- * 3.	Create 1 TL thread to lock a mutex. TL will get a chance to run
+- *      when TP sleep a wee bit in between.
+- * 4.	Create 1 TB thread to lock the mutex. TL's priority will boost to
+- *  	TB's priority, which will cause TP having no chance to run.
+- * 5.	TL will unlock the mutex,  TL's priority will decrease, so TP and TL
+- * 	will keep working as before.
+- * 5.	Keep running for a while to let TL stabilize.
+- * 6.	Stop these threads.
+- *
+- * NOTE: Most of the code is ported from test-11 written by inkay.
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <errno.h>
+-#include <pthread.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "posixtest.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex;
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-volatile int unlock_mutex = 0;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 200, 2, SCHED_FIFO, "TP", 0, 0, 0, 0}, {
+-	2, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	3, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	4, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	5, 0, 0, 3, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	6, 0, 0, 3, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	7, 0, 0, 3, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s started\n",
+-		seconds_read() - base_time, tp->name);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s stopped\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_tl(void *param)
+-{
+-	struct thread_param *tp = param;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity((pid_t) 0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF
+-		    ("UNRESOLVED: Thread %s index %d: Can't set affinity: %d %s",
+-		     tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TL started\n",
+-		seconds_read() - base_time);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-
+-	tp->progress = 0;
+-	pthread_mutex_lock(&mutex);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (unlock_mutex == 1) {
+-			rc = pthread_mutex_unlock(&mutex);
+-			if (rc == 0) {
+-				unlock_mutex = 0;
+-				DPRINTF(stdout,
+-					"#EVENT %f TL unlock the mutex\n",
+-					seconds_read() - base_time);
+-			} else {
+-				EPRINTF
+-				    ("UNRESOLVED: TL failed to unlock mutex: %d %s",
+-				     rc, strerror(rc));
+-				exit(UNRESOLVED);
+-			}
+-		}
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TL stopped\n",
+-		seconds_read() - base_time);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 300;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 5);
+-
+-	DPRINTF(stderr, "Thread Sampler: started\n");
+-	DPRINTF(stdout, "# COLUMNS %d Time TL TP ", 2 + cpus);
+-
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-
+-	while (!ts_stop) {
+-		size =
+-		    snprintf(buffer, 1023, "%f ", seconds_read() - base_time);
+-		for (i = 0; i < cpus + 1; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s\n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	int rc;
+-	struct timespec ts;
+-	ts.tv_sec = 2;
+-	ts.tv_nsec = 0;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 4);
+-	DPRINTF(stderr, "Thread TB: started\n");
+-	DPRINTF(stdout, "#EVENT %f Thread TB started,trying to lock\n",
+-		seconds_read() - base_time);
+-
+-	rc = pthread_mutex_lock(&mutex);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: Thread TB: lock returned %d %s",
+-			rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	DPRINTF(stdout, "#EVENT %f Thread TB got lock\n",
+-		seconds_read() - base_time);
+-
+-	nanosleep(&ts, NULL);
+-
+-	rc = pthread_mutex_unlock(&mutex);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: Thread TB: unlock returned %d %s",
+-			rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f Thread TB unlocked and stopped\n",
+-		seconds_read() - base_time);
+-
+-	return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1], threadsample, threadtp, threadtl, threadtb;
+-	time_t multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-	base_time = seconds_read();
+-
+-	/* Initialize a mutex with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: Creating sample thread\n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: Creating %d TF threads\n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 2]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP thread */
+-	DPRINTF(stderr, "Main Thread: Creating TP thread\n");
+-	rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[1]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: Creating TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_tl, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB thread (boosting thread) */
+-	rc = pthread_create(&threadtb, &threadattr, thread_tb, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 40 - seconds_read());
+-	unlock_mutex = 1;
+-	sleep(base_time + multiplier * 50 - seconds_read());
+-
+-	/* Stop TL thread */
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 60 - seconds_read());
+-
+-	/* Stop TP thread */
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 70 - seconds_read());
+-
+-	/* Stop TF threads */
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread\n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c b/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
+deleted file mode 100644
+index b873dfdad..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/pi_test/pitest-6.c
++++ /dev/null
+@@ -1,328 +0,0 @@
+-
+-/*
+- *  Copyright (c) 2003, Intel Corporation. All rights reserved.
+- *  Created by:  crystal.xiong REMOVE-THIS AT intel DOT com
+- *  This file is licensed under the GPL license.  For the full content
+- *  of this license, see the COPYING file@the top level of this
+- *  source tree.
+- */
+-
+-/* There are n TF threads, n is equal to the processors in the system minus
+- * one. TFs are used to keep busy these CPUs, which have priority 3. A
+- * TL thread with lower priority 1 is created, which locks a mutex and
+- * does workload. A TB thread with higher priority 4 is created and try
+- * to lock TL's mutex. A TP thread with priority 2 is created to reflect the
+- * priority change of TL. Main thread has the highest priority 6, which will
+- * control the running steps of those threads, including creating threads,
+- * stopping threads. There is another thread to collect the sample data with
+- * priority 5.
+- *
+- * Steps:
+- * 1.	Create n TF threads, n is equal to processors number minus one. TF
+- * 	will do workload.
+- * 2.	Create 1 TP thread and do workload. The thread will keep running when
+- * 	TL is created.
+- * 3.	Create 1 TL thread to lock a mutex. TL will get a chance to run
+- *      when TP sleep a wee bit in between.
+- * 4.	Create 1 TB thread to lock the mutex. TL's priority will boost to
+- *  	TB's priority, which will cause TP having no chance to run.
+- * 5.	Set TB's prioirty to 1, TL's priority will decrease. So TP and TL
+- * 	will keep working as before.
+- * 6.	Stop these threads.
+- *
+- * NOTE: Most of the code is ported from test-11 written by inkay.
+- */
+-
+-#ifdef	__linux__
+-#define	_GNU_SOURCE
+-#endif
+-#include <errno.h>
+-#include <pthread.h>
+-#include <sched.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "posixtest.h"
+-#include "pitest.h"
+-
+-int cpus;
+-pthread_mutex_t mutex;
+-volatile int ts_stop = 0;
+-volatile double base_time;
+-
+-struct thread_param {
+-	int index;
+-	volatile int stop;
+-	int sleep_ms;
+-	int priority;
+-	int policy;
+-	const char *name;
+-	int cpu;
+-	volatile unsigned futex;
+-	volatile unsigned should_stall;
+-	volatile unsigned progress;
+-} tp[] = {
+-	{
+-	0, 0, 0, 1, SCHED_FIFO, "TL", 0, 0, 0, 0}, {
+-	1, 0, 200, 2, SCHED_FIFO, "TP", 0, 0, 0, 0}, {
+-	2, 0, 0, 3, SCHED_FIFO, "TF", 1, 0, 0, 0}, {
+-	3, 0, 0, 3, SCHED_FIFO, "TF", 2, 0, 0, 0}, {
+-	4, 0, 0, 3, SCHED_FIFO, "TF", 3, 0, 0, 0}, {
+-	5, 0, 0, 3, SCHED_FIFO, "TF", 4, 0, 0, 0}, {
+-	6, 0, 0, 3, SCHED_FIFO, "TF", 5, 0, 0, 0}, {
+-	7, 0, 0, 3, SCHED_FIFO, "TF", 6, 0, 0, 0}
+-};
+-
+-volatile unsigned do_work_dummy;
+-void do_work(unsigned granularity_top, volatile unsigned *progress)
+-{
+-	unsigned granularity_cnt, i;
+-	unsigned top = 5 * 1000 * 1000;
+-	unsigned dummy = do_work_dummy;
+-
+-	for (granularity_cnt = 0; granularity_cnt < granularity_top;
+-	     granularity_cnt++) {
+-		for (i = 0; i < top; i++)
+-			dummy = i | dummy;
+-		(*progress)++;
+-	}
+-	return;
+-}
+-
+-void *thread_fn(void *param)
+-{
+-	struct thread_param *tp = param;
+-	struct timespec ts;
+-	int rc;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-
+-	rc = sched_setaffinity(0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF("UNRESOLVED: Thread %s index %d: Can't set affinity: "
+-			"%d %s", tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-
+-	tp->progress = 0;
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = tp->sleep_ms * 1000 * 1000;
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-		if (tp->sleep_ms == 0)
+-			continue;
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0) {
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_tl(void *param)
+-{
+-	struct thread_param *tp = param;
+-
+-#if __linux__
+-	unsigned long mask = 1 << tp->cpu;
+-	int rc;
+-
+-	rc = sched_setaffinity((pid_t) 0, sizeof(mask), &mask);
+-	if (rc < 0) {
+-		EPRINTF
+-		    ("UNRESOLVED: Thread %s index %d: Can't set affinity: %d %s",
+-		     tp->name, tp->index, rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-#endif
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, tp->priority);
+-
+-	DPRINTF(stderr, "Thread %s index %d: started\n", tp->name, tp->index);
+-	DPRINTF(stdout, "#EVENT %f Thread %s Started\n",
+-		seconds_read() - base_time, tp->name);
+-	tp->progress = 0;
+-	pthread_mutex_lock(&mutex);
+-	while (!tp->stop) {
+-		do_work(5, &tp->progress);
+-	}
+-	pthread_mutex_unlock(&mutex);
+-	DPRINTF(stdout, "#EVENT %f Thread %s Stopted\n",
+-		seconds_read() - base_time, tp->name);
+-	return NULL;
+-}
+-
+-void *thread_sample(void *arg LTP_ATTRIBUTE_UNUSED)
+-{
+-	char buffer[1024];
+-	struct timespec ts;
+-	double period = 250;
+-	size_t size;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 5);
+-	DPRINTF(stderr, "Thread Sampler: started\n");
+-	DPRINTF(stdout, "# COLUMNS %d Time TP TL ", 2 + cpus);
+-	for (i = 0; i < (cpus - 1); i++)
+-		DPRINTF(stdout, "TF%d ", i);
+-	DPRINTF(stdout, "\n");
+-	ts.tv_sec = 0;
+-	ts.tv_nsec = period * 1000 * 1000;
+-
+-	while (!ts_stop) {
+-		size =
+-		    snprintf(buffer, 1023, "%f ", seconds_read() - base_time);
+-		for (i = 0; i < cpus + 1; i++)
+-			size +=
+-			    snprintf(buffer + size, 1023 - size, "%u ",
+-				     tp[i].progress);
+-		DPRINTF(stdout, "%s\n", buffer);
+-		rc = nanosleep(&ts, NULL);
+-		if (rc < 0)
+-			EPRINTF("UNRESOLVED: Thread %s %d: nanosleep returned "
+-				"%d %s", tp->name, tp->index, rc, strerror(rc));
+-	}
+-	return NULL;
+-}
+-
+-void *thread_tb(void *arg)
+-{
+-	struct timespec boost_time;
+-	double t0, t1;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 4);
+-	DPRINTF(stderr, "Thread TB: started\n");
+-
+-	DPRINTF(stdout, "#EVENT %f TB Started, waiting for mutex for %lu s\n",
+-		seconds_read() - base_time, *(time_t *) arg);
+-
+-	boost_time.tv_sec = time(NULL) + *(time_t *) arg;
+-	boost_time.tv_nsec = 0;
+-
+-	t0 = seconds_read();
+-	rc = pthread_mutex_timedlock(&mutex, &boost_time);
+-	t1 = seconds_read();
+-	DPRINTF(stdout, "#EVENT %f TB Thread Waited for %.2f s\n",
+-		seconds_read() - base_time, t1 - t0);
+-
+-	if (rc != ETIMEDOUT && rc != 0) {
+-		EPRINTF("FAIL: Thread TB: lock returned %d %s, "
+-			"slept %f", rc, strerror(rc), t1 - t0);
+-		exit(FAIL);
+-	}
+-
+-	DPRINTF(stdout, "#EVENT %f TB Stopped\n", seconds_read() - base_time);
+-	return NULL;
+-}
+-
+-int main(void)
+-{
+-	cpus = sysconf(_SC_NPROCESSORS_ONLN);
+-	pthread_mutexattr_t mutex_attr;
+-	pthread_attr_t threadattr;
+-	pthread_t threads[cpus - 1], threadsample, threadtp, threadtl, threadtb;
+-
+-	time_t multiplier = 1;
+-	int i;
+-	int rc;
+-
+-	test_set_priority(pthread_self(), SCHED_FIFO, 6);
+-	base_time = seconds_read();
+-
+-	/* Initialize a mutex with PTHREAD_PRIO_INHERIT protocol */
+-	mutex_attr_init(&mutex_attr);
+-	mutex_init(&mutex, &mutex_attr);
+-
+-	/* Initialize thread attr */
+-	threadattr_init(&threadattr);
+-
+-	/* Start the sample thread */
+-	DPRINTF(stderr, "Main Thread: Creating sample thread\n");
+-	rc = pthread_create(&threadsample, &threadattr, thread_sample, NULL);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-
+-	/* Start the TF threads */
+-	DPRINTF(stderr, "Main Thread: Creating %d TF threads\n", cpus - 1);
+-	for (i = 0; i < cpus - 1; i++) {
+-		rc = pthread_create(&threads[i], &threadattr, thread_fn,
+-				    &tp[i + 2]);
+-		if (rc != 0) {
+-			EPRINTF("UNRESOLVED: pthread_create: %d %s",
+-				rc, strerror(rc));
+-			exit(UNRESOLVED);
+-		}
+-	}
+-
+-	sleep(base_time + multiplier * 10 - seconds_read());
+-
+-	/* Start TP thread */
+-	DPRINTF(stderr, "Main Thread: Creating TP thread\n");
+-	rc = pthread_create(&threadtp, &threadattr, thread_fn, &tp[1]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 20 - seconds_read());
+-
+-	/* Start TL thread */
+-	DPRINTF(stderr, "Main Thread: Creating TL thread\n");
+-	rc = pthread_create(&threadtl, &threadattr, thread_tl, &tp[0]);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 30 - seconds_read());
+-
+-	/* Start TB thread (boosting thread) */
+-	unsigned long timeout = multiplier * 20;
+-	rc = pthread_create(&threadtb, &threadattr, thread_tb, &timeout);
+-	if (rc != 0) {
+-		EPRINTF("UNRESOLVED: pthread_create: %d %s", rc, strerror(rc));
+-		exit(UNRESOLVED);
+-	}
+-	sleep(base_time + multiplier * 40 - seconds_read());
+-
+-	/* Decrease TB's priority */
+-	DPRINTF(stderr, "Main Thread: decrease TB's priority to 1\n");
+-	test_set_priority(threadtb, SCHED_FIFO, 1);
+-	DPRINTF(stdout, "#EVENT %f TB's priority decreased\n",
+-		seconds_read() - base_time);
+-	sleep(base_time + multiplier * 60 - seconds_read());
+-
+-	/* Stop TL thread */
+-	tp[0].stop = 1;
+-	sleep(base_time + multiplier * 70 - seconds_read());
+-
+-	/* Stop TP thread */
+-	tp[1].stop = 1;
+-	sleep(base_time + multiplier * 80 - seconds_read());
+-
+-	/* Stop TF threads */
+-	for (i = 2; i < cpus - 1; i++) {
+-		tp[i].stop = 1;
+-	}
+-
+-	/* Stop sampler */
+-	ts_stop = 1;
+-	DPRINTF(stderr, "Main Thread: stop sampler thread\n");
+-	return 0;
+-}
+diff --git a/testcases/open_posix_testsuite/functional/threads/tools/watchdogtimer.sh b/testcases/open_posix_testsuite/functional/threads/tools/watchdogtimer.sh
+deleted file mode 100755
+index af5790163..000000000
+--- a/testcases/open_posix_testsuite/functional/threads/tools/watchdogtimer.sh
++++ /dev/null
+@@ -1,17 +0,0 @@
+-#!/bin/bash
+-PRIORITY=20
+-# PINUM stands for the test cases number of pi test
+-PINUM=6
+-num=0
+-chrt -p -f $PRIORITY $$
+-TIMEOUT=600
+-echo "Start watchdogtimer script..."
+-echo "wait 10 minutes, if pitest hangs, stop the case execution"
+-while [ $num -lt $PINUM ]
+-do
+-sleep $TIMEOUT
+-killall -9 -q pitest*
+-echo "Timeout, kill pi test case"
+-num=`expr $num + 1`
+-done
+-
+-- 
+2.20.1
 
