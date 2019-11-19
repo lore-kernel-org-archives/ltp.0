@@ -1,40 +1,50 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 19 Nov 2019 05:02:34 -0500 (EST)
-Subject: [LTP] [PATCH] fallocate05: increase FALLOCATE_SIZE
-In-Reply-To: <6371c082-ac3a-3daf-9196-481973f85b04@suse.cz>
-References: <d8ad4bab26557fdf70e7ebc3f771bbb37ae889d7.1574093242.git.jstancek@redhat.com>
- <CAEemH2eu8HcQ90+BxUL0Hu+No6P5je4xC3oqVSU_ZnwMXEG=7Q@mail.gmail.com>
- <1824199572.12930798.1574151212869.JavaMail.zimbra@redhat.com>
- <6371c082-ac3a-3daf-9196-481973f85b04@suse.cz>
-Message-ID: <1061994684.12955452.1574157754643.JavaMail.zimbra@redhat.com>
+Date: Tue, 19 Nov 2019 11:29:26 +0100
+Subject: [LTP] [PATCH] lib: don't pass NULL to strcmp in safe_mount
+Message-ID: <1a623a82dfac64c8a6f9805c197fa72cb5e6f046.1574159295.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Rachel reports, that pivot_root01 crashes on latest LTP:
+  Thread 3.1 "pivot_root01" received signal SIGSEGV, Segmentation fault.
+  0x00000000004062c4 in safe_mount (file=file@entry=0x413017 "pivot_root01.c"
+  733             if (strcmp(filesystemtype, "ntfs")) {
 
+Don't pass NULL ptr to strcmp. Also fix return in unreachable path,
+to suppress warning about returning uninitialized 'rval'.
 
------ Original Message -----
-> > ----- Original Message -----
-> > fallocate05 seems to be the only test using it, but in general I think we
-> > can do that too. Assuming this alone would be reliable, is there any
-> > advantage of running test with small FALLOCATE_SIZE?
-> 
-> Note that simply increasing FALLOCATE_SIZE will not fix an incorrect
-> pass when the file system wasn't completely full. Here's the code that
-> checks whether some blocks were properly fallocate()d:
-> 
-> tst_fill_fs(MNTPOINT, 1);
-> ret = write(fd, buf, sizeof(buf));
-> if (ret < 0)
-> 	tst_res(TFAIL | TERRNO, "write() failed unexpectedly");
-> else
-> 	tst_res(TPASS, "write() wrote %zu bytes", ret);
-> 
-> If the file system somehow finds a few free blocks after tst_fill_fs()
-> returns, short write() will still count as a pass.
+Fixes: ae52b6f41bf3 ("lib: Fix safe_mount() when mounting NTFS on kernels with NTFS support")
+Reported-by: Rachel Sibley <rasibley@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ lib/safe_macros.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-That is good point, but that seems like issue that existed even with
-8k FALLOCATE_SIZE, right?
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index c725c7d7763f..41fa4ca83004 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -730,7 +730,7 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
+ 	 * the kernel's NTFS driver doesn't have proper write support.
+ 	 */
+-	if (strcmp(filesystemtype, "ntfs")) {
++	if (!filesystemtype || strcmp(filesystemtype, "ntfs")) {
+ 		rval = mount(source, target, filesystemtype, mountflags, data);
+ 		if (!rval)
+ 			return 0;
+@@ -764,7 +764,7 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 			 mountflags, data);
+ 	}
+ 
+-	return rval;
++	return -1;
+ }
+ 
+ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+-- 
+1.8.3.1
 
