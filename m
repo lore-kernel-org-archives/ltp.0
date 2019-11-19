@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 19 Nov 2019 16:03:36 -0000
+Date: Tue, 19 Nov 2019 17:31:34 -0000
 Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E12-rc1-0a89ac5=2Ecki_=28stable=29?=
-Message-ID: <cki.1DC2AF3DB0.C8FDVJX3WA@redhat.com>
+ =?utf-8?q?=2E12-rc1-6d539b8=2Ecki_=28stable=29?=
+Message-ID: <cki.6DBB2EB133.PTTL8ZNEDM@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 0a89ac54e7d5 - Linux 5.3.12-rc1
+            Commit: 6d539b8f097b - Linux 5.3.12-rc1
 
 The results of these automated tests are provided below.
 
@@ -26,7 +26,7 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://artifacts.cki-project.org/pipelines/294912
+  https://artifacts.cki-project.org/pipelines/295147
 
 One or more kernel tests failed:
 
@@ -111,6 +111,7 @@ We booted each kernel and ran the following tests:
        ? ALSA Control (mixer) Userspace Element test
        ? Usex - version 1.9-29
        ? storage: SCSI VPD
+       ? stress: stress-ng
        ? trace: ftrace/tracer
        ? ? CIFS Connectathon
        ? ? POSIX pjd-fstest suites
@@ -128,11 +129,6 @@ We booted each kernel and ran the following tests:
        ? ? Storage blktests
 
     Host 2:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
        ? Boot test
        ? Podman system integration test (as root)
        ? Podman system integration test (as user)
@@ -169,33 +165,10 @@ We booted each kernel and ran the following tests:
        ? ? CIFS Connectathon
        ? ? POSIX pjd-fstest suites
        ? ? Networking vnic: ipvlan/basic
-       ? ??? storage: dm/common
+       ? ? storage: dm/common
 
   x86_64:
     Host 1:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-    Host 2:
-       ? Boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-
-    Host 3:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IOMMU boot test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 5:
        ? Boot test
        ? Podman system integration test (as root)
        ? Podman system integration test (as user)
@@ -238,6 +211,29 @@ We booted each kernel and ran the following tests:
        ? ? POSIX pjd-fstest suites
        ? ? Networking vnic: ipvlan/basic
        ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 4:
+       ? Boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+
+    Host 5:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
