@@ -1,35 +1,66 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 20 Nov 2019 01:51:38 -0500 (EST)
-Subject: [LTP] [PATCH] lib: don't pass NULL to strcmp in safe_mount
-In-Reply-To: <CAEemH2fiyODj=FedbVK8xtrgz1T3JWO5dBiSUbA1L24XOx2yqA@mail.gmail.com>
-References: <1a623a82dfac64c8a6f9805c197fa72cb5e6f046.1574159295.git.jstancek@redhat.com>
- <CAEemH2fiyODj=FedbVK8xtrgz1T3JWO5dBiSUbA1L24XOx2yqA@mail.gmail.com>
-Message-ID: <2022379807.13117932.1574232698559.JavaMail.zimbra@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 20 Nov 2019 14:54:11 +0800
+Subject: [LTP] [PATCH v6 1/2] lib/tst_timer_test: move test setup
+ function before PR_GET_TIMERSLACK
+In-Reply-To: <1574044495-2813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20191115163517.GB25964@rei.lan>
+ <1574044495-2813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <71e855bf-62c8-5ee1-e8d2-6753459571f7@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Cyril
+
+ ?I think this patch can be merged if it is ok.
+
+Thanks
+Yang Xu
+
+> Move test setup function before PR_GET_TIMERSLACK in timer setup function so
+> that the library includes the newly set timerslack in the calculation.
+>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>   lib/tst_timer_test.c | 8 +++-----
+>   1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
+> index f6459e5c0..13e9deff2 100644
+> --- a/lib/tst_timer_test.c
+> +++ b/lib/tst_timer_test.c
+> @@ -340,6 +340,9 @@ static void timer_setup(void)
+>   	struct timespec t;
+>   	int ret;
+>   
+> +	if (setup)
+> +		setup();
+> +
+>   	tst_clock_getres(CLOCK_MONOTONIC, &t);
+>   
+>   	tst_res(TINFO, "CLOCK_MONOTONIC resolution %lins", (long)t.tv_nsec);
+> @@ -360,16 +363,11 @@ static void timer_setup(void)
+>   	tst_res(TINFO, "PR_GET_TIMERSLACK not defined, using %uus",
+>   		timerslack);
+>   #endif /* PR_GET_TIMERSLACK */
+> -
+>   	parse_timer_opts();
+>   
+>   	samples = SAFE_MALLOC(sizeof(long long) * MAX(MAX_SAMPLES, sample_cnt));
+> -
+>   	if (set_latency() < 0)
+>   		tst_res(TINFO, "Failed to set zero latency constraint: %m");
+> -
+> -	if (setup)
+> -		setup();
+>   }
+>   
+>   static void timer_cleanup(void)
 
 
------ Original Message -----
-> On Tue, Nov 19, 2019 at 6:29 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> > Rachel reports, that pivot_root01 crashes on latest LTP:
-> >   Thread 3.1 "pivot_root01" received signal SIGSEGV, Segmentation fault.
-> >   0x00000000004062c4 in safe_mount (file=file@entry=0x413017
-> > "pivot_root01.c"
-> >   733             if (strcmp(filesystemtype, "ntfs")) {
-> >
-> > Don't pass NULL ptr to strcmp. Also fix return in unreachable path,
-> > to suppress warning about returning uninitialized 'rval'.
-> >
-> 
-> Good catch.
-> 
-> And shouldn't we give a "correct" fs_type in pivot_root01.c too? Otherwise,
-> the test would be failed on an invalid mounted operation I guess.
-
-Per man-page, it should be ignored.
-
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191120/b98d0025/attachment.htm>
