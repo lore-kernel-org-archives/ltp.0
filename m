@@ -1,36 +1,56 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Nov 2019 13:29:10 +0100
-Subject: [LTP] [PATCH 1/3] perf_event_open02: migrate to newlib
-In-Reply-To: <53c6b3308d3e77fd95cae17b2a7ed1d4e8b2f60e.1574087532.git.jstancek@redhat.com>
+Date: Wed, 20 Nov 2019 13:33:39 +0100
+Subject: [LTP] [PATCH 2/3] perf_event_open02: make do_work() run for
+ specified time
+In-Reply-To: <5b0f2a837117f3af1351d8b3da357cacecaa1463.1574087532.git.jstancek@redhat.com>
 References: <cover.1574087532.git.jstancek@redhat.com>
- <53c6b3308d3e77fd95cae17b2a7ed1d4e8b2f60e.1574087532.git.jstancek@redhat.com>
-Message-ID: <20191120122910.GD14963@rei.lan>
+ <5b0f2a837117f3af1351d8b3da357cacecaa1463.1574087532.git.jstancek@redhat.com>
+Message-ID: <20191120123339.GE14963@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> @@ -312,15 +238,13 @@ static void cleanup(void)
+> -static void do_work(void)
+> +void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
+
+static void ?
+
+> +{
+> +	work_done = 1;
+> +}
+> +
+> +static void do_work(int time_ms)
 >  {
 >  	int i;
+> +	struct sigaction sa;
+> +	struct itimerval val;
 >  
-> -	for (i = 0; i < n; i++) {
-> -		if (hwfd[i] > 0 && close(hwfd[i]) == -1)
-> -			tst_resm(TWARN | TERRNO, "close(%d) failed", hwfd[i]);
-> -		if (tskfd[i] > 0 && close(tskfd[i]) == -1)
-> -			tst_resm(TWARN | TERRNO, "close(%d) failed", tskfd[i]);
-> +	for (i = 0; i < ntotal; i++) {
-> +		SAFE_CLOSE(hwfd[i]);
-> +		SAFE_CLOSE(tskfd[i]);
+> -	for (i = 0; i < LOOPS; ++i)
+> -		asm volatile (""::"g" (i));
+> -}
+> +	work_done = 0;
+> +	memset(&val, 0, sizeof(val));
+> +	val.it_value.tv_sec = time_ms / 1000;
+> +	val.it_value.tv_usec = (time_ms % 1000) * 1000;
+>  
+> +	sa.sa_handler = alarm_handler;
+> +	sa.sa_flags = SA_RESETHAND;
+> +	SAFE_SIGACTION(SIGALRM, &sa, NULL);
 
-Shouldn't we check that the hwfd[i] and tskfd[i] are > 0?
+I would have set up the signal handler just once in the test setup.
 
-I guess that we may do SAFE_CLOSE(0) repeatedly here in a case that
-perf_event_open() failed somewhere in the middle of the setup().
+> +	if (setitimer(ITIMER_REAL, &val, NULL))
+> +		tst_brk(TBROK | TERRNO, "setitimer");
+> +
+> +	while (!work_done) {
+> +		for (i = 0; i < 100000; ++i)
+> +			asm volatile (""::"g" (i));
+> +	}
+> +}
 
-Otherwise this is a nice cleanup, acked.
+Otherwise it looks great, acked.
 
 -- 
 Cyril Hrubis
