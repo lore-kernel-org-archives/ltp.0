@@ -1,54 +1,46 @@
-From: Rachel Sibley <rasibley@redhat.com>
-Date: Wed, 20 Nov 2019 11:25:58 -0500
-Subject: [LTP] ??? FAIL: Test report for kernel 5.4.0-rc8-4b17a56.cki
- (stable-next)
-In-Reply-To: <20191120113534.GC14963@rei.lan>
-References: <cki.6D94BD5731.3IAGHB25D8@redhat.com>
- <20191120113534.GC14963@rei.lan>
-Message-ID: <57f8e29e-1d49-e93f-2b03-75a3fd3e6e21@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 20 Nov 2019 18:09:48 +0100
+Subject: [LTP] [PATCH v3 1/5] syscalls/quotactl01.c: Add Q_GETNEXQUOTA
+ test
+In-Reply-To: <989b7cbfa4cf4d7bb65c9b7df45b8c37@G08CNEXMBPEKD04.g08.fujitsu.local>
+References: <20191031152646.GA7078@dell5510>
+ <1572612959-20577-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1572612959-20577-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191115155123.GA658@x230>
+ <989b7cbfa4cf4d7bb65c9b7df45b8c37@G08CNEXMBPEKD04.g08.fujitsu.local>
+Message-ID: <20191120170948.GA7010@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Xu,
 
+> >>  	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
+> >>+	if (TST_ERR == EINVAL) {
+> >> +		tst_res(TCONF, "Current system doesn't support this cmd");
+> >nit: cmd? Maybe something like "quotactl() syscall does not support this command"
+> >or "quotactl() syscall does not support to %s", tc->des to follow other messages. I'd actually prefer to have some macro, which prints QCMD flags, but that's a detail which we can >ignore.
+> I think we can add some info before each run (such as prctl02.c and copy_file_range02.c, make error cases more clear ), as below:
+> 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);  // this tname is a QCMD_string
 
-On 11/20/19 6:35 AM, Cyril Hrubis wrote:
-> Hi!
->> One or more kernel tests failed:
->>
->>      ppc64le:
->>       ??? LTP lite
->>       ??? xfstests: ext4
-> 
-> Both logs shows missing files, that may be an infrastructure problem as
-> well.
-> 
-> Also can we include links to the logfiles here? Bonus points for showing
-> the snippet with the actual failure in the email as well. I takes a fair
-> amount of time locating them manually in the pipeline repository, it
-> would be much much easier just with the links to the right logfile...
-> 
++1.  It could use similar approach as it's in testcases/kernel/syscalls/mbind/mbind01.c
 
-Thanks for the feedback Cyril, we did have links to each failure listed
-before but we were told it made the email look cluttered especially
-if there are multiple failures.
+#define POLICY_DESC(x) .policy = x, .desc = #x
+#define POLICY_DESC_TEXT(x, y) .policy = x, .desc = #x" ("y")"
 
-The test logs are sorted by arch|host|TC, is there something we can
-do to make it easier to find related logs ?
-https://artifacts.cki-project.org/pipelines/296781/logs/
+static struct test_case tcase[] = {
+	{
+		POLICY_DESC(MPOL_DEFAULT),
+		...
+	},
+	{
+		POLICY_DESC_TEXT(MPOL_DEFAULT, "target exists"),
 
-Maybe we can look into adding the linked logs to the bottom of the
-email with a reference id next to the failures in the summary, so
-for example:
+But I'd prefer to have it as a separate patch after v4 of this patchset is merged.
+I'd prefer to finish v4 (I've already fixed small formatting things, I can fix
+the rest of needed things myself).
 
-     ppc64le:
-      ? LTP lite [1]
-      ? xfstests: ext4 [2]
-
-We could also look into merging the ltp run logs into a single file
-as well.
-
--Rachel
-
+Kind regards,
+Petr
