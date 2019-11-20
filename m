@@ -1,215 +1,228 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 20 Nov 2019 17:13:34 +0800
-Subject: [LTP] [PATCH v4 3/5] syscalls/quotactl04: add project quota test
- for non-xfs filesystem
+Date: Wed, 20 Nov 2019 17:13:36 +0800
+Subject: [LTP] [PATCH v4 5/5] syscalls/quotactl06: Add new error testcase
 In-Reply-To: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1574241216-15168-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1574241216-15168-6-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a variant about quotactl01.c and used to test project quota.
-I split it into a new case instead of adding it in quotaclt01.c because
-two points:
-1)Before linux 4.10, ext4 doesn't support project quota.
-2)On old kernel, kernel doesn't permit mount both prjquota and grpquota together.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- include/lapi/quotactl.h                       |   4 +
  runtest/syscalls                              |   1 +
  testcases/kernel/syscalls/quotactl/.gitignore |   1 +
- .../kernel/syscalls/quotactl/quotactl04.c     | 162 ++++++++++++++++++
- 4 files changed, 168 insertions(+)
- create mode 100644 testcases/kernel/syscalls/quotactl/quotactl04.c
+ .../kernel/syscalls/quotactl/quotactl06.c     | 196 ++++++++++++++++++
+ 3 files changed, 198 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl06.c
 
-diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-index 808d044ff..8d559af51 100644
---- a/include/lapi/quotactl.h
-+++ b/include/lapi/quotactl.h
-@@ -59,6 +59,10 @@ struct fs_quota_statv {
- #endif
- #endif
- 
-+#ifndef PRJQUOTA
-+# define PRJQUOTA 2
-+#endif
-+
- # ifndef Q_XGETQSTATV
- #  define Q_XGETQSTATV XQM_CMD(8)
- # endif
 diff --git a/runtest/syscalls b/runtest/syscalls
-index fee91f909..078143b13 100644
+index b6bf67c38..9bbde8c41 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -954,6 +954,7 @@ pwritev202_64 pwritev202_64
- quotactl01 quotactl01
- quotactl02 quotactl02
+@@ -956,6 +956,7 @@ quotactl02 quotactl02
  quotactl03 quotactl03
-+quotactl04 quotactl04
+ quotactl04 quotactl04
+ quotactl05 quotactl05
++quotactl06 quotactl06
  
  read01 read01
  read02 read02
 diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-index b0ef075e7..1db7c5d98 100644
+index 6fe62fbf7..12896d6ad 100644
 --- a/testcases/kernel/syscalls/quotactl/.gitignore
 +++ b/testcases/kernel/syscalls/quotactl/.gitignore
-@@ -1,3 +1,4 @@
- /quotactl01
- /quotactl02
+@@ -3,3 +3,4 @@
  /quotactl03
-+/quotactl04
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+ /quotactl04
+ /quotactl05
++/quotactl06
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
 new file mode 100644
-index 000000000..86260499d
+index 000000000..0d7efe38b
 --- /dev/null
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -0,0 +1,162 @@
++++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
+@@ -0,0 +1,196 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
 + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 + *
-+ * This testcase checks the basic flag of quotactl(2) for project quota on
-+ * non-XFS filesystems.
-+ *
-+ * 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for project.
-+ * 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
-+ *    for project.
-+ * 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
-+ *    for project.
-+ * 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
-+ *    flag for project.
-+ * 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
-+ *    flag for project.
-+ * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for project.
-+ * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
-+ *    ID with Q_GETNEXTQUOTA flag for project.
-+ * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
++ * Tests basic error handling of the quotactl syscall.
++ * Description:
++ * 1) quotactl fails with EACCES when cmd is Q_QUOTAON and addr
++ * existed but not a regular file.
++ * 2) quotaclt fails with ENOENT when the file specified by special
++ * or addr does not exist.
++ * 3) quotactl fails with EBUSTY when  cmd is Q_QUOTAON and another
++ * Q_QUOTAON had already been performed.
++ * 4) quotactl fails with EFAULT when addr or special is invalid.
++ * 5) quotactl fails with EINVAL when cmd or type is invalid.
++ * 6) quotactl fails with ENOTBLK when special is not a block device.
++ * 7) quotactl fails with ESRCH when no disk quota is found for the
++ * indicated user and quotas have not been turned on for this fs.
++ * 8) quotactl fails with ESRCH when cmd is Q_QUOTAON, but the quota
++ * format was not found.
++ * 9) quotactl fails with ESRCH when cmd is Q_GETNEXTQUOTA, but there
++ * is no ID greater than or equal to id that has an active quota.
++ * 10) quotactl fails with ERANGE when cmd is Q_SETQUOTA, but the
++ * specified limits are out of the range allowed by the quota format.
++ * 11) quotactl fails with EPERM when the caller lacked the required
++ * privilege (CAP_SYS_ADMIN) for the specified operation.
 + */
-+
 +#include <errno.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <sys/stat.h>
-+#include "config.h"
-+#include "lapi/quotactl.h"
++#include <sys/quota.h>
 +#include "tst_test.h"
++#include "lapi/quotactl.h"
++#include "tst_capability.h"
 +
-+#ifndef QFMT_VFS_V1
-+# define QFMT_VFS_V1 4
-+#endif
++#define OPTION_INVALID 999
++#define QFMT_VFS_V0     2
++#define USRPATH MNTPOINT "/aquota.user"
++#define FMTID QFMT_VFS_V0
 +
-+#define FMTID QFMT_VFS_V1
-+#define MNTPOINT	"mntpoint"
++#define MNTPOINT "mntpoint"
++#define TESTDIR1 MNTPOINT "/testdir1"
++#define TESTDIR2 MNTPOINT "/testdir2"
++
 +static int32_t fmt_id = FMTID;
-+static int test_id, mount_flag;
++static int32_t fmt_invalid = 999;
++static int test_invalid;
++static int test_id;
++static int getnextquota_nsup;
++
++static struct if_nextdqblk res_ndq;
 +static struct dqblk set_dq = {
 +	.dqb_bsoftlimit = 100,
 +	.dqb_valid = QIF_BLIMITS
 +};
-+static struct dqblk res_dq;
-+static struct dqinfo set_qf = {
-+	.dqi_bgrace = 80,
-+	.dqi_valid = IIF_BGRACE
++
++static struct dqblk set_dqmax = {
++	.dqb_bsoftlimit = 0x7fffffffffffffffLL,  /* 2^63-1 */
++	.dqb_valid = QIF_BLIMITS
 +};
 +
-+static struct dqinfo res_qf;
-+static int32_t fmt_buf;
++struct tst_cap dropadmin = {
++	.action = TST_CAP_DROP,
++	.id = CAP_SYS_ADMIN,
++	.name = "CAP_SYS_ADMIN",
++};
 +
-+static struct if_nextdqblk res_ndq;
++struct tst_cap needadmin = {
++	.action = TST_CAP_REQ,
++	.id = CAP_SYS_ADMIN,
++	.name = "CAP_SYS_ADMIN",
++};
 +
 +static struct tcase {
 +	int cmd;
 +	int *id;
 +	void *addr;
-+	void *set_data;
-+	void *res_data;
-+	int sz;
-+	char *des;
-+	char *tname;
++	int exp_err;
++	int on_flag;
 +} tcases[] = {
-+	{QCMD(Q_QUOTAON, PRJQUOTA), &fmt_id, NULL,
-+	NULL, NULL, 0, "turn on quota for project",
-+	"QCMD(Q_QUOTAON, PRJQUOTA)"},
-+
-+	{QCMD(Q_SETQUOTA, PRJQUOTA), &test_id, &set_dq,
-+	NULL, NULL, 0, "set disk quota limit for project",
-+	"QCMD(Q_SETQUOTA, PRJQUOTA)"},
-+
-+	{QCMD(Q_GETQUOTA, PRJQUOTA), &test_id, &res_dq,
-+	&set_dq.dqb_bsoftlimit, &res_dq.dqb_bsoftlimit,
-+	sizeof(res_dq.dqb_bsoftlimit), "get disk quota limit for project",
-+	"QCMD(Q_GETQUOTA, PRJQUOTA)"},
-+
-+	{QCMD(Q_SETINFO, PRJQUOTA), &test_id, &set_qf,
-+	NULL, NULL, 0, "set information about quotafile for project",
-+	"QCMD(Q_SETINFO, PRJQUOTA"},
-+
-+	{QCMD(Q_GETINFO, PRJQUOTA), &test_id, &res_qf,
-+	&set_qf.dqi_bgrace, &res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace),
-+	"get information about quotafile for project",
-+	"QCMD(Q_GETINFO, PRJQUOTA"},
-+
-+	{QCMD(Q_GETFMT, PRJQUOTA), &test_id, &fmt_buf,
-+	&fmt_id, &fmt_buf, sizeof(fmt_buf),
-+	"get quota format for project", "QCMD(Q_GETFMT, PRJQUOTA)"},
-+
-+	{QCMD(Q_GETNEXTQUOTA, PRJQUOTA), &test_id, &res_ndq,
-+	&test_id, &res_ndq.dqb_id, sizeof(res_ndq.dqb_id),
-+	"get next disk quota limit for project",
-+	"QCMD(Q_GETNEXTQUOTA, PRJQUOTA)"},
-+
-+	{QCMD(Q_QUOTAOFF, PRJQUOTA), &test_id, NULL,
-+	NULL, NULL, 0, "turn off quota for project",
-+	"QCMD(Q_QUOTAOFF, PRJQUOTA)"},
-+
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, TESTDIR1, EACCES, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, TESTDIR2, ENOENT, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, EBUSY, 1},
++	{QCMD(Q_SETQUOTA, USRQUOTA), &fmt_id, NULL, EFAULT, 1},
++	{QCMD(OPTION_INVALID, USRQUOTA), &fmt_id, USRPATH, EINVAL, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, ENOTBLK, 0},
++	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dq, ESRCH, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_invalid, USRPATH, ESRCH, 0},
++	{QCMD(Q_GETNEXTQUOTA, USRQUOTA), &test_invalid, USRPATH, ESRCH, 0},
++	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dqmax, ERANGE, 1},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, EPERM, 0},
 +};
++
++static void verify_quotactl(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	int quota_on = 0;
++	int drop_flag = 0;
++
++	if (tc->cmd == QCMD(Q_GETNEXTQUOTA, USRQUOTA) && getnextquota_nsup) {
++		tst_res(TCONF, "current system doesn't support Q_GETNEXTQUOTA, skip it");
++		return;
++	}
++
++	if (tc->on_flag) {
++		TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), tst_device->dev, FMTID, USRPATH));
++		if (TST_RET == -1)
++			tst_brk(TBROK,
++				"quotactl with Q_QUOTAON returned %ld", TST_RET);
++		quota_on = 1;
++	}
++
++	if (tc->exp_err == EPERM) {
++		tst_cap_action(&dropadmin);
++		drop_flag = 1;
++	}
++
++	if (tc->exp_err == ENOTBLK)
++		TEST(quotactl(tc->cmd, "/dev/null", *tc->id, tc->addr));
++	else
++		TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
++	if (TST_RET == -1) {
++		if (tc->exp_err == TST_ERR) {
++			tst_res(TPASS | TTERRNO, "quotactl failed as expected");
++		} else {
++			tst_res(TFAIL | TTERRNO,
++				"quotactl failed unexpectedly; expected %s, but got",
++				tst_strerrno(tc->exp_err));
++		}
++	} else {
++		tst_res(TFAIL, "quotactl returned wrong value: %ld", TST_RET);
++	}
++
++	if (quota_on) {
++		TEST(quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), tst_device->dev, FMTID, USRPATH));
++		if (TST_RET == -1)
++			tst_brk(TBROK,
++				"quotactl with Q_QUOTAOFF returned %ld", TST_RET);
++		quota_on = 0;
++	}
++
++	if (drop_flag) {
++		tst_cap_action(&needadmin);
++		drop_flag = 0;
++	}
++}
 +
 +static void setup(void)
 +{
-+	const char *const extra_opts[] = {"-O quota,project", NULL};
++	const char *const cmd[] = {"quotacheck", "-uF", "vfsv0", MNTPOINT, NULL};
++	int ret;
++	unsigned int i;
 +
++	ret = tst_run_cmd(cmd, NULL, NULL, 1);
++	switch (ret) {
++	case 0:
++		break;
++	case 255:
++		tst_brk(TBROK, "quotacheck binary not installed");
++		break;
++	default:
++		tst_brk(TBROK, "quotacheck exited with %i", ret);
++	}
++
++	if (access(USRPATH, F_OK) == -1)
++		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
++
++	SAFE_MKDIR(TESTDIR1, 0666);
 +	test_id = geteuid();
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, extra_opts);
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-+	mount_flag = 1;
-+}
++	test_invalid = test_id + 1;
 +
-+static void cleanup(void)
-+{
-+	if (mount_flag && tst_umount(MNTPOINT))
-+	tst_res(TWARN | TERRNO, "umount(%s)", MNTPOINT);
-+}
++	TEST(quotactl(QCMD(Q_GETNEXTQUOTA, USRQUOTA), tst_device->dev,
++		test_id, (void *) &res_ndq));
++	if (TST_ERR == EINVAL || TST_ERR == ENOSYS)
++		getnextquota_nsup = 1;
 +
-+static void verify_quota(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	res_dq.dqb_bsoftlimit = 0;
-+	res_qf.dqi_igrace = 0;
-+	fmt_buf = 0;
-+
-+	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
-+
-+	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "quotactl failed to %s", tc->des);
-+		return;
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		if (!tcases[i].addr)
++			tcases[i].addr = tst_get_bad_addr(NULL);
 +	}
-+
-+	if (memcmp(tc->res_data, tc->set_data, tc->sz)) {
-+		tst_res(TFAIL, "quotactl failed to %s", tc->des);
-+		tst_res_hexd(TINFO, tc->res_data, tc->sz, "retval:   ");
-+		tst_res_hexd(TINFO, tc->set_data, tc->sz, "expected: ");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "quotactl succeeded to %s", tc->des);
 +}
 +
 +static const char *kconfigs[] = {
@@ -218,17 +231,15 @@ index 000000000..86260499d
 +};
 +
 +static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.needs_kconfigs = kconfigs,
-+	.min_kver = "4.10", /* commit 689c958cbe6b (ext4: add project quota support) */
-+	.test = verify_quota,
-+	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_device = 1,
++	.needs_kconfigs = kconfigs,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_quotactl,
 +	.dev_fs_type = "ext4",
 +	.mntpoint = MNTPOINT,
++	.mount_device = 1,
++	.mnt_data = "usrquota",
++	.needs_root = 1,
 +};
 -- 
 2.18.0
