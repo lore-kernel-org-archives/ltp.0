@@ -1,38 +1,86 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Nov 2019 16:16:10 +0100
-Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
- test
-In-Reply-To: <20191120151244.GA28197@dell5510>
-References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191120151244.GA28197@dell5510>
-Message-ID: <20191120151610.GB28197@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 20 Nov 2019 17:16:34 +0100
+Subject: [LTP] [PATCH v2] futex_cmp_requeue01: fix test expectations
+In-Reply-To: <ec1792be62432bb64e4d5c5085f6ebfa7e5d4b53.1573562645.git.jstancek@redhat.com>
+References: <1059626680.11523678.1573489826970.JavaMail.zimbra@redhat.com>
+ <ec1792be62432bb64e4d5c5085f6ebfa7e5d4b53.1573562645.git.jstancek@redhat.com>
+Message-ID: <20191120161634.GA31645@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan, Cyril, Xu,
+Hi!
+> 1. Keeping same uaddr1 value across requeue leads to a side-effect.
+> If there is a signal or spurious wakeup, futex_wait() operation can
+> be restarted (by kernel) with same input parameters. Which means that
+> process requeued for uaddr2, goes back to queueing for uaddr1. Such
+> use case is currently not valid as it is expected that uaddr1 value
+> changes, so that any late waiter can notice it and goes back with
+> -EWOULDBLOCK (-EAGAIN).
+> 
+> 2. Test doesn't expect possibility of spurious wakeups.
+> 
+> 3. Test is expecting to get exact values of woken/requeued processes.
+> Man page wording like "at most" or "maximum of" does not guarantee
+> exact numbers.
+> 
+> Change futex value before requeue, so child processes can observe
+> spurious wakeups.
+> 
+> Change child process, such that it always sleeps, to guarantee that
+> TST_PROCESS_STATE_WAIT() will always succeed finding sleeping process.
+> 
+> Change default timeout to 5 seconds. Spawning 1000 process on slower
+> systems was getting close to 1 second. This doesn't affect runtime in
+> PASS-ing case.
+> 
+> Change checks such that they reflect wording in man page, and don't
+> test for absolute values (see comments in code). One exception is
+> that we assume futex_wake(tc->num_waiters) will always wake up all
+> remaining processes.
 
-> > +#ifdef HAVE_STRUCT_IF_NEXTDQBLK
-> > +# include <linux/quota.h>
-> > +#else
-> > +# ifdef HAVE_LINUX_TYPES_H
-> > +# include <linux/types.h>
-> @Jan, @Cyril: Do we want to generally avoid loading <linux/types.h> if not really needed?
-> __u64 can be uint64_t etc (as it's also visible in struct dqblk in <sys/quota.h>
-> in various libc headers).
-> We used this approach for /usr/include/linux/bpf.h and for fanotify fixes for
-> musl (testcases/kernel/syscalls/fanotify/fanotify.h).
+I was thinking about this and the only unpreciseness we can get here is
+the number of spuriously woken up processes at the end of the test and
+that is because we cannot tell where exactly the spurious wakeup
+happened, right?
 
-> So unless you're against this approach here I'll change it before merge
-> (and add this info to next version of library API writing guidelines patch
-> https://patchwork.ozlabs.org/patch/1166786/).
-+ general question: do we want always test against kernel headers or libc
-headers? Libc is often outdated, so mostly it'd be our fallback to be tested.
-Ideally both kernel and libc header should be tested, but that's not easily
-achievable.
+That means that all the assertion we could have made without the
+spurious wakeups will still hold, but we will have to take the number of
+spurious wakeups as our measurement error, just like in physics.
 
-Kind regards,
-Petr
+Also the futex_cmp_requeue() should prefer waking processes up against
+requeue operation so basically:
+
+TST_RET - num_requeues = set_wakes
+
+Unless spurious wakeup has happened between the requeue and wake
+operation which means that the num_requeues can be smaller because we
+will wake up less than requeued processes. So if we sampled spurious
+wakeups before the requeue operation and after the futex_wake() for
+requeued processes and call it delta_spurious we would get a range:
+
+TST_RET - num_requeues >= set_wakes
+
+&&
+
+TST_RET - num_requeues - delta_spurious <= set_wakes
+
+Similarily the number of processes left waiting on the futex should be
+in a range of expected and MIN(0, expected - spurious) where
+expected = num_waiter - set_wakes - set_requeues.
+
+And lastly the num_requeues should be between set_requeues and MIN(0,
+set_requeues - spurious).
+
+Or did is miss something that invalidates my line of thought?
+
+
+Also btw, we are missing a tcase where we attempt to wake more processes
+that are sleeping on the futex and check that we haven't requeued any
+because all were woken up.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
