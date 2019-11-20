@@ -1,70 +1,51 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 20 Nov 2019 15:23:11 +0800
-Subject: [LTP] [PATCH v2] tst_fill_fs: enhance the filesystem filling routine
-Message-ID: <20191120072311.32333-1-liwang@redhat.com>
+Date: Wed, 20 Nov 2019 15:53:53 +0800
+Subject: [LTP] [PATCH] lib: don't pass NULL to strcmp in safe_mount
+In-Reply-To: <2022379807.13117932.1574232698559.JavaMail.zimbra@redhat.com>
+References: <1a623a82dfac64c8a6f9805c197fa72cb5e6f046.1574159295.git.jstancek@redhat.com>
+ <CAEemH2fiyODj=FedbVK8xtrgz1T3JWO5dBiSUbA1L24XOx2yqA@mail.gmail.com>
+ <2022379807.13117932.1574232698559.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2d7Mx_Y-vCa6YohULnbzE6H6Y6q7KrXGOjGEqJdkvnq_w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Do more tries with size in half when write() getting ENOSPC, until the size
-is less than the filesystem block size. Though we can't really fill a filesystem
-full, this could make the routine more robust.
+On Wed, Nov 20, 2019 at 2:51 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Jan Stancek <jstancek@redhat.com>
-Cc: Martin Doucha <mdoucha@suse.cz>
----
- lib/tst_fill_fs.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+>
+>
+> ----- Original Message -----
+> > On Tue, Nov 19, 2019 at 6:29 PM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> > > Rachel reports, that pivot_root01 crashes on latest LTP:
+> > >   Thread 3.1 "pivot_root01" received signal SIGSEGV, Segmentation
+> fault.
+> > >   0x00000000004062c4 in safe_mount (file=file@entry=0x413017
+> > > "pivot_root01.c"
+> > >   733             if (strcmp(filesystemtype, "ntfs")) {
+> > >
+> > > Don't pass NULL ptr to strcmp. Also fix return in unreachable path,
+> > > to suppress warning about returning uninitialized 'rval'.
+> > >
+> >
+> > Good catch.
+> >
+> > And shouldn't we give a "correct" fs_type in pivot_root01.c too?
+> Otherwise,
+> > the test would be failed on an invalid mounted operation I guess.
+>
+> Per man-page, it should be ignored.
+>
 
-diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
-index 4003dce97..3015c066e 100644
---- a/lib/tst_fill_fs.c
-+++ b/lib/tst_fill_fs.c
-@@ -6,6 +6,7 @@
- #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <sys/statvfs.h>
- 
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
-@@ -19,6 +20,8 @@ void tst_fill_fs(const char *path, int verbose)
- 	size_t len;
- 	ssize_t ret;
- 	int fd;
-+	struct statvfs fi;
-+	statvfs(path, &fi);
- 
- 	for (;;) {
- 		len = random() % (1024 * 102400);
-@@ -37,17 +40,20 @@ void tst_fill_fs(const char *path, int verbose)
- 			return;
- 		}
- 
--		while (len) {
-+		while (len >= fi.f_bsize/2) {
- 			ret = write(fd, buf, MIN(len, sizeof(buf)));
- 
- 			if (ret < 0) {
-+				if (errno == ENOSPC) {
-+					SAFE_FSYNC(fd);
-+					len /= 2;
-+					continue;
-+				}
-+
- 				SAFE_CLOSE(fd);
- 
- 				if (errno != ENOSPC)
- 					tst_brk(TBROK | TERRNO, "write()");
--
--				tst_res(TINFO | TERRNO, "write()");
--				return;
- 			}
- 
- 			len -= ret;
+Ok, then this patch looks good.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.20.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191120/e579d101/attachment.htm>
