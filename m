@@ -1,64 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Nov 2019 10:31:50 +0100
-Subject: [LTP] ??? FAIL: Test report for kernel 5.4.0-rc8-4b17a56.cki
- (stable-next)
-In-Reply-To: <57f8e29e-1d49-e93f-2b03-75a3fd3e6e21@redhat.com>
-References: <cki.6D94BD5731.3IAGHB25D8@redhat.com>
- <20191120113534.GC14963@rei.lan>
- <57f8e29e-1d49-e93f-2b03-75a3fd3e6e21@redhat.com>
-Message-ID: <20191121093150.GA14186@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 21 Nov 2019 11:30:03 +0100
+Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
+ test
+In-Reply-To: <1893160007.13287158.1574326875945.JavaMail.zimbra@redhat.com>
+References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191120151244.GA28197@dell5510>
+ <1893160007.13287158.1574326875945.JavaMail.zimbra@redhat.com>
+Message-ID: <20191121103003.GC23702@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> One or more kernel tests failed:
-> >>
-> >>      ppc64le:
-> >>       ??? LTP lite
-> >>       ??? xfstests: ext4
-> > 
-> > Both logs shows missing files, that may be an infrastructure problem as
-> > well.
-> > 
-> > Also can we include links to the logfiles here? Bonus points for showing
-> > the snippet with the actual failure in the email as well. I takes a fair
-> > amount of time locating them manually in the pipeline repository, it
-> > would be much much easier just with the links to the right logfile...
-> > 
-> 
-> Thanks for the feedback Cyril, we did have links to each failure listed
-> before but we were told it made the email look cluttered especially
-> if there are multiple failures.
+Hi Jan, Li,
 
-So it's exactly how Dmitry described it, you can't please everyone..,
+> ----- Original Message -----
+> > @Jan, @Cyril: Do we want to generally avoid loading <linux/types.h> if not
+> > really needed?
 
-> The test logs are sorted by arch|host|TC, is there something we can
-> do to make it easier to find related logs ?
-> https://artifacts.cki-project.org/pipelines/296781/logs/
-> 
-> Maybe we can look into adding the linked logs to the bottom of the
-> email with a reference id next to the failures in the summary, so
-> for example:
-> 
->      ppc64le:
->       ??? LTP lite [1]
->       ??? xfstests: ext4 [2]
+> Yes, we generally try to avoid including kernel headers. Our style-guide says
+> "Don't use +linux/+ headers if at all possible". uapi on older distros
+> was more prone to cause LTP build errors.
+Thank you for pointing out docs, I completely forgot on this page.
+BTW it needs some update (examples use old API, linux_syscall_numbers.h).
+Also not sure if everything else still applies (4. Call APIs that don't require
+freeing up resources on failure first, 2. Sort headers).
 
-That would work for me.
+> > Also ,If we use uint64_t, they still failed on 2.6.32-754.el6.x86_64 with undefined  . Or, we should use TST_ABI to define uint64_t them
+Jan, are you aware of this problem?
+Xu, I'm not sure if you're talking about uint64_t problematic in <linux/types.h>
+(as you mention kernel) or problem in glibc <sys/types.h> / <stdint.h> / <inttypes.h>?
+We have lots of code which is using some of these 3 libc headers, does it fail
+on 2.6.32?
 
-> We could also look into merging the ltp run logs into a single file
-> as well.
+Does anybody compile for 2.6.32?
+I know we want to keep support for 2.6.x (we had some discussion in the past).
+Than it'd be good to have travis build for kernel 2.6.x.
 
-That would make it too big I guess. Actually the only part I'm
-interested in most of the time is the part of the log with the failing
-test. I would be quite happy if we had logs/failures file on the
-pipelines sever that would contain only failures extracted from
-different logfiles. The question is if that's feasible with your
-framework.
+Back to patchset. I suggest to merge it as it is and I'll prepare patches, which
+use <sys/types.h> in our tests.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
