@@ -1,41 +1,32 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 21 Nov 2019 03:31:01 -0500 (EST)
-Subject: [LTP] [PATCH] tst_fill_fs: enhance the filesystem filling
- routine
-In-Reply-To: <d76d2ad2-f302-3cd5-0c9f-5d96a6a4bd55@suse.cz>
-References: <20191119094156.20348-1-liwang@redhat.com>
- <1860355560.12961927.1574161647388.JavaMail.zimbra@redhat.com>
- <CAEemH2cN8qv_YpsFKJazcOKEvgfjXpacZOV_Er-0bjK86=6VpQ@mail.gmail.com>
- <c9d278e6-5700-6c16-019b-1770a6ede0ff@suse.cz>
- <CAEemH2dZCm5MVyhzWiFKVK-jt+UUw65u5CRFk-moUVUgpDHHWg@mail.gmail.com>
- <d76d2ad2-f302-3cd5-0c9f-5d96a6a4bd55@suse.cz>
-Message-ID: <1019476919.13283233.1574325061298.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 21 Nov 2019 09:32:15 +0100
+Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
+ test
+In-Reply-To: <d346af6e-c037-7ac7-748a-a53c9b12046b@cn.fujitsu.com>
+References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20191120151244.GA28197@dell5510>
+ <d1d72a63-fd3b-e670-4559-c0216176546c@cn.fujitsu.com>
+ <20191121054507.GB59487@x230>
+ <d346af6e-c037-7ac7-748a-a53c9b12046b@cn.fujitsu.com>
+Message-ID: <20191121083215.GC14920@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Xu,
 
------ Original Message -----
-> On 11/20/19 3:19 AM, Li Wang wrote:
-> >     You don't need to reduce the write size in the first place. Kernel will
-> >     happily do short writes for you if the file system somehow finds some
-> > 
-> > 
-> > You're probably right, but here I just want to enhance the tst_fill_fs
-> > routine, it obviously couldn't? be guaranteed way to perfectly fill a
-> > filesystem, this action from userspace is what I can think of.
-> 
-> I was also talking about enhancing tst_fill_fs(). You can simply repeat
-> write()s with the maximum size until you're sure the file system is
-> really full.
+> I see. Now, I think we should avoid to use <linux/types.h>?? because on musl? libc doesn't have it.
+IMHO <linux/types.h> are always installed from kernel, not from libc
+(packaged result of make headers_install run from kernel sources).
 
-I'd rather we mirror xfstests, which halves the length on ENOSPC.
+> Also ,If we use uint64_t, they still failed on 2.6.32-754.el6.x86_64 with undefined  . Or, we should use TST_ABI to define uint64_t them
+Hm, that what I said: using kernel headers is imho easier that using libc
+headers (fewer problems with compatibility).
+Anyway, I don't want to block this patchset.
+We can always merge it as it is and sort/fix this problem later.
 
-> Reducing the write size and then also using the write size
-> as iteration counter
-
-We could do fixed number of retries. In the end it still feels
-like rain dance.
-
+Kind regards,
+Petr
