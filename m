@@ -1,48 +1,57 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Nov 2019 16:19:01 +0100
-Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
- test
-In-Reply-To: <339862280.13302048.1574334489479.JavaMail.zimbra@redhat.com>
-References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191120151244.GA28197@dell5510>
- <1893160007.13287158.1574326875945.JavaMail.zimbra@redhat.com>
- <20191121103003.GC23702@dell5510>
- <339862280.13302048.1574334489479.JavaMail.zimbra@redhat.com>
-Message-ID: <20191121151901.GA30697@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 21 Nov 2019 11:07:40 -0500 (EST)
+Subject: [LTP] [PATCH v2] futex_cmp_requeue01: fix test expectations
+In-Reply-To: <20191121110236.GB14186@rei.lan>
+References: <1059626680.11523678.1573489826970.JavaMail.zimbra@redhat.com>
+ <ec1792be62432bb64e4d5c5085f6ebfa7e5d4b53.1573562645.git.jstancek@redhat.com>
+ <20191120161634.GA31645@rei>
+ <1318319247.13280749.1574323496266.JavaMail.zimbra@redhat.com>
+ <20191121110236.GB14186@rei.lan>
+Message-ID: <1965156629.13355311.1574352460203.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
 
-> ----- Original Message -----
-> > > > Also ,If we use uint64_t, they still failed on 2.6.32-754.el6.x86_64 with
-> > > > undefined  . Or, we should use TST_ABI to define uint64_t them
-> > Jan, are you aware of this problem?
 
-> I'm not, it should be defined in stdint.h.
+----- Original Message -----
+> Hi!
+> > > Unless spurious wakeup has happened between the requeue and wake
+> > > operation which means that the num_requeues can be smaller because we
+> > > will wake up less than requeued processes. So if we sampled spurious
+> > > wakeups before the requeue operation and after the futex_wake() for
+> > > requeued processes and call it delta_spurious we would get a range:
+> > > 
+> > > TST_RET - num_requeues >= set_wakes
+> > 
+> > This doesn't look correct if we consider spurious wakeups:
+> > 
+> > 5 processes, set_wakes = 5, set_requeue = 0, 1 spuriously wakes up,
+> > remaining 4 are woken up by futex(), 0 are requeued:
+> > 
+> > 4 - 0 >= 5
+> 
+> Well I was betting on the fact that we wake up much less processes than
+> we attempt to lock on the futex and that waking up processes takes
+> precedence. I we can add delta_spurious to the right side that wouldn't
+> change much and we end up being correct all the time, i.e.
+> 
+> TST_RET + delta_spurious - num_requeues >= set_wakes
 
-> # cat /etc/redhat-release 
-> Red Hat Enterprise Linux Server release 6.10 (Santiago)
+I'd go with just spurious instead of delta_spurious. If there is spurious
+wake up before requeue (and first sample), wouldn't that fail in same way
+as example above?
 
-> # grep uint64_t -r /usr/include/ | grep stdint
-> /usr/include/stdint.h:typedef unsigned long int	uint64_t;
+TST_RET + delta_spurious - num_requeues >= set_wakes
+4 + 0 - 0 >= 5
 
-> > Xu, I'm not sure if you're talking about uint64_t problematic in
-> > <linux/types.h>
-> > (as you mention kernel) or problem in glibc <sys/types.h> / <stdint.h> /
-> > <inttypes.h>?
-> > We have lots of code which is using some of these 3 libc headers, does it
-> > fail
-> > on 2.6.32?
+Also delta_spurious looks racy, because it's based on counter
+that is increased only after user-space gets chance to run. But process
+may have been already removed from futex queue on kernel side.
+So 'first sample before requeue' can see inaccurate state.
 
-> > Does anybody compile for 2.6.32?
+So I'd tweak your check to:
+  set_wakes-spurious <= TST_RET-num_requeues <= set_wakes+spurious
 
-> [CC Li]
-> I think RH still does compile latest for regression tests. RHEL6 will be in
-> sustaining for couple more years. 
-Thanks for info. Sorry I forgot, we have CentOS 6.10 in travis, that should be
-enough for testing build in old toolchain.
