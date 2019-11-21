@@ -1,63 +1,64 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 21 Nov 2019 17:01:32 +0800
-Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
- test
-In-Reply-To: <20191121082118.GA14920@dell5510>
-References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191120151244.GA28197@dell5510> <20191120151610.GB28197@dell5510>
- <efb495a4-1071-68fd-d5a2-7597646228e1@cn.fujitsu.com>
- <20191121051022.GA59487@x230>
- <46954cdf-042b-fffd-583d-b1494d7747dd@cn.fujitsu.com>
- <20191121082118.GA14920@dell5510>
-Message-ID: <af8b09de-63e9-be0f-f891-8bc24502e084@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Nov 2019 10:31:50 +0100
+Subject: [LTP] ??? FAIL: Test report for kernel 5.4.0-rc8-4b17a56.cki
+ (stable-next)
+In-Reply-To: <57f8e29e-1d49-e93f-2b03-75a3fd3e6e21@redhat.com>
+References: <cki.6D94BD5731.3IAGHB25D8@redhat.com>
+ <20191120113534.GC14963@rei.lan>
+ <57f8e29e-1d49-e93f-2b03-75a3fd3e6e21@redhat.com>
+Message-ID: <20191121093150.GA14186@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> >> One or more kernel tests failed:
+> >>
+> >>      ppc64le:
+> >>       ??? LTP lite
+> >>       ??? xfstests: ext4
+> > 
+> > Both logs shows missing files, that may be an infrastructure problem as
+> > well.
+> > 
+> > Also can we include links to the logfiles here? Bonus points for showing
+> > the snippet with the actual failure in the email as well. I takes a fair
+> > amount of time locating them manually in the pipeline repository, it
+> > would be much much easier just with the links to the right logfile...
+> > 
+> 
+> Thanks for the feedback Cyril, we did have links to each failure listed
+> before but we were told it made the email look cluttered especially
+> if there are multiple failures.
 
-on 2019/11/21 16:21, Petr Vorel wrote:
+So it's exactly how Dmitry described it, you can't please everyone..,
 
-> Hi Xu,
->
->> Yes. I check <sys/quota.h> and <sys/prctl.h> on musl libc[1] and they don't include linux header files.
->> So I think checking both kernel and libc headers on other libc(musl,bionic) is meaningful.
-> But in single C file we decide only on one of these two.
-> It's a similar problem as testing raw syscall or libc wrapper (which we already
-> solved with .test_variants).
-> NOTE: Bionic has generate it's headers from linux headers.
+> The test logs are sorted by arch|host|TC, is there something we can
+> do to make it easier to find related logs ?
+> https://artifacts.cki-project.org/pipelines/296781/logs/
+> 
+> Maybe we can look into adding the linked logs to the bottom of the
+> email with a reference id next to the failures in the summary, so
+> for example:
+> 
+>      ppc64le:
+>       ??? LTP lite [1]
+>       ??? xfstests: ext4 [2]
 
-I see.
+That would work for me.
 
-Thanks again for reminding Bionic like glibc uses linux headers.
+> We could also look into merging the ltp run logs into a single file
+> as well.
 
->
->> ps: If our travis-ci has a target with musl, I think it will be better. I don't know whether possible.
-> It's here. But it requires some more fixes (in a meantime files are deleted),
-> so I'll post it once it's everything fixed
-> https://github.com/pevik/ltp/commits/travis/musl
-> https://travis-ci.org/pevik/ltp/builds/614575796
->
-> There is also CI on LTP on all glibc/uclibc-ng/musl in Buildroot
-> http://autobuild.buildroot.net/index.php?reason=ltp-testsuite-20190930
->
-> + There are other CI based on yocto/openembedded on glibc/uclibc-ng/musl
+That would make it too big I guess. Actually the only part I'm
+interested in most of the time is the part of the log with the failing
+test. I would be quite happy if we had logs/failures file on the
+pipelines sever that would contain only failures extracted from
+different logfiles. The question is if that's feasible with your
+framework.
 
-It is so cool.? And I think I? can move your musl patches to my ltp fork, so that I can also test them on musl
-when I contribute my patches to ltp.
-
-ps: I also think we should not block this patchset.
-
->
->> [1]http://git.musl-libc.org/cgit/musl/tree/include/sys/quota.h
-> Kind regards,
-> Petr
->
->
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191121/c86c4866/attachment.htm>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
