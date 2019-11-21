@@ -1,42 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Nov 2019 09:21:18 +0100
-Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
- test
-In-Reply-To: <46954cdf-042b-fffd-583d-b1494d7747dd@cn.fujitsu.com>
-References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191120151244.GA28197@dell5510> <20191120151610.GB28197@dell5510>
- <efb495a4-1071-68fd-d5a2-7597646228e1@cn.fujitsu.com>
- <20191121051022.GA59487@x230>
- <46954cdf-042b-fffd-583d-b1494d7747dd@cn.fujitsu.com>
-Message-ID: <20191121082118.GA14920@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 21 Nov 2019 03:31:01 -0500 (EST)
+Subject: [LTP] [PATCH] tst_fill_fs: enhance the filesystem filling
+ routine
+In-Reply-To: <d76d2ad2-f302-3cd5-0c9f-5d96a6a4bd55@suse.cz>
+References: <20191119094156.20348-1-liwang@redhat.com>
+ <1860355560.12961927.1574161647388.JavaMail.zimbra@redhat.com>
+ <CAEemH2cN8qv_YpsFKJazcOKEvgfjXpacZOV_Er-0bjK86=6VpQ@mail.gmail.com>
+ <c9d278e6-5700-6c16-019b-1770a6ede0ff@suse.cz>
+ <CAEemH2dZCm5MVyhzWiFKVK-jt+UUw65u5CRFk-moUVUgpDHHWg@mail.gmail.com>
+ <d76d2ad2-f302-3cd5-0c9f-5d96a6a4bd55@suse.cz>
+Message-ID: <1019476919.13283233.1574325061298.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
 
-> Yes. I check <sys/quota.h> and <sys/prctl.h> on musl libc[1] and they don't include linux header files.
-> So I think checking both kernel and libc headers on other libc(musl,bionic) is meaningful.
-But in single C file we decide only on one of these two.
-It's a similar problem as testing raw syscall or libc wrapper (which we already
-solved with .test_variants).
-NOTE: Bionic has generate it's headers from linux headers.
+----- Original Message -----
+> On 11/20/19 3:19 AM, Li Wang wrote:
+> >     You don't need to reduce the write size in the first place. Kernel will
+> >     happily do short writes for you if the file system somehow finds some
+> > 
+> > 
+> > You're probably right, but here I just want to enhance the tst_fill_fs
+> > routine, it obviously couldn't? be guaranteed way to perfectly fill a
+> > filesystem, this action from userspace is what I can think of.
+> 
+> I was also talking about enhancing tst_fill_fs(). You can simply repeat
+> write()s with the maximum size until you're sure the file system is
+> really full.
 
-> ps: If our travis-ci has a target with musl, I think it will be better. I don't know whether possible.
-It's here. But it requires some more fixes (in a meantime files are deleted),
-so I'll post it once it's everything fixed
-https://github.com/pevik/ltp/commits/travis/musl
-https://travis-ci.org/pevik/ltp/builds/614575796
+I'd rather we mirror xfstests, which halves the length on ENOSPC.
 
-There is also CI on LTP on all glibc/uclibc-ng/musl in Buildroot
-http://autobuild.buildroot.net/index.php?reason=ltp-testsuite-20190930
+> Reducing the write size and then also using the write size
+> as iteration counter
 
-+ There are other CI based on yocto/openembedded on glibc/uclibc-ng/musl
+We could do fixed number of retries. In the end it still feels
+like rain dance.
 
-> [1]http://git.musl-libc.org/cgit/musl/tree/include/sys/quota.h
-
-Kind regards,
-Petr
