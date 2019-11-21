@@ -1,46 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 21 Nov 2019 06:08:09 -0500 (EST)
-Subject: [LTP] [PATCH v4 1/5] syscalls/quotactl01: Add Q_GETNEXTQUOTA
- test
-In-Reply-To: <20191121103003.GC23702@dell5510>
-References: <1574241216-15168-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1574241216-15168-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191120151244.GA28197@dell5510>
- <1893160007.13287158.1574326875945.JavaMail.zimbra@redhat.com>
- <20191121103003.GC23702@dell5510>
-Message-ID: <339862280.13302048.1574334489479.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Nov 2019 14:34:14 +0100
+Subject: [LTP] [PATCH] syscalls/shmat03: Remove CVE tag
+Message-ID: <20191121133414.19808-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+The CVE was proved to be bogus so as far as I can tell we shouldn't list
+it in tags.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/ipc/shmat/shmat03.c | 1 -
+ 1 file changed, 1 deletion(-)
 
------ Original Message -----
-> > > Also ,If we use uint64_t, they still failed on 2.6.32-754.el6.x86_64 with
-> > > undefined  . Or, we should use TST_ABI to define uint64_t them
-> Jan, are you aware of this problem?
-
-I'm not, it should be defined in stdint.h.
-
-# cat /etc/redhat-release 
-Red Hat Enterprise Linux Server release 6.10 (Santiago)
-
-# grep uint64_t -r /usr/include/ | grep stdint
-/usr/include/stdint.h:typedef unsigned long int	uint64_t;
-
-> Xu, I'm not sure if you're talking about uint64_t problematic in
-> <linux/types.h>
-> (as you mention kernel) or problem in glibc <sys/types.h> / <stdint.h> /
-> <inttypes.h>?
-> We have lots of code which is using some of these 3 libc headers, does it
-> fail
-> on 2.6.32?
-> 
-> Does anybody compile for 2.6.32?
-
-[CC Li]
-I think RH still does compile latest for regression tests. RHEL6 will be in
-sustaining for couple more years. 
+diff --git a/testcases/kernel/syscalls/ipc/shmat/shmat03.c b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+index 8a0b89bd5..dfa427a56 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/shmat03.c
++++ b/testcases/kernel/syscalls/ipc/shmat/shmat03.c
+@@ -101,7 +101,6 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.tags = (const struct tst_tag[]) {
+-		{"CVE", "2017-5669"},
+ 		{"linux-git", "95e91b831f87"},
+ 		{"linux-git", "a73ab244f0da"},
+ 		{"linux-git", "8f89c007b6de"},
+-- 
+2.21.0
 
