@@ -1,38 +1,39 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 22 Nov 2019 14:40:50 +0300
-Subject: [LTP] [PATCH v2] lib/tst_net.sh: use SO_BINDTODEVICE in
- tst_netload()
-In-Reply-To: <20191121174405.GA16389@dell5510>
-References: <20191118104238.15044-1-alexey.kodanev@oracle.com>
- <20191121174405.GA16389@dell5510>
-Message-ID: <43b42a21-aa98-fb52-9627-ba9e1826c74b@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 22 Nov 2019 12:49:41 +0100
+Subject: [LTP] [COMMITTED] [PATCH] network/sctp_big_chunk: Add linux git
+ tag
+In-Reply-To: <5c00ffaa-c639-52d9-6305-edc7790e1769@oracle.com>
+References: <20191122100508.21265-1-chrubis@suse.cz>
+ <5c00ffaa-c639-52d9-6305-edc7790e1769@oracle.com>
+Message-ID: <20191122114941.GB19146@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 21.11.2019 20:44, Petr Vorel wrote:
-> Hi Alexey,
+Hi!
+> >  testcases/network/sctp/sctp_big_chunk.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/testcases/network/sctp/sctp_big_chunk.c b/testcases/network/sctp/sctp_big_chunk.c
+> > index 4ebdcb20f..ceb91c5b9 100644
+> > --- a/testcases/network/sctp/sctp_big_chunk.c
+> > +++ b/testcases/network/sctp/sctp_big_chunk.c
+> > @@ -182,5 +182,9 @@ static struct tst_test test = {
+> >  	.setup = setup,
+> >  	.forks_child = 1,
+> >  	.test_all = run,
+> > -	.options = options
+> > +	.options = options,
+> > +	.tags = (const struct tst_tag[]) {
+> > +		{"linux-git", "07f2c7ab6f8d"},
 > 
->> Since we have the information about the device, enable the
->> auto usage of the option, when starting netstress.
-> 
->> It can be disabled with TST_NETLOAD_BINDTODEVICE=0 even if
->> '-D' option is passed to tst_netload().
-> 
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> nit: I'd use empty string instead of zero.
-> testcases/lib/tst_net.sh
-> -export TST_NETLOAD_BINDTODEVICE="${TST_NETLOAD_BINDTODEVICE:-1}"
-> +export TST_NETLOAD_BINDTODEVICE="${TST_NETLOAD_BINDTODEVICE-1}"
-> 
-> testcases/network/mpls/mpls_lib.sh
-> -TST_NETLOAD_BINDTODEVICE=0
-> +TST_NETLOAD_BINDTODEVICE=
+> And {"CVE", "2018-5803"}, will add to the tags.
 
-Hi Petr,
+Feel free to push that change, I had no idea since there is no CVE in
+the test description either.
 
-Changed the patch as you suggested and applied. Thanks for review!
+-- 
+Cyril Hrubis
+chrubis@suse.cz
