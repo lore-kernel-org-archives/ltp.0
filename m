@@ -1,52 +1,257 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 25 Nov 2019 16:32:45 +0100
-Subject: [LTP] [PATCH] memcg_lib/memcg_process: Better synchronization
- of signal USR1
-In-Reply-To: <2e5756af-d7ef-7919-da6b-46e7fbf3cb66@jv-coder.de>
-References: <20191106073621.58738-1-lkml@jv-coder.de>
- <365bdf26-4e52-2159-17cd-52f2fb22e7fd@jv-coder.de>
- <20191125132957.GC8703@rei.lan>
- <2e5756af-d7ef-7919-da6b-46e7fbf3cb66@jv-coder.de>
-Message-ID: <20191125153245.GA15129@rei.lan>
+From: CKI Project <cki-project@redhat.com>
+Date: Mon, 25 Nov 2019 21:41:01 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
+ =?utf-8?q?=2E13-6b6ca63=2Ecki_=28stable-queue-tree=29?=
+Message-ID: <cki.0F29252F52.BT1NZETF9R@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> Actually this does not work like this, because some of the
-> >> tests trigger the oom killer and TEST_CHECKPOINT_WAIT calling
-> >> tst_checkpoint uses ROD. Is it ok to directly call
-> >>
-> >> tst_checkpoint wait 10000 "1"
-> >>
-> >> and ignore the result here?
-> > Wouldn't that delay the test for too long?
-> >
-> > The default timeout for checkpoints is probably too big.
-> >
-> > This problem is quite tricky to get right I guess. Maybe we can watch
-> > /proc/[pid]/statm for increase data + stack memory.
-> The timeout is specified on the command line (the 10000) in ms.
 
-Ah, sorry I was blind.
+Hello,
 
-> We run the test with timeout=1000 now and it works fine. It is simpler 
-> than thinking about any
-> other synchronization technique. The additonal wait adds less than 30 
-> for all tests, that use memcg_process.
+We ran automated tests on a recent commit from this kernel tree:
 
-30 what? seconds? That is unfortunatelly not acceptable.
+       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+            Commit: 6b6ca63a8174 - net/mlx5: Update the list of the PCI supported devices
 
-Actually having a closer look at the code there is a loop that checks
-every 100ms if:
+The results of these automated tests are provided below.
 
-1) the process is still alive
-2) if there was increase in usage_in_bytes in the corresponding cgroup
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-So what is wrong with the original code?
+All kernel binaries, config files, and logs are available for download here:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+  https://artifacts.cki-project.org/pipelines/307695
+
+One or more kernel tests failed:
+
+    ppc64le:
+     ? LTP
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 3 architectures:
+
+    aarch64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    ppc64le:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? LTP: openposix test suite
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+  ppc64le:
+    Host 1:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? LTP: openposix test suite
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+  x86_64:
+    Host 1:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? LTP: openposix test suite
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ??? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 3:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 4:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
