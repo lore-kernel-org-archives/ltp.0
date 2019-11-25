@@ -1,30 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Nov 2019 15:28:58 +0100
-Subject: [LTP] [PATCH] memcg_lib/memcg_process: Better synchronization
- of signal USR1
-In-Reply-To: <20191125131411.GB8703@rei.lan>
-References: <20191106073621.58738-1-lkml@jv-coder.de>
- <365bdf26-4e52-2159-17cd-52f2fb22e7fd@jv-coder.de>
- <20191121183401.GA20889@dell5510> <20191125131411.GB8703@rei.lan>
-Message-ID: <20191125142858.GA21715@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 25 Nov 2019 09:54:02 -0500 (EST)
+Subject: [LTP] [PATCH v2 2/3] perf_event_open02: make do_work() run for
+ specified time
+In-Reply-To: <20191122133343.GD19146@rei.lan>
+References: <5b0f2a837117f3af1351d8b3da357cacecaa1463.1574087532.git.jstancek@redhat.com>
+ <219b1b89de51fda28a0af02f6b15e6da8c73ab7c.1574363475.git.jstancek@redhat.com>
+ <20191122133343.GD19146@rei.lan>
+Message-ID: <327090990.13706910.1574693642661.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-> > No, there is no support for TST_CHECKPOINT in shell.
+----- Original Message -----
+> > 
+> > Tested with: 5.3.0-0.rc6.git0.1.fc31.x86_64
+> > 	     4.18.0-143.el8.x86_64
+> > 	     4.18.0-147.rt24.93.el8.x86_64
+> 
+> Looks good, acked.
 
-> Well there is actually. There is a tst_checkpoint helper that calls
-> tst_reinit() to map the shared page to be used with futexes and then
-> just calls the corresponding wake or wait function.
-Great.
-Joerg, sorry for being wrong, thanks Cyril for correction.
+Series pushed.
 
-> And yes it has been used in the cgroup testcases to synchronize C
-> helper that allocates memory and shell test that executes it.
+I tested also older kernels based on 2.6.32 (RHEL6.10), and recently
+released 5.4.
 
-Kind regards,
-Petr
