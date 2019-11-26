@@ -1,137 +1,55 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 26 Nov 2019 13:02:41 +0100
-Subject: [LTP] [PATCH 3/3] Split SCTP initmsg test into two test cases
-In-Reply-To: <20191126120241.5460-1-mdoucha@suse.cz>
-References: <20191126120241.5460-1-mdoucha@suse.cz>
-Message-ID: <20191126120241.5460-4-mdoucha@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 26 Nov 2019 13:10:39 +0100
+Subject: [LTP] [PATCH] memcg_lib/memcg_process: Better synchronization
+ of signal USR1
+In-Reply-To: <5f914dce-92b7-9070-6230-d76b73d7da34@jv-coder.de>
+References: <20191106073621.58738-1-lkml@jv-coder.de>
+ <365bdf26-4e52-2159-17cd-52f2fb22e7fd@jv-coder.de>
+ <20191125132957.GC8703@rei.lan>
+ <2e5756af-d7ef-7919-da6b-46e7fbf3cb66@jv-coder.de>
+ <20191125153245.GA15129@rei.lan>
+ <5f914dce-92b7-9070-6230-d76b73d7da34@jv-coder.de>
+Message-ID: <20191126121038.GC16922@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The original test allocates 65535 output streams which may fail on older
-kernels due to lack of memory. Split the test into two test cases:
-- allocate 10 output streams and accept no errors (functional test)
-- allocate 65535 output streams and accept ENOMEM (stress test)
+Hi!
+> >> We run the test with timeout=1000 now and it works fine. It is simpler
+> >> than thinking about any
+> >> other synchronization technique. The additonal wait adds less than 30
+> >> for all tests, that use memcg_process.
+> > 30 what? seconds? That is unfortunatelly not acceptable.
+> Yes 30 seconds. Why shouldn't that be not acceptable? It is nothing compared
+> to the runtime of other tests.
 
-Also clean up some unnecessary code and check that the test message is
-transferred correctly.
+I have written a blog post that partly applies to this case, see:
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- .../func_tests/test_1_to_1_initmsg_connect.c  | 56 ++++++++++++-------
- 1 file changed, 36 insertions(+), 20 deletions(-)
+https://people.kernel.org/metan/why-sleep-is-almost-never-acceptable-in-tests
 
-diff --git a/utils/sctp/func_tests/test_1_to_1_initmsg_connect.c b/utils/sctp/func_tests/test_1_to_1_initmsg_connect.c
-index d85474ad6..a98e0c003 100644
---- a/utils/sctp/func_tests/test_1_to_1_initmsg_connect.c
-+++ b/utils/sctp/func_tests/test_1_to_1_initmsg_connect.c
-@@ -27,50 +27,64 @@
- 
- #define SCTP_IP_LOOPBACK  htonl(0x7f000001)
- 
--static void test_sctp(void)
-+static const struct test_case {
-+	__u16 streams;
-+	int accept_err;
-+} testcase_list[] = {
-+	{10, 0},
-+	{65535, ENOMEM}
-+};
-+
-+static void test_sctp(unsigned int n)
- {
--	int sk1, sk2, sk3, pf_class, msglen;
-+	int sk1, sk2, sk3, msglen;
- 	socklen_t len;
- 	struct sockaddr_in lstn_addr, acpt_addr;
--	struct sockaddr_in conn_addr;
- 	char *buffer_rcv;
- 	struct sctp_initmsg sinmsg;
- 	const char *message = "Hello World!\n";
-+	const struct test_case *tc = testcase_list + n;
- 
--	pf_class = PF_INET;
--
--	sk1 = SAFE_SOCKET(pf_class, SOCK_STREAM, IPPROTO_SCTP);
--	sk3 = SAFE_SOCKET(pf_class, SOCK_STREAM, IPPROTO_SCTP);
-+	tst_res(TINFO, "Running test with %u streams", tc->streams);
- 
--        conn_addr.sin_family = AF_INET;
--        conn_addr.sin_addr.s_addr = SCTP_IP_LOOPBACK;
--        conn_addr.sin_port = htons(SCTP_TESTPORT_1);
-+	sk1 = SAFE_SOCKET(PF_INET, SOCK_STREAM, IPPROTO_SCTP);
-+	sk3 = SAFE_SOCKET(PF_INET, SOCK_STREAM, IPPROTO_SCTP);
- 
--        lstn_addr.sin_family = AF_INET;
--        lstn_addr.sin_addr.s_addr = SCTP_IP_LOOPBACK;
--        lstn_addr.sin_port = htons(SCTP_TESTPORT_1);
-+	lstn_addr.sin_family = AF_INET;
-+	lstn_addr.sin_addr.s_addr = SCTP_IP_LOOPBACK;
-+	lstn_addr.sin_port = htons(SCTP_TESTPORT_1);
- 
- 	SAFE_BIND(sk3, (struct sockaddr *) &lstn_addr, sizeof(lstn_addr));
- 
- 	len = sizeof(struct sctp_initmsg);
--	sinmsg.sinit_num_ostreams = 65535;
-+	sinmsg.sinit_num_ostreams = tc->streams;
- 	sinmsg.sinit_max_instreams = 10;
- 	sinmsg.sinit_max_attempts = 1;
- 	sinmsg.sinit_max_init_timeo = 0;
- 	SAFE_SETSOCKOPT(sk1, SOL_SCTP, SCTP_INITMSG, &sinmsg, len);
- 	sinmsg.sinit_num_ostreams = 10;
--	sinmsg.sinit_max_instreams = 65535;
-+	sinmsg.sinit_max_instreams = tc->streams;
- 	SAFE_SETSOCKOPT(sk3, SOL_SCTP, SCTP_INITMSG, &sinmsg, len);
- 
- 	SAFE_LISTEN(sk3, 1);
- 
- 	len = sizeof(struct sockaddr_in);
--	SAFE_CONNECT(sk1, (struct sockaddr *) &conn_addr, len);
-+	TEST(connect(sk1, (struct sockaddr *) &lstn_addr, len));
-+
-+	if (TST_RET == -1 && tc->accept_err && TST_ERR == tc->accept_err) {
-+		tst_res(TPASS, "connect() failed in an acceptable way");
-+		SAFE_CLOSE(sk1);
-+		SAFE_CLOSE(sk3);
-+		return;
-+	} else if (TST_RET < 0) {
-+		tst_brk(TBROK | TTERRNO, "connect() failed");
-+	}
-+
- 	sk2 = SAFE_ACCEPT(sk3, (struct sockaddr *) &acpt_addr, &len);
- 
- 	msglen = strlen(message) + 1;
--	TEST(sctp_sendmsg(sk1, message, msglen, (struct sockaddr *)&conn_addr,
--		len, 0, 0, 65534, 0, 0));
-+	TEST(sctp_sendmsg(sk1, message, msglen, (struct sockaddr *)&lstn_addr,
-+		len, 0, 0, tc->streams - 1, 0, 0));
- 
- 	if (TST_RET != msglen) {
- 		tst_brk(TBROK | TTERRNO, "sctp_sendmsg() failed");
-@@ -79,17 +93,19 @@ static void test_sctp(void)
- 	buffer_rcv = malloc(msglen);
- 	TEST(recv(sk2, buffer_rcv, msglen, MSG_NOSIGNAL));
- 
--	if (TST_RET != msglen) {
-+	if (TST_RET != msglen || strncmp(buffer_rcv, message, msglen)) {
- 		tst_res(TFAIL | TTERRNO, "recv() failed");
- 	} else {
- 		tst_res(TPASS, "connect() with init timeout set to 0 - SUCCESS");
- 	}
- 
-+	free(buffer_rcv);
- 	SAFE_CLOSE(sk1);
- 	SAFE_CLOSE(sk2);
- 	SAFE_CLOSE(sk3);
- }
- 
- static struct tst_test test = {
--	.test_all = test_sctp,
-+	.test = test_sctp,
-+	.tcnt = ARRAY_SIZE(testcase_list),
- };
+> > Actually having a closer look at the code there is a loop that checks
+> > every 100ms if:
+> >
+> > 1) the process is still alive
+> > 2) if there was increase in usage_in_bytes in the corresponding cgroup
+> >
+> > So what is wrong with the original code?
+> Please reread the description of my initial post. The problem is the 
+> signal race
+> not the check. The checkpoint system prevents the race. There is no way 
+> around
+> a solid synchronization.
+
+So the problem is that sometimes the program has not finished handling
+the first signal and we are sending another, right?
+
+I guess that the proper solution would be avoding the signals in the
+first place. I guess that we can estabilish two-way communication with
+fifos, which would also mean that we would get notified as fast as the
+child dies as well.
+
 -- 
-2.24.0
-
+Cyril Hrubis
+chrubis@suse.cz
