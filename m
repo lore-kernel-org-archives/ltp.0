@@ -1,41 +1,108 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 26 Nov 2019 13:59:01 +0100
-Subject: [LTP] [Automated-testing] [PATCH 1/2] Wrapper for Syzkaller
- reproducers
-In-Reply-To: <20191107153458.16917-2-rpalethorpe@suse.com>
-References: <20191107153458.16917-1-rpalethorpe@suse.com>
- <20191107153458.16917-2-rpalethorpe@suse.com>
-Message-ID: <20191126125901.GA6579@dell5510>
+From: Jorik Cronenberg <jcronenberg@suse.de>
+Date: Tue, 26 Nov 2019 14:54:34 +0100
+Subject: [LTP] [PATCH] Add vmsplice03 test
+Message-ID: <20191126135434.3196-1-jcronenberg@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+From: jcronenberg <jcronenberg@suse.de>
 
-...
-> +++ b/testcases/kernel/syzkaller-repros/Makefile
-...
-> +# If the reproducers directory is missing then we automatically clone the repo.
-> +# We then have to call make recursively to revaluate the targets
-> +SYZKALLER_REPROS_DIR ?= $(abs_top_srcdir)/testcases/linux-arts/syzkaller-repros/linux
-> +$(SYZKALLER_REPROS_DIR):
-> +	git submodule update --init $(abs_top_srcdir)/testcases/linux-arts
-Hm, that does not get submodule code.
-Reproduced locally and also on travis:
-https://travis-ci.org/pevik/ltp/builds/617186693
+Add a test for splicing from a pipe to user memory.
 
-https://api.travis-ci.org/v3/job/617186701/log.txt
-fatal: Not a git repository (or any of the parent directories): .git
+Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
+---
+ testcases/kernel/syscalls/vmsplice/.gitignore |  1 +
+ .../kernel/syscalls/vmsplice/vmsplice03.c     | 70 +++++++++++++++++++
+ 2 files changed, 71 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/vmsplice/vmsplice03.c
 
-or
+diff --git a/testcases/kernel/syscalls/vmsplice/.gitignore b/testcases/kernel/syscalls/vmsplice/.gitignore
+index 2cc74a956..03922073c 100644
+--- a/testcases/kernel/syscalls/vmsplice/.gitignore
++++ b/testcases/kernel/syscalls/vmsplice/.gitignore
+@@ -1,2 +1,3 @@
+ /vmsplice01
+ /vmsplice02
++/vmsplice03
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice03.c b/testcases/kernel/syscalls/vmsplice/vmsplice03.c
+new file mode 100644
+index 000000000..54dace1b6
+--- /dev/null
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice03.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 SUSE LLC
++ * Author: Jorik Cronenberg <jcronenberg@suse.de>
++ *
++ * Test vmsplice() from a pipe into user memory
++ */
++
++#define _GNU_SOURCE
++
++#include "tst_test.h"
++#include "lapi/fcntl.h"
++#include "lapi/vmsplice.h"
++
++
++#define TEST_BLOCK_SIZE (64*1024)	/* 64K */
++
++static char buffer[TEST_BLOCK_SIZE];
++static off64_t offset;
++
++static void vmsplice_test(void)
++{
++	int written, i;
++	int pipes[2];
++	struct iovec iov;
++	char arr_write[TEST_BLOCK_SIZE];
++	char *arr_read;
++
++	iov.iov_base = arr_write;
++	iov.iov_len = TEST_BLOCK_SIZE;
++	offset = sizeof(struct iovec);
++
++	SAFE_PIPE(pipes);
++	SAFE_WRITE(1, pipes[1], buffer, TEST_BLOCK_SIZE);
++	written = vmsplice(pipes[0], &iov, 1, 0);
++	arr_read = (char *)&iov;
++
++	if (written < 0)
++		tst_brk(TBROK | TERRNO, "vmsplice() failed");
++	else if (written == 0)
++		tst_res(TFAIL, "vmsplice() didn't write anything");
++	else {
++		for (i = 0; i < written; i++) {
++			if (arr_read[i+offset] != buffer[i]) {
++				tst_res(TFAIL,
++					"Wrong data in user memory@%i", i);
++				break;
++			}
++		}
++		if (i == written)
++			tst_res(TPASS, "Spliced correctly into user memory");
++	}
++
++	SAFE_CLOSE(pipes[1]);
++	SAFE_CLOSE(pipes[0]);
++}
++
++static void setup(void)
++{
++	int i;
++
++	for (i = 0; i < TEST_BLOCK_SIZE; i++)
++		buffer[i] = i & 0xff;
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = vmsplice_test,
++	.min_kver = "2.6.23",
++};
+-- 
+2.24.0
 
-https://api.travis-ci.org/v3/job/617186700/log.txt
-error: pathspec '/usr/src/ltp/testcases/linux-arts' did not match any file(s) known to git
-
-Maybe it's due the fact I already run locally (and the same did travis):
-git submodule update --init --recursive
-
-Kind regards,
-Petr
