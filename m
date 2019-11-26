@@ -1,257 +1,117 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Mon, 25 Nov 2019 21:41:01 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E13-6b6ca63=2Ecki_=28stable-queue-tree=29?=
-Message-ID: <cki.0F29252F52.BT1NZETF9R@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 26 Nov 2019 11:24:47 +0800
+Subject: [LTP] [PATCH v2] tst_fill_fs: enhance the filesystem filling
+ routine
+In-Reply-To: <20191125130155.GA8703@rei.lan>
+References: <20191120072311.32333-1-liwang@redhat.com>
+ <20191125130155.GA8703@rei.lan>
+Message-ID: <CAEemH2cxS1KR1eYeBregDPU7qFMPH-4UggvprPhv3rO+UineEA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Mon, Nov 25, 2019 at 9:13 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Hello,
+> Hi!
+> > diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
+> > index 4003dce97..3015c066e 100644
+> > --- a/lib/tst_fill_fs.c
+> > +++ b/lib/tst_fill_fs.c
+> > @@ -6,6 +6,7 @@
+> >  #include <errno.h>
+> >  #include <stdio.h>
+> >  #include <stdlib.h>
+> > +#include <sys/statvfs.h>
+> >
+> >  #define TST_NO_DEFAULT_MAIN
+> >  #include "tst_test.h"
+> > @@ -19,6 +20,8 @@ void tst_fill_fs(const char *path, int verbose)
+> >       size_t len;
+> >       ssize_t ret;
+> >       int fd;
+> > +     struct statvfs fi;
+> > +     statvfs(path, &fi);
+> >
+> >       for (;;) {
+> >               len = random() % (1024 * 102400);
+> > @@ -37,17 +40,20 @@ void tst_fill_fs(const char *path, int verbose)
+> >                       return;
+> >               }
+> >
+> > -             while (len) {
+> > +             while (len >= fi.f_bsize/2) {
+> >                       ret = write(fd, buf, MIN(len, sizeof(buf)));
+> >
+> >                       if (ret < 0) {
+> > +                             if (errno == ENOSPC) {
+> > +                                     SAFE_FSYNC(fd);
+> > +                                     len /= 2;
+> > +                                     continue;
+> > +                             }
+> > +
+> >                               SAFE_CLOSE(fd);
+> >
+> >                               if (errno != ENOSPC)
+> >                                       tst_brk(TBROK | TERRNO, "write()");
+> > -
+> > -                             tst_res(TINFO | TERRNO, "write()");
+> > -                             return;
+> >                       }
+> >
+> >                       len -= ret;
+>
+> Wouldn't this cause second SAFE_CLOSE() here because we no longer do a
+> return from from the while loop on ENOSPC?
+>
 
-We ran automated tests on a recent commit from this kernel tree:
-
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-            Commit: 6b6ca63a8174 - net/mlx5: Update the list of the PCI supported devices
-
-The results of these automated tests are provided below.
-
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://artifacts.cki-project.org/pipelines/307695
-
-One or more kernel tests failed:
-
-    ppc64le:
-     ? LTP
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 3 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+No, it wouldn't cause that. The while's condition judgment will help to
+go-out the loop when len < fi.f_bsize/2, and it only do SAFE_CLOSE() once
+in any situation I think.
 
 
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
+> Why not just:
+>
+> diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
+> index 4003dce97..2226171d8 100644
+> --- a/lib/tst_fill_fs.c
+> +++ b/lib/tst_fill_fs.c
+> @@ -41,6 +41,13 @@ void tst_fill_fs(const char *path, int verbose)
+>                         ret = write(fd, buf, MIN(len, sizeof(buf)));
+>
+>                         if (ret < 0) {
+> +                               /* retry on ENOSPC to make sure filesystem
+> is really full */
+> +                               if (errno == ENOSPC && len >=
+> fi.f_bsize/2) {
+> +                                       SAFE_FSYNC(fd);
+> +                                       len /= 2;
+> +                                       continue;
+>
 
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
+It does the same thing as my patch, but your code looks a little better
+because it reserves the print&reutrn part in below.
 
-    Host 2:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? LTP: openposix test suite
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns transport
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? stress: stress-ng
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+I will send patch V3 on your suggestion.
 
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
 
-    Host 2:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? LTP: openposix test suite
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+> +                               }
+> +
+>                                 SAFE_CLOSE(fd);
+>
+>                                 if (errno != ENOSPC)
+>
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+>
 
-  x86_64:
-    Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? LTP: openposix test suite
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns transport
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? stress: stress-ng
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
-
-    Host 3:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running are marked with ?. Reports for non-upstream kernels have
-a Beaker recipe linked to next to each host.
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191126/7afc91dc/attachment.htm>
