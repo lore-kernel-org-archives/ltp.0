@@ -1,69 +1,138 @@
-From: Li Wang <liwan@redhat.com>
-Date: Tue, 26 Nov 2019 13:21:50 +0800
-Subject: [LTP] 
-	=?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
-	=?utf-8?q?=2E13-6b6ca63=2Ecki_=28stable-queue-tree=29?=
-In-Reply-To: <cki.0F29252F52.BT1NZETF9R@redhat.com>
-References: <cki.0F29252F52.BT1NZETF9R@redhat.com>
-Message-ID: <CAEemH2cu9zXQqqvs+jTsO_JTx-wH6YTyZgfE3oaiRRUkU5S2yg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 26 Nov 2019 16:18:36 +0800
+Subject: [LTP] [PATCH 1/2] Wrapper for Syzkaller reproducers
+In-Reply-To: <20191107153458.16917-2-rpalethorpe@suse.com>
+References: <20191107153458.16917-1-rpalethorpe@suse.com>
+ <20191107153458.16917-2-rpalethorpe@suse.com>
+Message-ID: <CAEemH2f=_oGD8Zo=EDE6D096EEP=jCjzEUPOszJ7W7j8vbV7XA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Nov 26, 2019 at 5:41 AM CKI Project <cki-project@redhat.com> wrote:
+Hi Richard,
 
+Some more queries below.
+
+On Thu, Nov 7, 2019 at 11:36 PM Richard Palethorpe <rpalethorpe@suse.com>
+wrote:
+
+> Allows one to run the Syzkaller reproducers as part of the LTP.
 >
-> Hello,
+> ...
 >
-> We ran automated tests on a recent commit from this kernel tree:
->
->        Kernel repo: git://
-> git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
->             Commit: 6b6ca63a8174 - net/mlx5: Update the list of the PCI
-> supported devices
->
-> The results of these automated tests are provided below.
->
->     Overall result: FAILED (see details below)
->              Merge: OK
->            Compile: OK
->              Tests: FAILED
->
-> All kernel binaries, config files, and logs are available for download
-> here:
->
->   https://artifacts.cki-project.org/pipelines/307695
->
-> One or more kernel tests failed:
->
->     ppc64le:
->      ? LTP
+> +AC_ARG_WITH([syzkaller-repros],
+> +  [AC_HELP_STRING([--with-syzkaller-repros],
+> +    [compile and install Syzkaller reproducers (default=no)])],
+> +  [with_syzkaller_repros=$withval]
 >
 
-tag=dio30 stime=1574695439
-cmdline="diotest6 -b 65536 -n 100 -i 100 -o 1024000"
-contacts=""
-analysis=exit
-<<<test_output>>>
-diotest06    1  TPASS  :  Read with Direct IO, Write without
-diotest06    2  TFAIL  :  diotest6.c:150: readv failed, ret = 1269760:
-errno=ENOTTY(25): Inappropriate ioctl for device
-diotest06    3  TFAIL  :  diotest6.c:215: Write Direct-child 83 failed
-diotest06    1  TPASS  :  Read with Direct IO, Write without
-...
-diotest06 2 TFAIL : diotest6.c:334: Write with Direct IO, Read without
-diotest06    1  TPASS  :  Read with Direct IO, Write without
-diotest06    2  TFAIL  :  diotest6.c:334: Write with Direct IO, Read without
-diotest06    1  TPASS  :  Read with Direct IO, Write without
-diotest06    2  TFAIL  :  diotest6.c:334: Write with Direct IO, Read without
-diotest06    3  TPASS  :  Read, Write with Direct IO
-diotest06 0 TINFO : 1/3 testblocks failed
+To strictly, the [action-if-not-given] should be added too?
+
+
+> +)
+> +if test "x$with_syzkaller_repros" = xyes; then
+> +    AC_SUBST([WITH_SYZKALLER_REPROS],["yes"])
+> +else
+> +    AC_SUBST([WITH_SYZKALLER_REPROS],["no"])
+> +fi
+> ...
+> diff --git a/runtest/.gitignore b/runtest/.gitignore
+> new file mode 100644
+> index 000000000..2ae05bfac
+> --- /dev/null
+> +++ b/runtest/.gitignore
+> @@ -0,0 +1 @@
+> +syzkaller*
+>
+
+Why adding syzkaller* in here?
+
+
+> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+> index 3319b3163..0150cfb4f 100644
+> --- a/testcases/kernel/Makefile
+> +++ b/testcases/kernel/Makefile
+> @@ -53,6 +53,7 @@ SUBDIRS                       += connectors \
+>                            sched \
+>                            security \
+>                            sound \
+> +                          syzkaller-repros \
+>                            tracing \
+>                            uevents \
+>
+> diff --git a/testcases/kernel/syzkaller-repros/.gitignore
+> b/testcases/kernel/syzkaller-repros/.gitignore
+> new file mode 100644
+> index 000000000..dbda1c71f
+> --- /dev/null
+> +++ b/testcases/kernel/syzkaller-repros/.gitignore
+> @@ -0,0 +1 @@
+> +syzwrap
+> diff --git a/testcases/kernel/syzkaller-repros/Makefile
+> b/testcases/kernel/syzkaller-repros/Makefile
+> new file mode 100644
+> ...
+> +# Some useful compiler flags for the LTP will cause problems with the
+> +# syzkaller repros so the repros have seperate flags
+> +SYZKALLER_CFLAGS ?= -pthread
+> +SYZKALLER_REPROS = $(subst
+> $(abs_top_srcdir),$(abs_top_builddir),$(SYZKALLER_REPROS_SRCS:.c=))
+> +$(SYZKALLER_REPROS): %: %.c
+> +       -@if grep -q "__NR_mmap2" $^; then \
+> +               M32="-m32"; \
+>
+
+I got compiling errors on s390x:
+  gcc: error: unrecognized command line option ?-m32?; did you mean ?-m31??
+
+My other concern is syzkaller (I guess maybe) have some package
+dependencies, and that will break the compiler phase on the embedded system.
+
+
+> ....
+> +       while (!waitpid(pid, &status, WNOHANG)) {
+> +               rem = tst_timeout_remaining();
+> +
+> +               if (!sent_kill && rem / exec_time_start < 0.5) {
+> +                       tst_res(TINFO, "Timeout; killing reproducer");
+> +
+> +                       TEST(kill(pid, SIGKILL));
+> +                       if (TST_RET == -1)
+> +                               tst_res(TWARN | TTERRNO, "kill() failed");
+> +                       else
+> +                               sent_kill = 1;
+> +               }
+> +
+> +               usleep(backoff);
+> +               backoff = MIN(2 * backoff, 1000000);
+> +       }
+>
+
+Force to kill a timeout test process is fine, but one thing makes me
+worried is that we don't do any cleanup work(e.g. release hugepage, devices
+or other resources) for the children, that very probably causes many
+additional issues in the next testing and not easy to reproduce it in a new
+run.
+
+
+> +
+> +       if (tst_taint_check()) {
+> +               tst_res(TFAIL, "Kernel is tainted");
+> +       } else {
+> +               tst_res(TPASS, "Kernel is not tainted");
+> +       }
+
+
+If this is the only condition to judge if all tests pass or not, we may
+miss some test failure logs after running, unless we don't care about that.
+
+Btw, I can't even finish one round for the test then system panic there.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191126/c3bbe8af/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191126/afa8ad90/attachment.htm>
