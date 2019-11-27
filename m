@@ -1,108 +1,45 @@
-From: Jorik Cronenberg <jcronenberg@suse.de>
-Date: Tue, 26 Nov 2019 14:54:34 +0100
-Subject: [LTP] [PATCH] Add vmsplice03 test
-Message-ID: <20191126135434.3196-1-jcronenberg@suse.de>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 27 Nov 2019 08:41:32 +0100
+Subject: [LTP] [PATCH] memcg_lib/memcg_process: Better synchronization
+ of signal USR1
+In-Reply-To: <42d40727-f631-39ff-fdc0-576e13336a4d@jv-coder.de>
+References: <20191106073621.58738-1-lkml@jv-coder.de>
+ <365bdf26-4e52-2159-17cd-52f2fb22e7fd@jv-coder.de>
+ <20191125132957.GC8703@rei.lan>
+ <2e5756af-d7ef-7919-da6b-46e7fbf3cb66@jv-coder.de>
+ <20191125153245.GA15129@rei.lan>
+ <5f914dce-92b7-9070-6230-d76b73d7da34@jv-coder.de>
+ <20191126121038.GC16922@rei.lan>
+ <42d40727-f631-39ff-fdc0-576e13336a4d@jv-coder.de>
+Message-ID: <fb1559d9-6d1b-a870-f7b6-471f7599c1fd@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: jcronenberg <jcronenberg@suse.de>
+Hi,
+>>
+>> So the problem is that sometimes the program has not finished handling
+>> the first signal and we are sending another, right?
+>>
+>> I guess that the proper solution would be avoding the signals in the
+>> first place. I guess that we can estabilish two-way communication with
+>> fifos, which would also mean that we would get notified as fast as the
+>> child dies as well.
+> Correct. Using fifos is probably a viable solution, but it would 
+> require library work,
+> because otherwise the overhead is way too big.
+> Another thing I can think of is extending tst_checkpoint wait to also 
+> watch a process
+> and stop waiting, if that process dies. This would be the simplest way 
+> to get good
+> synchronization and get rid of the sleep.
+>
+When thinking about this yesterday, I had another idea to fix it without 
+much work:
+For the test, that expects the process to terminate, just don't call 
+tst_checkpoint at
+all. We know it will fail there. Would this be acceptable for you?
 
-Add a test for splicing from a pipe to user memory.
-
-Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
----
- testcases/kernel/syscalls/vmsplice/.gitignore |  1 +
- .../kernel/syscalls/vmsplice/vmsplice03.c     | 70 +++++++++++++++++++
- 2 files changed, 71 insertions(+)
- create mode 100644 testcases/kernel/syscalls/vmsplice/vmsplice03.c
-
-diff --git a/testcases/kernel/syscalls/vmsplice/.gitignore b/testcases/kernel/syscalls/vmsplice/.gitignore
-index 2cc74a956..03922073c 100644
---- a/testcases/kernel/syscalls/vmsplice/.gitignore
-+++ b/testcases/kernel/syscalls/vmsplice/.gitignore
-@@ -1,2 +1,3 @@
- /vmsplice01
- /vmsplice02
-+/vmsplice03
-diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice03.c b/testcases/kernel/syscalls/vmsplice/vmsplice03.c
-new file mode 100644
-index 000000000..54dace1b6
---- /dev/null
-+++ b/testcases/kernel/syscalls/vmsplice/vmsplice03.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC
-+ * Author: Jorik Cronenberg <jcronenberg@suse.de>
-+ *
-+ * Test vmsplice() from a pipe into user memory
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/vmsplice.h"
-+
-+
-+#define TEST_BLOCK_SIZE (64*1024)	/* 64K */
-+
-+static char buffer[TEST_BLOCK_SIZE];
-+static off64_t offset;
-+
-+static void vmsplice_test(void)
-+{
-+	int written, i;
-+	int pipes[2];
-+	struct iovec iov;
-+	char arr_write[TEST_BLOCK_SIZE];
-+	char *arr_read;
-+
-+	iov.iov_base = arr_write;
-+	iov.iov_len = TEST_BLOCK_SIZE;
-+	offset = sizeof(struct iovec);
-+
-+	SAFE_PIPE(pipes);
-+	SAFE_WRITE(1, pipes[1], buffer, TEST_BLOCK_SIZE);
-+	written = vmsplice(pipes[0], &iov, 1, 0);
-+	arr_read = (char *)&iov;
-+
-+	if (written < 0)
-+		tst_brk(TBROK | TERRNO, "vmsplice() failed");
-+	else if (written == 0)
-+		tst_res(TFAIL, "vmsplice() didn't write anything");
-+	else {
-+		for (i = 0; i < written; i++) {
-+			if (arr_read[i+offset] != buffer[i]) {
-+				tst_res(TFAIL,
-+					"Wrong data in user memory@%i", i);
-+				break;
-+			}
-+		}
-+		if (i == written)
-+			tst_res(TPASS, "Spliced correctly into user memory");
-+	}
-+
-+	SAFE_CLOSE(pipes[1]);
-+	SAFE_CLOSE(pipes[0]);
-+}
-+
-+static void setup(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < TEST_BLOCK_SIZE; i++)
-+		buffer[i] = i & 0xff;
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = vmsplice_test,
-+	.min_kver = "2.6.23",
-+};
--- 
-2.24.0
-
+J?rg
