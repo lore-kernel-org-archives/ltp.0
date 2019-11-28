@@ -1,51 +1,112 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 28 Nov 2019 16:37:08 +0800
-Subject: [LTP] [COMMITTED PATCH] mmap1: include lapi/abisize.h header
- file
-In-Reply-To: <1766813779.14211710.1574930105928.JavaMail.zimbra@redhat.com>
-References: <20191128082945.6495-1-liwang@redhat.com>
- <1766813779.14211710.1574930105928.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2cW+XUARCzyreQQgJnd1HSV506JEn4rt=oGyezXRtLKFw@mail.gmail.com>
+Date: Thu, 28 Nov 2019 16:45:05 +0800
+Subject: [LTP] [PATCH 1/2] lib: add tst_request_hugepages
+Message-ID: <20191128084506.7587-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 28, 2019 at 4:35 PM Jan Stancek <jstancek@redhat.com> wrote:
+Note: more and more tests need to configure hugepage before testing, so
+this is a start to add some useful hugetlb functions in global library
+for the whole LTP.
 
->
-> ----- Original Message -----
-> > To get rid of this BROK on i686:
-> >  mmap1.c:204: BROK: mmap((nil),2147483648,3,34,-1,0) failed: ENOMEM (12)
-> >
-> > Reported-by: Zhijun Wang <zhijwang@redhat.com>
-> > Signed-off-by: Li Wang <liwang@redhat.com>
-> > ---
-> >  testcases/kernel/mem/mtest06/mmap1.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/testcases/kernel/mem/mtest06/mmap1.c
-> > b/testcases/kernel/mem/mtest06/mmap1.c
-> > index c5417444f..5c7d3df2f 100644
-> > --- a/testcases/kernel/mem/mtest06/mmap1.c
-> > +++ b/testcases/kernel/mem/mtest06/mmap1.c
-> > @@ -30,6 +30,7 @@
-> >  #include <stdlib.h>
-> >  #include "lapi/abisize.h"
-> >  #include "tst_test.h"
-> > +#include "lapi/abisize.h"
->
-> This sounds familiar:
->   74d9fe32fda9 ("mtest06/mmap1: add missing lapi/abisize.h include")
->
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/tst_hugepage.h | 19 +++++++++++++++++++
+ include/tst_test.h     |  1 +
+ lib/tst_hugepage.c     | 43 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+)
+ create mode 100644 include/tst_hugepage.h
+ create mode 100644 lib/tst_hugepage.c
 
-Ah, sorry I was blind for missing this commit. Seems I just git pull&push
-my patch.
-
+diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+new file mode 100644
+index 000000000..e06705bd0
+--- /dev/null
++++ b/include/tst_hugepage.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Red Hat, Inc.
++ */
++
++#ifndef TST_HUGEPAGE__
++#define TST_HUGEPAGE__
++
++/*
++ * Try to request the specified number of huge pages from system.
++ *
++ * Note: this depend on the status of system memory fragmentation.
++ *       0 - reserve fail
++ *       1 - reserve success
++ */
++int tst_request_hugepages(long hpages);
++
++#endif /* TST_HUGEPAGE_H */
++
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 21c7dfbdb..7ec1ab865 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -37,6 +37,7 @@
+ #include "tst_coredump.h"
+ #include "tst_buffers.h"
+ #include "tst_capability.h"
++#include "tst_hugepage.h"
+ 
+ /*
+  * Reports testcase result.
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+new file mode 100644
+index 000000000..00cf90843
+--- /dev/null
++++ b/lib/tst_hugepage.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2019 Red Hat, Inc.
++ */
++
++#define TST_NO_DEFAULT_MAIN
++
++#include "tst_test.h"
++#include "tst_hugepage.h"
++
++int tst_request_hugepages(long hpages)
++{
++	int val;
++	long mem_avail, max_hpages;
++
++	if (FILE_LINES_SCANF("/proc/meminfo",
++				"MemAvailable: %ld", &mem_avail)) {
++		/*
++		 * Dropping caches and using "MemFree:" on kernel
++		 * that doesn't have "MemAvailable:" in Meminfo
++		 */
++		tst_res(TINFO, "MemAvailable: not found in /proc/meminfo");
++
++		SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++		mem_avail = SAFE_READ_MEMINFO("MemFree:");
++	}
++
++	max_hpages = mem_avail / SAFE_READ_MEMINFO("Hugepagesize:");
++
++	if (hpages > max_hpages) {
++		tst_res(TINFO, "Request %ld hugepages failed, memory too fragmented? "
++				"The max hugepage available count %ld",
++				hpages, max_hpages);
++		return 0;
++	}
++
++	SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%ld", hpages);
++	SAFE_FILE_SCANF("/proc/sys/vm/nr_hugepages", "%d", &val);
++	if (val != hpages)
++		tst_brk(TBROK, "nr_hugepages = %d, but expect %ld", val, hpages);
++
++	return 1;
++}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191128/656eb5a2/attachment.htm>
+2.20.1
+
