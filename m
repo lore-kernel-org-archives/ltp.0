@@ -1,104 +1,39 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 28 Nov 2019 16:23:50 +0300
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 28 Nov 2019 16:34:16 +0100
 Subject: [LTP] [PATCH 2/2] network/iptables: add new test for
  iptables-tranlsate and nft
-In-Reply-To: <20191128104603.GA3216@dell5510>
+In-Reply-To: <81a49496-28c9-2057-7366-8e4d8665644b@oracle.com>
 References: <20191126115344.15926-1-alexey.kodanev@oracle.com>
  <20191126115344.15926-2-alexey.kodanev@oracle.com>
  <20191128104603.GA3216@dell5510>
-Message-ID: <81a49496-28c9-2057-7366-8e4d8665644b@oracle.com>
+ <81a49496-28c9-2057-7366-8e4d8665644b@oracle.com>
+Message-ID: <20191128153416.GA5219@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 28.11.2019 13:46, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> * Reuse the test-cases from iptables_tests by moving them
->>   into iptables_lib.sh.
-> 
->> * create nft rules with iptables-translate.
-> 
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> 
-> Thanks for your patch.
-> Rewrite is ok, I'd just also drop dots from messages.
-> 
-> Also redirection to tst_iptables.out in cleanup() is pointless,
-> maybe we could just change:
-> 
-> cleanup()
-> {
-> 	if lsmod | grep -q "ip_tables"; then
-> 		NFRUN -F -t filter > /dev/null 2>&1
-> 		NFRUN -F -t nat > /dev/null 2>&1
-> 		NFRUN -F -t mangle > /dev/null 2>&1
-> 		rmmod -v ipt_limit ipt_multiport ipt_LOG ipt_REJECT \
-> 			 iptable_mangle iptable_nat ip_conntrack \
-> 			 iptable_filter ip_tables nf_nat_ipv4 nf_nat \
-> 			 nf_log_ipv4 nf_log_common nf_reject_ipv4 \
-> 			 nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack \
-> 			 > /dev/null 2>&1
-> 	fi
-> }
-> 
-> For further work on iptables tests: I wonder if nc is more commonly installed in
-> distros than telnet (if yes, I'd be for using it).
-> 
+Hi Alexey,
 
-Agree.
+> > But for nft01.sh I got error:
+> > nft01 1 TINFO: INIT: Flushing all rules.
+> > nft01 1 TCONF: nft not applicable for test 1
+> > nft01 2 TINFO: Use nft to DROP packets from particular IP
+> > nft01 2 TINFO: Rule to block icmp from 127.0.0.1
+> > nft01 2 TFAIL: nft command failed to append new rule.
+> > Error: Could not process rule: No such file or directory
+> > add rule ip filter INPUT ip protocol icmp ip saddr 127.0.0.1 counter drop
+> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-> But for nft01.sh I got error:
-> 
-> nft01 1 TINFO: INIT: Flushing all rules.
-> nft01 1 TCONF: nft not applicable for test 1
-> nft01 2 TINFO: Use nft to DROP packets from particular IP
-> nft01 2 TINFO: Rule to block icmp from 127.0.0.1
-> nft01 2 TFAIL: nft command failed to append new rule.
-> Error: Could not process rule: No such file or directory
-> add rule ip filter INPUT ip protocol icmp ip saddr 127.0.0.1 counter drop
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> It seems there is no ip filter table with INPUT chain? firewalld not installed?
+No, firewalld it's installed on openSUSE (+ I'll test it for Debian, but I
+expect the same result).
 
-It seems there is no ip filter table with INPUT chain? firewalld not installed?
+> Is it test running fine after these:
 
-Is it test running fine after these:
+> # nft add table ip filter
+> # nft add chain ip filter INPUT '{ type filter hook input priority 0; }'
 
-# nft add table ip filter
-# nft add chain ip filter INPUT '{ type filter hook input priority 0; }'
-
-
-> nft01 3 TINFO: Use nft to REJECT ping request.
-> nft01 3 TINFO: Rule to reject ping request.
-> nft01 3 TFAIL: nft command failed to append new rule.
-> Error: Could not process rule: No such file or directory
-> add rule ip filter INPUT ip daddr 127.0.0.1 icmp type echo-request counter reject
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> nft01 4 TINFO: Use nft to log packets to particular port.
-> nft01 4 TINFO: Rule to log tcp packets to particular port.
-> nft01 4 TFAIL: nft command failed to append new rule.
-> Error: Could not process rule: No such file or directory
-> add rule ip filter INPUT ip daddr 127.0.0.1 tcp dport 45886 counter log prefix "1128114107:"
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> nft01 5 TINFO: Use nft to log packets to multiple ports.
-> nft01 5 TINFO: Rule to log tcp packets to port 45801 - 45803.
-> nft01 5 TFAIL: nft command failed to append new rule.
-> Error: Could not process rule: No such file or directory
-> add rule ip filter INPUT ip daddr 127.0.0.1 tcp dport 45801-45803 counter log prefix "1128114107:"
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> nft01 6 TINFO: Use nft to log ping request with limited rate.
-> nft01 6 TINFO: Rule to log ping request.
-> nft01 6 TFAIL: nft command failed to append new rule.
-> Error: Could not process rule: No such file or directory
-> add rule ip filter INPUT ip daddr 127.0.0.1 icmp type echo-request limit rate 3/hour burst 5 packets counter log prefix "1128114107:"
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> Tested on openSUSE Tumbleweed (5.3.8-1-default, nftables v0.9.2 (Scram),
-> iptables v1.8.3 (legacy)) and Debian unstable (5.2.0-rc3+, nftables v0.9.0 (Fearless Fosdick), iptables v1.8.2 (nf_tables)). Am I missing something, have wrong version?
-> 
-> Kind regards,
-> Petr
-> 
-
+Kind regards,
+Petr
