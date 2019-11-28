@@ -1,48 +1,36 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 28 Nov 2019 16:45:06 +0800
-Subject: [LTP] [PATCH 2/2] pkey01: disable hugetlb test if failed to reserve
- hugepage
-In-Reply-To: <20191128084506.7587-1-liwang@redhat.com>
-References: <20191128084506.7587-1-liwang@redhat.com>
-Message-ID: <20191128084506.7587-2-liwang@redhat.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 28 Nov 2019 10:36:09 +0100
+Subject: [LTP] [PATCH 0/1] Use real FS block size in fallocate05
+Message-ID: <20191128093610.6903-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To handle the false positive:
-  pkey01.c:69: BROK: nr_hugepages = 0, but expect 1
+Using fixed-size buffer in fallocate05 caused some failures in the past
+due to allocation requests being misaligned with actual file system blocks.
+Btrfs in particular will treat misaligned allocation as regular write()
+and apply copy-on-write to partially allocated blocks even on the first real
+write().
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/pkeys/pkey01.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+While that behavior is somewhat surprising, it does make sense. Fix the error
+by using multiples of real block size in fallocate() and write().
 
-diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
-index fa84e71f3..b5831af37 100644
---- a/testcases/kernel/syscalls/pkeys/pkey01.c
-+++ b/testcases/kernel/syscalls/pkeys/pkey01.c
-@@ -61,13 +61,12 @@ static void setup(void)
- 		size = getpagesize();
- 		no_hugepage = 1;
- 	} else {
--		int val;
--		SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
--		SAFE_FILE_SCANF(PATH_VM_NRHPS, "%d", &val);
--		if (val != 1)
--			tst_brk(TBROK, "nr_hugepages = %d, but expect %d",
--					val, 1);
--		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
-+		if (tst_request_hugepages(1)) {
-+			size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
-+		} else {
-+			size = getpagesize();
-+			no_hugepage = 1;
-+		}
- 	}
- 
- 	check_pkey_support();
+I've also found some XFS and Btrfs quirks which are documented in the patch.
+The XFS behavior appears to be intentional. I'm still waiting for reply
+whether the Btrfs quirk with deallocating blocks is a bug or not.
+
+I'll also write another fallocate() test later for checking FS behavior
+on intentionally misaligned allocation. But this fix can be committed before
+that.
+
+Martin Doucha (1):
+  Use real FS block size in fallocate05
+
+ .../kernel/syscalls/fallocate/fallocate05.c   | 75 ++++++++++++-------
+ 1 file changed, 50 insertions(+), 25 deletions(-)
+
 -- 
-2.20.1
+2.24.0
 
