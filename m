@@ -1,64 +1,34 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 28 Nov 2019 14:10:00 +0800
-Subject: [LTP] [PATCH] tst_fill_fs: enhance the filesystem filling
- routine
-In-Reply-To: <986ec24a-0318-8217-52eb-816bbec5fb75@suse.cz>
-References: <20191119094156.20348-1-liwang@redhat.com>
- <1860355560.12961927.1574161647388.JavaMail.zimbra@redhat.com>
- <CAEemH2cN8qv_YpsFKJazcOKEvgfjXpacZOV_Er-0bjK86=6VpQ@mail.gmail.com>
- <c9d278e6-5700-6c16-019b-1770a6ede0ff@suse.cz>
- <CAEemH2dZCm5MVyhzWiFKVK-jt+UUw65u5CRFk-moUVUgpDHHWg@mail.gmail.com>
- <d76d2ad2-f302-3cd5-0c9f-5d96a6a4bd55@suse.cz>
- <986ec24a-0318-8217-52eb-816bbec5fb75@suse.cz>
-Message-ID: <CAEemH2dnBv+9t=Pk0iX8r8sG06CgueByw1PXZD+61erQfX0uZQ@mail.gmail.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Thu, 28 Nov 2019 09:12:48 +0100
+Subject: [LTP] cpuacct tests: Rational behind test
+Message-ID: <0aac6253-f3dc-f2e5-effb-397e9a5487e9@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Nov 27, 2019 at 10:29 PM Martin Doucha <mdoucha@suse.cz> wrote:
+Hi,
 
-> Hello,
-> here's something fun which I've discovered while playing with
-> fallocate05 test on XFS:
-> - fallocate(x blocks)
-> - tst_fill_fs()
-> - write(x blocks) - OK
-> - write(1 block) - ENOSPC
-> - fallocate(1 block) - OK
-> - write(1 block) - OK
-> - fallocate(1 block) - ENOSPC
->
-> Somehow, fallocate() can find another free block on XFS which wasn't
-> available to write() at first. But then that block becomes write()able.
->
+I am looking at the cpuacct tests. These tests create n cgroups and
+start m processes within each of these cgroups. The process runs until
+it used 10 ms of cpu time and terminates.
 
-That's interesting.
+The test is run with different values for n and m up to 100 and 100.
+This creates 10000 processes, which CAN exist at the same time, because
+the process can already terminate, while they are still started.
+I wonder what the rational behind this is.
 
-It does prove that an xfs filesystem can't be really fill full. As FS dev
-says though a filesystem return -ENOSPC, after some internal bookkeeping,
-flushing, then have space available again.
+I question the the numbers used (up to 100/100) and more important the
+spawn/kill timings.
 
-And that also means to increases FALLOCATE_SIZE is a wise way to avoid this
-problem.
+If it is required, that all processes run in parallel, synchronization
+is required. If it is not required, test processes should be started
+and terminated in batches. This would probably reduce test runtime,
+because the system is not permanently switching contexts.
 
+Is it really required to run it with 100/100? Shouldn't it be enough
+to run the test with 10/10 1/100 and 100/1? Sadly there is no rational
+for the test at all in the sources.
 
->
-> --
-> Martin Doucha   mdoucha@suse.cz
-> QA Engineer for Software Maintenance
-> SUSE LINUX, s.r.o.
-> CORSO IIa
-> Krizikova 148/34
-> 186 00 Prague 8
-> Czech Republic
->
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191128/5a04406e/attachment-0001.htm>
+J?rg
