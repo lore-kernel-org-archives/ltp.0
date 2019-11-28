@@ -1,34 +1,34 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu, 28 Nov 2019 09:12:48 +0100
-Subject: [LTP] cpuacct tests: Rational behind test
-Message-ID: <0aac6253-f3dc-f2e5-effb-397e9a5487e9@jv-coder.de>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 28 Nov 2019 16:29:45 +0800
+Subject: [LTP] [COMMITTED PATCH] mmap1: include lapi/abisize.h header file
+Message-ID: <20191128082945.6495-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+To get rid of this BROK on i686:
+ mmap1.c:204: BROK: mmap((nil),2147483648,3,34,-1,0) failed: ENOMEM (12)
 
-I am looking at the cpuacct tests. These tests create n cgroups and
-start m processes within each of these cgroups. The process runs until
-it used 10 ms of cpu time and terminates.
+Reported-by: Zhijun Wang <zhijwang@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/mtest06/mmap1.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The test is run with different values for n and m up to 100 and 100.
-This creates 10000 processes, which CAN exist at the same time, because
-the process can already terminate, while they are still started.
-I wonder what the rational behind this is.
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index c5417444f..5c7d3df2f 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -30,6 +30,7 @@
+ #include <stdlib.h>
+ #include "lapi/abisize.h"
+ #include "tst_test.h"
++#include "lapi/abisize.h"
+ #include "tst_safe_pthread.h"
+ 
+ #ifdef TST_ABI32
+-- 
+2.20.1
 
-I question the the numbers used (up to 100/100) and more important the
-spawn/kill timings.
-
-If it is required, that all processes run in parallel, synchronization
-is required. If it is not required, test processes should be started
-and terminated in batches. This would probably reduce test runtime,
-because the system is not permanently switching contexts.
-
-Is it really required to run it with 100/100? Shouldn't it be enough
-to run the test with 10/10 1/100 and 100/1? Sadly there is no rational
-for the test at all in the sources.
-
-J?rg
