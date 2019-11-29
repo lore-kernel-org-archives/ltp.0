@@ -1,69 +1,44 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 29 Nov 2019 10:54:54 +0100
-Subject: [LTP] [PATCH 1/1] Use real FS block size in fallocate05
-In-Reply-To: <20191128174733.GA5202@dell5510>
-References: <20191128093610.6903-1-mdoucha@suse.cz>
- <20191128093610.6903-2-mdoucha@suse.cz> <20191128174733.GA5202@dell5510>
-Message-ID: <a0d815a5-ef91-d982-b660-623b0316c98a@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 29 Nov 2019 10:55:17 +0100
+Subject: [LTP] [PATCH] mtest01: correct the ALLOC_THRESHOLD definition
+ on s390x
+In-Reply-To: <20191128045525.15454-1-liwang@redhat.com>
+References: <20191128045525.15454-1-liwang@redhat.com>
+Message-ID: <20191129095517.GA30496@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/28/19 6:47 PM, Petr Vorel wrote:
-> Hi Martin,
-> 
-> Looks ok to me.
-> 
-> BTW there is change on results on some of my VM:
-> 
-> Old version:
-> tst_test.c:1169: INFO: Testing on ext4
-> tst_mkfs.c:89: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-> mke2fs 1.43.8 (1-Jan-2018)
-> tst_test.c:1106: INFO: Timeout per run is 0h 05m 00s
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file0 size 21710183
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file1 size 8070086
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file2 size 3971177
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file3 size 36915315
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file4 size 70310993
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file5 size 4807935
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file6 size 90739786
-> tst_fill_fs.c:29: INFO: Creating file mntpoint/file7 size 76896492
-> tst_fill_fs.c:49: INFO: write(): ENOSPC
-> fallocate05.c:50: PASS: write() wrote 8192 bytes
-> fallocate05.c:59: PASS: fallocate() on full FS: ENOSPC
-> fallocate05.c:68: PASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
-> fallocate05.c:74: PASS: write()
-> 
-> With your patch:
-> ...
-> tst_fill_fs.c:49: INFO: write(): ENOSPC (28)
-> fallocate05.c:67: PASS: write() wrote 16384 bytes
-> fallocate05.c:73: FAIL: fallocate() succeeded unexpectedly
-> 
-> Maybe it's correct (previous version didn't catch a problem),
-> not really sure.
+Hi Li,
 
-Your VM seems to use 1KB blocks in the ext4 test partition. It's
-probably the same quirk as I've documented for XFS in the patch. I'd
-like some more opinions on how to deal with it:
-- improve tst_fill_fs() and make sure that fallocate(1 block) always
-fails after it?
-- set some reasonable minimum size where fallocate() must fail on full
-FS but allow fallocate() to pass with smaller allocation requests?
-- drop that one fallocate() fail check entirely because it's too unreliable?
+> mtest01 hits a problem on s390x platform. The situation is that if children's
+> memory allocating is ongoing and the test remaining time is in an emergency, the
+> parent will break from the while loop and try to revoke children, obviously, it
+> doesn't have enough time to wait for the children's status change to 'T'. Then it
+> occurs timeout issue as below:
 
-> + there are few simple warnings:
+>   mtest01.c:134: INFO: Filling up 80% of free ram which is 5868864 kbytes
+>   mtest01.c:149: INFO: ... child 38289 starting
+>   mtest01.c:149: INFO: ... child 38288 starting
+>   mtest01.c:208: WARN: the remaininig time is not enough for testing
+>   mtest01.c:218: FAIL: kbytes allocated (and written to) less than expected 5868864
+>   Test timeouted, sending SIGKILL!
 
-I'll resubmit after we agree on a solution to the above problem.
+> The immediate cause is the memory allocating is too slow to finish fleetly on such
+> a small virtual s390x machine, because ALLOC_THRESHOLD does not take real effort.
+> Here let's correct the allocating threshold definition to make sure each child
+> allocates less memory.
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> And, another fix for the fail handling. In case children are still on memory
+> allocating, the remaining 15 seconds is not enough to wait for process status
+> change. We kill them directly to avoid test timeout occurring.
+
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Rachel Sibley <rasibley@redhat.com>
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
