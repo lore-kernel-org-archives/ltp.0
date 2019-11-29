@@ -1,44 +1,62 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 29 Nov 2019 10:55:17 +0100
-Subject: [LTP] [PATCH] mtest01: correct the ALLOC_THRESHOLD definition
- on s390x
-In-Reply-To: <20191128045525.15454-1-liwang@redhat.com>
-References: <20191128045525.15454-1-liwang@redhat.com>
-Message-ID: <20191129095517.GA30496@dell5510>
+From: Zorro Lang <zlang@redhat.com>
+Date: Fri, 29 Nov 2019 19:20:54 +0800
+Subject: [LTP] [PATCH] syscalls/newmount: new test case for new mount API
+In-Reply-To: <fa006742-d29d-4d19-c628-30b0454c8f72@cn.fujitsu.com>
+References: <20191128173532.6468-1-zlang@redhat.com>
+ <9c487d75-0de0-af8f-a439-d3ce9d965808@cn.fujitsu.com>
+ <fa006742-d29d-4d19-c628-30b0454c8f72@cn.fujitsu.com>
+Message-ID: <20191129112053.GF4601@dhcp-12-102.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+On Fri, Nov 29, 2019 at 01:29:35PM +0800, Yang Xu wrote:
+> 
+> 
+> on 2019/11/29 11:39, Yang Xu wrote:
+> > --- /dev/null
+> > +++ b/include/lapi/newmount.h
+> > @@ -0,0 +1,106 @@
+> > +/*
+> > + * Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > + * modify it under the terms of the GNU General Public License as
+> > + * published by the Free Software Foundation; either version 2 of
+> > + * the License, or (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it would be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+> > + *
+> > + * You should have received a copy of the GNU General Public License
+> > + * along with this program; if not, write the Free Software Foundation,
+> > + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> > + */
+> > +
+> > +#ifndef __NEWMOUNT_H__
+> > +#define __NEWMOUNT_H__
+> > +
+> > +#include <stdint.h>
+> > +#include <unistd.h>
+> > +#include "lapi/syscalls.h"
+> > +
+> > +#if !defined(HAVE_FSOPEN)
+> When we run make autotools and ./configure, this macro is in
+> "include/config.h". You should include this header file like other lapi
+> files.
 
-> mtest01 hits a problem on s390x platform. The situation is that if children's
-> memory allocating is ongoing and the test remaining time is in an emergency, the
-> parent will break from the while loop and try to revoke children, obviously, it
-> doesn't have enough time to wait for the children's status change to 'T'. Then it
-> occurs timeout issue as below:
+Oh, thanks, I refered to the include/lapi/stat.h file, it doesn't include
+config.h, I don't know if it's needed.
 
->   mtest01.c:134: INFO: Filling up 80% of free ram which is 5868864 kbytes
->   mtest01.c:149: INFO: ... child 38289 starting
->   mtest01.c:149: INFO: ... child 38288 starting
->   mtest01.c:208: WARN: the remaininig time is not enough for testing
->   mtest01.c:218: FAIL: kbytes allocated (and written to) less than expected 5868864
->   Test timeouted, sending SIGKILL!
+Thanks,
+Zorro
 
-> The immediate cause is the memory allocating is too slow to finish fleetly on such
-> a small virtual s390x machine, because ALLOC_THRESHOLD does not take real effort.
-> Here let's correct the allocating threshold definition to make sure each child
-> allocates less memory.
+> > +static inline int fsopen(const char *fs_name, unsigned int flags)
+> > +{
+> 
+> 
 
-> And, another fix for the fail handling. In case children are still on memory
-> allocating, the remaining 15 seconds is not enough to wait for process status
-> change. We kill them directly to avoid test timeout occurring.
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Rachel Sibley <rasibley@redhat.com>
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
