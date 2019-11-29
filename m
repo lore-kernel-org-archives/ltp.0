@@ -1,40 +1,52 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 29 Nov 2019 11:43:33 +0800
-Subject: [LTP] [COMMITTED PATCH] mmap1: include lapi/abisize.h header
- file
-In-Reply-To: <16eba1ee-8b23-13c5-f496-3758c2b29fc8@163.com>
-References: <20191128082945.6495-1-liwang@redhat.com>
- <1766813779.14211710.1574930105928.JavaMail.zimbra@redhat.com>
- <CAEemH2cW+XUARCzyreQQgJnd1HSV506JEn4rt=oGyezXRtLKFw@mail.gmail.com>
- <16eba1ee-8b23-13c5-f496-3758c2b29fc8@163.com>
-Message-ID: <CAEemH2fhobsR2ethyGe2uOMk=j7KHfttn2hN3YsCv8YX7k9NNg@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 29 Nov 2019 13:29:35 +0800
+Subject: [LTP] [PATCH] syscalls/newmount: new test case for new mount API
+In-Reply-To: <9c487d75-0de0-af8f-a439-d3ce9d965808@cn.fujitsu.com>
+References: <20191128173532.6468-1-zlang@redhat.com>
+ <9c487d75-0de0-af8f-a439-d3ce9d965808@cn.fujitsu.com>
+Message-ID: <fa006742-d29d-4d19-c628-30b0454c8f72@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 29, 2019 at 11:35 AM Xiao Yang <ice_yangxiao@163.com> wrote:
 
-> ...
->
->
->> This sounds familiar:
->>   74d9fe32fda9 ("mtest06/mmap1: add missing lapi/abisize.h include")
->>
->
-> Ah, sorry I was blind for missing this commit. Seems I just git pull&push
-> my patch.
->
-> Hi Li,
->
-> Perhaps, you should git revert the duplicated patch. :-)
->
-Ok sure, but it doesn't matter for including twice I guess. :)
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191129/c7aad147/attachment.htm>
+on 2019/11/29 11:39, Yang Xu wrote:
+> --- /dev/null
+> +++ b/include/lapi/newmount.h
+> @@ -0,0 +1,106 @@
+> +/*
+> + * Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> +#ifndef __NEWMOUNT_H__
+> +#define __NEWMOUNT_H__
+> +
+> +#include <stdint.h>
+> +#include <unistd.h>
+> +#include "lapi/syscalls.h"
+> +
+> +#if !defined(HAVE_FSOPEN)
+When we run make autotools and ./configure, this macro is in 
+"include/config.h". You should include this header file like other lapi 
+files.
+> +static inline int fsopen(const char *fs_name, unsigned int flags)
+> +{
+
+
