@@ -1,62 +1,111 @@
-From: Zorro Lang <zlang@redhat.com>
-Date: Fri, 29 Nov 2019 19:20:54 +0800
-Subject: [LTP] [PATCH] syscalls/newmount: new test case for new mount API
-In-Reply-To: <fa006742-d29d-4d19-c628-30b0454c8f72@cn.fujitsu.com>
-References: <20191128173532.6468-1-zlang@redhat.com>
- <9c487d75-0de0-af8f-a439-d3ce9d965808@cn.fujitsu.com>
- <fa006742-d29d-4d19-c628-30b0454c8f72@cn.fujitsu.com>
-Message-ID: <20191129112053.GF4601@dhcp-12-102.nay.redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 29 Nov 2019 07:01:36 -0500 (EST)
+Subject: [LTP] [PATCH 1/1] Use real FS block size in fallocate05
+In-Reply-To: <20191128093610.6903-2-mdoucha@suse.cz>
+References: <20191128093610.6903-1-mdoucha@suse.cz>
+ <20191128093610.6903-2-mdoucha@suse.cz>
+Message-ID: <26933665.14359191.1575028896043.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 29, 2019 at 01:29:35PM +0800, Yang Xu wrote:
-> 
-> 
-> on 2019/11/29 11:39, Yang Xu wrote:
-> > --- /dev/null
-> > +++ b/include/lapi/newmount.h
-> > @@ -0,0 +1,106 @@
-> > +/*
-> > + * Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
-> > + *
-> > + * This program is free software; you can redistribute it and/or
-> > + * modify it under the terms of the GNU General Public License as
-> > + * published by the Free Software Foundation; either version 2 of
-> > + * the License, or (at your option) any later version.
-> > + *
-> > + * This program is distributed in the hope that it would be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > + * GNU General Public License for more details.
-> > + *
-> > + * You should have received a copy of the GNU General Public License
-> > + * along with this program; if not, write the Free Software Foundation,
-> > + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> > + */
-> > +
-> > +#ifndef __NEWMOUNT_H__
-> > +#define __NEWMOUNT_H__
-> > +
-> > +#include <stdint.h>
-> > +#include <unistd.h>
-> > +#include "lapi/syscalls.h"
-> > +
-> > +#if !defined(HAVE_FSOPEN)
-> When we run make autotools and ./configure, this macro is in
-> "include/config.h". You should include this header file like other lapi
-> files.
+Hi,
 
-Oh, thanks, I refered to the include/lapi/stat.h file, it doesn't include
-config.h, I don't know if it's needed.
+<snip>
 
-Thanks,
-Zorro
+>  
+>  static void run(void)
+>  {
+> -	char buf[FALLOCATE_SIZE];
+> -	ssize_t ret;
+> +	size_t bufsize, i;
+> +	struct stat statbuf;
+>  
+>  	fd = SAFE_OPEN(MNTPOINT "/test_file", O_WRONLY | O_CREAT);
+>  
+> -	if (fallocate(fd, 0, 0, FALLOCATE_SIZE)) {
+> -		if (errno == EOPNOTSUPP) {
+> -			tst_res(TCONF | TERRNO, "fallocate() not supported");
+> +	// Use real FS block size, otherwise fallocate() call will test
+> +	// different things on different platforms
 
-> > +static inline int fsopen(const char *fs_name, unsigned int flags)
-> > +{
-> 
-> 
+Style guide favors c-style comments.
+
+> +	SAFE_FSTAT(fd, &statbuf);
+> +	bufsize = FALLOCATE_BLOCKS * statbuf.st_blksize;
+> +	buf = realloc(buf, bufsize);
+> +
+> +	if (!buf) {
+> +		tst_brk(TBROK, "Buffer allocation failed");
+> +		SAFE_CLOSE(fd);
+> +		return;
+
+Anything after TBROK will be unreachable.
+
+> +	}
+> +
+> +	TEST(fallocate(fd, 0, 0, bufsize));
+> +
+> +	if (TST_RET) {
+> +		if (errno == ENOTSUP) {
+
+TEST_ERR
+
+> +			tst_res(TCONF | TTERRNO, "fallocate() not supported");
+
+tst_brk would make more sense here. If we fail here we can end the test.
+
+>  			SAFE_CLOSE(fd);
+>  			return;
+>  		}
+>  
+> -		tst_brk(TBROK | TERRNO,
+> -			"fallocate(fd, 0, 0, %i)", FALLOCATE_SIZE);
+> +		tst_brk(TBROK | TTERRNO, "fallocate(fd, 0, 0, %i)", bufsize);
+>  	}
+>  
+>  	tst_fill_fs(MNTPOINT, 1);
+>  
+> -	ret = write(fd, buf, sizeof(buf));
+> +	TEST(write(fd, buf, bufsize));
+>  
+> -	if (ret < 0)
+> -		tst_res(TFAIL | TERRNO, "write() failed unexpectedly");
+> +	if (TST_RET < 0)
+> +		tst_res(TFAIL | TTERRNO, "write() failed unexpectedly");
+> +	else if (TST_RET != bufsize)
+> +		tst_res(TFAIL,
+> +			"Short write(): %ld bytes (expected %zu)",
+> +			TST_RET, bufsize);
+>  	else
+> -		tst_res(TPASS, "write() wrote %zu bytes", ret);
+> +		tst_res(TPASS, "write() wrote %ld bytes", TST_RET);
+>  
+> -	ret = fallocate(fd, 0, FALLOCATE_SIZE, FALLOCATE_SIZE);
+> -	if (ret != -1)
+> +	// fallocate(1 block) may pass here on XFS. Original test allocated
+> +	// 8KB (2 blocks on x86) so keep the original behavior.
+> +	TEST(fallocate(fd, 0, bufsize, 2 * statbuf.st_blksize));
+
+I don't understand why there is need to find minimum value that can
+satisfy this check. It looks like we are testing tst_fill_fs() more
+than fallocate().
+
+In other words, what is wrong with current test? Is the problem that
+FALLOCATE_SIZE (1M) is not aligned on all platforms? Or is the test
+invalid with FALLOCATE_SIZE that big? Or both?
+
+<snip>
+
+>  
+> @@ -80,6 +102,9 @@ static void cleanup(void)
+>  {
+>  	if (fd > 0)
+>  		SAFE_CLOSE(fd);
+> +
+> +	if (buf)
+
+Check is not needed, free() can handle NULL.
 
