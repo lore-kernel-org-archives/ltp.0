@@ -1,12 +1,8 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 29 Nov 2019 11:17:28 -0500 (EST)
-Subject: [LTP] [PATCH 1/1] Use real FS block size in fallocate05
-In-Reply-To: <0e1a3d0e-a154-8469-6e04-a954740a4a61@suse.cz>
-References: <20191128093610.6903-1-mdoucha@suse.cz>
- <20191128093610.6903-2-mdoucha@suse.cz>
- <26933665.14359191.1575028896043.JavaMail.zimbra@redhat.com>
- <0e1a3d0e-a154-8469-6e04-a954740a4a61@suse.cz>
-Message-ID: <1057914729.14405454.1575044248773.JavaMail.zimbra@redhat.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Sat, 30 Nov 2019 05:26:17 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
+ =?utf-8?q?=2E13-3b5f971=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.6C6A189643.3T2ZUWEMOI@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,46 +10,243 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+Hello,
 
------ Original Message -----
-> On 11/29/19 1:01 PM, Jan Stancek wrote:
-> >> +			tst_res(TCONF | TTERRNO, "fallocate() not supported");
-> > 
-> > tst_brk would make more sense here. If we fail here we can end the test.
-> 
-> No. tst_brk() will terminate the whole test on the first usual test case
-> (Ext2) and skip all the other file systems that do support fallocate().
+We ran automated tests on a recent commit from this kernel tree:
 
-It shouldn't. tst_brk() does call exit() for test process, but
-.all_filesystems spawns new process for each fs.
+       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+            Commit: 3b5f97139acc - KVM: PPC: Book3S HV: Flush link stack on guest exit to host kernel
 
-If I add:
-   tst_brk(TCONF, "STOP");
-to run(), I get STOP for each fs:
-  $ sudo ./fallocate05 2>&1 | grep STOP
-  fallocate05.c:30: CONF: STOP
-  fallocate05.c:30: CONF: STOP
-  fallocate05.c:30: CONF: STOP
-  fallocate05.c:30: CONF: STOP
-  fallocate05.c:30: CONF: STOP
-  fallocate05.c:30: CONF: STOP
+The results of these automated tests are provided below.
 
-> 
-> > I don't understand why there is need to find minimum value that can
-> > satisfy this check. It looks like we are testing tst_fill_fs() more
-> > than fallocate().
-> > 
-> > In other words, what is wrong with current test? Is the problem that
-> > FALLOCATE_SIZE (1M) is not aligned on all platforms? Or is the test
-> > invalid with FALLOCATE_SIZE that big? Or both?
-> 
-> I don't like to blindly rely on the assumption that block size is always
-> a power of 2 and smaller than some magic number. Getting the real block
-> size is trivial. The only real question is how many free blocks do we
-> allow on a "full" file system in our tests. 1MB is just 16 blocks on
-> PPC64 so the magic number isn't particularly big anyway.
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-OK, let's assume 16 is enough. Can we use that value also for ENOSPC check?
-  TEST(fallocate(fd, 0, bufsize, 2 * statbuf.st_blksize));
+All kernel binaries, config files, and logs are available for download here:
 
+  https://artifacts.cki-project.org/pipelines/314344
+
+One or more kernel tests failed:
+
+    ppc64le:
+     ? LTP
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 3 architectures:
+
+    aarch64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    ppc64le:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+  ppc64le:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 2:
+       ?  Boot test
+       ?  Storage SAN device stress - mpt3sas driver
+
+    Host 3:
+       ?  Boot test
+       ?  Storage SAN device stress - megaraid_sas
+
+    Host 4:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
 
