@@ -1,32 +1,22 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 2 Dec 2019 04:29:36 +0100
-Subject: [LTP] [PATCH] Unshare KSM pages before setting max_page_sharing
-In-Reply-To: <20191128163147.4377-1-mdoucha@suse.cz>
-References: <20191128163147.4377-1-mdoucha@suse.cz>
-Message-ID: <20191202032936.GA32335@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 2 Dec 2019 11:37:11 +0800
+Subject: [LTP] [PATCH] mtest01: correct the ALLOC_THRESHOLD definition
+ on s390x
+In-Reply-To: <615998340.14360504.1575029808785.JavaMail.zimbra@redhat.com>
+References: <20191128045525.15454-1-liwang@redhat.com>
+ <615998340.14360504.1575029808785.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2f2Nu8KozVY2kgxTVLsOBThsSOKimJS5xmRZkhD1-xzcw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Pushed, thanks for the review.
 
-> Setting max_page_sharing is possible only when there are no KSM shared pages
-> in the system. Otherwise writing to max_page_sharing SysFS file will fail
-> with EBUSY.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Good catch!
-
-BTW at least ksm01 will fail on VM host with running VMs,
-but that's another story not related to this patch.
-
-mem.c:251: FAIL: pages_shared is not 1 but 3629.
-mem.c:251: FAIL: pages_sharing is not 98302 but 113789.
-mem.c:251: FAIL: pages_volatile is not 0 but 12.
-mem.c:251: FAIL: pages_unshared is not 1 but 48519.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191202/78ce45e4/attachment.htm>
