@@ -1,177 +1,259 @@
-From: Michael Ellerman <mpe@ellerman.id.au>
-Date: Mon, 02 Dec 2019 16:46:40 +1100
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E13-3b5f971=2Ecki_=28stable-queue=29?=
-In-Reply-To: <1738119916.14437244.1575151003345.JavaMail.zimbra@redhat.com>
-References: <cki.6C6A189643.3T2ZUWEMOI@redhat.com>
- <1738119916.14437244.1575151003345.JavaMail.zimbra@redhat.com>
-Message-ID: <8736e3ffen.fsf@mpe.ellerman.id.au>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Mon,  2 Dec 2019 18:19:43 +0800
+Subject: [LTP] [PATCH] cpuhotplug05.sh: Rewrite test case
+Message-ID: <20191202101943.17335-1-ice_yangxiao@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+1) Replace sar command with /proc/stat
+2) Convert to new API
+3) Remove unused/duplicated code
 
-Jan Stancek <jstancek@redhat.com> writes:
-> ----- Original Message -----
->> 
->> Hello,
->> 
->> We ran automated tests on a recent commit from this kernel tree:
->> 
->>        Kernel repo:
->>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
->>             Commit: 3b5f97139acc - KVM: PPC: Book3S HV: Flush link stack on
->>             guest exit to host kernel
+Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
+---
+ runtest/cpuhotplug                            |   2 +-
+ .../cpu_hotplug/functional/cpuhotplug05.sh    | 186 ++++++------------
+ 2 files changed, 63 insertions(+), 125 deletions(-)
 
-I can't find this commit, I assume it's roughly the same as:
+diff --git a/runtest/cpuhotplug b/runtest/cpuhotplug
+index ec7f11ed1..bd97e01b8 100644
+--- a/runtest/cpuhotplug
++++ b/runtest/cpuhotplug
+@@ -4,6 +4,6 @@
+ cpuhotplug02 cpuhotplug02.sh -c 1 -l 1
+ cpuhotplug03 cpuhotplug03.sh -c 1 -l 1
+ cpuhotplug04 cpuhotplug04.sh -l 1
+-cpuhotplug05 cpuhotplug05.sh -c 1 -l 1 -d /tmp
++cpuhotplug05 cpuhotplug05.sh -c 1
+ cpuhotplug06 cpuhotplug06.sh -c 1 -l 1
+ cpuhotplug07 cpuhotplug07.sh -c 1 -l 1 -d /usr/src/linux
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+index 95a8f4a2d..167cbc4a7 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+@@ -1,157 +1,95 @@
+ #!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
+ #
+-# Test Case 5 - sar
+-#
++# Test Case 5:
++# Check if /proc/stat can show correct cpu statistics
++# when cpu is onlined/offlined.
+ 
+-export TCID="cpuhotplug05"
+-export TST_TOTAL=1
+-export LC_TIME="POSIX"
++TST_SETUP=do_setup
++TST_CLEANUP=do_clean
++TST_TESTFUNC=do_test
++TST_USAGE=cpuhotplug_usage
++TST_OPTS="c:"
++TST_PARSE_ARGS=cpuhotplug_parse_args
+ 
+-# Includes:
+-. test.sh
++. tst_test.sh
+ . cpuhotplug_testsuite.sh
+ . cpuhotplug_hotplug.sh
+ 
+-cat <<EOF
+-Name:   $TCID
+-Date:   `date`
+-Desc:   Does sar behave properly during CPU hotplug events?
++orig_online=0
+ 
+-EOF
+-
+-usage()
++cpuhotplug_usage()
+ {
+-	cat << EOF
+-	usage: $0 -c cpu -l loop -d directory
+-
+-	OPTIONS
+-		-c  cpu which is specified for testing
+-		-l  number of cycle test
+-		-d  directory used to lay file
+-
+-EOF
+-	exit 1
++	echo "usage: $0"
++	echo "OPTIONS"
++	echo "-c cpu  which cpu is specified for testing"
+ }
+ 
+-do_clean()
++cpuhotplug_parse_args()
+ {
+-	pid_is_valid ${SAR_PID} && kill_pid ${SAR_PID}
+-	online_cpu "$CPU_TO_TEST"
++	case $1 in
++	c) cpu_num="$2";;
++	esac
+ }
+ 
+-get_field()
++do_clean()
+ {
+-	echo "$1" | awk "{print \$$2}"
++	[ $orig_online -eq 1 ] && online_cpu "$cpu_num"
++	[ $orig_online -eq 0 ] && offline_cpu "$cpu_num"
+ }
+ 
+-while getopts c:l:d: OPTION; do
+-	case $OPTION in
+-	c)
+-		CPU_TO_TEST=$OPTARG;;
+-	l)
+-		HOTPLUG05_LOOPS=$OPTARG;;
+-	d)
+-		TMP=$OPTARG;;
+-	?)
+-		usage;;
+-	esac
+-done
+-
+-LOOP_COUNT=1
+-
+-tst_require_cmds sar
+-
+-if [ $(get_present_cpus_num) -lt 2 ]; then
+-	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+-fi
+-
+-if [ -z "$CPU_TO_TEST" ]; then
+-	tst_brkm TBROK "usage: ${0##*} <CPU to offline>"
+-fi
++do_setup()
++{
++	[ $(get_present_cpus_num) -lt 2 ] && \
++		tst_brk TCONF "system doesn't have required cpu hotplug support"
+ 
+-# Validate the specified CPU is available
+-if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+-fi
++	[ -z "$cpu_num" ] && \
++		tst_brk TBROK "didn't specify cpu number to test"
+ 
+-# Check that the specified CPU is offline; if not, offline it
+-if cpu_is_online "${CPU_TO_TEST}" ; then
+-	if ! offline_cpu ${CPU_TO_TEST} ; then
+-		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be offlined"
++	# Validate the specified cpu is available
++	if ! cpu_is_valid "$cpu_num" ; then
++		tst_brk TCONF "cpu${cpu_num} doesn't support hotplug"
+ 	fi
+-fi
+ 
+-TST_CLEANUP=do_clean
++	# Set orig_online to 1 if the specified cpu is online by default
++	cpu_is_online "$cpu_num" && orig_online=1
++}
+ 
+-LOG_FILE="$TMP/log_$$"
++do_test()
++{
++	local passed=0
+ 
+-until [ $LOOP_COUNT -gt $HOTPLUG05_LOOPS ]; do
++	# Online the specified cpu
++	online_cpu "$cpu_num" || \
++		tst_brk TBROK "cpu${cpu_num} cannot be onlined"
+ 
+-	# Start up SAR and give it a couple cycles to run
+-	sar 1 0 >/dev/null 2>&1 &
+-	sleep 2
+-	# "sar 1 0" is supported before 'sysstat-8.1.4(include sar)',
+-	# after that use "sar 1" instead of. Use 'ps -C sar' to check.
+-	if ps -C sar >/dev/null 2>&1; then
+-		pkill sar
+-		sar -P "$CPU_TO_TEST" 1 0 > "$LOG_FILE" &
+-	else
+-		sar -P "$CPU_TO_TEST" 1 > "$LOG_FILE" &
+-	fi
+-	sleep 2
+-	SAR_PID=$!
+-
+-	# Since the CPU is offline, SAR should display all the 6 fields
+-	# of CPU statistics as '0.00'
+-	offline_status=$(tail -n 1 "$LOG_FILE")
+-	if [ -z "$offline_status" ]; then
+-		tst_brkm TBROK "SAR output file is empty"
++	if ! grep -q "^cpu${cpu_num}" /proc/stat; then
++		tst_res TFAIL \
++			"online cpu${cpu_num} doesn't appear in /proc/stat"
++		return 1
+ 	fi
+ 
+-	cpu_field=$(get_field "$offline_status" "2")
+-	if [ "${cpu_field}" = "CPU" ]; then
+-		# Since sysstat-11.7.1, sar/sadf didn't display offline CPU
+-		tst_resm TINFO "SAR didn't display offline CPU"
+-	else
+-		for i in $(seq 3 8); do
+-			field=$(get_field "$offline_status" "$i")
+-			if [ "$field" != "0.00" ]; then
+-				tst_brkm TBROK "Field $i is '$field', '0.00' expected"
+-			fi
+-		done
+-	fi
+-
+-	# Online the CPU
+-	if ! online_cpu ${CPU_TO_TEST}; then
+-		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
+-	fi
+-
+-	sleep 2
+-
+-	# Check that SAR registered the change in CPU online/offline states
+-	online_status=$(tail -n 1 "$LOG_FILE")
+-	check_passed=0
+-	for i in $(seq 3 8); do
+-		field_online=$(get_field "$online_status" "$i")
+-
+-		if [ "$field_online" != "0.00" ]; then
+-			check_passed=1
+-			break
+-		fi
++	for field in $(seq 2 11); do
++		field_value=$(grep "^cpu${cpu_num}" /proc/stat | awk "{print \$$field}")
++		[ "$field_value" != "0" ] && passed=1
+ 	done
+ 
+-	if [ $check_passed -eq 0 ]; then
+-		tst_resm TFAIL "No change in the CPU statistics"
+-		tst_exit
++	if [ $passed -eq 0 ]; then
++		tst_res TFAIL \
++			"all field of online cpu{cpu_num} shows zero in /proc/stat"
++		return 1
+ 	fi
+ 
+-	offline_cpu ${CPU_TO_TEST}
+-	kill_pid ${SAR_PID}
++	# Offline the specified cpu
++	offline_cpu "$cpu_num" || \
++		tst_brk TBROK "cpu${cpu_num} cannot be offlined"
+ 
+-	LOOP_COUNT=$((LOOP_COUNT+1))
+-
+-done
++	if grep -q "^cpu${cpu_num}" /proc/stat; then
++		tst_res TFAIL "offline cpu${cpu_num} appears in /proc/stat"
++		return 1
++	fi
+ 
+-tst_resm TPASS "SAR updated statistics after the CPU was turned on."
++	tst_res TPASS "/proc/stat shows correct cpu statistics"
++}
+ 
+-tst_exit
++tst_run
+-- 
+2.21.0
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.3.y&id=0815f75f90178bc7e1933cf0d0c818b5f3f5a20c
-
->> The results of these automated tests are provided below.
->> 
->>     Overall result: FAILED (see details below)
->>              Merge: OK
->>            Compile: OK
->>              Tests: FAILED
->> 
->> All kernel binaries, config files, and logs are available for download here:
->> 
->>   https://artifacts.cki-project.org/pipelines/314344
->> 
->> One or more kernel tests failed:
->> 
->>     ppc64le:
->>      ? LTP
->
-> I suspect kernel bug.
-
-Looks that way, but I can't reproduce it on a machine here.
-
-I have the same CPU revision and am booting the exact kernel binary &
-modules linked above.
-
-> There were couple of 'math' runtest related failures in recent couple days.
-> In all cases, some data file used by test was missing. Presumably because
-> binary that generates it crashed.
->
-> I managed to reproduce one failure with this CKI build, which I believe
-> is the same problem.
->
-> We crash early during load, before any LTP code runs:
->
-> (gdb) r
-> Starting program: /mnt/testarea/ltp/testcases/bin/genasin
-
-What is this /mnt/testarea? Looks like it's setup by some of the beaker
-scripts or something?
-
-I'm running LTP out of /home, which is ext4 directly on disk.
-
-I tried getting the tests-beaker stuff working on my machine, but I
-couldn't find all the libraries and so on it requires.
-
-
-> Program received signal SIGBUS, Bus error.
-> dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
-> 1362        switch (ph->p_type)
-> (gdb) bt
-> #0  dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
-> #1  0x00007ffff7fcf3c8 in _dl_sysdep_start (start_argptr=<optimized out>, dl_main=0x7ffff7fb37b0 <dl_main>) at ../elf/dl-sysdep.c:253
-> #2  0x00007ffff7fb1d1c in _dl_start_final (arg=arg@entry=0x7fffffffee20, info=info@entry=0x7fffffffe870) at rtld.c:445
-> #3  0x00007ffff7fb2f5c in _dl_start (arg=0x7fffffffee20) at rtld.c:537
-> #4  0x00007ffff7fb14d8 in _start () from /lib64/ld64.so.2
-> (gdb) f 0
-> #0  dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
-> 1362        switch (ph->p_type)
-> (gdb) l
-> 1357      /* And it was opened directly.  */
-> 1358      ++main_map->l_direct_opencount;
-> 1359
-> 1360      /* Scan the program header table for the dynamic section.  */
-> 1361      for (ph = phdr; ph < &phdr[phnum]; ++ph)
-> 1362        switch (ph->p_type)
-> 1363          {
-> 1364          case PT_PHDR:
-> 1365            /* Find out the load address.  */
-> 1366            main_map->l_addr = (ElfW(Addr)) phdr - ph->p_vaddr;
->
-> (gdb) p ph
-> $1 = (const Elf64_Phdr *) 0x10000040
->
-> (gdb) p *ph
-> Cannot access memory at address 0x10000040
->
-> (gdb) info proc map
-> process 1110670
-> Mapped address spaces:
->
->           Start Addr           End Addr       Size     Offset objfile
->           0x10000000         0x10010000    0x10000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
->           0x10010000         0x10030000    0x20000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
->       0x7ffff7f90000     0x7ffff7fb0000    0x20000        0x0 [vdso]
->       0x7ffff7fb0000     0x7ffff7fe0000    0x30000        0x0 /usr/lib64/ld-2.30.so
->       0x7ffff7fe0000     0x7ffff8000000    0x20000    0x20000 /usr/lib64/ld-2.30.so
->       0x7ffffffd0000     0x800000000000    0x30000        0x0 [stack]
->
-> (gdb) x/1x 0x10000040
-> 0x10000040:     Cannot access memory at address 0x10000040
-
-Yeah that's weird.
-
-> # /mnt/testarea/ltp/testcases/bin/genasin
-> Bus error (core dumped)
->
-> However, as soon as I copy that binary somewhere else, it works fine:
->
-> # cp /mnt/testarea/ltp/testcases/bin/genasin /tmp
-> # /tmp/genasin
-> # echo $?
-> 0
-
-Is /tmp a real disk or tmpfs?
-
-cheers
-
-> # cp /mnt/testarea/ltp/testcases/bin/genasin /mnt/testarea/ltp/testcases/bin/genasin2
-> # /mnt/testarea/ltp/testcases/bin/genasin2
-> # echo $?
-> 0
->
-> # /mnt/testarea/ltp/testcases/bin/genasin
-> Bus error (core dumped)
->
-> # diff /mnt/testarea/ltp/testcases/bin/genasin /mnt/testarea/ltp/testcases/bin/genasin2; echo $?
-> 0
->
-> # lscpu
-> Architecture:                    ppc64le
-> Byte Order:                      Little Endian
-> CPU(s):                          160
-> On-line CPU(s) list:             0-159
-> Thread(s) per core:              4
-> Core(s) per socket:              20
-> Socket(s):                       2
-> NUMA node(s):                    2
-> Model:                           2.2 (pvr 004e 1202)
-> Model name:                      POWER9, altivec supported
-> Frequency boost:                 enabled
-> CPU max MHz:                     3800.0000
-> CPU min MHz:                     2166.0000
-> L1d cache:                       1.3 MiB
-> L1i cache:                       1.3 MiB
-> L2 cache:                        10 MiB
-> L3 cache:                        200 MiB
-> NUMA node0 CPU(s):               0-79
-> NUMA node8 CPU(s):               80-159
-> Vulnerability Itlb multihit:     Not affected
-> Vulnerability L1tf:              Not affected
-> Vulnerability Mds:               Not affected
-> Vulnerability Meltdown:          Mitigation; RFI Flush, L1D private per thread
-> Vulnerability Spec store bypass: Mitigation; Kernel entry/exit barrier (eieio)
-> Vulnerability Spectre v1:        Mitigation; __user pointer sanitization, ori31 speculation barrier enabled
-> Vulnerability Spectre v2:        Mitigation; Indirect branch cache disabled, Software link stack flush
-> Vulnerability Tsx async abort:   Not affected
