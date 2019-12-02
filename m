@@ -1,57 +1,177 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 2 Dec 2019 11:57:15 +0800
-Subject: [LTP] [PATCH] Unshare KSM pages before setting max_page_sharing
-In-Reply-To: <20191202032936.GA32335@dell5510>
-References: <20191128163147.4377-1-mdoucha@suse.cz>
- <20191202032936.GA32335@dell5510>
-Message-ID: <CAEemH2d03WLKxJNap2fzMPhEoVQH3EkEQGgwTVCOZxuf+-fOZA@mail.gmail.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Date: Mon, 02 Dec 2019 16:46:40 +1100
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
+ =?utf-8?q?=2E13-3b5f971=2Ecki_=28stable-queue=29?=
+In-Reply-To: <1738119916.14437244.1575151003345.JavaMail.zimbra@redhat.com>
+References: <cki.6C6A189643.3T2ZUWEMOI@redhat.com>
+ <1738119916.14437244.1575151003345.JavaMail.zimbra@redhat.com>
+Message-ID: <8736e3ffen.fsf@mpe.ellerman.id.au>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Dec 2, 2019 at 11:29 AM Petr Vorel <pvorel@suse.cz> wrote:
+Hi Jan,
 
-> Hi Martin,
+Jan Stancek <jstancek@redhat.com> writes:
+> ----- Original Message -----
+>> 
+>> Hello,
+>> 
+>> We ran automated tests on a recent commit from this kernel tree:
+>> 
+>>        Kernel repo:
+>>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+>>             Commit: 3b5f97139acc - KVM: PPC: Book3S HV: Flush link stack on
+>>             guest exit to host kernel
+
+I can't find this commit, I assume it's roughly the same as:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.3.y&id=0815f75f90178bc7e1933cf0d0c818b5f3f5a20c
+
+>> The results of these automated tests are provided below.
+>> 
+>>     Overall result: FAILED (see details below)
+>>              Merge: OK
+>>            Compile: OK
+>>              Tests: FAILED
+>> 
+>> All kernel binaries, config files, and logs are available for download here:
+>> 
+>>   https://artifacts.cki-project.org/pipelines/314344
+>> 
+>> One or more kernel tests failed:
+>> 
+>>     ppc64le:
+>>      ? LTP
 >
-> > Setting max_page_sharing is possible only when there are no KSM shared
-> pages
-> > in the system. Otherwise writing to max_page_sharing SysFS file will fail
-> > with EBUSY.
+> I suspect kernel bug.
+
+Looks that way, but I can't reproduce it on a machine here.
+
+I have the same CPU revision and am booting the exact kernel binary &
+modules linked above.
+
+> There were couple of 'math' runtest related failures in recent couple days.
+> In all cases, some data file used by test was missing. Presumably because
+> binary that generates it crashed.
 >
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> I managed to reproduce one failure with this CKI build, which I believe
+> is the same problem.
 >
-
-Pushed.
-
+> We crash early during load, before any LTP code runs:
 >
-> Good catch!
+> (gdb) r
+> Starting program: /mnt/testarea/ltp/testcases/bin/genasin
+
+What is this /mnt/testarea? Looks like it's setup by some of the beaker
+scripts or something?
+
+I'm running LTP out of /home, which is ext4 directly on disk.
+
+I tried getting the tests-beaker stuff working on my machine, but I
+couldn't find all the libraries and so on it requires.
+
+
+> Program received signal SIGBUS, Bus error.
+> dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
+> 1362        switch (ph->p_type)
+> (gdb) bt
+> #0  dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
+> #1  0x00007ffff7fcf3c8 in _dl_sysdep_start (start_argptr=<optimized out>, dl_main=0x7ffff7fb37b0 <dl_main>) at ../elf/dl-sysdep.c:253
+> #2  0x00007ffff7fb1d1c in _dl_start_final (arg=arg@entry=0x7fffffffee20, info=info@entry=0x7fffffffe870) at rtld.c:445
+> #3  0x00007ffff7fb2f5c in _dl_start (arg=0x7fffffffee20) at rtld.c:537
+> #4  0x00007ffff7fb14d8 in _start () from /lib64/ld64.so.2
+> (gdb) f 0
+> #0  dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
+> 1362        switch (ph->p_type)
+> (gdb) l
+> 1357      /* And it was opened directly.  */
+> 1358      ++main_map->l_direct_opencount;
+> 1359
+> 1360      /* Scan the program header table for the dynamic section.  */
+> 1361      for (ph = phdr; ph < &phdr[phnum]; ++ph)
+> 1362        switch (ph->p_type)
+> 1363          {
+> 1364          case PT_PHDR:
+> 1365            /* Find out the load address.  */
+> 1366            main_map->l_addr = (ElfW(Addr)) phdr - ph->p_vaddr;
 >
-> BTW at least ksm01 will fail on VM host with running VMs,
-> but that's another story not related to this patch.
+> (gdb) p ph
+> $1 = (const Elf64_Phdr *) 0x10000040
 >
-
-AFAIK, KSM is mainly designed for VMs pages merging. It seems the LTP ksm
-test can't run in parallel too, they are suggested to be the only test
-without any other ksm-test running in the background. Because ksmd does not
-distinguish which process the pages belong to, it just does merging and
-counting work in total for the whole system.
-
-If we run ./ksm01 & ./ksm01, it will also fail like below I think.
-
-
+> (gdb) p *ph
+> Cannot access memory at address 0x10000040
 >
-> mem.c:251: FAIL: pages_shared is not 1 but 3629.
-> mem.c:251: FAIL: pages_sharing is not 98302 but 113789.
-> mem.c:251: FAIL: pages_volatile is not 0 but 12.
-> mem.c:251: FAIL: pages_unshared is not 1 but 48519.
+> (gdb) info proc map
+> process 1110670
+> Mapped address spaces:
 >
+>           Start Addr           End Addr       Size     Offset objfile
+>           0x10000000         0x10010000    0x10000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
+>           0x10010000         0x10030000    0x20000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
+>       0x7ffff7f90000     0x7ffff7fb0000    0x20000        0x0 [vdso]
+>       0x7ffff7fb0000     0x7ffff7fe0000    0x30000        0x0 /usr/lib64/ld-2.30.so
+>       0x7ffff7fe0000     0x7ffff8000000    0x20000    0x20000 /usr/lib64/ld-2.30.so
+>       0x7ffffffd0000     0x800000000000    0x30000        0x0 [stack]
+>
+> (gdb) x/1x 0x10000040
+> 0x10000040:     Cannot access memory at address 0x10000040
 
+Yeah that's weird.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191202/8c711629/attachment.htm>
+> # /mnt/testarea/ltp/testcases/bin/genasin
+> Bus error (core dumped)
+>
+> However, as soon as I copy that binary somewhere else, it works fine:
+>
+> # cp /mnt/testarea/ltp/testcases/bin/genasin /tmp
+> # /tmp/genasin
+> # echo $?
+> 0
+
+Is /tmp a real disk or tmpfs?
+
+cheers
+
+> # cp /mnt/testarea/ltp/testcases/bin/genasin /mnt/testarea/ltp/testcases/bin/genasin2
+> # /mnt/testarea/ltp/testcases/bin/genasin2
+> # echo $?
+> 0
+>
+> # /mnt/testarea/ltp/testcases/bin/genasin
+> Bus error (core dumped)
+>
+> # diff /mnt/testarea/ltp/testcases/bin/genasin /mnt/testarea/ltp/testcases/bin/genasin2; echo $?
+> 0
+>
+> # lscpu
+> Architecture:                    ppc64le
+> Byte Order:                      Little Endian
+> CPU(s):                          160
+> On-line CPU(s) list:             0-159
+> Thread(s) per core:              4
+> Core(s) per socket:              20
+> Socket(s):                       2
+> NUMA node(s):                    2
+> Model:                           2.2 (pvr 004e 1202)
+> Model name:                      POWER9, altivec supported
+> Frequency boost:                 enabled
+> CPU max MHz:                     3800.0000
+> CPU min MHz:                     2166.0000
+> L1d cache:                       1.3 MiB
+> L1i cache:                       1.3 MiB
+> L2 cache:                        10 MiB
+> L3 cache:                        200 MiB
+> NUMA node0 CPU(s):               0-79
+> NUMA node8 CPU(s):               80-159
+> Vulnerability Itlb multihit:     Not affected
+> Vulnerability L1tf:              Not affected
+> Vulnerability Mds:               Not affected
+> Vulnerability Meltdown:          Mitigation; RFI Flush, L1D private per thread
+> Vulnerability Spec store bypass: Mitigation; Kernel entry/exit barrier (eieio)
+> Vulnerability Spectre v1:        Mitigation; __user pointer sanitization, ori31 speculation barrier enabled
+> Vulnerability Spectre v2:        Mitigation; Indirect branch cache disabled, Software link stack flush
+> Vulnerability Tsx async abort:   Not affected
