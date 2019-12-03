@@ -1,9 +1,9 @@
-From: kernel test robot <lkp@intel.com>
-Date: Tue, 3 Dec 2019 17:18:22 +0800
-Subject: [LTP] [btrfs] 8d17c48fc3:
- WARNING:at_fs/btrfs/space-info.h:#btrfs_add_reserved_bytes[btrfs]
-In-Reply-To: <20191129093807.525-1-nborisov@suse.com>
-Message-ID: <20191203091821.GS18573@shao2-debian>
+From: kernel test robot <rong.a.chen@intel.com>
+Date: Tue, 3 Dec 2019 17:18:59 +0800
+Subject: [LTP] [fs] 53d4a4300b:
+ WARNING:at_fs/overlayfs/copy_up.c:#ovl_copy_up_inode[overlay]
+In-Reply-To: <1575148868.5563.30.camel@HansenPartnership.com>
+Message-ID: <20191203091859.GT18573@shao2-debian>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ To: ltp@lists.linux.it
 
 FYI, we noticed the following commit (built with gcc-7):
 
-commit: 8d17c48fc3549e88853f1cadb70763915c58fd78 ("[PATCH] btrfs: Simplify len alignment calculation")
-url: https://github.com/0day-ci/linux/commits/Nikolay-Borisov/btrfs-Simplify-len-alignment-calculation/20191129-174412
+commit: 53d4a4300b82c4156da46eab01a8dd4e65a46491 ("[PATCH 1/1] fs: rethread notify_change to take a path instead of a dentry")
+url: https://github.com/0day-ci/linux/commits/James-Bottomley/preparatory-patch-for-a-uid-gid-shifting-bind-mount/20191201-052453
 
 
 in testcase: ltp
@@ -21,7 +21,7 @@ with following parameters:
 
 	disk: 1HDD
 	fs: btrfs
-	test: fs_readonly-02
+	test: syscalls_part2
 
 test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
 test-url: http://linux-test-project.github.io/
@@ -32,219 +32,99 @@ on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
 caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
 
-+---------------------------------------------------------------------------------+----------+------------+
-|                                                                                 | v5.4-rc8 | 8d17c48fc3 |
-+---------------------------------------------------------------------------------+----------+------------+
-| boot_successes                                                                  | 5451     | 5          |
-| boot_failures                                                                   | 140      | 4          |
-| WARNING:at_kernel/trace/trace_hwlat.c:#start_kthread                            | 7        |            |
-| RIP:start_kthread                                                               | 7        |            |
-| WARNING:at_fs/iomap/direct-io.c:#iomap_dio_actor                                | 8        |            |
-| RIP:iomap_dio_actor                                                             | 8        |            |
-| BUG:kernel_hang_in_boot_stage                                                   | 40       |            |
-| BUG:soft_lockup-CPU##stuck_for#s![sed:#]                                        | 1        |            |
-| RIP:clear_page_rep                                                              | 11       |            |
-| Kernel_panic-not_syncing:softlockup:hung_tasks                                  | 30       |            |
-| BUG:soft_lockup-CPU##stuck_for#s                                                | 16       |            |
-| RIP:__memcpy                                                                    | 10       |            |
-| RIP:__memset                                                                    | 2        |            |
-| RIP:smp_call_function_single                                                    | 15       |            |
-| WARNING:at_net/sched/sch_generic.c:#dev_watchdog                                | 13       |            |
-| RIP:dev_watchdog                                                                | 13       |            |
-| RIP:copy_user_generic_string                                                    | 4        |            |
-| RIP:native_safe_halt                                                            | 10       |            |
-| RIP:copy_page                                                                   | 4        |            |
-| BUG:kernel_hang_in_early-boot_stage                                             | 5        |            |
-| INFO:rcu_sched_self-detected_stall_on_CPU                                       | 12       |            |
-| Assertion_failed                                                                | 8        |            |
-| WARNING:at_fs/xfs/xfs_message.c:#assfail[xfs]                                   | 8        |            |
-| RIP:assfail[xfs]                                                                | 8        |            |
-| INFO:rcu_sched_detected_stalls_on_CPUs/tasks                                    | 12       |            |
-| RIP:mce_timer_fn                                                                | 1        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![(journald):#]                                 | 2        |            |
-| RIP:inode_init_once                                                             | 2        |            |
-| RIP:iov_iter_fault_in_readable                                                  | 1        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![kworker:#:#]                                  | 4        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![swapper:#]                                    | 2        |            |
-| RIP:simple_write_begin                                                          | 3        |            |
-| BUG:kernel_hang_in_test_stage                                                   | 1        |            |
-| RIP:__init_single_page                                                          | 2        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![systemd-udevd:#]                              | 3        |            |
-| Oops:#[##]                                                                      | 4        |            |
-| RIP:reset_interrupt[floppy]                                                     | 1        |            |
-| Kernel_panic-not_syncing:Fatal_exception                                        | 9        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![modprobe:#]                                   | 1        |            |
-| BUG:soft_lockup-CPU##stuck_for#s![(d-logind):#]                                 | 1        |            |
-| WARNING:at_kernel/workqueue.c:#destroy_workqueue                                | 1        |            |
-| RIP:destroy_workqueue                                                           | 1        |            |
-| RIP:__d_lookup                                                                  | 1        |            |
-| RIP:__fget_light                                                                | 1        |            |
-| RIP:__do_softirq                                                                | 1        |            |
-| BUG:sleeping_function_called_from_invalid_context_at_kernel/locking/rwsem.c     | 9        |            |
-| BUG:kernel_NULL_pointer_dereference,address                                     | 1        |            |
-| RIP:__kmalloc                                                                   | 7        |            |
-| stack_segment:#[##]                                                             | 4        |            |
-| IP-Config:Auto-configuration_of_network_failed                                  | 8        |            |
-| invoked_oom-killer:gfp_mask=0x                                                  | 1        |            |
-| Mem-Info                                                                        | 1        |            |
-| kernel_BUG_at_mm/slub.c                                                         | 2        |            |
-| invalid_opcode:#[##]                                                            | 2        |            |
-| RIP:kfree                                                                       | 2        |            |
-| BUG:unable_to_handle_page_fault_for_address                                     | 2        |            |
-| Kernel_panic-not_syncing:Fatal_exception_in_interrupt                           | 1        |            |
-| WARNING:at_fs/btrfs/space-info.h:#btrfs_add_reserved_bytes[btrfs]               | 0        | 4          |
-| RIP:btrfs_add_reserved_bytes[btrfs]                                             | 0        | 4          |
-| WARNING:at_fs/btrfs/space-info.h:#btrfs_free_reserved_data_space_noquota[btrfs] | 0        | 4          |
-| RIP:btrfs_free_reserved_data_space_noquota[btrfs]                               | 0        | 4          |
-+---------------------------------------------------------------------------------+----------+------------+
++---------------------------------------------------------------+------------+------------+
+|                                                               | a6ed68d646 | 53d4a4300b |
++---------------------------------------------------------------+------------+------------+
+| boot_successes                                                | 42         | 5          |
+| boot_failures                                                 | 0          | 8          |
+| WARNING:at_fs/overlayfs/copy_up.c:#ovl_copy_up_inode[overlay] | 0          | 8          |
+| RIP:ovl_copy_up_inode[overlay]                                | 0          | 8          |
++---------------------------------------------------------------+------------+------------+
 
 
 If you fix the issue, kindly add following tag
-Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 
 
-[   44.262806] INFO: creating /lkp/benchmarks/ltp/output directory
-[   44.262808] 
-[   44.267352] INFO: creating /lkp/benchmarks/ltp/results directory
-[   44.267355] 
-[   44.271260] Checking for required user/group ids
-[   44.271262] 
-[   44.273994] 
-[   44.276174] 'nobody' user id and group found.
-[   44.276176] 
-[   44.279144] 'bin' user id and group found.
-[   44.279146] 
-[   44.283000] 'daemon' user id and group found.
-[   44.283003] 
-[   44.285708] Users group found.
-[   44.285730] 
-[   44.288429] Sys group found.
-[   44.288431] 
-[   44.291772] Required users/groups exist.
-[   44.291774] 
-[   44.296423] If some fields are empty or look unusual you may have an old version.
-[   44.296426] 
-[   44.301674] Compare to the current minimal requirements in Documentation/Changes.
-[   44.301696] 
-[   44.305939] 
-[   44.308590] /etc/os-release
-[   44.308592] 
-[   44.312438] PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
-[   44.312441] 
-[   44.315704] NAME="Debian GNU/Linux"
-[   44.315723] 
-[   44.319816] VERSION_ID="9"
-[   44.319821] 
-[   44.327497] VERSION="9 (stretch)"
-[   44.327501] 
-[   44.330371] ID=debian
-[   44.330375] 
-[   44.341691] HOME_URL="https://www.debian.org/"
-[   44.341696] 
-[   44.350285] SUPPORT_URL="https://www.debian.org/support"
-[   44.350289] 
-[   44.355478] BUG_REPORT_URL="https://bugs.debian.org/"
-[   44.355482] 
-[   44.359060] 
-[   44.361134] uname:
-[   44.361137] 
-[   44.368151] Linux vm-snb-248b35dff63b 5.4.0-rc8-00001-g8d17c48fc3549 #1 SMP Fri Nov 29 19:25:26 CST 2019 x86_64 GNU/Linux
-[   44.368154] 
-[   44.372224] 
-[   44.374135] /proc/cmdline
-[   44.374139] 
-[   47.649971] random: crng init done
-[   47.653241] random: 7 urandom warning(s) missed due to ratelimiting
-[   51.671778] ip=::::vm-snb-248b35dff63b::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-248b35dff63b/ltp-1HDD-btrfs-fs_readonly-02-debian-x86_64-2019-09-23.cgz-8d17c48fc35-20191201-23269-h0iryl-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2019113015 commit=8d17c48fc3549e88853f1cadb70763915c58fd78 BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/vmlinuz-5.4.0-rc8-00001-g8d17c48fc3549 max_uptime=3600 RESULT_ROOT=/result/ltp/1HDD-btrfs-fs_readonly-02/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/3 LKP_SERVER=inn debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 e
-[   51.671782] 
-[   51.775010] 
-[   56.274525] Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
-[   56.274536] 
-[   56.278772] Clang                 
-[   56.278774] 
-[   56.282145] Gnu make               4.1
-[   56.282147] 
-[   56.285656] util-linux             2.29.2
-[   56.285658] 
-[   57.372978] mount                  linux 2.29.2 (libmount 2.29.2: selinux, btrfs, assert, debug)
-[   57.372982] 
-[   57.378980] modutils               23
-[   57.378983] 
-[   57.383002] e2fsprogs              1.43.4
-[   57.383003] 
-[   57.386117] Linux C Library        > libc.2.24
-[   57.386119] 
-[   57.389870] Dynamic linker (ldd)   2.24
-[   57.389872] 
-[   57.393251] Procps                 3.3.12
-[   57.393253] 
-[   57.396325] Net-tools              2.10-alpha
-[   57.396327] 
-[   57.400415] iproute2               iproute2-ss161212
-[   57.400417] 
-[   57.403825] iputils                iputils-s20161105
-[   57.403826] 
-[   57.407473] Kbd                    116:
-[   57.407475] 
-[   57.410328] Sh-utils               8.26
-[   57.410330] 
-[   69.237421] ------------[ cut here ]------------
-[   69.239771] WARNING: CPU: 0 PID: 2458 at fs/btrfs/space-info.h:109 btrfs_add_reserved_bytes+0x25b/0x280 [btrfs]
-[   69.244613] Modules linked in: loop btrfs xor zstd_decompress zstd_compress raid6_pq libcrc32c dm_mod intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm sr_mod drm_vram_helper cdrom ttm sg ppdev drm_kms_helper ata_generic pata_acpi syscopyarea sysfillrect sysimgblt snd_pcm aesni_intel fb_sys_fops crypto_simd cryptd glue_helper snd_timer drm snd soundcore pcspkr joydev serio_raw parport_pc parport floppy i2c_piix4 ata_piix libata ip_tables
-[   69.258665] CPU: 0 PID: 2458 Comm: doio Not tainted 5.4.0-rc8-00001-g8d17c48fc3549 #1
-[   69.260467] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
-[   69.262419] RIP: 0010:btrfs_add_reserved_bytes+0x25b/0x280 [btrfs]
-[   69.263943] Code: 24 18 48 8b 6c 24 20 4c 8b 6c 24 28 65 ff 0d 44 29 90 3f 4d 85 f6 48 8b 43 28 0f 89 95 fe ff ff 48 39 04 24 0f 86 8b fe ff ff <0f> 0b 48 c7 43 28 00 00 00 00 e9 84 fe ff ff ba f5 ff ff ff e9 88
-[   69.267951] RSP: 0018:ffffa00800a0f6c8 EFLAGS: 00010206
-[   69.269360] RAX: 0000000000025000 RBX: ffff8f5577e39e00 RCX: 0000000000000001
-[   69.271040] RDX: 0000000000000000 RSI: 000000000002e000 RDI: ffff8f54d75a0040
-[   69.272669] RBP: ffff8f54d75a0000 R08: ffff8f54e4e72808 R09: 0000000000000000
-[   69.274369] R10: ffff8f54d2a80000 R11: 000000000002e000 R12: ffff8f54d2a80000
-[   69.276012] R13: 000000000002e000 R14: fffffffffffd2000 R15: 0000000059c42000
-[   69.277710] FS:  00007fb74c2d9700(0000) GS:ffff8f557fc00000(0000) knlGS:0000000000000000
-[   69.279496] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   69.280973] CR2: 00007fb74aaf9ff0 CR3: 00000001949d0000 CR4: 00000000000406f0
-[   69.282648] Call Trace:
-[   69.283635]  find_free_extent+0x8b1/0x1060 [btrfs]
-[   69.285026]  btrfs_reserve_extent+0x9b/0x180 [btrfs]
-[   69.286405]  cow_file_range+0x121/0x420 [btrfs]
-[   69.287717]  btrfs_run_delalloc_range+0x9c/0x4f0 [btrfs]
-[   69.289184]  ? find_lock_delalloc_range+0x1f4/0x220 [btrfs]
-[   69.290664]  writepage_delalloc+0xef/0x130 [btrfs]
-[   69.292016]  __extent_writepage+0x1af/0x340 [btrfs]
-[   69.293425]  extent_write_cache_pages+0x240/0x400 [btrfs]
-[   69.294883]  extent_writepages+0x52/0xa0 [btrfs]
-[   69.296212]  do_writepages+0x4b/0xf0
-[   69.297447]  ? __wake_up_common_lock+0x87/0xc0
-[   69.298749]  ? __filemap_fdatawrite_range+0xcb/0x100
-[   69.300135]  __filemap_fdatawrite_range+0xcb/0x100
-[   69.301553]  ? merge_state+0xb7/0x160 [btrfs]
-[   69.302976]  btrfs_fdatawrite_range+0x1b/0x50 [btrfs]
-[   69.304396]  start_ordered_ops+0x57/0xa0 [btrfs]
-[   69.305802]  ? btrfs_sync_file+0x97/0x3e0 [btrfs]
-[   69.307178]  btrfs_sync_file+0x97/0x3e0 [btrfs]
-[   69.308530]  btrfs_file_write_iter+0x42e/0x550 [btrfs]
-[   69.310012]  new_sync_write+0x12d/0x1d0
-[   69.311255]  vfs_write+0xbe/0x1d0
-[   69.312418]  ksys_write+0xa1/0xe0
-[   69.313601]  do_syscall_64+0x5b/0x1d0
-[   69.314824]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   69.316258] RIP: 0033:0x7fb74beb41b0
-[   69.317514] Code: 2e 0f 1f 84 00 00 00 00 00 90 48 8b 05 19 7e 20 00 c3 0f 1f 84 00 00 00 00 00 83 3d 19 c2 20 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ae fc ff ff 48 89 04 24
-[   69.324196] RSP: 002b:00007ffd21d49a68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[   69.327585] RAX: ffffffffffffffda RBX: 00007ffd21d49f20 RCX: 00007fb74beb41b0
-[   69.330744] RDX: 000000000001c557 RSI: 000055be7e620540 RDI: 0000000000000007
-[   69.334003] RBP: 000000000001c557 R08: 0000000000000007 R09: 000055be7e632540
-[   69.337238] R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffd21d49f28
-[   69.340418] R13: 0000000000000007 R14: 0000000000101001 R15: 0000000000928f86
-[   69.343598] ---[ end trace 848eeda69f9e0aed ]---
+[  578.985285] WARNING: CPU: 0 PID: 5270 at fs/overlayfs/copy_up.c:455 ovl_copy_up_inode+0x16f/0x180 [overlay]
+[  578.986017] ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+[  578.986019] 
+[  578.988494] Modules linked in: overlay ext4 mbcache jbd2 tun xfs loop btrfs xor zstd_decompress zstd_compress raid6_pq libcrc32c dm_mod intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm sr_mod drm_kms_helper cdrom sg ata_generic pata_acpi syscopyarea sysfillrect ppdev sysimgblt fb_sys_fops drm snd_pcm aesni_intel crypto_simd snd_timer cryptd glue_helper snd soundcore pcspkr joydev ata_piix serio_raw libata i2c_piix4 parport_pc floppy parport ip_tables
+[  578.992500] ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+[  578.992501] 
+[  579.002619] CPU: 0 PID: 5270 Comm: inotify07 Not tainted 5.4.0-08748-g53d4a4300b82c #2
+[  579.002619] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
+[  579.002625] RIP: 0010:ovl_copy_up_inode+0x16f/0x180 [overlay]
+[  579.002627] Code: ff ff 85 c0 0f 84 4d ff ff ff eb a5 4c 8d 64 24 28 48 8b 73 58 4c 89 e7 e8 be f8 ff ff 85 c0 0f 85 74 ff ff ff e9 63 ff ff ff <0f> 0b b8 fb ff ff ff e9 7b ff ff ff e8 b0 f6 b5 ee 66 66 66 66 90
+[  579.009864] ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+[  579.009866] 
+[  579.010638] RSP: 0018:ffffab27c0327958 EFLAGS: 00010206
+[  579.010639] RAX: 0000000000008000 RBX: ffffab27c0327a90 RCX: 00000000000081a4
+[  579.010640] RDX: 000000000000001c RSI: ffffab27c0327960 RDI: ffff98f9d6812e40
+[  579.010641] RBP: ffff98f9ecb92600 R08: 0000000000000000 R09: 0000000100043f23
+[  579.010641] R10: ffffab27c0327860 R11: ffff98f9d55b4000 R12: ffffab27c0327a90
+[  579.010642] R13: ffff98f9c648f6c0 R14: 00000000ecb92600 R15: 0000000000000000
+[  579.010643] FS:  00007fe8e8403500(0000) GS:ffff98fa7fc00000(0000) knlGS:0000000000000000
+[  579.015105] ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+[  579.015106] 
+[  579.018993] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  579.018994] CR2: 0000558a8a903840 CR3: 0000000195090000 CR4: 00000000000406f0
+[  579.018997] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  579.018998] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  579.018999] Call Trace:
+[  579.023287] ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+[  579.023289] 
+[  579.024174]  ovl_copy_up_one+0x80c/0xf40 [overlay]
+[  579.024178]  ? __d_lookup_done+0x7e/0x100
+[  579.027460] ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty59
+[  579.027462] 
+[  579.028091]  ? ext4_xattr_get+0x95/0x2d0 [ext4]
+[  579.030043] 
+[  579.031918]  ovl_copy_up_flags+0xac/0xf0 [overlay]
+[  579.031921]  ? ovl_llseek+0x110/0x110 [overlay]
+[  579.035137] ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty6
+[  579.035139] 
+[  579.035850]  ovl_maybe_copy_up+0x79/0xa0 [overlay]
+[  579.035853]  ovl_open+0x25/0x80 [overlay]
+[  579.035857]  do_dentry_open+0x1ce/0x380
+[  579.040211] ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+[  579.040212] 
+[  579.040979]  path_openat+0x2e5/0x1550
+[  579.044772] ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+[  579.044774] 
+[  579.044837]  do_filp_open+0x9b/0x110
+[  579.049101] ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+[  579.049103] 
+[  579.050042]  ? __check_object_size+0xd4/0x1a0
+[  579.050045]  ? do_sys_open+0x1bd/0x250
+[  579.053467] ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+[  579.053469] 
+[  579.054093]  do_sys_open+0x1bd/0x250
+[  579.057723] ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+[  579.057725] 
+[  579.058355]  do_syscall_64+0x5b/0x1f0
+[  579.058358]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  579.060704] ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty6
+[  579.060707] 
+[  579.060889] RIP: 0033:0x7fe8e7f246f0
+[  579.062386] 
+[  579.064109] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 83 3d 19 30 2c 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 fe 9d 01 00 48 89 04 24
+[  579.064110] RSP: 002b:00007ffc1f798318 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+[  579.064112] RAX: ffffffffffffffda RBX: 0000558a8a6f0f40 RCX: 00007fe8e7f246f0
+[  579.064112] RDX: 00000000000001b6 RSI: 0000000000000041 RDI: 0000558a8a6f0f40
+[  579.064113] RBP: 0000558a8a6f1135 R08: 00000000000001a4 R09: 0000000000000000
+[  579.064113] R10: 0000000000000075 R11: 0000000000000246 R12: 000000000000004e
+[  579.064115] R13: 00000000000001a4 R14: 0000000000000000 R15: 0000000000000000
+[  579.066448] ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty60
+[  579.066450] 
+[  579.066610] ---[ end trace 1eae0e213285ea20 ]---
 
 
 To reproduce:
 
         # build kernel
 	cd linux
-	cp config-5.4.0-rc8-00001-g8d17c48fc3549 .config
+	cp config-5.4.0-08748-g53d4a4300b82c .config
 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage modules
 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 INSTALL_MOD_PATH=<mod-install-dir> modules_install
 	cd <mod-install-dir>
@@ -258,12 +138,12 @@ To reproduce:
 
 
 Thanks,
-lkp
+Rong Chen
 
 -------------- next part --------------
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.4.0-rc8 Kernel Configuration
+# Linux/x86_64 5.4.0 Kernel Configuration
 #
 
 #
@@ -409,6 +289,7 @@ CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=y
 
 CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
 CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH=y
+CONFIG_CC_HAS_INT128=y
 CONFIG_ARCH_SUPPORTS_INT128=y
 CONFIG_NUMA_BALANCING=y
 CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
@@ -631,7 +512,6 @@ CONFIG_HPET_TIMER=y
 CONFIG_HPET_EMULATE_RTC=y
 CONFIG_DMI=y
 CONFIG_GART_IOMMU=y
-# CONFIG_CALGARY_IOMMU is not set
 CONFIG_MAXSMP=y
 CONFIG_NR_CPUS_RANGE_BEGIN=8192
 CONFIG_NR_CPUS_RANGE_END=8192
@@ -663,6 +543,7 @@ CONFIG_PERF_EVENTS_INTEL_CSTATE=y
 CONFIG_X86_16BIT=y
 CONFIG_X86_ESPFIX64=y
 CONFIG_X86_VSYSCALL_EMULATION=y
+CONFIG_X86_IOPL_IOPERM=y
 CONFIG_I8K=m
 CONFIG_MICROCODE=y
 CONFIG_MICROCODE_INTEL=y
@@ -700,7 +581,7 @@ CONFIG_X86_PAT=y
 CONFIG_ARCH_USES_PG_UNCACHED=y
 CONFIG_ARCH_RANDOM=y
 CONFIG_X86_SMAP=y
-CONFIG_X86_INTEL_UMIP=y
+CONFIG_X86_UMIP=y
 CONFIG_X86_INTEL_MPX=y
 CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS=y
 CONFIG_X86_INTEL_TSX_MODE_OFF=y
@@ -804,7 +685,6 @@ CONFIG_ACPI_IPMI=m
 CONFIG_ACPI_HOTPLUG_CPU=y
 CONFIG_ACPI_PROCESSOR_AGGREGATOR=m
 CONFIG_ACPI_THERMAL=y
-CONFIG_ACPI_NUMA=y
 CONFIG_ARCH_HAS_ACPI_TABLE_UPGRADE=y
 CONFIG_ACPI_TABLE_UPGRADE=y
 # CONFIG_ACPI_DEBUG is not set
@@ -819,6 +699,7 @@ CONFIG_ACPI_BGRT=y
 # CONFIG_ACPI_REDUCED_HARDWARE_ONLY is not set
 CONFIG_ACPI_NFIT=m
 # CONFIG_NFIT_SECURITY_DEBUG is not set
+CONFIG_ACPI_NUMA=y
 # CONFIG_ACPI_HMAT is not set
 CONFIG_HAVE_ACPI_APEI=y
 CONFIG_HAVE_ACPI_APEI_NMI=y
@@ -1082,8 +963,6 @@ CONFIG_ARCH_HAS_STRICT_KERNEL_RWX=y
 CONFIG_STRICT_KERNEL_RWX=y
 CONFIG_ARCH_HAS_STRICT_MODULE_RWX=y
 CONFIG_STRICT_MODULE_RWX=y
-CONFIG_ARCH_HAS_REFCOUNT=y
-# CONFIG_REFCOUNT_FULL is not set
 CONFIG_HAVE_ARCH_PREL32_RELOCATIONS=y
 CONFIG_ARCH_USE_MEMREMAP_PROT=y
 # CONFIG_LOCK_EVENT_COUNTS is not set
@@ -1134,6 +1013,7 @@ CONFIG_MODULE_SIG_HASH="sha256"
 CONFIG_MODULES_TREE_LOOKUP=y
 CONFIG_BLOCK=y
 CONFIG_BLK_SCSI_REQUEST=y
+CONFIG_BLK_CGROUP_RWSTAT=y
 CONFIG_BLK_DEV_BSG=y
 CONFIG_BLK_DEV_BSGLIB=y
 CONFIG_BLK_DEV_INTEGRITY=y
@@ -2218,6 +2098,7 @@ CONFIG_EXTRA_FIRMWARE=""
 CONFIG_FW_LOADER_USER_HELPER=y
 # CONFIG_FW_LOADER_USER_HELPER_FALLBACK is not set
 # CONFIG_FW_LOADER_COMPRESS is not set
+CONFIG_FW_CACHE=y
 # end of Firmware loader
 
 CONFIG_WANT_DEV_COREDUMP=y
@@ -2384,6 +2265,7 @@ CONFIG_BLK_DEV_RBD=m
 CONFIG_NVME_CORE=m
 CONFIG_BLK_DEV_NVME=m
 CONFIG_NVME_MULTIPATH=y
+# CONFIG_NVME_HWMON is not set
 CONFIG_NVME_FABRICS=m
 CONFIG_NVME_FC=m
 # CONFIG_NVME_TCP is not set
@@ -2460,41 +2342,9 @@ CONFIG_VMWARE_VMCI=m
 #
 # Intel MIC & related support
 #
-
-#
-# Intel MIC Bus Driver
-#
 # CONFIG_INTEL_MIC_BUS is not set
-
-#
-# SCIF Bus Driver
-#
 # CONFIG_SCIF_BUS is not set
-
-#
-# VOP Bus Driver
-#
 # CONFIG_VOP_BUS is not set
-
-#
-# Intel MIC Host Driver
-#
-
-#
-# Intel MIC Card Driver
-#
-
-#
-# SCIF Driver
-#
-
-#
-# Intel MIC Coprocessor State Management (COSM) Drivers
-#
-
-#
-# VOP Driver
-#
 # end of Intel MIC & related support
 
 # CONFIG_GENWQE is not set
@@ -2844,10 +2694,6 @@ CONFIG_VSOCKMON=m
 # CONFIG_ATM_DRIVERS is not set
 
 #
-# CAIF transport drivers
-#
-
-#
 # Distributed Switch Architecture drivers
 #
 # end of Distributed Switch Architecture drivers
@@ -2949,7 +2795,6 @@ CONFIG_BE2NET_SKYHAWK=y
 CONFIG_NET_VENDOR_EZCHIP=y
 CONFIG_NET_VENDOR_GOOGLE=y
 # CONFIG_GVE is not set
-# CONFIG_NET_VENDOR_HP is not set
 CONFIG_NET_VENDOR_HUAWEI=y
 # CONFIG_HINIC is not set
 # CONFIG_NET_VENDOR_I825XX is not set
@@ -3084,6 +2929,7 @@ CONFIG_MDIO_BITBANG=m
 # CONFIG_MDIO_GPIO is not set
 # CONFIG_MDIO_MSCC_MIIM is not set
 # CONFIG_MDIO_THUNDER is not set
+CONFIG_PHYLINK=m
 CONFIG_PHYLIB=y
 CONFIG_SWPHY=y
 # CONFIG_LED_TRIGGER_PHY is not set
@@ -3091,11 +2937,11 @@ CONFIG_SWPHY=y
 #
 # MII PHY device drivers
 #
+# CONFIG_SFP is not set
 # CONFIG_ADIN_PHY is not set
 CONFIG_AMD_PHY=m
 # CONFIG_AQUANTIA_PHY is not set
 # CONFIG_AX88796B_PHY is not set
-CONFIG_AT803X_PHY=m
 # CONFIG_BCM7XXX_PHY is not set
 CONFIG_BCM87XX_PHY=m
 CONFIG_BCM_NET_PHYLIB=m
@@ -3107,6 +2953,7 @@ CONFIG_DAVICOM_PHY=m
 # CONFIG_DP83TC811_PHY is not set
 # CONFIG_DP83848_PHY is not set
 # CONFIG_DP83867_PHY is not set
+# CONFIG_DP83869_PHY is not set
 CONFIG_FIXED_PHY=y
 CONFIG_ICPLUS_PHY=m
 # CONFIG_INTEL_XWAY_PHY is not set
@@ -3873,6 +3720,7 @@ CONFIG_PPS_CLIENT_GPIO=m
 CONFIG_PTP_1588_CLOCK=y
 CONFIG_DP83640_PHY=m
 CONFIG_PTP_1588_CLOCK_KVM=m
+# CONFIG_PTP_1588_CLOCK_IDTCM is not set
 # end of PTP clock support
 
 CONFIG_PINCTRL=y
@@ -3894,6 +3742,8 @@ CONFIG_PINCTRL_GEMINILAKE=m
 # CONFIG_PINCTRL_ICELAKE is not set
 CONFIG_PINCTRL_LEWISBURG=m
 CONFIG_PINCTRL_SUNRISEPOINT=m
+# CONFIG_PINCTRL_TIGERLAKE is not set
+# CONFIG_PINCTRL_EQUILIBRIUM is not set
 CONFIG_GPIOLIB=y
 CONFIG_GPIOLIB_FASTPATH_LIMIT=512
 CONFIG_GPIO_ACPI=y
@@ -4060,6 +3910,8 @@ CONFIG_SENSORS_JC42=m
 # CONFIG_SENSORS_POWR1220 is not set
 CONFIG_SENSORS_LINEAGE=m
 # CONFIG_SENSORS_LTC2945 is not set
+# CONFIG_SENSORS_LTC2947_I2C is not set
+# CONFIG_SENSORS_LTC2947_SPI is not set
 # CONFIG_SENSORS_LTC2990 is not set
 CONFIG_SENSORS_LTC4151=m
 CONFIG_SENSORS_LTC4215=m
@@ -4110,6 +3962,7 @@ CONFIG_SENSORS_PCF8591=m
 CONFIG_PMBUS=m
 CONFIG_SENSORS_PMBUS=m
 CONFIG_SENSORS_ADM1275=m
+# CONFIG_SENSORS_BEL_PFE is not set
 # CONFIG_SENSORS_IBM_CFFPS is not set
 # CONFIG_SENSORS_INSPUR_IPSPS is not set
 # CONFIG_SENSORS_IR35221 is not set
@@ -4161,6 +4014,7 @@ CONFIG_SENSORS_TMP102=m
 # CONFIG_SENSORS_TMP108 is not set
 CONFIG_SENSORS_TMP401=m
 CONFIG_SENSORS_TMP421=m
+# CONFIG_SENSORS_TMP513 is not set
 CONFIG_SENSORS_VIA_CPUTEMP=m
 CONFIG_SENSORS_VIA686A=m
 CONFIG_SENSORS_VT1211=m
@@ -5127,13 +4981,16 @@ CONFIG_DRM_DP_AUX_CHARDEV=y
 CONFIG_DRM_DEBUG_SELFTEST=m
 CONFIG_DRM_KMS_HELPER=m
 CONFIG_DRM_KMS_FB_HELPER=y
+# CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS is not set
 CONFIG_DRM_FBDEV_EMULATION=y
 CONFIG_DRM_FBDEV_OVERALLOC=100
 # CONFIG_DRM_FBDEV_LEAK_PHYS_SMEM is not set
 CONFIG_DRM_LOAD_EDID_FIRMWARE=y
 # CONFIG_DRM_DP_CEC is not set
 CONFIG_DRM_TTM=m
+CONFIG_DRM_TTM_DMA_PAGE_POOL=y
 CONFIG_DRM_VRAM_HELPER=m
+CONFIG_DRM_TTM_HELPER=m
 CONFIG_DRM_GEM_SHMEM_HELPER=y
 
 #
@@ -5187,7 +5044,11 @@ CONFIG_DRM_I915_GVT_KVMGT=m
 # drm/i915 Profile Guided Optimisation
 #
 CONFIG_DRM_I915_USERFAULT_AUTOSUSPEND=250
+CONFIG_DRM_I915_HEARTBEAT_INTERVAL=2500
+CONFIG_DRM_I915_PREEMPT_TIMEOUT=100
 CONFIG_DRM_I915_SPIN_REQUEST=5
+CONFIG_DRM_I915_STOP_TIMEOUT=100
+CONFIG_DRM_I915_TIMESLICE_DURATION=1
 # end of drm/i915 Profile Guided Optimisation
 
 CONFIG_DRM_VGEM=m
@@ -5495,7 +5356,6 @@ CONFIG_SND_VX222=m
 #
 CONFIG_SND_HDA=m
 CONFIG_SND_HDA_INTEL=m
-# CONFIG_SND_HDA_INTEL_DETECT_DMIC is not set
 CONFIG_SND_HDA_HWDEP=y
 CONFIG_SND_HDA_RECONFIG=y
 CONFIG_SND_HDA_INPUT_BEEP=y
@@ -5523,7 +5383,8 @@ CONFIG_SND_HDA_COMPONENT=y
 CONFIG_SND_HDA_I915=y
 CONFIG_SND_HDA_EXT_CORE=m
 CONFIG_SND_HDA_PREALLOC_SIZE=512
-CONFIG_SND_INTEL_NHLT=m
+CONFIG_SND_INTEL_NHLT=y
+CONFIG_SND_INTEL_DSP_CONFIG=m
 # CONFIG_SND_SPI is not set
 CONFIG_SND_USB=y
 CONFIG_SND_USB_AUDIO=m
@@ -5622,6 +5483,7 @@ CONFIG_SND_SOC_INTEL_SKL_RT286_MACH=m
 CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH=m
 CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH=m
 CONFIG_SND_SOC_INTEL_DA7219_MAX98357A_GENERIC=m
+CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON=m
 CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH=m
 CONFIG_SND_SOC_INTEL_BXT_RT298_MACH=m
 CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH=m
@@ -5629,7 +5491,6 @@ CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH=m
 # CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH is not set
 # CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH is not set
 # CONFIG_SND_SOC_INTEL_KBL_RT5660_MACH is not set
-# CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH is not set
 # CONFIG_SND_SOC_MTK_BTCVSD is not set
 # CONFIG_SND_SOC_SOF_TOPLEVEL is not set
 
@@ -5653,6 +5514,8 @@ CONFIG_SND_SOC_I2C_AND_SPI=m
 # CONFIG_SND_SOC_ADAU1761_I2C is not set
 # CONFIG_SND_SOC_ADAU1761_SPI is not set
 # CONFIG_SND_SOC_ADAU7002 is not set
+# CONFIG_SND_SOC_ADAU7118_HW is not set
+# CONFIG_SND_SOC_ADAU7118_I2C is not set
 # CONFIG_SND_SOC_AK4104 is not set
 # CONFIG_SND_SOC_AK4118 is not set
 # CONFIG_SND_SOC_AK4458 is not set
@@ -5744,6 +5607,8 @@ CONFIG_SND_SOC_SSM4567=m
 # CONFIG_SND_SOC_STA350 is not set
 # CONFIG_SND_SOC_STI_SAS is not set
 # CONFIG_SND_SOC_TAS2552 is not set
+# CONFIG_SND_SOC_TAS2562 is not set
+# CONFIG_SND_SOC_TAS2770 is not set
 # CONFIG_SND_SOC_TAS5086 is not set
 # CONFIG_SND_SOC_TAS571X is not set
 # CONFIG_SND_SOC_TAS5720 is not set
@@ -6638,6 +6503,7 @@ CONFIG_FWTTY_MAX_TOTAL_PORTS=64
 CONFIG_FWTTY_MAX_CARD_PORTS=32
 # CONFIG_GS_FPGABOOT is not set
 # CONFIG_UNISYSSPAR is not set
+# CONFIG_FB_TFT is not set
 # CONFIG_WILC1000_SDIO is not set
 # CONFIG_WILC1000_SPI is not set
 # CONFIG_MOST is not set
@@ -6682,6 +6548,8 @@ CONFIG_UWB_WHCI=m
 CONFIG_UWB_I1480U=m
 # CONFIG_EXFAT_FS is not set
 CONFIG_QLGE=m
+# CONFIG_NET_VENDOR_HP is not set
+# CONFIG_WFX is not set
 CONFIG_X86_PLATFORM_DEVICES=y
 CONFIG_ACER_WMI=m
 # CONFIG_ACER_WIRELESS is not set
@@ -6951,6 +6819,7 @@ CONFIG_HID_SENSOR_ACCEL_3D=m
 # CONFIG_AD7124 is not set
 # CONFIG_AD7266 is not set
 # CONFIG_AD7291 is not set
+# CONFIG_AD7292 is not set
 # CONFIG_AD7298 is not set
 # CONFIG_AD7476 is not set
 # CONFIG_AD7606_IFACE_PARALLEL is not set
@@ -7138,6 +7007,8 @@ CONFIG_HID_SENSOR_GYRO_3D=m
 # CONFIG_ADIS16480 is not set
 # CONFIG_BMI160_I2C is not set
 # CONFIG_BMI160_SPI is not set
+# CONFIG_FXOS8700_I2C is not set
+# CONFIG_FXOS8700_SPI is not set
 # CONFIG_KMX61 is not set
 # CONFIG_INV_MPU6050_I2C is not set
 # CONFIG_INV_MPU6050_SPI is not set
@@ -7149,6 +7020,7 @@ CONFIG_HID_SENSOR_GYRO_3D=m
 #
 # CONFIG_ACPI_ALS is not set
 # CONFIG_ADJD_S311 is not set
+# CONFIG_ADUX1020 is not set
 # CONFIG_AL3320A is not set
 # CONFIG_APDS9300 is not set
 # CONFIG_APDS9960 is not set
@@ -7186,6 +7058,7 @@ CONFIG_HID_SENSOR_PROX=m
 # CONFIG_US5182D is not set
 # CONFIG_VCNL4000 is not set
 # CONFIG_VCNL4035 is not set
+# CONFIG_VEML6030 is not set
 # CONFIG_VEML6070 is not set
 # CONFIG_VL6180 is not set
 # CONFIG_ZOPT2201 is not set
@@ -7296,6 +7169,7 @@ CONFIG_HID_SENSOR_PRESS=m
 #
 # Temperature sensors
 #
+# CONFIG_LTC2983 is not set
 # CONFIG_MAXIM_THERMOCOUPLE is not set
 # CONFIG_HID_SENSOR_TEMP is not set
 # CONFIG_MLX90614 is not set
@@ -7711,6 +7585,7 @@ CONFIG_NLS_UTF8=m
 CONFIG_DLM=m
 CONFIG_DLM_DEBUG=y
 # CONFIG_UNICODE is not set
+CONFIG_IO_WQ=y
 # end of File systems
 
 #
@@ -7825,8 +7700,8 @@ CONFIG_CRYPTO_ALGAPI=y
 CONFIG_CRYPTO_ALGAPI2=y
 CONFIG_CRYPTO_AEAD=y
 CONFIG_CRYPTO_AEAD2=y
-CONFIG_CRYPTO_BLKCIPHER=y
-CONFIG_CRYPTO_BLKCIPHER2=y
+CONFIG_CRYPTO_SKCIPHER=y
+CONFIG_CRYPTO_SKCIPHER2=y
 CONFIG_CRYPTO_HASH=y
 CONFIG_CRYPTO_HASH2=y
 CONFIG_CRYPTO_RNG=y
@@ -7860,6 +7735,8 @@ CONFIG_CRYPTO_DH=m
 CONFIG_CRYPTO_ECC=m
 CONFIG_CRYPTO_ECDH=m
 # CONFIG_CRYPTO_ECRDSA is not set
+# CONFIG_CRYPTO_CURVE25519 is not set
+# CONFIG_CRYPTO_CURVE25519_X86 is not set
 
 #
 # Authenticated Encryption with Associated Data
@@ -7905,7 +7782,10 @@ CONFIG_CRYPTO_CRC32C=y
 CONFIG_CRYPTO_CRC32C_INTEL=m
 CONFIG_CRYPTO_CRC32=m
 CONFIG_CRYPTO_CRC32_PCLMUL=m
-# CONFIG_CRYPTO_XXHASH is not set
+CONFIG_CRYPTO_XXHASH=m
+# CONFIG_CRYPTO_BLAKE2B is not set
+# CONFIG_CRYPTO_BLAKE2S is not set
+# CONFIG_CRYPTO_BLAKE2S_X86 is not set
 CONFIG_CRYPTO_CRCT10DIF=y
 CONFIG_CRYPTO_CRCT10DIF_PCLMUL=m
 CONFIG_CRYPTO_GHASH=y
@@ -7922,7 +7802,6 @@ CONFIG_CRYPTO_SHA1=y
 CONFIG_CRYPTO_SHA1_SSSE3=y
 CONFIG_CRYPTO_SHA256_SSSE3=y
 CONFIG_CRYPTO_SHA512_SSSE3=m
-CONFIG_CRYPTO_LIB_SHA256=y
 CONFIG_CRYPTO_SHA256=y
 CONFIG_CRYPTO_SHA512=y
 # CONFIG_CRYPTO_SHA3 is not set
@@ -7935,12 +7814,10 @@ CONFIG_CRYPTO_GHASH_CLMUL_NI_INTEL=m
 #
 # Ciphers
 #
-CONFIG_CRYPTO_LIB_AES=y
 CONFIG_CRYPTO_AES=y
 # CONFIG_CRYPTO_AES_TI is not set
 CONFIG_CRYPTO_AES_NI_INTEL=m
 CONFIG_CRYPTO_ANUBIS=m
-CONFIG_CRYPTO_LIB_ARC4=m
 CONFIG_CRYPTO_ARC4=m
 CONFIG_CRYPTO_BLOWFISH=m
 CONFIG_CRYPTO_BLOWFISH_COMMON=m
@@ -7954,7 +7831,6 @@ CONFIG_CRYPTO_CAST5=m
 CONFIG_CRYPTO_CAST5_AVX_X86_64=m
 CONFIG_CRYPTO_CAST6=m
 CONFIG_CRYPTO_CAST6_AVX_X86_64=m
-CONFIG_CRYPTO_LIB_DES=m
 CONFIG_CRYPTO_DES=m
 # CONFIG_CRYPTO_DES3_EDE_X86_64 is not set
 CONFIG_CRYPTO_FCRYPT=m
@@ -8002,6 +7878,20 @@ CONFIG_CRYPTO_USER_API_RNG=m
 # CONFIG_CRYPTO_USER_API_AEAD is not set
 # CONFIG_CRYPTO_STATS is not set
 CONFIG_CRYPTO_HASH_INFO=y
+
+#
+# Crypto library routines
+#
+CONFIG_CRYPTO_LIB_AES=y
+CONFIG_CRYPTO_LIB_ARC4=m
+# CONFIG_CRYPTO_LIB_BLAKE2S is not set
+# CONFIG_CRYPTO_LIB_CHACHA is not set
+# CONFIG_CRYPTO_LIB_CURVE25519 is not set
+CONFIG_CRYPTO_LIB_DES=m
+CONFIG_CRYPTO_LIB_POLY1305_RSIZE=4
+# CONFIG_CRYPTO_LIB_POLY1305 is not set
+# CONFIG_CRYPTO_LIB_CHACHA20POLY1305 is not set
+CONFIG_CRYPTO_LIB_SHA256=y
 CONFIG_CRYPTO_HW=y
 CONFIG_CRYPTO_DEV_PADLOCK=m
 CONFIG_CRYPTO_DEV_PADLOCK_AES=m
@@ -8025,6 +7915,7 @@ CONFIG_CRYPTO_DEV_QAT_C62XVF=m
 CONFIG_CRYPTO_DEV_CHELSIO=m
 CONFIG_CRYPTO_DEV_VIRTIO=m
 # CONFIG_CRYPTO_DEV_SAFEXCEL is not set
+# CONFIG_CRYPTO_DEV_AMLOGIC_GXL is not set
 CONFIG_ASYMMETRIC_KEY_TYPE=y
 CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
 # CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE is not set
@@ -8161,6 +8052,7 @@ CONFIG_FONT_8x8=y
 CONFIG_FONT_8x16=y
 CONFIG_SG_POOL=y
 CONFIG_ARCH_HAS_PMEM_API=y
+CONFIG_MEMREGION=y
 CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE=y
 CONFIG_ARCH_HAS_UACCESS_MCSAFE=y
 CONFIG_ARCH_STACKWALK=y
@@ -8182,6 +8074,7 @@ CONFIG_CONSOLE_LOGLEVEL_QUIET=4
 CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
 CONFIG_BOOT_PRINTK_DELAY=y
 CONFIG_DYNAMIC_DEBUG=y
+CONFIG_SYMBOLIC_ERRNAME=y
 # end of printk and dmesg options
 
 #
@@ -8331,6 +8224,7 @@ CONFIG_HAVE_FUNCTION_TRACER=y
 CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
 CONFIG_HAVE_DYNAMIC_FTRACE=y
 CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
 CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
 CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
 CONFIG_HAVE_FENTRY=y
@@ -8367,6 +8261,7 @@ CONFIG_DYNAMIC_EVENTS=y
 CONFIG_PROBE_EVENTS=y
 CONFIG_DYNAMIC_FTRACE=y
 CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
 CONFIG_FUNCTION_PROFILER=y
 # CONFIG_BPF_KPROBE_OVERRIDE is not set
 CONFIG_FTRACE_MCOUNT_RECORD=y
@@ -8380,6 +8275,7 @@ CONFIG_RING_BUFFER_BENCHMARK=m
 # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
 # CONFIG_TRACE_EVAL_MAP_FILE is not set
 CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+# CONFIG_KUNIT is not set
 CONFIG_RUNTIME_TESTING_MENU=y
 # CONFIG_LKDTM is not set
 # CONFIG_TEST_LIST_SORT is not set
@@ -8468,18 +8364,18 @@ export_top_env()
 	export testcase='ltp'
 	export category='functional'
 	export need_modules=true
-	export need_memory='3G'
-	export job_origin='/lkp/lkp/.src-20191129-162303/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part1.yaml'
+	export need_memory='4G'
+	export job_origin='/lkp/lkp/.src-20191201-135720/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part2.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='vm-snb-248b35dff63b'
+	export testbox='vm-snb-63c0fb4af38e'
 	export tbox_group='vm-snb'
 	export nr_vm=64
-	export submit_id='5de3cec37ffc095ae542c6a4'
-	export job_file='/lkp/jobs/scheduled/vm-snb-248b35dff63b/ltp-1HDD-btrfs-fs_readonly-02-debian-x86_64-2019-09-23.cgz-8d17c48fc35-20191201-23269-h0iryl-3.yaml'
-	export id='e874f7c347a1325d74a07b2be0712b5ca5537e4b'
+	export submit_id='5de50ee7dca3ab2ee9b677e0'
+	export job_file='/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml'
+	export id='82d3c2d1d79e3272771380e70ddf6c85ecdac193'
 	export queuer_version='/lkp-src'
 	export arch='x86_64'
 	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
@@ -8502,33 +8398,33 @@ CONFIG_IPV6_VTI=m
 CONFIG_MINIX_FS=m
 CONFIG_KVM_GUEST=y
 CONFIG_BTRFS_FS'
-	export commit='8d17c48fc3549e88853f1cadb70763915c58fd78'
+	export commit='53d4a4300b82c4156da46eab01a8dd4e65a46491'
 	export ssh_base_port=23032
 	export kconfig='x86_64-rhel-7.6'
 	export compiler='gcc-7'
 	export rootfs='debian-x86_64-2019-09-23.cgz'
-	export enqueue_time='2019-12-01 22:35:41 +0800'
-	export _id='5de3cec37ffc095ae542c6a4'
-	export _rt='/result/ltp/1HDD-btrfs-fs_readonly-02/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78'
+	export enqueue_time='2019-12-02 21:17:35 +0800'
+	export _id='5de50ef1dca3ab2ee9b677e1'
+	export _rt='/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491'
 	export user='lkp'
-	export head_commit='1d5f18079cb10420c4e4b67f571b998ec861a20c'
+	export head_commit='89f46f92d02f8fb46a1041c604579973c591a39e'
 	export base_commit='219d54332a09e8d8741c1e1982f5eae56099de85'
-	export branch='linux-devel/devel-hourly-2019113015'
-	export result_root='/result/ltp/1HDD-btrfs-fs_readonly-02/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/3'
-	export scheduler_version='/lkp/lkp/.src-20191201-135720'
+	export branch='linux-devel/devel-hourly-2019120121'
+	export result_root='/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3'
+	export scheduler_version='/lkp/lkp/.src-20191202-143357'
 	export LKP_SERVER='inn'
 	export max_uptime=3600
 	export initrd='/osimage/debian/debian-x86_64-2019-09-23.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/vm-snb-248b35dff63b/ltp-1HDD-btrfs-fs_readonly-02-debian-x86_64-2019-09-23.cgz-8d17c48fc35-20191201-23269-h0iryl-3.yaml
+job=/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-7.6
-branch=linux-devel/devel-hourly-2019113015
-commit=8d17c48fc3549e88853f1cadb70763915c58fd78
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/vmlinuz-5.4.0-rc8-00001-g8d17c48fc3549
+branch=linux-devel/devel-hourly-2019120121
+commit=53d4a4300b82c4156da46eab01a8dd4e65a46491
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c
 max_uptime=3600
-RESULT_ROOT=/result/ltp/1HDD-btrfs-fs_readonly-02/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/3
+RESULT_ROOT=/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3
 LKP_SERVER=inn
 debug
 apic=debug
@@ -8550,7 +8446,7 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/modules.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/modules.cgz'
 	export bm_initrd='/osimage/deps/debian-x86_64-2018-04-03.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/fs_2019-10-10.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/ltp_2019-10-10.cgz,/osimage/pkg/debian-x86_64-2018-04-03.cgz/ltp-x86_64-dc6156b-1_2019-10-18.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
@@ -8559,9 +8455,9 @@ rw'
 	export repeat_to=4
 	export schedule_notify_address=
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/8d17c48fc3549e88853f1cadb70763915c58fd78/vmlinuz-5.4.0-rc8-00001-g8d17c48fc3549'
-	export dequeue_time='2019-12-01 22:37:51 +0800'
-	export job_initrd='/lkp/jobs/scheduled/vm-snb-248b35dff63b/ltp-1HDD-btrfs-fs_readonly-02-debian-x86_64-2019-09-23.cgz-8d17c48fc35-20191201-23269-h0iryl-3.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c'
+	export dequeue_time='2019-12-02 21:18:15 +0800'
+	export job_initrd='/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -8587,7 +8483,7 @@ run_job()
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='fs_readonly-02' $LKP_SRC/tests/wrapper ltp
+	run_test test='syscalls_part2' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -8612,6 +8508,6513 @@ extract_stats()
 A non-text attachment was scrubbed...
 Name: dmesg.xz
 Type: application/x-xz
-Size: 350596 bytes
+Size: 79276 bytes
 Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191203/c959f69b/attachment-0001.xz>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191203/132c439c/attachment-0001.xz>
+-------------- next part --------------
+2019-12-02 21:19:26 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2019-12-02 21:19:26 ./runltp -f syscalls_part2 -d /fs/vda/tmpdir
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
+
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+/etc/os-release
+PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+NAME="Debian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+uname:
+Linux vm-snb-63c0fb4af38e 5.4.0-08748-g53d4a4300b82c #2 SMP Sun Dec 1 08:10:20 CST 2019 x86_64 GNU/Linux
+
+/proc/cmdline
+ip=::::vm-snb-63c0fb4af38e::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2019120121 commit=53d4a4300b82c4156da46eab01a8dd4e65a46491 BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c max_uptime=3600 RESULT_ROOT=/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3 LKP_SERVER=inn debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw rcuperf.shutdown=0 watchdog_thresh=60
+
+Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+Clang                 
+Gnu make               4.1
+util-linux             2.29.2
+mount                  linux 2.29.2 (libmount 2.29.2: selinux, btrfs, assert, debug)
+modutils               23
+e2fsprogs              1.43.4
+Linux C Library        > libc.2.24
+Dynamic linker (ldd)   2.24
+Procps                 3.3.12
+Net-tools              2.10-alpha
+iproute2               iproute2-ss161212
+iputils                iputils-s20161105
+Kbd                    116:
+Sh-utils               8.26
+Modules Loaded         btrfs xor zstd_decompress zstd_compress raid6_pq libcrc32c dm_mod sr_mod cdrom sg ata_generic pata_acpi intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ppdev snd_pcm snd_timer drm snd aesni_intel crypto_simd cryptd glue_helper joydev ata_piix soundcore serio_raw pcspkr libata i2c_piix4 parport_pc floppy parport ip_tables
+
+free reports:
+              total        used        free      shared  buff/cache   available
+Mem:        8149364      282120     5695784       11744     2171460     5584880
+Swap:             0           0           0
+
+cpuinfo:
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    1
+Socket(s):             2
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 42
+Model name:            Intel Xeon E312xx (Sandy Bridge)
+Stepping:              1
+CPU MHz:               2194.916
+BogoMIPS:              4389.83
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              4096K
+L3 cache:              16384K
+NUMA node0 CPU(s):     0,1
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx hypervisor lahf_lm cpuid_fault pti xsaveopt arat
+
+AppArmor disabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2244     -n 2244 -p -f /fs/vda/tmpdir/ltp-rD8LOpvacC/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_02-21h_19m_26s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_02-21h_19m_26s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.tconf
+Running tests.......
+<<<test_start>>>
+tag=getcpu01 stime=1575292768
+cmdline="getcpu01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getcpu01.c:152: PASS: getcpu() returned proper cpuid:1, node id:0
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getcwd01 stime=1575292768
+cmdline="getcwd01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getcwd01.c:62: PASS: getcwd() failed as expected: EFAULT (14)
+getcwd01.c:62: PASS: getcwd() failed as expected: ENOMEM (12)
+getcwd01.c:62: PASS: getcwd() failed as expected: EINVAL (22)
+getcwd01.c:62: PASS: getcwd() failed as expected: ERANGE (34)
+getcwd01.c:62: PASS: getcwd() failed as expected: ERANGE (34)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getcwd02 stime=1575292768
+cmdline="getcwd02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getcwd02.c:102: INFO: Expected path '/tmp'
+getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
+getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
+getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getcwd03 stime=1575292768
+cmdline="getcwd03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getcwd03.c:73: PASS: getcwd() succeeded on a symbolic link
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getcwd04 stime=1575292768
+cmdline="getcwd04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getcwd04.c:60: PASS: Bug is not reproduced!
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=121 cstime=529
+<<<test_end>>>
+<<<test_start>>>
+tag=getdents01 stime=1575292773
+cmdline="getdents01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdents01    0  TINFO  :  Found '.'
+getdents01    0  TINFO  :  Found '..'
+getdents01    0  TINFO  :  Found 'dir'
+getdents01    0  TINFO  :  Found 'file'
+getdents01    0  TINFO  :  Found 'symlink'
+getdents01    1  TPASS  :  All entires found
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdents02 stime=1575292773
+cmdline="getdents02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdents02    1  TPASS  :  getdents failed as expected: Bad file descriptor
+getdents02    2  TPASS  :  getdents failed as expected: Invalid argument
+getdents02    3  TPASS  :  getdents failed as expected: Not a directory
+getdents02    4  TPASS  :  getdents failed as expected: No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdents01_64 stime=1575292773
+cmdline="getdents01 -l"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdents01    0  TINFO  :  Found '.'
+getdents01    0  TINFO  :  Found '..'
+getdents01    0  TINFO  :  Found 'dir'
+getdents01    0  TINFO  :  Found 'file'
+getdents01    0  TINFO  :  Found 'symlink'
+getdents01    1  TPASS  :  All entires found
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdents02_64 stime=1575292773
+cmdline="getdents02 -l"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdents02    1  TPASS  :  getdents failed as expected: Bad file descriptor
+getdents02    2  TPASS  :  getdents failed as expected: Invalid argument
+getdents02    3  TPASS  :  getdents failed as expected: Not a directory
+getdents02    4  TPASS  :  getdents failed as expected: No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdomainname01 stime=1575292773
+cmdline="getdomainname01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdomainname01    1  TPASS  :  getdomainname() returned 0 
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getdtablesize01 stime=1575292773
+cmdline="getdtablesize01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getdtablesize01    0  TINFO  :  Maximum number of files a process can have opened is 1024
+getdtablesize01    0  TINFO  :  Checking with the value returned by getrlimit...RLIMIT_NOFILE
+getdtablesize01    1  TPASS  :  got correct dtablesize, value is 1024
+getdtablesize01    0  TINFO  :  Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1
+getdtablesize01    2  TPASS  :  1023 = 1023
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getegid01 stime=1575292773
+cmdline="getegid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getegid01    1  TPASS  :  getegid returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getegid01_16 stime=1575292773
+cmdline="getegid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getegid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: 16-bit version of getegid() is not supported on your platform
+getegid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getegid02 stime=1575292773
+cmdline="getegid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getegid02    1  TPASS  :  effective group id 0 is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getegid02_16 stime=1575292773
+cmdline="getegid02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getegid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: 16-bit version of getegid() is not supported on your platform
+getegid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=geteuid01 stime=1575292773
+cmdline="geteuid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+geteuid01    1  TPASS  :  geteuid returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=geteuid01_16 stime=1575292773
+cmdline="geteuid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+geteuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: 16-bit version of geteuid() is not supported on your platform
+geteuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=geteuid02 stime=1575292773
+cmdline="geteuid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+geteuid02    1  TPASS  :  values from geteuid and getpwuid match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=geteuid02_16 stime=1575292773
+cmdline="geteuid02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+geteuid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: 16-bit version of geteuid() is not supported on your platform
+geteuid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgid01 stime=1575292773
+cmdline="getgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgid01    1  TPASS  :  getgid returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgid01_16 stime=1575292773
+cmdline="getgid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: 16-bit version of getgid() is not supported on your platform
+getgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getgid03 stime=1575292773
+cmdline="getgid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgid03    1  TPASS  :  values from getuid and getpwuid match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgid03_16 stime=1575292773
+cmdline="getgid03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: 16-bit version of getgid() is not supported on your platform
+getgid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgroups01 stime=1575292773
+cmdline="getgroups01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgroups01    1  TPASS  :  getgroups failed as expected with EINVAL
+getgroups01    2  TPASS  :  getgroups did not modify the gidset array
+getgroups01    3  TPASS  :  getgroups failed as expected with EINVAL
+getgroups01    4  TPASS  :  getgroups(NGROUPS,gidset) returned 3 contains gid 0 (from getgid)
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgroups01_16 stime=1575292773
+cmdline="getgroups01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgroups01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:84: 16-bit version of getgroups() is not supported on your platform
+getgroups01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:84: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgroups03 stime=1575292773
+cmdline="getgroups03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgroups03    1  TPASS  :  getgroups functionality correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getgroups03_16 stime=1575292773
+cmdline="getgroups03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getgroups03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:79: 16-bit version of setgroups() is not supported on your platform
+getgroups03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:79: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gethostbyname_r01 stime=1575292773
+cmdline="gethostbyname_r01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gethostbyname_r01    1  TPASS  :  not vulnerable
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gethostid01 stime=1575292773
+cmdline="gethostid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gethostid01    1  TPASS  :  Hostid command and gethostid both report hostid is 007f0100
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gethostname01 stime=1575292773
+cmdline="gethostname01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gethostname01    1  TPASS  :  gethostname returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getitimer01 stime=1575292773
+cmdline="getitimer01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getitimer01    1  TPASS  :  functionality is ok
+getitimer01    2  TPASS  :  functionality is ok
+getitimer01    3  TPASS  :  functionality is ok
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getitimer02 stime=1575292773
+cmdline="getitimer02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getitimer02    1  TPASS  :  expected failure - errno = 14 - Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getitimer03 stime=1575292773
+cmdline="getitimer03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getitimer03    1  TPASS  :  expected failure - errno = 22 - Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpagesize01 stime=1575292773
+cmdline="getpagesize01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpagesize01    0  TINFO  :  Page Size is 4096
+getpagesize01    1  TPASS  :  getpagesize - Page size returned 4096
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpeername01 stime=1575292773
+cmdline="getpeername01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpeername01    1  TPASS  :  test getpeername() EBADF successful
+getpeername01    2  TPASS  :  test getpeername() ENOTSOCK successful
+getpeername01    3  TPASS  :  test getpeername() ENOTCONN successful
+getpeername01    4  TPASS  :  test getpeername() EINVAL successful
+getpeername01    5  TPASS  :  test getpeername() EFAULT successful
+getpeername01    6  TPASS  :  test getpeername() EFAULT successful
+getpeername01    7  TPASS  :  test getpeername() EFAULT successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpgid01 stime=1575292773
+cmdline="getpgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpgid01    0  TINFO  :  Enter block 1
+getpgid01    1  TPASS  :  Test block 1: getpgid(0) PASSED
+getpgid01    0  TINFO  :  Exit block 1
+getpgid01    0  TINFO  :  Enter block 2
+getpgid01    2  TPASS  :  Test block 2: getpgid(getpid()) PASSED
+getpgid01    0  TINFO  :  Exit block 2
+getpgid01    0  TINFO  :  Enter block 3
+getpgid01    3  TPASS  :  Test block 3: getpgid(getppid()) PASSED
+getpgid01    0  TINFO  :  Exit block 3
+getpgid01    0  TINFO  :  Enter block 4
+getpgid01    4  TPASS  :  Test block 4: getpgid(1) PASSED
+getpgid01    0  TINFO  :  Exit block 4
+getpgid01    0  TINFO  :  Enter block 5
+getpgid01    5  TPASS  :  Test block 5: getpgid(1) PASSED
+getpgid01    0  TINFO  :  Exit block 5
+getpgid01    0  TINFO  :  getpgid01 PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpgid02 stime=1575292773
+cmdline="getpgid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpgid02    1  TPASS  :  expected failure - errno = 3 : No such process
+getpgid02    2  TPASS  :  expected failure - errno = 3 : No such process
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpgrp01 stime=1575292773
+cmdline="getpgrp01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpgrp01    1  TPASS  :  getpgrp returned 2468
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpid01 stime=1575292773
+cmdline="getpid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpid01    1  TPASS  :  getpid returned 2469
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpid02 stime=1575292773
+cmdline="getpid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getpid02    1  TPASS  :  getpid functionality is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getppid01 stime=1575292773
+cmdline="getppid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getppid01    1  TPASS  :  getppid returned 2406
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getppid02 stime=1575292773
+cmdline="getppid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+return value and parent's pid value match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpriority01 stime=1575292773
+cmdline="getpriority01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getpriority01.c:50: PASS: getpriority(0, 0) returned 0
+getpriority01.c:50: PASS: getpriority(1, 0) returned 0
+getpriority01.c:50: PASS: getpriority(2, 0) returned -20
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getpriority02 stime=1575292773
+cmdline="getpriority02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getpriority02.c:58: PASS: getpriority(-1, 0) fails as expected: EINVAL (22)
+getpriority02.c:58: PASS: getpriority(0, -1) fails as expected: ESRCH (3)
+getpriority02.c:58: PASS: getpriority(1, -1) fails as expected: ESRCH (3)
+getpriority02.c:58: PASS: getpriority(2, -1) fails as expected: ESRCH (3)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getrandom01 stime=1575292773
+cmdline="getrandom01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
+getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
+getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
+getrandom01.c:21: PASS: getrandom returned -1: EAGAIN/EWOULDBLOCK (11)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=330 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=10
+<<<test_end>>>
+<<<test_start>>>
+tag=getrandom02 stime=1575293103
+cmdline="getrandom02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getrandom02.c:51: PASS: getrandom returned 256
+getrandom02.c:51: PASS: getrandom returned 6
+getrandom02.c:51: PASS: getrandom returned 256
+getrandom02.c:51: PASS: getrandom returned 6
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=207 termination_type=exited termination_id=0 corefile=no
+cutime=4491 cstime=5892
+<<<test_end>>>
+<<<test_start>>>
+tag=getrandom03 stime=1575293311
+cmdline="getrandom03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getrandom03.c:37: PASS: getrandom returned 1
+getrandom03.c:37: PASS: getrandom returned 2
+getrandom03.c:37: PASS: getrandom returned 3
+getrandom03.c:37: PASS: getrandom returned 7
+getrandom03.c:37: PASS: getrandom returned 8
+getrandom03.c:37: PASS: getrandom returned 15
+getrandom03.c:37: PASS: getrandom returned 22
+getrandom03.c:37: PASS: getrandom returned 64
+getrandom03.c:37: PASS: getrandom returned 127
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=getrandom04 stime=1575293312
+cmdline="getrandom04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getrandom04.c:28: PASS: getrandom returned 100
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid01 stime=1575293312
+cmdline="getresgid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid01    1  TPASS  :  Functionality of getresgid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=17 cstime=35
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid01_16 stime=1575293313
+cmdline="getresgid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
+getresgid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=8 cstime=10
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid02 stime=1575293313
+cmdline="getresgid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid02    1  TPASS  :  Functionality of getresgid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid02_16 stime=1575293313
+cmdline="getresgid02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid02    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
+getresgid02    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=14
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid03 stime=1575293314
+cmdline="getresgid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid03    1  TPASS  :  Functionality of getresgid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=12
+<<<test_end>>>
+<<<test_start>>>
+tag=getresgid03_16 stime=1575293314
+cmdline="getresgid03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresgid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
+getresgid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid01 stime=1575293314
+cmdline="getresuid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid01    1  TPASS  :  Functionality of getresuid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=14
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid01_16 stime=1575293314
+cmdline="getresuid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
+getresuid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=9
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid02 stime=1575293314
+cmdline="getresuid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid02    1  TPASS  :  Functionality of getresuid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=8
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid02_16 stime=1575293314
+cmdline="getresuid02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid02    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
+getresuid02    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=32 corefile=no
+cutime=5 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid03 stime=1575293315
+cmdline="getresuid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid03    1  TPASS  :  Functionality of getresuid() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=getresuid03_16 stime=1575293315
+cmdline="getresuid03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getresuid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
+getresuid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=2 cstime=20
+<<<test_end>>>
+<<<test_start>>>
+tag=getrlimit01 stime=1575293315
+cmdline="getrlimit01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrlimit01    1  TPASS  :  getrlimit() test RLIMIT_CPU success
+getrlimit01    2  TPASS  :  getrlimit() test RLIMIT_FSIZE success
+getrlimit01    3  TPASS  :  getrlimit() test RLIMIT_DATA success
+getrlimit01    4  TPASS  :  getrlimit() test RLIMIT_STACK success
+getrlimit01    5  TPASS  :  getrlimit() test RLIMIT_CORE success
+getrlimit01    6  TPASS  :  getrlimit() test RLIMIT_RSS success
+getrlimit01    7  TPASS  :  getrlimit() test RLIMIT_NPROC success
+getrlimit01    8  TPASS  :  getrlimit() test RLIMIT_NOFILE success
+getrlimit01    9  TPASS  :  getrlimit() test RLIMIT_MEMLOCK success
+getrlimit01   10  TPASS  :  getrlimit() test RLIMIT_AS success
+getrlimit01   11  TPASS  :  getrlimit() test RLIMIT_LOCKS success
+getrlimit01   12  TPASS  :  getrlimit() test RLIMIT_MSGQUEUE success
+getrlimit01   13  TPASS  :  getrlimit() test RLIMIT_NICE success
+getrlimit01   14  TPASS  :  getrlimit() test RLIMIT_RTPRIO success
+getrlimit01   15  TPASS  :  getrlimit() test RLIMIT_SIGPENDING success
+getrlimit01   16  TPASS  :  getrlimit() test RLIMIT_RTTIME success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=24
+<<<test_end>>>
+<<<test_start>>>
+tag=getrlimit02 stime=1575293315
+cmdline="getrlimit02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrlimit02    1  TPASS  :  expected failure; got EFAULT
+getrlimit02    2  TPASS  :  expected failure; got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=5 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=getrlimit03 stime=1575293315
+cmdline="getrlimit03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getrlimit03.c:168: PASS: __NR_prlimit64(0) and __NR_getrlimit(0) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(1) and __NR_getrlimit(1) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(2) and __NR_getrlimit(2) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(3) and __NR_getrlimit(3) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(4) and __NR_getrlimit(4) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(5) and __NR_getrlimit(5) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(6) and __NR_getrlimit(6) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(7) and __NR_getrlimit(7) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(8) and __NR_getrlimit(8) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(9) and __NR_getrlimit(9) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(10) and __NR_getrlimit(10) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(11) and __NR_getrlimit(11) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(12) and __NR_getrlimit(12) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(13) and __NR_getrlimit(13) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(14) and __NR_getrlimit(14) gave consistent results
+getrlimit03.c:168: PASS: __NR_prlimit64(15) and __NR_getrlimit(15) gave consistent results
+
+Summary:
+passed   16
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=8
+<<<test_end>>>
+<<<test_start>>>
+tag=get_mempolicy01 stime=1575293316
+cmdline="get_mempolicy01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=14 (Bad address)
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+get_mempolicy01    0  TINFO  :  (case00) START
+get_mempolicy01    1  TPASS  :  (case00) END
+get_mempolicy01    0  TINFO  :  (case01) START
+get_mempolicy01    2  TPASS  :  (case01) END
+get_mempolicy01    0  TINFO  :  (case02) START
+get_mempolicy01    3  TPASS  :  (case02) END
+get_mempolicy01    0  TINFO  :  (case03) START
+get_mempolicy01    4  TPASS  :  (case03) END
+get_mempolicy01    0  TINFO  :  (case04) START
+get_mempolicy01    5  TPASS  :  (case04) END
+get_mempolicy01    0  TINFO  :  (case05) START
+get_mempolicy01    6  TPASS  :  (case05) END
+get_mempolicy01    0  TINFO  :  (case06) START
+get_mempolicy01    7  TPASS  :  (case06) END
+get_mempolicy01    0  TINFO  :  (case07) START
+get_mempolicy01    8  TPASS  :  (case07) END
+get_mempolicy01    0  TINFO  :  (case08) START
+get_mempolicy01    9  TPASS  :  (case08) END
+get_mempolicy01    0  TINFO  :  (case09) START
+get_mempolicy01   10  TPASS  :  (case09) END
+get_mempolicy01    0  TINFO  :  (case10) START
+get_mempolicy01   11  TPASS  :  (case10) END
+get_mempolicy01    0  TINFO  :  (case11) START
+get_mempolicy01   12  TPASS  :  (case11) END
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=12 cstime=133
+<<<test_end>>>
+<<<test_start>>>
+tag=get_robust_list01 stime=1575293317
+cmdline="get_robust_list01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+get_robust_list01    1  TPASS  :  get_robust_list failed as expected with EFAULT
+get_robust_list01    2  TPASS  :  get_robust_list failed as expected with EFAULT
+get_robust_list01    3  TPASS  :  get_robust_list failed as expected with ESRCH
+get_robust_list01    4  TPASS  :  get_robust_list succeeded
+get_robust_list01    5  TPASS  :  get_robust_list failed as expected with EPERM
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=18 cstime=19
+<<<test_end>>>
+<<<test_start>>>
+tag=getrusage01 stime=1575293318
+cmdline="getrusage01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrusage01    1  TPASS  :  getrusage passed
+getrusage01    2  TPASS  :  getrusage passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=5 cstime=15
+<<<test_end>>>
+<<<test_start>>>
+tag=getrusage02 stime=1575293318
+cmdline="getrusage02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrusage02    1  TPASS  :  getrusage failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+getrusage02    2  TPASS  :  getrusage failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=getrusage03 stime=1575293318
+cmdline="getrusage03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    0  TINFO  :  child.self = 102496
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    1  TPASS  :  initial.self ~= child.self
+getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
+getrusage03    0  TINFO  :  initial.children = 103532
+getrusage03    2  TPASS  :  initial.children ~= 100MB
+getrusage03    0  TINFO  :  child.children = 0
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    1  TPASS  :  initial.self ~= child.self
+getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
+getrusage03    0  TINFO  :  initial.children = 103532
+getrusage03    2  TPASS  :  initial.children ~= 100MB
+getrusage03    3  TPASS  :  child.children == 0
+getrusage03    0  TINFO  :  Testcase #03: fork + malloc
+getrusage03    0  TINFO  :  initial.self = 103984
+getrusage03    0  TINFO  :  child allocate +50MB
+getrusage03    0  TINFO  :  child.self = 154324
+getrusage03_child    0  TINFO  :  grandchild allocate 300MB
+getrusage03_child    0  TINFO  :  grandchild allocate 300MB
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    1  TPASS  :  initial.self ~= child.self
+getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
+getrusage03    0  TINFO  :  initial.children = 103532
+getrusage03    2  TPASS  :  initial.children ~= 100MB
+getrusage03    3  TPASS  :  child.children == 0
+getrusage03    0  TINFO  :  Testcase #03: fork + malloc
+getrusage03    0  TINFO  :  initial.self = 103984
+getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
+getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
+getrusage03    0  TINFO  :  initial.children = 154800
+getrusage03_child    0  TINFO  :  child allocate 400MB
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    1  TPASS  :  initial.self ~= child.self
+getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
+getrusage03    0  TINFO  :  initial.children = 103532
+getrusage03    2  TPASS  :  initial.children ~= 100MB
+getrusage03    3  TPASS  :  child.children == 0
+getrusage03    0  TINFO  :  Testcase #03: fork + malloc
+getrusage03    0  TINFO  :  initial.self = 103984
+getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
+getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
+getrusage03    0  TINFO  :  initial.children = 154800
+getrusage03    0  TINFO  :  post_wait.children = 308184
+getrusage03    5  TPASS  :  child.children ~= 300MB
+getrusage03    0  TINFO  :  Testcase #05: zombie
+getrusage03    0  TINFO  :  initial.children = 308184
+getrusage03_child    0  TINFO  :  child allocate 500MB
+getrusage03    0  TINFO  :  allocate 100MB
+getrusage03    0  TINFO  :  Testcase #01: fork inherit
+getrusage03    0  TINFO  :  initial.self = 103764
+getrusage03    1  TPASS  :  initial.self ~= child.self
+getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
+getrusage03    0  TINFO  :  initial.children = 103532
+getrusage03    2  TPASS  :  initial.children ~= 100MB
+getrusage03    3  TPASS  :  child.children == 0
+getrusage03    0  TINFO  :  Testcase #03: fork + malloc
+getrusage03    0  TINFO  :  initial.self = 103984
+getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
+getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
+getrusage03    0  TINFO  :  initial.children = 154800
+getrusage03    0  TINFO  :  post_wait.children = 308184
+getrusage03    5  TPASS  :  child.children ~= 300MB
+getrusage03    0  TINFO  :  Testcase #05: zombie
+getrusage03    0  TINFO  :  initial.children = 308184
+getrusage03    0  TINFO  :  pre_wait.children = 308184
+getrusage03    6  TPASS  :  initial.children ~= pre_wait.children
+getrusage03    0  TINFO  :  post_wait.children = 411028
+getrusage03    7  TPASS  :  post_wait.children ~= 400MB
+getrusage03    0  TINFO  :  Testcase #06: SIG_IGN
+getrusage03    0  TINFO  :  initial.children = 411028
+getrusage03_child    0  TINFO  :  exec.self = 103996, exec.children = 411028
+getrusage03_child    1  TPASS  :  initial.self ~= exec.self
+getrusage03_child    2  TPASS  :  initial.children ~= exec.children
+<<<execution_status>>>
+initiation_status="ok"
+duration=8 termination_type=exited termination_id=0 corefile=no
+cutime=17 cstime=586
+<<<test_end>>>
+<<<test_start>>>
+tag=getrusage04 stime=1575293326
+cmdline="getrusage04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getrusage04    1  TCONF  :  getrusage04.c:202: This testcase is not supported on this virtual machine.
+getrusage04    2  TCONF  :  getrusage04.c:202: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=getsid01 stime=1575293327
+cmdline="getsid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getsid01    1  TPASS  :  session ID is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getsid02 stime=1575293327
+cmdline="getsid02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getsid02    1  TPASS  :  expected failure - errno = 3 - No such process
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getsockname01 stime=1575293327
+cmdline="getsockname01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getsockname01    1  TPASS  :  bad file descriptor successful
+getsockname01    2  TPASS  :  bad file descriptor successful
+getsockname01    3  TPASS  :  invalid socket buffer successful
+getsockname01    4  TPASS  :  invalid aligned salen successful
+getsockname01    5  TPASS  :  invalid unaligned salen successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getsockopt01 stime=1575293327
+cmdline="getsockopt01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getsockopt01    1  TPASS  :  bad file descriptor successful
+getsockopt01    2  TPASS  :  bad file descriptor successful
+getsockopt01    3  TPASS  :  invalid option buffer successful
+getsockopt01    4  TPASS  :  invalid optlen successful
+getsockopt01    5  TPASS  :  invalid level successful
+getsockopt01    6  TPASS  :  invalid option name successful
+getsockopt01    7  TPASS  :  invalid option name (UDP) successful
+getsockopt01    8  TPASS  :  invalid option name (IP) successful
+getsockopt01    9  TPASS  :  invalid option name (TCP) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getsockopt02 stime=1575293327
+cmdline="getsockopt02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getsockopt02.c:66: PASS: Test passed
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=gettid01 stime=1575293327
+cmdline="gettid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gettid01    1  TPASS  :  gettid() returned 4336
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gettimeofday01 stime=1575293327
+cmdline="gettimeofday01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+gettimeofday01    1  TPASS  :  gettimeofday(2) set the errno EFAULT correctly
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=gettimeofday02 stime=1575293327
+cmdline="gettimeofday02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+gettimeofday02.c:76: INFO: gettimeofday() called 14478038 times
+gettimeofday02.c:77: PASS: gettimeofday() monotonous in 10 seconds
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=0 corefile=no
+cutime=325 cstime=660
+<<<test_end>>>
+<<<test_start>>>
+tag=getuid01 stime=1575293337
+cmdline="getuid01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getuid01    1  TPASS  :  getuid returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getuid01_16 stime=1575293337
+cmdline="getuid01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: 16-bit version of getuid() is not supported on your platform
+getuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getuid03 stime=1575293337
+cmdline="getuid03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getuid03    1  TPASS  :  values from getuid and getpwuid match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getuid03_16 stime=1575293337
+cmdline="getuid03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getuid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: 16-bit version of getuid() is not supported on your platform
+getuid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getxattr01 stime=1575293337
+cmdline="getxattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getxattr01    1  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
+getxattr01    2  TPASS  :  expected behavior: TEST_ERRNO=ERANGE(34): Numerical result out of range
+getxattr01    3  TPASS  :  expected behavior: TEST_ERRNO=SUCCESS(0): Success
+getxattr01    4  TPASS  :  Got the right value
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=getxattr02 stime=1575293337
+cmdline="getxattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getxattr02    1  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
+getxattr02    2  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
+getxattr02    3  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
+getxattr02    4  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getxattr03 stime=1575293337
+cmdline="getxattr03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+getxattr03    1  TPASS  :  getxattr(2) returned correct value
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=getxattr04 stime=1575293337
+cmdline="getxattr04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+getxattr04.c:70: PASS: getxattr() succeeded to get an existing attribute
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=253 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=8
+<<<test_end>>>
+<<<test_start>>>
+tag=getxattr05 stime=1575293590
+cmdline="getxattr05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:772: CONF: <sys/xattr.h> or <sys/acl.h> does not exist.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl01_02 stime=1575293590
+cmdline="  test_ioctl"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty0
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty0
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty1
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty1
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty10
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty10
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty11
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty11
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty12
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty12
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty13
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty13
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty14
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty14
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty15
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty15
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty16
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty16
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty17
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty17
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty18
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty18
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty19
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty19
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty2
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty2
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty20
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty20
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty21
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty21
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty22
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty22
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty23
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty23
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty24
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty24
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty25
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty25
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty26
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty26
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty27
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty27
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty28
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty28
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty29
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty29
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty3
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty3
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty30
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty30
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty31
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty31
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty32
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty32
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty33
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty33
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty34
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty34
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty35
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty35
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty36
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty36
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty37
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty37
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty38
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty38
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty39
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty39
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty4
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty4
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty40
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty40
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty41
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty41
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty42
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty42
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty43
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty43
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty44
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty44
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty45
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty45
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty46
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty46
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty47
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty47
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty48
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty48
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty49
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty49
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty5
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty5
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty50
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty50
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty51
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty51
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty52
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty52
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty53
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty53
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty54
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty54
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty55
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty55
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty56
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty56
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty57
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty57
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty58
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty58
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty59
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty59
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty6
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty6
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty60
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty60
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty61
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty61
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty62
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty62
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty63
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty63
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty7
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty7
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty8
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty8
+
+ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty9
+ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
+ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty9
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty0
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty0
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty1
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty1
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty10
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty10
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty11
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty11
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty12
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty12
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty13
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty13
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty14
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty14
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty15
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty15
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty16
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty16
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty17
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty17
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty18
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty18
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty19
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty19
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty2
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty2
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty20
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty20
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty21
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty21
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty22
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty22
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty23
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty23
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty24
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty24
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty25
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty25
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty26
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty26
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty27
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty27
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty28
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty28
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty29
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty29
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty3
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty3
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty30
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty30
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty31
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty31
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty32
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty32
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty33
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty33
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty34
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty34
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty35
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty35
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty36
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty36
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty37
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty37
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty38
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty38
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty39
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty39
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty4
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty4
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty40
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty40
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty41
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty41
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty42
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty42
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty43
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty43
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty44
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty44
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty45
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty45
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty46
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty46
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty47
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty47
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty48
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty48
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty49
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty49
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty5
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty5
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty50
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty50
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty51
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty51
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty52
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty52
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty53
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty53
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty54
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty54
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty55
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty55
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty56
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty56
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty57
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty57
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty58
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty58
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty59
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty59
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty6
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty6
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty60
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty60
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty61
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty61
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty62
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty62
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty63
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty63
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty7
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty7
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty8
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty8
+
+ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty9
+ioctl02     0  TINFO  :  termio values are set as expected
+ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
+ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty9
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=0 corefile=no
+cutime=25 cstime=65
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl03 stime=1575293593
+cmdline="     ioctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl03.c:76: INFO: Available features are: 0x7133
+ioctl03.c:81: PASS: TUN 0x1
+ioctl03.c:81: PASS: TAP 0x2
+ioctl03.c:81: PASS: NO_PI 0x1000
+ioctl03.c:81: PASS: ONE_QUEUE 0x2000
+ioctl03.c:81: PASS: VNET_HDR 0x4000
+ioctl03.c:81: PASS: MULTI_QUEUE 0x100
+ioctl03.c:81: PASS: IFF_NAPI 0x10
+ioctl03.c:81: PASS: IFF_NAPI_FRAGS 0x20
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl04 stime=1575293593
+cmdline="     ioctl04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl04.c:26: PASS: BLKROGET returned 0
+ioctl04.c:39: PASS: BLKROGET returned 1
+ioctl04.c:50: PASS: Mounting RO device RW failed: EACCES (13)
+ioctl04.c:61: PASS: Mounting RO device RO works
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl05 stime=1575293599
+cmdline="     ioctl05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl05.c:35: PASS: BLKGETSIZE returned 524288, BLKGETSIZE64 268435456
+ioctl05.c:46: PASS: Could lseek to the end of the device
+ioctl05.c:53: PASS: Got EOF when trying to read after the end of device
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl06 stime=1575293599
+cmdline="     ioctl06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl06.c:26: INFO: BLKRAGET original value 256
+ioctl06.c:33: PASS: BLKRASET 0 read back correctly
+ioctl06.c:33: PASS: BLKRASET 512 read back correctly
+ioctl06.c:33: PASS: BLKRASET 1024 read back correctly
+ioctl06.c:33: PASS: BLKRASET 1536 read back correctly
+ioctl06.c:33: PASS: BLKRASET 2048 read back correctly
+ioctl06.c:33: PASS: BLKRASET 2560 read back correctly
+ioctl06.c:33: PASS: BLKRASET 3072 read back correctly
+ioctl06.c:33: PASS: BLKRASET 3584 read back correctly
+ioctl06.c:33: PASS: BLKRASET 4096 read back correctly
+ioctl06.c:38: INFO: BLKRASET restoring original value 256
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl07 stime=1575293599
+cmdline="     ioctl07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl07.c:32: INFO: entropy value from ioctl: 299, proc: 299
+ioctl07.c:35: PASS: entropy value within expected parameters
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl08 stime=1575293599
+cmdline="     ioctl08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with SUCCESS as expected
+ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with SUCCESS as expected
+ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with EINVAL as expected
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=12 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns01 stime=1575293611
+cmdline="ioctl_ns01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns01.c:57: PASS: NS_GET_PARENT fails with EPERM
+ioctl_ns01.c:57: PASS: NS_GET_PARENT fails with EPERM
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns02 stime=1575293611
+cmdline="ioctl_ns02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns02.c:39: PASS: NS_GET_PARENT fails with EINVAL
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns03 stime=1575293611
+cmdline="ioctl_ns03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns03.c:42: PASS: NS_GET_OWNER_UID fails, UTS namespace
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns04 stime=1575293611
+cmdline="ioctl_ns04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns04.c:38: PASS: NS_GET_USERNS fails with EPERM
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns05 stime=1575293611
+cmdline="ioctl_ns05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns05.c:91: PASS: child and parent are consistent
+ioctl_ns05.c:50: PASS: child thinks its pid is 1
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns06 stime=1575293611
+cmdline="ioctl_ns06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns06.c:87: PASS: child and parent are consistent
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioctl_ns07 stime=1575293611
+cmdline="ioctl_ns07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioctl_ns07.c:33: PASS: request failed with ENOTTY
+ioctl_ns07.c:33: PASS: request failed with ENOTTY
+ioctl_ns07.c:33: PASS: request failed with ENOTTY
+ioctl_ns07.c:33: PASS: request failed with ENOTTY
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify_init1_01 stime=1575293611
+cmdline="inotify_init1_01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify_init1_01    1  TPASS  :  inotify_init1(O_CLOEXEC) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify_init1_02 stime=1575293612
+cmdline="inotify_init1_02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+inotify_init1_02    1  TPASS  :  inotify_init1(IN_NONBLOCK) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify01 stime=1575293612
+cmdline="inotify01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify01.c:125: PASS: get event: wd=1 mask=04 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=20 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=01 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=10 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=20 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=02 cookie=0 len=0
+inotify01.c:125: PASS: get event: wd=1 mask=08 cookie=0 len=0
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify02 stime=1575293612
+cmdline="inotify02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify02.c:185: PASS: get event: wd=1 mask=40000004 cookie=0     len=0  name=""
+inotify02.c:185: PASS: get event: wd=1 mask=00000100 cookie=0     len=16 name="test_file1"
+inotify02.c:185: PASS: get event: wd=1 mask=00000020 cookie=0     len=16 name="test_file1"
+inotify02.c:185: PASS: get event: wd=1 mask=00000008 cookie=0     len=16 name="test_file1"
+inotify02.c:185: PASS: get event: wd=1 mask=00000040 cookie=347103 len=16 name="test_file1"
+inotify02.c:185: PASS: get event: wd=1 mask=00000080 cookie=347103 len=16 name="test_file2"
+inotify02.c:185: PASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
+inotify02.c:185: PASS: get event: wd=1 mask=00000200 cookie=0     len=16 name="test_file2"
+inotify02.c:185: PASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify03 stime=1575293612
+cmdline="inotify03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify03.c:71: INFO: umount /dev/loop0
+inotify03.c:102: PASS: get event: wd=1 mask=2000 cookie=0 len=0
+inotify03.c:102: PASS: get event: wd=1 mask=8000 cookie=0 len=0
+inotify03.c:126: PASS: inotify_rm_watch (7, 1) returned EINVAL
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=40 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=6
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify04 stime=1575293652
+cmdline="inotify04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify04.c:163: PASS: got event: wd=1 mask=0400 cookie=0 len=0 name=""
+inotify04.c:163: PASS: got event: wd=1 mask=8000 cookie=0 len=0 name=""
+inotify04.c:163: PASS: got event: wd=2 mask=0004 cookie=0 len=0 name=""
+inotify04.c:163: PASS: got event: wd=2 mask=0400 cookie=0 len=0 name=""
+inotify04.c:163: PASS: got event: wd=2 mask=8000 cookie=0 len=0 name=""
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify05 stime=1575293652
+cmdline="inotify05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify05.c:115: PASS: get event: wd=-1 mask=4000 cookie=0 len=0
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=3 cstime=11
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify06 stime=1575293652
+cmdline="inotify06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 50m 00s
+inotify06.c:84: PASS: kernel survived inotify beating
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify07 stime=1575293652
+cmdline="inotify07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify07.c:156: INFO: mntpoint/ovl/test_dir ino=40962
+inotify07.c:166: INFO: mntpoint/ovl/test_dir ino=40962
+safe_file_ops.c:359: BROK: Failed to open file 'mntpoint/ovl/test_dir/test_file' at inotify07.c:78: EIO (5)
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=26 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=29
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify08 stime=1575293678
+cmdline="inotify08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+inotify08.c:149: INFO: mntpoint/ovl/test_file ino=4098, dev=0:50
+safe_macros.c:557: BROK: inotify08.c:155: chmod(mntpoint/ovl/test_file,0600) failed: EIO (5)
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=42 termination_type=exited termination_id=2 corefile=no
+cutime=1 cstime=14
+<<<test_end>>>
+<<<test_start>>>
+tag=inotify09 stime=1575293720
+cmdline="inotify09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+../../../../include/tst_fuzzy_sync.h:504: INFO: Minimum sampling period ended
+../../../../include/tst_fuzzy_sync.h:328: INFO: loop = 1024, delay_bias = 0
+../../../../include/tst_fuzzy_sync.h:317: INFO: start_a - start_b: { avg =   -43ns, avg_dev =    19ns, dev_ratio = 0.45 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - start_a  : { avg =  1433ns, avg_dev =    11ns, dev_ratio = 0.01 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_b - start_b  : { avg =  3590ns, avg_dev =    15ns, dev_ratio = 0.00 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - end_b    : { avg = -2199ns, avg_dev =    27ns, dev_ratio = 0.01 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: spins            : { avg =   995  , avg_dev =    42  , dev_ratio = 0.04 }
+../../../../include/tst_fuzzy_sync.h:516: INFO: Reached deviation ratios < 0.10, introducing randomness
+../../../../include/tst_fuzzy_sync.h:519: INFO: Delay range is [-1671, 662]
+../../../../include/tst_fuzzy_sync.h:328: INFO: loop = 1140, delay_bias = 0
+../../../../include/tst_fuzzy_sync.h:317: INFO: start_a - start_b: { avg =   -65ns, avg_dev =     6ns, dev_ratio = 0.09 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - start_a  : { avg =  1425ns, avg_dev =    14ns, dev_ratio = 0.01 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_b - start_b  : { avg =  3595ns, avg_dev =    12ns, dev_ratio = 0.00 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - end_b    : { avg = -2235ns, avg_dev =    20ns, dev_ratio = 0.01 }
+../../../../include/tst_fuzzy_sync.h:317: INFO: spins            : { avg =  1039  , avg_dev =    55  , dev_ratio = 0.05 }
+../../../../include/tst_fuzzy_sync.h:640: INFO: Exceeded execution loops, requesting exit
+inotify09.c:89: PASS: kernel survived inotify beating
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=34 termination_type=exited termination_id=0 corefile=no
+cutime=3465 cstime=2751
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify01 stime=1575293754
+cmdline="fanotify01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify01.c:89: INFO: Test #0: inode mark events
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
+fanotify01.c:89: INFO: Test #1: mount mark events
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
+fanotify01.c:89: INFO: Test #2: filesystem mark events
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
+fanotify01.c:89: INFO: Test #3: inode mark events (FAN_REPORT_FID)
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
+fanotify01.c:89: INFO: Test #4: mount mark events (FAN_REPORT_FID)
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
+fanotify01.c:89: INFO: Test #5: filesystem mark events (FAN_REPORT_FID)
+fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
+fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
+fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
+
+Summary:
+passed   72
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=19 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify02 stime=1575293773
+cmdline="fanotify02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify02.c:173: PASS: got event: mask=2a pid=6708 fd=8
+fanotify02.c:173: PASS: got event: mask=a pid=6708 fd=8
+fanotify02.c:173: PASS: got event: mask=8 pid=6708 fd=8
+fanotify02.c:173: PASS: got event: mask=31 pid=6708 fd=9
+fanotify02.c:173: PASS: got event: mask=11 pid=6708 fd=9
+fanotify02.c:173: PASS: got event: mask=10 pid=6708 fd=9
+fanotify02.c:173: PASS: got event: mask=30 pid=6708 fd=10
+fanotify02.c:173: PASS: got event: mask=10 pid=6708 fd=10
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify03 stime=1575293773
+cmdline="fanotify03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify03.c:214: INFO: Test #0: inode mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
+fanotify03.c:316: PASS: got event: mask=10000 pid=6748 fd=8
+fanotify03.c:316: PASS: got event: mask=20000 pid=6748 fd=8
+fanotify03.c:316: PASS: got event: mask=10000 pid=6748 fd=8
+fanotify03.c:202: PASS: child exited correctly
+fanotify03.c:214: INFO: Test #1: inode mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
+fanotify03.c:316: PASS: got event: mask=20000 pid=6749 fd=8
+fanotify03.c:316: PASS: got event: mask=40000 pid=6749 fd=8
+fanotify03.c:202: PASS: child exited correctly
+fanotify03.c:214: INFO: Test #2: mount mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
+fanotify03.c:316: PASS: got event: mask=10000 pid=6750 fd=8
+fanotify03.c:316: PASS: got event: mask=20000 pid=6750 fd=8
+fanotify03.c:316: PASS: got event: mask=10000 pid=6750 fd=8
+fanotify03.c:202: PASS: child exited correctly
+fanotify03.c:214: INFO: Test #3: mount mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
+fanotify03.c:316: PASS: got event: mask=20000 pid=6751 fd=8
+fanotify03.c:316: PASS: got event: mask=40000 pid=6751 fd=8
+fanotify03.c:202: PASS: child exited correctly
+fanotify03.c:214: INFO: Test #4: filesystem mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
+fanotify03.c:316: PASS: got event: mask=10000 pid=6752 fd=8
+fanotify03.c:316: PASS: got event: mask=20000 pid=6752 fd=8
+fanotify03.c:316: PASS: got event: mask=10000 pid=6752 fd=8
+fanotify03.c:202: PASS: child exited correctly
+fanotify03.c:214: INFO: Test #5: filesystem mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
+fanotify03.c:316: PASS: got event: mask=20000 pid=6753 fd=8
+fanotify03.c:316: PASS: got event: mask=40000 pid=6753 fd=8
+fanotify03.c:202: PASS: child exited correctly
+
+Summary:
+passed   21
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=16 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify04 stime=1575293789
+cmdline="fanotify04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, '.') succeeded
+fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, 'fname_6773') failed
+fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_DONT_FOLLOW, FAN_OPEN, AT_FDCWD, 'symlink_6773') succeeded
+fanotify04.c:168: PASS: No event as expected
+fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | 0, FAN_OPEN, AT_FDCWD, 'symlink_6773') succeeded
+fanotify04.c:132: PASS: event generated properly for type 100000
+fanotify04.c:132: PASS: event generated properly for type 100000
+fanotify04.c:132: PASS: event generated properly for type 40000
+fanotify04.c:168: PASS: No event as expected
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify05 stime=1575293789
+cmdline="fanotify05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify05.c:99: PASS: got event: mask=4000 pid=6807 fd=-1
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=13 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=174
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify06 stime=1575293802
+cmdline="fanotify06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify06.c:169: INFO: Test #0: Fanotify merge mount mark
+fanotify06.c:147: PASS: group 0 got event: mask 2 pid=6850 fd=16
+fanotify06.c:147: PASS: group 1 got event: mask 2 pid=6850 fd=16
+fanotify06.c:147: PASS: group 2 got event: mask 2 pid=6850 fd=16
+fanotify06.c:230: PASS: group 3 got no event
+fanotify06.c:230: PASS: group 4 got no event
+fanotify06.c:230: PASS: group 5 got no event
+fanotify06.c:230: PASS: group 6 got no event
+fanotify06.c:230: PASS: group 7 got no event
+fanotify06.c:230: PASS: group 8 got no event
+fanotify06.c:169: INFO: Test #1: Fanotify merge overlayfs mount mark
+fanotify06.c:147: PASS: group 0 got event: mask 2 pid=6850 fd=16
+fanotify06.c:147: PASS: group 1 got event: mask 2 pid=6850 fd=16
+fanotify06.c:147: PASS: group 2 got event: mask 2 pid=6850 fd=16
+fanotify06.c:230: PASS: group 3 got no event
+fanotify06.c:230: PASS: group 4 got no event
+fanotify06.c:230: PASS: group 5 got no event
+fanotify06.c:230: PASS: group 6 got no event
+fanotify06.c:230: PASS: group 7 got no event
+fanotify06.c:230: PASS: group 8 got no event
+
+Summary:
+passed   18
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=9 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=6
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify07 stime=1575293811
+cmdline="fanotify07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify07.c:180: PASS: second instance destroyed successfully
+fanotify07.c:193: PASS: all children exited successfully
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify08 stime=1575293812
+cmdline="fanotify08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify08.c:38: PASS: not set close_on_exec
+fanotify08.c:38: PASS: set close_on_exec
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify09 stime=1575293812
+cmdline="fanotify09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify09.c:161: INFO: Test #0: Events on children with both inode and mount marks
+fanotify09.c:150: PASS: group 0 got event: mask 2 pid=6884 fd=10 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/tfile_6884
+fanotify09.c:234: PASS: group 1 got no event
+fanotify09.c:234: PASS: group 2 got no event
+fanotify09.c:161: INFO: Test #1: Events on children and subdirs with both inode and mount marks
+fanotify09.c:150: PASS: group 0 got event: mask 2 pid=6884 fd=10 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/tfile_6884
+fanotify09.c:150: PASS: group 0 got event: mask 10 pid=6884 fd=11 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/testdir
+fanotify09.c:234: PASS: group 1 got no event
+fanotify09.c:234: PASS: group 2 got no event
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify10 stime=1575293812
+cmdline="fanotify10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify10.c:331: INFO: Test #0: ignore mount events created on a specific file
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6910 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6910 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6910 fd=16
+fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:331: INFO: Test #1: ignore exec mount events created on a specific file
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6911 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6911 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6911 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6911 fd=16
+fanotify10.c:331: INFO: Test #2: don't ignore mount events created on another file
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
+fanotify10.c:331: INFO: Test #3: don't ignore exec mount events created on another file
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
+fanotify10.c:331: INFO: Test #4: ignore inode events created on a specific mount point
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6914 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6914 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6914 fd=16
+fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:331: INFO: Test #5: ignore exec inode events created on a specific mount point
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6915 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6915 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6915 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6915 fd=16
+fanotify10.c:331: INFO: Test #6: don't ignore inode events created on another mount point
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
+fanotify10.c:331: INFO: Test #7: don't ignore exec inode events created on another mount point
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
+fanotify10.c:331: INFO: Test #8: ignore fs events created on a specific file
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6919 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6919 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6919 fd=16
+fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
+fanotify10.c:331: INFO: Test #9: ignore exec fs events created on a specific file
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6922 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6922 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6922 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6922 fd=16
+fanotify10.c:331: INFO: Test #10: don't ignore mount events created on another file
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
+fanotify10.c:331: INFO: Test #11: don't ignore exec mount events created on another file
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
+fanotify10.c:331: INFO: Test #12: ignore fs events created on a specific mount point
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6925 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6925 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6925 fd=16
+fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
+fanotify10.c:331: INFO: Test #13: ignore exec fs events created on a specific mount point
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6926 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6926 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6926 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6926 fd=16
+fanotify10.c:331: INFO: Test #14: don't ignore fs events created on another mount point
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
+fanotify10.c:331: INFO: Test #15: don't ignore exec fs events created on another mount point
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
+fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
+
+Summary:
+passed   144
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=6
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify11 stime=1575293818
+cmdline="fanotify11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify11.c:66: INFO: Test #0: without FAN_REPORT_TID: tgid=6933, tid=0, event.pid=0
+fanotify11.c:91: PASS: event.pid == tgid
+fanotify11.c:66: INFO: Test #1: with FAN_REPORT_TID: tgid=6933, tid=6934, event.pid=6933
+fanotify11.c:89: PASS: event.pid == tid
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify12 stime=1575293818
+cmdline="fanotify12"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify12.c:137: INFO: Test #0: inode mark, FAN_OPEN events
+fanotify12.c:239: PASS: Received event: mask=20, pid=6939, fd=8
+fanotify12.c:239: PASS: Received event: mask=20, pid=6939, fd=9
+fanotify12.c:137: INFO: Test #1: inode mark, FAN_OPEN_EXEC events
+fanotify12.c:239: PASS: Received event: mask=1000, pid=6940, fd=8
+fanotify12.c:137: INFO: Test #2: inode mark, FAN_OPEN | FAN_OPEN_EXEC events
+fanotify12.c:239: PASS: Received event: mask=20, pid=6941, fd=8
+fanotify12.c:239: PASS: Received event: mask=1020, pid=6941, fd=9
+fanotify12.c:137: INFO: Test #3: inode mark, FAN_OPEN events, ignore FAN_OPEN_EXEC
+fanotify12.c:239: PASS: Received event: mask=20, pid=6942, fd=8
+fanotify12.c:239: PASS: Received event: mask=20, pid=6942, fd=9
+fanotify12.c:137: INFO: Test #4: inode mark, FAN_OPEN_EXEC events, ignore FAN_OPEN
+fanotify12.c:239: PASS: Received event: mask=1000, pid=6943, fd=8
+fanotify12.c:137: INFO: Test #5: inode mark, FAN_OPEN | FAN_OPEN_EXEC events, ignore FAN_OPEN_EXEC
+fanotify12.c:239: PASS: Received event: mask=20, pid=6944, fd=8
+fanotify12.c:239: PASS: Received event: mask=20, pid=6944, fd=9
+
+Summary:
+passed   10
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify13 stime=1575293818
+cmdline="fanotify13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
+fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
+
+Summary:
+passed   90
+failed   0
+skipped  12
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=29 termination_type=exited termination_id=0 corefile=no
+cutime=13 cstime=557
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify14 stime=1575293847
+cmdline="fanotify14"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
+
+Summary:
+passed   32
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=7 termination_type=exited termination_id=0 corefile=no
+cutime=9 cstime=207
+<<<test_end>>>
+<<<test_start>>>
+tag=fanotify15 stime=1575293854
+cmdline="fanotify15"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7307, fid=8ccb0af1.4954811e.72e162e300008001 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7307, fid=8ccb0af1.4954811e.7c1783a200008002 values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7307, fid=8ccb0af1.4954811e.72e162e300008001 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7307, fid=8ccb0af1.4954811e.d98bc74a00008002 values
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7316, fid=c9b057d0.defe2bb3.884786270000b001 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7316, fid=c9b057d0.defe2bb3.7d6404250000b002 values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7316, fid=c9b057d0.defe2bb3.884786270000b001 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7316, fid=c9b057d0.defe2bb3.8c9025820000b002 values
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7322, fid=c34f08.20cfb804.e4098ea600008001 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7322, fid=c34f08.20cfb804.2e9c701b00008002 values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7322, fid=c34f08.20cfb804.e4098ea600008001 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7322, fid=c34f08.20cfb804.519df5ad00008002 values
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7333, fid=700.0.63 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7333, fid=700.0.64 values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7333, fid=700.0.63 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7333, fid=700.0.20060 values
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7362, fid=8cc35814.16878e47.101 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7362, fid=8cc35814.16878e47.102 values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7362, fid=8cc35814.16878e47.101 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7362, fid=8cc35814.16878e47.103 values
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:198: PASS: Got event: mask=3c0, pid=7367, fid=700.0.5de5139e00000079 values
+fanotify15.c:198: PASS: Got event: mask=404, pid=7367, fid=700.0.5de5139f0000007a values
+fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7367, fid=700.0.5de5139e00000079 values
+fanotify15.c:198: PASS: Got event: mask=40000400, pid=7367, fid=700.0.5de5139e0000007b values
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:66: CONF: FAN_REPORT_FID not supported on exfat filesystem
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+fanotify15.c:66: CONF: FAN_REPORT_FID not supported on ntfs filesystem
+
+Summary:
+passed   24
+failed   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=0 corefile=no
+cutime=12 cstime=214
+<<<test_end>>>
+<<<test_start>>>
+tag=ioperm01 stime=1575293860
+cmdline="ioperm01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ioperm01    1  TPASS  :  ioperm() passed for port address 1021, returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioperm02 stime=1575293860
+cmdline="ioperm02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ioperm02    1  TPASS  :  Expected failure for Invalid I/O address, errno: 22
+ioperm02    2  TPASS  :  Expected failure for Non super-user, errno: 1
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=iopl01 stime=1575293861
+cmdline="iopl01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+iopl01      1  TPASS  :  iopl() passed for level 0, returned 0
+iopl01      2  TPASS  :  iopl() passed for level 1, returned 0
+iopl01      3  TPASS  :  iopl() passed for level 2, returned 0
+iopl01      4  TPASS  :  iopl() passed for level 3, returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=iopl02 stime=1575293861
+cmdline="iopl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+iopl02      1  TPASS  :  Expected failure for Invalid privilege level, errno: 22
+iopl02      2  TPASS  :  Expected failure for Non super-user, errno: 1
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioprio_get01 stime=1575293861
+cmdline="ioprio_get01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioprio_get01.c:42: PASS: ioprio_get returned class NONE prio 4
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ioprio_set01 stime=1575293861
+cmdline="ioprio_set01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioprio_set01.c:66: INFO: ioprio_get returned class NONE prio 4
+ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 5
+ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 3
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioprio_set02 stime=1575293861
+cmdline="ioprio_set02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioprio_set02.c:36: PASS: tested all prios in class BEST-EFFORT
+ioprio_set02.c:52: PASS: tested all prios in class IDLE
+ioprio.h:91: PASS: ioprio_set new class NONE, new prio 0
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ioprio_set03 stime=1575293861
+cmdline="ioprio_set03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 4
+ioprio_set03.c:34: PASS: returned correct error for wrong prio: EINVAL (22)
+ioprio_set03.c:48: INFO: tested illegal priority with class NONE
+ioprio_set03.c:50: PASS: returned correct error for wrong prio: EINVAL (22)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=io_cancel01 stime=1575293861
+cmdline="io_cancel01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+io_cancel01    1  TPASS  :  expected failure - returned value = -14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=io_destroy01 stime=1575293861
+cmdline="io_destroy01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+io_destroy01.c:37: PASS: io_destroy() failed as expected, returned -EINVAL
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=io_getevents01 stime=1575293861
+cmdline="io_getevents01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+io_getevents01    1  TPASS  :  expected failure - returned value = -22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=io_setup01 stime=1575293861
+cmdline="io_setup01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+io_setup01.c:62: PASS: io_setup() passed as expected
+io_setup01.c:43: PASS: io_setup() failed as expected, returned -EINVAL
+io_setup01.c:43: PASS: io_setup() failed as expected, returned -EINVAL
+io_setup01.c:43: PASS: io_setup() failed as expected, returned -EFAULT
+io_setup01.c:43: PASS: io_setup() failed as expected, returned -EAGAIN/EWOULDBLOCK
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=io_submit01 stime=1575293861
+cmdline="io_submit01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+io_submit01.c:112: PASS: io_submit() with invalid ctx failed with EINVAL
+io_submit01.c:112: PASS: io_submit() with invalid nr failed with EINVAL
+io_submit01.c:112: PASS: io_submit() with invalid iocbpp pointer failed with EFAULT
+io_submit01.c:112: PASS: io_submit() with NULL iocb pointers failed with EFAULT
+io_submit01.c:112: PASS: io_submit() with invalid fd failed with EBADF
+io_submit01.c:112: PASS: io_submit() with readonly fd for write failed with EBADF
+io_submit01.c:112: PASS: io_submit() with writeonly fd for read failed with EBADF
+io_submit01.c:112: PASS: io_submit() with zero buf size failed with SUCCESS
+io_submit01.c:112: PASS: io_submit() with zero nr failed with SUCCESS
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl01 stime=1575293861
+cmdline="keyctl01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl01.c:27: PASS: KEYCTL_GET_KEYRING_ID succeeded
+keyctl01.c:48: PASS: KEYCTL_REVOKE failed as expected: ENOKEY (126)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl02 stime=1575293861
+cmdline="keyctl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl02.c:118: INFO: waiting for key gc took: 100 ms
+keyctl02.c:119: PASS: Bug not reproduced
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=0 corefile=no
+cutime=27 cstime=210
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl03 stime=1575293864
+cmdline="keyctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl03.c:39: PASS: Bug not reproduced
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl04 stime=1575293864
+cmdline="keyctl04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl04.c:39: PASS: thread keyring was not leaked
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl05 stime=1575293864
+cmdline="keyctl05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl05.c:123: INFO: Try to update the 'asymmetric' key...
+keyctl05.c:136: PASS: updating 'asymmetric' key expectedly failed with EOPNOTSUPP
+keyctl05.c:92: CONF: kernel doesn't support key type 'dns_resolver'
+keyctl05.c:171: INFO: Try to update the 'user' key...
+keyctl05.c:180: PASS: didn't crash while racing to update 'user' key
+
+Summary:
+passed   2
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl06 stime=1575293864
+cmdline="keyctl06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl06.c:60: PASS: KEYCTL_READ returned full count but didn't overrun the buffer
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl07 stime=1575293864
+cmdline="keyctl07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl07.c:62: INFO: trying to read from the negative key...
+keyctl07.c:73: PASS: KEYCTL_READ on negative key expectedly failed with ENOKEY
+keyctl07.c:88: PASS: didn't crash while reading from negative key
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=keyctl08 stime=1575293864
+cmdline="keyctl08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+keyctl08.c:22: PASS: Denied access to .builtin_trusted_keys
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kcmp01 stime=1575293864
+cmdline="kcmp01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+kcmp01.c:86: PASS: kcmp() returned the expected value
+kcmp01.c:86: PASS: kcmp() returned the expected value
+kcmp01.c:86: PASS: kcmp() returned the expected value
+kcmp01.c:86: PASS: kcmp() returned the expected value
+kcmp01.c:86: PASS: kcmp() returned the expected value
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kcmp02 stime=1575293864
+cmdline="kcmp02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+kcmp02.c:83: PASS: kcmp() returned the expected value: ESRCH (3)
+kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
+kcmp02.c:83: PASS: kcmp() returned the expected value: EBADF (9)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=kcmp03 stime=1575293864
+cmdline="kcmp03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+kcmp03.c:64: PASS: kcmp() returned the expected value
+kcmp03.c:64: PASS: kcmp() returned the expected value
+kcmp03.c:64: PASS: kcmp() returned the expected value
+kcmp03.c:64: PASS: kcmp() returned the expected value
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill01 stime=1575293864
+cmdline="kill01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill01      1  TPASS  :  received expected signal 9
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill02 stime=1575293864
+cmdline="kill02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill02      1  TPASS  :  The signal was sent to all processes in the process group.
+kill02      2  TPASS  :  The signal was not sent to selective processes that were not in the process group.
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill03 stime=1575293874
+cmdline="kill03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill03      1  TPASS  :  errno set to 22 : Invalid argument, as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=kill04 stime=1575293874
+cmdline="kill04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill04      1  TPASS  :  errno set to 3 : No such process, as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill05 stime=1575293874
+cmdline="kill05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill failed with EPERM
+kill05      1  TPASS  :  received expected errno(EPERM)
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill06 stime=1575293875
+cmdline="kill06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill06      1  TPASS  :  received expected signal 9
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill07 stime=1575293875
+cmdline="kill07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill07      0  TINFO  :  received expected signal 9
+kill07      1  TPASS  :  Did not catch signal as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=kill08 stime=1575293876
+cmdline="kill08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill08      1  TPASS  :  received expected signal 9
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill09 stime=1575293876
+cmdline="kill09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill09      1  TPASS  :  kill(22870, SIGKILL) returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill10 stime=1575293876
+cmdline="kill10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+22872: All 10 children reported in
+22873: All 10 children reported in
+kill10      1  TPASS  :  All 2 pgrps received their signals
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=kill11 stime=1575293877
+cmdline="kill11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill11      0  TINFO  :  Adjusting RLIMIT_CORE to 1048576
+kill11      1  TPASS  :  signal SIGHUP          
+kill11      2  TPASS  :  signal SIGINT          
+kill11      3  TPASS  :  signal SIGQUIT          dumped core
+kill11      4  TPASS  :  signal SIGILL           dumped core
+kill11      5  TPASS  :  signal SIGTRAP          dumped core
+kill11      6  TPASS  :  signal SIGIOT/SIGABRT   dumped core
+kill11      7  TPASS  :  signal SIGIOT/SIGABRT   dumped core
+kill11      8  TPASS  :  signal SIGBUS           dumped core
+kill11      9  TPASS  :  signal SIGFPE           dumped core
+kill11     10  TPASS  :  signal SIGKILL         
+kill11     11  TPASS  :  signal SIGUSR1         
+kill11     12  TPASS  :  signal SIGSEGV          dumped core
+kill11     13  TPASS  :  signal SIGUSR2         
+kill11     14  TPASS  :  signal SIGPIPE         
+kill11     15  TPASS  :  signal SIGALRM         
+kill11     16  TPASS  :  signal SIGTERM         
+kill11     17  TPASS  :  signal SIGXCPU          dumped core
+kill11     18  TPASS  :  signal SIGXFSZ          dumped core
+kill11     19  TPASS  :  signal SIGVTALRM       
+kill11     20  TPASS  :  signal SIGPROF         
+kill11     21  TPASS  :  signal SIGIO/SIGPOLL   
+kill11     22  TPASS  :  signal SIGPWR          
+kill11     23  TPASS  :  signal SIGSYS/SIGUNUSED dumped core
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=kill12 stime=1575293877
+cmdline="kill12"
+contacts=""
+analysis=exit
+<<<test_output>>>
+kill12      1  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown01 stime=1575293877
+cmdline="lchown01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lchown01    1  TPASS  :  lchown() succeeds to Change Owner/Group ids of slink_file
+lchown01    2  TPASS  :  lchown() succeeds to Change Owner id only of slink_file
+lchown01    3  TPASS  :  lchown() succeeds to Change Owner/Group ids of slink_file
+lchown01    4  TPASS  :  lchown() succeeds to Change Group id only of slink_file
+lchown01    5  TPASS  :  lchown() succeeds to Change Group/Group ids of slink_file
+lchown01    6  TPASS  :  lchown() succeeds to Change none of slink_file
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown01_16 stime=1575293877
+cmdline="lchown01_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lchown01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
+lchown01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown02 stime=1575293877
+cmdline=" lchown02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lchown02    1  TPASS  :  lchown(2) fails, Process is not owner/root, errno:1
+lchown02    2  TPASS  :  lchown(2) fails, Search permission denied, errno:13
+lchown02    3  TPASS  :  lchown(2) fails, Unaccessible address space, errno:14
+lchown02    4  TPASS  :  lchown(2) fails, Pathname too long, errno:36
+lchown02    5  TPASS  :  lchown(2) fails, Path contains regular file, errno:20
+lchown02    6  TPASS  :  lchown(2) fails, Pathname is empty, errno:2
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown03 stime=1575293877
+cmdline=" lchown03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+lchown03    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+lchown03    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+lchown03    1  TPASS  :  lchown() failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+lchown03    2  TPASS  :  lchown() failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown02_16 stime=1575293877
+cmdline="lchown02_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lchown02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
+lchown02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=lchown03_16 stime=1575293877
+cmdline="lchown03_16"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+lchown03_16    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+lchown03_16    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+lchown03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
+lchown03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=lgetxattr01 stime=1575293878
+cmdline="lgetxattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lgetxattr01.c:77: PASS: lgetxattr() got expected value
+lgetxattr01.c:90: PASS: lgetxattr() failed as expected: ENODATA (61)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lgetxattr02 stime=1575293878
+cmdline="lgetxattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lgetxattr02.c:63: PASS: lgetxattr() failed as expected: ENODATA (61)
+lgetxattr02.c:63: PASS: lgetxattr() failed as expected: ERANGE (34)
+lgetxattr02.c:63: PASS: lgetxattr() failed as expected: EFAULT (14)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link01 stime=1575293878
+cmdline="symlink01 -T link01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link01      1  TPASS  :  link(2) to a symbolic link, which is pointing to an existing object file worked - file created and link count adjusted
+link01      2  TPASS  :  link(2) to a symbolic link, which is pointing to a non-existing object file worked ok - file created and link count adjusted.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link02 stime=1575293878
+cmdline="link02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link02      1  TPASS  :  link(oldpath,newpath) returned 0 and link counts match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=link03 stime=1575293878
+cmdline="link03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link03      1  TPASS  :  link() passed and linkcounts=10 match
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link04 stime=1575293878
+cmdline="link04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link04      1  TPASS  :  link(<non-existent file>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04      2  TPASS  :  link(<path is empty string>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04      3  TPASS  :  link(<path contains a non-existent file>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04      4  TPASS  :  link(<path contains a regular file>, <nefile>): TEST_ERRNO=ENOTDIR(20): Not a directory
+link04      5  TPASS  :  link(<pathname too long>, <nefile>): TEST_ERRNO=ENAMETOOLONG(36): File name too long
+link04      6  TPASS  :  link(<invalid address>, <nefile>): TEST_ERRNO=EFAULT(14): Bad address
+link04      7  TPASS  :  link(<regfile>, <empty string>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04      8  TPASS  :  link(<regfile>, <path contains a non-existent file>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04      9  TPASS  :  link(<regfile>, <path contains a regular file>): TEST_ERRNO=ENOENT(2): No such file or directory
+link04     10  TPASS  :  link(<regfile>, <pathname too long>): TEST_ERRNO=ENAMETOOLONG(36): File name too long
+link04     11  TPASS  :  link(<regfile>, <invalid address>): TEST_ERRNO=EFAULT(14): Bad address
+link04     12  TPASS  :  link(<regfile>, <regfile2>): TEST_ERRNO=EEXIST(17): File exists
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link05 stime=1575293878
+cmdline="link05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link05      1  TPASS  :  link(lkfile_22960, lkfile_22960[1-1000]) ret 0 for 1000 files,stat linkcounts match 1000
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=link06 stime=1575293878
+cmdline="link06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link06      1  TPASS  :  link() fails with expected error EACCES errno:13
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=link07 stime=1575293878
+cmdline="link07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+link07      1  TPASS  :  link() fails with expected error: TEST_ERRNO=EACCES(13): Permission denied
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=link08 stime=1575293878
+cmdline="link08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+link08.c:59: PASS: link() failed as expected: EPERM (1)
+link08.c:59: PASS: link() failed as expected: EXDEV (18)
+link08.c:59: PASS: link() failed as expected: EROFS (30)
+link08.c:59: PASS: link() failed as expected: ELOOP (40)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=linkat01 stime=1575293878
+cmdline="linkat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+linkat01    1  TPASS  :  linkat is functionality correct
+linkat01    2  TPASS  :  linkat succeeded as expected
+linkat01    3  TPASS  :  linkat is functionality correct
+linkat01    4  TPASS  :  linkat is functionality correct
+linkat01    5  TPASS  :  linkat is functionality correct
+linkat01    6  TPASS  :  linkat succeeded as expected
+linkat01    7  TPASS  :  linkat is functionality correct
+linkat01    8  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
+linkat01    9  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
+linkat01   10  TPASS  :  linkat succeeded as expected
+linkat01   11  TPASS  :  linkat is functionality correct
+linkat01   12  TPASS  :  linkat failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+linkat01   13  TPASS  :  linkat failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+linkat01   14  TPASS  :  linkat succeeded as expected
+linkat01   15  TPASS  :  linkat is functionality correct
+linkat01   16  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
+linkat01   17  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
+linkat01   18  TPASS  :  linkat succeeded as expected
+linkat01   19  TPASS  :  linkat is functionality correct
+linkat01   20  TPASS  :  linkat failed as expected: TEST_ERRNO=EXDEV(18): Invalid cross-device link
+linkat01   21  TPASS  :  linkat failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+linkat01   22  TPASS  :  linkat failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=linkat02 stime=1575293878
+cmdline="linkat02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+linkat02    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+linkat02    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+linkat02    0  TINFO  :  Failed reach the hardlinks limit
+linkat02    1  TPASS  :  linkat failed as expected: TEST_ERRNO=ENAMETOOLONG(36): File name too long
+linkat02    2  TPASS  :  linkat failed as expected: TEST_ERRNO=ENAMETOOLONG(36): File name too long
+linkat02    3  TPASS  :  linkat failed as expected: TEST_ERRNO=EEXIST(17): File exists
+linkat02    4  TPASS  :  linkat failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+linkat02    5  TPASS  :  linkat failed as expected: TEST_ERRNO=EACCES(13): Permission denied
+linkat02    6  TPASS  :  linkat failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+linkat02    7  TCONF  :  linkat02.c:108: EMLINK test is not appropriate
+<<<execution_status>>>
+initiation_status="ok"
+duration=4 termination_type=exited termination_id=0 corefile=no
+cutime=15 cstime=352
+<<<test_end>>>
+<<<test_start>>>
+tag=listen01 stime=1575293882
+cmdline="listen01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+listen01    1  TPASS  :  bad file descriptor successful
+listen01    2  TPASS  :  not a socket successful
+listen01    3  TPASS  :  UDP listen successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=listxattr01 stime=1575293882
+cmdline="listxattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+listxattr01.c:63: PASS: listxattr() succeeded
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=listxattr02 stime=1575293882
+cmdline="listxattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+listxattr02.c:73: PASS: listxattr() failed as expected: ERANGE (34)
+listxattr02.c:73: PASS: listxattr() failed as expected: ENOENT (2)
+listxattr02.c:73: PASS: listxattr() failed as expected: EFAULT (14)
+listxattr02.c:73: PASS: listxattr() failed as expected: ENAMETOOLONG (36)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=listxattr03 stime=1575293882
+cmdline="listxattr03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+listxattr03.c:54: PASS: listxattr() succeed with suitable buffer
+listxattr03.c:54: PASS: listxattr() succeed with suitable buffer
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=llistxattr01 stime=1575293882
+cmdline="llistxattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+llistxattr01.c:71: PASS: llistxattr() succeeded
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=llistxattr02 stime=1575293882
+cmdline="llistxattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+llistxattr02.c:74: PASS: llistxattr() failed as expected: ERANGE (34)
+llistxattr02.c:74: PASS: llistxattr() failed as expected: ENOENT (2)
+llistxattr02.c:74: PASS: llistxattr() failed as expected: EFAULT (14)
+llistxattr02.c:74: PASS: llistxattr() failed as expected: ENAMETOOLONG (36)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=llistxattr03 stime=1575293882
+cmdline="llistxattr03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+llistxattr03.c:55: PASS: llistxattr() succeed with suitable buffer
+llistxattr03.c:55: PASS: llistxattr() succeed with suitable buffer
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=llseek01 stime=1575293882
+cmdline="llseek01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+llseek01    1  TPASS  :  Functionality of llseek() on tmp_file successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=llseek02 stime=1575293882
+cmdline="llseek02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+llseek02    1  TPASS  :  llseek() fails, 'whence' argument is not valid, errno:22
+llseek02    2  TPASS  :  llseek() fails, 'fd' is not an open file descriptor, errno:9
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=llseek03 stime=1575293882
+cmdline="llseek03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+llseek03    1  TPASS  :  test SEEK_SET for llseek success
+llseek03    2  TPASS  :  test SEEK_END for llseek success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lremovexattr01 stime=1575293882
+cmdline="lremovexattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:115: CONF: symlink() not supported
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:115: CONF: symlink() not supported
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
+
+Summary:
+passed   6
+failed   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=7 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=219
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek01 stime=1575293889
+cmdline="lseek01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lseek01.c:67: PASS: lseek(tfile, 4, SEEK_SET) read correct data
+lseek01.c:67: PASS: lseek(tfile, -2, SEEK_CUR) read correct data
+lseek01.c:67: PASS: lseek(tfile, -4, SEEK_END) read correct data
+lseek01.c:67: PASS: lseek(tfile, 0, SEEK_END) read correct data
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek02 stime=1575293889
+cmdline="lseek02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lseek02.c:65: PASS: lseek(-1, 1, 0) failed as expected: EBADF (9)
+lseek02.c:65: PASS: lseek(-1, 1, 1) failed as expected: EBADF (9)
+lseek02.c:65: PASS: lseek(-1, 1, 2) failed as expected: EBADF (9)
+lseek02.c:65: PASS: lseek(7, 1, 5) failed as expected: EINVAL (22)
+lseek02.c:65: PASS: lseek(7, 1, -1) failed as expected: EINVAL (22)
+lseek02.c:65: PASS: lseek(7, 1, 7) failed as expected: EINVAL (22)
+lseek02.c:65: PASS: lseek(8, 1, 0) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(8, 1, 1) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(8, 1, 2) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(9, 1, 0) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(9, 1, 1) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(9, 1, 2) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(11, 1, 0) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(11, 1, 1) failed as expected: ESPIPE (29)
+lseek02.c:65: PASS: lseek(11, 1, 2) failed as expected: ESPIPE (29)
+
+Summary:
+passed   15
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek07 stime=1575293889
+cmdline="lseek07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lseek07.c:70: PASS: lseek(tfile1, 7, SEEK_SET) wrote correct data abcdefgijk
+lseek07.c:70: PASS: lseek(tfile2, 2, SEEK_SET) wrote correct data abijkfg
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lseek11 stime=1575293889
+cmdline="lseek11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lseek11.c:162: INFO: The block size is 4096
+lseek11.c:212: PASS: The 0th test passed: SEEK_DATA from startblock 0 offset 0
+lseek11.c:212: PASS: The 1th test passed: SEEK_DATA from startblock 0 offset 4
+lseek11.c:212: PASS: The 2th test passed: SEEK_HOLE from startblock 0 offset 0
+lseek11.c:212: PASS: The 3th test passed: SEEK_HOLE from startblock 0 offset 4
+lseek11.c:212: PASS: The 4th test passed: SEEK_HOLE from startblock 1 offset 0
+lseek11.c:212: PASS: The 5th test passed: SEEK_HOLE from startblock 1 offset 128
+lseek11.c:212: PASS: The 6th test passed: SEEK_DATA from startblock 1 offset 0
+lseek11.c:212: PASS: The 7th test passed: SEEK_DATA from startblock 10 offset -1
+lseek11.c:212: PASS: The 8th test passed: SEEK_DATA from startblock 10 offset 0
+lseek11.c:212: PASS: The 9th test passed: SEEK_DATA from startblock 10 offset 4
+lseek11.c:212: PASS: The 10th test passed: SEEK_HOLE from startblock 10 offset 0
+lseek11.c:212: PASS: The 11th test passed: SEEK_HOLE from startblock 10 offset 4
+lseek11.c:212: PASS: The 12th test passed: SEEK_HOLE from startblock 11 offset 128
+lseek11.c:212: PASS: The 13th test passed: SEEK_DATA from startblock 11 offset 128
+lseek11.c:212: PASS: The 14th test passed: SEEK_HOLE from startblock 30 offset -128
+
+Summary:
+passed   15
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat01A stime=1575293890
+cmdline="symlink01 -T lstat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lstat01     1  TPASS  :  lstat(2) of symbolic link file which points to no object file is ok
+lstat01     2  TPASS  :  lstat(2) of symbolic link file which points at an object file is ok
+lstat01     3  TPASS  :  lstat(2) of object file returns object file inode information
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat01A_64 stime=1575293890
+cmdline="symlink01 -T lstat01_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+lstat01_64    1  TPASS  :  lstat(2) of symbolic link file which points to no object file is ok
+lstat01_64    2  TPASS  :  lstat(2) of symbolic link file which points at an object file is ok
+lstat01_64    3  TPASS  :  lstat(2) of object file returns object file inode information
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat01 stime=1575293890
+cmdline="lstat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lstat01.c:47: PASS: lstat() reported correct values for the symlink!
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat01_64 stime=1575293890
+cmdline="lstat01_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lstat01.c:47: PASS: lstat() reported correct values for the symlink!
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat02 stime=1575293890
+cmdline="lstat02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lstat02.c:72: PASS: lstat() failed as expected: EACCES (13)
+lstat02.c:72: PASS: lstat() failed as expected: ENOENT (2)
+lstat02.c:72: PASS: lstat() failed as expected: EFAULT (14)
+lstat02.c:72: PASS: lstat() failed as expected: ENAMETOOLONG (36)
+lstat02.c:72: PASS: lstat() failed as expected: ENOTDIR (20)
+lstat02.c:72: PASS: lstat() failed as expected: ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=lstat02_64 stime=1575293890
+cmdline="lstat02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+lstat02.c:72: PASS: lstat() failed as expected: EACCES (13)
+lstat02.c:72: PASS: lstat() failed as expected: ENOENT (2)
+lstat02.c:72: PASS: lstat() failed as expected: EFAULT (14)
+lstat02.c:72: PASS: lstat() failed as expected: ENAMETOOLONG (36)
+lstat02.c:72: PASS: lstat() failed as expected: ENOTDIR (20)
+lstat02.c:72: PASS: lstat() failed as expected: ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mallopt01 stime=1575293890
+cmdline="mallopt01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mallopt01    1  TPASS  :  mallinfo() succeeded
+mallopt01    2  TPASS  :  mallopt(M_MXFAST, 160) succeeded
+mallopt01    3  TPASS  :  mallopt(M_NLBLKS, 50) succeeded
+mallopt01    4  TPASS  :  malloc(1024) succeeded
+mallopt01    5  TPASS  :  mallopt(M_MXFAST, 0) succeeded
+mallopt01    6  TPASS  :  malloc(1024) succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mbind01 stime=1575293890
+cmdline="mbind01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mbind01.c:169: INFO: case MPOL_DEFAULT
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_DEFAULT (target exists)
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_BIND (no target)
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_BIND
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_INTERLEAVE (no target)
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_INTERLEAVE
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_PREFERRED (no target)
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_PREFERRED
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case UNKNOWN_POLICY
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_DEFAULT (invalid flags)
+mbind01.c:218: PASS: Test passed
+mbind01.c:169: INFO: case MPOL_PREFERRED (invalid nodemask)
+mbind01.c:218: PASS: Test passed
+
+Summary:
+passed   11
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=mbind02 stime=1575293890
+cmdline="mbind02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+mbind02.c:38: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mbind03 stime=1575293890
+cmdline="mbind03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+mbind03.c:35: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mbind04 stime=1575293890
+cmdline="mbind04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+mbind04.c:37: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=memset01 stime=1575293890
+cmdline="memset01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+memset01    1  TPASS  :  Test passed
+memset01    2  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=memcmp01 stime=1575293890
+cmdline="memcmp01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+memcmp1     1  TPASS  :  Test passed
+memcmp1     2  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=memcpy01 stime=1575293890
+cmdline="memcpy01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+memcpy1     1  TPASS  :  Test passed
+memcpy1     2  TPASS  :  Test passed
+memcpy1     3  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=migrate_pages01 stime=1575293890
+cmdline="migrate_pages01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+migrate_pages01    0  TINFO  :  test_empty_mask
+migrate_pages01    1  TPASS  :  expected ret success: returned value = 0
+migrate_pages01    0  TINFO  :  test_invalid_pid -1
+migrate_pages01    2  TPASS  :  expected ret success: returned value = -1
+migrate_pages01    3  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+migrate_pages01    0  TINFO  :  test_invalid_pid unused pid
+migrate_pages01    4  TPASS  :  expected ret success: returned value = -1
+migrate_pages01    5  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+migrate_pages01    0  TINFO  :  test_invalid_masksize
+migrate_pages01    6  TPASS  :  expected ret success: returned value = -1
+migrate_pages01    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+migrate_pages01    0  TINFO  :  test_invalid_mem -1
+migrate_pages01    8  TPASS  :  expected ret success: returned value = -1
+migrate_pages01    9  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+migrate_pages01    0  TINFO  :  test_invalid_mem invalid prot
+migrate_pages01   10  TPASS  :  expected ret success: returned value = -1
+migrate_pages01   11  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+migrate_pages01    0  TINFO  :  test_invalid_mem unmmaped
+migrate_pages01   12  TPASS  :  expected ret success: returned value = -1
+migrate_pages01   13  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+migrate_pages01    0  TINFO  :  test_invalid_nodes
+migrate_pages01   14  TPASS  :  expected ret success: returned value = -1
+migrate_pages01   15  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+migrate_pages01    0  TINFO  :  test_invalid_perm
+migrate_pages01   16  TPASS  :  expected ret success: returned value = -1
+migrate_pages01   17  TPASS  :  expected failure: TEST_ERRNO=EPERM(1): Operation not permitted
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=migrate_pages02 stime=1575293890
+cmdline="migrate_pages02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+migrate_pages02.c:280: CONF: at least 2 allowed NUMA nodes are required
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=migrate_pages03 stime=1575293890
+cmdline="migrate_pages03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+migrate_pages03.c:60: CONF: requires NUMA with at least 2 node
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlockall01 stime=1575293890
+cmdline="mlockall01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlockall01    1  TPASS  :  mlockall test passed for MCL_CURRENT
+mlockall01    2  TPASS  :  mlockall test passed for MCL_FUTURE
+mlockall01    3  TPASS  :  mlockall test passed for MCL_CURRENT|MCL_FUTURE
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mlockall02 stime=1575293890
+cmdline="mlockall02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlockall02    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
+mlockall02    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
+mlockall02    3  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlockall03 stime=1575293890
+cmdline="mlockall03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlockall03    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
+mlockall03    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
+mlockall03    3  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir02 stime=1575293890
+cmdline="mkdir02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mkdir02.c:55: PASS: New dir inherited GID and S_ISGID
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir03 stime=1575293890
+cmdline="mkdir03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mkdir03.c:62: PASS: mkdir() failed as expected: EFAULT (14)
+mkdir03.c:62: PASS: mkdir() failed as expected: ENAMETOOLONG (36)
+mkdir03.c:62: PASS: mkdir() failed as expected: EEXIST (17)
+mkdir03.c:62: PASS: mkdir() failed as expected: ENOENT (2)
+mkdir03.c:62: PASS: mkdir() failed as expected: ENOTDIR (20)
+mkdir03.c:62: PASS: mkdir() failed as expected: ELOOP (40)
+mkdir03.c:62: PASS: mkdir() failed as expected: EROFS (30)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir04 stime=1575293890
+cmdline="mkdir04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mkdir04.c:37: PASS: mkdir() failed expectedly: EACCES (13)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir05 stime=1575293890
+cmdline="mkdir05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mkdir05.c:45: PASS: mkdir() functionality is correct
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir05A stime=1575293890
+cmdline="symlink01 -T mkdir05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mkdir05     1  TPASS  :  mkdir(2) of object file through symbolic link file failed as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdir09 stime=1575293890
+cmdline="mkdir09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mkdir09     1  TPASS  :  PASS
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=0 corefile=no
+cutime=216 cstime=1283
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdirat01 stime=1575293900
+cmdline="mkdirat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mkdirat01    1  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mkdirat01    2  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mkdirat01    3  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mkdirat01    4  TPASS  :  mkdirat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
+mkdirat01    5  TPASS  :  mkdirat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mkdirat02 stime=1575293900
+cmdline="mkdirat02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mkdirat02.c:66: PASS: mkdirat() failed as expected: EROFS (30)
+mkdirat02.c:66: PASS: mkdirat() failed as expected: EROFS (30)
+mkdirat02.c:66: PASS: mkdirat() failed as expected: ELOOP (40)
+mkdirat02.c:66: PASS: mkdirat() failed as expected: ELOOP (40)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod01 stime=1575293900
+cmdline="mknod01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod01     1  TPASS  :  mknod(test_node, 0100777, 0) returned 0
+mknod01     2  TPASS  :  mknod(test_node, 010777, 0) returned 0
+mknod01     3  TPASS  :  mknod(test_node, 020777, 259) returned 0
+mknod01     4  TPASS  :  mknod(test_node, 060777, 0) returned 0
+mknod01     5  TPASS  :  mknod(test_node, 0104700, 0) returned 0
+mknod01     6  TPASS  :  mknod(test_node, 0102700, 0) returned 0
+mknod01     7  TPASS  :  mknod(test_node, 0106700, 0) returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod02 stime=1575293900
+cmdline="mknod02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod02     1  TPASS  :  Functionality of mknod(tnode_23219, 012777, 0) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod03 stime=1575293900
+cmdline="mknod03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod03     1  TPASS  :  Functionality of mknod(tnode_23220, 012777, 0) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod04 stime=1575293900
+cmdline="mknod04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod04     1  TPASS  :  Functionality of mknod(tnode_23221, 010777, 0) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod05 stime=1575293900
+cmdline="mknod05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod05     1  TPASS  :  Functionality of mknod(tnode_23222, 012777, 0) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod06 stime=1575293900
+cmdline="mknod06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod06     1  TPASS  :  mknod() fails, Specified node already exists, errno:17
+mknod06     2  TPASS  :  mknod() fails, Invalid address, errno:14
+mknod06     3  TPASS  :  mknod() fails, Non-existent file, errno:2
+mknod06     4  TPASS  :  mknod() fails, Pathname is empty, errno:2
+mknod06     5  TPASS  :  mknod() fails, Pathname too long, errno:36
+mknod06     6  TPASS  :  mknod() fails, Path contains regular file, errno:20
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod07 stime=1575293900
+cmdline="mknod07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+mknod07     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+mknod07     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mknod07     1  TPASS  :  mknod failed as expected: TEST_ERRNO=EACCES(13): Permission denied
+mknod07     2  TPASS  :  mknod failed as expected: TEST_ERRNO=EACCES(13): Permission denied
+mknod07     3  TPASS  :  mknod failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+mknod07     4  TPASS  :  mknod failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+mknod07     5  TPASS  :  mknod failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+mknod07     6  TPASS  :  mknod failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod08 stime=1575293900
+cmdline="mknod08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod08     1  TPASS  :  Functionality of mknod(tnode_23232, 010777, 0) successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mknod09 stime=1575293900
+cmdline="mknod09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknod09     1  TPASS  :  mknod() fails with expected error EINVAL errno:22
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknodat01 stime=1575293900
+cmdline="mknodat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mknodat01    1  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mknodat01    2  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+mknodat01    3  TPASS  :  mknodat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
+mknodat01    4  TPASS  :  mknodat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
+mknodat01    5  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mknodat02 stime=1575293900
+cmdline="mknodat02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+mknodat     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+mknodat     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mknodat     1  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+mknodat     2  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+mknodat     3  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+mknodat     4  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
+mknodat     5  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
+mknodat     6  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
+mknodat     7  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+mknodat     8  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+mknodat     9  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock01 stime=1575293901
+cmdline="mlock01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock01     1  TPASS  :  mlock passed
+mlock01     2  TPASS  :  mlock passed
+mlock01     3  TPASS  :  mlock passed
+mlock01     4  TPASS  :  mlock passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock02 stime=1575293901
+cmdline="mlock02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock02     1  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+mlock02     2  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+mlock02     3  TPASS  :  mlock failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock03 stime=1575293901
+cmdline="mlock03 -i 20"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
+mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
+mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
+mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
+mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
+mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
+mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
+mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
+mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
+mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
+mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
+mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
+mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
+mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
+mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
+mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
+mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
+mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
+mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
+mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
+mlock03     0  TINFO  :  starting stack size is 136
+mlock03     0  TINFO  :  final stack size is 136
+mlock03     1  TPASS  :  stack size is not decreased.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock04 stime=1575293901
+cmdline="mlock04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mlock04     0  TINFO  :  locked 40960 bytes from 0x7faa85c23000
+mlock04     1  TPASS  :  test succeeded.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock201 stime=1575293901
+cmdline="mlock201"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mlock201.c:128: PASS: mlock2(0) succeeded in locking 1 pages
+mlock201.c:128: PASS: mlock2(0) succeeded in locking 8 pages
+mlock201.c:128: PASS: mlock2(0) succeeded in locking 3 pages
+mlock201.c:128: PASS: mlock2(0) succeeded in locking 2 pages
+mlock201.c:128: PASS: mlock2(1) succeeded in locking 0 pages
+mlock201.c:128: PASS: mlock2(1) succeeded in locking 4 pages
+mlock201.c:128: PASS: mlock2(1) succeeded in locking 1 pages
+mlock201.c:128: PASS: mlock2(1) succeeded in locking 4 pages
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock202 stime=1575293901
+cmdline="mlock202"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mlock202.c:75: PASS: mlock2() failed as expected: EINVAL (22)
+mlock202.c:75: PASS: mlock2() failed as expected: ENOMEM (12)
+mlock202.c:75: PASS: mlock2() failed as expected: EPERM (1)
+mlock202.c:75: PASS: mlock2() failed as expected: ENOMEM (12)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mlock203 stime=1575293901
+cmdline="mlock203"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
+mlock203.c:66: PASS: Locking one memory again didn't increased VmLck
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=qmm01 stime=1575293901
+cmdline="mmap001 -m 1"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap001     0  TINFO  :  mmap()ing file of 1 pages or 4096 bytes
+mmap001     1  TPASS  :  mmap() completed successfully.
+mmap001     0  TINFO  :  touching mmaped memory
+mmap001     2  TPASS  :  we're still here, mmaped area must be good
+mmap001     3  TPASS  :  synchronizing mmapped page passed
+mmap001     4  TPASS  :  munmapping testfile.23250 successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap01 stime=1575293901
+cmdline="mmap01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap01      1  TPASS  :  Functionality of mmap() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap02 stime=1575293901
+cmdline="mmap02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap02      1  TPASS  :  Functionality of mmap() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap03 stime=1575293901
+cmdline="mmap03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap03      1  TPASS  :  mmap() functionality is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap04 stime=1575293901
+cmdline="mmap04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap04      1  TPASS  :  Functionality of mmap() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap05 stime=1575293901
+cmdline="mmap05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap05      1  TPASS  :  Got SIGSEGV as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap06 stime=1575293901
+cmdline="mmap06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap06      1  TPASS  :  mmap failed with EACCES
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap07 stime=1575293901
+cmdline="mmap07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap07      1  TPASS  :  mmap failed with EACCES
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=mmap08 stime=1575293901
+cmdline="mmap08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mmap08      1  TPASS  :  mmap failed with EBADF
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20190930-35-gb8aebc835
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20190930-35-gb8aebc835
+       ###############################################################
+
