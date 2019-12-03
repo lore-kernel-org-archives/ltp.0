@@ -1,9 +1,8 @@
 From: kernel test robot <rong.a.chen@intel.com>
-Date: Tue, 3 Dec 2019 17:18:59 +0800
-Subject: [LTP] [fs] 53d4a4300b:
- WARNING:at_fs/overlayfs/copy_up.c:#ovl_copy_up_inode[overlay]
-In-Reply-To: <1575148868.5563.30.camel@HansenPartnership.com>
-Message-ID: <20191203091859.GT18573@shao2-debian>
+Date: Tue, 3 Dec 2019 17:20:37 +0800
+Subject: [LTP] [f*xattr] f4cecda4a3: ltp.open13.fail
+In-Reply-To: <20191128155940.17530-8-mszeredi@redhat.com>
+Message-ID: <20191203092037.GU18573@shao2-debian>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,16 +11,16 @@ To: ltp@lists.linux.it
 
 FYI, we noticed the following commit (built with gcc-7):
 
-commit: 53d4a4300b82c4156da46eab01a8dd4e65a46491 ("[PATCH 1/1] fs: rethread notify_change to take a path instead of a dentry")
-url: https://github.com/0day-ci/linux/commits/James-Bottomley/preparatory-patch-for-a-uid-gid-shifting-bind-mount/20191201-052453
+commit: f4cecda4a319b68a7ea940b27d5ffc6503a5208b ("[PATCH 07/12] f*xattr: allow O_PATH descriptors")
+url: https://github.com/0day-ci/linux/commits/Miklos-Szeredi/various-vfs-patches/20191129-023329
 
 
 in testcase: ltp
 with following parameters:
 
 	disk: 1HDD
-	fs: btrfs
-	test: syscalls_part2
+	fs: ext4
+	test: syscalls_part4
 
 test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
 test-url: http://linux-test-project.github.io/
@@ -32,99 +31,134 @@ on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
 caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
 
-+---------------------------------------------------------------+------------+------------+
-|                                                               | a6ed68d646 | 53d4a4300b |
-+---------------------------------------------------------------+------------+------------+
-| boot_successes                                                | 42         | 5          |
-| boot_failures                                                 | 0          | 8          |
-| WARNING:at_fs/overlayfs/copy_up.c:#ovl_copy_up_inode[overlay] | 0          | 8          |
-| RIP:ovl_copy_up_inode[overlay]                                | 0          | 8          |
-+---------------------------------------------------------------+------------+------------+
-
-
 If you fix the issue, kindly add following tag
 Reported-by: kernel test robot <rong.a.chen@intel.com>
 
+2019-12-03 11:38:05 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2019-12-03 11:38:05 ./runltp -f syscalls_part4 -d /fs/vda/tmpdir
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
 
-[  578.985285] WARNING: CPU: 0 PID: 5270 at fs/overlayfs/copy_up.c:455 ovl_copy_up_inode+0x16f/0x180 [overlay]
-[  578.986017] ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-[  578.986019] 
-[  578.988494] Modules linked in: overlay ext4 mbcache jbd2 tun xfs loop btrfs xor zstd_decompress zstd_compress raid6_pq libcrc32c dm_mod intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm sr_mod drm_kms_helper cdrom sg ata_generic pata_acpi syscopyarea sysfillrect ppdev sysimgblt fb_sys_fops drm snd_pcm aesni_intel crypto_simd snd_timer cryptd glue_helper snd soundcore pcspkr joydev ata_piix serio_raw libata i2c_piix4 parport_pc floppy parport ip_tables
-[  578.992500] ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-[  578.992501] 
-[  579.002619] CPU: 0 PID: 5270 Comm: inotify07 Not tainted 5.4.0-08748-g53d4a4300b82c #2
-[  579.002619] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
-[  579.002625] RIP: 0010:ovl_copy_up_inode+0x16f/0x180 [overlay]
-[  579.002627] Code: ff ff 85 c0 0f 84 4d ff ff ff eb a5 4c 8d 64 24 28 48 8b 73 58 4c 89 e7 e8 be f8 ff ff 85 c0 0f 85 74 ff ff ff e9 63 ff ff ff <0f> 0b b8 fb ff ff ff e9 7b ff ff ff e8 b0 f6 b5 ee 66 66 66 66 90
-[  579.009864] ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-[  579.009866] 
-[  579.010638] RSP: 0018:ffffab27c0327958 EFLAGS: 00010206
-[  579.010639] RAX: 0000000000008000 RBX: ffffab27c0327a90 RCX: 00000000000081a4
-[  579.010640] RDX: 000000000000001c RSI: ffffab27c0327960 RDI: ffff98f9d6812e40
-[  579.010641] RBP: ffff98f9ecb92600 R08: 0000000000000000 R09: 0000000100043f23
-[  579.010641] R10: ffffab27c0327860 R11: ffff98f9d55b4000 R12: ffffab27c0327a90
-[  579.010642] R13: ffff98f9c648f6c0 R14: 00000000ecb92600 R15: 0000000000000000
-[  579.010643] FS:  00007fe8e8403500(0000) GS:ffff98fa7fc00000(0000) knlGS:0000000000000000
-[  579.015105] ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-[  579.015106] 
-[  579.018993] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  579.018994] CR2: 0000558a8a903840 CR3: 0000000195090000 CR4: 00000000000406f0
-[  579.018997] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  579.018998] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  579.018999] Call Trace:
-[  579.023287] ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-[  579.023289] 
-[  579.024174]  ovl_copy_up_one+0x80c/0xf40 [overlay]
-[  579.024178]  ? __d_lookup_done+0x7e/0x100
-[  579.027460] ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty59
-[  579.027462] 
-[  579.028091]  ? ext4_xattr_get+0x95/0x2d0 [ext4]
-[  579.030043] 
-[  579.031918]  ovl_copy_up_flags+0xac/0xf0 [overlay]
-[  579.031921]  ? ovl_llseek+0x110/0x110 [overlay]
-[  579.035137] ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty6
-[  579.035139] 
-[  579.035850]  ovl_maybe_copy_up+0x79/0xa0 [overlay]
-[  579.035853]  ovl_open+0x25/0x80 [overlay]
-[  579.035857]  do_dentry_open+0x1ce/0x380
-[  579.040211] ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-[  579.040212] 
-[  579.040979]  path_openat+0x2e5/0x1550
-[  579.044772] ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-[  579.044774] 
-[  579.044837]  do_filp_open+0x9b/0x110
-[  579.049101] ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-[  579.049103] 
-[  579.050042]  ? __check_object_size+0xd4/0x1a0
-[  579.050045]  ? do_sys_open+0x1bd/0x250
-[  579.053467] ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-[  579.053469] 
-[  579.054093]  do_sys_open+0x1bd/0x250
-[  579.057723] ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-[  579.057725] 
-[  579.058355]  do_syscall_64+0x5b/0x1f0
-[  579.058358]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  579.060704] ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty6
-[  579.060707] 
-[  579.060889] RIP: 0033:0x7fe8e7f246f0
-[  579.062386] 
-[  579.064109] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 83 3d 19 30 2c 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 fe 9d 01 00 48 89 04 24
-[  579.064110] RSP: 002b:00007ffc1f798318 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-[  579.064112] RAX: ffffffffffffffda RBX: 0000558a8a6f0f40 RCX: 00007fe8e7f246f0
-[  579.064112] RDX: 00000000000001b6 RSI: 0000000000000041 RDI: 0000558a8a6f0f40
-[  579.064113] RBP: 0000558a8a6f1135 R08: 00000000000001a4 R09: 0000000000000000
-[  579.064113] R10: 0000000000000075 R11: 0000000000000246 R12: 000000000000004e
-[  579.064115] R13: 00000000000001a4 R14: 0000000000000000 R15: 0000000000000000
-[  579.066448] ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty60
-[  579.066450] 
-[  579.066610] ---[ end trace 1eae0e213285ea20 ]---
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+/etc/os-release
+PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+NAME="Debian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+uname:
+Linux vm-snb-4c35425f2f89 5.4.0-08754-gf4cecda4a319b #1 SMP Tue Dec 3 11:10:31 CST 2019 x86_64 GNU/Linux
+
+/proc/cmdline
+ip=::::vm-snb-4c35425f2f89::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-4c35425f2f89/ltp-1HDD-ext4-syscalls_part4-debian-x86_64-2019-09-23.cgz-f4cecda4a319b-20191203-4709-j221ir-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2019120121 commit=f4cecda4a319b68a7ea940b27d5ffc6503a5208b BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/vmlinuz-5.4.0-08754-gf4cecda4a319b max_uptime=3600 RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls_part4/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/3 LKP_SERVER=inn debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw rcuperf.shutdown=0 watchdog_thresh=60
+
+Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+Clang                 
+Gnu make               4.1
+util-linux             2.29.2
+mount                  linux 2.29.2 (libmount 2.29.2: selinux, btrfs, assert, debug)
+modutils               23
+e2fsprogs              1.43.4
+Linux C Library        > libc.2.24
+Dynamic linker (ldd)   2.24
+Procps                 3.3.12
+Net-tools              2.10-alpha
+iproute2               iproute2-ss161212
+iputils                iputils-s20161105
+Kbd                    116:
+Sh-utils               8.26
+Modules Loaded         ext4 mbcache jbd2 dm_mod sr_mod cdrom sg intel_rapl_msr ata_generic pata_acpi intel_rapl_common ppdev crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm drm_kms_helper snd_pcm syscopyarea sysfillrect sysimgblt snd_timer fb_sys_fops aesni_intel crypto_simd snd drm joydev cryptd glue_helper soundcore ata_piix serio_raw pcspkr libata i2c_piix4 floppy parport_pc parport ip_tables
+
+free reports:
+              total        used        free      shared  buff/cache   available
+Mem:        8149356      275916     5701796       11744     2171644     5591140
+Swap:             0           0           0
+
+cpuinfo:
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    1
+Socket(s):             2
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 42
+Model name:            Intel Xeon E312xx (Sandy Bridge)
+Stepping:              1
+CPU MHz:               2194.916
+BogoMIPS:              4389.83
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              4096K
+L3 cache:              16384K
+NUMA node0 CPU(s):     0,1
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx hypervisor lahf_lm cpuid_fault pti xsaveopt arat
+
+AppArmor disabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2234     -n 2234 -p -f /fs/vda/tmpdir/ltp-gUqxS8PHSD/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_03-11h_38m_05s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_03-11h_38m_05s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.tconf
+Running tests.......
+....
+<<<test_start>>>
+tag=open13 stime=1575344302
+cmdline="open13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open13      1  TPASS  :  read(2) failed with EBADF
+open13      2  TPASS  :  write(2) failed with EBADF
+open13      3  TPASS  :  fchmod(2) failed with EBADF
+open13      4  TPASS  :  fchown(2) failed with EBADF
+open13      5  TFAIL  :  open13.c:155: fgetxattr(2) failed unexpectedly, expected EBADF: TEST_ERRNO=EOPNOTSUPP(95): Operation not supported
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+...
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20190930-35-gb8aebc835
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20190930-35-gb8aebc835
+       ###############################################################
+
+
 
 
 To reproduce:
 
         # build kernel
 	cd linux
-	cp config-5.4.0-08748-g53d4a4300b82c .config
+	cp config-5.4.0-08754-gf4cecda4a319b .config
 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage modules
 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 INSTALL_MOD_PATH=<mod-install-dir> modules_install
 	cd <mod-install-dir>
@@ -5960,7 +5994,7 @@ CONFIG_USB_SERIAL_SAFE=m
 CONFIG_USB_SERIAL_SAFE_PADDED=y
 CONFIG_USB_SERIAL_SIERRAWIRELESS=m
 CONFIG_USB_SERIAL_SYMBOL=m
-CONFIG_USB_SERIAL_TI=m
+# CONFIG_USB_SERIAL_TI is not set
 CONFIG_USB_SERIAL_CYBERJACK=m
 CONFIG_USB_SERIAL_XIRCOM=m
 CONFIG_USB_SERIAL_WWAN=m
@@ -8364,18 +8398,18 @@ export_top_env()
 	export testcase='ltp'
 	export category='functional'
 	export need_modules=true
-	export need_memory='4G'
-	export job_origin='/lkp/lkp/.src-20191201-135720/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part2.yaml'
+	export need_memory='3G'
+	export job_origin='/lkp/lkp/.src-20191201-135720/allot/cyclic:vm-p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part1.yaml'
 	export queue_cmdline_keys='branch
 commit
 queue_at_least_once'
 	export queue='validate'
-	export testbox='vm-snb-63c0fb4af38e'
+	export testbox='vm-snb-4c35425f2f89'
 	export tbox_group='vm-snb'
 	export nr_vm=64
-	export submit_id='5de50ee7dca3ab2ee9b677e0'
-	export job_file='/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml'
-	export id='82d3c2d1d79e3272771380e70ddf6c85ecdac193'
+	export submit_id='5de5d83787eef3126514f3ba'
+	export job_file='/lkp/jobs/scheduled/vm-snb-4c35425f2f89/ltp-1HDD-ext4-syscalls_part4-debian-x86_64-2019-09-23.cgz-f4cecda4a319b-20191203-4709-j221ir-3.yaml'
+	export id='84c2ab037159a67a0fba2aa6e0ebdc9199611a9e'
 	export queuer_version='/lkp-src'
 	export arch='x86_64'
 	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
@@ -8397,34 +8431,34 @@ CONFIG_CAN_VCAN=m
 CONFIG_IPV6_VTI=m
 CONFIG_MINIX_FS=m
 CONFIG_KVM_GUEST=y
-CONFIG_BTRFS_FS'
-	export commit='53d4a4300b82c4156da46eab01a8dd4e65a46491'
+CONFIG_EXT4_FS'
+	export commit='f4cecda4a319b68a7ea940b27d5ffc6503a5208b'
 	export ssh_base_port=23032
 	export kconfig='x86_64-rhel-7.6'
 	export compiler='gcc-7'
 	export rootfs='debian-x86_64-2019-09-23.cgz'
-	export enqueue_time='2019-12-02 21:17:35 +0800'
-	export _id='5de50ef1dca3ab2ee9b677e1'
-	export _rt='/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491'
+	export enqueue_time='2019-12-03 11:36:28 +0800'
+	export _id='5de5d83c87eef3126514f3bb'
+	export _rt='/result/ltp/1HDD-ext4-syscalls_part4/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b'
 	export user='lkp'
 	export head_commit='89f46f92d02f8fb46a1041c604579973c591a39e'
 	export base_commit='219d54332a09e8d8741c1e1982f5eae56099de85'
 	export branch='linux-devel/devel-hourly-2019120121'
-	export result_root='/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3'
-	export scheduler_version='/lkp/lkp/.src-20191202-143357'
+	export result_root='/result/ltp/1HDD-ext4-syscalls_part4/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/3'
+	export scheduler_version='/lkp/lkp/.src-20191203-104559'
 	export LKP_SERVER='inn'
 	export max_uptime=3600
 	export initrd='/osimage/debian/debian-x86_64-2019-09-23.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml
+job=/lkp/jobs/scheduled/vm-snb-4c35425f2f89/ltp-1HDD-ext4-syscalls_part4-debian-x86_64-2019-09-23.cgz-f4cecda4a319b-20191203-4709-j221ir-3.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-7.6
 branch=linux-devel/devel-hourly-2019120121
-commit=53d4a4300b82c4156da46eab01a8dd4e65a46491
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c
+commit=f4cecda4a319b68a7ea940b27d5ffc6503a5208b
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/vmlinuz-5.4.0-08754-gf4cecda4a319b
 max_uptime=3600
-RESULT_ROOT=/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3
+RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls_part4/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/3
 LKP_SERVER=inn
 debug
 apic=debug
@@ -8446,7 +8480,7 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/modules.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/modules.cgz'
 	export bm_initrd='/osimage/deps/debian-x86_64-2018-04-03.cgz/run-ipconfig_2018-04-03.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/lkp_2019-08-05.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/rsync-rootfs_2018-04-03.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/fs_2019-10-10.cgz,/osimage/deps/debian-x86_64-2018-04-03.cgz/ltp_2019-10-10.cgz,/osimage/pkg/debian-x86_64-2018-04-03.cgz/ltp-x86_64-dc6156b-1_2019-10-18.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
@@ -8455,9 +8489,9 @@ rw'
 	export repeat_to=4
 	export schedule_notify_address=
 	export queue_at_least_once=1
-	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c'
-	export dequeue_time='2019-12-02 21:18:15 +0800'
-	export job_initrd='/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/vmlinuz-5.4.0-08754-gf4cecda4a319b'
+	export dequeue_time='2019-12-03 11:36:39 +0800'
+	export job_initrd='/lkp/jobs/scheduled/vm-snb-4c35425f2f89/ltp-1HDD-ext4-syscalls_part4-debian-x86_64-2019-09-23.cgz-f4cecda4a319b-20191203-4709-j221ir-3.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -8475,7 +8509,7 @@ run_job()
 
 	run_setup nr_hdd=1 $LKP_SRC/setup/disk
 
-	run_setup fs='btrfs' $LKP_SRC/setup/fs
+	run_setup fs='ext4' $LKP_SRC/setup/fs
 
 	run_monitor $LKP_SRC/monitors/wrapper kmsg
 	run_monitor $LKP_SRC/monitors/wrapper heartbeat
@@ -8483,7 +8517,7 @@ run_job()
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='syscalls_part2' $LKP_SRC/tests/wrapper ltp
+	run_test test='syscalls_part4' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -8508,12 +8542,12 @@ extract_stats()
 A non-text attachment was scrubbed...
 Name: dmesg.xz
 Type: application/x-xz
-Size: 79276 bytes
+Size: 107448 bytes
 Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191203/132c439c/attachment-0001.xz>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191203/7ddcacbe/attachment-0001.xz>
 -------------- next part --------------
-2019-12-02 21:19:26 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
-2019-12-02 21:19:26 ./runltp -f syscalls_part2 -d /fs/vda/tmpdir
+2019-12-03 11:38:05 ln -sf /usr/bin/genisoimage /usr/bin/mkisofs
+2019-12-03 11:38:05 ./runltp -f syscalls_part4 -d /fs/vda/tmpdir
 INFO: creating /lkp/benchmarks/ltp/output directory
 INFO: creating /lkp/benchmarks/ltp/results directory
 Checking for required user/group ids
@@ -8538,10 +8572,10 @@ SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"
 
 uname:
-Linux vm-snb-63c0fb4af38e 5.4.0-08748-g53d4a4300b82c #2 SMP Sun Dec 1 08:10:20 CST 2019 x86_64 GNU/Linux
+Linux vm-snb-4c35425f2f89 5.4.0-08754-gf4cecda4a319b #1 SMP Tue Dec 3 11:10:31 CST 2019 x86_64 GNU/Linux
 
 /proc/cmdline
-ip=::::vm-snb-63c0fb4af38e::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-63c0fb4af38e/ltp-1HDD-btrfs-syscalls_part2-debian-x86_64-2019-09-23.cgz-53d4a4300b8-20191202-12009-1tlxf62-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2019120121 commit=53d4a4300b82c4156da46eab01a8dd4e65a46491 BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/vmlinuz-5.4.0-08748-g53d4a4300b82c max_uptime=3600 RESULT_ROOT=/result/ltp/1HDD-btrfs-syscalls_part2/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/53d4a4300b82c4156da46eab01a8dd4e65a46491/3 LKP_SERVER=inn debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw rcuperf.shutdown=0 watchdog_thresh=60
+ip=::::vm-snb-4c35425f2f89::dhcp root=/dev/ram0 user=lkp job=/lkp/jobs/scheduled/vm-snb-4c35425f2f89/ltp-1HDD-ext4-syscalls_part4-debian-x86_64-2019-09-23.cgz-f4cecda4a319b-20191203-4709-j221ir-3.yaml ARCH=x86_64 kconfig=x86_64-rhel-7.6 branch=linux-devel/devel-hourly-2019120121 commit=f4cecda4a319b68a7ea940b27d5ffc6503a5208b BOOT_IMAGE=/pkg/linux/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/vmlinuz-5.4.0-08754-gf4cecda4a319b max_uptime=3600 RESULT_ROOT=/result/ltp/1HDD-ext4-syscalls_part4/vm-snb/debian-x86_64-2019-09-23.cgz/x86_64-rhel-7.6/gcc-7/f4cecda4a319b68a7ea940b27d5ffc6503a5208b/3 LKP_SERVER=inn debug apic=debug sysrq_always_enabled rcupdate.rcu_cpu_stall_timeout=100 net.ifnames=0 printk.devkmsg=on panic=-1 softlockup_panic=1 nmi_watchdog=panic oops=panic load_ramdisk=2 prompt_ramdisk=0 drbd.minor_count=8 systemd.log_level=err ignore_loglevel console=tty0 earlyprintk=ttyS0,115200 console=ttyS0,115200 vga=normal rw rcuperf.shutdown=0 watchdog_thresh=60
 
 Gnu C                  gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
 Clang                 
@@ -8558,11 +8592,11 @@ iproute2               iproute2-ss161212
 iputils                iputils-s20161105
 Kbd                    116:
 Sh-utils               8.26
-Modules Loaded         btrfs xor zstd_decompress zstd_compress raid6_pq libcrc32c dm_mod sr_mod cdrom sg ata_generic pata_acpi intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ppdev snd_pcm snd_timer drm snd aesni_intel crypto_simd cryptd glue_helper joydev ata_piix soundcore serio_raw pcspkr libata i2c_piix4 parport_pc floppy parport ip_tables
+Modules Loaded         ext4 mbcache jbd2 dm_mod sr_mod cdrom sg intel_rapl_msr ata_generic pata_acpi intel_rapl_common ppdev crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel bochs_drm drm_vram_helper drm_ttm_helper ttm drm_kms_helper snd_pcm syscopyarea sysfillrect sysimgblt snd_timer fb_sys_fops aesni_intel crypto_simd snd drm joydev cryptd glue_helper soundcore ata_piix serio_raw pcspkr libata i2c_piix4 floppy parport_pc parport ip_tables
 
 free reports:
               total        used        free      shared  buff/cache   available
-Mem:        8149364      282120     5695784       11744     2171460     5584880
+Mem:        8149356      275916     5701796       11744     2171644     5591140
 Swap:             0           0           0
 
 cpuinfo:
@@ -8597,64 +8631,21 @@ SELinux mode: unknown
 no big block device was specified on commandline.
 Tests which require a big block device are disabled.
 You can specify it with option -z
-COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2244     -n 2244 -p -f /fs/vda/tmpdir/ltp-rD8LOpvacC/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_02-21h_19m_26s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.tconf
-LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_02-21h_19m_26s.log
-FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.failed
-TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_02-21h_19m_26s.tconf
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 2234     -n 2234 -p -f /fs/vda/tmpdir/ltp-gUqxS8PHSD/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_03-11h_38m_05s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2019_12_03-11h_38m_05s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2019_12_03-11h_38m_05s.tconf
 Running tests.......
 <<<test_start>>>
-tag=getcpu01 stime=1575292768
-cmdline="getcpu01"
+tag=msgctl12 stime=1575344286
+cmdline="msgctl12"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getcpu01.c:152: PASS: getcpu() returned proper cpuid:1, node id:0
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getcwd01 stime=1575292768
-cmdline="getcwd01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getcwd01.c:62: PASS: getcwd() failed as expected: EFAULT (14)
-getcwd01.c:62: PASS: getcwd() failed as expected: ENOMEM (12)
-getcwd01.c:62: PASS: getcwd() failed as expected: EINVAL (22)
-getcwd01.c:62: PASS: getcwd() failed as expected: ERANGE (34)
-getcwd01.c:62: PASS: getcwd() failed as expected: ERANGE (34)
-
-Summary:
-passed   5
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getcwd02 stime=1575292768
-cmdline="getcwd02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getcwd02.c:102: INFO: Expected path '/tmp'
-getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
-getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
-getcwd02.c:86: PASS: getcwd() returned expected directory: /tmp
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgctl12.c:44: PASS: msgctl() test IPC_INFO succeeded
+msgctl12.c:44: PASS: msgctl() test MSG_INFO succeeded
+msgctl12.c:44: PASS: msgctl() test MSG_STAT succeeded
 
 Summary:
 passed   3
@@ -8667,13 +8658,13 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getcwd03 stime=1575292768
-cmdline="getcwd03"
+tag=msgget01 stime=1575344286
+cmdline="msgget01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getcwd03.c:73: PASS: getcwd() succeeded on a symbolic link
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgget01.c:45: PASS: message received = message sent
 
 Summary:
 passed   1
@@ -8686,13 +8677,38 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getcwd04 stime=1575292768
-cmdline="getcwd04"
+tag=msgget02 stime=1575344286
+cmdline="msgget02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getcwd04.c:60: PASS: Bug is not reproduced!
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgget02.c:57: PASS: msgget() failed as expected: EEXIST (17)
+msgget02.c:57: PASS: msgget() failed as expected: ENOENT (2)
+msgget02.c:57: PASS: msgget() failed as expected: ENOENT (2)
+msgget02.c:57: PASS: msgget() failed as expected: EACCES (13)
+msgget02.c:57: PASS: msgget() failed as expected: EACCES (13)
+msgget02.c:57: PASS: msgget() failed as expected: EACCES (13)
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=msgget03 stime=1575344286
+cmdline="msgget03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgget03.c:60: INFO: The maximum number of message queues (32000) reached
+msgget03.c:34: PASS: msgget() failed as expected: ENOSPC (28)
 
 Summary:
 passed   1
@@ -8701,631 +8717,118 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=5 termination_type=exited termination_id=0 corefile=no
-cutime=121 cstime=529
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=5
 <<<test_end>>>
 <<<test_start>>>
-tag=getdents01 stime=1575292773
-cmdline="getdents01"
+tag=msgrcv01 stime=1575344286
+cmdline="msgrcv01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getdents01    0  TINFO  :  Found '.'
-getdents01    0  TINFO  :  Found '..'
-getdents01    0  TINFO  :  Found 'dir'
-getdents01    0  TINFO  :  Found 'file'
-getdents01    0  TINFO  :  Found 'symlink'
-getdents01    1  TPASS  :  All entires found
+msgrcv01    1  TPASS  :  message received = message sent
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getdents02 stime=1575292773
-cmdline="getdents02"
+tag=msgrcv02 stime=1575344286
+cmdline="msgrcv02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getdents02    1  TPASS  :  getdents failed as expected: Bad file descriptor
-getdents02    2  TPASS  :  getdents failed as expected: Invalid argument
-getdents02    3  TPASS  :  getdents failed as expected: Not a directory
-getdents02    4  TPASS  :  getdents failed as expected: No such file or directory
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getdents01_64 stime=1575292773
-cmdline="getdents01 -l"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getdents01    0  TINFO  :  Found '.'
-getdents01    0  TINFO  :  Found '..'
-getdents01    0  TINFO  :  Found 'dir'
-getdents01    0  TINFO  :  Found 'file'
-getdents01    0  TINFO  :  Found 'symlink'
-getdents01    1  TPASS  :  All entires found
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getdents02_64 stime=1575292773
-cmdline="getdents02 -l"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getdents02    1  TPASS  :  getdents failed as expected: Bad file descriptor
-getdents02    2  TPASS  :  getdents failed as expected: Invalid argument
-getdents02    3  TPASS  :  getdents failed as expected: Not a directory
-getdents02    4  TPASS  :  getdents failed as expected: No such file or directory
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getdomainname01 stime=1575292773
-cmdline="getdomainname01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getdomainname01    1  TPASS  :  getdomainname() returned 0 
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getdtablesize01 stime=1575292773
-cmdline="getdtablesize01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getdtablesize01    0  TINFO  :  Maximum number of files a process can have opened is 1024
-getdtablesize01    0  TINFO  :  Checking with the value returned by getrlimit...RLIMIT_NOFILE
-getdtablesize01    1  TPASS  :  got correct dtablesize, value is 1024
-getdtablesize01    0  TINFO  :  Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1
-getdtablesize01    2  TPASS  :  1023 = 1023
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getegid01 stime=1575292773
-cmdline="getegid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getegid01    1  TPASS  :  getegid returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getegid01_16 stime=1575292773
-cmdline="getegid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getegid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: 16-bit version of getegid() is not supported on your platform
-getegid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getegid02 stime=1575292773
-cmdline="getegid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getegid02    1  TPASS  :  effective group id 0 is correct
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getegid02_16 stime=1575292773
-cmdline="getegid02_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getegid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: 16-bit version of getegid() is not supported on your platform
-getegid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getegid/../utils/compat_16.h:114: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=1 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=geteuid01 stime=1575292773
-cmdline="geteuid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-geteuid01    1  TPASS  :  geteuid returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=geteuid01_16 stime=1575292773
-cmdline="geteuid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-geteuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: 16-bit version of geteuid() is not supported on your platform
-geteuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=geteuid02 stime=1575292773
-cmdline="geteuid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-geteuid02    1  TPASS  :  values from geteuid and getpwuid match
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=geteuid02_16 stime=1575292773
-cmdline="geteuid02_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-geteuid02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: 16-bit version of geteuid() is not supported on your platform
-geteuid02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/geteuid/../utils/compat_16.h:109: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgid01 stime=1575292773
-cmdline="getgid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgid01    1  TPASS  :  getgid returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgid01_16 stime=1575292773
-cmdline="getgid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: 16-bit version of getgid() is not supported on your platform
-getgid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getgid03 stime=1575292773
-cmdline="getgid03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgid03    1  TPASS  :  values from getuid and getpwuid match
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgid03_16 stime=1575292773
-cmdline="getgid03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: 16-bit version of getgid() is not supported on your platform
-getgid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgid/../utils/compat_16.h:104: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgroups01 stime=1575292773
-cmdline="getgroups01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgroups01    1  TPASS  :  getgroups failed as expected with EINVAL
-getgroups01    2  TPASS  :  getgroups did not modify the gidset array
-getgroups01    3  TPASS  :  getgroups failed as expected with EINVAL
-getgroups01    4  TPASS  :  getgroups(NGROUPS,gidset) returned 3 contains gid 0 (from getgid)
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgroups01_16 stime=1575292773
-cmdline="getgroups01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgroups01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:84: 16-bit version of getgroups() is not supported on your platform
-getgroups01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:84: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgroups03 stime=1575292773
-cmdline="getgroups03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgroups03    1  TPASS  :  getgroups functionality correct
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getgroups03_16 stime=1575292773
-cmdline="getgroups03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getgroups03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:79: 16-bit version of setgroups() is not supported on your platform
-getgroups03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getgroups/../utils/compat_16.h:79: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=gethostbyname_r01 stime=1575292773
-cmdline="gethostbyname_r01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-gethostbyname_r01    1  TPASS  :  not vulnerable
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=gethostid01 stime=1575292773
-cmdline="gethostid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-gethostid01    1  TPASS  :  Hostid command and gethostid both report hostid is 007f0100
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=gethostname01 stime=1575292773
-cmdline="gethostname01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-gethostname01    1  TPASS  :  gethostname returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getitimer01 stime=1575292773
-cmdline="getitimer01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getitimer01    1  TPASS  :  functionality is ok
-getitimer01    2  TPASS  :  functionality is ok
-getitimer01    3  TPASS  :  functionality is ok
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getitimer02 stime=1575292773
-cmdline="getitimer02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getitimer02    1  TPASS  :  expected failure - errno = 14 - Bad address
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getitimer03 stime=1575292773
-cmdline="getitimer03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getitimer03    1  TPASS  :  expected failure - errno = 22 - Invalid argument
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpagesize01 stime=1575292773
-cmdline="getpagesize01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpagesize01    0  TINFO  :  Page Size is 4096
-getpagesize01    1  TPASS  :  getpagesize - Page size returned 4096
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpeername01 stime=1575292773
-cmdline="getpeername01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpeername01    1  TPASS  :  test getpeername() EBADF successful
-getpeername01    2  TPASS  :  test getpeername() ENOTSOCK successful
-getpeername01    3  TPASS  :  test getpeername() ENOTCONN successful
-getpeername01    4  TPASS  :  test getpeername() EINVAL successful
-getpeername01    5  TPASS  :  test getpeername() EFAULT successful
-getpeername01    6  TPASS  :  test getpeername() EFAULT successful
-getpeername01    7  TPASS  :  test getpeername() EFAULT successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpgid01 stime=1575292773
-cmdline="getpgid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpgid01    0  TINFO  :  Enter block 1
-getpgid01    1  TPASS  :  Test block 1: getpgid(0) PASSED
-getpgid01    0  TINFO  :  Exit block 1
-getpgid01    0  TINFO  :  Enter block 2
-getpgid01    2  TPASS  :  Test block 2: getpgid(getpid()) PASSED
-getpgid01    0  TINFO  :  Exit block 2
-getpgid01    0  TINFO  :  Enter block 3
-getpgid01    3  TPASS  :  Test block 3: getpgid(getppid()) PASSED
-getpgid01    0  TINFO  :  Exit block 3
-getpgid01    0  TINFO  :  Enter block 4
-getpgid01    4  TPASS  :  Test block 4: getpgid(1) PASSED
-getpgid01    0  TINFO  :  Exit block 4
-getpgid01    0  TINFO  :  Enter block 5
-getpgid01    5  TPASS  :  Test block 5: getpgid(1) PASSED
-getpgid01    0  TINFO  :  Exit block 5
-getpgid01    0  TINFO  :  getpgid01 PASSED
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpgid02 stime=1575292773
-cmdline="getpgid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpgid02    1  TPASS  :  expected failure - errno = 3 : No such process
-getpgid02    2  TPASS  :  expected failure - errno = 3 : No such process
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpgrp01 stime=1575292773
-cmdline="getpgrp01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpgrp01    1  TPASS  :  getpgrp returned 2468
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpid01 stime=1575292773
-cmdline="getpid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpid01    1  TPASS  :  getpid returned 2469
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getpid02 stime=1575292773
-cmdline="getpid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getpid02    1  TPASS  :  getpid functionality is correct
+msgrcv02    1  TPASS  :  expected failure - errno = 13 : Permission denied
+msgrcv02    2  TPASS  :  expected failure - errno = 14 : Bad address
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=1 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getppid01 stime=1575292773
-cmdline="getppid01"
+tag=msgrcv03 stime=1575344286
+cmdline="msgrcv03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getppid01    1  TPASS  :  getppid returned 2406
+msgrcv03    1  TPASS  :  expected failure - errno = 22 : Invalid argument
+msgrcv03    2  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=msgrcv04 stime=1575344286
+cmdline="msgrcv04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+msgrcv04    1  TPASS  :  expected failure - errno = 7 : Argument list too long
+msgrcv04    2  TPASS  :  expected failure - errno = 42 : No message of desired type
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getppid02 stime=1575292773
-cmdline="getppid02"
+tag=msgrcv05 stime=1575344286
+cmdline="msgrcv05"
 contacts=""
 analysis=exit
 <<<test_output>>>
-return value and parent's pid value match
+msgrcv05    1  TPASS  :  got EINTR as expected
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getpriority01 stime=1575292773
-cmdline="getpriority01"
+tag=msgrcv06 stime=1575344286
+cmdline="msgrcv06"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getpriority01.c:50: PASS: getpriority(0, 0) returned 0
-getpriority01.c:50: PASS: getpriority(1, 0) returned 0
-getpriority01.c:50: PASS: getpriority(2, 0) returned -20
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
+msgrcv06    1  TPASS  :  expected failure - errno = 43 : Identifier removed
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getpriority02 stime=1575292773
-cmdline="getpriority02"
+tag=msgrcv07 stime=1575344286
+cmdline="msgrcv07"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getpriority02.c:58: PASS: getpriority(-1, 0) fails as expected: EINVAL (22)
-getpriority02.c:58: PASS: getpriority(0, -1) fails as expected: ESRCH (3)
-getpriority02.c:58: PASS: getpriority(1, -1) fails as expected: ESRCH (3)
-getpriority02.c:58: PASS: getpriority(2, -1) fails as expected: ESRCH (3)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
+msgrcv07    1  TPASS  :  test MSG_EXCEPT success
+msgrcv07    2  TPASS  :  test MSG_NOERROR success
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getrandom01 stime=1575292773
-cmdline="getrandom01"
+tag=msgrcv08 stime=1575344286
+cmdline="msgrcv08"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
-getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
-getrandom01.c:21: PASS: getrandom returned -1: EFAULT (14)
-getrandom01.c:21: PASS: getrandom returned -1: EAGAIN/EWOULDBLOCK (11)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
+msgrcv08    1  TCONF  :  msgrcv08.c:116: not works when compiled as 64-bit application.
+msgrcv08    2  TCONF  :  msgrcv08.c:116: Remaining cases not appropriate for configuration
 <<<execution_status>>>
 initiation_status="ok"
-duration=330 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=10
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getrandom02 stime=1575293103
-cmdline="getrandom02"
+tag=msgsnd01 stime=1575344286
+cmdline="msgsnd01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getrandom02.c:51: PASS: getrandom returned 256
-getrandom02.c:51: PASS: getrandom returned 6
-getrandom02.c:51: PASS: getrandom returned 256
-getrandom02.c:51: PASS: getrandom returned 6
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=207 termination_type=exited termination_id=0 corefile=no
-cutime=4491 cstime=5892
-<<<test_end>>>
-<<<test_start>>>
-tag=getrandom03 stime=1575293311
-cmdline="getrandom03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getrandom03.c:37: PASS: getrandom returned 1
-getrandom03.c:37: PASS: getrandom returned 2
-getrandom03.c:37: PASS: getrandom returned 3
-getrandom03.c:37: PASS: getrandom returned 7
-getrandom03.c:37: PASS: getrandom returned 8
-getrandom03.c:37: PASS: getrandom returned 15
-getrandom03.c:37: PASS: getrandom returned 22
-getrandom03.c:37: PASS: getrandom returned 64
-getrandom03.c:37: PASS: getrandom returned 127
-
-Summary:
-passed   9
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=4 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=getrandom04 stime=1575293312
-cmdline="getrandom04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getrandom04.c:28: PASS: getrandom returned 100
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgsnd01.c:40: PASS: queue bytes and number of queues matched
 
 Summary:
 passed   1
@@ -9335,509 +8838,60 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=8 cstime=7
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getresgid01 stime=1575293312
-cmdline="getresgid01"
+tag=msgsnd02 stime=1575344286
+cmdline="msgsnd02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getresgid01    1  TPASS  :  Functionality of getresgid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=17 cstime=35
-<<<test_end>>>
-<<<test_start>>>
-tag=getresgid01_16 stime=1575293313
-cmdline="getresgid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresgid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
-getresgid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=8 cstime=10
-<<<test_end>>>
-<<<test_start>>>
-tag=getresgid02 stime=1575293313
-cmdline="getresgid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresgid02    1  TPASS  :  Functionality of getresgid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=7
-<<<test_end>>>
-<<<test_start>>>
-tag=getresgid02_16 stime=1575293313
-cmdline="getresgid02_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresgid02    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
-getresgid02    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=14
-<<<test_end>>>
-<<<test_start>>>
-tag=getresgid03 stime=1575293314
-cmdline="getresgid03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresgid03    1  TPASS  :  Functionality of getresgid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=12
-<<<test_end>>>
-<<<test_start>>>
-tag=getresgid03_16 stime=1575293314
-cmdline="getresgid03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresgid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: 16-bit version of getresgid() is not supported on your platform
-getresgid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresgid/../utils/compat_16.h:153: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=5
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid01 stime=1575293314
-cmdline="getresuid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid01    1  TPASS  :  Functionality of getresuid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=14
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid01_16 stime=1575293314
-cmdline="getresuid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid01    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
-getresuid01    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=1 cstime=9
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid02 stime=1575293314
-cmdline="getresuid02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid02    1  TPASS  :  Functionality of getresuid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=2 cstime=8
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid02_16 stime=1575293314
-cmdline="getresuid02_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid02    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
-getresuid02    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=32 corefile=no
-cutime=5 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid03 stime=1575293315
-cmdline="getresuid03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid03    1  TPASS  :  Functionality of getresuid() successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=3
-<<<test_end>>>
-<<<test_start>>>
-tag=getresuid03_16 stime=1575293315
-cmdline="getresuid03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getresuid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: 16-bit version of getresuid() is not supported on your platform
-getresuid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getresuid/../utils/compat_16.h:143: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=2 cstime=20
-<<<test_end>>>
-<<<test_start>>>
-tag=getrlimit01 stime=1575293315
-cmdline="getrlimit01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getrlimit01    1  TPASS  :  getrlimit() test RLIMIT_CPU success
-getrlimit01    2  TPASS  :  getrlimit() test RLIMIT_FSIZE success
-getrlimit01    3  TPASS  :  getrlimit() test RLIMIT_DATA success
-getrlimit01    4  TPASS  :  getrlimit() test RLIMIT_STACK success
-getrlimit01    5  TPASS  :  getrlimit() test RLIMIT_CORE success
-getrlimit01    6  TPASS  :  getrlimit() test RLIMIT_RSS success
-getrlimit01    7  TPASS  :  getrlimit() test RLIMIT_NPROC success
-getrlimit01    8  TPASS  :  getrlimit() test RLIMIT_NOFILE success
-getrlimit01    9  TPASS  :  getrlimit() test RLIMIT_MEMLOCK success
-getrlimit01   10  TPASS  :  getrlimit() test RLIMIT_AS success
-getrlimit01   11  TPASS  :  getrlimit() test RLIMIT_LOCKS success
-getrlimit01   12  TPASS  :  getrlimit() test RLIMIT_MSGQUEUE success
-getrlimit01   13  TPASS  :  getrlimit() test RLIMIT_NICE success
-getrlimit01   14  TPASS  :  getrlimit() test RLIMIT_RTPRIO success
-getrlimit01   15  TPASS  :  getrlimit() test RLIMIT_SIGPENDING success
-getrlimit01   16  TPASS  :  getrlimit() test RLIMIT_RTTIME success
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=2 cstime=24
-<<<test_end>>>
-<<<test_start>>>
-tag=getrlimit02 stime=1575293315
-cmdline="getrlimit02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getrlimit02    1  TPASS  :  expected failure; got EFAULT
-getrlimit02    2  TPASS  :  expected failure; got EINVAL
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=5 cstime=5
-<<<test_end>>>
-<<<test_start>>>
-tag=getrlimit03 stime=1575293315
-cmdline="getrlimit03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getrlimit03.c:168: PASS: __NR_prlimit64(0) and __NR_getrlimit(0) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(1) and __NR_getrlimit(1) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(2) and __NR_getrlimit(2) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(3) and __NR_getrlimit(3) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(4) and __NR_getrlimit(4) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(5) and __NR_getrlimit(5) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(6) and __NR_getrlimit(6) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(7) and __NR_getrlimit(7) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(8) and __NR_getrlimit(8) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(9) and __NR_getrlimit(9) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(10) and __NR_getrlimit(10) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(11) and __NR_getrlimit(11) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(12) and __NR_getrlimit(12) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(13) and __NR_getrlimit(13) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(14) and __NR_getrlimit(14) gave consistent results
-getrlimit03.c:168: PASS: __NR_prlimit64(15) and __NR_getrlimit(15) gave consistent results
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EACCES (13)
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EFAULT (14)
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EINVAL (22)
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EINVAL (22)
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EINVAL (22)
+msgsnd02.c:71: PASS: msgsnd() failed as expected: EINVAL (22)
 
 Summary:
-passed   16
+passed   6
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=4 cstime=8
-<<<test_end>>>
-<<<test_start>>>
-tag=get_mempolicy01 stime=1575293316
-cmdline="get_mempolicy01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=0 errno=0 (Success)
-EXPECT: return value(ret)=-1 errno=14 (Bad address)
-RESULT: return value(ret)=-1 errno=14 (Bad address)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=22 (Invalid argument)
-get_mempolicy01    0  TINFO  :  (case00) START
-get_mempolicy01    1  TPASS  :  (case00) END
-get_mempolicy01    0  TINFO  :  (case01) START
-get_mempolicy01    2  TPASS  :  (case01) END
-get_mempolicy01    0  TINFO  :  (case02) START
-get_mempolicy01    3  TPASS  :  (case02) END
-get_mempolicy01    0  TINFO  :  (case03) START
-get_mempolicy01    4  TPASS  :  (case03) END
-get_mempolicy01    0  TINFO  :  (case04) START
-get_mempolicy01    5  TPASS  :  (case04) END
-get_mempolicy01    0  TINFO  :  (case05) START
-get_mempolicy01    6  TPASS  :  (case05) END
-get_mempolicy01    0  TINFO  :  (case06) START
-get_mempolicy01    7  TPASS  :  (case06) END
-get_mempolicy01    0  TINFO  :  (case07) START
-get_mempolicy01    8  TPASS  :  (case07) END
-get_mempolicy01    0  TINFO  :  (case08) START
-get_mempolicy01    9  TPASS  :  (case08) END
-get_mempolicy01    0  TINFO  :  (case09) START
-get_mempolicy01   10  TPASS  :  (case09) END
-get_mempolicy01    0  TINFO  :  (case10) START
-get_mempolicy01   11  TPASS  :  (case10) END
-get_mempolicy01    0  TINFO  :  (case11) START
-get_mempolicy01   12  TPASS  :  (case11) END
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=12 cstime=133
-<<<test_end>>>
-<<<test_start>>>
-tag=get_robust_list01 stime=1575293317
-cmdline="get_robust_list01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-get_robust_list01    1  TPASS  :  get_robust_list failed as expected with EFAULT
-get_robust_list01    2  TPASS  :  get_robust_list failed as expected with EFAULT
-get_robust_list01    3  TPASS  :  get_robust_list failed as expected with ESRCH
-get_robust_list01    4  TPASS  :  get_robust_list succeeded
-get_robust_list01    5  TPASS  :  get_robust_list failed as expected with EPERM
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=18 cstime=19
-<<<test_end>>>
-<<<test_start>>>
-tag=getrusage01 stime=1575293318
-cmdline="getrusage01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getrusage01    1  TPASS  :  getrusage passed
-getrusage01    2  TPASS  :  getrusage passed
-<<<execution_status>>>
-initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=5 cstime=15
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getrusage02 stime=1575293318
-cmdline="getrusage02"
+tag=msgsnd05 stime=1575344286
+cmdline="msgsnd05"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getrusage02    1  TPASS  :  getrusage failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
-getrusage02    2  TPASS  :  getrusage failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=2 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=getrusage03 stime=1575293318
-cmdline="getrusage03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    0  TINFO  :  child.self = 102496
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    1  TPASS  :  initial.self ~= child.self
-getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
-getrusage03    0  TINFO  :  initial.children = 103532
-getrusage03    2  TPASS  :  initial.children ~= 100MB
-getrusage03    0  TINFO  :  child.children = 0
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    1  TPASS  :  initial.self ~= child.self
-getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
-getrusage03    0  TINFO  :  initial.children = 103532
-getrusage03    2  TPASS  :  initial.children ~= 100MB
-getrusage03    3  TPASS  :  child.children == 0
-getrusage03    0  TINFO  :  Testcase #03: fork + malloc
-getrusage03    0  TINFO  :  initial.self = 103984
-getrusage03    0  TINFO  :  child allocate +50MB
-getrusage03    0  TINFO  :  child.self = 154324
-getrusage03_child    0  TINFO  :  grandchild allocate 300MB
-getrusage03_child    0  TINFO  :  grandchild allocate 300MB
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    1  TPASS  :  initial.self ~= child.self
-getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
-getrusage03    0  TINFO  :  initial.children = 103532
-getrusage03    2  TPASS  :  initial.children ~= 100MB
-getrusage03    3  TPASS  :  child.children == 0
-getrusage03    0  TINFO  :  Testcase #03: fork + malloc
-getrusage03    0  TINFO  :  initial.self = 103984
-getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
-getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
-getrusage03    0  TINFO  :  initial.children = 154800
-getrusage03_child    0  TINFO  :  child allocate 400MB
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    1  TPASS  :  initial.self ~= child.self
-getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
-getrusage03    0  TINFO  :  initial.children = 103532
-getrusage03    2  TPASS  :  initial.children ~= 100MB
-getrusage03    3  TPASS  :  child.children == 0
-getrusage03    0  TINFO  :  Testcase #03: fork + malloc
-getrusage03    0  TINFO  :  initial.self = 103984
-getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
-getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
-getrusage03    0  TINFO  :  initial.children = 154800
-getrusage03    0  TINFO  :  post_wait.children = 308184
-getrusage03    5  TPASS  :  child.children ~= 300MB
-getrusage03    0  TINFO  :  Testcase #05: zombie
-getrusage03    0  TINFO  :  initial.children = 308184
-getrusage03_child    0  TINFO  :  child allocate 500MB
-getrusage03    0  TINFO  :  allocate 100MB
-getrusage03    0  TINFO  :  Testcase #01: fork inherit
-getrusage03    0  TINFO  :  initial.self = 103764
-getrusage03    1  TPASS  :  initial.self ~= child.self
-getrusage03    0  TINFO  :  Testcase #02: fork inherit(cont.)
-getrusage03    0  TINFO  :  initial.children = 103532
-getrusage03    2  TPASS  :  initial.children ~= 100MB
-getrusage03    3  TPASS  :  child.children == 0
-getrusage03    0  TINFO  :  Testcase #03: fork + malloc
-getrusage03    0  TINFO  :  initial.self = 103984
-getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
-getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
-getrusage03    0  TINFO  :  initial.children = 154800
-getrusage03    0  TINFO  :  post_wait.children = 308184
-getrusage03    5  TPASS  :  child.children ~= 300MB
-getrusage03    0  TINFO  :  Testcase #05: zombie
-getrusage03    0  TINFO  :  initial.children = 308184
-getrusage03    0  TINFO  :  pre_wait.children = 308184
-getrusage03    6  TPASS  :  initial.children ~= pre_wait.children
-getrusage03    0  TINFO  :  post_wait.children = 411028
-getrusage03    7  TPASS  :  post_wait.children ~= 400MB
-getrusage03    0  TINFO  :  Testcase #06: SIG_IGN
-getrusage03    0  TINFO  :  initial.children = 411028
-getrusage03_child    0  TINFO  :  exec.self = 103996, exec.children = 411028
-getrusage03_child    1  TPASS  :  initial.self ~= exec.self
-getrusage03_child    2  TPASS  :  initial.children ~= exec.children
-<<<execution_status>>>
-initiation_status="ok"
-duration=8 termination_type=exited termination_id=0 corefile=no
-cutime=17 cstime=586
-<<<test_end>>>
-<<<test_start>>>
-tag=getrusage04 stime=1575293326
-cmdline="getrusage04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getrusage04    1  TCONF  :  getrusage04.c:202: This testcase is not supported on this virtual machine.
-getrusage04    2  TCONF  :  getrusage04.c:202: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=32 corefile=no
-cutime=1 cstime=3
-<<<test_end>>>
-<<<test_start>>>
-tag=getsid01 stime=1575293327
-cmdline="getsid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getsid01    1  TPASS  :  session ID is correct
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgsnd05.c:51: PASS: msgsnd() failed as expected: EAGAIN/EWOULDBLOCK (11)
+msgsnd05.c:51: PASS: msgsnd() failed as expected: EINTR (4)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getsid02 stime=1575293327
-cmdline="getsid02"
+tag=msgsnd06 stime=1575344286
+cmdline="msgsnd06"
 contacts=""
 analysis=exit
 <<<test_output>>>
-getsid02    1  TPASS  :  expected failure - errno = 3 - No such process
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getsockname01 stime=1575293327
-cmdline="getsockname01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getsockname01    1  TPASS  :  bad file descriptor successful
-getsockname01    2  TPASS  :  bad file descriptor successful
-getsockname01    3  TPASS  :  invalid socket buffer successful
-getsockname01    4  TPASS  :  invalid aligned salen successful
-getsockname01    5  TPASS  :  invalid unaligned salen successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getsockopt01 stime=1575293327
-cmdline="getsockopt01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getsockopt01    1  TPASS  :  bad file descriptor successful
-getsockopt01    2  TPASS  :  bad file descriptor successful
-getsockopt01    3  TPASS  :  invalid option buffer successful
-getsockopt01    4  TPASS  :  invalid optlen successful
-getsockopt01    5  TPASS  :  invalid level successful
-getsockopt01    6  TPASS  :  invalid option name successful
-getsockopt01    7  TPASS  :  invalid option name (UDP) successful
-getsockopt01    8  TPASS  :  invalid option name (IP) successful
-getsockopt01    9  TPASS  :  invalid option name (TCP) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getsockopt02 stime=1575293327
-cmdline="getsockopt02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getsockopt02.c:66: PASS: Test passed
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msgsnd06.c:38: PASS: msgsnd() failed as expected: EIDRM (43)
 
 Summary:
 passed   1
@@ -9847,1036 +8901,114 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=gettid01 stime=1575293327
-cmdline="gettid01"
+tag=msync01 stime=1575344286
+cmdline="msync01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-gettid01    1  TPASS  :  gettid() returned 4336
+msync01     1  TPASS  :  Functionality of msync() successful
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=gettimeofday01 stime=1575293327
-cmdline="gettimeofday01"
+tag=msync02 stime=1575344286
+cmdline="msync02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-gettimeofday01    1  TPASS  :  gettimeofday(2) set the errno EFAULT correctly
+msync02     1  TPASS  :  Functionality of msync successful
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=gettimeofday02 stime=1575293327
-cmdline="gettimeofday02"
+tag=msync03 stime=1575344286
+cmdline="msync03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-gettimeofday02.c:76: INFO: gettimeofday() called 14478038 times
-gettimeofday02.c:77: PASS: gettimeofday() monotonous in 10 seconds
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=10 termination_type=exited termination_id=0 corefile=no
-cutime=325 cstime=660
-<<<test_end>>>
-<<<test_start>>>
-tag=getuid01 stime=1575293337
-cmdline="getuid01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getuid01    1  TPASS  :  getuid returned 0
+msync03     1  TPASS  :  msync failed as expected: TEST_ERRNO=EBUSY(16): Device or resource busy
+msync03     2  TPASS  :  msync failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+msync03     3  TPASS  :  msync failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+msync03     4  TPASS  :  msync failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+msync03     5  TPASS  :  msync failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+msync03     6  TPASS  :  msync failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=getuid01_16 stime=1575293337
-cmdline="getuid01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: 16-bit version of getuid() is not supported on your platform
-getuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getuid03 stime=1575293337
-cmdline="getuid03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getuid03    1  TPASS  :  values from getuid and getpwuid match
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getuid03_16 stime=1575293337
-cmdline="getuid03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getuid03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: 16-bit version of getuid() is not supported on your platform
-getuid03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_16.h:94: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getxattr01 stime=1575293337
-cmdline="getxattr01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getxattr01    1  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
-getxattr01    2  TPASS  :  expected behavior: TEST_ERRNO=ERANGE(34): Numerical result out of range
-getxattr01    3  TPASS  :  expected behavior: TEST_ERRNO=SUCCESS(0): Success
-getxattr01    4  TPASS  :  Got the right value
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=getxattr02 stime=1575293337
-cmdline="getxattr02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getxattr02    1  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
-getxattr02    2  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
-getxattr02    3  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
-getxattr02    4  TPASS  :  expected behavior: TEST_ERRNO=ENODATA(61): No data available
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getxattr03 stime=1575293337
-cmdline="getxattr03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-getxattr03    1  TPASS  :  getxattr(2) returned correct value
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=getxattr04 stime=1575293337
-cmdline="getxattr04"
+tag=msync04 stime=1575344286
+cmdline="msync04"
 contacts=""
 analysis=exit
 <<<test_output>>>
 tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on xfs
 tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-getxattr04.c:70: PASS: getxattr() succeeded to get an existing attribute
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=253 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=8
-<<<test_end>>>
-<<<test_start>>>
-tag=getxattr05 stime=1575293590
-cmdline="getxattr05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:772: CONF: <sys/xattr.h> or <sys/acl.h> does not exist.
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl01_02 stime=1575293590
-cmdline="  test_ioctl"
-contacts=""
-analysis=exit
-<<<test_output>>>
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty0
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty0
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty1
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty1
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty10
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty10
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty11
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty11
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty12
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty12
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty13
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty13
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty14
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty14
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty15
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty15
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty16
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty16
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty17
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty17
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty18
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty18
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty19
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty19
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty2
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty2
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty20
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty20
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty21
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty21
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty22
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty22
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty23
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty23
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty24
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty24
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty25
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty25
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty26
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty26
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty27
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty27
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty28
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty28
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty29
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty29
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty3
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty3
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty30
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty30
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty31
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty31
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty32
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty32
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty33
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty33
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty34
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty34
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty35
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty35
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty36
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty36
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty37
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty37
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty38
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty38
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty39
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty39
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty4
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty4
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty40
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty40
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty41
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty41
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty42
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty42
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty43
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty43
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty44
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty44
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty45
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty45
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty46
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty46
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty47
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty47
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty48
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty48
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty49
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty49
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty5
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty5
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty50
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty50
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty51
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty51
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty52
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty52
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty53
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty53
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty54
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty54
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty55
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty55
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty56
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty56
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty57
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty57
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty58
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty58
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty59
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty59
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty6
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty6
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty60
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty60
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty61
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty61
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty62
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty62
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty63
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty63
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty7
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty7
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty8
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty8
-
-ioctl01_02    0  TINFO  :  Testing ioctl01 with /dev/tty9
-ioctl01     1  TPASS  :  failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-ioctl01     2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01     3  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     4  TPASS  :  failed as expected: TEST_ERRNO=ENOTTY(25): Inappropriate ioctl for device
-ioctl01     5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-ioctl01_02    1  TPASS  :  ioctl01 Passed with /dev/tty9
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty0
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty0
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty1
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty1
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty10
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty10
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty11
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty11
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty12
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty12
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty13
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty13
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty14
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty14
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty15
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty15
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty16
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty16
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty17
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty17
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty18
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty18
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty19
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty19
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty2
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty2
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty20
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty20
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty21
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty21
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty22
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty22
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty23
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty23
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty24
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty24
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty25
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty25
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty26
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty26
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty27
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty27
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty28
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty28
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty29
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty29
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty3
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty3
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty30
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty30
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty31
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty31
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty32
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty32
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty33
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty33
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty34
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty34
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty35
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty35
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty36
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty36
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty37
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty37
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty38
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty38
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty39
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty39
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty4
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty4
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty40
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty40
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty41
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty41
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty42
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty42
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty43
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty43
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty44
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty44
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty45
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty45
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty46
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty46
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty47
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty47
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty48
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty48
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty49
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty49
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty5
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty5
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty50
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty50
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty51
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty51
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty52
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty52
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty53
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty53
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty54
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty54
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty55
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty55
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty56
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty56
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty57
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty57
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty58
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty58
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty59
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty59
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty6
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty6
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty60
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty60
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty61
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty61
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty62
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty62
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty63
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty63
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty7
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty7
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty8
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty8
-
-ioctl01_02    0  TINFO  :  Testing ioctl02 with /dev/tty9
-ioctl02     0  TINFO  :  termio values are set as expected
-ioctl02     1  TPASS  :  TCGETA/TCSETA tests SUCCEEDED
-ioctl01_02    1  TPASS  :  ioctl02 Passed with /dev/tty9
-
-<<<execution_status>>>
-initiation_status="ok"
-duration=3 termination_type=exited termination_id=0 corefile=no
-cutime=25 cstime=65
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl03 stime=1575293593
-cmdline="     ioctl03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl03.c:76: INFO: Available features are: 0x7133
-ioctl03.c:81: PASS: TUN 0x1
-ioctl03.c:81: PASS: TAP 0x2
-ioctl03.c:81: PASS: NO_PI 0x1000
-ioctl03.c:81: PASS: ONE_QUEUE 0x2000
-ioctl03.c:81: PASS: VNET_HDR 0x4000
-ioctl03.c:81: PASS: MULTI_QUEUE 0x100
-ioctl03.c:81: PASS: IFF_NAPI 0x10
-ioctl03.c:81: PASS: IFF_NAPI_FRAGS 0x20
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+msync04.c:71: PASS: msync() working correctly
 
 Summary:
 passed   8
@@ -10885,305 +9017,116 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=10 cstime=96
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl04 stime=1575293593
-cmdline="     ioctl04"
+tag=munlock01 stime=1575344291
+cmdline="munlock01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl04.c:26: PASS: BLKROGET returned 0
-ioctl04.c:39: PASS: BLKROGET returned 1
-ioctl04.c:50: PASS: Mounting RO device RW failed: EACCES (13)
-ioctl04.c:61: PASS: Mounting RO device RO works
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=6 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl05 stime=1575293599
-cmdline="     ioctl05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl05.c:35: PASS: BLKGETSIZE returned 524288, BLKGETSIZE64 268435456
-ioctl05.c:46: PASS: Could lseek to the end of the device
-ioctl05.c:53: PASS: Got EOF when trying to read after the end of device
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
+munlock01    1  TPASS  :  test 0 passed length = 1
+munlock01    2  TPASS  :  test 1 passed length = 1024
+munlock01    3  TPASS  :  test 2 passed length = 1048576
+munlock01    4  TPASS  :  test 3 passed length = 10485760
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl06 stime=1575293599
-cmdline="     ioctl06"
+tag=munlock02 stime=1575344291
+cmdline="munlock02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl06.c:26: INFO: BLKRAGET original value 256
-ioctl06.c:33: PASS: BLKRASET 0 read back correctly
-ioctl06.c:33: PASS: BLKRASET 512 read back correctly
-ioctl06.c:33: PASS: BLKRASET 1024 read back correctly
-ioctl06.c:33: PASS: BLKRASET 1536 read back correctly
-ioctl06.c:33: PASS: BLKRASET 2048 read back correctly
-ioctl06.c:33: PASS: BLKRASET 2560 read back correctly
-ioctl06.c:33: PASS: BLKRASET 3072 read back correctly
-ioctl06.c:33: PASS: BLKRASET 3584 read back correctly
-ioctl06.c:33: PASS: BLKRASET 4096 read back correctly
-ioctl06.c:38: INFO: BLKRASET restoring original value 256
-
-Summary:
-passed   9
-failed   0
-skipped  0
-warnings 0
+munlock02    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl07 stime=1575293599
-cmdline="     ioctl07"
+tag=munlockall01 stime=1575344291
+cmdline="munlockall01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl07.c:32: INFO: entropy value from ioctl: 299, proc: 299
-ioctl07.c:35: PASS: entropy value within expected parameters
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl08 stime=1575293599
-cmdline="     ioctl08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with SUCCESS as expected
-ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with SUCCESS as expected
-ioctl08.c:93: PASS: ioctl(FIDEDUPERANGE) ended with EINVAL as expected
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=12 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=5
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl_ns01 stime=1575293611
-cmdline="ioctl_ns01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns01.c:57: PASS: NS_GET_PARENT fails with EPERM
-ioctl_ns01.c:57: PASS: NS_GET_PARENT fails with EPERM
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl_ns02 stime=1575293611
-cmdline="ioctl_ns02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns02.c:39: PASS: NS_GET_PARENT fails with EINVAL
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
+munlockall01    1  TPASS  :  munlockall() passed with return=0 
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl_ns03 stime=1575293611
-cmdline="ioctl_ns03"
+tag=munmap01 stime=1575344291
+cmdline="munmap01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns03.c:42: PASS: NS_GET_OWNER_UID fails, UTS namespace
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
+munmap01    1  TPASS  :  Functionality of munmap() successful
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl_ns04 stime=1575293611
-cmdline="ioctl_ns04"
+tag=munmap02 stime=1575344291
+cmdline="munmap02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns04.c:38: PASS: NS_GET_USERNS fails with EPERM
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl_ns05 stime=1575293611
-cmdline="ioctl_ns05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns05.c:91: PASS: child and parent are consistent
-ioctl_ns05.c:50: PASS: child thinks its pid is 1
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
+munmap02    1  TPASS  :  Functionality of munmap() successful
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=ioctl_ns06 stime=1575293611
-cmdline="ioctl_ns06"
+tag=munmap03 stime=1575344291
+cmdline="munmap03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns06.c:87: PASS: child and parent are consistent
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=ioctl_ns07 stime=1575293611
-cmdline="ioctl_ns07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioctl_ns07.c:33: PASS: request failed with ENOTTY
-ioctl_ns07.c:33: PASS: request failed with ENOTTY
-ioctl_ns07.c:33: PASS: request failed with ENOTTY
-ioctl_ns07.c:33: PASS: request failed with ENOTTY
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
+munmap03    1  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+munmap03    2  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+munmap03    3  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify_init1_01 stime=1575293611
-cmdline="inotify_init1_01"
+tag=nanosleep01 stime=1575344291
+cmdline="nanosleep01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-inotify_init1_01    1  TPASS  :  inotify_init1(O_CLOEXEC) PASSED
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=inotify_init1_02 stime=1575293612
-cmdline="inotify_init1_02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-inotify_init1_02    1  TPASS  :  inotify_init1(IN_NONBLOCK) PASSED
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=inotify01 stime=1575293612
-cmdline="inotify01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify01.c:125: PASS: get event: wd=1 mask=04 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=20 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=01 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=10 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=20 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=02 cookie=0 len=0
-inotify01.c:125: PASS: get event: wd=1 mask=08 cookie=0 len=0
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1069us, max 1529us, median 1137us, trunc mean 1131.63us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2068us, max 6273us, median 2119us, trunc mean 2121.09us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5057us, max 8033us, median 5125us, trunc mean 5124.96us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10085us, max 12776us, median 10125us, trunc mean 10132.02us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25077us, max 25173us, median 25120us, trunc mean 25118.73us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100082us, max 100126us, median 100112us, trunc mean 100109.44us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: nanosleep() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1000145us, max 1000148us, median 1000145us, trunc mean 1000145.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
 
 Summary:
 passed   7
@@ -11192,50 +9135,39 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+duration=9 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=3
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify02 stime=1575293612
-cmdline="inotify02"
+tag=nanosleep02 stime=1575344300
+cmdline="nanosleep02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify02.c:185: PASS: get event: wd=1 mask=40000004 cookie=0     len=0  name=""
-inotify02.c:185: PASS: get event: wd=1 mask=00000100 cookie=0     len=16 name="test_file1"
-inotify02.c:185: PASS: get event: wd=1 mask=00000020 cookie=0     len=16 name="test_file1"
-inotify02.c:185: PASS: get event: wd=1 mask=00000008 cookie=0     len=16 name="test_file1"
-inotify02.c:185: PASS: get event: wd=1 mask=00000040 cookie=347103 len=16 name="test_file1"
-inotify02.c:185: PASS: get event: wd=1 mask=00000080 cookie=347103 len=16 name="test_file2"
-inotify02.c:185: PASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
-inotify02.c:185: PASS: get event: wd=1 mask=00000200 cookie=0     len=16 name="test_file2"
-inotify02.c:185: PASS: get event: wd=1 mask=00000800 cookie=0     len=0  name=""
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nanosleep02.c:57: PASS: nanosleep() returned -1, set errno to EINTR
+nanosleep02.c:73: PASS: nanosleep() slept for 1000084us, remaining time difference 76us
 
 Summary:
-passed   9
+passed   2
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
+duration=1 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify03 stime=1575293612
-cmdline="inotify03"
+tag=nanosleep04 stime=1575344301
+cmdline="nanosleep04"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify03.c:71: INFO: umount /dev/loop0
-inotify03.c:102: PASS: get event: wd=1 mask=2000 cookie=0 len=0
-inotify03.c:102: PASS: get event: wd=1 mask=8000 cookie=0 len=0
-inotify03.c:126: PASS: inotify_rm_watch (7, 1) returned EINVAL
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nanosleep04.c:45: PASS: nanosleep() failed with EINVAL
+nanosleep04.c:45: PASS: nanosleep() failed with EINVAL
+nanosleep04.c:45: PASS: nanosleep() failed with EINVAL
 
 Summary:
 passed   3
@@ -11244,24 +9176,104 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=40 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=6
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify04 stime=1575293652
-cmdline="inotify04"
+tag=nftw01 stime=1575344301
+cmdline="nftw01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify04.c:163: PASS: got event: wd=1 mask=0400 cookie=0 len=0 name=""
-inotify04.c:163: PASS: got event: wd=1 mask=8000 cookie=0 len=0 name=""
-inotify04.c:163: PASS: got event: wd=2 mask=0004 cookie=0 len=0 name=""
-inotify04.c:163: PASS: got event: wd=2 mask=0400 cookie=0 len=0 name=""
-inotify04.c:163: PASS: got event: wd=2 mask=8000 cookie=0 len=0 name=""
+nftw01      1  TPASS  :  Test block 0
+nftw01      2  TPASS  :  Test block 1
+nftw01      3  TPASS  :  Test block 2
+nftw01      4  TPASS  :  Test block 3
+nftw01      5  TPASS  :  Test block 4
+nftw01      6  TPASS  :  Test block 5
+nftw01      7  TPASS  :  Test block 6
+nftw01      8  TPASS  :  Test block 7
+nftw01      9  TPASS  :  Test block 8
+nftw01     10  TPASS  :  Test block 9
+nftw01     11  TPASS  :  Test block 10
+nftw01     12  TPASS  :  Test block 11
+nftw01     13  TPASS  :  Test block 12
+nftw01     14  TPASS  :  Test block 13
+nftw01     15  TPASS  :  Test block 14
+nftw01     16  TPASS  :  Test block 15
+nftw01     17  TPASS  :  Test block 16
+nftw01     18  TPASS  :  Test block 17
+nftw01     19  TPASS  :  Test block 18
+nftw01     20  TPASS  :  Test block 19
+nftw01     21  TPASS  :  Test block 20
+nftw01     22  TPASS  :  Test block 21
+nftw01     23  TPASS  :  Test block 22
+nftw01     24  TPASS  :  Test block 23
+nftw01     25  TPASS  :  Test block 24
+nftw01     26  TPASS  :  Test block 25
+nftw01     27  TPASS  :  Test block 26
+nftw01     28  TPASS  :  Test block 27
+nftw01     29  TPASS  :  Test block 28
+nftw01     30  TPASS  :  Test block 29
+nftw01     31  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=nftw6401 stime=1575344301
+cmdline="nftw6401"
+contacts=""
+analysis=exit
+<<<test_output>>>
+nftw6401    1  TPASS  :  Test block 0
+nftw6401    2  TPASS  :  Test block 1
+nftw6401    3  TPASS  :  Test block 2
+nftw6401    4  TPASS  :  Test block 3
+nftw6401    5  TPASS  :  Test block 4
+nftw6401    6  TPASS  :  Test block 5
+nftw6401    7  TPASS  :  Test block 6
+nftw6401    8  TPASS  :  Test block 7
+nftw6401    9  TPASS  :  Test block 8
+nftw6401   10  TPASS  :  Test block 9
+nftw6401   11  TPASS  :  Test block 10
+nftw6401   12  TPASS  :  Test block 11
+nftw6401   13  TPASS  :  Test block 12
+nftw6401   14  TPASS  :  Test block 13
+nftw6401   15  TPASS  :  Test block 14
+nftw6401   16  TPASS  :  Test block 15
+nftw6401   17  TPASS  :  Test block 16
+nftw6401   18  TPASS  :  Test block 17
+nftw6401   19  TPASS  :  Test block 18
+nftw6401   20  TPASS  :  Test block 19
+nftw6401   21  TPASS  :  Test block 20
+nftw6401   22  TPASS  :  Test block 21
+nftw6401   23  TPASS  :  Test block 22
+nftw6401   24  TPASS  :  Test block 23
+nftw6401   25  TPASS  :  Test block 24
+nftw6401   26  TPASS  :  Test block 25
+nftw6401   27  TPASS  :  Test block 26
+nftw6401   28  TPASS  :  Test block 27
+nftw6401   29  TPASS  :  Test block 28
+nftw6401   30  TPASS  :  Test block 29
+nftw6401   31  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=nice01 stime=1575344301
+cmdline="nice01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nice01.c:48: PASS: nice(-12) passed
 
 Summary:
-passed   5
+passed   1
 failed   0
 skipped  0
 warnings 0
@@ -11271,13 +9283,13 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify05 stime=1575293652
-cmdline="inotify05"
+tag=nice02 stime=1575344301
+cmdline="nice02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify05.c:115: PASS: get event: wd=-1 mask=4000 cookie=0 len=0
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nice02.c:46: PASS: nice(50) passed
 
 Summary:
 passed   1
@@ -11287,16 +9299,16 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=3 cstime=11
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify06 stime=1575293652
-cmdline="inotify06"
+tag=nice03 stime=1575344301
+cmdline="nice03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 50m 00s
-inotify06.c:84: PASS: kernel survived inotify beating
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nice03.c:47: PASS: nice(2) passed
 
 Summary:
 passed   1
@@ -11306,79 +9318,16 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=inotify07 stime=1575293652
-cmdline="inotify07"
+tag=nice04 stime=1575344301
+cmdline="nice04"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify07.c:156: INFO: mntpoint/ovl/test_dir ino=40962
-inotify07.c:166: INFO: mntpoint/ovl/test_dir ino=40962
-safe_file_ops.c:359: BROK: Failed to open file 'mntpoint/ovl/test_dir/test_file' at inotify07.c:78: EIO (5)
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=26 termination_type=exited termination_id=2 corefile=no
-cutime=0 cstime=29
-<<<test_end>>>
-<<<test_start>>>
-tag=inotify08 stime=1575293678
-cmdline="inotify08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-inotify08.c:149: INFO: mntpoint/ovl/test_file ino=4098, dev=0:50
-safe_macros.c:557: BROK: inotify08.c:155: chmod(mntpoint/ovl/test_file,0600) failed: EIO (5)
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=42 termination_type=exited termination_id=2 corefile=no
-cutime=1 cstime=14
-<<<test_end>>>
-<<<test_start>>>
-tag=inotify09 stime=1575293720
-cmdline="inotify09"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-../../../../include/tst_fuzzy_sync.h:504: INFO: Minimum sampling period ended
-../../../../include/tst_fuzzy_sync.h:328: INFO: loop = 1024, delay_bias = 0
-../../../../include/tst_fuzzy_sync.h:317: INFO: start_a - start_b: { avg =   -43ns, avg_dev =    19ns, dev_ratio = 0.45 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - start_a  : { avg =  1433ns, avg_dev =    11ns, dev_ratio = 0.01 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_b - start_b  : { avg =  3590ns, avg_dev =    15ns, dev_ratio = 0.00 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - end_b    : { avg = -2199ns, avg_dev =    27ns, dev_ratio = 0.01 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: spins            : { avg =   995  , avg_dev =    42  , dev_ratio = 0.04 }
-../../../../include/tst_fuzzy_sync.h:516: INFO: Reached deviation ratios < 0.10, introducing randomness
-../../../../include/tst_fuzzy_sync.h:519: INFO: Delay range is [-1671, 662]
-../../../../include/tst_fuzzy_sync.h:328: INFO: loop = 1140, delay_bias = 0
-../../../../include/tst_fuzzy_sync.h:317: INFO: start_a - start_b: { avg =   -65ns, avg_dev =     6ns, dev_ratio = 0.09 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - start_a  : { avg =  1425ns, avg_dev =    14ns, dev_ratio = 0.01 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_b - start_b  : { avg =  3595ns, avg_dev =    12ns, dev_ratio = 0.00 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: end_a - end_b    : { avg = -2235ns, avg_dev =    20ns, dev_ratio = 0.01 }
-../../../../include/tst_fuzzy_sync.h:317: INFO: spins            : { avg =  1039  , avg_dev =    55  , dev_ratio = 0.05 }
-../../../../include/tst_fuzzy_sync.h:640: INFO: Exceeded execution loops, requesting exit
-inotify09.c:89: PASS: kernel survived inotify beating
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+nice04.c:34: PASS: nice(-10) failed with EPERM
 
 Summary:
 passed   1
@@ -11387,201 +9336,145 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=34 termination_type=exited termination_id=0 corefile=no
-cutime=3465 cstime=2751
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify01 stime=1575293754
-cmdline="fanotify01"
+tag=open01 stime=1575344301
+cmdline="open01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify01.c:89: INFO: Test #0: inode mark events
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
-fanotify01.c:89: INFO: Test #1: mount mark events
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
-fanotify01.c:89: INFO: Test #2: filesystem mark events
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=8
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=9
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=11
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=10
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=13
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=12
-fanotify01.c:89: INFO: Test #3: inode mark events (FAN_REPORT_FID)
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
-fanotify01.c:89: INFO: Test #4: mount mark events (FAN_REPORT_FID)
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
-fanotify01.c:89: INFO: Test #5: filesystem mark events (FAN_REPORT_FID)
-fanotify01.c:323: PASS: got event: mask=31 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=11 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=10 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2a pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=a pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=20 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=b pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=9 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-2
-fanotify01.c:323: PASS: got event: mask=2 pid=6691 fd=-1
-fanotify01.c:323: PASS: got event: mask=8 pid=6691 fd=-1
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+open01.c:59: PASS: Sticky bit is set as expected
+open01.c:59: PASS: Directory bit is set as expected
 
 Summary:
-passed   72
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=19 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=fanotify02 stime=1575293773
-cmdline="fanotify02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify02.c:173: PASS: got event: mask=2a pid=6708 fd=8
-fanotify02.c:173: PASS: got event: mask=a pid=6708 fd=8
-fanotify02.c:173: PASS: got event: mask=8 pid=6708 fd=8
-fanotify02.c:173: PASS: got event: mask=31 pid=6708 fd=9
-fanotify02.c:173: PASS: got event: mask=11 pid=6708 fd=9
-fanotify02.c:173: PASS: got event: mask=10 pid=6708 fd=9
-fanotify02.c:173: PASS: got event: mask=30 pid=6708 fd=10
-fanotify02.c:173: PASS: got event: mask=10 pid=6708 fd=10
-
-Summary:
-passed   8
+passed   2
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=0
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify03 stime=1575293773
-cmdline="fanotify03"
+tag=open01A stime=1575344301
+cmdline="symlink01 -T open01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify03.c:214: INFO: Test #0: inode mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
-fanotify03.c:316: PASS: got event: mask=10000 pid=6748 fd=8
-fanotify03.c:316: PASS: got event: mask=20000 pid=6748 fd=8
-fanotify03.c:316: PASS: got event: mask=10000 pid=6748 fd=8
-fanotify03.c:202: PASS: child exited correctly
-fanotify03.c:214: INFO: Test #1: inode mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
-fanotify03.c:316: PASS: got event: mask=20000 pid=6749 fd=8
-fanotify03.c:316: PASS: got event: mask=40000 pid=6749 fd=8
-fanotify03.c:202: PASS: child exited correctly
-fanotify03.c:214: INFO: Test #2: mount mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
-fanotify03.c:316: PASS: got event: mask=10000 pid=6750 fd=8
-fanotify03.c:316: PASS: got event: mask=20000 pid=6750 fd=8
-fanotify03.c:316: PASS: got event: mask=10000 pid=6750 fd=8
-fanotify03.c:202: PASS: child exited correctly
-fanotify03.c:214: INFO: Test #3: mount mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
-fanotify03.c:316: PASS: got event: mask=20000 pid=6751 fd=8
-fanotify03.c:316: PASS: got event: mask=40000 pid=6751 fd=8
-fanotify03.c:202: PASS: child exited correctly
-fanotify03.c:214: INFO: Test #4: filesystem mark, FAN_OPEN_PERM | FAN_ACCESS_PERM events
-fanotify03.c:316: PASS: got event: mask=10000 pid=6752 fd=8
-fanotify03.c:316: PASS: got event: mask=20000 pid=6752 fd=8
-fanotify03.c:316: PASS: got event: mask=10000 pid=6752 fd=8
-fanotify03.c:202: PASS: child exited correctly
-fanotify03.c:214: INFO: Test #5: filesystem mark, FAN_ACCESS_PERM | FAN_OPEN_EXEC_PERM events
-fanotify03.c:316: PASS: got event: mask=20000 pid=6753 fd=8
-fanotify03.c:316: PASS: got event: mask=40000 pid=6753 fd=8
-fanotify03.c:202: PASS: child exited correctly
+open01      1  TPASS  :  open(2) with (O_CREAT | O_RDWR) to create object file through symbolic link file and all writes, reads, and lseeks are ok
+open01      2  TPASS  :  open(2) with O_RDWR of existing  object file through symbolic link file and all writes, reads, and lseeks are ok
+open01      3  TPASS  :  open(2) with (O_CREAT | O_EXCL) error  is caught when creating object file through symbolic link file
+open01      4  TPASS  :  open(2) error with O_RDWR is caught when processing symbolic link file which points at no object file
+open01      5  TPASS  :  Nested symbolic link access condition caught.  ELOOP is returned
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open02 stime=1575344301
+cmdline="open02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+open02.c:66: PASS: open() failed as expected: ENOENT (2)
+open02.c:66: PASS: open() failed as expected: EPERM (1)
 
 Summary:
-passed   21
+passed   2
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=16 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=5
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify04 stime=1575293789
-cmdline="fanotify04"
+tag=open03 stime=1575344301
+cmdline="open03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, '.') succeeded
-fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, 'fname_6773') failed
-fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | FAN_MARK_DONT_FOLLOW, FAN_OPEN, AT_FDCWD, 'symlink_6773') succeeded
-fanotify04.c:168: PASS: No event as expected
-fanotify04.c:71: PASS: fanotify_mark (7, FAN_MARK_ADD | 0, FAN_OPEN, AT_FDCWD, 'symlink_6773') succeeded
-fanotify04.c:132: PASS: event generated properly for type 100000
-fanotify04.c:132: PASS: event generated properly for type 100000
-fanotify04.c:132: PASS: event generated properly for type 40000
-fanotify04.c:168: PASS: No event as expected
+open03      1  TPASS  :  open(tfile_2656, O_RDWR|O_CREAT,0700) returned 7
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open04 stime=1575344301
+cmdline="open04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open04      1  TPASS  :  call returned expected EMFILE error
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=open05 stime=1575344301
+cmdline="open05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open05      1  TPASS  :  open returned expected EACCES error
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open06 stime=1575344301
+cmdline="open06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open06      1  TPASS  :  call returned expected ENXIO error
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open07 stime=1575344301
+cmdline="open07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open07      1  TPASS  :  open returned expected ELOOP error
+open07      2  TPASS  :  open returned expected ELOOP error
+open07      3  TPASS  :  open returned expected ELOOP error
+open07      4  TPASS  :  open returned expected ELOOP error
+open07      5  TPASS  :  open succeeded as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open08 stime=1575344301
+cmdline="open08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+open08.c:84: PASS: expected failure - errno = 17 : File exists
+open08.c:84: PASS: expected failure - errno = 21 : Is a directory
+open08.c:84: PASS: expected failure - errno = 20 : Not a directory
+open08.c:84: PASS: expected failure - errno = 36 : File name too long
+open08.c:84: PASS: expected failure - errno = 13 : Permission denied
+open08.c:84: PASS: expected failure - errno = 14 : Bad address
 
 Summary:
-passed   9
+passed   6
 failed   0
 skipped  0
 warnings 0
@@ -11591,57 +9484,255 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=1
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify05 stime=1575293789
-cmdline="fanotify05"
+tag=open09 stime=1575344301
+cmdline="open09"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify05.c:99: PASS: got event: mask=4000 pid=6807 fd=-1
+open09      1  TPASS  :  Test passed in O_WRONLY.
+open09      2  TPASS  :  Test passed in O_RDONLY.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open10 stime=1575344301
+cmdline="open10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open10      1  TPASS  :  Test passed in block0.
+open10      2  TPASS  :  Test passed in block1.
+open10      3  TPASS  :  Test passed in block2.
+open10      4  TPASS  :  Test passed in block3.
+open10      5  TPASS  :  Test passed.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open11 stime=1575344301
+cmdline="open11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+open11.c:289: PASS: Open regular file O_RDONLY
+open11.c:289: PASS: Open regular file O_WRONLY
+open11.c:289: PASS: Open regular file O_RDWR
+open11.c:289: PASS: Open regular file O_RDWR | O_SYNC
+open11.c:289: PASS: Open regular file O_RDWR | O_TRUNC
+open11.c:289: PASS: Open dir O_RDONLY
+open11.c:289: PASS: Open dir O_RDWR, expect EISDIR
+open11.c:289: PASS: Open regular file O_DIRECTORY, expect ENOTDIR
+open11.c:289: PASS: Open hard link file O_RDONLY
+open11.c:289: PASS: Open hard link file O_WRONLY
+open11.c:289: PASS: Open hard link file O_RDWR
+open11.c:289: PASS: Open sym link file O_RDONLY
+open11.c:289: PASS: Open sym link file O_WRONLY
+open11.c:289: PASS: Open sym link file O_RDWR
+open11.c:289: PASS: Open sym link dir O_RDONLY
+open11.c:289: PASS: Open sym link dir O_WRONLY, expect EISDIR
+open11.c:289: PASS: Open sym link dir O_RDWR, expect EISDIR
+open11.c:289: PASS: Open device special file O_RDONLY
+open11.c:289: PASS: Open device special file O_WRONLY
+open11.c:289: PASS: Open device special file O_RDWR
+open11.c:289: PASS: Open non-existing regular file in existing dir
+open11.c:289: PASS: Open link file O_RDONLY | O_CREAT
+open11.c:289: PASS: Open symlink file O_RDONLY | O_CREAT
+open11.c:289: PASS: Open regular file O_RDONLY | O_CREAT
+open11.c:289: PASS: Open symlink dir O_RDONLY | O_CREAT, expect EISDIR
+open11.c:289: PASS: Open dir O_RDONLY | O_CREAT, expect EISDIR
+open11.c:289: PASS: Open regular file O_RDONLY | O_TRUNC, behaviour is undefined but should not oops or hang
+open11.c:289: PASS: Open regular file(non-empty) O_RDONLY | O_TRUNC, behaviour is undefined but should not oops or hang
 
 Summary:
-passed   1
+passed   28
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=13 termination_type=exited termination_id=0 corefile=no
-cutime=4 cstime=174
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify06 stime=1575293802
-cmdline="fanotify06"
+tag=open12 stime=1575344301
+cmdline="open12"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
 mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify06.c:169: INFO: Test #0: Fanotify merge mount mark
-fanotify06.c:147: PASS: group 0 got event: mask 2 pid=6850 fd=16
-fanotify06.c:147: PASS: group 1 got event: mask 2 pid=6850 fd=16
-fanotify06.c:147: PASS: group 2 got event: mask 2 pid=6850 fd=16
-fanotify06.c:230: PASS: group 3 got no event
-fanotify06.c:230: PASS: group 4 got no event
-fanotify06.c:230: PASS: group 5 got no event
-fanotify06.c:230: PASS: group 6 got no event
-fanotify06.c:230: PASS: group 7 got no event
-fanotify06.c:230: PASS: group 8 got no event
-fanotify06.c:169: INFO: Test #1: Fanotify merge overlayfs mount mark
-fanotify06.c:147: PASS: group 0 got event: mask 2 pid=6850 fd=16
-fanotify06.c:147: PASS: group 1 got event: mask 2 pid=6850 fd=16
-fanotify06.c:147: PASS: group 2 got event: mask 2 pid=6850 fd=16
-fanotify06.c:230: PASS: group 3 got no event
-fanotify06.c:230: PASS: group 4 got no event
-fanotify06.c:230: PASS: group 5 got no event
-fanotify06.c:230: PASS: group 6 got no event
-fanotify06.c:230: PASS: group 7 got no event
-fanotify06.c:230: PASS: group 8 got no event
+open12      0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+open12      0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+open12      1  TPASS  :  test O_APPEND for open success
+open12      2  TPASS  :  test O_NOATIME for open success
+open12      3  TPASS  :  test O_CLOEXEC for open success
+open12      4  TPASS  :  test O_LARGEFILE for open success
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=open13 stime=1575344302
+cmdline="open13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open13      1  TPASS  :  read(2) failed with EBADF
+open13      2  TPASS  :  write(2) failed with EBADF
+open13      3  TPASS  :  fchmod(2) failed with EBADF
+open13      4  TPASS  :  fchown(2) failed with EBADF
+open13      5  TFAIL  :  open13.c:155: fgetxattr(2) failed unexpectedly, expected EBADF: TEST_ERRNO=EOPNOTSUPP(95): Operation not supported
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=open14 stime=1575344302
+cmdline="open14"
+contacts=""
+analysis=exit
+<<<test_output>>>
+open14      0  TINFO  :  creating a file with O_TMPFILE flag
+open14      0  TINFO  :  writing data to the file
+open14      0  TINFO  :  file size is '4096'
+open14      0  TINFO  :  looking for the file in '.'
+open14      0  TINFO  :  file not found, OK
+open14      0  TINFO  :  renaming '/fs/vda/tmpdir/ltp-gUqxS8PHSD/opeTF6qwh/#2097159 (deleted)' -> 'tmpfile'
+open14      0  TINFO  :  found a file: tmpfile
+open14      1  TPASS  :  single file tests passed
+open14      0  TINFO  :  create files in multiple directories
+open14      0  TINFO  :  removing test directories
+open14      0  TINFO  :  writing/reading temporary files
+open14      0  TINFO  :  closing temporary files
+open14      2  TPASS  :  multiple files tests passed
+open14      0  TINFO  :  create multiple directories, link files into them
+open14      0  TINFO  :  and check file permissions
+open14      0  TINFO  :  remove files, directories
+open14      3  TPASS  :  file permission tests passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=openat01 stime=1575344302
+cmdline="openat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+openat01    1  TPASS  :  openat() returned -1: TEST_ERRNO=SUCCESS(0): Success
+openat01    2  TPASS  :  openat() returned -1: TEST_ERRNO=SUCCESS(0): Success
+openat01    3  TPASS  :  openat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
+openat01    4  TPASS  :  openat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
+openat01    5  TPASS  :  openat() returned -1: TEST_ERRNO=SUCCESS(0): Success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=openat02 stime=1575344302
+cmdline="openat02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+openat02    1  TPASS  :  test O_APPEND for openat success
+openat02    2  TPASS  :  test O_CLOEXEC for openat success
+openat02    3  TPASS  :  test O_LARGEFILE for openat success
+openat02    4  TCONF  :  openat02.c:237: test O_NOATIME flag for openat needs filesystems which are mounted without noatime and relatime
+openat02    5  TPASS  :  test O_NOFOLLOW for openat success
+openat02    6  TPASS  :  test O_TRUNC for openat success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=openat03 stime=1575344302
+cmdline="openat03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+openat03    0  TINFO  :  creating a file with O_TMPFILE flag
+openat03    0  TINFO  :  writing data to the file
+openat03    0  TINFO  :  file size is '4096'
+openat03    0  TINFO  :  looking for the file in '.'
+openat03    0  TINFO  :  file not found, OK
+openat03    0  TINFO  :  renaming '/fs/vda/tmpdir/ltp-gUqxS8PHSD/opes5gJej/#2097159 (deleted)' -> 'tmpfile'
+openat03    0  TINFO  :  found a file: tmpfile
+openat03    1  TPASS  :  single file tests passed
+openat03    0  TINFO  :  create files in multiple directories
+openat03    0  TINFO  :  removing test directories
+openat03    0  TINFO  :  writing/reading temporary files
+openat03    0  TINFO  :  closing temporary files
+openat03    2  TPASS  :  multiple files tests passed
+openat03    0  TINFO  :  create multiple directories, link files into them
+openat03    0  TINFO  :  and check file permissions
+openat03    0  TINFO  :  remove files, directories
+openat03    3  TPASS  :  file permission tests passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mincore01 stime=1575344302
+cmdline="mincore01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mincore01    1  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+mincore01    2  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+mincore01    3  TPASS  :  failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+mincore01    4  TPASS  :  failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=mincore02 stime=1575344302
+cmdline="mincore02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mincore02    1  TPASS  :  4 pages locked, 4 pages in-core
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise01 stime=1575344302
+cmdline="madvise01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise01.c:112: PASS: madvise test for MADV_NORMAL PASSED
+madvise01.c:112: PASS: madvise test for MADV_RANDOM PASSED
+madvise01.c:112: PASS: madvise test for MADV_SEQUENTIAL PASSED
+madvise01.c:112: PASS: madvise test for MADV_WILLNEED PASSED
+madvise01.c:112: PASS: madvise test for MADV_DONTNEED PASSED
+madvise01.c:112: PASS: madvise test for MADV_REMOVE PASSED
+madvise01.c:112: PASS: madvise test for MADV_DONTFORK PASSED
+madvise01.c:112: PASS: madvise test for MADV_DOFORK PASSED
+madvise01.c:112: PASS: madvise test for MADV_HWPOISON PASSED
+madvise01.c:112: PASS: madvise test for MADV_MERGEABLE PASSED
+madvise01.c:112: PASS: madvise test for MADV_UNMERGEABLE PASSED
+madvise01.c:112: PASS: madvise test for MADV_HUGEPAGE PASSED
+madvise01.c:112: PASS: madvise test for MADV_NOHUGEPAGE PASSED
+madvise01.c:112: PASS: madvise test for MADV_DONTDUMP PASSED
+madvise01.c:112: PASS: madvise test for MADV_DODUMP PASSED
+madvise01.c:112: PASS: madvise test for MADV_FREE PASSED
+madvise01.c:112: PASS: madvise test for MADV_WIPEONFORK PASSED
+madvise01.c:112: PASS: madvise test for MADV_KEEPONFORK PASSED
 
 Summary:
 passed   18
@@ -11650,18 +9741,112 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=9 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=6
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=3
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify07 stime=1575293811
-cmdline="fanotify07"
+tag=madvise02 stime=1575344302
+cmdline="madvise02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify07.c:180: PASS: second instance destroyed successfully
-fanotify07.c:193: PASS: all children exited successfully
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise02.c:180: PASS: MADV_NORMAL failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_NORMAL failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_REMOVE failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_DONTNEED failed as expected: EINVAL (22)
+madvise02.c:173: CONF: MADV_MERGEABLE is not supported
+madvise02.c:173: CONF: MADV_UNMERGEABLE is not supported
+madvise02.c:180: PASS: MADV_NORMAL failed as expected: ENOMEM (12)
+madvise02.c:180: PASS: MADV_WILLNEED failed as expected: ENOMEM (12)
+madvise02.c:173: CONF: MADV_WILLNEED is not supported
+madvise02.c:180: PASS: MADV_FREE failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_WIPEONFORK failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_WIPEONFORK shared_anon failed as expected: EINVAL (22)
+madvise02.c:180: PASS: MADV_WIPEONFORK private file backed failed as expected: EINVAL (22)
+
+Summary:
+passed   10
+failed   0
+skipped  3
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise05 stime=1575344302
+cmdline="madvise05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise05.c:38: PASS: issue has not been reproduced
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise06 stime=1575344302
+cmdline="madvise06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise06.c:53: INFO: dropping caches
+madvise06.c:64: CONF: System swap is too small (838860800 bytes needed)
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=5
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise07 stime=1575344302
+cmdline="madvise07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise07.c:45: INFO: mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0)
+madvise07.c:54: INFO: madvise(0x7ff355a4e000, 4096, MADV_HWPOISON)
+madvise07.c:83: PASS: Received SIGBUS after accessing poisoned page
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise08 stime=1575344303
+cmdline="madvise08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise08.c:78: INFO: Temporary core pattern is '/fs/vda/tmpdir/ltp-gUqxS8PHSD/pHjikn/dump-%p'
+madvise08.c:117: INFO: Dump file should be dump-2698
+madvise08.c:201: PASS: madvise(..., MADV_DONTDUMP)
+madvise08.c:117: INFO: Dump file should be dump-2699
+madvise08.c:205: PASS: madvise(..., MADV_DODUMP)
 
 Summary:
 passed   2
@@ -11670,18 +9855,212 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=2
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify08 stime=1575293812
-cmdline="fanotify08"
+tag=madvise09 stime=1575344303
+cmdline="madvise09"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify08.c:38: PASS: not set close_on_exec
-fanotify08.c:38: PASS: set close_on_exec
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise09.c:319: CONF: MADV_FREE does not work without swap
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=madvise10 stime=1575344303
+cmdline="madvise10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+madvise10.c:134: INFO: MADV_WIPEONFORK zeroes memory in child
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x0)
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x12)
+madvise10.c:89: PASS: In PID 2704, Matched expected pattern
+madvise10.c:134: INFO: MADV_WIPEONFORK with zero length does nothing
+madvise10.c:108: PASS: madvise(0x7f1768770000, 0, 0x0)
+madvise10.c:108: PASS: madvise(0x7f1768770000, 0, 0x12)
+madvise10.c:89: PASS: In PID 2705, Matched expected pattern
+madvise10.c:134: INFO: MADV_WIPEONFORK zeroes memory in grand-child
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x0)
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x12)
+madvise10.c:89: PASS: In PID 2707, Matched expected pattern
+madvise10.c:134: INFO: MADV_KEEPONFORK will undo MADV_WIPEONFORK
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x12)
+madvise10.c:108: PASS: madvise(0x7f1768770000, 16384, 0x13)
+madvise10.c:89: PASS: In PID 2708, Matched expected pattern
+
+Summary:
+passed   12
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=newuname01 stime=1575344303
+cmdline="newuname01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+newuname01    1  TPASS  :  newuname call succeed: return value = 0 
+newuname01    0  TINFO  :  This system is Linux
+newuname01    0  TINFO  :  The system infomation is :
+newuname01    0  TINFO  :  System is Linux on x86_64 hardware
+newuname01    0  TINFO  :  Nodename is vm-snb-4c35425f2f89
+newuname01    0  TINFO  :  Version is 5.4.0-08754-gf4cecda4a319b, #1 SMP Tue Dec 3 11:10:31 CST 2019
+newuname01    0  TINFO  :  Domainname is (none) 
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pathconf01 stime=1575344303
+cmdline="pathconf01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pathconf01    1  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_LINK_MAX) returned 65000
+pathconf01    2  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_NAME_MAX) returned 255
+pathconf01    3  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_PATH_MAX) returned 4096
+pathconf01    4  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_PIPE_BUF) returned 4096
+pathconf01    5  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_CHOWN_RESTRICTED) returned 1
+pathconf01    6  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, _PC_NO_TRUNC) returned 1
+pathconf01    7  TPASS  :  pathconf(/fs/vda/tmpdir/ltp-gUqxS8PHSD/pat3wBxyp, (null)) returned 65000
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pause01 stime=1575344303
+cmdline="pause01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pause01.c:24: PASS: pause() interrupted with EINTR
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pause02 stime=1575344303
+cmdline="pause02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pause02     1  TPASS  :  pause was interrupted correctly
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pause03 stime=1575344303
+cmdline="pause03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pause03     1  TPASS  :  pause() did not return after SIGKILL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=personality01 stime=1575344303
+cmdline="personality01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+personality01    1  TPASS  :  personality(PER_LINUX)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_LINUX_32BIT)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SVR4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SVR3)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SCOSVR3)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_OSR5)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_WYSEV386)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_ISCR4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_BSD)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_XENIX)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_LINUX32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIX32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIXN32)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_IRIX64)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_RISCOS)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_SOLARIS)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_UW7)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_OSF4)
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TPASS  :  personality(PER_HPUX)
+personality01    0  TINFO  :  Child process returned TPASS
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=personality02 stime=1575344303
+cmdline="personality02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+personality02    1  TPASS  :  Timeout wasn't modified
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pidfd_send_signal01 stime=1575344303
+cmdline="pidfd_send_signal01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal01.c:29: PASS: Received correct signal and data!
+pidfd_send_signal01.c:65: PASS: pidfd_send_signal() behaved like rt_sigqueueinfo()
 
 Summary:
 passed   2
@@ -11694,21 +10073,386 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify09 stime=1575293812
-cmdline="fanotify09"
+tag=pidfd_send_signal02 stime=1575344303
+cmdline="pidfd_send_signal02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify09.c:161: INFO: Test #0: Events on children with both inode and mount marks
-fanotify09.c:150: PASS: group 0 got event: mask 2 pid=6884 fd=10 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/tfile_6884
-fanotify09.c:234: PASS: group 1 got no event
-fanotify09.c:234: PASS: group 2 got no event
-fanotify09.c:161: INFO: Test #1: Events on children and subdirs with both inode and mount marks
-fanotify09.c:150: PASS: group 0 got event: mask 2 pid=6884 fd=10 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/tfile_6884
-fanotify09.c:150: PASS: group 0 got event: mask 10 pid=6884 fd=11 path=/fs/vda/tmpdir/ltp-rD8LOpvacC/FaCOE4/mntpoint/testdir
-fanotify09.c:234: PASS: group 1 got no event
-fanotify09.c:234: PASS: group 2 got no event
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal02.c:63: PASS: pidfd_send_signal() failed as expected: EINVAL (22)
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal02.c:63: PASS: pidfd_send_signal() failed as expected: EBADF (9)
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal02.c:63: PASS: pidfd_send_signal() failed as expected: EINVAL (22)
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal02.c:63: PASS: pidfd_send_signal() failed as expected: EPERM (1)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pidfd_send_signal03 stime=1575344303
+cmdline="pidfd_send_signal03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pidfd_send_signal.h:23: INFO: Testing syscall(__NR_pidfd_send_signal)
+pidfd_send_signal03.c:99: PASS: Did not send signal to wrong process with same PID!
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe01 stime=1575344303
+cmdline="pipe01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pipe01.c:48: PASS: pipe() functionality is correct
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe02 stime=1575344303
+cmdline="pipe02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pipe02.c:86: PASS: Child killed by SIGPIPE
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe03 stime=1575344303
+cmdline="pipe03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pipe03.c:30: PASS: expected failure writing to read end of pipe: EBADF (9)
+pipe03.c:39: PASS: expected failure reading from write end of pipe: EBADF (9)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe04 stime=1575344303
+cmdline="pipe04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe04      1  TPASS  :  Child 1 killed while writing to a pipe
+pipe04      2  TPASS  :  Child 2 killed while writing to a pipe
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe05 stime=1575344303
+cmdline="pipe05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe05      1  TPASS  :  expected failure - errno = 14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe06 stime=1575344303
+cmdline="pipe06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe06      1  TPASS  :  failed with EMFILE
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe07 stime=1575344303
+cmdline="pipe07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe07      0  TINFO  :  Found 7 files open
+pipe07      1  TPASS  :  Opened 508 pipes
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe08 stime=1575344303
+cmdline="pipe08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe08      1  TPASS  :  got expected SIGPIPE signal
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe09 stime=1575344303
+cmdline="pipe09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe09      1  TPASS  :  functionality appears to be correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe10 stime=1575344303
+cmdline="pipe10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe10      1  TPASS  :  functionality is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe11 stime=1575344303
+cmdline="pipe11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pipe11.c:70: INFO: Reading 4096 per each of 1 children
+pipe11.c:50: PASS: Child 2768 read pipe buffer correctly
+pipe11.c:70: INFO: Reading 2048 per each of 2 children
+pipe11.c:50: PASS: Child 2770 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2769 read pipe buffer correctly
+pipe11.c:70: INFO: Reading 1365 per each of 3 children
+pipe11.c:50: PASS: Child 2773 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2772 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2771 read pipe buffer correctly
+pipe11.c:70: INFO: Reading 1024 per each of 4 children
+pipe11.c:50: PASS: Child 2777 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2776 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2775 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2774 read pipe buffer correctly
+pipe11.c:70: INFO: Reading 409 per each of 10 children
+pipe11.c:50: PASS: Child 2783 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2784 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2785 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2786 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2787 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2782 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2781 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2780 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2779 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2778 read pipe buffer correctly
+pipe11.c:70: INFO: Reading 81 per each of 50 children
+pipe11.c:50: PASS: Child 2828 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2830 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2831 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2817 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2819 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2825 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2832 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2833 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2822 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2801 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2803 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2804 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2806 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2809 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2812 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2813 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2821 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2823 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2827 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2834 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2802 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2837 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2798 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2811 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2820 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2824 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2793 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2794 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2795 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2796 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2797 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2800 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2805 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2807 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2810 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2814 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2815 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2816 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2818 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2826 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2829 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2836 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2799 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2808 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2835 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2792 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2791 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2790 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2789 read pipe buffer correctly
+pipe11.c:50: PASS: Child 2788 read pipe buffer correctly
+
+Summary:
+passed   70
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe2_01 stime=1575344303
+cmdline="pipe2_01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe2_01    1  TPASS  :  pipe2(O_CLOEXEC) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pipe2_02 stime=1575344303
+cmdline="pipe2_02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pipe2_02    1  TPASS  :  pipe2(O_NONBLOCK) PASSED
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pivot_root01 stime=1575344303
+cmdline="pivot_root01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pivot_root01.c:158: PASS: pivot_root succeeded
+pivot_root01.c:173: PASS: pivot_root failed as expectedly: EBUSY (16)
+pivot_root01.c:173: PASS: pivot_root failed as expectedly: EINVAL (22)
+pivot_root01.c:173: PASS: pivot_root failed as expectedly: ENOTDIR (20)
+pivot_root01.c:173: PASS: pivot_root failed as expectedly: EPERM (1)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=poll01 stime=1575344303
+cmdline="poll01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+poll01.c:42: PASS: poll() POLLOUT
+poll01.c:69: PASS: poll() POLLIN
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=poll02 stime=1575344303
+cmdline="poll02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+tst_timer_test.c:264: INFO: poll() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1083us, max 1251us, median 1143us, trunc mean 1137.16us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2069us, max 2562us, median 2143us, trunc mean 2141.31us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5061us, max 5228us, median 5147us, trunc mean 5144.92us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10086us, max 20803us, median 10146us, trunc mean 10145.78us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25045us, max 32429us, median 25106us, trunc mean 25214.46us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100112us, max 101043us, median 100145us, trunc mean 100163.44us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: poll() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1000752us, max 1001197us, median 1000752us, trunc mean 1000752.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
 
 Summary:
 passed   7
@@ -11717,201 +10461,54 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
+duration=8 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify10 stime=1575293812
-cmdline="fanotify10"
+tag=ppoll01 stime=1575344311
+cmdline="ppoll01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify10.c:331: INFO: Test #0: ignore mount events created on a specific file
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6910 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6910 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6910 fd=16
-fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_MOUNT and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:331: INFO: Test #1: ignore exec mount events created on a specific file
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6911 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6911 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6911 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6911 fd=16
-fanotify10.c:331: INFO: Test #2: don't ignore mount events created on another file
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6912 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6912 fd=16
-fanotify10.c:331: INFO: Test #3: don't ignore exec mount events created on another file
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6913 fd=16
-fanotify10.c:331: INFO: Test #4: ignore inode events created on a specific mount point
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6914 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6914 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6914 fd=16
-fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_INODE and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:331: INFO: Test #5: ignore exec inode events created on a specific mount point
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6915 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6915 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6915 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6915 fd=16
-fanotify10.c:331: INFO: Test #6: don't ignore inode events created on another mount point
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6916 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6916 fd=16
-fanotify10.c:331: INFO: Test #7: don't ignore exec inode events created on another mount point
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6917 fd=16
-fanotify10.c:331: INFO: Test #8: ignore fs events created on a specific file
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6919 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6919 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6919 fd=16
-fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_INODE ignore mask got no event
-fanotify10.c:331: INFO: Test #9: ignore exec fs events created on a specific file
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6922 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6922 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6922 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6922 fd=16
-fanotify10.c:331: INFO: Test #10: don't ignore mount events created on another file
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6923 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6923 fd=16
-fanotify10.c:331: INFO: Test #11: don't ignore exec mount events created on another file
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6924 fd=16
-fanotify10.c:331: INFO: Test #12: ignore fs events created on a specific mount point
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6925 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6925 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6925 fd=16
-fanotify10.c:398: PASS: group 0 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 1) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 0 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 1 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:398: PASS: group 2 (prio 2) with FAN_MARK_FILESYSTEM and FAN_MARK_MOUNT ignore mask got no event
-fanotify10.c:331: INFO: Test #13: ignore exec fs events created on a specific mount point
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6926 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6926 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6926 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1000 pid=6926 fd=16
-fanotify10.c:331: INFO: Test #14: don't ignore fs events created on another mount point
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 20 pid=6927 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 20 pid=6927 fd=16
-fanotify10.c:331: INFO: Test #15: don't ignore exec fs events created on another mount point
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 0 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 1 got event: mask 1020 pid=6928 fd=16
-fanotify10.c:292: PASS: group 2 got event: mask 1020 pid=6928 fd=16
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+ppoll01.c:212: INFO: case NORMAL
+ppoll01.c:243: PASS: revents=0x0005
+ppoll01.c:249: PASS: ret: 1
+ppoll01.c:212: INFO: case MASK_SIGNAL
+ppoll01.c:249: PASS: ret: 0
+ppoll01.c:212: INFO: case TIMEOUT
+ppoll01.c:249: PASS: ret: 0
+ppoll01.c:212: INFO: case FD_ALREADY_CLOSED
+ppoll01.c:243: PASS: revents=0x0020
+ppoll01.c:249: PASS: ret: 1
+ppoll01.c:212: INFO: case SEND_SIGINT
+ppoll01.c:252: PASS: ret: -1, errno: EINTR (4)
+ppoll01.c:212: INFO: case SEND_SIGINT_RACE_TEST
+ppoll01.c:252: PASS: ret: -1, errno: EINTR (4)
+ppoll01.c:212: INFO: case INVALID_NFDS
+ppoll01.c:252: PASS: ret: -1, errno: EINVAL (22)
+ppoll01.c:212: INFO: case INVALID_FDS
+ppoll01.c:252: PASS: ret: -1, errno: EFAULT (14)
 
 Summary:
-passed   144
+passed   10
 failed   0
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-duration=6 termination_type=exited termination_id=0 corefile=no
-cutime=2 cstime=6
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify11 stime=1575293818
-cmdline="fanotify11"
+tag=prctl01 stime=1575344312
+cmdline="prctl01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify11.c:66: INFO: Test #0: without FAN_REPORT_TID: tgid=6933, tid=0, event.pid=0
-fanotify11.c:91: PASS: event.pid == tgid
-fanotify11.c:66: INFO: Test #1: with FAN_REPORT_TID: tgid=6933, tid=6934, event.pid=6933
-fanotify11.c:89: PASS: event.pid == tid
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl01.c:25: PASS: prctl(PR_SET_PDEATHSIG) succeeded
+prctl01.c:35: PASS: prctl(PR_GET_PDEATHSIG) got expected death signal
 
 Summary:
 passed   2
@@ -11921,31 +10518,70 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=fanotify12 stime=1575293818
-cmdline="fanotify12"
+tag=prctl02 stime=1575344312
+cmdline="prctl02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify12.c:137: INFO: Test #0: inode mark, FAN_OPEN events
-fanotify12.c:239: PASS: Received event: mask=20, pid=6939, fd=8
-fanotify12.c:239: PASS: Received event: mask=20, pid=6939, fd=9
-fanotify12.c:137: INFO: Test #1: inode mark, FAN_OPEN_EXEC events
-fanotify12.c:239: PASS: Received event: mask=1000, pid=6940, fd=8
-fanotify12.c:137: INFO: Test #2: inode mark, FAN_OPEN | FAN_OPEN_EXEC events
-fanotify12.c:239: PASS: Received event: mask=20, pid=6941, fd=8
-fanotify12.c:239: PASS: Received event: mask=1020, pid=6941, fd=9
-fanotify12.c:137: INFO: Test #3: inode mark, FAN_OPEN events, ignore FAN_OPEN_EXEC
-fanotify12.c:239: PASS: Received event: mask=20, pid=6942, fd=8
-fanotify12.c:239: PASS: Received event: mask=20, pid=6942, fd=9
-fanotify12.c:137: INFO: Test #4: inode mark, FAN_OPEN_EXEC events, ignore FAN_OPEN
-fanotify12.c:239: PASS: Received event: mask=1000, pid=6943, fd=8
-fanotify12.c:137: INFO: Test #5: inode mark, FAN_OPEN | FAN_OPEN_EXEC events, ignore FAN_OPEN_EXEC
-fanotify12.c:239: PASS: Received event: mask=20, pid=6944, fd=8
-fanotify12.c:239: PASS: Received event: mask=20, pid=6944, fd=9
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl02.c:39: PASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:39: PASS: prctl() failed as expected: EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=prctl03 stime=1575344312
+cmdline="prctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl03.c:73: PASS: prctl(PR_SET_CHILD_SUBREAPER) succeeded
+prctl03.c:46: PASS: prctl(PR_GET_CHILD_SUBREAPER) got expected 0
+prctl03.c:88: PASS: PPID of orphaned process was reparented
+prctl03.c:101: PASS: wait() got orphaned process, pid 2893, status 0
+prctl03.c:108: PASS: received SIGCHLD from orphaned process
+prctl03.c:46: PASS: prctl(PR_GET_CHILD_SUBREAPER) got expected 1
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=prctl04 stime=1575344312
+cmdline="prctl04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl04.c:213: INFO: kernel support PR_GET/SET_SECCOMP
+prctl04.c:125: PASS: prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT succeed
+prctl04.c:197: PASS: SECCOMP_MODE_STRICT doesn't permit GET_SECCOMP call
+prctl04.c:133: PASS: SECCOMP_MODE_STRICT permits read(2) write(2) and _exit(2)
+prctl04.c:197: PASS: SECCOMP_MODE_STRICT doesn't permit close(2)
+prctl04.c:165: PASS: prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER succeed
+prctl04.c:197: PASS: SECCOMP_MODE_FILTER doestn't permit GET_SECCOMP call
+prctl04.c:171: PASS: SECCOMP_MODE_FILTER permits close(2)
+prctl04.c:197: PASS: SECCOMP_MODE_FILTER doesn't permit exit()
+prctl04.c:95: PASS: SECCOMP_MODE_FILTER permits fork(2)
+prctl04.c:102: PASS: SECCOMP_MODE_FILTER has been inherited by child
 
 Summary:
 passed   10
@@ -11955,2894 +10591,23 @@ warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=fanotify13 stime=1575293818
-cmdline="fanotify13"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_supported_fs_types.c:60: INFO: Kernel supports ext2
-tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext3
-tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext4
-tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports xfs
-tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
-tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports vfat
-tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support exfat
-tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
-tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
-tst_test.c:1179: INFO: Testing on ext2
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.934edd480000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=6990, fid=cf314d1a.1157108a.2a723af30000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=6990, fid=cf314d1a.1157108a.a8d13c550000b001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on ext3
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.688efd6300001801 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7006, fid=df935c14.9bb3daba.3136f77b00001802 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7006, fid=df935c14.9bb3daba.fe7a88f40000f001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on ext4
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.8acda15c0000000c values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7022, fid=23d47383.487e6392.25c911c80000000d values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7022, fid=23d47383.487e6392.7c8f4c2700008001 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on xfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.63 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7051, fid=700.0.64 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7051, fid=700.0.65 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on btrfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.101 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7089, fid=51fb15aa.157b1364.102 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7089, fid=51fb15aa.157b1364.103 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on vfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000075 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=30, pid=7097, fid=700.0.5de5138b00000076 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-fanotify13.c:280: PASS: got event: mask=40000030, pid=7097, fid=700.0.5de5138a00000077 values returned in event match those returned in statfs(2) and name_to_handle_at(2)
-tst_test.c:1179: INFO: Testing on exfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type exfat
-tst_test.c:1179: INFO: Testing on ntfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify13.c:168: INFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-fanotify13.c:168: INFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-fanotify13.c:168: INFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-fanotify13.c:168: INFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-fanotify13.c:168: INFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-fanotify13.c:168: INFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-fanotify13.c:138: CONF: FAN_REPORT_FID not supported on filesystem type ntfs
-
-Summary:
-passed   90
-failed   0
-skipped  12
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=29 termination_type=exited termination_id=0 corefile=no
-cutime=13 cstime=557
-<<<test_end>>>
-<<<test_start>>>
-tag=fanotify14 stime=1575293847
-cmdline="fanotify14"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_supported_fs_types.c:60: INFO: Kernel supports ext2
-tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext3
-tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext4
-tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports xfs
-tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
-tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports vfat
-tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support exfat
-tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
-tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
-tst_test.c:1179: INFO: Testing on ext2
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on ext3
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on ext4
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on xfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on btrfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on vfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on exfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-tst_test.c:1179: INFO: Testing on ntfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(204, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:75: PASS: fanotify_fd=-1, fanotify_init(208, O_RDONLY) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 0, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-fanotify14.c:117: PASS: ret=-1, fanotify_mark(7, FAN_MARK_ADD | 10, fc4, AT_FDCWD, mntpoint/file1) failed with error EINVAL as expected
-
-Summary:
-passed   32
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=7 termination_type=exited termination_id=0 corefile=no
-cutime=9 cstime=207
-<<<test_end>>>
-<<<test_start>>>
-tag=fanotify15 stime=1575293854
-cmdline="fanotify15"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_supported_fs_types.c:60: INFO: Kernel supports ext2
-tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext3
-tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext4
-tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports xfs
-tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
-tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports vfat
-tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support exfat
-tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
-tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
-tst_test.c:1179: INFO: Testing on ext2
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7307, fid=8ccb0af1.4954811e.72e162e300008001 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7307, fid=8ccb0af1.4954811e.7c1783a200008002 values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7307, fid=8ccb0af1.4954811e.72e162e300008001 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7307, fid=8ccb0af1.4954811e.d98bc74a00008002 values
-tst_test.c:1179: INFO: Testing on ext3
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7316, fid=c9b057d0.defe2bb3.884786270000b001 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7316, fid=c9b057d0.defe2bb3.7d6404250000b002 values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7316, fid=c9b057d0.defe2bb3.884786270000b001 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7316, fid=c9b057d0.defe2bb3.8c9025820000b002 values
-tst_test.c:1179: INFO: Testing on ext4
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7322, fid=c34f08.20cfb804.e4098ea600008001 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7322, fid=c34f08.20cfb804.2e9c701b00008002 values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7322, fid=c34f08.20cfb804.e4098ea600008001 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7322, fid=c34f08.20cfb804.519df5ad00008002 values
-tst_test.c:1179: INFO: Testing on xfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7333, fid=700.0.63 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7333, fid=700.0.64 values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7333, fid=700.0.63 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7333, fid=700.0.20060 values
-tst_test.c:1179: INFO: Testing on btrfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7362, fid=8cc35814.16878e47.101 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7362, fid=8cc35814.16878e47.102 values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7362, fid=8cc35814.16878e47.101 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7362, fid=8cc35814.16878e47.103 values
-tst_test.c:1179: INFO: Testing on vfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:198: PASS: Got event: mask=3c0, pid=7367, fid=700.0.5de5139e00000079 values
-fanotify15.c:198: PASS: Got event: mask=404, pid=7367, fid=700.0.5de5139f0000007a values
-fanotify15.c:198: PASS: Got event: mask=400003c0, pid=7367, fid=700.0.5de5139e00000079 values
-fanotify15.c:198: PASS: Got event: mask=40000400, pid=7367, fid=700.0.5de5139e0000007b values
-tst_test.c:1179: INFO: Testing on exfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:66: CONF: FAN_REPORT_FID not supported on exfat filesystem
-tst_test.c:1179: INFO: Testing on ntfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-fanotify15.c:66: CONF: FAN_REPORT_FID not supported on ntfs filesystem
-
-Summary:
-passed   24
-failed   0
-skipped  2
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=6 termination_type=exited termination_id=0 corefile=no
-cutime=12 cstime=214
-<<<test_end>>>
-<<<test_start>>>
-tag=ioperm01 stime=1575293860
-cmdline="ioperm01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-ioperm01    1  TPASS  :  ioperm() passed for port address 1021, returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=ioperm02 stime=1575293860
-cmdline="ioperm02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-ioperm02    1  TPASS  :  Expected failure for Invalid I/O address, errno: 22
-ioperm02    2  TPASS  :  Expected failure for Non super-user, errno: 1
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=iopl01 stime=1575293861
-cmdline="iopl01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-iopl01      1  TPASS  :  iopl() passed for level 0, returned 0
-iopl01      2  TPASS  :  iopl() passed for level 1, returned 0
-iopl01      3  TPASS  :  iopl() passed for level 2, returned 0
-iopl01      4  TPASS  :  iopl() passed for level 3, returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=iopl02 stime=1575293861
-cmdline="iopl02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-iopl02      1  TPASS  :  Expected failure for Invalid privilege level, errno: 22
-iopl02      2  TPASS  :  Expected failure for Non super-user, errno: 1
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=ioprio_get01 stime=1575293861
-cmdline="ioprio_get01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioprio_get01.c:42: PASS: ioprio_get returned class NONE prio 4
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=ioprio_set01 stime=1575293861
-cmdline="ioprio_set01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioprio_set01.c:66: INFO: ioprio_get returned class NONE prio 4
-ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 5
-ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 3
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=ioprio_set02 stime=1575293861
-cmdline="ioprio_set02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioprio_set02.c:36: PASS: tested all prios in class BEST-EFFORT
-ioprio_set02.c:52: PASS: tested all prios in class IDLE
-ioprio.h:91: PASS: ioprio_set new class NONE, new prio 0
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=ioprio_set03 stime=1575293861
-cmdline="ioprio_set03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-ioprio.h:91: PASS: ioprio_set new class BEST-EFFORT, new prio 4
-ioprio_set03.c:34: PASS: returned correct error for wrong prio: EINVAL (22)
-ioprio_set03.c:48: INFO: tested illegal priority with class NONE
-ioprio_set03.c:50: PASS: returned correct error for wrong prio: EINVAL (22)
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=io_cancel01 stime=1575293861
-cmdline="io_cancel01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-io_cancel01    1  TPASS  :  expected failure - returned value = -14 : Bad address
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=io_destroy01 stime=1575293861
-cmdline="io_destroy01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-io_destroy01.c:37: PASS: io_destroy() failed as expected, returned -EINVAL
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=io_getevents01 stime=1575293861
-cmdline="io_getevents01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-io_getevents01    1  TPASS  :  expected failure - returned value = -22 : Invalid argument
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=io_setup01 stime=1575293861
-cmdline="io_setup01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-io_setup01.c:62: PASS: io_setup() passed as expected
-io_setup01.c:43: PASS: io_setup() failed as expected, returned -EINVAL
-io_setup01.c:43: PASS: io_setup() failed as expected, returned -EINVAL
-io_setup01.c:43: PASS: io_setup() failed as expected, returned -EFAULT
-io_setup01.c:43: PASS: io_setup() failed as expected, returned -EAGAIN/EWOULDBLOCK
-
-Summary:
-passed   5
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=io_submit01 stime=1575293861
-cmdline="io_submit01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-io_submit01.c:112: PASS: io_submit() with invalid ctx failed with EINVAL
-io_submit01.c:112: PASS: io_submit() with invalid nr failed with EINVAL
-io_submit01.c:112: PASS: io_submit() with invalid iocbpp pointer failed with EFAULT
-io_submit01.c:112: PASS: io_submit() with NULL iocb pointers failed with EFAULT
-io_submit01.c:112: PASS: io_submit() with invalid fd failed with EBADF
-io_submit01.c:112: PASS: io_submit() with readonly fd for write failed with EBADF
-io_submit01.c:112: PASS: io_submit() with writeonly fd for read failed with EBADF
-io_submit01.c:112: PASS: io_submit() with zero buf size failed with SUCCESS
-io_submit01.c:112: PASS: io_submit() with zero nr failed with SUCCESS
-
-Summary:
-passed   9
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl01 stime=1575293861
-cmdline="keyctl01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl01.c:27: PASS: KEYCTL_GET_KEYRING_ID succeeded
-keyctl01.c:48: PASS: KEYCTL_REVOKE failed as expected: ENOKEY (126)
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl02 stime=1575293861
-cmdline="keyctl02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl02.c:118: INFO: waiting for key gc took: 100 ms
-keyctl02.c:119: PASS: Bug not reproduced
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=3 termination_type=exited termination_id=0 corefile=no
-cutime=27 cstime=210
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl03 stime=1575293864
-cmdline="keyctl03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl03.c:39: PASS: Bug not reproduced
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl04 stime=1575293864
-cmdline="keyctl04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl04.c:39: PASS: thread keyring was not leaked
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl05 stime=1575293864
-cmdline="keyctl05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl05.c:123: INFO: Try to update the 'asymmetric' key...
-keyctl05.c:136: PASS: updating 'asymmetric' key expectedly failed with EOPNOTSUPP
-keyctl05.c:92: CONF: kernel doesn't support key type 'dns_resolver'
-keyctl05.c:171: INFO: Try to update the 'user' key...
-keyctl05.c:180: PASS: didn't crash while racing to update 'user' key
-
-Summary:
-passed   2
-failed   0
-skipped  1
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=2
 <<<test_end>>>
 <<<test_start>>>
-tag=keyctl06 stime=1575293864
-cmdline="keyctl06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl06.c:60: PASS: KEYCTL_READ returned full count but didn't overrun the buffer
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl07 stime=1575293864
-cmdline="keyctl07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl07.c:62: INFO: trying to read from the negative key...
-keyctl07.c:73: PASS: KEYCTL_READ on negative key expectedly failed with ENOKEY
-keyctl07.c:88: PASS: didn't crash while reading from negative key
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=keyctl08 stime=1575293864
-cmdline="keyctl08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-keyctl08.c:22: PASS: Denied access to .builtin_trusted_keys
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kcmp01 stime=1575293864
-cmdline="kcmp01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-kcmp01.c:86: PASS: kcmp() returned the expected value
-kcmp01.c:86: PASS: kcmp() returned the expected value
-kcmp01.c:86: PASS: kcmp() returned the expected value
-kcmp01.c:86: PASS: kcmp() returned the expected value
-kcmp01.c:86: PASS: kcmp() returned the expected value
-
-Summary:
-passed   5
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kcmp02 stime=1575293864
-cmdline="kcmp02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-kcmp02.c:83: PASS: kcmp() returned the expected value: ESRCH (3)
-kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
-kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
-kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
-kcmp02.c:83: PASS: kcmp() returned the expected value: EINVAL (22)
-kcmp02.c:83: PASS: kcmp() returned the expected value: EBADF (9)
-
-Summary:
-passed   6
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=kcmp03 stime=1575293864
-cmdline="kcmp03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-kcmp03.c:64: PASS: kcmp() returned the expected value
-kcmp03.c:64: PASS: kcmp() returned the expected value
-kcmp03.c:64: PASS: kcmp() returned the expected value
-kcmp03.c:64: PASS: kcmp() returned the expected value
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill01 stime=1575293864
-cmdline="kill01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill01      1  TPASS  :  received expected signal 9
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill02 stime=1575293864
-cmdline="kill02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill02      1  TPASS  :  The signal was sent to all processes in the process group.
-kill02      2  TPASS  :  The signal was not sent to selective processes that were not in the process group.
-<<<execution_status>>>
-initiation_status="ok"
-duration=10 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill03 stime=1575293874
-cmdline="kill03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill03      1  TPASS  :  errno set to 22 : Invalid argument, as expected
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=kill04 stime=1575293874
-cmdline="kill04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill04      1  TPASS  :  errno set to 3 : No such process, as expected
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill05 stime=1575293874
-cmdline="kill05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill failed with EPERM
-kill05      1  TPASS  :  received expected errno(EPERM)
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill06 stime=1575293875
-cmdline="kill06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill06      1  TPASS  :  received expected signal 9
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill07 stime=1575293875
-cmdline="kill07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill07      0  TINFO  :  received expected signal 9
-kill07      1  TPASS  :  Did not catch signal as expected
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=kill08 stime=1575293876
-cmdline="kill08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill08      1  TPASS  :  received expected signal 9
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill09 stime=1575293876
-cmdline="kill09"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill09      1  TPASS  :  kill(22870, SIGKILL) returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill10 stime=1575293876
-cmdline="kill10"
-contacts=""
-analysis=exit
-<<<test_output>>>
-22872: All 10 children reported in
-22873: All 10 children reported in
-kill10      1  TPASS  :  All 2 pgrps received their signals
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=kill11 stime=1575293877
-cmdline="kill11"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill11      0  TINFO  :  Adjusting RLIMIT_CORE to 1048576
-kill11      1  TPASS  :  signal SIGHUP          
-kill11      2  TPASS  :  signal SIGINT          
-kill11      3  TPASS  :  signal SIGQUIT          dumped core
-kill11      4  TPASS  :  signal SIGILL           dumped core
-kill11      5  TPASS  :  signal SIGTRAP          dumped core
-kill11      6  TPASS  :  signal SIGIOT/SIGABRT   dumped core
-kill11      7  TPASS  :  signal SIGIOT/SIGABRT   dumped core
-kill11      8  TPASS  :  signal SIGBUS           dumped core
-kill11      9  TPASS  :  signal SIGFPE           dumped core
-kill11     10  TPASS  :  signal SIGKILL         
-kill11     11  TPASS  :  signal SIGUSR1         
-kill11     12  TPASS  :  signal SIGSEGV          dumped core
-kill11     13  TPASS  :  signal SIGUSR2         
-kill11     14  TPASS  :  signal SIGPIPE         
-kill11     15  TPASS  :  signal SIGALRM         
-kill11     16  TPASS  :  signal SIGTERM         
-kill11     17  TPASS  :  signal SIGXCPU          dumped core
-kill11     18  TPASS  :  signal SIGXFSZ          dumped core
-kill11     19  TPASS  :  signal SIGVTALRM       
-kill11     20  TPASS  :  signal SIGPROF         
-kill11     21  TPASS  :  signal SIGIO/SIGPOLL   
-kill11     22  TPASS  :  signal SIGPWR          
-kill11     23  TPASS  :  signal SIGSYS/SIGUNUSED dumped core
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=kill12 stime=1575293877
-cmdline="kill12"
-contacts=""
-analysis=exit
-<<<test_output>>>
-kill12      1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown01 stime=1575293877
-cmdline="lchown01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lchown01    1  TPASS  :  lchown() succeeds to Change Owner/Group ids of slink_file
-lchown01    2  TPASS  :  lchown() succeeds to Change Owner id only of slink_file
-lchown01    3  TPASS  :  lchown() succeeds to Change Owner/Group ids of slink_file
-lchown01    4  TPASS  :  lchown() succeeds to Change Group id only of slink_file
-lchown01    5  TPASS  :  lchown() succeeds to Change Group/Group ids of slink_file
-lchown01    6  TPASS  :  lchown() succeeds to Change none of slink_file
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown01_16 stime=1575293877
-cmdline="lchown01_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lchown01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
-lchown01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown02 stime=1575293877
-cmdline=" lchown02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lchown02    1  TPASS  :  lchown(2) fails, Process is not owner/root, errno:1
-lchown02    2  TPASS  :  lchown(2) fails, Search permission denied, errno:13
-lchown02    3  TPASS  :  lchown(2) fails, Unaccessible address space, errno:14
-lchown02    4  TPASS  :  lchown(2) fails, Pathname too long, errno:36
-lchown02    5  TPASS  :  lchown(2) fails, Path contains regular file, errno:20
-lchown02    6  TPASS  :  lchown(2) fails, Pathname is empty, errno:2
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown03 stime=1575293877
-cmdline=" lchown03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mke2fs 1.43.4 (31-Jan-2017)
-lchown03    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-lchown03    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-lchown03    1  TPASS  :  lchown() failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-lchown03    2  TPASS  :  lchown() failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=2
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown02_16 stime=1575293877
-cmdline="lchown02_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lchown02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
-lchown02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=lchown03_16 stime=1575293877
-cmdline="lchown03_16"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mke2fs 1.43.4 (31-Jan-2017)
-lchown03_16    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-lchown03_16    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-lchown03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: 16-bit version of lchown() is not supported on your platform
-lchown03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/lchown/../utils/compat_16.h:163: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=3
-<<<test_end>>>
-<<<test_start>>>
-tag=lgetxattr01 stime=1575293878
-cmdline="lgetxattr01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lgetxattr01.c:77: PASS: lgetxattr() got expected value
-lgetxattr01.c:90: PASS: lgetxattr() failed as expected: ENODATA (61)
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lgetxattr02 stime=1575293878
-cmdline="lgetxattr02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lgetxattr02.c:63: PASS: lgetxattr() failed as expected: ENODATA (61)
-lgetxattr02.c:63: PASS: lgetxattr() failed as expected: ERANGE (34)
-lgetxattr02.c:63: PASS: lgetxattr() failed as expected: EFAULT (14)
-
-Summary:
-passed   3
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=link01 stime=1575293878
-cmdline="symlink01 -T link01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link01      1  TPASS  :  link(2) to a symbolic link, which is pointing to an existing object file worked - file created and link count adjusted
-link01      2  TPASS  :  link(2) to a symbolic link, which is pointing to a non-existing object file worked ok - file created and link count adjusted.
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=link02 stime=1575293878
-cmdline="link02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link02      1  TPASS  :  link(oldpath,newpath) returned 0 and link counts match
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=link03 stime=1575293878
-cmdline="link03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link03      1  TPASS  :  link() passed and linkcounts=10 match
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=link04 stime=1575293878
-cmdline="link04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link04      1  TPASS  :  link(<non-existent file>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04      2  TPASS  :  link(<path is empty string>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04      3  TPASS  :  link(<path contains a non-existent file>, <nefile>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04      4  TPASS  :  link(<path contains a regular file>, <nefile>): TEST_ERRNO=ENOTDIR(20): Not a directory
-link04      5  TPASS  :  link(<pathname too long>, <nefile>): TEST_ERRNO=ENAMETOOLONG(36): File name too long
-link04      6  TPASS  :  link(<invalid address>, <nefile>): TEST_ERRNO=EFAULT(14): Bad address
-link04      7  TPASS  :  link(<regfile>, <empty string>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04      8  TPASS  :  link(<regfile>, <path contains a non-existent file>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04      9  TPASS  :  link(<regfile>, <path contains a regular file>): TEST_ERRNO=ENOENT(2): No such file or directory
-link04     10  TPASS  :  link(<regfile>, <pathname too long>): TEST_ERRNO=ENAMETOOLONG(36): File name too long
-link04     11  TPASS  :  link(<regfile>, <invalid address>): TEST_ERRNO=EFAULT(14): Bad address
-link04     12  TPASS  :  link(<regfile>, <regfile2>): TEST_ERRNO=EEXIST(17): File exists
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=link05 stime=1575293878
-cmdline="link05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link05      1  TPASS  :  link(lkfile_22960, lkfile_22960[1-1000]) ret 0 for 1000 files,stat linkcounts match 1000
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=link06 stime=1575293878
-cmdline="link06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link06      1  TPASS  :  link() fails with expected error EACCES errno:13
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=link07 stime=1575293878
-cmdline="link07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-link07      1  TPASS  :  link() fails with expected error: TEST_ERRNO=EACCES(13): Permission denied
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=link08 stime=1575293878
-cmdline="link08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-link08.c:59: PASS: link() failed as expected: EPERM (1)
-link08.c:59: PASS: link() failed as expected: EXDEV (18)
-link08.c:59: PASS: link() failed as expected: EROFS (30)
-link08.c:59: PASS: link() failed as expected: ELOOP (40)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=linkat01 stime=1575293878
-cmdline="linkat01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-linkat01    1  TPASS  :  linkat is functionality correct
-linkat01    2  TPASS  :  linkat succeeded as expected
-linkat01    3  TPASS  :  linkat is functionality correct
-linkat01    4  TPASS  :  linkat is functionality correct
-linkat01    5  TPASS  :  linkat is functionality correct
-linkat01    6  TPASS  :  linkat succeeded as expected
-linkat01    7  TPASS  :  linkat is functionality correct
-linkat01    8  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
-linkat01    9  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
-linkat01   10  TPASS  :  linkat succeeded as expected
-linkat01   11  TPASS  :  linkat is functionality correct
-linkat01   12  TPASS  :  linkat failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-linkat01   13  TPASS  :  linkat failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
-linkat01   14  TPASS  :  linkat succeeded as expected
-linkat01   15  TPASS  :  linkat is functionality correct
-linkat01   16  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
-linkat01   17  TPASS  :  linkat failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
-linkat01   18  TPASS  :  linkat succeeded as expected
-linkat01   19  TPASS  :  linkat is functionality correct
-linkat01   20  TPASS  :  linkat failed as expected: TEST_ERRNO=EXDEV(18): Invalid cross-device link
-linkat01   21  TPASS  :  linkat failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
-linkat01   22  TPASS  :  linkat failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=linkat02 stime=1575293878
-cmdline="linkat02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mke2fs 1.43.4 (31-Jan-2017)
-linkat02    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-linkat02    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-linkat02    0  TINFO  :  Failed reach the hardlinks limit
-linkat02    1  TPASS  :  linkat failed as expected: TEST_ERRNO=ENAMETOOLONG(36): File name too long
-linkat02    2  TPASS  :  linkat failed as expected: TEST_ERRNO=ENAMETOOLONG(36): File name too long
-linkat02    3  TPASS  :  linkat failed as expected: TEST_ERRNO=EEXIST(17): File exists
-linkat02    4  TPASS  :  linkat failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-linkat02    5  TPASS  :  linkat failed as expected: TEST_ERRNO=EACCES(13): Permission denied
-linkat02    6  TPASS  :  linkat failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
-linkat02    7  TCONF  :  linkat02.c:108: EMLINK test is not appropriate
-<<<execution_status>>>
-initiation_status="ok"
-duration=4 termination_type=exited termination_id=0 corefile=no
-cutime=15 cstime=352
-<<<test_end>>>
-<<<test_start>>>
-tag=listen01 stime=1575293882
-cmdline="listen01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-listen01    1  TPASS  :  bad file descriptor successful
-listen01    2  TPASS  :  not a socket successful
-listen01    3  TPASS  :  UDP listen successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=listxattr01 stime=1575293882
-cmdline="listxattr01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-listxattr01.c:63: PASS: listxattr() succeeded
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=listxattr02 stime=1575293882
-cmdline="listxattr02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-listxattr02.c:73: PASS: listxattr() failed as expected: ERANGE (34)
-listxattr02.c:73: PASS: listxattr() failed as expected: ENOENT (2)
-listxattr02.c:73: PASS: listxattr() failed as expected: EFAULT (14)
-listxattr02.c:73: PASS: listxattr() failed as expected: ENAMETOOLONG (36)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=listxattr03 stime=1575293882
-cmdline="listxattr03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-listxattr03.c:54: PASS: listxattr() succeed with suitable buffer
-listxattr03.c:54: PASS: listxattr() succeed with suitable buffer
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=llistxattr01 stime=1575293882
-cmdline="llistxattr01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-llistxattr01.c:71: PASS: llistxattr() succeeded
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=llistxattr02 stime=1575293882
-cmdline="llistxattr02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-llistxattr02.c:74: PASS: llistxattr() failed as expected: ERANGE (34)
-llistxattr02.c:74: PASS: llistxattr() failed as expected: ENOENT (2)
-llistxattr02.c:74: PASS: llistxattr() failed as expected: EFAULT (14)
-llistxattr02.c:74: PASS: llistxattr() failed as expected: ENAMETOOLONG (36)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=llistxattr03 stime=1575293882
-cmdline="llistxattr03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-llistxattr03.c:55: PASS: llistxattr() succeed with suitable buffer
-llistxattr03.c:55: PASS: llistxattr() succeed with suitable buffer
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=llseek01 stime=1575293882
-cmdline="llseek01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-llseek01    1  TPASS  :  Functionality of llseek() on tmp_file successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=llseek02 stime=1575293882
-cmdline="llseek02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-llseek02    1  TPASS  :  llseek() fails, 'whence' argument is not valid, errno:22
-llseek02    2  TPASS  :  llseek() fails, 'fd' is not an open file descriptor, errno:9
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=llseek03 stime=1575293882
-cmdline="llseek03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-llseek03    1  TPASS  :  test SEEK_SET for llseek success
-llseek03    2  TPASS  :  test SEEK_END for llseek success
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lremovexattr01 stime=1575293882
-cmdline="lremovexattr01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_supported_fs_types.c:60: INFO: Kernel supports ext2
-tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext3
-tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports ext4
-tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports xfs
-tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
-tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:60: INFO: Kernel supports vfat
-tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support exfat
-tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
-tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
-tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
-tst_test.c:1179: INFO: Testing on ext2
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-tst_test.c:1179: INFO: Testing on ext3
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-tst_test.c:1179: INFO: Testing on ext4
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-mke2fs 1.43.4 (31-Jan-2017)
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-tst_test.c:1179: INFO: Testing on xfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-tst_test.c:1179: INFO: Testing on btrfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-tst_test.c:1179: INFO: Testing on vfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:115: CONF: symlink() not supported
-tst_test.c:1179: INFO: Testing on exfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:115: CONF: symlink() not supported
-tst_test.c:1179: INFO: Testing on ntfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-safe_macros.c:743: INFO: Trying FUSE...
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lremovexattr01.c:107: PASS: lremovexattr(2) removed attribute as expected
-
-Summary:
-passed   6
-failed   0
-skipped  2
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=7 termination_type=exited termination_id=0 corefile=no
-cutime=8 cstime=219
-<<<test_end>>>
-<<<test_start>>>
-tag=lseek01 stime=1575293889
-cmdline="lseek01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lseek01.c:67: PASS: lseek(tfile, 4, SEEK_SET) read correct data
-lseek01.c:67: PASS: lseek(tfile, -2, SEEK_CUR) read correct data
-lseek01.c:67: PASS: lseek(tfile, -4, SEEK_END) read correct data
-lseek01.c:67: PASS: lseek(tfile, 0, SEEK_END) read correct data
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lseek02 stime=1575293889
-cmdline="lseek02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lseek02.c:65: PASS: lseek(-1, 1, 0) failed as expected: EBADF (9)
-lseek02.c:65: PASS: lseek(-1, 1, 1) failed as expected: EBADF (9)
-lseek02.c:65: PASS: lseek(-1, 1, 2) failed as expected: EBADF (9)
-lseek02.c:65: PASS: lseek(7, 1, 5) failed as expected: EINVAL (22)
-lseek02.c:65: PASS: lseek(7, 1, -1) failed as expected: EINVAL (22)
-lseek02.c:65: PASS: lseek(7, 1, 7) failed as expected: EINVAL (22)
-lseek02.c:65: PASS: lseek(8, 1, 0) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(8, 1, 1) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(8, 1, 2) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(9, 1, 0) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(9, 1, 1) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(9, 1, 2) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(11, 1, 0) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(11, 1, 1) failed as expected: ESPIPE (29)
-lseek02.c:65: PASS: lseek(11, 1, 2) failed as expected: ESPIPE (29)
-
-Summary:
-passed   15
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=lseek07 stime=1575293889
-cmdline="lseek07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lseek07.c:70: PASS: lseek(tfile1, 7, SEEK_SET) wrote correct data abcdefgijk
-lseek07.c:70: PASS: lseek(tfile2, 2, SEEK_SET) wrote correct data abijkfg
-
-Summary:
-passed   2
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lseek11 stime=1575293889
-cmdline="lseek11"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lseek11.c:162: INFO: The block size is 4096
-lseek11.c:212: PASS: The 0th test passed: SEEK_DATA from startblock 0 offset 0
-lseek11.c:212: PASS: The 1th test passed: SEEK_DATA from startblock 0 offset 4
-lseek11.c:212: PASS: The 2th test passed: SEEK_HOLE from startblock 0 offset 0
-lseek11.c:212: PASS: The 3th test passed: SEEK_HOLE from startblock 0 offset 4
-lseek11.c:212: PASS: The 4th test passed: SEEK_HOLE from startblock 1 offset 0
-lseek11.c:212: PASS: The 5th test passed: SEEK_HOLE from startblock 1 offset 128
-lseek11.c:212: PASS: The 6th test passed: SEEK_DATA from startblock 1 offset 0
-lseek11.c:212: PASS: The 7th test passed: SEEK_DATA from startblock 10 offset -1
-lseek11.c:212: PASS: The 8th test passed: SEEK_DATA from startblock 10 offset 0
-lseek11.c:212: PASS: The 9th test passed: SEEK_DATA from startblock 10 offset 4
-lseek11.c:212: PASS: The 10th test passed: SEEK_HOLE from startblock 10 offset 0
-lseek11.c:212: PASS: The 11th test passed: SEEK_HOLE from startblock 10 offset 4
-lseek11.c:212: PASS: The 12th test passed: SEEK_HOLE from startblock 11 offset 128
-lseek11.c:212: PASS: The 13th test passed: SEEK_DATA from startblock 11 offset 128
-lseek11.c:212: PASS: The 14th test passed: SEEK_HOLE from startblock 30 offset -128
-
-Summary:
-passed   15
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat01A stime=1575293890
-cmdline="symlink01 -T lstat01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lstat01     1  TPASS  :  lstat(2) of symbolic link file which points to no object file is ok
-lstat01     2  TPASS  :  lstat(2) of symbolic link file which points at an object file is ok
-lstat01     3  TPASS  :  lstat(2) of object file returns object file inode information
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat01A_64 stime=1575293890
-cmdline="symlink01 -T lstat01_64"
-contacts=""
-analysis=exit
-<<<test_output>>>
-lstat01_64    1  TPASS  :  lstat(2) of symbolic link file which points to no object file is ok
-lstat01_64    2  TPASS  :  lstat(2) of symbolic link file which points at an object file is ok
-lstat01_64    3  TPASS  :  lstat(2) of object file returns object file inode information
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat01 stime=1575293890
-cmdline="lstat01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lstat01.c:47: PASS: lstat() reported correct values for the symlink!
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat01_64 stime=1575293890
-cmdline="lstat01_64"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lstat01.c:47: PASS: lstat() reported correct values for the symlink!
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat02 stime=1575293890
-cmdline="lstat02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lstat02.c:72: PASS: lstat() failed as expected: EACCES (13)
-lstat02.c:72: PASS: lstat() failed as expected: ENOENT (2)
-lstat02.c:72: PASS: lstat() failed as expected: EFAULT (14)
-lstat02.c:72: PASS: lstat() failed as expected: ENAMETOOLONG (36)
-lstat02.c:72: PASS: lstat() failed as expected: ENOTDIR (20)
-lstat02.c:72: PASS: lstat() failed as expected: ELOOP (40)
-
-Summary:
-passed   6
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=lstat02_64 stime=1575293890
-cmdline="lstat02_64"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-lstat02.c:72: PASS: lstat() failed as expected: EACCES (13)
-lstat02.c:72: PASS: lstat() failed as expected: ENOENT (2)
-lstat02.c:72: PASS: lstat() failed as expected: EFAULT (14)
-lstat02.c:72: PASS: lstat() failed as expected: ENAMETOOLONG (36)
-lstat02.c:72: PASS: lstat() failed as expected: ENOTDIR (20)
-lstat02.c:72: PASS: lstat() failed as expected: ELOOP (40)
-
-Summary:
-passed   6
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mallopt01 stime=1575293890
-cmdline="mallopt01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mallopt01    1  TPASS  :  mallinfo() succeeded
-mallopt01    2  TPASS  :  mallopt(M_MXFAST, 160) succeeded
-mallopt01    3  TPASS  :  mallopt(M_NLBLKS, 50) succeeded
-mallopt01    4  TPASS  :  malloc(1024) succeeded
-mallopt01    5  TPASS  :  mallopt(M_MXFAST, 0) succeeded
-mallopt01    6  TPASS  :  malloc(1024) succeeded
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mbind01 stime=1575293890
-cmdline="mbind01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mbind01.c:169: INFO: case MPOL_DEFAULT
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_DEFAULT (target exists)
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_BIND (no target)
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_BIND
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_INTERLEAVE (no target)
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_INTERLEAVE
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_PREFERRED (no target)
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_PREFERRED
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case UNKNOWN_POLICY
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_DEFAULT (invalid flags)
-mbind01.c:218: PASS: Test passed
-mbind01.c:169: INFO: case MPOL_PREFERRED (invalid nodemask)
-mbind01.c:218: PASS: Test passed
-
-Summary:
-passed   11
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=5
-<<<test_end>>>
-<<<test_start>>>
-tag=mbind02 stime=1575293890
-cmdline="mbind02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-tst_numa.c:191: INFO: Found 1 NUMA memory nodes
-mbind02.c:38: CONF: Test requires at least two NUMA memory nodes
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mbind03 stime=1575293890
-cmdline="mbind03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-tst_numa.c:191: INFO: Found 1 NUMA memory nodes
-mbind03.c:35: CONF: Test requires at least two NUMA memory nodes
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mbind04 stime=1575293890
-cmdline="mbind04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-tst_numa.c:191: INFO: Found 1 NUMA memory nodes
-mbind04.c:37: CONF: Test requires at least two NUMA memory nodes
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=memset01 stime=1575293890
-cmdline="memset01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-memset01    1  TPASS  :  Test passed
-memset01    2  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=memcmp01 stime=1575293890
-cmdline="memcmp01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-memcmp1     1  TPASS  :  Test passed
-memcmp1     2  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=memcpy01 stime=1575293890
-cmdline="memcpy01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-memcpy1     1  TPASS  :  Test passed
-memcpy1     2  TPASS  :  Test passed
-memcpy1     3  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=migrate_pages01 stime=1575293890
-cmdline="migrate_pages01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-migrate_pages01    0  TINFO  :  test_empty_mask
-migrate_pages01    1  TPASS  :  expected ret success: returned value = 0
-migrate_pages01    0  TINFO  :  test_invalid_pid -1
-migrate_pages01    2  TPASS  :  expected ret success: returned value = -1
-migrate_pages01    3  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
-migrate_pages01    0  TINFO  :  test_invalid_pid unused pid
-migrate_pages01    4  TPASS  :  expected ret success: returned value = -1
-migrate_pages01    5  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
-migrate_pages01    0  TINFO  :  test_invalid_masksize
-migrate_pages01    6  TPASS  :  expected ret success: returned value = -1
-migrate_pages01    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
-migrate_pages01    0  TINFO  :  test_invalid_mem -1
-migrate_pages01    8  TPASS  :  expected ret success: returned value = -1
-migrate_pages01    9  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
-migrate_pages01    0  TINFO  :  test_invalid_mem invalid prot
-migrate_pages01   10  TPASS  :  expected ret success: returned value = -1
-migrate_pages01   11  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
-migrate_pages01    0  TINFO  :  test_invalid_mem unmmaped
-migrate_pages01   12  TPASS  :  expected ret success: returned value = -1
-migrate_pages01   13  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
-migrate_pages01    0  TINFO  :  test_invalid_nodes
-migrate_pages01   14  TPASS  :  expected ret success: returned value = -1
-migrate_pages01   15  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
-migrate_pages01    0  TINFO  :  test_invalid_perm
-migrate_pages01   16  TPASS  :  expected ret success: returned value = -1
-migrate_pages01   17  TPASS  :  expected failure: TEST_ERRNO=EPERM(1): Operation not permitted
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=migrate_pages02 stime=1575293890
-cmdline="migrate_pages02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-migrate_pages02.c:280: CONF: at least 2 allowed NUMA nodes are required
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=migrate_pages03 stime=1575293890
-cmdline="migrate_pages03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-migrate_pages03.c:60: CONF: requires NUMA with at least 2 node
-
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=32 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mlockall01 stime=1575293890
-cmdline="mlockall01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlockall01    1  TPASS  :  mlockall test passed for MCL_CURRENT
-mlockall01    2  TPASS  :  mlockall test passed for MCL_FUTURE
-mlockall01    3  TPASS  :  mlockall test passed for MCL_CURRENT|MCL_FUTURE
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mlockall02 stime=1575293890
-cmdline="mlockall02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlockall02    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
-mlockall02    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
-mlockall02    3  TPASS  :  expected failure - errno = 22 : Invalid argument
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mlockall03 stime=1575293890
-cmdline="mlockall03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlockall03    1  TPASS  :  expected failure - errno = 12 : Cannot allocate memory
-mlockall03    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
-mlockall03    3  TPASS  :  expected failure - errno = 22 : Invalid argument
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir02 stime=1575293890
-cmdline="mkdir02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mkdir02.c:55: PASS: New dir inherited GID and S_ISGID
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir03 stime=1575293890
-cmdline="mkdir03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mkdir03.c:62: PASS: mkdir() failed as expected: EFAULT (14)
-mkdir03.c:62: PASS: mkdir() failed as expected: ENAMETOOLONG (36)
-mkdir03.c:62: PASS: mkdir() failed as expected: EEXIST (17)
-mkdir03.c:62: PASS: mkdir() failed as expected: ENOENT (2)
-mkdir03.c:62: PASS: mkdir() failed as expected: ENOTDIR (20)
-mkdir03.c:62: PASS: mkdir() failed as expected: ELOOP (40)
-mkdir03.c:62: PASS: mkdir() failed as expected: EROFS (30)
-
-Summary:
-passed   7
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir04 stime=1575293890
-cmdline="mkdir04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mkdir04.c:37: PASS: mkdir() failed expectedly: EACCES (13)
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir05 stime=1575293890
-cmdline="mkdir05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mkdir05.c:45: PASS: mkdir() functionality is correct
-
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir05A stime=1575293890
-cmdline="symlink01 -T mkdir05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mkdir05     1  TPASS  :  mkdir(2) of object file through symbolic link file failed as expected
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdir09 stime=1575293890
-cmdline="mkdir09"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mkdir09     1  TPASS  :  PASS
-<<<execution_status>>>
-initiation_status="ok"
-duration=10 termination_type=exited termination_id=0 corefile=no
-cutime=216 cstime=1283
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdirat01 stime=1575293900
-cmdline="mkdirat01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mkdirat01    1  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-mkdirat01    2  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-mkdirat01    3  TPASS  :  mkdirat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-mkdirat01    4  TPASS  :  mkdirat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
-mkdirat01    5  TPASS  :  mkdirat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mkdirat02 stime=1575293900
-cmdline="mkdirat02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mkdirat02.c:66: PASS: mkdirat() failed as expected: EROFS (30)
-mkdirat02.c:66: PASS: mkdirat() failed as expected: EROFS (30)
-mkdirat02.c:66: PASS: mkdirat() failed as expected: ELOOP (40)
-mkdirat02.c:66: PASS: mkdirat() failed as expected: ELOOP (40)
-
-Summary:
-passed   4
-failed   0
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod01 stime=1575293900
-cmdline="mknod01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod01     1  TPASS  :  mknod(test_node, 0100777, 0) returned 0
-mknod01     2  TPASS  :  mknod(test_node, 010777, 0) returned 0
-mknod01     3  TPASS  :  mknod(test_node, 020777, 259) returned 0
-mknod01     4  TPASS  :  mknod(test_node, 060777, 0) returned 0
-mknod01     5  TPASS  :  mknod(test_node, 0104700, 0) returned 0
-mknod01     6  TPASS  :  mknod(test_node, 0102700, 0) returned 0
-mknod01     7  TPASS  :  mknod(test_node, 0106700, 0) returned 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod02 stime=1575293900
-cmdline="mknod02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod02     1  TPASS  :  Functionality of mknod(tnode_23219, 012777, 0) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod03 stime=1575293900
-cmdline="mknod03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod03     1  TPASS  :  Functionality of mknod(tnode_23220, 012777, 0) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod04 stime=1575293900
-cmdline="mknod04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod04     1  TPASS  :  Functionality of mknod(tnode_23221, 010777, 0) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod05 stime=1575293900
-cmdline="mknod05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod05     1  TPASS  :  Functionality of mknod(tnode_23222, 012777, 0) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod06 stime=1575293900
-cmdline="mknod06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod06     1  TPASS  :  mknod() fails, Specified node already exists, errno:17
-mknod06     2  TPASS  :  mknod() fails, Invalid address, errno:14
-mknod06     3  TPASS  :  mknod() fails, Non-existent file, errno:2
-mknod06     4  TPASS  :  mknod() fails, Pathname is empty, errno:2
-mknod06     5  TPASS  :  mknod() fails, Pathname too long, errno:36
-mknod06     6  TPASS  :  mknod() fails, Path contains regular file, errno:20
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod07 stime=1575293900
-cmdline="mknod07"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mke2fs 1.43.4 (31-Jan-2017)
-mknod07     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-mknod07     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mknod07     1  TPASS  :  mknod failed as expected: TEST_ERRNO=EACCES(13): Permission denied
-mknod07     2  TPASS  :  mknod failed as expected: TEST_ERRNO=EACCES(13): Permission denied
-mknod07     3  TPASS  :  mknod failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
-mknod07     4  TPASS  :  mknod failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
-mknod07     5  TPASS  :  mknod failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
-mknod07     6  TPASS  :  mknod failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod08 stime=1575293900
-cmdline="mknod08"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod08     1  TPASS  :  Functionality of mknod(tnode_23232, 010777, 0) successful
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mknod09 stime=1575293900
-cmdline="mknod09"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknod09     1  TPASS  :  mknod() fails with expected error EINVAL errno:22
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknodat01 stime=1575293900
-cmdline="mknodat01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mknodat01    1  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-mknodat01    2  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-mknodat01    3  TPASS  :  mknodat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
-mknodat01    4  TPASS  :  mknodat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
-mknodat01    5  TPASS  :  mknodat() returned 0: TEST_ERRNO=SUCCESS(0): Success
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mknodat02 stime=1575293900
-cmdline="mknodat02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mke2fs 1.43.4 (31-Jan-2017)
-mknodat     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-mknodat     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mknodat     1  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
-mknodat     2  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
-mknodat     3  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
-mknodat     4  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
-mknodat     5  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
-mknodat     6  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
-mknodat     7  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-mknodat     8  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-mknodat     9  TPASS  :  mknodat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=4
-<<<test_end>>>
-<<<test_start>>>
-tag=mlock01 stime=1575293901
-cmdline="mlock01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlock01     1  TPASS  :  mlock passed
-mlock01     2  TPASS  :  mlock passed
-mlock01     3  TPASS  :  mlock passed
-mlock01     4  TPASS  :  mlock passed
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=1 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mlock02 stime=1575293901
-cmdline="mlock02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlock02     1  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
-mlock02     2  TPASS  :  mlock failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
-mlock02     3  TPASS  :  mlock failed as expected: TEST_ERRNO=EPERM(1): Operation not permitted
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=mlock03 stime=1575293901
-cmdline="mlock03 -i 20"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  mlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  mlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  mlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  mlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  mlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  mlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  mlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  mlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  mlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  mlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  mlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  mlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  mlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  mlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  mlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  mlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  mlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  mlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  mlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  munlock from 559980d1e000 to 559980d3c000
-mlock03     0  TINFO  :  munlock from 559980f3c000 to 559980f3d000
-mlock03     0  TINFO  :  munlock from 559980f3d000 to 559980f3e000
-mlock03     0  TINFO  :  munlock from 559980f3e000 to 559980f41000
-mlock03     0  TINFO  :  munlock from 559981b85000 to 559981ba6000
-mlock03     0  TINFO  :  munlock from 7f25524c5000 to 7f255265a000
-mlock03     0  TINFO  :  munlock from 7f255265a000 to 7f255285a000
-mlock03     0  TINFO  :  munlock from 7f255285a000 to 7f255285e000
-mlock03     0  TINFO  :  munlock from 7f255285e000 to 7f2552860000
-mlock03     0  TINFO  :  munlock from 7f2552860000 to 7f2552864000
-mlock03     0  TINFO  :  munlock from 7f2552864000 to 7f2552887000
-mlock03     0  TINFO  :  munlock from 7f2552a7e000 to 7f2552a80000
-mlock03     0  TINFO  :  munlock from 7f2552a87000 to 7f2552a88000
-mlock03     0  TINFO  :  munlock from 7f2552a88000 to 7f2552a89000
-mlock03     0  TINFO  :  munlock from 7f2552a89000 to 7f2552a8a000
-mlock03     0  TINFO  :  munlock from 7ffd1dde1000 to 7ffd1de03000
-mlock03     0  TINFO  :  munlock from 7ffd1dff3000 to 7ffd1dff6000
-mlock03     0  TINFO  :  munlock from 7ffd1dff6000 to 7ffd1dff7000
-mlock03     0  TINFO  :  munlock failed: errno=ENOMEM(12): Cannot allocate memory
-mlock03     0  TINFO  :  munlock from ffffffffff600000 to ffffffffff601000
-mlock03     0  TINFO  :  starting stack size is 136
-mlock03     0  TINFO  :  final stack size is 136
-mlock03     1  TPASS  :  stack size is not decreased.
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=2
-<<<test_end>>>
-<<<test_start>>>
-tag=mlock04 stime=1575293901
-cmdline="mlock04"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mlock04     0  TINFO  :  locked 40960 bytes from 0x7faa85c23000
-mlock04     1  TPASS  :  test succeeded.
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-<<<test_start>>>
-tag=mlock201 stime=1575293901
-cmdline="mlock201"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mlock201.c:128: PASS: mlock2(0) succeeded in locking 1 pages
-mlock201.c:128: PASS: mlock2(0) succeeded in locking 8 pages
-mlock201.c:128: PASS: mlock2(0) succeeded in locking 3 pages
-mlock201.c:128: PASS: mlock2(0) succeeded in locking 2 pages
-mlock201.c:128: PASS: mlock2(1) succeeded in locking 0 pages
-mlock201.c:128: PASS: mlock2(1) succeeded in locking 4 pages
-mlock201.c:128: PASS: mlock2(1) succeeded in locking 1 pages
-mlock201.c:128: PASS: mlock2(1) succeeded in locking 4 pages
+tag=prctl05 stime=1575344312
+cmdline="prctl05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl05.c:55: PASS: prctl(PR_SET_NAME, 'prctl05_test') succeeded
+prctl05.c:69: PASS: prctl(PR_GET_NAME) succeeded, thread name is prctl05_test
+prctl05.c:40: PASS: /proc/self/task/2908/comm sets to prctl05_test
+prctl05.c:40: PASS: /proc/self/comm sets to prctl05_test
+prctl05.c:55: PASS: prctl(PR_SET_NAME, 'prctl05_test_xxxxx') succeeded
+prctl05.c:69: PASS: prctl(PR_GET_NAME) succeeded, thread name is prctl05_test_xx
+prctl05.c:40: PASS: /proc/self/task/2908/comm sets to prctl05_test_xx
+prctl05.c:40: PASS: /proc/self/comm sets to prctl05_test_xx
 
 Summary:
 passed   8
@@ -14855,19 +10620,68 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mlock202 stime=1575293901
-cmdline="mlock202"
+tag=prctl06 stime=1575344312
+cmdline="prctl06"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mlock202.c:75: PASS: mlock2() failed as expected: EINVAL (22)
-mlock202.c:75: PASS: mlock2() failed as expected: ENOMEM (12)
-mlock202.c:75: PASS: mlock2() failed as expected: EPERM (1)
-mlock202.c:75: PASS: mlock2() failed as expected: ENOMEM (12)
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl06.c:89: INFO: kernel supports PR_GET/SET_NO_NEW_PRIVS
+prctl06.h:56: PASS: parent prctl(PR_GET_NO_NEW_PRIVS) expected 0 got 0
+prctl06.h:44: PASS: parent /proc/self/status NoNewPrivs field expected 0 got 0
+prctl06.c:40: PASS: prctl(PR_SET_NO_NEW_PRIVS) succeeded
+prctl06.h:56: PASS: After fork, child process prctl(PR_GET_NO_NEW_PRIVS) expected 1 got 1
+prctl06.h:44: PASS: After fork, child process /proc/self/status NoNewPrivs field expected 1 got 1
+prctl06.h:56: PASS: After execve, child process prctl(PR_GET_NO_NEW_PRIVS) expected 1 got 1
+prctl06.h:44: PASS: After execve, child process /proc/self/status NoNewPrivs field expected 1 got 1
+prctl06_execve.c:32: PASS: After execve, child process getegid() returns nobody, it doesn't gain root privileges
+prctl06_execve.c:42: PASS: After execve, child process geteuid() returns nobody, it doesn't gain root privileges
+prctl06.h:56: PASS: parent process prctl(PR_GET_NO_NEW_PRIVS) expected 1 got 1
+prctl06.h:44: PASS: parent process /proc/self/status NoNewPrivs field expected 1 got 1
+prctl06.h:56: PASS: After execve, parent process prctl(PR_GET_NO_NEW_PRIVS) expected 1 got 1
+prctl06.h:44: PASS: After execve, parent process /proc/self/status NoNewPrivs field expected 1 got 1
+prctl06_execve.c:32: PASS: After execve, parent process getegid() returns nobody, it doesn't gain root privileges
+prctl06_execve.c:42: PASS: After execve, parent process geteuid() returns nobody, it doesn't gain root privileges
 
 Summary:
-passed   4
+passed   15
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=4
+<<<test_end>>>
+<<<test_start>>>
+tag=prctl07 stime=1575344312
+cmdline="prctl07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+prctl07.c:180: INFO: kernel supports PR_CAP_AMBIENT
+prctl07.c:64: PASS: At the beginning, CapAmb in /proc/self/status doesn't have CAP_NET_BIND_SERVICE
+prctl07.c:86: PASS: PR_CAP_AMBIENT_RAISE failed with EPERM on non-inheritable cap
+prctl07.c:86: PASS: PR_CAP_AMBIENT_RAISE failed with EPERM on non-permitted cap
+prctl07.c:86: PASS: PR_CAP_AMBIENT_RAISE failed with EPERM because of NO_RAISE_SECBIT set
+prctl07.c:74: PASS: PR_CAP_AMBIENT_RAISE CAP_NET_BIND_SERVICE succeeded
+prctl07.c:74: PASS: PR_CAP_AMBIENT_RAISE CAP_NET_BIND_SERIVCE twice succeeded
+prctl07.c:60: PASS: After PR_CAP_AMBIENT_RAISE, CapAmb in /proc/self/status has CAP_NET_BIND_SERVICE
+prctl07.c:99: PASS: PR_CAP_AMBIENT_IS_SET CAP_NET_BIND_SERVICE was in AmbientCap
+prctl07.c:102: PASS: PR_CAP_AMBIENT_IS_SET CAP_NET_RAW was not in AmbientCap
+prctl07.c:114: PASS: PR_CAP_AMBIENT_LOWER CAP_NET_RAW(it wasn't in ambient set) succeeded
+prctl07.c:114: PASS: PR_CAP_AMBIENT_LOWER CAP_NET_BIND_SERVICE(it was in ambient set) succeeded
+prctl07.c:64: PASS: After PR_CAP_AMBIENT_LORWER, CapAmb in /proc/self/status doesn't have CAP_NET_BIND_SERVICE
+prctl07.c:161: INFO: raise cap for clear
+prctl07.c:164: PASS: PR_CAP_AMBIENT_CLEAR ALL succeeded
+prctl07.c:50: PASS: After PR_CAP_AMBIENT_CLEAN_ALL, /proc/self/status CapAmb has been clear as 0
+
+Summary:
+passed   14
 failed   0
 skipped  0
 warnings 0
@@ -14877,13 +10691,1687 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mlock203 stime=1575293901
-cmdline="mlock203"
+tag=pread01 stime=1575344312
+cmdline="pread01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-tst_test.c:1118: INFO: Timeout per run is 0h 25m 00s
-mlock203.c:66: PASS: Locking one memory again didn't increased VmLck
+pread01     1  TPASS  :  Functionality of pread() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread01_64 stime=1575344312
+cmdline="pread01_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread01     1  TPASS  :  Functionality of pread() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread02 stime=1575344312
+cmdline="pread02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread02     1  TPASS  :  pread() fails, file descriptor is a PIPE or FIFO, errno:29
+pread02     2  TPASS  :  pread() fails, specified offset is -ve or invalid, errno:22
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread02_64 stime=1575344312
+cmdline="pread02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread02     1  TPASS  :  pread() fails, file descriptor is a PIPE or FIFO, errno:29
+pread02     2  TPASS  :  pread() fails, specified offset is -ve or invalid, errno:22
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread03 stime=1575344312
+cmdline="pread03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread03     1  TPASS  :  pread() fails with expected error EISDIR errno:21
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pread03_64 stime=1575344312
+cmdline="pread03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pread03     1  TPASS  :  pread() fails with expected error EISDIR errno:21
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv01 stime=1575344312
+cmdline="preadv01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: INFO: Test is using guarded buffers
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv01.c:81: PASS: Preadv(2) read 64 bytes successfully with content 'a' expectedly
+preadv01.c:81: PASS: Preadv(2) read 64 bytes successfully with content 'a' expectedly
+preadv01.c:81: PASS: Preadv(2) read 32 bytes successfully with content 'b' expectedly
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv01_64 stime=1575344312
+cmdline="preadv01_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: INFO: Test is using guarded buffers
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv01.c:81: PASS: Preadv(2) read 64 bytes successfully with content 'a' expectedly
+preadv01.c:81: PASS: Preadv(2) read 64 bytes successfully with content 'a' expectedly
+preadv01.c:81: PASS: Preadv(2) read 32 bytes successfully with content 'b' expectedly
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv02 stime=1575344312
+cmdline="preadv02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EFAULT (14)
+preadv02.c:89: PASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: PASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: PASS: preadv() failed as expected: EISDIR (21)
+preadv02.c:89: PASS: preadv() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv02_64 stime=1575344312
+cmdline="preadv02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: PASS: preadv() failed as expected: EFAULT (14)
+preadv02.c:89: PASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: PASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: PASS: preadv() failed as expected: EISDIR (21)
+preadv02.c:89: PASS: preadv() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv03 stime=1575344312
+cmdline="preadv03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+
+Summary:
+passed   24
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=137
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv03_64 stime=1575344317
+cmdline="preadv03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv03.c:102: INFO: Using block size 512
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
+preadv03.c:88: PASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
+
+Summary:
+passed   24
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=4 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=180
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv201 stime=1575344321
+cmdline="preadv201"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 32 bytes with content 'b' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'b' expectedly
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv201_64 stime=1575344321
+cmdline="preadv201_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 32 bytes with content 'b' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'a' expectedly
+preadv201.c:91: PASS: preadv2() read 64 bytes with content 'b' expectedly
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv202 stime=1575344321
+cmdline="preadv202"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv202.c:82: PASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: PASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: PASS: preadv2() failed as expected: EOPNOTSUPP (95)
+preadv202.c:82: PASS: preadv2() failed as expected: EFAULT (14)
+preadv202.c:82: PASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: PASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: PASS: preadv2() failed as expected: EISDIR (21)
+preadv202.c:82: PASS: preadv2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv202_64 stime=1575344321
+cmdline="preadv202_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv202.c:82: PASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: PASS: preadv2() failed as expected: EINVAL (22)
+preadv202.c:82: PASS: preadv2() failed as expected: EOPNOTSUPP (95)
+preadv202.c:82: PASS: preadv2() failed as expected: EFAULT (14)
+preadv202.c:82: PASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: PASS: preadv2() failed as expected: EBADF (9)
+preadv202.c:82: PASS: preadv2() failed as expected: EISDIR (21)
+preadv202.c:82: PASS: preadv2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv203 stime=1575344321
+cmdline="preadv203"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 6912187, short reads 10, zero len reads 0, EAGAIN(s) 62046
+preadv203.c:180: INFO: Number of writes 7069320
+preadv203.c:194: INFO: Cache dropped 467 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 1111163, short reads 10, zero len reads 0, EAGAIN(s) 10709
+preadv203.c:194: INFO: Cache dropped 66 times
+preadv203.c:180: INFO: Number of writes 798420
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 6349803, short reads 10, zero len reads 0, EAGAIN(s) 52317
+preadv203.c:180: INFO: Number of writes 5864220
+preadv203.c:194: INFO: Cache dropped 428 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:180: INFO: Number of writes 12224760
+preadv203.c:145: INFO: Number of full_reads 12096336, short reads 2, zero len reads 0, EAGAIN(s) 53045
+preadv203.c:194: INFO: Cache dropped 851 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 6377, short reads 10, zero len reads 0, EAGAIN(s) 49425
+preadv203.c:194: INFO: Cache dropped 2 times
+preadv203.c:180: INFO: Number of writes 3120
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+
+Summary:
+passed   5
+failed   0
+skipped  3
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=142 termination_type=exited termination_id=0 corefile=no
+cutime=1728 cstime=23878
+<<<test_end>>>
+<<<test_start>>>
+tag=preadv203_64 stime=1575344463
+cmdline="preadv203_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 7066268, short reads 10, zero len reads 0, EAGAIN(s) 309
+preadv203.c:180: INFO: Number of writes 7060500
+preadv203.c:194: INFO: Cache dropped 492 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 981595, short reads 10, zero len reads 0, EAGAIN(s) 29392
+preadv203.c:194: INFO: Cache dropped 66 times
+preadv203.c:180: INFO: Number of writes 819180
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:180: INFO: Number of writes 11162580
+preadv203.c:145: INFO: Number of full_reads 12091636, short reads 7, zero len reads 0, EAGAIN(s) 68761
+preadv203.c:194: INFO: Cache dropped 827 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:180: INFO: Number of writes 12571440
+preadv203.c:145: INFO: Number of full_reads 11577254, short reads 3, zero len reads 0, EAGAIN(s) 59968
+preadv203.c:194: INFO: Cache dropped 836 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:145: INFO: Number of full_reads 5417, short reads 10, zero len reads 0, EAGAIN(s) 66078
+preadv203.c:180: INFO: Number of writes 6840
+preadv203.c:194: INFO: Cache dropped 14 times
+preadv203.c:223: PASS: Got some EAGAIN
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+preadv203.c:238: CONF: preadv2(): EOPNOTSUPP (95)
+
+Summary:
+passed   5
+failed   0
+skipped  3
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=176 termination_type=exited termination_id=0 corefile=no
+cutime=2009 cstime=29547
+<<<test_end>>>
+<<<test_start>>>
+tag=profil01 stime=1575344639
+cmdline="profil01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+profil01    0  TINFO  :  buf[0x4058]=39
+profil01    0  TINFO  :  buf[0x406a]=64
+profil01    0  TINFO  :  buf[0x4174]=54
+profil01    0  TINFO  :  buf[0x4182]=60
+profil01    0  TINFO  :  buf[0x418c]=40
+profil01    0  TINFO  :  buf[0x4196]=1
+profil01    0  TINFO  :  buf[0x419a]=57
+profil01    0  TINFO  :  buf[0x41a4]=56
+profil01    0  TINFO  :  buf[0x41a8]=1
+profil01    0  TINFO  :  buf[0x41aa]=1
+profil01    0  TINFO  :  buf[0x41ac]=1
+profil01    0  TINFO  :  buf[0x41b0]=67
+profil01    0  TINFO  :  buf[0x41c0]=2
+profil01    0  TINFO  :  buf[0x41c4]=55
+profil01    1  TPASS  :  profil recorded some data
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=499 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_readv01 stime=1575344644
+cmdline="process_vm01 -r"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_readv    0  TINFO  :  test_sane_params
+process_vm_readv    1  TPASS  :  expected ret success - returned value = 4096
+process_vm_readv    0  TINFO  :  test_flags, flags=-2147483647
+process_vm_readv    2  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    3  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=-1
+process_vm_readv    4  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    5  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=1
+process_vm_readv    6  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=2147483647
+process_vm_readv    8  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    9  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=0
+process_vm_readv   10  TPASS  :  expected ret success - returned value = 4096
+process_vm_readv    0  TINFO  :  test_iov_len_overflow
+process_vm_readv   11  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   12  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_iov_invalid - lvec->iov_base
+process_vm_readv   13  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   14  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - rvec->iov_base
+process_vm_readv   15  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   16  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - lvec
+process_vm_readv   17  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   18  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - rvec
+process_vm_readv   19  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   20  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_invalid_pid
+process_vm_readv   21  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   22  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_readv   23  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   24  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_readv    0  TINFO  :  test_invalid_perm
+process_vm_readv   25  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   26  TPASS  :  expected failure: TEST_ERRNO=EPERM(1): Operation not permitted
+process_vm_readv    0  TINFO  :  test_sane_params
+process_vm_readv    1  TPASS  :  expected ret success - returned value = 4096
+process_vm_readv    0  TINFO  :  test_flags, flags=-2147483647
+process_vm_readv    2  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    3  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=-1
+process_vm_readv    4  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    5  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=1
+process_vm_readv    6  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=2147483647
+process_vm_readv    8  TPASS  :  expected ret success - returned value = -1
+process_vm_readv    9  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_flags, flags=0
+process_vm_readv   10  TPASS  :  expected ret success - returned value = 4096
+process_vm_readv    0  TINFO  :  test_iov_len_overflow
+process_vm_readv   11  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   12  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_readv    0  TINFO  :  test_iov_invalid - lvec->iov_base
+process_vm_readv   13  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   14  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - rvec->iov_base
+process_vm_readv   15  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   16  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - lvec
+process_vm_readv   17  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   18  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_iov_invalid - rvec
+process_vm_readv   19  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   20  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_invalid_pid
+process_vm_readv   21  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   22  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_readv   23  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   24  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_readv    0  TINFO  :  test_invalid_perm
+process_vm_readv    0  TINFO  :  test_invalid_protection lvec
+process_vm_readv   25  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   26  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_readv    0  TINFO  :  test_invalid_protection rvec
+process_vm_readv   27  TPASS  :  expected ret success - returned value = -1
+process_vm_readv   28  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_readv02 stime=1575344644
+cmdline="process_vm_readv02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_readv02    0  TINFO  :  child 1: reading string from same memory location.
+process_vm_readv02    1  TPASS  :  expected string received.
+process_vm_readv02    0  TINFO  :  child 0: memory allocated and initialized.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_readv03 stime=1575344644
+cmdline="process_vm_readv03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_readv03    0  TINFO  :  child 1: 10 remote iovecs received.
+process_vm_readv03    0  TINFO  :  child 1: 4 local iovecs initialized.
+process_vm_readv03    1  TPASS  :  child 1: all bytes are correctly received.
+process_vm_readv03    0  TINFO  :  child 0: 10 iovecs allocated and initialized.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_writev01 stime=1575344644
+cmdline="process_vm01 -w"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_writev    0  TINFO  :  test_sane_params
+process_vm_writev    1  TPASS  :  expected ret success - returned value = 4096
+process_vm_writev    0  TINFO  :  test_flags, flags=-2147483647
+process_vm_writev    2  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    3  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=-1
+process_vm_writev    4  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    5  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=1
+process_vm_writev    6  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=2147483647
+process_vm_writev    8  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    9  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=0
+process_vm_writev   10  TPASS  :  expected ret success - returned value = 4096
+process_vm_writev    0  TINFO  :  test_iov_len_overflow
+process_vm_writev   11  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   12  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_iov_invalid - lvec->iov_base
+process_vm_writev   13  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   14  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - rvec->iov_base
+process_vm_writev   15  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   16  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - lvec
+process_vm_writev   17  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   18  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - rvec
+process_vm_writev   19  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   20  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_invalid_pid
+process_vm_writev   21  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   22  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_writev   23  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   24  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_writev    0  TINFO  :  test_invalid_perm
+process_vm_writev   25  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   26  TPASS  :  expected failure: TEST_ERRNO=EPERM(1): Operation not permitted
+process_vm_writev    0  TINFO  :  test_sane_params
+process_vm_writev    1  TPASS  :  expected ret success - returned value = 4096
+process_vm_writev    0  TINFO  :  test_flags, flags=-2147483647
+process_vm_writev    2  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    3  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=-1
+process_vm_writev    4  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    5  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=1
+process_vm_writev    6  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    7  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=2147483647
+process_vm_writev    8  TPASS  :  expected ret success - returned value = -1
+process_vm_writev    9  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_flags, flags=0
+process_vm_writev   10  TPASS  :  expected ret success - returned value = 4096
+process_vm_writev    0  TINFO  :  test_iov_len_overflow
+process_vm_writev   11  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   12  TPASS  :  expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+process_vm_writev    0  TINFO  :  test_iov_invalid - lvec->iov_base
+process_vm_writev   13  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   14  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - rvec->iov_base
+process_vm_writev   15  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   16  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - lvec
+process_vm_writev   17  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   18  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_iov_invalid - rvec
+process_vm_writev   19  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   20  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_invalid_pid
+process_vm_writev   21  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   22  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_writev   23  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   24  TPASS  :  expected failure: TEST_ERRNO=ESRCH(3): No such process
+process_vm_writev    0  TINFO  :  test_invalid_perm
+process_vm_writev    0  TINFO  :  test_invalid_protection lvec
+process_vm_writev   25  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   26  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+process_vm_writev    0  TINFO  :  test_invalid_protection rvec
+process_vm_writev   27  TPASS  :  expected ret success - returned value = -1
+process_vm_writev   28  TPASS  :  expected failure: TEST_ERRNO=EFAULT(14): Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=process_vm_writev02 stime=1575344644
+cmdline="process_vm_writev02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+process_vm_writev02    0  TINFO  :  child 2: write to the same memory location.
+process_vm_writev02    0  TINFO  :  child 0: memory allocated.
+process_vm_writev02    1  TPASS  :  child 0: all bytes are expected.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=prot_hsymlinks stime=1575344644
+cmdline="prot_hsymlinks"
+contacts=""
+analysis=exit
+<<<test_output>>>
+prot_hsymlinks    0  TINFO  :   --- HARDLINKS AND SYMLINKS RESTRICTIONS TEST ---
+
+prot_hsymlinks    1  TPASS  :  Expect: can follow symlink '.../link_1', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    2  TPASS  :  Expect: can follow symlink '.../link_1', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    3  TPASS  :  Expect: can follow symlink '.../link_2', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    4  TPASS  :  Expect: can follow symlink '.../link_2', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    5  TPASS  :  Expect: can follow symlink '.../tmp_root/link_3', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    6  TPASS  :  Expect: can follow symlink '.../tmp_root/link_3', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    7  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_4', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    8  TPASS  :  Expect: can follow symlink '.../tmp_root/link_4', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    9  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_5', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   10  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_5', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   11  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_6', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   12  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_6', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   13  TPASS  :  Expect: can create hardlink '.../root.hs' to '.../link_7', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   14  TPASS  :  Expect: can't create hardlink '.../root.hs' to '.../link_8', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   15  TPASS  :  Expect: can create hardlink '.../root.hs' to '.../tmp_root/link_9', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   16  TPASS  :  Expect: can't create hardlink '.../root.hs' to '.../tmp_root/link_10', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   17  TPASS  :  Expect: can create hardlink '.../root.hs' to '.../tmp_hsym/link_11', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   18  TPASS  :  Expect: can't create hardlink '.../root.hs' to '.../tmp_hsym/link_12', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   19  TPASS  :  Expect: can follow symlink '.../link_13', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   20  TPASS  :  Expect: can follow symlink '.../link_13', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   21  TPASS  :  Expect: can follow symlink '.../link_14', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   22  TPASS  :  Expect: can follow symlink '.../link_14', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   23  TPASS  :  Expect: can follow symlink '.../tmp_root/link_15', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   24  TPASS  :  Expect: can follow symlink '.../tmp_root/link_15', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   25  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_16', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   26  TPASS  :  Expect: can follow symlink '.../tmp_root/link_16', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   27  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_17', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   28  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_17', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   29  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_18', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   30  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_18', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   31  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../link_19', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   32  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../link_20', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   33  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../tmp_root/link_21', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   34  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../tmp_root/link_22', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   35  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../tmp_hsym/link_23', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   36  TPASS  :  Expect: can create hardlink '.../root.hs_w' to '.../tmp_hsym/link_24', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   37  TPASS  :  Expect: can follow symlink '.../link_25', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   38  TPASS  :  Expect: can follow symlink '.../link_25', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   39  TPASS  :  Expect: can follow symlink '.../link_26', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   40  TPASS  :  Expect: can follow symlink '.../link_26', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   41  TPASS  :  Expect: can follow symlink '.../tmp_root/link_27', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   42  TPASS  :  Expect: can follow symlink '.../tmp_root/link_27', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   43  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_28', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   44  TPASS  :  Expect: can follow symlink '.../tmp_root/link_28', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   45  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_29', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   46  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_29', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   47  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_30', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   48  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_30', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   49  TPASS  :  Expect: can follow symlink '.../link_31', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   50  TPASS  :  Expect: can follow symlink '.../link_31', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   51  TPASS  :  Expect: can follow symlink '.../link_32', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   52  TPASS  :  Expect: can follow symlink '.../link_32', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   53  TPASS  :  Expect: can follow symlink '.../tmp_root/link_33', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   54  TPASS  :  Expect: can follow symlink '.../tmp_root/link_33', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   55  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_34', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   56  TPASS  :  Expect: can follow symlink '.../tmp_root/link_34', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   57  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_35', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   58  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_35', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   59  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_36', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   60  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_36', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   61  TPASS  :  Expect: can create hardlink '.../root/local_root.hs' to '.../link_37', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   62  TPASS  :  Expect: can't create hardlink '.../root/local_root.hs' to '.../link_38', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   63  TPASS  :  Expect: can create hardlink '.../root/local_root.hs' to '.../tmp_root/link_39', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   64  TPASS  :  Expect: can't create hardlink '.../root/local_root.hs' to '.../tmp_root/link_40', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   65  TPASS  :  Expect: can create hardlink '.../root/local_root.hs' to '.../tmp_hsym/link_41', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   66  TPASS  :  Expect: can't create hardlink '.../root/local_root.hs' to '.../tmp_hsym/link_42', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   67  TPASS  :  Expect: can follow symlink '.../link_43', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   68  TPASS  :  Expect: can follow symlink '.../link_43', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   69  TPASS  :  Expect: can follow symlink '.../link_44', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   70  TPASS  :  Expect: can follow symlink '.../link_44', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   71  TPASS  :  Expect: can follow symlink '.../tmp_root/link_45', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   72  TPASS  :  Expect: can follow symlink '.../tmp_root/link_45', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   73  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_46', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   74  TPASS  :  Expect: can follow symlink '.../tmp_root/link_46', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   75  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_47', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   76  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_47', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   77  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_48', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   78  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_48', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   79  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs' to '.../link_49', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   80  TPASS  :  Expect: can't create hardlink '.../tmp_root/root.hs' to '.../link_50', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   81  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs' to '.../tmp_root/link_51', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   82  TPASS  :  Expect: can't create hardlink '.../tmp_root/root.hs' to '.../tmp_root/link_52', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   83  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs' to '.../tmp_hsym/link_53', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   84  TPASS  :  Expect: can't create hardlink '.../tmp_root/root.hs' to '.../tmp_hsym/link_54', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   85  TPASS  :  Expect: can follow symlink '.../link_55', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   86  TPASS  :  Expect: can follow symlink '.../link_55', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   87  TPASS  :  Expect: can follow symlink '.../link_56', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   88  TPASS  :  Expect: can follow symlink '.../link_56', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   89  TPASS  :  Expect: can follow symlink '.../tmp_root/link_57', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   90  TPASS  :  Expect: can follow symlink '.../tmp_root/link_57', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   91  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_58', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   92  TPASS  :  Expect: can follow symlink '.../tmp_root/link_58', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   93  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_59', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   94  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_59', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   95  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_60', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   96  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_60', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   97  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../link_61', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   98  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../link_62', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   99  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../tmp_root/link_63', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  100  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../tmp_root/link_64', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  101  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../tmp_hsym/link_65', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  102  TPASS  :  Expect: can create hardlink '.../tmp_root/root.hs_w' to '.../tmp_hsym/link_66', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  103  TPASS  :  Expect: can follow symlink '.../link_67', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  104  TPASS  :  Expect: can follow symlink '.../link_67', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  105  TPASS  :  Expect: can follow symlink '.../link_68', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  106  TPASS  :  Expect: can follow symlink '.../link_68', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  107  TPASS  :  Expect: can follow symlink '.../tmp_root/link_69', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  108  TPASS  :  Expect: can follow symlink '.../tmp_root/link_69', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  109  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_70', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  110  TPASS  :  Expect: can follow symlink '.../tmp_root/link_70', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  111  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_71', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  112  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_71', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  113  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_72', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  114  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_72', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  115  TPASS  :  Expect: can follow symlink '.../link_73', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  116  TPASS  :  Expect: can follow symlink '.../link_73', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  117  TPASS  :  Expect: can follow symlink '.../link_74', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  118  TPASS  :  Expect: can follow symlink '.../link_74', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  119  TPASS  :  Expect: can follow symlink '.../tmp_root/link_75', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  120  TPASS  :  Expect: can follow symlink '.../tmp_root/link_75', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  121  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_76', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  122  TPASS  :  Expect: can follow symlink '.../tmp_root/link_76', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  123  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_77', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  124  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_77', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  125  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_78', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  126  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_78', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  127  TPASS  :  Expect: can create hardlink '.../tmp_root/root/local_root.hs' to '.../link_79', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  128  TPASS  :  Expect: can't create hardlink '.../tmp_root/root/local_root.hs' to '.../link_80', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  129  TPASS  :  Expect: can create hardlink '.../tmp_root/root/local_root.hs' to '.../tmp_root/link_81', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  130  TPASS  :  Expect: can't create hardlink '.../tmp_root/root/local_root.hs' to '.../tmp_root/link_82', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  131  TPASS  :  Expect: can create hardlink '.../tmp_root/root/local_root.hs' to '.../tmp_hsym/link_83', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  132  TPASS  :  Expect: can't create hardlink '.../tmp_root/root/local_root.hs' to '.../tmp_hsym/link_84', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  133  TPASS  :  Expect: can follow symlink '.../link_85', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  134  TPASS  :  Expect: can follow symlink '.../link_85', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  135  TPASS  :  Expect: can follow symlink '.../link_86', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  136  TPASS  :  Expect: can follow symlink '.../link_86', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  137  TPASS  :  Expect: can follow symlink '.../tmp_root/link_87', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  138  TPASS  :  Expect: can follow symlink '.../tmp_root/link_87', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  139  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_88', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  140  TPASS  :  Expect: can follow symlink '.../tmp_root/link_88', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  141  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_89', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  142  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_89', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  143  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_90', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  144  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_90', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  145  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs' to '.../link_91', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  146  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root.hs' to '.../link_92', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  147  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs' to '.../tmp_root/link_93', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  148  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root.hs' to '.../tmp_root/link_94', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  149  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs' to '.../tmp_hsym/link_95', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  150  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root.hs' to '.../tmp_hsym/link_96', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  151  TPASS  :  Expect: can follow symlink '.../link_97', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  152  TPASS  :  Expect: can follow symlink '.../link_97', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  153  TPASS  :  Expect: can follow symlink '.../link_98', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  154  TPASS  :  Expect: can follow symlink '.../link_98', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  155  TPASS  :  Expect: can follow symlink '.../tmp_root/link_99', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  156  TPASS  :  Expect: can follow symlink '.../tmp_root/link_99', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  157  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_100', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  158  TPASS  :  Expect: can follow symlink '.../tmp_root/link_100', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  159  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_101', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  160  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_101', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  161  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_102', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  162  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_102', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  163  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../link_103', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  164  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../link_104', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  165  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../tmp_root/link_105', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  166  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../tmp_root/link_106', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  167  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../tmp_hsym/link_107', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  168  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root.hs_w' to '.../tmp_hsym/link_108', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  169  TPASS  :  Expect: can follow symlink '.../link_109', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  170  TPASS  :  Expect: can follow symlink '.../link_109', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  171  TPASS  :  Expect: can follow symlink '.../link_110', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  172  TPASS  :  Expect: can follow symlink '.../link_110', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  173  TPASS  :  Expect: can follow symlink '.../tmp_root/link_111', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  174  TPASS  :  Expect: can follow symlink '.../tmp_root/link_111', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  175  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_112', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  176  TPASS  :  Expect: can follow symlink '.../tmp_root/link_112', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  177  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_113', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  178  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_113', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  179  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_114', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  180  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_114', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  181  TPASS  :  Expect: can follow symlink '.../link_115', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  182  TPASS  :  Expect: can follow symlink '.../link_115', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  183  TPASS  :  Expect: can follow symlink '.../link_116', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  184  TPASS  :  Expect: can follow symlink '.../link_116', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  185  TPASS  :  Expect: can follow symlink '.../tmp_root/link_117', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  186  TPASS  :  Expect: can follow symlink '.../tmp_root/link_117', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  187  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_118', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  188  TPASS  :  Expect: can follow symlink '.../tmp_root/link_118', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  189  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_119', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  190  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_119', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  191  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_120', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  192  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_120', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  193  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root/local_root.hs' to '.../link_121', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  194  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root/local_root.hs' to '.../link_122', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  195  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root/local_root.hs' to '.../tmp_root/link_123', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  196  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root/local_root.hs' to '.../tmp_root/link_124', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  197  TPASS  :  Expect: can create hardlink '.../tmp_hsym/root/local_root.hs' to '.../tmp_hsym/link_125', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  198  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/root/local_root.hs' to '.../tmp_hsym/link_126', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  199  TPASS  :  Expect: can follow symlink '.../link_127', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  200  TPASS  :  Expect: can follow symlink '.../link_127', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  201  TPASS  :  Expect: can follow symlink '.../link_128', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  202  TPASS  :  Expect: can follow symlink '.../link_128', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  203  TPASS  :  Expect: can follow symlink '.../tmp_root/link_129', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  204  TPASS  :  Expect: can follow symlink '.../tmp_root/link_129', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  205  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_130', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  206  TPASS  :  Expect: can follow symlink '.../tmp_root/link_130', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  207  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_131', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  208  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_131', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  209  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_132', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  210  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_132', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  211  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../link_133', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  212  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../link_134', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  213  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../tmp_root/link_135', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  214  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../tmp_root/link_136', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  215  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../tmp_hsym/link_137', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  216  TPASS  :  Expect: can create hardlink '.../hsym.hs' to '.../tmp_hsym/link_138', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  217  TPASS  :  Expect: can follow symlink '.../link_139', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  218  TPASS  :  Expect: can follow symlink '.../link_139', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  219  TPASS  :  Expect: can follow symlink '.../link_140', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  220  TPASS  :  Expect: can follow symlink '.../link_140', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  221  TPASS  :  Expect: can follow symlink '.../tmp_root/link_141', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  222  TPASS  :  Expect: can follow symlink '.../tmp_root/link_141', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  223  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_142', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  224  TPASS  :  Expect: can follow symlink '.../tmp_root/link_142', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  225  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_143', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  226  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_143', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  227  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_144', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  228  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_144', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  229  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../link_145', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  230  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../link_146', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  231  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../tmp_root/link_147', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  232  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../tmp_root/link_148', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  233  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../tmp_hsym/link_149', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  234  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' to '.../tmp_hsym/link_150', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  235  TPASS  :  Expect: can follow symlink '.../link_151', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  236  TPASS  :  Expect: can follow symlink '.../link_151', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  237  TPASS  :  Expect: can follow symlink '.../link_152', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  238  TPASS  :  Expect: can follow symlink '.../link_152', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  239  TPASS  :  Expect: can follow symlink '.../tmp_root/link_153', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  240  TPASS  :  Expect: can follow symlink '.../tmp_root/link_153', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  241  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_154', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  242  TPASS  :  Expect: can follow symlink '.../tmp_root/link_154', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  243  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_155', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  244  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_155', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  245  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_156', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  246  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_156', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  247  TPASS  :  Expect: can follow symlink '.../link_157', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  248  TPASS  :  Expect: can follow symlink '.../link_157', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  249  TPASS  :  Expect: can follow symlink '.../link_158', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  250  TPASS  :  Expect: can follow symlink '.../link_158', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  251  TPASS  :  Expect: can follow symlink '.../tmp_root/link_159', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  252  TPASS  :  Expect: can follow symlink '.../tmp_root/link_159', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  253  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_160', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  254  TPASS  :  Expect: can follow symlink '.../tmp_root/link_160', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  255  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_161', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  256  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_161', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  257  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_162', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  258  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_162', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  259  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../link_163', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  260  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../link_164', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  261  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../tmp_root/link_165', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  262  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../tmp_root/link_166', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  263  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../tmp_hsym/link_167', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  264  TPASS  :  Expect: can create hardlink '.../hsym/local_hsym.hs' to '.../tmp_hsym/link_168', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  265  TPASS  :  Expect: can follow symlink '.../link_169', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  266  TPASS  :  Expect: can follow symlink '.../link_169', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  267  TPASS  :  Expect: can follow symlink '.../link_170', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  268  TPASS  :  Expect: can follow symlink '.../link_170', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  269  TPASS  :  Expect: can follow symlink '.../tmp_root/link_171', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  270  TPASS  :  Expect: can follow symlink '.../tmp_root/link_171', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  271  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_172', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  272  TPASS  :  Expect: can follow symlink '.../tmp_root/link_172', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  273  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_173', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  274  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_173', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  275  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_174', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  276  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_174', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  277  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../link_175', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  278  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../link_176', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  279  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../tmp_root/link_177', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  280  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../tmp_root/link_178', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  281  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../tmp_hsym/link_179', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  282  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs' to '.../tmp_hsym/link_180', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  283  TPASS  :  Expect: can follow symlink '.../link_181', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  284  TPASS  :  Expect: can follow symlink '.../link_181', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  285  TPASS  :  Expect: can follow symlink '.../link_182', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  286  TPASS  :  Expect: can follow symlink '.../link_182', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  287  TPASS  :  Expect: can follow symlink '.../tmp_root/link_183', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  288  TPASS  :  Expect: can follow symlink '.../tmp_root/link_183', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  289  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_184', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  290  TPASS  :  Expect: can follow symlink '.../tmp_root/link_184', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  291  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_185', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  292  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_185', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  293  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_186', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  294  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_186', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  295  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../link_187', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  296  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../link_188', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  297  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../tmp_root/link_189', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  298  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../tmp_root/link_190', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  299  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../tmp_hsym/link_191', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  300  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym.hs_w' to '.../tmp_hsym/link_192', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  301  TPASS  :  Expect: can follow symlink '.../link_193', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  302  TPASS  :  Expect: can follow symlink '.../link_193', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  303  TPASS  :  Expect: can follow symlink '.../link_194', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  304  TPASS  :  Expect: can follow symlink '.../link_194', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  305  TPASS  :  Expect: can follow symlink '.../tmp_root/link_195', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  306  TPASS  :  Expect: can follow symlink '.../tmp_root/link_195', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  307  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_196', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  308  TPASS  :  Expect: can follow symlink '.../tmp_root/link_196', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  309  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_197', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  310  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_197', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  311  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_198', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  312  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_198', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  313  TPASS  :  Expect: can follow symlink '.../link_199', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  314  TPASS  :  Expect: can follow symlink '.../link_199', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  315  TPASS  :  Expect: can follow symlink '.../link_200', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  316  TPASS  :  Expect: can follow symlink '.../link_200', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  317  TPASS  :  Expect: can follow symlink '.../tmp_root/link_201', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  318  TPASS  :  Expect: can follow symlink '.../tmp_root/link_201', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  319  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_202', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  320  TPASS  :  Expect: can follow symlink '.../tmp_root/link_202', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  321  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_203', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  322  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_203', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  323  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_204', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  324  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_204', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  325  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../link_205', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  326  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../link_206', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  327  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../tmp_root/link_207', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  328  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../tmp_root/link_208', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  329  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../tmp_hsym/link_209', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  330  TPASS  :  Expect: can create hardlink '.../tmp_root/hsym/local_hsym.hs' to '.../tmp_hsym/link_210', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  331  TPASS  :  Expect: can follow symlink '.../link_211', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  332  TPASS  :  Expect: can follow symlink '.../link_211', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  333  TPASS  :  Expect: can follow symlink '.../link_212', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  334  TPASS  :  Expect: can follow symlink '.../link_212', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  335  TPASS  :  Expect: can follow symlink '.../tmp_root/link_213', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  336  TPASS  :  Expect: can follow symlink '.../tmp_root/link_213', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  337  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_214', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  338  TPASS  :  Expect: can follow symlink '.../tmp_root/link_214', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  339  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_215', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  340  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_215', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  341  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_216', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  342  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_216', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  343  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../link_217', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  344  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../link_218', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  345  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../tmp_root/link_219', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  346  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../tmp_root/link_220', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  347  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../tmp_hsym/link_221', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  348  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs' to '.../tmp_hsym/link_222', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  349  TPASS  :  Expect: can follow symlink '.../link_223', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  350  TPASS  :  Expect: can follow symlink '.../link_223', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  351  TPASS  :  Expect: can follow symlink '.../link_224', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  352  TPASS  :  Expect: can follow symlink '.../link_224', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  353  TPASS  :  Expect: can follow symlink '.../tmp_root/link_225', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  354  TPASS  :  Expect: can follow symlink '.../tmp_root/link_225', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  355  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_226', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  356  TPASS  :  Expect: can follow symlink '.../tmp_root/link_226', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  357  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_227', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  358  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_227', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  359  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_228', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  360  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_228', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  361  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../link_229', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  362  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../link_230', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  363  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../tmp_root/link_231', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  364  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../tmp_root/link_232', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  365  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../tmp_hsym/link_233', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  366  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym.hs_w' to '.../tmp_hsym/link_234', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  367  TPASS  :  Expect: can follow symlink '.../link_235', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  368  TPASS  :  Expect: can follow symlink '.../link_235', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  369  TPASS  :  Expect: can follow symlink '.../link_236', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  370  TPASS  :  Expect: can follow symlink '.../link_236', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  371  TPASS  :  Expect: can follow symlink '.../tmp_root/link_237', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  372  TPASS  :  Expect: can follow symlink '.../tmp_root/link_237', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  373  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_238', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  374  TPASS  :  Expect: can follow symlink '.../tmp_root/link_238', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  375  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_239', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  376  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_239', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  377  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_240', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  378  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_240', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  379  TPASS  :  Expect: can follow symlink '.../link_241', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  380  TPASS  :  Expect: can follow symlink '.../link_241', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  381  TPASS  :  Expect: can follow symlink '.../link_242', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  382  TPASS  :  Expect: can follow symlink '.../link_242', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  383  TPASS  :  Expect: can follow symlink '.../tmp_root/link_243', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  384  TPASS  :  Expect: can follow symlink '.../tmp_root/link_243', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  385  TPASS  :  Expect: can't follow symlink '.../tmp_root/link_244', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  386  TPASS  :  Expect: can follow symlink '.../tmp_root/link_244', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  387  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_245', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  388  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/link_245', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  389  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_246', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  390  TPASS  :  Expect: can follow symlink '.../tmp_hsym/link_246', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  391  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../link_247', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  392  TPASS  :  Expect: can create userdel: hsym mail spool (/var/mail/hsym) not found
+userdel: hsym home directory (/home/hsym) not found
+hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../link_248', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  393  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../tmp_root/link_249', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  394  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../tmp_root/link_250', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  395  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../tmp_hsym/link_251', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  396  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../tmp_hsym/link_252', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks    0  TINFO  :  All test-cases have been completed, summary:
+ - symlinks  test:	PASS
+ - hardlinks test:	PASS
+prot_hsymlinks    0  TINFO  :  Disable protected hardlinks mode back
+prot_hsymlinks    0  TINFO  :  Disable protected symlinks mode back
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=dirtyc0w stime=1575344644
+cmdline="dirtyc0w"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+dirtyc0w.c:91: PASS: Bug not reproduced
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=24 cstime=81
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect01 stime=1575344645
+cmdline="pselect01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+tst_timer_test.c:264: INFO: pselect() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1017us, max 2069us, median 1110us, trunc mean 1113.09us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2052us, max 2683us, median 2143us, trunc mean 2140.30us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5017us, max 9639us, median 5114us, trunc mean 5138.08us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10074us, max 16024us, median 10108us, trunc mean 10136.26us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25070us, max 25559us, median 25118us, trunc mean 25125.81us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100172us, max 100203us, median 100191us, trunc mean 100188.33us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1001086us, max 1001094us, median 1001086us, trunc mean 1001086.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=8 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect01_64 stime=1575344653
+cmdline="pselect01_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+tst_timer_test.c:264: INFO: pselect() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1031us, max 6808us, median 1124us, trunc mean 1128.66us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2066us, max 3194us, median 2122us, trunc mean 2119.12us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5067us, max 8002us, median 5132us, trunc mean 5126.65us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10103us, max 12313us, median 10153us, trunc mean 10151.23us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25077us, max 25177us, median 25149us, trunc mean 25141.81us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100178us, max 100241us, median 100206us, trunc mean 100206.89us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: pselect() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1001071us, max 1001100us, median 1001071us, trunc mean 1001071.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=9 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect02 stime=1575344662
+cmdline="pselect02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pselect02    1  TPASS  :  pselect() failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+pselect02    2  TPASS  :  pselect() failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+pselect02    3  TPASS  :  pselect() failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect02_64 stime=1575344662
+cmdline="pselect02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pselect02_64    1  TPASS  :  pselect() failed as expected: TEST_ERRNO=EBADF(9): Bad file descriptor
+pselect02_64    2  TPASS  :  pselect() failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+pselect02_64    3  TPASS  :  pselect() failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect03 stime=1575344662
+cmdline="pselect03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pselect03.c:31: PASS: pselect() succeeded retval=0
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pselect03_64 stime=1575344662
+cmdline="pselect03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pselect03.c:31: PASS: pselect() succeeded retval=0
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace01 stime=1575344662
+cmdline="ptrace01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ptrace01    1  TPASS  :  Test Passed
+ptrace01    2  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace02 stime=1575344662
+cmdline="ptrace02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ptrace02    1  TPASS  :  Test Passed
+ptrace02    2  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace03 stime=1575344662
+cmdline="ptrace03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ptrace03    1  TCONF  :  ptrace03.c:137: this kernel allows to trace init
+ptrace03    2  TPASS  :  Test Passed
+ptrace03    3  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace04 stime=1575344662
+cmdline="ptrace04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ptrace04    1  TCONF  :  ptrace04.c:105: test not supported for your arch (yet)
+ptrace04    2  TCONF  :  ptrace04.c:105: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace05 stime=1575344662
+cmdline="ptrace05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+ptrace05    0  TINFO  :  [child] Sending kill(.., 0)
+ptrace05    1  TPASS  :  kill(.., 0) exited with 0, as expected.
+ptrace05    2  TPASS  :  Stopped as expected
+ptrace05    3  TPASS  :  Stopped as expected
+ptrace05    4  TPASS  :  Stopped as expected
+ptrace05    5  TPASS  :  Stopped as expected
+ptrace05    6  TPASS  :  Stopped as expected
+ptrace05    7  TPASS  :  Stopped as expected
+ptrace05    8  TPASS  :  Stopped as expected
+ptrace05    9  TPASS  :  Stopped as expected
+ptrace05   10  TPASS  :  Killed with SIGKILL, as expected.
+ptrace05   11  TPASS  :  Stopped as expected
+ptrace05   12  TPASS  :  Stopped as expected
+ptrace05   13  TPASS  :  Stopped as expected
+ptrace05   14  TPASS  :  Stopped as expected
+ptrace05   15  TPASS  :  Stopped as expected
+ptrace05   16  TPASS  :  Stopped as expected
+ptrace05   17  TPASS  :  Stopped as expected
+ptrace05   18  TPASS  :  Stopped as expected
+ptrace05   19  TPASS  :  Stopped as expected
+ptrace05   20  TPASS  :  Stopped as expected
+ptrace05   21  TPASS  :  Stopped as expected
+ptrace05   22  TPASS  :  Stopped as expected
+ptrace05   23  TPASS  :  Stopped as expected
+ptrace05   24  TPASS  :  Stopped as expected
+ptrace05   25  TPASS  :  Stopped as expected
+ptrace05   26  TPASS  :  Stopped as expected
+ptrace05   27  TPASS  :  Stopped as expected
+ptrace05   28  TPASS  :  Stopped as expected
+ptrace05   29  TPASS  :  Stopped as expected
+ptrace05   30  TPASS  :  Stopped as expected
+ptrace05   31  TPASS  :  Stopped as expected
+ptrace05   32  TPASS  :  Stopped as expected
+ptrace05   33  TPASS  :  Stopped as expected
+ptrace05   34  TPASS  :  Stopped as expected
+ptrace05   35  TPASS  :  Stopped as expected
+ptrace05   36  TPASS  :  Stopped as expected
+ptrace05   37  TPASS  :  Stopped as expected
+ptrace05   38  TPASS  :  Stopped as expected
+ptrace05   39  TPASS  :  Stopped as expected
+ptrace05   40  TPASS  :  Stopped as expected
+ptrace05   41  TPASS  :  Stopped as expected
+ptrace05   42  TPASS  :  Stopped as expected
+ptrace05   43  TPASS  :  Stopped as expected
+ptrace05   44  TPASS  :  Stopped as expected
+ptrace05   45  TPASS  :  Stopped as expected
+ptrace05   46  TPASS  :  Stopped as expected
+ptrace05   47  TPASS  :  Stopped as expected
+ptrace05   48  TPASS  :  Stopped as expected
+ptrace05   49  TPASS  :  Stopped as expected
+ptrace05   50  TPASS  :  Stopped as expected
+ptrace05   51  TPASS  :  Stopped as expected
+ptrace05   52  TPASS  :  Stopped as expected
+ptrace05   53  TPASS  :  Stopped as expected
+ptrace05   54  TPASS  :  Stopped as expected
+ptrace05   55  TPASS  :  Stopped as expected
+ptrace05   56  TPASS  :  Stopped as expected
+ptrace05   57  TPASS  :  Stopped as expected
+ptrace05   58  TPASS  :  Stopped as expected
+ptrace05   59  TPASS  :  Stopped as expected
+ptrace05   60  TPASS  :  Stopped as expected
+ptrace05   61  TPASS  :  Stopped as expected
+ptrace05   62  TPASS  :  Stopped as expected
+ptrace05   63  TPASS  :  Stopped as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=ptrace07 stime=1575344662
+cmdline="ptrace07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+ptrace07.c:138: INFO: PTRACE_SETREGSET with reserved bits failed with EINVAL
+ptrace07.c:161: INFO: test child 4648 exited, retcode: 0
+ptrace07.c:174: PASS: wasn't able to set invalid FPU state
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=115 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite01 stime=1575344663
+cmdline="pwrite01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pwrite01    1  TPASS  :  Functionality of pwrite() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite02 stime=1575344663
+cmdline="pwrite02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwrite02.c:91: PASS: pwrite failed as expected: ESPIPE (29)
+pwrite02.c:91: PASS: pwrite failed as expected: EINVAL (22)
+pwrite02.c:91: PASS: pwrite failed as expected: EBADF (9)
+pwrite02.c:91: PASS: pwrite failed as expected: EBADF (9)
+pwrite02.c:91: PASS: pwrite failed as expected: EFAULT (14)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite03 stime=1575344663
+cmdline="pwrite03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwrite03.c:25: PASS: pwrite(fd, NULL, 0) == 0
 
 Summary:
 passed   1
@@ -14896,118 +12384,4484 @@ duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=qmm01 stime=1575293901
-cmdline="mmap001 -m 1"
+tag=pwrite04 stime=1575344663
+cmdline="pwrite04"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap001     0  TINFO  :  mmap()ing file of 1 pages or 4096 bytes
-mmap001     1  TPASS  :  mmap() completed successfully.
-mmap001     0  TINFO  :  touching mmaped memory
-mmap001     2  TPASS  :  we're still here, mmaped area must be good
-mmap001     3  TPASS  :  synchronizing mmapped page passed
-mmap001     4  TPASS  :  munmapping testfile.23250 successful
+pwrite04    1  TPASS  :  O_APPEND test passed.
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap01 stime=1575293901
-cmdline="mmap01"
+tag=pwrite01_64 stime=1575344663
+cmdline="pwrite01_64"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap01      1  TPASS  :  Functionality of mmap() successful
+pwrite01    1  TPASS  :  Functionality of pwrite() successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite02_64 stime=1575344663
+cmdline="pwrite02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwrite02.c:91: PASS: pwrite failed as expected: ESPIPE (29)
+pwrite02.c:91: PASS: pwrite failed as expected: EINVAL (22)
+pwrite02.c:91: PASS: pwrite failed as expected: EBADF (9)
+pwrite02.c:91: PASS: pwrite failed as expected: EBADF (9)
+pwrite02.c:91: PASS: pwrite failed as expected: EFAULT (14)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite03_64 stime=1575344663
+cmdline="pwrite03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwrite03.c:25: PASS: pwrite(fd, NULL, 0) == 0
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwrite04_64 stime=1575344663
+cmdline="pwrite04_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+pwrite04    1  TPASS  :  O_APPEND test passed.
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev01 stime=1575344663
+cmdline="pwritev01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=1 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap02 stime=1575293901
-cmdline="mmap02"
+tag=pwritev01_64 stime=1575344663
+cmdline="pwritev01_64"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap02      1  TPASS  :  Functionality of mmap() successful
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev01.c:85: PASS: writev() wrote 64 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap03 stime=1575293901
-cmdline="mmap03"
+tag=pwritev02 stime=1575344663
+cmdline="pwritev02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap03      1  TPASS  :  mmap() functionality is correct
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EFAULT (14)
+pwritev02.c:84: PASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: PASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: PASS: pwritev() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev02_64 stime=1575344663
+cmdline="pwritev02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: PASS: pwritev() failed as expected: EFAULT (14)
+pwritev02.c:84: PASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: PASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: PASS: pwritev() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev03 stime=1575344663
+cmdline="pwritev03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   24
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=7 cstime=219
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev03_64 stime=1575344668
+cmdline="pwritev03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ext3
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ext4
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on xfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on vfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on exfat
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+tst_test.c:1179: INFO: Testing on ntfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+safe_macros.c:743: INFO: Trying FUSE...
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev03.c:101: INFO: Using block size 512
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+pwritev03.c:87: PASS: pwritev(O_DIRECT) wrote 512 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   24
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=4 termination_type=exited termination_id=0 corefile=no
+cutime=8 cstime=184
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev201 stime=1575344672
+cmdline="pwritev201"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev201_64 stime=1575344672
+cmdline="pwritev201_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+pwritev201.c:96: PASS: pwritev2() wrote 64 bytes successfully with content 'a' expectedly 
+
+Summary:
+passed   6
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev202 stime=1575344672
+cmdline="pwritev202"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev202.c:78: PASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EOPNOTSUPP (95)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EFAULT (14)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: PASS: pwritev2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=pwritev202_64 stime=1575344672
+cmdline="pwritev202_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+pwritev202.c:78: PASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EOPNOTSUPP (95)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EFAULT (14)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: PASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: PASS: pwritev2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=quotactl01 stime=1575344672
+cmdline="quotactl01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+quotactl01.c:190: PASS: quotactl succeeded to turn on quota for user
+quotactl01.c:190: PASS: quotactl succeeded to set disk quota limit for user
+quotactl01.c:190: PASS: quotactl succeeded to get disk quota limit for user
+quotactl01.c:190: PASS: quotactl succeeded to set information about quotafile for user
+quotactl01.c:190: PASS: quotactl succeeded to get information about quotafile for user
+quotactl01.c:190: PASS: quotactl succeeded to get quota format for user
+quotactl01.c:190: PASS: quotactl succeeded to update quota usages for user
+quotactl01.c:190: PASS: quotactl succeeded to turn off quota for user
+quotactl01.c:190: PASS: quotactl succeeded to turn on quota for group
+quotactl01.c:190: PASS: quotactl succeeded to set disk quota limit for group
+quotactl01.c:190: PASS: quotactl succeeded to set disk quota limit for group
+quotactl01.c:190: PASS: quotactl succeeded to set information about quotafile for group
+quotactl01.c:190: PASS: quotactl succeeded to get information about quotafile for group
+quotactl01.c:190: PASS: quotactl succeeded to get quota format for group
+quotactl01.c:190: PASS: quotactl succeeded to update quota usages for group
+quotactl01.c:190: PASS: quotactl succeeded to turn off quota for group
+
+Summary:
+passed   16
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=3
+<<<test_end>>>
+<<<test_start>>>
+tag=quotactl02 stime=1575344672
+cmdline="quotactl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:772: CONF: This system didn't support quota or xfs quota
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=quotactl03 stime=1575344672
+cmdline="quotactl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:772: CONF: This system didn't support quota or xfs quota
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=read01 stime=1575344672
+cmdline="read01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+read01.c:24: PASS: read(2) returned 512
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=read02 stime=1575344672
+cmdline="read02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+read02.c:86: PASS: read() failed as expected: EBADF (9)
+read02.c:86: PASS: read() failed as expected: EISDIR (21)
+read02.c:86: PASS: read() failed as expected: EFAULT (14)
+read02.c:86: PASS: read() failed as expected: EINVAL (22)
+read02.c:86: PASS: read() failed as expected: EINVAL (22)
+
+Summary:
+passed   5
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=read03 stime=1575344672
+cmdline="read03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+read03      1  TPASS  :  read() succeded in setting errno to EAGAIN
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=read04 stime=1575344672
+cmdline="read04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+read04      1  TPASS  :  functionality of read() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readahead01 stime=1575344672
+cmdline="readahead01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+readahead01.c:56: INFO: test_bad_fd -1
+readahead01.c:28: PASS: expected ret success - returned value = -1
+readahead01.c:39: PASS: expected failure: EBADF (9)
+readahead01.c:61: INFO: test_bad_fd O_WRONLY
+readahead01.c:28: PASS: expected ret success - returned value = -1
+readahead01.c:39: PASS: expected failure: EBADF (9)
+readahead01.c:78: INFO: test_invalid_fd pipe
+readahead01.c:28: PASS: expected ret success - returned value = -1
+readahead01.c:39: PASS: expected failure: EINVAL (22)
+readahead01.c:86: INFO: test_invalid_fd socket
+readahead01.c:28: PASS: expected ret success - returned value = -1
+readahead01.c:39: PASS: expected failure: EINVAL (22)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readahead02 stime=1575344672
+cmdline="readahead02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.4 (31-Jan-2017)
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+readahead02.c:388: INFO: readahead length: 2097152
+readahead02.c:226: INFO: Test #0: readahead on file
+readahead02.c:131: INFO: creating test file of size: 67108864
+readahead02.c:245: INFO: read_testfile(0)
+readahead02.c:256: INFO: read_testfile(1)
+readahead02.c:180: INFO: readahead calls made: 32
+readahead02.c:186: PASS: offset is still at 0 as expected
+readahead02.c:290: INFO: read_testfile(0) took: 77421 usec
+readahead02.c:291: INFO: read_testfile(1) took: 73207 usec
+readahead02.c:293: INFO: read_testfile(0) read: 67108864 bytes
+readahead02.c:295: INFO: read_testfile(1) read: 0 bytes
+readahead02.c:298: PASS: readahead saved some I/O
+readahead02.c:306: INFO: cache can hold at least: 140692 kB
+readahead02.c:307: INFO: read_testfile(0) used cache: 134876 kB
+readahead02.c:308: INFO: read_testfile(1) used cache: 74220 kB
+readahead02.c:316: PASS: using cache as expected
+readahead02.c:226: INFO: Test #1: readahead on overlayfs file
+readahead02.c:131: INFO: creating test file of size: 67108864
+readahead02.c:245: INFO: read_testfile(0)
+readahead02.c:256: INFO: read_testfile(1)
+readahead02.c:180: INFO: readahead calls made: 32
+readahead02.c:186: PASS: offset is still at 0 as expected
+readahead02.c:290: INFO: read_testfile(0) took: 74445 usec
+readahead02.c:291: INFO: read_testfile(1) took: 69724 usec
+readahead02.c:293: INFO: read_testfile(0) read: 67108864 bytes
+readahead02.c:295: INFO: read_testfile(1) read: 0 bytes
+readahead02.c:298: PASS: readahead saved some I/O
+readahead02.c:306: INFO: cache can hold at least: 266340 kB
+readahead02.c:307: INFO: read_testfile(0) used cache: 134336 kB
+readahead02.c:308: INFO: read_testfile(1) used cache: 69144 kB
+readahead02.c:316: PASS: using cache as expected
+readahead02.c:226: INFO: Test #2: POSIX_FADV_WILLNEED on file
+readahead02.c:131: INFO: creating test file of size: 67108864
+readahead02.c:245: INFO: read_testfile(0)
+readahead02.c:256: INFO: read_testfile(1)
+readahead02.c:180: INFO: readahead calls made: 32
+readahead02.c:186: PASS: offset is still at 0 as expected
+readahead02.c:290: INFO: read_testfile(0) took: 80476 usec
+readahead02.c:291: INFO: read_testfile(1) took: 80364 usec
+readahead02.c:293: INFO: read_testfile(0) read: 67108864 bytes
+readahead02.c:295: INFO: read_testfile(1) read: 0 bytes
+readahead02.c:298: PASS: readahead saved some I/O
+readahead02.c:306: INFO: cache can hold at least: 266340 kB
+readahead02.c:307: INFO: read_testfile(0) used cache: 134444 kB
+readahead02.c:308: INFO: read_testfile(1) used cache: 68112 kB
+readahead02.c:316: PASS: using cache as expected
+readahead02.c:226: INFO: Test #3: POSIX_FADV_WILLNEED on overlayfs file
+readahead02.c:131: INFO: creating test file of size: 67108864
+readahead02.c:245: INFO: read_testfile(0)
+readahead02.c:256: INFO: read_testfile(1)
+readahead02.c:180: INFO: readahead calls made: 32
+readahead02.c:186: PASS: offset is still at 0 as expected
+readahead02.c:290: INFO: read_testfile(0) took: 80645 usec
+readahead02.c:291: INFO: read_testfile(1) took: 38969 usec
+readahead02.c:293: INFO: read_testfile(0) read: 67108864 bytes
+readahead02.c:295: INFO: read_testfile(1) read: 0 bytes
+readahead02.c:298: PASS: readahead saved some I/O
+readahead02.c:306: INFO: cache can hold at least: 266340 kB
+readahead02.c:307: INFO: read_testfile(0) used cache: 134640 kB
+readahead02.c:308: INFO: read_testfile(1) used cache: 92840 kB
+readahead02.c:316: PASS: using cache as expected
+
+Summary:
+passed   12
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=6 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=155
+<<<test_end>>>
+<<<test_start>>>
+tag=readdir01 stime=1575344678
+cmdline="readdir01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+readdir01    1  TPASS  :  found all 10 that were created
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readdir21 stime=1575344678
+cmdline="readdir21"
+contacts=""
+analysis=exit
+<<<test_output>>>
+readdir21    1  TCONF  :  readdir21.c:122: syscall(-1) __NR_readdir not supported on your arch
+readdir21    2  TCONF  :  readdir21.c:122: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readlink01A stime=1575344678
+cmdline="symlink01 -T readlink01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+readlink01    1  TPASS  :  Reading of symbolic link file contents checks out ok
+readlink01    2  TPASS  :  Reading of symbolic link file contents checks out ok
+readlink01    3  TPASS  :  Reading a symbolic link which exceeds maximum pathname error is caught
+readlink01    4  TPASS  :  Reading a nonsymbolic link file error condition is caught.  EINVAL is returned
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readlink01 stime=1575344678
+cmdline="readlink01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+readlink01.c:64: INFO: Running test as root
+readlink01.c:46: PASS: readlink() functionality on 'slink_file' was correct
+readlink01.c:55: INFO: Running test as nobody
+readlink01.c:46: PASS: readlink() functionality on 'slink_file' was correct
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=1
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap04 stime=1575293901
-cmdline="mmap04"
+tag=readlink03 stime=1575344678
+cmdline="readlink03"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap04      1  TPASS  :  Functionality of mmap() successful
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+readlink03.c:86: PASS: readlink() failed as expected: EACCES (13)
+readlink03.c:86: PASS: readlink() failed as expected: EINVAL (22)
+readlink03.c:86: PASS: readlink() failed as expected: EINVAL (22)
+readlink03.c:86: PASS: readlink() failed as expected: ENAMETOOLONG (36)
+readlink03.c:86: PASS: readlink() failed as expected: ENOENT (2)
+readlink03.c:86: PASS: readlink() failed as expected: ENOTDIR (20)
+readlink03.c:86: PASS: readlink() failed as expected: ELOOP (40)
+readlink03.c:86: PASS: readlink() failed as expected: EFAULT (14)
+
+Summary:
+passed   8
+failed   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap05 stime=1575293901
-cmdline="mmap05"
+tag=readlinkat01 stime=1575344678
+cmdline="readlinkat01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap05      1  TPASS  :  Got SIGSEGV as expected
+readlinkat01    1  TPASS  :  readlinkat() returned 13: TEST_ERRNO=SUCCESS(0): Success
+readlinkat01    2  TPASS  :  readlinkat() returned 13: TEST_ERRNO=SUCCESS(0): Success
+readlinkat01    3  TPASS  :  readlinkat() returned -1: TEST_ERRNO=ENOTDIR(20): Not a directory
+readlinkat01    4  TPASS  :  readlinkat() returned -1: TEST_ERRNO=EBADF(9): Bad file descriptor
+readlinkat01    5  TPASS  :  readlinkat() returned 13: TEST_ERRNO=SUCCESS(0): Success
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap06 stime=1575293901
-cmdline="mmap06"
+tag=readlinkat02 stime=1575344678
+cmdline="readlinkat02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap06      1  TPASS  :  mmap failed with EACCES
+readlinkat02    1  TPASS  :  readlinkat failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+readlinkat02    2  TPASS  :  readlinkat failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+readlinkat02    3  TPASS  :  readlinkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
+readlinkat02    4  TPASS  :  readlinkat failed as expected: TEST_ERRNO=ENOTDIR(20): Not a directory
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap07 stime=1575293901
-cmdline="mmap07"
+tag=readv01 stime=1575344678
+cmdline="readv01"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap07      1  TPASS  :  mmap failed with EACCES
+readv01     1  TPASS  :  readv read 0 io vectors
+readv01     2  TPASS  :  readv passed reading 64 bytes followed by two NULL vectors
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
 cutime=0 cstime=0
 <<<test_end>>>
 <<<test_start>>>
-tag=mmap08 stime=1575293901
-cmdline="mmap08"
+tag=readv02 stime=1575344678
+cmdline="readv02"
 contacts=""
 analysis=exit
 <<<test_output>>>
-mmap08      1  TPASS  :  mmap failed with EBADF
+readv02     1  TPASS  :  got EINVAL
+readv02     2  TPASS  :  got EFAULT
+readv02     3  TPASS  :  got EBADF
+readv02     4  TPASS  :  got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=readv03 stime=1575344678
+cmdline="readv03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+readv03     1  TPASS  :  got EISDIR
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=realpath01 stime=1575344678
+cmdline="realpath01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+realpath01.c:30: FAIL: returned unexpected errno: SUCCESS (0)
+
+Summary:
+passed   0
+failed   1
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=reboot01 stime=1575344678
+cmdline="reboot01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+reboot01    1  TPASS  :  reboot(2) Passed for option LINUX_REBOOT_CMD_CAD_ON
+reboot01    2  TPASS  :  reboot(2) Passed for option LINUX_REBOOT_CMD_CAD_OFF
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=reboot02 stime=1575344678
+cmdline="reboot02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+reboot02    1  TPASS  :  reboot(2) expected failure; Got errno - EINVAL : Invalid flag
+reboot02    1  TPASS  :  reboot(2) expected failure; Got errno - EPERM  : Permission denied
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=recv01 stime=1575344678
+cmdline="recv01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+recv01      1  TPASS  :  bad file descriptor successful
+recv01      2  TPASS  :  invalid socket successful
+recv01      3  TPASS  :  invalid recv buffer successful
+recv01      4  TPASS  :  invalid MSG_OOB flag set successful
+recv01      5  TPASS  :  invalid MSG_ERRQUEUE flag set successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=recvfrom01 stime=1575344678
+cmdline="recvfrom01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+recvfrom01    1  TPASS  :  bad file descriptor successful
+recvfrom01    2  TPASS  :  invalid socket successful
+recvfrom01    3  TPASS  :  invalid socket buffer successful
+recvfrom01    4  TPASS  :  invalid socket addr length successful
+recvfrom01    5  TPASS  :  invalid recv buffer successful
+recvfrom01    6  TPASS  :  invalid MSG_OOB flag set successful
+recvfrom01    7  TPASS  :  invalid MSG_ERRQUEUE flag set successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=recvmsg01 stime=1575344678
+cmdline="recvmsg01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+recvmsg01    1  TPASS  :  bad file descriptor successful
+recvmsg01    2  TPASS  :  invalid socket successful
+recvmsg01    3  TPASS  :  invalid socket buffer successful
+recvmsg01    4  TPASS  :  invalid socket length successful
+recvmsg01    5  TPASS  :  invalid recv buffer successful
+recvmsg01    6  TPASS  :  invalid iovec buffer successful
+recvmsg01    7  TPASS  :  invalid iovec count successful
+recvmsg01    8  TPASS  :  rights reception successful
+recvmsg01    9  TPASS  :  invalid MSG_OOB flag set successful
+recvmsg01   10  TPASS  :  invalid MSG_ERRQUEUE flag set successful
+recvmsg01   11  TPASS  :  invalid cmsg length successful
+recvmsg01   12  TPASS  :  large cmesg length successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=recvmsg02 stime=1575344678
+cmdline="recvmsg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+recvmsg02.c:76: INFO: received 25 bytes
+recvmsg02.c:79: PASS: recvmsg(..., MSG_PEEK) works fine
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=recvmsg03 stime=1575344678
+cmdline="recvmsg03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+recvmsg03.c:38: CONF: rds was not supported
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=remap_file_pages01 stime=1575344678
+cmdline="remap_file_pages01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+remap_file_pages01    1  TPASS  :  Non-Linear shm file OK
+remap_file_pages01    2  TPASS  :  Non-Linear /tmp/ file OK
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=remap_file_pages02 stime=1575344678
+cmdline="remap_file_pages02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+remap_file_pages02.c:86: PASS: remap_file_pages(2) start is not valid MAP_SHARED mapping: EINVAL (22)
+remap_file_pages02.c:86: PASS: remap_file_pages(2) start is invalid: EINVAL (22)
+remap_file_pages02.c:86: PASS: remap_file_pages(2) size is invalid: EINVAL (22)
+remap_file_pages02.c:86: PASS: remap_file_pages(2) prot is invalid: EINVAL (22)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=removexattr01 stime=1575344678
+cmdline="removexattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+removexattr01    1  TPASS  :  removexattr() succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=removexattr02 stime=1575344678
+cmdline="removexattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+removexattr02    1  TPASS  :  removexattr() failed as expected: TEST_ERRNO=ENODATA(61): No data available
+removexattr02    2  TPASS  :  removexattr() failed as expected: TEST_ERRNO=ENOENT(2): No such file or directory
+removexattr02    3  TPASS  :  removexattr() failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename01 stime=1575344678
+cmdline="rename01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename01    1  TPASS  :  functionality is correct for renaming a file
+rename01    2  TPASS  :  functionality is correct for renaming a directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename01A stime=1575344678
+cmdline="symlink01 -T rename01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename01    1  TPASS  :  rename(3) of symbolic link file name which points at no object file is ok
+rename01    2  TPASS  :  rename(3) of symbolic link file name which points at object file is ok
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename02 stime=1575344678
+cmdline="rename02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename02    1  TPASS  :  rename(./tfile_5006, ./rnfile_5006) returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename03 stime=1575344678
+cmdline="rename03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename03    1  TPASS  :  functionality is correct for renaming a file
+rename03    2  TPASS  :  functionality is correct for renaming a directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename04 stime=1575344678
+cmdline="rename04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename04    1  TPASS  :  rename() returned ENOTEMPTY
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename05 stime=1575344678
+cmdline="rename05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename05    1  TPASS  :  rename() returned EISDIR
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename06 stime=1575344678
+cmdline="rename06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename06    1  TPASS  :  rename() returned EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename07 stime=1575344678
+cmdline="rename07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename07    1  TPASS  :  rename() returned ENOTDIR
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename08 stime=1575344678
+cmdline="rename08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename08    1  TPASS  :  expected failure - errno = 14 : Bad address
+rename08    2  TPASS  :  expected failure - errno = 14 : Bad address
+rename08    3  TPASS  :  expected failure - errno = 14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename09 stime=1575344678
+cmdline="rename09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename09    1  TPASS  :  rename() returned EACCES
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename10 stime=1575344678
+cmdline="rename10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename10    1  TPASS  :  expected failure - errno = 36 : File name too long
+rename10    2  TPASS  :  expected failure - errno = 2 : No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename11 stime=1575344678
+cmdline="rename11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+rename11    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+rename11    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+rename11    0  TINFO  :  Failed reach the subdirs limit on EXT2/EXT3/EXT4 filesystem
+rename11    1  TPASS  :  failed as expected: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+rename11    2  TPASS  :  failed as expected: TEST_ERRNO=EROFS(30): Read-only file system
+rename11    3  TCONF  :  rename11.c:167: EMLINK test is not appropriate
+<<<execution_status>>>
+initiation_status="ok"
+duration=4 termination_type=exited termination_id=0 corefile=no
+cutime=11 cstime=232
+<<<test_end>>>
+<<<test_start>>>
+tag=rename12 stime=1575344682
+cmdline="rename12"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename12    1  TPASS  :  rename returned EPERM or EACCES
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=rename13 stime=1575344682
+cmdline="rename13"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename13    1  TPASS  :  functionality of rename() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rename14 stime=1575344682
+cmdline="rename14"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rename14    1  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=5 termination_type=exited termination_id=0 corefile=no
+cutime=32 cstime=920
+<<<test_end>>>
+<<<test_start>>>
+tag=renameat01 stime=1575344687
+cmdline="renameat01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mke2fs 1.43.4 (31-Jan-2017)
+renameat01    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+renameat01    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
+renameat01    0  TINFO  :  Failed reach the subdirs limit on EXT2/EXT3/EXT4 filesystem
+renameat01    1  TPASS  :  renameat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+renameat01    2  TPASS  :  renameat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+renameat01    3  TPASS  :  renameat() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+renameat01    4  TPASS  :  renameat() returned the expected value: TEST_ERRNO=EBADF(9): Bad file descriptor
+renameat01    5  TPASS  :  renameat() returned the expected value: TEST_ERRNO=ENOTDIR(20): Not a directory
+renameat01    6  TPASS  :  renameat() returned the expected value: TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+renameat01    7  TPASS  :  renameat() returned the expected value: TEST_ERRNO=EROFS(30): Read-only file system
+renameat01    8  TCONF  :  renameat01.c:200: EMLINK test is not appropriate
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=0 corefile=no
+cutime=11 cstime=218
+<<<test_end>>>
+<<<test_start>>>
+tag=renameat201 stime=1575344690
+cmdline="renameat201"
+contacts=""
+analysis=exit
+<<<test_output>>>
+renameat201    1  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=EEXIST(17): File exists
+renameat201    2  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+renameat201    3  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=ENOENT(2): No such file or directory
+renameat201    4  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=SUCCESS(0): Success
+renameat201    5  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=EINVAL(22): Invalid argument
+renameat201    6  TPASS  :  renameat2() returned the expected value: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=renameat202 stime=1575344690
+cmdline="renameat202 -i 10"
+contacts=""
+analysis=exit
+<<<test_output>>>
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+renameat202    1  TPASS  :  renameat2() test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key01 stime=1575344690
+cmdline="request_key01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+request_key01.c:39: PASS: request_key() succeed
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key02 stime=1575344690
+cmdline="request_key02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+request_key02.c:53: PASS: request_key() failed expectly: ENOKEY (126)
+request_key02.c:53: PASS: request_key() failed expectly: EKEYREVOKED (128)
+request_key02.c:53: PASS: request_key() failed expectly: EKEYEXPIRED (127)
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key03 stime=1575344692
+cmdline="request_key03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+request_key03.c:142: PASS: didn't crash while updating key of type 'encrypted'
+request_key03.c:156: PASS: didn't crash while requesting key of type 'encrypted'
+request_key03.c:65: CONF: kernel doesn't support key type 'trusted'
+request_key03.c:142: PASS: didn't crash while updating key of type 'user'
+request_key03.c:156: PASS: didn't crash while requesting key of type 'user'
+
+Summary:
+passed   4
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=4 cstime=29
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key04 stime=1575344694
+cmdline="request_key04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+request_key04.c:66: PASS: request_key() failed with EACCES as expected
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=request_key05 stime=1575344694
+cmdline="request_key05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+request_key05.c:25: INFO: Requesting dead key
+request_key05.c:29: PASS: No crash after 256 attempts
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rmdir01 stime=1575344694
+cmdline="rmdir01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+rmdir01.c:33: PASS: rmdir(testdir) success
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rmdir02 stime=1575344694
+cmdline="rmdir02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+rmdir02.c:92: PASS: rmdir() failed as expected: ENOTEMPTY (39)
+rmdir02.c:92: PASS: rmdir() failed as expected: ENAMETOOLONG (36)
+rmdir02.c:92: PASS: rmdir() failed as expected: ENOENT (2)
+rmdir02.c:92: PASS: rmdir() failed as expected: ENOTDIR (20)
+rmdir02.c:92: PASS: rmdir() failed as expected: EFAULT (14)
+rmdir02.c:92: PASS: rmdir() failed as expected: ELOOP (40)
+rmdir02.c:92: PASS: rmdir() failed as expected: EROFS (30)
+rmdir02.c:92: PASS: rmdir() failed as expected: EBUSY (16)
+rmdir02.c:92: PASS: rmdir() failed as expected: EINVAL (22)
+
+Summary:
+passed   9
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rmdir03 stime=1575344694
+cmdline="rmdir03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+rmdir03.c:55: PASS: rmdir() got expected errno: EPERM (1)
+rmdir03.c:61: PASS: rmdir() got expected errno: EACCES (13)
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rmdir03A stime=1575344694
+cmdline="symlink01 -T rmdir03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rmdir03     1  TPASS  :  rmdir(2) of object file through symbolic link file failed as expected
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigaction01 stime=1575344694
+cmdline="rt_sigaction01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    1  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 34
+
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    2  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 34
+
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    3  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 34
+
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    4  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 34
+
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    5  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 34
+
+rt_sigaction01    0  TINFO  :  signal: 35 
+rt_sigaction01    6  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 35
+
+rt_sigaction01    0  TINFO  :  signal: 35 
+rt_sigaction01    7  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 35
+
+rt_sigaction01    0  TINFO  :  signal: 35 
+rt_sigaction01    8  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 35
+
+rt_sigaction01    0  TINFO  :  signal: 35 
+rt_sigaction01    9  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 35
+
+rt_sigaction01    0  TINFO  :  signal: 35 
+rt_sigaction01   10  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 35
+
+rt_sigaction01    0  TINFO  :  signal: 36 
+rt_sigaction01   11  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 36
+
+rt_sigaction01    0  TINFO  :  signal: 36 
+rt_sigaction01   12  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 36
+
+rt_sigaction01    0  TINFO  :  signal: 36 
+rt_sigaction01   13  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 36
+
+rt_sigaction01    0  TINFO  :  signal: 36 
+rt_sigaction01   14  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 36
+
+rt_sigaction01    0  TINFO  :  signal: 36 
+rt_sigaction01   15  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 36
+
+rt_sigaction01    0  TINFO  :  signal: 37 
+rt_sigaction01   16  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 37
+
+rt_sigaction01    0  TINFO  :  signal: 37 
+rt_sigaction01   17  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 37
+
+rt_sigaction01    0  TINFO  :  signal: 37 
+rt_sigaction01   18  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 37
+
+rt_sigaction01    0  TINFO  :  signal: 37 
+rt_sigaction01   19  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 37
+
+rt_sigaction01    0  TINFO  :  signal: 37 
+rt_sigaction01   20  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 37
+
+rt_sigaction01    0  TINFO  :  signal: 38 
+rt_sigaction01   21  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 38
+
+rt_sigaction01    0  TINFO  :  signal: 38 
+rt_sigaction01   22  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 38
+
+rt_sigaction01    0  TINFO  :  signal: 38 
+rt_sigaction01   23  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 38
+
+rt_sigaction01    0  TINFO  :  signal: 38 
+rt_sigaction01   24  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 38
+
+rt_sigaction01    0  TINFO  :  signal: 38 
+rt_sigaction01   25  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 38
+
+rt_sigaction01    0  TINFO  :  signal: 39 
+rt_sigaction01   26  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 39
+
+rt_sigaction01    0  TINFO  :  signal: 39 
+rt_sigaction01   27  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 39
+
+rt_sigaction01    0  TINFO  :  signal: 39 
+rt_sigaction01   28  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 39
+
+rt_sigaction01    0  TINFO  :  signal: 39 
+rt_sigaction01   29  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 39
+
+rt_sigaction01    0  TINFO  :  signal: 39 
+rt_sigaction01   30  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 39
+
+rt_sigaction01    0  TINFO  :  signal: 40 
+rt_sigaction01   31  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 40
+
+rt_sigaction01    0  TINFO  :  signal: 40 
+rt_sigaction01   32  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 40
+
+rt_sigaction01    0  TINFO  :  signal: 40 
+rt_sigaction01   33  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 40
+
+rt_sigaction01    0  TINFO  :  signal: 40 
+rt_sigaction01   34  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 40
+
+rt_sigaction01    0  TINFO  :  signal: 40 
+rt_sigaction01   35  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 40
+
+rt_sigaction01    0  TINFO  :  signal: 41 
+rt_sigaction01   36  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 41
+
+rt_sigaction01    0  TINFO  :  signal: 41 
+rt_sigaction01   37  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 41
+
+rt_sigaction01    0  TINFO  :  signal: 41 
+rt_sigaction01   38  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 41
+
+rt_sigaction01    0  TINFO  :  signal: 41 
+rt_sigaction01   39  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 41
+
+rt_sigaction01    0  TINFO  :  signal: 41 
+rt_sigaction01   40  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 41
+
+rt_sigaction01    0  TINFO  :  signal: 42 
+rt_sigaction01   41  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 42
+
+rt_sigaction01    0  TINFO  :  signal: 42 
+rt_sigaction01   42  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 42
+
+rt_sigaction01    0  TINFO  :  signal: 42 
+rt_sigaction01   43  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 42
+
+rt_sigaction01    0  TINFO  :  signal: 42 
+rt_sigaction01   44  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 42
+
+rt_sigaction01    0  TINFO  :  signal: 42 
+rt_sigaction01   45  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 42
+
+rt_sigaction01    0  TINFO  :  signal: 43 
+rt_sigaction01   46  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 43
+
+rt_sigaction01    0  TINFO  :  signal: 43 
+rt_sigaction01   47  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 43
+
+rt_sigaction01    0  TINFO  :  signal: 43 
+rt_sigaction01   48  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 43
+
+rt_sigaction01    0  TINFO  :  signal: 43 
+rt_sigaction01   49  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 43
+
+rt_sigaction01    0  TINFO  :  signal: 43 
+rt_sigaction01   50  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 43
+
+rt_sigaction01    0  TINFO  :  signal: 44 
+rt_sigaction01   51  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 44
+
+rt_sigaction01    0  TINFO  :  signal: 44 
+rt_sigaction01   52  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 44
+
+rt_sigaction01    0  TINFO  :  signal: 44 
+rt_sigaction01   53  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 44
+
+rt_sigaction01    0  TINFO  :  signal: 44 
+rt_sigaction01   54  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 44
+
+rt_sigaction01    0  TINFO  :  signal: 44 
+rt_sigaction01   55  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 44
+
+rt_sigaction01    0  TINFO  :  signal: 45 
+rt_sigaction01   56  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 45
+
+rt_sigaction01    0  TINFO  :  signal: 45 
+rt_sigaction01   57  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 45
+
+rt_sigaction01    0  TINFO  :  signal: 45 
+rt_sigaction01   58  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 45
+
+rt_sigaction01    0  TINFO  :  signal: 45 
+rt_sigaction01   59  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 45
+
+rt_sigaction01    0  TINFO  :  signal: 45 
+rt_sigaction01   60  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 45
+
+rt_sigaction01    0  TINFO  :  signal: 46 
+rt_sigaction01   61  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 46
+
+rt_sigaction01    0  TINFO  :  signal: 46 
+rt_sigaction01   62  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 46
+
+rt_sigaction01    0  TINFO  :  signal: 46 
+rt_sigaction01   63  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 46
+
+rt_sigaction01    0  TINFO  :  signal: 46 
+rt_sigaction01   64  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 46
+
+rt_sigaction01    0  TINFO  :  signal: 46 
+rt_sigaction01   65  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 46
+
+rt_sigaction01    0  TINFO  :  signal: 47 
+rt_sigaction01   66  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 47
+
+rt_sigaction01    0  TINFO  :  signal: 47 
+rt_sigaction01   67  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 47
+
+rt_sigaction01    0  TINFO  :  signal: 47 
+rt_sigaction01   68  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 47
+
+rt_sigaction01    0  TINFO  :  signal: 47 
+rt_sigaction01   69  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 47
+
+rt_sigaction01    0  TINFO  :  signal: 47 
+rt_sigaction01   70  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 47
+
+rt_sigaction01    0  TINFO  :  signal: 48 
+rt_sigaction01   71  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 48
+
+rt_sigaction01    0  TINFO  :  signal: 48 
+rt_sigaction01   72  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 48
+
+rt_sigaction01    0  TINFO  :  signal: 48 
+rt_sigaction01   73  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 48
+
+rt_sigaction01    0  TINFO  :  signal: 48 
+rt_sigaction01   74  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 48
+
+rt_sigaction01    0  TINFO  :  signal: 48 
+rt_sigaction01   75  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 48
+
+rt_sigaction01    0  TINFO  :  signal: 49 
+rt_sigaction01   76  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 49
+
+rt_sigaction01    0  TINFO  :  signal: 49 
+rt_sigaction01   77  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 49
+
+rt_sigaction01    0  TINFO  :  signal: 49 
+rt_sigaction01   78  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 49
+
+rt_sigaction01    0  TINFO  :  signal: 49 
+rt_sigaction01   79  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 49
+
+rt_sigaction01    0  TINFO  :  signal: 49 
+rt_sigaction01   80  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 49
+
+rt_sigaction01    0  TINFO  :  signal: 50 
+rt_sigaction01   81  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 50
+
+rt_sigaction01    0  TINFO  :  signal: 50 
+rt_sigaction01   82  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 50
+
+rt_sigaction01    0  TINFO  :  signal: 50 
+rt_sigaction01   83  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 50
+
+rt_sigaction01    0  TINFO  :  signal: 50 
+rt_sigaction01   84  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 50
+
+rt_sigaction01    0  TINFO  :  signal: 50 
+rt_sigaction01   85  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 50
+
+rt_sigaction01    0  TINFO  :  signal: 51 
+rt_sigaction01   86  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 51
+
+rt_sigaction01    0  TINFO  :  signal: 51 
+rt_sigaction01   87  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 51
+
+rt_sigaction01    0  TINFO  :  signal: 51 
+rt_sigaction01   88  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 51
+
+rt_sigaction01    0  TINFO  :  signal: 51 
+rt_sigaction01   89  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 51
+
+rt_sigaction01    0  TINFO  :  signal: 51 
+rt_sigaction01   90  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 51
+
+rt_sigaction01    0  TINFO  :  signal: 52 
+rt_sigaction01   91  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 52
+
+rt_sigaction01    0  TINFO  :  signal: 52 
+rt_sigaction01   92  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 52
+
+rt_sigaction01    0  TINFO  :  signal: 52 
+rt_sigaction01   93  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 52
+
+rt_sigaction01    0  TINFO  :  signal: 52 
+rt_sigaction01   94  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 52
+
+rt_sigaction01    0  TINFO  :  signal: 52 
+rt_sigaction01   95  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 52
+
+rt_sigaction01    0  TINFO  :  signal: 53 
+rt_sigaction01   96  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 53
+
+rt_sigaction01    0  TINFO  :  signal: 53 
+rt_sigaction01   97  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 53
+
+rt_sigaction01    0  TINFO  :  signal: 53 
+rt_sigaction01   98  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 53
+
+rt_sigaction01    0  TINFO  :  signal: 53 
+rt_sigaction01   99  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 53
+
+rt_sigaction01    0  TINFO  :  signal: 53 
+rt_sigaction01  100  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 53
+
+rt_sigaction01    0  TINFO  :  signal: 54 
+rt_sigaction01  101  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 54
+
+rt_sigaction01    0  TINFO  :  signal: 54 
+rt_sigaction01  102  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 54
+
+rt_sigaction01    0  TINFO  :  signal: 54 
+rt_sigaction01  103  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 54
+
+rt_sigaction01    0  TINFO  :  signal: 54 
+rt_sigaction01  104  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 54
+
+rt_sigaction01    0  TINFO  :  signal: 54 
+rt_sigaction01  105  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 54
+
+rt_sigaction01    0  TINFO  :  signal: 55 
+rt_sigaction01  106  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 55
+
+rt_sigaction01    0  TINFO  :  signal: 55 
+rt_sigaction01  107  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 55
+
+rt_sigaction01    0  TINFO  :  signal: 55 
+rt_sigaction01  108  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 55
+
+rt_sigaction01    0  TINFO  :  signal: 55 
+rt_sigaction01  109  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 55
+
+rt_sigaction01    0  TINFO  :  signal: 55 
+rt_sigaction01  110  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 55
+
+rt_sigaction01    0  TINFO  :  signal: 56 
+rt_sigaction01  111  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 56
+
+rt_sigaction01    0  TINFO  :  signal: 56 
+rt_sigaction01  112  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 56
+
+rt_sigaction01    0  TINFO  :  signal: 56 
+rt_sigaction01  113  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 56
+
+rt_sigaction01    0  TINFO  :  signal: 56 
+rt_sigaction01  114  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 56
+
+rt_sigaction01    0  TINFO  :  signal: 56 
+rt_sigaction01  115  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 56
+
+rt_sigaction01    0  TINFO  :  signal: 57 
+rt_sigaction01  116  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 57
+
+rt_sigaction01    0  TINFO  :  signal: 57 
+rt_sigaction01  117  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 57
+
+rt_sigaction01    0  TINFO  :  signal: 57 
+rt_sigaction01  118  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 57
+
+rt_sigaction01    0  TINFO  :  signal: 57 
+rt_sigaction01  119  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 57
+
+rt_sigaction01    0  TINFO  :  signal: 57 
+rt_sigaction01  120  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 57
+
+rt_sigaction01    0  TINFO  :  signal: 58 
+rt_sigaction01  121  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 58
+
+rt_sigaction01    0  TINFO  :  signal: 58 
+rt_sigaction01  122  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 58
+
+rt_sigaction01    0  TINFO  :  signal: 58 
+rt_sigaction01  123  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 58
+
+rt_sigaction01    0  TINFO  :  signal: 58 
+rt_sigaction01  124  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 58
+
+rt_sigaction01    0  TINFO  :  signal: 58 
+rt_sigaction01  125  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 58
+
+rt_sigaction01    0  TINFO  :  signal: 59 
+rt_sigaction01  126  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 59
+
+rt_sigaction01    0  TINFO  :  signal: 59 
+rt_sigaction01  127  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 59
+
+rt_sigaction01    0  TINFO  :  signal: 59 
+rt_sigaction01  128  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 59
+
+rt_sigaction01    0  TINFO  :  signal: 59 
+rt_sigaction01  129  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 59
+
+rt_sigaction01    0  TINFO  :  signal: 59 
+rt_sigaction01  130  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 59
+
+rt_sigaction01    0  TINFO  :  signal: 60 
+rt_sigaction01  131  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 60
+
+rt_sigaction01    0  TINFO  :  signal: 60 
+rt_sigaction01  132  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 60
+
+rt_sigaction01    0  TINFO  :  signal: 60 
+rt_sigaction01  133  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 60
+
+rt_sigaction01    0  TINFO  :  signal: 60 
+rt_sigaction01  134  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 60
+
+rt_sigaction01    0  TINFO  :  signal: 60 
+rt_sigaction01  135  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 60
+
+rt_sigaction01    0  TINFO  :  signal: 61 
+rt_sigaction01  136  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 61
+
+rt_sigaction01    0  TINFO  :  signal: 61 
+rt_sigaction01  137  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 61
+
+rt_sigaction01    0  TINFO  :  signal: 61 
+rt_sigaction01  138  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 61
+
+rt_sigaction01    0  TINFO  :  signal: 61 
+rt_sigaction01  139  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 61
+
+rt_sigaction01    0  TINFO  :  signal: 61 
+rt_sigaction01  140  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 61
+
+rt_sigaction01    0  TINFO  :  signal: 62 
+rt_sigaction01  141  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 62
+
+rt_sigaction01    0  TINFO  :  signal: 62 
+rt_sigaction01  142  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 62
+
+rt_sigaction01    0  TINFO  :  signal: 62 
+rt_sigaction01  143  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 62
+
+rt_sigaction01    0  TINFO  :  signal: 62 
+rt_sigaction01  144  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 62
+
+rt_sigaction01    0  TINFO  :  signal: 62 
+rt_sigaction01  145  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 62
+
+rt_sigaction01    0  TINFO  :  signal: 63 
+rt_sigaction01  146  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 63
+
+rt_sigaction01    0  TINFO  :  signal: 63 
+rt_sigaction01  147  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 63
+
+rt_sigaction01    0  TINFO  :  signal: 63 
+rt_sigaction01  148  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 63
+
+rt_sigaction01    0  TINFO  :  signal: 63 
+rt_sigaction01  149  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 63
+
+rt_sigaction01    0  TINFO  :  signal: 63 
+rt_sigaction01  150  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 63
+
+rt_sigaction01    0  TINFO  :  signal: 64 
+rt_sigaction01  151  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 64
+
+rt_sigaction01    0  TINFO  :  signal: 64 
+rt_sigaction01  152  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 64
+
+rt_sigaction01    0  TINFO  :  signal: 64 
+rt_sigaction01  153  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 64
+
+rt_sigaction01    0  TINFO  :  signal: 64 
+rt_sigaction01  154  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 64
+
+rt_sigaction01    0  TINFO  :  signal: 64 
+rt_sigaction01  155  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction01    0  TINFO  :  Signal Handler Called with signal number 64
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigaction02 stime=1575344694
+cmdline="rt_sigaction02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigaction02    0  TINFO  :  Signal 34
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    1  TPASS  :  rt_sigaction02 failure with sig: 34 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02    2  TPASS  :  rt_sigaction02 failure with sig: 34 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    3  TPASS  :  rt_sigaction02 failure with sig: 34 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    4  TPASS  :  rt_sigaction02 failure with sig: 34 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02    5  TPASS  :  rt_sigaction02 failure with sig: 34 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 35
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    6  TPASS  :  rt_sigaction02 failure with sig: 35 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02    7  TPASS  :  rt_sigaction02 failure with sig: 35 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    8  TPASS  :  rt_sigaction02 failure with sig: 35 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02    9  TPASS  :  rt_sigaction02 failure with sig: 35 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   10  TPASS  :  rt_sigaction02 failure with sig: 35 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 36
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   11  TPASS  :  rt_sigaction02 failure with sig: 36 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   12  TPASS  :  rt_sigaction02 failure with sig: 36 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   13  TPASS  :  rt_sigaction02 failure with sig: 36 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   14  TPASS  :  rt_sigaction02 failure with sig: 36 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   15  TPASS  :  rt_sigaction02 failure with sig: 36 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 37
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   16  TPASS  :  rt_sigaction02 failure with sig: 37 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   17  TPASS  :  rt_sigaction02 failure with sig: 37 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   18  TPASS  :  rt_sigaction02 failure with sig: 37 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   19  TPASS  :  rt_sigaction02 failure with sig: 37 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   20  TPASS  :  rt_sigaction02 failure with sig: 37 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 38
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   21  TPASS  :  rt_sigaction02 failure with sig: 38 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   22  TPASS  :  rt_sigaction02 failure with sig: 38 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   23  TPASS  :  rt_sigaction02 failure with sig: 38 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   24  TPASS  :  rt_sigaction02 failure with sig: 38 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   25  TPASS  :  rt_sigaction02 failure with sig: 38 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 39
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   26  TPASS  :  rt_sigaction02 failure with sig: 39 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   27  TPASS  :  rt_sigaction02 failure with sig: 39 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   28  TPASS  :  rt_sigaction02 failure with sig: 39 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   29  TPASS  :  rt_sigaction02 failure with sig: 39 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   30  TPASS  :  rt_sigaction02 failure with sig: 39 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 40
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   31  TPASS  :  rt_sigaction02 failure with sig: 40 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   32  TPASS  :  rt_sigaction02 failure with sig: 40 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   33  TPASS  :  rt_sigaction02 failure with sig: 40 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   34  TPASS  :  rt_sigaction02 failure with sig: 40 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   35  TPASS  :  rt_sigaction02 failure with sig: 40 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 41
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   36  TPASS  :  rt_sigaction02 failure with sig: 41 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   37  TPASS  :  rt_sigaction02 failure with sig: 41 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   38  TPASS  :  rt_sigaction02 failure with sig: 41 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   39  TPASS  :  rt_sigaction02 failure with sig: 41 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   40  TPASS  :  rt_sigaction02 failure with sig: 41 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 42
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   41  TPASS  :  rt_sigaction02 failure with sig: 42 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   42  TPASS  :  rt_sigaction02 failure with sig: 42 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   43  TPASS  :  rt_sigaction02 failure with sig: 42 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   44  TPASS  :  rt_sigaction02 failure with sig: 42 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   45  TPASS  :  rt_sigaction02 failure with sig: 42 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 43
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   46  TPASS  :  rt_sigaction02 failure with sig: 43 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   47  TPASS  :  rt_sigaction02 failure with sig: 43 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   48  TPASS  :  rt_sigaction02 failure with sig: 43 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   49  TPASS  :  rt_sigaction02 failure with sig: 43 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   50  TPASS  :  rt_sigaction02 failure with sig: 43 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 44
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   51  TPASS  :  rt_sigaction02 failure with sig: 44 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   52  TPASS  :  rt_sigaction02 failure with sig: 44 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   53  TPASS  :  rt_sigaction02 failure with sig: 44 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   54  TPASS  :  rt_sigaction02 failure with sig: 44 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   55  TPASS  :  rt_sigaction02 failure with sig: 44 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 45
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   56  TPASS  :  rt_sigaction02 failure with sig: 45 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   57  TPASS  :  rt_sigaction02 failure with sig: 45 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   58  TPASS  :  rt_sigaction02 failure with sig: 45 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   59  TPASS  :  rt_sigaction02 failure with sig: 45 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   60  TPASS  :  rt_sigaction02 failure with sig: 45 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 46
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   61  TPASS  :  rt_sigaction02 failure with sig: 46 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   62  TPASS  :  rt_sigaction02 failure with sig: 46 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   63  TPASS  :  rt_sigaction02 failure with sig: 46 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   64  TPASS  :  rt_sigaction02 failure with sig: 46 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   65  TPASS  :  rt_sigaction02 failure with sig: 46 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 47
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   66  TPASS  :  rt_sigaction02 failure with sig: 47 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   67  TPASS  :  rt_sigaction02 failure with sig: 47 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   68  TPASS  :  rt_sigaction02 failure with sig: 47 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   69  TPASS  :  rt_sigaction02 failure with sig: 47 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   70  TPASS  :  rt_sigaction02 failure with sig: 47 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 48
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   71  TPASS  :  rt_sigaction02 failure with sig: 48 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   72  TPASS  :  rt_sigaction02 failure with sig: 48 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   73  TPASS  :  rt_sigaction02 failure with sig: 48 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   74  TPASS  :  rt_sigaction02 failure with sig: 48 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   75  TPASS  :  rt_sigaction02 failure with sig: 48 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 49
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   76  TPASS  :  rt_sigaction02 failure with sig: 49 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   77  TPASS  :  rt_sigaction02 failure with sig: 49 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   78  TPASS  :  rt_sigaction02 failure with sig: 49 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   79  TPASS  :  rt_sigaction02 failure with sig: 49 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   80  TPASS  :  rt_sigaction02 failure with sig: 49 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 50
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   81  TPASS  :  rt_sigaction02 failure with sig: 50 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   82  TPASS  :  rt_sigaction02 failure with sig: 50 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   83  TPASS  :  rt_sigaction02 failure with sig: 50 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   84  TPASS  :  rt_sigaction02 failure with sig: 50 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   85  TPASS  :  rt_sigaction02 failure with sig: 50 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 51
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   86  TPASS  :  rt_sigaction02 failure with sig: 51 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   87  TPASS  :  rt_sigaction02 failure with sig: 51 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   88  TPASS  :  rt_sigaction02 failure with sig: 51 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   89  TPASS  :  rt_sigaction02 failure with sig: 51 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   90  TPASS  :  rt_sigaction02 failure with sig: 51 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 52
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   91  TPASS  :  rt_sigaction02 failure with sig: 52 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   92  TPASS  :  rt_sigaction02 failure with sig: 52 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   93  TPASS  :  rt_sigaction02 failure with sig: 52 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   94  TPASS  :  rt_sigaction02 failure with sig: 52 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02   95  TPASS  :  rt_sigaction02 failure with sig: 52 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 53
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   96  TPASS  :  rt_sigaction02 failure with sig: 53 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02   97  TPASS  :  rt_sigaction02 failure with sig: 53 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   98  TPASS  :  rt_sigaction02 failure with sig: 53 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02   99  TPASS  :  rt_sigaction02 failure with sig: 53 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  100  TPASS  :  rt_sigaction02 failure with sig: 53 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 54
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  101  TPASS  :  rt_sigaction02 failure with sig: 54 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  102  TPASS  :  rt_sigaction02 failure with sig: 54 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  103  TPASS  :  rt_sigaction02 failure with sig: 54 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  104  TPASS  :  rt_sigaction02 failure with sig: 54 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  105  TPASS  :  rt_sigaction02 failure with sig: 54 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 55
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  106  TPASS  :  rt_sigaction02 failure with sig: 55 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  107  TPASS  :  rt_sigaction02 failure with sig: 55 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  108  TPASS  :  rt_sigaction02 failure with sig: 55 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  109  TPASS  :  rt_sigaction02 failure with sig: 55 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  110  TPASS  :  rt_sigaction02 failure with sig: 55 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 56
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  111  TPASS  :  rt_sigaction02 failure with sig: 56 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  112  TPASS  :  rt_sigaction02 failure with sig: 56 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  113  TPASS  :  rt_sigaction02 failure with sig: 56 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  114  TPASS  :  rt_sigaction02 failure with sig: 56 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  115  TPASS  :  rt_sigaction02 failure with sig: 56 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 57
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  116  TPASS  :  rt_sigaction02 failure with sig: 57 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  117  TPASS  :  rt_sigaction02 failure with sig: 57 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  118  TPASS  :  rt_sigaction02 failure with sig: 57 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  119  TPASS  :  rt_sigaction02 failure with sig: 57 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  120  TPASS  :  rt_sigaction02 failure with sig: 57 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 58
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  121  TPASS  :  rt_sigaction02 failure with sig: 58 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  122  TPASS  :  rt_sigaction02 failure with sig: 58 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  123  TPASS  :  rt_sigaction02 failure with sig: 58 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  124  TPASS  :  rt_sigaction02 failure with sig: 58 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  125  TPASS  :  rt_sigaction02 failure with sig: 58 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 59
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  126  TPASS  :  rt_sigaction02 failure with sig: 59 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  127  TPASS  :  rt_sigaction02 failure with sig: 59 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  128  TPASS  :  rt_sigaction02 failure with sig: 59 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  129  TPASS  :  rt_sigaction02 failure with sig: 59 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  130  TPASS  :  rt_sigaction02 failure with sig: 59 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 60
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  131  TPASS  :  rt_sigaction02 failure with sig: 60 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  132  TPASS  :  rt_sigaction02 failure with sig: 60 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  133  TPASS  :  rt_sigaction02 failure with sig: 60 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  134  TPASS  :  rt_sigaction02 failure with sig: 60 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  135  TPASS  :  rt_sigaction02 failure with sig: 60 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 61
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  136  TPASS  :  rt_sigaction02 failure with sig: 61 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  137  TPASS  :  rt_sigaction02 failure with sig: 61 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  138  TPASS  :  rt_sigaction02 failure with sig: 61 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  139  TPASS  :  rt_sigaction02 failure with sig: 61 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  140  TPASS  :  rt_sigaction02 failure with sig: 61 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 62
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  141  TPASS  :  rt_sigaction02 failure with sig: 62 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  142  TPASS  :  rt_sigaction02 failure with sig: 62 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  143  TPASS  :  rt_sigaction02 failure with sig: 62 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  144  TPASS  :  rt_sigaction02 failure with sig: 62 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  145  TPASS  :  rt_sigaction02 failure with sig: 62 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 63
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  146  TPASS  :  rt_sigaction02 failure with sig: 63 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  147  TPASS  :  rt_sigaction02 failure with sig: 63 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  148  TPASS  :  rt_sigaction02 failure with sig: 63 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  149  TPASS  :  rt_sigaction02 failure with sig: 63 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  150  TPASS  :  rt_sigaction02 failure with sig: 63 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  Signal 64
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  151  TPASS  :  rt_sigaction02 failure with sig: 64 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction02  152  TPASS  :  rt_sigaction02 failure with sig: 64 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  153  TPASS  :  rt_sigaction02 failure with sig: 64 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction02  154  TPASS  :  rt_sigaction02 failure with sig: 64 as expected errno  = EFAULT : Bad address
+rt_sigaction02    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction02  155  TPASS  :  rt_sigaction02 failure with sig: 64 as expected errno  = EFAULT : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigaction03 stime=1575344694
+cmdline="rt_sigaction03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigaction03    0  TINFO  :  Signal 34
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    1  TPASS  :  rt_sigaction03 failure with sig: 34 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03    2  TPASS  :  rt_sigaction03 failure with sig: 34 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    3  TPASS  :  rt_sigaction03 failure with sig: 34 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    4  TPASS  :  rt_sigaction03 failure with sig: 34 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03    5  TPASS  :  rt_sigaction03 failure with sig: 34 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 35
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    6  TPASS  :  rt_sigaction03 failure with sig: 35 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03    7  TPASS  :  rt_sigaction03 failure with sig: 35 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    8  TPASS  :  rt_sigaction03 failure with sig: 35 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03    9  TPASS  :  rt_sigaction03 failure with sig: 35 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   10  TPASS  :  rt_sigaction03 failure with sig: 35 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 36
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   11  TPASS  :  rt_sigaction03 failure with sig: 36 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   12  TPASS  :  rt_sigaction03 failure with sig: 36 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   13  TPASS  :  rt_sigaction03 failure with sig: 36 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   14  TPASS  :  rt_sigaction03 failure with sig: 36 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   15  TPASS  :  rt_sigaction03 failure with sig: 36 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 37
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   16  TPASS  :  rt_sigaction03 failure with sig: 37 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   17  TPASS  :  rt_sigaction03 failure with sig: 37 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   18  TPASS  :  rt_sigaction03 failure with sig: 37 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   19  TPASS  :  rt_sigaction03 failure with sig: 37 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   20  TPASS  :  rt_sigaction03 failure with sig: 37 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 38
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   21  TPASS  :  rt_sigaction03 failure with sig: 38 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   22  TPASS  :  rt_sigaction03 failure with sig: 38 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   23  TPASS  :  rt_sigaction03 failure with sig: 38 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   24  TPASS  :  rt_sigaction03 failure with sig: 38 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   25  TPASS  :  rt_sigaction03 failure with sig: 38 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 39
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   26  TPASS  :  rt_sigaction03 failure with sig: 39 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   27  TPASS  :  rt_sigaction03 failure with sig: 39 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   28  TPASS  :  rt_sigaction03 failure with sig: 39 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   29  TPASS  :  rt_sigaction03 failure with sig: 39 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   30  TPASS  :  rt_sigaction03 failure with sig: 39 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 40
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   31  TPASS  :  rt_sigaction03 failure with sig: 40 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   32  TPASS  :  rt_sigaction03 failure with sig: 40 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   33  TPASS  :  rt_sigaction03 failure with sig: 40 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   34  TPASS  :  rt_sigaction03 failure with sig: 40 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   35  TPASS  :  rt_sigaction03 failure with sig: 40 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 41
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   36  TPASS  :  rt_sigaction03 failure with sig: 41 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   37  TPASS  :  rt_sigaction03 failure with sig: 41 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   38  TPASS  :  rt_sigaction03 failure with sig: 41 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   39  TPASS  :  rt_sigaction03 failure with sig: 41 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   40  TPASS  :  rt_sigaction03 failure with sig: 41 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 42
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   41  TPASS  :  rt_sigaction03 failure with sig: 42 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   42  TPASS  :  rt_sigaction03 failure with sig: 42 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   43  TPASS  :  rt_sigaction03 failure with sig: 42 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   44  TPASS  :  rt_sigaction03 failure with sig: 42 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   45  TPASS  :  rt_sigaction03 failure with sig: 42 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 43
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   46  TPASS  :  rt_sigaction03 failure with sig: 43 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   47  TPASS  :  rt_sigaction03 failure with sig: 43 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   48  TPASS  :  rt_sigaction03 failure with sig: 43 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   49  TPASS  :  rt_sigaction03 failure with sig: 43 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   50  TPASS  :  rt_sigaction03 failure with sig: 43 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 44
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   51  TPASS  :  rt_sigaction03 failure with sig: 44 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   52  TPASS  :  rt_sigaction03 failure with sig: 44 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   53  TPASS  :  rt_sigaction03 failure with sig: 44 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   54  TPASS  :  rt_sigaction03 failure with sig: 44 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   55  TPASS  :  rt_sigaction03 failure with sig: 44 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 45
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   56  TPASS  :  rt_sigaction03 failure with sig: 45 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   57  TPASS  :  rt_sigaction03 failure with sig: 45 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   58  TPASS  :  rt_sigaction03 failure with sig: 45 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   59  TPASS  :  rt_sigaction03 failure with sig: 45 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   60  TPASS  :  rt_sigaction03 failure with sig: 45 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 46
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   61  TPASS  :  rt_sigaction03 failure with sig: 46 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   62  TPASS  :  rt_sigaction03 failure with sig: 46 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   63  TPASS  :  rt_sigaction03 failure with sig: 46 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   64  TPASS  :  rt_sigaction03 failure with sig: 46 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   65  TPASS  :  rt_sigaction03 failure with sig: 46 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 47
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   66  TPASS  :  rt_sigaction03 failure with sig: 47 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   67  TPASS  :  rt_sigaction03 failure with sig: 47 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   68  TPASS  :  rt_sigaction03 failure with sig: 47 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   69  TPASS  :  rt_sigaction03 failure with sig: 47 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   70  TPASS  :  rt_sigaction03 failure with sig: 47 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 48
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   71  TPASS  :  rt_sigaction03 failure with sig: 48 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   72  TPASS  :  rt_sigaction03 failure with sig: 48 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   73  TPASS  :  rt_sigaction03 failure with sig: 48 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   74  TPASS  :  rt_sigaction03 failure with sig: 48 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   75  TPASS  :  rt_sigaction03 failure with sig: 48 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 49
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   76  TPASS  :  rt_sigaction03 failure with sig: 49 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   77  TPASS  :  rt_sigaction03 failure with sig: 49 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   78  TPASS  :  rt_sigaction03 failure with sig: 49 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   79  TPASS  :  rt_sigaction03 failure with sig: 49 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   80  TPASS  :  rt_sigaction03 failure with sig: 49 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 50
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   81  TPASS  :  rt_sigaction03 failure with sig: 50 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   82  TPASS  :  rt_sigaction03 failure with sig: 50 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   83  TPASS  :  rt_sigaction03 failure with sig: 50 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   84  TPASS  :  rt_sigaction03 failure with sig: 50 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   85  TPASS  :  rt_sigaction03 failure with sig: 50 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 51
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   86  TPASS  :  rt_sigaction03 failure with sig: 51 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   87  TPASS  :  rt_sigaction03 failure with sig: 51 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   88  TPASS  :  rt_sigaction03 failure with sig: 51 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   89  TPASS  :  rt_sigaction03 failure with sig: 51 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   90  TPASS  :  rt_sigaction03 failure with sig: 51 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 52
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   91  TPASS  :  rt_sigaction03 failure with sig: 52 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   92  TPASS  :  rt_sigaction03 failure with sig: 52 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   93  TPASS  :  rt_sigaction03 failure with sig: 52 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   94  TPASS  :  rt_sigaction03 failure with sig: 52 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03   95  TPASS  :  rt_sigaction03 failure with sig: 52 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 53
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   96  TPASS  :  rt_sigaction03 failure with sig: 53 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03   97  TPASS  :  rt_sigaction03 failure with sig: 53 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   98  TPASS  :  rt_sigaction03 failure with sig: 53 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03   99  TPASS  :  rt_sigaction03 failure with sig: 53 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  100  TPASS  :  rt_sigaction03 failure with sig: 53 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 54
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  101  TPASS  :  rt_sigaction03 failure with sig: 54 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  102  TPASS  :  rt_sigaction03 failure with sig: 54 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  103  TPASS  :  rt_sigaction03 failure with sig: 54 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  104  TPASS  :  rt_sigaction03 failure with sig: 54 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  105  TPASS  :  rt_sigaction03 failure with sig: 54 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 55
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  106  TPASS  :  rt_sigaction03 failure with sig: 55 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  107  TPASS  :  rt_sigaction03 failure with sig: 55 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  108  TPASS  :  rt_sigaction03 failure with sig: 55 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  109  TPASS  :  rt_sigaction03 failure with sig: 55 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  110  TPASS  :  rt_sigaction03 failure with sig: 55 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 56
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  111  TPASS  :  rt_sigaction03 failure with sig: 56 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  112  TPASS  :  rt_sigaction03 failure with sig: 56 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  113  TPASS  :  rt_sigaction03 failure with sig: 56 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  114  TPASS  :  rt_sigaction03 failure with sig: 56 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  115  TPASS  :  rt_sigaction03 failure with sig: 56 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 57
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  116  TPASS  :  rt_sigaction03 failure with sig: 57 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  117  TPASS  :  rt_sigaction03 failure with sig: 57 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  118  TPASS  :  rt_sigaction03 failure with sig: 57 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  119  TPASS  :  rt_sigaction03 failure with sig: 57 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  120  TPASS  :  rt_sigaction03 failure with sig: 57 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 58
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  121  TPASS  :  rt_sigaction03 failure with sig: 58 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  122  TPASS  :  rt_sigaction03 failure with sig: 58 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  123  TPASS  :  rt_sigaction03 failure with sig: 58 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  124  TPASS  :  rt_sigaction03 failure with sig: 58 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  125  TPASS  :  rt_sigaction03 failure with sig: 58 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 59
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  126  TPASS  :  rt_sigaction03 failure with sig: 59 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  127  TPASS  :  rt_sigaction03 failure with sig: 59 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  128  TPASS  :  rt_sigaction03 failure with sig: 59 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  129  TPASS  :  rt_sigaction03 failure with sig: 59 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  130  TPASS  :  rt_sigaction03 failure with sig: 59 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 60
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  131  TPASS  :  rt_sigaction03 failure with sig: 60 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  132  TPASS  :  rt_sigaction03 failure with sig: 60 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  133  TPASS  :  rt_sigaction03 failure with sig: 60 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  134  TPASS  :  rt_sigaction03 failure with sig: 60 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  135  TPASS  :  rt_sigaction03 failure with sig: 60 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 61
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  136  TPASS  :  rt_sigaction03 failure with sig: 61 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  137  TPASS  :  rt_sigaction03 failure with sig: 61 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  138  TPASS  :  rt_sigaction03 failure with sig: 61 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  139  TPASS  :  rt_sigaction03 failure with sig: 61 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  140  TPASS  :  rt_sigaction03 failure with sig: 61 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 62
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  141  TPASS  :  rt_sigaction03 failure with sig: 62 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  142  TPASS  :  rt_sigaction03 failure with sig: 62 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  143  TPASS  :  rt_sigaction03 failure with sig: 62 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  144  TPASS  :  rt_sigaction03 failure with sig: 62 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  145  TPASS  :  rt_sigaction03 failure with sig: 62 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 63
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  146  TPASS  :  rt_sigaction03 failure with sig: 63 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  147  TPASS  :  rt_sigaction03 failure with sig: 63 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  148  TPASS  :  rt_sigaction03 failure with sig: 63 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  149  TPASS  :  rt_sigaction03 failure with sig: 63 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  150  TPASS  :  rt_sigaction03 failure with sig: 63 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  Signal 64
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  151  TPASS  :  rt_sigaction03 failure with sig: 64 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND 
+rt_sigaction03  152  TPASS  :  rt_sigaction03 failure with sig: 64 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  153  TPASS  :  rt_sigaction03 failure with sig: 64 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+rt_sigaction03  154  TPASS  :  rt_sigaction03 failure with sig: 64 as expected errno  = EINVAL : Invalid argument
+rt_sigaction03    0  TINFO  :  sa.sa_flags = SA_NOMASK 
+rt_sigaction03  155  TPASS  :  rt_sigaction03 failure with sig: 64 as expected errno  = EINVAL : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigprocmask01 stime=1575344694
+cmdline="rt_sigprocmask01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigprocmask01    1  TPASS  :  rt_sigprocmask functionality passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigprocmask02 stime=1575344694
+cmdline="rt_sigprocmask02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigprocmask02    1  TPASS  :  Got expected errno: TEST_ERRNO=EINVAL(22): Invalid argument
+rt_sigprocmask02    2  TPASS  :  Got expected errno: TEST_ERRNO=EFAULT(14): Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigqueueinfo01 stime=1575344694
+cmdline="rt_sigqueueinfo01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 00m 20s
+rt_sigqueueinfo01.c:37: PASS: Received correct signal and data!
+rt_sigqueueinfo01.c:78: PASS: rt_sigqueueinfo() was successful!
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigsuspend01 stime=1575344694
+cmdline="rt_sigsuspend01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+rt_sigsuspend01.c:49: PASS: rt_sigsuspend() returned with -1 and EINTR
+rt_sigsuspend01.c:58: PASS: signal mask preserved
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_sigtimedwait01 stime=1575344695
+cmdline="rt_sigtimedwait01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    1  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    2  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    3  TPASS  :  Test passed
+rt_sigtimedwait01    3  TPASS  :  sigwaitinfo restored the original mask
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    4  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    5  TPASS  :  Test passed
+rt_sigtimedwait01    5  TPASS  :  sigwaitinfo restored the original mask
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    6  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    7  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 10
+rt_sigtimedwait01    8  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 0
+rt_sigtimedwait01    9  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 12
+rt_sigtimedwait01   10  TPASS  :  Test passed
+rt_sigtimedwait01   10  TPASS  :  sigwaitinfo restored the original mask
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 12
+rt_sigtimedwait01   11  TPASS  :  Test passed
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, 15
+rt_sigtimedwait01   12  TPASS  :  Test passed
+rt_sigtimedwait01   12  TPASS  :  sigwaitinfo restored the original mask
+rt_sigtimedwait01    0  TINFO  :  0x55ffd3798280, -1
+rt_sigtimedwait01   13  TPASS  :  Test passed
+rt_sigtimedwait01   13  TPASS  :  Test passed
+rt_sigtimedwait01   13  TPASS  :  sigwaitinfo restored the original mask
+<<<execution_status>>>
+initiation_status="ok"
+duration=2 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=rt_tgsigqueueinfo01 stime=1575344697
+cmdline="rt_tgsigqueueinfo01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+rt_tgsigqueueinfo01.c:65: PASS: Test signal to self succeeded
+rt_tgsigqueueinfo01.c:96: PASS: Test signal to different thread succeeded
+rt_tgsigqueueinfo01.c:96: PASS: Test signal to different thread succeeded
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sbrk01 stime=1575344697
+cmdline="sbrk01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sbrk01      1  TPASS  :  sbrk - Increase by 8192 bytes returned 0x55fe58cac000
+sbrk01      2  TPASS  :  sbrk - Increase by -8192 bytes returned 0x55fe58cae000
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sbrk02 stime=1575344697
+cmdline="sbrk02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sbrk02      0  TINFO  :  setup() bailing inc: 8371830784, ret: 0xffffffffffffffff, sbrk: 0x575c98bd1000: errno=ENOMEM(12): Cannot allocate memory
+sbrk02      1  TPASS  :  sbrk(8371830784) failed as expected: TEST_ERRNO=ENOMEM(12): Cannot allocate memory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sbrk03 stime=1575344697
+cmdline="sbrk03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sbrk03.c:63: CONF: Only works in 32bit on s390 series system
+
+Summary:
+passed   0
+failed   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_get_priority_max01 stime=1575344697
+cmdline="sched_get_priority_max01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_get_priority_max01    1  TPASS  :  Test for SCHED_OTHER Passed
+sched_get_priority_max01    2  TPASS  :  Test for SCHED_FIFO Passed
+sched_get_priority_max01    3  TPASS  :  Test for SCHED_RR Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_get_priority_max02 stime=1575344697
+cmdline="sched_get_priority_max02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_get_priority_max02    1  TPASS  :  Test Passed, Got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_get_priority_min01 stime=1575344697
+cmdline="sched_get_priority_min01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_get_priority_min01    1  TPASS  :  Test for SCHED_OTHER Passed
+sched_get_priority_min01    2  TPASS  :  Test for SCHED_FIFO Passed
+sched_get_priority_min01    3  TPASS  :  Test for SCHED_RR Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_get_priority_min02 stime=1575344697
+cmdline="sched_get_priority_min02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_get_priority_min02    1  TPASS  :  Test Passed, Got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getparam01 stime=1575344697
+cmdline="sched_getparam01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getparam01    1  TPASS  :  sched_getparam() returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getparam02 stime=1575344697
+cmdline="sched_getparam02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getparam02    1  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getparam03 stime=1575344697
+cmdline="sched_getparam03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getparam03    1  TPASS  :  expected failure; Got ESRCH
+sched_getparam03    2  TPASS  :  expected failure; Got EINVAL
+sched_getparam03    3  TPASS  :  expected failure; Got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_rr_get_interval01 stime=1575344697
+cmdline="sched_rr_get_interval01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_rr_get_interval01    1  TPASS  :  sched_rr_get_interval() returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_rr_get_interval02 stime=1575344697
+cmdline="sched_rr_get_interval02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_rr_get_interval02    1  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_rr_get_interval03 stime=1575344697
+cmdline="sched_rr_get_interval03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_rr_get_interval03    1  TPASS  :  Test Passed
+sched_rr_get_interval03    2  TPASS  :  Test Passed
+sched_rr_get_interval03    3  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam01 stime=1575344697
+cmdline="sched_setparam01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam01    1  TPASS  :  sched_setparam() returned 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam02 stime=1575344697
+cmdline="sched_setparam02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam02    1  TPASS  :  Test with policy SCHED_FIFO Passed
+sched_setparam02    2  TPASS  :  Test with policy SCHED_RR Passed
+sched_setparam02    3  TPASS  :  Test with SCHED_OTHER Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam03 stime=1575344697
+cmdline="sched_setparam03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam03    1  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam04 stime=1575344697
+cmdline="sched_setparam04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam04    1  TPASS  :  expected failure; Got ESRCH
+sched_setparam04    2  TPASS  :  expected failure; Got EINVAL
+sched_setparam04    3  TPASS  :  expected failure; Got EINVAL
+sched_setparam04    4  TPASS  :  expected failure; Got EINVAL
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setparam05 stime=1575344697
+cmdline="sched_setparam05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setparam05    1  TPASS  :  Test passed, Got EPERM
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getscheduler01 stime=1575344697
+cmdline="sched_getscheduler01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getscheduler01    1  TPASS  :  policy value returned is correct
+sched_getscheduler01    2  TPASS  :  policy value returned is correct
+sched_getscheduler01    3  TPASS  :  policy value returned is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getscheduler02 stime=1575344697
+cmdline="sched_getscheduler02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getscheduler02    1  TPASS  :  call failed with ESRCH
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setscheduler01 stime=1575344697
+cmdline="sched_setscheduler01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setscheduler01    1  TPASS  :  expected failure - errno = 3 : No such process
+sched_setscheduler01    2  TPASS  :  expected failure - errno = 22 : Invalid argument
+sched_setscheduler01    3  TPASS  :  expected failure - errno = 14 : Bad address
+sched_setscheduler01    4  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setscheduler02 stime=1575344697
+cmdline="sched_setscheduler02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setscheduler02    1  TPASS  :  got EPERM
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setscheduler03 stime=1575344697
+cmdline="sched_setscheduler03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sched_setscheduler03.c:64: INFO: rlimit rlim_cur=0
+sched_setscheduler03.c:66: INFO: rlimit rlim_max=0
+sched_setscheduler03.c:74: INFO: Setting rlim_cur to 19
+sched_setscheduler03.c:76: INFO: Setting rlim_max to 19
+sched_setscheduler03.c:64: INFO: rlimit rlim_cur=19
+sched_setscheduler03.c:66: INFO: rlimit rlim_max=19
+sched_setscheduler03.c:131: INFO: Setting init sched policy to SCHED_OTHER
+sched_setscheduler03.c:139: INFO: Setting euid to nobody to drop privilege
+sched_setscheduler03.c:153: INFO: forked pid is 7253
+sched_setscheduler03.c:97: INFO: Verifying case[1]: policy = 0, priority = 0
+sched_setscheduler03.c:105: PASS: case[1] succeeded
+sched_setscheduler03.c:153: INFO: forked pid is 7254
+sched_setscheduler03.c:97: INFO: Verifying case[2]: policy = 3, priority = 0
+sched_setscheduler03.c:105: PASS: case[2] succeeded
+sched_setscheduler03.c:153: INFO: forked pid is 7255
+sched_setscheduler03.c:97: INFO: Verifying case[3]: policy = 5, priority = 0
+sched_setscheduler03.c:105: PASS: case[3] succeeded
+
+Summary:
+passed   3
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_yield01 stime=1575344697
+cmdline="sched_yield01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_yield01    1  TPASS  :  sched_yield() call succeeded
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setaffinity01 stime=1575344697
+cmdline="sched_setaffinity01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sched_setaffinity01.c:83: PASS: sched_setaffinity() failed: EFAULT (14)
+sched_setaffinity01.c:83: PASS: sched_setaffinity() failed: EINVAL (22)
+sched_setaffinity01.c:83: PASS: sched_setaffinity() failed: ESRCH (3)
+sched_setaffinity01.c:83: PASS: sched_setaffinity() failed: EPERM (1)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getaffinity01 stime=1575344697
+cmdline="sched_getaffinity01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sched_getaffinity01.c:88: INFO: system has 2 processor(s).
+sched_getaffinity01.c:76: PASS: cpuset size = 128, enabled cpus 2
+sched_getaffinity01.c:39: PASS: sched_getaffinity() failed: EFAULT (14)
+sched_getaffinity01.c:39: PASS: sched_getaffinity() failed: EINVAL (22)
+sched_getaffinity01.c:39: PASS: sched_getaffinity() failed: ESRCH (3)
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_setattr01 stime=1575344697
+cmdline="sched_setattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_setattr01    1  TPASS  :  sched_setattr() works as expected: TEST_ERRNO=SUCCESS(0): Success
+sched_setattr01    2  TPASS  :  sched_setattr() works as expected: TEST_ERRNO=ESRCH(3): No such process
+sched_setattr01    3  TPASS  :  sched_setattr() works as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+sched_setattr01    4  TPASS  :  sched_setattr() works as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getattr01 stime=1575344697
+cmdline="sched_getattr01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getattr01    1  TPASS  :  attributes were read back correctly
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sched_getattr02 stime=1575344697
+cmdline="sched_getattr02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sched_getattr02    1  TPASS  :  sched_getattr() failed expectedly: TEST_ERRNO=ESRCH(3): No such process
+sched_getattr02    2  TPASS  :  sched_getattr() failed expectedly: TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getattr02    3  TPASS  :  sched_getattr() failed expectedly: TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getattr02    4  TPASS  :  sched_getattr() failed expectedly: TEST_ERRNO=EINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=select01 stime=1575344697
+cmdline="select01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+select01    1  TPASS  :  select(4, &Readfds, 0, 0, &timeout) timeout = 0 usecs
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=select02 stime=1575344697
+cmdline="select02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+select02    1  TPASS  :  select(5, &Readfds, &Writefds, 0, &timeout) timeout = 0 usecs
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=select03 stime=1575344697
+cmdline="select03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+select03    1  TPASS  :  select(5, &Readfds, &Writefds, 0, &timeout) timeout = 0 usecs
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=select04 stime=1575344697
+cmdline="select04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+select_var.h:66: INFO: Testing libc select()
+tst_timer_test.c:264: INFO: select() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1030us, max 6248us, median 1118us, trunc mean 1237.22us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2019us, max 5187us, median 2117us, trunc mean 2285.18us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5027us, max 9083us, median 5123us, trunc mean 5436.92us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10036us, max 12886us, median 10117us, trunc mean 10331.60us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25026us, max 26395us, median 25133us, trunc mean 25185.06us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100170us, max 100615us, median 100203us, trunc mean 100201.78us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1001091us, max 1001115us, median 1001091us, trunc mean 1001091.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+select_var.h:69: INFO: Testing SYS_select syscall
+tst_timer_test.c:264: INFO: select() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1057us, max 2374us, median 1141us, trunc mean 1134.26us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2064us, max 6816us, median 2148us, trunc mean 2143.35us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5078us, max 9858us, median 5149us, trunc mean 5139.11us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10076us, max 12963us, median 10139us, trunc mean 10173.13us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25079us, max 28742us, median 25128us, trunc mean 25126.90us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100156us, max 100215us, median 100197us, trunc mean 100193.78us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1001072us, max 1001114us, median 1001072us, trunc mean 1001072.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+select_var.h:72: INFO: Testing SYS_pselect6 syscall
+tst_timer_test.c:264: INFO: select() sleeping for 1000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 1044us, max 5185us, median 1113us, trunc mean 1113.03us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 2000us 500 iterations, threshold 450.01us
+tst_timer_test.c:307: INFO: min 2026us, max 7057us, median 2118us, trunc mean 2117.42us (discarded 25)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 5000us 300 iterations, threshold 450.04us
+tst_timer_test.c:307: INFO: min 5018us, max 13334us, median 5126us, trunc mean 5119.82us (discarded 15)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 10000us 100 iterations, threshold 450.33us
+tst_timer_test.c:307: INFO: min 10039us, max 10439us, median 10113us, trunc mean 10115.04us (discarded 5)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 25000us 50 iterations, threshold 451.29us
+tst_timer_test.c:307: INFO: min 25097us, max 25416us, median 25124us, trunc mean 25127.85us (discarded 2)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 100000us 10 iterations, threshold 537.00us
+tst_timer_test.c:307: INFO: min 100169us, max 100197us, median 100176us, trunc mean 100179.78us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_timer_test.c:264: INFO: select() sleeping for 1000000us 2 iterations, threshold 4400.00us
+tst_timer_test.c:307: INFO: min 1001073us, max 1001078us, median 1001073us, trunc mean 1001073.00us (discarded 1)
+tst_timer_test.c:322: PASS: Measured times are within thresholds
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_timer_test.c:345: INFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:357: INFO: prctl(PR_GET_TIMERSLACK) = 50us
+select_var.h:75: INFO: Testing SYS__newselect syscall
+tst_timer_test.c:264: INFO: select() sleeping for 1000us 500 iterations, threshold 450.01us
+select_var.h:52: CONF: syscall(-1) __NR__newselect not supported
+
+Summary:
+passed   21
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=26 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=8
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl01 stime=1575344723
+cmdline="semctl01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl01    1  TPASS  :  buf.sem_nsems and buf.sem_perm.mode are correct
+semctl01    2  TPASS  :  buf.sem_perm.mode is correct
+semctl01    3  TPASS  :  semaphores have expected values
+semctl01    4  TPASS  :  number of sleeping processes is correct
+semctl01    5  TPASS  :  last pid value is correct
+semctl01    6  TPASS  :  semaphore value is correct
+semctl01    7  TPASS  :  number of sleeping processes is correct
+semctl01    8  TPASS  :  semaphore values are correct
+semctl01    9  TPASS  :  semaphore value is correct
+semctl01   10  TPASS  :  the highest index is correct
+semctl01   11  TPASS  :  number of semaphore sets is correct
+semctl01   12  TPASS  :  id of the semaphore set is correct
+semctl01   13  TPASS  :  semaphore appears to be removed
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl02 stime=1575344723
+cmdline="semctl02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl02    1  TPASS  :  expected failure - errno = 13 : Permission denied
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl03 stime=1575344723
+cmdline="semctl03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl03    1  TPASS  :  expected failure - errno = 22 : Invalid argument
+semctl03    2  TPASS  :  expected failure - errno = 22 : Invalid argument
+semctl03    3  TPASS  :  expected failure - errno = 14 : Bad address
+semctl03    4  TPASS  :  expected failure - errno = 14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl04 stime=1575344723
+cmdline="semctl04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl04    1  TPASS  :  expected failure - errno = 1 : Operation not permitted
+semctl04    2  TPASS  :  expected failure - errno = 1 : Operation not permitted
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl05 stime=1575344723
+cmdline="semctl05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl05    1  TPASS  :  expected failure - errno = 34 : Numerical result out of range
+semctl05    2  TPASS  :  expected failure - errno = 34 : Numerical result out of range
+semctl05    3  TPASS  :  expected failure - errno = 34 : Numerical result out of range
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl06 stime=1575344723
+cmdline="semctl06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl06    1  TPASS  :  semctl06 ran successfully!
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=semctl07 stime=1575344723
+cmdline="semctl07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semctl07    1  TPASS  :  semctl07 ran successfully!
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semget01 stime=1575344723
+cmdline="semget01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semget01    1  TPASS  :  basic semaphore values are okay
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semget02 stime=1575344723
+cmdline="semget02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semget02    1  TPASS  :  expected failure - errno = 13 : Permission denied
+semget02    2  TPASS  :  expected failure - errno = 17 : File exists
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semget03 stime=1575344723
+cmdline="semget03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semget03    1  TPASS  :  expected failure - errno = 2 : No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semget05 stime=1575344723
+cmdline="semget05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semget05    1  TPASS  :  expected failure - errno = 28 : No space left on device
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=2 cstime=7
+<<<test_end>>>
+<<<test_start>>>
+tag=semget06 stime=1575344723
+cmdline="semget06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semget06    1  TPASS  :  expected failure - errno = 22 : Invalid argument
+semget06    2  TPASS  :  expected failure - errno = 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop01 stime=1575344723
+cmdline="semop01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semop01     1  TPASS  :  semaphore values are correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop02 stime=1575344723
+cmdline="semop02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semop02     1  TPASS  :  semop failed as expected: TEST_ERRNO=E2BIG(7): Argument list too long
+semop02     2  TPASS  :  semop failed as expected: TEST_ERRNO=EACCES(13): Permission denied
+semop02     3  TPASS  :  semop failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+semop02     4  TPASS  :  semop failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+semop02     5  TPASS  :  semop failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+semop02     6  TPASS  :  semop failed as expected: TEST_ERRNO=ERANGE(34): Numerical result out of range
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop03 stime=1575344723
+cmdline="semop03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semop03     1  TPASS  :  expected failure - errno = 27 : File too large
+semop03     2  TPASS  :  expected failure - errno = 27 : File too large
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop04 stime=1575344723
+cmdline="semop04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semop04     1  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
+semop04     2  TPASS  :  expected failure - errno = 11 : Resource temporarily unavailable
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=semop05 stime=1575344723
+cmdline="semop05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+semop05     1  TPASS  :  expected failure - errno = 43 : Identifier removed
+semop05     1  TPASS  :  expected failure - errno = 43 : Identifier removed
+semop05     1  TPASS  :  expected failure - errno = 4 : Interrupted system call
+semop05     1  TPASS  :  expected failure - errno = 4 : Interrupted system call
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=send01 stime=1575344724
+cmdline="send01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+send01      1  TPASS  :  bad file descriptor successful
+send01      2  TPASS  :  invalid socket successful
+send01      3  TPASS  :  invalid send buffer successful
+send01      4  TPASS  :  UDP message too big successful
+send01      5  TPASS  :  local endpoint shutdown successful
+send01      6  TPASS  :  invalid flags set successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile02 stime=1575344724
+cmdline="sendfile02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile02    1  TPASS  :  functionality of sendfile() is correct
+sendfile02    2  TPASS  :  functionality of sendfile() is correct
+sendfile02    3  TPASS  :  functionality of sendfile() is correct
+sendfile02    4  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile02_64 stime=1575344724
+cmdline="sendfile02_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile02_64    1  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    2  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    3  TPASS  :  functionality of sendfile() is correct
+sendfile02_64    4  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile03 stime=1575344724
+cmdline="sendfile03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile03    1  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03    2  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03    3  TPASS  :  sendfile() returned 9 : Bad file descriptor
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile03_64 stime=1575344724
+cmdline="sendfile03_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile03_64    1  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03_64    2  TPASS  :  sendfile() returned 9 : Bad file descriptor
+sendfile03_64    3  TPASS  :  sendfile() returned 9 : Bad file descriptor
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile04 stime=1575344724
+cmdline="sendfile04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile04    1  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    2  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    3  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    4  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04    5  TPASS  :  sendfile() returned 14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile04_64 stime=1575344724
+cmdline="sendfile04_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile04_64    1  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    2  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    3  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    4  TPASS  :  sendfile() returned 14 : Bad address
+sendfile04_64    5  TPASS  :  sendfile() returned 14 : Bad address
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile05 stime=1575344724
+cmdline="sendfile05"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile05    1  TPASS  :  sendfile() returned 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile05_64 stime=1575344724
+cmdline="sendfile05_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile05_64    1  TPASS  :  sendfile() returned 22 : Invalid argument
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile06 stime=1575344724
+cmdline="sendfile06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile06    1  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile06_64 stime=1575344724
+cmdline="sendfile06_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile06_64    1  TPASS  :  functionality of sendfile() is correct
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile07 stime=1575344724
+cmdline="sendfile07"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile07    1  TPASS  :  sendfile() returned 11 : Resource temporarily unavailable
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile07_64 stime=1575344724
+cmdline="sendfile07_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile07_64    1  TPASS  :  sendfile() returned 11 : Resource temporarily unavailable
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile08 stime=1575344724
+cmdline="sendfile08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile08    1  TPASS  :  sendfile(2) copies data correctly
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile08_64 stime=1575344724
+cmdline="sendfile08_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile08_64    1  TPASS  :  sendfile(2) copies data correctly
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile09 stime=1575344724
+cmdline="sendfile09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile09    1  TPASS  :  Test sendfile(2) with offset at 0
+sendfile09    2  TPASS  :  Test sendfile(2) with offset at 3GB
+<<<execution_status>>>
+initiation_status="ok"
+duration=7 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=326
+<<<test_end>>>
+<<<test_start>>>
+tag=sendfile09_64 stime=1575344731
+cmdline="sendfile09_64"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendfile09_64    1  TPASS  :  Test sendfile(2) with offset at 0
+sendfile09_64    2  TPASS  :  Test sendfile(2) with offset at 3GB
+<<<execution_status>>>
+initiation_status="ok"
+duration=8 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=290
+<<<test_end>>>
+<<<test_start>>>
+tag=sendmsg01 stime=1575344739
+cmdline="sendmsg01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendmsg01    1  TPASS  :  bad file descriptor successful
+sendmsg01    2  TPASS  :  invalid socket successful
+sendmsg01    3  TPASS  :  invalid send buffer successful
+sendmsg01    4  TPASS  :  connected TCP successful
+sendmsg01    5  TPASS  :  not connected TCP successful
+sendmsg01    6  TPASS  :  invalid to buffer length successful
+sendmsg01    7  TPASS  :  invalid to buffer successful
+sendmsg01    8  TPASS  :  UDP message too big successful
+sendmsg01    9  TPASS  :  local endpoint shutdown successful
+sendmsg01   10  TPASS  :  invalid iovec pointer successful
+sendmsg01   11  TPASS  :  invalid msghdr pointer successful
+sendmsg01   12  TPASS  :  rights passing successful
+sendmsg01   13  TPASS  :  invalid flags set successful
+sendmsg01   14  TPASS  :  invalid cmsg length successful
+sendmsg01   15  TPASS  :  invalid cmsg pointer successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendmsg02 stime=1575344739
+cmdline="sendmsg02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendmsg02    1  TPASS  :  finished after 15 seconds
+<<<execution_status>>>
+initiation_status="ok"
+duration=15 termination_type=exited termination_id=0 corefile=no
+cutime=308 cstime=2550
+<<<test_end>>>
+<<<test_start>>>
+tag=sendmmsg01 stime=1575344754
+cmdline="sendmmsg01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_buffers.c:55: INFO: Test is using guarded buffers
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sendmmsg_var.h:50: INFO: Testing direct sendmmsg and recvmmsg syscalls
+sendmmsg01.c:60: PASS: First message received successfully
+sendmmsg01.c:65: PASS: Second message received successfully
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sendmmsg_var.h:53: INFO: Testing libc sendmmsg and recvmmsg syscalls
+sendmmsg01.c:60: PASS: First message received successfully
+sendmmsg01.c:65: PASS: Second message received successfully
+
+Summary:
+passed   4
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=sendto01 stime=1575344754
+cmdline="sendto01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sendto01    1  TPASS  :  bad file descriptor successful
+sendto01    2  TPASS  :  invalid socket successful
+sendto01    3  TPASS  :  invalid send buffer successful
+sendto01    4  TPASS  :  connected TCP successful
+sendto01    5  TPASS  :  not connected TCP successful
+sendto01    6  TPASS  :  invalid to buffer length successful
+sendto01    7  TPASS  :  invalid to buffer successful
+sendto01    8  TPASS  :  UDP message too big successful
+sendto01    9  TPASS  :  local endpoint shutdown successful
+sendto01   10  TPASS  :  invalid flags set successful
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+<<<test_start>>>
+tag=sendto02 stime=1575344754
+cmdline="sendto02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+sendto02.c:68: PASS: sendto(fd, NULL, ...) failed expectedly: EFAULT (14)
+
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_mempolicy01 stime=1575344754
+cmdline="set_mempolicy01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy01.c:38: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_mempolicy02 stime=1575344754
+cmdline="set_mempolicy02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy02.c:39: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_mempolicy03 stime=1575344754
+cmdline="set_mempolicy03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ext3
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ext4
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on xfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on btrfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on vfat
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on exfat
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ntfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy03.c:37: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  8
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=set_mempolicy04 stime=1575344754
+cmdline="set_mempolicy04"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:238: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_supported_fs_types.c:60: INFO: Kernel supports ext2
+tst_supported_fs_types.c:44: INFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext3
+tst_supported_fs_types.c:44: INFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports ext4
+tst_supported_fs_types.c:44: INFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports xfs
+tst_supported_fs_types.c:44: INFO: mkfs.xfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports btrfs
+tst_supported_fs_types.c:44: INFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:60: INFO: Kernel supports vfat
+tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support exfat
+tst_supported_fs_types.c:44: INFO: mkfs.exfat does exist
+tst_supported_fs_types.c:92: INFO: FUSE does support ntfs
+tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
+tst_test.c:1179: INFO: Testing on ext2
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ext3
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ext4
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on xfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on btrfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on vfat
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on exfat
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+tst_test.c:1179: INFO: Testing on ntfs
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+tst_numa.c:191: INFO: Found 1 NUMA memory nodes
+set_mempolicy04.c:48: CONF: Test requires at least two NUMA memory nodes
+
+Summary:
+passed   0
+failed   0
+skipped  8
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=1 cstime=2
+<<<test_end>>>
+<<<test_start>>>
+tag=set_robust_list01 stime=1575344754
+cmdline="set_robust_list01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+set_robust_list01    1  TPASS  :  set_robust_list: retval = -1 (expected -1), errno = 22 (expected 22)
+set_robust_list01    2  TPASS  :  set_robust_list: retval = 0 (expected 0), errno = 0 (expected 0)
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_thread_area01 stime=1575344754
+cmdline="set_thread_area01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+set_thread_area_01    1  TCONF  :  set_thread_area01.c:77: syscall(205) tests[i].syscall not supported on your arch
+set_thread_area_01    2  TCONF  :  set_thread_area01.c:77: Remaining cases not appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=set_tid_address01 stime=1575344754
+cmdline="set_tid_address01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+set_tid_address01    1  TPASS  :  set_tid_address call succeeded:  as expected 7651
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=setdomainname01 stime=1575344754
+cmdline="setdomainname01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:36: INFO: Testing libc setdomainname()
+setdomainname01.c:26: PASS: setdomainname() succeed
+tst_test.c:1118: INFO: Timeout per run is 0h 05m 00s
+setdomainname.h:39: INFO: Testing __NR_setdomainname syscall
+setdomainname01.c:26: PASS: setdomainname() succeed
+
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
 incrementing stop
 <<<execution_status>>>
 initiation_status="ok"
 duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
+cutime=0 cstime=0
 <<<test_end>>>
 INFO: ltp-pan reported some tests FAIL
 LTP Version: 20190930-35-gb8aebc835
