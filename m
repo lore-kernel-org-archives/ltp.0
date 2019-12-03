@@ -1,85 +1,152 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 3 Dec 2019 07:37:44 -0500 (EST)
-Subject: [LTP] ??? FAIL: Test report for kernel 5.3.13-cc9917b.cki
- (stable-queue)
-In-Reply-To: <20191203122236.GC2844@rei>
-References: <cki.B4696121A3.SRVKVUGWT3@redhat.com>
- <546bd6ac-8ab1-9a9b-5856-e6410fb8ee89@redhat.com> <20191203122236.GC2844@rei>
-Message-ID: <1532241482.14811981.1575376664944.JavaMail.zimbra@redhat.com>
+Date: Tue, 3 Dec 2019 07:50:39 -0500 (EST)
+Subject: [LTP] [bug] userspace hitting sporadic SIGBUS on xfs (Power9,
+ ppc64le), v4.19 and later
+In-Reply-To: <1420623640.14527843.1575289859701.JavaMail.zimbra@redhat.com>
+References: <cki.6C6A189643.3T2ZUWEMOI@redhat.com>
+ <1738119916.14437244.1575151003345.JavaMail.zimbra@redhat.com>
+ <8736e3ffen.fsf@mpe.ellerman.id.au>
+ <1420623640.14527843.1575289859701.JavaMail.zimbra@redhat.com>
+Message-ID: <1766807082.14812757.1575377439007.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
+
+(This bug report is summary from thread [1] with some additions)
+
+User-space binaries on Power9 ppc64le (with 64k pages) on xfs
+filesystem are sporadically hitting SIGBUS:
+
+---------- 8< ----------
+(gdb) r
+Starting program: /mnt/testarea/ltp/testcases/bin/genasin
+
+Program received signal SIGBUS, Bus error.
+dl_main (phdr=0x10000040, phnum=<optimized out>, user_entry=0x7fffffffe760, auxv=<optimized out>) at rtld.c:1362
+1362        switch (ph->p_type)
+
+(gdb) p ph
+$1 = (const Elf64_Phdr *) 0x10000040
+
+(gdb) p *ph
+Cannot access memory at address 0x10000040
+
+(gdb) info proc map
+process 1110670
+Mapped address spaces:
+
+          Start Addr           End Addr       Size     Offset objfile
+          0x10000000         0x10010000    0x10000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
+          0x10010000         0x10030000    0x20000        0x0 /mnt/testarea/ltp/testcases/bin/genasin
+      0x7ffff7f90000     0x7ffff7fb0000    0x20000        0x0 [vdso]
+      0x7ffff7fb0000     0x7ffff7fe0000    0x30000        0x0 /usr/lib64/ld-2.30.so
+      0x7ffff7fe0000     0x7ffff8000000    0x20000    0x20000 /usr/lib64/ld-2.30.so
+      0x7ffffffd0000     0x800000000000    0x30000        0x0 [stack]
+
+(gdb) x/1x 0x10000040
+0x10000040:     Cannot access memory at address 0x10000040
+---------- >8 ----------
+
+When this happens the binary continues to hit SIGBUS until page
+is released, for example by: echo 3 > /proc/sys/vm/drop_caches
+
+The issue goes back to at least v4.19.
+
+I can semi-reliably reproduce it with LTP is installed to /mnt/testarea/ltp by:
+while [ True ]; do
+        echo 3 > /proc/sys/vm/drop_caches
+        rm -f /mnt/testarea/ltp/results/RUNTEST.log /mnt/testarea/ltp/output/RUNTEST.run.log
+        ./runltp -p -d results -l RUNTEST.log -o RUNTEST.run.log -f math
+        grep FAIL /mnt/testarea/ltp/results/RUNTEST.log && exit 1
+done
+
+and some stress activity in other terminal (e.g. kernel build).
+Sometimes in minutes, sometimes in hours. It is not reliable
+enough to get meaningful bisect results.
+
+My theory is that there's a race in iomap. There appear to be
+interleaved calls to iomap_set_range_uptodate() for same page
+with varying offset and length. Each call sees bitmap as _not_
+entirely "uptodate" and hence doesn't call SetPageUptodate().
+Even though each bit in bitmap ends up uptodate by the time
+all calls finish.
+
+For example, with following traces:
+
+iomap_set_range_uptodate()
+...
+        if (uptodate && !PageError(page))
+                SetPageUptodate(page);
++       
++       if (mycheck(page)) {
++               trace_printk("page: %px, iop: %px, uptodate: %d, !PageError(page): %d, flags: %lx\n", page, iop, uptodate, !PageError(page), page->flags);
++               trace_printk("first: %u, last: %u, off: %u, len: %u, i: %u\n", first, last, off, len, i);
++       }
+
+I get:
+         genacos-18471 [057] ....   162.465730: iomap_readpages: mapping: c000003f185a1ab0
+         genacos-18471 [057] ....   162.465732: iomap_page_create: iomap_page_create page: c00c00000fe26180, page->private: 0000000000000000, iop: c000003fc70a19c0, flags: 3ffff800000001
+         genacos-18471 [057] ....   162.465736: iomap_set_range_uptodate: page: c00c00000fe26180, iop: c000003fc70a19c0, uptodate: 0, !PageError(page): 1, flags: 3ffff800002001
+         genacos-18471 [057] ....   162.465736: iomap_set_range_uptodate: first: 1, last: 14, off: 4096, len: 57344, i: 16
+          <idle>-0     [060] ..s.   162.534862: iomap_set_range_uptodate: page: c00c00000fe26180, iop: c000003fc70a19c0, uptodate: 0, !PageError(page): 1, flags: 3ffff800002081
+          <idle>-0     [061] ..s.   162.534862: iomap_set_range_uptodate: page: c00c00000fe26180, iop: c000003fc70a19c0, uptodate: 0, !PageError(page): 1, flags: 3ffff800002081
+          <idle>-0     [060] ..s.   162.534864: iomap_set_range_uptodate: first: 0, last: 0, off: 0, len: 4096, i: 16
+          <idle>-0     [061] ..s.   162.534864: iomap_set_range_uptodate: first: 15, last: 15, off: 61440, len: 4096, i: 16
+
+This page doesn't have Uptodate flag set, which leads to filemap_fault()
+returning VM_FAULT_SIGBUS:
+
+crash> p/x ((struct page *) 0xc00c00000fe26180)->flags                                                                                                                                             
+$1 = 0x3ffff800002032
+
+crash> kmem -g 0x3ffff800002032
+FLAGS: 3ffff800002032
+  PAGE-FLAG       BIT  VALUE
+  PG_error          1  0000002
+  PG_dirty          4  0000010
+  PG_lru            5  0000020
+  PG_private_2     13  0002000
+  PG_fscache       13  0002000
+  PG_savepinned     4  0000010
+  PG_double_map    13  0002000
+
+But iomap_page->uptodate in page->private suggests all bits are uptodate:
+
+crash> p/x ((struct page *) 0xc00c00000fe26180)->private
+$2 = 0xc000003fc70a19c0
+
+crash> p/x ((struct iomap_page *) 0xc000003fc70a19c0)->uptodate                                                                                                                                    
+$3 = {0xffff, 0x0}
 
 
------ Original Message -----
-> Hi!
-> > > We ran automated tests on a recent commit from this kernel tree:
-> > > 
-> > >         Kernel repo:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-> > >              Commit: cc9917b40848 - mdio_bus: Fix init if
-> > >              CONFIG_RESET_CONTROLLER=n
-> > > 
-> > > The results of these automated tests are provided below.
-> > > 
-> > >      Overall result: FAILED (see details below)
-> > >               Merge: OK
-> > >             Compile: OK
-> > >               Tests: FAILED
-> > > 
-> > > All kernel binaries, config files, and logs are available for download
-> > > here:
-> > > 
-> > >    https://artifacts.cki-project.org/pipelines/309848
-> > > 
-> > > One or more kernel tests failed:
-> > > 
-> > >      ppc64le:
-> > >       ??? LTP
-> > 
-> > I see a slew of syscalls failures here for LTP:
-> > https://artifacts.cki-project.org/pipelines/309848/logs/ppc64le_host_1_LTP_resultoutputfile.log
-> > https://artifacts.cki-project.org/pipelines/309848/logs/ppc64le_host_1_LTP_syscalls.run.log
-> 
-> There are a few syslog failures, which does not seem to be related to
-> the kernel commit at all. The commit above seems to touch error handling
-> in a mdio bus which is used to configure network hardware. I would say
-> that this is connected to the rest of the unexplained failures on
-> ppc64le that seems to happen randomly.
+It appears (after ~4 hours) that I can avoid the problem if I split
+the loop so that bits are checked only after all updates are made.
+Not sure if this correct approach, or just making it less reproducible:
 
-I think this is different. Test is spam-ing serial console with:
- preadv203 (765613): drop_caches: 3
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index e25901ae3ff4..abe37031c93d 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -131,7 +131,11 @@ iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+                for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
+                        if (i >= first && i <= last)
+                                set_bit(i, iop->uptodate);
+-                       else if (!test_bit(i, iop->uptodate))
++               }
++               for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
++                       if (i >= first && i <= last)
++                               continue;
++                       if (!test_bit(i, iop->uptodate))
+                                uptodate = false;
+                }
+        }
 
-which leads to RCU stall:
-[ 4338.611873] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[ 4517.198118] systemd[1]: systemd-journald.service: State 'stop-watchdog' timed out. Terminating.
-[ 4518.688311] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[ 4518.688318] rcu: 	0-...0: (2 ticks this GP) idle=7da/1/0x4000000000000000 softirq=208692/208696 fqs=11772 
-[ 4518.688321] 	(detected by 3, t=24007 jiffies, g=280901, q=430)
-[ 4518.688324] Sending NMI from CPU 3 to CPUs 0:
-[ 4524.259240] CPU 0 didn't respond to backtrace IPI, inspecting paca.
-[ 4524.259243] irq_soft_mask: 0x01 in_mce: 0 in_nmi: 0 current: 765613 (preadv203)
-[ 4524.259245] Back trace of paca->saved_r1 (0xc000000029b47990) (possibly stale):
-[ 4524.259246] Call Trace:
-[ 4524.259250] [c000000029b47990] [0000000000000001] 0x1 (unreliable)
-[ 4524.259255] [c000000029b47a00] [c0000000007e8b28] hvterm_raw_put_chars+0x48/0x70
-[ 4524.259257] [c000000029b47a20] [c0000000007eb174] hvc_console_print+0x124/0x2c0
-[ 4524.259260] [c000000029b47ab0] [c0000000001b2238] console_unlock+0x588/0x760
-[ 4524.259262] [c000000029b47b90] [c0000000001b4a8c] vprintk_emit+0x22c/0x330
-[ 4524.259264] [c000000029b47c00] [c0000000001b5d28] vprintk_func+0x78/0x1b0
-[ 4524.259266] [c000000029b47c50] [c0000000001b5294] printk+0x40/0x54
-[ 4524.259269] [c000000029b47c70] [c0000000004e6c7c] drop_caches_sysctl_handler+0x14c/0x170
-[ 4524.259271] [c000000029b47ce0] [c000000000512390] proc_sys_call_handler+0x230/0x240
-[ 4524.259273] [c000000029b47d60] [c000000000432098] __vfs_write+0x38/0x70
-[ 4524.259275] [c000000029b47d80] [c0000000004363c8] vfs_write+0xd8/0x250
-[ 4524.259277] [c000000029b47dd0] [c000000000436798] ksys_write+0x78/0x130
-[ 4524.259280] [c000000029b47e20] [c00000000000bae4] system_call+0x5c/0x70
+Thanks,
+Jan
 
-Maybe we could temporarily lower printk level during this test.
-
-Test also fails to release loop device and subsequent tests fail
-because they try to use same one.
+[1] https://lore.kernel.org/stable/1420623640.14527843.1575289859701.JavaMail.zimbra@redhat.com/T/#u
 
