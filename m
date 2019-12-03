@@ -1,148 +1,256 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Dec 2019 11:49:17 +0100
-Subject: [LTP] [PATCH 1/2] lib: add tst_request_hugepages
-In-Reply-To: <20191128084506.7587-1-liwang@redhat.com>
-References: <20191128084506.7587-1-liwang@redhat.com>
-Message-ID: <20191203104917.GA2844@rei>
+From: CKI Project <cki-project@redhat.com>
+Date: Tue, 03 Dec 2019 12:00:54 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
+ =?utf-8?q?=2E14-d6885f7=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.37B8559E6E.L9FDDMGAEJ@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Note: more and more tests need to configure hugepage before testing, so
-> this is a start to add some useful hugetlb functions in global library
-> for the whole LTP.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  include/tst_hugepage.h | 19 +++++++++++++++++++
->  include/tst_test.h     |  1 +
->  lib/tst_hugepage.c     | 43 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 63 insertions(+)
->  create mode 100644 include/tst_hugepage.h
->  create mode 100644 lib/tst_hugepage.c
-> 
-> diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
-> new file mode 100644
-> index 000000000..e06705bd0
-> --- /dev/null
-> +++ b/include/tst_hugepage.h
-> @@ -0,0 +1,19 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Red Hat, Inc.
-> + */
-> +
-> +#ifndef TST_HUGEPAGE__
-> +#define TST_HUGEPAGE__
-> +
-> +/*
-> + * Try to request the specified number of huge pages from system.
-> + *
-> + * Note: this depend on the status of system memory fragmentation.
-> + *       0 - reserve fail
-> + *       1 - reserve success
-> + */
-> +int tst_request_hugepages(long hpages);
 
-Can we add this to the tst_test structure so that test case use this as:
+Hello,
 
-static struct tst_test test = {
-	...
-	.needs_hugepages = 1,
-	...
-}
+We ran automated tests on a recent commit from this kernel tree:
 
-That way it will be included in the test metadata I'm working on.
+       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+            Commit: d6885f794222 - i40e: Fix for ethtool -m issue on X722 NIC
 
-> +#endif /* TST_HUGEPAGE_H */
-> +
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 21c7dfbdb..7ec1ab865 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -37,6 +37,7 @@
->  #include "tst_coredump.h"
->  #include "tst_buffers.h"
->  #include "tst_capability.h"
-> +#include "tst_hugepage.h"
->  
->  /*
->   * Reports testcase result.
-> diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
-> new file mode 100644
-> index 000000000..00cf90843
-> --- /dev/null
-> +++ b/lib/tst_hugepage.c
-> @@ -0,0 +1,43 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Red Hat, Inc.
-> + */
-> +
-> +#define TST_NO_DEFAULT_MAIN
-> +
-> +#include "tst_test.h"
-> +#include "tst_hugepage.h"
-> +
-> +int tst_request_hugepages(long hpages)
-> +{
-> +	int val;
-> +	long mem_avail, max_hpages;
-> +
-> +	if (FILE_LINES_SCANF("/proc/meminfo",
-> +				"MemAvailable: %ld", &mem_avail)) {
-> +		/*
-> +		 * Dropping caches and using "MemFree:" on kernel
-> +		 * that doesn't have "MemAvailable:" in Meminfo
-> +		 */
-> +		tst_res(TINFO, "MemAvailable: not found in /proc/meminfo");
-> +
-> +		SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
-> +		mem_avail = SAFE_READ_MEMINFO("MemFree:");
-> +	}
-> +
-> +	max_hpages = mem_avail / SAFE_READ_MEMINFO("Hugepagesize:");
-> +
-> +	if (hpages > max_hpages) {
-> +		tst_res(TINFO, "Request %ld hugepages failed, memory too fragmented? "
-> +				"The max hugepage available count %ld",
-> +				hpages, max_hpages);
-> +		return 0;
+The results of these automated tests are provided below.
 
-I guess that rest of the library functions returns non-zero on failure.
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-> +	}
-> +
-> +	SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%ld", hpages);
-> +	SAFE_FILE_SCANF("/proc/sys/vm/nr_hugepages", "%d", &val);
-> +	if (val != hpages)
-> +		tst_brk(TBROK, "nr_hugepages = %d, but expect %ld", val, hpages);
-> +
-> +	return 1;
+All kernel binaries, config files, and logs are available for download here:
 
-I guess that things will be more complicated than this. If there is
-already a pool of hugepages allocated on the machine and some are used
-this will utimatelly fail.
+  https://artifacts.cki-project.org/pipelines/319850
 
-I rember that we changed some tests to increase the nr_hugepages if
-needed instead of blindly writing values there.
+One or more kernel tests failed:
 
-Also this fails to cleanup after itself, we have to restore the system
-after the test, which is one more reason why we need .needs_hugepages in
-the tst_test structure because the test library can cleanup after the
-test with that.
+    ppc64le:
+     ? LTP
 
-> +}
-> -- 
-> 2.20.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 3 architectures:
+
+    aarch64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    ppc64le:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+  ppc64le:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ?  Networking tunnel: geneve basic test
+       ?  Networking tunnel: gre basic
+       ?  L2TP basic test
+       ?  Networking tunnel: vxlan basic
+       ?  Networking ipsec: basic netns tunnel
+       ?  audit: audit testsuite test
+       ?  httpd: mod_ssl smoke sanity
+       ?  tuned: tune-processes-through-perf
+       ?  ALSA PCM loopback test
+       ?  ALSA Control (mixer) Userspace Element test
+       ?  trace: ftrace/tracer
+       ?  CIFS Connectathon
+       ?  POSIX pjd-fstest suites
+       ?  jvm test suite
+       ?  LTP: openposix test suite
+       ?  Networking vnic: ipvlan/basic
+       ?  iotop: sanity
+       ?  Usex - version 1.9-29
+       ?  storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 3:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 4:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ??? Storage blktests
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
