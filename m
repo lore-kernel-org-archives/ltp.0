@@ -1,159 +1,45 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 4 Dec 2019 18:57:36 +0800
-Subject: [LTP] [PATCH] syscalls/quotactl07: add regresstion test for
- Q_XQTUOTARM
-Message-ID: <1575457056-10022-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 4 Dec 2019 12:10:56 +0100
+Subject: [LTP] [PATCH 1/2] lib: add tst_request_hugepages
+In-Reply-To: <CAEemH2doR7C6J4ROgLw=cJsWfH2-6y8-YwDwdGM8coH6ovM6_Q@mail.gmail.com>
+References: <20191128084506.7587-1-liwang@redhat.com>
+ <20191203104917.GA2844@rei>
+ <CAEemH2d0KJ_oi7j5sjcT=uUo28crB_hCs-gJzvWhczvKOG-mdA@mail.gmail.com>
+ <CAEemH2doR7C6J4ROgLw=cJsWfH2-6y8-YwDwdGM8coH6ovM6_Q@mail.gmail.com>
+Message-ID: <20191204111056.GB32161@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a regresstion test to check Q_XQUOTARM  whether has
-quota flags check.
+Hi!
+> > if the .needs_hugepages is set to an expected number, we should verify
+> > strictly if the system can provide that.
+> >
+> 
+> Oh, I guess maybe I misunderstand your suggestion here. you mean just to
+> let .needs_hugepages = 1 but not set an expected number, right? if so, that
+> will more easy to achieve.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- include/lapi/quotactl.h                       |  4 +
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/quotactl/.gitignore |  1 +
- .../kernel/syscalls/quotactl/quotactl07.c     | 89 +++++++++++++++++++
- 4 files changed, 95 insertions(+)
- create mode 100644 testcases/kernel/syscalls/quotactl/quotactl07.c
+We do have tests that needs more than 1 hugepage, there are tests that
+do numa migration so we likely need the needs_hugepages to be unsigned
+integer that represents the number of required hugepages.
 
-diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-index d3223b863..c1ec9d6e1 100644
---- a/include/lapi/quotactl.h
-+++ b/include/lapi/quotactl.h
-@@ -59,6 +59,10 @@ struct fs_quota_statv {
- # define PRJQUOTA 2
- #endif
- 
-+#ifndef Q_XQUOTARM
-+# define Q_XQUOTARM XQM_CMD(6)
-+#endif
-+
- #ifndef Q_XGETQSTATV
- # define Q_XGETQSTATV XQM_CMD(8)
- #endif
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 15dbd9971..0f75cf3f6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -958,6 +958,7 @@ quotactl03 quotactl03
- quotactl04 quotactl04
- quotactl05 quotactl05
- quotactl06 quotactl06
-+quotactl07 quotactl07
- 
- read01 read01
- read02 read02
-diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-index 12896d6ad..8d2ef94d9 100644
---- a/testcases/kernel/syscalls/quotactl/.gitignore
-+++ b/testcases/kernel/syscalls/quotactl/.gitignore
-@@ -4,3 +4,4 @@
- /quotactl04
- /quotactl05
- /quotactl06
-+/quotactl07
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl07.c b/testcases/kernel/syscalls/quotactl/quotactl07.c
-new file mode 100644
-index 000000000..076db0bfe
---- /dev/null
-+++ b/testcases/kernel/syscalls/quotactl/quotactl07.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ *
-+ * This is a regresstion test for kernel commit 3dd4d40b4208
-+ * ("xfs: Sanity check flags of Q_XQUOTARM call").
-+ */
-+
-+#include "config.h"
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <sys/quota.h>
-+#include "lapi/quotactl.h"
-+#include "tst_test.h"
-+
-+#ifdef HAVE_XFS_XQM_H
-+# include <xfs/xqm.h>
-+
-+#define MNTPOINT    "mntpoint"
-+
-+static uint32_t qflag_acct = XFS_QUOTA_UDQ_ACCT;
-+static int test_id;
-+static int xquotarm_nsup;
-+static unsigned int valid_type = 1;
-+static unsigned int invalid_type = 9;
-+
-+static void verify_quota(void)
-+{
-+	if (xquotarm_nsup) {
-+		tst_res(TCONF,
-+			"current system doesn't support Q_XQUOTARM, skip it");
-+		return;
-+	}
-+
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-+
-+	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, test_id, (void *)&qflag_acct));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
-+
-+	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, test_id, (void *)&invalid_type));
-+	if (TST_ERR == EINVAL)
-+		tst_res(TPASS, "Q_XQUOTARM has quota type check");
-+	else
-+		tst_res(TFAIL, "Q_XQUOTARM doesn't have quota type check");
-+
-+	SAFE_UMOUNT(MNTPOINT);
-+}
-+
-+static void setup(void)
-+{
-+	test_id = geteuid();
-+
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-+
-+	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, test_id, (void *)&qflag_acct));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
-+
-+	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, test_id, (void *)&valid_type));
-+	if (TST_ERR == EINVAL)
-+		xquotarm_nsup = 1;
-+
-+	SAFE_UMOUNT(MNTPOINT);
-+}
-+
-+static const char *kconfigs[] = {
-+	"CONFIG_XFS_QUOTA",
-+	NULL
-+};
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.needs_root = 1,
-+	.needs_kconfigs = kconfigs,
-+	.test_all = verify_quota,
-+	.format_device = 1,
-+	.dev_fs_type = "xfs",
-+	.mntpoint = MNTPOINT,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "3dd4d40b4208"},
-+		{}
-+	}
-+};
-+#else
-+	TST_TEST_TCONF("System doesn't have <xfs/xqm.h>");
-+#endif
+> >> Also this fails to cleanup after itself, we have to restore the system
+> >> after the test, which is one more reason why we need .needs_hugepages in
+> >> the tst_test structure because the test library can cleanup after the
+> >> test with that.
+> >>
+> >
+> > Agree, I will add the save/restore part for this.
+> >
+> 
+> Or just go with .save_restore in the testcase?
+
+I guess that best option would be to call tst_sys_conf_save_str() in the
+test library if we decided to change the nr_hugepages file.
+
 -- 
-2.18.0
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
