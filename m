@@ -1,256 +1,96 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Wed, 04 Dec 2019 06:07:30 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E3?=
- =?utf-8?q?=2E14-a8a1bb9=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.E29F90E1D2.DNJBK7BQCI@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 4 Dec 2019 14:40:10 +0800
+Subject: [LTP] [PATCH 1/2] lib: add tst_request_hugepages
+In-Reply-To: <20191203104917.GA2844@rei>
+References: <20191128084506.7587-1-liwang@redhat.com>
+ <20191203104917.GA2844@rei>
+Message-ID: <CAEemH2d0KJ_oi7j5sjcT=uUo28crB_hCs-gJzvWhczvKOG-mdA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Dec 3, 2019 at 6:49 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Hello,
-
-We ran automated tests on a recent commit from this kernel tree:
-
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-            Commit: a8a1bb9b6315 - platform/x86: hp-wmi: Fix ACPI errors caused by passing 0 as input size
-
-The results of these automated tests are provided below.
-
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://artifacts.cki-project.org/pipelines/322089
-
-One or more kernel tests failed:
-
-    x86_64:
-     ? LTP
-     ? Boot test
-     ? Boot test
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 3 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> ...
+>
+> Can we add this to the tst_test structure so that test case use this as:
+>
+> static struct tst_test test = {
+>         ...
+>         .needs_hugepages = 1,
+>         ...
+> }
+>
+>
+Good point.
 
 
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
+> That way it will be included in the test metadata I'm working on.
+>
+> ...
+> > +
+> > +     if (hpages > max_hpages) {
+> > +             tst_res(TINFO, "Request %ld hugepages failed, memory too
+> fragmented? "
+> > +                             "The max hugepage available count %ld",
+> > +                             hpages, max_hpages);
+> > +             return 0;
+>
+> I guess that rest of the library functions returns non-zero on failure.
+>
 
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns transport
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? stress: stress-ng
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+Sure, will reset the value for return.
 
-    Host 2:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
 
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
+>
+> > +     }
+> > +
+> > +     SAFE_FILE_PRINTF("/proc/sys/vm/nr_hugepages", "%ld", hpages);
+> > +     SAFE_FILE_SCANF("/proc/sys/vm/nr_hugepages", "%d", &val);
+> > +     if (val != hpages)
+> > +             tst_brk(TBROK, "nr_hugepages = %d, but expect %ld", val,
+> hpages);
+> > +
+> > +     return 1;
+>
+> I guess that things will be more complicated than this. If there is
+> already a pool of hugepages allocated on the machine and some are used
+> this will utimatelly fail.
+>
 
-    Host 2:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+I don't think so, if they're already many huge pages being used, the free
+memory of the system will firstly tell us the max_hpages is not satisfy for
+testing, it means we have no chance to arrive here.
 
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ??? Loopdev Sanity
-       ??? Memory function: memfd_create
-       ??? Memory function: kaslr
-       ??? AMTU (Abstract Machine Test Utility)
-       ??? Networking bridge: sanity
-       ??? Ethernet drivers sanity
-       ??? Networking MACsec: sanity
-       ??? Networking socket: fuzz
-       ??? Networking sctp-auth: sockopts test
-       ??? Networking: igmp conformance test
-       ??? Networking route: pmtu
-       ??? Networking route_func: local
-       ??? Networking route_func: forward
-       ??? Networking TCP: keepalive test
-       ??? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ??? Networking tunnel: gre basic
-       ??? L2TP basic test
-       ??? Networking tunnel: vxlan basic
-       ??? Networking ipsec: basic netns transport
-       ??? Networking ipsec: basic netns tunnel
-       ??? audit: audit testsuite test
-       ??? httpd: mod_ssl smoke sanity
-       ??? tuned: tune-processes-through-perf
-       ??? pciutils: sanity smoke test
-       ??? ALSA PCM loopback test
-       ??? ALSA Control (mixer) Userspace Element test
-       ??? storage: SCSI VPD
-       ??? stress: stress-ng
-       ??? trace: ftrace/tracer
-       ? ??? CIFS Connectathon
-       ? ??? POSIX pjd-fstest suites
-       ? ??? jvm test suite
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? iotop: sanity
-       ? ??? Usex - version 1.9-29
-       ? ??? storage: dm/common
 
-    Host 2:
-       ? Boot test
-       ??? Storage SAN device stress - mpt3sas driver
+>
+> I rember that we changed some tests to increase the nr_hugepages if
+> needed instead of blindly writing values there.
+>
 
-    Host 3:
-       ? Boot test
-       ??? Storage SAN device stress - megaraid_sas
+Yes, but that's only fit for the situation which does not need the precise
+number of pages, we could take 80% of the max_hpages and do our testing in
+our system.
 
-    Host 4:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
+But in this function, my purpose is to request the least number of pages
+for the test. e.g if the .needs_hugepages is set to an expected number, we
+should verify strictly if the system can provide that.
 
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
 
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
+>
+> Also this fails to cleanup after itself, we have to restore the system
+> after the test, which is one more reason why we need .needs_hugepages in
+> the tst_test structure because the test library can cleanup after the
+> test with that.
+>
 
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running are marked with ?. Reports for non-upstream kernels have
-a Beaker recipe linked to next to each host.
+Agree, I will add the save/restore part for this.
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191204/d52cedff/attachment.htm>
