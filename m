@@ -1,58 +1,35 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 4 Dec 2019 11:38:18 +0100
-Subject: [LTP] [PATCH 1/1] Use real FS block size in fallocate05
-In-Reply-To: <1057914729.14405454.1575044248773.JavaMail.zimbra@redhat.com>
-References: <20191128093610.6903-1-mdoucha@suse.cz>
- <20191128093610.6903-2-mdoucha@suse.cz>
- <26933665.14359191.1575028896043.JavaMail.zimbra@redhat.com>
- <0e1a3d0e-a154-8469-6e04-a954740a4a61@suse.cz>
- <1057914729.14405454.1575044248773.JavaMail.zimbra@redhat.com>
-Message-ID: <0c8a52b4-0c71-4efa-f58a-66524055e32a@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 4 Dec 2019 11:46:55 +0100
+Subject: [LTP] [PATCH] Unshare KSM pages before setting max_page_sharing
+In-Reply-To: <b4489aba-9f59-ff44-e2b3-3af6d9cd3cb1@suse.cz>
+References: <20191128163147.4377-1-mdoucha@suse.cz>
+ <20191202032936.GA32335@dell5510>
+ <b4489aba-9f59-ff44-e2b3-3af6d9cd3cb1@suse.cz>
+Message-ID: <20191204104655.GA3852@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/29/19 5:17 PM, Jan Stancek wrote:
->> No. tst_brk() will terminate the whole test on the first usual test case
->> (Ext2) and skip all the other file systems that do support fallocate().
-> 
-> It shouldn't. tst_brk() does call exit() for test process, but
-> .all_filesystems spawns new process for each fs.
+Hi,
 
-You're right, I'll use tst_brk(TCONF, ...) then.
+> > BTW at least ksm01 will fail on VM host with running VMs,
+> > but that's another story not related to this patch.
 
->> I don't like to blindly rely on the assumption that block size is always
->> a power of 2 and smaller than some magic number. Getting the real block
->> size is trivial. The only real question is how many free blocks do we
->> allow on a "full" file system in our tests. 1MB is just 16 blocks on
->> PPC64 so the magic number isn't particularly big anyway.
-> 
-> OK, let's assume 16 is enough. Can we use that value also for ENOSPC check?
->   TEST(fallocate(fd, 0, bufsize, 2 * statbuf.st_blksize));
+> > mem.c:251: FAIL: pages_shared is not 1 but 3629.
+> > mem.c:251: FAIL: pages_sharing is not 98302 but 113789.
+> > mem.c:251: FAIL: pages_volatile is not 0 but 12.
+> > mem.c:251: FAIL: pages_unshared is not 1 but 48519.
 
-I think it might be better to change the test scenario a bit:
-1. fallocate(FALLOCATE_BLOCKS * blocksize)
-2. tst_fill_fs()
-3. write(FALLOCATE_BLOCKS * blocksize)
-4. repeat fallocate(blocksize) until we get ENOSPC
-5. write() into all blocks allocated in step 4
-6. check that another write() will get ENOSPC
-7. test fallocate(PUNCH_HOLE | KEEP_SIZE)
+> I'm aware of other KSM tests failing but the failures are rare and quite
+> random so they'll be tricky to debug. The snippet you've sent looks like
+> interference from another process running on the same VM but the
+> failures I see in OpenQA look like some sort of race condition in kernel
+> itself.
+Yep, my failures are for sure different. I run the test on my workstation
+(KVM host), after start of about 15 VMs. Before test was ok.
+I haven't tested, but it should be ok when running on KVM guests.
 
-This should get us around the issue with tst_fill_fs() and still
-properly validate that fallocate() handles full FS gracefully.
-
-The only remaining issue is whether it's correct for Btrfs to only
-release blocks when you deallocate the whole file. I still haven't heard
-back from our Btrfs dev.
-
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Kind regards,
+Petr
