@@ -1,177 +1,84 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Wed, 4 Dec 2019 22:57:28 +0800
-Subject: [LTP] [PATCH] syscalls/quotactl07: add regresstion test for
- Q_XQTUOTARM
-In-Reply-To: <1575457056-10022-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1575457056-10022-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <8c735de2-8022-1df2-6ce5-ee4dabe77767@163.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 4 Dec 2019 16:11:34 +0100
+Subject: [LTP] [PATCH] cpuhotplug05.sh: Rewrite test case
+In-Reply-To: <20191202101943.17335-1-ice_yangxiao@163.com>
+References: <20191202101943.17335-1-ice_yangxiao@163.com>
+Message-ID: <7b7c1e8a-1db1-bf9f-96ff-01803416120e@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
-
-On 12/4/19 6:57 PM, Yang Xu wrote:
-> This is a regresstion test to check Q_XQUOTARM  whether has
-> quota flags check.
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->   include/lapi/quotactl.h                       |  4 +
->   runtest/syscalls                              |  1 +
->   testcases/kernel/syscalls/quotactl/.gitignore |  1 +
->   .../kernel/syscalls/quotactl/quotactl07.c     | 89 +++++++++++++++++++
->   4 files changed, 95 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/quotactl/quotactl07.c
->
-> diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
-> index d3223b863..c1ec9d6e1 100644
-> --- a/include/lapi/quotactl.h
-> +++ b/include/lapi/quotactl.h
-> @@ -59,6 +59,10 @@ struct fs_quota_statv {
->   # define PRJQUOTA 2
->   #endif
->   
-> +#ifndef Q_XQUOTARM
-> +# define Q_XQUOTARM XQM_CMD(6)
-> +#endif
-> +
->   #ifndef Q_XGETQSTATV
->   # define Q_XGETQSTATV XQM_CMD(8)
->   #endif
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 15dbd9971..0f75cf3f6 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -958,6 +958,7 @@ quotactl03 quotactl03
->   quotactl04 quotactl04
->   quotactl05 quotactl05
->   quotactl06 quotactl06
-> +quotactl07 quotactl07
->   
->   read01 read01
->   read02 read02
-> diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-> index 12896d6ad..8d2ef94d9 100644
-> --- a/testcases/kernel/syscalls/quotactl/.gitignore
-> +++ b/testcases/kernel/syscalls/quotactl/.gitignore
-> @@ -4,3 +4,4 @@
->   /quotactl04
->   /quotactl05
->   /quotactl06
-> +/quotactl07
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl07.c b/testcases/kernel/syscalls/quotactl/quotactl07.c
-> new file mode 100644
-> index 000000000..076db0bfe
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl07.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> + *
-> + * This is a regresstion test for kernel commit 3dd4d40b4208
-> + * ("xfs: Sanity check flags of Q_XQUOTARM call").
-> + */
-> +
-> +#include "config.h"
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +#include <sys/quota.h>
-> +#include "lapi/quotactl.h"
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_XFS_XQM_H
-> +# include <xfs/xqm.h>
-> +
-> +#define MNTPOINT    "mntpoint"
-> +
-> +static uint32_t qflag_acct = XFS_QUOTA_UDQ_ACCT;
-> +static int test_id;
-> +static int xquotarm_nsup;
-> +static unsigned int valid_type = 1;
-> +static unsigned int invalid_type = 9;
-> +
-> +static void verify_quota(void)
+On 12/2/19 11:19 AM, Xiao Yang wrote:
+> +do_test()
 > +{
-> +	if (xquotarm_nsup) {
-> +		tst_res(TCONF,
-> +			"current system doesn't support Q_XQUOTARM, skip it");
-> +		return;
-> +	}
-> +
-> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-> +
-> +	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, test_id, (void *)&qflag_acct));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
-Is it possible to git rid of Q_XQUOTAOFF and call Q_XQUOTARM with 
-invalid_type directly?
-> +
-> +	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, test_id, (void *)&invalid_type));
-> +	if (TST_ERR == EINVAL)
-> +		tst_res(TPASS, "Q_XQUOTARM has quota type check");
-> +	else
-> +		tst_res(TFAIL, "Q_XQUOTARM doesn't have quota type check");
-> +
-> +	SAFE_UMOUNT(MNTPOINT);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	test_id = geteuid();
 
-Is test_id necessary?? It seems to be ignored by both Q_XQUOTAOFF and 
-Q_XQUOTARM.
+First of all, your patch changes the test scenario. The original
+scenario is this:
+(setup) Deactivate selected CPU
+1. Check that load statistics are zero or empty for selected CPU
+2. Activate selected CPU
+3. Check that load statistics are valid for selected CPU
+4. Deactivate selected CPU
+(cleanup) Activate selected CPU
 
-> +
-> +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-> +
-> +	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, test_id, (void *)&qflag_acct));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
-> +
-> +	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, test_id, (void *)&valid_type));
-> +	if (TST_ERR == EINVAL)
-> +		xquotarm_nsup = 1;
-Is xquotarm_nsup variable duplicated? it seems simpler to report TCONF here.
-> +
-> +	SAFE_UMOUNT(MNTPOINT);
+I have a few kernel builds where step 3 correctly detects regression.
 
-Why do you need to mount and then umount?
+Your changed scenario looks like this:
+1. Activate selected CPU
+2. Check that load statistics are non-zero for selected CPU
+3. Deactivate selected CPU
+4. Check that load statistics are empty for selected CPU
+(cleanup) Return selected CPU back to original state
 
-Could we call Q_XQUOTAON if you have to turn on usrquota again?
+Your new scenario has two problems:
 
+- You have to run at least two test loops to verify that reactivating a
+CPU doesn't break /proc/stat entries.
 
-Best Regards,
+- You only check that load statistics are non-zero. This works with sar
+because the program already normalizes load statistics for you. But it
+won't detect the regression mentioned above because the bug sets one of
+the entries to something absurdly high. This will confuse sar enough to
+print all load values as 0 but it'll pass your checks.
 
-Xiao Yang
+In addition to checking that at least some values are non-zero, you need
+to check a few more things:
+- Call `getconf CLK_TCK` to find /proc/stat timer resolution
+- Calculate system uptime in seconds
+- Check that sum of all /proc/stat values for selected CPU is less than
+or equal to (timer resolution * (uptime+1))
+- Also consider doing the above check for all CPUs to increase test
+coverage.
 
-> +}
-> +
-> +static const char *kconfigs[] = {
-> +	"CONFIG_XFS_QUOTA",
-> +	NULL
-> +};
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.needs_root = 1,
-> +	.needs_kconfigs = kconfigs,
-> +	.test_all = verify_quota,
-> +	.format_device = 1,
-> +	.dev_fs_type = "xfs",
-> +	.mntpoint = MNTPOINT,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "3dd4d40b4208"},
-> +		{}
-> +	}
-> +};
-> +#else
-> +	TST_TEST_TCONF("System doesn't have <xfs/xqm.h>");
-> +#endif
+> +	for field in $(seq 2 11); do
+> +		field_value=$(grep "^cpu${cpu_num}" /proc/stat | awk "{print \$$field}")
+> +		[ "$field_value" != "0" ] && passed=1
+>  	done
+>  
+> -	if [ $check_passed -eq 0 ]; then
+> -		tst_resm TFAIL "No change in the CPU statistics"
+> -		tst_exit
+> +	if [ $passed -eq 0 ]; then
+> +		tst_res TFAIL \
+> +			"all field of online cpu{cpu_num} shows zero in /proc/stat"
+> +		return 1
+>  	fi
 
+It'd be better to write this check (including the upper bound check
+explained above) entirely in Awk.
+
+if ! awk "[test script]" /proc/stat; then
+	tst_res TFAIL ...
+	return 1
+fi
+
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
