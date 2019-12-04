@@ -1,84 +1,144 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 4 Dec 2019 16:11:34 +0100
-Subject: [LTP] [PATCH] cpuhotplug05.sh: Rewrite test case
-In-Reply-To: <20191202101943.17335-1-ice_yangxiao@163.com>
-References: <20191202101943.17335-1-ice_yangxiao@163.com>
-Message-ID: <7b7c1e8a-1db1-bf9f-96ff-01803416120e@suse.cz>
+From: CKI Project <cki-project@redhat.com>
+Date: Wed, 04 Dec 2019 17:52:08 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E2?=
+ =?utf-8?q?=2E21-rt14-eccdce6=2Ecki_=28rt-devel=29?=
+Message-ID: <cki.A05205186F.8840CLEZ0B@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12/2/19 11:19 AM, Xiao Yang wrote:
-> +do_test()
-> +{
 
-First of all, your patch changes the test scenario. The original
-scenario is this:
-(setup) Deactivate selected CPU
-1. Check that load statistics are zero or empty for selected CPU
-2. Activate selected CPU
-3. Check that load statistics are valid for selected CPU
-4. Deactivate selected CPU
-(cleanup) Activate selected CPU
+Hello,
 
-I have a few kernel builds where step 3 correctly detects regression.
+We ran automated tests on a recent commit from this kernel tree:
 
-Your changed scenario looks like this:
-1. Activate selected CPU
-2. Check that load statistics are non-zero for selected CPU
-3. Deactivate selected CPU
-4. Check that load statistics are empty for selected CPU
-(cleanup) Return selected CPU back to original state
+       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git
+            Commit: eccdce6cb526 - v5.2.21-rt14
 
-Your new scenario has two problems:
+The results of these automated tests are provided below.
 
-- You have to run at least two test loops to verify that reactivating a
-CPU doesn't break /proc/stat entries.
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-- You only check that load statistics are non-zero. This works with sar
-because the program already normalizes load statistics for you. But it
-won't detect the regression mentioned above because the bug sets one of
-the entries to something absurdly high. This will confuse sar enough to
-print all load values as 0 but it'll pass your checks.
+    Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/cki-pipeline/pipelines/323141
 
-In addition to checking that at least some values are non-zero, you need
-to check a few more things:
-- Call `getconf CLK_TCK` to find /proc/stat timer resolution
-- Calculate system uptime in seconds
-- Check that sum of all /proc/stat values for selected CPU is less than
-or equal to (timer resolution * (uptime+1))
-- Also consider doing the above check for all CPUs to increase test
-coverage.
+One or more kernel tests failed:
 
-> +	for field in $(seq 2 11); do
-> +		field_value=$(grep "^cpu${cpu_num}" /proc/stat | awk "{print \$$field}")
-> +		[ "$field_value" != "0" ] && passed=1
->  	done
->  
-> -	if [ $check_passed -eq 0 ]; then
-> -		tst_resm TFAIL "No change in the CPU statistics"
-> -		tst_exit
-> +	if [ $passed -eq 0 ]; then
-> +		tst_res TFAIL \
-> +			"all field of online cpu{cpu_num} shows zero in /proc/stat"
-> +		return 1
->  	fi
+    x86_64:
+     ? LTP
 
-It'd be better to write this check (including the upper bound check
-explained above) entirely in Awk.
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
 
-if ! awk "[test script]" /proc/stat; then
-	tst_res TFAIL ...
-	return 1
-fi
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 1 architecture:
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+All the testing jobs are listed here:
+
+  https://beaker.engineering.redhat.com/jobs/?jobsearch-0.table=Whiteboard&jobsearch-0.operation=contains&jobsearch-0.value=cki%40gitlab%3A323141
+
+We booted each kernel and ran the following tests:
+
+  x86_64:
+    Host 1: https://beaker.engineering.redhat.com/recipes/7651035
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Memory function: kaslr
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? stress: stress-ng
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+    Host 2: https://beaker.engineering.redhat.com/recipes/7651037
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 3: https://beaker.engineering.redhat.com/recipes/7651036
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IOMMU boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 4: https://beaker.engineering.redhat.com/recipes/7651038
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
