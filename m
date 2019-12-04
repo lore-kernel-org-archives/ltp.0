@@ -1,36 +1,44 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 4 Dec 2019 10:07:04 +0100
-Subject: [LTP] [PATCH] Unshare KSM pages before setting max_page_sharing
-In-Reply-To: <20191202032936.GA32335@dell5510>
-References: <20191128163147.4377-1-mdoucha@suse.cz>
- <20191202032936.GA32335@dell5510>
-Message-ID: <b4489aba-9f59-ff44-e2b3-3af6d9cd3cb1@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 4 Dec 2019 17:26:59 +0800
+Subject: [LTP] [PATCH 1/2] lib: add tst_request_hugepages
+In-Reply-To: <CAEemH2d0KJ_oi7j5sjcT=uUo28crB_hCs-gJzvWhczvKOG-mdA@mail.gmail.com>
+References: <20191128084506.7587-1-liwang@redhat.com>
+ <20191203104917.GA2844@rei>
+ <CAEemH2d0KJ_oi7j5sjcT=uUo28crB_hCs-gJzvWhczvKOG-mdA@mail.gmail.com>
+Message-ID: <CAEemH2doR7C6J4ROgLw=cJsWfH2-6y8-YwDwdGM8coH6ovM6_Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12/2/19 4:29 AM, Petr Vorel wrote:
-> BTW at least ksm01 will fail on VM host with running VMs,
-> but that's another story not related to this patch.
-> 
-> mem.c:251: FAIL: pages_shared is not 1 but 3629.
-> mem.c:251: FAIL: pages_sharing is not 98302 but 113789.
-> mem.c:251: FAIL: pages_volatile is not 0 but 12.
-> mem.c:251: FAIL: pages_unshared is not 1 but 48519.
+On Wed, Dec 4, 2019 at 2:40 PM Li Wang <liwang@redhat.com> wrote:
 
-I'm aware of other KSM tests failing but the failures are rare and quite
-random so they'll be tricky to debug. The snippet you've sent looks like
-interference from another process running on the same VM but the
-failures I see in OpenQA look like some sort of race condition in kernel
-itself.
+> ...
+> if the .needs_hugepages is set to an expected number, we should verify
+> strictly if the system can provide that.
+>
+
+Oh, I guess maybe I misunderstand your suggestion here. you mean just to
+let .needs_hugepages = 1 but not set an expected number, right? if so, that
+will more easy to achieve.
+
+
+>
+>> Also this fails to cleanup after itself, we have to restore the system
+>> after the test, which is one more reason why we need .needs_hugepages in
+>> the tst_test structure because the test library can cleanup after the
+>> test with that.
+>>
+>
+> Agree, I will add the save/restore part for this.
+>
+
+Or just go with .save_restore in the testcase?
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191204/6ae5a7b1/attachment.htm>
