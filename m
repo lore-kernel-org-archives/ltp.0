@@ -1,8 +1,11 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Wed, 04 Dec 2019 17:52:08 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E2?=
- =?utf-8?q?=2E21-rt14-eccdce6=2Ecki_=28rt-devel=29?=
-Message-ID: <cki.A05205186F.8840CLEZ0B@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 5 Dec 2019 11:18:38 +0800
+Subject: [LTP] [PATCH] syscalls/quotactl07: add regresstion test for
+ Q_XQTUOTARM
+In-Reply-To: <8c735de2-8022-1df2-6ce5-ee4dabe77767@163.com>
+References: <1575457056-10022-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <8c735de2-8022-1df2-6ce5-ee4dabe77767@163.com>
+Message-ID: <de1c1667-9535-b122-e76c-66d42d88dc1f@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,135 +13,241 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Hello,
+Hi Xiao
 
-We ran automated tests on a recent commit from this kernel tree:
+on 2019/12/04 22:57, Xiao Yang wrote:
+> Hi Yang,
+> 
+> On 12/4/19 6:57 PM, Yang Xu wrote:
+>> This is a regresstion test to check Q_XQUOTARM? whether has
+>> quota flags check.
+>>
+>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>> ? include/lapi/quotactl.h?????????????????????? |? 4 +
+>> ? runtest/syscalls????????????????????????????? |? 1 +
+>> ? testcases/kernel/syscalls/quotactl/.gitignore |? 1 +
+>> ? .../kernel/syscalls/quotactl/quotactl07.c???? | 89 +++++++++++++++++++
+>> ? 4 files changed, 95 insertions(+)
+>> ? create mode 100644 testcases/kernel/syscalls/quotactl/quotactl07.c
+>>
+>> diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
+>> index d3223b863..c1ec9d6e1 100644
+>> --- a/include/lapi/quotactl.h
+>> +++ b/include/lapi/quotactl.h
+>> @@ -59,6 +59,10 @@ struct fs_quota_statv {
+>> ? # define PRJQUOTA 2
+>> ? #endif
+>> +#ifndef Q_XQUOTARM
+>> +# define Q_XQUOTARM XQM_CMD(6)
+>> +#endif
+>> +
+>> ? #ifndef Q_XGETQSTATV
+>> ? # define Q_XGETQSTATV XQM_CMD(8)
+>> ? #endif
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 15dbd9971..0f75cf3f6 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -958,6 +958,7 @@ quotactl03 quotactl03
+>> ? quotactl04 quotactl04
+>> ? quotactl05 quotactl05
+>> ? quotactl06 quotactl06
+>> +quotactl07 quotactl07
+>> ? read01 read01
+>> ? read02 read02
+>> diff --git a/testcases/kernel/syscalls/quotactl/.gitignore 
+>> b/testcases/kernel/syscalls/quotactl/.gitignore
+>> index 12896d6ad..8d2ef94d9 100644
+>> --- a/testcases/kernel/syscalls/quotactl/.gitignore
+>> +++ b/testcases/kernel/syscalls/quotactl/.gitignore
+>> @@ -4,3 +4,4 @@
+>> ? /quotactl04
+>> ? /quotactl05
+>> ? /quotactl06
+>> +/quotactl07
+>> diff --git a/testcases/kernel/syscalls/quotactl/quotactl07.c 
+>> b/testcases/kernel/syscalls/quotactl/quotactl07.c
+>> new file mode 100644
+>> index 000000000..076db0bfe
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/quotactl/quotactl07.c
+>> @@ -0,0 +1,89 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> + *
+>> + * This is a regresstion test for kernel commit 3dd4d40b4208
+>> + * ("xfs: Sanity check flags of Q_XQUOTARM call").
+>> + */
+>> +
+>> +#include "config.h"
+>> +#include <errno.h>
+>> +#include <unistd.h>
+>> +#include <stdio.h>
+>> +#include <sys/quota.h>
+>> +#include "lapi/quotactl.h"
+>> +#include "tst_test.h"
+>> +
+>> +#ifdef HAVE_XFS_XQM_H
+>> +# include <xfs/xqm.h>
+>> +
+>> +#define MNTPOINT??? "mntpoint"
+>> +
+>> +static uint32_t qflag_acct = XFS_QUOTA_UDQ_ACCT;
+>> +static int test_id;
+>> +static int xquotarm_nsup;
+>> +static unsigned int valid_type = 1;
+>> +static unsigned int invalid_type = 9;
+>> +
+>> +static void verify_quota(void)
+>> +{
+>> +??? if (xquotarm_nsup) {
+>> +??????? tst_res(TCONF,
+>> +??????????? "current system doesn't support Q_XQUOTARM, skip it");
+>> +??????? return;
+>> +??? }
+>> +
+>> +??? SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, 
+>> "quota");
+>> +
+>> +??? TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, 
+>> test_id, (void *)&qflag_acct));
+>> +??? if (TST_RET == -1)
+>> +??????? tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
+> Is it possible to git rid of Q_XQUOTAOFF and call Q_XQUOTARM with 
+> invalid_type directly?
+ From man-pages, before we use Q_XQUOTARM , quotas must have already 
+been turned off. If we don't use turnoff, it will report EINVAL but not 
+we wanted "EINVAL".  as below:
+-------------------------------------------------------
+diff --git a/fs/xfs/xfs_quotaops.c b/fs/xfs/xfs_quotaops.c
+index c7de17deeae6..006c6985a528 100644
+--- a/fs/xfs/xfs_quotaops.c
++++ b/fs/xfs/xfs_quotaops.c
+@@ -164,8 +164,10 @@ xfs_quota_enable(
 
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git
-            Commit: eccdce6cb526 - v5.2.21-rt14
+         if (sb_rdonly(sb))
+                 return -EROFS;
+-       if (!XFS_IS_QUOTA_RUNNING(mp))
++       if (!XFS_IS_QUOTA_RUNNING(mp)) {
++               printk("xuyang quota is no running\n");
+                 return -ENOSYS;
++       }
 
-The results of these automated tests are provided below.
+         return xfs_qm_scall_quotaon(mp, xfs_quota_flags(uflags));
+  }
+@@ -198,12 +200,15 @@ xfs_fs_rm_xquota(
+         if (sb_rdonly(sb))
+                 return -EROFS;
 
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
+-       if (XFS_IS_QUOTA_ON(mp))
++       if (XFS_IS_QUOTA_ON(mp)) {
++               printk("xuyang rm quota\n");
+                 return -EINVAL;
++       }
 
-    Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/cki-pipeline/pipelines/323141
+-       if (uflags & ~(FS_USER_QUOTA | FS_GROUP_QUOTA | FS_PROJ_QUOTA))
++       if (uflags & ~(FS_USER_QUOTA | FS_GROUP_QUOTA | FS_PROJ_QUOTA)) {
++               printk("xuyang flag check\n");
+                 return -EINVAL;
+-
++       }
+         if (uflags & FS_USER_QUOTA)
+                 flags |= XFS_DQ_USER;
+         if (uflags & FS_GROUP_QUOTA)
 
-One or more kernel tests failed:
+-------------------------------------------------------
+it will report "xuyang rm quota" because quota acct is on.
 
-    x86_64:
-     ? LTP
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 1 architecture:
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+So I think it is impossible except we mount without quota option. But it 
+is meaningless(without quota feature to use Q_XQUOTARM). I prefer to use 
+my old way. What do you think about it?
 
 
-Hardware testing
-----------------
-All the testing jobs are listed here:
+>> +
+>> +??? TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, 
+>> test_id, (void *)&invalid_type));
+>> +??? if (TST_ERR == EINVAL)
+>> +??????? tst_res(TPASS, "Q_XQUOTARM has quota type check");
+>> +??? else
+>> +??????? tst_res(TFAIL, "Q_XQUOTARM doesn't have quota type check");
+>> +
+>> +??? SAFE_UMOUNT(MNTPOINT);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +??? test_id = geteuid();
+> 
+> Is test_id necessary?? It seems to be ignored by both Q_XQUOTAOFF and 
+> Q_XQUOTARM.
+It is unnecessary.  From man-pages or kernel source code, this id 
+argument is ingored. I will use 0 instead of it.
+> 
+>> +
+>> +??? SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, 
+>> "quota");
+>> +
+>> +??? TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, 
+>> test_id, (void *)&qflag_acct));
+>> +??? if (TST_RET == -1)
+>> +??????? tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
+>> +
+>> +??? TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, 
+>> test_id, (void *)&valid_type));
+>> +??? if (TST_ERR == EINVAL)
+>> +??????? xquotarm_nsup = 1;
+> Is xquotarm_nsup variable duplicated? it seems simpler to report TCONF 
+> here.
+Yes. I will report TCONF here. Also, I will add SAFE_UMOUNT when we use 
+Q_XQUOTAOFF failed.
+>> +
+>> +??? SAFE_UMOUNT(MNTPOINT);
+> 
+> Why do you need to mount and then umount?
+> 
+> Could we call Q_XQUOTAON if you have to turn on usrquota again?
+> 
+At the beginning , I also want to use Q_XQUOTAON to turn on usrquota 
+again. But from kernel code, when we call Q_XQUOTAON, it will use 
+XFS_IS_QUOTA_RUNNING macro to check whether there have quota acct. If 
+not, it will report ENOSYS. So, I give up using Q_XQUOTAON and use 
+mount/umount.
 
-  https://beaker.engineering.redhat.com/jobs/?jobsearch-0.table=Whiteboard&jobsearch-0.operation=contains&jobsearch-0.value=cki%40gitlab%3A323141
+Thanks
+Yang Xu
+> 
+> Best Regards,
+> 
+> Xiao Yang
+> 
+>> +}
+>> +
+>> +static const char *kconfigs[] = {
+>> +??? "CONFIG_XFS_QUOTA",
+>> +??? NULL
+>> +};
+>> +
+>> +static struct tst_test test = {
+>> +??? .setup = setup,
+>> +??? .needs_root = 1,
+>> +??? .needs_kconfigs = kconfigs,
+>> +??? .test_all = verify_quota,
+>> +??? .format_device = 1,
+>> +??? .dev_fs_type = "xfs",
+>> +??? .mntpoint = MNTPOINT,
+>> +??? .tags = (const struct tst_tag[]) {
+>> +??????? {"linux-git", "3dd4d40b4208"},
+>> +??????? {}
+>> +??? }
+>> +};
+>> +#else
+>> +??? TST_TEST_TCONF("System doesn't have <xfs/xqm.h>");
+>> +#endif
+> 
+> 
+> 
 
-We booted each kernel and ran the following tests:
-
-  x86_64:
-    Host 1: https://beaker.engineering.redhat.com/recipes/7651035
-       ? Boot test
-       ? Podman system integration test (as root)
-       ? Podman system integration test (as user)
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Memory function: kaslr
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func: local
-       ? Networking route_func: forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns transport
-       ? Networking ipsec: basic netns tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? stress: stress-ng
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm test suite
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2: https://beaker.engineering.redhat.com/recipes/7651037
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-    Host 3: https://beaker.engineering.redhat.com/recipes/7651036
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
-
-    Host 4: https://beaker.engineering.redhat.com/recipes/7651038
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running are marked with ?. Reports for non-upstream kernels have
-a Beaker recipe linked to next to each host.
 
