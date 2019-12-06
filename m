@@ -1,67 +1,50 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 5 Dec 2019 18:19:10 -0500 (EST)
-Subject: [LTP] [PATCH v2] futex_cmp_requeue01: fix test expectations
-In-Reply-To: <1965156629.13355311.1574352460203.JavaMail.zimbra@redhat.com>
-References: <1059626680.11523678.1573489826970.JavaMail.zimbra@redhat.com>
- <ec1792be62432bb64e4d5c5085f6ebfa7e5d4b53.1573562645.git.jstancek@redhat.com>
- <20191120161634.GA31645@rei>
- <1318319247.13280749.1574323496266.JavaMail.zimbra@redhat.com>
- <20191121110236.GB14186@rei.lan>
- <1965156629.13355311.1574352460203.JavaMail.zimbra@redhat.com>
-Message-ID: <1013755663.15334773.1575587950733.JavaMail.zimbra@redhat.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Fri, 6 Dec 2019 07:13:29 +0100
+Subject: [LTP] LTP realtime tests
+In-Reply-To: <20191205135020.GA7951@dell5510>
+References: <20191205135020.GA7951@dell5510>
+Message-ID: <6a7fbfdf-4fda-70bb-01d8-19fb6218170d@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Any thoughts about my last reply?
+Hi Petr,
 
------ Original Message -----
-> 
-> 
-> ----- Original Message -----
-> > Hi!
-> > > > Unless spurious wakeup has happened between the requeue and wake
-> > > > operation which means that the num_requeues can be smaller because we
-> > > > will wake up less than requeued processes. So if we sampled spurious
-> > > > wakeups before the requeue operation and after the futex_wake() for
-> > > > requeued processes and call it delta_spurious we would get a range:
-> > > > 
-> > > > TST_RET - num_requeues >= set_wakes
-> > > 
-> > > This doesn't look correct if we consider spurious wakeups:
-> > > 
-> > > 5 processes, set_wakes = 5, set_requeue = 0, 1 spuriously wakes up,
-> > > remaining 4 are woken up by futex(), 0 are requeued:
-> > > 
-> > > 4 - 0 >= 5
-> > 
-> > Well I was betting on the fact that we wake up much less processes than
-> > we attempt to lock on the futex and that waking up processes takes
-> > precedence. I we can add delta_spurious to the right side that wouldn't
-> > change much and we end up being correct all the time, i.e.
-> > 
-> > TST_RET + delta_spurious - num_requeues >= set_wakes
-> 
-> I'd go with just spurious instead of delta_spurious. If there is spurious
-> wake up before requeue (and first sample), wouldn't that fail in same way
-> as example above?
-> 
-> TST_RET + delta_spurious - num_requeues >= set_wakes
-> 4 + 0 - 0 >= 5
-> 
-> Also delta_spurious looks racy, because it's based on counter
-> that is increased only after user-space gets chance to run. But process
-> may have been already removed from futex queue on kernel side.
-> So 'first sample before requeue' can see inaccurate state.
-> 
-> So I'd tweak your check to:
->   set_wakes-spurious <= TST_RET-num_requeues <= set_wakes+spurious
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> 
+we are running these tests and from what I've seen the quality is very poor.
+We had to make changes to a lot of them to make them pass reliably:
+most of the tests: Missing checks of return value for pthread function 
+and resulting deadlock
+prio-wake and prio-preempt: Bound to a single cpu core
+sched_football: Needs a sleep to run reliable (I send a mail some time 
+ago to this mailing list
+regarding the validity of the test, which got forwarded to lkml by 
+cyril, but no reply)
+
+Some tests do not return the correct result e.g.:
+testpi-5, testpi-6, sched_jitter, gtod_latency
+
+I haven't really looked into most of these tests.
+
+J?rg
+
+Am 05.12.2019 um 14:50 schrieb Petr Vorel:
+> Hi RT folks,
+>
+> looking into LTP realtime tests (testcases/realtime/ [1]),
+> the code certainly deserves cleanup.
+>
+> Looking at [2], it does not mention these tests at all.
+> Can anyone comment on relevance of these tests to current RT?
+> Does anyone use these tests?
+>
+> Thanks for feedback.
+>
+> Kind regards,
+> Petr
+>
+> [1] https://github.com/linux-test-project/ltp/tree/master/testcases/realtime
+> [2] https://elinux.org/Realtime_Testing_Best_Practices#Test_programs
+>
 
