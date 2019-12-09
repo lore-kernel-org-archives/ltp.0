@@ -1,48 +1,44 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 9 Dec 2019 08:42:06 +0100
-Subject: [LTP] [PATCH] Remove duplicated ".needs_tmpdir=1" when using
- equivalent flags
-In-Reply-To: <1575447166-7813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1575447166-7813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191209074206.GA2373112@x230>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 9 Dec 2019 03:26:38 -0500 (EST)
+Subject: [LTP] [bug] userspace hitting sporadic SIGBUS on xfs (Power9,
+ ppc64le), v4.19 and later
+In-Reply-To: <f874ea14-becc-9c4b-2f2f-351573e6a751@sandeen.net>
+References: <9c0af967-4916-4e8b-e77f-087515793d77@free.fr>
+ <e9a171cc-6827-5c43-092a-9dcd8a997b5a@free.fr>
+ <f874ea14-becc-9c4b-2f2f-351573e6a751@sandeen.net>
+Message-ID: <35957501.15762152.1575879998305.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
 
-> From ltp library code, when we have used these flags(".needs_device"
-> ".mntpoint" ".resource_file" ".needs_checkpoints" ".format_device"
-> "mount_device" ".all_filesystems"), we don't need to set ".needs_tmpdir=1".
-> So remove it.
+----- Original Message -----
+> 
+> 
+> On 12/6/19 6:09 PM, dftxbs3e wrote:
+> > Hello!
+> > 
+> > I am very happy that someone has found this issue.
+> > 
+> > I have been suffering from rather random SIGBUS errors in similar
+> > conditions described by the author.
+> > 
+> > I don't have much troubleshooting information to provide, however, I hit
+> > the issue regularly so I could investigate during that.
+> > 
+> > How do you debug such an issue? I tried a debugger etc. but besides
+> > crashing with SIGBUS, I couldnt get any other meaningful information.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+If it's same issue, you could check if dropping caches helps.
+Figure out what page is it with crash or systemtap and look at page->flags
+and ((struct iomap_page *)page->private)->uptodate bitmap.
 
-LGTM (unless Cyril has some objections).
+> 
+> You may want to test the patch Christoph sent on the original thread for
+> this issue.
 
-I propose following diff (fix formating, reword; I'll modify it before merge).
+Or v5.5-rc1, Christoph's patch has been merged:
+  1cea335d1db1 ("iomap: fix sub-page uptodate handling")
 
-Kind regards,
-Petr
-
-diff --git doc/test-writing-guidelines.txt doc/test-writing-guidelines.txt
-index 29b0e5db2..e8e766753 100644
---- doc/test-writing-guidelines.txt
-+++ doc/test-writing-guidelines.txt
-@@ -493,10 +493,10 @@ this needed.
- 
- If '.needs_tmpdir' is set to '1' in the 'struct tst_test' unique test
- temporary is created and it's set as the test working directory. Tests *MUST
--NOT* create temporary files outside that directory. If we have used one of
--these flags(".needs_device" ".mntpoint" ".resource_file" ".needs_checkpoints"
--".format_device" "mount_device" ".all_filesystems"), we don't need to set
--'.needs_tmpdir' again because these flags also will create temporary directory.
-+NOT* create temporary files outside that directory. The flag is not needed to
-+be set when use these flags: '.all_filesystems', '.format_device', '.mntpoint',
-+'.mount_device' '.needs_checkpoints', '.needs_device', '.resource_file'
-+(these flags imply creating temporary directory).
- 
- IMPORTANT: Close all file descriptors (that point to files in test temporary
-            directory, even the unlinked ones) either in the 'test()' function
