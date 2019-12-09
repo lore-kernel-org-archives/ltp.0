@@ -1,468 +1,399 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon,  9 Dec 2019 07:41:10 +0100
-Subject: [LTP] [PATCH] lib: Add fifo library
-Message-ID: <20191209064110.67975-1-lkml@jv-coder.de>
+From: Zirong Lang <zlang@redhat.com>
+Date: Mon, 9 Dec 2019 02:37:03 -0500 (EST)
+Subject: [LTP] [PATCH v2] syscalls/newmount: new test case for new mount
+ API
+In-Reply-To: <b59bb33a-205a-581b-91ac-c1e05e92ca93@cn.fujitsu.com>
+References: <20191208141617.21925-1-zlang@redhat.com>
+ <b59bb33a-205a-581b-91ac-c1e05e92ca93@cn.fujitsu.com>
+Message-ID: <2129381829.39694312.1575877023126.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-This is a proposal for a fifo library that can be used to synchronize
-tests internally, e.g. between a shell script and c program or between forks.
-If the proposal is accepted, I will also add documentation.
 
-The library allows an arbitrary number of fifos to be created. The only requirement
-is that the test needs TST_NEEDS_TMPDIR=1.
-Reading and writing to the fifo is also a synchronization point.
+----- ???? -----
+> ???: "Yang Xu" <xuyang2018.jy@cn.fujitsu.com>
+> ???: "Zorro Lang" <zlang@redhat.com>, ltp@lists.linux.it
+> ??: linux-fsdevel@vger.kernel.org
+> ????: ???, 2019? 12 ? 09? ?? 12:49:32
+> ??: Re: [LTP] [PATCH v2] syscalls/newmount: new test case for new mount API
+> 
+> 
+> Hi Zorro
+> 
+> ON 2019/12/08 22:16, Zorro Lang wrote:
+> > 
+> > diff --git a/configure.ac b/configure.ac
+> > index 50d14967d..28f840c51 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -229,6 +229,7 @@ LTP_CHECK_MADVISE
+> >   LTP_CHECK_MKDTEMP
+> >   LTP_CHECK_MMSGHDR
+> >   LTP_CHECK_MREMAP_FIXED
+> > +LTP_CHECK_NEWMOUNT
+> >   LTP_CHECK_NOMMU_LINUX
+> >   LTP_CHECK_PERF_EVENT
+> >   LTP_CHECK_PRCTL_SUPPORT
+> > diff --git a/include/lapi/newmount.h b/include/lapi/newmount.h
+> > new file mode 100644
+> > index 000000000..6b787fe7d
+> > --- /dev/null
+> > +++ b/include/lapi/newmount.h
+> > @@ -0,0 +1,89 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
+> > + * Author: Zorro Lang <zlang@redhat.com>
+> > + */
+> > +
+> > +#ifndef NEWMOUNT_H__
+> > +#define NEWMOUNT_H__
+> > +
+> > +#include <stdint.h>
+> > +#include <unistd.h>
+> > +#include "config.h"
+> > +#include "lapi/syscalls.h"
+> > +
+> > +#if !defined(HAVE_NEWMOUNT)
+> Why use HVAE_NEWMOUNT?
 
-Each fifo requires two queues: One for sending a message to the other process
-and the second one is used for receive acknowledgement. Otherwise two messages
-can be received at the same time, if the sender sends them too fast, before the receiver
-has closed its file handle.
+Oh, my mistake. I wrote HAVE_NEWMOUNT with CHECK_NEWMOUNT together. I should use
+HAVE_FSOPEN, HAVE_FSCONFIG etc.
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- include/tst_fifo.h                      |  12 +++
- lib/newlib_tests/.gitignore             |   2 +
- lib/newlib_tests/shell/tst_fifo_test.sh |  56 ++++++++++++
- lib/newlib_tests/tst_fifo.c             |  51 +++++++++++
- lib/newlib_tests/tst_fifo_proc.c        |  42 +++++++++
- lib/tst_fifo.c                          | 115 ++++++++++++++++++++++++
- testcases/Makefile                      |   2 +-
- testcases/lib/tst_fifo.sh               |  58 ++++++++++++
- testcases/lib/tst_test.sh               |   4 +-
- 9 files changed, 340 insertions(+), 2 deletions(-)
- create mode 100644 include/tst_fifo.h
- create mode 100644 lib/newlib_tests/shell/tst_fifo_test.sh
- create mode 100644 lib/newlib_tests/tst_fifo.c
- create mode 100644 lib/newlib_tests/tst_fifo_proc.c
- create mode 100644 lib/tst_fifo.c
- create mode 100644 testcases/lib/tst_fifo.sh
+Thanks,
+Zorro
 
-diff --git a/include/tst_fifo.h b/include/tst_fifo.h
-new file mode 100644
-index 000000000..f5f61dee7
---- /dev/null
-+++ b/include/tst_fifo.h
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+ */
-+
-+void tst_fifo_init(void);
-+
-+void tst_fifo_create(const char *name);
-+void tst_fifo_destroy(const char *name);
-+
-+void tst_fifo_send(const char *name, const char *data);
-+int tst_fifo_receive(const char *name, char *data, int maxlen);
-\ No newline at end of file
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index d4aa4935f..1d887e0ab 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -17,6 +17,8 @@ test16
- tst_capability01
- tst_capability02
- tst_device
-+tst_fifo
-+tst_fifo_proc
- tst_safe_fileops
- tst_res_hexd
- tst_strstatus
-diff --git a/lib/newlib_tests/shell/tst_fifo_test.sh b/lib/newlib_tests/shell/tst_fifo_test.sh
-new file mode 100644
-index 000000000..f124a5f0a
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_fifo_test.sh
-@@ -0,0 +1,56 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+
-+TST_TESTFUNC=do_test
-+TST_NEEDS_FIFO=1
-+TST_NEEDS_TMPDIR=1
-+
-+. tst_test.sh
-+
-+S2P="fifo_shell_to_proc"
-+P2S="fifo_proc_to_shell"
-+
-+do_test()
-+{
-+    tst_fifo_create $S2P
-+    tst_fifo_create $P2S
-+
-+    tst_fifo_proc &
-+    pid=$!
-+
-+    tst_fifo_send $S2P "init message"
-+    tst_res TPASS "init message send"
-+
-+    tst_fifo_send $S2P "second init message"
-+    tst_res TPASS "second init message send"
-+
-+    data=$(tst_fifo_receive $P2S)
-+    if [ "$data" == "answer 1" ]; then
-+        tst_res TPASS "Received first expected answer"
-+    else
-+        tst_res TFAIL "First expected answer mismatch ('$data')"
-+    fi
-+
-+    data=$(tst_fifo_receive $P2S)
-+    if [ "$data" == "answer 2" ]; then
-+        tst_res TPASS "Received second expected answer"
-+    else
-+        tst_res TFAIL "Second expected answer mismatch ('$data')"
-+    fi
-+
-+    data=$(tst_fifo_receive $P2S)
-+    if [ "$data" == "answer 3" ]; then
-+        tst_res TPASS "Received third expected answer"
-+    else
-+        tst_res TFAIL "Third expected answer mismatch ('$data')"
-+    fi
-+
-+    tst_res TINFO "Waiting for tst_fifo_proc to terminate"
-+    wait $pid
-+
-+    tst_res TPASS "All tests passed"
-+}
-+
-+
-+tst_run
-\ No newline at end of file
-diff --git a/lib/newlib_tests/tst_fifo.c b/lib/newlib_tests/tst_fifo.c
-new file mode 100644
-index 000000000..c7d68cb08
---- /dev/null
-+++ b/lib/newlib_tests/tst_fifo.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_fifo.h"
-+
-+#define MSG_P2C "AbcD"
-+#define MSG_C2P "Hello World"
-+
-+static void do_setup(void)
-+{
-+    tst_fifo_init();
-+}
-+
-+static void do_test(void)
-+{
-+    tst_fifo_create("p2c");
-+    tst_fifo_create("c2p");
-+
-+    pid_t pid = SAFE_FORK();
-+    if (pid == 0) {
-+        char data[sizeof(MSG_P2C)];
-+        if (tst_fifo_receive("p2c", data, sizeof(data)) != strlen(MSG_P2C))
-+            tst_res(TFAIL, "Child did not receive expected length");
-+        if (strcmp(data, MSG_P2C) != 0)
-+            tst_res(TFAIL, "Child did not receive expected value ('%s' != '%s')", MSG_P2C, data);
-+        else
-+            tst_res(TPASS, "Child received expected value");
-+        
-+        tst_fifo_send("c2p", MSG_C2P);
-+    } else {
-+        tst_fifo_send("p2c", MSG_P2C);
-+
-+        char data[sizeof(MSG_C2P)];
-+        if (tst_fifo_receive("c2p", data, sizeof(data)) != strlen(MSG_C2P))
-+            tst_res(TFAIL, "Parent did not receive expected length");
-+        if (strcmp(data, MSG_C2P) != 0)
-+            tst_res(TFAIL, "Parent did not receive expected value ('%s' != '%s')", MSG_C2P, data);
-+        else
-+            tst_res(TPASS, "Parent received expected value");
-+    }
-+}
-+
-+static struct tst_test test = {
-+    .needs_tmpdir = 1,
-+    .forks_child = 1,
-+    .setup = do_setup,
-+	.test_all = do_test
-+};
-diff --git a/lib/newlib_tests/tst_fifo_proc.c b/lib/newlib_tests/tst_fifo_proc.c
-new file mode 100644
-index 000000000..bd9604741
---- /dev/null
-+++ b/lib/newlib_tests/tst_fifo_proc.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+ */
-+
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "tst_fifo.h"
-+
-+#define S2P "fifo_shell_to_proc"
-+#define P2S "fifo_proc_to_shell"
-+
-+int main()
-+{
-+    char data[128];
-+
-+    TCID = "tst_fifo_proc";
-+
-+    tst_fifo_init();
-+
-+    tst_fifo_receive(S2P, data, sizeof(data));
-+    tst_res(strcmp(data, "init message") == 0 ? TPASS : TFAIL,
-+            "Received expected init message (%s)", data);
-+
-+    // Wait a bit for asynchronous access to pipe
-+    sleep(1);
-+
-+    tst_fifo_receive(S2P, data, sizeof(data));
-+    tst_res(strcmp(data, "second init message") == 0 ? TPASS : TFAIL,
-+            "Received expected second init message");
-+
-+    tst_fifo_send(P2S, "answer 1");
-+    sleep(1);
-+    tst_fifo_send(P2S, "answer 2");
-+    sleep(1);
-+    tst_fifo_send(P2S, "answer 3");
-+
-+    tst_res(TPASS, "All tests passed");
-+
-+    return 0;
-+}
-\ No newline at end of file
-diff --git a/lib/tst_fifo.c b/lib/tst_fifo.c
-new file mode 100644
-index 000000000..7d139624b
---- /dev/null
-+++ b/lib/tst_fifo.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+ */
-+#define _GNU_SOURCE
-+#include <stddef.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "old_tmpdir.h"
-+#include "tst_fifo.h"
-+
-+#ifndef PATH_MAX
-+#ifdef MAXPATHLEN
-+#define PATH_MAX	MAXPATHLEN
-+#else
-+#define PATH_MAX	1024
-+#endif
-+#endif
-+
-+#define FIFO_ENV_VAR "LTP_FIFO_PATH"
-+
-+static char *FIFO_DIR = NULL;
-+
-+#define INIT_FIFO_FUNCTION(req_mode, ack_mode) \
-+    char path_req[PATH_MAX]; \
-+    char path_ack[PATH_MAX]; \
-+    if (!FIFO_DIR) \
-+        tst_brk(TBROK, "you must call tst_fifo_init first"); \
-+    snprintf(path_req, sizeof(path_req), "%s/tst_fifo_%s.req", FIFO_DIR, name); \
-+    snprintf(path_ack, sizeof(path_ack), "%s/tst_fifo_%s.ack", FIFO_DIR, name);
-+    //if (required_mode && access(path, required_mode)) \
-+     //   tst_brk(TBROK, "cannot access '%s'", path);
-+
-+void tst_fifo_init(void)
-+{
-+    if (tst_tmpdir_created()) {
-+        FIFO_DIR = tst_get_tmpdir();
-+        setenv(FIFO_ENV_VAR, FIFO_DIR, 1);
-+    } else {
-+        FIFO_DIR = getenv(FIFO_ENV_VAR);
-+    }
-+
-+    if (!FIFO_DIR)
-+        tst_brk(TBROK, "no tempdir and " FIFO_ENV_VAR " not set");
-+}
-+
-+void tst_fifo_create(const char *name)
-+{
-+    INIT_FIFO_FUNCTION(0, 0);
-+
-+    if (mkfifo(path_req, S_IRWXU | S_IRWXG | S_IRWXO)) 
-+        tst_brk(TBROK, "mkfifo(%s) failed with %s", path_req, tst_strerrno(errno));
-+
-+    if (mkfifo(path_ack, S_IRWXU | S_IRWXG | S_IRWXO)) 
-+        tst_brk(TBROK, "mkfifo(%s) failed with %s", path_ack, tst_strerrno(errno));
-+}
-+
-+void tst_fifo_destroy(const char *name)
-+{
-+    INIT_FIFO_FUNCTION(R_OK | W_OK, R_OK | W_OK);
-+
-+    if (remove(path_req))
-+        tst_brk(TBROK, "unable to remove fifo '%s'", path_req);
-+    if (remove(path_ack))
-+        tst_brk(TBROK, "unable to remove fifo '%s'", path_ack);
-+}
-+
-+void tst_fifo_send(const char *name, const char *data)
-+{
-+    int fd;
-+    char ack[2];
-+    INIT_FIFO_FUNCTION(W_OK, R_OK);
-+
-+    fd = SAFE_OPEN(path_req, O_WRONLY);
-+    SAFE_WRITE(1, fd, data, strlen(data));
-+    SAFE_CLOSE(fd);
-+
-+    fd = SAFE_OPEN(path_ack, O_RDONLY);
-+    SAFE_READ(1, fd, ack, 2);
-+    SAFE_CLOSE(fd);
-+}
-+
-+int tst_fifo_receive(const char *name, char *data, int maxlen)
-+{
-+    int fd;
-+    int nbyte;
-+    int pos;
-+    INIT_FIFO_FUNCTION(R_OK, W_OK);
-+
-+    fd = SAFE_OPEN(path_req, O_RDONLY);
-+    pos = 0;
-+    while (1) {
-+        nbyte = SAFE_READ(0, fd, data + pos, maxlen - pos);
-+        if (nbyte == 0)
-+            break;
-+        pos += nbyte;
-+        if (pos == maxlen)
-+            tst_brk(TBROK, "buffer is not big enough");
-+    }
-+
-+    SAFE_CLOSE(fd);
-+
-+    fd = SAFE_OPEN(path_ack, O_WRONLY);
-+    SAFE_WRITE(1, fd, "OK", 2);
-+    SAFE_CLOSE(fd);
-+
-+    data[pos] = 0;
-+    return pos;
-+}
-diff --git a/testcases/Makefile b/testcases/Makefile
-index b04e6309f..47c110972 100644
---- a/testcases/Makefile
-+++ b/testcases/Makefile
-@@ -28,7 +28,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
- # 1. kdump shouldn't be compiled by default, because it's runtime based and
- #    WILL crash the build host (the tests need to be fixed to just build, not
- #    run).
--FILTER_OUT_DIRS		:= kdump
-+FILTER_OUT_DIRS		:= kdump open_posix_testsuite realtime kernel network misc
- 
- ifneq ($(WITH_OPEN_POSIX_TESTSUITE),yes)
- FILTER_OUT_DIRS		+= open_posix_testsuite
-diff --git a/testcases/lib/tst_fifo.sh b/testcases/lib/tst_fifo.sh
-new file mode 100644
-index 000000000..922b24059
---- /dev/null
-+++ b/testcases/lib/tst_fifo.sh
-@@ -0,0 +1,58 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2019 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+
-+[ "$TST_NEEDS_TMPDIR" != 1 ] && tst_brk TCONF "fifo library requires TST_NEEDS_TMPDIR=1"
-+[ -z "$TST_TMPDIR" ] && tst_brk TCONF "TST_TMPDIR is not supposed to be empty"
-+
-+export LTP_FIFO_PATH="$TST_TMPDIR"
-+
-+tst_fifo_create()
-+{
-+    [ $# -ne 1 ] && tst_brk TBROK "tst_fifo_create expects 1 parameter"
-+    local _tst_path_req="${TST_TMPDIR}/tst_fifo_$1.req"
-+    local _tst_path_ack="${TST_TMPDIR}/tst_fifo_$1.ack"
-+
-+    mkfifo "$_tst_path_req" || tst_brk TBROK "unable to create fifo '$_tst_path_req'"
-+    mkfifo "$_tst_path_ack" || tst_brk TBROK "unable to create fifo '$_tst_path_ack'"
-+}
-+
-+tst_fifo_destroy()
-+{
-+    [ $# -ne 1 ] && tst_brk TBROK "tst_fifo_destroy expects 1 parameter"
-+    local _tst_path_req="${TST_TMPDIR}/tst_fifo_$1.req"
-+    local _tst_path_ack="${TST_TMPDIR}/tst_fifo_$1.ack"
-+
-+    [ -p "$_tst_path_req" ] || tst_brk TBROK "tst_fifo_destroy fifo '$_tst_path_req' does not exist"
-+    [ -p "$_tst_path_ack" ] || tst_brk TBROK "tst_fifo_destroy fifo '$_tst_path_ack' does not exist"
-+
-+    rm "$_tst_path_req"  || tst_brk TBROK "unable to destroy fifo '$_tst_path_req'"
-+    rm "$_tst_path_ack"  || tst_brk TBROK "unable to destroy fifo '$_tst_path_ack'"
-+}
-+
-+tst_fifo_send()
-+{
-+    [ $# -ne 2 ] && tst_brk TBROK "tst_fifo_send expects 2 parameters"
-+    local _tst_path_req="${TST_TMPDIR}/tst_fifo_$1.req"
-+    local _tst_path_ack="${TST_TMPDIR}/tst_fifo_$1.ack"
-+    local _tst_msg="$2"
-+
-+    [ -p "$_tst_path_req" ] || tst_brk TBROK "tst_fifo_send fifo '$_tst_path_req' does not exist"
-+    [ -p "$_tst_path_ack" ] || tst_brk TBROK "tst_fifo_send fifo '$_tst_path_ack' does not exist"
-+
-+    echo -n "$_tst_msg" > "$_tst_path_req"
-+    cat "$_tst_path_ack" > /dev/null
-+}
-+
-+tst_fifo_receive()
-+{
-+    [ $# -ne 1 ] && tst_brk TBROK "tst_fifo_receive expects 1 parameter"
-+    local _tst_path_req="${TST_TMPDIR}/tst_fifo_$1.req"
-+    local _tst_path_ack="${TST_TMPDIR}/tst_fifo_$1.ack"
-+
-+    [ -p "$_tst_path_req" ] || tst_brk TBROK "tst_fifo_receive fifo '$_tst_path_req' does not exist"
-+    [ -p "$_tst_path_ack" ] || tst_brk TBROK "tst_fifo_receive fifo '$_tst_path_ack' does not exist"
-+
-+    cat "$_tst_path_req"
-+    echo -n "OK" > "$_tst_path_ack"
-+}
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 70c1ef2e3..2352c5eea 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -479,7 +479,7 @@ tst_run()
- 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
--			NET_MAX_PKT);;
-+			NET_MAX_PKT|NEEDS_FIFO);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
- 			esac
- 		done
-@@ -537,6 +537,8 @@ tst_run()
- 		cd "$TST_TMPDIR"
- 	fi
- 
-+	[ "$TST_NEEDS_FIFO" = 1 ] && . tst_fifo.sh
-+
- 	TST_MNTPOINT="${TST_MNTPOINT:-mntpoint}"
- 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
- 		if [ -z ${TST_TMPDIR} ]; then
--- 
-2.20.1
+> > +static inline int fsopen(const char *fs_name, unsigned int flags)
+> > +{
+> > +	return tst_syscall(__NR_fsopen, fs_name, flags);
+> > +}
+> > +
+> > +/*
+> > + * fsopen() flags.
+> > + */
+> > +#define FSOPEN_CLOEXEC		0x00000001
+> > +
+> > +static inline int fsconfig(int fsfd, unsigned int cmd,
+> > +                           const char *key, const void *val, int aux)
+> > +{
+> > +	return tst_syscall(__NR_fsconfig, fsfd, cmd, key, val, aux);
+> > +}
+> > +
+> > +/*
+> > + * The type of fsconfig() call made.
+> > + */
+> > +enum fsconfig_command {
+> > +	FSCONFIG_SET_FLAG	= 0,    /* Set parameter, supplying no value */
+> > +	FSCONFIG_SET_STRING	= 1,    /* Set parameter, supplying a string value */
+> > +	FSCONFIG_SET_BINARY	= 2,    /* Set parameter, supplying a binary blob
+> > value */
+> > +	FSCONFIG_SET_PATH	= 3,    /* Set parameter, supplying an object by path
+> > */
+> > +	FSCONFIG_SET_PATH_EMPTY	= 4,    /* Set parameter, supplying an object by
+> > (empty) path */
+> > +	FSCONFIG_SET_FD		= 5,    /* Set parameter, supplying an object by fd */
+> > +	FSCONFIG_CMD_CREATE	= 6,    /* Invoke superblock creation */
+> > +	FSCONFIG_CMD_RECONFIGURE = 7,   /* Invoke superblock reconfiguration */
+> > +};
+> > +
+> > +static inline int fsmount(int fsfd, unsigned int flags, unsigned int
+> > ms_flags)
+> > +{
+> > +	return tst_syscall(__NR_fsmount, fsfd, flags, ms_flags);
+> > +}
+> > +
+> > +/*
+> > + * fsmount() flags.
+> > + */
+> > +#define FSMOUNT_CLOEXEC		0x00000001
+> > +
+> > +/*
+> > + * Mount attributes.
+> > + */
+> > +#define MOUNT_ATTR_RDONLY	0x00000001 /* Mount read-only */
+> > +#define MOUNT_ATTR_NOSUID	0x00000002 /* Ignore suid and sgid bits */
+> > +#define MOUNT_ATTR_NODEV	0x00000004 /* Disallow access to device special
+> > files */
+> > +#define MOUNT_ATTR_NOEXEC	0x00000008 /* Disallow program execution */
+> > +#define MOUNT_ATTR__ATIME	0x00000070 /* Setting on how atime should be
+> > updated */
+> > +#define MOUNT_ATTR_RELATIME	0x00000000 /* - Update atime relative to
+> > mtime/ctime. */
+> > +#define MOUNT_ATTR_NOATIME	0x00000010 /* - Do not update access times. */
+> > +#define MOUNT_ATTR_STRICTATIME	0x00000020 /* - Always perform atime
+> > updates */
+> > +#define MOUNT_ATTR_NODIRATIME	0x00000080 /* Do not update directory access
+> > times */
+> > +
+> > +static inline int move_mount(int from_dfd, const char *from_pathname,
+> > +                             int to_dfd, const char *to_pathname,
+> > +                             unsigned int flags)
+> > +{
+> > +	return tst_syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd,
+> > +	                   to_pathname, flags);
+> > +}
+> > +
+> > +/*
+> > + * move_mount() flags.
+> > + */
+> > +#define MOVE_MOUNT_F_SYMLINKS		0x00000001 /* Follow symlinks on from path
+> > */
+> > +#define MOVE_MOUNT_F_AUTOMOUNTS		0x00000002 /* Follow automounts on from
+> > path */
+> > +#define MOVE_MOUNT_F_EMPTY_PATH		0x00000004 /* Empty from path permitted
+> > */
+> > +#define MOVE_MOUNT_T_SYMLINKS		0x00000010 /* Follow symlinks on to path */
+> > +#define MOVE_MOUNT_T_AUTOMOUNTS		0x00000020 /* Follow automounts on to
+> > path */
+> > +#define MOVE_MOUNT_T_EMPTY_PATH		0x00000040 /* Empty to path permitted */
+> > +#define MOVE_MOUNT__MASK		0x00000077
+> > +
+> > +#endif /* HAVE_NEWMOUNT */
+> > +#endif /* NEWMOUNT_H__ */
+> > diff --git a/include/lapi/syscalls/aarch64.in
+> > b/include/lapi/syscalls/aarch64.in
+> > index 0e00641bc..5b9e1d9a4 100644
+> > --- a/include/lapi/syscalls/aarch64.in
+> > +++ b/include/lapi/syscalls/aarch64.in
+> > @@ -270,4 +270,8 @@ pkey_mprotect 288
+> >   pkey_alloc 289
+> >   pkey_free 290
+> >   pidfd_send_signal 424
+> > +move_mount 429
+> > +fsopen 430
+> > +fsconfig 431
+> > +fsmount 432
+> >   _sysctl 1078
+> > diff --git a/include/lapi/syscalls/powerpc64.in
+> > b/include/lapi/syscalls/powerpc64.in
+> > index 660165d7a..3aaed64e0 100644
+> > --- a/include/lapi/syscalls/powerpc64.in
+> > +++ b/include/lapi/syscalls/powerpc64.in
+> > @@ -359,3 +359,7 @@ pidfd_send_signal 424
+> >   pkey_mprotect 386
+> >   pkey_alloc 384
+> >   pkey_free 385
+> > +move_mount 429
+> > +fsopen 430
+> > +fsconfig 431
+> > +fsmount 432
+> > diff --git a/include/lapi/syscalls/s390x.in
+> > b/include/lapi/syscalls/s390x.in
+> > index 7d632d1dc..bd427555a 100644
+> > --- a/include/lapi/syscalls/s390x.in
+> > +++ b/include/lapi/syscalls/s390x.in
+> > @@ -341,3 +341,7 @@ pkey_mprotect 384
+> >   pkey_alloc 385
+> >   pkey_free 386
+> >   pidfd_send_signal 424
+> > +move_mount 429
+> > +fsopen 430
+> > +fsconfig 431
+> > +fsmount 432
+> > diff --git a/include/lapi/syscalls/x86_64.in
+> > b/include/lapi/syscalls/x86_64.in
+> > index b1cbd4f2f..94f0b562e 100644
+> > --- a/include/lapi/syscalls/x86_64.in
+> > +++ b/include/lapi/syscalls/x86_64.in
+> > @@ -320,3 +320,7 @@ pkey_alloc 330
+> >   pkey_free 331
+> >   statx 332
+> >   pidfd_send_signal 424
+> > +move_mount 429
+> > +fsopen 430
+> > +fsconfig 431
+> > +fsmount 432
+> > diff --git a/m4/ltp-newmount.m4 b/m4/ltp-newmount.m4
+> > new file mode 100644
+> > index 000000000..e13a6f0b1
+> > --- /dev/null
+> > +++ b/m4/ltp-newmount.m4
+> > @@ -0,0 +1,10 @@
+> > +dnl SPDX-License-Identifier: GPL-2.0-or-later
+> > +dnl Copyright (C) 2019 Red Hat, Inc. All Rights Reserved.
+> > +
+> > +AC_DEFUN([LTP_CHECK_NEWMOUNT],[
+> > +AC_CHECK_FUNCS(fsopen,,)
+> > +AC_CHECK_FUNCS(fsconfig,,)
+> > +AC_CHECK_FUNCS(fsmount,,)
+> > +AC_CHECK_FUNCS(move_mount,,)
+> > +AC_CHECK_HEADER(sys/mount.h,,,)
+> > +])
+> You use m4 to check them. But it seems that you don't use those macros
+> in your cases.
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index 15dbd9971..fac1c62d2 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -794,6 +794,8 @@ nanosleep01 nanosleep01
+> >   nanosleep02 nanosleep02
+> >   nanosleep04 nanosleep04
+> >   
+> > +newmount01 newmount01
+> > +
+> >   nftw01 nftw01
+> >   nftw6401 nftw6401
+> >   
+> > diff --git a/testcases/kernel/syscalls/newmount/.gitignore
+> > b/testcases/kernel/syscalls/newmount/.gitignore
+> > new file mode 100644
+> > index 000000000..dc78edd5b
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/newmount/.gitignore
+> > @@ -0,0 +1 @@
+> > +/newmount01
+> > diff --git a/testcases/kernel/syscalls/newmount/Makefile
+> > b/testcases/kernel/syscalls/newmount/Makefile
+> > new file mode 100644
+> > index 000000000..7d0920df6
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/newmount/Makefile
+> > @@ -0,0 +1,9 @@
+> > +# SPDX-License-Identifier: GPL-2.0-or-later
+> > +#
+> > +# Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
+> > +
+> > +top_srcdir		?= ../../../..
+> > +
+> > +include $(top_srcdir)/include/mk/testcases.mk
+> > +
+> > +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > diff --git a/testcases/kernel/syscalls/newmount/newmount01.c
+> > b/testcases/kernel/syscalls/newmount/newmount01.c
+> > new file mode 100644
+> > index 000000000..464ecb699
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/newmount/newmount01.c
+> > @@ -0,0 +1,114 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (C) 2019 Red Hat, Inc.  All rights reserved.
+> > + * Author: Zorro Lang <zlang@redhat.com>
+> > + *
+> > + * Use new mount API (fsopen, fsconfig, fsmount, move_mount) to mount
+> > + * a filesystem without any specified mount options.
+> > + */
+> > +
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <unistd.h>
+> > +#include <errno.h>
+> > +#include <sys/mount.h>
+> > +
+> > +#include "tst_test.h"
+> > +#include "tst_safe_macros.h"
+> "tst_test.h" has included "tst_safe_macros.h"
+> > +#include "lapi/newmount.h"
+> > +
+> > +#define LINELENGTH 256
+> > +#define MNTPOINT "newmount_point"
+> > +static int sfd, mfd;
+> > +static int is_mounted = 0;
+> static int sfd, mfd, is_mounted;
+
+
+
+> > +
+> > +static int ismount(char *mntpoint)
+> > +{
+> > +	int ret = 0;
+> > +	FILE *file;
+> > +	char line[LINELENGTH];
+> > +
+> > +	file = fopen("/proc/mounts", "r");
+> > +	if (file == NULL)
+> > +		tst_brk(TFAIL | TTERRNO, "Open /proc/mounts failed");
+> > +
+> > +	while (fgets(line, LINELENGTH, file) != NULL) {
+> > +		if (strstr(line, mntpoint) != NULL) {
+> > +			ret = 1;
+> > +			break;
+> > +		}
+> > +	}
+> > +	fclose(file);
+> > +	return ret;
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	if (is_mounted) {
+> > +		TEST(tst_umount(MNTPOINT));
+> > +		if (TST_RET != 0)
+> > +			tst_brk(TFAIL | TTERRNO, "umount failed in cleanup");
+> > +	}
+> > +}
+> > +
+> > +static void test_newmount(void)
+> > +{
+> > +	TEST(fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsopen %s", tst_device->fs_type);
+> > +	}
+> > +	sfd = TST_RET;
+> > +	tst_res(TPASS, "fsopen %s", tst_device->fs_type);
+> > +
+> > +	TEST(fsconfig(sfd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsconfig set source to %s", tst_device->dev);
+> > +	}
+> > +	tst_res(TPASS, "fsconfig set source to %s", tst_device->dev);
+> > +
+> > +
+> > +	TEST(fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsconfig create superblock");
+> > +	}
+> > +	tst_res(TPASS, "fsconfig create superblock");
+> > +
+> > +	TEST(fsmount(sfd, FSMOUNT_CLOEXEC, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO, "fsmount");
+> > +	}
+> > +	mfd = TST_RET;
+> > +	tst_res(TPASS, "fsmount");
+> > +	SAFE_CLOSE(sfd);
+> > +
+> > +	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO, "move_mount attach to mount point");
+> > +	}
+> > +	is_mounted = 1;
+> > +	tst_res(TPASS, "move_mount attach to mount point");
+> > +	SAFE_CLOSE(mfd);
+> > +
+> > +	if (ismount(MNTPOINT)) {
+> > +		tst_res(TPASS, "new mount works");
+> > +		TEST(tst_umount(MNTPOINT));
+> > +		if (TST_RET != 0)
+> > +			tst_brk(TFAIL | TTERRNO, "umount failed");
+> > +		is_mounted = 0;
+> cleanup also does umount operation. Maybe we can call it in here.
+> > +	} else {
+> > +		tst_res(TFAIL, "new mount fails");
+> > +	}
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test_all	= test_newmount,
+> > +	.cleanup	= cleanup,
+> > +	.needs_root	= 1,
+> > +	.mntpoint	= MNTPOINT,
+> > +	.needs_device	= 1,
+> In ltp library code, if you sepecify "format_device = 1", it will auto
+> set "needs_device = 1". So remove it.
+> 
+> > +	.format_device	= 1,
+> > +	.all_filesystems = 1,
+> > +};
+> > 
+> 
+> 
+> 
 
