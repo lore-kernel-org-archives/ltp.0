@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Dec 2019 14:28:48 +0100
-Subject: [LTP] [PATCH 1/1] shell: TST_NEEDS_DEVICE imply TST_TMPDIR
-In-Reply-To: <20191210104106.GA29288@rei.lan>
-References: <20191209203248.2427967-1-pvorel@suse.cz>
- <20191210104106.GA29288@rei.lan>
-Message-ID: <20191210132848.GA11148@dell5510>
+Date: Tue, 10 Dec 2019 15:01:46 +0100
+Subject: [LTP] [PATCH] syscalls/ioctl01: Cleanup & convert to new library
+In-Reply-To: <20191206145517.3415-1-chrubis@suse.cz>
+References: <20191206145517.3415-1-chrubis@suse.cz>
+Message-ID: <20191210140146.GA1124@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,16 +12,20 @@ To: ltp@lists.linux.it
 
 Hi Cyril,
 
-> Hi!
-> > instead of requiring to be set.
-> > This is a sync with C API (previous commit).
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
-> Looks good, acked.
-Thanks merged.
+LGTM.
 
-BTW any objections to related shell tst_mount()/tst_umount() fix?
-https://patchwork.ozlabs.org/patch/1206399/
+BTW (not related to ioctl01.c), is it possible to get rid of (false positive) this warning?
 
+ioctl01.c:115:1: warning: missing initializer for field ?test_all? of ?struct tst_test? [-Wmissing-field-initializers]
+ };
+ ^
+In file included from ioctl01.c:25:0:
+../../../../include/tst_test.h:185:9: note: ?test_all? declared here
+  void (*test_all)(void);
+         ^~~~~~~~
 
 Kind regards,
 Petr
