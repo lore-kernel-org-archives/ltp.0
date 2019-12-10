@@ -1,19 +1,22 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 Dec 2019 11:51:29 +0100
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 10 Dec 2019 14:01:37 +0100
 Subject: [LTP] [PATCH] Remove duplicated ".needs_tmpdir=1" when using
  equivalent flags
-In-Reply-To: <1575447166-7813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+In-Reply-To: <20191210105128.GB29288@rei.lan>
 References: <1575447166-7813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20191210105128.GB29288@rei.lan>
+ <20191210105128.GB29288@rei.lan>
+Message-ID: <20191210130137.GA2448369@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Acked from me as well, Peter feel free to merge.
+Hi Cyril,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi!
+> Acked from me as well, Peter feel free to merge.
+Thanks for ack, merged.
+
+Kind regards,
+Petr
