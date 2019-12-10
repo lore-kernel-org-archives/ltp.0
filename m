@@ -1,7 +1,9 @@
 From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Tue, 10 Dec 2019 16:14:16 -0500
-Subject: [LTP] [PATCH 1/3] syscalls/llseek01: convert to new library
-Message-ID: <1576012458-31108-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Date: Tue, 10 Dec 2019 16:14:17 -0500
+Subject: [LTP] [PATCH 2/3] syscalls/llseek02: convert to new library
+In-Reply-To: <1576012458-31108-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1576012458-31108-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1576012458-31108-2-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,14 +11,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 ---
- testcases/kernel/syscalls/llseek/llseek01.c | 224 ++++++----------------------
- 1 file changed, 47 insertions(+), 177 deletions(-)
+ testcases/kernel/syscalls/llseek/llseek02.c | 294 +++++-----------------------
+ 1 file changed, 45 insertions(+), 249 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/llseek/llseek01.c b/testcases/kernel/syscalls/llseek/llseek01.c
-index 9ae8218..2e826b2 100644
---- a/testcases/kernel/syscalls/llseek/llseek01.c
-+++ b/testcases/kernel/syscalls/llseek/llseek01.c
-@@ -1,211 +1,81 @@
+diff --git a/testcases/kernel/syscalls/llseek/llseek02.c b/testcases/kernel/syscalls/llseek/llseek02.c
+index 5f2e398..cfe276e 100644
+--- a/testcases/kernel/syscalls/llseek/llseek02.c
++++ b/testcases/kernel/syscalls/llseek/llseek02.c
+@@ -1,70 +1,13 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -39,17 +41,18 @@ index 9ae8218..2e826b2 100644
   */
 -
  /*
-- * Test Name: llseek01
+- * Test Name: llseek02
+- * Note that glibc exports the llseek syscall as lseek64.
 - *
-  * Test Description:
-- *  Verify that, llseek() call succeeds to set the file pointer position
-+ *  Verify that, lseek64() call succeeds to set the file pointer position
-  *  to an offset larger than file size. Also, verify that any attempt
-  *  to write to this location fails.
+- * Test Description:
+- *  Verify that,
+- *  1. llseek() returns -1 and sets errno to EINVAL, if the 'Whence' argument
+- *     is not a proper value.
+- *  2. llseek() returns -1 and sets errno to EBADF, if the file handle of
+- *     the specified file is not valid.
 - *
-- * Expected result:
-- *  llseek() should return the offset from the beginning of the file measured
-- *  in bytes. Attempt to write to the location ( > file size) should fail.
+- * Expected Result:
+- *  llseek() should fail with return value -1 and set expected errno.
 - *
 - * Algorithm:
 - *  Setup:
@@ -61,21 +64,20 @@ index 9ae8218..2e826b2 100644
 - *   Loop if the proper options are given.
 - *   Execute system call
 - *   Check return code, if system call failed (return=-1)
-- *	Log the errno and Issue a FAIL message.
+- *	if errno set == expected errno
+- *		Issue sys call fails with expected return value and errno.
+- *	Otherwise,
+- *		Issue sys call fails with unexpected errno.
 - *   Otherwise,
-- *	Verify the Functionality of system call
-- *      if successful,
-- *		Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
+- *	Issue sys call returns unexpected value.
+- *
 - *  Cleanup:
 - *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
+- *   Delete the temporary directory(s)/file(s) created.
 - *
 - * Usage:  <for command-line>
-- *  llseek01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  llseek02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
@@ -86,52 +88,84 @@ index 9ae8218..2e826b2 100644
 - *
 - * RESTRICTIONS:
 - *  None.
++ * Description:
++ * 1) lseek64(2) fails and sets errno to EINVAL when whence is invalid.
++ * 2) lseek64(2) fails ans sets errno to EBADF when fd is not an open
++ * file descriptor.
   */
  
  #ifndef _GNU_SOURCE
- #define _GNU_SOURCE
+@@ -72,204 +15,57 @@
  #endif
  
+ #include <stdio.h>
 -#include <unistd.h>
+-#include <sys/types.h>
 -#include <errno.h>
--#include <unistd.h>
 -#include <fcntl.h>
 -#include <utime.h>
 -#include <string.h>
--#include <signal.h>
--#include <sys/resource.h>
 -#include <sys/stat.h>
- #include <sys/types.h>
--#include <inttypes.h>
-+#include <unistd.h>
-+#include <stdio.h>
- 
+-#include <signal.h>
+-
 -#include "test.h"
 -#include "safe_macros.h"
 +#include "tst_test.h"
  
- #define TEMP_FILE	"tmp_file"
- #define FILE_MODE	0644
+-#define TEMP_FILE1	"tmp_file1"
+-#define TEMP_FILE2	"tmp_file2"
+-#define FILE_MODE	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+-#define SEEK_TOP	10
++#define TEMP_FILE1 "tmp_file1"
++#define TEMP_FILE2 "tmp_file2"
  
--char *TCID = "llseek01";
--int TST_TOTAL = 1;
--char write_buff[BUFSIZ];	/* buffer to hold data */
--int fildes;			/* file handle for temp file */
+-char *TCID = "llseek02";
+-int TST_TOTAL = 2;
++#define FILE_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
++#define SEEK_TOP 10
+ 
+-int no_setup();
+-int setup1();			/* setup function to test llseek() for EINVAL */
+-int setup2();			/* setup function to test llseek() for EBADF */
++static int fd1;
++static int fd2;
+ 
+-int fd1;			/* file handle for testfile1  */
+-int fd2;			/* file handle for testfile2  */
 -
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
+-	int fd;
+-	int Whence;
+-	char *desc;
+-	int exp_errno;
+-	int (*setupfunc) ();
+-} Test_cases[] = {
+-	{
+-	1, SEEK_TOP, "'whence' argument is not valid", EINVAL, setup1}, {
+-	2, SEEK_SET, "'fd' is not an open file descriptor", EBADF, setup2},
+-	{
+-	0, 0, NULL, 0, no_setup}
++static struct tcase {
++	int *fd;
++	int whence;
++	int exp_err;
++} tcases[] = {
++	{&fd1, SEEK_TOP, EINVAL},
++	{&fd2, SEEK_SET, EBADF},
+ };
+ 
 -void setup();			/* Main setup function of test */
 -void cleanup();			/* cleanup function for the test */
-+static char write_buff[BUFSIZ];
-+static int fildes;
- 
+-
 -int main(int ac, char **av)
-+static void verify_llseek (void)
- {
+-{
 -	int lc;
--	loff_t offset;		/* Ret value from llseek */
+-	int fildes;		/* file handle for testfile */
+-	int whence;		/* position of file handle in the file */
+-	char *test_desc;	/* test specific error message */
+-	int ind;		/* counter to test different test conditions */
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
--
--	offset = -1;
 -
 -	setup();
 -
@@ -139,141 +173,171 @@ index 9ae8218..2e826b2 100644
 -
 -		tst_count = 0;
 -
--		/*
--		 * set file size limit, seek to a file using llseek.
--		 */
--		TEST(lseek64(fildes, (loff_t) (80 * BUFSIZ), SEEK_SET));
+-		for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-			fildes = Test_cases[ind].fd;
+-			test_desc = Test_cases[ind].desc;
+-			whence = Test_cases[ind].Whence;
 -
--		if (TEST_RETURN == (loff_t) - 1) {
--			tst_resm(TFAIL, "llseek on (%s) Failed, errno=%d : %s",
--				 TEMP_FILE, TEST_ERRNO, strerror(TEST_ERRNO));
--			continue;
+-			/* Assign the 'fd' values appropriatly */
+-			if (fildes == 1) {
+-				fildes = fd1;
+-			} else {
+-				fildes = fd2;
+-			}
+-
+-			/*
+-			 * Invoke llseek(2) to test different test conditions.
+-			 * Verify that it fails with -1 return value and
+-			 * sets appropriate errno.
+-			 */
+-			TEST(lseek64(fildes, (loff_t) 0, whence));
+-
+-			if (TEST_RETURN != (loff_t) - 1) {
+-				tst_resm(TFAIL,
+-					 "llseek() returned %ld, expected"
+-					 " -1, errno:%d", TEST_RETURN,
+-					 Test_cases[ind].exp_errno);
+-				continue;
+-			}
+-			if (TEST_ERRNO == Test_cases[ind].exp_errno) {
+-				tst_resm(TPASS, "llseek() fails, %s, errno:%d",
+-					 test_desc, TEST_ERRNO);
+-			} else {
+-				tst_resm(TFAIL, "llseek() fails, %s, errno:%d, "
+-					 "expected errno:%d", test_desc,
+-					 TEST_ERRNO, Test_cases[ind].exp_errno);
+-			}
 -		}
--
--		if (TEST_RETURN != (loff_t) (80 * BUFSIZ)) {
--			tst_resm(TFAIL, "llseek() returned incorrect "
--				 "value %" PRId64 ", expected %d",
--				 (int64_t) offset, BUFSIZ);
--			continue;
--		}
--
--		/*
--		 * llseek() successful.  Now attempt to write past
--		 * file size limit.
--		 */
--		if (write(fildes, write_buff, BUFSIZ) != -1) {
--			tst_brkm(TFAIL, cleanup, "write successful "
--				 "after file size limit");
--		}
--
--		/* Seeking to end of last valid write */
--		offset = lseek64(fildes, (loff_t) BUFSIZ, SEEK_SET);
--		if (offset != (loff_t) BUFSIZ) {
--			tst_brkm(TFAIL, cleanup,
--				 "llseek under file size limit");
--		}
--
--		/*
--		 * llseek() successful.  Now, attempt to write to
--		 * file size limit.
--		 */
--		if (write(fildes, write_buff, BUFSIZ) != BUFSIZ) {
--			tst_brkm(TFAIL, cleanup, "write failed to "
--				 "write to file size limit");
--		}
--
--		/*
--		 * Again, attempt to write past file size limit.
--		 */
--		if (write(fildes, write_buff, BUFSIZ) != -1) {
--			tst_brkm(TFAIL, cleanup, "write past file "
--				 "size limit successful");
--		}
--
--		tst_resm(TPASS, "Functionality of llseek() on %s "
--			 "successful", TEMP_FILE);
 -	}
 -
 -	cleanup();
+-
 -	tst_exit();
-+	TEST(lseek64(fildes, (loff_t) (80 * BUFSIZ), SEEK_SET));
-+	if (TST_RET == (80 * BUFSIZ))
-+		tst_res(TPASS, "lseek64() can set file pointer position larger than file size limit");
-+	else
-+		tst_res(TFAIL, "lseek64() returned wrong value %ld when write past file size", TST_RET);
-+
-+	if (write(fildes, write_buff, BUFSIZ) == -1)
-+		tst_res(TPASS,"write failed after file size limit");
-+	else
-+		tst_brk(TFAIL, "write successful after file size limit");
-+
-+	TEST(lseek64(fildes, (loff_t) BUFSIZ, SEEK_SET));
-+	if (TST_RET == BUFSIZ)
-+		tst_res(TPASS,"lseek64() can set file pointer position under filer size limit");
-+	else
-+		tst_brk(TFAIL,"lseek64() returns wrong value %ld when write under file size", TST_RET);
-+
-+	if (write(fildes, write_buff, BUFSIZ) != -1)
-+		tst_res(TPASS, "write succcessfully under file size limit");
-+	else
-+		tst_brk(TFAIL, "write failed under file size limit");
-+
-+	if (write(fildes, write_buff, BUFSIZ) == -1)
-+		tst_res(TPASS, "write failed after file size limit");
-+	else
-+		tst_brk(TFAIL, "write successfully after file size limit");
- }
- 
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- *           Create a temporary directory and change directory to it.
+- *           Invoke individual test setup functions according to the order
+- *           set in test struct. definition.
+- */
 -void setup(void)
-+static void setup(void)
- {
--	struct sigaction act;	/* struct. to hold signal */
--	struct rlimit rlp;	/* resource for file size limit */
+-{
+-	int ind;
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
-+	struct sigaction act;
-+	struct rlimit rlp;
- 
- 	act.sa_handler = SIG_IGN;
- 	act.sa_flags = 0;
- 	sigemptyset(&act.sa_mask);
--	if (sigaction(SIGXFSZ, &act, NULL) == -1) {
--		tst_brkm(TFAIL, NULL, "sigaction() Failed to ignore SIGXFSZ");
--	}
 -
 -	tst_tmpdir();
-+	SAFE_SIGACTION(SIGXFSZ, &act, NULL);
- 
--	/* Set limit low, argument is # bytes */
- 	rlp.rlim_cur = rlp.rlim_max = 2 * BUFSIZ;
-+	SAFE_SETRLIMIT(RLIMIT_FSIZE, &rlp);
- 
--	SAFE_SETRLIMIT(cleanup, RLIMIT_FSIZE, &rlp);
+-
+-	/* call individual setup functions */
+-	for (ind = 0; Test_cases[ind].desc != NULL; ind++) {
+-		Test_cases[ind].setupfunc();
+-	}
+-}
+-
+-/*
+- * no_setup() - This is a dummy function which simply returns 0.
+- */
+-int no_setup(void)
++static void verify_llseek(unsigned int n)
+ {
+-	return 0;
+-}
+-
+-/*
+- * setup1() - setup function for a test condition for which llseek(2)
+- *            returns -1 and sets errno to EINVAL.
+- *            Creat a temporary file for reading/writing and write some data
+- *            into it.
+- *            This function returns 0 on success.
+- */
+-int setup1(void)
+-{
+-	char write_buff[BUFSIZ];	/* buffer to hold data */
+-
+-	/* Get the data to be written to temporary file */
+-	strcpy(write_buff, "abcdefg");
 -
 -	/* Creat/open a temporary file under above directory */
--	if ((fildes = open(TEMP_FILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-	if ((fd1 = open(TEMP_FILE1, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
 -		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, 0644) Failed, errno=%d :%s",
--			 TEMP_FILE, errno, strerror(errno));
--	}
-+	fildes = SAFE_OPEN(TEMP_FILE, O_RDWR | O_CREAT, FILE_MODE);
- 
--	SAFE_WRITE(cleanup, 1, fildes, write_buff, BUFSIZ);
-+	SAFE_WRITE(1, fildes, write_buff, BUFSIZ);
+-			 "open(%s, O_RDWR|O_CREAT, %#o) Failed, errno=%d :%s",
+-			 TEMP_FILE1, FILE_MODE, errno, strerror(errno));
++	struct tcase *tc = &tcases[n];
++	
++	TEST(lseek64(*tc->fd, (loff_t) 1, tc->whence));
++	if (TST_RET != (off_t) -1) {
++		tst_res(TFAIL, "lseek64(%d, 1, %d) succeeded unexpectedly",
++			*tc->fd, tc->whence);
++		return;
+ 	}
+-
+-	/* Write data into temporary file */
+-	if (write(fd1, write_buff, sizeof(write_buff)) <= 0) {
+-		tst_brkm(TBROK, cleanup, "write(2) on %s Failed, errno=%d : %s",
+-			 TEMP_FILE1, errno, strerror(errno));
++	if (TST_ERR == tc->exp_err) {
++		tst_res(TPASS | TTERRNO, "lseek64(%d, 1, %d) failed as expected",
++			*tc->fd, tc->whence);
++	} else {
++		tst_res(TFAIL | TTERRNO, "lseek64(%d, 1, %d) failed "
++		"unexpectedly, expected %s", *tc->fd, tc->whence,
++		tst_strerrno(tc->exp_err));
+ 	}
+-
+-	return 0;
  }
  
+-/*
+- * setup2() - setup function for a test condition for which llseek(2)
+- *            returns -1 and sets errno to EBADF.
+- *            Creat a temporary file for reading/writing and close it.
+- *            This function returns 0 on success.
+- */
+-int setup2(void)
++static void setup(void)
+ {
+-	/* Creat/open a temporary file under above directory */
+-	if ((fd2 = open(TEMP_FILE2, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %#o) Failed, errno=%d :%s",
+-			 TEMP_FILE2, FILE_MODE, errno, strerror(errno));
+-	}
+-
+-	/* Close the temporary file created above */
+-	SAFE_CLOSE(cleanup, fd2);
++	fd1 = SAFE_OPEN(TEMP_FILE1, O_RDWR | O_CREAT, FILE_MODE);
+ 
+-	return 0;
++	fd2 = SAFE_OPEN(TEMP_FILE2, O_RDWR | O_CREAT, FILE_MODE);
++	SAFE_CLOSE(fd2);
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- *             Close the temporary file.
+- *             Remove the test directory and testfile created in the setup.
+- */
 -void cleanup(void)
 -{
--	SAFE_CLOSE(NULL, fildes);
+-
+-	/* Close the temporary file(s) created in setup1/setup2 */
+-	if (close(fd1) < 0) {
+-		tst_brkm(TFAIL, NULL, "close(%s) Failed, errno=%d : %s:",
+-			 TEMP_FILE1, errno, strerror(errno));
+-	}
 -
 -	tst_rmdir();
+-
 -}
 +static struct tst_test test = {
 +	.setup = setup ,
 +	.needs_tmpdir = 1 ,
-+	.test_all = verify_llseek ,	
++	.test = verify_llseek,
++	.tcnt = ARRAY_SIZE(tcases),
 +};
 -- 
 1.8.3.1
