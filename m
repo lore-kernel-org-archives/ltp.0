@@ -1,88 +1,100 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Tue, 10 Dec 2019 21:13:18 +0100
-Subject: [LTP] [PATCH 0/3] musl: travis build and include fixes
-Message-ID: <20191210201321.1430984-1-petr.vorel@gmail.com>
+Date: Tue, 10 Dec 2019 21:13:19 +0100
+Subject: [LTP] [PATCH 1/3] travis: Add musl build (with Alpine Linux)
+In-Reply-To: <20191210201321.1430984-1-petr.vorel@gmail.com>
+References: <20191210201321.1430984-1-petr.vorel@gmail.com>
+Message-ID: <20191210201321.1430984-2-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+it was needed to temporarily remove test broken on musl
+to fix compilation.
 
-although LTP not yet fully support musl, I'd like
-to add travis build via Alpine linux distro.
-Remaining broken tests are deleted before building,
-I volunteer to solve musl problems for new code.
-
-I also added 2 simple RPC fixes.
-RPC tests deserve some rewrite, but I'd postpone it.
-https://github.com/linux-test-project/ltp/issues/621
-
-Kind regards,
-Petr
-
-Petr Vorel (3):
-  travis: Add musl build (with Alpine Linux)
-  rpc: Add missing <string.h>
-  rpc: Remove <sys/socketvar.h>
-
- .travis.yml                                   |  7 +++
- .../rpc/basic_tests/rpc01/rpc_server.c        |  1 +
- .../rpc_clnt_broadcast_dataint.c              |  1 +
- .../rpc_svcraw_create.c                       |  1 -
- .../rpc_svctcp_create.c                       |  1 -
- .../rpc_svctcp_create_stress.c                |  1 -
- .../rpc_svcudp_bufcreate.c                    |  1 -
- .../rpc_svcudp_create.c                       |  1 -
- .../rpc_svcudp_create_stress.c                |  1 -
- .../rpc_registerrpc.c                         |  1 -
- .../rpc_svc_register.c                        |  1 -
- .../rpc_svc_unregister.c                      |  1 -
- .../rpc_xprt_register.c                       |  1 -
- .../rpc_xprt_unregister.c                     |  1 -
- .../rpc_stdcall_callrpc/rpc_callrpc_dataint.c |  1 +
- .../rpc_clnt_call_dataint.c                   |  1 +
- .../rpc_svc_freeargs_svc.c                    |  1 +
- .../rpc_stdcall_svc_getargs/rpc_svc_getargs.c |  1 +
- .../rpc_svc_sendreply.c                       |  1 +
- .../tirpc_bottomlevel_clnt_call_dataint.c     |  1 +
- .../tirpc_bottomlevel_clnt_call_mt.c          |  1 +
- .../tirpc_bottomlevel_clnt_call_scalability.c |  1 +
- .../tirpc_expertlevel_clnt_call_complex.c     |  1 +
- .../tirpc_expertlevel_clnt_call_dataint.c     |  1 +
- .../tirpc_expertlevel_clnt_call_mt.c          |  1 +
- .../tirpc_expertlevel_clnt_call_scalability.c |  1 +
- .../tirpc_rpcb_rmtcall_complex.c              |  1 +
- .../tirpc_rpcb_rmtcall_dataint.c              |  1 +
- .../tirpc_rpcb_rmtcall_mt.c                   |  1 +
- .../tirpc_rpcb_rmtcall_scalability.c          |  1 +
- .../tirpc_svc_reg_mt.c                        |  1 +
- .../tirpc_svc_unreg_mt.c                      |  1 +
- .../tirpc_interlevel_clnt_call_complex.c      |  1 +
- .../tirpc_interlevel_clnt_call_dataint.c      |  1 +
- .../tirpc_interlevel_clnt_call_mt.c           |  1 +
- .../tirpc_interlevel_clnt_call_scalability.c  |  1 +
- .../tirpc_rpc_broadcast_dataint.c             |  1 +
- .../tirpc_rpc_broadcast_mt.c                  |  1 +
- .../tirpc_rpc_broadcast_scalability.c         |  1 +
- .../tirpc_rpc_broadcast_exp_dataint.c         |  1 +
- .../tirpc_rpc_broadcast_exp_mt.c              |  1 +
- .../tirpc_rpc_broadcast_exp_scalability.c     |  1 +
- .../tirpc_rpc_call_complex.c                  |  1 +
- .../tirpc_rpc_call_dataint.c                  |  1 +
- .../tirpc_simple_rpc_call/tirpc_rpc_call_mt.c |  1 +
- .../tirpc_rpc_call_scalability.c              |  1 +
- .../tirpc_simple_rpc_reg/tirpc_rpc_reg_mt.c   |  1 +
- .../tirpc_toplevel_clnt_call_complex.c        |  1 +
- .../tirpc_toplevel_clnt_call_dataint.c        |  1 +
- .../tirpc_toplevel_clnt_call_mt.c             |  1 +
- .../tirpc_toplevel_clnt_call_scalability.c    |  1 +
- .../tests_pack/rpc_svc_1/rpc_svc_1.c          |  1 +
- travis/alpine.sh                              | 51 +++++++++++++++++++
- 53 files changed, 98 insertions(+), 11 deletions(-)
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ .travis.yml      |  7 +++++++
+ travis/alpine.sh | 51 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
  create mode 100755 travis/alpine.sh
 
+diff --git a/.travis.yml b/.travis.yml
+index 51040b0f0..51efa22e3 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -19,6 +19,13 @@ matrix:
+           env: DISTRO=debian:stable VARIANT=cross-compile.aarch64 TREE="out"
+           compiler: aarch64-linux-gnu-gcc
+ 
++        # musl (native)
++        - os: linux
++          # Message: WARNING: xsltproc: cannot process http://docbook.sourceforge.net/release/xsl-ns/current/manpages/docbook.xsl
++          # doc/meson.build:70:1: ERROR: Problem encountered: Docs cannot be built: xsltproc does not work correctly
++          env: DISTRO=alpine:latest
++          compiler: gcc
++
+         # build with minimal dependencies
+         - os: linux
+           env: DISTRO=debian:stable VARIANT=minimal TREE="out"
+diff --git a/travis/alpine.sh b/travis/alpine.sh
+new file mode 100755
+index 000000000..cef627b65
+--- /dev/null
++++ b/travis/alpine.sh
+@@ -0,0 +1,51 @@
++#!/bin/sh
++# Copyright (c) 2019 Petr Vorel <petr.vorel@gmail.com>
++set -e
++
++apk update
++
++apk add \
++	acl-dev \
++	autoconf \
++	automake \
++	clang \
++	gcc \
++	keyutils-dev \
++	libaio-dev \
++	libacl \
++	libcap-dev \
++	libselinux-dev \
++	libsepol-dev \
++	libtirpc-dev \
++	linux-headers \
++	make \
++	musl-dev \
++	numactl-dev \
++	openssl-dev \
++	pkgconfig
++
++echo "=== /etc/os-release ==="
++cat /etc/os-release
++
++echo "WARNING: remove unsupported tests (until they're fixed)"
++cd ..
++rm -rfv \
++	testcases/kernel/pty/pty01.c \
++	testcases/kernel/pty/pty02.c \
++	testcases/kernel/pty/ptem01.c \
++	testcases/kernel/sched/process_stress/process.c \
++	testcases/kernel/syscalls/accept4/accept4_01.c \
++	testcases/kernel/syscalls/confstr/confstr01.c \
++	testcases/kernel/syscalls/fmtmsg/fmtmsg01.c \
++	testcases/kernel/syscalls/getcontext/getcontext01.c \
++	testcases/kernel/syscalls/getdents/getdents01.c \
++	testcases/kernel/syscalls/getdents/getdents02.c \
++	testcases/kernel/syscalls/ioctl/ioctl01.c \
++	testcases/kernel/syscalls/ioctl/ioctl02.c \
++	testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c \
++	testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c \
++	testcases/kernel/syscalls/timer_create/timer_create01.c \
++	testcases/kernel/syscalls/timer_create/timer_create03.c \
++	testcases/misc/crash/crash01.c \
++	utils/benchmark/ebizzy-0.3
++cd -
 -- 
 2.24.0
 
