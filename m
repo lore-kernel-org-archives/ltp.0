@@ -1,11 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Dec 2019 14:01:37 +0100
-Subject: [LTP] [PATCH] Remove duplicated ".needs_tmpdir=1" when using
- equivalent flags
-In-Reply-To: <20191210105128.GB29288@rei.lan>
-References: <1575447166-7813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20191210105128.GB29288@rei.lan>
-Message-ID: <20191210130137.GA2448369@x230>
+Date: Tue, 10 Dec 2019 14:28:48 +0100
+Subject: [LTP] [PATCH 1/1] shell: TST_NEEDS_DEVICE imply TST_TMPDIR
+In-Reply-To: <20191210104106.GA29288@rei.lan>
+References: <20191209203248.2427967-1-pvorel@suse.cz>
+ <20191210104106.GA29288@rei.lan>
+Message-ID: <20191210132848.GA11148@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,8 +14,15 @@ To: ltp@lists.linux.it
 Hi Cyril,
 
 > Hi!
-> Acked from me as well, Peter feel free to merge.
-Thanks for ack, merged.
+> > instead of requiring to be set.
+> > This is a sync with C API (previous commit).
+
+> Looks good, acked.
+Thanks merged.
+
+BTW any objections to related shell tst_mount()/tst_umount() fix?
+https://patchwork.ozlabs.org/patch/1206399/
+
 
 Kind regards,
 Petr
