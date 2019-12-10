@@ -1,26 +1,21 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Dec 2019 09:23:44 +0100
-Subject: [LTP] [PATCH] cpuhotplug05.sh: Rewrite test case
-In-Reply-To: <5DEEF6E8.1000505@cn.fujitsu.com>
-References: <20191202101943.17335-1-ice_yangxiao@163.com>
- <7b7c1e8a-1db1-bf9f-96ff-01803416120e@suse.cz>
- <31fe4c0c-863e-4ba6-d8d7-1af909013fb7@163.com>
- <8f5e7d2a-34a8-5d2a-658c-a1f535fd1cc7@suse.cz>
- <20191209210659.GA3820@dell5510> <5DEEF6E8.1000505@cn.fujitsu.com>
-Message-ID: <20191210082344.GB4143@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 10 Dec 2019 11:41:06 +0100
+Subject: [LTP] [PATCH 1/1] shell: TST_NEEDS_DEVICE imply TST_TMPDIR
+In-Reply-To: <20191209203248.2427967-1-pvorel@suse.cz>
+References: <20191209203248.2427967-1-pvorel@suse.cz>
+Message-ID: <20191210104106.GA29288@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> instead of requiring to be set.
+> This is a sync with C API (previous commit).
 
-> Sorry,  I am busy with other things recently.
-> Don't worry, I will send new version this week or next week. :-)
-Yang, sure, no rush.
+Looks good, acked.
 
-Martin, thanks a lot for very good review!
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
