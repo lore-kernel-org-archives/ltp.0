@@ -1,9 +1,10 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 10 Dec 2019 09:04:17 +0100
-Subject: [LTP] [PATCH v4 1/3] tst_test.sh: Add tst_require_module command
+Date: Tue, 10 Dec 2019 09:04:18 +0100
+Subject: [LTP] [PATCH v4 2/3] tst_test.sh: Make public tst_require_root
+ command public
 In-Reply-To: <20191210080419.128773-1-lkml@jv-coder.de>
 References: <20191210080419.128773-1-lkml@jv-coder.de>
-Message-ID: <20191210080419.128773-2-lkml@jv-coder.de>
+Message-ID: <20191210080419.128773-3-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,86 +13,112 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-Adds a new library function tst_require_module, that can be used, when a
-test needs a module dynamically at runtime
+If a test requires root only under certain circumstances, TST_NEEDS_ROOT
+is not sufficient, because it always requires root.
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- doc/test-writing-guidelines.txt |  3 +++
- testcases/lib/tst_test.sh       | 39 +++++++++++++++++++--------------
- 2 files changed, 25 insertions(+), 17 deletions(-)
+ doc/test-writing-guidelines.txt |  3 ++-
+ testcases/lib/tst_net.sh        | 12 ++----------
+ testcases/lib/tst_security.sh   |  4 ++--
+ testcases/lib/tst_test.sh       |  4 ++--
+ 4 files changed, 8 insertions(+), 15 deletions(-)
 
 diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 546bb7a49..3360f0920 100644
+index 3360f0920..d0c49dc9c 100644
 --- a/doc/test-writing-guidelines.txt
 +++ b/doc/test-writing-guidelines.txt
-@@ -2184,6 +2184,9 @@ module in a few possible paths.
- If module was found the path to it will be stored into '$TST_MODPATH'
- variable, if module wasn't found the test will exit with 'TCONF'.
+@@ -2118,7 +2118,8 @@ simply by setting right '$TST_NEEDS_FOO'.
+ [options="header"]
+ |=============================================================================
+ | Variable name      | Action done
+-| 'TST_NEEDS_ROOT'   | Exit the test with 'TCONF' unless executed under root
++| 'TST_NEEDS_ROOT'   | Exit the test with 'TCONF' unless executed under root.
++|                    | Alternatively the tst_require_root command can be used
+ | 'TST_NEEDS_TMPDIR' | Create test temporary directory and cd into it.
+ | 'TST_NEEDS_DEVICE' | Prepare test temporary device, the path to testing
+                        device is stored in '$TST_DEVICE' variable.
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 59ceb3352..dd0c712c3 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -97,14 +97,6 @@ tst_brk_()
+ {
+ 	[ -z "$TST_USE_LEGACY_API" ] && tst_brk $@ || tst_brkm $@
+ }
+-tst_require_root_()
+-{
+-	if [ -z "$TST_USE_LEGACY_API" ]; then
+-		_tst_require_root
+-	else
+-		tst_require_root
+-	fi
+-}
  
-+Alternatively the 'tst_require_module()' function can be used to do the same
-+at runtime.
-+
- 2.3.3 Optional command line parameters
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ init_ltp_netspace()
+ {
+@@ -112,7 +104,7 @@ init_ltp_netspace()
+ 
+ 	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+ 		tst_require_cmds ip
+-		tst_require_root_
++		tst_require_root
+ 
+ 		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
+ 		pid="$(ROD ns_create net,mnt)"
+@@ -577,7 +569,7 @@ tst_del_ipaddr()
+ tst_restore_ipaddr()
+ {
+ 	tst_require_cmds ip
+-	tst_require_root_
++	tst_require_root
+ 
+ 	local type="${1:-lhost}"
+ 	local link_num="${2:-0}"
+diff --git a/testcases/lib/tst_security.sh b/testcases/lib/tst_security.sh
+index 7d033bbc5..af7c81bb5 100644
+--- a/testcases/lib/tst_security.sh
++++ b/testcases/lib/tst_security.sh
+@@ -95,7 +95,7 @@ tst_selinux_used_profile()
+ tst_disable_apparmor()
+ {
+ 	tst_res TINFO "trying to disable AppArmor (requires super/root)"
+-	_tst_require_root
++	tst_require_root
+ 
+ 	local f="aa-teardown"
+ 	local action
+@@ -115,7 +115,7 @@ tst_disable_apparmor()
+ tst_disable_selinux()
+ {
+ 	tst_res TINFO "trying to disable SELinux (requires super/root)"
+-	_tst_require_root
++	tst_require_root
+ 
+ 	local f="$(_tst_get_enforce)"
  
 diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 70c1ef2e3..afee6aac5 100644
+index afee6aac5..c93ab7dbe 100644
 --- a/testcases/lib/tst_test.sh
 +++ b/testcases/lib/tst_test.sh
-@@ -461,6 +461,27 @@ _tst_require_root()
- 	fi
+@@ -454,7 +454,7 @@ _tst_setup_timer()
+ 	_tst_setup_timer_pid=$!
  }
  
-+tst_require_module()
-+{
-+	local _tst_module=$1
-+
-+	for tst_module in "$_tst_module" \
-+	                  "$LTPROOT/testcases/bin/$_tst_module" \
-+	                  "$TST_STARTWD/$_tst_module"; do
-+
-+			if [ -f "$tst_module" ]; then
-+				TST_MODPATH="$tst_module"
-+				break
-+			fi
-+	done
-+	
-+	if [ -n "$TST_MODPATH" ]; then
-+		tst_res TINFO "Found module at '$TST_MODPATH'"
-+	else
-+		tst_brk TCONF "Failed to find module '$_tst_module'"
-+	fi
-+}
-+
- tst_run()
+-_tst_require_root()
++tst_require_root()
  {
- 	local _tst_i
-@@ -552,23 +573,7 @@ tst_run()
- 		TST_DEVICE_FLAG=1
+ 	if [ "$(id -ru)" != 0 ]; then
+ 		tst_brk TCONF "Must be super/root for this test!"
+@@ -529,7 +529,7 @@ tst_run()
+ 		tst_brk TBROK "Number of iterations (-i) must be > 0"
  	fi
  
--	if [ -n "$TST_NEEDS_MODULE" ]; then
--		for tst_module in "$TST_NEEDS_MODULE" \
--		                  "$LTPROOT/testcases/bin/$TST_NEEDS_MODULE" \
--		                  "$TST_STARTWD/$TST_NEEDS_MODULE"; do
--
--				if [ -f "$tst_module" ]; then
--					TST_MODPATH="$tst_module"
--					break
--				fi
--		done
--
--		if [ -z "$TST_MODPATH" ]; then
--			tst_brk TCONF "Failed to find module '$TST_NEEDS_MODULE'"
--		else
--			tst_res TINFO "Found module at '$TST_MODPATH'"
--		fi
--	fi
-+	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
+-	[ "$TST_NEEDS_ROOT" = 1 ] && _tst_require_root
++	[ "$TST_NEEDS_ROOT" = 1 ] && tst_require_root
  
- 	if [ -n "$TST_SETUP" ]; then
- 		$TST_SETUP
+ 	[ "$TST_DISABLE_APPARMOR" = 1 ] && tst_disable_apparmor
+ 	[ "$TST_DISABLE_SELINUX" = 1 ] && tst_disable_selinux
 -- 
 2.20.1
 
