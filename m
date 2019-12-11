@@ -1,19 +1,36 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Tue, 10 Dec 2019 21:14:49 +0100
-Subject: [LTP] [PATCH 0/3] musl: travis build and include fixes
-In-Reply-To: <20191210201321.1430984-1-petr.vorel@gmail.com>
-References: <20191210201321.1430984-1-petr.vorel@gmail.com>
-Message-ID: <20191210201449.GA1451402@x230>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 11 Dec 2019 13:38:11 +0800
+Subject: [LTP] [PATCH] syscalls/ioctl01: Cleanup & convert to new library
+In-Reply-To: <20191210140146.GA1124@dell5510>
+References: <20191206145517.3415-1-chrubis@suse.cz>
+ <20191210140146.GA1124@dell5510>
+Message-ID: <CAEemH2d2RLfE0Ki=WOqdAhPNVhJX1h2ZGkr1BhtquV+WdLo8ZA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Tue, Dec 10, 2019 at 10:02 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-for a record: Travis build:
-https://travis-ci.org/pevik/ltp/builds/623349812
+> Hi Cyril,
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Tested-by: Petr Vorel <pvorel@suse.cz>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-Kind regards,
-Petr
+
+> BTW (not related to ioctl01.c), is it possible to get rid of (false
+> positive) this warning?
+>
+
+With -Wno-missing-field-initializers flag in GCC option can disable the
+warning. But not sure if we really need to do that.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191211/15369079/attachment.htm>
