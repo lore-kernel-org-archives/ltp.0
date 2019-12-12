@@ -1,38 +1,52 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 12 Dec 2019 13:35:03 +0100
-Subject: [LTP] [PATCH 1/2] statx07: add fsid= to exports
-Message-ID: <cd51199b87580a138fa9c7669e61bdb7611ab204.1576154034.git.jstancek@redhat.com>
+Date: Thu, 12 Dec 2019 13:35:04 +0100
+Subject: [LTP] [PATCH 2/2] statx07: handle ETIMEDOUT when rpcbind.socket is
+ not started
+In-Reply-To: <cd51199b87580a138fa9c7669e61bdb7611ab204.1576154034.git.jstancek@redhat.com>
+References: <cd51199b87580a138fa9c7669e61bdb7611ab204.1576154034.git.jstancek@redhat.com>
+Message-ID: <853f6938da5d133800dc6bf1d490937b50c2e059.1576154034.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Not all filesystems are stored on devices, and not all filesystems
-have UUIDs. tmpfs is one of them, which lead to test failing:
-    /tmp/XRzHSG/server requires fsid= for NFS export
+Recent Fedora distros (kernel-5.3.7-301.fc31.x86_64,
+nfs-utils-2.4.1-1.rc1.fc31.x86_64), by default don't start rpcbind
+service, where rpcbind.socket is a dependency.
+
+This leads to test failing with ETIMEDOUT:
+  # ./statx07
+  tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
+  statx07.c:149: BROK: mount() nfs failed: ETIMEDOUT (110)
+
+  # systemctl start rpcbind.socket
+  # ./statx07
+  tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
+  statx07.c:148: CONF: nfs server not set up?: EOPNOTSUPP (95)
+
+Watch for ETIMEDOUT as well.
 
 Fixes: #622
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/statx/statx07.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/statx/statx07.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index 997e81ad843a..a18f253bc7d4 100644
+index a18f253bc7d4..ec1cdd19087b 100644
 --- a/testcases/kernel/syscalls/statx/statx07.c
 +++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -133,8 +133,8 @@ static void setup(void)
- 	snprintf(server_path, sizeof(server_path), ":%s/%s", cwd, SERV_PATH);
+@@ -144,7 +144,8 @@ static void setup(void)
+ 		tst_brk(TBROK | TST_ERR, "failed to exportfs");
  
- 	snprintf(cmd, sizeof(cmd),
--		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check *%.1024s",
--		 server_path);
-+		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check,fsid=%d *%.1024s",
-+		 getpid(), server_path);
- 	exported = 1;
- 
- 	ret = tst_system(cmd);
+ 	if (mount(server_path, CLI_PATH, "nfs", 0, "addr=127.0.0.1")) {
+-		if (errno == EOPNOTSUPP || errno == ECONNREFUSED)
++		if (errno == EOPNOTSUPP || errno == ECONNREFUSED
++			|| errno == ETIMEDOUT)
+ 			tst_brk(TCONF | TERRNO, "nfs server not set up?");
+ 		tst_brk(TBROK | TERRNO, "mount() nfs failed");
+ 	}
 -- 
 1.8.3.1
 
