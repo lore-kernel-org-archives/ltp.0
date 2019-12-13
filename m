@@ -1,13 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Dec 2019 16:58:45 +0100
-Subject: [LTP] [PATCH 2/3] Port test_1_to_1_initmsg_connect (SCTP) to
- new API
-In-Reply-To: <e896dee9-4a6d-e5e8-e98b-0fb59a81de77@suse.cz>
-References: <20191126120241.5460-1-mdoucha@suse.cz>
- <20191126120241.5460-3-mdoucha@suse.cz>
- <20191213153933.GB8241@dell5510>
- <e896dee9-4a6d-e5e8-e98b-0fb59a81de77@suse.cz>
-Message-ID: <20191213155845.GA13257@dell5510>
+Date: Fri, 13 Dec 2019 17:48:47 +0100
+Subject: [LTP] [PATCH] Make crash02 verbose in standard runfile
+In-Reply-To: <20191213133709.11845-1-mdoucha@suse.cz>
+References: <20191213133709.11845-1-mdoucha@suse.cz>
+Message-ID: <20191213164847.GA18822@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,17 +12,17 @@ To: ltp@lists.linux.it
 
 Hi Martin,
 
-> >> -	tst_resm(TPASS, "connect() with init timeout set to 0 - SUCCESS");
-> >> +	if (TST_RET != msglen) {
-> >> +		tst_res(TFAIL | TTERRNO, "recv() failed");
-> >> +	} else {
-> >> +		tst_res(TPASS, "connect() with init timeout set to 0 - SUCCESS");
-> > If you don't mind, I'd remove " - SUCCESS" from the message before merge.
+> Verbose output from crash02 will be useful for actually reporting bugs
+> triggered by the test. With default verbosity level, it's difficult to figure
+> out which syscall arguments crashed the system even if you know the random seed
+> and can easily re-run `crash02 -xv 2` on a system that uses the same rand()
+> implementation.
 
-> Please do.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks your patch!
-Merged with this change and copyright in utils/sctp/func_tests/test_1_to_1_initmsg_connect.c
+BTW help for -x is (and was before this patch) misleading because "hexdump
+random code instead" is now for -v2 even without -x (and before it required
+-v2). But that's a detail, so I'd be for merging it.
 
 Kind regards,
 Petr
