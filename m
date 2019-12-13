@@ -1,62 +1,45 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 13 Dec 2019 14:37:09 +0100
-Subject: [LTP] [PATCH] Make crash02 verbose in standard runfile
-Message-ID: <20191213133709.11845-1-mdoucha@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 13 Dec 2019 14:40:02 +0100
+Subject: [LTP] [PATCH 1/1] Use real FS block size in fallocate05
+In-Reply-To: <0c8a52b4-0c71-4efa-f58a-66524055e32a@suse.cz>
+References: <20191128093610.6903-1-mdoucha@suse.cz>
+ <20191128093610.6903-2-mdoucha@suse.cz>
+ <26933665.14359191.1575028896043.JavaMail.zimbra@redhat.com>
+ <0e1a3d0e-a154-8469-6e04-a954740a4a61@suse.cz>
+ <1057914729.14405454.1575044248773.JavaMail.zimbra@redhat.com>
+ <0c8a52b4-0c71-4efa-f58a-66524055e32a@suse.cz>
+Message-ID: <20191213134002.GE20795@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verbose output from crash02 will be useful for actually reporting bugs
-triggered by the test. With default verbosity level, it's difficult to figure
-out which syscall arguments crashed the system even if you know the random seed
-and can easily re-run `crash02 -xv 2` on a system that uses the same rand()
-implementation.
+Hi!
+> I think it might be better to change the test scenario a bit:
+> 1. fallocate(FALLOCATE_BLOCKS * blocksize)
+> 2. tst_fill_fs()
+> 3. write(FALLOCATE_BLOCKS * blocksize)
+> 4. repeat fallocate(blocksize) until we get ENOSPC
+> 5. write() into all blocks allocated in step 4
+> 6. check that another write() will get ENOSPC
+> 7. test fallocate(PUNCH_HOLE | KEEP_SIZE)
+> 
+> This should get us around the issue with tst_fill_fs() and still
+> properly validate that fallocate() handles full FS gracefully.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- runtest/crashme                |  2 +-
- testcases/misc/crash/crash02.c | 13 ++++++-------
- 2 files changed, 7 insertions(+), 8 deletions(-)
+Looping over the second fallocate until we got ENOSPC sounds reasonable
+to me.
 
-diff --git a/runtest/crashme b/runtest/crashme
-index a4c5b41cc..14750749d 100644
---- a/runtest/crashme
-+++ b/runtest/crashme
-@@ -7,7 +7,7 @@ f00f f00f
- crash01 crash01
- # Generate random code and execute it. Read f00f comment,
- # this test lockup SunOS,WindowsNT,etc. in seconds..
--crash02 crash02
-+crash02 crash02 -v 2
- # Generate random syscalls and execute them, less probability
- # to hose your system, but still.
- mem01 mem01 -r
-diff --git a/testcases/misc/crash/crash02.c b/testcases/misc/crash/crash02.c
-index 00fee3493..29d05f82e 100644
---- a/testcases/misc/crash/crash02.c
-+++ b/testcases/misc/crash/crash02.c
-@@ -430,13 +430,12 @@ void try_one_crash(int try_num)
- 	arg6 = rand_long();
- 	arg7 = rand_long();
- 
--	if (x_opt) {
--		if (verbose_level >= 1)
--			printf("%04d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, "
--			       "%#lx, %#lx, %#lx)\n",
--			       try_num, sysno, arg1, arg2, arg3, arg4, arg5,
--			       arg6, arg7);
--	} else {
-+	if (verbose_level >= 1)
-+		printf("%04d: syscall(%ld, %#lx, %#lx, %#lx, %#lx, %#lx, "
-+		       "%#lx, %#lx)\n", try_num, sysno, arg1, arg2, arg3,
-+		       arg4, arg5, arg6, arg7);
-+
-+	if (!x_opt) {
- 		syscall(sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
- 		record_errno(errno);
- 	}
+> The only remaining issue is whether it's correct for Btrfs to only
+> release blocks when you deallocate the whole file. I still haven't heard
+> back from our Btrfs dev.
+
+So the punched hole does not free space on Btrfs even if we are FS block
+aligned? I was under an impression that it should, but again Btrfs is
+copy-on-write filesystem, so it may want to keep a copy of the discarded
+blocks anyways.
+
 -- 
-2.24.0
-
+Cyril Hrubis
+chrubis@suse.cz
