@@ -1,156 +1,139 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 17 Dec 2019 18:12:51 +0800
-Subject: [LTP] [PATCH v3 4/5] syscalls/quotactl05: add project quota test
- for xfs filesystem
-In-Reply-To: <1576577571-3668-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1576577571-3668-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1576577571-3668-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 17 Dec 2019 18:15:22 +0800
+Subject: [LTP] [PATCH v1 4/4] syscalls/capset04: add new EPERM error test
+ with vfs cap support
+Message-ID: <1576577722-3727-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a variant about quotactl02. It is used to test project quota.
-I split it into a new case instead of adding it in quotaclt02 because
-kernel doesn't permit mount both group and project quota before
-commit d892d5864f02 ("xfs: Start using pquotaino from the superblock.").
+Now, most linux distributions has VFS capabilities supports, so
+modifying other process cap is never permitted. This case from old
+capset02.c.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/quotactl/.gitignore |  2 +
- .../kernel/syscalls/quotactl/quotactl05.c     | 99 +++++++++++++++++++
- 3 files changed, 102 insertions(+)
- create mode 100644 testcases/kernel/syscalls/quotactl/quotactl05.c
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/capset/.gitignore |  1 +
+ testcases/kernel/syscalls/capset/capset04.c | 86 +++++++++++++++++++++
+ 3 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/capset/capset04.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index c30e9e620..f2c7b0daf 100644
+index 4f481be6d..f58fefe17 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -954,6 +954,7 @@ quotactl01 quotactl01
- quotactl02 quotactl02
- quotactl03 quotactl03
- quotactl04 quotactl04
-+quotactl05 quotactl05
+@@ -45,6 +45,7 @@ capget02 capget02
+ capset01 capset01
+ capset02 capset02
+ capset03 capset03
++capset04 capset04
  
- read01 read01
- read02 read02
-diff --git a/testcases/kernel/syscalls/quotactl/.gitignore b/testcases/kernel/syscalls/quotactl/.gitignore
-index 1db7c5d98..9621e7717 100644
---- a/testcases/kernel/syscalls/quotactl/.gitignore
-+++ b/testcases/kernel/syscalls/quotactl/.gitignore
-@@ -2,3 +2,5 @@
- /quotactl02
- /quotactl03
- /quotactl04
-+/quotactl05
-+
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl05.c b/testcases/kernel/syscalls/quotactl/quotactl05.c
+ cacheflush01 cacheflush01
+ 
+diff --git a/testcases/kernel/syscalls/capset/.gitignore b/testcases/kernel/syscalls/capset/.gitignore
+index 3f9a4d5e8..d0a7a13a4 100644
+--- a/testcases/kernel/syscalls/capset/.gitignore
++++ b/testcases/kernel/syscalls/capset/.gitignore
+@@ -1,3 +1,4 @@
+ /capset01
+ /capset02
+ /capset03
++/capset04
+diff --git a/testcases/kernel/syscalls/capset/capset04.c b/testcases/kernel/syscalls/capset/capset04.c
 new file mode 100644
-index 000000000..2c4f49f7c
+index 000000000..ba8546521
 --- /dev/null
-+++ b/testcases/kernel/syscalls/quotactl/quotactl05.c
-@@ -0,0 +1,99 @@
++++ b/testcases/kernel/syscalls/capset/capset04.c
+@@ -0,0 +1,86 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2019 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
++ * Author: Saji Kumar.V.R <saji.kumar@wipro.com>
 + *
-+ * Test Name: quotactl05
-+ *
-+ * Description:
-+ * This testcase checks basic flags of quotactl(2) for project on an XFS file
-+ * system:
-+ * 1) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status
-+ *    for project.
-+ * 2) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status
-+ *    for project.
-+ * 3) quotactl(2) succeeds to set and use Q_XGETQUOTA to get xfs disk quota
-+ *    limits for project.
-+ * 4) quotactl(2) succeeds to set and use Q_XGETNEXTQUOTA to get xfs disk
-+ *    quota limits Cgreater than or equal to ID for project.
-+ * 5) quotactl(2) succeeds to turn off xfs quota and get xfs quota off statv
-+ *    for project.
-+ * 6) quotactl(2) succeeds to turn on xfs quota and get xfs quota on statv
-+ *    for project.
++ * Tests whether we can use capset() to modify the capabilities of a thread
++ * other than itself. Now, most linux distributions with kernel supporting
++ * VFS capabilities, this should be never permitted.
 + */
-+#include "quotactl02.h"
-+#if defined(HAVE_XFS_XQM_H)
++#include <stdlib.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include <linux/capability.h>
 +
-+static uint32_t qflagp = XFS_QUOTA_PDQ_ENFD;
-+static struct t_case {
-+	int cmd;
-+	void *addr;
-+	void (*func_check)();
-+	int check_subcmd;
-+	int flag;
-+	char *des;
-+} tcases[] = {
-+	{QCMD(Q_XQUOTAOFF, PRJQUOTA), &qflagp, check_qoff,
-+	QCMD(Q_XGETQSTAT, PRJQUOTA), 1,
-+	"turn off xfs quota and get xfs quota off status for project"},
-+
-+	{QCMD(Q_XQUOTAON, PRJQUOTA), &qflagp, check_qon,
-+	QCMD(Q_XGETQSTAT, PRJQUOTA), 1,
-+	"turn on xfs quota and get xfs quota on status for project"},
-+
-+	{QCMD(Q_XSETQLIM, PRJQUOTA), &set_dquota, check_qlim,
-+	QCMD(Q_XGETQUOTA, PRJQUOTA), 0,
-+	"Q_XGETQUOTA for project"},
-+
-+	{QCMD(Q_XSETQLIM, PRJQUOTA), &set_dquota, check_qlim,
-+	QCMD(Q_XGETNEXTQUOTA, PRJQUOTA), 0,
-+	"Q_XGETNEXTQUOTA for project"},
-+
-+#if defined(HAVE_STRUCT_FS_QUOTA_STATV)
-+	{QCMD(Q_XQUOTAOFF, PRJQUOTA), &qflagp, check_qoffv,
-+	QCMD(Q_XGETQSTATV, PRJQUOTA), 1,
-+	"turn off xfs quota and get xfs quota off statv for project"},
-+
-+	{QCMD(Q_XQUOTAON, PRJQUOTA), &qflagp, check_qonv,
-+	QCMD(Q_XGETQSTATV, PRJQUOTA), 1,
-+	"turn on xfs quota and get xfs quota on statv for project"},
-+#endif
++static struct __user_cap_header_struct header = {
++	.version = 0x20080522,
++	.pid = 0,
 +};
++static struct __user_cap_data_struct data[2];
++static pid_t child_pid;
++static int clean_nflag;
++static void cleanup(void);
++
++static void child_func(void)
++{
++	for (;;)
++		sleep(10);
++}
++
++static void verify_capset(void)
++{
++	child_pid = SAFE_FORK();
++	if (child_pid == 0) {
++		child_func();
++		exit(0);
++	}
++
++	clean_nflag = 0;
++	header.pid = child_pid;
++
++	TEST(tst_syscall(__NR_capset, &header, data));
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "capset succeed unexpectedly");
++		cleanup();
++		return;
++	}
++	if (TST_ERR == EPERM)
++		tst_res(TPASS, "capset doesn't can modify other process capabilities");
++	else
++		tst_res(TFAIL | TTERRNO, "capset expected EPERM, bug got");
++
++	cleanup();
++}
 +
 +static void setup(void)
 +{
-+	test_id = geteuid();
++	pid_t pid;
++
++	pid = getpid();
++	header.pid = pid;
++	TEST(tst_syscall(__NR_capget, &header, data));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "capget data failed");
 +}
 +
-+static void verify_quota(unsigned int n)
++static void cleanup(void)
 +{
-+	struct t_case *tc = &tcases[n];
-+
-+	TEST(quotactl(tc->cmd, tst_device->dev, test_id, tc->addr));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "quotactl() failed to %s", tc->des);
-+		return;
++	if (child_pid > 0 && !clean_nflag) {
++		SAFE_KILL(child_pid, SIGTERM);
++		SAFE_WAIT(NULL);
++		clean_nflag = 1;
 +	}
-+
-+	if (tc->flag)
-+		tc->func_check(tc->check_subcmd, tc->des, *(int *)(tc->addr));
-+	else
-+		tc->func_check(tc->check_subcmd, tc->des);
 +}
 +
 +static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.needs_kconfigs = kconfigs,
-+	.test = verify_quota,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.mount_device = 1,
-+	.dev_fs_type = "xfs",
-+	.mntpoint = mntpoint,
-+	.mnt_data = "prjquota",
 +	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_capset,
++	.forks_child = 1,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_REQ, CAP_SETPCAP),
++		{}
++	},
 +};
-+
-+#else
-+	TST_TEST_TCONF("This system didn't have <xfs/xqm.h>");
-+#endif
 -- 
 2.18.0
 
