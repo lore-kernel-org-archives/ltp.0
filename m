@@ -1,33 +1,101 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Dec 2019 16:30:27 +0100
-Subject: [LTP] [PATCH] isofs: Convert to new library
-In-Reply-To: <3b6c187d-7e72-8d9a-ae42-189bedc3098d@jv-coder.de>
-References: <20191209093659.31996-1-lkml@jv-coder.de>
- <20191218103927.GA26489@dell5510> <20191218105920.GB26489@dell5510>
- <3b6c187d-7e72-8d9a-ae42-189bedc3098d@jv-coder.de>
-Message-ID: <20191218153027.GA26998@dell5510>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 18 Dec 2019 18:53:17 +0300
+Subject: [LTP] [PATCH v2 2/2] network/iptables: add new test for
+ iptables-tranlsate and nft
+In-Reply-To: <20191218152832.GA26689@dell5510>
+References: <20191217171918.10237-1-alexey.kodanev@oracle.com>
+ <20191217171918.10237-2-alexey.kodanev@oracle.com>
+ <20191218084406.GA10966@dell5510>
+ <f0aad696-82a5-fb06-0517-a437d95ae2e7@oracle.com>
+ <20191218152832.GA26689@dell5510>
+Message-ID: <853a8441-efc3-03e2-4889-1421cbe976b5@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi J?rg,
+Hi Petr,
+On 18.12.2019 18:28, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>> Thanks Petr! Fixed them and applied the patches.
+> Thanks for your work.
+> 
+> BTW even more setup could be moved into iptables_lib.sh.
+> If you like this change, I can push it.
 
-> thanks for merging
-> > > You correctly removed getopt options: -n just set NO_CLEANUP, which is not used
-> > > any more on test.sh. Both libraries support TST_NO_CLEANUP, so we should
-> > > document it (going to send a patch).
-> > In the end I just merged that simple doc change.
-> > I wonder if there would be use for variable keeping $TST_TMPDIR (because it's
-> > deleted even with $TST_NO_CLEANUP).
-> I think that was the reason why I completely removed the flag in the first
-> place.
-+1.
+No objections. I thought it is better to keep these TST_*
+variables per test, in the header, rather than searching
+in the lib... but looks like it might save some duplication.
 
-> Also I did not see any reason to keep the tempdir. If I ever needed this in
-> the past, I just modified the test.
-Thanks for info. You're right, it's probably useless.
+> 
+> Kind regards,
+> Petr
+> 
+>  testcases/network/iptables/iptables01.sh   | 3 ---
+>  testcases/network/iptables/iptables_lib.sh | 8 ++++++++
+>  testcases/network/iptables/nft01.sh        | 3 ---
+>  3 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/network/iptables/iptables01.sh b/testcases/network/iptables/iptables01.sh
+> index e6ed4afab..96d68e62e 100755
+> --- a/testcases/network/iptables/iptables01.sh
+> +++ b/testcases/network/iptables/iptables01.sh
+> @@ -4,11 +4,8 @@
+>  
+>  TST_SETUP="init"
+>  TST_CLEANUP="cleanup"
+> -TST_NEEDS_CMDS="iptables grep ping telnet"
+> -TST_NEEDS_DRIVERS="ip_tables"
+>  use_iptables=1
+>  
+>  . iptables_lib.sh
+> -. tst_test.sh
+>  
+>  tst_run
+> diff --git a/testcases/network/iptables/iptables_lib.sh b/testcases/network/iptables/iptables_lib.sh
+> index b098479e4..87f33dfca 100755
+> --- a/testcases/network/iptables/iptables_lib.sh
+> +++ b/testcases/network/iptables/iptables_lib.sh
+> @@ -12,11 +12,19 @@ TST_NEEDS_TMPDIR=1
+>  TST_NEEDS_ROOT=1
+>  
+>  if [ "$use_iptables" = 1 ]; then
+> +	cmds="iptables"
+>  	toolname=iptables
+> +	TST_NEEDS_DRIVERS="ip_tables"
+>  else
+> +	cmds="nft iptables-translate"
+>  	toolname=nft
+> +	TST_NEEDS_DRIVERS="nf_tables"
+>  fi
+>  
+> +TST_NEEDS_CMDS="$cmds grep ping telnet"
+> +
+> +. tst_test.sh
+> +
+>  NFRUN()
+>  {
+>  	local rule
+> diff --git a/testcases/network/iptables/nft01.sh b/testcases/network/iptables/nft01.sh
+> index 9bd10a7f5..6cbd7a3a6 100755
+> --- a/testcases/network/iptables/nft01.sh
+> +++ b/testcases/network/iptables/nft01.sh
+> @@ -4,14 +4,11 @@
+>  
+>  TST_SETUP="do_setup"
+>  TST_CLEANUP="do_cleanup"
+> -TST_NEEDS_CMDS="nft iptables-translate grep ping telnet"
+> -TST_NEEDS_DRIVERS="nf_tables"
+>  use_iptables=0
+>  cleanup_table=0
+>  cleanup_chain=0
+>  
+>  . iptables_lib.sh
+> -. tst_test.sh
+>  
+>  do_setup()
+>  {
+> 
 
-Kind regards,
-Petr
