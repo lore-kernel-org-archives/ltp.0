@@ -1,67 +1,59 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 18 Dec 2019 16:28:26 +0800
-Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of write
- back
-Message-ID: <20191218082826.25083-1-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Dec 2019 09:44:06 +0100
+Subject: [LTP] [PATCH v2 2/2] network/iptables: add new test for
+ iptables-tranlsate and nft
+In-Reply-To: <20191217171918.10237-2-alexey.kodanev@oracle.com>
+References: <20191217171918.10237-1-alexey.kodanev@oracle.com>
+ <20191217171918.10237-2-alexey.kodanev@oracle.com>
+Message-ID: <20191218084406.GA10966@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test tries to sync a range of $BYTES bytes, and then makes sure that
-between $BYTES and $BYTES+10% was written to disk. But sometimes, more
-than $BYTES+10% hit the disk: "Synced 39843840, expected 33554432" so
-it failed as below.
+Hi Alexey,
 
-  tst_test.c:1179: INFO: Testing on ext4
-  sync_file_range02.c:74: FAIL: Sync equals write: Synced 39843840,
-                          expected 33554432
-  sync_file_range02.c:74: FAIL: Sync inside of write: Synced 18612224,
-                          expected 16777216
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+one more fix below.
 
-From FS dev's view:
+> +++ b/testcases/network/iptables/nft01.sh
+> @@ -0,0 +1,41 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2019 Oracle and/or its affiliates. All Rights Reserved.
+> +
+> +TST_CNT=6
+> +TST_SETUP="do_setup"
+> +TST_TESTFUNC="test"
+> +TST_CLEANUP="do_cleanup"
+> +TST_NEEDS_TMPDIR=1
+> +TST_NEEDS_ROOT=1
+> +TST_NEEDS_CMDS="nft iptables-translate grep ping telnet"
+> +TST_NEEDS_DRIVERS="nf_tables"
+> +use_iptables=0
+> +
+> +. iptables_lib.sh
+> +. tst_test.sh
+> +
+> +cleanup_tables=0
+cleanup_table=0
 
-" The test's assumptions are fundamentally false; it thinks it can look
-at IO counters (tst_dev_bytes_written) for a disk before and after a
-system call, and attribute all of the IO seen to the system call that
-was made - this isn't necessarily correct. Other processes may generate
-IO in the background.
+Otherwise it fails:
+nft01 1 TCONF: 'nft' not found
+/opt/ltp/testcases/bin/nft01.sh: line 37: [: -eq: unary operator expected
 
-ext4 defers a lot of IO on a freshly made filesystem to the kernel -
-for example it will initialize the journal and inode tables after the
-mount, and this will cause extra IO.
++ nit (code style comments, feel free to ignore):
 
-Creating ext4 filesystems with the options: "-E lazy_itable_init=0,
-lazy_journal_init=0" might help.
+1) I'd use empty variable instead of 0 (and [ "$cleanup_chain" = 1 ]),
+we discuss it with previous patches.
 
-Another option would be to raise the threshold. Essentially, the report
-here is that the test is failing because the filesystem wrote "too much"
-as a result of the sync. How much is "too much?" ..."
+2) I'd move TST_CNT=6 to iptables_lib.sh (if test function adds more tests, all
+iptables_lib.sh uses would have to update it). Maybe all but these could be
+there: TST_SETUP, TST_CLEANUP and use_iptables.
 
-Let's remove the toplimit of write back, and think as long as we synced
-at least the expected amount, the test passes. The +10% limit seems arbitrary.
+3) I'd move cleanup_table and cleanup_chain below use_iptables
+(or use_iptables below, just to have all 3 variables together).
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Sumit Garg <sumit.garg@linaro.org>
----
- testcases/kernel/syscalls/sync_file_range/sync_file_range02.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-index eb08143c3..643be14fa 100644
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -66,8 +66,7 @@ static void verify_sync_file_range(struct testcase *tc)
- 
- 	SAFE_CLOSE(fd);
- 
--	if ((written >= tc->exp_sync_size) &&
--	    (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
-+	if ((written >= tc->exp_sync_size))
- 		tst_res(TPASS, "%s", tc->desc);
- 	else
- 		tst_res(TFAIL, "%s: Synced %li, expected %li", tc->desc,
--- 
-2.20.1
-
+Kind regards,
+Petr
