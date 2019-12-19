@@ -1,79 +1,97 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 19 Dec 2019 15:10:02 +0800
-Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
- write back
-In-Reply-To: <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
-References: <20191218082826.25083-1-liwang@redhat.com>
- <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
- <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
-Message-ID: <CAEemH2eRhmozt5OiT6z-YBjJUBNaGZgQVQRh40hNpKcq2d4-aw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 19 Dec 2019 08:26:38 +0100
+Subject: [LTP] [PATCH 1/1] iptables: Reduce code duplicity
+Message-ID: <20191219072638.31824-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Sumit,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi Alexey,
 
-On Wed, Dec 18, 2019 at 6:14 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+feel free to not ack this as not needed syntax optimalization.
+This way the most of variables is set in the library,
+so people would hopefuly search for them there.
 
-> + Cyril (who originally proposed upper bound check)
->
-> On Wed, 18 Dec 2019 at 14:55, Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> > ----- Original Message -----
-> > > " The test's assumptions are fundamentally false; it thinks it can look
-> > > at IO counters (tst_dev_bytes_written) for a disk before and after a
-> > > system call, and attribute all of the IO seen to the system call that
-> > > was made - this isn't necessarily correct. Other processes may generate
-> > > IO in the background.
-> >
-> > We create our own block device, so there shouldn't be other processes
-> > writing to it.
-> >
-> > > ext4 defers a lot of IO on a freshly made filesystem to the kernel -
-> > > for example it will initialize the journal and inode tables after the
-> > > mount
-> >
-> > Journal was my guess as well.
->
-> To avoid similar scenarios, I suggested to add a "sync()" call just
-> prior to test here [1]. And I couldn't reproduce the failure in
-> 1000-times run with 4.19 kernel.
->
+0 is the default in [ "$foo" = 1 ], but maybe use_iptables=0 in
+nft01.sh is better for readability.
 
-Yes, that makes sense to me.
+Kind regards,
+Petr
 
+ testcases/network/iptables/iptables01.sh   |  5 -----
+ testcases/network/iptables/iptables_lib.sh | 10 ++++++++++
+ testcases/network/iptables/nft01.sh        |  6 ------
+ 3 files changed, 10 insertions(+), 11 deletions(-)
 
->
-> Also, I think having a "sync()" call becomes more important in case we
-> remove the upper bound otherwise test might not provide reliable
-> results.
->
-> [1] http://lists.linux.it/pipermail/ltp/2019-October/014157.html
->
-> -Sumit
->
-> >
-> > > Let's remove the toplimit of write back, and think as long as we synced
-> > > at least the expected amount, the test passes. The +10% limit seems
-> > > arbitrary.
-> >
-> > I think this is reasonable approach until we find better way
-> > to measure what was synced.
-> >
-> > Acked-by: Jan Stancek <jstancek@redhat.com>
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
+diff --git a/testcases/network/iptables/iptables01.sh b/testcases/network/iptables/iptables01.sh
+index e6ed4afab..b788b919a 100755
+--- a/testcases/network/iptables/iptables01.sh
++++ b/testcases/network/iptables/iptables01.sh
+@@ -2,13 +2,8 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2018-2019 Oracle and/or its affiliates. All Rights Reserved.
+ 
+-TST_SETUP="init"
+-TST_CLEANUP="cleanup"
+-TST_NEEDS_CMDS="iptables grep ping telnet"
+-TST_NEEDS_DRIVERS="ip_tables"
+ use_iptables=1
+ 
+ . iptables_lib.sh
+-. tst_test.sh
+ 
+ tst_run
+diff --git a/testcases/network/iptables/iptables_lib.sh b/testcases/network/iptables/iptables_lib.sh
+index b098479e4..b029950f9 100755
+--- a/testcases/network/iptables/iptables_lib.sh
++++ b/testcases/network/iptables/iptables_lib.sh
+@@ -10,13 +10,23 @@ TST_CNT=6
+ TST_TESTFUNC="test"
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_ROOT=1
++TST_SETUP="${TST_SETUP:-init}"
++TST_CLEANUP="${TST_CLEANUP:-cleanup}"
+ 
+ if [ "$use_iptables" = 1 ]; then
+ 	toolname=iptables
++	cmds="$toolname"
++	TST_NEEDS_DRIVERS="ip_tables"
+ else
+ 	toolname=nft
++	cmds="$toolname iptables-translate"
++	TST_NEEDS_DRIVERS="nf_tables"
+ fi
+ 
++TST_NEEDS_CMDS="$cmds grep ping telnet"
++
++. tst_test.sh
++
+ NFRUN()
+ {
+ 	local rule
+diff --git a/testcases/network/iptables/nft01.sh b/testcases/network/iptables/nft01.sh
+index 9bd10a7f5..7d3fc4e0d 100755
+--- a/testcases/network/iptables/nft01.sh
++++ b/testcases/network/iptables/nft01.sh
+@@ -4,14 +4,8 @@
+ 
+ TST_SETUP="do_setup"
+ TST_CLEANUP="do_cleanup"
+-TST_NEEDS_CMDS="nft iptables-translate grep ping telnet"
+-TST_NEEDS_DRIVERS="nf_tables"
+-use_iptables=0
+-cleanup_table=0
+-cleanup_chain=0
+ 
+ . iptables_lib.sh
+-. tst_test.sh
+ 
+ do_setup()
+ {
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191219/d21b6bec/attachment.htm>
+2.24.0
+
