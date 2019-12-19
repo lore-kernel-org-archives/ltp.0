@@ -1,101 +1,118 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 18 Dec 2019 18:53:17 +0300
-Subject: [LTP] [PATCH v2 2/2] network/iptables: add new test for
- iptables-tranlsate and nft
-In-Reply-To: <20191218152832.GA26689@dell5510>
-References: <20191217171918.10237-1-alexey.kodanev@oracle.com>
- <20191217171918.10237-2-alexey.kodanev@oracle.com>
- <20191218084406.GA10966@dell5510>
- <f0aad696-82a5-fb06-0517-a437d95ae2e7@oracle.com>
- <20191218152832.GA26689@dell5510>
-Message-ID: <853a8441-efc3-03e2-4889-1421cbe976b5@oracle.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 19 Dec 2019 12:02:34 +0800
+Subject: [LTP] [PATCH 1/2] lib/tst_kconfig.c: add or select kconfig
+ function
+In-Reply-To: <20191218122504.9985-1-pengfei.xu@intel.com>
+References: <20191218122504.9985-1-pengfei.xu@intel.com>
+Message-ID: <c97da094-a320-e4b4-dee9-423a3e306ecf@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-On 18.12.2019 18:28, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> Thanks Petr! Fixed them and applied the patches.
-> Thanks for your work.
-> 
-> BTW even more setup could be moved into iptables_lib.sh.
-> If you like this change, I can push it.
+Hi Pengfei
 
-No objections. I thought it is better to keep these TST_*
-variables per test, in the header, rather than searching
-in the lib... but looks like it might save some duplication.
+on 2019/12/18 20:25, Pengfei Xu wrote:
+> Add "or" select kconfig function:
+>    For example, umip kconfig changed from "CONFIG_X86_INTEL_UMIP=y"
+> to "CONFIG_X86_UMIP=y": as before v5.4 mainline kernel used
+> kconfig "CONFIG_X86_INTEL_UMIP=y", after v5.5 mainline kernel would use
+> "CONFIG_X86_UMIP=y".
+>    We could fill "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y" in needs_kconfigs
+> to check umip kconfig item, which actually is the same item.
+> 
+> Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>   lib/tst_kconfig.c | 43 +++++++++++++++++++++++++++----------------
+>   1 file changed, 27 insertions(+), 16 deletions(-)
+> 
+> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> index 4b51413e5..91c0a821b 100644
+> --- a/lib/tst_kconfig.c
+> +++ b/lib/tst_kconfig.c
+> @@ -167,7 +167,12 @@ void tst_kconfig_read(const char *const *kconfigs,
+>   	struct match matches[cnt];
+>   	FILE *fp;
+>   	unsigned int i, j;
+> -	char buf[1024];
+> +	char buf[1024], kconfig_multi[100];
+> +	char *kconfig_token = NULL, *p_left = NULL;
+> +
+> +	fp = open_kconfig();
+> +	if (!fp)
+> +		tst_brk(TBROK, "Cannot parse kernel .config");
+>   
+>   	for (i = 0; i < cnt; i++) {
+>   		const char *val = strchr(kconfigs[i], '=');
+> @@ -178,32 +183,38 @@ void tst_kconfig_read(const char *const *kconfigs,
+>   		matches[i].match = 0;
+>   		matches[i].len = strlen(kconfigs[i]);
+>   
+> -		if (val) {
+> +		if (val)
+>   			matches[i].val = val + 1;
+> -			matches[i].len -= strlen(val);
+> -		}
+>   
+>   		results[i].match = 0;
+>   		results[i].value = NULL;
+> -	}
+>   
+> -	fp = open_kconfig();
+> -	if (!fp)
+> -		tst_brk(TBROK, "Cannot parse kernel .config");
+> +		while (fgets(buf, sizeof(buf), fp)) {
+>   
+> -	while (fgets(buf, sizeof(buf), fp)) {
+> -		for (i = 0; i < cnt; i++) {
+> -			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
+> -				for (j = 0; j < cnt; j++) {
+> -					if (matches[j].match)
+> -						break;
+> -				}
+> +			memset(kconfig_multi, 0, sizeof(kconfig_multi));
+> +			/* strtok_r will split kconfigs[i] to multi string, so copy it */
+> +			memcpy(kconfig_multi, kconfigs[i], strlen(kconfigs[i]));
+> +
+> +			kconfig_token = strtok_r(kconfig_multi, "|=", &p_left)
+Here has a problem, if we use CONFIG_X86_INTEL_UMIP, it will report 
+"miss this config" because it uses "=" or "|" to delim string.
+And I think you should use lib/newlib_tests/test_kconfig.c to test your
+introduced feature.
 
+Also, it has another two problems even we use "|" or "=" in kconfigs
+
+1.If  use "CONFIG_X86_INTEL_UMIP=y|CONFIG_X86_UMIP=y" ,it will report y 
+is invalid because we use "="or "|" to delim string.
+2. If  use "CONFIG_X86_INTEL_UMIP|X86_INTEL_UMIP=y", it will doesn't 
+check second config whether invalid if the first is ok.
+
+Kind Regards
+Yang Xu
+> +			while (kconfig_token != NULL) {
+> +				if (strncmp("CONFIG_", kconfig_token, 7))
+> +					tst_brk(TBROK, "Invalid config string '%s'", kconfig_token);
+> +				matches[i].len = strlen(kconfig_token);
+> +				if (match(&matches[i], kconfig_token, &results[i], buf)) {
+> +					for (j = 0; j < cnt; j++) {
+> +						if (matches[j].match)
+> +							break;
+> +					}
+>   
+>   				if (j == cnt)
+>   					goto exit;
+> +				}
+> +				kconfig_token = strtok_r(NULL, "|=", &p_left);
+> +				/* avoid to use after "=" string */
+> +				if (strlen(p_left) == 0)
+> +					break;
+>   			}
+>   		}
+> -
+>   	}
+>   
+>   exit:
 > 
-> Kind regards,
-> Petr
-> 
->  testcases/network/iptables/iptables01.sh   | 3 ---
->  testcases/network/iptables/iptables_lib.sh | 8 ++++++++
->  testcases/network/iptables/nft01.sh        | 3 ---
->  3 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/network/iptables/iptables01.sh b/testcases/network/iptables/iptables01.sh
-> index e6ed4afab..96d68e62e 100755
-> --- a/testcases/network/iptables/iptables01.sh
-> +++ b/testcases/network/iptables/iptables01.sh
-> @@ -4,11 +4,8 @@
->  
->  TST_SETUP="init"
->  TST_CLEANUP="cleanup"
-> -TST_NEEDS_CMDS="iptables grep ping telnet"
-> -TST_NEEDS_DRIVERS="ip_tables"
->  use_iptables=1
->  
->  . iptables_lib.sh
-> -. tst_test.sh
->  
->  tst_run
-> diff --git a/testcases/network/iptables/iptables_lib.sh b/testcases/network/iptables/iptables_lib.sh
-> index b098479e4..87f33dfca 100755
-> --- a/testcases/network/iptables/iptables_lib.sh
-> +++ b/testcases/network/iptables/iptables_lib.sh
-> @@ -12,11 +12,19 @@ TST_NEEDS_TMPDIR=1
->  TST_NEEDS_ROOT=1
->  
->  if [ "$use_iptables" = 1 ]; then
-> +	cmds="iptables"
->  	toolname=iptables
-> +	TST_NEEDS_DRIVERS="ip_tables"
->  else
-> +	cmds="nft iptables-translate"
->  	toolname=nft
-> +	TST_NEEDS_DRIVERS="nf_tables"
->  fi
->  
-> +TST_NEEDS_CMDS="$cmds grep ping telnet"
-> +
-> +. tst_test.sh
-> +
->  NFRUN()
->  {
->  	local rule
-> diff --git a/testcases/network/iptables/nft01.sh b/testcases/network/iptables/nft01.sh
-> index 9bd10a7f5..6cbd7a3a6 100755
-> --- a/testcases/network/iptables/nft01.sh
-> +++ b/testcases/network/iptables/nft01.sh
-> @@ -4,14 +4,11 @@
->  
->  TST_SETUP="do_setup"
->  TST_CLEANUP="do_cleanup"
-> -TST_NEEDS_CMDS="nft iptables-translate grep ping telnet"
-> -TST_NEEDS_DRIVERS="nf_tables"
->  use_iptables=0
->  cleanup_table=0
->  cleanup_chain=0
->  
->  . iptables_lib.sh
-> -. tst_test.sh
->  
->  do_setup()
->  {
-> 
+
 
