@@ -1,39 +1,48 @@
-From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Thu, 19 Dec 2019 18:43:21 +0800
-Subject: [LTP] [PATCH v2 2/2] umip_basic_test.c: improve kconfig check to
- avoid umip wrong abort case
-In-Reply-To: <20191219104321.23267-1-pengfei.xu@intel.com>
-References: <20191219104321.23267-1-pengfei.xu@intel.com>
-Message-ID: <20191219104321.23267-2-pengfei.xu@intel.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 19 Dec 2019 19:03:16 +0800
+Subject: [LTP] [PATCH 1/2] lib/tst_kconfig.c: add or select kconfig
+ function
+In-Reply-To: <20191219100602.mpyelysyizonfrit@xpf-desktop>
+References: <20191218122504.9985-1-pengfei.xu@intel.com>
+ <c97da094-a320-e4b4-dee9-423a3e306ecf@cn.fujitsu.com>
+ <b19e2cd0-964f-2fe3-860f-039d63088d52@cn.fujitsu.com>
+ <20191219100602.mpyelysyizonfrit@xpf-desktop>
+Message-ID: <cfa113f3-56b8-f93f-b3ed-50e9bd9f849a@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From v5.5 main line, umip kconfig changed from "CONFIG_X86_INTEL_UMIP=y"
-to "CONFIG_X86_UMIP=y".
-We could use "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y" to check kconfig
-CONFIG_X86_INTEL_UMIP=y(old kernel) or CONFIG_X86_UMIP=y(new kernel) for umip.
+Hi Pengfei
+> Hi Xu,
+>    Thanks for your advice!
+>    My concern is that:
+>    If some one need any CONFIG_A, CONFIG_B, CONFIG_C ... set to y.
+>    We need rewrite again.
+>    Also, thanks for advice, I will used newlib_tests to double check.:)
+>
+I see. Also, you should add example to lib/newlib_tests/test_kconfig.c 
+so we can know the kconfig feature is ok when maintainer merges your 
+patch. Usually, if we modify or add lib feature, we will document it in 
+doc/test-writing-guidelines.txt. So if you do it , it will be better.
+as below:
+diff --git a/lib/newlib_tests/test_kconfig.c 
+b/lib/newlib_tests/test_kconfig.c
+index d9c662fc5..9515b60e2 100644
+--- a/lib/newlib_tests/test_kconfig.c
++++ b/lib/newlib_tests/test_kconfig.c
+@@ -14,6 +14,7 @@ static const char *kconfigs[] = {
+         "CONFIG_MMU",
+         "CONFIG_EXT4_FS=m",
+         "CONFIG_PGTABLE_LEVELS=4",
++       "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y",
+         NULL
+  };
 
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
----
- testcases/kernel/security/umip/umip_basic_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Kind Regards
+Yang Xu
+>    Thanks!
+>    BR.
 
-diff --git a/testcases/kernel/security/umip/umip_basic_test.c b/testcases/kernel/security/umip/umip_basic_test.c
-index 1baa26c52..24eca8890 100644
---- a/testcases/kernel/security/umip/umip_basic_test.c
-+++ b/testcases/kernel/security/umip/umip_basic_test.c
-@@ -171,7 +171,7 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.test = verify_umip_instruction,
- 	.needs_kconfigs = (const char *[]){
--		"CONFIG_X86_INTEL_UMIP=y",
-+		"CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y",
- 		NULL
- 	},
- 	.needs_root = 1,
--- 
-2.14.1
 
