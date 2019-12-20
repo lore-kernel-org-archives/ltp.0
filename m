@@ -1,5 +1,5 @@
 From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Fri, 20 Dec 2019 14:35:34 +0800
+Date: Fri, 20 Dec 2019 15:09:26 +0800
 Subject: [LTP] [PATCH v4 4/4] lib: add any kconfig to match the expected
  value function document
 In-Reply-To: <5e859ac0-d009-3281-e712-fc86f7c72986@cn.fujitsu.com>
@@ -8,7 +8,7 @@ References: <20191219131855.28799-1-pengfei.xu@intel.com>
  <9ac02979-d8ec-4a11-7705-bb484dd79a20@cn.fujitsu.com>
  <20191220060151.nqvekuzs24yipia7@xpf-desktop>
  <5e859ac0-d009-3281-e712-fc86f7c72986@cn.fujitsu.com>
-Message-ID: <20191220063534.pcfqrdjjtqzuwnzc@xpf-desktop>
+Message-ID: <20191220070926.i4jknfoo6pdhersl@xpf-desktop>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,32 +16,22 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi Xu,
-  Thanks for your comment.
-  I will try to fix it and send the patch.
+  Due to memory copy, there is some bit and display issue in last string.
+
+  So for your question, for CONFIG_A|CONFIG_B without expect value, maybe y
+  or m.
+  We could add it with below style:
+  "CONFIG_A|CONFIG_B|NA", and add it into guidelines, NA will not be solved,
+  actually you could fill with any string after last '|'.
+  Is it ok?
 
   Thanks!
-  BR.
 
 On 2019-12-20 at 14:00:00 +0800, Yang Xu wrote:
 > Hi Pengfei
 > > Hi Xu,
 > > 
 > > 
-> > On 2019-12-20 at 13:37:21 +0800, Yang Xu wrote:
-> > > 
-> > > Hi Pengfei
-> > > 
-> > > on 2019/12/19 21:18, Pengfei Xu wrote:
-> > > > Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
-> > > > ---
-> > > >    doc/test-writing-guidelines.txt | 4 +++-
-> > > >    1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> > > > index 79d857fea..e64ff8716 100644
-> > > > --- a/doc/test-writing-guidelines.txt
-> > > > +++ b/doc/test-writing-guidelines.txt
-> > > > @@ -1590,7 +1590,9 @@ aborted with 'TCONF' if any of the required options were not set.
 > > > Before your patch, I know we can use the following two formats kconfigs
 > > > CONFIG_A
 > > > CONFIG_A=y/m/v
