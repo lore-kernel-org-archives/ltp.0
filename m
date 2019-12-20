@@ -1,86 +1,91 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 20 Dec 2019 15:19:42 +0800
-Subject: [LTP] [PATCH v4 4/4] lib: add any kconfig to match the expected
- value function document
-In-Reply-To: <20191220070926.i4jknfoo6pdhersl@xpf-desktop>
-References: <20191219131855.28799-1-pengfei.xu@intel.com>
- <20191219131855.28799-4-pengfei.xu@intel.com>
- <9ac02979-d8ec-4a11-7705-bb484dd79a20@cn.fujitsu.com>
- <20191220060151.nqvekuzs24yipia7@xpf-desktop>
- <5e859ac0-d009-3281-e712-fc86f7c72986@cn.fujitsu.com>
- <20191220070926.i4jknfoo6pdhersl@xpf-desktop>
-Message-ID: <257bd5cb-1277-def3-f4ac-e20b15e4273d@cn.fujitsu.com>
+From: Pengfei Xu <pengfei.xu@intel.com>
+Date: Fri, 20 Dec 2019 17:25:26 +0800
+Subject: [LTP] [PATCH v5 1/4] lib/tst_kconfig.c: add any kconfig with or
+ without expected value function
+Message-ID: <20191220092529.3239-1-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Pengfei
-> Hi Xu,
->    Due to memory copy, there is some bit and display issue in last string.
-> 
->    So for your question, for CONFIG_A|CONFIG_B without expect value, maybe y
->    or m.
->    We could add it with below style:
->    "CONFIG_A|CONFIG_B|NA", and add it into guidelines, NA will not be solved,
->    actually you could fill with any string after last '|'.
->    Is it ok?
-It sounds reasonable. I think it is ok.
+Example: CONFIG_X86_INTEL_UMIP=y for umip kconfig before and v5.4
+           mainline kernel.
+         CONFIG_X86_UMIP=y for umip kconfig after v5.5 mainline kernel.
+Format: CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y
+        CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP|NA
 
-Kind Regards
-Yang Xu
-> 
->    Thanks!
-> 
-> On 2019-12-20 at 14:00:00 +0800, Yang Xu wrote:
->> Hi Pengfei
->>> Hi Xu,
->>>
->>>
->>>> Before your patch, I know we can use the following two formats kconfigs
->>>> CONFIG_A
->>>> CONFIG_A=y/m/v
->>>> after your patch set, we can use the following three formats kconfigs
->>>> CONFIG_A
->>>> CONFIG_A=y/m/v
->>>> CONFIG_A|CONFIGB=y/m/v
->>>> As the usual extend logic,  we think  CONFIGA|CONFIGB is also ok. But in
->>>> fact, we use "|" or "=" to delim string. So  we can't parse CONFIGA|CONFIGB
->>>> correctly. So, if we can tell user or developer about this in here, it will
->>>> be better.
->>>>
->>>> ps: we can add configA| config B test in your third patch.
->>>>
->>>     Actually present patch could support CONFIG_A|CONFIG_B style, and it works
->>> well, you could change "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y" to
->>> "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP" in test_kconfig.c and have a try. : )
->> "CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP" is useful because
->> CONFIG_X86_INTEL_UMIP is in our kernel configs . If you use
->> "CONFIG_X86_UMIP|CONFIG_X86_INTEL_UMIP", it will report error.
->>
->> Kind Regards
->> Yang Xu
->>>
->>> Thanks!
->>>> Kind Regards
->>>> Yang Xu
->>>>>     #include "tst_test.h"
->>>>>     static const char *kconfigs[] = {
->>>>> -	"CONFIG_X86_INTEL_UMIP",
->>>>> +	"CONFIG_EXT4_FS=y",
->>>>> +	"CONFIG_MMU",
->>>>> +	"CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y",
->>>>>     	NULL
->>>>>     };
->>>>>
->>>>
->>>>
->>>
->>>
->>
->>
-> 
-> 
+Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+---
+ lib/tst_kconfig.c | 36 +++++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
 
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 4b51413e5..ac553b91e 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -167,7 +167,8 @@ void tst_kconfig_read(const char *const *kconfigs,
+ 	struct match matches[cnt];
+ 	FILE *fp;
+ 	unsigned int i, j;
+-	char buf[1024];
++	char buf[1024], kconfig_multi[100];
++	char *kconfig_token = NULL, *p_left = NULL;
+ 
+ 	for (i = 0; i < cnt; i++) {
+ 		const char *val = strchr(kconfigs[i], '=');
+@@ -176,12 +177,9 @@ void tst_kconfig_read(const char *const *kconfigs,
+ 			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
+ 
+ 		matches[i].match = 0;
+-		matches[i].len = strlen(kconfigs[i]);
+ 
+-		if (val) {
++		if (val)
+ 			matches[i].val = val + 1;
+-			matches[i].len -= strlen(val);
+-		}
+ 
+ 		results[i].match = 0;
+ 		results[i].value = NULL;
+@@ -193,17 +191,29 @@ void tst_kconfig_read(const char *const *kconfigs,
+ 
+ 	while (fgets(buf, sizeof(buf), fp)) {
+ 		for (i = 0; i < cnt; i++) {
+-			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
+-				for (j = 0; j < cnt; j++) {
+-					if (matches[j].match)
+-						break;
++			memset(kconfig_multi, 0, sizeof(kconfig_multi));
++			/* strtok_r will split kconfigs[i] to multi string, so copy it */
++			memcpy(kconfig_multi, kconfigs[i], strlen(kconfigs[i]));
++			kconfig_token = strtok_r(kconfig_multi, "|=", &p_left);
++
++			while (kconfig_token != NULL) {
++				if (strncmp("CONFIG_", kconfig_token, 7))
++					tst_brk(TBROK, "Invalid config string '%s'", kconfig_token);
++				matches[i].len = strlen(kconfig_token);
++				if (match(&matches[i], kconfig_token, &results[i], buf)) {
++					for (j = 0; j < cnt; j++) {
++						if (matches[j].match)
++							break;
++					}
++					if (j == cnt)
++						goto exit;
+ 				}
+-
+-				if (j == cnt)
+-					goto exit;
++				kconfig_token = strtok_r(NULL, "|=", &p_left);
++				/* avoid to use after "=" string */
++				if (strlen(p_left) == 0)
++					break;
+ 			}
+ 		}
+-
+ 	}
+ 
+ exit:
+-- 
+2.14.1
 
