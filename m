@@ -1,91 +1,40 @@
 From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Fri, 20 Dec 2019 17:25:26 +0800
-Subject: [LTP] [PATCH v5 1/4] lib/tst_kconfig.c: add any kconfig with or
- without expected value function
-Message-ID: <20191220092529.3239-1-pengfei.xu@intel.com>
+Date: Fri, 20 Dec 2019 17:25:28 +0800
+Subject: [LTP] [PATCH v5 3/4] lib: add usage that any kconfig with or
+ without expected value in document
+In-Reply-To: <20191220092529.3239-1-pengfei.xu@intel.com>
+References: <20191220092529.3239-1-pengfei.xu@intel.com>
+Message-ID: <20191220092529.3239-3-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Example: CONFIG_X86_INTEL_UMIP=y for umip kconfig before and v5.4
-           mainline kernel.
-         CONFIG_X86_UMIP=y for umip kconfig after v5.5 mainline kernel.
-Format: CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y
-        CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP|NA
-
 Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- lib/tst_kconfig.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ doc/test-writing-guidelines.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index 4b51413e5..ac553b91e 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -167,7 +167,8 @@ void tst_kconfig_read(const char *const *kconfigs,
- 	struct match matches[cnt];
- 	FILE *fp;
- 	unsigned int i, j;
--	char buf[1024];
-+	char buf[1024], kconfig_multi[100];
-+	char *kconfig_token = NULL, *p_left = NULL;
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 79d857fea..2299b6982 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1590,7 +1590,13 @@ aborted with 'TCONF' if any of the required options were not set.
+ #include "tst_test.h"
  
- 	for (i = 0; i < cnt; i++) {
- 		const char *val = strchr(kconfigs[i], '=');
-@@ -176,12 +177,9 @@ void tst_kconfig_read(const char *const *kconfigs,
- 			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
+ static const char *kconfigs[] = {
+-	"CONFIG_X86_INTEL_UMIP",
++	"CONFIG_EXT4_FS=y",
++	"CONFIG_MMU",
++	/* one CONFIG_A without expected value, add |NA as the end is optional */
++	"CONFIG_MMU|NA",
++	"CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y",
++	/* CONFIG_A|CONFIG_B without expected value, need to add |NA as the end */
++	"CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP|NA",
+ 	NULL
+ };
  
- 		matches[i].match = 0;
--		matches[i].len = strlen(kconfigs[i]);
- 
--		if (val) {
-+		if (val)
- 			matches[i].val = val + 1;
--			matches[i].len -= strlen(val);
--		}
- 
- 		results[i].match = 0;
- 		results[i].value = NULL;
-@@ -193,17 +191,29 @@ void tst_kconfig_read(const char *const *kconfigs,
- 
- 	while (fgets(buf, sizeof(buf), fp)) {
- 		for (i = 0; i < cnt; i++) {
--			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
--				for (j = 0; j < cnt; j++) {
--					if (matches[j].match)
--						break;
-+			memset(kconfig_multi, 0, sizeof(kconfig_multi));
-+			/* strtok_r will split kconfigs[i] to multi string, so copy it */
-+			memcpy(kconfig_multi, kconfigs[i], strlen(kconfigs[i]));
-+			kconfig_token = strtok_r(kconfig_multi, "|=", &p_left);
-+
-+			while (kconfig_token != NULL) {
-+				if (strncmp("CONFIG_", kconfig_token, 7))
-+					tst_brk(TBROK, "Invalid config string '%s'", kconfig_token);
-+				matches[i].len = strlen(kconfig_token);
-+				if (match(&matches[i], kconfig_token, &results[i], buf)) {
-+					for (j = 0; j < cnt; j++) {
-+						if (matches[j].match)
-+							break;
-+					}
-+					if (j == cnt)
-+						goto exit;
- 				}
--
--				if (j == cnt)
--					goto exit;
-+				kconfig_token = strtok_r(NULL, "|=", &p_left);
-+				/* avoid to use after "=" string */
-+				if (strlen(p_left) == 0)
-+					break;
- 			}
- 		}
--
- 	}
- 
- exit:
 -- 
 2.14.1
 
