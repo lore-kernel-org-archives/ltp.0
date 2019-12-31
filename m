@@ -1,302 +1,78 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 30 Dec 2019 21:11:22 +0100
-Subject: [LTP] [RFC PATCH 1/1] rpc-tirpc: Remove authdes related tests
-Message-ID: <20191230201122.9749-1-petr.vorel@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 31 Dec 2019 13:25:09 +0800
+Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
+ write back
+In-Reply-To: <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
+References: <20191218082826.25083-1-liwang@redhat.com>
+ <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
+ <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
+ <CAEemH2eRhmozt5OiT6z-YBjJUBNaGZgQVQRh40hNpKcq2d4-aw@mail.gmail.com>
+ <CAFA6WYOBbH8UbwrK1f3ZQjGuqHJqGZxhQ-N0w1mpBHz0bnPG1w@mail.gmail.com>
+ <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
+Message-ID: <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-authdes is by default compiled out in libtirpc 1.2.5, thus
-authdes_create() returns NULL (see libtirpc commit bf8f0b8 Add back the
-authdes interfaces) and IMHO there is no way to detect whether libtirpc
-was compiled without authdes support to skip the test.
-
-Interface to authdes_seccreate() is missing when libtirpc is compiled
-without authdes, thus compilation fail:
-
-/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: /tmp/ccFanCMm.o: in function `main':
-testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate.c:55: undefined reference to `authdes_seccreate'
-
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
 Hi,
 
-or is it safe to expect that authdes is compiled out when authdes_create() returning NULL?
-I also decided to remove tests because authdes is deprecated and uClibc
-and musl does not provide DES authentication.
+On Thu, Dec 19, 2019 at 5:15 PM Li Wang <liwang@redhat.com> wrote:
 
-FYI I've sent patch to libtirpc to add authdes_seccreate() interface [1].
+>
+>
+> On Thu, Dec 19, 2019 at 4:52 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+>> ...
+>> >> To avoid similar scenarios, I suggested to add a "sync()" call just
+>> >> prior to test here [1]. And I couldn't reproduce the failure in
+>> >> 1000-times run with 4.19 kernel.
+>> >
+>> >
+>> > Yes, that makes sense to me.
+>> >
+>>
+>> Would you mind to give it a try and check if you could reproduce the
+>> failure?
+>>
+>
+> Actually, I haven't had one time to reproduce it. This failure was
+> reported by CI jobs and very low frequency occurred. The fix is based on a
+> discussion with FS developer analysis.
+>
+> But I would have a try with this patch(+ sync()).
+>
 
-[1] https://sourceforge.net/p/libtirpc/mailman/message/36889142/
+I have tried this for many different systems, and it doesn't hit the
+failure at least one time. So if no more comments, I would merge the patch
+as below in the next step.
 
- runtest/net.tirpc_tests                       |  2 -
- testcases/network/rpc/rpc-tirpc/.gitignore    |  2 -
- .../tirpc/tirpc_auth_authdes_create/Makefile  | 23 -------
- .../tirpc_auth_authdes_create/assertions.xml  |  5 --
- .../tirpc_authdes_create.c                    | 60 -----------------
- .../tirpc_auth_authdes_seccreate/Makefile     | 23 -------
- .../assertions.xml                            |  5 --
- .../tirpc_authdes_seccreate.c                 | 65 -------------------
- 8 files changed, 185 deletions(-)
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/Makefile
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/assertions.xml
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/tirpc_authdes_create.c
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/Makefile
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/assertions.xml
- delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate.c
+--- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
++++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+@@ -48,6 +48,8 @@ static void verify_sync_file_range(struct testcase *tc)
 
-diff --git a/runtest/net.tirpc_tests b/runtest/net.tirpc_tests
-index ba967492f..48e9ba3f5 100644
---- a/runtest/net.tirpc_tests
-+++ b/runtest/net.tirpc_tests
-@@ -4,8 +4,6 @@ tirpc_rpcb_getmaps rpc_test.sh -s tirpc_svc_3 -c tirpc_rpcb_getmaps
- tirpc_authnone_create rpc_test.sh -c tirpc_authnone_create
- tirpc_authsys_create rpc_test.sh -s tirpc_svc_1 -c tirpc_authsys_create
- tirpc_authsys_create_default rpc_test.sh -c tirpc_authsys_create_default
--tirpc_authdes_create rpc_test.sh -s tirpc_svc_1 -c tirpc_authdes_create
--tirpc_authdes_seccreate rpc_test.sh -s tirpc_svc_1 -c tirpc_authdes_seccreate
- 
- tirpc_clnt_dg_create rpc_test.sh -s tirpc_svc_5 -c tirpc_clnt_dg_create
- tirpc_svc_dg_create rpc_test.sh -c tirpc_svc_dg_create
-diff --git a/testcases/network/rpc/rpc-tirpc/.gitignore b/testcases/network/rpc/rpc-tirpc/.gitignore
-index adcd81104..15b7c4d9c 100644
---- a/testcases/network/rpc/rpc-tirpc/.gitignore
-+++ b/testcases/network/rpc/rpc-tirpc/.gitignore
-@@ -140,7 +140,6 @@
- /tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_rmtcall/tirpc_rpcb_rmtcall_mt
- /tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_rmtcall/tirpc_rpcb_rmtcall_performance
- /tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_rmtcall/tirpc_rpcb_rmtcall
--/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate
- /tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_set/tirpc_rpcb_set
- /tests_pack/rpc_suite/tirpc/tirpc_err_svcerr_weakauth/tirpc_svcerr_weakauth
- /tests_pack/rpc_suite/tirpc/tirpc_err_svcerr_systemerr/tirpc_svcerr_systemerr
-@@ -176,7 +175,6 @@
- /tests_pack/rpc_suite/tirpc/tirpc_interlevel_clnt_control/tirpc_clnt_control
- /tests_pack/rpc_suite/tirpc/tirpc_interlevel_clnt_control/tirpc_clnt_control_limits
- /tests_pack/rpc_suite/tirpc/tirpc_interlevel_clnt_tp_create/tirpc_clnt_tp_create
--/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/tirpc_authdes_create
- /tests_pack/rpc_suite/tirpc/tirpc_interlevel_svc_tp_create/tirpc_svc_tp_create
- /tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed
- /tests_pack/rpc_suite/tirpc/tirpc_toplevel_clnt_create_timed/tirpc_clnt_create_timed_limits
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/Makefile
-deleted file mode 100644
-index 23bf048f0..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/Makefile
-+++ /dev/null
-@@ -1,23 +0,0 @@
--#
--#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--
--top_srcdir		?= ../../../../../../../..
--
--include	$(top_srcdir)/include/mk/env_pre.mk
--include $(abs_srcdir)/../../../Makefile.inc
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/assertions.xml b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/assertions.xml
-deleted file mode 100644
-index 927fdbbfb..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/assertions.xml
-+++ /dev/null
-@@ -1,5 +0,0 @@
--<assertions>
--	<assertion id="1" tag="ef:XSH6TC2:3966:3967">
--	Basic call of TIRPC authdes_create() function
--	</assertion>
--</assertions>
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/tirpc_authdes_create.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/tirpc_authdes_create.c
-deleted file mode 100644
-index bd52f5c0f..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_create/tirpc_authdes_create.c
-+++ /dev/null
-@@ -1,60 +0,0 @@
--/*
--* Copyright (c) Bull S.A.  2007 All Rights Reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it would be useful, but
--* WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--*
--* Further, this software is distributed without any warranty that it is
--* free of the rightful claim of any third person regarding infringement
--* or the like.  Any license provided herein, whether implied or
--* otherwise, applies only to this software file.  Patent licenses, if
--* any, provided herein do not apply to combinations of this program with
--* other software, or any other product whatsoever.
--*
--* You should have received a copy of the GNU General Public License along
--* with this program; if not, write the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--*
--* History:
--* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
--*
--*/
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <time.h>
--#include <netdb.h>
--#include "lapi/rpc.h"
--
--//Standard define
--#define PROCNUM 1
--#define VERSNUM 1
--
--int main(int argn, char *argc[])
--{
--	//Program parameters : argc[1] : HostName or Host IP
--	//                                         argc[2] : Server Program Number
--	//                                         other arguments depend on test case
--
--	int test_status = 1;	//Default test result set to FAILED
--	AUTH *authDes = NULL;
--	struct sockaddr server_addr;
--
--	//Initialization
--
--	authDes = authdes_create(argc[1], 60, &server_addr, NULL);
--
--	//If we are here, macro call was successful
--	test_status = ((AUTH *) authDes != NULL) ? 0 : 1;
--
--	//This last printf gives the result status to the tests suite
--	//normally should be 0: test has passed or 1: test has failed
--	printf("%d\n", test_status);
--
--	return test_status;
--}
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/Makefile
-deleted file mode 100644
-index 23bf048f0..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/Makefile
-+++ /dev/null
-@@ -1,23 +0,0 @@
--#
--#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--
--top_srcdir		?= ../../../../../../../..
--
--include	$(top_srcdir)/include/mk/env_pre.mk
--include $(abs_srcdir)/../../../Makefile.inc
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/assertions.xml b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/assertions.xml
-deleted file mode 100644
-index a19e4c1f2..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/assertions.xml
-+++ /dev/null
-@@ -1,5 +0,0 @@
--<assertions>
--	<assertion id="1" tag="ef:XSH6TC2:3966:3967">
--	Basic call of TIRPC authdes_seccreate() function
--	</assertion>
--</assertions>
-diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate.c
-deleted file mode 100644
-index 87b07ec54..000000000
---- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_auth_authdes_seccreate/tirpc_authdes_seccreate.c
-+++ /dev/null
-@@ -1,65 +0,0 @@
--/*
--* Copyright (c) Bull S.A.  2007 All Rights Reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it would be useful, but
--* WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--*
--* Further, this software is distributed without any warranty that it is
--* free of the rightful claim of any third person regarding infringement
--* or the like.  Any license provided herein, whether implied or
--* otherwise, applies only to this software file.  Patent licenses, if
--* any, provided herein do not apply to combinations of this program with
--* other software, or any other product whatsoever.
--*
--* You should have received a copy of the GNU General Public License along
--* with this program; if not, write the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--*
--* History:
--* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
--*
--*/
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <time.h>
--#include <netdb.h>
--#include "lapi/rpc.h"
--
--//Standard define
--#define PROCNUM 1
--#define VERSNUM 1
--
--int main(int argn, char *argc[])
--{
--	//Program parameters : argc[1] : HostName or Host IP
--	//                                         argc[2] : Server Program Number
--	//                                         other arguments depend on test case
--
--	//run_mode can switch into stand alone program or program launch by shell script
--	//1 : stand alone, debug mode, more screen information
--	//0 : launch by shell script as test case, only one printf -> result status
--	int run_mode = 0;
--	int test_status = 1;	//Default test result set to FAILED
--	int progNum = atoi(argc[2]);
--	AUTH *authDes = NULL;
--	struct sockaddr server_addr;
--
--	//Initialization
--
--	authDes = authdes_seccreate(argc[1], 60, (char *)&server_addr, NULL);
--
--	//If we are here, macro call was successful
--	test_status = ((AUTH *) authDes != NULL) ? 0 : 1;
--
--	//This last printf gives the result status to the tests suite
--	//normally should be 0: test has passed or 1: test has failed
--	printf("%d\n", test_status);
--
--	return test_status;
--}
+        lseek(fd, tc->write_off, SEEK_SET);
+
++       sync();
++
+        tst_dev_bytes_written(tst_device->dev);
+
+        tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
+@@ -66,8 +68,7 @@ static void verify_sync_file_range(struct testcase *tc)
+
+        SAFE_CLOSE(fd);
+
+-       if ((written >= tc->exp_sync_size) &&
+-           (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
++       if (written >= tc->exp_sync_size)
+                tst_res(TPASS, "%s", tc->desc);
+        else
+                tst_res(TFAIL, "%s: Synced %li, expected %li", tc->desc,
+
 -- 
-2.24.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191231/886c1803/attachment-0001.htm>
