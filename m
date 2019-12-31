@@ -1,70 +1,68 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 31 Dec 2019 13:11:05 +0530
-Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
- write back
-In-Reply-To: <CAEemH2fE=+6qi8P8wu6CDOkS1NOCWTTTmKeSBiRDWiu0qGhTOw@mail.gmail.com>
-References: <20191218082826.25083-1-liwang@redhat.com>
- <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
- <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
- <CAEemH2eRhmozt5OiT6z-YBjJUBNaGZgQVQRh40hNpKcq2d4-aw@mail.gmail.com>
- <CAFA6WYOBbH8UbwrK1f3ZQjGuqHJqGZxhQ-N0w1mpBHz0bnPG1w@mail.gmail.com>
- <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
- <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
- <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
- <CAEemH2dyHSS20Lf9neVfY6voN-EO60_MQdXjb0Xjy9VsDfbZwA@mail.gmail.com>
- <d3baf4e5-66cb-6288-6742-0f7d1dc89090@cn.fujitsu.com>
- <CAEemH2fE=+6qi8P8wu6CDOkS1NOCWTTTmKeSBiRDWiu0qGhTOw@mail.gmail.com>
-Message-ID: <CAFA6WYMvkbZYEzDv_3WYDMNx4kMeY1Zp0VYi8wx0bpDAZh93Fg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 31 Dec 2019 17:05:24 +0800
+Subject: [LTP] [PATCH v2] nm01: Remove prefix zeros of the addresses
+ output by nm before comparing
+In-Reply-To: <1577775768-134223-1-git-send-email-zhe.he@windriver.com>
+References: <1577775768-134223-1-git-send-email-zhe.he@windriver.com>
+Message-ID: <CAEemH2fjzJmerA+_BvGnGKBpStw9YAWWdze8RW4fzahg+NoTMw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 31 Dec 2019 at 13:02, Li Wang <liwang@redhat.com> wrote:
->
->
->
-> On Tue, Dec 31, 2019 at 3:05 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
->>
->> ...
->> >>     I have tried this for many different systems, and it doesn't hit
->> >>     the failure at least one time. So if no more comments, I would
->> >>     merge the patch as below in the next step.
->> >
->> >     I have a question.we must call sync()? I think syncfs is more accurate.
->> >
->> >
->> > Here we use sync() is to make fs metadata/cache being written back
->> > before testing because there is no obtainable file descriptor 'fd' for
->> > the ext4 deferred IO (e.g. initialize the journal and inode tables).
->
->
->>
->> I see. For other test cases using tst_dev_bytes_written api such as
->> fdatasync03.c,  we also need to call sync() to make this written value
->> more accurate.  What do you think about it?
->
->
-> Good point. I think we should take care of them as we do for sync_file_range02 too. It will more easily report fail in the case of a situation that synced data is less than expected.
->
-> $ git grep tst_dev_bytes_written
-> kernel/syscalls/fdatasync/fdatasync03.c:        tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/fdatasync/fdatasync03.c:        written = tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/fsync/fsync04.c:        tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/fsync/fsync04.c:        written = tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/sync/sync03.c:  tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/sync/sync03.c:  written = tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/sync_file_range/sync_file_range02.c:    tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/sync_file_range/sync_file_range02.c:    written = tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/syncfs/syncfs01.c:      tst_dev_bytes_written(tst_device->dev);
-> kernel/syscalls/syncfs/syncfs01.c:      written = tst_dev_bytes_written(tst_device->dev);
->
+On Tue, Dec 31, 2019 at 3:03 PM <zhe.he@windriver.com> wrote:
 
-Agree.
+> From: He Zhe <zhe.he@windriver.com>
+>
+> The latest nm v2.33.1.20191208 outputs symbols addresses without prefix
+> zeros
+> for "nm -f posix", which causes the following error.
+> nm01 5 TFAIL: Got wrong format with -f bsd
+>
+> Let's remove the prefix zeros before comparing.
+>
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
--Sumit
 
+> ---
+> v2:
+> Add boundary mark to RE pattern to exactly cover the prefix zeros
+> Add one more temp file to contain trimmed output
+>
+>  testcases/commands/nm/nm01.sh | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/commands/nm/nm01.sh b/testcases/commands/nm/nm01.sh
+> index 30c41bd..fd9d3d9 100755
+> --- a/testcases/commands/nm/nm01.sh
+> +++ b/testcases/commands/nm/nm01.sh
+> @@ -84,8 +84,11 @@ test5()
+>         EXPECT_PASS $NM -f bsd $TST_DATAROOT/f1 \> nm_bsd.out
+>         EXPECT_PASS $NM -f posix $TST_DATAROOT/f1 \> nm_posix.out
+>
+> -       ROD awk '{print $3 $2 $1}' nm_bsd.out \> nm1.out
+> -       ROD awk '{print $1 $2 $3}' nm_posix.out \> nm2.out
+> +       ROD awk '{print gensub(/\y(0+)([0-9a-fA-F]+)\y/, "\\2", "g")}'
+> nm_bsd.out \> trimmed_nm_bsd.out
+> +       ROD awk '{print gensub(/\y(0+)([0-9a-fA-F]+)\y/, "\\2", "g")}'
+> nm_posix.out \> trimmed_nm_posix.out
+> +
+> +       ROD awk '{print $3 $2 $1}' trimmed_nm_bsd.out \> nm1.out
+> +       ROD awk '{print $1 $2 $3}' trimmed_nm_posix.out \> nm2.out
+>
+>         if diff nm1.out nm2.out > /dev/null; then
+>                 tst_res TPASS "Got BSD format with -f bsd"
 > --
-> Regards,
-> Li Wang
+> 2.7.4
+>
+>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191231/01d7c5e8/attachment.htm>
