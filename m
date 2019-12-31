@@ -1,44 +1,79 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 31 Dec 2019 14:03:15 +0800
-Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
- write back
-In-Reply-To: <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
-References: <20191218082826.25083-1-liwang@redhat.com>
- <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
- <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
- <CAEemH2eRhmozt5OiT6z-YBjJUBNaGZgQVQRh40hNpKcq2d4-aw@mail.gmail.com>
- <CAFA6WYOBbH8UbwrK1f3ZQjGuqHJqGZxhQ-N0w1mpBHz0bnPG1w@mail.gmail.com>
- <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
- <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
- <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
-Message-ID: <CAEemH2dyHSS20Lf9neVfY6voN-EO60_MQdXjb0Xjy9VsDfbZwA@mail.gmail.com>
+From: He Zhe <zhe.he@windriver.com>
+Date: Tue, 31 Dec 2019 15:02:05 +0800
+Subject: [LTP] [PATCH] nm01: Remove prefix zeros of the addresses output
+ by nm before comparing
+In-Reply-To: <CAEemH2fAwMjPoVX17ydSJ3jchpiLgsXQwr=PN6t77Kpq12puHQ@mail.gmail.com>
+References: <1577257063-246792-1-git-send-email-zhe.he@windriver.com>
+ <CAEemH2fAwMjPoVX17ydSJ3jchpiLgsXQwr=PN6t77Kpq12puHQ@mail.gmail.com>
+Message-ID: <261bf3bb-fa9f-be51-c204-e365f173ecc7@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Thanks for pointing it out. I'll send v2.
 
-Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+Zhe
 
-> ...
+On 12/30/19 9:13 PM, Li Wang wrote:
+> Hi Zhe,
+>
+> On Wed, Dec 25, 2019 at 2:58 PM <zhe.he@windriver.com <mailto:zhe.he@windriver.com>> wrote:
+>
+>     From: He Zhe <zhe.he@windriver.com <mailto:zhe.he@windriver.com>>
+>
+>     The latest nm v2.33.1.20191208 outputs symbols addresses without prefix zeros
+>     for "nm -f posix", which causes the following error.
+>     nm01 5 TFAIL: Got wrong format with -f bsd
+>
+>     Let's remove the prefix zeros before comparing.
+>
+>     Signed-off-by: He Zhe <zhe.he@windriver.com <mailto:zhe.he@windriver.com>>
+>     ---
+>     ?testcases/commands/nm/nm01.sh | 3 +++
+>     ?1 file changed, 3 insertions(+)
+>
+>     diff --git a/testcases/commands/nm/nm01.sh b/testcases/commands/nm/nm01.sh
+>     index 30c41bd..29b6bd7 100755
+>     --- a/testcases/commands/nm/nm01.sh
+>     +++ b/testcases/commands/nm/nm01.sh
+>     @@ -84,6 +84,9 @@ test5()
+>     ? ? ? ? EXPECT_PASS $NM -f bsd $TST_DATAROOT/f1 \> nm_bsd.out
+>     ? ? ? ? EXPECT_PASS $NM -f posix $TST_DATAROOT/f1 \> nm_posix.out
+>
+>     +? ? ? ?ROD awk '{print gensub(/(0+)([0-9a-fA-F]+)/, "\\2", "g")}' nm_bsd.out \> nm_bsd.out
 >
 >
-> I have tried this for many different systems, and it doesn't hit the
-> failure at least one time. So if no more comments, I would merge the patch
-> as below in the next step.
+> AWK is base on stream editing, maybe we need the output to?a new log file.
 >
-> I have a question.we must call sync()? I think syncfs is more accurate.
+>     +? ? ? ?ROD awk '{print gensub(/(0+)([0-9a-fA-F]+)/, "\\2", "g")}' nm_posix.out \> nm_posix.out
 >
 >
-Here we use sync() is to make fs metadata/cache being written back before
-testing because there is no obtainable file descriptor 'fd' for the ext4
-deferred IO (e.g. initialize the journal and inode tables).
+> The regex is not fit for nm_posix.out since this format?of address does not start with 0000000000, e.g.
+>
+> # cat nm_posix.out | grep 40108f
+> .annobin_init.c t 40108f
+> .annobin_init.c_end t 40108f?
+>
+> # echo 40108f |awk '{print gensub(/(0+)([0-9a-fA-F]+)/, "\\2", "g")}'
+> 4108f
+> ?
+>
+>     +
+>     ? ? ? ? ROD awk '{print $3 $2 $1}' nm_bsd.out \> nm1.out
+>     ? ? ? ? ROD awk '{print $1 $2 $3}' nm_posix.out \> nm2.out
+>
+>     -- 
+>     2.7.4
+>
+>
+>     -- 
+>     Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+>
+> -- 
+> Regards,
+> Li Wang
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191231/4dd2b6ca/attachment.htm>
