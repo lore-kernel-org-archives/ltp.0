@@ -1,8 +1,8 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 31 Dec 2019 13:49:26 +0800
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 31 Dec 2019 14:03:15 +0800
 Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
  write back
-In-Reply-To: <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
+In-Reply-To: <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
 References: <20191218082826.25083-1-liwang@redhat.com>
  <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
  <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
@@ -10,85 +10,35 @@ References: <20191218082826.25083-1-liwang@redhat.com>
  <CAFA6WYOBbH8UbwrK1f3ZQjGuqHJqGZxhQ-N0w1mpBHz0bnPG1w@mail.gmail.com>
  <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
  <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
-Message-ID: <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
+ <23f8d05b-efff-56ba-b5d8-f99046e5619c@cn.fujitsu.com>
+Message-ID: <CAEemH2dyHSS20Lf9neVfY6voN-EO60_MQdXjb0Xjy9VsDfbZwA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
+Hi Yang,
 
-on 2019/12/31 13:25, Li Wang wrote:
-> Hi,
->
-> On Thu, Dec 19, 2019 at 5:15 PM Li Wang <liwang@redhat.com 
-> <mailto:liwang@redhat.com>> wrote:
->
->
->
->     On Thu, Dec 19, 2019 at 4:52 PM Sumit Garg <sumit.garg@linaro.org
->     <mailto:sumit.garg@linaro.org>> wrote:
->
->         ...
->         >> To avoid similar scenarios, I suggested to add a "sync()"
->         call just
->         >> prior to test here [1]. And I couldn't reproduce the failure in
->         >> 1000-times run with 4.19 kernel.
->         >
->         >
->         > Yes, that makes sense to me.
->         >
->
->         Would you mind to give it a try and check if you could
->         reproduce the failure?
->
->
->     Actually, I haven't had one time to reproduce it. This failure was
->     reported by CI jobs and very low frequency occurred. The fix is
->     based on a discussion?with FS developer analysis.
->
->     But I would have a try with this patch(+ sync()).
->
->
-> I have tried this for many different systems, and it doesn't hit the 
-> failure at least one time. So if no more comments, I would merge the 
-> patch as below in the next step.
+Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-I have a question.we must call sync()? I think syncfs is more accurate.
+> ...
+>
+>
+> I have tried this for many different systems, and it doesn't hit the
+> failure at least one time. So if no more comments, I would merge the patch
+> as below in the next step.
+>
+> I have a question.we must call sync()? I think syncfs is more accurate.
+>
+>
+Here we use sync() is to make fs metadata/cache being written back before
+testing because there is no obtainable file descriptor 'fd' for the ext4
+deferred IO (e.g. initialize the journal and inode tables).
 
-Best Regards
-Yang Xu
-
->
-> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> @@ -48,6 +48,8 @@ static void verify_sync_file_range(struct testcase *tc)
->
-> ? ? ? ? lseek(fd, tc->write_off, SEEK_SET);
->
-> + ? ? ? sync();
-> +
-> ? ? ? ? tst_dev_bytes_written(tst_device->dev);
->
-> ? ? ? ? tst_fill_fd(fd, 0, TST_MB, tc->write_size_mb);
-> @@ -66,8 +68,7 @@ static void verify_sync_file_range(struct testcase *tc)
->
-> ? ? ? ? SAFE_CLOSE(fd);
->
-> - ? ? ? if ((written >= tc->exp_sync_size) &&
-> - ? ? ? ? ? (written <= (tc->exp_sync_size + tc->exp_sync_size/10)))
-> + ? ? ? if (written >= tc->exp_sync_size)
-> ? ? ? ? ? ? ? ? tst_res(TPASS, "%s", tc->desc);
-> ? ? ? ? else
-> ? ? ? ? ? ? ? ? tst_res(TFAIL, "%s: Synced %li, expected %li", tc->desc,
->
-> -- 
-> Regards,
-> Li Wang
->
-
-
+-- 
+Regards,
+Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20191231/eb79f954/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20191231/4dd2b6ca/attachment.htm>
