@@ -1,24 +1,35 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 1 Jan 2020 11:15:11 -0500 (EST)
-Subject: [LTP] ./runltp always stop in restarting syslog daemon
-In-Reply-To: <tencent_89CAA885596D056C7E2299802BF6D3E62B08@qq.com>
-References: <tencent_89CAA885596D056C7E2299802BF6D3E62B08@qq.com>
-Message-ID: <558596810.144158.1577895311750.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 2 Jan 2020 09:45:39 +0800
+Subject: [LTP] [PATCH RFC] sync_file_range02: remove the toplimit of
+ write back
+In-Reply-To: <CAFA6WYMC=vh9xevacVwLCTVTn=KB0TjFUug5=ZVXkSu11io17g@mail.gmail.com>
+References: <20191218082826.25083-1-liwang@redhat.com>
+ <2104821569.17247635.1576661091375.JavaMail.zimbra@redhat.com>
+ <CAFA6WYN1ssqCzCqvT=9=DLjZdQz8OnH7+YBi8VGo7XLRdNLyvg@mail.gmail.com>
+ <CAEemH2eRhmozt5OiT6z-YBjJUBNaGZgQVQRh40hNpKcq2d4-aw@mail.gmail.com>
+ <CAFA6WYOBbH8UbwrK1f3ZQjGuqHJqGZxhQ-N0w1mpBHz0bnPG1w@mail.gmail.com>
+ <CAEemH2eXvZB9uCuZFsc2uMAt5k2F_gfgXCqch58juMsJn4Gr4w@mail.gmail.com>
+ <CAEemH2coGZGjFLhHzeR4JJYWpERGypjRdXRQ2dO0f1=Drh2KOg@mail.gmail.com>
+ <CAFA6WYMC=vh9xevacVwLCTVTn=KB0TjFUug5=ZVXkSu11io17g@mail.gmail.com>
+Message-ID: <CAEemH2eiCL_rnxjCB+kssUq4J9fmqMZeeMPG50KXZ8yxK+D4yQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Dec 31, 2019 at 1:31 PM Sumit Garg <sumit.garg@linaro.org> wrote:
 
------ Original Message -----
-> Hi,
-> I use ltp-full-20190930.tar.bz2 run in Ubuntu 16.04.6 LTS , the kernel
-> version is 4.4.0-170-generic. My linux is using Vagrant in macOs.
-> It always stop in [syslog01 0 TINFO : restarting syslog daemon].
+> ...
+>
+> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+>
 
-There was a polkit bug that manifisted in this way. Have a look
-if you're not running into same issue as described here:
-  https://bugzilla.redhat.com/show_bug.cgi?id=1711536
-  https://bugzilla.redhat.com/show_bug.cgi?id=1724444
+Pushed.
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200102/7be7051c/attachment.htm>
