@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 2 Jan 2020 13:57:59 +0100
-Subject: [LTP] [PATCH COMMITTED] tst_device: do sync() before reading
- test block device stat file
-In-Reply-To: <20200102015236.7400-1-liwang@redhat.com>
-References: <20200102015236.7400-1-liwang@redhat.com>
-Message-ID: <20200102125759.GE32710@rei.lan>
+Date: Thu, 2 Jan 2020 14:08:46 +0100
+Subject: [LTP] [iomap] 3af5053534:
+ WARNING:at_fs/iomap/buffered-io.c:#iomap_readpages
+In-Reply-To: <20191219134725.GE2760@shao2-debian>
+References: <20191219134725.GE2760@shao2-debian>
+Message-ID: <20200102130846.GF32710@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +12,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> To avoid FS deferred IO metadata/cache interferes test result, so we
-> do sync simply before the tst_dev_bytes_written invocation.
+Looks like FALLOC_FL_ZERO_RANGE fails, at least that's where the test
+reports wrong bytes in the file.
 
-Can we do fsync() on the fd instead of full sync()? That should be
-slightly faster.
+The source code of the test:
+
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fallocate/fallocate04.c#L157
+
 
 -- 
 Cyril Hrubis
