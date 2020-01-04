@@ -1,7 +1,7 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 3 Jan 2020 11:23:44 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Sat, 4 Jan 2020 10:06:06 +0100
 Subject: [LTP] [PATCH 5.4 000/191] 5.4.8-stable review
-In-Reply-To: <c5c3b8c8-1dfe-2433-630c-06dbfb3d318b@mageia.org>
+In-Reply-To: <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
 References: <20200102215829.911231638@linuxfoundation.org>
  <CA+G9fYuPkOGKbeQ0FKKx4H0Bs-nRHALsFtwyRw0Rt5DoOCvRHg@mail.gmail.com>
  <CAK8P3a1+Srey_7cUd0xfaO8HdMv5tkUcs6DeDXzcUKkUD-DnGQ@mail.gmail.com>
@@ -10,23 +10,63 @@ References: <20200102215829.911231638@linuxfoundation.org>
  <CAK8P3a00SpVfSE5oL8_F_8jHdg_8A5fyEKH_DWNyPToxack=zA@mail.gmail.com>
  <a2fc8b36-c512-b6dd-7349-dfb551e348b6@oracle.com>
  <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
- <CAHk-=wjvWTFn=C3mT5wA=mtOwXw44U+OHLVxk5DCe4v+7nOvKg@mail.gmail.com>
- <c5c3b8c8-1dfe-2433-630c-06dbfb3d318b@mageia.org>
-Message-ID: <CAHk-=wgV_YN9az2XBX=xr_DGQiUEqwjtMXkmj-w12j58NQxneQ@mail.gmail.com>
+Message-ID: <20200104090606.GA1249964@kroah.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jan 3, 2020 at 11:11 AM Thomas Backlund <tmb@mageia.org> wrote:
->
-> Does not seem to exist in public git yet, maybe you forgot to push ?
+On Fri, Jan 03, 2020 at 09:56:52AM -0800, Mike Kravetz wrote:
+> On 1/3/20 9:33 AM, Mike Kravetz wrote:
+> > On 1/3/20 7:56 AM, Arnd Bergmann wrote:
+> >> On Fri, Jan 3, 2020 at 4:45 PM Greg Kroah-Hartman
+> >> <gregkh@linuxfoundation.org> wrote:
+> >>> On Fri, Jan 03, 2020 at 04:29:56PM +0100, Arnd Bergmann wrote:
+> >>>> On Fri, Jan 3, 2020 at 4:25 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >>>>>
+> >>>>> On Fri, Jan 3, 2020 at 4:03 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >>>>>>
+> >>>>>> On Fri, 3 Jan 2020 at 03:42, Greg Kroah-Hartman
+> >>>>>> <gregkh@linuxfoundation.org> wrote:
+> >>>>>
+> >>>>> -ENOENT is what you get when hugetlbfs is not mounted, so this hints to
+> >>>>>
+> >>>>> 8fc312b32b2  mm/hugetlbfs: fix error handling when setting up mounts
+> >>>>>
+> >>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.4.y&id=3f549fb42a39bea3b29c0fc12afee53c4a01bec9
+> >>>>
+> >>>> I see that Mike Kravetz suggested not putting this patch into stable in
+> >>>>
+> >>>> https://lore.kernel.org/lkml/befca227-cb8a-8f47-617d-e3bf9972bfec@oracle.com/
+> >>>>
+> >>>> but it was picked through the autosel mechanism later.
+> >>>
+> >>> So does that mean that Linus's tree shows this LTP failure as well?
+> >>
+> >> Yes, according to
+> >> https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/memfd_create04
+> >> mainline has the same testcase failure, it started happening between
+> >> v5.4-10135-gc3bfc5dd73c6 and v5.4-10271-g596cf45cbf6e, when the patch
+> >> was originally merged into 5.5-rc1.
+> >>
+> >>> This does seem to fix a real issue, as shown by the LTP test noticing
+> >>> it, so should the error code value be fixed in Linus's tree?
+> >>
+> >> No idea what to conclude from the testcase failure, let's see if Mike has
+> >> any suggestions.
+> >>
+> > 
+> > Thanks for isolating to this patch!
+> > 
+> > There are dependencies between arch specific code and arch independent code
+> > during the setup of hugetlb sizes/mounts.  Let me take a closer look at the
+> > arm64 code and get access to a system for debug.
+> 
+> Before I started investigating, Jan Stancek found and fixed the issue.
+> 
+> http://lkml.kernel.org/r/a14b944b6e5e207d2f84f43227c98ed1f68290a2.1578072927.git.jstancek@redhat.com
 
-Not "forgot", but I've pulled a couple of other things, and done my
-usual build tests etc. I tend batch up the pulls and pushes a bit,
-sorry for not making that clear.
+Great, thanks for this, now queued up.
 
-But I've pushed it all out now.
-
-           Linus
+greg k-h
