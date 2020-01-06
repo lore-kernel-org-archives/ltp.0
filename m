@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 6 Jan 2020 16:03:29 +0100
-Subject: [LTP] LTP Release plans
-In-Reply-To: <20191213125435.GB20795@rei.lan>
-References: <20191213125435.GB20795@rei.lan>
-Message-ID: <20200106150329.GC26880@rei.lan>
+Date: Mon, 6 Jan 2020 16:55:24 +0100
+Subject: [LTP] [PATCH v3] syscalls/newmount: new test case for new mount
+ API
+In-Reply-To: <20191226072338.GH14328@dhcp-12-102.nay.redhat.com>
+References: <20191209160227.16125-1-zlang@redhat.com>
+ <20191226072338.GH14328@dhcp-12-102.nay.redhat.com>
+Message-ID: <20200106155524.GA30711@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,21 +13,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-First of all Happy New Year!
+> Ping.
+> 
+> It's been several weeks passed. Is there more review points?
 
-I'm back at patch review and we are getting close to a pre-release
-testing freeze.
-
-As I stated before I will have a look at he fallocate05 test and the
-capset/capget patches. Is there anything else that should be part of the
-release?
-
-Looking at the patch queue we should probably include:
-
-tst_dev_bytes_written: parsing /proc/diskstats instead of sys file
-syscalls/userfaultfd01: add hint about unprivileged_userfaultfd
-
-Anything else I should look at?
+Just FYI, most of the Europe takes time off starting at mid-December up
+until New Year due to Christmass and since most of the LTP patch
+reviewers are located in Europe there is very little review done during
+that period. As for LTP we are going to produce release soon as well, so
+I can't promise I can have a look this or even the next week. Please be
+patient.
 
 -- 
 Cyril Hrubis
