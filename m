@@ -1,90 +1,106 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 6 Jan 2020 16:06:30 +0800
-Subject: [LTP] [PATCH v2] syscalls/userfaultfd01: add hint about
- unprivileged_userfaultfd
-In-Reply-To: <1576641763-18305-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1576641763-18305-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <CAEemH2eKbbXjonuiKMdHcRda98hJikmGW4=YtWft0-1QAj0oBQ@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 6 Jan 2020 16:15:06 +0800
+Subject: [LTP] [PATCH] tst_dev_bytes_written: parsing /proc/diskstats
+ instead of sys file
+In-Reply-To: <CAFA6WYOPWBeu75DEopZF=+ZWf-QmGZXj0zcL1GTG7S8ZYq5Xbw@mail.gmail.com>
+References: <1578289125-2491-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAFA6WYOPWBeu75DEopZF=+ZWf-QmGZXj0zcL1GTG7S8ZYq5Xbw@mail.gmail.com>
+Message-ID: <76ec2bc6-b06b-08df-f3ca-024f84f9f0d2@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Dec 18, 2019 at 12:02 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-wrote:
-
-> Since commit cefdca0a86be ("userfaultfd/sysctl: add
-> vm.unprivileged_userfaultfd").
-> , it adds a global sysctl knob "vm.unprivileged_userfaultfd" to control
-> whether
-> unprivileged users can use the userfaultfd system calls. Set this to 1 to
-> allow
-> unprivileged users to use the userfaultfd system calls, or set this to 0 to
-> restrict userfaultfd to only privileged users (with SYS_CAP_PTRACE
-> capability). The
-> default value is 1. Add hint about it.
->
-
-Can we do the "vm.unprivileged_userfaultfd" check in the setup() and do set
-to 1 if it exists?
-And maybe we need more tests for the global sysctl knob
-"vm.unprivileged_userfaultfd".
 
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  .../syscalls/userfaultfd/userfaultfd01.c      | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> index a5e142209..4e178b4f8 100644
-> --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
-> @@ -82,12 +82,19 @@ static void run(void)
->
->         set_pages();
->
-> -       uffd = sys_userfaultfd(O_CLOEXEC | O_NONBLOCK);
-> -
-> -       if (uffd == -1)
-> -               tst_brk(TBROK | TERRNO,
-> -                       "Could not create userfault file descriptor");
-> -
-> +       TEST(sys_userfaultfd(O_CLOEXEC | O_NONBLOCK));
-> +
-> +       if (TST_RET == -1) {
-> +               if (TST_ERR == EPERM) {
-> +                       tst_res(TCONF, "Hint: check
-> /proc/sys/vm/unprivileged_userfaultfd");
-> +                       tst_brk(TCONF | TTERRNO,
-> +                               "userfaultfd() requires CAP_SYS_PTRACE on
-> this system");
-> +               } else
-> +                       tst_brk(TBROK | TTERRNO,
-> +                               "Could not create userfault file
-> descriptor");
-> +       }
-> +
-> +       uffd = TST_RET;
->         uffdio_api.api = UFFD_API;
->         uffdio_api.features = 0;
->         SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-> --
-> 2.18.0
->
->
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+on 2020/01/06 15:57, Sumit Garg wrote:
+> On Mon, 6 Jan 2020 at 11:09, Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+>>
+>> Now, tst_dev_bytes_written api can get the whole disk stat correctly(such as /dev/sda),
+>> but can not get partition stat correctly(such as /dev/sda5).
+>> fail as below:
+>> export LTP_DEV=/dev/sda5
+>> tst_device.c:388: CONF: Test device stat file: /sys/block/sda5/stat not found
+>>
+>> To fix this, use /proc/diskstats to parse instead of /sys/block/<devices>/stat.
+>> Data format as same as diskstats_show function in kernel genhd.c[1].
+>>
+>> Also, add hint when loop driver doesn't support blk-mq[2]. So that, user can export
+>> LTP_DEV to test.
+>>
+>> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/block/genhd.c
+>> [2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b5dd2f60
+>>
+>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>>   lib/tst_device.c | 26 ++++++++++++--------------
+>>   1 file changed, 12 insertions(+), 14 deletions(-)
+>>
+> 
+> Overall patch looks good to me but with minor comments below.
+Thanks for your review.
+> 
+>> diff --git a/lib/tst_device.c b/lib/tst_device.c
+>> index 10f71901d..58877c810 100644
+>> --- a/lib/tst_device.c
+>> +++ b/lib/tst_device.c
+>> @@ -375,24 +375,22 @@ int tst_umount(const char *path)
+>>
+>>   unsigned long tst_dev_bytes_written(const char *dev)
+>>   {
+>> -       struct stat st;
+>> -       unsigned long dev_sec_write = 0, dev_bytes_written, io_ticks = 0;
+>> -       char dev_stat_path[1024];
+>> -
+>> -       snprintf(dev_stat_path, sizeof(dev_stat_path), "/sys/block/%s/stat",
+>> -                strrchr(dev, '/') + 1);
+>> +       unsigned long dev_sec_write = 0, dev_bytes_written;
+>> +       unsigned int io_ticks = 0;
+>> +       char fmt[1024];
+>>
+>> -       if (stat(dev_stat_path, &st) != 0)
+>> -               tst_brkm(TCONF, NULL, "Test device stat file: %s not found",
+>> -                        dev_stat_path);
+>> +       sprintf(fmt, "%%*4d %%*7d %s %%*lu %%*lu %%*lu %%*u %%*lu %%*lu %%lu %%*u %%*u %%u",
+>> +                       strrchr(dev, '/') + 1);
+>>
+>> -       SAFE_FILE_SCANF(NULL, dev_stat_path,
+>> -                       "%*s %*s %*s %*s %*s %*s %lu %*s %*s %lu",
+>> -                       &dev_sec_write, &io_ticks);
+>> +       FILE_LINES_SCANF(NULL, "/proc/diskstats", fmt, &dev_sec_write, &io_ticks);
+> 
+> Shouldn't we use SAFE_FILE_LINES_SCANF() here?
+Yes. I will use SAFE_FILE_LINES_SCANF() in v2.
+> 
+>>
+>> +       /* If we create block device by attaching a free loop device, loop driver
+>> +        * needs to support blk-mq(commit b5dd2f6047c), so that kernel can get I/O
+>> +        * statistics about loop device.
+>> +        */
+>>          if (!io_ticks)
+>> -               tst_brkm(TCONF, NULL, "Test device stat file: %s broken",
+>> -                        dev_stat_path);
+>> +               tst_brkm(TCONF, NULL, "Test device %s io_ticks is always 0, "
+>> +                               "exporting LTP_DEV to test", dev);
+> 
+> s/exporting/export/
+...
+> 
+> -Sumit
+> 
+>>
+>>          dev_bytes_written = (dev_sec_write - prev_dev_sec_write) * 512;
+>>
+>> --
+>> 2.18.0
+>>
+>>
+>>
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> 
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200106/90744333/attachment.htm>
+
