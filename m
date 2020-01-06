@@ -1,72 +1,77 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Sat, 4 Jan 2020 10:06:06 +0100
-Subject: [LTP] [PATCH 5.4 000/191] 5.4.8-stable review
-In-Reply-To: <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
-References: <20200102215829.911231638@linuxfoundation.org>
- <CA+G9fYuPkOGKbeQ0FKKx4H0Bs-nRHALsFtwyRw0Rt5DoOCvRHg@mail.gmail.com>
- <CAK8P3a1+Srey_7cUd0xfaO8HdMv5tkUcs6DeDXzcUKkUD-DnGQ@mail.gmail.com>
- <CAK8P3a24EkUXTu-K2c-5B3w-LZwY7zNcX0dZixb3gd59vRw_Kw@mail.gmail.com>
- <20200103154518.GB1064304@kroah.com>
- <CAK8P3a00SpVfSE5oL8_F_8jHdg_8A5fyEKH_DWNyPToxack=zA@mail.gmail.com>
- <a2fc8b36-c512-b6dd-7349-dfb551e348b6@oracle.com>
- <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
-Message-ID: <20200104090606.GA1249964@kroah.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 6 Jan 2020 13:38:45 +0800
+Subject: [LTP] [PATCH] tst_dev_bytes_written: parsing /proc/diskstats
+ instead of sys file
+Message-ID: <1578289125-2491-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jan 03, 2020 at 09:56:52AM -0800, Mike Kravetz wrote:
-> On 1/3/20 9:33 AM, Mike Kravetz wrote:
-> > On 1/3/20 7:56 AM, Arnd Bergmann wrote:
-> >> On Fri, Jan 3, 2020 at 4:45 PM Greg Kroah-Hartman
-> >> <gregkh@linuxfoundation.org> wrote:
-> >>> On Fri, Jan 03, 2020 at 04:29:56PM +0100, Arnd Bergmann wrote:
-> >>>> On Fri, Jan 3, 2020 at 4:25 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >>>>>
-> >>>>> On Fri, Jan 3, 2020 at 4:03 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >>>>>>
-> >>>>>> On Fri, 3 Jan 2020 at 03:42, Greg Kroah-Hartman
-> >>>>>> <gregkh@linuxfoundation.org> wrote:
-> >>>>>
-> >>>>> -ENOENT is what you get when hugetlbfs is not mounted, so this hints to
-> >>>>>
-> >>>>> 8fc312b32b2  mm/hugetlbfs: fix error handling when setting up mounts
-> >>>>>
-> >>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.4.y&id=3f549fb42a39bea3b29c0fc12afee53c4a01bec9
-> >>>>
-> >>>> I see that Mike Kravetz suggested not putting this patch into stable in
-> >>>>
-> >>>> https://lore.kernel.org/lkml/befca227-cb8a-8f47-617d-e3bf9972bfec@oracle.com/
-> >>>>
-> >>>> but it was picked through the autosel mechanism later.
-> >>>
-> >>> So does that mean that Linus's tree shows this LTP failure as well?
-> >>
-> >> Yes, according to
-> >> https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/memfd_create04
-> >> mainline has the same testcase failure, it started happening between
-> >> v5.4-10135-gc3bfc5dd73c6 and v5.4-10271-g596cf45cbf6e, when the patch
-> >> was originally merged into 5.5-rc1.
-> >>
-> >>> This does seem to fix a real issue, as shown by the LTP test noticing
-> >>> it, so should the error code value be fixed in Linus's tree?
-> >>
-> >> No idea what to conclude from the testcase failure, let's see if Mike has
-> >> any suggestions.
-> >>
-> > 
-> > Thanks for isolating to this patch!
-> > 
-> > There are dependencies between arch specific code and arch independent code
-> > during the setup of hugetlb sizes/mounts.  Let me take a closer look at the
-> > arm64 code and get access to a system for debug.
-> 
-> Before I started investigating, Jan Stancek found and fixed the issue.
-> 
-> http://lkml.kernel.org/r/a14b944b6e5e207d2f84f43227c98ed1f68290a2.1578072927.git.jstancek@redhat.com
+Now, tst_dev_bytes_written api can get the whole disk stat correctly(such as /dev/sda),
+but can not get partition stat correctly(such as /dev/sda5).
+fail as below:
+export LTP_DEV=/dev/sda5
+tst_device.c:388: CONF: Test device stat file: /sys/block/sda5/stat not found
 
-Great, thanks for this, now queued up.
+To fix this, use /proc/diskstats to parse instead of /sys/block/<devices>/stat.
+Data format as same as diskstats_show function in kernel genhd.c[1].
 
-greg k-h
+Also, add hint when loop driver doesn't support blk-mq[2]. So that, user can export
+LTP_DEV to test.
+
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/block/genhd.c
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b5dd2f60
+
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ lib/tst_device.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 10f71901d..58877c810 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -375,24 +375,22 @@ int tst_umount(const char *path)
+ 
+ unsigned long tst_dev_bytes_written(const char *dev)
+ {
+-	struct stat st;
+-	unsigned long dev_sec_write = 0, dev_bytes_written, io_ticks = 0;
+-	char dev_stat_path[1024];
+-
+-	snprintf(dev_stat_path, sizeof(dev_stat_path), "/sys/block/%s/stat",
+-		 strrchr(dev, '/') + 1);
++	unsigned long dev_sec_write = 0, dev_bytes_written;
++	unsigned int io_ticks = 0;
++	char fmt[1024];
+ 
+-	if (stat(dev_stat_path, &st) != 0)
+-		tst_brkm(TCONF, NULL, "Test device stat file: %s not found",
+-			 dev_stat_path);
++	sprintf(fmt, "%%*4d %%*7d %s %%*lu %%*lu %%*lu %%*u %%*lu %%*lu %%lu %%*u %%*u %%u",
++			strrchr(dev, '/') + 1);
+ 
+-	SAFE_FILE_SCANF(NULL, dev_stat_path,
+-			"%*s %*s %*s %*s %*s %*s %lu %*s %*s %lu",
+-			&dev_sec_write, &io_ticks);
++	FILE_LINES_SCANF(NULL, "/proc/diskstats", fmt, &dev_sec_write, &io_ticks);
+ 
++	/* If we create block device by attaching a free loop device, loop driver
++	 * needs to support blk-mq(commit b5dd2f6047c), so that kernel can get I/O
++	 * statistics about loop device.
++	 */
+ 	if (!io_ticks)
+-		tst_brkm(TCONF, NULL, "Test device stat file: %s broken",
+-			 dev_stat_path);
++		tst_brkm(TCONF, NULL, "Test device %s io_ticks is always 0, "
++				"exporting LTP_DEV to test", dev);
+ 
+ 	dev_bytes_written = (dev_sec_write - prev_dev_sec_write) * 512;
+ 
+-- 
+2.18.0
+
+
+
