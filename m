@@ -1,44 +1,32 @@
-From: Thomas Backlund <tmb@mageia.org>
-Date: Sat, 4 Jan 2020 00:15:12 +0200
-Subject: [LTP] [PATCH 5.4 000/191] 5.4.8-stable review
-In-Reply-To: <CAHk-=wgV_YN9az2XBX=xr_DGQiUEqwjtMXkmj-w12j58NQxneQ@mail.gmail.com>
-References: <20200102215829.911231638@linuxfoundation.org>
- <CA+G9fYuPkOGKbeQ0FKKx4H0Bs-nRHALsFtwyRw0Rt5DoOCvRHg@mail.gmail.com>
- <CAK8P3a1+Srey_7cUd0xfaO8HdMv5tkUcs6DeDXzcUKkUD-DnGQ@mail.gmail.com>
- <CAK8P3a24EkUXTu-K2c-5B3w-LZwY7zNcX0dZixb3gd59vRw_Kw@mail.gmail.com>
- <20200103154518.GB1064304@kroah.com>
- <CAK8P3a00SpVfSE5oL8_F_8jHdg_8A5fyEKH_DWNyPToxack=zA@mail.gmail.com>
- <a2fc8b36-c512-b6dd-7349-dfb551e348b6@oracle.com>
- <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
- <CAHk-=wjvWTFn=C3mT5wA=mtOwXw44U+OHLVxk5DCe4v+7nOvKg@mail.gmail.com>
- <c5c3b8c8-1dfe-2433-630c-06dbfb3d318b@mageia.org>
- <CAHk-=wgV_YN9az2XBX=xr_DGQiUEqwjtMXkmj-w12j58NQxneQ@mail.gmail.com>
-Message-ID: <9bc30fda-2c6d-d66e-018e-95bdd77a4df2@mageia.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 6 Jan 2020 15:57:55 +0100
+Subject: [LTP] LTP Release plans
+In-Reply-To: <88bb51a8-731c-8532-130d-8a4e88654e04@suse.cz>
+References: <20191213125435.GB20795@rei.lan>
+ <88bb51a8-731c-8532-130d-8a4e88654e04@suse.cz>
+Message-ID: <20200106145755.GA26880@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Den 03-01-2020 kl. 21:23, skrev Linus Torvalds:
-> On Fri, Jan 3, 2020 at 11:11 AM Thomas Backlund <tmb@mageia.org> wrote:
->> Does not seem to exist in public git yet, maybe you forgot to push ?
-> Not "forgot", but I've pulled a couple of other things, and done my
-> usual build tests etc. I tend batch up the pulls and pushes a bit,
-> sorry for not making that clear.
+Hi!
+> > As usuall if there are any patches that should included in the release,
+> > just reply to this mail and I will try to review them once I'm back.
+> 
+> I'd like to include the fix for SCTP test_1_to_1_initmsg_connect (mostly
+> a simple API port with minor additions).
 
+This has been handled already.
 
-Ok.
+> I also need some feedback for my proposal to change the test scenario in
+> fallocate05 (from anyone). I'll need a few days to submit a new patch so
+> the sooner the better. I'd really like to get the final fallocate05
+> patch into the new release.
 
-> But I've pushed it all out now.
->
->             Linus
+Acked by Jan, I will have a look ASAP.
 
-
-I got it, thanks
-
---
-
-Thomas
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
