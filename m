@@ -1,40 +1,112 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 6 Jan 2020 14:33:02 +0530
-Subject: [LTP] [PATCH 5.4 000/191] 5.4.8-stable review
-In-Reply-To: <CAHk-=wjvWTFn=C3mT5wA=mtOwXw44U+OHLVxk5DCe4v+7nOvKg@mail.gmail.com>
-References: <20200102215829.911231638@linuxfoundation.org>
- <CA+G9fYuPkOGKbeQ0FKKx4H0Bs-nRHALsFtwyRw0Rt5DoOCvRHg@mail.gmail.com>
- <CAK8P3a1+Srey_7cUd0xfaO8HdMv5tkUcs6DeDXzcUKkUD-DnGQ@mail.gmail.com>
- <CAK8P3a24EkUXTu-K2c-5B3w-LZwY7zNcX0dZixb3gd59vRw_Kw@mail.gmail.com>
- <20200103154518.GB1064304@kroah.com>
- <CAK8P3a00SpVfSE5oL8_F_8jHdg_8A5fyEKH_DWNyPToxack=zA@mail.gmail.com>
- <a2fc8b36-c512-b6dd-7349-dfb551e348b6@oracle.com>
- <8283b231-f6e8-876f-7094-d3265096ab9a@oracle.com>
- <CAHk-=wjvWTFn=C3mT5wA=mtOwXw44U+OHLVxk5DCe4v+7nOvKg@mail.gmail.com>
-Message-ID: <CA+G9fYvzkPz6Ewm00ie+HqBpfQHFuRGn694Av-gj8Pt8iKrDQg@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 6 Jan 2020 17:10:09 +0800
+Subject: [LTP] [PATCH v2] syscalls/userfaultfd01: add hint about
+ unprivileged_userfaultfd
+In-Reply-To: <CAEemH2eKbbXjonuiKMdHcRda98hJikmGW4=YtWft0-1QAj0oBQ@mail.gmail.com>
+References: <1576641763-18305-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2eKbbXjonuiKMdHcRda98hJikmGW4=YtWft0-1QAj0oBQ@mail.gmail.com>
+Message-ID: <8a1a9b95-5c42-2176-857a-e3c36fa42b55@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, 4 Jan 2020 at 00:10, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Jan 3, 2020 at 9:59 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > Before I started investigating, Jan Stancek found and fixed the issue.
-> >
-> > http://lkml.kernel.org/r/a14b944b6e5e207d2f84f43227c98ed1f68290a2.1578072927.git.jstancek@redhat.com
->
-> Applied upstream as commit 15f0ec941f4f ("mm/hugetlbfs: fix
-> for_each_hstate() loop in init_hugetlbfs_fs()").
+Hi Li
+> 
+> 
+> On Wed, Dec 18, 2019 at 12:02 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com 
+> <mailto:xuyang2018.jy@cn.fujitsu.com>> wrote:
+> 
+>     Since commit cefdca0a86be ("userfaultfd/sysctl: add
+>     vm.unprivileged_userfaultfd").
+>     , it adds a global sysctl knob "vm.unprivileged_userfaultfd" to
+>     control whether
+>     unprivileged users can use the userfaultfd system calls. Set this to
+>     1 to allow
+>     unprivileged users to use the userfaultfd system calls, or set this
+>     to 0 to
+>     restrict userfaultfd to only privileged users (with SYS_CAP_PTRACE
+>     capability). The
+>     default value is 1. Add hint about it.
+> 
+> 
+> Can we do the "vm.unprivileged_userfaultfd" check in the setup() and do 
+> set to 1 if it exists?
+I remembered Jan Stancek has a patch about bpf hint about 
+unprivileged_bpf_disabled, I do as same as that patch did.
 
-After applying above patch.
-LTP test case memfd_create04 getting PASS on mainline Linus's tree
-from Jan 3rd onwards.
+Also, month agos about acct02 discussion, Cyril points about adjusting
+the threshold value of resume and suppend to make case passes.
 
-ref link,
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/memfd_create04
+So, I have a question that we have unified standards about these cases
+(bpf, acct02, affected by sysctl)? Report TCONF or modify argument to
+make case passes?
 
-- Naresh Kamboju
+@Cyril and @Jan Stancek What do you think about it?
+
+> And maybe?we need more tests for the global sysctl knob 
+> "vm.unprivileged_userfaultfd".Eeven though we don't have case to test unprivileged_bpf_disabled. I 
+still think testing unprivileged_userfaultfd is meaningful and we can 
+begin with it.
+
+Best Regards
+Yang Xu
+> 
+> 
+>     Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com
+>     <mailto:xuyang2018.jy@cn.fujitsu.com>>
+>     ---
+>      ?.../syscalls/userfaultfd/userfaultfd01.c? ? ? | 19 +++++++++++++------
+>      ?1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+>     diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+>     b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+>     index a5e142209..4e178b4f8 100644
+>     --- a/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+>     +++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd01.c
+>     @@ -82,12 +82,19 @@ static void run(void)
+> 
+>      ? ? ? ? set_pages();
+> 
+>     -? ? ? ?uffd = sys_userfaultfd(O_CLOEXEC | O_NONBLOCK);
+>     -
+>     -? ? ? ?if (uffd == -1)
+>     -? ? ? ? ? ? ? ?tst_brk(TBROK | TERRNO,
+>     -? ? ? ? ? ? ? ? ? ? ? ?"Could not create userfault file descriptor");
+>     -
+>     +? ? ? ?TEST(sys_userfaultfd(O_CLOEXEC | O_NONBLOCK));
+>     +
+>     +? ? ? ?if (TST_RET == -1) {
+>     +? ? ? ? ? ? ? ?if (TST_ERR == EPERM) {
+>     +? ? ? ? ? ? ? ? ? ? ? ?tst_res(TCONF, "Hint: check
+>     /proc/sys/vm/unprivileged_userfaultfd");
+>     +? ? ? ? ? ? ? ? ? ? ? ?tst_brk(TCONF | TTERRNO,
+>     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"userfaultfd() requires
+>     CAP_SYS_PTRACE on this system");
+>     +? ? ? ? ? ? ? ?} else
+>     +? ? ? ? ? ? ? ? ? ? ? ?tst_brk(TBROK | TTERRNO,
+>     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"Could not create userfault file
+>     descriptor");
+>     +? ? ? ?}
+>     +
+>     +? ? ? ?uffd = TST_RET;
+>      ? ? ? ? uffdio_api.api = UFFD_API;
+>      ? ? ? ? uffdio_api.features = 0;
+>      ? ? ? ? SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
+>     -- 
+>     2.18.0
+> 
+> 
+> 
+> 
+>     -- 
+>     Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> 
+> 
+> -- 
+> Regards,
+> Li Wang
+
+
