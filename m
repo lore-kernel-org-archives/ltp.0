@@ -1,63 +1,47 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 7 Jan 2020 11:02:57 +0800
-Subject: [LTP] LTP Release plans
-In-Reply-To: <c3c2588b-edc5-ddeb-eb0d-992041d4ff67@cn.fujitsu.com>
-References: <20191213125435.GB20795@rei.lan> <20200106150329.GC26880@rei.lan>
- <c3c2588b-edc5-ddeb-eb0d-992041d4ff67@cn.fujitsu.com>
-Message-ID: <1317ae5a-5f74-73bc-66fa-0da43793def8@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 7 Jan 2020 12:56:33 +0800
+Subject: [LTP] [PATCH v2] syscalls/userfaultfd01: add hint about
+ unprivileged_userfaultfd
+In-Reply-To: <8a1a9b95-5c42-2176-857a-e3c36fa42b55@cn.fujitsu.com>
+References: <1576641763-18305-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2eKbbXjonuiKMdHcRda98hJikmGW4=YtWft0-1QAj0oBQ@mail.gmail.com>
+ <8a1a9b95-5c42-2176-857a-e3c36fa42b55@cn.fujitsu.com>
+Message-ID: <CAEemH2djB=2=HD=RQxkABDzFt5ZOZr+iVT3_chahSoZSLhoqqQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Yang,
 
+On Mon, Jan 6, 2020 at 5:10 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-on 2020/01/07 10:03, Yang Xu wrote:
-> 
-> 
-> Hi Cyril
->> Hi!
->> First of all Happy New Year!
->>
->> I'm back at patch review and we are getting close to a pre-release
->> testing freeze.
->>
->> As I stated before I will have a look at he fallocate05 test and the
->> capset/capget patches. Is there anything else that should be part of the
->> release?
->>
->> Looking at the patch queue we should probably include:
->>
->> tst_dev_bytes_written: parsing /proc/diskstats instead of sys file
->> syscalls/userfaultfd01: add hint about unprivileged_userfaultfd
->>
->> Anything else I should look at?
-Also. In December-end, pengfei sent a kconfig patch set to support 
-CONFIG_X86_INTEL_UMIP|CONFIG_X86_UMIP=y. CONFIG_X86_INTEL_UMIP=y for 
-umip kconfig before and v5.4  mainline kernel. CONFIG_X86_UMIP=y for 
-umip kconfig after v5.5 mainline kernel. I think we can include this 
-patchset before release if it is ok.
+> ...
+> > Can we do the "vm.unprivileged_userfaultfd" check in the setup() and do
+> > set to 1 if it exists?
+> I remembered Jan Stancek has a patch about bpf hint about
+> unprivileged_bpf_disabled, I do as same as that patch did.
+>
+> Also, month agos about acct02 discussion, Cyril points about adjusting
+> the threshold value of resume and suppend to make case passes.
+>
+> So, I have a question that we have unified standards about these cases
+> (bpf, acct02, affected by sysctl)? Report TCONF or modify argument to
+> make case passes?
+>
 
-url:
-http://lists.linux.it/pipermail/ltp/2019-December/014841.html
-> Yes. I also sent a pipe test[1]to ltp(it has undefined F_GETPIPE_SZ 
-> error on old kernel [2]and I will fix it in v2), as below:
-> syscalls/pipe12: add new test for piep when write bytes > PIPE_BUF
-> 
-> Also, Cypresslin has a pull[3] about syscalls/statx05: add mkfs.ext4 
-> package version check.
-> 
-> [1]https://patchwork.ozlabs.org/patch/1215360/
-> [2]https://travis-ci.org/xuyang0410/ltp/jobs/629597516?utm_medium=notification&utm_source=github_status 
-> 
-> [3]https://github.com/linux-test-project/ltp/pull/626
-> 
-> Best Regards
-> Yang Xu
->>
-> 
-> 
-> 
+After thinking over, to report TCONF is the wise method here because this
+test might run with an unprivileged user and it can not modify the knob
+"vm.unprivileged_userfaultfd".
 
+Sorry and now I pull back my last comment.
 
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200107/cb5dcf9f/attachment-0001.htm>
