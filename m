@@ -1,47 +1,50 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 7 Jan 2020 12:56:33 +0800
-Subject: [LTP] [PATCH v2] syscalls/userfaultfd01: add hint about
- unprivileged_userfaultfd
-In-Reply-To: <8a1a9b95-5c42-2176-857a-e3c36fa42b55@cn.fujitsu.com>
-References: <1576641763-18305-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eKbbXjonuiKMdHcRda98hJikmGW4=YtWft0-1QAj0oBQ@mail.gmail.com>
- <8a1a9b95-5c42-2176-857a-e3c36fa42b55@cn.fujitsu.com>
-Message-ID: <CAEemH2djB=2=HD=RQxkABDzFt5ZOZr+iVT3_chahSoZSLhoqqQ@mail.gmail.com>
+Date: Tue, 7 Jan 2020 14:13:14 +0800
+Subject: [LTP] [PATCH COMMITTED] tst_device: do sync() before reading
+ test block device stat file
+In-Reply-To: <20200106100540.GA25027@rei.lan>
+References: <20200102015236.7400-1-liwang@redhat.com>
+ <20200102125759.GE32710@rei.lan>
+ <CAEemH2fdY_pPjNCEFmcd_zsye4HAciPuhF+Fiyde9WmBci=+Lg@mail.gmail.com>
+ <20200106100540.GA25027@rei.lan>
+Message-ID: <CAEemH2fbHPJSqFgQ2C5YLAmoctiAj_wvp27N+U-zc0omJWTCdw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Hi Cyril,
 
-On Mon, Jan 6, 2020 at 5:10 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+On Mon, Jan 6, 2020 at 6:06 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> ...
-> > Can we do the "vm.unprivileged_userfaultfd" check in the setup() and do
-> > set to 1 if it exists?
-> I remembered Jan Stancek has a patch about bpf hint about
-> unprivileged_bpf_disabled, I do as same as that patch did.
+> Hi!
+> > > > To avoid FS deferred IO metadata/cache interferes test result, so we
+> > > > do sync simply before the tst_dev_bytes_written invocation.
+> > >
+> > > Can we do fsync() on the fd instead of full sync()? That should be
+> > > slightly faster.
+> > >
+> >
+> > Probably you miss the previous discussed [1], we use sync() here because
+> we
+> > do want to make sure all FS metadata/cache being written back before the
+> > testing since there is no obtainable file descriptor 'fd' for the ext4
+> > deferred IO (e.g. initialize the journal and inode tables).
 >
-> Also, month agos about acct02 discussion, Cyril points about adjusting
-> the threshold value of resume and suppend to make case passes.
->
-> So, I have a question that we have unified standards about these cases
-> (bpf, acct02, affected by sysctl)? Report TCONF or modify argument to
-> make case passes?
+> Ah, right, we measure I/O to the whole device, so we would have to sync
+> the device in question. Then syncfs() on the fd we got should work
+> right? And it should avoid syncing unrelated filesystems as well.
 >
 
-After thinking over, to report TCONF is the wise method here because this
-test might run with an unprivileged user and it can not modify the knob
-"vm.unprivileged_userfaultfd".
-
-Sorry and now I pull back my last comment.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
+Good point, I double read the fsync() and syncfs() manual page. It looks
+like syncfs() is not the same as the previous function, it synchronizes the
+file system containing file referred to by the open file descriptor fd, I
+mixed them before, to be honest.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200107/cb5dcf9f/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200107/c94dff56/attachment.htm>
