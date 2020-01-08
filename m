@@ -1,35 +1,50 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 8 Jan 2020 12:45:45 +0100
-Subject: [LTP] [PATCH] tst_device: add new tst_dev_sync
-In-Reply-To: <20200108114141.GB17272@rei.lan>
-References: <20200107071324.29492-1-liwang@redhat.com>
- <20200107101119.GA22967@rei.lan>
- <CAEemH2fmmQ2a0EVHoqkMwMOjy5EZoiNT+02yYRz-TnWpTQ__0A@mail.gmail.com>
- <20200108112537.GA22954@dell5510> <20200108113535.GA17272@rei.lan>
- <CAEemH2dZ0pVqpaecjO06stw8RiK-hmSUWwo=kndm3EsvoXCW2w@mail.gmail.com>
- <20200108114141.GB17272@rei.lan>
-Message-ID: <20200108114545.GA28867@dell5510>
+Date: Wed, 8 Jan 2020 12:48:42 +0100
+Subject: [LTP] [PATCH 3/4] travis: Merge debian.cross-compile.*.sh
+In-Reply-To: <20200108103413.29096-4-pvorel@suse.cz>
+References: <20200108103413.29096-1-pvorel@suse.cz>
+ <20200108103413.29096-4-pvorel@suse.cz>
+Message-ID: <20200108114842.GA29068@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Cyril,
+Hi,
 
-> Hi
-> > Btw I just pushed a simple fix to include unistd.h, it seems not works.
-
-> You would need to define _GNU_SOURCE at the top of each test that uses
-> it otherwise the definition is not exposed.
-Yep :(. I join to Cyril's vote for raw syscall.
-BTW please test it with travis or locally build.sh script (which adds
--Werror=implicit-function-declaration).
-
-I guess we should work on travis CI integration so we don't have to push it to
-travis manually [1].
+this needs to be fixed, otherwise Debian cross compile jobs fail.
 
 Kind regards,
 Petr
 
-[1] https://github.com/linux-test-project/ltp/issues/599
+diff --git travis/debian.cross-compile.sh travis/debian.cross-compile.sh
+index 2f2b7a70c..8557b832b 100755
+--- travis/debian.cross-compile.sh
++++ travis/debian.cross-compile.sh
+@@ -3,10 +3,16 @@
+ set -e
+ 
+ if [ -z "$ARCH" ]; then
+-	echo "missing \$ARCH!"
++	echo "missing \$ARCH!" >&2
+ 	exit 1
+ fi
+ 
++case "$ARCH" in
++arm64) gcc_arch="aarch64";;
++ppc64el) gcc_arch="powerpc64le";;
++*) echo "unsupported arch: '$1'!" >&2; exit 1;;
++esac
++
+ dpkg --add-architecture $ARCH
+ apt update
+ 
+@@ -17,6 +23,6 @@ none) EXTRA_PACKAGES=;;
+ esac
+ 
+ apt install -y --no-install-recommends \
+-	gcc-${ARCH}-linux-gnu \
++	gcc-${gcc_arch}-linux-gnu \
+ 	libc6-dev-${ARCH}-cross \
+ 	$EXTRA_PACKAGES
