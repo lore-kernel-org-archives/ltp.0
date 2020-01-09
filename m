@@ -1,47 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 9 Jan 2020 11:10:15 +0100
-Subject: [LTP] [PATCH] tst_device: add new tst_dev_sync
-In-Reply-To: <20200109094916.GA31981@rei.lan>
-References: <20200107071324.29492-1-liwang@redhat.com>
- <20200107101119.GA22967@rei.lan>
- <CAEemH2fmmQ2a0EVHoqkMwMOjy5EZoiNT+02yYRz-TnWpTQ__0A@mail.gmail.com>
- <20200108112537.GA22954@dell5510> <20200108113535.GA17272@rei.lan>
- <CAEemH2dZ0pVqpaecjO06stw8RiK-hmSUWwo=kndm3EsvoXCW2w@mail.gmail.com>
- <20200108114141.GB17272@rei.lan> <20200108114545.GA28867@dell5510>
- <CAEemH2dUhpixZoorh_-H1CHenk9-XG9ZocjHB30RqzW_Kb0dCw@mail.gmail.com>
- <20200109094916.GA31981@rei.lan>
-Message-ID: <20200109101015.GC23230@dell5510>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 9 Jan 2020 18:14:24 +0800
+Subject: [LTP] [PATCH] syscalls/capget02: Use pid=0 instead of getpid()
+In-Reply-To: <20200109095955.GC31981@rei.lan>
+References: <1578553217-29510-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <6bd663d6-2ef4-cee8-1a5c-163dc2a74d8b@cn.fujitsu.com>
+ <20200109095955.GC31981@rei.lan>
+Message-ID: <9312b75d-7437-7274-6ec9-a05090cd86da@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!> Hi!
+>>> Since pid=0 returns the capabilities for the calling thread,
+>>> we can remove getpid and use pid=0 instead of it. Also we
+>>> can cover this test point.
+>> Since I defined static struct, I think it doesn't need pid=0 assignment.
+>> I will send a v2 and add comment.
+> 
+> If you are at it, can you also allocate guarded buffers instead?
+Sure, I will use guarded buffers instead.
+> 
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2231-guarded-buffers
+> 
 
-> > The reason why not use tst_syscall() is that involves a new compile error
-> > of tst_brk, and it can not get rid of errors only via include tst_test.h
-> > file.
 
-> The problem is that the header is used both for old and new test API, so
-> until we convert the rest of the oldlib testcases we can't use anything
-> from the new library there.
-Good point.
-
-> We solve that in other places by ifdefs, such as:
-
-> #ifdef TST_TEST_H__
-> 	tst_syscall(...);
-> #else
-> 	ltp_syscall(...);
-> #endif
-
-or something like (less #ifdef/#else branches):
-#ifdef TST_TEST_H__
-# define TST_SYSCALL(...) tst_syscall(##__VA_ARGS__)
-#else
-# define TST_SYSCALL(...) ltp_syscall(##__VA_ARGS__)
-#endif
-
-Kind regards,
-Petr
