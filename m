@@ -1,52 +1,31 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 9 Jan 2020 17:56:21 +0800
-Subject: [LTP] [PATCH] tst_device: add new tst_dev_sync
-In-Reply-To: <20200109084627.GA19145@dell5510>
-References: <20200107071324.29492-1-liwang@redhat.com>
- <20200107101119.GA22967@rei.lan>
- <CAEemH2fmmQ2a0EVHoqkMwMOjy5EZoiNT+02yYRz-TnWpTQ__0A@mail.gmail.com>
- <20200108112537.GA22954@dell5510> <20200108113535.GA17272@rei.lan>
- <CAEemH2dZ0pVqpaecjO06stw8RiK-hmSUWwo=kndm3EsvoXCW2w@mail.gmail.com>
- <20200108114141.GB17272@rei.lan> <20200108114545.GA28867@dell5510>
- <5518d8cd-7d35-8c65-e881-5f49c73dc379@cn.fujitsu.com>
- <20200109084627.GA19145@dell5510>
-Message-ID: <b429ce24-037f-6717-23bd-5b044891c62a@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 9 Jan 2020 09:37:52 +0100
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E9-rc1-3abd3b2=2Ecki_=28stable=29?=
+In-Reply-To: <cki.7B6FDEE6C3.9EE0H2AAP8@redhat.com>
+References: <cki.7B6FDEE6C3.9EE0H2AAP8@redhat.com>
+Message-ID: <20200109083752.GA17247@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr
-> Hi Xu,
-> 
->>> I guess we should work on travis CI integration so we don't have to push it to
->>> travis manually [1].
->> Do we have a tool or a function that
->> when this pushing patch complie succeeded, then merge successfully or reject
->> auto because of fail. Like gerrit.
-> Well, we have patchwork and his REST API [2] (IMHO lightweight than gerrit, but
-> needs to be setup). More info is at #599 [2].
-> 
->> Or, pushing patch compiler on travis CI first, then merged into ltp master.
-> 
->> If not, it seems that we can only try on our own ltp fork(Usually, I do it
->> when I write a new case or cleanup)
-> That's what I want to automate. It will probably needs some special github account,
-> but we have it for travis anyway.
-Thanks for your info. If this can realize, it will be great.
+Hi,
 
-ps: When I have free time, I will read them in detail.
+> One or more kernel tests failed:
 
-Best Regards
-Yang Xu
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://github.com/linux-test-project/ltp/issues/599
-> [2] https://patchwork.readthedocs.io/en/latest/api/rest/
-> 
-> 
+>     ppc64le:
+>      ? LTP
+It'd be nice if there were info which LTP tests failed (or even direct link to
+files which has the failure).
+There are 20 files related to LTP for ppc64le.
 
+Nothing in dmesg, grep for usual LTP errors didn't find anything
+grep -r -e FAIL -e TFAIL -e TBROK -e BROK |grep -v 'FAILED COMMAND File:'
 
+Or am I blind?
+
+Kind regards,
+Petr
