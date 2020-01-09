@@ -1,27 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Jan 2020 10:59:55 +0100
-Subject: [LTP] [PATCH] syscalls/capget02: Use pid=0 instead of getpid()
-In-Reply-To: <6bd663d6-2ef4-cee8-1a5c-163dc2a74d8b@cn.fujitsu.com>
-References: <1578553217-29510-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <6bd663d6-2ef4-cee8-1a5c-163dc2a74d8b@cn.fujitsu.com>
-Message-ID: <20200109095955.GC31981@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 9 Jan 2020 11:05:59 +0100
+Subject: [LTP] [PATCH] tst_device: add new tst_dev_sync
+In-Reply-To: <b429ce24-037f-6717-23bd-5b044891c62a@cn.fujitsu.com>
+References: <20200107101119.GA22967@rei.lan>
+ <CAEemH2fmmQ2a0EVHoqkMwMOjy5EZoiNT+02yYRz-TnWpTQ__0A@mail.gmail.com>
+ <20200108112537.GA22954@dell5510> <20200108113535.GA17272@rei.lan>
+ <CAEemH2dZ0pVqpaecjO06stw8RiK-hmSUWwo=kndm3EsvoXCW2w@mail.gmail.com>
+ <20200108114141.GB17272@rei.lan> <20200108114545.GA28867@dell5510>
+ <5518d8cd-7d35-8c65-e881-5f49c73dc379@cn.fujitsu.com>
+ <20200109084627.GA19145@dell5510>
+ <b429ce24-037f-6717-23bd-5b044891c62a@cn.fujitsu.com>
+Message-ID: <20200109100559.GB23230@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Since pid=0 returns the capabilities for the calling thread,
-> > we can remove getpid and use pid=0 instead of it. Also we
-> > can cover this test point.
-> Since I defined static struct, I think it doesn't need pid=0 assignment. 
-> I will send a v2 and add comment.
+Hi Xu,
 
-If you are at it, can you also allocate guarded buffers instead?
+> > > If not, it seems that we can only try on our own ltp fork(Usually, I do it
+> > > when I write a new case or cleanup)
+> > That's what I want to automate. It will probably needs some special github account,
+> > but we have it for travis anyway.
+> Thanks for your info. If this can realize, it will be great.
 
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2231-guarded-buffers
+> ps: When I have free time, I will read them in detail.
+Thanks!
+IMHO server will be needed to run these scripts.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
