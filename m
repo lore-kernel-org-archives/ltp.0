@@ -1,59 +1,67 @@
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 9 Jan 2020 15:04:56 +0530
-Subject: [LTP] [PATCH v2] tst_dev_bytes_written: parsing /proc/diskstats
- instead of sys file
-In-Reply-To: <bee8d39f-723f-491d-8676-a1c303f0a5bb@cn.fujitsu.com>
-References: <1578299418-4961-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200108131231.GA23619@rei.lan>
- <bee8d39f-723f-491d-8676-a1c303f0a5bb@cn.fujitsu.com>
-Message-ID: <CAFA6WYMk-bT7xKG7nov8mzd=b4T1gzghxrFz9x_OegU8mtSNVA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 9 Jan 2020 09:21:02 +0100
+Subject: [LTP] [PATCH] tst_device: use raw syscall in the tst_device.h
+In-Reply-To: <CAEemH2dEfE5A8Dipu671TgzU0MxHF9hTRVeTNgMsi-igPbrDMA@mail.gmail.com>
+References: <20200109071510.11223-1-liwang@redhat.com>
+ <20200109074537.GA12486@dell5510>
+ <CAEemH2dEfE5A8Dipu671TgzU0MxHF9hTRVeTNgMsi-igPbrDMA@mail.gmail.com>
+Message-ID: <20200109082102.GA15119@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Yang,
+Hi Li,
 
-On Thu, 9 Jan 2020 at 14:05, Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
->
-> Hi
-> > Hi!
-> >> Now, tst_dev_bytes_written api can get the whole disk stat correctly(such as /dev/sda),
-> >> but can not get partition stat correctly(such as /dev/sda5).
-> >> fail as below:
-> >> export LTP_DEV=/dev/sda5
-> >> tst_device.c:388: CONF: Test device stat file: /sys/block/sda5/stat not found
-> >
-> > It seems that in case of partitions the stat file is available under
-> > /sys/block/sda/sda5/stat.
-> >
-> > For NVME it's similar as:
-> >
-> > /sys/block/nvme0n1/nvme0n1p1/stat
-> >
-> > I do wonder if it wouldn't be easier to try to match the prefix of the
-> > device name first, then try a directory with a full name after that.
+> > > Cc: Petr Vorel <pvorel@suse.cz>
+> > BTW I wonder if my sieve filter is bad, because I didn't get this mail or
+> > git
+> > send-email didn't sent it.
 
-I did checked earlier that we could use partition specific
-sub-directory for "stat" file but I thought it would be complex in
-comparison to referring a single file. But your implementation doesn't
-look that complex.
 
-> Maybe, I am fine with your way(I tested it). I only  refer to kernel
-> documention [1] .sysfs and proc file  use the same source for the
-> information and so should not differ. So I use fixed format as kernel
-> function to exact.  Also, I want to listen advise from Sumit.
->
+> I guess that might because of your email filter configuration, the
+> Cc'ed name will be kicked out if he/she has subscribed to the mailing list,
+> especially for my Gmail-client always do that.
 
-TBH, I think it's just a matter of taste. I am fine with either approach.
+> This is git-send-email log FYI:
+> ----------------------------
+> $ git send-email 0001-tst_device-use-raw-syscall-in-the-tst_device.h.patch
+> --to ltp@lists.linux.it
+> 0001-tst_device-use-raw-syscall-in-the-tst_device.h.patch
+> (body) Adding cc: Petr Vorel <pvorel@suse.cz> from line 'Cc: Petr Vorel <
+> pvorel@suse.cz>'
+> (body) Adding cc: Cyril Hrubis <chrubis@suse.cz> from line 'Cc: Cyril
+> Hrubis <chrubis@suse.cz>'
+> OK. Log says:
+> Server: smtp.corp.redhat.com
+> MAIL FROM:<liwang@redhat.com>
+> RCPT TO:<ltp@lists.linux.it>
+> RCPT TO:<pvorel@suse.cz>
+> RCPT TO:<chrubis@suse.cz>
+> From: Li Wang <liwang@redhat.com>
+> To: ltp@lists.linux.it
+> Cc: Petr Vorel <pvorel@suse.cz>,
+> Cyril Hrubis <chrubis@suse.cz>
+> Subject: [PATCH] tst_device: use raw syscall in the tst_device.h
+> Date: Thu,  9 Jan 2020 15:15:10 +0800
+> Message-Id: <20200109071510.11223-1-liwang@redhat.com>
+> X-Mailer: git-send-email 2.20.1
+> MIME-Version: 1.0
+> Content-Transfer-Encoding: 8bit
 
--Sumit
+> Result: 250
 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/iostats.rst
->
-> Best Regards
-> Yang Xu
-> >
->
->
+Thank you for info. Sorry, my fault (I had filter to List-Id: and *also* to To:
+(normally I use just List-Id:, which is what I want).
+
+> > +#define _GNU_SOURCE
+> > >  #define _XOPEN_SOURCE 600
+> > If we define _GNU_SOURCE we probably don't need _XOPEN_SOURCE 600, do we?
+
+
+> Ah, right. I will remove it in patch merging.
+Thanks!
+
+Kind regards,
+Petr
