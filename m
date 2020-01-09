@@ -1,32 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 9 Jan 2020 11:19:09 +0100
-Subject: [LTP] LTP Release plans
-In-Reply-To: <20200106150329.GC26880@rei.lan>
-References: <20191213125435.GB20795@rei.lan> <20200106150329.GC26880@rei.lan>
-Message-ID: <20200109101909.GD23230@dell5510>
+Date: Thu, 9 Jan 2020 11:51:01 +0100
+Subject: [LTP] [PATCH] network/iptables: add ipv6 support
+In-Reply-To: <f65c32e4-e426-e6c9-5627-51bed11c31e6@oracle.com>
+References: <20191226135801.11839-1-alexey.kodanev@oracle.com>
+ <20200103124851.GA24603@dell5510>
+ <f65c32e4-e426-e6c9-5627-51bed11c31e6@oracle.com>
+Message-ID: <20200109105101.GA30367@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Alexey,
 
-> Anything else I should look at?
-I'd like to have TI-RPC related patch-set
+> > now:
+> > /bin/sh: 1: nft: not found
+> > nft01 1 TBROK: nft add table ip filter failed
 
-* RFC,1/1] rpc-tirpc: Remove authdes related tests
-https://patchwork.ozlabs.org/patch/1216506/
-Acked by Li, waiting for Steve (libtirpc maintainer) to be acked.
+> Good catch, what about starting with init() in do_setup()?
 
-And if you have time then this one (not that important, fixing
-https://github.com/linux-test-project/ltp/pull/628
-and adding libntirpc support):
-* TI-RPC: enhancements (pkg-config, libntirpc, travis)
-https://patchwork.ozlabs.org/project/ltp/list/?series=151849
-(first 2 commits are relevant, the others are travis)
+> diff --git a/testcases/network/iptables/nft01.sh b/testcases/network/iptables/nft01.sh
+> index 1ae086678..bf2a53c28 100755
+> --- a/testcases/network/iptables/nft01.sh
+> +++ b/testcases/network/iptables/nft01.sh
+> @@ -13,6 +13,7 @@ cleanup_chain=0
 
-Thanks!
+>  do_setup()
+>  {
+> +       init
+>         local ip_table="ip${TST_IPV6}"
+
+>         if ! nft list table $ip_table filter > /dev/null 2>&1; then
+> @@ -23,7 +24,6 @@ do_setup()
+>                 ROD nft add chain $ip_table filter INPUT '{ type filter hook input priority 0; }'
+>                 cleanup_chain=1
+>         fi
+> -       init
+>  }
+
+Great, what a simple fix :).
 
 Kind regards,
 Petr
