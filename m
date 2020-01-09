@@ -1,53 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Jan 2020 10:52:39 +0100
-Subject: [LTP] [PATCH] tst_device: use raw syscall in the tst_device.h
-In-Reply-To: <20200109071510.11223-1-liwang@redhat.com>
-References: <20200109071510.11223-1-liwang@redhat.com>
-Message-ID: <20200109095239.GB31981@rei.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 9 Jan 2020 17:56:21 +0800
+Subject: [LTP] [PATCH] tst_device: add new tst_dev_sync
+In-Reply-To: <20200109084627.GA19145@dell5510>
+References: <20200107071324.29492-1-liwang@redhat.com>
+ <20200107101119.GA22967@rei.lan>
+ <CAEemH2fmmQ2a0EVHoqkMwMOjy5EZoiNT+02yYRz-TnWpTQ__0A@mail.gmail.com>
+ <20200108112537.GA22954@dell5510> <20200108113535.GA17272@rei.lan>
+ <CAEemH2dZ0pVqpaecjO06stw8RiK-hmSUWwo=kndm3EsvoXCW2w@mail.gmail.com>
+ <20200108114141.GB17272@rei.lan> <20200108114545.GA28867@dell5510>
+ <5518d8cd-7d35-8c65-e881-5f49c73dc379@cn.fujitsu.com>
+ <20200109084627.GA19145@dell5510>
+Message-ID: <b429ce24-037f-6717-23bd-5b044891c62a@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#define _GNU_SOURCE
->  #include <unistd.h>
-> +#include <sys/syscall.h>
+Hi Petr
+> Hi Xu,
+> 
+>>> I guess we should work on travis CI integration so we don't have to push it to
+>>> travis manually [1].
+>> Do we have a tool or a function that
+>> when this pushing patch complie succeeded, then merge successfully or reject
+>> auto because of fail. Like gerrit.
+> Well, we have patchwork and his REST API [2] (IMHO lightweight than gerrit, but
+> needs to be setup). More info is at #599 [2].
+> 
+>> Or, pushing patch compiler on travis CI first, then merged into ltp master.
+> 
+>> If not, it seems that we can only try on our own ltp fork(Usually, I do it
+>> when I write a new case or cleanup)
+> That's what I want to automate. It will probably needs some special github account,
+> but we have it for travis anyway.
+Thanks for your info. If this can realize, it will be great.
 
-Defining _GNU_SOURCE anywhere but at the top of the test source is
-meaningless. It has to be defined before we include any libc headers
-otherwise it's ignored.
+ps: When I have free time, I will read them in detail.
 
->  struct tst_device {
->  	const char *dev;
-> @@ -75,9 +77,9 @@ int tst_detach_device(const char *dev_path);
->   * simply before the tst_dev_bytes_written invocation. For easy to use,
->   * we create this inline function tst_dev_sync.
->   */
-> -static inline void tst_dev_sync(int fd)
-> +static inline int tst_dev_sync(int fd)
->  {
-> -	syncfs(fd);
-> +	return syscall(__NR_syncfs, fd);
->  }
->  
->  /*
-> diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-> index 2af040840..f5d7ca8ac 100644
-> --- a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-> +++ b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-> @@ -20,6 +20,7 @@
->   *	None
->   */
->  
-> +#define _GNU_SOURCE
->  #define _XOPEN_SOURCE 600
->  #include <fcntl.h>
+Best Regards
+Yang Xu
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://github.com/linux-test-project/ltp/issues/599
+> [2] https://patchwork.readthedocs.io/en/latest/api/rest/
+> 
+> 
 
-Why do we need the _GNU_SOURCE here? We switched to a syscall() in the
-header, hence we do not need the syncfs() prototype anymore.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
