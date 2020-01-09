@@ -1,58 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Jan 2020 15:08:53 +0100
-Subject: [LTP] [PATCH] tst_device: Scan /sys/block/* for stat file
-In-Reply-To: <278a5c21-348e-5fd8-f33f-82e267028710@cn.fujitsu.com>
-References: <20200108134807.27001-1-chrubis@suse.cz>
- <278a5c21-348e-5fd8-f33f-82e267028710@cn.fujitsu.com>
-Message-ID: <20200109140853.GB27225@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 9 Jan 2020 17:16:18 +0300
+Subject: [LTP] [PATCH] network/iptables: add ipv6 support
+In-Reply-To: <20200109105101.GA30367@dell5510>
+References: <20191226135801.11839-1-alexey.kodanev@oracle.com>
+ <20200103124851.GA24603@dell5510>
+ <f65c32e4-e426-e6c9-5627-51bed11c31e6@oracle.com>
+ <20200109105101.GA30367@dell5510>
+Message-ID: <b7290545-f106-3605-7a82-7854383ad3f8@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > The current tst_dev_bytes_written() function works only for simple cases
-> > where the block device is not divided into partitions. This patch fixes
-> > that scannning the sysfiles for pattern /sys/block/*/devname/stat.
-> > 
-> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> > CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> > CC: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >   lib/tst_device.c | 33 ++++++++++++++++++++++++++++-----
-> >   1 file changed, 28 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/lib/tst_device.c b/lib/tst_device.c
-> > index 10f71901d..aca769559 100644
-> > --- a/lib/tst_device.c
-> > +++ b/lib/tst_device.c
-> > @@ -373,16 +373,39 @@ int tst_umount(const char *path)
-> >   	return -1;
-> >   }
-> >   
-> > +int find_stat_file(const char *dev, char *path, size_t path_len)
-> > +{
-> > +	const char *devname = strrchr(dev, '/') + 1;
-> > +
-> > +	snprintf(path, path_len, "/sys/block/%s/stat", devname);
-> > +
-> > +	if (!access(path, F_OK))
-> > +		return 1;
-> > +
-> > +	DIR *dir = SAFE_OPENDIR(NULL, "/sys/block/");
-> > +	struct dirent *ent;
-> > +
-> > +	while ((ent = readdir(dir))) {
-> > +		snprintf(path, path_len, "/sys/block/%s/%s/stat", ent->d_name, devname);
-> > +
-> > +		fprintf(stderr, "%s\n", path);
-> > +
-> It will make many noise when using .all_filesystem and we can remove it. 
-> Other than, it looks good to me.
+On 09.01.2020 13:51, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>>> now:
+>>> /bin/sh: 1: nft: not found
+>>> nft01 1 TBROK: nft add table ip filter failed
+> 
+>> Good catch, what about starting with init() in do_setup()?
+> 
+>> diff --git a/testcases/network/iptables/nft01.sh b/testcases/network/iptables/nft01.sh
+>> index 1ae086678..bf2a53c28 100755
+>> --- a/testcases/network/iptables/nft01.sh
+>> +++ b/testcases/network/iptables/nft01.sh
+>> @@ -13,6 +13,7 @@ cleanup_chain=0
+> 
+>>  do_setup()
+>>  {
+>> +       init
+>>         local ip_table="ip${TST_IPV6}"
+> 
+>>         if ! nft list table $ip_table filter > /dev/null 2>&1; then
+>> @@ -23,7 +24,6 @@ do_setup()
+>>                 ROD nft add chain $ip_table filter INPUT '{ type filter hook input priority 0; }'
+>>                 cleanup_chain=1
+>>         fi
+>> -       init
+>>  }
+> 
+> Great, what a simple fix :).
+> 
 
-That's forgotten debug print, I should have removed that before sending.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Applied with this change, thanks for your review Petr!
