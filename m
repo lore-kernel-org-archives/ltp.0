@@ -1,36 +1,32 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 10 Jan 2020 10:40:24 -0500 (EST)
-Subject: [LTP] [PATCH 1/1] tst_device: use raw syscall in the
- tst_device.h
-In-Reply-To: <20200110153539.GC219598@x230>
-References: <20200110151443.212842-1-pvorel@suse.cz>
- <20200110152607.GB23359@rei.lan>
- <888974477.1402999.1578670362098.JavaMail.zimbra@redhat.com>
- <20200110153539.GC219598@x230>
-Message-ID: <140774842.1403937.1578670824528.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 10 Jan 2020 17:42:24 +0100
+Subject: [LTP] [PATCH v2] syscalls/capget02: remove useless getpid()
+In-Reply-To: <20200110130029.GB25704@x230>
+References: <1578554765-30025-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200110130029.GB25704@x230>
+Message-ID: <20200110164224.GA305583@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Xu,
 
+> > Since pid=0 returns the capabilities for the calling thread,
+> > we can remove getpid. Also we can cover this test point.
 
------ Original Message -----
-> Hi Jan,
-> 
-> > > > tested on
-> > > > https://travis-ci.org/pevik/ltp/builds/635305638
-> 
-> > > > Please anybody ack and merge, so we can move on with merging other
-> > > > things before git freeze.
-> 
-> > > Acked once and if the travis run finishes green.
-> 
-> > Ack, looks good on RHEL too (6.10/7.8/8.1).
-> 
-> Thanks a lot for testing!
-> Sorry, I was faster, so merged without your ack.
+> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> > -----------------
+> > v1-v2:
+> > remove pid = 0 assignment, because it has been initialized as 0.
+> > add comment
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-No worries, thanks for getting this resolved.
+> Note, waiting for merge before current git get's fixed.
+> (v2 of https://patchwork.ozlabs.org/patch/1220180/).
 
+Thanks for your patch, merged.
+
+Kind regards,
+Petr
