@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 10 Jan 2020 14:37:46 +0100
-Subject: [LTP] [PATCH v2] syscalls/pipe12: add new test for pipe when
- write bytes > PIPE_BUF
-In-Reply-To: <1578365634-19825-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1577269768-30118-1-git-send-mail-xuyang2018.jy@cn.fujitsu.com>
- <1578365634-19825-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200110133746.GB14140@rei.lan>
+Date: Fri, 10 Jan 2020 15:30:53 +0100
+Subject: [LTP] [PATCH v2 1/3] syscalls/capset02: Cleanup & convert to
+ new library
+In-Reply-To: <1578651702-19486-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20200109124101.GE31981@rei.lan>
+ <1578651702-19486-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200110143053.GA23359@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,142 +13,298 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/pipe/pipe12.c
-> @@ -0,0 +1,106 @@
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/capset/capset02.c | 332 ++++++--------------
+>  1 file changed, 93 insertions(+), 239 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/capset/capset02.c b/testcases/kernel/syscalls/capset/capset02.c
+> index aece29511..15589d462 100644
+> --- a/testcases/kernel/syscalls/capset/capset02.c
+> +++ b/testcases/kernel/syscalls/capset/capset02.c
+> @@ -1,261 +1,115 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>  /*
+>   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> + * Author: Saji Kumar.V.R <saji.kumar@wipro.com>
 > + *
-> + * Test Description:
-> + * A pipe has a limited capacity. If the pipe with non block mode is full,
-> + * then a write(2) will fail and get EAGAIN error. Otherwise, from 1 to
-> + * PIPE_BUF bytes may be written.
-> + */
-> +#define _GNU_SOURCE
-> +#include <unistd.h>
+> + * Tests basic error handling of the capset syscall.
+> + * 1) capset() fails with errno set to EFAULT if an invalid address
+> + * is given for header.
+> + * 2) capset() fails with errno set to EFAULT if an invalid address
+> + * is given for data.
+> + * 3) capset() fails with errno set to EINVAL if an invalid value
+> + * is given for header->version.
+> + * 4) capset() fails with errno set to EPERM if the new_Effective is
+> + * not a subset of the new_Permitted.
+> + * 5) capset() fails with errno set to EPERM if the new_Permitted is
+> + * not a subset of the old_Permitted.
+> + * 6) capset() fails with errno set ot EPERM if the new_Inheritable is
+> + * not a subset of  the old_Inheritable and bounding set.
+>   */
+> -/**********************************************************
+> - *
+> - *    TEST IDENTIFIER	: capset02
+> - *
+> - *    EXECUTED BY	: anyone
+> - *
+> - *    TEST TITLE	: Tests for error conditions.
+> - *
+> - *    TEST CASE TOTAL	: 4
+> - *
+> - *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+> - *
+> - *    SIGNALS
+> - * 	Uses SIGUSR1 to pause before test if option set.
+> - * 	(See the parse_opts(3) man page).
+> - *
+> - *    DESCRIPTION
+> - *	Verify that
+> - *	1) capset() fails with errno set to EFAULT if an invalid address
+> - *	   is given for header
+> - *	2) capset() fails with errno set to EFAULT if an invalid address
+> - *	   is given for data
+> - *	3) capset() fails with errno set to EINVAL if an invalid value
+> - *	   is given for header->version
+> - *	4) capset() fails with errno set to EPERM the process does not
+> - *	   have enough privilege to set capabilities
+> - *
+> - *
+> - * 	Setup:
+> - * 	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *	  Call capget() to save current capability data
+> - *
+> - * 	Test:
+> - *	 Loop if the proper options are given.
+> - *	  do test specific setup.
+> - * 	  call capset with proper arguments
+> - *	  if capset() fails with expected errno
+> - *		Test passed
+> - *	  Otherwise
+> - *		Test failed
+> - *	  do test specific cleanup
+> - *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> - *
+> - * USAGE:  <for command-line>
+> - * capset02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+> - *			where,  -c n : Run n copies concurrently.
+> - *				-e   : Turn on errno logging.
+> - *				-h   : Show help screen
+> - *				-f   : Turn off functional testing
+> - *				-i n : Execute test n times.
+> - *				-I x : Execute test for x seconds.
+> - *				-p   : Pause for SIGUSR1 before starting
+> - *				-P x : Pause for x seconds between iterations.
+> - *				-t   : Turn on syscall timing.
+> - *
+> - ****************************************************************/
 > +#include <stdlib.h>
-> +#include <fcntl.h>
+>  #include <sys/types.h>
+> -#include <sys/wait.h>
+> -#include <errno.h>
+> -#include <pwd.h>
+> -#include <signal.h>
+> -#include <string.h>
+>  #include <unistd.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include <sys/prctl.h>
 > +#include "tst_test.h"
-> +#include "lapi/fcntl.h"
+>  #include "lapi/syscalls.h"
+> -
+> -/**************************************************************************/
+> -/*                                                                        */
+> -/*   Some archs do not have the manpage documented sys/capability.h file, */
+> -/*   and require the use of the line below                                */
+> -
+>  #include <linux/capability.h>
+>  
+> -/*   If you are having issues with including this file and have the sys/  */
+> -/*   version, then you may want to try switching to it. -Robbie W.        */
+> -/**************************************************************************/
+> -
+> -#define INVALID_VERSION 0
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -static void test_setup(int, char *);
+> -static void child_func(void);
+> -
+> -static pid_t child_pid = -1;
+> -
+> -char *TCID = "capset02";
+> -
+> -static struct __user_cap_header_struct header;
+> -static struct __user_cap_data_struct data;
+> -
+> -struct test_case_t {
+> -	cap_user_header_t headerp;
+> -	cap_user_data_t datap;
+> -	int exp_errno;
+> -	char *errdesc;
+> -} test_cases[] = {
+> -#ifndef UCLINUX
+> -	/* Skip since uClinux does not implement memory protection */
+> -	{
+> -	(cap_user_header_t) - 1, &data, EFAULT, "EFAULT"}, {
+> -	&header, (cap_user_data_t) - 1, EFAULT, "EFAULT"},
+> -#endif
+> -	{
+> -	&header, &data, EINVAL, "EINVAL"}, {
+> -&header, &data, EPERM, "EPERM"},};
+> -
+> -int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
+> -
+> -int main(int ac, char **av)
+> +#define CAP1 (1 << CAP_NET_RAW | 1 << CAP_CHOWN  | 1 << CAP_SETPCAP)
+> +#define CAP2 (CAP1 | 1 << CAP_KILL)
 > +
-> +static int fds[2];
-> +static char *wrbuf;
-> +static char *rdbuf;
-> +static ssize_t max_size, invalid_size;
+> +static int drop_flag;
+> +static struct __user_cap_header_struct *header;
+> +static struct __user_cap_data_struct *data;
 > +
 > +static struct tcase {
-> +	int full_flag;
-> +	int need_offset;
-
-This could be called just offset, it does not have to be boolean either,
-we just need to write offset bytes from a buffer before we attempt to
-write to the pipe.
-
+> +	int version;
+> +	int pid;
+> +	int effective;
+> +	int permitted;
+> +	int inheritable;
+> +	int exp_err;
+> +	int flag;
 > +	char *message;
 > +} tcases[] = {
-> +	{1, 0, "Test on full pipe"},
-                 "Write to full pipe"
-> +	{0, 1, "Test on non full pipe from 1 offset"},
-		 "Write to non-empty pipe"
-> +	{0, 0, "Test on non full pipe from 0 offset"},
-                      "Write to empty pipe"
+> +	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 1, "Test bad address header"},
+> +	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 2, "Test bad address data"},
+> +	{0, 0, CAP1, CAP1, CAP1, EINVAL, 0, "Test bad version"},
+> +	{0x20080522, 0, CAP2, CAP1, CAP1, EPERM, 0, "Test bad value data(when pE is not in pP)"},
+> +	{0x20080522, 0, CAP1, CAP2, CAP1, EPERM, 0, "Test bad value data(when pP is not in old pP)"},
+> +	{0x20080522, 0, CAP1, CAP1, CAP2, EPERM, 0, "Test bad value data(when pI is not in bounding set or old pI)"},
 > +};
 > +
-> +static void verify_pipe(unsigned int n)
-> +{
+> +static void verify_capset(unsigned int n)
+>  {
 > +	struct tcase *tc = &tcases[n];
-> +
-> +	memset(rdbuf, 0, max_size);
-> +
+>  
+> -	int lc, i;
+> +	header->version = tc->version;
+> +	header->pid = tc->pid;
+>  
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -#ifdef UCLINUX
+> -	maybe_run_child(&child_func, "");
+> -#endif
+> +	data->effective = tc->effective;
+> +	data->permitted = tc->permitted;
+> +	data->inheritable = tc->inheritable;
+>  
+> -	setup();
 > +	tst_res(TINFO, "%s", tc->message);
-> +	if (tc->full_flag) {
-> +		SAFE_WRITE(1, fds[1], wrbuf, max_size);
-> +		TEST(write(fds[1], "x", 1));
-> +		if (TST_RET == 0) {
-			write is required to return -1 here which is
-			what we have to check against i.e, TST_RET != -1
-			means fail
-> +			tst_res(TFAIL, "write succeeded unexpectedly");
-> +			goto clean_pipe_buf;
-> +		}
-> +		if (TST_ERR == EAGAIN)
-> +			tst_res(TPASS | TTERRNO, "write failed as expected");
-> +		else
-> +			tst_res(TFAIL | TTERRNO, "write failed, expected EAGAIN but got");
-> +	} else {
-> +		if (tc->need_offset)
-> +			SAFE_WRITE(1, fds[1], "x", 1);
-> +		TEST(write(fds[1], wrbuf, invalid_size));
-> +		if (TST_RET == -1) {
-> +			tst_res(TFAIL, "write failed unexpectedly");
-> +			goto clean_pipe_buf;
-> +		}
-> +		if (TST_RET == invalid_size)
-> +			tst_res(TFAIL, "write size %ld larger than PIPE_BUF %ld", TST_RET, max_size);
-> +		else
-> +			tst_res(TPASS, "write size %ld between [1, %ld]", TST_RET, max_size);
-
-		Here as well, write is supposed to return the number of
-		bytes written so in this case the TST_RET must be
-		max_size - tcase->offset which is all we have to check
-		for, anything else than that means failure.
-
-> +	}
-> +
-> +clean_pipe_buf:
-> +	SAFE_READ(0, fds[0], rdbuf, max_size);
-> +}
-> +
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fds[0] > 0)
-> +		SAFE_CLOSE(fds[0]);
-> +	if (fds[1] > 0)
-> +		SAFE_CLOSE(fds[1]);
-> +	if (wrbuf)
-> +		free(wrbuf);
-> +	if (rdbuf)
-> +		free(rdbuf);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +
-> +	TEST(pipe(fds));
-> +	if (TST_RET == -1) {
-> +		tst_brk(TBROK | TTERRNO, "pipe");
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -#ifdef UCLINUX
+> -		i = 2;
+> -#else
+> -		i = 0;
+> -#endif
+> -
+> -		for (; i < TST_TOTAL; i++) {
+> -
+> -			test_setup(i, av[0]);
+> -			TEST(ltp_syscall(__NR_capset, test_cases[i].headerp,
+> -				     test_cases[i].datap));
+> -
+> -			if (TEST_RETURN == -1 &&
+> -			    TEST_ERRNO == test_cases[i].exp_errno) {
+> -				tst_resm(TPASS, "capset() returned -1,"
+> -					 " errno: %s", test_cases[i].errdesc);
+> -			} else {
+> -				tst_resm(TFAIL | TTERRNO,
+> -					 "Test Failed, capset() returned %ld",
+> -					 TEST_RETURN);
+> -			}
+> -		}
+> +	TEST(tst_syscall(__NR_capset, tc->flag - 1 ? header : NULL,
+> +				tc->flag - 2 ? data : NULL));
+> +	if (TST_RET == 0) {
+> +		tst_res(TFAIL, "capset() succeed unexpectedly");
 > +		return;
-> +	}
-
-This is exactly what SAFE_PIPE() does.
-
-> +	max_size = SAFE_FCNTL(fds[1], F_GETPIPE_SZ);
-> +	invalid_size = max_size + 4096;
-> +	wrbuf = SAFE_MALLOC(invalid_size);
-> +	rdbuf = SAFE_MALLOC(max_size);
-> +	memset(wrbuf, 'x', invalid_size);
+>  	}
+> -
+> -	cleanup();
+> -
+> -	tst_exit();
+> -
+> -}
+> -
+> -void setup(void)
+> -{
+> -	tst_require_root();
+> -
+> -	TEST_PAUSE;
+> -
+> +	if (TST_ERR == tc->exp_err)
+> +		tst_res(TPASS | TTERRNO, "capset() failed as expected");
+> +	else
+> +		tst_res(TFAIL | TTERRNO, "capset() expected %s got ",
+> +			tst_strerrno(tc->exp_err));
+>  	/*
+> -	 * Save current capability data.
+> -	 * header.version must be _LINUX_CAPABILITY_VERSION
+> +	 * When an unsupported version value is specified, it will
+> +	 * return the kernel preferred value of _LINUX_CAPABILITY_VERSION_?.
+> +	 * Since linux 2.6.26, version 3 is default. We use it.
+>  	 */
+> -	header.version = _LINUX_CAPABILITY_VERSION;
+> -	if (ltp_syscall(__NR_capget, &header, &data) == -1)
+> -		tst_brkm(TBROK | TERRNO, NULL, "capget failed");
+> +	if (header->version != 0x20080522)
+> +		tst_res(TFAIL, "kernel doesn't return preferred linux"
+> +			" capability version when using bad version");
+>  }
+>  
+> -void cleanup(void)
+> +static void setup(void)
+>  {
+> -	if (0 < child_pid) {
+> -		kill(child_pid, SIGTERM);
+> -		wait(NULL);
+> -	}
+> +	header->version = 0x20080522;
+> +	data->effective = CAP1;
+> +	data->permitted = CAP1;
+> +	data->inheritable = CAP1;
 > +
-> +	SAFE_FCNTL(fds[1], F_SETFL, O_NONBLOCK);
-> +	SAFE_FCNTL(fds[0], F_SETFL, O_NONBLOCK);
-> +}
+> +	TEST(tst_syscall(__NR_capset, header, data));
+> +	if (TST_RET == -1)
+> +		tst_brk(TBROK | TTERRNO, "capset data failed");
 > +
-> +static struct tst_test test = {
-> +	.test = verify_pipe,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +};
-> -- 
-> 2.18.0
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> +	TEST(prctl(PR_CAPBSET_DROP, CAP_KILL));
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TTERRNO, "drop CAP_KILL failed");
+> +	else
+> +		drop_flag = 1;
+
+This flag does not seem to be used anywhere. Can't we simply tst_brk()
+here if the call fails?
 
 -- 
 Cyril Hrubis
