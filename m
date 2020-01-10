@@ -1,34 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 10 Jan 2020 13:30:12 +0100
-Subject: [LTP] [PATCH v2] tst_dev_bytes_written: parsing /proc/diskstats
- instead of sys file
-In-Reply-To: <CAFA6WYMk-bT7xKG7nov8mzd=b4T1gzghxrFz9x_OegU8mtSNVA@mail.gmail.com>
-References: <1578299418-4961-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200108131231.GA23619@rei.lan>
- <bee8d39f-723f-491d-8676-a1c303f0a5bb@cn.fujitsu.com>
- <CAFA6WYMk-bT7xKG7nov8mzd=b4T1gzghxrFz9x_OegU8mtSNVA@mail.gmail.com>
-Message-ID: <20200110123012.GA14140@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 10 Jan 2020 14:00:29 +0100
+Subject: [LTP] [PATCH v2] syscalls/capget02: remove useless getpid()
+In-Reply-To: <1578554765-30025-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1578554765-30025-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200110130029.GB25704@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Maybe, I am fine with your way(I tested it). I only  refer to kernel
-> > documention [1] .sysfs and proc file  use the same source for the
-> > information and so should not differ. So I use fixed format as kernel
-> > function to exact.  Also, I want to listen advise from Sumit.
-> >
-> 
-> TBH, I think it's just a matter of taste. I am fine with either approach.
+Hi Xu,
 
-I dot not like that much that we generate the scanf format string on the
-fly in the version that parses /proc/diskstat.
+> Since pid=0 returns the capabilities for the calling thread,
+> we can remove getpid. Also we can cover this test point.
 
-In the end we have to merge one of them, I slightly prefer mine, but I
-do not have a strong feelings about this.
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> -----------------
+> v1-v2:
+> remove pid = 0 assignment, because it has been initialized as 0.
+> add comment
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Note, waiting for merge before current git get's fixed.
+(v2 of https://patchwork.ozlabs.org/patch/1220180/).
+
+
+Kind regards,
+Petr
