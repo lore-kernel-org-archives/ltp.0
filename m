@@ -1,27 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Jan 2020 16:32:59 +0100
-Subject: [LTP] [RFC PATCH 1/1] rpc-tirpc: Remove authdes related tests
-In-Reply-To: <6eaebd7c-90bb-07ea-62f0-38cae6a34e42@RedHat.com>
-References: <20191230201122.9749-1-petr.vorel@gmail.com>
- <e01fdaab-617b-dfc3-021c-ea04d0ab42cf@RedHat.com>
- <20200109075835.GB12486@dell5510>
- <6eaebd7c-90bb-07ea-62f0-38cae6a34e42@RedHat.com>
-Message-ID: <20200110153259.GB219598@x230>
+Date: Fri, 10 Jan 2020 16:35:39 +0100
+Subject: [LTP] [PATCH 1/1] tst_device: use raw syscall in the
+ tst_device.h
+In-Reply-To: <888974477.1402999.1578670362098.JavaMail.zimbra@redhat.com>
+References: <20200110151443.212842-1-pvorel@suse.cz>
+ <20200110152607.GB23359@rei.lan>
+ <888974477.1402999.1578670362098.JavaMail.zimbra@redhat.com>
+Message-ID: <20200110153539.GC219598@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Steve,
+Hi Jan,
 
-> > Can you please either ack this patch or request we detect authdes support
-> > support (i.e. libtirpc < 1.2.5) and keep tests in this case?
-> The ack is done! :-)
-Thanks a lot, merged!
+> > > tested on
+> > > https://travis-ci.org/pevik/ltp/builds/635305638
 
+> > > Please anybody ack and merge, so we can move on with merging other
+> > > things before git freeze.
 
-> steved.
+> > Acked once and if the travis run finishes green.
+
+> Ack, looks good on RHEL too (6.10/7.8/8.1).
+
+Thanks a lot for testing!
+Sorry, I was faster, so merged without your ack.
 
 Kind regards,
 Petr
