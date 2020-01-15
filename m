@@ -1,35 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Jan 2020 15:32:07 +0100
-Subject: [LTP] mkfs.vfat: Device partition expected,
- not making filesystem on entire device '/dev/vdb' (use -I to
- override)
-In-Reply-To: <20200115124044.GC14046@rei.lan>
-References: <20200115110922.GB26763@dell5510> <20200115124044.GC14046@rei.lan>
-Message-ID: <20200115143207.GB28253@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 15 Jan 2020 16:00:23 +0100
+Subject: [LTP] [PATCH] syscalls/madvise06: Change drop_caches file
+ checking mode
+In-Reply-To: <1579004356-19797-1-git-send-email-zou_wei@huawei.com>
+References: <1579004356-19797-1-git-send-email-zou_wei@huawei.com>
+Message-ID: <20200115150023.GH14046@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> ---
+>  testcases/kernel/syscalls/madvise/madvise06.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+> index 37840d0..329f558 100644
+> --- a/testcases/kernel/syscalls/madvise/madvise06.c
+> +++ b/testcases/kernel/syscalls/madvise/madvise06.c
+> @@ -49,7 +49,7 @@ static void setup(void)
+> 
+>  	pg_sz = getpagesize();
+> 
+> -	check_path(drop_caches_fname);
+> +	access(drop_caches_fname, W_OK);
 
-> > there is a problem with mkfs.vfat, when LTP_DEV is full block device:
+If you are not checking the return value it's no-op. Also the file has
+been added to Linux kernel 14 years ago, so it's safe to assume it's
+present. Hence I've modified to patch to simply remove the check.
 
-> > # ltp_dev=/dev/vdb fsync04
-> > ...
-> > tst_test.c:1278: INFO: Testing on vfat
-> > tst_mkfs.c:92: INFO: Formatting /dev/vdb with vfat opts='' extra opts=''
-> > mkfs.vfat: Device partition expected, not making filesystem on entire device '/dev/vdb' (use -I to override)
-> > tst_mkfs.c:103: BROK: mkfs.vfat:1: tst_test.c failed with 830
+Thanks.
 
-> > Do we want to add permanently -I to vfat?
-> > Or is it too hacky to trying to workaround tool's problem in the code?
-
-> I would say that you are supposed to create partition on a real device
-> without creating a partition first, but you can always outvote me.
-No, I don't want to outvote you :). I'm just missing something as the device is
-just /dev/vdb without any partition.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
