@@ -1,15 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Jan 2020 12:05:09 +0100
-Subject: [LTP] [PATCH v2] tst_dev_bytes_written: parsing /proc/diskstats
- instead of sys file
-In-Reply-To: <20200115105834.GA14046@rei.lan>
-References: <1578299418-4961-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200108131231.GA23619@rei.lan>
- <bee8d39f-723f-491d-8676-a1c303f0a5bb@cn.fujitsu.com>
- <CAFA6WYMk-bT7xKG7nov8mzd=b4T1gzghxrFz9x_OegU8mtSNVA@mail.gmail.com>
- <20200110123012.GA14140@rei.lan> <20200115104627.GB24851@dell5510>
- <20200115105834.GA14046@rei.lan>
-Message-ID: <20200115110509.GA26763@dell5510>
+Date: Wed, 15 Jan 2020 12:09:22 +0100
+Subject: [LTP] mkfs.vfat: Device partition expected,
+ not making filesystem on entire device '/dev/vdb' (use -I to
+ override)
+Message-ID: <20200115110922.GB26763@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,13 +12,29 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> > If we merge Cyril's, I'd be for adding the hint about LTP_DEV (maybe as a
-> > separate commit).
+there is a problem with mkfs.vfat, when LTP_DEV is full block device:
 
-> Maybe it would be a bit better to print short TINFO message in the case
-> of failure instead of adding comments into the source code...
-There is extended TCONF message in the patch. Yep, maybe just append the commend
-to that message as well.
+# ltp_dev=/dev/vdb fsync04
+...
+fsync04.c:50: PASS: Test file synced to device
+tst_test.c:1278: INFO: Testing on xfs
+tst_mkfs.c:35 tst_mkfs_(): pev: fs_type: 'xfs'
+tst_mkfs.c:92: INFO: Formatting /dev/vdb with xfs opts='' extra opts=''
+tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
+fsync04.c:50: PASS: Test file synced to device
+tst_test.c:1278: INFO: Testing on btrfs
+tst_mkfs.c:35 tst_mkfs_(): pev: fs_type: 'btrfs'
+tst_mkfs.c:92: INFO: Formatting /dev/vdb with btrfs opts='' extra opts=''
+tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
+fsync04.c:50: PASS: Test file synced to device
+tst_test.c:1278: INFO: Testing on vfat
+tst_mkfs.c:35 tst_mkfs_(): pev: fs_type: 'vfat'
+tst_mkfs.c:92: INFO: Formatting /dev/vdb with vfat opts='' extra opts=''
+mkfs.vfat: Device partition expected, not making filesystem on entire device '/dev/vdb' (use -I to override)
+tst_mkfs.c:103: BROK: mkfs.vfat:1: tst_test.c failed with 830
+
+Do we want to add permanently -I to vfat?
+Or is it too hacky to trying to workaround tool's problem in the code?
 
 Kind regards,
 Petr
