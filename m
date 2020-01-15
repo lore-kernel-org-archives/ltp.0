@@ -1,136 +1,267 @@
-From: Zorro Lang <zlang@redhat.com>
-Date: Wed, 15 Jan 2020 17:01:26 +0800
-Subject: [LTP] [PATCH v3] syscalls/newmount: new test case for new mount
- API
-In-Reply-To: <20200114095804.GA9211@dell5510>
-References: <20191209160227.16125-1-zlang@redhat.com>
- <20191226072338.GH14328@dhcp-12-102.nay.redhat.com>
- <20200113153141.GA14282@dhcp-12-102.nay.redhat.com>
- <20200114081449.GB3468@dell5510>
- <20200114093633.GD14282@dhcp-12-102.nay.redhat.com>
- <20200114095804.GA9211@dell5510>
-Message-ID: <20200115090125.GE14282@dhcp-12-102.nay.redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 15 Jan 2020 17:09:53 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/fcntl30: clean up && add more range test
+Message-ID: <1579079394-18233-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jan 14, 2020 at 10:58:04AM +0100, Petr Vorel wrote:
-> Hi Zorro,
-> 
-> > > > ping again ... is there anything block this patch review?
-> > > Here are my comments to your v3 review [1]. Some of them are now irrelevant
-> > > as you're fixed them in v3 (Cyril ones from v1).
-> 
-> > Wow, now I know why I didn't get any response for such long time. The emails
-> > from you and Cyril were all sent to mail list, not to/cc me. I didn't pay so
-> > much attention to the mail list. Sorry about that.
-> OK good :). I'm sorry to forget to Cc you in some of my replies (I usually pay
-> attention to Cc people). It's also safer to look at ML or patchwork as this
-> sometimes happen :).
-> 
-> > > So it might be just .dev_fs_flags = TST_FS_SKIP_FUSE and tiny style fixes like
+When I write pipe12 test case, I have a question
+about F_SETPIPE_SZ can set the min and max value.
+So cleanup this case and add min/max/gt_max value test.
 
-Hi,
+ps: I run this code on i386 and x86_64 machine with 4kb pagesize.
+But I don't test it on 8kb/16kb pagesize system because my machine
+is x86_64 platform it does't support to change pgsize in kernel. If
+someone can test them, I will be very grateful.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/capability.h                 |   4 +
+ testcases/kernel/syscalls/fcntl/fcntl30.c | 196 ++++++++++++----------
+ 2 files changed, 111 insertions(+), 89 deletions(-)
 
-About the TST_FS_SKIP_FUSE flag I have below questions:
+diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+index 8833f0605..7ade78985 100644
+--- a/include/lapi/capability.h
++++ b/include/lapi/capability.h
+@@ -28,6 +28,10 @@
+ # define CAP_SYS_ADMIN        21
+ #endif
+ 
++#ifndef CAP_SYS_RESOURCE
++# define CAP_SYS_RESOURCE     24
++#endif
++
+ #ifndef CAP_AUDIT_READ
+ # define CAP_AUDIT_READ       37
+ #endif
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
+index 4a409b868..2411dafb9 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl30.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
+@@ -1,111 +1,129 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) 2014 Fujitsu Ltd.
++ * Copyright (c) 2014-2020 FUJITSU LIMITED. All rights reserved.
+  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- */
+-
+-/*
+  * Description:
+- * Verify that,
+- *     Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
++ * Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
+  */
+ 
+-
+-#include <stdio.h>
+-#include <errno.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+-#include <string.h>
+-#include <signal.h>
+ #include <sys/types.h>
+-#include <pwd.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/fcntl.h"
+-
+-char *TCID = "fcntl30";
+-int TST_TOTAL = 1;
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int ac, char **av)
++#include "lapi/abisize.h"
++#include "lapi/capability.h"
++
++static int fds[2];
++static unsigned int orig_value, struct_shift, max_shift;
++static int pg_size;
++
++static struct tcase {
++	unsigned int multi;
++	unsigned int exp_multi;
++	int hole;
++	int pass_flag;
++	char *message;
++} tcases[] = {
++	{1, 1, 1, 1, "set a value of blew page size"},
++	{2, 2, 0, 1, "set a normal value"},
++	{0, 0, 0, 1, "set a max value"},
++	{0, 0, -1, 0, "set a value beyond max"},
++};
++
++static void verify_fcntl(unsigned int n)
+ {
+-	int lc;
+-	int pipe_fds[2], test_fd;
+-	int orig_pipe_size, new_pipe_size;
+-
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		SAFE_PIPE(cleanup, pipe_fds);
+-		test_fd = pipe_fds[1];
+-
+-		TEST(fcntl(test_fd, F_GETPIPE_SZ));
+-		if (TEST_RETURN < 0) {
+-			tst_brkm(TFAIL | TTERRNO, cleanup,
+-				 "fcntl get pipe size failed");
+-		}
+-
+-		orig_pipe_size = TEST_RETURN;
+-		new_pipe_size = orig_pipe_size * 2;
+-		TEST(fcntl(test_fd, F_SETPIPE_SZ, new_pipe_size));
+-		if (TEST_RETURN < 0) {
+-			tst_brkm(TFAIL | TTERRNO, cleanup,
+-				 "fcntl test F_SETPIPE_SZ failed");
+-		}
+-
+-		TEST(fcntl(test_fd, F_GETPIPE_SZ));
+-		if (TEST_RETURN < 0) {
+-			tst_brkm(TFAIL | TTERRNO, cleanup,
+-				 "fcntl test F_GETPIPE_SZ failed");
+-		}
+-		tst_resm(TINFO, "orig_pipe_size: %d new_pipe_size: %d",
+-			 orig_pipe_size, new_pipe_size);
+-		if (TEST_RETURN >= new_pipe_size) {
+-			tst_resm(TPASS, "fcntl test F_GETPIPE_SZ"
+-				 "and F_SETPIPE_SZ success");
+-		} else {
+-			tst_resm(TFAIL, "fcntl test F_GETPIPE_SZ"
+-				 "and F_SETPIPE_SZ fail");
+-		}
+-		SAFE_CLOSE(cleanup, pipe_fds[0]);
+-		SAFE_CLOSE(cleanup, pipe_fds[1]);
++	struct tcase *tc = &tcases[n];
++	unsigned int pipe_value, shift;
++
++	shift = max_shift - struct_shift;
++	if (!tc->multi)
++		tc->multi = pg_size << shift;
++	if (!tc->exp_multi)
++		tc->exp_multi = pg_size << shift;
++
++	tst_res(TINFO, "%s", tc->message);
++
++	pipe_value = tc->multi * pg_size - tc->hole;
++	TEST(fcntl(fds[1], F_SETPIPE_SZ, pipe_value));
++	if (tc->pass_flag && TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "F_SETPIPE_SZ failed");
++		return;
++	}
++	if (!tc->pass_flag) {
++		if (TST_RET == -1) {
++			if (TST_ERR == ENOMEM)
++				tst_res(TPASS | TTERRNO, "F_SETPIPE_SZ failed");
++			else
++				tst_res(TFAIL | TTERRNO,
++					"F_SETPIPE_SZ failed expected ENOMEM got");
++		} else
++			tst_res(TFAIL, "F_SETPIPE_SZ succeed unexpectedly");
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	TEST(fcntl(fds[1], F_GETPIPE_SZ));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "F_GETPIPE_SZ failed");
++		return;
++	}
++	if (TST_RET == tc->exp_multi * pg_size)
++		tst_res(TPASS, "F_SETPIPE_SZ %u bytes F_GETPIPE_SZ %lu bytes",
++			pipe_value, TST_RET);
++	else
++		tst_res(TFAIL, "F_SETPIPE_SZ %u bytes but F_GETPIPE_SZ %lu bytes",
++			pipe_value, TST_RET);
+ }
+ 
+ static void setup(void)
+ {
+-	if ((tst_kvercmp(2, 6, 35)) < 0) {
+-		tst_brkm(TCONF, NULL, "This test can only run on kernels"
+-			 "that are 2.6.35 and higher");
+-	}
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	SAFE_PIPE(fds);
++	TEST(fcntl(fds[1], F_GETPIPE_SZ));
++	if (TST_ERR == EINVAL)
++		tst_brk(TCONF, "kernel doesn't support F_GET/SETPIPE_SZ");
++	orig_value = TST_RET;
++	/*
++	 * See kernel fs/pipe.c, the size of struct pipe buffer is 40 bytes
++	 * (round up 2^6) on 64bit system and 24 bytes(round up 2^5). kcalloc
++	 * mallocs a memory space range stores struct pipe buffer. kcalloc can
++	 * malloc max space depend on KMALLOC_SHIFT_MAX macro.
++	 *  #define KMALLOC_SHIFT_MAX  (MAX_ORDER + PAGE_SHIFT - 1)
++	 * the MAX_ORDER is 11.
++	 * For example, if page size is 4k, on 64bit system. the max pipe size
++	 * as below:
++	 *  kcalloc space(4M): 1 << (11+12-1)= 2^22
++	 *  space can store struct pipi buffer: 2^22/2^6= 2^16
++	 *  max pipe size: 2^16* 2^12 = 2^28
++	 * it should be 256M. On 32bit system, this value is 512M.
++	 */
++#ifdef TST_ABI64
++	struct_shift = 6;
++#else
++	struct_shift = 5;
++#endif
++	max_shift = 10;
++
++	pg_size = getpagesize();
++	tst_res(TINFO, "page size is %d bytes", pg_size);
+ }
+ 
+ static void cleanup(void)
+ {
++	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, orig_value);
++	if (fds[0] > 0)
++		SAFE_CLOSE(fds[0]);
++	if (fds[1] > 0)
++		SAFE_CLOSE(fds[1]);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_fcntl,
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_REQ, CAP_SYS_RESOURCE),
++		{}
++	},
++};
+-- 
+2.18.0
 
-1) About ntfs and vfat test
-You said below content in [1]:
 
-  I like you use .all_filesystems = 1 as I suggested in [1], but I warned that it
-  breaks nfs.
-  newmount01.c:58: FAIL: fsopen ntfs: ENODEV (19)
-
-  Fortunately this does not need any patch for filtering nfs as TST_FS_SKIP_FUSE
-  is enough for it - add this to struct tst_test:
-  .dev_fs_flags = TST_FS_SKIP_FUSE
-
-  Not sure if just fsopen() is affected, but it probably does not make sense to test
-  just fsopen() and fsconfig().
-
-Actually if you fsopen("ntfs", ...), it doesn't test FUSE. It's testing linux
-kernel ntfs:
-  # lsmod |grep ntfs
-  ntfs                  819200  0
-
-Similar for vfat:
-  # lsmod |grep fat
-  vfat                   45056  0
-  fat                   274432  1 vfat
-
-And from my test on linux 5.5-rc4, the ntfs and vfat can test passed:
-  ...
-  tst_test.c:1278: INFO: Testing on vfat
-  tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-  tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
-  newmount01.c:62: PASS: fsopen vfat
-  newmount01.c:69: PASS: fsconfig set source to /dev/loop0
-  newmount01.c:77: PASS: fsconfig create superblock
-  newmount01.c:84: PASS: fsmount
-  newmount01.c:92: PASS: move_mount attach to mount point
-  newmount01.c:96: PASS: new mount works
-  tst_test.c:1278: INFO: Testing on ntfs
-  tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-  The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-  The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-  The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-  To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-  Windows will not be able to boot from this device.
-  tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
-  newmount01.c:62: PASS: fsopen ntfs
-  newmount01.c:69: PASS: fsconfig set source to /dev/loop0
-  newmount01.c:77: PASS: fsconfig create superblock
-  newmount01.c:84: PASS: fsmount
-  newmount01.c:92: PASS: move_mount attach to mount point
-  newmount01.c:96: PASS: new mount works
-
-You hit that error, maybe due to your current kernel didn't build these fs
-modules, but your system has mkfs.ntfs* tool.
-
-2) About if this case supports FUSE:
-
-This current code of this case can't do a FUSE mount, due to if we want to mount
-a fs through FUSE, we need to do more things, something likes:
-  fd = open(/dev/fuse, ...)
-  fsfd = fsopen("fuse", ...);
-  ...
-  fsconfig(fsfd, FSCONFIG_SET_FD, "fd", NULL, fd);
-  ...
-  (more)
-  ...
-
-It's not a simple mount as general localfs mount does. So I didn't do that.
-If need, I'd like to write another case to cover that.
-
-3) About the TST_FS_SKIP_FUSE flag:
-
-If you want to skip ntfs and vfat test by set .dev_fs_flags = TST_FS_SKIP_FUSE
-for this case. I think it doesn't work. The reason as I said above. Actually
-if the current kernel support ntfs and vfat (build them), and we have mkfs.ntfs
-and mkfs.vfat tools, then this case can test it.
-
-But if we have the tools, but don't have the kernel support. The case will fail
-as you hit.
-
-Thanks,
-Zorro
-
-
-[1] https://patchwork.ozlabs.org/patch/1206389/#2333978
-
-> > > is_mounted = 0. I wanted to fix them myself and merge, but didn't find a time.
-> > > Sending v4 where you fix/implement suggestions generally helps speedup merging
-> > > (as I already told you) :).
-> 
-> > I'll read your review points, and send a V4 tonight.
-> Thanks a lot!
-> 
-> Kind regards,
-> Petr
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
 
