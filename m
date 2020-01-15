@@ -1,155 +1,152 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 15 Jan 2020 17:09:54 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/fcntl37: add error test for fcntl with
- F_SETPIPE_SZ
-In-Reply-To: <1579079394-18233-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1579079394-18233-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1579079394-18233-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Wed, 15 Jan 2020 09:34:15 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E12-100=2Efc30_=28fedora-30=29?=
+Message-ID: <cki.0.BMO32N203K@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- runtest/syscalls                           |   2 +
- testcases/kernel/syscalls/fcntl/.gitignore |   2 +
- testcases/kernel/syscalls/fcntl/fcntl37.c  | 100 +++++++++++++++++++++
- 3 files changed, 104 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl37.c
+Hello jcline,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 92a9ae636..3f33b8661 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -299,6 +299,8 @@ fcntl35 fcntl35
- fcntl35_64 fcntl35_64
- fcntl36 fcntl36
- fcntl36_64 fcntl36_64
-+fcntl37 fcntl37
-+fcntl37_64 fcntl37_64
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/fcntl/.gitignore b/testcases/kernel/syscalls/fcntl/.gitignore
-index 8d5738f97..be8d9739e 100644
---- a/testcases/kernel/syscalls/fcntl/.gitignore
-+++ b/testcases/kernel/syscalls/fcntl/.gitignore
-@@ -70,3 +70,5 @@
- /fcntl35_64
- /fcntl36
- /fcntl36_64
-+/fcntl37
-+/fcntl37_64
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
-new file mode 100644
-index 000000000..c9f5f15a7
---- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-+ *
-+ * Test basic error handling for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ
-+ * argument.
-+ * 1)fcntl fails with EINVAL when cmd is F_SETPIPE_SZ and the arg is
-+ * beyond UINT_MAX
-+ * 2)fcntl fails with EBUSY when cmd is F_SETPIPE_SZ and the arg is smaller
-+ * than the amount of the current used buffer space.
-+ * 3)fcntl fails with EPERM when cmd is F_SETPIPE_SZ and the arg is over
-+ * /proc/sys/fs/pipe-max-size limit under unprivileged users.
-+ */
-+
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <limits.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/capability.h"
-+
-+static int fds[2];
-+static unsigned int orig_value, invalid_value, half_value, sys_value;
-+static char *wrbuf;
-+
-+static struct tcase {
-+	unsigned int *setvalue;
-+	int exp_err;
-+	char *message;
-+} tcases[] = {
-+	{&invalid_value, EINVAL,
-+	"cmd is F_SETPIPE_SZ and the arg is beyond UINT_MAX"},
-+
-+	{&half_value, EBUSY,
-+	"cmd is F_SETPIPE_SZ and the arg is smaller than the amount of the current used buffer space"},
-+	{&sys_value, EPERM,
-+	"cmd is F_SETPIPE_SZ and the arg is over /proc/sys/fs/pipe-max-size limit under unprivileged users"},
-+};
-+
-+static void verify_fcntl(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	tst_res(TINFO, "%s", tc->message);
-+
-+	TEST(fcntl(fds[1], F_SETPIPE_SZ, *(tc->setvalue)));
-+	if (TST_RET != -1)
-+		tst_res(TFAIL, "F_SETPIPE_SZ succeed");
-+	if (TST_ERR == tc->exp_err)
-+		tst_res(TPASS | TTERRNO, "F_SETPIPE_SZ failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "F_SETPIPE_SZ failed expected %s bu got",
-+				tst_strerrno(tc->exp_err));
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_PIPE(fds);
-+
-+	TEST(fcntl(fds[1], F_GETPIPE_SZ));
-+	if (TST_ERR == EINVAL)
-+		tst_brk(TCONF, "kernel doesn't support F_GET/SETPIPE_SZ");
-+
-+	orig_value = TST_RET;
-+
-+	wrbuf = SAFE_MALLOC(orig_value);
-+	memset(wrbuf, 'x', orig_value);
-+	SAFE_WRITE(1, fds[1], wrbuf, orig_value);
-+
-+	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &sys_value);
-+	sys_value++;
-+
-+	half_value = orig_value / 2;
-+	invalid_value = (1U << 31) + 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, orig_value);
-+	if (fds[0] > 0)
-+		SAFE_CLOSE(fds[0]);
-+	if (fds[1] > 0)
-+		SAFE_CLOSE(fds[1]);
-+	if (wrbuf)
-+		free(wrbuf);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_fcntl,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_DROP, CAP_SYS_RESOURCE),
-+		{}
-+	},
-+};
--- 
-2.18.0
+We ran automated tests on a kernel build that you sent to Koji:
+
+    Kernel package: kernel-5.4.12-100.fc30
+         Koji task: https://koji.fedoraproject.org/koji/taskinfo?taskID=40542166
+
+The results of these automated tests are provided below.
+
+    Overall result: FAILED (see details below)
+             Tests: FAILED
+
+One or more kernel tests failed:
+
+    ppc64le:
+     ? LTP
 
 
+    Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/384229
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Hardware testing
+----------------
+All the testing jobs are listed here:
+
+  https://beaker.engineering.redhat.com/jobs/?jobsearch-0.table=Whiteboard&jobsearch-0.operation=contains&jobsearch-0.value=cki%40gitlab%3A384229
+
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1: https://beaker.engineering.redhat.com/recipes/7797420
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? xfstests: ext4
+       ??? xfstests: xfs
+       ??? lvm thinp sanity
+       ??? stress: stress-ng
+       ? ??? Storage blktests
+
+    Host 2: https://beaker.engineering.redhat.com/recipes/7797419
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+    Host 3: https://beaker.engineering.redhat.com/recipes/7797482
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? stress: stress-ng
+       ? ? Storage blktests
+
+  ppc64le:
+    Host 1: https://beaker.engineering.redhat.com/recipes/7797422
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? ? Storage blktests
+
+    Host 2: https://beaker.engineering.redhat.com/recipes/7797421
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+  x86_64:
+    Host 1: https://beaker.engineering.redhat.com/recipes/7797418
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? lvm thinp sanity
+       ? stress: stress-ng
+       ? ? Storage blktests
+
+    Host 2: https://beaker.engineering.redhat.com/recipes/7797417
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
+Reproducing results
+-------------------
+Click on a link below to access a web page that allows you to adjust the
+Beaker job and re-run any failed tests. These links are generated for
+failed or aborted tests that are not waived. Please adjust the Beaker
+job whiteboard string in the web page so that it is easy for you to find
+and so that it is not confused with regular CKI job.
+
+After clicking the "Submit the job!" button, a dialog with an url will open.
+Opening that url will show you the progress of submitting your job.
+At the end it should say "Submitted job J:XXXXX", meaning the job was really
+sent to Beaker.
+
+  http://respin-service-ark.cloud.paas.psi.redhat.com/respin.html?whiteboard=respin_job_4015280&recipe_id=7797421&job_id=4015280
 
