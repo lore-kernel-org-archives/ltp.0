@@ -1,11 +1,14 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Jan 2020 11:39:51 +0100
-Subject: [LTP] [PATCH] tst_device: Scan /sys/block/* for stat file
-In-Reply-To: <20200109140853.GB27225@rei.lan>
-References: <20200108134807.27001-1-chrubis@suse.cz>
- <278a5c21-348e-5fd8-f33f-82e267028710@cn.fujitsu.com>
- <20200109140853.GB27225@rei.lan>
-Message-ID: <20200115103951.GA24851@dell5510>
+Date: Wed, 15 Jan 2020 11:46:27 +0100
+Subject: [LTP] [PATCH v2] tst_dev_bytes_written: parsing /proc/diskstats
+ instead of sys file
+In-Reply-To: <20200110123012.GA14140@rei.lan>
+References: <1578299418-4961-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200108131231.GA23619@rei.lan>
+ <bee8d39f-723f-491d-8676-a1c303f0a5bb@cn.fujitsu.com>
+ <CAFA6WYMk-bT7xKG7nov8mzd=b4T1gzghxrFz9x_OegU8mtSNVA@mail.gmail.com>
+ <20200110123012.GA14140@rei.lan>
+Message-ID: <20200115104627.GB24851@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,30 +17,28 @@ To: ltp@lists.linux.it
 
 Hi,
 
-...
-> > > +int find_stat_file(const char *dev, char *path, size_t path_len)
-> > > +{
-> > > +	const char *devname = strrchr(dev, '/') + 1;
-> > > +
-> > > +	snprintf(path, path_len, "/sys/block/%s/stat", devname);
-> > > +
-> > > +	if (!access(path, F_OK))
-> > > +		return 1;
-> > > +
-> > > +	DIR *dir = SAFE_OPENDIR(NULL, "/sys/block/");
-> > > +	struct dirent *ent;
-> > > +
-> > > +	while ((ent = readdir(dir))) {
-> > > +		snprintf(path, path_len, "/sys/block/%s/%s/stat", ent->d_name, devname);
-> > > +
-> > > +		fprintf(stderr, "%s\n", path);
-> > > +
-> > It will make many noise when using .all_filesystem and we can remove it. 
-> > Other than, it looks good to me.
-
-> That's forgotten debug print, I should have removed that before sending.
-
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> > > Maybe, I am fine with your way(I tested it). I only  refer to kernel
+> > > documention [1] .sysfs and proc file  use the same source for the
+> > > information and so should not differ. So I use fixed format as kernel
+> > > function to exact.  Also, I want to listen advise from Sumit.
+
+
+> > TBH, I think it's just a matter of taste. I am fine with either approach.
+
+> I dot not like that much that we generate the scanf format string on the
+> fly in the version that parses /proc/diskstat.
++1
+
+> In the end we have to merge one of them, I slightly prefer mine, but I
+> do not have a strong feelings about this.
++1
+
+If we merge Cyril's, I'd be for adding the hint about LTP_DEV (maybe as a
+separate commit).
+
+Thank you both for working on this fix.
 
 Kind regards,
 Petr
