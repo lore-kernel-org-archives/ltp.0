@@ -1,68 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 16 Jan 2020 17:15:18 +0100
-Subject: [LTP] LTP Release plans
-In-Reply-To: <20200115161510.GA6523@rei.lan>
-References: <20191213125435.GB20795@rei.lan> <20200115161510.GA6523@rei.lan>
-Message-ID: <CAEemH2fzc4___xYFQTca0MD5gNLxVuOJzFSQqKLiL9L+3Eg1WQ@mail.gmail.com>
+From: Rachel Sibley <rasibley@redhat.com>
+Date: Thu, 16 Jan 2020 11:39:14 -0500
+Subject: [LTP] ??? FAIL: Test report for kernel 5.4.12-100.fc30
+ (fedora-30)
+In-Reply-To: <20200116155952.GB558@rei>
+References: <cki.0.BMO32N203K@redhat.com> <20200116155952.GB558@rei>
+Message-ID: <b251c469-ade3-bc34-8e07-1789640693e8@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-On Wed, Jan 15, 2020 at 5:15 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
+On 1/16/20 10:59 AM, Cyril Hrubis wrote:
 > Hi!
-> I've just finished patchwork queue review and I think that we are fine
-> and that we should freeze the git for anything but bugfixes at this
-> point.
->
-> I will do a bit more pre-release testing, however the results so far
-> looks good to me.
->
+>>      Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/384229
+> 
+> Looks like unreachable URL again.
+> 
 
-FYI:
+Oops sorry about that, since the Fedora maintainers had access to internal logs we used the regular
+template, only after did we start cc'ing LTP for upstream failures. I just changed it to the correct
+email template to include links to our external logs.
 
-I did a round of testing against RHEL6/7/8 and upstream kernel, the test
-result looks good except only below tiny issues:
+The failure was a dmesg check probably related to running on a slow kvm guest:
 
-- RHEL6 x86_64 (it is a kernel bug that in old distro)
-sysctl02 1 TFAIL: /proc/sys/fs/file-max overflows and is set to 0
-sysctl02 2 TINFO: trying to set fs.file-max=18446744073709551615
-sysctl02 2 TFAIL: /proc/sys/fs/file-max overflows and is set to
-18446744073709551615
-sysctl02 3 TINFO: trying to set fs.file-max=9223372036854775808
-sysctl02 3 TFAIL: /proc/sys/fs/file-max overflows and is set to
-9223372036854775808
+[ 5646.612562] watchdog: BUG: soft lockup - CPU#15 stuck for 31s! [systemd-journal:559]
+[ 5840.828707] watchdog: BUG: soft lockup - CPU#10 stuck for 23s! [systemd:1]
+[ 6018.881344] watchdog: BUG: soft lockup - CPU#2 stuck for 50s! [systemd-coredum:819905]
+[ 6047.933641] watchdog: BUG: soft lockup - CPU#15 stuck for 21s! [systemd:1]
+[ 6100.825887] watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [systemd-coredum:819905]
+[ 6369.103978] watchdog: BUG: soft lockup - CPU#5 stuck for 23s! [diotest6:819897]
+[ 6780.415986] watchdog: BUG: soft lockup - CPU#10 stuck for 22s! [khvcd:223]
+[ 6831.956434] watchdog: BUG: soft lockup - CPU#3 stuck for 70s! [migration/3:25]
+[ 6831.956436] watchdog: BUG: soft lockup - CPU#2 stuck for 52s! [kworker/2:2:1997]
+[ 6864.394439] watchdog: BUG: soft lockup - CPU#3 stuck for 22s! [rcu_sched:10]
+[ 7004.381847] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [rcu_sched:10]
+[ 7084.688008] watchdog: BUG: soft lockup - CPU#4 stuck for 67s! [kworker/4:3:818401]
+[ 7108.389938] watchdog: BUG: soft lockup - CPU#4 stuck for 22s! [rcu_sched:10]
+[ 7303.256283] watchdog: BUG: soft lockup - CPU#7 stuck for 110s! [diotest6:819970]
 
-fallocate04, fallocate05, fsetxattr01, fdatasync03, fgetxattr01 have the
-same issue as:
-tst_test.c:1278: INFO: Testing on vfat
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-mkfs.vfat: unable to open /dev/loop0
-tst_mkfs.c:101: BROK: mkfs.vfat:1: tst_test.c failed with 831
+-Rachel
 
-- RHEL7.8 x86_64
-  copy_file_range02 failed as a known kernel bug
-
-- RHEL7.8 ppc64le (I have confirmed the latest rhel7 kernel has fixed this
-bug)
-timer_delete01.c:47: FAIL: Aborting test -
-timer_create(CLOCK_BOOTTIME_ALARM) failed: ??? (524)
-timer_delete01.c:36: INFO: Testing CLOCK_REALTIME_ALARM
-timer_delete01.c:47: FAIL: Aborting test -
-timer_create(CLOCK_REALTIME_ALARM) failed: ??? (524)
-timer_delete01.c:36: INFO: Testing CLOCK_TAI
-timer_delete01.c:54: PASS: Timer deleted successfully!
-
-- Upstream kernel-5.5.0-rc5 x86_64/aarch64
-system hang at fs_fill, it more like the unstable kernel issue but not LTP
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200116/650951c5/attachment.htm>
