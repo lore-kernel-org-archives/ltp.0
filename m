@@ -1,313 +1,290 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 16 Jan 2020 13:31:00 +0100
-Subject: [LTP] [PATCH v2] Add test for misaligned fallocate()
-Message-ID: <20200116123100.13345-1-mdoucha@suse.cz>
+From: Rachel Sibley <rasibley@redhat.com>
+Date: Thu, 16 Jan 2020 08:41:59 -0500
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E13-rc1-7f1b863=2Ecki_=28stable=29?=
+In-Reply-To: <cki.FA900DB853.LBD049H627@redhat.com>
+References: <cki.FA900DB853.LBD049H627@redhat.com>
+Message-ID: <84944fa0-3c18-f8a4-47ca-7627eb4e0594@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Make sure that space allocation and deallocation works (or fails) correctly
-even when the requested file range does not align with filesystem blocks.
 
-Test on:
-- empty file system
-- full file system
-- also test with and without copy-on-write when supported
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+On 1/16/20 7:13 AM, CKI Project wrote:
+> 
+> Hello,
+> 
+> We ran automated tests on a recent commit from this kernel tree:
+> 
+>         Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>              Commit: 7f1b8631b5a5 - Linux 5.4.13-rc1
+> 
+> The results of these automated tests are provided below.
+> 
+>      Overall result: FAILED (see details below)
+>               Merge: OK
+>             Compile: OK
+>               Tests: FAILED
+> 
+> All kernel binaries, config files, and logs are available for download here:
+> 
+>    https://artifacts.cki-project.org/pipelines/385189
+> 
+> One or more kernel tests failed:
+> 
+>      ppc64le:
+>       ? LTP
 
-Note for reviewers: Feel free to ignore this patch until next week.
+Hi, I see max_map_count failed on ppc64le:
+https://artifacts.cki-project.org/pipelines/385189/logs/ppc64le_host_2_LTP_mm.run.log
 
-This patch is a follow-up to the fallocate05 fix. The original fallocate05
-test accidentally tested some misaligned allocation and deallocation
-on platforms with block size bigger than 8k but it didn't validate
-the results correctly. Test calling fallocate() on misaligned file range
-and this time validate the results properly, taking into account advanced
-FS features like copy-on-write.
+> 
+>      aarch64:
+>       ? Networking tunnel: gre basic
+>       ? Networking tunnel: vxlan basic
+> 
+>      x86_64:
+>       ? Networking route_func: local
+>       ? Networking tunnel: geneve basic test
 
-Changes since v1:
-- Fix compilation with --std=c89
-- Misalign by at most 512 bytes, otherwise the test may miss an XFS bug on PPC
+Please disregard the networking failures, they are related to an infrastructure bug and we now
+have a workaround to avoid these failure until it's resolved, you should stop seeing these shortly,
+sorry for the noise!
 
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/fallocate/fallocate06.c   | 253 ++++++++++++++++++
- 2 files changed, 254 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fallocate/fallocate06.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fa87ef63f..ec522e8fa 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -184,6 +184,7 @@ fallocate02 fallocate02
- fallocate03 fallocate03
- fallocate04 fallocate04
- fallocate05 fallocate05
-+fallocate06 fallocate06
- 
- fsetxattr01 fsetxattr01
- fsetxattr02 fsetxattr02
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
-new file mode 100644
-index 000000000..6ec9df030
---- /dev/null
-+++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
-@@ -0,0 +1,253 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
-+ */
-+
-+/*
-+ * Tests misaligned fallocate()
-+ * Test scenario:
-+ * 1. write() several blocks worth of data
-+ * 2. fallocate() some more space (not aligned to FS blocks)
-+ * 3. try to write() into the allocated space
-+ * 4. deallocate misaligned part of file range written in step 1
-+ * 5. read() the deallocated range and check that it was zeroed
-+ *
-+ * Subtests:
-+ * - fill file system between step 2 and 3
-+ * - disable copy-on-write on test file
-+ * - combinations of above subtests
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include <sys/ioctl.h>
-+#include <linux/fs.h>
-+#include "tst_test.h"
-+#include "lapi/fallocate.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define TEMPFILE MNTPOINT "/test_file"
-+#define WRITE_BLOCKS 8
-+#define FALLOCATE_BLOCKS 2
-+#define DEALLOCATE_BLOCKS 3
-+#define TESTED_FLAGS "fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)"
-+
-+const struct test_case {
-+	int no_cow, fill_fs;
-+} testcase_list[] = {
-+	{1, 0},
-+	{1, 1},
-+	{0, 0},
-+	{0, 1}
-+};
-+
-+static int cow_support;
-+static char *wbuf, *rbuf;
-+static blksize_t blocksize;
-+static long wbuf_size, rbuf_size, block_offset;
-+
-+static int toggle_cow(int fd, int enable)
-+{
-+	int ret, attr;
-+
-+	ret = ioctl(fd, FS_IOC_GETFLAGS, &attr);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		attr &= ~FS_NOCOW_FL;
-+	else
-+		attr |= FS_NOCOW_FL;
-+
-+	return ioctl(fd, FS_IOC_SETFLAGS, &attr);
-+}
-+
-+static void setup(void) {
-+	unsigned char ch;
-+	long i;
-+	int fd;
-+	struct stat statbuf;
-+
-+	fd = SAFE_OPEN(TEMPFILE, O_WRONLY | O_CREAT | O_TRUNC);
-+
-+	/*
-+	 * Set FS_NOCOW_FL flag on the temp file. Non-CoW filesystems will
-+	 * return error.
-+	 */
-+	TEST(toggle_cow(fd, 0));
-+	SAFE_FSTAT(fd, &statbuf);
-+	blocksize = statbuf.st_blksize;
-+	block_offset = MIN(blocksize / 2, 512);
-+	wbuf_size = MAX(WRITE_BLOCKS, FALLOCATE_BLOCKS) * blocksize;
-+	rbuf_size = (DEALLOCATE_BLOCKS + 1) * blocksize;
-+	SAFE_CLOSE(fd);
-+	SAFE_UNLINK(TEMPFILE);
-+
-+	if (blocksize < 2)
-+		tst_brk(TCONF, "Block size %ld too small for test", blocksize);
-+
-+	if (!TST_RET)
-+		cow_support = 1;
-+	else switch (TST_ERR) {
-+	case ENOTSUP:
-+	case ENOTTY:
-+	case EINVAL:
-+	case ENOSYS:
-+		cow_support = 0;
-+		break;
-+
-+	default:
-+		tst_brk(TBROK|TTERRNO, "Error checking copy-on-write support");
-+	}
-+
-+	tst_res(TINFO, "Copy-on-write is%s supported",
-+		cow_support ? "" : " not");
-+	wbuf = SAFE_MALLOC(wbuf_size);
-+	rbuf = SAFE_MALLOC(rbuf_size);
-+
-+	/* Fill the buffer with known values */
-+	for (i = 0, ch = 1; i < wbuf_size; i++, ch++) {
-+		wbuf[i] = ch;
-+	}
-+}
-+
-+static int check_result(const struct test_case *tc, const char *func, long exp)
-+{
-+	if (tc->fill_fs && !tc->no_cow && TST_RET < 0) {
-+		if (TST_RET != -1) {
-+			tst_res(TFAIL, "%s returned unexpected value %ld",
-+				func, TST_RET);
-+			return 0;
-+		}
-+
-+		if (TST_ERR != ENOSPC) {
-+			tst_res(TFAIL | TTERRNO, "%s should fail with ENOSPC",
-+				func);
-+			return 0;
-+		}
-+
-+		tst_res(TPASS | TTERRNO, "%s on full FS with CoW", func);
-+	} else if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "%s failed unexpectedly", func);
-+		return 0;
-+	} else if (TST_RET != exp) {
-+		tst_res(TFAIL,
-+			"Unexpected return value from %s: %ld (expected %ld)",
-+			func, TST_RET, exp);
-+		return 0;
-+	} else
-+		tst_res(TPASS, "%s successful", func);
-+
-+	return 1;
-+}
-+
-+static void run(unsigned int n)
-+{
-+	int fd;
-+	long offset, size;
-+	const struct test_case *tc = testcase_list + n;
-+
-+	tst_res(TINFO, "Case %u. Fill FS: %s; Use copy on write: %s", n+1,
-+		tc->fill_fs ? "yes" : "no", tc->no_cow ? "no" : "yes");
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT | O_TRUNC);
-+
-+	if (cow_support)
-+		toggle_cow(fd, !tc->no_cow);
-+	else if (!tc->no_cow)
-+		tst_brk(TCONF, "File system does not support copy-on-write");
-+
-+	/* Prepare test data for deallocation test */
-+	size = WRITE_BLOCKS * blocksize;
-+	TEST(write(fd, wbuf, size));
-+
-+	if (TST_RET < 0)
-+		tst_res(TFAIL | TTERRNO, "write() failed unexpectedly");
-+	else if (TST_RET != size)
-+		tst_res(TFAIL, "Short write(): %ld bytes (expected %ld)",
-+			TST_RET, size);
-+	else
-+		tst_res(TPASS, "write() wrote %ld bytes", TST_RET);
-+
-+	/* Allocation test */
-+	offset = size + block_offset;
-+	size = FALLOCATE_BLOCKS * blocksize;
-+	TEST(fallocate(fd, 0, offset, size));
-+
-+	if (TST_RET) {
-+		if (TST_ERR == ENOTSUP) {
-+			SAFE_CLOSE(fd);
-+			tst_brk(TCONF | TTERRNO, "fallocate() not supported");
-+		}
-+
-+		tst_brk(TBROK | TTERRNO, "fallocate(fd, 0, %ld, %ld)", offset,
-+			size);
-+	}
-+
-+	if (tc->fill_fs)
-+		tst_fill_fs(MNTPOINT, 1);
-+
-+	SAFE_LSEEK(fd, offset, SEEK_SET);
-+	TEST(write(fd, wbuf, size));
-+	if (check_result(tc, "write()", size))
-+		tst_res(TPASS, "Misaligned allocation works as expected");
-+
-+	/* Deallocation test */
-+	size = DEALLOCATE_BLOCKS * blocksize;
-+	offset = block_offset;
-+	TEST(fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, offset,
-+		size));
-+
-+	if (TST_RET == -1 && TST_ERR == ENOTSUP) {
-+		tst_res(TCONF | TTERRNO, TESTED_FLAGS);
-+	} else if (check_result(tc, TESTED_FLAGS, 0) && !TST_RET) {
-+		int i, err = 0;
-+
-+		SAFE_LSEEK(fd, 0, SEEK_SET);
-+		SAFE_READ(1, fd, rbuf, rbuf_size);
-+
-+		for (i = offset; i < offset + size; i++) {
-+			if (rbuf[i]) {
-+				err = 1;
-+				break;
-+			}
-+		}
-+
-+		err = err || memcmp(rbuf, wbuf, offset);
-+		offset += size;
-+		size = rbuf_size - offset;
-+		err = err || memcmp(rbuf + offset, wbuf + offset, size);
-+
-+		if (err)
-+			tst_res(TFAIL, TESTED_FLAGS
-+				" did not clear the correct file range.");
-+		else
-+			tst_res(TPASS, TESTED_FLAGS
-+				" cleared the correct file range");
-+	}
-+
-+	SAFE_CLOSE(fd);
-+	tst_system("rm -r " MNTPOINT "/*");
-+}
-+
-+static void cleanup(void)
-+{
-+	free(wbuf);
-+	free(rbuf);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.dev_min_size = 512,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
--- 
-2.24.1
+> 
+> We hope that these logs can help you find the problem quickly. For the full
+> detail on our testing procedures, please scroll to the bottom of this message.
+> 
+> Please reply to this email if you have any questions about the tests that we
+> ran or if you have any suggestions on how to make future tests more effective.
+> 
+>          ,-.   ,-.
+>         ( C ) ( K )  Continuous
+>          `-',-.`-'   Kernel
+>            ( I )     Integration
+>             `-'
+> ______________________________________________________________________________
+> 
+> Compile testing
+> ---------------
+> 
+> We compiled the kernel for 3 architectures:
+> 
+>      aarch64:
+>        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> 
+>      ppc64le:
+>        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> 
+>      x86_64:
+>        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> 
+> 
+> Hardware testing
+> ----------------
+> We booted each kernel and ran the following tests:
+> 
+>    aarch64:
+>      Host 1:
+>         ? Boot test
+>         ? Podman system integration test (as root)
+>         ? Podman system integration test (as user)
+>         ? LTP
+>         ? Loopdev Sanity
+>         ? Memory function: memfd_create
+>         ? AMTU (Abstract Machine Test Utility)
+>         ? Networking bridge: sanity
+>         ? Ethernet drivers sanity
+>         ? Networking MACsec: sanity
+>         ? Networking socket: fuzz
+>         ? Networking sctp-auth: sockopts test
+>         ? Networking: igmp conformance test
+>         ? Networking route: pmtu
+>         ? Networking route_func: local
+>         ? Networking route_func: forward
+>         ? Networking TCP: keepalive test
+>         ? Networking UDP: socket
+>         ? Networking tunnel: geneve basic test
+>         ? Networking tunnel: gre basic
+>         ? L2TP basic test
+>         ? Networking tunnel: vxlan basic
+>         ? Networking ipsec: basic netns transport
+>         ? Networking ipsec: basic netns tunnel
+>         ? audit: audit testsuite test
+>         ? httpd: mod_ssl smoke sanity
+>         ? tuned: tune-processes-through-perf
+>         ? ALSA PCM loopback test
+>         ? ALSA Control (mixer) Userspace Element test
+>         ? storage: SCSI VPD
+>         ? trace: ftrace/tracer
+>         ? ? CIFS Connectathon
+>         ?  POSIX pjd-fstest suites
+>         ?  jvm test suite
+>         ?  Memory function: kaslr
+>         ?  LTP: openposix test suite
+>         ?  Networking vnic: ipvlan/basic
+>         ?  iotop: sanity
+>         ?  Usex - version 1.9-29
+>         ?  storage: dm/common
+> 
+>      Host 2:
+> 
+>         ? Internal infrastructure issues prevented one or more tests (marked
+>         with ???) from running on this architecture.
+>         This is not the fault of the kernel that was tested.
+> 
+>         ? Boot test
+>         ? xfstests: ext4
+>         ? xfstests: xfs
+>         ? selinux-policy: serge-testsuite
+>         ? lvm thinp sanity
+>         ? storage: software RAID testing
+>         ? stress: stress-ng
+>         ? ??? IPMI driver test
+>         ? ? IPMItool loop stress test
+>         ? ??? Storage blktests
+> 
+>    ppc64le:
+>      Host 1:
+>         ? Boot test
+>         ? xfstests: ext4
+>         ? xfstests: xfs
+>         ? selinux-policy: serge-testsuite
+>         ? lvm thinp sanity
+>         ? storage: software RAID testing
+>         ? ? IPMI driver test
+>         ? ? IPMItool loop stress test
+>         ? ? Storage blktests
+> 
+>      Host 2:
+>         ? Boot test
+>         ? Podman system integration test (as root)
+>         ? Podman system integration test (as user)
+>         ? LTP
+>         ? Loopdev Sanity
+>         ? Memory function: memfd_create
+>         ? AMTU (Abstract Machine Test Utility)
+>         ? Networking bridge: sanity
+>         ? Ethernet drivers sanity
+>         ? Networking MACsec: sanity
+>         ? Networking socket: fuzz
+>         ? Networking sctp-auth: sockopts test
+>         ? Networking route: pmtu
+>         ? Networking route_func: local
+>         ? Networking route_func: forward
+>         ? Networking TCP: keepalive test
+>         ? Networking UDP: socket
+>         ? Networking tunnel: geneve basic test
+>         ? Networking tunnel: gre basic
+>         ? L2TP basic test
+>         ? Networking tunnel: vxlan basic
+>         ? Networking ipsec: basic netns tunnel
+>         ? audit: audit testsuite test
+>         ? httpd: mod_ssl smoke sanity
+>         ? tuned: tune-processes-through-perf
+>         ? ALSA PCM loopback test
+>         ? ALSA Control (mixer) Userspace Element test
+>         ? trace: ftrace/tracer
+>         ? ? CIFS Connectathon
+>         ? ? POSIX pjd-fstest suites
+>         ? ? jvm test suite
+>         ? ? Memory function: kaslr
+>         ? ? LTP: openposix test suite
+>         ? ? Networking vnic: ipvlan/basic
+>         ? ? iotop: sanity
+>         ? ? Usex - version 1.9-29
+>         ? ? storage: dm/common
+> 
+>    x86_64:
+>      Host 1:
+>         ?  Boot test
+>         ?  Storage SAN device stress - mpt3sas driver
+> 
+>      Host 2:
+>         ?  Boot test
+>         ?  Storage SAN device stress - megaraid_sas
+> 
+>      Host 3:
+> 
+>         ? Internal infrastructure issues prevented one or more tests (marked
+>         with ???) from running on this architecture.
+>         This is not the fault of the kernel that was tested.
+> 
+>         ? Boot test
+>         ? xfstests: ext4
+>         ? xfstests: xfs
+>         ? selinux-policy: serge-testsuite
+>         ? lvm thinp sanity
+>         ? storage: software RAID testing
+>         ? stress: stress-ng
+>         ? ? IOMMU boot test
+>         ? ? IPMI driver test
+>         ? ? IPMItool loop stress test
+>         ? ??? power-management: cpupower/sanity test
+>         ? ? Storage blktests
+> 
+>      Host 4:
+>         ? Boot test
+>         ? Podman system integration test (as root)
+>         ? Podman system integration test (as user)
+>         ? LTP
+>         ? Loopdev Sanity
+>         ? Memory function: memfd_create
+>         ? AMTU (Abstract Machine Test Utility)
+>         ? Networking bridge: sanity
+>         ? Ethernet drivers sanity
+>         ? Networking MACsec: sanity
+>         ? Networking socket: fuzz
+>         ? Networking sctp-auth: sockopts test
+>         ? Networking: igmp conformance test
+>         ? Networking route: pmtu
+>         ? Networking route_func: local
+>         ? Networking route_func: forward
+>         ? Networking TCP: keepalive test
+>         ? Networking UDP: socket
+>         ? Networking tunnel: geneve basic test
+>         ? Networking tunnel: gre basic
+>         ? L2TP basic test
+>         ? Networking tunnel: vxlan basic
+>         ? Networking ipsec: basic netns transport
+>         ? Networking ipsec: basic netns tunnel
+>         ? audit: audit testsuite test
+>         ? httpd: mod_ssl smoke sanity
+>         ? tuned: tune-processes-through-perf
+>         ? pciutils: sanity smoke test
+>         ? ALSA PCM loopback test
+>         ? ALSA Control (mixer) Userspace Element test
+>         ? storage: SCSI VPD
+>         ? trace: ftrace/tracer
+>         ? ? CIFS Connectathon
+>         ? ? POSIX pjd-fstest suites
+>         ?  jvm test suite
+>         ?  Memory function: kaslr
+>         ?  LTP: openposix test suite
+>         ?  Networking vnic: ipvlan/basic
+>         ?  iotop: sanity
+>         ?  Usex - version 1.9-29
+>         ?  storage: dm/common
+> 
+>    Test sources: https://github.com/CKI-project/tests-beaker
+>      ? Pull requests are welcome for new tests or improvements to existing tests!
+> 
+> Waived tests
+> ------------
+> If the test run included waived tests, they are marked with ?. Such tests are
+> executed but their results are not taken into account. Tests are waived when
+> their results are not reliable enough, e.g. when they're just introduced or are
+> being fixed.
+> 
+> Testing timeout
+> ---------------
+> We aim to provide a report within reasonable timeframe. Tests that haven't
+> finished running are marked with ?. Reports for non-upstream kernels have
+> a Beaker recipe linked to next to each host.
+> 
+> 
 
