@@ -1,45 +1,45 @@
-From: Rachel Sibley <rasibley@redhat.com>
-Date: Thu, 16 Jan 2020 11:39:14 -0500
-Subject: [LTP] ??? FAIL: Test report for kernel 5.4.12-100.fc30
- (fedora-30)
-In-Reply-To: <20200116155952.GB558@rei>
-References: <cki.0.BMO32N203K@redhat.com> <20200116155952.GB558@rei>
-Message-ID: <b251c469-ade3-bc34-8e07-1789640693e8@redhat.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 16 Jan 2020 23:02:06 +0530
+Subject: [LTP] LTP: statx06: FAIL: Birth time < before time
+Message-ID: <CA+G9fYuBdcZvE6VPm9i2=F0mK5u3j6Z+RHbFBQ1zh9qbN_4kaw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+LTP syscalls statx06 test case getting failed from linux next 20200115
+tag onwards on all x86_64, i386, arm and arm64 devices
 
+Test output:
+statx06.c:152: FAIL: Birth time < before time
+statx06.c:156: PASS: Modified time Passed
+statx06.c:156: PASS: Access time Passed
+statx06.c:156: PASS: Change time Passed
 
-On 1/16/20 10:59 AM, Cyril Hrubis wrote:
-> Hi!
->>      Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/384229
-> 
-> Looks like unreachable URL again.
-> 
+strace output snippet:
+[pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000}) = 0
+[pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
+[pid   498] openat(AT_FDCWD, \"mount_ext/test_file.txt\",
+O_RDWR|O_CREAT, 0666) = 3
+[pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000}) = 0
+[pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
+[pid   498] statx(AT_FDCWD, \"mount_ext/test_file.txt\",
+AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS,
+stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=0, ...}) = 0
+[pid   498] write(2, \"statx06.c:152: \33[1;31mFAIL: \33[0m\"...,
+57statx06.c:152: [1;31mFAIL: [0mBirth time < before time
+) = 57
 
-Oops sorry about that, since the Fedora maintainers had access to internal logs we used the regular
-template, only after did we start cc'ing LTP for upstream failures. I just changed it to the correct
-email template to include links to our external logs.
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1107634#L2276
 
-The failure was a dmesg check probably related to running on a slow kvm guest:
+Test results comparison link,
+https://qa-reports.linaro.org/lkft/linux-next-oe/tests/ltp-syscalls-tests/statx06
 
-[ 5646.612562] watchdog: BUG: soft lockup - CPU#15 stuck for 31s! [systemd-journal:559]
-[ 5840.828707] watchdog: BUG: soft lockup - CPU#10 stuck for 23s! [systemd:1]
-[ 6018.881344] watchdog: BUG: soft lockup - CPU#2 stuck for 50s! [systemd-coredum:819905]
-[ 6047.933641] watchdog: BUG: soft lockup - CPU#15 stuck for 21s! [systemd:1]
-[ 6100.825887] watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [systemd-coredum:819905]
-[ 6369.103978] watchdog: BUG: soft lockup - CPU#5 stuck for 23s! [diotest6:819897]
-[ 6780.415986] watchdog: BUG: soft lockup - CPU#10 stuck for 22s! [khvcd:223]
-[ 6831.956434] watchdog: BUG: soft lockup - CPU#3 stuck for 70s! [migration/3:25]
-[ 6831.956436] watchdog: BUG: soft lockup - CPU#2 stuck for 52s! [kworker/2:2:1997]
-[ 6864.394439] watchdog: BUG: soft lockup - CPU#3 stuck for 22s! [rcu_sched:10]
-[ 7004.381847] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [rcu_sched:10]
-[ 7084.688008] watchdog: BUG: soft lockup - CPU#4 stuck for 67s! [kworker/4:3:818401]
-[ 7108.389938] watchdog: BUG: soft lockup - CPU#4 stuck for 22s! [rcu_sched:10]
-[ 7303.256283] watchdog: BUG: soft lockup - CPU#7 stuck for 110s! [diotest6:819970]
+Test case link,
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/statx/statx06.c
 
--Rachel
-
+--
+Linaro LKFT
+https://lkft.linaro.org
