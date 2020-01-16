@@ -1,290 +1,228 @@
-From: Rachel Sibley <rasibley@redhat.com>
-Date: Thu, 16 Jan 2020 08:41:59 -0500
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E13-rc1-7f1b863=2Ecki_=28stable=29?=
-In-Reply-To: <cki.FA900DB853.LBD049H627@redhat.com>
-References: <cki.FA900DB853.LBD049H627@redhat.com>
-Message-ID: <84944fa0-3c18-f8a4-47ca-7627eb4e0594@redhat.com>
+From: Zorro Lang <zlang@redhat.com>
+Date: Thu, 16 Jan 2020 23:08:49 +0800
+Subject: [LTP] [PATCH v4] syscalls/newmount: new test case for new mount
+ API
+In-Reply-To: <20200116114900.GA4897@rei>
+References: <20200116075633.29752-1-zlang@redhat.com>
+ <20200116114900.GA4897@rei>
+Message-ID: <20200116150849.GF14282@dhcp-12-102.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Thu, Jan 16, 2020 at 12:49:00PM +0100, Cyril Hrubis wrote:
+> Hi!
+> >  configure.ac                                  |   1 +
+> >  include/lapi/newmount.h                       |  95 +++++++++++++++
+> >  include/lapi/syscalls/aarch64.in              |   4 +
+> >  include/lapi/syscalls/powerpc64.in            |   4 +
+> >  include/lapi/syscalls/s390x.in                |   4 +
+> >  include/lapi/syscalls/x86_64.in               |   4 +
+> >  m4/ltp-newmount.m4                            |  10 ++
+> >  runtest/syscalls                              |   2 +
+> >  testcases/kernel/syscalls/newmount/.gitignore |   1 +
+> >  testcases/kernel/syscalls/newmount/Makefile   |   9 ++
+> >  .../kernel/syscalls/newmount/newmount01.c     | 112 ++++++++++++++++++
+> >  11 files changed, 246 insertions(+)
+> >  create mode 100644 include/lapi/newmount.h
+> >  create mode 100644 m4/ltp-newmount.m4
+> >  create mode 100644 testcases/kernel/syscalls/newmount/.gitignore
+> >  create mode 100644 testcases/kernel/syscalls/newmount/Makefile
+> >  create mode 100644 testcases/kernel/syscalls/newmount/newmount01.c
 
+[snip]
 
-On 1/16/20 7:13 AM, CKI Project wrote:
+> > diff --git a/m4/ltp-newmount.m4 b/m4/ltp-newmount.m4
+> > new file mode 100644
+> > index 000000000..e13a6f0b1
+> > --- /dev/null
+> > +++ b/m4/ltp-newmount.m4
+> > @@ -0,0 +1,10 @@
+> > +dnl SPDX-License-Identifier: GPL-2.0-or-later
+> > +dnl Copyright (C) 2019 Red Hat, Inc. All Rights Reserved.
+> > +
+> > +AC_DEFUN([LTP_CHECK_NEWMOUNT],[
+> > +AC_CHECK_FUNCS(fsopen,,)
+> > +AC_CHECK_FUNCS(fsconfig,,)
+> > +AC_CHECK_FUNCS(fsmount,,)
+> > +AC_CHECK_FUNCS(move_mount,,)
+> > +AC_CHECK_HEADER(sys/mount.h,,,)
 > 
-> Hello,
-> 
-> We ran automated tests on a recent commit from this kernel tree:
-> 
->         Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->              Commit: 7f1b8631b5a5 - Linux 5.4.13-rc1
-> 
-> The results of these automated tests are provided below.
-> 
->      Overall result: FAILED (see details below)
->               Merge: OK
->             Compile: OK
->               Tests: FAILED
-> 
-> All kernel binaries, config files, and logs are available for download here:
-> 
->    https://artifacts.cki-project.org/pipelines/385189
-> 
-> One or more kernel tests failed:
-> 
->      ppc64le:
->       ? LTP
+> There is no point in checking if the sys/mount.h exits, it has been
+> there for years. You are not using the HAVE_SYS_MOUNT_H macro anywhere in
+> the code either.
 
-Hi, I see max_map_count failed on ppc64le:
-https://artifacts.cki-project.org/pipelines/385189/logs/ppc64le_host_2_LTP_mm.run.log
+Hi,
 
-> 
->      aarch64:
->       ? Networking tunnel: gre basic
->       ? Networking tunnel: vxlan basic
-> 
->      x86_64:
->       ? Networking route_func: local
->       ? Networking tunnel: geneve basic test
+Thanks so much for your review:)
 
-Please disregard the networking failures, they are related to an infrastructure bug and we now
-have a workaround to avoid these failure until it's resolved, you should stop seeing these shortly,
-sorry for the noise!
+Sure. I don't include <sys/mount.h> in case, due to I don't know how
+glibc will deal with these new syscalls, glibc isn't working on that
+yet. I'd like to add includes file in the future after we see the glibc
+update:)
 
 > 
-> We hope that these logs can help you find the problem quickly. For the full
-> detail on our testing procedures, please scroll to the bottom of this message.
+> > +])
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index fa87ef63f..bd0725977 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -794,6 +794,8 @@ nanosleep01 nanosleep01
+> >  nanosleep02 nanosleep02
+> >  nanosleep04 nanosleep04
+> >  
+> > +newmount01 newmount01
 > 
-> Please reply to this email if you have any questions about the tests that we
-> ran or if you have any suggestions on how to make future tests more effective.
+> I'm not sure if we shouldn't call the test fsmount01.c since the main
+> syscall we are testing here is fsmount().
+
+Yeah.. Although this case uses fsmount(), my later cases about new mount API
+might not use it. I don't like the name "newmount0*" either, but I don't have
+a better one for now. If anyone has a better name, please feel free to tell
+me :)
+
 > 
->          ,-.   ,-.
->         ( C ) ( K )  Continuous
->          `-',-.`-'   Kernel
->            ( I )     Integration
->             `-'
-> ______________________________________________________________________________
+> >  nftw01 nftw01
+> >  nftw6401 nftw6401
+> >  
+> > diff --git a/testcases/kernel/syscalls/newmount/.gitignore b/testcases/kernel/syscalls/newmount/.gitignore
+> > new file mode 100644
+> > index 000000000..dc78edd5b
+> > --- /dev/null
+
+[snip]
+
+> > +static void cleanup(void)
+> > +{
+> > +	if (is_mounted) {
+> > +		TEST(tst_umount(MNTPOINT));
+> > +		if (TST_RET != 0)
+> > +			tst_brk(TFAIL | TTERRNO, "umount failed in cleanup");
+> > +	}
+> > +}
+> > +
+> > +static void test_newmount(void)
+> > +{
+> > +	TEST(fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsopen %s", tst_device->fs_type);
 > 
-> Compile testing
-> ---------------
+> You can't use tst_brk() with TFAIL at the moment. You should either do
+> tst_res() followed by return or change the TFAIL to TBROK.
+
+OK, I'll use tst_brk(TBROK | TTERRNO, ...), and change all "tst_brk(TFAIL ...".
+
 > 
-> We compiled the kernel for 3 architectures:
+> See:
 > 
->      aarch64:
->        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> https://github.com/linux-test-project/ltp/issues/462
 > 
->      ppc64le:
->        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> Also this will likely fail on older kernels that does not support the
+> syscall. I guess that you will get einval here if the fsopen() is not
+> implemented in kernel. You have to at least set the min_kver in the
+> tst_test structure so that the test is skipped on older kernels.
+
+If an older downstream kernel (e.g. rhel8/centos kernel-4.18.0-xxx.el8)
+merges new mount API features, this case will think the kernel version
+is too low to do this test.
+
+I just tested on an old kernel which doesn't support new mount feature.
+Then I get this:
+
+  ...
+  ...
+  tst_test.c:1278: INFO: Testing on xfs
+  tst_mkfs.c:90: INFO: Formatting /dev/loop1 with xfs opts='' extra opts=''
+  tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
+  ../../../../include/lapi/newmount.h:18: CONF: syscall(430) __NR_fsopen not supported
+
+I think it's fine, due to generally we ignore CONF. What do you think?
+
+Thanks,
+Zorro
+
 > 
->      x86_64:
->        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> > +	}
+> > +	sfd = TST_RET;
+> > +	tst_res(TPASS, "fsopen %s", tst_device->fs_type);
+> > +
+> > +	TEST(fsconfig(sfd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsconfig set source to %s", tst_device->dev);
 > 
+> Here as well.
 > 
-> Hardware testing
-> ----------------
-> We booted each kernel and ran the following tests:
+> > +	}
+> > +	tst_res(TPASS, "fsconfig set source to %s", tst_device->dev);
+> > +
+> > +
+> > +	TEST(fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO,
+> > +		        "fsconfig create superblock");
 > 
->    aarch64:
->      Host 1:
->         ? Boot test
->         ? Podman system integration test (as root)
->         ? Podman system integration test (as user)
->         ? LTP
->         ? Loopdev Sanity
->         ? Memory function: memfd_create
->         ? AMTU (Abstract Machine Test Utility)
->         ? Networking bridge: sanity
->         ? Ethernet drivers sanity
->         ? Networking MACsec: sanity
->         ? Networking socket: fuzz
->         ? Networking sctp-auth: sockopts test
->         ? Networking: igmp conformance test
->         ? Networking route: pmtu
->         ? Networking route_func: local
->         ? Networking route_func: forward
->         ? Networking TCP: keepalive test
->         ? Networking UDP: socket
->         ? Networking tunnel: geneve basic test
->         ? Networking tunnel: gre basic
->         ? L2TP basic test
->         ? Networking tunnel: vxlan basic
->         ? Networking ipsec: basic netns transport
->         ? Networking ipsec: basic netns tunnel
->         ? audit: audit testsuite test
->         ? httpd: mod_ssl smoke sanity
->         ? tuned: tune-processes-through-perf
->         ? ALSA PCM loopback test
->         ? ALSA Control (mixer) Userspace Element test
->         ? storage: SCSI VPD
->         ? trace: ftrace/tracer
->         ? ? CIFS Connectathon
->         ?  POSIX pjd-fstest suites
->         ?  jvm test suite
->         ?  Memory function: kaslr
->         ?  LTP: openposix test suite
->         ?  Networking vnic: ipvlan/basic
->         ?  iotop: sanity
->         ?  Usex - version 1.9-29
->         ?  storage: dm/common
+> And here as well.
 > 
->      Host 2:
+> > +	}
+> > +	tst_res(TPASS, "fsconfig create superblock");
+> > +
+> > +	TEST(fsmount(sfd, FSMOUNT_CLOEXEC, 0));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO, "fsmount");
+> > +	}
 > 
->         ? Internal infrastructure issues prevented one or more tests (marked
->         with ???) from running on this architecture.
->         This is not the fault of the kernel that was tested.
+> And here as well.
 > 
->         ? Boot test
->         ? xfstests: ext4
->         ? xfstests: xfs
->         ? selinux-policy: serge-testsuite
->         ? lvm thinp sanity
->         ? storage: software RAID testing
->         ? stress: stress-ng
->         ? ??? IPMI driver test
->         ? ? IPMItool loop stress test
->         ? ??? Storage blktests
+> Also LKML prefers not to have curly braces around single line blocks.
 > 
->    ppc64le:
->      Host 1:
->         ? Boot test
->         ? xfstests: ext4
->         ? xfstests: xfs
->         ? selinux-policy: serge-testsuite
->         ? lvm thinp sanity
->         ? storage: software RAID testing
->         ? ? IPMI driver test
->         ? ? IPMItool loop stress test
->         ? ? Storage blktests
+> See:
+> https://www.kernel.org/doc/html/v4.10/process/coding-style.html#placing-braces-and-spaces
 > 
->      Host 2:
->         ? Boot test
->         ? Podman system integration test (as root)
->         ? Podman system integration test (as user)
->         ? LTP
->         ? Loopdev Sanity
->         ? Memory function: memfd_create
->         ? AMTU (Abstract Machine Test Utility)
->         ? Networking bridge: sanity
->         ? Ethernet drivers sanity
->         ? Networking MACsec: sanity
->         ? Networking socket: fuzz
->         ? Networking sctp-auth: sockopts test
->         ? Networking route: pmtu
->         ? Networking route_func: local
->         ? Networking route_func: forward
->         ? Networking TCP: keepalive test
->         ? Networking UDP: socket
->         ? Networking tunnel: geneve basic test
->         ? Networking tunnel: gre basic
->         ? L2TP basic test
->         ? Networking tunnel: vxlan basic
->         ? Networking ipsec: basic netns tunnel
->         ? audit: audit testsuite test
->         ? httpd: mod_ssl smoke sanity
->         ? tuned: tune-processes-through-perf
->         ? ALSA PCM loopback test
->         ? ALSA Control (mixer) Userspace Element test
->         ? trace: ftrace/tracer
->         ? ? CIFS Connectathon
->         ? ? POSIX pjd-fstest suites
->         ? ? jvm test suite
->         ? ? Memory function: kaslr
->         ? ? LTP: openposix test suite
->         ? ? Networking vnic: ipvlan/basic
->         ? ? iotop: sanity
->         ? ? Usex - version 1.9-29
->         ? ? storage: dm/common
+> > +	mfd = TST_RET;
+> > +	tst_res(TPASS, "fsmount");
+> > +	SAFE_CLOSE(sfd);
+> > +
+> > +	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
+> > +	if (TST_RET < 0) {
+> > +		tst_brk(TFAIL | TTERRNO, "move_mount attach to mount point");
+> > +	}
 > 
->    x86_64:
->      Host 1:
->         ?  Boot test
->         ?  Storage SAN device stress - mpt3sas driver
+> Here as well.
 > 
->      Host 2:
->         ?  Boot test
->         ?  Storage SAN device stress - megaraid_sas
+> > +	is_mounted = 1;
+> > +	tst_res(TPASS, "move_mount attach to mount point");
+> > +	SAFE_CLOSE(mfd);
+> > +
+> > +	if (ismount(MNTPOINT)) {
+> > +		tst_res(TPASS, "new mount works");
+> > +		TEST(tst_umount(MNTPOINT));
+> > +		if (TST_RET != 0)
+> > +			tst_brk(TFAIL | TTERRNO, "umount failed");
 > 
->      Host 3:
+> Here as well.
 > 
->         ? Internal infrastructure issues prevented one or more tests (marked
->         with ???) from running on this architecture.
->         This is not the fault of the kernel that was tested.
+> > +		is_mounted = 0;
+> > +	} else {
+> > +		tst_res(TFAIL, "new mount fails");
+> > +	}
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test_all	= test_newmount,
+> > +	.cleanup	= cleanup,
+> > +	.needs_root	= 1,
+> > +	.mntpoint	= MNTPOINT,
+> > +	.format_device	= 1,
+> > +	.all_filesystems = 1,
+> > +	.dev_fs_flags	= TST_FS_SKIP_FUSE,
+> > +};
 > 
->         ? Boot test
->         ? xfstests: ext4
->         ? xfstests: xfs
->         ? selinux-policy: serge-testsuite
->         ? lvm thinp sanity
->         ? storage: software RAID testing
->         ? stress: stress-ng
->         ? ? IOMMU boot test
->         ? ? IPMI driver test
->         ? ? IPMItool loop stress test
->         ? ??? power-management: cpupower/sanity test
->         ? ? Storage blktests
-> 
->      Host 4:
->         ? Boot test
->         ? Podman system integration test (as root)
->         ? Podman system integration test (as user)
->         ? LTP
->         ? Loopdev Sanity
->         ? Memory function: memfd_create
->         ? AMTU (Abstract Machine Test Utility)
->         ? Networking bridge: sanity
->         ? Ethernet drivers sanity
->         ? Networking MACsec: sanity
->         ? Networking socket: fuzz
->         ? Networking sctp-auth: sockopts test
->         ? Networking: igmp conformance test
->         ? Networking route: pmtu
->         ? Networking route_func: local
->         ? Networking route_func: forward
->         ? Networking TCP: keepalive test
->         ? Networking UDP: socket
->         ? Networking tunnel: geneve basic test
->         ? Networking tunnel: gre basic
->         ? L2TP basic test
->         ? Networking tunnel: vxlan basic
->         ? Networking ipsec: basic netns transport
->         ? Networking ipsec: basic netns tunnel
->         ? audit: audit testsuite test
->         ? httpd: mod_ssl smoke sanity
->         ? tuned: tune-processes-through-perf
->         ? pciutils: sanity smoke test
->         ? ALSA PCM loopback test
->         ? ALSA Control (mixer) Userspace Element test
->         ? storage: SCSI VPD
->         ? trace: ftrace/tracer
->         ? ? CIFS Connectathon
->         ? ? POSIX pjd-fstest suites
->         ?  jvm test suite
->         ?  Memory function: kaslr
->         ?  LTP: openposix test suite
->         ?  Networking vnic: ipvlan/basic
->         ?  iotop: sanity
->         ?  Usex - version 1.9-29
->         ?  storage: dm/common
-> 
->    Test sources: https://github.com/CKI-project/tests-beaker
->      ? Pull requests are welcome for new tests or improvements to existing tests!
-> 
-> Waived tests
-> ------------
-> If the test run included waived tests, they are marked with ?. Such tests are
-> executed but their results are not taken into account. Tests are waived when
-> their results are not reliable enough, e.g. when they're just introduced or are
-> being fixed.
-> 
-> Testing timeout
-> ---------------
-> We aim to provide a report within reasonable timeframe. Tests that haven't
-> finished running are marked with ?. Reports for non-upstream kernels have
-> a Beaker recipe linked to next to each host.
-> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 > 
 
