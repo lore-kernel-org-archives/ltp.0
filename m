@@ -1,89 +1,273 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 16 Jan 2020 12:52:27 +0100
-Subject: [LTP] [PATCH v4] syscalls/newmount: new test case for new mount
- API
-In-Reply-To: <20200116075633.29752-1-zlang@redhat.com>
-References: <20200116075633.29752-1-zlang@redhat.com>
-Message-ID: <20200116115227.GA19435@dell5510>
+From: CKI Project <cki-project@redhat.com>
+Date: Thu, 16 Jan 2020 12:13:08 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E13-rc1-7f1b863=2Ecki_=28stable=29?=
+Message-ID: <cki.FA900DB853.LBD049H627@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zorro,
 
-> Linux supports new mount syscalls from 5.2, so add new test cases
-> to cover these new API. This newmount01 case make sure new API -
-> fsopen(), fsconfig(), fsmount() and move_mount() can mount a
-> filesystem, then can be unmounted.
+Hello,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+We ran automated tests on a recent commit from this kernel tree:
 
-> Hi,
+       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+            Commit: 7f1b8631b5a5 - Linux 5.4.13-rc1
 
-> V4 made a few changes as https://patchwork.ozlabs.org/patch/1206389/#2341154
+The results of these automated tests are provided below.
 
-> And as I said in https://patchwork.ozlabs.org/comment/2342190, the
-> TST_FS_SKIP_FUSE flag won't help to skip linux kernel internal ntfs and
-> vfat test for this case.
-+1
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: FAILED
 
-...
-> --- /dev/null
-> +++ b/m4/ltp-newmount.m4
-> @@ -0,0 +1,10 @@
-> +dnl SPDX-License-Identifier: GPL-2.0-or-later
-> +dnl Copyright (C) 2019 Red Hat, Inc. All Rights Reserved.
-> +
-> +AC_DEFUN([LTP_CHECK_NEWMOUNT],[
-> +AC_CHECK_FUNCS(fsopen,,)
-> +AC_CHECK_FUNCS(fsconfig,,)
-> +AC_CHECK_FUNCS(fsmount,,)
-> +AC_CHECK_FUNCS(move_mount,,)
-> +AC_CHECK_HEADER(sys/mount.h,,,)
-> +])
-This should have been in configure.ac as I reported, but that's ok
-(can be fixed by person who merges this).
+All kernel binaries, config files, and logs are available for download here:
 
-...
-> +static struct tst_test test = {
-> +	.test_all	= test_newmount,
-> +	.cleanup	= cleanup,
-> +	.needs_root	= 1,
-> +	.mntpoint	= MNTPOINT,
-> +	.format_device	= 1,
-> +	.all_filesystems = 1,
-> +	.dev_fs_flags	= TST_FS_SKIP_FUSE,
-OK, I was wrong, as you found in [1], test shouldn't have .dev_fs_flags   = TST_FS_SKIP_FUSE
-(again, can be removed during merge).
+  https://artifacts.cki-project.org/pipelines/385189
 
-I'm just trying to find whether failure caused by CONFIG_NTFS_FS not set,
-but mkfs.ntfs installed is a LTP issue or mkfs.ntfs or a kernel issue.
+One or more kernel tests failed:
 
-tst_supported_fs_types.c:60: INFO: Kernel supports vfat
-tst_supported_fs_types.c:44: INFO: mkfs.vfat does exist
-tst_supported_fs_types.c:85: INFO: Filesystem exfat is not supported
-tst_supported_fs_types.c:95: INFO: FUSE does support ntfs
-tst_supported_fs_types.c:44: INFO: mkfs.ntfs does exist
-...
-newmount01.c:60: PASS: fsopen vfat
-newmount01.c:67: PASS: fsconfig set source to /dev/loop0
-newmount01.c:75: PASS: fsconfig create superblock
-newmount01.c:82: PASS: fsmount
-newmount01.c:90: PASS: move_mount attach to mount point
-newmount01.c:94: PASS: new mount works
-tst_test.c:1278: INFO: Testing on ntfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
-newmount01.c:56: FAIL: fsopen ntfs: ENODEV (19)
+    ppc64le:
+     ? LTP
 
-Kind regards,
-Petr
+    aarch64:
+     ? Networking tunnel: gre basic
+     ? Networking tunnel: vxlan basic
 
-[1] https://lists.linux.it/pipermail/ltp/2020-January/015046.html
+    x86_64:
+     ? Networking route_func: local
+     ? Networking tunnel: geneve basic test
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 3 architectures:
+
+    aarch64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    ppc64le:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ?  POSIX pjd-fstest suites
+       ?  jvm test suite
+       ?  Memory function: kaslr
+       ?  LTP: openposix test suite
+       ?  Networking vnic: ipvlan/basic
+       ?  iotop: sanity
+       ?  Usex - version 1.9-29
+       ?  storage: dm/common
+
+    Host 2:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? stress: stress-ng
+       ? ??? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ??? Storage blktests
+
+  ppc64le:
+    Host 1:
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm test suite
+       ? ? Memory function: kaslr
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? iotop: sanity
+       ? ? Usex - version 1.9-29
+       ? ? storage: dm/common
+
+  x86_64:
+    Host 1:
+       ?  Boot test
+       ?  Storage SAN device stress - mpt3sas driver
+
+    Host 2:
+       ?  Boot test
+       ?  Storage SAN device stress - megaraid_sas
+
+    Host 3:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? stress: stress-ng
+       ? ? IOMMU boot test
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ??? power-management: cpupower/sanity test
+       ? ? Storage blktests
+
+    Host 4:
+       ? Boot test
+       ? Podman system integration test (as root)
+       ? Podman system integration test (as user)
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func: local
+       ? Networking route_func: forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns transport
+       ? Networking ipsec: basic netns tunnel
+       ? audit: audit testsuite test
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? storage: SCSI VPD
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ?  jvm test suite
+       ?  Memory function: kaslr
+       ?  LTP: openposix test suite
+       ?  Networking vnic: ipvlan/basic
+       ?  iotop: sanity
+       ?  Usex - version 1.9-29
+       ?  storage: dm/common
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
+
