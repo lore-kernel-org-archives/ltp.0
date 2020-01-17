@@ -1,55 +1,84 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 17 Jan 2020 22:14:35 +0530
-Subject: [LTP] ??? FAIL: Test report for kernel 5.4.13-rc1-7f1b863.cki
- (stable)
-In-Reply-To: <1477632721.2420697.1579250111441.JavaMail.zimbra@redhat.com>
-References: <cki.FA900DB853.LBD049H627@redhat.com>
- <84944fa0-3c18-f8a4-47ca-7627eb4e0594@redhat.com>
- <20200116153741.GA558@rei>
- <1477632721.2420697.1579250111441.JavaMail.zimbra@redhat.com>
-Message-ID: <CA+G9fYuuVLziEVJ+93OWSWeB0h-=_qaYcAObe=_JSsbtydO7cQ@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 17 Jan 2020 12:24:47 -0500 (EST)
+Subject: [LTP] LTP: statx06: FAIL: Birth time < before time
+In-Reply-To: <CA+G9fYuBdcZvE6VPm9i2=F0mK5u3j6Z+RHbFBQ1zh9qbN_4kaw@mail.gmail.com>
+References: <CA+G9fYuBdcZvE6VPm9i2=F0mK5u3j6Z+RHbFBQ1zh9qbN_4kaw@mail.gmail.com>
+Message-ID: <1555311261.2497849.1579281887353.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 17 Jan 2020 at 14:05, Jan Stancek <jstancek@redhat.com> wrote:
->
->
->
-> ----- Original Message -----
-> > Hi!
-> > > > One or more kernel tests failed:
-> > > >
-> > > >      ppc64le:
-> > > >       ??? LTP
-> > >
-> > > Hi, I see max_map_count failed on ppc64le:
-> > > https://artifacts.cki-project.org/pipelines/385189/logs/ppc64le_host_2_LTP_mm.run.log
-> >
-> > That's strange, we do attempt to map 65536 mappings but we do not touch
-> > them, so these shouldn't be faulted in, so there is no real reason why
-> > mmap() in the child process should stop prematurely at 65532.
-> >
-> > I guess that we cannot do much here, unless it's reproducible, because
-> > there is not much information there.
->
-> max_map_count.c:205: FAIL: 64882 map entries in total, but expected 65536 entries
->
-> I can reproduce it by running it in loop for couple hours. Though no idea
-> why we started seeing it only in 5.4.13 rc kernels, as there doesn't seem
-> to be any significant mm changes.
->
-> I'll try some older kernels.
 
-I have noticed max_map_count fail intermittently on multiple stable
-branches on slow devices.
 
-max_map_count.c:202: FAIL: 63231 map entries in total, but expected
-65536 entries
+----- Original Message -----
+> LTP syscalls statx06 test case getting failed from linux next 20200115
+> tag onwards on all x86_64, i386, arm and arm64 devices
+> 
+> Test output:
+> statx06.c:152: FAIL: Birth time < before time
 
-https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/tests/ltp-mm-tests/max_map_count
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-mm-tests/max_map_count?&page=2
+[CC Theo & linux-ext4]
 
-- Naresh
+It's returning '0' in stx_btime for STATX_ALL or STATX_BTIME.
+
+Looking@changes, I suspect:
+  commit 927353987d503b24e1813245563cde0c6167af6e
+  Author: Theodore Ts'o <tytso@mit.edu>
+  Date:   Thu Nov 28 22:26:51 2019 -0500
+    ext4: avoid fetching btime in ext4_getattr() unless requested
+
+and that perhaps it should be instead...
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index c8355f022e6e..6d76eb6d2e7f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5398,7 +5398,7 @@ int ext4_getattr(const struct path *path, struct kstat *stat,
+        struct ext4_inode_info *ei = EXT4_I(inode);
+        unsigned int flags;
+
+-       if ((query_flags & STATX_BTIME) &&
++       if ((request_mask & STATX_BTIME) &&
+            EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime)) {
+                stat->result_mask |= STATX_BTIME;
+                stat->btime.tv_sec = ei->i_crtime.tv_sec;
+
+That allows test to pass again.
+
+> statx06.c:156: PASS: Modified time Passed
+> statx06.c:156: PASS: Access time Passed
+> statx06.c:156: PASS: Change time Passed
+> 
+> strace output snippet:
+> [pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000})
+> = 0
+> [pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
+> [pid   498] openat(AT_FDCWD, \"mount_ext/test_file.txt\",
+> O_RDWR|O_CREAT, 0666) = 3
+> [pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000})
+> = 0
+> [pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
+> [pid   498] statx(AT_FDCWD, \"mount_ext/test_file.txt\",
+> AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS,
+> stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=0, ...}) = 0
+> [pid   498] write(2, \"statx06.c:152: \33[1;31mFAIL: \33[0m\"...,
+> 57statx06.c:152: [1;31mFAIL: [0mBirth time < before time
+> ) = 57
+> 
+> Full test log link,
+> https://lkft.validation.linaro.org/scheduler/job/1107634#L2276
+> 
+> Test results comparison link,
+> https://qa-reports.linaro.org/lkft/linux-next-oe/tests/ltp-syscalls-tests/statx06
+> 
+> Test case link,
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/statx/statx06.c
+> 
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+> 
+> 
+
