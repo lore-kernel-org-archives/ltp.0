@@ -1,80 +1,56 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Sun, 19 Jan 2020 15:49:58 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/add_key01: remove duplicated case
-In-Reply-To: <1579420198-29651-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1579420198-29651-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1579420198-29651-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sun, 19 Jan 2020 09:33:01 +0100
+Subject: [LTP] [PATCH 1/1] memcg/stress: Lower swap memory use
+In-Reply-To: <20200117063600.3451-1-pvorel@suse.cz>
+References: <20200117063600.3451-1-pvorel@suse.cz>
+Message-ID: <CAEemH2fpUvUpgStMC7-+eKFd6Q4rqNPq+=5LtzBmyM9dL+OONQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since add_key05.c has covered this test point, remove it.
+Ack.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- runtest/syscalls                              |  1 -
- testcases/kernel/syscalls/add_key/.gitignore  |  1 -
- testcases/kernel/syscalls/add_key/add_key01.c | 26 -------------------
- 3 files changed, 28 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/add_key/add_key01.c
+On Fri, Jan 17, 2020, 07:36 Petr Vorel <pvorel@suse.cz> wrote:
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 830dfc8b7..04db95cf5 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -14,7 +14,6 @@ access04 access04
- acct01 acct01
- acct02 acct02
- 
--add_key01 add_key01
- add_key02 add_key02
- add_key03 add_key03
- add_key04 add_key04
-diff --git a/testcases/kernel/syscalls/add_key/.gitignore b/testcases/kernel/syscalls/add_key/.gitignore
-index f57dc2228..49acda06b 100644
---- a/testcases/kernel/syscalls/add_key/.gitignore
-+++ b/testcases/kernel/syscalls/add_key/.gitignore
-@@ -1,4 +1,3 @@
--/add_key01
- /add_key02
- /add_key03
- /add_key04
-diff --git a/testcases/kernel/syscalls/add_key/add_key01.c b/testcases/kernel/syscalls/add_key/add_key01.c
-deleted file mode 100644
-index 4fe97dac6..000000000
---- a/testcases/kernel/syscalls/add_key/add_key01.c
-+++ /dev/null
-@@ -1,26 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) Crackerjack Project., 2007
-- * Porting from Crackerjack to LTP is done by
-- * Manas Kumar Nayak maknayak@in.ibm.com>
-- *
-- * Basic test for the add_key() syscall.
-- */
--
--#include <errno.h>
--
--#include "tst_test.h"
--#include "lapi/keyctl.h"
--
--static void verify_add_key(void)
--{
--	TEST(add_key("keyring", "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING));
--	if (TST_RET == -1)
--		tst_res(TFAIL | TTERRNO, "add_key call failed");
--	else
--		tst_res(TPASS, "add_key call succeeded");
--}
--
--static struct tst_test test = {
--	.test_all = verify_add_key,
--};
--- 
-2.18.0
-
-
-
+> Fix freeze on systems, where where swap size is more
+> or less equal to a system RAM.
+>
+> Fixes: #632
+>
+> Reported-by: Zuo Liu <lz843723683@gmail.com>
+> Tested-by: Zuo Liu <lz843723683@gmail.com>
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git
+> a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+> b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+> index ad8605e16..a48d21e6e 100755
+> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+> @@ -33,7 +33,7 @@ setup()
+>         local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print
+> $2 }'`
+>         local pgsize=`tst_getconf PAGESIZE`
+>
+> -       MEM=$(( $mem_free + $swap_free / 2 ))
+> +       MEM=$(( $mem_free + $swap_free / 1O ))
+>         MEM=$(( $MEM / 1024 ))
+>         RUN_TIME=$(( 15 * 60 ))
+>         [ "$pgsize" = "4096" ] && THREAD_SPARE_MB=1 || THREAD_SPARE_MB=8
+> --
+> 2.24.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200119/b33cf33a/attachment.htm>
