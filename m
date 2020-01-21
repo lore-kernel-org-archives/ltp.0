@@ -1,12 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Jan 2020 11:17:53 +0100
-Subject: [LTP] [PATCH] syscalls/userfaultfd01: Always require
- CAP_SYS_PTRACE
-In-Reply-To: <5707ecce-aec4-a80d-5ec6-f9c728625634@cn.fujitsu.com>
-References: <1575532537-27105-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200121052447.GA6657@dell5510>
- <5707ecce-aec4-a80d-5ec6-f9c728625634@cn.fujitsu.com>
-Message-ID: <20200121101513.GA9254@gacrux.arch.suse.de>
+Date: Tue, 21 Jan 2020 13:50:59 +0100
+Subject: [LTP] [PATCH] syscalls/timer*: use linux git tags for timer
+ testcases
+In-Reply-To: <1579585678-2209-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1579585678-2209-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200121125022.GA10467@gacrux.arch.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,19 +13,12 @@ To: ltp@lists.linux.it
 
 Hi Xu,
 
-> We have pushed "syscalls/userfaultfd01: add hint about unprivileged_userfaultfd" patch(v2)[1].
+> I test these three cases(timer_delete01.c, timer_settime01.c, timer_settime02.c)
+> on arm machines, they will get unknown 524 error like timer_create01.c.
+> They are also regresstion test, so add linux tags about this error.
 
-> This is v1.? li Wang and me both think adding hint is more wise, more info see[2].
-
-> [1] https://github.com/linux-test-project/ltp/commit/7dc571d3ad1908d6e50163a06ef848f096fe880a
-> [2] http://lists.linux.it/pipermail/ltp/2020-January/014921.html
-Thanks for notification, I'll check previous commits next time!
-
-BTW this was caused by maintainers not updating patchwork :(.
-Would you mind to register to patchwork and check state of your tickets time to
-time [1]. You'd be able to change state of your own patches.
+Merged, with slightly modified commit message.
+Thank you!
 
 Kind regards,
 Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?submitter=76329
