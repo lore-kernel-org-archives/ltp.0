@@ -1,38 +1,30 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 23 Jan 2020 17:20:16 +0100
-Subject: [LTP] [PATCH v3 0/3] Add test for misaligned fallocate()
-Message-ID: <20200123162019.18958-1-mdoucha@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 23 Jan 2020 17:34:06 -0500 (EST)
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E14-0fce94b=2Ecki_=28stable=29?=
+In-Reply-To: <cki.03B22F835F.RSIEVD547K@redhat.com>
+References: <cki.03B22F835F.RSIEVD547K@redhat.com>
+Message-ID: <600201642.3600472.1579818846276.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch is a follow-up to the fallocate05 fix. The original fallocate05
-test accidentally tested some misaligned allocation and deallocation
-on platforms with block size bigger than 8k but it didn't validate
-the results correctly. Test calling fallocate() on misaligned file range
-and this time validate the results properly, taking into account advanced
-FS features like copy-on-write.
 
-Changes since v1:
-- Fix compilation with --std=c89
-- Misalign by at most 512 bytes, otherwise the test may miss an XFS bug on PPC
-- Clear the temp directory using tst_purge_dir()
 
-Martin Doucha (3):
-  Add tst_purge_dir() helper function
-  Add test for misaligned fallocate()
-  Purge temp directory after each run of fallocate05
+----- Original Message -----
+>   ppc64le:
+>     Host 1:
+>        ? Boot test
+>        ? Podman system integration test (as root)
+>        ? Podman system integration test (as user)
+>        ? LTP
 
- include/tst_device.h                          |   5 +
- lib/tst_tmpdir.c                              | 106 +++++---
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/fallocate/fallocate05.c   |  11 +-
- .../kernel/syscalls/fallocate/fallocate06.c   | 253 ++++++++++++++++++
- 5 files changed, 333 insertions(+), 43 deletions(-)
- create mode 100644 testcases/kernel/syscalls/fallocate/fallocate06.c
+This is safe to ignore.
 
--- 
-2.24.1
+I can reproduce on affected system, it doesn't hang on anything specific,
+it's just that test is taking longer than expected and hits timeout.
+I'll look into proposing LTP patch for this issue.
 
