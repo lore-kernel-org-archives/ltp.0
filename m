@@ -1,80 +1,110 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 23 Jan 2020 13:40:53 +0800
-Subject: [LTP] [PATCH] syscalls/socketcall: Use TCONF instead of TPASS
-In-Reply-To: <5E292C45.2010604@cn.fujitsu.com>
-References: <1579754906-7837-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5E292C45.2010604@cn.fujitsu.com>
-Message-ID: <14032013-3dd8-7beb-dc11-37018f7227fc@cn.fujitsu.com>
+Date: Thu, 23 Jan 2020 14:21:14 +0800
+Subject: [LTP] [PATCH 1/2] lib: Add timeout to TST_PROCESS_STATE_WAIT
+In-Reply-To: <20200122134239.28844-1-jcronenberg@suse.de>
+References: <20200122134239.28844-1-jcronenberg@suse.de>
+Message-ID: <a8618b2e-067c-9a66-02e7-3feceec1ff9c@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi Xu,
-> 
-> All of them are simple tests.
-> I perfer to convert to new library along with the minor fix. :-)
-Hi Xiao
-OK. I will clean up them later.
 
-ps:Using new library for all ltp cases looks like a long way to go.
+> Add the possibility to add a timeout to TST_PROCESS_STATE_WAIT.
+> Like checkpoints add TST_PROCESS_STATE_WAIT2()
+> for specifying a timeout. The original TST_PROCESS_STATE_WAIT()
+> works the same as before. Timeout can be specified in milliseconds.
+> 
+Hi Jorik
+
+We have tst_process_state_wait2 since commit dbf270c5 ("lib: Add 
+tst_process_state_wait2()"), this api has same functions as 
+tst_process_state_wait but only return error instead of TBROK.
+
+I think using TST_PROCESS_STATE_WAIT2 is confused and we can only expand
+tst_process_state_wait make it support sleep specifying in milliseconds.
 
 Best Regards
 Yang Xu
+> Signed-off-by: Jorik Cronenberg <jcronenberg@suse.de>
+> ---
+>   include/tst_process_state.h | 12 ++++++++----
+>   lib/tst_process_state.c     | 19 ++++++++++++++-----
+>   2 files changed, 22 insertions(+), 9 deletions(-)
 > 
-> Thanks,
-> Xiao Yang
-> On 2020/1/23 12:48, Yang Xu wrote:
->> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->> ---
->> ? testcases/kernel/syscalls/socketcall/socketcall02.c | 2 +-
->> ? testcases/kernel/syscalls/socketcall/socketcall03.c | 2 +-
->> ? testcases/kernel/syscalls/socketcall/socketcall04.c | 2 +-
->> ? 3 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/socketcall/socketcall02.c 
->> b/testcases/kernel/syscalls/socketcall/socketcall02.c
->> index cec0246a6..7574782ff 100644
->> --- a/testcases/kernel/syscalls/socketcall/socketcall02.c
->> +++ b/testcases/kernel/syscalls/socketcall/socketcall02.c
->> @@ -156,7 +156,7 @@ int TST_TOTAL = 0;
->>
->> ? int main(void)
->> ? {
->> -??? tst_resm(TPASS, "socket call test on this architecture disabled.");
->> +??? tst_resm(TCONF, "socket call test on this architecture disabled.");
->> ????? tst_exit();
->> ? }
->>
->> diff --git a/testcases/kernel/syscalls/socketcall/socketcall03.c 
->> b/testcases/kernel/syscalls/socketcall/socketcall03.c
->> index 244a28678..d6c082c21 100644
->> --- a/testcases/kernel/syscalls/socketcall/socketcall03.c
->> +++ b/testcases/kernel/syscalls/socketcall/socketcall03.c
->> @@ -174,7 +174,7 @@ int TST_TOTAL = 0;
->>
->> ? int main(void)
->> ? {
->> -??? tst_resm(TPASS, "socket call test on this architecture disabled.");
->> +??? tst_resm(TCONF, "socket call test on this architecture disabled.");
->> ????? tst_exit();
->> ? }
->>
->> diff --git a/testcases/kernel/syscalls/socketcall/socketcall04.c 
->> b/testcases/kernel/syscalls/socketcall/socketcall04.c
->> index 584c8f37a..c498b6e74 100644
->> --- a/testcases/kernel/syscalls/socketcall/socketcall04.c
->> +++ b/testcases/kernel/syscalls/socketcall/socketcall04.c
->> @@ -167,7 +167,7 @@ int TST_TOTAL = 0;
->>
->> ? int main(void)
->> ? {
->> -??? tst_resm(TPASS, "socket call test on this architecture disabled.");
->> +??? tst_resm(TCONF, "socket call test on this architecture disabled.");
->> ????? tst_exit();
->> ? }
->>
+> diff --git a/include/tst_process_state.h b/include/tst_process_state.h
+> index fab0491d9..27a8ffc36 100644
+> --- a/include/tst_process_state.h
+> +++ b/include/tst_process_state.h
+> @@ -47,9 +47,13 @@
+>    */
+>   #ifdef TST_TEST_H__
+>   
+> +#define TST_PROCESS_STATE_WAIT2(pid, state, msec_timeout) \
+> +	tst_process_state_wait(__FILE__, __LINE__, NULL, \
+> +	                       (pid), (state), msec_timeout)
+> +
+>   #define TST_PROCESS_STATE_WAIT(pid, state) \
+>   	tst_process_state_wait(__FILE__, __LINE__, NULL, \
+> -	                       (pid), (state))
+> +	                       (pid), (state), 0)
+>   #else
+>   /*
+>    * The same as above but does not use tst_brkm() interface.
+> @@ -65,8 +69,8 @@ int tst_process_state_wait2(pid_t pid, const char state);
+>   	                        (pid), (state))
+>   #endif
+>   
+> -void tst_process_state_wait(const char *file, const int lineno,
+> -                            void (*cleanup_fn)(void),
+> -                            pid_t pid, const char state);
+> +int tst_process_state_wait(const char *file, const int lineno,
+> +                            void (*cleanup_fn)(void), pid_t pid,
+> +			    const char state, unsigned int msec_timeout);
+>   
+>   #endif /* TST_PROCESS_STATE__ */
+> diff --git a/lib/tst_process_state.c b/lib/tst_process_state.c
+> index 7a7824959..32b44992c 100644
+> --- a/lib/tst_process_state.c
+> +++ b/lib/tst_process_state.c
+> @@ -28,11 +28,12 @@
+>   #include "test.h"
+>   #include "tst_process_state.h"
+>   
+> -void tst_process_state_wait(const char *file, const int lineno,
+> -                            void (*cleanup_fn)(void),
+> -                            pid_t pid, const char state)
+> +int tst_process_state_wait(const char *file, const int lineno,
+> +                            void (*cleanup_fn)(void), pid_t pid,
+> +			    const char state, unsigned int msec_timeout)
+>   {
+>   	char proc_path[128], cur_state;
+> +	unsigned int msecs = 0;
+>   
+>   	snprintf(proc_path, sizeof(proc_path), "/proc/%i/stat", pid);
+>   
+> @@ -41,10 +42,18 @@ void tst_process_state_wait(const char *file, const int lineno,
+>   		                "%*i %*s %c", &cur_state);
+>   
+>   		if (state == cur_state)
+> -			return;
+> +			break;
+>   
+> -		usleep(10000);
+> +		usleep(1000);
+> +		msecs += 1;
+> +
+> +		if (msecs >= msec_timeout) {
+> +			errno = ETIMEDOUT;
+> +			return -1;
+> +		}
+>   	}
+> +
+> +	return 0;
+>   }
+>   
+>   int tst_process_state_wait2(pid_t pid, const char state)
 > 
 
 
