@@ -1,169 +1,301 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 23 Jan 2020 10:31:23 +0530
-Subject: [LTP] [PATCH 1/2] Add Syscall numbers for io_pgetevents
-Message-ID: <f9e9bc067d1153199440512d6ece01f7a001b660.1579755655.git.viresh.kumar@linaro.org>
+Date: Thu, 23 Jan 2020 10:31:24 +0530
+Subject: [LTP] [PATCH 2/2] syscalls/io_pgetevents
+In-Reply-To: <f9e9bc067d1153199440512d6ece01f7a001b660.1579755655.git.viresh.kumar@linaro.org>
+References: <f9e9bc067d1153199440512d6ece01f7a001b660.1579755655.git.viresh.kumar@linaro.org>
+Message-ID: <6aae63a2e362a0f09cf35fff058e7741f0987208.1579755655.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Add tests to check working of io_pgetevents() syscall.
+
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/lapi/syscalls/aarch64.in   | 1 +
- include/lapi/syscalls/arm.in       | 1 +
- include/lapi/syscalls/hppa.in      | 1 +
- include/lapi/syscalls/i386.in      | 1 +
- include/lapi/syscalls/ia64.in      | 1 +
- include/lapi/syscalls/powerpc.in   | 1 +
- include/lapi/syscalls/powerpc64.in | 1 +
- include/lapi/syscalls/s390.in      | 1 +
- include/lapi/syscalls/s390x.in     | 1 +
- include/lapi/syscalls/sparc.in     | 1 +
- include/lapi/syscalls/sparc64.in   | 1 +
- include/lapi/syscalls/x86_64.in    | 1 +
- 12 files changed, 12 insertions(+)
+ configure.ac                                  |  1 +
+ include/lapi/io_pgetevents.h                  | 49 +++++++++++
+ runtest/syscalls                              |  4 +
+ .../kernel/syscalls/io_pgetevents/.gitignore  |  2 +
+ .../kernel/syscalls/io_pgetevents/Makefile    |  6 ++
+ .../syscalls/io_pgetevents/io_pgetevents01.c  | 73 +++++++++++++++++
+ .../syscalls/io_pgetevents/io_pgetevents02.c  | 81 +++++++++++++++++++
+ 7 files changed, 216 insertions(+)
+ create mode 100644 include/lapi/io_pgetevents.h
+ create mode 100644 testcases/kernel/syscalls/io_pgetevents/.gitignore
+ create mode 100644 testcases/kernel/syscalls/io_pgetevents/Makefile
+ create mode 100644 testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+ create mode 100644 testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 19f3aa4475bd..25e1b27e9867 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -269,6 +269,7 @@ pwritev2 287
- pkey_mprotect 288
- pkey_alloc 289
- pkey_free 290
-+io_pgetevents 292
- pidfd_send_signal 424
- pidfd_open 434
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 29538ba50d3b..49be125a755c 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -353,5 +353,6 @@ pkey_mprotect (__NR_SYSCALL_BASE+394)
- pkey_alloc (__NR_SYSCALL_BASE+395)
- pkey_free (__NR_SYSCALL_BASE+396)
- statx (__NR_SYSCALL_BASE+397)
-+io_pgetevents (__NR_SYSCALL_BASE+399)
- pidfd_send_signal (__NR_SYSCALL_BASE+424)
- pidfd_open (__NR_SYSCALL_BASE+434)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index b578d886516d..b11c8fbcf71f 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -25,5 +25,6 @@ mlock2 345
- copy_file_range 346
- preadv2 347
- pwritev2 348
-+io_pgetevents 350
- pidfd_send_signal 424
- pidfd_open 434
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 696563ebba48..40b84ca89f9b 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -352,5 +352,6 @@ pkey_mprotect 380
- pkey_alloc 381
- pkey_free 382
- statx 383
-+io_pgetevents 385
- pidfd_send_signal 424
- pidfd_open 434
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 11b236c7c507..675adda18703 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -305,6 +305,7 @@ mlock2 1346
- copy_file_range 1347
- preadv2 1348
- pwritev2 1349
-+io_pgetevents 1351
- pkey_mprotect 1354
- pkey_alloc 1355
- pkey_free 1356
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 293d86ba54c4..88c42924b306 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -355,6 +355,7 @@ copy_file_range 379
- preadv2 380
- pwritev2 381
- statx 383
-+io_pgetevents 388
- pidfd_send_signal 424
- pidfd_open 434
- pkey_mprotect 386
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 293d86ba54c4..88c42924b306 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -355,6 +355,7 @@ copy_file_range 379
- preadv2 380
- pwritev2 381
- statx 383
-+io_pgetevents 388
- pidfd_send_signal 424
- pidfd_open 434
- pkey_mprotect 386
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 4f4b2dbed5ef..dbeaea70f59c 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -339,6 +339,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+io_pgetevents 382
- pkey_mprotect 384
- pkey_alloc 385
- pkey_free 386
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 673538a7217e..6bacacba1468 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -337,6 +337,7 @@ mlock2 374
- copy_file_range 375
- preadv2 376
- pwritev2 377
-+io_pgetevents 382
- pkey_mprotect 384
- pkey_alloc 385
- pkey_free 386
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 2b33c4983088..b5f269222f8b 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -344,6 +344,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+io_pgetevents 361
- pkey_mprotect 362
- pkey_alloc 363
- pkey_free 364
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index a6157adef7b3..ea191d4745e1 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -319,6 +319,7 @@ mlock2 356
- copy_file_range 357
- preadv2 358
- pwritev2 359
-+io_pgetevents 361
- pkey_mprotect 362
- pkey_alloc 363
- pkey_free 364
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 8bd6b66d3bef..d9370b9032d1 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -319,5 +319,6 @@ pkey_mprotect 329
- pkey_alloc 330
- pkey_free 331
- statx 332
-+io_pgetevents 333
- pidfd_send_signal 424
- pidfd_open 434
+diff --git a/configure.ac b/configure.ac
+index 1bf0911d88ad..c7cdff1c422c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -75,6 +75,7 @@ AC_CHECK_FUNCS([ \
+     getdents \
+     getdents64 \
+     kcmp \
++    io_pgetevents \
+     mkdirat \
+     mknodat \
+     name_to_handle_at \
+diff --git a/include/lapi/io_pgetevents.h b/include/lapi/io_pgetevents.h
+new file mode 100644
+index 000000000000..0499dc03b3f2
+--- /dev/null
++++ b/include/lapi/io_pgetevents.h
+@@ -0,0 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Linaro Limited. All rights reserved.
++ * Author: Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++#ifndef IO_PGETEVENTS_H
++#define IO_PGETEVENTS_H
++
++#include <sys/types.h>
++
++#include "config.h"
++#include "lapi/syscalls.h"
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++
++#ifndef HAVE_IO_SETUP
++int io_setup(int nr, io_context_t *ctxp)
++{
++	return syscall(__NR_io_setup, nr, ctxp);
++}
++#endif /* HAVE_IO_SETUP */
++
++#ifndef HAVE_IO_DESTROY
++int io_destroy(io_context_t ctx)
++{
++	return syscall(__NR_io_destroy, ctx);
++}
++#endif /* HAVE_IO_DESTROY */
++
++#ifndef HAVE_IO_SUBMIT
++int io_submit(io_context_t ctx, long nr, struct iocb **iocbpp)
++{
++	return syscall(__NR_io_submit, ctx, nr, iocbpp);
++}
++#endif /* HAVE_IO_SUBMIT */
++
++#ifndef HAVE_IO_PGETEVENTS
++int io_pgetevents(io_context_t ctx, long min_nr, long max_nr,
++		 struct io_event *events, struct timespec *timeout,
++		 sigset_t *sigmask)
++{
++	return tst_syscall(__NR_io_pgetevents, ctx, min_nr, max_nr, events, timeout, sigmask);
++}
++#endif /* HAVE_IO_PGETEVENTS */
++#endif /* HAVE_LIBAIO */
++
++#endif /* IO_PGETEVENTS_H */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index a2d749d526a8..6d167b800ac7 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -554,6 +554,10 @@ ioprio_set03 ioprio_set03
+ io_cancel01 io_cancel01
+ io_destroy01 io_destroy01
+ io_getevents01 io_getevents01
++
++io_pgetevents01 io_pgetevents01
++io_pgetevents02 io_pgetevents02
++
+ io_setup01 io_setup01
+ io_submit01 io_submit01
+ 
+diff --git a/testcases/kernel/syscalls/io_pgetevents/.gitignore b/testcases/kernel/syscalls/io_pgetevents/.gitignore
+new file mode 100644
+index 000000000000..ae02077ba44b
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_pgetevents/.gitignore
+@@ -0,0 +1,2 @@
++io_pgetevents01
++io_pgetevents02
+diff --git a/testcases/kernel/syscalls/io_pgetevents/Makefile b/testcases/kernel/syscalls/io_pgetevents/Makefile
+new file mode 100644
+index 000000000000..5ea7d67db123
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_pgetevents/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+new file mode 100644
+index 000000000000..f8a12193dd2c
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ *
++ * Description:
++ * Basic io_pgetevents() test to receive 1 event successfully.
++ */
++#include <sys/types.h>
++#include <sys/syscall.h>
++#include <fcntl.h>
++#include <string.h>
++#include <inttypes.h>
++
++#include "tst_test.h"
++#include "lapi/io_pgetevents.h"
++#include "lapi/syscalls.h"
++
++#ifdef HAVE_LIBAIO
++
++static int fd = -1;
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(fd);
++}
++
++static void run(void)
++{
++	struct io_event events[1];
++	struct iocb cb, *cbs[1];
++	io_context_t ctx = 0;
++	sigset_t sigmask;
++	char data[4096];
++	int ret;
++
++	sigemptyset(&sigmask);
++
++	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
++
++	ret = io_setup(1, &ctx);
++	if (ret < 0)
++		tst_brk(TBROK | TERRNO, "io_setup() failed");
++
++	io_prep_pwrite(&cb, fd, data, 4096, 0);
++
++	cbs[0] = &cb;
++
++	ret = io_submit(ctx, 1, cbs);
++	if (ret != 1)
++		tst_brk(TBROK | TERRNO, "io_submit() failed");
++
++	/* get the reply */
++	ret = io_pgetevents(ctx, 1, 1, events, NULL, &sigmask);
++
++	if (io_destroy(ctx) < 0)
++		tst_brk(TBROK | TERRNO, "io_destroy() failed");
++
++	if (ret == 1)
++		tst_res(TPASS, "io_pgetevents() working as expected");
++	else
++		tst_brk(TBROK| TERRNO, "io_pgetevents() failed");
++}
++
++static struct tst_test test = {
++	.min_kver = "4.18",
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.cleanup = cleanup,
++};
++
++#else
++TST_TEST_TCONF("test requires libaio and it's development packages");
++#endif
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+new file mode 100644
+index 000000000000..de101e6cd0e9
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ *
++ * Description:
++ * Basic io_pgetevents() test to check various failures.
++ */
++#include <sys/types.h>
++#include <sys/syscall.h>
++#include <fcntl.h>
++#include <string.h>
++#include <inttypes.h>
++
++#include "tst_test.h"
++#include "lapi/io_pgetevents.h"
++#include "lapi/syscalls.h"
++
++#ifdef HAVE_LIBAIO
++
++static int fd = -1;
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(fd);
++}
++
++static void run(void)
++{
++	struct io_event events[1];
++	struct iocb cb, *cbs[1];
++	io_context_t ctx = 0;
++	sigset_t sigmask;
++	char data[4096];
++	int ret;
++
++	sigemptyset(&sigmask);
++
++	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
++
++	ret = io_setup(1, &ctx);
++	if (ret < 0)
++		tst_brk(TBROK | TERRNO, "io_setup() failed");
++
++	io_prep_pwrite(&cb, fd, data, 4096, 0);
++
++	cbs[0] = &cb;
++
++	ret = io_submit(ctx, 1, cbs);
++	if (ret != 1)
++		tst_brk(TBROK | TERRNO, "io_submit() failed");
++
++	/* Invalid Max event count */
++	ret = io_pgetevents(ctx, 1, 0, events, NULL, &sigmask);
++
++	/* Invalid events*/
++	if (ret != 1)
++		ret = io_pgetevents(ctx, 1, 1, NULL, NULL, &sigmask);
++
++	if (io_destroy(ctx) < 0)
++		tst_brk(TBROK | TERRNO, "io_destroy() failed");
++
++	/* Invalid ctx */
++	if (ret != 1)
++		ret = io_pgetevents(ctx, 1, 1, events, NULL, &sigmask);
++
++	if (ret != 1)
++		tst_res(TPASS, "io_pgetevents() failed as expected");
++	else
++		tst_brk(TBROK| TERRNO, "io_pgetevents() passed unexpectedly");
++}
++
++static struct tst_test test = {
++	.min_kver = "4.18",
++	.test_all = run,
++	.needs_tmpdir = 1,
++	.cleanup = cleanup,
++};
++
++#else
++TST_TEST_TCONF("test requires libaio and it's development packages");
++#endif
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
