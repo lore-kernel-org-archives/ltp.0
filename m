@@ -1,301 +1,183 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 23 Jan 2020 17:20:18 +0100
-Subject: [LTP] [PATCH v3 2/3] Add test for misaligned fallocate()
+Date: Thu, 23 Jan 2020 17:20:17 +0100
+Subject: [LTP] [PATCH v3 1/3] Add tst_purge_dir() helper function
 In-Reply-To: <20200123162019.18958-1-mdoucha@suse.cz>
 References: <20200123162019.18958-1-mdoucha@suse.cz>
-Message-ID: <20200123162019.18958-3-mdoucha@suse.cz>
+Message-ID: <20200123162019.18958-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Make sure that space allocation and deallocation works (or fails) correctly
-even when the requested file range does not align with filesystem blocks.
-
-Test on:
-- empty file system
-- full file system
-- also test with and without copy-on-write when supported
+This function deletes the contents of the given directory while leaving
+the directory itself intact. Useful for purging the mountpoint between test
+iterations or test cases.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/fallocate/fallocate06.c   | 253 ++++++++++++++++++
- 2 files changed, 254 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fallocate/fallocate06.c
+ include/tst_device.h |   5 ++
+ lib/tst_tmpdir.c     | 106 +++++++++++++++++++++++++++----------------
+ 2 files changed, 73 insertions(+), 38 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index fa87ef63f..ec522e8fa 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -184,6 +184,7 @@ fallocate02 fallocate02
- fallocate03 fallocate03
- fallocate04 fallocate04
- fallocate05 fallocate05
-+fallocate06 fallocate06
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 3db5275c9..d2e4ad5be 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -88,4 +88,9 @@ static inline int tst_dev_sync(int fd)
+  */
+ unsigned long tst_dev_bytes_written(const char *dev);
  
- fsetxattr01 fsetxattr01
- fsetxattr02 fsetxattr02
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
-new file mode 100644
-index 000000000..406249740
---- /dev/null
-+++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
-@@ -0,0 +1,253 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
++ *Wipe the contents of given directory but keep the directory itself
 + */
++void tst_purge_dir(const char *path);
 +
-+/*
-+ * Tests misaligned fallocate()
-+ * Test scenario:
-+ * 1. write() several blocks worth of data
-+ * 2. fallocate() some more space (not aligned to FS blocks)
-+ * 3. try to write() into the allocated space
-+ * 4. deallocate misaligned part of file range written in step 1
-+ * 5. read() the deallocated range and check that it was zeroed
-+ *
-+ * Subtests:
-+ * - fill file system between step 2 and 3
-+ * - disable copy-on-write on test file
-+ * - combinations of above subtests
-+ */
+ #endif	/* TST_DEVICE_H__ */
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index 09b7b6e22..4b21dfad6 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -99,6 +99,8 @@ static char test_start_work_dir[PATH_MAX];
+ /* lib/tst_checkpoint.c */
+ extern futex_t *tst_futexes;
+ 
++static int rmobj(const char *obj, char **errmsg);
 +
-+#define _GNU_SOURCE
+ int tst_tmpdir_created(void)
+ {
+ 	return TESTDIR != NULL;
+@@ -119,60 +121,80 @@ const char *tst_get_startwd(void)
+ 	return test_start_work_dir;
+ }
+ 
+-static int rmobj(char *obj, char **errmsg)
++static int purge_dir(const char *path, char **errptr)
+ {
+ 	int ret_val = 0;
+ 	DIR *dir;
+ 	struct dirent *dir_ent;
+ 	char dirobj[PATH_MAX];
+-	struct stat statbuf;
+ 	static char err_msg[1024];
+ 	int fd;
+ 
+-	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
+-	if (fd != -1) {
+-		close(fd);
++	errno = 0;
++	fd = open(path, O_DIRECTORY | O_NOFOLLOW);
+ 
+-		/* Do NOT perform the request if the directory is "/" */
+-		if (!strcmp(obj, "/")) {
+-			if (errmsg != NULL) {
+-				sprintf(err_msg, "Cannot remove /");
+-				*errmsg = err_msg;
+-			}
+-			return -1;
++	if (fd < 0) {
++		if (errptr) {
++			sprintf(err_msg,
++				"Cannot open directory %s; errno=%d: %s",
++				path, errno, tst_strerrno(errno));
++			*errptr = err_msg;
+ 		}
+ 
+-		/* Open the directory to get access to what is in it */
+-		if ((dir = opendir(obj)) == NULL) {
+-			if (rmdir(obj) != 0) {
+-				if (errmsg != NULL) {
+-					sprintf(err_msg,
+-						"rmdir(%s) failed; errno=%d: %s",
+-						obj, errno, tst_strerrno(errno));
+-					*errmsg = err_msg;
+-				}
+-				return -1;
+-			} else {
+-				return 0;
+-			}
+-		}
++		return -1;
++	}
+ 
+-		/* Loop through the entries in the directory, removing each one */
+-		for (dir_ent = (struct dirent *)readdir(dir);
+-		     dir_ent != NULL; dir_ent = (struct dirent *)readdir(dir)) {
++	close(fd);
+ 
+-			/* Don't remove "." or ".." */
+-			if (!strcmp(dir_ent->d_name, ".")
+-			    || !strcmp(dir_ent->d_name, ".."))
+-				continue;
++	/* Do NOT perform the request if the directory is "/" */
++	if (!strcmp(path, "/")) {
++		if (errptr) {
++			strcpy(err_msg, "Cannot purge system root directory");
++			*errptr = err_msg;
++		}
+ 
+-			/* Recursively call this routine to remove the current entry */
+-			sprintf(dirobj, "%s/%s", obj, dir_ent->d_name);
+-			if (rmobj(dirobj, errmsg) != 0)
+-				ret_val = -1;
++		return -1;
++	}
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include <sys/ioctl.h>
-+#include <linux/fs.h>
-+#include "tst_test.h"
-+#include "lapi/fallocate.h"
++	/* Open the directory to get access to what is in it */
++	if (!(dir = opendir(path))) {
++		if (errptr) {
++			sprintf(err_msg,
++				"Cannot open directory %s; errno=%d: %s",
++				path, errno, tst_strerrno(errno));
++			*errptr = err_msg;
+ 		}
++		return -1;
++	}
 +
-+#define MNTPOINT "mntpoint"
-+#define TEMPFILE MNTPOINT "/test_file"
-+#define WRITE_BLOCKS 8
-+#define FALLOCATE_BLOCKS 2
-+#define DEALLOCATE_BLOCKS 3
-+#define TESTED_FLAGS "fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)"
++	/* Loop through the entries in the directory, removing each one */
++	for (dir_ent = readdir(dir); dir_ent; dir_ent = readdir(dir)) {
++		/* Don't remove "." or ".." */
++		if (!strcmp(dir_ent->d_name, ".")
++		    || !strcmp(dir_ent->d_name, ".."))
++			continue;
 +
-+const struct test_case {
-+	int no_cow, fill_fs;
-+} testcase_list[] = {
-+	{1, 0},
-+	{1, 1},
-+	{0, 0},
-+	{0, 1}
-+};
++		/* Recursively remove the current entry */
++		sprintf(dirobj, "%s/%s", path, dir_ent->d_name);
++		if (rmobj(dirobj, errptr) != 0)
++			ret_val = -1;
++	}
 +
-+static int cow_support;
-+static char *wbuf, *rbuf;
-+static blksize_t blocksize;
-+static long wbuf_size, rbuf_size, block_offset;
-+
-+static int toggle_cow(int fd, int enable)
-+{
-+	int ret, attr;
-+
-+	ret = ioctl(fd, FS_IOC_GETFLAGS, &attr);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		attr &= ~FS_NOCOW_FL;
-+	else
-+		attr |= FS_NOCOW_FL;
-+
-+	return ioctl(fd, FS_IOC_SETFLAGS, &attr);
++	closedir(dir);
++	return ret_val;
 +}
 +
-+static void setup(void) {
-+	unsigned char ch;
-+	long i;
-+	int fd;
++static int rmobj(const char *obj, char **errmsg)
++{
++	int ret_val = 0;
 +	struct stat statbuf;
-+
-+	fd = SAFE_OPEN(TEMPFILE, O_WRONLY | O_CREAT | O_TRUNC);
-+
-+	/*
-+	 * Set FS_NOCOW_FL flag on the temp file. Non-CoW filesystems will
-+	 * return error.
-+	 */
-+	TEST(toggle_cow(fd, 0));
-+	SAFE_FSTAT(fd, &statbuf);
-+	blocksize = statbuf.st_blksize;
-+	block_offset = MIN(blocksize / 2, 512);
-+	wbuf_size = MAX(WRITE_BLOCKS, FALLOCATE_BLOCKS) * blocksize;
-+	rbuf_size = (DEALLOCATE_BLOCKS + 1) * blocksize;
-+	SAFE_CLOSE(fd);
-+	SAFE_UNLINK(TEMPFILE);
-+
-+	if (blocksize < 2)
-+		tst_brk(TCONF, "Block size %ld too small for test", blocksize);
-+
-+	if (!TST_RET)
-+		cow_support = 1;
-+	else switch (TST_ERR) {
-+	case ENOTSUP:
-+	case ENOTTY:
-+	case EINVAL:
-+	case ENOSYS:
-+		cow_support = 0;
-+		break;
-+
-+	default:
-+		tst_brk(TBROK|TTERRNO, "Error checking copy-on-write support");
-+	}
-+
-+	tst_res(TINFO, "Copy-on-write is%s supported",
-+		cow_support ? "" : " not");
-+	wbuf = SAFE_MALLOC(wbuf_size);
-+	rbuf = SAFE_MALLOC(rbuf_size);
-+
-+	/* Fill the buffer with known values */
-+	for (i = 0, ch = 1; i < wbuf_size; i++, ch++) {
-+		wbuf[i] = ch;
-+	}
-+}
-+
-+static int check_result(const struct test_case *tc, const char *func, long exp)
-+{
-+	if (tc->fill_fs && !tc->no_cow && TST_RET < 0) {
-+		if (TST_RET != -1) {
-+			tst_res(TFAIL, "%s returned unexpected value %ld",
-+				func, TST_RET);
-+			return 0;
-+		}
-+
-+		if (TST_ERR != ENOSPC) {
-+			tst_res(TFAIL | TTERRNO, "%s should fail with ENOSPC",
-+				func);
-+			return 0;
-+		}
-+
-+		tst_res(TPASS | TTERRNO, "%s on full FS with CoW", func);
-+	} else if (TST_RET < 0) {
-+		tst_res(TFAIL | TTERRNO, "%s failed unexpectedly", func);
-+		return 0;
-+	} else if (TST_RET != exp) {
-+		tst_res(TFAIL,
-+			"Unexpected return value from %s: %ld (expected %ld)",
-+			func, TST_RET, exp);
-+		return 0;
-+	} else
-+		tst_res(TPASS, "%s successful", func);
-+
-+	return 1;
-+}
-+
-+static void run(unsigned int n)
-+{
++	static char err_msg[1024];
 +	int fd;
-+	long offset, size;
-+	const struct test_case *tc = testcase_list + n;
+ 
+-		closedir(dir);
++	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
++	if (fd >= 0) {
++		close(fd);
++		ret_val = purge_dir(obj, errmsg);
+ 
+ 		/* If there were problems removing an entry, don't attempt to
+ 		   remove the directory itself */
+@@ -330,3 +352,11 @@ void tst_rmdir(void)
+ 			 __func__, TESTDIR, errmsg);
+ 	}
+ }
 +
-+	tst_res(TINFO, "Case %u. Fill FS: %s; Use copy on write: %s", n+1,
-+		tc->fill_fs ? "yes" : "no", tc->no_cow ? "no" : "yes");
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT | O_TRUNC);
-+
-+	if (cow_support)
-+		toggle_cow(fd, !tc->no_cow);
-+	else if (!tc->no_cow)
-+		tst_brk(TCONF, "File system does not support copy-on-write");
-+
-+	/* Prepare test data for deallocation test */
-+	size = WRITE_BLOCKS * blocksize;
-+	TEST(write(fd, wbuf, size));
-+
-+	if (TST_RET < 0)
-+		tst_res(TFAIL | TTERRNO, "write() failed unexpectedly");
-+	else if (TST_RET != size)
-+		tst_res(TFAIL, "Short write(): %ld bytes (expected %ld)",
-+			TST_RET, size);
-+	else
-+		tst_res(TPASS, "write() wrote %ld bytes", TST_RET);
-+
-+	/* Allocation test */
-+	offset = size + block_offset;
-+	size = FALLOCATE_BLOCKS * blocksize;
-+	TEST(fallocate(fd, 0, offset, size));
-+
-+	if (TST_RET) {
-+		if (TST_ERR == ENOTSUP) {
-+			SAFE_CLOSE(fd);
-+			tst_brk(TCONF | TTERRNO, "fallocate() not supported");
-+		}
-+
-+		tst_brk(TBROK | TTERRNO, "fallocate(fd, 0, %ld, %ld)", offset,
-+			size);
-+	}
-+
-+	if (tc->fill_fs)
-+		tst_fill_fs(MNTPOINT, 1);
-+
-+	SAFE_LSEEK(fd, offset, SEEK_SET);
-+	TEST(write(fd, wbuf, size));
-+	if (check_result(tc, "write()", size))
-+		tst_res(TPASS, "Misaligned allocation works as expected");
-+
-+	/* Deallocation test */
-+	size = DEALLOCATE_BLOCKS * blocksize;
-+	offset = block_offset;
-+	TEST(fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, offset,
-+		size));
-+
-+	if (TST_RET == -1 && TST_ERR == ENOTSUP) {
-+		tst_res(TCONF | TTERRNO, TESTED_FLAGS);
-+	} else if (check_result(tc, TESTED_FLAGS, 0) && !TST_RET) {
-+		int i, err = 0;
-+
-+		SAFE_LSEEK(fd, 0, SEEK_SET);
-+		SAFE_READ(1, fd, rbuf, rbuf_size);
-+
-+		for (i = offset; i < offset + size; i++) {
-+			if (rbuf[i]) {
-+				err = 1;
-+				break;
-+			}
-+		}
-+
-+		err = err || memcmp(rbuf, wbuf, offset);
-+		offset += size;
-+		size = rbuf_size - offset;
-+		err = err || memcmp(rbuf + offset, wbuf + offset, size);
-+
-+		if (err)
-+			tst_res(TFAIL, TESTED_FLAGS
-+				" did not clear the correct file range.");
-+		else
-+			tst_res(TPASS, TESTED_FLAGS
-+				" cleared the correct file range");
-+	}
-+
-+	SAFE_CLOSE(fd);
-+	tst_purge_dir(MNTPOINT);
-+}
-+
-+static void cleanup(void)
++void tst_purge_dir(const char *path)
 +{
-+	free(wbuf);
-+	free(rbuf);
-+}
++	char *err;
 +
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.dev_min_size = 512,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
++	if (purge_dir(path, &err))
++		tst_brkm(TBROK, NULL, "%s: %s", __func__, err);
++}
 -- 
 2.24.1
 
