@@ -1,30 +1,41 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 23 Jan 2020 18:54:59 -0500 (EST)
-Subject: [LTP] [PATCH v2] Fix prctl02
-In-Reply-To: <20200123151836.29484-1-mdoucha@suse.cz>
-References: <239304412.3515101.1579791334045.JavaMail.zimbra@redhat.com>
- <20200123151836.29484-1-mdoucha@suse.cz>
-Message-ID: <1063406316.3604310.1579823699778.JavaMail.zimbra@redhat.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 24 Jan 2020 13:18:05 +0530
+Subject: [LTP] [PATCH 1/2] Add Syscall numbers for io_pgetevents
+In-Reply-To: <f9e9bc067d1153199440512d6ece01f7a001b660.1579755655.git.viresh.kumar@linaro.org>
+References: <f9e9bc067d1153199440512d6ece01f7a001b660.1579755655.git.viresh.kumar@linaro.org>
+Message-ID: <20200124074805.b2gk4jcu3jrvrczd@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Cyril,
 
+On 23-01-20, 10:31, Viresh Kumar wrote:
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  include/lapi/syscalls/aarch64.in   | 1 +
+>  include/lapi/syscalls/arm.in       | 1 +
+>  include/lapi/syscalls/hppa.in      | 1 +
+>  include/lapi/syscalls/i386.in      | 1 +
+>  include/lapi/syscalls/ia64.in      | 1 +
+>  include/lapi/syscalls/powerpc.in   | 1 +
+>  include/lapi/syscalls/powerpc64.in | 1 +
+>  include/lapi/syscalls/s390.in      | 1 +
+>  include/lapi/syscalls/s390x.in     | 1 +
+>  include/lapi/syscalls/sparc.in     | 1 +
+>  include/lapi/syscalls/sparc64.in   | 1 +
+>  include/lapi/syscalls/x86_64.in    | 1 +
+>  12 files changed, 12 insertions(+)
 
------ Original Message -----
-> The prctl() system call takes 5 integer arguments but only 3 of them were
-> passed in the test. This means that the system call read random garbage
-> from stack in place of the two missing arguments and failed even on some
-> perfectly valid combinations of arguments on some platforms.
-> 
-> - Change num_invalid to ULONG_MAX
-> - Fix arguments in test case 9, 13 and 14
-> - Fix test call of prctl() to have all 5 arguments
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Is it fine to send patches like this separately from the patches which
+actually add the tests? Will you merge them alone as well?
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
+Asking as I would be required to resend these patches (which just add
+syscall number) along with the real tests, while they may never get
+modified. I can then send such patches for future syscalls I am
+working on.
 
+-- 
+viresh
