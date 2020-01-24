@@ -1,91 +1,38 @@
-From: Yang Xu <xuyang_jy_0410@163.com>
-Date: Fri, 24 Jan 2020 19:10:26 +0800
-Subject: [LTP] [PATCH v2] Fix prctl02
-In-Reply-To: <20200123151836.29484-1-mdoucha@suse.cz>
-References: <239304412.3515101.1579791334045.JavaMail.zimbra@redhat.com>
- <20200123151836.29484-1-mdoucha@suse.cz>
-Message-ID: <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 Jan 2020 13:07:03 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/vmsplice: Add NONBLOCK testcase
+In-Reply-To: <20200124094819.11710-2-jcronenberg@suse.de>
+References: <20200124094819.11710-1-jcronenberg@suse.de>
+ <20200124094819.11710-2-jcronenberg@suse.de>
+Message-ID: <20200124120643.GA31214@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
-> The prctl() system call takes 5 integer arguments but only 3 of them were
-> passed in the test. This means that the system call read random garbage
-> from stack in place of the two missing arguments and failed even on some
-> perfectly valid combinations of arguments on some platforms.
-> 
-> - Change num_invalid to ULONG_MAX
-> - Fix arguments in test case 9, 13 and 14
-> - Fix test call of prctl() to have all 5 arguments
-looks prctl manpages and kernel code, you are right, Thanks for the fix!
-Feel free to add?
-Reviewed-by: xuyang_jy_0410@163.com
-Tested-by: xuyang_jy_0410@163.com
+Hi!
+Pushed with minor changes, thanks.
 
-Also, do we should use 5 arguments for other prctl test cases?
+* Moved the initial vmsplice() to fill the pipe into the test setup
+  otherwise the test breaks on -i parameter
 
-Best Regards
-Yang Xu
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  
-> Changes since v1:
-> - Change num_invalid to ULONG_MAX
-> - Return removed test cases and fix them instead
-> 
->   testcases/kernel/syscalls/prctl/prctl02.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
-> index 93f30b54a..ebc0e5060 100644
-> --- a/testcases/kernel/syscalls/prctl/prctl02.c
-> +++ b/testcases/kernel/syscalls/prctl/prctl02.c
-> @@ -41,6 +41,7 @@
->   #include <unistd.h>
->   #include <stdlib.h>
->   #include <stddef.h>
-> +#include <limits.h>
->   #include "config.h"
->   #include "lapi/prctl.h"
->   #include "lapi/seccomp.h"
-> @@ -65,7 +66,7 @@ static unsigned long bad_addr;
->   static unsigned long num_0;
->   static unsigned long num_1 = 1;
->   static unsigned long num_2 = 2;
-> -static unsigned long num_invalid = 999;
-> +static unsigned long num_invalid = ULONG_MAX;
->   static int seccomp_nsup;
->   static int nonewprivs_nsup;
->   static int thpdisable_nsup;
-> @@ -87,12 +88,12 @@ static struct tcase {
->   	{PR_SET_SECCOMP, &num_2, &strict_addr, EACCES, "PR_SET_SECCOMP"},
->   	{PR_SET_TIMING, &num_1, &num_0, EINVAL, "PR_SET_TIMING"},
->   	{PR_SET_NO_NEW_PRIVS, &num_0, &num_0, EINVAL, "PR_SET_NO_NEW_PRIVS"},
-> -	{PR_SET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL, "PR_SET_NO_NEW_PRIVS"},
-> +	{PR_SET_NO_NEW_PRIVS, &num_1, &num_1, EINVAL, "PR_SET_NO_NEW_PRIVS"},
->   	{PR_GET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL, "PR_GET_NO_NEW_PRIVS"},
->   	{PR_SET_THP_DISABLE, &num_0, &num_1, EINVAL, "PR_SET_THP_DISABLE"},
->   	{PR_GET_THP_DISABLE, &num_1, &num_1, EINVAL, "PR_GET_THP_DISABLE"},
-> -	{PR_CAP_AMBIENT, &num_2, &num_1, EINVAL, "PR_CAP_AMBIENT"},
-> -	{PR_GET_SPECULATION_CTRL, &num_1, &num_0, EINVAL, "PR_GET_SPECULATION_CTRL"},
-> +	{PR_CAP_AMBIENT, &num_invalid, &num_0, EINVAL, "PR_CAP_AMBIENT"},
-> +	{PR_GET_SPECULATION_CTRL, &num_0, &num_invalid, EINVAL, "PR_GET_SPECULATION_CTRL"},
->   	{PR_SET_SECUREBITS, &num_0, &num_0, EPERM, "PR_SET_SECUREBITS"},
->   	{PR_CAPBSET_DROP, &num_1, &num_0, EPERM, "PR_CAPBSET_DROP"},
->   };
-> @@ -140,7 +141,7 @@ static void verify_prctl(unsigned int n)
->   	break;
->   	}
->   
-> -	TEST(prctl(tc->option, *tc->arg2, *tc->arg3));
-> +	TEST(prctl(tc->option, *tc->arg2, *tc->arg3, 0, 0));
->   	if (TST_RET == 0) {
->   		tst_res(TFAIL, "prctl() succeeded unexpectedly");
->   		return;
-> 
+* Added curly braces around multiline if/else blocks
+  since this is prefered by LKML see:
+  https://www.kernel.org/doc/html/v4.10/process/coding-style.html#placing-braces-and-spaces
 
+* I've put the parent code in the second test out of the else block,
+  the child does not return, there is no need to execute the rest of the
+  function in an else block
+
+* Put single empty lines between functions, it's much more readable that
+  way
+
+Also btw, if you put signed-off-by line after the --- it gets removed,
+since everything after --- that is not the actual patch gets ignored, so
+the signed-off-by should have been before the block that described the
+changes in the commit.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
