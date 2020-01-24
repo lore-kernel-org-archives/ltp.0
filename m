@@ -1,41 +1,42 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Jan 2020 13:48:47 +0100
-Subject: [LTP] [PATCH v2] Fix prctl02
-In-Reply-To: <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
-References: <239304412.3515101.1579791334045.JavaMail.zimbra@redhat.com>
- <20200123151836.29484-1-mdoucha@suse.cz>
- <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
-Message-ID: <20200124124847.GB31214@rei.lan>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 24 Jan 2020 13:55:34 +0100
+Subject: [LTP] [PATCH v4 0/3] Add test for misaligned fallocate()
+Message-ID: <20200124125537.17714-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > The prctl() system call takes 5 integer arguments but only 3 of them were
-> > passed in the test. This means that the system call read random garbage
-> > from stack in place of the two missing arguments and failed even on some
-> > perfectly valid combinations of arguments on some platforms.
-> > 
-> > - Change num_invalid to ULONG_MAX
-> > - Fix arguments in test case 9, 13 and 14
-> > - Fix test call of prctl() to have all 5 arguments
-> looks prctl manpages and kernel code, you are right, Thanks for the fix!
-> Feel free to add??
-> Reviewed-by: xuyang_jy_0410@163.com
-> Tested-by: xuyang_jy_0410@163.com
-> 
-> Also, do we should use 5 arguments for other prctl test cases?
+This patch is a follow-up to the fallocate05 fix. The original fallocate05
+test accidentally tested some misaligned allocation and deallocation
+on platforms with block size bigger than 8k but it didn't validate
+the results correctly. Test calling fallocate() on misaligned file range
+and this time validate the results properly, taking into account advanced
+FS features like copy-on-write.
 
-It depends on the option argument, the PR_CAP_AMBIENT explicitely states
-that arg4 and arg5 must be set to 0 as well as the
-PR_GET_SPECULATION_CTRL.
+Changes since v1:
+- Fix compilation with --std=c89
+- Misalign by at most 512 bytes, otherwise the test may miss an XFS bug on PPC
+- Clear the temp directory using tst_purge_dir()
+- Remove useless check in purge_dir()
+- Fix potential buffer overflow in rmdir()/purge_dir()
+- Add description of tst_purge_dir() to test writing guidelines
 
-Some of the options explicitely say that some arguments are ignored.
+Martin Doucha (3):
+  Add tst_purge_dir() helper function
+  Add test for misaligned fallocate()
+  Purge temp directory after each run of fallocate05
 
-And some, including PR_SET_NO_NEW_PRIVS does not say anyting.
+ doc/test-writing-guidelines.txt               |  11 +
+ include/tst_device.h                          |   5 +
+ lib/tst_tmpdir.c                              |  97 ++++---
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/fallocate/fallocate05.c   |  11 +-
+ .../kernel/syscalls/fallocate/fallocate06.c   | 253 ++++++++++++++++++
+ 6 files changed, 332 insertions(+), 46 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fallocate/fallocate06.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.24.1
+
