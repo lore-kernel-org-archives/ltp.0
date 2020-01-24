@@ -1,51 +1,41 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 24 Jan 2020 13:09:09 +0100
-Subject: [LTP] [PATCH v3 1/3] Add tst_purge_dir() helper function
-In-Reply-To: <20200124102323.GB28992@rei.lan>
-References: <20200123162019.18958-1-mdoucha@suse.cz>
- <20200123162019.18958-2-mdoucha@suse.cz> <20200124102323.GB28992@rei.lan>
-Message-ID: <dab8858a-4a0b-3413-02b6-5e32bd3b2ddf@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 Jan 2020 13:48:47 +0100
+Subject: [LTP] [PATCH v2] Fix prctl02
+In-Reply-To: <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
+References: <239304412.3515101.1579791334045.JavaMail.zimbra@redhat.com>
+ <20200123151836.29484-1-mdoucha@suse.cz>
+ <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
+Message-ID: <20200124124847.GB31214@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 1/24/20 11:23 AM, Cyril Hrubis wrote:
->> -	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
->> -	if (fd != -1) {
->> -		close(fd);
->> +	errno = 0;
->> +	fd = open(path, O_DIRECTORY | O_NOFOLLOW);
->>  
->> -		/* Do NOT perform the request if the directory is "/" */
->> -		if (!strcmp(obj, "/")) {
->> -			if (errmsg != NULL) {
->> -				sprintf(err_msg, "Cannot remove /");
->> -				*errmsg = err_msg;
->> -			}
->> -			return -1;
->> +	if (fd < 0) {
->> +		if (errptr) {
->> +			sprintf(err_msg,
->> +				"Cannot open directory %s; errno=%d: %s",
->> +				path, errno, tst_strerrno(errno));
->> +			*errptr = err_msg;
->>  		}
+Hi!
+> > The prctl() system call takes 5 integer arguments but only 3 of them were
+> > passed in the test. This means that the system call read random garbage
+> > from stack in place of the two missing arguments and failed even on some
+> > perfectly valid combinations of arguments on some platforms.
+> > 
+> > - Change num_invalid to ULONG_MAX
+> > - Fix arguments in test case 9, 13 and 14
+> > - Fix test call of prctl() to have all 5 arguments
+> looks prctl manpages and kernel code, you are right, Thanks for the fix!
+> Feel free to add??
+> Reviewed-by: xuyang_jy_0410@163.com
+> Tested-by: xuyang_jy_0410@163.com
 > 
-> Isn't this check useless here? Or are we trying to avoid escaping the
-> directory via symlink?
+> Also, do we should use 5 arguments for other prctl test cases?
 
-You're right. I've just blindly copied the check from rmobj() which uses
-it to decide whether the FS node should be removed using rmdir() or
-unlink(). I'll move the open() check to tst_purge_dir() so it doesn't
-get called twice for each subdirectory and drop the useless O_NOFOLLOW.
+It depends on the option argument, the PR_CAP_AMBIENT explicitely states
+that arg4 and arg5 must be set to 0 as well as the
+PR_GET_SPECULATION_CTRL.
+
+Some of the options explicitely say that some arguments are ignored.
+
+And some, including PR_SET_NO_NEW_PRIVS does not say anyting.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
