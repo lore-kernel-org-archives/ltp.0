@@ -1,38 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Jan 2020 13:07:03 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/vmsplice: Add NONBLOCK testcase
-In-Reply-To: <20200124094819.11710-2-jcronenberg@suse.de>
-References: <20200124094819.11710-1-jcronenberg@suse.de>
- <20200124094819.11710-2-jcronenberg@suse.de>
-Message-ID: <20200124120643.GA31214@rei.lan>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 24 Jan 2020 13:09:09 +0100
+Subject: [LTP] [PATCH v3 1/3] Add tst_purge_dir() helper function
+In-Reply-To: <20200124102323.GB28992@rei.lan>
+References: <20200123162019.18958-1-mdoucha@suse.cz>
+ <20200123162019.18958-2-mdoucha@suse.cz> <20200124102323.GB28992@rei.lan>
+Message-ID: <dab8858a-4a0b-3413-02b6-5e32bd3b2ddf@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+On 1/24/20 11:23 AM, Cyril Hrubis wrote:
+>> -	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
+>> -	if (fd != -1) {
+>> -		close(fd);
+>> +	errno = 0;
+>> +	fd = open(path, O_DIRECTORY | O_NOFOLLOW);
+>>  
+>> -		/* Do NOT perform the request if the directory is "/" */
+>> -		if (!strcmp(obj, "/")) {
+>> -			if (errmsg != NULL) {
+>> -				sprintf(err_msg, "Cannot remove /");
+>> -				*errmsg = err_msg;
+>> -			}
+>> -			return -1;
+>> +	if (fd < 0) {
+>> +		if (errptr) {
+>> +			sprintf(err_msg,
+>> +				"Cannot open directory %s; errno=%d: %s",
+>> +				path, errno, tst_strerrno(errno));
+>> +			*errptr = err_msg;
+>>  		}
+> 
+> Isn't this check useless here? Or are we trying to avoid escaping the
+> directory via symlink?
 
-* Moved the initial vmsplice() to fill the pipe into the test setup
-  otherwise the test breaks on -i parameter
-
-* Added curly braces around multiline if/else blocks
-  since this is prefered by LKML see:
-  https://www.kernel.org/doc/html/v4.10/process/coding-style.html#placing-braces-and-spaces
-
-* I've put the parent code in the second test out of the else block,
-  the child does not return, there is no need to execute the rest of the
-  function in an else block
-
-* Put single empty lines between functions, it's much more readable that
-  way
-
-Also btw, if you put signed-off-by line after the --- it gets removed,
-since everything after --- that is not the actual patch gets ignored, so
-the signed-off-by should have been before the block that described the
-changes in the commit.
+You're right. I've just blindly copied the check from rmobj() which uses
+it to decide whether the FS node should be removed using rmdir() or
+unlink(). I'll move the open() check to tst_purge_dir() so it doesn't
+get called twice for each subdirectory and drop the useless O_NOFOLLOW.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
