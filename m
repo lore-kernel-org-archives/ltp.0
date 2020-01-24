@@ -1,104 +1,91 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Jan 2020 11:23:23 +0100
-Subject: [LTP] [PATCH v3 1/3] Add tst_purge_dir() helper function
-In-Reply-To: <20200123162019.18958-2-mdoucha@suse.cz>
-References: <20200123162019.18958-1-mdoucha@suse.cz>
- <20200123162019.18958-2-mdoucha@suse.cz>
-Message-ID: <20200124102323.GB28992@rei.lan>
+From: Yang Xu <xuyang_jy_0410@163.com>
+Date: Fri, 24 Jan 2020 19:10:26 +0800
+Subject: [LTP] [PATCH v2] Fix prctl02
+In-Reply-To: <20200123151836.29484-1-mdoucha@suse.cz>
+References: <239304412.3515101.1579791334045.JavaMail.zimbra@redhat.com>
+ <20200123151836.29484-1-mdoucha@suse.cz>
+Message-ID: <b2a63820-656c-de66-cde2-ce91c62e52b6@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This function deletes the contents of the given directory while leaving
-> the directory itself intact. Useful for purging the mountpoint between test
-> iterations or test cases.
+Hi
+> The prctl() system call takes 5 integer arguments but only 3 of them were
+> passed in the test. This means that the system call read random garbage
+> from stack in place of the two missing arguments and failed even on some
+> perfectly valid combinations of arguments on some platforms.
+> 
+> - Change num_invalid to ULONG_MAX
+> - Fix arguments in test case 9, 13 and 14
+> - Fix test call of prctl() to have all 5 arguments
+looks prctl manpages and kernel code, you are right, Thanks for the fix!
+Feel free to add?
+Reviewed-by: xuyang_jy_0410@163.com
+Tested-by: xuyang_jy_0410@163.com
+
+Also, do we should use 5 arguments for other prctl test cases?
+
+Best Regards
+Yang Xu
 > 
 > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 > ---
->  include/tst_device.h |   5 ++
->  lib/tst_tmpdir.c     | 106 +++++++++++++++++++++++++++----------------
->  2 files changed, 73 insertions(+), 38 deletions(-)
+>  
+> Changes since v1:
+> - Change num_invalid to ULONG_MAX
+> - Return removed test cases and fix them instead
 > 
-> diff --git a/include/tst_device.h b/include/tst_device.h
-> index 3db5275c9..d2e4ad5be 100644
-> --- a/include/tst_device.h
-> +++ b/include/tst_device.h
-> @@ -88,4 +88,9 @@ static inline int tst_dev_sync(int fd)
->   */
->  unsigned long tst_dev_bytes_written(const char *dev);
->  
-> +/*
-> + *Wipe the contents of given directory but keep the directory itself
-> + */
-> +void tst_purge_dir(const char *path);
+>   testcases/kernel/syscalls/prctl/prctl02.c | 11 ++++++-----
+>   1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/prctl/prctl02.c b/testcases/kernel/syscalls/prctl/prctl02.c
+> index 93f30b54a..ebc0e5060 100644
+> --- a/testcases/kernel/syscalls/prctl/prctl02.c
+> +++ b/testcases/kernel/syscalls/prctl/prctl02.c
+> @@ -41,6 +41,7 @@
+>   #include <unistd.h>
+>   #include <stdlib.h>
+>   #include <stddef.h>
+> +#include <limits.h>
+>   #include "config.h"
+>   #include "lapi/prctl.h"
+>   #include "lapi/seccomp.h"
+> @@ -65,7 +66,7 @@ static unsigned long bad_addr;
+>   static unsigned long num_0;
+>   static unsigned long num_1 = 1;
+>   static unsigned long num_2 = 2;
+> -static unsigned long num_invalid = 999;
+> +static unsigned long num_invalid = ULONG_MAX;
+>   static int seccomp_nsup;
+>   static int nonewprivs_nsup;
+>   static int thpdisable_nsup;
+> @@ -87,12 +88,12 @@ static struct tcase {
+>   	{PR_SET_SECCOMP, &num_2, &strict_addr, EACCES, "PR_SET_SECCOMP"},
+>   	{PR_SET_TIMING, &num_1, &num_0, EINVAL, "PR_SET_TIMING"},
+>   	{PR_SET_NO_NEW_PRIVS, &num_0, &num_0, EINVAL, "PR_SET_NO_NEW_PRIVS"},
+> -	{PR_SET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL, "PR_SET_NO_NEW_PRIVS"},
+> +	{PR_SET_NO_NEW_PRIVS, &num_1, &num_1, EINVAL, "PR_SET_NO_NEW_PRIVS"},
+>   	{PR_GET_NO_NEW_PRIVS, &num_1, &num_0, EINVAL, "PR_GET_NO_NEW_PRIVS"},
+>   	{PR_SET_THP_DISABLE, &num_0, &num_1, EINVAL, "PR_SET_THP_DISABLE"},
+>   	{PR_GET_THP_DISABLE, &num_1, &num_1, EINVAL, "PR_GET_THP_DISABLE"},
+> -	{PR_CAP_AMBIENT, &num_2, &num_1, EINVAL, "PR_CAP_AMBIENT"},
+> -	{PR_GET_SPECULATION_CTRL, &num_1, &num_0, EINVAL, "PR_GET_SPECULATION_CTRL"},
+> +	{PR_CAP_AMBIENT, &num_invalid, &num_0, EINVAL, "PR_CAP_AMBIENT"},
+> +	{PR_GET_SPECULATION_CTRL, &num_0, &num_invalid, EINVAL, "PR_GET_SPECULATION_CTRL"},
+>   	{PR_SET_SECUREBITS, &num_0, &num_0, EPERM, "PR_SET_SECUREBITS"},
+>   	{PR_CAPBSET_DROP, &num_1, &num_0, EPERM, "PR_CAPBSET_DROP"},
+>   };
+> @@ -140,7 +141,7 @@ static void verify_prctl(unsigned int n)
+>   	break;
+>   	}
+>   
+> -	TEST(prctl(tc->option, *tc->arg2, *tc->arg3));
+> +	TEST(prctl(tc->option, *tc->arg2, *tc->arg3, 0, 0));
+>   	if (TST_RET == 0) {
+>   		tst_res(TFAIL, "prctl() succeeded unexpectedly");
+>   		return;
+> 
 
-I'm not sure that it belongs to tst_device.h.
-
-We do have functions such as tst_dir_is_empty() in tst_fs.h so maybe
-that would be a slightly better fit.
-
->  #endif	/* TST_DEVICE_H__ */
-> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-> index 09b7b6e22..4b21dfad6 100644
-> --- a/lib/tst_tmpdir.c
-> +++ b/lib/tst_tmpdir.c
-> @@ -99,6 +99,8 @@ static char test_start_work_dir[PATH_MAX];
->  /* lib/tst_checkpoint.c */
->  extern futex_t *tst_futexes;
->  
-> +static int rmobj(const char *obj, char **errmsg);
-> +
->  int tst_tmpdir_created(void)
->  {
->  	return TESTDIR != NULL;
-> @@ -119,60 +121,80 @@ const char *tst_get_startwd(void)
->  	return test_start_work_dir;
->  }
->  
-> -static int rmobj(char *obj, char **errmsg)
-> +static int purge_dir(const char *path, char **errptr)
->  {
->  	int ret_val = 0;
->  	DIR *dir;
->  	struct dirent *dir_ent;
->  	char dirobj[PATH_MAX];
-> -	struct stat statbuf;
->  	static char err_msg[1024];
->  	int fd;
->  
-> -	fd = open(obj, O_DIRECTORY | O_NOFOLLOW);
-> -	if (fd != -1) {
-> -		close(fd);
-> +	errno = 0;
-> +	fd = open(path, O_DIRECTORY | O_NOFOLLOW);
->  
-> -		/* Do NOT perform the request if the directory is "/" */
-> -		if (!strcmp(obj, "/")) {
-> -			if (errmsg != NULL) {
-> -				sprintf(err_msg, "Cannot remove /");
-> -				*errmsg = err_msg;
-> -			}
-> -			return -1;
-> +	if (fd < 0) {
-> +		if (errptr) {
-> +			sprintf(err_msg,
-> +				"Cannot open directory %s; errno=%d: %s",
-> +				path, errno, tst_strerrno(errno));
-> +			*errptr = err_msg;
->  		}
-
-Isn't this check useless here? Or are we trying to avoid escaping the
-directory via symlink?
-
-If that's so maybe we should make it more obvious with stat() and
-S_ISLNK(), or at least add a comment.
-
-Also it would be nice to add an paragraph describing this function into
-the doc/test-writing-guidelines.txt
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
