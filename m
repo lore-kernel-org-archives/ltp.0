@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 27 Jan 2020 15:32:15 +0100
-Subject: [LTP] [PATCH V3 2/2] syscalls/io_pgetevents
-In-Reply-To: <5c8bc1c031ec992f402e009a5ed85f9351ecd7ac.1580122000.git.viresh.kumar@linaro.org>
-References: <2d23f3a542bbd04179aba828e28d37f5c7be7b45.1579859350.git.viresh.kumar@linaro.org>
- <5c8bc1c031ec992f402e009a5ed85f9351ecd7ac.1580122000.git.viresh.kumar@linaro.org>
-Message-ID: <20200127143215.GC30831@rei.lan>
+Date: Mon, 27 Jan 2020 17:20:16 +0100
+Subject: [LTP] [PATCH v2 1/2] syscalls/fcntl30: clean up && add more
+ range test
+In-Reply-To: <1579686442-24689-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1579686442-24689-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200127162016.GD30831@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,379 +12,305 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Add tests to check working of io_pgetevents() syscall.
+> --------
+> v1->v2:
+> 1. add memfree check
+
+Do we really need this? Looking at the kernel code the fcntl() just
+reallocates the array that is holding the slots, so we only allocate new
+array of struct pipe_buffer which contains a pointer for the actuall
+page that is allocated when we _WRITE_ to the pipe.
+
+> 2. limit max shift, so pipe will not beyond 2^31 value
+> on big page size machine(such as 64kb pg size on arm machine)
+> --------
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 > ---
-> V2->V3:
-> - Dropped duplicate headers
-> - Handle failure tests with global variable
-> - All changes were inspired from the reviews of pidfd_open() patchset.
+>  include/lapi/capability.h                 |   4 +
+>  testcases/kernel/syscalls/fcntl/fcntl30.c | 216 +++++++++++++---------
+>  2 files changed, 133 insertions(+), 87 deletions(-)
 > 
-> V1->V2:
-> - Do the failure testing with help of array and .tcnt.
-> - Use tst_syscall().
-> - Removed cleanup() routines.
-> - Improved print messages and few more minor changes.
-> 
->  configure.ac                                  |   1 +
->  include/lapi/io_pgetevents.h                  |  51 +++++++++
->  runtest/syscalls                              |   4 +
->  .../kernel/syscalls/io_pgetevents/.gitignore  |   2 +
->  .../kernel/syscalls/io_pgetevents/Makefile    |   6 +
->  .../syscalls/io_pgetevents/io_pgetevents01.c  |  61 +++++++++++
->  .../syscalls/io_pgetevents/io_pgetevents02.c  | 103 ++++++++++++++++++
->  7 files changed, 228 insertions(+)
->  create mode 100644 include/lapi/io_pgetevents.h
->  create mode 100644 testcases/kernel/syscalls/io_pgetevents/.gitignore
->  create mode 100644 testcases/kernel/syscalls/io_pgetevents/Makefile
->  create mode 100644 testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
->  create mode 100644 testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 1bf0911d88ad..c7cdff1c422c 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -75,6 +75,7 @@ AC_CHECK_FUNCS([ \
->      getdents \
->      getdents64 \
->      kcmp \
-> +    io_pgetevents \
->      mkdirat \
->      mknodat \
->      name_to_handle_at \
-> diff --git a/include/lapi/io_pgetevents.h b/include/lapi/io_pgetevents.h
-> new file mode 100644
-> index 000000000000..6ee38c44d419
-> --- /dev/null
-> +++ b/include/lapi/io_pgetevents.h
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Linaro Limited. All rights reserved.
-> + * Author: Viresh Kumar <viresh.kumar@linaro.org>
-> + */
-> +
-> +#ifndef IO_PGETEVENTS_H
-> +#define IO_PGETEVENTS_H
-> +
-> +#include <sys/syscall.h>
-> +#include <sys/types.h>
-> +
-> +#include "config.h"
-> +#include "lapi/syscalls.h"
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_LIBAIO
-> +#include <libaio.h>
-> +
-> +#ifndef HAVE_IO_SETUP
-> +int io_setup(int nr, io_context_t *ctxp)
-> +{
-> +	return tst_syscall(__NR_io_setup, nr, ctxp);
-> +}
-> +#endif /* HAVE_IO_SETUP */
-> +
-> +#ifndef HAVE_IO_DESTROY
-> +int io_destroy(io_context_t ctx)
-> +{
-> +	return tst_syscall(__NR_io_destroy, ctx);
-> +}
-> +#endif /* HAVE_IO_DESTROY */
-> +
-> +#ifndef HAVE_IO_SUBMIT
-> +int io_submit(io_context_t ctx, long nr, struct iocb **iocbpp)
-> +{
-> +	return tst_syscall(__NR_io_submit, ctx, nr, iocbpp);
-> +}
-> +#endif /* HAVE_IO_SUBMIT */
-
-I'm not sure this is correct, the libaio.h does define these wrappers
-and the rest of LTP seems to use these syscalls only guarded by
-HAVE_LIBAIO, so I guess these cannot be missing if libaio.h is present.
-
-Furthermore there are no checks for io_setup, io_destroy and io_submit
-calls in the configure.ac so presumbly this macros are never used
-anyway.
-
-> +#ifndef HAVE_IO_PGETEVENTS
-> +int io_pgetevents(io_context_t ctx, long min_nr, long max_nr,
-> +		 struct io_event *events, struct timespec *timeout,
-> +		 sigset_t *sigmask)
-> +{
-> +	return syscall(__NR_io_pgetevents, ctx, min_nr, max_nr, events, timeout, sigmask);
-> +}
-> +#endif /* HAVE_IO_PGETEVENTS */
-
-This is the only function that seems to be missing from the libaio.h
-header, so I guess that all we have to do here is to define it if it's
-not defined.
-
-> +#endif /* HAVE_LIBAIO */
-> +
-> +#endif /* IO_PGETEVENTS_H */
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index a28a1f2ecd45..0743cf4e3f74 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -556,6 +556,10 @@ ioprio_set03 ioprio_set03
->  io_cancel01 io_cancel01
->  io_destroy01 io_destroy01
->  io_getevents01 io_getevents01
-> +
-> +io_pgetevents01 io_pgetevents01
-> +io_pgetevents02 io_pgetevents02
-> +
->  io_setup01 io_setup01
->  io_submit01 io_submit01
+> diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+> index 8833f0605..7ade78985 100644
+> --- a/include/lapi/capability.h
+> +++ b/include/lapi/capability.h
+> @@ -28,6 +28,10 @@
+>  # define CAP_SYS_ADMIN        21
+>  #endif
 >  
-> diff --git a/testcases/kernel/syscalls/io_pgetevents/.gitignore b/testcases/kernel/syscalls/io_pgetevents/.gitignore
-> new file mode 100644
-> index 000000000000..ae02077ba44b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/io_pgetevents/.gitignore
-> @@ -0,0 +1,2 @@
-> +io_pgetevents01
-> +io_pgetevents02
-> diff --git a/testcases/kernel/syscalls/io_pgetevents/Makefile b/testcases/kernel/syscalls/io_pgetevents/Makefile
-> new file mode 100644
-> index 000000000000..5ea7d67db123
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/io_pgetevents/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
-> new file mode 100644
-> index 000000000000..d685adb48759
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * Description:
-> + * Basic io_pgetevents() test to receive 1 event successfully.
-> + */
-> +#include "lapi/io_pgetevents.h"
-> +
-> +#ifdef HAVE_LIBAIO
-> +static void run(void)
-> +{
-> +	struct io_event events[1];
-> +	struct iocb cb, *cbs[1];
-> +	io_context_t ctx = 0;
-> +	sigset_t sigmask;
-> +	char data[4096];
-> +	int ret, fd;
-> +
-> +	cbs[0] = &cb;
-> +	sigemptyset(&sigmask);
-> +
-> +	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
-> +	io_prep_pwrite(&cb, fd, data, 4096, 0);
-> +
-> +	ret = io_setup(1, &ctx);
-> +	if (ret < 0) {
-> +		tst_res(TBROK | TERRNO, "io_setup() failed");
-> +		goto exit;
-> +	}
-> +
-> +	ret = io_submit(ctx, 1, cbs);
-> +	if (ret != 1) {
-> +		tst_res(TBROK | TERRNO, "io_submit() failed");
-> +		goto exit;
-> +	}
-> +
-> +	/* get the reply */
-> +	ret = io_pgetevents(ctx, 1, 1, events, NULL, &sigmask);
-> +
-> +	if (ret == 1)
-> +		tst_res(TPASS, "io_pgetevents() works as expected");
-> +	else
-> +		tst_res(TFAIL | TERRNO, "io_pgetevents() failed");
-> +
-> +	if (io_destroy(ctx) < 0)
-> +		tst_res(TBROK | TERRNO, "io_destroy() failed");
-> +
-> +exit:
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.min_kver = "4.18",
-> +	.test_all = run,
-> +	.needs_tmpdir = 1,
-> +};
-> +
-> +#else
-> +TST_TEST_TCONF("test requires libaio and it's development packages");
+> +#ifndef CAP_SYS_RESOURCE
+> +# define CAP_SYS_RESOURCE     24
 > +#endif
-> diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
-> new file mode 100644
-> index 000000000000..c612c3f0a2b2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
-> @@ -0,0 +1,103 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * Description:
-> + * Basic io_pgetevents() test to check various failures.
-> + */
-> +#include "lapi/io_pgetevents.h"
 > +
-> +#ifdef HAVE_LIBAIO
-> +static sigset_t sigmask;
-> +static struct io_event events[1];
-> +static io_context_t ctx, invalid_ctx = 0;
-> +static int fd;
+>  #ifndef CAP_AUDIT_READ
+>  # define CAP_AUDIT_READ       37
+>  #endif
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
+> index 4a409b868..0cb42babe 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl30.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
+> @@ -1,111 +1,153 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - * Copyright (c) 2014 Fujitsu Ltd.
+> + * Copyright (c) 2014-2020 FUJITSU LIMITED. All rights reserved.
+>   * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+>   *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - */
+> -
+> -/*
+>   * Description:
+> - * Verify that,
+> - *     Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
+> + * Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
+>   */
+>  
+> -
+> -#include <stdio.h>
+> -#include <errno.h>
+>  #include <unistd.h>
+>  #include <fcntl.h>
+> -#include <string.h>
+> -#include <signal.h>
+>  #include <sys/types.h>
+> -#include <pwd.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +#include "tst_test.h"
+>  #include "lapi/fcntl.h"
+> -
+> -char *TCID = "fcntl30";
+> -int TST_TOTAL = 1;
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -int main(int ac, char **av)
+> +#include "lapi/abisize.h"
+> +#include "lapi/capability.h"
+> +
+> +static int fds[2];
+> +static unsigned int orig_value, struct_shift, max_shift, pg_shift;
 > +
 > +static struct tcase {
-> +	char *name;
-> +	io_context_t *ctx;
-> +	long min_nr;
-> +	long max_nr;
-> +	struct io_event *events;
-> +	struct timespec *timeout;
-> +	sigset_t *sigmask;
-> +	int exp_errno;
+> +	unsigned int multi;
+> +	unsigned int exp_multi;
+> +	int hole;
+> +	int pass_flag;
+> +	char *message;
 > +} tcases[] = {
-> +	{"invalid ctx", &invalid_ctx, 1, 1, events, NULL, &sigmask, EINVAL},
-> +	{"invalid min_nr", &ctx, -1, 1, events, NULL, &sigmask, EINVAL},
-> +	{"invalid max_nr", &ctx, 1, -1, events, NULL, &sigmask, EINVAL},
-> +	{"invalid events", &ctx, 1, 1, NULL, NULL, &sigmask, EFAULT},
-> +	{"invalid timeout", &ctx, 1, 1, events, (void *)(0xDEAD), &sigmask, EFAULT},
-> +	{"invalid sigmask", &ctx, 1, 1, events, NULL, (void *)(0xDEAD), EFAULT},
+> +	{1, 1, 1, 1, "set a value of blew page size"},
+                                      ^
+				      below?
+> +	{2, 2, 0, 1, "set a normal value"},
+> +	{0, 0, 0, 1, "set a max value"},
+> +	{0, 0, -1, 0, "set a value beyond max"},
 > +};
 > +
-> +static void setup(void)
-> +{
-> +	struct iocb cb, *cbs[1];
-> +	char data[4096];
-> +	int ret;
-> +
-> +	cbs[0] = &cb;
-> +
-> +	sigemptyset(&sigmask);
-> +
-> +	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
-> +	io_prep_pwrite(&cb, fd, data, 4096, 0);
-> +
-> +	ret = io_setup(1, &ctx);
-> +	if (ret < 0) {
-> +		tst_res(TBROK | TERRNO, "io_setup() failed");
-> +		goto exit;
-> +	}
-> +
-> +	ret = io_submit(ctx, 1, cbs);
-> +	if (ret != 1) {
-> +		tst_res(TBROK | TERRNO, "io_submit() failed");
-> +		goto exit;
-> +	}
-> +
-> +	return;
-> +
-> +exit:
-> +	SAFE_CLOSE(fd);
-
-We do close the fd in test cleanup() so this should be removed.
-
-Also we will attempt to continue the test here even when the io_setup()
-or io_submit() have failed.
-
-What we should do here instead is to call tst_brk() in the checks for
-io_setup() and io_submit() failures. The fd will be closed in the
-cleanup that way.
-
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (io_destroy(ctx) < 0)
-> +		tst_res(TBROK | TERRNO, "io_destroy() failed");
-> +
-> +	SAFE_CLOSE(fd);
-
-The cleanup could be called when any of the SAFE_ calls fails, which
-especially means that if SAFE_OPEN() fails we will attempt to destroy
-uninitialized context and close fd -1.
-
-What we do in cleanups to cope with this is to check if the fd is valid
-fist, i.e.
-
-	if (fd > 0)
-		SAFE_CLOSE(fd);
-
-For the io_destroy(ctx) it's probably easiest to create a global flag
-ctx_initalized and set it to 1 right after the io_setup(). Then we can
-do:
-
-	if (ctx_initialized) {
-		if (io_destroy(ctx) < 0)
-			...
-	}
-
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
+> +static void verify_fcntl(unsigned int n)
+>  {
+> -	int lc;
+> -	int pipe_fds[2], test_fd;
+> -	int orig_pipe_size, new_pipe_size;
+> -
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		SAFE_PIPE(cleanup, pipe_fds);
+> -		test_fd = pipe_fds[1];
+> -
+> -		TEST(fcntl(test_fd, F_GETPIPE_SZ));
+> -		if (TEST_RETURN < 0) {
+> -			tst_brkm(TFAIL | TTERRNO, cleanup,
+> -				 "fcntl get pipe size failed");
+> -		}
+> -
+> -		orig_pipe_size = TEST_RETURN;
+> -		new_pipe_size = orig_pipe_size * 2;
+> -		TEST(fcntl(test_fd, F_SETPIPE_SZ, new_pipe_size));
+> -		if (TEST_RETURN < 0) {
+> -			tst_brkm(TFAIL | TTERRNO, cleanup,
+> -				 "fcntl test F_SETPIPE_SZ failed");
+> -		}
 > +	struct tcase *tc = &tcases[n];
+> +	unsigned int pipe_sz, exp_pipe_sz, shift;
+> +	long memfree;
 > +
-> +	TEST(io_pgetevents(*tc->ctx, tc->min_nr, tc->max_nr, tc->events,
-> +			   tc->timeout, tc->sigmask));
+> +	SAFE_FILE_LINES_SCANF("/proc/meminfo", "MemFree: %ld", &memfree);
 > +
-> +	if (TST_RET == 1) {
-> +		tst_res(TFAIL, "%s: io_pgetevents() passed unexpectedly",
-> +			tc->name);
-> +	} else if (tc->exp_errno != TST_ERR) {
-> +		tst_res(TFAIL | TTERRNO, "%s: io_pgetevents() should fail with %s",
-> +			tc->name, tst_strerrno(tc->exp_errno));
-> +	} else {
-> +		tst_res(TPASS | TTERRNO, "%s: io_pgetevents() failed as expected",
-> +			tc->name);
+> +	shift = max_shift - struct_shift + 2 * pg_shift;
+> +	/*
+> +	 * On 64k page size machine, this will beyond 2G and trigger EINVAL error,
+> +	 * so truncate it.
+> +	 */
+> +	if (shift > 31) {
+> +		tst_res(TINFO, "pipe size truncated into 2G");
+> +		shift = 31;
 > +	}
+> +	if (tc->multi)
+> +		pipe_sz = (tc->multi << pg_shift) - tc->hole;
+> +	else
+> +		pipe_sz = (1 << shift) - tc->hole;
+> +	if (tc->exp_multi)
+> +		exp_pipe_sz = tc->exp_multi << pg_shift;
+> +	else
+> +		exp_pipe_sz = 1 << shift;
 
-We usually use return to avoid if-else mazes like this one, i.e.
+I do wonder why can't we simply compute these sizes in the test setup
+instead.
 
-	if (TST_RET == 1) {
-		tst_res(TFAIL, ...);
-		return;
-	}
+> +	tst_res(TINFO, "%s, size is %d", tc->message, pipe_sz);
+> +
+> +	if (pipe_sz > memfree * 1024) {
+> +		tst_res(TCONF, "No enough free memory");
+> +		return;
+> +	}
+>  
+> -		TEST(fcntl(test_fd, F_GETPIPE_SZ));
+> -		if (TEST_RETURN < 0) {
+> -			tst_brkm(TFAIL | TTERRNO, cleanup,
+> -				 "fcntl test F_GETPIPE_SZ failed");
+> -		}
+> -		tst_resm(TINFO, "orig_pipe_size: %d new_pipe_size: %d",
+> -			 orig_pipe_size, new_pipe_size);
+> -		if (TEST_RETURN >= new_pipe_size) {
+> -			tst_resm(TPASS, "fcntl test F_GETPIPE_SZ"
+> -				 "and F_SETPIPE_SZ success");
+> -		} else {
+> -			tst_resm(TFAIL, "fcntl test F_GETPIPE_SZ"
+> -				 "and F_SETPIPE_SZ fail");
+> +	TEST(fcntl(fds[1], F_SETPIPE_SZ, pipe_sz));
+> +	if (tc->pass_flag && TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "F_SETPIPE_SZ failed");
+> +		return;
+> +	}
+> +	if (!tc->pass_flag) {
 
-	if (tc->exp_errno != TST_ERR) {
-		tst_res(TFAIL ...);
-		return;
-	}
+Simple else would be more readable here.
 
-	tst_res(TPASS, ...);
+> +		if (TST_RET == -1) {
+> +			if ((TST_ERR == ENOMEM && shift < 31 && tc->hole) ||
+> +				(TST_ERR == EINVAL && shift == 31 && tc->hole))
+> +				tst_res(TPASS | TTERRNO, "F_SETPIPE_SZ failed");
+> +			else
+> +				tst_res(TFAIL | TTERRNO,
+> +					"F_SETPIPE_SZ failed with unexpected error");
+> +			return;
+>  		}
+> -		SAFE_CLOSE(cleanup, pipe_fds[0]);
+> -		SAFE_CLOSE(cleanup, pipe_fds[1]);
+> +		tst_res(TFAIL, "F_SETPIPE_SZ succeed unexpectedly");
+>  	}
+>  
+> -	cleanup();
+> -	tst_exit();
+> +	TEST(fcntl(fds[1], F_GETPIPE_SZ));
+> +	if (TST_RET == -1) {
+> +		tst_res(TFAIL | TTERRNO, "F_GETPIPE_SZ failed");
+> +		return;
+> +	}
+> +	if ((unsigned int)TST_RET == exp_pipe_sz)
+> +		tst_res(TPASS, "F_SETPIPE_SZ %u bytes F_GETPIPE_SZ %u bytes",
+> +			pipe_sz, (unsigned int)TST_RET);
+> +	else
+> +		tst_res(TFAIL, "F_SETPIPE_SZ %u bytes but F_GETPIPE_SZ %u bytes",
+> +			pipe_sz, (unsigned int)TST_RET);
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	if ((tst_kvercmp(2, 6, 35)) < 0) {
+> -		tst_brkm(TCONF, NULL, "This test can only run on kernels"
+> -			 "that are 2.6.35 and higher");
+> -	}
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	unsigned int pg_size;
+> +
+> +	SAFE_PIPE(fds);
+> +	TEST(fcntl(fds[1], F_GETPIPE_SZ));
+> +	if (TST_ERR == EINVAL)
+> +		tst_brk(TCONF, "kernel doesn't support F_GET/SETPIPE_SZ");
+> +	orig_value = TST_RET;
+> +	/*
+> +	 * See kernel fs/pipe.c, the size of struct pipe buffer is 40 bytes
+> +	 * (round up 2^6) on 64bit system and 24 bytes(round up 2^5). kcalloc
+> +	 * mallocs a memory space range stores struct pipe buffer. kcalloc can
+> +	 * malloc max space depend on KMALLOC_SHIFT_MAX macro.
+> +	 *  #define KMALLOC_SHIFT_MAX  (MAX_ORDER + PAGE_SHIFT - 1)
+> +	 * the MAX_ORDER is 11.
+> +	 * For example, if page size is 4k, on 64bit system. the max pipe size
+> +	 * as below:
+> +	 *  kcalloc space(4M): 1 << (11+12-1)= 2^22
+> +	 *  space can store struct pipi buffer: 2^22/2^6= 2^16
+> +	 *  max pipe size: 2^16* 2^12 = 2^28
+> +	 * it should be 256M. On 32bit system, this value is 512M.
+> +	 */
+> +#ifdef TST_ABI64
+> +	struct_shift = 6;
+> +#else
+> +	struct_shift = 5;
+> +#endif
+> +	max_shift = 10;
+> +
+> +	pg_size = getpagesize();
+> +	tst_res(TINFO, "page size is %d bytes", pg_size);
+> +	while (pg_size >>= 1)
+> +		pg_shift++;
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> +	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, orig_value);
 
+Do we really restore the value? We are closing the the pipe here
+anyways.
 
-
-I find this a bit more readable.
-
-> +}
+> +	if (fds[0] > 0)
+> +		SAFE_CLOSE(fds[0]);
+> +	if (fds[1] > 0)
+> +		SAFE_CLOSE(fds[1]);
+>  }
 > +
 > +static struct tst_test test = {
-> +	.min_kver = "4.18",
-> +	.needs_tmpdir = 1,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
 > +	.setup = setup,
 > +	.cleanup = cleanup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = verify_fcntl,
+> +	.caps = (struct tst_cap []) {
+> +		TST_CAP(TST_CAP_REQ, CAP_SYS_RESOURCE),
+> +		{}
+> +	},
 > +};
-> +
-> +#else
-> +TST_TEST_TCONF("test requires libaio and it's development packages");
-> +#endif
 
-Other than the minor issues the rest looks good.
+Also btw, looking at the code there are couple of other things to test:
+
+* unpriviledged user can shrink buffer and grow it if the size is below /proc/sys/fs/pipe-max-size
+
+* write data to page and shrink the buffer, then read it back and check
+  the content, also check that pipe cannot be shrunk below the size the
+  currently used slots
 
 -- 
 Cyril Hrubis
