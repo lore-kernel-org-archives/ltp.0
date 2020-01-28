@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Jan 2020 15:04:30 +0100
-Subject: [LTP] [PATCH] Blacklist vhangup() syscall in crash02 test
-In-Reply-To: <20200127093935.8223-1-mdoucha@suse.cz>
-References: <20200127093935.8223-1-mdoucha@suse.cz>
-Message-ID: <20200128140429.GF26365@rei>
+Date: Tue, 28 Jan 2020 14:54:01 +0100
+Subject: [LTP] [PATCH] max_map_count: use default overcommit mode
+In-Reply-To: <7a2d56fa03583ca7979cbe22a61ac648b3d6b6eb.1579877813.git.jstancek@redhat.com>
+References: <7a2d56fa03583ca7979cbe22a61ac648b3d6b6eb.1579877813.git.jstancek@redhat.com>
+Message-ID: <20200128135401.GE26365@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +11,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed, thanks.
+Sounds reasonable to me, acked.
 
 -- 
 Cyril Hrubis
