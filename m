@@ -1,20 +1,20 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 29 Jan 2020 10:20:25 +0530
-Subject: [LTP] [PATCH 4.9 000/271] 4.9.212-stable review
-In-Reply-To: <20200128135852.449088278@linuxfoundation.org>
-References: <20200128135852.449088278@linuxfoundation.org>
-Message-ID: <CA+G9fYs=Fd27J7==VEYc_0=7=xH4sS003EwXMQHCRs0zL3iANw@mail.gmail.com>
+Date: Wed, 29 Jan 2020 10:23:17 +0530
+Subject: [LTP] [PATCH 4.14 00/46] 4.14.169-stable review
+In-Reply-To: <20200128135749.822297911@linuxfoundation.org>
+References: <20200128135749.822297911@linuxfoundation.org>
+Message-ID: <CA+G9fYsnSGw0NmV5hWwZSs5OYu18YRam3jYCsg4Sn+KUQJSMWw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 28 Jan 2020 at 19:46, Greg Kroah-Hartman
+On Tue, 28 Jan 2020 at 19:28, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.9.212 release.
-> There are 271 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.14.169 release.
+> There are 46 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -22,20 +22,17 @@ On Tue, 28 Jan 2020 at 19:46, Greg Kroah-Hartman
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.212-rc1.gz
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.169-rc1.gz
 > or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
 
-This is 4.9.212-rc2 test report.
-
 Results from Linaro?s test farm.
 No regressions on arm64, arm, x86_64, and i386.
-
 
 NOTE:
 LTP fs test read_all_proc fails intermittently on 4.9 and 4.14 branches.
@@ -43,18 +40,18 @@ LTP fs test read_all_proc fails intermittently on 4.9 and 4.14 branches.
 Summary
 ------------------------------------------------------------------------
 
-kernel: 4.9.212-rc2
+kernel: 4.14.169-rc1
 git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-git branch: linux-4.9.y
-git commit: 91ff8226a074449fcd2b96214d1927fd3e8d8114
-git describe: v4.9.211-272-g91ff8226a074
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.211-272-g91ff8226a074
+git branch: linux-4.14.y
+git commit: 5986a79ae28421d7027cb4ab78fba7d787a9f06e
+git describe: v4.14.168-47-g5986a79ae284
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/build/v4.14.168-47-g5986a79ae284
 
-No regressions (compared to build v4.9.211)
+No regressions (compared to build v4.14.168)
 
-No fixes (compared to build v4.9.211)
+No fixes (compared to build v4.14.168)
 
-Ran 23560 total tests in the following environments and test suites.
+Ran 24221 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -103,11 +100,10 @@ Test Suites
 * v4l2-compliance
 * network-basic-tests
 * ltp-open-posix-tests
-* prep-tmp-disk
 * kvm-unit-tests
+* ssuite
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
-* ssuite
 
 -- 
 Linaro LKFT
