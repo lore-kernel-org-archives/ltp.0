@@ -1,42 +1,114 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 29 Jan 2020 06:16:51 +0530
-Subject: [LTP] [PATCH V4 2/2] syscalls/io_pgetevents: New tests
-In-Reply-To: <20200128134037.GB26365@rei>
-References: <2d23f3a542bbd04179aba828e28d37f5c7be7b45.1579859350.git.viresh.kumar@linaro.org>
- <cc9d0f47db41cad97c590cf7b58e8d662a437a91.1580180304.git.viresh.kumar@linaro.org>
- <20200128134037.GB26365@rei>
-Message-ID: <20200129004651.pdwhyxnnwluxewb6@vireshk-i7>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 29 Jan 2020 10:20:25 +0530
+Subject: [LTP] [PATCH 4.9 000/271] 4.9.212-stable review
+In-Reply-To: <20200128135852.449088278@linuxfoundation.org>
+References: <20200128135852.449088278@linuxfoundation.org>
+Message-ID: <CA+G9fYs=Fd27J7==VEYc_0=7=xH4sS003EwXMQHCRs0zL3iANw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 28-01-20, 14:40, Cyril Hrubis wrote:
-> Hi!
-> Pushed with one minor adjustement, thanks.
-> 
-> I've removed the tst_test.h include from the lapi header and put it into
-> the two test sources. Since that is the main header the tests should
-> include it's better when they include it explicitely.
+On Tue, 28 Jan 2020 at 19:46, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.212 release.
+> There are 271 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 30 Jan 2020 13:57:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.212-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-That was a very intentional change I kept because the header should
-also take care of its dependencies. An earlier version was using few
-tst_syscall() calls in lapi header and so it should have directly
-included tst_test.h file, which I did.
+This is 4.9.212-rc2 test report.
 
-But the same got removed in the latest version and so the same isn't
-required. Though changing the order of lapi header and tst_test.h in
-the io_pgetevents0*.c files still generate compilation errors as
-definition of syscall() isn't found as well and the header should now
-explicitly include <unistd.h>.
+Results from Linaro?s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I have a question now :)
 
-In the pidfd_open() lapi header I used tst_syscall() and in
-io_pgetevents() lapi header I used syscall(). Should I use
-tst_syscall() in both of them ? If yes, then I will include tst_test.h
-as well in both of them and send you a patch.
+NOTE:
+LTP fs test read_all_proc fails intermittently on 4.9 and 4.14 branches.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.212-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+git branch: linux-4.9.y
+git commit: 91ff8226a074449fcd2b96214d1927fd3e8d8114
+git describe: v4.9.211-272-g91ff8226a074
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.9-oe/build/v4.9.211-272-g91ff8226a074
+
+No regressions (compared to build v4.9.211)
+
+No fixes (compared to build v4.9.211)
+
+Ran 23560 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+* network-basic-tests
+* ltp-open-posix-tests
+* prep-tmp-disk
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
 
 -- 
-viresh
+Linaro LKFT
+https://lkft.linaro.org
