@@ -1,63 +1,28 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Jan 2020 11:06:19 +0100
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 29 Jan 2020 11:27:05 +0100
 Subject: [LTP] [PATCH 1/1] ioctl02.c: check for struct termio
-In-Reply-To: <20200128212725.22781-1-petr.vorel@gmail.com>
+In-Reply-To: <20200129100126.GB21699@rei.lan>
 References: <20200128212725.22781-1-petr.vorel@gmail.com>
-Message-ID: <20200129100619.GC21699@rei.lan>
+ <20200128213902.GA23927@dell5510> <20200129100126.GB21699@rei.lan>
+Message-ID: <20200129102705.GA16176@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  configure.ac                              |  1 +
->  m4/ltp-termio.m4                          |  6 ++++++
->  testcases/kernel/syscalls/ioctl/ioctl01.c | 20 ++++++++++++--------
->  3 files changed, 19 insertions(+), 8 deletions(-)
->  create mode 100644 m4/ltp-termio.m4
-> 
-> diff --git a/configure.ac b/configure.ac
-> index c7cdff1c4..b860bdacc 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -257,6 +257,7 @@ LTP_CHECK_SYSCALL_QUOTACTL
->  LTP_CHECK_SYSCALL_SIGNALFD
->  LTP_CHECK_SYSCALL_UTIMENSAT
->  LTP_CHECK_TASKSTATS
-> +LTP_CHECK_TERMIO
->  LTP_CHECK_TIMERFD
->  test "x$with_tirpc" = xyes && LTP_CHECK_TIRPC
->  LTP_CHECK_TPACKET_V3
-> diff --git a/m4/ltp-termio.m4 b/m4/ltp-termio.m4
-> new file mode 100644
-> index 000000000..e745df1d9
-> --- /dev/null
-> +++ b/m4/ltp-termio.m4
-> @@ -0,0 +1,6 @@
-> +dnl SPDX-License-Identifier: GPL-2.0-or-later
-> +dnl Copyright (c) 2020 Petr Vorel <petr.vorel@gmail.com>
-> +
-> +AC_DEFUN([LTP_CHECK_TERMIO],[
-> +AC_CHECK_TYPES([struct termio],,,[#include <sys/ioctl.h>])
-> +])
+Hi,
 
-What about we add a fallback defition of the structure into
-lapi/termio.h instead of disabling the test?
+> > Hm, am I wrong, and we should rewrite ioctl01.c and ioctl02.c to use struct
+> > termios? Or do we want to test with both new struct termios and legacy termio?
 
-That way we would be able to test the kernel even if the userspace
-headers were missing...
+> Just have a look at 'man ioctl_list' there are two sets of ioctls one
+> for termio and one for termios and as usuall we should ideally test both.
+Thanks for info. I had a look at man ioctl_tty, just wasn't sure whether it's
+worth to test the legacy one.
 
-#include "config.h"
+Added as easyhack issue (I'll wait a bit before implementing it)
+https://github.com/linux-test-project/ltp/issues/637
 
-#ifndef HAVE_STRUCT_TERMIO
-struct termio {
-...
-}
-#ifdef
-
-Should be enough to be able to compile that test, right?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
