@@ -1,221 +1,100 @@
-From: Michael Moese <mmoese@suse.de>
-Date: Thu, 30 Jan 2020 10:21:06 +0100
-Subject: [LTP] [PATCH v3] Add a regression test for cve-2017-15649
-Message-ID: <20200130092106.4217-1-mmoese@suse.de>
+From: Pengfei Xu <pengfei.xu@intel.com>
+Date: Thu, 30 Jan 2020 18:00:17 +0800
+Subject: [LTP] [PATCH v5 1/4] lib/tst_kconfig.c: add any kconfig with or
+ without expected value function
+In-Reply-To: <20200129161957.GF22477@rei.lan>
+References: <20191220092529.3239-1-pengfei.xu@intel.com>
+ <20200129161957.GF22477@rei.lan>
+Message-ID: <20200130100017.24cycwmkcynqta2w@xpf-desktop>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local
-users to gain privileges via crafted system calls that trigger
-mishandling of packet_fanout data structures, because of a race
-condition (involving fanout_add and packet_do_bind) that leads to a
-use-after-free.
+Hi Cyril,
+  Thanks for advice!
+  I only support the CONFIG_A|CONFIG_B=X function, and there is only 1 '='
+  contained in 1 line kconfig check.
+  Could we add the function first, only support CONFIG_A|CONFIG_B=X function?
 
-See https://ssd-disclosure.com/archives/3484 for more detail.
+  Next to consider the function for CONFIG_A=X|CONFIG_B=Y.
+  And I tried to add the function you mentioned in tst_kconfig.c,
+  found CONFIG_A=X|CONFIG_B=Y, if kconfig set as CONFIG_A=Y, it will meet
+  judge correctly issue, there is no kconfig item string in tst_kconfig_res.
+struct tst_kconfig_res {
+	char match;  // match char like y|m|v
+	char *value; // *value like 4|44
+};
 
-Signed-off-by: Michael Moese <mmoese@suse.de>
+  Or shall we need change the kconfig verify way?
 
---
-Changes to v2:
-  - add tags to struct tst_test
+  Thanks!
+  BR.
 
-Changes to v1:
-  - reworked the usage of fuzzy sync library so this should now be
-    correct
-  - use LTP library functions for file I/O
-  - require KASAN to be enabled
----
- runtest/cve                    |   2 +-
- testcases/cve/.gitignore       |   1 +
- testcases/cve/Makefile         |   1 +
- testcases/cve/cve-2017-15649.c | 140 +++++++++++++++++++++++++++++++++
- 4 files changed, 143 insertions(+), 1 deletion(-)
- create mode 100644 testcases/cve/cve-2017-15649.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 57cf66075..b76ddaaaa 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -24,7 +24,7 @@ cve-2017-12193 add_key04
- cve-2017-15274 add_key02
- cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
--cve-2017-15649 fanout01
-+cve-2017-15649 cve-2017-15649
- cve-2017-15951 request_key03 -b cve-2017-15951
- cve-2017-17805 af_alg02
- cve-2017-17806 af_alg01
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 01a3e4c8f..08154e2db 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -8,5 +8,6 @@ cve-2017-2671
- meltdown
- stack_clash
- cve-2017-17052
-+cve-2017-15649
- cve-2017-16939
- cve-2017-17053
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index da44fff60..6cf3b5af9 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -46,5 +46,6 @@ cve-2017-17052:	CFLAGS += -pthread
- cve-2017-17053:	CFLAGS += -pthread
- 
- cve-2015-3290:	CFLAGS += -pthread
-+cve-2017-15649: CFLAGS += -pthread
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/cve/cve-2017-15649.c b/testcases/cve/cve-2017-15649.c
-new file mode 100644
-index 000000000..0bbcb6eba
---- /dev/null
-+++ b/testcases/cve/cve-2017-15649.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *   Copyright (c) 2019 Michael Moese <mmoese@suse.com>
-+ */
-+/* Regression test for CVE-2017-15649
-+ * based on the reproducer at https://ssd-disclosure.com/archives/3484
-+ *
-+ * net/packet/af_packet.c in the Linux kernel before 4.13.6 allows local users
-+ * to gain privileges via crafted system calls that trigger mishandling of
-+ * packet_fanout data structures, because of a race condition (involving
-+ * fanout_add and packet_do_bind) that leads to a use-after-free.
-+ *
-+ * Be careful! This test may crash your kernel!
-+ */
-+
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <sched.h>
-+#include <string.h>
-+#include <time.h>
-+#include <net/if.h>
-+#include <sched.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+#include "tst_test.h"
-+#include "tst_taint.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_fuzzy_sync.h"
-+#include "tst_capability.h"
-+#include "lapi/syscalls.h"
-+
-+static struct tst_fzsync_pair fzsync_pair;
-+
-+static int fd;
-+static struct ifreq ifr;
-+
-+struct sockaddr_ll {
-+	unsigned short	sll_family;
-+	short		sll_protocol;
-+	int		sll_ifindex;
-+	unsigned short	sll_hatype;
-+	unsigned char	sll_pkttype;
-+	unsigned char	sll_halen;
-+	unsigned char	sll_addr[8];
-+};
-+static struct sockaddr_ll addr;
-+
-+void *bind_fn(void *unused)
-+{
-+	while (tst_fzsync_run_b(&fzsync_pair)) {
-+		tst_fzsync_start_race_b(&fzsync_pair);
-+		bind(fd, (struct sockaddr *)&addr, sizeof(addr));
-+		tst_fzsync_end_race_b(&fzsync_pair);
-+	}
-+	return unused;
-+}
-+
-+static void setup(void)
-+{
-+	int real_uid = getuid();
-+	int real_gid = getgid();
-+	int index;
-+
-+	tst_fzsync_pair_init(&fzsync_pair);
-+	tst_taint_init(TST_TAINT_W | TST_TAINT_D | TST_TAINT_L);
-+
-+	if (unshare(CLONE_NEWUSER) != 0)
-+		tst_brk(TBROK | TTERRNO, "unshare(CLONE_NEWUSER) failed");
-+
-+	if (unshare(CLONE_NEWNET) != 0)
-+		tst_brk(TBROK | TTERRNO, "unshare(CLONE_NEWUSER) failed");
-+
-+	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
-+	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
-+	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
-+
-+	fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, PF_PACKET);
-+
-+	strcpy((char *) &ifr.ifr_name, "lo");
-+	SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
-+	index = ifr.ifr_ifindex;
-+
-+	SAFE_IOCTL(fd, SIOCGIFFLAGS, &ifr);
-+	ifr.ifr_flags &= ~(short) IFF_UP;
-+
-+	SAFE_IOCTL(fd, SIOCSIFFLAGS, &ifr);
-+
-+	addr.sll_family = AF_PACKET;
-+	addr.sll_protocol = 0x0;
-+	addr.sll_ifindex = index;
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_fzsync_pair_cleanup(&fzsync_pair);
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void run(void)
-+{
-+	int fanout = 0x3;
-+
-+	tst_fzsync_pair_reset(&fzsync_pair, bind_fn);
-+
-+	while (tst_fzsync_run_a(&fzsync_pair)) {
-+		tst_fzsync_start_race_a(&fzsync_pair);
-+		setsockopt(fd, 0x107, 18, &fanout, sizeof(fanout));
-+		tst_fzsync_end_race_a(&fzsync_pair);
-+	}
-+
-+	tst_res(TPASS, "please check for KASAN output");
-+}
-+
-+
-+static const char *kconfigs[] = {
-+	"CONFIG_KASAN",
-+	"CONFIG_USER_NS",
-+	NULL
-+};
-+
-+static struct tst_cap caps[] = {
-+	TST_CAP(TST_CAP_REQ, CAP_SYS_ADMIN),
-+	TST_CAP(TST_CAP_REQ, CAP_NET_RAW),
-+	TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-+	{},
-+};
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_kconfigs = kconfigs,
-+	.caps = caps,
-+	.tags = (const struct tst_tag[]) {
-+		{"CVE", "2017-15649"},
-+		{"linux-git", "008ba2a13f2d"},
-+	        {}
-+	}
-+};
--- 
-2.25.0
-
+On 2020-01-29 at 17:19:57 +0100, Cyril Hrubis wrote:
+> Hi!
+> >  	for (i = 0; i < cnt; i++) {
+> >  		const char *val = strchr(kconfigs[i], '=');
+> > @@ -176,12 +177,9 @@ void tst_kconfig_read(const char *const *kconfigs,
+> >  			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
+> >  
+> >  		matches[i].match = 0;
+> > -		matches[i].len = strlen(kconfigs[i]);
+> >  
+> > -		if (val) {
+> > +		if (val)
+> >  			matches[i].val = val + 1;
+> > -			matches[i].len -= strlen(val);
+> > -		}
+> >  
+> >  		results[i].match = 0;
+> >  		results[i].value = NULL;
+> > @@ -193,17 +191,29 @@ void tst_kconfig_read(const char *const *kconfigs,
+> >  
+> >  	while (fgets(buf, sizeof(buf), fp)) {
+> >  		for (i = 0; i < cnt; i++) {
+> > -			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
+> > -				for (j = 0; j < cnt; j++) {
+> > -					if (matches[j].match)
+> > -						break;
+> > +			memset(kconfig_multi, 0, sizeof(kconfig_multi));
+> > +			/* strtok_r will split kconfigs[i] to multi string, so copy it */
+> > +			memcpy(kconfig_multi, kconfigs[i], strlen(kconfigs[i]));
+> > +			kconfig_token = strtok_r(kconfig_multi, "|=", &p_left);
+> > +
+> > +			while (kconfig_token != NULL) {
+> > +				if (strncmp("CONFIG_", kconfig_token, 7))
+> > +					tst_brk(TBROK, "Invalid config string '%s'", kconfig_token);
+> > +				matches[i].len = strlen(kconfig_token);
+> > +				if (match(&matches[i], kconfig_token, &results[i], buf)) {
+> > +					for (j = 0; j < cnt; j++) {
+> > +						if (matches[j].match)
+> > +							break;
+> > +					}
+> > +					if (j == cnt)
+> > +						goto exit;
+> 
+> I do not think that this actually works correctly. One of the problems I
+> see is that we do match only the CONFIG_FOO part in the
+> tst_kconfig_read() and the result value is evaluated later on. This
+> means that if we had something as "CONFIG_FOO=5|CONFIG_FOO=4" the code
+> will pick up only the first occurence of the = and we would end up doing
+> strcmp("4", "5|CONFIG_FOO=4") which would fail as well.
+> 
+> If we wanted to have proper solution for logic statements inside of the
+> kconfig parser we would have to isolate the CONFIG_FOO names first, pass
+> them to the tst_kconfig_read() function, that would get us values for
+> all config variables we need, then we could split the configs strings
+> greadily on | and evaluate them one after another.
+> 
+> So the first function would have to be able to get arrays of strings and
+> return another array of strings isolating the CONFIG_FOO variables. That
+> would be passed to tst_kconfig_read() that would yield results[] array,
+> for all interesting variables. From that point we can split the kconfig
+> strings by | and evaluate one after another until we get match or end of
+> the string.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
