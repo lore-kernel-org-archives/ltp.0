@@ -1,9 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 30 Jan 2020 13:36:41 +0100
-Subject: [LTP] [PATCH v2 3/3] Add LVM support scripts
-In-Reply-To: <20200129144913.9889-4-mdoucha@suse.cz>
-References: <20200129144913.9889-4-mdoucha@suse.cz>
-Message-ID: <20200130123641.15286-1-mdoucha@suse.cz>
+Date: Thu, 30 Jan 2020 15:41:46 +0100
+Subject: [LTP] [PATCH v3 3/3] Add LVM support scripts
+In-Reply-To: <20200130123641.15286-1-mdoucha@suse.cz>
+References: <20200130123641.15286-1-mdoucha@suse.cz>
+Message-ID: <20200130144146.20846-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,9 +21,14 @@ Add support scripts for LVM tests that can be used with external testing tools.
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
+Sorry for resubmitting again, I didn't test v2 properly.
+
 Changes since v1:
 - rename generate_runfile.sh to generate_lvm_runfile.sh
 - update above commit message
+
+Changes since v2:
+- fix filename in misc/lvm/Makefile
 
  testcases/misc/lvm/Makefile                |  29 ++++++
  testcases/misc/lvm/cleanup_lvm.sh          |  34 +++++++
@@ -41,7 +46,7 @@ Changes since v1:
 
 diff --git a/testcases/misc/lvm/Makefile b/testcases/misc/lvm/Makefile
 new file mode 100644
-index 000000000..a803dd9f4
+index 000000000..3dbc996c8
 --- /dev/null
 +++ b/testcases/misc/lvm/Makefile
 @@ -0,0 +1,29 @@
@@ -71,7 +76,7 @@ index 000000000..a803dd9f4
 +
 +include $(top_srcdir)/include/mk/env_pre.mk
 +
-+INSTALL_TARGETS		:= generate_runfile.sh prepare_lvm.sh cleanup_lvm.sh
++INSTALL_TARGETS		:= generate_lvm_runfile.sh prepare_lvm.sh cleanup_lvm.sh
 +
 +include $(top_srcdir)/include/mk/generic_trunk_target.mk
 diff --git a/testcases/misc/lvm/cleanup_lvm.sh b/testcases/misc/lvm/cleanup_lvm.sh
