@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 3 Feb 2020 16:05:04 +0100
-Subject: [LTP] [PATCH 1/3] Fix releasing loop devices in shell API
-In-Reply-To: <20200129144913.9889-2-mdoucha@suse.cz>
+Date: Mon, 3 Feb 2020 16:24:20 +0100
+Subject: [LTP] [PATCH 2/3] Allow acquiring multiple loop devices
+In-Reply-To: <20200129144913.9889-3-mdoucha@suse.cz>
 References: <20200129144913.9889-1-mdoucha@suse.cz>
- <20200129144913.9889-2-mdoucha@suse.cz>
-Message-ID: <20200203150504.GA15129@dell5510>
+ <20200129144913.9889-3-mdoucha@suse.cz>
+Message-ID: <20200203152420.GA29586@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,16 +13,17 @@ To: ltp@lists.linux.it
 
 Hi Martin,
 
-> tst_device helper program currently cannot release any loop devices because
-> tst_release_device() checks whether any loop device was acquired by the same
-> process. If not, it'll do nothing. And since loop devices for shell test
-> scripts are always acquired by a different tst_device process, the check always
-> fails.
+> tst_acquire_device__() currently uses a hardcoded filename so only one loop
+> device can be used at a time. Allow setting arbitrary temp filename so that
+> multiple different loop devices can be acquired.
 
-> Call tst_detach_device() instead to bypass the check.
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Good idea, thanks!
 
-Indeed losetup --list shows increasing list of the devices.
-Thanks for a fix, pushed.
+BTW IMHO DEV_FILE should be #define DEV_FILE "test_dev.%d.img", where %d would
+be PID to fix clash when tests run in paralel (e.g. mkswap01.sh and df01.sh).
+I'll send a patch tomorrow, based on this one.
 
 Kind regards,
 Petr
