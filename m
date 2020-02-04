@@ -1,112 +1,972 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  4 Feb 2020 16:24:29 +0100
-Subject: [LTP] [RFC PATCH v2 3/4] travis: Merge debian.cross-compile.*.sh
+Date: Tue,  4 Feb 2020 16:24:30 +0100
+Subject: [LTP] [RFC PATCH v2 4/4] rpc-tirpc: Remove unused tests
 In-Reply-To: <20200204152430.10935-1-pvorel@suse.cz>
 References: <20200204152430.10935-1-pvorel@suse.cz>
-Message-ID: <20200204152430.10935-4-pvorel@suse.cz>
+Message-ID: <20200204152430.10935-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Removed tests which were compiled but not run:
+
+* tirpc_svc_6: multithreaded tests for all levels
+* tirpc_svc_7: limits and dataint tests for all levels
+* tirpc_svc_8: ping tests
+* tirpc_svc_9: complex domain for all levels
+
+Use of all but tirpc_svc_8 was removed in aa1e5d877 , tirpc_svc_8 was
+never used since including in c0caf8f23. Removed, as it'd be probably
+easier to write these tests from scratch than cleaning them.
+
+Fixes: aa1e5d877 ("rpc-tirpc: removed legacy scripts and updated README")
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .travis.yml                            |  6 +++---
- travis/debian.cross-compile.aarch64.sh | 11 -----------
- travis/debian.cross-compile.ppc64le.sh | 11 -----------
- travis/debian.cross-compile.sh         | 22 ++++++++++++++++++++++
- 4 files changed, 25 insertions(+), 25 deletions(-)
- delete mode 100755 travis/debian.cross-compile.aarch64.sh
- delete mode 100755 travis/debian.cross-compile.ppc64le.sh
- create mode 100755 travis/debian.cross-compile.sh
+ testcases/network/rpc/rpc-tirpc/.gitignore    |   4 -
+ .../rpc-tirpc/tests_pack/tirpc_svc_6/Makefile |  23 --
+ .../tests_pack/tirpc_svc_6/tirpc_svc_6.c      | 181 ---------------
+ .../rpc-tirpc/tests_pack/tirpc_svc_7/Makefile |  23 --
+ .../tests_pack/tirpc_svc_7/tirpc_svc_7.c      | 212 ------------------
+ .../rpc-tirpc/tests_pack/tirpc_svc_8/Makefile |  23 --
+ .../tests_pack/tirpc_svc_8/tirpc_svc_8.c      | 183 ---------------
+ .../rpc-tirpc/tests_pack/tirpc_svc_9/Makefile |  23 --
+ .../tests_pack/tirpc_svc_9/tirpc_svc_9.c      | 192 ----------------
+ 9 files changed, 864 deletions(-)
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/Makefile
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/tirpc_svc_6.c
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/Makefile
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/tirpc_svc_7.c
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/Makefile
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/tirpc_svc_8.c
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/Makefile
+ delete mode 100644 testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/tirpc_svc_9.c
 
-diff --git a/.travis.yml b/.travis.yml
-index 51efa22e3..d777a94c6 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -12,11 +12,11 @@ matrix:
- 
-         # cross compilation builds
-         - os: linux
--          env: DISTRO=debian:stable VARIANT=cross-compile.ppc64le TREE="out"
-+          env: DISTRO=debian:stable VARIANT=cross-compile ARCH=ppc64el TREE="out"
-           compiler: powerpc64le-linux-gnu-gcc
- 
-         - os: linux
--          env: DISTRO=debian:stable VARIANT=cross-compile.aarch64 TREE="out"
-+          env: DISTRO=debian:stable VARIANT=cross-compile ARCH=arm64 TREE="out"
-           compiler: aarch64-linux-gnu-gcc
- 
-         # musl (native)
-@@ -98,4 +98,4 @@ script:
-     - INSTALL="${INSTALL%%/*}"
-     - if [ ! "$TREE" ]; then TREE="in"; fi
-     - case $VARIANT in cross-compile*) BUILD="cross";; i386) BUILD="32";; *) BUILD="native";; esac
--    - docker run -t ltp /bin/sh -c "cd travis && ./$INSTALL.sh && if [ \"$VARIANT\" ]; then ./$INSTALL.$VARIANT.sh; fi && ../build.sh -o $TREE -t $BUILD -c $CC"
-+    - docker run -t ltp /bin/sh -c "cd travis && ./$INSTALL.sh && if [ \"$VARIANT\" ]; then ARCH=\"$ARCH\" ./$INSTALL.$VARIANT.sh; fi && ../build.sh -o $TREE -t $BUILD -c $CC"
-diff --git a/travis/debian.cross-compile.aarch64.sh b/travis/debian.cross-compile.aarch64.sh
-deleted file mode 100755
-index cc1eda5b5..000000000
---- a/travis/debian.cross-compile.aarch64.sh
+diff --git a/testcases/network/rpc/rpc-tirpc/.gitignore b/testcases/network/rpc/rpc-tirpc/.gitignore
+index 15b7c4d9c..6954e00d4 100644
+--- a/testcases/network/rpc/rpc-tirpc/.gitignore
++++ b/testcases/network/rpc/rpc-tirpc/.gitignore
+@@ -7,10 +7,6 @@
+ /tests_pack/tirpc_svc_3/tirpc_svc_3
+ /tests_pack/tirpc_svc_4/tirpc_svc_4
+ /tests_pack/tirpc_svc_5/tirpc_svc_5
+-/tests_pack/tirpc_svc_6/tirpc_svc_6
+-/tests_pack/tirpc_svc_7/tirpc_svc_7
+-/tests_pack/tirpc_svc_8/tirpc_svc_8
+-/tests_pack/tirpc_svc_9/tirpc_svc_9
+ /tests_pack/tirpc_svc_11/tirpc_svc_11
+ /tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control
+ /tests_pack/rpc_suite/rpc/rpc_stdcall_clnt_control/rpc_clnt_control_dataint
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/Makefile
+deleted file mode 100644
+index b5d08aa8b..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/Makefile
 +++ /dev/null
-@@ -1,11 +0,0 @@
--#!/bin/sh
--# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
--set -e
+@@ -1,23 +0,0 @@
+-#
+-#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
 -
--dpkg --add-architecture arm64
--apt update
+-top_srcdir		?= ../../../../../..
 -
--apt install -y --no-install-recommends \
--	gcc-aarch64-linux-gnu \
--	libc6-dev-arm64-cross \
--	libtirpc-dev:arm64
-diff --git a/travis/debian.cross-compile.ppc64le.sh b/travis/debian.cross-compile.ppc64le.sh
-deleted file mode 100755
-index 671867d31..000000000
---- a/travis/debian.cross-compile.ppc64le.sh
+-include	$(top_srcdir)/include/mk/env_pre.mk
+-include $(abs_srcdir)/../Makefile.inc
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/tirpc_svc_6.c b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/tirpc_svc_6.c
+deleted file mode 100644
+index 1cc274431..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_6/tirpc_svc_6.c
 +++ /dev/null
-@@ -1,11 +0,0 @@
--#!/bin/sh
--# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
--set -e
+@@ -1,181 +0,0 @@
+-/*
+-* Copyright (c) Bull S.A.  2007 All Rights Reserved.
+-*
+-* This program is free software; you can redistribute it and/or modify it
+-* under the terms of version 2 of the GNU General Public License as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it would be useful, but
+-* WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-*
+-* Further, this software is distributed without any warranty that it is
+-* free of the rightful claim of any third person regarding infringement
+-* or the like.  Any license provided herein, whether implied or
+-* otherwise, applies only to this software file.  Patent licenses, if
+-* any, provided herein do not apply to combinations of this program with
+-* other software, or any other product whatsoever.
+-*
+-* You should have received a copy of the GNU General Public License along
+-* with this program; if not, write the Free Software Foundation, Inc.,
+-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-*
+-* History:
+-* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
+-*
+-*/
 -
--dpkg --add-architecture ppc64el
--apt update
+-#include <stdio.h>
+-#include <string.h>
+-#include <sys/socket.h>
+-#include <errno.h>
+-#include <pthread.h>
+-#include <netinet/in.h>
+-#include "rpc.h"
 -
--apt install -y --no-install-recommends \
--	gcc-powerpc64le-linux-gnu \
--	libc6-dev-ppc64el-cross \
--	libtirpc-dev:ppc64el
-diff --git a/travis/debian.cross-compile.sh b/travis/debian.cross-compile.sh
-new file mode 100755
-index 000000000..ea04c8862
---- /dev/null
-+++ b/travis/debian.cross-compile.sh
-@@ -0,0 +1,22 @@
-+#!/bin/sh
-+# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
-+set -e
-+
-+if [ -z "$ARCH" ]; then
-+	echo "missing \$ARCH!" >&2
-+	exit 1
-+fi
-+
-+case "$ARCH" in
-+arm64) gcc_arch="aarch64";;
-+ppc64el) gcc_arch="powerpc64le";;
-+*) echo "unsupported arch: '$1'!" >&2; exit 1;;
-+esac
-+
-+dpkg --add-architecture $ARCH
-+apt update
-+
-+apt install -y --no-install-recommends \
-+	gcc-${gcc_arch}-linux-gnu \
-+	libc6-dev-${ARCH}-cross \
-+	libtirpc-dev:$ARCH
+-//Standard define
+-#define VERSNUM 1
+-#define PROCSIMPLEPING	1
+-#define PROGSYSERROR	10
+-#define PROGAUTHERROR	100
+-
+-static void exm_proc();
+-int progNum;
+-int run_mode;
+-
+-void *server_thread_process(void *arg)
+-{
+-	//Server process in a thread
+-	int err = 0;
+-
+-	if (run_mode == 1) {
+-		printf("Server #%d launched\n", atoi(arg));
+-		printf("Server Nb : %d\n", progNum + atoi(arg));
+-	}
+-
+-	svc_unreg(progNum + (long)arg, VERSNUM);
+-
+-	err = svc_create(exm_proc, progNum + atoi(arg), VERSNUM, "VISIBLE");
+-
+-	if (err == 0) {
+-		fprintf(stderr, "Cannot create service.\n");
+-		exit(1);
+-	}
+-
+-	svc_run();
+-
+-	fprintf(stderr, "svc_run() returned.  ERROR has occurred.\n");
+-	svc_unreg(progNum, VERSNUM);
+-
+-	pthread_exit(0);
+-}
+-
+-//****************************************//
+-//***           Main Function          ***//
+-//****************************************//
+-int main(int argn, char *argc[])
+-{
+-	//Server parameter is : argc[1] : Server Program Number
+-	//                                          argc[2] : Number of threads
+-	//                                          others arguments depend on server program
+-	run_mode = 0;
+-	int threadNb = atoi(argc[2]);
+-	long i;
+-	//Thread declaration
+-	pthread_t *pThreadArray;
+-	void *ret;
+-
+-	progNum = atoi(argc[1]);
+-
+-	pThreadArray = malloc(threadNb * sizeof(pthread_t));
+-	for (i = 0; i < threadNb; i++) {
+-		if (run_mode == 1)
+-			fprintf(stderr, "Try to create Thread Server %ld\n", i);
+-		if (pthread_create
+-		    (&pThreadArray[i], NULL, server_thread_process, (void*)i) < 0) {
+-			fprintf(stderr, "pthread_create error for thread 1\n");
+-			exit(1);
+-		}
+-	}
+-
+-	//Clean threads
+-	for (i = 0; i < threadNb; i++) {
+-		(void)pthread_join(pThreadArray[i], &ret);
+-	}
+-
+-	return 1;
+-}
+-
+-//****************************************//
+-//***        Remotes Procedures        ***//
+-//****************************************//
+-char *simplePing(char *in)
+-{
+-	//printf("*** in Ping Func.\n");
+-	//Simple function, returns what received
+-	static int result = 0;
+-	result = *in;
+-	return (char *)&result;
+-
+-}
+-
+-//****************************************//
+-//***       Dispatch Function          ***//
+-//****************************************//
+-static void exm_proc(struct svc_req *rqstp, SVCXPRT * transp)
+-{
+-	//printf("* in Dispatch Func.\n");
+-	union {
+-		int varIn;
+-	} argument;
+-
+-	char *result;
+-	xdrproc_t xdr_argument;
+-	xdrproc_t xdr_result;
+-	int *(*proc) (int *);
+-
+-	switch (rqstp->rq_proc) {
+-	case PROCSIMPLEPING:
+-		{
+-			//printf("** in PROCPONG dispatch Func.\n");
+-			xdr_argument = (xdrproc_t) xdr_int;
+-			xdr_result = (xdrproc_t) xdr_int;
+-			proc = (int *(*)(int *))simplePing;
+-			break;
+-		}
+-	case PROGSYSERROR:
+-		{
+-			//Simulate an error
+-			svcerr_systemerr(transp);
+-			return;
+-		}
+-	case PROGAUTHERROR:
+-		{
+-			//Simulate an authentification error
+-			svcerr_weakauth(transp);
+-			return;
+-		}
+-	default:
+-		{
+-			//Proc is unavaible
+-			svcerr_noproc(transp);
+-			return;
+-		}
+-	}
+-	memset((int *)&argument, (int)0, sizeof(argument));
+-	if (svc_getargs(transp, xdr_argument, (int *)&argument) == FALSE) {
+-		svcerr_decode(transp);
+-		return;
+-	}
+-
+-	result = (char *)(*proc) ((int *)&argument);
+-
+-	if ((result != NULL)
+-	    && (svc_sendreply(transp, xdr_result, result) == FALSE)) {
+-		svcerr_systemerr(transp);
+-	}
+-	if (svc_freeargs(transp, xdr_argument, (int *)&argument) == FALSE) {
+-		(void)fprintf(stderr, "unable to free arguments\n");
+-		exit(1);
+-	}
+-}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/Makefile
+deleted file mode 100644
+index b5d08aa8b..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/Makefile
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#
+-#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-
+-top_srcdir		?= ../../../../../..
+-
+-include	$(top_srcdir)/include/mk/env_pre.mk
+-include $(abs_srcdir)/../Makefile.inc
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/tirpc_svc_7.c b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/tirpc_svc_7.c
+deleted file mode 100644
+index 962787e6a..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_7/tirpc_svc_7.c
++++ /dev/null
+@@ -1,212 +0,0 @@
+-/*
+-* Copyright (c) Bull S.A.  2007 All Rights Reserved.
+-*
+-* This program is free software; you can redistribute it and/or modify it
+-* under the terms of version 2 of the GNU General Public License as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it would be useful, but
+-* WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-*
+-* Further, this software is distributed without any warranty that it is
+-* free of the rightful claim of any third person regarding infringement
+-* or the like.  Any license provided herein, whether implied or
+-* otherwise, applies only to this software file.  Patent licenses, if
+-* any, provided herein do not apply to combinations of this program with
+-* other software, or any other product whatsoever.
+-*
+-* You should have received a copy of the GNU General Public License along
+-* with this program; if not, write the Free Software Foundation, Inc.,
+-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-*
+-* History:
+-* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
+-*
+-*/
+-
+-#include <stdio.h>
+-#include <string.h>
+-#include <sys/socket.h>
+-#include <errno.h>
+-#include <netinet/in.h>
+-#include "rpc.h"
+-
+-//Standard define
+-#define VERSNUM 1
+-//Define limits test proc
+-#define PROCSIMPLEPING	1
+-//Define DataInt procs
+-#define INTPROCNUM 10
+-#define DBLPROCNUM 20
+-#define LNGPROCNUM 30
+-#define STRPROCNUM 40
+-
+-static void exm_proc();
+-
+-union u_argument {
+-	int varInt;
+-	double dbl;
+-	long lng;
+-	char *str;
+-} argument;
+-
+-//****************************************//
+-//***           Main Function          ***//
+-//****************************************//
+-int main(int argn, char *argc[])
+-{
+-	int progNum = atoi(argc[1]);
+-	SVCXPRT *transp = NULL;
+-	struct netconfig *nconf;
+-
+-	//Initialization
+-	svc_unreg(progNum, VERSNUM);
+-
+-	if ((nconf = getnetconfigent("udp")) == NULL) {
+-		fprintf(stderr, "Cannot get netconfig entry for UDP\n");
+-		exit(1);
+-	}
+-
+-	transp = svc_tp_create(exm_proc, progNum, VERSNUM, nconf);
+-
+-	if (transp == NULL) {
+-		fprintf(stderr, "Cannot create service.\n");
+-		exit(1);
+-	}
+-
+-	if (!svc_reg(transp, progNum, VERSNUM, exm_proc, nconf)) {
+-		fprintf(stderr, "svc_reg failed!!\n");
+-		exit(1);
+-	}
+-
+-	svc_run();
+-
+-	fprintf(stderr, "svc_run() returned.  ERROR has occurred.\n");
+-	svc_unreg(progNum, VERSNUM);
+-
+-	return 1;
+-}
+-
+-//****************************************//
+-//***        Remotes Procedures        ***//
+-//****************************************//
+-char *simplePing(union u_argument *in)
+-{
+-	//printf("*** in Ping Func.\n");
+-	//Simple function, returns what received
+-	static int result;
+-	result = in->varInt;
+-	return (char *)&result;
+-}
+-
+-char *intTestProc(union u_argument *in)
+-{
+-	//printf("*** in intTestProc.\n");
+-	//returns what received
+-	static int result;
+-	result = in->varInt;
+-	//printf("%d\n", result);
+-	return (char *)&result;
+-}
+-
+-char *lngTestProc(union u_argument *in)
+-{
+-	//printf("*** in lngTestProc.\n");
+-	//returns what received
+-	static long result;
+-	result = in->lng;
+-	//printf("%ld\n", result);
+-	return (char *)&result;
+-}
+-
+-char *dblTestProc(union u_argument *in)
+-{
+-	//printf("*** in dblTestProc.\n");
+-	//returns what received
+-	static double result;
+-	result = in->dbl;
+-	//printf("%lf\n", result);
+-	return (char *)&result;
+-}
+-
+-char *strTestProc(union u_argument *in)
+-{
+-	//printf("*** in strTestProc.\n");
+-	//returns what received
+-	static char *result;
+-	result = in->str;
+-	//printf("%s\n", result);
+-	return (char *)&result;
+-}
+-
+-//****************************************//
+-//***       Dispatch Function          ***//
+-//****************************************//
+-static void exm_proc(struct svc_req *rqstp, SVCXPRT * transp)
+-{
+-	char *result;
+-	xdrproc_t xdr_argument;
+-	xdrproc_t xdr_result;
+-	char *(*proc) (union u_argument *);
+-
+-	switch (rqstp->rq_proc) {
+-	case PROCSIMPLEPING:
+-		{
+-			xdr_argument = (xdrproc_t) xdr_int;
+-			xdr_result = (xdrproc_t) xdr_int;
+-			proc = (char *(*)(union u_argument *))simplePing;
+-			break;
+-		}
+-	case INTPROCNUM:
+-		{
+-			xdr_argument = (xdrproc_t) xdr_int;
+-			xdr_result = (xdrproc_t) xdr_int;
+-			proc = (char *(*)(union u_argument *))intTestProc;
+-			break;
+-		}
+-	case DBLPROCNUM:
+-		{
+-			xdr_argument = (xdrproc_t) xdr_double;
+-			xdr_result = (xdrproc_t) xdr_double;
+-			proc = (char *(*)(union u_argument *))dblTestProc;
+-			break;
+-		}
+-	case LNGPROCNUM:
+-		{
+-			xdr_argument = (xdrproc_t) xdr_long;
+-			xdr_result = (xdrproc_t) xdr_long;
+-			proc = (char *(*)(union u_argument *))lngTestProc;
+-			break;
+-		}
+-	case STRPROCNUM:
+-		{
+-			xdr_argument = (xdrproc_t) xdr_wrapstring;
+-			xdr_result = (xdrproc_t) xdr_wrapstring;
+-			proc = (char *(*)(union u_argument *))strTestProc;
+-			break;
+-		}
+-	default:
+-		{
+-			//Proc is unavaible
+-			svcerr_noproc(transp);
+-			return;
+-		}
+-	}
+-	memset((char *)&argument, (int)0, sizeof(argument));
+-	if (svc_getargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		svcerr_decode(transp);
+-		return;
+-	}
+-
+-	result = (char *)(*proc) ((union u_argument *)&argument);
+-
+-	if ((result != NULL)
+-	    && (svc_sendreply(transp, xdr_result, (char *)result) == FALSE)) {
+-		svcerr_systemerr(transp);
+-	}
+-	if (svc_freeargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		(void)fprintf(stderr, "unable to free arguments\n");
+-		exit(1);
+-	}
+-}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/Makefile
+deleted file mode 100644
+index b5d08aa8b..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/Makefile
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#
+-#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-
+-top_srcdir		?= ../../../../../..
+-
+-include	$(top_srcdir)/include/mk/env_pre.mk
+-include $(abs_srcdir)/../Makefile.inc
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/tirpc_svc_8.c b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/tirpc_svc_8.c
+deleted file mode 100644
+index 3137c5014..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_8/tirpc_svc_8.c
++++ /dev/null
+@@ -1,183 +0,0 @@
+-/*
+-* Copyright (c) Bull S.A.  2007 All Rights Reserved.
+-*
+-* This program is free software; you can redistribute it and/or modify it
+-* under the terms of version 2 of the GNU General Public License as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it would be useful, but
+-* WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-*
+-* Further, this software is distributed without any warranty that it is
+-* free of the rightful claim of any third person regarding infringement
+-* or the like.  Any license provided herein, whether implied or
+-* otherwise, applies only to this software file.  Patent licenses, if
+-* any, provided herein do not apply to combinations of this program with
+-* other software, or any other product whatsoever.
+-*
+-* You should have received a copy of the GNU General Public License along
+-* with this program; if not, write the Free Software Foundation, Inc.,
+-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-*
+-* History:
+-* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
+-*
+-*/
+-
+-#include <stdio.h>
+-#include <string.h>
+-#include <pthread.h>
+-#include <sys/socket.h>
+-#include <errno.h>
+-#include <netinet/in.h>
+-#include "rpc.h"
+-
+-//Standard define
+-#define VERSNUM 1
+-#define PINGPROC	1
+-#define PROGSYSERROR	10
+-#define PROGAUTHERROR	100
+-
+-static void exm_proc();
+-int progNum;
+-int run_mode;
+-
+-void *server_thread_process(void *arg)
+-{
+-	//Server process in a thread
+-	int err = 0;
+-	int i = (long)arg;
+-
+-	if (run_mode == 1) {
+-		printf("Server #%d launched\n", i);
+-		printf("Server Nb : %d\n", progNum + i);
+-	}
+-
+-	svc_unreg(progNum + atoi(arg), VERSNUM);
+-
+-	err = svc_create(exm_proc, progNum + atoi(arg), VERSNUM, "VISIBLE");
+-
+-	if (err == 0) {
+-		fprintf(stderr, "Cannot create service.\n");
+-		exit(1);
+-	}
+-
+-	svc_run();
+-
+-	fprintf(stderr, "svc_run() returned.  ERROR has occurred.\n");
+-	svc_unreg(progNum, VERSNUM);
+-
+-	pthread_exit(0);
+-}
+-
+-//****************************************//
+-//***           Main Function          ***//
+-//****************************************//
+-int main(int argn, char *argc[])
+-{
+-	//Server parameter is : argc[1] : Server Program Number
+-	//                                          argc[2] : Number of threads
+-	//                                          others arguments depend on server program
+-	run_mode = 0;
+-	int threadNb = atoi(argc[2]);
+-	long i;
+-	//Thread declaration
+-	pthread_t *pThreadArray;
+-	void *ret;
+-
+-	progNum = atoi(argc[1]);
+-
+-	pThreadArray = malloc(threadNb * sizeof(pthread_t));
+-	for (i = 0; i < threadNb; i++) {
+-		if (run_mode == 1)
+-			fprintf(stderr, "Try to create Thread Server %ld\n", i);
+-		if (pthread_create
+-		    (&pThreadArray[i], NULL, server_thread_process, (void*)i) < 0) {
+-			fprintf(stderr, "pthread_create error for thread 1\n");
+-			exit(1);
+-		}
+-	}
+-
+-	//Clean threads
+-	for (i = 0; i < threadNb; i++) {
+-		(void)pthread_join(pThreadArray[i], &ret);
+-	}
+-
+-	return 1;
+-}
+-
+-//****************************************//
+-//***        Remotes Procedures        ***//
+-//****************************************//
+-char *pingProc(int *dt)
+-{
+-	//Makes a + b * c from structure dt and returns double
+-	//printf("*** In calcProc ***\n");
+-	static int result = 0;
+-	result = *dt;
+-	//printf("Received : %lf, %lf, %lf\n", dt->a, dt->b, dt->c);
+-	return (char *)&result;
+-}
+-
+-//****************************************//
+-//***       Dispatch Function          ***//
+-//****************************************//
+-static void exm_proc(struct svc_req *rqstp, SVCXPRT * transp)
+-{
+-	//printf("* in Dispatch Func.\n");
+-
+-	char *result;
+-	xdrproc_t xdr_argument;
+-	xdrproc_t xdr_result;
+-	int *(*proc) (int *);
+-
+-	union {
+-		int varIn;
+-	} argument;
+-
+-	switch (rqstp->rq_proc) {
+-	case PINGPROC:
+-		{
+-			//printf("** in PROCPONG dispatch Func.\n");
+-			xdr_argument = (xdrproc_t) xdr_int;
+-			xdr_result = (xdrproc_t) xdr_int;
+-			proc = (int *(*)(int *))pingProc;
+-			break;
+-		}
+-	case PROGSYSERROR:
+-		{
+-			//Simulate an error
+-			svcerr_systemerr(transp);
+-			return;
+-		}
+-	case PROGAUTHERROR:
+-		{
+-			//Simulate an authentification error
+-			svcerr_weakauth(transp);
+-			return;
+-		}
+-	default:
+-		{
+-			//Proc is unavaible
+-			svcerr_noproc(transp);
+-			return;
+-		}
+-	}
+-	memset((int *)&argument, (int)0, sizeof(argument));
+-	if (svc_getargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		svcerr_decode(transp);
+-		return;
+-	}
+-
+-	result = (char *)(*proc) ((int *)&argument);
+-
+-	if ((result != NULL)
+-	    && (svc_sendreply(transp, xdr_result, result) == FALSE)) {
+-		svcerr_systemerr(transp);
+-	}
+-	if (svc_freeargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		(void)fprintf(stderr, "unable to free arguments\n");
+-		exit(1);
+-	}
+-}
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/Makefile b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/Makefile
+deleted file mode 100644
+index b5d08aa8b..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/Makefile
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#
+-#    Copyright (C) 2014, Oracle and/or its affiliates. All Rights Reserved.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-
+-top_srcdir		?= ../../../../../..
+-
+-include	$(top_srcdir)/include/mk/env_pre.mk
+-include $(abs_srcdir)/../Makefile.inc
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/tirpc_svc_9.c b/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/tirpc_svc_9.c
+deleted file mode 100644
+index 75f1254a5..000000000
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/tirpc_svc_9/tirpc_svc_9.c
++++ /dev/null
+@@ -1,192 +0,0 @@
+-/*
+-* Copyright (c) Bull S.A.  2007 All Rights Reserved.
+-*
+-* This program is free software; you can redistribute it and/or modify it
+-* under the terms of version 2 of the GNU General Public License as
+-* published by the Free Software Foundation.
+-*
+-* This program is distributed in the hope that it would be useful, but
+-* WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-*
+-* Further, this software is distributed without any warranty that it is
+-* free of the rightful claim of any third person regarding infringement
+-* or the like.  Any license provided herein, whether implied or
+-* otherwise, applies only to this software file.  Patent licenses, if
+-* any, provided herein do not apply to combinations of this program with
+-* other software, or any other product whatsoever.
+-*
+-* You should have received a copy of the GNU General Public License along
+-* with this program; if not, write the Free Software Foundation, Inc.,
+-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-*
+-* History:
+-* Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
+-*
+-*/
+-
+-#include <stdio.h>
+-#include <string.h>
+-#include <pthread.h>
+-#include <sys/socket.h>
+-#include <errno.h>
+-#include <netinet/in.h>
+-#include "rpc.h"
+-
+-//Standard define
+-#define VERSNUM 1
+-#define PROGSYSERROR	10
+-#define PROGAUTHERROR	100
+-#define CALCTHREADPROC	1000
+-
+-static void exm_proc();
+-int progNum;
+-int run_mode;
+-
+-struct datas {
+-	double a;
+-	double b;
+-	double c;
+-} argument;
+-
+-//XDR Struct function
+-bool_t xdr_datas(XDR * pt_xdr, struct datas *pt)
+-{
+-	return (xdr_double(pt_xdr, &(pt->a)) &&
+-		xdr_double(pt_xdr, &(pt->b)) && xdr_double(pt_xdr, &(pt->c)));
+-}
+-
+-void *server_thread_process(void *arg)
+-{
+-	//Server process in a thread
+-	int err = 0;
+-	int i = (long)arg;
+-
+-	if (run_mode == 1) {
+-		printf("Server #%d launched\n", i);
+-		printf("Server Nb : %d\n", progNum + i);
+-	}
+-
+-	svc_unreg(progNum + atoi(arg), VERSNUM);
+-
+-	err = svc_create(exm_proc, progNum + atoi(arg), VERSNUM, "VISIBLE");
+-
+-	if (err == 0) {
+-		fprintf(stderr, "Cannot create service.\n");
+-		exit(1);
+-	}
+-
+-	svc_run();
+-
+-	fprintf(stderr, "svc_run() returned.  ERROR has occurred.\n");
+-	svc_unreg(progNum, VERSNUM);
+-
+-	pthread_exit(0);
+-}
+-
+-//****************************************//
+-//***           Main Function          ***//
+-//****************************************//
+-int main(int argn, char *argc[])
+-{
+-	//Server parameter is : argc[1] : Server Program Number
+-	//                                          argc[2] : Number of threads
+-	//                                          others arguments depend on server program
+-	run_mode = 0;
+-	int threadNb = atoi(argc[2]);
+-	long i;
+-	//Thread declaration
+-	pthread_t *pThreadArray;
+-	void *ret;
+-
+-	progNum = atoi(argc[1]);
+-
+-	pThreadArray = malloc(threadNb * sizeof(pthread_t));
+-	for (i = 0; i < threadNb; i++) {
+-		if (run_mode == 1)
+-			fprintf(stderr, "Try to create Thread Server %ld\n", i);
+-		if (pthread_create
+-		    (&pThreadArray[i], NULL, server_thread_process, (void*)i) < 0) {
+-			fprintf(stderr, "pthread_create error for thread 1\n");
+-			exit(1);
+-		}
+-	}
+-
+-	//Clean threads
+-	for (i = 0; i < threadNb; i++) {
+-		(void)pthread_join(pThreadArray[i], &ret);
+-	}
+-
+-	return 1;
+-}
+-
+-//****************************************//
+-//***        Remotes Procedures        ***//
+-//****************************************//
+-char *calcProc(struct datas *dt)
+-{
+-	//Makes a + b * c from structure dt and returns double
+-	//printf("*** In calcProc ***\n");
+-	static double result = 0;
+-	result = dt->a + (dt->b * dt->c);
+-	//printf("Received : %lf, %lf, %lf\n", dt->a, dt->b, dt->c);
+-	return (char *)&result;
+-}
+-
+-//****************************************//
+-//***       Dispatch Function          ***//
+-//****************************************//
+-static void exm_proc(struct svc_req *rqstp, SVCXPRT * transp)
+-{
+-	//printf("* in Dispatch Func.\n");
+-
+-	char *result;
+-	xdrproc_t xdr_argument;
+-	xdrproc_t xdr_result;
+-	int *(*proc) (struct datas *);
+-
+-	switch (rqstp->rq_proc) {
+-	case CALCTHREADPROC:
+-		{
+-			//printf("** in PROCPONG dispatch Func.\n");
+-			xdr_argument = (xdrproc_t) xdr_datas;
+-			xdr_result = (xdrproc_t) xdr_double;
+-			proc = (int *(*)(struct datas *))calcProc;
+-			break;
+-		}
+-	case PROGSYSERROR:
+-		{
+-			//Simulate an error
+-			svcerr_systemerr(transp);
+-			return;
+-		}
+-	case PROGAUTHERROR:
+-		{
+-			//Simulate an authentification error
+-			svcerr_weakauth(transp);
+-			return;
+-		}
+-	default:
+-		{
+-			//Proc is unavaible
+-			svcerr_noproc(transp);
+-			return;
+-		}
+-	}
+-	memset((int *)&argument, (int)0, sizeof(argument));
+-	if (svc_getargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		svcerr_decode(transp);
+-		return;
+-	}
+-
+-	result = (char *)(*proc) ((struct datas *)&argument);
+-
+-	if ((result != NULL)
+-	    && (svc_sendreply(transp, xdr_result, result) == FALSE)) {
+-		svcerr_systemerr(transp);
+-	}
+-	if (svc_freeargs(transp, xdr_argument, (char *)&argument) == FALSE) {
+-		(void)fprintf(stderr, "unable to free arguments\n");
+-		exit(1);
+-	}
+-}
 -- 
 2.24.1
 
