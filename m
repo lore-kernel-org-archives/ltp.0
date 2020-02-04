@@ -1,43 +1,57 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 4 Feb 2020 17:09:58 +0100
-Subject: [LTP] [RFC PATCH 1/1] autotools: Move simple definitions out of
- m4/* to configure.ac
-In-Reply-To: <20200204155703.GA16838@dell5510>
-References: <20200130110753.20459-1-pvorel@suse.cz>
- <e6f7f611-7c2e-04cb-afd9-e11c4423dc3f@cn.fujitsu.com>
- <20200204155703.GA16838@dell5510>
-Message-ID: <20200204160949.GA6271@rei>
+From: Rachel Sibley <rasibley@redhat.com>
+Date: Tue, 4 Feb 2020 13:06:23 -0500
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
+ =?utf-8?q?=2E18-rc1-6213eed=2Ecki_=28stable=29?=
+In-Reply-To: <1905459596.5574249.1580806970915.JavaMail.zimbra@redhat.com>
+References: <cki.A43C5F6701.3LH2WNZUVM@redhat.com>
+ <1905459596.5574249.1580806970915.JavaMail.zimbra@redhat.com>
+Message-ID: <fd899990-b29d-7b5d-208c-aa89e5d67859@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > IMO, move all simple definitions to configure.ac will make this file mess
-> > likce old .gitnore file. I perfer to add function or header or macro but not
-> > include struct in configure.ac.
-> I think .gitignore files are different because it's content cannot be duplicated
-> when they're split, but m4/ repeated some checks.
-> + we already started to move configuration into configure.ac before
-> (AC_CHECK_HEADERS and AC_CHECK_FUNCS).
-> IMHO it's easier to search/work with single file than in many files with very little
-> content.
-
-The main reason for having a separate .gitignore files are:
-
-* To avoid patch collisions that would happen too often
-
-* When directory is deleted the .gitignore records are removed as well
-
-* Also the files are much easier to maintain if there are only few
-  entries, as we do not have to find stuff
 
 
-In that sense the configure file is different, collisions are generally
-rare and an stuffing things into m4 files is not much cleaner than
-having it directly in the configure.ac
+On 2/4/20 4:02 AM, Jan Stancek wrote:
+> 
+> 
+> ----- Original Message -----
+>>
+>> Hello,
+>>
+>> We ran automated tests on a recent commit from this kernel tree:
+>>
+>>         Kernel repo:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>>              Commit: 6213eed0e444 - Linux 5.4.18-rc1
+>>
+>> The results of these automated tests are provided below.
+>>
+>>      Overall result: FAILED (see details below)
+>>               Merge: OK
+>>             Compile: OK
+>>               Tests: FAILED
+>>
+>> All kernel binaries, config files, and logs are available for download here:
+>>
+>>    https://artifacts.cki-project.org/pipelines/419091
+>>
+>> One or more kernel tests failed:
+>>
+>>      ppc64le:
+>>       ? LTP
+> 
+> b45d82cfbabc ("max_map_count: use default overcommit mode")
+> should address that. CKI job is currently at LTP commit:
+>    baf4ca1653a9 ("syscalls/capset01: Cleanup & convert to new library")
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for the reminder :-) I will update LTP to a recent commit today to pull
+in this change.
+
+-Rachel
+> 
+> 
+
