@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 04 Feb 2020 01:59:32 -0000
+Date: Tue, 04 Feb 2020 06:49:18 -0000
 Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E18-rc1-6213eed=2Ecki_=28stable=29?=
-Message-ID: <cki.A43C5F6701.3LH2WNZUVM@redhat.com>
+ =?utf-8?q?=2E18-rc3-9028ac4=2Ecki_=28stable=29?=
+Message-ID: <cki.939854BCB7.49E7FRWNAP@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 6213eed0e444 - Linux 5.4.18-rc1
+            Commit: 9028ac4fc837 - Linux 5.4.18-rc3
 
 The results of these automated tests are provided below.
 
@@ -26,13 +26,15 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://artifacts.cki-project.org/pipelines/419091
+  https://artifacts.cki-project.org/pipelines/419366
 
 One or more kernel tests failed:
 
     ppc64le:
      ? LTP
-     ? ALSA PCM loopback test
+
+    aarch64:
+     ? Boot test
 
 We hope that these logs can help you find the problem quickly. For the full
 detail on our testing procedures, please scroll to the bottom of this message.
@@ -69,12 +71,15 @@ We booted each kernel and ran the following tests:
   aarch64:
     Host 1:
        ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? Storage blktests
+       ??? xfstests: ext4
+       ??? xfstests: xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? Storage blktests
 
     Host 2:
        ? Boot test
@@ -121,6 +126,17 @@ We booted each kernel and ran the following tests:
   ppc64le:
     Host 1:
        ? Boot test
+       ? xfstests: ext4
+       ? xfstests: xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
        ? Podman system integration test (as root)
        ? Podman system integration test (as user)
        ? LTP
@@ -158,46 +174,16 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
-       ? Boot test
-       ? xfstests: ext4
-       ? xfstests: xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
   x86_64:
     Host 1:
        ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 2:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ??? Boot test
-       ??? xfstests: ext4
-       ??? xfstests: xfs
-       ??? selinux-policy: serge-testsuite
-       ??? lvm thinp sanity
-       ??? storage: software RAID testing
-       ??? stress: stress-ng
-       ? ??? IOMMU boot test
-       ? ??? IPMI driver test
-       ? ??? IPMItool loop stress test
-       ? ??? power-management: cpupower/sanity test
-       ? ??? Storage blktests
-
-    Host 3:
-       ? Boot test
        ? Storage SAN device stress - megaraid_sas
 
-    Host 4:
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
        ? Boot test
        ? Podman system integration test (as root)
        ? Podman system integration test (as user)
@@ -240,7 +226,7 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 5:
+    Host 4:
        ? Boot test
        ? xfstests: ext4
        ? xfstests: xfs
