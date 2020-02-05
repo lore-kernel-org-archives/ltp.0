@@ -1,9 +1,7 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 05 Feb 2020 12:51:11 +0100
-Subject: [LTP] [PATCH 1/2] Add TST_SPIN_TEST() macro
-In-Reply-To: <20200203113956.13176-1-mdoucha@suse.cz>
-References: <20200203113956.13176-1-mdoucha@suse.cz>
-Message-ID: <87o8udgsls.fsf@our.domain.is.not.set>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Wed, 5 Feb 2020 08:46:10 +0000
+Subject: [LTP] problem with leapsec01 with x86 as well as RISC v
+Message-ID: <BMXPR01MB2999A74FB0C350C6377C7946EE020@BMXPR01MB2999.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,71 +9,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-
-Martin Doucha <mdoucha@suse.cz> writes:
-
-> The TST_RETRY_FUNC() macro requires a single return value that'll be considered
-> success. This cannot be used with system calls that e.g. return a new file
-> descriptor because the success value is somewhat unpredictable.
->
-> Add a new macro TST_SPIN_TEST that'll work mostly like TST_RETRY_FUNC(), except:
-> - Any negative return value means failure, any non-negative return value means
->   success.
-> - The loop will fall through on timeout instead of callid tst_brk(). TST_RET
->   and TST_ERR will be set to the values returned by the last FUNC call.
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->  include/tst_common.h | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
->
-> diff --git a/include/tst_common.h b/include/tst_common.h
-> index a0c06a3f7..72e00ca81 100644
-> --- a/include/tst_common.h
-> +++ b/include/tst_common.h
-> @@ -55,6 +55,34 @@
->  	ERET;								\
->  })
->
-> +/**
-> + * TST_SPIN_TEST() - Repeatedly retry a function with an increasing delay.
-> + * @FUNC - The function which will be retried
-> + *
-> + * Same as TST_RETRY_FUNC() but any non-negative return value is accepted
-> + * as success and tst_brk() will not be called on timeout.
-> + */
-> +#define TST_SPIN_TEST(FUNC) \
-> +	TST_SPIN_TEST_EXP_BACKOFF(FUNC, 1, -1)
-
-Ah, so this is actually always exponential. Ignore my comment on other
-patch.
-
-> +
-> +#define TST_SPIN_TEST_EXP_BACKOFF(FUNC, MAX_DELAY, GOOD_ERRNO)	\
-> +({	unsigned int tst_delay_, tst_max_delay_;			\
-> +	tst_delay_ = 1;							\
-> +	tst_max_delay_ = tst_multiply_timeout(MAX_DELAY * 1000000);	\
-> +	for (;;) {							\
-> +		TEST(FUNC);						\
-> +		if (TST_RET >= 0 || (GOOD_ERRNO >= 0 && TST_ERR == GOOD_ERRNO))	\
-> +			break;						\
-> +		if (tst_delay_ < tst_max_delay_) {			\
-> +			usleep(tst_delay_);				\
-> +			tst_delay_ *= 2;				\
-> +		} else {						\
-> +			break;						\
-> +		}							\
-> +	}								\
-> +	TST_RET;							\
-> +})
-> +
->  #define TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(condition) \
->  	do { ((void)sizeof(char[1 - 2 * !!(condition)])); } while (0)
->
-> --
-> 2.24.1
+please find the attachment ,I am trying ltp on RISC V and same i have tried on x86  as well ,getting an issue while running the leapsec01, it is printing  " adjtimex: insert leap second " for multiple time and finally failing with "leapsec01.c:84: BROK: adjtimex status 8208 not set "  how i should resolve this problem?
 
 
---
-Thank you,
-Richard.
+Thank you
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200205/2e3c21d6/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Screenshot from 2020-02-05 13-54-17.png
+Type: image/png
+Size: 371029 bytes
+Desc: Screenshot from 2020-02-05 13-54-17.png
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200205/2e3c21d6/attachment-0001.png>
