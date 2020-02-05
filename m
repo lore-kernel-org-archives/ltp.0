@@ -1,135 +1,85 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 5 Feb 2020 21:50:07 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/fcntl37: add error test for fcntl
- with F_SETPIPE_SZ
-In-Reply-To: <20200127162726.GE30831@rei.lan>
-References: <1579686442-24689-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1579686442-24689-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200127162726.GE30831@rei.lan>
-Message-ID: <ded32418-0d78-983e-4283-09625b7bad1f@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 5 Feb 2020 21:57:48 +0800
+Subject: [LTP] [PATCH] syscalls/getrandom02: lower bufsize if low on
+ entropy
+In-Reply-To: <7843cc36a04deb034e9479a139f535e5fa5f3135.1580894017.git.jstancek@redhat.com>
+References: <7843cc36a04deb034e9479a139f535e5fa5f3135.1580894017.git.jstancek@redhat.com>
+Message-ID: <CAEemH2fnu9nZiGDfa5LTTMA0a_-PJ35fjjLdZ2vXYNGRJqHfVA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-> Hi!
->> +static int fds[2];
->> +static unsigned int orig_value, invalid_value, half_value, sys_value;
->> +static char *wrbuf;
->> +
->> +static struct tcase {
->> +	unsigned int *setvalue;
->> +	int exp_err;
->> +	char *message;
->> +} tcases[] = {
->> +	{&invalid_value, EINVAL,
->> +	"cmd is F_SETPIPE_SZ and the arg is beyond 1<<31"},
->> +
->> +	{&half_value, EBUSY,
->> +	"cmd is F_SETPIPE_SZ and the arg is smaller than the amount of the current used buffer space"},
-> 
-> Ah the EBUSY is handled here.
-> 
-> 
-> Also these descriptions are way too long, ideally these should be
-> shorter and to the point. Something as:
-> 
-> "F_SETPIPE_SZ and size < data stored in pipe"
-> 
-OK. I will short them.
->> +	{&sys_value, EPERM,
->> +	"cmd is F_SETPIPE_SZ and the arg is over /proc/sys/fs/pipe-max-size limit under unprivileged users"},
-> 
-> Here something as:
-> 
-> "F_SETPIPE_SZ and size is over limit for unpriviledged user"
-> 
->> +};
->> +
->> +static void verify_fcntl(unsigned int n)
->> +{
->> +	struct tcase *tc = &tcases[n];
->> +
->> +	tst_res(TINFO, "%s", tc->message);
->> +
->> +	TEST(fcntl(fds[1], F_SETPIPE_SZ, *(tc->setvalue)));
->> +	if (TST_RET != -1)
->> +		tst_res(TFAIL, "F_SETPIPE_SZ succeed");
-> 
-> Maybe we should print the TST_RET here as well, it may return completely
-> random number that != -1.
-OK.
-> 
->> +	if (TST_ERR == tc->exp_err)
->> +		tst_res(TPASS | TTERRNO, "F_SETPIPE_SZ failed as expected");
->> +	else
->> +		tst_res(TFAIL | TTERRNO, "F_SETPIPE_SZ failed expected %s bu got",
->                                                                            ^
-> 									  but?
-> 
-> I guess that we can completely drop the "but" here and just keep it
-> "... expected %s got"
-> 
-OK.
->> +				tst_strerrno(tc->exp_err));
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	SAFE_PIPE(fds);
->> +
->> +	TEST(fcntl(fds[1], F_GETPIPE_SZ));
->> +	if (TST_ERR == EINVAL)
->> +		tst_brk(TCONF, "kernel doesn't support F_GET/SETPIPE_SZ");
->> +
->> +	orig_value = TST_RET;
->> +
->> +	wrbuf = SAFE_MALLOC(orig_value);
->> +	memset(wrbuf, 'x', orig_value);
->> +	SAFE_WRITE(1, fds[1], wrbuf, orig_value);
->> +
->> +	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &sys_value);
->> +	sys_value++;
->> +
->> +	half_value = orig_value / 2;
->> +	invalid_value = (1U << 31) + 1;
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, orig_value);
-> 
-> Again there is no point in restoring the value if we close the pipe
-> right after.
-> 
-OK.
->> +	if (fds[0] > 0)
->> +		SAFE_CLOSE(fds[0]);
->> +	if (fds[1] > 0)
->> +		SAFE_CLOSE(fds[1]);
->> +	if (wrbuf)
->> +		free(wrbuf);
-> 
-> Why don't we free the buffer right in the test setup? There is no point
-> in keeping it allocated.
-> 
-OK. I will free the buffer in setup.
->> +}
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.cleanup = cleanup,
->> +	.tcnt = ARRAY_SIZE(tcases),
->> +	.test = verify_fcntl,
->> +	.caps = (struct tst_cap []) {
->> +		TST_CAP(TST_CAP_DROP, CAP_SYS_RESOURCE),
->> +		{}
->> +	},
->> +};
-> 
-> Other than the minor things the rest looks good.
-> 
+On Wed, Feb 5, 2020 at 5:19 PM Jan Stancek <jstancek@redhat.com> wrote:
+
+> Some PPC KVM guests accumulate about 1 bit of entropy per second while idle
+> and running getrandom02. Which isn't enough and test sporadically fails on
+> timeout.
+>
+> Adjust the buffer size by looking at entropy_avail. We want to run the
+> test,
+> even if all entropy is exhausted, but with smaller buffer we don't set
+> as high expectations on how much entropy is generated within default test
+> time.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/getrandom/getrandom02.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/getrandom/getrandom02.c
+> b/testcases/kernel/syscalls/getrandom/getrandom02.c
+> index ee0193df9897..1384fc5f32c0 100644
+> --- a/testcases/kernel/syscalls/getrandom/getrandom02.c
+> +++ b/testcases/kernel/syscalls/getrandom/getrandom02.c
+> @@ -10,6 +10,8 @@
+>  #include "lapi/syscalls.h"
+>  #include "tst_test.h"
+>
+> +#define PROC_ENTROPY_AVAIL "/proc/sys/kernel/random/entropy_avail"
+> +
+>  static int modes[] = { 0, GRND_RANDOM, GRND_NONBLOCK,
+>                        GRND_RANDOM | GRND_NONBLOCK };
+>
+> @@ -37,11 +39,17 @@ static int check_content(unsigned char *buf, int nb)
+>  static void verify_getrandom(unsigned int n)
+>  {
+>         unsigned char buf[256];
+> +       int bufsize = 64, entropy_avail;
+>
+
+I'm not sure why here initialize bufsize as 64? can you explain more?
 
 
+>
+> -       memset(buf, 0, sizeof(buf));
+> +       if (access(PROC_ENTROPY_AVAIL, F_OK) == 0) {
+> +               SAFE_FILE_SCANF(PROC_ENTROPY_AVAIL, "%d", &entropy_avail);
+> +               if (entropy_avail > 256)
+> +                       bufsize = sizeof(buf);
+> +       }
+>
+> +       memset(buf, 0, sizeof(buf));
+>         do {
+> -               TEST(tst_syscall(__NR_getrandom, buf, sizeof(buf),
+> modes[n]));
+> +               TEST(tst_syscall(__NR_getrandom, buf, bufsize, modes[n]));
+>         } while ((modes[n] & GRND_NONBLOCK) && TST_RET == -1
+>                   && TST_ERR == EAGAIN);
+>
+> --
+> 2.18.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200205/5da9c352/attachment-0001.htm>
