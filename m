@@ -1,67 +1,34 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 5 Feb 2020 09:32:11 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/getrandom02: lower bufsize if low on
- entropy
-In-Reply-To: <CAEemH2fnu9nZiGDfa5LTTMA0a_-PJ35fjjLdZ2vXYNGRJqHfVA@mail.gmail.com>
-References: <7843cc36a04deb034e9479a139f535e5fa5f3135.1580894017.git.jstancek@redhat.com>
- <CAEemH2fnu9nZiGDfa5LTTMA0a_-PJ35fjjLdZ2vXYNGRJqHfVA@mail.gmail.com>
-Message-ID: <1751041821.5968536.1580913131753.JavaMail.zimbra@redhat.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 5 Feb 2020 16:25:48 +0100
+Subject: [LTP] [PATCH 2/2] Fix BPF test program loading issues
+In-Reply-To: <20200205143107.GC30186@rei>
+References: <20200203113956.13176-1-mdoucha@suse.cz>
+ <20200203113956.13176-2-mdoucha@suse.cz> <20200205143107.GC30186@rei>
+Message-ID: <fda46288-1850-8ac9-1c56-7641aaeb8759@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> >
-> > @@ -37,11 +39,17 @@ static int check_content(unsigned char *buf, int nb)
-> >  static void verify_getrandom(unsigned int n)
-> >  {
-> >         unsigned char buf[256];
-> > +       int bufsize = 64, entropy_avail;
-> >
+On 2/5/20 3:31 PM, Cyril Hrubis wrote:
+>> diff --git a/testcases/kernel/syscalls/bpf/bpf_common.h b/testcases/kernel/syscalls/bpf/bpf_common.h
 > 
-> I'm not sure why here initialize bufsize as 64? can you explain more?
+> Why can't we keep the code in the header? I do not condsider this to be
+> improving anything at all.
 
-That would be the default, unless we know we have enough entropy.
+Because executable code doesn't belong in header files unless necessary.
+Header files are as much API documentation for developers as they are
+code for compilers. And header files full of executable code make
+terrible API documentation.
 
-I picked 64 as it matches 'random_read_wakeup_bits'. Assuming we can get
-1bit/s entropy, then potentially worst case of waiting 4x for 64bit,
-it should still fit within default 300 seconds.
+I'll implement the rest of your suggestions and resubmit.
 
-But it's also rule of thumb, because it's smaller.
-
-> 
-> 
-> >
-> > -       memset(buf, 0, sizeof(buf));
-> > +       if (access(PROC_ENTROPY_AVAIL, F_OK) == 0) {
-> > +               SAFE_FILE_SCANF(PROC_ENTROPY_AVAIL, "%d", &entropy_avail);
-> > +               if (entropy_avail > 256)
-> > +                       bufsize = sizeof(buf);
-> > +       }
-> >
-> > +       memset(buf, 0, sizeof(buf));
-> >         do {
-> > -               TEST(tst_syscall(__NR_getrandom, buf, sizeof(buf),
-> > modes[n]));
-> > +               TEST(tst_syscall(__NR_getrandom, buf, bufsize, modes[n]));
-> >         } while ((modes[n] & GRND_NONBLOCK) && TST_RET == -1
-> >                   && TST_ERR == EAGAIN);
-> >
-> > --
-> > 2.18.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> >
-> >
-> 
-> --
-> Regards,
-> Li Wang
-> 
-
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
