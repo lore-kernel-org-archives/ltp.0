@@ -1,159 +1,48 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 6 Feb 2020 14:04:33 +0800
-Subject: [LTP] [PATCH v3 2/2] syscalls/fcntl37: add error test for fcntl
- with F_SETPIPE_SZ
-In-Reply-To: <1580969073-27367-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20200127162016.GD30831@rei.lan>
- <1580969073-27367-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1580969073-27367-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 6 Feb 2020 15:01:08 +0800
+Subject: [LTP] [PATCH] syscalls/getrandom02: lower bufsize if low on
+ entropy
+In-Reply-To: <1751041821.5968536.1580913131753.JavaMail.zimbra@redhat.com>
+References: <7843cc36a04deb034e9479a139f535e5fa5f3135.1580894017.git.jstancek@redhat.com>
+ <CAEemH2fnu9nZiGDfa5LTTMA0a_-PJ35fjjLdZ2vXYNGRJqHfVA@mail.gmail.com>
+ <1751041821.5968536.1580913131753.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2eycvuJkqvTj=8R=aRqRGxhb=n3BzpeAaaCk8M4oJELsg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
--------------
-v2->v3?
-fix things pointed by Cyril
------------
+On Wed, Feb 5, 2020 at 10:32 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- runtest/syscalls                           |  2 +
- testcases/kernel/syscalls/fcntl/.gitignore |  2 +
- testcases/kernel/syscalls/fcntl/fcntl37.c  | 98 ++++++++++++++++++++++
- 3 files changed, 102 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl37.c
+>
+>
+> ----- Original Message -----
+> > >
+> > > @@ -37,11 +39,17 @@ static int check_content(unsigned char *buf, int
+> nb)
+> > >  static void verify_getrandom(unsigned int n)
+> > >  {
+> > >         unsigned char buf[256];
+> > > +       int bufsize = 64, entropy_avail;
+> > >
+> >
+> > I'm not sure why here initialize bufsize as 64? can you explain more?
+>
+> That would be the default, unless we know we have enough entropy.
+>
+> I picked 64 as it matches 'random_read_wakeup_bits'. Assuming we can get
+> 1bit/s entropy, then potentially worst case of waiting 4x for 64bit,
+> it should still fit within default 300 seconds.
+>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0743cf4e3..577a4a527 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -301,6 +301,8 @@ fcntl35 fcntl35
- fcntl35_64 fcntl35_64
- fcntl36 fcntl36
- fcntl36_64 fcntl36_64
-+fcntl37 fcntl37
-+fcntl37_64 fcntl37_64
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/fcntl/.gitignore b/testcases/kernel/syscalls/fcntl/.gitignore
-index 8d5738f97..be8d9739e 100644
---- a/testcases/kernel/syscalls/fcntl/.gitignore
-+++ b/testcases/kernel/syscalls/fcntl/.gitignore
-@@ -70,3 +70,5 @@
- /fcntl35_64
- /fcntl36
- /fcntl36_64
-+/fcntl37
-+/fcntl37_64
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl37.c b/testcases/kernel/syscalls/fcntl/fcntl37.c
-new file mode 100644
-index 000000000..c52af22dd
---- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl37.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-+ *
-+ * Test basic error handling for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ
-+ * argument.
-+ * 1)fcntl fails with EINVAL when cmd is F_SETPIPE_SZ and the arg is
-+ * beyond 1<<31.
-+ * 2)fcntl fails with EBUSY when cmd is F_SETPIPE_SZ and the arg is smaller
-+ * than the amount of the current used buffer space.
-+ * 3)fcntl fails with EPERM when cmd is F_SETPIPE_SZ and the arg is over
-+ * /proc/sys/fs/pipe-max-size limit under unprivileged users.
-+ */
-+
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <limits.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/capability.h"
-+
-+static int fds[2];
-+static unsigned int invalid_value, half_value, sys_value;
-+
-+static struct tcase {
-+	unsigned int *setvalue;
-+	int exp_err;
-+	char *message;
-+} tcases[] = {
-+	{&invalid_value, EINVAL, "F_SETPIPE_SZ and size is beyond 1<<31"},
-+	{&half_value, EBUSY, "F_SETPIPE_SZ and size < data stored in pipe"},
-+	{&sys_value, EPERM, "F_SETPIPE_SZ and size is over limit for unpriviledged user"},
-+};
-+
-+static void verify_fcntl(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	tst_res(TINFO, "%s", tc->message);
-+
-+	TEST(fcntl(fds[1], F_SETPIPE_SZ, *(tc->setvalue)));
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "F_SETPIPE_SZ succeed and return %ld", TST_RET);
-+		return;
-+	}
-+	if (TST_ERR == tc->exp_err)
-+		tst_res(TPASS | TTERRNO, "F_SETPIPE_SZ failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "F_SETPIPE_SZ failed expected %s got",
-+				tst_strerrno(tc->exp_err));
-+}
-+
-+static void setup(void)
-+{
-+	char *wrbuf;
-+	unsigned int orig_value;
-+
-+	SAFE_PIPE(fds);
-+
-+	TEST(fcntl(fds[1], F_GETPIPE_SZ));
-+	if (TST_ERR == EINVAL)
-+		tst_brk(TCONF, "kernel doesn't support F_GET/SETPIPE_SZ");
-+
-+	orig_value = TST_RET;
-+
-+	wrbuf = SAFE_MALLOC(orig_value);
-+	memset(wrbuf, 'x', orig_value);
-+	SAFE_WRITE(1, fds[1], wrbuf, orig_value);
-+	free(wrbuf);
-+
-+	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d", &sys_value);
-+	sys_value++;
-+
-+	half_value = orig_value / 2;
-+	invalid_value = (1U << 31) + 1;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fds[0] > 0)
-+		SAFE_CLOSE(fds[0]);
-+	if (fds[1] > 0)
-+		SAFE_CLOSE(fds[1]);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_fcntl,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_DROP, CAP_SYS_RESOURCE),
-+		{}
-+	},
-+};
+That sounds reasonable. Thanks for the analysis.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.18.0
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200206/521ada62/attachment.htm>
