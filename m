@@ -1,43 +1,231 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 7 Feb 2020 12:29:28 +0100
-Subject: [LTP] [PATCH v2 1/3] Redesign TST_RETRY_FUNC()
-In-Reply-To: <20200207112236.16462-1-mdoucha@suse.cz>
-References: <20200207112236.16462-1-mdoucha@suse.cz>
-Message-ID: <8d022169-5c09-8b94-38b8-bdba679a9ea0@suse.cz>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 7 Feb 2020 21:14:57 +0800
+Subject: [LTP] [PATCH] syscalls/add_key05: add maxbytes/maxkeys test under
+ unprivileged user
+Message-ID: <1581081297-20034-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2/7/20 12:22 PM, Martin Doucha wrote:
-> The TST_RETRY_FUNC() macro requires a single return value that'll be considered
-> success. This cannot be used with system calls that e.g. return a new file
-> descriptor because the success value is somewhat unpredictable.
-> 
-> Redesign TST_RETRY_FUNC() to accept arbitrary macro/function ECHCK as the second
-> parameter for validating the FUNC return value.
-> - The loop will end succesfully if ECHCK(ret) evaluates to non-zero.
-> - The loop will fall through on timeout instead of calling tst_brk().
-> - errno will be cleared before every FUNC call.
-> - Add standard check macros for the most common call conventions:
->   - TST_RETVAL_EQ0(x) - x == 0
->   - TST_RETVAL_NOTNULL(x) - x != 0 or x != NULL
->   - TST_RETVAL_GE0(x) - x >= 0
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/add_key/.gitignore  |   1 +
+ testcases/kernel/syscalls/add_key/add_key05.c | 180 ++++++++++++++++++
+ 3 files changed, 182 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/add_key/add_key05.c
 
-Sorry, I forgot to add this to the commit message:
-Co-Developed-by: Cyril Hrubis <chrubis@suse.cz>
-
-Please add it before pushing.
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 577a4a527..df7bbcbf1 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -18,6 +18,7 @@ add_key01 add_key01
+ add_key02 add_key02
+ add_key03 add_key03
+ add_key04 add_key04
++add_key05 add_key05
+ 
+ adjtimex01 adjtimex01
+ adjtimex02 adjtimex02
+diff --git a/testcases/kernel/syscalls/add_key/.gitignore b/testcases/kernel/syscalls/add_key/.gitignore
+index b9a04214d..f57dc2228 100644
+--- a/testcases/kernel/syscalls/add_key/.gitignore
++++ b/testcases/kernel/syscalls/add_key/.gitignore
+@@ -2,3 +2,4 @@
+ /add_key02
+ /add_key03
+ /add_key04
++/add_key05
+diff --git a/testcases/kernel/syscalls/add_key/add_key05.c b/testcases/kernel/syscalls/add_key/add_key05.c
+new file mode 100644
+index 000000000..0d5e9db28
+--- /dev/null
++++ b/testcases/kernel/syscalls/add_key/add_key05.c
+@@ -0,0 +1,180 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ *
++ *Description:
++ * Test unprivileged user can support the number of keys and the
++ * number of bytes consumed in payloads of the keys.The defalut value
++ * is 200 and 20000.
++ * This is also a regresstion test for
++ * commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exact")
++ *
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <pwd.h>
++#include "tst_test.h"
++#include "lapi/keyctl.h"
++
++static char *user_buf, *user_buf1, *keyring_buf;
++static const char *username = "ltp_add_key05";
++static int user_added;
++struct passwd *ltpuser;
++static unsigned int used_bytes, max_bytes, used_key, max_key, data_len;
++char fmt[1024];
++int flag[2] = {1, 0};
++
++void add_user(void)
++{
++	if (user_added)
++		return;
++
++	const char *const cmd_useradd[] = {"useradd", username, NULL};
++	int rc;
++
++	switch ((rc = tst_run_cmd(cmd_useradd, NULL, NULL, 1))) {
++	case 0:
++		user_added = 1;
++		ltpuser = SAFE_GETPWNAM(username);
++		break;
++	case 1:
++	case 255:
++		break;
++	default:
++		tst_brk(TBROK, "Useradd failed (%d)", rc);
++	}
++	sprintf(fmt, "%5u: %%*5d %%*d/%%*d %%d/%%d %%d/%%d", ltpuser->pw_uid);
++}
++
++void clean_user(void)
++{
++	if (!user_added)
++		return;
++
++	const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
++
++	if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
++		tst_res(TWARN | TERRNO, "'userdel -r %s' failed", username);
++	else
++		user_added = 0;
++}
++
++void verify_max_btyes(void)
++{
++	char *buf, *invalid_buf;
++	int plen, invalid_plen;
++
++	tst_res(TINFO, "test max bytes under unprivileged user");
++	invalid_plen = max_bytes - used_bytes - data_len - 8;
++	plen = invalid_plen - 1;
++	buf = tst_alloc(plen);
++	invalid_buf = tst_alloc(invalid_plen);
++
++	TEST(add_key("user", "test_inv", invalid_buf, invalid_plen, KEY_SPEC_THREAD_KEYRING));
++	if (TST_RET != -1)
++		tst_res(TFAIL, "add_key(test_inv) succeeded unexpectedltly");
++	else {
++		if (TST_ERR == EDQUOT)
++			tst_res(TPASS | TTERRNO, "add_key(test_inv) failed as expected");
++		else
++			tst_res(TFAIL | TTERRNO, "add_key(test_inv) failed expected EDQUOT got");
++	}
++
++	TEST(add_key("user", "test_max", buf, plen, KEY_SPEC_THREAD_KEYRING));
++	if (TST_RET != -1) {
++		tst_res(TPASS, "add_key(test_max) succeeded as expected");
++		SAFE_FILE_LINES_SCANF("/proc/key-users", fmt, &used_key, &max_key, &used_bytes, &max_bytes);
++		if (used_bytes == max_bytes)
++			tst_res(TPASS, "allow reaching the max bytes exactly");
++		else
++			tst_res(TFAIL, "max used bytes %u, key allow max bytes %u", used_bytes, max_bytes);
++	} else
++		tst_res(TFAIL | TTERRNO, "add_key(test_max) failed unexpectedly");
++}
++
++void verify_max_keys(void)
++{
++	unsigned int i;
++	char desc[10];
++
++	tst_res(TINFO, "test max keys under unprivileged user");
++	for (i = used_key + 1; i < max_key; i++) {
++		sprintf(desc, "abc%d", i);
++		TEST(add_key("keyring", desc, keyring_buf, 0, KEY_SPEC_THREAD_KEYRING));
++		if (TST_RET == -1)
++			tst_res(TFAIL | TTERRNO, "add keyring key(%s) failed", desc);
++	}
++
++	TEST(add_key("keyring", "abc200", keyring_buf, 0, KEY_SPEC_THREAD_KEYRING));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "add keyring key(abc200) failed");
++		goto count;
++	} else
++		tst_res(TPASS, "add keyring key(abc200) succedd");
++
++	TEST(add_key("keyring", "abc201", keyring_buf, 0, KEY_SPEC_THREAD_KEYRING));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "add keyring key(abc201) succeeded unexpectedly");
++		goto count;
++	} else {
++		if (TST_ERR == EDQUOT)
++			tst_res(TPASS | TTERRNO, "add keyring key(abc201) failed as expected over max key");
++		else
++			tst_res(TFAIL | TTERRNO, "add_keyring failed expected EDQUOT got");
++	}
++count:
++	SAFE_FILE_LINES_SCANF("/proc/key-users", fmt, &used_key, &max_key, &used_bytes, &max_bytes);
++	if (used_key == max_key)
++		tst_res(TPASS, "allow reaching the max key exactly");
++	else
++		tst_res(TFAIL, "max used key %u, key allow max key %u", used_key, max_key);
++}
++
++static void do_test(unsigned int n)
++{
++	add_user();
++	int f_used_bytes = 0;
++
++	if (!SAFE_FORK()) {
++		SAFE_SETUID(ltpuser->pw_uid);
++
++		TEST(add_key("user", "test1", user_buf, 64, KEY_SPEC_THREAD_KEYRING));
++		if (TST_RET == -1)
++			tst_brk(TFAIL | TTERRNO, "add key test1 failed");
++		SAFE_FILE_LINES_SCANF("/proc/key-users", fmt, &used_key, &max_key, &used_bytes, &max_bytes);
++		f_used_bytes = used_bytes;
++
++		TEST(add_key("user", "test2", user_buf1, 64, KEY_SPEC_THREAD_KEYRING));
++		if (TST_RET == -1)
++			tst_brk(TFAIL | TTERRNO, "add key test2 failed");
++		SAFE_FILE_LINES_SCANF("/proc/key-users", fmt, &used_key, &max_key, &used_bytes, &max_bytes);
++
++		data_len = used_bytes - f_used_bytes - strlen("test1") - 1 - 64;
++		if (flag[n])
++			verify_max_btyes();
++		else
++			verify_max_keys();
++		exit(0);
++	}
++	tst_reap_children();
++	clean_user();
++}
++
++static struct tst_test test = {
++	.test = do_test,
++	.tcnt = 2,
++	.needs_root = 1,
++	.forks_child = 1,
++	.cleanup = clean_user,
++	.bufs = (struct tst_buffers []) {
++		{&keyring_buf, .size = 1},
++		{&user_buf, .size = 64},
++		{&user_buf1, .size = 64},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "a08bf91ce28"},
++		{}
++	}
++};
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.18.0
+
+
+
