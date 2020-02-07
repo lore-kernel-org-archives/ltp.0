@@ -1,26 +1,25 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 7 Feb 2020 18:07:56 +0100
-Subject: [LTP] [PATCH 2/3] Allow acquiring multiple loop devices
-In-Reply-To: <20200207164544.GB19681@rei.lan>
-References: <20200129144913.9889-1-mdoucha@suse.cz>
- <20200129144913.9889-3-mdoucha@suse.cz>
- <20200203152420.GA29586@dell5510> <20200207164544.GB19681@rei.lan>
-Message-ID: <20200207170756.GA10520@dell5510>
+Date: Fri, 7 Feb 2020 18:11:08 +0100
+Subject: [LTP] [PATCH 1/1] build: Disable make install for most of builds
+In-Reply-To: <20200207160831.27493-1-pvorel@suse.cz>
+References: <20200207160831.27493-1-pvorel@suse.cz>
+Message-ID: <20200207171108.GA11283@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> > BTW IMHO DEV_FILE should be #define DEV_FILE "test_dev.%d.img", where %d would
-> > be PID to fix clash when tests run in paralel (e.g. mkswap01.sh and df01.sh).
-> > I'll send a patch tomorrow, based on this one.
+> build.sh: add -i option which enables make install (default off)
+> Enable it in Debian powerpc64le cross-compilation (out of tree)
+> and latest Fedora.
 
-> Huh, do we even attempt to support parallel runs at this point? I doubt
-> so.
-No, but I'd expect it'd be nice to have this support for runltp-ng. Or not?
+> This 1) speedup builds 2) fixes often "No space left on device" on s390x.
+Merged.
+There still might be some failures on s390x, when space isn't enough for even
+starting docker, but that should be less often.
 
 Kind regards,
 Petr
