@@ -1,26 +1,50 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 7 Feb 2020 09:56:10 -0500 (EST)
-Subject: [LTP] [PATCH v2] Taunt OOM killer in fork12 setup()
-In-Reply-To: <20200207145403.23193-1-mdoucha@suse.cz>
-References: <1041474174.5093428.1580463462902.JavaMail.zimbra@redhat.com>
- <20200207145403.23193-1-mdoucha@suse.cz>
-Message-ID: <1149510045.6536246.1581087370399.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 7 Feb 2020 16:24:07 +0100
+Subject: [LTP] [PATCH v6 1/2] safe_macros: Use tst_umount() in
+ safe_umount()
+In-Reply-To: <20200207144105.19947-1-pvorel@suse.cz>
+References: <20200207144105.19947-1-pvorel@suse.cz>
+Message-ID: <20200207152406.GA16951@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
-> On a system with low memory, fork12 can trigger OOM killer before it hits
-> any fork() limits. The OOM killer might accidentally kill e.g. the parent
-> shell and external testing tools will assume the test failed.
+Hi!
+> To get retry workaround for gvfsd-trash background daemon.
 > 
-> Set high oom_score_adj on the children of the main fork12 process so that
-> the OOM killer focuses on them.
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
 > 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> this should be ok, but better to double check.
+> Used in fsmount01.
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
+My expectation is that retrying on EBUSY will not break anything. Jan
+what do you think?
 
+>  lib/safe_macros.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index 41fa4ca83..deb19d2df 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -772,7 +772,7 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>  {
+>  	int rval;
+>  
+> -	rval = umount(target);
+> +	rval = tst_umount(target);
+>  
+>  	if (rval == -1) {
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> -- 
+> 2.24.1
+> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
