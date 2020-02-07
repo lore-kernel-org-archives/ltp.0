@@ -1,27 +1,42 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Feb 2020 15:08:22 +0100
-Subject: [LTP] [PATCH 1/1] syscalls/fsmount01: Add test for new mount
- API v5.2
-In-Reply-To: <20200207140404.GA8492@dell5510>
-References: <20200206162722.18945-1-pvorel@suse.cz>
- <20200207132001.GC19508@rei.lan> <20200207140404.GA8492@dell5510>
-Message-ID: <20200207140821.GA6137@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  7 Feb 2020 15:41:04 +0100
+Subject: [LTP] [PATCH v6 1/2] safe_macros: Use tst_umount() in safe_umount()
+Message-ID: <20200207144105.19947-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I do remmeber commenting this that the tst_umount() already prints a
-> > WARN which will fail the test anyways, so there is no point in handling
-> > the return from tst_umount() here.
-> I guess SAFE_UMOUNT(MNTPOINT) will be the best.
+To get retry workaround for gvfsd-trash background daemon.
 
-Actually no, because unlike the tst_umount() SAFE_UMOUNT() does not
-retry, which will make the test faill if there is a background daemon
-that is probing newly mounted filesystems.
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
+this should be ok, but better to double check.
+Used in fsmount01.
+
+Kind regards,
+Petr
+
+ lib/safe_macros.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 41fa4ca83..deb19d2df 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -772,7 +772,7 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ {
+ 	int rval;
+ 
+-	rval = umount(target);
++	rval = tst_umount(target);
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.24.1
+
