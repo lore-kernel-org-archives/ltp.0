@@ -1,64 +1,85 @@
 From: Li Wang <liwang@redhat.com>
-Date: Sat, 8 Feb 2020 14:35:54 +0800
-Subject: [LTP] [PATCH v2 1/3] Redesign TST_RETRY_FUNC()
-In-Reply-To: <20200207112236.16462-1-mdoucha@suse.cz>
-References: <20200207112236.16462-1-mdoucha@suse.cz>
-Message-ID: <CAEemH2dEco268yqDyDjX25FPs3V7wTBija4HiMrf8nr0W7qVQQ@mail.gmail.com>
+Date: Sat,  8 Feb 2020 17:20:14 +0800
+Subject: [LTP] [PATCH v4 2/2] pkey01: disable hugetlb test if failed to
+ reserve hugepage
+In-Reply-To: <20200208092014.24824-1-liwang@redhat.com>
+References: <20200208092014.24824-1-liwang@redhat.com>
+Message-ID: <20200208092014.24824-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+To handle the false positive:
+  pkey01.c:69: BROK: nr_hugepages = 0, but expect 1
 
-On Fri, Feb 7, 2020 at 7:22 PM Martin Doucha <mdoucha@suse.cz> wrote:
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/pkeys/pkey01.c | 29 ++++++------------------
+ 1 file changed, 7 insertions(+), 22 deletions(-)
 
-> The TST_RETRY_FUNC() macro requires a single return value that'll be
-> considered
-> success. This cannot be used with system calls that e.g. return a new file
-> descriptor because the success value is somewhat unpredictable.
->
-> Redesign TST_RETRY_FUNC() to accept arbitrary macro/function ECHCK as the
-> second
-> parameter for validating the FUNC return value.
-> - The loop will end succesfully if ECHCK(ret) evaluates to non-zero.
-> - The loop will fall through on timeout instead of calling tst_brk().
-> - errno will be cleared before every FUNC call.
-> - Add standard check macros for the most common call conventions:
->   - TST_RETVAL_EQ0(x) - x == 0
->   - TST_RETVAL_NOTNULL(x) - x != 0 or x != NULL
->   - TST_RETVAL_GE0(x) - x >= 0
-
-
-Nice to see this enhancement! Few comments as below:
-
-1. We need to update the doc/test-writing-guidelines.txt too.
-
-2. Maybe better to let the shell version is consistent with this new?
-
-3. I remember there were discussions to support enabling infinite loop
-in TST_RETRY_FUNC, but not sure if it is possible to add in this patch, or
-we can do that after your patch merged.
-http://lists.linux.it/pipermail/ltp/2019-October/013896.html
-
-...
->         sprintf(defunct_tid_path, "/proc/%d/task/%d", getpid(),
-> defunct_tid);
-> -       TST_RETRY_FN_EXP_BACKOFF(access(defunct_tid_path, R_OK), -1, 15);
-> +       ret = TST_RETRY_FN_EXP_BACKOFF(access(defunct_tid_path, R_OK),
-> +               CHECK_ENOENT, 15);
->
-
-The test total timeout is set to 20 seconds, here reserve 15 seconds is too
-much for the macro looping because doing exponential backoff in
-15secs(1us+2us+4us+..) actually larger than the 20secs. So I suggest
-raising the tst_test.timeout at the same time or set a smaller value to
-MAX_DELAY.
-
+diff --git a/testcases/kernel/syscalls/pkeys/pkey01.c b/testcases/kernel/syscalls/pkeys/pkey01.c
+index fa84e71f3..04f50924c 100644
+--- a/testcases/kernel/syscalls/pkeys/pkey01.c
++++ b/testcases/kernel/syscalls/pkeys/pkey01.c
+@@ -36,12 +36,6 @@
+ #define PATH_VM_NRHPS "/proc/sys/vm/nr_hugepages"
+ 
+ static int size;
+-static int no_hugepage;
+-
+-static const char * const save_restore[] = {
+-	"?/proc/sys/vm/nr_hugepages",
+-	NULL,
+-};
+ 
+ static struct tcase {
+ 	unsigned long flags;
+@@ -56,22 +50,13 @@ static void setup(void)
+ {
+ 	int i, fd;
+ 
+-	if (access("/sys/kernel/mm/hugepages/", F_OK)) {
+-		tst_res(TINFO, "Huge page is not supported");
+-		size = getpagesize();
+-		no_hugepage = 1;
+-	} else {
+-		int val;
+-		SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
+-		SAFE_FILE_SCANF(PATH_VM_NRHPS, "%d", &val);
+-		if (val != 1)
+-			tst_brk(TBROK, "nr_hugepages = %d, but expect %d",
+-					val, 1);
+-		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+-	}
+-
+ 	check_pkey_support();
+ 
++	if (tst_hugepages == test.request_hugepages)
++		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
++	else
++		size = getpagesize();
++
+ 	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+ 	for (i = 0; i < 128; i++)
+ 		SAFE_WRITE(1, fd, STR, strlen(STR));
+@@ -147,7 +132,7 @@ static void pkey_test(struct tcase *tc, struct mmap_param *mpa)
+ 	int pkey, status;
+ 	int fd = mpa->fd;
+ 
+-	if (no_hugepage && (mpa->flags & MAP_HUGETLB)) {
++	if (!tst_hugepages && (mpa->flags & MAP_HUGETLB)) {
+ 		tst_res(TINFO, "Skip test on (%s) buffer", flag_to_str(mpa->flags));
+ 		return;
+ 	}
+@@ -236,5 +221,5 @@ static struct tst_test test = {
+ 	.forks_child = 1,
+ 	.test = verify_pkey,
+ 	.setup = setup,
+-	.save_restore = save_restore,
++	.request_hugepages = 1,
+ };
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200208/6c9f4ea9/attachment.htm>
+2.20.1
+
