@@ -1,330 +1,228 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat,  8 Feb 2020 17:20:13 +0800
-Subject: [LTP] [PATCH v4 1/2] lib: add .request_hugepages to reserve hugepage
-Message-ID: <20200208092014.24824-1-liwang@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Sun, 9 Feb 2020 19:58:45 +0800
+Subject: [LTP] [PATCH v1 1/2] syscalls/socketcall02: Cleanup && rewrite to
+ new API
+Message-ID: <1581249526-25295-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Many of the ltp tests need to use hugepage in their testing, this allows
-the test can reserve hpages from system only via .request_hugepages = xx.
+Also add EFAULT error test.
 
-If set non-zero number of request_hugepages, test will try to reserve the
-expected number of hugepage for testing in setup phase. If system does not
-have enough hpage for using, it will try the best to reserve 80% available
-number of hpages. For a system without hugetlb supporting, variable
-'tst_hugepage' will be set to 0.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
+ .../kernel/syscalls/socketcall/socketcall02.c | 173 ++++--------------
+ 1 file changed, 37 insertions(+), 136 deletions(-)
 
-Notes:
-    v3 --> v4
-      * add doc to check the hpage number in setup()
-      * remove the TCONF print if hugepage is not supported
-      * check here that max_hpages * 0.8 > 1
-
- doc/test-writing-guidelines.txt | 58 ++++++++++++++++++++++++++++++++
- include/tst_hugepage.h          | 29 ++++++++++++++++
- include/tst_test.h              | 13 ++++++++
- lib/newlib_tests/.gitignore     |  1 +
- lib/newlib_tests/test20.c       | 45 +++++++++++++++++++++++++
- lib/tst_hugepage.c              | 59 +++++++++++++++++++++++++++++++++
- lib/tst_test.c                  |  6 ++--
- 7 files changed, 209 insertions(+), 2 deletions(-)
- create mode 100644 include/tst_hugepage.h
- create mode 100644 lib/newlib_tests/test20.c
- create mode 100644 lib/tst_hugepage.c
-
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 546bb7a49..fa7cb89c1 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1933,6 +1933,64 @@ specified by the user plus some other heuristics.
- 
- For full documentation see the comments in 'include/tst_fuzzy_sync.h'.
- 
-+2.2.34 Reserving hugepages
-+^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+Many of the ltp tests need to use hugepage in their testing, this allows the
-+test can reserve hugepages from system only via .request_hugepages = xx.
-+
-+If set non-zero number of request_hugepages, test will try to reserve the
-+expected number of hugepage for testing in setup phase. If system does not
-+have enough hpage for using, it will try the best to reserve 80% available
-+number of hpages. With success test stores the reserved hugepage number in
-+'tst_hugepages. For the system without hugetlb supporting, variable
-+'tst_hugepages' will be set to 0.
-+
-+Also, we do cleanup and restore work for the hpages resetting automatically.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+#include "tst_test.h"
-+
-+static void run(void)
-+{
-+	...
-+
-+	if (tst_hugepages == test.request_hugepages)
-+		TEST(do_hpage_test);
-+	else
-+		...
-+	...
-+}
-+
-+struct tst_test test = {
-+	.test_all = run,
-+	.request_hugepages = 2,
-+	...
-+};
-+
-+or,
-+
-+#include "tst_test.h"
-+
-+static void run(void)
-+{
-+	...
-+}
-+
-+static void setup(void)
-+{
-+?? ?? ?? ?? if (tst_hugepages != test.requested_hugepages)
-+?? ?? ?? ?? ?? ?? ?? ?? tst_brk(TCONF, "...");
-+}
-+
-+struct tst_test test = {
-+	.test_all = run,
-+	.request_hugepages = 2,
-+	...
-+};
-+-------------------------------------------------------------------------------
-+
- 2.3 Writing a testcase in shell
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
-new file mode 100644
-index 000000000..10e0eaf47
---- /dev/null
-+++ b/include/tst_hugepage.h
-@@ -0,0 +1,29 @@
+diff --git a/testcases/kernel/syscalls/socketcall/socketcall02.c b/testcases/kernel/syscalls/socketcall/socketcall02.c
+index 7574782ff..6a9d51f4e 100644
+--- a/testcases/kernel/syscalls/socketcall/socketcall02.c
++++ b/testcases/kernel/syscalls/socketcall/socketcall02.c
+@@ -1,163 +1,64 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Red Hat, Inc.
-+ */
-+
-+#ifndef TST_HUGEPAGE__
-+#define TST_HUGEPAGE__
-+
-+#define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
-+#define PATH_NR_HPAGES	"/proc/sys/vm/nr_hugepages"
-+
-+/*
-+ * Try the best to request a specified number of huge pages from system,
-+ * it will store the reserved hpage number in tst_hugepages.
-+ *
-+ * Note: this depend on the status of system memory fragmentation.
-+ */
-+int tst_request_hugepages(int hpages);
-+
-+/*
-+ * This variable is used for recording the number of hugepages which system can
-+ * provides. It will be equal to 'hpages' if tst_request_hugepages on success,
-+ * otherwise set it to a number of hugepages that we were able to reserve.
-+ *
-+ * If system does not support hugetlb, then it will be set to 0.
-+ */
-+extern unsigned int tst_hugepages;
-+
-+#endif /* TST_HUGEPAGE_H */
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 21c7dfbdb..1026a422a 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -37,6 +37,7 @@
- #include "tst_coredump.h"
- #include "tst_buffers.h"
- #include "tst_capability.h"
-+#include "tst_hugepage.h"
- 
  /*
-  * Reports testcase result.
-@@ -148,6 +149,18 @@ struct tst_test {
- 	 */
- 	int all_filesystems:1;
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
++ * Copyright (c) 2020 Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ * Author: Sowmya Adiga <sowmya.adiga@wipro.com>
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * This is a error test for the socketcall(2) system call.
+  */
+-/**************************************************************************
+- *
+- *    TEST IDENTIFIER	: socketcall02
+- *
+- *    EXECUTED BY	: All user
+- *
+- *    TEST TITLE	: Error test for socketcall(2)
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: sowmya adiga<sowmya.adiga@wipro.com>
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	verify socketcall(2) returns -1 and sets errno
+- *	appropriately if argument passed is invalid.
+- *
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	  Loop if the proper option is given.
+- *	  Execute system call.
+- *	  Check return code, If system call failed (return == -1) &&
+- *				(errno set == expected errno)
+- *	  Issue sys call pass with expected error
+- *	  otherwise
+- *	  Issue sys call fails with unexpected error
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  socketcall02 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+- *		where,		-c n : Run n copies concurrently
+- *				-e   : Turn on errno logging.
+- *				-h   : Show this help screen
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- * RESTRICTIONS
+- * None
+- *****************************************************************************/
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <sys/syscall.h>
++
+ #include <unistd.h>
++#include <errno.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <linux/net.h>
+ #include <sys/un.h>
+ #include <netinet/in.h>
  
-+	/*
-+	 * If set non-zero number of request_hugepages, test will try to reserve the
-+	 * expected number of hugepage for testing in setup phase. If system does not
-+	 * have enough hpage for using, it will try the best to reserve 80% available
-+	 * number of hpages. With success test stores the reserved hugepage number in
-+	 * 'tst_hugepages. For the system without hugetlb supporting, variable
-+	 * 'tst_hugepages' will be set to 0.
-+	 *
-+	 * Also, we do cleanup and restore work for the hpages resetting automatically.
-+	 */
-+	unsigned int request_hugepages;
-+
- 	/*
- 	 * If set non-zero denotes number of test variant, the test is executed
- 	 * variants times each time with tst_variant set to different number.
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index d4aa4935f..ab3a92c4c 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -23,6 +23,7 @@ tst_strstatus
- test17
- test18
- test19
-+test20
- tst_expiration_timer
- test_exec
- test_exec_child
-diff --git a/lib/newlib_tests/test20.c b/lib/newlib_tests/test20.c
-new file mode 100644
-index 000000000..92e230976
---- /dev/null
-+++ b/lib/newlib_tests/test20.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Li Wang <liwang@redhat.com>
-+ */
-+
-+/*
-+ * Tests .request_hugepages + .save_restore
-+ */
-+
+-#include "test.h"
+-
+-char *TCID = "socketcall02";
+-
+-#ifdef __NR_socketcall
 +#include "tst_test.h"
-+#include "tst_hugepage.h"
-+#include "tst_sys_conf.h"
-+
-+static const char * const save_restore[] = {
-+	"!/proc/sys/kernel/numa_balancing",
-+	NULL,
-+};
-+
-+static void do_test(void) {
-+
-+	int val, hpages;
-+
-+	tst_res(TINFO, "tst_hugepages = %u", tst_hugepages);
-+	SAFE_FILE_PRINTF("/proc/sys/kernel/numa_balancing", "1");
-+
-+	hpages = test.request_hugepages;
-+	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
-+	if (val != hpages)
-+		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, hpages);
-+	else
-+		tst_res(TPASS, "test .needs_hugepges");
-+
-+	hpages = tst_request_hugepages(3);
-+	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
-+	if (val != hpages)
-+		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, hpages);
-+	else
-+		tst_res(TPASS, "tst_request_hugepages");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.request_hugepages = 2,
-+	.save_restore = save_restore,
-+};
-diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
-new file mode 100644
-index 000000000..d37b45e3a
---- /dev/null
-+++ b/lib/tst_hugepage.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Red Hat, Inc.
-+ */
-+
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
-+#include "tst_hugepage.h"
-+
-+unsigned int tst_hugepages;
-+
-+int tst_request_hugepages(int hpages)
-+{
-+	int val;
-+	long mem_avail, max_hpages;
-+
-+	if (access(PATH_HUGEPAGES, F_OK)) {
-+		tst_hugepages = 0;
-+		goto out;
-+	}
-+
-+	tst_hugepages = hpages;
-+
-+	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
-+
-+	if (FILE_LINES_SCANF("/proc/meminfo",
-+				"MemAvailable: %ld", &mem_avail)) {
-+		/*
-+		 * Using "MemFree:" on kernel that doesn't have
-+		 * "MemAvailable:" in Meminfo
-+		 */
-+		tst_res(TINFO, "MemAvailable: not found in /proc/meminfo");
-+
-+		mem_avail = SAFE_READ_MEMINFO("MemFree:");
-+	}
-+
-+	max_hpages = mem_avail / SAFE_READ_MEMINFO("Hugepagesize:");
-+
-+	if (hpages > max_hpages) {
-+		tst_res(TINFO, "Requested number(%d) of hugepages is too large, "
-+				"limiting to 80%% of the max hugepage count %ld",
-+				hpages, max_hpages);
-+		tst_hugepages = max_hpages * 0.8;
-+
-+		if (tst_hugepages < 1)
-+			goto out;
-+	}
-+
-+	tst_sys_conf_save("?/proc/sys/vm/nr_hugepages");
-+	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%d", tst_hugepages);
-+	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
-+	if (val != tst_hugepages)
-+		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, tst_hugepages);
-+
-+	tst_res(TINFO, "%d hugepage(s) reserved", tst_hugepages);
-+out:
-+	return tst_hugepages;
-+}
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 8d7dee2cc..9a24cffc5 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -890,6 +890,9 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->all_filesystems)
- 		tst_test->needs_device = 1;
++#include "lapi/syscalls.h"
  
-+	if (tst_test->request_hugepages)
-+		tst_request_hugepages(tst_test->request_hugepages);
-+
- 	setup_ipc();
+-#define socketcall(call, args) syscall(__NR_socketcall, call, args)
+-
+-void setup();
+-void cleanup();
+-
+-int TST_TOTAL = 1;
++static unsigned long args_valid[3] = {PF_INET, SOCK_STREAM, 0};
  
- 	if (tst_test->bufs)
-@@ -1006,8 +1009,7 @@ static void do_cleanup(void)
- 		tst_rmdir();
+ struct test_case_t {
+ 	int call;
+-	unsigned long args[3];
+-	int retval;
+-	int experrno;
++	unsigned long *args;
++	int exp_err;
+ 	char *desc;
+-} TC = {
+-	-1, {
+-PF_INET, SOCK_STREAM, 0}, -1, EINVAL, "invalid call"};
++} TC[] = {
++	{0, args_valid, EINVAL, "invalid call(0)"},
++	{21, args_valid, EINVAL, "invalid call(21)"},
++	{SYS_SOCKET, NULL, EFAULT, "invalid args address"},
++};
+ 
+-int main(int ac, char **av)
++static void verify_socketcall(unsigned int i)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	/* check looping state */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	tst_res(TINFO, "%s", TC[i].desc);
+ 
+-		tst_count = 0;
+-
+-		TEST(socketcall(TC.call, TC.args));
+-
+-		/* check return code */
+-		if ((TEST_RETURN == -1)
+-		    && (TEST_ERRNO == TC.experrno)) {
+-			tst_resm(TPASS, "socketcall() failed"
+-				 " as expected for %s", TC.desc);
+-		} else {
+-			tst_brkm(TFAIL, NULL, "socketcall()"
+-				 " Failed with wrong experrno"
+-				 " =%d got: errno=%d : %s",
+-				 TC.experrno, TEST_ERRNO, strerror(TEST_ERRNO));
+-		}
++	TEST(tst_syscall(__NR_socketcall, TC[i].call, TC[i].args));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "socketcall() succeeded unexpectedly");
++		return;
  	}
+-
+-	/* cleanup and exit */
+-	cleanup();
+-
+-	tst_exit();
++	if (TST_ERR == TC[i].exp_err)
++		tst_res(TPASS | TTERRNO, "socketcall() failed as expected ");
++	else
++		tst_res(TFAIL | TTERRNO, "socketcall fail expected %s got", tst_strerrno(TC[i].exp_err));
+ }
  
--	if (tst_test->save_restore)
--		tst_sys_conf_restore(0);
-+	tst_sys_conf_restore(0);
+-/* setup() - performs all ONE TIME setup for this test. */
+-void setup(void)
++static void setup(void)
+ {
++	unsigned int i;
  
- 	if (tst_test->restore_wallclock)
- 		tst_wallclock_restore();
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
++	for (i = 0; i < ARRAY_SIZE(TC); i++) {
++		if (!TC[i].args)
++			TC[i].args = tst_get_bad_addr(NULL);
++	}
+ }
+ 
+-#else
+-
+-int TST_TOTAL = 0;
+-
+-int main(void)
+-{
+-	tst_resm(TCONF, "socket call test on this architecture disabled.");
+-	tst_exit();
+-}
++static struct tst_test test = {
++	.setup = setup,
++	.test = verify_socketcall,
++	.tcnt = ARRAY_SIZE(TC),
++};
+ 
+-#endif
 -- 
-2.20.1
+2.18.0
+
+
 
