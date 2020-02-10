@@ -1,49 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Feb 2020 03:19:12 -0500 (EST)
-Subject: [LTP] [PATCH v6 1/2] safe_macros: Use tst_umount() in
- safe_umount()
-In-Reply-To: <20200207155730.GB16951@rei.lan>
-References: <20200207144105.19947-1-pvorel@suse.cz>
- <20200207152406.GA16951@rei.lan>
- <285421765.6549099.1581090469387.JavaMail.zimbra@redhat.com>
- <20200207155730.GB16951@rei.lan>
-Message-ID: <748200464.6799894.1581322752135.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 Feb 2020 13:40:43 +0100
+Subject: [LTP] [PATCH v2 2/3] safe_macros: Use tst_umount() in safe_umount()
+In-Reply-To: <20200210124043.14425-1-pvorel@suse.cz>
+References: <20200210124043.14425-1-pvorel@suse.cz>
+Message-ID: <20200210124043.14425-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+To get retry workaround for gvfsd-trash background daemon.
 
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/safe_macros.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------ Original Message -----
-> Hi!
-> > > My expectation is that retrying on EBUSY will not break anything. Jan
-> > > what do you think?
-> > 
-> > I agree. Though I'd like to point out that tst_umount() currently loops
-> > on any error, not just EBUSY.
-> 
-> Right, I guess that we should change that to be on the safe side, it was
-> never intended to retry anything else than EBUSY.
-> 
-> What about?
-> 
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index 89b9c96de..52a5b37fd 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -371,6 +371,9 @@ int tst_umount(const char *path)
->                                  "mounted fs, kill it to speed up tests.");
->                 }
->  
-> +               if (err != EBUSY) {
-> +                       errno = err;
-> +                       return ret;
-> +               }
-> +
->                 usleep(100000);
->         }
-
-Works for me too, I don't recall seeing anything else than EBUSY.
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 41fa4ca83..deb19d2df 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -772,7 +772,7 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ {
+ 	int rval;
+ 
+-	rval = umount(target);
++	rval = tst_umount(target);
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-- 
+2.24.1
 
