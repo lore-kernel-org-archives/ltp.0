@@ -1,60 +1,34 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Mon, 10 Feb 2020 21:50:39 +0800
-Subject: [LTP] [PATCH] syscalls/setrlimit06: lower RLIMIT_CPU parameters
-In-Reply-To: <87e6761eb699c7912e2064dea222f5ac7fd04a6b.1581338640.git.jstancek@redhat.com>
-References: <87e6761eb699c7912e2064dea222f5ac7fd04a6b.1581338640.git.jstancek@redhat.com>
-Message-ID: <ff9ef44d-2d6e-1e76-93f2-ab5c3bae8b86@163.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 Feb 2020 16:48:01 +0100
+Subject: [LTP] [PATCH 2/3] Allow acquiring multiple loop devices
+In-Reply-To: <20200207171125.GC16951@rei.lan>
+References: <20200129144913.9889-1-mdoucha@suse.cz>
+ <20200129144913.9889-3-mdoucha@suse.cz>
+ <20200203152420.GA29586@dell5510> <20200207164544.GB19681@rei.lan>
+ <20200207170756.GA10520@dell5510> <20200207171125.GC16951@rei.lan>
+Message-ID: <20200210154801.GA19911@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Hi,
 
-It looks good to me and thanks a lot for your improvement. :-)
+> > > > BTW IMHO DEV_FILE should be #define DEV_FILE "test_dev.%d.img", where %d would
+> > > > be PID to fix clash when tests run in paralel (e.g. mkswap01.sh and df01.sh).
+> > > > I'll send a patch tomorrow, based on this one.
 
-Reviewed-by: Xiao Yang <ice_yangxiao@163.com>
+> > > Huh, do we even attempt to support parallel runs at this point? I doubt
+> > > so.
+> > No, but I'd expect it'd be nice to have this support for runltp-ng. Or not?
 
-Best Regards,
+> We will fix this, when we get there. Also thinking of it the file that
+> is backing the device is actually created in the test temporary
+> directory, which has unique name anyways.
+If I remember it correctly, the file was in /tmp directory (the default)
+(probably before creating temporary directory and cd into it).
+I was really able to crash on tests, when running 2 in paralel.
 
-Xiao Yang
-
-On 2/10/20 8:47 PM, Jan Stancek wrote:
-> Lower the parameters so that test completes faster where possible.
->
-> This also increases alarm timer slightly, which in combination with
-> lower RLIMIT_CPU aims to avoid false positives in environments with
-> high steal time, where it can take multiple of wall clock seconds
-> to spend single second on a cpu.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->   testcases/kernel/syscalls/setrlimit/setrlimit06.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
-> index 726b26841583..3e5bf1d4253d 100644
-> --- a/testcases/kernel/syscalls/setrlimit/setrlimit06.c
-> +++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
-> @@ -59,8 +59,8 @@ static void verify_setrlimit(void)
->   	pid = SAFE_FORK();
->   	if (!pid) {
->   		struct rlimit rlim = {
-> -			.rlim_cur = 2,
-> -			.rlim_max = 3,
-> +			.rlim_cur = 1,
-> +			.rlim_max = 2,
->   		};
->   
->   		TEST(setrlimit(RLIMIT_CPU, &rlim));
-> @@ -70,7 +70,7 @@ static void verify_setrlimit(void)
->   			exit(1);
->   		}
->   
-> -		alarm(10);
-> +		alarm(20);
->   
->   		while (1);
->   	}
-
+Kind regards,
+Petr
