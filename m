@@ -1,38 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 10 Feb 2020 13:44:20 +0100
-Subject: [LTP] [PATCH v6 1/2] safe_macros: Use tst_umount() in
- safe_umount()
-In-Reply-To: <748200464.6799894.1581322752135.JavaMail.zimbra@redhat.com>
-References: <20200207144105.19947-1-pvorel@suse.cz>
- <20200207152406.GA16951@rei.lan>
- <285421765.6549099.1581090469387.JavaMail.zimbra@redhat.com>
- <20200207155730.GB16951@rei.lan>
- <748200464.6799894.1581322752135.JavaMail.zimbra@redhat.com>
-Message-ID: <20200210124420.GA14605@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 10 Feb 2020 13:47:20 +0100
+Subject: [LTP] [PATCH] syscalls/setrlimit06: lower RLIMIT_CPU parameters
+Message-ID: <87e6761eb699c7912e2064dea222f5ac7fd04a6b.1581338640.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Lower the parameters so that test completes faster where possible.
 
-> > +               if (err != EBUSY) {
-> > +                       errno = err;
-> > +                       return ret;
-> > +               }
-> > +
-> >                 usleep(100000);
-> >         }
+This also increases alarm timer slightly, which in combination with
+lower RLIMIT_CPU aims to avoid false positives in environments with
+high steal time, where it can take multiple of wall clock seconds
+to spend single second on a cpu.
 
-> Works for me too, I don't recall seeing anything else than EBUSY.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/setrlimit/setrlimit06.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks!
-Just in case I've sent this commit as v2, followed with "safe_macros: Use
-tst_umount() in safe_umount()" (without Zorro's fsmount commit).
-IMHO now is docs about tst_umount() correct.
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+index 726b26841583..3e5bf1d4253d 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit06.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+@@ -59,8 +59,8 @@ static void verify_setrlimit(void)
+ 	pid = SAFE_FORK();
+ 	if (!pid) {
+ 		struct rlimit rlim = {
+-			.rlim_cur = 2,
+-			.rlim_max = 3,
++			.rlim_cur = 1,
++			.rlim_max = 2,
+ 		};
+ 
+ 		TEST(setrlimit(RLIMIT_CPU, &rlim));
+@@ -70,7 +70,7 @@ static void verify_setrlimit(void)
+ 			exit(1);
+ 		}
+ 
+-		alarm(10);
++		alarm(20);
+ 
+ 		while (1);
+ 	}
+-- 
+2.18.1
 
-https://patchwork.ozlabs.org/patch/1235811/
-
-Kind regards,
-Petr
