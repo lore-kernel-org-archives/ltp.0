@@ -1,25 +1,20 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 11 Feb 2020 07:39:29 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/setrlimit06: lower RLIMIT_CPU parameters
-In-Reply-To: <CAEemH2e-w=-wp6tpG2+nz1wy35XBP5eDpdXNMV_FN-hWLc8iBA@mail.gmail.com>
-References: <87e6761eb699c7912e2064dea222f5ac7fd04a6b.1581338640.git.jstancek@redhat.com>
- <CAEemH2f90MPBV_w2+gw331cg0Fiu-=aqgp3M1BHhBCXcFUbyyg@mail.gmail.com>
- <1734212650.7000036.1581418326024.JavaMail.zimbra@redhat.com>
- <CAEemH2cJhxWcMj3k1ayasQegL-aPgjkkdypk881dXmjeV=MQmA@mail.gmail.com>
- <333995219.7015340.1581423014012.JavaMail.zimbra@redhat.com>
- <CAEemH2e-w=-wp6tpG2+nz1wy35XBP5eDpdXNMV_FN-hWLc8iBA@mail.gmail.com>
-Message-ID: <2059929054.7019965.1581424769808.JavaMail.zimbra@redhat.com>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Tue, 11 Feb 2020 14:00:39 +0000
+Subject: [LTP] Running kill11 failing with safe_macros.h:312: kill11.c:207:
+ setrlimit(4, 0x3ffff109c0) failed: errno=EINVAL(22): Invalid argument
+Message-ID: <BMXPR01MB29991C0EF971408503911674EE180@BMXPR01MB2999.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
+i am trying to run kill11 test on machine my test is getting breaked with follwing message.
 
-
------ Original Message -----
-> Ok sure. Let's apply the original first, then keep watching the status in
-> the next testing.
-
-Pushed.
-
+kill11 0 TINFO : Adjusting RLIMIT_CORE to 1048576
+kill11 1 TBROK : ../../../../include/old/safe_macros.h:312: kill11.c:207: setrlimit(4,0x3ffff109c0) failed: errno=EINVAL(22): Invalid argument
+kill11 2 TBROK : ../../../../include/old/safe_macros.h:312: Remaining cases broken
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200211/e0bfc194/attachment-0001.htm>
