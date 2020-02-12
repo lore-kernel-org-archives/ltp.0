@@ -1,72 +1,115 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 12 Feb 2020 13:30:26 +0800
-Subject: [LTP] [PATCH] aio02: Use mounted filesystem instead of temp
- directory
-In-Reply-To: <1581484093-13127-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1581484093-13127-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5E438D72.4020203@cn.fujitsu.com>
+Date: Wed, 12 Feb 2020 13:36:53 +0800
+Subject: [LTP] test with aio02 is failing with safe_macros.c:223: BROK:
+ aio02.c:130: open(file, 16961, 0644) failed: EINVAL (22)
+In-Reply-To: <588cc009-d46f-4070-7b14-ea81f8dc6b76@cn.fujitsu.com>
+References: <BMXPR01MB29991144C5DF1108F9B38DD9EE180@BMXPR01MB2999.INDPRD01.PROD.OUTLOOK.COM>
+ <f6cf7d37-cf31-7448-0bea-035eb48f2f79@163.com>
+ <BMXPR01MB2999C5C6166A34812CFA3727EE180@BMXPR01MB2999.INDPRD01.PROD.OUTLOOK.COM>
+ <6e81635f-c202-9f41-6795-4d6f84290e7e@163.com>
+ <588cc009-d46f-4070-7b14-ea81f8dc6b76@cn.fujitsu.com>
+Message-ID: <5E438EF5.1050800@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/2/12 13:08, Yang Xu wrote:
-> tmpfs doesn't support O_DIRECT flag, open file with this flag on
-> tmpfs will report EINVAL error. I thin we should test this case on
-> ext2 filesystem instead of temp directory.
+On 2020/2/11 18:55, Yang Xu wrote:
+>
+> on 2020/02/11 18:25, Xiao Yang wrote:
+>>
+>> On 2/11/20 6:01 PM, Pankaj Vinadrao Joshi wrote:
+>>> Hi sir,
+>>> I am begginer can you tell how i can  check if tmpfs is mounted on 
+>>> /tmp in your enviroment?
+>>
+>> Hi,
+>>
+>>
+>> You can use df/mount command to do check, as below:
+>>
+>> -----------------------------------------------------------------
+>>
+>> [root@Fedora-30-vm linux]# df -h | grep '/tmp'
+>> tmpfs           993M  4.0K  993M   1% /tmp
+>>
+>> [root@Fedora-30-vm linux]# mount | grep '/tmp'
+>> tmpfs on /tmp type tmpfs (rw,nosuid,nodev,seclabel)
+>>
+>> ------------------------------------------------------------------
+>>
+>>>
+>>> Sir if you have two minutes of time can you elaborate it whats its 
+>>> meaning?
+>>
+>> aio02 uses open(O_WRONLY | O_TRUNC | O_DIRECT | O_LARGEFILE | 
+>> O_CREAT) to
+>>
+>> create test file in default /tmp directory and ****O_DIRECT flag may 
+>> not be supported
+>>
+>> by tmpfs so calling open() returns EINVAL.
+>>
+> Hi Xiao
+> I think we should add a check or use a valid filesystem to test in 
+> this case.
 Hi Xu,
 
-Thanks for your quick fix. :-)
+Sorry for my late reply.
+Sure, we need to fix the issue indeed.
 
-I don't want to use the fixed file system to run aio02.
-I perfer to just drop O_DIRECT flag for tmpfs, as below:
-1) Drop O_DIRECT flag for tmpfs.
-2) Keep O_DIRECT flag for other filesystem.
-In this case, user still can run aio02 with different filesystem by 
-mounting specified filesystem on $TMPDIR.
-
-Best Regards,
+Thanks,
 Xiao Yang
-> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> ---
->   testcases/kernel/io/aio/aio02.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
 >
-> diff --git a/testcases/kernel/io/aio/aio02.c b/testcases/kernel/io/aio/aio02.c
-> index e283afba9..205d1b088 100644
-> --- a/testcases/kernel/io/aio/aio02.c
-> +++ b/testcases/kernel/io/aio/aio02.c
-> @@ -17,7 +17,8 @@
+> Best Regards
+> Yang Xu
+>>
+>> Thanks,
+>>
+>> Xiao Yang
+>>
+>>>
+>>>
+>>> Thank you ?
+>>> ------------------------------------------------------------------------ 
+>>>
+>>> *From:* Xiao Yang <ice_yangxiao@163.com>
+>>> *Sent:* Tuesday, February 11, 2020 3:04 PM
+>>> *To:* Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+>>> *Subject:* Re: [LTP] test with aio02 is failing with 
+>>> safe_macros.c:223: BROK: aio02.c:130: open(file, 16961, 0644) 
+>>> failed: EINVAL (22)
+>>>
+>>> Hi,
+>>>
+>>>
+>>> Could you check if tmpfs is mounted on /tmp in your enviroment?
+>>>
+>>> It seems that tmpfs cannot support O_DIRECT flag and creating file 
+>>> with O_DIRECT in tmpfs triggers the error.
+>>>
+>>> Perhaps, you can fix the error by mounting normal filesystem(e.g. 
+>>> ext4/xfs) on /tmp for now.
+>>>
+>>>
+>>> Thanks,
+>>>
+>>> Xiao Yang
+>>>
+>>> On 2/11/20 4:31 PM, Pankaj Vinadrao Joshi wrote:
+>>>> Hi,
+>>>> i am running aio02 test on my RISC v machine,my testing is getting 
+>>>> failed with the message
+>>>> *safe_macros.c:223: BROK: aio02.c:130: open(file,16961,0644) 
+>>>> failed: EINVAL (22)*
+>>>>
+>>> [EXT]
+>>
+>>
 >
->   #define AIO_MAXIO 32
->   #define AIO_BLKSIZE (64*1024)
-> -
-> +#define MNTPOINT   "mnt_point"
-> +#define FILE_TEST MNTPOINT"/file"
->   static int wait_count = 0;
 >
->   #define DESC_FLAGS_OPR(x, y) .desc = (x == IO_CMD_PWRITE ? "WRITE: " #y: "READ : " #y), \
-> @@ -206,7 +207,7 @@ static void test_io(unsigned int n)
->   	int status;
->   	struct testcase *tc = testcases + n;
 >
-> -	status = io_tio("file", tc->flags, tc->operation);
-> +	status = io_tio(FILE_TEST, tc->flags, tc->operation);
->   	if (status)
->   		tst_res(TFAIL, "%s, status = %d", tc->desc, status);
->   	else
-> @@ -214,7 +215,9 @@ static void test_io(unsigned int n)
->   }
->
->   static struct tst_test test = {
-> -	.needs_tmpdir = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_root = 1,
->   	.test = test_io,
->   	.tcnt = ARRAY_SIZE(testcases),
->   };
 
 
 
