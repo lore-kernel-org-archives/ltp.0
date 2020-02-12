@@ -1,120 +1,52 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Wed, 12 Feb 2020 12:47:28 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E5?=
- =?utf-8?q?=2E3-200=2Efc31_=28fedora-31=29?=
-Message-ID: <cki.0.DS0DIXTWC0@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 12 Feb 2020 08:32:07 -0500 (EST)
+Subject: [LTP] [PATCH] syscalls/kill11: add a check between hard limit
+ and MIN_RLIMIT_CORE
+In-Reply-To: <1581486286-13615-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1581486286-13615-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1892366945.7197852.1581514327491.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello jforbes,
-
-We ran automated tests on a kernel build that you sent to Koji:
-
-    Kernel package: kernel-5.5.3-200.fc31
-         Koji task: https://koji.fedoraproject.org/koji/taskinfo?taskID=41461280
-
-The results of these automated tests are provided below.
-
-    Overall result: FAILED (see details below)
-             Tests: FAILED
-
-One or more kernel tests failed:
-
-    ppc64le:
-     ? LTP
 
 
-    Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/432806
+----- Original Message -----
+> Currently, running this case will report EINVAL error if I run "ulimit -c
+> 1023" command firstly. From setrlimit(2)manpage, it got EINVAL error because
+> rlim->rlim_cur was greater than rlim->rlim_max. So add a check for it before
+> setrlimit.
+> 
+> Reported-by: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/kill/kill11.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/kill/kill11.c
+> b/testcases/kernel/syscalls/kill/kill11.c
+> index 83fba5beb..5f70b0a07 100644
+> --- a/testcases/kernel/syscalls/kill/kill11.c
+> +++ b/testcases/kernel/syscalls/kill/kill11.c
+> @@ -201,6 +201,9 @@ void setup(void)
+>  
+>  	SAFE_GETRLIMIT(NULL, RLIMIT_CORE, &rlim);
+>  
+> +	if (rlim.rlim_max < MIN_RLIMIT_CORE)
+> +		tst_brkm(TCONF, NULL, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
+> +				rlim.rlim_max, MIN_RLIMIT_CORE);
 
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
+This looks OK, but could we also raise the limit when possible?
 
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
 
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running are marked with ?. Reports for non-upstream kernels have
-a Beaker recipe linked to next to each host.
++       if (rlim.rlim_max < MIN_RLIMIT_CORE) {
++               if (geteuid() != 0) {
++                       tst_brkm(TCONF, NULL, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
++                               rlim.rlim_max, MIN_RLIMIT_CORE);
++               }
++               tst_resm(TINFO, "Raising rlim_max to %i", MIN_RLIMIT_CORE);
++               rlim.rlim_max = MIN_RLIMIT_CORE;
++       }
 
