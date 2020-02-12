@@ -1,20 +1,59 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Tue, 11 Feb 2020 14:00:39 +0000
-Subject: [LTP] Running kill11 failing with safe_macros.h:312: kill11.c:207:
- setrlimit(4, 0x3ffff109c0) failed: errno=EINVAL(22): Invalid argument
-Message-ID: <BMXPR01MB29991C0EF971408503911674EE180@BMXPR01MB2999.INDPRD01.PROD.OUTLOOK.COM>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 12 Feb 2020 13:08:13 +0800
+Subject: [LTP] [PATCH] aio02: Use mounted filesystem instead of temp
+ directory
+Message-ID: <1581484093-13127-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-i am trying to run kill11 test on machine my test is getting breaked with follwing message.
+tmpfs doesn't support O_DIRECT flag, open file with this flag on
+tmpfs will report EINVAL error. I thin we should test this case on
+ext2 filesystem instead of temp directory.
 
-kill11 0 TINFO : Adjusting RLIMIT_CORE to 1048576
-kill11 1 TBROK : ../../../../include/old/safe_macros.h:312: kill11.c:207: setrlimit(4,0x3ffff109c0) failed: errno=EINVAL(22): Invalid argument
-kill11 2 TBROK : ../../../../include/old/safe_macros.h:312: Remaining cases broken
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200211/e0bfc194/attachment-0001.htm>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/io/aio/aio02.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/io/aio/aio02.c b/testcases/kernel/io/aio/aio02.c
+index e283afba9..205d1b088 100644
+--- a/testcases/kernel/io/aio/aio02.c
++++ b/testcases/kernel/io/aio/aio02.c
+@@ -17,7 +17,8 @@
+ 
+ #define AIO_MAXIO 32
+ #define AIO_BLKSIZE (64*1024)
+-
++#define MNTPOINT   "mnt_point"
++#define FILE_TEST MNTPOINT"/file"
+ static int wait_count = 0;
+ 
+ #define DESC_FLAGS_OPR(x, y) .desc = (x == IO_CMD_PWRITE ? "WRITE: " #y: "READ : " #y), \
+@@ -206,7 +207,7 @@ static void test_io(unsigned int n)
+ 	int status;
+ 	struct testcase *tc = testcases + n;
+ 
+-	status = io_tio("file", tc->flags, tc->operation);
++	status = io_tio(FILE_TEST, tc->flags, tc->operation);
+ 	if (status)
+ 		tst_res(TFAIL, "%s, status = %d", tc->desc, status);
+ 	else
+@@ -214,7 +215,9 @@ static void test_io(unsigned int n)
+ }
+ 
+ static struct tst_test test = {
+-	.needs_tmpdir = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.needs_root = 1,
+ 	.test = test_io,
+ 	.tcnt = ARRAY_SIZE(testcases),
+ };
+-- 
+2.18.0
+
+
+
