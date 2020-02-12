@@ -1,53 +1,120 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 12 Feb 2020 18:07:31 +0800
-Subject: [LTP] [PATCH v3] aio02: Drop O_DIRECT flag for tmpfs
-In-Reply-To: <5E43C9A1.8090807@cn.fujitsu.com>
-References: <5E43C9A1.8090807@cn.fujitsu.com>
-Message-ID: <1581502051-17240-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Wed, 12 Feb 2020 12:47:28 -0000
+Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E5?=
+ =?utf-8?q?=2E3-200=2Efc31_=28fedora-31=29?=
+Message-ID: <cki.0.DS0DIXTWC0@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tmpfs doesn't support O_DIRECT flag, drop it. So user still can run aio02
-with different filesystem by mounting specified filesystem on $TMPDIR.
+Hello jforbes,
 
-Also remove unused static value initialization.
+We ran automated tests on a kernel build that you sent to Koji:
 
-Reviewed-by: Xiao Yang <ice_yangxiao@163.com>
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/io/aio/aio02.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+    Kernel package: kernel-5.5.3-200.fc31
+         Koji task: https://koji.fedoraproject.org/koji/taskinfo?taskID=41461280
 
-diff --git a/testcases/kernel/io/aio/aio02.c b/testcases/kernel/io/aio/aio02.c
-index e283afba9..6dec073a2 100644
---- a/testcases/kernel/io/aio/aio02.c
-+++ b/testcases/kernel/io/aio/aio02.c
-@@ -18,7 +18,7 @@
- #define AIO_MAXIO 32
- #define AIO_BLKSIZE (64*1024)
- 
--static int wait_count = 0;
-+static int wait_count;
- 
- #define DESC_FLAGS_OPR(x, y) .desc = (x == IO_CMD_PWRITE ? "WRITE: " #y: "READ : " #y), \
- 	.flags = y, .operation = x
-@@ -206,6 +206,11 @@ static void test_io(unsigned int n)
- 	int status;
- 	struct testcase *tc = testcases + n;
- 
-+	if ((tst_fs_type(".") == TST_TMPFS_MAGIC) && (tc->flags & O_DIRECT)) {
-+		tst_res(TINFO, "Drop O_DIRECT flag for tmpfs");
-+		tc->flags &= ~O_DIRECT;
-+	}
-+
- 	status = io_tio("file", tc->flags, tc->operation);
- 	if (status)
- 		tst_res(TFAIL, "%s, status = %d", tc->desc, status);
--- 
-2.18.0
+The results of these automated tests are provided below.
+
+    Overall result: FAILED (see details below)
+             Tests: FAILED
+
+One or more kernel tests failed:
+
+    ppc64le:
+     ? LTP
 
 
+    Pipeline: https://xci32.lab.eng.rdu2.redhat.com/cki-project/brew-pipeline/pipelines/432806
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? lvm thinp sanity
+       ? stress: stress-ng
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+  ppc64le:
+    Host 1:
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? lvm thinp sanity
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? lvm thinp sanity
+       ? stress: stress-ng
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Ethernet drivers sanity
+       ? ? CIFS Connectathon
+       ? ? LTP: openposix test suite
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running are marked with ?. Reports for non-upstream kernels have
+a Beaker recipe linked to next to each host.
 
