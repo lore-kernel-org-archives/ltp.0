@@ -1,32 +1,23 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 13 Feb 2020 07:40:44 -0500 (EST)
-Subject: [LTP] [PATCH v2 2/2] syscalls/kill11,
- abort01: lower MIN_RLIMIT_CORE size
-In-Reply-To: <1581590121-4626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1581590121-4626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1581590121-4626-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1420373308.7517416.1581597644001.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 13 Feb 2020 14:52:58 +0100
+Subject: [LTP] [PATCH] syscalls: Check for time64 unsafe syscalls before
+ using them
+In-Reply-To: <c8a71ed3-be25-5eec-3419-adad3539c80f@cn.fujitsu.com>
+References: <20200213062524.2027846-1-raj.khem@gmail.com>
+ <c8a71ed3-be25-5eec-3419-adad3539c80f@cn.fujitsu.com>
+Message-ID: <20200213135258.GA7062@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Khem, Xu,
 
+> Can we use simple tst_syscall to fix this like commit 333a47be
+> ("socketcall01: Use tst_syscall")?
++1
+NOTE: legacy API (test.h, used by gettimeofday01.c) uses ltp_syscall().
 
------ Original Message -----
-> From ulimit manpage, ulimit -c options used 512-bytes-block in posix mode
-> and used 1024-bytes-block in common mode. Usually, this case used "ulimit
->  -c 1024" to test, but it will report TCONF in posix mode under unprivileged
->  user.
-> Since these two cases only check correct signal, lower this size doesn't
-> affect
-> this result. This also can avoid github issue(640[1],83[2]).
-> 
-> [1]https://github.com/linux-test-project/ltp/issues/640
-> [2]https://github.com/linux-test-project/ltp/issues/83
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-both look good to me, ack
-
+Kind regards,
+Petr
