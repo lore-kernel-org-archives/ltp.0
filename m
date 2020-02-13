@@ -1,58 +1,65 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 13 Feb 2020 18:11:59 +0800
-Subject: [LTP] [PATCH] syscalls/kill11: add a check between hard limit
- and MIN_RLIMIT_CORE
-In-Reply-To: <22de5707-18fb-f552-caed-aff4e9922c6d@cn.fujitsu.com>
-References: <1581486286-13615-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1892366945.7197852.1581514327491.JavaMail.zimbra@redhat.com>
- <71c807c2-b77b-5081-76f8-335aaf1cbe3a@cn.fujitsu.com>
- <702486188.7490041.1581582953077.JavaMail.zimbra@redhat.com>
- <22de5707-18fb-f552-caed-aff4e9922c6d@cn.fujitsu.com>
-Message-ID: <00adce02-dc66-b766-bf27-7d45922d7a94@cn.fujitsu.com>
+Date: Thu, 13 Feb 2020 18:35:20 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/kill11,
+ abort01: Also raise hard limit when possible
+Message-ID: <1581590121-4626-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Currently, running this two cases will report EINVAL error if I run "ulimit -c
+1023" command firstly. From setrlimit(2)manpage, it got EINVAL error because
+rlim->rlim_cur was greater than rlim->rlim_max. So raise the limit when possible.
 
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/abort/abort01.c | 9 +++++++++
+ testcases/kernel/syscalls/kill/kill11.c   | 8 ++++++++
+ 2 files changed, 17 insertions(+)
 
-on 2020/02/13 16:41, Yang Xu wrote:
-> 
-> 
-> on 2020/02/13 16:35, Jan Stancek wrote:
->>
->>
->> ----- Original Message -----
->>>> This looks OK, but could we also raise the limit when possible?
->>>>
->>> Of course. Your way is more wise.
->>> But I also want to change this size of MIN_RLIMIT_CORE.
->>> ? From ulimit manpage, I know in posix mode "-c" used 512-byte block. I
->>> doubt whether we can change MIN_RLIMIT_CORE(512 *1024), so this case
->>> can also pass in unbuntu(default environment).
->>> What do you think about this?
->>
->> I don't see problem with that, we only check for correct signal.
->> Though it probably should be separate patch. Can you re-post
->> both as 2 patch series?
-Hi Jan
-Since abort01 has the same issue, I will send a patch series as you 
-advise, and then cleanup kill11 when I have free time.
+diff --git a/testcases/kernel/syscalls/abort/abort01.c b/testcases/kernel/syscalls/abort/abort01.c
+index 386a22f26..6fde3721c 100644
+--- a/testcases/kernel/syscalls/abort/abort01.c
++++ b/testcases/kernel/syscalls/abort/abort01.c
+@@ -70,6 +70,15 @@ static void setup(void)
+ 
+ 	/* make sure we get core dumps */
+ 	SAFE_GETRLIMIT(RLIMIT_CORE, &rlim);
++
++	if (rlim.rlim_max < MIN_RLIMIT_CORE) {
++		if (geteuid() != 0) {
++			tst_brk(TCONF, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
++				rlim.rlim_max, MIN_RLIMIT_CORE);
++		}
++		tst_res(TINFO, "Raising rlim_max to %i", MIN_RLIMIT_CORE);
++		rlim.rlim_max = MIN_RLIMIT_CORE;
++	}
+ 	if (rlim.rlim_cur < MIN_RLIMIT_CORE) {
+ 		rlim.rlim_cur = MIN_RLIMIT_CORE;
+ 		SAFE_SETRLIMIT(RLIMIT_CORE, &rlim);
+diff --git a/testcases/kernel/syscalls/kill/kill11.c b/testcases/kernel/syscalls/kill/kill11.c
+index 83fba5beb..4025fcc87 100644
+--- a/testcases/kernel/syscalls/kill/kill11.c
++++ b/testcases/kernel/syscalls/kill/kill11.c
+@@ -201,6 +201,14 @@ void setup(void)
+ 
+ 	SAFE_GETRLIMIT(NULL, RLIMIT_CORE, &rlim);
+ 
++	if (rlim.rlim_max < MIN_RLIMIT_CORE) {
++		if (geteuid() != 0) {
++			tst_brkm(TCONF, NULL, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
++				rlim.rlim_max, MIN_RLIMIT_CORE);
++		}
++		tst_resm(TINFO, "Raising rlim_max to %i", MIN_RLIMIT_CORE);
++		rlim.rlim_max = MIN_RLIMIT_CORE;
++	}
+ 	if (rlim.rlim_cur < MIN_RLIMIT_CORE) {
+ 		tst_resm(TINFO, "Adjusting RLIMIT_CORE to %i", MIN_RLIMIT_CORE);
+ 		rlim.rlim_cur = MIN_RLIMIT_CORE;
+-- 
+2.18.0
 
-Best Regargd
-Yang Xu
-> Hi Jan
->  ?I perfer to cleanup this case to use new API and also include this two 
-> points.
-> 
-> Best Regard
-> Yang Xu
->>
->>
->>
-> 
-> 
-> 
 
 
