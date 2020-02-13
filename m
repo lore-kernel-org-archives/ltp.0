@@ -1,95 +1,31 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 13 Feb 2020 14:45:10 +0800
-Subject: [LTP] [PATCH] syscalls: Check for time64 unsafe syscalls before
- using them
-In-Reply-To: <20200213062524.2027846-1-raj.khem@gmail.com>
-References: <20200213062524.2027846-1-raj.khem@gmail.com>
-Message-ID: <c8a71ed3-be25-5eec-3419-adad3539c80f@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 13 Feb 2020 03:35:53 -0500 (EST)
+Subject: [LTP] [PATCH] syscalls/kill11: add a check between hard limit
+ and MIN_RLIMIT_CORE
+In-Reply-To: <71c807c2-b77b-5081-76f8-335aaf1cbe3a@cn.fujitsu.com>
+References: <1581486286-13615-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1892366945.7197852.1581514327491.JavaMail.zimbra@redhat.com>
+ <71c807c2-b77b-5081-76f8-335aaf1cbe3a@cn.fujitsu.com>
+Message-ID: <702486188.7490041.1581582953077.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Khem
 
-Can we use simple tst_syscall to fix this like commit 333a47be 
-("socketcall01: Use tst_syscall")?
 
-Best Regards
-Yang Xu
-> musl is using 64bit time_t now on 32bit architectures and these syscalls
-> no longer exist, therefore its better to check for them being available
-> before using them
-> 
-> Signed-off-by: Khem Raj <raj.khem@gmail.com>
-> ---
->   lib/tst_clocks.c                                        | 9 +++++++++
->   testcases/kernel/syscalls/gettimeofday/gettimeofday01.c | 4 ++++
->   testcases/kernel/syscalls/gettimeofday/gettimeofday02.c | 4 ++++
->   3 files changed, 17 insertions(+)
-> 
-> diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-> index 35798a4aaf..6a5b05c4ea 100644
-> --- a/lib/tst_clocks.c
-> +++ b/lib/tst_clocks.c
-> @@ -28,15 +28,24 @@
->   
->   int tst_clock_getres(clockid_t clk_id, struct timespec *res)
->   {
-> +#if defined(__NR_clock_getres)
->   	return syscall(SYS_clock_getres, clk_id, res);
-> +#endif
-> +	return -1;
->   }
->   
->   int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
->   {
-> +#if defined(__NR_clock_gettime)
->   	return syscall(SYS_clock_gettime, clk_id, ts);
-> +#endif
-> +	return -1;
->   }
->   
->   int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
->   {
-> +#if defined(__NR_clock_settime)
->   	return syscall(SYS_clock_settime, clk_id, ts);
-> +#endif
-> +	return -1;
->   }
-> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> index 583d8f7b9b..b498de5b68 100644
-> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> @@ -41,7 +41,11 @@
->   #include <sys/syscall.h>
->   #include <unistd.h>
->   
-> +#ifdef __NR_gettimeofday
->   #define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-> +#else
-> +#define gettimeofday(a,b) (-1)
-> +#endif
->   
->   char *TCID = "gettimeofday01";
->   int TST_TOTAL = 1;
-> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> index 1d60f448e8..218e017df8 100644
-> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> @@ -23,7 +23,11 @@
->   
->   #include "tst_test.h"
->   
-> +#ifdef __NR_gettimeofday
->   #define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-> +#else
-> +#define gettimeofday(a,b) (-1)
-> +#endif
->   
->   static volatile sig_atomic_t done;
->   static char *str_rtime;
-> 
+----- Original Message -----
+> > This looks OK, but could we also raise the limit when possible?
+> > 
+> Of course. Your way is more wise.
+> But I also want to change this size of MIN_RLIMIT_CORE.
+>  From ulimit manpage, I know in posix mode "-c" used 512-byte block. I
+> doubt whether we can change MIN_RLIMIT_CORE(512 *1024), so this case
+> can also pass in unbuntu(default environment).
+> What do you think about this?
 
+I don't see problem with that, we only check for correct signal.
+Though it probably should be separate patch. Can you re-post
+both as 2 patch series?
 
