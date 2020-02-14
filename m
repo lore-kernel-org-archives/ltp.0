@@ -1,70 +1,70 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 14 Feb 2020 17:05:54 +0530
-Subject: [LTP] [PATCH 5/7] syscalls/move_mount: New tests
+Date: Fri, 14 Feb 2020 17:05:55 +0530
+Subject: [LTP] [PATCH 6/7] syscalls/fspick: New tests
 In-Reply-To: <cover.1581680021.git.viresh.kumar@linaro.org>
 References: <cover.1581680021.git.viresh.kumar@linaro.org>
-Message-ID: <dc526a3e1bfb7835860f381192babee33766340d.1581680021.git.viresh.kumar@linaro.org>
+Message-ID: <6db1879832ebda6620a76acf3666280e87d79253.1581680021.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add tests to check working of move_mount() syscall.
+Add tests to check working of fspick() syscall.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- configure.ac                                  |   1 +
- runtest/syscalls                              |   3 +
- .../kernel/syscalls/move_mount/.gitignore     |   2 +
- testcases/kernel/syscalls/move_mount/Makefile |   6 ++
- .../kernel/syscalls/move_mount/move_mount01.c |  82 ++++++++++++++
- .../kernel/syscalls/move_mount/move_mount02.c | 102 ++++++++++++++++++
- 6 files changed, 196 insertions(+)
- create mode 100644 testcases/kernel/syscalls/move_mount/.gitignore
- create mode 100644 testcases/kernel/syscalls/move_mount/Makefile
- create mode 100644 testcases/kernel/syscalls/move_mount/move_mount01.c
- create mode 100644 testcases/kernel/syscalls/move_mount/move_mount02.c
+ configure.ac                                |   1 +
+ runtest/syscalls                            |   3 +
+ testcases/kernel/syscalls/fspick/.gitignore |   2 +
+ testcases/kernel/syscalls/fspick/Makefile   |   6 ++
+ testcases/kernel/syscalls/fspick/fspick01.c | 104 ++++++++++++++++++
+ testcases/kernel/syscalls/fspick/fspick02.c | 110 ++++++++++++++++++++
+ 6 files changed, 226 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fspick/.gitignore
+ create mode 100644 testcases/kernel/syscalls/fspick/Makefile
+ create mode 100644 testcases/kernel/syscalls/fspick/fspick01.c
+ create mode 100644 testcases/kernel/syscalls/fspick/fspick02.c
 
 diff --git a/configure.ac b/configure.ac
-index 734fb10c4b31..05b7d0a72c0a 100644
+index 05b7d0a72c0a..de767b1413bb 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -91,6 +91,7 @@ AC_CHECK_FUNCS([ \
-     mkdirat \
-     mknodat \
-     modify_ldt \
-+    move_mount \
-     name_to_handle_at \
-     openat \
-     pidfd_open \
+@@ -81,6 +81,7 @@ AC_CHECK_FUNCS([ \
+     fallocate \
+     fchownat \
+     fsconfig \
++    fspick \
+     fsmount \
+     fsopen \
+     fstatat \
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 0b1def7d4659..04e11ef4f9d2 100644
+index 04e11ef4f9d2..d90e212748a2 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -731,6 +731,9 @@ mount04 mount04
- mount05 mount05
- mount06 mount06
+@@ -545,6 +545,9 @@ fanotify15 fanotify15
+ fsconfig01 fsconfig01
+ fsconfig02 fsconfig02
  
-+move_mount01 move_mount01
-+move_mount02 move_mount02
++fspick01 fspick01
++fspick02 fspick02
 +
- move_pages01 move_pages01
- move_pages02 move_pages02
- move_pages03 move_pages03
-diff --git a/testcases/kernel/syscalls/move_mount/.gitignore b/testcases/kernel/syscalls/move_mount/.gitignore
+ fsmount01 fsmount01
+ fsmount02 fsmount02
+ 
+diff --git a/testcases/kernel/syscalls/fspick/.gitignore b/testcases/kernel/syscalls/fspick/.gitignore
 new file mode 100644
-index 000000000000..8e2f4aaf497b
+index 000000000000..ddcb2231e58c
 --- /dev/null
-+++ b/testcases/kernel/syscalls/move_mount/.gitignore
++++ b/testcases/kernel/syscalls/fspick/.gitignore
 @@ -0,0 +1,2 @@
-+move_mount01
-+move_mount02
-diff --git a/testcases/kernel/syscalls/move_mount/Makefile b/testcases/kernel/syscalls/move_mount/Makefile
++fspick01
++fspick02
+diff --git a/testcases/kernel/syscalls/fspick/Makefile b/testcases/kernel/syscalls/fspick/Makefile
 new file mode 100644
 index 000000000000..5ea7d67db123
 --- /dev/null
-+++ b/testcases/kernel/syscalls/move_mount/Makefile
++++ b/testcases/kernel/syscalls/fspick/Makefile
 @@ -0,0 +1,6 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +
@@ -72,40 +72,38 @@ index 000000000000..5ea7d67db123
 +
 +include $(top_srcdir)/include/mk/testcases.mk
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount01.c b/testcases/kernel/syscalls/move_mount/move_mount01.c
+diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
 new file mode 100644
-index 000000000000..5b719013fed2
+index 000000000000..927435f8741f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/move_mount/move_mount01.c
-@@ -0,0 +1,82 @@
++++ b/testcases/kernel/syscalls/fspick/fspick01.c
+@@ -0,0 +1,104 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
 + *
 + * Description:
-+ * Basic move_mount() test.
++ * Basic fspick() test.
 + */
 +#include "tst_test.h"
 +#include "lapi/fsmount.h"
 +
 +#define MNTPOINT	"mntpoint"
 +
-+static int fd, fsmfd, mmfd = -1;
++static int fd, fsmfd, mmfd;
 +
 +static void cleanup(void)
 +{
++	SAFE_CLOSE(mmfd);
 +	SAFE_CLOSE(fsmfd);
-+
-+	if (mmfd != -1) {
-+		SAFE_CLOSE(mmfd);
-+		TEST(umount(MNTPOINT));
-+	}
-+
++	TEST(umount(MNTPOINT));
 +	SAFE_CLOSE(fd);
 +}
 +
 +static void setup(void)
 +{
++	char *err = "fsconfig()";
++
 +	TEST(fsopen(tst_device->fs_type, 0));
 +	fd = TST_RET;
 +
@@ -126,28 +124,52 @@ index 000000000000..5b719013fed2
 +
 +	TEST(fsmount(fd, 0, 0));
 +	if (TST_RET == -1) {
-+		SAFE_CLOSE(fd);
-+		tst_brk(TBROK | TERRNO, "fsmount() failed");
++		err = "fsmount()";
++		goto out;
 +	}
 +
 +	fsmfd = TST_RET;
-+	return;
++
++	TEST(move_mount(TST_RET, "", AT_FDCWD, MNTPOINT,
++			MOVE_MOUNT_F_EMPTY_PATH));
++	if (TST_RET != -1) {
++		mmfd = TST_RET;
++		return;
++	}
++
++	SAFE_CLOSE(fsmfd);
++
++	err = "move_mount()";
 +
 +out:
 +	SAFE_CLOSE(fd);
-+	tst_brk(TBROK | TERRNO, "fsconfig() failed");
++	tst_brk(TBROK | TERRNO, "%s failed", err);
 +}
 +
 +static void run(void)
 +{
-+	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
-+			MOVE_MOUNT_F_EMPTY_PATH));
++	int fspick_fd;
++
++	TEST(fspick(AT_FDCWD, MNTPOINT, FSPICK_NO_AUTOMOUNT | FSPICK_CLOEXEC));
 +	if (TST_RET == -1)
-+		tst_brk(TFAIL | TERRNO, "move_mount() failed");
++		tst_brk(TFAIL | TERRNO, "fspick() failed");
 +
-+	mmfd = TST_RET;
++	fspick_fd = TST_RET;
 +
-+	tst_res(TPASS, "move_mount() passed");
++	TEST(fsconfig(fspick_fd, FSCONFIG_SET_STRING, "user_xattr", "false", 0));
++	if (TST_RET == -1) {
++		SAFE_CLOSE(fspick_fd);
++		tst_brk(TBROK | TERRNO, "fsconfig() failed");
++	}
++
++	TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "ro", NULL, 0));
++	if (TST_RET == -1) {
++		SAFE_CLOSE(fspick_fd);
++		tst_brk(TBROK | TERRNO, "fsconfig() failed");
++	}
++
++	SAFE_CLOSE(fspick_fd);
++	tst_res(TPASS, "fspick() passed");
 +}
 +
 +static struct tst_test test = {
@@ -160,50 +182,50 @@ index 000000000000..5b719013fed2
 +	.format_device = 1,
 +	.mntpoint = MNTPOINT,
 +};
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount02.c b/testcases/kernel/syscalls/move_mount/move_mount02.c
+diff --git a/testcases/kernel/syscalls/fspick/fspick02.c b/testcases/kernel/syscalls/fspick/fspick02.c
 new file mode 100644
-index 000000000000..8cff7e82069a
+index 000000000000..4e271aa47d0a
 --- /dev/null
-+++ b/testcases/kernel/syscalls/move_mount/move_mount02.c
-@@ -0,0 +1,102 @@
++++ b/testcases/kernel/syscalls/fspick/fspick02.c
+@@ -0,0 +1,110 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
 + *
 + * Description:
-+ * Basic move_mount() failure tests.
++ * Basic fspick() failure tests.
 + */
 +#include "tst_test.h"
 +#include "lapi/fsmount.h"
 +
 +#define MNTPOINT	"mntpoint"
 +
-+int fd, invalid_fd = -1, fsmfd;
++int fd, fsmfd, mmfd;
 +
 +static struct tcase {
 +	char *name;
-+	int *from_dirfd;
-+	const char *from_pathname;
-+	int to_dirfd;
-+	const char *to_pathname;
++	int dirfd;
++	const char *pathname;
 +	unsigned int flags;
 +	int exp_errno;
 +} tcases[] = {
-+	{"invalid-from-fd", &invalid_fd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, EBADF},
-+	{"invalid-from-path", &fsmfd, "invalid", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, ENOENT},
-+	{"invalid-to-fd", &fsmfd, "", -1, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, EBADF},
-+	{"invalid-to-path", &fsmfd, "", AT_FDCWD, "invalid", MOVE_MOUNT_F_EMPTY_PATH, ENOENT},
-+	{"invalid-flags", &fsmfd, "", AT_FDCWD, MNTPOINT, 0x08, EINVAL},
++	{"invalid-fd", -1, MNTPOINT, FSPICK_NO_AUTOMOUNT | FSPICK_CLOEXEC, EBADF},
++	{"invalid-path", AT_FDCWD, "invalid", FSPICK_NO_AUTOMOUNT | FSPICK_CLOEXEC, ENOENT},
++	{"invalid-flags", AT_FDCWD, MNTPOINT, 0x10, EINVAL},
 +};
 +
 +static void cleanup(void)
 +{
++	SAFE_CLOSE(mmfd);
 +	SAFE_CLOSE(fsmfd);
++	TEST(umount(MNTPOINT));
 +	SAFE_CLOSE(fd);
 +}
 +
 +static void setup(void)
 +{
++	char *err = "fsconfig()";
++
 +	TEST(fsopen(tst_device->fs_type, 0));
 +	fd = TST_RET;
 +
@@ -224,37 +246,45 @@ index 000000000000..8cff7e82069a
 +
 +	TEST(fsmount(fd, 0, 0));
 +	if (TST_RET == -1) {
-+		SAFE_CLOSE(fd);
-+		tst_brk(TBROK | TERRNO, "fsmount() failed");
++		err = "fsmount()";
++		goto out;
 +	}
 +
 +	fsmfd = TST_RET;
-+	return;
++
++	TEST(move_mount(TST_RET, "", AT_FDCWD, MNTPOINT,
++			MOVE_MOUNT_F_EMPTY_PATH));
++	if (TST_RET != -1) {
++		mmfd = TST_RET;
++		return;
++	}
++
++	SAFE_CLOSE(fsmfd);
++
++	err = "move_mount()";
 +
 +out:
 +	SAFE_CLOSE(fd);
-+	tst_brk(TBROK | TERRNO, "fsconfig() failed");
++	tst_brk(TBROK | TERRNO, "%s failed", err);
 +}
 +
 +static void run(unsigned int n)
 +{
 +	struct tcase *tc = &tcases[n];
 +
-+	TEST(move_mount(*tc->from_dirfd, tc->from_pathname, tc->to_dirfd,
-+			tc->to_pathname, tc->flags));
++	TEST(fspick(tc->dirfd, tc->pathname, tc->flags));
 +	if (TST_RET != -1) {
 +		SAFE_CLOSE(TST_RET);
-+		TEST(umount(MNTPOINT));
-+		tst_brk(TFAIL, "%s: move_mount() succeeded unexpectedly (index: %d)",
++		tst_brk(TFAIL, "%s: fspick() succeeded unexpectedly (index: %d)",
 +			tc->name, n);
 +	}
 +
 +	if (tc->exp_errno != TST_ERR) {
-+		tst_brk(TFAIL | TTERRNO, "%s: move_mount() should fail with %s",
++		tst_brk(TFAIL | TTERRNO, "%s: fspick() should fail with %s",
 +			tc->name, tst_strerrno(tc->exp_errno));
 +	}
 +
-+	tst_res(TPASS | TTERRNO, "%s: move_mount() failed as expected", tc->name);
++	tst_res(TPASS | TTERRNO, "%s: fspick() failed as expected", tc->name);
 +}
 +
 +static struct tst_test test = {
