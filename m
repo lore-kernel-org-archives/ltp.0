@@ -1,265 +1,75 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sun, 16 Feb 2020 18:11:23 +0800
-Subject: [LTP] [PATCH 2/7] syscalls/fsopen: New tests
-In-Reply-To: <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
-References: <cover.1581680021.git.viresh.kumar@linaro.org>
- <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
-Message-ID: <CAEemH2emOw=Abnvk-3EOVFyCoY=c6HtC_1o0gih5n+aL-WfXLw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Sun, 16 Feb 2020 14:17:23 +0100
+Subject: [LTP] [PATCH v6 2/2] syscalls/fsmount01: Add test for new mount
+ API v5.2
+In-Reply-To: <CAEemH2f0db1i7Tpg-4jqa5h5j9KZpH+d4aRg-M3Xn3Mw9NU1eA@mail.gmail.com>
+References: <20200207144105.19947-1-pvorel@suse.cz>
+ <20200207144105.19947-2-pvorel@suse.cz>
+ <CAEemH2f0db1i7Tpg-4jqa5h5j9KZpH+d4aRg-M3Xn3Mw9NU1eA@mail.gmail.com>
+Message-ID: <20200216131723.GA2725117@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Feb 14, 2020 at 7:36 PM Viresh Kumar <viresh.kumar@linaro.org>
-wrote:
+Hi Li,
 
-> Add tests to check working of fsopen() syscall.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  configure.ac                                |  1 +
->  runtest/syscalls                            |  3 +
->  testcases/kernel/syscalls/fsopen/.gitignore |  2 +
->  testcases/kernel/syscalls/fsopen/Makefile   |  6 ++
->  testcases/kernel/syscalls/fsopen/fsopen01.c | 71 +++++++++++++++++++++
->  testcases/kernel/syscalls/fsopen/fsopen02.c | 56 ++++++++++++++++
->  6 files changed, 139 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/fsopen/.gitignore
->  create mode 100644 testcases/kernel/syscalls/fsopen/Makefile
->  create mode 100644 testcases/kernel/syscalls/fsopen/fsopen01.c
->  create mode 100644 testcases/kernel/syscalls/fsopen/fsopen02.c
->
-> diff --git a/configure.ac b/configure.ac
-> index df4e8c8322fc..4125160a19bb 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -80,6 +80,7 @@ AC_CHECK_FUNCS([ \
->      execveat \
->      fallocate \
->      fchownat \
-> +    fsopen \
->      fstatat \
->      getdents \
->      getdents64 \
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 0743cf4e3f74..0a56599ebad9 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -542,6 +542,9 @@ fanotify13 fanotify13
->  fanotify14 fanotify14
->  fanotify15 fanotify15
->
-> +fsopen01 fsopen01
-> +fsopen02 fsopen02
-> +
->  ioperm01 ioperm01
->  ioperm02 ioperm02
->
-> diff --git a/testcases/kernel/syscalls/fsopen/.gitignore
-> b/testcases/kernel/syscalls/fsopen/.gitignore
-> new file mode 100644
-> index 000000000000..80089dd137a7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fsopen/.gitignore
-> @@ -0,0 +1,2 @@
-> +fsopen01
-> +fsopen02
-> diff --git a/testcases/kernel/syscalls/fsopen/Makefile
-> b/testcases/kernel/syscalls/fsopen/Makefile
-> new file mode 100644
-> index 000000000000..5ea7d67db123
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fsopen/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir             ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/fsopen/fsopen01.c
-> b/testcases/kernel/syscalls/fsopen/fsopen01.c
-> new file mode 100644
-> index 000000000000..3587c67636ea
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fsopen/fsopen01.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * Description:
-> + * Basic fsopen() test which tries to configure and mount the filesystem
-> as
-> + * well.
-> + */
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +
-> +#define MNTPOINT       "mntpoint"
-> +
-> +static void run(void)
-> +{
-> +       int fd, fsmfd;
-> +
-> +       TEST(fsopen(tst_device->fs_type, 0));
-> +       fd = TST_RET;
-> +
-> +       if (fd == -1)
-> +               tst_brk(TFAIL | TERRNO, "fsopen() failed");
-> +
-> +       TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev,
-> 0));
-> +       if (TST_RET == -1) {
-> +               tst_res(TBROK | TERRNO, "fsconfig() failed");
-> +               goto out;
-> +       }
-> +
-> +       TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
-> +       if (TST_RET == -1) {
-> +               tst_res(TBROK | TERRNO, "fsconfig() failed");
-> +               goto out;
-> +       }
-> +
-> +       TEST(fsmount(fd, 0, 0));
-> +       if (TST_RET == -1) {
-> +               tst_res(TBROK | TERRNO, "fsmount() failed");
-> +               goto out;
-> +       }
-> +
-> +       fsmfd = TST_RET;
-> +
-> +       TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
-> +                       MOVE_MOUNT_F_EMPTY_PATH));
-> +
-> +       SAFE_CLOSE(fsmfd);
-> +
-> +       if (TST_RET == -1) {
-> +               tst_res(TBROK | TERRNO, "move_mount() failed");
-> +               goto out;
-> +       }
-> +
-> +       SAFE_CLOSE(TST_RET);
-> +
-> +       TEST(umount(MNTPOINT));
-> +
-> +       tst_res(TPASS, "fsopen() passed");
-> +
-> +out:
-> +       SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +       .min_kver = "5.2",
->
+> Patch v6 looks almost good besides tiny issues:
 
-I suggest removing .min_kver check in all of the tests to let they can be
-running on many distributions(which backport the features).
+> I don't like the commit summary with kernel version number, can we just
+> note as:
+>     "syscalls/fsmount01: Add test for fsmount series API"?
+Sure.
 
-+       .test_all = run,
-> +       .needs_root = 1,
-> +       .needs_tmpdir = 1,
->
+> >  configure.ac                                  |  4 +
+> >  include/lapi/newmount.h                       | 95 +++++++++++++++++++
+> >  include/lapi/syscalls/powerpc64.in            |  4 +
+> Is there any reason why only add syscall num for ppc64?
+The other numbers are already there:
+01e4dc222 lapi/syscalls: Add MIPS support
+c2f27f6e9 Add syscall numbers for new file-system related syscalls
 
-.needs_tmpdir is not necessary because tst_test->mntpoint helps create that
-too.
+Not sure if we should add a note in the commit message to prevent confusion
+later (probably not needed).
+
+> > +++ b/include/lapi/newmount.h
+> Maybe rename to fsmount.h is better? Now we think it new since mainline
+> v5.2 is new to us, one year later it probably not new actually, to use a
+> name can indicate the functionality is wiser I guess.
++1
+
+> BTW, I like the way Viresh Kumar gives in his fsmount.h, it looks more tidy
+> and clean.
+> http://lists.linux.it/pipermail/ltp/2020-February/015413.html
+Hm, competing implementations.
+Both tries to handle preventing redefinitions (e.g. FSOPEN_CLOEXEC) once
+the API hits libc headers (at least in musl it might be soon).
+Zorro tries to bind them to function check (e.g. #ifndef HAVE_FSMOUNT, #ifndef
+HAVE_MOVE_MOUNT), Viresh just use single check #ifndef OPEN_TREE_CLONE.
+I slightly prefer Viresh way (it's unlikely that libc headers would include just
+part of the new mount API definitions, although obviously the most safest way
+would be to either guard with #ifndef each definition or just give up on testing
+header and copy whole include/uapi/linux/mount.h (+ avoid using sys/mount.h;
+that's the way used for include/lapi/bpf.h).
+
+> > +++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
+...
+> > +static void test_newmount(void)
+> static void test_fsmount(void)? Or, static void run(void).
++1.
 
 
-> +       .format_device = 1,
-> +       .mntpoint = MNTPOINT,
->
-
-Maybe to test more filesystems and skip on FUSE? Just like the way in zlang@'s
-patch.
-
-+       .all_filesystems = 1,
-+       .dev_fs_flags = TST_FS_SKIP_FUSE,
-
-+};
-> diff --git a/testcases/kernel/syscalls/fsopen/fsopen02.c
-> b/testcases/kernel/syscalls/fsopen/fsopen02.c
-> new file mode 100644
-> index 000000000000..6831a12c696b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fsopen/fsopen02.c
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * Description:
-> + * Basic fsopen() failure tests.
-> + */
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +
-> +const char *invalid_fs = "invalid";
-> +const char *valid_fs;
-> +
-> +static struct tcase {
-> +       char *name;
-> +       const char **fs;
-> +       unsigned int flags;
-> +       int exp_errno;
-> +} tcases[] = {
-> +       {"invalid-fs", &invalid_fs, 0, ENODEV},
-> +       {"invalid-flags", &valid_fs, 0x10, EINVAL},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +       valid_fs = tst_device->fs_type;
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
-> +       struct tcase *tc = &tcases[n];
-> +
-> +       TEST(fsopen(*tc->fs, tc->flags));
-> +
-> +       if (TST_RET != -1) {
-> +               SAFE_CLOSE(TST_RET);
-> +               tst_brk(TFAIL, "%s: fsopen() succeeded unexpectedly
-> (index: %d)",
-> +                       tc->name, n);
-> +       }
-> +
-> +       if (tc->exp_errno != TST_ERR) {
-> +               tst_brk(TFAIL | TTERRNO, "%s: fsopen() should fail with
-> %s",
-> +                       tc->name, tst_strerrno(tc->exp_errno));
-> +       }
-> +
-> +       tst_res(TPASS | TTERRNO, "%s: fsopen() failed as expected",
-> tc->name);
-> +}
-> +
-> +static struct tst_test test = {
-> +       .min_kver = "5.2",
->
-
-To delete .min_kver.
+> > +       if (ismount(MNTPOINT)) {
+> > +               tst_res(TPASS, "new mount API from v5.2 works");
 
 
-> +       .tcnt = ARRAY_SIZE(tcases),
-> +       .test = run,
-> +       .setup = setup,
-> +       .needs_root = 1,
-> +       .needs_device = 1,
-> +};
-> --
-> 2.21.0.rc0.269.g1a574e7a288b
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+> Can we avoid appearance the v5.2? I guess many Enterprise Linux
+> Distributions will backport the fsmount() series API, v5.2 in test log
+> looks strange if the kernel is older than it.
++1. That was added by myself.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200216/427b4b5f/attachment.htm>
+I've prepared fixed version, we just need to decide how to handle LAPI header.
+
+Kind regards,
+Petr
