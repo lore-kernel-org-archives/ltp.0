@@ -1,70 +1,75 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 17 Feb 2020 04:16:58 -0500 (EST)
-Subject: [LTP] [PATCH v6 2/2] syscalls/fsmount01: Add test for new mount
- API v5.2
-In-Reply-To: <CAEemH2ewgh=OnRzEs+1X4rvsiChrLRRMxeK-ChZL3wDqco_iLg@mail.gmail.com>
-References: <20200207144105.19947-1-pvorel@suse.cz>
- <20200207144105.19947-2-pvorel@suse.cz>
- <CAEemH2f0db1i7Tpg-4jqa5h5j9KZpH+d4aRg-M3Xn3Mw9NU1eA@mail.gmail.com>
- <20200216131723.GA2725117@x230>
- <CAEemH2ewgh=OnRzEs+1X4rvsiChrLRRMxeK-ChZL3wDqco_iLg@mail.gmail.com>
-Message-ID: <1181359180.7790231.1581931018783.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 17 Feb 2020 17:16:51 +0800
+Subject: [LTP] [PATCH v7 4/4] syscalls/fsmount01: Add test for fsmount
+ series API
+In-Reply-To: <20200217084622.11199-5-pvorel@suse.cz>
+References: <20200217084622.11199-1-pvorel@suse.cz>
+ <20200217084622.11199-5-pvorel@suse.cz>
+Message-ID: <CAEemH2cGsXkgkfrFN2XW9ByWqNnknR+-9yCv6T+hqAp13PjVyQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Petr,
 
------ Original Message -----
-> Hi Petr,
-> 
-> On Sun, Feb 16, 2020 at 9:17 PM Petr Vorel <pvorel@suse.cz> wrote:
-> 
-> > ...
-> > > >  include/lapi/syscalls/powerpc64.in            |  4 +
-> > > Is there any reason why only add syscall num for ppc64?
-> > The other numbers are already there:
-> > 01e4dc222 lapi/syscalls: Add MIPS support
-> > c2f27f6e9 Add syscall numbers for new file-system related syscalls
-> >
-> 
-> Good to know this.
-> 
-> Not sure if we should add a note in the commit message to prevent confusion
-> > later (probably not needed).
-> >
-> 
-> Or just mentionion that commit(c2f27f6e9 Add syscall numbers ...) message.
-> 
-> > BTW, I like the way Viresh Kumar gives in his fsmount.h, it looks more
-> > tidy
-> > > and clean.
-> > > http://lists.linux.it/pipermail/ltp/2020-February/015413.html
-> > Hm, competing implementations.
-> > Both tries to handle preventing redefinitions (e.g. FSOPEN_CLOEXEC) once
-> > the API hits libc headers (at least in musl it might be soon).
-> > Zorro tries to bind them to function check (e.g. #ifndef HAVE_FSMOUNT,
-> > #ifndef
-> > HAVE_MOVE_MOUNT), Viresh just use single check #ifndef OPEN_TREE_CLONE.
-> > I slightly prefer Viresh way (it's unlikely that libc headers would
-> > include just
-> >
-> +1 Viresh way.
-> 
-> 
-> > part of the new mount API definitions, although obviously the most safest
-> > way
-> > would be to either guard with #ifndef each definition or just give up on
-> > testing
-> > header and copy whole include/uapi/linux/mount.h (+ avoid using
-> > sys/mount.h;
-> > that's the way used for include/lapi/bpf.h).
-> >
-> 
-> @Cyril, @Jan, any else suggestion?
+Thanks for the quick response to the patch improvement.
 
-I'd go with additions to lapi, and avoid copying entire linux/mount.h. And use
-#ifndef for each definition. v7 is currently not doing that, but it's easy
-to add if we run into problems later, when/if there are additions to mount API.
+On Mon, Feb 17, 2020 at 4:47 PM Petr Vorel <pvorel@suse.cz> wrote:
 
+> From: Zorro Lang <zlang@redhat.com>
+>
+> Add basic tests tests for new mount API from kernel v5.2.
+> Testing mount and umount filesystems with fsopen(), fsconfig(),
+> fsmount() and move_mount().
+>
+> NOTE: most of the syscalls numbers were added in previous commits
+> (c2f27f6e9b, 01e4dc2222, 87a2612857).
+>
+
+87a2612857 is invalid?
+
+
+> Signed-off-by: Zorro Lang <zlang@redhat.com>
+> Acked-by: Li Wang <liwang@redhat.com>
+> [ pvorel: rebased, cleanup autotools and other small fixes ]
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  include/lapi/syscalls/powerpc64.in            |  4 +
+>  runtest/syscalls                              |  2 +
+>  testcases/kernel/syscalls/fsmount/.gitignore  |  1 +
+>  testcases/kernel/syscalls/fsmount/Makefile    |  8 ++
+>  testcases/kernel/syscalls/fsmount/fsmount01.c | 95 +++++++++++++++++++
+>  5 files changed, 110 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fsmount/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/fsmount/Makefile
+>  create mode 100644 testcases/kernel/syscalls/fsmount/fsmount01.c
+>
+> diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/
+> powerpc64.in
+> index 2c1f105c1..beb0e6812 100644
+> --- a/include/lapi/syscalls/powerpc64.in
+> +++ b/include/lapi/syscalls/powerpc64.in
+> @@ -371,3 +371,7 @@ pidfd_open 434
+>  pkey_mprotect 386
+>  pkey_alloc 384
+>  pkey_free 385
+> +move_mount 429
+> +fsopen 430
+> +fsconfig 431
+> +fsmount 432
+>
+
+As Viresh and I commented in the previous email this four syscalls-number
+should be deleted from the patch.
+
+Besides that, the patchset looks good to me.
+    Acked-by: Li Wang <liwang@redhat.com>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200217/bd3b8350/attachment.htm>
