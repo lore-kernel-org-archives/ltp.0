@@ -1,198 +1,52 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Feb 2020 09:46:21 +0100
-Subject: [LTP] [PATCH v7 3/4] lapi/fsmount: Add definitions for fsmount
- related syscalls
-In-Reply-To: <20200217084622.11199-1-pvorel@suse.cz>
-References: <20200217084622.11199-1-pvorel@suse.cz>
-Message-ID: <20200217084622.11199-4-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 17 Feb 2020 16:54:23 +0800
+Subject: [LTP] [PATCH 4/7] syscalls/fsmount: New tests
+In-Reply-To: <20200217082931.vbjkg2f53lek4uf3@vireshk-i7>
+References: <cover.1581680021.git.viresh.kumar@linaro.org>
+ <1c61c673a02152c30edac0e25438257c23c3322e.1581680021.git.viresh.kumar@linaro.org>
+ <CAEemH2f2pR1KhLAoKKphzh9fP++yyALbv4TiAh=4Vyv0M3SEdw@mail.gmail.com>
+ <20200217082931.vbjkg2f53lek4uf3@vireshk-i7>
+Message-ID: <CAEemH2c28zj-+pec+sgoLzCq6iV627YvyH2hRpQN98eYZ_8geg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Viresh Kumar <viresh.kumar@linaro.org>
+On Mon, Feb 17, 2020 at 4:29 PM Viresh Kumar <viresh.kumar@linaro.org>
+wrote:
 
-This adds definitions for all fsmount related syscalls which will be
-used by multiple syscall tests.
+> ...
+> > Adding #include "lapi/fcntl.h" in case of ?AT_FDCWD? undeclared. It seems
+> > we have to do this for all the tests involves  ?AT_FDCWD?.
+>
+> my fsmount.h header includes <fcntl.h>, won't that be enough ?
+>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Acked-by: Li Wang <liwang@redhat.com>
-[ pvorel: add autotools checks + sort kcmp ]
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- configure.ac           |   8 ++-
- include/lapi/fsmount.h | 134 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 141 insertions(+), 1 deletion(-)
- create mode 100644 include/lapi/fsmount.h
+I'm afraid it's not enough.
 
-diff --git a/configure.ac b/configure.ac
-index df4e8c832..df407ce35 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -80,15 +80,21 @@ AC_CHECK_FUNCS([ \
-     execveat \
-     fallocate \
-     fchownat \
-+    fsconfig \
-+    fsmount \
-+    fsopen \
-+    fspick \
-     fstatat \
-     getdents \
-     getdents64 \
--    kcmp \
-     io_pgetevents \
-+    kcmp \
-     mkdirat \
-     mknodat \
-     modify_ldt \
-+    move_mount \
-     name_to_handle_at \
-+    open_tree \
-     openat \
-     pidfd_open \
-     pidfd_send_signal \
-diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-new file mode 100644
-index 000000000..87f2f229c
---- /dev/null
-+++ b/include/lapi/fsmount.h
-@@ -0,0 +1,134 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Linaro Limited. All rights reserved.
-+ * Author: Viresh Kumar <viresh.kumar@linaro.org>
-+ */
-+
-+#ifndef FSMOUNT_H__
-+#define FSMOUNT_H__
-+
-+#include <fcntl.h>
-+#include <sys/mount.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+
-+#include "config.h"
-+#include "lapi/syscalls.h"
-+
-+#ifndef HAVE_FSOPEN
-+int fsopen(const char *fsname, unsigned int flags)
-+{
-+	return tst_syscall(__NR_fsopen, fsname, flags);
-+}
-+#endif /* HAVE_FSOPEN */
-+
-+#ifndef HAVE_FSCONFIG
-+int fsconfig(int fd, unsigned int cmd, const char *key,
-+	     const void *value, int aux)
-+{
-+	return tst_syscall(__NR_fsconfig, fd, cmd, key, value, aux);
-+}
-+#endif /* HAVE_FSCONFIG */
-+
-+#ifndef HAVE_FSMOUNT
-+int fsmount(int fd, unsigned int flags, unsigned int mount_attrs)
-+{
-+	return tst_syscall(__NR_fsmount, fd, flags, mount_attrs);
-+}
-+#endif /* HAVE_FSMOUNT */
-+
-+#ifndef HAVE_FSPICK
-+int fspick(int dirfd, const char *pathname, unsigned int flags)
-+{
-+	return tst_syscall(__NR_fspick, dirfd, pathname, flags);
-+}
-+#endif /* HAVE_FSPICK */
-+
-+#ifndef HAVE_MOVE_MOUNT
-+int move_mount(int from_dirfd, const char *from_pathname, int to_dirfd,
-+	       const char *to_pathname, unsigned int flags)
-+{
-+	return tst_syscall(__NR_move_mount, from_dirfd, from_pathname, to_dirfd,
-+			   to_pathname, flags);
-+}
-+#endif /* HAVE_MOVE_MOUNT */
-+
-+#ifndef HAVE_OPEN_TREE
-+int open_tree(int dirfd, const char *pathname, unsigned int flags)
-+{
-+	return tst_syscall(__NR_open_tree, dirfd, pathname, flags);
-+}
-+#endif /* HAVE_OPEN_TREE */
-+
-+/*
-+ * New headers added in kernel after 5.2 release, create them for old userspace.
-+*/
-+
-+#ifndef OPEN_TREE_CLONE
-+
-+/*
-+ * open_tree() flags.
-+ */
-+#define OPEN_TREE_CLONE		1		/* Clone the target tree and attach the clone */
-+#define OPEN_TREE_CLOEXEC	O_CLOEXEC	/* Close the file on execve() */
-+
-+/*
-+ * move_mount() flags.
-+ */
-+#define MOVE_MOUNT_F_SYMLINKS		0x00000001 /* Follow symlinks on from path */
-+#define MOVE_MOUNT_F_AUTOMOUNTS		0x00000002 /* Follow automounts on from path */
-+#define MOVE_MOUNT_F_EMPTY_PATH		0x00000004 /* Empty from path permitted */
-+#define MOVE_MOUNT_T_SYMLINKS		0x00000010 /* Follow symlinks on to path */
-+#define MOVE_MOUNT_T_AUTOMOUNTS		0x00000020 /* Follow automounts on to path */
-+#define MOVE_MOUNT_T_EMPTY_PATH		0x00000040 /* Empty to path permitted */
-+#define MOVE_MOUNT__MASK		0x00000077
-+
-+/*
-+ * fsopen() flags.
-+ */
-+#define FSOPEN_CLOEXEC		0x00000001
-+
-+/*
-+ * fspick() flags.
-+ */
-+#define FSPICK_CLOEXEC		0x00000001
-+#define FSPICK_SYMLINK_NOFOLLOW	0x00000002
-+#define FSPICK_NO_AUTOMOUNT	0x00000004
-+#define FSPICK_EMPTY_PATH	0x00000008
-+
-+/*
-+ * The type of fsconfig() call made.
-+ */
-+enum fsconfig_command {
-+	FSCONFIG_SET_FLAG	= 0,	/* Set parameter, supplying no value */
-+	FSCONFIG_SET_STRING	= 1,	/* Set parameter, supplying a string value */
-+	FSCONFIG_SET_BINARY	= 2,	/* Set parameter, supplying a binary blob value */
-+	FSCONFIG_SET_PATH	= 3,	/* Set parameter, supplying an object by path */
-+	FSCONFIG_SET_PATH_EMPTY	= 4,	/* Set parameter, supplying an object by (empty) path */
-+	FSCONFIG_SET_FD		= 5,	/* Set parameter, supplying an object by fd */
-+	FSCONFIG_CMD_CREATE	= 6,	/* Invoke superblock creation */
-+	FSCONFIG_CMD_RECONFIGURE = 7,	/* Invoke superblock reconfiguration */
-+};
-+
-+/*
-+ * fsmount() flags.
-+ */
-+#define FSMOUNT_CLOEXEC		0x00000001
-+
-+/*
-+ * Mount attributes.
-+ */
-+#define MOUNT_ATTR_RDONLY	0x00000001 /* Mount read-only */
-+#define MOUNT_ATTR_NOSUID	0x00000002 /* Ignore suid and sgid bits */
-+#define MOUNT_ATTR_NODEV	0x00000004 /* Disallow access to device special files */
-+#define MOUNT_ATTR_NOEXEC	0x00000008 /* Disallow program execution */
-+#define MOUNT_ATTR__ATIME	0x00000070 /* Setting on how atime should be updated */
-+#define MOUNT_ATTR_RELATIME	0x00000000 /* - Update atime relative to mtime/ctime. */
-+#define MOUNT_ATTR_NOATIME	0x00000010 /* - Do not update access times. */
-+#define MOUNT_ATTR_STRICTATIME	0x00000020 /* - Always perform atime updates */
-+#define MOUNT_ATTR_NODIRATIME	0x00000080 /* Do not update directory access times */
-+
-+#endif /* OPEN_TREE_CLONE */
-+
-+
-+#endif /* FSMOUNT_H__ */
+After having a closer look, the reason is that the AT_FDCWD is defined with
+condition __USE_ATFILE,  the __USE_ATFILE depends on _ATFILE_SOURCE
+defined, and _ATFILE_SOURCE needs enable _GNU_SOURCE.
+
+So another effective way is to add '#define _GNU_SOURCE' in front of your
+test then that <fcntl.h> will be work for you.
+
+# rpm -qa glibc-headers
+glibc-headers-2.5-123
+
+# cat /usr/include/fcntl.h |grep AT_FDCWD -B 2 -A 2
+#ifdef __USE_ATFILE
+# define AT_FDCWD -100   /* Special value used to indicate
+                                                the *at functions should
+use the
+                                                current working directory.
+*/
+
+
 -- 
-2.25.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200217/cccc37ee/attachment.htm>
