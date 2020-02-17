@@ -1,66 +1,56 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Feb 2020 10:38:50 +0100
-Subject: [LTP] [PATCH v7 4/4] syscalls/fsmount01: Add test for fsmount
- series API
-In-Reply-To: <CAEemH2cGsXkgkfrFN2XW9ByWqNnknR+-9yCv6T+hqAp13PjVyQ@mail.gmail.com>
-References: <20200217084622.11199-1-pvorel@suse.cz>
- <20200217084622.11199-5-pvorel@suse.cz>
- <CAEemH2cGsXkgkfrFN2XW9ByWqNnknR+-9yCv6T+hqAp13PjVyQ@mail.gmail.com>
-Message-ID: <20200217093850.GA13398@dell5510>
+Date: Mon, 17 Feb 2020 10:43:48 +0100
+Subject: [LTP] [PATCH v6 2/2] syscalls/fsmount01: Add test for new mount
+ API v5.2
+In-Reply-To: <1181359180.7790231.1581931018783.JavaMail.zimbra@redhat.com>
+References: <20200207144105.19947-1-pvorel@suse.cz>
+ <20200207144105.19947-2-pvorel@suse.cz>
+ <CAEemH2f0db1i7Tpg-4jqa5h5j9KZpH+d4aRg-M3Xn3Mw9NU1eA@mail.gmail.com>
+ <20200216131723.GA2725117@x230>
+ <CAEemH2ewgh=OnRzEs+1X4rvsiChrLRRMxeK-ChZL3wDqco_iLg@mail.gmail.com>
+ <1181359180.7790231.1581931018783.JavaMail.zimbra@redhat.com>
+Message-ID: <20200217094348.GB13398@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Jan,
 
-> > NOTE: most of the syscalls numbers were added in previous commits
-> > (c2f27f6e9b, 01e4dc2222, 87a2612857).
+...
+> > > BTW, I like the way Viresh Kumar gives in his fsmount.h, it looks more
+> > > tidy
+> > > > and clean.
+> > > > http://lists.linux.it/pipermail/ltp/2020-February/015413.html
+> > > Hm, competing implementations.
+> > > Both tries to handle preventing redefinitions (e.g. FSOPEN_CLOEXEC) once
+> > > the API hits libc headers (at least in musl it might be soon).
+> > > Zorro tries to bind them to function check (e.g. #ifndef HAVE_FSMOUNT,
+> > > #ifndef
+> > > HAVE_MOVE_MOUNT), Viresh just use single check #ifndef OPEN_TREE_CLONE.
+> > > I slightly prefer Viresh way (it's unlikely that libc headers would
+> > > include just
+
+> > +1 Viresh way.
 
 
-> 87a2612857 is invalid?
-I'm sorry, that was this upcomming commit (besides that it needs to be removed
-from it) => thanks for a report, I'll remove it.
+> > > part of the new mount API definitions, although obviously the most safest
+> > > way
+> > > would be to either guard with #ifndef each definition or just give up on
+> > > testing
+> > > header and copy whole include/uapi/linux/mount.h (+ avoid using
+> > > sys/mount.h;
+> > > that's the way used for include/lapi/bpf.h).
 
 
-> > Signed-off-by: Zorro Lang <zlang@redhat.com>
-> > Acked-by: Li Wang <liwang@redhat.com>
-> > [ pvorel: rebased, cleanup autotools and other small fixes ]
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >  include/lapi/syscalls/powerpc64.in            |  4 +
-> >  runtest/syscalls                              |  2 +
-> >  testcases/kernel/syscalls/fsmount/.gitignore  |  1 +
-> >  testcases/kernel/syscalls/fsmount/Makefile    |  8 ++
-> >  testcases/kernel/syscalls/fsmount/fsmount01.c | 95 +++++++++++++++++++
-> >  5 files changed, 110 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/fsmount/.gitignore
-> >  create mode 100644 testcases/kernel/syscalls/fsmount/Makefile
-> >  create mode 100644 testcases/kernel/syscalls/fsmount/fsmount01.c
+> > @Cyril, @Jan, any else suggestion?
 
-> > diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/
-> > powerpc64.in
-> > index 2c1f105c1..beb0e6812 100644
-> > --- a/include/lapi/syscalls/powerpc64.in
-> > +++ b/include/lapi/syscalls/powerpc64.in
-> > @@ -371,3 +371,7 @@ pidfd_open 434
-> >  pkey_mprotect 386
-> >  pkey_alloc 384
-> >  pkey_free 385
-> > +move_mount 429
-> > +fsopen 430
-> > +fsconfig 431
-> > +fsmount 432
-Yep.
-
-> As Viresh and I commented in the previous email this four syscalls-number
-> should be deleted from the patch.
-
-> Besides that, the patchset looks good to me.
->     Acked-by: Li Wang <liwang@redhat.com>
-I suppose you ack also the change include/lapi/fsmount.h using lapi/fcntl.h
-(if not, please let me know).
+> I'd go with additions to lapi, and avoid copying entire linux/mount.h. And use
+> #ifndef for each definition. v7 is currently not doing that, but it's easy
+> to add if we run into problems later, when/if there are additions to mount API.
+OK, I'm also for single guard with OPEN_TREE_CLONE until anything else is
+needed. I'll add your ack for lapi commit.
 
 Kind regards,
 Petr
