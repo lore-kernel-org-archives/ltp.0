@@ -1,60 +1,75 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Feb 2020 16:58:40 +0100
-Subject: [LTP] Networking test failing
-In-Reply-To: <MAXPR0101MB146826599C0BAB5162CFDD3FEE160@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB146826599C0BAB5162CFDD3FEE160@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <20200217155840.GA4424@dell5510>
+Date: Mon, 17 Feb 2020 17:08:30 +0100
+Subject: [LTP] [PATCH v4 1/2] lib: add .request_hugepages to reserve
+ hugepage
+In-Reply-To: <20200208092014.24824-1-liwang@redhat.com>
+References: <20200208092014.24824-1-liwang@redhat.com>
+Message-ID: <20200217160830.GA6482@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Li,
 
-> i am running ltp test when i checked log files i found following errors in networking tests. I am not getting how to run these test individually????
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Code looks good.
+Minor issue: doc has broken formatting.
 
-export PATH="/opt/ltp/testcases/bin:$PATH"
-netns_breakns.sh ns_exec ipv4 netlink
-on properly installed LTP, to default path /opt/ltp
-(that's from runtest/containers).
+> +2.2.34 Reserving hugepages
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^
+> +
+> +Many of the ltp tests need to use hugepage in their testing, this allows the
+> +test can reserve hugepages from system only via .request_hugepages = xx.
+> +
+> +If set non-zero number of request_hugepages, test will try to reserve the
+> +expected number of hugepage for testing in setup phase. If system does not
+> +have enough hpage for using, it will try the best to reserve 80% available
+> +number of hpages. With success test stores the reserved hugepage number in
+> +'tst_hugepages. For the system without hugetlb supporting, variable
+Missing ' here   ^
 
-> netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
-> netns_netlink    2  TBROK  :  netns_netlink.c:143: Remaining cases broken
+> +'tst_hugepages' will be set to 0.
 
-> netns_breakns_ns_exec_ipv4_netlink 1 TBROK: unable to create veth pair devices
-> Cannot find device "veth0"
-
-It fails on  ip link add veth0 type veth peer name veth1.
-Do you have CONFIG_VETH=m or CONFIG_VETH=y in your kernel config (in /boot/config-$(uname -r)).
-
-
-> I am attaching log file report
-
-> netns_netlink                                                       FAIL       2
-> netns_breakns_ns_exec_ipv4_netlink                 FAIL       2
-> netns_breakns_ns_exec_ipv6_netlink                 FAIL       2
-> netns_breakns_ns_exec_ipv4_ioctl                   FAIL       2
-> netns_breakns_ns_exec_ipv6_ioctl                   FAIL       2
-> netns_breakns_ip_ipv4_netlink                          FAIL       2
-> netns_breakns_ip_ipv6_netlink                          FAIL       2
-> netns_breakns_ip_ipv4_ioctl                              FAIL       2
-> netns_breakns_ip_ipv6_ioctl                               FAIL       2
-> netns_comm_ns_exec_ipv4_netlink                    FAIL       2
-> netns_comm_ns_exec_ipv6_netlink                    FAIL       2
-> netns_comm_ns_exec_ipv4_ioctl                         FAIL       2
-> netns_comm_ns_exec_ipv6_ioctl                         FAIL       2
-> netns_comm_ip_ipv4_netlink                              FAIL       2
-> netns_comm_ip_ipv6_netlink                               FAIL       2
-> netns_comm_ip_ipv4_ioctl                           FAIL       2
-> netns_comm_ip_ipv6_ioctl                           FAIL       2
-> netns_sysfs                                        FAIL       2
-
-Well, next time a bit more info about the kernel and distro you run might help :).
-
-> How i can resolve these errors please guide me how these tests needs to run and from which path.
-
-> Thank you
+I propose these changes (+ strip this formatting from comments in C source - include/tst_test.h).
 
 Kind regards,
 Petr
+
+diff --git doc/test-writing-guidelines.txt doc/test-writing-guidelines.txt
+index b9f8d5ab0..ae9a8b040 100644
+--- doc/test-writing-guidelines.txt
++++ doc/test-writing-guidelines.txt
+@@ -1945,14 +1945,14 @@ For full documentation see the comments in 'include/tst_fuzzy_sync.h'.
+ 2.2.34 Reserving hugepages
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+-Many of the ltp tests need to use hugepage in their testing, this allows the
+-test can reserve hugepages from system only via .request_hugepages = xx.
++Many of the LTP tests need to use hugepage in their testing, this allows the
++test can reserve hugepages from system only via '.request_hugepages = xx'.
+ 
+-If set non-zero number of request_hugepages, test will try to reserve the
++If set non-zero number of 'request_hugepages', test will try to reserve the
+ expected number of hugepage for testing in setup phase. If system does not
+ have enough hpage for using, it will try the best to reserve 80% available
+ number of hpages. With success test stores the reserved hugepage number in
+-'tst_hugepages. For the system without hugetlb supporting, variable
++'tst_hugepages'. For the system without hugetlb supporting, variable
+ 'tst_hugepages' will be set to 0.
+ 
+ Also, we do cleanup and restore work for the hpages resetting automatically.
+@@ -1977,9 +1977,12 @@ struct tst_test test = {
+ 	.request_hugepages = 2,
+ 	...
+ };
++[source,c]
++-------------------------------------------------------------------------------
+ 
+ or,
+ 
++-------------------------------------------------------------------------------
+ #include "tst_test.h"
+ 
+ static void run(void)
