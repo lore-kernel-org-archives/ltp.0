@@ -1,45 +1,47 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 18 Feb 2020 13:55:06 +0530
-Subject: [LTP] [PATCH 2/7] syscalls/fsopen: New tests
-In-Reply-To: <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
-References: <cover.1581680021.git.viresh.kumar@linaro.org>
- <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
- <CAEemH2emOw=Abnvk-3EOVFyCoY=c6HtC_1o0gih5n+aL-WfXLw@mail.gmail.com>
- <20200217133638.GB14410@rei>
- <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
-Message-ID: <20200218082506.2hbjglknpqdo3upm@vireshk-i7>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 18 Feb 2020 09:44:19 +0100
+Subject: [LTP] [PATCH v3 2/3] Split off executable code from
+ bpf/bpf_common.h
+In-Reply-To: <CAEemH2fvquWe_+-Au-Z0wRaYt0V943A1zszJVPCXO6HrLWH9Yg@mail.gmail.com>
+References: <CAEemH2dEco268yqDyDjX25FPs3V7wTBija4HiMrf8nr0W7qVQQ@mail.gmail.com>
+ <20200217141622.26912-1-mdoucha@suse.cz>
+ <20200217141622.26912-2-mdoucha@suse.cz>
+ <CAEemH2fvquWe_+-Au-Z0wRaYt0V943A1zszJVPCXO6HrLWH9Yg@mail.gmail.com>
+Message-ID: <7d52d4b5-c9ae-2cf8-5742-85ce4e55ff67@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18-02-20, 09:15, Li Wang wrote:
-> On Mon, Feb 17, 2020 at 9:36 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On 2/18/20 9:15 AM, Li Wang wrote:
+>     diff --git a/testcases/kernel/syscalls/bpf/Makefile
+>     b/testcases/kernel/syscalls/bpf/Makefile
+>     index 990c8c83c..2241bce9b 100644
+>     --- a/testcases/kernel/syscalls/bpf/Makefile
+>     +++ b/testcases/kernel/syscalls/bpf/Makefile
+>     @@ -5,6 +5,9 @@ top_srcdir? ? ? ? ? ? ? ?= ../../../..
 > 
-> > ...
-> > > > +static struct tst_test test = {
-> > > > +       .min_kver = "5.2",
-> > > >
-> > >
-> > > I suggest removing .min_kver check in all of the tests to let they can be
-> > > running on many distributions(which backport the features).
-> >
-> > If we do that we have to explicitely check for ENOSYS errno in each
-> > test, quite possibly with a dummy call to the tested syscall in test
-> > setup, because once these calls gets libc wrappers we will no longer
-> > call the tst_syscall() that checks for it.
-> >
+>     ?include $(top_srcdir)/include/mk/testcases.mk <http://testcases.mk>
 > 
-> +1 add dummy call to the tested syscall in the setup.
-> Agree, thanks for point out this.
+>     +FILTER_OUT_MAKE_TARGETS? ? ? ? := bpf_common
+>     ?CFLAGS? ? ? ? ? ? ? ? ?+= -D_GNU_SOURCE
+> 
+>     ?include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>     <http://generic_leaf_target.mk>
+>     +
+>     +$(MAKE_TARGETS): %: %.o bpf_common.o
+> 
+> 
+> May I ask why we need to reserve these *.o binary files in the compiling?
 
-Not sure if I understood it very clearly and don't want to spam everyone with an
-incorrect patchset still missing this point and so asking here :)
-
-How exactly would the setup() routine look like? Something like this ?
-
-        syscall(#NR, ##__VA_ARGS__);
+Sorry, I don't understand the question.
 
 -- 
-viresh
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
