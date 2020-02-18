@@ -1,67 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Feb 2020 16:15:51 +0800
-Subject: [LTP] [PATCH v3 2/3] Split off executable code from
- bpf/bpf_common.h
-In-Reply-To: <20200217141622.26912-2-mdoucha@suse.cz>
-References: <CAEemH2dEco268yqDyDjX25FPs3V7wTBija4HiMrf8nr0W7qVQQ@mail.gmail.com>
- <20200217141622.26912-1-mdoucha@suse.cz>
- <20200217141622.26912-2-mdoucha@suse.cz>
-Message-ID: <CAEemH2fvquWe_+-Au-Z0wRaYt0V943A1zszJVPCXO6HrLWH9Yg@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 18 Feb 2020 13:55:06 +0530
+Subject: [LTP] [PATCH 2/7] syscalls/fsopen: New tests
+In-Reply-To: <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
+References: <cover.1581680021.git.viresh.kumar@linaro.org>
+ <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
+ <CAEemH2emOw=Abnvk-3EOVFyCoY=c6HtC_1o0gih5n+aL-WfXLw@mail.gmail.com>
+ <20200217133638.GB14410@rei>
+ <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
+Message-ID: <20200218082506.2hbjglknpqdo3upm@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Feb 17, 2020 at 10:16 PM Martin Doucha <mdoucha@suse.cz> wrote:
+On 18-02-20, 09:15, Li Wang wrote:
+> On Mon, Feb 17, 2020 at 9:36 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+> 
+> > ...
+> > > > +static struct tst_test test = {
+> > > > +       .min_kver = "5.2",
+> > > >
+> > >
+> > > I suggest removing .min_kver check in all of the tests to let they can be
+> > > running on many distributions(which backport the features).
+> >
+> > If we do that we have to explicitely check for ENOSYS errno in each
+> > test, quite possibly with a dummy call to the tested syscall in test
+> > setup, because once these calls gets libc wrappers we will no longer
+> > call the tst_syscall() that checks for it.
+> >
+> 
+> +1 add dummy call to the tested syscall in the setup.
+> Agree, thanks for point out this.
 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->
-> Changes since v1: This patch was split off from the v1 BPF fix. Code
-> cleanup
-> to prevent future bugs and make the common code more readable.
->
-> Changes since v2: None.
->
->  testcases/kernel/syscalls/bpf/Makefile     |  3 ++
->  testcases/kernel/syscalls/bpf/bpf_common.c | 45 ++++++++++++++++++++++
->  testcases/kernel/syscalls/bpf/bpf_common.h | 39 ++-----------------
->  3 files changed, 51 insertions(+), 36 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/bpf/bpf_common.c
->
-> diff --git a/testcases/kernel/syscalls/bpf/Makefile
-> b/testcases/kernel/syscalls/bpf/Makefile
-> index 990c8c83c..2241bce9b 100644
-> --- a/testcases/kernel/syscalls/bpf/Makefile
-> +++ b/testcases/kernel/syscalls/bpf/Makefile
-> @@ -5,6 +5,9 @@ top_srcdir              ?= ../../../..
->
->  include $(top_srcdir)/include/mk/testcases.mk
->
-> +FILTER_OUT_MAKE_TARGETS        := bpf_common
->  CFLAGS                 += -D_GNU_SOURCE
->
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> +$(MAKE_TARGETS): %: %.o bpf_common.o
->
+Not sure if I understood it very clearly and don't want to spam everyone with an
+incorrect patchset still missing this point and so asking here :)
 
-May I ask why we need to reserve these *.o binary files in the compiling?
+How exactly would the setup() routine look like? Something like this ?
 
-# ls
-bpf_common.c  bpf_common.o  bpf_map01.c  bpf_prog01    bpf_prog01.o
- bpf_prog02.c  bpf_prog03    bpf_prog03.o
-bpf_common.h  bpf_map01     bpf_map01.o  bpf_prog01.c  bpf_prog02
- bpf_prog02.o  bpf_prog03.c  Makefile
-
-
-Otherwise, the patchset looks good.
-    Acked-by: Li Wang <liwang@redhat.com>
+        syscall(#NR, ##__VA_ARGS__);
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200218/f61366ed/attachment.htm>
+viresh
