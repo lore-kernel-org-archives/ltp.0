@@ -1,64 +1,45 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 19 Feb 2020 14:03:10 +0530
-Subject: [LTP] [PATCH 1/1] fsmount01: Avoid leaving file descriptor open
-In-Reply-To: <20200219083019.22799-1-pvorel@suse.cz>
-References: <20200219083019.22799-1-pvorel@suse.cz>
-Message-ID: <20200219083310.e7ole7n37cpvsrh2@vireshk-i7>
+Date: Wed, 19 Feb 2020 14:04:48 +0530
+Subject: [LTP] [PATCH 2/7] syscalls/fsopen: New tests
+In-Reply-To: <20200219082359.GA21099@dell5510>
+References: <cover.1581680021.git.viresh.kumar@linaro.org>
+ <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
+ <CAEemH2emOw=Abnvk-3EOVFyCoY=c6HtC_1o0gih5n+aL-WfXLw@mail.gmail.com>
+ <20200217133638.GB14410@rei>
+ <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
+ <20200219082359.GA21099@dell5510>
+Message-ID: <20200219083448.miwubkndnbxq3awn@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 19-02-20, 09:30, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
+On 19-02-20, 09:23, Petr Vorel wrote:
+> Hi Viresh,
 > 
-> this is probably not needed, as fd will be closed at program exit
-> anyway.
+> as somebody (probably Li) pointed out fsopen/fsopen01.c is similar to fsmount/fsmount01.c,
+> so please during rebase drop it. BTW for this dropped test I'd use different
+> approach (close fd in cleanup function and use tst_brk(TFAIL instead of
+> tst_res(TBROK and goto):
 > 
-> Kind regards,
-> Petr
+> static void cleanup(void)
+> {
+> 	if (fd > 0)
+> 		SAFE_CLOSE(fd);
+> }
 > 
->  testcases/kernel/syscalls/fsmount/fsmount01.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-> index 83185b48a..aea050506 100644
-> --- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-> +++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-> @@ -16,6 +16,7 @@
->  
->  #define LINELENGTH 256
->  #define MNTPOINT "newmount_point"
-> +
->  static int sfd, mfd, is_mounted;
->  
->  static int ismount(char *mntpoint)
-> @@ -38,6 +39,9 @@ static int ismount(char *mntpoint)
->  
->  static void cleanup(void)
->  {
-> +	if (sfd > 0)
-> +		SAFE_CLOSE(sfd);
-> +
->  	if (is_mounted)
->  		SAFE_UMOUNT(MNTPOINT);
->  }
-> @@ -67,7 +71,6 @@ static void test_fsmount(void)
->  		tst_brk(TBROK | TTERRNO, "fsmount() failed to create a mount object");
->  	mfd = TST_RET;
->  	tst_res(TPASS, "fsmount() created a mount object");
-> -	SAFE_CLOSE(sfd);
->  
->  	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
->  	if (TST_RET < 0)
+> ...
+> 	if (fd == -1)
+> 		tst_brk(TFAIL | TERRNO, "fsopen() failed");
 
-My patchset is making enough changes to this file and fixes this issue as well.
-I won't ask you to not get this merged as you already sent it before me :)
+Lets review this comment after my V2 series is posted today. It may be better to
+keep separate tests.
 
-My V2 will be on list very soon.
+> Also you added autotools check for functions (e.g. fsopen) during commits, but I
+> move them to the first (together with lapi header).
+
+Yeah, I already saw that. Thanks for that, you did the right thing :)
 
 -- 
 viresh
