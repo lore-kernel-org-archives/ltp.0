@@ -1,40 +1,41 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 19 Feb 2020 11:57:30 +0800
-Subject: [LTP] [PATCH] cleanup: avoid to generate many redundant obj
- files
-In-Reply-To: <a3d98743-8c77-3282-97dd-a2864886e8c6@163.com>
-References: <20200218115918.32203-1-liwang@redhat.com>
- <a3d98743-8c77-3282-97dd-a2864886e8c6@163.com>
-Message-ID: <CAEemH2cg=r3tjefzm=dSj0FZca-gMorGue3C0uGugpniSnZjBA@mail.gmail.com>
+Date: Wed, 19 Feb 2020 12:02:02 +0800
+Subject: [LTP] [PATCH v4 1/2] lib: add .request_hugepages to reserve
+ hugepage
+In-Reply-To: <20200218162739.GA9985@rei.lan>
+References: <20200208092014.24824-1-liwang@redhat.com>
+ <20200218162739.GA9985@rei.lan>
+Message-ID: <CAEemH2c1KJnBEizhB6_7Hqnkryg2QdhKeiWeZEc7oorPvmjgnQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-On Tue, Feb 18, 2020 at 10:21 PM Yang Xu <xuyang_jy_0410@163.com> wrote:
+...
+> > +
+> > +             mem_avail = SAFE_READ_MEMINFO("MemFree:");
+> > +     }
+>
+> I guess that we don't have to bother with MemAvailable here, since we do
+> drop the system caches the MemFree should be equal to MemAvailable. So I
+> would be for reading just MemFree unconditionally here.
+>
 
-> Hi Li
->
-> This patch looks good to me, feel free to add
-> Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com> <xuyang2018.jy@cn.fujitsu.com>
->
-> Also, I think we can replace GPL with SPDX-License-Identifier in these makefiles
->
-> Yes, I have fixed that as you suggest and pushed. Thanks!
++1 yes, that's right.
 
 
-> (Also for
-> all ltp makefiles, we have converted SPDX-License-Identifier in few header since commit b288957a88b1 ).
+> If you agree with this change I can change it before applying.
 >
-> Good point, but I haven't found a way to do the replacement for whole
-files.
+
+Of course yes, feel free to do that (and remember to add the changes which
+Petr suggested).
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200219/556d1f05/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200219/ecf02c99/attachment.htm>
