@@ -1,313 +1,38 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Wed, 19 Feb 2020 04:14:38 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E21-rc1-0b36b76=2Ecki_=28stable=29?=
-Message-ID: <cki.42ECDBEE64.ERPQQC610R@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 19 Feb 2020 09:23:59 +0100
+Subject: [LTP] [PATCH 2/7] syscalls/fsopen: New tests
+In-Reply-To: <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
+References: <cover.1581680021.git.viresh.kumar@linaro.org>
+ <e4955c8edfb29c1d0f74a8cd24b1dcc68f3b6814.1581680021.git.viresh.kumar@linaro.org>
+ <CAEemH2emOw=Abnvk-3EOVFyCoY=c6HtC_1o0gih5n+aL-WfXLw@mail.gmail.com>
+ <20200217133638.GB14410@rei>
+ <CAEemH2caDii5LcOX7fbOcrJNY9=TL6RfEi6Y0ajybxMKNgw7ag@mail.gmail.com>
+Message-ID: <20200219082359.GA21099@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Viresh,
 
-Hello,
+as somebody (probably Li) pointed out fsopen/fsopen01.c is similar to fsmount/fsmount01.c,
+so please during rebase drop it. BTW for this dropped test I'd use different
+approach (close fd in cleanup function and use tst_brk(TFAIL instead of
+tst_res(TBROK and goto):
 
-We ran automated tests on a recent commit from this kernel tree:
+static void cleanup(void)
+{
+	if (fd > 0)
+		SAFE_CLOSE(fd);
+}
 
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 0b36b7661751 - Linux 5.4.21-rc1
+...
+	if (fd == -1)
+		tst_brk(TFAIL | TERRNO, "fsopen() failed");
 
-The results of these automated tests are provided below.
+Also you added autotools check for functions (e.g. fsopen) during commits, but I
+move them to the first (together with lapi header).
 
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/02/18/444097
-
-One or more kernel tests failed:
-
-    ppc64le:
-     ? LTP
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 3 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-  ppc64le:
-    Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ??? LTP
-       ??? Loopdev Sanity
-       ??? Memory function: memfd_create
-       ??? AMTU (Abstract Machine Test Utility)
-       ??? Networking bridge: sanity
-       ??? Ethernet drivers sanity
-       ??? Networking MACsec: sanity
-       ??? Networking socket: fuzz
-       ??? Networking sctp-auth: sockopts test
-       ??? Networking route: pmtu
-       ??? Networking route_func - local
-       ??? Networking route_func - forward
-       ??? Networking TCP: keepalive test
-       ??? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ??? Networking tunnel: gre basic
-       ??? L2TP basic test
-       ??? Networking tunnel: vxlan basic
-       ??? Networking ipsec: basic netns - tunnel
-       ??? audit: audit testsuite test
-       ??? httpd: mod_ssl smoke sanity
-       ??? tuned: tune-processes-through-perf
-       ??? ALSA PCM loopback test
-       ??? ALSA Control (mixer) Userspace Element test
-       ??? trace: ftrace/tracer
-       ? ??? CIFS Connectathon
-       ? ??? POSIX pjd-fstest suites
-       ? ??? jvm - DaCapo Benchmark Suite
-       ? ??? jvm - jcstress tests
-       ? ??? Memory function: kaslr
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? iotop: sanity
-       ? ??? Usex - version 1.9-29
-       ? ??? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-    Host 3:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ??? Podman system integration test - as root
-       ??? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-  x86_64:
-    Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ??? jvm - jcstress tests
-       ? ??? Memory function: kaslr
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? iotop: sanity
-       ? ??? Usex - version 1.9-29
-       ? ??? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 3:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ??? Storage blktests
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
-
+Kind regards,
+Petr
