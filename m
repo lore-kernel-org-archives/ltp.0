@@ -1,37 +1,48 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 19 Feb 2020 18:32:53 +0800
-Subject: [LTP] cpuset_regression_test failure
-In-Reply-To: <20200219102329.GA28580@rei>
-References: <MAXPR0101MB1468A284450566343010E440EE110@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <fa9fae7c-2110-d710-7df8-c3885e54d706@cn.fujitsu.com>
- <20200219102329.GA28580@rei>
-Message-ID: <cd8d9a9f-9513-35c5-0b59-6ab4dd60c5fd@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 19 Feb 2020 11:35:05 +0100
+Subject: [LTP] [PATCH v2] Wrapper for Syzkaller reproducers
+In-Reply-To: <877e0jgewo.fsf@our.domain.is.not.set>
+References: <20191204103120.29440-1-rpalethorpe@suse.com>
+ <CACT4Y+aMum6OJS_t-_-sXOUftPegFGrAjCvYJ-0g+5z7=aX7GQ@mail.gmail.com>
+ <877e0jgewo.fsf@our.domain.is.not.set>
+Message-ID: <20200219103505.GB28580@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-Hi Cyril
-> Hi!
->>> I am trying to run *cpuset_regression_test* on my linux 5.4.3 with our
->>> Yocto distro,i got *FAIL* result for this test when i ran complete ltp
->>> test but i did not got reason for test failure but when i tried to run
->>> this test seperately it showing is it correct way to run this test,how
->>> this test needs to be ran independently?
->> sh can not be ran independently unless using runltp sh.
+Hi!
+> >> Allows one to run the Syzkaller reproducers as part of the LTP.
+> >>
+> >> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> >> ---
+> >>
+> >> V2:
+> >>
+> >> * Will now refuse to compile on anything other than x86_64, because I haven't
+> >>   tested them on anything else.
+> >>
+> >> * Hopefully fixed problem with submodule not being found because I didn't
+> >>   include a commit reference.
+> >>
+> >> * Added explicity 'no' value if --with-syzkaller-repros is not present
+> >>
+> >> * Reduced the default timeout in the test to 20 seconds. I found this allows
+> >>   me to complete testing in reasonable time.
+> >
+> > What's the status of this? This wasn't merged yet, right?
+> > I don't see this here:
+> > https://github.com/linux-test-project/ltp/tree/master/testcases/kernel
 > 
-> They could, but you have to setup $PATH correctly first, we are sourcing
-> shell scripts and executing binaries from /opt/ltp/testcases/bin, so in
-> most cases this should work:
-> 
-> PATH="$PATH:/opt/ltp/testcases/bin" ./foo.sh
+> Yeah, it fell to one side due to the LTP release, SUSE Hackweek and lack
+> of feedback. Hopefully we can get it merged soon however.
 
-Yes, you are right. Sorry for the wrong info.
+You don't forget about FOSDEM. Unfortunatelly we have managed to
+accumulate quite a backlog at the start of the year.
 
-Best Regards
-Yang Xu
-> 
+However I do plan to return to this once things settle down a bit.
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
