@@ -1,117 +1,43 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Wed, 19 Feb 2020 21:48:44 -0800
-Subject: [LTP] [PATCH v2] syscalls: Check for time64 unsafe syscalls before
- using them
-Message-ID: <20200220054844.3365462-1-raj.khem@gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 20 Feb 2020 11:20:24 +0530
+Subject: [LTP] [PATCH V2 05/10] syscalls/fsconfig: New tests
+In-Reply-To: <CAEemH2f6gudJjZ1HAsVFVKkuR3FUyBVHf1JQDHeQMdavQqc+2A@mail.gmail.com>
+References: <cover.1582104018.git.viresh.kumar@linaro.org>
+ <6ac7573e8ea5ab6f0ab9256b73802126d72b5156.1582104018.git.viresh.kumar@linaro.org>
+ <CAEemH2f6gudJjZ1HAsVFVKkuR3FUyBVHf1JQDHeQMdavQqc+2A@mail.gmail.com>
+Message-ID: <20200220055024.fgh2uxje6yanrshh@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl is using 64bit time_t now on 32bit architectures and these syscalls
-no longer exist, therefore its better to check for them being available
-before using them
+On 20-02-20, 13:41, Li Wang wrote:
+> > +       TEST(fsconfig(fd, FSCONFIG_SET_PATH, "foo", tst_device->dev,
+> > AT_FDCWD));
+> > +       if (TST_RET == -1) {
+> > +               if (TST_ERR == EOPNOTSUPP) {
+> > +                       tst_res(TINFO, "fsconfig(): FSCONFIG_SET_PATH not
+> > supported");
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- lib/tst_clocks.c                                        | 9 +++++----
- testcases/kernel/syscalls/gettimeofday/gettimeofday01.c | 6 ++----
- testcases/kernel/syscalls/gettimeofday/gettimeofday02.c | 8 +++-----
- 3 files changed, 10 insertions(+), 13 deletions(-)
+On my ARM setup, I always hit this path for few of the syscalls :(
 
-diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-index 5195da38f3..f4f8b2846b 100644
---- a/lib/tst_clocks.c
-+++ b/lib/tst_clocks.c
-@@ -10,21 +10,22 @@
- #define _GNU_SOURCE
- #include <unistd.h>
- #include <time.h>
--#include <sys/syscall.h>
- 
-+#include "test.h"
- #include "tst_clocks.h"
-+#include "lapi/syscalls.h"
- 
- int tst_clock_getres(clockid_t clk_id, struct timespec *res)
- {
--	return syscall(SYS_clock_getres, clk_id, res);
-+	return ltp_syscall(__NR_clock_getres, clk_id, res);
- }
- 
- int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
- {
--	return syscall(SYS_clock_gettime, clk_id, ts);
-+	return ltp_syscall(__NR_clock_gettime, clk_id, ts);
- }
- 
- int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
- {
--	return syscall(SYS_clock_settime, clk_id, ts);
-+	return ltp_syscall(__NR_clock_settime, clk_id, ts);
- }
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-index 583d8f7b9b..08ea1673ad 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-@@ -38,10 +38,8 @@
- #include <sys/time.h>
- #include <errno.h>
- #include "test.h"
--#include <sys/syscall.h>
- #include <unistd.h>
--
--#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-+#include "lapi/syscalls.h"
- 
- char *TCID = "gettimeofday01";
- int TST_TOTAL = 1;
-@@ -63,7 +61,7 @@ int main(int ac, char **av)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		TEST(gettimeofday((void *)-1, (void *)-1));
-+		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
- 
- 		/* gettimeofday returns an int, so we need to turn the long
- 		 * TEST_RETURN into an int to test with */
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-index 1d60f448e8..5170ad2f78 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-@@ -16,14 +16,12 @@
- #include <stdint.h>
- #include <sys/time.h>
- #include <stdlib.h>
--#include <sys/syscall.h>
- #include <unistd.h>
- #include <time.h>
- #include <errno.h>
- 
- #include "tst_test.h"
--
--#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-+#include "lapi/syscalls.h"
- 
- static volatile sig_atomic_t done;
- static char *str_rtime;
-@@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
- 
- 	alarm(rtime);
- 
--	if (gettimeofday(&tv1, NULL)) {
-+	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
- 		tst_res(TBROK | TERRNO, "gettimeofday() failed");
- 		return;
- 	}
- 
- 	while (!done) {
--		if (gettimeofday(&tv2, NULL)) {
-+		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
- 			tst_res(TBROK | TERRNO, "gettimeofday() failed");
- 			return;
- 		}
+> > +               } else {
+> > +                       tst_res(TFAIL | TERRNO, "fsconfig() failed");
+> >
+> 
+> The test reports an EINVAL error when testing fsconfig() with
+> 'FSCONFIG_SET_PATH' on XFS. I'm now trying to look close to this issue.
+> 
+> kernel: 5.6.0-rc2+ x86_64
+> 
+> tst_test.c:1278: INFO: Testing on xfs
+> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+> tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
+> fsconfig01.c:46: FAIL: fsconfig() failed: EINVAL (22)
+
+Both "foo" and tst_device->dev may be wrong here unfortunately. Same
+for few other commands like: _PATH, _PATH_EMPTY, _FD..
+
 -- 
-2.25.1
-
+viresh
