@@ -1,103 +1,118 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Feb 2020 14:34:44 +0800
-Subject: [LTP] [PATCH V2 06/10] syscalls/fsmount: Improve fsmount01 test
-In-Reply-To: <9706f359006ea409d2f85c111d3e001ca6f6d128.1582104018.git.viresh.kumar@linaro.org>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <9706f359006ea409d2f85c111d3e001ca6f6d128.1582104018.git.viresh.kumar@linaro.org>
-Message-ID: <CAEemH2cG-OCNmAybYOebbmr=HNoSQ-gBsd7xa9ANGPiOXEHyDg@mail.gmail.com>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Wed, 19 Feb 2020 22:52:04 -0800
+Subject: [LTP] [PATCH v3] syscalls: Check for time64 unsafe syscalls before
+ using them
+Message-ID: <20200220065204.485391-1-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Feb 19, 2020 at 5:28 PM Viresh Kumar <viresh.kumar@linaro.org>
-wrote:
+musl is using 64bit time_t now on 32bit architectures and these syscalls
+no longer exist, therefore its better to check for them being available
+before using them
 
-> This patch updates the fsmount01.c file to make it look similar to all
-> other fsmount related syscall tests and here is the list of all changes:
->
-> - Test all fsmount flags and mount attributes
-> - Remove extra PASS messages as all we want to test here is fsmount()
->   and not other syscalls.
-> - On the same lines, print TFAIL for fsmount() syscall and TBROK for
->   other calls.
-> - close sfd on failures
-> - Make the file look similar to other fsmount related tests
-> - General cleanup
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  testcases/kernel/syscalls/fsmount/fsmount01.c | 92 ++++++++++++-------
->  1 file changed, 60 insertions(+), 32 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c
-> b/testcases/kernel/syscalls/fsmount/fsmount01.c
-> index c3cf8106f63b..b746a14ba472 100644
-> --- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-> +++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-> @@ -3,67 +3,95 @@
->   * Copyright (C) 2020 Red Hat, Inc.  All rights reserved.
->   * Author: Zorro Lang <zlang@redhat.com>
->   *
-> - * Use new mount API from v5.2 (fsopen(), fsconfig(), fsmount(),
-> move_mount())
-> - * to mount a filesystem without any specified mount options.
-> + * Description:
-> + * Basic fsmount() test.
->   */
->
-> -#include <sys/mount.h>
-> -
->  #include "tst_test.h"
->  #include "lapi/fsmount.h"
->
-> -#define MNTPOINT "newmount_point"
-> -static int sfd, mfd, is_mounted;
-> +#define MNTPOINT       "mntpoint"
-> +
-> +static struct tcase {
-> +       char *name;
-> +       unsigned int flags;
-> +       unsigned int mount_attrs;
-> +} tcases[] = {
-> +       {"Flag 0, attr RDONLY", 0, MOUNT_ATTR_RDONLY},
-> +       {"Flag 0, attr NOSUID", 0, MOUNT_ATTR_NOSUID},
-> +       {"Flag 0, attr NODEV", 0, MOUNT_ATTR_NODEV},
-> +       {"Flag 0, attr NOEXEC", 0, MOUNT_ATTR_NOEXEC},
-> +       {"Flag 0, attr RELATIME", 0, MOUNT_ATTR_RELATIME},
-> +       {"Flag 0, attr NOATIME", 0, MOUNT_ATTR_NOATIME},
-> +       {"Flag 0, attr STRICTATIME", 0, MOUNT_ATTR_STRICTATIME},
-> +       {"Flag 0, attr NODIRATIME", 0, MOUNT_ATTR_NODIRATIME},
-> +       {"Flag CLOEXEC, attr RDONLY", FSMOUNT_CLOEXEC, MOUNT_ATTR_RDONLY},
-> +       {"Flag CLOEXEC, attr NOSUID", FSMOUNT_CLOEXEC, MOUNT_ATTR_NOSUID},
-> +       {"Flag CLOEXEC, attr NODEV", FSMOUNT_CLOEXEC, MOUNT_ATTR_NODEV},
-> +       {"Flag CLOEXEC, attr NOEXEC", FSMOUNT_CLOEXEC, MOUNT_ATTR_NOEXEC},
-> +       {"Flag CLOEXEC, attr RELATIME", FSMOUNT_CLOEXEC,
-> MOUNT_ATTR_RELATIME},
-> +       {"Flag CLOEXEC, attr NOATIME", FSMOUNT_CLOEXEC,
-> MOUNT_ATTR_NOATIME},
-> +       {"Flag CLOEXEC, attr STRICTATIME", FSMOUNT_CLOEXEC,
-> MOUNT_ATTR_STRICTATIME},
-> +       {"Flag CLOEXEC, attr NODIRATIME", FSMOUNT_CLOEXEC,
-> MOUNT_ATTR_NODIRATIME},
-> +};
->
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ lib/tst_clocks.c                                      | 11 ++++++-----
+ .../kernel/syscalls/gettimeofday/gettimeofday01.c     |  6 ++----
+ .../kernel/syscalls/gettimeofday/gettimeofday02.c     |  8 +++-----
+ 3 files changed, 11 insertions(+), 14 deletions(-)
 
-Again, if you move the 'Flag & attr' to print info, this patch looks pretty
-good to me.
-
-> +       if (!tst_ismount(MNTPOINT))
-> +               tst_res(TPASS, "%s: fsmount() passed", tc->name);
->
-
-What about:
-        tst_res(TPASS, "'Flag & mount_attr: %s': fsmount() passed",
-tc->name);
-
+diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+index 5195da38f3..155551170d 100644
+--- a/lib/tst_clocks.c
++++ b/lib/tst_clocks.c
+@@ -10,21 +10,22 @@
+ #define _GNU_SOURCE
+ #include <unistd.h>
+ #include <time.h>
+-#include <sys/syscall.h>
+-
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
+ #include "tst_clocks.h"
++#include "lapi/syscalls.h"
+ 
+ int tst_clock_getres(clockid_t clk_id, struct timespec *res)
+ {
+-	return syscall(SYS_clock_getres, clk_id, res);
++	return tst_syscall(__NR_clock_getres, clk_id, res);
+ }
+ 
+ int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+ {
+-	return syscall(SYS_clock_gettime, clk_id, ts);
++	return tst_syscall(__NR_clock_gettime, clk_id, ts);
+ }
+ 
+ int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
+ {
+-	return syscall(SYS_clock_settime, clk_id, ts);
++	return tst_syscall(__NR_clock_settime, clk_id, ts);
+ }
+diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+index 583d8f7b9b..08ea1673ad 100644
+--- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
++++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+@@ -38,10 +38,8 @@
+ #include <sys/time.h>
+ #include <errno.h>
+ #include "test.h"
+-#include <sys/syscall.h>
+ #include <unistd.h>
+-
+-#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
++#include "lapi/syscalls.h"
+ 
+ char *TCID = "gettimeofday01";
+ int TST_TOTAL = 1;
+@@ -63,7 +61,7 @@ int main(int ac, char **av)
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		TEST(gettimeofday((void *)-1, (void *)-1));
++		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
+ 
+ 		/* gettimeofday returns an int, so we need to turn the long
+ 		 * TEST_RETURN into an int to test with */
+diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+index 1d60f448e8..5170ad2f78 100644
+--- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
++++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+@@ -16,14 +16,12 @@
+ #include <stdint.h>
+ #include <sys/time.h>
+ #include <stdlib.h>
+-#include <sys/syscall.h>
+ #include <unistd.h>
+ #include <time.h>
+ #include <errno.h>
+ 
+ #include "tst_test.h"
+-
+-#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
++#include "lapi/syscalls.h"
+ 
+ static volatile sig_atomic_t done;
+ static char *str_rtime;
+@@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
+ 
+ 	alarm(rtime);
+ 
+-	if (gettimeofday(&tv1, NULL)) {
++	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
+ 		tst_res(TBROK | TERRNO, "gettimeofday() failed");
+ 		return;
+ 	}
+ 
+ 	while (!done) {
+-		if (gettimeofday(&tv2, NULL)) {
++		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
+ 			tst_res(TBROK | TERRNO, "gettimeofday() failed");
+ 			return;
+ 		}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/2c5c3798/attachment.htm>
+2.25.1
+
