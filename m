@@ -1,118 +1,59 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Wed, 19 Feb 2020 22:52:04 -0800
-Subject: [LTP] [PATCH v3] syscalls: Check for time64 unsafe syscalls before
- using them
-Message-ID: <20200220065204.485391-1-raj.khem@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 20 Feb 2020 15:06:33 +0800
+Subject: [LTP] [PATCH V2 01/10] tst_device: Add tst_ismount() helper
+In-Reply-To: <199f58740e42bbdbcba0c847c194f62d2b3bb37b.1582104018.git.viresh.kumar@linaro.org>
+References: <cover.1582104018.git.viresh.kumar@linaro.org>
+ <199f58740e42bbdbcba0c847c194f62d2b3bb37b.1582104018.git.viresh.kumar@linaro.org>
+Message-ID: <CAEemH2e9fhUVU3DbpXCEimL0k8eGLuuSRcicq4NYOk_zELLqMw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl is using 64bit time_t now on 32bit architectures and these syscalls
-no longer exist, therefore its better to check for them being available
-before using them
+> +int tst_ismount(const char *path)
+> +{
+> +       char line[256];
+> +       FILE *file;
+> +       int ret = -1;
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- lib/tst_clocks.c                                      | 11 ++++++-----
- .../kernel/syscalls/gettimeofday/gettimeofday01.c     |  6 ++----
- .../kernel/syscalls/gettimeofday/gettimeofday02.c     |  8 +++-----
- 3 files changed, 11 insertions(+), 14 deletions(-)
++
+> +       file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
+> +
+> +       while (fgets(line, sizeof(line), file)) {
+> +               if (strstr(line, path) != NULL) {
+> +                       ret = 0;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       SAFE_FCLOSE(NULL, file);
+> +
+> +       if (ret) {
+> +               errno = ENOENT;
+> +               tst_resm(TWARN, "No device is mounted at %s", path);
+> +       }
+> +
+> +       return ret;
+>
 
-diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-index 5195da38f3..155551170d 100644
---- a/lib/tst_clocks.c
-+++ b/lib/tst_clocks.c
-@@ -10,21 +10,22 @@
- #define _GNU_SOURCE
- #include <unistd.h>
- #include <time.h>
--#include <sys/syscall.h>
--
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
- #include "tst_clocks.h"
-+#include "lapi/syscalls.h"
- 
- int tst_clock_getres(clockid_t clk_id, struct timespec *res)
- {
--	return syscall(SYS_clock_getres, clk_id, res);
-+	return tst_syscall(__NR_clock_getres, clk_id, res);
- }
- 
- int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
- {
--	return syscall(SYS_clock_gettime, clk_id, ts);
-+	return tst_syscall(__NR_clock_gettime, clk_id, ts);
- }
- 
- int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
- {
--	return syscall(SYS_clock_settime, clk_id, ts);
-+	return tst_syscall(__NR_clock_settime, clk_id, ts);
- }
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-index 583d8f7b9b..08ea1673ad 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-@@ -38,10 +38,8 @@
- #include <sys/time.h>
- #include <errno.h>
- #include "test.h"
--#include <sys/syscall.h>
- #include <unistd.h>
--
--#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-+#include "lapi/syscalls.h"
- 
- char *TCID = "gettimeofday01";
- int TST_TOTAL = 1;
-@@ -63,7 +61,7 @@ int main(int ac, char **av)
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
- 
--		TEST(gettimeofday((void *)-1, (void *)-1));
-+		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
- 
- 		/* gettimeofday returns an int, so we need to turn the long
- 		 * TEST_RETURN into an int to test with */
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-index 1d60f448e8..5170ad2f78 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-@@ -16,14 +16,12 @@
- #include <stdint.h>
- #include <sys/time.h>
- #include <stdlib.h>
--#include <sys/syscall.h>
- #include <unistd.h>
- #include <time.h>
- #include <errno.h>
- 
- #include "tst_test.h"
--
--#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-+#include "lapi/syscalls.h"
- 
- static volatile sig_atomic_t done;
- static char *str_rtime;
-@@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
- 
- 	alarm(rtime);
- 
--	if (gettimeofday(&tv1, NULL)) {
-+	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
- 		tst_res(TBROK | TERRNO, "gettimeofday() failed");
- 		return;
- 	}
- 
- 	while (!done) {
--		if (gettimeofday(&tv2, NULL)) {
-+		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
- 			tst_res(TBROK | TERRNO, "gettimeofday() failed");
- 			return;
- 		}
+Sorry, I think the return value should be '1' if it has been mounted
+already.
+
+e.g
+These codes will make people confused about whether it's
+mounted successfully or not.
+
+if (tst_ismount(MNTPOINT))
+        tst_brk(TBROK | TERRNO, "device not mounted");
+
+
++}
+>
+
 -- 
-2.25.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/98197515/attachment.htm>
