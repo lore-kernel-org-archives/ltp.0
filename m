@@ -1,258 +1,45 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Thu, 20 Feb 2020 03:43:47 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E21-2d636a1=2Ecki_=28stable=29?=
-Message-ID: <cki.C7F44073DC.K13BODGQAA@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 20 Feb 2020 13:10:54 +0800
+Subject: [LTP] [PATCH V2 01/10] tst_device: Add tst_ismount() helper
+In-Reply-To: <199f58740e42bbdbcba0c847c194f62d2b3bb37b.1582104018.git.viresh.kumar@linaro.org>
+References: <cover.1582104018.git.viresh.kumar@linaro.org>
+ <199f58740e42bbdbcba0c847c194f62d2b3bb37b.1582104018.git.viresh.kumar@linaro.org>
+Message-ID: <CAEemH2d9DmK3-1hNH4Y-L+qikN7GXPbtguM7q4AQ__9is2MoPA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Wed, Feb 19, 2020 at 5:28 PM Viresh Kumar <viresh.kumar@linaro.org>
+wrote:
 
-Hello,
-
-We ran automated tests on a recent commit from this kernel tree:
-
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 2d636a1263be - Linux 5.4.21
-
-The results of these automated tests are provided below.
-
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/02/19/446693
-
-One or more kernel tests failed:
-
-    ppc64le:
-     ? LTP
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 3 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+> This patch moves the ismount() helper added to the fsmount syscall tests
+> to the standard library and renames it to tst_ismount(). The helper can
+> be used across different files now.
+>
+> Minor modifications are also done to the helper.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>
+Acked-by: Li Wang <liwang@redhat.com>
 
 
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
+> ---
+> +/*
+> + * Verifies if an earlier mount is successful or not.
+> + * @path: Mount path to verify
+> + */
+> +int tst_ismount(const char *path);
+>
 
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+I have slightly thought to rename it as 'tst_is_mounted(const char *path)',
+but it also depends on other reviewer's opinion, I have no strong insist
+here.
 
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? Storage blktests
-
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 2:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ??? Storage blktests
-
-    Host 3:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/88c19774/attachment.htm>
