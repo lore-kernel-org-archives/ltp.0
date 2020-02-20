@@ -1,61 +1,127 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Thu, 20 Feb 2020 06:09:31 +0000
-Subject: [LTP] min_free_kbytes  test failing
-Message-ID: <BM1PR0101MB1459EF571BFF86EE43FBF66BEE130@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 20 Feb 2020 14:25:22 +0800
+Subject: [LTP] [PATCH v2] syscalls: Check for time64 unsafe syscalls
+ before using them
+In-Reply-To: <20200220054844.3365462-1-raj.khem@gmail.com>
+References: <20200220054844.3365462-1-raj.khem@gmail.com>
+Message-ID: <aeaab177-aedf-b47a-3d9d-84793dc8681f@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-I am running min_free_kbytes on my RISC  v system wth linux 5.4.3 with custom Yocto distro,the test is getting failed with following errors.What could be the possible reason for failure?
 
 
-root@exaleapsemi:~/pankaj_ltp/ltp/testcases/kernel/mem/tunable# ./min_free_kbytes
-tst_test.c:1206: INFO: Timeout per run is disabled
-mem.c:817: INFO: set overcommit_memory to 2
-mem.c:817: INFO: set min_free_kbytes to 11441
-memfree is 7968532 kB before eatup mem
-memfree is 4196564 kB after eatup mem
-mem.c:817: INFO: set min_free_kbytes to 22882
-memfree is 7967752 kB before eatup mem
-memfree is 4198660 kB after eatup mem
-mem.c:817: INFO: set min_free_kbytes to 163642
-memfree is 7967328 kB before eatup mem
-memfree is 4186296 kB after eatup mem
-mem.c:817: INFO: set overcommit_memory to 0
-mem.c:817: INFO: set min_free_kbytes to 11441
-memfree is 7966824 kB before eatup mem
-min_free_kbytes.c:152: FAIL: child unexpectedly failed: 11
-mem.c:817: INFO: set min_free_kbytes to 22882
-memfree is 7992744 kB before eatup mem
-safe_macros.c:633: BROK: min_free_kbytes.c:121: waitpid(34,0x3fffec0854,10) failed: ECHILD (10)
-min_free_kbytes.c:147: FAIL: child unexpectedly failed: 512
-mem.c:817: INFO: set min_free_kbytes to 163642
-memfree is 7987848 kB before eatup mem
-safe_macros.c:633: BROK: min_free_kbytes.c:121: waitpid(34,0x3fffec0854,10) failed: ECHILD (10)
-min_free_kbytes.c:147: FAIL: child unexpectedly failed: 512
-mem.c:817: INFO: set overcommit_memory to 1
-mem.c:817: INFO: set min_free_kbytes to 11441
-memfree is 7987748 kB before eatup mem
-min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
-mem.c:817: INFO: set min_free_kbytes to 22882
-memfree is 7995428 kB before eatup mem
-min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
-mem.c:817: INFO: set min_free_kbytes to 163642
-memfree is 7995760 kB before eatup mem
-min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
-min_free_kbytes.c:82: PASS: min_free_kbytes test pass
-mem.c:817: INFO: set min_free_kbytes to 11441
-mem.c:817: INFO: set overcommit_memory to 0
+Hi Khem
+> musl is using 64bit time_t now on 32bit architectures and these syscalls
+> no longer exist, therefore its better to check for them being available
+> before using them
+> 
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
+>   lib/tst_clocks.c                                        | 9 +++++----
+>   testcases/kernel/syscalls/gettimeofday/gettimeofday01.c | 6 ++----
+>   testcases/kernel/syscalls/gettimeofday/gettimeofday02.c | 8 +++-----
+>   3 files changed, 10 insertions(+), 13 deletions(-)
+> 
+> diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+> index 5195da38f3..f4f8b2846b 100644
+> --- a/lib/tst_clocks.c
+> +++ b/lib/tst_clocks.c
+> @@ -10,21 +10,22 @@
+>   #define _GNU_SOURCE
+>   #include <unistd.h>
+>   #include <time.h>
+> -#include <sys/syscall.h>
+>   
+> +#include "test.h"
+>   #include "tst_clocks.h"
+> +#include "lapi/syscalls.h"
+>   
+>   int tst_clock_getres(clockid_t clk_id, struct timespec *res)
+>   {
+> -	return syscall(SYS_clock_getres, clk_id, res);
+> +	return ltp_syscall(__NR_clock_getres, clk_id, res);
+It should use new api, include "tst_test.h" and use tst_syscall. It 
+doesn't like gettimeofday01.c.
+>   }
+>   
+>   int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+>   {
+> -	return syscall(SYS_clock_gettime, clk_id, ts);
+> +	return ltp_syscall(__NR_clock_gettime, clk_id, ts);
+>   }
+>   
+>   int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
+>   {
+> -	return syscall(SYS_clock_settime, clk_id, ts);
+> +	return ltp_syscall(__NR_clock_settime, clk_id, ts);
+>   }
+> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> index 583d8f7b9b..08ea1673ad 100644
+> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> @@ -38,10 +38,8 @@
+>   #include <sys/time.h>
+>   #include <errno.h>
+>   #include "test.h"
+> -#include <sys/syscall.h>
+>   #include <unistd.h>
+> -
+> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
+> +#include "lapi/syscalls.h"
+>   
+>   char *TCID = "gettimeofday01";
+>   int TST_TOTAL = 1;
+> @@ -63,7 +61,7 @@ int main(int ac, char **av)
+>   	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>   		tst_count = 0;
+>   
+> -		TEST(gettimeofday((void *)-1, (void *)-1));
+> +		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
+In future, we can convert this case into new api and use tst_syscall.
+>   
+>   		/* gettimeofday returns an int, so we need to turn the long
+>   		 * TEST_RETURN into an int to test with */
+> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> index 1d60f448e8..5170ad2f78 100644
+> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> @@ -16,14 +16,12 @@
+>   #include <stdint.h>
+>   #include <sys/time.h>
+>   #include <stdlib.h>
+> -#include <sys/syscall.h>
+>   #include <unistd.h>
+>   #include <time.h>
+>   #include <errno.h>
+>   
+>   #include "tst_test.h"
+> -
+> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
+> +#include "lapi/syscalls.h"
+>   
+>   static volatile sig_atomic_t done;
+>   static char *str_rtime;
+> @@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
+>   
+>   	alarm(rtime);
+>   
+> -	if (gettimeofday(&tv1, NULL)) {
+> +	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
+>   		tst_res(TBROK | TERRNO, "gettimeofday() failed");
+>   		return;
+>   	}
+>   
+>   	while (!done) {
+> -		if (gettimeofday(&tv2, NULL)) {
+> +		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
+>   			tst_res(TBROK | TERRNO, "gettimeofday() failed");
+>   			return;
+>   		}
+> 
+other than, this patch looks good to me.
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
-Summary:
-passed   1
-failed   6
-skipped  0
-warnings 0
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/a5d0a0e4/attachment.htm>
