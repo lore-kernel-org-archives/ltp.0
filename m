@@ -1,43 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Feb 2020 09:51:29 +0100
-Subject: [LTP] [PATCH V2 04/10] syscalls/fsopen: New tests
-In-Reply-To: <CAEemH2f7eezS27odRq9qvAN=BCskpvvELECr7+Nsdd+Z_7sofA@mail.gmail.com>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <aab7ae7e324c40e8e995ff381384a402d2aba8f5.1582104018.git.viresh.kumar@linaro.org>
- <CAEemH2f7eezS27odRq9qvAN=BCskpvvELECr7+Nsdd+Z_7sofA@mail.gmail.com>
-Message-ID: <20200220085129.GA11465@gacrux.arch.suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Feb 2020 10:59:08 +0100
+Subject: [LTP] [PATCH] syscalls/fgetxattr02: Use loop instead of RAM disk
+Message-ID: <20200220095908.14980-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+There are minimal systems that does not ship with RAM disk kernel module
+which makes this test fail with ENXIO when we attempt to open the block
+device in the test setup.
 
-> > +static struct tcase {
-> > +       char *name;
-> > +       unsigned int flags;
-> > +} tcases[] = {
-> > +       {"Flag 0", 0},
-> > +       {"Flag FSOPEN_CLOEXEC", FSOPEN_CLOEXEC},
+LTP depends on heavily on loop device driver already so it makes sense
+to switch over to a loop device backed block device instead.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/fgetxattr/fgetxattr02.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> Maybe better to remove the 'Flag' keywords from here and add it to the
-> print sentence.
-+1. BTW if you remove bogus text, you can use macro to not repeat the flag,
-see testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-#define TYPE_NAME(x) .ttype = x, .desc = #x
-(just a suggestion, nothing really important)
+diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
+index 02e81810a..82fb676be 100644
+--- a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
++++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
+@@ -210,7 +210,8 @@ static void setup(void)
+ 	size_t i = 0;
+ 	struct sockaddr_un sun;
+ 
+-	dev_t dev = makedev(1, 3);
++	dev_t chr_dev = makedev(1, 3);
++	dev_t blk_dev = makedev(7, 3);
+ 
+ 	SAFE_TOUCH(FILENAME, 0644, NULL);
+ 	SAFE_TOUCH(SYMLINKF, 0644, NULL);
+@@ -219,8 +220,8 @@ static void setup(void)
+ 
+ 	/* root: mknod(2) needs it to create something other than a file */
+ 	SAFE_MKNOD(FIFO, S_IFIFO | 0777, 0);
+-	SAFE_MKNOD(CHR, S_IFCHR | 0777, dev);
+-	SAFE_MKNOD(BLK, S_IFBLK | 0777, dev);
++	SAFE_MKNOD(CHR, S_IFCHR | 0777, chr_dev);
++	SAFE_MKNOD(BLK, S_IFBLK | 0777, blk_dev);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+ 
+-- 
+2.23.0
 
-> > +static void run(unsigned int n)
-> > +{
-> > ...
-> > +
-> > +       if (!tst_ismount(MNTPOINT))
-> > +               tst_res(TPASS, "%s: fsopen() passed", tc->name);
-
-
-> tst_res(TPASS, "Flag %s: fsopen() passed", tc->name);
-
-Kind regards,
-Petr
