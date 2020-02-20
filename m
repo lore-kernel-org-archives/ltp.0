@@ -1,64 +1,32 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Feb 2020 15:57:04 +0800
-Subject: [LTP] [PATCH V2 09/10] syscalls/fspick: New tests
-In-Reply-To: <7195b2e7ffcda3ba70715b9094cff450568d9298.1582104018.git.viresh.kumar@linaro.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Feb 2020 09:01:55 +0100
+Subject: [LTP] [PATCH V2 02/10] lapi/fsmount.h: Add
+ fsopen_supported_by_kernel()
+In-Reply-To: <8d552688d85a7acc62d654832ab7ce270a70cf77.1582104018.git.viresh.kumar@linaro.org>
 References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <7195b2e7ffcda3ba70715b9094cff450568d9298.1582104018.git.viresh.kumar@linaro.org>
-Message-ID: <CAEemH2dUQ_NdJWNTBgh=i0sLY+VzgwFmfCXNqiKeeh2YZDw4_A@mail.gmail.com>
+ <8d552688d85a7acc62d654832ab7ce270a70cf77.1582104018.git.viresh.kumar@linaro.org>
+Message-ID: <20200220080155.GB2860622@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Hi Viresh,
 
-> ...
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fspick/fspick01.c
-> ...
-> +
-> +static void run(unsigned int n)
+...
+> +++ b/include/lapi/fsmount.h
+...
+> +void fsopen_supported_by_kernel(void)
 > +{
-> +       struct tcase *tc = &tcases[n];
-> +       int fspick_fd;
-> +
-> +       TEST(fspick(AT_FDCWD, MNTPOINT, tc->flags));
-> +       if (TST_RET == -1)
-> +               tst_brk(TFAIL | TERRNO, "fspick() failed");
-> +
-> +       fspick_fd = TST_RET;
-> +
-> +       TEST(fsconfig(fspick_fd, FSCONFIG_SET_STRING, "user_xattr",
-> "false", 0));
-> +       if (TST_RET == -1) {
-> +               SAFE_CLOSE(fspick_fd);
-> +               tst_brk(TBROK | TERRNO, "fsconfig() failed");
->
-Test kernel: 5.6.0-rc2+ x86_64
+> +	if ((tst_kvercmp(5, 2, 0)) < 0) {
+> +		/* Check if the syscall is backported on an older kernel */
+> +		TEST(syscall(__NR_fsopen, NULL, 0));
+> +		if (TST_RET == -1 && TST_ERR == ENOSYS)
+> +			tst_brk(TCONF, "Test not supporter on kernel version < v5.2");
+typo supporter => supported.
 
-tst_test.c:1278: INFO: Testing on xfs
-tst_mkfs.c:90: INFO: Formatting /dev/loop3 with xfs opts='' extra opts=''
-tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
-fspick01.c:90: BROK: fsconfig() failed: EINVAL (22)
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-
-> +       }
-> +
-> +       TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "ro", NULL, 0));
-> +       if (TST_RET == -1) {
-> +               SAFE_CLOSE(fspick_fd);
-> +               tst_brk(TBROK | TERRNO, "fsconfig() failed");
-> +       }
-> +
-> +       SAFE_CLOSE(fspick_fd);
-> +       tst_res(TPASS, "%s: fspick() passed", tc->name);
-> +}
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/82abd210/attachment.htm>
+Kind regards,
+Petr
