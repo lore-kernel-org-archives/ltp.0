@@ -1,46 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Feb 2020 13:48:21 +0100
-Subject: [LTP] [PATCH v2] syscalls/quotactl07: add regresstion test for
- Q_XQTUOTARM
-In-Reply-To: <1575526664-25738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1575526664-25738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200220124821.GB11142@rei>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Thu, 20 Feb 2020 12:49:12 +0000
+Subject: [LTP] ksm03, ksm04 testcases don't work with cgroup
+Message-ID: <BM1PR0101MB145982BF4AAC059931EA2013EE130@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This is a regresstion test to check Q_XQUOTARM  whether has
-> quota flags check.
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> 
-> ---------------------
-> 1.Simplify test code
-> 2.add comment for invalid_type,
-> ---------------------
-  ^
-  Btw this belongs under the three dashes below, otherwise it ends up in
-  the commit message when applied.
+Hi,
 
-...
+I am running ksm03 and kms04 on my RISC  v system wth linux 5.4.3,LTP Version: 20200120-55-g537fb6535
+with custom Yocto distro,the test is getting failed with following errors.why it is failing?
 
-> +static void setup(void)
-> +{
-> +	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, 0, (void *)&qflag_acct));
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
-> +
-> +	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, 0, (void *)&valid_type));
-> +	if (TST_ERR == EINVAL) {
-> +		tst_res(TCONF, "current system doesn't support Q_XQUOTARM, skip it");
-> +		return;
+root@exaleapsemi:~/pankaj_ltp/ltp/testcases/kernel/mem/ksm# ./ksm03
+tst_test.c:1215: INFO: Timeout per run is 0h 05m 00s
+safe_macros.c:167: BROK: mem.c:750: mkdir(/dev/cgroup,0777) failed: EEXIST (17)
 
-I've changed this to tst_brk() because doing return from setup has no
-efect here, and pushed, thanks.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200220/3cc5cefb/attachment.htm>
