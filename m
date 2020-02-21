@@ -1,163 +1,171 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 21 Feb 2020 12:50:33 +0100
-Subject: [LTP] [PATCH] syscalls/timerfd01: Port to new library & cleanup
-In-Reply-To: <20200115155156.5891-1-jcronenberg@suse.de>
-References: <20200115155156.5891-1-jcronenberg@suse.de>
-Message-ID: <20200221115033.GB24332@rei>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 21 Feb 2020 13:08:50 +0100
+Subject: [LTP] [PATCH v2] Add test for CVE 2017-10661
+Message-ID: <20200221120850.15874-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Nice cleanup, I've added a few more assertions and pushed, thanks.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-My changes were:
+Sorry about the tmp expression in v1, the comma at the end was a typo.
 
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd01.c b/testcases/kernel/syscalls/timerfd/timerfd01.c
-index 6d17357f1..af19b4399 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd01.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd01.c
-@@ -18,6 +18,7 @@
- #define _GNU_SOURCE
- #include <poll.h>
- #include "tst_test.h"
-+#include "tst_timer.h"
- #include "lapi/timerfd.h"
+Changes since v1:
+- typo fixes
+- code style fixes
+- move test from cve/ to kernel/syscall/timerfd/
+- add test to cve runfile
+
+ runtest/cve                                   |   1 +
+ testcases/kernel/syscalls/timerfd/Makefile    |   3 +-
+ .../syscalls/timerfd/timerfd_settime02.c      | 110 ++++++++++++++++++
+ 3 files changed, 113 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/timerfd/timerfd_settime02.c
+
+diff --git a/runtest/cve b/runtest/cve
+index 57cf66075..36c5ba1d6 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -19,6 +19,7 @@ cve-2017-2671 cve-2017-2671
+ cve-2017-6951 request_key05
+ cve-2017-7308 setsockopt02
+ cve-2017-7472 keyctl04
++cve-2017-10661 timerfd_settime02
+ cve-2017-12192 keyctl07
+ cve-2017-12193 add_key04
+ cve-2017-15274 add_key02
+diff --git a/testcases/kernel/syscalls/timerfd/Makefile b/testcases/kernel/syscalls/timerfd/Makefile
+index 3691a8c36..10b3862ea 100644
+--- a/testcases/kernel/syscalls/timerfd/Makefile
++++ b/testcases/kernel/syscalls/timerfd/Makefile
+@@ -20,6 +20,7 @@ top_srcdir		?= ../../../..
  
- static struct tcase {
-@@ -40,30 +41,25 @@ static unsigned long long getustime(int clockid)
- 	return 1000000ULL * tp.tv_sec + tp.tv_nsec / 1000;
- }
+ include $(top_srcdir)/include/mk/testcases.mk
  
--static void set_timespec(struct timespec *tmr, unsigned long long ustime)
--{
--	tmr->tv_sec = (time_t) (ustime / 1000000ULL);
--	tmr->tv_nsec = (long)(1000ULL * (ustime % 1000000ULL));
--}
--
- static void settime(int tfd, struct itimerspec *tmr, int tflags,
--	unsigned long long tvalue, int tinterval)
-+                    unsigned long long tvalue, int tinterval)
- {
--	set_timespec(&tmr->it_value, tvalue);
--	set_timespec(&tmr->it_interval, tinterval);
-+	tmr->it_value = tst_us_to_timespec(tvalue);
-+	tmr->it_interval = tst_us_to_timespec(tinterval);
+-LDLIBS			+= -lpthread -lrt
++timerfd_settime02:	CFLAGS	+= -pthread
++timerfd_settime02:	LDLIBS	+= -pthread -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
+new file mode 100644
+index 000000000..4525cafed
+--- /dev/null
++++ b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
+@@ -0,0 +1,110 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
++ *
++ * CVE-2017-10661
++ *
++ * Test for race condition vulnerability in timerfd_settime(). Multiple
++ * concurrent calls of timerfd_settime() clearing the CANCEL_ON_SET flag may
++ * cause memory corruption. Fixed in:
++ *
++ *  commit 1e38da300e1e395a15048b0af1e5305bd91402f6
++ *  Author: Thomas Gleixner <tglx@linutronix.de>
++ *  Date:   Tue Jan 31 15:24:03 2017 +0100
++ *
++ *  timerfd: Protect the might cancel mechanism proper
++ */
++#include <unistd.h>
++#include <lapi/timerfd.h>
++#include "tst_test.h"
++#include "tst_fuzzy_sync.h"
++#include "tst_taint.h"
 +
- 	if (timerfd_settime(tfd, tflags, tmr, NULL))
--		tst_brk(TFAIL | TERRNO, "timerfd_settime() failed");
-+		tst_brk(TBROK | TERRNO, "timerfd_settime() failed");
- }
- 
--static void waittmr(int tfd, int timeo)
-+static void waittmr(int tfd, unsigned int exp_ticks)
- {
--	u_int64_t ticks;
-+	uint64_t ticks;
- 	struct pollfd pfd;
- 
- 	pfd.fd = tfd;
- 	pfd.events = POLLIN;
- 	pfd.revents = 0;
--	if (poll(&pfd, 1, timeo) < 0) {
-+	if (poll(&pfd, 1, -1) < 0) {
- 		tst_res(TFAIL | TERRNO, "poll() failed");
- 		return;
- 	}
-@@ -73,48 +69,58 @@ static void waittmr(int tfd, int timeo)
- 	}
- 	SAFE_READ(0, tfd, &ticks, sizeof(ticks));
- 
--	if (ticks <= 0)
--		tst_res(TFAIL, "got no timer");
-+	if (ticks != exp_ticks) {
-+		tst_res(TFAIL, "got %u tick(s) expected %u",
-+		        (unsigned int)ticks, exp_ticks);
-+	} else {
-+		tst_res(TPASS, "got %u tick(s)", exp_ticks);
++#define TIMERFD_FLAGS "timerfd_settime(TFD_TIMER_ABSTIME | TFD_TIMER_CANCEL_ON_SET)"
++
++#ifndef TFD_TIMER_CANCEL_ON_SET
++#define TFD_TIMER_CANCEL_ON_SET (1<<1)
++#endif
++
++static int fd = -1;
++static struct itimerspec its;
++static struct tst_fzsync_pair fzsync_pair;
++
++static void setup(void)
++{
++	int ttype;
++
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++	errno = 0;
++	fd = timerfd_create(CLOCK_REALTIME, 0);
++
++	if (fd < 0) {
++		ttype = (errno == ENOTSUP ? TCONF : TBROK);
++		tst_brk(ttype | TERRNO, "Cannot create timer");
 +	}
- }
- 
- static void run(unsigned int n)
- {
- 	int tfd;
- 	unsigned long long tnow;
--	u_int64_t uticks;
-+	uint64_t uticks;
- 	struct itimerspec tmr;
- 	struct tcase *clks = &tcases[n];
- 
--	if (TFD_TIMER_ABSTIME == 0)
--		tst_brk(TCONF, "Test not suited for this system");
--
- 	tst_res(TINFO, "testing %s", clks->name);
- 
- 	tfd = timerfd_create(clks->id, 0);
- 	if (tfd == -1)
- 		tst_brk(TFAIL | TERRNO, "timerfd_create() failed");
- 
--	tst_res(TINFO, "relative timer (500 ms)");
--	settime(tfd, &tmr, 0, 500 * 1000, 0);
--	waittmr(tfd, -1);
-+	tst_res(TINFO, "relative timer (100 ms)");
-+	settime(tfd, &tmr, 0, 100 * 1000, 0);
-+	waittmr(tfd, 1);
- 
--	tst_res(TINFO, "absolute timer (500 ms)");
-+	tst_res(TINFO, "absolute timer (100 ms)");
- 	tnow = getustime(clks->id);
--	settime(tfd, &tmr, TFD_TIMER_ABSTIME, tnow + 500 * 1000, 0);
--	waittmr(tfd, -1);
-+	settime(tfd, &tmr, TFD_TIMER_ABSTIME, tnow + 100 * 1000, 0);
-+	waittmr(tfd, 1);
- 
--	tst_res(TINFO, "sequential timer (100 ms)");
-+	tst_res(TINFO, "sequential timer (50 ms)");
- 	tnow = getustime(clks->id);
--	settime(tfd, &tmr, TFD_TIMER_ABSTIME, tnow + 100 * 1000, 100 * 1000);
-+	settime(tfd, &tmr, TFD_TIMER_ABSTIME, tnow + 50 * 1000, 50 * 1000);
- 
-+	memset(&tmr, 0, sizeof(tmr));
- 	if (timerfd_gettime(tfd, &tmr))
- 		tst_res(TFAIL | TERRNO, "timerfd_gettime() failed");
- 
--	waittmr(tfd, -1);
 +
-+	if (tmr.it_value.tv_sec != 0 || tmr.it_value.tv_nsec > 50 * 1000000)
-+		tst_res(TFAIL, "Timer read back value not relative");
-+	else
-+		tst_res(TPASS, "Timer read back value is relative");
++	fzsync_pair.exec_loops = 1000000;
++	tst_fzsync_pair_init(&fzsync_pair);
++}
 +
-+	usleep(160000);
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++	tst_fzsync_pair_cleanup(&fzsync_pair);
++}
 +
-+	waittmr(tfd, 3);
- 
- 	tst_res(TINFO, "testing with O_NONBLOCK");
- 	settime(tfd, &tmr, 0, 100 * 1000, 0);
--	waittmr(tfd, -1);
-+	waittmr(tfd, 1);
- 
- 	SAFE_FCNTL(tfd, F_SETFL, fcntl(tfd, F_GETFL, 0) | O_NONBLOCK);
- 
-@@ -122,13 +128,11 @@ static void run(unsigned int n)
- 	if (TST_RET > 0)
- 		tst_res(TFAIL, "timer ticks not zero");
- 	else if (TST_ERR != EAGAIN)
--		tst_res(TFAIL | TERRNO, "expected errno EAGAIN got");
-+		tst_res(TFAIL | TERRNO, "read should fail with EAGAIN got");
- 	else
--		tst_res(TPASS, "Passed test %s", clks->name);
-+		tst_res(TPASS | TERRNO, "read failed with");
- 
--	SAFE_FCNTL(tfd, F_SETFL, fcntl(tfd, F_GETFL, 0) & ~O_NONBLOCK);
- 	SAFE_CLOSE(tfd);
--
- }
- 
- static struct tst_test test = {
-
++static int punch_clock(int flags)
++{
++	return timerfd_settime(fd, flags, &its, NULL);
++}
++
++static void *thread_run(void *arg)
++{
++	while (tst_fzsync_run_b(&fzsync_pair)) {
++		tst_fzsync_start_race_b(&fzsync_pair);
++		punch_clock(0);
++		tst_fzsync_end_race_b(&fzsync_pair);
++	}
++
++	return arg;
++}
++
++static void run(void)
++{
++	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
++
++	while (tst_fzsync_run_a(&fzsync_pair)) {
++		TEST(punch_clock(TFD_TIMER_ABSTIME | TFD_TIMER_CANCEL_ON_SET));
++
++		if (TST_RET == -1)
++			tst_res(TBROK | TTERRNO, TIMERFD_FLAGS " failed");
++
++		if (TST_RET != 0)
++			tst_res(TBROK | TTERRNO, "Invalid " TIMERFD_FLAGS
++				" return value");
++
++		tst_fzsync_start_race_a(&fzsync_pair);
++		punch_clock(0);
++		tst_fzsync_end_race_a(&fzsync_pair);
++
++		if (tst_taint_check()) {
++			tst_res(TFAIL, "Kernel is vulnerable");
++			return;
++		}
++	}
++
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_kver = "2.6.25",
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "1e38da300e1e"},
++		{"CVE", "2017-10661"},
++		{}
++	}
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.0
+
