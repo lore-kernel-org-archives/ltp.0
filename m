@@ -1,253 +1,113 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Fri, 21 Feb 2020 13:50:02 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E4?=
- =?utf-8?q?=2E22-rc1-bae6e9b=2Ecki_=28stable=29?=
-Message-ID: <cki.64BB832275.J40MITVP7D@redhat.com>
+From: Xu, Yanfei <yanfei.xu@windriver.com>
+Date: Fri, 21 Feb 2020 22:04:31 +0800
+Subject: [LTP] controller case cpuset_load_balance failed
+Message-ID: <7885e4eb-42b0-8d4b-4bdd-85f3d37799de@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi ,
 
-Hello,
+I am trying to run controller case cpuset_load_balance on my Linux 
+version 5.5.0
 
-We ran automated tests on a recent commit from this kernel tree:
+with yocto. But I got many failures :
 
-       Kernel repo: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: bae6e9bf73af - Linux 5.4.22-rc1
-
-The results of these automated tests are provided below.
-
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/02/21/449393
-
-One or more kernel tests failed:
-
-    ppc64le:
-     ? LTP
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 3 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+<<<test_start>>>
+tag=cpuset_load_balance stime=1580819970
+cmdline="cpuset_load_balance_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+cpuset_load_balance 1 TINFO: general group load balance test
+cpuset_load_balance 1 TINFO: root group info:
+cpuset_load_balance 1 TINFO: sched load balance: 0
+cpuset_load_balance 1 TINFO: general group info:
+cpuset_load_balance 1 TINFO: cpus: -
+cpuset_load_balance 1 TINFO: sched load balance: 1
+*cpuset_load_balance 1 TFAIL: load balance test failed.*
+cpuset_load_balance 3 TINFO: general group load balance test
+cpuset_load_balance 3 TINFO: root group info:
+cpuset_load_balance 3 TINFO: sched load balance: 0
+cpuset_load_balance 3 TINFO: general group info:
+.......
+cpuset_load_balance 25 TINFO: general group2 info:
+cpuset_load_balance 25 TINFO: cpus: 1,3
+cpuset_load_balance 25 TINFO: sched load balance: 1
+cpuset_load_balance 25 TINFO: CPU hotplug: online
+smpboot: CPU 1 is now offline
+x86: Booting SMP configuration:
+smpboot: Booting Node 0 Processor 1 APIC 0x2
+c*puset_load_balance 25 TFAIL: load balance test failed.*
+<<<execution_staLTP: starting cpuset_hotplug (cpuset_hotplug_test.sh)
+tus>>>
+initiation_status="ok"
+duration=410 termination_type=exited termination_id=1 corefile=no
+cutime=251 cstime=1188
+<<<test_end>>>
 
 
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
+And I tried to analyse the source code for the reason, but didn't get it.
 
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? Storage blktests
+That what I found with the file cpuset_load_balance_test.sh as below:
 
-    Host 2:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+general_load_balance_test1()
+{
+........
 
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+ ??? # start to fork the child processes
+*/****(line*:108) The fork works rightly */ *
 
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
+ ??? /bin/kill -s SIGUSR1 $pid 2> $CPUSET_TMP/stderr **
+ ??? if [ $? -ne 0 ]; then
+ ??? ??? cpuset_log_error $CPUSET_TMP/stderr
+ ??? ??? tst_resm TFAIL "send the signal to fork the child tasks " \
+ ??? ??? ??? ?? "failed."
+ ??? ??? /bin/kill -s SIGKILL $pid
+ ??? ??? return 1
+ ??? fi
 
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
+ ??? read fifo < ./myfifo
+ ??? if [ $fifo -ne 0 ]; then
+ ??? ??? cpuset_log_error $CPUSET_TMP/cpu-hog_stderr
+ ??? ??? tst_resm TFAIL "forking test tasks failed"
+ ??? ??? return 1
+ ??? fi
 
-    Host 2:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
+ ??? # start to run the child processes
+*/*(line:135)Something is wrong here. After the signal sent out, the 
+child processes all become zombies*/*
+ ??? /bin/kill -s SIGUSR1 $pid 2> $CPUSET_TMP/stderr
+ ??? if [ $? -ne 0 ]; then
+ ??? ??? cpuset_log_error $CPUSET_TMP/stderr
+ ??? ??? tst_resm TFAIL "send the signal to run the child tasks " \
+ ??? ??? ??? ?? "failed."
+ ??? ??? /bin/kill -s SIGUSR2 $pid
+ ??? ??? return 1
+ ??? fi
+*/*(line:143) Something is wrong here. wait returns value 1*/*
+wait $pid
+...........
+}
 
-    Host 3:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
+Then I saw the file cpuset_cpu_hog.c for the zombies proccess with gdb. 
+It seems
 
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
+cpuset_cpusetofpid func(line:190) failed. But I didn't konw more about 
+these cpuset
 
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
+func.
 
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
+Have you met problems about cpuset_load_balance like this?
 
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
 
+Thanks!
+
+Yanfei,
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200221/b6453e3d/attachment-0001.htm>
