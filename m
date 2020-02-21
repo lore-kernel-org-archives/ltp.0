@@ -1,276 +1,187 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 21 Feb 2020 15:55:20 +0800
-Subject: [LTP] [PATCH] syscalls/kill11: convert to new library
-Message-ID: <1582271720-27370-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 21 Feb 2020 09:06:15 +0100
+Subject: [LTP] [PATCH] Add test for CVE 2017-10661
+In-Reply-To: <20200220144559.22440-1-mdoucha@suse.cz>
+References: <20200220144559.22440-1-mdoucha@suse.cz>
+Message-ID: <8736b4gya0.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also, drop checks for UCLINUX and WCOREDUMP and add SIGSTKFLT
-sig test.
+Hello,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/kill/kill11.c | 173 ++++++------------------
- 1 file changed, 44 insertions(+), 129 deletions(-)
+Looks mostly good, but see comments below.
 
-diff --git a/testcases/kernel/syscalls/kill/kill11.c b/testcases/kernel/syscalls/kill/kill11.c
-index 9b81e0095..8b69d3974 100644
---- a/testcases/kernel/syscalls/kill/kill11.c
-+++ b/testcases/kernel/syscalls/kill/kill11.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /* IBM Corporation
-  * 01/02/2003	Port to LTP	avenkat@us.ibm.com
-  * 06/30/2001	Port to Linux	nsharoff@us.ibm.com
-@@ -5,31 +6,14 @@
-  *   Copyright (c) International Business Machines  Corp., 2002
-  *   Copyright (c) Cyril Hrubis <chrubis@suse.cz> 2014
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * Test checks that when a child is killed by its parent with sig, it
-+ * returns the correct values(sig and core dump bit) to the waiting parent.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
--
--  Test check that when a child is killed by its parent, it returns the correct
--  values to the waiting parent--default behaviour assumed by child.
--
-+ * RESTRICTIONS
-+ * The ulimit for core file size must be greater than 0.
-  */
- 
--#define _GNU_SOURCE 1
--
--#include <stdio.h>
-+#define _GNU_SOURCE
- #include <errno.h>
- #include <sys/types.h>
- #include <signal.h>
-@@ -38,27 +22,9 @@
- #include <sys/wait.h>
- #include <sys/resource.h>
- 
--#include "test.h"
--#include "safe_macros.h"
--
--#define FAILED 0
--#define PASSED 1
--
--char *TCID = "kill11";
--
--int local_flag = PASSED;
--int block_number;
--FILE *temp;
--int TST_TOTAL = 1;
--static int sig;
-+#include "tst_test.h"
- 
--void setup(void);
--void do_child(void);
--
--/*
-- * These signals terminate process by default, some create core file.
-- */
--struct tcase {
-+static struct tcase {
- 	int sig;
- 	int dumps_core;
- } tcases[] = {
-@@ -78,6 +44,7 @@ struct tcase {
- 	{SIGPIPE, 0},
- 	{SIGALRM, 0},
- 	{SIGTERM, 0},
-+	{SIGSTKFLT, 0},
- 	{SIGXCPU, 1},
- 	{SIGXFSZ, 1},
- 	{SIGVTALRM, 0},
-@@ -87,133 +54,81 @@ struct tcase {
- 	{SIGSYS, 1},
- };
- 
--static void verify_kill(struct tcase *t)
-+static void verify_kill(unsigned int n)
- {
- 	int core;
--	int pid, npid;
--	int nsig, nexno, status;
--
--	if (t->sig != SIGKILL) {
--#ifndef BCS
--		if (t->sig != SIGSTOP)
--#endif
--			if (sigset(t->sig, SIG_DFL) == SIG_ERR) {
--				tst_brkm(TBROK | TERRNO, tst_rmdir,
--				         "sigset(%d) failed", sig);
--			}
--	}
-+	pid_t pid, npid;
-+	int nsig, status;
-+	struct tcase *tc = &tcases[n];
- 
--	pid = FORK_OR_VFORK();
--	if (pid < 0)
--		tst_brkm(TBROK | TERRNO, tst_rmdir, "fork() failed");
--
--	if (pid == 0) {
--#ifdef UCLINUX
--		if (self_exec(argv[0], "dd", t->sig) < 0)
--			exit(1);
--#else
--		do_child();
--#endif
-+	if (tc->sig != SIGKILL) {
-+		if (sigset(tc->sig, SIG_DFL) == SIG_ERR)
-+			tst_brk(TBROK | TERRNO, "sigset(%d) failed", tc->sig);
- 	}
- 
--	kill(pid, t->sig);
--	npid = wait(&status);
-+	pid = SAFE_FORK();
-+	if (!pid)
-+		pause();
-+
-+	SAFE_KILL(pid, tc->sig);
-+	npid = SAFE_WAIT(&status);
- 
- 	if (npid != pid) {
--		tst_resm(TFAIL, "wait() returned %d, expected %d", npid, pid);
-+		tst_res(TFAIL, "wait() returned %d, expected %d", npid, pid);
- 		return;
- 	}
- 
- 	nsig = WTERMSIG(status);
--#ifdef WCOREDUMP
- 	core = WCOREDUMP(status);
--#endif
--	nexno = WIFEXITED(status);
- 
--	if (t->dumps_core) {
-+	if (tc->dumps_core) {
- 		if (!core) {
--			tst_resm(TFAIL, "core dump bit not set for %s", tst_strsig(t->sig));
-+			tst_res(TFAIL, "core dump bit not set for %s", tst_strsig(tc->sig));
- 			return;
- 		}
- 	} else {
- 		if (core) {
--			tst_resm(TFAIL, "core dump bit set for %s", tst_strsig(t->sig));
-+			tst_res(TFAIL, "core dump bit set for %s", tst_strsig(tc->sig));
- 			return;
- 		}
- 	}
- 
--	if (nsig != t->sig) {
--		tst_resm(TFAIL, "wait: unexpected signal %d returned, expected %d", nsig, t->sig);
-+	if (nsig != tc->sig) {
-+		tst_res(TFAIL, "wait: unexpected signal %d returned, expected %d", nsig, tc->sig);
- 		return;
- 	}
- 
--	if (nexno != 0) {
--		tst_resm(TFAIL,
--			"signal: unexpected exit number %d returned, expected 0\n",
--			nexno);
--		return;
--	}
--
--	tst_resm(TPASS, "signal %-16s%s", tst_strsig(t->sig),
--	         t->dumps_core ? " dumped core" : "");
--}
--
--int main(int argc, char **argv)
--{
--	int lc;
--	unsigned int i;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--#ifdef UCLINUX
--	maybe_run_child(&do_child, "dd", &sig);
--#endif
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		for (i = 0; i < ARRAY_SIZE(tcases); i++)
--			verify_kill(tcases + i);
--	}
--
--	tst_rmdir();
--	tst_exit();
--}
--
--void do_child(void)
--{
--	int i;
--
--	for (i = 0; i < 180; i++)
--		sleep(1);
--
--	fprintf(stderr, "Child missed siggnal");
--	fflush(stderr);
--	exit(1);
-+	tst_res(TPASS, "signal %-16s%s", tst_strsig(tc->sig),
-+			tc->dumps_core ? " dumped core" : "");
- }
- 
- #define MIN_RLIMIT_CORE (512 * 1024)
- 
--void setup(void)
-+static void setup(void)
- {
- 	struct rlimit rlim;
- 
--	SAFE_GETRLIMIT(NULL, RLIMIT_CORE, &rlim);
-+	SAFE_GETRLIMIT(RLIMIT_CORE, &rlim);
- 
- 	if (rlim.rlim_max < MIN_RLIMIT_CORE) {
- 		if (geteuid() != 0) {
--			tst_brkm(TCONF, NULL, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
-+			tst_brk(TCONF, "hard limit(%lu)less than MIN_RLIMT_CORE(%i)",
- 				rlim.rlim_max, MIN_RLIMIT_CORE);
- 		}
--		tst_resm(TINFO, "Raising rlim_max to %i", MIN_RLIMIT_CORE);
-+		tst_res(TINFO, "Raising rlim_max to %i", MIN_RLIMIT_CORE);
- 		rlim.rlim_max = MIN_RLIMIT_CORE;
- 	}
- 	if (rlim.rlim_cur < MIN_RLIMIT_CORE) {
--		tst_resm(TINFO, "Adjusting RLIMIT_CORE to %i", MIN_RLIMIT_CORE);
-+		tst_res(TINFO, "Adjusting RLIMIT_CORE to %i", MIN_RLIMIT_CORE);
- 		rlim.rlim_cur = MIN_RLIMIT_CORE;
--		SAFE_SETRLIMIT(NULL, RLIMIT_CORE, &rlim);
-+		SAFE_SETRLIMIT(RLIMIT_CORE, &rlim);
- 	}
--
--	temp = stderr;
--	tst_tmpdir();
- }
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_kill,
-+};
--- 
-2.18.0
+Martin Doucha <mdoucha@suse.cz> writes:
+
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/cve/Makefile         |   3 +
+>  testcases/cve/cve-2017-10661.c | 112 +++++++++++++++++++++++++++++++++
+>  2 files changed, 115 insertions(+)
+>  create mode 100644 testcases/cve/cve-2017-10661.c
+>
+> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+> index da44fff60..1faee9fc5 100644
+> --- a/testcases/cve/Makefile
+> +++ b/testcases/cve/Makefile
+> @@ -36,6 +36,9 @@ endif
+>  cve-2017-2671:	CFLAGS += -pthread
+>  cve-2017-2671:	LDLIBS += -lrt
+>
+> +cve-2017-10661:	CFLAGS += -pthread
+> +cve-2017-10661:	LDLIBS += -lrt
+> +
+>  meltdown: CFLAGS += -I$(abs_srcdir)/../realtime/include
+>
+>  ifneq (,$(filter $(HOST_CPU),x86 x86_64))
+> diff --git a/testcases/cve/cve-2017-10661.c b/testcases/cve/cve-2017-10661.c
+> new file mode 100644
+> index 000000000..6fe6b63c7
+> --- /dev/null
+> +++ b/testcases/cve/cve-2017-10661.c
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
+> + *
+> + * CVE-2017-10661
+> + *
+> + * Test for race condition vulnerability in timerfd_settime(). Multiple
+> + * concurrent calls of timerfd_settime() clearing the CANCEL_ON_SET flag may
+> + * cause memory corruption. Fixed in:
+
+We had some complaints that sorting tests by cve number made the tests
+for a particular component difficult to find. So you should put this
+with the other timerfd tests.
+
+CVEs which rely on the interaction between many components or are
+against hardware go in this folder.
+
+> + *
+> + *  commit 1e38da300e1e395a15048b0af1e5305bd91402f6
+> + *  Author: Thomas Gleixner <tglx@linutronix.de>
+> + *  Date:   Tue Jan 31 15:24:03 2017 +0100
+> + *
+> + *  timerfd: Protect the might cancel mechanism proper
+> + */
+> +#include <unistd.h>
+> +#include <lapi/timerfd.h>
+> +#include "tst_test.h"
+> +#include "tst_fuzzy_sync.h"
+> +#include "tst_taint.h"
+> +
+> +#define TIMERFD_FLAGS "timerfd_settime(TFD_TIMER_ABSTIME | TFD_TIMER_CANCEL_ON_SET)"
+> +
+> +#ifndef TFD_TIMER_CANCEL_ON_SET
+> +#define TFD_TIMER_CANCEL_ON_SET (1<<1)
+> +#endif
+> +
+> +static int fd = -1;
+> +static struct itimerspec its;
+> +static struct tst_fzsync_pair fzsync_pair;
+> +
+> +static void setup(void)
+> +{
+> +	int tmp;
+
+All variables are temporary.
+
+> +
+> +	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> +	fd = timerfd_create(CLOCK_REALTIME, 0);
+> +
+> +	if (fd < 0) {
+> +		tmp = (errno == ENOTSUP ? TCONF : TBROK) | TERRNO,
+
+Huh? This compiles?
+
+> +		tst_brk(tmp, "Cannot create timer");
+> +	}
+> +
+> +	fzsync_pair.exec_loops = 1000000;
+> +	tst_fzsync_pair_init(&fzsync_pair);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd >= 0)
+> +		SAFE_CLOSE(fd);
+> +	tst_fzsync_pair_cleanup(&fzsync_pair);
+> +}
+> +
+> +static int punch_clock(int flags)
+> +{
+> +	return timerfd_settime(fd, flags, &its, NULL);
+> +}
+> +
+> +static void *thread_run(void *arg)
+> +{
+> +	while (tst_fzsync_run_b(&fzsync_pair)) {
+> +		tst_fzsync_start_race_b(&fzsync_pair);
+> +		// race to clear the CANCEL_ON_SET flag
+
+We don't need inline comments to explain this. The code is clear
+enough. Although it would be even clearer if you changed punch_clock to
+set_clock_flags.
+
+> +		punch_clock(0);
+> +		tst_fzsync_end_race_b(&fzsync_pair);
+> +	}
+> +
+> +	return arg;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
+> +
+> +	while (tst_fzsync_run_a(&fzsync_pair)) {
+> +		// set the CANCEL_ON_SET flag
+
+Same here.
+> +		TEST(punch_clock(TFD_TIMER_ABSTIME | TFD_TIMER_CANCEL_ON_SET));
+> +
+> +		if (TST_RET == -1)
+> +			tst_res(TBROK | TTERRNO, TIMERFD_FLAGS " failed");
+> +
+> +		if (TST_RET != 0)
+> +			tst_res(TBROK | TTERRNO, "Invalid " TIMERFD_FLAGS
+> +				" return value");
+> +
+> +		tst_fzsync_start_race_a(&fzsync_pair);
+> +		// race to clear the CANCEL_ON_SET flag
+
+and here.
+> +		punch_clock(0);
+> +		tst_fzsync_end_race_a(&fzsync_pair);
+> +
+> +		if (tst_taint_check()) {
+> +			tst_res(TFAIL, "Kernel is vulnerable");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "Nothing bad happened, probably");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.min_kver = "2.6.25",
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "1e38da300e1e"},
+> +		{"CVE", "2017-10661"},
+> +		{}
+> +	}
+> +};
+> --
+> 2.25.0
 
 
-
+--
+Thank you,
+Richard.
