@@ -1,49 +1,60 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 21 Feb 2020 10:08:30 +0800
-Subject: [LTP] [PATCH v2] syscalls/quotactl07: add regresstion test for
- Q_XQTUOTARM
-In-Reply-To: <20200220124821.GB11142@rei>
-References: <1575526664-25738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200220124821.GB11142@rei>
-Message-ID: <eb73f177-9e2b-7a35-cf1a-e36c1a5ce19e@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 21 Feb 2020 06:59:36 +0100
+Subject: [LTP] [PATCHv2 1/3] zram/zram_lib.sh: fix variable name and
+ algorithm retrieval
+In-Reply-To: <20190710072305.25806-2-po-hsu.lin@canonical.com>
+References: <20190710072305.25806-1-po-hsu.lin@canonical.com>
+ <20190710072305.25806-2-po-hsu.lin@canonical.com>
+Message-ID: <20200221055936.GA13261@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
-Hi> Hi!
->> This is a regresstion test to check Q_XQUOTARM  whether has
->> quota flags check.
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->>
->> ---------------------
->> 1.Simplify test code
->> 2.add comment for invalid_type,
->> ---------------------
->    ^
->    Btw this belongs under the three dashes below, otherwise it ends up in
->    the commit message when applied.
-> 
-OK. I will notice this next time.
-> ...
-> 
->> +static void setup(void)
->> +{
->> +	TEST(quotactl(QCMD(Q_XQUOTAOFF, USRQUOTA), tst_device->dev, 0, (void *)&qflag_acct));
->> +	if (TST_RET == -1)
->> +		tst_brk(TBROK | TTERRNO, "quotactl with Q_XQUOTAOFF failed");
->> +
->> +	TEST(quotactl(QCMD(Q_XQUOTARM, USRQUOTA), tst_device->dev, 0, (void *)&valid_type));
->> +	if (TST_ERR == EINVAL) {
->> +		tst_res(TCONF, "current system doesn't support Q_XQUOTARM, skip it");
->> +		return;
-> 
-> I've changed this to tst_brk() because doing return from setup has no
-> efect here, and pushed, thanks.
-Thanks for pushing.
-> 
+> The compression algorithm was stored into a local variable "algs",
+> however the variable name zram_algs was used in the for loop later.
 
+> Unify them with algs so the default zram_algs defined in zram01 won't
+> be altered.
 
+> Also, use sed to get rid of the square brackets that indicates the
+> compression algorithm currently in use.
+>     $ cat /sys/block/zram0/comp_algorithm
+>     [lzo] lz4 lz4hc 842 zstd
+
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>  testcases/kernel/device-drivers/zram/zram_lib.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+> diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> index d0e7704a8..599e5f0f3 100755
+> --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
+> +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> @@ -98,10 +98,10 @@ zram_compress_alg()
+
+>  	tst_resm TINFO "test that we can set compression algorithm"
+
+> -	local algs="$(cat /sys/block/zram0/comp_algorithm)"
+> +	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
+>  	tst_resm TINFO "supported algs: $algs"
+>  	local i=0
+> -	for alg in $zram_algs; do
+> +	for alg in $algs; do
+>  		local sys_path="/sys/block/zram${i}/comp_algorithm"
+>  		echo "$alg" >  $sys_path || \
+>  			tst_brkm TFAIL "can't set '$alg' to $sys_path"
+
+Sorry for a late reply.
+
+What is the purpose of zram_algs="lzo lzo lzo lzo in zram01.sh?
+It should be removed now, right? (as you decided not to set the algorithms to the ones defined in the zram01.sh
+test at the end of this function as Cyril suggested at [1]
+
+Kind regards,
+Petr
+
+[1] http://lists.linux.it/pipermail/ltp/2019-July/012674.html
