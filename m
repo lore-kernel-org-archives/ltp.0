@@ -1,41 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Feb 2020 17:44:07 +0100
-Subject: [LTP] [PATCH V2 05/10] syscalls/fsconfig: New tests
-In-Reply-To: <CAEemH2f6gudJjZ1HAsVFVKkuR3FUyBVHf1JQDHeQMdavQqc+2A@mail.gmail.com>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <6ac7573e8ea5ab6f0ab9256b73802126d72b5156.1582104018.git.viresh.kumar@linaro.org>
- <CAEemH2f6gudJjZ1HAsVFVKkuR3FUyBVHf1JQDHeQMdavQqc+2A@mail.gmail.com>
-Message-ID: <20200221164407.GA3000@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 22 Feb 2020 11:02:26 +0800
+Subject: [LTP] [PATCH v4 1/2] lib: add .request_hugepages to reserve
+ hugepage
+In-Reply-To: <20200221121618.GA16421@dell5510>
+References: <20200208092014.24824-1-liwang@redhat.com>
+ <20200218162739.GA9985@rei.lan> <20200221121618.GA16421@dell5510>
+Message-ID: <CAEemH2ftLanZppq4kiVCK7JuRvCh+xX4GG9--GKrOQ8j8c2idw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+On Fri, Feb 21, 2020 at 8:16 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> The test reports an EINVAL error when testing fsconfig() with
-> 'FSCONFIG_SET_PATH' on XFS. I'm now trying to look close to this issue.
+> Hi Li, Cyril,
+>
+> > > +   if (FILE_LINES_SCANF("/proc/meminfo",
+> > > +                           "MemAvailable: %ld", &mem_avail)) {
+> > > +           /*
+> > > +            * Using "MemFree:" on kernel that doesn't have
+> > > +            * "MemAvailable:" in Meminfo
+> > > +            */
+> > > +           tst_res(TINFO, "MemAvailable: not found in /proc/meminfo");
+> > > +
+> > > +           mem_avail = SAFE_READ_MEMINFO("MemFree:");
+> > > +   }
+>
+> > I guess that we don't have to bother with MemAvailable here, since we do
+> > drop the system caches the MemFree should be equal to MemAvailable. So I
+> > would be for reading just MemFree unconditionally here.
+>
+> > If you agree with this change I can change it before applying.
+>
+> Merged both patches with this change and my docs change.
+>
 
-> kernel: 5.6.0-rc2+ x86_64
-Confirmed, with this XFS config:
+Thanks very much Petr. Btw, I added a commit to remove the surplus variable
+'mem_avail'.(It's a tiny issue so I pushed directly:)
 
-CONFIG_XFS_FS=y
-# CONFIG_XFS_QUOTA is not set
-# CONFIG_XFS_POSIX_ACL is not set
-# CONFIG_XFS_RT is not set
-# CONFIG_XFS_ONLINE_SCRUB is not set
-# CONFIG_XFS_WARN is not set
-# CONFIG_XFS_DEBUG is not set
-# CONFIG_VXFS_FS is not set
-
-I'll have a look on it on Monday.
-
-Kind regards,
-Petr
-
-> tst_test.c:1278: INFO: Testing on xfs
-> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-> tst_test.c:1217: INFO: Timeout per run is 0h 05m 00s
-> fsconfig01.c:46: FAIL: fsconfig() failed: EINVAL (22)
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200222/9598924f/attachment-0001.htm>
