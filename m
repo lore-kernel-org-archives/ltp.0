@@ -1,46 +1,65 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 24 Feb 2020 11:35:31 +0800
-Subject: [LTP] [PATCH V2 04/10] syscalls/fsopen: New tests
-In-Reply-To: <20200224031847.4nbao5too3vuyfqx@vireshk-i7>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <aab7ae7e324c40e8e995ff381384a402d2aba8f5.1582104018.git.viresh.kumar@linaro.org>
- <20200220170425.GB15699@gacrux.arch.suse.de>
- <20200224031847.4nbao5too3vuyfqx@vireshk-i7>
-Message-ID: <f203c3d7-cfc3-3be8-f6d1-01010e9391e3@cn.fujitsu.com>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Mon, 24 Feb 2020 05:09:12 +0000
+Subject: [LTP] Fw: min_free_kbytes  test failing
+In-Reply-To: <BM1PR0101MB1459EF571BFF86EE43FBF66BEE130@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
+References: <BM1PR0101MB1459EF571BFF86EE43FBF66BEE130@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <MAXPR0101MB146893B306F3375AD15DA76BEEEC0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh
-
-> On 20-02-20, 18:04, Petr Vorel wrote:
->> However I have problem on fsopen01 and fsmount02.
->> mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0', not making
->> filesystem (use -I to override)
->> tst_mkfs.c:100: BROK: tst_test.c:830: mkfs.vfat failed with 1
->>
->> .dev_fs_flags = TST_FS_SKIP_FUSE helps with exfat and ntfs, but this also fails
->> on vfat.
->>
->> This is tested on system with CONFIG_VFAT_FS=m and CONFIG_FAT_FS=m, vfat and fat
->> are loaded by mkfs.vfat. IMHO we need something like TST_FS_SKIP_EXFAT | TST_FS_SKIP_FAT | TST_FS_SKIP_NTFS | TST_FS_SKIP_FUSE
->> i.e. explicitly say what FS is not wanted no matter whether it's fuse or not.
->>
->> Or maybe just TST_FS_SKIP_FAT | TST_FS_SKIP_FUSE would be enough.
->>
->> NOTE: flags TST_FS_SKIP_EXFAT, TST_FS_SKIP_FAT, TST_FS_SKIP_NTFS do not exists yet.
-> 
-> I am not sure what should be done here.
-I guess petr may want to let you add TST_FS_SKIP_FAT flag like  adding 
-TST_FS_SKIP_FUSE flag in commit dbe56e52bc50("ib: Add flags to 
-tst_get_supported_fs_types()").
-
-Best Regards
-Yang Xu
-> 
-> @Cyril ?
-> 
 
 
+Hi,
+I am running min_free_kbytes on my RISC  v system wth linux 5.4.3 with custom Yocto distro,the test is getting failed with following errors.What could be the possible reason for failure i have posted the same issue earlier but didnt find an appropriate solution?
+
+
+root@exaleapsemi:~/pankaj_ltp/ltp/testcases/kernel/mem/tunable# ./min_free_kbytes
+tst_test.c:1206: INFO: Timeout per run is disabled
+mem.c:817: INFO: set overcommit_memory to 2
+mem.c:817: INFO: set min_free_kbytes to 11441
+memfree is 7968532 kB before eatup mem
+memfree is 4196564 kB after eatup mem
+mem.c:817: INFO: set min_free_kbytes to 22882
+memfree is 7967752 kB before eatup mem
+memfree is 4198660 kB after eatup mem
+mem.c:817: INFO: set min_free_kbytes to 163642
+memfree is 7967328 kB before eatup mem
+memfree is 4186296 kB after eatup mem
+mem.c:817: INFO: set overcommit_memory to 0
+mem.c:817: INFO: set min_free_kbytes to 11441
+memfree is 7966824 kB before eatup mem
+min_free_kbytes.c:152: FAIL: child unexpectedly failed: 11
+mem.c:817: INFO: set min_free_kbytes to 22882
+memfree is 7992744 kB before eatup mem
+safe_macros.c:633: BROK: min_free_kbytes.c:121: waitpid(34,0x3fffec0854,10) failed: ECHILD (10)
+min_free_kbytes.c:147: FAIL: child unexpectedly failed: 512
+mem.c:817: INFO: set min_free_kbytes to 163642
+memfree is 7987848 kB before eatup mem
+safe_macros.c:633: BROK: min_free_kbytes.c:121: waitpid(34,0x3fffec0854,10) failed: ECHILD (10)
+min_free_kbytes.c:147: FAIL: child unexpectedly failed: 512
+mem.c:817: INFO: set overcommit_memory to 1
+mem.c:817: INFO: set min_free_kbytes to 11441
+memfree is 7987748 kB before eatup mem
+min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
+mem.c:817: INFO: set min_free_kbytes to 22882
+memfree is 7995428 kB before eatup mem
+min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
+mem.c:817: INFO: set min_free_kbytes to 163642
+memfree is 7995760 kB before eatup mem
+min_free_kbytes.c:134: FAIL: child unexpectedly failed: 11
+min_free_kbytes.c:82: PASS: min_free_kbytes test pass
+mem.c:817: INFO: set min_free_kbytes to 11441
+mem.c:817: INFO: set overcommit_memory to 0
+
+Summary:
+passed   1
+failed   6
+skipped  0
+warnings 0
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200224/9669f149/attachment-0001.htm>
