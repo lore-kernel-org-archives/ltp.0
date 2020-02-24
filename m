@@ -1,28 +1,209 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 24 Feb 2020 14:08:56 +0100
-Subject: [LTP] [PATCH V2 04/10] syscalls/fsopen: New tests
-In-Reply-To: <20200224031847.4nbao5too3vuyfqx@vireshk-i7>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <aab7ae7e324c40e8e995ff381384a402d2aba8f5.1582104018.git.viresh.kumar@linaro.org>
- <20200220170425.GB15699@gacrux.arch.suse.de>
- <20200224031847.4nbao5too3vuyfqx@vireshk-i7>
-Message-ID: <20200224130856.GB30073@rei.lan>
+From: Xu, Yanfei <yanfei.xu@windriver.com>
+Date: Mon, 24 Feb 2020 21:38:59 +0800
+Subject: [LTP] controller case cpuset_load_balance failed
+In-Reply-To: <7885e4eb-42b0-8d4b-4bdd-85f3d37799de@windriver.com>
+References: <7885e4eb-42b0-8d4b-4bdd-85f3d37799de@windriver.com>
+Message-ID: <2cfcdbb4-50c6-8f25-17bd-30282190de24@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I am not sure what should be done here.
-> 
-> @Cyril ?
+Hello,
 
-Hmm, we should fix library to be able to format the device properly,
-looks like some kind of bug though:
+Process want to read from /dev/cpuset/cpuset.cpu_exclusive, but it get a 
+wrong
+filename that /dev/cpuset/cpu_exclusive in fact.
+I wonder if the older version about /dev/cpuset/* are didn't have the 
+"cpuset."
+prefix? If that, the func cpuset_query() in *libcpuset.c*should be 
+updated*.*
+**
 
-https://github.com/dosfstools/dosfstools/issues/40
+------------------------------*gdb 
+messages*----------------------------------------------
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+load_flag (flag=0x562bdf3832ce "cpu_exclusive", flagp=0x562bdf393eb0 "",
+ ??? path=0x7ffe615fc4c0 "/dev/cpuset") at libcpuset.c:2103
+2103??? in libcpuset.c
+(gdb) s
+pathcat2 (buf=buf@entry=0x7ffe615fd4c0 "",
+ ??? name1=name1@entry=0x7ffe615fc4c0 "/dev/cpuset",
+ ??? name2=name2@entry=0x562bdf3832ce "cpu_exclusive", buflen=4096)
+ ??? at libcpuset.c:492
+492???? in libcpuset.c
+(gdb) s
+snprintf (__fmt=0x562bdf38342e "%s/%s", __n=4096, __s=0x7ffe615fd4c0 "")
+ ??? at /usr/include/bits/stdio2.h:67
+67????? /usr/include/bits/stdio2.h: No such file or directory.
+(gdb) s
+pathcat2 (buf=buf@entry=0x7ffe615fd4c0 "/dev/cpuset/cpu_exclusive",
+ ??? name1=name1@entry=0x7ffe615fc4c0 *"/dev/cpuset"*,
+ ??? name2=name2@entry=0x562bdf3832ce *"cpu_exclusive"*, buflen=4096)
+ ??? at libcpuset.c:493
+493???? libcpuset.c: No such file or directory.
+(gdb) s
+*Value returned is $4 = 0x7ffe615fd4c0 "/dev/cpuset/cpu_exclusive"*
+(gdb) s
+read_flag (filepath=0x7ffe615fd4c0 "/dev/cpuset/cpu_exclusive",
+ ??? flagp=0x562bdf393eb0 "") at libcpuset.c:921
+921???? in libcpuset.c
+(gdb) s
+925???? in libcpuset.c
+(gdb) s
+*open (__oflag=0, __path=0x7ffe615fd4c0 "/dev/cpuset/cpu_exclusive")*
+ ??? at /usr/include/bits/fcntl2.h:53
+53????? /usr/include/bits/fcntl2.h: No such file or directory.
+(gdb) s
+*open /dev/cpuset/cpu_exclusive failed. erro message=No such file or 
+directory*
+
+
+-----------------------*cpuset_query() func as below:* 
+-------------------------------
+
+/* Set cpuset cp to the cpuset at location 'path' */
+int cpuset_query(struct cpuset *cp, const char *relpath)
+{
+ ??? char buf[PATH_MAX];
+
+ ??? if (check() < 0)
+ ??? ??? goto err;
+
+ ??? fullpath(buf, sizeof(buf), relpath);
+
+ ??? if (load_flag(buf, &cp->cpu_exclusive, "cpu_exclusive") < 0) 
+*/*should it be **"cpuset.cpu_exclusive"**???*/*
+ ??? ??? goto err;
+ ??? cp->cpu_exclusive_valid = 1;
+
+ ??? if (load_flag(buf, &cp->mem_exclusive, "mem_exclusive") < 0) 
+*/*should it be **"cpuset.mem_exclusive"**???*/*
+ ??? ??? goto err;
+ ??? cp->mem_exclusive_valid = 1;
+
+ ??? if (load_flag(buf, &cp->notify_on_release, "notify_on_release") < 0)
+ ??? ??? goto err;
+ ??? cp->notify_on_release_valid = 1;
+
+ ??? if (exists_flag(buf, "memory_migrate")) {
+ ??? ??? if (load_flag(buf, &cp->memory_migrate, "memory_migrate") < 0)
+ ??? ??? ??? goto err;
+ ??? ??? cp->memory_migrate_valid = 1;
+ ??? }
+
+ ??? if (exists_flag(buf, "mem_hardwall")) {
+ ??? ??? if (load_flag(buf, &cp->mem_hardwall, "mem_hardwall") < 0)
+ ??? ??? ??? goto err;
+ ??? ??? cp->mem_hardwall_valid = 1;
+ ??? }
+
+........
+
+
+On 2/21/20 10:04 PM, Xu, Yanfei wrote:
+>
+> Hi ,
+>
+> I am trying to run controller case cpuset_load_balance on my Linux 
+> version 5.5.0
+>
+> with yocto. But I got many failures :
+>
+> <<<test_start>>>
+> tag=cpuset_load_balance stime=1580819970
+> cmdline="cpuset_load_balance_test.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> cpuset_load_balance 1 TINFO: general group load balance test
+> cpuset_load_balance 1 TINFO: root group info:
+> cpuset_load_balance 1 TINFO: sched load balance: 0
+> cpuset_load_balance 1 TINFO: general group info:
+> cpuset_load_balance 1 TINFO: cpus: -
+> cpuset_load_balance 1 TINFO: sched load balance: 1
+> *cpuset_load_balance 1 TFAIL: load balance test failed.*
+> cpuset_load_balance 3 TINFO: general group load balance test
+> cpuset_load_balance 3 TINFO: root group info:
+> cpuset_load_balance 3 TINFO: sched load balance: 0
+> cpuset_load_balance 3 TINFO: general group info:
+> .......
+> cpuset_load_balance 25 TINFO: general group2 info:
+> cpuset_load_balance 25 TINFO: cpus: 1,3
+> cpuset_load_balance 25 TINFO: sched load balance: 1
+> cpuset_load_balance 25 TINFO: CPU hotplug: online
+> smpboot: CPU 1 is now offline
+> x86: Booting SMP configuration:
+> smpboot: Booting Node 0 Processor 1 APIC 0x2
+> c*puset_load_balance 25 TFAIL: load balance test failed.*
+> <<<execution_staLTP: starting cpuset_hotplug (cpuset_hotplug_test.sh)
+> tus>>>
+> initiation_status="ok"
+> duration=410 termination_type=exited termination_id=1 corefile=no
+> cutime=251 cstime=1188
+> <<<test_end>>>
+>
+>
+> And I tried to analyse the source code for the reason, but didn't get it.
+>
+> That what I found with the file cpuset_load_balance_test.sh as below:
+>
+> general_load_balance_test1()
+> {
+> ........
+>
+> ??? # start to fork the child processes
+> */****(line*:108) The fork works rightly */ *
+>
+> ??? /bin/kill -s SIGUSR1 $pid 2> $CPUSET_TMP/stderr **
+> ??? if [ $? -ne 0 ]; then
+> ??? ??? cpuset_log_error $CPUSET_TMP/stderr
+> ??? ??? tst_resm TFAIL "send the signal to fork the child tasks " \
+> ??? ??? ??? ?? "failed."
+> ??? ??? /bin/kill -s SIGKILL $pid
+> ??? ??? return 1
+> ??? fi
+>
+> ??? read fifo < ./myfifo
+> ??? if [ $fifo -ne 0 ]; then
+> ??? ??? cpuset_log_error $CPUSET_TMP/cpu-hog_stderr
+> ??? ??? tst_resm TFAIL "forking test tasks failed"
+> ??? ??? return 1
+> ??? fi
+>
+> ??? # start to run the child processes
+> */*(line:135)Something is wrong here. After the signal sent out, the 
+> child processes all become zombies*/*
+> ??? /bin/kill -s SIGUSR1 $pid 2> $CPUSET_TMP/stderr
+> ??? if [ $? -ne 0 ]; then
+> ??? ??? cpuset_log_error $CPUSET_TMP/stderr
+> ??? ??? tst_resm TFAIL "send the signal to run the child tasks " \
+> ??? ??? ??? ?? "failed."
+> ??? ??? /bin/kill -s SIGUSR2 $pid
+> ??? ??? return 1
+> ??? fi
+> */*(line:143) Something is wrong here. wait returns value 1*/*
+> wait $pid
+> ...........
+> }
+>
+> Then I saw the file cpuset_cpu_hog.c for the zombies proccess with 
+> gdb. It seems
+>
+> cpuset_cpusetofpid func(line:190) failed. But I didn't konw more about 
+> these cpuset
+>
+> func.
+>
+> Have you met problems about cpuset_load_balance like this?
+>
+>
+> Thanks!
+>
+> Yanfei,
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200224/70ebffd4/attachment.htm>
