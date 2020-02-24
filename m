@@ -1,37 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 24 Feb 2020 16:46:42 +0100
-Subject: [LTP] [PATCH V2 04/10] syscalls/fsopen: New tests
-In-Reply-To: <20200224153246.GC2210@rei>
-References: <cover.1582104018.git.viresh.kumar@linaro.org>
- <aab7ae7e324c40e8e995ff381384a402d2aba8f5.1582104018.git.viresh.kumar@linaro.org>
- <20200220170425.GB15699@gacrux.arch.suse.de>
- <20200224031847.4nbao5too3vuyfqx@vireshk-i7>
- <20200224130856.GB30073@rei.lan> <20200224153011.GA24401@dell5510>
- <20200224153246.GC2210@rei>
-Message-ID: <20200224154642.GA28943@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 24 Feb 2020 17:34:02 +0100
+Subject: [LTP] [PATCH v1 1/2] syscalls/socketcall02: Cleanup && rewrite
+ to new API
+In-Reply-To: <04f0e695-8301-98bb-2b7a-4e20dfb09d72@cn.fujitsu.com>
+References: <1581249526-25295-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <04f0e695-8301-98bb-2b7a-4e20dfb09d72@cn.fujitsu.com>
+Message-ID: <20200224163402.GA24673@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> > -PF_INET, SOCK_STREAM, 0}, -1, EINVAL, "invalid call"};
+> > +} TC[] = {
+> > +	{0, args_valid, EINVAL, "invalid call(0)"},
+> "invalid call(<1)" is more correc.
+> > +	{21, args_valid, EINVAL, "invalid call(21)"},
+> "invalid call(>20)" is more correct.
+> > +	{SYS_SOCKET, NULL, EFAULT, "invalid args address"},
+> > +};
 
-> > > Hmm, we should fix library to be able to format the device properly,
-> > > looks like some kind of bug though:
+I've fixed these two and pushed both patches, thanks.
 
-> > > https://github.com/dosfstools/dosfstools/issues/40
-
-> > I'm not able to reproduce the problems on fsopen01 and fsmount02.
-> > Using different tmp directory via TMPDIR fixed that, but it started to work even
-> > without it and even reboot didn't bring back the failure. On different host
-> > (different distro) it worked all the time. I wonder what was wrong.
-
-> Hmm, that sounds really strange, I doubt that there is something that
-> would create partitions on a loop device on a background, so it really
-> smells like a bug.
-I haven't found any hint in dmesg. I tested in on a machine, which sometimes has
-problems with disc I/O (occasionally it's slow). So maybe it was hw related.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
