@@ -1,141 +1,57 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Tue, 25 Feb 2020 10:03:14 +0000
-Subject: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
- 139
-In-Reply-To: <768964483.8786340.1582619493789.JavaMail.zimbra@redhat.com>
-References: <MAXPR0101MB14687E3C724A815D2857EA14EE1A0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <MAXPR0101MB14685FEB7F52C97C8835B106EE110@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <558576867.8097569.1582098912792.JavaMail.zimbra@redhat.com>
- <BM1PR0101MB14596D9D318FF13C32724A32EE100@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
- <732362668.8105497.1582103304747.JavaMail.zimbra@redhat.com>
- <MAXPR0101MB1468CAB5F98BE95E3170E7A3EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <641229800.8775991.1582616022386.JavaMail.zimbra@redhat.com>
- <MAXPR0101MB14681EB0C7F8BBC970B19ED9EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>,
- <768964483.8786340.1582619493789.JavaMail.zimbra@redhat.com>
-Message-ID: <MAXPR0101MB1468590F5585E000D2380876EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 25 Feb 2020 18:20:33 +0800
+Subject: [LTP] [PATCH v3 1/2] syscalls/fcntl30: clean up && add more
+ range test
+In-Reply-To: <20200224142034.GA2210@rei>
+References: <20200127162016.GD30831@rei.lan>
+ <1580969073-27367-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200221160351.GA26393@rei.lan>
+ <8d1a7c73-7122-2c3d-6a73-024bed066966@cn.fujitsu.com>
+ <20200224142034.GA2210@rei>
+Message-ID: <1d62bf3e-3f34-fd05-8662-08ff16523673@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LTP is built natively,atleast for now i seeing crash for this particular test only. I am also not able to get how and that is failing there?
+Hi
+
+> Hi!
+>>> I was playing with the test and it seems that the kernel allocation may
+>>> fail even for much smaller sizes for various reasons. I guess that
+>>> memory framentation on long running systems may be the culprit here
+>>> because kmalloc() allocates physically continuous memory.
+>>>
+>>> I guess that the safest bet here would be limiting the maximal size we
+>>> try to resize the pipe and succeed to something as 8MB which would be
+>>> something as 32 pages to allocate.
+>>>
+>> Agree.
+>>> At the same time I would just define the size we expect to fail with
+>>> ENOMEM to 1<<30 and that would save us from this architecture specific
+>>> trickery that will probably fail on stranger architectures anyway.
+>> On 64kb page size, it will over 1 <<30 for ENOMEM error .I think we can
+>> test MAX_SIZE+pg_size(< 1<<31) for ENOMEM error. If  beyond 1<<31,
+>> expect EINVAL error.
+> 
+> Hmm, maybe we can just double the size in a loop until we hit either
+> ENOMEM or EINVAL then and fail the test if we hit them too soon.
+I plan to remove this max test because of unknown kmalloc fail, test 
+range as below
+
+         {0, 0, 0, 1, "set a value of below page size"},
+         {0, 0, 0, 1, "set a normal value"},             //under 
+non-privileged user,maybe 128k (<1024k )
+         {0, 0, 1, 1, "set a value of below page size"},
+         {0, 0, 1, 1, "set a normal value"},    // test 8M as you suggested,
+         {0, 0, 1, 0, "set a value beyond max"},  //expect EINVAL or ENOMEM
+};
+
+What do you think about it?
+
+Best Regards
+Yang Xu
+> 
 
 
-________________________________
-From: Jan Stancek <jstancek@redhat.com>
-Sent: Tuesday, February 25, 2020 2:01 PM
-To: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Cc: LTP Mailing List <ltp@lists.linux.it>
-Subject: Re: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed: 139
-
-[adding back LTP list] Please keep the list CC-ed, you might get more responses
-from other members.
-
------ Original Message -----
-> (gdb) bt
-> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> vfscanf-internal.c:345
-> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
-
-Which is unfortunate.
-
-Only place I see child reaching vfscanf is via check_monitor -> get_sys_tune,
-but per test output it's not check_monitor child, but eatup_mem one.
-
-I don't see why it would crash here, and why it happens on RISCV only.
-I can only recommend to try simplify the testcase to see what triggers it.
-
-Is this the only LTP test you see crashing?
-Is it built natively on RISCV or is it cross-compiled in other environment?
-
-> (gdb) where
-> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> vfscanf-internal.c:345
-> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
->
-> (gdb) info registers
-> ra             0x16438 0x16438 <safe_waitpid+40>
-> sp             0x3fffd94850 0x3fffd94850
-> gp             0x29f10 0x29f10 <ipc_path+544>
-> tp             0x3fe16cd720 0x3fe16cd720
-> t0             0xffffffffffffffff -1
-> t1             0x1366c 79468
-> t2             0x1000 4096
-> fp             0x1 0x1
-> s1             0x180 384
-> a0             0x180 384
-> a1             0x3fffd948c4 274875369668
-> a2             0xa 10
-> a3             0x0 0
-> a4             0x3fffd948c4 274875369668
-> a5             0xffffffffffffffff -1
-> a6             0x1 1
-> a7             0x104 260
-> s2             0x3fffd948c4 274875369668
-> s3             0xa 10
-> s4             0x79 121
-> s5             0x3fe17e6008 274366095368
-> s6             0x21ad0 137936
-> s7             0x22000 139264
-> s8             0x22000 139264
-> s9             0x22000 139264
-> s10            0x23000 143360
-> s11            0x1fed70 2092400
-> t3             0x3fe17e5790 274366093200
-> t4             0x3fe17a2070 274365816944
-> t5             0x3fe17a2970 274365819248
-> t6             0x5 5
-> pc             0x3fe1713b92 0x3fe1713b92 <__vfscanf_internal+1126>
-> (gdb)
->
-> ________________________________
-> Sent: Tuesday, February 25, 2020 1:03 PM
-> Subject: Re: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
-> 139
->
-> ----- Original Message -----
->
-> > Hi Jan,
-> > i have tried to collect the core through GDB this is the result i
-> > found??what
-> > i should conclude from this??
->
-> Can you paste the output of backtrace? ('bt' command in gdb)
->
->
-> > root@exaleapsemi:~/pankaj_ltpn/ltp/testcases/kernel/mem/tunable# gdb
-> > ./min_free_kbytes core.378
-> > GNU gdb (GDB) 8.3.1
-> > Copyright (C) 2019 Free Software Foundation, Inc.
-> > License GPLv3+: GNU GPL version 3 or later
-> > <http://gnu.org/licenses/gpl.html>
-> > This is free software: you are free to change and redistribute it.
-> > There is NO WARRANTY, to the extent permitted by law.
-> > Type "show copying" and "show warranty" for details.
-> > This GDB was configured as "riscv64-oe-linux".
-> > Type "show configuration" for configuration details.
-> > For bug reporting instructions, please see:
-> > <http://www.gnu.org/software/gdb/bugs/>.
-> > Find the GDB manual and other documentation resources online at:
-> > <http://www.gnu.org/software/gdb/documentation/>.
->
-> > For help, type "help".
-> > Type "apropos word" to search for commands related to "word"...??
-> > Reading symbols from ./min_free_kbytes...
-> > [New LWP 378]
-> > [Thread debugging using libthread_db enabled]
-> > Using host libthread_db library "/lib/libthread_db.so.1".
-> > Core was generated by `./min_free_kbytes'.
-> > Program terminated with signal SIGSEGV, Segmentation fault.
-> > #0 0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> > out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> > vfscanf-internal.c:345
->
-
-[EXT]
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200225/6ab897c4/attachment-0001.htm>
