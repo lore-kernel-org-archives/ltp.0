@@ -1,71 +1,134 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 Feb 2020 11:28:50 +0100
-Subject: [LTP] [PATCH] syscalls/pipe13: Add regression test for pipe to
- wake up all readers
-In-Reply-To: <0bfca454-8c44-6435-81fb-a243172ef96f@cn.fujitsu.com>
-References: <1582537946-22098-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200224125802.GA30073@rei.lan>
- <0bfca454-8c44-6435-81fb-a243172ef96f@cn.fujitsu.com>
-Message-ID: <20200225102850.GA5077@rei.lan>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 25 Feb 2020 16:09:31 +0530
+Subject: [LTP] [PATCH V4 1/10] tst_device: Add tst_is_mounted() helper
+In-Reply-To: <7c0899c42b8d8434c1cf9ca6b261993a1c09031f.1582612624.git.viresh.kumar@linaro.org>
+References: <7c0899c42b8d8434c1cf9ca6b261993a1c09031f.1582612624.git.viresh.kumar@linaro.org>
+Message-ID: <305330ad290ce4802d832e02765b8723a976d4a7.1582627066.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > We should just use waitpid with -1 as a pid here and WNOHANG twice,
-> > because if one of the children hangs it's not guaranteed in any way
-> > which one would that be.
-> > 
-> On my environment, kernel wakes up the first read and the remaining read 
-> doesn't be waked up. (I add three childs, 2,3 doesn't wake up)
+This patch moves the ismount() helper added to the fsmount syscall tests
+to the standard library and renames it to tst_is_mounted(). The helper
+can be used across different files now.
 
-But that behavior is not written down in any standard, that's just how
-the kernel internals are working at the moment, we should not assume it
-will work like this in the future.
+Minor modifications are also done to the helper.
 
-What I would do here would be:
+Acked-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V3->V4:
+- s/TWARN/TINFO
+- Fix commit log.
 
-	int ret, cnt = 0, sleep_us = 1, fail = 0;
+ include/tst_device.h                          |  6 +++++
+ lib/tst_device.c                              | 23 +++++++++++++++++
+ testcases/kernel/syscalls/fsmount/fsmount01.c | 25 +------------------
+ 3 files changed, 30 insertions(+), 24 deletions(-)
 
-	while (cnt < 2 && sleep_us < 100000) {
-		ret = waitpid(-1, NULL, WNOHANG);
-
-		if (ret < 0)
-			tst_brk(TBROK | TERRNO, "waitpid()");
-
-		if (ret > 0) {
-			cnt++;
-			for (i = 0; i < 2; i++) {
-				if (pid[i] == ret)
-					pid[i] = 0;
-			}
-			continue;
-		}
-
-		usleep(sleep_time);
-		sleep_time *= 2;
-	}
-
-	for (i = 0; i < 2; i++) {
-		if (pid[i]) {
-			tst_res(TINFO, "pid %i still sleeps", pid[i]);
-			fail = 1;
-			SAFE_KILL(pid[i], SIGKILL);
-			SAFE_WAIT(NULL);
-		}
-	}
-
-	if (fail)
-		tst_res(TFAIL, "Closed pipe didn't wake everyone");
-
-
-
-This has also advantage that we can easily run the test even for 100
-children as well as two if we change the upper bound of the for loops to
-a variable.
-
+diff --git a/include/tst_device.h b/include/tst_device.h
+index f5609f5986bb..bd6910672d2f 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -36,6 +36,12 @@ extern struct tst_device *tst_device;
+  */
+ int tst_umount(const char *path);
+ 
++/*
++ * Verifies if an earlier mount is successful or not.
++ * @path: Mount path to verify
++ */
++int tst_is_mounted(const char *path);
++
+ /*
+  * Clears a first few blocks of the device. This is needed when device has
+  * already been formatted with a filesystems, subset of mkfs.foo utils aborts
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 8b5459def1cb..d99fb8bc554a 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -386,6 +386,29 @@ int tst_umount(const char *path)
+ 	return -1;
+ }
+ 
++int tst_is_mounted(const char *path)
++{
++	char line[256];
++	FILE *file;
++	int ret = 0;
++
++	file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
++
++	while (fgets(line, sizeof(line), file)) {
++		if (strstr(line, path) != NULL) {
++			ret = 1;
++			break;
++		}
++	}
++
++	SAFE_FCLOSE(NULL, file);
++
++	if (!ret)
++		tst_resm(TINFO, "No device is mounted at %s", path);
++
++	return ret;
++}
++
+ int find_stat_file(const char *dev, char *path, size_t path_len)
+ {
+ 	const char *devname = strrchr(dev, '/') + 1;
+diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
+index 83185b48aedd..8e29a1537334 100644
+--- a/testcases/kernel/syscalls/fsmount/fsmount01.c
++++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
+@@ -12,30 +12,10 @@
+ #include "tst_test.h"
+ #include "lapi/fcntl.h"
+ #include "lapi/fsmount.h"
+-#include "tst_safe_stdio.h"
+ 
+-#define LINELENGTH 256
+ #define MNTPOINT "newmount_point"
+ static int sfd, mfd, is_mounted;
+ 
+-static int ismount(char *mntpoint)
+-{
+-	int ret = 0;
+-	FILE *file;
+-	char line[LINELENGTH];
+-
+-	file = SAFE_FOPEN("/proc/mounts", "r");
+-
+-	while (fgets(line, sizeof(line), file)) {
+-		if (strstr(line, mntpoint) != NULL) {
+-			ret = 1;
+-			break;
+-		}
+-	}
+-	SAFE_FCLOSE(file);
+-	return ret;
+-}
+-
+ static void cleanup(void)
+ {
+ 	if (is_mounted)
+@@ -76,12 +56,9 @@ static void test_fsmount(void)
+ 	tst_res(TPASS, "move_mount() attached to the mount point");
+ 	SAFE_CLOSE(mfd);
+ 
+-	if (ismount(MNTPOINT)) {
+-		tst_res(TPASS, "device mounted");
++	if (tst_is_mounted(MNTPOINT)) {
+ 		SAFE_UMOUNT(MNTPOINT);
+ 		is_mounted = 0;
+-	} else {
+-		tst_res(TFAIL, "device not mounted");
+ 	}
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.21.0.rc0.269.g1a574e7a288b
+
