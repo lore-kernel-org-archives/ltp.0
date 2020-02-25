@@ -1,130 +1,44 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 25 Feb 2020 12:10:39 +0530
-Subject: [LTP] [PATCH V3 01/10] tst_device: Add tst_ismount() helper
+Date: Tue, 25 Feb 2020 12:10:40 +0530
+Subject: [LTP] [PATCH V3 02/10] lapi/fsmount.h: Add
+ fsopen_supported_by_kernel()
 In-Reply-To: <cover.1582612624.git.viresh.kumar@linaro.org>
 References: <cover.1582612624.git.viresh.kumar@linaro.org>
-Message-ID: <7c0899c42b8d8434c1cf9ca6b261993a1c09031f.1582612624.git.viresh.kumar@linaro.org>
+Message-ID: <adc609fbfd9b8ccc31bb3dd6050af13d7126e2f2.1582612624.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch moves the ismount() helper added to the fsmount syscall tests
-to the standard library and renames it to tst_ismount(). The helper can
-be used across different files now.
+Add a helper to check if the fsmount() related syscalls are supported by
+the kernel or not.
 
-Minor modifications are also done to the helper.
-
-Acked-by: Li Wang <liwang@redhat.com>
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/tst_device.h                          |  6 +++++
- lib/tst_device.c                              | 23 +++++++++++++++++
- testcases/kernel/syscalls/fsmount/fsmount01.c | 25 +------------------
- 3 files changed, 30 insertions(+), 24 deletions(-)
+ include/lapi/fsmount.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index f5609f5986bb..bd6910672d2f 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -36,6 +36,12 @@ extern struct tst_device *tst_device;
-  */
- int tst_umount(const char *path);
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 87f2f229c371..a6a24904e66d 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -130,5 +130,14 @@ enum fsconfig_command {
  
-+/*
-+ * Verifies if an earlier mount is successful or not.
-+ * @path: Mount path to verify
-+ */
-+int tst_is_mounted(const char *path);
-+
- /*
-  * Clears a first few blocks of the device. This is needed when device has
-  * already been formatted with a filesystems, subset of mkfs.foo utils aborts
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 8b5459def1cb..c53ae36cf8b9 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -386,6 +386,29 @@ int tst_umount(const char *path)
- 	return -1;
- }
+ #endif /* OPEN_TREE_CLONE */
  
-+int tst_is_mounted(const char *path)
++void fsopen_supported_by_kernel(void)
 +{
-+	char line[256];
-+	FILE *file;
-+	int ret = 0;
-+
-+	file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
-+
-+	while (fgets(line, sizeof(line), file)) {
-+		if (strstr(line, path) != NULL) {
-+			ret = 1;
-+			break;
-+		}
++	if ((tst_kvercmp(5, 2, 0)) < 0) {
++		/* Check if the syscall is backported on an older kernel */
++		TEST(syscall(__NR_fsopen, NULL, 0));
++		if (TST_RET == -1 && TST_ERR == ENOSYS)
++			tst_brk(TCONF, "Test not supported on kernel version < v5.2");
 +	}
-+
-+	SAFE_FCLOSE(NULL, file);
-+
-+	if (!ret)
-+		tst_resm(TWARN, "No device is mounted at %s", path);
-+
-+	return ret;
 +}
-+
- int find_stat_file(const char *dev, char *path, size_t path_len)
- {
- 	const char *devname = strrchr(dev, '/') + 1;
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-index 83185b48aedd..8e29a1537334 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-@@ -12,30 +12,10 @@
- #include "tst_test.h"
- #include "lapi/fcntl.h"
- #include "lapi/fsmount.h"
--#include "tst_safe_stdio.h"
  
--#define LINELENGTH 256
- #define MNTPOINT "newmount_point"
- static int sfd, mfd, is_mounted;
- 
--static int ismount(char *mntpoint)
--{
--	int ret = 0;
--	FILE *file;
--	char line[LINELENGTH];
--
--	file = SAFE_FOPEN("/proc/mounts", "r");
--
--	while (fgets(line, sizeof(line), file)) {
--		if (strstr(line, mntpoint) != NULL) {
--			ret = 1;
--			break;
--		}
--	}
--	SAFE_FCLOSE(file);
--	return ret;
--}
--
- static void cleanup(void)
- {
- 	if (is_mounted)
-@@ -76,12 +56,9 @@ static void test_fsmount(void)
- 	tst_res(TPASS, "move_mount() attached to the mount point");
- 	SAFE_CLOSE(mfd);
- 
--	if (ismount(MNTPOINT)) {
--		tst_res(TPASS, "device mounted");
-+	if (tst_is_mounted(MNTPOINT)) {
- 		SAFE_UMOUNT(MNTPOINT);
- 		is_mounted = 0;
--	} else {
--		tst_res(TFAIL, "device not mounted");
- 	}
- }
- 
+ #endif /* FSMOUNT_H__ */
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
