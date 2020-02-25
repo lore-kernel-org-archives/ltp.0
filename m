@@ -1,126 +1,22 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 25 Feb 2020 03:31:33 -0500 (EST)
-Subject: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
- 139
-In-Reply-To: <MAXPR0101MB14681EB0C7F8BBC970B19ED9EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB14687E3C724A815D2857EA14EE1A0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <MAXPR0101MB14685FEB7F52C97C8835B106EE110@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <558576867.8097569.1582098912792.JavaMail.zimbra@redhat.com>
- <BM1PR0101MB14596D9D318FF13C32724A32EE100@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
- <732362668.8105497.1582103304747.JavaMail.zimbra@redhat.com>
- <MAXPR0101MB1468CAB5F98BE95E3170E7A3EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <641229800.8775991.1582616022386.JavaMail.zimbra@redhat.com>
- <MAXPR0101MB14681EB0C7F8BBC970B19ED9EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <768964483.8786340.1582619493789.JavaMail.zimbra@redhat.com>
+Date: Tue, 25 Feb 2020 03:40:20 -0500 (EST)
+Subject: [LTP] [PATCH] lib: fputs() in print_result() is not signal safe
+In-Reply-To: <20200225073531.GA64168@gacrux.arch.suse.de>
+References: <bac938d8a2d57653b9f22e55c6d222a990b6a5cf.1582301521.git.jstancek@redhat.com>
+ <20200225073531.GA64168@gacrux.arch.suse.de>
+Message-ID: <990931249.8786991.1582620020742.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-[adding back LTP list] Please keep the list CC-ed, you might get more responses
-from other members.
+
 
 ----- Original Message -----
-> (gdb) bt
-> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> vfscanf-internal.c:345
-> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
+> Hi Jan,
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Which is unfortunate.
-
-Only place I see child reaching vfscanf is via check_monitor -> get_sys_tune,
-but per test output it's not check_monitor child, but eatup_mem one.
-
-I don't see why it would crash here, and why it happens on RISCV only.
-I can only recommend to try simplify the testcase to see what triggers it.
-
-Is this the only LTP test you see crashing? 
-Is it built natively on RISCV or is it cross-compiled in other environment?
-
-> (gdb) where
-> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> vfscanf-internal.c:345
-> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
-> 
-> (gdb) info registers
-> ra             0x16438 0x16438 <safe_waitpid+40>
-> sp             0x3fffd94850 0x3fffd94850
-> gp             0x29f10 0x29f10 <ipc_path+544>
-> tp             0x3fe16cd720 0x3fe16cd720
-> t0             0xffffffffffffffff -1
-> t1             0x1366c 79468
-> t2             0x1000 4096
-> fp             0x1 0x1
-> s1             0x180 384
-> a0             0x180 384
-> a1             0x3fffd948c4 274875369668
-> a2             0xa 10
-> a3             0x0 0
-> a4             0x3fffd948c4 274875369668
-> a5             0xffffffffffffffff -1
-> a6             0x1 1
-> a7             0x104 260
-> s2             0x3fffd948c4 274875369668
-> s3             0xa 10
-> s4             0x79 121
-> s5             0x3fe17e6008 274366095368
-> s6             0x21ad0 137936
-> s7             0x22000 139264
-> s8             0x22000 139264
-> s9             0x22000 139264
-> s10            0x23000 143360
-> s11            0x1fed70 2092400
-> t3             0x3fe17e5790 274366093200
-> t4             0x3fe17a2070 274365816944
-> t5             0x3fe17a2970 274365819248
-> t6             0x5 5
-> pc             0x3fe1713b92 0x3fe1713b92 <__vfscanf_internal+1126>
-> (gdb)
-> 
-> ________________________________
-> Sent: Tuesday, February 25, 2020 1:03 PM
-> Subject: Re: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
-> 139
-> 
-> ----- Original Message -----
-> 
-> > Hi Jan,
-> > i have tried to collect the core through GDB this is the result i
-> > found??what
-> > i should conclude from this??
-> 
-> Can you paste the output of backtrace? ('bt' command in gdb)
-> 
-> 
-> > root@exaleapsemi:~/pankaj_ltpn/ltp/testcases/kernel/mem/tunable# gdb
-> > ./min_free_kbytes core.378
-> > GNU gdb (GDB) 8.3.1
-> > Copyright (C) 2019 Free Software Foundation, Inc.
-> > License GPLv3+: GNU GPL version 3 or later
-> > <http://gnu.org/licenses/gpl.html>
-> > This is free software: you are free to change and redistribute it.
-> > There is NO WARRANTY, to the extent permitted by law.
-> > Type "show copying" and "show warranty" for details.
-> > This GDB was configured as "riscv64-oe-linux".
-> > Type "show configuration" for configuration details.
-> > For bug reporting instructions, please see:
-> > <http://www.gnu.org/software/gdb/bugs/>.
-> > Find the GDB manual and other documentation resources online at:
-> > <http://www.gnu.org/software/gdb/documentation/>.
-> 
-> > For help, type "help".
-> > Type "apropos word" to search for commands related to "word"...??
-> > Reading symbols from ./min_free_kbytes...
-> > [New LWP 378]
-> > [Thread debugging using libthread_db enabled]
-> > Using host libthread_db library "/lib/libthread_db.so.1".
-> > Core was generated by `./min_free_kbytes'.
-> > Program terminated with signal SIGSEGV, Segmentation fault.
-> > #0 0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
-> > out>, argptr=<optimized out>, mode_flags=<optimized out>) at
-> > vfscanf-internal.c:345
-> 
+Pushed.
 
