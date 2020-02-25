@@ -1,44 +1,141 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 25 Feb 2020 18:00:00 +0800
-Subject: [LTP] [PATCH V3 00/10] Add new LTP tests related to fsmount
- family of syscalls
-In-Reply-To: <cover.1582612624.git.viresh.kumar@linaro.org>
-References: <cover.1582612624.git.viresh.kumar@linaro.org>
-Message-ID: <CAEemH2dogCkDHtZzwWCx-ahg-CebGYLNyew6F2AkJVPC_yivBA@mail.gmail.com>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Tue, 25 Feb 2020 10:03:14 +0000
+Subject: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
+ 139
+In-Reply-To: <768964483.8786340.1582619493789.JavaMail.zimbra@redhat.com>
+References: <MAXPR0101MB14687E3C724A815D2857EA14EE1A0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+ <MAXPR0101MB14685FEB7F52C97C8835B106EE110@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+ <558576867.8097569.1582098912792.JavaMail.zimbra@redhat.com>
+ <BM1PR0101MB14596D9D318FF13C32724A32EE100@BM1PR0101MB1459.INDPRD01.PROD.OUTLOOK.COM>
+ <732362668.8105497.1582103304747.JavaMail.zimbra@redhat.com>
+ <MAXPR0101MB1468CAB5F98BE95E3170E7A3EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+ <641229800.8775991.1582616022386.JavaMail.zimbra@redhat.com>
+ <MAXPR0101MB14681EB0C7F8BBC970B19ED9EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>,
+ <768964483.8786340.1582619493789.JavaMail.zimbra@redhat.com>
+Message-ID: <MAXPR0101MB1468590F5585E000D2380876EEED0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+LTP is built natively,atleast for now i seeing crash for this particular test only. I am also not able to get how and that is failing there?
 
-These new tests look good, only a few comments/questions below:
 
-Patch 1/10:
-1. The git summary should be updated too (someone who push patch can help
-do that:).
-2. Maybe better to replace the TWARN by TINFO? Since tst_is_mounted() as a
-general function to check if mount success, sometimes we just need the
-return status then do next work(I tend to leave the waring or break operate
-to LTP users:).
+________________________________
+From: Jan Stancek <jstancek@redhat.com>
+Sent: Tuesday, February 25, 2020 2:01 PM
+To: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: LTP Mailing List <ltp@lists.linux.it>
+Subject: Re: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed: 139
 
-Patch 5/10, 9/10:
-May I ask why we use "sync" as the key value in fsconfig()? I ask this
-because it can get rid of the errors we found in XFS test before.
+[adding back LTP list] Please keep the list CC-ed, you might get more responses
+from other members.
 
-Patch 9/10, 10/10:
-I guess that'd be better if we put the 'ismounted = 1' at the behind of
-tst_is_mounted(), do you feel the code sequence looks strange which we set
-'ismounted' to 1 then do mount checking?
+----- Original Message -----
+> (gdb) bt
+> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
+> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
+> vfscanf-internal.c:345
+> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
 
-Ack for the whole patchset v3 (+ follow some modification for above
-comments):
-    Acked-by: Li Wang <liwang@redhat.com>
+Which is unfortunate.
 
--- 
-Regards,
-Li Wang
+Only place I see child reaching vfscanf is via check_monitor -> get_sys_tune,
+but per test output it's not check_monitor child, but eatup_mem one.
+
+I don't see why it would crash here, and why it happens on RISCV only.
+I can only recommend to try simplify the testcase to see what triggers it.
+
+Is this the only LTP test you see crashing?
+Is it built natively on RISCV or is it cross-compiled in other environment?
+
+> (gdb) where
+> #0  0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
+> out>, argptr=<optimized out>, mode_flags=<optimized out>) at
+> vfscanf-internal.c:345
+> Backtrace stopped: Cannot access memory at address 0xfffffffffffffff9
+>
+> (gdb) info registers
+> ra             0x16438 0x16438 <safe_waitpid+40>
+> sp             0x3fffd94850 0x3fffd94850
+> gp             0x29f10 0x29f10 <ipc_path+544>
+> tp             0x3fe16cd720 0x3fe16cd720
+> t0             0xffffffffffffffff -1
+> t1             0x1366c 79468
+> t2             0x1000 4096
+> fp             0x1 0x1
+> s1             0x180 384
+> a0             0x180 384
+> a1             0x3fffd948c4 274875369668
+> a2             0xa 10
+> a3             0x0 0
+> a4             0x3fffd948c4 274875369668
+> a5             0xffffffffffffffff -1
+> a6             0x1 1
+> a7             0x104 260
+> s2             0x3fffd948c4 274875369668
+> s3             0xa 10
+> s4             0x79 121
+> s5             0x3fe17e6008 274366095368
+> s6             0x21ad0 137936
+> s7             0x22000 139264
+> s8             0x22000 139264
+> s9             0x22000 139264
+> s10            0x23000 143360
+> s11            0x1fed70 2092400
+> t3             0x3fe17e5790 274366093200
+> t4             0x3fe17a2070 274365816944
+> t5             0x3fe17a2970 274365819248
+> t6             0x5 5
+> pc             0x3fe1713b92 0x3fe1713b92 <__vfscanf_internal+1126>
+> (gdb)
+>
+> ________________________________
+> Sent: Tuesday, February 25, 2020 1:03 PM
+> Subject: Re: [LTP] min_free_kbytes.c:134: FAIL: child unexpectedly failed:
+> 139
+>
+> ----- Original Message -----
+>
+> > Hi Jan,
+> > i have tried to collect the core through GDB this is the result i
+> > found??what
+> > i should conclude from this??
+>
+> Can you paste the output of backtrace? ('bt' command in gdb)
+>
+>
+> > root@exaleapsemi:~/pankaj_ltpn/ltp/testcases/kernel/mem/tunable# gdb
+> > ./min_free_kbytes core.378
+> > GNU gdb (GDB) 8.3.1
+> > Copyright (C) 2019 Free Software Foundation, Inc.
+> > License GPLv3+: GNU GPL version 3 or later
+> > <http://gnu.org/licenses/gpl.html>
+> > This is free software: you are free to change and redistribute it.
+> > There is NO WARRANTY, to the extent permitted by law.
+> > Type "show copying" and "show warranty" for details.
+> > This GDB was configured as "riscv64-oe-linux".
+> > Type "show configuration" for configuration details.
+> > For bug reporting instructions, please see:
+> > <http://www.gnu.org/software/gdb/bugs/>.
+> > Find the GDB manual and other documentation resources online at:
+> > <http://www.gnu.org/software/gdb/documentation/>.
+>
+> > For help, type "help".
+> > Type "apropos word" to search for commands related to "word"...??
+> > Reading symbols from ./min_free_kbytes...
+> > [New LWP 378]
+> > [Thread debugging using libthread_db enabled]
+> > Using host libthread_db library "/lib/libthread_db.so.1".
+> > Core was generated by `./min_free_kbytes'.
+> > Program terminated with signal SIGSEGV, Segmentation fault.
+> > #0 0x0000003fe1713b92 in __vfscanf_internal (s=0x23000, format=<optimized
+> > out>, argptr=<optimized out>, mode_flags=<optimized out>) at
+> > vfscanf-internal.c:345
+>
+
+[EXT]
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200225/515a0f53/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200225/6ab897c4/attachment-0001.htm>
