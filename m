@@ -1,57 +1,71 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 25 Feb 2020 18:20:33 +0800
-Subject: [LTP] [PATCH v3 1/2] syscalls/fcntl30: clean up && add more
- range test
-In-Reply-To: <20200224142034.GA2210@rei>
-References: <20200127162016.GD30831@rei.lan>
- <1580969073-27367-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200221160351.GA26393@rei.lan>
- <8d1a7c73-7122-2c3d-6a73-024bed066966@cn.fujitsu.com>
- <20200224142034.GA2210@rei>
-Message-ID: <1d62bf3e-3f34-fd05-8662-08ff16523673@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 25 Feb 2020 11:28:50 +0100
+Subject: [LTP] [PATCH] syscalls/pipe13: Add regression test for pipe to
+ wake up all readers
+In-Reply-To: <0bfca454-8c44-6435-81fb-a243172ef96f@cn.fujitsu.com>
+References: <1582537946-22098-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200224125802.GA30073@rei.lan>
+ <0bfca454-8c44-6435-81fb-a243172ef96f@cn.fujitsu.com>
+Message-ID: <20200225102850.GA5077@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+Hi!
+> > We should just use waitpid with -1 as a pid here and WNOHANG twice,
+> > because if one of the children hangs it's not guaranteed in any way
+> > which one would that be.
+> > 
+> On my environment, kernel wakes up the first read and the remaining read 
+> doesn't be waked up. (I add three childs, 2,3 doesn't wake up)
 
-> Hi!
->>> I was playing with the test and it seems that the kernel allocation may
->>> fail even for much smaller sizes for various reasons. I guess that
->>> memory framentation on long running systems may be the culprit here
->>> because kmalloc() allocates physically continuous memory.
->>>
->>> I guess that the safest bet here would be limiting the maximal size we
->>> try to resize the pipe and succeed to something as 8MB which would be
->>> something as 32 pages to allocate.
->>>
->> Agree.
->>> At the same time I would just define the size we expect to fail with
->>> ENOMEM to 1<<30 and that would save us from this architecture specific
->>> trickery that will probably fail on stranger architectures anyway.
->> On 64kb page size, it will over 1 <<30 for ENOMEM error .I think we can
->> test MAX_SIZE+pg_size(< 1<<31) for ENOMEM error. If  beyond 1<<31,
->> expect EINVAL error.
-> 
-> Hmm, maybe we can just double the size in a loop until we hit either
-> ENOMEM or EINVAL then and fail the test if we hit them too soon.
-I plan to remove this max test because of unknown kmalloc fail, test 
-range as below
+But that behavior is not written down in any standard, that's just how
+the kernel internals are working at the moment, we should not assume it
+will work like this in the future.
 
-         {0, 0, 0, 1, "set a value of below page size"},
-         {0, 0, 0, 1, "set a normal value"},             //under 
-non-privileged user,maybe 128k (<1024k )
-         {0, 0, 1, 1, "set a value of below page size"},
-         {0, 0, 1, 1, "set a normal value"},    // test 8M as you suggested,
-         {0, 0, 1, 0, "set a value beyond max"},  //expect EINVAL or ENOMEM
-};
+What I would do here would be:
 
-What do you think about it?
+	int ret, cnt = 0, sleep_us = 1, fail = 0;
 
-Best Regards
-Yang Xu
-> 
+	while (cnt < 2 && sleep_us < 100000) {
+		ret = waitpid(-1, NULL, WNOHANG);
+
+		if (ret < 0)
+			tst_brk(TBROK | TERRNO, "waitpid()");
+
+		if (ret > 0) {
+			cnt++;
+			for (i = 0; i < 2; i++) {
+				if (pid[i] == ret)
+					pid[i] = 0;
+			}
+			continue;
+		}
+
+		usleep(sleep_time);
+		sleep_time *= 2;
+	}
+
+	for (i = 0; i < 2; i++) {
+		if (pid[i]) {
+			tst_res(TINFO, "pid %i still sleeps", pid[i]);
+			fail = 1;
+			SAFE_KILL(pid[i], SIGKILL);
+			SAFE_WAIT(NULL);
+		}
+	}
+
+	if (fail)
+		tst_res(TFAIL, "Closed pipe didn't wake everyone");
 
 
+
+This has also advantage that we can easily run the test even for 100
+children as well as two if we change the upper bound of the for loops to
+a variable.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
