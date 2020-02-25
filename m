@@ -1,44 +1,56 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 25 Feb 2020 12:10:40 +0530
-Subject: [LTP] [PATCH V3 02/10] lapi/fsmount.h: Add
- fsopen_supported_by_kernel()
+Date: Tue, 25 Feb 2020 12:10:41 +0530
+Subject: [LTP] [PATCH V3 03/10] lapi/fsmount.h: Include "lapi/fcntl.h"
 In-Reply-To: <cover.1582612624.git.viresh.kumar@linaro.org>
 References: <cover.1582612624.git.viresh.kumar@linaro.org>
-Message-ID: <adc609fbfd9b8ccc31bb3dd6050af13d7126e2f2.1582612624.git.viresh.kumar@linaro.org>
+Message-ID: <655d948e27dbbc03f6cef038e339ec0269d11140.1582612624.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add a helper to check if the fsmount() related syscalls are supported by
-the kernel or not.
+All the files that include (and that will include it in future) are most
+probably going to need the definitions from "lapi/fcntl.h", include it
+directly instead of <fcntl.h>, which will break it for old RHL distros.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Acked-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/lapi/fsmount.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/lapi/fsmount.h                        | 2 +-
+ testcases/kernel/syscalls/fsmount/fsmount01.c | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-index 87f2f229c371..a6a24904e66d 100644
+index a6a24904e66d..5e5eaca7e6ff 100644
 --- a/include/lapi/fsmount.h
 +++ b/include/lapi/fsmount.h
-@@ -130,5 +130,14 @@ enum fsconfig_command {
+@@ -7,12 +7,12 @@
+ #ifndef FSMOUNT_H__
+ #define FSMOUNT_H__
  
- #endif /* OPEN_TREE_CLONE */
+-#include <fcntl.h>
+ #include <sys/mount.h>
+ #include <sys/syscall.h>
+ #include <sys/types.h>
  
-+void fsopen_supported_by_kernel(void)
-+{
-+	if ((tst_kvercmp(5, 2, 0)) < 0) {
-+		/* Check if the syscall is backported on an older kernel */
-+		TEST(syscall(__NR_fsopen, NULL, 0));
-+		if (TST_RET == -1 && TST_ERR == ENOSYS)
-+			tst_brk(TCONF, "Test not supported on kernel version < v5.2");
-+	}
-+}
+ #include "config.h"
++#include "lapi/fcntl.h"
+ #include "lapi/syscalls.h"
  
- #endif /* FSMOUNT_H__ */
+ #ifndef HAVE_FSOPEN
+diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
+index 8e29a1537334..514d3b0b38f8 100644
+--- a/testcases/kernel/syscalls/fsmount/fsmount01.c
++++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
+@@ -10,7 +10,6 @@
+ #include <sys/mount.h>
+ 
+ #include "tst_test.h"
+-#include "lapi/fcntl.h"
+ #include "lapi/fsmount.h"
+ 
+ #define MNTPOINT "newmount_point"
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
