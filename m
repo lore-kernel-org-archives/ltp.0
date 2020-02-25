@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 Feb 2020 13:19:14 +0100
-Subject: [LTP] [PATCH] syscalls/pidfd_open: Continue with rest of the
- tests on failure
-In-Reply-To: <54a3d6fcef8cfed89a1e4f0b56717f56aa502293.1582611994.git.viresh.kumar@linaro.org>
-References: <54a3d6fcef8cfed89a1e4f0b56717f56aa502293.1582611994.git.viresh.kumar@linaro.org>
-Message-ID: <20200225121914.GC5077@rei.lan>
+Date: Tue, 25 Feb 2020 13:54:50 +0100
+Subject: [LTP] [PATCH] syscalls/kill11: convert to new library
+In-Reply-To: <1582271720-27370-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1582271720-27370-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200225125449.GD5077@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,53 +11,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+Pushed with a minor change, thanks.
 
-Agree here, also tst_brk(TFAIL, ...) is not working well at this point, see:
+> +	if (tc->sig != SIGKILL) {
+> +		if (sigset(tc->sig, SIG_DFL) == SIG_ERR)
+> +			tst_brk(TBROK | TERRNO, "sigset(%d) failed", tc->sig);
+>  	}
 
-https://github.com/linux-test-project/ltp/issues/462
-
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  .../kernel/syscalls/pidfd_open/pidfd_open02.c    | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> index d73b5326b3b1..533270da3dbd 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> @@ -35,17 +35,15 @@ static void run(unsigned int n)
->  
->  	if (TST_RET != -1) {
->  		SAFE_CLOSE(TST_RET);
-> -		tst_brk(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
-> +		tst_res(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
->  			tc->name, n);
-> -	}
-> -
-> -	if (tc->exp_errno != TST_ERR) {
-> -		tst_brk(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
-> +	} else if (tc->exp_errno != TST_ERR) {
-> +		tst_res(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
->  			tc->name, tst_strerrno(tc->exp_errno));
-> -	}
-
-Can we please use return instead of the else if branches?
-
-i.e.
-
-	if (...) {
-		tst_res(TFAIL, ...);
-		return;
-	}
-
-> -	tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
-> -		tc->name);
-> +	 } else {
-> +		 tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
-> +			 tc->name);
-> +	 }
->  }
-
+There is no need to restore the default signal handlers if we haven't
+changed them, so I've removed this part as well.
 
 -- 
 Cyril Hrubis
