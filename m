@@ -1,25 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 26 Feb 2020 17:23:38 +0100
-Subject: [LTP] [PATCH V2] syscalls/pidfd_open: Continue with rest of the
- tests on failure
-In-Reply-To: <5E567BD2.302@cn.fujitsu.com>
-References: <54a3d6fcef8cfed89a1e4f0b56717f56aa502293.1582611994.git.viresh.kumar@linaro.org>
- <2f579843fb1ff09cfaaa1b991b48437f525740b3.1582673499.git.viresh.kumar@linaro.org>
- <5E567BD2.302@cn.fujitsu.com>
-Message-ID: <20200226162337.GB31170@rei>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 26 Feb 2020 17:40:35 +0100
+Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
+In-Reply-To: <20200226135748.GD24080@rei>
+References: <20200224100932.10349-1-mdoucha@suse.cz>
+ <20200226135748.GD24080@rei>
+Message-ID: <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >   	tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
-> >   		tc->name);
->   Acked-by: Xiao Yang <ice_yangxiao@163.com>
+On 2/26/20 2:57 PM, Cyril Hrubis wrote:
+> Hi!
+> Are the failures on xfs fixed by now?
+> 
+> Do we have a upstrem kernel commit we can add to the test as a tag?
+> 
 
-Sorry, missed that one.
+Anthony Iliopoulos says in the BSC that the upstream fix is
+commit e093c4be760e ("xfs: Fix tail rounding in xfs_alloc_file_space()")
+
+See https://bugzilla.suse.com/show_bug.cgi?id=1161087#c1
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
