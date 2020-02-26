@@ -1,49 +1,52 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 26 Feb 2020 09:42:49 +0100
-Subject: [LTP] [PATCH 1/1] request_key04: Use TFAIL instead of TBROK
-Message-ID: <20200226084249.29561-1-pvorel@suse.cz>
+Date: Wed, 26 Feb 2020 09:53:03 +0100
+Subject: [LTP] [PATCH V3 08/10] syscalls/move_mount: New tests
+In-Reply-To: <20200226082318.eq5ozhgg2myscpqt@vireshk-i7>
+References: <cover.1582612624.git.viresh.kumar@linaro.org>
+ <e12560056ebc632918426194172a6cba48953d4e.1582612624.git.viresh.kumar@linaro.org>
+ <20200225135709.GC62318@gacrux.arch.suse.de>
+ <20200226022758.ls35mblsetg4nk6f@vireshk-i7>
+ <20200226074729.GA15207@dell5510>
+ <20200226082318.eq5ozhgg2myscpqt@vireshk-i7>
+Message-ID: <20200226085303.GA30488@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To fix unreported results error:
+Hi Viresh,
+
+> On 26-02-20, 08:47, Petr Vorel wrote:
+> > Your idea is correct, but IMHO it's not good to skip all the tests, which is
+> > done due
+> > tst_test.c:1051: BROK: Test 0 haven't reported results!
+> > if you use tst_res(TBROK ...).
+
+> I don't think that is the case. tst_res(TBROK, ...) shouldn't (and
+> isn't for me) result in skipping of tests.
+Correct, tst_res() itself doesn't exit the test. But the fact it uses TBROK
+without reporting any result previously leads to tst_brk from the library:
+
 tst_test.c:1036: BROK: Test haven't reported results!
 
-which also prevents to display kernel commit fix and CVE.
+tst_brk(TBROK, "Test %i haven't reported results!", i);
 
-Fixes: 8ac26843e ("syscalls/request_key04: new test for request_key()
-permission check bug")
+That's why I consider tst_res(TBROK problematic.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
-
-obvious fix which I'd normally merge without sending to ML.
-But there are 19 tests which use tst_res(TBROK, and at least some of
-them are affected by this (i.e. don't unconditionally report any result
-before tst_res(TBROK), so we might want to fix it different way.
+This is a separate discussion, see the patch I sent today
+https://patchwork.ozlabs.org/patch/1244781/
 
 Kind regards,
 Petr
 
- testcases/kernel/syscalls/request_key/request_key04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > tst_brk(TBROK) is used for setup, where you create some resource, which is then
+> > reused by all test runs, but this preparation fails.
 
-diff --git a/testcases/kernel/syscalls/request_key/request_key04.c b/testcases/kernel/syscalls/request_key/request_key04.c
-index da036bf3a..c125f4261 100644
---- a/testcases/kernel/syscalls/request_key/request_key04.c
-+++ b/testcases/kernel/syscalls/request_key/request_key04.c
-@@ -65,7 +65,7 @@ static void do_test(void)
- 	if (TST_ERR == EACCES) {
- 		tst_res(TPASS, "request_key() failed with EACCES as expected");
- 	} else {
--		tst_res(TBROK | TTERRNO,
-+		tst_res(TFAIL | TTERRNO,
- 			"request_key() failed with unexpected error code");
- 	}
- }
--- 
-2.25.1
+> Right, but in my case I can't put all setup stuff in setup() callback
+> and some of the setup bits stay in run() callback as well.
+Sure. But as a result of it I'd personally use tst_res(TFAIL).
+But maybe I'm wrong and others will correct me.
 
+Kind regards,
+Petr
