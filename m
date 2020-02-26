@@ -1,34 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 26 Feb 2020 10:18:24 +0100
-Subject: [LTP] [PATCH 1/1] request_key04: Use TFAIL instead of TBROK
-In-Reply-To: <CAEemH2cMBtVV-1_RZb_UHN9rQF3sD2w-H2gS11BD2WHPTPzvgQ@mail.gmail.com>
-References: <20200226084249.29561-1-pvorel@suse.cz>
- <CAEemH2cMBtVV-1_RZb_UHN9rQF3sD2w-H2gS11BD2WHPTPzvgQ@mail.gmail.com>
-Message-ID: <20200226091824.GA2215@dell5510>
+Date: Wed, 26 Feb 2020 10:20:43 +0100
+Subject: [LTP] [PATCH V3 08/10] syscalls/move_mount: New tests
+In-Reply-To: <20200226085927.xuwos7nbcfehfckj@vireshk-i7>
+References: <cover.1582612624.git.viresh.kumar@linaro.org>
+ <e12560056ebc632918426194172a6cba48953d4e.1582612624.git.viresh.kumar@linaro.org>
+ <20200225135709.GC62318@gacrux.arch.suse.de>
+ <20200226022758.ls35mblsetg4nk6f@vireshk-i7>
+ <20200226074729.GA15207@dell5510>
+ <20200226082318.eq5ozhgg2myscpqt@vireshk-i7>
+ <20200226085303.GA30488@dell5510>
+ <20200226085927.xuwos7nbcfehfckj@vireshk-i7>
+Message-ID: <20200226092043.GB2215@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Viresh,
 
-...
-> > obvious fix which I'd normally merge without sending to ML.
-> > But there are 19 tests which use tst_res(TBROK, and at least some of
-> > them are affected by this (i.e. don't unconditionally report any result
-> > before tst_res(TBROK), so we might want to fix it different way.
+> > > I don't think that is the case. tst_res(TBROK, ...) shouldn't (and
+> > > isn't for me) result in skipping of tests.
+> > Correct, tst_res() itself doesn't exit the test. But the fact it uses TBROK
+> > without reporting any result previously leads to tst_brk from the library:
 
-> +1 for this fix.
-Thanks for your review.
+> > tst_test.c:1036: BROK: Test haven't reported results!
 
-> By the way, do you think it makes sense to add build check parameters for
-> tst_res() too? Just like what we do for tst_brk() in commit 0738e3753c51.
+> Ahh, I missed this part then.
 
-IMHO if we agree that tst_res(TBROK) is harmful and should be avoided entirely,
-I'd be for adding this check.
+> > > Right, but in my case I can't put all setup stuff in setup() callback
+> > > and some of the setup bits stay in run() callback as well.
+> > Sure. But as a result of it I'd personally use tst_res(TFAIL).
+> > But maybe I'm wrong and others will correct me.
 
-> Any thoughts?
+> FWIW, I am the least educated guy here in terms of LTP stuff :)
+You're doing well :).
+
+> I just want to make sure I don't need to do it again and so wanted to
+> better understand TBROK vs TFAIL thing.
++1.
+
+> So the conclusion is that in the run() callback we should always use
+> TFAIL ?
+I'd wait on the outcome of the discussion here
+https://patchwork.ozlabs.org/patch/1244781/
 
 Kind regards,
 Petr
