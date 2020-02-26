@@ -1,5 +1,5 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 26 Feb 2020 20:04:58 +0800
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 26 Feb 2020 13:48:26 +0100
 Subject: [LTP] [PATCH 1/1] request_key04: Use TFAIL instead of TBROK
 In-Reply-To: <20200226113757.GA24342@dell5510>
 References: <20200226084249.29561-1-pvorel@suse.cz>
@@ -7,42 +7,32 @@ References: <20200226084249.29561-1-pvorel@suse.cz>
  <20200226091824.GA2215@dell5510>
  <CAEemH2cXGOh=MX28kYvhFaHspHGXiVdGuNZeyN97+O3+bt1jGg@mail.gmail.com>
  <20200226113757.GA24342@dell5510>
-Message-ID: <5E565EEA.5020900@cn.fujitsu.com>
+Message-ID: <20200226124826.GA24080@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/2/26 19:37, Petr Vorel wrote:
-> Hi Li,
->
->>> ...
->>>>> obvious fix which I'd normally merge without sending to ML.
->>>>> But there are 19 tests which use tst_res(TBROK, and at least some of
->>>>> them are affected by this (i.e. don't unconditionally report any result
->>>>> before tst_res(TBROK), so we might want to fix it different way.
->>>> +1 for this fix.
->>> Thanks for your review.
->>>> By the way, do you think it makes sense to add build check parameters for
->>>> tst_res() too? Just like what we do for tst_brk() in commit 0738e3753c51.
->>> IMHO if we agree that tst_res(TBROK) is harmful and should be avoided
->>> entirely,
->> I agree.
->>> I'd be for adding this check.
->
->> In personally, I'd let tst_res() only accept 'TPASS, TFAIL, TINFO, TCONF,
->> TWARN'.
+Hi!
+> > In personally, I'd let tst_res() only accept 'TPASS, TFAIL, TINFO, TCONF,
+> > TWARN'.
 > +1. Cyril, Jan?
-Hi Petr,
 
-It is OK for me to add this check. :-)
+I guess that it does not make much sense to report TBROK and then
+continue the test. But that all depends on how exactly are these states
+defined. Have we ever wrote them down?
 
-Thanks,
-Xiao Yang
-> Kind regards,
-> Petr
->
+I guess that TPASS and TFAIL are obvious.
 
+TINFO is just additional information.
 
+TCONF is test skipped.
 
+TWARN something went wrong but we decided to continue?
+
+TBROK something went wrong and we decided to exit?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
