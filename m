@@ -1,60 +1,77 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 26 Feb 2020 11:58:37 +0530
-Subject: [LTP] [PATCH V4 1/10] tst_device: Add tst_is_mounted() helper
-In-Reply-To: <20200226051407.GP14282@dhcp-12-102.nay.redhat.com>
-References: <7c0899c42b8d8434c1cf9ca6b261993a1c09031f.1582612624.git.viresh.kumar@linaro.org>
- <305330ad290ce4802d832e02765b8723a976d4a7.1582627066.git.viresh.kumar@linaro.org>
- <20200226051407.GP14282@dhcp-12-102.nay.redhat.com>
-Message-ID: <20200226062837.v3bfggksn62dk2gt@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 26 Feb 2020 08:47:29 +0100
+Subject: [LTP] [PATCH V3 08/10] syscalls/move_mount: New tests
+In-Reply-To: <20200226022758.ls35mblsetg4nk6f@vireshk-i7>
+References: <cover.1582612624.git.viresh.kumar@linaro.org>
+ <e12560056ebc632918426194172a6cba48953d4e.1582612624.git.viresh.kumar@linaro.org>
+ <20200225135709.GC62318@gacrux.arch.suse.de>
+ <20200226022758.ls35mblsetg4nk6f@vireshk-i7>
+Message-ID: <20200226074729.GA15207@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26-02-20, 13:14, Zorro Lang wrote:
-> For example, if path is "/mnt/test", and we get a line as "/mnt/test/mnt1 ..."
-> or "/mnt/mnt/test", Then this function thinks "/mnt/test" is a mountpoint.
-> 
-> We can refer to util-linux/sys-utils/mountpoint.c a little, but it's complicated,
-> or we can call mountpoint command directly?
+Hi Viresh,
 
-This is working fine for me, does this looks okay now ?
+> On 25-02-20, 14:57, Petr Vorel wrote:
+> > > +	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+> > > +	if (TST_RET == -1) {
+> > > +		SAFE_CLOSE(fd);
+> > > +		tst_res(TBROK | TERRNO, "fsconfig() failed");
+> > These should be TFAIL otherwise it 1) breaks all tests 2) does not report any
+> > result:
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index d99fb8bc554a..8bf6dacf5973 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -388,25 +388,16 @@ int tst_umount(const char *path)
- 
- int tst_is_mounted(const char *path)
- {
--       char line[256];
--       FILE *file;
--       int ret = 0;
--
--       file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
--
--       while (fgets(line, sizeof(line), file)) {
--               if (strstr(line, path) != NULL) {
--                       ret = 1;
--                       break;
--               }
--       }
-+       char cmd[PATH_MAX];
-+       int ret;
- 
--       SAFE_FCLOSE(NULL, file);
-+       snprintf(cmd, sizeof(cmd), "mountpoint -q %s", path);
-+       ret = tst_system(cmd);
- 
--       if (!ret)
-+       if (ret)
-                tst_resm(TINFO, "No device is mounted at %s", path);
- 
--       return ret;
-+       return !ret;
- }
+> > move_mount02.c:37: BROK: fsopen() failed: SUCCESS (0)
+> > tst_test.c:1051: BROK: Test 0 haven't reported results!
 
--- 
-viresh
+> I am a bit confused about TBROK and TFAIL to be honest. The test
+> writing guideline says this:
+
+> | 'TFAIL' | Test has failed.
+> | 'TBROK' | Something has failed in test preparation phase.
+
+> And so in my code I have been using TFAIL only for the failures for the
+> actual syscalls that we are testing, like move_mount here. And I have
+> been using TBROK for pretty much everything else.
+Your idea is correct, but IMHO it's not good to skip all the tests, which is
+done due
+tst_test.c:1051: BROK: Test 0 haven't reported results!
+if you use tst_res(TBROK ...).
+
+You can use tst_brk(TBROK) to avoid no reported results, but that's obviously
+exit the test either.
+
+tst_brk(TBROK) is used for setup, where you create some resource, which is then
+reused by all test runs, but this preparation fails.
+
+NOTE: There are some tests which are using tst_res(TBROK). At least some of them are
+wrong. IMHO in testcases/kernel/syscalls/request_key/request_key04.c
+	TST_ERR = saved_errno;
+	if (TST_ERR == EACCES) {
+		tst_res(TPASS, "request_key() failed with EACCES as expected");
+	} else {
+		tst_res(TBROK | TTERRNO,
+			"request_key() failed with unexpected error code");
+	}
+
+IMHO it should be
+	TST_ERR = saved_errno;
+	if (TST_ERR == EACCES) {
+		tst_res(TPASS, "request_key() failed with EACCES as expected");
+	} else {
+		tst_res(TFAIL | TTERRNO,
+			"request_key() failed with unexpected error code");
+	}
+Otherwise if it fails at unexpected error code, you get:
+request_key04.c:68: BROK: request_key() failed with unexpected error code: EACCES (13)
+tst_test.c:1036: BROK: Test haven't reported results!
+
+Thus I'd try to avoid TBROK with tst_res().
+
+> Would be good if you and Cyril can explain what's the correct usage
+> model for these is.
+
+Kind regards,
+Petr
