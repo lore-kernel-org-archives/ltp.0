@@ -1,34 +1,121 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 27 Feb 2020 00:37:17 +0100
-Subject: [LTP] [PATCH v1] Stringify flags to improve error msg of
- unshare()
-In-Reply-To: <20200226172620.29815-1-cfamullaconrad@suse.de>
-References: <20200226172620.29815-1-cfamullaconrad@suse.de>
-Message-ID: <20200226233717.GA10163@dell5510>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Wed, 26 Feb 2020 15:52:17 -0800
+Subject: [LTP] [PATCH v3] syscalls: Check for time64 unsafe syscalls
+ before using them
+In-Reply-To: <20200220065204.485391-1-raj.khem@gmail.com>
+References: <20200220065204.485391-1-raj.khem@gmail.com>
+Message-ID: <759857e6-247c-33fc-53e1-80fa73704906@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Clemens,
+ping
 
-> If your test has multiple calls of unshare() it is hard to read which
-> unshare() call really failed. With this we improve the error message to
-> something like this:
-
->   sendmsg03.c:43: CONF: unshare(CLONE_NEWUSER) unsupported: EINVAL (22)
-
-> Instead of having a hard to understand number like:
-
->   sendmsg03.c:43: CONF: unshare(268435456) unsupported: EINVAL (22)
-
-> Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-LGTM. BTW I guess sendmsg03.c is part of patch you're working on atm, right?
-It's a bit confusing to refer to file which does not exist in git yet.
-Actually, no test is using yet since it's adding in db2f0ed9e.
-
-Kind regards,
-Petr
+On 2/19/20 10:52 PM, Khem Raj wrote:
+> musl is using 64bit time_t now on 32bit architectures and these syscalls
+> no longer exist, therefore its better to check for them being available
+> before using them
+> 
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
+>   lib/tst_clocks.c                                      | 11 ++++++-----
+>   .../kernel/syscalls/gettimeofday/gettimeofday01.c     |  6 ++----
+>   .../kernel/syscalls/gettimeofday/gettimeofday02.c     |  8 +++-----
+>   3 files changed, 11 insertions(+), 14 deletions(-)
+> 
+> diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+> index 5195da38f3..155551170d 100644
+> --- a/lib/tst_clocks.c
+> +++ b/lib/tst_clocks.c
+> @@ -10,21 +10,22 @@
+>   #define _GNU_SOURCE
+>   #include <unistd.h>
+>   #include <time.h>
+> -#include <sys/syscall.h>
+> -
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+>   #include "tst_clocks.h"
+> +#include "lapi/syscalls.h"
+>   
+>   int tst_clock_getres(clockid_t clk_id, struct timespec *res)
+>   {
+> -	return syscall(SYS_clock_getres, clk_id, res);
+> +	return tst_syscall(__NR_clock_getres, clk_id, res);
+>   }
+>   
+>   int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+>   {
+> -	return syscall(SYS_clock_gettime, clk_id, ts);
+> +	return tst_syscall(__NR_clock_gettime, clk_id, ts);
+>   }
+>   
+>   int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
+>   {
+> -	return syscall(SYS_clock_settime, clk_id, ts);
+> +	return tst_syscall(__NR_clock_settime, clk_id, ts);
+>   }
+> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> index 583d8f7b9b..08ea1673ad 100644
+> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
+> @@ -38,10 +38,8 @@
+>   #include <sys/time.h>
+>   #include <errno.h>
+>   #include "test.h"
+> -#include <sys/syscall.h>
+>   #include <unistd.h>
+> -
+> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
+> +#include "lapi/syscalls.h"
+>   
+>   char *TCID = "gettimeofday01";
+>   int TST_TOTAL = 1;
+> @@ -63,7 +61,7 @@ int main(int ac, char **av)
+>   	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>   		tst_count = 0;
+>   
+> -		TEST(gettimeofday((void *)-1, (void *)-1));
+> +		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
+>   
+>   		/* gettimeofday returns an int, so we need to turn the long
+>   		 * TEST_RETURN into an int to test with */
+> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> index 1d60f448e8..5170ad2f78 100644
+> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+> @@ -16,14 +16,12 @@
+>   #include <stdint.h>
+>   #include <sys/time.h>
+>   #include <stdlib.h>
+> -#include <sys/syscall.h>
+>   #include <unistd.h>
+>   #include <time.h>
+>   #include <errno.h>
+>   
+>   #include "tst_test.h"
+> -
+> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
+> +#include "lapi/syscalls.h"
+>   
+>   static volatile sig_atomic_t done;
+>   static char *str_rtime;
+> @@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
+>   
+>   	alarm(rtime);
+>   
+> -	if (gettimeofday(&tv1, NULL)) {
+> +	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
+>   		tst_res(TBROK | TERRNO, "gettimeofday() failed");
+>   		return;
+>   	}
+>   
+>   	while (!done) {
+> -		if (gettimeofday(&tv2, NULL)) {
+> +		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
+>   			tst_res(TBROK | TERRNO, "gettimeofday() failed");
+>   			return;
+>   		}
+> 
