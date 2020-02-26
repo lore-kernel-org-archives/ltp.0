@@ -1,78 +1,40 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 26 Feb 2020 09:27:02 +0800
-Subject: [LTP] [PATCH] syscalls/pipe13: Add regression test for pipe to
- wake up all readers
-In-Reply-To: <20200225102850.GA5077@rei.lan>
-References: <1582537946-22098-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200224125802.GA30073@rei.lan>
- <0bfca454-8c44-6435-81fb-a243172ef96f@cn.fujitsu.com>
- <20200225102850.GA5077@rei.lan>
-Message-ID: <c2a51c9c-2509-7099-23ff-015810048af3@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 26 Feb 2020 07:57:58 +0530
+Subject: [LTP] [PATCH V3 08/10] syscalls/move_mount: New tests
+In-Reply-To: <20200225135709.GC62318@gacrux.arch.suse.de>
+References: <cover.1582612624.git.viresh.kumar@linaro.org>
+ <e12560056ebc632918426194172a6cba48953d4e.1582612624.git.viresh.kumar@linaro.org>
+ <20200225135709.GC62318@gacrux.arch.suse.de>
+Message-ID: <20200226022758.ls35mblsetg4nk6f@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+On 25-02-20, 14:57, Petr Vorel wrote:
+> > +	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+> > +	if (TST_RET == -1) {
+> > +		SAFE_CLOSE(fd);
+> > +		tst_res(TBROK | TERRNO, "fsconfig() failed");
+> These should be TFAIL otherwise it 1) breaks all tests 2) does not report any
+> result:
+> 
+> move_mount02.c:37: BROK: fsopen() failed: SUCCESS (0)
+> tst_test.c:1051: BROK: Test 0 haven't reported results!
 
-> Hi!
->>> We should just use waitpid with -1 as a pid here and WNOHANG twice,
->>> because if one of the children hangs it's not guaranteed in any way
->>> which one would that be.
->>>
->> On my environment, kernel wakes up the first read and the remaining read
->> doesn't be waked up. (I add three childs, 2,3 doesn't wake up)
-> 
-> But that behavior is not written down in any standard, that's just how
-> the kernel internals are working at the moment, we should not assume it
-> will work like this in the future.
-Sound reasonable to me, I will follow your advise.
-> 
-> What I would do here would be:
-> 
-> 	int ret, cnt = 0, sleep_us = 1, fail = 0;
-> 
-> 	while (cnt < 2 && sleep_us < 100000) {
-> 		ret = waitpid(-1, NULL, WNOHANG);
-> 
-> 		if (ret < 0)
-> 			tst_brk(TBROK | TERRNO, "waitpid()");
-> 
-> 		if (ret > 0) {
-> 			cnt++;
-> 			for (i = 0; i < 2; i++) {
-> 				if (pid[i] == ret)
-> 					pid[i] = 0;
-> 			}
-> 			continue;
-> 		}
-> 
-> 		usleep(sleep_time);
-> 		sleep_time *= 2;
-> 	}
-> 
-> 	for (i = 0; i < 2; i++) {
-> 		if (pid[i]) {
-> 			tst_res(TINFO, "pid %i still sleeps", pid[i]);
-> 			fail = 1;
-> 			SAFE_KILL(pid[i], SIGKILL);
-> 			SAFE_WAIT(NULL);
-> 		}
-> 	}
-> 
-> 	if (fail)
-> 		tst_res(TFAIL, "Closed pipe didn't wake everyone");
-> 
-> 
-> 
-> This has also advantage that we can easily run the test even for 100
-> children as well as two if we change the upper bound of the for loops to
-> a variable.
-Yes. this way is more wise.
+I am a bit confused about TBROK and TFAIL to be honest. The test
+writing guideline says this:
 
-Best Regards
-Yang Xu
-> 
+| 'TFAIL' | Test has failed.
+| 'TBROK' | Something has failed in test preparation phase.
 
+And so in my code I have been using TFAIL only for the failures for the
+actual syscalls that we are testing, like move_mount here. And I have
+been using TBROK for pretty much everything else.
 
+Would be good if you and Cyril can explain what's the correct usage
+model for these is.
+
+-- 
+viresh
