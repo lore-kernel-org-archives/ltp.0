@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 26 Feb 2020 14:56:17 +0100
-Subject: [LTP] [PATCH v3] syscalls/pipe13: Add regression test for pipe
- to wake up all readers
-In-Reply-To: <1582686383-23299-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20200225102850.GA5077@rei.lan>
- <1582686383-23299-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200226135616.GC24080@rei>
+Date: Wed, 26 Feb 2020 14:57:48 +0100
+Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
+In-Reply-To: <20200224100932.10349-1-mdoucha@suse.cz>
+References: <20200224100932.10349-1-mdoucha@suse.cz>
+Message-ID: <20200226135748.GD24080@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,16 +11,9 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've added a few more fixes/assertions and pushed, thanks.
+Are the failures on xfs fixed by now?
 
-* Changed the code to run the test for a few different number of
-  children
-
-* Added check for return value from the read() in the child
-
-* Added SAFE_CLOSE(fds[0]) into the parent
-  - this fixes failures with large enough -i parameter where the test
-    would run out of file descriptors
+Do we have a upstrem kernel commit we can add to the test as a tag?
 
 -- 
 Cyril Hrubis
