@@ -1,51 +1,32 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 26 Feb 2020 05:03:16 +0530
-Subject: [LTP] [PATCH V2] syscalls/pidfd_open: Continue with rest of the
- tests on failure
-In-Reply-To: <54a3d6fcef8cfed89a1e4f0b56717f56aa502293.1582611994.git.viresh.kumar@linaro.org>
-References: <54a3d6fcef8cfed89a1e4f0b56717f56aa502293.1582611994.git.viresh.kumar@linaro.org>
-Message-ID: <2f579843fb1ff09cfaaa1b991b48437f525740b3.1582673499.git.viresh.kumar@linaro.org>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 26 Feb 2020 09:19:13 +0800
+Subject: [LTP] [PATCH] syscalls/kill11: convert to new library
+In-Reply-To: <20200225125449.GD5077@rei.lan>
+References: <1582271720-27370-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200225125449.GD5077@rei.lan>
+Message-ID: <f51300ea-50a3-b584-8f2d-f10091a5b8f4@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With tst_brk(), the tests end immediately while what we want to do here
-is to test rest of the failure tests. Use tst_res() to report result and
-continue with rest of the failure tests.
+Hi
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V2: Use return, instead of if/else blocks.
+> Hi!
+> Pushed with a minor change, thanks.
+> 
+>> +	if (tc->sig != SIGKILL) {
+>> +		if (sigset(tc->sig, SIG_DFL) == SIG_ERR)
+>> +			tst_brk(TBROK | TERRNO, "sigset(%d) failed", tc->sig);
+>>   	}
+> 
+> There is no need to restore the default signal handlers if we haven't
+> changed them, so I've removed this part as well.
+Thanks for the removing.
 
- testcases/kernel/syscalls/pidfd_open/pidfd_open02.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Best Regards
+Yang Xu
+> 
 
-diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-index d73b5326b3b1..9cdded13525a 100644
---- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-+++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-@@ -35,14 +35,16 @@ static void run(unsigned int n)
- 
- 	if (TST_RET != -1) {
- 		SAFE_CLOSE(TST_RET);
--		tst_brk(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
-+		tst_res(TFAIL, "%s: pidfd_open succeeded unexpectedly (index: %d)",
- 			tc->name, n);
-+		return;
- 	}
- 
- 	if (tc->exp_errno != TST_ERR) {
--		tst_brk(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
-+		tst_res(TFAIL | TTERRNO, "%s: pidfd_open() should fail with %s",
- 			tc->name, tst_strerrno(tc->exp_errno));
--	}
-+		return;
-+	 }
- 
- 	tst_res(TPASS | TTERRNO, "%s: pidfd_open() failed as expected",
- 		tc->name);
--- 
-2.21.0.rc0.269.g1a574e7a288b
 
