@@ -1,29 +1,61 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Feb 2020 15:13:56 +0100
-Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
-In-Reply-To: <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
-References: <20200224100932.10349-1-mdoucha@suse.cz>
- <20200226135748.GD24080@rei>
- <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
-Message-ID: <20200227141356.GA29089@rei>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 27 Feb 2020 17:39:20 +0100
+Subject: [LTP] [PATCH 2/4] lib: Check also flags for tst_res()
+In-Reply-To: <20200227163922.317-1-pvorel@suse.cz>
+References: <20200227163922.317-1-pvorel@suse.cz>
+Message-ID: <20200227163922.317-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Are the failures on xfs fixed by now?
-> > 
-> > Do we have a upstrem kernel commit we can add to the test as a tag?
-> > 
-> 
-> Anthony Iliopoulos says in the BSC that the upstream fix is
-> commit e093c4be760e ("xfs: Fix tail rounding in xfs_alloc_file_space()")
+Allowed types: TCONF | TFAIL | TINFO | TPASS | TWARN
+i.e. TBROK is forbidden.
 
-I've added this as a tag and commend and also added a .gitignore entry
-and pushed. Thanks.
+Suggested-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
+TPASS == 0, that's why TTYPE_RESULT(ttype) ?: TCONF
+
+Kind regards,
+Petr
+
+ include/tst_common.h | 3 +++
+ include/tst_test.h   | 6 +++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/tst_common.h b/include/tst_common.h
+index d37e38487..54a8428fd 100644
+--- a/include/tst_common.h
++++ b/include/tst_common.h
+@@ -77,4 +77,7 @@
+ #define TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(condition) \
+ 	do { ((void)sizeof(char[1 - 2 * !!(condition)])); } while (0)
+ 
++#define TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(condition) \
++	TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(condition)
++
+ #endif /* TST_COMMON_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 1026a422a..8508c2e38 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -47,7 +47,11 @@ void tst_res_(const char *file, const int lineno, int ttype,
+               __attribute__ ((format (printf, 4, 5)));
+ 
+ #define tst_res(ttype, arg_fmt, ...) \
+-	tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
++	({									\
++		TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(!((TTYPE_RESULT(ttype) ?: TCONF) & \
++			(TCONF | TFAIL | TINFO | TPASS | TWARN))); 				\
++		tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
++	})
+ 
+ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ 	const void *buf, size_t size, const char *arg_fmt, ...)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
