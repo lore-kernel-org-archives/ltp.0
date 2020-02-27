@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Feb 2020 14:31:59 +0100
-Subject: [LTP] [PATCH] syscalls/bpf: bump RLIMIT_MEMLOCK limit
-In-Reply-To: <fa386b967db52665ca84150a59058d0f601ca051.1582806435.git.jstancek@redhat.com>
-References: <fa386b967db52665ca84150a59058d0f601ca051.1582806435.git.jstancek@redhat.com>
-Message-ID: <20200227133159.GA24778@rei>
+Date: Thu, 27 Feb 2020 14:49:25 +0100
+Subject: [LTP] [PATCH v1] Stringify flags to improve error msg of
+ unshare()
+In-Reply-To: <20200226172620.29815-1-cfamullaconrad@suse.de>
+References: <20200226172620.29815-1-cfamullaconrad@suse.de>
+Message-ID: <20200227134924.GB24778@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,31 +12,59 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Some bpf array types reserve space according to number of
-> possible CPUs. This is running into limits on a ppc64le with
-> 64k pages and NR_CPUS==2048:
->     84 bpf_map01(1049142):   <-bpf_map_init_from_attr
->     89 bpf_map01(1049142):   ->bpf_map_charge_init mem={.pages=0, .user=0x0} size=208456
->     94 bpf_map01(1049142):   <-bpf_map_charge_init return=0xffffffffffffffff
+> If your test has multiple calls of unshare() it is hard to read which
+> unshare() call really failed. With this we improve the error message to
+> something like this:
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>   sendmsg03.c:43: CONF: unshare(CLONE_NEWUSER) unsupported: EINVAL (22)
+> 
+> Instead of having a hard to understand number like:
+> 
+>   sendmsg03.c:43: CONF: unshare(268435456) unsupported: EINVAL (22)
+> 
+> Signed-off-by: Clemens Famulla-Conrad <cfamullaconrad@suse.de>
 > ---
->  testcases/kernel/syscalls/bpf/bpf_common.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/tst_safe_macros.h | 5 +++--
+>  lib/tst_safe_macros.c     | 7 ++++---
+>  2 files changed, 7 insertions(+), 5 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/bpf/bpf_common.h b/testcases/kernel/syscalls/bpf/bpf_common.h
-> index 1dbbd5f25635..d36a2b09ffd9 100644
-> --- a/testcases/kernel/syscalls/bpf/bpf_common.h
-> +++ b/testcases/kernel/syscalls/bpf/bpf_common.h
-> @@ -6,7 +6,7 @@
->  #ifndef LTP_BPF_COMMON_H
->  #define LTP_BPF_COMMON_H
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index 80c4d9cb9..f2f8bd10f 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -544,7 +544,8 @@ int safe_personality(const char *filename, unsigned int lineno,
+>  	}							\
+>  	} while (0)
 >  
-> -#define BPF_MEMLOCK_ADD (256*1024)
-> +#define BPF_MEMLOCK_ADD (2*1024*1024)
+> -void safe_unshare(const char *file, const int lineno, int flags);
+> -#define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
+> +void safe_unshare(const char *file, const int lineno, const char *flags_str,
+> +	int flags);
+> +#define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, #flags, (flags))
 
-Looks still reasonably small so that we can raise it unconditionally,
-acked.
+I would actually prefer to have a lookup table instead, because this
+breaks when pass flags by a variable, e.g.
+
+	int ns_flags = CLONE_NEWNS | CLONE_NEWPID;
+
+	SAFE_UNSHARE(ns_flags);
+
+
+Looking that the flags, these are bigflags, which makes it a bit tricky,
+so we will have to write it as:
+
+void get_ns_flags(int flags, char *flags, size_t flags_size)
+{
+	int first = 1;
+
+	if (flags & CLONE_VM)
+		append_flags("CLONE_VM", &first, &flags, &flags_size);
+
+	if (flags & CLONE_FS)
+		append_flags("CLONE_FS", &first, &flags, &flags_size);
+
+	...
+}
 
 -- 
 Cyril Hrubis
