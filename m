@@ -1,278 +1,170 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 27 Feb 2020 10:44:33 +0530
-Subject: [LTP] [PATCH V5 05/10] syscalls/fsconfig: New tests
+Date: Thu, 27 Feb 2020 10:44:34 +0530
+Subject: [LTP] [PATCH V5 06/10] syscalls/fsmount: Improve fsmount01 test
 In-Reply-To: <cover.1582779464.git.viresh.kumar@linaro.org>
 References: <cover.1582779464.git.viresh.kumar@linaro.org>
-Message-ID: <01949a4ba3d2c125a9be8422ec27c8436a53f6a8.1582779464.git.viresh.kumar@linaro.org>
+Message-ID: <15594e36e83ddf307d423777b930e9b848c6a943.1582779464.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add tests to check working of fsconfig() syscall.
+This patch updates the fsmount01.c file to make it look similar to all
+other fsmount related syscall tests and here is the list of all changes:
+
+- Test all fsmount flags and mount attributes
+- Remove extra PASS messages as all we want to test here is fsmount()
+  and not other syscalls.
+- On the same lines, print TFAIL for fsmount() syscall and TBROK for
+  other calls.
+- close sfd on failures
+- Make the file look similar to other fsmount related tests
+- General cleanup
 
 Acked-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- runtest/syscalls                              |   3 +
- testcases/kernel/syscalls/fsconfig/.gitignore |   2 +
- testcases/kernel/syscalls/fsconfig/Makefile   |   6 ++
- .../kernel/syscalls/fsconfig/fsconfig01.c     | 101 ++++++++++++++++++
- .../kernel/syscalls/fsconfig/fsconfig02.c     |  99 +++++++++++++++++
- 5 files changed, 211 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fsconfig/.gitignore
- create mode 100644 testcases/kernel/syscalls/fsconfig/Makefile
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig01.c
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig02.c
+ testcases/kernel/syscalls/fsmount/fsmount01.c | 103 +++++++++++-------
+ 1 file changed, 65 insertions(+), 38 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 1f21cc55bf2d..97c0fea2fe57 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -341,6 +341,9 @@ fpathconf01 fpathconf01
- fremovexattr01 fremovexattr01
- fremovexattr02 fremovexattr02
+diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
+index 514d3b0b38f8..8c3538bf8c84 100644
+--- a/testcases/kernel/syscalls/fsmount/fsmount01.c
++++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
+@@ -3,67 +3,94 @@
+  * Copyright (C) 2020 Red Hat, Inc.  All rights reserved.
+  * Author: Zorro Lang <zlang@redhat.com>
+  *
+- * Use new mount API from v5.2 (fsopen(), fsconfig(), fsmount(), move_mount())
+- * to mount a filesystem without any specified mount options.
++ * Basic fsmount() test.
+  */
  
-+fsconfig01 fsconfig01
-+fsconfig02 fsconfig02
-+
- fsmount01 fsmount01
+-#include <sys/mount.h>
+-
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
  
- fsopen01 fsopen01
-diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
-new file mode 100644
-index 000000000000..2bc54b82751b
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/.gitignore
-@@ -0,0 +1,2 @@
-+/fsconfig01
-+/fsconfig02
-diff --git a/testcases/kernel/syscalls/fsconfig/Makefile b/testcases/kernel/syscalls/fsconfig/Makefile
-new file mode 100644
-index 000000000000..5ea7d67db123
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-new file mode 100644
-index 000000000000..e32b23e9586b
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ *
-+ * Basic fsconfig() test which tries to configure and mount the filesystem as
-+ * well.
-+ */
-+#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+
+-#define MNTPOINT "newmount_point"
+-static int sfd, mfd, is_mounted;
 +#define MNTPOINT	"mntpoint"
-+
-+static void run(void)
-+{
-+	int fd, fsmfd;
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TERRNO, "fsopen() failed");
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_FLAG, "rw", NULL, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+		goto out;
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+		goto out;
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "sync", tst_device->dev, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_PATH not supported");
-+		} else {
-+			tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+			goto out;
-+		}
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_PATH_EMPTY, "sync", tst_device->dev, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_PATH_EMPTY not supported");
-+		} else {
-+			tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+			goto out;
-+		}
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_FD, "sync", NULL, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP) {
-+			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_FD not supported");
-+		} else {
-+			tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+			goto out;
-+		}
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TERRNO, "fsconfig() failed");
-+		goto out;
-+	}
-+
-+	TEST(fsmfd = fsmount(fd, 0, 0));
-+	if (fsmfd == -1) {
-+		tst_res(TBROK | TERRNO, "fsmount() failed");
-+		goto out;
-+	}
-+
-+	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
-+			MOVE_MOUNT_F_EMPTY_PATH));
-+	SAFE_CLOSE(fsmfd);
-+
-+	if (TST_RET == -1) {
-+		tst_res(TBROK | TERRNO, "move_mount() failed");
-+		goto out;
-+	}
-+
-+	if (tst_is_mounted(MNTPOINT))
-+		tst_res(TPASS, "fsconfig() passed");
-+
-+	SAFE_UMOUNT(MNTPOINT);
-+
-+out:
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = fsopen_supported_by_kernel,
-+	.needs_root = 1,
-+	.format_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+};
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig02.c b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-new file mode 100644
-index 000000000000..e6e7b4b9f1de
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ *
-+ * Basic fsconfig() failure tests.
-+ */
-+#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+
-+static int fd = -1, temp_fd = -1, invalid_fd = -1;
-+static int aux_0 = 0, aux_1 = 1, aux_fdcwd = AT_FDCWD, aux_minus1 = -1;
-+
+ 
+-static void cleanup(void)
+-{
+-	if (is_mounted)
+-		SAFE_UMOUNT(MNTPOINT);
+-}
++#define TCASE_ENTRY(_flags, _attrs)	{.name = "Flag " #_flags ", Attr " #_attrs, .flags = _flags, .attrs = _attrs}
+ 
+-static void test_fsmount(void)
 +static struct tcase {
 +	char *name;
-+	int *fd;
-+	unsigned int cmd;
-+	const char *key;
-+	const void *value;
-+	int *aux;
-+	int exp_errno;
++	unsigned int flags;
++	unsigned int attrs;
 +} tcases[] = {
-+	{"invalid-fd", &invalid_fd, FSCONFIG_SET_FLAG, "user_xattr", NULL, &aux_0, EINVAL},
-+	{"invalid-cmd", &fd, 100, "rw", NULL, &aux_0, EOPNOTSUPP},
-+	{"set-flag-key", &fd, FSCONFIG_SET_FLAG, NULL, NULL, &aux_0, EINVAL},
-+	{"set-flag-value", &fd, FSCONFIG_SET_FLAG, "rw", "foo", &aux_0, EINVAL},
-+	{"set-flag-aux", &fd, FSCONFIG_SET_FLAG, "rw", NULL, &aux_1, EINVAL},
-+	{"set-string-key", &fd, FSCONFIG_SET_STRING, NULL, "#grand.central.org:root.cell.", &aux_0, EINVAL},
-+	{"set-string-value", &fd, FSCONFIG_SET_STRING, "source", NULL, &aux_0, EINVAL},
-+	{"set-string-aux", &fd, FSCONFIG_SET_STRING, "source", "#grand.central.org:root.cell.", &aux_1, EINVAL},
-+	{"set-binary-key", &fd, FSCONFIG_SET_BINARY, NULL, "foo", &aux_1, EINVAL},
-+	{"set-binary-value", &fd, FSCONFIG_SET_BINARY, "sync", NULL, &aux_1, EINVAL},
-+	{"set-binary-aux", &fd, FSCONFIG_SET_BINARY, "sync", "foo", &aux_0, EINVAL},
-+	{"set-path-key", &fd, FSCONFIG_SET_PATH, NULL, "/dev/sda1", &aux_fdcwd, EINVAL},
-+	{"set-path-value", &fd, FSCONFIG_SET_PATH, "sync", NULL, &aux_fdcwd, EINVAL},
-+	{"set-path-aux", &fd, FSCONFIG_SET_PATH, "sync", "/dev/sda1", &aux_minus1, EINVAL},
-+	{"set-path-empty-key", &fd, FSCONFIG_SET_PATH_EMPTY, NULL, "/dev/foo", &aux_fdcwd, EINVAL},
-+	{"set-path-empty-value", &fd, FSCONFIG_SET_PATH_EMPTY, "sync", NULL, &aux_fdcwd, EINVAL},
-+	{"set-path-empty-aux", &fd, FSCONFIG_SET_PATH_EMPTY, "sync", "/dev/foo", &aux_minus1, EINVAL},
-+	{"set-fd-key", &fd, FSCONFIG_SET_FD, NULL, NULL, &temp_fd, EINVAL},
-+	{"set-fd-value", &fd, FSCONFIG_SET_FD, "sync", "foo", &temp_fd, EINVAL},
-+	{"set-fd-aux", &fd, FSCONFIG_SET_FD, "sync", NULL, &aux_minus1, EINVAL},
-+	{"cmd-create-key", &fd, FSCONFIG_CMD_CREATE, "foo", NULL, &aux_0, EINVAL},
-+	{"cmd-create-value", &fd, FSCONFIG_CMD_CREATE, NULL, "foo", &aux_0, EINVAL},
-+	{"cmd-create-aux", &fd, FSCONFIG_CMD_CREATE, NULL, NULL, &aux_1, EINVAL},
-+	{"cmd-reconfigure-key", &fd, FSCONFIG_CMD_RECONFIGURE, "foo", NULL, &aux_0, EINVAL},
-+	{"cmd-reconfigure-value", &fd, FSCONFIG_CMD_RECONFIGURE, NULL, "foo", &aux_0, EINVAL},
-+	{"cmd-reconfigure-aux", &fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, &aux_1, EINVAL},
++	TCASE_ENTRY(0, MOUNT_ATTR_RDONLY),
++	TCASE_ENTRY(0, MOUNT_ATTR_NOSUID),
++	TCASE_ENTRY(0, MOUNT_ATTR_NODEV),
++	TCASE_ENTRY(0, MOUNT_ATTR_NOEXEC),
++	TCASE_ENTRY(0, MOUNT_ATTR_RELATIME),
++	TCASE_ENTRY(0, MOUNT_ATTR_NOATIME),
++	TCASE_ENTRY(0, MOUNT_ATTR_STRICTATIME),
++	TCASE_ENTRY(0, MOUNT_ATTR_NODIRATIME),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_RDONLY),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOSUID),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NODEV),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOEXEC),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_RELATIME),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOATIME),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_STRICTATIME),
++	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NODIRATIME),
 +};
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TERRNO, "fsopen() failed");
-+
-+	temp_fd = open("testfile", O_RDWR | O_CREAT, 01444);
-+	if (temp_fd == -1)
-+		tst_res(TBROK, "Can't obtain temp_fd, open() failed");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (temp_fd != -1)
-+		SAFE_CLOSE(temp_fd);
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+}
 +
 +static void run(unsigned int n)
-+{
+ {
+-	TEST(fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO, "fsopen() on %s failed", tst_device->fs_type);
+-	sfd = TST_RET;
+-	tst_res(TPASS, "fsopen() on %s", tst_device->fs_type);
 +	struct tcase *tc = &tcases[n];
++	int sfd, mfd;
 +
-+	TEST(fsconfig(*tc->fd, tc->cmd, tc->key, tc->value, *tc->aux));
-+
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "%s: fsconfig() succeeded unexpectedly (index: %d)",
-+			tc->name, n);
++	TEST(sfd = fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
++	if (sfd == -1) {
++		tst_res(TFAIL | TTERRNO, "fsopen() on %s failed",
++			tst_device->fs_type);
++		return;
++	}
+ 
+ 	TEST(fsconfig(sfd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO,
++	if (TST_RET == -1) {
++		SAFE_CLOSE(sfd);
++		tst_res(TFAIL | TTERRNO,
+ 			"fsconfig() failed to set source to %s", tst_device->dev);
+-	tst_res(TPASS, "fsconfig() set source to %s", tst_device->dev);
+-
++		return;
++	}
+ 
+ 	TEST(fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO, "fsconfig() created superblock");
+-	tst_res(TPASS, "fsconfig() created superblock");
++	if (TST_RET == -1) {
++		SAFE_CLOSE(sfd);
++		tst_res(TFAIL | TTERRNO, "fsconfig() created superblock");
++		return;
++	}
+ 
+-	TEST(fsmount(sfd, FSMOUNT_CLOEXEC, 0));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO, "fsmount() failed to create a mount object");
+-	mfd = TST_RET;
+-	tst_res(TPASS, "fsmount() created a mount object");
++	TEST(mfd = fsmount(sfd, tc->flags, tc->attrs));
+ 	SAFE_CLOSE(sfd);
+ 
++	if (mfd == -1) {
++		tst_res(TFAIL | TTERRNO,
++			"fsmount() failed to create a mount object");
 +		return;
 +	}
 +
-+	if (tc->exp_errno != TST_ERR) {
-+		tst_res(TFAIL | TTERRNO, "%s: fsconfig() should fail with %s",
-+			tc->name, tst_strerrno(tc->exp_errno));
+ 	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO, "move_mount() failed to attach to the mount point");
+-	is_mounted = 1;
+-	tst_res(TPASS, "move_mount() attached to the mount point");
+ 	SAFE_CLOSE(mfd);
+ 
+-	if (tst_is_mounted(MNTPOINT)) {
+-		SAFE_UMOUNT(MNTPOINT);
+-		is_mounted = 0;
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO,
++			"move_mount() failed to attach to the mount point");
 +		return;
-+	}
+ 	}
 +
-+	tst_res(TPASS | TTERRNO, "%s: fsconfig() failed as expected", tc->name);
-+}
++	if (tst_is_mounted(MNTPOINT))
++		tst_res(TPASS, "%s: fsmount() passed", tc->name);
 +
-+static struct tst_test test = {
++	SAFE_UMOUNT(MNTPOINT);
+ }
+ 
+ static struct tst_test test = {
+-	.test_all = test_fsmount,
+-	.cleanup = cleanup,
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.test = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_device = 1,
-+};
++	.setup = fsopen_supported_by_kernel,
+ 	.needs_root = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.format_device = 1,
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
