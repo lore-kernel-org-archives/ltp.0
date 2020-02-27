@@ -1,72 +1,40 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 27 Feb 2020 08:55:24 +0530
-Subject: [LTP] [PATCH v2 1/1] lap/syscalls: Update syscall numbers
-In-Reply-To: <20200226232649.8736-1-pvorel@suse.cz>
-References: <20200226232649.8736-1-pvorel@suse.cz>
-Message-ID: <20200227032524.yldx3diebom3wqod@vireshk-i7>
+Date: Thu, 27 Feb 2020 10:24:17 +0530
+Subject: [LTP] [PATCH V3 05/10] syscalls/fsconfig: New tests
+In-Reply-To: <20200225134648.GB62318@gacrux.arch.suse.de>
+References: <cover.1582612624.git.viresh.kumar@linaro.org>
+ <ccb816c7032270dd2ef51ab14290aacb2c89db38.1582612624.git.viresh.kumar@linaro.org>
+ <20200225134648.GB62318@gacrux.arch.suse.de>
+Message-ID: <20200227045417.tl2vf6boupp7s7iw@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27-02-20, 00:26, Petr Vorel wrote:
-> From: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> to sync with the kernel v5.6-rc3.
+On 25-02-20, 14:46, Petr Vorel wrote:
+> > diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig02.c b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+> > new file mode 100644
+> > index 000000000000..d51a869ac3ff
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+> > @@ -0,0 +1,98 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+> > + *
+> > + * Basic fsconfig() failure tests.
+> > + */
+> > +#include "tst_test.h"
+> > +#include "lapi/fsmount.h"
+> > +
+> > +int fd = -1, temp_fd = -1, invalid_fd = -1;
+> > +int aux_0 = 0, aux_1 = 1, aux_fdcwd = AT_FDCWD, aux_minus1 = -1;
+> These 2 should be static (also fd could be default 0, but who cares :)).
 
-This doesn't look right, you missed some text here ?
-
-> As this was performed in some sort of automated way, few extra changes
-> may be noticed while converting from kernel files to LTP, like a
-> different format of defining syscalls or removal of obsolete syscalls.
-> 
-> The diff generated against sh.in file is enormous and looks like someone
-> did a mistake while adding the syscall numbers there as they look to be
-> mostly incorrect from 220 to 393. They are fixed as a consequence of
-> this exercise.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> [ pvorel: various fixes for 32bit syscalls in 64bit arch and vice versa ]
-
-Sorry about making these mistakes :(
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v1->v2:
-> * remove wrong umount in ia64
-> * fixed typo sched_rr_get_interval_ti (=> sched_rr_get_interval_time64)
-> * various fixes for 32bit syscalls in 64bit arch and vice versa
-> 
-> TODO: not sure about spu and nospu ABI in powerpc (whether they go to
-> 32 bit or 64 bit or is ignored)
-> 
-> === DIFF from v1 ===
-> diff --git include/lapi/syscalls/s390.in include/lapi/syscalls/s390.in
->  pkey_free 386
-> -semtimedop 392
-
-Why is this removed ?
-
-> diff --git include/lapi/syscalls/s390x.in include/lapi/syscalls/s390x.in
-> index dfb7ee811..88cc9b86b 100644
-> --- include/lapi/syscalls/s390x.in
-> +++ include/lapi/syscalls/s390x.in
-> @@ -10,17 +10,12 @@ link 9
->  unlink 10
->  execve 11
->  chdir 12
-> -time 13
-
-And the ones like these..
-
-Because they are only for 32 bit arch and not 64 ?
-
-> diff --git include/lapi/syscalls/sparc.in include/lapi/syscalls/sparc.in
-> -sched_rr_get_interval_ti423
-> +sched_rr_get_interval_time64 423
-
-Really bad that I made these mistakes with my vim tricks.
+No, fd was intentionally set to -1 here. If we return early due to
+tst_brk() from fsopen_supported_by_kernel(), then we need to handle
+that case in cleanup().
 
 -- 
 viresh
