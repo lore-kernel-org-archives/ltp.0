@@ -1,40 +1,38 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 27 Feb 2020 13:33:39 +0530
-Subject: [LTP] [PATCH v2 1/1] lap/syscalls: Update syscall numbers
-In-Reply-To: <20200227064442.GB7096@dell5510>
-References: <20200226232649.8736-1-pvorel@suse.cz>
- <20200227032524.yldx3diebom3wqod@vireshk-i7>
- <20200227064442.GB7096@dell5510>
-Message-ID: <20200227080339.lo27tae6feizlf6z@vireshk-i7>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 27 Feb 2020 13:28:13 +0100
+Subject: [LTP] [PATCH] syscalls/bpf: bump RLIMIT_MEMLOCK limit
+Message-ID: <fa386b967db52665ca84150a59058d0f601ca051.1582806435.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27-02-20, 07:44, Petr Vorel wrote:
-> Hi Viresh,
-> 
-> > > to sync with the kernel v5.6-rc3.
-> 
-> > This doesn't look right, you missed some text here ?
-> I dared to change this
-> 
-> Get Syscall numbers in sync with latest Linux kernel source
-> 
->     This gets the Syscall numbers in sync with latest kernel source.
-> 
-> to this:
-> lap/syscalls: Update syscall numbers
-> 
->     to sync with the kernel v5.6-rc3.
+Some bpf array types reserve space according to number of
+possible CPUs. This is running into limits on a ppc64le with
+64k pages and NR_CPUS==2048:
+    84 bpf_map01(1049142):   <-bpf_map_init_from_attr
+    89 bpf_map01(1049142):   ->bpf_map_charge_init mem={.pages=0, .user=0x0} size=208456
+    94 bpf_map01(1049142):   <-bpf_map_charge_init return=0xffffffffffffffff
 
-Ah, so subject and body must be read together, I missed that :)
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/bpf/bpf_common.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> => typo: s/lap/lapi/
-> Hope you don't mind.
-
-Surely not.
-
+diff --git a/testcases/kernel/syscalls/bpf/bpf_common.h b/testcases/kernel/syscalls/bpf/bpf_common.h
+index 1dbbd5f25635..d36a2b09ffd9 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_common.h
++++ b/testcases/kernel/syscalls/bpf/bpf_common.h
+@@ -6,7 +6,7 @@
+ #ifndef LTP_BPF_COMMON_H
+ #define LTP_BPF_COMMON_H
+ 
+-#define BPF_MEMLOCK_ADD (256*1024)
++#define BPF_MEMLOCK_ADD (2*1024*1024)
+ 
+ void rlimit_bump_memlock(void);
+ int bpf_map_create(union bpf_attr *attr);
 -- 
-viresh
+2.18.1
+
