@@ -1,121 +1,72 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Wed, 26 Feb 2020 15:52:17 -0800
-Subject: [LTP] [PATCH v3] syscalls: Check for time64 unsafe syscalls
- before using them
-In-Reply-To: <20200220065204.485391-1-raj.khem@gmail.com>
-References: <20200220065204.485391-1-raj.khem@gmail.com>
-Message-ID: <759857e6-247c-33fc-53e1-80fa73704906@gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 27 Feb 2020 08:55:24 +0530
+Subject: [LTP] [PATCH v2 1/1] lap/syscalls: Update syscall numbers
+In-Reply-To: <20200226232649.8736-1-pvorel@suse.cz>
+References: <20200226232649.8736-1-pvorel@suse.cz>
+Message-ID: <20200227032524.yldx3diebom3wqod@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ping
+On 27-02-20, 00:26, Petr Vorel wrote:
+> From: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> to sync with the kernel v5.6-rc3.
 
-On 2/19/20 10:52 PM, Khem Raj wrote:
-> musl is using 64bit time_t now on 32bit architectures and these syscalls
-> no longer exist, therefore its better to check for them being available
-> before using them
+This doesn't look right, you missed some text here ?
+
+> As this was performed in some sort of automated way, few extra changes
+> may be noticed while converting from kernel files to LTP, like a
+> different format of defining syscalls or removal of obsolete syscalls.
 > 
-> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> The diff generated against sh.in file is enormous and looks like someone
+> did a mistake while adding the syscall numbers there as they look to be
+> mostly incorrect from 220 to 393. They are fixed as a consequence of
+> this exercise.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> [ pvorel: various fixes for 32bit syscalls in 64bit arch and vice versa ]
+
+Sorry about making these mistakes :(
+
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->   lib/tst_clocks.c                                      | 11 ++++++-----
->   .../kernel/syscalls/gettimeofday/gettimeofday01.c     |  6 ++----
->   .../kernel/syscalls/gettimeofday/gettimeofday02.c     |  8 +++-----
->   3 files changed, 11 insertions(+), 14 deletions(-)
+> Changes v1->v2:
+> * remove wrong umount in ia64
+> * fixed typo sched_rr_get_interval_ti (=> sched_rr_get_interval_time64)
+> * various fixes for 32bit syscalls in 64bit arch and vice versa
 > 
-> diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-> index 5195da38f3..155551170d 100644
-> --- a/lib/tst_clocks.c
-> +++ b/lib/tst_clocks.c
-> @@ -10,21 +10,22 @@
->   #define _GNU_SOURCE
->   #include <unistd.h>
->   #include <time.h>
-> -#include <sys/syscall.h>
-> -
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
->   #include "tst_clocks.h"
-> +#include "lapi/syscalls.h"
->   
->   int tst_clock_getres(clockid_t clk_id, struct timespec *res)
->   {
-> -	return syscall(SYS_clock_getres, clk_id, res);
-> +	return tst_syscall(__NR_clock_getres, clk_id, res);
->   }
->   
->   int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
->   {
-> -	return syscall(SYS_clock_gettime, clk_id, ts);
-> +	return tst_syscall(__NR_clock_gettime, clk_id, ts);
->   }
->   
->   int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
->   {
-> -	return syscall(SYS_clock_settime, clk_id, ts);
-> +	return tst_syscall(__NR_clock_settime, clk_id, ts);
->   }
-> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> index 583d8f7b9b..08ea1673ad 100644
-> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-> @@ -38,10 +38,8 @@
->   #include <sys/time.h>
->   #include <errno.h>
->   #include "test.h"
-> -#include <sys/syscall.h>
->   #include <unistd.h>
-> -
-> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-> +#include "lapi/syscalls.h"
->   
->   char *TCID = "gettimeofday01";
->   int TST_TOTAL = 1;
-> @@ -63,7 +61,7 @@ int main(int ac, char **av)
->   	for (lc = 0; TEST_LOOPING(lc); lc++) {
->   		tst_count = 0;
->   
-> -		TEST(gettimeofday((void *)-1, (void *)-1));
-> +		TEST(ltp_syscall(__NR_gettimeofday, (void *)-1, (void *)-1));
->   
->   		/* gettimeofday returns an int, so we need to turn the long
->   		 * TEST_RETURN into an int to test with */
-> diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> index 1d60f448e8..5170ad2f78 100644
-> --- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> +++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-> @@ -16,14 +16,12 @@
->   #include <stdint.h>
->   #include <sys/time.h>
->   #include <stdlib.h>
-> -#include <sys/syscall.h>
->   #include <unistd.h>
->   #include <time.h>
->   #include <errno.h>
->   
->   #include "tst_test.h"
-> -
-> -#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
-> +#include "lapi/syscalls.h"
->   
->   static volatile sig_atomic_t done;
->   static char *str_rtime;
-> @@ -48,13 +46,13 @@ static void verify_gettimeofday(void)
->   
->   	alarm(rtime);
->   
-> -	if (gettimeofday(&tv1, NULL)) {
-> +	if (tst_syscall(__NR_gettimeofday, &tv1, NULL)) {
->   		tst_res(TBROK | TERRNO, "gettimeofday() failed");
->   		return;
->   	}
->   
->   	while (!done) {
-> -		if (gettimeofday(&tv2, NULL)) {
-> +		if (tst_syscall(__NR_gettimeofday, &tv2, NULL)) {
->   			tst_res(TBROK | TERRNO, "gettimeofday() failed");
->   			return;
->   		}
+> TODO: not sure about spu and nospu ABI in powerpc (whether they go to
+> 32 bit or 64 bit or is ignored)
 > 
+> === DIFF from v1 ===
+> diff --git include/lapi/syscalls/s390.in include/lapi/syscalls/s390.in
+>  pkey_free 386
+> -semtimedop 392
+
+Why is this removed ?
+
+> diff --git include/lapi/syscalls/s390x.in include/lapi/syscalls/s390x.in
+> index dfb7ee811..88cc9b86b 100644
+> --- include/lapi/syscalls/s390x.in
+> +++ include/lapi/syscalls/s390x.in
+> @@ -10,17 +10,12 @@ link 9
+>  unlink 10
+>  execve 11
+>  chdir 12
+> -time 13
+
+And the ones like these..
+
+Because they are only for 32 bit arch and not 64 ?
+
+> diff --git include/lapi/syscalls/sparc.in include/lapi/syscalls/sparc.in
+> -sched_rr_get_interval_ti423
+> +sched_rr_get_interval_time64 423
+
+Really bad that I made these mistakes with my vim tricks.
+
+-- 
+viresh
