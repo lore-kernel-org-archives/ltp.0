@@ -1,286 +1,467 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 27 Feb 2020 17:39:22 +0100
-Subject: [LTP] [PATCH 4/4] doc: Update style guide to new API
-In-Reply-To: <20200227163922.317-1-pvorel@suse.cz>
-References: <20200227163922.317-1-pvorel@suse.cz>
-Message-ID: <20200227163922.317-4-pvorel@suse.cz>
+Date: Thu, 27 Feb 2020 17:39:19 +0100
+Subject: [LTP] [PATCH 1/4] Avoid using tst_res(TBROK)
+Message-ID: <20200227163922.317-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Document still needs more update, but at least don't use legacy API
-examples.
+Mostly TFAIL is better, TBROK should be used only with tst_brk().
+This is a preparation for next commit.
+
++ Adding cleanup() for io_pgetevents01.c
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Do we want to keep this document?
-Wouldn't it be better to have this info in Test-Writing-Guidelines (to
-have a single document)?
+ doc/test-writing-guidelines.txt               |  4 +--
+ lib/newlib_tests/test_exec.c                  |  2 +-
+ lib/newlib_tests/tst_capability01.c           |  2 +-
+ testcases/cve/cve-2017-17052.c                |  2 +-
+ testcases/cve/meltdown.c                      |  6 ++---
+ testcases/kernel/crypto/af_alg05.c            |  4 +--
+ .../mem/hugetlb/hugeshmctl/hugeshmctl01.c     |  4 +--
+ testcases/kernel/pty/pty03.c                  |  2 +-
+ testcases/kernel/syscalls/fstat/fstat03.c     |  2 +-
+ .../syscalls/gettimeofday/gettimeofday02.c    | 13 +++-------
+ .../syscalls/io_pgetevents/io_pgetevents01.c  | 26 ++++++++++---------
+ .../syscalls/io_pgetevents/io_pgetevents02.c  |  2 +-
+ testcases/kernel/syscalls/keyctl/keyctl05.c   | 12 ++++-----
+ .../syscalls/migrate_pages/migrate_pages02.c  |  4 +--
+ .../kernel/syscalls/mq_unlink/mq_unlink01.c   |  2 +-
+ .../kernel/syscalls/readahead/readahead01.c   |  2 +-
+ .../sched_setscheduler/sched_setscheduler03.c |  4 +--
+ .../kernel/syscalls/setregid/setregid04.c     |  9 ++++---
+ .../kernel/syscalls/setrlimit/setrlimit05.c   |  2 +-
+ .../kernel/syscalls/setrlimit/setrlimit06.c   |  2 +-
+ 20 files changed, 52 insertions(+), 54 deletions(-)
 
-Kind regards,
-Petr
-
- doc/style-guide.txt | 107 +++++++++++++++-----------------------------
- 1 file changed, 35 insertions(+), 72 deletions(-)
-
-diff --git a/doc/style-guide.txt b/doc/style-guide.txt
-index 55331c8d7..25cfa369b 100644
---- a/doc/style-guide.txt
-+++ b/doc/style-guide.txt
-@@ -31,7 +31,7 @@ When you can use libltp please observe the following guidelines:
- No, only use libltp in non-forked processes and functions +perror(3)+ /
- +exit(3)+ otherwise. Reason being:
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 9ff70b1bc..48fd06764 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -724,7 +724,7 @@ static void do_test(void)
  
-- * Calling +tst_resm()+ from multiple processes is messy.
-+ * Calling +tst_res()+ from multiple processes is messy.
-  * Calling cleanup can break test execution.
-  * Establishing a complicated scheme of tracking the testcase state
-    for teardown is undesirable.
-@@ -79,10 +79,8 @@ exec'ing and descriptor inheritance, etc.
- 4. Call APIs that don't require freeing up resources on failure first
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	execve(path, argv, environ);
  
-- * +tst_require_root()+
-  * +tst_sig(...)+
-  * +malloc(3)+
-- * +tst_tmpdir()+
- 
- That way you can simplify your setup and avoid calling cleanup whenever
- possible!
-@@ -91,7 +89,7 @@ possible!
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- If the test need to run as root, check to make sure that you're root
--*before doing any other setup* via +tst_require_root()+.
-+*before doing any other setup* via +.needs_root = 1+ (+TST_NEEDS_ROOT=1+ for shell).
- 
- 6. No custom reporting APIs
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -119,15 +117,15 @@ For example:
- [source,c]
- ----------------------------------------------------
- if (fork() == -1)
--	tst_brkm(TBROK, cleanup, "fork failed");
-+	tst_brk(TBROK, "fork failed");
- 
- /* or */
- 
- if (fork() == -1)
--	tst_brkm(TBROK, cleanup, "fork # 1 failed");
-+	tst_brk(TBROK, "fork # 1 failed");
- 
- if (fork() == -1)
--	tst_brkm(TBROK, cleanup, "fork # 2 failed");
-+	tst_brk(TBROK, "fork # 2 failed");
- ----------------------------------------------------
- 
- If you can't determine where the failure has occurred in a testcase based on
-@@ -137,7 +135,7 @@ failure may be impossible.
- 10. Reporting errno and the TEST() macro
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--Don't roll your own +errno+ / +strerror()+ printout when you use +tst_resm()+
-+Don't roll your own +errno+ / +strerror()+ printout when you use +tst_res()+
- calls. Use either +TERRNO+ or +TTERRNO+. Similarly, if a testcase passed and
- it's obvious why it passed (for example a function call returns +0+ or
- +TEST_RETURN == 0+).
-@@ -154,59 +152,40 @@ if (fn() == -1) {
- 	 * isn't static.
- 	 */
- 	if (exp_errno == ENOENT)
--		tst_resm(TPASS|TERRNO,
-+		tst_res(TPASS | TERRNO,
- 		    "fn failed as expected");
- 	/*
- 	 * Using strerror(TEST_ERRNO) here is valid because
- 	 * the error case isn't static.
- 	 */
- 	else
--		tst_resm(TFAIL|TERRNO,
-+		tst_res(TFAIL | TERRNO,
- 		    "fn failed unexpectedly; expected "
- 		    "%d - %s",
- 		    exp_errno, strerror(exp_errno));
--} else
--	tst_resm(TBROK, "fn passed unexpectedly");
-+} else {
-+	tst_res(TFAIL, "fn passed unexpectedly");
-+}
- 
- /* Example using TEST(...) macro */
- 
- TEST(fn());
- if (TEST_RETURN == 0)
--	tst_resm(TPASS, "fn passed as expected");
-+	tst_res(TPASS, "fn passed as expected");
- else
--	tst_resm(TFAIL|TTERRNO, "fn failed");
-+	tst_res(TFAIL | TTERRNO, "fn failed");
- -------------------------------------------------------------------------------
- 
- [NOTE]
- The +TEST()+ macro is not thread-safe as it saves return value and errno into
- global variable.
- 
--12. Use tst_brkm() when possible
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--Use...
--[source,c]
--------------------------------
--tst_brkm(TBROK, cleanup, ...);
--------------------------------
--...instead of...
--[source,c]
--------------------------------
--tst_resm(TBROK, ...);
--cleanup();
--tst_exit();
--------------------------------
--
--[NOTE]
--As you see the +tst_brkm()+ no longer requires non +NULL+ cleanup_fn argument
--in order to call +tst_exit()+.
--
--13. Indentation
-+12. Indentation
- ~~~~~~~~~~~~~~~
- 
- Use hard tabs for first-level indentation, and 4 spaces for every line longer
- than 80 columns. Use a linebreak with string constants in format functions
--like +*printf()+, the +tst_resm()+ APIs, etc.
-+like +*printf()+, the +tst_res()+ APIs, etc.
- 
- Example:
- [source,c]
-@@ -216,7 +195,7 @@ if ((this_is_a_poorly_formed_really_long_variable = function_call()) == NULL &&
- 	/* Use tabs here */
- 	printf("The rain in Spain falls mainly in the plain.\nThe quick brown "
- 	    "fox jumped over the lazy yellow dog\n");
--	tst_resm(TPASS,
-+	tst_res(TPASS,
- 	    "Half would turn and fight. The other half would try to swim "
- 	    "across. But my uncle told me about a few that... they'd swim "
- 	    "halfway out, turn with the current, and ride it all the way out "
-@@ -224,7 +203,7 @@ if ((this_is_a_poorly_formed_really_long_variable = function_call()) == NULL &&
+-	tst_res(TBROK | TERRNO, "EXEC!");
++	tst_res(TFAIL | TERRNO, "EXEC!");
  }
- -------------------------------------------------------------------------------
  
--14. System headers
-+13. System headers
- ~~~~~~~~~~~~~~~~~~
+ static struct tst_test test = {
+@@ -1816,7 +1816,7 @@ static void run(void)
+ 	if (TST_RET > -1) {
+ 		tst_res(TFAIL, "Created raw socket");
+ 	} else if (TST_ERR != EPERM) {
+-		tst_res(TBROK | TTERRNO,
++		tst_res(TFAIL | TTERRNO,
+ 			"Failed to create socket for wrong reason");
+ 	} else {
+ 		tst_res(TPASS | TTERRNO, "Didn't create raw socket");
+diff --git a/lib/newlib_tests/test_exec.c b/lib/newlib_tests/test_exec.c
+index 75f1b03a4..370a0b948 100644
+--- a/lib/newlib_tests/test_exec.c
++++ b/lib/newlib_tests/test_exec.c
+@@ -25,7 +25,7 @@ static void do_test(void)
  
- Don't use +linux/+ headers if at all possible. Usually they are replaced with
-@@ -232,7 +211,7 @@ Don't use +linux/+ headers if at all possible. Usually they are replaced with
- headers get shuffled around a lot more than their +sys/+ counterparts it
- seems.
+ 	execve(path, argv, environ);
  
--15. Signal handlers
-+14. Signal handlers
- ~~~~~~~~~~~~~~~~~~~~
+-	tst_res(TBROK | TERRNO, "EXEC!");
++	tst_res(TFAIL | TERRNO, "EXEC!");
+ }
  
- Avoid doing tricky things in signal handlers. Calling most of the libc
-@@ -317,7 +296,7 @@ The only exception to this is when you define global variables.
+ static struct tst_test test = {
+diff --git a/lib/newlib_tests/tst_capability01.c b/lib/newlib_tests/tst_capability01.c
+index 7d3f0f1ea..47ac04569 100644
+--- a/lib/newlib_tests/tst_capability01.c
++++ b/lib/newlib_tests/tst_capability01.c
+@@ -22,7 +22,7 @@ static void run(void)
+ 		tst_res(TFAIL, "Created raw socket");
+ 		SAFE_CLOSE(TST_RET);
+ 	} else if (TST_ERR != EPERM) {
+-		tst_res(TBROK | TTERRNO,
++		tst_res(TFAIL | TTERRNO,
+ 			"Failed to create socket for wrong reason");
+ 	} else {
+ 		tst_res(TPASS | TTERRNO, "Didn't create raw socket");
+diff --git a/testcases/cve/cve-2017-17052.c b/testcases/cve/cve-2017-17052.c
+index 361ed66be..b97815708 100644
+--- a/testcases/cve/cve-2017-17052.c
++++ b/testcases/cve/cve-2017-17052.c
+@@ -112,7 +112,7 @@ static void run(void)
+ 	if (run == RUNS)
+ 		tst_res(TPASS, "kernel survived %d runs", run);
+ 	else
+-		tst_res(TBROK, "something strange happened");
++		tst_res(TFAIL, "something strange happened");
+ }
  
- Your testcase should be runnable as root and non-root. What does that mean? It
- should fail gracefully as non-root if it has insufficient privileges, or use
--+tst_require_root()+ if root access is absolutely required.
-++.needs_root = 1+ if root access is absolutely necessary.
+ static struct tst_test test = {
+diff --git a/testcases/cve/meltdown.c b/testcases/cve/meltdown.c
+index db00e1811..a387b3205 100644
+--- a/testcases/cve/meltdown.c
++++ b/testcases/cve/meltdown.c
+@@ -175,7 +175,7 @@ readbit(int fd, unsigned long addr, char bit)
+ 	for (i = 0; i < CYCLES; i++) {
+ 		ret = pread(fd, buf, sizeof(buf), 0);
+ 		if (ret < 0)
+-			tst_res(TBROK | TERRNO, "can't read fd");
++			tst_res(TFAIL | TERRNO, "can't read fd");
  
- A lot of newer testcases don't honor this fact and it causes random
- unnecessary errors when run as non-privileged users.
-@@ -325,15 +304,10 @@ unnecessary errors when run as non-privileged users.
- 6. Do I need to create temporary directory?
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 		clflush_target();
  
--Use +tst_tmpdir()+ if your testcase will:
-+Use +.needs_tmpdir = 1+ (+TST_NEEDS_TMPDIR=1+ for shell) if your testcase does:
+@@ -304,7 +304,7 @@ static void setup(void)
+ 	memset(target_array, 1, sizeof(target_array));
  
- * Create temporary files.
- * Dump core.
--* Etc. Otherwise, don't bother with the API.
--
--[NOTE]
--If you created temporary directory with +tst_tmpdir()+ don't forget to call
--+tst_rmdir()+ when the test is cleaning up. This is *NOT* done automatically.
+ 	if (set_signal() < 0)
+-		tst_res(TBROK | TERRNO, "set_signal");
++		tst_res(TFAIL | TERRNO, "set_signal");
+ }
  
- 7. Setting up signal handlers
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -349,43 +323,33 @@ but the rest can be caught).
- The following is a basic testcase template:
- [source,c]
- ---------------------------------------------------------------------------
--#include "test.h"
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Linux Test Project, 20XX
-+*/
+ #define READ_SIZE 32
+@@ -320,7 +320,7 @@ static void run(void)
  
--char *TCID = "testname";
--int TST_TOTAL = /* ... */
-+#include "tst_test.h"
+ 	expected_len = pread(spec_fd, expected, sizeof(expected), 0);
+ 	if (expected_len < 0)
+-		tst_res(TBROK | TERRNO, "can't read test fd");
++		tst_res(TFAIL | TERRNO, "can't read test fd");
+ 
+ 	/* read address of saved_cmdline_addr */
+ 	addr = saved_cmdline_addr;
+diff --git a/testcases/kernel/crypto/af_alg05.c b/testcases/kernel/crypto/af_alg05.c
+index df2b03546..e835b8a1f 100644
+--- a/testcases/kernel/crypto/af_alg05.c
++++ b/testcases/kernel/crypto/af_alg05.c
+@@ -35,11 +35,11 @@ static void run(void)
+ 	TEST(read(reqfd, buffer, 15));
+ 
+ 	if (TST_RET == 0)
+-		tst_res(TBROK, "read() unexpectedly succeeded");
++		tst_res(TFAIL, "read() unexpectedly succeeded");
+ 	else if (TST_ERR == EINVAL)
+ 		tst_res(TPASS, "read() expectedly failed with EINVAL");
+ 	else
+-		tst_res(TBROK | TTERRNO, "read() failed with unexpected error");
++		tst_res(TFAIL | TTERRNO, "read() failed with unexpected error");
+ 
+ 	close(reqfd);
+ }
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+index e3e3f6a7f..e6cf8bf09 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+@@ -223,7 +223,7 @@ static void stat_cleanup(void)
+ 	/* remove the parent's shared memory the second time through */
+ 	if (stat_time == SECOND)
+ 		if (shmdt(set_shared) == -1)
+-			tst_res(TBROK | TERRNO, "shmdt in stat_cleanup()");
++			tst_res(TFAIL | TERRNO, "shmdt in stat_cleanup()");
+ 	stat_time++;
+ }
+ 
+@@ -246,7 +246,7 @@ static void func_set(void)
+ {
+ 	/* first stat the shared memory to get the new data */
+ 	if (shmctl(shm_id_1, IPC_STAT, &buf) == -1) {
+-		tst_res(TBROK | TERRNO, "shmctl in func_set()");
++		tst_res(TFAIL | TERRNO, "shmctl in func_set()");
+ 		return;
+ 	}
+ 
+diff --git a/testcases/kernel/pty/pty03.c b/testcases/kernel/pty/pty03.c
+index b79c499ef..8e05ad3be 100644
+--- a/testcases/kernel/pty/pty03.c
++++ b/testcases/kernel/pty/pty03.c
+@@ -85,7 +85,7 @@ static int set_ldisc(int tty, struct ldisc_info *ldisc)
+ 			"You don't appear to have the %s TTY line discipline",
+ 			ldisc->name);
+ 	} else {
+-		tst_res(TBROK | TTERRNO,
++		tst_res(TFAIL | TTERRNO,
+ 			"Failed to set the %s line discipline", ldisc->name);
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/fstat/fstat03.c b/testcases/kernel/syscalls/fstat/fstat03.c
+index 68fae43df..4ff37e882 100644
+--- a/testcases/kernel/syscalls/fstat/fstat03.c
++++ b/testcases/kernel/syscalls/fstat/fstat03.c
+@@ -78,7 +78,7 @@ static void run(unsigned int tc_num)
+ 	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+ 		return;
+ 
+-	tst_res(TBROK, "child %s", tst_strstatus(status));
++	tst_res(TFAIL, "child %s", tst_strstatus(status));
+ }
  
  static void setup(void)
- {
- 	/* ... */
--
--	tst_require_root();
--
--	tst_tmpdir();
--
--	/* ... */
--
--	TEST_PAUSE;
- }
+diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+index 1d60f448e..e78bd7dca 100644
+--- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
++++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+@@ -48,16 +48,12 @@ static void verify_gettimeofday(void)
  
- static void cleanup(void)
- {
--
--	TEST_CLEANUP;
--
- 	/* ... */
--
--	tst_rmdir();
- }
+ 	alarm(rtime);
  
--int main(void)
-+static void do_test(void)
- {
--	/* ... */
+-	if (gettimeofday(&tv1, NULL)) {
+-		tst_res(TBROK | TERRNO, "gettimeofday() failed");
+-		return;
+-	}
++	if (gettimeofday(&tv1, NULL))
++		tst_brk(TFAIL | TERRNO, "gettimeofday() failed");
+ 
+ 	while (!done) {
+-		if (gettimeofday(&tv2, NULL)) {
+-			tst_res(TBROK | TERRNO, "gettimeofday() failed");
+-			return;
+-		}
++		if (gettimeofday(&tv2, NULL))
++			tst_brk(TFAIL | TERRNO, "gettimeofday() failed");
+ 
+ 		if (tv2.tv_sec < tv1.tv_sec ||
+ 		    (tv2.tv_sec == tv1.tv_sec && tv2.tv_usec < tv1.tv_usec)) {
+@@ -72,7 +68,6 @@ static void verify_gettimeofday(void)
+ 		cnt++;
+ 	}
+ 
 -
--	setup();	/* Optional */
--
--	cleanup();	/* Optional */
--	tst_exit();	/* DON'T FORGET THIS -- this must be last! */
-+	tst_res(TPASS, "Test passed");
+ 	tst_res(TINFO, "gettimeofday() called %llu times", cnt);
+ 	tst_res(TPASS, "gettimeofday() monotonous in %i seconds", rtime);
  }
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+index e80d7de9d..50d2c5f9a 100644
+--- a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+@@ -9,6 +9,14 @@
+ #include "lapi/io_pgetevents.h"
+ 
+ #ifdef HAVE_LIBAIO
++static int fd;
 +
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.setup = setup,
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
+ static void run(void)
+ {
+ 	struct io_event events[1];
+@@ -25,16 +33,12 @@ static void run(void)
+ 	io_prep_pwrite(&cb, fd, data, 4096, 0);
+ 
+ 	ret = io_setup(1, &ctx);
+-	if (ret < 0) {
+-		tst_res(TBROK | TERRNO, "io_setup() failed");
+-		goto exit;
+-	}
++	if (ret < 0)
++		tst_brk(TBROK | TERRNO, "io_setup() failed");
+ 
+ 	ret = io_submit(ctx, 1, cbs);
+-	if (ret != 1) {
+-		tst_res(TBROK | TERRNO, "io_submit() failed");
+-		goto exit;
+-	}
++	if (ret != 1)
++		tst_brk(TBROK | TERRNO, "io_submit() failed");
+ 
+ 	/* get the reply */
+ 	ret = io_pgetevents(ctx, 1, 1, events, NULL, &sigmask);
+@@ -45,16 +49,14 @@ static void run(void)
+ 		tst_res(TFAIL | TERRNO, "io_pgetevents() failed");
+ 
+ 	if (io_destroy(ctx) < 0)
+-		tst_res(TBROK | TERRNO, "io_destroy() failed");
+-
+-exit:
+-	SAFE_CLOSE(fd);
++		tst_brk(TBROK | TERRNO, "io_destroy() failed");
+ }
+ 
+ static struct tst_test test = {
+ 	.min_kver = "4.18",
+ 	.test_all = run,
+ 	.needs_tmpdir = 1,
 +	.cleanup = cleanup,
-+};
- ---------------------------------------------------------------------------
+ };
  
- Fixing Legacy Testcases
-@@ -418,13 +382,12 @@ So *NO* Linux, BSD specific syscalls there.
- Contribution to the project
- ---------------------------
+ #else
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+index 117380f55..7cca7fc08 100644
+--- a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+@@ -60,7 +60,7 @@ static void cleanup(void)
+ {
+ 	if (ctx_initialized) {
+ 		if (io_destroy(ctx) < 0)
+-			tst_res(TBROK | TERRNO, "io_destroy() failed");
++			tst_res(TWARN | TERRNO, "io_destroy() failed");
+ 	}
  
--Since CVS is effectively dead for LTP proper, we ask that you submit
--patches that are git friendly and patchable.
-+Submit patches that are git friendly and patchable.
+ 	if (fd > 0)
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl05.c b/testcases/kernel/syscalls/keyctl/keyctl05.c
+index c592eb49e..55ce852b8 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl05.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl05.c
+@@ -103,7 +103,7 @@ static void test_update_nonupdatable(const char *type,
+ 				"and/or CONFIG_CRYPTO_SHA256)");
+ 			return;
+ 		}
+-		tst_res(TBROK | TTERRNO, "unexpected error adding '%s' key",
++		tst_res(TFAIL | TTERRNO, "unexpected error adding '%s' key",
+ 			type);
+ 		return;
+ 	}
+@@ -115,7 +115,7 @@ static void test_update_nonupdatable(const char *type,
+ 	 */
+ 	TEST(keyctl(KEYCTL_SETPERM, keyid, KEY_POS_ALL));
+ 	if (TST_RET != 0) {
+-		tst_res(TBROK | TTERRNO,
++		tst_res(TFAIL | TTERRNO,
+ 			"failed to grant write permission to '%s' key", type);
+ 		return;
+ 	}
+@@ -123,12 +123,12 @@ static void test_update_nonupdatable(const char *type,
+ 	tst_res(TINFO, "Try to update the '%s' key...", type);
+ 	TEST(keyctl(KEYCTL_UPDATE, keyid, payload, plen));
+ 	if (TST_RET == 0) {
+-		tst_res(TBROK,
++		tst_res(TFAIL,
+ 			"updating '%s' key unexpectedly succeeded", type);
+ 		return;
+ 	}
+ 	if (TST_ERR != EOPNOTSUPP) {
+-		tst_res(TBROK | TTERRNO,
++		tst_res(TFAIL | TTERRNO,
+ 			"updating '%s' key unexpectedly failed", type);
+ 		return;
+ 	}
+@@ -151,7 +151,7 @@ static void test_update_setperm_race(void)
+ 	TEST(add_key("user", "desc", payload, sizeof(payload),
+ 		KEY_SPEC_SESSION_KEYRING));
+ 	if (TST_RET < 0) {
+-		tst_res(TBROK | TTERRNO, "failed to add 'user' key");
++		tst_res(TFAIL | TTERRNO, "failed to add 'user' key");
+ 		return;
+ 	}
+ 	keyid = TST_RET;
+@@ -172,7 +172,7 @@ static void test_update_setperm_race(void)
+ 	for (i = 0; i < 10000; i++) {
+ 		TEST(keyctl(KEYCTL_UPDATE, keyid, payload, sizeof(payload)));
+ 		if (TST_RET != 0 && TST_ERR != EACCES) {
+-			tst_res(TBROK | TTERRNO, "failed to update 'user' key");
++			tst_res(TFAIL | TTERRNO, "failed to update 'user' key");
+ 			return;
+ 		}
+ 	}
+diff --git a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+index e6e2fdff3..fac30a076 100644
+--- a/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
++++ b/testcases/kernel/syscalls/migrate_pages/migrate_pages02.c
+@@ -115,8 +115,8 @@ static int addr_on_node(void *addr)
+ 	ret = tst_syscall(__NR_get_mempolicy, &node, NULL, (unsigned long)0,
+ 		      (unsigned long)addr, MPOL_F_NODE | MPOL_F_ADDR);
+ 	if (ret == -1) {
+-		tst_res(TBROK | TERRNO, "error getting memory policy "
+-			 "for page %p", addr);
++		tst_res(TFAIL | TERRNO,
++				"error getting memory policy for page %p", addr);
+ 	}
+ 	return node;
+ }
+diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+index af79d9571..baca57948 100644
+--- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
++++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+@@ -85,7 +85,7 @@ static void do_test(unsigned int i)
+ 	fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
  
- Guidelines for submitting patches are as follows:
+ 	if (tc->as_nobody && seteuid(pw->pw_uid)) {
+-		tst_res(TBROK | TERRNO, "seteuid failed");
++		tst_res(TFAIL | TERRNO, "seteuid failed");
+ 		goto EXIT;
+ 	}
  
- 1. Use +git commit -s+ . You know you want to ;) .. (you may need to
--   submit a correct signed-off-by line, e.g. use git config first).
-+   submit a correct Signed-off-by line, e.g. use git config first).
- 2. Provide a short (<= 50 character) description of the commit.
- 3. Provide a little more terse (1-2 paragraph maximum, <= 72 character
-    lines) description of what the commit does.
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+index e1967955a..a0be96065 100644
+--- a/testcases/kernel/syscalls/readahead/readahead01.c
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -61,7 +61,7 @@ static void test_bad_fd(void)
+ 	tst_res(TINFO, "test_bad_fd O_WRONLY");
+ 	fd = mkstemp(tempname);
+ 	if (fd == -1)
+-		tst_res(TBROK | TERRNO, "mkstemp failed");
++		tst_res(TFAIL | TERRNO, "mkstemp failed");
+ 	SAFE_CLOSE(fd);
+ 	fd = SAFE_OPEN(tempname, O_WRONLY);
+ 	TEST(readahead(fd, 0, getpagesize()));
+diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
+index 22f4e34f4..9045d0366 100644
+--- a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
++++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler03.c
+@@ -130,11 +130,11 @@ static void setup(void)
+ 
+ 	tst_res(TINFO, "Setting init sched policy to SCHED_OTHER");
+ 	if (sched_setscheduler(0, SCHED_OTHER, &param[0]) != 0)
+-		tst_res(TBROK | TERRNO,
++		tst_res(TFAIL | TERRNO,
+ 			 "ERROR sched_setscheduler: (0, SCHED_OTHER, param)");
+ 
+ 	if (sched_getscheduler(0) != SCHED_OTHER)
+-		tst_res(TBROK | TERRNO, "ERROR sched_setscheduler");
++		tst_res(TFAIL | TERRNO, "ERROR sched_setscheduler");
+ 
+ 	tst_res(TINFO, "Setting euid to nobody to drop privilege");
+ 
+diff --git a/testcases/kernel/syscalls/setregid/setregid04.c b/testcases/kernel/syscalls/setregid/setregid04.c
+index d8e7c2dc2..9490ae173 100644
+--- a/testcases/kernel/syscalls/setregid/setregid04.c
++++ b/testcases/kernel/syscalls/setregid/setregid04.c
+@@ -69,12 +69,13 @@ static void run(unsigned int i)
+ 	TEST(SETREGID(*test_data[i].real_gid, *test_data[i].eff_gid));
+ 
+ 	if (TST_RET == -1) {
+-		tst_res(TBROK | TTERRNO, "setregid(%d, %d) failed",
++		tst_res(TFAIL | TTERRNO, "setregid(%d, %d) failed",
+ 			*test_data[i].real_gid, *test_data[i].eff_gid);
+-	} else {
+-		gid_verify(test_data[i].exp_real_usr, test_data[i].exp_eff_usr,
+-			   test_data[i].test_msg);
++		return;
+ 	}
++
++	gid_verify(test_data[i].exp_real_usr, test_data[i].exp_eff_usr,
++		   test_data[i].test_msg);
+ }
+ 
+ static void setup(void)
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit05.c b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+index 077399e83..906396f01 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit05.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit05.c
+@@ -57,7 +57,7 @@ static void verify_setrlimit(void)
+ 	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+ 		return;
+ 
+-	tst_res(TBROK, "child %s", tst_strstatus(status));
++	tst_res(TFAIL, "child %s", tst_strstatus(status));
+ }
+ 
+ static void setup(void)
+diff --git a/testcases/kernel/syscalls/setrlimit/setrlimit06.c b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+index 3e5bf1d42..9ff515d81 100644
+--- a/testcases/kernel/syscalls/setrlimit/setrlimit06.c
++++ b/testcases/kernel/syscalls/setrlimit/setrlimit06.c
+@@ -106,7 +106,7 @@ static void verify_setrlimit(void)
+ 		}
+ 	}
+ 
+-	tst_res(TBROK, "Child %s", tst_strstatus(status));
++	tst_res(TFAIL, "Child %s", tst_strstatus(status));
+ }
+ 
+ static struct tst_test test = {
 -- 
 2.25.1
 
