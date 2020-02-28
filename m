@@ -1,31 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 28 Feb 2020 10:21:07 +0100
-Subject: [LTP] netns_netlink test failure
-In-Reply-To: <MAXPR0101MB14681590CE13BB4E2ED97CFEEEE80@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB14681590CE13BB4E2ED97CFEEEE80@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <20200228092107.GB31181@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 28 Feb 2020 04:22:08 -0500 (EST)
+Subject: [LTP] [PATCH 4/4] doc: Update style guide to new API
+In-Reply-To: <20200228084236.GA4925@dell5510>
+References: <20200227163922.317-1-pvorel@suse.cz>
+ <20200227163922.317-4-pvorel@suse.cz>
+ <CAEemH2ddNJTjzvPgHvtwVTM0CeFYH2_wy7SeK90ZPDMvME9K5g@mail.gmail.com>
+ <20200228084236.GA4925@dell5510>
+Message-ID: <513439094.9393483.1582881728087.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> <<<test_output>>>
-> open: No such file or directory
-> netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
-                                                 ^
-						 This is a line number,
-						 if you look a the
-						 source code of the
-						 test, you see:
 
-        if (WEXITSTATUS(system("ip tuntap add dev dummy0 mode tap")))
-                tst_brkm(TBROK, cleanup, "system() failed");
 
-So that the failed command was "ip tuntap add dev dummy0 mode tap", it's up to
-you to figure out why...
+----- Original Message -----
+> Hi Jan,
+> 
+> > > Do we want to keep this document?
+> 
+> > I agree to remove this old document.
+> 
+> > > Wouldn't it be better to have this info in Test-Writing-Guidelines (to
+> > > have a single document)?
+> 
+> > Yes, and there are too much-duplicated contents in this, maybe we can
+> > extract something useful to library-api-writing-guidelines.txt
+> > and test-writing-guidelines.txt then delete it?
+> 
+> You often quote the style guide. What do you suggest?
+> Keep it or delete and move some of it's content to Test-Writing-Guidelines?
+> (which ones)?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I'm fine with removing it, and move what's not covered to other docs.
+
+> 
+> Kind regards,
+> Petr
+> 
+> 
+
