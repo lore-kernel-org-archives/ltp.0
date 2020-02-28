@@ -1,22 +1,22 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 27 Feb 2020 20:41:31 +0100
-Subject: [LTP] [PATCH v3] syscalls: Check for time64 unsafe syscalls
- before using them
-In-Reply-To: <759857e6-247c-33fc-53e1-80fa73704906@gmail.com>
-References: <20200220065204.485391-1-raj.khem@gmail.com>
- <759857e6-247c-33fc-53e1-80fa73704906@gmail.com>
-Message-ID: <20200227194131.GA29776@dell5510>
+Date: Fri, 28 Feb 2020 07:49:34 +0100
+Subject: [LTP] [PATCH v2 1/1] lap/syscalls: Update syscall numbers
+In-Reply-To: <20200226232649.8736-1-pvorel@suse.cz>
+References: <20200226232649.8736-1-pvorel@suse.cz>
+Message-ID: <20200228064934.GA30424@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Khem,
+Hi,
 
-> ping
-Sorry for the delay, merged (with tiny changes: cleared comment, _GNU_SOURCE and
-unistd.h include).
+> TODO: not sure about spu and nospu ABI in powerpc (whether they go to
+> 32 bit or 64 bit or is ignored)
+OK: 32bit uses "common,nospu,32" and 64bit uses "common,nospu,64"
+spu can be ignored for both.
+=> patch is correct.
 
 Kind regards,
 Petr
