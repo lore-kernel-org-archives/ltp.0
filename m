@@ -1,33 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 28 Feb 2020 09:42:36 +0100
-Subject: [LTP] [PATCH 4/4] doc: Update style guide to new API
-In-Reply-To: <CAEemH2ddNJTjzvPgHvtwVTM0CeFYH2_wy7SeK90ZPDMvME9K5g@mail.gmail.com>
+Date: Fri, 28 Feb 2020 09:46:41 +0100
+Subject: [LTP] [PATCH 1/4] Avoid using tst_res(TBROK)
+In-Reply-To: <CAEemH2fQ_oc8iEaKQV9pJgbfeOoq3yT7hqcGCmWK2JwMeRkzCQ@mail.gmail.com>
 References: <20200227163922.317-1-pvorel@suse.cz>
- <20200227163922.317-4-pvorel@suse.cz>
- <CAEemH2ddNJTjzvPgHvtwVTM0CeFYH2_wy7SeK90ZPDMvME9K5g@mail.gmail.com>
-Message-ID: <20200228084236.GA4925@dell5510>
+ <CAEemH2fQ_oc8iEaKQV9pJgbfeOoq3yT7hqcGCmWK2JwMeRkzCQ@mail.gmail.com>
+Message-ID: <20200228084641.GA8041@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Hi Li,
 
-> > Do we want to keep this document?
+> This patch looks good.
+Thanks, I'll add your ack.
 
-> I agree to remove this old document.
+> But something wrong in patch applying, you probably need to do git rebase:).
+>     error: patch failed:
+> testcases/kernel/syscalls/gettimeofday/gettimeofday02.c:48
+>     error: testcases/kernel/syscalls/gettimeofday/gettimeofday02.c: patch
+> does not apply
 
-> > Wouldn't it be better to have this info in Test-Writing-Guidelines (to
-> > have a single document)?
+I've also noticed (my night push conflicted).
+I've rebased it in my LTP fork.
+https://github.com/pevik/ltp/commits/tst_res-allowed-flags
 
-> Yes, and there are too much-duplicated contents in this, maybe we can
-> extract something useful to library-api-writing-guidelines.txt
-> and test-writing-guidelines.txt then delete it?
-
-You often quote the style guide. What do you suggest?
-Keep it or delete and move some of it's content to Test-Writing-Guidelines?
-(which ones)?
+I didn't want to sent v2 until we agree about docs
+(or I could push this rebased one if others ack it).
 
 Kind regards,
 Petr
