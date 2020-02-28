@@ -1,28 +1,32 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 28 Feb 2020 15:47:20 +0800
-Subject: [LTP] [PATCH 1/4] Avoid using tst_res(TBROK)
-In-Reply-To: <20200227163922.317-1-pvorel@suse.cz>
-References: <20200227163922.317-1-pvorel@suse.cz>
-Message-ID: <CAEemH2fQ_oc8iEaKQV9pJgbfeOoq3yT7hqcGCmWK2JwMeRkzCQ@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 28 Feb 2020 13:44:24 +0530
+Subject: [LTP] Query: Adding support for clone3()
+Message-ID: <CAKohponuu3zpsQCv0v1_Yqb_tmqy5yyUejMoS1_M_UFf5FU2Mw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hey guys,
 
-This patch looks good.
+I was looking to start implementation of clone3() syscall in LTP
+and am a bit confused here and need your help in doing the same.
 
-But something wrong in patch applying, you probably need to do git rebase:).
-    error: patch failed:
-testcases/kernel/syscalls/gettimeofday/gettimeofday02.c:48
-    error: testcases/kernel/syscalls/gettimeofday/gettimeofday02.c: patch
-does not apply
+LTP abstracts the call to clone() syscall in lib/cloner.c and the current
+prototype of it looks like this.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200228/393b3c56/attachment.htm>
+       int clone(int (*fn)(void *), void *stack, int flags, void *arg, ...
+                 /* pid_t *parent_tid, void *tls, pid_t *child_tid */ );
+
+One of the challenges with the implementation of clone3() is that
+there is no glibc wrapper available. And in case of clone() glibc
+wrapper isn't ordinary as it takes care of calling fn() and handling
+few stack related things, apart from calling the real syscall.
+
+I am confused now on how should I write support for clone3().
+
+Any suggestions will be appreciated. Thanks.
+
+--
+viresh
