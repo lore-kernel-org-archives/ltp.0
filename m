@@ -1,50 +1,65 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 28 Feb 2020 11:14:22 +0100
-Subject: [LTP] [PATCH 2/2] doc: Add note about LAPI headers
-In-Reply-To: <20200228101422.31011-1-pvorel@suse.cz>
-References: <20200228101422.31011-1-pvorel@suse.cz>
-Message-ID: <20200228101422.31011-2-pvorel@suse.cz>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 28 Feb 2020 15:54:32 +0530
+Subject: [LTP] Query: Adding support for clone3()
+In-Reply-To: <20200228085859.GA31181@rei>
+References: <CAKohponuu3zpsQCv0v1_Yqb_tmqy5yyUejMoS1_M_UFf5FU2Mw@mail.gmail.com>
+ <20200228085859.GA31181@rei>
+Message-ID: <20200228102432.3kdhl4aqkla4akss@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-into the Test Writing Guidelines.
+On 28-02-20, 09:58, Cyril Hrubis wrote:
+> Hi!
+> > I was looking to start implementation of clone3() syscall in LTP
+> > and am a bit confused here and need your help in doing the same.
+> > 
+> > LTP abstracts the call to clone() syscall in lib/cloner.c and the current
+> > prototype of it looks like this.
+> > 
+> >        int clone(int (*fn)(void *), void *stack, int flags, void *arg, ...
+> >                  /* pid_t *parent_tid, void *tls, pid_t *child_tid */ );
+> 
+> This function is there mostly for implementation of container testscases
+> so that they does not need to deal with the clone() syscall complexity.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+Right.
 
-Maybe some of this text belongs to library-api-writing-guidelines.txt,
-not sure.
+> > One of the challenges with the implementation of clone3() is that
+> > there is no glibc wrapper available. And in case of clone() glibc
+> > wrapper isn't ordinary as it takes care of calling fn() and handling
+> > few stack related things, apart from calling the real syscall.
+> > 
+> > I am confused now on how should I write support for clone3().
+> > 
+> > Any suggestions will be appreciated. Thanks.
+> 
+> Let's just add the code into lapi/clone.h, would that work for you?
 
-Kind regards,
-Petr
+Which code are you talking about ?
 
- doc/test-writing-guidelines.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Here is some stuff about the glibc wrapper for clone() from an stackoverflow
+page [1]:
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 9ff70b1bc..45bac223f 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -327,6 +327,15 @@ time may vary arbitrarily, for these timeout can be disabled by setting it to
- Test can find out how much time (in seconds) is remaining to timeout,
- by calling 'tst_timeout_remaining()'.
- 
-+LAPI headers
-+++++++++++++
-+
-+Use our LAPI headers ('include "lapi/foo.h"') to keep compatibility with old distributions.
-+LAPI header should always include original header. Older linux headers were problematic,
-+therefore we preferred to use libc headers. There are still some bugs when
-+combining certain glibc headers with linux headers, see
-+https://sourceware.org/glibc/wiki/Synchronizing_Headers.
-+
- A word about the cleanup() callback
- +++++++++++++++++++++++++++++++++++
- 
+clone(void (*fn)(void *), void *stack_pointer)
+{
+    push fn onto stack_pointer
+    syscall_clone()
+    if (child) {
+        pop fn off of stack
+        fn();
+        exit();
+    }
+}
+
+This takes care of calling fn() and doing some stack related stuff.
+The kernel syscall doesn't expect the fn() argument but only the
+userspace calls do. How should I handle the extra stuff that userspace
+expects for a clone() call ?
+
 -- 
-2.25.1
+viresh
 
+[1] https://stackoverflow.com/questions/18904292/is-it-true-that-fork-calls-clone-internally
