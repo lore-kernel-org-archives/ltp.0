@@ -1,32 +1,33 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 28 Feb 2020 13:44:24 +0530
-Subject: [LTP] Query: Adding support for clone3()
-Message-ID: <CAKohponuu3zpsQCv0v1_Yqb_tmqy5yyUejMoS1_M_UFf5FU2Mw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 28 Feb 2020 09:42:36 +0100
+Subject: [LTP] [PATCH 4/4] doc: Update style guide to new API
+In-Reply-To: <CAEemH2ddNJTjzvPgHvtwVTM0CeFYH2_wy7SeK90ZPDMvME9K5g@mail.gmail.com>
+References: <20200227163922.317-1-pvorel@suse.cz>
+ <20200227163922.317-4-pvorel@suse.cz>
+ <CAEemH2ddNJTjzvPgHvtwVTM0CeFYH2_wy7SeK90ZPDMvME9K5g@mail.gmail.com>
+Message-ID: <20200228084236.GA4925@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hey guys,
+Hi Jan,
 
-I was looking to start implementation of clone3() syscall in LTP
-and am a bit confused here and need your help in doing the same.
+> > Do we want to keep this document?
 
-LTP abstracts the call to clone() syscall in lib/cloner.c and the current
-prototype of it looks like this.
+> I agree to remove this old document.
 
-       int clone(int (*fn)(void *), void *stack, int flags, void *arg, ...
-                 /* pid_t *parent_tid, void *tls, pid_t *child_tid */ );
+> > Wouldn't it be better to have this info in Test-Writing-Guidelines (to
+> > have a single document)?
 
-One of the challenges with the implementation of clone3() is that
-there is no glibc wrapper available. And in case of clone() glibc
-wrapper isn't ordinary as it takes care of calling fn() and handling
-few stack related things, apart from calling the real syscall.
+> Yes, and there are too much-duplicated contents in this, maybe we can
+> extract something useful to library-api-writing-guidelines.txt
+> and test-writing-guidelines.txt then delete it?
 
-I am confused now on how should I write support for clone3().
+You often quote the style guide. What do you suggest?
+Keep it or delete and move some of it's content to Test-Writing-Guidelines?
+(which ones)?
 
-Any suggestions will be appreciated. Thanks.
-
---
-viresh
+Kind regards,
+Petr
