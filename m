@@ -1,33 +1,45 @@
-From: Steve Muckle <smuckle@google.com>
-Date: Fri, 28 Feb 2020 11:47:16 -0800
-Subject: [LTP] use of pthread_cancel in tst_fuzzy_sync.h
-Message-ID: <2365a007-02fe-c48c-2df5-04aedc076208@google.com>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Mon, 2 Mar 2020 04:32:31 +0000
+Subject: [LTP] netns_netlink test failure
+In-Reply-To: <20200228092107.GB31181@rei>
+References: <MAXPR0101MB14681590CE13BB4E2ED97CFEEEE80@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>,
+ <20200228092107.GB31181@rei>
+Message-ID: <MAXPR0101MB1468032C8109347B258800B7EEE70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi,
+What could be the possible reason behind failing,any guess??
+________________________________
+From: Cyril Hrubis <chrubis@suse.cz>
+Sent: Friday, February 28, 2020 2:51 PM
+To: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] netns_netlink test failure
 
-While integrating the latest LTP release into Android's VTS test suite I 
-ran into trouble with this commit:
+Hi!
+> <<<test_output>>>
+> open: No such file or directory
+> netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
+                                                 ^
+                                                 This is a line number,
+                                                 if you look a the
+                                                 source code of the
+                                                 test, you see:
 
-commit cad524797ba4cee2e40985043f113256419f4a90
-Author: Li Wang <liwang@redhat.com>
-Date:   Thu Sep 26 17:39:21 2019 +0800
+        if (WEXITSTATUS(system("ip tuntap add dev dummy0 mode tap")))
+                tst_brkm(TBROK, cleanup, "system() failed");
 
-     fzsync: revoke thread_b if parent hits accidental break
+So that the failed command was "ip tuntap add dev dummy0 mode tap", it's up to
+you to figure out why...
 
-It introduces a dependency on pthread_cancel() which Android does not 
-implement:
-
-https://android.googlesource.com/platform/bionic/+/refs/heads/master/docs/status.md
-
-In the short term I can work around this, taking out the 
-pthread_cancel() should be fine as far as I can tell as it is just used 
-to avoid a timeout in certain circumstances. Long term though, could 
-this be reworked to use pthread_kill() or some other mechanism?
-
-thanks,
-Steve
+--
+Cyril Hrubis
+chrubis@suse.cz
+[EXT]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200302/0c8c3fa8/attachment.htm>
