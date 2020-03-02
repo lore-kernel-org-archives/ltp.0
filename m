@@ -1,85 +1,86 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 2 Mar 2020 12:07:14 +0530
-Subject: [LTP] [PATCH] syscalls/openat2: New tests
-In-Reply-To: <20200228132210.GC8324@rei>
-References: <b927e5f2cd36ec2dd57202b492563922b1a94e77.1582886993.git.viresh.kumar@linaro.org>
- <20200228132210.GC8324@rei>
-Message-ID: <20200302063714.claovt5uyi7gxf2o@vireshk-i7>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Mon, 2 Mar 2020 15:12:18 +0800
+Subject: [LTP] [PATCHv2 1/3] zram/zram_lib.sh: fix variable name and
+ algorithm retrieval
+In-Reply-To: <20200221055936.GA13261@dell5510>
+References: <20190710072305.25806-1-po-hsu.lin@canonical.com>
+ <20190710072305.25806-2-po-hsu.lin@canonical.com>
+ <20200221055936.GA13261@dell5510>
+Message-ID: <CAMy_GT9VC5KvgCL68fVXVfKwErwKqiNab0s8SwPw9BZxMuLReg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 28-02-20, 14:22, Cyril Hrubis wrote:
-> > +static void run(unsigned int n)
-> > +{
-> > +	int fd;
-> > +	struct stat file_stat;
-> > +	struct tcase *tc = &tcases[n];
-> > +	struct open_how how = {
-> > +		.flags = tc->flags | O_CREAT,
-> > +		.mode = tc->mode,
-> > +		.resolve = tc->resolve
-> > +	};
-> 
-> This structure should be allocated tst_buffers, see capget01.c for
-> example.
+Hello Petr,
 
-This changed few things.
+thanks for the reply, and sorry for the late response too, need some
+time to throw myself back in time.
 
-I am getting a build warning now (same happen if I build bpf stuff as
-well). I don't understand why this warning comes though.
+To my understanding, the zram_algs="lzo lzo lzo lzo" in zram01.sh is a
+dummy mapping (placeholder?) for 4 compression algorithms with 4
+different setup, one for (zram_sizes=26214400, zram_mem_limits=25M,
+zram_filesystems=ext3), and one for (zram_sizes=26214400,
+zram_mem_limits=25M, zram_filesystems=ext4) and so on.
 
-openat202.c:69:1: warning: missing initializer for field 'caps' of 'struct tst_test' [-Wmissing-field-initializers]
- };
- ^
-In file included from openat202.c:7:0:
-../../../../include/tst_test.h:236:18: note: 'caps' declared here
-  struct tst_cap *caps;
-                  ^~~~
+With this patch the test will be more comprehensive, as it's not
+trying to set the algorithm to "lzo" 4 times (as defined in zram_algs
+from zram01.sh), but try to switch to all supported algorithm reported
+back from  /sys/block/zram0/comp_algorithm
+
+So yes, this zram_algs in zram01.sh will not be used at all after
+applying my patch here, maybe it can be removed but I am not sure if
+we should keep it there as a placeholder.
+
+Cheers
 
 
-Also for the failure test where larger size was passed, the error
-reported now is EFAULT as kernel can't access out of bound dynamically
-allocated memory (instead of stack one earlier). In order to get
-E2BIG, I need to add some hacks (allocate more memory and write
-non-zero value to excess memory) and I don't think that would be worth
-it, so my test will expect EFAULT now.
-
-> > +	TEST(fd = openat2(*tc->dfd, tc->pathname, &how, sizeof(how)));
-> > +	if (fd == -1) {
-> > +		tst_res(TFAIL | TTERRNO, "openat2() failed (%d)", n);
-> > +		return;
-> > +	}
-> > +
-> > +	SAFE_FSTAT(fd, &file_stat);
-> > +
-> > +	if (file_stat.st_size == 0)
-> > +		tst_res(TPASS, "openat2() passed (%d)", n);
-> > +	else
-> > +		tst_res(TFAIL, "fstat() didn't work as expected (%d)", n);
-> 
-> So this is very basic test that just checks that openat() can open a
-> file and we would need a few more for each of the newly introduced
-> RESOLVE_* flags.
-
-Hmm, this file is already testing openat2() with all different type of
-resolve flags. What kind of further tests are you suggesting here ?
-
-> > +	{AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, 2 * sizeof(struct open_how), E2BIG},
->                                                              ^
-> 							     What
-> 							     happends if
-> 							     we pass
-> 							     size
-> 							     smaller
-> 							     than the
-> 							     sizeof(struct open_how) ?
-> 
-> Do we get EINVAL just like for 0?
-
-Yes, added a test for that as well.
-
--- 
-viresh
+On Fri, Feb 21, 2020 at 1:59 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi,
+>
+> > The compression algorithm was stored into a local variable "algs",
+> > however the variable name zram_algs was used in the for loop later.
+>
+> > Unify them with algs so the default zram_algs defined in zram01 won't
+> > be altered.
+>
+> > Also, use sed to get rid of the square brackets that indicates the
+> > compression algorithm currently in use.
+> >     $ cat /sys/block/zram0/comp_algorithm
+> >     [lzo] lz4 lz4hc 842 zstd
+>
+> > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> > ---
+> >  testcases/kernel/device-drivers/zram/zram_lib.sh | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> > diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > index d0e7704a8..599e5f0f3 100755
+> > --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > @@ -98,10 +98,10 @@ zram_compress_alg()
+>
+> >       tst_resm TINFO "test that we can set compression algorithm"
+>
+> > -     local algs="$(cat /sys/block/zram0/comp_algorithm)"
+> > +     local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
+> >       tst_resm TINFO "supported algs: $algs"
+> >       local i=0
+> > -     for alg in $zram_algs; do
+> > +     for alg in $algs; do
+> >               local sys_path="/sys/block/zram${i}/comp_algorithm"
+> >               echo "$alg" >  $sys_path || \
+> >                       tst_brkm TFAIL "can't set '$alg' to $sys_path"
+>
+> Sorry for a late reply.
+>
+> What is the purpose of zram_algs="lzo lzo lzo lzo in zram01.sh?
+> It should be removed now, right? (as you decided not to set the algorithms to the ones defined in the zram01.sh
+> test at the end of this function as Cyril suggested at [1]
+>
+> Kind regards,
+> Petr
+>
+> [1] http://lists.linux.it/pipermail/ltp/2019-July/012674.html
