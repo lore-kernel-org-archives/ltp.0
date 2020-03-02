@@ -1,31 +1,81 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 2 Mar 2020 08:31:21 +0100
-Subject: [LTP] [PATCH] syscalls/openat2: New tests
-In-Reply-To: <20200302063714.claovt5uyi7gxf2o@vireshk-i7>
-References: <b927e5f2cd36ec2dd57202b492563922b1a94e77.1582886993.git.viresh.kumar@linaro.org>
- <20200228132210.GC8324@rei>
- <20200302063714.claovt5uyi7gxf2o@vireshk-i7>
-Message-ID: <20200302073121.GA18621@dell5510>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 2 Mar 2020 16:08:38 +0800
+Subject: [LTP] netns_netlink test failure
+In-Reply-To: <MAXPR0101MB14686629CA22EDA8E38CBE6AEEE70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+References: <MAXPR0101MB14681590CE13BB4E2ED97CFEEEE80@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+ <20200228092107.GB31181@rei>
+ <MAXPR0101MB1468032C8109347B258800B7EEE70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+ <42474632-110d-bf91-f9da-37b16f8e6fed@cn.fujitsu.com>
+ <MAXPR0101MB14686629CA22EDA8E38CBE6AEEE70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <84d11eec-f182-3e14-ec0b-8909b22d8281@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+Hi
 
-> I am getting a build warning now (same happen if I build bpf stuff as
-> well). I don't understand why this warning comes though.
+CC LTP mail list, you may get more info from others.
+> Hi,
+> sir, have tried this it giving error with folloeing message
+> 
+> root@exaleapsemi:~/pankaj_ltp# ip tuntap add dev dummy0 mode tap
+> open: No such file or directory
+It looks like your environment misses /dev/net/tun devfile, you should 
+check your kernel config and set "CONFIG_TUN=y/m".
 
-> openat202.c:69:1: warning: missing initializer for field 'caps' of 'struct tst_test' [-Wmissing-field-initializers]
->  };
->  ^
-> In file included from openat202.c:7:0:
-> ../../../../include/tst_test.h:236:18: note: 'caps' declared here
->   struct tst_cap *caps;
->                   ^~~~
+Best Regards
+Yang Xu
+> 
+> Thanks
+> ------------------------------------------------------------------------
+> *From:* Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> *Sent:* Monday, March 2, 2020 11:11 AM
+> *To:* Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+> *Cc:* Cyril Hrubis <chrubis@suse.cz>; ltp@lists.linux.it
+> <ltp@lists.linux.it>
+> *Subject:* Re: [LTP] netns_netlink test failure
+> Hi
+> 
+>> Hi,
+>> What could be the possible reason behind failing,any guess??
+> At lease, you should attach this command output.
+> # ip tuntap add dev dummy0 mode tap
+> 
+> Best Regards
+> Yang Xu
+>> ------------------------------------------------------------------------
+>> *From:* Cyril Hrubis <chrubis@suse.cz>
+>> *Sent:* Friday, February 28, 2020 2:51 PM
+>> *To:* Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+>> *Cc:* ltp@lists.linux.it <ltp@lists.linux.it>
+>> *Subject:* Re: [LTP] netns_netlink test failure
+>> Hi!
+>>> <<<test_output>>>
+>>> open: No such file or directory
+>>> netns_netlink??? 1? TBROK? :? netns_netlink.c:143: system() failed
+>>?????????????????????????????????????????????????? ^
+>>?????????????????????????????????????????????????? This is a line number,
+>>?????????????????????????????????????????????????? if you look a the
+>>?????????????????????????????????????????????????? source code of the
+>>?????????????????????????????????????????????????? test, you see:
+>>
+>>????????? if (WEXITSTATUS(system("ip tuntap add dev dummy0 mode tap")))
+>>????????????????? tst_brkm(TBROK, cleanup, "system() failed");
+>>
+>> So that the failed command was "ip tuntap add dev dummy0 mode tap", it's
+>> up to
+>> you to figure out why...
+>>
+>> --
+>> Cyril Hrubis
+>> chrubis@suse.cz
+>> [EXT]
+>>
+>>
+> 
+> 
+> [EXT]
 
-This is false positive warning. Unfortunately we don't know how to avoid it.
 
-Kind regards,
-Petr
