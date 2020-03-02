@@ -1,71 +1,85 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 2 Mar 2020 14:10:49 +0800
-Subject: [LTP] use of pthread_cancel in tst_fuzzy_sync.h
-In-Reply-To: <2365a007-02fe-c48c-2df5-04aedc076208@google.com>
-References: <2365a007-02fe-c48c-2df5-04aedc076208@google.com>
-Message-ID: <CAEemH2csQSdvaFkQu7aRDNdp44Ri7tgbzzrtQJh40f-EPFPU=w@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 2 Mar 2020 12:07:14 +0530
+Subject: [LTP] [PATCH] syscalls/openat2: New tests
+In-Reply-To: <20200228132210.GC8324@rei>
+References: <b927e5f2cd36ec2dd57202b492563922b1a94e77.1582886993.git.viresh.kumar@linaro.org>
+ <20200228132210.GC8324@rei>
+Message-ID: <20200302063714.claovt5uyi7gxf2o@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Steve,
+On 28-02-20, 14:22, Cyril Hrubis wrote:
+> > +static void run(unsigned int n)
+> > +{
+> > +	int fd;
+> > +	struct stat file_stat;
+> > +	struct tcase *tc = &tcases[n];
+> > +	struct open_how how = {
+> > +		.flags = tc->flags | O_CREAT,
+> > +		.mode = tc->mode,
+> > +		.resolve = tc->resolve
+> > +	};
+> 
+> This structure should be allocated tst_buffers, see capget01.c for
+> example.
 
-Thanks for reporting this.
+This changed few things.
 
-On Sat, Feb 29, 2020 at 3:47 AM Steve Muckle <smuckle@google.com> wrote:
+I am getting a build warning now (same happen if I build bpf stuff as
+well). I don't understand why this warning comes though.
 
-> Hi Li,
->
-> While integrating the latest LTP release into Android's VTS test suite I
-> ran into trouble with this commit:
->
-> commit cad524797ba4cee2e40985043f113256419f4a90
-> Author: Li Wang <liwang@redhat.com>
-> Date:   Thu Sep 26 17:39:21 2019 +0800
->
->      fzsync: revoke thread_b if parent hits accidental break
->
-> It introduces a dependency on pthread_cancel() which Android does not
-> implement:
->
->
-> https://android.googlesource.com/platform/bionic/+/refs/heads/master/docs/status.md
->
-> In the short term I can work around this, taking out the
-> pthread_cancel() should be fine as far as I can tell as it is just used
->
-
-Yes, for currently, we don't see another test(besides cve-2016-7117.c) that
-hits the accidental break. So I think it's safe for you to revert my patch
-on your branch:).
-
-We also have fixed on cve-2016-7117.c for the break problem in a simple way:
-
-commit 2e74d9963c882289be0551df63d33f5b7dee56d8
-Author: Richard Palethorpe <rpalethorpe@suse.com>
-Date:   Thu Jan 10 10:59:50 2019 +0100
-
-    Check recvmmsg exists before entering fuzzy loop
+openat202.c:69:1: warning: missing initializer for field 'caps' of 'struct tst_test' [-Wmissing-field-initializers]
+ };
+ ^
+In file included from openat202.c:7:0:
+../../../../include/tst_test.h:236:18: note: 'caps' declared here
+  struct tst_cap *caps;
+                  ^~~~
 
 
+Also for the failure test where larger size was passed, the error
+reported now is EFAULT as kernel can't access out of bound dynamically
+allocated memory (instead of stack one earlier). In order to get
+E2BIG, I need to add some hacks (allocate more memory and write
+non-zero value to excess memory) and I don't think that would be worth
+it, so my test will expect EFAULT now.
 
-> to avoid a timeout in certain circumstances. Long term though, could
-> this be reworked to use pthread_kill() or some other mechanism?
->
+> > +	TEST(fd = openat2(*tc->dfd, tc->pathname, &how, sizeof(how)));
+> > +	if (fd == -1) {
+> > +		tst_res(TFAIL | TTERRNO, "openat2() failed (%d)", n);
+> > +		return;
+> > +	}
+> > +
+> > +	SAFE_FSTAT(fd, &file_stat);
+> > +
+> > +	if (file_stat.st_size == 0)
+> > +		tst_res(TPASS, "openat2() passed (%d)", n);
+> > +	else
+> > +		tst_res(TFAIL, "fstat() didn't work as expected (%d)", n);
+> 
+> So this is very basic test that just checks that openat() can open a
+> file and we would need a few more for each of the newly introduced
+> RESOLVE_* flags.
 
-Sure, it is a tiny defect in LTP test fuzzy synchronization. As before in
-my patch V2[1], it tried to use pthread_kill/pthread_exit for solving the
-problem, unfortunately, pthread_exit is not signal-safety function. So we
-go pthread_cancel way for the fix. I'm thinking if we can go back to merge
-these two way together now. Or maybe another idea is also welcomed~
+Hmm, this file is already testing openat2() with all different type of
+resolve flags. What kind of further tests are you suggesting here ?
 
-[1] http://lists.linux.it/pipermail/ltp/2019-January/010489.html
+> > +	{AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, 2 * sizeof(struct open_how), E2BIG},
+>                                                              ^
+> 							     What
+> 							     happends if
+> 							     we pass
+> 							     size
+> 							     smaller
+> 							     than the
+> 							     sizeof(struct open_how) ?
+> 
+> Do we get EINVAL just like for 0?
+
+Yes, added a test for that as well.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200302/e0b122bd/attachment.htm>
+viresh
