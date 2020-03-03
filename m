@@ -1,20 +1,18 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 3 Mar 2020 12:52:40 +0100
-Subject: [LTP] [PATCH 1/1] nfs: Add fsid=PID to exportfs
-In-Reply-To: <91a9db4d-fef8-12f0-d996-87bdb7365b74@oracle.com>
-References: <20200302155857.923-1-pvorel@suse.cz>
- <91a9db4d-fef8-12f0-d996-87bdb7365b74@oracle.com>
-Message-ID: <20200303115240.GD42769@gacrux.arch.suse.de>
+Date: Tue, 3 Mar 2020 13:47:49 +0100
+Subject: [LTP] [PATCH v3] Add test for CVE 2017-10661
+In-Reply-To: <20200303115306.16443-1-mdoucha@suse.cz>
+References: <20200303115306.16443-1-mdoucha@suse.cz>
+Message-ID: <20200303124748.GA43940@gacrux.arch.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Martin,
 
-> Agree, thanks Petr!
-Thanks for your ack, merged.
+merged. I've added timerfd_settime02 also to syscalls runtest file.
 
 Kind regards,
 Petr
