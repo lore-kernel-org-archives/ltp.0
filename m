@@ -1,44 +1,36 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 4 Mar 2020 13:43:06 +0800
-Subject: [LTP] LTP autoconfig
-In-Reply-To: <MAXPR0101MB14687839FE18D4BC633BF475EEE50@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB14687839FE18D4BC633BF475EEE50@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <31b51443-dbf1-76a8-a8e4-672ecbad0f87@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 4 Mar 2020 13:15:02 +0530
+Subject: [LTP] Query: Adding support for clone3()
+In-Reply-To: <20200228114801.GA8324@rei>
+References: <CAKohponuu3zpsQCv0v1_Yqb_tmqy5yyUejMoS1_M_UFf5FU2Mw@mail.gmail.com>
+ <20200228085859.GA31181@rei>
+ <20200228102432.3kdhl4aqkla4akss@vireshk-i7>
+ <20200228114801.GA8324@rei>
+Message-ID: <20200304074502.i5zpf5q4gxcz2vz5@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-
-
-> Hi,
-> i have cloned git from github and going ahead with procedure i facing 
-> following problem
+On 28-02-20, 12:48, Cyril Hrubis wrote:
+> That depends I guess mostly on the clone() flags, right? Unless we pass
+> CLONE_VM the child lives in a separate copy of the memory space and we
+> do not have to do anything about the stack.
 > 
-> root@exaleapsemi:~/pankaj_ltp/ltp# make autotools
-> aclocal -I m4
-> Can't locate Exporter.pm in @INC (you may need to install the Exporter 
-> module) (@INC contains: /usr/share/automake-1.16 
-Here has said the reason, you should install perl-Exporter
-module/package.
-
-Best Regards
-Yang Xu
-> /usr/lib/perl5/site_perl/5.30.0/riscv64-linux 
-> /usr/lib/perl5/site_perl/5.30.0 
-> /usr/lib/perl5/vendor_perl/5.30.0/riscv64-linux 
-> /usr/lib/perl5/vendor_perl/5.30.0 /usr/lib/perl5/5.30.0/riscv64-linux 
-> /usr/lib/perl5/5.30.0 .) at /usr/share/automake-1.16/Automake/Config.pm 
-> line 22.
-> Compilation failed in require at /usr/bin/aclocal line 37.
-> BEGIN failed--compilation aborted at /usr/bin/aclocal line 37.
-> make: *** [/home/root/pankaj_ltp/ltp/include/mk/automake.mk:45: 
-> aclocal.m4] Error 2
+> So for the most clone3() tests we can just need the struct clone_args
+> and the syscall number and we can treat it mostly like more complex
+> version of fork(), i.e. pass NULL and 0 for the stack and stack_size
+> parameters.
 > 
-> 
-> Thanks
-> 
+> So I would start by adding the kernel version of the clone3() syscall,
+> the structure, and the V0 structure size into the lapi header and use
+> that for a basic testcases.
 
+Okay, so you are suggesting here to create a separate
+testcases/kernel/syscalls/clone3 directory for the tests ? That makes
+sense as a user may want to test both clone and clone3 on a platform
+for a given kernel version.
 
+-- 
+viresh
