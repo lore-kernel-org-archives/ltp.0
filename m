@@ -1,47 +1,91 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 4 Mar 2020 17:49:56 +0100
-Subject: [LTP] [PATCH 1/2] lib: Add safe timerfd macros
-In-Reply-To: <20200304160330.GA7516@rei>
-References: <20200304151201.19117-1-pvorel@suse.cz>
- <b42e93cb-b06d-538c-a5ff-1d110ed8ce74@suse.cz>
- <20200304160330.GA7516@rei>
-Message-ID: <20200304164956.GB5603@dell5510>
+Date: Wed,  4 Mar 2020 19:38:06 +0100
+Subject: [LTP] [PATCH 2/2] timerfd: Use safe macros
+In-Reply-To: <20200304183806.17672-1-pvorel@suse.cz>
+References: <20200304183806.17672-1-pvorel@suse.cz>
+Message-ID: <20200304183806.17672-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+SAFE_TIMERFD_CREATE() and SAFE_TIMERFD_SETTIME()
 
-> > Don't forget to clear errno when you're not using the TEST() macro.
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2: NONE
 
-> Hmm, I'm not sure how useful is this. Generally the syscalls in libc
-> have single macro definition that is used everywhere to copy the error
-> from the errno variable. If that piece of code is buggy half of the test
-> in LTP would fail anyway.
-That's exactly what I thought when I omit that.
-+ we reset errno on fewer places than we don't.
+ testcases/kernel/syscalls/timerfd/timerfd01.c        |  9 +++------
+ .../kernel/syscalls/timerfd/timerfd_settime02.c      | 12 ++----------
+ 2 files changed, 5 insertions(+), 16 deletions(-)
 
-> > > +	if (tst_kvercmp(2, 6, 26) <= 0)
-> > > +		flags = 0;
+diff --git a/testcases/kernel/syscalls/timerfd/timerfd01.c b/testcases/kernel/syscalls/timerfd/timerfd01.c
+index af19b4399..7bbde7283 100644
+--- a/testcases/kernel/syscalls/timerfd/timerfd01.c
++++ b/testcases/kernel/syscalls/timerfd/timerfd01.c
+@@ -19,7 +19,7 @@
+ #include <poll.h>
+ #include "tst_test.h"
+ #include "tst_timer.h"
+-#include "lapi/timerfd.h"
++#include "tst_safe_timerfd.h"
+ 
+ static struct tcase {
+ 	int id;
+@@ -47,8 +47,7 @@ static void settime(int tfd, struct itimerspec *tmr, int tflags,
+ 	tmr->it_value = tst_us_to_timespec(tvalue);
+ 	tmr->it_interval = tst_us_to_timespec(tinterval);
+ 
+-	if (timerfd_settime(tfd, tflags, tmr, NULL))
+-		tst_brk(TBROK | TERRNO, "timerfd_settime() failed");
++	SAFE_TIMERFD_SETTIME(tfd, tflags, tmr, NULL);
+ }
+ 
+ static void waittmr(int tfd, unsigned int exp_ticks)
+@@ -87,9 +86,7 @@ static void run(unsigned int n)
+ 
+ 	tst_res(TINFO, "testing %s", clks->name);
+ 
+-	tfd = timerfd_create(clks->id, 0);
+-	if (tfd == -1)
+-		tst_brk(TFAIL | TERRNO, "timerfd_create() failed");
++	tfd = SAFE_TIMERFD_CREATE(clks->id, 0);
+ 
+ 	tst_res(TINFO, "relative timer (100 ms)");
+ 	settime(tfd, &tmr, 0, 100 * 1000, 0);
+diff --git a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
+index 7fa26de62..0565802f4 100644
+--- a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
++++ b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
+@@ -15,7 +15,7 @@
+  *  timerfd: Protect the might cancel mechanism proper
+  */
+ #include <unistd.h>
+-#include <lapi/timerfd.h>
++#include "tst_safe_timerfd.h"
+ #include "tst_test.h"
+ #include "tst_fuzzy_sync.h"
+ #include "tst_taint.h"
+@@ -32,16 +32,8 @@ static struct tst_fzsync_pair fzsync_pair;
+ 
+ static void setup(void)
+ {
+-	int ttype;
+-
+ 	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+-	errno = 0;
+-	fd = timerfd_create(CLOCK_REALTIME, 0);
+-
+-	if (fd < 0) {
+-		ttype = (errno == ENOTSUP ? TCONF : TBROK);
+-		tst_brk(ttype | TERRNO, "Cannot create timer");
+-	}
++	fd = SAFE_TIMERFD_CREATE(CLOCK_REALTIME, 0);
+ 
+ 	fzsync_pair.exec_loops = 1000000;
+ 	tst_fzsync_pair_init(&fzsync_pair);
+-- 
+2.25.1
 
-> > I think tst_brk(TCONF) would be better here. Or at least tst_res(TWARN),
-> > since resetting flags to 0 may render some tests useless.
-
-> I think that it's completely wrong to put kernel version comparsion to
-> the safe_macros. If the test needs specific kernel version it should be
-> either put into the tst_test structure of handled in the test setup.
-OK, I'll remove it.
-For my previous state:
-timerfd01.c (all)
-timerfd_settime01.c (3th and 4rd test)
-timerfd_settime02.c (not sure whether this old version is really affected by
-CVE-2017-10661)
-
-It means that 1st and 2nd test from timerfd_settime01.c could be tested on
-2.6.25 and .26, but it won't due TCONF. But probably not many people will miss
-it nowadays.
-
-Kind regards,
-Petr
