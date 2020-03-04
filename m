@@ -1,94 +1,111 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  4 Mar 2020 16:12:01 +0100
-Subject: [LTP] [PATCH 2/2] timerfd: Use safe macros
-In-Reply-To: <20200304151201.19117-1-pvorel@suse.cz>
-References: <20200304151201.19117-1-pvorel@suse.cz>
-Message-ID: <20200304151201.19117-2-pvorel@suse.cz>
+Date: Wed,  4 Mar 2020 16:12:00 +0100
+Subject: [LTP] [PATCH 1/2] lib: Add safe timerfd macros
+Message-ID: <20200304151201.19117-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-SAFE_TIMERFD_CREATE() and SAFE_TIMERFD_SETTIME()
+SAFE_TIMERFD_CREATE(), SAFE_TIMERFD_GETTIME() and SAFE_TIMERFD_SETTIME()
+
+Added only to new C API.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Safe functions will be used also in other timerfd related tests once
-they're migrated to new C API.
+Hi,
+
+NOTE: ENOSYS is handled by ltp_syscall in lapi/timerfd.h.
++ I wonder include/tst_safe_timerfd.h and lapi/timerfd.h shouldn't be
+merged into single file.
 
 Kind regards,
 Petr
 
- testcases/kernel/syscalls/timerfd/timerfd01.c        |  9 +++------
- .../kernel/syscalls/timerfd/timerfd_settime02.c      | 12 ++----------
- 2 files changed, 5 insertions(+), 16 deletions(-)
+ include/tst_safe_timerfd.h | 73 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100644 include/tst_safe_timerfd.h
 
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd01.c b/testcases/kernel/syscalls/timerfd/timerfd01.c
-index af19b4399..7bbde7283 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd01.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd01.c
-@@ -19,7 +19,7 @@
- #include <poll.h>
- #include "tst_test.h"
- #include "tst_timer.h"
--#include "lapi/timerfd.h"
-+#include "tst_safe_timerfd.h"
- 
- static struct tcase {
- 	int id;
-@@ -47,8 +47,7 @@ static void settime(int tfd, struct itimerspec *tmr, int tflags,
- 	tmr->it_value = tst_us_to_timespec(tvalue);
- 	tmr->it_interval = tst_us_to_timespec(tinterval);
- 
--	if (timerfd_settime(tfd, tflags, tmr, NULL))
--		tst_brk(TBROK | TERRNO, "timerfd_settime() failed");
-+	SAFE_TIMERFD_SETTIME(tfd, tflags, tmr, NULL);
- }
- 
- static void waittmr(int tfd, unsigned int exp_ticks)
-@@ -87,9 +86,7 @@ static void run(unsigned int n)
- 
- 	tst_res(TINFO, "testing %s", clks->name);
- 
--	tfd = timerfd_create(clks->id, 0);
--	if (tfd == -1)
--		tst_brk(TFAIL | TERRNO, "timerfd_create() failed");
-+	tfd = SAFE_TIMERFD_CREATE(clks->id, 0);
- 
- 	tst_res(TINFO, "relative timer (100 ms)");
- 	settime(tfd, &tmr, 0, 100 * 1000, 0);
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-index 7fa26de62..0565802f4 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_settime02.c
-@@ -15,7 +15,7 @@
-  *  timerfd: Protect the might cancel mechanism proper
-  */
- #include <unistd.h>
--#include <lapi/timerfd.h>
-+#include "tst_safe_timerfd.h"
- #include "tst_test.h"
- #include "tst_fuzzy_sync.h"
- #include "tst_taint.h"
-@@ -32,16 +32,8 @@ static struct tst_fzsync_pair fzsync_pair;
- 
- static void setup(void)
- {
--	int ttype;
--
- 	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
--	errno = 0;
--	fd = timerfd_create(CLOCK_REALTIME, 0);
--
--	if (fd < 0) {
--		ttype = (errno == ENOTSUP ? TCONF : TBROK);
--		tst_brk(ttype | TERRNO, "Cannot create timer");
--	}
-+	fd = SAFE_TIMERFD_CREATE(CLOCK_REALTIME, 0);
- 
- 	fzsync_pair.exec_loops = 1000000;
- 	tst_fzsync_pair_init(&fzsync_pair);
+diff --git a/include/tst_safe_timerfd.h b/include/tst_safe_timerfd.h
+new file mode 100644
+index 000000000..4019527d6
+--- /dev/null
++++ b/include/tst_safe_timerfd.h
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
++ */
++
++#ifndef TST_SAFE_TIMERFD_H__
++#define TST_SAFE_TIMERFD_H__
++
++#include <errno.h>
++#include "lapi/timerfd.h"
++#include "tst_test.h"
++
++#define TTYPE (errno == ENOTSUP ? TCONF : TBROK)
++
++static inline int safe_timerfd_create(const char *file, const int lineno,
++				      int clockid, int flags)
++{
++	int fd;
++
++	fd = timerfd_create(clockid, flags);
++
++	if (fd < 0) {
++		tst_brk(TTYPE | TERRNO, "%s:%d: timerfd_create() failed",
++			file, lineno);
++	}
++
++	return fd;
++}
++
++static inline int safe_timerfd_gettime(const char *file, const int lineno,
++				int fd, struct itimerspec *curr_value)
++{
++	int rval;
++
++	rval = timerfd_gettime(fd, curr_value);
++	if (rval < 0) {
++		tst_brk(TTYPE | TERRNO, "%s:%d: timerfd_gettime() failed",
++			file, lineno);
++	}
++
++	return rval;
++}
++
++static inline int safe_timerfd_settime(const char *file, const int lineno,
++				int fd, int flags,
++				const struct itimerspec *new_value,
++				struct itimerspec *old_value)
++{
++	int rval;
++
++	if (tst_kvercmp(2, 6, 26) <= 0)
++		flags = 0;
++
++	rval = timerfd_settime(fd, flags, new_value, old_value);
++	if (rval < 0) {
++		tst_brk(TTYPE | TERRNO, "%s:%d: timerfd_settime() failed",
++			file, lineno);
++	}
++
++	return rval;
++}
++
++#define SAFE_TIMERFD_CREATE(clockid, flags)\
++	safe_timerfd_create(__FILE__, __LINE__, (clockid), (flags))
++
++#define SAFE_TIMERFD_GETTIME(fd, curr_value)\
++	safe_timerfd_gettime(__FILE__, __LINE__, (fd), (curr_value))
++
++#define SAFE_TIMERFD_SETTIME(fd, flags, new_value, old_value)\
++	safe_timerfd_settime(__FILE__, __LINE__, (fd), (flags), (new_value), \
++						 (old_value))
++
++#endif /* SAFE_TIMERFD_H__ */
 -- 
 2.25.1
 
