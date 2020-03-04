@@ -1,34 +1,28 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 4 Mar 2020 16:44:26 +0800
-Subject: [LTP] [PATCH v1 1/2] syscalls/settimeofday01: convert to new library
-Message-ID: <1583311467-2379-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 4 Mar 2020 16:44:27 +0800
+Subject: [LTP] [PATCH v1 2/2] syscalls/settimeofday02: convert to new library
+In-Reply-To: <1583311467-2379-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1583311467-2379-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1583311467-2379-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also, since glibc 2.31[1], when tz and tv are both null, it will get
-SIGSEGV sig. So, remove this EFAULT error test to adopt glibc2.31.
+As well as settimeofday01, using tst_sycall for gettimeofday
+and remove EFAULT error test. Also, add EINVAL error test.
 
-Moreover, musl 1.2.0 is now available and changes time_t for 32-bit
-archs to a 64-bit type. It is updated to slove y2038 problem and get
-time function no longer used for 32bit arch but not affecting set time
-function and 64 bit arch, more info see[2]. So for gettimeofday(), we
-use tst_syscall instead of calling libc to avoid this problem.
-
-[1]https://sourceware.org/ml/libc-announce/2020/msg00001.html
-[2]https://musl.libc.org/time64.html
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- .../syscalls/settimeofday/settimeofday01.c    | 200 ++++--------------
- 1 file changed, 46 insertions(+), 154 deletions(-)
+ .../syscalls/settimeofday/settimeofday02.c    | 207 +++++-------------
+ 1 file changed, 49 insertions(+), 158 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday01.c b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-index 7388c3231..fdb03ba7f 100644
---- a/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-+++ b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-@@ -1,52 +1,10 @@
+diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday02.c b/testcases/kernel/syscalls/settimeofday/settimeofday02.c
+index 5516e619e..290c692b8 100644
+--- a/testcases/kernel/syscalls/settimeofday/settimeofday02.c
++++ b/testcases/kernel/syscalls/settimeofday/settimeofday02.c
+@@ -1,189 +1,80 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -51,28 +45,29 @@ index 7388c3231..fdb03ba7f 100644
 -
 -/*
 - * NAME
-- * 	settimeofday01.c
+- * 	settimeofday02.c
 + * Copyright (c) International Business Machines  Corp., 2001
   *
   * DESCRIPTION
-  *	Testcase to check the basic functionality of settimeofday().
+  *	Testcase to check that settimeofday() sets errnos correctly.
   *
 - * ALGORITHM
 - *	Setup:
 - *	  Setup signal handling.
-- *	  Check that we are the proper user.
+- *	  Check that we are not root.
 - *	  Setup expected errnos.
 - *	  Pause for SIGUSER1 if option specified.
 - *	  Save the current time values.
 - *	Loop if the proper options are given.
-- *	  Call settimeofday and verify the time was changed.
-- *	  Call settimeofday with invalid Args and verify that the call fails.
+- *	  Call settimeofday with an invalid "buf" address and verify that
+- *		errno is set to EFAULT.
+- *	  Call settimeofday as a non-root user.  Verify that the call fails
+- *		and errno is set to EPERM.
 - *	Cleanup:
-- *	  Restore the original time values.
 - *	  Print errno log and/or timing stats if options given.
 - *
 - * USAGE:  <for command-line>
-- *	settimeofday01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	settimeofday02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *	where,  -c n : Run n copies concurrently.
 - *		-e   : Turn on errno logging.
 - *		-i n : Execute test n times.
@@ -83,122 +78,107 @@ index 7388c3231..fdb03ba7f 100644
   * History
   *	07/2001 John George
   *		-Ported
-@@ -58,135 +16,69 @@
+- *
+- * Restrictions
+- *	Must not be run as root
+  */
+ 
+ #include <stdio.h>
  #include <sys/time.h>
  #include <errno.h>
- #include <unistd.h>
 -#include "test.h"
+-#include <pwd.h>
++#include <linux/capability.h>
++#include "tst_capability.h"
 +#include "tst_test.h"
 +#include "lapi/syscalls.h"
  
--#define	FAILED		1
  #define	VAL_SEC		100
  #define	VAL_MSEC	100
--#define ACCEPTABLE_DELTA	500	/* in milli-seconds */
-+#define ACCEPTABLE_DELTA 500
- #define USEC_PER_SEC    1000000L
  
--char *TCID = "settimeofday01";
+-char *TCID = "settimeofday02";
 -int TST_TOTAL = 1;
--time_t save_tv_sec, save_tv_usec;
--struct timeval tp, tp1, tp2;
 -
+-struct timeval tp;
+-time_t save_tv_sec, save_tv_usec;
+-
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
++struct timeval tv_saved;
++static int flag;
+ 
 -void setup(void);
 -void cleanup(void);
-+struct timeval tv_saved;
+-void restore_time(void);
++static struct tcase {
++	struct timeval tv;
++	int exp_errno;
++	char *message;
++} tcases[] = {
++	{{-1, 0}, EINVAL, "tv.tv_sec is negative"},
++	{{0, -1}, EINVAL, "tv.tv_usec is outside the range [0..999,999]"},
++	{{100, 100}, EPERM, "calling process without CAP_SYS_TIME capability"},
++};
  
 -#if !defined(UCLINUX)
 -
 -int main(int argc, char **argv)
-+static void verify_settimeofday(void)
++static void verify_settimeofday(unsigned int n)
  {
 -	int lc;
- 	suseconds_t delta;
-+	struct timeval tv1, tv2;
- 
+-
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int condition_number = 1;
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		gettimeofday(&tp, NULL);
--		tp.tv_sec += VAL_SEC;
--		tp.tv_usec += VAL_MSEC;
--		if (tp.tv_usec >= USEC_PER_SEC)
--			tp.tv_usec = VAL_MSEC;
+-		TEST(settimeofday((void *)-1, NULL));
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "settimeofday(2) failed to FAIL");
+-			restore_time();
+-		} else {
+-			if (TEST_ERRNO != EFAULT) {
+-				tst_resm(TFAIL, "Expected EFAULT got %d",
+-					 TEST_ERRNO);
+-			} else {
+-				tst_resm(TPASS, "Received expected errno");
+-			}
+-		}
 -
+-		tp.tv_sec = VAL_SEC;
+-		tp.tv_usec = VAL_MSEC;
 -		TEST(settimeofday(&tp, NULL));
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "Error Setting Time, errno=%d",
--				 TEST_ERRNO);
--		}
--
--		if ((gettimeofday(&tp2, (struct timezone *)&tp1)) == -1) {
--			tst_resm(TBROK, "Error Getting Time, errno=%d", errno);
--		}
-+	if (tst_syscall(__NR_gettimeofday, &tv1, NULL) == -1)
-+		tst_brk(TBROK | TERRNO, "gettimeofday(&tv1, NULL) failed");
- 
--		if (tp2.tv_sec > tp.tv_sec) {
--			delta =
--			    (suseconds_t) (tp2.tv_sec - tp.tv_sec) * 1000 +
--			    (tp2.tv_usec - tp.tv_usec) / 1000;
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "settimeofday(2) failed to FAIL");
+-			restore_time();
 -		} else {
--			delta =
--			    (suseconds_t) (tp.tv_sec - tp2.tv_sec) * 1000 +
--			    (tp.tv_usec - tp2.tv_usec) / 1000;
+-			if (TEST_ERRNO != EPERM) {
+-				tst_resm(TFAIL, "Expected EPERM got %d",
+-					 TEST_ERRNO);
+-			} else {
+-				tst_resm(TPASS, "Received expected errno");
+-			}
 -		}
-+	tv1.tv_sec += VAL_SEC;
-+	tv1.tv_usec += VAL_MSEC;
-+	if (tv1.tv_usec >= USEC_PER_SEC)
-+		tv1.tv_usec = VAL_MSEC;
- 
--		if (delta > -ACCEPTABLE_DELTA && delta < ACCEPTABLE_DELTA) {
--			tst_resm(TPASS, "Test condition %d successful",
--				 condition_number++);
--		} else {
--			tst_resm(TFAIL, "Test condition %d failed",
--				 condition_number++);
--		}
--
--		/* Invalid Args : Error Condition where tp = NULL */
--		TEST(settimeofday((struct timeval *)-1, NULL));
--		if (TEST_RETURN == -1) {
--			tst_resm(TPASS, "Test condition %d successful",
--				 condition_number++);
--		} else {
--			tst_resm(TFAIL, "Test condition %d failed",
--				 condition_number);
--		}
-+	TEST(settimeofday(&tv1, NULL));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "settimeofday(&tv1, NULL) failed");
-+		return;
-+	}
- 
-+	if (tst_syscall(__NR_gettimeofday, &tv2, NULL) == -1)
-+		tst_brk(TBROK | TERRNO, "gettimeofday(&tv2, NULL) failed");
++	struct tcase *tc = &tcases[n];
 +
-+	if (tv2.tv_sec > tv1.tv_sec) {
-+		delta =
-+			(suseconds_t) (tv2.tv_sec - tv1.tv_sec) * 1000 +
-+			(tv2.tv_usec - tv1.tv_usec) / 1000;
-+	} else {
-+		delta =
-+			(suseconds_t) (tv1.tv_sec - tv2.tv_sec) * 1000 +
-+			(tv1.tv_usec - tv2.tv_usec) / 1000;
++	flag = 0;
++	tst_res(TINFO, "%s", tc->message);
++	TEST(settimeofday(&tc->tv, NULL));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "settimeofday() succeeded unexpectedly");
++		flag = 1;
++		return;
  	}
 -	cleanup();
 -	tst_exit();
  
-+	if (delta > -ACCEPTABLE_DELTA && delta < ACCEPTABLE_DELTA)
-+		tst_res(TPASS, "settimeofday() pass");
++	if (TST_ERR != tc->exp_errno)
++		tst_res(TFAIL | TTERRNO, "Expected %s got ", tst_strerrno(tc->exp_errno));
 +	else
-+		tst_res(TFAIL, "settimeofday() fail");
++		tst_res(TPASS | TTERRNO, "Received expected errno");
  }
  
 -#else
@@ -225,18 +205,28 @@ index 7388c3231..fdb03ba7f 100644
 -
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
+-	/* Switch to nobody user for correct error code collection */
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
+-	}
+-
 -	/* Pause if that option was specified
 -	 * TEST_PAUSE contains the code to fork the test with the -c option.
 -	 */
 -	TEST_PAUSE;
 -
 -	/* Save the current time values */
--	if ((gettimeofday(&tp, (struct timezone *)&tp1)) == -1) {
+-	if ((gettimeofday(&tp, (struct timezone *)&tp)) == -1) {
 -		tst_brkm(TBROK, cleanup, "gettimeofday failed. "
 -			 "errno=%d", errno);
 -	}
 -	save_tv_sec = tp.tv_sec;
 -	save_tv_usec = tp.tv_usec;
++	if (!flag)
++		return;
 +	if ((settimeofday(&tv_saved, NULL)) == -1)
 +		tst_brk(TBROK | TERRNO, "settimeofday(&tv_saved, NULL) failed");
  }
@@ -248,6 +238,21 @@ index 7388c3231..fdb03ba7f 100644
 - */
 -void cleanup(void)
 -{
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_settimeofday,
++	.tcnt = ARRAY_SIZE(tcases),
++	.caps = (struct tst_cap []) {
++		TST_CAP(TST_CAP_DROP, CAP_SYS_TIME),
++		{}
++	},
++};
+ 
+-}
+-
+-void restore_time(void)
+-{
 -	/* restore the original time values. */
 -	tp.tv_sec = save_tv_sec;
 -	tp.tv_usec = save_tv_usec;
@@ -255,14 +260,7 @@ index 7388c3231..fdb03ba7f 100644
 -		tst_resm(TWARN, "FATAL COULD NOT RESET THE CLOCK");
 -		tst_resm(TFAIL, "Error Setting Time, errno=%d", errno);
 -	}
--
 -}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_settimeofday,
-+	.needs_root = 1,
-+};
 -- 
 2.18.0
 
