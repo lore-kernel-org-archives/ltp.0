@@ -1,61 +1,62 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Mar 2020 14:48:32 +0100
-Subject: [LTP] [PATCH 6/8] syscalls/clock_gettime03: Add basic time
- namespace test
+Date: Thu,  5 Mar 2020 14:48:33 +0100
+Subject: [LTP] [PATCH 7/8] containers/timens: Add basic error test
 In-Reply-To: <20200305134834.16736-1-chrubis@suse.cz>
 References: <20200305134834.16736-1-chrubis@suse.cz>
-Message-ID: <20200305134834.16736-7-chrubis@suse.cz>
+Message-ID: <20200305134834.16736-8-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Add basic error handling test for the /proc/$PID/timens_offsets file.
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/containers                            |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/clock_gettime/.gitignore  |   1 +
- .../syscalls/clock_gettime/clock_gettime03.c  | 113 ++++++++++++++++++
- 4 files changed, 116 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
+ runtest/containers                            |  1 +
+ testcases/kernel/containers/timens/.gitignore |  1 +
+ testcases/kernel/containers/timens/Makefile   |  6 ++
+ testcases/kernel/containers/timens/timens01.c | 75 +++++++++++++++++++
+ 4 files changed, 83 insertions(+)
+ create mode 100644 testcases/kernel/containers/timens/.gitignore
+ create mode 100644 testcases/kernel/containers/timens/Makefile
+ create mode 100644 testcases/kernel/containers/timens/timens01.c
 
 diff --git a/runtest/containers b/runtest/containers
-index 8100cd2bc..1006d8d35 100644
+index 1006d8d35..23e4a533d 100644
 --- a/runtest/containers
 +++ b/runtest/containers
-@@ -89,3 +89,4 @@ userns07 userns07
- # time namespaces
+@@ -90,3 +90,4 @@ userns07 userns07
  sysinfo03 sysinfo03
  clock_nanosleep03 clock_nanosleep03
-+clock_gettime03 clock_gettime03
-diff --git a/runtest/syscalls b/runtest/syscalls
-index d19ae0041..778f722a3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -91,6 +91,7 @@ clock_nanosleep03 clock_nanosleep03
- 
- clock_gettime01 clock_gettime01
- clock_gettime02 clock_gettime02
-+clock_gettime03 clock_gettime03
- leapsec01 leapsec01
- 
- clock_settime01 clock_settime01
-diff --git a/testcases/kernel/syscalls/clock_gettime/.gitignore b/testcases/kernel/syscalls/clock_gettime/.gitignore
-index ba471c859..9d06613b6 100644
---- a/testcases/kernel/syscalls/clock_gettime/.gitignore
-+++ b/testcases/kernel/syscalls/clock_gettime/.gitignore
-@@ -1,3 +1,4 @@
- clock_gettime01
- clock_gettime02
-+clock_gettime03
- leapsec01
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
+ clock_gettime03 clock_gettime03
++timens01 timens01
+diff --git a/testcases/kernel/containers/timens/.gitignore b/testcases/kernel/containers/timens/.gitignore
 new file mode 100644
-index 000000000..533b3898e
+index 000000000..bcd2dd9dd
 --- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
-@@ -0,0 +1,113 @@
++++ b/testcases/kernel/containers/timens/.gitignore
+@@ -0,0 +1 @@
++timens01
+diff --git a/testcases/kernel/containers/timens/Makefile b/testcases/kernel/containers/timens/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/containers/timens/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/timens/timens01.c b/testcases/kernel/containers/timens/timens01.c
+new file mode 100644
+index 000000000..08bc449f9
+--- /dev/null
++++ b/testcases/kernel/containers/timens/timens01.c
+@@ -0,0 +1,75 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 +
@@ -64,107 +65,69 @@ index 000000000..533b3898e
 + */
 +/*
 +
-+  Basic test for timer namespaces.
++  Basic test for timens_offsets error handling.
 +
 +  After a call to unshare(CLONE_NEWTIME) a new timer namespace is created, the
 +  process that has called the unshare() can adjust offsets for CLOCK_MONOTONIC
 +  and CLOCK_BOOTTIME for its children by writing to the '/proc/self/timens_offsets'.
 +
-+  The child processes also switch to the initial parent namespace and checks
-+  that the offset is set to 0.
-+
 + */
 +
 +#define _GNU_SOURCE
 +#include "lapi/setns.h"
-+#include "tst_safe_clocks.h"
-+#include "tst_timer.h"
 +#include "lapi/namespaces_constants.h"
++#include "lapi/posix_clocks.h"
 +#include "tst_test.h"
 +
 +static struct tcase {
-+	int clk_id;
-+	int clk_off;
-+	int off;
++	const char *offsets;
++	int exp_err;
 +} tcases[] = {
-+	{CLOCK_MONOTONIC, CLOCK_MONOTONIC, 10},
-+	{CLOCK_BOOTTIME, CLOCK_BOOTTIME, 10},
-+
-+	{CLOCK_MONOTONIC, CLOCK_MONOTONIC, -10},
-+	{CLOCK_BOOTTIME, CLOCK_BOOTTIME, -10},
-+
-+	{CLOCK_MONOTONIC_RAW, CLOCK_MONOTONIC, 100},
-+	{CLOCK_MONOTONIC_COARSE, CLOCK_MONOTONIC, 100},
++	/* obvious garbage */
++	{"not an offset", EINVAL},
++	/* missing nanoseconds */
++	{"1 10", EINVAL},
++	/* negative nanoseconds */
++	{"1 10 -10", EINVAL},
++	/* nanoseconds > 1s */
++	{"1 10 1000000001", EINVAL},
++	/* unsupported CLOCK_REALTIME */
++	{"0 10 0", EINVAL},
++	/* mess on the second line */
++	{"1 10 0\na", EINVAL},
++	/* overflow kernel 64bit nanosecond timer */
++	{"1 9223372036 0", ERANGE},
++	{"1 -9223372036 0", ERANGE},
 +};
-+
-+static struct timespec now;
-+static int parent_ns;
-+
-+static void child(struct tcase *tc)
-+{
-+	struct timespec then;
-+	struct timespec parent_then;
-+	long long diff;
-+
-+	SAFE_CLOCK_GETTIME(tc->clk_id, &then);
-+
-+	setns(parent_ns, CLONE_NEWTIME);
-+
-+	SAFE_CLOCK_GETTIME(tc->clk_id, &parent_then);
-+
-+	diff = tst_timespec_diff_ms(then, now);
-+
-+	if (diff/1000 != tc->off) {
-+		tst_res(TFAIL, "Wrong offset (%s) read %llims",
-+		        tst_clock_name(tc->clk_id), diff);
-+	} else {
-+		tst_res(TPASS, "Offset (%s) is correct %llims",
-+		        tst_clock_name(tc->clk_id), diff);
-+	}
-+
-+	diff = tst_timespec_diff_ms(parent_then, now);
-+
-+	if (diff/1000) {
-+		tst_res(TFAIL, "Wrong offset (%s) read %llims",
-+		        tst_clock_name(tc->clk_id), diff);
-+	} else {
-+		tst_res(TPASS, "Offset (%s) is correct %llims",
-+		        tst_clock_name(tc->clk_id), diff);
-+	}
-+}
 +
 +static void verify_ns_clock(unsigned int n)
 +{
 +	struct tcase *tc = &tcases[n];
++	int fd, ret;
 +
 +	SAFE_UNSHARE(CLONE_NEWTIME);
 +
-+	SAFE_FILE_PRINTF("/proc/self/timens_offsets", "%d %d 0",
-+	                 tc->clk_off, tc->off);
++	fd = SAFE_OPEN("/proc/self/timens_offsets", O_WRONLY);
++	ret = write(fd, tc->offsets, strlen(tc->offsets));
 +
-+	SAFE_CLOCK_GETTIME(tc->clk_id, &now);
++	if (ret != -1) {
++		tst_res(TFAIL, "Write returned %i", ret);
++		return;
++	}
 +
-+	if (!SAFE_FORK())
-+		child(tc);
-+}
++	if (errno != tc->exp_err) {
++		tst_res(TFAIL | TERRNO, "Write should fail with %s, got:",
++			tst_strerrno(tc->exp_err));
++		return;
++	}
 +
-+static void setup(void)
-+{
-+	parent_ns = SAFE_OPEN("/proc/self/ns/time_for_children", O_RDONLY);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(parent_ns);
++	tst_res(TPASS | TERRNO, "Write offsets='%s'", tc->offsets);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.test = verify_ns_clock,
 +	.needs_root = 1,
-+	.forks_child = 1,
 +	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_TIME_NS=y"
 +	}
