@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Thu, 05 Mar 2020 02:45:59 -0000
+Date: Thu, 05 Mar 2020 06:24:58 -0000
 Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E5?=
- =?utf-8?q?=2E8-rc1-3517b32=2Ecki_=28stable=29?=
-Message-ID: <cki.C41593054D.8LWCY0M8ZH@redhat.com>
+ =?utf-8?q?=2E7-60528b7=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.EED856DF66.LLEP90YP5M@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 3517b32c0774 - Linux 5.5.8-rc1
+            Commit: 60528b79e30a - kvm: nVMX: VMWRITE checks unsupported field before read-only field
 
 The results of these automated tests are provided below.
 
@@ -26,16 +26,15 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/04/471144
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/04/471505
 
 One or more kernel tests failed:
 
     s390x:
      ? LTP
-     ? Networking bridge: sanity
 
     ppc64le:
-     ? LTP
+     ? Boot test
 
 We hope that these logs can help you find the problem quickly. For the full
 detail on our testing procedures, please scroll to the bottom of this message.
@@ -74,6 +73,23 @@ We booted each kernel and ran the following tests:
 
   aarch64:
     Host 1:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? Storage blktests
+
+    Host 2:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -116,7 +132,7 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
+    Host 3:
 
        ? Internal infrastructure issues prevented one or more tests (marked
        with ???) from running on this architecture.
@@ -128,10 +144,24 @@ We booted each kernel and ran the following tests:
        ? selinux-policy: serge-testsuite
        ? lvm thinp sanity
        ? storage: software RAID testing
+       ? stress: stress-ng
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
        ? ??? Storage blktests
 
   ppc64le:
     Host 1:
+       ? Boot test
+       ??? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? Storage blktests
+
+    Host 2:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -171,42 +201,21 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ??? Storage blktests
-
   s390x:
     Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
        ? Boot test
        ? selinux-policy: serge-testsuite
        ? stress: stress-ng
-       ? ??? Storage blktests
+       ? ? Storage blktests
 
     Host 2:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Networking bridge: sanity
+       ??? Loopdev Sanity
+       ??? Memory function: memfd_create
+       ??? Networking bridge: sanity
        ??? Ethernet drivers sanity
        ??? Networking MACsec: sanity
        ??? Networking sctp-auth: sockopts test
@@ -238,6 +247,10 @@ We booted each kernel and ran the following tests:
 
   x86_64:
     Host 1:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 2:
 
        ? Internal infrastructure issues prevented one or more tests (marked
        with ???) from running on this architecture.
@@ -251,19 +264,11 @@ We booted each kernel and ran the following tests:
        ? storage: software RAID testing
        ? stress: stress-ng
        ? ? IOMMU boot test
-       ? ??? IPMI driver test
+       ? ? IPMI driver test
        ? ? IPMItool loop stress test
        ? ??? Storage blktests
 
-    Host 2:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
     Host 3:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-    Host 4:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -306,6 +311,10 @@ We booted each kernel and ran the following tests:
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
+
+    Host 4:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
