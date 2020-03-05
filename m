@@ -1,8 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Mar 2020 14:37:49 +0100
-Subject: [LTP] [COMMITTED] [PATCH] timerfd/timerfd_settime02: Add a
- .gitignore entry
-Message-ID: <20200305133749.15167-1-chrubis@suse.cz>
+Date: Thu,  5 Mar 2020 14:48:27 +0100
+Subject: [LTP] [PATCH 1/8] lapi/namespace_constants.h: Add CLONE_NEWTIME
+In-Reply-To: <20200305134834.16736-1-chrubis@suse.cz>
+References: <20200305134834.16736-1-chrubis@suse.cz>
+Message-ID: <20200305134834.16736-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,18 +12,22 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/timerfd/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ include/lapi/namespaces_constants.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/timerfd/.gitignore b/testcases/kernel/syscalls/timerfd/.gitignore
-index e5c819ced..1c5329966 100644
---- a/testcases/kernel/syscalls/timerfd/.gitignore
-+++ b/testcases/kernel/syscalls/timerfd/.gitignore
-@@ -4,3 +4,4 @@
- /timerfd_create01
- /timerfd_gettime01
- /timerfd_settime01
-+/timerfd_settime02
+diff --git a/include/lapi/namespaces_constants.h b/include/lapi/namespaces_constants.h
+index da4a7a4a1..8f73c4302 100644
+--- a/include/lapi/namespaces_constants.h
++++ b/include/lapi/namespaces_constants.h
+@@ -24,5 +24,8 @@
+ #ifndef CLONE_NEWUTS
+ #  define CLONE_NEWUTS	0x04000000
+ #endif
++#ifndef CLONE_NEWTIME
++#  define CLONE_NEWTIME 0x00000080
++#endif
+ 
+ #endif /* __NAMESPACES_CONSTANTS_H__ */
 -- 
 2.23.0
 
