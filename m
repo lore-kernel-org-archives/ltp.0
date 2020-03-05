@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  5 Mar 2020 14:48:27 +0100
-Subject: [LTP] [PATCH 1/8] lapi/namespace_constants.h: Add CLONE_NEWTIME
+Date: Thu,  5 Mar 2020 14:48:28 +0100
+Subject: [LTP] [PATCH 2/8] lapi: Add a configure check and fallback for setns
 In-Reply-To: <20200305134834.16736-1-chrubis@suse.cz>
 References: <20200305134834.16736-1-chrubis@suse.cz>
-Message-ID: <20200305134834.16736-2-chrubis@suse.cz>
+Message-ID: <20200305134834.16736-3-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,22 +12,49 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/lapi/namespaces_constants.h | 3 +++
- 1 file changed, 3 insertions(+)
+ configure.ac         |  1 +
+ include/lapi/setns.h | 20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+)
+ create mode 100644 include/lapi/setns.h
 
-diff --git a/include/lapi/namespaces_constants.h b/include/lapi/namespaces_constants.h
-index da4a7a4a1..8f73c4302 100644
---- a/include/lapi/namespaces_constants.h
-+++ b/include/lapi/namespaces_constants.h
-@@ -24,5 +24,8 @@
- #ifndef CLONE_NEWUTS
- #  define CLONE_NEWUTS	0x04000000
- #endif
-+#ifndef CLONE_NEWTIME
-+#  define CLONE_NEWTIME 0x00000080
+diff --git a/configure.ac b/configure.ac
+index c9ec39fce..cd52806de 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -110,6 +110,7 @@ AC_CHECK_FUNCS([ \
+     renameat2 \
+     sched_getcpu \
+     sendmmsg \
++    setns \
+     sigpending \
+     splice \
+     statx \
+diff --git a/include/lapi/setns.h b/include/lapi/setns.h
+new file mode 100644
+index 000000000..7b0a7afc4
+--- /dev/null
++++ b/include/lapi/setns.h
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++  Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++#ifndef LAPI_SETNS_H__
++#define LAPI_SETNS_H__
++
++#include "config.h"
++#include "lapi/syscalls.h"
++#include <sched.h>
++
++#ifndef HAVE_SETNS
++int setns(int fd, int nstype)
++{
++	return tst_syscall(__NR_setns, fd, nstype);
++}
 +#endif
- 
- #endif /* __NAMESPACES_CONSTANTS_H__ */
++
++#endif /* LAPI_SETNS_H__ */
 -- 
 2.23.0
 
