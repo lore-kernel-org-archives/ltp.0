@@ -1,305 +1,126 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Fri, 06 Mar 2020 01:28:49 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E5?=
- =?utf-8?q?=2E7-b480e8b=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.FEFDF20463.TBRAWPEYVD@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 6 Mar 2020 09:53:18 +0800
+Subject: [LTP] [PATCH 1/1] hugeshmctl01: Fix reset stat_time when
+ looping with -i n
+In-Reply-To: <20200305171844.24020-1-pvorel@suse.cz>
+References: <20200305171844.24020-1-pvorel@suse.cz>
+Message-ID: <cd067b8a-224d-993f-8668-e8f7b70f59bc@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Petr
 
-Hello,
+> c7a2d296b didn't reset stat_time, thus uninitialized set_shared was
+> assigned to test variable and test got value from a null pointer,
+> which leaded to segfault.
+> 
+> hugeshmctl01.c:279: PASS: shmctl in func_rmid() failed as expected, shared memory appears to be removed
+> tst_checkpoint.c:147: BROK: hugeshmctl01.c:152: tst_checkpoint_wait(0, 10000): ETIMEDOUT (110)
+> mem.c:817: INFO: set nr_hugepages to 0
+> 
+> dmesg:
+> segfault at 7f73f8c00000 ip 00000000004051e1 sp 00007ffef375f9a0 error 6 in hugeshmctl01.master[404000+13000]
+> addr2line -e hugeshmctl01 -f  00000000004051e1
+> stat_setup
+> hugeshmctl01.c:139 (discriminator 4)
+> 
+> test = (stat_time == FIRST) ? set_shmat() : set_shared;
+> 
+> /* do an assignement for fun */
+> *(int *)test = i; // error here
+> 
+> Fixes: c7a2d296b ("hugeshmctl: Use loop from the API")
+> 
+> Reported-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Suggested-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi Xu,
+> 
+> I'm sorry for introducing a regression.
+> Thank you for a report and fixing the test.
+> I'd personally prefer to keep .tcnt = ARRAY_SIZE(tcases),
+> but maybe others will prefer to keep loop in test_hugeshmctl()
+> as it was before my change.
+> 
+> BTW it'd be nice to have something like setup_i() and cleanup_i(),
+> which would be called before/after each run of whole test, when run with
+> -i n.
+Sub tests have own clean and setup function. They only reused  a System 
+V shared memory segment. IMO, this is a question of coupling.
+> 
+> Kind regards,
+> Petr
+> 
+>   .../mem/hugetlb/hugeshmctl/hugeshmctl01.c     | 27 ++++++++++---------
+>   1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> index e6cf8bf09..3b7e14363 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> @@ -75,6 +75,20 @@ struct tcase {
+>   
+>   static void test_hugeshmctl(unsigned int i)
+>   {
+> +	stat_time = FIRST;
+> +
+My description may confuse you.  stat_time should not be reseted every 
+time, it only needs to be reseted when next loop. This value will be +1 
+  when call stat_cleanup.
+struct tcase {
+         int cmd;
+         void (*func_test) (void);
+         void (*func_setup) (void);
+} tcases[] = {
+         {IPC_STAT, func_stat, stat_setup},   //stat_time = FIRST
+         {IPC_STAT, func_stat, stat_setup},   //stat_time = SECOND
 
-We ran automated tests on a recent commit from this kernel tree:
+As you do, the first and second case are same. it should be added into 
+the "if == 0".
 
-       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: b480e8b17e61 - kvm: nVMX: VMWRITE checks unsupported field before read-only field
+ps: I personally think old case is more cleaner. Let's hear from others.
 
-The results of these automated tests are provided below.
+Best Regards
+Yang Xu
+> +	/*
+> +	 * Create a shared memory segment with read and write
+> +	 * permissions. Do this here instead of in setup()
+> +	 * so that looping (-i) will work correctly.
+> +	 */
+> +	if (i == 0) {
+> +		shm_id_1 = shmget(shmkey, shm_size,
+> +				SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+> +		if (shm_id_1 == -1)
+> +			tst_brk(TBROK | TERRNO, "shmget #main");
+> +	}
+> +
+>   	/*
+>   	 * if needed, set up any required conditions by
+>   	 * calling the appropriate setup function
+> @@ -296,19 +310,6 @@ void setup(void)
+>   	shm_size = hpage_size * hugepages / 2;
+>   	update_shm_size(&shm_size);
+>   	shmkey = getipckey();
+> -
+> -	/* initialize stat_time */
+> -	stat_time = FIRST;
+> -
+> -	/*
+> -	 * Create a shared memory segment with read and write
+> -	 * permissions.  Do this here instead of in setup()
+> -	 * so that looping (-i) will work correctly.
+> -	 */
+> -	shm_id_1 = shmget(shmkey, shm_size,
+> -			SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+> -	if (shm_id_1 == -1)
+> -		tst_brk(TBROK | TERRNO, "shmget #main");
+>   }
+>   
+>   void cleanup(void)
+> 
 
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: FAILED
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/05/473267
-
-One or more kernel tests failed:
-
-    s390x:
-     ? LTP
-
-    x86_64:
-     ? Boot test
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 4 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    s390x:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-  s390x:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? selinux-policy: serge-testsuite
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ??? Storage SAN device stress - mpt3sas driver
-
-    Host 3:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
 
