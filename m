@@ -1,84 +1,64 @@
-From: Chen Li <chenli@uniontech.com>
-Date: Sat, 07 Mar 2020 15:14:52 +0800
-Subject: [LTP] Subject: [PATCH] Update legacy codes in ltp_tpci.c
-Message-ID: <87mu8smyab.wl-chenli@uniontech.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 7 Mar 2020 20:42:47 +0800
+Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
+In-Reply-To: <20200306124546.GA3375@rei.lan>
+References: <cover.1582779464.git.viresh.kumar@linaro.org>
+ <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
+ <20200306124546.GA3375@rei.lan>
+Message-ID: <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The kernel api used in ltp_tpci.c is too old and connot pass compile
-after 3.12.
+On Fri, Mar 6, 2020 at 8:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Signed-off-by: Li Chen <chenli@uniontech.com>
----
- .../device-drivers/pci/tpci_kernel/ltp_tpci.c | 30 ++-----------------
- 1 file changed, 2 insertions(+), 28 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-index 2cf8cefc8..7cbabfaa5 100644
---- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-@@ -61,7 +61,7 @@ MODULE_LICENSE("GPL");
- #define TFAIL	1
- #define TSKIP	32
-
--static DEFINE_PCI_DEVICE_TABLE(ltp_pci_tbl) = {
-+static const struct pci_device_id ltp_pci_tbl[] = {
- 	{ PCI_DEVICE(PCI_ANY_ID, PCI_ANY_ID) },
- 	{ 0, }
- };
-@@ -104,7 +104,7 @@ static int probe_pci_dev(unsigned int bus, unsigned int slot)
- 		ltp_pci.dev = NULL;
- 	}
-
--	dev = pci_get_bus_and_slot(bus, slot);
-+	dev = pci_get_domain_bus_and_slot(pci_domain_nr(dev->bus), bus, slot);
- 	if (!dev || !dev->driver)
- 		return -ENODEV;
-
-@@ -360,29 +360,6 @@ static int test_bus_add_devices(void)
- 	return TFAIL;
- }
-
--/*
-- * test_enable_bridges
-- *	make call to pci_enable_bridges,
-- *	use bus pointer from the ltp_pci
-- *	structure
-- */
--static int test_enable_bridges(void)
--{
--	struct pci_bus *bus = ltp_pci.bus;
--
--	prk_info("enable bridges");
--
--	pci_enable_bridges(bus);
--
--	if (bus) {
--		prk_info("called enable bridges");
--		return TPASS;
--	}
--
--	prk_err("enable_bridges failed");
--	return TFAIL;
--}
--
- /*
-  * test_match_device
-  *	make call to pci_match_device, returns a
-@@ -609,9 +586,6 @@ static int test_case(unsigned int cmd)
- 	case BUS_ADD_DEVICES:
- 		rc = test_bus_add_devices();
- 		break;
--	case ENABLE_BRIDGES:
--		rc = test_enable_bridges();
--		break;
- 	case MATCH_DEVICE:
- 		rc = test_match_device();
- 		break;
---
-2.25.0
+> ...
+> >
+> > +int tst_is_mounted(const char *path)
+> > +{
+> > +     char cmd[PATH_MAX];
+> > +     int ret;
+> > +
+> > +     snprintf(cmd, sizeof(cmd), "mountpoint -q %s", path);
+> > +     ret = tst_system(cmd);
+>
+> I'm not sure that depending on mountpoint command is right choice, there
+> are all kinds of embedded systems out there that may be missing it.
 
 
+Good point, we'd better avoid involving other packages as the dependence of
+LTP.
+
+
+> Also this does not even handle the case that the command is missing.
+>
+> Looking at the v4 version, all we need is to correctly parse each line
+> from from /proc/mounts. I would just use strsep() with space as a
+> delimited and took first token that starts with a slash i.e. '/', then
+> we can just strcmp() it against the path. Or do I miss something?
+>
+
+I'm afraid strcmp() can not satisfy the requirement for us. As you know LTP
+creates the MNTPOINT in temp dir that means it could not accurately match
+the string path which extracts from /proc/mounts with a slash.
+
+e.g
+#define MNTPOINT "fallocate"
+...
+/dev/loop4 on /tmp/FPp7kh/fallocate type xfs
+(rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+...
+strcmp("/tmp/FPp7kh/fallocate", MNTPOINT) will never ruturn 0 to us.
+
+What I can think of is to use strrchr() to cut the string after last '/',
+but that can only work for test mount fs in LTP ways. Other situations
+might not satisfy.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200307/02bcfb77/attachment.htm>
