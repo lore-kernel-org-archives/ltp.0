@@ -1,43 +1,51 @@
-From: Cixi Geng <gengcixi@gmail.com>
-Date: Mon, 9 Mar 2020 18:00:44 +0800
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_mkdtemp_failed_for_EACCES_when?=
-	=?utf-8?q?_setresuid_nobody?=
-Message-ID: <CAF12kFtx6wqUhN4z5uHHW51trstgMsSzRbQHU44rGrVO3-v5AA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 9 Mar 2020 11:15:33 +0100
+Subject: [LTP] [PATCH 2/8] lapi: Add a configure check and fallback for
+ setns
+In-Reply-To: <20200305134834.16736-3-chrubis@suse.cz>
+References: <20200305134834.16736-1-chrubis@suse.cz>
+ <20200305134834.16736-3-chrubis@suse.cz>
+Message-ID: <20200309101533.GA355713@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello everyone:
+Hi Cyril,
 
-While testing some syscalls tests on our device,based on debian
-rootfs, I got an error on many tests (running as "root" user).
+your patchset looks good to me.
 
-Here is one of log:
+There is an error for old glibc on centos 06:
 
-<<<test_start>>>
-tag=fchown03 stime=1478195083
-cmdline="fchown03"
-contacts=""
-analysis=exit
-<<<test_output>>>
-fchown03    1  TBROK  :  tst_tmpdir.c:264: tst_tmpdir:
-mkdtemp(/tmp/ltp-cawz3S2QlX/fchNeMx77) failed: errno=EACCES(13):
-Permission denied
-fchown03    2  TBROK  :  tst_tmpdir.c:264: Remaining cases broken
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=2 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-After I trace the kerenel syscalls, found it do a setresuid operate,
-set uid to nobody.
+https://api.travis-ci.org/v3/job/659994070/log.txt
 
-I did test on my self C code, make that nobody did have no exec
-permission to mkdtemp. other normal user successed.
+In file included from /usr/src/ltp/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c:21:
 
-So I pizzled that how to fix this error. need someone help me.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200309/14616a7e/attachment.htm>
+/usr/src/ltp/include/lapi/setns.h: In function 'setns':
+
+/usr/src/ltp/include/lapi/setns.h:16: error: implicit declaration of function 'syscall'
+
+/usr/src/ltp/include/lapi/setns.h:16: error: implicit declaration of function 'tst_brk'
+
+/usr/src/ltp/include/lapi/setns.h:16: error: 'TCONF' undeclared (first use in this function)
+
+/usr/src/ltp/include/lapi/setns.h:16: error: (Each undeclared identifier is reported only once
+
+/usr/src/ltp/include/lapi/setns.h:16: error: for each function it appears in.)
+
+In file included from /usr/src/ltp/include/tst_test.h:14,
+
+                 from /usr/src/ltp/include/tst_safe_clocks.h:13,
+
+                 from /usr/src/ltp/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c:22:
+
+/usr/include/unistd.h: At top level:
+
+/usr/include/unistd.h:1068: error: conflicting types for 'syscall'
+
+/usr/src/ltp/include/lapi/setns.h:16: note: previous implicit declaration of 'syscall' was here
+
+
+Kind regards,
+Petr
