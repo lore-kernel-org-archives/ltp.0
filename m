@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 10 Mar 2020 21:30:24 -0000
+Date: Tue, 10 Mar 2020 21:44:11 -0000
 Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E5=2E8-0b85992=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.160A6805C5.VNNSF8UGRD@redhat.com>
+ =?utf-8?q?5=2E5=2E8-1003401=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.30A816C1BC.O59T1RAR2W@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 0b85992eea00 - net: stmmac: fix notifier registration
+            Commit: 100340175337 - IB/hfi1, qib: Ensure RCU is locked when accessing list
 
 The results of these automated tests are provided below.
 
@@ -26,7 +26,7 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/482003
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481718
 
 One or more kernel tests failed:
 
@@ -34,7 +34,13 @@ One or more kernel tests failed:
      ? LTP
 
     ppc64le:
-     ? selinux-policy: serge-testsuite
+     ? audit: audit testsuite test
+
+    aarch64:
+     ? audit: audit testsuite test
+
+    x86_64:
+     ? audit: audit testsuite test
 
 We hope that these logs can help you find the problem quickly. For the full
 detail on our testing procedures, please scroll to the bottom of this message.
@@ -109,6 +115,7 @@ We booted each kernel and ran the following tests:
        ? Networking tunnel: vxlan basic
        ? Networking ipsec: basic netns - transport
        ? Networking ipsec: basic netns - tunnel
+       ? audit: audit testsuite test
        ? httpd: mod_ssl smoke sanity
        ? tuned: tune-processes-through-perf
        ? ALSA PCM loopback test
@@ -122,24 +129,12 @@ We booted each kernel and ran the following tests:
        ? ? Memory function: kaslr
        ? ? LTP: openposix test suite
        ? ? Networking vnic: ipvlan/basic
-       ? ? audit: audit testsuite test
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
   ppc64le:
     Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-    Host 2:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -162,6 +157,7 @@ We booted each kernel and ran the following tests:
        ? L2TP basic test
        ? Networking tunnel: vxlan basic
        ? Networking ipsec: basic netns - tunnel
+       ? audit: audit testsuite test
        ? httpd: mod_ssl smoke sanity
        ? tuned: tune-processes-through-perf
        ? ALSA PCM loopback test
@@ -174,13 +170,29 @@ We booted each kernel and ran the following tests:
        ? ? Memory function: kaslr
        ? ? LTP: openposix test suite
        ? ? Networking vnic: ipvlan/basic
-       ? ? audit: audit testsuite test
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
+    Host 2:
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? Storage blktests
+
   s390x:
     Host 1:
+       ? Boot test
+       ? selinux-policy: serge-testsuite
+       ? stress: stress-ng
+       ? ? Storage blktests
+
+    Host 2:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -202,6 +214,7 @@ We booted each kernel and ran the following tests:
        ??? Networking tunnel: vxlan basic
        ??? Networking ipsec: basic netns - transport
        ??? Networking ipsec: basic netns - tunnel
+       ??? audit: audit testsuite test
        ??? httpd: mod_ssl smoke sanity
        ??? tuned: tune-processes-through-perf
        ??? trace: ftrace/tracer
@@ -212,16 +225,9 @@ We booted each kernel and ran the following tests:
        ? ??? Memory function: kaslr
        ? ??? LTP: openposix test suite
        ? ??? Networking vnic: ipvlan/basic
-       ? ??? audit: audit testsuite test
        ? ??? iotop: sanity
        ? ??? Usex - version 1.9-29
        ? ??? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? selinux-policy: serge-testsuite
-       ? stress: stress-ng
-       ? ? Storage blktests
 
   x86_64:
     Host 1:
@@ -249,6 +255,7 @@ We booted each kernel and ran the following tests:
        ? Networking tunnel: vxlan basic
        ? Networking ipsec: basic netns - transport
        ? Networking ipsec: basic netns - tunnel
+       ? audit: audit testsuite test
        ? httpd: mod_ssl smoke sanity
        ? tuned: tune-processes-through-perf
        ? pciutils: sanity smoke test
@@ -263,7 +270,6 @@ We booted each kernel and ran the following tests:
        ? ? Memory function: kaslr
        ? ? LTP: openposix test suite
        ? ? Networking vnic: ipvlan/basic
-       ? ? audit: audit testsuite test
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
@@ -274,6 +280,48 @@ We booted each kernel and ran the following tests:
 
     Host 3:
        ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 4:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IOMMU boot test
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? power-management: cpupower/sanity test
+       ? ??? Storage blktests
+
+    Host 5:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IOMMU boot test
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? power-management: cpupower/sanity test
+       ? ??? Storage blktests
+
+    Host 6:
+       ? Boot test
        ? xfstests - ext4
        ? xfstests - xfs
        ? selinux-policy: serge-testsuite
@@ -281,13 +329,7 @@ We booted each kernel and ran the following tests:
        ? storage: software RAID testing
        ? stress: stress-ng
        ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
        ? ? Storage blktests
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
