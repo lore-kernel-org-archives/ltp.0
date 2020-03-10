@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 10 Mar 2020 19:44:58 -0000
+Date: Tue, 10 Mar 2020 20:43:40 -0000
 Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E5=2E8-6a51c63=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.F9F72B2F91.N94MTGRSPO@redhat.com>
+ =?utf-8?q?5=2E5=2E8-0709ff7=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.13F44303F0.SPGJ3CK2DI@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 6a51c635485a - net: stmmac: fix notifier registration
+            Commit: 0709ff7f404e - net: stmmac: fix notifier registration
 
 The results of these automated tests are provided below.
 
@@ -26,12 +26,11 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481814
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481835
 
 One or more kernel tests failed:
 
     s390x:
-     ? stress: stress-ng
      ? LTP
 
     ppc64le:
@@ -82,15 +81,6 @@ We booted each kernel and ran the following tests:
   aarch64:
     Host 1:
        ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
@@ -131,6 +121,18 @@ We booted each kernel and ran the following tests:
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? stress: stress-ng
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? Storage blktests
 
   ppc64le:
     Host 1:
@@ -187,12 +189,6 @@ We booted each kernel and ran the following tests:
   s390x:
     Host 1:
        ? Boot test
-       ? selinux-policy: serge-testsuite
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
@@ -228,8 +224,49 @@ We booted each kernel and ran the following tests:
        ? ??? Usex - version 1.9-29
        ? ??? storage: dm/common
 
+    Host 2:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? selinux-policy: serge-testsuite
+       ??? stress: stress-ng
+       ? ? Storage blktests
+
+    Host 3:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? selinux-policy: serge-testsuite
+       ??? stress: stress-ng
+       ? ??? Storage blktests
+
+    Host 4:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ??? Boot test
+       ??? selinux-policy: serge-testsuite
+       ??? stress: stress-ng
+       ? ??? Storage blktests
+
   x86_64:
     Host 1:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -273,11 +310,7 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 3:
+    Host 4:
        ? Boot test
        ? xfstests - ext4
        ? xfstests - xfs
@@ -289,10 +322,6 @@ We booted each kernel and ran the following tests:
        ? ? IPMI driver test
        ? ? IPMItool loop stress test
        ? ? Storage blktests
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
