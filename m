@@ -1,33 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Mar 2020 17:10:01 +0100
-Subject: [LTP] [PATCH] travis: Temporarily disable fedora:lastest
-In-Reply-To: <7c240f66-a65b-4444-b4a2-7569f52e5496@cn.fujitsu.com>
-References: <1583834577-21695-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <7c240f66-a65b-4444-b4a2-7569f52e5496@cn.fujitsu.com>
-Message-ID: <20200310161001.GA29541@dell5510>
+Date: Tue, 10 Mar 2020 17:44:41 +0100
+Subject: [LTP] [PATCH 2/2] nfs: Detect disabled UDP
+In-Reply-To: <21baaca8-7c4e-7c11-2ff3-d10cf3e492e5@oracle.com>
+References: <20200305192716.10313-1-pvorel@suse.cz>
+ <20200305192716.10313-2-pvorel@suse.cz>
+ <21baaca8-7c4e-7c11-2ff3-d10cf3e492e5@oracle.com>
+Message-ID: <20200310164441.GC29541@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Hi Alexey,
 
-> I also test fedora:32 fedora:33 in my ltp fork[1], they are all pass.
-> fedora:31 and fedora:latest are failed.
+> > +	tst_rhost_run -c "grep -q '^[[:space:]]*udp[[:space:]]*=[[:space:]]*y' /etc/nfs.conf $config"
 
-> @Petr, You often modify travis code, if you have some advise, please let me
-> know.
-Thank you for taking care.
+> Looks like the pattern doesn't detect when udp enabled by
+> default and the config has commented default values,
+> i.e. '# udp=y'.
 
-I hoped it'd get fixed soon, but it haven't so far :(
-Generally I'd prefer to use rawhide (which is 33, see [2]), but until it's fixed
-let's use 32 (upcomming release).
+> grep '^[# ]*udp *= *y' /etc/nfs.conf $config
+Correct, this should be covered.
+I'll send v2 with your much simpler regex, although I hoped we'd have something
+error prone than just relying on content of config files. But IMHO checking
+nfs-utils version cannot be easily done:
 
-Please send patch today, or I'll commit it myself tonight.
+1) exportfs (which we require) does not print version (could be checked in
+strings $(which exportfs), but we don't want unnecessary string dependency).
+2) checking nfsstat (which will be probably presented on the server and even we
+don't require it's presented, via if tst_cmd_available nfsstat && ...) can be
+done, but we probably don't want to bother to parse it's version (UDP was
+disabled in fbd7623d, which was in added in 2.1.2-rc2 and actually released in 2.2.1).
 
 Kind regards,
 Petr
-
-> [1]https://github.com/xuyang0410/ltp/commits/settimeofday_builderror
-[2] https://hub.docker.com/_/fedora
