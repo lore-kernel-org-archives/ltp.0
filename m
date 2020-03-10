@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 10 Mar 2020 04:42:21 -0000
+Date: Tue, 10 Mar 2020 05:37:31 -0000
 Subject: [LTP] =?utf-8?q?=E2=9D=8C_PANICKED=3A_Test_report_for_kernel_5?=
- =?utf-8?q?=2E5=2E9-rc1-b413bdd=2Ecki_=28stable=29?=
-Message-ID: <cki.A98BE23923.JR57MMFIVA@redhat.com>
+ =?utf-8?q?=2E5=2E9-rc1-8bd9a9c=2Ecki_=28stable=29?=
+Message-ID: <cki.701DFD96A5.TGME6ECGFW@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: b413bdd9128e - Linux 5.5.9-rc1
+            Commit: 8bd9a9cf0c14 - Linux 5.5.9-rc1
 
 The results of these automated tests are provided below.
 
@@ -26,14 +26,16 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/09/480649
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/09/480605
 
 One or more kernel tests failed:
 
     s390x:
+     ? stress: stress-ng
      ? LTP
 
     ppc64le:
+     ? LTP
      ? audit: audit testsuite test
 
     aarch64:
@@ -79,13 +81,8 @@ We booted each kernel and ran the following tests:
 
   aarch64:
     Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
        ? Boot test
-       ??? Podman system integration test - as root
+       ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
        ? Loopdev Sanity
@@ -137,15 +134,21 @@ We booted each kernel and ran the following tests:
 
   ppc64le:
     Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
        ? Boot test
-       ??? Podman system integration test - as root
-       ??? Podman system integration test - as user
-       ??? LTP
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ? IPMItool loop stress test
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test - as root
+       ? Podman system integration test - as user
+       ? LTP
        ? Loopdev Sanity
        ? Memory function: memfd_create
        ? AMTU (Abstract Machine Test Utility)
@@ -181,23 +184,12 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
   s390x:
     Host 1:
        ? Boot test
        ? selinux-policy: serge-testsuite
        ? stress: stress-ng
-       ? ? Storage blktests
+       ? ??? Storage blktests
 
     Host 2:
        ? Boot test
@@ -238,6 +230,14 @@ We booted each kernel and ran the following tests:
 
   x86_64:
     Host 1:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -281,7 +281,7 @@ We booted each kernel and ran the following tests:
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
 
-    Host 2:
+    Host 4:
        ? Boot test
        ? xfstests - ext4
        ? xfstests - xfs
@@ -293,14 +293,6 @@ We booted each kernel and ran the following tests:
        ? ? IPMI driver test
        ? ? IPMItool loop stress test
        ? ? Storage blktests
-
-    Host 3:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 4:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
