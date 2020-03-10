@@ -1,62 +1,75 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 10 Mar 2020 16:01:17 +0300
-Subject: [LTP] [PATCH 1/2] nfs_lib: Unify testing on netns
-In-Reply-To: <20200305192716.10313-1-pvorel@suse.cz>
+Date: Tue, 10 Mar 2020 16:34:22 +0300
+Subject: [LTP] [PATCH 2/2] nfs: Detect disabled UDP
+In-Reply-To: <20200305192716.10313-2-pvorel@suse.cz>
 References: <20200305192716.10313-1-pvorel@suse.cz>
-Message-ID: <5b00a232-d175-9cb1-ba20-ccd5d6e93cdc@oracle.com>
+ <20200305192716.10313-2-pvorel@suse.cz>
+Message-ID: <21baaca8-7c4e-7c11-2ff3-d10cf3e492e5@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
 On 05.03.2020 22:27, Petr Vorel wrote:
-> There is no need to run tests on opposite client/server when using
-> $TST_USE_NETNS based setup. It's enough just to set lhost IP address.
-> This simplifies code a bit.
-
-It changes the testcase, this way nfs traffic will go through
-lo interface, the test won't use ltp_ns_veth* and netns.
-
-We could add the knob for this scenario with LTP_NFS_USE_NETNS={1|0}?
-
+> nfs-utils disabled serving NFS over UDP in version 2.2.1,
+> which produce TBROK:
+> 
+> nfs01 1 TBROK: 'mount -t nfs -o proto=udp,vers=3
+> 10.0.0.2:/tmp/LTP_nfs01.3pixnljzEv/3/udp /tmp/LTP_nfs01.3pixnljzEv/3/0'
+> failed on '': 'mount.nfs: requested NFS version or transport protocol is
+> not supported'
+> 
+> Detect UDP configuration (parsing all configs) and return TCONF when disabled.
+> 
+> NOTE: Debian based distros still use older version, once it upgrades, it
+> will might keep using current configuration files
+> (/etc/default/nfs-kernel-server, /etc/default/nfs-common), therefore
+> code might need to be adjusted.
 > 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 13 -------------
->  1 file changed, 13 deletions(-)
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
 > diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index 66f2fb038..2d5535dc5 100644
+> index 2d5535dc5..2ba79dfdd 100644
 > --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
 > +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -50,14 +50,6 @@ nfs_setup_server()
->  {
->  	local export_cmd="exportfs -i -o fsid=$$,no_root_squash,rw *:$remote_dir"
->  
-> -	if [ -n "$LTP_NETNS" ]; then
-> -		if [ ! -d $remote_dir ]; then
-> -			mkdir -p $remote_dir
-> -			ROD $export_cmd
-> -		fi
-> -		return
-> -	fi
-> -
->  	if ! tst_rhost_run -c "test -d $remote_dir"; then
->  		tst_rhost_run -s -c "mkdir -p $remote_dir; $export_cmd"
->  	fi
-> @@ -79,11 +71,6 @@ nfs_mount()
->  	local mnt_cmd="mount -t nfs $opts $mount_dir $local_dir"
->  
->  	tst_res TINFO "Mounting NFS: $mnt_cmd"
-> -	if [ -n "$LTP_NETNS" ]; then
-> -		tst_rhost_run -s -c "$mnt_cmd"
-> -		return
-> -	fi
-> -
->  	ROD $mnt_cmd
+> @@ -46,6 +46,15 @@ get_socket_type()
+>  	done
 >  }
 >  
+> +nfs_server_udp_enabled()
+> +{
+> +	local config f
+> +
+> +	tst_rhost_run -c "[ -f /etc/nfs.conf ]" || return 0
+> +	config=$(tst_rhost_run -c 'for f in $(grep ^include.*= '/etc/nfs.conf' | cut -d = -f2); do [ -f $f ] && printf "$f "; done')
+> +	tst_rhost_run -c "grep -q '^[[:space:]]*udp[[:space:]]*=[[:space:]]*y' /etc/nfs.conf $config"
+
+Looks like the pattern doesn't detect when udp enabled by
+default and the config has commented default values,
+i.e. '# udp=y'.
+
+grep '^[# ]*udp *= *y' /etc/nfs.conf $config
+
+
+> +}
+> +
+>  nfs_setup_server()
+>  {
+>  	local export_cmd="exportfs -i -o fsid=$$,no_root_squash,rw *:$remote_dir"
+> @@ -93,6 +102,10 @@ nfs_setup()
+>  		type=$(get_socket_type $n)
+>  		tst_res TINFO "setup NFSv$i, socket type $type"
+>  
+> +		if [ "$type" = "udp" ] && ! nfs_server_udp_enabled; then
+> +			tst_brk TCONF "UDP support disabled on NFS server"
+> +		fi
+> +
+>  		local_dir="$TST_TMPDIR/$i/$n"
+>  		remote_dir="$TST_TMPDIR/$i/$type"
+>  		mkdir -p $local_dir
 > 
 
