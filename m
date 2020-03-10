@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 10 Mar 2020 14:34:43 -0000
+Date: Tue, 10 Mar 2020 14:42:16 -0000
 Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E5=2E8-306da64=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.15DCA87EEB.2EMYDAGGQ3@redhat.com>
+ =?utf-8?q?5=2E5=2E8-d907b3e=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.E096250EEB.E8FSMV1K0G@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 306da6441a5b - ASoC: intel: skl: Fix possible buffer overflow in debug outputs
+            Commit: d907b3e6c735 - ASoC: intel: skl: Fix possible buffer overflow in debug outputs
 
 The results of these automated tests are provided below.
 
@@ -26,7 +26,7 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481393
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481486
 
 One or more kernel tests failed:
 
@@ -34,7 +34,6 @@ One or more kernel tests failed:
      ? LTP
 
     ppc64le:
-     ? LTP
      ? audit: audit testsuite test
 
     aarch64:
@@ -81,6 +80,15 @@ We booted each kernel and ran the following tests:
   aarch64:
     Host 1:
        ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
@@ -121,18 +129,6 @@ We booted each kernel and ran the following tests:
        ? ? iotop: sanity
        ? ? Usex - version 1.9-29
        ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
 
   ppc64le:
     Host 1:
@@ -194,9 +190,14 @@ We booted each kernel and ran the following tests:
        ? ? Storage blktests
 
     Host 2:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
        ? Boot test
        ? Podman system integration test - as root
-       ? Podman system integration test - as user
+       ??? Podman system integration test - as user
        ? LTP
        ??? Loopdev Sanity
        ??? Memory function: memfd_create
@@ -233,13 +234,29 @@ We booted each kernel and ran the following tests:
   x86_64:
     Host 1:
        ? Boot test
-       ? Storage SAN device stress - megaraid_sas
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? stress: stress-ng
+       ? ? IOMMU boot test
+       ? ? Storage blktests
 
     Host 2:
        ? Boot test
        ? Storage SAN device stress - mpt3sas driver
 
     Host 3:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 4:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -271,30 +288,17 @@ We booted each kernel and ran the following tests:
        ? ALSA PCM loopback test
        ? ALSA Control (mixer) Userspace Element test
        ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 4:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
+       ??? trace: ftrace/tracer
+       ? ??? CIFS Connectathon
+       ? ??? POSIX pjd-fstest suites
+       ? ??? jvm - DaCapo Benchmark Suite
+       ? ??? jvm - jcstress tests
+       ? ??? Memory function: kaslr
+       ? ??? LTP: openposix test suite
+       ? ??? Networking vnic: ipvlan/basic
+       ? ??? iotop: sanity
+       ? ??? Usex - version 1.9-29
+       ? ??? storage: dm/common
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
