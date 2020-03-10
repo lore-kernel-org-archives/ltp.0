@@ -1,33 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Mar 2020 16:46:33 +0100
-Subject: [LTP] [PATCH 1/2] nfs_lib: Unify testing on netns
-In-Reply-To: <5b00a232-d175-9cb1-ba20-ccd5d6e93cdc@oracle.com>
-References: <20200305192716.10313-1-pvorel@suse.cz>
- <5b00a232-d175-9cb1-ba20-ccd5d6e93cdc@oracle.com>
-Message-ID: <20200310154633.GA25942@dell5510>
+Date: Tue, 10 Mar 2020 17:10:01 +0100
+Subject: [LTP] [PATCH] travis: Temporarily disable fedora:lastest
+In-Reply-To: <7c240f66-a65b-4444-b4a2-7569f52e5496@cn.fujitsu.com>
+References: <1583834577-21695-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <7c240f66-a65b-4444-b4a2-7569f52e5496@cn.fujitsu.com>
+Message-ID: <20200310161001.GA29541@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Xu,
 
-thanks for your review!
+> I also test fedora:32 fedora:33 in my ltp fork[1], they are all pass.
+> fedora:31 and fedora:latest are failed.
 
-> > There is no need to run tests on opposite client/server when using
-> > $TST_USE_NETNS based setup. It's enough just to set lhost IP address.
-> > This simplifies code a bit.
+> @Petr, You often modify travis code, if you have some advise, please let me
+> know.
+Thank you for taking care.
 
-> It changes the testcase, this way nfs traffic will go through
-> lo interface, the test won't use ltp_ns_veth* and netns.
-Sorry, I didn't notice this.
-BTW code nfs_setup_server could be run by tst_rhost_run() (code simplification),
-but that's a detail.
+I hoped it'd get fixed soon, but it haven't so far :(
+Generally I'd prefer to use rawhide (which is 33, see [2]), but until it's fixed
+let's use 32 (upcomming release).
 
-> We could add the knob for this scenario with LTP_NFS_USE_NETNS={1|0}?
-Is this scenario useful? It does not look to me as a real world scenario,
-but if I'm wrong let's add it :).
+Please send patch today, or I'll commit it myself tonight.
 
 Kind regards,
 Petr
+
+> [1]https://github.com/xuyang0410/ltp/commits/settimeofday_builderror
+[2] https://hub.docker.com/_/fedora
