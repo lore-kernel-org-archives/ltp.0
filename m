@@ -1,36 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 11 Mar 2020 21:11:00 +0800
-Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
-In-Reply-To: <CAEemH2fqKvEU8+FBvTunv8VCOzXf0SMCHe6Ky9neFKQX51cZ7g@mail.gmail.com>
-References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
- <20200306124546.GA3375@rei.lan>
- <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
- <20200311102620.GB3802@rei.lan>
- <CAEemH2fqKvEU8+FBvTunv8VCOzXf0SMCHe6Ky9neFKQX51cZ7g@mail.gmail.com>
-Message-ID: <CAEemH2fqcnETtW47kB5BNGyf8_F11zD8Y_RpDaNOhSmEGHJYtA@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 11 Mar 2020 17:35:39 +0300
+Subject: [LTP] [PATCH 1/2] nfs_lib: Unify testing on netns
+In-Reply-To: <20200310154633.GA25942@dell5510>
+References: <20200305192716.10313-1-pvorel@suse.cz>
+ <5b00a232-d175-9cb1-ba20-ccd5d6e93cdc@oracle.com>
+ <20200310154633.GA25942@dell5510>
+Message-ID: <6f07302a-d36b-e824-5f7f-747db510fb75@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Mar 11, 2020 at 8:45 PM Li Wang <liwang@redhat.com> wrote:
+Hi Petr,
+On 10.03.2020 18:46, Petr Vorel wrote:
+> Hi Alexey,
+> 
+> thanks for your review!
+> 
+>>> There is no need to run tests on opposite client/server when using
+>>> $TST_USE_NETNS based setup. It's enough just to set lhost IP address.
+>>> This simplifies code a bit.
+> 
+>> It changes the testcase, this way nfs traffic will go through
+>> lo interface, the test won't use ltp_ns_veth* and netns.
+> Sorry, I didn't notice this.
+> BTW code nfs_setup_server could be run by tst_rhost_run() (code simplification),
 
-> ...
->>
->> int tst_is_mntpoint_at_tmpdir(const char *path);
->>
->
-> Hmm, the return value shouldn't the full right path, why return int here?
-> or I misunderstand here?
->
->
-s/shouldn't/should
+Right
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200311/538c16c8/attachment.htm>
+> but that's a detail.
+> 
+>> We could add the knob for this scenario with LTP_NFS_USE_NETNS={1|0}?
+> Is this scenario useful? It does not look to me as a real world scenario,
+> but if I'm wrong let's add it :).
+
+Perhaps, it can be useful to find out if the test failure
+related to veth/netns...
+
+> 
+> Kind regards,
+> Petr
+> 
+
