@@ -1,55 +1,221 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Mar 2020 11:26:20 +0100
-Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
-In-Reply-To: <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
-References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
- <20200306124546.GA3375@rei.lan>
- <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
-Message-ID: <20200311102620.GB3802@rei.lan>
+From: Paolo Valente <paolo.valente@linaro.org>
+Date: Wed, 11 Mar 2020 12:28:11 +0100
+Subject: [LTP] 
+ =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E6?=
+ =?utf-8?q?=2E0-rc4-61a0925=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
+In-Reply-To: <24e4518f-7035-f8f8-30d0-97f0836f174c@redhat.com>
+References: <cki.FEFA879F6B.TFTZ93YIF0@redhat.com>
+ <ba09351f-0a5a-824a-dbf2-021360581cd7@redhat.com>
+ <86A42362-D355-4885-AC68-B43E46FBB109@linaro.org>
+ <24e4518f-7035-f8f8-30d0-97f0836f174c@redhat.com>
+Message-ID: <DAD068BF-14B4-4BA9-BFB8-60059F4249FC@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Also this does not even handle the case that the command is missing.
-> >
-> > Looking at the v4 version, all we need is to correctly parse each line
-> > from from /proc/mounts. I would just use strsep() with space as a
-> > delimited and took first token that starts with a slash i.e. '/', then
-> > we can just strcmp() it against the path. Or do I miss something?
-> >
+Hi,
+hoping this is a convenient solution for you, I have attached a
+compressed archives with a pair of patches.  The first patch just does
+a lot of checks while BFQ runs (BUG_ONs must be turned on for this to
+work), while the second patch is a tentative fix.
+
+Looking forward to your feedback,
+Paolo
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: debug_patches_for_5.6.tgz
+Type: application/octet-stream
+Size: 29746 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200311/6b8c5b8b/attachment-0001.obj>
+-------------- next part --------------
+
+
+> Il giorno 9 mar 2020, alle ore 18:09, Rachel Sibley <rasibley@redhat.com> ha scritto:
 > 
-> I'm afraid strcmp() can not satisfy the requirement for us. As you know LTP
-> creates the MNTPOINT in temp dir that means it could not accurately match
-> the string path which extracts from /proc/mounts with a slash.
 > 
-> e.g
-> #define MNTPOINT "fallocate"
-> ...
-> /dev/loop4 on /tmp/FPp7kh/fallocate type xfs
-> (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> ...
-> strcmp("/tmp/FPp7kh/fallocate", MNTPOINT) will never ruturn 0 to us.
 > 
-> What I can think of is to use strrchr() to cut the string after last '/',
-> but that can only work for test mount fs in LTP ways. Other situations
-> might not satisfy.
+> On 3/9/20 12:42 PM, Paolo Valente wrote:
+>> Hi Rachel,
+>> IIUC, you can reproduce this bug reliably. If so, I'd need you to test a debugging patch (on top of one of the offending kernels).
+> 
+> Hi Paolo,
+> 
+> Yes seems we have seen it pretty consistently in the last three reports, but I'm cloning the job to be sure we can
+> reproduce reliably. In the mean time, feel free to send me a pointer to your debugging patch so I can retry with
+> the patch applied.
+> 
+> Thank you,
+> Rachel
+> 
+>> Looking forward to your feedback,
+>> Paolo
+>>> Il giorno 9 mar 2020, alle ore 15:27, Rachel Sibley <rasibley@redhat.com> ha scritto:
+>>> 
+>>> (cc'ing linux-block@vger.kernel.org)
+>>> 
+>>> Hello,
+>>> 
+>>> We are seeing a kernel panic triggered with LTP and xfstests against a recent commit for mainline,
+>>> wanted to share in case it's not already known.
+>>> 
+>>> Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>> Commit: 61a09258f2e5 - Merge tag 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma
+>>> 
+>>> We have also seen it with 2c523b344dfa and 378fee2e6b12 commits as well.
+>>> 
+>>> LTP: https://cki-artifacts.s3.us-east-2.amazonaws.com/datawarehouse/2020/03/08/477469/x86_64_1_console.log
+>>> xfstests: https://cki-artifacts.s3.us-east-2.amazonaws.com/datawarehouse/2020/03/08/477469/x86_64_4_console.log
+>>> 
+>>> [-- MARK -- Sun Mar  8 02:45:00 2020]
+>>> [  762.315610] BUG: kernel NULL pointer dereference, address: 0000000000000158
+>>> [  762.323385] #PF: supervisor read access in kernel mode
+>>> [  762.329119] #PF: error_code(0x0000) - not-present page
+>>> [  762.334853] PGD 0 P4D 0
+>>> [  762.337680] Oops: 0000 [#1] SMP PTI
+>>> [  762.341575] CPU: 9 PID: 87 Comm: kworker/9:1 Not tainted 5.6.0-rc4-61a0925.cki #1
+>>> [  762.349927] Hardware name: Cisco Systems, Inc. UCS-E160DP-M1/K9/UCS-E160DP-M1/K9, BIOS UCSED.1.5.0.2.051520131757 05/15/2013
+>>> [  762.362453] Workqueue: cgroup_destroy css_killed_work_fn
+>>> [  762.368387] RIP: 0010:bfq_bfqq_expire+0x1c/0x940
+>>> [  762.373540] Code: 01 00 00 c7 80 f8 00 00 00 01 00 00 00 c3 66 66 66 66 90 41 57 41 56 41 55 41 54 41 89 cc 55 48 89 fd 53 48 89 f3 48 83 ec 28 <8b> be 58 01 00 00 65 48 8b 04 25 28 00 00 00 48 89 44 24 20 31 c0
+>>> [  762.394500] RSP: 0018:ffff9927c03bbd50 EFLAGS: 00010086
+>>> [  762.400331] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
+>>> [  762.408301] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8965a3913800
+>>> [  762.416270] RBP: ffff8965a3913800 R08: ffff896592d41098 R09: ffff89657aa8df00
+>>> [  762.424233] R10: 0000000000000000 R11: ffff89657aa8df00 R12: 0000000000000004
+>>> [  762.432200] R13: ffff89659f0cd9b0 R14: ffff8965a3913bf0 R15: ffff89659f0cd898
+>>> [  762.440175] FS:  0000000000000000(0000) GS:ffff8965a7c40000(0000) knlGS:0000000000000000
+>>> [  762.449211] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [  762.455622] CR2: 0000000000000158 CR3: 000000065afc6003 CR4: 00000000000606e0
+>>> [  762.463599] Call Trace:
+>>> [  762.466341]  ? bfq_idle_extract+0x40/0xb0
+>>> [  762.470821]  bfq_bfqq_move+0x14f/0x160
+>>> [  762.475011]  bfq_pd_offline+0xd3/0xf0
+>>> [  762.479112]  blkg_destroy+0x52/0xf0
+>>> [  762.483005]  blkcg_destroy_blkgs+0x4f/0xa0
+>>> [  762.487582]  css_killed_work_fn+0x4d/0xd0
+>>> [  762.492066]  process_one_work+0x1b5/0x360
+>>> [  762.496547]  worker_thread+0x50/0x3c0
+>>> [  762.500641]  kthread+0xf9/0x130
+>>> [  762.504153]  ? process_one_work+0x360/0x360
+>>> [  762.508813]  ? kthread_park+0x90/0x90
+>>> [  762.512909]  ret_from_fork+0x35/0x40
+>>> 
+>>> Thanks,
+>>> Rachel
+>>> 
+>>> On 3/7/20 9:59 PM, CKI Project wrote:
+>>>> Hello,
+>>>> We ran automated tests on a recent commit from this kernel tree:
+>>>>        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>             Commit: 61a09258f2e5 - Merge tag 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma
+>>>> The results of these automated tests are provided below.
+>>>>     Overall result: FAILED (see details below)
+>>>>              Merge: OK
+>>>>            Compile: OK
+>>>>              Tests: FAILED
+>>>> All kernel binaries, config files, and logs are available for download here:
+>>>>   https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/08/477469
+>>>> One or more kernel tests failed:
+>>>>     x86_64:
+>>>>      ? LTP
+>>>>      ? xfstests - ext4
+>>>> We hope that these logs can help you find the problem quickly. For the full
+>>>> detail on our testing procedures, please scroll to the bottom of this message.
+>>>> Please reply to this email if you have any questions about the tests that we
+>>>> ran or if you have any suggestions on how to make future tests more effective.
+>>>>         ,-.   ,-.
+>>>>        ( C ) ( K )  Continuous
+>>>>         `-',-.`-'   Kernel
+>>>>           ( I )     Integration
+>>>>            `-'
+>>>> ______________________________________________________________________________
+>>>> Compile testing
+>>>> ---------------
+>>>> We compiled the kernel for 1 architecture:
+>>>>     x86_64:
+>>>>       make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+>>>> Hardware testing
+>>>> ----------------
+>>>> We booted each kernel and ran the following tests:
+>>>>   x86_64:
+>>>>     Host 1:
+>>>>        ? Boot test
+>>>>        ? Podman system integration test - as root
+>>>>        ? Podman system integration test - as user
+>>>>        ? LTP
+>>>>        ??? Loopdev Sanity
+>>>>        ??? Memory function: memfd_create
+>>>>        ??? AMTU (Abstract Machine Test Utility)
+>>>>        ??? Networking bridge: sanity
+>>>>        ??? Ethernet drivers sanity
+>>>>        ??? Networking MACsec: sanity
+>>>>        ??? Networking socket: fuzz
+>>>>        ??? Networking sctp-auth: sockopts test
+>>>>        ??? Networking: igmp conformance test
+>>>>        ??? Networking route: pmtu
+>>>>        ??? Networking route_func - local
+>>>>        ??? Networking route_func - forward
+>>>>        ??? Networking TCP: keepalive test
+>>>>        ??? Networking UDP: socket
+>>>>        ??? Networking tunnel: geneve basic test
+>>>>        ??? Networking tunnel: gre basic
+>>>>        ??? L2TP basic test
+>>>>        ??? Networking tunnel: vxlan basic
+>>>>        ??? Networking ipsec: basic netns - transport
+>>>>        ??? Networking ipsec: basic netns - tunnel
+>>>>        ??? audit: audit testsuite test
+>>>>        ??? httpd: mod_ssl smoke sanity
+>>>>        ??? tuned: tune-processes-through-perf
+>>>>        ??? pciutils: sanity smoke test
+>>>>        ??? ALSA PCM loopback test
+>>>>        ??? ALSA Control (mixer) Userspace Element test
+>>>>        ??? storage: SCSI VPD
+>>>>        ??? trace: ftrace/tracer
+>>>>        ? ??? CIFS Connectathon
+>>>>        ? ??? POSIX pjd-fstest suites
+>>>>        ? ??? jvm - DaCapo Benchmark Suite
+>>>>        ? ??? jvm - jcstress tests
+>>>>        ? ??? Memory function: kaslr
+>>>>        ? ??? LTP: openposix test suite
+>>>>        ? ??? Networking vnic: ipvlan/basic
+>>>>        ? ??? iotop: sanity
+>>>>        ? ??? Usex - version 1.9-29
+>>>>        ? ??? storage: dm/common
+>>>>     Host 2:
+>>>>        ? Boot test
+>>>>        ? Storage SAN device stress - mpt3sas driver
+>>>>     Host 3:
+>>>>        ? Boot test
+>>>>        ? Storage SAN device stress - megaraid_sas
+>>>>     Host 4:
+>>>>        ? Boot test
+>>>>        ? xfstests - ext4
+>>>>        ??? xfstests - xfs
+>>>>        ??? selinux-policy: serge-testsuite
+>>>>        ??? lvm thinp sanity
+>>>>        ??? storage: software RAID testing
+>>>>        ??? stress: stress-ng
+>>>>        ? ??? IOMMU boot test
+>>>>        ? ??? IPMI driver test
+>>>>        ? ??? IPMItool loop stress test
+>>>>        ? ??? power-management: cpupower/sanity test
+>>>>        ? ??? Storage blktests
+>>>>   Test sources: https://github.com/CKI-project/tests-beaker
+>>>>     ? Pull requests are welcome for new tests or improvements to existing tests!
+>>>> Waived tests
+>>>> ------------
+>>>> If the test run included waived tests, they are marked with ?. Such tests are
+>>>> executed but their results are not taken into account. Tests are waived when
+>>>> their results are not reliable enough, e.g. when they're just introduced or are
+>>>> being fixed.
+>>>> Testing timeout
+>>>> ---------------
+>>>> We aim to provide a report within reasonable timeframe. Tests that haven't
+>>>> finished running yet are marked with ?.
+>>> 
+> 
 
-Hmm, for that we have to have compose the path for the comparsion
-anyways, since unless we pass an absoule path we can never be user if we
-have a right match or not. There may be leftover mount points from a
-failed tests that have faile to cleanup properly as well.
-
-So I guess that we need one more function, with tmpdir in name, that
-would compose the right path for us and then call the tst_is_mntpoint().
-
-I would have called that:
-
-int tst_is_mntpoint_at_tmpdir(const char *path);
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
