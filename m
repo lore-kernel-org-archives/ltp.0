@@ -1,50 +1,43 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 11 Mar 2020 12:52:12 +0530
-Subject: [LTP] [PATCH V5 02/10] lapi/fsmount.h: Add
- fsopen_supported_by_kernel()
-In-Reply-To: <20200306124749.GB3375@rei.lan>
+Date: Wed, 11 Mar 2020 12:55:02 +0530
+Subject: [LTP] [PATCH V5 04/10] syscalls/fsopen: New tests
+In-Reply-To: <20200306131046.GC3375@rei.lan>
 References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <21026a48ffa25ed8b09616cb939dc417459d2d74.1582779464.git.viresh.kumar@linaro.org>
- <20200306124749.GB3375@rei.lan>
-Message-ID: <20200311072212.hsi2euwmvwrxuenw@vireshk-i7>
+ <495a95969c63d67868b82d2b15bd663f19780d0e.1582779464.git.viresh.kumar@linaro.org>
+ <20200306131046.GC3375@rei.lan>
+Message-ID: <20200311072502.hpj5bycslu6ygk74@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06-03-20, 13:47, Cyril Hrubis wrote:
-> On Thu, Feb 27, 2020 at 10:44:30AM +0530, Viresh Kumar wrote:
-> > Add a helper to check if the fsmount() related syscalls are supported by
-> > the kernel or not.
-> > 
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> > Acked-by: Li Wang <liwang@redhat.com>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  include/lapi/fsmount.h | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-> > index 87f2f229c371..a6a24904e66d 100644
-> > --- a/include/lapi/fsmount.h
-> > +++ b/include/lapi/fsmount.h
-> > @@ -130,5 +130,14 @@ enum fsconfig_command {
-> >  
-> >  #endif /* OPEN_TREE_CLONE */
-> >  
-> > +void fsopen_supported_by_kernel(void)
-> > +{
-> > +	if ((tst_kvercmp(5, 2, 0)) < 0) {
-> > +		/* Check if the syscall is backported on an older kernel */
-> > +		TEST(syscall(__NR_fsopen, NULL, 0));
-> > +		if (TST_RET == -1 && TST_ERR == ENOSYS)
-> > +			tst_brk(TCONF, "Test not supported on kernel version < v5.2");
+On 06-03-20, 14:10, Cyril Hrubis wrote:
+> Hi!
+> > +	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
+> > +			MOVE_MOUNT_F_EMPTY_PATH));
+> > +
+> > +	SAFE_CLOSE(fsmfd);
+> > +
+> > +	if (TST_RET == -1) {
+> > +		tst_res(TFAIL | TERRNO, "move_mount() failed");
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (tst_is_mounted(MNTPOINT))
+> > +		tst_res(TPASS, "%s: fsopen() passed", tc->name);
+> > +
+> > +	SAFE_UMOUNT(MNTPOINT);
 > 
-> 		Shouldn't we close the TST_RET here?
+> I gues sthat the SAFE_UMOUNT() should be inside of the if here and in
+> the rest of the testcases.
 
-I didn't do that in the else part as this call should never succeed
-and it will be a bug if it succeeds. Do you still want me to do it ?
+Petr had a similar comment earlier and here is my explanation to it.
+
+There should always be a unmount() in response to a successful call to
+mount() APIs. What if, because of some other bugs in the kernel or
+testsuite, tst_is_mounted() returns 0? We should still do the
+unmount() part as the mount() API didn't return an error.
 
 -- 
 viresh
