@@ -1,65 +1,145 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 11 Mar 2020 13:01:13 +0530
-Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
-In-Reply-To: <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
-References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
- <20200306124546.GA3375@rei.lan>
- <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
-Message-ID: <20200311073113.q7e7jauldjyizz2q@vireshk-i7>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 11 Mar 2020 18:15:10 +0800
+Subject: [LTP] [PATCH 1/3] lib/tst_hugepage: Use uniform data type
+Message-ID: <1583921712-9008-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07-03-20, 20:42, Li Wang wrote:
-> On Fri, Mar 6, 2020 at 8:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-> 
-> > ...
-> > >
-> > > +int tst_is_mounted(const char *path)
-> > > +{
-> > > +     char cmd[PATH_MAX];
-> > > +     int ret;
-> > > +
-> > > +     snprintf(cmd, sizeof(cmd), "mountpoint -q %s", path);
-> > > +     ret = tst_system(cmd);
-> >
-> > I'm not sure that depending on mountpoint command is right choice, there
-> > are all kinds of embedded systems out there that may be missing it.
-> 
-> 
-> Good point, we'd better avoid involving other packages as the dependence of
-> LTP.
-> 
-> 
-> > Also this does not even handle the case that the command is missing.
-> >
-> > Looking at the v4 version, all we need is to correctly parse each line
-> > from from /proc/mounts. I would just use strsep() with space as a
-> > delimited and took first token that starts with a slash i.e. '/', then
-> > we can just strcmp() it against the path. Or do I miss something?
-> >
-> 
-> I'm afraid strcmp() can not satisfy the requirement for us. As you know LTP
-> creates the MNTPOINT in temp dir that means it could not accurately match
-> the string path which extracts from /proc/mounts with a slash.
-> 
-> e.g
-> #define MNTPOINT "fallocate"
-> ...
-> /dev/loop4 on /tmp/FPp7kh/fallocate type xfs
-> (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
-> ...
-> strcmp("/tmp/FPp7kh/fallocate", MNTPOINT) will never ruturn 0 to us.
-> 
-> What I can think of is to use strrchr() to cut the string after last '/',
-> but that can only work for test mount fs in LTP ways. Other situations
-> might not satisfy.
+From man-page[1] and kernel code[2], HugePages_Total and free are
+both "unsigned long". I guess there is no reason for not using it
+even though we don't have so larger memory to support it.
 
-@Cyril, can we please finalize what you guys want me to do here ? I
-don't really want to repost the patch, which still has issues :)
+[1]https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man5/proc.5#n3696
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/hugetlb.c#n3055
 
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/tst_hugepage.h    |  4 ++--
+ include/tst_test.h        |  2 +-
+ lib/newlib_tests/test20.c | 12 ++++++------
+ lib/tst_hugepage.c        | 19 +++++++++----------
+ 4 files changed, 18 insertions(+), 19 deletions(-)
+
+diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+index 10e0eaf47..8600b3adb 100644
+--- a/include/tst_hugepage.h
++++ b/include/tst_hugepage.h
+@@ -15,7 +15,7 @@
+  *
+  * Note: this depend on the status of system memory fragmentation.
+  */
+-int tst_request_hugepages(int hpages);
++unsigned long tst_request_hugepages(unsigned long hpages);
+ 
+ /*
+  * This variable is used for recording the number of hugepages which system can
+@@ -24,6 +24,6 @@ int tst_request_hugepages(int hpages);
+  *
+  * If system does not support hugetlb, then it will be set to 0.
+  */
+-extern unsigned int tst_hugepages;
++extern unsigned long tst_hugepages;
+ 
+ #endif /* TST_HUGEPAGE_H */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 8508c2e38..84b6a940f 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -163,7 +163,7 @@ struct tst_test {
+ 	 *
+ 	 * Also, we do cleanup and restore work for the hpages resetting automatically.
+ 	 */
+-	unsigned int request_hugepages;
++	unsigned long request_hugepages;
+ 
+ 	/*
+ 	 * If set non-zero denotes number of test variant, the test is executed
+diff --git a/lib/newlib_tests/test20.c b/lib/newlib_tests/test20.c
+index 92e230976..53317b669 100644
+--- a/lib/newlib_tests/test20.c
++++ b/lib/newlib_tests/test20.c
+@@ -18,22 +18,22 @@ static const char * const save_restore[] = {
+ 
+ static void do_test(void) {
+ 
+-	int val, hpages;
++	unsigned long val, hpages;
+ 
+-	tst_res(TINFO, "tst_hugepages = %u", tst_hugepages);
++	tst_res(TINFO, "tst_hugepages = %lu", tst_hugepages);
+ 	SAFE_FILE_PRINTF("/proc/sys/kernel/numa_balancing", "1");
+ 
+ 	hpages = test.request_hugepages;
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
++	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
+ 	if (val != hpages)
+-		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, hpages);
++		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, hpages);
+ 	else
+ 		tst_res(TPASS, "test .needs_hugepges");
+ 
+ 	hpages = tst_request_hugepages(3);
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
++	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
+ 	if (val != hpages)
+-		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, hpages);
++		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, hpages);
+ 	else
+ 		tst_res(TPASS, "tst_request_hugepages");
+ }
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index 3f20a9ede..c75fb264d 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -8,12 +8,11 @@
+ #include "tst_test.h"
+ #include "tst_hugepage.h"
+ 
+-unsigned int tst_hugepages;
++unsigned long tst_hugepages;
+ 
+-int tst_request_hugepages(int hpages)
++unsigned long tst_request_hugepages(unsigned long hpages)
+ {
+-	int val;
+-	long max_hpages;
++	unsigned long val, max_hpages;
+ 
+ 	if (access(PATH_HUGEPAGES, F_OK)) {
+ 		tst_hugepages = 0;
+@@ -25,8 +24,8 @@ int tst_request_hugepages(int hpages)
+ 	max_hpages = SAFE_READ_MEMINFO("MemFree:") / SAFE_READ_MEMINFO("Hugepagesize:");
+ 
+ 	if (hpages > max_hpages) {
+-		tst_res(TINFO, "Requested number(%d) of hugepages is too large, "
+-				"limiting to 80%% of the max hugepage count %ld",
++		tst_res(TINFO, "Requested number(%lu) of hugepages is too large, "
++				"limiting to 80%% of the max hugepage count %lu",
+ 				hpages, max_hpages);
+ 		tst_hugepages = max_hpages * 0.8;
+ 
+@@ -35,12 +34,12 @@ int tst_request_hugepages(int hpages)
+ 	}
+ 
+ 	tst_sys_conf_save("?/proc/sys/vm/nr_hugepages");
+-	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%d", tst_hugepages);
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%d", &val);
++	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
++	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
+ 	if (val != tst_hugepages)
+-		tst_brk(TBROK, "nr_hugepages = %d, but expect %d", val, tst_hugepages);
++		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, tst_hugepages);
+ 
+-	tst_res(TINFO, "%d hugepage(s) reserved", tst_hugepages);
++	tst_res(TINFO, "%lu hugepage(s) reserved", tst_hugepages);
+ out:
+ 	return tst_hugepages;
+ }
 -- 
-viresh
+2.18.0
+
+
+
