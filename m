@@ -1,43 +1,65 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 11 Mar 2020 12:55:02 +0530
-Subject: [LTP] [PATCH V5 04/10] syscalls/fsopen: New tests
-In-Reply-To: <20200306131046.GC3375@rei.lan>
+Date: Wed, 11 Mar 2020 13:01:13 +0530
+Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
+In-Reply-To: <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
 References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <495a95969c63d67868b82d2b15bd663f19780d0e.1582779464.git.viresh.kumar@linaro.org>
- <20200306131046.GC3375@rei.lan>
-Message-ID: <20200311072502.hpj5bycslu6ygk74@vireshk-i7>
+ <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
+ <20200306124546.GA3375@rei.lan>
+ <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
+Message-ID: <20200311073113.q7e7jauldjyizz2q@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06-03-20, 14:10, Cyril Hrubis wrote:
-> Hi!
-> > +	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
-> > +			MOVE_MOUNT_F_EMPTY_PATH));
-> > +
-> > +	SAFE_CLOSE(fsmfd);
-> > +
-> > +	if (TST_RET == -1) {
-> > +		tst_res(TFAIL | TERRNO, "move_mount() failed");
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (tst_is_mounted(MNTPOINT))
-> > +		tst_res(TPASS, "%s: fsopen() passed", tc->name);
-> > +
-> > +	SAFE_UMOUNT(MNTPOINT);
+On 07-03-20, 20:42, Li Wang wrote:
+> On Fri, Mar 6, 2020 at 8:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 > 
-> I gues sthat the SAFE_UMOUNT() should be inside of the if here and in
-> the rest of the testcases.
+> > ...
+> > >
+> > > +int tst_is_mounted(const char *path)
+> > > +{
+> > > +     char cmd[PATH_MAX];
+> > > +     int ret;
+> > > +
+> > > +     snprintf(cmd, sizeof(cmd), "mountpoint -q %s", path);
+> > > +     ret = tst_system(cmd);
+> >
+> > I'm not sure that depending on mountpoint command is right choice, there
+> > are all kinds of embedded systems out there that may be missing it.
+> 
+> 
+> Good point, we'd better avoid involving other packages as the dependence of
+> LTP.
+> 
+> 
+> > Also this does not even handle the case that the command is missing.
+> >
+> > Looking at the v4 version, all we need is to correctly parse each line
+> > from from /proc/mounts. I would just use strsep() with space as a
+> > delimited and took first token that starts with a slash i.e. '/', then
+> > we can just strcmp() it against the path. Or do I miss something?
+> >
+> 
+> I'm afraid strcmp() can not satisfy the requirement for us. As you know LTP
+> creates the MNTPOINT in temp dir that means it could not accurately match
+> the string path which extracts from /proc/mounts with a slash.
+> 
+> e.g
+> #define MNTPOINT "fallocate"
+> ...
+> /dev/loop4 on /tmp/FPp7kh/fallocate type xfs
+> (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+> ...
+> strcmp("/tmp/FPp7kh/fallocate", MNTPOINT) will never ruturn 0 to us.
+> 
+> What I can think of is to use strrchr() to cut the string after last '/',
+> but that can only work for test mount fs in LTP ways. Other situations
+> might not satisfy.
 
-Petr had a similar comment earlier and here is my explanation to it.
-
-There should always be a unmount() in response to a successful call to
-mount() APIs. What if, because of some other bugs in the kernel or
-testsuite, tst_is_mounted() returns 0? We should still do the
-unmount() part as the mount() API didn't return an error.
+@Cyril, can we please finalize what you guys want me to do here ? I
+don't really want to repost the patch, which still has issues :)
 
 -- 
 viresh
