@@ -1,354 +1,97 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Tue, 10 Mar 2020 21:44:11 -0000
-Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E5=2E8-1003401=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.30A816C1BC.O59T1RAR2W@redhat.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 11 Mar 2020 12:38:45 +0530
+Subject: [LTP] [PATCH V2] syscalls/openat2: New tests
+In-Reply-To: <20200306144603.GA31015@rei.lan>
+References: <6b3d4c2c92b4a4e6eeef708ac181b57cf7affda4.1583233870.git.viresh.kumar@linaro.org>
+ <20200306144603.GA31015@rei.lan>
+Message-ID: <20200311070845.wx5w7cxftzx5m2sx@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 06-03-20, 15:46, Cyril Hrubis wrote:
+> > diff --git a/testcases/kernel/syscalls/openat2/openat202.c b/testcases/kernel/syscalls/openat2/openat202.c
+> > new file mode 100644
+> > index 000000000000..504878277f7e
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/openat2/openat202.c
+> > @@ -0,0 +1,86 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+> > + *
+> > + * openat2() tests with various resolve flags.
+> > + */
+> > +#include "tst_test.h"
+> > +#include "lapi/openat2.h"
+> > +
+> > +#define FOO_SYMLINK "foo_symlink"
+> > +
+> > +static struct open_how *how;
+> > +
+> > +static struct tcase {
+> > +	const char *name;
+> > +	const char *pathname;
+> > +	uint64_t resolve;
+> > +	int exp_errno;
+> > +} tcases[] = {
+> > +	/* Success cases */
+> > +	{"open /proc/version", "/proc/version", 0, 0},
+> > +	{"open magiclinks", "/proc/self/exe", 0, 0},
+> > +	{"open symlinks", FOO_SYMLINK, 0, 0},
+> 
+> Wouldn't it be easier if we added these to the first test and keep this
+> one failures only?
 
-Hello,
+I thought about that earlier and kept it this way as this file is only
+for testing the resolve flags. Else the success cases could be added
+to openat201.c and failure to openat203.c itself.
 
-We ran automated tests on a recent commit from this kernel tree:
+This also helps in understanding (or noticing), that the test only
+changes the value of the resolve flag and we get an error. The first
+test plays with a lot of variables and so it may not be best to do it
+there as it would be a bit less readable.
 
-       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 100340175337 - IB/hfi1, qib: Ensure RCU is locked when accessing list
+> > +	/* Failure cases */
+> > +	{"resolve-no-xdev", "/proc/version", RESOLVE_NO_XDEV, EXDEV},
+> > +	{"resolve-no-magiclinks", "/proc/self/exe", RESOLVE_NO_MAGICLINKS, ELOOP},
+> > +	{"resolve-no-symlinks", FOO_SYMLINK, RESOLVE_NO_SYMLINKS, ELOOP},
+> > +	{"resolve-beneath", "/proc/version", RESOLVE_BENEATH, EXDEV},
+> > +	{"resolve-no-in-root", "/proc/version", RESOLVE_IN_ROOT, ENOENT},
 
-The results of these automated tests are provided below.
+> > +static struct tcase {
+> > +	const char *name;
+> > +	int dfd;
+> > +	const char *pathname;
+> > +	uint64_t flags;
+> > +	uint64_t mode;
+> > +	uint64_t resolve;
+> > +	struct open_how **how;
+> > +	size_t size;
+> > +	int exp_errno;
+> > +} tcases[] = {
+> > +	{"invalid-dfd", -1, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how), EBADF},
+> > +	{"invalid-pathname", AT_FDCWD, NULL, O_RDONLY | O_CREAT, S_IRUSR, 0, &how, sizeof(*how), EFAULT},
+> > +	{"invalid-flags", AT_FDCWD, TEST_FILE, O_RDONLY, S_IWUSR, 0, &how, sizeof(*how), EINVAL},
+> > +	{"invalid-mode", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, -1, 0, &how, sizeof(*how), EINVAL},
+> > +	{"invalid-resolve", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, -1, &how, sizeof(*how), EINVAL},
+> > +	{"invalid-size-zero", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, 0, EINVAL},
+> > +	{"invalid-size-small", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how) - 1, EINVAL},
+> > +	{"invalid-size-big", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how) + 1, EFAULT},
+> > +	{"invalid-size-big-with-pad", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, (struct open_how **)&phow, sizeof(*how) + 1, E2BIG},
+> 
+> Here as well +8.
 
-    Overall result: FAILED (see details below)
-             Merge: OK
-           Compile: OK
-             Tests: PANICKED
+I kept this as 1 intentionally despite the fact that pad is 8 bytes
+long. The last 2 tests have size set to (sizeof(*how) + 1) now and the
+only difference is that we have provided pad of X number of bytes in
+one case and no pad in the other case. This gives us different error
+numbers based on difference in the pad available. If I use +8 here,
+then there are two factors which are different, the structure and the
+number of bytes we are sending in size and we can't be certain about
+why we got a different error number.
 
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/10/481718
-
-One or more kernel tests failed:
-
-    s390x:
-     ? LTP
-
-    ppc64le:
-     ? audit: audit testsuite test
-
-    aarch64:
-     ? audit: audit testsuite test
-
-    x86_64:
-     ? audit: audit testsuite test
-
-We hope that these logs can help you find the problem quickly. For the full
-detail on our testing procedures, please scroll to the bottom of this message.
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Compile testing
----------------
-
-We compiled the kernel for 4 architectures:
-
-    aarch64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    ppc64le:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    s390x:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-    x86_64:
-      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ? IPMItool loop stress test
-       ? ? Storage blktests
-
-  s390x:
-    Host 1:
-       ? Boot test
-       ? selinux-policy: serge-testsuite
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ??? Loopdev Sanity
-       ??? Memory function: memfd_create
-       ??? Networking bridge: sanity
-       ??? Ethernet drivers sanity
-       ??? Networking MACsec: sanity
-       ??? Networking sctp-auth: sockopts test
-       ??? Networking route: pmtu
-       ??? Networking route_func - local
-       ??? Networking route_func - forward
-       ??? Networking TCP: keepalive test
-       ??? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ??? Networking tunnel: gre basic
-       ??? L2TP basic test
-       ??? Networking tunnel: vxlan basic
-       ??? Networking ipsec: basic netns - transport
-       ??? Networking ipsec: basic netns - tunnel
-       ??? audit: audit testsuite test
-       ??? httpd: mod_ssl smoke sanity
-       ??? tuned: tune-processes-through-perf
-       ??? trace: ftrace/tracer
-       ? ??? CIFS Connectathon
-       ? ??? POSIX pjd-fstest suites
-       ? ??? jvm - DaCapo Benchmark Suite
-       ? ??? jvm - jcstress tests
-       ? ??? Memory function: kaslr
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? iotop: sanity
-       ? ??? Usex - version 1.9-29
-       ? ??? storage: dm/common
-
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? Podman system integration test - as root
-       ? Podman system integration test - as user
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Networking bridge: sanity
-       ? Ethernet drivers sanity
-       ? Networking MACsec: sanity
-       ? Networking socket: fuzz
-       ? Networking sctp-auth: sockopts test
-       ? Networking: igmp conformance test
-       ? Networking route: pmtu
-       ? Networking route_func - local
-       ? Networking route_func - forward
-       ? Networking TCP: keepalive test
-       ? Networking UDP: socket
-       ? Networking tunnel: geneve basic test
-       ? Networking tunnel: gre basic
-       ? L2TP basic test
-       ? Networking tunnel: vxlan basic
-       ? Networking ipsec: basic netns - transport
-       ? Networking ipsec: basic netns - tunnel
-       ? audit: audit testsuite test
-       ? httpd: mod_ssl smoke sanity
-       ? tuned: tune-processes-through-perf
-       ? pciutils: sanity smoke test
-       ? ALSA PCM loopback test
-       ? ALSA Control (mixer) Userspace Element test
-       ? storage: SCSI VPD
-       ? trace: ftrace/tracer
-       ? ? CIFS Connectathon
-       ? ? POSIX pjd-fstest suites
-       ? ? jvm - DaCapo Benchmark Suite
-       ? ? jvm - jcstress tests
-       ? ? Memory function: kaslr
-       ? ? LTP: openposix test suite
-       ? ? Networking vnic: ipvlan/basic
-       ? ? iotop: sanity
-       ? ? Usex - version 1.9-29
-       ? ? storage: dm/common
-
-    Host 2:
-       ? Boot test
-       ? Storage SAN device stress - megaraid_sas
-
-    Host 3:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 4:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ??? Boot test
-       ??? xfstests - ext4
-       ??? xfstests - xfs
-       ??? selinux-policy: serge-testsuite
-       ??? lvm thinp sanity
-       ??? storage: software RAID testing
-       ??? stress: stress-ng
-       ? ??? IOMMU boot test
-       ? ??? IPMI driver test
-       ? ??? IPMItool loop stress test
-       ? ??? power-management: cpupower/sanity test
-       ? ??? Storage blktests
-
-    Host 5:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
-       ??? Boot test
-       ??? xfstests - ext4
-       ??? xfstests - xfs
-       ??? selinux-policy: serge-testsuite
-       ??? lvm thinp sanity
-       ??? storage: software RAID testing
-       ??? stress: stress-ng
-       ? ??? IOMMU boot test
-       ? ??? IPMI driver test
-       ? ??? IPMItool loop stress test
-       ? ??? power-management: cpupower/sanity test
-       ? ??? Storage blktests
-
-    Host 6:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? selinux-policy: serge-testsuite
-       ? lvm thinp sanity
-       ? storage: software RAID testing
-       ? stress: stress-ng
-       ? ? IOMMU boot test
-       ? ? Storage blktests
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Aborted tests
--------------
-Tests that didn't complete running successfully are marked with ???.
-If this was caused by an infrastructure issue, we try to mark that
-explicitly in the report.
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
-
+-- 
+viresh
