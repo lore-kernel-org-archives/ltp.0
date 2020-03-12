@@ -1,168 +1,252 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 12 Mar 2020 17:31:06 +0530
-Subject: [LTP] [PATCH V6 06/10] syscalls/fsmount: Improve fsmount01 test
+Date: Thu, 12 Mar 2020 17:31:08 +0530
+Subject: [LTP] [PATCH V6 08/10] syscalls/move_mount: New tests
 In-Reply-To: <cover.1584014172.git.viresh.kumar@linaro.org>
 References: <cover.1584014172.git.viresh.kumar@linaro.org>
-Message-ID: <34617a5bd9778cd1350f620629315c3c759e4e07.1584014172.git.viresh.kumar@linaro.org>
+Message-ID: <543ed1241afb0a5199377ba61cd83d25f28f3bdf.1584014172.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch updates the fsmount01.c file to make it look similar to all
-other fsmount related syscall tests and here is the list of all changes:
-
-- Test all fsmount flags and mount attributes
-- Remove extra PASS messages as all we want to test here is fsmount()
-  and not other syscalls.
-- On the same lines, print TFAIL for fsmount() syscall and TBROK for
-  other calls.
-- close sfd on failures
-- Make the file look similar to other fsmount related tests
-- General cleanup
+Add tests to check working of move_mount() syscall.
 
 Acked-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- testcases/kernel/syscalls/fsmount/fsmount01.c | 99 ++++++++++++-------
- 1 file changed, 63 insertions(+), 36 deletions(-)
+ runtest/syscalls                              |  3 +
+ .../kernel/syscalls/move_mount/.gitignore     |  2 +
+ testcases/kernel/syscalls/move_mount/Makefile |  6 ++
+ .../kernel/syscalls/move_mount/move_mount01.c | 83 +++++++++++++++++
+ .../kernel/syscalls/move_mount/move_mount02.c | 92 +++++++++++++++++++
+ 5 files changed, 186 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/move_mount/.gitignore
+ create mode 100644 testcases/kernel/syscalls/move_mount/Makefile
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount01.c
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount02.c
 
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-index 43337e22e224..34d9365d4680 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-@@ -3,67 +3,94 @@
-  * Copyright (C) 2020 Red Hat, Inc.  All rights reserved.
-  * Author: Zorro Lang <zlang@redhat.com>
-  *
-- * Use new mount API from v5.2 (fsopen(), fsconfig(), fsmount(), move_mount())
-- * to mount a filesystem without any specified mount options.
-+ * Basic fsmount() test.
-  */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 41d824562dde..077e724b62e4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -734,6 +734,9 @@ mount04 mount04
+ mount05 mount05
+ mount06 mount06
  
--#include <sys/mount.h>
--
- #include "tst_test.h"
- #include "lapi/fsmount.h"
- 
--#define MNTPOINT "newmount_point"
--static int sfd, mfd, is_mounted;
++move_mount01 move_mount01
++move_mount02 move_mount02
++
+ move_pages01 move_pages01
+ move_pages02 move_pages02
+ move_pages03 move_pages03
+diff --git a/testcases/kernel/syscalls/move_mount/.gitignore b/testcases/kernel/syscalls/move_mount/.gitignore
+new file mode 100644
+index 000000000000..83ae40145dff
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/.gitignore
+@@ -0,0 +1,2 @@
++/move_mount01
++/move_mount02
+diff --git a/testcases/kernel/syscalls/move_mount/Makefile b/testcases/kernel/syscalls/move_mount/Makefile
+new file mode 100644
+index 000000000000..5ea7d67db123
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/move_mount/move_mount01.c b/testcases/kernel/syscalls/move_mount/move_mount01.c
+new file mode 100644
+index 000000000000..abd73d132491
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/move_mount01.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ *
++ * Basic move_mount() test.
++ */
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++
 +#define MNTPOINT	"mntpoint"
- 
--static void cleanup(void)
--{
--	if (is_mounted)
--		SAFE_UMOUNT(MNTPOINT);
--}
-+#define TCASE_ENTRY(_flags, _attrs)	{.name = "Flag " #_flags ", Attr " #_attrs, .flags = _flags, .attrs = _attrs}
- 
--static void test_fsmount(void)
++
++#define TCASE_ENTRY(_flags)	{.name = "Flag " #_flags, .flags = _flags}
++
 +static struct tcase {
 +	char *name;
 +	unsigned int flags;
-+	unsigned int attrs;
 +} tcases[] = {
-+	TCASE_ENTRY(0, MOUNT_ATTR_RDONLY),
-+	TCASE_ENTRY(0, MOUNT_ATTR_NOSUID),
-+	TCASE_ENTRY(0, MOUNT_ATTR_NODEV),
-+	TCASE_ENTRY(0, MOUNT_ATTR_NOEXEC),
-+	TCASE_ENTRY(0, MOUNT_ATTR_RELATIME),
-+	TCASE_ENTRY(0, MOUNT_ATTR_NOATIME),
-+	TCASE_ENTRY(0, MOUNT_ATTR_STRICTATIME),
-+	TCASE_ENTRY(0, MOUNT_ATTR_NODIRATIME),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_RDONLY),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOSUID),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NODEV),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOEXEC),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_RELATIME),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NOATIME),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_STRICTATIME),
-+	TCASE_ENTRY(FSMOUNT_CLOEXEC, MOUNT_ATTR_NODIRATIME),
++	TCASE_ENTRY(MOVE_MOUNT_F_SYMLINKS),
++	TCASE_ENTRY(MOVE_MOUNT_F_AUTOMOUNTS),
++	TCASE_ENTRY(MOVE_MOUNT_F_EMPTY_PATH),
++	TCASE_ENTRY(MOVE_MOUNT_T_SYMLINKS),
++	TCASE_ENTRY(MOVE_MOUNT_T_AUTOMOUNTS),
++	TCASE_ENTRY(MOVE_MOUNT_T_EMPTY_PATH),
 +};
 +
 +static void run(unsigned int n)
- {
--	TEST(fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
--	if (TST_RET < 0)
--		tst_brk(TBROK | TTERRNO, "fsopen() on %s failed", tst_device->fs_type);
--	sfd = TST_RET;
--	tst_res(TPASS, "fsopen() on %s", tst_device->fs_type);
++{
 +	struct tcase *tc = &tcases[n];
-+	int sfd, mfd;
++	int fsmfd, fd;
 +
-+	TEST(sfd = fsopen(tst_device->fs_type, FSOPEN_CLOEXEC));
-+	if (sfd == -1) {
-+		tst_res(TFAIL | TTERRNO, "fsopen() on %s failed",
-+			tst_device->fs_type);
-+		return;
-+	}
- 
- 	TEST(fsconfig(sfd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
--	if (TST_RET < 0)
--		tst_brk(TBROK | TTERRNO,
-+	if (TST_RET == -1) {
-+		SAFE_CLOSE(sfd);
-+		tst_res(TFAIL | TTERRNO,
- 			"fsconfig() failed to set source to %s", tst_device->dev);
--	tst_res(TPASS, "fsconfig() set source to %s", tst_device->dev);
--
-+		return;
-+	}
- 
- 	TEST(fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
--	if (TST_RET < 0)
--		tst_brk(TBROK | TTERRNO, "fsconfig() created superblock");
--	tst_res(TPASS, "fsconfig() created superblock");
-+	if (TST_RET == -1) {
-+		SAFE_CLOSE(sfd);
-+		tst_res(TFAIL | TTERRNO, "fsconfig() created superblock");
-+		return;
-+	}
- 
--	TEST(fsmount(sfd, FSMOUNT_CLOEXEC, 0));
--	if (TST_RET < 0)
--		tst_brk(TBROK | TTERRNO, "fsmount() failed to create a mount object");
--	mfd = TST_RET;
--	tst_res(TPASS, "fsmount() created a mount object");
-+	TEST(mfd = fsmount(sfd, tc->flags, tc->attrs));
- 	SAFE_CLOSE(sfd);
- 
-+	if (mfd == -1) {
-+		tst_res(TFAIL | TTERRNO,
-+			"fsmount() failed to create a mount object");
++	TEST(fd = fsopen(tst_device->fs_type, 0));
++	if (fd == -1) {
++		tst_res(TFAIL | TERRNO, "fsopen() failed");
 +		return;
 +	}
 +
- 	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
--	if (TST_RET < 0)
--		tst_brk(TBROK | TTERRNO, "move_mount() failed to attach to the mount point");
--	is_mounted = 1;
--	tst_res(TPASS, "move_mount() attached to the mount point");
- 	SAFE_CLOSE(mfd);
- 
++	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
 +	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO,
-+			"move_mount() failed to attach to the mount point");
++		SAFE_CLOSE(fd);
++		tst_res(TFAIL | TERRNO, "fsconfig() failed");
 +		return;
 +	}
 +
- 	if (tst_is_mounted_at_tmpdir(MNTPOINT)) {
- 		SAFE_UMOUNT(MNTPOINT);
--		is_mounted = 0;
-+		tst_res(TPASS, "%s: fsmount() passed", tc->name);
- 	}
- }
- 
- static struct tst_test test = {
--	.test_all = test_fsmount,
--	.cleanup = cleanup,
++	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
++	if (TST_RET == -1) {
++		SAFE_CLOSE(fd);
++		tst_res(TFAIL | TERRNO, "fsconfig() failed");
++		return;
++	}
++
++	TEST(fsmfd = fsmount(fd, 0, 0));
++	SAFE_CLOSE(fd);
++
++	if (fsmfd == -1) {
++		tst_res(TFAIL | TERRNO, "fsmount() failed");
++		return;
++	}
++
++	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
++			tc->flags | MOVE_MOUNT_F_EMPTY_PATH));
++	SAFE_CLOSE(fsmfd);
++
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TERRNO, "move_mount() failed");
++		return;
++	}
++
++	if (tst_is_mounted_at_tmpdir(MNTPOINT)) {
++		SAFE_UMOUNT(MNTPOINT);
++		tst_res(TPASS, "%s: move_mount() passed", tc->name);
++	}
++}
++
++static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.test = run,
 +	.setup = fsopen_supported_by_kernel,
- 	.needs_root = 1,
- 	.mntpoint = MNTPOINT,
- 	.format_device = 1,
++	.needs_root = 1,
++	.format_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.dev_fs_flags = TST_FS_SKIP_FUSE,
++};
+diff --git a/testcases/kernel/syscalls/move_mount/move_mount02.c b/testcases/kernel/syscalls/move_mount/move_mount02.c
+new file mode 100644
+index 000000000000..dfb48a1b3dc6
+--- /dev/null
++++ b/testcases/kernel/syscalls/move_mount/move_mount02.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ *
++ * Basic move_mount() failure tests.
++ */
++#include "tst_test.h"
++#include "lapi/fsmount.h"
++
++#define MNTPOINT	"mntpoint"
++
++int invalid_fd = -1, fsmfd;
++
++static struct tcase {
++	char *name;
++	int *from_dirfd;
++	const char *from_pathname;
++	int to_dirfd;
++	const char *to_pathname;
++	unsigned int flags;
++	int exp_errno;
++} tcases[] = {
++	{"invalid-from-fd", &invalid_fd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, EBADF},
++	{"invalid-from-path", &fsmfd, "invalid", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, ENOENT},
++	{"invalid-to-fd", &fsmfd, "", -1, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH, EBADF},
++	{"invalid-to-path", &fsmfd, "", AT_FDCWD, "invalid", MOVE_MOUNT_F_EMPTY_PATH, ENOENT},
++	{"invalid-flags", &fsmfd, "", AT_FDCWD, MNTPOINT, 0x08, EINVAL},
++};
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	int fd;
++
++	TEST(fd = fsopen(tst_device->fs_type, 0));
++	if (fd == -1) {
++		tst_res(TFAIL | TERRNO, "fsopen() failed");
++		return;
++	}
++
++	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
++	if (TST_RET == -1) {
++		SAFE_CLOSE(fd);
++		tst_res(TFAIL | TERRNO, "fsconfig() failed");
++		return;
++	}
++
++	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
++	if (TST_RET == -1) {
++		SAFE_CLOSE(fd);
++		tst_res(TFAIL | TERRNO, "fsconfig() failed");
++		return;
++	}
++
++	TEST(fsmfd = fsmount(fd, 0, 0));
++	SAFE_CLOSE(fd);
++
++	if (fsmfd == -1) {
++		tst_res(TFAIL | TERRNO, "fsmount() failed");
++		return;
++	}
++
++	TEST(move_mount(*tc->from_dirfd, tc->from_pathname, tc->to_dirfd,
++			tc->to_pathname, tc->flags));
++	SAFE_CLOSE(fsmfd);
++
++	if (TST_RET != -1) {
++		SAFE_UMOUNT(MNTPOINT);
++		tst_res(TFAIL, "%s: move_mount() succeeded unexpectedly (index: %d)",
++			tc->name, n);
++		return;
++	}
++
++	if (tc->exp_errno != TST_ERR) {
++		tst_res(TFAIL | TTERRNO, "%s: move_mount() should fail with %s",
++			tc->name, tst_strerrno(tc->exp_errno));
++		return;
++	}
++
++	tst_res(TPASS | TTERRNO, "%s: move_mount() failed as expected", tc->name);
++}
++
++static struct tst_test test = {
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = run,
++	.setup = fsopen_supported_by_kernel,
++	.needs_root = 1,
++	.format_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.dev_fs_flags = TST_FS_SKIP_FUSE,
++};
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
