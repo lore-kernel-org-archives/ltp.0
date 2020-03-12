@@ -1,48 +1,71 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Mar 2020 11:11:28 +0100
-Subject: [LTP] [PATCH V5 04/10] syscalls/fsopen: New tests
-In-Reply-To: <20200312100316.7w67e5salel3dfue@vireshk-i7>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 12 Mar 2020 16:33:40 +0530
+Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
+In-Reply-To: <20200311102620.GB3802@rei.lan>
 References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <495a95969c63d67868b82d2b15bd663f19780d0e.1582779464.git.viresh.kumar@linaro.org>
- <20200306131046.GC3375@rei.lan>
- <20200311072502.hpj5bycslu6ygk74@vireshk-i7>
- <20200312081153.GA16928@dell5510>
- <20200312100316.7w67e5salel3dfue@vireshk-i7>
-Message-ID: <20200312101127.GA3803@rei.lan>
+ <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
+ <20200306124546.GA3375@rei.lan>
+ <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
+ <20200311102620.GB3802@rei.lan>
+Message-ID: <20200312110340.y7mcfktrlgyzfui6@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > > I gues sthat the SAFE_UMOUNT() should be inside of the if here and in
-> > > > the rest of the testcases.
-> > 
-> > > Petr had a similar comment earlier and here is my explanation to it.
-> > 
-> > > There should always be a unmount() in response to a successful call to
-> > > mount() APIs. What if, because of some other bugs in the kernel or
-> > > testsuite, tst_is_mounted() returns 0? We should still do the
-> > > unmount() part as the mount() API didn't return an error.
-> > But IMHO if device is not mounted we get TBROK due EINVAL in safe_umount().
+On 11-03-20, 11:26, Cyril Hrubis wrote:
+> Hmm, for that we have to have compose the path for the comparsion
+> anyways, since unless we pass an absoule path we can never be user if we
+> have a right match or not. There may be leftover mount points from a
+> failed tests that have faile to cleanup properly as well.
 > 
-> But why won't move_mount() fail if device isn't mounted ? Why do we
-> need the tst_is_mounted() helper at all ? Just to catch a case where
-> move_mount() is buggy and doesn't report the failure properly, right ?
-> In case of that bug, isn't it possible that move_mount() allocates
-> some resources which must be freed with a call to umount()
-> nevertheless ?
+> So I guess that we need one more function, with tmpdir in name, that
+> would compose the right path for us and then call the tst_is_mntpoint().
+> 
+> I would have called that:
+> 
+> int tst_is_mntpoint_at_tmpdir(const char *path);
 
-We can't really clean things up when something in kernel is misbehaving.
-If there is a bug we enter the wast lands of undefined behavior where
-anything is possible and any attempt to restore the system in a defined
-state is doomed to fail anyways.
+Is everyone fine with this code now :)
 
-So in the end I do not care here as long as we clean up properly when
-things work as expected, so either way is fine. It only looks a bit
-strange when we attempt to umount things that are possibly not mounted.
+int tst_is_mounted(const char *path)
+{
+        char line[PATH_MAX];
+        FILE *file;
+        int ret = 0;
+
+        file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
+
+        while (fgets(line, sizeof(line), file)) {
+                if (strstr(line, path) != NULL) {
+                        ret = 1;
+                        break;
+                }
+        }
+
+        SAFE_FCLOSE(NULL, file);
+
+        if (!ret)
+                tst_resm(TINFO, "No device is mounted at %s", path);
+
+        return ret;
+}
+
+int tst_is_mounted_at_tmpdir(const char *path)
+{
+        char cdir[PATH_MAX], mpath[PATH_MAX];
+        int ret;
+
+        if (!getcwd(cdir, PATH_MAX))
+                return 0;
+
+        ret = snprintf(mpath, PATH_MAX, "%s/%s", cdir, path);
+        if (ret < 0 || ret >= PATH_MAX)
+                return 0;
+
+        return tst_is_mounted(mpath);
+}
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+viresh
