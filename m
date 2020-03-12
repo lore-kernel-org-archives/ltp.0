@@ -1,498 +1,541 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 12 Mar 2020 13:55:45 +0100
-Subject: [LTP] [PATCH v3 3/3] Add connection tests for bind()
+Date: Thu, 12 Mar 2020 13:55:43 +0100
+Subject: [LTP] [PATCH v3 1/3] Create separate .c file for include/tst_net.h
 In-Reply-To: <20200312125545.3976-1-mdoucha@suse.cz>
 References: <20200312125545.3976-1-mdoucha@suse.cz>
-Message-ID: <20200312125545.3976-4-mdoucha@suse.cz>
+Message-ID: <20200312125545.3976-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add two new test programs to verify that bind() will open sockets for incoming
-connections. Both programs follow the same test scenario:
-- Create and bind() a socket
-- Wait for connection from peer thread
-- Send request to peer thread
-- Receive and verify response from peer thread
-
-bind04 tests stream-oriented sockets (SOCK_STREAM and SOCK_SEQPACKET).
-bind05 tests datagram-oriented sockets (SOCK_DGRAM).
-
-Both programs test the following socket types:
-- AF_UNIX (pathname and abstract addresses)
-- AF_INET (loopback)
-- AF_INET6 (loopback)
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
 Changes since v1:
-- added UDPLITE and SCTP test cases
-- common constants and test_case data structure moved to libbind.h
+- new patch
 
 Changes since v2:
-- Code style fixes
-- Makefile fix
+- Also separate print_svar*()
+- Added tst_ prefix to functions separated into tst_net.c
 
-Regarding review comments about the cleanup of AF_UNIX sockets: It doesn't
-really matter if the socket gets explicitly unlink()ed after tst_brk().
-LTP library will remove it either way when it removes the temp directory.
-The real issue is that in the second test case (or test iteration) with named
-Unix sockets, bind() will fail if the path already exists. Even when it's
-a socket file closed on both ends.
+ include/tst_net.h                    | 132 ++----------------------
+ lib/tst_net.c                        | 146 +++++++++++++++++++++++++++
+ testcases/lib/tst_net_iface_prefix.c |   9 +-
+ testcases/lib/tst_net_ip_prefix.c    |  10 +-
+ testcases/lib/tst_net_vars.c         |  64 ++++++------
+ 5 files changed, 197 insertions(+), 164 deletions(-)
+ create mode 100644 lib/tst_net.c
 
- runtest/syscalls                          |   2 +
- testcases/kernel/syscalls/bind/.gitignore |   2 +
- testcases/kernel/syscalls/bind/Makefile   |   2 +
- testcases/kernel/syscalls/bind/bind04.c   | 172 ++++++++++++++++++++
- testcases/kernel/syscalls/bind/bind05.c   | 186 ++++++++++++++++++++++
- testcases/kernel/syscalls/bind/libbind.h  |  29 ++++
- 6 files changed, 393 insertions(+)
- create mode 100644 testcases/kernel/syscalls/bind/bind04.c
- create mode 100644 testcases/kernel/syscalls/bind/bind05.c
- create mode 100644 testcases/kernel/syscalls/bind/libbind.h
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 30ea8be21..8aecd509f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -31,6 +31,8 @@ alarm07 alarm07
- bind01 bind01
- bind02 bind02
- bind03 bind03
-+bind04 bind04
-+bind05 bind05
+diff --git a/include/tst_net.h b/include/tst_net.h
+index e1edc7200..2e9c33dff 100644
+--- a/include/tst_net.h
++++ b/include/tst_net.h
+@@ -4,10 +4,7 @@
+  */
  
- bpf_map01 bpf_map01
- bpf_prog01 bpf_prog01
-diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
-index 4ebea9ee7..e18ceea56 100644
---- a/testcases/kernel/syscalls/bind/.gitignore
-+++ b/testcases/kernel/syscalls/bind/.gitignore
-@@ -1,3 +1,5 @@
- /bind01
- /bind02
- /bind03
-+/bind04
-+/bind05
-diff --git a/testcases/kernel/syscalls/bind/Makefile b/testcases/kernel/syscalls/bind/Makefile
-index 044619fb8..fffa146ad 100644
---- a/testcases/kernel/syscalls/bind/Makefile
-+++ b/testcases/kernel/syscalls/bind/Makefile
-@@ -5,4 +5,6 @@ top_srcdir		?= ../../../..
+ #include <arpa/inet.h>
+-#include <errno.h>
+ #include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
  
- include $(top_srcdir)/include/mk/testcases.mk
+ #define MAX_IPV4_PREFIX 32
+ #define MAX_IPV6_PREFIX 128
+@@ -21,124 +18,13 @@
+ 	fprintf(stderr, "# "); \
+ 	tst_brk(TCONF, __VA_ARGS__); } \
  
-+bind04 bind05:	CFLAGS		+= -pthread
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/bind/bind04.c b/testcases/kernel/syscalls/bind/bind04.c
+-static inline void print_svar(const char *name, const char *val)
+-{
+-	if (name && val)
+-		printf("export %s=\"%s\"\n", name, val);
+-}
++void tst_print_svar(const char *name, const char *val);
++void tst_print_svar_change(const char *name, const char *val);
+ 
+-static inline void print_svar_change(const char *name, const char *val)
+-{
+-	if (name && val)
+-		printf("export %s=\"${%s:-%s}\"\n", name, name, val);
+-}
+-
+-/*
+- * Function bit_count is from ipcalc project, ipcalc.c.
+- */
+-static inline int bit_count(uint32_t i)
+-{
+-	int c = 0;
+-	unsigned int seen_one = 0;
+-
+-	while (i > 0) {
+-		if (i & 1) {
+-			seen_one = 1;
+-			c++;
+-		} else {
+-			if (seen_one)
+-				return -1;
+-		}
+-		i >>= 1;
+-	}
+-
+-	return c;
+-}
+-
+-/*
+- * Function mask2prefix is from ipcalc project, ipcalc.c.
+- */
+-static inline int mask2prefix(struct in_addr mask)
+-{
+-	return bit_count(ntohl(mask.s_addr));
+-}
+-
+-/*
+- * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
+- */
+-static inline int ipv4_mask_to_int(const char *prefix)
+-{
+-	int ret;
+-	struct in_addr in;
+-
+-	ret = inet_pton(AF_INET, prefix, &in);
+-	if (ret == 0)
+-		return -1;
+-
+-	return mask2prefix(in);
+-}
+-
+-/*
+- * Function safe_atoi is from ipcalc project, ipcalc.c.
+- */
+-static inline int safe_atoi(const char *s, int *ret_i)
+-{
+-	char *x = NULL;
+-	long l;
+-
+-	errno = 0;
+-	l = strtol(s, &x, 0);
+-
+-	if (!x || x == s || *x || errno)
+-		return errno > 0 ? -errno : -EINVAL;
+-
+-	if ((long)(int)l != l)
+-		return -ERANGE;
+-
+-	*ret_i = (int)l;
+-
+-	return 0;
+-}
+-
+-/*
+- * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
+- */
+-static inline int get_prefix(const char *ip_str, int is_ipv6)
+-{
+-	char *prefix_str = NULL;
+-	int prefix = -1, r;
+-
+-	prefix_str = strchr(ip_str, '/');
+-	if (!prefix_str)
+-		return -1;
+-
+-	*(prefix_str++) = '\0';
+-
+-	if (!is_ipv6 && strchr(prefix_str, '.'))
+-		prefix = ipv4_mask_to_int(prefix_str);
+-	else {
+-		r = safe_atoi(prefix_str, &prefix);
+-		if (r != 0)
+-			tst_brk_comment("conversion error: '%s' is not integer",
+-					prefix_str);
+-	}
+-
+-	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
+-		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
+-		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
+-				prefix_str);
+-
+-	return prefix;
+-}
+-
+-static inline void get_in_addr(const char *ip_str, struct in_addr *ip)
+-{
+-	if (inet_pton(AF_INET, ip_str, ip) <= 0)
+-		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
+-}
+-
+-static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
+-{
+-	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
+-		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
+-}
++int tst_bit_count(uint32_t i);
++int tst_mask2prefix(struct in_addr mask);
++int tst_ipv4_mask_to_int(const char *prefix);
++int tst_safe_atoi(const char *s, int *ret_i);
++int tst_get_prefix(const char *ip_str, int is_ipv6);
++void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
++void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+diff --git a/lib/tst_net.c b/lib/tst_net.c
 new file mode 100644
-index 000000000..1be14560b
+index 000000000..bd4396a06
 --- /dev/null
-+++ b/testcases/kernel/syscalls/bind/bind04.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/lib/tst_net.c
+@@ -0,0 +1,146 @@
 +/*
-+ *   Copyright (c) 2019 Martin Doucha <mdoucha@suse.cz>
++ * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +
-+/*
-+ * Create and bind socket for various standard stream protocols.
-+ * Then connect to it and send some test data.
-+ */
-+
++#include <errno.h>
 +#include <string.h>
 +#include <stdlib.h>
-+#include <time.h>
-+#include <pthread.h>
 +
++#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
 +#include "tst_net.h"
-+#include "tst_safe_pthread.h"
-+#include "libbind.h"
 +
-+static struct sockaddr_un unix_addr = {
-+	.sun_family = AF_UNIX,
-+	.sun_path = MAIN_SOCKET_FILE
-+};
-+static struct sockaddr_un abstract_addr = {
-+	.sun_family = AF_UNIX,
-+	.sun_path = ABSTRACT_SOCKET_PATH
-+};
-+static struct sockaddr_in ipv4_addr;
-+static struct sockaddr_in ipv4_any_addr;
-+static struct sockaddr_in6 ipv6_addr;
-+static struct sockaddr_in6 ipv6_any_addr;
-+
-+static struct test_case testcase_list[] = {
-+	/* UNIX sockets */
-+	{SOCK_STREAM, 0, (struct sockaddr *)&unix_addr, sizeof(unix_addr),
-+		"AF_UNIX pathname stream"},
-+	{SOCK_SEQPACKET, 0, (struct sockaddr *)&unix_addr, sizeof(unix_addr),
-+		"AF_UNIX pathname seqpacket"},
-+	{SOCK_STREAM, 0, (struct sockaddr *)&abstract_addr,
-+		sizeof(abstract_addr), "AF_UNIX abstract stream"},
-+	{SOCK_SEQPACKET, 0, (struct sockaddr *)&abstract_addr,
-+		sizeof(abstract_addr), "AF_UNIX abstract seqpacket"},
-+
-+	/* IPv4 sockets */
-+	{SOCK_STREAM, 0, (struct sockaddr *)&ipv4_addr, sizeof(ipv4_addr),
-+		"IPv4 loop TCP variant 1"},
-+	{SOCK_STREAM, IPPROTO_TCP, (struct sockaddr *)&ipv4_addr,
-+		sizeof(ipv4_addr), "IPv4 loop TCP variant 2"},
-+	{SOCK_STREAM, IPPROTO_SCTP, (struct sockaddr *)&ipv4_addr,
-+		sizeof(ipv4_addr), "IPv4 loop SCTP"},
-+	{SOCK_STREAM, 0, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any TCP variant 1"},
-+	{SOCK_STREAM, IPPROTO_TCP, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any TCP variant 2"},
-+	{SOCK_STREAM, IPPROTO_SCTP, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any SCTP"},
-+
-+	/* IPv6 sockets */
-+	{SOCK_STREAM, 0, (struct sockaddr *)&ipv6_addr, sizeof(ipv6_addr),
-+		"IPv6 loop TCP variant 1"},
-+	{SOCK_STREAM, IPPROTO_TCP, (struct sockaddr *)&ipv6_addr,
-+		sizeof(ipv6_addr), "IPv6 loop TCP variant 2"},
-+	{SOCK_STREAM, IPPROTO_SCTP, (struct sockaddr *)&ipv6_addr,
-+		sizeof(ipv6_addr), "IPv6 loop SCTP"},
-+	{SOCK_STREAM, 0, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any TCP variant 1"},
-+	{SOCK_STREAM, IPPROTO_TCP, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any TCP variant 2"},
-+	{SOCK_STREAM, IPPROTO_SCTP, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any SCTP"}
-+};
-+
-+static void setup(void)
++void tst_print_svar(const char *name, const char *val)
 +{
-+	srand(time(0));
-+
-+	tst_init_sockaddr_inet(&ipv4_addr, IPV4_ADDRESS, 0);
-+	tst_init_sockaddr_inet_bin(&ipv4_any_addr, INADDR_ANY, 0);
-+	tst_init_sockaddr_inet6_bin(&ipv6_addr, &in6addr_loopback, 0);
-+	tst_init_sockaddr_inet6_bin(&ipv6_any_addr, &in6addr_any, 0);
++	if (name && val)
++		printf("export %s=\"%s\"\n", name, val);
 +}
 +
-+static void *peer_thread(void *tc_ptr)
++void tst_print_svar_change(const char *name, const char *val)
 +{
-+	const struct test_case *tc = tc_ptr;
-+	int sock;
-+	unsigned int request;
-+	const char *response;
-+
-+	sock = SAFE_SOCKET(tc->address->sa_family, tc->type, tc->protocol);
-+	SAFE_CONNECT(sock, tc->address, tc->addrlen);
-+	SAFE_READ(1, sock, &request, sizeof(request));
-+
-+	if (request < ARRAY_SIZE(testcase_list))
-+		response = testcase_list[request].description;
-+	else
-+		response = "Invalid request value";
-+
-+	SAFE_WRITE(1, sock, response, strlen(response) + 1);
-+	SAFE_CLOSE(sock);
-+	return NULL;
++	if (name && val)
++		printf("export %s=\"${%s:-%s}\"\n", name, name, val);
 +}
 +
-+static void test_bind(unsigned int n)
++/*
++ * Function bit_count is from ipcalc project, ipcalc.c.
++ */
++int tst_bit_count(uint32_t i)
 +{
-+	struct test_case tc_copy, *tc = testcase_list + n;
-+	struct sockaddr_storage listen_addr, remote_addr;
-+	struct sockaddr_un *tmp_addr;
-+	socklen_t remote_len = sizeof(struct sockaddr_storage);
-+	int listen_sock, sock, size;
-+	unsigned int rand_index;
-+	pthread_t thread_id;
-+	char buffer[BUFFER_SIZE];
-+	const char *exp_data;
++	int c = 0;
++	unsigned int seen_one = 0;
 +
-+	tst_res(TINFO, "Testing %s", tc->description);
-+	listen_sock = SAFE_SOCKET(tc->address->sa_family, tc->type,
-+		tc->protocol);
-+
-+	TEST(bind(listen_sock, tc->address, tc->addrlen));
-+
-+	if (TST_RET) {
-+		tst_res(TFAIL | TERRNO, "bind() failed");
-+		SAFE_CLOSE(listen_sock);
-+		return;
++	while (i > 0) {
++		if (i & 1) {
++			seen_one = 1;
++			c++;
++		} else {
++			if (seen_one)
++				return -1;
++		}
++		i >>= 1;
 +	}
 +
-+	/*
-+	 * IPv4/IPv6 tests use wildcard addresses, resolve a valid connection
-+	 * address for peer thread
-+	 */
-+	memcpy(&tc_copy, tc, sizeof(struct test_case));
-+	tc_copy.addrlen = tst_get_connect_address(listen_sock, &listen_addr);
-+	tc_copy.address = (struct sockaddr *)&listen_addr;
-+
-+	SAFE_LISTEN(listen_sock, 1);
-+	SAFE_PTHREAD_CREATE(&thread_id, NULL, peer_thread, &tc_copy);
-+	sock = accept(listen_sock, (struct sockaddr *)&remote_addr,
-+		&remote_len);
-+
-+	if (sock < 0)
-+		tst_brk(TBROK | TERRNO, "accept() failed");
-+
-+	rand_index = rand() % ARRAY_SIZE(testcase_list);
-+	SAFE_WRITE(1, sock, &rand_index, sizeof(rand_index));
-+
-+	size = SAFE_READ(0, sock, buffer, BUFFER_SIZE - 1);
-+	buffer[size] = '\0';
-+	exp_data = testcase_list[rand_index].description;
-+
-+	if (!strcmp(buffer, exp_data))
-+		tst_res(TPASS, "Communication successful");
-+	else
-+		tst_res(TFAIL, "Received invalid data. Expected: \"%s\". "
-+			"Received: \"%s\"", exp_data, buffer);
-+
-+	SAFE_CLOSE(sock);
-+	SAFE_CLOSE(listen_sock);
-+	pthread_join(thread_id, NULL);
-+	tmp_addr = (struct sockaddr_un *)tc->address;
-+
-+	if (tc->address->sa_family == AF_UNIX && tmp_addr->sun_path[0])
-+		SAFE_UNLINK(tmp_addr->sun_path);
++	return c;
 +}
-+
-+static struct tst_test test = {
-+	.test = test_bind,
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+};
-diff --git a/testcases/kernel/syscalls/bind/bind05.c b/testcases/kernel/syscalls/bind/bind05.c
-new file mode 100644
-index 000000000..16c9c711d
---- /dev/null
-+++ b/testcases/kernel/syscalls/bind/bind05.c
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *   Copyright (c) 2019 Martin Doucha <mdoucha@suse.cz>
-+ */
 +
 +/*
-+ * Create and bind socket for various standard datagram protocols.
-+ * Then connect to it and send some test data.
++ * Function mask2prefix is from ipcalc project, ipcalc.c.
 + */
-+
-+#include <string.h>
-+#include <stdlib.h>
-+#include <time.h>
-+#include <pthread.h>
-+
-+#include "tst_test.h"
-+#include "tst_net.h"
-+#include "tst_safe_pthread.h"
-+#include "libbind.h"
-+
-+static struct sockaddr_un unix_addr = {
-+	.sun_family = AF_UNIX,
-+	.sun_path = MAIN_SOCKET_FILE
-+};
-+static struct sockaddr_un abstract_addr = {
-+	.sun_family = AF_UNIX,
-+	.sun_path = ABSTRACT_SOCKET_PATH
-+};
-+static struct sockaddr_un peer_addr = {
-+	.sun_family = AF_UNIX,
-+	.sun_path = PEER_SOCKET_FILE
-+};
-+static struct sockaddr_in ipv4_addr;
-+static struct sockaddr_in ipv4_any_addr;
-+static struct sockaddr_in6 ipv6_addr;
-+static struct sockaddr_in6 ipv6_any_addr;
-+
-+static struct test_case testcase_list[] = {
-+	/* UNIX sockets */
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&unix_addr, sizeof(unix_addr),
-+		"AF_UNIX pathname datagram"},
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&abstract_addr,
-+		sizeof(abstract_addr), "AF_UNIX abstract datagram"},
-+
-+	/* IPv4 sockets */
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&ipv4_addr, sizeof(ipv4_addr),
-+		"IPv4 loop UDP variant 1"},
-+	{SOCK_DGRAM, IPPROTO_UDP, (struct sockaddr *)&ipv4_addr,
-+		sizeof(ipv4_addr), "IPv4 loop UDP variant 2"},
-+	{SOCK_DGRAM, IPPROTO_UDPLITE, (struct sockaddr *)&ipv4_addr,
-+		sizeof(ipv4_addr), "IPv4 loop UDP-Lite"},
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any UDP variant 1"},
-+	{SOCK_DGRAM, IPPROTO_UDP, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any UDP variant 2"},
-+	{SOCK_DGRAM, IPPROTO_UDPLITE, (struct sockaddr *)&ipv4_any_addr,
-+		sizeof(ipv4_any_addr), "IPv4 any UDP-Lite"},
-+
-+	/* IPv6 sockets */
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&ipv6_addr, sizeof(ipv6_addr),
-+		"IPv6 loop UDP variant 1"},
-+	{SOCK_DGRAM, IPPROTO_UDP, (struct sockaddr *)&ipv6_addr,
-+		sizeof(ipv6_addr), "IPv6 loop UDP variant 2"},
-+	{SOCK_DGRAM, IPPROTO_UDPLITE, (struct sockaddr *)&ipv6_addr,
-+		sizeof(ipv6_addr), "IPv6 loop UDP-Lite"},
-+	{SOCK_DGRAM, 0, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any UDP variant 1"},
-+	{SOCK_DGRAM, IPPROTO_UDP, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any UDP variant 2"},
-+	{SOCK_DGRAM, IPPROTO_UDPLITE, (struct sockaddr *)&ipv6_any_addr,
-+		sizeof(ipv6_any_addr), "IPv6 any UDP-Lite"}
-+};
-+
-+static void setup(void)
++int tst_mask2prefix(struct in_addr mask)
 +{
-+	srand(time(0));
-+
-+	tst_init_sockaddr_inet(&ipv4_addr, IPV4_ADDRESS, 0);
-+	tst_init_sockaddr_inet_bin(&ipv4_any_addr, INADDR_ANY, 0);
-+	tst_init_sockaddr_inet6_bin(&ipv6_addr, &in6addr_loopback, 0);
-+	tst_init_sockaddr_inet6_bin(&ipv6_any_addr, &in6addr_any, 0);
++	return tst_bit_count(ntohl(mask.s_addr));
 +}
 +
-+static void *peer_thread(void *tc_ptr)
++/*
++ * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
++ */
++int tst_ipv4_mask_to_int(const char *prefix)
 +{
-+	const struct test_case *tc = tc_ptr;
-+	int sock;
-+	unsigned int request = 0;
-+	const char *response;
++	int ret;
++	struct in_addr in;
 +
-+	sock = SAFE_SOCKET(tc->address->sa_family, tc->type, tc->protocol);
++	ret = inet_pton(AF_INET, prefix, &in);
++	if (ret == 0)
++		return -1;
 +
-+	/*
-+	 * Both sides of AF_UNIX/SOCK_DGRAM socket must be bound for
-+	 * bidirectional communication
-+	 */
-+	if (tc->address->sa_family == AF_UNIX)
-+		SAFE_BIND(sock, (struct sockaddr *)&peer_addr,
-+			sizeof(struct sockaddr_un));
-+
-+	SAFE_CONNECT(sock, tc->address, tc->addrlen);
-+	SAFE_WRITE(1, sock, &request, sizeof(request));
-+	SAFE_READ(1, sock, &request, sizeof(request));
-+
-+	if (request < ARRAY_SIZE(testcase_list))
-+		response = testcase_list[request].description;
-+	else
-+		response = "Invalid request value";
-+
-+	SAFE_WRITE(1, sock, response, strlen(response) + 1);
-+	SAFE_CLOSE(sock);
-+
-+	if (tc->address->sa_family == AF_UNIX)
-+		SAFE_UNLINK(PEER_SOCKET_FILE);
-+
-+	return NULL;
++	return tst_mask2prefix(in);
 +}
 +
-+static void test_bind(unsigned int n)
++/*
++ * Function safe_atoi is from ipcalc project, ipcalc.c.
++ */
++int tst_safe_atoi(const char *s, int *ret_i)
 +{
-+	struct test_case tc_copy, *tc = testcase_list + n;
-+	struct sockaddr_storage listen_addr, remote_addr;
-+	struct sockaddr_un *tmp_addr;
-+	socklen_t remote_len = sizeof(struct sockaddr_storage);
-+	int sock, size;
-+	unsigned int rand_index;
-+	pthread_t thread_id;
-+	char buffer[BUFFER_SIZE];
-+	const char *exp_data;
++	char *x = NULL;
++	long l;
 +
-+	tst_res(TINFO, "Testing %s", tc->description);
-+	sock = SAFE_SOCKET(tc->address->sa_family, tc->type, tc->protocol);
++	errno = 0;
++	l = strtol(s, &x, 0);
 +
-+	TEST(bind(sock, tc->address, tc->addrlen));
++	if (!x || x == s || *x || errno)
++		return errno > 0 ? -errno : -EINVAL;
 +
-+	if (TST_RET) {
-+		tst_res(TFAIL | TERRNO, "bind() failed");
-+		SAFE_CLOSE(sock);
-+		return;
++	if ((long)(int)l != l)
++		return -ERANGE;
++
++	*ret_i = (int)l;
++
++	return 0;
++}
++
++/*
++ * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
++ */
++int tst_get_prefix(const char *ip_str, int is_ipv6)
++{
++	char *prefix_str = NULL;
++	int prefix = -1, r;
++
++	prefix_str = strchr(ip_str, '/');
++	if (!prefix_str)
++		return -1;
++
++	*(prefix_str++) = '\0';
++
++	if (!is_ipv6 && strchr(prefix_str, '.'))
++		prefix = tst_ipv4_mask_to_int(prefix_str);
++	else {
++		r = tst_safe_atoi(prefix_str, &prefix);
++		if (r != 0)
++			tst_brk_comment("conversion error: '%s' is not integer",
++					prefix_str);
 +	}
 +
-+	/*
-+	 * IPv4/IPv6 tests use wildcard addresses, resolve a valid connection
-+	 * address for peer thread
-+	 */
-+	memcpy(&tc_copy, tc, sizeof(struct test_case));
-+	tc_copy.addrlen = tst_get_connect_address(sock, &listen_addr);
-+	tc_copy.address = (struct sockaddr *)&listen_addr;
++	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
++		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
++		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
++				prefix_str);
 +
-+	SAFE_PTHREAD_CREATE(&thread_id, NULL, peer_thread, &tc_copy);
-+	size = recvfrom(sock, &rand_index, sizeof(rand_index), 0,
-+		(struct sockaddr *)&remote_addr, &remote_len);
-+
-+	if (size != sizeof(rand_index)) {
-+		SAFE_CLOSE(sock);
-+		tst_brk(TBROK | TERRNO, "Error while waiting for connection");
-+	}
-+
-+	rand_index = rand() % ARRAY_SIZE(testcase_list);
-+	SAFE_SENDTO(1, sock, &rand_index, sizeof(rand_index), 0,
-+		(struct sockaddr *)&remote_addr, remote_len);
-+
-+	size = SAFE_READ(0, sock, buffer, BUFFER_SIZE - 1);
-+	buffer[size] = '\0';
-+	exp_data = testcase_list[rand_index].description;
-+
-+	if (!strcmp(buffer, exp_data))
-+		tst_res(TPASS, "Communication successful");
-+	else
-+		tst_res(TFAIL, "Received invalid data. Expected: \"%s\". "
-+			"Received: \"%s\"", exp_data, buffer);
-+
-+	SAFE_CLOSE(sock);
-+	pthread_join(thread_id, NULL);
-+	tmp_addr = (struct sockaddr_un *)tc->address;
-+
-+	if (tc->address->sa_family == AF_UNIX && tmp_addr->sun_path[0])
-+		SAFE_UNLINK(tmp_addr->sun_path);
++	return prefix;
 +}
 +
-+static struct tst_test test = {
-+	.test = test_bind,
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+};
-diff --git a/testcases/kernel/syscalls/bind/libbind.h b/testcases/kernel/syscalls/bind/libbind.h
-new file mode 100644
-index 000000000..e19758f1b
---- /dev/null
-+++ b/testcases/kernel/syscalls/bind/libbind.h
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *   Copyright (c) 2019 Martin Doucha <mdoucha@suse.cz>
-+ */
++void tst_get_in_addr(const char *ip_str, struct in_addr *ip)
++{
++	if (inet_pton(AF_INET, ip_str, ip) <= 0)
++		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
++}
 +
-+/*
-+ * Common settings and data types for bind() connection tests
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/un.h>
-+#include <arpa/inet.h>
-+#include <netinet/in.h>
-+#include <netinet/ip.h>
-+
-+#define MAIN_SOCKET_FILE "test.sock"
-+#define ABSTRACT_SOCKET_PATH "\0test.sock"
-+#define PEER_SOCKET_FILE "peer.sock"
-+#define IPV4_ADDRESS "127.0.0.1"
-+#define IPV6_ADDRESS "::1"
-+#define BUFFER_SIZE 128
-+
-+struct test_case {
-+	int type, protocol;
-+	struct sockaddr *address;
-+	socklen_t addrlen;
-+	const char *description;
-+};
++void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6)
++{
++	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
++		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
++}
+diff --git a/testcases/lib/tst_net_iface_prefix.c b/testcases/lib/tst_net_iface_prefix.c
+index a40a8edc2..c9be5cf3b 100644
+--- a/testcases/lib/tst_net_iface_prefix.c
++++ b/testcases/lib/tst_net_iface_prefix.c
+@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
+ 
+ 	prefix_str = strchr(ip_str, '/');
+ 	if (prefix_str) {
+-		prefix = get_prefix(ip_str, is_ipv6);
++		prefix = tst_get_prefix(ip_str, is_ipv6);
+ 		tst_res_comment(TINFO,
+ 			"IP address '%s' contains prefix %d, using it and don't search for iface.\n",
+ 			ip_str, prefix);
+@@ -136,11 +136,12 @@ int main(int argc, char *argv[])
+ 
+ 	/* checks for validity of IP string */
+ 	if (is_ipv6)
+-		get_in6_addr(ip_str, &ip6);
++		tst_get_in6_addr(ip_str, &ip6);
+ 	else
+-		get_in_addr(ip_str, &ip);
++		tst_get_in_addr(ip_str, &ip);
+ 
+-	print_svar_change(is_rhost ? "RHOST_IFACES" : "LHOST_IFACES", iface);
++	tst_print_svar_change(is_rhost ? "RHOST_IFACES" : "LHOST_IFACES",
++		iface);
+ 	if (is_ipv6)
+ 		print_ivar(is_rhost ? "IPV6_RPREFIX" : "IPV6_LPREFIX", prefix);
+ 	else
+diff --git a/testcases/lib/tst_net_ip_prefix.c b/testcases/lib/tst_net_ip_prefix.c
+index 2ac06e724..99da8d405 100644
+--- a/testcases/lib/tst_net_ip_prefix.c
++++ b/testcases/lib/tst_net_ip_prefix.c
+@@ -67,22 +67,22 @@ int main(int argc, char *argv[])
+ 	prefix_str = strchr(ip_str, '/');
+ 
+ 	if (prefix_str)
+-		prefix = get_prefix(ip_str, is_ipv6);
++		prefix = tst_get_prefix(ip_str, is_ipv6);
+ 	else
+ 		prefix = is_ipv6 ? DEFAULT_IPV6_PREFIX : DEFAULT_IPV4_PREFIX;
+ 
+ 	/* checks for validity of IP string */
+ 	if (is_ipv6)
+-		get_in6_addr(ip_str, &ip6);
++		tst_get_in6_addr(ip_str, &ip6);
+ 	else
+-		get_in_addr(ip_str, &ip);
++		tst_get_in_addr(ip_str, &ip);
+ 
+ 	if (is_ipv6) {
+ 		print_ivar(is_rhost ? "IPV6_RPREFIX" : "IPV6_LPREFIX", prefix);
+-		print_svar(is_rhost ? "IPV6_RHOST" : "IPV6_LHOST", ip_str);
++		tst_print_svar(is_rhost ? "IPV6_RHOST" : "IPV6_LHOST", ip_str);
+ 	} else {
+ 		print_ivar(is_rhost ? "IPV4_RPREFIX" : "IPV4_LPREFIX", prefix);
+-		print_svar(is_rhost ? "IPV4_RHOST" : "IPV4_LHOST", ip_str);
++		tst_print_svar(is_rhost ? "IPV4_RHOST" : "IPV4_LHOST", ip_str);
+ 	}
+ 
+ 	exit(EXIT_SUCCESS);
+diff --git a/testcases/lib/tst_net_vars.c b/testcases/lib/tst_net_vars.c
+index 7c5507ed7..10d950942 100644
+--- a/testcases/lib/tst_net_vars.c
++++ b/testcases/lib/tst_net_vars.c
+@@ -217,7 +217,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
+ 			DEFAULT_IPV4_UNUSED_PART2);
+ 	sprintf(buf, "%s.0.0", net_unused);
+ 
+-	get_in_addr(buf, &network);
++	tst_get_in_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv4(ip, &mask, &network))
+ 		return strdup(net_unused);
+@@ -229,7 +229,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
+ 		(rand() % 128) + (((ip->s_addr >> 8) & 0xff) < 128 ? 128 : 0));
+ 	sprintf(buf, "%s.0.0", net_unused);
+ 
+-	get_in_addr(buf, &network);
++	tst_get_in_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv4(ip, &mask, &network))
+ 		return strdup(net_unused);
+@@ -239,7 +239,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
+ 			< 128 ? 128 : 0), DEFAULT_IPV4_UNUSED_PART2);
+ 	sprintf(buf, "%s.0.0", net_unused);
+ 
+-	get_in_addr(buf, &network);
++	tst_get_in_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv4(ip, &mask, &network))
+ 		return strdup(net_unused);
+@@ -281,7 +281,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
+ 			DEFAULT_IPV6_UNUSED_PART2);
+ 	sprintf(buf, "%s::", net_unused);
+ 
+-	get_in6_addr(buf, &network);
++	tst_get_in6_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
+ 		return strdup(net_unused);
+@@ -294,7 +294,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
+ 			DEFAULT_IPV6_UNUSED_PART2);
+ 	sprintf(buf, "%s::", net_unused);
+ 
+-	get_in6_addr(buf, &network);
++	tst_get_in6_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
+ 		return strdup(net_unused);
+@@ -305,7 +305,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
+ 			128 : 0), DEFAULT_IPV6_UNUSED_PART2);
+ 	sprintf(buf, "%s::", net_unused);
+ 
+-	get_in6_addr(buf, &network);
++	tst_get_in6_addr(buf, &network);
+ 
+ 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
+ 		return strdup(net_unused);
+@@ -503,8 +503,8 @@ static void get_ipv4_info(const char *lip_str, const char *rip_str, int lprefix,
+ 	lprefix_round = round_down_prefix(lprefix, 0);
+ 	rprefix_round = round_down_prefix(rprefix, 0);
+ 
+-	get_in_addr(lip_str, &lip);
+-	get_in_addr(rip_str, &rip);
++	tst_get_in_addr(lip_str, &lip);
++	tst_get_in_addr(rip_str, &rip);
+ 
+ 	vars.ipv4_lbroadcast = get_ipv4_broadcast(lip, lprefix);
+ 	vars.ipv4_rbroadcast = get_ipv4_broadcast(rip, rprefix);
+@@ -530,8 +530,8 @@ static void get_ipv6_info(const char *lip_str, const char *rip_str,
+ 	lprefix_round = round_down_prefix(lprefix, 1);
+ 	rprefix_round = round_down_prefix(rprefix, 1);
+ 
+-	get_in6_addr(lip_str, &lip);
+-	get_in6_addr(rip_str, &rip);
++	tst_get_in6_addr(lip_str, &lip);
++	tst_get_in6_addr(rip_str, &rip);
+ 
+ 	vars.ipv6_lnetmask = get_ipv6_netmask(lprefix);
+ 	vars.ipv6_rnetmask = get_ipv6_netmask(rprefix);
+@@ -548,23 +548,23 @@ static void get_ipv6_info(const char *lip_str, const char *rip_str,
+ static void print_vars(int is_ipv6)
+ {
+ 	if (is_ipv6) {
+-		print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
+-		print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
+-		print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
+-		print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
+-		print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
+-		print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
+-		print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
++		tst_print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
++		tst_print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
++		tst_print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
++		tst_print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
++		tst_print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
++		tst_print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
++		tst_print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
+ 	} else {
+-		print_svar("IPV4_LBROADCAST", vars.ipv4_lbroadcast);
+-		print_svar_change("IPV4_RBROADCAST", vars.ipv4_rbroadcast);
+-		print_svar("IPV4_LNETMASK", vars.ipv4_lnetmask);
+-		print_svar_change("IPV4_RNETMASK", vars.ipv4_rnetmask);
+-		print_svar("IPV4_LNETWORK", vars.ipv4_lnetwork);
+-		print_svar("IPV4_RNETWORK", vars.ipv4_rnetwork);
+-		print_svar("LHOST_IPV4_HOST", vars.lhost_ipv4_host);
+-		print_svar("RHOST_IPV4_HOST", vars.rhost_ipv4_host);
+-		print_svar("IPV4_NET16_UNUSED", vars.ipv4_net16_unused);
++		tst_print_svar("IPV4_LBROADCAST", vars.ipv4_lbroadcast);
++		tst_print_svar_change("IPV4_RBROADCAST", vars.ipv4_rbroadcast);
++		tst_print_svar("IPV4_LNETMASK", vars.ipv4_lnetmask);
++		tst_print_svar_change("IPV4_RNETMASK", vars.ipv4_rnetmask);
++		tst_print_svar("IPV4_LNETWORK", vars.ipv4_lnetwork);
++		tst_print_svar("IPV4_RNETWORK", vars.ipv4_rnetwork);
++		tst_print_svar("LHOST_IPV4_HOST", vars.lhost_ipv4_host);
++		tst_print_svar("RHOST_IPV4_HOST", vars.rhost_ipv4_host);
++		tst_print_svar("IPV4_NET16_UNUSED", vars.ipv4_net16_unused);
+ 	}
+ }
+ 
+@@ -586,19 +586,19 @@ int main(int argc, char *argv[])
+ 	rip_str = argv[2];
+ 
+ 	is_ipv6 = !!strchr(lip_str, ':');
+-	lprefix = get_prefix(lip_str, is_ipv6);
+-	rprefix = get_prefix(rip_str, is_ipv6);
++	lprefix = tst_get_prefix(lip_str, is_ipv6);
++	rprefix = tst_get_prefix(rip_str, is_ipv6);
+ 
+ 	if (is_ipv6)
+-		get_in6_addr(lip_str, &ip6);
++		tst_get_in6_addr(lip_str, &ip6);
+ 	else
+-		get_in_addr(lip_str, &ip);
++		tst_get_in_addr(lip_str, &ip);
+ 
+ 	tmp = !!strchr(rip_str, ':');
+ 	if (tmp)
+-		get_in6_addr(rip_str, &ip6);
++		tst_get_in6_addr(rip_str, &ip6);
+ 	else
+-		get_in_addr(rip_str, &ip);
++		tst_get_in_addr(rip_str, &ip);
+ 
+ 	if (is_ipv6 != tmp)
+ 		tst_brk_comment("mixed IPv4 and IPv6 addresses ('%s', '%s')",
 -- 
 2.25.1
 
