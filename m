@@ -1,541 +1,322 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 12 Mar 2020 13:55:43 +0100
-Subject: [LTP] [PATCH v3 1/3] Create separate .c file for include/tst_net.h
-In-Reply-To: <20200312125545.3976-1-mdoucha@suse.cz>
-References: <20200312125545.3976-1-mdoucha@suse.cz>
-Message-ID: <20200312125545.3976-2-mdoucha@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 12 Mar 2020 14:43:00 +0100
+Subject: [LTP] [PATCH] syscalls/clone3: New tests
+In-Reply-To: <08f6f9f8af7b8f999136cc2a30744a8d678d2b5f.1584000268.git.viresh.kumar@linaro.org>
+References: <08f6f9f8af7b8f999136cc2a30744a8d678d2b5f.1584000268.git.viresh.kumar@linaro.org>
+Message-ID: <20200312134300.GB3803@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+Hi!
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  configure.ac                                |  1 +
+>  include/lapi/clone.h                        | 49 ++++++++++++
+>  runtest/syscalls                            |  3 +
+>  testcases/kernel/syscalls/clone3/.gitignore |  2 +
+>  testcases/kernel/syscalls/clone3/Makefile   |  7 ++
+>  testcases/kernel/syscalls/clone3/clone301.c | 67 ++++++++++++++++
+>  testcases/kernel/syscalls/clone3/clone302.c | 86 +++++++++++++++++++++
+>  7 files changed, 215 insertions(+)
+>  create mode 100644 include/lapi/clone.h
+>  create mode 100644 testcases/kernel/syscalls/clone3/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/clone3/Makefile
+>  create mode 100644 testcases/kernel/syscalls/clone3/clone301.c
+>  create mode 100644 testcases/kernel/syscalls/clone3/clone302.c
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 238d1cde85f2..cf89bd8c351e 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -75,6 +75,7 @@ AC_CHECK_HEADERS(fts.h, [have_fts=1])
+>  AC_SUBST(HAVE_FTS_H, $have_fts)
+>  
+>  AC_CHECK_FUNCS([ \
+> +    clone3 \
+>      copy_file_range \
+>      epoll_pwait \
+>      execveat \
+> diff --git a/include/lapi/clone.h b/include/lapi/clone.h
+> new file mode 100644
+> index 000000000000..2b8cbdbe08e0
+> --- /dev/null
+> +++ b/include/lapi/clone.h
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 Linaro Limited. All rights reserved.
+> + * Author: Viresh Kumar <viresh.kumar@linaro.org>
+> + */
+> +
+> +#ifndef LAPI_CLONE_H__
+> +#define LAPI_CLONE_H__
+> +
+> +#include <sys/syscall.h>
+> +#include <linux/types.h>
+> +#include <sched.h>
+> +
+> +#include "config.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#ifndef HAVE_CLONE3
+> +struct clone_args {
+> +	uint64_t __attribute__((aligned(8))) flags;
+> +	uint64_t __attribute__((aligned(8))) pidfd;
+> +	uint64_t __attribute__((aligned(8))) child_tid;
+> +	uint64_t __attribute__((aligned(8))) parent_tid;
+> +	uint64_t __attribute__((aligned(8))) exit_signal;
+> +	uint64_t __attribute__((aligned(8))) stack;
+> +	uint64_t __attribute__((aligned(8))) stack_size;
+> +	uint64_t __attribute__((aligned(8))) tls;
+> +};
+> +
+> +int clone3(struct clone_args *args, size_t size)
+> +{
+> +	return tst_syscall(__NR_clone3, args, size);
+> +}
+> +#endif
+> +
+> +#ifndef CLONE_PIDFD
+> +#define CLONE_PIDFD	0x00001000	/* set if a pidfd should be placed in parent */
+> +#endif
+> +
+> +void clone3_supported_by_kernel(void)
+> +{
+> +	if ((tst_kvercmp(5, 3, 0)) < 0) {
+> +		/* Check if the syscall is backported on an older kernel */
+> +		TEST(syscall(__NR_clone3, NULL, 0));
+> +		if (TST_RET == -1 && TST_ERR == ENOSYS)
+> +			tst_brk(TCONF, "Test not supported on kernel version < v5.3");
+> +	}
+> +}
+> +
+> +#endif /* LAPI_CLONE_H__ */
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 7dd109400075..48015fe15525 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -105,6 +105,9 @@ clone07 clone07
+>  clone08 clone08
+>  clone09 clone09
+>  
+> +clone301 clone301
+> +clone302 clone302
+> +
+>  close01 close01
+>  close02 close02
+>  close08 close08
+> diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+> new file mode 100644
+> index 000000000000..604cb903e33d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clone3/.gitignore
+> @@ -0,0 +1,2 @@
+> +clone301
+> +clone302
+> diff --git a/testcases/kernel/syscalls/clone3/Makefile b/testcases/kernel/syscalls/clone3/Makefile
+> new file mode 100644
+> index 000000000000..18896b6f28c0
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clone3/Makefile
+> @@ -0,0 +1,7 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
+> new file mode 100644
+> index 000000000000..7402a637d679
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clone3/clone301.c
+> @@ -0,0 +1,67 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+> + *
+> + * Basic clone3() test.
+> + */
+> +#define _GNU_SOURCE
+> +
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/clone.h"
+> +
+> +static struct clone_args *args;
+> +static int pidfd, child_tid, parent_tid;
+> +
+> +static struct tcase {
+> +	uint64_t flags;
+> +	int exit_signal;
+> +} tcases[] = {
+> +	{0, SIGCHLD},
+> +	{CLONE_FS, SIGCHLD},
+> +	{CLONE_NEWPID, SIGCHLD},
+> +	{CLONE_PARENT_SETTID | CLONE_CHILD_SETTID | CLONE_PIDFD, SIGCHLD},
+> +};
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	pid_t pid;
+> +	int status;
+> +
+> +	args->flags = tc->flags;
+> +	args->pidfd = (uint64_t)(&pidfd);
+> +	args->child_tid = (uint64_t)(&child_tid);
+> +	args->parent_tid = (uint64_t)(&parent_tid);
+> +	args->exit_signal = tc->exit_signal;
+> +	args->stack = 0;
+> +	args->stack_size = 0;
+> +	args->tls = 0;
+> +
+> +	TEST(pid = clone3(args, sizeof(*args)));
+> +
+> +	if (pid < 0) {
+> +		tst_res(TFAIL | TTERRNO, "clone3() failed (%d)", n);
+> +		return;
+> +	}
+> +
+> +	if (!pid)
+> +		exit(EXIT_SUCCESS);
+> +
+> +	SAFE_WAIT(&status);
+> +
+> +	tst_res(TPASS, "clone3() passed with status:%d, pidfd:%d, ctid:%d, ptid:%d (index %d)",
+> +		WEXITSTATUS(status), pidfd, child_tid, parent_tid, n);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = run,
+> +	.setup = clone3_supported_by_kernel,
+> +	.needs_tmpdir = 1,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&args, .size = sizeof(*args)},
+> +		{},
+> +	}
+> +};
 
-Changes since v1:
-- new patch
+We need root for the CLONE_NEWPID, so I guess that we need .needs_root=1
+added here. I can add that before applying the rest looks good to me.
 
-Changes since v2:
-- Also separate print_svar*()
-- Added tst_ prefix to functions separated into tst_net.c
+Also I guess that we should add test that would check that the pidfd is
+valid, i.e. that it could be used to send a signal to the child process,
+but that could be added later in a subsequent patch.
 
- include/tst_net.h                    | 132 ++----------------------
- lib/tst_net.c                        | 146 +++++++++++++++++++++++++++
- testcases/lib/tst_net_iface_prefix.c |   9 +-
- testcases/lib/tst_net_ip_prefix.c    |  10 +-
- testcases/lib/tst_net_vars.c         |  64 ++++++------
- 5 files changed, 197 insertions(+), 164 deletions(-)
- create mode 100644 lib/tst_net.c
+And the same for the exit signal, we should add a test that the child
+send requested signal to the parent on exit.
 
-diff --git a/include/tst_net.h b/include/tst_net.h
-index e1edc7200..2e9c33dff 100644
---- a/include/tst_net.h
-+++ b/include/tst_net.h
-@@ -4,10 +4,7 @@
-  */
- 
- #include <arpa/inet.h>
--#include <errno.h>
- #include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
- 
- #define MAX_IPV4_PREFIX 32
- #define MAX_IPV6_PREFIX 128
-@@ -21,124 +18,13 @@
- 	fprintf(stderr, "# "); \
- 	tst_brk(TCONF, __VA_ARGS__); } \
- 
--static inline void print_svar(const char *name, const char *val)
--{
--	if (name && val)
--		printf("export %s=\"%s\"\n", name, val);
--}
-+void tst_print_svar(const char *name, const char *val);
-+void tst_print_svar_change(const char *name, const char *val);
- 
--static inline void print_svar_change(const char *name, const char *val)
--{
--	if (name && val)
--		printf("export %s=\"${%s:-%s}\"\n", name, name, val);
--}
--
--/*
-- * Function bit_count is from ipcalc project, ipcalc.c.
-- */
--static inline int bit_count(uint32_t i)
--{
--	int c = 0;
--	unsigned int seen_one = 0;
--
--	while (i > 0) {
--		if (i & 1) {
--			seen_one = 1;
--			c++;
--		} else {
--			if (seen_one)
--				return -1;
--		}
--		i >>= 1;
--	}
--
--	return c;
--}
--
--/*
-- * Function mask2prefix is from ipcalc project, ipcalc.c.
-- */
--static inline int mask2prefix(struct in_addr mask)
--{
--	return bit_count(ntohl(mask.s_addr));
--}
--
--/*
-- * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
-- */
--static inline int ipv4_mask_to_int(const char *prefix)
--{
--	int ret;
--	struct in_addr in;
--
--	ret = inet_pton(AF_INET, prefix, &in);
--	if (ret == 0)
--		return -1;
--
--	return mask2prefix(in);
--}
--
--/*
-- * Function safe_atoi is from ipcalc project, ipcalc.c.
-- */
--static inline int safe_atoi(const char *s, int *ret_i)
--{
--	char *x = NULL;
--	long l;
--
--	errno = 0;
--	l = strtol(s, &x, 0);
--
--	if (!x || x == s || *x || errno)
--		return errno > 0 ? -errno : -EINVAL;
--
--	if ((long)(int)l != l)
--		return -ERANGE;
--
--	*ret_i = (int)l;
--
--	return 0;
--}
--
--/*
-- * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
-- */
--static inline int get_prefix(const char *ip_str, int is_ipv6)
--{
--	char *prefix_str = NULL;
--	int prefix = -1, r;
--
--	prefix_str = strchr(ip_str, '/');
--	if (!prefix_str)
--		return -1;
--
--	*(prefix_str++) = '\0';
--
--	if (!is_ipv6 && strchr(prefix_str, '.'))
--		prefix = ipv4_mask_to_int(prefix_str);
--	else {
--		r = safe_atoi(prefix_str, &prefix);
--		if (r != 0)
--			tst_brk_comment("conversion error: '%s' is not integer",
--					prefix_str);
--	}
--
--	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
--		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
--		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
--				prefix_str);
--
--	return prefix;
--}
--
--static inline void get_in_addr(const char *ip_str, struct in_addr *ip)
--{
--	if (inet_pton(AF_INET, ip_str, ip) <= 0)
--		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
--}
--
--static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
--{
--	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
--		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
--}
-+int tst_bit_count(uint32_t i);
-+int tst_mask2prefix(struct in_addr mask);
-+int tst_ipv4_mask_to_int(const char *prefix);
-+int tst_safe_atoi(const char *s, int *ret_i);
-+int tst_get_prefix(const char *ip_str, int is_ipv6);
-+void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
-+void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
-diff --git a/lib/tst_net.c b/lib/tst_net.c
-new file mode 100644
-index 000000000..bd4396a06
---- /dev/null
-+++ b/lib/tst_net.c
-@@ -0,0 +1,146 @@
-+/*
-+ * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+#include "tst_net.h"
-+
-+void tst_print_svar(const char *name, const char *val)
-+{
-+	if (name && val)
-+		printf("export %s=\"%s\"\n", name, val);
-+}
-+
-+void tst_print_svar_change(const char *name, const char *val)
-+{
-+	if (name && val)
-+		printf("export %s=\"${%s:-%s}\"\n", name, name, val);
-+}
-+
-+/*
-+ * Function bit_count is from ipcalc project, ipcalc.c.
-+ */
-+int tst_bit_count(uint32_t i)
-+{
-+	int c = 0;
-+	unsigned int seen_one = 0;
-+
-+	while (i > 0) {
-+		if (i & 1) {
-+			seen_one = 1;
-+			c++;
-+		} else {
-+			if (seen_one)
-+				return -1;
-+		}
-+		i >>= 1;
-+	}
-+
-+	return c;
-+}
-+
-+/*
-+ * Function mask2prefix is from ipcalc project, ipcalc.c.
-+ */
-+int tst_mask2prefix(struct in_addr mask)
-+{
-+	return tst_bit_count(ntohl(mask.s_addr));
-+}
-+
-+/*
-+ * Function ipv4_mask_to_int is from ipcalc project, ipcalc.c.
-+ */
-+int tst_ipv4_mask_to_int(const char *prefix)
-+{
-+	int ret;
-+	struct in_addr in;
-+
-+	ret = inet_pton(AF_INET, prefix, &in);
-+	if (ret == 0)
-+		return -1;
-+
-+	return tst_mask2prefix(in);
-+}
-+
-+/*
-+ * Function safe_atoi is from ipcalc project, ipcalc.c.
-+ */
-+int tst_safe_atoi(const char *s, int *ret_i)
-+{
-+	char *x = NULL;
-+	long l;
-+
-+	errno = 0;
-+	l = strtol(s, &x, 0);
-+
-+	if (!x || x == s || *x || errno)
-+		return errno > 0 ? -errno : -EINVAL;
-+
-+	if ((long)(int)l != l)
-+		return -ERANGE;
-+
-+	*ret_i = (int)l;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Function get_prefix use code from ipcalc project, str_to_prefix/ipcalc.c.
-+ */
-+int tst_get_prefix(const char *ip_str, int is_ipv6)
-+{
-+	char *prefix_str = NULL;
-+	int prefix = -1, r;
-+
-+	prefix_str = strchr(ip_str, '/');
-+	if (!prefix_str)
-+		return -1;
-+
-+	*(prefix_str++) = '\0';
-+
-+	if (!is_ipv6 && strchr(prefix_str, '.'))
-+		prefix = tst_ipv4_mask_to_int(prefix_str);
-+	else {
-+		r = tst_safe_atoi(prefix_str, &prefix);
-+		if (r != 0)
-+			tst_brk_comment("conversion error: '%s' is not integer",
-+					prefix_str);
-+	}
-+
-+	if (prefix < 0 || ((is_ipv6 && prefix > MAX_IPV6_PREFIX) ||
-+		(!is_ipv6 && prefix > MAX_IPV4_PREFIX)))
-+		tst_brk_comment("bad %s prefix: %s", is_ipv6 ?  "IPv6" : "IPv4",
-+				prefix_str);
-+
-+	return prefix;
-+}
-+
-+void tst_get_in_addr(const char *ip_str, struct in_addr *ip)
-+{
-+	if (inet_pton(AF_INET, ip_str, ip) <= 0)
-+		tst_brk_comment("bad IPv4 address: '%s'", ip_str);
-+}
-+
-+void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6)
-+{
-+	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
-+		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
-+}
-diff --git a/testcases/lib/tst_net_iface_prefix.c b/testcases/lib/tst_net_iface_prefix.c
-index a40a8edc2..c9be5cf3b 100644
---- a/testcases/lib/tst_net_iface_prefix.c
-+++ b/testcases/lib/tst_net_iface_prefix.c
-@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
- 
- 	prefix_str = strchr(ip_str, '/');
- 	if (prefix_str) {
--		prefix = get_prefix(ip_str, is_ipv6);
-+		prefix = tst_get_prefix(ip_str, is_ipv6);
- 		tst_res_comment(TINFO,
- 			"IP address '%s' contains prefix %d, using it and don't search for iface.\n",
- 			ip_str, prefix);
-@@ -136,11 +136,12 @@ int main(int argc, char *argv[])
- 
- 	/* checks for validity of IP string */
- 	if (is_ipv6)
--		get_in6_addr(ip_str, &ip6);
-+		tst_get_in6_addr(ip_str, &ip6);
- 	else
--		get_in_addr(ip_str, &ip);
-+		tst_get_in_addr(ip_str, &ip);
- 
--	print_svar_change(is_rhost ? "RHOST_IFACES" : "LHOST_IFACES", iface);
-+	tst_print_svar_change(is_rhost ? "RHOST_IFACES" : "LHOST_IFACES",
-+		iface);
- 	if (is_ipv6)
- 		print_ivar(is_rhost ? "IPV6_RPREFIX" : "IPV6_LPREFIX", prefix);
- 	else
-diff --git a/testcases/lib/tst_net_ip_prefix.c b/testcases/lib/tst_net_ip_prefix.c
-index 2ac06e724..99da8d405 100644
---- a/testcases/lib/tst_net_ip_prefix.c
-+++ b/testcases/lib/tst_net_ip_prefix.c
-@@ -67,22 +67,22 @@ int main(int argc, char *argv[])
- 	prefix_str = strchr(ip_str, '/');
- 
- 	if (prefix_str)
--		prefix = get_prefix(ip_str, is_ipv6);
-+		prefix = tst_get_prefix(ip_str, is_ipv6);
- 	else
- 		prefix = is_ipv6 ? DEFAULT_IPV6_PREFIX : DEFAULT_IPV4_PREFIX;
- 
- 	/* checks for validity of IP string */
- 	if (is_ipv6)
--		get_in6_addr(ip_str, &ip6);
-+		tst_get_in6_addr(ip_str, &ip6);
- 	else
--		get_in_addr(ip_str, &ip);
-+		tst_get_in_addr(ip_str, &ip);
- 
- 	if (is_ipv6) {
- 		print_ivar(is_rhost ? "IPV6_RPREFIX" : "IPV6_LPREFIX", prefix);
--		print_svar(is_rhost ? "IPV6_RHOST" : "IPV6_LHOST", ip_str);
-+		tst_print_svar(is_rhost ? "IPV6_RHOST" : "IPV6_LHOST", ip_str);
- 	} else {
- 		print_ivar(is_rhost ? "IPV4_RPREFIX" : "IPV4_LPREFIX", prefix);
--		print_svar(is_rhost ? "IPV4_RHOST" : "IPV4_LHOST", ip_str);
-+		tst_print_svar(is_rhost ? "IPV4_RHOST" : "IPV4_LHOST", ip_str);
- 	}
- 
- 	exit(EXIT_SUCCESS);
-diff --git a/testcases/lib/tst_net_vars.c b/testcases/lib/tst_net_vars.c
-index 7c5507ed7..10d950942 100644
---- a/testcases/lib/tst_net_vars.c
-+++ b/testcases/lib/tst_net_vars.c
-@@ -217,7 +217,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
- 			DEFAULT_IPV4_UNUSED_PART2);
- 	sprintf(buf, "%s.0.0", net_unused);
- 
--	get_in_addr(buf, &network);
-+	tst_get_in_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv4(ip, &mask, &network))
- 		return strdup(net_unused);
-@@ -229,7 +229,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
- 		(rand() % 128) + (((ip->s_addr >> 8) & 0xff) < 128 ? 128 : 0));
- 	sprintf(buf, "%s.0.0", net_unused);
- 
--	get_in_addr(buf, &network);
-+	tst_get_in_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv4(ip, &mask, &network))
- 		return strdup(net_unused);
-@@ -239,7 +239,7 @@ static char *get_ipv4_net16_unused(const struct in_addr *ip,
- 			< 128 ? 128 : 0), DEFAULT_IPV4_UNUSED_PART2);
- 	sprintf(buf, "%s.0.0", net_unused);
- 
--	get_in_addr(buf, &network);
-+	tst_get_in_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv4(ip, &mask, &network))
- 		return strdup(net_unused);
-@@ -281,7 +281,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
- 			DEFAULT_IPV6_UNUSED_PART2);
- 	sprintf(buf, "%s::", net_unused);
- 
--	get_in6_addr(buf, &network);
-+	tst_get_in6_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
- 		return strdup(net_unused);
-@@ -294,7 +294,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
- 			DEFAULT_IPV6_UNUSED_PART2);
- 	sprintf(buf, "%s::", net_unused);
- 
--	get_in6_addr(buf, &network);
-+	tst_get_in6_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
- 		return strdup(net_unused);
-@@ -305,7 +305,7 @@ static char *get_ipv6_net32_unused(const struct in6_addr *ip6,
- 			128 : 0), DEFAULT_IPV6_UNUSED_PART2);
- 	sprintf(buf, "%s::", net_unused);
- 
--	get_in6_addr(buf, &network);
-+	tst_get_in6_addr(buf, &network);
- 
- 	if (!is_in_subnet_ipv6(ip6, &mask, &network))
- 		return strdup(net_unused);
-@@ -503,8 +503,8 @@ static void get_ipv4_info(const char *lip_str, const char *rip_str, int lprefix,
- 	lprefix_round = round_down_prefix(lprefix, 0);
- 	rprefix_round = round_down_prefix(rprefix, 0);
- 
--	get_in_addr(lip_str, &lip);
--	get_in_addr(rip_str, &rip);
-+	tst_get_in_addr(lip_str, &lip);
-+	tst_get_in_addr(rip_str, &rip);
- 
- 	vars.ipv4_lbroadcast = get_ipv4_broadcast(lip, lprefix);
- 	vars.ipv4_rbroadcast = get_ipv4_broadcast(rip, rprefix);
-@@ -530,8 +530,8 @@ static void get_ipv6_info(const char *lip_str, const char *rip_str,
- 	lprefix_round = round_down_prefix(lprefix, 1);
- 	rprefix_round = round_down_prefix(rprefix, 1);
- 
--	get_in6_addr(lip_str, &lip);
--	get_in6_addr(rip_str, &rip);
-+	tst_get_in6_addr(lip_str, &lip);
-+	tst_get_in6_addr(rip_str, &rip);
- 
- 	vars.ipv6_lnetmask = get_ipv6_netmask(lprefix);
- 	vars.ipv6_rnetmask = get_ipv6_netmask(rprefix);
-@@ -548,23 +548,23 @@ static void get_ipv6_info(const char *lip_str, const char *rip_str,
- static void print_vars(int is_ipv6)
- {
- 	if (is_ipv6) {
--		print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
--		print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
--		print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
--		print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
--		print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
--		print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
--		print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
-+		tst_print_svar("IPV6_LNETMASK", vars.ipv6_lnetmask);
-+		tst_print_svar_change("IPV6_RNETMASK", vars.ipv6_rnetmask);
-+		tst_print_svar("IPV6_LNETWORK", vars.ipv6_lnetwork);
-+		tst_print_svar("IPV6_RNETWORK", vars.ipv6_rnetwork);
-+		tst_print_svar("LHOST_IPV6_HOST", vars.lhost_ipv6_host);
-+		tst_print_svar("RHOST_IPV6_HOST", vars.rhost_ipv6_host);
-+		tst_print_svar("IPV6_NET32_UNUSED", vars.ipv6_net32_unused);
- 	} else {
--		print_svar("IPV4_LBROADCAST", vars.ipv4_lbroadcast);
--		print_svar_change("IPV4_RBROADCAST", vars.ipv4_rbroadcast);
--		print_svar("IPV4_LNETMASK", vars.ipv4_lnetmask);
--		print_svar_change("IPV4_RNETMASK", vars.ipv4_rnetmask);
--		print_svar("IPV4_LNETWORK", vars.ipv4_lnetwork);
--		print_svar("IPV4_RNETWORK", vars.ipv4_rnetwork);
--		print_svar("LHOST_IPV4_HOST", vars.lhost_ipv4_host);
--		print_svar("RHOST_IPV4_HOST", vars.rhost_ipv4_host);
--		print_svar("IPV4_NET16_UNUSED", vars.ipv4_net16_unused);
-+		tst_print_svar("IPV4_LBROADCAST", vars.ipv4_lbroadcast);
-+		tst_print_svar_change("IPV4_RBROADCAST", vars.ipv4_rbroadcast);
-+		tst_print_svar("IPV4_LNETMASK", vars.ipv4_lnetmask);
-+		tst_print_svar_change("IPV4_RNETMASK", vars.ipv4_rnetmask);
-+		tst_print_svar("IPV4_LNETWORK", vars.ipv4_lnetwork);
-+		tst_print_svar("IPV4_RNETWORK", vars.ipv4_rnetwork);
-+		tst_print_svar("LHOST_IPV4_HOST", vars.lhost_ipv4_host);
-+		tst_print_svar("RHOST_IPV4_HOST", vars.rhost_ipv4_host);
-+		tst_print_svar("IPV4_NET16_UNUSED", vars.ipv4_net16_unused);
- 	}
- }
- 
-@@ -586,19 +586,19 @@ int main(int argc, char *argv[])
- 	rip_str = argv[2];
- 
- 	is_ipv6 = !!strchr(lip_str, ':');
--	lprefix = get_prefix(lip_str, is_ipv6);
--	rprefix = get_prefix(rip_str, is_ipv6);
-+	lprefix = tst_get_prefix(lip_str, is_ipv6);
-+	rprefix = tst_get_prefix(rip_str, is_ipv6);
- 
- 	if (is_ipv6)
--		get_in6_addr(lip_str, &ip6);
-+		tst_get_in6_addr(lip_str, &ip6);
- 	else
--		get_in_addr(lip_str, &ip);
-+		tst_get_in_addr(lip_str, &ip);
- 
- 	tmp = !!strchr(rip_str, ':');
- 	if (tmp)
--		get_in6_addr(rip_str, &ip6);
-+		tst_get_in6_addr(rip_str, &ip6);
- 	else
--		get_in_addr(rip_str, &ip);
-+		tst_get_in_addr(rip_str, &ip);
- 
- 	if (is_ipv6 != tmp)
- 		tst_brk_comment("mixed IPv4 and IPv6 addresses ('%s', '%s')",
+> diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
+> new file mode 100644
+> index 000000000000..5c3e001d088d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/clone3/clone302.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+> + *
+> + * Basic clone3() test to check various failures.
+> + */
+> +#define _GNU_SOURCE
+> +
+> +#include <stdlib.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/clone.h"
+> +
+> +static struct clone_args *valid_args, *invalid_args;
+> +unsigned long stack;
+> +
+> +static struct tcase {
+> +	const char *name;
+> +	struct clone_args **args;
+> +	size_t size;
+> +	uint64_t flags;
+> +	int *pidfd;
+> +	int *child_tid;
+> +	int *parent_tid;
+> +	int exit_signal;
+> +	unsigned long stack;
+> +	unsigned long stack_size;
+> +	unsigned long tls;
+> +	int exp_errno;
+> +} tcases[] = {
+> +	{"invalid args", &invalid_args, sizeof(*valid_args), 0, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EFAULT},
+> +	{"zero size", &valid_args, 0, 0, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+> +	{"short size", &valid_args, sizeof(*valid_args) - 1, 0, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+> +	{"extra size", &valid_args, sizeof(*valid_args) + 1, 0, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EFAULT},
+> +	{"sighand-no-VM", &valid_args, sizeof(*valid_args), CLONE_SIGHAND, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+> +	{"thread-no-sighand", &valid_args, sizeof(*valid_args), CLONE_THREAD, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+> +	{"fs-newns", &valid_args, sizeof(*valid_args), CLONE_FS | CLONE_NEWNS, NULL, NULL, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+> +	{"zero-stack-size", &valid_args, sizeof(*valid_args), 0, NULL, NULL, NULL, SIGCHLD, (unsigned long)&stack, 0, 0, EINVAL},
+> +	{"invalid-stack", &valid_args, sizeof(*valid_args), 0, NULL, NULL, NULL, SIGCHLD, 0, 4, 0, EINVAL},
+
+What about invalid exit signal? I guess that signal is 32bit so anything
+that has non-zero bits in upper 32bits of the exit_signal should yield
+EINVAL as well.
+
+Also all pidfd, child_tid, and parent_tid should be tested with invalid
+pointers right?
+
+> +};
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	struct clone_args *args = *tc->args;
+> +
+> +	if (args) {
+> +		args->flags = tc->flags;
+> +		args->pidfd = (uint64_t)(tc->pidfd);
+> +		args->child_tid = (uint64_t)(tc->child_tid);
+> +		args->parent_tid = (uint64_t)(tc->parent_tid);
+> +		args->exit_signal = tc->exit_signal;
+> +		args->stack = tc->stack;
+> +		args->stack_size = tc->stack_size;
+> +		args->tls = tc->tls;
+> +	}
+> +
+> +	TEST(clone3(args, tc->size));
+> +
+> +	if (!TST_RET)
+> +		exit(EXIT_SUCCESS);
+> +
+> +	if (TST_RET >= 0) {
+> +		tst_res(TFAIL, "%s: clone3() passed unexpectedly", tc->name);
+> +		return;
+> +	}
+> +
+> +	if (tc->exp_errno != TST_ERR) {
+> +		tst_res(TFAIL | TTERRNO, "%s: clone3() should fail with %s",
+> +			tc->name, tst_strerrno(tc->exp_errno));
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS | TTERRNO, "%s: clone3() failed as expected", tc->name);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = run,
+> +	.setup = clone3_supported_by_kernel,
+> +	.needs_tmpdir = 1,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&valid_args, .size = sizeof(*valid_args)},
+> +		{},
+> +	}
+> +};
+> -- 
+> 2.21.0.rc0.269.g1a574e7a288b
+> 
+
 -- 
-2.25.1
-
+Cyril Hrubis
+chrubis@suse.cz
