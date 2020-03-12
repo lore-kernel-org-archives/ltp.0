@@ -1,63 +1,129 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Mar 2020 12:35:34 +0100
-Subject: [LTP] [PATCH V5 01/10] tst_device: Add tst_is_mounted() helper
-In-Reply-To: <20200312110340.y7mcfktrlgyzfui6@vireshk-i7>
-References: <cover.1582779464.git.viresh.kumar@linaro.org>
- <2071e47d7d8cb3e7f8bc6558e86999eddd9c3762.1582779464.git.viresh.kumar@linaro.org>
- <20200306124546.GA3375@rei.lan>
- <CAEemH2drJyp5kU21jS7Ej+-q6hTysb5oDNM+3KiWsmPoLAbMQA@mail.gmail.com>
- <20200311102620.GB3802@rei.lan>
- <20200312110340.y7mcfktrlgyzfui6@vireshk-i7>
-Message-ID: <20200312113534.GA28962@dell5510>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 12 Mar 2020 17:31:00 +0530
+Subject: [LTP] [PATCH V6 00/10] Add new LTP tests related to fsmount family
+ of syscalls
+Message-ID: <cover.1584014172.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+Hello,
 
-> Is everyone fine with this code now :)
+Here is the sixth version of these patches.  This is tested on both ARM
+and X86 platforms now and no more errors are seen with it.
 
-> int tst_is_mounted(const char *path)
-> {
->         char line[PATH_MAX];
->         FILE *file;
->         int ret = 0;
+V5->V6:
+- A new implementation of tst_is_mounted() and a new helper
+  tst_is_mounted_at_tmpdir().
+- Add cleanup() callback in fsconfig01.c
+- Call umount() only if tst_is_mounted_at_tmpdir() passes.
+- Call close() in fsopen_supported_by_kernel().
+- Use /dev/foo instead of /dev/sda1
 
->         file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
+V4->V5:
+- s/TBROK/TFAIL/ in run(int n) callbacks.
+- Many conversions like TEST(fd = fsopen());
+- A new implementation of tst_is_mounted().
+- fspick.h created to take care of duplicate code.
+- tmp directory not removed from code as that will be auto done anyway.
+- Other minor improvements.
 
->         while (fgets(line, sizeof(line), file)) {
->                 if (strstr(line, path) != NULL) {
->                         ret = 1;
->                         break;
->                 }
->         }
+V3->V4:
+- Only the first patch was resent after fixing git log and minor code
+  modifications.
 
->         SAFE_FCLOSE(NULL, file);
+V2->V3:
+- Fix errors with xfs.
+- Add macros to define test names.
+- Continue with multiple iteration tests on failures, instead of
+  returning early.
+- Set value of is_mounted in open_tree patch.
+- Rename tst_ismount() and make it return 1 on success.
+- Fix various formatting issues.
+- Add all reviewed/ack tags.
 
->         if (!ret)
->                 tst_resm(TINFO, "No device is mounted at %s", path);
+V1->V2:
+- Lots of changes, really :)
+- Rebased over Zorro's work with fsmount.
+- The success tests are modified to test all possible flags, attributes
+  as well.
+- Create tst_ismount() and fsopen_supported_by_kernel() helpers.
+- Verify if mount is successful or not using tst_ismount().
+- Remove min_kver and instead check if older kernels have patches
+  backported or not.
+- Test on multiple filesystems.
+- Better handling of failures during setup/run callbacks.
+- One of the patches around fsmount.h is already merged, dropped it now.
+- Other minor cleanups.
 
->         return ret;
-> }
 
-> int tst_is_mounted_at_tmpdir(const char *path)
-> {
->         char cdir[PATH_MAX], mpath[PATH_MAX];
->         int ret;
+Viresh Kumar (10):
+  tst_device: Add tst_is_mounted() and tst_is_mounted_at_tmpdir()
+    helpers
+  lapi/fsmount.h: Add fsopen_supported_by_kernel()
+  lapi/fsmount.h: Include "lapi/fcntl.h"
+  syscalls/fsopen: New tests
+  syscalls/fsconfig: New tests
+  syscalls/fsmount: Improve fsmount01 test
+  syscalls/fsmount: Add failure tests
+  syscalls/move_mount: New tests
+  syscalls/fspick: New tests
+  syscalls/open_tree: New tests
 
->         if (!getcwd(cdir, PATH_MAX))
->                 return 0;
-LGTM. I guess we can ignore this, but maybe tst_res(TWARN | TERRNO, "..."),
-could be added here. But maybe it's not important.
+ include/lapi/fsmount.h                        |  13 +-
+ include/tst_device.h                          |   7 +
+ lib/tst_device.c                              |  44 +++++++
+ runtest/syscalls                              |  16 +++
+ testcases/kernel/syscalls/fsconfig/.gitignore |   2 +
+ testcases/kernel/syscalls/fsconfig/Makefile   |   6 +
+ .../kernel/syscalls/fsconfig/fsconfig01.c     |  91 +++++++++++++
+ .../kernel/syscalls/fsconfig/fsconfig02.c     |  99 ++++++++++++++
+ testcases/kernel/syscalls/fsmount/.gitignore  |   1 +
+ testcases/kernel/syscalls/fsmount/fsmount01.c | 121 +++++++++---------
+ testcases/kernel/syscalls/fsmount/fsmount02.c |  80 ++++++++++++
+ testcases/kernel/syscalls/fsopen/.gitignore   |   2 +
+ testcases/kernel/syscalls/fsopen/Makefile     |   6 +
+ testcases/kernel/syscalls/fsopen/fsopen01.c   |  80 ++++++++++++
+ testcases/kernel/syscalls/fsopen/fsopen02.c   |  58 +++++++++
+ testcases/kernel/syscalls/fspick/.gitignore   |   2 +
+ testcases/kernel/syscalls/fspick/Makefile     |   6 +
+ testcases/kernel/syscalls/fspick/fspick.h     |  60 +++++++++
+ testcases/kernel/syscalls/fspick/fspick01.c   |  62 +++++++++
+ testcases/kernel/syscalls/fspick/fspick02.c   |  54 ++++++++
+ .../kernel/syscalls/move_mount/.gitignore     |   2 +
+ testcases/kernel/syscalls/move_mount/Makefile |   6 +
+ .../kernel/syscalls/move_mount/move_mount01.c |  83 ++++++++++++
+ .../kernel/syscalls/move_mount/move_mount02.c |  92 +++++++++++++
+ .../kernel/syscalls/open_tree/.gitignore      |   2 +
+ testcases/kernel/syscalls/open_tree/Makefile  |   6 +
+ .../kernel/syscalls/open_tree/open_tree01.c   | 109 ++++++++++++++++
+ .../kernel/syscalls/open_tree/open_tree02.c   | 105 +++++++++++++++
+ 28 files changed, 1155 insertions(+), 60 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fsconfig/.gitignore
+ create mode 100644 testcases/kernel/syscalls/fsconfig/Makefile
+ create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig01.c
+ create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig02.c
+ create mode 100644 testcases/kernel/syscalls/fsmount/fsmount02.c
+ create mode 100644 testcases/kernel/syscalls/fsopen/.gitignore
+ create mode 100644 testcases/kernel/syscalls/fsopen/Makefile
+ create mode 100644 testcases/kernel/syscalls/fsopen/fsopen01.c
+ create mode 100644 testcases/kernel/syscalls/fsopen/fsopen02.c
+ create mode 100644 testcases/kernel/syscalls/fspick/.gitignore
+ create mode 100644 testcases/kernel/syscalls/fspick/Makefile
+ create mode 100644 testcases/kernel/syscalls/fspick/fspick.h
+ create mode 100644 testcases/kernel/syscalls/fspick/fspick01.c
+ create mode 100644 testcases/kernel/syscalls/fspick/fspick02.c
+ create mode 100644 testcases/kernel/syscalls/move_mount/.gitignore
+ create mode 100644 testcases/kernel/syscalls/move_mount/Makefile
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount01.c
+ create mode 100644 testcases/kernel/syscalls/move_mount/move_mount02.c
+ create mode 100644 testcases/kernel/syscalls/open_tree/.gitignore
+ create mode 100644 testcases/kernel/syscalls/open_tree/Makefile
+ create mode 100644 testcases/kernel/syscalls/open_tree/open_tree01.c
+ create mode 100644 testcases/kernel/syscalls/open_tree/open_tree02.c
 
->         ret = snprintf(mpath, PATH_MAX, "%s/%s", cdir, path);
->         if (ret < 0 || ret >= PATH_MAX)
->                 return 0;
+-- 
+2.21.0.rc0.269.g1a574e7a288b
 
->         return tst_is_mounted(mpath);
-> }
-
-Kind regards,
-Petr
