@@ -1,14 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Mar 2020 13:09:43 +0100
-Subject: [LTP] [PATCH V6 05/10] syscalls/fsconfig: New tests
-In-Reply-To: <20200313084853.lnfi4dnyoht5yupi@vireshk-i7>
-References: <cover.1584014172.git.viresh.kumar@linaro.org>
- <824c287cd06190cf0a489535fd4617aff8742b03.1584014172.git.viresh.kumar@linaro.org>
- <20200312191025.GD3803@rei.lan>
- <20200313040012.bvkzfbxlvrwkkltd@vireshk-i7>
- <20200313080334.GA6597@rei.lan>
- <20200313084853.lnfi4dnyoht5yupi@vireshk-i7>
-Message-ID: <20200313120943.GA32033@dell5510>
+Date: Fri, 13 Mar 2020 13:27:40 +0100
+Subject: [LTP] [PATCH V7 10/10] syscalls/open_tree: New tests
+In-Reply-To: <928553e5fd3518fccb363fb8b6ad079ac3c75fd2.1584090119.git.viresh.kumar@linaro.org>
+References: <6648a9106e367d370012c8ee1d0d81c369779ba8.1584014172.git.viresh.kumar@linaro.org>
+ <928553e5fd3518fccb363fb8b6ad079ac3c75fd2.1584090119.git.viresh.kumar@linaro.org>
+Message-ID: <20200313122740.GB32033@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,9 +13,10 @@ To: ltp@lists.linux.it
 
 Hi Viresh,
 
-> I didn't knew about the -i option, yeah your change makes sense now :)
-NOTE: all test (both C and shell) should support -h (inherited from the
-library), to display options.
+> V6->V7:
+> - Remove the temporary directory from cleanup routine to avoid test
+>   failure.
+Thanks for a quick fix, merged these 2 remaining tests.
 
 Kind regards,
 Petr
