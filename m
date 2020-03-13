@@ -1,65 +1,29 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 13 Mar 2020 09:30:12 +0530
-Subject: [LTP] [PATCH V6 05/10] syscalls/fsconfig: New tests
-In-Reply-To: <20200312191025.GD3803@rei.lan>
-References: <cover.1584014172.git.viresh.kumar@linaro.org>
- <824c287cd06190cf0a489535fd4617aff8742b03.1584014172.git.viresh.kumar@linaro.org>
- <20200312191025.GD3803@rei.lan>
-Message-ID: <20200313040012.bvkzfbxlvrwkkltd@vireshk-i7>
+Date: Fri, 13 Mar 2020 09:49:47 +0530
+Subject: [LTP] [PATCH] syscalls/clone3: New tests
+In-Reply-To: <20200312134300.GB3803@rei.lan>
+References: <08f6f9f8af7b8f999136cc2a30744a8d678d2b5f.1584000268.git.viresh.kumar@linaro.org>
+ <20200312134300.GB3803@rei.lan>
+Message-ID: <20200313041947.2ua6abqerhdo6wfv@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12-03-20, 20:10, Cyril Hrubis wrote:
-> Hi!
-> Pushed with two minor changes:
-> 
-> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> index d05350ce2..aea6db822 100644
-> --- a/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> @@ -77,6 +77,8 @@ static void run(void)
->                 SAFE_UMOUNT(MNTPOINT);
->                 tst_res(TPASS, "fsconfig() passed");
->         }
-> +
-> +       SAFE_CLOSE(fd);
+On 12-03-20, 14:43, Cyril Hrubis wrote:
+> Also all pidfd, child_tid, and parent_tid should be tested with invalid
+> pointers right?
 
-This isn't required as cleanup() routine is taking care of it and this
-is a test_all type test.
+I tried this but here is the problem ..
 
->  }
-> 
-> We need to close the fd here, because the test will run out of file
-> descriptors for large enough -i parameter, since cleanup is executed
-> only at the test end. Also note that SAFE_CLOSE() sets the fd to -1 so
-> that cleanup is no-op unless we trigger some of the tst_brk()
-> statements.
-> 
->  static struct tst_test test = {
-> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig02.c b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> index b07a5f3ab..586524f14 100644
-> --- a/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> @@ -94,6 +94,7 @@ static struct tst_test test = {
->         .test = run,
->         .setup = setup,
->         .cleanup = cleanup,
-> +       .needs_tmpdir = 1,
+- pidfd: Kernel doesn't check this pointer and we get EFAULT.
+- child_tid: Kernel checks for valid pointer and doesn't use the
+  variable if NULL, so test passes unexpectedly.
+- parent_tid: Kernel doesn't verify the pointer, but doesn't return
+  the error code properly and so test passes unexpectedly.
 
-I probably didn't add this as we weren't mounting anything here.
-
->         .needs_root = 1,
->         .needs_device = 1,
->  };
-> 
-> The test creates a file hence it has to request temporary directory.
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+And so I wasn't sure on what we should be doing really.
 
 -- 
 viresh
