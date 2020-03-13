@@ -1,39 +1,27 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 13 Mar 2020 16:42:40 +0800
-Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
-In-Reply-To: <0c8d0d4a-8eca-bd42-4c88-5cb7b87ba861@suse.cz>
-References: <20200224100932.10349-1-mdoucha@suse.cz>
- <20200226135748.GD24080@rei> <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
- <20200227141356.GA29089@rei>
- <f3cbdd28-e89c-02e1-7f4b-0b62278b6edb@cn.fujitsu.com>
- <0c8d0d4a-8eca-bd42-4c88-5cb7b87ba861@suse.cz>
-Message-ID: <233e1d29-b433-ce77-f361-a5f94bb7493b@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Mar 2020 09:48:35 +0100
+Subject: [LTP] [PATCH V6 10/10] syscalls/open_tree: New tests
+In-Reply-To: <6648a9106e367d370012c8ee1d0d81c369779ba8.1584014172.git.viresh.kumar@linaro.org>
+References: <cover.1584014172.git.viresh.kumar@linaro.org>
+ <6648a9106e367d370012c8ee1d0d81c369779ba8.1584014172.git.viresh.kumar@linaro.org>
+Message-ID: <20200313084835.GA15154@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin
+Hi Viresh,
 
+> diff --git a/testcases/kernel/syscalls/open_tree/open_tree01.c b/testcases/kernel/syscalls/open_tree/open_tree01.c
+...
+> +static void setup(void)
+> +{
+> +	fsopen_supported_by_kernel();
+> +	SAFE_MKDIR(OT_MNTPOINT, 0777);
+This fails, because setup (and cleanup) is run fo each filesystem. Therefore it
+needs to be created just once.
+safe_macros.c:172: BROK: open_tree01.c:27: mkdir(ot_mntpoint,0777) failed: EEXIST (17)
 
-> On 13. 03. 20 5:31, Yang Xu wrote:
->> Hi Cyril, Martin
->>
->> When I test this case by using btrfs, this case failed as below:
->>
->> ...
->>
->> It failed when we fill fs and not using cow. Is it a known issue(I see
->> the previous eamils, but found nothing)?
->> I also used 5.6-rc3 kernel to test, it still failed.
-> 
-> Yes, this is a known issue. Upstream kernel fix is currently being reviewed:
-> https://patchwork.kernel.org/patch/11357415/
-Thanks for a quick response.
-
-Best Regards
-Yang Xu
-> 
-
-
+Kind regards,
+Petr
