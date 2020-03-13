@@ -1,47 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Mar 2020 09:03:34 +0100
-Subject: [LTP] [PATCH V6 05/10] syscalls/fsconfig: New tests
-In-Reply-To: <20200313040012.bvkzfbxlvrwkkltd@vireshk-i7>
-References: <cover.1584014172.git.viresh.kumar@linaro.org>
- <824c287cd06190cf0a489535fd4617aff8742b03.1584014172.git.viresh.kumar@linaro.org>
- <20200312191025.GD3803@rei.lan>
- <20200313040012.bvkzfbxlvrwkkltd@vireshk-i7>
-Message-ID: <20200313080334.GA6597@rei.lan>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 13 Mar 2020 09:17:01 +0100
+Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
+In-Reply-To: <f3cbdd28-e89c-02e1-7f4b-0b62278b6edb@cn.fujitsu.com>
+References: <20200224100932.10349-1-mdoucha@suse.cz>
+ <20200226135748.GD24080@rei> <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
+ <20200227141356.GA29089@rei>
+ <f3cbdd28-e89c-02e1-7f4b-0b62278b6edb@cn.fujitsu.com>
+Message-ID: <0c8d0d4a-8eca-bd42-4c88-5cb7b87ba861@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> > index d05350ce2..aea6db822 100644
-> > --- a/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> > +++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-> > @@ -77,6 +77,8 @@ static void run(void)
-> >                 SAFE_UMOUNT(MNTPOINT);
-> >                 tst_res(TPASS, "fsconfig() passed");
-> >         }
-> > +
-> > +       SAFE_CLOSE(fd);
+On 13. 03. 20 5:31, Yang Xu wrote:
+> Hi Cyril, Martin
 > 
-> This isn't required as cleanup() routine is taking care of it and this
-> is a test_all type test.
+> When I test this case by using btrfs, this case failed as below:
+> 
+> ...
+> 
+> It failed when we fill fs and not using cow. Is it a known issue(I see
+> the previous eamils, but found nothing)?
+> I also used 5.6-rc3 kernel to test, it still failed.
 
-It _is_, I've tried top explain in the paragraph below, just run the
-test with large enough -i, sooner or late the test will run out of file
-descriptiors and then it will fail.
-
-The key here is that the run() function can be called repeatedly but
-setup() and cleanup() are called only once at the start and at the end
-of the test.
-
-> > We need to close the fd here, because the test will run out of file
-> > descriptors for large enough -i parameter, since cleanup is executed
-> > only at the test end. Also note that SAFE_CLOSE() sets the fd to -1 so
-> > that cleanup is no-op unless we trigger some of the tst_brk()
-> > statements.
+Yes, this is a known issue. Upstream kernel fix is currently being reviewed:
+https://patchwork.kernel.org/patch/11357415/
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
