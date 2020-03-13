@@ -1,102 +1,69 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 13 Mar 2020 09:54:11 +0530
-Subject: [LTP] [PATCH V2] syscalls/openat2: New tests
-In-Reply-To: <20200311070845.wx5w7cxftzx5m2sx@vireshk-i7>
-References: <6b3d4c2c92b4a4e6eeef708ac181b57cf7affda4.1583233870.git.viresh.kumar@linaro.org>
- <20200306144603.GA31015@rei.lan>
- <20200311070845.wx5w7cxftzx5m2sx@vireshk-i7>
-Message-ID: <20200313042411.rfscl67p6lq3xve2@vireshk-i7>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 13 Mar 2020 12:31:37 +0800
+Subject: [LTP] [PATCH v5] Add test for misaligned fallocate()
+In-Reply-To: <20200227141356.GA29089@rei>
+References: <20200224100932.10349-1-mdoucha@suse.cz>
+ <20200226135748.GD24080@rei> <0d875613-07a4-b9fe-9c83-76c2e403d6dc@suse.cz>
+ <20200227141356.GA29089@rei>
+Message-ID: <f3cbdd28-e89c-02e1-7f4b-0b62278b6edb@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11-03-20, 12:38, Viresh Kumar wrote:
-> On 06-03-20, 15:46, Cyril Hrubis wrote:
-> > > diff --git a/testcases/kernel/syscalls/openat2/openat202.c b/testcases/kernel/syscalls/openat2/openat202.c
-> > > new file mode 100644
-> > > index 000000000000..504878277f7e
-> > > --- /dev/null
-> > > +++ b/testcases/kernel/syscalls/openat2/openat202.c
-> > > @@ -0,0 +1,86 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > +/*
-> > > + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> > > + *
-> > > + * openat2() tests with various resolve flags.
-> > > + */
-> > > +#include "tst_test.h"
-> > > +#include "lapi/openat2.h"
-> > > +
-> > > +#define FOO_SYMLINK "foo_symlink"
-> > > +
-> > > +static struct open_how *how;
-> > > +
-> > > +static struct tcase {
-> > > +	const char *name;
-> > > +	const char *pathname;
-> > > +	uint64_t resolve;
-> > > +	int exp_errno;
-> > > +} tcases[] = {
-> > > +	/* Success cases */
-> > > +	{"open /proc/version", "/proc/version", 0, 0},
-> > > +	{"open magiclinks", "/proc/self/exe", 0, 0},
-> > > +	{"open symlinks", FOO_SYMLINK, 0, 0},
-> > 
-> > Wouldn't it be easier if we added these to the first test and keep this
-> > one failures only?
-> 
-> I thought about that earlier and kept it this way as this file is only
-> for testing the resolve flags. Else the success cases could be added
-> to openat201.c and failure to openat203.c itself.
-> 
-> This also helps in understanding (or noticing), that the test only
-> changes the value of the resolve flag and we get an error. The first
-> test plays with a lot of variables and so it may not be best to do it
-> there as it would be a bit less readable.
-> 
-> > > +	/* Failure cases */
-> > > +	{"resolve-no-xdev", "/proc/version", RESOLVE_NO_XDEV, EXDEV},
-> > > +	{"resolve-no-magiclinks", "/proc/self/exe", RESOLVE_NO_MAGICLINKS, ELOOP},
-> > > +	{"resolve-no-symlinks", FOO_SYMLINK, RESOLVE_NO_SYMLINKS, ELOOP},
-> > > +	{"resolve-beneath", "/proc/version", RESOLVE_BENEATH, EXDEV},
-> > > +	{"resolve-no-in-root", "/proc/version", RESOLVE_IN_ROOT, ENOENT},
-> 
-> > > +static struct tcase {
-> > > +	const char *name;
-> > > +	int dfd;
-> > > +	const char *pathname;
-> > > +	uint64_t flags;
-> > > +	uint64_t mode;
-> > > +	uint64_t resolve;
-> > > +	struct open_how **how;
-> > > +	size_t size;
-> > > +	int exp_errno;
-> > > +} tcases[] = {
-> > > +	{"invalid-dfd", -1, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how), EBADF},
-> > > +	{"invalid-pathname", AT_FDCWD, NULL, O_RDONLY | O_CREAT, S_IRUSR, 0, &how, sizeof(*how), EFAULT},
-> > > +	{"invalid-flags", AT_FDCWD, TEST_FILE, O_RDONLY, S_IWUSR, 0, &how, sizeof(*how), EINVAL},
-> > > +	{"invalid-mode", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, -1, 0, &how, sizeof(*how), EINVAL},
-> > > +	{"invalid-resolve", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, -1, &how, sizeof(*how), EINVAL},
-> > > +	{"invalid-size-zero", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, 0, EINVAL},
-> > > +	{"invalid-size-small", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how) - 1, EINVAL},
-> > > +	{"invalid-size-big", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, &how, sizeof(*how) + 1, EFAULT},
-> > > +	{"invalid-size-big-with-pad", AT_FDCWD, TEST_FILE, O_RDWR | O_CREAT, S_IRWXU, 0, (struct open_how **)&phow, sizeof(*how) + 1, E2BIG},
-> > 
-> > Here as well +8.
-> 
-> I kept this as 1 intentionally despite the fact that pad is 8 bytes
-> long. The last 2 tests have size set to (sizeof(*how) + 1) now and the
-> only difference is that we have provided pad of X number of bytes in
-> one case and no pad in the other case. This gives us different error
-> numbers based on difference in the pad available. If I use +8 here,
-> then there are two factors which are different, the structure and the
-> number of bytes we are sending in size and we can't be certain about
-> why we got a different error number.
+Hi Cyril, Martin
 
-@Cyril: I am waiting for your response before sending the next version
-here. Thanks.
+When I test this case by using btrfs, this case failed as below:
 
--- 
-viresh
+fallocate06.c:174: CONF: File system does not support copy-on-write
+tst_test.c:1290: INFO: Testing on btrfs
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+tst_test.c:1229: INFO: Timeout per run is 0h 05m 00s
+fallocate06.c:117: INFO: Copy-on-write is supported
+fallocate06.c:168: INFO: Case 1. Fill FS: no; Use copy on write: no
+fallocate06.c:157: PASS: write() successful
+fallocate06.c:201: PASS: Misaligned allocation works as expected
+fallocate06.c:157: PASS: fallocate(FALLOC_FL_PUNCH_HOLE | 
+FALLOC_FL_KEEP_SIZE) successful
+fallocate06.c:237: PASS: fallocate(FALLOC_FL_PUNCH_HOLE | 
+FALLOC_FL_KEEP_SIZE) cleared the correct file range
+fallocate06.c:168: INFO: Case 2. Fill FS: yes; Use copy on write: no
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file0 size 21710183
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file1 size 8070086
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file2 size 3971177
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file3 size 36915315
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file4 size 70310993
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file5 size 4807935
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file6 size 90739786
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file7 size 76896492
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file8 size 72228649
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file9 size 36207821
+tst_fill_fs.c:32: INFO: Creating file mntpoint/file10 size 81483962
+tst_fill_fs.c:59: INFO: write(): ENOSPC (28)
+fallocate06.c:157: PASS: write() successful
+fallocate06.c:201: PASS: Misaligned allocation works as expected
+fallocate06.c:146: FAIL: fallocate(FALLOC_FL_PUNCH_HOLE | 
+FALLOC_FL_KEEP_SIZE) failed unexpectedly: ENOSPC (28)
+
+It failed when we fill fs and not using cow. Is it a known issue(I see 
+the previous eamils, but found nothing)?
+I also used 5.6-rc3 kernel to test, it still failed.
+
+Best Regards
+Yang Xu
+
+> Hi!
+>>> Are the failures on xfs fixed by now?
+>>>
+>>> Do we have a upstrem kernel commit we can add to the test as a tag?
+>>>
+>>
+>> Anthony Iliopoulos says in the BSC that the upstream fix is
+>> commit e093c4be760e ("xfs: Fix tail rounding in xfs_alloc_file_space()")
+> 
+> I've added this as a tag and commend and also added a .gitignore entry
+> and pushed. Thanks.
+> 
+
+
