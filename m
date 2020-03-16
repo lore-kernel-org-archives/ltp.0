@@ -1,82 +1,63 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 16 Mar 2020 15:53:47 +0800
-Subject: [LTP] [PATCH] pthread_cond_init/s-c.c: Add the lose ifndef line
-In-Reply-To: <8eec82a7-f9eb-1002-ee86-71b94a55bdf4@cn.fujitsu.com>
-References: <1584327515-74727-1-git-send-email-zou_wei@huawei.com>
- <8eec82a7-f9eb-1002-ee86-71b94a55bdf4@cn.fujitsu.com>
-Message-ID: <7017e8bc-616b-0958-b82e-852604c06a3b@cn.fujitsu.com>
+Date: Mon, 16 Mar 2020 18:29:16 +0800
+Subject: [LTP] [PATCH] openposix/functional/timers: Add missing Makefile
+Message-ID: <1584354556-6439-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+Currently, open_posix_testsuite/scripts/generate-makefiles.sh and local-test
+think every c file is a test case, only directory with c file will generate
+Makefile. It doesn't work well in situation with middle layer not having c file
+like openposix/functional/thread. So add missing Makefile for this case and also
+add LDLIBS for linking with -lrt.
 
-On my environment, when I test openposix, this case missed run and 
-complie because locate-test has filter rules called by 
-open_posix_testsuite/scripts/generate-makefiles.sh.  filter rules as below:
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/open_posix_testsuite/functional/Makefile     |  2 +-
+ .../open_posix_testsuite/functional/timers/Makefile    | 10 ++++++++++
+ .../functional/timers/timers/LDLIBS                    |  1 +
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/open_posix_testsuite/functional/timers/Makefile
+ create mode 100644 testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
 
-runnable)
-         find "$WHERE/conformance" "$WHERE/stress" -type f -name 
-'*[0-9].c' -o -name '[0-9]*-[0-9]*.sh' | grep -v buildonly | grep -v 
-'^./tools'
-         find "$WHERE/functional" -type f -name '*.c'
+diff --git a/testcases/open_posix_testsuite/functional/Makefile b/testcases/open_posix_testsuite/functional/Makefile
+index b647f0796..3b22c89af 100644
+--- a/testcases/open_posix_testsuite/functional/Makefile
++++ b/testcases/open_posix_testsuite/functional/Makefile
+@@ -10,4 +10,4 @@ all clean install test:
+ 	done
+ 
+ distclean-makefiles:
+-	@find */ -name 'Makefile*' | grep -v threads/Makefile | xargs rm -f
++	@find */ -name 'Makefile*' | grep -v threads/Makefile | grep -v timers/Makefile | xargs rm -f
+diff --git a/testcases/open_posix_testsuite/functional/timers/Makefile b/testcases/open_posix_testsuite/functional/timers/Makefile
+new file mode 100644
+index 000000000..6cf8b0642
+--- /dev/null
++++ b/testcases/open_posix_testsuite/functional/timers/Makefile
+@@ -0,0 +1,10 @@
++#
++# Read COPYING for licensing details.
++#
++# Ngie Cooper, June 2010
++#
++
++all clean install test:
++	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
++		$(MAKE) -C $$dir $@;						   \
++	done
+diff --git a/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS b/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
+new file mode 100644
+index 000000000..4c7e2d8de
+--- /dev/null
++++ b/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
+@@ -0,0 +1 @@
++-lrt
+-- 
+2.18.1
 
-I have a question why we leave it here if they are no meaningful. If
-it was meaningful, why we filter this case? I see the history, but found 
-no thing.
-
-@Enji, you often change openposix code, can you give me some advise?
-
-Best Regards
-Yang Xu
-
-> Hi Zou
-> 
-> It was introduced by commit 310c9eb6e6("Remove explicit #define's for 
-> `_POSIX_C_SOURCE` and `_XOPEN_SOURCE`").
-> 
-> IMO, we can remove this WITHOUT_XOPEN macro directly because we have 
-> setted -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 in 
-> ltp/testcases/open_posix_testsuite/CFLAGS.
-> 
-> Best Regards
-> Yang Xu
->> pthread_cond_init/s-c.c testcase lose a #ifndef line, fix it
->>
->> Reported-by: Zou Wei <zou_wei@huawei.com>
->> Signed-off-by: Zou Wei <zou_wei@huawei.com>
->> ---
->>   
->> testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c 
->> | 1 +
->> ? 1 file changed, 1 insertion(+)
->>
->> diff --git 
->> a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c 
->>
->> index 6a5c70a..8d18484 100644
->> --- 
->> a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c
->> +++ 
->> b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c
->> @@ -80,6 +80,7 @@
->> ? /***********************************??? Test case   
->> *****************************************/
->>   
->> /********************************************************************************************/ 
->>
->> +#ifndef WITHOUT_XOPEN
->> ? typedef struct _teststruct {
->> ????? pthread_cond_t cnd[10 * SCALABILITY_FACTOR];
->> ????? pthread_condattr_t ca[4];
->> -- 
->> 2.6.2
->>
->>
-> 
-> 
-> 
 
 
