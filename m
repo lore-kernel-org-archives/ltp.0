@@ -1,34 +1,32 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 16 Mar 2020 08:59:31 +0800
-Subject: [LTP] Contribution to the LTP.
-In-Reply-To: <CAEX+82+X=V_Z4nhBqpu5MyPJxhbEEdRgz84t8iDxo-5WanGghA@mail.gmail.com>
-References: <CAEX+82K_6yO1pB9utLg3TPheG91+oO-ode7kmMUPoLLe7aszxA@mail.gmail.com>
- <CAEemH2c6hkXMBsSQEm5MMhZoEieR0-OUwJ-ASLB9VFnG6Z-a8g@mail.gmail.com>
- <CAEX+82+X=V_Z4nhBqpu5MyPJxhbEEdRgz84t8iDxo-5WanGghA@mail.gmail.com>
-Message-ID: <CAEemH2ef0iSM45VDfHBFbwRxxqJUeDBpcC9GgKYBs=z-0+6j2A@mail.gmail.com>
+From: Zou Wei <zou_wei@huawei.com>
+Date: Mon, 16 Mar 2020 10:58:35 +0800
+Subject: [LTP] [PATCH] pthread_cond_init/s-c.c: Add the lose ifndef line
+Message-ID: <1584327515-74727-1-git-send-email-zou_wei@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sun, Mar 15, 2020 at 8:20 PM Javier Romero <xavinux@gmail.com> wrote:
+pthread_cond_init/s-c.c testcase lose a #ifndef line, fix it
 
-> Hi Li,
->
-> Thank you for your answer.
->
-> Will read those links you suggested.
->
-> BTW I have a Raspberry PI 3 to start working on testing, it could be
-> useful to test the Linux Kernel and subsystems on ARM processor?
->
+Reported-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I think the answer is yes, enjoy~
+diff --git a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c
+index 6a5c70a..8d18484 100644
+--- a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c
++++ b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c
+@@ -80,6 +80,7 @@
+ /***********************************    Test case   *****************************************/
+ /********************************************************************************************/
++#ifndef WITHOUT_XOPEN
+ typedef struct _teststruct {
+ 	pthread_cond_t cnd[10 * SCALABILITY_FACTOR];
+ 	pthread_condattr_t ca[4];
+--
+2.6.2
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200316/af0b8754/attachment.htm>
