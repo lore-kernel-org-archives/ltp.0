@@ -1,63 +1,173 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 16 Mar 2020 18:29:16 +0800
-Subject: [LTP] [PATCH] openposix/functional/timers: Add missing Makefile
-Message-ID: <1584354556-6439-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 16 Mar 2020 11:38:31 +0100
+Subject: [LTP] [PATCH v2] Add new test cases to syscalls/readv01
+Message-ID: <20200316103831.10224-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Currently, open_posix_testsuite/scripts/generate-makefiles.sh and local-test
-think every c file is a test case, only directory with c file will generate
-Makefile. It doesn't work well in situation with middle layer not having c file
-like openposix/functional/thread. So add missing Makefile for this case and also
-add LDLIBS for linking with -lrt.
+Split the original test scenario into two test cases and add:
+- read into buffers bigger than input file
+- read into multiple buffers
+- read into non-NULL buffer with size = 0 (test for kernel commit 19f18459)
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Also use guarded buffers in all IO vectors. Fixes #382
+
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/open_posix_testsuite/functional/Makefile     |  2 +-
- .../open_posix_testsuite/functional/timers/Makefile    | 10 ++++++++++
- .../functional/timers/timers/LDLIBS                    |  1 +
- 3 files changed, 12 insertions(+), 1 deletion(-)
- create mode 100644 testcases/open_posix_testsuite/functional/timers/Makefile
- create mode 100644 testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
 
-diff --git a/testcases/open_posix_testsuite/functional/Makefile b/testcases/open_posix_testsuite/functional/Makefile
-index b647f0796..3b22c89af 100644
---- a/testcases/open_posix_testsuite/functional/Makefile
-+++ b/testcases/open_posix_testsuite/functional/Makefile
-@@ -10,4 +10,4 @@ all clean install test:
- 	done
+Changes since v1:
+- Code style fixes
+- Use tst_get_bad_addr() in the zero-size lockup test case
+
+Re: Timeout.
+The last test case may cause infinite loop in some kernels. The entire test
+program should finish in less than a second so waiting 15 minutes to detect
+the possible lockup is a waste of time. 15 seconds is long enough to avoid
+false positives.
+
+Re: Guarded buffers/invalid pointers.
+Fixed. Patching the buffer library won't help me here because I'm working
+with IO vectors anyway. Negative size in IO vector definition array currently
+represents end of vector so negative sizes could only be used for single
+buffers. Or the whole IO vector definition semantics in struct tst_test
+would have to be redesigned.
+
+ testcases/kernel/syscalls/readv/readv01.c | 91 +++++++++++++++--------
+ 1 file changed, 61 insertions(+), 30 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/readv/readv01.c b/testcases/kernel/syscalls/readv/readv01.c
+index ad0ab187b..6ae894814 100644
+--- a/testcases/kernel/syscalls/readv/readv01.c
++++ b/testcases/kernel/syscalls/readv/readv01.c
+@@ -20,57 +20,79 @@
  
- distclean-makefiles:
--	@find */ -name 'Makefile*' | grep -v threads/Makefile | xargs rm -f
-+	@find */ -name 'Makefile*' | grep -v threads/Makefile | grep -v timers/Makefile | xargs rm -f
-diff --git a/testcases/open_posix_testsuite/functional/timers/Makefile b/testcases/open_posix_testsuite/functional/timers/Makefile
-new file mode 100644
-index 000000000..6cf8b0642
---- /dev/null
-+++ b/testcases/open_posix_testsuite/functional/timers/Makefile
-@@ -0,0 +1,10 @@
-+#
-+# Read COPYING for licensing details.
-+#
-+# Ngie Cooper, June 2010
-+#
+ #include "tst_test.h"
+ 
++/* Note: multi_iovec test assumes CHUNK is divisible by 4 */
+ #define	CHUNK		64
+ 
+ static char buf[CHUNK];
++static struct iovec *rd_iovec, *big_iovec, *multi_iovec, *lockup_iovec;
++static int fd;
+ 
+-static struct iovec rd_iovec[] = {
+-	{buf, CHUNK},
+-	{NULL, 0},
+-	{NULL, 0},
++static struct testcase {
++	struct iovec **iov;
++	int iov_count, exp_ret;
++	const char *name;
++} testcase_list[] = {
++	{&rd_iovec, 0, 0, "readv() with 0 I/O vectors"},
++	{&rd_iovec, 3, CHUNK, "readv() with NULL I/O vectors"},
++	{&big_iovec, 2, CHUNK, "readv() with too big I/O vectors"},
++	{&multi_iovec, 2, 3*CHUNK/4, "readv() with multiple I/O vectors"},
++	{&lockup_iovec, 2, CHUNK, "readv() with zero-len buffer"},
+ };
+ 
+-static int fd;
+-
+-static void run(void)
++static void test_readv(unsigned int n)
+ {
+-	int i, fail;
+-	char *vec;
++	int i, fpos, fail = 0;
++	size_t j;
++	char *ptr;
++	const struct testcase *tc = testcase_list + n;
++	struct iovec *vec;
+ 
+ 	SAFE_LSEEK(fd, 0, SEEK_SET);
++	vec = *tc->iov;
+ 
+-	if (readv(fd, rd_iovec, 0) == -1)
+-		tst_res(TFAIL | TERRNO, "readv failed unexpectedly");
+-	else
+-		tst_res(TPASS, "readv read 0 io vectors");
++	for (i = 0; i < tc->iov_count; i++) {
++		if (vec[i].iov_base && vec[i].iov_len)
++			memset(vec[i].iov_base, 0, vec[i].iov_len);
++	}
 +
-+all clean install test:
-+	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
-+		$(MAKE) -C $$dir $@;						   \
-+	done
-diff --git a/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS b/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
-new file mode 100644
-index 000000000..4c7e2d8de
---- /dev/null
-+++ b/testcases/open_posix_testsuite/functional/timers/timers/LDLIBS
-@@ -0,0 +1 @@
-+-lrt
++	TEST(readv(fd, vec, tc->iov_count));
++
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, "readv() failed unexpectedly");
++	else if (TST_RET < 0)
++		tst_res(TFAIL | TTERRNO, "readv() returned invalid value");
++	else if (TST_RET != tc->exp_ret)
++		tst_res(TFAIL, "readv() returned unexpected value %ld",
++			TST_RET);
+ 
+-	memset(rd_iovec[0].iov_base, 0x00, CHUNK);
++	if (TST_RET != tc->exp_ret)
++		return;
+ 
+-	if (readv(fd, rd_iovec, 3) != CHUNK) {
+-		tst_res(TFAIL, "readv failed reading %d bytes, "
+-			 "followed by two NULL vectors", CHUNK);
+-	} else {
+-		fail = 0;
+-		vec = rd_iovec[0].iov_base;
++	tst_res(TPASS, "%s", tc->name);
+ 
+-		for (i = 0; i < CHUNK; i++) {
+-			if (vec[i] != 0x42)
++	for (i = 0, fpos = 0; i < tc->iov_count; i++) {
++		ptr = vec[i].iov_base;
++
++		for (j = 0; j < vec[i].iov_len; j++, fpos++) {
++			if (ptr[j] != (fpos < tc->exp_ret ? 0x42 : 0))
+ 				fail++;
+ 		}
+-
+-		if (fail)
+-			tst_res(TFAIL, "Wrong buffer content");
+-		else
+-			tst_res(TPASS, "readv passed reading %d bytes "
+-			         "followed by two NULL vectors", CHUNK);
+ 	}
++
++	if (fail)
++		tst_res(TFAIL, "Wrong buffer content");
++	else
++		tst_res(TPASS, "readv() correctly read %d bytes ", tc->exp_ret);
+ }
+ 
+ static void setup(void)
+ {
++	/* replace the default NULL pointer with invalid address */
++	lockup_iovec[0].iov_base = tst_get_bad_addr(NULL);
++
+ 	memset(buf, 0x42, sizeof(buf));
+ 
+-	fd = SAFE_OPEN("data_file", O_WRONLY | O_CREAT, 0666);
++	fd = SAFE_OPEN("data_file", O_WRONLY | O_CREAT | O_TRUNC, 0666);
+ 	SAFE_WRITE(1, fd, buf, sizeof(buf));
+ 	SAFE_CLOSE(fd);
+ 	fd = SAFE_OPEN("data_file", O_RDONLY);
+@@ -85,6 +107,15 @@ static void cleanup(void)
+ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.test_all = run,
++	.test = test_readv,
++	.tcnt = ARRAY_SIZE(testcase_list),
+ 	.needs_tmpdir = 1,
++	.timeout = 15,
++	.bufs = (struct tst_buffers[]) {
++		{&rd_iovec, .iov_sizes = (int[]){CHUNK, 0, 0, -1}},
++		{&big_iovec, .iov_sizes = (int[]){2*CHUNK, CHUNK, -1}},
++		{&multi_iovec, .iov_sizes = (int[]){CHUNK/4, CHUNK/2, -1}},
++		{&lockup_iovec, .iov_sizes = (int[]){0, CHUNK, -1}},
++		{}
++	}
+ };
 -- 
-2.18.1
-
-
+2.25.1
 
