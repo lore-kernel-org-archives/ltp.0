@@ -1,9 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 17 Mar 2020 15:08:30 +0100
-Subject: [LTP] [PATCH] Add test for CVE-2017-17712
-In-Reply-To: <20200225161514.25544-1-mdoucha@suse.cz>
-References: <20200225161514.25544-1-mdoucha@suse.cz>
-Message-ID: <20200317140830.GA901@haruka.lan>
+Date: Tue, 17 Mar 2020 16:24:03 +0100
+Subject: [LTP] [PATCH v3 2/2] syscalls/fcntl37: add error test for fcntl
+ with F_SETPIPE_SZ
+In-Reply-To: <1580969073-27367-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20200127162016.GD30831@rei.lan>
+ <1580969073-27367-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1580969073-27367-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200317152403.GB901@haruka.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +14,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've added a .gitignore entry and pushed, thanks.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
