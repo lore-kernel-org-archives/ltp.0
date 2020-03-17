@@ -1,75 +1,59 @@
-From: Zouwei (Samuel) <zou_wei@huawei.com>
-Date: Tue, 17 Mar 2020 07:34:05 +0000
-Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gcHRocmVhZF9jb25kX2luaXQv?=
- =?gb2312?b?cy1jLmM6IEFkZCB0aGUgbG9zZSBpZm5kZWYgbGluZQ==?=
-In-Reply-To: <5E7078E9.9080809@cn.fujitsu.com>
-References: <1584327515-74727-1-git-send-email-zou_wei@huawei.com>
- <5E7078E9.9080809@cn.fujitsu.com>
-Message-ID: <C3CD0DF8AD11A84CB25A1426DE537C61E5910B5D@dggeml524-mbx.china.huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 17 Mar 2020 15:55:03 +0800
+Subject: [LTP] [PATCH] open_posix_testsuite: Enable the testsuite
+In-Reply-To: <1584430400-47359-1-git-send-email-zou_wei@huawei.com>
+References: <1584430400-47359-1-git-send-email-zou_wei@huawei.com>
+Message-ID: <CAEemH2f5sMfOX5XjEOr8cmLRwu+YzMziEwRFPAegG+FAURi90A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu
+Hi Zou & Xiao,
 
-Thanks for merge the patch.
+Do we really need to enable the open_posix_testsuite explicitly? By
+default, LTP uses "--with-open-posix-testsuite" as the configure parameter
+to enabling it, is that work for you?
 
-I sent another 2 patches, one is to enable the open_posix_testsuite in the makefile, and the other one is to fix the open_posix compilation issue.
+i.e you can include the open_posix_testsuite build by perform `./build.sh`
 
-Best Regards
-Zou Wei
------????-----
-???: Xiao Yang [mailto:yangx.jy@cn.fujitsu.com] 
-????: 2020?3?17? 15:15
-???: Zouwei (Samuel) <zou_wei@huawei.com>
-??: ltp@lists.linux.it
-??: Re: [LTP] [PATCH] pthread_cond_init/s-c.c: Add the lose ifndef line
+On Tue, Mar 17, 2020 at 3:27 PM Zou Wei <zou_wei@huawei.com> wrote:
 
-Hi Zou,
-
-Pushed.
-
-BTW:
-1) we also need to update open_posix_testsuite so that it can compile these stress tests by default.
-2) Your patch seems to be broken so I recreate and apply it.
-
-Thanks,
-Xiao Yang
-On 2020/3/16 10:58, Zou Wei wrote:
-> pthread_cond_init/s-c.c testcase lose a #ifndef line, fix it
+> Enable open posix testsuite compilation by default
 >
-> Reported-by: Zou Wei<zou_wei@huawei.com>
-> Signed-off-by: Zou Wei<zou_wei@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
->   testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.c | 1 +
->   1 file changed, 1 insertion(+)
+>  testcases/Makefile | 4 ----
+>  1 file changed, 4 deletions(-)
 >
-> diff --git 
-> a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.
-> c 
-> b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.
-> c
-> index 6a5c70a..8d18484 100644
-> --- 
-> a/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/s-c.
-> c
-> +++ b/testcases/open_posix_testsuite/stress/threads/pthread_cond_init/
-> +++ s-c.c
-> @@ -80,6 +80,7 @@
->   /***********************************    Test case   *****************************************/
->   
-> /*********************************************************************
-> ***********************/
-> +#ifndef WITHOUT_XOPEN
->   typedef struct _teststruct {
->   	pthread_cond_t cnd[10 * SCALABILITY_FACTOR];
->   	pthread_condattr_t ca[4];
+> diff --git a/testcases/Makefile b/testcases/Makefile
+> index b04e630..ae1cafc 100644
+> --- a/testcases/Makefile
+> +++ b/testcases/Makefile
+> @@ -30,10 +30,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
+>  #    run).
+>  FILTER_OUT_DIRS                := kdump
+>
+> -ifneq ($(WITH_OPEN_POSIX_TESTSUITE),yes)
+> -FILTER_OUT_DIRS                += open_posix_testsuite
+> -endif
+> -
+>  ifneq ($(WITH_REALTIME_TESTSUITE),yes)
+>  FILTER_OUT_DIRS                += realtime
+>  endif
 > --
 > 2.6.2
 >
 >
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
-
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200317/6a1ba799/attachment-0001.htm>
