@@ -1,37 +1,50 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 17 Mar 2020 19:09:08 +0800
+From: Enji Cooper <yaneurabeya@gmail.com>
+Date: Tue, 17 Mar 2020 04:26:22 -0700
 Subject: [LTP] [PATCH] open_posix_testsuite: Enable the testsuite
-In-Reply-To: <20200317182704.GB10442@yuki.lan>
+In-Reply-To: <1584430400-47359-1-git-send-email-zou_wei@huawei.com>
 References: <1584430400-47359-1-git-send-email-zou_wei@huawei.com>
- <CAEemH2f5sMfOX5XjEOr8cmLRwu+YzMziEwRFPAegG+FAURi90A@mail.gmail.com>
- <20200317182704.GB10442@yuki.lan>
-Message-ID: <CAEemH2eHDQJdWwZNDPT+RqdrTNdr9HWX7i2vOEaZwB1LRoN5Xg@mail.gmail.com>
+Message-ID: <21681327-BC61-4A15-8980-AA1A6402C863@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 17, 2020 at 6:43 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+NAK.
 
-> Hi!
-> > Do we really need to enable the open_posix_testsuite explicitly? By
-> > default, LTP uses "--with-open-posix-testsuite" as the configure
-> parameter
-> > to enabling it, is that work for you?
->
-> Even if we wanted to enable openposix by default, which may be a good
-> idea, we should change the default in configure.ac instead with:
->
+This will build the suite on the build host, which includes a number of build time tests, which will slow down hosts and 
 
-Yes, your method looks better. But I'd suggest giving more time on bug
-fixing before enabling open_posix_testsuit explicitly, other than
-publishing that with many build issues. Seems Zou and Xu are working on
-this part recently, that would be appreciated if more patches work out.
+It?s better to flip the default in configure, but I think the build machinery needs to be reworked so runtime tests and build and installed and build time tests are just installed.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200317/14fe14f9/attachment.htm>
+-Enji
+
+> On Mar 17, 2020, at 00:27, Zou Wei <zou_wei@huawei.com> wrote:
+> 
+> ?Enable open posix testsuite compilation by default
+> 
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+> testcases/Makefile | 4 ----
+> 1 file changed, 4 deletions(-)
+> 
+> diff --git a/testcases/Makefile b/testcases/Makefile
+> index b04e630..ae1cafc 100644
+> --- a/testcases/Makefile
+> +++ b/testcases/Makefile
+> @@ -30,10 +30,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
+> #    run).
+> FILTER_OUT_DIRS        := kdump
+> 
+> -ifneq ($(WITH_OPEN_POSIX_TESTSUITE),yes)
+> -FILTER_OUT_DIRS        += open_posix_testsuite
+> -endif
+> -
+> ifneq ($(WITH_REALTIME_TESTSUITE),yes)
+> FILTER_OUT_DIRS        += realtime
+> endif
+> --
+> 2.6.2
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
