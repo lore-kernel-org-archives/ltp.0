@@ -1,28 +1,33 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Mar 2020 14:17:30 +0100
-Subject: [LTP] [PATCH v2] syscalls/add_key05: add maxbytes/maxkeys test
- under unprivileged user
-In-Reply-To: <20200318131614.GA12354@dell5510>
-References: <20200224153112.GB2210@rei>
- <1582879661-1951-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200317123203.GA21921@dell5510>
- <aae4670a-74eb-36e7-6115-b41eff951405@cn.fujitsu.com>
- <20200318131614.GA12354@dell5510>
-Message-ID: <20200318131730.GB12354@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 18 Mar 2020 16:37:53 +0100
+Subject: [LTP] [PATCH v2 1/9] lapi/namespace_constants.h: Add CLONE_NEWTIME
+In-Reply-To: <20200318153801.3529-1-chrubis@suse.cz>
+References: <20200318153801.3529-1-chrubis@suse.cz>
+Message-ID: <20200318153801.3529-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/lapi/namespaces_constants.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> > > The rest looks ok to me.
-> > Thanks for your reivew. I will send v3 (also add save_store for keys/btyes )
-> OK, I'll wait for v3 (but I could also merge just this one and fix that tiny
-> formatting issues, up to you).
+diff --git a/include/lapi/namespaces_constants.h b/include/lapi/namespaces_constants.h
+index da4a7a4a1..8f73c4302 100644
+--- a/include/lapi/namespaces_constants.h
++++ b/include/lapi/namespaces_constants.h
+@@ -24,5 +24,8 @@
+ #ifndef CLONE_NEWUTS
+ #  define CLONE_NEWUTS	0x04000000
+ #endif
++#ifndef CLONE_NEWTIME
++#  define CLONE_NEWTIME 0x00000080
++#endif
+ 
+ #endif /* __NAMESPACES_CONSTANTS_H__ */
+-- 
+2.24.1
 
-OK, v3 already sent. I'll have look today. Thanks!
-
-Kind regards,
-Petr
