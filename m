@@ -1,36 +1,28 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 18 Mar 2020 12:48:27 +0530
-Subject: [LTP] [PATCH] syscalls/pidfd_send_signal: Use local pointer to
- verify signal data
-Message-ID: <31b0bde3ac9d0e617c2878a9b4ae1e1dc1f39c10.1584515853.git.viresh.kumar@linaro.org>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Wed, 18 Mar 2020 07:29:56 +0000
+Subject: [LTP] LTP build failure
+Message-ID: <MAXPR0101MB1468D80C07532533C7698F85EEF70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The current check, uinfo->si_value.sival_int == DATA, will always
-evaluate to true as we are checking uinfo by mistake instead of the
-pointer passed to the callback. Fix it.
+Hi,
+I am trying to build LTP on x86 i am facing following issue,can someone please help me out to figure it??
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- .../kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c     | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-index 64dddad6643a..3137b6967371 100644
---- a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-+++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal01.c
-@@ -26,7 +26,7 @@ static int pidfd;
- static void received_signal(int sig, siginfo_t *info, void *ucontext)
- {
- 	if (info && ucontext) {
--		if (sig == SIGNAL && uinfo->si_value.sival_int == DATA) {
-+		if (sig == SIGNAL && info->si_value.sival_int == DATA) {
- 			tst_res(TPASS, "Received correct signal and data!");
- 			sig_rec = 1;
- 		} else {
--- 
-2.21.0.rc0.269.g1a574e7a288b
-
+root@LAPTOP-NQBOH0V5:/home/pankaj/pankaj_work/exaleap_ltp/ltp# make
+/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/env_pre.mk:111: /home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/config.mk: No such file or directory
+/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/env_pre.mk:112: /home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk: No such file or directory
+make -C /home/pankaj/pankaj_work/exaleap_ltp/ltp help; false
+make[1]: Entering directory '/home/pankaj/pankaj_work/exaleap_ltp/ltp'
+Please read the Configuration section in /home/pankaj/pankaj_work/exaleap_ltp/ltp/INSTALL
+Makefile:198: recipe for target 'help' failed
+make[1]: *** [help] Error 1
+make[1]: Leaving directory '/home/pankaj/pankaj_work/exaleap_ltp/ltp'
+/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/automake.mk:115: recipe for target '/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk' failed
+make: *** [/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk] Error 1
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200318/bef42c88/attachment.htm>
