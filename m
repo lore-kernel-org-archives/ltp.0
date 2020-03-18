@@ -1,62 +1,56 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Wed, 18 Mar 2020 09:05:26 +0000
-Subject: [LTP] LTP build failure
-In-Reply-To: <MAXPR0101MB1468ACD2C1D67F06BB109198EEF70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB1468D80C07532533C7698F85EEF70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>,
- <CAF12kFvy41q24NOqrAbZe-2h6-q0B_0ifzDAyr3RPoVxeA5BQw@mail.gmail.com>,
- <MAXPR0101MB1468ACD2C1D67F06BB109198EEF70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <MAXPR0101MB1468457E110C4026E1EEA9C9EEF70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 18 Mar 2020 17:16:48 +0800
+Subject: [LTP] [PATCH] openposix/twoptimers.c: Use other signal instead of
+ SIGALRM
+Message-ID: <1584523008-27044-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-i yes.i did
-make autotools
-./configure and then i tried make but it failed with error
-________________________________
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Sent: Wednesday, March 18, 2020 2:32 PM
-To: Cixi Geng <gengcixi@gmail.com>
-Subject: Re: [LTP] LTP build failure
+Currently, run this case failed as below:
 
-yes..i did
-make autotools
-./configure
-make
-________________________________
-From: Cixi Geng <gengcixi@gmail.com>
-Sent: Wednesday, March 18, 2020 2:03 PM
-To: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Subject: Re: [LTP] LTP build failure
+Got it!  Child
+Alarm clock
 
-HI Pankaj:
-did you run ./configure before make ?
-The quick start step
-1. ./configure .2 make all 3. make install
+Parent process doesn't get SIGALRM siganl by using sigwait. It
+seems SIGALRM siganl is handled by system but not user.
 
-Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com<mailto:Pankaj.VJ@exaleapsemi.com>> ?2020?3?18??? ??3:30???
-Hi,
-I am trying to build LTP on x86 i am facing following issue,can someone please help me out to figure it??
+From timer_create man-page, it said "
+Specifying  sevp as NULL is equivalent to specifying a pointer to
+a sigevent structure in which sigev_notify is SIGEV_SIGNAL, sigev_signo
+is SIGALRM, and sigev_value.sival_int is the timer ID".
+
+I think this is the reason. So use SIGILL signal to avoid system caught.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../functional/timers/timers/twoptimers.c                     | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c b/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
+index 84bea3f0a..7e1648d5b 100644
+--- a/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
++++ b/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
+@@ -92,13 +92,13 @@ int main(int argc, char *argv[])
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+-		if (sigaddset(&set, SIGALRM) == -1) {
++		if (sigaddset(&set, SIGILL) == -1) {
+ 			perror("sigaddset() failed\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
+ 		ev.sigev_notify = SIGEV_SIGNAL;
+-		ev.sigev_signo = SIGALRM;
++		ev.sigev_signo = SIGILL;
+ 		if (timer_create(CLOCK_REALTIME, &ev, &tid) != 0) {
+ 			perror("timer_create() did not return success\n");
+ 			return PTS_UNRESOLVED;
+-- 
+2.18.1
 
 
-root@LAPTOP-NQBOH0V5:/home/pankaj/pankaj_work/exaleap_ltp/ltp# make
-/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/env_pre.mk:111<http://env_pre.mk:111>: /home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/config.mk<http://config.mk>: No such file or directory
-/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/env_pre.mk:112<http://env_pre.mk:112>: /home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk<http://features.mk>: No such file or directory
-make -C /home/pankaj/pankaj_work/exaleap_ltp/ltp help; false
-make[1]: Entering directory '/home/pankaj/pankaj_work/exaleap_ltp/ltp'
-Please read the Configuration section in /home/pankaj/pankaj_work/exaleap_ltp/ltp/INSTALL
-Makefile:198: recipe for target 'help' failed
-make[1]: *** [help] Error 1
-make[1]: Leaving directory '/home/pankaj/pankaj_work/exaleap_ltp/ltp'
-/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/automake.mk:115<http://automake.mk:115>: recipe for target '/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk<http://features.mk>' failed
-make: *** [/home/pankaj/pankaj_work/exaleap_ltp/ltp/include/mk/features.mk<http://features.mk>] Error 1
 
---
-Mailing list info: https://lists.linux.it/listinfo/ltp
-[EXT]
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200318/fb60b9a8/attachment-0001.htm>
