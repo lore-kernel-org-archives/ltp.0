@@ -1,7 +1,7 @@
 From: Cixi Geng <gengcixi@gmail.com>
-Date: Wed, 18 Mar 2020 13:25:45 +0800
+Date: Wed, 18 Mar 2020 13:31:19 +0800
 Subject: [LTP] [PATCH] uart: add uart testcase in kernel device-driver
-Message-ID: <CAF12kFv5dEAGmcQLziDjDzsYWmQ3J6tcqW6GK_oB7YDsaBbc-A@mail.gmail.com>
+Message-ID: <CAF12kFsKiR8XFW2WhMuNs7VYEGh8Sj=oaQHC05uc689vAcmarA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,7 +14,6 @@ Porting UART test from ltp-ddt back to ltp. only test 115200 UART_RATE.
 
 Signed-off-by: Orson Zhai <orson@gmail.com>
 Signed-off-by: Cixi Geng <gengcixi@gmail.com>
-Signed-off-by: Carlos Hernandez <ceh@ti.com>
 ---
  runtest/kernel_ddt                            |   1 +
  testcases/kernel/device-drivers/Makefile      |   1 +
@@ -205,4 +204,4 @@ FAILED"; }
 2.17.1
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200318/eaf9b6c6/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200318/cce05c12/attachment-0001.htm>
