@@ -1,62 +1,208 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 18 Mar 2020 12:55:02 +0800
-Subject: [LTP] [PATCH] ltp_tpci.c: fix a null pointer
-Message-ID: <1584507302-23515-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Cixi Geng <gengcixi@gmail.com>
+Date: Wed, 18 Mar 2020 13:25:45 +0800
+Subject: [LTP] [PATCH] uart: add uart testcase in kernel device-driver
+Message-ID: <CAF12kFv5dEAGmcQLziDjDzsYWmQ3J6tcqW6GK_oB7YDsaBbc-A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit 3dd286bdbee ("ltp_tpci.c: Update legacy code"),
-it introduced a warning as below:
-../ltp_tpci.c: In function ?probe_pci_dev?:
-../ltp_tpci.c:107:8: warning: ?dev? is used uninitialized in this function [-Wuninitialized]
-  struct pci_dev *dev;
-  dev = pci_get_domain_bus_and_slot(pci_domain_nr(dev->bus), bus, slot)
+Porting UART test from ltp-ddt back to ltp. only test 115200 UART_RATE.
 
-This will lead to system crash when we run this case because it triggers a null pointer.
-Use 0 domain intead of pci_domain_nr.
+[TODO] support more rate, and add test HWFLOW function test.
 
-ps: I want to use a dymaic domain to fix it but failed. If someone know,
-please tell me. Also, this case failed when merging this patch because
-test 13 (test_assign_resources) report no space error as below:
-[754930.757585] ltp_tpci: test-case 13
-[754930.757585] ltp_tpci: assign resources
-[754930.757585] ltp_tpci: assign resource #0
-[754930.757586] ltp_tpci: name = 0000:00:08.0, flags = 262401, start 0xc140, end 0xc17f
-[754930.757586] ltp_tpci: assign resource #1
-[754930.757587] ltp_tpci: name = 0000:00:08.0, flags = 262656, start 0xfebd7000, end 0xfebd7fff
-[754930.757587] ltp_tpci: assign resource #2
-[754930.757587] ltp_tpci: name = 0000:00:08.0, flags = 0, start 0x0, end 0x0
-[754930.757588] ltp_tpci: assign resource #3
-[754930.757588] ltp_tpci: name = 0000:00:08.0, flags = 0, start 0x0, end 0x0
-[754930.757588] ltp_tpci: assign resource #4
-[754930.757589] ltp_tpci: name = 0000:00:08.0, flags = 538190348, start 0xfe80c000, end 0xfe80ffff
-[754930.757593] virtio-pci 0000:00:08.0: BAR 4: no space for [mem size 0x00004000 64bit pref]
-[754930.757594] virtio-pci 0000:00:08.0: BAR 4: failed to assign [mem size 0x00004000 64bit pref
-
-Fixes: 3dd286b ("ltp_tpci.c: Update legacy code")
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Orson Zhai <orson@gmail.com>
+Signed-off-by: Cixi Geng <gengcixi@gmail.com>
+Signed-off-by: Carlos Hernandez <ceh@ti.com>
 ---
- testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ runtest/kernel_ddt                            |   1 +
+ testcases/kernel/device-drivers/Makefile      |   1 +
+ testcases/kernel/device-drivers/uart/Makefile |  22 ++++
+ .../kernel/device-drivers/uart/serialcheck.sh | 111 ++++++++++++++++++
+ 4 files changed, 135 insertions(+)
+ create mode 100644 runtest/kernel_ddt
+ create mode 100644 testcases/kernel/device-drivers/uart/Makefile
+ create mode 100755 testcases/kernel/device-drivers/uart/serialcheck.sh
 
-diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-index 7cbabfaa5..a57953db6 100644
---- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-@@ -104,7 +104,7 @@ static int probe_pci_dev(unsigned int bus, unsigned int slot)
- 		ltp_pci.dev = NULL;
- 	}
- 
--	dev = pci_get_domain_bus_and_slot(pci_domain_nr(dev->bus), bus, slot);
-+	dev = pci_get_domain_bus_and_slot(0, bus, slot);
- 	if (!dev || !dev->driver)
- 		return -ENODEV;
- 
+diff --git a/runtest/kernel_ddt b/runtest/kernel_ddt
+new file mode 100644
+index 000000000..30e9a0269
+--- /dev/null
++++ b/runtest/kernel_ddt
+@@ -0,0 +1 @@
++uart serialcheck.sh
+diff --git a/testcases/kernel/device-drivers/Makefile
+b/testcases/kernel/device-drivers/Makefile
+index 55e0d25a0..a214f211b 100644
+--- a/testcases/kernel/device-drivers/Makefile
++++ b/testcases/kernel/device-drivers/Makefile
+@@ -27,6 +27,7 @@ SUBDIRS := acpi \
+    rtc \
+    tbio \
+    uaccess \
++   uart \
+    zram
+
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/device-drivers/uart/Makefile
+b/testcases/kernel/device-drivers/uart/Makefile
+new file mode 100644
+index 000000000..0d73f6635
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uart/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++
++top_srcdir ?= ../../../..
++include $(top_srcdir)/include/mk/testcases.mk
++
++INSTALL_TARGETS := *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/device-drivers/uart/serialcheck.sh
+b/testcases/kernel/device-drivers/uart/serialcheck.sh
+new file mode 100755
+index 000000000..f4cf13e02
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uart/serialcheck.sh
+@@ -0,0 +1,111 @@
++#!/bin/sh
++###############################################################################
++#
++# Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
++# Copyright (C) 2019, Unisoc Communications Inc.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation version 2.
++#
++# This program is distributed "as is" WITHOUT ANY WARRANTY of any
++# kind, whether express or implied; without even the implied warranty
++# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++###############################################################################
++
++# @desc Test UART ports using git://
+git.breakpoint.cc/bigeasy/serialcheck.git
++
++#### Functions definitions ####
++usage()
++{
++    echo "usage: ./${0##*/} [-r UART_RATE] [-l LOOPS] [-x to enable HW
+flow control]"
++    exit 1
++}
++
++# Default values
++: ${UART_RATE:=115200}
++: ${UART_LOOPS:=5}
++: ${UART_HWFLOW:=0}
++
++PORTS_TO_TEST=();
++UART_PORTS=();
++ARRAY=(`find /sys/class/tty/*/uartclk`);
++
++check_requirements()
++{
++ which serialcheck
++ ret=$?
++ if [ $ret -eq 0 ];then
++ tst_res TINFO "serialcheck command is in system,continue to test"
++ else
++ tst_brk TCONF "test failed for lack of requirement,returned is $ret"
++ fi
++
++}
++
++create_test_file()
++{
++    temp_test_file=`mktemp`
++    dd if=/dev/urandom of=$temp_test_file count=1 bs=$((UART_RATE / 2))
++}
++
++get_uart_ports()
++{
++for i in ${ARRAY[@]}; do
++    PORT=/dev/`echo $i | cut -d'/' -f 5`
++    # Activate port in case it will be initialized only when startup
++    echo "DDT TESTING" > $PORT 2>/dev/null
++    if [ `cat $i` -ne 0 ]; then
++        UART_PORTS=("${UART_PORTS[@]}" "$PORT")
++    fi
++done
++}
++
++filter_out_used_ports()
++{
++ which lsof
++ ret=$?
++ if [ $ret -eq 0 ];then
++ tst_res TINFO "lsof command exist, filter out used ports";
++ else
++ tst_brk TCONF "test failed for lack of requirement,returned is $ret"
++ fi
++
++    for i in ${UART_PORTS[@]}; do
++        lsof | grep $i &> /dev/null ||
+PORTS_TO_TEST=("${PORTS_TO_TEST[@]}" $i)
++    done
++}
++
++run_serial_test()
++{
++ create_test_file
++    for i in ${PORTS_TO_TEST[@]}; do
++        if [ $UART_HWFLOW -eq 0 ]; then
++            { sleep 1; serialcheck -b $UART_RATE -d $i -f $temp_test_file
+-l $UART_LOOPS -m t -k; }&
++            PID=$!
++            serialcheck -b $UART_RATE -d $i -f $temp_test_file -l
+$UART_LOOPS -m r -k || { kill -- -$PID 2>/dev/null; tst_res TFAIL "TEST
+FAILED"; }
++        else
++            { sleep 1; serialcheck -b $UART_RATE -d $i -f $temp_test_file
+-l $UART_LOOPS -m t -h; } &
++            PID=$!
++            serialcheck -b $UART_RATE -d $i -f $temp_test_file -l
+$UART_LOOPS -m r -h || { kill -- -$PID 2>/dev/null; tst_res TFAIL "TEST
+FAILED"; }
++        fi
++    done
++    rm $temp_test_file
++ tst_res TPASS "uart test passed"
++}
++
++
++TST_TESTFUNC=do_test
++. tst_test.sh
++
++do_test()
++{
++ check_requirements
++ get_uart_ports
++ filter_out_used_ports
++ run_serial_test
++}
++
++tst_run
 -- 
-2.18.1
-
-
-
+2.17.1
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200318/eaf9b6c6/attachment.htm>
