@@ -1,63 +1,92 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Mar 2020 16:37:55 +0100
-Subject: [LTP] [PATCH v2 3/9] safe_macros: Add SAFE_SETNS()
+Date: Wed, 18 Mar 2020 16:37:56 +0100
+Subject: [LTP] [PATCH v2 4/9] include/tst_timer: Fix normalization
 In-Reply-To: <20200318153801.3529-1-chrubis@suse.cz>
 References: <20200318153801.3529-1-chrubis@suse.cz>
-Message-ID: <20200318153801.3529-4-chrubis@suse.cz>
+Message-ID: <20200318153801.3529-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Cyril Hrubis <metan@ucw.cz>
+The timespec_add and timespec_sub functions were producing incorrect
+results when passed negative input. We have to normalize the result in
+both cases for nseconds < 0 && nseconds > 1s.
 
-Signed-off-by: Cyril Hrubis <metan@ucw.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_safe_macros.h |  4 ++++
- lib/tst_safe_macros.c     | 12 ++++++++++++
- 2 files changed, 16 insertions(+)
+ include/tst_timer.h | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 80c4d9cb9..291f2a722 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -547,4 +547,8 @@ int safe_personality(const char *filename, unsigned int lineno,
- void safe_unshare(const char *file, const int lineno, int flags);
- #define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
- 
-+
-+void safe_setns(const char *file, const int lineno, int fd, int nstype);
-+#define SAFE_SETNS(fd, nstype) safe_setns(__FILE__, __LINE__, (fd), (nstype));
-+
- #endif /* SAFE_MACROS_H__ */
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index f5413a18e..353ef5b1d 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -6,6 +6,7 @@
- #define _GNU_SOURCE
- #include <unistd.h>
- #include <errno.h>
-+#include "lapi/setns.h"
- #include <sched.h>
- #include "config.h"
- #ifdef HAVE_SYS_FANOTIFY_H
-@@ -202,3 +203,14 @@ void safe_unshare(const char *file, const int lineno, int flags)
- 		}
- 	}
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index de60bc62a..b091137dc 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -134,6 +134,21 @@ static inline int tst_timespec_lt(struct timespec t1, struct timespec t2)
+ 	return t1.tv_sec < t2.tv_sec;
  }
-+
-+void safe_setns(const char *file, const int lineno, int fd, int nstype)
+ 
++static inline struct timespec tst_timespec_normalize(struct timespec t)
 +{
-+	int ret;
-+
-+	ret = setns(fd, nstype);
-+	if (ret == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO, "setns(%i, %i) failed",
-+		         fd, nstype);
++	if (t.tv_nsec >= 1000000000) {
++		t.tv_sec++;
++		t.tv_nsec -= 1000000000;
 +	}
++
++	if (t.tv_nsec < 0) {
++		t.tv_sec--;
++		t.tv_nsec += 1000000000;
++	}
++
++	return t;
 +}
++
+ /*
+  * Adds us microseconds to t.
+  */
+@@ -143,12 +158,8 @@ static inline struct timespec tst_timespec_add_us(struct timespec t,
+ 	t.tv_sec += us / 1000000;
+ 	t.tv_nsec += (us % 1000000) * 1000;
+ 
+-	if (t.tv_nsec >= 1000000000) {
+-		t.tv_sec++;
+-		t.tv_nsec -= 1000000000;
+-	}
+ 
+-	return t;
++	return tst_timespec_normalize(t);
+ }
+ 
+ /*
+@@ -162,12 +173,7 @@ static inline struct timespec tst_timespec_add(struct timespec t1,
+ 	res.tv_sec = t1.tv_sec + t2.tv_sec;
+ 	res.tv_nsec = t1.tv_nsec + t2.tv_nsec;
+ 
+-	if (res.tv_nsec >= 1000000000) {
+-		res.tv_sec++;
+-		res.tv_nsec -= 1000000000;
+-	}
+-
+-	return res;
++	return tst_timespec_normalize(res);
+ }
+ 
+ /*
+@@ -179,12 +185,7 @@ static inline struct timespec tst_timespec_sub_us(struct timespec t,
+ 	t.tv_sec -= us / 1000000;
+ 	t.tv_nsec -= (us % 1000000) * 1000;
+ 
+-	if (t.tv_nsec < 0) {
+-		t.tv_sec--;
+-		t.tv_nsec += 1000000000;
+-	}
+-
+-	return t;
++	return tst_timespec_normalize(t);
+ }
+ 
+ /*
 -- 
 2.24.1
 
