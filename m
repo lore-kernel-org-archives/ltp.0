@@ -1,71 +1,48 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 19 Mar 2020 08:48:58 -0400 (EDT)
-Subject: [LTP] [RFC] Define minimal supported kernel and (g)libc version
-In-Reply-To: <20200317081547.GA15989@dell5510>
-References: <20200313141458.GB21248@dell5510>
- <CAEemH2cNc7pCc-wB=4hGVquJT1Y5NCeZ_z8nH6D9V+J_5o_TWw@mail.gmail.com>
- <20200317081547.GA15989@dell5510>
-Message-ID: <2016207059.2611128.1584622138390.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 19 Mar 2020 23:00:06 +0100
+Subject: [LTP] [PATCH v2 5/9] syscalls/sysinfo03: Add time namespace test
+In-Reply-To: <CAEemH2f_Md7hkEWgLYABD+TLbDJvvR-aMfuuNqLNeyWSWK1EnQ@mail.gmail.com>
+References: <20200318153801.3529-1-chrubis@suse.cz>
+ <20200318153801.3529-6-chrubis@suse.cz>
+ <CAEemH2f_Md7hkEWgLYABD+TLbDJvvR-aMfuuNqLNeyWSWK1EnQ@mail.gmail.com>
+Message-ID: <20200319220006.GA29386@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> > +static struct tst_test test = {
+> > +       .tcnt = ARRAY_SIZE(offsets),
+> > +       .test = verify_sysinfo,
+> > +       .needs_root = 1,
+> > +       .forks_child = 1,
+> > +       .needs_kconfigs = (const char *[]) {
+> > +               "CONFIG_TIME_NS=y"
+> >
+> 
+> Shouldn't end with 'NULL' in kconfig struct?
+> If not that will mislead arrary_len to recognise wrong number of arrry(cnt)
+> and caused segmentation fault in test.
+> 
+> 
+> 
+> > +       }
+> >
+> 
+> A comma is required here ^, otherwise it'd be failing in the build phase.
+> 
+> +       .tags = (const struct tst_tag[]) {
+> > +               {"linux-git", "ecc421e05bab"},
+> >
+> 
+> Ending with '{}' in tags struct?
 
+Of course, thanks for catching that!
 
------ Original Message -----
-> Hi Li,
-> 
-> > This is a good topic, thanks for kicking off this initiative!
-> Thanks for your input.
-> 
-> > > I'm sorry, I've raised this question in the past, but it got lost.
-> > > I remember we talked about 2.6 something.
-> 
-> > Yes, the past discussion is still valuable to us. see:
-> > http://lists.linux.it/pipermail/ltp/2019-May/011990.html
-> Great, thanks!
-> 
-> > > It'd be good to state publicly the oldest kernel and glibc (or even other
-> > > libc
-> > > versions) we support.  This would allow us to remove some legacy code or
-> > > force
-> > > support for legacy code.
-> 
-> 
-> > Maybe we could also state the oldest GCC version too? Though I haven't seen
-> > any conflict or supporting issue from my side, it helps avoid some
-> > potential error in cross-compilation I guess.
-> +1
-> Not sure if we want to specify also clang.
-> 
-> >     i.e.  kernel-3.10.0 / glibc-2.17 / gcc-4.8.0
-> This is for RHEL7 I guess.
+I will fix these before applying, if the patchset is acked otherwise.
 
-Correct, it's still active (though in less extent than RHEL8). But
-I still see value of running/supporting LTP here.
-
-As I said in previous thread, if we want to draw a line somewhere,
-e.g. say anything older 10 years is too old, RHEL6/Centos6 would
-fall in that. For regression tests it should be OK to use older
-stable release.
-
-> 
-> The oldest system in travis we have CentOS 6: kernel-2.6.32 / glibc-2.12 /
-> gcc-4.4.7 (clang-3.4.2, but we don't test it with clang). I'm ok to have this
-> older dependency, just to make sure it builds.  But code would be cleaner for
-> sure if we drop it.
-> 
-> BTW I also occasionally test build on SLES 11-SP3 (kernel 3.0 / glibc-2.11.3
-> /
-> gcc-4.3.4 - older glibc and gcc), but this is not even in travis.
-> But for testing these distros we use older releases (the same mentioned Jan
-> [1]).
-> I wonder if there is really somebody using 2.6.x or 3.x < 3.10 on master.
-> If not, we can drop some lapi files which mention 2.6.
-
-There are some, since LTP didn't reject such patches yet. But updates to
-those old kernels are few and far between, so it might be not be worth
-the trouble from LTP point of view.
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
