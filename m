@@ -1,48 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Mar 2020 23:00:06 +0100
-Subject: [LTP] [PATCH v2 5/9] syscalls/sysinfo03: Add time namespace test
-In-Reply-To: <CAEemH2f_Md7hkEWgLYABD+TLbDJvvR-aMfuuNqLNeyWSWK1EnQ@mail.gmail.com>
-References: <20200318153801.3529-1-chrubis@suse.cz>
- <20200318153801.3529-6-chrubis@suse.cz>
- <CAEemH2f_Md7hkEWgLYABD+TLbDJvvR-aMfuuNqLNeyWSWK1EnQ@mail.gmail.com>
-Message-ID: <20200319220006.GA29386@yuki.lan>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Thu, 19 Mar 2020 22:39:57 +0800
+Subject: [LTP] [PATCH 3/3] zram/zram_lib.sh: set the compression
+ algorithms back to default after test
+In-Reply-To: <20200317182120.GB11295@dell5510>
+References: <20190710072305.25806-1-po-hsu.lin@canonical.com>
+ <20190710072305.25806-4-po-hsu.lin@canonical.com>
+ <20200317182120.GB11295@dell5510>
+Message-ID: <CAMy_GT9S6a7tFhjXHxmj+-+djjLbRzZP_HjXViX0QZSYF6kAHw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +static struct tst_test test = {
-> > +       .tcnt = ARRAY_SIZE(offsets),
-> > +       .test = verify_sysinfo,
-> > +       .needs_root = 1,
-> > +       .forks_child = 1,
-> > +       .needs_kconfigs = (const char *[]) {
-> > +               "CONFIG_TIME_NS=y"
-> >
-> 
-> Shouldn't end with 'NULL' in kconfig struct?
-> If not that will mislead arrary_len to recognise wrong number of arrry(cnt)
-> and caused segmentation fault in test.
-> 
-> 
-> 
-> > +       }
-> >
-> 
-> A comma is required here ^, otherwise it'd be failing in the build phase.
-> 
-> +       .tags = (const struct tst_tag[]) {
-> > +               {"linux-git", "ecc421e05bab"},
-> >
-> 
-> Ending with '{}' in tags struct?
+Hello Petr,
 
-Of course, thanks for catching that!
+Yes you're right, the zram_cleanup() will kick in after zram01.sh finishes,
+so this can be dropped for the moment I think.
 
-I will fix these before applying, if the patchset is acked otherwise.
+Thanks for the review!
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+On Wed, Mar 18, 2020 at 2:21 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Po-Hsu,
+>
+> > Set the compression algorithm back to the default one in the end of the
+> > zram_compress_alg() test.
+>
+> Why is this needed? We remove zram in zram_cleanup() anyway.
+> This would make sense if we detect whether zram was loaded before testing and
+> try to restore the setup of originally loaded module instead of always removing it.
+>
+> Kind regards,
+> Petr
