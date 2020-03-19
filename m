@@ -1,65 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Mar 2020 16:37:52 +0100
-Subject: [LTP] [PATCH v2 0/9] Add basic time namespace testcases
-Message-ID: <20200318153801.3529-1-chrubis@suse.cz>
+From: Zouwei (Samuel) <zou_wei@huawei.com>
+Date: Thu, 19 Mar 2020 01:26:13 +0000
+Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gb3Blbl9wb3NpeF90ZXN0c3Vp?=
+ =?gb2312?b?dGU6IEZpeCBjb21waWxhdGlvbiBpc3N1ZXM=?=
+In-Reply-To: <20200317205205.GA23447@yuki.lan>
+References: <1584430031-47227-1-git-send-email-zou_wei@huawei.com>
+ <20200317205205.GA23447@yuki.lan>
+Message-ID: <C3CD0DF8AD11A84CB25A1426DE537C61E5911584@dggeml524-mbx.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a set of test for the time namespaces that are going to be part
-of 5.6 kernel.
+Hi Cyril,
 
-v2:
+So we need to add -pthread to both CFLAGS and LDFLAGS to avoid the compilation and linking problem?
 
-* Added git has into sysinfo03, as requested by ritchie
+Best Regards
+Zou Wei
 
-* Included description for the timens01 test as requsted by ritchie
+-----????-----
+???: Cyril Hrubis [mailto:chrubis@suse.cz] 
+????: 2020?3?18? 4:52
+???: Zouwei (Samuel) <zou_wei@huawei.com>
+??: ltp@lists.linux.it
+??: Re: [LTP] [PATCH] open_posix_testsuite: Fix compilation issues
 
-* Added SAFE_NETNS() which fixed compilation problems reported by pvorel
-  as well
+Hi!
+> Fix compilation issues:
+> 1. Add the '-lpthread -lrt -lm' config into LDFLAGS
 
-Cyril Hrubis (9):
-  lapi/namespace_constants.h: Add CLONE_NEWTIME
-  lapi: Add a configure check and fallback for setns
-  safe_macros: Add SAFE_SETNS()
-  include/tst_timer: Fix normalization
-  syscalls/sysinfo03: Add time namespace test
-  syscalls/clock_nanosleep03: Add test for time namespace
-  syscalls/clock_gettime03: Add basic time namespace test
-  containers/timens: Add basic error test
-  syscalls/timerfd04: Add time namespace test
+Just linking with -lpthread is not correct way how to compile pthread programs on Linux, we have to add -pthread to both CLFAGS and LDFLAGS.
 
- configure.ac                                  |   1 +
- include/lapi/namespaces_constants.h           |   3 +
- include/lapi/setns.h                          |  20 ++++
- include/tst_safe_macros.h                     |   4 +
- include/tst_timer.h                           |  35 +++---
- lib/tst_safe_macros.c                         |  12 ++
- runtest/containers                            |   7 ++
- runtest/syscalls                              |   4 +
- testcases/kernel/containers/timens/.gitignore |   1 +
- testcases/kernel/containers/timens/Makefile   |   6 +
- testcases/kernel/containers/timens/timens01.c |  68 +++++++++++
- .../kernel/syscalls/clock_gettime/.gitignore  |   1 +
- .../syscalls/clock_gettime/clock_gettime03.c  | 112 ++++++++++++++++++
- .../syscalls/clock_nanosleep/.gitignore       |   1 +
- .../clock_nanosleep/clock_nanosleep03.c       |  71 +++++++++++
- testcases/kernel/syscalls/sysinfo/.gitignore  |   1 +
- testcases/kernel/syscalls/sysinfo/sysinfo03.c |  81 +++++++++++++
- testcases/kernel/syscalls/timerfd/.gitignore  |   1 +
- testcases/kernel/syscalls/timerfd/timerfd04.c |  98 +++++++++++++++
- 19 files changed, 510 insertions(+), 17 deletions(-)
- create mode 100644 include/lapi/setns.h
- create mode 100644 testcases/kernel/containers/timens/.gitignore
- create mode 100644 testcases/kernel/containers/timens/Makefile
- create mode 100644 testcases/kernel/containers/timens/timens01.c
- create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
- create mode 100644 testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep03.c
- create mode 100644 testcases/kernel/syscalls/sysinfo/sysinfo03.c
- create mode 100644 testcases/kernel/syscalls/timerfd/timerfd04.c
+I guess that we should also default to the output of getconf for pthread CFLAGS and LDFLAGS if available[1]. Unfortunately it looks like this is not implemented on Linux yet.
 
--- 
-2.24.1
+So if getconf fails we will have to probably fallback to per-OS table of CFLAGS and LDFLAGS.
 
+[1] https://pubs.opengroup.org/onlinepubs/9699919799/utilities/c99.html#tagtcjh_25
+
+--
+Cyril Hrubis
+chrubis@suse.cz
