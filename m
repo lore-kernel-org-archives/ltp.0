@@ -1,191 +1,283 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 19 Mar 2020 15:55:43 +0800
-Subject: [LTP] [PATCH v2 5/9] syscalls/sysinfo03: Add time namespace test
-In-Reply-To: <20200318153801.3529-6-chrubis@suse.cz>
-References: <20200318153801.3529-1-chrubis@suse.cz>
- <20200318153801.3529-6-chrubis@suse.cz>
-Message-ID: <CAEemH2f_Md7hkEWgLYABD+TLbDJvvR-aMfuuNqLNeyWSWK1EnQ@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 19 Mar 2020 11:28:42 +0100
+Subject: [LTP] [PATCH] uart: add uart testcase in kernel device-driver
+In-Reply-To: <CAF12kFsKiR8XFW2WhMuNs7VYEGh8Sj=oaQHC05uc689vAcmarA@mail.gmail.com>
+References: <CAF12kFsKiR8XFW2WhMuNs7VYEGh8Sj=oaQHC05uc689vAcmarA@mail.gmail.com>
+Message-ID: <20200319102842.GA440@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Mar 18, 2020 at 11:35 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi Cixi,
 
-> This tests that the uptime in sysinfo() is adjusted correctly by the
-> namespace offset.
->
-> Also check that /proc/uptime is consistent with the uptime from the
-> sysinfo() syscall.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  runtest/containers                            |  3 +
->  runtest/syscalls                              |  1 +
->  testcases/kernel/syscalls/sysinfo/.gitignore  |  1 +
->  testcases/kernel/syscalls/sysinfo/sysinfo03.c | 81 +++++++++++++++++++
->  4 files changed, 86 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sysinfo/sysinfo03.c
->
-> diff --git a/runtest/containers b/runtest/containers
-> index 871cd2a42..4dc05af93 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -85,3 +85,6 @@ userns04 userns04
->  userns05 userns05
->  userns06 userns06
->  userns07 userns07
-> +
-> +# time namespaces
-> +sysinfo03 sysinfo03
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 6f2dcd82a..fb0b9e539 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1465,6 +1465,7 @@ sysfs06 sysfs06
->
->  sysinfo01 sysinfo01
->  sysinfo02 sysinfo02
-> +sysinfo03 sysinfo03
->
->  syslog01 syslog01
->  syslog02 syslog02
-> diff --git a/testcases/kernel/syscalls/sysinfo/.gitignore
-> b/testcases/kernel/syscalls/sysinfo/.gitignore
-> index aa7c26946..8ad2279a4 100644
-> --- a/testcases/kernel/syscalls/sysinfo/.gitignore
-> +++ b/testcases/kernel/syscalls/sysinfo/.gitignore
-> @@ -1,2 +1,3 @@
->  /sysinfo01
->  /sysinfo02
-> +/sysinfo03
-> diff --git a/testcases/kernel/syscalls/sysinfo/sysinfo03.c
-> b/testcases/kernel/syscalls/sysinfo/sysinfo03.c
+> Porting UART test from ltp-ddt back to ltp. only test 115200 UART_RATE.
+Thanks for your effort. There are several problems with this test, I'll try to
+address them all.
+
+> [TODO] support more rate, and add test HWFLOW function test.
+Could this be in v2?
+
+> diff --git a/runtest/kernel_ddt b/runtest/kernel_ddt
 > new file mode 100644
-> index 000000000..af1024915
+> index 000000000..30e9a0269
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/sysinfo/sysinfo03.c
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> +  Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +/*
+> +++ b/runtest/kernel_ddt
+> @@ -0,0 +1 @@
+> +uart serialcheck.sh
+I wonder if there needs to be in it's own runtest file.
+Maybe yes, but I'd propose more meaningful name (serial, uart).
+What is ddt anyway?
+
+> diff --git a/testcases/kernel/device-drivers/Makefile
+> b/testcases/kernel/device-drivers/Makefile
+> index 55e0d25a0..a214f211b 100644
+> --- a/testcases/kernel/device-drivers/Makefile
+> +++ b/testcases/kernel/device-drivers/Makefile
+> @@ -27,6 +27,7 @@ SUBDIRS := acpi \
+>     rtc \
+>     tbio \
+>     uaccess \
+> +   uart \
+>     zram
+
+>  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/testcases/kernel/device-drivers/uart/Makefile
+> b/testcases/kernel/device-drivers/uart/Makefile
+> new file mode 100644
+> index 000000000..0d73f6635
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/uart/Makefile
+> @@ -0,0 +1,22 @@
+> +# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write the Free Software Foundation,
+> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+Please next time instead of verbose GPL text ^ use just:
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 > +
-> +  Test if CLOCK_BOOTTIME namespace offset is applied to sysinfo uptime
-> and that
-> +  it's consistent with /proc/uptime as well.
+> +top_srcdir ?= ../../../..
+> +include $(top_srcdir)/include/mk/testcases.mk
 > +
-> +  After a call to unshare(CLONE_NEWTIME) a new timer namespace is
-> created, the
-> +  process that has called the unshare() can adjust offsets for
-> CLOCK_MONOTONIC
-> +  and CLOCK_BOOTTIME for its children by writing to the
-> '/proc/self/timens_offsets'.
+> +INSTALL_TARGETS := *.sh
 > +
-> + */
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/device-drivers/uart/serialcheck.sh
+> b/testcases/kernel/device-drivers/uart/serialcheck.sh
+> new file mode 100755
+> index 000000000..f4cf13e02
+> --- /dev/null
+> +++ b/testcases/kernel/device-drivers/uart/serialcheck.sh
+> @@ -0,0 +1,111 @@
+> +#!/bin/sh
+> +###############################################################################
+> +#
+> +# Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
+> +# Copyright (C) 2019, Unisoc Communications Inc.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation version 2.
+> +#
+> +# This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> +# kind, whether express or implied; without even the implied warranty
+> +# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +###############################################################################
+And here ^:
+# SPDX-License-Identifier: GPL-2.0-or-later
 > +
-> +#include <sys/sysinfo.h>
-> +#include "lapi/namespaces_constants.h"
-> +#include "tst_test.h"
+> +# @desc Test UART ports using git://
+> git.breakpoint.cc/bigeasy/serialcheck.git
+It looks your mailer wraps lines, that's unusable for applying.
+Could you use git format-patch and git send-email for generating patches and
+sending them?
+
 > +
-> +static int offsets[] = {
-> +       10,
-> +       -10,
-> +       3600,
-> +};
-> +
-> +static long read_proc_uptime(void)
+> +#### Functions definitions ####
+Please avoid these useless comments.
+
+> +usage()
 > +{
-> +       long sec, sec_rem;
-> +
-> +       SAFE_FILE_SCANF("/proc/uptime", "%li.%li", &sec, &sec_rem);
-> +
-> +       return sec + (sec_rem ? 1 : 0);
+> +    echo "usage: ./${0##*/} [-r UART_RATE] [-l LOOPS] [-x to enable HW
+> flow control]"
+Also here is wrapped.
+
+But you're supposed to use TST_OPTS TST_PARSE_ARGS and TST_USAGE from The API
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#233-optional-command-line-parameters
+
+> +    exit 1
 > +}
 > +
-> +static void verify_sysinfo(unsigned int n)
+> +# Default values
+> +: ${UART_RATE:=115200}
+> +: ${UART_LOOPS:=5}
+> +: ${UART_HWFLOW:=0}
+Even this is a valid syntax, please use more convinient:
+UART_RATE="${UART_RATE:=115200}"
+
+> +
+> +PORTS_TO_TEST=();
+> +UART_PORTS=();
+> +ARRAY=(`find /sys/class/tty/*/uartclk`);
+Arrays are bashisms (bash specific), we don't allow them in LTP, as we require
+POSIX shell syntax, which is portable (some systems doesn't have bash, but dash
+or other shell e.g. toybox or busybox on Android. I guess you target embedded
+system with this test):
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
+
+Most of the time arrays can be replaced by string separated by space.
+If you need these devices, in /sys/class/tty/*/uartclk, it could be done like:
+ports=$(for i in /sys/class/tty/*/uartclk ; do echo $i | cut -d '/' -f 5; done)
+
+> +
+> +check_requirements()
 > +{
-> +       struct sysinfo si;
-> +       long uptime;
-> +       int off = offsets[n];
+> + which serialcheck
+
+
+> + ret=$?
+> + if [ $ret -eq 0 ];then
+> + tst_res TINFO "serialcheck command is in system,continue to test"
+> + else
+> + tst_brk TCONF "test failed for lack of requirement,returned is $ret"
+> + fi
 > +
-> +       SAFE_UNSHARE(CLONE_NEWTIME);
+Useless blank line here.
+> +}
+TINFO is not much useful, I'd avoid that. And check_requirements should be a setup function, not called directly in do_test:
+TST_SETUP=check_requirements
+
+But given that whole function just check serialcheck, whole function should be
+replaced just by:
+
+TST_NEEDS_CMDS="serialcheck"
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#232-library-environment-variables-for-shell
+
+BTW serialcheck source isn't probably packaged in distros
+https://git.breakpoint.cc/cgit/bigeasy/serialcheck.git/tree/serialcheck.c
+Maybe we could just adapt it to LTP and include it as well (if we consider whole
+testing useful).
+
 > +
-> +        SAFE_FILE_PRINTF("/proc/self/timens_offsets", "%d %d 0",
-> +                        CLOCK_BOOTTIME, off);
-> +
-> +       sysinfo(&si);
-> +
-> +       uptime = si.uptime;
-> +
-> +       if (!SAFE_FORK()) {
-> +               sysinfo(&si);
-> +               long proc_uptime = read_proc_uptime();
-> +
-> +               long diff = si.uptime - uptime;
-> +
-> +               if (diff < off || diff > off + 1)
-> +                       tst_res(TFAIL, "Wrong sysinfo uptime offset %li",
-> diff);
-> +               else
-> +                       tst_res(TPASS, "Correct sysinfo uptime offset %i",
-> off);
-> +
-> +               if (si.uptime < proc_uptime || si.uptime > proc_uptime +
-> 1) {
-> +                       tst_res(TFAIL, "/proc/uptime %li differs from
-> sysinfo %li",
-> +                               proc_uptime, si.uptime);
-> +               } else {
-> +                       tst_res(TPASS, "/proc/uptime is consistent with
-> sysinfo");
-> +               }
-> +       }
+> +create_test_file()
+> +{
+> +    temp_test_file=`mktemp`
+I guess you need to use TST_NEEDS_TMPDIR=1
+and then just any file in it. Or use $$ (e.g. file.$$) if you want to have
+concurrency, but we usually don't care).
+> +    dd if=/dev/urandom of=$temp_test_file count=1 bs=$((UART_RATE / 2))
+You also need to add dd to TST_NEEDS_CMDS.
+
 > +}
 > +
-> +static struct tst_test test = {
-> +       .tcnt = ARRAY_SIZE(offsets),
-> +       .test = verify_sysinfo,
-> +       .needs_root = 1,
-> +       .forks_child = 1,
-> +       .needs_kconfigs = (const char *[]) {
-> +               "CONFIG_TIME_NS=y"
->
+> +get_uart_ports()
+> +{
+> +for i in ${ARRAY[@]}; do
+> +    PORT=/dev/`echo $i | cut -d'/' -f 5`
+Well, you use cut yourself, so why that complicated code with arrays?
 
-Shouldn't end with 'NULL' in kconfig struct?
-If not that will mislead arrary_len to recognise wrong number of arrry(cnt)
-and caused segmentation fault in test.
+> +    # Activate port in case it will be initialized only when startup
+> +    echo "DDT TESTING" > $PORT 2>/dev/null
+> +    if [ `cat $i` -ne 0 ]; then
+> +        UART_PORTS=("${UART_PORTS[@]}" "$PORT")
+> +    fi
+> +done
+> +}
+> +
+> +filter_out_used_ports()
+> +{
+> + which lsof
+> + ret=$?
+> + if [ $ret -eq 0 ];then
+> + tst_res TINFO "lsof command exist, filter out used ports";
+> + else
+> + tst_brk TCONF "test failed for lack of requirement,returned is $ret"
+> + fi
+Again whole block is useless, just add lsof into TST_NEEDS_CMDS.
 
+> +
+> +    for i in ${UART_PORTS[@]}; do
+> +        lsof | grep $i &> /dev/null ||
+> PORTS_TO_TEST=("${PORTS_TO_TEST[@]}" $i)
+> +    done
+> +}
+> +
+> +run_serial_test()
+> +{
+> + create_test_file
+create_test_file should be just 2 lines of code in setup function.
 
+> +    for i in ${PORTS_TO_TEST[@]}; do
+Array => bashism :(.
 
-> +       }
->
+> +        if [ $UART_HWFLOW -eq 0 ]; then
+> +            { sleep 1; serialcheck -b $UART_RATE -d $i -f $temp_test_file
+> -l $UART_LOOPS -m t -k; }&
+Again line wrapped :(
 
-A comma is required here ^, otherwise it'd be failing in the build phase.
+> +            PID=$!
+> +            serialcheck -b $UART_RATE -d $i -f $temp_test_file -l
+Hm, why do you run 2 instances?
 
-+       .tags = (const struct tst_tag[]) {
-> +               {"linux-git", "ecc421e05bab"},
->
+> $UART_LOOPS -m r -k || { kill -- -$PID 2>/dev/null; tst_res TFAIL "TEST
+> FAILED"; }
+Using complicated code in { } isn't much readable. I'd put it into:
+if ! $UART_LOOPS -m r -k; then
+	kill ...
+fi
 
-Ending with '{}' in tags struct?
+> +        else
+> +            { sleep 1; serialcheck -b $UART_RATE -d $i -f $temp_test_file
+> -l $UART_LOOPS -m t -h; } &
+> +            PID=$!
+> +            serialcheck -b $UART_RATE -d $i -f $temp_test_file -l
+> $UART_LOOPS -m r -h || { kill -- -$PID 2>/dev/null; tst_res TFAIL "TEST
+> FAILED"; }
 
+This can be written better to not repeat much yourself.
+Whole if and else block is the same exept -h and -k parameter are different.
+Why not put this extra parameter into variable?
+Why sleep added into {} block?
 
-> +       }
-> +};
-> --
-> 2.24.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+> +        fi
+> +    done
+> +    rm $temp_test_file
+> + tst_res TPASS "uart test passed"
+> +}
+> +
+> +
+> +TST_TESTFUNC=do_test
+> +. tst_test.sh
+We usually put this at the beginning of the test.
+Please see some tests as examples (testcases/commands/df/df01.sh,
+testcases/commands/mkfs/mkfs01.sh, testcases/commands/lsmod/lsmod01.sh, ...)
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200319/f8c9a0de/attachment.htm>
+> +
+> +do_test()
+> +{
+> + check_requirements
+
+> + get_uart_ports
+> + filter_out_used_ports
+> + run_serial_test
+> +}
+> +
+> +tst_run
+
+Kind regards,
+Petr
