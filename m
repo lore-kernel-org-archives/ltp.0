@@ -1,65 +1,40 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 20 Mar 2020 10:05:48 +0530
-Subject: [LTP] [PATCH V7 10/10] syscalls/open_tree: New tests
-In-Reply-To: <20200313124920.GC6597@rei.lan>
-References: <6648a9106e367d370012c8ee1d0d81c369779ba8.1584014172.git.viresh.kumar@linaro.org>
- <928553e5fd3518fccb363fb8b6ad079ac3c75fd2.1584090119.git.viresh.kumar@linaro.org>
- <20200313124920.GC6597@rei.lan>
-Message-ID: <20200320043548.66orcumbq57wqyzt@vireshk-i7>
+Date: Fri, 20 Mar 2020 10:22:44 +0530
+Subject: [LTP] [PATCH] syscalls/fspick: Call fsconfig with
+ FSCONFIG_CMD_RECONFIGURE
+Message-ID: <b392569b582f264927f2fea65bf14a89c03faaa5.1584679961.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13-03-20, 13:49, Cyril Hrubis wrote:
-> > +static void run(unsigned int n)
-> > +{
-> > +	struct tcase *tc = &tcases[n];
-> > +	int fd, fsmfd, otfd;
-> > +
-> > +	TEST(fd = fsopen(tst_device->fs_type, 0));
-> > +	if (fd == -1) {
-> > +		tst_res(TFAIL | TERRNO, "fsopen() failed");
-> > +		return;
-> > +	}
-> > +
-> > +	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
-> > +	if (TST_RET == -1) {
-> > +		SAFE_CLOSE(fd);
-> > +		tst_res(TFAIL | TERRNO, "fsconfig() failed");
-> > +		return;
-> > +	}
-> > +
-> > +	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
-> > +	if (TST_RET == -1) {
-> > +		SAFE_CLOSE(fd);
-> > +		tst_res(TFAIL | TERRNO, "fsconfig() failed");
-> > +		return;
-> > +	}
-> > +
-> > +	TEST(fsmfd = fsmount(fd, 0, 0));
-> > +	SAFE_CLOSE(fd);
-> > +
-> > +	if (fsmfd == -1) {
-> > +		tst_res(TFAIL | TERRNO, "fsmount() failed");
-> > +		return;
-> > +	}
-> > +
-> > +	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
-> > +			MOVE_MOUNT_F_EMPTY_PATH));
-> > +	SAFE_CLOSE(fsmfd);
-> 
-> Here as well, shouldn't we just set the .mount_device flag instead?
+Make sure mountpoint is reconfigured after all the recent changes by
+calling fsconfig() with FSCONFIG_CMD_RECONFIGURE.
 
-Hi,
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ testcases/kernel/syscalls/fspick/fspick01.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Sorry but I am not sure what will happen by .mount_device here. From
-what I see from tst_test.c, that flag will end up calling SAFE_MOUNT()
-automatically, but what we are calling here is fsmount() and
-move_mount() instead.
-
-Can you please elaborate a bit on that ? Thanks.
-
+diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
+index 3b3635b20195..b5a35bf61e2c 100644
+--- a/testcases/kernel/syscalls/fspick/fspick01.c
++++ b/testcases/kernel/syscalls/fspick/fspick01.c
+@@ -43,6 +43,12 @@ static void run(unsigned int n)
+ 		goto out;
+ 	}
+ 
++	TEST(fsconfig(fspick_fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
++		goto out;
++	}
++
+ 	tst_res(TPASS, "%s: fspick() passed", tc->name);
+ 
+ out:
 -- 
-viresh
+2.21.0.rc0.269.g1a574e7a288b
+
