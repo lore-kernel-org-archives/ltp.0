@@ -1,73 +1,59 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 20 Mar 2020 16:15:29 +0800
-Subject: [LTP] [PATCH] aio_error/3-1.c: Call write before aio_error
-In-Reply-To: <1584586550-11668-1-git-send-email-zou_wei@huawei.com>
-References: <1584586550-11668-1-git-send-email-zou_wei@huawei.com>
-Message-ID: <6fb895d9-0396-1ee7-429f-ab7ea3ebdf0d@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 20 Mar 2020 09:54:27 +0100
+Subject: [LTP] [PATCH v4 3/3] Add connection tests for bind()
+In-Reply-To: <20200317121057.13529-3-mdoucha@suse.cz>
+References: <20200317121057.13529-1-mdoucha@suse.cz>
+ <20200317121057.13529-3-mdoucha@suse.cz>
+Message-ID: <20200320085427.GA14750@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zou
+Hi Martin,
 
-> In the case, if there is no write/read operation before aio_error,
-> aio_error will judge that the current asynchronous I/O has been successfully
-> completed, then return 0, case failed.
-> 
-> After the write/read operation is added, because aiocb.aio_reqprio is -1,
-> the write/read operation will return -1, so aio_error will also return EINVAL
-> because it detects that the asynchronous I/O has not completed successfully.
-I have seen glibc code about aio_write and aio_err function, you are 
-right. Thanks for the fix.
+whole patchset is very nice work. Thanks!
 
-Looks good to me.
-Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-Best Regards
-Yang Xu
-> 
-> ps:
-> http://man7.org/linux/man-pages/man3/aio_error.3.html
-> RETURN VALUE
->         This function returns one of the following:
->         *  EINPROGRESS, if the request has not been completed yet.
->         *  ECANCELED, if the request was canceled.
->         *  0, if the request completed successfully.
->         *  A positive error number, if the asynchronous I/O operation failed.
->            This is the same value that would have been stored in the errno
->            variable in the case of a synchronous read(2), write(2), fsync(2),
->            or fdatasync(2) call.
-> ERRORS
->         EINVAL aiocbp does not point at a control block for an asynchronous
->                I/O request of which the return status (see aio_return(3)) has
->                not been retrieved yet.
-> 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->   .../open_posix_testsuite/conformance/interfaces/aio_error/3-1.c      | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-> index 9ccda05..2b2c65b 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
-> @@ -64,6 +64,11 @@ int main(void)
->   	aiocb.aio_reqprio = -1;
->   	aiocb.aio_nbytes = BUF_SIZE;
-> 
-> +	if (aio_write(&aiocb) != -1) {
-> +                printf(TNAME " Error at aio_write(): %s\n", strerror(errno));
-> +                return PTS_FAIL;
-> +        }
+> +static void setup(void)
+> +{
+> +	srand(time(0));
 > +
->   	ret = aio_error(&aiocb);
-> 
->   	if (ret != EINVAL) {
-> --
-> 2.6.2
-> 
-> 
+> +	tst_init_sockaddr_inet(&ipv4_addr, IPV4_ADDRESS, 0);
+> +	tst_init_sockaddr_inet_bin(&ipv4_any_addr, INADDR_ANY, 0);
+> +	tst_init_sockaddr_inet6_bin(&ipv6_addr, &in6addr_loopback, 0);
+> +	tst_init_sockaddr_inet6_bin(&ipv6_any_addr, &in6addr_any, 0);
+> +}
+You don't use tst_init_sockaddr_inet6() at all. How about using it?
 
+Or do you have some reason not to use it?
 
+Kind regards,
+Petr
+
+diff --git testcases/kernel/syscalls/bind/bind04.c testcases/kernel/syscalls/bind/bind04.c
+index 1be14560b..cdd4f38f5 100644
+--- testcases/kernel/syscalls/bind/bind04.c
++++ testcases/kernel/syscalls/bind/bind04.c
+@@ -77,7 +77,7 @@ static void setup(void)
+ 
+ 	tst_init_sockaddr_inet(&ipv4_addr, IPV4_ADDRESS, 0);
+ 	tst_init_sockaddr_inet_bin(&ipv4_any_addr, INADDR_ANY, 0);
+-	tst_init_sockaddr_inet6_bin(&ipv6_addr, &in6addr_loopback, 0);
++	tst_init_sockaddr_inet6(&ipv6_addr, IPV6_ADDRESS, 0);
+ 	tst_init_sockaddr_inet6_bin(&ipv6_any_addr, &in6addr_any, 0);
+ }
+ 
+diff --git testcases/kernel/syscalls/bind/bind05.c testcases/kernel/syscalls/bind/bind05.c
+index 16c9c711d..fdab8b22e 100644
+--- testcases/kernel/syscalls/bind/bind05.c
++++ testcases/kernel/syscalls/bind/bind05.c
+@@ -77,7 +77,7 @@ static void setup(void)
+ 
+ 	tst_init_sockaddr_inet(&ipv4_addr, IPV4_ADDRESS, 0);
+ 	tst_init_sockaddr_inet_bin(&ipv4_any_addr, INADDR_ANY, 0);
+-	tst_init_sockaddr_inet6_bin(&ipv6_addr, &in6addr_loopback, 0);
++	tst_init_sockaddr_inet6(&ipv6_addr, IPV6_ADDRESS, 0);
+ 	tst_init_sockaddr_inet6_bin(&ipv6_any_addr, &in6addr_any, 0);
+ }
+ 
