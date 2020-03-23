@@ -1,87 +1,60 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 23 Mar 2020 17:04:15 +0100
-Subject: [LTP] [PATCH 2/2] Use SAFE_RUNCMD()
-In-Reply-To: <CAEemH2e4sRwZ8HRm-w5CD=Wm8-SW+LaA5XHDnXdqrOL1t4FdtA@mail.gmail.com>
-References: <20200320134937.16616-1-pvorel@suse.cz>
- <20200320134937.16616-2-pvorel@suse.cz>
- <CAEemH2f7TB9sMt-+YE2zF5KztT4O64VN9L4AZWdS3nU1uJX5_w@mail.gmail.com>
- <303d1019-f836-b2ae-ce51-d2c46dd7fb1e@cn.fujitsu.com>
- <20200323113738.GA4807@dell5510>
- <CAEemH2fhRYefq_9LmSmDvujS1OQa7rCeF7V=mJQrLhz0bwpo0A@mail.gmail.com>
- <CAEemH2e4sRwZ8HRm-w5CD=Wm8-SW+LaA5XHDnXdqrOL1t4FdtA@mail.gmail.com>
-Message-ID: <20200323160415.GC15673@dell5510>
+Date: Mon, 23 Mar 2020 17:11:29 +0100
+Subject: [LTP] [PATCH v2 3/9] safe_macros: Add SAFE_SETNS()
+In-Reply-To: <20200318153801.3529-4-chrubis@suse.cz>
+References: <20200318153801.3529-1-chrubis@suse.cz>
+ <20200318153801.3529-4-chrubis@suse.cz>
+Message-ID: <20200323161129.GA28014@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Cyril,
 
-> Or, simply to use access() if we gonna take care of embedded Linux, is this
-> reliable?
+...
+> diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+> index f5413a18e..353ef5b1d 100644
+> --- a/lib/tst_safe_macros.c
+> +++ b/lib/tst_safe_macros.c
+> @@ -6,6 +6,7 @@
+>  #define _GNU_SOURCE
+>  #include <unistd.h>
+>  #include <errno.h>
+> +#include "lapi/setns.h"
+One more fix needed: lapi file needs to be loaded later:
 
-> int tst_cmd_available(char *cmd)
-> {
->     int ret = 0;
->     char path[PATH_MAX];
+diff --git lib/tst_safe_macros.c lib/tst_safe_macros.c
+index 353ef5b1d..7d33f2b79 100644
+--- lib/tst_safe_macros.c
++++ lib/tst_safe_macros.c
+@@ -6,7 +6,6 @@
+ #define _GNU_SOURCE
+ #include <unistd.h>
+ #include <errno.h>
+-#include "lapi/setns.h"
+ #include <sched.h>
+ #include "config.h"
+ #ifdef HAVE_SYS_FANOTIFY_H
+@@ -14,6 +13,7 @@
+ #endif
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "lapi/setns.h"
+ #include "tst_safe_macros.h"
+ #include "lapi/personality.h"
+ 
+to prevent failure:
+In file included from /usr/src/ltp/lib/tst_safe_macros.c:9:
+/usr/src/ltp/include/lapi/setns.h: In function 'setns':
+/usr/src/ltp/include/lapi/setns.h:16: error: implicit declaration of function 'tst_brk'
+/usr/src/ltp/include/lapi/setns.h:16: error: 'TCONF' undeclared (first use in this function)
+/usr/src/ltp/include/lapi/setns.h:16: error: (Each undeclared identifier is reported only once
 
->     snprintf(path, PATH_MAX, "/usr/bin/%s", cmd);
->     if (!access(path, X_OK)) {
->         ret = 1;
->         goto out;
->     }
+The rest of the patchset looks ok to me:
 
->     snprintf(path, PATH_MAX, "/usr/sbin/%s", cmd);
->     if (!access(path, X_OK)) {
->         ret = 1;
->         goto out;
->     }
-
->     snprintf(path, PATH_MAX, "/usr/local/bin/%s", cmd);
->     if (!access(path, X_OK)) {
->         ret = 1;
->         goto out;
->     }
-
->     snprintf(path, PATH_MAX, "/usr/local/sbin/%s", cmd);
->     if (!access(path, X_OK)) {
->         ret = 1;
->         goto out;
->     }
-
-> out:
->     return ret;
-> }
-
-Something like this would work on whole PATH.
-It's just a question if we want to use it.
-
-int tst_cmd_available(char *cmd)
-{
-	char *dup = strdup(getenv("PATH"));
-	char *s = dup;
-	char *p = NULL;
-	int ret = 0;
-    char path[PATH_MAX];
-
-	do {
-		p = strchr(s, ':');
-		if (p != NULL) {
-			p[0] = 0;
-		}
-		snprintf(path, PATH_MAX, "%s/%s", s, cmd);
-
-		if (!access(path, X_OK)) {
-			ret = 1;
-			break;
-		}
-		s = p + 1;
-	} while (p != NULL);
-
-	free(dup);
-	return ret;
-}
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
