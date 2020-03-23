@@ -1,40 +1,34 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Mon, 23 Mar 2020 23:49:32 +0100
-Subject: [LTP] [PATCH 2/3] accept4: Remove fallback definitions
+Date: Mon, 23 Mar 2020 23:49:33 +0100
+Subject: [LTP] [PATCH 3/3] travis: Update musl build
 In-Reply-To: <20200323224933.2613658-1-petr.vorel@gmail.com>
 References: <20200323224933.2613658-1-petr.vorel@gmail.com>
-Message-ID: <20200323224933.2613658-2-petr.vorel@gmail.com>
+Message-ID: <20200323224933.2613658-3-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-They're already defined in lapi/fcntl.h.
+accept4_01.c was fixed in previous build.
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- testcases/kernel/syscalls/accept4/accept4_01.c | 7 -------
- 1 file changed, 7 deletions(-)
+ travis/alpine.sh | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
-index a596b9b1a..55aa210ae 100644
---- a/testcases/kernel/syscalls/accept4/accept4_01.c
-+++ b/testcases/kernel/syscalls/accept4/accept4_01.c
-@@ -25,13 +25,6 @@
- 
- #define PORT_NUM 33333
- 
--#ifndef SOCK_CLOEXEC
--# define SOCK_CLOEXEC    O_CLOEXEC
--#endif
--#ifndef SOCK_NONBLOCK
--# define SOCK_NONBLOCK   O_NONBLOCK
--#endif
--
- static const char *variant_desc[] = {
- 	"libc accept4()",
- 	"__NR_accept4 syscall",
+diff --git a/travis/alpine.sh b/travis/alpine.sh
+index 233dae78e..b2c1fff9e 100755
+--- a/travis/alpine.sh
++++ b/travis/alpine.sh
+@@ -30,7 +30,6 @@ echo "WARNING: remove unsupported tests (until they're fixed)"
+ cd ..
+ rm -rfv \
+ 	testcases/kernel/sched/process_stress/process.c \
+-	testcases/kernel/syscalls/accept4/accept4_01.c \
+ 	testcases/kernel/syscalls/confstr/confstr01.c \
+ 	testcases/kernel/syscalls/fmtmsg/fmtmsg01.c \
+ 	testcases/kernel/syscalls/getcontext/getcontext01.c \
 -- 
 2.25.1
 
