@@ -1,26 +1,67 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 23 Mar 2020 14:42:01 +0530
-Subject: [LTP] Query: Supporting time64 syscalls
-Message-ID: <CAKohpokaPiyGFkAXgG2oy_f5UGMCtsVUUAf4vA3Npa2ixAbNig@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 23 Mar 2020 10:18:51 +0100
+Subject: [LTP] [PATCH v2 1/2] lib: Implement SAFE_RUN() macro (new API only)
+Message-ID: <20200323091852.29106-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi guys,
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+Fixes errors reported by Xu:
+* Fixed params
 
-I was looking to start working on the time64 syscalls
-(like clock_gettime64, timerfd_settime64, etc) and
-was looking for your suggestions on how to proceed on
-the same.
+ doc/test-writing-guidelines.txt |  3 +++
+ include/tst_safe_macros.h       | 20 ++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-AFAIU, the only difference is that the argument is 64 bit now
-instead of 32 bit and so I don't think I should be adding new
-tests but reusing the existing ones for both 32 bit and 64 bit
-variants.
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index b56f1a0f2..b8330801b 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1282,6 +1282,9 @@ return value is '255' if 'execvp()' failed with 'ENOENT' and '254' otherwise.
+ 'stdout_path' and 'stderr_path' determine where to redirect the program
+ stdout and stderr I/O streams.
+ 
++The 'SAFE_RUNCMD()' macro can be used automatic handling non zero exits (exits
++with 'TBROK') or 'ENOENT' (exits with 'TCONF').
++
+ .Example
+ [source,c]
+ -------------------------------------------------------------------------------
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 80c4d9cb9..dea101a8e 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -547,4 +547,24 @@ int safe_personality(const char *filename, unsigned int lineno,
+ void safe_unshare(const char *file, const int lineno, int flags);
+ #define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
+ 
++static inline void safe_run_cmd(const char *file, const int lineno,
++							   const char *const argv[],
++			      const char *stdout_path,
++			      const char *stderr_path)
++{
++	int rval;
++
++	switch ((rval = tst_run_cmd(argv, stdout_path, stderr_path, 1))) {
++	case 0:
++		break;
++	case 255:
++		tst_brk(TCONF, "%s:%d: %s not found in $PATH", file, lineno, argv[0]);
++		break;
++	default:
++		tst_brk(TBROK, "%s:%d: %s failed (%d)", file, lineno, argv[0], rval);
++	}
++}
++#define SAFE_RUNCMD(argv, stdout_path, stderr_path) \
++	safe_run_cmd(__FILE__, __LINE__, (argv), (stdout_path), (stderr_path))
++
+ #endif /* SAFE_MACROS_H__ */
+-- 
+2.25.1
 
-Thanks.
-
---
-viresh
