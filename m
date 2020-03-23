@@ -1,155 +1,61 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Mon, 23 Mar 2020 10:37:17 +0000
-Subject: [LTP] tar01_sh testcase failure
-Message-ID: <MAXPR0101MB1468556AA605AAB483768D00EEF00@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 23 Mar 2020 12:37:38 +0100
+Subject: [LTP] [PATCH 2/2] Use SAFE_RUNCMD()
+In-Reply-To: <303d1019-f836-b2ae-ce51-d2c46dd7fb1e@cn.fujitsu.com>
+References: <20200320134937.16616-1-pvorel@suse.cz>
+ <20200320134937.16616-2-pvorel@suse.cz>
+ <CAEemH2f7TB9sMt-+YE2zF5KztT4O64VN9L4AZWdS3nU1uJX5_w@mail.gmail.com>
+ <303d1019-f836-b2ae-ce51-d2c46dd7fb1e@cn.fujitsu.com>
+Message-ID: <20200323113738.GA4807@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-i am trying to run tar01_sh on RISC v with custom yocto distro i am getting following errors
+Hi Li, Xu,
 
-cmdline="tar_tests.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tar_tests 1 TINFO: timeout per run is 0h 5m 0s
-a file1
-a file2
-a file3
-tar_tests 1 TPASS: tar cvf test.tar file1 file2 file3 > tar.out passed as expected
-tar_tests 1 TFAIL: Unexpected number of lines in tar.out
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 1 TFAIL: tar dvf test.tar > tar.out failed unexpectedly
-tar_tests 1 TFAIL: Unexpected number of lines in tar.out
-tar_tests 1 TPASS: tar tvf test.tar > tar.out passed as expected
-tar_tests 1 TPASS: Listing in tar.out is correct
-x file1
-x file2
-x file3
-tar_tests 1 TPASS: tar xvf test.tar > tar.out passed as expected
-tar_tests 1 TFAIL: Unexpected number of lines in tar.out
-tar_tests 1 TPASS: Files were uncompressed correctly
-a file4
-tar_tests 1 TPASS: tar rvf test.tar file4 > tar.out passed as expected
-tar_tests 1 TFAIL: Unexpected number of lines in tar.out
-tar_tests 1 TPASS: tar tvf test.tar > tar.out passed as expected
-tar_tests 1 TPASS: Listing in tar.out is correct
-x file1
-x file2
-x file3
-x file4
-tar_tests 1 TPASS: tar xvf test.tar > tar.out passed as expected
-tar_tests 1 TFAIL: Unexpected number of lines in tar.out
-tar_tests 1 TPASS: Files were uncompressed correctly
-a file1
-a file2
-a file3
-tar_tests 2 TPASS: tar cvfz test.tar.gz file1 file2 file3 > tar.out passed as expected
-tar_tests 2 TFAIL: Unexpected number of lines in tar.out
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 2 TFAIL: tar dvf test.tar.gz > tar.out failed unexpectedly
-tar_tests 2 TFAIL: Unexpected number of lines in tar.out
-tar_tests 2 TPASS: tar tvf test.tar.gz > tar.out passed as expected
-tar_tests 2 TPASS: Listing in tar.out is correct
-x file1
-x file2
-x file3
-tar_tests 2 TPASS: tar xvf test.tar.gz > tar.out passed as expected
-tar_tests 2 TFAIL: Unexpected number of lines in tar.out
-tar_tests 2 TPASS: Files were uncompressed correctly
-a file1
-a file2
-a file3
-tar_tests 3 TPASS: tar cvfj test.tar.bz2 file1 file2 file3 > tar.out passed as expected
-tar_tests 3 TFAIL: Unexpected number of lines in tar.out
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 3 TFAIL: tar dvf test.tar.bz2 > tar.out failed unexpectedly
-tar_tests 3 TFAIL: Unexpected number of lines in tar.out
-tar_tests 3 TPASS: tar tvf test.tar.bz2 > tar.out passed as expected
-tar_tests 3 TPASS: Listing in tar.out is correct
-x file1
-x file2
-x file3
-tar_tests 3 TPASS: tar xvf test.tar.bz2 > tar.out passed as expected
-tar_tests 3 TFAIL: Unexpected number of lines in tar.out
-tar_tests 3 TPASS: Files were uncompressed correctly
-tar_tests 4 TPASS: tar cf test.tar file1 file2 file3 > tar.out passed as expected
-tar_tests 4 TPASS: Tar produced no output
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 4 TFAIL: tar df test.tar > tar.out failed unexpectedly
-tar_tests 4 TPASS: Tar produced no output
-tar_tests 4 TPASS: tar tf test.tar > tar.out passed as expected
-tar_tests 4 TPASS: Listing in tar.out is correct
-tar_tests 4 TPASS: tar xf test.tar > tar.out passed as expected
-tar_tests 4 TPASS: Tar produced no output
-tar_tests 4 TPASS: Files were uncompressed correctly
-tar_tests 4 TPASS: tar rf test.tar file4 > tar.out passed as expected
-tar_tests 4 TPASS: Tar produced no output
-tar_tests 4 TPASS: tar tf test.tar > tar.out passed as expected
-tar_tests 4 TPASS: Listing in tar.out is correct
-tar_tests 4 TPASS: tar xf test.tar > tar.out passed as expected
-tar_tests 4 TPASS: Tar produced no output
-tar_tests 4 TPASS: Files were uncompressed correctly
-tar_tests 5 TPASS: tar cfz test.tar.gz file1 file2 file3 > tar.out passed as expected
-tar_tests 5 TPASS: Tar produced no output
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 5 TFAIL: tar df test.tar.gz > tar.out failed unexpectedly
-tar_tests 5 TPASS: Tar produced no output
-tar_tests 5 TPASS: tar tf test.tar.gz > tar.out passed as expected
-tar_tests 5 TPASS: Listing in tar.out is correct
-tar_tests 5 TPASS: tar xf test.tar.gz > tar.out passed as expected
-tar_tests 5 TPASS: Tar produced no output
-tar_tests 5 TPASS: Files were uncompressed correctly
-tar_tests 6 TPASS: tar cfj test.tar.bz2 file1 file2 file3 > tar.out passed as expected
-tar_tests 6 TPASS: Tar produced no output
-Usage:
-  List:    tar -tf <archive-filename>
-  Extract: tar -xf <archive-filename>
-  Create:  tar -cf <archive-filename> [filenames...]
-  Help:    tar --help
-tar_tests 6 TFAIL: tar df test.tar.bz2 > tar.out failed unexpectedly
-tar_tests 6 TPASS: Tar produced no output
-tar_tests 6 TPASS: tar tf test.tar.bz2 > tar.out passed as expected
-tar_tests 6 TPASS: Listing in tar.out is correct
-tar_tests 6 TPASS: tar xf test.tar.bz2 > tar.out passed as expected
-tar_tests 6 TPASS: Tar produced no output
-tar_tests 6 TPASS: Files were uncompressed correctly
+> >      ?testcases/kernel/syscalls/add_key/add_key05.c? ?| 15 ++-------------
+> >      ?testcases/kernel/syscalls/quotactl/quotactl01.c | 14 ++------------
+> >      ?testcases/kernel/syscalls/quotactl/quotactl06.c | 12 +-----------
 
-Summary:
-passed   51
-failed   17
-skipped  0
-warnings 0
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=1 corefile=no
-cutime=45 cstime=45
-<<<test_end>>>
+> > Apart from the three, do you consider converting to SAFE_RUNCMD for the
+> > rest testcases?
+> > (it seems not too much work remaining since only a few test case uses
+> > tst_run_cmd)
+> At the beginning, I have the same idea. But after seeing code, I think we
+> should not because these cases have many sub tests(only few test deponds on
+> the result of the cmd execution.
 
-Thanks!
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200323/f5db67ce/attachment-0001.htm>
+> > kernel/syscalls/setpriority/setpriority01.c
+> One year ago has a commit db82b596(setpriority01: Skip only PRIO_USER when
+> unable to add test user). It only affects PRIO_USER sub test.
++ 1. I didn't want to break the case when useradd is not available (android or
+some custom embedded linux) or there is no password file (root mounted as ro -
+custom embedded linux).
+
+BTW I also avoid handling adding user as I want to implement better handling
+user and group in LTP (adding a flag), see:
+https://github.com/linux-test-project/ltp/issues/468
+
+Feel free to commend this plan.
+This patchset is kind of preparation for it.
+
+> > kernel/syscalls/copy_file_range/copy_file_range02.c
+> only affect test6 and test7
+>  6) Try to copy contents to a file chattred with +i
+>  *    flag -> EPERM
+>  * 7) Try to copy contents to a swapfile ->ETXTBSY
+Yes, it'd be bad to break all tests due it.
+
+Here is also problem with swapoff (or maybe chattr, mkswap, swapon; I don't
+remember), which returns exit code 255 on error, so it's not possible to
+distinguish this from the case whether command is not available (any idea, how
+to fix it?).
+
+Looking into old API uses, testcases/kernel/syscalls/swapon/libswapon.c could
+use it (once it migrates to new API), although it uses tst_brkm(TFAIL).
+testcases/kernel/input/input_helper.c probably not.
+
+Kind regards,
+Petr
