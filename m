@@ -1,7 +1,7 @@
 From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Mon, 23 Mar 2020 10:00:46 +0000
-Subject: [LTP] cpio01_sh testcase failure
-Message-ID: <MAXPR0101MB1468BC364EA06FEE7D6F217CEEF00@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+Date: Mon, 23 Mar 2020 10:37:17 +0000
+Subject: [LTP] tar01_sh testcase failure
+Message-ID: <MAXPR0101MB1468556AA605AAB483768D00EEF00@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,53 +9,147 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-i am running cpio01_sh testcase on RISC v with our customized yocto distro i am getting following failure i am usinf LTP version  20200120-105-gae32c07c4
-can someone help us to rectify
-sage: cpio [-dmvu] [-F FILE] [-R USER[:GRP]] [-ti] [EXTR_FILE]...
-cpio_tests 1 TFAIL: cpio -o > cpio.out < filelist failed unexpectedly
-cpio_tests 1 TPASS: cpio -i < cpio.out passed as expected
-Only in dir_orig: a
-Only in dir_orig: b
-Only in dir_orig: c
-Only in dir_orig: d
-Only in dir_orig: e
-Only in dir_orig: f
-Only in dir_orig: g
-Only in dir_orig: h
-Only in dir_orig: i
-Only in dir_orig: j
-Only in dir_orig: k
-Only in dir_orig: l
-Only in dir_orig: m
-Only in dir_orig: n
-Only in dir_orig: o
-Only in dir_orig: p
-Only in dir_orig: q
-Only in dir_orig: r
-Only in dir_orig: s
-Only in dir_orig: t
-Only in dir_orig: u
-Only in dir_orig: v
-Only in dir_orig: w
-Only in dir_orig: x
-Only in dir_orig: y
-Only in dir_orig: z
-cpio_tests 1 TFAIL: Directories dir and dir_orig differ
-dir_orig:
-a  b  c  d  e  f  g  h i  j  k  l  m  n  o  p q  r  s  t  u  v  w  x y  z
+i am trying to run tar01_sh on RISC v with custom yocto distro i am getting following errors
 
-dir:
+cmdline="tar_tests.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tar_tests 1 TINFO: timeout per run is 0h 5m 0s
+a file1
+a file2
+a file3
+tar_tests 1 TPASS: tar cvf test.tar file1 file2 file3 > tar.out passed as expected
+tar_tests 1 TFAIL: Unexpected number of lines in tar.out
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 1 TFAIL: tar dvf test.tar > tar.out failed unexpectedly
+tar_tests 1 TFAIL: Unexpected number of lines in tar.out
+tar_tests 1 TPASS: tar tvf test.tar > tar.out passed as expected
+tar_tests 1 TPASS: Listing in tar.out is correct
+x file1
+x file2
+x file3
+tar_tests 1 TPASS: tar xvf test.tar > tar.out passed as expected
+tar_tests 1 TFAIL: Unexpected number of lines in tar.out
+tar_tests 1 TPASS: Files were uncompressed correctly
+a file4
+tar_tests 1 TPASS: tar rvf test.tar file4 > tar.out passed as expected
+tar_tests 1 TFAIL: Unexpected number of lines in tar.out
+tar_tests 1 TPASS: tar tvf test.tar > tar.out passed as expected
+tar_tests 1 TPASS: Listing in tar.out is correct
+x file1
+x file2
+x file3
+x file4
+tar_tests 1 TPASS: tar xvf test.tar > tar.out passed as expected
+tar_tests 1 TFAIL: Unexpected number of lines in tar.out
+tar_tests 1 TPASS: Files were uncompressed correctly
+a file1
+a file2
+a file3
+tar_tests 2 TPASS: tar cvfz test.tar.gz file1 file2 file3 > tar.out passed as expected
+tar_tests 2 TFAIL: Unexpected number of lines in tar.out
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 2 TFAIL: tar dvf test.tar.gz > tar.out failed unexpectedly
+tar_tests 2 TFAIL: Unexpected number of lines in tar.out
+tar_tests 2 TPASS: tar tvf test.tar.gz > tar.out passed as expected
+tar_tests 2 TPASS: Listing in tar.out is correct
+x file1
+x file2
+x file3
+tar_tests 2 TPASS: tar xvf test.tar.gz > tar.out passed as expected
+tar_tests 2 TFAIL: Unexpected number of lines in tar.out
+tar_tests 2 TPASS: Files were uncompressed correctly
+a file1
+a file2
+a file3
+tar_tests 3 TPASS: tar cvfj test.tar.bz2 file1 file2 file3 > tar.out passed as expected
+tar_tests 3 TFAIL: Unexpected number of lines in tar.out
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 3 TFAIL: tar dvf test.tar.bz2 > tar.out failed unexpectedly
+tar_tests 3 TFAIL: Unexpected number of lines in tar.out
+tar_tests 3 TPASS: tar tvf test.tar.bz2 > tar.out passed as expected
+tar_tests 3 TPASS: Listing in tar.out is correct
+x file1
+x file2
+x file3
+tar_tests 3 TPASS: tar xvf test.tar.bz2 > tar.out passed as expected
+tar_tests 3 TFAIL: Unexpected number of lines in tar.out
+tar_tests 3 TPASS: Files were uncompressed correctly
+tar_tests 4 TPASS: tar cf test.tar file1 file2 file3 > tar.out passed as expected
+tar_tests 4 TPASS: Tar produced no output
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 4 TFAIL: tar df test.tar > tar.out failed unexpectedly
+tar_tests 4 TPASS: Tar produced no output
+tar_tests 4 TPASS: tar tf test.tar > tar.out passed as expected
+tar_tests 4 TPASS: Listing in tar.out is correct
+tar_tests 4 TPASS: tar xf test.tar > tar.out passed as expected
+tar_tests 4 TPASS: Tar produced no output
+tar_tests 4 TPASS: Files were uncompressed correctly
+tar_tests 4 TPASS: tar rf test.tar file4 > tar.out passed as expected
+tar_tests 4 TPASS: Tar produced no output
+tar_tests 4 TPASS: tar tf test.tar > tar.out passed as expected
+tar_tests 4 TPASS: Listing in tar.out is correct
+tar_tests 4 TPASS: tar xf test.tar > tar.out passed as expected
+tar_tests 4 TPASS: Tar produced no output
+tar_tests 4 TPASS: Files were uncompressed correctly
+tar_tests 5 TPASS: tar cfz test.tar.gz file1 file2 file3 > tar.out passed as expected
+tar_tests 5 TPASS: Tar produced no output
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 5 TFAIL: tar df test.tar.gz > tar.out failed unexpectedly
+tar_tests 5 TPASS: Tar produced no output
+tar_tests 5 TPASS: tar tf test.tar.gz > tar.out passed as expected
+tar_tests 5 TPASS: Listing in tar.out is correct
+tar_tests 5 TPASS: tar xf test.tar.gz > tar.out passed as expected
+tar_tests 5 TPASS: Tar produced no output
+tar_tests 5 TPASS: Files were uncompressed correctly
+tar_tests 6 TPASS: tar cfj test.tar.bz2 file1 file2 file3 > tar.out passed as expected
+tar_tests 6 TPASS: Tar produced no output
+Usage:
+  List:    tar -tf <archive-filename>
+  Extract: tar -xf <archive-filename>
+  Create:  tar -cf <archive-filename> [filenames...]
+  Help:    tar --help
+tar_tests 6 TFAIL: tar df test.tar.bz2 > tar.out failed unexpectedly
+tar_tests 6 TPASS: Tar produced no output
+tar_tests 6 TPASS: tar tf test.tar.bz2 > tar.out passed as expected
+tar_tests 6 TPASS: Listing in tar.out is correct
+tar_tests 6 TPASS: tar xf test.tar.bz2 > tar.out passed as expected
+tar_tests 6 TPASS: Tar produced no output
+tar_tests 6 TPASS: Files were uncompressed correctly
 
 Summary:
-passed   1
-failed   2
+passed   51
+failed   17
 skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status="ok"
-
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=45 cstime=45
+<<<test_end>>>
 
 Thanks!
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200323/aa69017c/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200323/f5db67ce/attachment-0001.htm>
