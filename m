@@ -1,273 +1,147 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 23 Mar 2020 09:04:15 +0530
-Subject: [LTP] [PATCH] syscalls/fsconfig: Improve print messages by adding
- fsconfig command name
-Message-ID: <3a3774a67f143fd250ea6ebe0daff29beffa7cfd.1584934420.git.viresh.kumar@linaro.org>
+Date: Mon, 23 Mar 2020 12:41:58 +0530
+Subject: [LTP] [PATCH 1/2] syscalls/fspick: Set .mount_device to get rid of
+ mounting related code
+Message-ID: <aa66c041b2eca3f874056de72ca3dcdf8825a6b5.1584947466.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add fsconfig command name to the print messages to improve readability.
+We don't necessarily need to work with the fsmount() related syscalls to
+initially mount the device, we can set .mount_device instead and get rid
+of a lot of code.
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- .../kernel/syscalls/fsconfig/fsconfig01.c      | 18 +++++++++---------
- testcases/kernel/syscalls/fsmount/fsmount01.c  |  4 ++--
- testcases/kernel/syscalls/fsmount/fsmount02.c  |  4 ++--
- testcases/kernel/syscalls/fsopen/fsopen01.c    |  4 ++--
- testcases/kernel/syscalls/fspick/fspick.h      |  4 ++--
- testcases/kernel/syscalls/fspick/fspick01.c    |  6 +++---
- .../kernel/syscalls/move_mount/move_mount01.c  |  4 ++--
- .../kernel/syscalls/move_mount/move_mount02.c  |  4 ++--
- .../kernel/syscalls/open_tree/open_tree01.c    |  4 ++--
- .../kernel/syscalls/open_tree/open_tree02.c    |  4 ++--
- 10 files changed, 28 insertions(+), 28 deletions(-)
+ testcases/kernel/syscalls/fspick/fspick.h   | 60 ---------------------
+ testcases/kernel/syscalls/fspick/fspick01.c |  7 ++-
+ testcases/kernel/syscalls/fspick/fspick02.c |  8 +--
+ 3 files changed, 7 insertions(+), 68 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/fspick/fspick.h
 
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-index 34f5481e479a..47941136d502 100644
---- a/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-@@ -28,39 +28,39 @@ static void run(void)
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_FLAG, "rw", NULL, 0));
- 	if (TST_RET == -1)
--		tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) failed");
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1)
--		tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "sync", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		if (TST_ERR == EOPNOTSUPP)
--			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_PATH not supported");
-+			tst_res(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
- 		else
--			tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_PATH_EMPTY, "sync", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		if (TST_ERR == EOPNOTSUPP)
--			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_PATH_EMPTY not supported");
-+			tst_res(TCONF, "fsconfig(FSCONFIG_SET_PATH_EMPTY) not supported");
- 		else
--			tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH_EMPTY) failed");
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_FD, "sync", NULL, 0));
- 	if (TST_RET == -1) {
- 		if (TST_ERR == EOPNOTSUPP)
--			tst_res(TCONF, "fsconfig(): FSCONFIG_SET_FD not supported");
-+			tst_res(TCONF, "fsconfig(FSCONFIG_SET_FD) not supported");
- 		else
--			tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FD) failed");
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1)
--		tst_brk(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 
- 	TEST(fsmfd = fsmount(fd, 0, 0));
- 	if (fsmfd == -1)
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-index 34d9365d4680..e8198187145b 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-@@ -52,14 +52,14 @@ static void run(unsigned int n)
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(sfd);
- 		tst_res(TFAIL | TTERRNO,
--			"fsconfig() failed to set source to %s", tst_device->dev);
-+			"fsconfig(FSCONFIG_SET_STRING) failed to set source to %s", tst_device->dev);
- 		return;
- 	}
- 
- 	TEST(fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(sfd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() created superblock");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 		return;
- 	}
- 
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount02.c b/testcases/kernel/syscalls/fsmount/fsmount02.c
-index 6f90519ff5f7..effc863516b6 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount02.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount02.c
-@@ -39,11 +39,11 @@ static void setup(void)
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1)
--		tst_brk(TBROK | TTERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1)
--		tst_brk(TBROK | TTERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- }
- 
- static void run(unsigned int n)
-diff --git a/testcases/kernel/syscalls/fsopen/fsopen01.c b/testcases/kernel/syscalls/fsopen/fsopen01.c
-index 02e6d270eff3..8dabd6814a93 100644
---- a/testcases/kernel/syscalls/fsopen/fsopen01.c
-+++ b/testcases/kernel/syscalls/fsopen/fsopen01.c
-@@ -33,13 +33,13 @@ static void run(unsigned int n)
- 
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 		goto out;
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 		goto out;
- 	}
- 
 diff --git a/testcases/kernel/syscalls/fspick/fspick.h b/testcases/kernel/syscalls/fspick/fspick.h
-index ca84269ee7a9..4be296ee79da 100644
+deleted file mode 100644
+index 4be296ee79da..000000000000
 --- a/testcases/kernel/syscalls/fspick/fspick.h
-+++ b/testcases/kernel/syscalls/fspick/fspick.h
-@@ -29,13 +29,13 @@ static void setup(void)
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_brk(TBROK | TERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_brk(TBROK | TERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 	}
- 
- 	TEST(fsmfd = fsmount(fd, 0, 0));
++++ /dev/null
+@@ -1,60 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
+- */
+-
+-#ifndef FSPICK_H__
+-#define FSPICK_H__
+-
+-#define MNTPOINT	"mntpoint"
+-
+-static int ismounted;
+-
+-static void cleanup(void)
+-{
+-	if (ismounted)
+-		SAFE_UMOUNT(MNTPOINT);
+-}
+-
+-static void setup(void)
+-{
+-	int fd, fsmfd;
+-
+-	fsopen_supported_by_kernel();
+-
+-	TEST(fd = fsopen(tst_device->fs_type, 0));
+-	if (fd == -1)
+-		tst_brk(TBROK | TERRNO, "fsopen() failed");
+-
+-	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
+-	if (TST_RET == -1) {
+-		SAFE_CLOSE(fd);
+-		tst_brk(TBROK | TERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
+-	}
+-
+-	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
+-	if (TST_RET == -1) {
+-		SAFE_CLOSE(fd);
+-		tst_brk(TBROK | TERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
+-	}
+-
+-	TEST(fsmfd = fsmount(fd, 0, 0));
+-	SAFE_CLOSE(fd);
+-
+-	if (fsmfd == -1)
+-		tst_brk(TBROK | TERRNO, "fsmount() failed");
+-
+-	TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
+-			MOVE_MOUNT_F_EMPTY_PATH));
+-	SAFE_CLOSE(fsmfd);
+-
+-	if (TST_RET == -1)
+-		tst_brk(TBROK | TERRNO, "move_mount() failed");
+-
+-	if (!tst_is_mounted_at_tmpdir(MNTPOINT))
+-		tst_brk(TBROK | TERRNO, "device not mounted");
+-
+-	ismounted = 1;
+-}
+-
+-#endif /* FSPICK_H__ */
 diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
-index b5a35bf61e2c..c84723805cb9 100644
+index c84723805cb9..2f372f7f126c 100644
 --- a/testcases/kernel/syscalls/fspick/fspick01.c
 +++ b/testcases/kernel/syscalls/fspick/fspick01.c
-@@ -33,19 +33,19 @@ static void run(unsigned int n)
+@@ -6,8 +6,8 @@
+  */
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
+-#include "fspick.h"
  
- 	TEST(fsconfig(fspick_fd, FSCONFIG_SET_STRING, "sync", "false", 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 		goto out;
- 	}
++#define MNTPOINT		"mntpoint"
+ #define TCASE_ENTRY(_flags)	{.name = "Flag " #_flags, .flags = _flags}
  
- 	TEST(fsconfig(fspick_fd, FSCONFIG_SET_FLAG, "ro", NULL, 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_FLAG) failed");
- 		goto out;
- 	}
+ static struct tcase {
+@@ -58,10 +58,9 @@ static void run(unsigned int n)
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = run,
+-	.setup = setup,
+-	.cleanup = cleanup,
++	.setup = fsopen_supported_by_kernel,
+ 	.needs_root = 1,
+-	.format_device = 1,
++	.mount_device = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.all_filesystems = 1,
+ 	.dev_fs_flags = TST_FS_SKIP_FUSE,
+diff --git a/testcases/kernel/syscalls/fspick/fspick02.c b/testcases/kernel/syscalls/fspick/fspick02.c
+index dc8f153ccc48..b9d020226856 100644
+--- a/testcases/kernel/syscalls/fspick/fspick02.c
++++ b/testcases/kernel/syscalls/fspick/fspick02.c
+@@ -6,7 +6,8 @@
+  */
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
+-#include "fspick.h"
++
++#define MNTPOINT		"mntpoint"
  
- 	TEST(fsconfig(fspick_fd, FSCONFIG_CMD_RECONFIGURE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_RECONFIGURE) failed");
- 		goto out;
- 	}
- 
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount01.c b/testcases/kernel/syscalls/move_mount/move_mount01.c
-index ede88946ad4c..fd785da02b14 100644
---- a/testcases/kernel/syscalls/move_mount/move_mount01.c
-+++ b/testcases/kernel/syscalls/move_mount/move_mount01.c
-@@ -37,14 +37,14 @@ static void run(unsigned int n)
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 		return;
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 		return;
- 	}
- 
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount02.c b/testcases/kernel/syscalls/move_mount/move_mount02.c
-index 74c287b0a6fb..f75991a3f5d2 100644
---- a/testcases/kernel/syscalls/move_mount/move_mount02.c
-+++ b/testcases/kernel/syscalls/move_mount/move_mount02.c
-@@ -41,14 +41,14 @@ static void run(unsigned int n)
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 		return;
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 		return;
- 	}
- 
-diff --git a/testcases/kernel/syscalls/open_tree/open_tree01.c b/testcases/kernel/syscalls/open_tree/open_tree01.c
-index 905d16a03697..ddaabed810bd 100644
---- a/testcases/kernel/syscalls/open_tree/open_tree01.c
-+++ b/testcases/kernel/syscalls/open_tree/open_tree01.c
-@@ -49,14 +49,14 @@ static void run(unsigned int n)
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 		return;
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_res(TFAIL | TTERRNO, "fsconfig() failed");
-+		tst_res(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 		return;
- 	}
- 
-diff --git a/testcases/kernel/syscalls/open_tree/open_tree02.c b/testcases/kernel/syscalls/open_tree/open_tree02.c
-index 58c71da20e74..76a750ae412b 100644
---- a/testcases/kernel/syscalls/open_tree/open_tree02.c
-+++ b/testcases/kernel/syscalls/open_tree/open_tree02.c
-@@ -42,13 +42,13 @@ static void setup(void)
- 	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_brk(TBROK | TTERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
- 	}
- 
- 	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
- 	if (TST_RET == -1) {
- 		SAFE_CLOSE(fd);
--		tst_brk(TBROK | TTERRNO, "fsconfig() failed");
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
- 	}
- 
- 	TEST(fsmfd = fsmount(fd, 0, 0));
+ static struct tcase {
+ 	char *name;
+@@ -44,10 +45,9 @@ static void run(unsigned int n)
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = run,
+-	.setup = setup,
+-	.cleanup = cleanup,
++	.setup = fsopen_supported_by_kernel,
+ 	.needs_root = 1,
+-	.format_device = 1,
++	.mount_device = 1,
+ 	.mntpoint = MNTPOINT,
+ 	.all_filesystems = 1,
+ 	.dev_fs_flags = TST_FS_SKIP_FUSE,
 -- 
 2.21.0.rc0.269.g1a574e7a288b
 
