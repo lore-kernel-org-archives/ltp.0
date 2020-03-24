@@ -1,140 +1,83 @@
-From: CKI Project <cki-project@redhat.com>
-Date: Tue, 24 Mar 2020 00:56:03 -0000
-Subject: [LTP] =?utf-8?q?=E2=9D=8C_FAIL=3A_Test_report_for_kernel_5=2E5?=
- =?utf-8?q?=2E11-200=2Efc31_=28fedora-31=29?=
-Message-ID: <cki.0.9NFIKZ9EH2@redhat.com>
+From: Zou Wei <zou_wei@huawei.com>
+Date: Tue, 24 Mar 2020 09:56:38 +0800
+Subject: [LTP] [PATCH v2] open_posix_testsuite: Fix compilation issues
+Message-ID: <1585014998-27587-1-git-send-email-zou_wei@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello jforbes,
+Fix compilation issues:
+1. Add the '-lpthread -lrt -lm' config into LDFLAGS
+2. Add the '-pthread' config into CFLAGS
+3. Update makefile and locate-test script
 
-We ran automated tests on the following kernel build:
+If only add -pthread to LDFLAGS and CFLAGS,
+some cases will fail to compile, such as timers/twoevtimers.c,
+need to add -lrt to compile successfully.
 
-    Kernel package: kernel-5.5.11-200.fc31
-         Task URL: https://koji.fedoraproject.org/koji/taskinfo?taskID=42723737
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ testcases/open_posix_testsuite/CFLAGS              | 2 +-
+ testcases/open_posix_testsuite/LDFLAGS             | 1 +
+ testcases/open_posix_testsuite/functional/Makefile | 2 +-
+ testcases/open_posix_testsuite/scripts/locate-test | 2 +-
+ testcases/open_posix_testsuite/stress/Makefile     | 2 +-
+ 5 files changed, 5 insertions(+), 4 deletions(-)
 
-The results of these automated tests are provided below.
+diff --git a/testcases/open_posix_testsuite/CFLAGS b/testcases/open_posix_testsuite/CFLAGS
+index 297d292..6330fa9 100644
+--- a/testcases/open_posix_testsuite/CFLAGS
++++ b/testcases/open_posix_testsuite/CFLAGS
+@@ -1 +1 @@
+--std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -W -Wall
++-std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -W -Wall -pthread
+diff --git a/testcases/open_posix_testsuite/LDFLAGS b/testcases/open_posix_testsuite/LDFLAGS
+index e69de29..6c112d3 100644
+--- a/testcases/open_posix_testsuite/LDFLAGS
++++ b/testcases/open_posix_testsuite/LDFLAGS
+@@ -0,0 +1 @@
++-lpthread -lrt -lm
+diff --git a/testcases/open_posix_testsuite/functional/Makefile b/testcases/open_posix_testsuite/functional/Makefile
+index 3b22c89..50e03aa 100644
+--- a/testcases/open_posix_testsuite/functional/Makefile
++++ b/testcases/open_posix_testsuite/functional/Makefile
+@@ -5,7 +5,7 @@
+ #
 
-    Overall result: FAILED (see details below)
-             Tests: FAILED
+ all clean install test:
+-	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
++	@for dir in `find . -name *Makefile | egrep -v '^./Makefile' | sed -e 's,/Makefile$$,,g'`; do \
+ 		$(MAKE) -C $$dir $@;						   \
+ 	done
 
-One or more kernel tests failed:
+diff --git a/testcases/open_posix_testsuite/scripts/locate-test b/testcases/open_posix_testsuite/scripts/locate-test
+index 27f0bb5..e4ef994 100755
+--- a/testcases/open_posix_testsuite/scripts/locate-test
++++ b/testcases/open_posix_testsuite/scripts/locate-test
+@@ -92,7 +92,7 @@ runnable)
+ 	# waltz down the tools directory and try and build t0 (which doesn't
+ 	# make sense as it's a tool, not a test). Better criterion needs to
+ 	# be established for this file.
+-	find "$WHERE/conformance" "$WHERE/stress" -type f -name '*[0-9].c' -o -name '[0-9]*-[0-9]*.sh' | grep -v buildonly | grep -v '^./tools'
++	find "$WHERE/conformance" "$WHERE/stress" -type f -name '*[0-9a-z].c' -o -name '[0-9]*-[0-9]*.sh' | grep -v buildonly | grep -v '^./tools' | grep -v 'testfrmw.c$'
+ 	find "$WHERE/functional" -type f -name '*.c'
+ 	;;
+ test-tools)
+diff --git a/testcases/open_posix_testsuite/stress/Makefile b/testcases/open_posix_testsuite/stress/Makefile
+index b09527f..d6872a9 100644
+--- a/testcases/open_posix_testsuite/stress/Makefile
++++ b/testcases/open_posix_testsuite/stress/Makefile
+@@ -5,7 +5,7 @@
+ #
 
-    ppc64le:
-     ? LTP
+ all clean install test:
+-	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
++	@for dir in `find . -name *Makefile | egrep -v '^./Makefile' | sed -e 's,/Makefile$$,,g'`; do \
+ 		$(MAKE) -C $$dir $@;						  \
+ 	done
 
-
-
-All kernel binaries, config files, and logs are available for download here:
-
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/23/502235
-
-Please reply to this email if you have any questions about the tests that we
-ran or if you have any suggestions on how to make future tests more effective.
-For the full detail on our testing procedures, please scroll to the bottom of
-this message.
-
-        ,-.   ,-.
-       ( C ) ( K )  Continuous
-        `-',-.`-'   Kernel
-          ( I )     Integration
-           `-'
-______________________________________________________________________________
-
-Hardware testing
-----------------
-We booted each kernel and ran the following tests:
-
-  aarch64:
-    Host 1:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-    Host 2:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-  ppc64le:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-  s390x:
-    Host 1:
-       ? Boot test
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-    Host 2:
-       ? Boot test
-       ? ? Storage blktests
-
-  x86_64:
-    Host 1:
-       ? Boot test
-       ? xfstests - ext4
-       ? xfstests - xfs
-       ? lvm thinp sanity
-       ? stress: stress-ng
-       ? ? Storage blktests
-
-    Host 2:
-       ? Boot test
-       ? LTP
-       ? Loopdev Sanity
-       ? Memory function: memfd_create
-       ? AMTU (Abstract Machine Test Utility)
-       ? Ethernet drivers sanity
-       ? ? CIFS Connectathon
-       ? ? LTP: openposix test suite
-
-  Test sources: https://github.com/CKI-project/tests-beaker
-    ? Pull requests are welcome for new tests or improvements to existing tests!
-
-Aborted tests
--------------
-Tests that didn't complete running successfully are marked with ???.
-If this was caused by an infrastructure issue, we try to mark that
-explicitly in the report.
-
-Waived tests
-------------
-If the test run included waived tests, they are marked with ?. Such tests are
-executed but their results are not taken into account. Tests are waived when
-their results are not reliable enough, e.g. when they're just introduced or are
-being fixed.
-
-Testing timeout
----------------
-We aim to provide a report within reasonable timeframe. Tests that haven't
-finished running yet are marked with ?.
+--
+2.6.2
 
