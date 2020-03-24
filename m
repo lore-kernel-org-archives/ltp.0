@@ -1,106 +1,160 @@
-From: Greg KH <greg@kroah.com>
-Date: Tue, 24 Mar 2020 12:47:27 +0100
-Subject: [LTP] 
- =?utf-8?b?8J+SpSBQQU5JQ0tFRDogVGVzdCByZXBvcnQ/Zm9yP2tlcm5l?=
- =?utf-8?q?l_5=2E5=2E12-rc1-8b841eb=2Ecki_=28stable=29?=
-In-Reply-To: <1768018191.15186361.1585050272846.JavaMail.zimbra@redhat.com>
-References: <cki.936A32626F.M0L95JS69X@redhat.com>
- <20200324062213.GA1961100@kroah.com>
- <970614328.15180583.1585048327050.JavaMail.zimbra@redhat.com>
- <20200324111819.GA2234211@kroah.com>
- <1768018191.15186361.1585050272846.JavaMail.zimbra@redhat.com>
-Message-ID: <20200324114727.GA2333047@kroah.com>
+From: gengcixi@gmail.com <gengcixi@gmail.com>
+Date: Tue, 24 Mar 2020 20:17:42 +0800
+Subject: [LTP] [PATCH v2] uart: add uart testcase in kernel device-drivers
+Message-ID: <20200324121742.7130-1-gengcixi@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 24, 2020 at 07:44:32AM -0400, Veronika Kabatova wrote:
-> 
-> 
-> ----- Original Message -----
-> > From: "Greg KH" <greg@kroah.com>
-> > To: "Veronika Kabatova" <vkabatov@redhat.com>
-> > Cc: "Memory Management" <mm-qe@redhat.com>, "Ondrej Mosnacek" <omosnace@redhat.com>, "Linux Stable maillist"
-> > <stable@vger.kernel.org>, "CKI Project" <cki-project@redhat.com>, "Jan Stancek" <jstancek@redhat.com>, "LTP Mailing
-> > List" <ltp@lists.linux.it>
-> > Sent: Tuesday, March 24, 2020 12:18:19 PM
-> > Subject: Re: ? PANICKED: Test report	for?kernel 5.5.12-rc1-8b841eb.cki (stable)
-> > 
-> > On Tue, Mar 24, 2020 at 07:12:07AM -0400, Veronika Kabatova wrote:
-> > > 
-> > > 
-> > > ----- Original Message -----
-> > > > From: "Greg KH" <greg@kroah.com>
-> > > > To: "CKI Project" <cki-project@redhat.com>
-> > > > Cc: "Memory Management" <mm-qe@redhat.com>, "Ondrej Mosnacek"
-> > > > <omosnace@redhat.com>, "Linux Stable maillist"
-> > > > <stable@vger.kernel.org>, "Jan Stancek" <jstancek@redhat.com>, "LTP
-> > > > Mailing List" <ltp@lists.linux.it>
-> > > > Sent: Tuesday, March 24, 2020 7:22:13 AM
-> > > > Subject: Re: ? PANICKED: Test report for	kernel 5.5.12-rc1-8b841eb.cki
-> > > > (stable)
-> > > > 
-> > > > On Tue, Mar 24, 2020 at 05:42:38AM -0000, CKI Project wrote:
-> > > > > 
-> > > > > Hello,
-> > > > > 
-> > > > > We ran automated tests on a recent commit from this kernel tree:
-> > > > > 
-> > > > >        Kernel repo:
-> > > > >        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > >             Commit: 8b841eb697e1 - Linux 5.5.12-rc1
-> > > > > 
-> > > > > The results of these automated tests are provided below.
-> > > > > 
-> > > > >     Overall result: FAILED (see details below)
-> > > > >              Merge: OK
-> > > > >            Compile: OK
-> > > > >              Tests: PANICKED
-> > > > > 
-> > > > > All kernel binaries, config files, and logs are available for download
-> > > > > here:
-> > > > > 
-> > > > >   https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/23/502039
-> > > > > 
-> > > > > One or more kernel tests failed:
-> > > > > 
-> > > > >     ppc64le:
-> > > > >      ? xfstests - ext4
-> > > > > 
-> > > > >     aarch64:
-> > > > >      ? LTP
-> > > > > 
-> > > > >     x86_64:
-> > > > >      ? xfstests - ext4
-> > > > 
-> > > > Ok, it's time I start just blacklisting this report again, it's not
-> > > > being helpful in any way :(
-> > > > 
-> > > > Remember, if something starts breaking, I need some way to find out what
-> > > > caused it to break...
-> > > > 
-> > > 
-> > > Hi Greg,
-> > > 
-> > > do you have any specific suggestions about what to include to help you out?
-> > > The linked console logs contain call traces for the panics [0]. Is there
-> > > anything else that would help you with debugging those? We're planning on
-> > > releasing core dumps, would those be helpful?
-> > 
-> > Bisection to find the offending commit would be best.
-> > 
-> 
-> This is going to be really tricky for hard to reproduce bugs but we'll do
-> some research on it, thanks!
+From: Cixi Geng <gengcixi@gmail.com>
 
-I got about 8 "failed" emails today, it doesn't sound like it is hard to
-reproduce.
+Porting UART test from ltp-ddt back to ltp.
+rewrite case use ltp library functions instead of ltp-ddt's
 
-And if you can't reproduce it, why would you expect me to know what is
-going on?  :)
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Orson Zhai <orsonzhai@gmail.com>
+Signed-off-by: Cixi Geng <gengcixi@gmail.com>
+---
+changes v2:
+    1. support more bandrate test 
+    2. move test tags in kernel_misc file 
+    3. use TST_NEEDS_CMDS to check lsof,dd and serialcheck command 
+    4. remove arrays in bash,rewrite test flow control to adapt dash 
+    5. others like License and code-style issues
+explatin for v1:
+    1. create_test_file should be just 2 lines of code in setup function.
+    >>>the test files need have random data,So use create_test_file
+    function
+    2. why run 2 instances of serialcheck
+    >>>run 2 instances is one test send and one test recv, sleep in
+    send  for make sure recv instances can get the send data
+---
+ runtest/kernel_misc                           |  6 ++
+ testcases/kernel/device-drivers/Makefile      |  1 +
+ testcases/kernel/device-drivers/uart/Makefile | 10 +++
+ .../kernel/device-drivers/uart/serialcheck.sh | 68 +++++++++++++++++++
+ 4 files changed, 85 insertions(+)
+ create mode 100644 testcases/kernel/device-drivers/uart/Makefile
+ create mode 100755 testcases/kernel/device-drivers/uart/serialcheck.sh
 
-thanks,
+diff --git a/runtest/kernel_misc b/runtest/kernel_misc
+index 7937c7bbf..7a077b23b 100644
+--- a/runtest/kernel_misc
++++ b/runtest/kernel_misc
+@@ -13,3 +13,9 @@ zram01 zram01.sh
+ zram02 zram02.sh
+ zram03 zram03
+ umip_basic_test umip_basic_test
++# uart test in loopback mode
++uart_9600_k serialcheck.sh 9600 5 k
++uart_19200_k serialcheck.sh 19200 5 k
++uart_38400_k serialcheck.sh 38400 5 k
++uart_57600_k  serialcheck.sh 57600 5 k
++uart_115200_k serialcheck.sh 115200 5 k
+diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
+index 55e0d25a0..a214f211b 100644
+--- a/testcases/kernel/device-drivers/Makefile
++++ b/testcases/kernel/device-drivers/Makefile
+@@ -27,6 +27,7 @@ SUBDIRS		:= acpi \
+ 		   rtc \
+ 		   tbio \
+ 		   uaccess \
++		   uart \
+ 		   zram
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/device-drivers/uart/Makefile b/testcases/kernel/device-drivers/uart/Makefile
+new file mode 100644
+index 000000000..2e4781a6b
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uart/Makefile
+@@ -0,0 +1,10 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
++
++top_srcdir	?= ../../../..
++include $(top_srcdir)/include/mk/testcases.mk
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/device-drivers/uart/serialcheck.sh b/testcases/kernel/device-drivers/uart/serialcheck.sh
+new file mode 100755
+index 000000000..afdc9212f
+--- /dev/null
++++ b/testcases/kernel/device-drivers/uart/serialcheck.sh
+@@ -0,0 +1,68 @@
++#!/bin/sh
++###############################################################################
++#
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
++# Copyright (C) 2019, Unisoc Communications Inc.
++#
++# Test UART ports using git://git.breakpoint.cc/bigeasy/serialcheck.git
++#
++###############################################################################
++
++TST_TESTFUNC=do_test
++TST_POS_ARGS=3
++TST_USAGE=usage
++TST_NEEDS_ROOT=1
++TST_NEEDS_CMDS="serialcheck"
++TST_NEEDS_CMDS="lsof"
++TST_NEEDS_CMDS="dd"
++TST_NEEDS_TMPDIR=1
++
++. tst_test.sh
++
++usage()
++{
++    echo "usage: ./${0} [-r UART_RATE] [-l LOOPS] [-h|k to enable HW flow control or loopback]"
++    exit 1
++}
++
++UART_RATE=$1
++UART_LOOPS=$2
++UART_HWFLOW=$3
++
++create_test_file()
++{
++    temp_test_file=`mktemp`
++    dd if=/dev/urandom of=$temp_test_file count=1 bs=$((UART_RATE / 2))
++}
++
++test_serial()
++{
++    create_test_file
++    { sleep 1; serialcheck -b $UART_RATE -d $1 -f $temp_test_file -l $UART_LOOPS -m t -${UART_HWFLOW}; }&
++    PID=$!
++    serialcheck -b $UART_RATE -d $1 -f $temp_test_file -l $UART_LOOPS -m r -${UART_HWFLOW}
++    if [ $? ];  then
++        kill -- -$PID 2>/dev/null
++        tst_res TFAIL "uart test failed"
++    else
++        tst_res TPASS "uart test passed"
++    fi
++    rm $temp_test_file
++}
++
++do_test()
++{
++    for i in /sys/class/tty/*/uartclk ;do
++        PORT=`echo $i |cut -d '/' -f 5`
++        # Activate port in case it will be initialized only when startup
++        echo "UART TESTING">${PORT} 2>/dev/null
++        if [ `cat /sys/class/tty/${PORT}/uartclk` -ne 0 ]; then
++            lsof | grep "/dev/${PORT}" &> /dev/null || PORT_TO_TEST="/dev/${PORT}"
++            tst_res TINFO "start test on ${PORT_TO_TEST} ${UART_RATE}"
++            test_serial ${PORT_TO_TEST}
++        fi
++    done
++}
++
++tst_run
+-- 
+2.17.1
 
-greg k-h
