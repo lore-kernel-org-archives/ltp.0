@@ -1,8 +1,8 @@
 From: CKI Project <cki-project@redhat.com>
-Date: Tue, 24 Mar 2020 02:37:29 -0000
+Date: Tue, 24 Mar 2020 05:42:38 -0000
 Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E5=2E11-97814a0=2Ecki_=28stable-queue=29?=
-Message-ID: <cki.B5B641A2D4.YQMMK8835O@redhat.com>
+ =?utf-8?q?5=2E5=2E12-rc1-8b841eb=2Ecki_=28stable=29?=
+Message-ID: <cki.936A32626F.M0L95JS69X@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Hello,
 We ran automated tests on a recent commit from this kernel tree:
 
        Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-            Commit: 97814a0792fd - io_uring: NULL-deref for IOSQE_{ASYNC,DRAIN}
+            Commit: 8b841eb697e1 - Linux 5.5.12-rc1
 
 The results of these automated tests are provided below.
 
@@ -26,19 +26,18 @@ The results of these automated tests are provided below.
 
 All kernel binaries, config files, and logs are available for download here:
 
-  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/23/502272
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/23/502039
 
 One or more kernel tests failed:
 
     ppc64le:
-     ? LTP
+     ? xfstests - ext4
 
     aarch64:
-     ? xfstests - ext4
+     ? LTP
 
     x86_64:
      ? xfstests - ext4
-     ? Networking bridge: sanity
 
 We hope that these logs can help you find the problem quickly. For the full
 detail on our testing procedures, please scroll to the bottom of this message.
@@ -120,8 +119,13 @@ We booted each kernel and ran the following tests:
        ? ? storage: dm/common
 
     Host 2:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
        ? Boot test
-       ? xfstests - ext4
+       ??? xfstests - ext4
        ??? xfstests - xfs
        ??? selinux-policy: serge-testsuite
        ??? lvm thinp sanity
@@ -131,75 +135,69 @@ We booted each kernel and ran the following tests:
        ? ??? IPMItool loop stress test
        ? ??? Storage blktests
 
-  ppc64le:
-    Host 1:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
+    Host 3:
        ? Boot test
        ? xfstests - ext4
        ? xfstests - xfs
        ? selinux-policy: serge-testsuite
        ? lvm thinp sanity
        ? storage: software RAID testing
-       ? ? IPMI driver test
-       ? ??? IPMItool loop stress test
        ? ? Storage blktests
 
-    Host 2:
+  ppc64le:
+    Host 1:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
        ? LTP
-       ??? Loopdev Sanity
-       ??? Memory function: memfd_create
-       ??? AMTU (Abstract Machine Test Utility)
-       ??? Networking bridge: sanity
-       ??? Ethernet drivers sanity
-       ??? Networking MACsec: sanity
-       ??? Networking socket: fuzz
-       ??? Networking sctp-auth: sockopts test
-       ??? Networking route: pmtu
-       ??? Networking route_func - local
-       ??? Networking route_func - forward
-       ??? Networking TCP: keepalive test
-       ??? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ??? Networking tunnel: gre basic
-       ??? L2TP basic test
-       ??? Networking tunnel: vxlan basic
-       ??? Networking ipsec: basic netns - tunnel
-       ??? httpd: mod_ssl smoke sanity
-       ??? tuned: tune-processes-through-perf
-       ??? ALSA PCM loopback test
-       ??? ALSA Control (mixer) Userspace Element test
-       ??? Usex - version 1.9-29
-       ??? trace: ftrace/tracer
-       ? ??? CIFS Connectathon
-       ? ??? POSIX pjd-fstest suites
-       ? ??? jvm - DaCapo Benchmark Suite
-       ? ??? jvm - jcstress tests
-       ? ??? Memory function: kaslr
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? audit: audit testsuite test
-       ? ??? iotop: sanity
-       ? ??? storage: dm/common
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func - local
+       ? Networking route_func - forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns - tunnel
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? Usex - version 1.9-29
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm - DaCapo Benchmark Suite
+       ? ? jvm - jcstress tests
+       ? ? Memory function: kaslr
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? audit: audit testsuite test
+       ? ? iotop: sanity
+       ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? Storage blktests
 
   s390x:
     Host 1:
-       ? Boot test
-       ? selinux-policy: serge-testsuite
-       ? ? Storage blktests
-
-    Host 2:
-
-       ? Internal infrastructure issues prevented one or more tests (marked
-       with ???) from running on this architecture.
-       This is not the fault of the kernel that was tested.
-
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -230,9 +228,14 @@ We booted each kernel and ran the following tests:
        ? ? Memory function: kaslr
        ? ? LTP: openposix test suite
        ? ? Networking vnic: ipvlan/basic
-       ? ??? audit: audit testsuite test
+       ? ? audit: audit testsuite test
        ? ? iotop: sanity
        ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
 
   x86_64:
     Host 1:
@@ -240,10 +243,6 @@ We booted each kernel and ran the following tests:
        ? Storage SAN device stress - megaraid_sas
 
     Host 2:
-       ? Boot test
-       ? Storage SAN device stress - mpt3sas driver
-
-    Host 3:
        ? Boot test
        ? xfstests - ext4
        ??? xfstests - xfs
@@ -257,7 +256,7 @@ We booted each kernel and ran the following tests:
        ? ??? power-management: cpupower/sanity test
        ? ??? Storage blktests
 
-    Host 4:
+    Host 3:
        ? Boot test
        ? Podman system integration test - as root
        ? Podman system integration test - as user
@@ -266,40 +265,44 @@ We booted each kernel and ran the following tests:
        ? Memory function: memfd_create
        ? AMTU (Abstract Machine Test Utility)
        ? Networking bridge: sanity
-       ??? Ethernet drivers sanity
-       ??? Networking MACsec: sanity
-       ??? Networking socket: fuzz
-       ??? Networking sctp-auth: sockopts test
-       ??? Networking: igmp conformance test
-       ??? Networking route: pmtu
-       ??? Networking route_func - local
-       ??? Networking route_func - forward
-       ??? Networking TCP: keepalive test
-       ??? Networking UDP: socket
-       ??? Networking tunnel: geneve basic test
-       ??? Networking tunnel: gre basic
-       ??? L2TP basic test
-       ??? Networking tunnel: vxlan basic
-       ??? Networking ipsec: basic netns - transport
-       ??? Networking ipsec: basic netns - tunnel
-       ??? httpd: mod_ssl smoke sanity
-       ??? tuned: tune-processes-through-perf
-       ??? pciutils: sanity smoke test
-       ??? ALSA PCM loopback test
-       ??? ALSA Control (mixer) Userspace Element test
-       ??? Usex - version 1.9-29
-       ??? storage: SCSI VPD
-       ??? trace: ftrace/tracer
-       ? ??? CIFS Connectathon
-       ? ??? POSIX pjd-fstest suites
-       ? ??? jvm - DaCapo Benchmark Suite
-       ? ??? jvm - jcstress tests
-       ? ??? Memory function: kaslr
-       ? ??? LTP: openposix test suite
-       ? ??? Networking vnic: ipvlan/basic
-       ? ??? audit: audit testsuite test
-       ? ??? iotop: sanity
-       ? ??? storage: dm/common
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func - local
+       ? Networking route_func - forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns - transport
+       ? Networking ipsec: basic netns - tunnel
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? pciutils: sanity smoke test
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? Usex - version 1.9-29
+       ? storage: SCSI VPD
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm - DaCapo Benchmark Suite
+       ? ? jvm - jcstress tests
+       ? ? Memory function: kaslr
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? audit: audit testsuite test
+       ? ? iotop: sanity
+       ? ? storage: dm/common
+
+    Host 4:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
 
   Test sources: https://github.com/CKI-project/tests-beaker
     ? Pull requests are welcome for new tests or improvements to existing tests!
