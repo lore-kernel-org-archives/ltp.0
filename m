@@ -1,83 +1,324 @@
-From: Zou Wei <zou_wei@huawei.com>
-Date: Tue, 24 Mar 2020 09:56:38 +0800
-Subject: [LTP] [PATCH v2] open_posix_testsuite: Fix compilation issues
-Message-ID: <1585014998-27587-1-git-send-email-zou_wei@huawei.com>
+From: CKI Project <cki-project@redhat.com>
+Date: Tue, 24 Mar 2020 02:37:29 -0000
+Subject: [LTP] =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
+ =?utf-8?q?5=2E5=2E11-97814a0=2Ecki_=28stable-queue=29?=
+Message-ID: <cki.B5B641A2D4.YQMMK8835O@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fix compilation issues:
-1. Add the '-lpthread -lrt -lm' config into LDFLAGS
-2. Add the '-pthread' config into CFLAGS
-3. Update makefile and locate-test script
 
-If only add -pthread to LDFLAGS and CFLAGS,
-some cases will fail to compile, such as timers/twoevtimers.c,
-need to add -lrt to compile successfully.
+Hello,
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- testcases/open_posix_testsuite/CFLAGS              | 2 +-
- testcases/open_posix_testsuite/LDFLAGS             | 1 +
- testcases/open_posix_testsuite/functional/Makefile | 2 +-
- testcases/open_posix_testsuite/scripts/locate-test | 2 +-
- testcases/open_posix_testsuite/stress/Makefile     | 2 +-
- 5 files changed, 5 insertions(+), 4 deletions(-)
+We ran automated tests on a recent commit from this kernel tree:
 
-diff --git a/testcases/open_posix_testsuite/CFLAGS b/testcases/open_posix_testsuite/CFLAGS
-index 297d292..6330fa9 100644
---- a/testcases/open_posix_testsuite/CFLAGS
-+++ b/testcases/open_posix_testsuite/CFLAGS
-@@ -1 +1 @@
---std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -W -Wall
-+-std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -W -Wall -pthread
-diff --git a/testcases/open_posix_testsuite/LDFLAGS b/testcases/open_posix_testsuite/LDFLAGS
-index e69de29..6c112d3 100644
---- a/testcases/open_posix_testsuite/LDFLAGS
-+++ b/testcases/open_posix_testsuite/LDFLAGS
-@@ -0,0 +1 @@
-+-lpthread -lrt -lm
-diff --git a/testcases/open_posix_testsuite/functional/Makefile b/testcases/open_posix_testsuite/functional/Makefile
-index 3b22c89..50e03aa 100644
---- a/testcases/open_posix_testsuite/functional/Makefile
-+++ b/testcases/open_posix_testsuite/functional/Makefile
-@@ -5,7 +5,7 @@
- #
+       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+            Commit: 97814a0792fd - io_uring: NULL-deref for IOSQE_{ASYNC,DRAIN}
 
- all clean install test:
--	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
-+	@for dir in `find . -name *Makefile | egrep -v '^./Makefile' | sed -e 's,/Makefile$$,,g'`; do \
- 		$(MAKE) -C $$dir $@;						   \
- 	done
+The results of these automated tests are provided below.
 
-diff --git a/testcases/open_posix_testsuite/scripts/locate-test b/testcases/open_posix_testsuite/scripts/locate-test
-index 27f0bb5..e4ef994 100755
---- a/testcases/open_posix_testsuite/scripts/locate-test
-+++ b/testcases/open_posix_testsuite/scripts/locate-test
-@@ -92,7 +92,7 @@ runnable)
- 	# waltz down the tools directory and try and build t0 (which doesn't
- 	# make sense as it's a tool, not a test). Better criterion needs to
- 	# be established for this file.
--	find "$WHERE/conformance" "$WHERE/stress" -type f -name '*[0-9].c' -o -name '[0-9]*-[0-9]*.sh' | grep -v buildonly | grep -v '^./tools'
-+	find "$WHERE/conformance" "$WHERE/stress" -type f -name '*[0-9a-z].c' -o -name '[0-9]*-[0-9]*.sh' | grep -v buildonly | grep -v '^./tools' | grep -v 'testfrmw.c$'
- 	find "$WHERE/functional" -type f -name '*.c'
- 	;;
- test-tools)
-diff --git a/testcases/open_posix_testsuite/stress/Makefile b/testcases/open_posix_testsuite/stress/Makefile
-index b09527f..d6872a9 100644
---- a/testcases/open_posix_testsuite/stress/Makefile
-+++ b/testcases/open_posix_testsuite/stress/Makefile
-@@ -5,7 +5,7 @@
- #
+    Overall result: FAILED (see details below)
+             Merge: OK
+           Compile: OK
+             Tests: PANICKED
 
- all clean install test:
--	@for dir in `ls -d */Makefile 2>/dev/null | sed -e 's,/Makefile$$,,g'`; do \
-+	@for dir in `find . -name *Makefile | egrep -v '^./Makefile' | sed -e 's,/Makefile$$,,g'`; do \
- 		$(MAKE) -C $$dir $@;						  \
- 	done
+All kernel binaries, config files, and logs are available for download here:
 
---
-2.6.2
+  https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/23/502272
+
+One or more kernel tests failed:
+
+    ppc64le:
+     ? LTP
+
+    aarch64:
+     ? xfstests - ext4
+
+    x86_64:
+     ? xfstests - ext4
+     ? Networking bridge: sanity
+
+We hope that these logs can help you find the problem quickly. For the full
+detail on our testing procedures, please scroll to the bottom of this message.
+
+Please reply to this email if you have any questions about the tests that we
+ran or if you have any suggestions on how to make future tests more effective.
+
+        ,-.   ,-.
+       ( C ) ( K )  Continuous
+        `-',-.`-'   Kernel
+          ( I )     Integration
+           `-'
+______________________________________________________________________________
+
+Compile testing
+---------------
+
+We compiled the kernel for 4 architectures:
+
+    aarch64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    ppc64le:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    s390x:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+    x86_64:
+      make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
+
+
+Hardware testing
+----------------
+We booted each kernel and ran the following tests:
+
+  aarch64:
+    Host 1:
+       ? Boot test
+       ? Podman system integration test - as root
+       ? Podman system integration test - as user
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking socket: fuzz
+       ? Networking sctp-auth: sockopts test
+       ? Networking: igmp conformance test
+       ? Networking route: pmtu
+       ? Networking route_func - local
+       ? Networking route_func - forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns - transport
+       ? Networking ipsec: basic netns - tunnel
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? ALSA PCM loopback test
+       ? ALSA Control (mixer) Userspace Element test
+       ? Usex - version 1.9-29
+       ? storage: SCSI VPD
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm - DaCapo Benchmark Suite
+       ? ? jvm - jcstress tests
+       ? ? Memory function: kaslr
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ? audit: audit testsuite test
+       ? ? iotop: sanity
+       ? ? storage: dm/common
+
+    Host 2:
+       ? Boot test
+       ? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? Storage blktests
+
+  ppc64le:
+    Host 1:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? xfstests - ext4
+       ? xfstests - xfs
+       ? selinux-policy: serge-testsuite
+       ? lvm thinp sanity
+       ? storage: software RAID testing
+       ? ? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ? Storage blktests
+
+    Host 2:
+       ? Boot test
+       ? Podman system integration test - as root
+       ? Podman system integration test - as user
+       ? LTP
+       ??? Loopdev Sanity
+       ??? Memory function: memfd_create
+       ??? AMTU (Abstract Machine Test Utility)
+       ??? Networking bridge: sanity
+       ??? Ethernet drivers sanity
+       ??? Networking MACsec: sanity
+       ??? Networking socket: fuzz
+       ??? Networking sctp-auth: sockopts test
+       ??? Networking route: pmtu
+       ??? Networking route_func - local
+       ??? Networking route_func - forward
+       ??? Networking TCP: keepalive test
+       ??? Networking UDP: socket
+       ??? Networking tunnel: geneve basic test
+       ??? Networking tunnel: gre basic
+       ??? L2TP basic test
+       ??? Networking tunnel: vxlan basic
+       ??? Networking ipsec: basic netns - tunnel
+       ??? httpd: mod_ssl smoke sanity
+       ??? tuned: tune-processes-through-perf
+       ??? ALSA PCM loopback test
+       ??? ALSA Control (mixer) Userspace Element test
+       ??? Usex - version 1.9-29
+       ??? trace: ftrace/tracer
+       ? ??? CIFS Connectathon
+       ? ??? POSIX pjd-fstest suites
+       ? ??? jvm - DaCapo Benchmark Suite
+       ? ??? jvm - jcstress tests
+       ? ??? Memory function: kaslr
+       ? ??? LTP: openposix test suite
+       ? ??? Networking vnic: ipvlan/basic
+       ? ??? audit: audit testsuite test
+       ? ??? iotop: sanity
+       ? ??? storage: dm/common
+
+  s390x:
+    Host 1:
+       ? Boot test
+       ? selinux-policy: serge-testsuite
+       ? ? Storage blktests
+
+    Host 2:
+
+       ? Internal infrastructure issues prevented one or more tests (marked
+       with ???) from running on this architecture.
+       This is not the fault of the kernel that was tested.
+
+       ? Boot test
+       ? Podman system integration test - as root
+       ? Podman system integration test - as user
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? Networking bridge: sanity
+       ? Ethernet drivers sanity
+       ? Networking MACsec: sanity
+       ? Networking sctp-auth: sockopts test
+       ? Networking route: pmtu
+       ? Networking route_func - local
+       ? Networking route_func - forward
+       ? Networking TCP: keepalive test
+       ? Networking UDP: socket
+       ? Networking tunnel: geneve basic test
+       ? Networking tunnel: gre basic
+       ? L2TP basic test
+       ? Networking tunnel: vxlan basic
+       ? Networking ipsec: basic netns - transport
+       ? Networking ipsec: basic netns - tunnel
+       ? httpd: mod_ssl smoke sanity
+       ? tuned: tune-processes-through-perf
+       ? trace: ftrace/tracer
+       ? ? CIFS Connectathon
+       ? ? POSIX pjd-fstest suites
+       ? ? jvm - DaCapo Benchmark Suite
+       ? ? jvm - jcstress tests
+       ? ? Memory function: kaslr
+       ? ? LTP: openposix test suite
+       ? ? Networking vnic: ipvlan/basic
+       ? ??? audit: audit testsuite test
+       ? ? iotop: sanity
+       ? ? storage: dm/common
+
+  x86_64:
+    Host 1:
+       ? Boot test
+       ? Storage SAN device stress - megaraid_sas
+
+    Host 2:
+       ? Boot test
+       ? Storage SAN device stress - mpt3sas driver
+
+    Host 3:
+       ? Boot test
+       ? xfstests - ext4
+       ??? xfstests - xfs
+       ??? selinux-policy: serge-testsuite
+       ??? lvm thinp sanity
+       ??? storage: software RAID testing
+       ??? stress: stress-ng
+       ? ??? IOMMU boot test
+       ? ??? IPMI driver test
+       ? ??? IPMItool loop stress test
+       ? ??? power-management: cpupower/sanity test
+       ? ??? Storage blktests
+
+    Host 4:
+       ? Boot test
+       ? Podman system integration test - as root
+       ? Podman system integration test - as user
+       ? LTP
+       ? Loopdev Sanity
+       ? Memory function: memfd_create
+       ? AMTU (Abstract Machine Test Utility)
+       ? Networking bridge: sanity
+       ??? Ethernet drivers sanity
+       ??? Networking MACsec: sanity
+       ??? Networking socket: fuzz
+       ??? Networking sctp-auth: sockopts test
+       ??? Networking: igmp conformance test
+       ??? Networking route: pmtu
+       ??? Networking route_func - local
+       ??? Networking route_func - forward
+       ??? Networking TCP: keepalive test
+       ??? Networking UDP: socket
+       ??? Networking tunnel: geneve basic test
+       ??? Networking tunnel: gre basic
+       ??? L2TP basic test
+       ??? Networking tunnel: vxlan basic
+       ??? Networking ipsec: basic netns - transport
+       ??? Networking ipsec: basic netns - tunnel
+       ??? httpd: mod_ssl smoke sanity
+       ??? tuned: tune-processes-through-perf
+       ??? pciutils: sanity smoke test
+       ??? ALSA PCM loopback test
+       ??? ALSA Control (mixer) Userspace Element test
+       ??? Usex - version 1.9-29
+       ??? storage: SCSI VPD
+       ??? trace: ftrace/tracer
+       ? ??? CIFS Connectathon
+       ? ??? POSIX pjd-fstest suites
+       ? ??? jvm - DaCapo Benchmark Suite
+       ? ??? jvm - jcstress tests
+       ? ??? Memory function: kaslr
+       ? ??? LTP: openposix test suite
+       ? ??? Networking vnic: ipvlan/basic
+       ? ??? audit: audit testsuite test
+       ? ??? iotop: sanity
+       ? ??? storage: dm/common
+
+  Test sources: https://github.com/CKI-project/tests-beaker
+    ? Pull requests are welcome for new tests or improvements to existing tests!
+
+Aborted tests
+-------------
+Tests that didn't complete running successfully are marked with ???.
+If this was caused by an infrastructure issue, we try to mark that
+explicitly in the report.
+
+Waived tests
+------------
+If the test run included waived tests, they are marked with ?. Such tests are
+executed but their results are not taken into account. Tests are waived when
+their results are not reliable enough, e.g. when they're just introduced or are
+being fixed.
+
+Testing timeout
+---------------
+We aim to provide a report within reasonable timeframe. Tests that haven't
+finished running yet are marked with ?.
 
