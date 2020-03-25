@@ -1,94 +1,49 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 25 Mar 2020 17:26:45 +0800
-Subject: [LTP] [PATCH] aio_return: Remove cases and refactor 4-1.c
-In-Reply-To: <1585127864-1341-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1585127864-1341-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <3329abd9-38f8-1268-d288-a9f874959e01@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 25 Mar 2020 10:34:27 +0100
+Subject: [LTP] [PATCH 2/2] Use SAFE_RUNCMD()
+In-Reply-To: <20200325170739.GA2461@yuki.lan>
+References: <303d1019-f836-b2ae-ce51-d2c46dd7fb1e@cn.fujitsu.com>
+ <20200323113738.GA4807@dell5510>
+ <CAEemH2fhRYefq_9LmSmDvujS1OQa7rCeF7V=mJQrLhz0bwpo0A@mail.gmail.com>
+ <CAEemH2e4sRwZ8HRm-w5CD=Wm8-SW+LaA5XHDnXdqrOL1t4FdtA@mail.gmail.com>
+ <20200323160415.GC15673@dell5510> <20200324235150.GC4521@yuki.lan>
+ <20200324172102.GA1307@dell5510> <20200325015324.GA15127@yuki.lan>
+ <CAEemH2doL4m4-TLBBWTHygTRPSTa68dkoAFjZJrDmzrkmgUrSQ@mail.gmail.com>
+ <20200325170739.GA2461@yuki.lan>
+Message-ID: <20200325093427.GA23023@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+Hi Li, Metan,
 
+> > And this makes me think more of the '.request_hugepages' story. The
+> > needs_foo flags require the foo to be present on the system as hard
+> > requirements. In some situations(i.e copy_file_range02.c), we probably need
+> > to handle the soft situation, which means, the commands are only part of
+> > the test requirement. So if it writing with .needs_cmds="xxx", it might
+> > skip the whole test in setup() phase.
++1. This is similar to a general problem how to structure tests when you want to
+use tst_brk() and cleanup function (having more unrelated tests in single C file
+means one should try to avoid using tst_brk() when not needed).
 
->  From aio_return(3) manpage, the aio_return() function returns the
-> final return status for the asynchronous I/O request with control
-> block pointed to by aiocbp. It should be called only once for any
-> given request. If we want to call twice for same aiocbp, it only
-> returns the last value. It doesn't make sense. So remove 2-1.c and
-> 3-2.c.
-> 
-> For 4-1.c, it failed with the same reason. But we can refactor this
-> , firstly call aio_return(&aiocb2) and then call aio_return(&aiocb).
-> It tests whether value override.
-> 
-> Reported-by: Gang Liu <liug.fnst@cn.fujitsu.com>
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->   .../conformance/interfaces/aio_return/2-1.c   | 108 -----------------
->   .../conformance/interfaces/aio_return/3-2.c   | 111 ------------------
->   .../conformance/interfaces/aio_return/4-1.c   |  23 +++-
->   3 files changed, 18 insertions(+), 224 deletions(-)
->   delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
->   delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
-> 
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-> index 7a039b13f..770699b54 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-> @@ -17,8 +17,10 @@
->    *
->    *	- Open a file
->    *	- fill in an aiocb for writing
-> - *	- call aio_write usign this aiocb
-> + *	- call aio_write using this aiocb
->    *	- fill in a new aiocb
-> + *	- call aio_write using this aiocb
-> + *	- call aio_return with aiocb
->    *	- call aio_return with this last aiocb
->    */
->   
-> @@ -86,20 +88,31 @@ int main(void)
->   		aiocb2.aio_fildes = fd;
->   		aiocb2.aio_buf = buf;
->   		aiocb2.aio_nbytes = BUF_SIZE;
-> +		if (aio_write(&aiocb2) == -1) {
-> +			close(fd);
-> +			printf(TNAME " Error at aio_write(): %s\n", strerror(errno));
-> +			return PTS_FAIL;
-> +		}
-> +
-> +		do {
-> +			nanosleep(&completion_wait_ts, NULL);
-> +			retval = aio_error(&aiocb);
-Here should be aio_error(&aiocb2). Sorry.
-> +		} while (retval == EINPROGRESS);
->   
->   		retval = aio_return(&aiocb2);
->   
-> -		if (retval != -1 || aio_error(&aiocb) != EINVAL) {
-> +		if (retval != BUF_SIZE) {
->   			close(fd);
-> -			printf(TNAME "aio_return() have not failed\n");
-> -			return PTS_UNTESTED;
-> +			printf(TNAME " Error at aio_return(&aiocb2): %d, %s\n", retval,
-> +				strerror(aio_error(&aiocb)));
-Here as well.
-> +			return PTS_UNRESOLVED;
->   		}
->   
->   		retval = aio_return(&aiocb);
->   
->   		if (retval != BUF_SIZE) {
->   			close(fd);
-> -			printf(TNAME " Error at aio_return(): %d, %s\n", retval,
-> +			printf(TNAME " Error at aio_return(&aiocb): %d, %s\n", retval,
->   			       strerror(aio_error(&aiocb)));
->   			return PTS_UNRESOLVED;
->   		}
-> 
+> Indeed, there are couple of solutions for that, one of them would have
+> all the arrays doubled and one of them would list hard requirement while
+> the other soft requirements. Then we will end up with something as
+> "need_cmds" and "wants_cmds". The second one would be more or less
+> informative, the test may print a message "Missing foo command test
+> coverage will be limited".
+I was thinking about it and thought that would be too rich API (given there is
+not that much external dependencies for C tests). But ok, sounds reasonable.
 
+Also similar use case from shell tests: mostly $TST_NEEDS_CMDS is used,
+which stop whole testing. But rarely (only in 3 tests and tst_net.sh) is used
+tst_require_cmds() directly - it's a hard requirement, but it tries to run some
+test before (or require it only when it's needed - tst_net.sh).
+But that's bad from metadata point of view (you concentrate on metadata in C,
+but sooner or later we'll need to handle shell as well).
 
+Kind regards,
+Petr
