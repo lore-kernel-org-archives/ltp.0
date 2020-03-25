@@ -1,166 +1,83 @@
-From: Rachel Sibley <rasibley@redhat.com>
-Date: Tue, 24 Mar 2020 15:44:22 -0400
-Subject: [LTP] 
- =?utf-8?q?=F0=9F=92=A5_PANICKED=3A_Test_report_for_kernel_?=
- =?utf-8?q?5=2E6=2E0-rc7-76ccd23=2Ecki_=28mainline=2Ekernel=2Eorg=29?=
-In-Reply-To: <cki.DE02ACD38F.FLRCD9DAJV@redhat.com>
-References: <cki.DE02ACD38F.FLRCD9DAJV@redhat.com>
-Message-ID: <aa9f8479-3c53-f109-1051-49cffef26beb@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 25 Mar 2020 13:07:00 +0800
+Subject: [LTP] [PATCH v2] openposix/twoptimers: handle signal correctly
+In-Reply-To: <5E71F152.5010909@cn.fujitsu.com>
+References: <5E71F152.5010909@cn.fujitsu.com>
+Message-ID: <1585112820-30322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Usually, when we want to get a signal to handle, we should install
+customized signal handler function by using sigation. The other way
+is to block this signal and use sigwait() to get the signal from its
+pending list. Use sigprocmask(SIGBLOCK, &set, NULL) to make sure we
+can get SIGABRT/SIGALRM signal.
+
+Test this case on 2.6.18-398.el5, it doesn't get any signal.
+higer versions than this only get SIGABRT signal.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../functional/timers/timers/twoptimers.c     | 20 ++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c b/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
+index 84bea3f0a..b2657539c 100644
+--- a/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
++++ b/testcases/open_posix_testsuite/functional/timers/timers/twoptimers.c
+@@ -51,6 +51,10 @@ int main(int argc, char *argv[])
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
++		if (sigprocmask(SIG_BLOCK, &set, NULL) == -1) {
++			perror("sigprocmask() failed\n");
++			return PTS_UNRESOLVED;
++		}
+ 		ev.sigev_notify = SIGEV_SIGNAL;
+ 		ev.sigev_signo = SIGABRT;
+ 		if (timer_create(CLOCK_REALTIME, &ev, &tid) != 0) {
+@@ -73,8 +77,10 @@ int main(int argc, char *argv[])
+ 			perror("sigwait() failed\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		printf("Got it!  Child\n");
+-
++		if (sig == SIGABRT)
++			printf("Got it! Child\n");
++		else
++			printf("Got another signal! Child\n");
+ 		sleep(LONGTIME);
+ 		return CHILDPASS;
+ 	} else {
+@@ -97,6 +103,11 @@ int main(int argc, char *argv[])
+ 			return PTS_UNRESOLVED;
+ 		}
+ 
++		if (sigprocmask(SIG_BLOCK, &set, NULL) == -1) {
++			perror("sigaprocmask() failed\n");
++			return PTS_UNRESOLVED;
++		}
++
+ 		ev.sigev_notify = SIGEV_SIGNAL;
+ 		ev.sigev_signo = SIGALRM;
+ 		if (timer_create(CLOCK_REALTIME, &ev, &tid) != 0) {
+@@ -119,7 +130,10 @@ int main(int argc, char *argv[])
+ 			perror("sigwait() failed\n");
+ 			return PTS_UNRESOLVED;
+ 		}
+-		printf("Got it!  Parent\n");
++		if (sig == SIGALRM)
++			printf("Got it! Parent\n");
++		else
++			printf("Got another signal! Parent\n");
+ 
+ 		if (wait(&i) == -1) {
+ 			perror("Error waiting for child to exit\n");
+-- 
+2.23.0
 
 
-On 3/24/20 2:51 PM, CKI Project wrote:
-> 
-> Hello,
-> 
-> We ran automated tests on a recent commit from this kernel tree:
-> 
->         Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->              Commit: 76ccd234269b - Merge branch 'perf-urgent-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-> 
-> The results of these automated tests are provided below.
-> 
->      Overall result: FAILED (see details below)
->               Merge: OK
->             Compile: OK
->               Tests: PANICKED
-> 
-> All kernel binaries, config files, and logs are available for download here:
-> 
->    https://cki-artifacts.s3.us-east-2.amazonaws.com/index.html?prefix=datawarehouse/2020/03/24/503583
-> 
-> One or more kernel tests failed:
-> 
->      x86_64:
->       ? xfstests - ext4
->       ? LTP
-
-Sorry for all the panic emails, this is caused by a known issue which is not yet merged
-into Linus tree, patches were submitted last Friday for linux-block:
-https://lore.kernel.org/lkml/20200321094521.85986-2-paolo.valente@linaro.org/
-
-I've temporarily disabled cc'ing LTP ML for now while we investigate a better
-solution to report known issues properly.
-
-> 
-> We hope that these logs can help you find the problem quickly. For the full
-> detail on our testing procedures, please scroll to the bottom of this message.
-> 
-> Please reply to this email if you have any questions about the tests that we
-> ran or if you have any suggestions on how to make future tests more effective.
-> 
->          ,-.   ,-.
->         ( C ) ( K )  Continuous
->          `-',-.`-'   Kernel
->            ( I )     Integration
->             `-'
-> ______________________________________________________________________________
-> 
-> Compile testing
-> ---------------
-> 
-> We compiled the kernel for 1 architecture:
-> 
->      x86_64:
->        make options: -j30 INSTALL_MOD_STRIP=1 targz-pkg
-> 
-> 
-> Hardware testing
-> ----------------
-> We booted each kernel and ran the following tests:
-> 
->    x86_64:
->      Host 1:
->         ? Boot test
->         ? selinux-policy: serge-testsuite
->         ? lvm thinp sanity
->         ? storage: software RAID testing
->         ? stress: stress-ng
->         ? ? xfstests - ext4
->         ? ??? xfstests - xfs
->         ? ??? IOMMU boot test
->         ? ??? IPMI driver test
->         ? ??? IPMItool loop stress test
->         ? ??? power-management: cpupower/sanity test
->         ? ??? Storage blktests
-> 
->      Host 2:
->         ? Boot test
->         ? Storage SAN device stress - megaraid_sas
-> 
->      Host 3:
->         ? Boot test
->         ? Storage SAN device stress - mpt3sas driver
-> 
->      Host 4:
->         ? Boot test
->         ? Podman system integration test - as root
->         ? Podman system integration test - as user
->         ? LTP
->         ??? Loopdev Sanity
->         ??? Memory function: memfd_create
->         ??? AMTU (Abstract Machine Test Utility)
->         ??? Networking bridge: sanity
->         ??? Ethernet drivers sanity
->         ??? Networking MACsec: sanity
->         ??? Networking socket: fuzz
->         ??? Networking sctp-auth: sockopts test
->         ??? Networking: igmp conformance test
->         ??? Networking route: pmtu
->         ??? Networking route_func - local
->         ??? Networking route_func - forward
->         ??? Networking TCP: keepalive test
->         ??? Networking UDP: socket
->         ??? Networking tunnel: geneve basic test
->         ??? Networking tunnel: gre basic
->         ??? L2TP basic test
->         ??? Networking tunnel: vxlan basic
->         ??? Networking ipsec: basic netns - transport
->         ??? Networking ipsec: basic netns - tunnel
->         ??? httpd: mod_ssl smoke sanity
->         ??? tuned: tune-processes-through-perf
->         ??? pciutils: sanity smoke test
->         ??? ALSA PCM loopback test
->         ??? ALSA Control (mixer) Userspace Element test
->         ??? Usex - version 1.9-29
->         ??? storage: SCSI VPD
->         ??? trace: ftrace/tracer
->         ? ??? CIFS Connectathon
->         ? ??? POSIX pjd-fstest suites
->         ? ??? jvm - DaCapo Benchmark Suite
->         ? ??? jvm - jcstress tests
->         ? ??? Memory function: kaslr
->         ? ??? LTP: openposix test suite
->         ? ??? Networking vnic: ipvlan/basic
->         ? ??? audit: audit testsuite test
->         ? ??? iotop: sanity
->         ? ??? storage: dm/common
-> 
->    Test sources: https://github.com/CKI-project/tests-beaker
->      ? Pull requests are welcome for new tests or improvements to existing tests!
-> 
-> Aborted tests
-> -------------
-> Tests that didn't complete running successfully are marked with ???.
-> If this was caused by an infrastructure issue, we try to mark that
-> explicitly in the report.
-> 
-> Waived tests
-> ------------
-> If the test run included waived tests, they are marked with ?. Such tests are
-> executed but their results are not taken into account. Tests are waived when
-> their results are not reliable enough, e.g. when they're just introduced or are
-> being fixed.
-> 
-> Testing timeout
-> ---------------
-> We aim to provide a report within reasonable timeframe. Tests that haven't
-> finished running yet are marked with ?.
-> 
-> 
 
