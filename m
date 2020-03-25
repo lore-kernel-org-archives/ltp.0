@@ -1,27 +1,73 @@
 From: Jozef Pupava <jpupava@suse.cz>
-Date: Wed, 25 Mar 2020 17:39:59 +0100
-Subject: [LTP] [PATCH v2] Replace deprecated <strings.h> with <string.h>
-In-Reply-To: <20200325163350.GA11691@yuki.lan>
-References: <20200325123403.56628ed7@daedruan>
- <20200325163350.GA11691@yuki.lan>
-Message-ID: <20200325173959.1de8d9c4@daedruan>
+Date: Wed, 25 Mar 2020 17:41:56 +0100
+Subject: [LTP] [PATCH v3] Replace deprecated <strings.h> with <string.h>
+Message-ID: <20200325174156.15c5a27a@daedruan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 25 Mar 2020 17:33:50 +0100
-Cyril Hrubis <chrubis@suse.cz> wrote:
+I guess this won't really solve anything, just the issue.
 
-> Hi!
-> > I guess this won't really solve anything, just the issue.  
-> 
-> Looks okay, but the patch got line-wrapped, possibly by your email
-> client.
-> 
+Closes: #521
 
-Ah, yes, sorry I have problems with git send-email so I used client and
-forgot about wrapping.
+Signed-off-by: Jozef Pupava <jpupava@suse.com>
+---
+ testcases/kernel/containers/share/ns_create.c                           | 1 -
+ testcases/kernel/fs/fsx-linux/fsx-linux.c                               | 2 +-
+ .../open_posix_testsuite/conformance/interfaces/sem_timedwait/3-1.c     | 1 -
+ .../open_posix_testsuite/conformance/interfaces/sem_timedwait/7-1.c     | 1 -
+ 4 files changed, 1 insertion(+), 4 deletions(-)
 
-Jozef
+diff --git a/testcases/kernel/containers/share/ns_create.c b/testcases/kernel/containers/share/ns_create.c
+index 1d0339e71..d4259f38b 100644
+--- a/testcases/kernel/containers/share/ns_create.c
++++ b/testcases/kernel/containers/share/ns_create.c
+@@ -30,7 +30,6 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <string.h>
+-#include <strings.h>
+ #include <errno.h>
+ #include "test.h"
+ #include "lapi/namespaces_constants.h"
+diff --git a/testcases/kernel/fs/fsx-linux/fsx-linux.c b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+index 02f3eb827..4a20f4da6 100644
+--- a/testcases/kernel/fs/fsx-linux/fsx-linux.c
++++ b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+@@ -43,7 +43,7 @@
+ #include <sys/param.h>
+ #include <limits.h>
+ #include <time.h>
+-#include <strings.h>
++#include <string.h>
+ #include <sys/time.h>
+ #endif
+ #include <fcntl.h>
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/3-1.c
+index dd42bbd91..fb6f2e6cb 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/3-1.c
+@@ -20,7 +20,6 @@
+ #endif
+ #include <semaphore.h>
+ #include <stdio.h>
+-#include <strings.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/7-1.c
+index 79de0af7f..73e174682 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/7-1.c
+@@ -21,7 +21,6 @@
+ #endif
+ #include <semaphore.h>
+ #include <stdio.h>
+-#include <strings.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include "posixtest.h"
+-- 
+2.16.4
