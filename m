@@ -1,55 +1,319 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Mar 2020 18:07:40 +0100
-Subject: [LTP] [PATCH 2/2] Use SAFE_RUNCMD()
-In-Reply-To: <CAEemH2doL4m4-TLBBWTHygTRPSTa68dkoAFjZJrDmzrkmgUrSQ@mail.gmail.com>
-References: <CAEemH2f7TB9sMt-+YE2zF5KztT4O64VN9L4AZWdS3nU1uJX5_w@mail.gmail.com>
- <303d1019-f836-b2ae-ce51-d2c46dd7fb1e@cn.fujitsu.com>
- <20200323113738.GA4807@dell5510>
- <CAEemH2fhRYefq_9LmSmDvujS1OQa7rCeF7V=mJQrLhz0bwpo0A@mail.gmail.com>
- <CAEemH2e4sRwZ8HRm-w5CD=Wm8-SW+LaA5XHDnXdqrOL1t4FdtA@mail.gmail.com>
- <20200323160415.GC15673@dell5510> <20200324235150.GC4521@yuki.lan>
- <20200324172102.GA1307@dell5510> <20200325015324.GA15127@yuki.lan>
- <CAEemH2doL4m4-TLBBWTHygTRPSTa68dkoAFjZJrDmzrkmgUrSQ@mail.gmail.com>
-Message-ID: <20200325170739.GA2461@yuki.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 25 Mar 2020 17:17:44 +0800
+Subject: [LTP] [PATCH] aio_return: Remove cases and refactor 4-1.c
+Message-ID: <1585127864-1341-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > > Also if we are going to add this functionality it should be added as an
-> > > > .needs_cmds array in the tst_test structure.
-> > > .needs_cmds sounds as a good idea. But let's do it as a separate effort.
-> >
-> +1, thanks Petr!
-> 
-> 
-> > > I'll leave already sent v2 for review. Once .needs_cmds is implemented,
-> > we can
-> > > use it as well for copy_file_range02.c.
-> >
-> > Actually I would like to avoid exposing the function to the tests and
-> > force people to use the .needs_cmds instead in order to have a proper
-> > metadata.
-> >
-> 
-> Sounds good.
-> 
-> And this makes me think more of the '.request_hugepages' story. The
-> needs_foo flags require the foo to be present on the system as hard
-> requirements. In some situations(i.e copy_file_range02.c), we probably need
-> to handle the soft situation, which means, the commands are only part of
-> the test requirement. So if it writing with .needs_cmds="xxx", it might
-> skip the whole test in setup() phase.
+From aio_return(3) manpage, the aio_return() function returns the
+final return status for the asynchronous I/O request with control
+block pointed to by aiocbp. It should be called only once for any
+given request. If we want to call twice for same aiocbp, it only
+returns the last value. It doesn't make sense. So remove 2-1.c and
+3-2.c.
 
-Indeed, there are couple of solutions for that, one of them would have
-all the arrays doubled and one of them would list hard requirement while
-the other soft requirements. Then we will end up with something as
-"need_cmds" and "wants_cmds". The second one would be more or less
-informative, the test may print a message "Missing foo command test
-coverage will be limited".
+For 4-1.c, it failed with the same reason. But we can refactor this
+, firstly call aio_return(&aiocb2) and then call aio_return(&aiocb).
+It tests whether value override.
 
+Reported-by: Gang Liu <liug.fnst@cn.fujitsu.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../conformance/interfaces/aio_return/2-1.c   | 108 -----------------
+ .../conformance/interfaces/aio_return/3-2.c   | 111 ------------------
+ .../conformance/interfaces/aio_return/4-1.c   |  23 +++-
+ 3 files changed, 18 insertions(+), 224 deletions(-)
+ delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
+ delete mode 100644 testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
+
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
+deleted file mode 100644
+index ac9873200..000000000
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
++++ /dev/null
+@@ -1,108 +0,0 @@
+-/*
+- * Copyright (c) 2004, Bull SA. All rights reserved.
+- * Created by:  Laurent.Vivier@bull.net
+- * This file is licensed under the GPL license.  For the full content
+- * of this license, see the COPYING file at the top level of this
+- * source tree.
+- */
+-
+-/*
+- * assertion:
+- *
+- *	aio_return() may be called exactly once to retrieve the return status.
+- *
+- * method:
+- *
+- *	- open a file
+- *	- fill in an aiocb for writing
+- *	- call aio_write using this aiocb
+- *	- call aio_return to get the aiocb status (number of bytes written)
+- *	- call aio_return again, return status should be -1
+- */
+-
+-#include <sys/stat.h>
+-#include <aio.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include "posixtest.h"
+-#include <time.h>
+-
+-#define TNAME "aio_return/2-1.c"
+-#define BUF_SIZE 111
+-
+-int main(void)
+-{
+-	char tmpfname[256];
+-	char buf[BUF_SIZE];
+-	struct aiocb aiocb;
+-	int fd, retval;
+-	struct timespec completion_wait_ts = {0, 10000000};
+-
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+-		return PTS_UNSUPPORTED;
+-
+-	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_return_2_1_%d",
+-		 getpid());
+-	unlink(tmpfname);
+-	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+-
+-	if (fd == -1) {
+-		printf(TNAME " Error at open(): %s\n", strerror(errno));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	unlink(tmpfname);
+-
+-	memset(buf, 0xaa, BUF_SIZE);
+-	memset(&aiocb, 0, sizeof(struct aiocb));
+-	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
+-	aiocb.aio_nbytes = BUF_SIZE;
+-
+-	if (aio_write(&aiocb) == -1) {
+-		close(fd);
+-		printf(TNAME " Error at aio_write(): %s\n",
+-		       strerror(aio_error(&aiocb)));
+-		return PTS_FAIL;
+-	}
+-
+-	do {
+-		nanosleep(&completion_wait_ts, NULL);
+-		retval = aio_error(&aiocb);
+-	} while (retval == EINPROGRESS);
+-
+-	retval = aio_return(&aiocb);
+-
+-	if (0 < retval) {
+-
+-		if (retval != BUF_SIZE) {
+-			close(fd);
+-			printf(TNAME " aio_return didn't return expected size: "
+-			       "%d\n", retval);
+-			return PTS_FAIL;
+-		}
+-
+-		retval = aio_return(&aiocb);
+-
+-		if (retval != -1) {
+-			close(fd);
+-			printf(TNAME " Second call to aio_return() may "
+-			       "return -1; aio_return() returned %d\n", retval);
+-			return PTS_UNTESTED;
+-		}
+-
+-	} else {
+-		close(fd);
+-		printf(TNAME " Error at aio_error(): %s\n",
+-		       strerror(aio_error(&aiocb)));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	close(fd);
+-	printf("Test PASSED\n");
+-	return PTS_PASS;
+-}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
+deleted file mode 100644
+index 883823bac..000000000
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
++++ /dev/null
+@@ -1,111 +0,0 @@
+-/*
+- * Copyright (c) 2004, Bull SA. All rights reserved.
+- * Created by:  Laurent.Vivier@bull.net
+- * This file is licensed under the GPL license.  For the full content
+- * of this license, see the COPYING file@the top level of this
+- * source tree.
+- */
+-
+-/*
+- * assertion:
+- *
+- *	If the aiocbp is used to submit another asynchronous operation,
+- *	then aio_return may be successfully used to retrieve the return status.
+- *
+- * method:
+- *
+- *	- open a file
+- *	- fill in an aiocb for writing
+- *	- call aio_write using this aiocb
+- *	- call aio_return to get the aiocb status (number of bytes written)
+- *	- call aio_return again, return status should be -1
+- */
+-
+-#include <stdio.h>
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <stdlib.h>
+-#include <aio.h>
+-#include <time.h>
+-
+-#include "posixtest.h"
+-
+-#define TNAME "aio_return/3-2.c"
+-#define BUF_SIZE 4096
+-
+-int main(void)
+-{
+-	char tmpfname[256];
+-	char buf[BUF_SIZE];
+-	struct aiocb aiocb;
+-	int fd, retval;
+-	struct timespec completion_wait_ts = {0, 10000000};
+-
+-	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+-		return PTS_UNSUPPORTED;
+-
+-	snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_return_3_2_%d",
+-		 getpid());
+-	unlink(tmpfname);
+-	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+-
+-	if (fd == -1) {
+-		printf(TNAME " Error at open(): %s\n", strerror(errno));
+-		return PTS_UNRESOLVED;
+-	}
+-
+-	unlink(tmpfname);
+-
+-	memset(buf, 0xaa, BUF_SIZE);
+-	memset(&aiocb, 0, sizeof(struct aiocb));
+-	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
+-	aiocb.aio_nbytes = BUF_SIZE;
+-
+-	if (aio_write(&aiocb) == -1) {
+-		close(fd);
+-		printf(TNAME " Error at aio_write(): %s\n",
+-		       strerror(aio_error(&aiocb)));
+-		return PTS_FAIL;
+-	}
+-
+-	do {
+-		nanosleep(&completion_wait_ts, NULL);
+-		retval = aio_error(&aiocb);
+-	} while (retval == EINPROGRESS);
+-
+-	retval = aio_return(&aiocb);
+-
+-	if (retval == -1) {
+-		printf(TNAME " Error at aio_error(): %s\n",
+-		       strerror(aio_error(&aiocb)));
+-		return PTS_UNRESOLVED;
+-	} else {
+-
+-		if (retval != BUF_SIZE) {
+-			close(fd);
+-			printf(TNAME " Error at aio_return(): %d, %s\n", retval,
+-			       strerror(aio_error(&aiocb)));
+-			return PTS_FAIL;
+-		}
+-
+-		retval = aio_return(&aiocb);
+-
+-		if (retval != -1 && aio_error(&aiocb) != EINVAL) {
+-			close(fd);
+-			printf(TNAME " aio_return() may fail with (-1, %d); "
+-			       "failed with (%d, %d) instead\n",
+-			       EINVAL, retval, aio_error(&aiocb));
+-			return PTS_UNTESTED;
+-		}
+-
+-	}
+-
+-	close(fd);
+-	printf("Test PASSED\n");
+-	return PTS_PASS;
+-}
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+index 7a039b13f..770699b54 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+@@ -17,8 +17,10 @@
+  *
+  *	- Open a file
+  *	- fill in an aiocb for writing
+- *	- call aio_write usign this aiocb
++ *	- call aio_write using this aiocb
+  *	- fill in a new aiocb
++ *	- call aio_write using this aiocb
++ *	- call aio_return with aiocb
+  *	- call aio_return with this last aiocb
+  */
+ 
+@@ -86,20 +88,31 @@ int main(void)
+ 		aiocb2.aio_fildes = fd;
+ 		aiocb2.aio_buf = buf;
+ 		aiocb2.aio_nbytes = BUF_SIZE;
++		if (aio_write(&aiocb2) == -1) {
++			close(fd);
++			printf(TNAME " Error at aio_write(): %s\n", strerror(errno));
++			return PTS_FAIL;
++		}
++
++		do {
++			nanosleep(&completion_wait_ts, NULL);
++			retval = aio_error(&aiocb);
++		} while (retval == EINPROGRESS);
+ 
+ 		retval = aio_return(&aiocb2);
+ 
+-		if (retval != -1 || aio_error(&aiocb) != EINVAL) {
++		if (retval != BUF_SIZE) {
+ 			close(fd);
+-			printf(TNAME "aio_return() have not failed\n");
+-			return PTS_UNTESTED;
++			printf(TNAME " Error at aio_return(&aiocb2): %d, %s\n", retval,
++				strerror(aio_error(&aiocb)));
++			return PTS_UNRESOLVED;
+ 		}
+ 
+ 		retval = aio_return(&aiocb);
+ 
+ 		if (retval != BUF_SIZE) {
+ 			close(fd);
+-			printf(TNAME " Error at aio_return(): %d, %s\n", retval,
++			printf(TNAME " Error@aio_return(&aiocb): %d, %s\n", retval,
+ 			       strerror(aio_error(&aiocb)));
+ 			return PTS_UNRESOLVED;
+ 		}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.23.0
+
+
+
