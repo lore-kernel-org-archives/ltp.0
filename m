@@ -1,61 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Mar 2020 15:11:02 +0100
-Subject: [LTP] [PATCH v2] Fix use after stack unwind in fzsync lib
-In-Reply-To: <20200326122329.24876-1-mdoucha@suse.cz>
-References: <20200326122329.24876-1-mdoucha@suse.cz>
-Message-ID: <20200326141101.GB5185@yuki.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 26 Mar 2020 18:08:09 +0300
+Subject: [LTP] [PATCH 0/2] xinetd rewrite
+In-Reply-To: <20200324093622.21091-1-pvorel@suse.cz>
+References: <20200324093622.21091-1-pvorel@suse.cz>
+Message-ID: <fb9ee711-f42d-3dd0-a2ef-1685aef951af@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> tst_fzsync_pair_reset() passes a local variable to thread B which may be
-> already unwinded by the time the thread wrapper function executes. If new
-> variables get allocated and initialized on stack between pthread_create()
-> and thread wrapper execution, thread B will segfault.
+On 24.03.2020 12:36, Petr Vorel wrote:
+> Hi Alexey,
 > 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
+> this sounds as a bad joke to rewrite tests for xinetd, which nobody uses
+> now. I was surprised, that it's still in some distros (e.g. openSUSE,
+> Debian, Gentoo). I can delete the test if we don't want LTP to be a
+> museum.
 > 
-> Changes since v1:
-> - Use tst_alloc() instead of SAFE_MALLOC() to prevent memory leak even if
->   SAFE_PTHREAD_CREATE() fails
-> - Revert changes in tst_fzsync_thread_wrapper() as they're no longer needed
-> 
->  include/tst_fuzzy_sync.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-> index c1d0b00f9..8b38cf37d 100644
-> --- a/include/tst_fuzzy_sync.h
-> +++ b/include/tst_fuzzy_sync.h
-> @@ -297,8 +297,12 @@ static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
->  	pair->b_cntr = 0;
->  	pair->exit = 0;
->  	if (run_b) {
-> -		struct tst_fzsync_run_thread wrap_run_b = {.func = run_b, .arg = NULL};
-> -		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, tst_fzsync_thread_wrapper, &wrap_run_b);
-> +		struct tst_fzsync_run_thread *wrap_run_b;
-> +
-> +		wrap_run_b = tst_alloc(sizeof(struct tst_fzsync_run_thread));
-> +		wrap_run_b->func = run_b;
-> +		wrap_run_b->arg = NULL;
+Hi Petr,
 
-Why can't we simply declare the wrap_run_b as a global variable?
+Perhaps, it is true for inetd, not for xinetd.
 
-> +		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, tst_fzsync_thread_wrapper, wrap_run_b);
->  	}
->  
->  	pair->exec_time_start = (float)tst_timeout_remaining();
-> -- 
-> 2.25.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+The changes look good, acked.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Kind regards,
+> Petr
+> 
+> Petr Vorel (2):
+>   xinetd: Rewrite into new API
+>   xinetd: Fix pattern for NetKit telnet
+> 
+>  testcases/network/xinetd/xinetd_tests.sh | 99 ++++++++----------------
+>  1 file changed, 33 insertions(+), 66 deletions(-)
+> 
