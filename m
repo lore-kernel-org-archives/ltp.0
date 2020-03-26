@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Mar 2020 14:46:04 +0100
-Subject: [LTP] [PATCH 2/2] Avoid zero or negative int results in
- calculations
-In-Reply-To: <20200326084504.GB29830@dell5510>
-References: <20200324143839.3647c485@daedruan>
- <20200326084504.GB29830@dell5510>
-Message-ID: <20200326134603.GA5185@yuki.lan>
+Date: Thu, 26 Mar 2020 15:11:02 +0100
+Subject: [LTP] [PATCH v2] Fix use after stack unwind in fzsync lib
+In-Reply-To: <20200326122329.24876-1-mdoucha@suse.cz>
+References: <20200326122329.24876-1-mdoucha@suse.cz>
+Message-ID: <20200326141101.GB5185@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,13 +11,50 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Define BUF_SIZE smaller than BLOCKSIZE for possitive offset result
+> tst_fzsync_pair_reset() passes a local variable to thread B which may be
+> already unwinded by the time the thread wrapper function executes. If new
+> variables get allocated and initialized on stack between pthread_create()
+> and thread wrapper execution, thread B will segfault.
 > 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 > 
-> BTW it significantly prolongs the run, but IMHO ok.
+> Changes since v1:
+> - Use tst_alloc() instead of SAFE_MALLOC() to prevent memory leak even if
+>   SAFE_PTHREAD_CREATE() fails
+> - Revert changes in tst_fzsync_thread_wrapper() as they're no longer needed
+> 
+>  include/tst_fuzzy_sync.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> index c1d0b00f9..8b38cf37d 100644
+> --- a/include/tst_fuzzy_sync.h
+> +++ b/include/tst_fuzzy_sync.h
+> @@ -297,8 +297,12 @@ static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
+>  	pair->b_cntr = 0;
+>  	pair->exit = 0;
+>  	if (run_b) {
+> -		struct tst_fzsync_run_thread wrap_run_b = {.func = run_b, .arg = NULL};
+> -		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, tst_fzsync_thread_wrapper, &wrap_run_b);
+> +		struct tst_fzsync_run_thread *wrap_run_b;
+> +
+> +		wrap_run_b = tst_alloc(sizeof(struct tst_fzsync_run_thread));
+> +		wrap_run_b->func = run_b;
+> +		wrap_run_b->arg = NULL;
 
-Longer testruns should be avoided unless there is a good reason for it.
+Why can't we simply declare the wrap_run_b as a global variable?
+
+> +		SAFE_PTHREAD_CREATE(&pair->thread_b, 0, tst_fzsync_thread_wrapper, wrap_run_b);
+>  	}
+>  
+>  	pair->exec_time_start = (float)tst_timeout_remaining();
+> -- 
+> 2.25.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
