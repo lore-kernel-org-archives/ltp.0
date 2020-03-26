@@ -1,311 +1,30 @@
 From: Jozef Pupava <jpupava@suse.cz>
-Date: Thu, 26 Mar 2020 11:10:40 +0100
+Date: Thu, 26 Mar 2020 11:15:31 +0100
 Subject: [LTP] [PATCH 1/2] Update syscalls/fsync02 to new API
-In-Reply-To: <4be42fd5-51e1-3716-2646-07cd06602262@suse.cz>
+In-Reply-To: <20200326083759.GA29830@dell5510>
 References: <20200324143837.51d2df15@daedruan>
- <4be42fd5-51e1-3716-2646-07cd06602262@suse.cz>
-Message-ID: <20200326111040.0bb5eb66@daedruan>
+ <20200326083759.GA29830@dell5510>
+Message-ID: <20200326111531.163fab48@daedruan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 26 Mar 2020 10:38:16 +0100
-Martin Doucha <mdoucha@suse.cz> wrote:
+Hi Petr,
 
-> Hello,
-> 
-> On 24. 03. 20 14:38, Jozef Pupava wrote:
-> > Acked-by: Martin Doucha <mdoucha@suse.cz>
-> > Signed-off-by: Jozef Pupava <jpupava@suse.com>
-> > ---
-> >  testcases/kernel/syscalls/fsync/fsync02.c | 235
-> > ++++++++++-------------------- 1 file changed, 77 insertions(+),
-> > 158 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/fsync/fsync02.c
-> > b/testcases/kernel/syscalls/fsync/fsync02.c index
-> > 1e5f9ee00..9506b4868 100644 ---
-> > a/testcases/kernel/syscalls/fsync/fsync02.c +++
-> > b/testcases/kernel/syscalls/fsync/fsync02.c @@ -1,195 +1,114 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> >  /*
-> > - *
-> > - *   Copyright (c) International Business Machines  Corp., 2001
-> > - *
-> > - *   This program is free software;  you can redistribute it
-> > and/or modify
-> > - *   it under the terms of the GNU General Public License as
-> > published by
-> > - *   the Free Software Foundation; either version 2 of the
-> > License, or
-> > - *   (at your option) any later version.
-> > - *
-> > - *   This program is distributed in the hope that it will be
-> > useful,
-> > - *   but WITHOUT ANY WARRANTY;  without even the implied warranty
-> > of
-> > - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> > - *   the GNU General Public License for more details.
-> > - *
-> > - *   You should have received a copy of the GNU General Public
-> > License
-> > - *   along with this program;  if not, write to the Free Software
-> > - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> > 02110-1301 USA
-> > + * Copyright (c) Wayne Boyer, International Business Machines
-> > Corp., 2001
-> > + * Copyright (c) 2019 SUSE LLC, Jozef Pupava <jpupava@suse.com>
-> >   */
-> >  
-> >  /*
-> > - * NAME
-> > - *	fsync02.c
-> > - *
-> > - * DESCRIPTION
-> > - *	Create a sparse file, fsync it, and time the fsync
-> > - *
-> > - * ALGORITHM
-> > - *	1. Create a file.
-> > - *	2. Write to the file at equally spaced intervals up to a
-> > max block
-> > - *	3. Check if the time limit was exceeded.
-> > - *
-> > - * USAGE:  <for command-line>
-> > - *  fsync02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-> > - *     where,  -c n : Run n copies concurrently.
-> > - *             -f   : Turn off functionality Testing.
-> > - *             -i n : Execute test n times.
-> > - *             -I x : Execute test for x seconds.
-> > - *             -P x : Pause for x seconds between iterations.
-> > - *             -t   : Turn on syscall timing.
-> > - *
-> > - * HISTORY
-> > - *	07/2001 Ported by Wayne Boyer
-> > - *
-> > - * RESTRICTIONS
-> > - *	None
-> > + * Test Description:
-> > + *  Test fsync() return value on test file
-> > + *  fsync() has to finish within TIME_LIMIT.
-> >   */
-> >  
-> >  #include <stdio.h>
-> > -#include <unistd.h>
-> > +#include <stdlib.h>
-> >  #include <sys/types.h>
-> >  #include <sys/statvfs.h>
-> >  #include <fcntl.h>
-> > -#include <errno.h>
-> >  #include <sys/resource.h>
-> > -#include "test.h"
-> > -#include "safe_macros.h"
-> >  #include <time.h>
-> > +#include "tst_test.h"
-> >  
-> >  #define BLOCKSIZE 8192
-> >  #define MAXBLKS 262144
-> >  #define TIME_LIMIT 120
-> >  
-> > -char *TCID = "fsync02";
-> > -int TST_TOTAL = 1;
-> > -
-> > -void setup(void);
-> > -void cleanup(void);
-> > -
-> >  char tempfile[40] = "";
-> > -int fd, pid;
-> > +char pbuf[BUFSIZ];
-> > +int fd;
-> >  off_t max_blks = MAXBLKS;
-> >  
-> >  struct statvfs stat_buf;
-> >  
-> > -int main(int ac, char **av)
-> > -{
-> > -	int lc;
-> > -
-> > -	off_t offsetret, offset;
-> > -	char pbuf[BUFSIZ];
-> > -	int ret, max_block = 0;
-> > -	int i;
-> > -	time_t time_start, time_end;
-> > -	double time_delta;
-> > -	int data_blocks = 0;
-> > -	long int random_number;
-> > -
-> > -	tst_parse_opts(ac, av, NULL, NULL);
-> > -
-> > -	setup();
-> > -
-> > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > -
-> > -		tst_count = 0;
-> > -
-> > -		while (max_block <= data_blocks) {
-> > -			random_number = random();
-> > -			max_block = random_number % max_blks;
-> > -			data_blocks = random_number % 1000 + 1;
-> > -		}
-> > -
-> > -		for (i = 1; i <= data_blocks; i++) {
-> > -			offset = i * ((BLOCKSIZE * max_block) /
-> > data_blocks);
-> > -			offset -= BUFSIZ;
-> > -			if ((offsetret = lseek(fd, offset,
-> > SEEK_SET)) != offset)
-> > -				tst_brkm(TBROK | TERRNO, cleanup,
-> > -					 "lseek failed: %ld, %ld",
-> > offsetret,
-> > -					 offset);
-> > -			if ((ret = write(fd, pbuf, BUFSIZ)) !=
-> > BUFSIZ)
-> > -				tst_brkm(TBROK, cleanup, "write
-> > failed");
-> > -		}
-> > -		if (time(&time_start) == -1)
-> > -			tst_brkm(TBROK | TERRNO, cleanup,
-> > -				 "getting start time failed");
-> > -
-> > -		TEST(fsync(fd));
-> > -
-> > -		if (time(&time_end) == -1)
-> > -			tst_brkm(TBROK | TERRNO, cleanup,
-> > -				 "getting end time failed");
-> > -
-> > -		if (TEST_RETURN == -1) {
-> > -			tst_resm(TFAIL | TTERRNO, "fsync failed");
-> > -			continue;
-> > -		}
-> > -
-> > -		if (time_end < time_start)
-> > -			tst_resm(TBROK,
-> > -				 "timer broken end %ld < start
-> > %ld",
-> > -				 time_end, time_start);
-> > -
-> > -		if ((time_delta =
-> > -		     difftime(time_end, time_start)) > TIME_LIMIT)
-> > -			tst_resm(TFAIL,
-> > -				 "fsync took too long: %lf
-> > seconds; "
-> > -				 "max_block: %d; data_blocks: %d",
-> > -				 time_delta, max_block,
-> > data_blocks);
-> > -		else
-> > -			tst_resm(TPASS, "fsync succeeded in an "
-> > -				 "acceptable amount of time");
-> > -
-> > -		SAFE_FTRUNCATE(cleanup, fd, 0);
-> > -	}
-> > -
-> > -	sync();
-> > -	cleanup();
-> > -	tst_exit();
-> > -}
-> > -
-> > -/*
-> > - * setup() - performs all ONE TIME setup for this test.
-> > - */
-> > -void setup(void)
-> > -{
-> > +static void setup(void) {
-> >  	/* free blocks avail to non-superuser */
-> >  	unsigned long f_bavail;
-> >  
-> > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> > -
-> > -	TEST_PAUSE;
-> > -
-> > -	/* make a temporary directory and cd to it */
-> > -	tst_tmpdir();
-> > +	fd = SAFE_OPEN("tempfile", O_RDWR | O_CREAT | O_TRUNC,
-> > 0777); 
-> > -	sprintf(tempfile, "%s.%d", TCID, pid = getpid());
-> > -	srand48(pid);
-> > -
-> > -	if ((fd = open(tempfile, O_RDWR | O_CREAT | O_TRUNC,
-> > 0777)) == -1)
-> > -		tst_brkm(TBROK, cleanup, "open failed");
-> > -
-> > -	if (fstatvfs(fd, &stat_buf) != 0)
-> > -		tst_brkm(TBROK, cleanup, "fstatvfs failed");
-> > +	if (fstatvfs(fd, &stat_buf) != 0) {
-> > +		tst_brk(TBROK, "fstatvfs failed");
-> > +	}
-> >  
-> >  	f_bavail = (stat_buf.f_bavail * stat_buf.f_frsize) /
-> > BLOCKSIZE;  
-> 
-> Looks like the original test has another bug here. The correct
-> calculation is:
-> f_bavail = (stat_buf.f_bavail * stat_buf.f_bsize) / BLOCKSIZE;
-> 
-> f_frsize is the fragment size, a fraction of a real block used for
-> features like tail packing (stuffing multiple small files into the
-> same physical block). But file systems which don't support tail
-> packing generally have f_frsize == f_bsize.
-> 
-> Sorry for not noticing this earlier. Could you include a fix for this
-> in the second patch?
-> 
-
-No problem Martin, I will fix it.
+I will add return for better readability in second patch.
 
 Jozef
 
-> > -	if (f_bavail && (f_bavail < MAXBLKS))
-> > +	if (f_bavail && (f_bavail < MAXBLKS)) {
-> >  		max_blks = f_bavail;
-> > +	}
-> >  
-> >  #ifdef LARGEFILE
-> > -	if ((fcntl(fd, F_SETFL, O_LARGEFILE)) == -1)
-> > -		tst_brkm(TBROK | TERRNO, cleanup,
-> > -			 "fcntl(.., O_LARGEFILE) failed");
-> > -
-> > -	if (write(fd, pbuf, BUFSIZ) != BUFSIZ)
-> > -		tst_brkm(TBROK | TERRNO, cleanup, "write(fd,
-> > pbuf, ..) failed");
-> > +	SAFE_FCNTL(fd, F_SETFL, O_LARGEFILE);
-> > +	SAFE_WRITE(1, fd, pbuf, BUFSIZ);
-> >  #endif
-> >  }
-> >  
-> > -void cleanup(void)
-> > -{
-> > -	if (close(fd) == -1)
-> > -		tst_resm(TWARN | TERRNO, "close failed");
-> > +static void run(void) {
-> > +	off_t offset;
-> > +	int i;
-> > +	int max_block = 0;
-> > +	int data_blocks = 0;
-> > +	time_t time_start, time_end;
-> > +	double time_delta;
-> > +	long int random_number;
-> > +
-> > +	while (max_block <= data_blocks) {
-> > +		random_number = rand();
-> > +		max_block = random_number % max_blks;
-> > +		data_blocks = random_number % 1000 + 1;
-> > +	}
-> >  
-> > -	tst_rmdir();
-> > +	for (i = 1; i <= data_blocks; i++) {
-> > +		offset = i * ((BLOCKSIZE * max_block) /
-> > data_blocks);
-> > +		offset -= BUFSIZ;
-> > +		SAFE_LSEEK(fd, offset, SEEK_SET);
-> > +		SAFE_WRITE(1, fd, pbuf, BUFSIZ);
-> > +	}
-> > +	time_start = time(0);
-> > +
-> > +	TEST(fsync(fd));
-> > +
-> > +	time_end = time(0);
-> > +
+On Thu, 26 Mar 2020 09:37:59 +0100
+Petr Vorel <pvorel@suse.cz> wrote:
+
+> Hi Jozef,
+> 
+> LGTM, thanks for your patch.
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
 > > +	if (time_end == -1) {
 > > +		tst_res(TFAIL | TTERRNO, "getting end time
 > > failed");
@@ -327,21 +46,44 @@ Jozef
 > > +	} else {
 > > +		tst_res(TPASS,
 > > +		"fsync succeeded in an acceptable amount of time");
-> > +	}
-> > +	SAFE_FTRUNCATE(fd, 0);
-> > +}
-> >  
-> > +static void cleanup(void) {
-> > +	SAFE_CLOSE(fd);
-> >  }
-> > +
-> > +static struct tst_test test = {
-> > +	.test_all = run,
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.needs_tmpdir = 1
-> > +};
-> >   
+> > +	}  
 > 
+> nit: note Cyril prefers due better readability return from function
+> instead of having too much else if. So something like this might be
+> more readable. But up to you.
+> 
+> 	if (time_end == -1) {
+> 		tst_res(TFAIL | TTERRNO, "getting end time failed");
+> 		return;
+> 	}
+> 
+> 	if (TST_RET == -1) {
+> 		tst_res(TFAIL | TTERRNO, "fsync failed");
+> 		return;
+> 	}
+> 
+> 	if (TST_RET != 0) {
+> 		tst_res(TFAIL | TTERRNO, "fsync failed with
+> unexpected return value"); return;
+> 	}
+> 
+> 	if (time_end < time_start) {
+> 		tst_res(TFAIL, "timer broken end %ld < start %ld",
+> 		time_end, time_start);
+> 		return;
+> 	}
+> 
+> 	if ((time_delta = difftime(time_end, time_start)) >
+> TIME_LIMIT) { tst_res(TFAIL,
+> 		"fsync took too long: %lf seconds; max_block: %d;
+> data_blocks: %d", time_delta, max_block, data_blocks);
+> 		return;
+> 	}
+> 
+> 	tst_res(TPASS, "fsync succeeded in an acceptable amount of
+> time");
+> 
+> Kind regards,
+> Petr
 > 
 
