@@ -1,76 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 27 Mar 2020 16:23:47 +0100
-Subject: [LTP] [PATCH 2/2] Avoid zero or negative int results in
- calculations
-In-Reply-To: <98d9d28a-5da8-5c28-3b8f-0678a4988eda@suse.cz>
-References: <20200324143839.3647c485@daedruan>
- <20200326084504.GB29830@dell5510> <20200326134603.GA5185@yuki.lan>
- <20200326203222.GA19445@dell5510> <20200327095715.GA16912@dell5510>
- <98d9d28a-5da8-5c28-3b8f-0678a4988eda@suse.cz>
-Message-ID: <20200327152347.GA8979@dell5510>
+Date: Fri, 27 Mar 2020 22:39:18 +0100
+Subject: [LTP] [PATCH 0/6] C API: .needs_cmds and SAFE_RUN_CMD()
+Message-ID: <20200327213924.18816-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi,
 
-> Like I said in the previous e-mail, that slowdown is caused by the test
-> intentionally randomizing the number of disk writes, not the patch. Run
-> the test several times.
+I implemented .needs_cmds + SAFE_RUN_CMD().
 
-> > My concern is about brief explanation where/how is zero or negative result
-> > appears. But maybe it's obvious and I just don't see it.
+I also checked for command in path in tst_run_cmd_fds_() as suggested by
+Cyril + added possibility to TCONF when program not found. This leaded
+to more verbose changes. + There is a double check (first in
+.needs_cmds, then in SAFE_RUN_CMD()), maybe that's not needed.
 
-> Let me explain.
+Also this change is not used in copy_file_range02.c, because it does not
+require these commands. Is it worth to reduce code it'd be good to separate
+file into two, put common functions in header and tests with
+fd_immutable and fd_swapfile into new test?
 
-> > @@ -60,17 +61,15 @@ static void run(void) {
+Petr Vorel (6):
+  lib: Implement .needs_cmds
+  Use .needs_cmds
+  lib/tst_run_cmd_*(): Turn int pass_exit_val into enum
+  lib/tst_run_cmd_*(): Search for program in $PATH
+  lib: Implement SAFE_RUN_CMD() macro (new API only)
+  Use SAFE_RUN_CMD()
 
-> >  	double time_delta;
+ doc/test-writing-guidelines.txt               | 29 +++++++++++---
+ include/tst_cmd.h                             | 39 +++++++++++--------
+ include/tst_safe_macros.h                     | 20 ++++++++++
+ include/tst_test.h                            |  3 ++
+ lib/tst_kernel.c                              |  3 +-
+ lib/tst_mkfs.c                                |  3 +-
+ lib/tst_module.c                              |  3 +-
+ lib/tst_run_cmd.c                             | 28 ++++++++-----
+ lib/tst_test.c                                | 11 ++++++
+ testcases/kernel/input/input_helper.c         |  4 +-
+ testcases/kernel/syscalls/acct/acct02.c       |  2 +-
+ testcases/kernel/syscalls/add_key/add_key05.c | 24 +++++-------
+ .../copy_file_range/copy_file_range02.c       |  2 +-
+ .../kernel/syscalls/quotactl/quotactl01.c     | 18 +++------
+ .../kernel/syscalls/quotactl/quotactl06.c     | 16 +++-----
+ .../syscalls/setpriority/setpriority01.c      |  5 ++-
+ testcases/network/netstress/netstress.c       |  2 +-
+ 17 files changed, 134 insertions(+), 78 deletions(-)
 
-> >  	long int random_number;
+-- 
+2.25.1
 
-
-
-> > -	while (max_block <= data_blocks) {
-
-> > -		random_number = rand();
-
-> > -		max_block = random_number % max_blks;
-
-> > -		data_blocks = random_number % 1000 + 1;
-
-> > -	}
-
-> > +	random_number = rand();
-
-> > +	max_block = random_number % max_blks + 1;
-
-> > +	data_blocks = random_number % max_block;
-
-
-> This fixes a potential infinite loop if max_blks == 1000. This
-> calculation is also the reason why the test has random run length.
-
-Thanks for an explanation!
-
-> >  	for (i = 1; i <= data_blocks; i++) {
-
-> >  		offset = i * ((BLOCKSIZE * max_block) / data_blocks);
-
-> > -		offset -= BUFSIZ;
-
-> > +		offset -= BUF_SIZE;
-
-
-> Here the old calculation could produce negative offset if
-> BUFSIZ > BLOCKSIZE and (float)max_block/data_blocks is close to 1.
-> BUFSIZ is defined in libc headers so the actual value can be different
-> on different systems.
-BTW BUFSIZ == BLOCKSIZE for glibc (BUFSIZ is 8192; long time ago was 1024. And
-it's 1024 for musl and bionic).
-
-
-Kind regards,
-Petr
