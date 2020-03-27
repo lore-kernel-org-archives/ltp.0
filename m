@@ -1,29 +1,76 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 27 Mar 2020 16:11:02 +0100
-Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
-In-Reply-To: <20200327134707.4532-3-chrubis@suse.cz>
-References: <20200327134707.4532-1-chrubis@suse.cz>
- <20200327134707.4532-3-chrubis@suse.cz>
-Message-ID: <20200327151102.GA6563@dell5510>
+Date: Fri, 27 Mar 2020 16:23:47 +0100
+Subject: [LTP] [PATCH 2/2] Avoid zero or negative int results in
+ calculations
+In-Reply-To: <98d9d28a-5da8-5c28-3b8f-0678a4988eda@suse.cz>
+References: <20200324143839.3647c485@daedruan>
+ <20200326084504.GB29830@dell5510> <20200326134603.GA5185@yuki.lan>
+ <20200326203222.GA19445@dell5510> <20200327095715.GA16912@dell5510>
+ <98d9d28a-5da8-5c28-3b8f-0678a4988eda@suse.cz>
+Message-ID: <20200327152347.GA8979@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Martin,
 
-> +uart01_9600 uart01 -b 9600
-> +uart01_19200 uart01 -b 19200
-> +uart01_38400 uart01 -b 38400
-> +uart01_57600 uart01 -b 57600
-> +uart01_115200 uart01 -b 115200
-Tested-by: Petr Vorel <pvorel@suse.cz>
-on all speeds.
+> Like I said in the previous e-mail, that slowdown is caused by the test
+> intentionally randomizing the number of disk writes, not the patch. Run
+> the test several times.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > My concern is about brief explanation where/how is zero or negative result
+> > appears. But maybe it's obvious and I just don't see it.
 
-Thanks for porting serialcheck.c to LTP.
+> Let me explain.
+
+> > @@ -60,17 +61,15 @@ static void run(void) {
+
+> >  	double time_delta;
+
+> >  	long int random_number;
+
+
+
+> > -	while (max_block <= data_blocks) {
+
+> > -		random_number = rand();
+
+> > -		max_block = random_number % max_blks;
+
+> > -		data_blocks = random_number % 1000 + 1;
+
+> > -	}
+
+> > +	random_number = rand();
+
+> > +	max_block = random_number % max_blks + 1;
+
+> > +	data_blocks = random_number % max_block;
+
+
+> This fixes a potential infinite loop if max_blks == 1000. This
+> calculation is also the reason why the test has random run length.
+
+Thanks for an explanation!
+
+> >  	for (i = 1; i <= data_blocks; i++) {
+
+> >  		offset = i * ((BLOCKSIZE * max_block) / data_blocks);
+
+> > -		offset -= BUFSIZ;
+
+> > +		offset -= BUF_SIZE;
+
+
+> Here the old calculation could produce negative offset if
+> BUFSIZ > BLOCKSIZE and (float)max_block/data_blocks is close to 1.
+> BUFSIZ is defined in libc headers so the actual value can be different
+> on different systems.
+BTW BUFSIZ == BLOCKSIZE for glibc (BUFSIZ is 8192; long time ago was 1024. And
+it's 1024 for musl and bionic).
+
 
 Kind regards,
 Petr
