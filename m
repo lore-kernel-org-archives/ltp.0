@@ -1,88 +1,82 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 27 Mar 2020 11:17:37 +0100
-Subject: [LTP] [PATCH 2/2] Avoid zero or negative int results in
- calculations
-In-Reply-To: <20200327095715.GA16912@dell5510>
-References: <20200324143839.3647c485@daedruan>
- <20200326084504.GB29830@dell5510> <20200326134603.GA5185@yuki.lan>
- <20200326203222.GA19445@dell5510> <20200327095715.GA16912@dell5510>
-Message-ID: <98d9d28a-5da8-5c28-3b8f-0678a4988eda@suse.cz>
+Date: Fri, 27 Mar 2020 13:16:10 +0100
+Subject: [LTP] [PATCH v2 1/2] Add SAFE_PTRACE() to LTP library
+Message-ID: <20200327121611.1566-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27. 03. 20 10:57, Petr Vorel wrote:
-> Hi,
-> 
->> Before:
->> real	0m0,013s
-> 
->> After (slowed by second commit, not by the rewrite):
->> real	0m0,402s
-> 
-> Although the slowdown it's ~30 times, it's obviously fast enough,
-> so I wouldn't consider it as a problem. I was just surprised by it.
+The function treats any non-zero return value as error. Requests which may
+return non-zero values on success are not supported and need to be handled
+manually.
 
-Like I said in the previous e-mail, that slowdown is caused by the test
-intentionally randomizing the number of disk writes, not the patch. Run
-the test several times.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> My concern is about brief explanation where/how is zero or negative result
-> appears. But maybe it's obvious and I just don't see it.
+Changes since v1:
+- Split off from CVE 2018-1000199 patch
+- Changed the req parameter type to int
+- Moved SAFE_PTRACE() declaration from tst_safe_ptrace.h to tst_safe_macros.h
 
-Let me explain.
+ include/tst_safe_macros.h | 10 ++++++++++
+ lib/tst_safe_macros.c     | 19 +++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
-> @@ -60,17 +61,15 @@ static void run(void) {
-
->  	double time_delta;
-
->  	long int random_number;
-
->  
-
-> -	while (max_block <= data_blocks) {
-
-> -		random_number = rand();
-
-> -		max_block = random_number % max_blks;
-
-> -		data_blocks = random_number % 1000 + 1;
-
-> -	}
-
-> +	random_number = rand();
-
-> +	max_block = random_number % max_blks + 1;
-
-> +	data_blocks = random_number % max_block;
-
-
-This fixes a potential infinite loop if max_blks == 1000. This
-calculation is also the reason why the test has random run length.
-
->  
-
->  	for (i = 1; i <= data_blocks; i++) {
-
->  		offset = i * ((BLOCKSIZE * max_block) / data_blocks);
-
-> -		offset -= BUFSIZ;
-
-> +		offset -= BUF_SIZE;
-
-
-Here the old calculation could produce negative offset if
-BUFSIZ > BLOCKSIZE and (float)max_block/data_blocks is close to 1.
-BUFSIZ is defined in libc headers so the actual value can be different
-on different systems.
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index d95d26219..c018497b9 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -534,4 +534,14 @@ int safe_personality(const char *filename, unsigned int lineno,
+ void safe_unshare(const char *file, const int lineno, int flags);
+ #define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
+ 
++/*
++ * SAFE_PTRACE() treats any non-zero return value as error. Don't use it
++ * for requests like PTRACE_PEEK* or PTRACE_SECCOMP_GET_FILTER which use
++ * the return value to pass arbitrary data.
++ */
++long tst_safe_ptrace(const char *file, const int lineno, int req, pid_t pid,
++	void *addr, void *data);
++#define SAFE_PTRACE(req, pid, addr, data) \
++	tst_safe_ptrace(__FILE__, __LINE__, req, pid, addr, data)
++
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index f5413a18e..68431fe24 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -7,6 +7,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sched.h>
++#include <sys/ptrace.h>
+ #include "config.h"
+ #ifdef HAVE_SYS_FANOTIFY_H
+ # include <sys/fanotify.h>
+@@ -202,3 +203,21 @@ void safe_unshare(const char *file, const int lineno, int flags)
+ 		}
+ 	}
+ }
++
++long tst_safe_ptrace(const char *file, const int lineno, int req, pid_t pid,
++	void *addr, void *data)
++{
++	long ret;
++
++	errno = 0;
++	ret = ptrace(req, pid, addr, data);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO, "ptrace() failed");
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid ptrace() return value %ld", ret);
++	}
++
++	return ret;
++}
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.25.1
+
