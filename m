@@ -1,29 +1,29 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 27 Mar 2020 15:13:26 +0100
-Subject: [LTP] [PATCH v2] uart: add uart testcase in kernel
- device-drivers
-In-Reply-To: <CAF12kFuqJQmiZW+otpb9Hp37kqVis9UzkOKJTMKQWCPnH1nPoQ@mail.gmail.com>
-References: <20200324121742.7130-1-gengcixi@gmail.com>
- <20200325102852.GD5404@yuki.lan> <20200325152821.GA21800@dell5510>
- <CAF12kFv0P4yTVVf-pfXOai8+3urEiWug_dbnTfAXpyfOvzi2ug@mail.gmail.com>
- <20200326070555.GA17560@dell5510>
- <CAF12kFuqJQmiZW+otpb9Hp37kqVis9UzkOKJTMKQWCPnH1nPoQ@mail.gmail.com>
-Message-ID: <20200327141325.GA5525@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 27 Mar 2020 16:11:02 +0100
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <20200327134707.4532-3-chrubis@suse.cz>
+References: <20200327134707.4532-1-chrubis@suse.cz>
+ <20200327134707.4532-3-chrubis@suse.cz>
+Message-ID: <20200327151102.GA6563@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >Cyril already mentioned the need to use proper locks instead of sleep
-> I have realized the sleep is not a good way , but I don't have any idea
-> about the "proper locks"
-> Can you give me some help?
+Hi Cyril,
 
-I've just send a patchset that implements the serial test based on the
-serialcheck C source code, please have a look at that patchset.
+> +uart01_9600 uart01 -b 9600
+> +uart01_19200 uart01 -b 19200
+> +uart01_38400 uart01 -b 38400
+> +uart01_57600 uart01 -b 57600
+> +uart01_115200 uart01 -b 115200
+Tested-by: Petr Vorel <pvorel@suse.cz>
+on all speeds.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Thanks for porting serialcheck.c to LTP.
+
+Kind regards,
+Petr
