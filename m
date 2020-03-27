@@ -1,36 +1,31 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 27 Mar 2020 09:42:44 +0100
-Subject: [LTP] [PATCH v3] Fix use after stack unwind in fzsync lib
-In-Reply-To: <20200326204107.GA26499@dell5510>
-References: <20200326152828.14934-1-mdoucha@suse.cz>
- <20200326204107.GA26499@dell5510>
-Message-ID: <5b99cab2-5f9e-47f0-15f1-3dfdb02920ac@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 27 Mar 2020 10:57:15 +0100
+Subject: [LTP] [PATCH 2/2] Avoid zero or negative int results in
+ calculations
+In-Reply-To: <20200326203222.GA19445@dell5510>
+References: <20200324143839.3647c485@daedruan>
+ <20200326084504.GB29830@dell5510> <20200326134603.GA5185@yuki.lan>
+ <20200326203222.GA19445@dell5510>
+Message-ID: <20200327095715.GA16912@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26. 03. 20 21:41, Petr Vorel wrote:
-> Hi Martin,
-> 
->> tst_fzsync_pair_reset() passes a local variable to thread B which may be
->> already unwinded by the time the thread wrapper function executes. If new
->> variables get allocated and initialized on stack between pthread_create()
->> and thread wrapper execution, thread B will segfault.
-> 
-> I naively assumed this would fix SIGKILL signal for CVE 2018-1000199 test,
-> but it didn't.
+Hi,
 
-No, the fuzzysync fix is unrelated to the CVE-2018-1000199 test. I ran
-into mysterious segfaults while writing a test for CVE-2018-18559 which
-I haven't finished yet.
+> Before:
+> real	0m0,013s
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> After (slowed by second commit, not by the rewrite):
+> real	0m0,402s
+
+Although the slowdown it's ~30 times, it's obviously fast enough,
+so I wouldn't consider it as a problem. I was just surprised by it.
+
+My concern is about brief explanation where/how is zero or negative result
+appears. But maybe it's obvious and I just don't see it.
+
+Kind regards,
+Petr
