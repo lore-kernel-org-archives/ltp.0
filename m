@@ -1,38 +1,27 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Mon, 30 Mar 2020 20:33:37 +0800
-Subject: [LTP] [PATCH v3 1/3] security/dirtyc0w: Fix bug caused by
- default umask
-In-Reply-To: <20200330092046.GB9845@yuki.lan>
-References: <1585553269-119544-1-git-send-email-zou_wei@huawei.com>
- <1585553269-119544-2-git-send-email-zou_wei@huawei.com>
- <20200330091835.GA9845@yuki.lan> <20200330092046.GB9845@yuki.lan>
-Message-ID: <e08ee1c3-c537-a1ca-01b1-cf7d25d77117@163.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 30 Mar 2020 14:37:26 +0200
+Subject: [LTP] [PATCH 2/6] Use .needs_cmds
+In-Reply-To: <CAEemH2c6UKHipLfc0XXH-QaAx3pVeuqnR+HoUW6hasN8mLmghw@mail.gmail.com>
+References: <20200327213924.18816-1-pvorel@suse.cz>
+ <20200327213924.18816-3-pvorel@suse.cz>
+ <20200330113111.GD9845@yuki.lan> <20200330114838.GB23915@dell5510>
+ <CAEemH2c6UKHipLfc0XXH-QaAx3pVeuqnR+HoUW6hasN8mLmghw@mail.gmail.com>
+Message-ID: <20200330123726.GE23915@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 3/30/20 5:20 PM, Cyril Hrubis wrote:
-> Hi!
->>> The case is only successful when system default umask is 0022.
->>> When default umask is 0077 or other values, should clear current umask by umask(0) in setup().
->> What exactly fails in the dirtyc0w because of non-standard umask?
->>
->> I can easily understand why fstat and statx fail, since we check the
->> file permissions there. Ideally the failure should have been part of the
->> patch description.
-> Looking at the code I guess that the child fails to open the file
-> created in parent before the setgid/setuid, something like this should
-> really have been part of the patch description.
->
-Hi Cyril,
+Hi Li,
 
-Right, some default mask drop the read permission of g/o and
+> Thanks Petr, there is still a tiny place need fix.
+> Hope you can help to correct the description in the next round patch
+> merging.
+You were right, I pushed this before. I'm sorry, fixed now.
 
-nobody user cannot do read. :-)
+> +       /* NULL terminated array of required binaries */
+> +       const char *const *needs_cmds;
 
-Thanks,
-
-Xiao Yang
-
+Kind regards,
+Petr
