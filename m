@@ -1,48 +1,54 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 30 Mar 2020 11:02:41 +0800
-Subject: [LTP] [PATCH v2] security/dirtyc0w: Get and set umask in setup
-In-Reply-To: <1585536316-23604-1-git-send-email-zou_wei@huawei.com>
-References: <1585536316-23604-1-git-send-email-zou_wei@huawei.com>
-Message-ID: <5E816151.9060507@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 30 Mar 2020 12:24:22 +0800
+Subject: [LTP] [PATCH 0/6] C API: .needs_cmds and SAFE_RUN_CMD()
+In-Reply-To: <20200328034253.GA2720439@x230>
+References: <20200327213924.18816-1-pvorel@suse.cz>
+ <4ff84a77-b858-6cae-a320-cfaed3646864@163.com>
+ <20200328034253.GA2720439@x230>
+Message-ID: <CAEemH2e5i_N5FGsY6KZnfAN4k7cfLZU=XJvsg_AP8n=bV2JdrQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/3/30 10:45, Zou Wei wrote:
-> v2:
-> Clear current umask by umask(0) in setup()
-Hi Zou,
+On Sat, Mar 28, 2020 at 11:43 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-1) needs to update the subject as well.
-2) add some commit message to describe the issue.
-
-Thanks,
-Xiao Yang
+> Hi Xiao,
 >
-> Signed-off-by: Zou Wei<zou_wei@huawei.com>
-> ---
->   testcases/kernel/security/dirtyc0w/dirtyc0w.c | 2 ++
->   1 file changed, 2 insertions(+)
+> > On 3/28/20 5:39 AM, Petr Vorel wrote:
+> > > + There is a double check (first in
+> > > .needs_cmds, then in SAFE_RUN_CMD()), maybe that's not needed.
 >
-> diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w.c b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
-> index a0a81b6..6455f9c 100644
-> --- a/testcases/kernel/security/dirtyc0w/dirtyc0w.c
-> +++ b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
-> @@ -45,6 +45,8 @@ static void setup(void)
->   {
->   	struct passwd *pw;
+> > Hi Petr,
 >
-> +	umask(0);
-> +
->   	pw = SAFE_GETPWNAM("nobody");
+> > Why do you need the duplicate .needs_cmds flag?(it introduces the double
+> > check as you said)
 >
->   	nobody_uid = pw->pw_uid;
-> --
-> 2.6.2
+> > Usually, all tests run commands by tst_run_cmd()/SAFE_RUN_CMD() and they
+> can
+> > report TCONF
 >
+> > by passing TST_RUN_CMD_CHECK_CMD so it is fair to be a part of
+> > tst_run_cmd()/SAFE_RUN_CMD().
+>
+> Thanks for your review.
+> I guess Cyril will prefer .needs_cmds, as it can be parsed - metadata
+> project:
+> https://people.kernel.org/metan/towards-parallel-kernel-test-runs
+> https://github.com/metan-ucw/ltp/tree/master/docparse
+>
+> I put it there because some command might be run just under some condition
+> (not
+> always), thus not suitable for .needs_cmds, but still nice to have reliable
+> check. But maybe I'm wrong.
 >
 
++1 you're right, I believe that is safer and choosable for the test.
 
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200330/e2d2298a/attachment.htm>
