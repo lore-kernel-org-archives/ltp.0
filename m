@@ -1,7 +1,7 @@
 From: Zou Wei <zou_wei@huawei.com>
-Date: Mon, 30 Mar 2020 10:44:23 +0800
-Subject: [LTP] [PATCH v2] syscalls/statx: Add judgment to the MODE value
-Message-ID: <1585536263-23084-1-git-send-email-zou_wei@huawei.com>
+Date: Mon, 30 Mar 2020 10:45:16 +0800
+Subject: [LTP] [PATCH v2] security/dirtyc0w: Get and set umask in setup
+Message-ID: <1585536316-23604-1-git-send-email-zou_wei@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,22 +13,22 @@ Clear current umask by umask(0) in setup()
 
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- testcases/kernel/syscalls/statx/statx01.c | 2 ++
+ testcases/kernel/security/dirtyc0w/dirtyc0w.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-index 4f9d582..b66c2b6 100644
---- a/testcases/kernel/syscalls/statx/statx01.c
-+++ b/testcases/kernel/syscalls/statx/statx01.c
-@@ -147,6 +147,8 @@ static void setup(void)
+diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w.c b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
+index a0a81b6..6455f9c 100644
+--- a/testcases/kernel/security/dirtyc0w/dirtyc0w.c
++++ b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
+@@ -45,6 +45,8 @@ static void setup(void)
  {
- 	char data_buff[SIZE];
- 	int file_fd;
-+
+ 	struct passwd *pw;
+
 +	umask(0);
++
+ 	pw = SAFE_GETPWNAM("nobody");
 
- 	memset(data_buff, '@', sizeof(data_buff));
-
+ 	nobody_uid = pw->pw_uid;
 --
 2.6.2
 
