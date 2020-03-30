@@ -1,38 +1,28 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 30 Mar 2020 14:35:09 +0800
-Subject: [LTP] [PATCH 5/6] lib: Implement SAFE_RUN_CMD() macro (new API
- only)
-In-Reply-To: <20200327213924.18816-6-pvorel@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 30 Mar 2020 09:03:09 +0200
+Subject: [LTP] [PATCH 1/6] lib: Implement .needs_cmds
+In-Reply-To: <CAEemH2c2Rq9x53fr2-KRaLpJ55xbuwVO96YWzJXAEdgcx2vvCQ@mail.gmail.com>
 References: <20200327213924.18816-1-pvorel@suse.cz>
- <20200327213924.18816-6-pvorel@suse.cz>
-Message-ID: <CAEemH2fusvyGAnDmfFEYqhnsbHwzrT+B3+FFD6bnJGpz3oB-QA@mail.gmail.com>
+ <20200327213924.18816-2-pvorel@suse.cz>
+ <CAEemH2c2Rq9x53fr2-KRaLpJ55xbuwVO96YWzJXAEdgcx2vvCQ@mail.gmail.com>
+Message-ID: <20200330070309.GA4571@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Li,
 
-Thanks for your work on this.
+thanks for your review.
 
->
-> +static inline void safe_run_cmd(const char *file, const int lineno,
-> +                                                          const char
-> *const argv[],
->
+> > +2.2.35 Checking for required binaries
+> > +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Be cautious of the code indent here, otherwise patchset looks good.
+> Maybe better to talk commands but not binaries, since not all of the
+> commands are binary, there is possible python, perl or shell executable
+> file need check too. Isn't it?
++1
 
-
-> +                             const char *stdout_path,
-> +                             const char *stderr_path)
-> +{
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200330/0fcdfb80/attachment.htm>
+Kind regards,
+Petr
