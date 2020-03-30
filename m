@@ -1,12 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 30 Mar 2020 20:48:27 +0200
-Subject: [LTP] [PATCH v2 4/5] lib: Implement SAFE_CMD() macro (new API
- only)
-In-Reply-To: <CAEemH2dcxrpB_dkp26=5oiMdY_2OVw5v_OjpyG37N+zx7y+A9g@mail.gmail.com>
+Date: Mon, 30 Mar 2020 22:02:50 +0200
+Subject: [LTP] [PATCH v2 5/5] Use SAFE_CMD()
+In-Reply-To: <CAEemH2dQfpn9mEBY=CFfVj_8dLETD7zh4=j3KP-bt95m_CCBxg@mail.gmail.com>
 References: <20200330124338.6764-1-pvorel@suse.cz>
- <20200330124338.6764-5-pvorel@suse.cz>
- <CAEemH2dcxrpB_dkp26=5oiMdY_2OVw5v_OjpyG37N+zx7y+A9g@mail.gmail.com>
-Message-ID: <20200330184827.GA8636@dell5510>
+ <20200330124338.6764-6-pvorel@suse.cz>
+ <CAEemH2dQfpn9mEBY=CFfVj_8dLETD7zh4=j3KP-bt95m_CCBxg@mail.gmail.com>
+Message-ID: <20200330200250.GB8636@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,22 +14,22 @@ To: ltp@lists.linux.it
 
 Hi Li,
 
-> > +       switch ((rval = tst_run_cmd(argv, stdout_path, stderr_path,
-> > +                                   TST_RUN_CMD_PASS_EXIT_VAL |
-> > +                                   TST_RUN_CMD_CHECK_CMD))) {
+> Oh, you did the renaming in patch 5/5, but pity that the
+> TST_CMD_TCONF_ON_MISSING still not being used:). I guess this modification
+> should belong to patch4/5.
+Thanks for careful review. Yes, I found that as well + the other problem you
+reported - tst_run_cmd() during one more check.
 
-
-> This should be TST_CMD_TCONF_ON_MISSING ^.
-
-> I'd help to build&run the whole patches tomorrow, anything wrong if I can
-> find will reply to you then.
-
-Thanks for fixes. Here is following diff from v2 (addressing issues you found,
-fixed tst_run_cmd() being replaced in later commit, fix doc formatting),
-code available also on:
++ I needed to put back static inline for safe_cmd() (it was in previous version,
+it's really needed). So there is latest version available on
 https://github.com/pevik/ltp/tree/needs_cmds.v2.fixes
 
-I'm going to test each commit if it builds and wait for your ack tomorrow.
+which passed some travis jobs (I'll check that tomorrow)
+https://travis-ci.org/github/pevik/ltp/builds/668925599
+
+Diff from v2 below.
+
+IMHO now it should be ok, but I'm waiting for your or anybody else ack/review.
 
 Kind regards,
 Petr
@@ -49,17 +48,23 @@ index 75c2e517a..895f6c99d 100644
  
  'tst_cmd()' is a wrapper for 'vfork() + execvp()' which provides a way
 diff --git include/tst_safe_macros.h include/tst_safe_macros.h
-index d050c5990..295800c1b 100644
+index d050c5990..8126179f4 100644
 --- include/tst_safe_macros.h
 +++ include/tst_safe_macros.h
-@@ -543,8 +543,8 @@ void safe_cmd(const char *file, const int lineno, const char *const argv[],
+@@ -538,13 +538,13 @@ void safe_unshare(const char *file, const int lineno, int flags);
+ void safe_setns(const char *file, const int lineno, int fd, int nstype);
+ #define SAFE_SETNS(fd, nstype) safe_setns(__FILE__, __LINE__, (fd), (nstype));
+ 
+-void safe_cmd(const char *file, const int lineno, const char *const argv[],
++static inline void safe_cmd(const char *file, const int lineno, const char *const argv[],
+ 				  const char *stdout_path, const char *stderr_path)
  {
  	int rval;
  
 -	switch ((rval = tst_cmd(argv, stdout_path, stderr_path, TST_CMD_PASS_RETVAL
 -							| TST_CMD_CHECK_CMD))) {
 +	switch ((rval = tst_cmd(argv, stdout_path, stderr_path,
-+				TST_CMD_PASS_EXIT_VAL | TST_CMD_TCONF_ON_MISSING))) {
++				TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING))) {
  	case 0:
  		break;
  	default:
