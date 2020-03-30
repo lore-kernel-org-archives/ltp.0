@@ -1,22 +1,53 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 Mar 2020 16:09:14 +0200
-Subject: [LTP] [PATCH v2 3/9] safe_macros: Add SAFE_SETNS()
-In-Reply-To: <20200323161129.GA28014@dell5510>
-References: <20200318153801.3529-1-chrubis@suse.cz>
- <20200318153801.3529-4-chrubis@suse.cz>
- <20200323161129.GA28014@dell5510>
-Message-ID: <20200330140914.GB26711@yuki.lan>
+Date: Mon, 30 Mar 2020 16:21:42 +0200
+Subject: [LTP] [COMMITTED] [PATCH] tst_test: Print tags only when defined.
+Message-ID: <20200330142142.26858-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've fixed up problems pointed out by you and Li and pushed.
+We were printing the Tags heading even when no tags were defined.
 
-Peter, Li thanks a lot for the review.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_test.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index dae3fa1b5..e502c2c1a 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -447,18 +447,19 @@ static void print_test_tags(void)
+ 	unsigned int i;
+ 	const struct tst_tag *tags = tst_test->tags;
+ 
++	if (!tags)
++		return;
++
+ 	printf("\nTags\n");
+ 	printf("----\n");
+ 
+-	if (tags) {
+-		for (i = 0; tags[i].name; i++) {
+-			if (!strcmp(tags[i].name, "CVE"))
+-				printf(CVE_DB_URL "%s\n", tags[i].value);
+-			else if (!strcmp(tags[i].name, "linux-git"))
+-				printf(LINUX_GIT_URL "%s\n", tags[i].value);
+-			else
+-				printf("%s: %s\n", tags[i].name, tags[i].value);
+-		}
++	for (i = 0; tags[i].name; i++) {
++		if (!strcmp(tags[i].name, "CVE"))
++			printf(CVE_DB_URL "%s\n", tags[i].value);
++		else if (!strcmp(tags[i].name, "linux-git"))
++			printf(LINUX_GIT_URL "%s\n", tags[i].value);
++		else
++			printf("%s: %s\n", tags[i].name, tags[i].value);
+ 	}
+ 
+ 	printf("\n");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.24.1
+
