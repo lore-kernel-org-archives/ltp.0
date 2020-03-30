@@ -1,28 +1,83 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 Mar 2020 14:52:49 +0200
-Subject: [LTP] [PATCH v3 1/3] security/dirtyc0w: Fix bug caused by
- default umask
-In-Reply-To: <f78cb609-b4f1-2f89-a641-09a97c2d0a03@163.com>
-References: <1585553269-119544-1-git-send-email-zou_wei@huawei.com>
- <1585553269-119544-2-git-send-email-zou_wei@huawei.com>
- <20200330091835.GA9845@yuki.lan> <20200330092046.GB9845@yuki.lan>
- <f78cb609-b4f1-2f89-a641-09a97c2d0a03@163.com>
-Message-ID: <20200330125249.GA26711@yuki.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 30 Mar 2020 21:01:18 +0800
+Subject: [LTP] [PATCH v2 4/5] lib: Implement SAFE_CMD() macro (new API
+ only)
+In-Reply-To: <20200330124338.6764-5-pvorel@suse.cz>
+References: <20200330124338.6764-1-pvorel@suse.cz>
+ <20200330124338.6764-5-pvorel@suse.cz>
+Message-ID: <CAEemH2dcxrpB_dkp26=5oiMdY_2OVw5v_OjpyG37N+zx7y+A9g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Just one question when reviewing this patch set.
-> 
-> I saw the umask set(e.g. set umask to 0 or 0022) is used by a lot of tests.
-> 
-> Is it necessary for metadata project to introduce .needs_umask?
+On Mon, Mar 30, 2020 at 8:43 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-I do no think so.
+> Reviewed-by: Li Wang <liwang@redhat.com>
+> Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/test-writing-guidelines.txt |  3 +++
+>  include/tst_safe_macros.h       | 18 ++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+>
+> diff --git a/doc/test-writing-guidelines.txt
+> b/doc/test-writing-guidelines.txt
+> index 7069d3c8f..6f1eee490 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1283,6 +1283,9 @@ return value is '255' if 'execvp()' failed with
+> 'ENOENT' and '254' otherwise.
+>  'stdout_path' and 'stderr_path' determine where to redirect the program
+>  stdout and stderr I/O streams.
+>
+> +The 'SAFE_CMD()' macro can be used automatic handling non zero exits
+> (exits
+> +with 'TBROK') or 'ENOENT' (exits with 'TCONF').
+> +
+>  .Example
+>  [source,c]
+>
+>  -------------------------------------------------------------------------------
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index d95d26219..38eb67d1d 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -21,6 +21,7 @@
+>  #include <grp.h>
+>
+>  #include "safe_macros_fn.h"
+> +#include "tst_cmd.h"
+>
+>  #define SAFE_BASENAME(path) \
+>         safe_basename(__FILE__, __LINE__, NULL, (path))
+> @@ -534,4 +535,21 @@ int safe_personality(const char *filename, unsigned
+> int lineno,
+>  void safe_unshare(const char *file, const int lineno, int flags);
+>  #define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
+>
+> +void safe_cmd(const char *file, const int lineno, const char *const
+> argv[],
+> +                                 const char *stdout_path, const char
+> *stderr_path)
+> +{
+> +       int rval;
+> +
+> +       switch ((rval = tst_run_cmd(argv, stdout_path, stderr_path,
+> +                                   TST_RUN_CMD_PASS_EXIT_VAL |
+> +                                   TST_RUN_CMD_CHECK_CMD))) {
+>
+
+This should be TST_CMD_TCONF_ON_MISSING ^.
+
+I'd help to build&run the whole patches tomorrow, anything wrong if I can
+find will reply to you then.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200330/d9c5a717/attachment.htm>
