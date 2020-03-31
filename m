@@ -1,12 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Mar 2020 17:14:44 +0200
-Subject: [LTP] [PATCH V3] uart: add uart testcase in kernel
- device-drivers
-In-Reply-To: <CAF12kFv9+Bu5q9XxbeUUBuSCWKgSt6dYEwmaepsCUP9qX8OxaQ@mail.gmail.com>
-References: <20200331065442.28591-1-gengcixi@gmail.com>
- <20200331074154.GA23091@dell5510>
- <CAF12kFv9+Bu5q9XxbeUUBuSCWKgSt6dYEwmaepsCUP9qX8OxaQ@mail.gmail.com>
-Message-ID: <20200331151444.GC2900@yuki.lan>
+Date: Tue, 31 Mar 2020 20:08:16 +0200
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <20200330152122.GA2699@yuki.lan>
+References: <20200327134707.4532-1-chrubis@suse.cz>
+ <20200327134707.4532-3-chrubis@suse.cz>
+ <CAF12kFteeJ6nerju6kwX+Ebzrzd_JPCiJ9jKW4tX9F4Y4s7FEg@mail.gmail.com>
+ <20200330152122.GA2699@yuki.lan>
+Message-ID: <20200331180816.GE2900@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,21 +14,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I hope the ltp test devices have a more convenient way???
-> like auto detect if the machine have these devices
-> and can run the device test.
-> Now we only test the uart device,we can export PORTxx for the test.
-> but if we have to test dozens or even hundreds devices,
-> the way to set device environment variable needed test is very trouble and
-> time consuming
-> So I don't think add need_devices is the best desirable way
+> > Thank you porting the serialcheck.c into LTP
+> > I am sorry to find the serialcheck have not LOOPBACK mode support
+> > the LOOPBACK mode is a better test than HW flow , because most machine's
+> > uart have not connect the Rx & TX
+> > in LOOPBACK mode. we test the uart port directly, So we can test one uart
+> > port Rx and Tx functions at the same time .
+> > here is the diff  serialcheck with loopback patch
+> > So I'd prefer use loopback mode test the uart in case.
+> > $ diff serialcheck.c serialcheck-with-loopback.c
+> 
+> Thanks for the hint, I had no idea that subset serial port hardware has
+> a loopback test that could be enabled in modem control register which is
+> meant for testing. I will have a closer look tomorrow.
 
-I think that the right way is that the detection is in the test
-execution framework, not it the test, where it does not belong.
+If I understand this properly if we set a bit in the modem control
+register we will test mostly the circuits between CPU and UART
+controller which is better than nothing, but we are not really testing
+if the port speed was set correctly since the data are just being copied
+between registers in the UART controller, so it does not make sense to
+change the speed in this mode. Or am I mistaken?
 
-So either the execution framework has to be able to re-run the test for
-each UART pair, or we have to be able to pass more structured data to
-the test. I will think a bit more about this.
+Also it does not seem to work for me and I've tried with both serial
+ports on my desktop PC as well as with USB-to-Serial dongle. I can set
+the bit just fine but loopback does not work.
 
 -- 
 Cyril Hrubis
