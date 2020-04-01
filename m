@@ -1,53 +1,30 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 01 Apr 2020 09:44:53 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/clone301: Fix race between
- parent and child
-In-Reply-To: <20200331112131.2837-1-chrubis@suse.cz>
-References: <20200331112131.2837-1-chrubis@suse.cz>
-Message-ID: <87d08rvedm.fsf@our.domain.is.not.set>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 1 Apr 2020 10:32:28 +0200
+Subject: [LTP] LTP compilation broken with -fno-common
+Message-ID: <20200401083228.GA18685@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+LTP compilation breaks with -fno-common (we don't use as the default).
+This is the default for GCC 10, is there a way to fix it or do we need to disable it?
 
-> The signal handler has to be set up before we clone() the child,
-> otherwise the signal may be lost if the child manages to call exit()
-> before parent is able to continue.
->
-> Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/syscalls/clone3/clone301.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
-> index f6d5c5dda..456291b67 100644
-> --- a/testcases/kernel/syscalls/clone3/clone301.c
-> +++ b/testcases/kernel/syscalls/clone3/clone301.c
-> @@ -103,12 +103,12 @@ static void run(unsigned int n)
->  		return;
->  	}
->  
-> -	if (!pid)
-> -		do_child(clone_pidfd, n);
-> -
->  	parent_received_signal = 0;
->  	SAFE_SIGACTION(tc->exit_signal, &psig_action, NULL);
->  
-> +	if (!pid)
-> +		do_child(clone_pidfd, n);
-> +
->  	/* Need to send signal to child process */
->  	if (clone_pidfd) {
->  		TST_CHECKPOINT_WAIT(0);
+Compilation on gcc-10 (or gcc-9 with CFLAGS="-fno-common":
 
-LGTM
+gcc-9 -Werror=implicit-function-declaration -fno-common -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -W  -I../../include -I../../include -I../../include/old/   -L../../lib  tst_checkpoint_wait_timeout.c   -lltp -o tst_checkpoint_wait_timeout
+/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: ../../lib/libltp.a(tst_test.o):ltp.git/lib/../include/tst_test.h:325: multiple definition of `TCID'; /tmp/cc49yYO6.o:ltp.git/lib/tests/tst_strsig.c:27: first defined here
+/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: ../../lib/libltp.a(tst_sys_conf.o):ltp.git/lib/../include/tst_test.h:325: multiple definition of `TCID'; /tmp/cc49yYO6.o:ltp.git/lib/tests/tst_strsig.c:27: first defined here
 
--- 
-Thank you,
-Richard.
+It's somehow related to the "hack" in include/tst_test.h:
+
+/*
+ * This is a hack to make the testcases link without defining TCID
+ */
+extern const char *TCID;
+
+Kind regards,
+Petr
