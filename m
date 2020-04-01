@@ -1,44 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Mar 2020 20:08:16 +0200
-Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
-In-Reply-To: <20200330152122.GA2699@yuki.lan>
-References: <20200327134707.4532-1-chrubis@suse.cz>
- <20200327134707.4532-3-chrubis@suse.cz>
- <CAF12kFteeJ6nerju6kwX+Ebzrzd_JPCiJ9jKW4tX9F4Y4s7FEg@mail.gmail.com>
- <20200330152122.GA2699@yuki.lan>
-Message-ID: <20200331180816.GE2900@yuki.lan>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 01 Apr 2020 09:44:53 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/clone301: Fix race between
+ parent and child
+In-Reply-To: <20200331112131.2837-1-chrubis@suse.cz>
+References: <20200331112131.2837-1-chrubis@suse.cz>
+Message-ID: <87d08rvedm.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Thank you porting the serialcheck.c into LTP
-> > I am sorry to find the serialcheck have not LOOPBACK mode support
-> > the LOOPBACK mode is a better test than HW flow , because most machine's
-> > uart have not connect the Rx & TX
-> > in LOOPBACK mode. we test the uart port directly, So we can test one uart
-> > port Rx and Tx functions at the same time .
-> > here is the diff  serialcheck with loopback patch
-> > So I'd prefer use loopback mode test the uart in case.
-> > $ diff serialcheck.c serialcheck-with-loopback.c
-> 
-> Thanks for the hint, I had no idea that subset serial port hardware has
-> a loopback test that could be enabled in modem control register which is
-> meant for testing. I will have a closer look tomorrow.
+Hello,
 
-If I understand this properly if we set a bit in the modem control
-register we will test mostly the circuits between CPU and UART
-controller which is better than nothing, but we are not really testing
-if the port speed was set correctly since the data are just being copied
-between registers in the UART controller, so it does not make sense to
-change the speed in this mode. Or am I mistaken?
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-Also it does not seem to work for me and I've tried with both serial
-ports on my desktop PC as well as with USB-to-Serial dongle. I can set
-the bit just fine but loopback does not work.
+> The signal handler has to be set up before we clone() the child,
+> otherwise the signal may be lost if the child manages to call exit()
+> before parent is able to continue.
+>
+> Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/kernel/syscalls/clone3/clone301.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
+> index f6d5c5dda..456291b67 100644
+> --- a/testcases/kernel/syscalls/clone3/clone301.c
+> +++ b/testcases/kernel/syscalls/clone3/clone301.c
+> @@ -103,12 +103,12 @@ static void run(unsigned int n)
+>  		return;
+>  	}
+>  
+> -	if (!pid)
+> -		do_child(clone_pidfd, n);
+> -
+>  	parent_received_signal = 0;
+>  	SAFE_SIGACTION(tc->exit_signal, &psig_action, NULL);
+>  
+> +	if (!pid)
+> +		do_child(clone_pidfd, n);
+> +
+>  	/* Need to send signal to child process */
+>  	if (clone_pidfd) {
+>  		TST_CHECKPOINT_WAIT(0);
+
+LGTM
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
