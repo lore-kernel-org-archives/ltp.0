@@ -1,14 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 1 Apr 2020 14:01:40 +0200
-Subject: [LTP] LTP compilation broken with -fno-common
-In-Reply-To: <fd62323e-3d29-884d-1a0c-bf1adc3e28c2@suse.cz>
-References: <20200401083228.GA18685@dell5510> <20200401093934.GA23773@yuki.lan>
- <e9ea8c2a-7c00-26a7-fb1a-0db9ae093620@suse.cz>
- <20200401095822.GB23773@yuki.lan>
- <aa695e74-2aed-2b9e-c0c0-7626dfc0a7e1@suse.cz>
- <20200401105055.GC23773@yuki.lan>
- <fd62323e-3d29-884d-1a0c-bf1adc3e28c2@suse.cz>
-Message-ID: <20200401120140.GD23773@yuki.lan>
+Date: Wed, 1 Apr 2020 15:12:21 +0200
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <CAF12kFs6H1FgU_77MAMhrn1pK15fp1cx+9wox4k9LN5GxCN=nA@mail.gmail.com>
+References: <20200327134707.4532-1-chrubis@suse.cz>
+ <20200327134707.4532-3-chrubis@suse.cz>
+ <CAF12kFteeJ6nerju6kwX+Ebzrzd_JPCiJ9jKW4tX9F4Y4s7FEg@mail.gmail.com>
+ <20200330152122.GA2699@yuki.lan> <20200331180816.GE2900@yuki.lan>
+ <CAF12kFs6H1FgU_77MAMhrn1pK15fp1cx+9wox4k9LN5GxCN=nA@mail.gmail.com>
+Message-ID: <20200401131220.GA3627@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,36 +15,37 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >>> The problem here is that gcc10 forbids variables in headers, moving it
-> >>> anywhere int the header wouldn't help.
-> >>
-> >> I don't think GCC cares about where exactly the variable came from. It's
-> >> only refusing to link multiple definitions of the same symbol. So if we
-> >> move the TCID definition into the TST_NO_DEFAULT_MAIN guard block, GCC
-> >> linker should stop complaining because the symbol name will become unique.
-> > 
-> > See:
-> > 
-> > https://gcc.gnu.org/gcc-10/porting_to.html
-> > 
+> >If I understand this properly if we set a bit in the modem control
+> >register we will test mostly the circuits between CPU and UART
+> >controller which is better than nothing, but we are not really testing
+> >if the port speed was set correctly since the data are just being copied
+> >between registers in the UART controller, so it does not make sense to
+> >change the speed in this mode. Or am I mistaken?
 > 
-> This patch fixes the "multiple definition of `TCID'" error. But never
-> mind because we'll get the "undefined reference to `TCID'" error instead
-> from about 50 programs files that use the new library but define their
-> own main().
+> >Also it does not seem to work for me and I've tried with both serial
+> >ports on my desktop PC as well as with USB-to-Serial dongle. I can set
+> >the bit just fine but loopback does not work.
 > 
-> Reminder that "multiple definition of `TCID'" is a linker error. If
-> defining variables in .h files were really forbidden, it'd be a
-> preprocessor error instead.
+> In the loopback mode , the data will be transferred in buffer ,and back to
+> CPU
+> by FIFO way.
+> I understand the test flow is CPU->uart Tx-> buffer file->uart Rx->CPU,
+> so it does make sense to the uart driver .
 
-Well variables in headers are not exactly forbidden by -fno-common but
-they are not resolved as a single global variable by the linker anymore,
-which was the default before gcc10. So effectivelly this disallows
-having variables in headers if the header is included from more than one
-compilation unit becuase you end up with a linker error.
+Indeed but it does not make sense tu run it with a different baud rates,
+since the data are not transmitted at all.
 
-The end result is overall the same, no more variables in headers in any
-non-trivial codebase.
+>  BTW??? I found the latest seriacheck git is
+> https://github.com/nsekhar/serialcheck.git
+> and I test on my arm64 machine of sprdtream. and it does works.
+> the test log I had send in another patch
+> https://patchwork.ozlabs.org/patch/1264553/
+
+Unfortunately it does not seem to work on my AMD based desktop at all,
+my guess is that the loopback bit is silently ignored by the hardware.
+
+Which means that we cannot enable the test by default in loopback mode
+after all.
 
 -- 
 Cyril Hrubis
