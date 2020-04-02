@@ -1,133 +1,76 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 2 Apr 2020 23:06:25 +0800
-Subject: [LTP] [PATCH v1 05/10] syscalls/ioctl_loop03: Add LOOP_CHANGE_FD
- test with WR mode
+Date: Thu, 2 Apr 2020 23:06:21 +0800
+Subject: [LTP] [PATCH v1 01/10] lapi: Add a configure check and fallback for
+ loop ioctl and flag
 In-Reply-To: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1585839990-19923-6-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1585839990-19923-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It is designed to test LOOP_CHANGE_FD can not succeed(get EINAL error)
-when loop_dev is not read only.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/ioctl/.gitignore    |  1 +
- .../kernel/syscalls/ioctl/ioctl_loop03.c      | 76 +++++++++++++++++++
- 3 files changed, 78 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop03.c
+ configure.ac        |  1 +
+ include/lapi/loop.h | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+ create mode 100644 include/lapi/loop.h
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 719953497..a4591dd62 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -529,6 +529,7 @@ ioctl08      ioctl08
- 
- ioctl_loop01 ioctl_loop01
- ioctl_loop02 ioctl_loop02
-+ioctl_loop03 ioctl_loop03
- 
- ioctl_ns01 ioctl_ns01
- ioctl_ns02 ioctl_ns02
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 534c4ab34..1501c2779 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -8,6 +8,7 @@
- /ioctl08
- /ioctl_loop01
- /ioctl_loop02
-+/ioctl_loop03
- /ioctl_ns01
- /ioctl_ns02
- /ioctl_ns03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop03.c b/testcases/kernel/syscalls/ioctl/ioctl_loop03.c
+diff --git a/configure.ac b/configure.ac
+index e1069b57e..e088cb564 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -50,6 +50,7 @@ AC_CHECK_HEADERS([ \
+     linux/if_ether.h \
+     linux/if_packet.h \
+     linux/keyctl.h \
++    linux/loop.h \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
+diff --git a/include/lapi/loop.h b/include/lapi/loop.h
 new file mode 100644
-index 000000000..4e7c29cde
+index 000000000..bc6d9950d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop03.c
-@@ -0,0 +1,76 @@
++++ b/include/lapi/loop.h
+@@ -0,0 +1,35 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-+ *
-+ * This is a basic ioctl test about loopdevice.
-+ *
-+ * It is designed to test LOOP_CHANGE_FD can not succeed(get EINAL error)
-+ * when loop_dev is not read only.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 + */
++#ifndef LAPI_LOOP_H
++#define LAPI_LOOP_H
 +
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include "ioctl_loop_support.h"
-+#include "lapi/loop.h"
-+#include "tst_test.h"
++#include <linux/types.h>
++#ifdef HAVE_LINUX_LOOP_H
++# include <linux/loop.h>
++#endif
 +
-+static char dev_path[1024];
-+static int dev_num, dev_fd, file_fd, attach_flag;
++#ifndef LO_FLAGS_PARTSCAN
++# define LO_FLAGS_PARTSCAN 8
++#endif
 +
-+static void verify_ioctl_loop(void)
-+{
-+	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_fd));
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "LOOP_CHANGE_FD succeeded unexpectedly");
-+		return;
-+	}
-+	if (TST_ERR == EINVAL)
-+		tst_res(TPASS | TTERRNO, "LOOP_CHANGE_FD failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed expected EINVAL got");
-+}
++#ifndef LO_FLAGS_DIRECT_IO
++# define LO_FLAGS_DIRECT_IO 16
++#endif
 +
-+static void setup(void)
-+{
-+	struct loop_info loopinfoget;
++#ifndef LOOP_SET_CAPACITY
++# define LOOP_SET_CAPACITY 0x4C07
++#endif
 +
-+	memset(&loopinfoget, 0, sizeof(loopinfoget));
-+	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-+	if (dev_num < 0)
-+		tst_brk(TBROK, "Failed to find free loop device");
++#ifndef LOOP_SET_DIRECT_IO
++# define LOOP_SET_DIRECT_IO 0x4C08
++#endif
 +
-+	tst_fill_file("test.img", 0, 1024, 10);
-+	tst_attach_device(dev_path, "test.img");
-+	attach_flag = 1;
++#ifndef LOOP_SET_BLOCK_SIZE
++# define LOOP_SET_BLOCK_SIZE 0x4C09
++#endif
 +
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	file_fd = SAFE_OPEN("test.img", O_RDWR);
-+	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
++#endif
 +
-+	if (loopinfoget.lo_flags & LO_FLAGS_READ_ONLY)
-+		tst_brk(TCONF, "Current environment has unexpected LO_FLAGS_READ_ONLY flag");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dev_fd > 0)
-+		SAFE_CLOSE(dev_fd);
-+	if (file_fd > 0)
-+		SAFE_CLOSE(file_fd);
-+	if (attach_flag)
-+		tst_detach_device(dev_path);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_ioctl_loop,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_drivers = (const char *const []) {
-+		"loop",
-+		NULL
-+	}
-+};
 -- 
 2.23.0
 
