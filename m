@@ -1,199 +1,137 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 2 Apr 2020 23:06:24 +0800
-Subject: [LTP] [PATCH v1 04/10] syscalls/ioctl_loop02: Add
- LO_FLAGS_READ_ONLY and LOOP_CHANGE_FD test
+Date: Thu, 2 Apr 2020 23:06:28 +0800
+Subject: [LTP] [PATCH v1 08/10] syscalls/ioctl_loop06: Add
+ LOOP_SET_BLOCK_SIZE error test
 In-Reply-To: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1585839990-19923-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1585839990-19923-9-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For LOOP_CHANGE_FD, this operation is possible only if the loop device
-is read-only and the new backing store is the same size and type as the
-old backing store.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_loop02.c      | 148 ++++++++++++++++++
- 3 files changed, 150 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop02.c
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/ioctl/.gitignore    |  1 +
+ .../kernel/syscalls/ioctl/ioctl_loop06.c      | 90 +++++++++++++++++++
+ 3 files changed, 92 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop06.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7fd67450e..719953497 100644
+index 9644588f3..41774a494 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -528,6 +528,7 @@ ioctl07      ioctl07
- ioctl08      ioctl08
- 
- ioctl_loop01 ioctl_loop01
-+ioctl_loop02 ioctl_loop02
+@@ -532,6 +532,7 @@ ioctl_loop02 ioctl_loop02
+ ioctl_loop03 ioctl_loop03
+ ioctl_loop04 ioctl_loop04
+ ioctl_loop05 ioctl_loop05
++ioctl_loop06 ioctl_loop06
  
  ioctl_ns01 ioctl_ns01
  ioctl_ns02 ioctl_ns02
 diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 4cfef2839..534c4ab34 100644
+index f484d98d6..ec19b4901 100644
 --- a/testcases/kernel/syscalls/ioctl/.gitignore
 +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -7,6 +7,7 @@
- /ioctl07
- /ioctl08
- /ioctl_loop01
-+/ioctl_loop02
+@@ -11,6 +11,7 @@
+ /ioctl_loop03
+ /ioctl_loop04
+ /ioctl_loop05
++/ioctl_loop06
  /ioctl_ns01
  /ioctl_ns02
  /ioctl_ns03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
 new file mode 100644
-index 000000000..ba3636aa9
+index 000000000..ef98efbca
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
-@@ -0,0 +1,148 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+@@ -0,0 +1,90 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
 + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
 + *
-+ * This is a basic ioctl test about loopdevice.
-+ *
-+ * It is designed to test LO_FLAGS_READ_ONLY(similar as losetup -r)
-+ * and LOOP_CHANGE_FD.
-+ *
-+ * For LOOP_CHANGE_FD, this operation is possible only if the loop device
-+ * is read-only and the new backing store is the same size and type as the
-+ * old backing store.
++ * This is a basic ioctl error test about loopdevice
++ * LOOP_SET_BLOCK_SIZE.
 + */
 +
 +#include <stdio.h>
 +#include <unistd.h>
-+#include <string.h>
++#include <sys/types.h>
++#include <stdlib.h>
 +#include "ioctl_loop_support.h"
 +#include "lapi/loop.h"
 +#include "tst_test.h"
 +
-+static int file_fd, file_change_fd, file_fd_invalid;
-+static char backing_path[1024], backing_file_path[1024], backing_file_change_path[1024];
-+static int attach_flag, dev_fd, file_fd;
-+static char loop_ro_path[1024], dev_path[1024];
-+static void attach_device(char *);
++static char dev_path[1024], sys_loop_logicalpath[1024];
++static int dev_num, dev_fd, attach_flag;
++static unsigned int invalid_value, half_value, unalign_value;
 +
-+static void verify_ioctl_loop(void)
++static struct tcase {
++	unsigned int *setvalue;
++	int exp_err;
++	char *message;
++} tcases[] = {
++	{&half_value, EINVAL, "arg < 512"},
++	{&invalid_value, EINVAL, "arg > PAGE_SIZE"},
++	{&unalign_value, EINVAL, "arg != power_of_2"},
++};
++
++static void verify_ioctl_loop(unsigned int n)
 +{
-+	struct loop_info loopinfoget;
++	struct tcase *tc = &tcases[n];
 +
-+	attach_device("test.img");
-+	attach_flag = 1;
-+
-+	check_sys_value(loop_ro_path, 1);
-+	check_sys_string(backing_path, backing_file_path);
-+
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	file_change_fd = SAFE_OPEN("test1.img", O_RDWR);
-+	file_fd_invalid = SAFE_OPEN("test2.img", O_RDWR);
-+
-+	memset(&loopinfoget, 0, sizeof(loopinfoget));
-+	/*
-+	 *In drivers/block/loop.c code, set status function doesn't handle
-+	 *LO_FLAGS_READ_ONLY flag and ignore it. Only loop_set_fd with rondonly
-+	 *mode, lo_flags will include LO_FLAGS_READ_ONLY.
-+	 */
-+
-+	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
-+
-+	if (loopinfoget.lo_flags & ~LO_FLAGS_READ_ONLY)
-+		tst_res(TFAIL, "lo_flags has unexpected %d flag", loopinfoget.lo_flags);
-+	else
-+		tst_res(TPASS, "lo_flags only has default LO_FLAGS_READ_ONLY flag");
-+
-+	TEST(write(dev_fd, "xx", 2));
-+	if (TST_RET != -1)
-+		tst_res(TFAIL, "write succeed unexpectedly");
-+	else
-+		tst_res(TPASS | TTERRNO, "Can not write data in RO mode");
-+
-+	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_change_fd));
-+	if (TST_RET) {
-+		tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed");
-+	} else {
-+		tst_res(TPASS, "LOOP_CHANGE_FD succeeded");
-+		check_sys_value(loop_ro_path, 1);
-+		check_sys_string(backing_path, backing_file_change_path);
++	tst_res(TINFO, "%s", tc->message);
++	TEST(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, *(tc->setvalue)));
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "LOOP_SET_BLOCK_SIZE succeed unexpectedly");
++		return;
 +	}
-+
-+	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_fd_invalid));
-+	if (TST_RET) {
-+		if (TST_ERR == EINVAL)
-+			tst_res(TPASS | TTERRNO, "LOOP_CHANGE_FD failed as expected");
-+		else
-+			tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed expected EINVAL got");
-+	} else {
-+		tst_res(TFAIL, "LOOP_CHANGE_FD succeeded");
-+	}
-+
-+	SAFE_CLOSE(dev_fd);
-+	SAFE_CLOSE(file_change_fd);
-+	SAFE_CLOSE(file_fd_invalid);
-+	tst_detach_device(dev_path);
-+	attach_flag = 0;
-+}
-+
-+/*
-+ * This function is different from tst_attach_dev lib/tst_device.c.
-+ * It only opens file_path with O_RDONLY mode before loop_set_fd.
-+ * So we can generate LO_FLAGS_READ_ONLY flag.
-+ */
-+static void attach_device(char *img)
-+{
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	file_fd = SAFE_OPEN(img, O_RDONLY);
-+
-+	SAFE_IOCTL(dev_fd, LOOP_SET_FD, file_fd);
-+
-+	SAFE_CLOSE(dev_fd);
-+	SAFE_CLOSE(file_fd);
++	if (TST_ERR == tc->exp_err)
++		tst_res(TPASS | TTERRNO, "LOOP_SET_BLOCK_SIZE failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "LOOP_SET_BLOCK_SIZE failed expected %s got",
++				tst_strerrno(tc->exp_err));
 +}
 +
 +static void setup(void)
 +{
-+	int dev_num;
++	unsigned int pg_size;
 +
-+	char *tmpdir = tst_get_tmpdir();
 +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
 +	if (dev_num < 0)
 +		tst_brk(TBROK, "Failed to find free loop device");
 +
-+	tst_fill_file("test.img", 0, 1024, 10);
-+	tst_fill_file("test1.img", 0, 1024, 10);
-+	tst_fill_file("test2.img", 0, 2048, 20);
++	sprintf(sys_loop_logicalpath, "/sys/block/loop%d/logical_block_size", dev_num);
++	tst_fill_file("test.img", 0, 1024, 1024);
++	tst_attach_device(dev_path, "test.img");
++	attach_flag = 1;
++	half_value = 256;
++	pg_size = getpagesize();
++	invalid_value = pg_size * 2 ;
++	unalign_value = pg_size - 1;
 +
-+	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
-+	sprintf(backing_file_path, "%s/test.img", tmpdir);
-+	sprintf(backing_file_change_path, "%s/test1.img", tmpdir);
-+	sprintf(loop_ro_path, "/sys/block/loop%d/ro", dev_num);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	check_support_cmd(dev_fd, LOOP_SET_BLOCK_SIZE, 512, "LOOP_SET_BLOCK_SIZE");
 +}
 +
 +static void cleanup(void)
 +{
 +	if (dev_fd > 0)
 +		SAFE_CLOSE(dev_fd);
-+	if (file_fd > 0)
-+		SAFE_CLOSE(file_fd);
-+	if (file_change_fd > 0)
-+		SAFE_CLOSE(file_change_fd);
-+	if (file_fd_invalid > 0)
-+		SAFE_CLOSE(file_fd_invalid);
 +	if (attach_flag)
 +		tst_detach_device(dev_path);
++	unlink("test.img");
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_ioctl_loop,
++	.test = verify_ioctl_loop,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.needs_drivers = (const char *const []) {
