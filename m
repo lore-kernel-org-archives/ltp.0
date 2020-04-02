@@ -1,156 +1,143 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 2 Apr 2020 23:06:30 +0800
-Subject: [LTP] [PATCH v1 10/10] syscalls/ioctl_loop08: Add
- LOOP_SET/GET_STATUS64 sizelimit field test
-In-Reply-To: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1585839990-19923-11-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 3 Apr 2020 00:56:57 +0530
+Subject: [LTP] mm/mremap.c : WARNING: at mm/mremap.c:211
+ move_page_tables+0x5b0/0x5d0
+In-Reply-To: <20200402133849.mmkvekzx37kw4nsj@box>
+References: <CA+G9fYs1xStrrsvGbW7bc4h1a0Kjfz0_zn4c7LL7-bGZb0GH6g@mail.gmail.com>
+ <20200402133849.mmkvekzx37kw4nsj@box>
+Message-ID: <CA+G9fYv0xNtnD=eBmxVqYqEoYTbMk6mdn04WmgSUasDw2L7uFg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
-available. If sizelimit is less than loop_size, loopsize will
-be truncated.
+On Thu, 2 Apr 2020 at 19:08, Kirill A. Shutemov <kirill@shutemov.name> wrote:
+>
+> On Thu, Apr 02, 2020 at 04:49:02PM +0530, Naresh Kamboju wrote:
+> > While running LTP mm thp01 test case on i386 kernel running on x86_64 device
+> > the following kernel warning was noticed multiple times.
+> >
+>
+> Interesting. I suspect it's related to 2-level page tables in this
+> configuration. But I cannot immediately see how.
+>
+> Could you test if enabling HIGHMEM64 fixes the issue?
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/ioctl/.gitignore    |  1 +
- .../kernel/syscalls/ioctl/ioctl_loop08.c      | 96 +++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+CONFIG_HIGHMEM64G=y
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 0e4dbaa77..d88848cb9 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -534,6 +534,7 @@ ioctl_loop04 ioctl_loop04
- ioctl_loop05 ioctl_loop05
- ioctl_loop06 ioctl_loop06
- ioctl_loop07 ioctl_loop07
-+ioctl_loop08 ioctl_loop08
- 
- ioctl_ns01 ioctl_ns01
- ioctl_ns02 ioctl_ns02
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 3a3d49adc..97134aa0b 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -13,6 +13,7 @@
- /ioctl_loop05
- /ioctl_loop06
- /ioctl_loop07
-+/ioctl_loop08
- /ioctl_ns01
- /ioctl_ns02
- /ioctl_ns03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop08.c b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
-new file mode 100644
-index 000000000..37e6c02b3
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-+ *
-+ * This is a basic ioctl test about loopdevice LOOP_SET_STATUS64
-+ * and LOOP_GET_STATUS64.
-+ * Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
-+ * available. If sizelimit is less than loop_size, loopsize will
-+ * be truncated.
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <stdlib.h>
-+#include "ioctl_loop_support.h"
-+#include "lapi/loop.h"
-+#include "tst_test.h"
-+
-+static char dev_path[1024], sys_loop_sizepath[1024], sys_loop_sizelimitpath[1024];
-+static int dev_num, dev_fd, file_fd, attach_flag;
-+
-+static struct tcase {
-+	unsigned int set_sizelimit;
-+	unsigned int exp_loopsize;
-+	char *message;
-+} tcases[] = {
-+	{1024 * 4096, 2048, "When sizelimit is greater than loopsize "},
-+	{1024 * 512, 1024, "When sizelimit is less than loopsize"},
-+};
-+
-+static void verify_ioctl_loop(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	struct loop_info64 loopinfo, loopinfoget;
-+
-+	tst_res(TINFO, "%s", tc->message);
-+	memset(&loopinfo, 0, sizeof(loopinfo));
-+	memset(&loopinfoget, 0, sizeof(loopinfoget));
-+
-+	loopinfo.lo_sizelimit = tc->set_sizelimit;
-+	safe_set_status64(dev_fd, loopinfo);
-+
-+	check_sys_value(sys_loop_sizepath, tc->exp_loopsize);
-+	check_sys_value(sys_loop_sizelimitpath, tc->set_sizelimit);
-+	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS64, &loopinfoget);
-+	if (loopinfoget.lo_sizelimit == tc->set_sizelimit)
-+		tst_res(TPASS, "LOOP_GET_STATUS64 gets correct lo_sizelimit(%d)", tc->set_sizelimit);
-+	else
-+		tst_res(TFAIL, "LOOP_GET_STATUS64 gets wrong lo_sizelimit(%llu), expect %d",
-+				loopinfoget.lo_sizelimit, tc->set_sizelimit);
-+	/*Reset*/
-+	loopinfo.lo_sizelimit = 0;
-+	safe_set_status64(dev_fd, loopinfo);
-+}
-+
-+static void setup(void)
-+{
-+	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-+	if (dev_num < 0)
-+		tst_brk(TBROK, "Failed to find free loop device");
-+
-+	tst_fill_file("test.img", 0, 1024, 1024);
-+	tst_attach_device(dev_path, "test.img");
-+	attach_flag = 1;
-+
-+	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
-+	sprintf(sys_loop_sizelimitpath, "/sys/block/loop%d/loop/sizelimit", dev_num);
-+
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	tst_res(TINFO, "original loop size 2048 sectors");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dev_fd > 0)
-+		SAFE_CLOSE(dev_fd);
-+	if (file_fd > 0)
-+		SAFE_CLOSE(file_fd);
-+	if (attach_flag)
-+		tst_detach_device(dev_path);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_ioctl_loop,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_drivers = (const char *const []) {
-+		"loop",
-+		NULL
-+	}
-+};
--- 
-2.23.0
+>
+> Below is patch that prints some additional info:
+
+Applied your patch and reproduced the problem,
+The boot log show this warning,
+
+[    0.261879] ************************************************************
+[    0.261880] ** WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!  **
+[    0.261881] **                                                        **
+[    0.261881] ** You are using 32-bit PTI on a 64-bit PCID-capable CPU. **
+[    0.261882] ** Your performance will increase dramatically if you     **
+[    0.261882] ** switch to a 64-bit kernel!                             **
+[    0.261883] **                                                        **
+[    0.261884] ** WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!  **
+[    0.261884] ************************************************************
+...
+
+Reproducing steps:
+------------------------
+cd /opt/ltp
+./runltp -f mm
+
+[  734.485672] ------------[ cut here ]------------
+[  734.490306] WARNING: CPU: 3 PID: 32321 at mm/mremap.c:212
+move_page_tables+0x7c3/0x830
+[  734.498212] Modules linked in: x86_pkg_temp_thermal
+[  734.503084] CPU: 3 PID: 32321 Comm: true Tainted: G        W
+ 5.6.2-rc1+ #14
+[  734.510729] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[  734.518110] EIP: move_page_tables+0x7c3/0x830
+[  734.522463] Code: 0c eb a7 8d 45 d8 83 4d e8 01 e8 c8 e6 01 00 e9
+be f8 ff ff 8d 45 d8 31 d2 e8 59 e8 01 00 e9 a5 fc ff ff 31 db e9 81
+fc ff ff <0f> 0b 8b 45 b8 e8 43 e0 fe ff ff 75 b0 ff 75 08 ff 75 cc 68
+e4 50
+[  734.541200] EAX: eb5f1fe8 EBX: 00400000 ECX: 2b5f1001 EDX: 2b5f1000
+[  734.547456] ESI: ea5d6010 EDI: eb5f1ff0 EBP: da381e14 ESP: da381d84
+[  734.553714] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010202
+[  734.560492] CR0: 80050033 CR2: b7d11f50 CR3: 2a5d6000 CR4: 003406f0
+[  734.566748] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[  734.573006] DR6: fffe0ff0 DR7: 00000400
+[  734.576835] Call Trace:
+[  734.579282]  setup_arg_pages+0x22c/0x350
+[  734.583207]  ? strlcpy+0x33/0x50
+[  734.586459]  load_elf_binary+0x352/0x1010
+[  734.590468]  ? selinux_inode_permission+0xe5/0x1f0
+[  734.595254]  search_binary_handler+0x77/0x1a0
+[  734.599614]  __do_execve_file+0x5aa/0x710
+[  734.603615]  sys_execve+0x21/0x30
+[  734.606926]  do_fast_syscall_32+0x75/0x260
+[  734.611019]  entry_SYSENTER_32+0xa5/0xf8
+[  734.614942] EIP: 0xb7ef6c11
+[  734.617735] Code: Bad RIP value.
+[  734.620956] EAX: ffffffda EBX: bfb8dcb0 ECX: 08069420 EDX: bfb8df14
+[  734.627238] ESI: 080599d4 EDI: bfb8dcb9 EBP: bfb8dd58 ESP: bfb8dc88
+[  734.633499] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000296
+[  734.640276] ---[ end trace e625d4d55b8380f3 ]---
+[  734.644934] vma dbc4c180 start bf801000 end c0000000
+[  734.644934] next 00000000 prev 00000000 mm d0d75d40
+[  734.644934] prot 25 anon_vma d0dfddc8 vm_ops 00000000
+[  734.644934] pgoff bfa01 file 00000000 private_data 00000000
+[  734.644934] flags:
+0x118173(read|write|mayread|maywrite|mayexec|growsdown|seqread|randread|account)
+[  734.674346] old_addr: 0xbfc00000, new_addr: 0xbfa00000, old_end: 0xc0000000
+[  734.681322] old_pmd: 0x77923067
+[  734.681322] new_pmd: 0x7796d067
+[  734.684510] ------------[ cut here ]------------
+[  734.692295] WARNING: CPU: 2 PID: 32321 at mm/mremap.c:212
+move_page_tables+0x7c3/0x830
+[  734.700241] Modules linked in: x86_pkg_temp_thermal
+[  734.705128] CPU: 2 PID: 32321 Comm: true Tainted: G        W
+ 5.6.2-rc1+ #14
+[  734.712770] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[  734.720156] EIP: move_page_tables+0x7c3/0x830
+[  734.724506] Code: 0c eb a7 8d 45 d8 83 4d e8 01 e8 c8 e6 01 00 e9
+be f8 ff ff 8d 45 d8 31 d2 e8 59 e8 01 00 e9 a5 fc ff ff 31 db e9 81
+fc ff ff <0f> 0b 8b 45 b8 e8 43 e0 fe ff ff 75 b0 ff 75 08 ff 75 cc 68
+e4 50
+[  734.743256] EAX: eb5f1ff0 EBX: 00200000 ECX: 2b5f1001 EDX: 2b5f1000
+[  734.749517] ESI: ea5d6010 EDI: eb5f1ff8 EBP: da381e14 ESP: da381d84
+[  734.755776] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010202
+[  734.762553] CR0: 80050033 CR2: b7f1f4e0 CR3: 2a5d6000 CR4: 003406f0
+[  734.768808] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[  734.775067] DR6: fffe0ff0 DR7: 00000400
+[  734.778898] Call Trace:
+[  734.781344]  setup_arg_pages+0x22c/0x350
+[  734.785269]  ? strlcpy+0x33/0x50
+[  734.788499]  load_elf_binary+0x352/0x1010
+[  734.792503]  ? selinux_inode_permission+0xe5/0x1f0
+[  734.797287]  search_binary_handler+0x77/0x1a0
+[  734.801639]  __do_execve_file+0x5aa/0x710
+[  734.805642]  sys_execve+0x21/0x30
+[  734.808953]  do_fast_syscall_32+0x75/0x260
+[  734.813045]  entry_SYSENTER_32+0xa5/0xf8
+[  734.816959] EIP: 0xb7ef6c11
+[  734.819752] Code: Bad RIP value.
+[  734.822976] EAX: ffffffda EBX: bfb8dcb0 ECX: 08069420 EDX: bfb8df14
+[  734.829261] ESI: 080599d4 EDI: bfb8dcb9 EBP: bfb8dd58 ESP: bfb8dc88
+[  734.835525] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000296
+[  734.842302] ---[ end trace e625d4d55b8380f4 ]---
+[  734.846940] vma dbc4c180 start bf801000 end c0000000
+[  734.846940] next 00000000 prev 00000000 mm d0d75d40
+[  734.846940] prot 25 anon_vma d0dfddc8 vm_ops 00000000
+[  734.846940] pgoff bfa01 file 00000000 private_data 00000000
+[  734.846940] flags:
+0x118173(read|write|mayread|maywrite|mayexec|growsdown|seqread|randread|account)
+[  734.876355] old_addr: 0xbfe00000, new_addr: 0xbfc00000, old_end: 0xc0000000
+[  734.883316] old_pmd: 0x77a08067
 
 
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1334357#L478
 
+- Naresh
