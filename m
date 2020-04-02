@@ -1,61 +1,58 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 2 Apr 2020 23:06:27 +0800
-Subject: [LTP] [PATCH v1 07/10] syscalls/ioctl_loop05: Add
- LOOP_SET_DIRECT_IO ioctl test
+Date: Thu, 2 Apr 2020 23:06:26 +0800
+Subject: [LTP] [PATCH v1 06/10] syscalls/ioctl_loop04: Add LOOP_SET_CAPACITY
+ ioctl test
 In-Reply-To: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1585839990-19923-8-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1585839990-19923-7-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LOOP_SET_DIRECT_IO can updata a live loop device dio mode. It needs the
-backing file also supports dio mode and the lo_offset is aligned with
-the logical I/O size.
-
-It was introduced into kernel since 4.10
-commit ab1cb278bc70 ("block: loop: introduce ioctl command of LOOP_SET_DIRECT_IO").
+LOOP_SET_CAPACITY can update a live loop device size when we
+change the size of the underlying backing file. Also check sys
+value.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_loop05.c      | 120 ++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/ioctl/.gitignore    |  1 +
+ .../kernel/syscalls/ioctl/ioctl_loop04.c      | 97 +++++++++++++++++++
+ 3 files changed, 99 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop04.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 6e8d71d44..9644588f3 100644
+index a4591dd62..6e8d71d44 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -531,6 +531,7 @@ ioctl_loop01 ioctl_loop01
+@@ -530,6 +530,7 @@ ioctl08      ioctl08
+ ioctl_loop01 ioctl_loop01
  ioctl_loop02 ioctl_loop02
  ioctl_loop03 ioctl_loop03
- ioctl_loop04 ioctl_loop04
-+ioctl_loop05 ioctl_loop05
++ioctl_loop04 ioctl_loop04
  
  ioctl_ns01 ioctl_ns01
  ioctl_ns02 ioctl_ns02
 diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 039a5251c..f484d98d6 100644
+index 1501c2779..039a5251c 100644
 --- a/testcases/kernel/syscalls/ioctl/.gitignore
 +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -10,6 +10,7 @@
+@@ -9,6 +9,7 @@
+ /ioctl_loop01
  /ioctl_loop02
  /ioctl_loop03
- /ioctl_loop04
-+/ioctl_loop05
++/ioctl_loop04
  /ioctl_ns01
  /ioctl_ns02
  /ioctl_ns03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop04.c b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
 new file mode 100644
-index 000000000..43bad6c18
+index 000000000..ae110570e
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -0,0 +1,120 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop04.c
+@@ -0,0 +1,97 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
@@ -63,9 +60,9 @@ index 000000000..43bad6c18
 + *
 + * This is a basic ioctl test about loopdevice.
 + *
-+ * It is designed to test LOOP_SET_DIRECT_IO can updata a live
-+ * loop device dio mode. It need the backing file also supports
-+ * dio mode and the lo_offset is aligned with the logical I/O size.
++ * It is designed to test LOOP_SET_CAPACITY can update a live
++ * loop device size when we change the size of the underlying
++ * backing file. Also check sys value.
 + */
 +#include <stdio.h>
 +#include <unistd.h>
@@ -75,94 +72,71 @@ index 000000000..43bad6c18
 +#include "lapi/loop.h"
 +#include "tst_test.h"
 +
-+#define DIO_MESSAGE "In dio mode"
-+#define NON_DIO_MESSAGE "In non dio mode"
++#define OLD_SIZE 10240
++#define NEW_SIZE 5120
 +
-+static char dev_path[1024], sys_loop_diopath[1024];
-+static int dev_num, dev_fd, attach_flag;
++static char dev_path[1024], sys_loop_sizepath[1024];
++static char *wrbuf;
++static int dev_num, dev_fd, file_fd, attach_flag;
 +
-+static void check_dio_value(int flag)
++static void verify_ioctl_loop(void)
 +{
 +	struct loop_info loopinfoget;
 +
 +	memset(&loopinfoget, 0, sizeof(loopinfoget));
++	tst_fill_file("test.img", 0, 1024, OLD_SIZE/1024);
++	tst_attach_device(dev_path, "test.img");
++	attach_flag = 1;
 +
++	check_sys_value(sys_loop_sizepath, OLD_SIZE/512);
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	file_fd = SAFE_OPEN("test.img", O_RDWR);
 +	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
-+	tst_res(TINFO, "%s", flag ? DIO_MESSAGE : NON_DIO_MESSAGE);
 +
-+	if (loopinfoget.lo_flags & LO_FLAGS_DIRECT_IO)
-+		tst_res(flag ? TPASS : TFAIL, "lo_flags has LO_FLAGS_DIRECT_IO flag");
-+	else
-+		tst_res(flag ? TFAIL : TPASS, "lo_flags doesn't have LO_FLAGS_DIRECT_IO flag");
++	if (loopinfoget.lo_flags & LO_FLAGS_READ_ONLY)
++		tst_brk(TCONF, "Current environment has unexpected LO_FLAGS_READ_ONLY flag");
 +
-+	check_sys_value(sys_loop_diopath, flag);
-+}
++	SAFE_TRUNCATE("test.img", NEW_SIZE);
++	SAFE_IOCTL(dev_fd, LOOP_SET_CAPACITY);
 +
-+static void verify_ioctl_loop(void)
-+{
-+	struct loop_info loopinfo;
-+
-+	memset(&loopinfo, 0, sizeof(loopinfo));
-+
-+	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
-+	check_dio_value(0);
-+	tst_res(TINFO, "Without setting lo_offset or sizelimit");
-+	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 1);
-+	check_dio_value(1);
-+
-+	tst_res(TINFO, "With offset equal to sector size");
-+	loopinfo.lo_offset = 512;
-+	safe_set_status(dev_fd, loopinfo);
-+	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-+	if (TST_RET == 0) {
-+		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
-+		check_dio_value(1);
++	/*check that we can't write data beyond 5K into loop device*/
++	TEST(write(dev_fd, wrbuf, OLD_SIZE));
++	if (TST_RET == NEW_SIZE) {
++		tst_res(TPASS, "LOOP_SET_CAPACITY has updated loop size(%d) to %d", OLD_SIZE, NEW_SIZE);
++		check_sys_value(sys_loop_sizepath, NEW_SIZE/512);
 +	} else {
-+		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed");
++		tst_res(TFAIL, "LOOP_SET_CAPACITY doesn't updated loop size to %d, its size is %ld",
++				NEW_SIZE, TST_RET);
 +	}
 +
-+	tst_res(TINFO, "With offset less than or unalign sector size");
-+	loopinfo.lo_offset = 256;
-+	safe_set_status(dev_fd, loopinfo);
-+
-+	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
-+		return;
-+	}
-+	if (TST_ERR == EINVAL)
-+		tst_res(TPASS | TTERRNO, "LOOP_SET_DIRECT_IO failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed expected EINVAL got");
-+
-+	loopinfo.lo_offset = 0;
-+	safe_set_status(dev_fd, loopinfo);
++	SAFE_CLOSE(file_fd);
++	SAFE_CLOSE(dev_fd);
++	tst_detach_device(dev_path);
++	unlink("test.img");
++	attach_flag = 0;
 +}
 +
 +static void setup(void)
 +{
-+	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
-+		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag, skip it");
-+
 +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
 +	if (dev_num < 0)
 +		tst_brk(TBROK, "Failed to find free loop device");
 +
-+	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
-+	tst_fill_file("test.img", 0, 1024, 1024);
-+	tst_attach_device(dev_path, "test.img");
-+	attach_flag = 1;
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	check_support_cmd(dev_fd, LOOP_SET_DIRECT_IO, 0, "LOOP_SET_DIRECT_IO");
++	wrbuf = SAFE_MALLOC(OLD_SIZE);
++	memset(wrbuf, 'x', OLD_SIZE);
++	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
 +}
 +
 +static void cleanup(void)
 +{
 +	if (dev_fd > 0)
 +		SAFE_CLOSE(dev_fd);
++	if (file_fd > 0)
++		SAFE_CLOSE(file_fd);
++	if (wrbuf)
++		free(wrbuf);
 +	if (attach_flag)
 +		tst_detach_device(dev_path);
-+	unlink("test.img");
 +}
 +
 +static struct tst_test test = {
@@ -170,7 +144,7 @@ index 000000000..43bad6c18
 +	.cleanup = cleanup,
 +	.test_all = verify_ioctl_loop,
 +	.needs_root = 1,
-+//	.needs_tmpdir = 1,
++	.needs_tmpdir = 1,
 +	.needs_drivers = (const char *const []) {
 +		"loop",
 +		NULL
