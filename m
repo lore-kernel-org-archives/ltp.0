@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 3 Apr 2020 18:59:22 +0200
+Date: Fri, 3 Apr 2020 19:02:54 +0200
 Subject: [LTP] [RFC PATCH v3 2/2] net/route: Add netlink based route
  change gw/dest tests
 In-Reply-To: <20200403165432.19358-3-pvorel@suse.cz>
 References: <20200403165432.19358-1-pvorel@suse.cz>
  <20200403165432.19358-3-pvorel@suse.cz>
-Message-ID: <20200403165922.GA20326@dell5510>
+Message-ID: <20200403170254.GA21083@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,51 +14,17 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> +++ b/runtest/net_stress.route
-> @@ -2,11 +2,15 @@
->  route4-change-dst route-change-dst.sh
->  route4-change-gw route-change-gw.sh
->  route4-change-if route-change-if.sh
-> +route4-change-netlink-dst route-change-netlink.sh
-> +route4-change-netlink-gw route-change-netlink.sh -g
->  route4-redirect route4-redirect
->  route4-rmmod route4-rmmod
+> * use libmnl and new C API
+> * reuse code in tst_net.h (added in previous commit)
 
->  route6-change-dst route-change-dst.sh -6
->  route6-change-gw route-change-gw.sh -6
->  route6-change-if route-change-if.sh -6
-> +route6-change-netlink-dst route-change-netlink.sh
-> +route6-change-netlink-gw route-change-netlink.sh -g
->  route6-redirect route6-redirect
->  route6-rmmod route6-rmmod
+Sorry, these 2 are also outdated:
+> * add shell wrapper route-change-netlink.sh (set environment with
+>   tst_net.sh instead of using deprecated helpers in testcases/network/stress/ns-tools/)
+2 wrappers.
 
-I haven't updated the runtest file (route-change-netlink.sh =>
-route-change-netlink-dst.sh and route-change-netlink-gw.sh)
+> * add tst_ipaddr_un() into C API, unlike shell API this implementation
+>   does not support -c tst_ipaddr_un [-cCOUNTER] [TYPE] syntax.
+That was removed in this version.
 
 Kind regards,
 Petr
-
-diff --git runtest/net_stress.route runtest/net_stress.route
-index cfe31df02..0a8cfec39 100644
---- runtest/net_stress.route
-+++ runtest/net_stress.route
-@@ -2,15 +2,15 @@
- route4-change-dst route-change-dst.sh
- route4-change-gw route-change-gw.sh
- route4-change-if route-change-if.sh
--route4-change-netlink-dst route-change-netlink.sh
--route4-change-netlink-gw route-change-netlink.sh -g
-+route4-change-netlink-dst route-change-netlink-dst.sh
-+route4-change-netlink-gw route-change-netlink-gw.sh -g
- route4-redirect route4-redirect
- route4-rmmod route4-rmmod
- 
- route6-change-dst route-change-dst.sh -6
- route6-change-gw route-change-gw.sh -6
- route6-change-if route-change-if.sh -6
--route6-change-netlink-dst route-change-netlink.sh
--route6-change-netlink-gw route-change-netlink.sh -g
-+route6-change-netlink-dst route-change-netlink-dst.sh
-+route6-change-netlink-gw route-change-netlink-gw.sh -g
- route6-redirect route6-redirect
- route6-rmmod route6-rmmod
