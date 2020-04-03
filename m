@@ -1,204 +1,150 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 3 Apr 2020 18:44:16 +0200
-Subject: [LTP] [PATCH v1 07/10] syscalls/ioctl_loop05: Add
- LOOP_SET_DIRECT_IO ioctl test
-In-Reply-To: <1585839990-19923-8-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1585839990-19923-8-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200403164416.GA11850@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  3 Apr 2020 18:54:31 +0200
+Subject: [LTP] [RFC PATCH v3 1/2] net: Move setup_addrinfo() into tst_net.h
+In-Reply-To: <20200403165432.19358-1-pvorel@suse.cz>
+References: <20200403165432.19358-1-pvorel@suse.cz>
+Message-ID: <20200403165432.19358-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> LOOP_SET_DIRECT_IO can updata a live loop device dio mode. It needs the
-> backing file also supports dio mode and the lo_offset is aligned with
-> the logical I/O size.
-> 
-> It was introduced into kernel since 4.10
-> commit ab1cb278bc70 ("block: loop: introduce ioctl command of LOOP_SET_DIRECT_IO").
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  runtest/syscalls                              |   1 +
->  testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
->  .../kernel/syscalls/ioctl/ioctl_loop05.c      | 120 ++++++++++++++++++
->  3 files changed, 122 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 6e8d71d44..9644588f3 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -531,6 +531,7 @@ ioctl_loop01 ioctl_loop01
->  ioctl_loop02 ioctl_loop02
->  ioctl_loop03 ioctl_loop03
->  ioctl_loop04 ioctl_loop04
-> +ioctl_loop05 ioctl_loop05
->  
->  ioctl_ns01 ioctl_ns01
->  ioctl_ns02 ioctl_ns02
-> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-> index 039a5251c..f484d98d6 100644
-> --- a/testcases/kernel/syscalls/ioctl/.gitignore
-> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-> @@ -10,6 +10,7 @@
->  /ioctl_loop02
->  /ioctl_loop03
->  /ioctl_loop04
-> +/ioctl_loop05
->  /ioctl_ns01
->  /ioctl_ns02
->  /ioctl_ns03
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> new file mode 100644
-> index 000000000..43bad6c18
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> @@ -0,0 +1,120 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-> + *
-> + * This is a basic ioctl test about loopdevice.
-> + *
-> + * It is designed to test LOOP_SET_DIRECT_IO can updata a live
-> + * loop device dio mode. It need the backing file also supports
-> + * dio mode and the lo_offset is aligned with the logical I/O size.
-> + */
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <stdlib.h>
-> +#include "ioctl_loop_support.h"
-> +#include "lapi/loop.h"
-> +#include "tst_test.h"
-> +
-> +#define DIO_MESSAGE "In dio mode"
-> +#define NON_DIO_MESSAGE "In non dio mode"
-> +
-> +static char dev_path[1024], sys_loop_diopath[1024];
-> +static int dev_num, dev_fd, attach_flag;
-> +
-> +static void check_dio_value(int flag)
-> +{
-> +	struct loop_info loopinfoget;
-> +
-> +	memset(&loopinfoget, 0, sizeof(loopinfoget));
-> +
-> +	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
-> +	tst_res(TINFO, "%s", flag ? DIO_MESSAGE : NON_DIO_MESSAGE);
-> +
-> +	if (loopinfoget.lo_flags & LO_FLAGS_DIRECT_IO)
-> +		tst_res(flag ? TPASS : TFAIL, "lo_flags has LO_FLAGS_DIRECT_IO flag");
-> +	else
-> +		tst_res(flag ? TFAIL : TPASS, "lo_flags doesn't have LO_FLAGS_DIRECT_IO flag");
-> +
-> +	check_sys_value(sys_loop_diopath, flag);
-> +}
-> +
-> +static void verify_ioctl_loop(void)
-> +{
-> +	struct loop_info loopinfo;
-> +
-> +	memset(&loopinfo, 0, sizeof(loopinfo));
-> +
-> +	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
-> +	check_dio_value(0);
-> +	tst_res(TINFO, "Without setting lo_offset or sizelimit");
-> +	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 1);
-> +	check_dio_value(1);
-> +
-> +	tst_res(TINFO, "With offset equal to sector size");
-> +	loopinfo.lo_offset = 512;
+as tst_setup_addrinfo().
 
-We should use BLKSSZGET ioctl() to get the block size for direct I/O
-otherwise I would expect that it would break on one of the less common
-architectures. See also discussion at the end of man 2 open.
+This allows reusing it in next commit.
 
-> +	safe_set_status(dev_fd, loopinfo);
-> +	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-> +	if (TST_RET == 0) {
-> +		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
-> +		check_dio_value(1);
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed");
-> +	}
-> +
-> +	tst_res(TINFO, "With offset less than or unalign sector size");
-> +	loopinfo.lo_offset = 256;
-> +	safe_set_status(dev_fd, loopinfo);
-> +
-> +	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-> +	if (TST_RET == 0) {
-> +		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
-> +		return;
-> +	}
-> +	if (TST_ERR == EINVAL)
-> +		tst_res(TPASS | TTERRNO, "LOOP_SET_DIRECT_IO failed as expected");
-> +	else
-> +		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed expected EINVAL got");
-> +
-> +	loopinfo.lo_offset = 0;
-> +	safe_set_status(dev_fd, loopinfo);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
-> +		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag, skip it");
-> +
-> +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-> +	if (dev_num < 0)
-> +		tst_brk(TBROK, "Failed to find free loop device");
-> +
-> +	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
-> +	tst_fill_file("test.img", 0, 1024, 1024);
-> +	tst_attach_device(dev_path, "test.img");
-> +	attach_flag = 1;
-> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> +	check_support_cmd(dev_fd, LOOP_SET_DIRECT_IO, 0, "LOOP_SET_DIRECT_IO");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (dev_fd > 0)
-> +		SAFE_CLOSE(dev_fd);
-> +	if (attach_flag)
-> +		tst_detach_device(dev_path);
-> +	unlink("test.img");
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+* setup_addrinfo() renamed to tst_setup_addrinfo()
+* rebase
 
-We don't have to remove the image here once the needs_tmpdir has been
-uncommented below, right?
+ include/tst_net.h                       |  9 +++++++--
+ include/tst_private.h                   |  1 +
+ lib/tst_net.c                           | 14 ++++++++++++++
+ testcases/network/netstress/netstress.c | 20 ++++----------------
+ 4 files changed, 26 insertions(+), 18 deletions(-)
 
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_ioctl_loop,
-> +	.needs_root = 1,
-> +//	.needs_tmpdir = 1,
-
-Looks like a forgotten debug measure.
-
-> +	.needs_drivers = (const char *const []) {
-> +		"loop",
-> +		NULL
-> +	}
-> +};
-> -- 
-> 2.23.0
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/include/tst_net.h b/include/tst_net.h
+index 855f4fc13..34025eb81 100644
+--- a/include/tst_net.h
++++ b/include/tst_net.h
+@@ -7,9 +7,10 @@
+ #define TST_NET_H_
+ 
+ #include <arpa/inet.h>
+-#include <sys/types.h>
++#include <netdb.h>
+ #include <netinet/in.h>
+ #include <netinet/ip.h>
++#include <sys/types.h>
+ 
+ void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
+ void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+@@ -27,4 +28,8 @@ void tst_init_sockaddr_inet_bin(struct sockaddr_in *sa, uint32_t ip_val, uint16_
+ void tst_init_sockaddr_inet6(struct sockaddr_in6 *sa, const char *ip_str, uint16_t port);
+ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr *ip_val, uint16_t port);
+ 
+-#endif
++void tst_setup_addrinfo(const char *src_addr, const char *port,
++		    const struct addrinfo *hints,
++		    struct addrinfo **addr_info);
++
++#endif /* TST_NET_H_ */
+diff --git a/include/tst_private.h b/include/tst_private.h
+index 00cd17fce..e30d34740 100644
+--- a/include/tst_private.h
++++ b/include/tst_private.h
+@@ -10,6 +10,7 @@
+ #define TST_PRIVATE_H_
+ 
+ #include <stdio.h>
++#include <netdb.h>
+ 
+ #define MAX_IPV4_PREFIX 32
+ #define MAX_IPV6_PREFIX 128
+diff --git a/lib/tst_net.c b/lib/tst_net.c
+index 22c990e62..7c5fa77cd 100644
+--- a/lib/tst_net.c
++++ b/lib/tst_net.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <errno.h>
++#include <netdb.h>
+ #include <string.h>
+ #include <stdlib.h>
+ 
+@@ -204,3 +205,16 @@ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr
+ 	sa->sin6_port = htons(port);
+ 	memcpy(&sa->sin6_addr, ip_val, sizeof(struct in6_addr));
+ }
++
++void tst_setup_addrinfo(const char *src_addr, const char *port,
++		    const struct addrinfo *hints,
++		    struct addrinfo **addr_info)
++{
++	int err = getaddrinfo(src_addr, port, hints, addr_info);
++
++	if (err)
++		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
++
++	if (!*addr_info)
++		tst_brk(TBROK, "failed to get the address");
++}
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index 6797be018..b66eed56e 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -29,6 +29,7 @@
+ #include "tst_safe_stdio.h"
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "tst_net.h"
+ 
+ static const int max_msg_len = (1 << 16) - 1;
+ static const int min_msg_len = 5;
+@@ -441,19 +442,6 @@ static int parse_client_request(const char *msg)
+ static struct timespec tv_client_start;
+ static struct timespec tv_client_end;
+ 
+-static void setup_addrinfo(const char *src_addr, const char *port,
+-			   const struct addrinfo *hints,
+-			   struct addrinfo **addr_info)
+-{
+-	int err = getaddrinfo(src_addr, port, hints, addr_info);
+-
+-	if (err)
+-		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+-
+-	if (!*addr_info)
+-		tst_brk(TBROK, "failed to get the address");
+-}
+-
+ static void client_init(void)
+ {
+ 	if (clients_num >= MAX_THREADS) {
+@@ -471,8 +459,8 @@ static void client_init(void)
+ 	hints.ai_protocol = 0;
+ 
+ 	if (source_addr)
+-		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
+-	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
++		tst_setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
++	tst_setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+ 
+ 	tst_res(TINFO, "Running the test over IPv%s",
+ 		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
+@@ -667,7 +655,7 @@ static void server_init(void)
+ 
+ 	if (source_addr && !strchr(source_addr, ':'))
+ 		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
+-	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
++	tst_setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
+ 		       &hints, &local_addrinfo);
+ 	free(src_addr);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.0
+
