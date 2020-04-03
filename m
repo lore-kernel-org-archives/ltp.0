@@ -1,38 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 3 Apr 2020 11:30:19 +0200
-Subject: [LTP] Query: Supporting time64 syscalls
-In-Reply-To: <20200403071223.4d2vcfwiuxnuxij6@vireshk-i7>
-References: <CAKohpokaPiyGFkAXgG2oy_f5UGMCtsVUUAf4vA3Npa2ixAbNig@mail.gmail.com>
- <20200403071223.4d2vcfwiuxnuxij6@vireshk-i7>
-Message-ID: <20200403093019.GA26355@yuki.lan>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Fri, 3 Apr 2020 09:38:50 +0000
+Subject: [LTP] Fw: LIBTIRPC Error
+In-Reply-To: <MAXPR0101MB1468C63FD2BF7CD9AF9051E6EEC70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+References: <MAXPR0101MB14688E4E7604C8BD9D17CB40EEC70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>,
+ <MAXPR0101MB1468C63FD2BF7CD9AF9051E6EEC70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <MAXPR0101MB1468590DACB631F9D703D70EEEC70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I was looking to start working on the time64 syscalls
-> > (like clock_gettime64, timerfd_settime64, etc) and
-> > was looking for your suggestions on how to proceed on
-> > the same.
-> > 
-> > AFAIU, the only difference is that the argument is 64 bit now
-> > instead of 32 bit and so I don't think I should be adding new
-> > tests but reusing the existing ones for both 32 bit and 64 bit
-> > variants.
-> 
-> @Cyril/Petr,
-> 
-> Any suggestions on how should I go about these tests ?
+adding ltp back
 
-I guess that we can take the existing timer tests and add tests variants
-so that we cover all possible cases, I guess that would mean 32bit
-kernel syscall, 64bit kernel syscall, glibc wrapper and in some cases
-also VDSO.
+________________________________
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Sent: Friday, April 3, 2020 2:59 PM
+To: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Subject: Fw: LIBTIRPC Error
 
-You can have a look at clock_getres01.c and take it as an example.
+Hi,
+As i already mentioned in previous mail, i already installed pkg-config libtirpc-dev libtirpc1 but still i am facing same.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+________________________________
+From: Pankaj Vinadrao Joshi
+Sent: Friday, April 3, 2020 2:02 PM
+To: ltp@lists.linux.it <ltp@lists.linux.it>
+Cc: Deepa Ballari <deepa@exaleapsemi.com>
+Subject: LIBTIRPC Error
+
+Hi,
+I am trying to run ltp on 5.4.3 kernel with our custom yocto distro but i am facing following issue , i have installed
+
+pkg-config libtirpc-dev libtirpc1 but still the same error is getting encountered,can someone help us to solve it??
+
+./configure: line 6794: syntax error near unexpected token `LIBTIRPC,'
+./configure: line 6794: ` PKG_CHECK_MODULES(LIBTIRPC, libtirpc >
+
+Thanks!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200403/fb4c6b6f/attachment.htm>
