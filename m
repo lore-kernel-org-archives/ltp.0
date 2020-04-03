@@ -1,53 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 3 Apr 2020 12:05:11 +0200
-Subject: [LTP] LIBTIRPC Error
-In-Reply-To: <5E86F92F.9080200@cn.fujitsu.com>
-References: <MAXPR0101MB14688E4E7604C8BD9D17CB40EEC70@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
- <5E86F92F.9080200@cn.fujitsu.com>
-Message-ID: <20200403100511.GA23296@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 3 Apr 2020 18:11:51 +0800
+Subject: [LTP] [PATCH] ltp_tpci.c: fix a null pointer
+In-Reply-To: <1584507302-23515-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1584507302-23515-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <5E870BE7.9070809@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Pankaj, Xiao,
+On 2020/3/18 12:55, Yang Xu wrote:
+> ps: I want to use a dymaic domain to fix it but failed. If someone know,
+> please tell me. Also, this case failed when merging this patch because
+> test 13 (test_assign_resources) report no space error as below:
+> [754930.757585] ltp_tpci: test-case 13
+> [754930.757585] ltp_tpci: assign resources
+> [754930.757585] ltp_tpci: assign resource #0
+> [754930.757586] ltp_tpci: name = 0000:00:08.0, flags = 262401, start 0xc140, end 0xc17f
+> [754930.757586] ltp_tpci: assign resource #1
+> [754930.757587] ltp_tpci: name = 0000:00:08.0, flags = 262656, start 0xfebd7000, end 0xfebd7fff
+> [754930.757587] ltp_tpci: assign resource #2
+> [754930.757587] ltp_tpci: name = 0000:00:08.0, flags = 0, start 0x0, end 0x0
+> [754930.757588] ltp_tpci: assign resource #3
+> [754930.757588] ltp_tpci: name = 0000:00:08.0, flags = 0, start 0x0, end 0x0
+> [754930.757588] ltp_tpci: assign resource #4
+> [754930.757589] ltp_tpci: name = 0000:00:08.0, flags = 538190348, start 0xfe80c000, end 0xfe80ffff
+> [754930.757593] virtio-pci 0000:00:08.0: BAR 4: no space for [mem size 0x00004000 64bit pref]
+> [754930.757594] virtio-pci 0000:00:08.0: BAR 4: failed to assign [mem size 0x00004000 64bit pref
+>
+Hi Xu,
 
-> > Hi,
-> > I am trying to run ltp on 5.4.3 kernel with our custom yocto distro but
-> > i am facing following issue , i have installed
+Do you mean that the fix patch results in the failure of subtest 13?
+If so, we may need a better solution.
 
-> > pkg-config libtirpc-dev libtirpc1 but still the same error is getting
-> > encountered,can someone help us to solve it??
+Thanks,
+Xiao Yang
 
-> > .*/configure: line 6794: syntax error near unexpected token `LIBTIRPC,'
-> > **./configure: line 6794: ` PKG_CHECK_MODULES(LIBTIRPC, libtirpc >*
 
-> It seems that pkg-config package(it provides pkg-config command) is not
-> installed on your enviroment.
-+1
-You need to have pkg.m4 (usually /usr/share/aclocal/pkg.m4).
-
-Distros might have it in different packages than pkg-config or pkgconf,
-but they usually install it as a dependency.
-openSUSE have it in pkgconf-m4, but installed as dependency with pkg-config.
-Debian have it in pkg-config and pkgconf.
-
-Yes, this has been documented on usual places:
-https://github.com/linux-test-project/ltp/#quick-guide-to-running-the-tests
-If you have git, autoconf, automake, m4 and pkg-config, the linux headers and
-the common developer packages installed ...
-
-https://github.com/linux-test-project/ltp/blob/master/INSTALL
-If you want to use auto configuration you also need autoconf-2.61+, automake-1.10+
-and pkg-config.
-
-(+ also in travis scripts (in travis/ directory) and also in the commit, but
-both aren't that much visible for users).
-
-But apparently that's not enough (you mentioned pkg-config, so you have read the
-docs. Maybe I should state that the dependency is on pkg-config autotools
-integration (pkg.m4).
-
-Kind regards,
-Petr
