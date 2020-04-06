@@ -1,12 +1,12 @@
 From: Yang Xu <xuyang_jy_0410@163.com>
-Date: Mon, 6 Apr 2020 14:27:44 +0800
-Subject: [LTP] [PATCH v1 03/10] syscalls/ioctl_loop01: Add
- LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN test
-In-Reply-To: <20200403115502.GC26355@yuki.lan>
+Date: Mon, 6 Apr 2020 15:24:20 +0800
+Subject: [LTP] [PATCH v1 04/10] syscalls/ioctl_loop02: Add
+ LO_FLAGS_READ_ONLY and LOOP_CHANGE_FD test
+In-Reply-To: <20200403133424.GA6426@yuki.lan>
 References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1585839990-19923-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200403115502.GC26355@yuki.lan>
-Message-ID: <16dd8088-e485-8e7b-8e99-2b755e889041@163.com>
+ <1585839990-19923-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200403133424.GA6426@yuki.lan>
+Message-ID: <376afeed-d8eb-0aae-f8ae-cf26b4713209@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,70 +16,61 @@ To: ltp@lists.linux.it
 Hi Cyril
 
 > Hi!
->> For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue in sys
->> directory and also get lo_flags by using LOOP_GET_STATUS.
->>
->> For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR flag.
->> But we also check whether we can scan partition table correctly ie check
->> whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
+>> For LOOP_CHANGE_FD, this operation is possible only if the loop device
+>> is read-only and the new backing store is the same size and type as the
+>> old backing store.
 >>
 >> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 >> ---
->>   runtest/syscalls                              |   3 +-
+>>   runtest/syscalls                              |   1 +
 >>   testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
->>   .../kernel/syscalls/ioctl/ioctl_loop01.c      | 127 ++++++++++++++++++
->>   3 files changed, 130 insertions(+), 1 deletion(-)
->>   create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+>>   .../kernel/syscalls/ioctl/ioctl_loop02.c      | 148 ++++++++++++++++++
+>>   3 files changed, 150 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop02.c
 >>
 >> diff --git a/runtest/syscalls b/runtest/syscalls
->> index 777f0ac6a..7fd67450e 100644
+>> index 7fd67450e..719953497 100644
 >> --- a/runtest/syscalls
 >> +++ b/runtest/syscalls
->> @@ -524,10 +524,11 @@ ioctl03      ioctl03
->>   ioctl04      ioctl04
->>   ioctl05      ioctl05
->>   ioctl06      ioctl06
->> -
->>   ioctl07      ioctl07
+>> @@ -528,6 +528,7 @@ ioctl07      ioctl07
 >>   ioctl08      ioctl08
 >>   
->> +ioctl_loop01 ioctl_loop01
->> +
+>>   ioctl_loop01 ioctl_loop01
+>> +ioctl_loop02 ioctl_loop02
+>>   
 >>   ioctl_ns01 ioctl_ns01
 >>   ioctl_ns02 ioctl_ns02
->>   ioctl_ns03 ioctl_ns03
 >> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
->> index 97fbb9681..4cfef2839 100644
+>> index 4cfef2839..534c4ab34 100644
 >> --- a/testcases/kernel/syscalls/ioctl/.gitignore
 >> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
->> @@ -6,6 +6,7 @@
->>   /ioctl06
+>> @@ -7,6 +7,7 @@
 >>   /ioctl07
 >>   /ioctl08
->> +/ioctl_loop01
+>>   /ioctl_loop01
+>> +/ioctl_loop02
 >>   /ioctl_ns01
 >>   /ioctl_ns02
 >>   /ioctl_ns03
->> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop02.c b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
 >> new file mode 100644
->> index 000000000..e806e0443
+>> index 000000000..ba3636aa9
 >> --- /dev/null
->> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
->> @@ -0,0 +1,127 @@
+>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop02.c
+>> @@ -0,0 +1,148 @@
 >> +// SPDX-License-Identifier: GPL-2.0-or-later
 >> +/*
 >> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
 >> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
 >> + *
 >> + * This is a basic ioctl test about loopdevice.
->> + * It is designed to test LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN flag.
 >> + *
->> + * For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue in sys
->> + * directory and also get lo_flags by using LOOP_GET_STATUS.
+>> + * It is designed to test LO_FLAGS_READ_ONLY(similar as losetup -r)
+>> + * and LOOP_CHANGE_FD.
 >> + *
->> + * For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR flag.
->> + * But we also check whether we can scan partition table correctly ie check
->> + * whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
+>> + * For LOOP_CHANGE_FD, this operation is possible only if the loop device
+>> + * is read-only and the new backing store is the same size and type as the
+>> + * old backing store.
 >> + */
 >> +
 >> +#include <stdio.h>
@@ -89,106 +80,132 @@ Hi Cyril
 >> +#include "lapi/loop.h"
 >> +#include "tst_test.h"
 >> +
->> +static char dev_path[1024], backing_path[1024], backing_file_path[1024];
->> +static int dev_num, attach_flag, dev_fd;
->> +/*
->> + *In drivers/block/loop.c code, set status function doesn't handle
->> + *LO_FLAGS_READ_ONLY flag and ingore it. Only loop_set_fd with rondonly
->> + *mode file_fd, lo_flags will include LO_FLAGS_READ_ONLY.
->> + */
->> +#define set_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN | LO_FLAGS_READ_ONLY | LO_FLAGS_DIRECT_IO)
->> +#define get_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN)
->> +
->> +static char partscan_path[1024], autoclear_path[1024];
->> +static char loop_partpath[1026], sys_loop_partpath[1026];
->> +
+>> +static int file_fd, file_change_fd, file_fd_invalid;
+>> +static char backing_path[1024], backing_file_path[1024], backing_file_change_path[1024];
+>> +static int attach_flag, dev_fd, file_fd;
+>> +static char loop_ro_path[1024], dev_path[1024];
+>> +static void attach_device(char *);
+> 
+> Just move the function here, there is no point in having the helper
+> function after the test function.
+>
+OK.
+
 >> +static void verify_ioctl_loop(void)
 >> +{
->> +	int ret;
->> +	struct loop_info loopinfo, loopinfoget;
+>> +	struct loop_info loopinfoget;
 >> +
->> +	tst_attach_device(dev_path, "test.img");
+>> +	attach_device("test.img");
 >> +	attach_flag = 1;
 >> +
->> +	check_sys_value(partscan_path, 0);
->> +	check_sys_value(autoclear_path, 0);
+>> +	check_sys_value(loop_ro_path, 1);
 >> +	check_sys_string(backing_path, backing_file_path);
 >> +
 >> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
->> +	memset(&loopinfo, 0, sizeof(loopinfo));
->> +	memset(&loopinfo, 0, sizeof(loopinfoget));
+>> +	file_change_fd = SAFE_OPEN("test1.img", O_RDWR);
+>> +	file_fd_invalid = SAFE_OPEN("test2.img", O_RDWR);
 >> +
->> +	loopinfo.lo_flags = set_flags;
->> +	SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
+>> +	memset(&loopinfoget, 0, sizeof(loopinfoget));
+>> +	/*
+>> +	 *In drivers/block/loop.c code, set status function doesn't handle
+>> +	 *LO_FLAGS_READ_ONLY flag and ignore it. Only loop_set_fd with rondonly
+>                                                                         ^
+> 								       readonly
+>> +	 *mode, lo_flags will include LO_FLAGS_READ_ONLY.
+>> +	 */
 > 
-> I guess that it would be safer to memset() the loopinfo_get here, also
-> if we zero the structure we may as well reuse the loopinfo here as well.
->
-of coure, I will add memset in here.
-
+> Also it's customary to add a space between the asterisk and the comment
+> text.
+> 
+OK.
 >> +	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
 >> +
->> +	if (loopinfoget.lo_flags & ~get_flags)
->> +		tst_res(TFAIL, "expect %d but got %d", get_flags, loopinfoget.lo_flags);
+>> +	if (loopinfoget.lo_flags & ~LO_FLAGS_READ_ONLY)
+>> +		tst_res(TFAIL, "lo_flags has unexpected %d flag", loopinfoget.lo_flags);
 >> +	else
->> +		tst_res(TPASS, "get expected lo_flag %d", loopinfoget.lo_flags);
+>> +		tst_res(TPASS, "lo_flags only has default LO_FLAGS_READ_ONLY flag");
 >> +
->> +	ret = access(loop_partpath, F_OK);
->> +	if (ret == 0)
->> +		tst_res(TPASS, "access %s succeeds", loop_partpath);
+>> +	TEST(write(dev_fd, "xx", 2));
+>> +	if (TST_RET != -1)
+>> +		tst_res(TFAIL, "write succeed unexpectedly");
 >> +	else
->> +		tst_res(TFAIL, "access %s fails", loop_partpath);
+>> +		tst_res(TPASS | TTERRNO, "Can not write data in RO mode");
 >> +
->> +	ret = access(sys_loop_partpath, F_OK);
->> +	if (ret == 0)
->> +		tst_res(TPASS, "access %s succeeds", sys_loop_partpath);
->> +	else
->> +		tst_res(TFAIL, "access %s fails", sys_loop_partpath);
+>> +	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_change_fd));
+>> +	if (TST_RET) {
+>> +		tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed");
+>> +	} else {
+>> +		tst_res(TPASS, "LOOP_CHANGE_FD succeeded");
+>> +		check_sys_value(loop_ro_path, 1);
+>> +		check_sys_string(backing_path, backing_file_change_path);
+>> +	}
 >> +
->> +	check_sys_value(partscan_path, 1);
->> +	check_sys_value(autoclear_path, 1);
+>> +	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_fd_invalid));
+>> +	if (TST_RET) {
+>> +		if (TST_ERR == EINVAL)
+>> +			tst_res(TPASS | TTERRNO, "LOOP_CHANGE_FD failed as expected");
+>> +		else
+>> +			tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed expected EINVAL got");
+>> +	} else {
+>> +		tst_res(TFAIL, "LOOP_CHANGE_FD succeeded");
+>> +	}
 >> +
 >> +	SAFE_CLOSE(dev_fd);
+>> +	SAFE_CLOSE(file_change_fd);
+>> +	SAFE_CLOSE(file_fd_invalid);
 >> +	tst_detach_device(dev_path);
 >> +	attach_flag = 0;
 >> +}
 >> +
+>> +/*
+>> + * This function is different from tst_attach_dev lib/tst_device.c.
+>> + * It only opens file_path with O_RDONLY mode before loop_set_fd.
+>> + * So we can generate LO_FLAGS_READ_ONLY flag.
+>> + */
+>> +static void attach_device(char *img)
+>> +{
+>> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+>> +	file_fd = SAFE_OPEN(img, O_RDONLY);
+>> +
+>> +	SAFE_IOCTL(dev_fd, LOOP_SET_FD, file_fd);
+>> +
+>> +	SAFE_CLOSE(dev_fd);
+>> +	SAFE_CLOSE(file_fd);
+>> +}
+>> +
 >> +static void setup(void)
 >> +{
->> +	const char *const cmd_dd[] = {"dd", "if=/dev/zero", "of=test.img", "bs=1M", "count=10", NULL};
->> +	const char *const cmd_parted[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
->> +						"primary", "ext4", "1M", "10M", NULL};
+>> +	int dev_num;
 >> +
+>> +	char *tmpdir = tst_get_tmpdir();
 >> +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
 >> +	if (dev_num < 0)
 >> +		tst_brk(TBROK, "Failed to find free loop device");
 >> +
->> +	SAFE_CMD(cmd_dd, NULL, NULL);
-> 
-> Why not tst_fill_file("test.img", 0, 1024 * 1024, 10); ?
->
-I will try this.
-
->> +	SAFE_CMD(cmd_parted, NULL, NULL);
-> 
-> I wonder if we can avoid dependency on parted by having a look at the
-> changes in the image after the call to parted and writing a few bytes
-> ourselves instead.
-I will see kernel code to figure out this, if no other good way, we can 
-split this check into a new single test. it can make this case less couping.
-> 
->> +	sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
->> +	sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", dev_num);
+>> +	tst_fill_file("test.img", 0, 1024, 10);
+>> +	tst_fill_file("test1.img", 0, 1024, 10);
+>> +	tst_fill_file("test2.img", 0, 2048, 20);
+>> +
 >> +	sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", dev_num);
->> +	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", dev_num, dev_num);
->> +	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
->> +	sprintf(loop_partpath, "%sp1", dev_path);
+>> +	sprintf(backing_file_path, "%s/test.img", tmpdir);
+>> +	sprintf(backing_file_change_path, "%s/test1.img", tmpdir);
+>> +	sprintf(loop_ro_path, "/sys/block/loop%d/ro", dev_num);
+> 
+> We should free the tmpdir here.
+Yes, sorry for forgetting this.
+> 
 >> +}
 >> +
 >> +static void cleanup(void)
 >> +{
 >> +	if (dev_fd > 0)
 >> +		SAFE_CLOSE(dev_fd);
+>> +	if (file_fd > 0)
+>> +		SAFE_CLOSE(file_fd);
+>> +	if (file_change_fd > 0)
+>> +		SAFE_CLOSE(file_change_fd);
+>> +	if (file_fd_invalid > 0)
+>> +		SAFE_CLOSE(file_fd_invalid);
 >> +	if (attach_flag)
 >> +		tst_detach_device(dev_path);
 >> +}
@@ -198,24 +215,11 @@ split this check into a new single test. it can make this case less couping.
 >> +	.cleanup = cleanup,
 >> +	.test_all = verify_ioctl_loop,
 >> +	.needs_root = 1,
->> +	.needs_cmds = (const char *const []) {
->> +		"dd",
->> +		"parted",
->> +		NULL
->> +	},
+>> +	.needs_tmpdir = 1,
 >> +	.needs_drivers = (const char *const []) {
 >> +		"loop",
 >> +		NULL
->> +	},
->> +	.needs_tmpdir = 1,
+>> +	}
 >> +};
->> -- 
->> 2.23.0
->>
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
 > 
 
