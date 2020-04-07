@@ -1,220 +1,331 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 6 Apr 2020 16:39:42 +0200
-Subject: [LTP] [PATCH] Add test for CVE 2018-18559
-In-Reply-To: <20200331124849.28591-1-mdoucha@suse.cz>
-References: <20200331124849.28591-1-mdoucha@suse.cz>
-Message-ID: <20200406143942.GA31090@yuki.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 7 Apr 2020 10:30:50 +0800
+Subject: [LTP] [PATCH] hugetlb: move nr_opt to tst_hugepage.h
+In-Reply-To: <20200406132932.12951-1-liwang@redhat.com>
+References: <20200406132932.12951-1-liwang@redhat.com>
+Message-ID: <c95f2855-1e16-69c9-1eea-d88c66caffe1@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  runtest/cve                               |   1 +
->  runtest/syscalls                          |   1 +
->  testcases/kernel/syscalls/bind/.gitignore |   1 +
->  testcases/kernel/syscalls/bind/Makefile   |   1 +
->  testcases/kernel/syscalls/bind/bind06.c   | 128 ++++++++++++++++++++++
->  5 files changed, 132 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/bind/bind06.c
+Hi Li
+
+Looks good to me,
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+
+Best Regards
+Yang Xu
+
+> This is to get rid of the following error:
+>    # ./hugemmap01 -s 2
+>    tst_hugepage.c:29: INFO: Requested number(128) of hugepages is too large,
+>                       limiting to 80% of the max hugepage count 28
+>    tst_hugepage.c:40: BROK: nr_hugepages = 5, but expect 22
 > 
-> diff --git a/runtest/cve b/runtest/cve
-> index a9a534300..932d97451 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -42,4 +42,5 @@ cve-2017-1000380 snd_timer01
->  cve-2018-5803 sctp_big_chunk
->  cve-2018-1000001 realpath01
->  cve-2018-1000204 ioctl_sg01
-> +cve-2018-18559 bind06
->  cve-2018-19854 crypto_user01
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 83d16d20e..f2073af96 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -34,6 +34,7 @@ bind02 bind02
->  bind03 bind03
->  bind04 bind04
->  bind05 bind05
-> +bind06 bind06
->  
->  bpf_map01 bpf_map01
->  bpf_prog01 bpf_prog01
-> diff --git a/testcases/kernel/syscalls/bind/.gitignore b/testcases/kernel/syscalls/bind/.gitignore
-> index e18ceea56..c85774441 100644
-> --- a/testcases/kernel/syscalls/bind/.gitignore
-> +++ b/testcases/kernel/syscalls/bind/.gitignore
-> @@ -3,3 +3,4 @@
->  /bind03
->  /bind04
->  /bind05
-> +/bind06
-> diff --git a/testcases/kernel/syscalls/bind/Makefile b/testcases/kernel/syscalls/bind/Makefile
-> index fffa146ad..3de725143 100644
-> --- a/testcases/kernel/syscalls/bind/Makefile
-> +++ b/testcases/kernel/syscalls/bind/Makefile
-> @@ -6,5 +6,6 @@ top_srcdir		?= ../../../..
->  include $(top_srcdir)/include/mk/testcases.mk
->  
->  bind04 bind05:	CFLAGS		+= -pthread
-> +bind06:		LDFLAGS		+= -pthread -lrt
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/bind/bind06.c b/testcases/kernel/syscalls/bind/bind06.c
-> new file mode 100644
-> index 000000000..23f65fef6
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/bind/bind06.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
-> + *
-> + * CVE-2018-18559
-> + *
-> + * Test for race condition vulnerability in bind() on AF_PACKET socket.
-> + * Fixed in:
-> + *
-> + *  commit 15fe076edea787807a7cdc168df832544b58eba6
-> + *  Author: Eric Dumazet <edumazet@google.com>
-> + *  Date:   Tue Nov 28 08:03:30 2017 -0800
-> + *
-> + *  net/packet: fix a race in packet_bind() and packet_notifier()
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/socket.h>
-> +#include <sys/ioctl.h>
-> +#include <linux/if_packet.h>
-> +#include <net/ethernet.h>
-> +#include <net/if.h>
-> +#include <sched.h>
-> +#include "tst_test.h"
-> +#include "tst_fuzzy_sync.h"
-> +#include "tst_taint.h"
-> +
-> +static volatile int fd = -1;
-> +static struct sockaddr_ll addr1, addr2;
-> +static struct tst_fzsync_pair fzsync_pair;
-> +
-> +static void setup(void)
-> +{
-> +	int real_uid = getuid();
-> +	int real_gid = getgid();
-> +	struct ifreq ifr;
-> +
-> +	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-> +
-> +	SAFE_UNSHARE(CLONE_NEWUSER);
-> +	SAFE_UNSHARE(CLONE_NEWNET);
-> +	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
-> +	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
-> +	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
-> +
-> +	fd = SAFE_SOCKET(AF_PACKET, SOCK_DGRAM, PF_PACKET);
-> +	strcpy(ifr.ifr_name, "lo");
-> +	SAFE_IOCTL(fd, SIOCGIFINDEX, &ifr);
-> +	SAFE_CLOSE(fd);
-> +
-> +	addr1.sll_family = AF_PACKET;
-> +	addr1.sll_ifindex = ifr.ifr_ifindex;
-> +	addr2.sll_family = AF_PACKET;
-> +}
-> +
-> +static void do_bind(void) {
-> +	bind(fd, (struct sockaddr *)&addr1, sizeof(addr1));
-> +	bind(fd, (struct sockaddr *)&addr2, sizeof(addr2));
-> +}
-> +
-> +static void *thread_run(void *arg)
-> +{
-> +	while (tst_fzsync_run_b(&fzsync_pair)) {
-> +		tst_fzsync_start_race_b(&fzsync_pair);
-> +		do_bind();
-> +		tst_fzsync_end_race_b(&fzsync_pair);
-> +	}
-> +
-> +	return arg;
-> +}
-> +
-> +static void child_run(void)
-> +{
-> +	struct ifreq ifr;
-> +
-> +	fzsync_pair.exec_loops = 10000;
-> +	tst_fzsync_pair_init(&fzsync_pair);
-> +	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
-> +	strcpy(ifr.ifr_name, "lo");
-> +
-> +	while (tst_fzsync_run_a(&fzsync_pair)) {
-> +		fd = SAFE_SOCKET(AF_PACKET, SOCK_DGRAM, PF_PACKET);
-> +		ifr.ifr_flags = 0;
-> +		ioctl(fd, SIOCSIFFLAGS, &ifr);
-> +		ifr.ifr_flags = IFF_UP;
-> +		tst_fzsync_start_race_a(&fzsync_pair);
-> +		ioctl(fd, SIOCSIFFLAGS, &ifr);
-> +		tst_fzsync_end_race_a(&fzsync_pair);
-> +		SAFE_CLOSE(fd);
-> +
-> +	}
-> +
-> +	tst_fzsync_pair_cleanup(&fzsync_pair);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	pid_t child;
-> +
-> +	/* The kernel crash is triggered on process exit. */
-> +	child = SAFE_FORK();
-> +
-> +	if (!child) {
-> +		child_run();
-> +		exit(0);
-> +	}
-> +
-> +	SAFE_WAITPID(child, NULL, 0);
-> +
-> +	if (tst_taint_check()) {
-> +		tst_res(TFAIL, "Kernel is vulnerable");
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "Nothing bad happened, probably");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.timeout = 600,
-> +	.forks_child = 1,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "15fe076edea7"},
-> +		{"CVE", "2018-18559"},
-> +		{}
-> +	}
-
-Maybe we should add:
-
-	.needs_kconfig = {
-		"CONFIG_USER_NS=y",
-		"CONFIG_NET_NS=y",
-		NULL
-	};
-
-Just for the sake of having correct metadata in the test.
-
-Otherwise it looks good.
-
-> +};
-> -- 
-> 2.25.1
+> The root cause is that hugetlb test hits TBROK if the system can't satisfy 80%
+> of .request_hugepages(default: 128), it doesn't get a chance to set nr_hugepages
+> with specified page number via '-s xxx'.
 > 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>   include/tst_hugepage.h                                 |  3 +++
+>   lib/tst_hugepage.c                                     | 10 +++++++---
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c     |  5 -----
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c     |  5 -----
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c     |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c   |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c   |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c   |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c   |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c |  5 -----
+>   testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c |  5 -----
+>   testcases/kernel/mem/hugetlb/lib/hugetlb.h             |  3 ---
+>   17 files changed, 10 insertions(+), 76 deletions(-)
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+> index 8600b3adb..30e00a377 100644
+> --- a/include/tst_hugepage.h
+> +++ b/include/tst_hugepage.h
+> @@ -9,6 +9,9 @@
+>   #define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
+>   #define PATH_NR_HPAGES	"/proc/sys/vm/nr_hugepages"
+>   
+> +char *nr_opt; /* -s num   Set the number of the been allocated hugepages */
+> +char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H /var/hugetlbfs */
+> +
+>   /*
+>    * Try the best to request a specified number of huge pages from system,
+>    * it will store the reserved hpage number in tst_hugepages.
+> diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+> index c75fb264d..34fd27ede 100644
+> --- a/lib/tst_hugepage.c
+> +++ b/lib/tst_hugepage.c
+> @@ -19,14 +19,18 @@ unsigned long tst_request_hugepages(unsigned long hpages)
+>   		goto out;
+>   	}
+>   
+> -	tst_hugepages = hpages;
+> +	if (nr_opt)
+> +		tst_hugepages = SAFE_STRTOL(nr_opt, 1, LONG_MAX);
+> +	else
+> +		tst_hugepages = hpages;
+> +
+>   	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
+>   	max_hpages = SAFE_READ_MEMINFO("MemFree:") / SAFE_READ_MEMINFO("Hugepagesize:");
+>   
+> -	if (hpages > max_hpages) {
+> +	if (tst_hugepages > max_hpages) {
+>   		tst_res(TINFO, "Requested number(%lu) of hugepages is too large, "
+>   				"limiting to 80%% of the max hugepage count %lu",
+> -				hpages, max_hpages);
+> +				tst_hugepages, max_hpages);
+>   		tst_hugepages = max_hpages * 0.8;
+>   
+>   		if (tst_hugepages < 1)
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> index eecbe93f8..891c42e46 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> @@ -81,11 +81,6 @@ void setup(void)
+>   		Hopt = tst_get_tmpdir();
+>   	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> index 4a4b5680e..c0dbb60d6 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> @@ -128,11 +128,6 @@ static void setup(void)
+>   		Hopt = tst_get_tmpdir();
+>   	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 1, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> index 74a90c01a..5fcbe2789 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> @@ -99,11 +99,6 @@ void setup(void)
+>   		Hopt = tst_get_tmpdir();
+>   	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing!");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> index 0e6e64d3d..807d1c454 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> @@ -154,11 +154,6 @@ static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> index cfc18a795..febe03d12 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> @@ -79,11 +79,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> index ea784da70..42965e4d7 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> @@ -74,11 +74,6 @@ static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> index 84321d94c..1e84fec59 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> @@ -288,11 +288,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> index 9d835394c..69db058d1 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> @@ -77,11 +77,6 @@ static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> index 739b57f95..fedc22246 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> @@ -106,11 +106,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> index f0947e703..066f34d1c 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> @@ -119,11 +119,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> index d77f4ae97..e1f8fec5a 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> @@ -54,11 +54,6 @@ static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> index ad81c979c..ebe6f0bcd 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> @@ -72,11 +72,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> index e08ed9f42..226985d53 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> @@ -51,11 +51,6 @@ static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> index 4c175d59a..506d1df06 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> @@ -66,11 +66,6 @@ void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> -	if (nr_opt) {
+> -		tst_hugepages = SAFE_STRTOL(nr_opt, 0, LONG_MAX);
+> -		tst_request_hugepages(tst_hugepages);
+> -	}
+> -
+>   	if (tst_hugepages == 0)
+>   		tst_brk(TCONF, "No enough hugepages for testing.");
+>   
+> diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+> index 7c03a317c..88890ebfb 100644
+> --- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+> +++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+> @@ -40,7 +40,4 @@ int getipckey(void);
+>   int getuserid(char *user);
+>   void rm_shm(int shm_id);
+>   
+> -char *nr_opt;
+> -char *Hopt;
+> -
+>   #endif /* hugetlb.h */
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
