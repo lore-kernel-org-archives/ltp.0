@@ -1,9 +1,17 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Apr 2020 15:43:39 +0200
-Subject: [LTP] [PATCH] Add test for CVE 2018-7566
-In-Reply-To: <20200408103050.27706-1-mdoucha@suse.cz>
-References: <20200408103050.27706-1-mdoucha@suse.cz>
-Message-ID: <20200408134339.GA10178@yuki.lan>
+Date: Wed, 8 Apr 2020 16:18:53 +0200
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <CAF12kFvV=a5HJgDOAOGgdr2CMJhtVsYJ199T=SM1kyQSp-Js=w@mail.gmail.com>
+References: <20200330152122.GA2699@yuki.lan> <20200331180816.GE2900@yuki.lan>
+ <CAF12kFs6H1FgU_77MAMhrn1pK15fp1cx+9wox4k9LN5GxCN=nA@mail.gmail.com>
+ <20200401131220.GA3627@yuki.lan>
+ <CAF12kFsFsG6Jk0citiGmicq+dyB90i_cG_bcDAMhHiyVPafRdA@mail.gmail.com>
+ <20200402093127.GA28452@yuki.lan>
+ <CAF12kFvDv8ksxMLDyniwQ=hty6J4Oy5-wvErX=DLrfWmhiwT0w@mail.gmail.com>
+ <20200402112309.GA5732@yuki.lan>
+ <CAF12kFsCfb12Yi=rhAqKSLPUBLkaWPs_-JCQOcucvyu=whYFsw@mail.gmail.com>
+ <CAF12kFvV=a5HJgDOAOGgdr2CMJhtVsYJ199T=SM1kyQSp-Js=w@mail.gmail.com>
+Message-ID: <20200408141853.GB10178@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +19,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Fixes #606
+> I would like to know how is it going?
 
-Add your signed-off-by here and pushed, thanks.
-
-> ---
-> 
-> There are two reproducers for this CVE:
-> - ioctl()/ioctl() race
-> - ioctl()/write() race
-> 
-> I've implemented the first one because it reliably crashes SLE-12SP3 GM kernel.
-> The other reproducer gets stuck in one of the syscalls but I couldn't get it
-> to trigger an actual crash. Should I implement the other one as well?
-
-Yes please, stuck tests is easy to detect as well, moreover the behavior
-of these tests is unpredictable anyways so we cannot really tell what
-will happen when the bug is triggered.
+I had a time off and was planting plants in my garden, I will get back
+to the uart ASAP, but then we have a public holiday on Friday and Monday
+so I may not manage to do much until next week.
 
 -- 
 Cyril Hrubis
