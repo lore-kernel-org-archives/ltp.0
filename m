@@ -1,31 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  8 Apr 2020 14:40:30 +0200
-Subject: [LTP] [COMMITTED] [PATCH] pty/Makefile: The -lrt has to go to LDLIBS
-Message-ID: <20200408124030.9058-1-chrubis@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 08 Apr 2020 15:36:07 +0200
+Subject: [LTP] [PATCH 1/2] add_key05: Avoid race with key garbage
+ collection
+In-Reply-To: <87k12qyzmq.fsf@our.domain.is.not.set>
+References: <20200408090635.4686-1-rpalethorpe@suse.com>
+ <d950a46d-b65a-ac33-e71b-f93a2dce7620@cn.fujitsu.com>
+ <1200091233.7615565.1586341144193.JavaMail.zimbra@redhat.com>
+ <87v9maz1fj.fsf@our.domain.is.not.set>
+ <1212083323.7622450.1586344729154.JavaMail.zimbra@redhat.com>
+ <87k12qyzmq.fsf@our.domain.is.not.set>
+Message-ID: <87v9mahzgf.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes: a49448f1b41b ("pty03: Add -lrt into LDFLAGS")
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/pty/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-diff --git a/testcases/kernel/pty/Makefile b/testcases/kernel/pty/Makefile
-index ca2ba5507..4469775aa 100644
---- a/testcases/kernel/pty/Makefile
-+++ b/testcases/kernel/pty/Makefile
-@@ -25,6 +25,6 @@ top_srcdir		?= ../../..
- include $(top_srcdir)/include/mk/testcases.mk
- 
- pty03: CFLAGS += -pthread
--pty03: LDFLAGS += -lrt
-+pty03: LDLIBS += -lrt
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Richard Palethorpe <rpalethorpe@suse.de> writes:
+
+>>> I'm assuming the keys are 'deleted' when the thread keyring is destroyed
+>>> when the child process exits. However they are not freed until later by
+>>> garbage collection (maybe I am confusing deferred freeing with 'garbage
+>>> collection'?).
+>>
+>> Do you know how large is the race window?
+>>
+>> Default /proc/sys/kernel/keys/gc_delay is 300, so if it's tied to this
+>> garbage collect, I'd expect it to fail almost all the time.
+>
+> It doesn't appear to be tied to that.
+>
+>>
+>>> 
+>>> We could explicitly delete/revoke the individual keys, but AFAICT there
+>>> would still be a race because freeing is still asynchronous. Ofcourse
+>>> there might be a reliable way to force freeing?
+>>
+>> gc_delay is only one I recall.
+>>
+>> If it's tied to process being around, I can try similar approach from 
+>> e747d0456adc ("syscalls/tgkill03: wait for defunct tid to get detached")
+>> where we wait for /proc/<pid>/task/<tid> to disappear.
+>
+>
+> This might work as the work is scheduled to be done in process context,
+> so the task may remain until the keys have been freed.
+
+This doesn't seem to work.
+
 -- 
-2.24.1
-
+Thank you,
+Richard.
