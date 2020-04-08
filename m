@@ -1,14 +1,10 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 08 Apr 2020 13:40:28 +0200
-Subject: [LTP] [PATCH 1/2] add_key05: Avoid race with key garbage
- collection
-In-Reply-To: <1212083323.7622450.1586344729154.JavaMail.zimbra@redhat.com>
-References: <20200408090635.4686-1-rpalethorpe@suse.com>
- <d950a46d-b65a-ac33-e71b-f93a2dce7620@cn.fujitsu.com>
- <1200091233.7615565.1586341144193.JavaMail.zimbra@redhat.com>
- <87v9maz1fj.fsf@our.domain.is.not.set>
- <1212083323.7622450.1586344729154.JavaMail.zimbra@redhat.com>
-Message-ID: <87k12qyzmq.fsf@our.domain.is.not.set>
+Date: Wed, 08 Apr 2020 14:21:33 +0200
+Subject: [LTP] [PATCH] syscalls/clone301: Fix the test race this time
+ for real
+In-Reply-To: <20200408114007.4096-1-chrubis@suse.cz>
+References: <20200408114007.4096-1-chrubis@suse.cz>
+Message-ID: <877dyqyxq4.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,84 +13,73 @@ To: ltp@lists.linux.it
 
 Hello,
 
-Jan Stancek <jstancek@redhat.com> writes:
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-> ----- Original Message -----
->> Hello,
->> 
->> Jan Stancek <jstancek@redhat.com> writes:
->> 
->> > ----- Original Message -----
->> >> Hi Richard
->> >>
->> >> > The key subsystem independently tracks user info against UID. If a user
->> >> > is
->> >> > deleted and the UID reused for a new user then the key subsystem will
->> >> > mistake
->> >> > the new user for the old one.
->> >
->> > Thanks for raising this problem Richard. This matches CKI failure
->> > we seen recently. (CC Li and Rachel)
->> >
->> >> Does any documentation or kernel comment mentioned this? I didn't notice
->> >> this before.
->> >> >
->> >> > The keys/keyrings may not be accessible to the new user, but if they are
->> >> > not
->> >> > yet garbage collected (which happens asynchronously) then the new user
->> >> > may
->> >> > be
->> >> > exceeding its quota limits.
->> >> >
->> >> > This results in a race condition where this test can fail because the
->> >> > old
->> >> > thread keyring is taking up the full quota. We should be able to avoid
->> >> > this
->> >> > by
->> >> > creating two users in parallel instead of sequentially so that they have
->> >> > different UIDs.
->> >> I guess you may want to creat two user, so next, the key subsystem
->> >> think the new user is different from  the last deleting user. It can
->> >> avoid race.
->> >>
->> >> But you patch overrides ltpuser, in actually, we still use
->> >> ltp_add_key05_1 in SAFE_SETUID.
->> >>
->> >> Also, this patch doesn't handle delete user when we using -i parameters.
->> >
->> > -i might be problem, but other than that I think it works, at least for
->> > default run.
->> >
->> > Though I'm wondering, shouldn't the test delete keys it creates,
->> > rather than relying on garbage collection?
->> 
->> I'm assuming the keys are 'deleted' when the thread keyring is destroyed
->> when the child process exits. However they are not freed until later by
->> garbage collection (maybe I am confusing deferred freeing with 'garbage
->> collection'?).
+> I have messed up the first fix, sorry, the signal handler has to be
+> estabilished before the clone3() call, not just before the if ().
 >
-> Do you know how large is the race window?
+> This also makes the test more verbose in case of failure, we print what
+> exactly went wrong which saves time on debugging.
 >
-> Default /proc/sys/kernel/keys/gc_delay is 300, so if it's tied to this
-> garbage collect, I'd expect it to fail almost all the time.
+> Fixes: f17b3862dceb (syscalls/clone301: Fix race between parent and child)
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Richard Palethorpe <rpalethorpe@suse.com>
+> CC: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  testcases/kernel/syscalls/clone3/clone301.c | 65 +++++++++++++++------
+>  1 file changed, 48 insertions(+), 17 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
+> index 456291b67..bf009e940 100644
+> --- a/testcases/kernel/syscalls/clone3/clone301.c
+> +++ b/testcases/kernel/syscalls/clone3/clone301.c
+> @@ -17,7 +17,7 @@
+>  #define DATA	777
+>  
+>  static int pidfd, child_tid, parent_tid, parent_received_signal;
+> -static volatile int child_received_signal;
+> +static volatile int child_received_signal, child_data;
+>  static struct clone_args *args;
+>  
+>  static struct tcase {
+> @@ -40,8 +40,8 @@ static void child_rx_signal(int sig, siginfo_t *info, void *ucontext)
+>  {
+>  	(void) ucontext;
+>  
+> -	if (sig == CHILD_SIGNAL && info && info->si_value.sival_int == DATA)
+> -		child_received_signal = 1;
+> +	child_received_signal = sig;
+> +	child_data = info->si_value.sival_int;
+>  }
+>  
+>  static struct sigaction psig_action = {
+> @@ -60,23 +60,43 @@ static siginfo_t uinfo = {
+>  };
+>  
+>  
+> -static void do_child(int clone_pidfd, int n)
+> +static void do_child(int clone_pidfd)
+>  {
+>  	int count = 1000;
+>  
+>  	if (clone_pidfd) {
+>  		child_received_signal = 0;
+> +		child_data = 0;
+> +
+>  		SAFE_SIGACTION(CHILD_SIGNAL, &csig_action, NULL);
+>  
+>  		TST_CHECKPOINT_WAKE(0);
+>  
+> -		while(!child_received_signal && --count)
+> +		while (child_received_signal != CHILD_SIGNAL && --count)
+>  			usleep(100);
 
-It doesn't appear to be tied to that.
+Maybe to be nice, we should use the exponential backoff function?
 
->
->> 
->> We could explicitly delete/revoke the individual keys, but AFAICT there
->> would still be a race because freeing is still asynchronous. Ofcourse
->> there might be a reliable way to force freeing?
->
-> gc_delay is only one I recall.
->
-> If it's tied to process being around, I can try similar approach from 
-> e747d0456adc ("syscalls/tgkill03: wait for defunct tid to get detached")
-> where we wait for /proc/<pid>/task/<tid> to disappear.
+Although not too important in this case.
 
-
-This might work as the work is scheduled to be done in process context,
-so the task may remain until the keys have been freed.
+Otherwise LGTM!
 
 -- 
 Thank you,
