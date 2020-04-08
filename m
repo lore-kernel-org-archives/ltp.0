@@ -1,146 +1,37 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 8 Apr 2020 12:27:20 +0530
-Subject: [LTP] [RFC] syscalls/clock_gettime: Support time64 variants
-In-Reply-To: <CAK8P3a2tbLZxyA-a=w7GZDwa0POwETaHQ73DqAU=FnB7zEnT2Q@mail.gmail.com>
-References: <bff0fc8e8777a744d35bca86c83158efb90b0ff8.1586257574.git.viresh.kumar@linaro.org>
- <CAK8P3a2tbLZxyA-a=w7GZDwa0POwETaHQ73DqAU=FnB7zEnT2Q@mail.gmail.com>
-Message-ID: <20200408065720.p2tkny6icrqa7o25@vireshk-i7>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed,  8 Apr 2020 11:06:35 +0200
+Subject: [LTP] [PATCH 2/2] add_key05: Correct formatting
+In-Reply-To: <20200408090635.4686-1-rpalethorpe@suse.com>
+References: <20200408090635.4686-1-rpalethorpe@suse.com>
+Message-ID: <20200408090635.4686-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07-04-20, 14:36, Arnd Bergmann wrote:
-> On Tue, Apr 7, 2020 at 1:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > Hi Guys,
-> >
-> > I wanted to get some inputs/confirmations from everyone before going
-> > full fledged on implementing time64 changes and so here is an RFC.
-> >
-> > This extends the clock_gettime01.c tests to support time64 variants for
-> > both 32bit and 64bit architectures.
-> >
-> > Are there some other tests you guys want me to include ?
-> >
-> > @Arnd: I still wasn't able to understand how can I incorporate
-> > D_TIME_BITS thing here and so left it :(
-> >
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  include/tst_timer.h                           |  31 +++++
-> >  .../syscalls/clock_gettime/clock_gettime01.c  | 115 +++++++++---------
-> >  2 files changed, 89 insertions(+), 57 deletions(-)
-> >
-> > diff --git a/include/tst_timer.h b/include/tst_timer.h
-> > index cdb8de7987d9..282514abac08 100644
-> > --- a/include/tst_timer.h
-> > +++ b/include/tst_timer.h
-> > @@ -15,6 +15,37 @@
-> >  #include <sys/time.h>
-> >  #include <time.h>
-> >
-> > +#ifndef __kernel_timespec
-> > +typedef long __kernel_long_t;
-> 
-> Minor bug: __kernel_long_t is 'long long' on x32 (we might not care
-> here, but it's best to define the type to match the kernel)
-> 
-> > +typedef __kernel_long_t        __kernel_old_time_t;
-> > +
-> > +struct __kernel_old_timespec {
-> > +       __kernel_old_time_t     tv_sec;         /* seconds */
-> > +       long                    tv_nsec;        /* nanoseconds */
-> > +};
-> 
-> "__kernel_long_t tv_nsec;", also because of x32.
+Use checkpatch.pl
 
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 282514abac08..23ba9c2c6707 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -16,12 +16,17 @@
- #include <time.h>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/kernel/syscalls/add_key/add_key05.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/add_key/add_key05.c b/testcases/kernel/syscalls/add_key/add_key05.c
+index 5691b8579..d83339048 100644
+--- a/testcases/kernel/syscalls/add_key/add_key05.c
++++ b/testcases/kernel/syscalls/add_key/add_key05.c
+@@ -118,8 +118,8 @@ static void verify_max_btyes(void)
+ 	plen = max_bytes - used_bytes - delta - strlen("test_xxx") - 1;
+ 	TEST(add_key("user", "test_max", buf, plen, KEY_SPEC_THREAD_KEYRING));
+ 	if (TST_RET == -1) {
+-		 tst_res(TFAIL | TTERRNO, "add_key(test_max) failed unexpectedly");
+-		 return;
++		tst_res(TFAIL | TTERRNO, "add_key(test_max) failed unexpectedly");
++		return;
+ 	}
  
- #ifndef __kernel_timespec
-+#ifdef __x86_x32__
-+typedef long long __kernel_long_t;
-+#else
- typedef long __kernel_long_t;
-+#endif
-+
- typedef __kernel_long_t        __kernel_old_time_t;
- 
- struct __kernel_old_timespec {
-        __kernel_old_time_t     tv_sec;         /* seconds */
--       long                    tv_nsec;        /* nanoseconds */
-+       __kernel_old_time_t     tv_nsec;        /* nanoseconds */
- };
- 
- typedef long long __kernel_time64_t;
-
--------------------------8<-------------------------
-
-I hope above diff fixes both the issues you pointed ? TBH, I am not sure if the
-macro I must be checking for is __x86_x32__ or something else :)
-
-> > -static int sys_clock_gettime(clockid_t clk_id, struct timespec *tp)
-> > +struct __kernel_timespec kspec64;
-> > +
-> > +#ifdef TST_ABI32
-> > +struct timespec spec32;
-> > +struct __kernel_old_timespec kspec32;
-> > +
-> > +static int _clock_gettime(clockid_t clk_id, void *tp)
-> >  {
-> > -       return tst_syscall(__NR_clock_gettime, clk_id, tp);
-> > +       return clock_gettime(clk_id, tp);
-> >  }
-> 
-> On new architectures, notably 32-bit risc-v, there is no __NR_clock_gettime,
-> as it only supports the 64-bit interface.
-> 
-> > -static int check_spec(struct timespec *spec)
-> > +static int sys_clock_gettime64(clockid_t clk_id, void *tp)
-> >  {
-> > -       return (spec->tv_nsec != 0 || spec->tv_sec != 0) ? 1 : 0;
-> > +       return tst_syscall(__NR_clock_gettime64, clk_id, tp);
-> >  }
-> > +#endif
-> 
-> And when building against old kernel headers or on 64-bit
-> architectures, this one is not available.
-
-As Petr said, even if these get called on the architecture we don't support, we
-will get something like this in output only once for the tests..
-
-clock_gettime01.c:74: CONF: syscall(-1) __NR_clock_gettime64 not supported
-
-> > +struct tmpfunc {
-> > +       int (*func)(clockid_t clk_id, void *tp);
-> > +       int (*check)(void *spec);
-> > +       void *spec;
-> > +       int spec_size;
-> > +       char *desc;
-> > +} variants[] = {
-> > +#ifdef TST_ABI32
-> > +       { .func = _clock_gettime, .check = tst_timespec_updated_32, .spec = &spec32, .spec_size = sizeof(spec32), .desc = "vDSO or syscall (32)"},
-> > +       { .func = sys_clock_gettime, .check = tst_timespec_updated_32, .spec = &spec32, .spec_size = sizeof(spec32), .desc = "syscall (32) with libc spec"},
-> > +       { .func = sys_clock_gettime, .check = tst_timespec_updated_32, .spec = &kspec32, .spec_size = sizeof(kspec32), .desc = "syscall (32) with kernel spec"},
-> > +       { .func = sys_clock_gettime64, .check = tst_timespec_updated_64, .spec = &kspec64, .spec_size = sizeof(kspec64), .desc = "syscall (64) with kernel spec"},
-> > +#else
-> > +       { .func = sys_clock_gettime, .check = tst_timespec_updated_64, .spec = &kspec64, .spec_size = sizeof(kspec64), .desc = "syscall (64) with kernel spec"},
-> > +#endif
-> > +};
-> 
-> I think instead of an #if / #else, this should have separate #if statements for
-> whichever versions are available on the given combination of architecture,
-> libc and kernel header.
-
-Can you give an example on how you would write it ?
-
-Also any other tests I should have included here ?
-
+ 	tst_res(TPASS, "add_key(test_max) succeeded as expected");
 -- 
-viresh
+2.24.0
+
