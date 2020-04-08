@@ -1,55 +1,34 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 08 Apr 2020 15:36:07 +0200
-Subject: [LTP] [PATCH 1/2] add_key05: Avoid race with key garbage
- collection
-In-Reply-To: <87k12qyzmq.fsf@our.domain.is.not.set>
-References: <20200408090635.4686-1-rpalethorpe@suse.com>
- <d950a46d-b65a-ac33-e71b-f93a2dce7620@cn.fujitsu.com>
- <1200091233.7615565.1586341144193.JavaMail.zimbra@redhat.com>
- <87v9maz1fj.fsf@our.domain.is.not.set>
- <1212083323.7622450.1586344729154.JavaMail.zimbra@redhat.com>
- <87k12qyzmq.fsf@our.domain.is.not.set>
-Message-ID: <87v9mahzgf.fsf@our.domain.is.not.set>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 8 Apr 2020 15:43:39 +0200
+Subject: [LTP] [PATCH] Add test for CVE 2018-7566
+In-Reply-To: <20200408103050.27706-1-mdoucha@suse.cz>
+References: <20200408103050.27706-1-mdoucha@suse.cz>
+Message-ID: <20200408134339.GA10178@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> Fixes #606
 
-Richard Palethorpe <rpalethorpe@suse.de> writes:
+Add your signed-off-by here and pushed, thanks.
 
->>> I'm assuming the keys are 'deleted' when the thread keyring is destroyed
->>> when the child process exits. However they are not freed until later by
->>> garbage collection (maybe I am confusing deferred freeing with 'garbage
->>> collection'?).
->>
->> Do you know how large is the race window?
->>
->> Default /proc/sys/kernel/keys/gc_delay is 300, so if it's tied to this
->> garbage collect, I'd expect it to fail almost all the time.
->
-> It doesn't appear to be tied to that.
->
->>
->>> 
->>> We could explicitly delete/revoke the individual keys, but AFAICT there
->>> would still be a race because freeing is still asynchronous. Ofcourse
->>> there might be a reliable way to force freeing?
->>
->> gc_delay is only one I recall.
->>
->> If it's tied to process being around, I can try similar approach from 
->> e747d0456adc ("syscalls/tgkill03: wait for defunct tid to get detached")
->> where we wait for /proc/<pid>/task/<tid> to disappear.
->
->
-> This might work as the work is scheduled to be done in process context,
-> so the task may remain until the keys have been freed.
+> ---
+> 
+> There are two reproducers for this CVE:
+> - ioctl()/ioctl() race
+> - ioctl()/write() race
+> 
+> I've implemented the first one because it reliably crashes SLE-12SP3 GM kernel.
+> The other reproducer gets stuck in one of the syscalls but I couldn't get it
+> to trigger an actual crash. Should I implement the other one as well?
 
-This doesn't seem to work.
+Yes please, stuck tests is easy to detect as well, moreover the behavior
+of these tests is unpredictable anyways so we cannot really tell what
+will happen when the bug is triggered.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
