@@ -1,29 +1,180 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 9 Apr 2020 10:27:30 +0800
-Subject: [LTP] [PATCH] hugetlb: move nr_opt to tst_hugepage.h
-In-Reply-To: <c95f2855-1e16-69c9-1eea-d88c66caffe1@cn.fujitsu.com>
-References: <20200406132932.12951-1-liwang@redhat.com>
- <c95f2855-1e16-69c9-1eea-d88c66caffe1@cn.fujitsu.com>
-Message-ID: <CAEemH2eH6M7frm-FA3ENvcSVf6sh9zSC0YywO-Qh_iFeo2-FBg@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 9 Apr 2020 10:42:01 +0800
+Subject: [LTP] [PATCH v1 02/10] syscalls/ioctl:add common c file for
+ loop ioctl
+In-Reply-To: <20200403121603.GD26355@yuki.lan>
+References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1585839990-19923-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200403121603.GD26355@yuki.lan>
+Message-ID: <0fbe20c8-d73f-441e-6b32-60e8835d9432@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 7, 2020 at 10:31 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-wrote:
+Hi Cyril
 
-> Hi Li
->
-> Looks good to me,
-> Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->
+> Hi!
+>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>>   testcases/kernel/syscalls/ioctl/Makefile      |  3 +
+>>   .../syscalls/ioctl/ioctl_loop_support.c       | 74 +++++++++++++++++++
+>>   .../syscalls/ioctl/ioctl_loop_support.h       | 14 ++++
+>>   3 files changed, 91 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop_support.c
+>>   create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop_support.h
+>>
+>> diff --git a/testcases/kernel/syscalls/ioctl/Makefile b/testcases/kernel/syscalls/ioctl/Makefile
+>> index c2ff6c8e7..05a75d1b4 100644
+>> --- a/testcases/kernel/syscalls/ioctl/Makefile
+>> +++ b/testcases/kernel/syscalls/ioctl/Makefile
+>> @@ -7,6 +7,9 @@ include $(top_srcdir)/include/mk/testcases.mk
+>>   
+>>   INSTALL_TARGETS		+= test_ioctl
+>>   
+>> +MAKE_TARGETS            := $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/ioctl_loop[0-9]*.c))
+>> +$(MAKE_TARGETS): %: ioctl_loop_support.o
+> 
+> I guess that we should use anything else than MAKE_TARGETS because
+> changing that variable will disable rest of the ioctl tests from build
+> right?
+> 
+Yes, you are right.
+> As this only expresses dependency on the object file we should use any
+> variable name that is not used by the test library itself.
+I think the following code maybe ok.
++FILTER_OUT_MAKE_TARGETS         := ioctl_loop_support
++
++LOOP_TARGETS            := $(patsubst $(abs_srcdir)/%.c,%,$(wildcard 
+$(abs_srcdir)/ioctl_loop*[0-9].c))
++$(LOOP_TARGETS): %: ioctl_loop_support.o
 
-Pushed. Thanks for the review.
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200409/bb058bea/attachment.htm>
+
+> 
+>>   ifeq ($(ANDROID),1)
+>>   FILTER_OUT_MAKE_TARGETS	+= ioctl02
+>>   endif
+>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop_support.c b/testcases/kernel/syscalls/ioctl/ioctl_loop_support.c
+>> new file mode 100644
+>> index 000000000..4099bd364
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop_support.c
+>> @@ -0,0 +1,74 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> + */
+>> +#define TST_NO_DEFAULT_MAIN
+>> +#include "ioctl_loop_support.h"
+>> +#include "tst_test.h"
+>> +
+>> +void check_sys_value(char *path, int setvalue)
+>> +{
+>> +	int getvalue;
+>> +
+>> +	SAFE_FILE_SCANF(path, "%d", &getvalue);
+>> +	if (setvalue == getvalue)
+>> +		tst_res(TPASS, "%s value is %d", path, setvalue);
+>> +	else
+>> +		tst_res(TFAIL, "%s value expected %d got %d", path, setvalue, getvalue);
+>> +}
+>> +
+>> +void check_sys_string(char *path, char *setmessage)
+>> +{
+>> +	char getmessage[1024];
+>> +
+>> +	SAFE_FILE_SCANF(path, "%s", getmessage);
+>> +	if (strcmp(setmessage, getmessage))
+>> +		tst_res(TFAIL, "%s expected %s got %s", path, setmessage, getmessage);
+>> +	else
+>> +		tst_res(TPASS, "%s string is %s", path, getmessage);
+>> +}
+>> +
+>> +void safe_set_status(int dev_fd, struct loop_info loopinfo)
+>> +{
+>> +	int sleep_us = 4096;
+>> +	int ret = 0;
+>> +
+>> +	/*
+>> +	 * It may have dirty page, so loop dirver may get EAGAIN error
+>> +	 * when we use different offset or sizelimit.
+>> +	 */
+>> +	ret = ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo);
+>> +	while (ret != 0 && errno == EAGAIN && sleep_us < 100000) {
+>> +		ret = ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo);
+>> +		usleep(sleep_us);
+>> +		sleep_us *= 2;
+>> +	}
+> 
+> TBROK here if we failed to set the status?
+Yes.
+> 
+> Also we should use the TST_RETRY_FUNC() instead because that one uses
+> the timeout multiplier environment variable.
+Ok, I will use TST_RETRY_FUNC macro.
+> 
+>> +}
+>> +
+>> +void safe_set_status64(int dev_fd, struct loop_info64 loopinfo)
+>> +{
+>> +	int sleep_us = 4096;
+>> +	int ret = 0;
+>> +
+>> +	/*
+>> +	 * It may have dirty page, so loop dirver may get EAGAIN error
+>> +	 * when we use different offset or sizelimit.
+>> +	 */
+>> +	ret = ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo);
+>> +	while (ret != 0 && errno == EAGAIN && sleep_us < 100000) {
+>> +		ret = ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo);
+>> +		usleep(sleep_us);
+>> +		sleep_us *= 2;
+>> +	}
+> 
+> Here as well.
+
+> 
+>> +}
+>> +
+>> +void check_support_cmd(int dev_fd, int ioctl_flag, int value, char *message)
+>> +{
+>> +	int ret = 0;
+>> +
+>> +	ret = ioctl(dev_fd, ioctl_flag, value);
+>> +	if (ret && errno == EINVAL)
+>> +		tst_brk(TCONF, "Current environment doesn't support this flag(%s)",
+>> +				message);
+>> +}
+>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop_support.h b/testcases/kernel/syscalls/ioctl/ioctl_loop_support.h
+>> new file mode 100644
+>> index 000000000..44445af8a
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop_support.h
+>> @@ -0,0 +1,14 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>> + */
+>> +#ifndef IOCTL_LOOP_H
+>> +#define IOCTL_lOOP_H
+>> +#include <linux/loop.h>
+>> +void check_sys_value(char *path, int setvalue);
+>> +void check_sys_string(char *path, char *setmessage);
+>> +void safe_set_status(int dev_fd, struct loop_info loopinfo);
+>> +void safe_set_status64(int dev_fd, struct loop_info64 loopinfo);
+>> +void check_support_cmd(int dev_fd, int ioctl_flag, int value, char *message);
+>> +#endif
+>> -- 
+>> 2.23.0
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+
+
