@@ -1,55 +1,153 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 9 Apr 2020 10:04:19 -0400 (EDT)
-Subject: [LTP] [PATCH v2] add_key05: Avoid race with key garbage
- collection
-In-Reply-To: <20200409112645.643-1-rpalethorpe@suse.com>
-References: <20200409112645.643-1-rpalethorpe@suse.com>
-Message-ID: <1033986999.7818590.1586441059205.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 9 Apr 2020 17:44:30 +0300
+Subject: [LTP] [RFC PATCH v3 1/2] net: Move setup_addrinfo() into
+ tst_net.h
+In-Reply-To: <20200403165432.19358-2-pvorel@suse.cz>
+References: <20200403165432.19358-1-pvorel@suse.cz>
+ <20200403165432.19358-2-pvorel@suse.cz>
+Message-ID: <608a0875-7bbb-405e-c535-5af4c1fd6fb0@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> --- a/testcases/kernel/syscalls/add_key/add_key05.c
-> +++ b/testcases/kernel/syscalls/add_key/add_key05.c
-> @@ -10,6 +10,10 @@
->   * This is also a regression test for
->   * commit a08bf91ce28e ("KEYS: allow reaching the keys quotas exactly")
->   * commit 2e356101e72a ("KEYS: reaching the keys quotas correctly")
-> + *
-> + * If you run this test with -i > 10 then expect to see some sporadic
-> failures
-
-Since test is using 2 users per iteration, should above say -i > 5?
-
-> + * where add_key fails with EDQUOT. Keys are freed asynchronously and we
-> only
-> + * create up to 10 users to avoid race conditions.
->   */
+Hi Petr,
+On 03.04.2020 19:54, Petr Vorel wrote:
+> as tst_setup_addrinfo().
+> 
+> This allows reusing it in next commit.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Changes v1->v2:
+> * setup_addrinfo() renamed to tst_setup_addrinfo()
+> * rebase
+> 
+>  include/tst_net.h                       |  9 +++++++--
+>  include/tst_private.h                   |  1 +
+>  lib/tst_net.c                           | 14 ++++++++++++++
+>  testcases/network/netstress/netstress.c | 20 ++++----------------
+>  4 files changed, 26 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/tst_net.h b/include/tst_net.h
+> index 855f4fc13..34025eb81 100644
+> --- a/include/tst_net.h
+> +++ b/include/tst_net.h
+> @@ -7,9 +7,10 @@
+>  #define TST_NET_H_
+>  
+>  #include <arpa/inet.h>
+> -#include <sys/types.h>
+> +#include <netdb.h>
+>  #include <netinet/in.h>
+>  #include <netinet/ip.h>
+> +#include <sys/types.h>
+>  
+>  void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
+>  void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+> @@ -27,4 +28,8 @@ void tst_init_sockaddr_inet_bin(struct sockaddr_in *sa, uint32_t ip_val, uint16_
+>  void tst_init_sockaddr_inet6(struct sockaddr_in6 *sa, const char *ip_str, uint16_t port);
+>  void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr *ip_val, uint16_t port);
+>  
+> -#endif
+> +void tst_setup_addrinfo(const char *src_addr, const char *port,
+> +		    const struct addrinfo *hints,
+> +		    struct addrinfo **addr_info);
+> +
+> +#endif /* TST_NET_H_ */
+> diff --git a/include/tst_private.h b/include/tst_private.h
+> index 00cd17fce..e30d34740 100644
+> --- a/include/tst_private.h
+> +++ b/include/tst_private.h
+> @@ -10,6 +10,7 @@
+>  #define TST_PRIVATE_H_
 >  
 >  #include <stdio.h>
-> @@ -18,47 +22,53 @@
->  #include "tst_test.h"
->  #include "lapi/keyctl.h"
+> +#include <netdb.h>
 >  
-> +#define MAX_USERS 10
+>  #define MAX_IPV4_PREFIX 32
+>  #define MAX_IPV6_PREFIX 128
+> diff --git a/lib/tst_net.c b/lib/tst_net.c
+> index 22c990e62..7c5fa77cd 100644
+> --- a/lib/tst_net.c
+> +++ b/lib/tst_net.c
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  #include <errno.h>
+> +#include <netdb.h>
+>  #include <string.h>
+>  #include <stdlib.h>
+>  
+> @@ -204,3 +205,16 @@ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr
+>  	sa->sin6_port = htons(port);
+>  	memcpy(&sa->sin6_addr, ip_val, sizeof(struct in6_addr));
+>  }
 > +
->  static char *user_buf;
-> -static const char *username = "ltp_add_key05";
-> -static int user_added;
-> -struct passwd *ltpuser;
-> -static char fmt[1024];
-> +static uid_t ltpuser[MAX_USERS];
+> +void tst_setup_addrinfo(const char *src_addr, const char *port,
+> +		    const struct addrinfo *hints,
+> +		    struct addrinfo **addr_info)
+> +{
+> +	int err = getaddrinfo(src_addr, port, hints, addr_info);
 > +
-> +static unsigned int usern;
-> +static volatile unsigned int useri;
+> +	if (err)
+> +		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+> +
+> +	if (!*addr_info)
+> +		tst_brk(TBROK, "failed to get the address");
+> +}
+> diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+> index 6797be018..b66eed56e 100644
+> --- a/testcases/network/netstress/netstress.c
+> +++ b/testcases/network/netstress/netstress.c
+> @@ -29,6 +29,7 @@
+>  #include "tst_safe_stdio.h"
+>  #include "tst_safe_pthread.h"
+>  #include "tst_test.h"
+> +#include "tst_net.h"
+>  
+>  static const int max_msg_len = (1 << 16) - 1;
+>  static const int min_msg_len = 5;
+> @@ -441,19 +442,6 @@ static int parse_client_request(const char *msg)
+>  static struct timespec tv_client_start;
+>  static struct timespec tv_client_end;
+>  
+> -static void setup_addrinfo(const char *src_addr, const char *port,
+> -			   const struct addrinfo *hints,
+> -			   struct addrinfo **addr_info)
+> -{
+> -	int err = getaddrinfo(src_addr, port, hints, addr_info);
+> -
+> -	if (err)
+> -		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+> -
+> -	if (!*addr_info)
+> -		tst_brk(TBROK, "failed to get the address");
+> -}
+> -
+>  static void client_init(void)
+>  {
+>  	if (clients_num >= MAX_THREADS) {
+> @@ -471,8 +459,8 @@ static void client_init(void)
+>  	hints.ai_protocol = 0;
+>  
+>  	if (source_addr)
+> -		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
+> -	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+> +		tst_setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
+> +	tst_setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+>  
+>  	tst_res(TINFO, "Running the test over IPv%s",
+>  		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
+> @@ -667,7 +655,7 @@ static void server_init(void)
+>  
+>  	if (source_addr && !strchr(source_addr, ':'))
+>  		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
+> -	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
+> +	tst_setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
+>  		       &hints, &local_addrinfo);
+>  	free(src_addr);
+>  
 
-I don't see why volatile is needed here. Other than that rest looks
-reasonable to me. 
-
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
