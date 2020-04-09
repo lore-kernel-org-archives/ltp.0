@@ -1,325 +1,251 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu,  9 Apr 2020 08:07:45 +0200
-Subject: [LTP] [PATCH v2 2/2] pty04: Add SLCAN ldisc and check for
- CVE-2020-11494
-In-Reply-To: <20200409060745.9619-1-rpalethorpe@suse.com>
-References: <20200409060745.9619-1-rpalethorpe@suse.com>
-Message-ID: <20200409060745.9619-2-rpalethorpe@suse.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 9 Apr 2020 14:10:49 +0800
+Subject: [LTP] [PATCH v1 03/10] syscalls/ioctl_loop01: Add
+ LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN test
+In-Reply-To: <16dd8088-e485-8e7b-8e99-2b755e889041@163.com>
+References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1585839990-19923-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200403115502.GC26355@yuki.lan>
+ <16dd8088-e485-8e7b-8e99-2b755e889041@163.com>
+Message-ID: <07295721-7256-d6f1-872e-e29de2ecea4f@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/pty/pty04.c | 150 ++++++++++++++++++++++++++++-------
- 1 file changed, 120 insertions(+), 30 deletions(-)
+Hi Cyril
 
-diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
-index d730d6834..20812edb9 100644
---- a/testcases/kernel/pty/pty04.c
-+++ b/testcases/kernel/pty/pty04.c
-@@ -7,6 +7,9 @@
-  * data is in flight to try to cause a race between the netdev being deleted
-  * and the discipline receive function writing to the netdev.
-  *
-+ * For SLCAN we check stack data is not leaked in the frame padding
-+ * (CVE-2020-11494).
-+ *
-  * Test flow:
-  * 1. Create PTY with ldisc X which creates netdev Y
-  * 2. Open raw packet socket and bind to netdev Y
-@@ -23,6 +26,11 @@
-  * until we are in the netdev code which can have a bigger buffer. Of course
-  * the MTU still decides exactly where the packet delimiter goes, this just
-  * concerns choosing the best packet size to cause a race.
-+ *
-+ * Note on line discipline encapsulation formats:
-+ * - For SLIP frames we just write the data followed by a delimiter char
-+ * - SLCAN we write some ASCII described in drivers/net/can/slcan.c which is
-+ *   converted to the actual frame by the kernel
-  */
- 
- #define _GNU_SOURCE
-@@ -36,6 +44,14 @@
- #include <linux/if_ether.h>
- #include <linux/tty.h>
- 
-+#ifdef HAVE_LINUX_CAN_H
-+# include <linux/can.h>
-+#else
-+# define CAN_MTU 16
-+# define CAN_MAX_DLEN 8
-+#endif
-+
-+#include <stddef.h>
- #include <stdlib.h>
- #include <stdio.h>
- #include <errno.h>
-@@ -48,19 +64,23 @@
- 
- #include "tst_safe_stdio.h"
- 
-+#define str(s) #s
-+#define SLCAN_FRAME "t00185f5f5f5f5f5f5f5f\r"
-+
- struct ldisc_info {
- 	int n;
- 	char *name;
--	int max_mtu;
-+	int mtu;
- };
- 
- static struct ldisc_info ldiscs[] = {
- 	{N_SLIP, "N_SLIP", 8192},
-+	{N_SLCAN, "N_SLCAN", CAN_MTU},
- };
- 
- static volatile int ptmx, pts, sk, mtu, no_check;
- 
--static int set_ldisc(int tty, struct ldisc_info *ldisc)
-+static int set_ldisc(int tty, const struct ldisc_info *ldisc)
- {
- 	TEST(ioctl(tty, TIOCSETD, &ldisc->n));
- 
-@@ -79,7 +99,7 @@ static int set_ldisc(int tty, struct ldisc_info *ldisc)
- 	return 1;
- }
- 
--static int open_pty(struct ldisc_info *ldisc)
-+static int open_pty(const struct ldisc_info *ldisc)
- {
- 	char pts_path[PATH_MAX];
- 
-@@ -99,7 +119,8 @@ static int open_pty(struct ldisc_info *ldisc)
- 	return set_ldisc(pts, ldisc);
- }
- 
--static ssize_t try_write(int fd, char *data, ssize_t size, ssize_t *written)
-+static ssize_t try_write(int fd, const char *data,
-+			 ssize_t size, ssize_t *written)
- {
- 	ssize_t ret = write(fd, data, size);
- 
-@@ -109,22 +130,40 @@ static ssize_t try_write(int fd, char *data, ssize_t size, ssize_t *written)
- 	return !written || (*written += ret) >= size;
- }
- 
--static void write_pty(void)
-+static void write_pty(const struct ldisc_info *ldisc)
- {
--	char *data = tst_alloc(mtu);
-+	char *data;
- 	ssize_t written, ret;
-+	size_t len = 0;
-+
-+	switch (ldisc->n) {
-+	case N_SLIP:
-+		len = mtu; break;
-+	case N_SLCAN:
-+		len = sizeof(SLCAN_FRAME) - 1; break;
-+	}
-+
-+	data = tst_alloc(len);
-+
-+	switch (ldisc->n) {
-+	case N_SLIP:
-+		memset(data, '_', len - 1);
-+		data[len - 1] = 0300;
-+		break;
-+	case N_SLCAN:
-+		memcpy(data, SLCAN_FRAME, len);
-+		break;
-+	}
- 
--	memset(data, '_', mtu - 1);
--	data[mtu - 1] = 0300;
- 
- 	written = 0;
--	ret = TST_RETRY_FUNC(try_write(ptmx, data, mtu, &written), TST_RETVAL_NOTNULL);
-+	ret = TST_RETRY_FUNC(try_write(ptmx, data, len, &written), TST_RETVAL_NOTNULL);
- 	if (ret < 0)
- 		tst_brk(TBROK | TERRNO, "Failed 1st write to PTY");
- 	tst_res(TPASS, "Wrote PTY 1");
- 
- 	written = 0;
--	ret = TST_RETRY_FUNC(try_write(ptmx, data, mtu, &written), TST_RETVAL_NOTNULL);
-+	ret = TST_RETRY_FUNC(try_write(ptmx, data, len, &written), TST_RETVAL_NOTNULL);
- 	if (ret < 0)
- 		tst_brk(TBROK | TERRNO, "Failed 2nd write to PTY");
- 
-@@ -133,7 +172,7 @@ static void write_pty(void)
- 
- 	tst_res(TPASS, "Wrote PTY 2");
- 
--	while (try_write(ptmx, data, mtu, NULL) >= 0)
-+	while (try_write(ptmx, data, len, NULL) >= 0)
- 		;
- 
- 	tst_res(TPASS, "Writing to PTY interrupted by hangup");
-@@ -141,7 +180,7 @@ static void write_pty(void)
- 	tst_free_all();
- }
- 
--static void open_netdev(struct ldisc_info *ldisc)
-+static void open_netdev(const struct ldisc_info *ldisc)
- {
- 	struct ifreq ifreq = { 0 };
- 	struct sockaddr_ll lla = { 0 };
-@@ -151,12 +190,12 @@ static void open_netdev(struct ldisc_info *ldisc)
- 
- 	sk = SAFE_SOCKET(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
- 
--	ifreq.ifr_mtu = ldisc->max_mtu;
-+	ifreq.ifr_mtu = ldisc->mtu;
- 	if (ioctl(sk, SIOCSIFMTU, &ifreq))
- 		tst_res(TWARN | TERRNO, "Failed to set netdev MTU to maximum");
- 	SAFE_IOCTL(sk, SIOCGIFMTU, &ifreq);
- 	mtu = ifreq.ifr_mtu;
--	tst_res(TINFO, "Netdev MTU is %d (we set %d)", mtu, ldisc->max_mtu);
-+	tst_res(TINFO, "Netdev MTU is %d (we set %d)", mtu, ldisc->mtu);
- 
- 	SAFE_IOCTL(sk, SIOCGIFFLAGS, &ifreq);
- 	ifreq.ifr_flags |= IFF_UP | IFF_RUNNING;
-@@ -176,13 +215,45 @@ static void open_netdev(struct ldisc_info *ldisc)
- 	tst_res(TINFO, "Bound netdev %d to socket %d", ifreq.ifr_ifindex, sk);
- }
- 
--static void check_data(const char *data, ssize_t len)
-+static void check_data(const struct ldisc_info *ldisc,
-+		       const char *data, ssize_t len)
- {
- 	ssize_t i = 0, j;
-+#ifdef HAVE_LINUX_CAN_H
-+	struct can_frame frm;
-+#endif
- 
- 	if (no_check)
- 		return;
- 
-+#ifdef HAVE_LINUX_CAN_H
-+	if (ldisc->n == N_SLCAN) {
-+		memcpy(&frm, data, len);
-+
-+		if (frm.can_id != 1) {
-+			tst_res(TFAIL, "can_id = %d != 1",
-+				frm.can_id);
-+			no_check = 1;
-+		}
-+
-+		if (frm.can_dlc != CAN_MAX_DLEN) {
-+			tst_res(TFAIL, "can_dlc = %d != " str(CAN_MAX_DLEN),
-+				frm.can_dlc);
-+			no_check = 1;
-+		}
-+
-+		i = offsetof(struct can_frame, __pad);
-+		if (frm.__pad != frm.__res0 || frm.__res0 != frm.__res1) {
-+			tst_res_hexd(TFAIL, data + i,
-+				     offsetof(struct can_frame, data) - i,
-+				     "Padding bytes may contain stack data");
-+			no_check = 1;
-+		}
-+
-+		i = offsetof(struct can_frame, data);
-+	}
-+#endif
-+
- 	do {
- 		if (i >= len)
- 			return;
-@@ -195,31 +266,45 @@ static void check_data(const char *data, ssize_t len)
- 	j--;
- 
- 	tst_res_hexd(TFAIL, data + i, j - i,
--		     "Corrupt data (max 64 bytes shown): data[%ld..%ld] = ",
--		     i, j);
--	tst_res(TINFO, "Will continue test without data checking");
-+		     "Corrupt data (max 64 of %ld bytes shown): data[%ld..%ld] = ",
-+		     len, i, j);
- 	no_check = 1;
-+
-+	if (no_check)
-+		tst_res(TINFO, "Will continue test without data checking");
- }
- 
--static void read_netdev(void)
-+static void read_netdev(const struct ldisc_info *ldisc)
- {
--	int rlen, plen = mtu - 1;
--	char *data = tst_alloc(plen);
-+	int rlen, plen = 0;
-+	char *data;
-+
-+	switch (ldisc->n) {
-+	case N_SLIP:
-+		plen = mtu - 1;
-+		break;
-+
-+#ifdef HAVE_LINUX_CAN_H
-+	case N_SLCAN:
-+		plen = CAN_MTU;
-+		break;
-+#endif
-+	}
-+	data = tst_alloc(plen);
- 
- 	tst_res(TINFO, "Reading from socket %d", sk);
- 
- 	SAFE_READ(1, sk, data, plen);
--	check_data(data, plen);
--
-+	check_data(ldisc, data, plen);
- 	tst_res(TPASS, "Read netdev 1");
--	SAFE_READ(1, sk, data, plen);
--	check_data(data, plen);
- 
-+	SAFE_READ(1, sk, data, plen);
-+	check_data(ldisc, data, plen);
- 	tst_res(TPASS, "Read netdev 2");
- 
- 	TST_CHECKPOINT_WAKE(0);
- 	while((rlen = read(sk, data, plen)) > 0)
--		check_data(data, rlen);
-+		check_data(ldisc, data, rlen);
- 
- 	tst_res(TPASS, "Reading data from netdev interrupted by hangup");
- 
-@@ -236,12 +321,12 @@ static void do_test(unsigned int n)
- 	open_netdev(ldisc);
- 
- 	if (!SAFE_FORK()) {
--		read_netdev();
-+		read_netdev(ldisc);
- 		return;
- 	}
- 
- 	if (!SAFE_FORK()) {
--		write_pty();
-+		write_pty(ldisc);
- 		return;
- 	}
- 
-@@ -268,11 +353,16 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.test = do_test,
- 	.cleanup = cleanup,
--	.tcnt = 1,
-+	.tcnt = 2,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- 	.needs_root = 1,
--	.min_kver = "4.10"
-+	.min_kver = "4.10",
-+	.tags = (const struct tst_tag[]){
-+		{"linux-git", "b9258a2cece4ec1f020715fe3554bc2e360f6264"},
-+		{"CVE", "CVE-2020-11494"},
-+		{}
-+	}
- };
- 
- #else
--- 
-2.24.0
+> Hi Cyril
+> 
+>> Hi!
+>>> For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue in sys
+>>> directory and also get lo_flags by using LOOP_GET_STATUS.
+>>>
+>>> For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR flag.
+>>> But we also check whether we can scan partition table correctly ie check
+>>> whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
+>>>
+>>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>>> ---
+>>> ? runtest/syscalls????????????????????????????? |?? 3 +-
+>>> ? testcases/kernel/syscalls/ioctl/.gitignore??? |?? 1 +
+>>> ? .../kernel/syscalls/ioctl/ioctl_loop01.c????? | 127 ++++++++++++++++++
+>>> ? 3 files changed, 130 insertions(+), 1 deletion(-)
+>>> ? create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+>>>
+>>> diff --git a/runtest/syscalls b/runtest/syscalls
+>>> index 777f0ac6a..7fd67450e 100644
+>>> --- a/runtest/syscalls
+>>> +++ b/runtest/syscalls
+>>> @@ -524,10 +524,11 @@ ioctl03????? ioctl03
+>>> ? ioctl04????? ioctl04
+>>> ? ioctl05????? ioctl05
+>>> ? ioctl06????? ioctl06
+>>> -
+>>> ? ioctl07????? ioctl07
+>>> ? ioctl08????? ioctl08
+>>> +ioctl_loop01 ioctl_loop01
+>>> +
+>>> ? ioctl_ns01 ioctl_ns01
+>>> ? ioctl_ns02 ioctl_ns02
+>>> ? ioctl_ns03 ioctl_ns03
+>>> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore 
+>>> b/testcases/kernel/syscalls/ioctl/.gitignore
+>>> index 97fbb9681..4cfef2839 100644
+>>> --- a/testcases/kernel/syscalls/ioctl/.gitignore
+>>> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
+>>> @@ -6,6 +6,7 @@
+>>> ? /ioctl06
+>>> ? /ioctl07
+>>> ? /ioctl08
+>>> +/ioctl_loop01
+>>> ? /ioctl_ns01
+>>> ? /ioctl_ns02
+>>> ? /ioctl_ns03
+>>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c 
+>>> b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+>>> new file mode 100644
+>>> index 000000000..e806e0443
+>>> --- /dev/null
+>>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
+>>> @@ -0,0 +1,127 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>> +/*
+>>> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+>>> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+>>> + *
+>>> + * This is a basic ioctl test about loopdevice.
+>>> + * It is designed to test LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN 
+>>> flag.
+>>> + *
+>>> + * For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue 
+>>> in sys
+>>> + * directory and also get lo_flags by using LOOP_GET_STATUS.
+>>> + *
+>>> + * For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR 
+>>> flag.
+>>> + * But we also check whether we can scan partition table correctly 
+>>> ie check
+>>> + * whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
+>>> + */
+>>> +
+>>> +#include <stdio.h>
+>>> +#include <unistd.h>
+>>> +#include <string.h>
+>>> +#include "ioctl_loop_support.h"
+>>> +#include "lapi/loop.h"
+>>> +#include "tst_test.h"
+>>> +
+>>> +static char dev_path[1024], backing_path[1024], 
+>>> backing_file_path[1024];
+>>> +static int dev_num, attach_flag, dev_fd;
+>>> +/*
+>>> + *In drivers/block/loop.c code, set status function doesn't handle
+>>> + *LO_FLAGS_READ_ONLY flag and ingore it. Only loop_set_fd with rondonly
+>>> + *mode file_fd, lo_flags will include LO_FLAGS_READ_ONLY.
+>>> + */
+>>> +#define set_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN | 
+>>> LO_FLAGS_READ_ONLY | LO_FLAGS_DIRECT_IO)
+>>> +#define get_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN)
+>>> +
+>>> +static char partscan_path[1024], autoclear_path[1024];
+>>> +static char loop_partpath[1026], sys_loop_partpath[1026];
+>>> +
+>>> +static void verify_ioctl_loop(void)
+>>> +{
+>>> +??? int ret;
+>>> +??? struct loop_info loopinfo, loopinfoget;
+>>> +
+>>> +??? tst_attach_device(dev_path, "test.img");
+>>> +??? attach_flag = 1;
+>>> +
+>>> +??? check_sys_value(partscan_path, 0);
+>>> +??? check_sys_value(autoclear_path, 0);
+>>> +??? check_sys_string(backing_path, backing_file_path);
+>>> +
+>>> +??? dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+>>> +??? memset(&loopinfo, 0, sizeof(loopinfo));
+>>> +??? memset(&loopinfo, 0, sizeof(loopinfoget));
+>>> +
+>>> +??? loopinfo.lo_flags = set_flags;
+>>> +??? SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
+>>
+>> I guess that it would be safer to memset() the loopinfo_get here, also
+>> if we zero the structure we may as well reuse the loopinfo here as well.
+>>
+> of coure, I will add memset in here.
+> 
+>>> +??? SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
+>>> +
+>>> +??? if (loopinfoget.lo_flags & ~get_flags)
+>>> +??????? tst_res(TFAIL, "expect %d but got %d", get_flags, 
+>>> loopinfoget.lo_flags);
+>>> +??? else
+>>> +??????? tst_res(TPASS, "get expected lo_flag %d", 
+>>> loopinfoget.lo_flags);
+>>> +
+>>> +??? ret = access(loop_partpath, F_OK);
+>>> +??? if (ret == 0)
+>>> +??????? tst_res(TPASS, "access %s succeeds", loop_partpath);
+>>> +??? else
+>>> +??????? tst_res(TFAIL, "access %s fails", loop_partpath);
+>>> +
+>>> +??? ret = access(sys_loop_partpath, F_OK);
+>>> +??? if (ret == 0)
+>>> +??????? tst_res(TPASS, "access %s succeeds", sys_loop_partpath);
+>>> +??? else
+>>> +??????? tst_res(TFAIL, "access %s fails", sys_loop_partpath);
+>>> +
+>>> +??? check_sys_value(partscan_path, 1);
+>>> +??? check_sys_value(autoclear_path, 1);
+>>> +
+>>> +??? SAFE_CLOSE(dev_fd);
+>>> +??? tst_detach_device(dev_path);
+>>> +??? attach_flag = 0;
+>>> +}
+>>> +
+>>> +static void setup(void)
+>>> +{
+>>> +??? const char *const cmd_dd[] = {"dd", "if=/dev/zero", 
+>>> "of=test.img", "bs=1M", "count=10", NULL};
+>>> +??? const char *const cmd_parted[] = {"parted", "-s", "test.img", 
+>>> "mklabel", "msdos", "mkpart",
+>>> +??????????????????????? "primary", "ext4", "1M", "10M", NULL};
+>>> +
+>>> +??? dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+>>> +??? if (dev_num < 0)
+>>> +??????? tst_brk(TBROK, "Failed to find free loop device");
+>>> +
+>>> +??? SAFE_CMD(cmd_dd, NULL, NULL);
+>>
+>> Why not tst_fill_file("test.img", 0, 1024 * 1024, 10); ?
+>>
+> I will try this.
+
+> 
+>>> +??? SAFE_CMD(cmd_parted, NULL, NULL);
+>>
+>> I wonder if we can avoid dependency on parted by having a look at the
+>> changes in the image after the call to parted and writing a few bytes
+>> ourselves instead.
+> I will see kernel code to figure out this, if no other good way, we can 
+> split this check into a new single test. it can make this case less 
+> couping.
+Sorry for misunderstanding,.  I prefer to add a parted test.img(10K is 
+ok on my environment) into ltp or add a flag to skip this 
+check(/dev/loop0p1) when parted command is not available.  What do you 
+think about the two ways?
+
+Best Regards
+Yang Xu
+>>
+>>> +??? sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
+>>> +??? sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", 
+>>> dev_num);
+>>> +??? sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", 
+>>> dev_num);
+>>> +??? sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", 
+>>> dev_num, dev_num);
+>>> +??? sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
+>>> +??? sprintf(loop_partpath, "%sp1", dev_path);
+>>> +}
+>>> +
+>>> +static void cleanup(void)
+>>> +{
+>>> +??? if (dev_fd > 0)
+>>> +??????? SAFE_CLOSE(dev_fd);
+>>> +??? if (attach_flag)
+>>> +??????? tst_detach_device(dev_path);
+>>> +}
+>>> +
+>>> +static struct tst_test test = {
+>>> +??? .setup = setup,
+>>> +??? .cleanup = cleanup,
+>>> +??? .test_all = verify_ioctl_loop,
+>>> +??? .needs_root = 1,
+>>> +??? .needs_cmds = (const char *const []) {
+>>> +??????? "dd",
+>>> +??????? "parted",
+>>> +??????? NULL
+>>> +??? },
+>>> +??? .needs_drivers = (const char *const []) {
+>>> +??????? "loop",
+>>> +??????? NULL
+>>> +??? },
+>>> +??? .needs_tmpdir = 1,
+>>> +};
+>>> -- 
+>>> 2.23.0
+>>>
+>>>
+>>>
+>>>
+>>> -- 
+>>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
+> 
+> 
+> 
+
 
