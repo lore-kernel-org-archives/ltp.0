@@ -1,251 +1,80 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 9 Apr 2020 14:10:49 +0800
-Subject: [LTP] [PATCH v1 03/10] syscalls/ioctl_loop01: Add
- LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN test
-In-Reply-To: <16dd8088-e485-8e7b-8e99-2b755e889041@163.com>
-References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1585839990-19923-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200403115502.GC26355@yuki.lan>
- <16dd8088-e485-8e7b-8e99-2b755e889041@163.com>
-Message-ID: <07295721-7256-d6f1-872e-e29de2ecea4f@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 9 Apr 2020 09:45:05 +0200
+Subject: [LTP] LTP compilation broken with -fno-common
+In-Reply-To: <20200401093934.GA23773@yuki.lan>
+References: <20200401083228.GA18685@dell5510> <20200401093934.GA23773@yuki.lan>
+Message-ID: <20200409074505.GA2601@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+Hi all,
 
-> Hi Cyril
-> 
->> Hi!
->>> For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue in sys
->>> directory and also get lo_flags by using LOOP_GET_STATUS.
->>>
->>> For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR flag.
->>> But we also check whether we can scan partition table correctly ie check
->>> whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
->>>
->>> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->>> ---
->>> ? runtest/syscalls????????????????????????????? |?? 3 +-
->>> ? testcases/kernel/syscalls/ioctl/.gitignore??? |?? 1 +
->>> ? .../kernel/syscalls/ioctl/ioctl_loop01.c????? | 127 ++++++++++++++++++
->>> ? 3 files changed, 130 insertions(+), 1 deletion(-)
->>> ? create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop01.c
->>>
->>> diff --git a/runtest/syscalls b/runtest/syscalls
->>> index 777f0ac6a..7fd67450e 100644
->>> --- a/runtest/syscalls
->>> +++ b/runtest/syscalls
->>> @@ -524,10 +524,11 @@ ioctl03????? ioctl03
->>> ? ioctl04????? ioctl04
->>> ? ioctl05????? ioctl05
->>> ? ioctl06????? ioctl06
->>> -
->>> ? ioctl07????? ioctl07
->>> ? ioctl08????? ioctl08
->>> +ioctl_loop01 ioctl_loop01
->>> +
->>> ? ioctl_ns01 ioctl_ns01
->>> ? ioctl_ns02 ioctl_ns02
->>> ? ioctl_ns03 ioctl_ns03
->>> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore 
->>> b/testcases/kernel/syscalls/ioctl/.gitignore
->>> index 97fbb9681..4cfef2839 100644
->>> --- a/testcases/kernel/syscalls/ioctl/.gitignore
->>> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
->>> @@ -6,6 +6,7 @@
->>> ? /ioctl06
->>> ? /ioctl07
->>> ? /ioctl08
->>> +/ioctl_loop01
->>> ? /ioctl_ns01
->>> ? /ioctl_ns02
->>> ? /ioctl_ns03
->>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c 
->>> b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
->>> new file mode 100644
->>> index 000000000..e806e0443
->>> --- /dev/null
->>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
->>> @@ -0,0 +1,127 @@
->>> +// SPDX-License-Identifier: GPL-2.0-or-later
->>> +/*
->>> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
->>> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
->>> + *
->>> + * This is a basic ioctl test about loopdevice.
->>> + * It is designed to test LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN 
->>> flag.
->>> + *
->>> + * For LO_FLAGS_AUTOCLEAR flag, we only check autoclear fieldvalue 
->>> in sys
->>> + * directory and also get lo_flags by using LOOP_GET_STATUS.
->>> + *
->>> + * For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR 
->>> flag.
->>> + * But we also check whether we can scan partition table correctly 
->>> ie check
->>> + * whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
->>> + */
->>> +
->>> +#include <stdio.h>
->>> +#include <unistd.h>
->>> +#include <string.h>
->>> +#include "ioctl_loop_support.h"
->>> +#include "lapi/loop.h"
->>> +#include "tst_test.h"
->>> +
->>> +static char dev_path[1024], backing_path[1024], 
->>> backing_file_path[1024];
->>> +static int dev_num, attach_flag, dev_fd;
->>> +/*
->>> + *In drivers/block/loop.c code, set status function doesn't handle
->>> + *LO_FLAGS_READ_ONLY flag and ingore it. Only loop_set_fd with rondonly
->>> + *mode file_fd, lo_flags will include LO_FLAGS_READ_ONLY.
->>> + */
->>> +#define set_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN | 
->>> LO_FLAGS_READ_ONLY | LO_FLAGS_DIRECT_IO)
->>> +#define get_flags (LO_FLAGS_AUTOCLEAR | LO_FLAGS_PARTSCAN)
->>> +
->>> +static char partscan_path[1024], autoclear_path[1024];
->>> +static char loop_partpath[1026], sys_loop_partpath[1026];
->>> +
->>> +static void verify_ioctl_loop(void)
->>> +{
->>> +??? int ret;
->>> +??? struct loop_info loopinfo, loopinfoget;
->>> +
->>> +??? tst_attach_device(dev_path, "test.img");
->>> +??? attach_flag = 1;
->>> +
->>> +??? check_sys_value(partscan_path, 0);
->>> +??? check_sys_value(autoclear_path, 0);
->>> +??? check_sys_string(backing_path, backing_file_path);
->>> +
->>> +??? dev_fd = SAFE_OPEN(dev_path, O_RDWR);
->>> +??? memset(&loopinfo, 0, sizeof(loopinfo));
->>> +??? memset(&loopinfo, 0, sizeof(loopinfoget));
->>> +
->>> +??? loopinfo.lo_flags = set_flags;
->>> +??? SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
->>
->> I guess that it would be safer to memset() the loopinfo_get here, also
->> if we zero the structure we may as well reuse the loopinfo here as well.
->>
-> of coure, I will add memset in here.
-> 
->>> +??? SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
->>> +
->>> +??? if (loopinfoget.lo_flags & ~get_flags)
->>> +??????? tst_res(TFAIL, "expect %d but got %d", get_flags, 
->>> loopinfoget.lo_flags);
->>> +??? else
->>> +??????? tst_res(TPASS, "get expected lo_flag %d", 
->>> loopinfoget.lo_flags);
->>> +
->>> +??? ret = access(loop_partpath, F_OK);
->>> +??? if (ret == 0)
->>> +??????? tst_res(TPASS, "access %s succeeds", loop_partpath);
->>> +??? else
->>> +??????? tst_res(TFAIL, "access %s fails", loop_partpath);
->>> +
->>> +??? ret = access(sys_loop_partpath, F_OK);
->>> +??? if (ret == 0)
->>> +??????? tst_res(TPASS, "access %s succeeds", sys_loop_partpath);
->>> +??? else
->>> +??????? tst_res(TFAIL, "access %s fails", sys_loop_partpath);
->>> +
->>> +??? check_sys_value(partscan_path, 1);
->>> +??? check_sys_value(autoclear_path, 1);
->>> +
->>> +??? SAFE_CLOSE(dev_fd);
->>> +??? tst_detach_device(dev_path);
->>> +??? attach_flag = 0;
->>> +}
->>> +
->>> +static void setup(void)
->>> +{
->>> +??? const char *const cmd_dd[] = {"dd", "if=/dev/zero", 
->>> "of=test.img", "bs=1M", "count=10", NULL};
->>> +??? const char *const cmd_parted[] = {"parted", "-s", "test.img", 
->>> "mklabel", "msdos", "mkpart",
->>> +??????????????????????? "primary", "ext4", "1M", "10M", NULL};
->>> +
->>> +??? dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
->>> +??? if (dev_num < 0)
->>> +??????? tst_brk(TBROK, "Failed to find free loop device");
->>> +
->>> +??? SAFE_CMD(cmd_dd, NULL, NULL);
->>
->> Why not tst_fill_file("test.img", 0, 1024 * 1024, 10); ?
->>
-> I will try this.
+> > /*
+> >  * This is a hack to make the testcases link without defining TCID
+> >  */
+> > extern const char *TCID;
 
-> 
->>> +??? SAFE_CMD(cmd_parted, NULL, NULL);
->>
->> I wonder if we can avoid dependency on parted by having a look at the
->> changes in the image after the call to parted and writing a few bytes
->> ourselves instead.
-> I will see kernel code to figure out this, if no other good way, we can 
-> split this check into a new single test. it can make this case less 
-> couping.
-Sorry for misunderstanding,.  I prefer to add a parted test.img(10K is 
-ok on my environment) into ltp or add a flag to skip this 
-check(/dev/loop0p1) when parted command is not available.  What do you 
-think about the two ways?
+> This is not the original line, the original line is without the extern.
 
-Best Regards
-Yang Xu
->>
->>> +??? sprintf(partscan_path, "/sys/block/loop%d/loop/partscan", dev_num);
->>> +??? sprintf(autoclear_path, "/sys/block/loop%d/loop/autoclear", 
->>> dev_num);
->>> +??? sprintf(backing_path, "/sys/block/loop%d/loop/backing_file", 
->>> dev_num);
->>> +??? sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp1", 
->>> dev_num, dev_num);
->>> +??? sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
->>> +??? sprintf(loop_partpath, "%sp1", dev_path);
->>> +}
->>> +
->>> +static void cleanup(void)
->>> +{
->>> +??? if (dev_fd > 0)
->>> +??????? SAFE_CLOSE(dev_fd);
->>> +??? if (attach_flag)
->>> +??????? tst_detach_device(dev_path);
->>> +}
->>> +
->>> +static struct tst_test test = {
->>> +??? .setup = setup,
->>> +??? .cleanup = cleanup,
->>> +??? .test_all = verify_ioctl_loop,
->>> +??? .needs_root = 1,
->>> +??? .needs_cmds = (const char *const []) {
->>> +??????? "dd",
->>> +??????? "parted",
->>> +??????? NULL
->>> +??? },
->>> +??? .needs_drivers = (const char *const []) {
->>> +??????? "loop",
->>> +??????? NULL
->>> +??? },
->>> +??? .needs_tmpdir = 1,
->>> +};
->>> -- 
->>> 2.23.0
->>>
->>>
->>>
->>>
->>> -- 
->>> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
-> 
-> 
-> 
+> Now this will not be easy to solve since the problem is:
+
+> * All old style test define TCID in the test source that also implements main()
+
+> * The test library uses that variable in various places
+
+> * The variable definition is in the tst_test.h so that all new test also
+>   define TCID
+
+> We cannot move that definition into tst_test.c beacuse that would mean
+> that old API test would end up with multiple definitions one in the
+> corresponding test and one in the new library library code.
+
+> Maybe we can add it with a weak linker attribute. What about this patch:
+
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index 259d87d60..352e2cd64 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -322,9 +322,7 @@ int main(int argc, char *argv[])
+
+>  #define TST_TEST_TCONF(message)                                 \
+>          static struct tst_test test = { .tconf_msg = message  } \
+> -/*
+> - * This is a hack to make the testcases link without defining TCID
+> - */
+> -const char *TCID;
+> +
+> +extern const char *TCID;
+
+>  #endif /* TST_TEST_H__ */
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 73827d472..4ce8cc301 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -32,6 +32,11 @@
+>  #include "old_device.h"
+>  #include "old_tmpdir.h"
+
+> +/*
+> + * Hack to get TCID defined in newlib tests
+> + */
+> +const char *TCID __attribute__((weak));
+> +
+>  #define LINUX_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id="
+>  #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
 
 
+
+> I guess that we can even drop the TCID extern definition from the tst_test.h
+> header if the weak attribute works fine.
+
+I'd be for adding this patch (both version works), Cyril, will you send it
+to ML / push it?
+
+I'd also be for adding -fno-common to Travis after this fix.
+
+Kind regards,
+Petr
