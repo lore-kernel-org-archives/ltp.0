@@ -1,94 +1,30 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 9 Apr 2020 10:47:28 +0200
-Subject: [LTP] [PATCH v1 01/10] lapi: Add a configure check and fallback
- for loop ioctl and flag
-In-Reply-To: <1585839990-19923-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1585839990-19923-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1585839990-19923-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <6bb6bc11-c3c0-48e5-0a67-80b246dfbe4b@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 9 Apr 2020 11:18:54 +0200
+Subject: [LTP] LTP compilation broken with -fno-common
+In-Reply-To: <20200409074505.GA2601@dell5510>
+References: <20200401083228.GA18685@dell5510> <20200401093934.GA23773@yuki.lan>
+ <20200409074505.GA2601@dell5510>
+Message-ID: <20200409091854.GA9792@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-
-On 02. 04. 20 17:06, Yang Xu wrote:
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  configure.ac        |  1 +
->  include/lapi/loop.h | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 36 insertions(+)
->  create mode 100644 include/lapi/loop.h
+Hi!
+> > I guess that we can even drop the TCID extern definition from the tst_test.h
+> > header if the weak attribute works fine.
 > 
-> diff --git a/configure.ac b/configure.ac
-> index e1069b57e..e088cb564 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -50,6 +50,7 @@ AC_CHECK_HEADERS([ \
->      linux/if_ether.h \
->      linux/if_packet.h \
->      linux/keyctl.h \
-> +    linux/loop.h \
->      linux/mempolicy.h \
->      linux/module.h \
->      linux/netlink.h \
-> diff --git a/include/lapi/loop.h b/include/lapi/loop.h
-> new file mode 100644
-> index 000000000..bc6d9950d
-> --- /dev/null
-> +++ b/include/lapi/loop.h
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+> I'd be for adding this patch (both version works), Cyril, will you send it
+> to ML / push it?
 
-Here's a little legal issue for LTP: "GPL" and "All rights reserved" are
-mutually exclusive. Those two lines are effectively saying that your
-code is both open-source and proprietary at the same time. Please pick
-one, or the other. It can't be both.
+Feel free do that yourself. I would be for the version without extern
+definition in tst_test.h then.
 
-> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> + */
-> +#ifndef LAPI_LOOP_H
-> +#define LAPI_LOOP_H
-> +
-> +#include <linux/types.h>
-> +#ifdef HAVE_LINUX_LOOP_H
-> +# include <linux/loop.h>
-> +#endif
-> +
-> +#ifndef LO_FLAGS_PARTSCAN
-> +# define LO_FLAGS_PARTSCAN 8
-> +#endif
-> +
-> +#ifndef LO_FLAGS_DIRECT_IO
-> +# define LO_FLAGS_DIRECT_IO 16
-> +#endif
-> +
-> +#ifndef LOOP_SET_CAPACITY
-> +# define LOOP_SET_CAPACITY 0x4C07
-> +#endif
-> +
-> +#ifndef LOOP_SET_DIRECT_IO
-> +# define LOOP_SET_DIRECT_IO 0x4C08
-> +#endif
-> +
-> +#ifndef LOOP_SET_BLOCK_SIZE
-> +# define LOOP_SET_BLOCK_SIZE 0x4C09
-> +#endif
-> +
-> +#endif
-> +
-> 
+> I'd also be for adding -fno-common to Travis after this fix.
 
+Sounds good.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
