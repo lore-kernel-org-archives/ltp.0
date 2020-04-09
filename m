@@ -1,40 +1,81 @@
 From: laniel_francis@privacyrequired.com <laniel_francis@privacyrequired.com>
-Date: Thu,  9 Apr 2020 23:12:54 +0200
-Subject: [LTP] Add new test for pipe2 with/without O_NONBLOCK mode
+Date: Thu,  9 Apr 2020 23:12:55 +0200
+Subject: [LTP] [PATCH v3 1/2] Add SAFE_PIPE2.
 In-Reply-To: <67fdc846a8cd8616c9eb13cf89463b9d637e6849>
 References: <67fdc846a8cd8616c9eb13cf89463b9d637e6849>
-Message-ID: <20200409211255.1357-1-laniel_francis@privacyrequired.com>
+Message-ID: <20200409211255.1357-2-laniel_francis@privacyrequired.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi.
+From: Francis Laniel <laniel_francis@privacyrequired.com>
 
+This macro is the equivalent of SAFE_PIPE for pipe2 system call.
+---
+ include/old/safe_macros.h |  3 +++
+ include/tst_safe_macros.h |  6 ++++++
+ lib/safe_macros.c         | 15 +++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-I added a new test file (pipe2_03.c) to test pipe2 system call with and without
-O_NONBLOCK enabled.
-This test uses the macro SAFE_PIPE2 that I added, this macro is just the
-equivalent of SAFE_PIPE for pipe2.
-
-I do not know if it is correct to do that but at the end of the test function we
-need to set the pipe in the same state as it was at the end of setup function:
-1. Set the O_NONBLOCK flag to the pipe.
-2. Read the pipe to empty it.
-3. We do not set its size to default because we do not care of it.
-If we do not do that, there will be problem when this test is run multiple time
-(this problem was found when running ./pipe2_03 -i 10).
-
-The diff --stat output is the following:
- include/old/safe_macros.h                  |   3 +++
- include/tst_safe_macros.h                  |   6 ++++++
- lib/safe_macros.c                          |  15 ++++++++++++++
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/pipe2/.gitignore |   1 +
- testcases/kernel/syscalls/pipe2/pipe2_03.c | 135 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 161 insertions(+)
-
-
-Best regards.
+diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
+index e778d3077..a7bd43c80 100644
+--- a/include/old/safe_macros.h
++++ b/include/old/safe_macros.h
+@@ -66,6 +66,9 @@
+ #define SAFE_PIPE(cleanup_fn, fildes)	\
+ 	safe_pipe(__FILE__, __LINE__, cleanup_fn, (fildes))
+ 
++#define SAFE_PIPE2(fildes, flags) \
++	safe_pipe2(__FILE__, __LINE__, NULL, (fildes), (flags))
++
+ #define SAFE_READ(cleanup_fn, len_strict, fildes, buf, nbyte)	\
+ 	safe_read(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
+ 	    (buf), (nbyte))
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index d95d26219..a21d75646 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -87,6 +87,12 @@ static inline int safe_dup(const char *file, const int lineno,
+ #define SAFE_PIPE(fildes) \
+ 	safe_pipe(__FILE__, __LINE__, NULL, (fildes))
+ 
++int safe_pipe2(const char *file, const int lineno, void (*cleanup_fn) (void),
++	       int fildes[2], int flags);
++
++#define SAFE_PIPE2(fildes, flags) \
++	safe_pipe2(__FILE__, __LINE__, NULL, (fildes), (flags))
++
+ #define SAFE_READ(len_strict, fildes, buf, nbyte) \
+ 	safe_read(__FILE__, __LINE__, NULL, (len_strict), (fildes), (buf), (nbyte))
+ 
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index dde9b7b5e..780245821 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -248,6 +248,21 @@ int safe_pipe(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 	return rval;
+ }
+ 
++int safe_pipe2(const char *file, const int lineno, void (*cleanup_fn) (void),
++               int fildes[2], int flags)
++{
++	int rval;
++
++	rval = pipe2(fildes, flags);
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: pipe2({%d,%d}) failed",
++			 file, lineno, fildes[0], fildes[1]);
++	}
++
++	return rval;
++}
++
+ ssize_t safe_read(const char *file, const int lineno, void (*cleanup_fn) (void),
+                   char len_strict, int fildes, void *buf, size_t nbyte)
+ {
+-- 
+2.20.1
 
