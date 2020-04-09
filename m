@@ -1,172 +1,139 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 9 Apr 2020 18:44:42 +0800
-Subject: [LTP] [PATCH v2 07/10] syscalls/ioctl_loop05: Add
- LOOP_SET_DIRECT_IO ioctl test
+Date: Thu, 9 Apr 2020 18:44:45 +0800
+Subject: [LTP] [PATCH v2 10/10] syscalls/ioctl_loop08: Add
+ LOOP_SET/GET_STATUS64 sizelimit field test
 In-Reply-To: <1586429086-22975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <20200409075506.GA2828@yuki.lan>
  <1586429086-22975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1586429086-22975-7-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1586429086-22975-10-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LOOP_SET_DIRECT_IO can update a live loop device dio mode. It needs the
-backing file also supports dio mode and the lo_offset is aligned with
-the logical block size(getting by BLKSSZGET ioctl).
-
-It was introduced into kernel since 4.10
-commit ab1cb278bc70 ("block: loop: introduce ioctl command of LOOP_SET_DIRECT_IO").
+Test its lo_sizelimit field. If lo_sizelimit is 0, it means max
+available. If sizelimit is less than loop_size, loopsize will
+be truncated.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
- .../kernel/syscalls/ioctl/ioctl_loop05.c      | 125 ++++++++++++++++++
- 3 files changed, 127 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/ioctl/.gitignore    |  1 +
+ .../kernel/syscalls/ioctl/ioctl_loop08.c      | 96 +++++++++++++++++++
+ 3 files changed, 98 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop08.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 51ad8ff69..8b120b43a 100644
+index f83561724..d77c191d2 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -532,6 +532,7 @@ ioctl_loop01 ioctl_loop01
- ioctl_loop02 ioctl_loop02
- ioctl_loop03 ioctl_loop03
- ioctl_loop04 ioctl_loop04
-+ioctl_loop05 ioctl_loop05
+@@ -535,6 +535,7 @@ ioctl_loop04 ioctl_loop04
+ ioctl_loop05 ioctl_loop05
+ ioctl_loop06 ioctl_loop06
+ ioctl_loop07 ioctl_loop07
++ioctl_loop08 ioctl_loop08
  
  ioctl_ns01 ioctl_ns01
  ioctl_ns02 ioctl_ns02
 diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 039a5251c..f484d98d6 100644
+index 3a3d49adc..97134aa0b 100644
 --- a/testcases/kernel/syscalls/ioctl/.gitignore
 +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -10,6 +10,7 @@
- /ioctl_loop02
- /ioctl_loop03
- /ioctl_loop04
-+/ioctl_loop05
+@@ -13,6 +13,7 @@
+ /ioctl_loop05
+ /ioctl_loop06
+ /ioctl_loop07
++/ioctl_loop08
  /ioctl_ns01
  /ioctl_ns02
  /ioctl_ns03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop08.c b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
 new file mode 100644
-index 000000000..16c7a468c
+index 000000000..150cfa0ef
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -0,0 +1,125 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+@@ -0,0 +1,96 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
 + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
 + *
-+ * This is a basic ioctl test about loopdevice.
-+ *
-+ * It is designed to test LOOP_SET_DIRECT_IO can updata a live
-+ * loop device dio mode. It need the backing file also supports
-+ * dio mode and the lo_offset is aligned with the logical block size.
++ * This is a basic ioctl test about loopdevice LOOP_SET_STATUS64
++ * and LOOP_GET_STATUS64.
++ * Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
++ * available. If sizelimit is less than loop_size, loopsize will
++ * be truncated.
 + */
++
 +#include <stdio.h>
 +#include <unistd.h>
-+#include <string.h>
++#include <sys/types.h>
 +#include <stdlib.h>
-+#include <sys/mount.h>
 +#include "ioctl_loop_support.h"
 +#include "lapi/loop.h"
 +#include "tst_test.h"
 +
-+#define DIO_MESSAGE "In dio mode"
-+#define NON_DIO_MESSAGE "In non dio mode"
++static char dev_path[1024], sys_loop_sizepath[1024], sys_loop_sizelimitpath[1024];
++static int dev_num, dev_fd, file_fd, attach_flag;
 +
-+static char dev_path[1024], sys_loop_diopath[1024];
-+static int dev_num, dev_fd, attach_flag, logical_block_size;
++static struct tcase {
++	unsigned int set_sizelimit;
++	unsigned int exp_loopsize;
++	char *message;
++} tcases[] = {
++	{1024 * 4096, 2048, "When sizelimit is greater than loopsize "},
++	{1024 * 512, 1024, "When sizelimit is less than loopsize"},
++};
 +
-+static void check_dio_value(int flag)
++static void verify_ioctl_loop(unsigned int n)
 +{
-+	struct loop_info loopinfoget;
++	struct tcase *tc = &tcases[n];
++	struct loop_info64 loopinfo, loopinfoget;
 +
++	tst_res(TINFO, "%s", tc->message);
++	memset(&loopinfo, 0, sizeof(loopinfo));
 +	memset(&loopinfoget, 0, sizeof(loopinfoget));
 +
-+	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS, &loopinfoget);
-+	tst_res(TINFO, "%s", flag ? DIO_MESSAGE : NON_DIO_MESSAGE);
++	loopinfo.lo_sizelimit = tc->set_sizelimit;
++	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
 +
-+	if (loopinfoget.lo_flags & LO_FLAGS_DIRECT_IO)
-+		tst_res(flag ? TPASS : TFAIL, "lo_flags has LO_FLAGS_DIRECT_IO flag");
++	check_sys_value(sys_loop_sizepath, tc->exp_loopsize);
++	check_sys_value(sys_loop_sizelimitpath, tc->set_sizelimit);
++	SAFE_IOCTL(dev_fd, LOOP_GET_STATUS64, &loopinfoget);
++	if (loopinfoget.lo_sizelimit == tc->set_sizelimit)
++		tst_res(TPASS, "LOOP_GET_STATUS64 gets correct lo_sizelimit(%d)", tc->set_sizelimit);
 +	else
-+		tst_res(flag ? TFAIL : TPASS, "lo_flags doesn't have LO_FLAGS_DIRECT_IO flag");
-+
-+	check_sys_value(sys_loop_diopath, flag);
-+}
-+
-+static void verify_ioctl_loop(void)
-+{
-+	struct loop_info loopinfo;
-+
-+	memset(&loopinfo, 0, sizeof(loopinfo));
-+
-+	tst_res(TINFO, "Without setting lo_offset or sizelimit");
-+	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 1);
-+	check_dio_value(1);
-+
-+	SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
-+	check_dio_value(0);
-+
-+	tst_res(TINFO, "With offset equal to logical_block_size");
-+	loopinfo.lo_offset = logical_block_size;
-+	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-+	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-+	if (TST_RET == 0) {
-+		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
-+		check_dio_value(1);
-+		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
-+	} else {
-+		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed");
-+	}
-+
-+	tst_res(TINFO, "With offset less than or unalign logical_block_size");
-+	loopinfo.lo_offset = logical_block_size / 2;
-+	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-+
-+	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
-+		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
-+		return;
-+	}
-+	if (TST_ERR == EINVAL)
-+		tst_res(TPASS | TTERRNO, "LOOP_SET_DIRECT_IO failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed expected EINVAL got");
-+
-+	loopinfo.lo_offset = 0;
++		tst_res(TFAIL, "LOOP_GET_STATUS64 gets wrong lo_sizelimit(%llu), expect %d",
++				loopinfoget.lo_sizelimit, tc->set_sizelimit);
++	/*Reset*/
++	loopinfo.lo_sizelimit = 0;
 +	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
 +}
 +
 +static void setup(void)
 +{
-+	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
-+		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag, skip it");
-+
 +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
 +	if (dev_num < 0)
 +		tst_brk(TBROK, "Failed to find free loop device");
 +
-+	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
-+	tst_fill_file("test.img", 0, 1024, 1024);
++	tst_fill_file("test.img", 0, 1024 * 1024, 1);
 +	tst_attach_device(dev_path, "test.img");
 +	attach_flag = 1;
++
++	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
++	sprintf(sys_loop_sizelimitpath, "/sys/block/loop%d/loop/sizelimit", dev_num);
++
 +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	check_support_cmd(dev_fd, LOOP_SET_DIRECT_IO, 0, "LOOP_SET_DIRECT_IO");
-+	SAFE_IOCTL(dev_fd, BLKSSZGET, &logical_block_size);
-+	tst_res(TINFO, "%s default logical_block_size is %d", dev_path, logical_block_size);
++	tst_res(TINFO, "original loop size 2048 sectors");
 +}
 +
 +static void cleanup(void)
 +{
 +	if (dev_fd > 0)
 +		SAFE_CLOSE(dev_fd);
++	if (file_fd > 0)
++		SAFE_CLOSE(file_fd);
 +	if (attach_flag)
 +		tst_detach_device(dev_path);
 +}
@@ -174,7 +141,8 @@ index 000000000..16c7a468c
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_ioctl_loop,
++	.test = verify_ioctl_loop,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.needs_drivers = (const char *const []) {
