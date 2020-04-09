@@ -1,72 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 9 Apr 2020 20:37:14 +0200
-Subject: [LTP] [RFC PATCH v3 2/2] net/route: Add netlink based route
- change gw/dest tests
-In-Reply-To: <06e299d0-0663-a868-f8cc-1f9002d9d43f@oracle.com>
-References: <20200403165432.19358-1-pvorel@suse.cz>
- <20200403165432.19358-3-pvorel@suse.cz>
- <06e299d0-0663-a868-f8cc-1f9002d9d43f@oracle.com>
-Message-ID: <20200409183714.GA915479@x230>
+From: laniel_francis@privacyrequired.com <laniel_francis@privacyrequired.com>
+Date: Thu,  9 Apr 2020 23:12:54 +0200
+Subject: [LTP] Add new test for pipe2 with/without O_NONBLOCK mode
+In-Reply-To: <67fdc846a8cd8616c9eb13cf89463b9d637e6849>
+References: <67fdc846a8cd8616c9eb13cf89463b9d637e6849>
+Message-ID: <20200409211255.1357-1-laniel_francis@privacyrequired.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi.
 
-thanks for your review!
 
-> > diff --git a/testcases/network/stress/route/route-change-gw.sh b/testcases/network/stress/route/route-change-gw.sh
-...
-> >  setup()
-> >  {
-> >  	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
-> > -
-> > -	rt="$(tst_ipaddr_un -p 0 0)"
-> > -	lhost="$(tst_ipaddr_un 1 1)"
-> > -	rhost="$(tst_ipaddr_un 0 1)"
-> > -	tst_add_ipaddr -s -q -a $lhost
-> > -	tst_add_ipaddr -s -q -a $rhost rhost
-> > +	setup_gw
-> >  }
+I added a new test file (pipe2_03.c) to test pipe2 system call with and without
+O_NONBLOCK enabled.
+This test uses the macro SAFE_PIPE2 that I added, this macro is just the
+equivalent of SAFE_PIPE for pipe2.
 
-> TST_SETUP=setup_gw
+I do not know if it is correct to do that but at the end of the test function we
+need to set the pipe in the same state as it was at the end of setup function:
+1. Set the O_NONBLOCK flag to the pipe.
+2. Read the pipe to empty it.
+3. We do not set its size to default because we do not care of it.
+If we do not do that, there will be problem when this test is run multiple time
+(this problem was found when running ./pipe2_03 -i 10).
 
-OK, I hesitated, whether
-tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
-should be part of setup_gw() or not in the end I accidentally left it on both
-places. OK, I'll keep it in setup_gw() and remove from
-route-change-netlink-gw.sh + use TST_SETUP=setup_gw here (in
-route-change-gw.sh).
+The diff --stat output is the following:
+ include/old/safe_macros.h                  |   3 +++
+ include/tst_safe_macros.h                  |   6 ++++++
+ lib/safe_macros.c                          |  15 ++++++++++++++
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/pipe2/.gitignore |   1 +
+ testcases/kernel/syscalls/pipe2/pipe2_03.c | 135 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 161 insertions(+)
 
-> > diff --git a/testcases/network/stress/route/route-lib.sh b/testcases/network/stress/route/route-lib.sh
-...
-> > +test_netlink()
-> > +{
-> > +	local ip_flag
-> > +	[ "$TST_IPV6" ] && ip_flag="-6"
-> > +
-> > +	local port=$(tst_rhost_run -s -c "tst_get_unused_port ipv${TST_IPVER} dgram")
-> > +
 
-> What will be listen on this remote port?
-Nothing. We've talked about it in the past. I struggled to setup remote workers
-(problems to detect that the setup is up before testing starts), but I can
-rethink it again. What do you suggest: one daemon which would run several
-threads (each of them bind to specific IP) or several single thread instances?
-IMHO not binding to specific IP does not garant traffic is taking path we want.
+Best regards.
 
-> > +	EXPECT_PASS route-change-netlink -c $NS_TIMES -d $(tst_iface) $ip_flag -p $port $ROUTE_CHANGE_NETLINK_PARAMS
-
-> EXPECT_PASS doesn't handle TCONF when libmnl-devel is missing.
-
-Thanks, I'll fix it.
-
-tst_test.c:865: CONF: libmnl library and headers are required
-route-change-netlink-gw 1 TFAIL: route-change-netlink -c 10 -d ltp_ns_veth2 -p 40645 -g 10.23.1.7^10.23.1.6^10.23.1.5^10.23.1.4^10.23.1.3^ -l 10.23.1.1 -r 10.23.0.1 failed unexpectedly
-
-I propose to handle this in EXPECT_PASS() (send a separate RFC patch for it).
-
-Kind regards,
-Petr
