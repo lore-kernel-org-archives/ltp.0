@@ -1,45 +1,38 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 14 Apr 2020 10:59:34 +0200
-Subject: [LTP] [PATCH v5 3/3] Skip Btrfs in LVM stress tests
-In-Reply-To: <20200414085934.8840-1-mdoucha@suse.cz>
-References: <20200414085934.8840-1-mdoucha@suse.cz>
-Message-ID: <20200414085934.8840-3-mdoucha@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 14 Apr 2020 17:22:16 +0800
+Subject: [LTP] LTP testcase analysis
+In-Reply-To: <MAXPR0101MB14684E021A23A6B00ED69DC0EEDA0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+References: <MAXPR0101MB14684E021A23A6B00ED69DC0EEDA0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <CAEemH2dB5tz-GMoFzRniQhtBJyDg9wfGoEWZSBU2Nz=e14jeiw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Delayed file deletion makes stress testing Btrfs on small block devices
-difficult. Each test case would require explicit FS cleanup synchronization.
-Drop Btrfs tests from LVM runfile for now.
+Hi Pankaj,
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+On Tue, Apr 14, 2020 at 4:45 PM Pankaj Vinadrao Joshi <
+Pankaj.VJ@exaleapsemi.com> wrote:
 
+> Hi,
+> i am running LTP on x86 with 5.4.3 kernel.i gave $ ./runltp command to run
+> the complete LTP but found some failures,like oom01,futex_wait05,select04
+> etc.
+>
+> When i tried to run single test some of them turns into PASS which earlier
+> got failed.like oom01 was failed then i gave coomand $./runltp -s oom01 and
+> after that it got pass.
+>
+> why it could be happened,any specific reason,if you know please suggest??
+>
 
-Changes since v3: New patch.
-Changes since v4: Rebase only.
+I understand sometimes test failures depress us but, it's impossible to
+know what happened without any detailed test log provided:).
 
- testcases/misc/lvm/generate_lvm_runfile.sh | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
-index b5e979e6b..5ca035f22 100755
---- a/testcases/misc/lvm/generate_lvm_runfile.sh
-+++ b/testcases/misc/lvm/generate_lvm_runfile.sh
-@@ -18,7 +18,10 @@ generate_runfile()
- 	echo -n "" >"$OUTFILE"
- 
- 	for fsname in $FS_LIST; do
--		sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-+		# Btrfs needs too much space for reliable stress testing
-+		if [ "x$fsname" != "xbtrfs" ]; then
-+			sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-+		fi
- 	done
- 
- 	tst_res TPASS "Runfile $OUTFILE successfully created"
 -- 
-2.26.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200414/f0cfa2a4/attachment.htm>
