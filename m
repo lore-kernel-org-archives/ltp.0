@@ -1,42 +1,149 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Apr 2020 16:08:32 +0200
-Subject: [LTP] [PATCH v5 2/3] Add LVM support scripts
-In-Reply-To: <1a9956bc-f6b8-f360-e8c8-14fa59bee91b@suse.cz>
-References: <20200414085934.8840-1-mdoucha@suse.cz>
- <20200414085934.8840-2-mdoucha@suse.cz>
- <20200414122908.GA6700@yuki.lan>
- <45d1cdc4-0a15-e987-b88d-87624215019b@suse.cz>
- <20200414130559.GB6700@yuki.lan>
- <1a9956bc-f6b8-f360-e8c8-14fa59bee91b@suse.cz>
-Message-ID: <20200414140832.GC6700@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 14 Apr 2020 17:24:11 +0200
+Subject: [LTP] [PATCH v4 1/2] net: Move setup_addrinfo() into tst_net.h
+In-Reply-To: <20200414152412.8278-1-pvorel@suse.cz>
+References: <20200414152412.8278-1-pvorel@suse.cz>
+Message-ID: <20200414152412.8278-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> generate_lvm_runfile.sh will be called near the end of install_ltp to
-> >> generate system-specific runfile for LVM tests using the template.
-> >> prepare_lvm.sh will be called in a separate OpenQA module right after
-> >> boot_ltp. None of these helper scripts should be included in any runfile.
-> > 
-> > So these are OpenQA specific scripts, I do not think that they belong to
-> > LTP upstream unless we make then work with upstream LTP.
-> 
-> These scripts have no dependencies on OpenQA and can be used to prepare
-> LVM test environment under any harness, including manual testing. I've
-> made some design choices to ensure compatibility with OpenQA but they're
-> really meant as full replacement for testscripts/ltpfslvm.sh which has
-> been in LTP since forever.
+as tst_setup_addrinfo().
 
-Sure but unless there is a glue script that actually makes the tests run
-or at least a README it's kind of pointless.
+This allows reusing it in next commit.
 
-I would really prefer if there was something that coulud execute these
-tests in upstream by starting a single script, so that it's clear how
-these script should be used in the first place.
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+The same as in v3.
 
+ include/tst_net.h                       |  9 +++++++--
+ include/tst_private.h                   |  1 +
+ lib/tst_net.c                           | 14 ++++++++++++++
+ testcases/network/netstress/netstress.c | 20 ++++----------------
+ 4 files changed, 26 insertions(+), 18 deletions(-)
+
+diff --git a/include/tst_net.h b/include/tst_net.h
+index 855f4fc13..34025eb81 100644
+--- a/include/tst_net.h
++++ b/include/tst_net.h
+@@ -7,9 +7,10 @@
+ #define TST_NET_H_
+ 
+ #include <arpa/inet.h>
+-#include <sys/types.h>
++#include <netdb.h>
+ #include <netinet/in.h>
+ #include <netinet/ip.h>
++#include <sys/types.h>
+ 
+ void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
+ void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+@@ -27,4 +28,8 @@ void tst_init_sockaddr_inet_bin(struct sockaddr_in *sa, uint32_t ip_val, uint16_
+ void tst_init_sockaddr_inet6(struct sockaddr_in6 *sa, const char *ip_str, uint16_t port);
+ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr *ip_val, uint16_t port);
+ 
+-#endif
++void tst_setup_addrinfo(const char *src_addr, const char *port,
++		    const struct addrinfo *hints,
++		    struct addrinfo **addr_info);
++
++#endif /* TST_NET_H_ */
+diff --git a/include/tst_private.h b/include/tst_private.h
+index 00cd17fce..e30d34740 100644
+--- a/include/tst_private.h
++++ b/include/tst_private.h
+@@ -10,6 +10,7 @@
+ #define TST_PRIVATE_H_
+ 
+ #include <stdio.h>
++#include <netdb.h>
+ 
+ #define MAX_IPV4_PREFIX 32
+ #define MAX_IPV6_PREFIX 128
+diff --git a/lib/tst_net.c b/lib/tst_net.c
+index 22c990e62..7c5fa77cd 100644
+--- a/lib/tst_net.c
++++ b/lib/tst_net.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <errno.h>
++#include <netdb.h>
+ #include <string.h>
+ #include <stdlib.h>
+ 
+@@ -204,3 +205,16 @@ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr
+ 	sa->sin6_port = htons(port);
+ 	memcpy(&sa->sin6_addr, ip_val, sizeof(struct in6_addr));
+ }
++
++void tst_setup_addrinfo(const char *src_addr, const char *port,
++		    const struct addrinfo *hints,
++		    struct addrinfo **addr_info)
++{
++	int err = getaddrinfo(src_addr, port, hints, addr_info);
++
++	if (err)
++		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
++
++	if (!*addr_info)
++		tst_brk(TBROK, "failed to get the address");
++}
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index 6797be018..b66eed56e 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -29,6 +29,7 @@
+ #include "tst_safe_stdio.h"
+ #include "tst_safe_pthread.h"
+ #include "tst_test.h"
++#include "tst_net.h"
+ 
+ static const int max_msg_len = (1 << 16) - 1;
+ static const int min_msg_len = 5;
+@@ -441,19 +442,6 @@ static int parse_client_request(const char *msg)
+ static struct timespec tv_client_start;
+ static struct timespec tv_client_end;
+ 
+-static void setup_addrinfo(const char *src_addr, const char *port,
+-			   const struct addrinfo *hints,
+-			   struct addrinfo **addr_info)
+-{
+-	int err = getaddrinfo(src_addr, port, hints, addr_info);
+-
+-	if (err)
+-		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+-
+-	if (!*addr_info)
+-		tst_brk(TBROK, "failed to get the address");
+-}
+-
+ static void client_init(void)
+ {
+ 	if (clients_num >= MAX_THREADS) {
+@@ -471,8 +459,8 @@ static void client_init(void)
+ 	hints.ai_protocol = 0;
+ 
+ 	if (source_addr)
+-		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
+-	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
++		tst_setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
++	tst_setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+ 
+ 	tst_res(TINFO, "Running the test over IPv%s",
+ 		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
+@@ -667,7 +655,7 @@ static void server_init(void)
+ 
+ 	if (source_addr && !strchr(source_addr, ':'))
+ 		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
+-	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
++	tst_setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
+ 		       &hints, &local_addrinfo);
+ 	free(src_addr);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.0
+
