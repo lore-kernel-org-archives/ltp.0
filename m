@@ -1,63 +1,161 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 14 Apr 2020 17:24:10 +0200
-Subject: [LTP] [PATCH v4 0/2] Route tests using netlink API (dst,gw)
-Message-ID: <20200414152412.8278-1-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 14 Apr 2020 17:42:06 +0200
+Subject: [LTP] [PATCH] Add test for CVE 2018-9568
+Message-ID: <20200414154206.21237-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Fixes #438
 
-Changes v3->v4:
-* fix TCONF not handled in EXPECT_PASS()
-* use ROUTE_RHOST_PORT variable for port
-* use TST_SETUP="setup_gw" in route-change-gw.sh
-* fix double TINFO report in route-change-gw.sh and route-change-netlink-gw.sh
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ runtest/cve                                   |   1 +
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/connect/.gitignore  |   1 +
+ testcases/kernel/syscalls/connect/connect02.c | 100 ++++++++++++++++++
+ 4 files changed, 103 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/connect/connect02.c
 
-For fixing TCONF not handled in EXPECT_PASS() I copy pasted solution
-from tst_netload(). Discussing this with Cyril I'm planning to implement
-his tip to use mapped memory to increment counter also in shell API.
-That should simplify shell API as there will be just single "Summary:"
-report.
-
-Kind regards,
-Petr
-
-Petr Vorel (2):
-  net: Move setup_addrinfo() into tst_net.h
-  net/route: Add netlink based route change gw/dest tests
-
- configure.ac                                  |   1 +
- include/mk/config.mk.in                       |   2 +
- include/tst_net.h                             |   9 +-
- include/tst_private.h                         |   1 +
- lib/tst_net.c                                 |  14 +
- m4/ltp-libmnl.m4                              |   8 +
- runtest/net_stress.route                      |   4 +
- testcases/network/netstress/netstress.c       |  20 +-
- testcases/network/stress/route/.gitignore     |   1 +
- .../network/stress/route/00_Descriptions.txt  |  39 +-
- testcases/network/stress/route/Makefile       |  30 +-
- .../network/stress/route/route-change-dst.sh  |   1 +
- .../network/stress/route/route-change-gw.sh   |  15 +-
- .../network/stress/route/route-change-if.sh   |   1 +
- .../stress/route/route-change-netlink-dst.sh  |  33 ++
- .../stress/route/route-change-netlink-gw.sh   |  28 ++
- .../stress/route/route-change-netlink.c       | 348 ++++++++++++++++++
- testcases/network/stress/route/route-lib.sh   |  44 ++-
- travis/debian.cross-compile.sh                |   1 +
- travis/debian.sh                              |   1 +
- travis/fedora.sh                              |   3 +
- travis/tumbleweed.sh                          |   1 +
- 22 files changed, 526 insertions(+), 79 deletions(-)
- create mode 100644 m4/ltp-libmnl.m4
- create mode 100644 testcases/network/stress/route/.gitignore
- create mode 100755 testcases/network/stress/route/route-change-netlink-dst.sh
- create mode 100755 testcases/network/stress/route/route-change-netlink-gw.sh
- create mode 100644 testcases/network/stress/route/route-change-netlink.c
-
+diff --git a/runtest/cve b/runtest/cve
+index b26e02f0b..629cf7035 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -41,6 +41,7 @@ cve-2017-18075 pcrypt_aead01
+ cve-2017-1000380 snd_timer01
+ cve-2018-5803 sctp_big_chunk
+ cve-2018-7566 snd_seq01
++cve-2018-9568 connect02
+ cve-2018-1000001 realpath01
+ cve-2018-1000199 ptrace08
+ cve-2018-1000204 ioctl_sg01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 44254d7da..2b85473ba 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -121,6 +121,7 @@ close08 close08
+ confstr01 confstr01
+ 
+ connect01 connect01
++connect02 connect02
+ 
+ creat01 creat01
+ creat03 creat03
+diff --git a/testcases/kernel/syscalls/connect/.gitignore b/testcases/kernel/syscalls/connect/.gitignore
+index b425169a8..0a3fc90bf 100644
+--- a/testcases/kernel/syscalls/connect/.gitignore
++++ b/testcases/kernel/syscalls/connect/.gitignore
+@@ -1 +1,2 @@
+ /connect01
++/connect02
+diff --git a/testcases/kernel/syscalls/connect/connect02.c b/testcases/kernel/syscalls/connect/connect02.c
+new file mode 100644
+index 000000000..141f83dc2
+--- /dev/null
++++ b/testcases/kernel/syscalls/connect/connect02.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2017 Christoph Paasch <cpaasch@apple.com>
++ * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
++ *
++ * CVE-2018-9568
++ *
++ * Test that connect() to AF_UNSPEC address correctly converts IPV6 socket
++ * to IPV4 listen socket when IPV6_ADDRFORM is set to AF_INET.
++ * Kernel memory corruption fixed in:
++ *
++ *  commit 9d538fa60bad4f7b23193c89e843797a1cf71ef3
++ *  Author: Christoph Paasch <cpaasch@apple.com>
++ *  Date:   Tue Sep 26 17:38:50 2017 -0700
++ *
++ *  net: Set sk_prot_creator when cloning sockets to the right proto
++ */
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <netinet/tcp.h>
++
++#include "tst_test.h"
++#include "tst_net.h"
++#include "tst_taint.h"
++
++static int listenfd;
++static struct sockaddr_in6 bind_addr;
++static struct sockaddr_in bind_addr4, client_addr;
++static struct sockaddr reset_addr;
++
++static void setup(void)
++{
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
++
++	tst_init_sockaddr_inet6_bin(&bind_addr, &in6addr_any, 42424);
++	tst_init_sockaddr_inet_bin(&bind_addr4, INADDR_ANY, 0);
++	tst_init_sockaddr_inet(&client_addr, "127.0.0.1", 42424);
++	memset(&reset_addr, 0, sizeof(reset_addr));
++	reset_addr.sa_family = AF_UNSPEC;
++
++	listenfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
++	SAFE_BIND(listenfd, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
++	SAFE_LISTEN(listenfd, 5);
++}
++
++static void cleanup(void)
++{
++	if (listenfd >= 0)
++		SAFE_CLOSE(listenfd);
++}
++
++static void run(void)
++{
++	int i, addrlen, fd, confd1, confd2, confd3;
++	struct sockaddr_storage client_addr2;
++
++	for (i = 0; i < 1000; i++) {
++		confd1 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
++		SAFE_CONNECT(confd1, (struct sockaddr *)&client_addr,
++			sizeof(client_addr));
++
++		fd = SAFE_ACCEPT(listenfd, NULL, NULL);
++		SAFE_SETSOCKOPT_INT(fd, SOL_IPV6, IPV6_ADDRFORM, AF_INET);
++		SAFE_CONNECT(fd, (struct sockaddr *)&reset_addr,
++			sizeof(reset_addr));
++		SAFE_BIND(fd, (struct sockaddr *)&bind_addr4,
++			sizeof(bind_addr4));
++		SAFE_LISTEN(fd, 5);
++
++		addrlen = tst_get_connect_address(fd, &client_addr2);
++		confd2 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
++		SAFE_CONNECT(confd2, (struct sockaddr *)&client_addr2, addrlen);
++		confd3 = SAFE_ACCEPT(fd, NULL, NULL);
++
++		SAFE_CLOSE(confd3);
++		SAFE_CLOSE(confd2);
++		SAFE_CLOSE(confd1);
++		SAFE_CLOSE(fd);
++
++		if (tst_taint_check()) {
++			tst_res(TFAIL, "Kernel is vulnerable");
++			return;
++		}
++	}
++
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "9d538fa60bad"},
++		{"CVE", "2018-9568"},
++		{}
++	}
++};
 -- 
 2.26.0
 
