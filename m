@@ -1,45 +1,35 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 14 Apr 2020 12:05:51 +0200
-Subject: [LTP] LTP testcase analysis
-In-Reply-To: <MAXPR0101MB14684E021A23A6B00ED69DC0EEDA0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-References: <MAXPR0101MB14684E021A23A6B00ED69DC0EEDA0@MAXPR0101MB1468.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <dbe77a95-1f43-8d74-5c8d-a06e465d3cca@suse.cz>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 14 Apr 2020 16:30:37 +0530
+Subject: [LTP] [PATCH V2 0/2] syscalls/clock_gettime: Add support for time64
+ tests
+Message-ID: <cover.1586861885.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14. 04. 20 10:45, Pankaj Vinadrao Joshi wrote:
-> Hi,
-> i am running LTP on x86 with 5.4.3 kernel.i gave $ ./runltp command to
-> run the complete LTP but found some failures,like
-> oom01,futex_wait05,select04 etc.
-> 
-> When i tried to run single test some of them turns into PASS which
-> earlier got failed.like oom01 was failed then i gave coomand $./runltp
-> -s oom01 and after that it got pass.
-> 
-> why it could be happened,any specific reason,if you know please suggest??
+Hello,
 
-The most common errors for futex_wait and select tests are "$SYSCALL
-slept too long". These errors usually happen when you run the test in a
-VM on overloaded host because the VM doesn't get enough CPU time to wake
-the test process up within time limit.
+The first version was sent as an RFC to understand how we should go
+about it and here is the first version that can be merged. There are
+too many changes to be described here, very much different than the RFC.
 
-OOM tests have issues in the mlock() test case. OOM killer is blocked by
-mlock() which usually results in the parent shell being killed instead
-of the expected OOM victim. This is a known kernel bug with some denial
-of service potential but so far nobody came up with a fix that wouldn't
-create memory corruption bugs.
+--
+viresh
 
-That's all I can tell you without seeing the actual test output.
+Viresh Kumar (2):
+  tst_timer: Add time64 related helpers
+  syscalls/clock_gettime: Add support for time64 tests
+
+ include/tst_timer.h                           | 379 ++++++++++--------
+ .../syscalls/clock_gettime/clock_gettime.h    |  29 ++
+ .../syscalls/clock_gettime/clock_gettime01.c  | 125 +++---
+ .../syscalls/clock_gettime/clock_gettime02.c  |  80 ++--
+ .../syscalls/clock_gettime/clock_gettime03.c  |  80 +++-
+ 5 files changed, 425 insertions(+), 268 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime.h
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.21.0.rc0.269.g1a574e7a288b
+
