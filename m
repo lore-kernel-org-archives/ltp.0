@@ -1,44 +1,43 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 15 Apr 2020 14:41:57 +0200
-Subject: [LTP] [PATCH v6 3/3] Skip Btrfs in LVM stress tests
-In-Reply-To: <20200415124157.10484-1-mdoucha@suse.cz>
-References: <20200415124157.10484-1-mdoucha@suse.cz>
-Message-ID: <20200415124157.10484-4-mdoucha@suse.cz>
+Date: Wed, 15 Apr 2020 14:41:54 +0200
+Subject: [LTP] [PATCH v6 0/3] LVM support scripts for OpenQA
+Message-ID: <20200415124157.10484-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Delayed file deletion makes stress testing Btrfs on small block devices
-difficult. Each test case would require explicit FS cleanup synchronization.
-Drop Btrfs tests from LVM runfile for now.
+The old support script for LVM tests (testscripts/ltpfslvm.sh) doesn't work
+very well with external testing tools so LVM tests currently cannot be run
+in OpenQA. Create new LVM support scripts that focus exclusively on setup
+and cleanup. One of the scripts also generates a new LVM runfile that'll test
+only file systems supported by the test machine.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+Martin Doucha (3):
+  Allow acquiring multiple loop devices
+  Add LVM support scripts
+  Skip Btrfs in LVM stress tests
 
-Changes since v3: New patch.
-Changes since v4: Rebase only.
+ include/old/old_device.h                   | 15 +++-
+ lib/tst_device.c                           | 36 ++++++----
+ testcases/lib/tst_device.c                 | 14 ++--
+ testcases/misc/lvm/Makefile                |  9 +++
+ testcases/misc/lvm/cleanup_lvm.sh          | 34 +++++++++
+ testcases/misc/lvm/datafiles/Makefile      |  8 +++
+ testcases/misc/lvm/datafiles/runfile.tpl   | 36 ++++++++++
+ testcases/misc/lvm/generate_lvm_runfile.sh | 30 ++++++++
+ testcases/misc/lvm/prepare_lvm.sh          | 83 ++++++++++++++++++++++
+ testscripts/lvmtest.sh                     | 18 +++++
+ 10 files changed, 264 insertions(+), 19 deletions(-)
+ create mode 100644 testcases/misc/lvm/Makefile
+ create mode 100755 testcases/misc/lvm/cleanup_lvm.sh
+ create mode 100644 testcases/misc/lvm/datafiles/Makefile
+ create mode 100644 testcases/misc/lvm/datafiles/runfile.tpl
+ create mode 100755 testcases/misc/lvm/generate_lvm_runfile.sh
+ create mode 100755 testcases/misc/lvm/prepare_lvm.sh
+ create mode 100755 testscripts/lvmtest.sh
 
- testcases/misc/lvm/generate_lvm_runfile.sh | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
-index b5e979e6b..5ca035f22 100755
---- a/testcases/misc/lvm/generate_lvm_runfile.sh
-+++ b/testcases/misc/lvm/generate_lvm_runfile.sh
-@@ -18,7 +18,10 @@ generate_runfile()
- 	echo -n "" >"$OUTFILE"
- 
- 	for fsname in $FS_LIST; do
--		sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-+		# Btrfs needs too much space for reliable stress testing
-+		if [ "x$fsname" != "xbtrfs" ]; then
-+			sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-+		fi
- 	done
- 
- 	tst_res TPASS "Runfile $OUTFILE successfully created"
 -- 
 2.26.0
 
