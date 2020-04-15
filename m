@@ -1,161 +1,79 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 14 Apr 2020 17:42:06 +0200
-Subject: [LTP] [PATCH] Add test for CVE 2018-9568
-Message-ID: <20200414154206.21237-1-mdoucha@suse.cz>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 15 Apr 2020 09:58:59 +0800
+Subject: [LTP] Add new test for pipe2 with/without O_NONBLOCK mode
+In-Reply-To: <7c9e27de-aaff-98ea-4e00-2c242f7a0cc3@cn.fujitsu.com>
+References: <67fdc846a8cd8616c9eb13cf89463b9d637e6849>
+ <20200409211255.1357-1-laniel_francis@privacyrequired.com>
+ <7c9e27de-aaff-98ea-4e00-2c242f7a0cc3@cn.fujitsu.com>
+Message-ID: <f8f3aea3-5371-a8b5-09dd-1200d9dc6d72@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes #438
+Hi Li
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/connect/.gitignore  |   1 +
- testcases/kernel/syscalls/connect/connect02.c | 100 ++++++++++++++++++
- 4 files changed, 103 insertions(+)
- create mode 100644 testcases/kernel/syscalls/connect/connect02.c
+> Hi Laniel
+> 
+> 
+>> Hi.
+>>
+>>
+>> I added a new test file (pipe2_03.c) to test pipe2 system call with 
+>> and without
+>> O_NONBLOCK enabled.
+>> This test uses the macro SAFE_PIPE2 that I added, this macro is just the
+>> equivalent of SAFE_PIPE for pipe2.
+>>
+>> I do not know if it is correct to do that but at the end of the test 
+>> function we
+>> need to set the pipe in the same state as it was at the end of setup 
+>> function:
+>> 1. Set the O_NONBLOCK flag to the pipe.
+>> 2. Read the pipe to empty it.
+> As my previous mail said, fill up the pipe in setup, so we don't need to 
+> read the pipe. we only need to set the non_block flag when using -i 
+> parameter.
+> 
+> I modify your patch and merged into my ltp own fork.
+> see 
+> https://github.com/xuyang0410/ltp/commits/Laniel_francis_pipe2_03_v3.fixes
+> 
+> ps: I will convert pipe2_01/02.c into new libray and use SAFE_PIPE2 macro.
+Can you merge the safe_pipe2 patch(don't need to add this macro into old 
+safe_macro header) into master? so then I can write new test cases 
+(using this macro) to test O_DIRECT and  O_CLOEXEC flag function.
 
-diff --git a/runtest/cve b/runtest/cve
-index b26e02f0b..629cf7035 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -41,6 +41,7 @@ cve-2017-18075 pcrypt_aead01
- cve-2017-1000380 snd_timer01
- cve-2018-5803 sctp_big_chunk
- cve-2018-7566 snd_seq01
-+cve-2018-9568 connect02
- cve-2018-1000001 realpath01
- cve-2018-1000199 ptrace08
- cve-2018-1000204 ioctl_sg01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 44254d7da..2b85473ba 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -121,6 +121,7 @@ close08 close08
- confstr01 confstr01
- 
- connect01 connect01
-+connect02 connect02
- 
- creat01 creat01
- creat03 creat03
-diff --git a/testcases/kernel/syscalls/connect/.gitignore b/testcases/kernel/syscalls/connect/.gitignore
-index b425169a8..0a3fc90bf 100644
---- a/testcases/kernel/syscalls/connect/.gitignore
-+++ b/testcases/kernel/syscalls/connect/.gitignore
-@@ -1 +1,2 @@
- /connect01
-+/connect02
-diff --git a/testcases/kernel/syscalls/connect/connect02.c b/testcases/kernel/syscalls/connect/connect02.c
-new file mode 100644
-index 000000000..141f83dc2
---- /dev/null
-+++ b/testcases/kernel/syscalls/connect/connect02.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2017 Christoph Paasch <cpaasch@apple.com>
-+ * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
-+ *
-+ * CVE-2018-9568
-+ *
-+ * Test that connect() to AF_UNSPEC address correctly converts IPV6 socket
-+ * to IPV4 listen socket when IPV6_ADDRFORM is set to AF_INET.
-+ * Kernel memory corruption fixed in:
-+ *
-+ *  commit 9d538fa60bad4f7b23193c89e843797a1cf71ef3
-+ *  Author: Christoph Paasch <cpaasch@apple.com>
-+ *  Date:   Tue Sep 26 17:38:50 2017 -0700
-+ *
-+ *  net: Set sk_prot_creator when cloning sockets to the right proto
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <netinet/tcp.h>
-+
-+#include "tst_test.h"
-+#include "tst_net.h"
-+#include "tst_taint.h"
-+
-+static int listenfd;
-+static struct sockaddr_in6 bind_addr;
-+static struct sockaddr_in bind_addr4, client_addr;
-+static struct sockaddr reset_addr;
-+
-+static void setup(void)
-+{
-+	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
-+
-+	tst_init_sockaddr_inet6_bin(&bind_addr, &in6addr_any, 42424);
-+	tst_init_sockaddr_inet_bin(&bind_addr4, INADDR_ANY, 0);
-+	tst_init_sockaddr_inet(&client_addr, "127.0.0.1", 42424);
-+	memset(&reset_addr, 0, sizeof(reset_addr));
-+	reset_addr.sa_family = AF_UNSPEC;
-+
-+	listenfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
-+	SAFE_BIND(listenfd, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
-+	SAFE_LISTEN(listenfd, 5);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (listenfd >= 0)
-+		SAFE_CLOSE(listenfd);
-+}
-+
-+static void run(void)
-+{
-+	int i, addrlen, fd, confd1, confd2, confd3;
-+	struct sockaddr_storage client_addr2;
-+
-+	for (i = 0; i < 1000; i++) {
-+		confd1 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-+		SAFE_CONNECT(confd1, (struct sockaddr *)&client_addr,
-+			sizeof(client_addr));
-+
-+		fd = SAFE_ACCEPT(listenfd, NULL, NULL);
-+		SAFE_SETSOCKOPT_INT(fd, SOL_IPV6, IPV6_ADDRFORM, AF_INET);
-+		SAFE_CONNECT(fd, (struct sockaddr *)&reset_addr,
-+			sizeof(reset_addr));
-+		SAFE_BIND(fd, (struct sockaddr *)&bind_addr4,
-+			sizeof(bind_addr4));
-+		SAFE_LISTEN(fd, 5);
-+
-+		addrlen = tst_get_connect_address(fd, &client_addr2);
-+		confd2 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-+		SAFE_CONNECT(confd2, (struct sockaddr *)&client_addr2, addrlen);
-+		confd3 = SAFE_ACCEPT(fd, NULL, NULL);
-+
-+		SAFE_CLOSE(confd3);
-+		SAFE_CLOSE(confd2);
-+		SAFE_CLOSE(confd1);
-+		SAFE_CLOSE(fd);
-+
-+		if (tst_taint_check()) {
-+			tst_res(TFAIL, "Kernel is vulnerable");
-+			return;
-+		}
-+	}
-+
-+	tst_res(TPASS, "Nothing bad happened, probably");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "9d538fa60bad"},
-+		{"CVE", "2018-9568"},
-+		{}
-+	}
-+};
--- 
-2.26.0
+Also, feel free to comment the Laniel_francis_pipe2_03_v3.fixes branch 
+(laniel write this case to test O_NONBLOCK mode, it is similar with 
+vmsplice04.c).
+
+Best Regards
+Yang Xu
+> 
+> Best Regards
+> Yang Xu
+>> 3. We do not set its size to default because we do not care of it.
+>> If we do not do that, there will be problem when this test is run 
+>> multiple time
+>> (this problem was found when running ./pipe2_03 -i 10).
+>>
+>> The diff --stat output is the following:
+>> ? include/old/safe_macros.h????????????????? |?? 3 +++
+>> ? include/tst_safe_macros.h????????????????? |?? 6 ++++++
+>> ? lib/safe_macros.c????????????????????????? |? 15 ++++++++++++++
+>> ? runtest/syscalls?????????????????????????? |?? 1 +
+>> ? testcases/kernel/syscalls/pipe2/.gitignore |?? 1 +
+>> ? testcases/kernel/syscalls/pipe2/pipe2_03.c | 135 
+>> +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+>>
+>> ? 6 files changed, 161 insertions(+)
+>>
+>>
+>> Best regards.
+>>
+>>
+>>
+
 
