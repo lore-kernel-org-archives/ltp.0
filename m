@@ -1,59 +1,68 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 13:26:26 +0200
-Subject: [LTP] [PATCH v2 0/9] Fix compilation with -fno-common (gcc-10)
-Message-ID: <20200415112635.14144-1-pvorel@suse.cz>
+Date: Wed, 15 Apr 2020 13:26:28 +0200
+Subject: [LTP] [PATCH v2 2/9] lib: Fix linking error multiple TCID
+ definitions with -fno-common
+In-Reply-To: <20200415112635.14144-1-pvorel@suse.cz>
+References: <20200415112635.14144-1-pvorel@suse.cz>
+Message-ID: <20200415112635.14144-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+-fno-common is a default for gcc-10 and if not used on many targets
+implies a speed and code size penalty on global variable references.
+It requires either defining variable in header as extern or moving it
+to C source.
 
-I added 1st commit "Remove use of TCID in new API tests" which allows to
-remove extern const char *TCID;
+https://gcc.gnu.org/gcc-10/porting_to.html
 
-https://travis-ci.org/github/pevik/ltp/builds/675251626
+Due different TCID handling in legacy API (which defines TCID in the
+test source) and new API (TCID defined in the library header) it's not
+enough to simply move that definition into tst_test.c because that would
+mean that old API test would end up with multiple definitions one in the
+corresponding test and one in the new library library code. To workaround
+this added definition in tst_test.c with weak linker attribute.
 
-Kind regards,
-Petr
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_test.h | 4 ----
+ lib/tst_test.c     | 5 +++++
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-Petr Vorel (9):
-  Remove use of TCID in new API tests
-  lib: Fix linking error multiple TCID definitions with -fno-common
-  controllers: Simplify fullpath definition
-  controllers: Fix linking with -fno-common
-  kernel/mem: Fix linking error with -fno-common
-  hugepage: Fix linking error with -fno-common
-  hugetlb: Fix linking error with -fno-common
-  realtime: Fix linking error with -fno-common
-  travis: Build with -fno-common
-
- build.sh                                      |  2 +-
- include/tst_hugepage.h                        |  4 +--
- include/tst_test.h                            |  4 ---
- lib/tst_hugepage.c                            |  2 ++
- lib/tst_test.c                                |  5 +++
- .../controllers/cpuctl/cpuctl_def_task01.c    |  2 --
- .../controllers/cpuctl/cpuctl_def_task02.c    |  2 --
- .../controllers/cpuctl/cpuctl_def_task03.c    |  2 --
- .../controllers/cpuctl/cpuctl_def_task04.c    |  2 --
- .../kernel/controllers/cpuctl/cpuctl_test01.c |  2 --
- .../kernel/controllers/cpuctl/cpuctl_test02.c |  1 -
- .../kernel/controllers/cpuctl/cpuctl_test03.c |  2 --
- .../kernel/controllers/cpuctl/cpuctl_test04.c |  2 --
- .../libcontrollers/libcontrollers.c           | 11 +++++++
- .../libcontrollers/libcontrollers.h           | 32 ++++++-------------
- testcases/kernel/mem/hugetlb/lib/hugetlb.c    |  2 ++
- testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  2 +-
- testcases/kernel/mem/include/mem.h            |  2 +-
- .../kernel/mem/tunable/overcommit_memory.c    |  4 +--
- .../security/integrity/ima/src/ima_mmap.c     |  3 +-
- .../syscalls/memfd_create/memfd_create01.c    |  3 +-
- testcases/realtime/include/librttest.h        |  1 -
- testcases/realtime/lib/librttest.c            |  1 +
- 23 files changed, 42 insertions(+), 51 deletions(-)
-
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 42c02b549..484842e59 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -319,9 +319,5 @@ int main(int argc, char *argv[])
+ 
+ #define TST_TEST_TCONF(message)                                 \
+         static struct tst_test test = { .tconf_msg = message  } \
+-/*
+- * This is a hack to make the testcases link without defining TCID
+- */
+-const char *TCID;
+ 
+ #endif	/* TST_TEST_H__ */
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index e502c2c1a..64cd3ac33 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -32,6 +32,11 @@
+ #include "old_device.h"
+ #include "old_tmpdir.h"
+ 
++/*
++ * Hack to get TCID defined in newlib tests
++ */
++const char *TCID __attribute__((weak));
++
+ #define LINUX_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id="
+ #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
+ 
 -- 
 2.26.0
 
