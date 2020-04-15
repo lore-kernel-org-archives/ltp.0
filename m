@@ -1,48 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 11:28:08 +0200
-Subject: [LTP] [RFC PATCH 7/8] realtime: Fix linking error with -fno-common
+Date: Wed, 15 Apr 2020 11:28:09 +0200
+Subject: [LTP] [RFC PATCH 8/8] travis: Build with -fno-common
 In-Reply-To: <20200415092809.20240-1-pvorel@suse.cz>
 References: <20200415092809.20240-1-pvorel@suse.cz>
-Message-ID: <20200415092809.20240-8-pvorel@suse.cz>
+Message-ID: <20200415092809.20240-9-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-by declaring iters_per_us as static and moving from header into
-C source.
+This is the default with gcc-10, but use it with all compilers.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/realtime/include/librttest.h | 1 -
- testcases/realtime/lib/librttest.c     | 1 +
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ build.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/realtime/include/librttest.h b/testcases/realtime/include/librttest.h
-index c18236200..b829f4089 100644
---- a/testcases/realtime/include/librttest.h
-+++ b/testcases/realtime/include/librttest.h
-@@ -66,7 +66,6 @@ extern char *optarg;
+diff --git a/build.sh b/build.sh
+index e3d268c83..50fb527e4 100755
+--- a/build.sh
++++ b/build.sh
+@@ -9,7 +9,7 @@
  
- #define _MAXTHREADS 256
- #define CALIBRATE_LOOPS 100000
--unsigned long iters_per_us;
+ set -e
  
- #define NS_PER_MS 1000000
- #define NS_PER_US 1000
-diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/librttest.c
-index 36790581e..722d99d50 100644
---- a/testcases/realtime/lib/librttest.c
-+++ b/testcases/realtime/lib/librttest.c
-@@ -63,6 +63,7 @@
+-CFLAGS="${CFLAGS:--Werror=implicit-function-declaration}"
++CFLAGS="${CFLAGS:--Werror=implicit-function-declaration -fno-common}"
+ CC="${CC:-gcc}"
  
- static LIST_HEAD(_threads);
- static atomic_t _thread_count = { -1 };
-+static unsigned long iters_per_us;
- 
- pthread_mutex_t _buffer_mutex;
- char *_print_buffer = NULL;
+ DEFAULT_PREFIX="$HOME/ltp-install"
 -- 
 2.26.0
 
