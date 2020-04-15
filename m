@@ -1,54 +1,30 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 11:28:06 +0200
-Subject: [LTP] [RFC PATCH 5/8] hugepage: Fix linking error with -fno-common
-In-Reply-To: <20200415092809.20240-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 15 Apr 2020 11:30:38 +0200
+Subject: [LTP] [RFC PATCH 1/8] lib: Fix linking error multiple TCID
+ definitions with -fno-common
+In-Reply-To: <20200415092809.20240-2-pvorel@suse.cz>
 References: <20200415092809.20240-1-pvorel@suse.cz>
-Message-ID: <20200415092809.20240-6-pvorel@suse.cz>
+ <20200415092809.20240-2-pvorel@suse.cz>
+Message-ID: <20200415093038.GA12705@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-by moving definitions to tst_hugepage.c and adding extern declarations
-to tst_hugepage.h.
+Hi!
+> +extern const char *TCID;
 
-Fixes: 156f91396 ("hugetlb: move nr_opt to tst_hugepage.h")
+Do we really need this extern or can we remove it?
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- include/tst_hugepage.h | 4 ++--
- lib/tst_hugepage.c     | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+>  #endif	/* TST_TEST_H__ */
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index e502c2c1a..64cd3ac33 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -32,6 +32,11 @@
+>  #include "old_device.h"
+>  #include "old_tmpdir.h"
 
-diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
-index 30e00a377..60c03c5c5 100644
---- a/include/tst_hugepage.h
-+++ b/include/tst_hugepage.h
-@@ -9,8 +9,8 @@
- #define PATH_HUGEPAGES	"/sys/kernel/mm/hugepages/"
- #define PATH_NR_HPAGES	"/proc/sys/vm/nr_hugepages"
- 
--char *nr_opt; /* -s num   Set the number of the been allocated hugepages */
--char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H /var/hugetlbfs */
-+extern char *nr_opt; /* -s num   Set the number of the been allocated hugepages */
-+extern char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H /var/hugetlbfs */
- 
- /*
-  * Try the best to request a specified number of huge pages from system,
-diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
-index 34fd27ede..52667a14e 100644
---- a/lib/tst_hugepage.c
-+++ b/lib/tst_hugepage.c
-@@ -9,6 +9,8 @@
- #include "tst_hugepage.h"
- 
- unsigned long tst_hugepages;
-+char *nr_opt;
-+char *Hopt;
- 
- unsigned long tst_request_hugepages(unsigned long hpages)
- {
 -- 
-2.26.0
-
+chrubis@suse.cz
