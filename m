@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 Apr 2020 17:47:31 +0200
-Subject: [LTP] [PATCH] Add write()/ioctl() race variant to snd_seq01
-In-Reply-To: <20200409113259.27515-1-mdoucha@suse.cz>
-References: <20200409113259.27515-1-mdoucha@suse.cz>
-Message-ID: <20200415154731.GA21877@yuki.lan>
+Date: Wed, 15 Apr 2020 17:53:47 +0200
+Subject: [LTP] [PATCH] Add test for CVE 2018-9568
+In-Reply-To: <20200414154206.21237-1-mdoucha@suse.cz>
+References: <20200414154206.21237-1-mdoucha@suse.cz>
+Message-ID: <20200415155347.GB21877@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,75 +11,117 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/kernel/sound/snd_seq01.c b/testcases/kernel/sound/snd_seq01.c
-> index e0f197e74..c3b4b6ac2 100644
-> --- a/testcases/kernel/sound/snd_seq01.c
-> +++ b/testcases/kernel/sound/snd_seq01.c
-> @@ -24,10 +24,27 @@
->  #include "tst_fuzzy_sync.h"
->  #include "tst_taint.h"
->  
-> +typedef void (*racefunc_t)(void);
+> +/*
+> + * Copyright (C) 2017 Christoph Paasch <cpaasch@apple.com>
+> + * Copyright (C) 2020 SUSE LLC <mdoucha@suse.cz>
+> + *
+> + * CVE-2018-9568
+> + *
+> + * Test that connect() to AF_UNSPEC address correctly converts IPV6 socket
+> + * to IPV4 listen socket when IPV6_ADDRFORM is set to AF_INET.
+> + * Kernel memory corruption fixed in:
+> + *
+> + *  commit 9d538fa60bad4f7b23193c89e843797a1cf71ef3
+> + *  Author: Christoph Paasch <cpaasch@apple.com>
+> + *  Date:   Tue Sep 26 17:38:50 2017 -0700
+> + *
+> + *  net: Set sk_prot_creator when cloning sockets to the right proto
+> + */
 > +
->  static int fd = -1;
->  static int client_id;
-> +static struct snd_seq_remove_events rminfo = {
-> +	.remove_mode = SNDRV_SEQ_REMOVE_OUTPUT
-> +};
-> +static struct snd_seq_event ssev = {
-> +	.flags = SNDRV_SEQ_TIME_STAMP_TICK | SNDRV_SEQ_TIME_MODE_REL,
-> +	.queue = 0,
-> +	.type = SNDRV_SEQ_EVENT_USR0,
-> +	.time = { .tick = 10 }
-> +};
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <netinet/in.h>
+> +#include <netinet/tcp.h>
 > +
->  static struct tst_fzsync_pair fzsync_pair;
->  
-> +static void race_ioctl(void);
-> +static void race_write(void);
+> +#include "tst_test.h"
+> +#include "tst_net.h"
+> +#include "tst_taint.h"
 > +
-> +racefunc_t testfunc_list[] = {race_ioctl, race_write};
+> +static int listenfd;
+> +static struct sockaddr_in6 bind_addr;
+> +static struct sockaddr_in bind_addr4, client_addr;
+> +static struct sockaddr reset_addr;
+> +
+> +static void setup(void)
+> +{
+> +	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> +
+> +	tst_init_sockaddr_inet6_bin(&bind_addr, &in6addr_any, 42424);
+> +	tst_init_sockaddr_inet_bin(&bind_addr4, INADDR_ANY, 0);
+> +	tst_init_sockaddr_inet(&client_addr, "127.0.0.1", 42424);
 
-Can't we just define this as void (*testfuncs[])(void) instead?
+Do we have use the hardcoded port here?
 
-There is no point in having a typedef if we don't use the type anywhere
-else.
+We do have TST_GET_UNUSED_PORT() that should be used for port
+allocation.
 
-Also why don't decleare the array after the race_* function
-implementation? As is it now we do have two more useless lines with
-function signatures here.
-
->  static void setup(void)
->  {
->  	struct snd_seq_queue_info qconf = { .queue = 0 };
-> @@ -44,6 +61,7 @@ static void setup(void)
->  
->  	SAFE_IOCTL(fd, SNDRV_SEQ_IOCTL_CLIENT_ID, &client_id);
->  	SAFE_IOCTL(fd, SNDRV_SEQ_IOCTL_CREATE_QUEUE, &qconf);
-> +	ssev.dest.client = client_id;
->  
->  	fzsync_pair.exec_loops = 100000;
->  	tst_fzsync_pair_init(&fzsync_pair);
-> @@ -63,28 +81,39 @@ static void reinit_pool(int pool_size)
->  		.client = client_id
->  	};
->  
-> -	SAFE_IOCTL(fd, SNDRV_SEQ_IOCTL_SET_CLIENT_POOL, &pconf);
-> +	ioctl(fd, SNDRV_SEQ_IOCTL_SET_CLIENT_POOL, &pconf);
+> +	memset(&reset_addr, 0, sizeof(reset_addr));
+> +	reset_addr.sa_family = AF_UNSPEC;
+> +
+> +	listenfd = SAFE_SOCKET(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
+> +	SAFE_BIND(listenfd, (struct sockaddr *)&bind_addr, sizeof(bind_addr));
+> +	SAFE_LISTEN(listenfd, 5);
 > +}
 > +
-> +static void race_ioctl(void)
+> +static void cleanup(void)
 > +{
-> +	reinit_pool(512);
+> +	if (listenfd >= 0)
+> +		SAFE_CLOSE(listenfd);
 > +}
 > +
-> +static void race_write(void)
+> +static void run(void)
 > +{
-> +	write(fd, &ssev, sizeof(ssev));
->  }
-
-Is it okay to use SAFE_WRITE() here? Otherwise write() generates a
-warning that couldn't be easily silenced.
+> +	int i, addrlen, fd, confd1, confd2, confd3;
+> +	struct sockaddr_storage client_addr2;
+> +
+> +	for (i = 0; i < 1000; i++) {
+> +		confd1 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+> +		SAFE_CONNECT(confd1, (struct sockaddr *)&client_addr,
+> +			sizeof(client_addr));
+> +
+> +		fd = SAFE_ACCEPT(listenfd, NULL, NULL);
+> +		SAFE_SETSOCKOPT_INT(fd, SOL_IPV6, IPV6_ADDRFORM, AF_INET);
+> +		SAFE_CONNECT(fd, (struct sockaddr *)&reset_addr,
+> +			sizeof(reset_addr));
+> +		SAFE_BIND(fd, (struct sockaddr *)&bind_addr4,
+> +			sizeof(bind_addr4));
+> +		SAFE_LISTEN(fd, 5);
+> +
+> +		addrlen = tst_get_connect_address(fd, &client_addr2);
+> +		confd2 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+> +		SAFE_CONNECT(confd2, (struct sockaddr *)&client_addr2, addrlen);
+> +		confd3 = SAFE_ACCEPT(fd, NULL, NULL);
+> +
+> +		SAFE_CLOSE(confd3);
+> +		SAFE_CLOSE(confd2);
+> +		SAFE_CLOSE(confd1);
+> +		SAFE_CLOSE(fd);
+> +
+> +		if (tst_taint_check()) {
+> +			tst_res(TFAIL, "Kernel is vulnerable");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "Nothing bad happened, probably");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "9d538fa60bad"},
+> +		{"CVE", "2018-9568"},
+> +		{}
+> +	}
+> +};
+> -- 
+> 2.26.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
