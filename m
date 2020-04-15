@@ -1,35 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 11:28:05 +0200
-Subject: [LTP] [RFC PATCH 4/8] kernel/mem: Fix linking error with -fno-common
+Date: Wed, 15 Apr 2020 11:28:03 +0200
+Subject: [LTP] [RFC PATCH 2/8] controllers: Simplify fullpath definition
 In-Reply-To: <20200415092809.20240-1-pvorel@suse.cz>
 References: <20200415092809.20240-1-pvorel@suse.cz>
-Message-ID: <20200415092809.20240-5-pvorel@suse.cz>
+Message-ID: <20200415092809.20240-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adding missing extern.
+PATH_MAX has been in <limits.h> in all libc for a long time.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/mem/include/mem.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/controllers/libcontrollers/libcontrollers.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index a12c2231f..cce9c0497 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -37,7 +37,7 @@ static inline void clean_node(unsigned long *array)
- #define MLOCK			2
- #define KSM			3
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+index cdde9f9e6..f999f705e 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+@@ -42,11 +42,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
  
--long overcommit;
-+extern long overcommit;
- void oom(int testcase, int lite, int retcode, int allow_sigkill);
- void testoom(int mempolicy, int lite, int retcode, int allow_sigkill);
+-#ifdef PATH_MAX
+ char fullpath[PATH_MAX];
+-#else
+-char fullpath[1024]; /* Guess */
+-#endif
  
+ int FLAG;
+ volatile int timer_expired;
 -- 
 2.26.0
 
