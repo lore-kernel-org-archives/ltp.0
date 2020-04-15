@@ -1,32 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 09:00:47 +0200
-Subject: [LTP] LTP compilation broken with -fno-common
-In-Reply-To: <CAEemH2fo2HOsgrS7q8s3gr5-BdLfO530f0WGszDDWmpw_V=KOg@mail.gmail.com>
-References: <20200401083228.GA18685@dell5510> <20200401093934.GA23773@yuki.lan>
- <20200409074505.GA2601@dell5510>
- <CAEemH2fo2HOsgrS7q8s3gr5-BdLfO530f0WGszDDWmpw_V=KOg@mail.gmail.com>
-Message-ID: <20200415070047.GA24415@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 15 Apr 2020 16:08:54 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/quotactl04.c: Specify inode size for
+ prjquota feature
+In-Reply-To: <20200415080854.65971-1-yangx.jy@cn.fujitsu.com>
+References: <20200415080854.65971-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200415080854.65971-2-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Background:
+1) LTP uses default 256M filesystem to run test.
+2) Mke2fs sets inode size to 128 bytes for small filesystem(e.g. 256M) usually.
+3) Prjquota feature requires bigger inode size which is at least 256 bytes.
 
-> After building LTP with CFLAGS="-fno-common" locally, I just find more
-> places that need to do the same improvement.
+new mke2fs can adjust inode size to 256M automatically by commit 66aae96 in
+e2fsprogs, but old mke2fs cannot do it and reports the following error:
+-----------------------------------------------------------
+mke2fs 1.43.4 (31-Jan-2017)
+mkfs.ext4: 128 byte inodes are too small for project quota; specify larger size
+-----------------------------------------------------------
 
->     ltp/testcases/kernel/controllers/libcontrollers/libcontrollers.h:56:
-> multiple definition of `num_line'
->     ltp/lib/../include/tst_hugepage.h:16: multiple definition of `Hopt'
+Make quotactl04 with old mke2fs works by specifying inode size to 256 bytes.
 
-> Sorry for involving the definition in tst_hugetlb.h without 'extern' issue
-> many hours ago. It'd be appreciated if you can fix them together in your
-> coming patch.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/quotactl/quotactl04.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Hope this is a timely reminder in case you formatting patch V2 :).
-Thanks for info, working on the fix :).
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+index b0db8fe5d..73980d7e9 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl04.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
+@@ -102,7 +102,7 @@ static struct tcase {
+ 
+ static void setup(void)
+ {
+-	const char *const fs_opts[] = {"-O quota,project", NULL};
++	const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
+ 
+ 	test_id = geteuid();
+ 	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+-- 
+2.25.1
 
-Kind regards,
-Petr
+
+
