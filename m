@@ -1,68 +1,196 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 15 Apr 2020 13:26:28 +0200
-Subject: [LTP] [PATCH v2 2/9] lib: Fix linking error multiple TCID
- definitions with -fno-common
+Date: Wed, 15 Apr 2020 13:26:30 +0200
+Subject: [LTP] [PATCH v2 4/9] controllers: Fix linking with -fno-common
 In-Reply-To: <20200415112635.14144-1-pvorel@suse.cz>
 References: <20200415112635.14144-1-pvorel@suse.cz>
-Message-ID: <20200415112635.14144-3-pvorel@suse.cz>
+Message-ID: <20200415112635.14144-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
--fno-common is a default for gcc-10 and if not used on many targets
-implies a speed and code size penalty on global variable references.
-It requires either defining variable in header as extern or moving it
-to C source.
+by moving definitions to libcontrollers.c and adding extern declarations
+to libcontrollers.h.
 
-https://gcc.gnu.org/gcc-10/porting_to.html
-
-Due different TCID handling in legacy API (which defines TCID in the
-test source) and new API (TCID defined in the library header) it's not
-enough to simply move that definition into tst_test.c because that would
-mean that old API test would end up with multiple definitions one in the
-corresponding test and one in the new library library code. To workaround
-this added definition in tst_test.c with weak linker attribute.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_test.h | 4 ----
- lib/tst_test.c     | 5 +++++
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ .../controllers/cpuctl/cpuctl_def_task01.c    |  2 --
+ .../controllers/cpuctl/cpuctl_def_task02.c    |  2 --
+ .../controllers/cpuctl/cpuctl_def_task03.c    |  2 --
+ .../controllers/cpuctl/cpuctl_def_task04.c    |  2 --
+ .../kernel/controllers/cpuctl/cpuctl_test01.c |  2 --
+ .../kernel/controllers/cpuctl/cpuctl_test02.c |  1 -
+ .../kernel/controllers/cpuctl/cpuctl_test03.c |  2 --
+ .../kernel/controllers/cpuctl/cpuctl_test04.c |  2 --
+ .../libcontrollers/libcontrollers.c           | 11 ++++++++
+ .../libcontrollers/libcontrollers.h           | 28 +++++++------------
+ 10 files changed, 21 insertions(+), 33 deletions(-)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 42c02b549..484842e59 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -319,9 +319,5 @@ int main(int argc, char *argv[])
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+index 90119e4ad..578c60c89 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+@@ -81,8 +81,6 @@ extern void cleanup(void)
+ 	/* Report exit status */
+ }
  
- #define TST_TEST_TCONF(message)                                 \
-         static struct tst_test test = { .tconf_msg = message  } \
--/*
-- * This is a hack to make the testcases link without defining TCID
-- */
--const char *TCID;
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
  
- #endif	/* TST_TEST_H__ */
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index e502c2c1a..64cd3ac33 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -32,6 +32,11 @@
- #include "old_device.h"
- #include "old_tmpdir.h"
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+index dc1546e88..658c6fd3f 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+@@ -76,8 +76,6 @@ extern void cleanup(void)
+ 	/* Report exit status */
+ }
  
-+/*
-+ * Hack to get TCID defined in newlib tests
-+ */
-+const char *TCID __attribute__((weak));
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+index 92b451793..a700ca515 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+@@ -76,8 +76,6 @@ extern void cleanup(void)
+ 	/* Report exit status */
+ }
+ 
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+index 108e576e1..1726f810d 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+@@ -76,8 +76,6 @@ extern void cleanup(void)
+ 	/* Report exit status */
+ }
+ 
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+index d7be1c80c..8f6d11de0 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+@@ -79,8 +79,6 @@ extern void cleanup(void)
+ 	tst_exit();		/* Report exit status */
+ }
+ 
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+index 2a5cd4a11..52ad8aa2f 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+@@ -78,7 +78,6 @@ extern void cleanup(void)
+ }
+ 
+ int migrate_task();
+-volatile int timer_expired = 0;
+ 
+ int main(void)
+ {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+index 8a80d6932..0e0a26dc3 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+@@ -76,8 +76,6 @@ extern void cleanup(void)
+ 	tst_exit();		/* Report exit status */
+ }
+ 
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+index 791a58dd2..dae0d4c05 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+@@ -77,8 +77,6 @@ extern void cleanup(void)
+ 	tst_exit();		/* Report exit status */
+ }
+ 
+-volatile int timer_expired = 0;
+-
+ int main(int argc, char *argv[])
+ {
+ 
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+index 75766fc19..e9917271c 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+@@ -35,6 +35,17 @@
+ 
+ #include "libcontrollers.h"
+ 
++char fullpath[PATH_MAX];
++int FLAG;
++volatile int timer_expired = 0;
++int retval;
++unsigned int num_line;
++unsigned int current_shares;
++unsigned int total_shares;
++unsigned int *shares_pointer;
++char target[LINE_MAX];
++struct dirent *dir_pointer;
 +
- #define LINUX_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id="
- #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
+ /*
+  * Function: scan_shares_file()
+  * This function scans all the shares files under the mountpoint
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+index f999f705e..7d7b8324b 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+@@ -42,24 +42,16 @@
+ #include <sys/types.h>
+ #include <unistd.h>
  
+-char fullpath[PATH_MAX];
+-
+-int FLAG;
+-volatile int timer_expired;
+-
+-int retval;
+-
+-unsigned int num_line;//??
+-
+-unsigned int current_shares;
+-
+-unsigned int total_shares;
+-
+-unsigned int *shares_pointer;//??
+-
+-char target[LINE_MAX];
+-
+-struct dirent 	*dir_pointer;
++extern char fullpath[PATH_MAX];
++extern int FLAG;
++extern volatile int timer_expired;
++extern int retval;
++extern unsigned int num_line;
++extern unsigned int current_shares;
++extern unsigned int total_shares;
++extern unsigned int *shares_pointer;
++extern char target[LINE_MAX];
++extern struct dirent *dir_pointer;
+ 
+ enum{
+ 	GET_SHARES	=1,
 -- 
 2.26.0
 
