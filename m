@@ -1,52 +1,49 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 17 Apr 2020 14:39:42 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/quotactl04.c: Specify inode size for
- prjquota feature
-In-Reply-To: <20200417063943.309285-1-yangx.jy@cn.fujitsu.com>
-References: <20200417063943.309285-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <20200417063943.309285-2-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 17 Apr 2020 15:42:16 +0800
+Subject: [LTP] Add new test for pipe2 with/without O_NONBLOCK mode
+In-Reply-To: <f8f3aea3-5371-a8b5-09dd-1200d9dc6d72@cn.fujitsu.com>
+References: <20200409211255.1357-1-laniel_francis@privacyrequired.com>
+ <7c9e27de-aaff-98ea-4e00-2c242f7a0cc3@cn.fujitsu.com>
+ <f8f3aea3-5371-a8b5-09dd-1200d9dc6d72@cn.fujitsu.com>
+Message-ID: <CAEemH2dzt4Hi7HDyO4Spn_i3naJbhQ5GwpZVCk3BgkdaL5uNWg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Background:
-1) LTP uses default 256M filesystem to run test.
-2) Mke2fs sets inode size to 128 bytes for small filesystem(e.g. 256M) usually.
-3) Prjquota feature requires bigger inode size which is at least 256 bytes.
+Hi Xu,
 
-New mke2fs can adjust inode size to 256 bytes automatically by commit 66aae96
-in e2fsprogs, but old mke2fs cannot do it and reports the following error:
------------------------------------------------------------
-mke2fs 1.43.4 (31-Jan-2017)
-mkfs.ext4: 128 byte inodes are too small for project quota; specify larger size
------------------------------------------------------------
+Thanks for reviewing the patches.
 
-Make quotactl04 with old mke2fs work by specifying inode size to 256 bytes.
+Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Acked-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/quotactl/quotactl04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ...
+> > I modify your patch and merged into my ltp own fork.
+> > see
+> >
+> https://github.com/xuyang0410/ltp/commits/Laniel_francis_pipe2_03_v3.fixes
+> >
+> > ps: I will convert pipe2_01/02.c into new libray and use SAFE_PIPE2
+> macro.
+> Can you merge the safe_pipe2 patch(don't need to add this macro into old
+> safe_macro header) into master? so then I can write new test cases
+>
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-index b0db8fe5d..73980d7e9 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -102,7 +102,7 @@ static struct tcase {
- 
- static void setup(void)
- {
--	const char *const fs_opts[] = {"-O quota,project", NULL};
-+	const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
- 
- 	test_id = geteuid();
- 	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+I'm ok with only support it in the new library.
+
+But if we export the safe macro only to use by new API, we'd better add it
+into lib/tst_safe_macros.c
+but not lib/safe_macros.c, this patch leaves the 'void (*cleanup_fn)
+(void)' hook in function safe_pipe2()
+and put in safe_macros.c that is compatible with both API using.
+
+Do you think so? if yes I can help to move it to tst_safe_macros.c and
+apply it.
+
 -- 
-2.25.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200417/1982f0dc/attachment-0001.htm>
