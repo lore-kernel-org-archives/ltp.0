@@ -1,37 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 17 Apr 2020 13:39:48 +0200
-Subject: [LTP] [COMMITTED] [PATCH] tst_cmd: Fix exit in search for program
- in $PATH
-Message-ID: <20200417113948.12678-1-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 17 Apr 2020 20:03:45 +0800
+Subject: [LTP] Add new test for pipe2 with/without O_NONBLOCK mode
+In-Reply-To: <c4118b86-b364-1355-3bf4-602a9ae0c5bc@cn.fujitsu.com>
+References: <20200409211255.1357-1-laniel_francis@privacyrequired.com>
+ <7c9e27de-aaff-98ea-4e00-2c242f7a0cc3@cn.fujitsu.com>
+ <f8f3aea3-5371-a8b5-09dd-1200d9dc6d72@cn.fujitsu.com>
+ <CAEemH2dzt4Hi7HDyO4Spn_i3naJbhQ5GwpZVCk3BgkdaL5uNWg@mail.gmail.com>
+ <c4118b86-b364-1355-3bf4-602a9ae0c5bc@cn.fujitsu.com>
+Message-ID: <CAEemH2d59S0StA6q-r2w4xYrdqDpHxu9zqzJH5uiEk4H4eeVJw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The check is executed before fork() so we have to do return instead of
-exit() otherwise we exit the library process.
+Hi Xu, Laniel,
 
-Fixes: 105d283bc ("lib/tst_cmd_*(): Search for program in $PATH")
+Patchset changed as the following and pushed:
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  * [1/2] move safe_pipe2() to tst_safe_macro.c
+  * [1/2] remove cleanup_fn callback from function
+  * [1/2] replace tst_brk() by tst_brk_()
+  * [1/2] add flag in the print message
+  * [2/2] rename to pipe2_04.c
+  * [2/2] remove useless status variable
+  * [2/2] code indent cleanup
 
-diff --git a/lib/tst_cmd.c b/lib/tst_cmd.c
-index 3a90d1a5d..4b67d4b31 100644
---- a/lib/tst_cmd.c
-+++ b/lib/tst_cmd.c
-@@ -64,7 +64,7 @@ int tst_cmd_fds_(void (cleanup_fn)(void),
- 			tst_brkm(TCONF, cleanup_fn, "Couldn't find '%s' in $PATH at %s:%d", argv[0],
- 				 __FILE__, __LINE__);
- 		else
--			_exit(255);
-+			return 255;
- 	}
- 
- 	pid_t pid = vfork();
+@Laniel, remember to use '-s' in the git-commit command next time, then it
+will help add the Signed-off-by: automatically.
+
 -- 
-2.24.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200417/19996939/attachment-0001.htm>
