@@ -1,346 +1,94 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 21 Apr 2020 18:21:22 +0800
-Subject: [LTP] [PATCH v3 3/3] syscalls/pipe2_03: Add new test for pipe2
- O_DIRECT flag
-In-Reply-To: <CAEemH2eeUa0XJSGeyid2J373FnvqSAQCjdO1AkbpHGTFisGGNA@mail.gmail.com>
-References: <1586927503-10827-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1587022142-32122-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1587022142-32122-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eeUa0XJSGeyid2J373FnvqSAQCjdO1AkbpHGTFisGGNA@mail.gmail.com>
-Message-ID: <be1c1761-c518-f3ee-ef19-b4f45d36df80@cn.fujitsu.com>
+Date: Tue, 21 Apr 2020 18:35:20 +0800
+Subject: [LTP] [PATCH v2 02/10] syscalls/ioctl:add common c file for
+ loop ioctl
+In-Reply-To: <20200421085544.GB6577@yuki.lan>
+References: <20200409075506.GA2828@yuki.lan>
+ <1586429086-22975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1586429086-22975-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200417151050.GA2491@yuki.lan>
+ <8dd0a496-c46f-55d2-2393-5566eff618ff@cn.fujitsu.com>
+ <48142e6b-8169-2934-e8b2-f71927cd62b0@cn.fujitsu.com>
+ <20200420130140.GB11604@yuki.lan>
+ <d3063175-5014-51ea-9d1c-4a9f3e2243b1@cn.fujitsu.com>
+ <20200421085544.GB6577@yuki.lan>
+Message-ID: <4b8ee0d5-6f5d-be72-a49a-6cfe3d13e06a@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
+Hi Cyril
 
-> 
-> 
-> On Thu, Apr 16, 2020 at 3:29 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com 
-> <mailto:xuyang2018.jy@cn.fujitsu.com>> wrote:
-> 
->     Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com
->     <mailto:xuyang2018.jy@cn.fujitsu.com>>
->     ---
->      ?runtest/syscalls? ? ? ? ? ? ? ? ? ? ? ? ? ?|? ?1 +
->      ?testcases/kernel/syscalls/pipe2/.gitignore |? ?1 +
->      ?testcases/kernel/syscalls/pipe2/pipe2_03.c | 157 +++++++++++++++++++++
->      ?3 files changed, 159 insertions(+)
->      ?create mode 100644 testcases/kernel/syscalls/pipe2/pipe2_03.c
-> 
->     diff --git a/runtest/syscalls b/runtest/syscalls
->     index 44254d7da..4d8ebc5a3 100644
->     --- a/runtest/syscalls
->     +++ b/runtest/syscalls
->     @@ -912,6 +912,7 @@ pipe13 pipe13
-> 
->      ?pipe2_01 pipe2_01
->      ?pipe2_02 pipe2_02
->     +pipe2_03 pipe2_03
-> 
->      ?pivot_root01 pivot_root01
-> 
->     diff --git a/testcases/kernel/syscalls/pipe2/.gitignore
->     b/testcases/kernel/syscalls/pipe2/.gitignore
->     index 786222de2..4cc5acaf1 100644
->     --- a/testcases/kernel/syscalls/pipe2/.gitignore
->     +++ b/testcases/kernel/syscalls/pipe2/.gitignore
->     @@ -1,3 +1,4 @@
->      ?/pipe2_01
->      ?/pipe2_02
->      ?/pipe2_02_child
->     +/pipe2_03
->     diff --git a/testcases/kernel/syscalls/pipe2/pipe2_03.c
->     b/testcases/kernel/syscalls/pipe2/pipe2_03.c
->     new file mode 100644
->     index 000000000..0b5d37dd0
->     --- /dev/null
->     +++ b/testcases/kernel/syscalls/pipe2/pipe2_03.c
->     @@ -0,0 +1,157 @@
->     +// SPDX-License-Identifier: GPL-2.0-or-later
->     +/*
->     + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
->     + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com
->     <mailto:xuyang2018.jy@cn.fujitsu.com>>
->     + *
->     + * This case is designed to test the basic functionality about the
->     + * O_DIRECT flag of pipe2.
->     + *
->     + * It includes three sub tests.
->     + * 1) Each write(2) to the pipe is dealt with as a separate packet, and
->     + * read(2)s from the pipe will read one packet at a time.
->     + * 2) Writes of greater than PIPE_BUF bytes (see pipe(7)) will be split
->     + * into multiple packet.
->     + * 3)If a read(2) specifies a buffer size that is smaller than the next
->     + * packet, then the requested number of bytes are read, and the excess
->     + * bytes in the packet are discarded.
->     + */
->     +#define _GNU_SOURCE
->     +#include <stdio.h>
->     +#include <unistd.h>
->     +#include <stdlib.h>
->     +#include <linux/limits.h>
->     +#include "lapi/fcntl.h"
->     +#include "tst_test.h"
->     +
->     +static int fds[2], packet_num, pipe_size;
->     +static char *wrbuf;
->     +static char *rdbuf;
->     +static void check_peer_rw(void);
->     +static void check_split(void);
->     +static void check_discard(void);
->     +
->     +static void (*test_func[])(void) = {check_peer_rw, check_split,
->     check_discard};
->     +
->     +static void check_peer_rw(void)
->     +{
->     +? ? ? ?int i, pid;
->     +
->     +? ? ? ?SAFE_PIPE2(fds, O_DIRECT | O_NONBLOCK);
->     +? ? ? ?for (i = 0; i < packet_num; i++)
->     +? ? ? ? ? ? ? ?SAFE_WRITE(1, fds[1], "x", 1);
->     +
->     +? ? ? ?TEST(write(fds[1], "x", 1));
->     +? ? ? ?if (TST_RET != -1) {
->     +? ? ? ? ? ? ? ?tst_res(TFAIL, "write succeeded unexpectedly");
->     +? ? ? ?} else {
->     +? ? ? ? ? ? ? ?if (TST_ERR == EAGAIN)
->     +? ? ? ? ? ? ? ? ? ? ? ?tst_res(TPASS, "Each write(2) uses a
->     separate packet");
->     +? ? ? ? ? ? ? ?else
->     +? ? ? ? ? ? ? ? ? ? ? ?tst_res(TFAIL | TTERRNO, "write failed,
->     expected EAGAIN but got");
->     +? ? ? ?}
->     +? ? ? ?pid = SAFE_FORK();
->     +? ? ? ?if (!pid) {
->     +? ? ? ? ? ? ? ?memset(rdbuf, 0, pipe_size);
->     +? ? ? ? ? ? ? ?for (i = 0; i < packet_num; i++) {
->     +? ? ? ? ? ? ? ? ? ? ? ?TEST(SAFE_READ(0, fds[0], rdbuf, pipe_size));
->     +? ? ? ? ? ? ? ? ? ? ? ?if (TST_RET != 1)
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?tst_res(TFAIL,
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"Each read(2) doesn't read a
->     separate packet, return %ld", TST_RET);
->     +? ? ? ? ? ? ? ?}
->     +? ? ? ? ? ? ? ?tst_res(TPASS, "Each read(2) reads a separate packet");
-> 
-> 
-> I would add _exit(0); at the end of the child.
-> + ? ? ? ? ? ? ? _exit(0);
-> 
->     +? ? ? ?}
-> 
-> 
-> And move the tst_reap_children() from the main process to here.
-> 
-> + ? ? ? tst_reap_children();
-> + ? ? ? SAFE_CLOSE(fds[0]);
-> + ? ? ? SAFE_CLOSE(fds[1]);
-> 
->     +}
->     +
->     +static void check_split(void)
->     +{
->     +? ? ? ?int i, pid;
->     +
->     +? ? ? ?SAFE_PIPE2(fds, O_DIRECT);
->     +? ? ? ?SAFE_WRITE(1, fds[1], wrbuf, PIPE_BUF * 2);
->     +
->     +? ? ? ?pid = SAFE_FORK();
->     +? ? ? ?if (!pid) {
->     +? ? ? ? ? ? ? ?memset(rdbuf, 0, pipe_size);
->     +? ? ? ? ? ? ? ?for (i = 0; i < 2; i++) {
->     +? ? ? ? ? ? ? ? ? ? ? ?TEST(SAFE_READ(0, fds[0], rdbuf, pipe_size));
->     +? ? ? ? ? ? ? ? ? ? ? ?if (TST_RET != PIPE_BUF)
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?tst_res(TFAIL,
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"write(higner than PIPE_BUF)
->     split into multiple packet, return %ld", TST_RET);
->     +? ? ? ? ? ? ? ?}
->     +? ? ? ? ? ? ? ?tst_res(TPASS, "write(higner than PIPE_BUF) split
->     into multiple packet");
-> 
-> + ? ? ? ? ? ? ? _exit(0);
-> 
->     +? ? ? ?}
-> 
-> + ? ? ? tst_reap_children();
-> + ? ? ? SAFE_CLOSE(fds[0]);
-> + ? ? ? SAFE_CLOSE(fds[1]);
-> 
->     +}
->     +
->     +static void check_discard(void)
->     +{
->     +? ? ? ?int pid;
->     +? ? ? ?char tmp_buf[20];
->     +? ? ? ?char tmp_secondbuf[20];
->     +
->     +? ? ? ?SAFE_PIPE2(fds, O_DIRECT);
->     +? ? ? ?SAFE_WRITE(1, fds[1], wrbuf, PIPE_BUF);
->     +? ? ? ?SAFE_WRITE(1, fds[1], "1", 1);
->     +
->     +? ? ? ?pid = SAFE_FORK();
->     +? ? ? ?if (!pid) {
->     +? ? ? ? ? ? ? ?TEST(SAFE_READ(0, fds[0], tmp_buf, 20));
->     +? ? ? ? ? ? ? ?if (TST_RET != 20)
->     +? ? ? ? ? ? ? ? ? ? ? ?tst_res(TFAIL,
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"the excess bytes in the packet
->     isn't discarded by read, return %ld", TST_RET);
->     +? ? ? ? ? ? ? ?TEST(SAFE_READ(0, fds[0], tmp_secondbuf, 20));
->     +? ? ? ? ? ? ? ?if (TST_RET == 1) {
->     +? ? ? ? ? ? ? ? ? ? ? ?if (!strcmp(tmp_secondbuf, "1"))
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?tst_res(TPASS,
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"the excess bytes in the
->     packet is discarded by read, only read 1");
->     +? ? ? ? ? ? ? ? ? ? ? ?else
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?tst_res(TFAIL,
->     +? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?"the excess bytes in the
->     packet is discarded by read, expect 1 got %s", tmp_secondbuf);
->     +? ? ? ? ? ? ? ?}
-> 
-> + ? ? ? ? ? ? ? _exit(0);
-> 
->     +? ? ? ?}
-> 
-> + ? ? ? tst_reap_children();
-> + ? ? ? SAFE_CLOSE(fds[0]);
-> + ? ? ? SAFE_CLOSE(fds[1]);
-> 
->     +}
->     +
->     +static void verify_pipe2(unsigned int n)
->     +{
->     +? ? ? ?int pid;
->     +
->     +? ? ? ?pid = SAFE_FORK();
-> 
-> 
-> Why we need fork() here? I don't see any necessary reason for twice fork 
-> in the main process.Yes, it only needs one fork. At the beginning, I think we should do 
-actual test in child process( I remember having such rule) especially 
-when there are multiple subtests.  So I fork twice to make sure all sub 
-test in child or grandchild process.
-> 
->     +? ? ? ?if (pid == 0) {
->     +? ? ? ? ? ? ? ?(*test_func[n])();
-> 
->     +? ? ? ? ? ? ? ?tst_reap_children();
->     +? ? ? ? ? ? ? ?SAFE_CLOSE(fds[0]);
->     +? ? ? ? ? ? ? ?SAFE_CLOSE(fds[1]);
-> 
-> 
-> I tend to move the cloese(fd) to the test process to nearby?pipe2(). 
-> Otherwise, it causes an unclear error like:
-> 
-> # ./pipe2_03
-> tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
-> pipe2_03.c:48: PASS: Each write(2) uses a separate packet
-> pipe2_03.c:61: PASS: Each read(2) reads a separate packet
-> pipe2_03.c:81: PASS: write(higner than PIPE_BUF) split into multiple packet
-> pipe2_03.c:108: FAIL: the excess bytes in the packet is discarded by 
-> read, expect 1 got 1%A
-Even I use one fork and exit(0), I don't meet this problem. Or, I miss 
-something?
 
---- a/testcases/kernel/syscalls/pipe2/pipe2_03.c
-+++ b/testcases/kernel/syscalls/pipe2/pipe2_03.c
-@@ -59,6 +59,7 @@ static void check_peer_rw(void)
-                                         "Each read(2) doesn't read a 
-separate packet, return %ld", TST_RET);
-                 }
-                 tst_res(TPASS, "Each read(2) reads a separate packet");
-+                _exit(0);
-         }
-  }
+> Hi!
+>>>> +void tst_assert_file_str(const char *file, const int lineno, const char
+>>>> *path, const char *buf, const char *val)
+>>>> +{
+>>>> +       char sys_val[1024];
+>>>> +
+>>>> +       SAFE_FILE_LINES_SCANF(path, buf, sys_val);
+>>>
+>>> We should call the file_lines_scanf() here and pass the filename and
+>>> lineno that this functions takes as parameter instead.
+>> I don't understand the meaning of adding filename and line parameter(If
+>> fail, it will report tst_assert.c: 29). Do you want to report the
+>> correct parsed filename when failed?
+>>
+>> If so, I think lineno is meaningless and it also overides the place of
+>> the code meet problem . I prefer to add some path info in safe_file_ops.c.
+> 
+> What I want is to show the test source filename and line on failure, for
+> that we have to pass the lineno and file to the file_lines_scanf()
+> function. I think that it makes much more sense to print the line in a
+> test where the problem has happened rather than some location in the
+> library code.
+Oh, I see. ie TST_ASSERT_INT, modify ioctl_loop01.c
+TST_ASSERT_INT(__FILE__, __LINE__, partscan_path, 0);
+if partscan_path doesn't exist, it will report error as below:
+safe_file_ops.c:142: BROK: Failed to open FILE 
+'/sys/block/loop0/loop1/partscan' for reading at ioctl_loop01.c:46: 
+ENOENT (2)
 
-@@ -79,6 +80,7 @@ static void check_split(void)
-                                         "write(higner than PIPE_BUF) 
-split into multiple packet, return %ld", TST_RET);
-                 }
-                 tst_res(TPASS, "write(higner than PIPE_BUF) split into 
-multiple packet");
-+                _exit(0);
-         }
-  }
-
-@@ -107,21 +109,17 @@ static void check_discard(void)
-                                 tst_res(TFAIL,
-                                         "the excess bytes in the packet 
-is discarded by read, expect 1 got %s", tmp_secondbuf);
-                 }
-+                _exit(0);
-         }
-  }
-
-  static void verify_pipe2(unsigned int n)
+--- a/lib/tst_assert.c
++++ b/lib/tst_assert.c
+-void tst_assert_int(const char *file, const int lineno, const char 
+*path, int val)
++void tst_assert_int(const char *file, const int lineno, const char 
+*source_path,
++                   const int source_pos, const char *path, int val)
   {
--       int pid;
--
--       pid = SAFE_FORK();
--       if (pid == 0) {
--               (*test_func[n])();
--               tst_reap_children();
--               SAFE_CLOSE(fds[0]);
--               SAFE_CLOSE(fds[1]);
--       }
-+       (*test_func[n])();
-+       SAFE_CLOSE(fds[0]);
-+       SAFE_CLOSE(fds[1]);
-         tst_reap_children();
-+
-  }
+         int sys_val;
+
+-       SAFE_FILE_SCANF(path, "%d", &sys_val);
++       safe_file_scanf(source_path, source_pos, NULL, path, "%d", &sys_val
+
+diff --git a/include/tst_assert.h b/include/tst_assert.h
+index 913fff1b5..03e57bbd9 100644
+--- a/include/tst_assert.h
++++ b/include/tst_assert.h
+@@ -7,8 +7,8 @@
+  #ifndef TST_ASSERT_H__
+  #define TST_ASSERT_H__
+
+-#define TST_ASSERT_INT(path, val) \
+-       tst_assert_int(__FILE__, __LINE__, path, val)
++#define TST_ASSERT_INT(source_path, source_pos, path, val) \
++       tst_assert_int(__FILE__, __LINE__, source_path, source_pos, 
+path, val)
+
+  /*
+   * Asserts that integer value stored in file pointed by path equals to the
+@@ -16,6 +16,7 @@
+   * values in sysfs, procfs, etc.
+   */
+  void tst_assert_int(const char *file, const int lineno,
++                   const char *source_path, const int source_pos,
+                     const char *path, int val);
+
+  #define TST_ASSERT_FILE_INT(path, buf, val)
 
 > 
->     +? ? ? ?}
->     +? ? ? ?tst_reap_children();
->     +}
->     +
->     +static void setup(void)
->     +{
->     +? ? ? ?SAFE_PIPE2(fds, O_DIRECT);
->     +? ? ? ?pipe_size = SAFE_FCNTL(fds[1], F_GETPIPE_SZ);
->     +? ? ? ?wrbuf = SAFE_MALLOC(PIPE_BUF * 2);
->     +? ? ? ?rdbuf = SAFE_MALLOC(pipe_size);
->     +? ? ? ?memset(wrbuf, 'x', PIPE_BUF * 2);
->     +? ? ? ?packet_num = pipe_size / PIPE_BUF;
->     +? ? ? ?SAFE_CLOSE(fds[0]);
->     +? ? ? ?SAFE_CLOSE(fds[1]);
->     +}
->     +
->     +static void cleanup(void)
->     +{
->     +? ? ? ?if (fds[0] > 0)
->     +? ? ? ? ? ? ? ?SAFE_CLOSE(fds[0]);
->     +? ? ? ?if (fds[1] > 0)
->     +? ? ? ? ? ? ? ?SAFE_CLOSE(fds[1]);
->     +? ? ? ?if (wrbuf)
->     +? ? ? ? ? ? ? ?free(wrbuf);
->     +? ? ? ?if (rdbuf)
->     +? ? ? ? ? ? ? ?free(rdbuf);
->     +}
->     +
->     +static struct tst_test test = {
->     +? ? ? ?.setup = setup,
->     +? ? ? ?.cleanup = cleanup,
->     +? ? ? ?.forks_child = 1,
->     +? ? ? ?.test = verify_pipe2,
->     +? ? ? ?.tcnt = ARRAY_SIZE(test_func),
->     +};
->     -- 
->     2.23.0
-> 
-> 
-> 
-> 
->     -- 
->     Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> 
-> 
-> -- 
-> Regards,
-> Li Wang
 
 
