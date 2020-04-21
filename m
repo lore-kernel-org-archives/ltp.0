@@ -1,128 +1,135 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 21 Apr 2020 14:21:47 +0800
-Subject: [LTP] [PATCH 2/3] lib: Add TST_ASSERT_FILE_INT and
- TST_ASSERT_FILE_STR
-In-Reply-To: <1587450108-31100-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1587450108-31100-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1587450108-31100-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 21 Apr 2020 09:49:59 +0300
+Subject: [LTP] [PATCH 1/4] syscalls/fanotify09: Check merging of events on
+ directories
+In-Reply-To: <20200421065002.12417-1-amir73il@gmail.com>
+References: <20200421065002.12417-1-amir73il@gmail.com>
+Message-ID: <20200421065002.12417-2-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These functions are similar to TST_ASSERT_INT/STR, but they
-are designed to get field value of proc or sys file. ie
-NoNewPrivs field in the /proc/[pid]/status.
+In a setup of mount mark and directory inode mark the FAN_ONDIR flag
+set on one mark should not imply that all events in the other mark mask
+are expected on directories as well.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Add a regression test case for commit 55bf882c7f13:
+   fanotify: fix merging marks masks with FAN_ONDIR
+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- include/tst_assert.h | 28 ++++++++++++++++++++++++++--
- lib/tst_assert.c     | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 2 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify09.c     | 46 +++++++++++++------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
 
-diff --git a/include/tst_assert.h b/include/tst_assert.h
-index 04e80777c..913fff1b5 100644
---- a/include/tst_assert.h
-+++ b/include/tst_assert.h
-@@ -16,7 +16,20 @@
-  * values in sysfs, procfs, etc.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+index 0f6a9e864..68a4e5081 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify09.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+@@ -15,6 +15,10 @@
+  * Test case #2 is a regression test for commit b469e7e47c8a:
+  *
+  *      fanotify: fix handling of events on child sub-directory
++ *
++ * Test case #3 is a regression test for commit 55bf882c7f13:
++ *
++ *      fanotify: fix merging marks masks with FAN_ONDIR
   */
- void tst_assert_int(const char *file, const int lineno,
--                    const char *path, int val);
-+		    const char *path, int val);
-+
-+#define TST_ASSERT_FILE_INT(path, buf, val) \
-+	tst_assert_file_int(__FILE__, __LINE__, path, buf, val)
-+
-+/*
-+ * Asserts that integer value stored in the buf field of file pointed by path
-+ * equals to the value passed to this function. This is mostly useful for
-+ * asserting correct field values in sysfs, procfs, etc.
-+ */
-+
-+void tst_assert_file_int(const char *file, const int lineno,
-+			 const char *path, const char *buf, int val);
-+
- 
- #define TST_ASSERT_STR(path, val) \
- 	tst_assert_str(__FILE__, __LINE__, path, val)
-@@ -27,6 +40,17 @@ void tst_assert_int(const char *file, const int lineno,
-  * values in sysfs, procfs, etc.
-  */
- void tst_assert_str(const char *file, const int lineno,
--                    const char *path, const char *val);
-+		    const char *path, const char *val);
-+
-+#define TST_ASSERT_FILE_STR(path, buf, val) \
-+	tst_assert_file_str(__FILE__, __LINE__, path, buf, val)
-+
-+/*
-+ * Asserts that a string value stored in the buf field of file pointed by path
-+ * equals to the value passed to this function. This is mostly useful for
-+ * asserting correct field values in sysfs, procfs, etc.
-+ */
-+void tst_assert_file_str(const char *file, const int lineno,
-+			 const char *path, const char *buf, const char *val);
- 
- #endif /* TST_ASSERT_H__ */
-diff --git a/lib/tst_assert.c b/lib/tst_assert.c
-index 8ef3cd72e..65ee76473 100644
---- a/lib/tst_assert.c
-+++ b/lib/tst_assert.c
-@@ -4,6 +4,7 @@
-  * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-  * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
-  */
-+#include <stdio.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_assert.h"
- #include "tst_test.h"
-@@ -22,6 +23,22 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
- 	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
+ #define _GNU_SOURCE
+ #include "config.h"
+@@ -57,16 +61,25 @@ static int mount_created;
+ static struct tcase {
+ 	const char *tname;
+ 	unsigned int ondir;
++	const char *testdir;
+ 	int nevents;
+ } tcases[] = {
+ 	{
+ 		"Events on children with both inode and mount marks",
+ 		0,
++		DIR_NAME,
+ 		1,
+ 	},
+ 	{
+ 		"Events on children and subdirs with both inode and mount marks",
+ 		FAN_ONDIR,
++		DIR_NAME,
++		2,
++	},
++	{
++		"Events on files and dirs with both inode and mount marks",
++		FAN_ONDIR,
++		".",
+ 		2,
+ 	},
+ };
+@@ -125,6 +138,20 @@ static void cleanup_fanotify_groups(void)
+ 	}
  }
  
-+void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *buf, int val)
++static void event_res(int ttype, int group,
++		      struct fanotify_event_metadata *event)
 +{
-+	int sys_val;
-+	char fmt[1024];
-+
-+	sprintf(fmt, "%s: %%d", buf);
-+	SAFE_FILE_LINES_SCANF(path, fmt, &sys_val);
-+
-+	if (val == sys_val) {
-+		tst_res_(file, lineno, TPASS, "%s %s = %d", path, buf, sys_val);
-+		return;
-+	}
-+
-+	tst_res_(file, lineno, TFAIL, "%s %s != %d got %d", path, buf, val, sys_val);
++	int len;
++	sprintf(symlnk, "/proc/self/fd/%d", event->fd);
++	len = readlink(symlnk, fdpath, sizeof(fdpath));
++	if (len < 0)
++		len = 0;
++	fdpath[len] = 0;
++	tst_res(ttype, "group %d got event: mask %llx pid=%u fd=%d path=%s",
++		group, (unsigned long long)event->mask,
++		(unsigned)event->pid, event->fd, fdpath);
 +}
 +
- void tst_assert_str(const char *file, const int lineno, const char *path, const char *val)
+ static void verify_event(int group, struct fanotify_event_metadata *event,
+ 			 uint32_t expect)
  {
- 	char sys_val[1024];
-@@ -34,3 +51,19 @@ void tst_assert_str(const char *file, const int lineno, const char *path, const
- 
- 	tst_res_(file, lineno, TFAIL, "%s != '%s' got '%s'", path, val, sys_val);
+@@ -139,15 +166,7 @@ static void verify_event(int group, struct fanotify_event_metadata *event,
+ 			(unsigned long long)event->mask, (unsigned)event->pid,
+ 			(unsigned)getpid(), event->fd);
+ 	} else {
+-		int len;
+-		sprintf(symlnk, "/proc/self/fd/%d", event->fd);
+-		len = readlink(symlnk, fdpath, sizeof(fdpath));
+-		if (len < 0)
+-			len = 0;
+-		fdpath[len] = 0;
+-		tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%d path=%s",
+-			group, (unsigned long long)event->mask,
+-			(unsigned)event->pid, event->fd, fdpath);
++		event_res(TPASS, group, event);
+ 	}
  }
-+
-+void tst_assert_file_str(const char *file, const int lineno, const char *path, const char *buf, const char *val)
-+{
-+	char sys_val[1024];
-+	char fmt[2048];
-+
-+	sprintf(fmt, "%s: %%1024s", buf);
-+	SAFE_FILE_LINES_SCANF(path, fmt, sys_val);
-+
-+	if (!strcmp(val, sys_val)) {
-+		tst_res_(file, lineno, TPASS, "%s %s = '%s'", path, buf, sys_val);
-+		return;
-+	}
-+
-+	tst_res_(file, lineno, TFAIL, "%s %s != '%s' got '%s'", path, buf, val, sys_val);
-+}
+ 
+@@ -167,9 +186,9 @@ static void test_fanotify(unsigned int n)
+ 	 */
+ 	SAFE_FILE_PRINTF(fname, "1");
+ 	/*
+-	 * generate FAN_CLOSE_NOWRITE event on a child subdir.
++	 * generate FAN_CLOSE_NOWRITE event on a testdir (subdir or ".")
+ 	 */
+-	dirfd = SAFE_OPEN(DIR_NAME, O_RDONLY);
++	dirfd = SAFE_OPEN(tc->testdir, O_RDONLY);
+ 	if (dirfd >= 0)
+ 		SAFE_CLOSE(dirfd);
+ 
+@@ -210,13 +229,12 @@ static void test_fanotify(unsigned int n)
+ 
+ 	/*
+ 	 * Then verify the rest of the groups did not get the MODIFY event and
+-	 * did not get the FAN_CLOSE_NOWRITE event on subdir.
++	 * did not get the FAN_CLOSE_NOWRITE event on testdir.
+ 	 */
+ 	for (i = 1; i < NUM_GROUPS; i++) {
+ 		ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
+ 		if (ret > 0) {
+-			tst_res(TFAIL, "group %d got event", i);
+-			verify_event(i, event, FAN_CLOSE_NOWRITE);
++			event_res(TFAIL, i, event);
+ 			if (event->fd != FAN_NOFD)
+ 				SAFE_CLOSE(event->fd);
+ 			continue;
 -- 
-2.23.0
-
-
+2.17.1
 
