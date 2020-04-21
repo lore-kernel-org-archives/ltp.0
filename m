@@ -1,24 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 21 Apr 2020 17:40:06 +0200
-Subject: [LTP] [PATCH V3 1/2] tst_timer: Add support for kernel's 64 bit
- timespec
-In-Reply-To: <08a307591b531593bbaa5b1e8a4c841e80493937.1587033556.git.viresh.kumar@linaro.org>
-References: <cover.1587033556.git.viresh.kumar@linaro.org>
- <08a307591b531593bbaa5b1e8a4c841e80493937.1587033556.git.viresh.kumar@linaro.org>
-Message-ID: <20200421154006.GA14036@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 21 Apr 2020 19:41:04 +0200
+Subject: [LTP] [PATCH 2/2] net/sendfile01.sh: Rewrite into new API
+In-Reply-To: <ec51559c-09e3-b518-f144-4246c68f1bd9@oracle.com>
+References: <20200416104548.27897-1-pvorel@suse.cz>
+ <20200416104548.27897-2-pvorel@suse.cz>
+ <ec51559c-09e3-b518-f144-4246c68f1bd9@oracle.com>
+Message-ID: <20200421174104.GA4344@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've cleaned up and simplified these changes + wrote a simple test and
-pushed the result, thanks a lot for your effors.
+Hi Alexey,
 
-Can you please rebase the test changes on the top of these changes? It
-should be merely cosmetical, function names have changes etc.
+...
+> > +	tst_res TINFO "wait for the server to start"
+> > +	sleep 1
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> It would be better to replace 'sleep' with a wait-loop and check that the
+> port in the listen state there, e.g with ss -ltp | grep "$port.*testsf"
+
+I'm sorry, I overlooked this. I'm sorry, merged without this.
+I'll implement it separately.
+Thanks for your review.
+
+...
+> > +		diff $file $lfile > /dev/null
+> > +		ret=$?
+> > +		if [ $ret -eq 0 ]; then
+> > +			tst_res TPASS "coped file is the same as the original"
+> > +		elif [ $ret -gt 1 ]; then
+> > +			tst_brk TFAIL "cannot compare files"
+> > +		else
+> > +			tst_res TFAIL "the copied file differs from the original"
+
+
+> EXPECT_PASS diff $lfile
+Fixed.
+
+Kind regards,
+Petr
