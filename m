@@ -1,64 +1,91 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Apr 2020 16:29:17 +0800
-Subject: [LTP] [PATCH] lib/tst_hugepage: TCONF when huge pages are not
- supported
-In-Reply-To: <bc3c52ff5b97feefa4200c3d87002de5a61ee360.1587539566.git.jstancek@redhat.com>
-References: <bc3c52ff5b97feefa4200c3d87002de5a61ee360.1587539566.git.jstancek@redhat.com>
-Message-ID: <CAEemH2fWhXzLRV+g=hN9yJRcmqsj2iGMxxy14GGGKDpBAEX5HQ@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 22 Apr 2020 17:31:16 +0800
+Subject: [LTP] [PATCH v3 3/3] syscalls/pipe2_03: Add new test for pipe2
+ O_DIRECT flag
+In-Reply-To: <1f29b873-b256-b475-87c5-83378017aa39@cn.fujitsu.com>
+References: <1586927503-10827-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1587022142-32122-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1587022142-32122-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2eeUa0XJSGeyid2J373FnvqSAQCjdO1AkbpHGTFisGGNA@mail.gmail.com>
+ <be1c1761-c518-f3ee-ef19-b4f45d36df80@cn.fujitsu.com>
+ <CAEemH2dj8vdicU76ewAAECgrEmVaEGN5uMZ4EmnzUa1v+Ez9Ng@mail.gmail.com>
+ <53bb4ba1-0e68-4abb-39fd-9e661ed38754@cn.fujitsu.com>
+ <1f29b873-b256-b475-87c5-83378017aa39@cn.fujitsu.com>
+Message-ID: <20f5e406-f430-79ba-f911-015247e73d0d@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
-
-On Wed, Apr 22, 2020 at 3:13 PM Jan Stancek <jstancek@redhat.com> wrote:
-
-> /sys/kernel/mm/hugepages is not present when there are no
-> supported hugepage sizes. This is common for ppc64le KVM guests,
-> when hypervisor does not enable hugepages. Guest will boot with:
->   hugetlbfs: disabling because there are no supported hugepage sizes
->
->   # cat /proc/filesystems  | grep huge; echo $?
->   1
->
-> End the test with TCONF to avoid TBROK on mmap, set_sys_tune, etc.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  lib/tst_hugepage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
-> index 52667a14e8ff..eb66c4fbbc91 100644
-> --- a/lib/tst_hugepage.c
-> +++ b/lib/tst_hugepage.c
-> @@ -18,7 +18,7 @@ unsigned long tst_request_hugepages(unsigned long hpages)
->
->         if (access(PATH_HUGEPAGES, F_OK)) {
->                 tst_hugepages = 0;
-> -               goto out;
-> +               tst_brk(TCONF, "Huge pages not supported.");
->
-
-We don't do that because hugetlb is not the hard requirement for some tests
-(i.e pkey01.c). If we exit with TCONF at an early phase on a non-hugetlb
-system the remaining test will be missed too. In a word, the goto out here
-is on purpose.
+Hi Li
 
 
->         }
->
->         if (nr_opt)
-> --
-> 2.18.1
->
->
+> Hi Li
+> 
+> 
+>> Hi Li
+>>
+>>> Hi Xu,
+>>>
+>>> Yang Xu <xuyang2018.jy@cn.fujitsu.com 
+>>> <mailto:xuyang2018.jy@cn.fujitsu.com>> wrote:
+>>>
+>>> ??? ...
+>>> ???? >
+>>> ???? > # ./pipe2_03
+>>> ???? > tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+>>> ???? > pipe2_03.c:48: PASS: Each write(2) uses a separate packet
+>>> ???? > pipe2_03.c:61: PASS: Each read(2) reads a separate packet
+>>> ???? > pipe2_03.c:81: PASS: write(higner than PIPE_BUF) split into
+>>> ??? multiple packet
+>>> ???? > pipe2_03.c:108: FAIL: the excess bytes in the packet is 
+>>> discarded by
+>>> ???? > read, expect 1 got 1%A
+>>> ??? Even I use one fork and exit(0), I don't meet this problem. Or, I 
+>>> miss
+>>> ??? something?
+>>>
+>>>
+>>> I think I got the point.
+>>>
+>>> In your test code for pipe2(), you didn't use pipe in the correct 
+>>> way. Even that we define the fds[2] as a global?variable, there still 
+>>> have a new copy for fds[2] in the child process, we should close one 
+>>> of the pipes in child and parent to make the connection is built 
+>>> correspondingly, then that will work normally for us.
+>>>
+>>> I suggest redesigning some of the test structs. What do you think?
+>> Yes.
+>>>
+>>> Fyi: 
+>>> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/pipe/pipe02.c 
+> 
+> BTW, pipe02.c can use SAFE_PIPE macro and remove? UCLINUX ifdef.
+>>>
+>> In principle, we should use the following format
+>> step1????? pipe(fds);
+>> step2????? SAFE_FORK();
+>> ?????? child process
+>> step3???????? close one fd and do something
+>> ?????? parent process
+>> step4???????? close another fd and do something
+>>
+>> Also, we should not do write opeartion in step 1~2, otherwise child 
+>> process will inherit data.
+modify this case ,url as below:
+https://github.com/xuyang0410/ltp/commit/6e701803b39123b5abf74bd292c36fee73b54065
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200422/4c25d7a1/attachment.htm>
+How about it?
+
+ps: I meet a problem that string without the trailing string zero 
+terminator, so I want to use memcmp or strncmp.
+>>>
+>>> -- 
+>>> Regards,
+>>> Li Wang
+>>
+>>
+>>
+
+
