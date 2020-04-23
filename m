@@ -1,350 +1,132 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Date: Thu, 23 Apr 2020 00:17:38 -0700
-Subject: [LTP] [PATCH] lapi/syscalls: Add ARC support
-Message-ID: <20200423071738.3469-1-vgupta@synopsys.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 23 Apr 2020 16:08:53 +0800
+Subject: [LTP] [PATCH v4 3/3] syscalls/pipe2_03: Add new test for pipe2
+ O_DIRECT flag
+In-Reply-To: <1587552329-21738-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1587552329-21738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1587552329-21738-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2ea_CtRyP9KtpJDjpEzobRyhrodiycDCAxhLbCjuOwhCQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- include/lapi/syscalls/arc.in | 314 +++++++++++++++++++++++++++++++++++
- include/lapi/syscalls/order  |   1 +
- 2 files changed, 315 insertions(+)
- create mode 100644 include/lapi/syscalls/arc.in
+On Wed, Apr 22, 2020 at 6:47 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+wrote:
 
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-new file mode 100644
-index 000000000000..0cadb150c7fe
---- /dev/null
-+++ b/include/lapi/syscalls/arc.in
-@@ -0,0 +1,314 @@
-+io_setup 0
-+io_destroy 1
-+io_submit 2
-+io_cancel 3
-+io_getevents 4
-+setxattr 5
-+lsetxattr 6
-+fsetxattr 7
-+getxattr 8
-+lgetxattr 9
-+fgetxattr 10
-+listxattr 11
-+llistxattr 12
-+flistxattr 13
-+removexattr 14
-+lremovexattr 15
-+fremovexattr 16
-+getcwd 17
-+lookup_dcookie 18
-+eventfd2 19
-+epoll_create1 20
-+epoll_ctl 21
-+epoll_pwait 22
-+dup 23
-+dup3 24
-+fcntl 25
-+inotify_init1 26
-+inotify_add_watch 27
-+inotify_rm_watch 28
-+ioctl 29
-+ioprio_set 30
-+ioprio_get 31
-+flock 32
-+mknodat 33
-+mkdirat 34
-+unlinkat 35
-+symlinkat 36
-+linkat 37
-+renameat 38
-+umount2 39
-+mount 40
-+pivot_root 41
-+nfsservctl 42
-+statfs 43
-+fstatfs 44
-+truncate 45
-+ftruncate 46
-+fallocate 47
-+faccessat 48
-+chdir 49
-+fchdir 50
-+chroot 51
-+fchmod 52
-+fchmodat 53
-+fchownat 54
-+fchown 55
-+openat 56
-+close 57
-+vhangup 58
-+pipe2 59
-+quotactl 60
-+getdents64 61
-+lseek 62
-+read 63
-+write 64
-+readv 65
-+writev 66
-+pread64 67
-+pwrite64 68
-+preadv 69
-+pwritev 70
-+sendfile 71
-+pselect6 72
-+ppoll 73
-+signalfd4 74
-+vmsplice 75
-+splice 76
-+tee 77
-+readlinkat 78
-+fstatat 79
-+fstat 80
-+sync 81
-+fsync 82
-+fdatasync 83
-+sync_file_range2 84
-+sync_file_range 84
-+timerfd_create 85
-+timerfd_settime 86
-+timerfd_gettime 87
-+utimensat 88
-+acct 89
-+capget 90
-+capset 91
-+personality 92
-+exit 93
-+exit_group 94
-+waitid 95
-+set_tid_address 96
-+unshare 97
-+futex 98
-+set_robust_list 99
-+get_robust_list 100
-+nanosleep 101
-+getitimer 102
-+setitimer 103
-+kexec_load 104
-+init_module 105
-+delete_module 106
-+timer_create 107
-+timer_gettime 108
-+timer_getoverrun 109
-+timer_settime 110
-+timer_delete 111
-+clock_settime 112
-+clock_gettime 113
-+clock_getres 114
-+clock_nanosleep 115
-+syslog 116
-+ptrace 117
-+sched_setparam 118
-+sched_setscheduler 119
-+sched_getscheduler 120
-+sched_getparam 121
-+sched_setaffinity 122
-+sched_getaffinity 123
-+sched_yield 124
-+sched_get_priority_max 125
-+sched_get_priority_min 126
-+sched_rr_get_interval 127
-+restart_syscall 128
-+kill 129
-+tkill 130
-+tgkill 131
-+sigaltstack 132
-+rt_sigsuspend 133
-+rt_sigaction 134
-+rt_sigprocmask 135
-+rt_sigpending 136
-+rt_sigtimedwait 137
-+rt_sigqueueinfo 138
-+rt_sigreturn 139
-+setpriority 140
-+getpriority 141
-+reboot 142
-+setregid 143
-+setgid 144
-+setreuid 145
-+setuid 146
-+setresuid 147
-+getresuid 148
-+setresgid 149
-+getresgid 150
-+setfsuid 151
-+setfsgid 152
-+times 153
-+setpgid 154
-+getpgid 155
-+getsid 156
-+setsid 157
-+getgroups 158
-+setgroups 159
-+uname 160
-+sethostname 161
-+setdomainname 162
-+getrlimit 163
-+setrlimit 164
-+getrusage 165
-+umask 166
-+prctl 167
-+getcpu 168
-+gettimeofday 169
-+settimeofday 170
-+adjtimex 171
-+getpid 172
-+getppid 173
-+getuid 174
-+geteuid 175
-+getgid 176
-+getegid 177
-+gettid 178
-+sysinfo 179
-+mq_open 180
-+mq_unlink 181
-+mq_timedsend 182
-+mq_timedreceive 183
-+mq_notify 184
-+mq_getsetattr 185
-+msgget 186
-+msgctl 187
-+msgrcv 188
-+msgsnd 189
-+semget 190
-+semctl 191
-+semtimedop 192
-+semop 193
-+shmget 194
-+shmctl 195
-+shmat 196
-+shmdt 197
-+socket 198
-+socketpair 199
-+bind 200
-+listen 201
-+accept 202
-+connect 203
-+getsockname 204
-+getpeername 205
-+sendto 206
-+recvfrom 207
-+setsockopt 208
-+getsockopt 209
-+shutdown 210
-+sendmsg 211
-+recvmsg 212
-+readahead 213
-+brk 214
-+munmap 215
-+mremap 216
-+add_key 217
-+request_key 218
-+keyctl 219
-+clone 220
-+execve 221
-+mmap 222
-+fadvise64 223
-+swapon 224
-+swapoff 225
-+mprotect 226
-+msync 227
-+mlock 228
-+munlock 229
-+mlockall 230
-+munlockall 231
-+mincore 232
-+madvise 233
-+remap_file_pages 234
-+mbind 235
-+get_mempolicy 236
-+set_mempolicy 237
-+migrate_pages 238
-+move_pages 239
-+rt_tgsigqueueinfo 240
-+perf_event_open 241
-+accept4 242
-+recvmmsg 243
-+cacheflush 244
-+arc_settls 245
-+arc_gettls 246
-+sysfs 247
-+arc_usr_cmpxchg 248
-+wait4 260
-+prlimit64 261
-+fanotify_init 262
-+fanotify_mark 263
-+name_to_handle_at 264
-+open_by_handle_at 265
-+clock_adjtime 266
-+syncfs 267
-+setns 268
-+sendmmsg 269
-+process_vm_readv 270
-+process_vm_writev 271
-+kcmp 272
-+getrandom 278
-+memfd_create 279
-+bpf 280
-+execveat 281
-+userfaultfd 282
-+membarrier 283
-+mlock2 284
-+copy_file_range 285
-+preadv2 286
-+pwritev2 287
-+pkey_mprotect 288
-+pkey_alloc 289
-+pkey_free 290
-+statx 291
-+io_pgetevents 292
-+rseq 293
-+kexec_file_load 294
-+clock_gettime64 403
-+clock_settime64 404
-+clock_adjtime64 405
-+clock_getres_time64 406
-+clock_nanosleep_time64 407
-+timer_gettime64 408
-+timer_settime64 409
-+timerfd_gettime64 410
-+timerfd_settime64 411
-+utimensat_time64 412
-+pselect6_time64 413
-+ppoll_time64 414
-+io_pgetevents_time64 416
-+recvmmsg_time64 417
-+mq_timedsend_time64 418
-+mq_timedreceive_time64 419
-+semtimedop_time64 420
-+rt_sigtimedwait_time64 421
-+futex_time64 422
-+sched_rr_get_interval_time64 423
-+pidfd_send_signal 424
-+io_uring_setup 425
-+io_uring_enter 426
-+io_uring_register 427
-+open_tree 428
-+move_mount 429
-+fsopen 430
-+fsconfig 431
-+fsmount 432
-+fspick 433
-+pidfd_open 434
-+clone3 435
-+openat2 437
-+pidfd_getfd 438
-diff --git a/include/lapi/syscalls/order b/include/lapi/syscalls/order
-index 62352c7a887f..548097681307 100644
---- a/include/lapi/syscalls/order
-+++ b/include/lapi/syscalls/order
-@@ -1,4 +1,5 @@
- aarch64
-+arc
- arm
- hppa
- i386
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                           |   1 +
+>  testcases/kernel/syscalls/pipe2/.gitignore |   1 +
+>  testcases/kernel/syscalls/pipe2/pipe2_03.c | 172 +++++++++++++++++++++
+>  3 files changed, 174 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/pipe2/pipe2_03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 9bb72beb2..16add02d3 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -916,6 +916,7 @@ pipe13 pipe13
+>
+>  pipe2_01 pipe2_01
+>  pipe2_02 pipe2_02
+> +pipe2_03 pipe2_03
+>  pipe2_04 pipe2_04
+>
+>  pivot_root01 pivot_root01
+> diff --git a/testcases/kernel/syscalls/pipe2/.gitignore
+> b/testcases/kernel/syscalls/pipe2/.gitignore
+> index 773450a48..ede1da65e 100644
+> --- a/testcases/kernel/syscalls/pipe2/.gitignore
+> +++ b/testcases/kernel/syscalls/pipe2/.gitignore
+> @@ -1,3 +1,4 @@
+>  /pipe2_01
+>  /pipe2_02
+> +/pipe2_03
+>  /pipe2_04
+> diff --git a/testcases/kernel/syscalls/pipe2/pipe2_03.c
+> b/testcases/kernel/syscalls/pipe2/pipe2_03.c
+> new file mode 100644
+> index 000000000..0314f9eda
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/pipe2/pipe2_03.c
+> @@ -0,0 +1,172 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> + *
+> + * This case is designed to test the basic functionality about the
+> + * O_DIRECT flag of pipe2.
+> + *
+> + * It includes three sub tests.
+> + * 1) Each write(2) to the pipe is dealt with as a separate packet, and
+> + * read(2)s from the pipe will read one packet at a time.
+> + * 2) Writes of greater than PIPE_BUF bytes (see pipe(7)) will be split
+> + * into multiple packet.
+> + * 3)If a read(2) specifies a buffer size that is smaller than the next
+> + * packet, then the requested number of bytes are read, and the excess
+> + * bytes in the packet are discarded.
+> + */
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <linux/limits.h>
+> +#include "lapi/fcntl.h"
+> +#include "tst_test.h"
+> +
+> +static int fds[2], packet_num, pipe_size;
+> +static char *wrbuf;
+> +static char *rdbuf;
+> +static void check_peer_rw(void);
+> +static void check_split(void);
+> +static void check_discard(void);
+> +
+> +static void (*test_func[])(void) = {check_peer_rw, check_split,
+> check_discard};
+> +
+> +static void check_peer_rw(void)
+> +{
+> +       int i, pid;
+> +
+> +       SAFE_PIPE2(fds, O_DIRECT | O_NONBLOCK);
+> +
+> +       pid = SAFE_FORK();
+> +       if (!pid) {
+> +               SAFE_CLOSE(fds[1]);
+> +               memset(rdbuf, 0, pipe_size);
+> +               TST_CHECKPOINT_WAIT(0);
+> +               for (i = 0; i < packet_num; i++) {
+> +                       TEST(SAFE_READ(0, fds[0], rdbuf, pipe_size));
+> +                       if (TST_RET != 1)
+> +                               tst_res(TFAIL,
+> +                                       "Each read(2) doesn't read a
+> separate packet, return %ld", TST_RET);
+> +               }
+> +               tst_res(TPASS, "Each read(2) reads a separate packet");
+> +                _exit(0);
+> +       }
+> +
+> +       SAFE_CLOSE(fds[0]);
+> +       for (i = 0; i < packet_num; i++)
+> +               SAFE_WRITE(1, fds[1], "x", 1);
+> +
+>
+
+I got a failure on the ppc64le platform(page size: 65536kB).
+
+# ./pipe2_03
+tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+pipe_size = 1048576
+PIPE_BUF = 4096
+packet_num = 256
+safe_macros.c:457: BROK: pipe2_03.c:58:
+write(4,0x1001d2b8,18446744073709551615) failed: EAGAIN/EWOULDBLOCK (11)
 -- 
-2.20.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200423/ab57c8b1/attachment.htm>
