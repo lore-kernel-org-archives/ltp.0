@@ -1,57 +1,66 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Apr 2020 00:12:45 +0200
-Subject: [LTP] [PATCH 1/1] net/sendfile01.sh: Check with timeout
-In-Reply-To: <dab04fc5-5d20-3dbc-c21f-535112ab222f@oracle.com>
-References: <20200421180002.11351-1-pvorel@suse.cz>
- <dab04fc5-5d20-3dbc-c21f-535112ab222f@oracle.com>
-Message-ID: <20200423221245.GA1391884@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 24 Apr 2020 12:43:04 +0800
+Subject: [LTP] [PATCH v2 09/10] syscalls/ioctl_loop07: Add dio with
+ logic block size error test
+In-Reply-To: <9084aae3-e98a-918d-9a0d-bdbe7da76f87@cn.fujitsu.com>
+References: <20200409075506.GA2828@yuki.lan>
+ <1586429086-22975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1586429086-22975-9-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200422135856.GB5529@yuki.lan>
+ <124d3b91-2025-d36e-f3b1-6c0b5528ae51@cn.fujitsu.com>
+ <9084aae3-e98a-918d-9a0d-bdbe7da76f87@cn.fujitsu.com>
+Message-ID: <46c50e18-faec-a428-6fcc-ffc3515b29dd@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-
-> > I guess nothing controversial here as failure of starting server is
-> > guarded by -s.
-> > I was thinking about using TST_RETRY_FUNC, but passing command to it
-> > leads to: tst_rhost_run: unknown option: l
+Hi Cyril
 
 
-> Hi Petr,
+> Hi Cyril
+> 
+>> Hi Cyril
+>>
+>>
+>>> Hi!
+>>> This test fails for me, i.e. the attempt to enabe direct IO succeeds. I
+>>> will have to have a closer look later on.
+>> Now, I use 5.7.0-rc2 kernel to test, this case fails, I guess loop 
+>> driver has changed its logic. I am trying.
+> 
+> I write this test on fedora31(tmp directory use tmpfs), so I got a 
+> pseudo pass when setting dio.
+> 
+> I misunderstood the meaning of the comment in the kernel.
+> kernel commet as below:
+> "We support direct I/O only if lo_offset is aligned with the
+> logical I/O size of backing device, and the logical block
+> size of loop is bigger than the backing device's and the loop
+> needn't transform transfer."
+> 
+> sb_bsize = bdev_logical_block_size(inode->i_sb->s_bdev);? //get block 
+> size from backing device
+> dio_align = sb_bsize - 1;
+> 
+> I use logic block size of loop(1024 > 512) , so this test pass.
+> 
+> Now, I think this test is meaningless and we can remove this.
+> 
+> Best Regards
+> Yang Xu
+>>
+>> ps: when run ioctl_loop01.c, I also met another problem that 
+>> /dev/loop0p1 and? the corresponding sys file doesn't existed. dmesg 
+>> report error "loop_reread_partitions: partition scan of loop0 () 
+>> failed (rc=-16)". Also trying .
+Kernel commit d3ef55362("block: fix busy device checking in 
+blk_drop_partitions")  and commit cb6b771b05("block: fix busy device 
+checking in blk_drop_partitions again") introduced this 
+failure(ioctl_loop01, EBUSY error). more info see[1]
 
-> eval might help in this case, take a look at tst_retry() in test.sh
-Good point.
+[1]https://lkml.org/lkml/2020/4/23/380
+>>>
 
-> old api, not sure why exactly it was removed in the new one...
-It was designed from scratch I guess.
-But this patch makes sense to me, I'll test it tomorrow.
 
-> index 1d8a71d9f..e34edb26a 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -207,7 +207,7 @@ TST_RETRY_FN_EXP_BACKOFF()
->         fi
-
->         while true; do
-> -               $tst_fun
-> +               eval "$tst_fun"
->                 if [ "$?" = "$tst_exp" ]; then
->                         break
->                 fi
-
-> > What bothers me more, that TST_NEEDS_CMDS does not check command on
-> > rhost. Do we want to have something like TST_NEEDS_CMDS_RHOST or we just
-> > don't care?
-
-> In general, yes, we need to check if a command exists on the remote host.
-> Yet another variable, what about checking what in TST_NEEDS_CMDS on the
-> remote host? Though TST_NEEDS_CMDS_RHOST looks quite well.
-In this case ss was needed only on rhost.
-I don't know if SUT in two hosts configurations (ssh/rsh) are identical.
-If yes, it'd be enough just to check TST_NEEDS_CMDS also on rhost.
-I'm for this variant as it's a simpler change. I'll send a patch tomorrow.
-
-Kind regards,
-Petr
