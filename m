@@ -1,560 +1,685 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 24 Apr 2020 12:48:45 +0530
-Subject: [LTP] [PATCH V5 4/5] syscalls/clock_nanosleep: Add support for
- time64 tests
+Date: Fri, 24 Apr 2020 12:48:46 +0530
+Subject: [LTP] [PATCH V5 5/5] syscalls/clock_adjtime: Add support for time64
+ tests
 In-Reply-To: <1f2c00709d36aa9bc810f201e3adb93808816851.1587712683.git.viresh.kumar@linaro.org>
 References: <a143f48ffeec14739d35c07dfb95f237981a322d.1587712683.git.viresh.kumar@linaro.org>
-Message-ID: <f47b22174da8454ed6a58e984a3468af7fd5a1d5.1587712683.git.viresh.kumar@linaro.org>
+Message-ID: <c4bf1e2c7699a8fe2d05ab498495646f9d41ce44.1587712683.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing clock_nanosleep()
+This adds support for time64 tests to the existing clock_adjtime()
 syscall tests.
-
-This also moves the tests from clock_nanosleep2/ directory to
-clock_nanosleep/ directory as it was added mistakenly there, as there is
-no clock_nanosleep2() syscall.
-
-Also note that this patch doesn't update clock_nanosleep02.c test as
-that uses the sample test pattern and will result in many other changes
-to core libraries of LTP test suite.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/tst_timer.h                           |  20 ++++
- runtest/syscalls                              |   2 +-
- .../syscalls/clock_nanosleep/.gitignore       |   1 +
- .../clock_nanosleep/clock_nanosleep01.c       | 100 +++++++++++++-----
- .../clock_nanosleep/clock_nanosleep03.c       |  66 ++++++++++--
- .../clock_nanosleep/clock_nanosleep04.c       |  88 +++++++++++++++
- .../syscalls/clock_nanosleep2/.gitignore      |   1 -
- .../kernel/syscalls/clock_nanosleep2/Makefile |  10 --
- .../clock_nanosleep2/clock_nanosleep2_01.c    |  45 --------
- 9 files changed, 243 insertions(+), 90 deletions(-)
- create mode 100644 testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep04.c
- delete mode 100644 testcases/kernel/syscalls/clock_nanosleep2/.gitignore
- delete mode 100644 testcases/kernel/syscalls/clock_nanosleep2/Makefile
- delete mode 100644 testcases/kernel/syscalls/clock_nanosleep2/clock_nanosleep2_01.c
+ .../syscalls/clock_adjtime/clock_adjtime.h    | 216 +++++++++++++++---
+ .../syscalls/clock_adjtime/clock_adjtime01.c  | 124 ++++++----
+ .../syscalls/clock_adjtime/clock_adjtime02.c  |  95 +++++---
+ 3 files changed, 332 insertions(+), 103 deletions(-)
 
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 4823d350fdc6..256e1d71e1bc 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -192,6 +192,26 @@ static inline int sys_clock_settime64(clockid_t clk_id, void *ts)
- 	return tst_syscall(__NR_clock_settime64, clk_id, ts);
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+index d7f553a3a04b..138e6ca7f3d0 100644
+--- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+@@ -16,43 +16,191 @@
+ #include <sys/types.h>
+ #include "lapi/timex.h"
+ 
+-static int sys_clock_adjtime(clockid_t, struct timex *);
+-static void timex_show(char *, struct timex);
++#ifndef __kernel_timex
++struct __kernel_timex_timeval {
++	__kernel_time64_t       tv_sec;
++	long long		tv_usec;
++};
+ 
+-/*
+- * bad pointer w/ libc causes SIGSEGV signal, call syscall directly
+- */
+-static int sys_clock_adjtime(clockid_t clk_id, struct timex *txc)
++struct __kernel_timex {
++	unsigned int modes;	/* mode selector */
++	int :32;            /* pad */
++	long long offset;	/* time offset (usec) */
++	long long freq;	/* frequency offset (scaled ppm) */
++	long long maxerror;/* maximum error (usec) */
++	long long esterror;/* estimated error (usec) */
++	int status;		/* clock command/status */
++	int :32;            /* pad */
++	long long constant;/* pll time constant */
++	long long precision;/* clock precision (usec) (read only) */
++	long long tolerance;/* clock frequency tolerance (ppm)
++				   * (read only)
++				   */
++	struct __kernel_timex_timeval time;	/* (read only, except for ADJ_SETOFFSET) */
++	long long tick;	/* (modified) usecs between clock ticks */
++
++	long long ppsfreq;/* pps frequency (scaled ppm) (ro) */
++	long long jitter; /* pps jitter (us) (ro) */
++	int shift;              /* interval duration (s) (shift) (ro) */
++	int :32;            /* pad */
++	long long stabil;            /* pps stability (scaled ppm) (ro) */
++	long long jitcnt; /* jitter limit exceeded (ro) */
++	long long calcnt; /* calibration intervals (ro) */
++	long long errcnt; /* calibration errors (ro) */
++	long long stbcnt; /* stability limit exceeded (ro) */
++
++	int tai;		/* TAI offset (ro) */
++
++	int  :32; int  :32; int  :32; int  :32;
++	int  :32; int  :32; int  :32; int  :32;
++	int  :32; int  :32; int  :32;
++};
++#endif
++
++enum tst_timex_type {
++	TST_LIBC_TIMEX,
++	TST_KERN_TIMEX
++};
++
++struct tst_timex {
++	enum tst_timex_type type;
++	union {
++		struct timex libc_timex;
++		struct __kernel_timex kern_timex;
++	} ts;
++};
++
++static inline void *tst_timex_get(struct tst_timex *t)
++{
++	switch (t->type) {
++	case TST_LIBC_TIMEX:
++		return &t->ts.libc_timex;
++	case TST_KERN_TIMEX:
++		return &t->ts.kern_timex;
++	default:
++		tst_brk(TBROK, "Invalid type: %d", t->type);
++		return NULL;
++	}
++}
++
++static inline int sys_clock_adjtime(clockid_t clk_id, void *timex)
+ {
+-	return tst_syscall(__NR_clock_adjtime, clk_id, txc);
++	return tst_syscall(__NR_clock_adjtime, clk_id, timex);
  }
  
-+static inline int libc_clock_nanosleep(clockid_t clk_id, int flags,
-+				       void *request, void *remain)
-+{
-+	return clock_nanosleep(clk_id, flags, request, remain);
+-static void timex_show(char *given, struct timex txc)
++static inline int sys_clock_adjtime64(clockid_t clk_id, void *timex)
+ {
+-	tst_res(TINFO,  "%s\n"
+-			"             mode: %d\n"
+-			"           offset: %ld\n"
+-			"        frequency: %ld\n"
+-			"         maxerror: %ld\n"
+-			"         esterror: %ld\n"
+-			"           status: %d (0x%x)\n"
+-			"    time_constant: %ld\n"
+-			"        precision: %ld\n"
+-			"        tolerance: %ld\n"
+-			"             tick: %ld\n"
+-			"         raw time: %d(s) %d(us)",
+-			given,
+-			txc.modes,
+-			txc.offset,
+-			txc.freq,
+-			txc.maxerror,
+-			txc.esterror,
+-			txc.status,
+-			txc.status,
+-			txc.constant,
+-			txc.precision,
+-			txc.tolerance,
+-			txc.tick,
+-			(int)txc.time.tv_sec,
+-			(int)txc.time.tv_usec);
++	return tst_syscall(__NR_clock_adjtime64, clk_id, timex);
 +}
 +
-+static inline int sys_clock_nanosleep(clockid_t clk_id, int flags,
-+				      void *request, void *remain)
++#define _timex_show(_timex, _desc)					\
++	tst_res(TINFO,  "%s\n"						\
++			"             mode: %u\n"			\
++			"           offset: "#_desc"\n"			\
++			"        frequency: "#_desc"\n"			\
++			"         maxerror: "#_desc"\n"			\
++			"         esterror: "#_desc"\n"			\
++			"           status: %d (0x%x)\n"		\
++			"    time_constant: "#_desc"\n"			\
++			"        precision: "#_desc"\n"			\
++			"        tolerance: "#_desc"\n"			\
++			"             tick: "#_desc"\n"			\
++			"         raw time: "#_desc"(s) "#_desc"(us)",	\
++			given,						\
++			_timex.modes,					\
++			_timex.offset,					\
++			_timex.freq,					\
++			_timex.maxerror,				\
++			_timex.esterror,				\
++			_timex.status,					\
++			_timex.status,					\
++			_timex.constant,				\
++			_timex.precision,				\
++			_timex.tolerance,				\
++			_timex.tick,					\
++			_timex.time.tv_sec,				\
++			_timex.time.tv_usec)
++
++static inline void timex_show(char *given, struct tst_timex *timex)
 +{
-+	return tst_syscall(__NR_clock_nanosleep, clk_id, flags,
-+			   request, remain);
++	switch (timex->type) {
++	case TST_LIBC_TIMEX:
++		_timex_show(timex->ts.libc_timex, %ld);
++		return;
++	case TST_KERN_TIMEX:
++		_timex_show(timex->ts.kern_timex, %lld);
++		return;
++	default:
++		tst_res(TFAIL, "Invalid type: %d", timex->type);
++	}
 +}
 +
-+static inline int sys_clock_nanosleep64(clockid_t clk_id, int flags,
-+				        void *request, void *remain)
-+{
-+	return tst_syscall(__NR_clock_nanosleep_time64, clk_id, flags,
-+			   request, remain);
++#define ADJ_MODES	0
++
++#define _select_field(_timex, _field)					\
++{									\
++	if (_field == ADJ_MODES)					\
++		return &_timex.modes;					\
++	if (_field == ADJ_OFFSET)					\
++		return &_timex.offset;					\
++	if (_field == ADJ_FREQUENCY)					\
++		return &_timex.freq;					\
++	if (_field == ADJ_MAXERROR)					\
++		return &_timex.maxerror;				\
++	if (_field == ADJ_ESTERROR)					\
++		return &_timex.esterror;				\
++	if (_field == ADJ_TIMECONST)					\
++		return &_timex.constant;				\
++	if (_field == ADJ_TICK)						\
++		return &_timex.tick;					\
++	if (_field == ADJ_STATUS)					\
++		return &_timex.status;					\
++	tst_res(TFAIL, "Invalid type: %d", timex->type);		\
++	return NULL;							\
 +}
 +
- /*
-  * Returns tst_ts seconds.
++static inline void *_get_field(struct tst_timex *timex, unsigned int field)
++{
++	switch (timex->type) {
++	case TST_LIBC_TIMEX:
++		_select_field(timex->ts.libc_timex, field);
++	case TST_KERN_TIMEX:
++		_select_field(timex->ts.kern_timex, field);
++	default:
++		tst_res(TFAIL, "Invalid type: %d", timex->type);
++		return NULL;
++	}
++}
++
++#define timex_get_set_field_type(_type_libc, _type_kern)		\
++static inline _type_kern						\
++timex_get_field_##_type_libc(struct tst_timex *timex, unsigned int field) \
++{									\
++	switch (timex->type) {						\
++	case TST_LIBC_TIMEX:						\
++		return *((_type_libc*)_get_field(timex, field));	\
++	case TST_KERN_TIMEX:						\
++		return *((_type_kern*)_get_field(timex, field));	\
++	default:							\
++		tst_res(TFAIL, "Invalid type: %d", timex->type);	\
++		return 0;						\
++	}								\
++}									\
++									\
++static inline void							\
++timex_set_field_##_type_libc(struct tst_timex *timex, unsigned int field, \
++			    _type_kern value)				\
++{									\
++	switch (timex->type) {						\
++	case TST_LIBC_TIMEX:						\
++		*((_type_libc*)_get_field(timex, field)) = value;	\
++		return;							\
++	case TST_KERN_TIMEX:						\
++		*((_type_kern*)_get_field(timex, field)) = value;	\
++		return;							\
++	default:							\
++		tst_res(TFAIL, "Invalid type: %d", timex->type);	\
++	}								\
+ }
++timex_get_set_field_type(uint, uint);
++timex_get_set_field_type(long, long long);
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+index 1262d34fa0d6..a5b8792e50e3 100644
+--- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+@@ -55,15 +55,15 @@
   */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f6df32859df6..6c23f75d3389 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -90,8 +90,8 @@ clock_adjtime02 clock_adjtime02
- clock_getres01 clock_getres01
- clock_nanosleep01 clock_nanosleep01
- clock_nanosleep02 clock_nanosleep02
--clock_nanosleep2_01 clock_nanosleep2_01
- clock_nanosleep03 clock_nanosleep03
-+clock_nanosleep04 clock_nanosleep04
  
- clock_gettime01 clock_gettime01
- clock_gettime02 clock_gettime02
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/.gitignore b/testcases/kernel/syscalls/clock_nanosleep/.gitignore
-index 406897cded6d..1ab03a335f37 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/.gitignore
-+++ b/testcases/kernel/syscalls/clock_nanosleep/.gitignore
-@@ -1,3 +1,4 @@
- /clock_nanosleep01
- /clock_nanosleep02
- /clock_nanosleep03
-+/clock_nanosleep04
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-index d1fb0ee664c9..85152d0a1713 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-@@ -9,10 +9,10 @@
- 
- #include <limits.h>
- 
--#include "lapi/syscalls.h"
-+#include "tst_safe_clocks.h"
- #include "tst_sig_proc.h"
- #include "tst_timer.h"
--#include "tst_test.h"
+ #include "clock_adjtime.h"
 +#include "lapi/abisize.h"
  
- static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
-@@ -30,7 +30,8 @@ struct test_case {
- 	int ttype;		   /* test type (enum) */
- 	const char *desc;	   /* test description (name) */
- 	int flags;		   /* clock_nanosleep flags parameter */
--	struct timespec rq;
-+	long tv_sec;
-+	long tv_nsec;
- 	int exp_ret;
- 	int exp_err;
+ static long hz;
+-static struct timex saved, ttxc;
++static struct tst_timex saved, ttxc;
+ static int supported;
+ 
+ struct test_case {
+ 	unsigned int modes;
+ 	long highlimit;
+-	long *ptr;
+ 	long delta;
  };
-@@ -46,45 +47,74 @@ static struct test_case tcase[] = {
- 		TYPE_NAME(NORMAL),
- 		.clk_id = CLOCK_REALTIME,
- 		.flags = 0,
--		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = -1},
--		.exp_ret = EINVAL,
--		.exp_err = 0,
-+		.tv_sec = 0,
-+		.tv_nsec = -1,
-+		.exp_ret = -1,
-+		.exp_err = EINVAL,
+ 
+@@ -80,79 +80,103 @@ struct test_case tc[] = {
+ 	{
+ 	 .modes = ADJ_OFFSET,
+ 	 .highlimit = 500000,
+-	 .ptr = &ttxc.offset,
+ 	 .delta = 10000,
  	},
  	{
- 		TYPE_NAME(NORMAL),
- 		.clk_id = CLOCK_REALTIME,
- 		.flags = 0,
--		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = 1000000000},
--		.exp_ret = EINVAL,
--		.exp_err = 0,
-+		.tv_sec = 0,
-+		.tv_nsec = 1000000000,
-+		.exp_ret = -1,
-+		.exp_err = EINVAL,
+ 	 .modes = ADJ_FREQUENCY,
+-	 .ptr = &ttxc.freq,
+ 	 .delta = 100,
  	},
  	{
- 		TYPE_NAME(NORMAL),
- 		.clk_id = CLOCK_THREAD_CPUTIME_ID,
- 		.flags = 0,
--		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = 500000000},
--		.exp_ret = EINVAL,
--		.exp_err = 0,
-+		.tv_sec = 0,
-+		.tv_nsec = 500000000,
-+		.exp_ret = -1,
-+		.exp_err = ENOTSUP,
+ 	 .modes = ADJ_MAXERROR,
+-	 .ptr = &ttxc.maxerror,
+ 	 .delta = 100,
  	},
  	{
- 		TYPE_NAME(SEND_SIGINT),
- 		.clk_id = CLOCK_REALTIME,
- 		.flags = 0,
--		.rq = (struct timespec) {.tv_sec = 10, .tv_nsec = 0},
--		.exp_ret = EINTR,
--		.exp_err = 0,
-+		.tv_sec = 10,
-+		.tv_nsec = 0,
-+		.exp_ret = -1,
-+		.exp_err = EINTR,
+ 	 .modes = ADJ_ESTERROR,
+-	 .ptr = &ttxc.esterror,
+ 	 .delta = 100,
+ 	},
+ 	{
+ 	 .modes = ADJ_TIMECONST,
+-	 .ptr = &ttxc.constant,
+ 	 .delta = 1,
+ 	},
+ 	{
+ 	 .modes = ADJ_TICK,
+ 	 .highlimit = 1100000,
+-	 .ptr = &ttxc.tick,
+ 	 .delta = 1000,
  	},
  };
  
-+static struct tst_ts rq;
-+
 +static struct test_variants {
-+	int (*func)(clockid_t clock_id, int flags, void *request, void *remain);
-+	enum tst_ts_type type;
++	int (*func)(clockid_t clk_id, void *timex);
++	enum tst_timex_type type;
 +	char *desc;
 +} variants[] = {
 +#if defined(TST_ABI32)
-+	{ .func = libc_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+	{ .func = sys_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .func = sys_clock_nanosleep, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++	{ .func = sys_clock_adjtime, .type = TST_LIBC_TIMEX, .desc = "syscall with libc spec"},
 +#endif
 +
 +#if defined(TST_ABI64)
-+	{ .func = sys_clock_nanosleep, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++	{ .func = sys_clock_adjtime, .type = TST_KERN_TIMEX, .desc = "syscall with kernel spec64"},
 +#endif
 +
-+#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .func = sys_clock_nanosleep64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#if (__NR_clock_adjtime64 != __LTP__NR_INVALID_SYSCALL)
++	{ .func = sys_clock_adjtime64, .type = TST_KERN_TIMEX, .desc = "syscall time64 with kernel spec64"},
 +#endif
 +};
 +
- void setup(void)
+ static void verify_clock_adjtime(unsigned int i)
  {
-+	rq.type = variants[tst_variant].type;
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 	SAFE_SIGNAL(SIGINT, sighandler);
- }
- 
- static void do_test(unsigned int i)
- {
+-	long ptroff, *ptr = NULL;
+-	struct timex verify;
 +	struct test_variants *tv = &variants[tst_variant];
- 	struct test_case *tc = &tcase[i];
--	struct timespec rm = {0};
-+	struct tst_ts rm = {.type = tv->type, };
- 	pid_t pid = 0;
++	struct tst_timex verify;
++	long long val;
++	int rval;
  
- 	tst_res(TINFO, "case %s", tc->desc);
-@@ -92,7 +122,29 @@ static void do_test(unsigned int i)
- 	if (tc->ttype == SEND_SIGINT)
- 		pid = create_sig_proc(SIGINT, 40, 500000);
+-	memset(&ttxc, 0, sizeof(struct timex));
+-	memset(&verify, 0, sizeof(struct timex));
++	memset(&ttxc, 0, sizeof(ttxc));
++	memset(&verify, 0, sizeof(verify));
  
--	TEST(clock_nanosleep(tc->clk_id, tc->flags, &tc->rq, &rm));
-+	tst_ts_set_sec(&rq, tc->tv_sec);
-+	tst_ts_set_nsec(&rq, tc->tv_nsec);
+-	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &ttxc);
+-	timex_show("GET", ttxc);
++	ttxc.type = verify.type = tv->type;
 +
-+	TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(&rq), tst_ts_get(&rm)));
-+
-+	if (tv->func == libc_clock_nanosleep) {
-+		/*
-+		 * The return value and error number are differently set for
-+		 * libc syscall as compared to kernel syscall.
-+		 */
-+		if (TST_RET) {
-+			TST_ERR = TST_RET;
-+			TST_RET = -1;
-+		}
-+
-+		/*
-+		 * nsleep isn't implemented by kernelf or
-+		 * CLOCK_THREAD_CPUTIME_ID and it returns ENOTSUP, but libc
-+		 * changes that error value to EINVAL.
-+		 */
-+		if (tc->clk_id == CLOCK_THREAD_CPUTIME_ID)
-+			tc->exp_err = EINVAL;
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&ttxc));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
++		return;
 +	}
  
- 	if (pid) {
- 		SAFE_KILL(pid, SIGTERM);
-@@ -100,12 +152,10 @@ static void do_test(unsigned int i)
+-	ttxc.modes = tc[i].modes;
++	timex_show("GET", &ttxc);
+ 
+-	if (tc[i].ptr && tc[i].delta) {
++	timex_set_field_uint(&ttxc, ADJ_MODES, tc[i].modes);
+ 
+-		*tc[i].ptr += tc[i].delta;
++	if (tc[i].delta) {
++		val = timex_get_field_long(&ttxc, tc[i].modes);
++		val += tc[i].delta;
+ 
+ 		/* fix limits, if existent, so no errors occur */
++		if (tc[i].highlimit && val >= tc[i].highlimit)
++			val = tc[i].highlimit;
+ 
+-		if (tc[i].highlimit) {
+-			if (*tc[i].ptr >= tc[i].highlimit)
+-				*tc[i].ptr = tc[i].highlimit;
+-		}
++		timex_set_field_long(&ttxc, tc[i].modes, val);
  	}
  
- 	if (tc->ttype == SEND_SIGINT) {
--		long long expect_ms = tst_timespec_to_ms(tc->rq);
--		long long remain_ms = tst_timespec_to_ms(rm);
+-	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &ttxc);
+-	timex_show("SET", ttxc);
 -
--		tst_res(TINFO, "remain time: %lds %ldns", rm.tv_sec, rm.tv_nsec);
-+		long long expect_ms = tst_ts_to_ms(rq);
-+		long long remain_ms = tst_ts_to_ms(rm);
+-	if (tc[i].ptr) {
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&ttxc));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
++		return;
++	}
  
--		if (!rm.tv_sec && !rm.tv_nsec) {
-+		if (tst_ts_valid(&rm)) {
- 			tst_res(TFAIL | TTERRNO,
- 				"The clock_nanosleep() haven't updated"
- 				" timestamp with remaining time");
-@@ -120,20 +170,20 @@ static void do_test(unsigned int i)
- 		}
+-		/* adjtimex field being tested so we can verify later */
++	timex_show("SET", &ttxc);
+ 
+-		ptroff = (long) tc[i].ptr - (long) &ttxc;
+-		ptr = (void *) &verify + ptroff;
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&verify));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
++		return;
  	}
  
--	if (TST_RET != tc->exp_ret) {
-+	if ((TST_RET != tc->exp_ret) || (TST_ERR != tc->exp_err)) {
- 		tst_res(TFAIL | TTERRNO, "returned %ld, expected %d,"
- 			" expected errno: %s (%d)", TST_RET,
- 			tc->exp_ret, tst_strerrno(tc->exp_err), tc->exp_err);
- 		return;
+-	TEST(sys_clock_adjtime(CLOCK_REALTIME, &verify));
+-	timex_show("VERIFY", verify);
++	timex_show("VERIFY", &verify);
+ 
+-	if (tc[i].ptr && *tc[i].ptr != *ptr) {
++	if (tc[i].delta &&
++	    timex_get_field_long(&ttxc, tc[i].modes) !=
++	    timex_get_field_long(&verify, tc[i].modes)) {
+ 		tst_res(TFAIL, "clock_adjtime(): could not set value (mode=%x)",
+-				tc[i].modes);
++			tc[i].modes);
  	}
  
--	tst_res(TPASS, "returned %s (%ld)",
--		tst_strerrno(TST_RET), TST_RET);
-+	tst_res(TPASS, "returned %s (%d)", tst_strerrno(TST_ERR), TST_ERR);
- }
+ 	if (TST_RET < 0) {
+@@ -165,14 +189,23 @@ static void verify_clock_adjtime(unsigned int i)
  
- static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcase),
- 	.test = do_test,
-+	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.forks_child = 1,
- };
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep03.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep03.c
-index 68773d59e346..edcd57c076bf 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep03.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep03.c
-@@ -19,33 +19,83 @@
- #include "tst_safe_clocks.h"
- #include "tst_timer.h"
- #include "lapi/namespaces_constants.h"
--#include "tst_test.h"
-+#include "lapi/abisize.h"
- 
- #define OFFSET_S 10
- #define SLEEP_US 100000
- 
-+static struct test_variants {
-+	int (*gettime)(clockid_t clk_id, void *ts);
-+	int (*func)(clockid_t clock_id, int flags, void *request, void *remain);
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+#if defined(TST_ABI32)
-+	{ .gettime = libc_clock_gettime, .func = libc_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
-+#endif
-+
-+#if defined(TST_ABI64)
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
-+#endif
-+
-+#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .gettime = sys_clock_gettime64, .func = sys_clock_nanosleep64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
-+#endif
-+};
-+
- static void verify_clock_nanosleep(void)
+ static void setup(void)
  {
--	struct timespec start, end, sleep_abs;
 +	struct test_variants *tv = &variants[tst_variant];
-+	struct tst_ts start, end, sleep_abs;
-+
+ 	size_t i;
+ 	int rval;
+ 
+-	rval = SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
 +	tst_res(TINFO, "Testing variant: %s", tv->desc);
 +
-+	start.type = end.type = sleep_abs.type = tv->type;
- 
- 	SAFE_UNSHARE(CLONE_NEWTIME);
- 
- 	SAFE_FILE_PRINTF("/proc/self/timens_offsets", "%d %d 0", CLOCK_MONOTONIC, OFFSET_S);
- 
--	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &start);
-+	TEST(tv->gettime(CLOCK_MONOTONIC, tst_ts_get(&start)));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "clock_gettime(2) failed for clock %s",
-+			tst_clock_name(CLOCK_MONOTONIC));
++	saved.type = tv->type;
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&saved));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
 +		return;
 +	}
- 
--	sleep_abs = tst_timespec_add_us(start, 1000000 * OFFSET_S + SLEEP_US);
-+	sleep_abs = tst_ts_add_us(start, 1000000 * OFFSET_S + SLEEP_US);
- 
- 	if (!SAFE_FORK()) {
--		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sleep_abs, NULL);
-+		TEST(tv->func(CLOCK_MONOTONIC, TIMER_ABSTIME, tst_ts_get(&sleep_abs), NULL));
-+		/*
-+		 * The return value and error number are differently set for
-+		 * libc syscall as compared to kernel syscall.
-+		 */
-+		if ((tv->func == libc_clock_nanosleep) && TST_RET) {
-+			TST_ERR = TST_RET;
-+			TST_RET = -1;
-+		}
 +
-+		if (TST_RET == -1) {
-+			tst_res(TFAIL | TTERRNO, "clock_nanosleep(2) failed for clock %s",
-+				tst_clock_name(CLOCK_MONOTONIC));
-+		}
-+
- 		exit(0);
+ 	supported = 1;
+ 
+ 	if (rval != TIME_OK && rval != TIME_ERROR) {
+-		timex_show("SAVE_STATUS", saved);
++		timex_show("SAVE_STATUS", &saved);
+ 		tst_brk(TBROK | TTERRNO, "clock has on-going leap changes, "
+ 				"returned: %i", rval);
  	}
+@@ -188,7 +221,7 @@ static void setup(void)
  
- 	SAFE_WAIT(NULL);
+ 		/* fix usec as being test default resolution */
  
--	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &end);
-+	TEST(tv->gettime(CLOCK_MONOTONIC, tst_ts_get(&end)));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "clock_gettime(2) failed for clock %s",
-+			tst_clock_name(CLOCK_MONOTONIC));
+-		if (saved.modes & ADJ_NANO) {
++		if (timex_get_field_uint(&saved, ADJ_MODES) & ADJ_NANO) {
+ 			if (tc[i].modes == ADJ_OFFSET) {
+ 				tc[i].highlimit *= 1000;
+ 				tc[i].delta *= 1000;
+@@ -199,21 +232,29 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
++	unsigned int modes = ADJ_ALL;
++	int rval;
++
+ 	if (supported == 0)
+ 		return;
+ 
+-	saved.modes = ADJ_ALL;
+-
+ 	/* restore clock resolution based on original status flag */
+ 
+-	if (saved.status & STA_NANO)
+-		saved.modes |= ADJ_NANO;
++	if (timex_get_field_uint(&saved, ADJ_STATUS) & STA_NANO)
++		modes |= ADJ_NANO;
+ 	else
+-		saved.modes |= ADJ_MICRO;
++		modes |= ADJ_MICRO;
++
++	timex_set_field_uint(&saved, ADJ_MODES, modes);
+ 
+ 	/* restore original clock flags */
+ 
+-	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&saved));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
 +		return;
 +	}
- 
--	long long diff = tst_timespec_diff_us(end, start);
-+	long long diff = tst_ts_diff_us(end, start);
- 
- 	if (diff > 5 * SLEEP_US) {
- 		tst_res(TFAIL, "clock_nanosleep() slept too long %lli", diff);
-@@ -62,11 +112,11 @@ static void verify_clock_nanosleep(void)
+ }
  
  static struct tst_test test = {
- 	.test_all = verify_clock_nanosleep,
+@@ -221,6 +262,7 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.tcnt = ARRAY_SIZE(tc),
 +	.test_variants = ARRAY_SIZE(variants),
  	.needs_root = 1,
- 	.forks_child = 1,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_TIME_NS=y",
- 		NULL
- 	}
--
+ 	.restore_wallclock = 1,
  };
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep04.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep04.c
-new file mode 100644
-index 000000000000..38bcfcb194b1
---- /dev/null
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep04.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) M. Koehrer <mathias_koehrer@arcor.de>, 2009
-+ * Copyright (C) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#include <stdio.h>
-+#include <time.h>
-+#include <unistd.h>
-+#include "tst_safe_clocks.h"
-+#include "tst_timer.h"
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+index ba8eae54f5ed..9f957f7643b0 100644
+--- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c
+@@ -56,9 +56,10 @@
+  */
+ 
+ #include "clock_adjtime.h"
 +#include "lapi/abisize.h"
-+
-+#define NSEC_IN_SEC 1000000000
-+
-+static clockid_t tcase[] = {
-+	CLOCK_MONOTONIC,
-+	CLOCK_REALTIME,
-+};
-+
+ 
+ static long hz;
+-static struct timex saved, ttxc;
++static struct tst_timex saved, ttxc;
+ static int supported;
+ 
+ static void cleanup(void);
+@@ -68,7 +69,6 @@ struct test_case {
+ 	unsigned int modes;
+ 	long lowlimit;
+ 	long highlimit;
+-	long *ptr;
+ 	long delta;
+ 	int exp_err;
+ 	int droproot;
+@@ -92,7 +92,6 @@ struct test_case tc[] = {
+ 	 .clktype = CLOCK_REALTIME,
+ 	 .modes = ADJ_TICK,
+ 	 .lowlimit = 900000,
+-	 .ptr = &ttxc.tick,
+ 	 .delta = 1,
+ 	 .exp_err = EINVAL,
+ 	},
+@@ -100,7 +99,6 @@ struct test_case tc[] = {
+ 	 .clktype = CLOCK_REALTIME,
+ 	 .modes = ADJ_TICK,
+ 	 .highlimit = 1100000,
+-	 .ptr = &ttxc.tick,
+ 	 .delta = 1,
+ 	 .exp_err = EINVAL,
+ 	},
+@@ -112,19 +110,43 @@ struct test_case tc[] = {
+ 	},
+ };
+ 
 +static struct test_variants {
-+	int (*gettime)(clockid_t clk_id, void *ts);
-+	int (*func)(clockid_t clock_id, int flags, void *request, void *remain);
-+	enum tst_ts_type type;
++	int (*func)(clockid_t clk_id, void *timex);
++	enum tst_timex_type type;
 +	char *desc;
 +} variants[] = {
 +#if defined(TST_ABI32)
-+	{ .gettime = libc_clock_gettime, .func = libc_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++	{ .func = sys_clock_adjtime, .type = TST_LIBC_TIMEX, .desc = "syscall with libc spec"},
 +#endif
 +
 +#if defined(TST_ABI64)
-+	{ .gettime = sys_clock_gettime, .func = sys_clock_nanosleep, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++	{ .func = sys_clock_adjtime, .type = TST_KERN_TIMEX, .desc = "syscall with kernel spec64"},
 +#endif
 +
-+#if (__NR_clock_nanosleep_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .gettime = sys_clock_gettime64, .func = sys_clock_nanosleep64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#if (__NR_clock_adjtime64 != __LTP__NR_INVALID_SYSCALL)
++	{ .func = sys_clock_adjtime64, .type = TST_KERN_TIMEX, .desc = "syscall time64 with kernel spec64"},
 +#endif
 +};
 +
-+void setup(void)
-+{
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-+}
-+
-+static void do_test(unsigned int i)
-+{
+ static void verify_clock_adjtime(unsigned int i)
+ {
 +	struct test_variants *tv = &variants[tst_variant];
-+	struct tst_ts ts = {.type = tv->type};
-+	long long sec, nsec;
+ 	uid_t whoami = 0;
+-	struct timex *txcptr;
++	struct tst_timex *txcptr = &ttxc;
+ 	struct passwd *nobody;
+ 	static const char name[] = "nobody";
++	int rval;
+ 
+-	txcptr = &ttxc;
++	memset(txcptr, 0, sizeof(*txcptr));
+ 
+-	memset(txcptr, 0, sizeof(struct timex));
++	txcptr->type = tv->type;
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(txcptr));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
++		return;
++	}
+ 
+-	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, txcptr);
+-	timex_show("GET", *txcptr);
++	timex_show("GET", txcptr);
+ 
+ 	if (tc[i].droproot) {
+ 		nobody = SAFE_GETPWNAM(name);
+@@ -132,24 +154,23 @@ static void verify_clock_adjtime(unsigned int i)
+ 		SAFE_SETEUID(whoami);
+ 	}
+ 
+-	txcptr->modes = tc[i].modes;
+-
+-	if (tc[i].ptr) {
++	timex_set_field_uint(txcptr, ADJ_MODES, tc[i].modes);
+ 
++	if (tc[i].delta) {
+ 		if (tc[i].lowlimit)
+-			*tc[i].ptr = tc[i].lowlimit - tc[i].delta;
++			timex_set_field_long(&ttxc, tc[i].modes, tc[i].lowlimit - tc[i].delta);
+ 
+ 		if (tc[i].highlimit)
+-			*tc[i].ptr = tc[i].highlimit + tc[i].delta;
++			timex_set_field_long(&ttxc, tc[i].modes, tc[i].highlimit + tc[i].delta);
+ 	}
+ 
+ 	/* special case: EFAULT for bad addresses */
+-	if (tc[i].exp_err == EFAULT)
+-		txcptr = tst_get_bad_addr(cleanup);
+-
+-	TEST(sys_clock_adjtime(tc[i].clktype, txcptr));
+-	if (txcptr && tc[i].exp_err != EFAULT)
+-		timex_show("TEST", *txcptr);
++	if (tc[i].exp_err == EFAULT) {
++		TEST(tv->func(tc[i].clktype, tst_get_bad_addr(NULL)));
++	} else {
++		TEST(tv->func(tc[i].clktype, tst_timex_get(txcptr)));
++		timex_show("TEST", txcptr);
++	}
+ 
+ 	if (TST_RET >= 0) {
+ 		tst_res(TFAIL, "clock_adjtime(): passed unexpectedly (mode=%x, "
+@@ -173,14 +194,23 @@ static void verify_clock_adjtime(unsigned int i)
+ 
+ static void setup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
+ 	size_t i;
+ 	int rval;
+ 
+-	rval = SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
 +
-+	TEST(tv->gettime(tcase[i], tst_ts_get(&ts)));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "clock_gettime(2) failed for clock %s",
-+			tst_clock_name(tcase[i]));
++	saved.type = tv->type;
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&saved));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
 +		return;
 +	}
 +
-+	sec = tst_ts_get_sec(ts);
-+	nsec = tst_ts_get_nsec(ts);
+ 	supported = 1;
+ 
+ 	if (rval != TIME_OK && rval != TIME_ERROR) {
+-		timex_show("SAVE_STATUS", saved);
++		timex_show("SAVE_STATUS", &saved);
+ 		tst_brk(TBROK | TTERRNO, "clock has on-going leap changes, "
+ 				"returned: %i", rval);
+ 	}
+@@ -199,21 +229,29 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
++	unsigned int modes = ADJ_ALL;
++	int rval;
 +
-+	nsec += NSEC_IN_SEC/10;
-+	if (nsec >= NSEC_IN_SEC) {
-+		sec += 1;
-+		nsec %= NSEC_IN_SEC;
+ 	if (supported == 0)
+ 		return;
+ 
+-	saved.modes = ADJ_ALL;
+-
+ 	/* restore clock resolution based on original status flag */
+ 
+-	if (saved.status & STA_NANO)
+-		saved.modes |= ADJ_NANO;
++	if (timex_get_field_uint(&saved, ADJ_STATUS) & STA_NANO)
++		modes |= ADJ_NANO;
+ 	else
+-		saved.modes |= ADJ_MICRO;
++		modes |= ADJ_MICRO;
++
++	timex_set_field_uint(&saved, ADJ_MODES, modes);
+ 
+ 	/* restore original clock flags */
+ 
+-	SAFE_CLOCK_ADJTIME(CLOCK_REALTIME, &saved);
++	rval = tv->func(CLOCK_REALTIME, tst_timex_get(&saved));
++	if (rval < 0) {
++		tst_res(TFAIL | TERRNO, "clock_adjtime() failed %i", rval);
++		return;
 +	}
-+
-+	tst_ts_set_sec(&ts, sec);
-+	tst_ts_set_nsec(&ts, nsec);
-+
-+	TEST(tv->func(tcase[i], TIMER_ABSTIME, tst_ts_get(&ts), NULL));
-+
-+	if (TST_RET) {
-+		tst_res(TFAIL | TTERRNO, "clock_nanosleep(2) failed for clock %s",
-+			tst_clock_name(tcase[i]));
-+	}
-+
-+	tst_res(TPASS, "clock_nanosleep(2) passed for clock %s",
-+		tst_clock_name(tcase[i]));
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcase),
-+	.test = do_test,
+ }
+ 
+ static struct tst_test test = {
+@@ -221,6 +259,7 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.tcnt = ARRAY_SIZE(tc),
 +	.test_variants = ARRAY_SIZE(variants),
-+	.setup = setup,
-+};
-diff --git a/testcases/kernel/syscalls/clock_nanosleep2/.gitignore b/testcases/kernel/syscalls/clock_nanosleep2/.gitignore
-deleted file mode 100644
-index 5be9cd0e8a8d..000000000000
---- a/testcases/kernel/syscalls/clock_nanosleep2/.gitignore
-+++ /dev/null
-@@ -1 +0,0 @@
--/clock_nanosleep2_01
-diff --git a/testcases/kernel/syscalls/clock_nanosleep2/Makefile b/testcases/kernel/syscalls/clock_nanosleep2/Makefile
-deleted file mode 100644
-index 262eef71b02b..000000000000
---- a/testcases/kernel/syscalls/clock_nanosleep2/Makefile
-+++ /dev/null
-@@ -1,10 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) International Business Machines  Corp., 2009
--
--top_srcdir		?= ../../../..
--
--include $(top_srcdir)/include/mk/testcases.mk
--
--LDLIBS			+= -lpthread -lrt
--
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/clock_nanosleep2/clock_nanosleep2_01.c b/testcases/kernel/syscalls/clock_nanosleep2/clock_nanosleep2_01.c
-deleted file mode 100644
-index d82d74d2d9fa..000000000000
---- a/testcases/kernel/syscalls/clock_nanosleep2/clock_nanosleep2_01.c
-+++ /dev/null
-@@ -1,45 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) M. Koehrer <mathias_koehrer@arcor.de>, 2009
-- * Copyright (C) 2017 Cyril Hrubis <chrubis@suse.cz>
-- */
--
--#include <stdio.h>
--#include <time.h>
--#include <unistd.h>
--#include <sys/syscall.h>
--
--#include "tst_test.h"
--#include "lapi/syscalls.h"
--
--#define NSEC_IN_SEC 1000000000
--
--const clockid_t CLOCK_TO_USE = CLOCK_MONOTONIC;
--static int clock_nanosleep2(clockid_t clock_id, int flags,
--			    const struct timespec *req, struct timespec *rem)
--{
--	return tst_syscall(__NR_clock_nanosleep, clock_id, flags, req, rem);
--}
--
--static void verify_clock_nanosleep2(void)
--{
--	struct timespec ts;
--
--	clock_gettime(CLOCK_TO_USE, &ts);
--	ts.tv_nsec += NSEC_IN_SEC/10;
--	if (ts.tv_nsec >= NSEC_IN_SEC) {
--		ts.tv_sec += 1;
--		ts.tv_nsec %= NSEC_IN_SEC;
--	}
--
--	TEST(clock_nanosleep2(CLOCK_TO_USE, TIMER_ABSTIME, &ts, NULL));
--
--	if (TST_RET)
--		tst_res(TFAIL | TTERRNO, "clock_nanosleep2() failed");
--	else
--		tst_res(TPASS, "clock_nanosleep2() passed");
--}
--
--static struct tst_test test = {
--	.test_all = verify_clock_nanosleep2,
--};
+ 	.needs_root = 1,
+ 	.restore_wallclock = 1,
+ };
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
