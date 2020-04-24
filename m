@@ -1,33 +1,80 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 24 Apr 2020 12:49:45 +0530
-Subject: [LTP] [PATCH V4 1/5] syscalls/clock_gettime: Add support for
- time64 tests
-In-Reply-To: <20200423135048.GB3632@yuki.lan>
-References: <cover.1587533697.git.viresh.kumar@linaro.org>
- <2e57919c45e9e9b23bd0e819ffc470a9326ecfb1.1587533697.git.viresh.kumar@linaro.org>
- <20200423135048.GB3632@yuki.lan>
-Message-ID: <20200424071945.yqsxq6m5oelsoh5l@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 24 Apr 2020 14:11:16 +0200
+Subject: [LTP] [PATCH 1/1] net/sendfile01.sh: Check with timeout
+In-Reply-To: <20200423221245.GA1391884@x230>
+References: <20200421180002.11351-1-pvorel@suse.cz>
+ <dab04fc5-5d20-3dbc-c21f-535112ab222f@oracle.com>
+ <20200423221245.GA1391884@x230>
+Message-ID: <20200424121116.GA25613@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23-04-20, 15:50, Cyril Hrubis wrote:
-> Hi!
-> Pushed with a few changes, thanks.
-> 
-> * Changed the nonzero check to check if nanoseconds are valid,
->   which covers the 64bit check as well.
-> 
-> * Pushed the bad address handling down to the test, which means that
->   we have to convert the struct tst_ts for each syscall, but I think
->   that it's cleaner that way and we also map only single bad address per
->   test.
+Hi Alexey,
 
-Thanks. I have resent the pending patches from this series with
-modification based on your changes to this patch, so you won't be
-required waste that much time on this :)
+> > > I guess nothing controversial here as failure of starting server is
+> > > guarded by -s.
+> > > I was thinking about using TST_RETRY_FUNC, but passing command to it
+> > > leads to: tst_rhost_run: unknown option: l
 
--- 
-viresh
+
+> > Hi Petr,
+
+> > eval might help in this case, take a look at tst_retry() in test.sh
+> Good point.
+
+> > old api, not sure why exactly it was removed in the new one...
+> It was designed from scratch I guess.
+> But this patch makes sense to me, I'll test it tomorrow.
+
+Actually, I now consider a bit cleaner and safer solution to *not* use eval
+and require test to specify function. E.g.:
+
++retry_fnc()
++{
++	tst_rhost_run -c 'ss -ltp' | grep -q "$port.*testsf"
++}
++
+ do_setup()
+ {
+ 
+@@ -28,7 +33,7 @@ do_setup()
+ 	tst_rhost_run -s -b -c "$server $(tst_ipaddr rhost) $port"
+ 	server_started=1
+ 	tst_res TINFO "wait for the server to start"
+-	sleep 1
++	TST_RETRY_FUNC retry_fnc 0
+ }
+
+Instead of simple:
+
+ do_setup()
+@@ -28,7 +28,7 @@ do_setup()
+ 	tst_rhost_run -s -b -c "$server $(tst_ipaddr rhost) $port"
+ 	server_started=1
+ 	tst_res TINFO "wait for the server to start"
+-	sleep 1
++	TST_RETRY_FUNC "tst_rhost_run -c 'ss -ltp' | grep -q '$port.*testsf'" 0
+ }
+
+But I don't have strong opinion on it.
+Cyril, Li, any preference?
+
+Kind regards,
+Petr
+
+> > index 1d8a71d9f..e34edb26a 100644
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -207,7 +207,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+> >         fi
+
+> >         while true; do
+> > -               $tst_fun
+> > +               eval "$tst_fun"
+> >                 if [ "$?" = "$tst_exp" ]; then
+> >                         break
+> >                 fi
+...
