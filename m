@@ -1,57 +1,71 @@
-From: Filip Bozuta <fbozuta1@gmail.com>
-Date: Fri, 24 Apr 2020 21:54:21 +0200
-Subject: [LTP] [PATCH v2 0/3] Add tests for a group of real time clock
- ioctls
-In-Reply-To: <20200424145838.GA3421@yuki.lan>
-References: <20200423150626.12672-1-fbozuta1@gmail.com>
- <20200424145838.GA3421@yuki.lan>
-Message-ID: <CAGbDZEonwc3TALEE0EsmU1=K3pxQuhdY_hZKDKGNWck1JPw2tQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 25 Apr 2020 11:28:42 +0800
+Subject: [LTP] [PATCH 1/1] net/sendfile01.sh: Check with timeout
+In-Reply-To: <20200424121116.GA25613@dell5510>
+References: <20200421180002.11351-1-pvorel@suse.cz>
+ <dab04fc5-5d20-3dbc-c21f-535112ab222f@oracle.com>
+ <20200423221245.GA1391884@x230> <20200424121116.GA25613@dell5510>
+Message-ID: <CAEemH2f1_6BFuTfrGZ2qpbLidFXxB2EQEO43TjucaMTPM9ghuw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Cyrill,
+Petr Vorel <pvorel@suse.cz> wrote:
 
-Thank you for your response!
-
-I didn't take a look at the file
-testcases/kernel/device-drivers/rtc/rtc01.c when writing rtc ioctl tests.
-I see that it runs tests for certain ioctls that are covered in the patches
-I sent (i.e. RTC_RD_TIME, RTC_SET_TIME, RTC_AIE_ON,...).
-
-As I see, this file runs tests for certain ioctls more thoroughly than my
-test since it is meant to test the functionality of the rtc driver. My
-tests are only meant to test the functionalities of rtc ioctls without
-testing whether the driver works correctly. For instance, when running
-tests for ioctls used for interrupts (RTC_AIE_ON, RTC_AIE_OFF,
-RTC_PIE_ON,...), I only check whether these ioctls work to turn on/off rtc
-interrupts (alarm, periodic, update, watchdog). I don't check whether the
-interrupts work on the driver correctly.
-
-Anyway, I am new to LTP so I am not that familiar with the scope of
-functionalities ioctl tests should cover. Any feedback you can give me on
-this would be greatly appreciated.
-
-I am looking forward to your review of my patches.
-
-Best regards,
-Filip
-
-On Fri, Apr 24, 2020 at 4:58 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-
-> Hi!
-> Looking at these I guess that we should also delete the
-> testcases/kernel/device-drivers/rtc/ as a last patch in this series
-> since these tests seems to cover a bit more than the original test.
+...
 >
-> I will have a closer look at the patchset next week.
+> > > old api, not sure why exactly it was removed in the new one...
+> > It was designed from scratch I guess.
+> > But this patch makes sense to me, I'll test it tomorrow.
 >
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+> Actually, I now consider a bit cleaner and safer solution to *not* use eval
+> and require test to specify function. E.g.:
 >
+
+Why not use eval for that? It helps us to perform more commands directly
+without wrap into function.
+
+
+> +retry_fnc()
+> +{
+> +       tst_rhost_run -c 'ss -ltp' | grep -q "$port.*testsf"
+> +}
+> +
+>  do_setup()
+>  {
+>
+> @@ -28,7 +33,7 @@ do_setup()
+>         tst_rhost_run -s -b -c "$server $(tst_ipaddr rhost) $port"
+>         server_started=1
+>         tst_res TINFO "wait for the server to start"
+> -       sleep 1
+> +       TST_RETRY_FUNC retry_fnc 0
+>  }
+>
+> Instead of simple:
+>
+>  do_setup()
+> @@ -28,7 +28,7 @@ do_setup()
+>         tst_rhost_run -s -b -c "$server $(tst_ipaddr rhost) $port"
+>         server_started=1
+>         tst_res TINFO "wait for the server to start"
+> -       sleep 1
+> +       TST_RETRY_FUNC "tst_rhost_run -c 'ss -ltp' | grep -q
+> '$port.*testsf'" 0
+>  }
+>
+> But I don't have strong opinion on it.
+> Cyril, Li, any preference?
+>
+
+If no more strict reasons I prefer to go the simpler way. And there is no
+need to wrap a retry_fun() I think.
+
+-- 
+Regards,
+Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200424/2a05c03b/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200425/a8bc5114/attachment.htm>
