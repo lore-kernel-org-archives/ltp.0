@@ -1,35 +1,23 @@
 From: Li Wang <liwang@redhat.com>
-Date: Sun, 26 Apr 2020 17:00:53 +0800
-Subject: [LTP] [COMMITTED] pipe2: add min_kver = "2.6.35" in pipe2_04
-Message-ID: <20200426090053.26764-1-liwang@redhat.com>
+Date: Sun, 26 Apr 2020 17:31:08 +0800
+Subject: [LTP] [PATCH v4 1/3] syscalls/pipe2_01: convert into new API
+In-Reply-To: <1587552329-21738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1587552329-21738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2dhh-30o0XSwRSajnzfnpYTu=ZdO+=SAj03UcccGRhPOg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To change the capacity of a pipe was involved from kernel-2.6.35 version.
+Hi Xu,
 
-  F_SETPIPE_SZ (int; since Linux 2.6.35)
-  F_GETPIPE_SZ (void; since Linux 2.6.35)
+Patch1/3 and 2/3 pushed with some modifications(code indent and kver
+checks).
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/pipe2/pipe2_04.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/syscalls/pipe2/pipe2_04.c b/testcases/kernel/syscalls/pipe2/pipe2_04.c
-index 1edb3f151..432007e4d 100644
---- a/testcases/kernel/syscalls/pipe2/pipe2_04.c
-+++ b/testcases/kernel/syscalls/pipe2/pipe2_04.c
-@@ -98,6 +98,7 @@ static void cleanup(void)
- }
- 
- static struct tst_test test = {
-+	.min_kver = "2.6.35",
- 	.test_all = test_pipe2,
- 	.setup = setup,
- 	.cleanup = cleanup,
 -- 
-2.21.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200426/6fe6d66b/attachment.htm>
