@@ -1,26 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 27 Apr 2020 07:31:25 +0200
-Subject: [LTP] [PATCH] Add env variable as workaround for test issues in
- VMs
-In-Reply-To: <20200424150422.17467-1-mdoucha@suse.cz>
-References: <20200424150422.17467-1-mdoucha@suse.cz>
-Message-ID: <20200427053125.GA21164@dell5510>
+Date: Mon, 27 Apr 2020 07:38:12 +0200
+Subject: [LTP] [PATCH v2 1/2] tst_test.sh: eval TST_RETRY_FN_EXP_BACKOFF
+ function
+Message-ID: <20200427053813.23112-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+It helps to have more advanced commands without having to declare
+function.
 
-> Timer tests often fail on sleep overrun when LTP is running inside a VM.
-> The main cause is usually that the VM doesn't get enough CPU time to wake up
-> the test process in time.
-Cannot we detect presence of "hypervisor" in flags in /proc/cpuinfo?
-I though it was quite reliable for detecting VM.
+Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Disable upper bound checks in the tst_timer_test library if LTP_VM_ENV is set
-> to non-zero value.
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 1d8a71d9f..8d24b4abf 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -207,7 +207,7 @@ TST_RETRY_FN_EXP_BACKOFF()
+ 	fi
+ 
+ 	while true; do
+-		$tst_fun
++		eval "$tst_fun"
+ 		if [ "$?" = "$tst_exp" ]; then
+ 			break
+ 		fi
+-- 
+2.26.1
 
-Kind regards,
-Petr
