@@ -1,34 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Apr 2020 13:49:26 +0200
-Subject: [LTP] What is wrong with this program ?
-In-Reply-To: <20200428100254.3oiu3weon3uyyvkl@vireshk-i7>
-References: <20200428094745.io5fni2txzl6n37q@vireshk-i7>
- <20200428095222.GC6221@yuki.lan>
- <20200428100254.3oiu3weon3uyyvkl@vireshk-i7>
-Message-ID: <20200428114926.GA14333@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 28 Apr 2020 14:36:21 +0200
+Subject: [LTP] [PATCH 1/2] inotify: Add SAFE_MYINOTIFY_INIT{,
+ 1}() helpers
+In-Reply-To: <20190613131018.GA29926@rei.lan>
+References: <20190605072126.19856-1-pvorel@suse.cz>
+ <20190613131018.GA29926@rei.lan>
+Message-ID: <20200428123621.GA32116@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > It fails with:
-> > > 
-> > > safe_macros.c:230: BROK: foo.c:9: open(file,66,01) failed: EACCES (13)
-> > > 
-> > > if run as a normal user and passes with sudo.
-> > 
-> > I guess that you forget to pass the mode argument to the first
-> > SAFE_OPEN() and hence the second one fails because the garbage passed to
-> > mode prevents normal users from opening the file.
-> 
-> Hmm, mode seems to be missing from a lot of syscall tests, which means that if
-> they are run in a loop (with the cmdline way you mentioned earlier), then they
-> will all fail.
+Hi Cyril,
 
-If there is open() with O_CREAT without mode it's a bug.
+> Hi!
+> These two patches are obviously OK.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Well I we were pedantic the licence change should be in a separate
+> patch, but I guess that it's fine as it is.
+
+> Also we should probably switch to the inotify_init() from sys/inotify.h
+> and drop the my from the functions and macros, but that could be done in
+> a subsequent patch.
+Looking into this old TODO for inotify tests. I have similar question to
+fanotify: do you consider worth of testing both raw syscall and inotify_init()?
+
+Kind regards,
+Petr
