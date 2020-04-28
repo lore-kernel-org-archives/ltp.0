@@ -1,111 +1,176 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 28 Apr 2020 17:47:26 +0200
-Subject: [LTP] [PATCH v2 1/2] tst_is_virt(): Allow checking for any
- hypervisor
-Message-ID: <20200428154727.29206-1-mdoucha@suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 28 Apr 2020 19:09:01 +0300
+Subject: [LTP] [PATCH v5 1/2] net: Add SAFE_GETADDRINFO()
+In-Reply-To: <20200423131632.20525-2-pvorel@suse.cz>
+References: <20200423131632.20525-1-pvorel@suse.cz>
+ <20200423131632.20525-2-pvorel@suse.cz>
+Message-ID: <be5e92d2-8c7e-f707-971d-6ef66533c3d2@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add two more valid arguments for tst_is_virt():
-- VIRT_ANY: return 1 if any hypervisor is detected
-- VIRT_OTHER: return 1 if an unrecognized hypervisor is detected
+On 23.04.2020 16:16, Petr Vorel wrote:
+> based on setup_addrinfo() from netstress.c.
+> 
+> Added only to new C API, thus code kept in tst_net.c, instead of safe_net.c,
+> which is also for legacy API.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz> ---
+>  include/tst_net.h                       |  9 +++++++--
+>  include/tst_private.h                   |  1 +
+>  include/tst_safe_net.h                  |  6 ++++++
+>  lib/tst_net.c                           | 15 +++++++++++++++
+>  testcases/network/netstress/netstress.c | 20 ++++----------------
+>  5 files changed, 33 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/tst_net.h b/include/tst_net.h
+> index 855f4fc13..daefdd9d9 100644
+> --- a/include/tst_net.h
+> +++ b/include/tst_net.h
+> @@ -7,9 +7,10 @@
+>  #define TST_NET_H_
+>  
+>  #include <arpa/inet.h>
+> -#include <sys/types.h>
+> +#include <netdb.h>
+>  #include <netinet/in.h>
+>  #include <netinet/ip.h>
+> +#include <sys/types.h>
+>  
+>  void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
+>  void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
+> @@ -27,4 +28,8 @@ void tst_init_sockaddr_inet_bin(struct sockaddr_in *sa, uint32_t ip_val, uint16_
+>  void tst_init_sockaddr_inet6(struct sockaddr_in6 *sa, const char *ip_str, uint16_t port);
+>  void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr *ip_val, uint16_t port);
+>  
+> -#endif
+> +void safe_getaddrinfo(const char *file, const int lineno, const char *src_addr,
+> +					  const char *port, const struct addrinfo *hints,
+> +					  struct addrinfo **addr_info);
+> +
+> +#endif /* TST_NET_H_ */
+> diff --git a/include/tst_private.h b/include/tst_private.h
+> index 00cd17fce..e30d34740 100644
+> --- a/include/tst_private.h
+> +++ b/include/tst_private.h
+> @@ -10,6 +10,7 @@
+>  #define TST_PRIVATE_H_
+>  
+>  #include <stdio.h>
+> +#include <netdb.h>
+>  
+>  #define MAX_IPV4_PREFIX 32
+>  #define MAX_IPV6_PREFIX 128
+> diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+> index f31c8fe2f..78a488a18 100644
+> --- a/include/tst_safe_net.h
+> +++ b/include/tst_safe_net.h
+> @@ -12,6 +12,7 @@
+>  #include <sys/un.h>
+>  
+>  #include "safe_net_fn.h"
+> +#include "tst_net.h"
+>  
+>  #define SAFE_SOCKET(domain, type, protocol) \
+>  	safe_socket(__FILE__, __LINE__, NULL, domain, type, protocol)
+> @@ -70,4 +71,9 @@
+>  #define TST_GET_UNUSED_PORT(family, type) \
+>  	tst_get_unused_port(__FILE__, __LINE__, NULL, family, type)
+>  
+> +/* new API only */
+> +
+> +#define SAFE_GETADDRINFO(src_addr, port, hints, addr_info) \
+> +	safe_getaddrinfo(__FILE__, __LINE__, src_addr, port, hints, addr_info)
+> +
+>  #endif /* TST_SAFE_NET_H__ */
+> diff --git a/lib/tst_net.c b/lib/tst_net.c
+> index 22c990e62..8a589b0ad 100644
+> --- a/lib/tst_net.c
+> +++ b/lib/tst_net.c
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  #include <errno.h>
+> +#include <netdb.h>
+>  #include <string.h>
+>  #include <stdlib.h>
+>  
+> @@ -204,3 +205,17 @@ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr
+>  	sa->sin6_port = htons(port);
+>  	memcpy(&sa->sin6_addr, ip_val, sizeof(struct in6_addr));
+>  }
+> +
+> +void safe_getaddrinfo(const char *file, const int lineno, const char *src_addr,
+> +					  const char *port, const struct addrinfo *hints,
+> +					  struct addrinfo **addr_info)
+> +{
+> +	int err = getaddrinfo(src_addr, port, hints, addr_info);
+> +
+> +	if (err)
+> +		tst_brk(TBROK, "%s:%d: getaddrinfo failed, %s", file, lineno,
+> +				gai_strerror(err));
+> +
+> +	if (!*addr_info)
+> +		tst_brk(TBROK, "%s:%d: failed to get the address", file, lineno);
+> +}
+> diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+> index 6797be018..c5da4d464 100644
+> --- a/testcases/network/netstress/netstress.c
+> +++ b/testcases/network/netstress/netstress.c
+> @@ -29,6 +29,7 @@
+>  #include "tst_safe_stdio.h"
+>  #include "tst_safe_pthread.h"
+>  #include "tst_test.h"
+> +#include "tst_safe_net.h"
+>  
+>  static const int max_msg_len = (1 << 16) - 1;
+>  static const int min_msg_len = 5;
+> @@ -441,19 +442,6 @@ static int parse_client_request(const char *msg)
+>  static struct timespec tv_client_start;
+>  static struct timespec tv_client_end;
+>  
+> -static void setup_addrinfo(const char *src_addr, const char *port,
+> -			   const struct addrinfo *hints,
+> -			   struct addrinfo **addr_info)
+> -{
+> -	int err = getaddrinfo(src_addr, port, hints, addr_info);
+> -
+> -	if (err)
+> -		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+> -
+> -	if (!*addr_info)
+> -		tst_brk(TBROK, "failed to get the address");
+> -}
+> -
+>  static void client_init(void)
+>  {
+>  	if (clients_num >= MAX_THREADS) {
+> @@ -471,8 +459,8 @@ static void client_init(void)
+>  	hints.ai_protocol = 0;
+>  
+>  	if (source_addr)
+> -		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
+> -	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+> +		SAFE_GETADDRINFO(source_addr, NULL, &hints, &local_addrinfo);
+> +	SAFE_GETADDRINFO(server_addr, tcp_port, &hints, &remote_addrinfo);
+>  
+>  	tst_res(TINFO, "Running the test over IPv%s",
+>  		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
+> @@ -667,7 +655,7 @@ static void server_init(void)
+>  
+>  	if (source_addr && !strchr(source_addr, ':'))
+>  		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
+> -	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
+> +	SAFE_GETADDRINFO(src_addr ? src_addr : source_addr, tcp_port,
+>  		       &hints, &local_addrinfo);
+>  	free(src_addr);
+>  
+>
 
-Also fix bugs in try_systemd_detect_virt() and return -1 on error.
+Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
 
-Changes since v1: New patch
-
-The is_kvm() fallback test pretty much doesn't work anywhere except in our
-OpenQA setup. But looking at SystemD sources (yuck), detecting KVM properly
-will be a major pain in the ass, never mind any other hypervisor. So I'll
-leave any further improvements as an exercise for the reader.
-
-BTW, systemd-detect-virt can't detect the PowerPC LPAR hypervisor.
-
- include/tst_cpu.h |  2 ++
- lib/tst_virt.c    | 23 +++++++++++++++++------
- 2 files changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/include/tst_cpu.h b/include/tst_cpu.h
-index db6138f43..c83a58260 100644
---- a/include/tst_cpu.h
-+++ b/include/tst_cpu.h
-@@ -9,8 +9,10 @@ long tst_ncpus(void);
- long tst_ncpus_conf(void);
- long tst_ncpus_max(void);
  
-+#define VIRT_ANY	0	/* catch-all argument for tst_is_virt() */
- #define VIRT_XEN	1	/* xen dom0/domU */
- #define VIRT_KVM	2	/* only default virtual CPU */
-+#define VIRT_OTHER	0xffff	/* unrecognized hypervisor */
- 
- int tst_is_virt(int virt_type);
- 
-diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-index 090e6334c..53d33e69c 100644
---- a/lib/tst_virt.c
-+++ b/lib/tst_virt.c
-@@ -49,7 +49,7 @@ static int is_kvm(void)
- 
- static int is_xen(void)
- {
--	char hypervisor_type[3];
-+	char hypervisor_type[4];
- 
- 	if (access("/proc/xen", F_OK) == 0)
- 		return 1;
-@@ -90,30 +90,41 @@ static int try_systemd_detect_virt(void)
- 	 * systemd-detect-virt not found by shell or no virtualization detected
- 	 * (systemd-detect-virt returns non-zero)
-          */
-+	if (ret < 0 || (WIFEXITED(ret) && WEXITSTATUS(ret) == 127))
-+		return -1;
-+
- 	if (ret)
- 		return 0;
- 
--	if (strncmp("kvm", virt_type, 3))
-+	if (!strncmp("kvm", virt_type, 3))
- 		return VIRT_KVM;
- 
--	if (strncmp("xen", virt_type, 3))
-+	if (!strncmp("xen", virt_type, 3))
- 		return VIRT_XEN;
- 
--	return 0;
-+	return VIRT_OTHER;
- }
- 
- int tst_is_virt(int virt_type)
- {
- 	int ret = try_systemd_detect_virt();
- 
--	if (ret)
--		return ret == virt_type;
-+	if (ret >= 0) {
-+		if (virt_type == VIRT_ANY)
-+			return ret != 0;
-+		else
-+			return ret == virt_type;
-+	}
- 
- 	switch (virt_type) {
-+	case VIRT_ANY:
-+		return is_xen() || is_kvm();
- 	case VIRT_XEN:
- 		return is_xen();
- 	case VIRT_KVM:
- 		return is_kvm();
-+	case VIRT_OTHER:
-+		return 0;
- 	}
- 
- 	tst_brkm(TBROK, NULL, "invalid virt_type flag: %d", virt_type);
--- 
-2.26.0
 
