@@ -1,37 +1,36 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 28 Apr 2020 18:18:48 +0300
-Subject: [LTP] [PATCH 2/2] fanotify: Test with tst_variant both raw
- syscall and libc
-In-Reply-To: <20200428133748.GA5349@dell5510>
-References: <20200428113501.24711-1-pvorel@suse.cz>
- <20200428113501.24711-2-pvorel@suse.cz>
- <CAOQ4uxjTh5r3JWVzt6Gazh61Cb1Fr7Y90k1mXn=q2WbsSRs2NQ@mail.gmail.com>
- <20200428133748.GA5349@dell5510>
-Message-ID: <CAOQ4uxjJ7qFZVf4YNNK=JYDSc=_+fRoU6v+OAwQ3Vp7soNSAbQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 28 Apr 2020 17:30:22 +0200
+Subject: [LTP] [fs] ce436509a8: ltp.openat203.fail
+In-Reply-To: <20200428005126.6wncibudt6ohghvc@yavin.dot.cyphar.com>
+References: <f969e7d45a8e83efc1ca13d675efd8775f13f376.1586830316.git.josh@joshtriplett.org>
+ <20200427135210.GB5770@shao2-debian> <20200427142733.GD7661@rei>
+ <20200428005126.6wncibudt6ohghvc@yavin.dot.cyphar.com>
+Message-ID: <20200428153022.GC4244@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 28, 2020 at 4:37 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Amir,
->
-> > FWIW, I have no objection to these changes.
-> Thanks!
->
-> > I trust that you tested build with all supported configurations, because
-> > I am not good at reviewing portable code.
-> Not sure if I understand you. There is just a single configuration (test are run
-> twice, first with raw syscall than with libc wrapper). Previously there were two
-> configurations (tests were run only once, mostly with libc wrapper, raw syscalls
-> was on systems with old glibc, where only kernel supports fanotify syscall).
->
+Hi!
+> > > commit: ce436509a8e109330c56bb4d8ec87d258788f5f4 ("[PATCH v4 2/3] fs: openat2: Extend open_how to allow userspace-selected fds")
+> > > url: https://github.com/0day-ci/linux/commits/Josh-Triplett/Support-userspace-selected-fds/20200414-102939
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
+> > 
+> > This commit adds fd parameter to the how structure where LTP test was
+> > previously passing garbage, which obviously causes the difference in
+> > errno.
+> > 
+> > This could be safely ignored for now, if the patch gets merged the test
+> > needs to be updated.
+> 
+> It wouldn't be a bad idea to switch the test to figure out the ksize of
+> the struct, so that you only add bad padding after that. But then again,
+> this would be a bit ugly -- having CHECK_FIELDS would make this simpler.
 
-My confusion is because you removed the HAVE_SYS_FANOTIFY_H ifdef
-and now you include sys/fanotify.h unconditionally.
-So I meant if this code builds with all supported system configurations.
+Any pointers how can be the size figured out without relying on the
+E2BIG we are testing for? Does the kernel export it somewhere?
 
-Thanks,
-Amir.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
