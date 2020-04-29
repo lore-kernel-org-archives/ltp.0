@@ -1,172 +1,188 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Apr 2020 21:23:38 +0200
-Subject: [LTP] [PATCH v6 1/3] net: Add SAFE_GETADDRINFO()
+Date: Wed, 29 Apr 2020 21:23:40 +0200
+Subject: [LTP] [PATCH v6 3/3] route: Increase default loop values
 In-Reply-To: <20200429192340.14252-1-pvorel@suse.cz>
 References: <20200429192340.14252-1-pvorel@suse.cz>
-Message-ID: <20200429192340.14252-2-pvorel@suse.cz>
+Message-ID: <20200429192340.14252-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-based on setup_addrinfo() from netstress.c.
+by introducing $ROUTE_CHANGE_IP for shell based tests (only these
+rewritten into new shell API) and $ROUTE_CHANGE_NETLINK with C Netlink
+API based tests.
 
-Added only to new C API, thus code kept in tst_net.c, instead of safe_net.c,
-which is also for legacy API.
-
-Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_net.h                       |  9 +++++++--
- include/tst_private.h                   |  1 +
- include/tst_safe_net.h                  |  6 ++++++
- lib/tst_net.c                           | 15 +++++++++++++++
- testcases/network/netstress/netstress.c | 20 ++++----------------
- 5 files changed, 33 insertions(+), 18 deletions(-)
+ testcases/lib/tst_net.sh                               |  2 ++
+ testcases/network/stress/route/route-change-dst.sh     |  4 ++--
+ testcases/network/stress/route/route-change-gw.sh      | 10 ++++++++--
+ testcases/network/stress/route/route-change-if.sh      | 10 ++++++++--
+ .../network/stress/route/route-change-netlink-dst.sh   |  2 +-
+ .../network/stress/route/route-change-netlink-gw.sh    |  2 ++
+ .../network/stress/route/route-change-netlink-if.sh    |  1 +
+ testcases/network/stress/route/route-lib.sh            |  8 ++------
+ 8 files changed, 26 insertions(+), 13 deletions(-)
 
-diff --git a/include/tst_net.h b/include/tst_net.h
-index 855f4fc13..daefdd9d9 100644
---- a/include/tst_net.h
-+++ b/include/tst_net.h
-@@ -7,9 +7,10 @@
- #define TST_NET_H_
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 1ec03c738..011b62267 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -913,6 +913,8 @@ export UPLOAD_BIGFILESIZE="${UPLOAD_BIGFILESIZE:-2147483647}"
+ export UPLOAD_REGFILESIZE="${UPLOAD_REGFILESIZE:-1024}"
+ export MCASTNUM_NORMAL="${MCASTNUM_NORMAL:-20}"
+ export MCASTNUM_HEAVY="${MCASTNUM_HEAVY:-4000}"
++export ROUTE_CHANGE_IP="${ROUTE_CHANGE_IP:-100}"
++export ROUTE_CHANGE_NETLINK="${ROUTE_CHANGE_NETLINK:-10000}"
  
- #include <arpa/inet.h>
--#include <sys/types.h>
-+#include <netdb.h>
- #include <netinet/in.h>
- #include <netinet/ip.h>
-+#include <sys/types.h>
+ # Warning: make sure to set valid interface names and IP addresses below.
+ # Set names for test interfaces, e.g. "eth0 eth1"
+diff --git a/testcases/network/stress/route/route-change-dst.sh b/testcases/network/stress/route/route-change-dst.sh
+index dcd2898a8..2d88b5f73 100755
+--- a/testcases/network/stress/route/route-change-dst.sh
++++ b/testcases/network/stress/route/route-change-dst.sh
+@@ -12,11 +12,11 @@ TST_SETUP="setup"
+ TST_CLEANUP="route_cleanup"
+ TST_TESTFUNC="test_dst"
+ . route-lib.sh
+-TST_CNT=$NS_TIMES
++TST_CNT=$ROUTE_CHANGE_IP
  
- void tst_get_in_addr(const char *ip_str, struct in_addr *ip);
- void tst_get_in6_addr(const char *ip_str, struct in6_addr *ip6);
-@@ -27,4 +28,8 @@ void tst_init_sockaddr_inet_bin(struct sockaddr_in *sa, uint32_t ip_val, uint16_
- void tst_init_sockaddr_inet6(struct sockaddr_in6 *sa, const char *ip_str, uint16_t port);
- void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr *ip_val, uint16_t port);
- 
--#endif
-+void safe_getaddrinfo(const char *file, const int lineno, const char *src_addr,
-+					  const char *port, const struct addrinfo *hints,
-+					  struct addrinfo **addr_info);
-+
-+#endif /* TST_NET_H_ */
-diff --git a/include/tst_private.h b/include/tst_private.h
-index 00cd17fce..e30d34740 100644
---- a/include/tst_private.h
-+++ b/include/tst_private.h
-@@ -10,6 +10,7 @@
- #define TST_PRIVATE_H_
- 
- #include <stdio.h>
-+#include <netdb.h>
- 
- #define MAX_IPV4_PREFIX 32
- #define MAX_IPV6_PREFIX 128
-diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
-index f31c8fe2f..78a488a18 100644
---- a/include/tst_safe_net.h
-+++ b/include/tst_safe_net.h
-@@ -12,6 +12,7 @@
- #include <sys/un.h>
- 
- #include "safe_net_fn.h"
-+#include "tst_net.h"
- 
- #define SAFE_SOCKET(domain, type, protocol) \
- 	safe_socket(__FILE__, __LINE__, NULL, domain, type, protocol)
-@@ -70,4 +71,9 @@
- #define TST_GET_UNUSED_PORT(family, type) \
- 	tst_get_unused_port(__FILE__, __LINE__, NULL, family, type)
- 
-+/* new API only */
-+
-+#define SAFE_GETADDRINFO(src_addr, port, hints, addr_info) \
-+	safe_getaddrinfo(__FILE__, __LINE__, src_addr, port, hints, addr_info)
-+
- #endif /* TST_SAFE_NET_H__ */
-diff --git a/lib/tst_net.c b/lib/tst_net.c
-index 22c990e62..8a589b0ad 100644
---- a/lib/tst_net.c
-+++ b/lib/tst_net.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <errno.h>
-+#include <netdb.h>
- #include <string.h>
- #include <stdlib.h>
- 
-@@ -204,3 +205,17 @@ void tst_init_sockaddr_inet6_bin(struct sockaddr_in6 *sa, const struct in6_addr
- 	sa->sin6_port = htons(port);
- 	memcpy(&sa->sin6_addr, ip_val, sizeof(struct in6_addr));
- }
-+
-+void safe_getaddrinfo(const char *file, const int lineno, const char *src_addr,
-+					  const char *port, const struct addrinfo *hints,
-+					  struct addrinfo **addr_info)
-+{
-+	int err = getaddrinfo(src_addr, port, hints, addr_info);
-+
-+	if (err)
-+		tst_brk(TBROK, "%s:%d: getaddrinfo failed, %s", file, lineno,
-+				gai_strerror(err));
-+
-+	if (!*addr_info)
-+		tst_brk(TBROK, "%s:%d: failed to get the address", file, lineno);
-+}
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 6797be018..c5da4d464 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -29,6 +29,7 @@
- #include "tst_safe_stdio.h"
- #include "tst_safe_pthread.h"
- #include "tst_test.h"
-+#include "tst_safe_net.h"
- 
- static const int max_msg_len = (1 << 16) - 1;
- static const int min_msg_len = 5;
-@@ -441,19 +442,6 @@ static int parse_client_request(const char *msg)
- static struct timespec tv_client_start;
- static struct timespec tv_client_end;
- 
--static void setup_addrinfo(const char *src_addr, const char *port,
--			   const struct addrinfo *hints,
--			   struct addrinfo **addr_info)
--{
--	int err = getaddrinfo(src_addr, port, hints, addr_info);
--
--	if (err)
--		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
--
--	if (!*addr_info)
--		tst_brk(TBROK, "failed to get the address");
--}
--
- static void client_init(void)
+ setup()
  {
- 	if (clients_num >= MAX_THREADS) {
-@@ -471,8 +459,8 @@ static void client_init(void)
- 	hints.ai_protocol = 0;
+-	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
++	tst_res TINFO "change IPv$TST_IPVER route destination $ROUTE_CHANGE_IP times"
+ }
  
- 	if (source_addr)
--		setup_addrinfo(source_addr, NULL, &hints, &local_addrinfo);
--	setup_addrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
-+		SAFE_GETADDRINFO(source_addr, NULL, &hints, &local_addrinfo);
-+	SAFE_GETADDRINFO(server_addr, tcp_port, &hints, &remote_addrinfo);
+ test_dst()
+diff --git a/testcases/network/stress/route/route-change-gw.sh b/testcases/network/stress/route/route-change-gw.sh
+index cfbc331ac..6c650befd 100755
+--- a/testcases/network/stress/route/route-change-gw.sh
++++ b/testcases/network/stress/route/route-change-gw.sh
+@@ -8,11 +8,17 @@
+ # Change route gateway
+ # lhost: 10.23.1.1, gw (on rhost): 10.23.1.x, rhost: 10.23.0.1
  
- 	tst_res(TINFO, "Running the test over IPv%s",
- 		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
-@@ -667,7 +655,7 @@ static void server_init(void)
+-TST_SETUP="setup_gw"
++TST_SETUP="setup"
+ TST_CLEANUP="route_cleanup"
+ TST_TESTFUNC="test_gw"
+ . route-lib.sh
+-TST_CNT=$NS_TIMES
++TST_CNT=$ROUTE_CHANGE_IP
++
++setup()
++{
++	tst_res TINFO "change IPv$TST_IPVER route gateway $ROUTE_CHANGE_IP times"
++	setup_gw
++}
  
- 	if (source_addr && !strchr(source_addr, ':'))
- 		SAFE_ASPRINTF(&src_addr, "::ffff:%s", source_addr);
--	setup_addrinfo(src_addr ? src_addr : source_addr, tcp_port,
-+	SAFE_GETADDRINFO(src_addr ? src_addr : source_addr, tcp_port,
- 		       &hints, &local_addrinfo);
- 	free(src_addr);
+ test_gw()
+ {
+diff --git a/testcases/network/stress/route/route-change-if.sh b/testcases/network/stress/route/route-change-if.sh
+index a32f5f3d9..7e9c15fe4 100755
+--- a/testcases/network/stress/route/route-change-if.sh
++++ b/testcases/network/stress/route/route-change-if.sh
+@@ -8,11 +8,17 @@
+ # Change route interface
+ # lhost: 10.23.x.2, gw (on rhost): 10.23.x.1, rhost: 10.23.0.1, switching ifaces on lhost
  
+-TST_SETUP="setup_if"
++TST_SETUP="setup"
+ TST_CLEANUP="cleanup_if"
+ TST_TESTFUNC="test_if"
+ . route-lib.sh
+-TST_CNT=$NS_TIMES
++TST_CNT=$ROUTE_CHANGE_IP
++
++setup()
++{
++	tst_res TINFO "change IPv$TST_IPVER route interface $ROUTE_CHANGE_IP times"
++	setup_if
++}
+ 
+ test_if()
+ {
+diff --git a/testcases/network/stress/route/route-change-netlink-dst.sh b/testcases/network/stress/route/route-change-netlink-dst.sh
+index de558949d..0740d0963 100755
+--- a/testcases/network/stress/route/route-change-netlink-dst.sh
++++ b/testcases/network/stress/route/route-change-netlink-dst.sh
+@@ -13,7 +13,7 @@ TST_TESTFUNC="test_netlink"
+ 
+ setup()
+ {
+-	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
++	tst_res TINFO "change IPv$TST_IPVER route destination $ROUTE_CHANGE_NETLINK times"
+ 
+ 	local cnt=0
+ 	local gw rhost rhost_all rt
+diff --git a/testcases/network/stress/route/route-change-netlink-gw.sh b/testcases/network/stress/route/route-change-netlink-gw.sh
+index 46e544ef0..3119a1b31 100755
+--- a/testcases/network/stress/route/route-change-netlink-gw.sh
++++ b/testcases/network/stress/route/route-change-netlink-gw.sh
+@@ -15,6 +15,8 @@ setup()
+ {
+ 	local cnt=0
+ 
++	tst_res TINFO "change IPv$TST_IPVER route gateway $ROUTE_CHANGE_NETLINK times"
++
+ 	check_max_ip
+ 	setup_gw
+ 
+diff --git a/testcases/network/stress/route/route-change-netlink-if.sh b/testcases/network/stress/route/route-change-netlink-if.sh
+index ad4e3712c..d1e64a40e 100755
+--- a/testcases/network/stress/route/route-change-netlink-if.sh
++++ b/testcases/network/stress/route/route-change-netlink-if.sh
+@@ -16,6 +16,7 @@ setup()
+ 	local gw gw_all iface iface_all
+ 	local cnt=0
+ 
++	tst_res TINFO "change IPv$TST_IPVER route interface $ROUTE_CHANGE_NETLINK times"
+ 	setup_if
+ 
+ 	while [ $cnt -lt $(tst_get_ifaces_cnt) ]; do
+diff --git a/testcases/network/stress/route/route-lib.sh b/testcases/network/stress/route/route-lib.sh
+index 51803056a..a5bb96c12 100644
+--- a/testcases/network/stress/route/route-lib.sh
++++ b/testcases/network/stress/route/route-lib.sh
+@@ -45,7 +45,7 @@ check_max_ip()
+ 
+ 	tst_is_int "$ROUTE_MAX_IP" || tst_brk TBROK "\$ROUTE_MAX_IP not int ($ROUTE_MAX_IP)"
+ 	[ $ROUTE_MAX_IP -gt $max_ip_limit ] && ROUTE_MAX_IP=$max_ip_limit
+-	[ $ROUTE_MAX_IP -gt $NS_TIMES ] && ROUTE_MAX_IP=$NS_TIMES
++	[ $ROUTE_MAX_IP -gt $ROUTE_CHANGE_NETLINK ] && ROUTE_MAX_IP=$ROUTE_CHANGE_NETLINK
+ }
+ 
+ cleanup_if()
+@@ -63,8 +63,6 @@ route_cleanup()
+ 
+ setup_gw()
+ {
+-	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
+-
+ 	rt="$(tst_ipaddr_un -p 0 0)"
+ 	lhost="$(tst_ipaddr_un 1 1)"
+ 	rhost="$(tst_ipaddr_un 0 1)"
+@@ -74,8 +72,6 @@ setup_gw()
+ 
+ setup_if()
+ {
+-	tst_res TINFO "change IPv$TST_IPVER route interface $NS_TIMES times"
+-
+ 	rt="$(tst_ipaddr_un -p 0)"
+ 	rhost="$(tst_ipaddr_un 0 1)"
+ 	tst_add_ipaddr -s -q -a $rhost rhost
+@@ -99,7 +95,7 @@ test_netlink()
+ 	local cmd ip_flag
+ 	[ "$TST_IPV6" ] && ip_flag="-6"
+ 
+-	cmd="route-change-netlink -c $NS_TIMES $ip_flag -p $ROUTE_RHOST_PORT $ROUTE_CHANGE_NETLINK_PARAMS"
++	cmd="route-change-netlink -c $ROUTE_CHANGE_NETLINK $ip_flag -p $ROUTE_RHOST_PORT $ROUTE_CHANGE_NETLINK_PARAMS"
+ 	tst_res TINFO "running $cmd"
+ 	$cmd || ret=$?
+ 	if [ "$ret" -ne 0 ]; then
 -- 
 2.26.2
 
