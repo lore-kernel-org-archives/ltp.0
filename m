@@ -1,71 +1,47 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Tue, 28 Apr 2020 20:35:11 -0700
-Subject: [LTP] [PATCH] Define __NR_futex to be __NR_futex_time64 on riscv32
-Message-ID: <20200429033511.1848449-1-raj.khem@gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 29 Apr 2020 02:54:57 -0400 (EDT)
+Subject: [LTP] [PATCH v2 2/2] Skip oversleep checks in timer tests under
+ VM
+In-Reply-To: <20200428154727.29206-2-mdoucha@suse.cz>
+References: <20200428154727.29206-1-mdoucha@suse.cz>
+ <20200428154727.29206-2-mdoucha@suse.cz>
+Message-ID: <797241805.10630970.1588143297978.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-RISCV glibc has decided to use 64bit time_t from get go unlike
-other 32bit architecture therefore aliasing __NR_futex to
-__NR_futex_time64 helps avoid the below errors on rv32
 
-tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- lib/tst_checkpoint.c                        | 4 ++++
- testcases/kernel/syscalls/clone/clone08.c   | 4 ++++
- testcases/kernel/syscalls/futex/futextest.h | 4 ++++
- 3 files changed, 12 insertions(+)
+----- Original Message -----
+> Timer tests often fail on sleep overrun when LTP is running inside a VM.
+> The main cause is usually that the VM doesn't get enough CPU time to wake up
+> the test process in time. Disable oversleep tests if tst_is_virt() detects
+> any hypervisor.
 
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 5e5b11496c..0388e9db2f 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -21,6 +21,10 @@
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  */
- 
-+#if !defined(__NR_futex) && defined(__riscv) && __riscv_xlen == 32
-+# define __NR_futex __NR_futex_time64
-+#endif
-+
- #include <stdint.h>
- #include <limits.h>
- #include <errno.h>
-diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
-index aace308068..85a2bd9246 100644
---- a/testcases/kernel/syscalls/clone/clone08.c
-+++ b/testcases/kernel/syscalls/clone/clone08.c
-@@ -5,6 +5,10 @@
-  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-  */
- 
-+#if !defined(__NR_futex) && defined(__riscv) && __riscv_xlen == 32
-+# define __NR_futex __NR_futex_time64
-+#endif
-+
- #define _GNU_SOURCE
- #include <stdlib.h>
- #include <stdio.h>
-diff --git a/testcases/kernel/syscalls/futex/futextest.h b/testcases/kernel/syscalls/futex/futextest.h
-index 5754d36dae..59d877e30f 100644
---- a/testcases/kernel/syscalls/futex/futextest.h
-+++ b/testcases/kernel/syscalls/futex/futextest.h
-@@ -34,6 +34,10 @@
- #ifndef _FUTEXTEST_H
- #define _FUTEXTEST_H
- 
-+#if !defined(__NR_futex) && defined(__riscv) && __riscv_xlen == 32
-+# define __NR_futex __NR_futex_time64
-+#endif
-+
- #include <unistd.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
--- 
-2.26.2
+> BTW, systemd-detect-virt can't detect the PowerPC LPAR hypervisor.
+
+Same with virt-what. We could (in separate patch) add check for
+'pseries_platform' (powerpc-utils) output:
+
+# pseries_platform
+PowerVM pSeries LPAR
+
+# pseries_platform
+PowerNV Host
+
+# pseries_platform
+Power KVM pSeries Guest
+
+>  
+> +	/*
+> +	 * Running tests in VM may cause timing issues, disable upper bound
+> +	 * checks if LTP_VM_ENV is set to non-zero.
+> +	 */
+> +	virt_env = tst_is_virt(VIRT_ANY);
+
+The comment still mentions LTP_VM_ENV. Other than that, I don't have major
+objections. Maybe somebody would like to run strict checks on VMs too, but
+that's something we could add later with an env. variable.
 
