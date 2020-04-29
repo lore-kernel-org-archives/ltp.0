@@ -1,38 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Apr 2020 16:14:11 +0200
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Do not fail on success
-Message-ID: <20200429141411.9051-1-chrubis@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 29 Apr 2020 17:27:51 +0300
+Subject: [LTP] [PATCH 2/2] fanotify: Test with tst_variant both raw
+ syscall and libc
+In-Reply-To: <20200429120611.GA10236@dell5510>
+References: <20200428113501.24711-1-pvorel@suse.cz>
+ <20200428113501.24711-2-pvorel@suse.cz>
+ <CAOQ4uxjTh5r3JWVzt6Gazh61Cb1Fr7Y90k1mXn=q2WbsSRs2NQ@mail.gmail.com>
+ <20200428133748.GA5349@dell5510>
+ <CAOQ4uxjJ7qFZVf4YNNK=JYDSc=_+fRoU6v+OAwQ3Vp7soNSAbQ@mail.gmail.com>
+ <20200429120611.GA10236@dell5510>
+Message-ID: <CAOQ4uxjRD_gjLYS_kujAR--GO7QAqUX_B7x=3m9K4Ffzq_Ewmw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The code in __loop_update_dio() uses inode->i_sb->s_bdev to get the
-logical block size for the backing file for the loop device. If that
-pointer is NULL, which happens to be the case for Btrfs, the checks for
-alignment and block size are ignored and direct I/O can be turned on
-regardless of the offset and logical block size.
+On Wed, Apr 29, 2020 at 3:06 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Amir,
+>
+> > My confusion is because you removed the HAVE_SYS_FANOTIFY_H ifdef
+> > and now you include sys/fanotify.h unconditionally.
+> > So I meant if this code builds with all supported system configurations.
+> Thanks! I overlook an obvious error. Patch is wrong, because fanotify.h must be
+> included in tests below #if defined(HAVE_SYS_FANOTIFY_H).
+> Below is fix to posted patch, tested without <sys/fanotify.h>.
+>
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That looks sane.
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index 3a028ba2c..d26fa61bf 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -71,7 +71,7 @@ static void verify_ioctl_loop(void)
- 
- 	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
- 	if (TST_RET == 0) {
--		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
-+		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
- 		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
- 		return;
- 	}
--- 
-2.24.1
-
+Thanks,
+Amir.
