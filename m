@@ -1,27 +1,38 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Wed, 29 Apr 2020 13:56:41 +0000
-Subject: [LTP] LTP driver testsuite
-Message-ID: <BM1PR01MB22279080FA97CD05A583FA0CEEAD0@BM1PR01MB2227.INDPRD01.PROD.OUTLOOK.COM>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 29 Apr 2020 16:14:11 +0200
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Do not fail on success
+Message-ID: <20200429141411.9051-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-I am running LTP on risc V on 5.4.3 with custom distro but all the driver related tests are getting skipped,
-saying  Failed to find module.
+The code in __loop_update_dio() uses inode->i_sb->s_bdev to get the
+logical block size for the backing file for the loop device. If that
+pointer is NULL, which happens to be the case for Btrfs, the checks for
+alignment and block size are ignored and direct I/O can be turned on
+regardless of the offset and logical block size.
 
-e.g. when i am running block_dev then the test is getting skipped with the error msg like
-block_dev    1  TCONF  :  tst_module.c:69: Failed to find module 'ltp_block_dev.ko'
-block_dev    2  TCONF  :  tst_module.c:69: Remaining cases not appropriate for configuration
-<<<execution_status>>>
-same msg when running other tests like tbio,rtc,zram01 etc.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-why tests are getting,what could be reason??
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+index 3a028ba2c..d26fa61bf 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+@@ -71,7 +71,7 @@ static void verify_ioctl_loop(void)
+ 
+ 	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
+ 	if (TST_RET == 0) {
+-		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
++		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
+ 		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
+ 		return;
+ 	}
+-- 
+2.24.1
 
-
-Thanks!
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200429/46c6bfca/attachment.htm>
