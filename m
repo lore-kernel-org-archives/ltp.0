@@ -1,62 +1,74 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 30 Apr 2020 16:22:40 +0800
-Subject: [LTP] [PATCH 2/3] lib: Add TST_ASSERT_FILE_INT and
- TST_ASSERT_FILE_STR
-In-Reply-To: <20200429120609.GA668@yuki.lan>
-References: <1587450108-31100-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1587450108-31100-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200429120609.GA668@yuki.lan>
-Message-ID: <2e9ddc2e-8048-63f3-6fe6-62733db28320@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 30 Apr 2020 16:57:41 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+Message-ID: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+pidfd_open(2) will set close-on-exec flag on the file descriptor as it
+manpage states, so check close-on-exec flag by fcntl(2).
 
+Also avoid compiler warning by replacing (long) TST_RET with (int) pidfd:
+------------------------------------------------------
+In file included from pidfd_open01.c:9:
+pidfd_open01.c: In function ?run?:
+../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
+   76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+      |                                         ^~~~~~~~~
+../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
+  224 |     tst_brk(TBROK | TERRNO,                          \
+      |     ^~~~~~~
+pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
+   20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+------------------------------------------------------
 
-> Hi!
->>   #endif /* TST_ASSERT_H__ */
->> diff --git a/lib/tst_assert.c b/lib/tst_assert.c
->> index 8ef3cd72e..65ee76473 100644
->> --- a/lib/tst_assert.c
->> +++ b/lib/tst_assert.c
->> @@ -4,6 +4,7 @@
->>    * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->>    * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
->>    */
->> +#include <stdio.h>
->>   #define TST_NO_DEFAULT_MAIN
->>   #include "tst_assert.h"
->>   #include "tst_test.h"
->> @@ -22,6 +23,22 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
->>   	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
->>   }
->>   
->> +void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *buf, int val)
->> +{
->> +	int sys_val;
->> +	char fmt[1024];
->> +
->> +	sprintf(fmt, "%s: %%d", buf);
-> 
-> If we want to keep the function as generic as possible we shouldn't add
-> the colon and space after the %s here.
-> 
-> There is no standard on proc files, for instance it wouldn't be possible
-> to parse /proc/vmstat if we hardcode the format string like that.
-> 
-> So I would just change this to "%s%%d" instead and pass "Foo: " instead
-> just "Foo" in the testcases.
-Yes, good suggestion!!
-> 
-> Also I guess that we should call it prefix rather than buf, but that's
-> minor.
-Agree. I will send a v2 patch.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-Best Regards
-Yang Xu
-> 
+diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+index 93bb86687..293e93b63 100644
+--- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
++++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+@@ -6,17 +6,27 @@
+  * Basic pidfd_open() test, fetches the PID of the current process and tries to
+  * get its file descriptor.
+  */
++
++#include <sys/types.h>
++#include <unistd.h>
++#include <fcntl.h>
+ #include "tst_test.h"
+ #include "lapi/pidfd_open.h"
+ 
+ static void run(void)
+ {
+-	TEST(pidfd_open(getpid(), 0));
++	int pidfd = 0, flag = 0;
++
++	pidfd = pidfd_open(getpid(), 0);
++	if (pidfd == -1)
++		tst_brk(TFAIL | TERRNO, "pidfd_open(getpid(), 0) failed");
++
++	flag = SAFE_FCNTL(pidfd, F_GETFD);
+ 
+-	if (TST_RET == -1)
+-		tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
++	SAFE_CLOSE(pidfd);
+ 
+-	SAFE_CLOSE(TST_RET);
++	if (!(flag & FD_CLOEXEC))
++		tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
+ 
+ 	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
+ }
+-- 
+2.21.0
+
 
 
