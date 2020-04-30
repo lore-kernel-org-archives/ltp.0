@@ -1,56 +1,22 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 30 Apr 2020 11:58:17 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Do not fail on success
-In-Reply-To: <20200429141411.9051-1-chrubis@suse.cz>
-References: <20200429141411.9051-1-chrubis@suse.cz>
-Message-ID: <643ba523-3421-fa27-cdc9-9c64e60647c3@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 30 Apr 2020 14:07:10 +0800
+Subject: [LTP] [PATCH v3 1/2] tst_is_virt(): Allow checking for any
+ hypervisor
+In-Reply-To: <CAEemH2fnv-hynqo2CeROs-C3EwRuVD1+YhRN4FtSHgbakwffrg@mail.gmail.com>
+References: <20200429092601.6325-1-mdoucha@suse.cz>
+ <CAEemH2fnv-hynqo2CeROs-C3EwRuVD1+YhRN4FtSHgbakwffrg@mail.gmail.com>
+Message-ID: <CAEemH2ce9EMoLskLwVDkCi=KN-18dQm7mU9GwhkHSoKb74njrw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+Pushed, thanks!
 
-
-> The code in __loop_update_dio() uses inode->i_sb->s_bdev to get the
-> logical block size for the backing file for the loop device. If that
-> pointer is NULL, which happens to be the case for Btrfs, the checks for
-> alignment and block size are ignored and direct I/O can be turned on
-> regardless of the offset and logical block size.Since kernel comment "the above condition may be loosed in the future, 
-and direct I/O may be switched runtime at that time because most
-of requests in sane applications should be PAGE_SIZE aligned". I think 
-pass is ok, also print filesystem let user know this fs igores this 
-align is better.
-
-   loopinfo.lo_offset = 0;
-   TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), 
-TST_RETVAL_EQ0);
-
-These should be moved to the beginning of test function.
-
-Best Regards
-Yang Xu
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->   testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> index 3a028ba2c..d26fa61bf 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> @@ -71,7 +71,7 @@ static void verify_ioctl_loop(void)
->   
->   	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
->   	if (TST_RET == 0) {
-> -		tst_res(TFAIL, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
-> +		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
->   		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
->   		return;
->   	}
-> 
-
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200430/e3a90fd7/attachment.htm>
