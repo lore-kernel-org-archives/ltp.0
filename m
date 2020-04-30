@@ -1,93 +1,62 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 30 Apr 2020 14:57:35 +0800
-Subject: [LTP] [PATCH v4 3/3] syscalls/pipe2_03: Add new test for pipe2
- O_DIRECT flag
-In-Reply-To: <36bd1e20-414b-ec24-f7e3-16ef7e2395d9@cn.fujitsu.com>
-References: <1587552329-21738-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1587552329-21738-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2ea_CtRyP9KtpJDjpEzobRyhrodiycDCAxhLbCjuOwhCQ@mail.gmail.com>
- <662aa817-04ff-e924-6880-7c23fa1cfe31@cn.fujitsu.com>
- <CAEemH2cF-kziNEHuN1GayTtzwdxFFzsu0wRGB85yJ=LaKS-XBw@mail.gmail.com>
- <3268f153-6730-708f-ed93-19ca4cf85fdd@cn.fujitsu.com>
- <CAEemH2ee7c55=EQb5qohpu40XMACSOCrSStwWt7u=_GyqjrxLw@mail.gmail.com>
- <CAHk-=wg7u4AjZQd49VjrZXikDMfK-HchOKHYqoUFwcXjsbJ3XQ@mail.gmail.com>
- <36bd1e20-414b-ec24-f7e3-16ef7e2395d9@cn.fujitsu.com>
-Message-ID: <CAEemH2d-puNst+Mro8oSCiobw2dhHcQVaS=6YoBX=v2+hVMqzQ@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 30 Apr 2020 16:22:40 +0800
+Subject: [LTP] [PATCH 2/3] lib: Add TST_ASSERT_FILE_INT and
+ TST_ASSERT_FILE_STR
+In-Reply-To: <20200429120609.GA668@yuki.lan>
+References: <1587450108-31100-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1587450108-31100-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200429120609.GA668@yuki.lan>
+Message-ID: <2e9ddc2e-8048-63f3-6fe6-62733db28320@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
-
-Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
-
-Hi Linus
->
->
-> > On Sun, Apr 26, 2020 at 4:59 AM Li Wang <liwang@redhat.com> wrote:
-> >>
-> >>  From kernel code seems you are right. The pipe indeed takes use of
-> PAGE_SIZE(ppc64le: 64kB) to split the writes data in the packetized mode
-> (marked by O_DIRECT). But in the manual page, O_DIRECT indicates us the
-> PIPE_BUF is the correct atomic unit.
->
+Hi Cyril
 
 
-> >
-> > The manual is correct.
-> >
-> > PIPE_BUF is the size we _guarantee_ can be used atomically.
-> >
-> > The fact that in practice we do have bigger buffers on some platforms
-> > is an implementation detail.
-> >
-> > Yes, that implementation detail can be visible, but basically any test
-> > code that tries to test for "what if we use a bigger bug that
-> > PIPE_BUF" is buggy. It's simply not guaranteed to work any more.
-> >
-> > O_DIRECT is kind of immaterial, except it's just one of those things
-> > where the atomic size is slightly more visible. But basically,
-> > packetized pipes with bigger packets than PIPE_BUF is random behavior.
-> > It may work. It may not.
->
+> Hi!
+>>   #endif /* TST_ASSERT_H__ */
+>> diff --git a/lib/tst_assert.c b/lib/tst_assert.c
+>> index 8ef3cd72e..65ee76473 100644
+>> --- a/lib/tst_assert.c
+>> +++ b/lib/tst_assert.c
+>> @@ -4,6 +4,7 @@
+>>    * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>>    * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
+>>    */
+>> +#include <stdio.h>
+>>   #define TST_NO_DEFAULT_MAIN
+>>   #include "tst_assert.h"
+>>   #include "tst_test.h"
+>> @@ -22,6 +23,22 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
+>>   	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
+>>   }
+>>   
+>> +void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *buf, int val)
+>> +{
+>> +	int sys_val;
+>> +	char fmt[1024];
+>> +
+>> +	sprintf(fmt, "%s: %%d", buf);
+> 
+> If we want to keep the function as generic as possible we shouldn't add
+> the colon and space after the %s here.
+> 
+> There is no standard on proc files, for instance it wouldn't be possible
+> to parse /proc/vmstat if we hardcode the format string like that.
+> 
+> So I would just change this to "%s%%d" instead and pass "Foo: " instead
+> just "Foo" in the testcases.
+Yes, good suggestion!!
+> 
+> Also I guess that we should call it prefix rather than buf, but that's
+> minor.
+Agree. I will send a v2 patch.
+
+Best Regards
+Yang Xu
+> 
 
 
-> Thanks for your explanation. I am more curious about the user scene of
-> this flag.
->
->
-
-> @Li, so how to design this test? In this test, we don't have complex
-> scene to test this automic unit.
->
-
-As Linus pointed out that "packetized pipes with bigger packets than
-PIPE_BUF is random behavior", it looks the way in your test is not
-guaranteed to work correctly, so I would drop the pipe2_03.c patch.
-But according to the pipe(7) manual page, we could try to verify writing
-data less than PIPE_BUF is atomic, and the pipe read end also should
-provide us correct data in one packet at a time.
-
-"
-PIPE_BUF
-  POSIX.1 says that write(2)s of less than PIPE_BUF bytes must be
-  atomic: the output data is written to the pipe as a contiguous sequence
-  ...
-  POSIX.1 requires PIPE_BUF to be at least 512 bytes. (On Linux, PIPE_BUF
-is 4096 bytes.)
-  ...
-
-  O_NONBLOCK disabled, n <= PIPE_BUF ...
-
-  O_NONBLOCK enabled, n <= PIPE_BUF ...
-"
-http://man7.org/linux/man-pages/man7/pipe.7.html
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200430/854ddcf7/attachment.htm>
