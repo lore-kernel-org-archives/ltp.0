@@ -1,50 +1,66 @@
 From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Date: Fri, 1 May 2020 18:09:04 +1000
-Subject: [LTP] [PATCH 2/4] syscalls/fanotify15: Minor corrections
-In-Reply-To: <20200421065002.12417-3-amir73il@gmail.com>
+Date: Fri, 1 May 2020 19:46:55 +1000
+Subject: [LTP] [PATCH 1/4] syscalls/fanotify09: Check merging of events
+ on directories
+In-Reply-To: <CAOQ4uxi3mKYH68oWZmqJ7NMs2SgGirYx=pnBQ3UD-0LkHjRw3A@mail.gmail.com>
 References: <20200421065002.12417-1-amir73il@gmail.com>
- <20200421065002.12417-3-amir73il@gmail.com>
-Message-ID: <20200501080902.GA2782@morpheus.bobrowski.net>
+ <20200421065002.12417-2-amir73il@gmail.com>
+ <20200501071740.GA2217@morpheus.bobrowski.net>
+ <CAOQ4uxi3mKYH68oWZmqJ7NMs2SgGirYx=pnBQ3UD-0LkHjRw3A@mail.gmail.com>
+Message-ID: <CAC0goKdzHxxobDuhp1z=xVtDgv0Ry_YS6WU9vBrEsyioe05dnQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 21, 2020 at 09:50:00AM +0300, Amir Goldstein wrote:
->  static void do_test(void)
-> @@ -55,23 +61,24 @@ static void do_test(void)
->  	struct fanotify_event_metadata *metadata;
->  	struct fanotify_event_info_fid *event_fid;
->  
-> +
+Ah, right.
 
-^ Unnecessary white line entered here?
+I'll finish off the review tomorrow when I have some more time.
 
->  	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-> -				FAN_CREATE | FAN_DELETE | FAN_ATTRIB |
-> -				FAN_MOVED_FROM | FAN_MOVED_TO |
-> -				FAN_DELETE_SELF | FAN_ONDIR,
-> +				FAN_CREATE | FAN_DELETE | FAN_MOVE |
-> +				FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
->  				AT_FDCWD, TEST_DIR) == -1) {
-
-...
-
-> -	/* Generate a sequence of events */
-> +	/* All dirent events on testdir are merged */
->  	event_set[count].mask = FAN_CREATE | FAN_MOVED_FROM | FAN_MOVED_TO | \
->  				FAN_DELETE;
-
-Just a suggestion, perhaps we can modify the above line to the following:
-
-	event_set[count].mask = FAN_CREATE | FAN_MOVE | FAN_DELETE;
-
-Also, I believe that we can generally replace all instances of
-FAN_MOVED_FROM | FAN_MOVED_TO with FAN_MOVE within this file.
-
-The rest looks good to me.
-
-Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Chat then!
 
 /M
+
+On Fri, 1 May 2020, 7:05 pm Amir Goldstein, <amir73il@gmail.com> wrote:
+
+> On Fri, May 1, 2020 at 10:17 AM Matthew Bobrowski
+> <mbobrowski@mbobrowski.org> wrote:
+> >
+> > On Tue, Apr 21, 2020 at 09:49:59AM +0300, Amir Goldstein wrote:
+> > > +static void event_res(int ttype, int group,
+> > > +                   struct fanotify_event_metadata *event)
+> > > +{
+> > > +     int len;
+> > > +     sprintf(symlnk, "/proc/self/fd/%d", event->fd);
+> > > +     len = readlink(symlnk, fdpath, sizeof(fdpath));
+> > > +     if (len < 0)
+> > > +             len = 0;
+> > > +     fdpath[len] = 0;
+> > > +     tst_res(ttype, "group %d got event: mask %llx pid=%u fd=%d
+> path=%s",
+> > > +             group, (unsigned long long)event->mask,
+> > > +             (unsigned)event->pid, event->fd, fdpath);
+> > > +}
+> >
+> > Nice helper, although it would be nice not to see all these statements
+> > clunked together like this.
+> >
+> > > -      * generate FAN_CLOSE_NOWRITE event on a child subdir.
+> > > +      * generate FAN_CLOSE_NOWRITE event on a testdir (subdir or ".")
+> >            ^ s/g/G :P
+> >
+> > Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> >
+>
+> Thanks for the review Matthew, but this patch has already been merged,
+> so those cleanups could be done at a later time.
+> I will address you comments to fanotify15 and fanotify16, which are
+> still not merged, when you are done with review.
+>
+> Thanks,
+> Amir.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200501/9b454f70/attachment-0001.htm>
