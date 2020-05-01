@@ -1,115 +1,39 @@
-From: =?unknown-8bit?b?5p2o5pmT?= <ice_yangxiao@163.com>
-Date: Mon, 4 May 2020 16:30:08 +0800 (CST)
-Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
- close-on-exec flag
-In-Reply-To: <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
-References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
- <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
-Message-ID: <43140aa8.315c.171dece8540.Coremail.ice_yangxiao@163.com>
+From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Date: Fri, 1 May 2020 17:17:42 +1000
+Subject: [LTP] [PATCH 1/4] syscalls/fanotify09: Check merging of events
+ on directories
+In-Reply-To: <20200421065002.12417-2-amir73il@gmail.com>
+References: <20200421065002.12417-1-amir73il@gmail.com>
+ <20200421065002.12417-2-amir73il@gmail.com>
+Message-ID: <20200501071740.GA2217@morpheus.bobrowski.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Apr 21, 2020 at 09:49:59AM +0300, Amir Goldstein wrote:
+> +static void event_res(int ttype, int group,
+> +		      struct fanotify_event_metadata *event)
+> +{
+> +	int len;
+> +	sprintf(symlnk, "/proc/self/fd/%d", event->fd);
+> +	len = readlink(symlnk, fdpath, sizeof(fdpath));
+> +	if (len < 0)
+> +		len = 0;
+> +	fdpath[len] = 0;
+> +	tst_res(ttype, "group %d got event: mask %llx pid=%u fd=%d path=%s",
+> +		group, (unsigned long long)event->mask,
+> +		(unsigned)event->pid, event->fd, fdpath);
+> +}
 
------ Original Message -----
-From: "Viresh Kumar" <viresh.kumar@linaro.org>
-To: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
-Cc: ltp@lists.linux.it
-Sent: Mon, 4 May 2020 10:39:37 +0530
-Subject: Re: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for close-on-exec flag
+Nice helper, although it would be nice not to see all these statements
+clunked together like this.
 
-On 30-04-20, 16:57, Xiao Yang wrote:
-> pidfd_open(2) will set close-on-exec flag on the file descriptor as it
-> manpage states, so check close-on-exec flag by fcntl(2).
-> 
-> Also avoid compiler warning by replacing (long) TST_RET with (int) pidfd:
-> ------------------------------------------------------
-> In file included from pidfd_open01.c:9:
-> pidfd_open01.c: In function ?run?:
-> ../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
->    76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
->       |                                         ^~~~~~~~~
-> ../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
->   224 |     tst_brk(TBROK | TERRNO,                          \
->       |     ^~~~~~~
-> pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
->    20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+> -	 * generate FAN_CLOSE_NOWRITE event on a child subdir.
+> +	 * generate FAN_CLOSE_NOWRITE event on a testdir (subdir or ".")
+  	   ^ s/g/G :P
 
-This log isn't useful as the warning started coming after your change
-only and not before.
+Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 
-
-Hi?
-
-
-Right?just add a hint why I use pidfd instead so I want to keep it.  Of course?I will say that avoid compiler warning from my change in v2 patch.
-
-
-Thanks?
-Xiao Yang
-
-> ------------------------------------------------------
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> index 93bb86687..293e93b63 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> @@ -6,17 +6,27 @@
->   * Basic pidfd_open() test, fetches the PID of the current process and tries to
->   * get its file descriptor.
->   */
-> +
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
->  #include "tst_test.h"
->  #include "lapi/pidfd_open.h"
->  
->  static void run(void)
->  {
-> - TEST(pidfd_open(getpid(), 0));
-> + int pidfd = 0, flag = 0;
-
-None of these need to be initialized.
-
-> +
-> + pidfd = pidfd_open(getpid(), 0);
-> + if (pidfd == -1)
-> + tst_brk(TFAIL | TERRNO, "pidfd_open(getpid(), 0) failed");
-
-This could have been written as:
-        TEST(pidfd = pidfd_open(getpid(), 0));
-
-> +
-> + flag = SAFE_FCNTL(pidfd, F_GETFD);
->  
-> - if (TST_RET == -1)
-> - tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
-> + SAFE_CLOSE(pidfd);
->  
-> - SAFE_CLOSE(TST_RET);
-> + if (!(flag & FD_CLOEXEC))
-> + tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
->  
->   tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
->  }
-> -- 
-> 2.21.0
-> 
-> 
-
--- 
-viresh
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200504/ae01d41b/attachment-0001.htm>
+/M
