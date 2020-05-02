@@ -1,59 +1,192 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Sat, 2 May 2020 16:17:07 +0300
-Subject: [LTP] [PATCH 3/4] syscalls/fanotify15: Add a test case for
- inode marks
-In-Reply-To: <20200502070956.GA1649@morpheus.bobrowski.net>
+Date: Sat, 2 May 2020 17:58:39 +0300
+Subject: [LTP] [PATCH 4/4] syscalls/fanotify: New test for FAN_MODIFY_DIR
+In-Reply-To: <20200502093931.GB1649@morpheus.bobrowski.net>
 References: <20200421065002.12417-1-amir73il@gmail.com>
- <20200421065002.12417-4-amir73il@gmail.com>
- <20200502070956.GA1649@morpheus.bobrowski.net>
-Message-ID: <CAOQ4uxiiY8XWWvuSfVre2cKkCDGn0rVj4OJ9umtUyn4o-QUhxQ@mail.gmail.com>
+ <20200421065002.12417-5-amir73il@gmail.com>
+ <20200502093931.GB1649@morpheus.bobrowski.net>
+Message-ID: <CAOQ4uxjnob_fxg=gLkQpmFYX__EpNE1WP0jQBpGvqji6RZtqnA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, May 2, 2020 at 10:10 AM Matthew Bobrowski
+On Sat, May 2, 2020 at 12:39 PM Matthew Bobrowski
 <mbobrowski@mbobrowski.org> wrote:
 >
-> On Tue, Apr 21, 2020 at 09:50:01AM +0300, Amir Goldstein wrote:
-> > +     tst_res(TINFO,
-> > +             "Test #%d: FAN_REPORT_FID with mark type: %s",
-> > +             number, mark->name);
-> >
-> > -     if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
+> On Tue, Apr 21, 2020 at 09:50:02AM +0300, Amir Goldstein wrote:
+> > +void save_fid(const char *path, struct fid_t *fid)
+> > +{
+> > +     int *fh = (int *)(fid->handle.f_handle);
+> > +     int *fsid = fid->fsid.val;
 > > +
+> > +     fh[0] = fh[1] = fh[2] = 0;
+> > +     fid->handle.handle_bytes = MAX_HANDLE_SZ;
+> > +     fanotify_get_fid(path, &fid->fsid, &fid->handle);
+> > +
+> > +     tst_res(TINFO,
+> > +             "fid(%s) = %x.%x.%x.%x.%x...",
+> > +             path, fsid[0], fsid[1], fh[0], fh[1], fh[2]);
+> > +}
 >
-> A nit, but there's an unnecessary extra whiteline here.
+> What do you think about pulling this out and shoving it in fanotify.h
+> as another helper? Perhaps future tests would/could also make use of
+> this routine.
 >
-> > +     if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag, tc->mask |
-> >                               FAN_CREATE | FAN_DELETE | FAN_MOVE |
-> > -                             FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
-> > +                             FAN_MODIFY | FAN_ONDIR,
-> >                               AT_FDCWD, TEST_DIR) == -1) {
-> >               if (errno == ENODEV)
-> >                       tst_brk(TCONF,
-> >                               "FAN_REPORT_FID not supported on %s "
-> >                               "filesystem", tst_device->fs_type);
-> >               tst_brk(TBROK | TERRNO,
-> > -                     "fanotify_mark(%d, FAN_MARK_ADD | FAN_MARK_FILESYSTEM, "
-> > +                     "fanotify_mark(%d, FAN_MARK_ADD | %s, "
-> >                       "FAN_CREATE | FAN_DELETE | FAN_MOVE | "
-> > -                     "FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR, "
-> > +                     "FAN_MODIFY | FAN_ONDIR, "
-> >                       "AT_FDCWD, %s) failed",
-> > -                     fanotify_fd, TEST_DIR);
-> > +                     fanotify_fd, mark->name, TEST_DIR);
->
-> I see that you've removed the FAN_DELETE_SELF mask here, although
-> should we consider adding tc->mask here too for the sake of
-> correctness?
 
-Sure, I added " | 0x%x" for the extra tc->mask and also
-enhanced the TINFO in the beginning of the test case to disaply
-more explicit text like this:
-               "FAN_REPORT_FID on filesystem including FAN_DELETE_SELF",
-               "FAN_REPORT_FID on directory with FAN_EVENT_ON_CHILD",
+Ok. And I'll convert fanotify15/fanotify13 to use this helper in another patch.
 
-Thanks,
+> > +static void do_test(unsigned int number)
+> > +{
+> > +     int len = 0, i = 0, test_num = 0;
+> > +     int tst_count = 0;
+> > +     int fd;
+>
+> Just shove all these on one line?
+
+ok.
+
+>
+> > +     if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
+> > +                       AT_FDCWD, MOUNT_PATH) < 0) {
+> > +             if (errno == EINVAL) {
+> > +                     tst_brk(TCONF,
+> > +                             "FAN_DIR_MODIFY not supported by kernel");
+> > +                     return;
+> > +             }
+> > +             tst_brk(TBROK | TERRNO,
+> > +                 "fanotify_mark (%d, FAN_MARK_ADD | %s, "
+> > +                 "FAN_DIR_MODIFY, AT_FDCWD, '"MOUNT_PATH"') "
+> > +                 "failed", fd_notify, mark->name);
+>
+> Should we be adding tc->mask here to the format string output?
+
+Ok.
+
+>
+> > +     /*
+> > +      * Create subdir and watch open events "on children" with name.
+> > +      */
+> > +     if (mkdir(dname1, 0755) < 0) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "mkdir('"DIR_NAME1"', 0755) failed");
+> > +     }
+>
+> Perhaps we should be making use of the SAFE_MACROS() so that we're
+> adhering to the test writing guidelines?
+>
+
+Of course.
+
+> > +     if (tc->sub_mask &&
+> > +         fanotify_mark(fd_notify, FAN_MARK_ADD | sub_mark->flag, tc->sub_mask,
+> > +                       AT_FDCWD, dname1) < 0) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                 "fanotify_mark (%d, FAN_MARK_ADD | %s, "
+> > +                 "FAN_DIR_MODIFY | FAN_DELETE_SELF | FAN_ONDIR, "
+> > +                 "AT_FDCWD, '%s') "
+> > +                 "failed", fd_notify, sub_mark->name, dname1);
+> > +     }
+>
+> Maybe just replace the statically typed mask here with tc->sub_mask?
+> That way, if test cases are added or modified in the future, you don't
+> have to update it?
+>
+
+Sure.
+
+> > +     if ((fd = creat(fname1, 0755)) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                     "creat(\"%s\", 755) failed", FILE_NAME1);
+> > +     }
+> > +
+> > +     if (rename(fname1, fname2) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "rename(%s, %s) failed",
+> > +                             FILE_NAME1, FILE_NAME2);
+> > +     }
+> > +
+> > +     if (close(fd) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "close(%s) failed", FILE_NAME2);
+> > +     }
+> > +
+> > +     /* Generate delete events with fname2 */
+> > +     if (unlink(fname2) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "unlink(%s) failed", FILE_NAME2);
+> > +     }
+>
+> The same applies with the above set of system calls?
+>
+> ...
+>
+> > +     if (rename(dname1, dname2) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "rename(%s, %s) failed",
+> > +                             DIR_NAME1, DIR_NAME2);
+> > +     }
+> > +
+> > +     if (rmdir(dname2) == -1) {
+> > +             tst_brk(TBROK | TERRNO,
+> > +                             "rmdir(%s) failed", DIR_NAME2);
+> > +     }
+>
+>
+> And here...
+>
+> > +     while (i < len) {
+> > +             struct event_t *expected = &event_set[test_num];
+> > +             struct fanotify_event_metadata *event;
+> > +             struct fanotify_event_info_fid *event_fid;
+> > +             struct file_handle *file_handle;
+> > +             unsigned int fhlen;
+> > +             const char *filename;
+> > +             int namelen, info_type;
+> > +
+> > +             event = (struct fanotify_event_metadata *)&event_buf[i];
+> > +             event_fid = (struct fanotify_event_info_fid *)(event + 1);
+> > +             file_handle = (struct file_handle *)event_fid->handle;
+> > +             fhlen = file_handle->handle_bytes;
+> > +             filename = (char *)file_handle->f_handle + fhlen;
+> > +             namelen = ((char *)event + event->event_len) - filename;
+> > +             /* End of event could have name, zero padding, both or none */
+> > +             if (namelen > 0) {
+> > +                     namelen = strlen(filename);
+> > +             } else {
+> > +                     filename = "";
+> > +                     namelen = 0;
+> > +             }
+> > +             if (expected->name[0]) {
+> > +                     info_type = FAN_EVENT_INFO_TYPE_DFID_NAME;
+> > +             } else {
+> > +                     info_type = FAN_EVENT_INFO_TYPE_FID;
+> > +             }
+>
+> Can we line break these conditional statements?
+>
+
+ok.
+
+> ...
+>
+> > +static void setup(void)
+> > +{
+>
+>         int fd;
+>
+>         fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, 0_RDONLY);
+>         SAFE_CLOSE(fd);
+>
+> Above snippet missing from test bootstrap? I remember we had to add
+> this in the past, but I can't remember the _why_?
+>
+
+Because, if kernel does not support fanotify, we want the test
+to fail on setup with "fanotify is not configured in this kernel."
+instead of inaccurately reporting later:
+"FAN_REPORT_FID not supported by kernel".
+
+Thanks a lot for the review,
 Amir.
