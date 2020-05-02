@@ -1,50 +1,59 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 1 May 2020 12:05:31 +0300
-Subject: [LTP] [PATCH 1/4] syscalls/fanotify09: Check merging of events
- on directories
-In-Reply-To: <20200501071740.GA2217@morpheus.bobrowski.net>
+Date: Sat, 2 May 2020 16:17:07 +0300
+Subject: [LTP] [PATCH 3/4] syscalls/fanotify15: Add a test case for
+ inode marks
+In-Reply-To: <20200502070956.GA1649@morpheus.bobrowski.net>
 References: <20200421065002.12417-1-amir73il@gmail.com>
- <20200421065002.12417-2-amir73il@gmail.com>
- <20200501071740.GA2217@morpheus.bobrowski.net>
-Message-ID: <CAOQ4uxi3mKYH68oWZmqJ7NMs2SgGirYx=pnBQ3UD-0LkHjRw3A@mail.gmail.com>
+ <20200421065002.12417-4-amir73il@gmail.com>
+ <20200502070956.GA1649@morpheus.bobrowski.net>
+Message-ID: <CAOQ4uxiiY8XWWvuSfVre2cKkCDGn0rVj4OJ9umtUyn4o-QUhxQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, May 1, 2020 at 10:17 AM Matthew Bobrowski
+On Sat, May 2, 2020 at 10:10 AM Matthew Bobrowski
 <mbobrowski@mbobrowski.org> wrote:
 >
-> On Tue, Apr 21, 2020 at 09:49:59AM +0300, Amir Goldstein wrote:
-> > +static void event_res(int ttype, int group,
-> > +                   struct fanotify_event_metadata *event)
-> > +{
-> > +     int len;
-> > +     sprintf(symlnk, "/proc/self/fd/%d", event->fd);
-> > +     len = readlink(symlnk, fdpath, sizeof(fdpath));
-> > +     if (len < 0)
-> > +             len = 0;
-> > +     fdpath[len] = 0;
-> > +     tst_res(ttype, "group %d got event: mask %llx pid=%u fd=%d path=%s",
-> > +             group, (unsigned long long)event->mask,
-> > +             (unsigned)event->pid, event->fd, fdpath);
-> > +}
+> On Tue, Apr 21, 2020 at 09:50:01AM +0300, Amir Goldstein wrote:
+> > +     tst_res(TINFO,
+> > +             "Test #%d: FAN_REPORT_FID with mark type: %s",
+> > +             number, mark->name);
+> >
+> > -     if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
+> > +
 >
-> Nice helper, although it would be nice not to see all these statements
-> clunked together like this.
+> A nit, but there's an unnecessary extra whiteline here.
 >
-> > -      * generate FAN_CLOSE_NOWRITE event on a child subdir.
-> > +      * generate FAN_CLOSE_NOWRITE event on a testdir (subdir or ".")
->            ^ s/g/G :P
+> > +     if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag, tc->mask |
+> >                               FAN_CREATE | FAN_DELETE | FAN_MOVE |
+> > -                             FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
+> > +                             FAN_MODIFY | FAN_ONDIR,
+> >                               AT_FDCWD, TEST_DIR) == -1) {
+> >               if (errno == ENODEV)
+> >                       tst_brk(TCONF,
+> >                               "FAN_REPORT_FID not supported on %s "
+> >                               "filesystem", tst_device->fs_type);
+> >               tst_brk(TBROK | TERRNO,
+> > -                     "fanotify_mark(%d, FAN_MARK_ADD | FAN_MARK_FILESYSTEM, "
+> > +                     "fanotify_mark(%d, FAN_MARK_ADD | %s, "
+> >                       "FAN_CREATE | FAN_DELETE | FAN_MOVE | "
+> > -                     "FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR, "
+> > +                     "FAN_MODIFY | FAN_ONDIR, "
+> >                       "AT_FDCWD, %s) failed",
+> > -                     fanotify_fd, TEST_DIR);
+> > +                     fanotify_fd, mark->name, TEST_DIR);
 >
-> Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
->
+> I see that you've removed the FAN_DELETE_SELF mask here, although
+> should we consider adding tc->mask here too for the sake of
+> correctness?
 
-Thanks for the review Matthew, but this patch has already been merged,
-so those cleanups could be done at a later time.
-I will address you comments to fanotify15 and fanotify16, which are
-still not merged, when you are done with review.
+Sure, I added " | 0x%x" for the extra tc->mask and also
+enhanced the TINFO in the beginning of the test case to disaply
+more explicit text like this:
+               "FAN_REPORT_FID on filesystem including FAN_DELETE_SELF",
+               "FAN_REPORT_FID on directory with FAN_EVENT_ON_CHILD",
 
 Thanks,
 Amir.
