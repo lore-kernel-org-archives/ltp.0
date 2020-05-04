@@ -1,94 +1,50 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 4 May 2020 10:41:07 +0530
-Subject: [LTP] [PATCH 2/2] syscalls/pidfd_open*.c: Drop .min_kver flag
-In-Reply-To: <20200430085742.1663-2-yangx.jy@cn.fujitsu.com>
-References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
- <20200430085742.1663-2-yangx.jy@cn.fujitsu.com>
-Message-ID: <20200504051107.edvfiqloegt3ak5o@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 4 May 2020 07:53:18 +0200
+Subject: [LTP] [PATCH v2 0/4] fanotify ltp tests for v5.7-rc1
+In-Reply-To: <20200502162744.9589-1-amir73il@gmail.com>
+References: <20200502162744.9589-1-amir73il@gmail.com>
+Message-ID: <20200504055318.GA11558@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 30-04-20, 16:57, Xiao Yang wrote:
-> 1) Drop .min_kver flag directly because of two following reasons:
->    a) pidfd_open(2) may be backported to old kernel which is less
->       than v5.3 so kernel version check is meaningless.
->    b) tst_syscall() can report TCONF if pidfd_open(2) is not supported.
-> 2) For pidfd_open03.c, check if pidfd_open(2) is not supported before
->    calling fork() and remove unnecessary TEST().
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  .../kernel/syscalls/pidfd_open/pidfd_open01.c      |  1 -
->  .../kernel/syscalls/pidfd_open/pidfd_open02.c      |  1 -
->  .../kernel/syscalls/pidfd_open/pidfd_open03.c      | 14 +++++++++-----
->  3 files changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> index 293e93b63..983dcdccb 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> @@ -32,6 +32,5 @@ static void run(void)
->  }
->  
->  static struct tst_test test = {
-> -	.min_kver = "5.3",
->  	.test_all = run,
->  };
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> index dc86cae7a..a7328ddfe 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
-> @@ -51,7 +51,6 @@ static void run(unsigned int n)
->  }
->  
->  static struct tst_test test = {
-> -	.min_kver = "5.3",
->  	.tcnt = ARRAY_SIZE(tcases),
->  	.test = run,
->  	.setup = setup,
-> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> index 48470e5e1..2fc3b3a5f 100644
-> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
-> @@ -27,11 +27,9 @@ static void run(void)
->  		exit(EXIT_SUCCESS);
->  	}
->  
-> -	TEST(pidfd_open(pid, 0));
-> -
-> -	fd = TST_RET;
-> +	fd = pidfd_open(pid, 0);
->  	if (fd == -1)
-> -		tst_brk(TFAIL | TTERRNO, "pidfd_open() failed");
-> +		tst_brk(TFAIL | TERRNO, "pidfd_open() failed");
+Hi Amir,
 
-Unrelated change, please drop it.
+> Hi Petr,
 
->  
->  	TST_CHECKPOINT_WAKE(0);
->  
-> @@ -49,8 +47,14 @@ static void run(void)
->  		tst_res(TPASS, "pidfd_open() passed");
->  }
->  
-> +static void setup(void)
-> +{
-> +	// Check if pidfd_open(2) is not supported
-> +	tst_syscall(__NR_pidfd_open, -1, 0);
-> +}
-> +
->  static struct tst_test test = {
-> -	.min_kver = "5.3",
-> +	.setup = setup,
->  	.test_all = run,
->  	.forks_child = 1,
->  	.needs_checkpoints = 1,
+> Following patches test fanotify kernel code merged to v5.7-rc1.
 
-Please have a look at fsopen_supported_by_kernel() in lapi/fsmount.h
-and make such a helper.
+> Changes since v1:
+> - Patch to fanotify09 has already been merged
+> - Addressed comments by Petr, Cyril, Matthew and added reviewed-by
+> - Added patch to use new helper fanotify_save_fid by other tests
 
--- 
-viresh
+> Patch 3 adds a new test for the new event type FAN_MODIFY_DIR, which
+> carries a new event format (parent fid + name).
+> The man page patches for FAN_MODIFY_DIR have already been merged.
+
+LGTM, I'll just fix failure on MUSl and then merge
+https://travis-ci.org/github/pevik/ltp/jobs/682785812
+
+Kind regards,
+Petr
+
+> Thanks all for the review,
+> Amir.
+
+> Amir Goldstein (4):
+>   syscalls/fanotify15: Minor corrections
+>   syscalls/fanotify15: Add a test case for inode marks
+>   syscalls/fanotify: New test for FAN_MODIFY_DIR
+>   syscalls/fanotify: Use fanotify_save_fid() helper
+
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+>  testcases/kernel/syscalls/fanotify/fanotify.h |  36 +-
+>  .../kernel/syscalls/fanotify/fanotify13.c     |  44 +-
+>  .../kernel/syscalls/fanotify/fanotify15.c     | 191 ++++++---
+>  .../kernel/syscalls/fanotify/fanotify16.c     | 403 ++++++++++++++++++
+>  6 files changed, 596 insertions(+), 80 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/fanotify/fanotify16.c
