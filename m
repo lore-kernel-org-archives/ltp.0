@@ -1,195 +1,115 @@
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 4 May 2020 10:07:15 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/fanotify15: Add a test case for
- inode marks
-In-Reply-To: <20200502162744.9589-3-amir73il@gmail.com>
-References: <20200502162744.9589-1-amir73il@gmail.com>
- <20200502162744.9589-3-amir73il@gmail.com>
-Message-ID: <20200504080715.GA1741@quack2.suse.cz>
+From: =?unknown-8bit?b?5p2o5pmT?= <ice_yangxiao@163.com>
+Date: Mon, 4 May 2020 16:30:08 +0800 (CST)
+Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
+References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
+ <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
+Message-ID: <43140aa8.315c.171dece8540.Coremail.ice_yangxiao@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat 02-05-20 19:27:42, Amir Goldstein wrote:
-> Test reporting events with fid also with recusrive inode marks:
-> - Test events "on self" (FAN_DELETE_SELF) on file and dir
-> - Test events "on child" (FAN_MODIFY) on file
+
+----- Original Message -----
+From: "Viresh Kumar" <viresh.kumar@linaro.org>
+To: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
+Cc: ltp@lists.linux.it
+Sent: Mon, 4 May 2020 10:39:37 +0530
+Subject: Re: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for close-on-exec flag
+
+On 30-04-20, 16:57, Xiao Yang wrote:
+> pidfd_open(2) will set close-on-exec flag on the file descriptor as it
+> manpage states, so check close-on-exec flag by fcntl(2).
 > 
-> With recursive inode marks, verify that the FAN_MODIFY event reported
-> to parent "on child" is merged with the FAN_MODIFY event reported to
-> child.
+> Also avoid compiler warning by replacing (long) TST_RET with (int) pidfd:
+> ------------------------------------------------------
+> In file included from pidfd_open01.c:9:
+> pidfd_open01.c: In function ?run?:
+> ../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
+>    76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+>       |                                         ^~~~~~~~~
+> ../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
+>   224 |     tst_brk(TBROK | TERRNO,                          \
+>       |     ^~~~~~~
+> pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
+>    20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+
+This log isn't useful as the warning started coming after your change
+only and not before.
+
+
+Hi?
+
+
+Right?just add a hint why I use pidfd instead so I want to keep it.  Of course?I will say that avoid compiler warning from my change in v2 patch.
+
+
+Thanks?
+Xiao Yang
+
+> ------------------------------------------------------
 > 
-> The new test case is a regression test for commit f367a62a7cad:
-> 
->     fanotify: merge duplicate events on parent and child
-
-The test looks OK but do we want a test for this? I mean: A test like this
-seems to imply we promise to merge identical events. Although that is a
-good general guideline, I consider it rather an optimization that may or
-may not happen but userspace should not rely on it. Thoughts?
-
-								Honza
-
-
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-> Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 > ---
->  .../kernel/syscalls/fanotify/fanotify15.c     | 81 +++++++++++++++++--
->  1 file changed, 73 insertions(+), 8 deletions(-)
+>  .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-> index 2e860edb2..a9ed2ec81 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify15.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-> @@ -9,6 +9,10 @@
->   *	Test file that has been purposely designed to verify
->   *	FAN_REPORT_FID functionality while using newly defined dirent
->   *	events.
-> + *
-> + * Test case #1 is a regression test for commit f367a62a7cad:
-> + *
-> + *      fanotify: merge duplicate events on parent and child
+> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> index 93bb86687..293e93b63 100644
+> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> @@ -6,17 +6,27 @@
+>   * Basic pidfd_open() test, fetches the PID of the current process and tries to
+>   * get its file descriptor.
 >   */
->  #define _GNU_SOURCE
->  #include "config.h"
-> @@ -53,28 +57,49 @@ static int fanotify_fd;
->  static char events_buf[EVENT_BUF_LEN];
->  static struct event_t event_set[EVENT_MAX];
->  
-> -static void do_test(void)
-> +static struct test_case_t {
-> +	const char *tname;
-> +	struct fanotify_mark_type mark;
-> +	unsigned long mask;
-> +} test_cases[] = {
-> +	{
-> +		"FAN_REPORT_FID on filesystem including FAN_DELETE_SELF",
-> +		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
-> +		FAN_DELETE_SELF,
-> +	},
-> +	{
-> +		"FAN_REPORT_FID on directory with FAN_EVENT_ON_CHILD",
-> +		INIT_FANOTIFY_MARK_TYPE(INODE),
-> +		FAN_EVENT_ON_CHILD,
-> +	},
-> +};
 > +
-> +static void do_test(unsigned int number)
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+>  #include "tst_test.h"
+>  #include "lapi/pidfd_open.h"
+>  
+>  static void run(void)
 >  {
->  	int i, fd, len, count = 0;
->  
->  	struct file_handle *event_file_handle;
->  	struct fanotify_event_metadata *metadata;
->  	struct fanotify_event_info_fid *event_fid;
-> +	struct test_case_t *tc = &test_cases[number];
-> +	struct fanotify_mark_type *mark = &tc->mark;
+> - TEST(pidfd_open(getpid(), 0));
+> + int pidfd = 0, flag = 0;
+
+None of these need to be initialized.
+
 > +
-> +	tst_res(TINFO, "Test #%d: %s", number, tc->tname);
->  
-> -	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-> +	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag, tc->mask |
->  				FAN_CREATE | FAN_DELETE | FAN_MOVE |
-> -				FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
-> +				FAN_MODIFY | FAN_ONDIR,
->  				AT_FDCWD, TEST_DIR) == -1) {
->  		if (errno == ENODEV)
->  			tst_brk(TCONF,
->  				"FAN_REPORT_FID not supported on %s "
->  				"filesystem", tst_device->fs_type);
->  		tst_brk(TBROK | TERRNO,
-> -			"fanotify_mark(%d, FAN_MARK_ADD | FAN_MARK_FILESYSTEM, "
-> +			"fanotify_mark(%d, FAN_MARK_ADD | %s, "
->  			"FAN_CREATE | FAN_DELETE | FAN_MOVE | "
-> -			"FAN_MODIFY | FAN_DELETE_SELF | FAN_ONDIR, "
-> +			"FAN_MODIFY | FAN_ONDIR | 0x%lx, "
->  			"AT_FDCWD, %s) failed",
-> -			fanotify_fd, TEST_DIR);
-> +			fanotify_fd, mark->name, tc->mask, TEST_DIR);
->  	}
->  
->  	/* All dirent events on testdir are merged */
-> @@ -87,8 +112,21 @@ static void do_test(void)
->  	fd = SAFE_CREAT(FILE1, 0644);
->  	SAFE_CLOSE(fd);
->  
-> +	/* Recursive watch file for events "on self" */
-> +	if (mark->flag == FAN_MARK_INODE &&
-> +	    fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag,
-> +			  FAN_MODIFY | FAN_DELETE_SELF,
-> +			  AT_FDCWD, FILE1) == -1) {
-> +		tst_brk(TBROK | TERRNO,
-> +			"fanotify_mark(%d, FAN_MARK_ADD | %s, "
-> +			"FAN_DELETE_SELF, AT_FDCWD, %s) failed",
-> +			fanotify_fd, mark->name, FILE1);
-> +	}
+> + pidfd = pidfd_open(getpid(), 0);
+> + if (pidfd == -1)
+> + tst_brk(TFAIL | TERRNO, "pidfd_open(getpid(), 0) failed");
+
+This could have been written as:
+        TEST(pidfd = pidfd_open(getpid(), 0));
+
 > +
->  	/*
->  	 * Event on child file is not merged with dirent events.
-> +	 * FAN_MODIFY event reported on file mark should be merged with the
-> +	 * FAN_MODIFY event reported on parent directory watch.
->  	 */
->  	event_set[count].mask = FAN_MODIFY;
->  	event_set[count].handle.handle_bytes = MAX_HANDLE_SZ;
-> @@ -128,6 +166,17 @@ static void do_test(void)
+> + flag = SAFE_FCNTL(pidfd, F_GETFD);
 >  
->  	SAFE_MKDIR(DIR1, 0755);
+> - if (TST_RET == -1)
+> - tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
+> + SAFE_CLOSE(pidfd);
 >  
-> +	/* Recursive watch subdir for events "on self" */
-> +	if (mark->flag == FAN_MARK_INODE &&
-> +	    fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag,
-> +			  FAN_DELETE_SELF | FAN_ONDIR,
-> +			  AT_FDCWD, DIR1) == -1) {
-> +		tst_brk(TBROK | TERRNO,
-> +			"fanotify_mark(%d, FAN_MARK_ADD | %s,"
-> +			"FAN_DELETE_SELF | FAN_ONDIR, AT_FDCWD, %s) failed",
-> +			fanotify_fd, mark->name, DIR1);
-> +	}
-> +
->  	SAFE_RENAME(DIR1, DIR2);
+> - SAFE_CLOSE(TST_RET);
+> + if (!(flag & FD_CLOEXEC))
+> + tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
 >  
->  	event_set[count].mask = FAN_ONDIR | FAN_DELETE_SELF;
-> @@ -141,6 +190,17 @@ static void do_test(void)
->  	/* Read dir events from the event queue */
->  	len += SAFE_READ(0, fanotify_fd, events_buf + len, EVENT_BUF_LEN - len);
->  
-> +	/*
-> +	 * Cleanup the mark
-> +	 */
-> +	if (fanotify_mark(fanotify_fd, FAN_MARK_FLUSH | mark->flag, 0,
-> +			  AT_FDCWD, TEST_DIR) < 0) {
-> +		tst_brk(TBROK | TERRNO,
-> +			"fanotify_mark (%d, FAN_MARK_FLUSH | %s, 0,"
-> +			"AT_FDCWD, '"TEST_DIR"') failed",
-> +			fanotify_fd, mark->name);
-> +	}
-> +
->  	/* Process each event in buffer */
->  	for (i = 0, metadata = (struct fanotify_event_metadata *) events_buf;
->  		FAN_EVENT_OK(metadata, len); i++) {
-> @@ -259,9 +319,14 @@ static struct tst_test test = {
->  	.mount_device = 1,
->  	.mntpoint = MOUNT_POINT,
->  	.all_filesystems = 1,
-> -	.test_all = do_test,
-> +	.test = do_test,
-> +	.tcnt = ARRAY_SIZE(test_cases),
->  	.setup = do_setup,
-> -	.cleanup = do_cleanup
-> +	.cleanup = do_cleanup,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "f367a62a7cad"},
-> +		{}
-> +	}
->  };
->  
->  #else
+>   tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
+>  }
 > -- 
-> 2.17.1
+> 2.21.0
 > 
+> 
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+viresh
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200504/ae01d41b/attachment-0001.htm>
