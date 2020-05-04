@@ -1,129 +1,91 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Mon, 4 May 2020 19:32:26 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
- close-on-exec flag
-In-Reply-To: <43140aa8.315c.171dece8540.Coremail.ice_yangxiao@163.com>
-References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
- <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
- <43140aa8.315c.171dece8540.Coremail.ice_yangxiao@163.com>
-Message-ID: <19216dad-ec85-692c-e7fa-baa402f60b31@163.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 4 May 2020 14:07:40 +0200
+Subject: [LTP] [PATCH v2 3/4] syscalls/fanotify: New test for
+ FAN_MODIFY_DIR
+In-Reply-To: <20200502162744.9589-4-amir73il@gmail.com>
+References: <20200502162744.9589-1-amir73il@gmail.com>
+ <20200502162744.9589-4-amir73il@gmail.com>
+Message-ID: <20200504120740.GA6452@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+Hi Amir,
 
-Please ignore this reply.
+while waiting for you and Jan to agree whether whole patchset should be merged
+I have 2 fixes for v2.
 
-Thanks,
+> +static inline void fanotify_save_fid(const char *path,
+> +				     struct fanotify_fid_t *fid)
+> +{
+> +	int *fh = (int *)(fid->handle.f_handle);
+> +
+> +	fh[0] = fh[1] = fh[2] = 0;
+> +	fid->handle.handle_bytes = MAX_HANDLE_SZ;
+> +	fanotify_get_fid(path, &fid->fsid, &fid->handle);
+> +
+> +	tst_res(TINFO,
+> +		"fid(%s) = %x.%x.%x.%x.%x...", path,
+> +		FSID_VAL_MEMBER(fid->fsid, 0), FSID_VAL_MEMBER(fid->fsid, 1),
+> +		fh[0], fh[1], fh[2]);
 
-Xiao Yang
+We're using __kernel_fsid_t, which has val member on both libc and musl,
+thus it must be:
+-		"fid(%s) = %x.%x.%x.%x.%x...", path,
+-		FSID_VAL_MEMBER(fid->fsid, 0), FSID_VAL_MEMBER(fid->fsid, 1),
+-		fh[0], fh[1], fh[2]);
++		"fid(%s) = %x.%x.%x.%x.%x...", path, fid->fsid.val[0],
++		fid->fsid.val[1], fh[0], fh[1], fh[2]);
 
-On 5/4/20 4:30 PM, ?? wrote:
->
-> -----?Original?Message?-----
-> From:?"Viresh?Kumar"?<viresh.kumar@linaro.org>
-> To:?"Xiao?Yang"?<yangx.jy@cn.fujitsu.com>
-> Cc:?ltp@lists.linux.it
-> Sent:?Mon,?4?May?2020?10:39:37?+0530
-> Subject:?Re:?[LTP]?[PATCH?1/2]?syscalls/pidfd_open01.c:?Add?check?for?close-on-exec?flag 
->
->
-> On?30-04-20,?16:57,?Xiao?Yang?wrote:
-> >?pidfd_open(2)?will?set?close-on-exec?flag?on?the?file?descriptor?as?it
-> >?manpage?states,?so?check?close-on-exec?flag?by?fcntl(2).
-> >
-> >?Also?avoid?compiler?warning?by?replacing?(long)?TST_RET?with?(int)?pidfd:
-> >?------------------------------------------------------
-> >?In?file?included?from?pidfd_open01.c:9:
-> >?pidfd_open01.c:?In?function??run?:
-> >?../../../../include/tst_test.h:76:41:?warning:?format??%i??expects?argument?of?type??int?,?but?argument?5?has?type??long?int??[-Wformat=]
-> >????76?|???tst_brk_(__FILE__,?__LINE__,?(ttype),?(arg_fmt),?##__VA_ARGS__);\
-> >???????|?????????????????????????????????????????^~~~~~~~~
-> >?../../../../include/tst_safe_macros.h:224:5:?note:?in?expansion?of?macro??tst_brk?
-> >???224?|?????tst_brk(TBROK?|?TERRNO,??????????????????????????\
-> >???????|?????^~~~~~~
-> >?pidfd_open01.c:20:9:?note:?in?expansion?of?macro??SAFE_FCNTL?
-> >????20?|??flag?=?SAFE_FCNTL(TST_RET,?F_GETFD);
->
-> This?log?isn't?useful?as?the?warning?started?coming?after?your?change
-> only?and?not?before.
->
-> Hi?
->
-> Right?just add a hint why I use pidfd instead so I want to keep it. 
-> ?Of course?I will say that avoid compiler warning from my change in v2 
-> patch.
->
-> Thanks?
-> Xiao Yang
->
-> >?------------------------------------------------------
-> >
-> >?Signed-off-by:?Xiao?Yang?<yangx.jy@cn.fujitsu.com>
-> >?---
-> >??.../kernel/syscalls/pidfd_open/pidfd_open01.c??|?18?++++++++++++++----
-> >??1?file?changed,?14?insertions(+),?4?deletions(-)
-> >
-> >?diff?--git?a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c?b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> >?index?93bb86687..293e93b63?100644
-> >?---?a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> >?+++?b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> >?@@?-6,17?+6,27?@@
-> >???*?Basic?pidfd_open()?test,?fetches?the?PID?of?the?current?process?and?tries?to
-> >???*?get?its?file?descriptor.
-> >???*/
-> >?+
-> >?+#include?<sys/types.h>
-> >?+#include?<unistd.h>
-> >?+#include?<fcntl.h>
-> >??#include?"tst_test.h"
-> >??#include?"lapi/pidfd_open.h"
-> >
-> >??static?void?run(void)
-> >??{
-> >?- TEST(pidfd_open(getpid(),?0));
-> >?+ int?pidfd?=?0,?flag?=?0;
->
-> None?of?these?need?to?be?initialized.
->
-> >?+
-> >?+ pidfd?=?pidfd_open(getpid(),?0);
-> >?+ if?(pidfd?==?-1)
-> >?+ tst_brk(TFAIL?|?TERRNO,?"pidfd_open(getpid(),?0)?failed");
->
-> This?could?have?been?written?as:
-> ????????TEST(pidfd?=?pidfd_open(getpid(),?0));
->
-> >?+
-> >?+ flag?=?SAFE_FCNTL(pidfd,?F_GETFD);
-> >
-> >?- if?(TST_RET?==?-1)
-> >?- tst_brk(TFAIL?|?TTERRNO,?"pidfd_open(getpid(),?0)?failed");
-> >?+ SAFE_CLOSE(pidfd);
-> >
-> >?- SAFE_CLOSE(TST_RET);
-> >?+ if?(!(flag?&?FD_CLOEXEC))
-> >?+ 
-> tst_brk(TFAIL,?"pidfd_open(getpid(),?0)?didn't?set?close-on-exec?flag");
-> >
-> >?? tst_res(TPASS,?"pidfd_open(getpid(),?0)?passed");
-> >??}
-> >?--
-> >?2.21.0
-> >
-> >
->
-> -- 
-> viresh
->
-> -- 
-> Mailing?list?info:?https://lists.linux.it/listinfo/ltp
->
->
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200504/a6c19794/attachment-0001.htm>
+...
+> +		} else if (memcmp(&event_fid->fsid, &expected->fid->fsid,
+> +				  sizeof(event_fid->fsid)) != 0) {
+> +			tst_res(TFAIL,
+> +				"got event: mask=%llx pid=%u fd=%d name='%s' "
+> +				"len=%d info_type=%d info_len=%d fh_len=%d "
+> +				"fsid=%x.%x (expected %x.%x)",
+> +				(unsigned long long)event->mask,
+> +				(unsigned)event->pid, event->fd, filename,
+> +				event->event_len, info_type,
+> +				event_fid->hdr.len, fhlen,
+> +				FSID_VAL_MEMBER(event_fid->fsid, 0),
+> +				FSID_VAL_MEMBER(event_fid->fsid, 1),
+> +				FSID_VAL_MEMBER(expected->fid->fsid, 0),
+> +				FSID_VAL_MEMBER(expected->fid->fsid, 1));
+
+Also here 3rd and 4th access must be direct as it is event_t:
+-				FSID_VAL_MEMBER(expected->fid->fsid, 0),
+-				FSID_VAL_MEMBER(expected->fid->fsid, 1));
++				expected->fid->fsid.val[0],
++				expected->fid->fsid.val[1]);
+
+FYI FSID_VAL_MEMBER is only for event_fid. I'm sorry, although there is a note
+in fanotify.h, it's a bit confusing (see f37704d6c fanotify: Fix
+FSID_VAL_MEMBER() usage).
+
+There is also warning on array size on newer compilers:
+
+  378 |  sprintf(fname1, "%s/%s", dname1, FILE_NAME1);
+      |                      ^~
+In file included from /usr/include/stdio.h:867,
+                 from fanotify16.c:13:
+/usr/include/bits/stdio2.h:36:10: note: ?__builtin___sprintf_chk? output between 12 and 267 bytes into a destination of size 256
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fanotify16.c:379:22: warning: ?%s? directive writing 10 bytes into a region of size between 0 and 255 [-Wformat-overflow=]
+  379 |  sprintf(fname2, "%s/%s", dname1, FILE_NAME2);
+      |                      ^~
+
+It can be fixed by increasing the size of fname1 and fname2:
+-static char fname1[BUF_SIZE], fname2[BUF_SIZE];
++static char fname1[BUF_SIZE + 11], fname2[BUF_SIZE + 11];
+
+I don't like that code but on the other hand don't like introducing warnings
+either.
+
+Kind regards,
+Petr
