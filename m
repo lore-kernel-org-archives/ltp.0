@@ -1,181 +1,105 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue,  5 May 2020 14:42:08 +0530
-Subject: [LTP] [PATCH 8/8] syscalls/ppoll: Add support for time64 tests
-In-Reply-To: <7e037dacaeb0c7f3bfd73cd11d80f3e1567dc052.1588669892.git.viresh.kumar@linaro.org>
-References: <7e037dacaeb0c7f3bfd73cd11d80f3e1567dc052.1588669892.git.viresh.kumar@linaro.org>
-Message-ID: <3e96a3fa8df22b49edabdbce30ac72e744d6c1d4.1588669892.git.viresh.kumar@linaro.org>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Tue, 5 May 2020 17:30:41 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/pidfd_open*.c: Drop .min_kver flag
+In-Reply-To: <20200505033507.oerhoby6aif3leea@vireshk-i7>
+References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
+ <20200430085742.1663-2-yangx.jy@cn.fujitsu.com>
+ <20200504051107.edvfiqloegt3ak5o@vireshk-i7>
+ <b74eac89-11fc-9a7c-c337-ffe6f19ec7b8@163.com>
+ <20200505033507.oerhoby6aif3leea@vireshk-i7>
+Message-ID: <c63909b8-a666-bf56-c747-78eff8c138b3@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing ppoll() syscall
-tests.
+Cc: Cyril
 
-Note that the O_EXCL flag is removed from SAFE_OPEN() calls as it made
-the tests failed when run for the second variant as the file existed.
+On 5/5/20 11:35 AM, Viresh Kumar wrote:
+> On 04-05-20, 20:49, Xiao Yang wrote:
+>> Yes, It is unrelated change and just a small cleanup.
+>>
+>> My commit message has mentioned it and I don't want to do the cleanup in
+>> seperate patch.
+> Removing usage of TEST() is not cleanup but just a choice of the
+> developer of how to write code, it wasn't my choice and I have been
+> asked to do it by maintainers, so removing it like that isn't correct.
+> If you want to do it, please send a separate patch and don't mix with
+> unrelated changes. There should be a separate patch normally for
+> different changes.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- testcases/kernel/syscalls/ppoll/ppoll01.c | 76 ++++++++++++++++++-----
- 1 file changed, 60 insertions(+), 16 deletions(-)
+Hi Viresh?
 
-diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
-index 2fadd0653948..eb8a14534e2e 100644
---- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-+++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-@@ -21,6 +21,8 @@
- #include "ltp_signal.h"
- #include "tst_sig_proc.h"
- #include "tst_test.h"
-+#include "tst_timer.h"
-+#include "lapi/abisize.h"
- 
- /* Older versions of glibc don't publish this constant's value. */
- #ifndef POLLRDHUP
-@@ -38,7 +40,7 @@ struct test_case {
- 	unsigned int nfds;	   /* nfds ppoll parameter */
- 	sigset_t *sigmask;	   /* sigmask ppoll parameter */
- 	sigset_t *sigmask_cur;	   /* sigmask set for current process */
--	struct timespec *ts;	   /* ts ppoll parameter */
-+	struct tst_ts *ts;	   /* ts ppoll parameter */
- 	struct pollfd *fds;	   /* fds ppoll parameter */
- 	int sigint_count;	   /* if > 0, spawn process to send SIGINT */
- 				   /* 'count' times to current process */
-@@ -60,14 +62,7 @@ static int fd1 = -1;
- static sigset_t sigmask_empty, sigmask_sigint;
- static struct pollfd fds_good[1], fds_already_closed[1];
- 
--static struct timespec ts_short = {
--	.tv_sec = 0,
--	.tv_nsec = 200000000,
--};
--static struct timespec ts_long = {
--	.tv_sec = 2,
--	.tv_nsec = 0,
--};
-+static struct tst_ts ts_short, ts_long;
- 
- /* Test cases
-  *
-@@ -160,14 +155,57 @@ static struct test_case tcase[] = {
- 	},
- };
- 
-+static inline int libc_ppoll(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+			     const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return ppoll(fds, nfds, tmo_p, sigmask);
-+}
-+
-+static inline int sys_ppoll(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+			    const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return tst_syscall(__NR_ppoll, fds, nfds, tmo_p, sigmask, sigsetsize);
-+}
-+
-+static inline int sys_ppoll_time64(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+				   const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return tst_syscall(__NR_ppoll_time64, fds, nfds, tmo_p, sigmask,
-+			   sigsetsize);
-+}
-+
-+static struct test_variants {
-+	int (*ppoll)(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+		     const sigset_t *sigmask, size_t sigsetsize);
-+
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+#if defined(TST_ABI32)
-+	{ .ppoll = libc_ppoll, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+	{ .ppoll = sys_ppoll, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .ppoll = sys_ppoll, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
-+#endif
-+
-+#if defined(TST_ABI64)
-+	{ .ppoll = sys_ppoll, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
-+#endif
-+
-+#if (__NR_ppoll_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .ppoll = sys_ppoll_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
-+#endif
-+};
-+
- static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
- }
- 
- static void setup(void)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	int fd2;
- 
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	SAFE_SIGNAL(SIGINT, sighandler);
- 
- 	if (sigemptyset(&sigmask_empty) == -1)
-@@ -177,18 +215,22 @@ static void setup(void)
- 	if (sigaddset(&sigmask_sigint, SIGINT) == -1)
- 		tst_brk(TBROK | TERRNO, "sigaddset");
- 
--	fd1 = SAFE_OPEN("testfile1", O_CREAT | O_EXCL | O_RDWR,
--		S_IRUSR | S_IWUSR);
-+	fd1 = SAFE_OPEN("testfile1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
- 	fds_good[0].fd = fd1;
- 	fds_good[0].events = POLLIN | POLLPRI | POLLOUT | POLLRDHUP;
- 	fds_good[0].revents = 0;
- 
--	fd2 = SAFE_OPEN("testfile2", O_CREAT | O_EXCL | O_RDWR,
--		S_IRUSR | S_IWUSR);
-+	fd2 = SAFE_OPEN("testfile2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
- 	fds_already_closed[0].fd = fd2;
- 	fds_already_closed[0].events = POLLIN | POLLPRI | POLLOUT | POLLRDHUP;
- 	fds_already_closed[0].revents = 0;
- 	SAFE_CLOSE(fd2);
-+
-+	ts_short.type = ts_long.type = tv->type;
-+	tst_ts_set_sec(&ts_short, 0);
-+	tst_ts_set_nsec(&ts_short, 200000000);
-+	tst_ts_set_sec(&ts_long, 2);
-+	tst_ts_set_nsec(&ts_long, 0);
- }
- 
- static void cleanup(void)
-@@ -199,10 +241,11 @@ static void cleanup(void)
- 
- static void do_test(unsigned int i)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	pid_t pid = 0;
- 	int sys_ret, sys_errno = 0, dummy;
- 	struct test_case *tc = &tcase[i];
--	struct timespec ts, *tsp = NULL;
-+	struct tst_ts ts, *tsp = NULL;
- 
- 	if (tc->ts) {
- 		memcpy(&ts, tc->ts, sizeof(ts));
-@@ -223,8 +266,8 @@ static void do_test(unsigned int i)
- 
- 	/* test */
- 	errno = 0;
--	sys_ret = tst_syscall(__NR_ppoll, tc->fds, tc->nfds, tsp,
--		tc->sigmask, SIGSETSIZE);
-+	sys_ret = tv->ppoll(tc->fds, tc->nfds, tst_ts_get(tsp), tc->sigmask,
-+			    SIGSETSIZE);
- 	sys_errno = errno;
- 
- 	/* cleanup */
-@@ -261,6 +304,7 @@ static void do_test(unsigned int i)
- static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcase),
- 	.test = do_test,
-+	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
--- 
-2.25.0.rc1.19.g042ed3e048af
+I think TEST() is surplus because fd and TERRNO is enough to finish 
+check point.
+
+It is not an important change and I will keep it if you and Cyril prefer 
+to use TEST().
+
+>
+>>>>    	TST_CHECKPOINT_WAKE(0);
+>>>> @@ -49,8 +47,14 @@ static void run(void)
+>>>>    		tst_res(TPASS, "pidfd_open() passed");
+>>>>    }
+>>>> +static void setup(void)
+>>>> +{
+>>>> +	// Check if pidfd_open(2) is not supported
+>>>> +	tst_syscall(__NR_pidfd_open, -1, 0);
+>>>> +}
+>>>> +
+>>>>    static struct tst_test test = {
+>>>> -	.min_kver = "5.3",
+>>>> +	.setup = setup,
+>>>>    	.test_all = run,
+>>>>    	.forks_child = 1,
+>>>>    	.needs_checkpoints = 1,
+>>> Please have a look at fsopen_supported_by_kernel() in lapi/fsmount.h
+>>> and make such a helper.
+>> First, I want to explain my check point:
+>>
+>> Passing invalid argument can check the support of pidfd_open(2) by ENOSYS
+>> errno and we don't need to close the pidfd.
+>>
+>> Second, I don't like the implementation of fsopen_supported_by_kernel() and
+>> give some suggestions:
+>>
+>> a) syscall()/tst_syscall() is enough to check the support of pidfd_open(2)
+>> and 'tst_kvercmp(5, 2, 0)) < 0' will skip the check
+>>
+>>  ??? if a kernel on distribution is newer than v5.2 but drop the support of
+>> pidfd_open(2) on purpose.
+> I don't think kernel can drop support of syscalls just like that, we
+> can't break user space. And if that is done, we need to fix userspace
+> again separately for that.
+
+Hi Viresh,
+
+It is just a possible situation? for example:
+
+Upstream kernel introduces btrfs filesystem long long ago but the kernel
+
+of RHEL8 drops btrfs filesystem because of some reasons.
+
+>
+> We came to the implementation of fsopen_supported_by_kernel() after a
+> lot of reviews and decided on that and so I asked you for the sake of
+> keeping similar code throughout LTP (of course there will be old
+> usages which are different) to have a similar implementation.
+>
+> Anyway, I will leave it to Cyril to decide on that :)
+
+Hi Cyril,
+
+Do you have any comment on the implementation of 
+fsopen_supported_by_kernel() and
+
+my check point(i.e. check the support of pidfd_open(2) by passing 
+invalid argument ).
+
+Thanks,
+
+Xiao Yang
+
+>
 
