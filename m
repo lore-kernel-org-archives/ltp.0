@@ -1,33 +1,43 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Date: Tue, 05 May 2020 09:54:38 +0200
+From: Christian Brauner <christian.brauner@ubuntu.com>
+Date: Tue, 5 May 2020 09:59:38 +0200
 Subject: [LTP] [bug?] clone(CLONE_IO) failing after kernel commit commit
  ef2c41cf38a7
-In-Reply-To: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
- (Jan Stancek via Libc-alpha's message of "Tue, 5 May 2020 03:28:34
- -0400 (EDT)")
-References: <100149681.11244932.1588661282331.JavaMail.zimbra@redhat.com>
- <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
-Message-ID: <874ksuke9t.fsf@igel.home>
+In-Reply-To: <87pnbi4y8x.fsf@mid.deneb.enyo.de>
+References: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+ <87pnbi4y8x.fsf@mid.deneb.enyo.de>
+Message-ID: <20200505075938.slkllo2awlop33pu@wittgenstein>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mai 05 2020, Jan Stancek via Libc-alpha wrote:
+On Tue, May 05, 2020 at 09:49:50AM +0200, Florian Weimer wrote:
+> * Jan Stancek via Libc-alpha:
+> 
+> > I'm seeing an issue with CLONE_IO and libc' clone() on ppc64le,
+> > where flags parameter appears to be sign extended before it's passed
+> > to kernel syscall.
+> 
+> Interesting, thanks for reporting this.  The manual page clearly
+> documents the interface as;
+> 
+>        int clone(int (*fn)(void *), void *child_stack,
+>                  int flags, void *arg, ...
+>                  /* pid_t *ptid, void *newtls, pid_t *ctid */ );
+> 
+> But the kernel uses unsigned long for clone_flags.  This looks like an
+> unintended userspace ABI breakage.
+> 
+> Rather than dropping the invalid flags check in the kernel (having the
+> check is valuable), I think the parameter should be changed to int or
+> unsigned int, or the flags check should be written in such a way that
+> it disregards bits that result from sign extensions: fail if
+> clone_flags != (int) clone_flags, otherwise set clone_flags = 0xFFFFFFFF.
 
-> I'm seeing an issue with CLONE_IO and libc' clone() on ppc64le,
-> where flags parameter appears to be sign extended before it's passed
-> to kernel syscall.
+Let me take a quick look. This just affects legacy clone it seems. Maybe
+we can do something to avoid that breakage without having to change
+extensions. Legacy clone shouldn't care about invalid flag checking
+since it never used to do that anyway, only clone3() does.
 
-Looks like the flags argument should be declared as unsigned int,
-instead of int, both in glibc and in the kernel.
-
-#define CLONE_IO		0x80000000	/* Clone io context */
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Christian
