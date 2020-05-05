@@ -1,62 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 5 May 2020 03:28:34 -0400 (EDT)
+From: Florian Weimer <fw@deneb.enyo.de>
+Date: Tue, 05 May 2020 09:49:50 +0200
 Subject: [LTP] [bug?] clone(CLONE_IO) failing after kernel commit commit
  ef2c41cf38a7
-In-Reply-To: <100149681.11244932.1588661282331.JavaMail.zimbra@redhat.com>
-Message-ID: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+ (Jan Stancek via Libc-alpha's message of "Tue, 5 May 2020 03:28:34
+ -0400 (EDT)")
+References: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+Message-ID: <87pnbi4y8x.fsf@mid.deneb.enyo.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+* Jan Stancek via Libc-alpha:
 
-I'm seeing an issue with CLONE_IO and libc' clone() on ppc64le,
-where flags parameter appears to be sign extended before it's passed
-to kernel syscall.
+> I'm seeing an issue with CLONE_IO and libc' clone() on ppc64le,
+> where flags parameter appears to be sign extended before it's passed
+> to kernel syscall.
 
-This is an issue since kernel commit ef2c41cf38a7 ("clone3: allow
-spawning processes into cgroups"), because there's now a check for
-flag that userspace didn't intend to pass:
+Interesting, thanks for reporting this.  The manual page clearly
+documents the interface as;
 
-static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
-        __acquires(&cgroup_mutex) __acquires(&cgroup_threadgroup_rwsem)
-        if (!(kargs->flags & CLONE_INTO_CGROUP)) {   // CLONE_INTO_CGROUP == 0x200000000ULL
-                kargs->cset = cset;
-                return 0;
-        }
+       int clone(int (*fn)(void *), void *child_stack,
+                 int flags, void *arg, ...
+                 /* pid_t *ptid, void *newtls, pid_t *ctid */ );
 
-        f = fget_raw(kargs->cgroup);
-        if (!f) {
-                ret = -EBADF;
-                goto err;
-        }
+But the kernel uses unsigned long for clone_flags.  This looks like an
+unintended userspace ABI breakage.
 
-Reproducer:
-
-#define _GNU_SOURCE
-#include <sched.h>
-#include <stdio.h>
-#include <sys/wait.h>
-
-char stack[2*1024*1024];
-
-static int do_child(void *arg)
-{
-        printf("hello");
-        return 0;
-}
-
-int main(void)
-{
-        clone(do_child, stack+1024*1024, CLONE_IO|SIGCHLD, NULL, NULL, NULL, NULL);
-        return 0;
-}
-
-reliably hits EBADF with glibc-2.31.9000-12.fc33.ppc64le and 5.7.0-0.rc2 kernel:
-  clone(child_stack=0x1011ffe0, flags=CLONE_IO|0xffffffff00000000|SIGCHLD) = -1 EBADF (Bad file descriptor)
-
-Regards,
-Jan
-
+Rather than dropping the invalid flags check in the kernel (having the
+check is valuable), I think the parameter should be changed to int or
+unsigned int, or the flags check should be written in such a way that
+it disregards bits that result from sign extensions: fail if
+clone_flags != (int) clone_flags, otherwise set clone_flags = 0xFFFFFFFF.
