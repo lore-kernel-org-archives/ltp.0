@@ -1,306 +1,199 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue,  5 May 2020 14:42:05 +0530
-Subject: [LTP] [PATCH 5/8] syscalls/rt_sigtimedwait: Add support for time64
- tests
+Date: Tue,  5 May 2020 14:42:07 +0530
+Subject: [LTP] [PATCH 7/8] syscalls/recvmmsg: Add support for time64 tests
 In-Reply-To: <7e037dacaeb0c7f3bfd73cd11d80f3e1567dc052.1588669892.git.viresh.kumar@linaro.org>
 References: <7e037dacaeb0c7f3bfd73cd11d80f3e1567dc052.1588669892.git.viresh.kumar@linaro.org>
-Message-ID: <26cbca717c2c04f16c0818f2f9ccfa1c5a0887f8.1588669892.git.viresh.kumar@linaro.org>
+Message-ID: <5a1c2899e7001bb14c0b2987f72d28329522d63b.1588669892.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing rt_sigtimedwait()
-syscall tests.
+This adds support for time64 tests to the existing recvmmsg() syscall
+tests.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- .../syscalls/sigwaitinfo/sigwaitinfo01.c      | 118 +++++++++++++-----
- 1 file changed, 86 insertions(+), 32 deletions(-)
+ .../kernel/syscalls/sendmmsg/sendmmsg01.c     | 45 +++++++++++----
+ .../kernel/syscalls/sendmmsg/sendmmsg_var.h   | 55 ++++++++-----------
+ 2 files changed, 58 insertions(+), 42 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-index 4eee27b0db29..404036c40aac 100644
---- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-+++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -21,11 +21,13 @@
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  */
+diff --git a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
+index 37084102ee09..5d1fd1b6b9fa 100644
+--- a/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
++++ b/testcases/kernel/syscalls/sendmmsg/sendmmsg01.c
+@@ -14,8 +14,8 @@
  #include "tst_test.h"
-+#include "tst_timer.h"
- #include <errno.h>
- #include <stdlib.h>
- #include <signal.h>
- #include <limits.h>
- #include "lapi/syscalls.h"
+ #include "lapi/socket.h"
+ #include "tst_safe_macros.h"
+-
+ #include "sendmmsg_var.h"
 +#include "lapi/abisize.h"
- #include "tst_sig_proc.h"
  
- #define SUCCEED_OR_DIE(syscall, message, ...)				 \
-@@ -73,12 +75,12 @@ static void empty_handler(int sig)
- }
- 
- typedef int (*swi_func) (const sigset_t * set, siginfo_t * info,
--			 struct timespec * timeout);
--typedef void (*test_func) (swi_func, int);
-+			 void * timeout);
-+typedef void (*test_func) (swi_func, int, enum tst_ts_type type);
- 
- #ifdef TEST_SIGWAIT
- static int my_sigwait(const sigset_t * set, siginfo_t * info,
--		      struct timespec *timeout)
-+		      void *timeout)
- {
- 	int ret;
- 	int err = sigwait(set, &ret);
-@@ -92,7 +94,7 @@ static int my_sigwait(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_SIGWAITINFO
- static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
--			  struct timespec *timeout)
-+			  void *timeout)
- {
- 	return sigwaitinfo(set, info);
- }
-@@ -100,7 +102,7 @@ static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_SIGTIMEDWAIT
- static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
--			   struct timespec *timeout)
-+			   void *timeout)
- {
- 	return sigtimedwait(set, info, timeout);
- }
-@@ -108,14 +110,23 @@ static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_RT_SIGTIMEDWAIT
- static int my_rt_sigtimedwait(const sigset_t * set, siginfo_t * info,
--			      struct timespec *timeout)
-+			      void *timeout)
- {
- 	/* _NSIG is always the right number of bits of signal map for all arches */
- 	return tst_syscall(__NR_rt_sigtimedwait, set, info, timeout, _NSIG/8);
- }
-+
-+#if (__NR_rt_sigtimedwait_time64 != __LTP__NR_INVALID_SYSCALL)
-+static int my_rt_sigtimedwait_time64(const sigset_t * set, siginfo_t * info,
-+				     void *timeout)
-+{
-+	/* _NSIG is always the right number of bits of signal map for all arches */
-+	return tst_syscall(__NR_rt_sigtimedwait_time64, set, info, timeout, _NSIG/8);
-+}
-+#endif
- #endif
- 
--void test_empty_set(swi_func sigwaitinfo, int signo)
-+void test_empty_set(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
-@@ -132,19 +143,23 @@ void test_empty_set(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_timeout(swi_func sigwaitinfo, int signo)
-+void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
- 	pid_t child;
--	struct timespec ts = {.tv_sec = 1 };
-+	struct tst_ts ts;
-+
-+	ts.type = type;
-+	tst_ts_set_sec(&ts, 1);
-+	tst_ts_set_nsec(&ts, 0);
- 
- 	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
- 
- 	/* Run a child that will wake us up */
- 	child = create_sig_proc(signo, INT_MAX, 100000);
- 
--	TEST(sigwaitinfo(&sigs, &si, &ts));
-+	TEST(sigwaitinfo(&sigs, &si, tst_ts_get(&ts)));
- 	REPORT_SUCCESS(-1, EAGAIN);
- 
- 	SAFE_KILL(child, SIGTERM);
-@@ -154,7 +169,8 @@ void test_timeout(swi_func sigwaitinfo, int signo)
- /* Note: sigwait-ing for a signal that is not blocked is unspecified
-  * by POSIX; but works for non-ignored signals under Linux
-  */
--void test_unmasked_matching(swi_func sigwaitinfo, int signo)
-+void test_unmasked_matching(swi_func sigwaitinfo, int signo,
-+			    enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
-@@ -175,7 +191,8 @@ void test_unmasked_matching(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
-+void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+				   enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	pid_t child;
-@@ -192,7 +209,8 @@ void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_masked_matching(swi_func sigwaitinfo, int signo)
-+void test_masked_matching(swi_func sigwaitinfo, int signo,
-+			  enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	siginfo_t si;
-@@ -230,7 +248,8 @@ void test_masked_matching(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
-+void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
-+			     enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	siginfo_t si;
-@@ -281,7 +300,8 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
- 			 "sigwaitinfo failed to restore the original mask");
- }
- 
--void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
-+void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+				 enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	pid_t child;
-@@ -316,7 +336,7 @@ void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_bad_address(swi_func sigwaitinfo, int signo)
-+void test_bad_address(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	pid_t child;
-@@ -345,7 +365,7 @@ void test_bad_address(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_bad_address2(swi_func sigwaitinfo, int signo)
-+void test_bad_address2(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	pid_t pid;
- 	int status;
-@@ -391,7 +411,7 @@ void test_bad_address2(swi_func sigwaitinfo, int signo)
- 	}
- }
- 
--void test_bad_address3(swi_func sigwaitinfo, int signo)
-+void test_bad_address3(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-@@ -407,28 +427,28 @@ struct test_desc {
- } tests[] = {
- #ifdef TEST_RT_SIGTIMEDWAIT
- 	{
--	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
--	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
--	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
--	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
--	test_timeout, my_rt_sigtimedwait, 0},
-+	test_empty_set, NULL, SIGUSR1}, {
-+	test_unmasked_matching, NULL, SIGUSR1}, {
-+	test_masked_matching, NULL, SIGUSR1}, {
-+	test_unmasked_matching_noinfo, NULL, SIGUSR1}, {
-+	test_masked_matching_noinfo, NULL, SIGUSR1}, {
-+	test_bad_address, NULL, SIGUSR1}, {
-+	test_bad_address2, NULL, SIGUSR1}, {
-+	test_bad_address3, NULL, SIGUSR1}, {
-+	test_timeout, NULL, 0},
- 	    /* Special cases */
- 	    /* 1: sigwaitinfo does respond to ignored signal */
- 	{
--	test_masked_matching, my_rt_sigtimedwait, SIGUSR2},
-+	test_masked_matching, NULL, SIGUSR2},
- 	    /* 2: An ignored signal doesn't cause sigwaitinfo to return EINTR */
- 	{
--	test_timeout, my_rt_sigtimedwait, SIGUSR2},
-+	test_timeout, NULL, SIGUSR2},
- 	    /* 3: The handler is not called when the signal is waited for by sigwaitinfo */
- 	{
--	test_masked_matching, my_rt_sigtimedwait, SIGTERM},
-+	test_masked_matching, NULL, SIGTERM},
- 	    /* 4: Simultaneous realtime signals are delivered in the order of increasing signal number */
- 	{
--	test_masked_matching_rt, my_rt_sigtimedwait, -1},
-+	test_masked_matching_rt, NULL, -1},
- #endif
- #if defined TEST_SIGWAIT
- 	{
-@@ -459,15 +479,48 @@ struct test_desc {
- #endif
- };
+ #define BUFSIZE 16
+ #define VLEN 2
+@@ -25,27 +25,52 @@ static int receive_sockfd;
+ static struct mmsghdr *snd_msg, *rcv_msg;
+ static struct iovec *snd1, *snd2, *rcv1, *rcv2;
  
 +static struct test_variants {
-+	swi_func swi;
++	int (*receive)(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
++		       unsigned int flags, void *timeout);
++	int (*send)(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
++		    unsigned int flags);
 +	enum tst_ts_type type;
 +	char *desc;
 +} variants[] = {
-+#ifdef TEST_RT_SIGTIMEDWAIT
-+
 +#if defined(TST_ABI32)
-+	{ .swi = my_rt_sigtimedwait, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .swi = my_rt_sigtimedwait, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++	{ .receive = libc_recvmmsg, .send = libc_sendmmsg, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
++	{ .receive = sys_recvmmsg, .send = sys_sendmmsg, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .receive = sys_recvmmsg, .send = sys_sendmmsg, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
 +#endif
 +
 +#if defined(TST_ABI64)
-+	{ .swi = my_rt_sigtimedwait, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++	{ .receive = sys_recvmmsg, .send = sys_sendmmsg, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
 +#endif
 +
-+#if (__NR_rt_sigtimedwait_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .swi = my_rt_sigtimedwait_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#if (__NR_recvmmsg_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .receive = sys_recvmmsg64, .send = sys_sendmmsg, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
 +#endif
-+
-+#else /* !TEST_RT_SIGTIMEDWAIT */
-+
-+	{ .swi = NULL, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+
-+#endif /* TEST_RT_SIGTIMEDWAIT */
 +};
 +
- static void run(unsigned int i)
+ static void run(void)
  {
+-	struct timespec timeout;
 +	struct test_variants *tv = &variants[tst_variant];
- 	struct test_desc *tc = &tests[i];
-+	swi_func swi;
++	struct tst_ts timeout;
+ 	int retval;
  
--	tc->tf(tc->swi, tc->signo);
-+	swi = tv->swi ? tv->swi : tc->swi;
-+
-+	tc->tf(swi, tc->signo, tv->type);
+-	retval = do_sendmmsg(send_sockfd, snd_msg, VLEN, 0);
++	retval = tv->send(send_sockfd, snd_msg, VLEN, 0);
+ 	if (retval < 0 || snd_msg[0].msg_len != 6 || snd_msg[1].msg_len != 6) {
+-		tst_res(TFAIL|TTERRNO, "sendmmsg failed");
++		tst_res(TFAIL|TTERRNO, "sendmmsg() failed");
+ 		return;
+ 	}
+ 
+ 	memset(rcv1->iov_base, 0, rcv1->iov_len);
+ 	memset(rcv2->iov_base, 0, rcv2->iov_len);
+ 
+-	timeout.tv_sec = 1;
+-	timeout.tv_nsec = 0;
++	timeout.type = tv->type;
++	tst_ts_set_sec(&timeout, 1);
++	tst_ts_set_nsec(&timeout, 0);
+ 
+-	retval = do_recvmmsg(receive_sockfd, rcv_msg, VLEN, 0, &timeout);
++	retval = tv->receive(receive_sockfd, rcv_msg, VLEN, 0, tst_ts_get(&timeout));
+ 
+ 	if (retval == -1) {
+-		tst_res(TFAIL | TTERRNO, "recvmmsg failed");
++		tst_res(TFAIL | TTERRNO, "recvmmsg() failed");
+ 		return;
+ 	}
+ 	if (retval != 2) {
+@@ -96,7 +121,7 @@ static void setup(void)
+ 	rcv_msg[1].msg_hdr.msg_iov = rcv2;
+ 	rcv_msg[1].msg_hdr.msg_iovlen = 1;
+ 
+-	test_info();
++	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
  }
  
- static void setup(void)
- {
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-+
- 	signal(SIGUSR1, empty_handler);
- 	signal(SIGALRM, empty_handler);
- 	signal(SIGUSR2, SIG_IGN);
-@@ -483,6 +536,7 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.test= run,
- 	.tcnt = ARRAY_SIZE(tests),
-+	.test_variants = ARRAY_SIZE(variants),
+ static void cleanup(void)
+@@ -111,7 +136,7 @@ static struct tst_test test = {
+ 	.test_all = run,
  	.setup = setup,
  	.cleanup = cleanup,
- 	.forks_child = 1,
+-	.test_variants = TEST_VARIANTS,
++	.test_variants = ARRAY_SIZE(variants),
+ 	.bufs = (struct tst_buffers []) {
+ 		{&snd1, .iov_sizes = (int[]){3, 3, -1}},
+ 		{&snd2, .iov_sizes = (int[]){6, -1}},
+diff --git a/testcases/kernel/syscalls/sendmmsg/sendmmsg_var.h b/testcases/kernel/syscalls/sendmmsg/sendmmsg_var.h
+index f00cf056a747..a142b17f9718 100644
+--- a/testcases/kernel/syscalls/sendmmsg/sendmmsg_var.h
++++ b/testcases/kernel/syscalls/sendmmsg/sendmmsg_var.h
+@@ -6,55 +6,46 @@
+ #ifndef SENDMMSG_VAR__
+ #define SENDMMSG_VAR__
+ 
++#include "tst_timer.h"
+ #include "lapi/syscalls.h"
+ 
+-static int do_sendmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
+-		       int flags)
++static inline int libc_sendmmsg(int sockfd, struct mmsghdr *msgvec,
++				unsigned int vlen, unsigned int flags)
+ {
+-	switch (tst_variant) {
+-	case 0:
+-		return tst_syscall(__NR_sendmmsg, sockfd, msgvec, vlen, flags);
+-	case 1:
+ #ifdef HAVE_SENDMMSG
+-		return sendmmsg(sockfd, msgvec, vlen, flags);
++	return sendmmsg(sockfd, msgvec, vlen, flags);
+ #else
+-		tst_brk(TCONF, "libc sendmmsg not present");
++	tst_brk(TCONF, "libc sendmmsg not present");
+ #endif
+-	}
++}
+ 
+-	return -1;
++static inline int sys_sendmmsg(int sockfd, struct mmsghdr *msgvec,
++			       unsigned int vlen, unsigned int flags)
++{
++	return tst_syscall(__NR_sendmmsg, sockfd, msgvec, vlen, flags);
+ }
+ 
+-static int do_recvmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
+-		       int flags, struct timespec *timeout)
++static inline int libc_recvmmsg(int sockfd, struct mmsghdr *msgvec,
++			unsigned int vlen, unsigned int flags, void *timeout)
+ {
+-	switch (tst_variant) {
+-	case 0:
+-		return tst_syscall(__NR_recvmmsg, sockfd, msgvec, vlen, flags,
+-				   timeout);
+-	case 1:
+ #ifdef HAVE_RECVMMSG
+-		return recvmmsg(sockfd, msgvec, vlen, flags, timeout);
++	return recvmmsg(sockfd, msgvec, vlen, flags, timeout);
+ #else
+-		tst_brk(TCONF, "libc recvmmsg not present");
++	tst_brk(TCONF, "libc recvmmsg not present");
+ #endif
+-	}
+-
+-	return -1;
+ }
+ 
+-static void test_info(void)
++static inline int sys_recvmmsg(int sockfd, struct mmsghdr *msgvec,
++			unsigned int vlen, unsigned int flags, void *timeout)
+ {
+-	switch (tst_variant) {
+-	case 0:
+-		tst_res(TINFO, "Testing direct sendmmsg and recvmmsg syscalls");
+-		break;
+-	case 1:
+-		tst_res(TINFO, "Testing libc sendmmsg and recvmmsg syscalls");
+-		break;
+-	}
++	return tst_syscall(__NR_recvmmsg, sockfd, msgvec, vlen, flags, timeout);
+ }
+ 
+-#define TEST_VARIANTS 2
++static inline int sys_recvmmsg64(int sockfd, struct mmsghdr *msgvec,
++			unsigned int vlen, unsigned int flags, void *timeout)
++{
++	return tst_syscall(__NR_recvmmsg_time64, sockfd, msgvec, vlen, flags,
++			   timeout);
++}
+ 
+ #endif /* SENDMMSG_VAR__ */
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
