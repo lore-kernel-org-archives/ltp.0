@@ -1,28 +1,31 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 May 2020 17:26:07 +0200
-Subject: [LTP] [PATCH 1/2] Add test for CVE 2016-8655
-In-Reply-To: <20200505143135.GC27810@yuki.lan>
-References: <20200505102456.13004-1-mdoucha@suse.cz>
- <20200505131724.GA21884@dell5510> <20200505143135.GC27810@yuki.lan>
-Message-ID: <20200505152607.GC9949@dell5510>
+Date: Tue, 5 May 2020 17:27:39 +0200
+Subject: [LTP] [PATCH v4 2/2] pty04: Add SLCAN ldisc and check for
+ CVE-2020-11494
+In-Reply-To: <87a72ms93x.fsf@our.domain.is.not.set>
+References: <20200505101625.25020-1-rpalethorpe@suse.com>
+ <20200505101625.25020-2-rpalethorpe@suse.com>
+ <20200505133523.GA27810@yuki.lan> <20200505135531.GA30346@dell5510>
+ <87a72ms93x.fsf@our.domain.is.not.set>
+Message-ID: <20200505152739.GD9949@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Richard,
 
-> > I wanted to propose after release dropping gcc 4 support by deleting CentOS 6
-> > from Travis (but maybe we should drop it even now). To keep the support, it'd be
-> > good to add lapi/if_packet.h with this definition.
+> >> Hi!
+> >> Both pushed, thanks.
 
-> That mainly depends on if someone wants to still carry on supporting it.
+> > This test does not compile on kernel older than v4.2-rc1 (2015),
+> > because __pad, __res0 and __res1 are missing. They were added in
+> > a2f11835994e ("can.h: make padding given by gcc explicit").
 
-> Does someone out there still need CentOS 6?
-Should we send separate RFC about dropping support for this oldest distro in
-Travis? If nobody interested and unless it requires too much effort I'd keep it
-for this release.
+> I suppose I can just drop the header and define it inline as we need the
+> fallback anyway.
++1. Thanks!
 
 Kind regards,
 Petr
