@@ -1,29 +1,28 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 5 May 2020 16:33:19 +0200
-Subject: [LTP] [PATCH 1/2] Add test for CVE 2016-8655
-In-Reply-To: <20200505131724.GA21884@dell5510>
-References: <20200505102456.13004-1-mdoucha@suse.cz>
- <20200505131724.GA21884@dell5510>
-Message-ID: <cdd26392-10a9-b952-361d-8308585c3980@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 5 May 2020 16:36:40 +0200
+Subject: [LTP] [PATCH v2] open_posix_testsuite: Fix compilation issues
+In-Reply-To: <1585014998-27587-1-git-send-email-zou_wei@huawei.com>
+References: <1585014998-27587-1-git-send-email-zou_wei@huawei.com>
+Message-ID: <20200505143640.GD27810@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05. 05. 20 15:17, Petr Vorel wrote:
-> I wanted to propose after release dropping gcc 4 support by deleting CentOS 6
-> from Travis (but maybe we should drop it even now). To keep the support, it'd be
-> good to add lapi/if_packet.h with this definition.
+Hi!
+> Fix compilation issues:
+> 1. Add the '-lpthread -lrt -lm' config into LDFLAGS
+> 2. Add the '-pthread' config into CFLAGS
+> 3. Update makefile and locate-test script
+>
+> If only add -pthread to LDFLAGS and CFLAGS,
+> some cases will fail to compile, such as timers/twoevtimers.c,
+> need to add -lrt to compile successfully.
 
-I don't really care about CentOS 6 either way but I'll add the new LAPI
-header and resubmit.
+As discussed previously we should add the flags to the testcases that
+actually needs them instead of adding them to all testcases.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
