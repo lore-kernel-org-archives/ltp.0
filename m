@@ -1,40 +1,38 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 May 2020 14:15:29 +0200
-Subject: [LTP] [PATCH] Define __NR_futex to be __NR_futex_time64 on
- riscv32
-In-Reply-To: <CAMKF1srKzdh=VnoxDyumQHo25-ZWREcRPkyJ+V5tW4vZdiMuZA@mail.gmail.com>
-References: <20200429033511.1848449-1-raj.khem@gmail.com>
- <20200429131624.GB10236@dell5510>
- <CAMKF1srKzdh=VnoxDyumQHo25-ZWREcRPkyJ+V5tW4vZdiMuZA@mail.gmail.com>
-Message-ID: <20200505121529.GA6299@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  5 May 2020 14:50:19 +0200
+Subject: [LTP] [PATCH COMMITTED] syscalls/lremovexattr01: use strncmp() to
+ check attribute value
+Message-ID: <135538f22cc17bd92eeff77a21a8bb8dbf926c4a.1588683000.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Khem,
+Fix the test failure and following compile warning (gcc version 10.0.1):
+  lremovexattr01.c: In function ?verify_lremovexattr?:
+  lremovexattr01.c:98:6: warning: ?strcmp? of a string of length 13 and an array of size 13 evaluates to nonzero [-Wstring-compare]
+     98 |  if (strcmp(got_value, XATTR_VALUE)) {
+        |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sorry for a delay.
-> > > RISCV glibc has decided to use 64bit time_t from get go unlike
-> > > other 32bit architecture therefore aliasing __NR_futex to
-> > > __NR_futex_time64 helps avoid the below errors on rv32
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/lremovexattr/lremovexattr01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
+diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
+index 0c19c62ace50..590f5a6f32a0 100644
+--- a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
++++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
+@@ -95,7 +95,7 @@ static void verify_lremovexattr(void)
+ 		return;
+ 	}
+ 
+-	if (strcmp(got_value, XATTR_VALUE)) {
++	if (strncmp(got_value, XATTR_VALUE, XATTR_VALUE_SIZE)) {
+ 		tst_res(TFAIL, "lremovexattr(2) changed file attribute");
+ 		return;
+ 	}
+-- 
+2.18.1
 
-> > Thanks for your fix.
-
-> > BTW, out of curiosity, is Risc-v 32 bit merged into glibc master?
-
-> Not yet but its almost finalised and should be merged before 2.32 hopefully
-Nice!
-
-> > I guess this should go to include/lapi/futex.h, so we don't repeat ourselves.
-> > (and clone08.c needs to include it, others already do).
-
-
-> OK makes sense, will send v2 ?
-Yes please.
-
-Kind regards,
-Petr
