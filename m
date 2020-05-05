@@ -1,76 +1,106 @@
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 4 May 2020 22:27:27 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/fanotify15: Add a test case for
- inode marks
-In-Reply-To: <20200504184936.GA92715@x230>
-References: <20200502162744.9589-1-amir73il@gmail.com>
- <20200502162744.9589-3-amir73il@gmail.com>
- <20200504080715.GA1741@quack2.suse.cz>
- <CAOQ4uxgJQ2MGdnib9gvc=PcoWxveUpyqDZ1YybT-Hxrhba9ApQ@mail.gmail.com>
- <20200504141516.GC1741@quack2.suse.cz>
- <20200504184936.GA92715@x230>
-Message-ID: <20200504202727.GC17863@quack2.suse.cz>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 5 May 2020 08:58:03 +0530
+Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <e666a91d-1ffd-0f5f-131e-966ff763b14e@163.com>
+References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
+ <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
+ <e666a91d-1ffd-0f5f-131e-966ff763b14e@163.com>
+Message-ID: <20200505032803.s6axol3sfyyzl6ag@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon 04-05-20 20:49:36, Petr Vorel wrote:
-> Hi Jan,
+On 04-05-20, 19:31, Xiao Yang wrote:
+> On 5/4/20 1:09 PM, Viresh Kumar wrote:
+> > On 30-04-20, 16:57, Xiao Yang wrote:
+> > > pidfd_open(2) will set close-on-exec flag on the file descriptor as it
+> > > manpage states, so check close-on-exec flag by fcntl(2).
+> > > 
+> > > Also avoid compiler warning by replacing (long) TST_RET with (int) pidfd:
+> > > ------------------------------------------------------
+> > > In file included from pidfd_open01.c:9:
+> > > pidfd_open01.c: In function ?run?:
+> > > ../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
+> > >     76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+> > >        |                                         ^~~~~~~~~
+> > > ../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
+> > >    224 |     tst_brk(TBROK | TERRNO,                          \
+> > >        |     ^~~~~~~
+> > > pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
+> > >     20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+> > This log isn't useful as the warning started coming after your change
+> > only and not before.
 > 
-> ...
-> > > > > The new test case is a regression test for commit f367a62a7cad:
+> Hi Viresh,
 > 
-> > > > >     fanotify: merge duplicate events on parent and child
+> Thanks for your review.
 > 
-> > > > The test looks OK but do we want a test for this? I mean: A test like this
-> > > > seems to imply we promise to merge identical events. Although that is a
-> > > > good general guideline, I consider it rather an optimization that may or
-> > > > may not happen but userspace should not rely on it. Thoughts?
+> Right?just add a hint why I use pidfd instead so I want to keep it.
 > 
-> > > The thing is, those are not really two identical events.
-> > > This is in fact the same event (fsnotify_change() hook was called once).
-> > > The fact that listener process may have an inode watch, parent directory
-> > > watch and a filesystem watch should not affect the number of read events.
-> 
-> > Yeah, I agree that in this case we should be merging the event if sanely
-> > possible (which is why I've merged that patch).
-> 
-> > > Now it's true that internally, fsnotify_dentry() emits two event flavors to
-> > > parent and to victim. For inotify it even made some sense, because listener
-> > > would read two different event flavors with two different formats.
-> > > With fanotify (either reporting fd or fid) receiving two events makes very
-> > > little sense.
-> 
-> > > I agree that the fix (merging those events) is best effort and we cannot
-> > > commit to merging the events, but this isolated regression test does
-> > > check the best effort fix reliably and this is the reason I think it
-> > > should stay.
-> 
-> > OK, I'm not too concerned about this test. But still the functionality is
-> > more in the area of "nice to have" than "must have" so in future we may
-> > break this if the implementation would get too hairy. But I guess we can
-> > remove the test in that case.
-> Yes, nothing is set in stone.
-> 
-> > > Upcoming FAN_REPORT_NAME is about to change the picture a bit
-> > > towards the inotify behavior - victim watch gets event without name,
-> > > parent watch gets event with name, filesystem watch gets both event
-> > > flavors... that is, if you will agree to this behavior, but we shall continue
-> > > this discussion on the fanotiify_name patches....
-> 
-> > Yes.
-> Can I add your ack tag to the whole patchset?
-> Or do you still consider whether any of them should be merged?
+> Of course?I will mention that my change introduces the compiler warning in
+> v2 patch.
 
-Feel free to add my Ack-by tag:
+Even that isn't required really. You can add a variable if you like.
 
-Acked-by: Jan Kara <jack@suse.cz>
+> > 
+> > > ------------------------------------------------------
+> > > 
+> > > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> > > ---
+> > >   .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++----
+> > >   1 file changed, 14 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> > > index 93bb86687..293e93b63 100644
+> > > --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> > > +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+> > > @@ -6,17 +6,27 @@
+> > >    * Basic pidfd_open() test, fetches the PID of the current process and tries to
+> > >    * get its file descriptor.
+> > >    */
+> > > +
+> > > +#include <sys/types.h>
+> > > +#include <unistd.h>
+> > > +#include <fcntl.h>
+> > >   #include "tst_test.h"
+> > >   #include "lapi/pidfd_open.h"
+> > >   static void run(void)
+> > >   {
+> > > -	TEST(pidfd_open(getpid(), 0));
+> > > +	int pidfd = 0, flag = 0;
+> > None of these need to be initialized.
+> 
+> Initialization or not initialization are both fine for me.
+>
+> Do you have any strong reason to drop Initialization?
 
-I didn't check all the details but overall the patches look good to me.
+Initializations are only required if there is a chance of the variable
+getting used without being initialized, which isn't the case here.
+Whatever value you set to these variables, they will get overwritten
+anyway.
 
-								Honza
+> > 
+> > > +
+> > > +	pidfd = pidfd_open(getpid(), 0);
+> > > +	if (pidfd == -1)
+> > > +		tst_brk(TFAIL | TERRNO, "pidfd_open(getpid(), 0) failed");
+> > This could have been written as:
+> >          TEST(pidfd = pidfd_open(getpid(), 0));
+> 
+> Why do you want to keep TEST()? I don't think it is necessary:
+> 
+> 1) pidfd and TERRNO are enough to check return value and errno.
+> 
+> 2) It is OK for testcase to not use TEST().
+
+As far as I have understood, that is the preferred way of doing it
+from LTP maintainers.
+
+Over that it was already there, why remove it now ? Just fix the
+problems you are trying to fix and that should be good.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+viresh
