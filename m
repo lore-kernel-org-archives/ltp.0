@@ -1,36 +1,40 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 May 2020 14:03:30 +0200
-Subject: [LTP] [PATCH v2 2/4] syscalls/fanotify15: Add a test case for
- inode marks
-In-Reply-To: <20200504202727.GC17863@quack2.suse.cz>
-References: <20200502162744.9589-1-amir73il@gmail.com>
- <20200502162744.9589-3-amir73il@gmail.com>
- <20200504080715.GA1741@quack2.suse.cz>
- <CAOQ4uxgJQ2MGdnib9gvc=PcoWxveUpyqDZ1YybT-Hxrhba9ApQ@mail.gmail.com>
- <20200504141516.GC1741@quack2.suse.cz>
- <20200504184936.GA92715@x230>
- <20200504202727.GC17863@quack2.suse.cz>
-Message-ID: <20200505120330.GA28600@dell5510>
+Date: Tue, 5 May 2020 14:15:29 +0200
+Subject: [LTP] [PATCH] Define __NR_futex to be __NR_futex_time64 on
+ riscv32
+In-Reply-To: <CAMKF1srKzdh=VnoxDyumQHo25-ZWREcRPkyJ+V5tW4vZdiMuZA@mail.gmail.com>
+References: <20200429033511.1848449-1-raj.khem@gmail.com>
+ <20200429131624.GB10236@dell5510>
+ <CAMKF1srKzdh=VnoxDyumQHo25-ZWREcRPkyJ+V5tW4vZdiMuZA@mail.gmail.com>
+Message-ID: <20200505121529.GA6299@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi Khem,
 
-> > Can I add your ack tag to the whole patchset?
-> > Or do you still consider whether any of them should be merged?
+sorry for a delay.
+> > > RISCV glibc has decided to use 64bit time_t from get go unlike
+> > > other 32bit architecture therefore aliasing __NR_futex to
+> > > __NR_futex_time64 helps avoid the below errors on rv32
 
-> Feel free to add my Ack-by tag:
+> > > tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
 
-> Acked-by: Jan Kara <jack@suse.cz>
+> > Thanks for your fix.
 
-> I didn't check all the details but overall the patches look good to me.
-Merged with that few small fixes we discussed.
-Thanks for your work!
+> > BTW, out of curiosity, is Risc-v 32 bit merged into glibc master?
 
-> 								Honza
+> Not yet but its almost finalised and should be merged before 2.32 hopefully
+Nice!
+
+> > I guess this should go to include/lapi/futex.h, so we don't repeat ourselves.
+> > (and clone08.c needs to include it, others already do).
+
+
+> OK makes sense, will send v2 ?
+Yes please.
 
 Kind regards,
 Petr
