@@ -1,38 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  5 May 2020 14:50:19 +0200
-Subject: [LTP] [PATCH COMMITTED] syscalls/lremovexattr01: use strncmp() to
- check attribute value
-Message-ID: <135538f22cc17bd92eeff77a21a8bb8dbf926c4a.1588683000.git.jstancek@redhat.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Date: Tue, 05 May 2020 09:54:38 +0200
+Subject: [LTP] [bug?] clone(CLONE_IO) failing after kernel commit commit
+ ef2c41cf38a7
+In-Reply-To: <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+ (Jan Stancek via Libc-alpha's message of "Tue, 5 May 2020 03:28:34
+ -0400 (EDT)")
+References: <100149681.11244932.1588661282331.JavaMail.zimbra@redhat.com>
+ <1038674044.11248021.1588663714272.JavaMail.zimbra@redhat.com>
+Message-ID: <874ksuke9t.fsf@igel.home>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fix the test failure and following compile warning (gcc version 10.0.1):
-  lremovexattr01.c: In function ?verify_lremovexattr?:
-  lremovexattr01.c:98:6: warning: ?strcmp? of a string of length 13 and an array of size 13 evaluates to nonzero [-Wstring-compare]
-     98 |  if (strcmp(got_value, XATTR_VALUE)) {
-        |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+On Mai 05 2020, Jan Stancek via Libc-alpha wrote:
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/lremovexattr/lremovexattr01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I'm seeing an issue with CLONE_IO and libc' clone() on ppc64le,
+> where flags parameter appears to be sign extended before it's passed
+> to kernel syscall.
 
-diff --git a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-index 0c19c62ace50..590f5a6f32a0 100644
---- a/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-+++ b/testcases/kernel/syscalls/lremovexattr/lremovexattr01.c
-@@ -95,7 +95,7 @@ static void verify_lremovexattr(void)
- 		return;
- 	}
- 
--	if (strcmp(got_value, XATTR_VALUE)) {
-+	if (strncmp(got_value, XATTR_VALUE, XATTR_VALUE_SIZE)) {
- 		tst_res(TFAIL, "lremovexattr(2) changed file attribute");
- 		return;
- 	}
+Looks like the flags argument should be declared as unsigned int,
+instead of int, both in glibc and in the kernel.
+
+#define CLONE_IO		0x80000000	/* Clone io context */
+
+Andreas.
+
 -- 
-2.18.1
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
