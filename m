@@ -1,45 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 6 May 2020 18:01:59 +0200
-Subject: [LTP] [PATCH 1/1] pty04: Fix build for kernel headers < v4.2-rc1
-In-Reply-To: <20200506155616.GE11352@yuki.lan>
-References: <20200506134858.23919-1-pvorel@suse.cz>
- <20200506154724.GA19535@dell5510> <20200506155616.GE11352@yuki.lan>
-Message-ID: <20200506160159.GA23110@dell5510>
+Date: Wed, 6 May 2020 18:08:04 +0200
+Subject: [LTP] [PATCH v6 3/3] route: Increase default loop values
+In-Reply-To: <43c34d08-439c-a6a0-8e3c-b06ffc61ef40@oracle.com>
+References: <20200429192340.14252-1-pvorel@suse.cz>
+ <20200429192340.14252-4-pvorel@suse.cz>
+ <c408ffc1-9ba6-ac01-0de9-1726ee72d4a4@oracle.com>
+ <20200506150629.GA678@dell5510>
+ <43c34d08-439c-a6a0-8e3c-b06ffc61ef40@oracle.com>
+Message-ID: <20200506160804.GB23110@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > The struct added in 6b6b56cf3 ("pty04: Add SLCAN ldisc and check for CVE-2020-11494") uses
-> > uint32_t, kernel version always used __u8. Richie, any reason to use uint32_t
-> > instead of uint8_t? I does not fixes the problem, I'm just asking, whether
-> > different size affect test coverage.
+Hi Alexey,
 
-> > struct can_frame {
-> > 	canid_t can_id;
-> > 	uint32_t can_dlc;
-> > 	uint32_t __pad;
-> > 	uint32_t __res0;
-> > 	uint32_t __res1;
-> > 	uint32_t data[CAN_MAX_DLEN] __attribute__((aligned(8)));
-> > };
+> > Or I can use long and LONG_MAX, but IMHO int is OK :)
 
-> > struct can_frame {
-> > 	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-> > 	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
-> > 	__u8    __pad;   /* padding */
-> > 	__u8    __res0;  /* reserved / padding */
-> > 	__u8    __res1;  /* reserved / padding */
-> > 	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
-> > };
+> >> Can we limit the setup only and iterate (adding and deleting) from
+> >> the beginning or use -i option with -c?
+> > I'm sorry, I don't understand you. Isn't it INT_MAX enough?
 
-> These two structures are for sure incompatible, that should be uint8_t
-> instead uint32_t.
-OK I'll fix it.
-I also add #define CAN_MTU     (sizeof(struct can_frame)), instead of 16 (which
-is now correct, but for uint32_t should be 56).
+
+> Yes, it's fine, I just wasn't sure why it was added in the first place,
+> 65535, because of some limitation of the ip address setup (you have
+> added the separate ip max var though) or something else...
+
+OK, finally merging. Thanks a lot for patient review and many tips!
 
 Kind regards,
 Petr
