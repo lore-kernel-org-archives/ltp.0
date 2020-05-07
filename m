@@ -1,33 +1,22 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 7 May 2020 16:31:42 +0200
-Subject: [LTP] [PATCH] pty04: Correct struct member sizes and add to CVE
- runtest file
-In-Reply-To: <20200507141142.GA19567@yuki.lan>
-References: <20200506170407.5562-1-rpalethorpe@suse.com>
- <20200506171921.GA1214@dell5510>
- <CAEemH2eQ9Dd4CewEvPxfZx-1R69QS990iodR1_EsbYBVX8TmyA@mail.gmail.com>
- <20200507141142.GA19567@yuki.lan>
-Message-ID: <20200507143142.GA24733@dell5510>
+Date: Thu, 7 May 2020 16:52:58 +0200
+Subject: [LTP] [PATCH 2/8] syscalls/futex: Add support for time64 tests
+In-Reply-To: <379f4d58e86b5249f56ff58e1907dee69d67e451.1588669892.git.viresh.kumar@linaro.org>
+References: <7e037dacaeb0c7f3bfd73cd11d80f3e1567dc052.1588669892.git.viresh.kumar@linaro.org>
+ <379f4d58e86b5249f56ff58e1907dee69d67e451.1588669892.git.viresh.kumar@linaro.org>
+Message-ID: <20200507145258.GA16940@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi,
 
-> Hi!
-> > nit: I might separate runtest change into it's own commit.
+FYI, 2nd and 6th patch didn't apply cleanly.
+Trivial fixes, but for anybody who is lazy to repeat the work here it's done:
+https://github.com/pevik/ltp/tree/Viresh_Kumar/futex_wait_bitset.v1
 
-> Agree here, the runtest change should be separated.
-+1.
-
-Merged, thanks for a fix!
-
-We still have time to comment out the test if #674 won't be fixed before
-release.
 
 Kind regards,
 Petr
-
-https://github.com/linux-test-project/ltp/issues/674
