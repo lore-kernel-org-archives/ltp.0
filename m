@@ -1,53 +1,29 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 7 May 2020 15:59:36 +0800
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 7 May 2020 10:12:39 +0200
 Subject: [LTP] [PATCH] pty04: Correct struct member sizes and add to CVE
  runtest file
-In-Reply-To: <20200506171921.GA1214@dell5510>
+In-Reply-To: <20200506170407.5562-1-rpalethorpe@suse.com>
 References: <20200506170407.5562-1-rpalethorpe@suse.com>
- <20200506171921.GA1214@dell5510>
-Message-ID: <CAEemH2eQ9Dd4CewEvPxfZx-1R69QS990iodR1_EsbYBVX8TmyA@mail.gmail.com>
+Message-ID: <20200507081239.GA20239@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, May 7, 2020 at 1:19 AM Petr Vorel <pvorel@suse.cz> wrote:
+Hi Richard,
 
-> Hi Richard,
->
-> > Also remove min_kver because it is arbitrary. We know this test works on
-> much
-> > older kernels, but it will probably hit bugs that have been fixed for a
-> long
-> > time.
->
-> Thanks!
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> Waiting for reactions to .min_kver removal.
->
+...
+> +++ b/runtest/cve
+> @@ -50,3 +50,4 @@ cve-2018-1000199 ptrace08
+>  cve-2018-1000204 ioctl_sg01
+>  cve-2018-18559 bind06
+>  cve-2018-19854 crypto_user01
+> +cve-2020-11494 pty04
+BTW Also Jan was proposing to disable test in runtest.
 
-Removing .min_kver = "4.10" is fine by me, it works on rhel6/7/8 from my
-test. The test failure seems related to the unfix kernel problem.
+But it'd be great to fix that before release, so I'm ok to take merge it (we can
+disable it in both pty and cve runtest files just before release).
 
-nit: I might separate runtest change into it's own commit.
->
-
-Also to add #define CAN_MTU     (sizeof(struct can_frame)).
-
-
-> Kind regards,
-> Petr
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200507/b415096e/attachment.htm>
+Kind regards,
+Petr
