@@ -1,254 +1,265 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri,  8 May 2020 09:53:50 +0530
-Subject: [LTP] [PATCH V2 05/17] syscalls/futex: Merge futex_wait_bitset tests
+Date: Fri,  8 May 2020 09:53:52 +0530
+Subject: [LTP] [PATCH V2 07/17] syscalls/io_pgetevents: Add support for
+ time64 tests
 In-Reply-To: <cover.1588911607.git.viresh.kumar@linaro.org>
 References: <cover.1588911607.git.viresh.kumar@linaro.org>
-Message-ID: <8399646565f298f1b1fc3d685f15c868baa73b88.1588911607.git.viresh.kumar@linaro.org>
+Message-ID: <61b6e9020dd1d06606870bdaa0b21e0e7ee6ad49.1588911607.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We can handle them easily in a single test, lets do it.
+This adds support for time64 tests to the existing io_pgetevents()
+syscall tests.
+
+While at it, also pass mode to SAFE_OPEN() to avoid any errors when the
+tests are run for multiple variants together.
+
+Also get rid of an extra copy of local fd variable, which is incorrect.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                              |  1 -
- testcases/kernel/syscalls/futex/.gitignore    |  1 -
- testcases/kernel/syscalls/futex/Makefile      |  1 -
- .../kernel/syscalls/futex/futex_wait_bitset.h | 75 -------------------
- .../syscalls/futex/futex_wait_bitset01.c      | 73 +++++++++++++++++-
- .../syscalls/futex/futex_wait_bitset02.c      | 18 -----
- 6 files changed, 71 insertions(+), 98 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/futex/futex_wait_bitset.h
- delete mode 100644 testcases/kernel/syscalls/futex/futex_wait_bitset02.c
+ include/lapi/io_pgetevents.h                  | 15 +++--
+ .../syscalls/io_pgetevents/io_pgetevents01.c  | 41 ++++++++++++-
+ .../syscalls/io_pgetevents/io_pgetevents02.c  | 59 +++++++++++++++----
+ 3 files changed, 97 insertions(+), 18 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index edd3e8de7861..4a19075cd131 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1664,7 +1664,6 @@ futex_wake02 futex_wake02
- futex_wake03 futex_wake03
- futex_wake04 futex_wake04
- futex_wait_bitset01 futex_wait_bitset01
--futex_wait_bitset02 futex_wait_bitset02
+diff --git a/include/lapi/io_pgetevents.h b/include/lapi/io_pgetevents.h
+index 3c9d5b2d7618..5bb9a60c352a 100644
+--- a/include/lapi/io_pgetevents.h
++++ b/include/lapi/io_pgetevents.h
+@@ -16,15 +16,20 @@
+ #ifdef HAVE_LIBAIO
+ #include <libaio.h>
  
- memfd_create01 memfd_create01
- memfd_create02 memfd_create02
-diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
-index 68bc2028e1b2..54cd02b0223f 100644
---- a/testcases/kernel/syscalls/futex/.gitignore
-+++ b/testcases/kernel/syscalls/futex/.gitignore
-@@ -6,7 +6,6 @@
- /futex_wait04
- /futex_wait05
- /futex_wait_bitset01
--/futex_wait_bitset02
- /futex_wake01
- /futex_wake02
- /futex_wake03
-diff --git a/testcases/kernel/syscalls/futex/Makefile b/testcases/kernel/syscalls/futex/Makefile
-index 8dd239301e63..c88af7c9643b 100644
---- a/testcases/kernel/syscalls/futex/Makefile
-+++ b/testcases/kernel/syscalls/futex/Makefile
-@@ -12,7 +12,6 @@ futex_wake02: CFLAGS+=-pthread
- futex_wake04: CFLAGS+=-pthread
- futex_wait05: LDLIBS+=-lrt
- futex_wait_bitset01: LDLIBS+=-lrt
--futex_wait_bitset02: LDLIBS+=-lrt
- 
- include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset.h b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
-deleted file mode 100644
-index 84712816bfe8..000000000000
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset.h
-+++ /dev/null
-@@ -1,75 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
-- */
--
--#define THRESHOLD_US 100000
--#define DEFAULT_TIMEOUT_US 100010
--
--static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
--{
--	struct timespec start, to, end;
--	futex_t futex = FUTEX_INITIALIZER;
--	u_int32_t bitset = 0xffffffff;
--	int flags = clk_id == CLOCK_REALTIME ? FUTEX_CLOCK_REALTIME : 0;
--
--	tst_res(TINFO, "testing futex_wait_bitset() timeout with %s",
--		clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
--
--	clock_gettime(clk_id, &start);
--	to = tst_timespec_add_us(start, wait_us);
--
--	TEST(futex_wait_bitset(&futex, futex, &to, bitset, flags));
--
--	clock_gettime(clk_id, &end);
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "futex_wait_bitset() returned %li, expected -1",
--			TST_RET);
--		return;
--	}
--
--	if (TST_ERR == ENOSYS) {
--		tst_res(TCONF,
--			"In this kernel, futex() does not support FUTEX_WAIT_BITSET operation");
--		return;
--	}
--
--	if (TST_ERR != ETIMEDOUT) {
--		tst_res(TFAIL | TTERRNO, "expected %s",
--			tst_strerrno(ETIMEDOUT));
--		return;
--	}
--
--	if (tst_timespec_lt(end, to)) {
--		tst_res(TFAIL,
--			"futex_wait_bitset() woken up prematurely %llius, expected %llius",
--			tst_timespec_diff_us(end, start), wait_us);
--		return;
--	}
--
--	if (tst_timespec_diff_us(end, to) > THRESHOLD_US) {
--		tst_res(TFAIL,
--			"futex_wait_bitset() waited too long %llius, expected %llius",
--			tst_timespec_diff_us(end, start), wait_us);
--		return;
--	}
--
--	tst_res(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
--		tst_timespec_diff_us(end, start), wait_us);
--}
--
--static void setup(void)
--{
--	tst_timer_check(USE_CLOCK);
--}
--
--static void run(void)
--{
--	verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, USE_CLOCK);
--}
--
--static struct tst_test test = {
--	.setup = setup,
--	.test_all = run,
--};
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-index 1ae3253cfe13..b8546c3e640c 100644
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait_bitset01.c
-@@ -13,7 +13,76 @@
- #include "tst_timer.h"
- #include "futextest.h"
- 
--#define USE_CLOCK CLOCK_MONOTONIC
-+#define THRESHOLD_US 100000
-+#define DEFAULT_TIMEOUT_US 100010
- 
--#include "futex_wait_bitset.h"
-+static struct test_case_t {
-+	clockid_t clk_id;
-+} tcases[] = {
-+	{ CLOCK_MONOTONIC },
-+	{ CLOCK_REALTIME }
-+};
- 
-+static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+-#ifndef HAVE_IO_PGETEVENTS
+-int io_pgetevents(io_context_t ctx, long min_nr, long max_nr,
+-		 struct io_event *events, struct timespec *timeout,
+-		 sigset_t *sigmask)
++static inline int sys_io_pgetevents(io_context_t ctx, long min_nr, long max_nr,
++		struct io_event *events, void *timeout, sigset_t *sigmask)
+ {
+ 	return tst_syscall(__NR_io_pgetevents, ctx, min_nr, max_nr, events,
+ 			   timeout, sigmask);
+ }
+-#endif /* HAVE_IO_PGETEVENTS */
++
++static inline int sys_io_pgetevents_time64(io_context_t ctx, long min_nr, long max_nr,
++		struct io_event *events, void *timeout, sigset_t *sigmask)
 +{
-+	struct timespec start, to, end;
-+	futex_t futex = FUTEX_INITIALIZER;
-+	u_int32_t bitset = 0xffffffff;
-+	int flags = clk_id == CLOCK_REALTIME ? FUTEX_CLOCK_REALTIME : 0;
-+
-+	tst_res(TINFO, "testing futex_wait_bitset() timeout with %s",
-+		clk_id == CLOCK_REALTIME ? "CLOCK_REALTIME" : "CLOCK_MONOTONIC");
-+
-+	clock_gettime(clk_id, &start);
-+	to = tst_timespec_add_us(start, wait_us);
-+
-+	TEST(futex_wait_bitset(&futex, futex, &to, bitset, flags));
-+
-+	clock_gettime(clk_id, &end);
-+
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "futex_wait_bitset() returned %li, expected -1",
-+			TST_RET);
-+		return;
-+	}
-+
-+	if (TST_ERR == ENOSYS) {
-+		tst_res(TCONF,
-+			"In this kernel, futex() does not support FUTEX_WAIT_BITSET operation");
-+		return;
-+	}
-+
-+	if (TST_ERR != ETIMEDOUT) {
-+		tst_res(TFAIL | TTERRNO, "expected %s",
-+			tst_strerrno(ETIMEDOUT));
-+		return;
-+	}
-+
-+	if (tst_timespec_lt(end, to)) {
-+		tst_res(TFAIL,
-+			"futex_wait_bitset() woken up prematurely %llius, expected %llius",
-+			tst_timespec_diff_us(end, start), wait_us);
-+		return;
-+	}
-+
-+	if (tst_timespec_diff_us(end, to) > THRESHOLD_US) {
-+		tst_res(TFAIL,
-+			"futex_wait_bitset() waited too long %llius, expected %llius",
-+			tst_timespec_diff_us(end, start), wait_us);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "futex_wait_bitset() waited %llius, expected %llius",
-+		tst_timespec_diff_us(end, start), wait_us);
++	return tst_syscall(__NR_io_pgetevents_time64, ctx, min_nr, max_nr,
++			   events, timeout, sigmask);
 +}
 +
-+static void run(unsigned int n)
+ #endif /* HAVE_LIBAIO */
+ 
+ #endif /* IO_PGETEVENTS_H */
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+index 50d2c5f9a3ab..f99879c07ea6 100644
+--- a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents01.c
+@@ -6,11 +6,38 @@
+  * Basic io_pgetevents() test to receive 1 event successfully.
+  */
+ #include "tst_test.h"
++#include "tst_timer.h"
+ #include "lapi/io_pgetevents.h"
++#include "lapi/abisize.h"
+ 
+ #ifdef HAVE_LIBAIO
+ static int fd;
+ 
++static struct test_variants {
++	int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
++		struct io_event *events, void *timeout, sigset_t *sigmask);
++	enum tst_ts_type type;
++	char *desc;
++} variants[] = {
++#if defined(TST_ABI32)
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++#endif
++
++#if defined(TST_ABI64)
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++#endif
++
++#if (__NR_io_pgetevents_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .io_pgetevents = sys_io_pgetevents_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#endif
++};
++
++static void setup(void)
 +{
-+	tst_timer_check(tcases[n].clk_id);
-+	verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, tcases[n].clk_id);
++	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
 +}
 +
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
+ static void cleanup(void)
+ {
+ 	if (fd > 0)
+@@ -19,17 +46,23 @@ static void cleanup(void)
+ 
+ static void run(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
+ 	struct io_event events[1];
+ 	struct iocb cb, *cbs[1];
+ 	io_context_t ctx = 0;
++	struct tst_ts to;
+ 	sigset_t sigmask;
+ 	char data[4096];
+-	int ret, fd;
++	int ret;
++
++	to.type = tv->type;
++	tst_ts_set_sec(&to, 0);
++	tst_ts_set_nsec(&to, 10000);
+ 
+ 	cbs[0] = &cb;
+ 	sigemptyset(&sigmask);
+ 
+-	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
++	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT, 0644);
+ 	io_prep_pwrite(&cb, fd, data, 4096, 0);
+ 
+ 	ret = io_setup(1, &ctx);
+@@ -41,7 +74,7 @@ static void run(void)
+ 		tst_brk(TBROK | TERRNO, "io_submit() failed");
+ 
+ 	/* get the reply */
+-	ret = io_pgetevents(ctx, 1, 1, events, NULL, &sigmask);
++	ret = tv->io_pgetevents(ctx, 1, 1, events, tst_ts_get(&to), &sigmask);
+ 
+ 	if (ret == 1)
+ 		tst_res(TPASS, "io_pgetevents() works as expected");
+@@ -55,8 +88,10 @@ static void run(void)
+ static struct tst_test test = {
+ 	.min_kver = "4.18",
+ 	.test_all = run,
++	.test_variants = ARRAY_SIZE(variants),
+ 	.needs_tmpdir = 1,
+ 	.cleanup = cleanup,
++	.setup = setup,
+ };
+ 
+ #else
+diff --git a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+index 7cca7fc08567..7c0c6806d005 100644
+--- a/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
++++ b/testcases/kernel/syscalls/io_pgetevents/io_pgetevents02.c
+@@ -6,7 +6,9 @@
+  * Basic io_pgetevents() test to check various failures.
+  */
+ #include "tst_test.h"
++#include "tst_timer.h"
+ #include "lapi/io_pgetevents.h"
++#include "lapi/abisize.h"
+ 
+ #ifdef HAVE_LIBAIO
+ static sigset_t sigmask;
+@@ -14,35 +16,65 @@ static struct io_event events[1];
+ static io_context_t ctx, invalid_ctx = 0;
+ static int fd, ctx_initialized;
+ 
++static struct tst_ts to;
++static void *bad_addr;
++
+ static struct tcase {
+ 	char *name;
+ 	io_context_t *ctx;
+ 	long min_nr;
+ 	long max_nr;
+ 	struct io_event *events;
+-	struct timespec *timeout;
++	struct tst_ts *timeout;
+ 	sigset_t *sigmask;
+ 	int exp_errno;
+ } tcases[] = {
+-	{"invalid ctx", &invalid_ctx, 1, 1, events, NULL, &sigmask, EINVAL},
+-	{"invalid min_nr", &ctx, -1, 1, events, NULL, &sigmask, EINVAL},
+-	{"invalid max_nr", &ctx, 1, -1, events, NULL, &sigmask, EINVAL},
+-	{"invalid events", &ctx, 1, 1, NULL, NULL, &sigmask, EFAULT},
+-	{"invalid timeout", &ctx, 1, 1, events, (void *)(0xDEAD), &sigmask, EFAULT},
+-	{"invalid sigmask", &ctx, 1, 1, events, NULL, (void *)(0xDEAD), EFAULT},
++	{"invalid ctx", &invalid_ctx, 1, 1, events, &to, &sigmask, EINVAL},
++	{"invalid min_nr", &ctx, -1, 1, events, &to, &sigmask, EINVAL},
++	{"invalid max_nr", &ctx, 1, -1, events, &to, &sigmask, EINVAL},
++	{"invalid events", &ctx, 1, 1, NULL, &to, &sigmask, EFAULT},
++	{"invalid timeout", &ctx, 1, 1, events, NULL, &sigmask, EFAULT},
++	{"invalid sigmask", &ctx, 1, 1, events, &to, NULL, EFAULT},
 +};
-diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c b/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
-deleted file mode 100644
-index 4d532fc07775..000000000000
---- a/testcases/kernel/syscalls/futex/futex_wait_bitset02.c
-+++ /dev/null
-@@ -1,18 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * 1. Block on a bitset futex and wait for timeout, the difference between
-- *    normal futex and bitset futex is that that the later have absolute timeout.
-- * 2. Check that the futex waited for expected time.
-- */
--
--#include <errno.h>
--
--#include "tst_test.h"
--#include "tst_timer.h"
--#include "futextest.h"
--
--#define USE_CLOCK CLOCK_REALTIME
--
--#include "futex_wait_bitset.h"
++
++static struct test_variants {
++	int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
++		struct io_event *events, void *timeout, sigset_t *sigmask);
++	enum tst_ts_type type;
++	char *desc;
++} variants[] = {
++#if defined(TST_ABI32)
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++#endif
++
++#if defined(TST_ABI64)
++	{ .io_pgetevents = sys_io_pgetevents, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++#endif
++
++#if (__NR_io_pgetevents_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .io_pgetevents = sys_io_pgetevents_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#endif
+ };
+ 
+ static void setup(void)
+ {
++	struct test_variants *tv = &variants[tst_variant];
+ 	struct iocb cb, *cbs[1];
+ 	char data[4096];
+ 	int ret;
+ 
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	bad_addr = tst_get_bad_addr(NULL);
++	to.type = tv->type;
++	tst_ts_set_sec(&to, 0);
++	tst_ts_set_nsec(&to, 10000);
++
+ 	cbs[0] = &cb;
+ 
+ 	sigemptyset(&sigmask);
+ 
+-	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT);
++	fd = SAFE_OPEN("io_pgetevents_file", O_RDWR | O_CREAT, 0644);
+ 	io_prep_pwrite(&cb, fd, data, 4096, 0);
+ 
+ 	ret = io_setup(1, &ctx);
+@@ -69,10 +101,16 @@ static void cleanup(void)
+ 
+ static void run(unsigned int n)
+ {
++	struct test_variants *tv = &variants[tst_variant];
+ 	struct tcase *tc = &tcases[n];
++	struct timespec *to;
++	sigset_t *sigmask;
++
++	sigmask = tc->sigmask ? tc->sigmask : bad_addr;
++	to = tc->timeout ? tc->timeout : bad_addr;
+ 
+-	TEST(io_pgetevents(*tc->ctx, tc->min_nr, tc->max_nr, tc->events,
+-			   tc->timeout, tc->sigmask));
++	TEST(tv->io_pgetevents(*tc->ctx, tc->min_nr, tc->max_nr, tc->events, to,
++			       sigmask));
+ 
+ 	if (TST_RET == 1) {
+ 		tst_res(TFAIL, "%s: io_pgetevents() passed unexpectedly",
+@@ -95,6 +133,7 @@ static struct tst_test test = {
+ 	.needs_tmpdir = 1,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = run,
++	.test_variants = ARRAY_SIZE(variants),
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ };
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
