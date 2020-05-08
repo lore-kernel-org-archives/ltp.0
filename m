@@ -1,46 +1,38 @@
 From: Alexander Gordeev <agordeev@linux.ibm.com>
-Date: Fri,  8 May 2020 15:09:03 +0200
-Subject: [LTP] [PATCH 2/2] lib/cloner.c: Use __clone instead of clone for
- s390
-In-Reply-To: <cover.1588942426.git.agordeev@linux.ibm.com>
-References: <cover.1588942426.git.agordeev@linux.ibm.com>
-Message-ID: <8f28b9797be3408c0c1086d0a2bc9c052b55bfe2.1588942426.git.agordeev@linux.ibm.com>
+Date: Fri,  8 May 2020 15:09:01 +0200
+Subject: [LTP] [PATCH 0/2] syscalls/kcmp03.c: Fix CLONE_IO failure on s390
+Message-ID: <cover.1588942426.git.agordeev@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The kernel sys_clone and s390 glibc entry __clone assume
-the flags parameter type as unsigned long. However, the
-glibc clone wrapper used by ltp_clone helper defines flags
-as signed int. That leads to gcc extending CLONE_IO flag of
-0x80000000 value to 0xffffffff80000000.
+Hi all,
 
-A quick solution for s390 is to skip clone weak alias and
-use __clone entry point directly.
+This series fixes the CLONE_IO flag test on s390:
 
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- lib/cloner.c | 5 +++++
- 1 file changed, 5 insertions(+)
+	kcmp03.c:82: FAIL: clone() Failed: EBADF (9)
 
-diff --git a/lib/cloner.c b/lib/cloner.c
-index 11401f2..1192e4b 100644
---- a/lib/cloner.c
-+++ b/lib/cloner.c
-@@ -49,6 +49,11 @@ extern int __clone2(int (*fn) (void *arg), void *child_stack_base,
-                     size_t child_stack_size, int flags, void *arg,
-                     pid_t *parent_tid, void *tls, pid_t *child_tid);
- #endif
-+#if defined(__s390__)
-+# define clone __clone
-+extern int __clone(int (*fn)(void *arg), void *child_stack, unsigned long flags,
-+		   void *arg, pid_t *parent_tid, void *tls, pid_t *child_tid);
-+#endif
- 
- #ifndef CLONE_SUPPORTS_7_ARGS
- # define clone(fn, stack, flags, arg, ptid, tls, ctid) \
+The reason for the failure is CLONE_IO flag is sign-
+extended to unsigned long and CLONE_INTO_CGROUP gets
+set unintentionally. The kernel does its job well and
+fails the syscall.
+
+The fix is probably wrong, as the right solution needs to
+accomodate all archs. I however, post it as a short-term
+solution that might work for other archs as well.
+
+Thanks!
+
+Alexander Gordeev (2):
+  syscalls/kcmp03.c: Extend clone_type type to unsigned long
+  lib/cloner.c: Use __clone instead of clone for s390
+
+ lib/cloner.c                            | 5 +++++
+ testcases/kernel/syscalls/kcmp/kcmp03.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
 -- 
 1.8.3.1
 
