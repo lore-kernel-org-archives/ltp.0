@@ -1,31 +1,86 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 8 May 2020 10:30:36 +0200
-Subject: [LTP] [PATCH V2 01/17] syscalls/timer_gettime: Add support for
- time64 tests
-In-Reply-To: <d115c3ad61a422e5cadd3617c554c91a242defad.1588911607.git.viresh.kumar@linaro.org>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 8 May 2020 14:26:57 +0530
+Subject: [LTP] [PATCH V2 15/17] syscalls/semtimedop: Add support for
+ semtimedop and its time64 version
+In-Reply-To: <CAK8P3a1x+uK_WgVn9O8LVcLoZH=oJ_jQcePwcwzqpyhewApX9w@mail.gmail.com>
 References: <cover.1588911607.git.viresh.kumar@linaro.org>
- <d115c3ad61a422e5cadd3617c554c91a242defad.1588911607.git.viresh.kumar@linaro.org>
-Message-ID: <CAK8P3a0_MAOyEXjdGJ0YAwKwn-j9Y+3apfM1W4SUnwVQRBC2MA@mail.gmail.com>
+ <8a675726b6e553e740016390c774bce19efc5a12.1588911607.git.viresh.kumar@linaro.org>
+ <CAK8P3a1x+uK_WgVn9O8LVcLoZH=oJ_jQcePwcwzqpyhewApX9w@mail.gmail.com>
+Message-ID: <20200508085657.ousiwqakcq7zegpo@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, May 8, 2020 at 6:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On 08-05-20, 09:18, Arnd Bergmann wrote:
+> On Fri, May 8, 2020 at 6:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> 
+> > +
+> > +static inline int sys_semtimedop(int semid, struct sembuf *sops, size_t nsops,
+> > +               void *timeout)
+> > +{
+> > +       return tst_syscall(__NR_semtimedop, semid, sops, nsops, timeout);
+> > +}
+> > +
+> > +static inline int sys_semtimedop_time64(int semid, struct sembuf *sops,
+> > +                                       size_t nsops, void *timeout)
+> > +{
+> > +       return tst_syscall(__NR_semtimedop_time64, semid, sops, nsops, timeout);
+> > +}
+> > +
+> > +struct test_variants {
+> > +       int (*semop)(int semid, struct sembuf *sops, size_t nsops);
+> > +       int (*semtimedop)(int semid, struct sembuf *sops, size_t nsops, void *timeout);
+> > +       enum tst_ts_type type;
+> > +       char *desc;
+> > +} variants[] = {
+> > +       { .semop = semop, .type = TST_LIBC_TIMESPEC, .desc = "semop: vDSO or syscall"},
+> > +#if defined(TST_ABI32)
+> > +       { .semtimedop = sys_semtimedop, .type = TST_LIBC_TIMESPEC, .desc = "semtimedop: syscall with libc spec"},
+> > +       { .semtimedop = sys_semtimedop, .type = TST_KERN_OLD_TIMESPEC, .desc = "semtimedop: syscall with kernel spec32"},
+> > +#endif
+> > +
+> > +#if defined(TST_ABI64)
+> > +       { .semtimedop = sys_semtimedop, .type = TST_KERN_TIMESPEC, .desc = "semtimedop: syscall with kernel spec64"},
+> > +#endif
+> 
+> 
+> It feels like this is more complicated than it need to be. The line
+> 
+> semtimedop = sys_semtimedop, .type = TST_KERN_OLD_TIMESPEC, .desc =
+> "semtimedop: syscall with kernel spec32"},
+> 
+> should apply to any kernel that has "__NR_semtimedop !=
+> __LTP__NR_INVALID_SYSCALL",
+> regardless of any other macros set, and then you don't need the separate line
+> 
+> { .semtimedop = sys_semtimedop, .type = TST_KERN_TIMESPEC, .desc =
+> "semtimedop: syscall with kernel spec64"},
+ 
+> which is not what the ABI is meant to be anyway (sys_semtimedop takes
+> a __kernel_old_timespec,
+> not a __kernel_timespec).
 
-> +#if defined(TST_ABI32)
-> +       { .func = sys_timer_gettime, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-> +#endif
+There is some misunderstanding here, surely from my side. The sys_
+helpers here are the direct syscalls called from userspace with help
+of tst_syscall().
 
-> +#if defined(TST_ABI64)
-> +       { .func = sys_timer_gettime, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
-> +#endif
+AFAIU, on 32 bit systems we need to call __NR_semtimedop with the 32
+bit and 64 bit timespec (both), and on 64 bit systems which don't
+implement __NR_semtimedop_time64, we need to call __NR_semtimedop with
+the 64 bit timespec only.
 
-I think these are both invalid: timer_gettime() does not take a libc timespec or
-a __kernel_timespec but takes a __kernel_old_timespec. You should only
-use the libc data structure with the libc timer_gettime, and the
-__kernel_timespec
-with the kernel's timer_gettime64().
+What you are telling now is very different from that and so I don't
+get it.
 
-        Arnd
+> Similarly, the line
+> 
+>  { .semop = semop, .type = TST_LIBC_TIMESPEC, .desc = "semop: vDSO or syscall"},
+> 
+> should apply to both 32 and 64 bit machines
+
+Yes and so it is called without ifdef hackery. Isn't that correct ? 
+
+-- 
+viresh
