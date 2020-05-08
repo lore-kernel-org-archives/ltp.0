@@ -1,265 +1,284 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri,  8 May 2020 09:53:46 +0530
-Subject: [LTP] [PATCH V2 01/17] syscalls/timer_gettime: Add support for
+Date: Fri,  8 May 2020 09:53:47 +0530
+Subject: [LTP] [PATCH V2 02/17] syscalls/timer_settime: Add support for
  time64 tests
 In-Reply-To: <cover.1588911607.git.viresh.kumar@linaro.org>
 References: <cover.1588911607.git.viresh.kumar@linaro.org>
-Message-ID: <d115c3ad61a422e5cadd3617c554c91a242defad.1588911607.git.viresh.kumar@linaro.org>
+Message-ID: <cd002c8c3a5a67ba87eaa54c61387e54d71404b4.1588911607.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing timer_gettime()
+This adds support for time64 tests to the existing timer_settime()
 syscall tests.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/tst_timer.h                           |  40 ++++++
- .../syscalls/timer_gettime/timer_gettime01.c  | 135 ++++++++----------
- 2 files changed, 100 insertions(+), 75 deletions(-)
+ include/tst_timer.h                           | 34 ++++++++++
+ .../syscalls/timer_settime/timer_settime01.c  | 51 +++++++++++----
+ .../syscalls/timer_settime/timer_settime02.c  | 65 ++++++++++++++-----
+ 3 files changed, 122 insertions(+), 28 deletions(-)
 
 diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 256e1d71e1bc..601f934da670 100644
+index 601f934da670..94d03cecdabe 100644
 --- a/include/tst_timer.h
 +++ b/include/tst_timer.h
-@@ -15,6 +15,7 @@
- #include <sys/time.h>
- #include <time.h>
- #include "tst_test.h"
-+#include "lapi/common_timers.h"
- #include "lapi/syscalls.h"
- 
- /*
-@@ -112,6 +113,11 @@ struct __kernel_timespec {
- 	__kernel_time64_t       tv_sec;                 /* seconds */
- 	long long               tv_nsec;                /* nanoseconds */
- };
-+
-+struct __kernel_itimerspec {
-+	struct __kernel_timespec it_interval;    /* timer period */
-+	struct __kernel_timespec it_value;       /* timer expiration */
-+};
- #endif
- 
- enum tst_ts_type {
-@@ -129,6 +135,14 @@ struct tst_ts {
- 	} ts;
- };
- 
-+struct tst_its {
-+	enum tst_ts_type type;
-+	union {
-+		struct itimerspec libc_its;
-+		struct __kernel_itimerspec kern_its;
-+	} ts;
-+};
-+
- static inline void *tst_ts_get(struct tst_ts *t)
- {
- 	if (!t)
-@@ -147,6 +161,22 @@ static inline void *tst_ts_get(struct tst_ts *t)
- 	}
+@@ -252,6 +252,40 @@ static inline int sys_timer_gettime64(kernel_timer_t timerid, void *its)
+ 	return tst_syscall(__NR_timer_gettime64, timerid, its);
  }
  
-+static inline void *tst_its_get(struct tst_its *t)
++static inline int sys_timer_settime(kernel_timer_t timerid, int flags,
++				    void *its, void *old_its)
 +{
-+	if (!t)
-+		return NULL;
++	return tst_syscall(__NR_timer_settime, timerid, flags, its, old_its);
++}
 +
-+	switch (t->type) {
++static inline int sys_timer_settime64(kernel_timer_t timerid, int flags,
++				      void *its, void *old_its)
++{
++	return tst_syscall(__NR_timer_settime64, timerid, flags, its, old_its);
++}
++
++static inline void tst_its_set_time(struct tst_its *its, long long value_sec,
++				long long value_nsec, long long interval_sec,
++				long long interval_nsec)
++{
++	switch (its->type) {
 +	case TST_LIBC_TIMESPEC:
-+		return &t->ts.libc_its;
++		its->ts.libc_its.it_value.tv_sec = value_sec;
++		its->ts.libc_its.it_value.tv_nsec = value_nsec;
++		its->ts.libc_its.it_interval.tv_sec = interval_sec;
++		its->ts.libc_its.it_interval.tv_nsec = interval_nsec;
++	break;
 +	case TST_KERN_TIMESPEC:
-+		return &t->ts.kern_its;
++		its->ts.kern_its.it_value.tv_sec = value_sec;
++		its->ts.kern_its.it_value.tv_nsec = value_nsec;
++		its->ts.kern_its.it_interval.tv_sec = interval_sec;
++		its->ts.kern_its.it_interval.tv_nsec = interval_nsec;
++	break;
 +	default:
-+		tst_brk(TBROK, "Invalid type: %d", t->type);
-+		return NULL;
++		tst_brk(TBROK, "Invalid type: %d", its->type);
 +	}
-+}
-+
- static inline int libc_clock_getres(clockid_t clk_id, void *ts)
- {
- 	return clock_getres(clk_id, ts);
-@@ -212,6 +242,16 @@ static inline int sys_clock_nanosleep64(clockid_t clk_id, int flags,
- 			   request, remain);
- }
- 
-+static inline int sys_timer_gettime(kernel_timer_t timerid, void *its)
-+{
-+	return tst_syscall(__NR_timer_gettime, timerid, its);
-+}
-+
-+static inline int sys_timer_gettime64(kernel_timer_t timerid, void *its)
-+{
-+	return tst_syscall(__NR_timer_gettime64, timerid, its);
 +}
 +
  /*
   * Returns tst_ts seconds.
   */
-diff --git a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-index 1c75f1cf0e45..4e9230fb6e9a 100644
---- a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-+++ b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-@@ -1,24 +1,5 @@
--/******************************************************************************
-- * Copyright (c) Crackerjack Project., 2007                                   *
-- * Porting from Crackerjack to LTP is done by:                                *
-- *              Manas Kumar Nayak <maknayak@in.ibm.com>                       *
-- * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>                          *
-- *                                                                            *
-- * This program is free software;  you can redistribute it and/or modify      *
-- * it under the terms of the GNU General Public License as published by       *
-- * the Free Software Foundation; either version 2 of the License, or          *
-- * (at your option) any later version.                                        *
-- *                                                                            *
-- * This program is distributed in the hope that it will be useful,            *
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of            *
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  *
-- * the GNU General Public License for more details.                           *
-- *                                                                            *
-- * You should have received a copy of the GNU General Public License          *
-- * along with this program;  if not, write to the Free Software Foundation,   *
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           *
-- *                                                                            *
-- ******************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) Crackerjack Project., 2007 */
- 
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+index da365d221086..8c00718eedaf 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+@@ -25,15 +25,15 @@
+ #include <errno.h>
  #include <time.h>
  #include <signal.h>
-@@ -26,71 +7,75 @@
- #include <stdio.h>
- #include <errno.h>
- 
--#include "test.h"
--#include "lapi/syscalls.h"
+-#include "tst_test.h"
+-#include "lapi/common_timers.h"
 +#include "tst_timer.h"
 +#include "lapi/abisize.h"
  
--char *TCID = "timer_gettime01";
--int TST_TOTAL = 3;
+-static struct timespec timenow;
+-static struct itimerspec new_set, old_set;
++static struct tst_ts timenow;
++static struct tst_its new_set, old_set;
+ static kernel_timer_t timer;
+ 
+ static struct testcase {
+-	struct itimerspec	*old_ptr;
++	struct tst_its		*old_ptr;
+ 	int			it_value_tv_sec;
+ 	int			it_interval_tv_sec;
+ 	int			flag;
+@@ -45,10 +45,32 @@ static struct testcase {
+ 	{&old_set, 5, 0, TIMER_ABSTIME, "using absolute time"},
+ };
+ 
 +static struct test_variants {
-+	int (*func)(kernel_timer_t timer, void *its);
++	int (*gettime)(clockid_t clk_id, void *ts);
++	int (*func)(kernel_timer_t timerid, int flags, void *its,
++		    void *old_its);
 +	enum tst_ts_type type;
 +	char *desc;
 +} variants[] = {
 +#if defined(TST_ABI32)
-+	{ .func = sys_timer_gettime, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .gettime = sys_clock_gettime, .func = sys_timer_settime, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
 +#endif
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
++
 +#if defined(TST_ABI64)
-+	{ .func = sys_timer_gettime, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++	{ .gettime = sys_clock_gettime, .func = sys_timer_settime, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
 +#endif
- 
--static void setup(void)
--{
--	TEST_PAUSE;
--	tst_tmpdir();
--}
-+#if (__NR_timer_gettime64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .func = sys_timer_gettime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++
++#if (__NR_timer_settime64 != __LTP__NR_INVALID_SYSCALL)
++	{ .gettime = sys_clock_gettime64, .func = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
 +#endif
 +};
++
+ static void run(unsigned int n)
+ {
+-	unsigned int i;
++	struct test_variants *tv = &variants[tst_variant];
+ 	struct testcase *tc = &tcases[n];
++	long long val;
++	unsigned int i;
  
--int main(int ac, char **av)
--{
--	int lc;
-+static kernel_timer_t timer;
+ 	tst_res(TINFO, "Testing for %s:", tc->description);
  
+@@ -78,21 +100,24 @@ static void run(unsigned int n)
+ 		memset(&new_set, 0, sizeof(new_set));
+ 		memset(&old_set, 0, sizeof(old_set));
+ 
+-		new_set.it_value.tv_sec = tc->it_value_tv_sec;
+-		new_set.it_interval.tv_sec = tc->it_interval_tv_sec;
++		new_set.type = old_set.type = tv->type;
++
++		val = tc->it_value_tv_sec;
+ 
+ 		if (tc->flag & TIMER_ABSTIME) {
+-			if (clock_gettime(clock, &timenow) < 0) {
++			timenow.type = tv->type;
++			if (tv->gettime(clock, tst_ts_get(&timenow)) < 0) {
+ 				tst_res(TFAIL,
+ 					"clock_gettime(%s) failed - skipping the test",
+ 					get_clock_str(clock));
+ 				continue;
+ 			}
+-			new_set.it_value.tv_sec += timenow.tv_sec;
++			val += tst_ts_get_sec(timenow);
+ 		}
+ 
+-		TEST(tst_syscall(__NR_timer_settime, timer,
+-			tc->flag, &new_set, tc->old_ptr));
++		tst_its_set_time(&new_set, val, 0, tc->it_interval_tv_sec, 0);
++
++		TEST(tv->func(timer, tc->flag, tst_its_get(&new_set), tst_its_get(tc->old_ptr)));
+ 
+ 		if (TST_RET != 0) {
+ 			tst_res(TFAIL | TTERRNO, "%s failed",
+@@ -116,6 +141,7 @@ static void sighandler(int sig)
+ 
+ static void setup(void)
+ {
++	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
+ 	SAFE_SIGNAL(SIGALRM, sighandler);
+ }
+ 
+@@ -123,6 +149,7 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.needs_root = 1,
+ 	.tcnt = ARRAY_SIZE(tcases),
++	.test_variants = ARRAY_SIZE(variants),
+ 	.setup = setup,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "f18ddc13af98"},
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime02.c b/testcases/kernel/syscalls/timer_settime/timer_settime02.c
+index bcabb76956f8..9ca62e15b690 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime02.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime02.c
+@@ -25,10 +25,12 @@
+ 
+ #include <errno.h>
+ #include <time.h>
+-#include "tst_test.h"
+-#include "lapi/common_timers.h"
++#include "tst_timer.h"
++#include "lapi/abisize.h"
+ 
+-static struct itimerspec new_set, old_set;
++static struct tst_its new_set, old_set;
++static struct tst_its *pnew_set = &new_set, *pold_set = &old_set, *null_set = NULL;
++static void *faulty_set;
+ static kernel_timer_t timer;
+ static kernel_timer_t timer_inval = -1;
+ 
+@@ -44,23 +46,50 @@ static const char * const descriptions[] = {
+ 
+ static struct testcase {
+ 	kernel_timer_t		*timer_id;
+-	struct itimerspec	*new_ptr;
+-	struct itimerspec	*old_ptr;
++	struct tst_its		**new_ptr;
++	struct tst_its		**old_ptr;
+ 	int			it_value_tv_nsec;
+ 	int			error;
+ } tcases[] = {
+-	{&timer, NULL, &old_set, 0, EINVAL},
+-	{&timer, &new_set, &old_set, -1, EINVAL},
+-	{&timer, &new_set, &old_set, NSEC_PER_SEC + 1, EINVAL},
+-	{&timer_inval, &new_set, &old_set, 0, EINVAL},
+-	{&timer, (struct itimerspec *) -1, &old_set, 0, EFAULT},
+-	{&timer, &new_set, (struct itimerspec *) -1, 0, EFAULT},
++	{&timer, &null_set, &pold_set, 0, EINVAL},
++	{&timer, &pnew_set, &pold_set, -1, EINVAL},
++	{&timer, &pnew_set, &pold_set, NSEC_PER_SEC + 1, EINVAL},
++	{&timer_inval, &pnew_set, &pold_set, 0, EINVAL},
++	{&timer, (struct tst_its **)&faulty_set, &pold_set, 0, EFAULT},
++	{&timer, &pnew_set, (struct tst_its **)&faulty_set, 0, EFAULT},
+ };
+ 
++static struct test_variants {
++	int (*func)(kernel_timer_t timerid, int flags, void *its,
++		    void *old_its);
++	enum tst_ts_type type;
++	char *desc;
++} variants[] = {
++#if defined(TST_ABI32)
++	{ .func = sys_timer_settime, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++#endif
++
++#if defined(TST_ABI64)
++	{ .func = sys_timer_settime, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++#endif
++
++#if (__NR_timer_settime64 != __LTP__NR_INVALID_SYSCALL)
++	{ .func = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#endif
++};
++
 +static void setup(void)
 +{
- 	struct sigevent ev;
--	struct itimerspec spec;
--	int timer;
- 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
 +	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 
- 	ev.sigev_value = (union sigval) 0;
- 	ev.sigev_signo = SIGALRM;
- 	ev.sigev_notify = SIGEV_SIGNAL;
--	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
--
--	if (TEST_RETURN != 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "Failed to create timer");
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--
--		TEST(ltp_syscall(__NR_timer_gettime, timer, &spec));
--		if (TEST_RETURN == 0) {
--			tst_resm(TPASS, "timer_gettime(CLOCK_REALTIME) Passed");
--		} else {
--			tst_resm(TFAIL | TERRNO,
--			         "timer_gettime(CLOCK_REALTIME) Failed");
--		}
--
--		TEST(ltp_syscall(__NR_timer_gettime, -1, &spec));
--		if (TEST_RETURN == -1 && TEST_ERRNO == EINVAL) {
--			tst_resm(TPASS,	"timer_gettime(-1) Failed: EINVAL");
--		} else {
--			tst_resm(TFAIL | TERRNO,
--			         "timer_gettime(-1) = %li", TEST_RETURN);
--		}
--
--		TEST(ltp_syscall(__NR_timer_gettime, timer, NULL));
--		if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT) {
--			tst_resm(TPASS,	"timer_gettime(NULL) Failed: EFAULT");
--		} else {
--			tst_resm(TFAIL | TERRNO,
--			         "timer_gettime(-1) = %li", TEST_RETURN);
--		}
-+
-+	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
-+
-+	if (TST_RET) {
-+		tst_res(TFAIL | TTERRNO, "timer_create() failed");
-+		return;
-+	}
++	faulty_set = tst_get_bad_addr(NULL);
 +}
 +
-+static void verify(void)
-+{
+ static void run(unsigned int n)
+ {
+-	unsigned int i;
 +	struct test_variants *tv = &variants[tst_variant];
-+	struct tst_its spec = {.type = tv->type, };
-+
-+	TEST(tv->func(timer, tst_its_get(&spec)));
-+	if (TST_RET == 0) {
-+		tst_res(TPASS, "timer_gettime() Passed");
-+	} else {
-+		tst_res(TFAIL | TTERRNO, "timer_gettime() Failed");
- 	}
+ 	struct testcase *tc = &tcases[n];
++	void *new, *old;
++	unsigned int i;
  
--	cleanup();
--	tst_exit();
-+	TEST(tv->func((kernel_timer_t)-1, tst_its_get(&spec)));
-+	if (TST_RET == -1 && TST_ERR == EINVAL)
-+		tst_res(TPASS, "timer_gettime(-1) Failed: EINVAL");
-+	else
-+		tst_res(TFAIL | TTERRNO, "timer_gettime(-1) = %li", TST_RET);
+ 	tst_res(TINFO, "Testing for %s:", descriptions[n]);
+ 
+@@ -91,11 +120,13 @@ static void run(unsigned int n)
+ 		memset(&new_set, 0, sizeof(new_set));
+ 		memset(&old_set, 0, sizeof(old_set));
+ 
+-		new_set.it_value.tv_sec  = 5;
+-		new_set.it_value.tv_nsec = tc->it_value_tv_nsec;
++		new_set.type = old_set.type = tv->type;
++		tst_its_set_time(&new_set, 5, tc->it_value_tv_nsec, 0, 0);
 +
-+	TEST(tv->func(timer, NULL));
-+	if (TST_RET == -1 && TST_ERR == EFAULT)
-+		tst_res(TPASS, "timer_gettime(NULL) Failed: EFAULT");
-+	else
-+		tst_res(TFAIL | TTERRNO, "timer_gettime(-1) = %li", TST_RET);
- }
-+
-+static struct tst_test test = {
-+	.test_all = verify,
++		new = (tc->new_ptr == (struct tst_its **)&faulty_set) ? faulty_set : tst_its_get(*tc->new_ptr);
++		old = (tc->old_ptr == (struct tst_its **)&faulty_set) ? faulty_set : tst_its_get(*tc->old_ptr);
+ 
+-		TEST(tst_syscall(__NR_timer_settime, *tc->timer_id,
+-					0, tc->new_ptr,	tc->old_ptr));
++		TEST(tv->func(*tc->timer_id, 0, new, old));
+ 
+ 		if (tc->error != TST_ERR) {
+ 			tst_res(TFAIL | TTERRNO,
+@@ -119,6 +150,8 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.needs_root = 1,
+ 	.tcnt = ARRAY_SIZE(tcases),
 +	.test_variants = ARRAY_SIZE(variants),
 +	.setup = setup,
-+	.needs_tmpdir = 1,
-+};
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "f18ddc13af98"},
+ 		{}
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
