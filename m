@@ -1,53 +1,31 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 8 May 2020 15:40:11 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl_loop01: Add linux git tag
-In-Reply-To: <1588916828-4228-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1588916828-4228-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5EB50CDB.5060909@cn.fujitsu.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 8 May 2020 10:30:36 +0200
+Subject: [LTP] [PATCH V2 01/17] syscalls/timer_gettime: Add support for
+ time64 tests
+In-Reply-To: <d115c3ad61a422e5cadd3617c554c91a242defad.1588911607.git.viresh.kumar@linaro.org>
+References: <cover.1588911607.git.viresh.kumar@linaro.org>
+ <d115c3ad61a422e5cadd3617c554c91a242defad.1588911607.git.viresh.kumar@linaro.org>
+Message-ID: <CAK8P3a0_MAOyEXjdGJ0YAwKwn-j9Y+3apfM1W4SUnwVQRBC2MA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+On Fri, May 8, 2020 at 6:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-The commit actually fixes the failure of ioctl_loop01 so I will apply it 
-shortly.
-Acked-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#if defined(TST_ABI32)
+> +       { .func = sys_timer_gettime, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
+> +#endif
 
-Thanks,
-Xiao Yang
-On 2020/5/8 13:47, Yang Xu wrote:
-> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> ---
->   testcases/kernel/syscalls/ioctl/ioctl_loop01.c | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> index faef22e47..2d9733f95 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-> @@ -12,6 +12,9 @@
->    * For LO_FLAGS_PARTSCAN flag, it is the same as LO_FLAGS_AUTOCLEAR flag.
->    * But we also check whether we can scan partition table correctly ie check
->    * whether /dev/loopnp1 and /sys/bloclk/loop0/loop0p1 existed.
-> + *
-> + * It is also a regression test for kernel
-> + * commit 10c70d95c0f2 ("block: remove the bd_openers checks in blk_drop_partitions").
->    */
->
->   #include<stdio.h>
-> @@ -137,5 +140,9 @@ static struct tst_test test = {
->   		"loop",
->   		NULL
->   	},
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "10c70d95c0f2"},
-> +		{}
-> +	},
->   	.needs_tmpdir = 1,
->   };
+> +#if defined(TST_ABI64)
+> +       { .func = sys_timer_gettime, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
+> +#endif
 
+I think these are both invalid: timer_gettime() does not take a libc timespec or
+a __kernel_timespec but takes a __kernel_old_timespec. You should only
+use the libc data structure with the libc timer_gettime, and the
+__kernel_timespec
+with the kernel's timer_gettime64().
 
-
+        Arnd
