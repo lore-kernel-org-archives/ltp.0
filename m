@@ -1,306 +1,590 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri,  8 May 2020 09:53:54 +0530
-Subject: [LTP] [PATCH V2 09/17] syscalls/rt_sigtimedwait: Add support for
- time64 tests
+Date: Fri,  8 May 2020 09:53:55 +0530
+Subject: [LTP] [PATCH V2 10/17] syscalls/mq_timed{send|receive}: Add support
+ for time64 tests
 In-Reply-To: <cover.1588911607.git.viresh.kumar@linaro.org>
 References: <cover.1588911607.git.viresh.kumar@linaro.org>
-Message-ID: <ad1976850359a87242aedf7c62a67fcbf808ca27.1588911607.git.viresh.kumar@linaro.org>
+Message-ID: <16d390a25afe9120517e2d9bbf5b8f96a4a3d200.1588911607.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing rt_sigtimedwait()
-syscall tests.
+This adds support for time64 tests to the existing
+mq_timed{send|receive}() syscall tests.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- .../syscalls/sigwaitinfo/sigwaitinfo01.c      | 118 +++++++++++++-----
- 1 file changed, 86 insertions(+), 32 deletions(-)
+ include/tst_timer.h                           |  41 +++++++
+ .../mq_timedreceive/mq_timedreceive01.c       |  97 ++++++++++++-----
+ .../syscalls/mq_timedsend/mq_timedsend01.c    | 101 ++++++++++++------
+ testcases/kernel/syscalls/utils/mq_timed.h    |  42 +++-----
+ 4 files changed, 192 insertions(+), 89 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-index 1b976a271d28..60d0a2b7cf04 100644
---- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-+++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -2,11 +2,13 @@
- /* Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009 */
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index b4280042c77f..28f11c7376b4 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -14,6 +14,7 @@
  
+ #include <sched.h>
+ #include <sys/time.h>
++#include <mqueue.h>
+ #include <time.h>
  #include "tst_test.h"
-+#include "tst_timer.h"
- #include <errno.h>
- #include <stdlib.h>
- #include <signal.h>
- #include <limits.h>
- #include "lapi/syscalls.h"
-+#include "lapi/abisize.h"
- #include "tst_sig_proc.h"
- 
- #define SUCCEED_OR_DIE(syscall, message, ...)				 \
-@@ -54,12 +56,12 @@ static void empty_handler(int sig)
+ #include "lapi/common_timers.h"
+@@ -255,6 +256,46 @@ static inline int sys_futex_time64(int *uaddr, int futex_op, int val, void *to,
+ 	return tst_syscall(__NR_futex_time64, uaddr, futex_op, val, to, uaddr2, val3);
  }
  
- typedef int (*swi_func) (const sigset_t * set, siginfo_t * info,
--			 struct timespec * timeout);
--typedef void (*test_func) (swi_func, int);
-+			 void * timeout);
-+typedef void (*test_func) (swi_func, int, enum tst_ts_type type);
- 
- #ifdef TEST_SIGWAIT
- static int my_sigwait(const sigset_t * set, siginfo_t * info,
--		      struct timespec *timeout)
-+		      void *timeout)
- {
- 	int ret;
- 	int err = sigwait(set, &ret);
-@@ -73,7 +75,7 @@ static int my_sigwait(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_SIGWAITINFO
- static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
--			  struct timespec *timeout)
-+			  void *timeout)
- {
- 	return sigwaitinfo(set, info);
- }
-@@ -81,7 +83,7 @@ static int my_sigwaitinfo(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_SIGTIMEDWAIT
- static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
--			   struct timespec *timeout)
-+			   void *timeout)
- {
- 	return sigtimedwait(set, info, timeout);
- }
-@@ -89,14 +91,23 @@ static int my_sigtimedwait(const sigset_t * set, siginfo_t * info,
- 
- #ifdef TEST_RT_SIGTIMEDWAIT
- static int my_rt_sigtimedwait(const sigset_t * set, siginfo_t * info,
--			      struct timespec *timeout)
-+			      void *timeout)
- {
- 	/* _NSIG is always the right number of bits of signal map for all arches */
- 	return tst_syscall(__NR_rt_sigtimedwait, set, info, timeout, _NSIG/8);
- }
-+
-+#if (__NR_rt_sigtimedwait_time64 != __LTP__NR_INVALID_SYSCALL)
-+static int my_rt_sigtimedwait_time64(const sigset_t * set, siginfo_t * info,
-+				     void *timeout)
++static inline int libc_mq_timedsend(mqd_t mqdes, const char *msg_ptr,
++		size_t msg_len, unsigned int msg_prio, void *abs_timeout)
 +{
-+	/* _NSIG is always the right number of bits of signal map for all arches */
-+	return tst_syscall(__NR_rt_sigtimedwait_time64, set, info, timeout, _NSIG/8);
++	return mq_timedsend(mqdes, msg_ptr, msg_len, msg_prio, abs_timeout);
 +}
-+#endif
- #endif
- 
--void test_empty_set(swi_func sigwaitinfo, int signo)
-+void test_empty_set(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
-@@ -113,19 +124,23 @@ void test_empty_set(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_timeout(swi_func sigwaitinfo, int signo)
-+void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
- 	pid_t child;
--	struct timespec ts = {.tv_sec = 1 };
-+	struct tst_ts ts;
 +
-+	ts.type = type;
-+	tst_ts_set_sec(&ts, 1);
-+	tst_ts_set_nsec(&ts, 0);
- 
- 	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
- 
- 	/* Run a child that will wake us up */
- 	child = create_sig_proc(signo, INT_MAX, 100000);
- 
--	TEST(sigwaitinfo(&sigs, &si, &ts));
-+	TEST(sigwaitinfo(&sigs, &si, tst_ts_get(&ts)));
- 	REPORT_SUCCESS(-1, EAGAIN);
- 
- 	SAFE_KILL(child, SIGTERM);
-@@ -135,7 +150,8 @@ void test_timeout(swi_func sigwaitinfo, int signo)
- /* Note: sigwait-ing for a signal that is not blocked is unspecified
-  * by POSIX; but works for non-ignored signals under Linux
++static inline int sys_mq_timedsend(mqd_t mqdes, const char *msg_ptr,
++		size_t msg_len, unsigned int msg_prio, void *abs_timeout)
++{
++	return tst_syscall(__NR_mq_timedsend, mqdes, msg_ptr, msg_len, msg_prio,
++			   abs_timeout);
++}
++
++static inline int sys_mq_timedsend64(mqd_t mqdes, const char *msg_ptr,
++		size_t msg_len, unsigned int msg_prio, void *abs_timeout)
++{
++	return tst_syscall(__NR_mq_timedsend_time64, mqdes, msg_ptr, msg_len,
++			   msg_prio, abs_timeout);
++}
++
++static inline ssize_t libc_mq_timedreceive(mqd_t mqdes, char *msg_ptr,
++		size_t msg_len, unsigned int *msg_prio, void *abs_timeout)
++{
++	return mq_timedreceive(mqdes, msg_ptr, msg_len, msg_prio, abs_timeout);
++}
++
++static inline ssize_t sys_mq_timedreceive(mqd_t mqdes, char *msg_ptr,
++		size_t msg_len, unsigned int *msg_prio, void *abs_timeout)
++{
++	return tst_syscall(__NR_mq_timedreceive, mqdes, msg_ptr, msg_len,
++			   msg_prio, abs_timeout);
++}
++
++static inline ssize_t sys_mq_timedreceive64(mqd_t mqdes, char *msg_ptr,
++		size_t msg_len, unsigned int *msg_prio, void *abs_timeout)
++{
++	return tst_syscall(__NR_mq_timedreceive_time64, mqdes, msg_ptr, msg_len,
++			   msg_prio, abs_timeout);
++}
++
+ static inline int libc_sched_rr_get_interval(pid_t pid, void *ts)
+ {
+ 	return sched_rr_get_interval(pid, ts);
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index 1be515ced671..f2a4c5c0f8f1 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Crackerjack Project., 2007-2008, Hitachi, Ltd
+  * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+@@ -6,29 +7,17 @@
+  * Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,
+  * Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
+  * Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
--void test_unmasked_matching(swi_func sigwaitinfo, int signo)
-+void test_unmasked_matching(swi_func sigwaitinfo, int signo,
-+			    enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	siginfo_t si;
-@@ -156,7 +172,8 @@ void test_unmasked_matching(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
  
--void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
-+void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+				   enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	pid_t child;
-@@ -173,7 +190,8 @@ void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
+ #include <errno.h>
+ #include <limits.h>
++#include "lapi/abisize.h"
  
--void test_masked_matching(swi_func sigwaitinfo, int signo)
-+void test_masked_matching(swi_func sigwaitinfo, int signo,
-+			  enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	siginfo_t si;
-@@ -211,7 +229,8 @@ void test_masked_matching(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
+ static int fd, fd_root, fd_nonblock, fd_maxint = INT_MAX - 1, fd_invalid = -1;
  
--void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
-+void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
-+			     enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	siginfo_t si;
-@@ -262,7 +281,8 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
- 			 "sigwaitinfo failed to restore the original mask");
- }
+ #include "mq_timed.h"
  
--void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
-+void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
-+				 enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	pid_t child;
-@@ -297,7 +317,7 @@ void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
+-static struct timespec ts;
++static struct tst_ts ts;
  
--void test_bad_address(swi_func sigwaitinfo, int signo)
-+void test_bad_address(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs, oldmask;
- 	pid_t child;
-@@ -326,7 +346,7 @@ void test_bad_address(swi_func sigwaitinfo, int signo)
- 	SAFE_WAIT(NULL);
- }
- 
--void test_bad_address2(swi_func sigwaitinfo, int signo)
-+void test_bad_address2(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	pid_t pid;
- 	int status;
-@@ -372,7 +392,7 @@ void test_bad_address2(swi_func sigwaitinfo, int signo)
- 	}
- }
- 
--void test_bad_address3(swi_func sigwaitinfo, int signo)
-+void test_bad_address3(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
- {
- 	sigset_t sigs;
- 	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-@@ -388,28 +408,28 @@ struct test_desc {
- } tests[] = {
- #ifdef TEST_RT_SIGTIMEDWAIT
+ static struct test_case tcase[] = {
  	{
--	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
--	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
--	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
--	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
--	test_timeout, my_rt_sigtimedwait, 0},
-+	test_empty_set, NULL, SIGUSR1}, {
-+	test_unmasked_matching, NULL, SIGUSR1}, {
-+	test_masked_matching, NULL, SIGUSR1}, {
-+	test_unmasked_matching_noinfo, NULL, SIGUSR1}, {
-+	test_masked_matching_noinfo, NULL, SIGUSR1}, {
-+	test_bad_address, NULL, SIGUSR1}, {
-+	test_bad_address2, NULL, SIGUSR1}, {
-+	test_bad_address3, NULL, SIGUSR1}, {
-+	test_timeout, NULL, 0},
- 	    /* Special cases */
- 	    /* 1: sigwaitinfo does respond to ignored signal */
+@@ -95,21 +84,27 @@ static struct test_case tcase[] = {
  	{
--	test_masked_matching, my_rt_sigtimedwait, SIGUSR2},
-+	test_masked_matching, NULL, SIGUSR2},
- 	    /* 2: An ignored signal doesn't cause sigwaitinfo to return EINTR */
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = -1, .tv_nsec = 0},
++		.tv_sec = -1,
++		.tv_nsec = 0,
++		.rq = &ts,
+ 		.ret = -1,
+ 		.err = EINVAL,
+ 	},
  	{
--	test_timeout, my_rt_sigtimedwait, SIGUSR2},
-+	test_timeout, NULL, SIGUSR2},
- 	    /* 3: The handler is not called when the signal is waited for by sigwaitinfo */
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = 0, .tv_nsec = -1},
++		.tv_sec = 0,
++		.tv_nsec = -1,
++		.rq = &ts,
+ 		.ret = -1,
+ 		.err = EINVAL,
+ 	},
  	{
--	test_masked_matching, my_rt_sigtimedwait, SIGTERM},
-+	test_masked_matching, NULL, SIGTERM},
- 	    /* 4: Simultaneous realtime signals are delivered in the order of increasing signal number */
- 	{
--	test_masked_matching_rt, my_rt_sigtimedwait, -1},
-+	test_masked_matching_rt, NULL, -1},
- #endif
- #if defined TEST_SIGWAIT
- 	{
-@@ -440,15 +460,48 @@ struct test_desc {
- #endif
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = 0, .tv_nsec = 1000000000},
++		.tv_sec = 0,
++		.tv_nsec = 1000000000,
++		.rq = &ts,
+ 		.ret = -1,
+ 		.err = EINVAL,
+ 	},
+@@ -131,8 +126,44 @@ static struct test_case tcase[] = {
+ 	},
  };
  
 +static struct test_variants {
-+	swi_func swi;
++	int (*send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
++		    unsigned int msg_prio, void *abs_timeout);
++	ssize_t (*receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
++			   unsigned int *msg_prio, void *abs_timeout);
++
++	int (*gettime)(clockid_t clk_id, void *ts);
 +	enum tst_ts_type type;
 +	char *desc;
 +} variants[] = {
-+#ifdef TEST_RT_SIGTIMEDWAIT
-+
 +#if defined(TST_ABI32)
-+	{ .swi = my_rt_sigtimedwait, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+	{ .swi = my_rt_sigtimedwait, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++	{ .gettime = libc_clock_gettime, .send = libc_mq_timedsend, .receive = libc_mq_timedreceive, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
 +#endif
 +
 +#if defined(TST_ABI64)
-+	{ .swi = my_rt_sigtimedwait, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
 +#endif
 +
-+#if (__NR_rt_sigtimedwait_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .swi = my_rt_sigtimedwait_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#if (__NR_mq_timedsend_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .gettime = sys_clock_gettime64, .send = sys_mq_timedsend64, .receive = sys_mq_timedreceive64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
 +#endif
-+
-+#else /* !TEST_RT_SIGTIMEDWAIT */
-+
-+	{ .swi = NULL, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
-+
-+#endif /* TEST_RT_SIGTIMEDWAIT */
 +};
 +
- static void run(unsigned int i)
++static void setup(void)
++{
++	struct test_variants *tv = &variants[tst_variant];
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	ts.type = tv->type;
++
++	setup_common();
++}
++
+ static void do_test(unsigned int i)
  {
 +	struct test_variants *tv = &variants[tst_variant];
- 	struct test_desc *tc = &tests[i];
-+	swi_func swi;
+ 	const struct test_case *tc = &tcase[i];
+ 	unsigned int j;
+ 	unsigned int prio;
+@@ -140,19 +171,26 @@ static void do_test(unsigned int i)
+ 	char rmsg[len];
+ 	pid_t pid = -1;
  
--	tc->tf(tc->swi, tc->signo);
-+	swi = tv->swi ? tv->swi : tc->swi;
++	tst_ts_set_sec(&ts, tc->tv_sec);
++	tst_ts_set_nsec(&ts, tc->tv_nsec);
 +
-+	tc->tf(swi, tc->signo, tv->type);
+ 	if (tc->signal)
+-		pid = set_sig(tc->rq);
++		pid = set_sig(tc->rq, tv->gettime);
+ 
+ 	if (tc->timeout)
+-		set_timeout(tc->rq);
++		set_timeout(tc->rq, tv->gettime);
+ 
+-	if (tc->send)
+-		send_msg(*tc->fd, tc->len, tc->prio);
++	if (tc->send) {
++		if (tv->send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
++			tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
++			return;
++		}
++	}
+ 
+ 	if (tc->invalid_msg)
+ 		len -= 1;
+ 
+-	TEST(mq_timedreceive(*tc->fd, rmsg, len, &prio, tc->rq));
++	TEST(tv->receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
+ 
+ 	if (pid > 0)
+ 		kill_pid(pid);
+@@ -163,22 +201,22 @@ static void do_test(unsigned int i)
+ 	if (TST_RET < 0) {
+ 		if (tc->err != TST_ERR)
+ 			tst_res(TFAIL | TTERRNO,
+-				"mq_timedreceive failed unexpectedly, expected %s",
++				"mq_timedreceive() failed unexpectedly, expected %s",
+ 				tst_strerrno(tc->err));
+ 		else
+-			tst_res(TPASS | TTERRNO, "mq_timedreceive failed expectedly");
++			tst_res(TPASS | TTERRNO, "mq_timedreceive() failed expectedly");
+ 
+ 		return;
+ 	}
+ 
+ 	if (tc->len != TST_RET) {
+-		tst_res(TFAIL, "mq_timedreceive wrong length %ld, expected %zu",
++		tst_res(TFAIL, "mq_timedreceive() wrong length %ld, expected %u",
+ 			TST_RET, tc->len);
+ 		return;
+ 	}
+ 
+ 	if (tc->prio != prio) {
+-		tst_res(TFAIL, "mq_timedreceive wrong prio %d, expected %d",
++		tst_res(TFAIL, "mq_timedreceive() wrong prio %d, expected %d",
+ 			prio, tc->prio);
+ 		return;
+ 	}
+@@ -186,20 +224,21 @@ static void do_test(unsigned int i)
+ 	for (j = 0; j < tc->len; j++) {
+ 		if (rmsg[j] != smsg[j]) {
+ 			tst_res(TFAIL,
+-				"mq_timedreceive wrong data %d in %u, expected %d",
++				"mq_timedreceive() wrong data %d in %u, expected %d",
+ 				rmsg[j], i, smsg[j]);
+ 			return;
+ 		}
+ 	}
+ 
+-	tst_res(TPASS, "mq_timedreceive returned %ld, priority %u, length: %zu",
++	tst_res(TPASS, "mq_timedreceive() returned %ld, priority %u, length: %zu",
+ 			TST_RET, prio, len);
  }
  
- static void setup(void)
- {
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
-+
- 	signal(SIGUSR1, empty_handler);
- 	signal(SIGALRM, empty_handler);
- 	signal(SIGUSR2, SIG_IGN);
-@@ -464,6 +517,7 @@ static void cleanup(void)
  static struct tst_test test = {
- 	.test= run,
- 	.tcnt = ARRAY_SIZE(tests),
+ 	.tcnt = ARRAY_SIZE(tcase),
+ 	.test = do_test,
+-	.setup = setup_common,
 +	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.cleanup = cleanup,
++	.setup = setup,
+ 	.cleanup = cleanup_common,
  	.forks_child = 1,
+ };
+diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+index 8f209d396040..292b8ab5b429 100644
+--- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
++++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Crackerjack Project., 2007-2008, Hitachi, Ltd
+  * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+@@ -6,29 +7,18 @@
+  * Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,
+  * Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
+  * Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #include <errno.h>
+ #include <limits.h>
++#include "lapi/abisize.h"
+ 
+ static int fd, fd_root, fd_nonblock, fd_maxint = INT_MAX - 1, fd_invalid = -1;
+-static struct timespec ts;
+ 
+ #include "mq_timed.h"
+ 
++static struct tst_ts ts;
++
+ static struct test_case tcase[] = {
+ 	{
+ 		.fd = &fd,
+@@ -95,7 +85,9 @@ static struct test_case tcase[] = {
+ 	{
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = -1, .tv_nsec = 0},
++		.tv_sec = -1,
++		.tv_nsec = 0,
++		.rq = &ts,
+ 		.send = 1,
+ 		.ret = -1,
+ 		.err = EINVAL,
+@@ -103,7 +95,9 @@ static struct test_case tcase[] = {
+ 	{
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = 0, .tv_nsec = -1},
++		.tv_sec = 0,
++		.tv_nsec = -1,
++		.rq = &ts,
+ 		.send = 1,
+ 		.ret = -1,
+ 		.err = EINVAL,
+@@ -111,7 +105,9 @@ static struct test_case tcase[] = {
+ 	{
+ 		.fd = &fd,
+ 		.len = 16,
+-		.rq = &(struct timespec) {.tv_sec = 0, .tv_nsec = 1000000000},
++		.tv_sec = 0,
++		.tv_nsec = 1000000000,
++		.rq = &ts,
+ 		.send = 1,
+ 		.ret = -1,
+ 		.err = EINVAL,
+@@ -136,8 +132,44 @@ static struct test_case tcase[] = {
+ 	},
+ };
+ 
++static struct test_variants {
++	int (*send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
++		    unsigned int msg_prio, void *abs_timeout);
++	ssize_t (*receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
++			   unsigned int *msg_prio, void *abs_timeout);
++
++	int (*gettime)(clockid_t clk_id, void *ts);
++	enum tst_ts_type type;
++	char *desc;
++} variants[] = {
++#if defined(TST_ABI32)
++	{ .gettime = libc_clock_gettime, .send = libc_mq_timedsend, .receive = libc_mq_timedreceive, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_LIBC_TIMESPEC, .desc = "syscall with libc spec"},
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with kernel spec32"},
++#endif
++
++#if defined(TST_ABI64)
++	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_KERN_TIMESPEC, .desc = "syscall with kernel spec64"},
++#endif
++
++#if (__NR_mq_timedsend_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .gettime = sys_clock_gettime64, .send = sys_mq_timedsend64, .receive = sys_mq_timedreceive64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec64"},
++#endif
++};
++
++static void setup(void)
++{
++	struct test_variants *tv = &variants[tst_variant];
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	ts.type = tv->type;
++
++	setup_common();
++}
++
+ static void do_test(unsigned int i)
+ {
++	struct test_variants *tv = &variants[tst_variant];
+ 	const struct test_case *tc = &tcase[i];
+ 	unsigned int j;
+ 	unsigned int prio;
+@@ -145,18 +177,24 @@ static void do_test(unsigned int i)
+ 	char rmsg[len];
+ 	pid_t pid = -1;
+ 
++	tst_ts_set_sec(&ts, tc->tv_sec);
++	tst_ts_set_nsec(&ts, tc->tv_nsec);
++
+ 	if (tc->signal)
+-		pid = set_sig(tc->rq);
++		pid = set_sig(tc->rq, tv->gettime);
+ 
+ 	if (tc->timeout)
+-		set_timeout(tc->rq);
++		set_timeout(tc->rq, tv->gettime);
+ 
+ 	if (tc->send) {
+ 		for (j = 0; j < MSG_LENGTH; j++)
+-			send_msg(*tc->fd, tc->len, tc->prio);
++			if (tv->send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
++				tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
++				return;
++			}
+ 	}
+ 
+-	TEST(mq_timedsend(*tc->fd, smsg, tc->len, tc->prio, tc->rq));
++	TEST(tv->send(*tc->fd, smsg, tc->len, tc->prio, tst_ts_get(tc->rq)));
+ 
+ 	if (pid > 0)
+ 		kill_pid(pid);
+@@ -164,10 +202,10 @@ static void do_test(unsigned int i)
+ 	if (TST_RET < 0) {
+ 		if (tc->err != TST_ERR)
+ 			tst_res(TFAIL | TTERRNO,
+-				"mq_timedsend failed unexpectedly, expected %s",
++				"mq_timedsend() failed unexpectedly, expected %s",
+ 				tst_strerrno(tc->err));
+ 		else
+-			tst_res(TPASS | TTERRNO, "mq_timedreceive failed expectedly");
++			tst_res(TPASS | TTERRNO, "mq_timedreceive() failed expectedly");
+ 
+ 		if (*tc->fd == fd)
+ 			cleanup_queue(fd);
+@@ -175,7 +213,7 @@ static void do_test(unsigned int i)
+ 		return;
+ 	}
+ 
+-	TEST(mq_timedreceive(*tc->fd, rmsg, len, &prio, tc->rq));
++	TEST(tv->receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
+ 
+ 	if (*tc->fd == fd)
+ 		cleanup_queue(fd);
+@@ -183,26 +221,26 @@ static void do_test(unsigned int i)
+ 	if (TST_RET < 0) {
+ 		if (tc->err != TST_ERR) {
+ 			tst_res(TFAIL | TTERRNO,
+-				"mq_timedreceive failed unexpectedly, expected %s",
++				"mq_timedreceive() failed unexpectedly, expected %s",
+ 				tst_strerrno(tc->err));
+ 			return;
+ 		}
+ 
+ 		if (tc->ret >= 0) {
+-			tst_res(TFAIL | TTERRNO, "mq_timedreceive returned %ld, expected %d",
++			tst_res(TFAIL | TTERRNO, "mq_timedreceive() returned %ld, expected %d",
+ 					TST_RET, tc->ret);
+ 			return;
+ 		}
+ 	}
+ 
+ 	if (tc->len != TST_RET) {
+-		tst_res(TFAIL, "mq_timedreceive wrong length %ld, expected %d",
++		tst_res(TFAIL, "mq_timedreceive() wrong length %ld, expected %u",
+ 			TST_RET, tc->len);
+ 		return;
+ 	}
+ 
+ 	if (tc->prio != prio) {
+-		tst_res(TFAIL, "mq_timedreceive wrong prio %d, expected %d",
++		tst_res(TFAIL, "mq_timedreceive() wrong prio %d, expected %d",
+ 			prio, tc->prio);
+ 		return;
+ 	}
+@@ -210,20 +248,21 @@ static void do_test(unsigned int i)
+ 	for (j = 0; j < tc->len; j++) {
+ 		if (rmsg[j] != smsg[j]) {
+ 			tst_res(TFAIL,
+-				"mq_timedreceive wrong data %d in %u, expected %d",
++				"mq_timedreceive() wrong data %d in %u, expected %d",
+ 				rmsg[j], i, smsg[j]);
+ 			return;
+ 		}
+ 	}
+ 
+-	tst_res(TPASS, "mq_timedreceive returned %ld, priority %u, length: %zu",
++	tst_res(TPASS, "mq_timedreceive() returned %ld, priority %u, length: %zu",
+ 			TST_RET, prio, len);
+ }
+ 
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcase),
+ 	.test = do_test,
+-	.setup = setup_common,
++	.test_variants = ARRAY_SIZE(variants),
++	.setup = setup,
+ 	.cleanup = cleanup_common,
+ 	.forks_child = 1,
+ };
+diff --git a/testcases/kernel/syscalls/utils/mq_timed.h b/testcases/kernel/syscalls/utils/mq_timed.h
+index a163ddcee3af..1d5515f9d629 100644
+--- a/testcases/kernel/syscalls/utils/mq_timed.h
++++ b/testcases/kernel/syscalls/utils/mq_timed.h
+@@ -1,30 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #ifndef MQ_TIMED_H
+ #define MQ_TIMED_H
+ 
+ #include "mq.h"
++#include "tst_timer.h"
+ 
+ struct test_case {
+ 	int *fd;
+ 	unsigned int len;
+ 	unsigned int prio;
+-	struct timespec *rq;
++	struct tst_ts *rq;
++	long tv_sec;
++	long tv_nsec;
+ 	int invalid_msg;
+ 	int send;
+ 	int signal;
+@@ -33,27 +24,20 @@ struct test_case {
+ 	int err;
+ };
+ 
+-static pid_t set_sig(struct timespec *ts)
++static pid_t set_sig(struct tst_ts *ts,
++		     int (*gettime)(clockid_t clk_id, void *ts))
+ {
+-	clock_gettime(CLOCK_REALTIME, ts);
+-	ts->tv_sec += 3;
++	gettime(CLOCK_REALTIME, tst_ts_get(ts));
++	*ts = tst_ts_add_us(*ts, 3000000);
+ 
+ 	return create_sig_proc(SIGINT, 40, 200000);
+ }
+ 
+-static void set_timeout(struct timespec *ts)
++static void set_timeout(struct tst_ts *ts,
++			int (*gettime)(clockid_t clk_id, void *ts))
+ {
+-	clock_gettime(CLOCK_REALTIME, ts);
+-	ts->tv_nsec += 50000000;
+-	ts->tv_sec += ts->tv_nsec / 1000000000;
+-	ts->tv_nsec %= 1000000000;
+-}
+-
+-static void send_msg(int fd, int len, int prio)
+-{
+-	if (mq_timedsend(fd, smsg, len, prio,
+-		&((struct timespec){0})) < 0)
+-		tst_brk(TBROK | TERRNO, "mq_timedsend failed");
++	gettime(CLOCK_REALTIME, tst_ts_get(ts));
++	*ts = tst_ts_add_us(*ts, 50000);
+ }
+ 
+ static void kill_pid(pid_t pid)
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
