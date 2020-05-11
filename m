@@ -1,11 +1,18 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 11 May 2020 11:33:24 +0200
-Subject: [LTP] [PATCH V2 16/17] syscalls/utimensat: Migrate to new test
- framework
-In-Reply-To: <e03c9d77116e9f7f2b6a179644aab18bd9ece9e1.1588911607.git.viresh.kumar@linaro.org>
-References: <cover.1588911607.git.viresh.kumar@linaro.org>
- <e03c9d77116e9f7f2b6a179644aab18bd9ece9e1.1588911607.git.viresh.kumar@linaro.org>
-Message-ID: <20200511093324.GC3070@yuki.lan>
+Date: Mon, 11 May 2020 11:37:30 +0200
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <CAF12kFuJ=bC2ByRN7ihk=CZnA48zVW9KeAoDJO3+VcOJ13C=ug@mail.gmail.com>
+References: <CAF12kFs6H1FgU_77MAMhrn1pK15fp1cx+9wox4k9LN5GxCN=nA@mail.gmail.com>
+ <20200401131220.GA3627@yuki.lan>
+ <CAF12kFsFsG6Jk0citiGmicq+dyB90i_cG_bcDAMhHiyVPafRdA@mail.gmail.com>
+ <20200402093127.GA28452@yuki.lan>
+ <CAF12kFvDv8ksxMLDyniwQ=hty6J4Oy5-wvErX=DLrfWmhiwT0w@mail.gmail.com>
+ <20200402112309.GA5732@yuki.lan>
+ <CAF12kFsCfb12Yi=rhAqKSLPUBLkaWPs_-JCQOcucvyu=whYFsw@mail.gmail.com>
+ <CAF12kFvV=a5HJgDOAOGgdr2CMJhtVsYJ199T=SM1kyQSp-Js=w@mail.gmail.com>
+ <20200408141853.GB10178@yuki.lan>
+ <CAF12kFuJ=bC2ByRN7ihk=CZnA48zVW9KeAoDJO3+VcOJ13C=ug@mail.gmail.com>
+Message-ID: <20200511093730.GD3070@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,12 +20,26 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +	if (tc->rattr != NULL)
-> +		run_command("chattr", tc->rattr, tc->pathname);
+> I had study the ltp execution framework and found that the LTP
+> detection device is
+> not suitable for device driver test at present.
+> Like the UART test, I want have a auto-detect way to find the device
+> needed to test
+>  in the current running LtP machines.
+> Now I have test the uart case in several sprdtream Soc
+> these board  have different /dev/tty* device???and I nedd run in CI
+> manual export device puzzled me to do the auto-test-job.
+> moreover I wil  porting other device driver testcases in the future.
+> So can We expand the LTP detection ?
 
-Can we please use the FS_IOC_GETFLAGS and FS_IOC_SETFLAGS instead?
+Sorry I haven't managed to work on this before it was time for LTP
+release. I will resume my work on this once LTP is released.
 
-Have a look at fallocate06.c function toggle_cow()
+My generall idea is that the LTP framework will get a path to a
+directory with scripts that would be evaluated at test runtime and will
+return list of devices to test. These scripts will have to be supplied
+by the user as managing lab hardware is out of scope of the LTP
+framework.
 
 -- 
 Cyril Hrubis
