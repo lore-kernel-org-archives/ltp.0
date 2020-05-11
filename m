@@ -1,36 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 11 May 2020 10:33:34 +0200
-Subject: [LTP] [PATCH 2/2] lib/cloner.c: Use __clone instead of clone
- for s390
-In-Reply-To: <475724112.11805789.1588947614752.JavaMail.zimbra@redhat.com>
-References: <cover.1588942426.git.agordeev@linux.ibm.com>
- <8f28b9797be3408c0c1086d0a2bc9c052b55bfe2.1588942426.git.agordeev@linux.ibm.com>
- <475724112.11805789.1588947614752.JavaMail.zimbra@redhat.com>
-Message-ID: <20200511083334.GA23004@dell5510>
+From: Cixi Geng <gengcixi@gmail.com>
+Date: Mon, 11 May 2020 17:12:43 +0800
+Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+In-Reply-To: <20200408141853.GB10178@yuki.lan>
+References: <20200330152122.GA2699@yuki.lan> <20200331180816.GE2900@yuki.lan>
+ <CAF12kFs6H1FgU_77MAMhrn1pK15fp1cx+9wox4k9LN5GxCN=nA@mail.gmail.com>
+ <20200401131220.GA3627@yuki.lan>
+ <CAF12kFsFsG6Jk0citiGmicq+dyB90i_cG_bcDAMhHiyVPafRdA@mail.gmail.com>
+ <20200402093127.GA28452@yuki.lan>
+ <CAF12kFvDv8ksxMLDyniwQ=hty6J4Oy5-wvErX=DLrfWmhiwT0w@mail.gmail.com>
+ <20200402112309.GA5732@yuki.lan>
+ <CAF12kFsCfb12Yi=rhAqKSLPUBLkaWPs_-JCQOcucvyu=whYFsw@mail.gmail.com>
+ <CAF12kFvV=a5HJgDOAOGgdr2CMJhtVsYJ199T=SM1kyQSp-Js=w@mail.gmail.com>
+ <20200408141853.GB10178@yuki.lan>
+Message-ID: <CAF12kFuJ=bC2ByRN7ihk=CZnA48zVW9KeAoDJO3+VcOJ13C=ug@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> I had a time off and was planting plants in my garden, I will get back
+> to the uart ASAP, but then we have a public holiday on Friday and Monday
+> so I may not manage to do much until next week.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
 
-> ----- Original Message -----
-> > The kernel sys_clone and s390 glibc entry __clone assume
-> > the flags parameter type as unsigned long. However, the
-> > glibc clone wrapper used by ltp_clone helper defines flags
-> > as signed int. That leads to gcc extending CLONE_IO flag of
-> > 0x80000000 value to 0xffffffff80000000.
-
-> Same problem exists on ppc64le. There's a patch proposed to fix this on
-> kernel side:
->   https://lore.kernel.org/lkml/20200507103214.77218-1-christian.brauner@ubuntu.com/
-
-> Earlier discussion is here:
->   https://sourceware.org/pipermail/libc-alpha/2020-May/113596.html
-
-OK instead of merging whole patchset we should add git commit hash once this fix is
-merged (although no reply since v2 post).
-
-Kind regards,
-Petr
+Hi Cyril:
+I had study the ltp execution framework and found that the LTP
+detection device is
+not suitable for device driver test at present.
+Like the UART test, I want have a auto-detect way to find the device
+needed to test
+ in the current running LtP machines.
+Now I have test the uart case in several sprdtream Soc
+these board  have different /dev/tty* device?and I nedd run in CI
+manual export device puzzled me to do the auto-test-job.
+moreover I wil  porting other device driver testcases in the future.
+So can We expand the LTP detection ?
