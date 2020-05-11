@@ -1,30 +1,69 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 11 May 2020 16:53:54 +0530
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 11 May 2020 20:29:42 +0800
 Subject: [LTP] [PATCH V2 15/17] syscalls/semtimedop: Add support for
  semtimedop and its time64 version
-In-Reply-To: <CAK8P3a3VrcpdmGZB_VOLk17uDMxAfYyfM57yUUUSuqEdKvROOQ@mail.gmail.com>
+In-Reply-To: <20200511104306.x4sit6vy2a4bmcgc@vireshk-i7>
 References: <cover.1588911607.git.viresh.kumar@linaro.org>
  <8a675726b6e553e740016390c774bce19efc5a12.1588911607.git.viresh.kumar@linaro.org>
- <CAK8P3a1x+uK_WgVn9O8LVcLoZH=oJ_jQcePwcwzqpyhewApX9w@mail.gmail.com>
- <20200511064929.pa4lydt2vfryl7ve@vireshk-i7>
- <CAK8P3a2y+8kv0Wa4iiU+vGeNTudmx3aJJQ87zfi9WyfWKJ7WYg@mail.gmail.com>
- <20200511073315.gws5lhw6tsaaijpi@vireshk-i7>
- <CAK8P3a3VrcpdmGZB_VOLk17uDMxAfYyfM57yUUUSuqEdKvROOQ@mail.gmail.com>
-Message-ID: <20200511112354.3u5r6vmu74knpst6@vireshk-i7>
+ <CAEemH2cX=zyULO6qZBV5fBQv74dm2yuiUeRJ8SMe7OXYWJJ_sQ@mail.gmail.com>
+ <20200511104306.x4sit6vy2a4bmcgc@vireshk-i7>
+Message-ID: <CAEemH2dps8ib=GQKd+GftKYFdefFM+9sgvJw8SWccSDcXTRHaQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11-05-20, 09:58, Arnd Bergmann wrote:
-> We should still check that five variants of it (sys_semop,
-> sys_semtimedop, sys_semtimedop64, ipc(SEMTIMEDOP) and ipc(SEMOP))
-> correctly implement the semop semantics
+On Mon, May 11, 2020 at 6:43 PM Viresh Kumar <viresh.kumar@linaro.org>
+wrote:
 
-How do you suggest I add tests for ipc() types? Should they be always
-tested? Or they should be tested only if the normal sys_* variant
-isn't implemented by the kernel/arch ?
+> On 09-05-20, 12:21, Li Wang wrote:
+> > RHEL8.2(x84_64) failed as:
+> >
+> > # ./semop05
+> > tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+> > semop05.c:147: INFO: Testing variant: semop: vDSO or syscall
+> > semop05.c:132: PASS: expected failure: EIDRM (43)
+> > semop05.c:132: PASS: expected failure: EIDRM (43)
+> > semop05.c:132: PASS: expected failure: EINTR (4)
+> > semop05.c:132: PASS: expected failure: EINTR (4)
+> > tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+> > semop05.c:147: INFO: Testing variant: semtimedop: syscall with kernel
+> spec64
+> > semop05.c:134: FAIL: unexpected failure: EAGAIN/EWOULDBLOCK (11)
+> > Test timeouted, sending SIGKILL!
+> > tst_test.c:1286: INFO: If you are running on slow machine, try exporting
+> > LTP_TIMEOUT_MUL > 1
+> > tst_test.c:1287: BROK: Test killed! (timeout?)
+> >
+> >
+> > RHEL8.2(s390x) failed as:
+> >
+> > tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+> > semop05.c:147: INFO: Testing variant: semop: vDSO or syscall
+> > semop05.c:132: PASS: expected failure: EIDRM (43)
+> > semop05.c:132: PASS: expected failure: EIDRM (43)
+> > semop05.c:132: PASS: expected failure: EINTR (4)
+> > semop05.c:132: PASS: expected failure: EINTR (4)
+> > tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+> > semop05.c:147: INFO: Testing variant: semtimedop: syscall with kernel
+> spec64
+> > semop.h:13: CONF: syscall(392) __NR_semtimedop not supported
+> > Test timeouted, sending SIGKILL!
+> > tst_test.c:1286: INFO: If you are running on slow machine, try exporting
+> > LTP_TIMEOUT_MUL > 1
+> > tst_test.c:1287: BROK: Test killed! (timeout?)
+>
+> Some part of the timeout was left uninitialized and so was causing
+> some issues. Can you please try with this delta:
+>
+
+This delta works(on x86_64) for me. But the s390x issue looks like the same
+as the futex TCONF in another email.
 
 -- 
-viresh
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200511/67b4f9ab/attachment-0001.htm>
