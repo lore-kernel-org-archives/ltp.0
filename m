@@ -1,138 +1,41 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 11 May 2020 15:55:17 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Ensure do zero offset in
- kernel always
-In-Reply-To: <207ce727-a0a4-2c2a-19f7-87aef956ffb5@cn.fujitsu.com>
-References: <1588918535-4682-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5EB51F9D.6080404@cn.fujitsu.com>
- <207ce727-a0a4-2c2a-19f7-87aef956ffb5@cn.fujitsu.com>
-Message-ID: <5EB904E5.8020109@cn.fujitsu.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 11 May 2020 09:58:48 +0200
+Subject: [LTP] [PATCH V2 15/17] syscalls/semtimedop: Add support for
+ semtimedop and its time64 version
+In-Reply-To: <20200511073315.gws5lhw6tsaaijpi@vireshk-i7>
+References: <cover.1588911607.git.viresh.kumar@linaro.org>
+ <8a675726b6e553e740016390c774bce19efc5a12.1588911607.git.viresh.kumar@linaro.org>
+ <CAK8P3a1x+uK_WgVn9O8LVcLoZH=oJ_jQcePwcwzqpyhewApX9w@mail.gmail.com>
+ <20200511064929.pa4lydt2vfryl7ve@vireshk-i7>
+ <CAK8P3a2y+8kv0Wa4iiU+vGeNTudmx3aJJQ87zfi9WyfWKJ7WYg@mail.gmail.com>
+ <20200511073315.gws5lhw6tsaaijpi@vireshk-i7>
+Message-ID: <CAK8P3a3VrcpdmGZB_VOLk17uDMxAfYyfM57yUUUSuqEdKvROOQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/5/8 17:23, Yang Xu wrote:
-> Hi Xiao
+On Mon, May 11, 2020 at 9:33 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
+> On 11-05-20, 09:20, Arnd Bergmann wrote:
+> > It looks like you are still missing a test for the libc semtimedop function with
+> > TST_LIBC_TIMESPEC, but perhaps this is in a different place?
 >
->> On 2020/5/8 14:15, Yang Xu wrote:
->>> Currently, we use return instead of zero_offset. I debug this code
->>> (early return, ext4 filesystem)as below:
->>> ---------------------------------------
->>> TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
->>> if (TST_RET == 0) {
->>>     tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded unexpectedly");
->>>          SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
->>> }
->>> return;
->>> ---------------------------------------
->>> this case will broke when using i parameter,
->>> ioctl_loop05.c:62: BROK: ioctl(3,LOOP_SET_DIRECT_IO,...) failed:
->>> EINVAL (22)
-Hi Xu,
-
-Sorry for the late reply.
-
-Without modifying code, we can also fall into this branch by running 
-ioctl_loop05 under btrfs, so could we simple the description of issue?
-
->>>
->>> It seems the last test affected this test, so I think we should use
->>> goto instead of return. Also including a typo, updata->update.
->>>
->>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
->>> ---
->>>   testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
->>> b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
->>> index 6cf701f47..a103aaa94 100644
->>> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
->>> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
->>> @@ -5,7 +5,7 @@
->>>    *
->>>    * This is a basic ioctl test about loopdevice.
->>>    *
->>> - * It is designed to test LOOP_SET_DIRECT_IO can updata a live
->>> + * It is designed to test LOOP_SET_DIRECT_IO can update a live
->> Hi Xu,
->>
->> What does the line changes?
-> just a typo, updata->update
-
-Sorry for missing the typo.
-
->>
->>>    * loop device dio mode. It needs the backing file also supports
->>>    * dio mode and the lo_offset is aligned with the logical block size.
->>>    *
->>> @@ -85,13 +85,14 @@ static void verify_ioctl_loop(void)
->>>       if (TST_RET == 0) {
->>>           tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
->>>           SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
->>> -        return;
->>> +        goto zero_offset;
->>>       }
->>>       if (TST_ERR == EINVAL)
->>>           tst_res(TPASS | TTERRNO, "LOOP_SET_DIRECT_IO failed as
->>> expected");
->>>       else
->>>           tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed
->>> expected EINVAL got");
->>>
->>> +zero_offset:
->>>       loopinfo.lo_offset = 0;
->>>       TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS,&loopinfo),
->>> TST_RETVAL_EQ0);
->>
->> You have cleared the struct loopinfo at the beginning of
->> verify_ioctl_loop(), so could we just drop loopinfo.lo_offset = 0 and
->> move 'TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS,&loopinfo),
->> TST_RETVAL_EQ0);' to the beginning?
-> Yes. IMO, at the beginning or end, they all work well.
-
-Agreed, but it seems simpler to clear resouce at the beginning of 
-verify_ioctl_loop(), like this:
------------------------------------
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c 
-b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index 6cf701f47..6c9ea2802 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-...
-@@ -57,6 +57,7 @@ static void verify_ioctl_loop(void)
-         struct loop_info loopinfo;
-
-         memset(&loopinfo, 0, sizeof(loopinfo));
-+       TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), 
-TST_RETVAL_EQ0);
-
-         tst_res(TINFO, "Without setting lo_offset or sizelimit");
-         SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 1);
-@@ -91,9 +92,6 @@ static void verify_ioctl_loop(void)
-                 tst_res(TPASS | TTERRNO, "LOOP_SET_DIRECT_IO failed as 
-expected");
-         else
-                 tst_res(TFAIL | TTERRNO, "LOOP_SET_DIRECT_IO failed 
-expected EINVAL got");
--
--       loopinfo.lo_offset = 0;
--       TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), 
-TST_RETVAL_EQ0);
------------------------------------
-
-Best Regards,
-Xiao Yang
->>
->> Thanks,
->> Xiao Yang
->>>   }
->>
-> .
+> The libc test is missing for few of the syscalls, as it was already missing for
+> them because the headers may not have the definition.
 >
+> And so I didn't add them separately.
 
+Ok, I see. This one just looked curious because the you add tests for the kernel
+syscall (semtimedop) in a file that checks an older libc syscall (semop).
 
+The libc semop is implemented in terms of the kernel's semtimedop for
+architectures that don't have their own semop by passing a NULL timeout
+argument. We should still check that five variants of it (sys_semop,
+sys_semtimedop, sys_semtimedop64, ipc(SEMTIMEDOP) and ipc(SEMOP))
+correctly implement the semop semantics, but I would also note that
+testing the differences of the time types is only meaningful when you
+actually pass a non-NULL timeout.
 
+      Arnd
