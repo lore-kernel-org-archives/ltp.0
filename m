@@ -1,42 +1,56 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 May 2020 17:17:28 +0200
-Subject: [LTP] [PATCH 1/3] [COMMITTED] lib/tst_mkfs.c: Fix fall through
- warning
-Message-ID: <20200512151730.10201-1-chrubis@suse.cz>
+Date: Tue, 12 May 2020 17:17:29 +0200
+Subject: [LTP] [PATCH 2/3] [COMMITTED] lib: Fix two sprintf() warnings.
+In-Reply-To: <20200512151730.10201-1-chrubis@suse.cz>
+References: <20200512151730.10201-1-chrubis@suse.cz>
+Message-ID: <20200512151730.10201-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_mkfs.c: In function 'tst_mkfs_':
-../include/old/test.h:139:5: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  139 |  if (tst_test) \
-      |     ^
-tst_mkfs.c:98:3: note: in expansion of macro 'tst_brkm'
-   98 |   tst_brkm(TCONF, cleanup_fn,
-      |   ^~~~~~~~
-tst_mkfs.c:100:2: note: here
-  100 |  default:
-      |  ^~~~~~~
+tst_test.c: In function 'do_setup':
+tst_test.c:69:21: warning: '%s' directive writing up to 1023 bytes into a region of size 1011 [-Wformat-overflow=]
+
+tst_kconfig.c: In function 'tst_kconfig_read':
+tst_kconfig.c:67:37: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 1018 [-Wformat-truncation=]
+
+The buffer that we print the path along with variable name has to be
+bigger than the path obviously.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- lib/tst_mkfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/tst_kconfig.c | 2 +-
+ lib/tst_test.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 3860545eb..38b2e7151 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -97,6 +97,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 	case 255:
- 		tst_brkm(TCONF, cleanup_fn,
- 			 "%s:%d: %s not found in $PATH", file, lineno, mkfs);
-+	break;
- 	default:
- 		tst_brkm(TBROK, cleanup_fn,
- 			 "%s:%d: %s failed with %i", file, lineno, mkfs, ret);
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 4b51413e5..d49187b6f 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -52,7 +52,7 @@ static char is_gzip;
+ static FILE *open_kconfig(void)
+ {
+ 	FILE *fp;
+-	char buf[1024];
++	char buf[1064];
+ 	char path_buf[1024];
+ 	const char *path = kconfig_path(path_buf, sizeof(path_buf));
+ 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 64cd3ac33..0e58060e0 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -68,7 +68,7 @@ extern unsigned int tst_max_futexes;
+ 
+ #define IPC_ENV_VAR "LTP_IPC_PATH"
+ 
+-static char ipc_path[1024];
++static char ipc_path[1064];
+ const char *tst_ipc_path = ipc_path;
+ 
+ static char shm_path[1024];
 -- 
 2.26.2
 
