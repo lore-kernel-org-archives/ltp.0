@@ -1,42 +1,40 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 12 May 2020 15:44:48 -0400 (EDT)
-Subject: [LTP] [PATCH 2/2] pty04: Retry reads when short
-In-Reply-To: <20200512154935.GA24478@dell5510>
-References: <20200512142824.13063-1-rpalethorpe@suse.com>
- <20200512142824.13063-2-rpalethorpe@suse.com>
- <20200512154935.GA24478@dell5510>
-Message-ID: <2136651671.12186381.1589312688262.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 12 May 2020 21:50:33 +0200
+Subject: [LTP] [PATCH 1/1] rpc: Warn when tests aren't compiled
+In-Reply-To: <d011a55b-a5b5-049f-9037-235d1f18cf1b@oracle.com>
+References: <20200512152701.23625-1-pvorel@suse.cz>
+ <d011a55b-a5b5-049f-9037-235d1f18cf1b@oracle.com>
+Message-ID: <20200512195033.GA3784@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Alexey,
 
------ Original Message -----
-> Hi Richard,
-> 
-> > Even though reads are blocking and packets are flipped into the netdevice
-> > buffer whole, it seems read may return before a full packet is read into
-> > user
-> > land. Retrying read should prevent timeouts and read failures on some
-> > machines.
-> 
-> > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> > Reported-by: Jan Stancek <jstancek@redhat.com>
-> > Cc: Petr Vorel <pvorel@suse.cz>
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Thanks for taking care of this.
+...
+> >  rpc_parse_args()
+> >  {
+> > +	local err="LTP compiled without TI-RPC support"
+> > +
+> >  	case "$1" in
+> > -		c) CLIENT="$OPTARG" ;;
+> > -		e) CLIENT_EXTRA_OPTS="$OPTARG" ;;
+> > -		s) SERVER="$OPTARG" ;;
+> > +	c) CLIENT="$OPTARG"; tst_cmd_available $OPTARG || tst_brk TCONF $err;;
+> > +	e) CLIENT_EXTRA_OPTS="$OPTARG";;
+> > +	s) SERVER="$OPTARG"; tst_cmd_available $OPTARG || tst_brk TCONF $err;;
+> >  	esac
 
-ACK, I'll update github issue when this runs for a while with recent upstream kernels.
+> Perhaps this one, to write about the missing command:
+> tst_require_cmds $CLIENT $SERVER
 
-> It's still possible to reproduce timeout just with higher -i (-i10),
-> but it's an improvement.
-> 
-> Kind regards,
-> Petr
-> 
-> 
+> or just $CLIENT because it's always used, and if the hint is needed:
+> tst_check_cmds $CLIENT $SERVER || tst_brk TCONF "LTP compiled without TI-RPC support?"
+I prefer to have the hint, so I'll merge this variant.
 
+Thanks for your review!
+
+Kind regards,
+Petr
