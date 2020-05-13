@@ -1,73 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 May 2020 22:14:16 +0200
-Subject: [LTP] [PATCH v2 1/1] rpc: TCONF when tests aren't compiled + remove
- kill warning
-Message-ID: <20200512201416.8299-1-pvorel@suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 13 May 2020 09:26:25 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+Message-ID: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Without this test failure was wrongly reported:
-rpc_test 1 TFAIL: tirpc_rpcb_getaddr 10.0.0.2 536875000 failed unexpectedly
+pidfd_open(2) will set close-on-exec flag on the file descriptor as it
+manpage states, so check close-on-exec flag by fcntl(2).
 
-Also make sure with variable that server has started before trying to
-kill it.
+BTW:
+I tried to pass (long) TST_RET to fcntl() but triggered the following
+compiler warning, so pass (int) pidfd instead.
+------------------------------------------------------
+In file included from pidfd_open01.c:9:
+pidfd_open01.c: In function ?run?:
+../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
+   76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+      |                                         ^~~~~~~~~
+../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
+  224 |     tst_brk(TBROK | TERRNO,                          \
+      |     ^~~~~~~
+pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
+   20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+------------------------------------------------------
 
-Kill server with SIGPIPE, should be enough and SIGKILL
-produced warning, which might be confused:
-/opt/ltp/testcases/bin/rpc_test.sh: line 61: 3827 Killed  $SERVER $PROGNUMNOSVC
-
-Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
-Hi,
+ testcases/kernel/syscalls/pidfd_open/pidfd_open01.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-with this implementation (suggested by Alexey), we get TCONF twice. It's
-a bit strange, but I'll keep it, because I like that required binary is
-printed:
-rpc_test 1 TCONF: 'tirpc_rpcb_getaddr' not found
-rpc_test 1 TCONF: LTP compiled without TI-RPC support?
-
-Also added proper detection if kill is needed (related to the change in
-the commit) and kill with SIGPIPE (unrelated change, I can add it as
-separate commit).
-
-Kind regards,
-Petr
-
- testcases/network/rpc/rpc-tirpc/rpc_test.sh | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/network/rpc/rpc-tirpc/rpc_test.sh b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-index 30cfd2564..dc97213d0 100755
---- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-+++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-@@ -54,12 +54,13 @@ setup()
- 	fi
+diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+index 93bb86687..ba1580bc7 100644
+--- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
++++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
+@@ -11,13 +11,20 @@
  
- 	[ -n "$CLIENT" ] || tst_brk TBROK "client program not set"
-+	tst_check_cmds $CLIENT $SERVER || tst_brk TCONF "LTP compiled without TI-RPC support?"
- }
- 
- cleanup()
+ static void run(void)
  {
--	if [ ! -z "$SERVER" ]; then
--		pkill -9 $SERVER > /dev/null 2>&1
-+	if [ "$SERVER_STARTED" ]; then
-+		pkill -13 -x $SERVER
- 		$CLEANER $PROGNUMNOSVC
- 	fi
+-	TEST(pidfd_open(getpid(), 0));
++	int pidfd, flag;
++
++	TEST(pidfd = pidfd_open(getpid(), 0));
+ 
+ 	if (TST_RET == -1)
+ 		tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
+ 
++	flag = SAFE_FCNTL(pidfd, F_GETFD);
++
+ 	SAFE_CLOSE(TST_RET);
+ 
++	if (!(flag & FD_CLOEXEC))
++		tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
++
+ 	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
  }
-@@ -70,6 +71,7 @@ do_test()
  
- 	if [ -n "$SERVER" ]; then
- 		$SERVER $PROGNUMNOSVC &
-+		SERVER_STARTED=1
- 
- 		for i in $(seq 1 10); do
- 			rpcinfo -p localhost | grep -q $PROGNUMNOSVC && break
 -- 
-2.26.2
+2.21.0
+
+
 
