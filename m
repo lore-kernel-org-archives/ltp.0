@@ -1,39 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 May 2020 15:04:09 +0200
-Subject: [LTP] [PATCH v3] pty04: Retry reads when short and wait longer
-In-Reply-To: <20200513123944.31411-1-rpalethorpe@suse.com>
-References: <20200513123944.31411-1-rpalethorpe@suse.com>
-Message-ID: <20200513130409.GA21234@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 13 May 2020 21:12:11 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <20200513123409.GA10803@yuki.lan>
+References: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
+ <20200513123409.GA10803@yuki.lan>
+Message-ID: <5EBBF22B.80501@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+On 2020/5/13 20:34, Cyril Hrubis wrote:
+> Hi!
+>> pidfd_open(2) will set close-on-exec flag on the file descriptor as it
+>> manpage states, so check close-on-exec flag by fcntl(2).
+>>
+>> BTW:
+>> I tried to pass (long) TST_RET to fcntl() but triggered the following
+>> compiler warning, so pass (int) pidfd instead.
+>> ------------------------------------------------------
+>> In file included from pidfd_open01.c:9:
+>> pidfd_open01.c: In function ???run???:
+>> ../../../../include/tst_test.h:76:41: warning: format ???%i??? expects argument of type ???int???, but argument 5 has type ???long int??? [-Wformat=]
+>>     76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+>>        |                                         ^~~~~~~~~
+>> ../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ???tst_brk???
+>>    224 |     tst_brk(TBROK | TERRNO,                          \
+>>        |     ^~~~~~~
+>> pidfd_open01.c:20:9: note: in expansion of macro ???SAFE_FCNTL???
+>>     20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
+>
+> You can either cast the TST_RET to int as SAFE_FCNTL((int)TST_RET, ...)
+> or if you decide to store the pidfd into an int variable there is no
+> added value in using the TEST() macro here so the code should just do
+> pidfd = pidfd_open(...) and use the pidfd instead of TST_RET.
+Hi Cyril,
 
-> Even though reads are blocking and packets are flipped into the netdevice
-> buffer whole, it seems read may return before a full packet is read into user
-> land. Retrying read should prevent timeouts and read failures on some
-> machines.
+Thanks for your reply.
+I also think it is OK to replace TEST() and TST_RET directly.
 
-> Also this increases the timeout to wait for the checkpoint to a large value
-> because sometimes the kernel stalls, possibly while trying to (re)claim
-> memory, and this causes the checkpoint wait to timeout and everything to be
-> cleaned up. If the kernel is left in a stalled state, this can result in a
-> stack trace which is more useful.
+Thanks,
+Xiao Yang
+>
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Reported-by: Jan Stancek <jstancek@redhat.com>
-> Cc: Petr Vorel <pvorel@suse.cz>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Great fix, thanks!
 
-Tested on various kernels (5.7.0-rc4, 5.6, 5.3, 4.12, 4.4, 3.16, 3.10, 2.6.32)
-on various distros and it got stack only on 2.6.32.
-
-Going to wait little longer for a feedback and then merge.
-
-Kind regards,
-Petr
