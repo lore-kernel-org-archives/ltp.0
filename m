@@ -1,17 +1,20 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 13 May 2020 13:52:47 +0530
-Subject: [LTP] LTP: fanotify09
-Message-ID: <CA+G9fYsRUp8U_gMMjFD=6zHQZOHREvq+a9kj=6VK4LD1xHpMJA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 13 May 2020 10:23:04 +0200
+Subject: [LTP] [PATCH 1/2] pty04: Remove unnecessary volatile and style
+ fix
+In-Reply-To: <20200512142824.13063-1-rpalethorpe@suse.com>
+References: <20200512142824.13063-1-rpalethorpe@suse.com>
+Message-ID: <20200513082304.GA3553@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test running fanotify09 resubmitted job
-https://lkft.validation.linaro.org/scheduler/job/1428062
-https://lkft.validation.linaro.org/scheduler/job/1428657
+Hi Richard,
 
-https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/tests/ltp-syscalls-tests/fanotify09
+Merged (with while from 2nd patch).
+Thanks!
 
-- Naresh
+Kind regards,
+Petr
