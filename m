@@ -1,47 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 May 2020 14:54:28 +0200
-Subject: [LTP] [PATCH] syscalls: Fix issues around calling syscalls with
- old timespec
-In-Reply-To: <20200513114239.roy5hqu26lm2of4l@vireshk-i7>
-References: <437d6fd3926de4c801ae0edb2379c6afafcb34d4.1589190284.git.viresh.kumar@linaro.org>
- <20200513113318.GA25472@dell5510>
- <20200513114239.roy5hqu26lm2of4l@vireshk-i7>
-Message-ID: <20200513125428.GA15868@dell5510>
+Date: Wed, 13 May 2020 15:04:09 +0200
+Subject: [LTP] [PATCH v3] pty04: Retry reads when short and wait longer
+In-Reply-To: <20200513123944.31411-1-rpalethorpe@suse.com>
+References: <20200513123944.31411-1-rpalethorpe@suse.com>
+Message-ID: <20200513130409.GA21234@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+Hi Richard,
 
-> > >  #ifndef __kernel_timex
-> > > +#if defined(__x86_64__) && defined(__ILP32__)
-> > > +typedef long long __kernel_long_t;
-> > > +#else
-> > > +typedef long __kernel_long_t;
-> > > +#endif
-> > > +
-> > > +typedef __kernel_long_t	__kernel_old_time_t;
+> Even though reads are blocking and packets are flipped into the netdevice
+> buffer whole, it seems read may return before a full packet is read into user
+> land. Retrying read should prevent timeouts and read failures on some
+> machines.
 
-> > It's caused by this fallback definition ^, which is already in
-> > include/tst_timer.h. Simple deleting it should fix the problem
+> Also this increases the timeout to wait for the checkpoint to a large value
+> because sometimes the kernel stalls, possibly while trying to (re)claim
+> memory, and this causes the checkpoint wait to timeout and everything to be
+> cleaned up. If the kernel is left in a stalled state, this can result in a
+> stack trace which is more useful.
 
-> But tst_timer.h isn't included here in clock_adjtime at all. What's
-tst_timer.h has been included in clock_adjtime.h since 5085e14c7e
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reported-by: Jan Stancek <jstancek@redhat.com>
+> Cc: Petr Vorel <pvorel@suse.cz>
 
-> special with Centos that failure is seen there only ?
-> Any idea ?
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Great fix, thanks!
 
-Not sure why it's only for old CentOS 6. Usually there is some bug in the
-headers (conflicting headers which has been fixed in newer distros) or something
-simply missing.
-And we should really drop CentOS 6 from travis CI, we agreed to discontinue gcc
-4 support (10 years old). But I wanted to drop it after the release.
+Tested on various kernels (5.7.0-rc4, 5.6, 5.3, 4.12, 4.4, 3.16, 3.10, 2.6.32)
+on various distros and it got stack only on 2.6.32.
 
-BTW typedef long long __kernel_long_t; is in <asm/posix_types_x32.h>
-which you include via <asm/posix_types.h>. But redefining typedef is not a
-problem.
+Going to wait little longer for a feedback and then merge.
 
 Kind regards,
 Petr
