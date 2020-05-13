@@ -1,53 +1,37 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 13 May 2020 12:09:22 +0530
-Subject: [LTP] [PATCH v2 2/2] syscalls/pidfd_open*.c: Drop .min_kver flag
-In-Reply-To: <5EBB944F.5010303@cn.fujitsu.com>
-References: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
- <20200513012626.1571-2-yangx.jy@cn.fujitsu.com>
- <20200513055533.ipmghf2oacc22mzy@vireshk-i7>
- <5EBB8DAA.5080509@cn.fujitsu.com>
- <20200513061343.mjhmciatmx4sw2ub@vireshk-i7>
- <5EBB944F.5010303@cn.fujitsu.com>
-Message-ID: <20200513063922.vetbmhn35cbrdydk@vireshk-i7>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 13 May 2020 15:06:53 +0800
+Subject: [LTP] [PATCH v1 1/2] tpci: remove useless ENABLE_BRIDGES
+Message-ID: <1589353614-24423-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13-05-20, 14:31, Xiao Yang wrote:
-> ? 2020/5/13 14:13, Viresh Kumar ??:
-> > On 13-05-20, 14:03, Xiao Yang wrote:
-> > > Could you tell which issue happen? Thanks a lot.
-> > > The other two don't need the extra check because the implementation of
-> > > pidfd_open() can do it well.  For 3rd test, I want to check the support of
-> > > pidfs_open() before doing fork().
-> > 
-> > What I meant was that the solution needs to be consistent across
-> Hi Viresh,
-> 
-> Current change can do correct check for pidfd_open[1-3] so don't need to add
-> redundant check.
+Since the previous commit, we have removed test_enable_bridges() because
+pci_enable_bridges() was removed in 3.12 (928bea964827). But it forgot
+to delete it in tpci.h. So remove it.
 
-How will a check from file 03.c check it for 01.c or 02.c ?
+Fixes: 3dd286b ("ltp_tpci.c: Update legacy code")
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> > tests. For example, with the current change the run() function will
-> > run for all tests in pidfd_open02.c and print the message that syscall
-> > isn't supported, while it would be better to run it only once in setup
-> > and get done with it. i.e. 1 message instead of 3 similar ones.
-> > 
-> 
-> Are you sure?
-> 
-> Triggering first tst_brk(TCONF, ...) will break the whole test instead of a
-> subtest.
-
-Ahh, yes. I missed the tst_brk part :(
-
-But I will still like it to be consistent across files. But anyway,
-whatever you and Cyril decide is fine :)
-
-Thanks.
-
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h b/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
+index f65c6fc22..f7defb29f 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
++++ b/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
+@@ -30,7 +30,6 @@ enum PCI_TCASES {
+ 	FIND_SUBSYS,
+ 	BUS_SCAN,
+ 	SLOT_SCAN,
+-	ENABLE_BRIDGES,
+ 	BUS_ADD_DEVICES,
+ 	MATCH_DEVICE,
+ 	REG_DRIVER,
 -- 
-viresh
+2.23.0
+
+
+
