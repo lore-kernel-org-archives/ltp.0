@@ -1,92 +1,89 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 13 May 2020 10:28:13 +0800
-Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_open01.c: Add check for
- close-on-exec flag
-In-Reply-To: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 13 May 2020 11:25:33 +0530
+Subject: [LTP] [PATCH v2 2/2] syscalls/pidfd_open*.c: Drop .min_kver flag
+In-Reply-To: <20200513012626.1571-2-yangx.jy@cn.fujitsu.com>
 References: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <5EBB5B3D.4020302@cn.fujitsu.com>
+ <20200513012626.1571-2-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200513055533.ipmghf2oacc22mzy@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Petr
+On 13-05-20, 09:26, Xiao Yang wrote:
+> 1) Drop .min_kver flag directly because of two following reasons:
+>    a) pidfd_open(2) may be backported to old kernel which is less
+>       than v5.3 so kernel version check is meaningless.
+>    b) tst_syscall() can report TCONF if pidfd_open(2) is not supported.
+> 2) For pidfd_open03.c, check if pidfd_open(2) is not supported before
+>    calling fork().
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-For the patch set, I and Viresh have the following doubts so do you have 
-any suggestion about them?
-1) I keep TEST() in pidfd_open01/pidfd_open03 for now but I think it is
-    surplus because pidfd/fd and TERRNO are enough to check return value
-    and errno.
-    I wonder if it is necessary to keep TEST()?
-2) tst_syscall() is enough to check the support of pidfd_open() and I
-    don't want to define check function as fsopen_supported_by_kernel()
-    does.
-    Do you think so?
+You can not apply someone's tag without them explicitly asking you to.
 
-BTW:
-I don't like the implementation of fsopen_supported_by_kernel():
-a) syscall()/tst_syscall() is enough to check the support of
-pidfd_open(2) and 'tst_kvercmp(5, 2, 0)) < 0' will skip the check if
-a kernel on distribution is newer than v5.2 but drop the support of
-pidfd_open(2) on purpose.
-b) tst_syscall() has checked ENOSYS error so we can simple
-fsopen_supported_by_kernel() by replacing syscall() with tst_syscalls().
-
-Best Regards,
-Xiao Yang
-On 2020/5/13 9:26, Xiao Yang wrote:
-> pidfd_open(2) will set close-on-exec flag on the file descriptor as it
-> manpage states, so check close-on-exec flag by fcntl(2).
->
-> BTW:
-> I tried to pass (long) TST_RET to fcntl() but triggered the following
-> compiler warning, so pass (int) pidfd instead.
-> ------------------------------------------------------
-> In file included from pidfd_open01.c:9:
-> pidfd_open01.c: In function ?run?:
-> ../../../../include/tst_test.h:76:41: warning: format ?%i? expects argument of type ?int?, but argument 5 has type ?long int? [-Wformat=]
->     76 |   tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
->        |                                         ^~~~~~~~~
-> ../../../../include/tst_safe_macros.h:224:5: note: in expansion of macro ?tst_brk?
->    224 |     tst_brk(TBROK | TERRNO,                          \
->        |     ^~~~~~~
-> pidfd_open01.c:20:9: note: in expansion of macro ?SAFE_FCNTL?
->     20 |  flag = SAFE_FCNTL(TST_RET, F_GETFD);
-> ------------------------------------------------------
->
-> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> Reviewed-by: Viresh Kumar<viresh.kumar@linaro.org>
 > ---
->   testcases/kernel/syscalls/pidfd_open/pidfd_open01.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
->
+>  testcases/kernel/syscalls/pidfd_open/pidfd_open01.c |  1 -
+>  testcases/kernel/syscalls/pidfd_open/pidfd_open02.c |  1 -
+>  testcases/kernel/syscalls/pidfd_open/pidfd_open03.c | 12 +++++++++++-
+>  3 files changed, 11 insertions(+), 3 deletions(-)
+> 
 > diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> index 93bb86687..ba1580bc7 100644
+> index ba1580bc7..6f5114f68 100644
 > --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
 > +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open01.c
-> @@ -11,13 +11,20 @@
->
->   static void run(void)
->   {
-> -	TEST(pidfd_open(getpid(), 0));
-> +	int pidfd, flag;
+> @@ -29,6 +29,5 @@ static void run(void)
+>  }
+>  
+>  static struct tst_test test = {
+> -	.min_kver = "5.3",
+>  	.test_all = run,
+>  };
+> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
+> index dc86cae7a..a7328ddfe 100644
+> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
+> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open02.c
+> @@ -51,7 +51,6 @@ static void run(unsigned int n)
+>  }
+>  
+>  static struct tst_test test = {
+> -	.min_kver = "5.3",
+>  	.tcnt = ARRAY_SIZE(tcases),
+>  	.test = run,
+>  	.setup = setup,
+> diff --git a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
+> index 48470e5e1..9e27ee75e 100644
+> --- a/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
+> +++ b/testcases/kernel/syscalls/pidfd_open/pidfd_open03.c
+> @@ -49,8 +49,18 @@ static void run(void)
+>  		tst_res(TPASS, "pidfd_open() passed");
+>  }
+>  
+> +static void setup(void)
+> +{
+> +	int pidfd = -1;
 > +
-> +	TEST(pidfd = pidfd_open(getpid(), 0));
->
->   	if (TST_RET == -1)
->   		tst_brk(TFAIL | TTERRNO, "pidfd_open(getpid(), 0) failed");
->
-> +	flag = SAFE_FCNTL(pidfd, F_GETFD);
+> +	// Check if pidfd_open(2) is not supported
+> +	pidfd = tst_syscall(__NR_pidfd_open, getpid(), 0);
+> +	if (pidfd != -1)
+> +		SAFE_CLOSE(pidfd);
+> +}
 > +
->   	SAFE_CLOSE(TST_RET);
->
-> +	if (!(flag&  FD_CLOEXEC))
-> +		tst_brk(TFAIL, "pidfd_open(getpid(), 0) didn't set close-on-exec flag");
-> +
->   	tst_res(TPASS, "pidfd_open(getpid(), 0) passed");
->   }
->
 
+This only fixes the 3rd test, the other two will have an issue now.
 
+>  static struct tst_test test = {
+> -	.min_kver = "5.3",
+> +	.setup = setup,
+>  	.test_all = run,
+>  	.forks_child = 1,
+>  	.needs_checkpoints = 1,
+> -- 
+> 2.21.0
+> 
+> 
 
+-- 
+viresh
