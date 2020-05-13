@@ -1,75 +1,93 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 May 2020 12:30:32 +0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_open01.c: Add check for
- close-on-exec flag
-In-Reply-To: <5EBBCA12.5020901@cn.fujitsu.com>
-References: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
- <5EBB5B3D.4020302@cn.fujitsu.com> <20200513092028.GA4598@dell5510>
- <5EBBCA12.5020901@cn.fujitsu.com>
-Message-ID: <20200513103032.GA18763@dell5510>
+Date: Wed, 13 May 2020 13:33:18 +0200
+Subject: [LTP] [PATCH] syscalls: Fix issues around calling syscalls with
+ old timespec
+In-Reply-To: <437d6fd3926de4c801ae0edb2379c6afafcb34d4.1589190284.git.viresh.kumar@linaro.org>
+References: <437d6fd3926de4c801ae0edb2379c6afafcb34d4.1589190284.git.viresh.kumar@linaro.org>
+Message-ID: <20200513113318.GA25472@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Hi Viresh,
 
-> Thanks a lot for your quick reply.
-Thanks for a patience (we're not working just on LTP unfortunately).
+checking for __kernel_timespec, which defined in include/tst_timer.h should fix
+it, but we might need some more elegant solution (have that depende
 
-> Resetting errno may not necessary because errno will be set again when
-> fd == -1.
-Agree, I'm just careful, thus asking :).
+diff --git testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+index 42e4c699c..c246f84bb 100644
+--- testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
++++ testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+@@ -17,7 +17,7 @@
+ #include <asm/posix_types.h>
+ #include "lapi/timex.h"
+ 
+-#ifndef __kernel_timex
++#ifndef __kernel_timespec
+ #if defined(__x86_64__) && defined(__ILP32__)
+ typedef long long __kernel_long_t;
+ #else
 
-> > > 2) tst_syscall() is enough to check the support of pidfd_open() and I
-> > >     don't want to define check function as fsopen_supported_by_kernel()
-> > >     does.
-> > >     Do you think so?
+> +++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+> @@ -14,9 +14,54 @@
+>  #include <pwd.h>
+>  #include <sys/timex.h>
+>  #include <sys/types.h>
+> +#include <asm/posix_types.h>
+>  #include "lapi/timex.h"
 
-> > > BTW:
-> > > I don't like the implementation of fsopen_supported_by_kernel():
-> > > a) syscall()/tst_syscall() is enough to check the support of
-> > > pidfd_open(2) and 'tst_kvercmp(5, 2, 0))<  0' will skip the check if
-> > +1 for tst_syscall()
+Thanks! On a first look LGTM.
+Unfortunately, there is failure on Centos 6 (gcc 4):
 
-> > > a kernel on distribution is newer than v5.2 but drop the support of
-> > > pidfd_open(2) on purpose.
-> > "drop support of pidfd_open(2) on purpose": would anybody has a reason to do
-> > that?
+https://travis-ci.org/github/pevik/ltp/jobs/686519604
 
-> As my pervious mail said, It is just a possible situation? for example:
-> Upstream kernel introduces btrfs filesystem long long ago but the
-> kernel of RHEL8 drops btrfs filesystem because of some reasons.
-I guess filesystem changes are the most frequent. But as I said, I wouldn't mind 
-this implementation:
-void fsopen_supported_by_kernel(void)
-{
-	TEST(tst_syscall(__NR_fsopen, NULL, 0));
-	if (TST_RET != -1)
-		SAFE_CLOSE(TST_RET);
-}
+/usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h:24: error: redefinition of typedef '__kernel_long_t'
+/usr/src/ltp/include/tst_timer.h:99: note: previous declaration of '__kernel_long_t' was here
+/usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h:27: error: redefinition of typedef '__kernel_old_time_t'
+/usr/src/ltp/include/tst_timer.h:102: note: previous declaration of '__kernel_old_time_t' was here
+make[4]: *** [clock_adjtime01] Error 1
+make[4]: *** Waiting for unfinished jobs....
+In file included from /usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime02.c:58:
+/usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h: At top level:
+/usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h:24: error: redefinition of typedef '__kernel_long_t'
+/usr/src/ltp/include/tst_timer.h:99: note: previous declaration of '__kernel_long_t' was here
+/usr/src/ltp/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h:27: error: redefinition of typedef '__kernel_old_time_t'
+/usr/src/ltp/include/tst_timer.h:102: note: previous declaration of '__kernel_old_time_t' was here
+make[4]: *** [clock_adjtime02] Error 1
+make[4]: Leaving directory `/usr/src/ltp-build/testcases/kernel/syscalls/clock_adjtime'
 
-> It is just a reason used to explain why I want to drop the kernel version
-> check.
+>  #ifndef __kernel_timex
+> +#if defined(__x86_64__) && defined(__ILP32__)
+> +typedef long long __kernel_long_t;
+> +#else
+> +typedef long __kernel_long_t;
+> +#endif
+> +
+> +typedef __kernel_long_t	__kernel_old_time_t;
 
-...
-
-> > How about to call the function pidfd_open_supported_by_kernel()?
-
-> OK
-
-> > Than you can remove the comment (which BTW should use C style /* */).
-
-> OK
-
-> > And IMHO you don't have to assign pidfd to -1.
-
-> In pidfd_open_supported_by_kernel(), do you want to drop 'pidfd = -1'
-> directly or drop 'pidfd = -1' by using TEST()?
-I meant (as it's always assigned by the call, it's just a nit.):
--int pidfd = -1;
-+int pidfd;
+It's caused by this fallback definition ^, which is already in
+include/tst_timer.h. Simple deleting it should fix the problem
 
 Kind regards,
 Petr
+
+diff --git testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+index 42e4c699c..9849d83e3 100644
+--- testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
++++ testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+@@ -18,13 +18,6 @@
+ #include "lapi/timex.h"
+ 
+ #ifndef __kernel_timex
+-#if defined(__x86_64__) && defined(__ILP32__)
+-typedef long long __kernel_long_t;
+-#else
+-typedef long __kernel_long_t;
+-#endif
+-
+-typedef __kernel_long_t	__kernel_old_time_t;
+ 
+ struct __kernel_old_timeval {
+ 	__kernel_old_time_t	tv_sec;		/* seconds */
