@@ -1,32 +1,45 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 14 May 2020 21:45:30 +0800
-Subject: [LTP] LTP release
-In-Reply-To: <20200514121139.GB4176@yuki.lan>
-References: <20200504104907.GA3567@yuki.lan> <20200514095444.GB18592@yuki.lan>
- <4667c260-0736-2995-4a64-1012a665bee3@cn.fujitsu.com>
- <20200514121139.GB4176@yuki.lan>
-Message-ID: <5EBD4B7A.8080708@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 14 May 2020 16:14:54 +0200
+Subject: [LTP] [PATCH v2 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <5EBD12D9.70708@cn.fujitsu.com>
+References: <20200513012626.1571-1-yangx.jy@cn.fujitsu.com>
+ <5EBB5B3D.4020302@cn.fujitsu.com> <20200513092028.GA4598@dell5510>
+ <5EBBCA12.5020901@cn.fujitsu.com> <20200513103032.GA18763@dell5510>
+ <20200514073701.GA9562@dell5510> <5EBD12D9.70708@cn.fujitsu.com>
+Message-ID: <20200514141454.GB17718@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/5/14 20:11, Cyril Hrubis wrote:
-> Hi!
->>> This is a last call, if you think that something has to be included in
->>> the release speak up today.
->> just including two small fixes about tpci.
->
-> These two looks good to me, so feel free to push them.
-Hi Cyril,
+Hi Yang,
 
-They also looks good to me, but not urgent fixes.
-I think you can proceed with the release directly and then I will push 
-them after the release.
+> > To be honest I like this approach, because 1) it defines when new syscall was
+> > backported
 
-Best Regards,
-Xiao Yang
->
+> Hmm, the reason seems a little weak, it can be done by adding a comment(e.g.
+> "the syscall is introduced since v5.6.0").
+Sure, that would work as well.
+
+> 2) if there is really problem that some functionality was removed, we
+> > can always handle it. But IMHO that's going to be rare (btrfs removed in RHEL 8
+> > is IMHO because RHEL does not want to support it, but that would not happen for
+> > syscalls).
+
+> Without the rare situation, I also think tst_syscall() is enough to check
+> the support of syscall.
+Well, nothing that much important, but I'd like to hear the opinion of
+other maintainers. BTW We now concentrate on pre-release fixes.
+
+> > I'd also like to be consistent how we handle these new syscalls.
+> Agreed.
+
+> I also think if we can implement common func(e.g.
+> syscall_supported_by_kernel()).
+Sure, feel free to send a patch (could be a macro).
 
 
+Kind regards,
+Petr
