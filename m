@@ -1,38 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 May 2020 15:39:18 +0200
-Subject: [LTP] [PATCH] pty04: Fix read retries
-In-Reply-To: <20200514133201.12829-1-rpalethorpe@suse.com>
-References: <20200514133201.12829-1-rpalethorpe@suse.com>
-Message-ID: <20200514133918.GA6087@yuki.lan>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 14 May 2020 21:45:30 +0800
+Subject: [LTP] LTP release
+In-Reply-To: <20200514121139.GB4176@yuki.lan>
+References: <20200504104907.GA3567@yuki.lan> <20200514095444.GB18592@yuki.lan>
+ <4667c260-0736-2995-4a64-1012a665bee3@cn.fujitsu.com>
+ <20200514121139.GB4176@yuki.lan>
+Message-ID: <5EBD4B7A.8080708@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> We need to increase the data pointer by the amount already read.
+On 2020/5/14 20:11, Cyril Hrubis wrote:
+> Hi!
+>>> This is a last call, if you think that something has to be included in
+>>> the release speak up today.
+>> just including two small fixes about tpci.
+>
+> These two looks good to me, so feel free to push them.
+Hi Cyril,
 
-Applied, thanks.
+They also looks good to me, but not urgent fixes.
+I think you can proceed with the release directly and then I will push 
+them after the release.
 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  testcases/kernel/pty/pty04.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
-> index 68a84ea87..d574d8b2c 100644
-> --- a/testcases/kernel/pty/pty04.c
-> +++ b/testcases/kernel/pty/pty04.c
-> @@ -294,7 +294,7 @@ static void try_read(int fd, char *data, ssize_t size)
->  	int retry = mtu;
->  
->  	while (retry--) {
-> -		ret = read(fd, data, size - n);
-> +		ret = read(fd, data + n, size - n);
+Best Regards,
+Xiao Yang
+>
 
-Sorry for not catching that during the review...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
