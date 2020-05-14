@@ -1,23 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 May 2020 14:11:39 +0200
-Subject: [LTP] LTP release
-In-Reply-To: <4667c260-0736-2995-4a64-1012a665bee3@cn.fujitsu.com>
-References: <20200504104907.GA3567@yuki.lan> <20200514095444.GB18592@yuki.lan>
- <4667c260-0736-2995-4a64-1012a665bee3@cn.fujitsu.com>
-Message-ID: <20200514121139.GB4176@yuki.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 14 May 2020 14:32:01 +0100
+Subject: [LTP] [PATCH] pty04: Fix read retries
+Message-ID: <20200514133201.12829-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > This is a last call, if you think that something has to be included in
-> > the release speak up today.
-> just including two small fixes about tpci.
+We need to increase the data pointer by the amount already read.
 
-These two looks good to me, so feel free to push them.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/kernel/pty/pty04.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
+index 68a84ea87..d574d8b2c 100644
+--- a/testcases/kernel/pty/pty04.c
++++ b/testcases/kernel/pty/pty04.c
+@@ -294,7 +294,7 @@ static void try_read(int fd, char *data, ssize_t size)
+ 	int retry = mtu;
+ 
+ 	while (retry--) {
+-		ret = read(fd, data, size - n);
++		ret = read(fd, data + n, size - n);
+ 
+ 		if (ret < 0)
+ 			break;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.1
+
