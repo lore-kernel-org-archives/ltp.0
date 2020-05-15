@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 May 2020 13:31:31 +0200
-Subject: [LTP] [PATCH v4 3/4] INSTALL: Remove uClinux and "What's in a
- Path?" sections
-In-Reply-To: <20200515093216.829-4-pvorel@suse.cz>
-References: <20200515093216.829-1-pvorel@suse.cz>
- <20200515093216.829-4-pvorel@suse.cz>
-Message-ID: <20200515113131.GB2364@yuki.lan>
+Date: Fri, 15 May 2020 13:45:07 +0200
+Subject: [LTP] [PATCH v2 1/1] rpc: TCONF when tests aren't compiled +
+ remove kill warning
+In-Reply-To: <20200514144729.GA19276@dell5510>
+References: <20200512201416.8299-1-pvorel@suse.cz>
+ <20200514144729.GA19276@dell5510>
+Message-ID: <20200515114507.GA3395@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +13,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Note about reasonable PATH it's kind of obvious, we don't have to
-> point that out.
+> > with this implementation (suggested by Alexey), we get TCONF twice. It's
+> > a bit strange, but I'll keep it, because I like that required binary is
+> > printed:
+> > rpc_test 1 TCONF: 'tirpc_rpcb_getaddr' not found
+> > rpc_test 1 TCONF: LTP compiled without TI-RPC support?
+> Please any comment for 2x TCONF. It's a bit strange, but just a tiny detail.
+> I'd like to have this fix in the release.
 
-Well that comment is there becuase of openSUSE build service that
-creates a directories with colon in the middle for home directories and
-LTP fails to build in such scenario, which wasn't that obvious, at least
-if I remmeber correctly. And I do not think that other GNU software
-fails to build in such scenario, I think it's really LTP fault because
-we operate on absolute paths because of the out-of-tree build support.
+I do not really care how many TCONF the test prints as long as the user
+gets a reasonable message.
 
-Anyways the patchset looks fine, and changes to documentation are
-considered low risk, so let's get this into the release.
+With that the patch looks good, acked.
 
 -- 
 Cyril Hrubis
