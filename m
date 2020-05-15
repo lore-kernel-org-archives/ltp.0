@@ -1,33 +1,25 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 May 2020 13:56:01 +0200
-Subject: [LTP] [PATCH] pty04: Avoid receiving packets from all interfaces
-In-Reply-To: <20200515103910.8703-1-rpalethorpe@suse.com>
-References: <20200515103910.8703-1-rpalethorpe@suse.com>
-Message-ID: <20200515115601.GA6412@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 May 2020 08:11:41 -0400 (EDT)
+Subject: [LTP] [PATCH v4 0/4] Update installation docs
+In-Reply-To: <20200515093216.829-1-pvorel@suse.cz>
+References: <20200515093216.829-1-pvorel@suse.cz>
+Message-ID: <1312029153.12581498.1589544701639.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-> Raw sockets receive all packets from all interfaces as soon as they are
-> created. They don't need to be bound to one or more interfaces like I thought.
 
-> This creates the socket with a NULL packet type which appears to be unused in
-> the Linux kernel and receives no packets. The protocol is then changed to
-> ETH_P_ALL when binding to the netdevice we are interested in.
+----- Original Message -----
+> Hi,
+> 
+> changes v3->v4:
+> * improve note about other library dependencies in 1st commit (Jan)
+> * remove also "What's in a Path?" in 3rd commit
+> 
+> It'd need more cleanup, but enough now :).
 
-> I assume it is impossible for a packet to have zero for its packet type. Most
-> likely using ETH_P_LOOP would have been OK too, but I suppose that is really
-> used by some hardware.
+ACK
 
-> This also fixes various other problems that have been observed with this
-> test. Such as memory allocation failures.
-So we have lost a potential CVE reproducer :).
-
-Thanks for the fix.
-
-Kind regards,
-Petr
