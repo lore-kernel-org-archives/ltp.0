@@ -1,21 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 May 2020 13:00:09 +0200
-Subject: [LTP] [PATCH 1/1] rpc-tirpc: Fix deprecated glibc detection
-In-Reply-To: <20200515105336.GA2364@yuki.lan>
-References: <20200514193011.11386-1-pvorel@suse.cz>
- <20200515105336.GA2364@yuki.lan>
-Message-ID: <20200515110009.GA13853@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 May 2020 13:31:31 +0200
+Subject: [LTP] [PATCH v4 3/4] INSTALL: Remove uClinux and "What's in a
+ Path?" sections
+In-Reply-To: <20200515093216.829-4-pvorel@suse.cz>
+References: <20200515093216.829-1-pvorel@suse.cz>
+ <20200515093216.829-4-pvorel@suse.cz>
+Message-ID: <20200515113131.GB2364@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> Note about reasonable PATH it's kind of obvious, we don't have to
+> point that out.
 
-> Looks good to me, if you have tested this throughly I would like to have
-> it in the release.
-Yes, I tested it. Thanks a lot, merged.
+Well that comment is there becuase of openSUSE build service that
+creates a directories with colon in the middle for home directories and
+LTP fails to build in such scenario, which wasn't that obvious, at least
+if I remmeber correctly. And I do not think that other GNU software
+fails to build in such scenario, I think it's really LTP fault because
+we operate on absolute paths because of the out-of-tree build support.
 
-Kind regards,
-Petr
+Anyways the patchset looks fine, and changes to documentation are
+considered low risk, so let's get this into the release.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
