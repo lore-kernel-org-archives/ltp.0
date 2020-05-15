@@ -1,48 +1,59 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 May 2020 09:21:56 +0200
-Subject: [LTP] [PATCH v2 1/4] INSTALL: Update requirements
-In-Reply-To: <CAEemH2fQ3yfDfNqNeUfLAAWY6hUDcEybbU+dK=hwrwg2rFj60A@mail.gmail.com>
-References: <20200514190906.27130-1-pvorel@suse.cz>
- <CAEemH2e5G53VPLp4bOe_i-2_4eRSF9dbTC378rqN-AwGanUTEw@mail.gmail.com>
- <20200515062221.GB5117@dell5510>
- <CAEemH2fQ3yfDfNqNeUfLAAWY6hUDcEybbU+dK=hwrwg2rFj60A@mail.gmail.com>
-Message-ID: <20200515072156.GA17488@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 15 May 2020 15:45:21 +0800
+Subject: [LTP] [PATCH 2/4] INSTALL: Document 32bit and cross-compilation
+ setup
+In-Reply-To: <20200514193441.GA11518@dell5510>
+References: <20200514184904.4537-1-pvorel@suse.cz>
+ <20200514184904.4537-3-pvorel@suse.cz>
+ <20200514193441.GA11518@dell5510>
+Message-ID: <CAEemH2etn2mSJbV=a=xpVMnUOjKdKrp0C5Cch2JYtbZ2pDkRyw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Petr,
 
-> > I'd prefer it in simple form (single line) + I thought bison is more
-> > common than
-> > byacc (but maybe I'm wrong). I'm not a big fan of sudo (but can add it
-> > there).
+On Fri, May 15, 2020 at 3:34 AM Petr Vorel <pvorel@suse.cz> wrote:
+
+> ...
+>
+> > +32 bit build on 64 bit machine
+> > +------------------------------
+> > +You need to set CFLAGS=-m32 LDFLAGS=-m32 and PKG_CONFIG_LIBDIR
+> > +
+> > +* RPM based distributions (openSUSE, Fedora, etc.)
+> > +PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig CFLAGS=-m32 LDFLAGS=-m32
+> ./configure
+> > +
+> > +* Debian / Ubuntu and derivates
+> > +PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig CFLAGS=-m32
+> LDFLAGS=-m32 ./configure
+>
+
+I occationally build 32bit LTP on my RHEL8(x86_64) platform
+via: CFLAGS="-m32" CXXFLAGS="-m32" LDFLAGS="-m32" ./configure, it works for
+me awalys.
+
+May I ask why we need the PKG_CONFIG_LIBDIR?
 
 
-> Sure, I have no preference here :). I added the 'sudo' just because I
-> noticed that the INSTALL use many $ before commands which means in non-root
-> user.
-I added '#' in v3, but if anybody requires I can change it to sudo.
+>
+> I guess, we should set this variable in 32 bit build in travis CI (we have
+> only 1
+> job, which uses Debian). It's not failing now, because it's not a minimal
+> build.
+> Therefore we should have minimal 32 bit build (easiest way is to use
+> openSUSE or
+> Fedora/CentOS as they don't install libtirpc 32bit).
+>
 
+Good suggestion! I think at least for CentOS/RHEL has no problem with this.
 
-> > + Added headers and gcc. But on the other hand I wanted to have package
-> > reference in
-> > travis/*.sh (where are missing some packages which are installed by
-> > default with
-> > gcc, e.g. , but it does not harm to have it offline.
-
-> +1
-In the end in v3 I mentioned glibc and kernel headers, but also mentioned travis/*.sh.
-
-
-> > Should I remove links to the tools? And we obviously don't list a compiler.
-
-
-> Personally I think links are useless, people opened this INSTALL could also
-> have the ability to use google for finding the package link:).
-Agree, thus removed in v3.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200515/ea1166d4/attachment-0001.htm>
