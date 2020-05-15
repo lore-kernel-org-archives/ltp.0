@@ -1,45 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 May 2020 12:53:36 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 May 2020 13:00:09 +0200
 Subject: [LTP] [PATCH 1/1] rpc-tirpc: Fix deprecated glibc detection
-In-Reply-To: <20200514193011.11386-1-pvorel@suse.cz>
+In-Reply-To: <20200515105336.GA2364@yuki.lan>
 References: <20200514193011.11386-1-pvorel@suse.cz>
-Message-ID: <20200515105336.GA2364@yuki.lan>
+ <20200515105336.GA2364@yuki.lan>
+Message-ID: <20200515110009.GA13853@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> It's not enough to check for RPC headers. These can belong to libtirpc 64bit, which
-> is not enough when compiling 32bit LTP without 32bit libtirpc.
-> 
-> Fixes: 60b20c428 ("rpc: Enable and fix build basic RPC tests with glibc SunRPC")
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  m4/ltp-tirpc.m4 | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/m4/ltp-tirpc.m4 b/m4/ltp-tirpc.m4
-> index 639e1e886..4d9701469 100644
-> --- a/m4/ltp-tirpc.m4
-> +++ b/m4/ltp-tirpc.m4
-> @@ -17,9 +17,9 @@ AC_DEFUN([LTP_CHECK_TIRPC], [
->  	dnl rpc_broadcast() instead of clnt_broadcast()), but glibc implementation
->  	dnl does not have the new ones. We could either provide the deprecated
->  	dnl functions (copy from libtirpc src/rpc_soc.c) or drop glibc tests.
-> -	AC_CHECK_HEADERS([rpc/rpc.h], [have_rpc_headers=yes])
-> +	AC_CHECK_FUNCS([xdr_char clnttcp_create], [have_rpc_glibc=yes])
->  
-> -	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_headers" = "xyes"; then
-> +	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_glibc" = "xyes"; then
->  		AC_SUBST(HAVE_RPC, 1)
->  	fi
+Hi Cyril,
 
-Looks good to me, if you have tested this throughly I would like to have
-it in the release.
+> Looks good to me, if you have tested this throughly I would like to have
+> it in the release.
+Yes, I tested it. Thanks a lot, merged.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
