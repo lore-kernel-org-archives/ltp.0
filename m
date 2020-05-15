@@ -1,32 +1,35 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 May 2020 05:10:39 -0400 (EDT)
-Subject: [LTP] [PATCH v3 1/4] INSTALL: Update requirements,
- modernise text
-In-Reply-To: <20200515090616.GA29676@dell5510>
-References: <20200515070022.16407-1-pvorel@suse.cz>
- <1321342340.12558723.1589531383298.JavaMail.zimbra@redhat.com>
- <20200515090238.GA29151@dell5510> <20200515090616.GA29676@dell5510>
-Message-ID: <962317877.12564854.1589533839512.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 May 2020 11:32:12 +0200
+Subject: [LTP] [PATCH v4 0/4] Update installation docs
+Message-ID: <20200515093216.829-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
+changes v3->v4:
+* improve note about other library dependencies in 1st commit (Jan)
+* remove also "What's in a Path?" in 3rd commit
 
------ Original Message -----
-> Hi Jan,
-> 
-> > > Do we want to list also optional packages here?
-> > > libaio-devel libcap-devel numactl-devel openssl-devel and others?
-> > I was thinking to ask users to have look into travis/*.sh (if it's
-> > packaged),
-> Yes, travis files are packaged in tarball.
-> 
-> > as I was trying to avoid maintaining the dependencies on 2 places,
-> > but I can put it there.
+It'd need more cleanup, but enough now :).
 
-Pointer to different file is fine. Just so it's clear that listed requirements
-are bare minimum, and some tests need extra libraries to work.
+Kind regards,
+Petr
+
+Petr Vorel (4):
+  INSTALL: Update requirements, modernise text
+  INSTALL: Document 32bit and cross-compilation setup
+  INSTALL: Remove uClinux and "What's in a Path?" sections
+  doc: Remove links to README.mk-devel
+
+ INSTALL                 | 88 ++++++++++++++++-------------------------
+ README.md               |  5 ++-
+ include/mk/config.mk.in |  2 +-
+ 3 files changed, 38 insertions(+), 57 deletions(-)
+
+-- 
+2.26.2
 
