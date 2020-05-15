@@ -1,73 +1,199 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 15 May 2020 14:55:14 +0100
-Subject: [LTP] [PATCH] pty04: Avoid receiving packets from all interfaces
-In-Reply-To: <20200515130024.GA26750@dell5510>
-References: <20200515103910.8703-1-rpalethorpe@suse.com>
- <20200515114837.GB3395@yuki.lan>
- <914267680.12582166.1589545134812.JavaMail.zimbra@redhat.com>
- <20200515130024.GA26750@dell5510>
-Message-ID: <87tv0hqp4t.fsf@our.domain.is.not.set>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 May 2020 16:44:39 +0200
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for MAY
+ 2020
+Message-ID: <20200515144439.GA3267@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Good news everyone,
 
-Petr Vorel <pvorel@suse.cz> writes:
+the Linux Test Project test suite stable release for *May 2020* has been
+released.
 
-> Hi,
->
->> > Sounds reasonable, also hope it's the last patch. :-)
->
->> > @Jan do you want to test this as well, or should I apply and proceed
->> > with the release?
->
->> I haven't spotted potential issue while looking at kernel code,
->> will test the patch just to be sure.
-> +1 reproduced kernel oops on 5.7.0-rc5-1.g298ea3d from openSUSE Tumbleweed, but
-> when running with -i100 (=> this fix greatly reduces the problem, but still
-> possible to reproduce)
->
-> Kind regards,
-> Petr
->
-> [27048.459612] watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/u16:10:10487]
-> [27048.459615] Modules linked in: slcan slip slhc uas usb_storage vhost_net vhost tap vhost_iotlb ccm rfcomm fuse xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ip_tables x_tables bpfilter tun bridge stp llc af_packet cmac algif_hash algif_skcipher af_alg bnep dmi_sysfs msr xfs dm_crypt cdc_ether usbnet snd_usb_audio r8152 snd_usbmidi_lib snd_rawmidi snd_seq_device mii uvcvideo btusb videobuf2_vmalloc x86_pkg_temp_thermal intel_powerclamp videobuf2_memops btrtl videobuf2_v4l2 btbcm coretemp videobuf2_common btintel btrfs bluetooth videodev kvm_intel blake2b_generic xor snd_hda_codec_hdmi ecdh_generic ecc mc joydev kvm iwlmvm raid6_pq irqbypass iTCO_wdt libcrc32c iTCO_vendor_support snd_hda_codec_realtek hid_multitouch mac80211 mei_hdcp mei_wdt intel_rapl_msr dell_rbtn crct10dif_pclmul
-> [27048.459667]  snd_hda_codec_generic crc32_pclmul dell_laptop ledtrig_audio intel_hid snd_hda_intel ghash_clmulni_intel dell_smm_hwmon libarc4 snd_intel_dspcfg aesni_intel snd_hda_codec crypto_simd cryptd glue_helper snd_hda_core iwlwifi snd_hwdep snd_pcm dell_wmi dell_smbios dcdbas snd_timer snd pcspkr sparse_keymap dell_wmi_descriptor wmi_bmof intel_wmi_thunderbolt cfg80211 i2c_i801 soundcore mei_me rfkill mei processor_thermal_device intel_lpss_pci intel_rapl_common intel_lpss idma64 intel_pch_thermal intel_soc_dts_iosf thermal fan int3403_thermal dell_smo8800 acpi_pad int3402_thermal int3400_thermal int340x_thermal_zone acpi_thermal_rel ac tiny_power_button nfsd auth_rpcgss nfs_acl lockd grace sunrpc hid_logitech_hidpp hid_logitech_dj hid_generic usbhid i915 nouveau rtsx_pci_sdmmc mmc_core ttm i2c_algo_bit drm_kms_helper xhci_pci xhci_hcd syscopyarea sysfillrect sysimgblt fb_sys_fops mxm_wmi cec rc_core crc32c_intel drm usbcore serio_raw rtsx_pci battery i2c_hid video wmi butt
- on
-> [27048.459695]  dm_mirror dm_region_hash dm_log sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua
-> [27048.459700] CPU: 1 PID: 10487 Comm: kworker/u16:10 Kdump: loaded Tainted: G          I       5.7.0-rc5-1.g298ea3d-default #1 openSUSE Tumbleweed (unreleased)
-> [27048.459701] Hardware name: Dell Inc. Precision 5510/0N8J4R, BIOS 1.2.13 08/08/2016
-> [27048.459705] Workqueue: events_unbound flush_to_ldisc
-> [27048.459709] RIP: 0010:slip_receive_buf+0xfc/0x2a0 [slip]
-> [27048.459710] Code: 10 48 83 80 60 01 00 00 01 f0 80 8b 88 00 00 00 04 41 83 ec 01 41 83 fc ff 0f 85 5f ff ff ff 48 83 c4 08 5b 5d 41 5c 41 5e c3 <3c> dc 0f 84 44 01 00 00 77 24 3c c0 0f 84 f3 00 00 00 3c db 75 2e
-> [27048.459711] RSP: 0018:ffffb7f022757de0 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-> [27048.459713] RAX: 000000000000005f RBX: ffff90a8d8e4d900 RCX: 0000000000000e00
-> [27048.459713] RDX: 0000000000000004 RSI: ffff90a8d959a4b0 RDI: ffff90a902d76400
-> [27048.459714] RBP: 0000000000000000 R08: ffffffffc1a9c000 R09: ffffffffb4871d01
-> [27048.459715] R10: ffff90a8d959f000 R11: 0000000000000001 R12: 0000000000000970
-> [27048.459716] R13: 0000000000000000 R14: 00000000ffffffc0 R15: ffff90a8d959a020
-> [27048.459717] FS:  0000000000000000(0000) GS:ffff90affdc40000(0000) knlGS:0000000000000000
-> [27048.459718] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [27048.459718] CR2: 000034ca2fb92400 CR3: 000000067380a001 CR4: 00000000003626e0
-> [27048.459719] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [27048.459720] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [27048.459720] Call Trace:
-> [27048.459725]  tty_ldisc_receive_buf+0x41/0x50
-> [27048.459727]  tty_port_default_receive_buf+0x3d/0x60
-> [27048.459729]  flush_to_ldisc+0x8a/0xd0
-> [27048.459732]  process_one_work+0x1e3/0x3b0
-> [27048.459735]  worker_thread+0x4d/0x3f0
-> [27048.459739]  kthread+0xf9/0x130
-> [27048.459741]  ? process_one_work+0x3b0/0x3b0
-> [27048.459742]  ? kthread_park+0x90/0x90
-> [27048.459744]  ret_from_fork+0x35/0x40
+Since the last release 327 patches by 26 authors were merged.
 
-Is there more to this? Do you get allocation failures as well? (no
-problem if not, I'm just curious, I don't think this is an issue unless
-it happens with N=1).
+NOTABLE CHANGES
+===============
+
+* New tests
+  - fanotify16: FAN_MODIFY_DIR test
+  - ioctl_loop01: LO_FLAGS_AUTOCLEAR and LO_FLAGS_PARTSCAN test
+  - ioctl_loop02: LO_FLAGS_READ_ONLY and LOOP_CHANGE_FD test
+  - ioctl_loop03: LOOP_CHANGE_FD test with WR mode
+  - ioctl_loop04: LOOP_SET_CAPACITY ioctl test
+  - ioctl_loop05: LOOP_SET_DIRECT_IO ioctl test
+  - ioctl_loop06: LOOP_SET_BLOCK_SIZE error test
+  - ioctl_loop07: LOOP_SET/GET_STATUS64 sizelimit field test
+  - pipe2_02: test for pipe2 O_CLOEXEC flag
+  - pipe2_04: test for pipe2 with/without O_NONBLOCK mode
+  - timerfd04: time namespace test
+  - timens01: time namespace test
+  - clock_gettime03: time namespace test
+  - clock_nanosleep03: time namespace test
+  - sysinfo03: time namespace test
+  - clone301, clone301: clone3() syscall tests
+  - bind04: Connection tests for stream-oriented sockets (SOCK_STREAM and SOCK_SEQPACKET)
+  - bind05: Connection tests for datagram-oriented sockets (SOCK_DGRAM)
+  - fcntl37: add error test for fcntl with F_SETPIPE_SZ
+  - openat201, openat202, openat203: openat2() syscall tests
+  - open_tree01, open_tree02: open_tree() syscall tests
+  - fspick01, fspick02: fspick() syscall tests
+  - move_mount01, move_mount02: move_mount() syscall tests
+  - fsmount01, fsmount02: fsmount() syscall tests
+  - fsconfig01, fsconfig02: fsconfig() syscall tests
+  - fsopen01, fsopen02: fsopen() syscall tests
+  - pty04: Test data transmission with SLIP line discipline
+  - fallocate06: test for misaligned fallocate()
+  - io_pgetevents01, io_pgetevents02: io_pgetevents() syscall tests
+  - pidfd_open01, pidfd_open02, pidfd_open03: pidfd_open() syscall tests
+  - vmsplice04: vmsplice() test with SPLICE_F_NONBLOCK
+  - pipe12: add new test for pipe when write bytes > pipe size
+
+* New regression tests
+  - pty04: Added SLCAN ldisc and check for CVE-2020-11494
+  - setsockopt05: Test for CVE-2017-1000112
+  - ptrace09: Test for CVE-2018-8897
+  - snd_seq01: Test for CVE-2018-7566
+  - bind06: Test for CVE-2018-18559
+  - ptrace08: Test for CVE-2018-1000199
+  - ioctl_sg01: Test for CVE-2018-1000204
+  - sendmsg03: Test for CVE-2017-17712
+  - timerfd_settime02: Test for CVE-2017-10661
+  - connect02: Test for CVE 2018-9568
+               and also for setsockopt(IP_ADDRFORM) kernel bug
+               (82c9ae440857 ipv6: fix restrict IPV6_ADDRFORM operation)
+  - fanotify15: Add a test case for inode marks
+              (f367a62a7cad fanotify: merge duplicate events on parent and child)
+  - fanotify09: Check merging of events on directories
+             (55bf882c7f13 fanotify: fix merging marks masks with FAN_ONDIR)
+  - add_key05: add maxbytes/maxkeys test under unprivileged user
+               (a08bf91ce28e "KEYS: allow reaching the keys quotas exactly")
+  - pipe13: test for pipe to wake up all readers
+            (6551d5c56eb0 "pipe: make sure to wake up everybody when the last reader/writer closes")
+  - quotactl07: test for Q_XQTUOTARM
+            (3dd4d40b4208 "xfs: Sanity check flags of Q_XQUOTARM call")
+  - pty03: test for slip/slcan data race
+           (0ace17d568241 "can, slip: Protect tty->disc_data in write_wakeup and close with RCU")
+
+* Increased coverage
+  - readv01: new test cases added to the test
+  - add_key02: add the "big_key" key type
+
+* First half of time64 tests for 64bit timer syscalls has landed in this
+  relese, second half is going to be part of the next one1
+
+* Additional 12 tests were converted to the new test library
+
+* Removed tests
+  - epoll2: these depended on Portable Coroutine Library and were not even
+            compiled by default for a long time
+
+* Fixes for gcc-10 that enables -fno-common by default
+
+* LTP now supports ARC CPUs
+
+* Skip oversleep checks in timer tests under VM
+
++ The usual amount of fixes and cleanups.
+
+
+NOTABLE CHANGES IN NETWORK TESTS
+================================
+brought to you by Petr Vorel
+
+* New netlink based route change tests
+
+* Fixes
+  - nfs: detect disabled UDP
+  - rpc: cleanup unused tests
+  - detect libtirpc with pkg-config
+
+* Rewrite to new API
+  - bind02, socketcall0[2-4], test_1_to_1_initmsg_connect (SCTP)
+  - rpcinfo01.sh, rpc01.sh, sendfile01.sh, xinetd_tests.sh
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20200515
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+git shortlog -s -e -n 20200120..
+
+   105  Petr Vorel <pvorel@suse.cz>
+    49  Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+    38  Viresh Kumar <viresh.kumar@linaro.org>
+    35  Martin Doucha <mdoucha@suse.cz>
+    33  Cyril Hrubis <chrubis@suse.cz>
+    11  Richard Palethorpe <rpalethorpe@suse.com>
+    10  Jan Stancek <jstancek@redhat.com>
+     6  Li Wang <liwang@redhat.com>
+     6  Petr Vorel <petr.vorel@gmail.com>
+     5  Amir Goldstein <amir73il@gmail.com>
+     4  Jorik Cronenberg <jcronenberg@suse.de>
+     4  Zou Wei <zou_wei@huawei.com>
+     3  Joerg Vehlow <joerg.vehlow@aox-tech.de>
+     3  Po-Hsu Lin <po-hsu.lin@canonical.com>
+     2  Alexey Kodanev <alexey.kodanev@oracle.com>
+     2  Jozef Pupava <jpupava@suse.com>
+     2  Xiao Yang <yangx.jy@cn.fujitsu.com>
+     1  Anibal Limon <anibal.limon@linux.intel.com>
+     1  Chen Li <chenli@uniontech.com>
+     1  Jozef Pupava <jpupava@suse.cz>
+     1  Khem Raj <raj.khem@gmail.com>
+     1  Ronald Monthero <rmonther@redhat.com>
+     1  Sean T Allen <sean@seantallen.com>
+     1  Vikas Kumar <vikas.kumar2@arm.com>
+     1  Vineet Gupta <Vineet.Gupta1@synopsys.com>
+     1  Zorro Lang <zlang@redhat.com>
+
+And also thanks to patch reviewers:
+
+git log 20200120.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+    137 Cyril Hrubis <chrubis@suse.cz>
+     62 Petr Vorel <pvorel@suse.cz>
+     56 Li Wang <liwang@redhat.com>
+     26 Jan Stancek <jstancek@redhat.com>
+     17 Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+     12 Alexey Kodanev <alexey.kodanev@oracle.com>
+      8 Xiao Yang <ice_yangxiao@163.com>
+      4 Martin Doucha <mdoucha@suse.cz>
+      4 Jan Kara <jack@suse.cz>
+      3 Richard Palethorpe <rpalethorpe@suse.com>
+      3 Matthew Bobrowski <mbobrowski@mbobrowski.org>
+      2 Xiao Yang <yangx.jy@cn.fujitsu.com>
+      2 Viresh Kumar <viresh.kumar@linaro.org>
+      1 Yang Xu <xuyang_jy_0410@163.com>
+      1 Desnes A. Nunes do Rosario <desnesn@linux.ibm.com>
+
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
