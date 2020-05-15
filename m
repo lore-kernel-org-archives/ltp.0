@@ -1,29 +1,30 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 15 May 2020 12:16:47 +0800
-Subject: [LTP] LTP release
-In-Reply-To: <5ebe1570.1c69fb81.46edc.a08cSMTPIN_ADDED_BROKEN@mx.google.com>
-References: <5ebe1570.1c69fb81.46edc.a08cSMTPIN_ADDED_BROKEN@mx.google.com>
-Message-ID: <CAEemH2do_dTERpsB_k0X97JVqdThXH2EO457bhu=qNHhomCwhw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 May 2020 07:29:36 +0200
+Subject: [LTP] [PATCH V4 1/1] syscall: Add io_uring test
+In-Reply-To: <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
+References: <20200514172831.27854-1-vikas.kumar2@arm.com>
+ <20200514172831.27854-2-vikas.kumar2@arm.com>
+ <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
+Message-ID: <20200515052936.GA5117@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, May 15, 2020 at 12:07 PM xuyang_jy_0410@163.com <
-xuyang_jy_0410@163.com> wrote:
+Hi,
 
-> Hi Li
-> Can we put these attach and disattach steps into verify function like
-> ioctl_loop 04.c does?
->
+> On 14-05-20, 22:58, Vikas Kumar wrote:
+> > Added Linux asynchronous I/O API Test for io_uring_setup(),
+> > io_uring_register() and io_uring_enter().
+> > This test will check io_uring api basic operation.
 
-How does the attach/detach device cause the failure?  I actually run into
-this failure without parameter "-i".
+> > Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com>
+> > Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200515/9fb76d89/attachment.htm>
+> Please don't do this unless someone gave you this explicitly.
++1. By this you say Cyril considered your patch ready, which is not true.
+Just on a brief look I see there needed to be some changes.
+
+Kind regards,
+Petr
