@@ -1,55 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 15 May 2020 11:37:02 +0800
-Subject: [LTP] LTP release
-In-Reply-To: <20200514095444.GB18592@yuki.lan>
-References: <20200504104907.GA3567@yuki.lan> <20200514095444.GB18592@yuki.lan>
-Message-ID: <CAEemH2dGpJzRTnn-n26cDBQUhZeX7UK5wtq=fSdVO8HUtJCzAQ@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 15 May 2020 09:38:49 +0530
+Subject: [LTP] [PATCH V4 1/1] syscall: Add io_uring test
+In-Reply-To: <20200514172831.27854-2-vikas.kumar2@arm.com>
+References: <20200514172831.27854-1-vikas.kumar2@arm.com>
+ <20200514172831.27854-2-vikas.kumar2@arm.com>
+Message-ID: <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+On 14-05-20, 22:58, Vikas Kumar wrote:
+> Added Linux asynchronous I/O API Test for io_uring_setup(),
+> io_uring_register() and io_uring_enter().
+> This test will check io_uring api basic operation.
+> 
+> Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-I have finished the latest LTP test around RHEL7/8 and mainline kernel
-across arches. Apart from many known issues/bugs the test looks good.
+Please don't do this unless someone gave you this explicitly.
 
-The only failure to catch my attention is the ioctl_loop05 still getting
-fail on s390x with RHEL8.2 or kernel-v5.7-rc5. I haven't dig into the
-details since it looks insignificant.
-@Yang Xu <xuyang2018.jy@cn.fujitsu.com> Xu, do you have any idea about that?
+> diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
+> +int setup_io_uring_test(struct submitter *s)
+> +{
+> +	struct io_sq_ring *sring = &s->sq_ring;
+> +	struct io_cq_ring *cring = &s->cq_ring;
+> +	struct io_uring_params p;
+> +	void *ptr;
+> +
+> +	memset(&p, 0, sizeof(p));
+> +	s->ring_fd = io_uring_setup(QUEUE_DEPTH, &p);
+> +	if (s->ring_fd == -1) {
+> +		tst_res(TFAIL | TTERRNO, "io_uring setup return error");
+> +		return 1;
+> +	}
+> +
+> +	//submission queue ring buffer mapping
 
-# ./ioctl_loop05
-tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
-tst_device.c:88: INFO: Found free device 0 '/dev/loop0'
-ioctl_loop05.c:116: INFO: /dev/loop0 default logical_block_size is 512
-ioctl_loop05.c:62: INFO: Without setting lo_offset or sizelimit
-ioctl_loop05.c:63: BROK: ioctl(3,LOOP_SET_DIRECT_IO,...) failed: EINVAL (22)
+You need to follow kernel coding guidelines everywhere in the code
+here and so no such comments. Try to run checkpatch on this file with
+--strict option and you will see the problems..
 
+This API is new and you also need to implement something like
+fsopen_supported_by_kernel().
 
-On Thu, May 14, 2020 at 5:54 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-
-> Hi!
-> This is a last call, if you think that something has to be included in
-> the release speak up today.
->
-> The last thing on my radar is the "syscalls: Fix issues around calling
-> syscalls with old timespec" patch that should get in, after that I would
-> like to proceed with the release.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+I didn't do in depth reviews though..
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200515/28f395a7/attachment-0001.htm>
+viresh
