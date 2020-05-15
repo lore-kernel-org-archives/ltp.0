@@ -1,49 +1,45 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 15 May 2020 11:39:10 +0100
-Subject: [LTP] [PATCH] pty04: Avoid receiving packets from all interfaces
-Message-ID: <20200515103910.8703-1-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 May 2020 12:53:36 +0200
+Subject: [LTP] [PATCH 1/1] rpc-tirpc: Fix deprecated glibc detection
+In-Reply-To: <20200514193011.11386-1-pvorel@suse.cz>
+References: <20200514193011.11386-1-pvorel@suse.cz>
+Message-ID: <20200515105336.GA2364@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Raw sockets receive all packets from all interfaces as soon as they are
-created. They don't need to be bound to one or more interfaces like I thought.
+Hi!
+> It's not enough to check for RPC headers. These can belong to libtirpc 64bit, which
+> is not enough when compiling 32bit LTP without 32bit libtirpc.
+> 
+> Fixes: 60b20c428 ("rpc: Enable and fix build basic RPC tests with glibc SunRPC")
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  m4/ltp-tirpc.m4 | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/m4/ltp-tirpc.m4 b/m4/ltp-tirpc.m4
+> index 639e1e886..4d9701469 100644
+> --- a/m4/ltp-tirpc.m4
+> +++ b/m4/ltp-tirpc.m4
+> @@ -17,9 +17,9 @@ AC_DEFUN([LTP_CHECK_TIRPC], [
+>  	dnl rpc_broadcast() instead of clnt_broadcast()), but glibc implementation
+>  	dnl does not have the new ones. We could either provide the deprecated
+>  	dnl functions (copy from libtirpc src/rpc_soc.c) or drop glibc tests.
+> -	AC_CHECK_HEADERS([rpc/rpc.h], [have_rpc_headers=yes])
+> +	AC_CHECK_FUNCS([xdr_char clnttcp_create], [have_rpc_glibc=yes])
+>  
+> -	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_headers" = "xyes"; then
+> +	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_glibc" = "xyes"; then
+>  		AC_SUBST(HAVE_RPC, 1)
+>  	fi
 
-This creates the socket with a NULL packet type which appears to be unused in
-the Linux kernel and receives no packets. The protocol is then changed to
-ETH_P_ALL when binding to the netdevice we are interested in.
+Looks good to me, if you have tested this throughly I would like to have
+it in the release.
 
-I assume it is impossible for a packet to have zero for its packet type. Most
-likely using ETH_P_LOOP would have been OK too, but I suppose that is really
-used by some hardware.
-
-This also fixes various other problems that have been observed with this
-test. Such as memory allocation failures.
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Jan Stancek <jstancek@redhat.com>
----
-
-Another day, another patch for pty04.
-
- testcases/kernel/pty/pty04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
-index d574d8b2c..4adf2cbb7 100644
---- a/testcases/kernel/pty/pty04.c
-+++ b/testcases/kernel/pty/pty04.c
-@@ -206,7 +206,7 @@ static void open_netdev(const struct ldisc_info *ldisc)
- 	SAFE_IOCTL(pts, SIOCGIFNAME, ifreq.ifr_name);
- 	tst_res(TINFO, "Netdev is %s", ifreq.ifr_name);
- 
--	sk = SAFE_SOCKET(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-+	sk = SAFE_SOCKET(PF_PACKET, SOCK_RAW, 0);
- 
- 	ifreq.ifr_mtu = ldisc->mtu;
- 	if (ioctl(sk, SIOCSIFMTU, &ifreq))
 -- 
-2.26.1
-
+Cyril Hrubis
+chrubis@suse.cz
