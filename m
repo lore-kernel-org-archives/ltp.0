@@ -1,82 +1,47 @@
-From: Vikas Kumar <vikas.kumar2@arm.com>
-Date: Mon, 18 May 2020 10:03:44 +0530
-Subject: [LTP] [PATCH V4 1/1] syscall: Add io_uring test
-In-Reply-To: <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
-References: <20200514172831.27854-1-vikas.kumar2@arm.com>
- <20200514172831.27854-2-vikas.kumar2@arm.com>
- <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
-Message-ID: <b13403ce-b7c9-79f6-c303-97763e867020@arm.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 18 May 2020 13:43:35 +0800
+Subject: [LTP] [PATCH] lib/tst_test.c: Take account of
+ tst_brk(TCONF)/tst_brk(TFAIL) in summary output
+Message-ID: <20200518054335.12017-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Current summary output doesn't take account of tst_brk(TCONF/TFAIL),
+for example:
+-----------------------------------------------------
+[root@RHEL8U2GA_Intel64 pidfd_send_signal]# ./pidfd_send_signal01
+tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
+../../../../include/lapi/pidfd_send_signal.h:16: CONF: syscall(424) __NR_pidfd_send_signal not supported
 
-On 15/05/20 9:38 am, Viresh Kumar wrote:
+Summary:
+passed   0
+failed   0
+skipped  0
+warnings 0
+-----------------------------------------------------
 
-On 14-05-20, 22:58, Vikas Kumar wrote:
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ lib/tst_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Added Linux asynchronous I/O API Test for io_uring_setup(),
-io_uring_register() and io_uring_enter().
-This test will check io_uring api basic operation.
-
-Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com><mailto:vikas.kumar2@arm.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz><mailto:chrubis@suse.cz>
-
-
-
-Please don't do this unless someone gave you this explicitly.
-
-
-Sure I will remove it in next patch set its my mistake.
-
-Thank you Viresh, Petr and Cyril for correcting my mistake.
-
-
-
-
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
-+int setup_io_uring_test(struct submitter *s)
-+{
-+       struct io_sq_ring *sring = &s->sq_ring;
-+       struct io_cq_ring *cring = &s->cq_ring;
-+       struct io_uring_params p;
-+       void *ptr;
-+
-+       memset(&p, 0, sizeof(p));
-+       s->ring_fd = io_uring_setup(QUEUE_DEPTH, &p);
-+       if (s->ring_fd == -1) {
-+               tst_res(TFAIL | TTERRNO, "io_uring setup return error");
-+               return 1;
-+       }
-+
-+       //submission queue ring buffer mapping
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 0e58060e0..b28521a67 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -316,6 +316,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
+                const char *fmt, va_list va)
+ {
+ 	print_result(file, lineno, ttype, fmt, va);
++	update_results(TTYPE_RESULT(ttype));
+ 
+ 	/*
+ 	 * The getpid implementation in some C library versions may cause cloned
+-- 
+2.21.0
 
 
 
-You need to follow kernel coding guidelines everywhere in the code
-here and so no such comments. Try to run checkpatch on this file with
---strict option and you will see the problems..
-
-This API is new and you also need to implement something like
-fsopen_supported_by_kernel().
-
-I didn't do in depth reviews though..
-
-I will implement io_uring_supported_by_kernel() and checkpatch with --strict option and send In next patch.
-
-
-struct io_sq_ring, struct io_cq_ring and struct submitter
-
-
-
-Cyril: These are local structure although derived from kernel structure so it can be local in this file in place of lapi/io_uring.h
-
-
-
-IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200518/ed930870/attachment.htm>
