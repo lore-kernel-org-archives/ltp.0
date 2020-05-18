@@ -1,44 +1,82 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 18 May 2020 11:26:57 +0800
-Subject: [LTP] [PATCH v1 1/2] tpci: remove useless ENABLE_BRIDGES
-In-Reply-To: <1589353614-24423-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1589353614-24423-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5EC20081.1000508@cn.fujitsu.com>
+From: Vikas Kumar <vikas.kumar2@arm.com>
+Date: Mon, 18 May 2020 10:03:44 +0530
+Subject: [LTP] [PATCH V4 1/1] syscall: Add io_uring test
+In-Reply-To: <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
+References: <20200514172831.27854-1-vikas.kumar2@arm.com>
+ <20200514172831.27854-2-vikas.kumar2@arm.com>
+ <20200515040849.yu27rdihdih5wxc3@vireshk-i7>
+Message-ID: <b13403ce-b7c9-79f6-c303-97763e867020@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-Thanks for your work, pushed.
+On 15/05/20 9:38 am, Viresh Kumar wrote:
 
-Best Regards,
-Xiao Yang
-On 2020/5/13 15:06, Yang Xu wrote:
-> Since the previous commit, we have removed test_enable_bridges() because
-> pci_enable_bridges() was removed in 3.12 (928bea964827). But it forgot
-> to delete it in tpci.h. So remove it.
->
-> Fixes: 3dd286b ("ltp_tpci.c: Update legacy code")
-> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> ---
->   testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h b/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
-> index f65c6fc22..f7defb29f 100644
-> --- a/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
-> +++ b/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
-> @@ -30,7 +30,6 @@ enum PCI_TCASES {
->   	FIND_SUBSYS,
->   	BUS_SCAN,
->   	SLOT_SCAN,
-> -	ENABLE_BRIDGES,
->   	BUS_ADD_DEVICES,
->   	MATCH_DEVICE,
->   	REG_DRIVER,
+On 14-05-20, 22:58, Vikas Kumar wrote:
+
+
+Added Linux asynchronous I/O API Test for io_uring_setup(),
+io_uring_register() and io_uring_enter().
+This test will check io_uring api basic operation.
+
+Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com><mailto:vikas.kumar2@arm.com>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz><mailto:chrubis@suse.cz>
 
 
 
+Please don't do this unless someone gave you this explicitly.
+
+
+Sure I will remove it in next patch set its my mistake.
+
+Thank you Viresh, Petr and Cyril for correcting my mistake.
+
+
+
+
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
++int setup_io_uring_test(struct submitter *s)
++{
++       struct io_sq_ring *sring = &s->sq_ring;
++       struct io_cq_ring *cring = &s->cq_ring;
++       struct io_uring_params p;
++       void *ptr;
++
++       memset(&p, 0, sizeof(p));
++       s->ring_fd = io_uring_setup(QUEUE_DEPTH, &p);
++       if (s->ring_fd == -1) {
++               tst_res(TFAIL | TTERRNO, "io_uring setup return error");
++               return 1;
++       }
++
++       //submission queue ring buffer mapping
+
+
+
+You need to follow kernel coding guidelines everywhere in the code
+here and so no such comments. Try to run checkpatch on this file with
+--strict option and you will see the problems..
+
+This API is new and you also need to implement something like
+fsopen_supported_by_kernel().
+
+I didn't do in depth reviews though..
+
+I will implement io_uring_supported_by_kernel() and checkpatch with --strict option and send In next patch.
+
+
+struct io_sq_ring, struct io_cq_ring and struct submitter
+
+
+
+Cyril: These are local structure although derived from kernel structure so it can be local in this file in place of lapi/io_uring.h
+
+
+
+IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200518/ed930870/attachment.htm>
