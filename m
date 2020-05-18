@@ -1,89 +1,52 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 18 May 2020 15:57:32 +0530
-Subject: [LTP] [PATCH V4 13/17] syscalls/select6: Add support for time64
- tests
-In-Reply-To: <f7b891343ded659bd45fa28d88667109887f1d60.1589789487.git.viresh.kumar@linaro.org>
-References: <f7b891343ded659bd45fa28d88667109887f1d60.1589789487.git.viresh.kumar@linaro.org>
-Message-ID: <96ce7bbd49ae243c02371aeb4c6a672a246e8b53.1589797580.git.viresh.kumar@linaro.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 May 2020 15:01:32 +0200
+Subject: [LTP] [PATCH 2/2] tst_test.sh: Warn about setup/cleanup function
+ not loaded
+In-Reply-To: <20200518130132.19312-1-pvorel@suse.cz>
+References: <20200518130132.19312-1-pvorel@suse.cz>
+Message-ID: <20200518130132.19312-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing select6() syscall
-tests.
+Inspired by regression fixed by previous commit.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-V4:
-- Move the setting of tv_sec/nsec within the ifdef as ts isn't available
-  outside of it.
+ testcases/lib/tst_test.sh | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
- testcases/kernel/syscalls/select/select_var.h | 25 ++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
-index b19a1d1bf085..2c7604807cf6 100644
---- a/testcases/kernel/syscalls/select/select_var.h
-+++ b/testcases/kernel/syscalls/select/select_var.h
-@@ -6,6 +6,7 @@
- #define SELECT_VAR__
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index aa74ad761..cd5bdeae7 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -30,7 +30,11 @@ _tst_do_exit()
  
- #include "lapi/syscalls.h"
-+#include "tst_timer.h"
+ 	if [ -n "$TST_SETUP_STARTED" -a -n "$TST_RUN_STARTED" -a \
+ 		-n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
+-		$TST_CLEANUP
++		if type "$TST_CLEANUP" >/dev/null 2>&1; then
++			$TST_CLEANUP
++		else
++			tst_res TWARN "cleanup function set (TST_SETUP='$TST_CLEANUP'), but not found (test bug)"
++		fi
+ 	fi
  
- struct compat_sel_arg_struct {
- 	long _n;
-@@ -38,7 +39,7 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
- 	}
- 	case 2: {
- 		int ret;
--		struct timespec ts = {
-+		struct __kernel_old_timespec ts = {
- 			.tv_sec = timeout->tv_sec,
- 			.tv_nsec = timeout->tv_usec * 1000,
- 		};
-@@ -47,7 +48,22 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
- 		timeout->tv_usec = ts.tv_nsec / 1000;
- 		return ret;
- 	}
--	case 3:
-+	case 3: {
-+		int ret = 0;
-+#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
-+		struct __kernel_timespec ts = {
-+			.tv_sec = timeout->tv_sec,
-+			.tv_nsec = timeout->tv_usec * 1000,
-+		};
-+		ret = tst_syscall(__NR_pselect6_time64, nfds, readfds, writefds, exceptfds, &ts, NULL);
-+		timeout->tv_sec = ts.tv_sec;
-+		timeout->tv_usec = ts.tv_nsec / 1000;
-+#else
-+		tst_brk(TCONF, "__NR_pselect6 time64 variant not supported");
-+#endif
-+		return ret;
-+	}
-+	case 4:
- #ifdef __NR__newselect
- 		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
- #else
-@@ -72,11 +88,14 @@ static void select_info(void)
- 		tst_res(TINFO, "Testing SYS_pselect6 syscall");
- 	break;
- 	case 3:
-+		tst_res(TINFO, "Testing SYS_pselect6 time64 syscall");
-+	break;
-+	case 4:
- 		tst_res(TINFO, "Testing SYS__newselect syscall");
- 	break;
- 	}
- }
+ 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
+@@ -585,6 +589,11 @@ tst_run()
+ 	if [ -n "$TST_SETUP" ]; then
+ 		TST_SETUP_STARTED=1
+ 		$TST_SETUP
++		if type "$TST_SETUP" >/dev/null 2>&1; then
++			$TST_SETUP
++		else
++			tst_res TWARN "setup function set (TST_SETUP='$TST_SETUP'), but not found (test bug)"
++		fi
+ 	fi
  
--#define TEST_VARIANTS 4
-+#define TEST_VARIANTS 5
- 
- #endif /* SELECT_VAR__ */
+ 	#TODO check that test reports some results for each test function call
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.26.2
 
