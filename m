@@ -1,62 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 May 2020 23:15:13 +0200
-Subject: [LTP] [PATCH 1/2] tst_net.sh: Print output on unexpected PASS/FAIL
-Message-ID: <20200518211514.20445-1-pvorel@suse.cz>
+Date: Mon, 18 May 2020 23:42:53 +0200
+Subject: [LTP] [PATCH v2 1/1] rpc: TCONF when tests aren't compiled +
+ remove kill warning
+In-Reply-To: <5EC287EE.9070508@cn.fujitsu.com>
+References: <20200512201416.8299-1-pvorel@suse.cz>
+ <5EC287EE.9070508@cn.fujitsu.com>
+Message-ID: <20200518214253.GB22879@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This helps debugging.
+Hi Xiao,
 
-Use $TMPDIR and PID to guarantee writable directory and unique file
-without the need to require TST_NEEDS_TMPDIR=1.
+> On 2020/5/13 4:14, Petr Vorel wrote:
+> > Without this test failure was wrongly reported:
+> > rpc_test 1 TFAIL: tirpc_rpcb_getaddr 10.0.0.2 536875000 failed unexpectedly
+> Hi Petr,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_net.sh | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+> Do you know which caused this failure?
+Certain tests compiled with TI-RPC on glibc (not on libtirpc): rpc_pmap_set,
+rpc_pmap_unset, rpc_svc_register. NOTE glibc implementation is fading out,
+nothing really important.
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 011b62267..bfed4a44d 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -250,22 +250,32 @@ tst_net_run()
- 
- EXPECT_RHOST_PASS()
- {
--	tst_rhost_run -c "$*" > /dev/null
-+	local log="$TMPDIR/log.$$"
-+
-+	tst_rhost_run -c "$*" > $log
- 	if [ $? -eq 0 ]; then
- 		tst_res_ TPASS "$* passed as expected"
- 	else
- 		tst_res_ TFAIL "$* failed unexpectedly"
-+		cat $log
- 	fi
-+
-+	rm -f $log
- }
- 
- EXPECT_RHOST_FAIL()
- {
--	tst_rhost_run -c "$* 2> /dev/null"
-+	local log="$TMPDIR/log.$$"
-+
-+	tst_rhost_run -c "$*" > $log
- 	if [ $? -ne 0 ]; then
- 		tst_res_ TPASS "$* failed as expected"
- 	else
- 		tst_res_ TFAIL "$* passed unexpectedly"
-+		cat $log
- 	fi
-+
-+	rm -f $log
- }
- 
- # Get test interface names for local/remote host.
--- 
-2.26.2
+Before I just disable these tests, I've asked the experts [1] and posted
+patchset to show some debug info.
 
+Kind regards,
+Petr
+
+[1] https://sourceforge.net/p/libtirpc/mailman/message/37014386/
+[2] https://patchwork.ozlabs.org/project/ltp/list/?series=177741&state=*
