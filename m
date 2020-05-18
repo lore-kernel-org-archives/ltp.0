@@ -1,74 +1,82 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 May 2020 15:01:31 +0200
-Subject: [LTP] [PATCH 1/2] tst_test.sh: Fix calling not yet loaded cleanup
- function
-Message-ID: <20200518130132.19312-1-pvorel@suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 18 May 2020 21:04:46 +0800
+Subject: [LTP] [PATCH v2 1/1] rpc: TCONF when tests aren't compiled +
+ remove kill warning
+In-Reply-To: <20200512201416.8299-1-pvorel@suse.cz>
+References: <20200512201416.8299-1-pvorel@suse.cz>
+Message-ID: <5EC287EE.9070508@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-e7dc14caa introduced a regression for new API network tests (these using
-tst_net.sh), which use network namespaces and have cleanup function:
+On 2020/5/13 4:14, Petr Vorel wrote:
+> Without this test failure was wrongly reported:
+> rpc_test 1 TFAIL: tirpc_rpcb_getaddr 10.0.0.2 536875000 failed unexpectedly
+Hi Petr,
 
-$ PATH="/opt/ltp/testcases/bin:$PATH" tcp_ipsec.sh -6 -A rfc4543_256 \
-  -p esp_aead -m tunnel -s 100:1000:65535:R65535
-tcp_ipsec 1 TCONF: Must be super/root for this test!
-/opt/ltp/testcases/bin/tst_test.sh: line 32: tst_ipsec_cleanup: command not found
+Do you know which caused this failure?
 
-This is caused by tst_brk called in tst_net.sh test preparation (happen
-just after loading tst_net.sh, that's why cleanup function haven't been
-defined yet. This would require to load tst_net.sh just before tst_run.
+Best Regards,
+Xiao Yang
+>
+> Also make sure with variable that server has started before trying to
+> kill it.
+>
+> Kill server with SIGPIPE, should be enough and SIGKILL
+> produced warning, which might be confused:
+> /opt/ltp/testcases/bin/rpc_test.sh: line 61: 3827 Killed  $SERVER $PROGNUMNOSVC
+>
+> Reviewed-by: Alexey Kodanev<alexey.kodanev@oracle.com>
+> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> ---
+> Hi,
+>
+> with this implementation (suggested by Alexey), we get TCONF twice. It's
+> a bit strange, but I'll keep it, because I like that required binary is
+> printed:
+> rpc_test 1 TCONF: 'tirpc_rpcb_getaddr' not found
+> rpc_test 1 TCONF: LTP compiled without TI-RPC support?
+>
+> Also added proper detection if kill is needed (related to the change in
+> the commit) and kill with SIGPIPE (unrelated change, I can add it as
+> separate commit).
+>
+> Kind regards,
+> Petr
+>
+>   testcases/network/rpc/rpc-tirpc/rpc_test.sh | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/network/rpc/rpc-tirpc/rpc_test.sh b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
+> index 30cfd2564..dc97213d0 100755
+> --- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
+> +++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
+> @@ -54,12 +54,13 @@ setup()
+>   	fi
+>
+>   	[ -n "$CLIENT" ] || tst_brk TBROK "client program not set"
+> +	tst_check_cmds $CLIENT $SERVER || tst_brk TCONF "LTP compiled without TI-RPC support?"
+>   }
+>
+>   cleanup()
+>   {
+> -	if [ ! -z "$SERVER" ]; then
+> -		pkill -9 $SERVER>  /dev/null 2>&1
+> +	if [ "$SERVER_STARTED" ]; then
+> +		pkill -13 -x $SERVER
+>   		$CLEANER $PROGNUMNOSVC
+>   	fi
+>   }
+> @@ -70,6 +71,7 @@ do_test()
+>
+>   	if [ -n "$SERVER" ]; then
+>   		$SERVER $PROGNUMNOSVC&
+> +		SERVER_STARTED=1
+>
+>   		for i in $(seq 1 10); do
+>   			rpcinfo -p localhost | grep -q $PROGNUMNOSVC&&  break
 
-But because tst_net.sh doesn't have it's own cleanup function
-(tst_cleanup_rhost is always called in _tst_do_exit in tst_test.sh
-regardless of setup/cleanup functions), we can assume that only after
-starting the actual test code (i.e. running either setup or test
-function) it's meaningful to run cleanup function.
 
-This is effectively a revert of e7dc14caa + adding $TST_SETUP_STARTED.
-
-Fixes: e7dc14caa ("tst_test.sh: Run cleanup even setup is not defined")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_test.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8d24b4abf..aa74ad761 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -28,7 +28,8 @@ _tst_do_exit()
- 	local ret=0
- 	TST_DO_EXIT=1
- 
--	if [ -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
-+	if [ -n "$TST_SETUP_STARTED" -a -n "$TST_RUN_STARTED" -a \
-+		-n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
- 		$TST_CLEANUP
- 	fi
- 
-@@ -582,6 +583,7 @@ tst_run()
- 	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
- 
- 	if [ -n "$TST_SETUP" ]; then
-+		TST_SETUP_STARTED=1
- 		$TST_SETUP
- 	fi
- 
-@@ -592,9 +594,11 @@ tst_run()
- 			_tst_max=$(( $(echo $TST_TEST_DATA | tr -cd "$TST_TEST_DATA_IFS" | wc -c) +1))
- 			for _tst_i in $(seq $_tst_max); do
- 				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_i)"
-+				TST_RUN_STARTED=1
- 				_tst_run_tests "$_tst_data"
- 			done
- 		else
-+			TST_RUN_STARTED=1
- 			_tst_run_tests
- 		fi
- 		TST_ITERATIONS=$((TST_ITERATIONS-1))
--- 
-2.26.2
 
