@@ -1,82 +1,42 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 18 May 2020 21:04:46 +0800
-Subject: [LTP] [PATCH v2 1/1] rpc: TCONF when tests aren't compiled +
- remove kill warning
-In-Reply-To: <20200512201416.8299-1-pvorel@suse.cz>
-References: <20200512201416.8299-1-pvorel@suse.cz>
-Message-ID: <5EC287EE.9070508@cn.fujitsu.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 18 May 2020 20:29:52 +0200
+Subject: [LTP] [COMMITTED][PATCH 1/1] ebizzy: guard mallocopt() with
+ __GLIBC__
+Message-ID: <20200518182952.23520-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/5/13 4:14, Petr Vorel wrote:
-> Without this test failure was wrongly reported:
-> rpc_test 1 TFAIL: tirpc_rpcb_getaddr 10.0.0.2 536875000 failed unexpectedly
-Hi Petr,
+From: Khem Raj <raj.khem@gmail.com>
 
-Do you know which caused this failure?
+mallocopt is not available on non glibc implementations
 
-Best Regards,
-Xiao Yang
->
-> Also make sure with variable that server has started before trying to
-> kill it.
->
-> Kill server with SIGPIPE, should be enough and SIGKILL
-> produced warning, which might be confused:
-> /opt/ltp/testcases/bin/rpc_test.sh: line 61: 3827 Killed  $SERVER $PROGNUMNOSVC
->
-> Reviewed-by: Alexey Kodanev<alexey.kodanev@oracle.com>
-> Signed-off-by: Petr Vorel<pvorel@suse.cz>
-> ---
-> Hi,
->
-> with this implementation (suggested by Alexey), we get TCONF twice. It's
-> a bit strange, but I'll keep it, because I like that required binary is
-> printed:
-> rpc_test 1 TCONF: 'tirpc_rpcb_getaddr' not found
-> rpc_test 1 TCONF: LTP compiled without TI-RPC support?
->
-> Also added proper detection if kill is needed (related to the change in
-> the commit) and kill with SIGPIPE (unrelated change, I can add it as
-> separate commit).
->
-> Kind regards,
-> Petr
->
->   testcases/network/rpc/rpc-tirpc/rpc_test.sh | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/network/rpc/rpc-tirpc/rpc_test.sh b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-> index 30cfd2564..dc97213d0 100755
-> --- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-> +++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-> @@ -54,12 +54,13 @@ setup()
->   	fi
->
->   	[ -n "$CLIENT" ] || tst_brk TBROK "client program not set"
-> +	tst_check_cmds $CLIENT $SERVER || tst_brk TCONF "LTP compiled without TI-RPC support?"
->   }
->
->   cleanup()
->   {
-> -	if [ ! -z "$SERVER" ]; then
-> -		pkill -9 $SERVER>  /dev/null 2>&1
-> +	if [ "$SERVER_STARTED" ]; then
-> +		pkill -13 -x $SERVER
->   		$CLEANER $PROGNUMNOSVC
->   	fi
->   }
-> @@ -70,6 +71,7 @@ do_test()
->
->   	if [ -n "$SERVER" ]; then
->   		$SERVER $PROGNUMNOSVC&
-> +		SERVER_STARTED=1
->
->   		for i in $(seq 1 10); do
->   			rpcinfo -p localhost | grep -q $PROGNUMNOSVC&&  break
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ utils/benchmark/ebizzy-0.3/ebizzy.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
+diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
+index 5bb8eff56..934d951f3 100644
+--- a/utils/benchmark/ebizzy-0.3/ebizzy.c
++++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
+@@ -215,10 +215,10 @@ static void read_options(int argc, char *argv[])
+ 			"\"never mmap\" option specified\n");
+ 		usage();
+ 	}
+-
++#ifdef __GLIBC__
+ 	if (never_mmap)
+ 		mallopt(M_MMAP_MAX, 0);
+-
++#endif
+ 	if (chunk_size < record_size) {
+ 		fprintf(stderr, "Chunk size %u smaller than record size %u\n",
+ 			chunk_size, record_size);
+-- 
+2.26.2
 
