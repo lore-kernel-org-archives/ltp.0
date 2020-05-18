@@ -1,68 +1,89 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 18 May 2020 11:21:10 +0200
-Subject: [LTP] [PATCH V3 00/17] Syscalls: Add support for time64 variants
-In-Reply-To: <20200518091253.qmvqo7xub7hpeovm@vireshk-i7>
-References: <cover.1589789487.git.viresh.kumar@linaro.org>
- <CAK8P3a3aP5S_w_FFv=UvJRSRTjcoNVy_W6ycm4OTct-7Q_5_xg@mail.gmail.com>
- <20200518091253.qmvqo7xub7hpeovm@vireshk-i7>
-Message-ID: <CAK8P3a3_dGzoGPckBByySvLYGC3FyiCSwCdfzxG8xjJsY0oXrg@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 18 May 2020 15:57:32 +0530
+Subject: [LTP] [PATCH V4 13/17] syscalls/select6: Add support for time64
+ tests
+In-Reply-To: <f7b891343ded659bd45fa28d88667109887f1d60.1589789487.git.viresh.kumar@linaro.org>
+References: <f7b891343ded659bd45fa28d88667109887f1d60.1589789487.git.viresh.kumar@linaro.org>
+Message-ID: <96ce7bbd49ae243c02371aeb4c6a672a246e8b53.1589797580.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, May 18, 2020 at 11:12 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 18-05-20, 11:02, Arnd Bergmann wrote:
-> > These all look good to me.
-> >
-> > I cross-referenced it with my list of syscall changes, and found that this
-> > set of patches does not contain
-> > clock_{gettime,settime,adjtime,getres,nanosleep},
->
-> These are already already merged.
->
-> > waitid, statx and msgctl/semctl/shmctl
->
-> Hmm, I didn't see them in the list of time64 calls somehow. Nor is
-> there a _time64 syscall number available for them. What did I miss ?
-> Or the original syscalls only support the 64bit timespec and there is
-> no separate time64 variant ?
+This adds support for time64 tests to the existing select6() syscall
+tests.
 
-I was mistaken about waitid, we never added a time64 syscall
-for that since the arguments do not overflow and it takes a
-timeval rather than a timespec. In this case you just have to make
-sure to pass the correct rusage structure based on __kernel_old_timeval
-instead of the glibc timeval.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V4:
+- Move the setting of tv_sec/nsec within the ifdef as ts isn't available
+  outside of it.
 
-For msgctl/semctl/shmctl, the existing syscalls were extended in a
-compatible way, using an extended 'high' field for each 32-bit
-seconds value. I later learned that on some architectures, the
-'compat' version of that failed to zero-initialize those fields, so I
-guess all we need is a test that ensures this was fixed correctly,
-by initializing the '*_high' to something nonzero before calling
-the syscall, and checking that it gets zero-filled by the syscall.
+ testcases/kernel/syscalls/select/select_var.h | 25 ++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-Ideally one would also check that they contain the correct values
-after y2038 (same as we'd like for sys_clock_gettime and the
-syscall wrappers based on that), but I don't know if that can
-easily be done in ltp now because setting the system time may
-have undesired side-effects.
+diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
+index b19a1d1bf085..2c7604807cf6 100644
+--- a/testcases/kernel/syscalls/select/select_var.h
++++ b/testcases/kernel/syscalls/select/select_var.h
+@@ -6,6 +6,7 @@
+ #define SELECT_VAR__
+ 
+ #include "lapi/syscalls.h"
++#include "tst_timer.h"
+ 
+ struct compat_sel_arg_struct {
+ 	long _n;
+@@ -38,7 +39,7 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+ 	}
+ 	case 2: {
+ 		int ret;
+-		struct timespec ts = {
++		struct __kernel_old_timespec ts = {
+ 			.tv_sec = timeout->tv_sec,
+ 			.tv_nsec = timeout->tv_usec * 1000,
+ 		};
+@@ -47,7 +48,22 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+ 		timeout->tv_usec = ts.tv_nsec / 1000;
+ 		return ret;
+ 	}
+-	case 3:
++	case 3: {
++		int ret = 0;
++#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
++		struct __kernel_timespec ts = {
++			.tv_sec = timeout->tv_sec,
++			.tv_nsec = timeout->tv_usec * 1000,
++		};
++		ret = tst_syscall(__NR_pselect6_time64, nfds, readfds, writefds, exceptfds, &ts, NULL);
++		timeout->tv_sec = ts.tv_sec;
++		timeout->tv_usec = ts.tv_nsec / 1000;
++#else
++		tst_brk(TCONF, "__NR_pselect6 time64 variant not supported");
++#endif
++		return ret;
++	}
++	case 4:
+ #ifdef __NR__newselect
+ 		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
+ #else
+@@ -72,11 +88,14 @@ static void select_info(void)
+ 		tst_res(TINFO, "Testing SYS_pselect6 syscall");
+ 	break;
+ 	case 3:
++		tst_res(TINFO, "Testing SYS_pselect6 time64 syscall");
++	break;
++	case 4:
+ 		tst_res(TINFO, "Testing SYS__newselect syscall");
+ 	break;
+ 	}
+ }
+ 
+-#define TEST_VARIANTS 4
++#define TEST_VARIANTS 5
+ 
+ #endif /* SELECT_VAR__ */
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
-> > There is also a list of syscalls that may need to get updates to their tests
-> > because passing a timeval/timespec into them is now broken and they need
-> > to receive the __kernel_old_* variants:
->
-> Ahh, if I understand correct you are only talking about the cases
-> where the syscall is called directly without the libc wrapper, right ?
-> We can't use timeval/timespec there anymore.
-
-Exactly. There are probably also ioctls with the same problem, but
-I don't know which ioctl commands are actually tested by ltp.
-
-I would guess that the socket timestamps (both ioctl and
-setsockopt based ones) do have some tests that need to be
-updated.
-
-       Arnd
