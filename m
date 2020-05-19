@@ -1,60 +1,60 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 19 May 2020 08:44:56 +0200
-Subject: [LTP] [PATCH 1/2] tst_test.sh: Fix calling not yet loaded
- cleanup function
-In-Reply-To: <20200519063740.GA7756@dell5510>
-References: <20200518130132.19312-1-pvorel@suse.cz>
- <1a41aca6-f774-08da-bf7b-b33806b48923@jv-coder.de>
- <20200519063740.GA7756@dell5510>
-Message-ID: <eb30b7e2-fb61-cdcb-b24b-6deb5512f4a4@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 19 May 2020 08:52:01 +0200
+Subject: [LTP] [PATCH v2 2/2] tst_test.sh: Warn about setup/cleanup function
+ not loaded
+In-Reply-To: <20200519065201.23295-1-pvorel@suse.cz>
+References: <20200519065201.23295-1-pvorel@suse.cz>
+Message-ID: <20200519065201.23295-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Inspired by regression fixed by previous commit.
 
->> Is it really important, that test is started? Shouldn't it be enough if we
->> got to the point, where the test
->> could be started. Moving TST_RUN_STARTED out of the condition would reduce
->> repetition.
-> Well, if you look into the code, there is tst_require_cmds call in if clause,
-> which should pass:
->
-> 	#TODO check that test reports some results for each test function call
-> 	while [ $TST_ITERATIONS -gt 0 ]; do
-> 		if [ -n "$TST_TEST_DATA" ]; then
-> 			tst_require_cmds cut tr wc
-> 			_tst_max=$(( $(echo $TST_TEST_DATA | tr -cd "$TST_TEST_DATA_IFS" | wc -c) +1))
-> 			for _tst_i in $(seq $_tst_max); do
-> 				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_i)"
-> 				TST_RUN_STARTED=1
-> 				_tst_run_tests "$_tst_data"
-> 			done
-> 		else
-> 			TST_RUN_STARTED=1
-> 			_tst_run_tests
-> 		fi
-> 		TST_ITERATIONS=$((TST_ITERATIONS-1))
-> 	done
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+* use tst_brk TBROK instead of tst_res TWARN
+* fixed variable name TST_CLEANUP in tst_brk
+(both Joerg)
 
-At this point setup was executed right? So if tst_require_cmds fails, it 
-should execute cleanup, to
-revert whatever setup did, no?
-Oh I guess changing the condition to "setup run _or_ test run" will make 
-this work.
-But is there really a reason for having both variables? I guess the 
-reason they exist at all is to ensure,
-that the cleanup function is already defined. But that should be true, 
-as soon as tst_run is executed.
-So maybe one single variable that is set, when TST_RUN is executed is 
-sufficient.
-In my opinion the decision to execute of cleanup shouldn't be too 
-complicated. The cleanup function
-should be able to handle an abort anytime during test execution anyway. 
-So it should be callable, as soon
-as it is defined. At least when tst_run is executed, it should be ok to 
-call cleanup.
+Kind regards,
+Petr
 
-J?rg
+ testcases/lib/tst_test.sh | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index e76a31509..b1fc96401 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -30,7 +30,11 @@ _tst_do_exit()
+ 
+ 	if [ -n "$TST_SETUP_STARTED" -o -n "$TST_RUN_STARTED" ] && \
+ 		[ -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
+-		$TST_CLEANUP
++		if type "$TST_CLEANUP" >/dev/null 2>&1; then
++			$TST_CLEANUP
++		else
++			tst_brk TBROK "cleanup function set (TST_CLEANUP='$TST_CLEANUP'), but not found (test bug)"
++		fi
+ 	fi
+ 
+ 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
+@@ -585,6 +589,11 @@ tst_run()
+ 	if [ -n "$TST_SETUP" ]; then
+ 		TST_SETUP_STARTED=1
+ 		$TST_SETUP
++		if type "$TST_SETUP" >/dev/null 2>&1; then
++			$TST_SETUP
++		else
++			tst_brk TBROK "setup function set (TST_SETUP='$TST_SETUP'), but not found (test bug)"
++		fi
+ 	fi
+ 
+ 	#TODO check that test reports some results for each test function call
+-- 
+2.26.2
+
