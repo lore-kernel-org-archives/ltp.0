@@ -1,80 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 May 2020 08:52:00 +0200
-Subject: [LTP] [PATCH v2 1/2] tst_test.sh: Fix calling not yet loaded
- cleanup function
-Message-ID: <20200519065201.23295-1-pvorel@suse.cz>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 19 May 2020 14:21:07 +0530
+Subject: [LTP] [PATCH 0/5] syscalls: Remove incorrect usage of libc
+ structures
+Message-ID: <cover.1589877853.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-e7dc14caa introduced a regression for new API network tests (these using
-tst_net.sh), which use network namespaces and have cleanup function:
+Hi,
 
-$ PATH="/opt/ltp/testcases/bin:$PATH" tcp_ipsec.sh -6 -A rfc4543_256 \
-  -p esp_aead -m tunnel -s 100:1000:65535:R65535
-tcp_ipsec 1 TCONF: Must be super/root for this test!
-/opt/ltp/testcases/bin/tst_test.sh: line 32: tst_ipsec_cleanup: command not found
+It is incorrect to use the libc structures (timespec, timeval, timex),
+to the non-timex64 syscalls called via tst_syscall() as the kernel
+expects the old structures in there and the libc structure definition
+may change in the future.
 
-This is caused by tst_brk called in tst_net.sh test preparation (happen
-just after loading tst_net.sh, that's why cleanup function haven't been
-defined yet. This would require to load tst_net.sh just before tst_run.
+Arnd: It was getting difficult to search for such instances and so I
+searched it with following strings (search for files that use these
+structures, as well as tst_syscall()) to catch the abuse, hope it covers
+all cases.
 
-But because tst_net.sh doesn't have it's own cleanup function
-(tst_cleanup_rhost is always called in _tst_do_exit in tst_test.sh
-regardless of setup/cleanup functions), we can assume that only after
-starting the actual test code (i.e. running either setup or test
-function) it's meaningful to run cleanup function.
+git grep "struct timeval" `git grep -l tst_syscall`
+git grep "struct timespec" `git grep -l tst_syscall`
+git grep "struct timex" `git grep -l tst_syscall`
 
-This is effectively a revert of e7dc14caa + adding $TST_SETUP_STARTED.
+Viresh Kumar (5):
+  tst_safe_clocks: Remove safe_clock_adjtime()
+  syscalls: settimeofday: Use gettimeofday()
+  syscalls: Don't use tst_syscall() unnecessarily
+  syscalls: Don't pass struct timespec to tst_syscall()
+  syscalls: Don't pass struct timeval to tst_syscall()
 
-Fixes: e7dc14caa ("tst_test.sh: Run cleanup even setup is not defined")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Changes v1->v2:
-* fixed condition (or: $TST_SETUP_STARTED" -o -n "$TST_RUN_STARTED") (Joerg)
+ include/tst_clocks.h                          |  8 ++++---
+ include/tst_safe_clocks.h                     | 18 ---------------
+ include/tst_timer.h                           |  6 +++++
+ lib/parse_opts.c                              |  3 +--
+ lib/tst_clocks.c                              |  6 ++---
+ lib/tst_test.c                                | 16 ++++++-------
+ lib/tst_timer.c                               | 23 ++++++++++++-------
+ lib/tst_timer_test.c                          |  2 +-
+ lib/tst_wallclock.c                           | 17 +++++++-------
+ testcases/cve/cve-2016-7117.c                 |  2 +-
+ .../syscalls/clock_adjtime/clock_adjtime.h    |  5 ----
+ .../syscalls/gettimeofday/gettimeofday02.c    |  3 ++-
+ .../syscalls/settimeofday/settimeofday01.c    |  6 ++---
+ .../syscalls/settimeofday/settimeofday02.c    |  2 +-
+ testcases/kernel/syscalls/stime/stime_var.h   |  3 ++-
+ 15 files changed, 57 insertions(+), 63 deletions(-)
 
-Kind regards,
-Petr
-
- testcases/lib/tst_test.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8d24b4abf..e76a31509 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -28,7 +28,8 @@ _tst_do_exit()
- 	local ret=0
- 	TST_DO_EXIT=1
- 
--	if [ -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
-+	if [ -n "$TST_SETUP_STARTED" -o -n "$TST_RUN_STARTED" ] && \
-+		[ -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
- 		$TST_CLEANUP
- 	fi
- 
-@@ -582,6 +583,7 @@ tst_run()
- 	[ -n "$TST_NEEDS_MODULE" ] && tst_require_module "$TST_NEEDS_MODULE"
- 
- 	if [ -n "$TST_SETUP" ]; then
-+		TST_SETUP_STARTED=1
- 		$TST_SETUP
- 	fi
- 
-@@ -592,9 +594,11 @@ tst_run()
- 			_tst_max=$(( $(echo $TST_TEST_DATA | tr -cd "$TST_TEST_DATA_IFS" | wc -c) +1))
- 			for _tst_i in $(seq $_tst_max); do
- 				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_i)"
-+				TST_RUN_STARTED=1
- 				_tst_run_tests "$_tst_data"
- 			done
- 		else
-+			TST_RUN_STARTED=1
- 			_tst_run_tests
- 		fi
- 		TST_ITERATIONS=$((TST_ITERATIONS-1))
 -- 
-2.26.2
+2.25.0.rc1.19.g042ed3e048af
 
