@@ -1,54 +1,56 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 19 May 2020 14:21:07 +0530
-Subject: [LTP] [PATCH 0/5] syscalls: Remove incorrect usage of libc
- structures
-Message-ID: <cover.1589877853.git.viresh.kumar@linaro.org>
+Date: Tue, 19 May 2020 14:21:08 +0530
+Subject: [LTP] [PATCH 1/5] tst_safe_clocks: Remove safe_clock_adjtime()
+In-Reply-To: <cover.1589877853.git.viresh.kumar@linaro.org>
+References: <cover.1589877853.git.viresh.kumar@linaro.org>
+Message-ID: <530fdb27575512ec76d975e31c05f9f58592e2cf.1589877853.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+safe_clock_adjtime() isn't used anymore, remove it.
 
-It is incorrect to use the libc structures (timespec, timeval, timex),
-to the non-timex64 syscalls called via tst_syscall() as the kernel
-expects the old structures in there and the libc structure definition
-may change in the future.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ include/tst_safe_clocks.h | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-Arnd: It was getting difficult to search for such instances and so I
-searched it with following strings (search for files that use these
-structures, as well as tst_syscall()) to catch the abuse, hope it covers
-all cases.
-
-git grep "struct timeval" `git grep -l tst_syscall`
-git grep "struct timespec" `git grep -l tst_syscall`
-git grep "struct timex" `git grep -l tst_syscall`
-
-Viresh Kumar (5):
-  tst_safe_clocks: Remove safe_clock_adjtime()
-  syscalls: settimeofday: Use gettimeofday()
-  syscalls: Don't use tst_syscall() unnecessarily
-  syscalls: Don't pass struct timespec to tst_syscall()
-  syscalls: Don't pass struct timeval to tst_syscall()
-
- include/tst_clocks.h                          |  8 ++++---
- include/tst_safe_clocks.h                     | 18 ---------------
- include/tst_timer.h                           |  6 +++++
- lib/parse_opts.c                              |  3 +--
- lib/tst_clocks.c                              |  6 ++---
- lib/tst_test.c                                | 16 ++++++-------
- lib/tst_timer.c                               | 23 ++++++++++++-------
- lib/tst_timer_test.c                          |  2 +-
- lib/tst_wallclock.c                           | 17 +++++++-------
- testcases/cve/cve-2016-7117.c                 |  2 +-
- .../syscalls/clock_adjtime/clock_adjtime.h    |  5 ----
- .../syscalls/gettimeofday/gettimeofday02.c    |  3 ++-
- .../syscalls/settimeofday/settimeofday01.c    |  6 ++---
- .../syscalls/settimeofday/settimeofday02.c    |  2 +-
- testcases/kernel/syscalls/stime/stime_var.h   |  3 ++-
- 15 files changed, 57 insertions(+), 63 deletions(-)
-
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index 27e8bda45589..4cb5f41ed82f 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -55,21 +55,6 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 	}
+ }
+ 
+-static inline int safe_clock_adjtime(const char *file, const int lineno,
+-	clockid_t clk_id, struct timex *txc)
+-{
+-	int rval;
+-
+-	rval = tst_syscall(__NR_clock_adjtime, clk_id, txc);
+-	if (rval < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d clock_adjtime(%s) failed %i",
+-			file, lineno, tst_clock_name(clk_id), rval);
+-	}
+-
+-	return rval;
+-}
+-
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+@@ -79,7 +64,4 @@ static inline int safe_clock_adjtime(const char *file, const int lineno,
+ #define SAFE_CLOCK_SETTIME(clk_id, tp)\
+ 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
+ 
+-#define SAFE_CLOCK_ADJTIME(clk_id, txc)\
+-	safe_clock_adjtime(__FILE__, __LINE__, (clk_id), (txc))
+-
+ #endif /* SAFE_CLOCKS_H__ */
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
