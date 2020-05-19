@@ -1,55 +1,32 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 19 May 2020 14:41:29 +0200
-Subject: [LTP] [PATCH 3/5] syscalls: Don't use tst_syscall()
- unnecessarily
-In-Reply-To: <20200519122347.GC16008@yuki.lan>
+Date: Tue, 19 May 2020 14:47:49 +0200
+Subject: [LTP] [PATCH 2/5] syscalls: settimeofday: Use gettimeofday()
+In-Reply-To: <20200519121617.GA16008@yuki.lan>
 References: <cover.1589877853.git.viresh.kumar@linaro.org>
- <3f3b7d669d47ae701385b43deb8280a353dd231e.1589877853.git.viresh.kumar@linaro.org>
- <20200519122347.GC16008@yuki.lan>
-Message-ID: <CAK8P3a2PgjYyijH=VoNGhs_xk1VvFN6ZNvNM-W4TopWY6jJNbA@mail.gmail.com>
+ <931bddab3d92f73f07f32dd7e1770078fdc07e0e.1589877853.git.viresh.kumar@linaro.org>
+ <20200519121617.GA16008@yuki.lan>
+Message-ID: <CAK8P3a2WQ+pU2ao1ERM8f9Vy3_6ASc3ijBDSD6id2aZoio+o5w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, May 19, 2020 at 2:23 PM Cyril Hrubis <chrubis@suse.cz> wrote:
-> > These syscall are old enough and must have support in libc for everyone.
-> > Don't use tst_syscall() for them unnecessarily.
-> >
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  lib/parse_opts.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/lib/parse_opts.c b/lib/parse_opts.c
-> > index a9d50589a3f9..b3ab69c0a539 100644
-> > --- a/lib/parse_opts.c
-> > +++ b/lib/parse_opts.c
-> > @@ -45,7 +45,6 @@
-> >  #include "test.h"
-> >  #include "ltp_priv.h"
-> >  #include "usctest.h"
-> > -#include "tst_clocks.h"
-> >
-> >  #ifndef UNIT_TEST
-> >  #define UNIT_TEST    0
-> > @@ -472,7 +471,7 @@ static uint64_t get_current_time(void)
-> >  {
-> >       struct timespec ts;
-> >
-> > -     tst_clock_gettime(CLOCK_MONOTONIC, &ts);
-> > +     clock_gettime(CLOCK_MONOTONIC, &ts);
+On Tue, May 19, 2020 at 2:15 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 >
-> I guess that this will reintroduce LTP compilation failures on older
-> glibc, which was the primary reason we used the tst_clock_gettime()
-> instead of clock_gettime().
+> Hi!
+> You can set the .restore_wallclock flag in the tst_test structure for
+> these two tests and remove the setup() and cleanup() as well.
+>
+> Also in the settimeofday02 I would be inclined to just remove the clock
+> restoration code, since there is no way the tim will be changed unless
+> the kernel is buggy.
 
-I see that clock_gettime was first added in glibc-2.1.3 back in 1999.
-Can that actually run LTP any more? If it can and this is considered
-important, I fear the tst_clock_gettime() call needs to be extended
-to call the clock_gettime()/clock_gettime64()/gettimeofday() syscalls,
-whichever is the first to work, and convert the formats from the
-native kernel format to the glibc format.
+Ah, I did not realize that LTP actually does try to set the clock and then
+set it back. If it does that, it may be very interesting to test the behavior
+across the y2038 overflow, e.g. set the time ot just after the 2038-01-19
+expiration and ensure the kernel still behaves as expected, or set the
+timer to just before the overflow and set a timer just after, and see that
+the timer triggers.
 
-         Arnd
+      Arnd
