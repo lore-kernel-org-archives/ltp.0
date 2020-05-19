@@ -1,13 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 May 2020 15:45:11 +0200
-Subject: [LTP] [PATCH 3/5] syscalls: Don't use tst_syscall()
- unnecessarily
-In-Reply-To: <CAK8P3a2PgjYyijH=VoNGhs_xk1VvFN6ZNvNM-W4TopWY6jJNbA@mail.gmail.com>
-References: <cover.1589877853.git.viresh.kumar@linaro.org>
- <3f3b7d669d47ae701385b43deb8280a353dd231e.1589877853.git.viresh.kumar@linaro.org>
- <20200519122347.GC16008@yuki.lan>
- <CAK8P3a2PgjYyijH=VoNGhs_xk1VvFN6ZNvNM-W4TopWY6jJNbA@mail.gmail.com>
-Message-ID: <20200519134511.GD16008@yuki.lan>
+Date: Tue, 19 May 2020 16:07:04 +0200
+Subject: [LTP] [PATCH 1/1] C API: Turn .test_variants into array of
+ description
+In-Reply-To: <20200519120725.25750-1-pvorel@suse.cz>
+References: <20200519120725.25750-1-pvorel@suse.cz>
+Message-ID: <20200519140704.GE16008@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,27 +12,55 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > -     tst_clock_gettime(CLOCK_MONOTONIC, &ts);
-> > > +     clock_gettime(CLOCK_MONOTONIC, &ts);
-> >
-> > I guess that this will reintroduce LTP compilation failures on older
-> > glibc, which was the primary reason we used the tst_clock_gettime()
-> > instead of clock_gettime().
-> 
-> I see that clock_gettime was first added in glibc-2.1.3 back in 1999.
-> Can that actually run LTP any more? If it can and this is considered
-> important, I fear the tst_clock_gettime() call needs to be extended
-> to call the clock_gettime()/clock_gettime64()/gettimeofday() syscalls,
-> whichever is the first to work, and convert the formats from the
-> native kernel format to the glibc format.
+> diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+> index 061b2bb22..40dae4b24 100644
+> --- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+> +++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime01.c
+> @@ -107,14 +107,12 @@ struct test_case tc[] = {
+>  static struct test_variants {
+>  	int (*clock_adjtime)(clockid_t clk_id, void *timex);
+>  	enum tst_timex_type type;
+> -	char *desc;
+>  } variants[] = {
+>  #if (__NR_clock_adjtime != __LTP__NR_INVALID_SYSCALL)
+> -	{.clock_adjtime = sys_clock_adjtime, .type = TST_KERN_OLD_TIMEX, .desc = "syscall with old kernel spec"},
+> +	{.clock_adjtime = sys_clock_adjtime, .type = TST_KERN_OLD_TIMEX},
+>  #endif
+> -
+>  #if (__NR_clock_adjtime64 != __LTP__NR_INVALID_SYSCALL)
+> -	{.clock_adjtime = sys_clock_adjtime64, .type = TST_KERN_TIMEX, .desc = "syscall time64 with kernel spec"},
+> +	{.clock_adjtime = sys_clock_adjtime64, .type = TST_KERN_TIMEX},
+>  #endif
+>  };
+>  
+> @@ -188,8 +186,6 @@ static void setup(void)
+>  	size_t i;
+>  	int rval;
+>  
+> -	tst_res(TINFO, "Testing variant: %s", tv->desc);
+> -
+>  	saved.type = tv->type;
+>  	rval = tv->clock_adjtime(CLOCK_REALTIME, tst_timex_get(&saved));
+>  	if (rval < 0) {
+> @@ -257,7 +253,15 @@ static struct tst_test test = {
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+>  	.tcnt = ARRAY_SIZE(tc),
+> -	.test_variants = ARRAY_SIZE(variants),
+> +	.test_variants = (const char *[]) {
+> +#if (__NR_clock_adjtime != __LTP__NR_INVALID_SYSCALL)
+> +		"syscall with old kernel spec",
+> +#endif
+> +#if (__NR_clock_adjtime64 != __LTP__NR_INVALID_SYSCALL)
+> +		"syscall time64 with kernel spec",
+> +#endif
+> +		NULL
+> +	},
 
-I guess that at the current time we do support distros that are at max
-10 years old, mostly because enterprise support cycles are about 10
-years in lenght.
+I do not think that having more ifdefs and splitting the test variant
+structure helps to make things simple in the case of timer testcases.
 
-The issue here is that glibc needed -lrt passed to linker couple of
-years ago and we wanted to avoid the need of linking everything with
--lrt, as calling the raw syscall was just easier fix.
+What exact problem are you trying to solve?
 
 -- 
 Cyril Hrubis
