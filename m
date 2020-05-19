@@ -1,35 +1,60 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 May 2020 08:43:14 +0200
-Subject: [LTP] [PATCH 2/2] tst_test.sh: Warn about setup/cleanup
- function not loaded
-In-Reply-To: <033366de-ed10-f494-600a-51aed8639613@jv-coder.de>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 19 May 2020 08:44:56 +0200
+Subject: [LTP] [PATCH 1/2] tst_test.sh: Fix calling not yet loaded
+ cleanup function
+In-Reply-To: <20200519063740.GA7756@dell5510>
 References: <20200518130132.19312-1-pvorel@suse.cz>
- <20200518130132.19312-2-pvorel@suse.cz>
- <033366de-ed10-f494-600a-51aed8639613@jv-coder.de>
-Message-ID: <20200519064314.GA16972@dell5510>
+ <1a41aca6-f774-08da-bf7b-b33806b48923@jv-coder.de>
+ <20200519063740.GA7756@dell5510>
+Message-ID: <eb30b7e2-fb61-cdcb-b24b-6deb5512f4a4@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi J?rg,
+Hi,
 
-> this looks good, just one small typo. And I guess I would raise this to
-> TBROK, but that
-> is just my personal preference :)
-Yes, it could be. I thought TBROK would be for setup (tests results are probably
-invalid without setup) and TWARN for cleanup (well, cleanup is important, but
-results are valid, see other TWARN in tst_test.sh). But I want to be consistent
-=> use TBROK.
+>> Is it really important, that test is started? Shouldn't it be enough if we
+>> got to the point, where the test
+>> could be started. Moving TST_RUN_STARTED out of the condition would reduce
+>> repetition.
+> Well, if you look into the code, there is tst_require_cmds call in if clause,
+> which should pass:
+>
+> 	#TODO check that test reports some results for each test function call
+> 	while [ $TST_ITERATIONS -gt 0 ]; do
+> 		if [ -n "$TST_TEST_DATA" ]; then
+> 			tst_require_cmds cut tr wc
+> 			_tst_max=$(( $(echo $TST_TEST_DATA | tr -cd "$TST_TEST_DATA_IFS" | wc -c) +1))
+> 			for _tst_i in $(seq $_tst_max); do
+> 				_tst_data="$(echo "$TST_TEST_DATA" | cut -d"$TST_TEST_DATA_IFS" -f$_tst_i)"
+> 				TST_RUN_STARTED=1
+> 				_tst_run_tests "$_tst_data"
+> 			done
+> 		else
+> 			TST_RUN_STARTED=1
+> 			_tst_run_tests
+> 		fi
+> 		TST_ITERATIONS=$((TST_ITERATIONS-1))
+> 	done
 
-> Am 18.05.2020 um 15:01 schrieb Petr Vorel:
-> > +		if type "$TST_CLEANUP" >/dev/null 2>&1; then
-> > +			$TST_CLEANUP
-> > +		else
-> > +			tst_res TWARN "cleanup function set (TST_SETUP='$TST_CLEANUP'), but not found (test bug)"
-> This should probably be TST_CLEANUP=....
-Thanks!
+At this point setup was executed right? So if tst_require_cmds fails, it 
+should execute cleanup, to
+revert whatever setup did, no?
+Oh I guess changing the condition to "setup run _or_ test run" will make 
+this work.
+But is there really a reason for having both variables? I guess the 
+reason they exist at all is to ensure,
+that the cleanup function is already defined. But that should be true, 
+as soon as tst_run is executed.
+So maybe one single variable that is set, when TST_RUN is executed is 
+sufficient.
+In my opinion the decision to execute of cleanup shouldn't be too 
+complicated. The cleanup function
+should be able to handle an abort anytime during test execution anyway. 
+So it should be callable, as soon
+as it is defined. At least when tst_run is executed, it should be ok to 
+call cleanup.
 
-Kind regards,
-Petr
+J?rg
