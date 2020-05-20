@@ -1,58 +1,66 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 May 2020 10:26:07 +0200
-Subject: [LTP] [PATCH v3 2/2] tst_test.sh: Warn about setup/cleanup function
- not loaded
-In-Reply-To: <20200520082607.25776-1-pvorel@suse.cz>
-References: <20200520082607.25776-1-pvorel@suse.cz>
-Message-ID: <20200520082607.25776-2-pvorel@suse.cz>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 20 May 2020 10:47:17 +0200
+Subject: [LTP] [PATCH 4/5] syscalls: Don't pass struct timespec to
+ tst_syscall()
+In-Reply-To: <20200520073151.y5xttqnqeqe4jmka@vireshk-i7>
+References: <cover.1589877853.git.viresh.kumar@linaro.org>
+ <a6c2c59a9cffb86d751b911384a560803e723623.1589877853.git.viresh.kumar@linaro.org>
+ <20200519122155.GB16008@yuki.lan> <20200520073151.y5xttqnqeqe4jmka@vireshk-i7>
+Message-ID: <CAK8P3a3kS-_ZynTR=o9FVAXEyr9VcAaigOcnG-_Se+wA_+jQoA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Inspired by regression fixed by previous commit.
+On Wed, May 20, 2020 at 9:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 19-05-20, 14:21, Cyril Hrubis wrote:
+> > So we can as well so that they take the tst_ts structure, then we are
+> > also free to change the way the timestamp is acquired without the need
+> > to change all the callers.
+>
+> I am not sure I understood it all. What do you mean by "also free to change the
+> way the timestamp is acquired"?
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Maybe this sanity check is not needed any more.
+The bug in the current implementation is that the tst_clock_gettime() takes
+the libc type but the argument to the kernel that may expect a different
+type.
 
-Kind regards,
-Petr
+Your patch solves the problem by using the kernel type consistently,
+but the other way to solve it is to keep passing the glibc type and
+instead make tst_clock_gettime() get a timestamp through the low
+level kernel interface using the kernel type and then convert it, like
 
- testcases/lib/tst_test.sh | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+ {
+       int ret;
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 4f966df17..b04db103b 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -30,8 +30,11 @@ _tst_do_exit()
- 
- 	if [ -n "$TST_RUN_STARTED" -a -n "$TST_CLEANUP" -a \
- 		-z "$TST_NO_CLEANUP" ]; then
--
--		$TST_CLEANUP
-+		if type "$TST_CLEANUP" >/dev/null 2>&1; then
-+			$TST_CLEANUP
-+		else
-+			tst_brk TBROK "cleanup function set (TST_CLEANUP='$TST_CLEANUP'), but not found (test bug)"
-+		fi
- 	fi
- 
- 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
-@@ -587,6 +590,11 @@ tst_run()
- 
- 	if [ -n "$TST_SETUP" ]; then
- 		$TST_SETUP
-+		if type "$TST_SETUP" >/dev/null 2>&1; then
-+			$TST_SETUP
-+		else
-+			tst_brk TBROK "setup function set (TST_SETUP='$TST_SETUP'), but not found (test bug)"
-+		fi
- 	fi
- 
- 	#TODO check that test reports some results for each test function call
--- 
-2.26.2
+#ifdef(__NR_clock_gettime64)
+        struct __kernel_timespec newts;
+        ret = tst_syscall(__NR_clock_gettime64, clk_id, &newts);
+        *ts = (struct timespec) { .tv_sec = newts.tv_sec, .tv_nsec =
+newts.tv_nsec };
+        if (ret != -ENOSYS)
+              return ret;
+#endif
 
+#ifdef __NR_clock_gettime
+        struct __kernel_old_timespec oldts;
+        ret = tst_syscall(__NR_clock_gettime, clk_id, &oldts);
+        *ts = (struct timespec) { .tv_sec = oldts.tv_sec, .tv_nsec =
+oldts.tv_nsec };
+        if (ret != -ENOSYS)
+              return ret;
+#endif
+
+       /* fallback for prehistoric linux */
+        struct timeval tv;
+        ret = gettimeofday(&tv, NULL);
+        *ts = (struct timespec) { .tv_sec = newts.tv_sec, .tv_usec =
+newts.tv_nsec / 1000};
+
+        return ret;
+}
+
+Or something like it that works reliably.
