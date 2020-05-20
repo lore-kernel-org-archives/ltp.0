@@ -1,62 +1,69 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 20 May 2020 15:26:04 +0800
-Subject: [LTP] [PATCH] tirpc: Pass all extra client options to client program
-Message-ID: <20200520072605.12614-1-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 20 May 2020 10:26:06 +0200
+Subject: [LTP] [PATCH v3 1/2] tst_test.sh: Fix calling not yet loaded
+ cleanup function
+Message-ID: <20200520082607.25776-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-New rpc_test.sh only passes the first extra client option to
-client program if extra client options are two or more.
-For example, only "1" is passed into tirpc_rpc_broadcast_exp:
--------------------------------------------
-./runltp -f net.tirpc_tests -s tirpc_rpc_broadcast_exp
-...
-tag=tirpc_rpc_broadcast_exp stime=1589957933
-cmdline="rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_broadcast_exp -e "1 2""
-...
-rpc_test 1 TFAIL: tirpc_rpc_broadcast_exp 10.0.0.2 536875000 1 failed unexpectedly
--------------------------------------------
-For extra client options, use comma as a delimiter in net.tirpc_tests
-and replace it with white space in rpc_test.sh
+e7dc14caa introduced a regression for new API network tests (these using
+tst_net.sh), which use network namespaces and have cleanup function:
 
-Fixes: 3190368d2df8 ("rpc/rpc_test.sh: Rewrite into new shell API")
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+$ PATH="/opt/ltp/testcases/bin:$PATH" tcp_ipsec.sh -6 -A rfc4543_256 \
+  -p esp_aead -m tunnel -s 100:1000:65535:R65535
+tcp_ipsec 1 TCONF: Must be super/root for this test!
+/opt/ltp/testcases/bin/tst_test.sh: line 32: tst_ipsec_cleanup: command not found
+
+This is caused by tst_brk called in tst_net.sh test preparation (happen
+just after loading tst_net.sh, that's why cleanup function haven't been
+defined yet. This would require to load tst_net.sh just before tst_run.
+
+But because tst_net.sh doesn't have it's own cleanup function
+(tst_cleanup_rhost is always called in _tst_do_exit in tst_test.sh
+regardless of setup/cleanup functions), we can assume that only after
+starting the actual test code (after tst_run start).
+
+Fixes: e7dc14caa ("tst_test.sh: Run cleanup even setup is not defined")
+
+Suggested-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/net.tirpc_tests                     | 2 +-
- testcases/network/rpc/rpc-tirpc/rpc_test.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+changes v2->v3:
+* simplify setup, inspired by Joerg
 
-diff --git a/runtest/net.tirpc_tests b/runtest/net.tirpc_tests
-index 48e9ba3f5..8aa69ef4d 100644
---- a/runtest/net.tirpc_tests
-+++ b/runtest/net.tirpc_tests
-@@ -38,7 +38,7 @@ tirpc_clnt_control rpc_test.sh -s tirpc_svc_3 -c tirpc_clnt_control
- tirpc_rpc_reg rpc_test.sh -c tirpc_rpc_reg
- tirpc_rpc_call rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_call
- tirpc_rpc_broadcast rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_broadcast
--tirpc_rpc_broadcast_exp rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_broadcast_exp -e "1 2"
-+tirpc_rpc_broadcast_exp rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_broadcast_exp -e "1,2"
+Kind regards,
+Petr
+
+ testcases/lib/tst_test.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 8d24b4abf..4f966df17 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -28,7 +28,9 @@ _tst_do_exit()
+ 	local ret=0
+ 	TST_DO_EXIT=1
  
- tirpc_clnt_create rpc_test.sh -s tirpc_svc_2 -c tirpc_clnt_create
- tirpc_clnt_create_timed rpc_test.sh -s tirpc_svc_2 -c tirpc_clnt_create_timed
-diff --git a/testcases/network/rpc/rpc-tirpc/rpc_test.sh b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-index dc97213d0..bcefadbdb 100755
---- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-+++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-@@ -37,7 +37,7 @@ rpc_parse_args()
- {
- 	case "$1" in
- 		c) CLIENT="$OPTARG" ;;
--		e) CLIENT_EXTRA_OPTS="$OPTARG" ;;
-+		e) CLIENT_EXTRA_OPTS="${OPTARG//','/' '}" ;;
- 		s) SERVER="$OPTARG" ;;
- 	esac
- }
+-	if [ -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
++	if [ -n "$TST_RUN_STARTED" -a -n "$TST_CLEANUP" -a \
++		-z "$TST_NO_CLEANUP" ]; then
++
+ 		$TST_CLEANUP
+ 	fi
+ 
+@@ -495,6 +497,8 @@ tst_run()
+ 	local _tst_max
+ 	local _tst_name
+ 
++	TST_RUN_STARTED=1
++
+ 	if [ -n "$TST_TEST_PATH" ]; then
+ 		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed 's/.*TST_//; s/[="} \t\/:`].*//'); do
+ 			case "$_tst_i" in
 -- 
-2.21.0
-
-
+2.26.2
 
