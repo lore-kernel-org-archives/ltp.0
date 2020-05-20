@@ -1,55 +1,75 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 20 May 2020 22:17:01 +0800
-Subject: [LTP] [PATCH] tirpc: Pass all extra client options to client
- program
-In-Reply-To: <20200520132501.GA22418@dell5510>
-References: <20200520072605.12614-1-yangx.jy@cn.fujitsu.com>
- <20200520132501.GA22418@dell5510>
-Message-ID: <5EC53BDD.9050400@cn.fujitsu.com>
+Date: Wed, 20 May 2020 22:25:25 +0800
+Subject: [LTP] [PATCH 1/2] tst_net.sh: Print output on unexpected
+ PASS/FAIL
+In-Reply-To: <20200518211514.20445-1-pvorel@suse.cz>
+References: <20200518211514.20445-1-pvorel@suse.cz>
+Message-ID: <5EC53DD5.9000506@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ON 2020/5/20 21:25, Petr Vorel wrote:
-> Hi Yang,
->
->> New rpc_test.sh only passes the first extra client option to
->> client program if extra client options are two or more.
->> For example, only "1" is passed into tirpc_rpc_broadcast_exp:
->> -------------------------------------------
->> ./runltp -f net.tirpc_tests -s tirpc_rpc_broadcast_exp
->> ...
->> tag=tirpc_rpc_broadcast_exp stime=1589957933
->> cmdline="rpc_test.sh -s tirpc_svc_1 -c tirpc_rpc_broadcast_exp -e "1 2""
->> ...
->> rpc_test 1 TFAIL: tirpc_rpc_broadcast_exp 10.0.0.2 536875000 1 failed unexpectedly
->> -------------------------------------------
->> For extra client options, use comma as a delimiter in net.tirpc_tests
->> and replace it with white space in rpc_test.sh
->
->> Fixes: 3190368d2df8 ("rpc/rpc_test.sh: Rewrite into new shell API")
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->
-> Thanks a lot for a fix!
->
-> I replaced bashism in OPTARG handling with sed (otherwise it'd fail on dash) and
-> merged.
 Hi Petr,
 
-Thanks for your change.
-I will avoid bashism next time.
+I tested the patchset and it also looks good to me.
+BTW: These outputs are useful to locate the issue.
+
+Reviewed-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
 Best Regards,
 Xiao Yang
+On 2020/5/19 5:15, Petr Vorel wrote:
+> This helps debugging.
 >
-> Kind regards,
-> Petr
+> Use $TMPDIR and PID to guarantee writable directory and unique file
+> without the need to require TST_NEEDS_TMPDIR=1.
 >
+> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> ---
+>   testcases/lib/tst_net.sh | 14 ++++++++++++--
+>   1 file changed, 12 insertions(+), 2 deletions(-)
 >
-> .
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index 011b62267..bfed4a44d 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -250,22 +250,32 @@ tst_net_run()
 >
+>   EXPECT_RHOST_PASS()
+>   {
+> -	tst_rhost_run -c "$*">  /dev/null
+> +	local log="$TMPDIR/log.$$"
+> +
+> +	tst_rhost_run -c "$*">  $log
+>   	if [ $? -eq 0 ]; then
+>   		tst_res_ TPASS "$* passed as expected"
+>   	else
+>   		tst_res_ TFAIL "$* failed unexpectedly"
+> +		cat $log
+>   	fi
+> +
+> +	rm -f $log
+>   }
+>
+>   EXPECT_RHOST_FAIL()
+>   {
+> -	tst_rhost_run -c "$* 2>  /dev/null"
+> +	local log="$TMPDIR/log.$$"
+> +
+> +	tst_rhost_run -c "$*">  $log
+>   	if [ $? -ne 0 ]; then
+>   		tst_res_ TPASS "$* failed as expected"
+>   	else
+>   		tst_res_ TFAIL "$* passed unexpectedly"
+> +		cat $log
+>   	fi
+> +
+> +	rm -f $log
+>   }
+>
+>   # Get test interface names for local/remote host.
 
 
 
