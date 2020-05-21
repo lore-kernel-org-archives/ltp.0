@@ -1,70 +1,44 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 21 May 2020 15:20:46 +0200
-Subject: [LTP] [PATCH 3/5] syscalls: semctl: Add new test to verify the
- _time_high fields
-In-Reply-To: <5d502fbc7070644ed83c423713941b457c3a7aff.1590057824.git.viresh.kumar@linaro.org>
-References: <cover.1590057824.git.viresh.kumar@linaro.org>
- <5d502fbc7070644ed83c423713941b457c3a7aff.1590057824.git.viresh.kumar@linaro.org>
-Message-ID: <CAK8P3a0pxv5wauMcf223n=_7zNJ4mn1Y0WvcssFC13pcvz9wmQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 May 2020 16:20:37 +0200
+Subject: [LTP] [PATCH 3/5] syscalls: Don't use tst_syscall()
+ unnecessarily
+In-Reply-To: <20200520071948.qtuzbfesqvcnsizd@vireshk-i7>
+References: <cover.1589877853.git.viresh.kumar@linaro.org>
+ <3f3b7d669d47ae701385b43deb8280a353dd231e.1589877853.git.viresh.kumar@linaro.org>
+ <20200519122347.GC16008@yuki.lan>
+ <CAK8P3a2PgjYyijH=VoNGhs_xk1VvFN6ZNvNM-W4TopWY6jJNbA@mail.gmail.com>
+ <20200519134511.GD16008@yuki.lan>
+ <20200520071948.qtuzbfesqvcnsizd@vireshk-i7>
+Message-ID: <20200521142037.GC7833@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, May 21, 2020 at 12:48 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> The _time_high fields must be reset by the kernel, add a test to verify
-> that.
->
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hi!
+> > I guess that at the current time we do support distros that are at max
+> > 10 years old, mostly because enterprise support cycles are about 10
+> > years in lenght.
+> > 
+> > The issue here is that glibc needed -lrt passed to linker couple of
+> > years ago and we wanted to avoid the need of linking everything with
+> > -lrt, as calling the raw syscall was just easier fix.
+> 
+> To conclude the discussion, is this patch okay or not ? The reason why I am
+> asking this is because this file still uses the old test framework and so can't
+> include tst_timer.h, and so doesn't have access to struct __kernel_old_timespec.
+> 
+> What do you suggest I do here ?
 
-Right, here you do need to copy the struct definitions since I forgot
-to add a way to detect the presence in the kernel header files,
-sorry about that.
+Well if it was only about __kernel_old_timespec we could easily just
+declare it locally in the file and be done with it.
 
-Possibly you could just have a check in the Makefile that lets
-skips the test if it fails to build because of old kernel headers?
-Or maybe check LINUX_VERSION_CODE to see if the headers
-are at least from linux-4.19?
+But I guess that newer 32bit architectures will have only the 64 bit
+syscall present, I think that somebody pointed out that this is the case
+for 32bit RiscV. If that's true we will have to have a fallback for that
+case as well.
 
->  configure.ac                                  |   1 +
->  include/sembuf.h                              | 234 ++++++++++++++++++
->  runtest/syscalls                              |   1 +
->  runtest/syscalls-ipc                          |   1 +
->  testcases/kernel/syscalls/ipc/msgctl/msgctl05 | Bin 0 -> 498784 bytes
-
-stale file
-
-> +       /* get an IPC resource key */
-> +       key = GETIPCKEY();
-> +
-> +       semid = semget(key, 1, SEM_RA | IPC_CREAT);
-> +       if (semid == -1)
-> +               tst_brk(TBROK | TERRNO, "couldn't create semaphore");
-> +
-> +       arg.buf = (struct semid_ds *)&buf_ds;
-> +       TEST(semctl(semid, 0, IPC_STAT, arg));
-> +       if (TST_RET == -1)
-> +               tst_brk(TFAIL | TTERRNO, "semctl() failed");
-> +
-> +       if (buf_ds.sem_otime_high || buf_ds.sem_ctime_high)
-> +               tst_res(TFAIL, "time_high fields aren't cleared by the kernel");
-> +       else
-> +               tst_res(TPASS, "time_high fields cleared by the kernel");
-> +
-> +       if (semctl(semid, 0, IPC_RMID, arg) == -1)
-> +               tst_res(TINFO, "WARNING: semaphore deletion failed.");
-> +}
-
-The test looks good to me.
-
-If we wanted to get fancy, you could check that the time is actually
-correct when setting the system clock past y2038 with clock_settime64()
-at the start and then setting it back at the end.
-That might risk crashing the system though, depending what else
-is running at the same time that relies on the time fitting into
-a 32-bit time_t.
-
-     Arnd
+-- 
+Cyril Hrubis
+chrubis@suse.cz
