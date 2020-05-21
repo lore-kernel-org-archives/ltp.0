@@ -1,10 +1,10 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 21 May 2020 15:08:33 +0200
-Subject: [LTP] [PATCH 0/5] syscalls: Add tests to verify the _time_high
- fields
-In-Reply-To: <cover.1590057824.git.viresh.kumar@linaro.org>
+Date: Thu, 21 May 2020 15:11:49 +0200
+Subject: [LTP] [PATCH 2/5] include: Add declaration of struct ipc64_perm
+In-Reply-To: <5a10d33509ac73c26b233ab72c579f44386d0a55.1590057824.git.viresh.kumar@linaro.org>
 References: <cover.1590057824.git.viresh.kumar@linaro.org>
-Message-ID: <CAK8P3a2N-J5LoNPHa7hjRPcOR0ytNfZQ678pFuCJaJJHGYS--A@mail.gmail.com>
+ <5a10d33509ac73c26b233ab72c579f44386d0a55.1590057824.git.viresh.kumar@linaro.org>
+Message-ID: <CAK8P3a2yN+AwWP-BdiPg+NkyB5z00jXoSt4vQCzPJfzWpZvW6w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,23 +13,22 @@ To: ltp@lists.linux.it
 
 On Thu, May 21, 2020 at 12:47 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> Hello,
+> This adds declaration of struct ipc64_perm, which will be used by
+> following patches.
 >
-> This patchset adds a new test to three syscalls to verify that the
-> extended fields, _time_high, are cleared by the kernel. This was
-> suggested by Arnd.
->
-> I did run them, but on a 64 bit machine. Please see if you can check
-> that they work properly on 32 bit machines, where we really want to test
-> them. This is rebased over ltp master.
->
-> Cyril, This conflicts a bit with my other time64 syscall tests, I will
-> rebase one of these, after you apply any of these first :)
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-The known bugs we had here were actually on 64-bit machines running
-compat 32-bit user space. You should be able to test this on most
-64-bit distros using the compat libraries and building ltp against the
-32-bit version (not sure what the best way is to configure that, but it
-should not be hard).
+Like the other structures, there are multiple definitions in the kernel:
 
-     Arnd
+$ git grep ^struct.ipc64_perm
+arch/parisc/include/uapi/asm/ipcbuf.h:struct ipc64_perm
+arch/powerpc/include/uapi/asm/ipcbuf.h:struct ipc64_perm
+arch/s390/include/uapi/asm/ipcbuf.h:struct ipc64_perm
+arch/sparc/include/uapi/asm/ipcbuf.h:struct ipc64_perm
+arch/xtensa/include/uapi/asm/ipcbuf.h:struct ipc64_perm
+include/uapi/asm-generic/ipcbuf.h:struct ipc64_perm
+
+Any reason you can't just #include <asm/ipcbuf.h> to get the
+kernel's definition for the correct architecture?
+
+        Arnd
