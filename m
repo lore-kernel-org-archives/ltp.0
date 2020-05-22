@@ -1,64 +1,43 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 22 May 2020 09:40:07 +0800
-Subject: [LTP] [PATCH v2] lib/tst_test.c: Take account of
- tst_brk(TCONF/TFAIL) in summary output
-In-Reply-To: <5EC48FCD.9050600@cn.fujitsu.com>
-References: <5EC48FCD.9050600@cn.fujitsu.com>
-Message-ID: <20200522014007.3108-1-yangx.jy@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 22 May 2020 12:24:06 +0530
+Subject: [LTP] [PATCH V2 0/6] syscalls: Remove incorrect usage of libc
+ structures
+Message-ID: <cover.1590130423.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current summary output doesn't take account of tst_brk(TCONF/TFAIL),
-for example:
------------------------------------------------------
-[root@Fedora-30  pidfd_send_signal]# ./pidfd_send_signal01
-tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
-../../../../include/lapi/pidfd_send_signal.h:16: CONF: syscall(424) __NR_pidfd_send_signal not supported
+Hi,
 
-Summary:
-passed   0
-failed   0
-skipped  0
-warnings 0
-----------------------------------------------------
+It is incorrect to use the libc structures (timespec, timeval, timex),
+to the non-time64 syscalls called via tst_syscall() as the kernel
+expects the old structures in there and the libc structure definition
+may change in the future.
 
-1) Add update_result() in tst_vbrk_() to fix the issue.
-2) Remove redundant update_result() in run_tcases_per_fs() after the fix.
+V2:
+- Use .restore_wallclock flag and remove unnecessary restoration code.
+- Update tst_clock_*() syscall's implementation instead of its users.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- lib/tst_test.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Viresh Kumar (6):
+  tst_safe_clocks: Remove safe_clock_adjtime()
+  syscalls: settimeofday01: Set .restore_wallclock flag
+  syscalls: settimeofday02: Remove time restoration code
+  syscalls: settimeofday: Use gettimeofday()
+  syscalls: Don't pass struct timespec to tst_syscall()
+  syscalls: Don't pass struct timeval to tst_syscall()
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 0e58060e0..e93c88ba5 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -316,6 +316,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
-                const char *fmt, va_list va)
- {
- 	print_result(file, lineno, ttype, fmt, va);
-+	update_results(TTYPE_RESULT(ttype));
- 
- 	/*
- 	 * The getpid implementation in some C library versions may cause cloned
-@@ -1316,10 +1317,8 @@ static int run_tcases_per_fs(void)
- 			mntpoint_mounted = 0;
- 		}
- 
--		if (ret == TCONF) {
--			update_results(ret);
-+		if (ret == TCONF)
- 			continue;
--		}
- 
- 		if (ret == 0)
- 			continue;
+ include/tst_safe_clocks.h                     | 18 ------
+ include/tst_timer.h                           |  6 ++
+ lib/tst_clocks.c                              | 59 ++++++++++++++++++-
+ .../syscalls/clock_adjtime/clock_adjtime.h    |  5 --
+ .../syscalls/gettimeofday/gettimeofday02.c    |  3 +-
+ .../syscalls/settimeofday/settimeofday01.c    | 21 +------
+ .../syscalls/settimeofday/settimeofday02.c    | 21 -------
+ testcases/kernel/syscalls/stime/stime_var.h   |  3 +-
+ 8 files changed, 69 insertions(+), 67 deletions(-)
+
 -- 
-2.21.0
-
-
+2.25.0.rc1.19.g042ed3e048af
 
