@@ -1,10 +1,10 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 22 May 2020 12:24:11 +0530
-Subject: [LTP] [PATCH V2 5/6] syscalls: Don't pass struct timespec to
+Date: Fri, 22 May 2020 12:24:12 +0530
+Subject: [LTP] [PATCH V2 6/6] syscalls: Don't pass struct timeval to
  tst_syscall()
 In-Reply-To: <cover.1590130423.git.viresh.kumar@linaro.org>
 References: <cover.1590130423.git.viresh.kumar@linaro.org>
-Message-ID: <c5428a9c88d18fac80e364281cfd4e3aefa38d2c.1590130423.git.viresh.kumar@linaro.org>
+Message-ID: <bea4b8f60091c44e43e71539fd8f177dce639b15.1590130423.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,103 +12,99 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 There are compatibility issues here as we are calling the direct
-syscalls (with tst_syscall()) with the "struct timespec" (which is a
-libc definition). Over that, an architecture may not define
-__NR_clock_getres (for example) and so we must have the fallback version
-in place.
-
-This updates the tst_clock_*() routines in core libraries and adds
-support for different syscall variants.
+syscalls with the "struct timeval" (which is a libc definition). We
+must use struct __kernel_old_timeval instead.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- lib/tst_clocks.c | 59 +++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 56 insertions(+), 3 deletions(-)
+ include/tst_timer.h                                     | 6 ++++++
+ testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h | 5 -----
+ testcases/kernel/syscalls/gettimeofday/gettimeofday02.c | 3 ++-
+ testcases/kernel/syscalls/stime/stime_var.h             | 3 ++-
+ 4 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-index 2eaa73b11abe..ed13f0af0c60 100644
---- a/lib/tst_clocks.c
-+++ b/lib/tst_clocks.c
-@@ -7,23 +7,76 @@
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index 256e1d71e1bc..62a0833b6cd9 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -12,6 +12,7 @@
+ #ifndef TST_TIMER
+ #define TST_TIMER
  
- #define TST_NO_DEFAULT_MAIN
++#include <asm/posix_types.h>
+ #include <sys/time.h>
+ #include <time.h>
+ #include "tst_test.h"
+@@ -101,6 +102,11 @@ typedef long __kernel_long_t;
+ 
+ typedef __kernel_long_t	__kernel_old_time_t;
+ 
++struct __kernel_old_timeval {
++	__kernel_old_time_t	tv_sec;		/* seconds */
++	__kernel_suseconds_t	tv_usec;	/* microseconds */
++};
++
+ struct __kernel_old_timespec {
+ 	__kernel_old_time_t	tv_sec;		/* seconds */
+ 	__kernel_old_time_t	tv_nsec;	/* nanoseconds */
+diff --git a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+index eb60f707f776..dbe0a561a3ab 100644
+--- a/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
++++ b/testcases/kernel/syscalls/clock_adjtime/clock_adjtime.h
+@@ -18,11 +18,6 @@
+ #include "lapi/timex.h"
+ 
+ #ifndef __kernel_timex
+-struct __kernel_old_timeval {
+-	__kernel_old_time_t	tv_sec;		/* seconds */
+-	__kernel_suseconds_t	tv_usec;	/* microseconds */
+-};
+-
+ struct __kernel_old_timex {
+ 	unsigned int modes;	/* mode selector */
+ 	__kernel_long_t offset;	/* time offset (usec) */
+diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+index b7687468d39d..b73bf129b116 100644
+--- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
++++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
+@@ -21,6 +21,7 @@
+ #include <errno.h>
+ 
  #include "tst_test.h"
 +#include "tst_timer.h"
- #include "tst_clocks.h"
  #include "lapi/syscalls.h"
- #include "lapi/posix_clocks.h"
  
- int tst_clock_getres(clockid_t clk_id, struct timespec *res)
+ static volatile sig_atomic_t done;
+@@ -39,7 +40,7 @@ static void breakout(int sig)
+ 
+ static void verify_gettimeofday(void)
  {
--	return tst_syscall(__NR_clock_getres, clk_id, res);
-+	int (*func)(clockid_t clk_id, void *ts);
-+	struct tst_ts tts = { 0, };
-+	int ret;
-+
-+#if defined(__NR_clock_getres_time64)
-+	tts.type = TST_KERN_TIMESPEC;
-+	func = sys_clock_getres64;
-+#elif defined(__NR_clock_getres)
-+	tts.type = TST_KERN_OLD_TIMESPEC;
-+	func = sys_clock_getres;
-+#else
-+	tts.type = TST_LIBC_TIMESPEC;
-+	func = libc_clock_getres;
-+#endif
-+
-+	ret = func(clk_id, tst_ts_get(&tts));
-+	res->tv_sec = tst_ts_get_sec(tts);
-+	res->tv_nsec = tst_ts_get_nsec(tts);
-+	return ret;
- }
+-	struct timeval tv1, tv2;
++	struct __kernel_old_timeval tv1, tv2;
+ 	unsigned long long cnt = 0;
  
- int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
- {
--	return tst_syscall(__NR_clock_gettime, clk_id, ts);
-+	int (*func)(clockid_t clk_id, void *ts);
-+	struct tst_ts tts = { 0, };
-+	int ret;
-+
-+#if defined(__NR_clock_gettime64)
-+	tts.type = TST_KERN_TIMESPEC;
-+	func = sys_clock_gettime64;
-+#elif defined(__NR_clock_gettime)
-+	tts.type = TST_KERN_OLD_TIMESPEC;
-+	func = sys_clock_gettime;
-+#else
-+	tts.type = TST_LIBC_TIMESPEC;
-+	func = libc_clock_gettime;
-+#endif
-+
-+	ret = func(clk_id, tst_ts_get(&tts));
-+	ts->tv_sec = tst_ts_get_sec(tts);
-+	ts->tv_nsec = tst_ts_get_nsec(tts);
-+	return ret;
- }
+ 	done = 0;
+diff --git a/testcases/kernel/syscalls/stime/stime_var.h b/testcases/kernel/syscalls/stime/stime_var.h
+index b33c5704e94a..708b80573167 100644
+--- a/testcases/kernel/syscalls/stime/stime_var.h
++++ b/testcases/kernel/syscalls/stime/stime_var.h
+@@ -9,6 +9,7 @@
  
- int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
- {
--	return tst_syscall(__NR_clock_settime, clk_id, ts);
-+	int (*func)(clockid_t clk_id, void *ts);
-+	struct tst_ts tts = { 0, };
-+
-+#if defined(__NR_clock_settime64)
-+	tts.type = TST_KERN_TIMESPEC;
-+	func = sys_clock_settime64;
-+#elif defined(__NR_clock_settime)
-+	tts.type = TST_KERN_OLD_TIMESPEC;
-+	func = sys_clock_settime;
-+#else
-+	tts.type = TST_LIBC_TIMESPEC;
-+	func = libc_clock_settime;
-+#endif
-+
-+	tst_ts_set_sec(&tts, ts->tv_sec);
-+	tst_ts_set_nsec(&tts, ts->tv_nsec);
-+	return func(clk_id, tst_ts_get(&tts));
- }
+ #include <sys/time.h>
+ #include "config.h"
++#include "tst_timer.h"
+ #include "lapi/syscalls.h"
  
- const char *tst_clock_name(clockid_t clk_id)
+ #define TEST_VARIANTS 3
+@@ -26,7 +27,7 @@ static int do_stime(time_t *ntime)
+ 	case 1:
+ 		return tst_syscall(__NR_stime, ntime);
+ 	case 2: {
+-		struct timeval tv;
++		struct __kernel_old_timeval tv;
+ 
+ 		tv.tv_sec = *ntime;
+ 		tv.tv_usec = 0;
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
