@@ -1,47 +1,244 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 22 May 2020 12:42:58 +0530
-Subject: [LTP] [PATCH 3/5] syscalls: semctl: Add new test to verify the
- _time_high fields
-In-Reply-To: <20200521142621.GE7833@yuki.lan>
-References: <cover.1590057824.git.viresh.kumar@linaro.org>
- <5d502fbc7070644ed83c423713941b457c3a7aff.1590057824.git.viresh.kumar@linaro.org>
- <CAK8P3a0pxv5wauMcf223n=_7zNJ4mn1Y0WvcssFC13pcvz9wmQ@mail.gmail.com>
- <20200521142621.GE7833@yuki.lan>
-Message-ID: <20200522071258.bgajo3a7mngmhr6y@vireshk-i7>
+Date: Fri, 22 May 2020 12:46:04 +0530
+Subject: [LTP] [PATCH V2 2/5] include: Add declaration of struct ipc64_perm
+In-Reply-To: <5a10d33509ac73c26b233ab72c579f44386d0a55.1590057824.git.viresh.kumar@linaro.org>
+References: <5a10d33509ac73c26b233ab72c579f44386d0a55.1590057824.git.viresh.kumar@linaro.org>
+Message-ID: <dc4d34a42d4ca85d4d73b9e87974382368d02296.1590131635.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 21-05-20, 16:26, Cyril Hrubis wrote:
-> Hi!
-> > > The _time_high fields must be reset by the kernel, add a test to verify
-> > > that.
-> > >
-> > > Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > 
-> > Right, here you do need to copy the struct definitions since I forgot
-> > to add a way to detect the presence in the kernel header files,
-> > sorry about that.
-> > 
-> > Possibly you could just have a check in the Makefile that lets
-> > skips the test if it fails to build because of old kernel headers?
-> > Or maybe check LINUX_VERSION_CODE to see if the headers
-> > are at least from linux-4.19?
-> 
-> We usually include autotools checks and fallback definitions in
-> include/lapi.h in this case.
+This adds declaration of struct ipc64_perm, which will be used by
+following patches.
 
-And that's what my patches are doing. They check for 
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2: Include definitions for other architectures as well.
 
-#ifndef HAVE_MSQID64_DS
+ configure.ac     |   1 +
+ include/ipcbuf.h | 199 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 200 insertions(+)
+ create mode 100644 include/ipcbuf.h
 
-and then only go define them.
-
-We can't work with kernel versions due to possible backporting of the
-patches to older kernels.
-
+diff --git a/configure.ac b/configure.ac
+index 1d3ea58d0082..eaf33dd60350 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -150,6 +150,7 @@ AC_CHECK_TYPES([struct file_dedupe_range],,,[#include <linux/fs.h>])
+ AC_CHECK_TYPES([struct fs_quota_statv],,,[#include <xfs/xqm.h>])
+ AC_CHECK_TYPES([struct if_nextdqblk],,,[#include <linux/quota.h>])
+ AC_CHECK_TYPES([struct iovec],,,[#include <sys/uio.h>])
++AC_CHECK_TYPES([struct ipc64_perm],,,[#include <sys/ipcbuf.h>])
+ 
+ AC_CHECK_TYPES([struct mmsghdr],,,[
+ #define _GNU_SOURCE
+diff --git a/include/ipcbuf.h b/include/ipcbuf.h
+new file mode 100644
+index 000000000000..caf1491df27f
+--- /dev/null
++++ b/include/ipcbuf.h
+@@ -0,0 +1,199 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Linaro Limited. All rights reserved.
++ * Author: Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++#ifndef IPCBUF_H
++#define IPCBUF_H
++
++#include <linux/posix_types.h>
++
++#ifndef HAVE_IPC64_PERM
++
++#if defined(__hppa__)
++#define HAVE_IPC64_PERM
++/*
++ * The ipc64_perm structure for PA-RISC is almost identical to
++ * kern_ipc_perm as we have always had 32-bit UIDs and GIDs in the kernel.
++ * 'seq' has been changed from long to int so that it's the same size
++ * on 64-bit kernels as on 32-bit ones.
++ */
++
++struct ipc64_perm
++{
++	__kernel_key_t		key;
++	__kernel_uid_t		uid;
++	__kernel_gid_t		gid;
++	__kernel_uid_t		cuid;
++	__kernel_gid_t		cgid;
++#if __BITS_PER_LONG != 64
++	unsigned short int	__pad1;
++#endif
++	__kernel_mode_t		mode;
++	unsigned short int	__pad2;
++	unsigned short int	seq;
++	unsigned int		__pad3;
++	unsigned long long int __unused1;
++	unsigned long long int __unused2;
++};
++#endif /* __hppa__ */
++
++#if defined(__powerpc__) || defined(__powerpc64__)
++#define HAVE_IPC64_PERM
++/*
++ * The ipc64_perm structure for the powerpc is identical to
++ * kern_ipc_perm as we have always had 32-bit UIDs and GIDs in the
++ * kernel.  Note extra padding because this structure is passed back
++ * and forth between kernel and user space.  Pad space is left for:
++ *	- 1 32-bit value to fill up for 8-byte alignment
++ *	- 2 miscellaneous 64-bit values
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++struct ipc64_perm
++{
++	__kernel_key_t	key;
++	__kernel_uid_t	uid;
++	__kernel_gid_t	gid;
++	__kernel_uid_t	cuid;
++	__kernel_gid_t	cgid;
++	__kernel_mode_t	mode;
++	unsigned int	seq;
++	unsigned int	__pad1;
++	unsigned long long __unused1;
++	unsigned long long __unused2;
++};
++
++#endif /* defined(__powerpc__) || defined(__powerpc64__) */
++
++#if defined(__s390__)
++#define HAVE_IPC64_PERM
++/*
++ * The user_ipc_perm structure for S/390 architecture.
++ * Note extra padding because this structure is passed back and forth
++ * between kernel and user space.
++ *
++ * Pad space is left for:
++ * - 32-bit mode_t and seq
++ * - 2 miscellaneous 32-bit values
++ */
++
++struct ipc64_perm
++{
++	__kernel_key_t		key;
++	__kernel_uid32_t	uid;
++	__kernel_gid32_t	gid;
++	__kernel_uid32_t	cuid;
++	__kernel_gid32_t	cgid;
++	__kernel_mode_t		mode;
++	unsigned short		__pad1;
++	unsigned short		seq;
++#ifndef __s390x__
++	unsigned short		__pad2;
++#endif /* ! __s390x__ */
++	unsigned long		__unused1;
++	unsigned long		__unused2;
++};
++
++#endif /* defined(__powerpc__) || defined(__powerpc64__) */
++
++#if defined(__sparc__)
++#define HAVE_IPC64_PERM
++/*
++ * The ipc64_perm structure for sparc/sparc64 architecture.
++ * Note extra padding because this structure is passed back and forth
++ * between kernel and user space.
++ *
++ * Pad space is left for:
++ * - 32-bit seq
++ * - on sparc for 32 bit mode (it is 32 bit on sparc64)
++ * - 2 miscellaneous 64-bit values
++ */
++
++struct ipc64_perm
++{
++	__kernel_key_t		key;
++	__kernel_uid32_t	uid;
++	__kernel_gid32_t	gid;
++	__kernel_uid32_t	cuid;
++	__kernel_gid32_t	cgid;
++#ifndef __arch64__
++	unsigned short		__pad0;
++#endif
++	__kernel_mode_t		mode;
++	unsigned short		__pad1;
++	unsigned short		seq;
++	unsigned long long	__unused1;
++	unsigned long long	__unused2;
++};
++
++#endif /* __sparc__ */
++
++#if defined(__xtensa__)
++#define HAVE_IPC64_PERM
++/*
++ * Pad space is left for:
++ * - 32-bit mode_t and seq
++ * - 2 miscellaneous 32-bit values
++ *
++ * This file is subject to the terms and conditions of the GNU General
++ * Public License.  See the file "COPYING" in the main directory of
++ * this archive for more details.
++ */
++
++struct ipc64_perm
++{
++	__kernel_key_t		key;
++	__kernel_uid32_t	uid;
++	__kernel_gid32_t	gid;
++	__kernel_uid32_t	cuid;
++	__kernel_gid32_t	cgid;
++	__kernel_mode_t		mode;
++	unsigned long		seq;
++	unsigned long		__unused1;
++	unsigned long		__unused2;
++};
++
++#endif /* __xtensa__ */
++
++#ifndef HAVE_IPC64_PERM
++/*
++ * The generic ipc64_perm structure:
++ * Note extra padding because this structure is passed back and forth
++ * between kernel and user space.
++ *
++ * ipc64_perm was originally meant to be architecture specific, but
++ * everyone just ended up making identical copies without specific
++ * optimizations, so we may just as well all use the same one.
++ *
++ * Pad space is left for:
++ * - 32-bit mode_t on architectures that only had 16 bit
++ * - 32-bit seq
++ * - 2 miscellaneous 32-bit values
++ */
++
++struct ipc64_perm {
++	__kernel_key_t		key;
++	__kernel_uid32_t	uid;
++	__kernel_gid32_t	gid;
++	__kernel_uid32_t	cuid;
++	__kernel_gid32_t	cgid;
++	__kernel_mode_t		mode;
++				/* pad if mode_t is u16: */
++	unsigned char		__pad1[4 - sizeof(__kernel_mode_t)];
++	unsigned short		seq;
++	unsigned short		__pad2;
++	__kernel_ulong_t	__unused1;
++	__kernel_ulong_t	__unused2;
++};
++
++#endif /* ipc64_perm */
++
++#endif /* HAVE_IPC64_PERM */
++
++#endif /* IPCBUF_H */
 -- 
-viresh
+2.25.0.rc1.19.g042ed3e048af
+
