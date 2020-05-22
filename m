@@ -1,179 +1,278 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 22 May 2020 16:21:37 +0530
-Subject: [LTP] [PATCH V4 17/17] syscalls/utimensat: Add support for time64
- tests
-In-Reply-To: <cover.1590144577.git.viresh.kumar@linaro.org>
-References: <cover.1590144577.git.viresh.kumar@linaro.org>
-Message-ID: <39f66e596f390f0019225c4cac77c3d4996b7c5d.1590144577.git.viresh.kumar@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 22 May 2020 14:39:03 +0200
+Subject: [LTP] [PATCH 1/5] syscalls:ipc: Move libraries to libs/ director
+In-Reply-To: <3b3344651f2ba4bf2446b6730a76ebcd9f894dd0.1590057824.git.viresh.kumar@linaro.org>
+References: <cover.1590057824.git.viresh.kumar@linaro.org>
+ <3b3344651f2ba4bf2446b6730a76ebcd9f894dd0.1590057824.git.viresh.kumar@linaro.org>
+Message-ID: <20200522123903.GB2446@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing utimensat() syscall
-tests.
+Hi!
+> Move the ipc libraries to libs/ directory. One of the reasons to do this
+> was to add the capability of adding tests with both old and new test
+> frameworks in the same ipc test directory.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- runtest/syscalls                              |  2 +-
- testcases/kernel/syscalls/utimensat/Makefile  |  4 -
- .../kernel/syscalls/utimensat/utimensat01.c   | 74 ++++++++++++++++---
- 3 files changed, 65 insertions(+), 15 deletions(-)
+Pushed with following diff, thanks.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4a19075cd131..e1271f9e34aa 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1600,7 +1600,7 @@ utime06 utime06
- utimes01 utimes01
+1) You cannot build two different libs in one directory
+2) Setting LTPLIBS instead of LDFLAGS generates proper build
+   dependencies as well
+3) Limit the linker flags for the kill and mremap tests
+
+diff --git a/libs/libltpipc/Makefile b/libs/libltpipc/Makefile
+index 11f38ea0a..9fdc57894 100644
+--- a/libs/libltpipc/Makefile
++++ b/libs/libltpipc/Makefile
+@@ -5,7 +5,7 @@ top_srcdir		?= ../..
  
- # Introduced from Kernel 2.6.22 onwards
--utimensat01 utimensat_tests.sh
-+utimensat01 utimensat01
+ include $(top_srcdir)/include/mk/env_pre.mk
  
- vfork01 vfork01
- vfork02 vfork02
-diff --git a/testcases/kernel/syscalls/utimensat/Makefile b/testcases/kernel/syscalls/utimensat/Makefile
-index 69cab8dbc057..044619fb8724 100644
---- a/testcases/kernel/syscalls/utimensat/Makefile
-+++ b/testcases/kernel/syscalls/utimensat/Makefile
-@@ -5,8 +5,4 @@ top_srcdir		?= ../../../..
+-LIB			:= libltpipc.a libltpmsgctl.a
++LIB			:= libltpipc.a
+ 
+ include $(top_srcdir)/include/mk/lib.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/Makefile b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+index e2b305573..a11cbcf2e 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgctl/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpnewipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpnewipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgget/Makefile b/testcases/kernel/syscalls/ipc/msgget/Makefile
+index e2b305573..a11cbcf2e 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgget/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpnewipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpnewipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/Makefile b/testcases/kernel/syscalls/ipc/msgrcv/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgrcv/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/Makefile b/testcases/kernel/syscalls/ipc/msgsnd/Makefile
+index b4930310f..17960cae3 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgsnd/Makefile
+@@ -3,6 +3,8 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpnewipc
++
+ ifeq ($(UCLINUX),1)
+ FILTER_OUT_MAKE_TARGETS += msgsnd05 msgsnd06
+ endif
+@@ -10,6 +12,5 @@ endif
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpnewipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgstress/Makefile b/testcases/kernel/syscalls/ipc/msgstress/Makefile
+index 551463829..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/msgstress/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgstress/Makefile
+@@ -3,10 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDLIBS  += -lltpmsgctl
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/semget/Makefile b/testcases/kernel/syscalls/ipc/semget/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/semget/Makefile
++++ b/testcases/kernel/syscalls/ipc/semget/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/semop/Makefile b/testcases/kernel/syscalls/ipc/semop/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/semop/Makefile
++++ b/testcases/kernel/syscalls/ipc/semop/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/shmat/Makefile b/testcases/kernel/syscalls/ipc/shmat/Makefile
+index e2b305573..a11cbcf2e 100644
+--- a/testcases/kernel/syscalls/ipc/shmat/Makefile
++++ b/testcases/kernel/syscalls/ipc/shmat/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpnewipc
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpnewipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/Makefile b/testcases/kernel/syscalls/ipc/shmctl/Makefile
+index dda6d636f..cfa5d6e76 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/shmctl/Makefile
+@@ -3,12 +3,13 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
++
+ shmctl05: CFLAGS += -pthread
+ shmctl05: LDLIBS += -lrt
  
  include $(top_srcdir)/include/mk/testcases.mk
  
--vpath %.c $(srcdir):$(top_srcdir)/lib
--
--INSTALL_TARGETS		:= utimensat_tests.sh
--
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index 97a43713454f..0139d6ddfedf 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -16,8 +16,7 @@
- #include <string.h>
- #include <sys/stat.h>
- #include "lapi/fs.h"
--#include "tst_test.h"
--#include "lapi/syscalls.h"
-+#include "tst_timer.h"
+diff --git a/testcases/kernel/syscalls/ipc/shmdt/Makefile b/testcases/kernel/syscalls/ipc/shmdt/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/shmdt/Makefile
++++ b/testcases/kernel/syscalls/ipc/shmdt/Makefile
+@@ -3,9 +3,10 @@
  
- #define UTIME_NOW	((1l << 30) - 1l)
- #define UTIME_OMIT	((1l << 30) - 2l)
-@@ -98,13 +97,68 @@ struct test_case {
- };
+ top_srcdir              ?= ../../../../..
  
- static inline int sys_utimensat(int dirfd, const char *pathname,
--				const struct timespec times[2], int flags)
-+				void *times, int flags)
- {
- 	return tst_syscall(__NR_utimensat, dirfd, pathname, times, flags);
- }
- 
-+static inline int sys_utimensat_time64(int dirfd, const char *pathname,
-+				       void *times, int flags)
-+{
-+	return tst_syscall(__NR_utimensat_time64, dirfd, pathname, times, flags);
-+}
++LTPLIBS = ltpipc
 +
-+static struct test_variants {
-+	int (*utimensat)(int dirfd, const char *pathname, void *times,
-+			 int flags);
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+#if (__NR_utimensat != __LTP__NR_INVALID_SYSCALL)
-+	{ .utimensat = sys_utimensat, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-+#endif
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/shmget/Makefile b/testcases/kernel/syscalls/ipc/shmget/Makefile
+index aa211d37f..f62cd1f48 100644
+--- a/testcases/kernel/syscalls/ipc/shmget/Makefile
++++ b/testcases/kernel/syscalls/ipc/shmget/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
++LTPLIBS = ltpipc
 +
-+#if (__NR_utimensat_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .utimensat = sys_utimensat_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/kill/Makefile b/testcases/kernel/syscalls/kill/Makefile
+index 3e32978fc..00cadabef 100644
+--- a/testcases/kernel/syscalls/kill/Makefile
++++ b/testcases/kernel/syscalls/kill/Makefile
+@@ -3,9 +3,11 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++LTPLIBS = ltpipc
 +
-+union tst_multi {
-+	struct timespec libc_ts[2];
-+	struct __kernel_old_timespec kern_old_ts[2];
-+	struct __kernel_timespec kern_ts[2];
-+} ts;
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
++kill07: LDLIBS  += -lltpipc
++kill05: LDLIBS  += -lltpipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mremap/Makefile b/testcases/kernel/syscalls/mremap/Makefile
+index 3e32978fc..7bdf425d2 100644
+--- a/testcases/kernel/syscalls/mremap/Makefile
++++ b/testcases/kernel/syscalls/mremap/Makefile
+@@ -3,9 +3,10 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++LTPLIBS = ltpipc
 +
-+static void tst_multi_set_time(enum tst_ts_type type, long access_tv_sec,
-+			long access_tv_nsec, long mod_tv_sec, long mod_tv_nsec)
-+{
-+	switch (type) {
-+	case TST_LIBC_TIMESPEC:
-+		ts.libc_ts[0].tv_sec = access_tv_sec;
-+		ts.libc_ts[0].tv_nsec = access_tv_nsec;
-+		ts.libc_ts[1].tv_sec = mod_tv_sec;
-+		ts.libc_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	case TST_KERN_OLD_TIMESPEC:
-+		ts.kern_old_ts[0].tv_sec = access_tv_sec;
-+		ts.kern_old_ts[0].tv_nsec = access_tv_nsec;
-+		ts.kern_old_ts[1].tv_sec = mod_tv_sec;
-+		ts.kern_old_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	case TST_KERN_TIMESPEC:
-+		ts.kern_ts[0].tv_sec = access_tv_sec;
-+		ts.kern_ts[0].tv_nsec = access_tv_nsec;
-+		ts.kern_ts[1].tv_sec = mod_tv_sec;
-+		ts.kern_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	default:
-+		tst_brk(TBROK, "Invalid type: %d", type);
-+	}
-+}
-+
- static void setup(void)
- {
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 	bad_addr = tst_get_bad_addr(NULL);
- }
+ include $(top_srcdir)/include/mk/testcases.mk
  
-@@ -144,8 +198,8 @@ static void change_attr(struct test_case *tc, int fd, int set)
+-LDLIBS  += -lltpipc
+-LDFLAGS += -L$(top_builddir)/libs/libltpipc
++mremap04: LDLIBS  += -lltpipc
  
- static void run(unsigned int i)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	struct test_case *tc = &tcase[i];
--	struct timespec ts[2];
- 	void *tsp = NULL;
- 	char *pathname = NULL;
- 	int dfd = AT_FDCWD, fd = 0;
-@@ -160,11 +214,10 @@ static void run(unsigned int i)
- 	if (tc->mytime) {
- 		struct mytime *mytime = *tc->mytime;
- 
--		ts[0].tv_sec = mytime->access_tv_sec;
--		ts[0].tv_nsec = mytime->access_tv_nsec;
--		ts[1].tv_sec = mytime->mod_tv_sec;
--		ts[1].tv_nsec = mytime->mod_tv_nsec;
--		tsp = ts;
-+		tst_multi_set_time(tv->type, mytime->access_tv_sec,
-+				   mytime->access_tv_nsec, mytime->mod_tv_sec,
-+				   mytime->mod_tv_nsec);
-+		tsp = &ts.libc_ts;
- 	} else if (tc->exp_err == EFAULT) {
- 		tsp = bad_addr;
- 	}
-@@ -178,7 +231,7 @@ static void run(unsigned int i)
- 		pathname = bad_addr;
- 	}
- 
--	TEST(sys_utimensat(dfd, pathname, tsp, tc->flags));
-+	TEST(tv->utimensat(dfd, pathname, tsp, tc->flags));
- 	if (tc->pathname)
- 		change_attr(tc, fd, 0);
- 
-@@ -210,6 +263,7 @@ static void run(unsigned int i)
- static struct tst_test test = {
- 	.test = run,
- 	.tcnt = ARRAY_SIZE(tcase),
-+	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
--- 
-2.25.0.rc1.19.g042ed3e048af
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
