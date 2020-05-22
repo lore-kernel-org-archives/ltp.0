@@ -1,47 +1,114 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 22 May 2020 12:24:10 +0530
-Subject: [LTP] [PATCH V2 4/6] syscalls: settimeofday: Use gettimeofday()
+Date: Fri, 22 May 2020 12:24:11 +0530
+Subject: [LTP] [PATCH V2 5/6] syscalls: Don't pass struct timespec to
+ tst_syscall()
 In-Reply-To: <cover.1590130423.git.viresh.kumar@linaro.org>
 References: <cover.1590130423.git.viresh.kumar@linaro.org>
-Message-ID: <40fd549b487a705afa1f50f833488c185011df1f.1590130423.git.viresh.kumar@linaro.org>
+Message-ID: <c5428a9c88d18fac80e364281cfd4e3aefa38d2c.1590130423.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Passing struct timeval to __NR_gettimeofday syscall is incompatible and
-may cause issues as it must only be used with the libc gettimeofday()
-syscall. Use gettimeofday() instead of calling it with tst_syscall() to
-fix that.
+There are compatibility issues here as we are calling the direct
+syscalls (with tst_syscall()) with the "struct timespec" (which is a
+libc definition). Over that, an architecture may not define
+__NR_clock_getres (for example) and so we must have the fallback version
+in place.
+
+This updates the tst_clock_*() routines in core libraries and adds
+support for different syscall variants.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- testcases/kernel/syscalls/settimeofday/settimeofday01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/tst_clocks.c | 59 +++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 56 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/settimeofday/settimeofday01.c b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-index 7ce3dc5a47b3..b7f84b00fdc8 100644
---- a/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-+++ b/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-@@ -21,7 +21,7 @@ static void verify_settimeofday(void)
- 	suseconds_t delta;
- 	struct timeval tv1, tv2;
+diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+index 2eaa73b11abe..ed13f0af0c60 100644
+--- a/lib/tst_clocks.c
++++ b/lib/tst_clocks.c
+@@ -7,23 +7,76 @@
  
--	if (tst_syscall(__NR_gettimeofday, &tv1, NULL) == -1)
-+	if (gettimeofday(&tv1, NULL) == -1)
- 		tst_brk(TBROK | TERRNO, "gettimeofday(&tv1, NULL) failed");
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "tst_timer.h"
+ #include "tst_clocks.h"
+ #include "lapi/syscalls.h"
+ #include "lapi/posix_clocks.h"
  
- 	tv1.tv_sec += VAL_SEC;
-@@ -35,7 +35,7 @@ static void verify_settimeofday(void)
- 		return;
- 	}
+ int tst_clock_getres(clockid_t clk_id, struct timespec *res)
+ {
+-	return tst_syscall(__NR_clock_getres, clk_id, res);
++	int (*func)(clockid_t clk_id, void *ts);
++	struct tst_ts tts = { 0, };
++	int ret;
++
++#if defined(__NR_clock_getres_time64)
++	tts.type = TST_KERN_TIMESPEC;
++	func = sys_clock_getres64;
++#elif defined(__NR_clock_getres)
++	tts.type = TST_KERN_OLD_TIMESPEC;
++	func = sys_clock_getres;
++#else
++	tts.type = TST_LIBC_TIMESPEC;
++	func = libc_clock_getres;
++#endif
++
++	ret = func(clk_id, tst_ts_get(&tts));
++	res->tv_sec = tst_ts_get_sec(tts);
++	res->tv_nsec = tst_ts_get_nsec(tts);
++	return ret;
+ }
  
--	if (tst_syscall(__NR_gettimeofday, &tv2, NULL) == -1)
-+	if (gettimeofday(&tv2, NULL) == -1)
- 		tst_brk(TBROK | TERRNO, "gettimeofday(&tv2, NULL) failed");
+ int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
+ {
+-	return tst_syscall(__NR_clock_gettime, clk_id, ts);
++	int (*func)(clockid_t clk_id, void *ts);
++	struct tst_ts tts = { 0, };
++	int ret;
++
++#if defined(__NR_clock_gettime64)
++	tts.type = TST_KERN_TIMESPEC;
++	func = sys_clock_gettime64;
++#elif defined(__NR_clock_gettime)
++	tts.type = TST_KERN_OLD_TIMESPEC;
++	func = sys_clock_gettime;
++#else
++	tts.type = TST_LIBC_TIMESPEC;
++	func = libc_clock_gettime;
++#endif
++
++	ret = func(clk_id, tst_ts_get(&tts));
++	ts->tv_sec = tst_ts_get_sec(tts);
++	ts->tv_nsec = tst_ts_get_nsec(tts);
++	return ret;
+ }
  
- 	if (tv2.tv_sec > tv1.tv_sec) {
+ int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
+ {
+-	return tst_syscall(__NR_clock_settime, clk_id, ts);
++	int (*func)(clockid_t clk_id, void *ts);
++	struct tst_ts tts = { 0, };
++
++#if defined(__NR_clock_settime64)
++	tts.type = TST_KERN_TIMESPEC;
++	func = sys_clock_settime64;
++#elif defined(__NR_clock_settime)
++	tts.type = TST_KERN_OLD_TIMESPEC;
++	func = sys_clock_settime;
++#else
++	tts.type = TST_LIBC_TIMESPEC;
++	func = libc_clock_settime;
++#endif
++
++	tst_ts_set_sec(&tts, ts->tv_sec);
++	tst_ts_set_nsec(&tts, ts->tv_nsec);
++	return func(clk_id, tst_ts_get(&tts));
+ }
+ 
+ const char *tst_clock_name(clockid_t clk_id)
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
