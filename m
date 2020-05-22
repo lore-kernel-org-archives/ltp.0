@@ -1,45 +1,106 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 22 May 2020 14:38:08 +0530
-Subject: [LTP] [PATCH 0/5] syscalls: Add tests to verify the _time_high
- fields
-In-Reply-To: <20200521142510.GD7833@yuki.lan>
-References: <cover.1590057824.git.viresh.kumar@linaro.org>
- <CAK8P3a2N-J5LoNPHa7hjRPcOR0ytNfZQ678pFuCJaJJHGYS--A@mail.gmail.com>
- <20200521142510.GD7833@yuki.lan>
-Message-ID: <20200522090808.uobmfe4rw7qfmqf4@vireshk-i7>
+Date: Fri, 22 May 2020 16:21:20 +0530
+Subject: [LTP] [PATCH V4 00/17] Syscalls: Add support for time64 variants
+Message-ID: <cover.1590144577.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 21-05-20, 16:25, Cyril Hrubis wrote:
-> Hi!
-> > > This patchset adds a new test to three syscalls to verify that the
-> > > extended fields, _time_high, are cleared by the kernel. This was
-> > > suggested by Arnd.
-> > >
-> > > I did run them, but on a 64 bit machine. Please see if you can check
-> > > that they work properly on 32 bit machines, where we really want to test
-> > > them. This is rebased over ltp master.
-> > >
-> > > Cyril, This conflicts a bit with my other time64 syscall tests, I will
-> > > rebase one of these, after you apply any of these first :)
-> > 
-> > The known bugs we had here were actually on 64-bit machines running
-> > compat 32-bit user space. You should be able to test this on most
-> > 64-bit distros using the compat libraries and building ltp against the
-> > 32-bit version (not sure what the best way is to configure that, but it
-> > should not be hard).
-> 
-> We run LTP compiled with -m32 in our automation in SUSE precisely
-> because of these reasons. Not sure if somebody else does that.
+Hi,
 
-Okay, I tested LTP with:
+This updates the pending syscall tests that lacked the time64 updates.
 
-LDFLAGS=-m32 CFLAGS=-m32 ./configure
+V4:
+- Pass timer_t type to timer_gettime/settime syscalls instead of
+  kernel_timer_t.
+- Some part of timer_settime() patch was merged in timerfd_gettime()
+  earlier by mistake, fixed that.
 
-and the time-high fields got cleared on my x86 machine with 5.5 kernel.
+V3:
+- Fix issues related to passing incorrect timespec type to syscalls.
+- Take care of futex and semtimedop tests where the architecture
+  provides the syscall number, but doesn't implement it.
+- Other improvements and cleanups.
+
+Viresh Kumar (17):
+  syscalls/timer_gettime: Add support for time64 tests
+  syscalls/timer_settime: Add support for time64 tests
+  syscalls/timerfd: Add support for time64 tests
+  syscalls/sched_rr_get_interval: Add support for time64 tests
+  syscalls/futex: Merge futex_wait_bitset tests
+  syscalls/futex: Add support for time64 tests
+  syscalls/io_pgetevents: Add support for time64 tests
+  syscalls/sigwaitinfo: Migrate to new test framework
+  syscalls/rt_sigtimedwait: Add support for time64 tests
+  syscalls/mq_timed{send|receive}: Add support for time64 tests
+  syscalls/recvmmsg: Add support for time64 tests
+  syscalls/ppoll: Add support for time64 tests
+  syscalls/select6: Add support for time64 tests
+  syscalls/semop: Migrate to new test framework
+  syscalls/semtimedop: Add support for semtimedop and its time64 version
+  syscalls/utimensat: Migrate to new test framework
+  syscalls/utimensat: Add support for time64 tests
+
+ include/lapi/io_pgetevents.h                  |  15 +-
+ include/tst_timer.h                           | 196 +++++++
+ runtest/syscalls                              |   3 +-
+ testcases/kernel/syscalls/futex/.gitignore    |   1 -
+ testcases/kernel/syscalls/futex/Makefile      |   1 -
+ .../syscalls/futex/futex_cmp_requeue01.c      |  34 +-
+ .../syscalls/futex/futex_cmp_requeue02.c      |  24 +-
+ testcases/kernel/syscalls/futex/futex_utils.h |  52 +-
+ .../kernel/syscalls/futex/futex_wait01.c      |  79 +--
+ .../kernel/syscalls/futex/futex_wait02.c      | 102 ++--
+ .../kernel/syscalls/futex/futex_wait03.c      |  87 ++-
+ .../kernel/syscalls/futex/futex_wait04.c      |  81 +--
+ .../kernel/syscalls/futex/futex_wait05.c      |   2 +-
+ .../kernel/syscalls/futex/futex_wait_bitset.h |  75 ---
+ .../syscalls/futex/futex_wait_bitset01.c      | 101 +++-
+ .../syscalls/futex/futex_wait_bitset02.c      |  18 -
+ .../kernel/syscalls/futex/futex_wake01.c      |  67 ++-
+ .../kernel/syscalls/futex/futex_wake02.c      |  95 ++--
+ .../kernel/syscalls/futex/futex_wake03.c      | 109 ++--
+ .../kernel/syscalls/futex/futex_wake04.c      | 146 +++--
+ testcases/kernel/syscalls/futex/futextest.h   | 122 +++--
+ .../syscalls/io_pgetevents/io_pgetevents01.c  |  33 +-
+ .../syscalls/io_pgetevents/io_pgetevents02.c  |  51 +-
+ testcases/kernel/syscalls/ipc/semop/Makefile  |   2 +-
+ testcases/kernel/syscalls/ipc/semop/semop.h   |  55 ++
+ testcases/kernel/syscalls/ipc/semop/semop01.c | 148 +++--
+ testcases/kernel/syscalls/ipc/semop/semop02.c | 156 +++---
+ testcases/kernel/syscalls/ipc/semop/semop03.c | 162 +++---
+ testcases/kernel/syscalls/ipc/semop/semop04.c | 177 +++---
+ testcases/kernel/syscalls/ipc/semop/semop05.c | 313 +++++------
+ .../mq_timedreceive/mq_timedreceive01.c       |  92 +++-
+ .../syscalls/mq_timedsend/mq_timedsend01.c    |  96 ++--
+ testcases/kernel/syscalls/ppoll/ppoll01.c     |  71 ++-
+ .../sched_rr_get_interval01.c                 | 116 ++--
+ .../sched_rr_get_interval02.c                 | 122 ++---
+ .../sched_rr_get_interval03.c                 | 146 +++--
+ testcases/kernel/syscalls/select/select_var.h |  25 +-
+ .../kernel/syscalls/sendmmsg/sendmmsg01.c     |  40 +-
+ .../kernel/syscalls/sendmmsg/sendmmsg_var.h   |  55 +-
+ .../syscalls/sigwaitinfo/sigwaitinfo01.c      | 311 ++++++-----
+ .../syscalls/timer_gettime/timer_gettime01.c  | 124 ++---
+ .../syscalls/timer_settime/timer_settime01.c  |  48 +-
+ .../syscalls/timer_settime/timer_settime02.c  |  66 ++-
+ testcases/kernel/syscalls/timerfd/timerfd01.c |  53 +-
+ testcases/kernel/syscalls/timerfd/timerfd04.c |  51 +-
+ .../syscalls/timerfd/timerfd_gettime01.c      | 133 ++---
+ .../syscalls/timerfd/timerfd_settime01.c      | 136 +++--
+ .../syscalls/timerfd/timerfd_settime02.c      |  28 +-
+ testcases/kernel/syscalls/utils/mq_timed.h    |  42 +-
+ testcases/kernel/syscalls/utimensat/Makefile  |   4 -
+ .../kernel/syscalls/utimensat/utimensat01.c   | 472 ++++++++--------
+ .../syscalls/utimensat/utimensat_tests.sh     | 517 ------------------
+ 52 files changed, 2566 insertions(+), 2689 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/futex/futex_wait_bitset.h
+ delete mode 100644 testcases/kernel/syscalls/futex/futex_wait_bitset02.c
+ create mode 100644 testcases/kernel/syscalls/ipc/semop/semop.h
+ delete mode 100755 testcases/kernel/syscalls/utimensat/utimensat_tests.sh
 
 -- 
-viresh
+2.25.0.rc1.19.g042ed3e048af
+
