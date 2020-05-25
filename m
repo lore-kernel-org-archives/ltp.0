@@ -1,31 +1,27 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 May 2020 18:28:39 +0200
-Subject: [LTP] [PATCH v2 3/3] Add test for CVE 2017-1000111
-In-Reply-To: <f24e98c8-0aba-aaeb-0401-dafe2fffa897@suse.cz>
-References: <20200505152315.29216-1-mdoucha@suse.cz>
- <20200505152315.29216-3-mdoucha@suse.cz>
- <20200525141510.GC26837@dell5510>
- <f24e98c8-0aba-aaeb-0401-dafe2fffa897@suse.cz>
-Message-ID: <20200525162839.GA18169@dell5510>
+Date: Mon, 25 May 2020 21:02:33 +0200
+Subject: [LTP] [PATCH] hugemmap05: check if the reserving hpages as
+ expected
+In-Reply-To: <20200525105410.4328-1-liwang@redhat.com>
+References: <20200525105410.4328-1-liwang@redhat.com>
+Message-ID: <20200525190233.GA21052@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi Li,
 
-> > Don't we want to add here taint check (you had it in v1)?
-> > tst_taint_init(TST_TAINT_W | TST_TAINT_D);
+> To get rid of TBROK on small box:
+>   hugemmap05.c:88: BROK: mmap((nil),201326592,3,1,6,0) failed: ENOMEM (12)
 
-> Taint check is meaningless in this test because the only ill effect from
-> the race condition is that all incoming packets will be truncated to 0
-> bytes. Somebody would have to horribly break the code for receiving
-> incoming packets in order to turn this bug into something that can
-> actually taint the kernel.
+> And, reduce the reserved testing huge pages to 2, it also works well.
 
-Right, that makes no sense to add it then.
-Thanks for explanation and your patchset, merged.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Nice speedup :)
+Maybe add some constant for size (2), as it's used on 3 places?
 
 Kind regards,
 Petr
