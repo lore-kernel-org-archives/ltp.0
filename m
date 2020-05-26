@@ -1,88 +1,316 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 May 2020 02:11:59 -0400 (EDT)
-Subject: [LTP] 
- =?utf-8?q?=E2=9D=8C_FAIL=3A_Waiting_for_review=3A_Test_rep?=
- =?utf-8?q?ort_for_kernel_5=2E6=2E14-dbf782f=2Ecki_=28stable-queue=29?=
-In-Reply-To: <CAEemH2dCnkczxB2jWrGprRGQ=F7PB=o53MmUNDrcfhB34z4P9A@mail.gmail.com>
-References: <cki.5639E3C778.X5N9P4R7GB@redhat.com>
- <2102236949.13452256.1590328678642.JavaMail.zimbra@redhat.com>
- <CAEemH2dNB3Ktt5LeBLxMKekv7-gj4d=EkQouYmO1SgbyzjLEaw@mail.gmail.com>
- <1440024610.13546915.1590416134343.JavaMail.zimbra@redhat.com>
- <CAEemH2dCnkczxB2jWrGprRGQ=F7PB=o53MmUNDrcfhB34z4P9A@mail.gmail.com>
-Message-ID: <218996157.13586289.1590473519056.JavaMail.zimbra@redhat.com>
+From: Vikas Kumar <vikas.kumar2@arm.com>
+Date: Tue, 26 May 2020 12:05:55 +0530
+Subject: [LTP] [PATCH V5] syscall: Add io_uring related tests
+Message-ID: <20200526063555.25006-1-vikas.kumar2@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Added asynchronous I/O API tests for io_uring_setup(), io_uring_register()
+and io_uring_enter(). These tests intend to validate io_uring operations.
 
+1. io_uring_setup() creates submission queue and completion queue to
+   perform subsequent operations on the io_uring instance.
+2. io_uring_register() registers user buffers in kernel for long term
+   usese.
+3. io_uring_enter() initiates I/O operations using the shared SQ and CQ
+   queue.
 
------ Original Message -----
-> On Mon, May 25, 2020 at 10:15 PM Jan Stancek <jstancek@redhat.com> wrote:
-> 
-> >
-> > ...
-> 
-> 
-> > > > >     s390x:
-> > > > >      ? LTP
-> > > >
-> > > > @Li, any thoughts on hugetlb TBROKs here? I thought you said
-> > > > 'request_hugepages'
-> > > > was not supposed to be hard test requirement.
-> > > >
-> > >
-> > > The hugemmap05.c doesn't goes the new 'request_hugepages' way in the huge
-> > > page reserving. it tries to reserve 128 hpages and overcommits 192 hpages
-> > > in hard coding, and probably touch the memory available uplimit on s390x.
-> > > static long size = 128, length = 384;
-> > > ...
-> > > addr = SAFE_MMAP(ADDR, (length / 2 * hugepagesize), PROTECTION, FLAGS,
-> > fd,
-> > > 0);
-> > >
-> > > We could convert this to use the new request_hugepages API and do the
-> > > requested number of huge page checking at setup() to make sure the system
-> > > only running in a reasonable situation.
-> >
-> > Sorry, I didn't make it clear I was talking about hugemmap06. The patch is
-> > OK,
-> > since it makes both use request_hugepages API. But should we also do
-> > something
-> > with this TBROK?
-> >
-> 
-> It seems unkind and useless to exit with TBROK when failed to reserve with
-> 80% max_hpages again. I'm thinking if it could be directly replaced by
-> TCONF to skip the whole test?
+Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com>
+---
+ include/lapi/io_uring.h                       |  42 ++++
+ testcases/kernel/syscalls/io_uring/Makefile   |   7 +
+ .../kernel/syscalls/io_uring/io_uring01.c     | 214 ++++++++++++++++++
+ 3 files changed, 263 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_uring/Makefile
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring01.c
 
-I think it can fail even when request is less than 80%, when memory is too fragmented.
-I agree with TCONF, but I'd keep numbers (val, tst_hugepages) in output, so we know
-how close it was to the requested number.
-
-> 
-> --- a/lib/tst_hugepage.c
-> +++ b/lib/tst_hugepage.c
-> @@ -43,7 +43,7 @@ unsigned long tst_request_hugepages(unsigned long hpages)
->         SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
->         SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
->         if (val != tst_hugepages)
-> -               tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val,
-> tst_hugepages);
-> +               tst_brk(TCONF, "Not enough hugepages for testing.");
-> 
->         tst_res(TINFO, "%lu hugepage(s) reserved", tst_hugepages);
->  out:
-> 
-> 
-> >
-> >     tst_hugepage.c:46: BROK: nr_hugepages = 171, but expect 255
-> >
-> >
-> 
-> --
-> Regards,
-> Li Wang
-> 
+diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
+index 5fde58e22..168cae14c 100644
+--- a/include/lapi/io_uring.h
++++ b/include/lapi/io_uring.h
+@@ -280,4 +280,46 @@ int io_uring_enter(int fd, unsigned int to_submit, unsigned int min_complete,
+ }
+ #endif /* HAVE_IO_URING_ENTER */
+ 
++/*
++ * Check whether the ioring related system calls are supported on
++ * the current kernel. These system calls are enabled by default
++ * on kernel version 5.1.0 or higher. But they also might have
++ * been backported as well.
++ */
++void io_uring_setup_supported_by_kernel(void)
++{
++	if ((tst_kvercmp(5, 1, 0)) < 0) {
++		TEST(syscall(__NR_io_uring_setup, NULL, 0));
++		if (TST_RET != -1)
++			SAFE_CLOSE(TST_RET);
++		else if (TST_ERR == ENOSYS)
++			tst_brk(TCONF,
++				"Test not supported on kernel version < v5.1");
++	}
++}
++
++void io_uring_register_supported_by_kernel(void)
++{
++	if ((tst_kvercmp(5, 1, 0)) < 0) {
++		TEST(syscall(__NR_io_uring_register, NULL, 0));
++		if (TST_RET != -1)
++			SAFE_CLOSE(TST_RET);
++		else if (TST_ERR == ENOSYS)
++			tst_brk(TCONF,
++				"Test not supported on kernel version < v5.1");
++	}
++}
++
++void io_uring_enter_supported_by_kernel(void)
++{
++	if ((tst_kvercmp(5, 1, 0)) < 0) {
++		TEST(syscall(__NR_io_uring_enter, NULL, 0));
++		if (TST_RET != -1)
++			SAFE_CLOSE(TST_RET);
++		else if (TST_ERR == ENOSYS)
++			tst_brk(TCONF,
++				"Test not supported on kernel version < v5.1");
++	}
++}
++
+ #endif /* IO_URING_H__ */
+diff --git a/testcases/kernel/syscalls/io_uring/Makefile b/testcases/kernel/syscalls/io_uring/Makefile
+new file mode 100644
+index 000000000..7c6797397
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_uring/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2020 ARM, Ltd.  All rights reserved.
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
+new file mode 100644
+index 000000000..3f7de3a31
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_uring/io_uring01.c
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 ARM Ltd. All rights reserved.
++ * Author: Vikas Kumar <vikas.kumar2@arm.com>
++ *
++ * Tests for asynchronous I/O raw API i.e io_uring_setup(), io_uring_register()
++ * and io_uring_enter(). This tests validate basic API operation by creating a
++ * submission queue and a completion queue using io_uring_setup(). User buffer
++ * registered in the kernel for long term operation using io_uring_register().
++ * This tests initiates I/O operations with the help of io_uring_enter().
++ */
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <fcntl.h>
++#include "config.h"
++#include "tst_test.h"
++#include "lapi/io_uring.h"
++
++#define QUEUE_DEPTH 1
++#define BLOCK_SZ    1024
++
++static struct tcase {
++	unsigned int setup_flags;
++	unsigned int register_opcode;
++	unsigned int enter_flags;
++} tcases[] = {
++	{IORING_SETUP_IOPOLL, IORING_REGISTER_BUFFERS, IORING_OP_READ_FIXED},
++};
++
++struct io_sq_ring {
++	unsigned int *head;
++	unsigned int *tail;
++	unsigned int *ring_mask;
++	unsigned int *ring_entries;
++	unsigned int *flags;
++	unsigned int *array;
++};
++
++struct io_cq_ring {
++	unsigned int *head;
++	unsigned int *tail;
++	unsigned int *ring_mask;
++	unsigned int *ring_entries;
++	struct io_uring_cqe *cqes;
++};
++
++struct submitter {
++	int ring_fd;
++	struct io_sq_ring sq_ring;
++	struct io_uring_sqe *sqes;
++	struct io_cq_ring cq_ring;
++};
++
++struct buff_info {
++	unsigned int buff_sz;
++	struct iovec iovecs[];
++};
++
++static struct submitter *s;
++static struct buff_info *bi;
++static sigset_t sig;
++
++static int setup_io_uring_test(struct submitter *s, struct tcase *tc)
++{
++	struct io_sq_ring *sring = &s->sq_ring;
++	struct io_cq_ring *cring = &s->cq_ring;
++	struct io_uring_params p;
++	void *ptr;
++
++	memset(&p, 0, sizeof(p));
++	p.flags |= tc->setup_flags;
++	s->ring_fd = io_uring_setup(QUEUE_DEPTH, &p);
++	if (s->ring_fd == -1) {
++		tst_res(TFAIL | TTERRNO, "io_uring_setup() failed");
++		return 1;
++	}
++
++	/* Submission queue ring buffer mapping */
++	ptr = SAFE_MMAP(0, p.sq_off.array +
++			p.sq_entries * sizeof(unsigned int),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_SQ_RING);
++	if (ptr == MAP_FAILED)
++		return 1;
++
++	/* Save global submission queue struct info */
++	sring->head = ptr + p.sq_off.head;
++	sring->tail = ptr + p.sq_off.tail;
++	sring->ring_mask = ptr + p.sq_off.ring_mask;
++	sring->ring_entries = ptr + p.sq_off.ring_entries;
++	sring->flags = ptr + p.sq_off.flags;
++	sring->array = ptr + p.sq_off.array;
++
++	/* Submission queue entries ring buffer mapping */
++	s->sqes = SAFE_MMAP(0, p.sq_entries *
++			sizeof(struct io_uring_sqe),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_SQES);
++	if (s->sqes == MAP_FAILED)
++		return 1;
++
++	/* Completion queue ring buffer mapping */
++	ptr = SAFE_MMAP(0,
++			p.cq_off.cqes + p.cq_entries *
++			sizeof(struct io_uring_cqe),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_CQ_RING);
++	if (ptr == MAP_FAILED)
++		return 1;
++
++	/* Save global completion queue struct info */
++	cring->head = ptr + p.cq_off.head;
++	cring->tail = ptr + p.cq_off.tail;
++	cring->ring_mask = ptr + p.cq_off.ring_mask;
++	cring->ring_entries = ptr + p.cq_off.ring_entries;
++	cring->cqes = ptr + p.cq_off.cqes;
++
++	return 0;
++}
++
++static int submit_to_uring_sq(struct submitter *s, struct tcase *tc)
++{
++	unsigned int index = 0, tail = 0, next_tail = 0;
++	struct io_sq_ring *sring = &s->sq_ring;
++	struct io_uring_sqe *sqe;
++	void  *iov_base;
++	size_t iov_len;
++	int ret;
++
++	bi = SAFE_MALLOC(sizeof(*bi));
++	if (!bi)
++		return 1;
++
++	iov_len = BLOCK_SZ;
++	iov_base = SAFE_MALLOC(iov_len);
++	if (!iov_base)
++		return 1;
++
++	memset(iov_base, 0, iov_len);
++
++	bi->iovecs[index].iov_base = (void *)iov_base;
++	bi->iovecs[index].iov_len = (size_t)iov_len;
++
++	ret = io_uring_register(s->ring_fd, tc->register_opcode,
++				bi->iovecs, QUEUE_DEPTH);
++	if (ret != 0) {
++		tst_res(TFAIL | TTERRNO, "io_uring_register() failed");
++		return 1;
++	}
++
++	/* Submission queue entry addition to SQE ring buffer tail */
++	tail = *sring->tail;
++	next_tail = tail;
++	next_tail++;
++	index = tail & *s->sq_ring.ring_mask;
++	sqe = &s->sqes[index];
++	sqe->flags = 0;
++	sqe->opcode = tc->enter_flags;
++	sqe->addr = (unsigned long)bi->iovecs;
++	sqe->user_data = (unsigned long long)bi;
++	sring->array[index] = index;
++	tail = next_tail;
++
++	/* Kernel to notice the tail update */
++	if (*sring->tail != tail)
++		*sring->tail = tail;
++
++	ret =  io_uring_enter(s->ring_fd, 1, 1, IORING_ENTER_GETEVENTS, &sig);
++	if (ret < 0) {
++		tst_res(TFAIL | TTERRNO, "io_uring_enter() failed");
++		return 1;
++	}
++
++	return 0;
++}
++
++static void setup(void)
++{
++	io_uring_setup_supported_by_kernel();
++	io_uring_register_supported_by_kernel();
++	io_uring_enter_supported_by_kernel();
++}
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	int ret = 0;
++
++	s = SAFE_MALLOC(sizeof(*s));
++	if (!s)
++		return;
++
++	memset(s, 0, sizeof(*s));
++	ret = setup_io_uring_test(s, tc);
++	if (ret)
++		tst_res(TFAIL | TTERRNO, "io_uring_setup error");
++
++	ret = submit_to_uring_sq(s, tc);
++	if (ret)
++		tst_res(TFAIL | TTERRNO, "io_uring_submit error");
++	else
++		tst_res(TPASS, "functionality of io_uring API is correct");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++};
++
+-- 
+2.17.1
 
