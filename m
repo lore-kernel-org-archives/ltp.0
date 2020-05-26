@@ -1,43 +1,86 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 26 May 2020 15:09:01 +0800
-Subject: [LTP] [PATCH] lib: use TCONF if hpage reserve failed in retry
-Message-ID: <20200526070901.12957-1-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 26 May 2020 04:27:31 -0400 (EDT)
+Subject: [LTP] [PATCH RFC 1/4] lib: add new cgroup test API
+In-Reply-To: <20200522012327.18991-1-liwang@redhat.com>
+References: <20200522012327.18991-1-liwang@redhat.com>
+Message-ID: <1156025603.13595880.1590481651127.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test still easy to get fail in?hpages?reserving (only 80% of
-max_hpages) because of memory fragmentation.
- ?
-  tst_hugepage.c:46: BROK: nr_hugepages = 171, but expect 255
-? ?
-But it seems unkind and useless to exit with TBROK when failed
-in hpage reserve retrying. This patch proposes to use TCONF for
-better log review.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Jan Stancek <jstancek@redhat.com>
----
- lib/tst_hugepage.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+----- Original Message -----
 
-diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
-index 52667a14e..f2bf5d20e 100644
---- a/lib/tst_hugepage.c
-+++ b/lib/tst_hugepage.c
-@@ -43,7 +43,9 @@ unsigned long tst_request_hugepages(unsigned long hpages)
- 	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
- 	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
- 	if (val != tst_hugepages)
--		tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val, tst_hugepages);
-+		tst_brk(TCONF, "nr_hugepages = %lu, but expect %lu. "
-+				"Not enough hugepages for testing.",
-+				val, tst_hugepages);
- 
- 	tst_res(TINFO, "%lu hugepage(s) reserved", tst_hugepages);
- out:
--- 
-2.21.1
+> +
+> +/* cgroup v1 */
+> +#define PATH_TMP_CG1_MEM	"/tmp/cgroup1_mem"
+> +#define PATH_TMP_CG1_CST	"/tmp/cgroup1_cpuset"
+
+It's only used for mount, so not sure if making it relative to TMPDIR
+buys us anything.
+
+> +
+> +/* cgroup v1 */
+> +void tst_mount_cgroup1(const char *name, const char *option,
+> +			const char *mnt_path, const char *new_path)
+
+I'd make all cgroup API start with tst_cgroup*.
+
+Is the intent to provide API for both v1 and v2, or just higher level API
+that hides the details?
+
+> +{
+> +	if (tst_is_mounted(mnt_path))
+> +		goto out;
+> +
+> +	SAFE_MKDIR(mnt_path, 0777);
+> +	if (mount(name, mnt_path, "cgroup", 0, option) == -1) {
+> +		if (errno == ENODEV) {
+> +			if (rmdir(mnt_path) == -1)
+> +				tst_res(TWARN | TERRNO, "rmdir %s failed", mnt_path);
+> +			tst_brk(TCONF,
+> +				 "Cgroup v1 is not configured in kernel");
+> +		}
+
+We should probably handle also EBUSY, for cases when controller is already part
+of existing hierarchy. E.g. cpu,cpuacct is mounted together, and someone
+tries to mount just cpu:
+  mount("none", "/mnt/cgroup", "cgroup", MS_MGC_VAL, "cpu") = -1 EBUSY (Device or resource busy)
+
+> +
+> +void tst_write_memcg1(long memsz)
+
+This should at least say memmax or something similar, if we add
+functions for more knobs later.
+
+I'm thinking if it would be worth having API more parametrized,
+something like:
+
+enum tst_cgroup_ctrl {
+        TST_CGROUP_MEMCG = 1,
+        TST_CGROUP_CPUSET = 2,
+};
+
+tst_cgroup_mount(enum tst_cgroup_ctrl)
+tst_cgroup_umount(enum tst_cgroup_ctrl)
+  // tests wouldn't need to use these ones directly
+  // would be probably internal functions
+
+tst_cgroup_version()
+  // to get/check cgroup support in setup()
+
+tst_cgroup_create(enum tst_cgroup_ctrl, const char *dir)
+  // mounts cgroup if not already mounted
+  // creates "dir", sets up subtree_control, etc.
+
+tst_cgroup_cleanup()
+  // cleans up everything, removes dirs, umounts what was mounted
+
+tst_cgroup_move_current(enum tst_cgroup_ctrl, const char *dir)
+  // writes getpid() to dir/"tasks"
+
+tst_cgroup_mem_set_maxbytes(const char *dir, long memsz)
+  // memcg specific function
 
