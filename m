@@ -1,107 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 26 May 2020 10:48:37 +0200
-Subject: [LTP] [PATCH V5] syscall: Add io_uring related tests
-In-Reply-To: <20200526063555.25006-1-vikas.kumar2@arm.com>
-References: <20200526063555.25006-1-vikas.kumar2@arm.com>
-Message-ID: <20200526084837.GA10775@dell5510>
+From: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date: Tue, 26 May 2020 09:54:17 +0100
+Subject: [LTP] Memory requirements for ltp
+Message-ID: <64a5e1c5c8041679e3024b564f2c67ace779c110.camel@linuxfoundation.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Vikas,
+Hi,
 
-not a complete review, just a few notes.
+I work on the Yocto Project and we run ltp tests as part of our testing
+infrastructure. We're having problems where the tests hang during
+execution and are trying to figure out why as this is disruptive.
 
-...
-> +/*
-> + * Check whether the ioring related system calls are supported on
-> + * the current kernel. These system calls are enabled by default
-> + * on kernel version 5.1.0 or higher. But they also might have
-> + * been backported as well.
-> + */
-IMHO the function name is obvious, so please shorten the comment :).
-> +void io_uring_setup_supported_by_kernel(void)
-> +{
-> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
-> +		TEST(syscall(__NR_io_uring_setup, NULL, 0));
-> +		if (TST_RET != -1)
-> +			SAFE_CLOSE(TST_RET);
-> +		else if (TST_ERR == ENOSYS)
-> +			tst_brk(TCONF,
-> +				"Test not supported on kernel version < v5.1");
-> +	}
-> +}
-> +
-> +void io_uring_register_supported_by_kernel(void)
-> +{
-> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
-> +		TEST(syscall(__NR_io_uring_register, NULL, 0));
-> +		if (TST_RET != -1)
-> +			SAFE_CLOSE(TST_RET);
-> +		else if (TST_ERR == ENOSYS)
-> +			tst_brk(TCONF,
-> +				"Test not supported on kernel version < v5.1");
-> +	}
-> +}
-> +
-> +void io_uring_enter_supported_by_kernel(void)
-> +{
-> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
-> +		TEST(syscall(__NR_io_uring_enter, NULL, 0));
-> +		if (TST_RET != -1)
-> +			SAFE_CLOSE(TST_RET);
-> +		else if (TST_ERR == ENOSYS)
-> +			tst_brk(TCONF,
-> +				"Test not supported on kernel version < v5.1");
-> +	}
-> +}
-IMHO It's unlikely that somebody would backport just some syscalls, not all 3.
-I'd be just for testing io_uring_setup().
-Then no setup function is needed (use .setup =
-io_uring_setup_supported_by_kernel in struct tst_test).
+It appears to be the controllers tests which hang. Its also clear we
+are running the tests on a system with too little memory (512MB) as
+there is OOM killer activity all over the logs (as well as errors from
+missing tools like nice, bc, gdb, ifconfig and others).
 
-And according to man pages only io_uring_setup() returns a file descriptor. The
-other two takes it as a parameter, so SAFE_CLOSE(TST_RET) is wrong.
-https://www.mankier.com/2/io_uring_setup
-https://www.mankier.com/2/io_uring_register
-https://www.mankier.com/2/io_uring_enter
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	int ret = 0;
-> +
-> +	s = SAFE_MALLOC(sizeof(*s));
-> +	if (!s)
-> +		return;
-All SAFE_* macros (and safe_* functions which use them) are here to avoid these
-checks in the code. They exit executing via tst_brk(TCONF, "..."), therefore use
-just
-s = SAFE_MALLOC(sizeof(*s));
-(drop the check).
+I did dump all the logs and output I could find into a bug for tracking
+purposes, https://bugzilla.yoctoproject.org/show_bug.cgi?id=13802
 
-> +
-> +	memset(s, 0, sizeof(*s));
-> +	ret = setup_io_uring_test(s, tc);
-> +	if (ret)
-> +		tst_res(TFAIL | TTERRNO, "io_uring_setup error");
-> +
-> +	ret = submit_to_uring_sq(s, tc);
-> +	if (ret)
-> +		tst_res(TFAIL | TTERRNO, "io_uring_submit error");
-> +	else
-> +		tst_res(TPASS, "functionality of io_uring API is correct");
+Petr tells me SUSE use 4GB for QEMU, does anyone have any other
+boundaries on what works/doesn't work?
 
-nit: we prefer return in if instead of else:
+Other questions that come to mind:
 
-if (submit_to_uring_sq(s, tc)) {
-	tst_res(TFAIL | TTERRNO, "io_uring_submit error");
-	return;
-}
+Could/should ltp test for the tools it uses up front?
+Are there any particular tests we should avoid as they are known to be
+unreliable?
 
-tst_res(TPASS, "functionality of io_uring API is correct");
+The ones we're currently running are:
 
-Kind regards,
-Petr
+"math", "syscalls", "dio", "io", "mm", "ipc", "sched", "nptl", "pty",
+"containers", "controllers", 
+"filecaps", "cap_bounds", "fcntl-locktests", "connectors", "commands",
+"net.ipv6_lib", "input",
+"fs_perms_simple", "fs", "fsx", "fs_bind"
+
+someone suggested I should just remove controllers but I'm not sure
+that is the best way forward.
+
+I will test with more memory (not sure how much yet) but I'd welcome
+more data if anyone has any.
+
+Cheers,
+
+Richard
+
