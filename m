@@ -1,70 +1,47 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 26 May 2020 21:43:20 +0800
-Subject: [LTP] [PATCH v2] lib/tst_test.c: Take account of
- tst_brk(TCONF/TFAIL) in summary output
-In-Reply-To: <20200522014007.3108-1-yangx.jy@cn.fujitsu.com>
-References: <5EC48FCD.9050600@cn.fujitsu.com>
- <20200522014007.3108-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <5ECD1CF8.5010607@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 26 May 2020 22:09:04 +0200
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Fix TST_NEEDS_DEVICE=1 implies
+ TST_NEEDS_TMPDIR=1
+Message-ID: <20200526200904.27264-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+e5dd9c0e7 set TST_TMPDIR=1 instead, which is wrong, because variable
+holds path to the test temporary directory. That broke IMA/EVM tests
+running on tmpfs (which creates loop device via TST_NEEDS_DEVICE=1):
 
-I want to push it tomorrow if nobody has any objection.
+/opt/ltp/testcases/bin/ima_measurements.sh: 107: cd: can't cd to 1
 
-Thanks,
-Xiao Yang
-On 2020/5/22 9:40, Xiao Yang wrote:
-> Current summary output doesn't take account of tst_brk(TCONF/TFAIL),
-> for example:
-> -----------------------------------------------------
-> [root@Fedora-30  pidfd_send_signal]# ./pidfd_send_signal01
-> tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
-> ../../../../include/lapi/pidfd_send_signal.h:16: CONF: syscall(424) __NR_pidfd_send_signal not supported
-> 
-> Summary:
-> passed   0
-> failed   0
-> skipped  0
-> warnings 0
-> ----------------------------------------------------
-> 
-> 1) Add update_result() in tst_vbrk_() to fix the issue.
-> 2) Remove redundant update_result() in run_tcases_per_fs() after the fix.
-> 
-> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> ---
->   lib/tst_test.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 0e58060e0..e93c88ba5 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -316,6 +316,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
->                  const char *fmt, va_list va)
->   {
->   	print_result(file, lineno, ttype, fmt, va);
-> +	update_results(TTYPE_RESULT(ttype));
-> 
->   	/*
->   	 * The getpid implementation in some C library versions may cause cloned
-> @@ -1316,10 +1317,8 @@ static int run_tcases_per_fs(void)
->   			mntpoint_mounted = 0;
->   		}
-> 
-> -		if (ret == TCONF) {
-> -			update_results(ret);
-> +		if (ret == TCONF)
->   			continue;
-> -		}
-> 
->   		if (ret == 0)
->   			continue;
+which also broke umount in cleanup()
+umount: /root/mntpoint: target is busy.
+ima_measurements 1 TINFO: umount(/dev/loop14) failed, try 1 ...
+ima_measurements 1 TINFO: Likely gvfsd-trash is probing newly mounted
+fs, kill it to speed up tests.
+umount: /root/mntpoint: target is busy.
 
+Fixes: e5dd9c0e7 ("shell: TST_NEEDS_DEVICE implies TST_TMPDIR")
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 8d24b4abf..1cf724cbe 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -550,7 +550,7 @@ tst_run()
+ 
+ 	_tst_setup_timer
+ 
+-	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_TMPDIR=1
++	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
+ 
+ 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+ 		if [ -z "$TMPDIR" ]; then
+-- 
+2.26.2
 
