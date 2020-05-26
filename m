@@ -1,52 +1,52 @@
-From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Tue, 26 May 2020 18:37:08 +0800
-Subject: [LTP] [PATCH v5 4/4] umip_basic_test.c: improve kconfig
- verification to avoid umip wrong abort case
-In-Reply-To: <20200526101133.GA3114075@x230>
-References: <20191220092529.3239-1-pengfei.xu@intel.com>
- <20191220092529.3239-4-pengfei.xu@intel.com>
- <20200525212401.GA30581@dell5510>
- <20200526023233.GA14105@xpf-desktop.sh.intel.com>
- <20200526092346.GB10775@dell5510> <20200526092703.GC10775@dell5510>
- <20200526100700.GA24819@xpf-desktop.sh.intel.com>
- <20200526101133.GA3114075@x230>
-Message-ID: <20200526103708.GA26057@xpf-desktop.sh.intel.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 26 May 2020 14:38:47 +0300
+Subject: [LTP] [PATCH] acct02: fix the ac_version check on big endian
+ platforms
+Message-ID: <20200526113847.6837-1-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+If we are on a big endian platform where char is signed,
+the following compilation error is emitted:
 
-On 2020-05-26 at 12:11:33 +0200, Petr Vorel wrote:
-> Hi Pengfei,
-> 
-> > > But it looks like Cyril is not against the implementation, it just needs to be
-> > > fixed:
-> > > https://patchwork.ozlabs.org/comment/2352151/
-> 
-> > You are right, actually it could be worked as my suggest way:
-> > "CONFIG_A|CONFIG_B=Y".
-> > I tried to use Cyril's advice "CONFIG_A=X|CONFIG_B=Y" way, which will
-> > add more code complexity, so I just want to solve the problem I am currently
-> > facing.
-> > If we really need the "CONFIG_A=X|CONFIG_B=Y" function, which cannot be
-> > satisfied by "CONFIG_A|CONFIG_B=Y" function in the future, then we could add
-> > this function I think.
-> > Thanks for your considering.
-> 
-> I'd also think that we need "CONFIG_A=X|CONFIG_B=Y", because
-> "CONFIG_A|CONFIG_B=Y" is ambiguous (we support both CONFIG_FOO and
-> CONFIG_FOO=bar and this must stay even with |).
-> 
-> Will you send a patch for that or shell I fix it with LINUX_VERSION_CODE <
-> KERNEL_VERSION for now?
+acct02.c: In function ?verify_acct?:
+acct02.c:38:37: warning: comparison is always true due to limited range of data type [-Wtype-limits]
+ #define ACCT_MEMBER_V3(x) (((struct acct_v3 *)acc)->x)
+                                     ^
+acct02.c:144:6: note: in expansion of macro ?ACCT_MEMBER_V3?
+  if (ACCT_MEMBER_V3(ac_version) != (3 | ACCT_BYTEORDER)) {
 
-  Ok, thanks for your LINUX_VERSION way to fix this issue.
-  Thanks!
-  BR.
+and the test case fails, because it cannot 'decrypt' the ac_version
+from the file:
 
-> 
-> Kind regards,
-> Petr
+acct02.c:238: INFO: Verifying using 'struct acct_v3'
+acct02.c:191: INFO: == entry 1 ==
+acct02.c:146: INFO: ac_version != 3 (-125)
+
+One way to address that is to explicitly cast the expression
+we compare to (which is int) to the type of ac_version (which is char).
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index d6b16b8..8ee1bfc 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -141,7 +141,7 @@ static int verify_acct(void *acc, int elap_time)
+ 		ret = 1;
+ 	}
+ 
+-	if (ACCT_MEMBER_V3(ac_version) != (3 | ACCT_BYTEORDER)) {
++	if (ACCT_MEMBER_V3(ac_version) != (char)(3 | ACCT_BYTEORDER)) {
+ 		tst_res(TINFO, "ac_version != 3 (%d)",
+ 			ACCT_MEMBER_V3(ac_version));
+ 		ret = 1;
+-- 
+1.8.3.1
+
