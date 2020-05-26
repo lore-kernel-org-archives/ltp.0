@@ -1,86 +1,107 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 May 2020 04:27:31 -0400 (EDT)
-Subject: [LTP] [PATCH RFC 1/4] lib: add new cgroup test API
-In-Reply-To: <20200522012327.18991-1-liwang@redhat.com>
-References: <20200522012327.18991-1-liwang@redhat.com>
-Message-ID: <1156025603.13595880.1590481651127.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 26 May 2020 10:48:37 +0200
+Subject: [LTP] [PATCH V5] syscall: Add io_uring related tests
+In-Reply-To: <20200526063555.25006-1-vikas.kumar2@arm.com>
+References: <20200526063555.25006-1-vikas.kumar2@arm.com>
+Message-ID: <20200526084837.GA10775@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Vikas,
 
------ Original Message -----
+not a complete review, just a few notes.
 
-> +
-> +/* cgroup v1 */
-> +#define PATH_TMP_CG1_MEM	"/tmp/cgroup1_mem"
-> +#define PATH_TMP_CG1_CST	"/tmp/cgroup1_cpuset"
-
-It's only used for mount, so not sure if making it relative to TMPDIR
-buys us anything.
-
-> +
-> +/* cgroup v1 */
-> +void tst_mount_cgroup1(const char *name, const char *option,
-> +			const char *mnt_path, const char *new_path)
-
-I'd make all cgroup API start with tst_cgroup*.
-
-Is the intent to provide API for both v1 and v2, or just higher level API
-that hides the details?
-
+...
+> +/*
+> + * Check whether the ioring related system calls are supported on
+> + * the current kernel. These system calls are enabled by default
+> + * on kernel version 5.1.0 or higher. But they also might have
+> + * been backported as well.
+> + */
+IMHO the function name is obvious, so please shorten the comment :).
+> +void io_uring_setup_supported_by_kernel(void)
 > +{
-> +	if (tst_is_mounted(mnt_path))
-> +		goto out;
-> +
-> +	SAFE_MKDIR(mnt_path, 0777);
-> +	if (mount(name, mnt_path, "cgroup", 0, option) == -1) {
-> +		if (errno == ENODEV) {
-> +			if (rmdir(mnt_path) == -1)
-> +				tst_res(TWARN | TERRNO, "rmdir %s failed", mnt_path);
+> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
+> +		TEST(syscall(__NR_io_uring_setup, NULL, 0));
+> +		if (TST_RET != -1)
+> +			SAFE_CLOSE(TST_RET);
+> +		else if (TST_ERR == ENOSYS)
 > +			tst_brk(TCONF,
-> +				 "Cgroup v1 is not configured in kernel");
-> +		}
+> +				"Test not supported on kernel version < v5.1");
+> +	}
+> +}
+> +
+> +void io_uring_register_supported_by_kernel(void)
+> +{
+> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
+> +		TEST(syscall(__NR_io_uring_register, NULL, 0));
+> +		if (TST_RET != -1)
+> +			SAFE_CLOSE(TST_RET);
+> +		else if (TST_ERR == ENOSYS)
+> +			tst_brk(TCONF,
+> +				"Test not supported on kernel version < v5.1");
+> +	}
+> +}
+> +
+> +void io_uring_enter_supported_by_kernel(void)
+> +{
+> +	if ((tst_kvercmp(5, 1, 0)) < 0) {
+> +		TEST(syscall(__NR_io_uring_enter, NULL, 0));
+> +		if (TST_RET != -1)
+> +			SAFE_CLOSE(TST_RET);
+> +		else if (TST_ERR == ENOSYS)
+> +			tst_brk(TCONF,
+> +				"Test not supported on kernel version < v5.1");
+> +	}
+> +}
+IMHO It's unlikely that somebody would backport just some syscalls, not all 3.
+I'd be just for testing io_uring_setup().
+Then no setup function is needed (use .setup =
+io_uring_setup_supported_by_kernel in struct tst_test).
 
-We should probably handle also EBUSY, for cases when controller is already part
-of existing hierarchy. E.g. cpu,cpuacct is mounted together, and someone
-tries to mount just cpu:
-  mount("none", "/mnt/cgroup", "cgroup", MS_MGC_VAL, "cpu") = -1 EBUSY (Device or resource busy)
+And according to man pages only io_uring_setup() returns a file descriptor. The
+other two takes it as a parameter, so SAFE_CLOSE(TST_RET) is wrong.
+https://www.mankier.com/2/io_uring_setup
+https://www.mankier.com/2/io_uring_register
+https://www.mankier.com/2/io_uring_enter
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	int ret = 0;
+> +
+> +	s = SAFE_MALLOC(sizeof(*s));
+> +	if (!s)
+> +		return;
+All SAFE_* macros (and safe_* functions which use them) are here to avoid these
+checks in the code. They exit executing via tst_brk(TCONF, "..."), therefore use
+just
+s = SAFE_MALLOC(sizeof(*s));
+(drop the check).
 
 > +
-> +void tst_write_memcg1(long memsz)
+> +	memset(s, 0, sizeof(*s));
+> +	ret = setup_io_uring_test(s, tc);
+> +	if (ret)
+> +		tst_res(TFAIL | TTERRNO, "io_uring_setup error");
+> +
+> +	ret = submit_to_uring_sq(s, tc);
+> +	if (ret)
+> +		tst_res(TFAIL | TTERRNO, "io_uring_submit error");
+> +	else
+> +		tst_res(TPASS, "functionality of io_uring API is correct");
 
-This should at least say memmax or something similar, if we add
-functions for more knobs later.
+nit: we prefer return in if instead of else:
 
-I'm thinking if it would be worth having API more parametrized,
-something like:
+if (submit_to_uring_sq(s, tc)) {
+	tst_res(TFAIL | TTERRNO, "io_uring_submit error");
+	return;
+}
 
-enum tst_cgroup_ctrl {
-        TST_CGROUP_MEMCG = 1,
-        TST_CGROUP_CPUSET = 2,
-};
+tst_res(TPASS, "functionality of io_uring API is correct");
 
-tst_cgroup_mount(enum tst_cgroup_ctrl)
-tst_cgroup_umount(enum tst_cgroup_ctrl)
-  // tests wouldn't need to use these ones directly
-  // would be probably internal functions
-
-tst_cgroup_version()
-  // to get/check cgroup support in setup()
-
-tst_cgroup_create(enum tst_cgroup_ctrl, const char *dir)
-  // mounts cgroup if not already mounted
-  // creates "dir", sets up subtree_control, etc.
-
-tst_cgroup_cleanup()
-  // cleans up everything, removes dirs, umounts what was mounted
-
-tst_cgroup_move_current(enum tst_cgroup_ctrl, const char *dir)
-  // writes getpid() to dir/"tasks"
-
-tst_cgroup_mem_set_maxbytes(const char *dir, long memsz)
-  // memcg specific function
-
+Kind regards,
+Petr
