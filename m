@@ -1,32 +1,81 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 26 May 2020 08:38:54 +0530
-Subject: [LTP] [PATCH 1/5] syscalls:ipc: Move libraries to libs/ director
-In-Reply-To: <20200522123903.GB2446@yuki.lan>
-References: <cover.1590057824.git.viresh.kumar@linaro.org>
- <3b3344651f2ba4bf2446b6730a76ebcd9f894dd0.1590057824.git.viresh.kumar@linaro.org>
- <20200522123903.GB2446@yuki.lan>
-Message-ID: <20200526030854.xocwohgiyg3p5edh@vireshk-i7>
+From: Li Wang <liwan@redhat.com>
+Date: Tue, 26 May 2020 11:22:58 +0800
+Subject: [LTP] 
+	=?utf-8?q?=E2=9D=8C_FAIL=3A_Waiting_for_review=3A_Test_rep?=
+	=?utf-8?q?ort_for_kernel_5=2E6=2E14-dbf782f=2Ecki_=28stable-queue?=
+	=?utf-8?q?=29?=
+In-Reply-To: <1440024610.13546915.1590416134343.JavaMail.zimbra@redhat.com>
+References: <cki.5639E3C778.X5N9P4R7GB@redhat.com>
+ <2102236949.13452256.1590328678642.JavaMail.zimbra@redhat.com>
+ <CAEemH2dNB3Ktt5LeBLxMKekv7-gj4d=EkQouYmO1SgbyzjLEaw@mail.gmail.com>
+ <1440024610.13546915.1590416134343.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2dCnkczxB2jWrGprRGQ=F7PB=o53MmUNDrcfhB34z4P9A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 22-05-20, 14:39, Cyril Hrubis wrote:
-> Hi!
-> > Move the ipc libraries to libs/ directory. One of the reasons to do this
-> > was to add the capability of adding tests with both old and new test
-> > frameworks in the same ipc test directory.
-> 
-> Pushed with following diff, thanks.
-> 
-> 1) You cannot build two different libs in one directory
-> 2) Setting LTPLIBS instead of LDFLAGS generates proper build
->    dependencies as well
-> 3) Limit the linker flags for the kill and mremap tests
+On Mon, May 25, 2020 at 10:15 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-I don't think you pushed the changes you made. I still see my original
-patch there. :)
+>
+> ...
+
+
+> > > >     s390x:
+> > > >      ? LTP
+> > >
+> > > @Li, any thoughts on hugetlb TBROKs here? I thought you said
+> > > 'request_hugepages'
+> > > was not supposed to be hard test requirement.
+> > >
+> >
+> > The hugemmap05.c doesn't goes the new 'request_hugepages' way in the huge
+> > page reserving. it tries to reserve 128 hpages and overcommits 192 hpages
+> > in hard coding, and probably touch the memory available uplimit on s390x.
+> > static long size = 128, length = 384;
+> > ...
+> > addr = SAFE_MMAP(ADDR, (length / 2 * hugepagesize), PROTECTION, FLAGS,
+> fd,
+> > 0);
+> >
+> > We could convert this to use the new request_hugepages API and do the
+> > requested number of huge page checking at setup() to make sure the system
+> > only running in a reasonable situation.
+>
+> Sorry, I didn't make it clear I was talking about hugemmap06. The patch is
+> OK,
+> since it makes both use request_hugepages API. But should we also do
+> something
+> with this TBROK?
+>
+
+It seems unkind and useless to exit with TBROK when failed to reserve with
+80% max_hpages again. I'm thinking if it could be directly replaced by
+TCONF to skip the whole test?
+
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -43,7 +43,7 @@ unsigned long tst_request_hugepages(unsigned long hpages)
+        SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
+        SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
+        if (val != tst_hugepages)
+-               tst_brk(TBROK, "nr_hugepages = %lu, but expect %lu", val,
+tst_hugepages);
++               tst_brk(TCONF, "Not enough hugepages for testing.");
+
+        tst_res(TINFO, "%lu hugepage(s) reserved", tst_hugepages);
+ out:
+
+
+>
+>     tst_hugepage.c:46: BROK: nr_hugepages = 171, but expect 255
+>
+>
 
 -- 
-viresh
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200526/1ba02bf6/attachment.htm>
