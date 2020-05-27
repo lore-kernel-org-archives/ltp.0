@@ -1,81 +1,46 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 27 May 2020 15:08:58 +0800
-Subject: [LTP] [PATCH v2] lib/tst_test.c: Take account of
- tst_brk(TCONF/TFAIL) in summary output
-In-Reply-To: <5ECD1CF8.5010607@cn.fujitsu.com>
-References: <5EC48FCD.9050600@cn.fujitsu.com>
- <20200522014007.3108-1-yangx.jy@cn.fujitsu.com>
- <5ECD1CF8.5010607@cn.fujitsu.com>
-Message-ID: <5ECE120A.8060209@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 27 May 2020 03:11:04 -0400 (EDT)
+Subject: [LTP] [PATCH RFC 1/4] lib: add new cgroup test API
+In-Reply-To: <CAEemH2cGa5tvgWAPbyoanBKh7MbM4kuo+Ws_i0Z2vmbCts1yYQ@mail.gmail.com>
+References: <20200522012327.18991-1-liwang@redhat.com>
+ <1156025603.13595880.1590481651127.JavaMail.zimbra@redhat.com>
+ <CAEemH2cGa5tvgWAPbyoanBKh7MbM4kuo+Ws_i0Z2vmbCts1yYQ@mail.gmail.com>
+Message-ID: <1731864663.13759097.1590563464850.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-Pushed.
+----- Original Message -----
 
-Best Regards,
-Xiao Yang
-On 2020/5/26 21:43, Xiao Yang wrote:
-> Hi,
+> > We should probably handle also EBUSY, for cases when controller is already
+> > part
+> > of existing hierarchy. E.g. cpu,cpuacct is mounted together, and someone
+> > tries to mount just cpu:
+> >   mount("none", "/mnt/cgroup", "cgroup", MS_MGC_VAL, "cpu") = -1 EBUSY
+> > (Device or resource busy)
+> >
 > 
-> I want to push it tomorrow if nobody has any objection.
+> That's true.
 > 
-> Thanks,
-> Xiao Yang
-> On 2020/5/22 9:40, Xiao Yang wrote:
->> Current summary output doesn't take account of tst_brk(TCONF/TFAIL),
->> for example:
->> -----------------------------------------------------
->> [root@Fedora-30  pidfd_send_signal]# ./pidfd_send_signal01
->> tst_test.c:1246: INFO: Timeout per run is 0h 05m 00s
->> ../../../../include/lapi/pidfd_send_signal.h:16: CONF: syscall(424) __NR_pidfd_send_signal not supported
->>
->> Summary:
->> passed   0
->> failed   0
->> skipped  0
->> warnings 0
->> ----------------------------------------------------
->>
->> 1) Add update_result() in tst_vbrk_() to fix the issue.
->> 2) Remove redundant update_result() in run_tcases_per_fs() after the fix.
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> ---
->>    lib/tst_test.c | 5 ++---
->>    1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/lib/tst_test.c b/lib/tst_test.c
->> index 0e58060e0..e93c88ba5 100644
->> --- a/lib/tst_test.c
->> +++ b/lib/tst_test.c
->> @@ -316,6 +316,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
->>                   const char *fmt, va_list va)
->>    {
->>    	print_result(file, lineno, ttype, fmt, va);
->> +	update_results(TTYPE_RESULT(ttype));
->>
->>    	/*
->>    	 * The getpid implementation in some C library versions may cause cloned
->> @@ -1316,10 +1317,8 @@ static int run_tcases_per_fs(void)
->>    			mntpoint_mounted = 0;
->>    		}
->>
->> -		if (ret == TCONF) {
->> -			update_results(ret);
->> +		if (ret == TCONF)
->>    			continue;
->> -		}
->>
->>    		if (ret == 0)
->>    			continue;
-> 
-> .
-> 
+> But in general, people are not permitted to use tst_cgroup*_mount()
+> directly, it is only as the low-level/internal function to hide details we
+> mount cgroup. My previous thought is that, in v1, cpu,cpuacct are bound
+> together(as system way) in tst_croup_cpu().
 
+They don't need to use tst_cgroup*_mount() directly, they could change their
+system config and mount cpu,cpuacct,memcg together. Though chances of that
+happening are low.
 
+> > tst_cgroup_create(enum tst_cgroup_ctrl, const char *dir)
+> >
+> 
+> Maybe we can drop the second parameter "dir", the mount
+> functions are internal and we just use path macros in sub-function
+> which like what I did.
+
+I wanted to keep some flexibility in case test needs multiple cgroups.
+I'll have a look at v1 you posted today.
 
