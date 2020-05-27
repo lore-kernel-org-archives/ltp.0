@@ -1,72 +1,55 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 27 May 2020 03:45:18 -0400 (EDT)
-Subject: [LTP] [PATCH v1 2/4] mem: take use of new cgroup API
-In-Reply-To: <20200527031430.22144-2-liwang@redhat.com>
+Date: Wed, 27 May 2020 03:47:21 -0400 (EDT)
+Subject: [LTP] [PATCH v1 1/4] lib: add new cgroup test API
+In-Reply-To: <20200527031430.22144-1-liwang@redhat.com>
 References: <20200527031430.22144-1-liwang@redhat.com>
- <20200527031430.22144-2-liwang@redhat.com>
-Message-ID: <396532423.13763181.1590565518615.JavaMail.zimbra@redhat.com>
+Message-ID: <1946678285.13763431.1590565641700.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
-> b/testcases/kernel/mem/cpuset/cpuset01.c
-> index 853f7fe55..cecc4ba86 100644
-> --- a/testcases/kernel/mem/cpuset/cpuset01.c
-> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
-> @@ -51,11 +51,11 @@ static void test_cpuset(void)
->  	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
->  	char mems[BUFSIZ], buf[BUFSIZ];
->  
-> -	read_cpuset_files(CPATH, "cpus", buf);
-> -	write_cpuset_files(CPATH_NEW, "cpus", buf);
-> -	read_cpuset_files(CPATH, "mems", mems);
-> -	write_cpuset_files(CPATH_NEW, "mems", mems);
-> -	SAFE_FILE_PRINTF(CPATH_NEW "/tasks", "%d", getpid());
-> +	read_cpuset_files(PATH_TMP_CG1_CST, "cpus", buf);
-> +	write_cpuset_files(PATH_CG1_CST_LTP, "cpus", buf);
-> +	read_cpuset_files(PATH_TMP_CG1_CST, "mems", mems);
-> +	write_cpuset_files(PATH_CG1_CST_LTP, "mems", mems);
-
-This mixes generic api with cgroup1. It currently relies on implementation
-detail of tst_cgroup_mount(), which isn't visible just by looking at this test.
-
-We should make it generic or make it clear that test is for cgroup1 only:
-
-setup()
-  if (tst_cgroup_version() != TST_CGROUP_V1)
-    TCONF
 
 
-> diff --git a/testcases/kernel/mem/oom/oom03.c
-> b/testcases/kernel/mem/oom/oom03.c
-> index ce0b34c31..af3a565ce 100644
-> --- a/testcases/kernel/mem/oom/oom03.c
-> +++ b/testcases/kernel/mem/oom/oom03.c
-> @@ -36,27 +36,26 @@
->  
->  #ifdef HAVE_NUMA_V2
->  
-> -static int memcg_mounted;
-> -
->  static void verify_oom(void)
->  {
->  #ifdef TST_ABI32
->  	tst_brk(TCONF, "test is not designed for 32-bit system.");
->  #endif
->  
-> -	SAFE_FILE_PRINTF(MEMCG_PATH_NEW "/tasks", "%d", getpid());
-> -	SAFE_FILE_PRINTF(MEMCG_LIMIT, "%ld", TESTMEM);
-> +	tst_cgroup_mem_set_maxbytes(TESTMEM);
->  
->  	testoom(0, 0, ENOMEM, 1);
->  
-> -	if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
-> +	if ((access(PATH_MEMORY_SW_LIMIT, F_OK) == -1) ||
-> +			(access(PATH_MEMORY_SW_MAX, F_OK) == -1)) {
+----- Original Message -----
+> +
+> +static void tst_cgroup1_umount(const char *mnt_path, const char *new_path)
+> +{
+> +	FILE *fp;
+> +	int fd;
+> +	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
+> +
+> +	if (!tst_is_mounted(mnt_path))
+> +		return;
+> +
+> +	/* Move all processes in task to its parent node. */
+> +	sprintf(s, "%s/tasks", mnt_path);
+> +	fd = open(s, O_WRONLY);
+> +	if (fd == -1)
+> +		tst_res(TWARN | TERRNO, "open %s", s);
+> +
+> +	snprintf(s_new, BUFSIZ, "%s/tasks", new_path);
+> +	fp = fopen(s_new, "r");
+> +	if (fp == NULL)
+> +		tst_res(TWARN | TERRNO, "fopen %s", s_new);
+> +	if ((fd != -1) && (fp != NULL)) {
+> +		while (fgets(value, BUFSIZ, fp) != NULL)
+> +			if (write(fd, value, strlen(value) - 1)
+> +			    != (ssize_t)strlen(value) - 1)
+> +				tst_res(TWARN | TERRNO, "write %s", s);
+> +	}
+> +	if (fd != -1)
+> +		close(fd);
+> +	if (fp != NULL)
+> +		fclose(fp);
+> +	if (rmdir(new_path) == -1)
+> +		tst_res(TWARN | TERRNO, "rmdir %s", new_path);
+> +	if (umount(mnt_path) == -1)
+> +		tst_res(TWARN | TERRNO, "umount %s", mnt_path);
+> +	if (rmdir(mnt_path) == -1)
+> +		tst_res(TWARN | TERRNO, "rmdir %s", mnt_path);
 
-This could be tst_cgroup_mem_swapacct_enabled(), without need for test
-to probe specific cgroup[12] files.
+This sequence looks almost identical to tst_cgroup2_umount(),
+would be nice if code could be shared in some way.
 
