@@ -1,26 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 28 May 2020 13:40:54 +0200
-Subject: [LTP] [RFC PATCH 0/2] LVM: Drop legacy scripts and runtest files
-In-Reply-To: <20200528110554.10179-1-pvorel@suse.cz>
+Date: Thu, 28 May 2020 13:56:36 +0200
+Subject: [LTP] [RFC PATCH 1/2] LVM: Don't require root for
+ generate_lvm_runfile.sh
+In-Reply-To: <858875ff-2137-38b6-8301-f44e745f8026@suse.cz>
 References: <20200528110554.10179-1-pvorel@suse.cz>
-Message-ID: <20200528114054.GA16726@dell5510>
+ <20200528110554.10179-2-pvorel@suse.cz>
+ <858875ff-2137-38b6-8301-f44e745f8026@suse.cz>
+Message-ID: <20200528115636.GB16726@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> On 28. 05. 20 13:05, Petr Vorel wrote:
+> > LTPROOT can be in user writable directory. Having rights for make
+> > install is user responsibility, it does not have to be guarded by
+> > TST_NEEDS_ROOT=1.
 
-growfiles are used also in other runtest files: fs, fs_readonly, scsi_debug.part1.
-I wonder how to reduce duplicity for fs and fs_readonly.
+> TST_NEEDS_ROOT=1 is there for tst_supported_fs. It won't find any mkfs
+> programs if it's not running as root.
+Right, thanks for info. Hm, there can be some tests which just want to know
+supported filesystems without running them and we have to require root for them.
 
-runtest/scsi_debug.part1 should be IMHO deleted. And
-testscripts/ltp-scsi_debug.sh should be either deleted, or, if the idea is
-valid (using scsi_debug kernel module for testing), it should be rewritten.
-
-Other candidate for deleting are ltpfs tests (testcases/kernel/fs/scsi/ltpfs/).
-They're not maintained, ltpfsio.sh and ltpfstest is not even installed.
+There could be a solutions (tst_get_supported_fs_types() could have warning
+about PATH when user is not root and no mkfs.* found or just changing in
+has_mkfs() "mkfs.%s does not exist" to "mkfs.%s does not found" to give more
+obvious hint). But it's just a corner case issue, no need to bother with it.
 
 Kind regards,
 Petr
