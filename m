@@ -1,52 +1,50 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 28 May 2020 12:28:15 +0530
-Subject: [LTP] [PATCH] syscalls: clock_settime: Add test around y2038
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 28 May 2020 10:27:10 +0200
+Subject: [LTP] [PATCH V2] syscalls: clock_settime: Add test around y2038
  vulnerability
-In-Reply-To: <CAK8P3a13aJ3joRBE=P06fX8fxS-yroHx=T=bG0ZtdjhWE3RAJg@mail.gmail.com>
+In-Reply-To: <86a36c7d5919a966e077cb76f0d8710f31bcc60a.1590649002.git.viresh.kumar@linaro.org>
 References: <70417fdc55c750e8b13d7124e66a7e8a59182e75.1590494889.git.viresh.kumar@linaro.org>
- <CAK8P3a13aJ3joRBE=P06fX8fxS-yroHx=T=bG0ZtdjhWE3RAJg@mail.gmail.com>
-Message-ID: <20200528065815.4zygmlzz4s2xpuq6@vireshk-i7>
+ <86a36c7d5919a966e077cb76f0d8710f31bcc60a.1590649002.git.viresh.kumar@linaro.org>
+Message-ID: <CAK8P3a11aWYdBtgV=T91_BOVR_hX-OZTAVhr806nbTFtCE+3MQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27-05-20, 13:18, Arnd Bergmann wrote:
-> On Tue, May 26, 2020 at 2:10 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > This adds a test around the y2038 vulnerability, it sets the system time
-> > to just before y2038 time (i.e. max value that can be stored in s32),
-> > and adds a timer to expire just after crossing it.
-> >
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> Nice!
-> > +static struct test_variants {
-> > +       int (*clock_settime)(clockid_t clk_id, void *ts);
-> > +       int (*timer_settime)(timer_t timerid, int flags, void *its,
-> > +                            void *old_its);
-> > +       enum tst_ts_type type;
-> > +       char *desc;
-> > +} variants[] = {
-> > +#if (__NR_clock_settime != __LTP__NR_INVALID_SYSCALL)
-> > +       { .clock_settime = sys_clock_settime, .timer_settime = sys_timer_settime, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-> > +#endif
-> > +
-> > +#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
-> > +       { .clock_settime = sys_clock_settime64, .timer_settime = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-> > +#endif
-> 
-> I think the first one has to be guarded so we do not try to set
-> the time to just before the end with sys_clock_settime() on
-> 32-bit machines, as kernels that don't fully support 64-bit
-> time_t behave in unpredictable ways when you do that and
-> are likely to crash.
-> 
-> However, we probably do want to test this on 64-bit kernels
-> with sys_clock_settime() anyway.
+On Thu, May 28, 2020 at 8:57 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> This adds a test around the y2038 vulnerability, it sets the system time
+> to just before y2038 time (i.e. max value that can be stored in s32),
+> and adds a timer to expire just after crossing it.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V2:
+> - Fix the y2038 bug in the test itself, changes in the setup() routine.
+>   :)
 
-I have done this differently, please see V2.
+So I assume this version works as expected?
+I don't see any more problems with it.
 
--- 
-viresh
+> +       ret = tv->clock_settime(CLOCK_REALTIME, tst_ts_get(&ts));
+> +       if (ret == -1)
+> +               tst_brk(TBROK | TERRNO, "clock_settime() failed");
+> +
+> +       tst_its_set_time(&its, time + EXPIREDELTA, 0, 0, 0);
+> +
+> +       TEST(tv->timer_settime(timer, TIMER_ABSTIME, tst_its_get(&its), NULL));
+> +       if (TST_RET == -1)
+> +               tst_brk(TBROK | TTERRNO, "timer_settime() failed");
+> +
+> +       if (sigwait(&set, &sig) == -1)
+> +               tst_brk(TBROK, "sigwait() failed");
+
+Should you maybe check the time after the expiration to ensure the
+timer ran for the expected length?
+
+I suppose you can read the time in CLOCK_MONOTONIC to check
+for the elapsed time regardless of what the kernel might think the
+CLOCK_REALTIME is after this.
+
+      Arnd
