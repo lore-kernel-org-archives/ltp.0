@@ -1,38 +1,45 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 29 May 2020 06:28:02 -0400 (EDT)
-Subject: [LTP] [PATCH 1/1] tst_taint.h Add taint for randstruct
-In-Reply-To: <20200528111504.12638-1-pvorel@suse.cz>
-References: <20200528111504.12638-1-pvorel@suse.cz>
-Message-ID: <1187623618.14050931.1590748082097.JavaMail.zimbra@redhat.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 29 May 2020 14:05:45 +0300
+Subject: [LTP] [PATCH] acct02: fix the ac_version check on big endian
+ platforms
+In-Reply-To: <1158333456.13771112.1590570252412.JavaMail.zimbra@redhat.com>
+References: <20200526113847.6837-1-stanislav.kholmanskikh@oracle.com>
+ <1158333456.13771112.1590570252412.JavaMail.zimbra@redhat.com>
+Message-ID: <fa945f1f-f1ea-ab6c-f70c-6bee9a99db64@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Thank you. Committed.
 
-
------ Original Message -----
-> Added in kernel 4.17.
+On 27.05.2020 12:04, Jan Stancek wrote:
 > 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  include/tst_taint.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/tst_taint.h b/include/tst_taint.h
-> index 0acc1140c..cfa84dded 100644
-> --- a/include/tst_taint.h
-> +++ b/include/tst_taint.h
-> @@ -60,7 +60,8 @@
->  #define TST_TAINT_E     (1 << 13) /* unsigned module was loaded */
->  #define TST_TAINT_L     (1 << 14) /* A soft lock-up has previously occurred
->  */
->  #define TST_TAINT_K     (1 << 15) /* kernel has been live-patched */
-> -#define TST_TAINT_X	(1 << 16) /* auxiliary taint, for distro's use */
-> +#define TST_TAINT_X     (1 << 16) /* auxiliary taint, for distro's use */
-> +#define TST_TAINT_T     (1 << 17) /* kernel was built with the struct
-> randomization plugin */
-
-ack, this is trivial enough to push directly
-
+> ----- Original Message -----
+>> If we are on a big endian platform where char is signed,
+>> the following compilation error is emitted:
+>>
+>> acct02.c: In function ?verify_acct?:
+>> acct02.c:38:37: warning: comparison is always true due to limited range of
+>> data type [-Wtype-limits]
+>>   #define ACCT_MEMBER_V3(x) (((struct acct_v3 *)acc)->x)
+>>                                       ^
+>> acct02.c:144:6: note: in expansion of macro ?ACCT_MEMBER_V3?
+>>    if (ACCT_MEMBER_V3(ac_version) != (3 | ACCT_BYTEORDER)) {
+>>
+>> and the test case fails, because it cannot 'decrypt' the ac_version
+>> from the file:
+>>
+>> acct02.c:238: INFO: Verifying using 'struct acct_v3'
+>> acct02.c:191: INFO: == entry 1 ==
+>> acct02.c:146: INFO: ac_version != 3 (-125)
+>>
+>> One way to address that is to explicitly cast the expression
+>> we compare to (which is int) to the type of ac_version (which is char).
+>>
+>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> 
+> Acked-by: Jan Stancek <jstancek@redhat.com>
+> 
