@@ -1,76 +1,39 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Thu, 28 May 2020 18:44:48 -0700
-Subject: [LTP] [PATCH v2] sigwaitinfo: Do not run invalid/undefined test
- cases
-Message-ID: <20200529014448.3815022-1-raj.khem@gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 29 May 2020 13:39:00 +0800
+Subject: [LTP] [PATCH 1/5] syscalls:ipc: Move libraries to libs/ director
+In-Reply-To: <20200526030854.xocwohgiyg3p5edh@vireshk-i7>
+References: <cover.1590057824.git.viresh.kumar@linaro.org>
+ <3b3344651f2ba4bf2446b6730a76ebcd9f894dd0.1590057824.git.viresh.kumar@linaro.org>
+ <20200522123903.GB2446@yuki.lan> <20200526030854.xocwohgiyg3p5edh@vireshk-i7>
+Message-ID: <b11c6ca2-7b63-0c12-3491-8b76f9940d2e@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These testcases run for eternity on musl
+Hi  Cyril
 
-test_bad_address* cases are passing invalid pointers to a function; that's always UB
-empty_set and timeout rely on the implementation-defined "may fail" for EINTR in sigtimedwait [1]
+> On 22-05-20, 14:39, Cyril Hrubis wrote:
+>> Hi!
+>>> Move the ipc libraries to libs/ directory. One of the reasons to do this
+>>> was to add the capability of adding tests with both old and new test
+>>> frameworks in the same ipc test directory.
+>>
+>> Pushed with following diff, thanks.
+>>
+>> 1) You cannot build two different libs in one directory
+>> 2) Setting LTPLIBS instead of LDFLAGS generates proper build
+>>     dependencies as well
+>> 3) Limit the linker flags for the kill and mremap tests
+> 
+> I don't think you pushed the changes you made. I still see my original
+> patch there. :)
+It looks like you miss this change. It still uses
+LDFLAGS instead of correct LTPLIBS.
 
-normally "may fail" is an "unspecified" but here the impl
-is supposed to document it so it's "impl-defined"
+Best Regards
+Yang Xu
+> 
 
-[1] https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
-Cc: Rich Felker <dalias@aerifal.cx>
----
-v2: Extend same fixes to include sigwaitinfo01
-
- .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c      | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
-
---- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-+++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -422,15 +422,10 @@ struct test_desc {
- } tests[] = {
- #ifdef TEST_RT_SIGTIMEDWAIT
- 	{
--	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
- 	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
- 	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
- 	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
--	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
--	test_timeout, my_rt_sigtimedwait, 0},
-+	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, 
- 	    /* Special cases */
- 	    /* 1: sigwaitinfo does respond to ignored signal */
- 	{
-@@ -452,25 +447,17 @@ struct test_desc {
- #endif
- #if defined TEST_SIGWAITINFO
- 	{
--	test_empty_set, my_sigwaitinfo, SIGUSR1}, {
- 	test_unmasked_matching, my_sigwaitinfo, SIGUSR1}, {
- 	test_masked_matching, my_sigwaitinfo, SIGUSR1}, {
- 	test_unmasked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
--	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
--	test_bad_address, my_sigwaitinfo, SIGUSR1}, {
--	test_bad_address2, my_sigwaitinfo, SIGUSR1},
-+	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1},
- #endif
- #if defined TEST_SIGTIMEDWAIT
- 	{
--	test_empty_set, my_sigtimedwait, SIGUSR1}, {
- 	test_unmasked_matching, my_sigtimedwait, SIGUSR1}, {
- 	test_masked_matching, my_sigtimedwait, SIGUSR1}, {
- 	test_unmasked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
--	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
--	test_bad_address, my_sigtimedwait, SIGUSR1}, {
--	test_bad_address2, my_sigtimedwait, SIGUSR1}, {
--	test_bad_address3, my_sigtimedwait, SIGUSR1}, {
--	test_timeout, my_sigtimedwait, 0},
-+	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1},
- #endif
- };
- 
