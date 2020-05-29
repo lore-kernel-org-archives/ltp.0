@@ -1,7 +1,8 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Thu, 28 May 2020 13:45:56 -0700
-Subject: [LTP] [PATCH] sigwaitinfo: Do not run invalid/undefined test cases
-Message-ID: <20200528204556.2444156-1-raj.khem@gmail.com>
+Date: Thu, 28 May 2020 18:44:48 -0700
+Subject: [LTP] [PATCH v2] sigwaitinfo: Do not run invalid/undefined test
+ cases
+Message-ID: <20200529014448.3815022-1-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,14 +22,31 @@ is supposed to document it so it's "impl-defined"
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 Cc: Rich Felker <dalias@aerifal.cx>
 ---
+v2: Extend same fixes to include sigwaitinfo01
+
  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c      | 12 ++----------
  1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-index 6a30c27f6f..3a4cfe1b43 100644
 --- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
 +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-@@ -452,25 +452,17 @@ struct test_desc {
+@@ -422,15 +422,10 @@ struct test_desc {
+ } tests[] = {
+ #ifdef TEST_RT_SIGTIMEDWAIT
+ 	{
+-	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
+ 	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
+ 	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
+ 	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
+-	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
+-	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
+-	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
+-	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
+-	test_timeout, my_rt_sigtimedwait, 0},
++	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, 
+ 	    /* Special cases */
+ 	    /* 1: sigwaitinfo does respond to ignored signal */
+ 	{
+@@ -452,25 +447,17 @@ struct test_desc {
  #endif
  #if defined TEST_SIGWAITINFO
  	{
@@ -56,6 +74,3 @@ index 6a30c27f6f..3a4cfe1b43 100644
  #endif
  };
  
--- 
-2.26.2
-
