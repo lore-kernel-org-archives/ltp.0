@@ -1,9 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 29 May 2020 06:08:25 -0400 (EDT)
-Subject: [LTP] [PATCH] LIB: Use INTERNAL_LIB for ltp lib
-In-Reply-To: <1590730943-23463-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1590730943-23463-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1709395031.14049839.1590746905611.JavaMail.zimbra@redhat.com>
+Date: Fri, 29 May 2020 06:28:02 -0400 (EDT)
+Subject: [LTP] [PATCH 1/1] tst_taint.h Add taint for randstruct
+In-Reply-To: <20200528111504.12638-1-pvorel@suse.cz>
+References: <20200528111504.12638-1-pvorel@suse.cz>
+Message-ID: <1187623618.14050931.1590748082097.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,29 +13,26 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> Use INTERNAL_LIB for ltp lib because installing these ltp static
-> library in any situation is meaningless.
+> Added in kernel 4.17.
 > 
-> all static library as below:
-> ./libs/libltpuinput/libltpuinput.a
-> ./libs/libltpnewipc/libltpnewipc.a
-> ./libs/libltpnuma/libltpnuma.a
-> ./libs/libltpipc/libltpipc.a
-> ./libs/libltpipc/libltpmsgctl.a
-> ./utils/sctp/lib/libsctp.a
-> ./utils/sctp/testlib/libsctputil.a
-> ./lib/libltp.a
-> ./testcases/network/rpc/basic_tests/rpc01/lib/librpc01.a
-> ./testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.a
-> ./testcases/kernel/containers/libclone/libclone.a
-> ./testcases/kernel/mem/hugetlb/lib/libhugetlb.a
-> ./testcases/kernel/mem/lib/libmem.a
-> ./testcases/kernel/controllers/libcontrollers/libcontrollers.a
-> ./testcases/kernel/controllers/cpuset/cpuset_lib/libcpu_set.a
-> ./testcases/kernel/lib/libkerntest.a
-> ./testcases/commands/nm/datafiles/lib.a
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  include/tst_taint.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/tst_taint.h b/include/tst_taint.h
+> index 0acc1140c..cfa84dded 100644
+> --- a/include/tst_taint.h
+> +++ b/include/tst_taint.h
+> @@ -60,7 +60,8 @@
+>  #define TST_TAINT_E     (1 << 13) /* unsigned module was loaded */
+>  #define TST_TAINT_L     (1 << 14) /* A soft lock-up has previously occurred
+>  */
+>  #define TST_TAINT_K     (1 << 15) /* kernel has been live-patched */
+> -#define TST_TAINT_X	(1 << 16) /* auxiliary taint, for distro's use */
+> +#define TST_TAINT_X     (1 << 16) /* auxiliary taint, for distro's use */
+> +#define TST_TAINT_T     (1 << 17) /* kernel was built with the struct
+> randomization plugin */
 
-With the one above omitted from commit message:
-
-Acked-by: Jan Stancek <jstancek@redhat.com>
+ack, this is trivial enough to push directly
 
