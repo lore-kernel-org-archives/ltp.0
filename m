@@ -1,38 +1,44 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon,  1 Jun 2020 18:04:59 +0800
-Subject: [LTP] [PATCH v2 4/4] mm: add cpuset01 to runtest file
+Date: Mon, 1 Jun 2020 18:58:47 +0800
+Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
 In-Reply-To: <20200601100459.32511-1-liwang@redhat.com>
 References: <20200601100459.32511-1-liwang@redhat.com>
-Message-ID: <20200601100459.32511-4-liwang@redhat.com>
+Message-ID: <CAEemH2e_pzdJj5jDxCB_=SiTweP_RoWXitJdSiYa8-hAR9yjBQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This test was moved to stress test since commit ae8fa55a8, but stress
-runtest has been removed from commit e752f7c19674 :).
+Li Wang <liwang@redhat.com> wrote:
 
-Here adding back it as a general memory test without '-I 3600'.
+...
+>
+> +#define PATH_SYS_CGROUP                "/sys/fs/cgroup"
+> +#define PATH_TMP_CG1_MEM       "/tmp/cg1_mem"
+> +#define PATH_TMP_CG1_CST       "/tmp/cg1_cst"
+> +#define PATH_TMP_CGROUP2       "/tmp/cgroup2" /* cgroup v2 has only
+> single hierarchy */
+> +
+>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- runtest/mm | 2 ++
- 1 file changed, 2 insertions(+)
+Seems there is no need to distinguish CG1 and CG2 mount directory
+in tst_cgroup.h, because we have introduced the 'tst_cgroup_mnt_path'
+to mount cgroup unified, it will choose cgroup versions automatically.
 
-diff --git a/runtest/mm b/runtest/mm
-index a09f39c1e..612a4d066 100644
---- a/runtest/mm
-+++ b/runtest/mm
-@@ -73,6 +73,8 @@ ksm06 ksm06
- ksm06_1 ksm06 -n 10
- ksm06_2 ksm06 -n 10000
- 
-+cpuset01 cpuset01
-+
- oom01 oom01
- oom02 oom02
- oom03 oom03
+So maybe we can change these above definitions to:
+
+-#define PATH_SYS_CGROUP                "/sys/fs/cgroup"
+-#define PATH_TMP_CG1_MEM       "/tmp/cg1_mem"
+-#define PATH_TMP_CG1_CST       "/tmp/cg1_cst"
+-#define PATH_TMP_CGROUP2       "/tmp/cgroup2" /* cgroup v2 has only single
+hierarchy */
++#define PATH_TMP_CGROUP_MEM    "/tmp/cgroup_mem"
++#define PATH_TMP_CGROUP_CST    "/tmp/cgroup_cst"
+
 -- 
-2.21.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200601/8375be37/attachment.htm>
