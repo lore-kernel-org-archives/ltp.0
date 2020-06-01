@@ -1,44 +1,79 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 1 Jun 2020 18:58:47 +0800
-Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
-In-Reply-To: <20200601100459.32511-1-liwang@redhat.com>
-References: <20200601100459.32511-1-liwang@redhat.com>
-Message-ID: <CAEemH2e_pzdJj5jDxCB_=SiTweP_RoWXitJdSiYa8-hAR9yjBQ@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon,  1 Jun 2020 15:01:49 +0200
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05: set loop blksize to bdev
+ blksize
+Message-ID: <0e99163dd0deef5e3c0e7276533998e80a93d16e.1591016352.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Li Wang <liwang@redhat.com> wrote:
+Test is failing on s390, where default loop blksize is less than
+backing dev's blksize (4096):
+  tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+  tst_device.c:88: INFO: Found free device 0 '/dev/loop0'
+  ioctl_loop05.c:116: INFO: /dev/loop0 default logical_block_size is 512
+  ioctl_loop05.c:62: INFO: Without setting lo_offset or sizelimit
+  ioctl_loop05.c:63: BROK: ioctl(3,LOOP_SET_DIRECT_IO,...) failed: EINVAL (22)
 
-...
->
-> +#define PATH_SYS_CGROUP                "/sys/fs/cgroup"
-> +#define PATH_TMP_CG1_MEM       "/tmp/cg1_mem"
-> +#define PATH_TMP_CG1_CST       "/tmp/cg1_cst"
-> +#define PATH_TMP_CGROUP2       "/tmp/cgroup2" /* cgroup v2 has only
-> single hierarchy */
-> +
->
+Per kernel comment at __loop_update_dio(), direct io is supported
+when "logical block size of loop is bigger than the backing device's".
 
-Seems there is no need to distinguish CG1 and CG2 mount directory
-in tst_cgroup.h, because we have introduced the 'tst_cgroup_mnt_path'
-to mount cgroup unified, it will choose cgroup versions automatically.
+Set loop blksize to one of backing device. Retry is there to avoid
+EAGAIN warning "loop0 (test.img) has still dirty pages".
 
-So maybe we can change these above definitions to:
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../kernel/syscalls/ioctl/ioctl_loop05.c      | 21 +++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
--#define PATH_SYS_CGROUP                "/sys/fs/cgroup"
--#define PATH_TMP_CG1_MEM       "/tmp/cg1_mem"
--#define PATH_TMP_CG1_CST       "/tmp/cg1_cst"
--#define PATH_TMP_CGROUP2       "/tmp/cgroup2" /* cgroup v2 has only single
-hierarchy */
-+#define PATH_TMP_CGROUP_MEM    "/tmp/cgroup_mem"
-+#define PATH_TMP_CGROUP_CST    "/tmp/cgroup_cst"
-
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+index 6c9ea2802981..a969978239a5 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+@@ -96,6 +96,9 @@ static void verify_ioctl_loop(void)
+ 
+ static void setup(void)
+ {
++	int fd;
++	struct stat buf;
++
+ 	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
+ 		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
+ 
+@@ -105,6 +108,14 @@ static void setup(void)
+ 
+ 	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
+ 	tst_fill_file("test.img", 0, 1024, 1024);
++
++	fd = SAFE_OPEN("test.img", O_RDONLY);
++	SAFE_FSTAT(fd, &buf);
++	SAFE_CLOSE(fd);
++
++	logical_block_size = buf.st_blksize;
++	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
++
+ 	tst_attach_device(dev_path, "test.img");
+ 	attach_flag = 1;
+ 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+@@ -112,8 +123,14 @@ static void setup(void)
+ 	if (ioctl(dev_fd, LOOP_SET_DIRECT_IO, 0) && errno == EINVAL)
+ 		tst_brk(TCONF, "LOOP_SET_DIRECT_IO is not supported");
+ 
+-	SAFE_IOCTL(dev_fd, BLKSSZGET, &logical_block_size);
+-	tst_res(TINFO, "%s default logical_block_size is %d", dev_path, logical_block_size);
++	/*
++	 * from __loop_update_dio():
++	 *   We support direct I/O only if lo_offset is aligned with the
++	 *   logical I/O size of backing device, and the logical block
++	 *   size of loop is bigger than the backing device's and the loop
++	 *   needn't transform transfer.
++	 */
++	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
+ }
+ 
+ static void cleanup(void)
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200601/8375be37/attachment.htm>
+2.18.1
+
