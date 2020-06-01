@@ -1,79 +1,112 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  1 Jun 2020 15:01:49 +0200
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05: set loop blksize to bdev
- blksize
-Message-ID: <0e99163dd0deef5e3c0e7276533998e80a93d16e.1591016352.git.jstancek@redhat.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 1 Jun 2020 19:25:30 +0530
+Subject: [LTP] i386: fanotify01.c:115: BROK: fanotify_mark () failed: EFAULT
+ (14)
+Message-ID: <CA+G9fYvU3g1HqOT8UbNBzXCjCD7Ot1pAFjv-8PGee9ObdbYksg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test is failing on s390, where default loop blksize is less than
-backing dev's blksize (4096):
-  tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-  tst_device.c:88: INFO: Found free device 0 '/dev/loop0'
-  ioctl_loop05.c:116: INFO: /dev/loop0 default logical_block_size is 512
-  ioctl_loop05.c:62: INFO: Without setting lo_offset or sizelimit
-  ioctl_loop05.c:63: BROK: ioctl(3,LOOP_SET_DIRECT_IO,...) failed: EINVAL (22)
+We have recently enabled CONFIG_FANOTIFY=y in our testing builds and
+i386 kernel running on x86_64 machine testing LTP 20200515 test runs reported
+fanotify{01,02,04..15} failures on linux mainline 5.7.0-rc6
+Where as these tests pass on x86_64, arm and arm64.
 
-Per kernel comment at __loop_update_dio(), direct io is supported
-when "logical block size of loop is bigger than the backing device's".
+Is this a known issue on i386 ?
+As you know, these tests cases were skipped before enabling CONFIG_FANOTIFY.
 
-Set loop blksize to one of backing device. Retry is there to avoid
-EAGAIN warning "loop0 (test.img) has still dirty pages".
+The file system mounted on NFS and the LTP tests using a external mounted
+SSD drive. LTP tests running as
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../kernel/syscalls/ioctl/ioctl_loop05.c      | 21 +++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+Steps to reproduce:
+-------------------
+./runltp -d /scratch -f syscalls
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index 6c9ea2802981..a969978239a5 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -96,6 +96,9 @@ static void verify_ioctl_loop(void)
- 
- static void setup(void)
- {
-+	int fd;
-+	struct stat buf;
-+
- 	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
- 		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
- 
-@@ -105,6 +108,14 @@ static void setup(void)
- 
- 	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
- 	tst_fill_file("test.img", 0, 1024, 1024);
-+
-+	fd = SAFE_OPEN("test.img", O_RDONLY);
-+	SAFE_FSTAT(fd, &buf);
-+	SAFE_CLOSE(fd);
-+
-+	logical_block_size = buf.st_blksize;
-+	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
-+
- 	tst_attach_device(dev_path, "test.img");
- 	attach_flag = 1;
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-@@ -112,8 +123,14 @@ static void setup(void)
- 	if (ioctl(dev_fd, LOOP_SET_DIRECT_IO, 0) && errno == EINVAL)
- 		tst_brk(TCONF, "LOOP_SET_DIRECT_IO is not supported");
- 
--	SAFE_IOCTL(dev_fd, BLKSSZGET, &logical_block_size);
--	tst_res(TINFO, "%s default logical_block_size is %d", dev_path, logical_block_size);
-+	/*
-+	 * from __loop_update_dio():
-+	 *   We support direct I/O only if lo_offset is aligned with the
-+	 *   logical I/O size of backing device, and the logical block
-+	 *   size of loop is bigger than the backing device's and the loop
-+	 *   needn't transform transfer.
-+	 */
-+	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
- }
- 
- static void cleanup(void)
+and easily reproducible on qemu_i386 also which is mounting local rootfs.img
+
+configs:
+-----------
+CONFIG_FANOTIFY=y
+# CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set --> not set of x86_64 and i386.
+
+
+Test output log:
+-----------------
+tst_device.c:262: INFO: Using test device LTP_DEV='/dev/loop0'
+tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.43.8 (1-Jan-2018)
+[  391.914376] EXT4-fs (loop0): mounting ext2 file system using the
+ext4 subsystem
+[  391.962316] EXT4-fs (loop0): mounted filesystem without journal. Opts: (null)
+[  391.969684] ext2 filesystem being mounted at
+/scratch/ltp-86JZJboUf9/Sl4t1D/fs_mnt supports timestamps until 2038
+(0x7fffffff)
+tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
+fanotify01.c:89: INFO: Test #0: inode mark events
+fanotify01.c:115: BROK: fanotify_mark (6, FAN_MARK_ADD, FAN_ACCESS |
+FAN_MARK_INODE | FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD,
+fs_mnt/tfile_19115) failed: EFAULT (14)
+
+fanotify02.c:57: BROK: fanotify_mark (6, FAN_MARK_ADD, FAN_ACCESS |
+FAN_MODIFY | FAN_CLOSE | FAN_OPEN | FAN_EVENT_ON_CHILD | FAN_ONDIR,
+AT_FDCWD, '.') failed: EFAULT (14)
+
+fanotify03.c:236: CONF: CONFIG_FANOTIFY_ACCESS_PERMISSIONS not
+configured in kernel?: EINVAL (22)
+
+fanotify04.c:66: FAIL: fanotify_mark (6, FAN_MARK_ADD |
+FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, '.') failed
+fanotify04.c:71: PASS: fanotify_mark (6, FAN_MARK_ADD |
+FAN_MARK_ONLYDIR, FAN_OPEN, AT_FDCWD, 'fname_19127') failed
+fanotify04.c:66: FAIL: fanotify_mark (6, FAN_MARK_ADD |
+FAN_MARK_DONT_FOLLOW, FAN_OPEN, AT_FDCWD, 'symlink_19127') failed
+fanotify04.c:66: FAIL: fanotify_mark (6, FAN_MARK_ADD | 0, FAN_OPEN,
+AT_FDCWD, 'symlink_19127') failed
+fanotify04.c:198: BROK: fanotify_mark (6, FAN_MARK_ADD, FAN_OPEN,
+AT_FDCWD, 'fname_19127') failed: EFAULT (14)
+
+fanotify05.c:115: BROK: fanotify_mark (6, FAN_MARK_MOUNT |
+FAN_MARK_ADD, FAN_OPEN, AT_FDCWD, \".\") failed: EFAULT (14)
+
+fanotify06.c:98: BROK: fanotify_mark(6, FAN_MARK_ADD | FAN_MARK_MOUNT,
+FAN_MODIFY, AT_FDCWD, mntpoint/tfile_19139) failed: EFAULT (14)
+
+fanotify07.c:112: CONF: CONFIG_FANOTIFY_ACCESS_PERMISSIONS not
+configured in kernel?: EINVAL (22)
+
+fanotify09.c:108: BROK: fanotify_mark(6, FAN_MARK_ADD |
+FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD, '.') failed: EFAULT (14)
+
+fanotify10.c:239: BROK: fanotify_mark(6, FAN_MARK_ADD |
+FAN_MARK_MOUNT,FAN_OPEN, AT_FDCWD, fs_mnt) failed: EFAULT (14)
+
+fanotify11.c:82: BROK: fanotify_mark FAN_MARK_ADD fail ret=-1
+
+fanotify12.c:160: BROK: fanotify_mark(6, FAN_MARK_ADD |
+FAN_MARK_INODE, 20, AT_FDCWD, fname_19160) failed: EFAULT (14)
+
+fanotify13.c:300: BROK: fanotify_mark(6, FAN_MARK_ADD,
+FAN_CLOSE_WRITE, AT_FDCWD, mntpoint/file_one) failed: EFAULT (14)
+
+fanotify15.c:101: BROK: fanotify_mark(6, FAN_MARK_ADD |
+FAN_MARK_FILESYSTEM, FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_MODIFY |
+FAN_ONDIR | 0x400, AT_FDCWD, mntpoint/test_dir) failed: EFAULT (14)
+
+full test log link,
+i386 kernel running on x86_64 machine
+https://lkft.validation.linaro.org/scheduler/job/1446082#L8947
+https://lkft.validation.linaro.org/scheduler/job/1457258#L8946
+
+qemu_i386 test log link,
+https://lkft.validation.linaro.org/scheduler/job/1446103
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-rc6-100-g444565650a5f/testrun/1446103/
+
+Test results comparison:
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/fanotify01
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/ltp-syscalls-tests/fanotify15
+
 -- 
-2.18.1
-
+Linaro LKFT
+https://lkft.linaro.org
