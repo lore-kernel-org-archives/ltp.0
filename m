@@ -1,93 +1,132 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 2 Jun 2020 16:57:14 +0800
-Subject: [LTP] [PATCH v2] syscalls/ioctl_loop05: set loop blksize to
- bdev blksize
-In-Reply-To: <2f353cb69600740308c196dcfa8f570ba6420bfa.1591087232.git.jstancek@redhat.com>
-References: <0e99163dd0deef5e3c0e7276533998e80a93d16e.1591016352.git.jstancek@redhat.com>
- <2f353cb69600740308c196dcfa8f570ba6420bfa.1591087232.git.jstancek@redhat.com>
-Message-ID: <4e69e550-d11e-2b0a-2e98-36b186b983e7@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 2 Jun 2020 14:12:33 +0200
+Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
+In-Reply-To: <CAEemH2ffNHY6Ej-Er5a4Ng_9zw+RX+wEBc0widntmYqDLNRqxw@mail.gmail.com>
+References: <20200601100459.32511-1-liwang@redhat.com>
+ <1365679659.14324910.1591019831545.JavaMail.zimbra@redhat.com>
+ <CAEemH2ffNHY6Ej-Er5a4Ng_9zw+RX+wEBc0widntmYqDLNRqxw@mail.gmail.com>
+Message-ID: <20200602121232.GA22599@janakin.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan
+Hi Li,
 
-Looks good to me, acked.
-> Test is failing on s390, where default loop blksize is less than
-> backing dev's blksize (4096):
->    tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
->    tst_device.c:88: INFO: Found free device 0 '/dev/loop0'
->    ioctl_loop05.c:116: INFO: /dev/loop0 default logical_block_size is 512
->    ioctl_loop05.c:62: INFO: Without setting lo_offset or sizelimit
->    ioctl_loop05.c:63: BROK: ioctl(3,LOOP_SET_DIRECT_IO,...) failed: EINVAL (22)
-> 
-> Per kernel comment at __loop_update_dio(), direct io is supported
-> when ".. logical block size of loop is bigger than the backing device's".
-> 
-> Set loop blksize to one of backing device. Retry is there to avoid
-> EAGAIN warning "loop0 (test.img) has still dirty pages".
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->   .../kernel/syscalls/ioctl/ioctl_loop05.c      | 26 +++++++++++++++++--
->   1 file changed, 24 insertions(+), 2 deletions(-)
-> 
-> Changes in v2:
-> - check if LOOP_SET_BLOCK_SIZE is supported in setup()
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> index 6c9ea2802981..2a3c127959aa 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> @@ -96,6 +96,9 @@ static void verify_ioctl_loop(void)
->   
->   static void setup(void)
->   {
-> +	int fd;
-> +	struct stat buf;
-> +
->   	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
->   		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
->   
-> @@ -105,6 +108,14 @@ static void setup(void)
->   
->   	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
->   	tst_fill_file("test.img", 0, 1024, 1024);
-> +
-> +	fd = SAFE_OPEN("test.img", O_RDONLY);
-> +	SAFE_FSTAT(fd, &buf);
-> +	SAFE_CLOSE(fd);
-> +
-> +	logical_block_size = buf.st_blksize;
-> +	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
-> +
->   	tst_attach_device(dev_path, "test.img");
->   	attach_flag = 1;
->   	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> @@ -112,8 +123,19 @@ static void setup(void)
->   	if (ioctl(dev_fd, LOOP_SET_DIRECT_IO, 0) && errno == EINVAL)
->   		tst_brk(TCONF, "LOOP_SET_DIRECT_IO is not supported");
->   
-> -	SAFE_IOCTL(dev_fd, BLKSSZGET, &logical_block_size);
-> -	tst_res(TINFO, "%s default logical_block_size is %d", dev_path, logical_block_size);
-> +	/*
-> +	 * from __loop_update_dio():
-> +	 *   We support direct I/O only if lo_offset is aligned with the
-> +	 *   logical I/O size of backing device, and the logical block
-> +	 *   size of loop is bigger than the backing device's and the loop
-> +	 *   needn't transform transfer.
-> +	 */
-> +	if (ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size) != 0) {
-> +		if (errno == EINVAL)
-> +			tst_brk(TCONF, "LOOP_SET_BLOCK_SIZE is not supported");
-> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE,
-> +			logical_block_size), TST_RETVAL_EQ0);
-> +	}
->   }
->   
->   static void cleanup(void)
-> 
+>Why we need this? Because, if a testcase(i.e oom05.c) needs more than one
+>cgroup
+>subsystem(memory, cpuset) on RHEL7(cgroup-v1), it should mount two
+>different
+>directories and do some knob setting.
 
+Mounting with different controllers is fine, I meant do we have a case for mounting
+same controller multiple times? We might have, because current design allows
+only for single directory (tst_cgroup_new_path), that's automatically created on mount.
+(This is your example 4)
+
+>
+>
+>>
+>> > +
+>> > +static void tst_cgroup_set_path(const char *cgroup_dir)
+>> > +{
+>> > +     struct tst_cgroup_path *tst_cgroup_path, *a;
+>> > +
+>> > +     if (!cgroup_dir)
+>> > +             tst_brk(TBROK, "Invalid cgroup dir, plese check
+>> cgroup_dir");
+>> > +
+>> > +     sprintf(tst_cgroup_mnt_path, "%s", cgroup_dir);
+>> > +     sprintf(tst_cgroup_new_path, "%s/ltp_%d", cgroup_dir, rand());
+>> > +
+>> > +     /* To store cgroup path in the shared 'path' list */
+>> > +     tst_cgroup_path = SAFE_MMAP(NULL, (sizeof(struct tst_cgroup_path)),
+>> > +                     PROT_READ | PROT_WRITE, MAP_ANONYMOUS |
+>> MAP_SHARED, -1, 0);
+>>
+>> I'm not sure I understand what is the reason to have tst_cgroup_path. Is
+>> it expected,
+>> that mount and umount are called by different processes? It might be easier
+>>
+>
+>The shared 'tst_cgroup_path' is necessary especially for mounting
+>different cgoups in setup(). Otherwise, it would be easy to get lost
+>which directory for kind of cgroup type.
+
+But why is it shared? Is cleanup going to run in different process context?
+Which one of your examples needs shared memory?
+
+>
+>And the worth to say, the random directory name for same cgroup
+>mounting is also on purpose, though we mount same(i.e memory)
+>cgroup in two places it still belongs to the one hierarchy, and create
+>the same name of the new directory will be hit an error in EEXIST.
+>
+>static void tst_cgroup_set_path(const char *cgroup_dir)
+>{
+>    ...
+>    sprintf(tst_cgroup_mnt_path, "%s", cgroup_dir);
+>    sprintf(tst_cgroup_new_path, "%s/ltp_%d", cgroup_dir, rand());
+
+I see why you are tracking this in list, but this exchange of state through
+global variables does seem bit unclear.
+
+Could we leave "new_path" creation to testcase itself? It would give
+us more flexibility and we don't have to worry about name collisions.
+It also avoids need to mount same controller multiple times
+(example 4 in your reply).
+
+Let's assume this is API:
+
+#include "tst_cgroup.h"
+#define MEM_MNT  "/tmp/cgroup1"
+#define CPUSET_MNT  "/tmp/cgroup2"
+#define DIR1 "ltp_test_blah_dir1"
+#define DIR2 "ltp_test_blah_dir2"
+#define DIR3 "ltp_test_blah_dir3"
+
+static void run(void)
+{
+    if (fork() == 0) {
+        tst_cgroup_move_current(MEM_MNT, DIR2);
+        // do your test
+        exit(0);
+    }
+    tst_cgroup_move_current(MEM_MNT, DIR1);
+    // do your test
+}
+
+static void setup(void)
+{
+    tst_cgroup_mount(TST_CGROUP_MEMCG, MEM_MNT);
+    tst_cgroup_mkdir(MEM_MNT, DIR1);
+    tst_cgroup_mem_set_maxbytes(MEM_MNT, DIR1, 1*1024*1024);
+    tst_cgroup_mkdir(MEM_MNT, DIR2);
+    tst_cgroup_mem_set_maxbytes(MEM_MNT, DIR2, 2*1024*1024);
+    
+    tst_cgroup_mount(TST_CGROUP_CPUSET, CPUSET_MNT);
+    tst_cgroup_mkdir(CPUSET_MNT, DIR3);
+    tst_cgroup_move_current(CPUSET_MNT, DIR3);
+}
+
+static void cleanup(void)
+{
+    tst_cgroup_umount(MEM_MNT);
+    tst_cgroup_umount(CPUSET_MNT);
+}
+
+static struct tst_test test = {
+    ...
+    .test_all = run,
+};
+
+On library side we would have a list that tracks all mounts. And every mount
+record would have list that tracks all mkdir() operations, so we can
+cleanup anything that test creates. I think tracking per-process would be sufficient.
+
+(without spinning v3) What are your thoughts?
+
+Regards,
+Jan
 
