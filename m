@@ -1,89 +1,52 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 3 Jun 2020 20:51:37 +0800
-Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
-In-Reply-To: <20200603104314.GA12583@janakin.usersys.redhat.com>
-References: <20200601100459.32511-1-liwang@redhat.com>
- <1365679659.14324910.1591019831545.JavaMail.zimbra@redhat.com>
- <CAEemH2ffNHY6Ej-Er5a4Ng_9zw+RX+wEBc0widntmYqDLNRqxw@mail.gmail.com>
- <20200602121232.GA22599@janakin.usersys.redhat.com>
- <CAEemH2d7OzG6jBZ15bYGRHm7ry-gVjzuwJYhbHp3yitB3_928w@mail.gmail.com>
- <20200603104314.GA12583@janakin.usersys.redhat.com>
-Message-ID: <CAEemH2ey08M+-ddqh1DNWSOWSi7RNYz8ho=MSPQryYHSqamffg@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu,  4 Jun 2020 17:11:44 +0530
+Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
+Message-ID: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jun 3, 2020 at 6:43 PM Jan Stancek <jstancek@redhat.com> wrote:
+The tests takes difference between two time readings and check it
+against the offset set by the test. When the offset is set to a positive
+value (eg 10000 ms), then the diff comes to a value >= 10000 ms (eg
+10001 ms), and with divided by 1000, both sides evaluate to 10.
 
-> >> >And the worth to say, the random directory name for same cgroup
-> >> >mounting is also on purpose, though we mount same(i.e memory)
-> >> >cgroup in two places it still belongs to the one hierarchy, and create
-> >> >the same name of the new directory will be hit an error in EEXIST.
-> >> >
-> >> >static void tst_cgroup_set_path(const char *cgroup_dir)
-> >> >{
-> >> >    ...
-> >> >    sprintf(tst_cgroup_mnt_path, "%s", cgroup_dir);
-> >> >    sprintf(tst_cgroup_new_path, "%s/ltp_%d", cgroup_dir, rand());
-> >>
-> >> I see why you are tracking this in list, but this exchange of state
-> through
-> >> global variables does seem bit unclear.
-> >>
-> >
-> >Yes, that's a compromise to support more usage of the APIs.
->
-> I don't get why global variables are necessary.
->
+But when the offset is set to -10000 ms, then the delta is >= -10000 ms
+(eg -9999) ms. And when divided by 1000, it comes to -9 != -10 and the
+test reports error. Over that we are comparing value in seconds, which
+is too large of a value. Change the test to compare delta in ms and fix
+the false failures.
 
-The only reason to export them as global variables is to make the legacy
-read/write_cpuse_files() happy. So that I said it is a compromise.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ testcases/kernel/syscalls/clock_gettime/clock_gettime03.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-$ git grep tst_cgroup_new_path
-cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "cpus",
-buf);
-cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
-mems);
-cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
-buf);
-cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
-buf);
-lib/mem.c:      write_cpuset_files(tst_cgroup_new_path, "mems", buf);
-lib/mem.c:              write_cpuset_files(tst_cgroup_new_path, "cpus",
-cpus);
-lib/mem.c:              write_cpuset_files(tst_cgroup_new_path, "cpus",
-"0");
-oom/oom04.c:            write_cpuset_files(tst_cgroup_new_path,
-"memory_migrate", "1");
-oom/oom05.c:            write_cpuset_files(tst_cgroup_new_path,
-"memory_migrate", "1");
-
-
-
-> tst_cgroup_mnt_path is always same as cgroup_dir parameter passed to all
-> functions.
-> tst_cgroup_get_path() could return pointer to tst_cgroup_pathes->new_path,
->   (you just need you call umount before del_path)
-> tst_cgroup_ctl_knob is set before each use, so it could be local variable
-> too.
->
-
-tst_cgroup_ctl_knob can be localized since no other places need it.
-
-
-> >I have no strong preference to shift from v2 to this method, or maybe we
-> >can try
-> >to combine together and do more optimize work in the lib side.
->
-> Sounds like we could use 3rd opinion.
->
->
-
+diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
+index e6b9c9c7857c..8341051088d7 100644
+--- a/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
++++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
+@@ -76,7 +76,7 @@ static void child(struct test_variants *tv, struct tcase *tc)
+ 
+ 	diff = tst_ts_diff_ms(then, now);
+ 
+-	if (diff/1000 != tc->off) {
++	if (diff - tc->off * 1000 > 10) {
+ 		tst_res(TFAIL, "Wrong offset (%s) read %llims",
+ 		        tst_clock_name(tc->clk_id), diff);
+ 	} else {
+@@ -86,7 +86,7 @@ static void child(struct test_variants *tv, struct tcase *tc)
+ 
+ 	diff = tst_ts_diff_ms(parent_then, now);
+ 
+-	if (diff/1000) {
++	if (diff > 10) {
+ 		tst_res(TFAIL, "Wrong offset (%s) read %llims",
+ 		        tst_clock_name(tc->clk_id), diff);
+ 	} else {
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200603/e64a2a62/attachment.htm>
+2.25.0.rc1.19.g042ed3e048af
+
