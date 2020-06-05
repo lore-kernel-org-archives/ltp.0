@@ -1,148 +1,79 @@
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 4 Jun 2020 19:57:23 -0700
-Subject: [LTP] [exec] 166d03c9ec: ltp.execveat02.fail
-In-Reply-To: <20200525091420.GI12456@shao2-debian>
-References: <20200518055457.12302-3-keescook@chromium.org>
- <20200525091420.GI12456@shao2-debian>
-Message-ID: <202006041910.9EF0C602@keescook>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 5 Jun 2020 13:39:55 +0800
+Subject: [LTP] [PATCH] syscalls/mknod07: whiteout creation no longer
+ requires privileges
+In-Reply-To: <588f29555a93919a5ea47e5cf786eca6a08f85f1.1591185180.git.jstancek@redhat.com>
+References: <588f29555a93919a5ea47e5cf786eca6a08f85f1.1591185180.git.jstancek@redhat.com>
+Message-ID: <3d927f64-438c-f52e-93c4-969a0d2d7c02@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, May 25, 2020 at 05:14:20PM +0800, kernel test robot wrote:
-> execveat02.c:64: PASS: execveat() fails as expected: EBADF (9)
-> execveat02.c:64: PASS: execveat() fails as expected: EINVAL (22)
-> execveat02.c:61: FAIL: execveat() fails unexpectedly, expected: ELOOP: EACCES (13)
-> execveat02.c:64: PASS: execveat() fails as expected: ENOTDIR (20)
+Hi Jan
 
-tl;dr: I think this test is correct, and I think I see a way to improve
-the offending patch series to do the right thing.
+Acked.
+Also Theses mknod/mknodat cases should convert into new api.
+
+Best Regards
+Yang Xu
+
+> Since commit a3c751a50fe6 ("vfs: allow unprivileged whiteout creation"),
+> privileges are no longer required to create whiteout (0,0) char device.
+>
+> Use /dev/null instead for EPERM test.
+>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>   testcases/kernel/syscalls/mknod/mknod07.c | 17 ++++++++++-------
+>   1 file changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
+> index 69cff02d95d1..829199061532 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod07.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod07.c
+> @@ -43,6 +43,7 @@
+>   #include <sys/types.h>
+>   #include <sys/stat.h>
+>   #include <sys/mount.h>
+> +#include <sys/sysmacros.h>
+>   
+>   #include "test.h"
+>   #include "safe_macros.h"
+> @@ -69,13 +70,14 @@ static struct test_case_t {
+>   	char *pathname;
+>   	int mode;
+>   	int exp_errno;
+> +	int major, minor;
+>   } test_cases[] = {
+> -	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES },
+> -	{ "testdir_1/tnode_2", FIFO_MODE, EACCES },
+> -	{ "tnode_3", CHR_MODE, EPERM },
+> -	{ "tnode_4", BLK_MODE, EPERM },
+> -	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS },
+> -	{ elooppathname, FIFO_MODE, ELOOP },
+> +	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES, 0, 0 },
+> +	{ "testdir_1/tnode_2", FIFO_MODE, EACCES, 0, 0 },
+> +	{ "tnode_3", CHR_MODE, EPERM, 1, 3 },
+> +	{ "tnode_4", BLK_MODE, EPERM, 0, 0 },
+> +	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS, 0, 0 },
+> +	{ elooppathname, FIFO_MODE, ELOOP, 0, 0 },
+>   };
+>   
+>   char *TCID = "mknod07";
+> @@ -149,7 +151,8 @@ static void setup(void)
+>   
+>   static void mknod_verify(const struct test_case_t *test_case)
+>   {
+> -	TEST(mknod(test_case->pathname, test_case->mode, 0));
+> +	TEST(mknod(test_case->pathname, test_case->mode,
+> +		makedev(test_case->major, test_case->minor)));
+>   
+>   	if (TEST_RETURN != -1) {
+>   		tst_resm(TFAIL, "mknod succeeded unexpectedly");
 
 
-Okay, the LTP is checking for ELOOP on trying to exec a symlink:
-
-...
- *    3) execveat() fails and returns ELOOP if the file identified by dirfd and
- *       pathname is a symbolic link and flag includes AT_SYMLINK_NOFOLLOW.
-...
-#define TESTDIR "testdir"
-#define TEST_APP "execveat_errno"
-...
-#define TEST_SYMLINK "execveat_symlink"
-...
-#define TEST_ERL_SYMLINK TESTDIR"/"TEST_SYMLINK
-...
-        sprintf(app_sym_path, "%s/%s", cur_dir_path, TEST_ERL_SYMLINK);
-...
-        SAFE_SYMLINK(TEST_REL_APP, TEST_ERL_SYMLINK);
-
-        fd = SAFE_OPEN(TEST_REL_APP, O_PATH);
-...
-static struct tcase {
-        int *fd;
-        char *pathname;
-        int flag;
-        int exp_err;
-} tcases[] = {
-...
-        {&fd, app_sym_path, AT_SYMLINK_NOFOLLOW, ELOOP},
-...
-};
-...
-                TEST(execveat(*tc->fd, tc->pathname, argv, environ, tc->flag));
-
-This is testing the exec _of_ a symlink under AT_SYMLINK_NOFOLLOW.
-
-The execve(2) manpage says:
-
-       ELOOP  Too many symbolic links were encountered in resolving
-              pathname or  the  name  of  a script or ELF interpreter.
-
-       ELOOP  The maximum recursion limit was reached during recursive
-	      script interpretation (see "Interpreter scripts", above).
-	      Before Linux 3.8, the error produced for this case was ENOEXEC.
-
-Which actually doesn't mention this case. open(2) says:
-
-       ELOOP  Too many symbolic links were encountered in resolving pathname.
-
-       ELOOP  pathname was a symbolic link, and flags specified O_NOFOLLOW
-	      but not O_PATH.
-
-(but O_NOFOLLOW is limited to file creation. linkat(2) lists the AT_*
-flags, and applied to openat, this seems to track: attempting to
-execat where the final element is a symlink should fail with ELOOP,
-though the manpage does warn that this makes it indistinguishable from
-symlink loops -- the first item listed in the execve manpage for
-ELOOP...)
-
-Regardless, this does seem to be the "correct" result, as opening for
-exec or opening just normally should really get the same error code.
-
-The call path for execve looks like this:
-
-    do_open_execat()
-        struct open_flags open_exec_flags = {
-            .open_flag = O_LARGEFILE | O_RDONLY | __FMODE_EXEC,
-	    .acc_mode = MAY_READ | MAY_EXEC,
-	    ...
-        do_filp_open(dfd, filename, open_flags)
-            path_openat(nameidata, open_flags, flags)
-                file = alloc_empty_file(open_flags, current_cred());
-		open_last_lookups(nd, file, open_flags)
-		    step_into(nd, ...)
-		        /* stop on symlink without LOOKUP_FOLLOW */
-                do_open(nameidata, file, open_flags)
-                    /* new location of FMODE_EXEC vs S_ISREG() test */
-                    may_open(path, acc_mode, open_flag)
-			/* test for S_IFLNK */
-                        inode_permission(inode, MAY_OPEN | acc_mode)
-                            security_inode_permission(inode, acc_mode)
-                    vfs_open(path, file)
-                        do_dentry_open(file, path->dentry->d_inode, open)
-                            /* old location of FMODE_EXEC vs S_ISREG() test */
-                            security_file_open(f)
-                            open()
-
-The step_into() is what kicks back out without LOOKUP_FOLLOW, so we're
-left holding a symlink (S_IFMT inode). In do_open(), there is a set of
-checks via may_open() which checks for S_IFMT and rejects it:
-
-        switch (inode->i_mode & S_IFMT) {
-        case S_IFLNK:
-                return -ELOOP;
-
-So that's the case LTP was testing for.
-
-The patch in -next ("exec: relocate S_ISREG() check")[1], moves the regular
-file requirement up before may_open(), for all the reasons mentioned in
-the commit log (and the next patch[2]).
-
-When I was originally trying to determine the best place for where the
-checks should live, may_open() really did seem like the right place, but I
-recognized that it was examining path characteristics (which was good) but
-it didn't have the file, and that seemed to be an intentional separation.
-
-What is needed in may_open() would be the "how was this file opened?"
-piece of information: file->f_mode & FMODE_EXEC. However, in looking at
-this again now, I wonder if it might be possible to use the MAY_EXEC
-from the acc_mode? It seems the old check (in do_dentry_open() had no
-access to the acc_mode, so it was forced to use the FMODE_EXEC signal
-instead.
-
-(I actually think this remains a bit of a design problem: path-based LSMs,
-which see the opened file in security_file_open(), also don't have access
-to acc_mode and must depend on the FMODE_* flags...)
-
-I will respin the series to use acc_mode and move the tests into
-may_open().
-
--Kees
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=vfs/fmode_exec/v1&id=36aaecef88b472ad5e0a408ffdb5b2e46f1478f6
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=vfs/fmode_exec/v1&id=a2f303b9f24ae2ecdc57f3db93e49b2b869893aa
-
--- 
-Kees Cook
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200605/c7c0730c/attachment.htm>
