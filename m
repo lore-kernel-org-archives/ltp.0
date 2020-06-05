@@ -1,462 +1,245 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri,  5 Jun 2020 17:13:14 +0800
-Subject: [LTP] [PATCH v3 2/4] mem: take use of new cgroup API
-In-Reply-To: <20200605091316.27546-1-liwang@redhat.com>
-References: <20200605091316.27546-1-liwang@redhat.com>
-Message-ID: <20200605091316.27546-2-liwang@redhat.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 5 Jun 2020 17:27:02 +0800
+Subject: [LTP] LTP: syscalls: regression on mainline - ioctl_loop01
+ mknod07 setns01
+In-Reply-To: <CAB0TPYE4yvunSmK=oK7goaCRa+B1BxAoVhEkK+yhtDNwnJS6VA@mail.gmail.com>
+References: <CA+G9fYuGwcE3zyMFQPpfA0CyW=4WOg9V=kCfKhS7b8930jQofA@mail.gmail.com>
+ <CA+G9fYuUvjDeLXVm2ax_5UF=OJeH7fog0U7GG2vEUXg-HXWRqg@mail.gmail.com>
+ <CAB0TPYGo5ePYrah3Wgv_M1fx91+niRe12YaBBXGfs5b87Fjtrg@mail.gmail.com>
+ <CAB0TPYEx4Z8do3qL1KVpnGGnorTLGqKtrwi1uQgxQ6Xw3JqiYw@mail.gmail.com>
+ <ca8a4087-8c8b-6105-3f2c-1e2deee5f987@cn.fujitsu.com>
+ <14be1119-50a7-3861-dfd4-42a239413ee7@cn.fujitsu.com>
+ <CAB0TPYE4yvunSmK=oK7goaCRa+B1BxAoVhEkK+yhtDNwnJS6VA@mail.gmail.com>
+Message-ID: <5e992dc1-c60b-bfd0-a993-dfbd0572d499@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For issue #611:
-  https://github.com/linux-test-project/ltp/issues/611
+Hi Martign
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/mem/cpuset/cpuset01.c | 19 +++++++------
- testcases/kernel/mem/include/mem.h     |  1 +
- testcases/kernel/mem/ksm/ksm02.c       | 10 +++----
- testcases/kernel/mem/ksm/ksm03.c       | 12 +++-----
- testcases/kernel/mem/ksm/ksm04.c       | 19 +++++--------
- testcases/kernel/mem/lib/mem.c         |  8 ++----
- testcases/kernel/mem/oom/oom03.c       | 22 ++++-----------
- testcases/kernel/mem/oom/oom04.c       | 12 ++++----
- testcases/kernel/mem/oom/oom05.c       | 38 ++++++++------------------
- 9 files changed, 52 insertions(+), 89 deletions(-)
+Also for your kernel commit,
+lo->lo_flags |= prev_lo_flags & ~LOOP_SET_STATUS_SETTABLE_FLAGS;
+lo->lo_flags |= prev_lo_flags & ~LOOP_SET_STATUS_CLEARABLE_FLAGS;
 
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index 853f7fe55..77f6e4dca 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -51,11 +51,11 @@ static void test_cpuset(void)
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
- 	char mems[BUFSIZ], buf[BUFSIZ];
- 
--	read_cpuset_files(CPATH, "cpus", buf);
--	write_cpuset_files(CPATH_NEW, "cpus", buf);
--	read_cpuset_files(CPATH, "mems", mems);
--	write_cpuset_files(CPATH_NEW, "mems", mems);
--	SAFE_FILE_PRINTF(CPATH_NEW "/tasks", "%d", getpid());
-+	tst_cgroup_move_current(PATH_TMP_CG_CST);
-+	read_cpuset_files(tst_cgroup_mnt_path, "cpus", buf);
-+	write_cpuset_files(tst_cgroup_new_path, "cpus", buf);
-+	read_cpuset_files(tst_cgroup_mnt_path, "mems", mems);
-+	write_cpuset_files(tst_cgroup_new_path, "mems", mems);
- 
- 	child = SAFE_FORK();
- 	if (child == 0) {
-@@ -70,9 +70,9 @@ static void test_cpuset(void)
- 	}
- 
- 	snprintf(buf, BUFSIZ, "%d", nodes[0]);
--	write_cpuset_files(CPATH_NEW, "mems", buf);
-+	write_cpuset_files(tst_cgroup_new_path, "mems", buf);
- 	snprintf(buf, BUFSIZ, "%d", nodes[1]);
--	write_cpuset_files(CPATH_NEW, "mems", buf);
-+	write_cpuset_files(tst_cgroup_new_path, "mems", buf);
- 
- 	SAFE_WAITPID(child, &status, WUNTRACED | WCONTINUED);
- 	if (WEXITSTATUS(status) != 0) {
-@@ -85,7 +85,7 @@ static void test_cpuset(void)
- 
- static void setup(void)
- {
--	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-+	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
- 	ncpus = count_cpu();
- 	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
- 		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
-@@ -95,7 +95,7 @@ static void setup(void)
- 
- static void cleanup(void)
- {
--	umount_mem(CPATH, CPATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_CST);
- }
- 
- static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
-@@ -183,6 +183,7 @@ static long count_cpu(void)
- 
- static struct tst_test test = {
- 	.needs_root = 1,
-+	.forks_child = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = test_cpuset,
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index cce9c0497..f553651c2 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -2,6 +2,7 @@
- #define _MEM_H
- #include "config.h"
- #include "tst_test.h"
-+#include "tst_cgroup.h"
- #include "ksm_helper.h"
- 
- #if defined(__powerpc__) || defined(__powerpc64__)
-diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
-index 3d4c19deb..72e650a53 100644
---- a/testcases/kernel/mem/ksm/ksm02.c
-+++ b/testcases/kernel/mem/ksm/ksm02.c
-@@ -59,13 +59,13 @@
- #ifdef HAVE_NUMA_V2
- #include <numaif.h>
- 
--static int cpuset_mounted;
--
- static void verify_ksm(void)
- {
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
- 	unsigned int node;
- 
-+	tst_cgroup_move_current(PATH_TMP_CG_CST);
-+
- 	node = get_a_numa_node();
- 	set_node(nmask, node);
- 
-@@ -88,8 +88,7 @@ static void cleanup(void)
- 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
- 				 "%d", merge_across_nodes);
- 
--	if (cpuset_mounted)
--		umount_mem(CPATH, CPATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_CST);
- }
- 
- static void setup(void)
-@@ -105,8 +104,7 @@ static void setup(void)
- 		SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
- 	}
- 
--	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	cpuset_mounted = 1;
-+	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
-index 0e5131654..cc3695e95 100644
---- a/testcases/kernel/mem/ksm/ksm03.c
-+++ b/testcases/kernel/mem/ksm/ksm03.c
-@@ -59,11 +59,10 @@
- #include "mem.h"
- #include "ksm_common.h"
- 
--static int memcg_mounted;
--
- static void verify_ksm(void)
- {
--	write_memcg();
-+	tst_cgroup_move_current(PATH_TMP_CG_MEM);
-+	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
- 	create_same_memory(size, num, unit);
- }
- 
-@@ -79,8 +78,7 @@ static void setup(void)
- 	}
- 
- 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
--	memcg_mounted = 1;
-+	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
- }
- 
- static void cleanup(void)
-@@ -88,9 +86,7 @@ static void cleanup(void)
- 	if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
- 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
- 				 "%d", merge_across_nodes);
--
--	if (memcg_mounted)
--		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_MEM);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
-index e393dbd40..cafab479c 100644
---- a/testcases/kernel/mem/ksm/ksm04.c
-+++ b/testcases/kernel/mem/ksm/ksm04.c
-@@ -59,9 +59,6 @@
- #ifdef HAVE_NUMA_V2
- #include <numaif.h>
- 
--static int cpuset_mounted;
--static int memcg_mounted;
--
- static void verify_ksm(void)
- {
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
-@@ -70,7 +67,8 @@ static void verify_ksm(void)
- 	node = get_a_numa_node();
- 	set_node(nmask, node);
- 
--	write_memcg();
-+	tst_cgroup_move_current(PATH_TMP_CG_MEM);
-+	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
- 
- 	if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
- 		if (errno != ENOSYS)
-@@ -81,6 +79,7 @@ static void verify_ksm(void)
- 	}
- 	create_same_memory(size, num, unit);
- 
-+	tst_cgroup_move_current(PATH_TMP_CG_CST);
- 	write_cpusets(node);
- 	create_same_memory(size, num, unit);
- }
-@@ -91,10 +90,8 @@ static void cleanup(void)
- 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
- 				 "%d", merge_across_nodes);
- 
--	if (cpuset_mounted)
--		umount_mem(CPATH, CPATH_NEW);
--	if (memcg_mounted)
--		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_MEM);
-+	tst_cgroup_umount(PATH_TMP_CG_CST);
- }
- 
- static void setup(void)
-@@ -110,10 +107,8 @@ static void setup(void)
- 
- 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
- 
--	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	cpuset_mounted = 1;
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
--	memcg_mounted = 1;
-+	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
-+	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index eca4c61c8..45f155922 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -692,7 +692,7 @@ void write_cpusets(long nd)
- 	char cpus[BUFSIZ] = "";
- 
- 	snprintf(buf, BUFSIZ, "%ld", nd);
--	write_cpuset_files(CPATH_NEW, "mems", buf);
-+	write_cpuset_files(tst_cgroup_new_path, "mems", buf);
- 
- 	gather_node_cpus(cpus, nd);
- 	/*
-@@ -701,14 +701,12 @@ void write_cpusets(long nd)
- 	 * the value of cpuset.cpus.
- 	 */
- 	if (strlen(cpus) != 0) {
--		write_cpuset_files(CPATH_NEW, "cpus", cpus);
-+		write_cpuset_files(tst_cgroup_new_path, "cpus", cpus);
- 	} else {
- 		tst_res(TINFO, "No CPUs in the node%ld; "
- 				"using only CPU0", nd);
--		write_cpuset_files(CPATH_NEW, "cpus", "0");
-+		write_cpuset_files(tst_cgroup_new_path, "cpus", "0");
- 	}
--
--	SAFE_FILE_PRINTF(CPATH_NEW "/tasks", "%d", getpid());
- }
- 
- void umount_mem(char *path, char *path_new)
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index ce0b34c31..fc860c660 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -36,27 +36,19 @@
- 
- #ifdef HAVE_NUMA_V2
- 
--static int memcg_mounted;
--
- static void verify_oom(void)
- {
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
- 
--	SAFE_FILE_PRINTF(MEMCG_PATH_NEW "/tasks", "%d", getpid());
--	SAFE_FILE_PRINTF(MEMCG_LIMIT, "%ld", TESTMEM);
-+	tst_cgroup_move_current(PATH_TMP_CG_MEM);
-+	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
- 
- 	testoom(0, 0, ENOMEM, 1);
- 
--	if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
--		if (errno == ENOENT)
--			tst_res(TCONF,
--				"memcg swap accounting is disabled");
--		else
--			tst_brk(TBROK | TERRNO, "access");
--	} else {
--		SAFE_FILE_PRINTF(MEMCG_SW_LIMIT, "%ld", TESTMEM);
-+	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
-+		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
- 		testoom(0, 1, ENOMEM, 1);
- 	}
- 
-@@ -73,16 +65,14 @@ static void setup(void)
- {
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
--	memcg_mounted = 1;
-+	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
- }
- 
- static void cleanup(void)
- {
- 	if (overcommit != -1)
- 		set_sys_tune("overcommit_memory", overcommit, 0);
--	if (memcg_mounted)
--		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_MEM);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index 7185ef973..c1c809b63 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -36,14 +36,14 @@
- 
- #ifdef HAVE_NUMA_V2
- 
--static int cpuset_mounted;
--
- static void verify_oom(void)
- {
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
- 
-+	tst_cgroup_move_current(PATH_TMP_CG_CST);
-+
- 	tst_res(TINFO, "OOM on CPUSET...");
- 	testoom(0, 0, ENOMEM, 1);
- 
-@@ -53,7 +53,7 @@ static void verify_oom(void)
- 		 * is in charge of cpuset.memory_migrate, we can write
- 		 * 1 to cpuset.memory_migrate to enable the migration.
- 		 */
--		write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
-+		write_cpuset_files(tst_cgroup_new_path, "memory_migrate", "1");
- 		tst_res(TINFO, "OOM on CPUSET with mem migrate:");
- 		testoom(0, 0, ENOMEM, 1);
- 	}
-@@ -69,8 +69,7 @@ static void setup(void)
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
- 
--	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	cpuset_mounted = 1;
-+	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
- 
- 	/*
- 	 * Some nodes do not contain memory, so use
-@@ -89,8 +88,7 @@ static void cleanup(void)
- {
- 	if (overcommit != -1)
- 		set_sys_tune("overcommit_memory", overcommit, 0);
--	if (cpuset_mounted)
--		umount_mem(CPATH, CPATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_CST);
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index db24df6de..ef70864ff 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -36,18 +36,16 @@
- 
- #ifdef HAVE_NUMA_V2
- 
--static int memcg_mounted;
--static int cpuset_mounted;
--
- static void verify_oom(void)
- {
--	int swap_acc_on = 1;
--
- #ifdef TST_ABI32
- 	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
- 
- 	tst_res(TINFO, "OOM on CPUSET & MEMCG...");
-+	tst_cgroup_move_current(PATH_TMP_CG_MEM);
-+	tst_cgroup_move_current(PATH_TMP_CG_CST);
-+	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
- 	testoom(0, 0, ENOMEM, 1);
- 
- 	/*
-@@ -56,29 +54,22 @@ static void verify_oom(void)
- 	 * 1 to cpuset.memory_migrate to enable the migration.
- 	 */
- 	if (is_numa(NULL, NH_MEMS, 2)) {
--		write_cpuset_files(CPATH_NEW, "memory_migrate", "1");
-+		tst_cgroup_move_current(PATH_TMP_CG_CST);
-+		write_cpuset_files(tst_cgroup_new_path, "memory_migrate", "1");
- 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
- 				"cpuset.memory_migrate=1");
- 		testoom(0, 0, ENOMEM, 1);
- 	}
- 
--	if (access(MEMCG_SW_LIMIT, F_OK) == -1) {
--		if (errno == ENOENT) {
--			tst_res(TCONF, "memcg swap accounting is disabled");
--			swap_acc_on = 0;
--		} else
--			tst_brk(TBROK|TERRNO, "access");
--	}
--
--	if (swap_acc_on) {
-+	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
- 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
- 				"special memswap limitation:");
--		SAFE_FILE_PRINTF(MEMCG_SW_LIMIT, "%ld", TESTMEM);
-+		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
- 		testoom(0, 0, ENOMEM, 1);
- 
- 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
- 				"disabled memswap limitation:");
--		SAFE_FILE_PRINTF(MEMCG_SW_LIMIT, "-1");
-+		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, -1);
- 		testoom(0, 0, ENOMEM, 1);
- 	}
- }
-@@ -93,11 +84,8 @@ void setup(void)
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
- 
--	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
--	memcg_mounted = 1;
--	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
--	cpuset_mounted = 1;
--	write_memcg();
-+	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
-+	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
- 
- 	/*
- 	 * Some nodes do not contain memory, so use
-@@ -116,10 +104,8 @@ void cleanup(void)
- {
- 	if (overcommit != -1)
- 		set_sys_tune("overcommit_memory", overcommit, 0);
--	if (cpuset_mounted)
--		umount_mem(CPATH, CPATH_NEW);
--	if (memcg_mounted)
--		umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
-+	tst_cgroup_umount(PATH_TMP_CG_MEM);
-+	tst_cgroup_umount(PATH_TMP_CG_CST);
- }
- 
- static struct tst_test test = {
--- 
-2.21.1
+since  ~LOOP_SET_STATUS_SETTABLE_FLAGS has been included in 
+~LOOP_SET_STATUS_CLEARABLE_FLAGS, do we still need the previous step?
+What do you think about it?
+
+Best Regards
+Yang Xu
+
+> Hey Yang,
+> 
+> On Fri, Jun 5, 2020 at 10:59 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+>>
+>> Hi Martijn
+>>
+>> Sorry for noise. I see your patch in here[1] . I will modify
+>> ioctl_loop01 to test that LO_FLAGS_PARTSCAN can not clear and
+>> LO_FLAGS_AUTOCLEAR can be clear.
+> 
+> Thanks, that would indeed be useful.
+> 
+>>
+>> ps: Giving the url of patch is better so that other people doesn't need
+>> to investigate it again.
+>> [1]https://patchwork.kernel.org/patch/11588321/
+> 
+> Ok, will do next time!
+> 
+> Best,
+> Martijn
+>>
+>> Best Regards
+>> Yang Xu
+>>> Hi Martijn
+>>>
+>>>> Hi Naresh,
+>>>>
+>>>> I just sent a patch and cc'd you. I verified all the loop tests pass
+>>>> again with that patch.
+>>> I think you want to say "without".  I verified the ioctl_loop01 fails
+>>> with faf1d25440 ("loop: Clean up LOOP_SET_STATUS lo_flags handling").
+>>>
+>>> This kernel commit breaks old behaviour(if old flag all 0, new flag is
+>>> always 0 regradless your flag setting).
+>>>
+>>> I think we should modify code as below:
+>>> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+>>> index 13518ba191f5..c6ba8cf486ce 100644
+>>> --- a/drivers/block/loop.c
+>>> +++ b/drivers/block/loop.c
+>>> @@ -1364,11 +1364,9 @@ loop_set_status(struct loop_device *lo, const
+>>> struct loop_info64 *info)
+>>>           if (err)
+>>>                   goto out_unfreeze;
+>>>
+>>> -       /* Mask out flags that can't be set using LOOP_SET_STATUS. */
+>>> -       lo->lo_flags &= ~LOOP_SET_STATUS_SETTABLE_FLAGS;
+>>> -       /* For those flags, use the previous values instead */
+>>> -       lo->lo_flags |= prev_lo_flags & ~LOOP_SET_STATUS_SETTABLE_FLAGS;
+>>> -       /* For flags that can't be cleared, use previous values too */
+>>> +       /* Mask out flags that can be set using LOOP_SET_STATUS. */
+>>> +       lo->lo_flags &= LOOP_SET_STATUS_SETTABLE_FLAGS;
+>>> +       /* For flags that can't be cleared, use previous values. */
+>>>           lo->lo_flags |= prev_lo_flags &~LOOP_SET_STATUS_CLEARABLE_FLAGS;
+>>>
+>>> Best Regards
+>>> Yang Xu
+>>>>
+>>>> Thanks,
+>>>> Martijn
+>>>>
+>>>>
+>>>> On Thu, Jun 4, 2020 at 9:10 PM Martijn Coenen <maco@android.com> wrote:
+>>>>>
+>>>>> Hi Naresh,
+>>>>>
+>>>>> I suspect the loop failures are due to
+>>>>> faf1d25440d6ad06d509dada4b6fe62fea844370 ("loop: Clean up
+>>>>> LOOP_SET_STATUS lo_flags handling"), I will investigate and get back
+>>>>> to you.
+>>>>>
+>>>>> Thanks,
+>>>>> Martijn
+>>>>>
+>>>>> On Thu, Jun 4, 2020 at 7:19 PM Naresh Kamboju
+>>>>> <naresh.kamboju@linaro.org> wrote:
+>>>>>>
+>>>>>> + linux-block@vger.kernel.org
+>>>>>>
+>>>>>> On Thu, 4 Jun 2020 at 22:47, Naresh Kamboju
+>>>>>> <naresh.kamboju@linaro.org> wrote:
+>>>>>>>
+>>>>>>> Following three test cases reported as regression on Linux mainline
+>>>>>>> kernel
+>>>>>>> on x86_64, arm64, arm and i386
+>>>>>>>
+>>>>>>>     ltp-syscalls-tests:
+>>>>>>>       * ioctl_loop01
+>>>>>>>       * mknod07
+>>>>>>>       * setns01
+>>>>>>>
+>>>>>>> git repo:
+>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>>>> git branch: master
+>>>>>>> GOOD:
+>>>>>>>     git commit: b23c4771ff62de8ca9b5e4a2d64491b2fb6f8f69
+>>>>>>>     git describe: v5.7-1230-gb23c4771ff62
+>>>>>>> BAD:
+>>>>>>>     git commit: 1ee08de1e234d95b5b4f866878b72fceb5372904
+>>>>>>>     git describe: v5.7-3523-g1ee08de1e234
+>>>>>>>
+>>>>>>> kernel-config:
+>>>>>>> https://builds.tuxbuild.com/U3bU0dMA62OVHb4DvZIVuw/kernel.config
+>>>>>>>
+>>>>>>> We are investigating these failures.
+>>>>>>>
+>>>>>>> tst_test.c:906: CONF: btrfs driver not available
+>>>>>>> tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
+>>>>>>> tst_device.c:88: INFO: Found free device 1 '/dev/loop1'
+>>>>>>> ioctl_loop01.c:49: PASS: /sys/block/loop1/loop/partscan = 0
+>>>>>>> [ 1073.639677] loop_set_status: loop1 () has still dirty pages
+>>>>>>> (nrpages=1)
+>>>>>>> ioctl_loop01.c:50: PASS: /sys/block/loop1/loop/autoclear = 0
+>>>>>>> ioctl_loop01.c:51: PASS: /sys/block/loop1/loop/backing_file =
+>>>>>>> '/scratch/ltp-mnIdulzriQ/9cPtLQ/test.img'
+>>>>>>> ioctl_loop01.c:63: FAIL: expect 12 but got 17
+>>>>>>> ioctl_loop01.c:67: FAIL: /sys/block/loop1/loop/partscan != 1 got 0
+>>>>>>> ioctl_loop01.c:68: FAIL: /sys/block/loop1/loop/autoclear != 1 got 0
+>>>>>>> ioctl_loop01.c:79: FAIL: access /dev/loop1p1 fails
+>>>>>>> [ 1073.679678] loop_set_status: loop1 () has still dirty pages
+>>>>>>> (nrpages=1)
+>>>>>>> ioctl_loop01.c:85: FAIL: access /sys/block/loop1/loop1p1 fails
+>>>>>>>
+>>>>>>> HINT: You _MAY_ be missing kernel fixes, see:
+>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=10c70d95c0f2
+>>>>>>>
+>>>>>>>
+>>>>>>> mke2fs 1.43.8 (1-Jan-2018)
+>>>>>>> [ 1264.711379] EXT4-fs (loop0): mounting ext2 file system using the
+>>>>>>> ext4 subsystem
+>>>>>>> [ 1264.716642] EXT4-fs (loop0): mounted filesystem without journal.
+>>>>>>> Opts: (null)
+>>>>>>> mknod07     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+>>>>>>> mknod07     0  TINFO  :  Formatting /dev/loop0 with ext2 opts=''
+>>>>>>> extra opts=''
+>>>>>>> mknod07     1  TPASS  :  mknod failed as expected:
+>>>>>>> TEST_ERRNO=EACCES(13): Permission denied
+>>>>>>> mknod07     2  TPASS  :  mknod failed as expected:
+>>>>>>> TEST_ERRNO=EACCES(13): Permission denied
+>>>>>>> mknod07     3  TFAIL  :  mknod07.c:155: mknod succeeded unexpectedly
+>>>>>>> mknod07     4  TPASS  :  mknod failed as expected:
+>>>>>>> TEST_ERRNO=EPERM(1): Operation not permitted
+>>>>>>> mknod07     5  TPASS  :  mknod failed as expected:
+>>>>>>> TEST_ERRNO=EROFS(30): Read-only file system
+>>>>>>> mknod07     6  TPASS  :  mknod failed as expected:
+>>>>>>> TEST_ERRNO=ELOOP(40): Too many levels of symbolic links
+>>>>>>>
+>>>>>>>
+>>>>>>> setns01     0  TINFO  :  ns_name=ipc, ns_fds[0]=6,
+>>>>>>> ns_types[0]=0x8000000
+>>>>>>> setns01     0  TINFO  :  ns_name=mnt, ns_fds[1]=7, ns_types[1]=0x20000
+>>>>>>> setns01     0  TINFO  :  ns_name=net, ns_fds[2]=8,
+>>>>>>> ns_types[2]=0x40000000
+>>>>>>> setns01     0  TINFO  :  ns_name=pid, ns_fds[3]=9,
+>>>>>>> ns_types[3]=0x20000000
+>>>>>>> setns01     0  TINFO  :  ns_name=uts, ns_fds[4]=10,
+>>>>>>> ns_types[4]=0x4000000
+>>>>>>> setns01     0  TINFO  :  setns(-1, 0x8000000)
+>>>>>>> setns01     1  TPASS  :  invalid fd exp_errno=9
+>>>>>>> setns01     0  TINFO  :  setns(-1, 0x20000)
+>>>>>>> setns01     2  TPASS  :  invalid fd exp_errno=9
+>>>>>>> setns01     0  TINFO  :  setns(-1, 0x40000000)
+>>>>>>> setns01     3  TPASS  :  invalid fd exp_errno=9
+>>>>>>> setns01     0  TINFO  :  setns(-1, 0x20000000)
+>>>>>>> setns01     4  TPASS  :  invalid fd exp_errno=9
+>>>>>>> setns01     0  TINFO  :  setns(-1, 0x4000000)
+>>>>>>> setns01     5  TPASS  :  invalid fd exp_errno=9
+>>>>>>> setns01     0  TINFO  :  setns(11, 0x8000000)
+>>>>>>> setns01     6  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+>>>>>>> errno=EBADF(9): Bad file descriptor
+>>>>>>> setns01     0  TINFO  :  setns(11, 0x20000)
+>>>>>>> setns01     7  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+>>>>>>> errno=EBADF(9): Bad file descriptor
+>>>>>>> setns01     0  TINFO  :  setns(11, 0x40000000)
+>>>>>>> setns01     8  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+>>>>>>> errno=EBADF(9): Bad file descriptor
+>>>>>>> setns01     0  TINFO  :  setns(11, 0x20000000)
+>>>>>>> setns01     9  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+>>>>>>> errno=EBADF(9): Bad file descriptor
+>>>>>>> setns01     0  TINFO  :  setns(11, 0x4000000)
+>>>>>>> setns01    10  TFAIL  :  setns01.c:176: regular file fd exp_errno=22:
+>>>>>>> errno=EBADF(9): Bad file descriptor
+>>>>>>>
+>>>>>>> Full test log link,
+>>>>>>> https://lkft.validation.linaro.org/scheduler/job/1467931#L8047
+>>>>>>>
+>>>>>>> test results comparison shows this test case started failing from
+>>>>>>> June-2-2020
+>>>>>>> https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/ioctl_loop01/history/
+>>>>>>>
+>>>>>>>
+>>>>>>> https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/setns01/history/
+>>>>>>>
+>>>>>>>
+>>>>>>> https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.7-4092-g38696e33e2bd/testrun/2779586/suite/ltp-syscalls-tests/test/mknod07/history/
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> --
+>>>>>>> Linaro LKFT
+>>>>>>> https://lkft.linaro.org
+>>>>
+>>>>
+>>>
+>>>
+>>>
+>>
+>>
+> 
+> 
+
 
