@@ -1,127 +1,38 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri,  5 Jun 2020 17:13:15 +0800
-Subject: [LTP] [PATCH v3 3/4] mem: remove the old cgroup API
+Date: Fri,  5 Jun 2020 17:13:16 +0800
+Subject: [LTP] [PATCH v3 4/4] mm: add cpuset01 to runtest file
 In-Reply-To: <20200605091316.27546-1-liwang@redhat.com>
 References: <20200605091316.27546-1-liwang@redhat.com>
-Message-ID: <20200605091316.27546-3-liwang@redhat.com>
+Message-ID: <20200605091316.27546-4-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This test was moved to stress test since commit ae8fa55a8, but stress
+runtest has been removed from commit e752f7c19674 :).
+
+Here adding back it as a general memory test without '-I 3600'.
+
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/mem/include/mem.h | 16 +--------
- testcases/kernel/mem/lib/mem.c     | 58 ------------------------------
- 2 files changed, 1 insertion(+), 73 deletions(-)
+ runtest/mm | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index f553651c2..0e089fae2 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -60,24 +60,10 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages);
- void check_hugepage(void);
- void write_memcg(void);
+diff --git a/runtest/mm b/runtest/mm
+index a09f39c1e..612a4d066 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -73,6 +73,8 @@ ksm06 ksm06
+ ksm06_1 ksm06 -n 10
+ ksm06_2 ksm06 -n 10000
  
--/* cpuset/memcg */
--
--#define CPATH			"/dev/cpuset"
--#define CPATH_NEW		CPATH "/1"
--#define MEMCG_PATH		"/dev/cgroup"
--#define MEMCG_PATH_NEW		MEMCG_PATH "/1"
--#define MEMCG_LIMIT		MEMCG_PATH_NEW "/memory.limit_in_bytes"
--#define MEMCG_SW_LIMIT		MEMCG_PATH_NEW "/memory.memsw.limit_in_bytes"
--#if HAVE_SYS_EVENTFD_H
--#define PATH_OOMCTRL		MEMCG_PATH_NEW "/memory.oom_control"
--#define PATH_EVTCTRL		MEMCG_PATH_NEW "/cgroup.event_control"
--#endif
--
-+/* cpuset/memcg - include/tst_cgroup.h */
- void read_cpuset_files(char *prefix, char *filename, char *retbuf);
- void write_cpuset_files(char *prefix, char *filename, char *buf);
- void write_cpusets(long nd);
--void mount_mem(char *name, char *fs, char *options, char *path, char *path_new);
--void umount_mem(char *path, char *path_new);
- 
- /* shared */
- unsigned int get_a_numa_node(void);
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 45f155922..7a911f8b3 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -312,13 +312,6 @@ void check_hugepage(void)
- 		tst_brk(TCONF, "Huge page is not supported.");
- }
- 
--void write_memcg(void)
--{
--	SAFE_FILE_PRINTF(MEMCG_LIMIT, "%ld", TESTMEM);
--
--	SAFE_FILE_PRINTF(MEMCG_PATH_NEW "/tasks", "%d", getpid());
--}
--
- struct ksm_merge_data {
- 	char data;
- 	unsigned int mergeable_size;
-@@ -709,57 +702,6 @@ void write_cpusets(long nd)
- 	}
- }
- 
--void umount_mem(char *path, char *path_new)
--{
--	FILE *fp;
--	int fd;
--	char s_new[BUFSIZ], s[BUFSIZ], value[BUFSIZ];
--
--	/* Move all processes in task to its parent node. */
--	sprintf(s, "%s/tasks", path);
--	fd = open(s, O_WRONLY);
--	if (fd == -1)
--		tst_res(TWARN | TERRNO, "open %s", s);
--
--	snprintf(s_new, BUFSIZ, "%s/tasks", path_new);
--	fp = fopen(s_new, "r");
--	if (fp == NULL)
--		tst_res(TWARN | TERRNO, "fopen %s", s_new);
--	if ((fd != -1) && (fp != NULL)) {
--		while (fgets(value, BUFSIZ, fp) != NULL)
--			if (write(fd, value, strlen(value) - 1)
--			    != (ssize_t)strlen(value) - 1)
--				tst_res(TWARN | TERRNO, "write %s", s);
--	}
--	if (fd != -1)
--		close(fd);
--	if (fp != NULL)
--		fclose(fp);
--	if (rmdir(path_new) == -1)
--		tst_res(TWARN | TERRNO, "rmdir %s", path_new);
--	if (umount(path) == -1)
--		tst_res(TWARN | TERRNO, "umount %s", path);
--	if (rmdir(path) == -1)
--		tst_res(TWARN | TERRNO, "rmdir %s", path);
--}
--
--void mount_mem(char *name, char *fs, char *options, char *path, char *path_new)
--{
--	SAFE_MKDIR(path, 0777);
--	if (mount(name, path, fs, 0, options) == -1) {
--		if (errno == ENODEV) {
--			if (rmdir(path) == -1)
--				tst_res(TWARN | TERRNO, "rmdir %s failed",
--					 path);
--			tst_brk(TCONF,
--				 "file system %s is not configured in kernel",
--				 fs);
--		}
--		tst_brk(TBROK | TERRNO, "mount %s", path);
--	}
--	SAFE_MKDIR(path_new, 0777);
--}
--
- /* shared */
- 
- /* Warning: *DO NOT* use this function in child */
++cpuset01 cpuset01
++
+ oom01 oom01
+ oom02 oom02
+ oom03 oom03
 -- 
 2.21.1
 
