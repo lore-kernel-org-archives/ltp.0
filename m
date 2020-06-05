@@ -1,79 +1,24 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 5 Jun 2020 13:39:55 +0800
-Subject: [LTP] [PATCH] syscalls/mknod07: whiteout creation no longer
- requires privileges
-In-Reply-To: <588f29555a93919a5ea47e5cf786eca6a08f85f1.1591185180.git.jstancek@redhat.com>
-References: <588f29555a93919a5ea47e5cf786eca6a08f85f1.1591185180.git.jstancek@redhat.com>
-Message-ID: <3d927f64-438c-f52e-93c4-969a0d2d7c02@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 5 Jun 2020 02:13:58 -0400 (EDT)
+Subject: [LTP] [PATCH v2] syscalls/ioctl_loop05: set loop blksize to
+ bdev blksize
+In-Reply-To: <4e69e550-d11e-2b0a-2e98-36b186b983e7@cn.fujitsu.com>
+References: <0e99163dd0deef5e3c0e7276533998e80a93d16e.1591016352.git.jstancek@redhat.com>
+ <2f353cb69600740308c196dcfa8f570ba6420bfa.1591087232.git.jstancek@redhat.com>
+ <4e69e550-d11e-2b0a-2e98-36b186b983e7@cn.fujitsu.com>
+Message-ID: <1283643675.14872901.1591337638680.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan
-
-Acked.
-Also Theses mknod/mknodat cases should convert into new api.
-
-Best Regards
-Yang Xu
-
-> Since commit a3c751a50fe6 ("vfs: allow unprivileged whiteout creation"),
-> privileges are no longer required to create whiteout (0,0) char device.
->
-> Use /dev/null instead for EPERM test.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->   testcases/kernel/syscalls/mknod/mknod07.c | 17 ++++++++++-------
->   1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/mknod/mknod07.c b/testcases/kernel/syscalls/mknod/mknod07.c
-> index 69cff02d95d1..829199061532 100644
-> --- a/testcases/kernel/syscalls/mknod/mknod07.c
-> +++ b/testcases/kernel/syscalls/mknod/mknod07.c
-> @@ -43,6 +43,7 @@
->   #include <sys/types.h>
->   #include <sys/stat.h>
->   #include <sys/mount.h>
-> +#include <sys/sysmacros.h>
->   
->   #include "test.h"
->   #include "safe_macros.h"
-> @@ -69,13 +70,14 @@ static struct test_case_t {
->   	char *pathname;
->   	int mode;
->   	int exp_errno;
-> +	int major, minor;
->   } test_cases[] = {
-> -	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES },
-> -	{ "testdir_1/tnode_2", FIFO_MODE, EACCES },
-> -	{ "tnode_3", CHR_MODE, EPERM },
-> -	{ "tnode_4", BLK_MODE, EPERM },
-> -	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS },
-> -	{ elooppathname, FIFO_MODE, ELOOP },
-> +	{ "testdir_1/tnode_1", SOCKET_MODE, EACCES, 0, 0 },
-> +	{ "testdir_1/tnode_2", FIFO_MODE, EACCES, 0, 0 },
-> +	{ "tnode_3", CHR_MODE, EPERM, 1, 3 },
-> +	{ "tnode_4", BLK_MODE, EPERM, 0, 0 },
-> +	{ "mntpoint/tnode_5", SOCKET_MODE, EROFS, 0, 0 },
-> +	{ elooppathname, FIFO_MODE, ELOOP, 0, 0 },
->   };
->   
->   char *TCID = "mknod07";
-> @@ -149,7 +151,8 @@ static void setup(void)
->   
->   static void mknod_verify(const struct test_case_t *test_case)
->   {
-> -	TEST(mknod(test_case->pathname, test_case->mode, 0));
-> +	TEST(mknod(test_case->pathname, test_case->mode,
-> +		makedev(test_case->major, test_case->minor)));
->   
->   	if (TEST_RETURN != -1) {
->   		tst_resm(TFAIL, "mknod succeeded unexpectedly");
 
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200605/c7c0730c/attachment.htm>
+----- Original Message -----
+> Hi Jan
+> 
+> Looks good to me, acked.
+
+Pushed.
+
