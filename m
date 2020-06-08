@@ -1,29 +1,29 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 8 Jun 2020 10:52:09 -0400 (EDT)
-Subject: [LTP] sched_rr_get_interval01 , sched_rr_get_interval02 ,
- sched_rr_get_interval03 testcase failure
-In-Reply-To: <BMXPR01MB23442B106F1292542BA7F85CEE850@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB23442B106F1292542BA7F85CEE850@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <1210169239.15186381.1591627929151.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 8 Jun 2020 16:58:31 +0200
+Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep
+ pattern
+In-Reply-To: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
+References: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200608145831.GA2746544@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Xiao,
 
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
 
------ Original Message -----
-> <<<test_output>>>
-> incrementing stop
-> sched_rr_get_interval01 1 TBROK : sched_rr_get_interval01.c:131:
-> sched_setscheduler() failed
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -58,7 +58,7 @@ nfs_server_udp_enabled()
+>  	tst_rhost_run -c "[ -f /etc/nfs.conf ]" || return 0
+>  	config=$(tst_rhost_run -c 'for f in $(grep ^include.*= '/etc/nfs.conf' | cut -d = -f2); do [ -f $f ] && printf "$f "; done')
 
-Common cause is that you run tests in cgroup that has zero cpu.rt_runtime_us.
+> -	tst_rhost_run -c "grep -q '^[# ]*udp *= *y' /etc/nfs.conf $config"
+> +	tst_rhost_run -c "grep -q \"^[# ]*udp *= *y\" /etc/nfs.conf $config"
+Good catch. But I wonder if we shouldn't fix tst_rhost_run instead, to avoid
+this error in the future. How about replacing ' with \" in $cmd?
 
-1. Are sched_setparam02 and sched_getscheduler01 passing?
-
-2. Can you rerun with this patch:
-     https://github.com/linux-test-project/ltp/commit/94e6163082055700db700c33ed0eab537420fdaf.patch
-   or use strace? 
-
+Kind regards,
+Petr
