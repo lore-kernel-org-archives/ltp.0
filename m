@@ -1,45 +1,60 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 8 Jun 2020 22:27:44 +0800
-Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep pattern
-Message-ID: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon,  8 Jun 2020 16:45:00 +0200
+Subject: [LTP] [PATCH COMMITTED] syscalls/sched_rr_get_interval: add missing
+ TERRNO
+Message-ID: <94e6163082055700db700c33ed0eab537420fdaf.1591627489.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sh -c 'grep -q '^[# ]*udp *= *y' ...' in nfs_server_udp_enabled()
-cannot processe nested single quotes correctly if rsh/ssh is used
-and gets the error:
---------------------------------------------
-grep: Unmatched [ or [^ (or grep: Unmatched [, [^, [:, [., or [=)
-nfs01 1 TCONF: UDP support disabled on NFS server
---------------------------------------------
-
-This issue make many NFS tests including UDP become TCONF even
-if NFS supports UDP so use double quotes inside to fix it.
-
-Fixes: 0f1c36c51 ("nfs: Detect disabled UDP")
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval01.c    | 2 +-
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval02.c    | 2 +-
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval03.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index f7eb57d66..e236cd485 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -58,7 +58,7 @@ nfs_server_udp_enabled()
- 	tst_rhost_run -c "[ -f /etc/nfs.conf ]" || return 0
- 	config=$(tst_rhost_run -c 'for f in $(grep ^include.*= '/etc/nfs.conf' | cut -d = -f2); do [ -f $f ] && printf "$f "; done')
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index b6084f673ca7..6ebf873de798 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -128,7 +128,7 @@ void setup(void)
  
--	tst_rhost_run -c "grep -q '^[# ]*udp *= *y' /etc/nfs.conf $config"
-+	tst_rhost_run -c "grep -q \"^[# ]*udp *= *y\" /etc/nfs.conf $config"
+ 	/* Change scheduling policy to SCHED_RR */
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1) {
+-		tst_brkm(TBROK, cleanup, "sched_setscheduler() failed");
++		tst_brkm(TBROK|TERRNO, cleanup, "sched_setscheduler() failed");
+ 	}
  }
  
- nfs_setup_server()
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+index 6bf743f78c5e..367d9e3ff486 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+@@ -132,7 +132,7 @@ void setup(void)
+ 
+ 	/* Change scheduling policy to SCHED_FIFO */
+ 	if ((sched_setscheduler(0, SCHED_FIFO, &p)) == -1) {
+-		tst_brkm(TBROK, cleanup, "sched_setscheduler() failed");
++		tst_brkm(TBROK|TERRNO, cleanup, "sched_setscheduler() failed");
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+index 56f2fcf28269..40b636b4dc65 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+@@ -155,7 +155,7 @@ void setup(void)
+ 
+ 	/* Change scheduling policy to SCHED_RR */
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1) {
+-		tst_brkm(TBROK, cleanup, "sched_setscheduler() failed");
++		tst_brkm(TBROK|TERRNO, cleanup, "sched_setscheduler() failed");
+ 	}
+ 
+ 	unused_pid = tst_get_unused_pid(cleanup);
 -- 
-2.25.1
-
-
+2.18.1
 
