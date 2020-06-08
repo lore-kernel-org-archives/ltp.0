@@ -1,8 +1,16 @@
-From: Kushal Chand <kushalchand@zilogic.com>
-Date: Mon, 08 Jun 2020 09:26:35 -0000
-Subject: [LTP] [PATCH v1] Added test case to test mmap with
- MAP_FIXED_NOREPLACE flag
-Message-ID: <20200608092635.15248-1-kushalchand@zilogic.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 8 Jun 2020 05:48:42 -0400 (EDT)
+Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
+In-Reply-To: <CAEemH2cCLY1htBYPm9tuefyzdg6EqmFRrcMin76kf_LcMA2f3A@mail.gmail.com>
+References: <20200601100459.32511-1-liwang@redhat.com>
+ <CAEemH2ffNHY6Ej-Er5a4Ng_9zw+RX+wEBc0widntmYqDLNRqxw@mail.gmail.com>
+ <20200602121232.GA22599@janakin.usersys.redhat.com>
+ <CAEemH2d7OzG6jBZ15bYGRHm7ry-gVjzuwJYhbHp3yitB3_928w@mail.gmail.com>
+ <20200603104314.GA12583@janakin.usersys.redhat.com>
+ <CAEemH2ey08M+-ddqh1DNWSOWSi7RNYz8ho=MSPQryYHSqamffg@mail.gmail.com>
+ <20200605101443.GA6826@janakin.usersys.redhat.com>
+ <CAEemH2cCLY1htBYPm9tuefyzdg6EqmFRrcMin76kf_LcMA2f3A@mail.gmail.com>
+Message-ID: <595558785.15122565.1591609722778.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,137 +18,86 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-This patch adds a new test case for the mmap syscall. It tests the
-MAP_FIXED_NOREPLACE flag of mmap. The code checks if MAP_FIXED_NOREPLACE
-returns with EEXIST when mapped with an already mapped address. It does
-so by allocating an available address by passing NULL to first argument
-of mmap and tries to mmap with MAP_FIXED_NOREPLACE flag at the same
-address returned by the first mmap call. This fails as expected. It also
-does the necessary changes required to run the syscall using the runltp
-command after building the LTP test suite.
-Git Hub Issue link - https://github.com/linux-test-project/ltp/issues/299
 
-Signed-off-by: Kushal Chand <kushalchand@zilogic.com>
-Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
+----- Original Message -----
+> On Fri, Jun 5, 2020 at 6:14 PM Jan Stancek <jstancek@redhat.com> wrote:
+> 
+> > On Wed, Jun 03, 2020 at 08:51:37PM +0800, Li Wang wrote:
+> > >> I don't get why global variables are necessary.
+> > >>
+> > >
+> > >The only reason to export them as global variables is to make the legacy
+> > >read/write_cpuse_files() happy. So that I said it is a compromise.
+> > >
+> > >$ git grep tst_cgroup_new_path
+> > >cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "cpus",
+> > >buf);
+> > >cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
+> > >mems);
+> > >cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
+> > >buf);
+> > >cpuset/cpuset01.c:      write_cpuset_files(tst_cgroup_new_path, "mems",
+> > >buf);
+> > >lib/mem.c:      write_cpuset_files(tst_cgroup_new_path, "mems", buf);
+> > >lib/mem.c:              write_cpuset_files(tst_cgroup_new_path, "cpus",
+> > >cpus);
+> > >lib/mem.c:              write_cpuset_files(tst_cgroup_new_path, "cpus",
+> > >"0");
+> > >oom/oom04.c:            write_cpuset_files(tst_cgroup_new_path,
+> > >"memory_migrate", "1");
+> > >oom/oom05.c:            write_cpuset_files(tst_cgroup_new_path,
+> > >"memory_migrate", "1");
+> >
+> > What if we provided access to it via API? Would we still need these
+> > global variables?
+> >
+> >   char *tst_cgroup_get_path(const char *cgroup_mnt)
+> >       // return ptr to tst_cgroup_paths->new_path
+> >
+> 
+> The series of list operating function are hiding in the library. My thought
+> is
+> to make the list transparent to users.
+> 
+> In your method, we have to export the tst_cgroup_get_path() as an external
+> function, it stills needs an extra local pointer in testcase to store the
+> got new_path,
+> it doesn't seem tidier too.
 
----
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/mmap/.gitignore |  1 +
- testcases/kernel/syscalls/mmap/mmap17.c   | 85 +++++++++++++++++++++++
- 3 files changed, 87 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap17.c
+But there would be clear connection between function and variable.
+  new_path = tst_cgroup_get_path(cgroup_dir);
+vs.
+  tst_cgroup_get_path(cgroup_dir);
+  // fyi, tst_cgroup_new_path is updated as side-effect of call above
+  // What other calls do update tst_cgroup_new_path? Have a look at implementation.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index edd3e8de7..e685037c7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -745,6 +745,7 @@ mmap14 mmap14
- #mmap11 mmap11 -i 30000
- mmap15 mmap15
- mmap16 mmap16
-+mmap17 mmap17
+> 
+> 
+> > mount path is always known to test, because it passes it to
+> > tst_cgroup_mount(),
+> > so it just needs to find out "new path".
+> >
+> > Would that satisfy the need of this legacy test?
+> 
+> 
+> How about moving the cpuset legacy code to the library as part of APIs?
+> That'd
+> help to capsulate all the operation of cgroup control in lib, and people
+> just need
+> to invoke the related function as what he/she wants.
+> 
+> +void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char
+> *filename, char *buf);
+> +void tst_cgroup_cpuset_write_files(const char *cgroup_dir, const char
+> *filename, const char *buf);
+> 
+> Then 'tst_cgroup_new_path' searching work will all located internally. And
+> 'tst_cgroup_ctl_knob' can
+> be local variable too.
+> 
+> Any other comments? (attach the v3.1)
 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
-index 39ed2aab0..c5c083d4b 100644
---- a/testcases/kernel/syscalls/mmap/.gitignore
-+++ b/testcases/kernel/syscalls/mmap/.gitignore
-@@ -15,3 +15,4 @@
- /mmap14
- /mmap15
- /mmap16
-+/mmap17
-diff --git a/testcases/kernel/syscalls/mmap/mmap17.c b/testcases/kernel/syscalls/mmap/mmap17.c
-new file mode 100644
-index 000000000..a620f104a
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap17.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
-+ * Email: code@zilogic.com
-+ */
-+
-+/*
-+ * Test mmap with MAP_FIXED_NOREPLACE flag
-+ *
-+ * We are testing the MAP_FIXED_NOREPLACE flag of mmap() syscall. To check
-+ * if an attempt to mmap at an exisiting mapping fails with EEXIST.
-+ * The code allocates a free address by passing NULL to first mmap call
-+ * Then tries to mmap with the same address using MAP_FIXED_NOREPLACE flag
-+ * and the mapping fails as expected.
-+ */
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <error.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+
-+static int fd_file1;
-+static int fd_file2;
-+static void *mapped_address;
-+static const char str[] = "Writing to mapped file";
-+
-+#define FNAME1 "file1_to_mmap"
-+#define FNAME2 "file2_to_mmap"
-+
-+static void setup(void)
-+{
-+	fd_file1 = SAFE_OPEN(FNAME1, O_CREAT | O_RDWR, 0600);
-+	fd_file2 = SAFE_OPEN(FNAME2, O_CREAT | O_RDWR, 0600);
-+}
-+
-+static void cleanup(void)
-+{
-+	int str_len;
-+
-+	str_len = strlen(str);
-+
-+	if (fd_file2 > 0)
-+		SAFE_CLOSE(fd_file2);
-+	if (fd_file1 > 0)
-+		SAFE_CLOSE(fd_file1);
-+	if (mapped_address)
-+		SAFE_MUNMAP(mapped_address, str_len);
-+}
-+
-+static void test_mmap(void)
-+{
-+	int str_len;
-+	void *address;
-+
-+	str_len = strlen(str);
-+
-+	SAFE_WRITE(1, fd_file1, str, str_len);
-+	mapped_address = SAFE_MMAP(NULL, str_len, PROT_WRITE,
-+				   MAP_PRIVATE, fd_file1, 0);
-+
-+	SAFE_WRITE(1, fd_file2, str, str_len);
-+
-+	address = mmap(mapped_address, str_len, PROT_WRITE,
-+		  MAP_PRIVATE | MAP_FIXED_NOREPLACE, fd_file2, 0);
-+	if (address == MAP_FAILED && errno == EEXIST)
-+		tst_res(TPASS, "mmap set errno to EEXIST as expected");
-+	else
-+		tst_res(TFAIL | TERRNO, "mmap failed, with unexpected error "
-+			"code, expected EEXIST");
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = test_mmap,
-+	.min_kver = "4.17",
-+	.needs_tmpdir = 1
-+};
---
-2.20.1
+That makes it somewhat better, since it's only concern of library code now.
+But since there are no tests using "tst_cgroup_new_path", does it still
+need to be global variable?
+
