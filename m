@@ -1,58 +1,56 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Jun 2020 12:10:32 +0200
-Subject: [LTP] [PATCH v2] LIB: Use INTERNAL_LIB for ltp lib
-In-Reply-To: <1591083478-5342-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1591083478-5342-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200608101032.GA9222@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 8 Jun 2020 18:18:31 +0800
+Subject: [LTP] [PATCH v2 1/4] lib: add new cgroup test API
+In-Reply-To: <595558785.15122565.1591609722778.JavaMail.zimbra@redhat.com>
+References: <20200601100459.32511-1-liwang@redhat.com>
+ <CAEemH2ffNHY6Ej-Er5a4Ng_9zw+RX+wEBc0widntmYqDLNRqxw@mail.gmail.com>
+ <20200602121232.GA22599@janakin.usersys.redhat.com>
+ <CAEemH2d7OzG6jBZ15bYGRHm7ry-gVjzuwJYhbHp3yitB3_928w@mail.gmail.com>
+ <20200603104314.GA12583@janakin.usersys.redhat.com>
+ <CAEemH2ey08M+-ddqh1DNWSOWSi7RNYz8ho=MSPQryYHSqamffg@mail.gmail.com>
+ <20200605101443.GA6826@janakin.usersys.redhat.com>
+ <CAEemH2cCLY1htBYPm9tuefyzdg6EqmFRrcMin76kf_LcMA2f3A@mail.gmail.com>
+ <595558785.15122565.1591609722778.JavaMail.zimbra@redhat.com>
+Message-ID: <CAEemH2cDdCowDZEYVuqV4aTFgBK69CO10hhFRM2X-XHEazK1Tg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+On Mon, Jun 8, 2020 at 5:48 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ...
+>
+> But there would be clear connection between function and variable.
+>   new_path = tst_cgroup_get_path(cgroup_dir);
+>
 
-Cyril concerned 3rd party use of lib/libltp.a, but nobody complained.
-Given Jan acked v1, I'd be also for merge.
+Yes, that's easier to understand the code workflow.
 
-> Use INTERNAL_LIB for ltp lib because installing these ltp static
-> library in any situation is meaningless.
+> vs.
+>   tst_cgroup_get_path(cgroup_dir);
+>   // fyi, tst_cgroup_new_path is updated as side-effect of call above
+>   // What other calls do update tst_cgroup_new_path? Have a look at
+> implementation.
 
-> all static library as below:
-> ./libs/libltpuinput/libltpuinput.a
-> ./libs/libltpnewipc/libltpnewipc.a
-> ./libs/libltpnuma/libltpnuma.a
-> ./libs/libltpipc/libltpipc.a
-> ./libs/libltpipc/libltpmsgctl.a
-> ./utils/sctp/lib/libsctp.a
-> ./utils/sctp/testlib/libsctputil.a
-> ./lib/libltp.a
-> ./testcases/network/rpc/basic_tests/rpc01/lib/librpc01.a
-> ./testcases/network/rpc/rpc-tirpc/tests_pack/lib/librpc-tirpc.a
-> ./testcases/kernel/containers/libclone/libclone.a
-> ./testcases/kernel/mem/hugetlb/lib/libhugetlb.a
-> ./testcases/kernel/mem/lib/libmem.a
-> ./testcases/kernel/controllers/libcontrollers/libcontrollers.a
-> ./testcases/kernel/controllers/cpuset/cpuset_lib/libcpu_set.a
-> ./testcases/kernel/lib/libkerntest.a
-nit: I'd remove './' from commit message.
+...
+>
+> That makes it somewhat better, since it's only concern of library code now.
+> But since there are no tests using "tst_cgroup_new_path", does it still
+> need to be global variable?
+>
 
-Kind regards,
-Petr
+Sure, we could delete tst_cgorup_mnt/new_path variables, since we have
+tracking all mount paths in the list, so it will be easy to find new_path
+in each
+function.
 
-> Also include Android_libpthread and android_librt and remove useless
-> libdir variable.
+Hope v4 is the final version:).
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
-> v1->v2:
-> 1.remove ./testcases/commands/nm/datafiles/lib.a from commit message
-> 2.add two anroid Makefiles
-> 3.remove useless libdir
-FYI I'm still having in my mind trying dynamic library linking.
-But if I ever do it I'll just re-add this variable.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200608/5ecc6f74/attachment.htm>
