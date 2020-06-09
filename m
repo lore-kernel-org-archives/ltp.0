@@ -1,5 +1,5 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 9 Jun 2020 14:03:54 +0530
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 9 Jun 2020 10:51:49 +0200
 Subject: [LTP] [PATCH] syscalls/clock_gettime: Add test to check bug
  during successive readings
 In-Reply-To: <20200609083219.5473zf2tq4tmjxac@vireshk-i7>
@@ -12,14 +12,14 @@ References: <e15907ed42f0276f09c4120b9255db5764d4e9b6.1591343286.git.viresh.kuma
  <20200609070535.iym6m5n2v5urykbc@vireshk-i7>
  <CAK8P3a0giS2A=4Hc4SO7cVn_nOU4rz-KzbSkQJcddM2Hc=KRxg@mail.gmail.com>
  <20200609083219.5473zf2tq4tmjxac@vireshk-i7>
-Message-ID: <20200609083354.haqmv2yg4ns7up7a@vireshk-i7>
+Message-ID: <CAK8P3a2BaLtcyyfNQUJq-gvO6C_53hvLaNhajcpREwqHCEBYqg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09-06-20, 14:02, Viresh Kumar wrote:
+On Tue, Jun 9, 2020 at 10:32 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 > On 09-06-20, 09:43, Arnd Bergmann wrote:
 > > On Tue, Jun 9, 2020 at 9:05 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 > > >
@@ -41,14 +41,54 @@ On 09-06-20, 14:02, Viresh Kumar wrote:
 > > > +                        */
 > > > +                       if (tv->gettime == my_gettimeofday && end < start)
 > > > +                               end += start % 1000;
-> > 
+> >
 > > This looks like it should work correctly, but it feels a bit more fragile than
-> > 
+> >
 > >                        if (tv->gettime == my_gettimeofday)
 > >                                start -= start % 1000;
+> >
+> > which would bring the start and end values to the same resolution
+> > rather than making up values that were never read.
+>
+> This sounds better, will pick it up.
+>
+> > Your approach however has the advantage of adding less overhead
+> > as the % operator on a 64-bit integer is going to turn into a very
+> > expensive calculation on most 32-bit processors that itself can
+> > skew the timing.
+>
+> I am not sure of what you meant here, both the approaches are using
+> the % operation.
 
-And this can be
-        start /= 1000;
+Yours only needs it when the nanoseconds are actually lower, which
+is only the case if no the actual time has not crossed into the next
+microsecond. If the gettimeofday() call itself takes over a microsecond
+to complete, then it usually will have wrapped, but this is highly
+hardware specific as the amount of time it takes to read the current
+clock registers can be anywhere from 'almost free' to 'several
+microseconds'.
 
--- 
-viresh
+Doing a division would be the same as the modulo operator.
+
+Using a 32-bit modulo or division on the tv_nsec portion instead
+of doing it on the 64-bit nanoseconds is much faster but also
+a little more complex.
+
+Another option would be to allow up to 999 nanoseconds of
+time going backwards before printing an error for the case
+of gettimeofday() after clock_gettime(), like
+
+if ((tv->gettime == my_gettimeofday)
+    slack = 999;
+else
+    slack = 0;
+
+if (start + slack < end)
+      failure();
+
+This is much faster as it avoids the division but does not catch
+the corner case of gettimeofday() returning a value that is
+slightly before the previous clock_gettime() but that is actually
+in the previous microsecond interval.
+
+     Arnd
