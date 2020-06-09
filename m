@@ -1,35 +1,73 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 9 Jun 2020 20:27:01 +0800
-Subject: [LTP] [PATCH] read_all: scale down how many times we read by
- default
-In-Reply-To: <33c4abf347e2de96f89b9acea02d731e47dbf2a9.1591700131.git.jstancek@redhat.com>
-References: <33c4abf347e2de96f89b9acea02d731e47dbf2a9.1591700131.git.jstancek@redhat.com>
-Message-ID: <CAEemH2cnbDcqWMo2tLRzTsfMgFxecqP8QMEUFdchS7MxMGErCA@mail.gmail.com>
+Date: Tue, 9 Jun 2020 20:32:09 +0800
+Subject: [LTP] [PATCH V4 01/17] syscalls/timer_gettime: Add support for
+ time64 tests
+In-Reply-To: <a4a628a637a6eeeed4249656836bd217f5cbb9ac.1590144577.git.viresh.kumar@linaro.org>
+References: <cover.1590144577.git.viresh.kumar@linaro.org>
+ <a4a628a637a6eeeed4249656836bd217f5cbb9ac.1590144577.git.viresh.kumar@linaro.org>
+Message-ID: <CAEemH2eLNKKCdVvNFRFdU2-PDsXLZZmrh1gLH6bgMMFbrXi_Lg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-[Cc Richard] in case he has extra suggest.
+On Fri, May 22, 2020 at 6:52 PM Viresh Kumar <viresh.kumar@linaro.org>
+wrote:
 
-On Tue, Jun 9, 2020 at 6:56 PM Jan Stancek <jstancek@redhat.com> wrote:
+> This adds support for time64 tests to the existing timer_gettime()
+> syscall tests.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  include/tst_timer.h                           |  45 +++++++
+>  .../syscalls/timer_gettime/timer_gettime01.c  | 124 ++++++++----------
+>  2 files changed, 97 insertions(+), 72 deletions(-)
+>
+> diff --git a/include/tst_timer.h b/include/tst_timer.h
+> index 256e1d71e1bc..d9afbe0ece71 100644
+> --- a/include/tst_timer.h
+> +++ b/include/tst_timer.h
+> @@ -15,6 +15,7 @@
+>  #include <sys/time.h>
+>  #include <time.h>
+>  #include "tst_test.h"
+> +#include "lapi/common_timers.h"
+>  #include "lapi/syscalls.h"
+>
+>  /*
+> @@ -112,6 +113,16 @@ struct __kernel_timespec {
+>         __kernel_time64_t       tv_sec;                 /* seconds */
+>         long long               tv_nsec;                /* nanoseconds */
+>  };
+> +
+> +struct __kernel_old_itimerspec {
+> +       struct __kernel_old_timespec it_interval;    /* timer period */
+> +       struct __kernel_old_timespec it_value;       /* timer expiration */
+> +};
+> +
+> +struct __kernel_itimerspec {
+> +       struct __kernel_timespec it_interval;    /* timer period */
+> +       struct __kernel_timespec it_value;       /* timer expiration */
+> +};
+>  #endif
+>
+>  enum tst_ts_type {
+> @@ -129,6 +140,14 @@ struct tst_ts {
+>         } ts;
+>  };
+>
+> +struct tst_its {
+> +       enum tst_ts_type type;
+> +       union {
+> +               struct __kernel_itimerspec kern_old_its;
+>
 
-> read_all is running into timeouts on high cpu systems, where
-> access to some per-cpu files is protected by a lock. Latest
-> example is /sys/kernel/tracing/per_cpu/*.
->
-> At the moment we read each file 10 times, and we have been
-> excluding files that take too long. Rather than expanding
-> blacklist, scale the default down to 3.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
->
-Reviewed-by: Li Wang <liwang@redhat.com>
+I guess this line should be used 'struct __kernel_old_itimerspec', right?
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200609/b70c248a/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200609/a9496cae/attachment.htm>
