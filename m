@@ -1,45 +1,80 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 9 Jun 2020 02:48:48 -0400 (EDT)
-Subject: [LTP] sched_rr_get_interval01 , sched_rr_get_interval02 ,
- sched_rr_get_interval03 testcase failure
-In-Reply-To: <BMXPR01MB23445D894481BDFED050AD27EE820@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB23442B106F1292542BA7F85CEE850@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
- <1210169239.15186381.1591627929151.JavaMail.zimbra@redhat.com>
- <BMXPR01MB2344728D919729E8F7F007EBEE820@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
- <1150717403.15265201.1591683953555.JavaMail.zimbra@redhat.com>
- <BMXPR01MB23445D894481BDFED050AD27EE820@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <1242963582.15267570.1591685328616.JavaMail.zimbra@redhat.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 9 Jun 2020 12:35:35 +0530
+Subject: [LTP] [PATCH] syscalls/clock_gettime: Add test to check bug
+ during successive readings
+In-Reply-To: <CAK8P3a0PqtFWTZr9hvSy5Y0ZZOSNgfzw0x1DTTyuzfsfROpAvw@mail.gmail.com>
+References: <e15907ed42f0276f09c4120b9255db5764d4e9b6.1591343286.git.viresh.kumar@linaro.org>
+ <CAK8P3a0b2BbZq_yYBKJHUfZgzCYUtdidpzJEj-HzuBKf1Q_nnQ@mail.gmail.com>
+ <20200608100900.c4fi7pw7euie6tnt@vireshk-i7>
+ <CAK8P3a004cavRhyWx+uXYYteBi1LviahAv11+9JyGadN-vo8og@mail.gmail.com>
+ <20200608112000.sjrbvmqjciifgyub@vireshk-i7>
+ <CAK8P3a0PqtFWTZr9hvSy5Y0ZZOSNgfzw0x1DTTyuzfsfROpAvw@mail.gmail.com>
+Message-ID: <20200609070535.iym6m5n2v5urykbc@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
------ Original Message ----- 
+On 08-06-20, 16:51, Arnd Bergmann wrote:
+> You already have a special case for gettimeofday(), so just round down
+> the 'start' value to the previous microsecond when you are in that
+> case.
 
-> sched_setscheduler(0, SCHED_FIFO, [1]) = -1 EPERM (Operation not permitted)
+Since this will also affect the next reading as well (as we will loose
+values < 1 us), I tried to do it a bit differently.
 
-Thanks, that aligns with the theory.
+@@ -78,6 +78,13 @@ static void run(unsigned int i)
+                        tv->gettime(clks[i], tst_ts_get(&ts));
+                        end = tst_ts_to_ns(ts);
+ 
++                       /*
++                        * gettimeofday() doesn't value less than 1 us, copy
++                        * that from start.
++                        */
++                       if (tv->gettime == my_gettimeofday && end < start)
++                               end += start % 1000;
++
+                        /* Skip comparison on first traversal */
+                        if (count == 10000 && !j)
+                                continue;
 
-> 2)
-> root@exaleapsemi-r2:/opt/ltp# pu_mnt=$(mount | grep "type cgroup (.*cpu[,)]"
-> | awk '{print $3}')
-> root@exaleapsemi-r2:/opt/ltp# cpu_mnt=$(mount | grep "type cgroup (.*cpu[,)]"
-> | awk '{print $3}')
-> root@exaleapsemi-r2:/opt/ltp# p=$(cat /proc/self/cgroup | grep ":cpu[:,]" |
-> sed "s/.*://")
-> root@exaleapsemi-r2:/opt/ltp# cat $cpu_mnt/$p/cpu.rt_runtime_us
-> cat: //system.slice/system-sshd.slice/cpu.rt_runtime_us: No such file or
-> directory
+> > +static void run(unsigned int i)
+> > +{
+> > +       struct tst_ts ts;
+> > +       long long start, end = 0, diff;
+> > +       struct test_variants *tv;
+> > +       int count = 10000;
+> > +       unsigned int j;
+> > +
+> > +       do {
+> > +               for (j = 0; j < ARRAY_SIZE(variants); j++) {
+> > +                       /* Refresh time in start */
+> > +                       start = end;
+> > +
+> > +                       tv = &variants[j];
+> > +                       ts.type = tv->type;
+> > +
+> > +                       /* Do gettimeofday() test only for CLOCK_REALTIME */
+> > +                       if (tv->gettime == my_gettimeofday && clks[i] != CLOCK_REALTIME)
+> > +                               continue;
+> > +
+> > +                       tv->gettime(clks[i], tst_ts_get(&ts));
+> > +                       end = tst_ts_to_ns(ts);
+> > +
+> > +                       /* Skip comparison on first traversal */
+> > +                       if (count == 10000 && !j)
+> > +                               continue;
 
-> it didnt gave any info about cpu.rt_runtime_us??
+I am skipping diff for the first iteration..
 
-That could be because your distro is mounting cgroup2.
+> > +
+> > +                       diff = end - start;
+> 
+> I think on the first iteration, 'start' is wrong here as well, and needs to
+> be initialized once, as you did in the earlier versions.
 
-# mount | grep cgroup
+And so this won't be a problem.
 
-Do you see any change if you run following?
-
-# echo $$ > /sys/fs/cgroup/cgroup.procs
-# /opt/ltp/testcases/bin/sched_setparam02
-
+-- 
+viresh
