@@ -1,45 +1,42 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 9 Jun 2020 14:14:54 +0800
-Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep
- pattern
-In-Reply-To: <20200608145831.GA2746544@x230>
-References: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
- <20200608145831.GA2746544@x230>
-Message-ID: <5EDF28DE.7070202@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 9 Jun 2020 02:25:53 -0400 (EDT)
+Subject: [LTP] sched_rr_get_interval01 , sched_rr_get_interval02 ,
+ sched_rr_get_interval03 testcase failure
+In-Reply-To: <BMXPR01MB2344728D919729E8F7F007EBEE820@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
+References: <BMXPR01MB23442B106F1292542BA7F85CEE850@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
+ <1210169239.15186381.1591627929151.JavaMail.zimbra@redhat.com>
+ <BMXPR01MB2344728D919729E8F7F007EBEE820@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <1150717403.15265201.1591683953555.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/6/8 22:58, Petr Vorel wrote:
-> Hi Xiao,
->
-> Reviewed-by: Petr Vorel<petr.vorel@gmail.com>
->
->> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
->> @@ -58,7 +58,7 @@ nfs_server_udp_enabled()
->>   	tst_rhost_run -c "[ -f /etc/nfs.conf ]" || return 0
->>   	config=$(tst_rhost_run -c 'for f in $(grep ^include.*= '/etc/nfs.conf' | cut -d = -f2); do [ -f $f ]&&  printf "$f "; done')
->
->> -	tst_rhost_run -c "grep -q '^[# ]*udp *= *y' /etc/nfs.conf $config"
->> +	tst_rhost_run -c "grep -q \"^[# ]*udp *= *y\" /etc/nfs.conf $config"
-> Good catch. But I wonder if we shouldn't fix tst_rhost_run instead, to avoid
-> this error in the future. How about replacing ' with \" in $cmd?
-Hi Petr,
-
-It is fine for me to fix the issue in tst_rhost_run() but I didn't find 
-a better fix, could you provide an example about your idea?
-
-Best Regards,
-Xiao Yang
->
-> Kind regards,
-> Petr
->
->
-> .
->
 
 
+----- Original Message -----
+> Hi Jan Stancek,
+> Thanks for your response.All of the following test are failing w.r.t sched
+> 
+> 1) sched_setparam02
+> 2) sched_setparam03
+> 3) sched_getscheduler01
+
+That suggests it could be cpu.rt_runtime_us == 0, since all tests are
+trying to use realtime scheduler.
+
+> 
+> root@exaleapsemi-r2:/opt/ltp# strace ./runltp -s sched_setparam02
+
+Above doesn't help much, since you are not tracing child processes.
+
+1. Can you run this instead:
+ /opt/ltp# strace ./testcases/bin/sched_setparam02
+
+2. Can you check what is the cpu.rt_runtime_us for pid that runs the test?
+
+# cpu_mnt=$(mount | grep "type cgroup (.*cpu[,)]" | awk '{print $3}')
+# p=$(cat /proc/self/cgroup | grep ":cpu[:,]" | sed "s/.*://")
+# cat $cpu_mnt/$p/cpu.rt_runtime_us
 
