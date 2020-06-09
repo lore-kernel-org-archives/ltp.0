@@ -1,34 +1,168 @@
-From: Vikas Kumar <vikas.kumar2@arm.com>
-Date: Tue, 9 Jun 2020 10:09:06 +0530
-Subject: [LTP] [PATCH V6] syscall: Add io_uring related tests
-In-Reply-To: <20200601053550.3848-1-vikas.kumar2@arm.com>
-References: <20200601053550.3848-1-vikas.kumar2@arm.com>
-Message-ID: <14e7e598-b0aa-5c62-3cb3-726d29e315da@arm.com>
+From: Kushal Chand <kushalchand@zilogic.com>
+Date: Tue, 09 Jun 2020 04:46:41 -0000
+Subject: [LTP] [PATCH v2] Added test case to test mmap with
+ MAP_FIXED_NOREPLACE flag
+Message-ID: <20200609044641.3623-1-kushalchand@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 01/06/20 11:05 am, Vikas Kumar wrote:
-> Added asynchronous I/O API tests for io_uring_setup(), io_uring_register()
-> and io_uring_enter(). These tests intend to validate io_uring operations.
->
-> 1. io_uring_setup() creates submission queue and completion queue to
->     perform subsequent operations on the io_uring instance.
-> 2. io_uring_register() registers user buffers in kernel for long term
->     usese.
-> 3. io_uring_enter() initiates I/O operations using the shared SQ and CQ
->     queue.
->
-> Signed-off-by: Vikas Kumar<vikas.kumar2@arm.com>
 
-Gentle reminder. Any updates on this patch ?
+This patch adds a new test case for the mmap syscall. It tests the
+MAP_FIXED_NOREPLACE flag of mmap. The code checks if MAP_FIXED_NOREPLACE
+returns with EEXIST when mapped with an already mapped address. It does
+so by allocating an available address by passing NULL to first argument
+of mmap and tries to mmap with MAP_FIXED_NOREPLACE flag at the same
+address returned by the first mmap call. This fails as expected. It also
+does the necessary changes required to run the syscall using the runltp
+command after building the LTP test suite.
+Git Hub Issue link - https://github.com/linux-test-project/ltp/issues/299
 
-- Vikas
+Signed-off-by: Kushal Chand <kushalchand@zilogic.com>
+Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
 
+---
+ include/lapi/mmap.h                       | 10 +++
+ runtest/syscalls                          |  1 +
+ testcases/kernel/syscalls/mmap/.gitignore |  1 +
+ testcases/kernel/syscalls/mmap/mmap17.c   | 85 +++++++++++++++++++++++
+ 4 files changed, 97 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap17.c
 
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index b3db94128..12845b76e 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -66,6 +66,16 @@
+ # define MADV_KEEPONFORK 19
+ #endif
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200609/fa88d6f8/attachment-0001.htm>
++#ifndef MAP_FIXED_NOREPLACE
++
++#ifdef __alpha__
++# define MAP_FIXED_NOREPLACE 0x200000
++#else
++# define MAP_FIXED_NOREPLACE 0x100000
++#endif
++
++#endif /* MAP_FIXED_NOREPLACE */
++
+ #ifdef HAVE_SYS_SHM_H
+ # include <sys/shm.h>
+ # define MMAP_GRANULARITY SHMLBA
+diff --git a/runtest/syscalls b/runtest/syscalls
+index edd3e8de7..e685037c7 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -745,6 +745,7 @@ mmap14 mmap14
+ #mmap11 mmap11 -i 30000
+ mmap15 mmap15
+ mmap16 mmap16
++mmap17 mmap17
+
+ modify_ldt01 modify_ldt01
+ modify_ldt02 modify_ldt02
+diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
+index 39ed2aab0..c5c083d4b 100644
+--- a/testcases/kernel/syscalls/mmap/.gitignore
++++ b/testcases/kernel/syscalls/mmap/.gitignore
+@@ -15,3 +15,4 @@
+ /mmap14
+ /mmap15
+ /mmap16
++/mmap17
+diff --git a/testcases/kernel/syscalls/mmap/mmap17.c b/testcases/kernel/syscalls/mmap/mmap17.c
+new file mode 100644
+index 000000000..a620f104a
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap17.c
+@@ -0,0 +1,85 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
++ * Email: code@zilogic.com
++ */
++
++/*
++ * Test mmap with MAP_FIXED_NOREPLACE flag
++ *
++ * We are testing the MAP_FIXED_NOREPLACE flag of mmap() syscall. To check
++ * if an attempt to mmap at an exisiting mapping fails with EEXIST.
++ * The code allocates a free address by passing NULL to first mmap call
++ * Then tries to mmap with the same address using MAP_FIXED_NOREPLACE flag
++ * and the mapping fails as expected.
++ */
++
++#include <stdio.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <error.h>
++#include <errno.h>
++#include <string.h>
++#include <stdlib.h>
++#include "tst_test.h"
++
++static int fd_file1;
++static int fd_file2;
++static void *mapped_address;
++static const char str[] = "Writing to mapped file";
++
++#define FNAME1 "file1_to_mmap"
++#define FNAME2 "file2_to_mmap"
++
++static void setup(void)
++{
++	fd_file1 = SAFE_OPEN(FNAME1, O_CREAT | O_RDWR, 0600);
++	fd_file2 = SAFE_OPEN(FNAME2, O_CREAT | O_RDWR, 0600);
++}
++
++static void cleanup(void)
++{
++	int str_len;
++
++	str_len = strlen(str);
++
++	if (fd_file2 > 0)
++		SAFE_CLOSE(fd_file2);
++	if (fd_file1 > 0)
++		SAFE_CLOSE(fd_file1);
++	if (mapped_address)
++		SAFE_MUNMAP(mapped_address, str_len);
++}
++
++static void test_mmap(void)
++{
++	int str_len;
++	void *address;
++
++	str_len = strlen(str);
++
++	SAFE_WRITE(1, fd_file1, str, str_len);
++	mapped_address = SAFE_MMAP(NULL, str_len, PROT_WRITE,
++				   MAP_PRIVATE, fd_file1, 0);
++
++	SAFE_WRITE(1, fd_file2, str, str_len);
++
++	address = mmap(mapped_address, str_len, PROT_WRITE,
++		  MAP_PRIVATE | MAP_FIXED_NOREPLACE, fd_file2, 0);
++	if (address == MAP_FAILED && errno == EEXIST)
++		tst_res(TPASS, "mmap set errno to EEXIST as expected");
++	else
++		tst_res(TFAIL | TERRNO, "mmap failed, with unexpected error "
++			"code, expected EEXIST");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = test_mmap,
++	.min_kver = "4.17",
++	.needs_tmpdir = 1
++};
+--
+2.20.1
