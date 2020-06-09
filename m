@@ -1,36 +1,34 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 8 Jun 2020 23:29:24 +0530
-Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
-In-Reply-To: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
-References: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
-Message-ID: <CA+G9fYuHsezzit3pzHiz-6ad4AfbgRsdbuqfUKvLif7_Jk5WkA@mail.gmail.com>
+From: Vikas Kumar <vikas.kumar2@arm.com>
+Date: Tue, 9 Jun 2020 10:09:06 +0530
+Subject: [LTP] [PATCH V6] syscall: Add io_uring related tests
+In-Reply-To: <20200601053550.3848-1-vikas.kumar2@arm.com>
+References: <20200601053550.3848-1-vikas.kumar2@arm.com>
+Message-ID: <14e7e598-b0aa-5c62-3cb3-726d29e315da@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 4 Jun 2020 at 17:11, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On 01/06/20 11:05 am, Vikas Kumar wrote:
+> Added asynchronous I/O API tests for io_uring_setup(), io_uring_register()
+> and io_uring_enter(). These tests intend to validate io_uring operations.
 >
-> The tests takes difference between two time readings and check it
-> against the offset set by the test. When the offset is set to a positive
-> value (eg 10000 ms), then the diff comes to a value >= 10000 ms (eg
-> 10001 ms), and with divided by 1000, both sides evaluate to 10.
+> 1. io_uring_setup() creates submission queue and completion queue to
+>     perform subsequent operations on the io_uring instance.
+> 2. io_uring_register() registers user buffers in kernel for long term
+>     usese.
+> 3. io_uring_enter() initiates I/O operations using the shared SQ and CQ
+>     queue.
 >
-> But when the offset is set to -10000 ms, then the delta is >= -10000 ms
-> (eg -9999) ms. And when divided by 1000, it comes to -9 != -10 and the
-> test reports error. Over that we are comparing value in seconds, which
-> is too large of a value. Change the test to compare delta in ms and fix
-> the false failures.
+> Signed-off-by: Vikas Kumar<vikas.kumar2@arm.com>
 
-Test ran for 100 iterations on x86 device and confirmed test getting pass.
+Gentle reminder. Any updates on this patch ?
 
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+- Vikas
 
-Tested-by:  Naresh Kamboju <naresh.kamboju@linaro.org>
 
-ref:
-https://bugs.linaro.org/show_bug.cgi?id=5640
-- Naresh
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200609/fa88d6f8/attachment-0001.htm>
