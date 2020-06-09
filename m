@@ -1,43 +1,37 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  9 Jun 2020 12:55:51 +0200
-Subject: [LTP] [PATCH] read_all: scale down how many times we read by default
-Message-ID: <33c4abf347e2de96f89b9acea02d731e47dbf2a9.1591700131.git.jstancek@redhat.com>
+Date: Tue, 9 Jun 2020 07:01:57 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Get the logic_block_size
+ dynamically
+In-Reply-To: <96ba542d-4ec7-bc5d-41d9-f533952f94cd@cn.fujitsu.com>
+References: <1591691583-12442-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <218497387.15286923.1591694653027.JavaMail.zimbra@redhat.com>
+ <b1a7a025-3875-86db-222d-5a1e40737b24@cn.fujitsu.com>
+ <1837993622.15296660.1591697802060.JavaMail.zimbra@redhat.com>
+ <96ba542d-4ec7-bc5d-41d9-f533952f94cd@cn.fujitsu.com>
+Message-ID: <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-read_all is running into timeouts on high cpu systems, where
-access to some per-cpu files is protected by a lock. Latest
-example is /sys/kernel/tracing/per_cpu/*.
 
-At the moment we read each file 10 times, and we have been
-excluding files that take too long. Rather than expanding
-blacklist, scale the default down to 3.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/fs | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+----- Original Message -----
+> >>> Would BLKSSZGET work? It returns bdev_logical_block_size().
+> >>
+> >> But it needs a blockdev, in user space, we can specify bdev, but how can
+> >> we
+> >> figure out this inode->i_sb->s_bdev block dev.
+> > 
+> > Isn't that the block device "test.img" is on?
+> Do you mean the test.img belong to some block dev, such as /dev/sda1 or
+> our mounted block_dev? If so, I think it is.
 
-diff --git a/runtest/fs b/runtest/fs
-index 464ba8fb9686..5892e9fdaee5 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -69,9 +69,9 @@ fs_di fs_di -d $TMPDIR
- # Was not sure why it should reside in runtest/crashme and won't get tested ever
- proc01 proc01 -m 128
- 
--read_all_dev read_all -d /dev -p -q -r 10
--read_all_proc read_all -d /proc -q -r 10
--read_all_sys read_all -d /sys -q -r 10
-+read_all_dev read_all -d /dev -p -q -r 3
-+read_all_proc read_all -d /proc -q -r 3
-+read_all_sys read_all -d /sys -q -r 3
- 
- #Run the File System Race Condition Check tests as well
- fs_racer fs_racer.sh -t 5
--- 
-2.18.1
+The former. Say if test.img is in /tmp, then I'd assume "s_bdev" is
+/dev/mapper/rhel-root (/dev/dm-0)
+
+$ df -T /tmp/test.img
+Filesystem            Type 1K-blocks     Used Available Use% Mounted on
+/dev/mapper/rhel-root xfs   66789516 33211340  33578176  50% /
 
