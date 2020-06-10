@@ -1,47 +1,50 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 10 Jun 2020 09:19:26 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Get the logic_block_size
- dynamically
-In-Reply-To: <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
-References: <1591691583-12442-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <218497387.15286923.1591694653027.JavaMail.zimbra@redhat.com>
- <b1a7a025-3875-86db-222d-5a1e40737b24@cn.fujitsu.com>
- <1837993622.15296660.1591697802060.JavaMail.zimbra@redhat.com>
- <96ba542d-4ec7-bc5d-41d9-f533952f94cd@cn.fujitsu.com>
- <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
-Message-ID: <716f9011-97d8-ee14-c28a-5beb2f17a9b9@cn.fujitsu.com>
+Date: Wed, 10 Jun 2020 09:28:47 +0800
+Subject: [LTP] [PATCH v2] LIB: Use INTERNAL_LIB for ltp lib
+In-Reply-To: <57a1c19e-d8e5-4389-8565-20e49f144657@G08CNEXMBPEKD05.g08.fujitsu.local>
+References: <57a1c19e-d8e5-4389-8565-20e49f144657@G08CNEXMBPEKD05.g08.fujitsu.local>
+Message-ID: <78176e41-03c4-e75b-594b-20731b2d4dfd@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan
+Hi Petr
 
+Nothing blocks this simple patch, I guess we can directly push this 
+patch(don't forget jan's acked-by).
 
+Best Regards
+Yang Xu
+> Hi petr
+> just reply for your ?Given Jan acked v1, I'd be also for merge?? v2 is OK.
+> 
+> Best Regards
+> Yang Xu
 > 
 > 
-> ----- Original Message -----
->>>>> Would BLKSSZGET work? It returns bdev_logical_block_size().
->>>>
->>>> But it needs a blockdev, in user space, we can specify bdev, but how can
->>>> we
->>>> figure out this inode->i_sb->s_bdev block dev.
->>>
->>> Isn't that the block device "test.img" is on?
->> Do you mean the test.img belong to some block dev, such as /dev/sda1 or
->> our mounted block_dev? If so, I think it is.
+> ---Original---
+> *From:* "Petr Vorel"<pvorel@suse.cz>
+> *Date:* Mon, Jun 8, 2020 19:41 PM
+> *To:* "Yang Xu"<xuyang2018.jy@cn.fujitsu.com>;
+> *Cc:* "ltp"<ltp@lists.linux.it>;
+> *Subject:* Re: [LTP] [PATCH v2] LIB: Use INTERNAL_LIB for ltp lib
 > 
-> The former. Say if test.img is in /tmp, then I'd assume "s_bdev" is
-> /dev/mapper/rhel-root (/dev/dm-0)
+> Hi?Xu,
 > 
-> $ df -T /tmp/test.img
-> Filesystem            Type 1K-blocks     Used Available Use% Mounted on
-> /dev/mapper/rhel-root xfs   66789516 33211340  33578176  50% /
-I try this, it is ok on my machine. I will send a v2 patch by using 
-BLKSSZGET.
+>  >?>?Cyril?concerned?3rd?party?use?of?lib/libltp.a,?but?nobody?complained.
+>  >?>?Given?Jan?acked?v1,?I'd?be?also?for?merge.
 > 
+>  >??We?also?should?include?android_libpthread?and?android_librt?Makefile.
+> Not?sure?what?you?mean.?You?did?the?change?in?android_libpthread?and
+> android_librt?Makefile?(this?is?v2?thread),?thus?I?consider?this?patch?ready.
+> Or?am?I?missing?something?
 > 
+> Kind?regards,
+> Petr
 > 
+> -- 
+> Mailing?list?info:?https://lists.linux.it/listinfo/ltp
 
 
