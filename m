@@ -1,88 +1,65 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 10 Jun 2020 11:47:36 +0530
-Subject: [LTP] [PATCH] syscalls/clock_gettime: Add test to check bug
- during successive readings
-In-Reply-To: <CAK8P3a2BaLtcyyfNQUJq-gvO6C_53hvLaNhajcpREwqHCEBYqg@mail.gmail.com>
-References: <e15907ed42f0276f09c4120b9255db5764d4e9b6.1591343286.git.viresh.kumar@linaro.org>
- <CAK8P3a0b2BbZq_yYBKJHUfZgzCYUtdidpzJEj-HzuBKf1Q_nnQ@mail.gmail.com>
- <20200608100900.c4fi7pw7euie6tnt@vireshk-i7>
- <CAK8P3a004cavRhyWx+uXYYteBi1LviahAv11+9JyGadN-vo8og@mail.gmail.com>
- <20200608112000.sjrbvmqjciifgyub@vireshk-i7>
- <CAK8P3a0PqtFWTZr9hvSy5Y0ZZOSNgfzw0x1DTTyuzfsfROpAvw@mail.gmail.com>
- <20200609070535.iym6m5n2v5urykbc@vireshk-i7>
- <CAK8P3a0giS2A=4Hc4SO7cVn_nOU4rz-KzbSkQJcddM2Hc=KRxg@mail.gmail.com>
- <20200609083219.5473zf2tq4tmjxac@vireshk-i7>
- <CAK8P3a2BaLtcyyfNQUJq-gvO6C_53hvLaNhajcpREwqHCEBYqg@mail.gmail.com>
-Message-ID: <20200610061736.pozfqs4fh4wakdep@vireshk-i7>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 10 Jun 2020 08:18:09 +0100
+Subject: [LTP] [PATCH v3] Wrapper for Syzkaller reproducers
+In-Reply-To: <8b3cbf25-83ad-42da-f3ec-e2bafdfff97c@linuxfoundation.org>
+References: <20200609113421.10936-1-rpalethorpe@suse.com>
+ <20200609165921.GA28805@dell5510>
+ <fa3b9d86-84f7-be61-f06f-c32f3ab60d3a@linuxfoundation.org>
+ <CACT4Y+bYdmD7vdNUayT86oiW8yVLUBdFLOZRJ1nTi9AE99KzSg@mail.gmail.com>
+ <ce8bd6c0-0abb-e09e-b21f-5e769ffd3ab3@linuxfoundation.org>
+ <20200609195851.GA29515@x230>
+ <8b3cbf25-83ad-42da-f3ec-e2bafdfff97c@linuxfoundation.org>
+Message-ID: <874krjxuby.fsf@our.domain.is.not.set>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09-06-20, 10:51, Arnd Bergmann wrote:
-> Yours only needs it when the nanoseconds are actually lower, which
-> is only the case if no the actual time has not crossed into the next
-> microsecond.
+Hello,
 
-That is a very small percentage of cases I believe, and so I won't
-count my version to be really better here :)
+Shuah Khan <skhan@linuxfoundation.org> writes:
 
-> If the gettimeofday() call itself takes over a microsecond
-> to complete, then it usually will have wrapped, but this is highly
-> hardware specific as the amount of time it takes to read the current
-> clock registers can be anywhere from 'almost free' to 'several
-> microseconds'.
-> 
-> Doing a division would be the same as the modulo operator.
+> On 6/9/20 1:58 PM, Petr Vorel wrote:
+>> Hi Shuah,
+>>
+>> ...
+>>>> I don't have any particular comments.
+>>>> I assume Richard tested it and it works. if so, it's fine with me :)
+>>>> I don't have any concrete plans to use this at the moment. We have a
+>>>> corpus of reproducers in syzkaller format and we can run these. This
+>>>> should be more useful for kernel continuous integration systems and
+>>>> distro testing.
+>>
+>>> Right. That is what I was thinking that this is more relevant for kernel
+>>> developers, CI and distros.
+>>
+>>> Richard, Please send the patch for linux-arts to me once Petr gives it a
+>>> try and I will apply it.
+>> NOTE: this patch is for LTP. But maybe I miss something (some other patch for
+>> linux-arts I overlooked).
+>>
+>
+> Possibly I misread the
+>
+> V3:
+> + Updated linux-arts commit (thanks Dmitry and Shuah for updating those!)
+> + Fixed AC macro
+>
+> If this patch doesn't intend to update syzkaller-repo, there is
+> nothing to do for linux-arts. I thought that this patch is for
+> Dmitry's syzkaller repo I update from and looking get this into
+> linux-arts directly.
+>
+> Since this is LTP patch, ignore my comments. Sorry for the noise.
+>
+> thanks,
+> -- Shuah
 
-Sure.
+No problem at all, I should have made that more clear.
 
-> Using a 32-bit modulo or division on the tv_nsec portion instead
-> of doing it on the 64-bit nanoseconds is much faster but also
-> a little more complex.
-
-Yeah, keeping separate values is a mess. Another thing I was thinking
-about, does the time it takes to do a division operation has the
-tendency to affect the output of the program? i.e. not catching bugs
-sometimes ? Otherwise who cares about the time spent doing division
-during testing of the kernel :)
-
-> Another option would be to allow up to 999 nanoseconds of
-> time going backwards before printing an error for the case
-> of gettimeofday() after clock_gettime(), like
-> 
-> if ((tv->gettime == my_gettimeofday)
->     slack = 999;
-> else
->     slack = 0;
-> 
-> if (start + slack < end)
->       failure();
-
-I like it, but I think you did it a bit incorrectly according to the
-current code:
-
-if (end + slack < start)
-      failure();
-
-> This is much faster as it avoids the division but does not catch
-> the corner case of gettimeofday() returning a value that is
-> slightly before the previous clock_gettime() but that is actually
-> in the previous microsecond interval.
-
-Hmm, I am not sure I understand it. The only bug that can happen with
-gettimeofday() is when it returns a value with a different microsecond
-value than clock_gettime(), as we can't capture values lower than 1
-us.
-
-So, clock_gettime() returns 4001 ns and gettimeofday() returns 3000
-(or 2000 or 1000) ns. This is the only bug possible here. And adding
-999 to gettimeofday() output will never make it cross the microsecond
-boundary (as it has 000 at the end) and so we should always catch the
-bug.
-
-Where am I wrong here now ? Of course I am :)
-
+Infact I will send a seperate patch to linux-arts mentioning the LTP
+wrapper.
 -- 
-viresh
+Thank you,
+Richard.
