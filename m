@@ -1,36 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 9 Jun 2020 21:58:51 +0200
-Subject: [LTP] [PATCH v3] Wrapper for Syzkaller reproducers
-In-Reply-To: <ce8bd6c0-0abb-e09e-b21f-5e769ffd3ab3@linuxfoundation.org>
-References: <20200609113421.10936-1-rpalethorpe@suse.com>
- <20200609165921.GA28805@dell5510>
- <fa3b9d86-84f7-be61-f06f-c32f3ab60d3a@linuxfoundation.org>
- <CACT4Y+bYdmD7vdNUayT86oiW8yVLUBdFLOZRJ1nTi9AE99KzSg@mail.gmail.com>
- <ce8bd6c0-0abb-e09e-b21f-5e769ffd3ab3@linuxfoundation.org>
-Message-ID: <20200609195851.GA29515@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 10 Jun 2020 09:19:26 +0800
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05: Get the logic_block_size
+ dynamically
+In-Reply-To: <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
+References: <1591691583-12442-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <218497387.15286923.1591694653027.JavaMail.zimbra@redhat.com>
+ <b1a7a025-3875-86db-222d-5a1e40737b24@cn.fujitsu.com>
+ <1837993622.15296660.1591697802060.JavaMail.zimbra@redhat.com>
+ <96ba542d-4ec7-bc5d-41d9-f533952f94cd@cn.fujitsu.com>
+ <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
+Message-ID: <716f9011-97d8-ee14-c28a-5beb2f17a9b9@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Shuah,
+Hi Jan
 
-...
-> > I don't have any particular comments.
-> > I assume Richard tested it and it works. if so, it's fine with me :)
-> > I don't have any concrete plans to use this at the moment. We have a
-> > corpus of reproducers in syzkaller format and we can run these. This
-> > should be more useful for kernel continuous integration systems and
-> > distro testing.
 
-> Right. That is what I was thinking that this is more relevant for kernel
-> developers, CI and distros.
+> 
+> 
+> ----- Original Message -----
+>>>>> Would BLKSSZGET work? It returns bdev_logical_block_size().
+>>>>
+>>>> But it needs a blockdev, in user space, we can specify bdev, but how can
+>>>> we
+>>>> figure out this inode->i_sb->s_bdev block dev.
+>>>
+>>> Isn't that the block device "test.img" is on?
+>> Do you mean the test.img belong to some block dev, such as /dev/sda1 or
+>> our mounted block_dev? If so, I think it is.
+> 
+> The former. Say if test.img is in /tmp, then I'd assume "s_bdev" is
+> /dev/mapper/rhel-root (/dev/dm-0)
+> 
+> $ df -T /tmp/test.img
+> Filesystem            Type 1K-blocks     Used Available Use% Mounted on
+> /dev/mapper/rhel-root xfs   66789516 33211340  33578176  50% /
+I try this, it is ok on my machine. I will send a v2 patch by using 
+BLKSSZGET.
+> 
+> 
+> 
 
-> Richard, Please send the patch for linux-arts to me once Petr gives it a
-> try and I will apply it.
-NOTE: this patch is for LTP. But maybe I miss something (some other patch for
-linux-arts I overlooked).
 
-Kind regards,
-Petr
