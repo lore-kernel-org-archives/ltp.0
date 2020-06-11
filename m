@@ -1,84 +1,60 @@
-From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Wed, 10 Jun 2020 10:01:23 -0700
-Subject: [LTP] [PATCH 2/2] IMA: Add a test to verify importing a certificate
- into keyring
-In-Reply-To: <1591808483-22040-1-git-send-email-t-josne@linux.microsoft.com>
-References: <1591808483-22040-1-git-send-email-t-josne@linux.microsoft.com>
-Message-ID: <1591808483-22040-2-git-send-email-t-josne@linux.microsoft.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 11 Jun 2020 12:56:35 +0800
+Subject: [LTP] [PATCH v2] syscalls/ioctl_loop05: Use correct blockdev to
+ get logical_block_size
+In-Reply-To: <660069492.15476972.1591794243308.JavaMail.zimbra@redhat.com>
+References: <828833321.15301509.1591700517554.JavaMail.zimbra@redhat.com>
+ <1591767427-29383-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1904123764.15455071.1591784009893.JavaMail.zimbra@redhat.com>
+ <787d0f86-269b-1e23-2631-2c420d6dd884@cn.fujitsu.com>
+ <3cdd6be2-c27a-e9dc-2559-c6577239a1bc@cn.fujitsu.com>
+ <660069492.15476972.1591794243308.JavaMail.zimbra@redhat.com>
+Message-ID: <4c75396e-6578-ecbb-e8e5-d0569d289f9f@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add an IMA measurement test that verifies that an x509 certificate
-can be imported into the .ima keyring and measured correctly.
+Hi Jan
 
-Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
----
- .../security/integrity/ima/tests/ima_keys.sh  | 44 ++++++++++++++++++-
- 1 file changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 1b0dd0aed..6904fabfa 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -7,7 +7,7 @@
- 
- TST_NEEDS_CMDS="awk cut"
- TST_SETUP="setup"
--TST_CNT=1
-+TST_CNT=2
- TST_NEEDS_DEVICE=1
- 
- . ima_setup.sh
-@@ -69,4 +69,46 @@ $(echo "$line" | cut -d' ' -f5) keyring"
- 	tst_res TPASS "specified keyrings were measured correctly"
- }
- 
-+
-+# Test that a cert can be imported into the ".ima" keyring correctly.
-+test2() {
-+	local keyring_id key_id
-+	CERT_FILE="/etc/keys/x509_ima.der" # Default
-+
-+	[ -f $CERT_FILE ] || tst_brk TCONF "missing $CERT_FILE"
-+
-+	if ! openssl x509 -in $CERT_FILE -inform der > /dev/null; then
-+		tst_brk TCONF "The suppled cert file ($CERT_FILE) is not \
-+a valid x509 certificate"
-+	fi
-+
-+	tst_res TINFO "adding a cert to the \".ima\" keyring ($CERT_FILE)"
-+
-+	keyring_id=$(sudo keyctl show %:.ima | sed -n 2p | \
-+		sed 's/^[[:space:]]*//' | cut -d' ' -f1) || \
-+		tst_btk TCONF "unable to retrieve .ima keyring id"
-+
-+	if ! tst_is_num	"$keyring_id"; then
-+		tst_brk TCONF "unable to parse keyring id from keyring"
-+	fi
-+
-+	sudo evmctl import $CERT_FILE "$keyring_id" > /dev/null || \
-+		tst_brk TCONF "unable to import a cert into the .ima keyring"
-+
-+	grep -F ".ima" "$ASCII_MEASUREMENTS" | tail -n1 | cut -d' ' -f6 | \
-+		xxd -r -p > $TEST_FILE || \
-+		tst_brk TCONF "cert not found in ascii_runtime_measurements log"
-+
-+	if ! openssl x509 -in $TEST_FILE -inform der > /dev/null; then
-+		tst_brk TCONF "The cert logged in ascii_runtime_measurements \
-+($CERT_FILE) is not a valid x509 certificate"
-+	fi
-+
-+	if cmp -s "$TEST_FILE" $CERT_FILE; then
-+		tst_res TPASS "logged cert matches original cert"
-+	else
-+		tst_res TFAIL "logged cert does not match original cert"
-+	fi
-+}
-+
- tst_run
--- 
-2.25.1
+> 
+> 
+> ----- Original Message -----
+>>>>
+>>>> What I had in mind when I referred to df was something like:
+>>>>  ?? stat("test.img", &statbuf);
+>>>>  ?? SAFE_MKNOD("blkdev", S_IFBLK | S_IRWXU, statbuf.st_dev);
+>>>>  ?? block_devfd = SAFE_OPEN("blkdev", O_RDWR);
+>>>> What do you think?
+>>>>
+>> It works well on ext4 or xfs filesystem(user may mount wanted filesystem
+>> on tmpdir). But if we use btrfs, this
+>> BLKSSZGET will fail because major dev numer is 0. When we meet this
+>> situation, we don't need to call this ioctl and we can directly test
+>> becuase it doesn' t have backing file block device align limit.
+>> What do you thin about it?
+> 
+> This I didn't expect. If it's not reliable then perhaps your method
+> in v1 that incrementally increases it until it works is perhaps most
+> universal approach. Sorry for the detour to get there.
+> 
+After I trace the stat syscall, btrfs uses virtual block dev, so major 
+dev number is 0 since kernel commit[1].
+
+Originally, I want to use that major dev number is 0 to judge whether 
+loop driver has align limit on some fileystems. But it sees that they 
+don't have direct connection between inode->i_sb->s_bdev (loop used)and 
+inode->st_dev(stat used). So using the major dev number to judge whether 
+loop driver code has align limits sounds unreasonable.
+
+To aovid this, I will use v1 method with some improvement.
+
+
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/btrfs/inode.c?id=3394e1607eaf870ebba37d303fbd590a4c569908 
+
+> 
+> 
+
 
