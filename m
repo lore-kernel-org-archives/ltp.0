@@ -1,276 +1,350 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 11 Jun 2020 14:04:20 +0530
-Subject: [LTP] [PATCH V2 2/2] syscalls/clock_gettime: Add test to check bug
- during successive readings
-In-Reply-To: <0f1cc05d6d79238ed94b93417f300e9a026a2063.1591864369.git.viresh.kumar@linaro.org>
-References: <0f1cc05d6d79238ed94b93417f300e9a026a2063.1591864369.git.viresh.kumar@linaro.org>
-Message-ID: <cc75beb4074b62e94b8ac92cba17af41b8f5fbdc.1591864369.git.viresh.kumar@linaro.org>
+Date: Thu, 11 Jun 2020 14:04:19 +0530
+Subject: [LTP] [PATCH V2 1/2] libs: Import vdso parsing lib from kernel tree
+Message-ID: <0f1cc05d6d79238ed94b93417f300e9a026a2063.1591864369.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-An issue was reported recently where a bug was found during successive
-reading of 64 bit time on arm32 platforms. Add a test for that.
-
-https://github.com/richfelker/musl-cross-make/issues/96
+This imports the vdso symbol parsing library from the kernel tree.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
-V2:
-- Test vDSOs as well and overall improved test.
+V2: New patch.
 
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/clock_gettime/.gitignore  |   1 +
- .../kernel/syscalls/clock_gettime/Makefile    |   5 +-
- .../syscalls/clock_gettime/clock_gettime04.c  | 197 ++++++++++++++++++
- 4 files changed, 203 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
+ include/parse_vdso.h         |  16 +++
+ libs/libltpvdso/Makefile     |  11 ++
+ libs/libltpvdso/README       |   1 +
+ libs/libltpvdso/parse_vdso.c | 269 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 297 insertions(+)
+ create mode 100644 include/parse_vdso.h
+ create mode 100644 libs/libltpvdso/Makefile
+ create mode 100644 libs/libltpvdso/README
+ create mode 100644 libs/libltpvdso/parse_vdso.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index f9a6397560fa..d7c3cbed611a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -96,6 +96,7 @@ clock_nanosleep04 clock_nanosleep04
- clock_gettime01 clock_gettime01
- clock_gettime02 clock_gettime02
- clock_gettime03 clock_gettime03
-+clock_gettime04 clock_gettime04
- leapsec01 leapsec01
- 
- clock_settime01 clock_settime01
-diff --git a/testcases/kernel/syscalls/clock_gettime/.gitignore b/testcases/kernel/syscalls/clock_gettime/.gitignore
-index 9d06613b6f41..304eedab68c6 100644
---- a/testcases/kernel/syscalls/clock_gettime/.gitignore
-+++ b/testcases/kernel/syscalls/clock_gettime/.gitignore
-@@ -1,4 +1,5 @@
- clock_gettime01
- clock_gettime02
- clock_gettime03
-+clock_gettime04
- leapsec01
-diff --git a/testcases/kernel/syscalls/clock_gettime/Makefile b/testcases/kernel/syscalls/clock_gettime/Makefile
-index 79f671f1c597..1c1cbd7a8853 100644
---- a/testcases/kernel/syscalls/clock_gettime/Makefile
-+++ b/testcases/kernel/syscalls/clock_gettime/Makefile
-@@ -3,8 +3,11 @@
- 
- top_srcdir		?= ../../../..
- 
-+LTPLIBS = ltpvdso
-+
- include $(top_srcdir)/include/mk/testcases.mk
- 
- LDLIBS+=-lrt
-+clock_gettime04: LDLIBS += -lltpvdso
- 
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-\ No newline at end of file
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
+diff --git a/include/parse_vdso.h b/include/parse_vdso.h
 new file mode 100644
-index 000000000000..a70288ce0cb9
+index 000000000000..d81bb30bb196
 --- /dev/null
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-@@ -0,0 +1,197 @@
++++ b/include/parse_vdso.h
+@@ -0,0 +1,16 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 Linaro Limited. All rights reserved.
-+ * Author: Viresh Kumar<viresh.kumar@linaro.org>
-+ *
-+ * Check time difference between successive readings and report a bug if
-+ * difference found to be over 5 ms.
++ * Author: Viresh Kumar <viresh.kumar@linaro.org>
 + */
 +
-+#include "config.h"
-+#include "parse_vdso.h"
-+#include "tst_timer.h"
-+#include "tst_safe_clocks.h"
++#ifndef PARSE_VDSO_H__
++#define PARSE_VDSO_H__
 +
-+#include <sys/auxv.h>
++#include <stdint.h>
 +
-+clockid_t clks[] = {
-+	CLOCK_REALTIME,
-+	CLOCK_REALTIME_COARSE,
-+	CLOCK_MONOTONIC,
-+	CLOCK_MONOTONIC_COARSE,
-+	CLOCK_MONOTONIC_RAW,
-+	CLOCK_BOOTTIME,
-+};
++extern void vdso_init_from_auxv(void *auxv);
++extern void vdso_init_from_sysinfo_ehdr(uintptr_t base);
++extern void *vdso_sym(const char *version, const char *name);
 +
-+typedef int (*gettime_t)(clockid_t clk_id, void *ts);
-+static gettime_t ptr_vdso_gettime, ptr_vdso_gettime64;
++#endif /* PARSE_VDSO_H__ */
+diff --git a/libs/libltpvdso/Makefile b/libs/libltpvdso/Makefile
+new file mode 100644
+index 000000000000..cf308feaee16
+--- /dev/null
++++ b/libs/libltpvdso/Makefile
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) International Business Machines  Corp., 2001
 +
-+static inline int _vdso_gettime(gettime_t vdso, clockid_t clk_id, void *ts)
-+{
-+	if (!vdso) {
-+		errno = ENOSYS;
-+		return -1;
-+	}
++top_srcdir		?= ../..
 +
-+	return vdso(clk_id, ts);
-+}
++include $(top_srcdir)/include/mk/env_pre.mk
 +
-+static inline int vdso_gettime(clockid_t clk_id, void *ts)
-+{
-+	return _vdso_gettime(ptr_vdso_gettime, clk_id, ts);
-+}
++LIB			:= libltpvdso.a
 +
-+static inline int vdso_gettime64(clockid_t clk_id, void *ts)
-+{
-+	return _vdso_gettime(ptr_vdso_gettime64, clk_id, ts);
-+}
++include $(top_srcdir)/include/mk/lib.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/libs/libltpvdso/README b/libs/libltpvdso/README
+new file mode 100644
+index 000000000000..e208f7ef395e
+--- /dev/null
++++ b/libs/libltpvdso/README
+@@ -0,0 +1 @@
++Copied from kernel tree: tools/testing/selftests/vDSO/parse_vdso.c
+diff --git a/libs/libltpvdso/parse_vdso.c b/libs/libltpvdso/parse_vdso.c
+new file mode 100644
+index 000000000000..1dbb4b87268f
+--- /dev/null
++++ b/libs/libltpvdso/parse_vdso.c
+@@ -0,0 +1,269 @@
++/*
++ * parse_vdso.c: Linux reference vDSO parser
++ * Written by Andrew Lutomirski, 2011-2014.
++ *
++ * This code is meant to be linked in to various programs that run on Linux.
++ * As such, it is available with as few restrictions as possible.  This file
++ * is licensed under the Creative Commons Zero License, version 1.0,
++ * available at http://creativecommons.org/publicdomain/zero/1.0/legalcode
++ *
++ * The vDSO is a regular ELF DSO that the kernel maps into user space when
++ * it starts a program.  It works equally well in statically and dynamically
++ * linked binaries.
++ *
++ * This code is tested on x86.  In principle it should work on any
++ * architecture that has a vDSO.
++ */
 +
-+static void find_vdso_helpers(void)
-+{
-+	/*
-+	 * Some vDSO exports its clock_gettime() implementation with a different
-+	 * name and version from other architectures, so we need to handle it as
-+	 * a special case.
-+	 */
-+#if defined(__powerpc__) || defined(__powerpc64__)
-+	const char *version = "LINUX_2.6.15";
-+	const char *name = "__kernel_clock_gettime";
-+#elif defined(__aarch64__)
-+	const char *version = "LINUX_2.6.39";
-+	const char *name = "__kernel_clock_gettime";
-+#elif defined(__s390__)
-+	const char *version = "LINUX_2.6.29";
-+	const char *name = "__kernel_clock_gettime";
-+#else
-+	const char *version = "LINUX_2.6";
-+	const char *name = "__vdso_clock_gettime";
++#include <stdbool.h>
++#include <stdint.h>
++#include <string.h>
++#include <limits.h>
++#include <elf.h>
++
++/*
++ * To use this vDSO parser, first call one of the vdso_init_* functions.
++ * If you've already parsed auxv, then pass the value of AT_SYSINFO_EHDR
++ * to vdso_init_from_sysinfo_ehdr.  Otherwise pass auxv to vdso_init_from_auxv.
++ * Then call vdso_sym for each symbol you want.  For example, to look up
++ * gettimeofday on x86_64, use:
++ *
++ *     <some pointer> = vdso_sym("LINUX_2.6", "gettimeofday");
++ * or
++ *     <some pointer> = vdso_sym("LINUX_2.6", "__vdso_gettimeofday");
++ *
++ * vdso_sym will return 0 if the symbol doesn't exist or if the init function
++ * failed or was not called.  vdso_sym is a little slow, so its return value
++ * should be cached.
++ *
++ * vdso_sym is threadsafe; the init functions are not.
++ *
++ * These are the prototypes:
++ */
++extern void vdso_init_from_auxv(void *auxv);
++extern void vdso_init_from_sysinfo_ehdr(uintptr_t base);
++extern void *vdso_sym(const char *version, const char *name);
++
++
++/* And here's the code. */
++#ifndef ELF_BITS
++# if ULONG_MAX > 0xffffffffUL
++#  define ELF_BITS 64
++# else
++#  define ELF_BITS 32
++# endif
 +#endif
 +
-+	const char *version64 = "LINUX_2.6";
-+	const char *name64 = "__vdso_clock_gettime64";
++#define ELF_BITS_XFORM2(bits, x) Elf##bits##_##x
++#define ELF_BITS_XFORM(bits, x) ELF_BITS_XFORM2(bits, x)
++#define ELF(x) ELF_BITS_XFORM(ELF_BITS, x)
 +
-+	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
++static struct vdso_info
++{
++	bool valid;
 +
-+	if (!sysinfo_ehdr) {
-+		tst_res(TINFO, "Couldn't find AT_SYSINFO_EHDR");
-+		return;
++	/* Load information */
++	uintptr_t load_addr;
++	uintptr_t load_offset;  /* load_addr - recorded vaddr */
++
++	/* Symbol table */
++	ELF(Sym) *symtab;
++	const char *symstrings;
++	ELF(Word) *bucket, *chain;
++	ELF(Word) nbucket, nchain;
++
++	/* Version table */
++	ELF(Versym) *versym;
++	ELF(Verdef) *verdef;
++} vdso_info;
++
++/* Straight from the ELF specification. */
++static unsigned long elf_hash(const unsigned char *name)
++{
++	unsigned long h = 0, g;
++	while (*name)
++	{
++		h = (h << 4) + *name++;
++		if (g = h & 0xf0000000)
++			h ^= g >> 24;
++		h &= ~g;
 +	}
-+
-+	vdso_init_from_sysinfo_ehdr(sysinfo_ehdr);
-+
-+	ptr_vdso_gettime = vdso_sym(version, name);
-+	if (!ptr_vdso_gettime)
-+		tst_res(TINFO, "Couldn't find vdso_gettime()");
-+
-+	ptr_vdso_gettime64 = vdso_sym(version64, name64);
-+	if (!ptr_vdso_gettime64)
-+		tst_res(TINFO, "Couldn't find vdso_gettime64()");
++	return h;
 +}
 +
-+static inline int my_gettimeofday(clockid_t clk_id, void *ts)
++void vdso_init_from_sysinfo_ehdr(uintptr_t base)
 +{
-+	struct timeval tval;
++	size_t i;
++	bool found_vaddr = false;
 +
-+	if (clk_id != CLOCK_REALTIME)
-+		tst_brk(TBROK, "%s: Invalid clk_id, exiting", tst_clock_name(clk_id));
++	vdso_info.valid = false;
 +
-+	if (gettimeofday(&tval, NULL) < 0)
-+		tst_brk(TBROK | TERRNO, "gettimeofday() failed");
++	vdso_info.load_addr = base;
++
++	ELF(Ehdr) *hdr = (ELF(Ehdr)*)base;
++	if (hdr->e_ident[EI_CLASS] !=
++	    (ELF_BITS == 32 ? ELFCLASS32 : ELFCLASS64)) {
++		return;  /* Wrong ELF class -- check ELF_BITS */
++	}
++
++	ELF(Phdr) *pt = (ELF(Phdr)*)(vdso_info.load_addr + hdr->e_phoff);
++	ELF(Dyn) *dyn = 0;
 +
 +	/*
-+	 * The array defines the type to TST_LIBC_TIMESPEC and so we can cast
-+	 * this into struct timespec.
++	 * We need two things from the segment table: the load offset
++	 * and the dynamic table.
 +	 */
-+	*((struct timespec *)ts) = tst_timespec_from_us(tst_timeval_to_us(tval));
++	for (i = 0; i < hdr->e_phnum; i++)
++	{
++		if (pt[i].p_type == PT_LOAD && !found_vaddr) {
++			found_vaddr = true;
++			vdso_info.load_offset =	base
++				+ (uintptr_t)pt[i].p_offset
++				- (uintptr_t)pt[i].p_vaddr;
++		} else if (pt[i].p_type == PT_DYNAMIC) {
++			dyn = (ELF(Dyn)*)(base + pt[i].p_offset);
++		}
++	}
++
++	if (!found_vaddr || !dyn)
++		return;  /* Failed */
++
++	/*
++	 * Fish out the useful bits of the dynamic table.
++	 */
++	ELF(Word) *hash = 0;
++	vdso_info.symstrings = 0;
++	vdso_info.symtab = 0;
++	vdso_info.versym = 0;
++	vdso_info.verdef = 0;
++	for (i = 0; dyn[i].d_tag != DT_NULL; i++) {
++		switch (dyn[i].d_tag) {
++		case DT_STRTAB:
++			vdso_info.symstrings = (const char *)
++				((uintptr_t)dyn[i].d_un.d_ptr
++				 + vdso_info.load_offset);
++			break;
++		case DT_SYMTAB:
++			vdso_info.symtab = (ELF(Sym) *)
++				((uintptr_t)dyn[i].d_un.d_ptr
++				 + vdso_info.load_offset);
++			break;
++		case DT_HASH:
++			hash = (ELF(Word) *)
++				((uintptr_t)dyn[i].d_un.d_ptr
++				 + vdso_info.load_offset);
++			break;
++		case DT_VERSYM:
++			vdso_info.versym = (ELF(Versym) *)
++				((uintptr_t)dyn[i].d_un.d_ptr
++				 + vdso_info.load_offset);
++			break;
++		case DT_VERDEF:
++			vdso_info.verdef = (ELF(Verdef) *)
++				((uintptr_t)dyn[i].d_un.d_ptr
++				 + vdso_info.load_offset);
++			break;
++		}
++	}
++	if (!vdso_info.symstrings || !vdso_info.symtab || !hash)
++		return;  /* Failed */
++
++	if (!vdso_info.verdef)
++		vdso_info.versym = 0;
++
++	/* Parse the hash table header. */
++	vdso_info.nbucket = hash[0];
++	vdso_info.nchain = hash[1];
++	vdso_info.bucket = &hash[2];
++	vdso_info.chain = &hash[vdso_info.nbucket + 2];
++
++	/* That's all we need. */
++	vdso_info.valid = true;
++}
++
++static bool vdso_match_version(ELF(Versym) ver,
++			       const char *name, ELF(Word) hash)
++{
++	/*
++	 * This is a helper function to check if the version indexed by
++	 * ver matches name (which hashes to hash).
++	 *
++	 * The version definition table is a mess, and I don't know how
++	 * to do this in better than linear time without allocating memory
++	 * to build an index.  I also don't know why the table has
++	 * variable size entries in the first place.
++	 *
++	 * For added fun, I can't find a comprehensible specification of how
++	 * to parse all the weird flags in the table.
++	 *
++	 * So I just parse the whole table every time.
++	 */
++
++	/* First step: find the version definition */
++	ver &= 0x7fff;  /* Apparently bit 15 means "hidden" */
++	ELF(Verdef) *def = vdso_info.verdef;
++	while(true) {
++		if ((def->vd_flags & VER_FLG_BASE) == 0
++		    && (def->vd_ndx & 0x7fff) == ver)
++			break;
++
++		if (def->vd_next == 0)
++			return false;  /* No definition. */
++
++		def = (ELF(Verdef) *)((char *)def + def->vd_next);
++	}
++
++	/* Now figure out whether it matches. */
++	ELF(Verdaux) *aux = (ELF(Verdaux)*)((char *)def + def->vd_aux);
++	return def->vd_hash == hash
++		&& !strcmp(name, vdso_info.symstrings + aux->vda_name);
++}
++
++void *vdso_sym(const char *version, const char *name)
++{
++	unsigned long ver_hash;
++	if (!vdso_info.valid)
++		return 0;
++
++	ver_hash = elf_hash(version);
++	ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
++
++	for (; chain != STN_UNDEF; chain = vdso_info.chain[chain]) {
++		ELF(Sym) *sym = &vdso_info.symtab[chain];
++
++		/* Check for a defined global or weak function w/ right name. */
++		if (ELF64_ST_TYPE(sym->st_info) != STT_FUNC)
++			continue;
++		if (ELF64_ST_BIND(sym->st_info) != STB_GLOBAL &&
++		    ELF64_ST_BIND(sym->st_info) != STB_WEAK)
++			continue;
++		if (sym->st_shndx == SHN_UNDEF)
++			continue;
++		if (strcmp(name, vdso_info.symstrings + sym->st_name))
++			continue;
++
++		/* Check symbol version. */
++		if (vdso_info.versym
++		    && !vdso_match_version(vdso_info.versym[chain],
++					   version, ver_hash))
++			continue;
++
++		return (void *)(vdso_info.load_offset + sym->st_value);
++	}
++
 +	return 0;
 +}
 +
-+static struct test_variants {
-+	int (*gettime)(clockid_t clk_id, void *ts);
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+	{ .gettime = libc_clock_gettime, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+
-+#if (__NR_clock_gettime != __LTP__NR_INVALID_SYSCALL)
-+	{ .gettime = sys_clock_gettime, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-+	{ .gettime = vdso_gettime, .type = TST_KERN_OLD_TIMESPEC, .desc = "vDSO with old kernel spec"},
-+#endif
-+
-+#if (__NR_clock_gettime64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .gettime = sys_clock_gettime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-+	{ .gettime = vdso_gettime64, .type = TST_KERN_TIMESPEC, .desc = "vDSO time64 with kernel spec"},
-+#endif
-+	{ .gettime = my_gettimeofday, .type = TST_LIBC_TIMESPEC, .desc = "gettimeofday"},
-+};
-+
-+static void run(unsigned int i)
++void vdso_init_from_auxv(void *auxv)
 +{
-+	struct tst_ts ts;
-+	long long start, end = 0, diff, slack;
-+	struct test_variants *tv;
-+	int count = 10000, ret;
-+	unsigned int j;
-+
-+	do {
-+		for (j = 0; j < ARRAY_SIZE(variants); j++) {
-+			/* Refresh time in start */
-+			start = end;
-+
-+			tv = &variants[j];
-+			ts.type = tv->type;
-+
-+			/* Do gettimeofday() test only for CLOCK_REALTIME */
-+			if (tv->gettime == my_gettimeofday && clks[i] != CLOCK_REALTIME)
-+				continue;
-+
-+			ret = tv->gettime(clks[i], tst_ts_get(&ts));
-+			if (ret) {
-+				if (errno != ENOSYS) {
-+					tst_res(TFAIL | TERRNO, "%s: clock_gettime() failed (%d)",
-+						tst_clock_name(clks[i]), j);
-+				}
-+				continue;
-+			}
-+
-+			end = tst_ts_to_ns(ts);
-+
-+			/* Skip comparison on first traversal */
-+			if (count == 10000 && !j)
-+				continue;
-+
-+			/*
-+			 * gettimeofday() doesn't capture time less than 1 us,
-+			 * add 999 to it.
-+			 */
-+			if (tv->gettime == my_gettimeofday)
-+				slack = 999;
-+			else
-+				slack = 0;
-+
-+			diff = end + slack - start;
-+			if (diff < 0) {
-+				tst_res(TFAIL, "%s: Time travelled backwards (%d): %lld ns",
-+					tst_clock_name(clks[i]), j, diff);
-+				return;
-+			}
-+
-+			diff /= 1000000;
-+
-+			if (diff >= 5) {
-+				tst_res(TFAIL, "%s: Difference between successive readings greater than 5 ms (%d): %lld",
-+					tst_clock_name(clks[i]), j, diff);
-+				return;
-+			}
++	ELF(auxv_t) *elf_auxv = auxv;
++	for (int i = 0; elf_auxv[i].a_type != AT_NULL; i++)
++	{
++		if (elf_auxv[i].a_type == AT_SYSINFO_EHDR) {
++			vdso_init_from_sysinfo_ehdr(elf_auxv[i].a_un.a_val);
++			return;
 +		}
-+	} while (--count);
++	}
 +
-+	tst_res(TPASS, "%s: Difference between successive readings is reasonable",
-+		tst_clock_name(clks[i]));
++	vdso_info.valid = false;
 +}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.setup = find_vdso_helpers,
-+	.tcnt = ARRAY_SIZE(clks),
-+};
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
