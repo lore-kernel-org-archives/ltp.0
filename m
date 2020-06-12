@@ -1,44 +1,68 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 12 Jun 2020 13:47:38 +0530
-Subject: [LTP] [PATCH V3 2/2] syscalls/clock_gettime: Add test to check
- bug during successive readings
-In-Reply-To: <CAK8P3a3EQ2wbM=XKHaUQCK=_bhSc1pxGKCd9+oEf9y02GFs9_g@mail.gmail.com>
-References: <cc75beb4074b62e94b8ac92cba17af41b8f5fbdc.1591864369.git.viresh.kumar@linaro.org>
- <0fb91044431a04c2787bfa121a7e5f969664fc8b.1591948595.git.viresh.kumar@linaro.org>
- <CAK8P3a3EQ2wbM=XKHaUQCK=_bhSc1pxGKCd9+oEf9y02GFs9_g@mail.gmail.com>
-Message-ID: <20200612081738.humjvvgikhzq6lf7@vireshk-i7>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 12 Jun 2020 16:24:55 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <20200505032803.s6axol3sfyyzl6ag@vireshk-i7>
+References: <20200430085742.1663-1-yangx.jy@cn.fujitsu.com>
+ <20200504050937.oassdcfg4x5zh4nm@vireshk-i7>
+ <e666a91d-1ffd-0f5f-131e-966ff763b14e@163.com>
+ <20200505032803.s6axol3sfyyzl6ag@vireshk-i7>
+Message-ID: <20200612142455.GA2310@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12-06-20, 10:07, Arnd Bergmann wrote:
-> There was one more thing I had originally suggested as an optional
-> thing to test for:
+Hi!
+> > > > +
+> > > > +	pidfd = pidfd_open(getpid(), 0);
+> > > > +	if (pidfd == -1)
+> > > > +		tst_brk(TFAIL | TERRNO, "pidfd_open(getpid(), 0) failed");
+> > > This could have been written as:
+> > >          TEST(pidfd = pidfd_open(getpid(), 0));
+> > 
+> > Why do you want to keep TEST()? I don't think it is necessary:
+> > 
+> > 1) pidfd and TERRNO are enough to check return value and errno.
+> > 
+> > 2) It is OK for testcase to not use TEST().
 > 
-> - ensure that CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
->   is at most clock_getres() nanoseconds behind
->   CLOCK_REALTIME/CLOCK_MONOTONIC, and never ahead of it.
+> As far as I have understood, that is the preferred way of doing it
+> from LTP maintainers.
 > 
-> It's probably too much to put into this test, and I'm not sure we really
-> need to test for it. Are you still looking into this, or do you think we should
-> stop here?
+> Over that it was already there, why remove it now ? Just fix the
+> problems you are trying to fix and that should be good.
 
-Sorry, I missed replying to it. When you suggest something, you
-suggest too much (which is good) and I get lost implementing all of it
-:)
+I do not care that much if the test uses the macro or not, but you should
+really keep changes separate from the removal of the kernel minimal version.
 
-Can you have a look at the attached test? This is already merged in
-LTP and does what you are asking to some level (not exactly though)
-and so I thought we don't need to do it again.
+Also I guess that we can supress the warning by a cast in the SAFE_FCNTL()
+macro so that we can pass long there.
+
+This should do:
+
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index c39d8768b..c153f163c 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -215,14 +215,14 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+        ({int tst_ret_ = ioctl(fd, request, ##__VA_ARGS__);  \
+          tst_ret_ < 0 ?                                     \
+           tst_brk(TBROK | TERRNO,                           \
+-                   "ioctl(%i,%s,...) failed", fd, #request), 0 \
++                   "ioctl(%i,%s,...) failed", (int)fd, #request), 0 \
+         : tst_ret_;})
+ 
+ #define SAFE_FCNTL(fd, cmd, ...)                            \
+        ({int tst_ret_ = fcntl(fd, cmd, ##__VA_ARGS__);     \
+          tst_ret_ == -1 ?                                  \
+           tst_brk(TBROK | TERRNO,                          \
+-                   "fcntl(%i,%s,...) failed", fd, #cmd), 0 \
++                   "fcntl(%i,%s,...) failed", (int)fd, #cmd), 0 \
+         : tst_ret_;})
+
 
 -- 
-viresh
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: clock_gettime03.c
-Type: text/x-csrc
-Size: 3613 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200612/5971a5bc/attachment.c>
+Cyril Hrubis
+chrubis@suse.cz
