@@ -1,52 +1,43 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 15 Jun 2020 15:26:04 +0800
-Subject: [LTP] [PATCH v3] Wrapper for Syzkaller reproducers
-In-Reply-To: <20200610072732.GA32619@dell5510>
-References: <20200609113421.10936-1-rpalethorpe@suse.com>
- <20200609165921.GA28805@dell5510>
- <fa3b9d86-84f7-be61-f06f-c32f3ab60d3a@linuxfoundation.org>
- <CACT4Y+bYdmD7vdNUayT86oiW8yVLUBdFLOZRJ1nTi9AE99KzSg@mail.gmail.com>
- <ce8bd6c0-0abb-e09e-b21f-5e769ffd3ab3@linuxfoundation.org>
- <20200609195851.GA29515@x230>
- <8b3cbf25-83ad-42da-f3ec-e2bafdfff97c@linuxfoundation.org>
- <874krjxuby.fsf@our.domain.is.not.set> <20200610072732.GA32619@dell5510>
-Message-ID: <CAEemH2dKooCXs84Qa=AoAd+QrHLZWo4Ko_hzOvHy6Cm74JVADw@mail.gmail.com>
+Date: Mon, 15 Jun 2020 15:47:31 +0800
+Subject: [LTP] [PATCH v4] Wrapper for Syzkaller reproducers
+In-Reply-To: <20200610072928.1331-1-rpalethorpe@suse.com>
+References: <20200610072928.1331-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2fyJKyKwKzF4W35tM_sjbYQAf-Gx7-Vrhv6r+QdLE8+Bw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jun 10, 2020 at 3:27 PM Petr Vorel <pvorel@suse.cz> wrote:
+On Wed, Jun 10, 2020 at 3:29 PM Richard Palethorpe <rpalethorpe@suse.com>
+wrote:
 
-> Hi Shuah, Richard,
+> Allows one to run the Syzkaller reproducers as part of the LTP.
 >
-> > > If this patch doesn't intend to update syzkaller-repo, there is
-> > > nothing to do for linux-arts. I thought that this patch is for
-> > > Dmitry's syzkaller repo I update from and looking get this into
-> > > linux-arts directly.
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reviewed-by: Pter Vorel <pvorel@suse.com>
 >
-> > > Since this is LTP patch, ignore my comments. Sorry for the noise.
->
-> > > thanks,
-> > > -- Shuah
->
-> > No problem at all, I should have made that more clear.
->
-> > Infact I will send a seperate patch to linux-arts mentioning the LTP
-> > wrapper.
-> Thanks you both for clarifying.
->
-> @Jan, @Cyril, @Yang, @Li: any ack/objection to this patch?
+Reviewed-by: Li Wang <liwang@redhat.com>
+
++
+> +static void setup(void)
+> +{
+> +       tst_taint_init(TST_TAINT_W | TST_TAINT_D | TST_TAINT_L);
 >
 
-I have no objection to merging the syzkaller patch.
-Build and run some of the testcase locally(Fedora32) by manual, it works
-well.
+My only concern is that the limitation is too strict for syzkaller.
+
+Because if one of the tests (near the top of the name rankings)
+trigger a WARNING in SUT kernel, the syzwrap.c will be
+skipping all remaining test cases.
+
+Maybe we can just use 'TST_TAINT_D' here, and I wish to
+hear more opinions from others.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200615/49a22ccd/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200615/25a83f68/attachment.htm>
