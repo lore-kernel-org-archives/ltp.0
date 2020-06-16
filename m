@@ -1,40 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jun 2020 11:53:09 +0200
-Subject: [LTP] [PATCH V2 2/5] include: Add declaration of struct
- ipc64_perm
-In-Reply-To: <20200616064142.pagswwcjvvf32oyl@vireshk-i7>
-References: <5a10d33509ac73c26b233ab72c579f44386d0a55.1590057824.git.viresh.kumar@linaro.org>
- <dc4d34a42d4ca85d4d73b9e87974382368d02296.1590131635.git.viresh.kumar@linaro.org>
- <20200615124324.GB25279@yuki.lan>
- <20200616064142.pagswwcjvvf32oyl@vireshk-i7>
-Message-ID: <20200616095309.GB6239@yuki.lan>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 16 Jun 2020 15:39:38 +0530
+Subject: [LTP] [PATCH V2 3/5] syscalls: semctl: Add new test to verify
+ the _time_high fields
+In-Reply-To: <20200616095204.GA6239@yuki.lan>
+References: <5d502fbc7070644ed83c423713941b457c3a7aff.1590057824.git.viresh.kumar@linaro.org>
+ <7d7363384b5719fa48a5a5ba71b0aa581ebc91bd.1590131635.git.viresh.kumar@linaro.org>
+ <20200615133125.GC25279@yuki.lan>
+ <20200616064047.7njwpmlmxzyoikwo@vireshk-i7>
+ <20200616095204.GA6239@yuki.lan>
+Message-ID: <20200616100938.4iump75rvgrvjnnj@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > + * The ipc64_perm structure for the powerpc is identical to
-> > > + * kern_ipc_perm as we have always had 32-bit UIDs and GIDs in the
-> > > + * kernel.  Note extra padding because this structure is passed back
-> > > + * and forth between kernel and user space.  Pad space is left for:
-> > > + *	- 1 32-bit value to fill up for 8-byte alignment
-> > > + *	- 2 miscellaneous 64-bit values
-> > > + *
-> > > + * This program is free software; you can redistribute it and/or
-> > > + * modify it under the terms of the GNU General Public License
-> > > + * as published by the Free Software Foundation; either version
-> > > + * 2 of the License, or (at your option) any later version.
-> > > + */
-> >             ^
-> > 	    This part.
+On 16-06-20, 11:52, Cyril Hrubis wrote:
+> Ah, right, the rule that rebuilds the libraries does not work correctly
+> for more than one library because I do pass "$^" there which is the list
+> of directories and not a single directory.
 > 
-> I don't see this patch in master yet.
+> As a quick hack this should fix it:
+> 
+> diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+> index 684655fbf..7e0ec13f9 100644
+> --- a/include/mk/testcases.mk
+> +++ b/include/mk/testcases.mk
+> @@ -49,7 +49,9 @@ LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach
+>  MAKE_DEPS += $(LTPLIBS_FILES)
+>  
+>  $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
+> -       $(MAKE) -C "$^" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$^)/Makefile" all
+> +       for dir in $^; do \
+> +               $(MAKE) -C "$$dir" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$$dir)/Makefile" all; \
+> +       done
+>  
+>  LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
+> 
+> 
+> This does not parallelize the build but I guess that it would be fine since
+> when we rebuild LTP from top directory the libraries are build first anyways
+> and this is no-op.
 
-Sorry, haven't done git push at the end of my workday, should be there
-now.
+Tested-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+Please merge it, I am sending my patches again based on this.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+viresh
