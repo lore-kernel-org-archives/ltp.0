@@ -1,37 +1,48 @@
-From: Rong Chen <rong.a.chen@intel.com>
-Date: Tue, 16 Jun 2020 20:24:52 +0800
-Subject: [LTP] [LKP] Re: [x86/entry] 2bbc68f837: ltp.ptrace08.fail
-In-Reply-To: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
-References: <20200616075533.GL5653@shao2-debian>
- <87y2onbdtb.fsf@nanos.tec.linutronix.de>
-Message-ID: <20200616122451.GQ5653@shao2-debian>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 Jun 2020 14:41:13 +0200
+Subject: [LTP] [COMMITTED] [PATCH] testcases.mk: Fix LTPLIBS build rule
+Message-ID: <20200616124113.14808-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 16, 2020 at 10:44:00AM +0200, Thomas Gleixner wrote:
-> kernel test robot <rong.a.chen@intel.com> writes:
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> Is the head of linux.git exposing the same problem or is this an
-> intermittent failure, which only affects bisectability?
-> 
+The current code that attempts to rebuild libraries a test is depending
+on is broken for more than one library since the "$^" is a list of all
+prerequisities.
 
-Hi Thomas,
+This fixes the problem by adding a proper pattern rule.
 
-The problem still exists in v5.8-rc1:
+I've also added the libraries to the .PHONY target so that we attempt to
+rebuild them regardless of the library archive existence since we do not
+know the prerequisities of the library archive in the testcase directory
+we cannot tell if some of the sources has been changed so the safest
+course of action is to attempt the rebuild every time.
 
-9f58fdde95c9509a  2bbc68f8373c0631ebf137f376                    v5.8-rc1  testcase/testparams/testbox
-----------------  --------------------------  --------------------------  ---------------------------
-       fail:runs  %reproduction    fail:runs  %reproduction    fail:runs
-           |             |             |             |             |    
-           :12          92%          11:12         100%          13:13    ltp/1HDD-xfs-syscalls_part4/vm-snb
-           :12          92%          11:12         100%          13:13    TOTAL ltp.ptrace08.fail
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/mk/testcases.mk | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Best Regards,
-Rong Chen
+diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
+index 684655fbf..bb22be82e 100644
+--- a/include/mk/testcases.mk
++++ b/include/mk/testcases.mk
+@@ -48,8 +48,12 @@ LTPLIBS_FILES = $(addsuffix .a, $(addprefix $(abs_top_builddir)/libs/, $(foreach
+ 
+ MAKE_DEPS += $(LTPLIBS_FILES)
+ 
++.PHONY: $(LTPLIBS_FILES)
++
+ $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
+-	$(MAKE) -C "$^" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$^)/Makefile" all
++
++$(LTPLIBS_FILES): %:
++	$(MAKE) -C "$(dir $@)" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$(dir $@))/Makefile" all
+ 
+ LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
+ 
+-- 
+2.26.2
+
