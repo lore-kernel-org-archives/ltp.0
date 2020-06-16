@@ -1,26 +1,24 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 16 Jun 2020 04:08:52 -0400 (EDT)
-Subject: [LTP] 303cc571d1: ltp.setns01.fail
-In-Reply-To: <20200615213843.2ojgm3ob7kp3qq6a@wittgenstein>
-References: <20200615085836.GR12456@shao2-debian>
- <20200615091850.GA3373@yuki.lan>
- <1101600340.15989438.1592229781375.JavaMail.zimbra@redhat.com>
- <20200615213843.2ojgm3ob7kp3qq6a@wittgenstein>
-Message-ID: <348139455.16141709.1592294932212.JavaMail.zimbra@redhat.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 16 Jun 2020 10:44:00 +0200
+Subject: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+In-Reply-To: <20200616075533.GL5653@shao2-debian>
+References: <20200616075533.GL5653@shao2-debian>
+Message-ID: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+kernel test robot <rong.a.chen@intel.com> writes:
+> FYI, we noticed the following commit (built with gcc-9):
+>
+> commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
+Is the head of linux.git exposing the same problem or is this an
+intermittent failure, which only affects bisectability?
 
------ Original Message -----
-> I'll send a pr for this to Linus this week (or next since I'm on
-> vacation this week) and get this fixed. Thanks for spotting this. What's
-> the Reported-by: line format that LTP uses?
+Thanks,
 
-I'm not sure we ever used one, it's usually various CI systems that
-reference LTP. This thread has been started by kernel test robot:
-  Reported-by: kernel test robot <rong.a.chen@intel.com>
-
+        tglx
