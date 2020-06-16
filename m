@@ -1,57 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 16 Jun 2020 12:26:18 +0200
-Subject: [LTP] [PATCH v2 2/2] IMA: Add a test to verify importing a
- certificate into keyring
-In-Reply-To: <20200612143842.3993-3-t-josne@linux.microsoft.com>
-References: <20200612143842.3993-1-t-josne@linux.microsoft.com>
- <20200612143842.3993-3-t-josne@linux.microsoft.com>
-Message-ID: <20200616102618.GA4513@dell5510>
+From: Rong Chen <rong.a.chen@intel.com>
+Date: Tue, 16 Jun 2020 20:24:52 +0800
+Subject: [LTP] [LKP] Re: [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+In-Reply-To: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
+References: <20200616075533.GL5653@shao2-debian>
+ <87y2onbdtb.fsf@nanos.tec.linutronix.de>
+Message-ID: <20200616122451.GQ5653@shao2-debian>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lachlan,
+On Tue, Jun 16, 2020 at 10:44:00AM +0200, Thomas Gleixner wrote:
+> kernel test robot <rong.a.chen@intel.com> writes:
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> Is the head of linux.git exposing the same problem or is this an
+> intermittent failure, which only affects bisectability?
+> 
 
-few details (all can be fixed by me before merge, no need to repost).
+Hi Thomas,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+The problem still exists in v5.8-rc1:
 
-...
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> @@ -5,10 +5,12 @@
+9f58fdde95c9509a  2bbc68f8373c0631ebf137f376                    v5.8-rc1  testcase/testparams/testbox
+----------------  --------------------------  --------------------------  ---------------------------
+       fail:runs  %reproduction    fail:runs  %reproduction    fail:runs
+           |             |             |             |             |    
+           :12          92%          11:12         100%          13:13    ltp/1HDD-xfs-syscalls_part4/vm-snb
+           :12          92%          11:12         100%          13:13    TOTAL ltp.ptrace08.fail
 
->  # Verify that keys are measured correctly based on policy.
-
-> -TST_NEEDS_CMDS="awk cut xxd"
-> -TST_CNT=1
-> +TST_NEEDS_CMDS="awk cut xxd keyctl evmctl openssl cmp"
-TST_NEEDS_CMDS="awk cmp cut evmctl keyctl openssl sed xxd"
-(I ignore tail, if there is cut, sed and openssl it should be there,
-the same rule as for grep).
-
-> +TST_CNT=2
->  TST_NEEDS_DEVICE=1
-
-> +CERT_FILE="${CERT_FILE:-}/etc/keys/x509_ima.der"
-I'm sorry, I was wrong, this must be:
-CERT_FILE="${CERT_FILE:-/etc/keys/x509_ima.der}"
-
-> +
->  . ima_setup.sh
-
->  # Based on https://lkml.org/lkml/2019/12/13/564.
-> @@ -62,4 +64,43 @@ test1()
->  	tst_res TPASS "specified keyrings were measured correctly"
->  }
-
-> +
-> +# Test that a cert can be imported into the ".ima" keyring correctly.
-> +test2() {
-> +	local keyring_id key_id test_file="$PWD/test.txt"
-nit: Can test_file use relative path?
-local test_file="test.txt"
-
-Kind regards,
-Petr
+Best Regards,
+Rong Chen
