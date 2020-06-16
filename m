@@ -1,45 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Jun 2020 16:29:58 +0200
-Subject: [LTP] [PATCH V2 0/6] syscalls: Add tests to verify the
- _time_high fields
-In-Reply-To: <20200616131014.GB2790@yuki.lan>
-References: <cover.1592302358.git.viresh.kumar@linaro.org>
- <20200616131014.GB2790@yuki.lan>
-Message-ID: <20200616142958.GA25688@yuki.lan>
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 16 Jun 2020 16:57:07 +0200
+Subject: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+In-Reply-To: <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
+References: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
+ <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
+Message-ID: <87ftav2h4s.fsf@nanos.tec.linutronix.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Looking at the travis it looks like we do have a problem with missing
-__kernel_ulong_t on older kernel headers:
+Andy Lutomirski <luto@amacapital.net> writes:
+>> On Jun 16, 2020, at 1:44 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> 
+>> ?kernel test robot <rong.a.chen@intel.com> writes:
+>>> FYI, we noticed the following commit (built with gcc-9):
+>>> 
+>>> commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>> 
+>> Is the head of linux.git exposing the same problem or is this an
+>> intermittent failure, which only affects bisectability?
+>
+> It sure looks deterministic:
+>
+> ptrace08.c:62: BROK: Cannot find address of kernel symbol "do_debug"
 
-https://api.travis-ci.org/v3/job/698929344/log.txt
+Hahahaha. But not only LTP, also LKP-tests makes assumptions:
 
-Also looking into kernel headers it looks like it's defined to unsigned
-long unless on x32 which has unsigned long long. It seems that the types
-__kernel_long_t and __kernel_ulong_t firstly appeared in 3.4 along with
-the x32 so I guess that we will need a fallback definition in UAPI as
-well. And given that __kernel_long_t is defined we may need something
-as lapi/posix_types.h with:
+  monitors/irq_exception_noise:[ "$exception" -eq "1" ] && export ftrace_filters='__do_page_fault do_divide_error do_overflow do_bounds do_invalid_op do_device_not_available do_double_fault do_coprocessor_segment_overrun do_invalid_TSS do_segment_not_present do_spurious_interrupt_bug do_coprocessor_error do_alignment_check do_simd_coprocessor_error do_debug do_stack_segment do_general_protection'
 
-#include "linux/posix_types.h"
+stable-api-nonsense.rst comes to my mind.
 
-#ifndef __kernel_long_t
-# if (defined(__x86_64__) && defined(__ILP32__))
-typedef long          __kernel_long_t
-typedef unsigned long __kernel_ulong_t
-# else
-typedef long long          __kernel_long_t
-typedef unsigned long long __kernel_ulong_t
-# endif
-#endif
+Thanks,
 
+        tglx
 
-Is that all or do I miss some 32bit ABI with 64bit syscalls?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
