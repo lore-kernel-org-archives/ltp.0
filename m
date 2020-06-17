@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Jun 2020 14:30:29 +0200
-Subject: [LTP] [PATCH V3 5/6] syscalls: Don't pass struct timespec to
- tst_syscall()
-In-Reply-To: <c47220ecab3c7570f5387cd71894c977009ad3d8.1590572545.git.viresh.kumar@linaro.org>
-References: <c5428a9c88d18fac80e364281cfd4e3aefa38d2c.1590130423.git.viresh.kumar@linaro.org>
- <c47220ecab3c7570f5387cd71894c977009ad3d8.1590572545.git.viresh.kumar@linaro.org>
-Message-ID: <20200617123029.GC8389@yuki.lan>
+Date: Wed, 17 Jun 2020 15:17:42 +0200
+Subject: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+In-Reply-To: <20200616132705.GW2531@hirez.programming.kicks-ass.net>
+References: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
+ <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
+ <20200616132705.GW2531@hirez.programming.kicks-ass.net>
+Message-ID: <20200617131742.GD8389@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,144 +13,51 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> V3:
-> - Run the syscalls at least once to verify they are supported by the
->   hardware.
+> > >> FYI, we noticed the following commit (built with gcc-9):
+> > >> 
+> > >> commit: 2bbc68f8373c0631ebf137f376fbea00e8086be7 ("x86/entry: Convert Debug exception to IDTENTRY_DB")
+> > >> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > > Is the head of linux.git exposing the same problem or is this an
+> > > intermittent failure, which only affects bisectability?
+> > 
+> > It sure looks deterministic:
+> > 
+> > ptrace08.c:62: BROK: Cannot find address of kernel symbol "do_debug"
 > 
->  lib/tst_clocks.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 87 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-> index 2eaa73b11abe..ddf54b903133 100644
-> --- a/lib/tst_clocks.c
-> +++ b/lib/tst_clocks.c
-> @@ -7,23 +7,107 @@
->  
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
-> +#include "tst_timer.h"
->  #include "tst_clocks.h"
->  #include "lapi/syscalls.h"
->  #include "lapi/posix_clocks.h"
->  
-> +typedef int (*mysyscall)(clockid_t clk_id, void *ts);
-> +
-> +int syscall_supported_by_kernel(mysyscall func)
-> +{
-> +	int ret;
-> +
-> +	ret = func(0, NULL);
-> +	if (ret == ENOSYS)
-> +		return 0;
+> ROFL
 
-I guess that we will get -1 here and errno == ENOSYS instead since the
-tst_syscall() calls syscall() that passes the error in errno.
+It's nice to have a good laugh, however I would really appreciate if any
+of you would help me to fix the test.
 
-> +	return 1;
-> +}
-> +
->  int tst_clock_getres(clockid_t clk_id, struct timespec *res)
->  {
-> -	return tst_syscall(__NR_clock_getres, clk_id, res);
-> +	static struct tst_ts tts = { 0, };
-> +	static mysyscall func;
-> +	int ret;
-> +
-> +#if (__NR_clock_getres_time64 != __LTP__NR_INVALID_SYSCALL)
-> +	if (!func && syscall_supported_by_kernel(sys_clock_getres64)) {
-> +		func = sys_clock_getres64;
-> +		tts.type = TST_KERN_TIMESPEC;
-> +	}
-> +#endif
-> +
-> +	if (!func && syscall_supported_by_kernel(sys_clock_getres)) {
-> +		func = sys_clock_getres;
-> +		tts.type = TST_KERN_OLD_TIMESPEC;
-> +	}
-> +
-> +	if (!func) {
-> +		tst_res(TCONF, "clock_getres() not available");
-> +		return ENOSYS;
+The test in question is a regression test for:
 
-Here as well, the callers expects the error in errno, so we have to set
-the errno to ENOSYS and return -1 instead.
+commit f67b15037a7a50c57f72e69a6d59941ad90a0f0f
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon Mar 26 15:39:07 2018 -1000
 
-> +	}
-> +
-> +	ret = func(clk_id, tst_ts_get(&tts));
-> +	res->tv_sec = tst_ts_get_sec(tts);
-> +	res->tv_nsec = tst_ts_get_nsec(tts);
-> +	return ret;
->  }
->  
->  int tst_clock_gettime(clockid_t clk_id, struct timespec *ts)
->  {
-> -	return tst_syscall(__NR_clock_gettime, clk_id, ts);
-> +	struct tst_ts tts = { 0, };
-> +	static mysyscall func;
-> +	int ret;
-> +
-> +#if (__NR_clock_gettime64 != __LTP__NR_INVALID_SYSCALL)
-> +	if (!func && syscall_supported_by_kernel(sys_clock_gettime64)) {
-> +		func = sys_clock_gettime64;
-> +		tts.type = TST_KERN_TIMESPEC;
-> +	}
-> +#endif
-> +
-> +	if (!func && syscall_supported_by_kernel(sys_clock_gettime)) {
-> +		func = sys_clock_gettime;
-> +		tts.type = TST_KERN_OLD_TIMESPEC;
-> +	}
-> +
-> +	if (!func) {
-> +		tst_res(TCONF, "clock_gettime() not available");
-> +		return ENOSYS;
+    perf/hwbp: Simplify the perf-hwbp code, fix documentation
 
-Here as well.
+    Annoyingly, modify_user_hw_breakpoint() unnecessarily complicates the
+    modification of a breakpoint - simplify it and remove the pointless
+    local variables.
 
-> +	}
-> +
-> +	ret = func(clk_id, tst_ts_get(&tts));
-> +	ts->tv_sec = tst_ts_get_sec(tts);
-> +	ts->tv_nsec = tst_ts_get_nsec(tts);
-> +	return ret;
->  }
->
->  int tst_clock_settime(clockid_t clk_id, struct timespec *ts)
->  {
-> -	return tst_syscall(__NR_clock_settime, clk_id, ts);
-> +	struct tst_ts tts = { 0, };
-> +	static mysyscall func;
-> +
-> +#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
-> +	if (!func && syscall_supported_by_kernel(sys_clock_settime64)) {
-> +		func = sys_clock_settime64;
-> +		tts.type = TST_KERN_TIMESPEC;
-> +	}
-> +#endif
-> +
-> +	if (!func && syscall_supported_by_kernel(sys_clock_settime)) {
-> +		func = sys_clock_settime;
-> +		tts.type = TST_KERN_OLD_TIMESPEC;
-> +	}
-> +
-> +	if (!func) {
-> +		tst_res(TCONF, "clock_settime() not available");
-> +		return ENOSYS;
+And as far as I can tell it uses ptrace() with PTRACE_POKEUSER in order to
+trigger it. But I'm kind of lost on how exactly we trigger the kernel
+crash.
 
-And here.
+What is does is to write:
 
-> +	}
-> +
-> +	tst_ts_set_sec(&tts, ts->tv_sec);
-> +	tst_ts_set_nsec(&tts, ts->tv_nsec);
-> +	return func(clk_id, tst_ts_get(&tts));
->  }
+	(void*)1 to u_debugreg[0]
+	(void*)1 to u_debugreg[7]
+	do_debug addr to u_debugreg[0]
 
+Looking at the kernel code the write to register 7 enables the breakpoints and
+what we attempt here is to change an invalid address to a valid one after we
+enabled the breakpoint but that's as far I can go.
 
-Other than that it looks good.
+So does anyone has an idea how to trigger the bug without the do_debug function
+address? Would any valid kernel function address suffice?
 
 -- 
 Cyril Hrubis
