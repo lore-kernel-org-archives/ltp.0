@@ -1,47 +1,68 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Jun 2020 20:43:56 +0200
-Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep
- pattern
-In-Reply-To: <423c55db-a393-d1d9-6de6-28f65f76557a@oracle.com>
-References: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
- <20200608145831.GA2746544@x230>
- <423c55db-a393-d1d9-6de6-28f65f76557a@oracle.com>
-Message-ID: <20200617184356.GA7422@dell5510>
+From: Bruno Meneguele <bmeneg@redhat.com>
+Date: Wed, 17 Jun 2020 16:52:05 -0300
+Subject: [LTP] [LTP v2 1/1] ima_tpm.sh: Fix for calculating boot
+ aggregate
+In-Reply-To: <1592347211.11061.250.camel@linux.ibm.com>
+References: <20200527071434.28574-1-pvorel@suse.cz>
+ <1590601280.16219.1.camel@linux.ibm.com>
+ <20200528140747.GA8401@dell5510>
+ <1590679145.4457.39.camel@linux.ibm.com>
+ <20200528160527.GA27243@dell5510> <20200615194134.GF129694@glitch>
+ <20200615200121.GG129694@glitch>
+ <1592347211.11061.250.camel@linux.ibm.com>
+Message-ID: <20200617195205.GA40831@glitch>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey, Xiao,
+On Tue, Jun 16, 2020 at 06:40:11PM -0400, Mimi Zohar wrote:
+> On Mon, 2020-06-15 at 17:01 -0300, Bruno Meneguele wrote:
+> > On Mon, Jun 15, 2020 at 04:41:34PM -0300, Bruno Meneguele wrote:
+> > > On Thu, May 28, 2020 at 06:05:27PM +0200, Petr Vorel wrote:
+> 
+> > > > > The boot_aggregate.trs and boot_aggregate.log files are being created
+> > > > > in the tests/ directory. ?Is that directory read-only?
+> > > > Yes, drwxr-xr-x. Testing on fresh clone and issue persists.
+> > > > 
+> > > 
+> > > Yes, same thing here.. but didn't really check the reason for that. Will
+> > > take a time later to see what's happening.
+> 
+> Cloning as root will cause that to happen.
+> 
+> $ sudo git clone git://git.code.sf.net/p/linux-ima/ima-evm-utils --branch next-testing
+> Cloning into 'ima-evm-utils'...
+> remote: Enumerating objects: 1154, done.
+> remote: Counting objects: 100% (1154/1154), done.
+> remote: Compressing objects: 100% (1052/1052), done.
+> remote: Total 1154 (delta 736), reused 182 (delta 96)
+> Receiving objects: 100% (1154/1154), 335.12 KiB | 0 bytes/s, done.
+> Resolving deltas: 100% (736/736), done.
+> Checking connectivity... done.
+> 
+> $ ls -lat ima-evm-utils/ | grep tests
+> drwxr-xr-x.  2 root root   220 Jun 16 18:28 tests
+> 
+> Mimi
+> 
 
-> Perhaps this:
+Yes, indeed. But what really happened with both I and Petr was trying to
+run the test copying and pasting what you've sent:
 
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index 59b373e..9c8f163 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -172,8 +172,7 @@ tst_rhost_run()
->         local output=
->         local ret=0
->         if [ -n "${TST_USE_SSH:-}" ]; then
-> -               output=`ssh -n -q $user@$RHOST "sh -c \
-> -                       '$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
-> +               output=$(ssh -n -q $user@$RHOST "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
->         elif [ -n "$TST_USE_NETNS" ]; then
->                 output=`$LTP_NETNS sh -c \
->                         "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
+$ VERBOSE=1 make check TESTS=boog_aggregate.test
 
-Nice! Much simpler than what what I was just going to post (sed replacement).
-Would it work for rsh as well? i.e. can it work without sh -c?
-I have no working rsh setup.
+the typo in "boog" (vs "boot") was the cause. So I think we can ignore
+this issue here :).
 
-And removing it from all 3 variants would be great (keeping them to be the same,
-also it might allow to also use shell functions, which doesn't work with sh -c
-"..."). Why was sh -c "..." used anyway?
-
-BTW I have more tst_net.sh, but I post them after we solve this one (as
-replacing quotes with sed, which is in my prepared patchset is ugly).
-
-Kind regards,
-Petr
+-- 
+bmeneg 
+PGP Key: http://bmeneg.com/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 488 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200617/7aa5aa78/attachment.sig>
