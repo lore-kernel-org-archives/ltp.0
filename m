@@ -1,175 +1,244 @@
-From: Bruno Meneguele <bmeneg@redhat.com>
-Date: Wed, 17 Jun 2020 17:45:00 -0300
-Subject: [LTP] [LTP v2 1/1] ima_tpm.sh: Fix for calculating boot
- aggregate
-In-Reply-To: <20200617012148.hhpvxqov2py7fvvc@cantor>
-References: <20200527071434.28574-1-pvorel@suse.cz>
- <1590601280.16219.1.camel@linux.ibm.com>
- <20200528140747.GA8401@dell5510>
- <1590679145.4457.39.camel@linux.ibm.com>
- <20200528160527.GA27243@dell5510> <20200615194134.GF129694@glitch>
- <1592252491.11061.181.camel@linux.ibm.com>
- <20200617012148.hhpvxqov2py7fvvc@cantor>
-Message-ID: <20200617204500.GB40831@glitch>
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Wed, 17 Jun 2020 19:49:56 -0400
+Subject: [LTP] [PATCH v3 1/2] IMA: Add a test to verify measurment of keys
+In-Reply-To: <20200617234957.10611-1-t-josne@linux.microsoft.com>
+References: <20200617234957.10611-1-t-josne@linux.microsoft.com>
+Message-ID: <20200617234957.10611-2-t-josne@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 16, 2020 at 06:21:48PM -0700, Jerry Snitselaar wrote:
-> On Mon Jun 15 20, Mimi Zohar wrote:
-> > On Mon, 2020-06-15 at 16:41 -0300, Bruno Meneguele wrote:
-> > > On Thu, May 28, 2020 at 06:05:27PM +0200, Petr Vorel wrote:
-> > > > Hi Mimi,
-> > > > ...
-> > > > > > > With just this change, the ima_tpm.sh test is failing. ?I assume it is
-> > > > > > > failing because it is reading the SHA1 TPM bank, not the SHA256 bank
-> > > > > > > to calculate the boot_aggregate hash.
-> > > > > > First question: is it correct to take sha256? Because on my test below it's
-> > > > > > reading sha1, because that's the content of /sys/kernel/security/ima/ascii_runtime_measurements
-> > > >
-> > > > > > I thought just kernel commit: 6f1a1d103b48 ima: ("Switch to ima_hash_algo for
-> > > > > > boot aggregate") from current linux-integrity tree is needed, but I tested it on
-> > > > > > b59fda449cf0 ("ima: Set again build_ima_appraise variable") (i.e. having all
-> > > > > > Robeto's ima patches,  missing just last 2 commits from next-integrity head).
-> > > > > > What is needed to get your setup?
-> > > >
-> > > > > This isn't a configuration problem, but an issue of reading PCRs and
-> > > > > calculating the TPM bank appropriate boot_aggregate. ?If you're
-> > > > > calculating a sha256 boot_aggregate, then the test needs to read and
-> > > > > calculate the boot_aggregate by reading the SHA256 TPM bank.
-> > > > OK, I tested it on TPM 1.2 (no TPM 2.0 available atm).
-> > > > I guess you have TPM 2.0, that's why I didn't spot this issue.
-> > > >
-> > > > To sum that: my patch is required for any system without physical TPM with with
-> > > > kernel with b59fda449cf0 + it also works for TPM 1.2 (regardless kernel
-> > > > version), because TPM 1.2 supports sha1 only boot aggregate.
-> > > >
-> > > > But testing on kernel with b59fda449cf0 with TPM 2.0 is not only broken with
-> > > > this patch, but also on current version in master, right? As you have
-> > > > sha256:3fd5dc717f886ff7182526efc5edc3abb179a5aac1ab589c8ec888398233ae5 anyway.
-> > > > So this patch would help at least testing on VM without vTPM.
-> > > >
-> > > 
-> > > If we consider to delay this change until we have the ima-evm-utils
-> > > released with the ima_boot_aggregate + make this test dependent on
-> > > both ima-evm-utils and tsspcrread, would it be worth to SKIP the test in
-> > > case a TPM2.0 sha256 bank is detected instead of FAIL? Thus we could
-> > > have the test fixed for TPM1.2 && no-TPM cases until we get the full
-> > > support for multiple banks?
-> > 
-> > As long as we're dealing with the "boot_aggregate", Maurizio just
-> > posted a kernel patch for including PCR 8 & 9 in the boot_aggregate.
-> > ?The existing IMA LTP "boot_aggregate" test is going to need to
-> > support this change.
-> > 
-> > I'd appreciate if someone could send me a TPM event log, the PCRs, and
-> > the associated IMA ascii_runtime_measurements "boot_aggregate" from a
-> > system with a discrete TPM 2.0 with PCRs 8 & 9 events.
-> > 
+Add a testcase that verifies that the IMA subsystem has correctly
+measured keys added to keyrings specified in the IMA policy file.
 
-Maybe Maurizio already have it at hand?
-I can try to setup a system with grub2+tpm to get the log with pcr 8 and
-9 filled.
+Additionally, add support for handling a new IMA template descriptor,
+namely ima-buf[1], in the IMA measurement tests.
 
-> > > 
-> > > > ...
-> > > > > > > The ima-evm-utils next-testing branch has code to calculate the
-> > > > > > > boot_aggregate based on multiple banks.
-> > > > > > I see, 696bf0b ("ima-evm-utils: calculate the digests for multiple TPM banks")
-> > > > > > I wonder whether it's reasonable trying to port that to ima_boot_aggregate.c or
-> > > > > > just depend on evmctl. External dependencies are sometimes complicated, but for
-> > > > > > IMA I incline to just require evmctl.
-> > > >
-> > > > > Unlike TPM 1.2, the TPM 2.0 device driver doesn't export the TPM PCRs.
-> > > > > ?Not only would you have a dependency on ima-evm-utils, but also on a
-> > > > > userspace application(s) for reading the TPM PCRs. ?That dependency
-> > > > > exists whether you're using evmctl to calculate the boot_aggregate or
-> > > > > doing it yourself.
-> > > > Hm, things get complicated.
-> > > > Yep I remember your patch to skip verifying TPM 2.0 PCR values
-> > > > https://patchwork.ozlabs.org/project/ltp/patch/1558041162.3971.2.camel@linux.ibm.com/
-> > > > At least thanks to Jerry Snitselaar since v5.6 we have
-> > > > /sys/class/tpm/tpm*/tpm_version_major. We could check this (+ try also
-> > > > /sys/class/tpm/tpm0/device/description for older kernels).
-> > > >
-> > > > BTW on my system there is also /sys/class/tpm/tpm0/ppi/version, which has 1.2,
-> > > > not sure if it indicate TPM 1.2, but I wouldn't rely on that.
-> > > >
+[1]: https://www.kernel.org/doc/html/latest/security/IMA-templates.html#use
 
-Missed this last paragraph.. but /sys/class/tpm/tpm0/ppi/version has
-relation to the Physical Presence Interface version, which is the
-communication interface between firmware and OS afaik, and doesn't
-points to the TPM version: TPM2.0 may have PPI version 1.2 or 1.3.
+Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
+---
+ runtest/ima                                   |  1 +
+ .../integrity/ima/datafiles/keycheck.policy   |  1 +
+ .../security/integrity/ima/tests/ima_keys.sh  | 67 +++++++++++++++++++
+ .../integrity/ima/tests/ima_measurements.sh   | 36 +---------
+ .../integrity/ima/tests/ima_policy.sh         |  1 -
+ .../security/integrity/ima/tests/ima_setup.sh | 35 ++++++++++
+ 6 files changed, 105 insertions(+), 36 deletions(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_keys.sh
 
-> > > 
-> > > IIUC 'tpm_version_major' should be the only safe reference of the actual
-> > > TCG spec version being implemented by the hw TPM, in a sysfs standard
-> > > output.
-> > 
-> > That was only upstreamed in linux-v5.6. ?Has it been backported?
-> > 
-
-Hmm, well pointed. 
-
-> 
-> Not that I know of. Since it isn't using chip->ops and only
-> looks at chip->flags it could probably be backported, but I'd
-> have to take a look at it.
-> 
-> > The PCRs are not exported for TPM 2.0, unfortunately, making
-> > regression tests dependent on a userspace app. ?The existing LTP
-> > ima_tpm.sh test looks for the PCRs in either
-> > /sys/class/tpm/tpm0/device/pcrs or /sys/class/misc/tpm0/device/pcrs.
-> > ?Perhaps piggyback on the pseudo PCR file to test for TPM 1.2.
-> > 
-> > > 
-> > > > ...
-> > > > > > > There's also a new test to verify the boot_aggregate.
-> > > >
-> > > > > > > $ VERBOSE=1 make check TESTS=boog_aggregate.test
-> > > > > > BTW I got some errors
-> > > > > > ...
-> > > > > > make  check-TESTS
-> > > > > > make[2]: Entering directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make[3]: Entering directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make[4]: Entering directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make[4]: Nothing to be done for 'boog_aggregate.log'.
-> > > > > > make[4]: Leaving directory '/home/foo/ima-evm-utils/tests'
-> > > > > > fatal: making test-suite.log: failed to create boog_aggregate.trs
-> > > > > > fatal: making test-suite.log: failed to create boog_aggregate.log
-> > > > > > make[3]: *** [Makefile:516: test-suite.log] Error 1
-> > > > > > make[3]: Leaving directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make[2]: *** [Makefile:625: check-TESTS] Error 2
-> > > > > > make[2]: Leaving directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make[1]: *** [Makefile:692: check-am] Error 2
-> > > > > > make[1]: Leaving directory '/home/foo/ima-evm-utils/tests'
-> > > > > > make: *** [Makefile:514: check-recursive] Error 1
-> > > >
-> > > > > [Cc'ing Vitaly]
-> > > >
-> > > > > The boot_aggregate.trs and boot_aggregate.log files are being created
-> > > > > in the tests/ directory. ?Is that directory read-only?
-> > > > Yes, drwxr-xr-x. Testing on fresh clone and issue persists.
-> > > >
-> > > 
-> > > Yes, same thing here.. but didn't really check the reason for that. Will
-> > > take a time later to see what's happening.
-> > 
-> > Thanks, much appreciated. ?I'm not seeing that here.
-> > 
-> > Mimi
-> > 
-> 
-
+diff --git a/runtest/ima b/runtest/ima
+index f3ea88cf0..309d47420 100644
+--- a/runtest/ima
++++ b/runtest/ima
+@@ -3,4 +3,5 @@ ima_measurements ima_measurements.sh
+ ima_policy ima_policy.sh
+ ima_tpm ima_tpm.sh
+ ima_violations ima_violations.sh
++ima_keys ima_keys.sh
+ evm_overlay evm_overlay.sh
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/keycheck.policy b/testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
+new file mode 100644
+index 000000000..3f1934a3d
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
+@@ -0,0 +1 @@
++measure func=KEY_CHECK keyrings=.ima|.evm|.builtin_trusted_keys|.blacklist template=ima-buf
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+new file mode 100755
+index 000000000..2b5324dbf
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -0,0 +1,67 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2020 Microsoft Corporation
++# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
++#
++# Verify that keys are measured correctly based on policy.
++
++TST_NEEDS_CMDS="grep mktemp cut sed tr"
++TST_CNT=1
++TST_NEEDS_DEVICE=1
++
++. ima_setup.sh
++
++# Based on https://lkml.org/lkml/2019/12/13/564.
++# (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
++test1()
++{
++	local keyrings keycheck_line templates test_file=$(mktemp)
++
++	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
++
++	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
++
++	[ -r $IMA_POLICY ] || tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
++
++	keycheck_line=$(grep "func=KEY_CHECK" $IMA_POLICY)
++	if [ -z "$keycheck_line" ]; then
++		tst_brk TCONF "ima policy does not specify \"func=KEY_CHECK\""
++	fi
++
++	if echo "$keycheck_line" | grep -q "*keyrings*"; then
++		tst_brk TCONF "ima policy does not specify a keyrings to check"
++	fi
++
++	keyrings=$(echo "$keycheck_line" | tr " " "\n" | grep "keyrings" | \
++		sed "s/\./\\\./g" | cut -d'=' -f2)
++	if [ -z "$keyrings" ]; then
++		tst_brk TCONF "ima policy has a keyring key-value specifier, but no specified keyrings"
++	fi
++
++	templates=$(echo "$keycheck_line" | tr " " "\n" | grep "template" | \
++		cut -d'=' -f2)
++
++	grep -E "($templates)*($keyrings)" $ASCII_MEASUREMENTS | while read line
++	do
++		local digest expected_digest algorithm
++
++		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
++		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
++		keyring=$(echo "$line" | cut -d' ' -f5)
++
++		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
++
++		expected_digest="$(compute_digest $algorithm $test_file)" || \
++			tst_brk TCONF "cannot compute digest for $algorithm"
++
++		if [ "$digest" != "$expected_digest" ]; then
++			tst_res TFAIL "incorrect digest was found for the ($keyring) keyring"
++		fi
++	done
++
++	rm $test_file
++
++	tst_res TPASS "specified keyrings were measured correctly"
++}
++
++tst_run
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+index 54237d688..04d8e6353 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -28,7 +28,7 @@ setup()
+ 	# parse digest index
+ 	# https://www.kernel.org/doc/html/latest/security/IMA-templates.html#use
+ 	case "$template" in
+-	ima|ima-ng|ima-sig) DIGEST_INDEX=4 ;;
++	ima|ima-ng|ima-sig|ima-buf) DIGEST_INDEX=4 ;;
+ 	*)
+ 		# using ima_template_fmt kernel parameter
+ 		local IFS="|"
+@@ -46,40 +46,6 @@ setup()
+ 		"Cannot find digest index (template: '$template')"
+ }
+ 
+-# TODO: find support for rmd128 rmd256 rmd320 wp256 wp384 tgr128 tgr160
+-compute_digest()
+-{
+-	local algorithm="$1"
+-	local file="$2"
+-	local digest
+-
+-	digest="$(${algorithm}sum $file 2>/dev/null | cut -f1 -d ' ')"
+-	if [ -n "$digest" ]; then
+-		echo "$digest"
+-		return 0
+-	fi
+-
+-	digest="$(openssl $algorithm $file 2>/dev/null | cut -f2 -d ' ')"
+-	if [ -n "$digest" ]; then
+-		echo "$digest"
+-		return 0
+-	fi
+-
+-	# uncommon ciphers
+-	local arg="$algorithm"
+-	case "$algorithm" in
+-	tgr192) arg="tiger" ;;
+-	wp512) arg="whirlpool" ;;
+-	esac
+-
+-	digest="$(rdigest --$arg $file 2>/dev/null | cut -f1 -d ' ')"
+-	if [ -n "$digest" ]; then
+-		echo "$digest"
+-		return 0
+-	fi
+-	return 1
+-}
+-
+ ima_check()
+ {
+ 	local delimiter=':'
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+index 6286277b4..244cf081d 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+@@ -23,7 +23,6 @@ check_policy_writable()
+ 
+ setup()
+ {
+-	IMA_POLICY="$IMA_DIR/policy"
+ 	check_policy_writable
+ 
+ 	VALID_POLICY="$TST_DATAROOT/measure.policy"
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 58a12eda3..8ae477c1c 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -20,6 +20,40 @@ SYSFS="/sys"
+ UMOUNT=
+ TST_FS_TYPE="ext3"
+ 
++# TODO: find support for rmd128 rmd256 rmd320 wp256 wp384 tgr128 tgr160
++compute_digest()
++{
++	local algorithm="$1"
++	local file="$2"
++	local digest
++
++	digest="$(${algorithm}sum $file 2>/dev/null | cut -f1 -d ' ')"
++	if [ -n "$digest" ]; then
++		echo "$digest"
++		return 0
++	fi
++
++	digest="$(openssl $algorithm $file 2>/dev/null | cut -f2 -d ' ')"
++	if [ -n "$digest" ]; then
++		echo "$digest"
++		return 0
++	fi
++
++	# uncommon ciphers
++	local arg="$algorithm"
++	case "$algorithm" in
++	tgr192) arg="tiger" ;;
++	wp512) arg="whirlpool" ;;
++	esac
++
++	digest="$(rdigest --$arg $file 2>/dev/null | cut -f1 -d ' ')"
++	if [ -n "$digest" ]; then
++		echo "$digest"
++		return 0
++	fi
++	return 1
++}
++
+ check_ima_policy()
+ {
+ 	local policy="$1"
+@@ -85,6 +119,7 @@ ima_setup()
+ 	[ -d "$IMA_DIR" ] || tst_brk TCONF "IMA not enabled in kernel"
+ 	ASCII_MEASUREMENTS="$IMA_DIR/ascii_runtime_measurements"
+ 	BINARY_MEASUREMENTS="$IMA_DIR/binary_runtime_measurements"
++	IMA_POLICY="$IMA_DIR/policy"
+ 
+ 	print_ima_config
+ 
 -- 
-bmeneg 
-PGP Key: http://bmeneg.com/pubkey.txt
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 488 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200617/4dfc485e/attachment-0001.sig>
+2.25.1
+
