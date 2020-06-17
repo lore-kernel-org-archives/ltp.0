@@ -1,48 +1,59 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 17 Jun 2020 10:19:52 +0530
-Subject: [LTP] [PATCH V2 0/6] syscalls: Add tests to verify the
- _time_high fields
-In-Reply-To: <20200616142958.GA25688@yuki.lan>
-References: <cover.1592302358.git.viresh.kumar@linaro.org>
- <20200616131014.GB2790@yuki.lan> <20200616142958.GA25688@yuki.lan>
-Message-ID: <20200617044952.afa4mawg236ut5u2@vireshk-i7>
+Date: Wed, 17 Jun 2020 10:21:48 +0530
+Subject: [LTP] [RFC PATCH] lapi: Add posix_types.h
+In-Reply-To: <20200616190918.24761-1-pvorel@suse.cz>
+References: <20200616190918.24761-1-pvorel@suse.cz>
+Message-ID: <20200617045148.vegbo3ufpjeqlrgz@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 16-06-20, 16:29, Cyril Hrubis wrote:
-> Hi!
-> Looking at the travis it looks like we do have a problem with missing
-> __kernel_ulong_t on older kernel headers:
+On 16-06-20, 21:09, Petr Vorel wrote:
+> To fix undefined __kernel_ulong_t, which was defined in v3.4-rc1
+> in afead38d011a ("posix_types: Introduce __kernel_[u]long_t").
 > 
-> https://api.travis-ci.org/v3/job/698929344/log.txt
+> This fixed build error:
 > 
-> Also looking into kernel headers it looks like it's defined to unsigned
-> long unless on x32 which has unsigned long long. It seems that the types
-> __kernel_long_t and __kernel_ulong_t firstly appeared in 3.4 along with
-> the x32 so I guess that we will need a fallback definition in UAPI as
-> well. And given that __kernel_long_t is defined we may need something
-> as lapi/posix_types.h with:
+> In file included from /usr/src/ltp/include/lapi/msgbuf.h:13,
+>                  from /usr/src/ltp/testcases/kernel/syscalls/ipc/msgctl/msgctl05.c:9:
+> /usr/src/ltp/include/lapi/ipcbuf.h: At top level:
+> /usr/src/ltp/include/lapi/ipcbuf.h:187: error: expected specifier-qualifier-list before '__kernel_ulong_t'
 > 
-> #include "linux/posix_types.h"
+> Fixes: 3e1fc0644 ("include: Add declaration of struct ipc64_perm")
 > 
-> #ifndef __kernel_long_t
-> # if (defined(__x86_64__) && defined(__ILP32__))
-> typedef long          __kernel_long_t
-> typedef unsigned long __kernel_ulong_t
-> # else
-> typedef long long          __kernel_long_t
-> typedef unsigned long long __kernel_ulong_t
-> # endif
-> #endif
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
 > 
+> or is it a time to drop that support?
+> If I remember we were talking about 3.0, this is 3.4.
 > 
-> Is that all or do I miss some 32bit ABI with 64bit syscalls?
+> Is this correct?
+> +#ifndef __kernel_long_t
+> +# if defined(__x86_64__) && defined(__ILP32__)
+> +typedef long long		__kernel_long_t;
+> +typedef unsigned long long	__kernel_ulong_t;
+> +# else
+> +typedef long			__kernel_long_t;
+> +typedef unsigned long		__kernel_ulong_t;
+> +# endif
+> +#endif
+> 
+> Kind regards,
+> Petr
+> 
+>  include/lapi/ipcbuf.h      |  2 +-
+>  include/lapi/msgbuf.h      |  2 +-
+>  include/lapi/posix_types.h | 21 +++++++++++++++++++++
+>  include/lapi/sembuf.h      |  2 +-
+>  include/lapi/shmbuf.h      |  2 +-
+>  include/tst_timer.h        |  7 +------
+>  6 files changed, 26 insertions(+), 10 deletions(-)
+>  create mode 100644 include/lapi/posix_types.h
 
-That should do I believe. Part of this is already present in
-tst_timer.h btw.
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
 viresh
