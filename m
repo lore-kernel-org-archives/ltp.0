@@ -1,57 +1,32 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 18 Jun 2020 15:38:30 +0300
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 Jun 2020 15:23:00 +0200
 Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep
  pattern
-In-Reply-To: <20200617184356.GA7422@dell5510>
+In-Reply-To: <3e8b407b-fd12-c637-e199-3651fd280bbc@oracle.com>
 References: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
  <20200608145831.GA2746544@x230>
  <423c55db-a393-d1d9-6de6-28f65f76557a@oracle.com>
  <20200617184356.GA7422@dell5510>
-Message-ID: <3e8b407b-fd12-c637-e199-3651fd280bbc@oracle.com>
+ <3e8b407b-fd12-c637-e199-3651fd280bbc@oracle.com>
+Message-ID: <20200618132300.GA7101@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 17.06.2020 21:43, Petr Vorel wrote:
-> Hi Alexey, Xiao,
-> 
->> Perhaps this:
-> 
->> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
->> index 59b373e..9c8f163 100644
->> --- a/testcases/lib/tst_net.sh
->> +++ b/testcases/lib/tst_net.sh
->> @@ -172,8 +172,7 @@ tst_rhost_run()
->>         local output=
->>         local ret=0
->>         if [ -n "${TST_USE_SSH:-}" ]; then
->> -               output=`ssh -n -q $user@$RHOST "sh -c \
->> -                       '$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
->> +               output=$(ssh -n -q $user@$RHOST "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
->>         elif [ -n "$TST_USE_NETNS" ]; then
->>                 output=`$LTP_NETNS sh -c \
->>                         "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
-> 
-> Nice! Much simpler than what what I was just going to post (sed replacement).
-> Would it work for rsh as well? i.e. can it work without sh -c?
-> I have no working rsh setup.
-> 
-> And removing it from all 3 variants would be great (keeping them to be the same,
-> also it might allow to also use shell functions, which doesn't work with sh -c
-> "..."). Why was sh -c "..." used anyway?
+Hi Alexey,
 
-Hi Petr,
+> > And removing it from all 3 variants would be great (keeping them to be the same,
+> > also it might allow to also use shell functions, which doesn't work with sh -c
+> > "..."). Why was sh -c "..." used anyway?
 
-Don't remember, so if all work without it I would remove it. For rsh,
-I doubt that's is used now days, let's remove it too? The replacement (ssh)
-in the tst_rhost_run() has been for a long time already.
+> Hi Petr,
 
-> BTW I have more tst_net.sh, but I post them after we solve this one (as
-> replacing quotes with sed, which is in my prepared patchset is ugly).
-> 
-> Kind regards,
-> Petr
-> 
+> Don't remember, so if all work without it I would remove it. For rsh,
+> I doubt that's is used now days, let's remove it too? The replacement (ssh)
+> in the tst_rhost_run() has been for a long time already.
++1 agree, go ahead :).
 
+Kind regards,
+Petr
