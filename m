@@ -1,23 +1,61 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Jun 2020 10:51:40 +0200
-Subject: [LTP] [PATCH v2] syscalls/setns: convert to new API
-In-Reply-To: <fbfc0935275f40efd2ac70685724e31806ed156e.1592465232.git.jstancek@redhat.com>
-References: <20200617151135.GA7370@yuki.lan>
- <fbfc0935275f40efd2ac70685724e31806ed156e.1592465232.git.jstancek@redhat.com>
-Message-ID: <20200618085140.GA9355@dell5510>
+From: zhe.he@windriver.com <zhe.he@windriver.com>
+Date: Thu, 18 Jun 2020 17:18:27 +0800
+Subject: [LTP] [PATCH] syscalls/copy_file_range02: Expect EFBIG in subcase
+ max length on 32-bit architectures
+Message-ID: <20200618091827.4143850-1-zhe.he@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+From: He Zhe <zhe.he@windriver.com>
 
-> Both tests are converted in single commit since they share setns.h.
-> Some small warnings are also fixed.
+For syscall
+ssize_t copy_file_range(int fd_in, loff_t *off_in,
+                               int fd_out, loff_t *off_out,
+                               size_t len, unsigned int flags);
+off_out is loff_t* that is long long, 64 bits on 32-bit architectures,
+while len is size_t that unsigned int, 32 bits on 32-bit architectures.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Thanks!
+In subcase "max length", simplified as below,
 
-Kind regards,
-Petr
+dst = tst_max_lfs_filesize();
+TEST(sys_copy_file_range(fd_src, 0, *tc->copy_to_fd, &dst, tc->len, tc->flags));
+
+where dst is 4K*4G and len is 4G, so (4K+1)*4G is always smaller than 4G*4G,
+it can never match the following kernel condition on 32-bit architectures.
+
+if (pos_in + count < pos_in || pos_out + count < pos_out)
+	return -EOVERFLOW;
+
+And thus we would get error like
+copy_file_range02.c:139: FAIL: copy_file_range failed unexpectedly; expected EOVERFLOW, but got: EFBIG (27)
+
+Also correct a typo.
+
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+---
+ .../kernel/syscalls/copy_file_range/copy_file_range02.c     | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+index fa679c4d3..bc27fbe57 100644
+--- a/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
++++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range02.c
+@@ -78,7 +78,11 @@ static struct tcase {
+ 	{&fd_chrdev,	0,	EINVAL,		CONTSIZE,	"char device",	0},
+ 	{&fd_fifo,	0,	EINVAL,		CONTSIZE,	"fifo", 	0},
+ 	{&fd_pipe[0],	0,	EINVAL,		CONTSIZE,	"pipe", 	0},
+-	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length lenght", 	1},
++#ifdef TST_ABI64
++	{&fd_copy,	0,	EOVERFLOW,	ULLONG_MAX,	"max length", 	1},
++#else
++	{&fd_copy,	0,	EFBIG,		ULLONG_MAX,	"max length", 	1},
++#endif
+ 	{&fd_copy,	0,	EFBIG,		MIN_OFF,	"max file size", 	1},
+ };
+ 
+-- 
+2.17.1
+
