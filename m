@@ -1,122 +1,72 @@
-From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Wed, 17 Jun 2020 19:49:57 -0400
-Subject: [LTP] [PATCH v3 2/2] IMA: Add a test to verify importing a
- certificate into keyring
-In-Reply-To: <20200617234957.10611-1-t-josne@linux.microsoft.com>
-References: <20200617234957.10611-1-t-josne@linux.microsoft.com>
-Message-ID: <20200617234957.10611-3-t-josne@linux.microsoft.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 18 Jun 2020 11:15:41 +0800
+Subject: [LTP] [PATCH] network/nsf_lib.sh: TCONF on mount (udp/udp6)
+ failure for Linux v5.6+
+In-Reply-To: <20200617154926.32588-1-alexey.kodanev@oracle.com>
+References: <20200617154926.32588-1-alexey.kodanev@oracle.com>
+Message-ID: <CAEemH2dOxAnaaMXhKyj36FqmYDQ_p_kfi-=pMQhrE3O9oQO8LA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add an IMA measurement test that verifies that an x509 certificate
-can be imported into the .ima keyring and measured correctly.
+Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
 
-Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
----
- .../kernel/security/integrity/ima/README.md   | 21 +++++++++
- .../security/integrity/ima/tests/ima_keys.sh  | 47 ++++++++++++++++++-
- 2 files changed, 66 insertions(+), 2 deletions(-)
+...
 
-diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-index 16a1f48c3..e41f7b570 100644
---- a/testcases/kernel/security/integrity/ima/README.md
-+++ b/testcases/kernel/security/integrity/ima/README.md
-@@ -16,6 +16,27 @@ CONFIG_INTEGRITY=y
- CONFIG_IMA=y
- ```
- 
-+IMA Key Import test
-+-------------
-+
-+`ima_keys.sh` requires an x509 key to be generated and placed
-+at `/etc/keys/x509_ima.der`.
-+
-+The x509 public key key must be signed by the private key you generate.
-+Follow these instructions:
-+https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys.
-+
-+The test cannot be set-up automatically because the kernel must be built
-+with one of the keys you generate.
-+
-+As well as what's required for the IMA tests, the following are also required
-+in the kernel configuration:
-+```
-+CONFIG_IMA_READ_POLICY=y
-+CONFIG_SYSTEM_TRUSTED_KEYRING=y
-+CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
-+```
-+
- EVM tests
- ---------
- 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 2b5324dbf..1d9824aba 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -5,10 +5,12 @@
- #
- # Verify that keys are measured correctly based on policy.
- 
--TST_NEEDS_CMDS="grep mktemp cut sed tr"
--TST_CNT=1
-+TST_NEEDS_CMDS="grep mktemp cut sed tr xxd keyctl evmctl openssl cmp"
-+TST_CNT=2
- TST_NEEDS_DEVICE=1
- 
-+CERT_FILE="${CERT_FILE:-/etc/keys/x509_ima.der}"
-+
- . ima_setup.sh
- 
- # Based on https://lkml.org/lkml/2019/12/13/564.
-@@ -64,4 +66,45 @@ test1()
- 	tst_res TPASS "specified keyrings were measured correctly"
- }
- 
-+
-+# Test that a cert can be imported into the ".ima" keyring correctly.
-+test2() {
-+	local keyring_id key_id test_file=$(mktemp)
-+
-+	[ -f $CERT_FILE ] || tst_brk TCONF "missing $CERT_FILE"
-+
-+	if ! openssl x509 -in $CERT_FILE -inform der > /dev/null; then
-+		tst_brk TCONF "The suppled cert file ($CERT_FILE) is not a valid x509 certificate"
-+	fi
-+
-+	tst_res TINFO "adding a cert to the .ima keyring ($CERT_FILE)"
-+
-+	keyring_id=$(keyctl show %:.ima | sed -n 2p | \
-+		sed 's/^[[:space:]]*//' | cut -d' ' -f1) || \
-+		tst_btk TCONF "unable to retrieve .ima keyring id"
-+
-+	if ! tst_is_num	"$keyring_id"; then
-+		tst_brk TCONF "unable to parse keyring id from keyring"
-+	fi
-+
-+	evmctl import $CERT_FILE "$keyring_id" > /dev/null || \
-+		tst_brk TCONF "unable to import a cert into the .ima keyring"
-+
-+	grep -F ".ima" "$ASCII_MEASUREMENTS" | tail -n1 | cut -d' ' -f6 | \
-+		xxd -r -p > $test_file || \
-+		tst_brk TCONF "cert not found in ascii_runtime_measurements log"
-+
-+	if ! openssl x509 -in $test_file -inform der > /dev/null; then
-+		tst_brk TCONF "The cert logged in ascii_runtime_measurements is not a valid x509 certificate"
-+	fi
-+
-+	if cmp -s "$test_file" $CERT_FILE; then
-+		tst_res TPASS "logged cert matches original cert"
-+	else
-+		tst_res TFAIL "logged cert does not match original cert"
-+	fi
-+
-+	rm $test_file
-+}
-+
- tst_run
+--- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -87,11 +87,17 @@ nfs_mount()
+>
+>         tst_res TINFO "Mounting NFS: $mnt_cmd"
+>         if [ -n "$LTP_NETNS" ] && [ -z "$LTP_NFS_NETNS_USE_LO" ]; then
+> -               tst_rhost_run -s -c "$mnt_cmd"
+>
+
+Or, maybe we can have a new function naming as 'tst_kconifg_check' to parse
+kernel .config in shell library as well?
+
+i.e
+    tst_kconfig_check "NFS_DISABLE_UDP_SUPPORT=y"
+    if [$? -qe 0 ]; then
+        tst_rhost_run -s -c "$mnt_cmd"
+    else
+        exit with TCONF ...
+
+What do you think?
+
+
+> -               return
+> +               tst_rhost_run -c "$mnt_cmd"
+> +       else
+> +               $mnt_cmd > /dev/null
+>         fi
+>
+> -       ROD $mnt_cmd
+> +       if [ $? -ne 0 ]; then
+> +               if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp
+> -ge 5.6; then
+> +                       tst_brk TCONF "UDP support disabled with the
+> kernel config NFS_DISABLE_UDP_SUPPORT?"
+> +               fi
+> +               tst_brk TBROK "mount command failed"
+> +       fi
+>  }
+>
+>  nfs_setup()
+> --
+> 2.20.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+
 -- 
-2.25.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200618/cc395a81/attachment.htm>
