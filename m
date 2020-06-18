@@ -1,41 +1,162 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Jun 2020 11:36:46 +0200
-Subject: [LTP] [PATCH] network/nsf_lib.sh: TCONF on mount (udp/udp6)
- failure for Linux v5.6+
-In-Reply-To: <20200618055105.GA42990@x230>
-References: <20200617154926.32588-1-alexey.kodanev@oracle.com>
- <CAEemH2dOxAnaaMXhKyj36FqmYDQ_p_kfi-=pMQhrE3O9oQO8LA@mail.gmail.com>
- <20200618055105.GA42990@x230>
-Message-ID: <20200618093646.GA11962@dell5510>
+From: Yang Xu <xuyang_jy_0410@163.com>
+Date: Thu, 18 Jun 2020 17:41:38 +0800
+Subject: [LTP] [PATCH v2 1/2] libs/libltpnewipc: Add libnewmsgctl.c
+Message-ID: <20200618094139.24579-1-xuyang_jy_0410@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Alexey, Cyril,
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Add libnewmsgctl.c into ltp new ipc libs, so the upcoming msgstress cleanup cases
+can use doreader/dowirter functions such as old libmsgctl.c does.
 
-> > > +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> > > @@ -87,11 +87,17 @@ nfs_mount()
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/libnewmsgctl.h           |  22 +++++++
+ libs/libltpnewipc/libnewmsgctl.c | 102 +++++++++++++++++++++++++++++++
+ 2 files changed, 124 insertions(+)
+ create mode 100644 include/libnewmsgctl.h
+ create mode 100644 libs/libltpnewipc/libnewmsgctl.c
 
-> > >         tst_res TINFO "Mounting NFS: $mnt_cmd"
-> > >         if [ -n "$LTP_NETNS" ] && [ -z "$LTP_NFS_NETNS_USE_LO" ]; then
-> > > -               tst_rhost_run -s -c "$mnt_cmd"
+diff --git a/include/libnewmsgctl.h b/include/libnewmsgctl.h
+new file mode 100644
+index 000000000..e48a04277
+--- /dev/null
++++ b/include/libnewmsgctl.h
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ */
++
++#ifndef __LIBNEWMSGCTL_H__
++#define __LIBNEWMSGCTL_H__
++
++struct mbuffer {
++	long type;
++	struct {
++		char len;
++		char pbytes[99];
++	} data;
++};
++
++void doreader(long key, int tid, long type, int child, int nreps);
++void dowriter(long key, int tid, long type, int child, int nreps);
++void fill_buffer(char *buf, char val, int size);
++int verify(char *buf, char val, int size, int child);
++
++#endif /*__LIBNEWMSGCTL_H__ */
+diff --git a/libs/libltpnewipc/libnewmsgctl.c b/libs/libltpnewipc/libnewmsgctl.c
+new file mode 100644
+index 000000000..1f6eed74a
+--- /dev/null
++++ b/libs/libltpnewipc/libnewmsgctl.c
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ */
++
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewmsgctl.h"
++
++void doreader(long key, int tid, long type, int child, int nreps)
++{
++	int i, size;
++	int id;
++	struct mbuffer buffer;
++
++	id = SAFE_MSGGET(key, 0);
++	if (id != tid) {
++		tst_res(TFAIL,
++			"Message queue mismatch in the reader of child group %d for message queue id %d\n",
++			child, id);
++		return;
++	}
++	for (i = 0; i < nreps; i++) {
++		memset(&buffer, 0, sizeof(buffer));
++
++		size = SAFE_MSGRCV(id, &buffer, 100, type, 0);
++		if (buffer.type != type) {
++			tst_res(TFAIL, "Type mismatch in child %d, read #%d, for message got %ld, exected %ld",
++				child, (i + 1), buffer.type, type);
++			return;
++		}
++		if (buffer.data.len + 1 != size) {
++			tst_res(TFAIL, "Size mismatch in child %d, read #%d, for message got %d, expected %d",
++				child, (i + 1), buffer.data.len + 1, size);
++			return;
++		}
++		if (verify(buffer.data.pbytes, (key % 255), size - 1, child)) {
++			tst_res(TFAIL, "Verify failed in child %d read # = %d, key = %lx\n",
++				child, (i + 1), key);
++			return;
++		}
++		key++;
++	}
++}
++
++void dowriter(long key, int tid, long type, int child, int nreps)
++{
++	int i, size;
++	int id;
++	struct mbuffer buffer;
++
++	id = SAFE_MSGGET(key, 0);
++	if (id != tid) {
++		tst_res(TFAIL, "Message queue mismatch in the reader of child group %d for message queue id %d\n",
++			child, id);
++		return;
++	}
++
++	for (i = 0; i < nreps; i++) {
++		memset(&buffer, 0, sizeof(buffer));
++
++		do {
++			size = (lrand48() % 99);
++		} while (size == 0);
++		fill_buffer(buffer.data.pbytes, (key % 255), size);
++		buffer.data.len = size;
++		buffer.type = type;
++		SAFE_MSGSND(id, &buffer, size + 1, 0);
++		key++;
++	}
++}
++
++void fill_buffer(char *buf, char val, int size)
++{
++	int i;
++
++	for (i = 0; i < size; i++)
++		buf[i] = val;
++}
++
++/* Check a buffer for correct values */
++int verify(char *buf, char val, int size, int child)
++{
++	while (size-- > 0) {
++		if (*buf++ != val) {
++			tst_res(TFAIL, "Verify error in child %d, *buf = %x, val = %x, size = %d\n",
++				child, *buf, val, size);
++			return 1;
++		}
++	}
++	return 0;
++}
+-- 
+2.23.0
 
-
-> > Or, maybe we can have a new function naming as 'tst_kconifg_check' to parse
-> > kernel .config in shell library as well?
-> +1, I was thinking about it for a long time.
-Thinking about the balance between base TCONF decision on kernel version vs.
-require kernel config to be presented I think for cases like this I'd prefer
-kernel version based check (i.e. the original patch).
-
-Requiring kernel config is ok for traditional distros (and even here is
-sometimes readable only for root, e.g. Debian/Ubuntu), but it's still rare on
-arm (other embedded archs). I guess it'd be nice to have some variable, which
-would turn kernel config based requirement into warning.
-
-Kind regards,
-Petr
