@@ -1,31 +1,57 @@
-From: Helge Deller <deller@gmx.de>
-Date: Thu, 18 Jun 2020 14:24:05 +0200
-Subject: [LTP] Testcase approach for MAP_GROWSDOWN
-In-Reply-To: <c6792053-287d-7a53-477d-5f5ad95ffa6f@zilogic.com>
-References: <c6792053-287d-7a53-477d-5f5ad95ffa6f@zilogic.com>
-Message-ID: <35bbf85f-e689-2aab-5b0d-0f045ad04b3a@gmx.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 18 Jun 2020 15:38:30 +0300
+Subject: [LTP] [PATCH] network/nfs_lib.sh: Use double quotes for grep
+ pattern
+In-Reply-To: <20200617184356.GA7422@dell5510>
+References: <20200608142744.274287-1-yangx.jy@cn.fujitsu.com>
+ <20200608145831.GA2746544@x230>
+ <423c55db-a393-d1d9-6de6-28f65f76557a@oracle.com>
+ <20200617184356.GA7422@dell5510>
+Message-ID: <3e8b407b-fd12-c637-e199-3651fd280bbc@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18.06.20 08:15, Pravin Raghul wrote:
-> We are planning to add the following testcases for MAP_GROWSDOWN, please let us know your thoughts on this.
->
-> We assign the memory region allocated using MAP_GROWSDOWN to a thread, as a stack, to test the effect of MAP_GROWSDOWN. This is because the kernel only grows the memory region when the stack pointer, is within guard page, when the guard page is touched.
->
->
->       Test Case 1: Grow into an unmapped region
->
->  1. Map an anyonymous memory region of size X, and unmap it.
->  2. Split the unmapped memory region into two.
->  3. The lower memory region is left unmapped.
->  4. The higher memory region is mapped for use as stack, using MAP_FIXED | MAP_GROWSDOWN.
->  5. The higher memory region is provided as stack to a thread, where a recursive function is invoked.
->  6. The stack grows beyond the allocated region, into the lower memory area.
+On 17.06.2020 21:43, Petr Vorel wrote:
+> Hi Alexey, Xiao,
+> 
+>> Perhaps this:
+> 
+>> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+>> index 59b373e..9c8f163 100644
+>> --- a/testcases/lib/tst_net.sh
+>> +++ b/testcases/lib/tst_net.sh
+>> @@ -172,8 +172,7 @@ tst_rhost_run()
+>>         local output=
+>>         local ret=0
+>>         if [ -n "${TST_USE_SSH:-}" ]; then
+>> -               output=`ssh -n -q $user@$RHOST "sh -c \
+>> -                       '$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+>> +               output=$(ssh -n -q $user@$RHOST "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
+>>         elif [ -n "$TST_USE_NETNS" ]; then
+>>                 output=`$LTP_NETNS sh -c \
+>>                         "$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
+> 
+> Nice! Much simpler than what what I was just going to post (sed replacement).
+> Would it work for rsh as well? i.e. can it work without sh -c?
+> I have no working rsh setup.
+> 
+> And removing it from all 3 variants would be great (keeping them to be the same,
+> also it might allow to also use shell functions, which doesn't work with sh -c
+> "..."). Why was sh -c "..." used anyway?
 
-For architectures where the stack grows up (e.g. parisc), you need to start from lower memory region
-and grow up into the higher one. I can test on parisc hardware or give you access if needed.
+Hi Petr,
 
-Helge
+Don't remember, so if all work without it I would remove it. For rsh,
+I doubt that's is used now days, let's remove it too? The replacement (ssh)
+in the tst_rhost_run() has been for a long time already.
+
+> BTW I have more tst_net.sh, but I post them after we solve this one (as
+> replacing quotes with sed, which is in my prepared patchset is ugly).
+> 
+> Kind regards,
+> Petr
+> 
+
