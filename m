@@ -1,28 +1,32 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 Jun 2020 11:07:18 +0800
-Subject: [LTP] [PATCH v4 1/4] lib: add new cgroup test API
-In-Reply-To: <CAEemH2fkUX2KA+dPqgjqrBftxAZ722k9B7i3fi8eSxEmzSLk6w@mail.gmail.com>
-References: <20200609095102.21153-1-liwang@redhat.com>
- <1111554317.15300411.1591699362992.JavaMail.zimbra@redhat.com>
- <CAEemH2fkUX2KA+dPqgjqrBftxAZ722k9B7i3fi8eSxEmzSLk6w@mail.gmail.com>
-Message-ID: <CAEemH2e+BE4=jikyu92CNarVGefd9piwDdWxSzwua3rWj6_dkQ@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 19 Jun 2020 09:02:25 +0530
+Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
+In-Reply-To: <20200618134205.GB19072@dell5510>
+References: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
+ <CA+G9fYuHsezzit3pzHiz-6ad4AfbgRsdbuqfUKvLif7_Jk5WkA@mail.gmail.com>
+ <20200618134205.GB19072@dell5510>
+Message-ID: <20200619033225.vhqu7a7ej33wjcbf@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I have pushed the patchset with the following changes:
+On 18-06-20, 15:42, Petr Vorel wrote:
+> Hi Naresh, Viresh,
+> 
+> > Test ran for 100 iterations on x86 device and confirmed test getting pass.
+> FYI with very high number of the tests it still can fail, but it's
+> much less likely:
+> 
+> ./clock_gettime03 -i 100000
+> Summary:
+> passed   3599972
+> failed   28
+> skipped  0
+> warnings 0
 
-1. use SAFE_MALLOC to replace SAFE_MMAP
-2. set 1 to cgroup.clone_children before creating dir
-3. add more code comments in tst_cgroup.h
-
-Let's see how things going on with these new APIs using in next.
+I am wondering why delta will be over 10 ms in any case.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200619/d1645c69/attachment.htm>
+viresh
