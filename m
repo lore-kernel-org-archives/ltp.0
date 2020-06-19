@@ -1,40 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Jun 2020 11:17:47 +0200
-Subject: [LTP] [PATCH v2 2/2] IMA: Add a test to verify importing a
- certificate into keyring
-In-Reply-To: <20200612143842.3993-3-t-josne@linux.microsoft.com>
-References: <20200612143842.3993-1-t-josne@linux.microsoft.com>
- <20200612143842.3993-3-t-josne@linux.microsoft.com>
-Message-ID: <20200619091747.GB9372@dell5510>
+Date: Fri, 19 Jun 2020 11:38:55 +0200
+Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
+In-Reply-To: <20200619033225.vhqu7a7ej33wjcbf@vireshk-i7>
+References: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
+ <CA+G9fYuHsezzit3pzHiz-6ad4AfbgRsdbuqfUKvLif7_Jk5WkA@mail.gmail.com>
+ <20200618134205.GB19072@dell5510>
+ <20200619033225.vhqu7a7ej33wjcbf@vireshk-i7>
+Message-ID: <20200619093855.GD10932@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lachlan,
+Hi, Viresh,
 
-Just a 2 nit changes for second test:
+> > > Test ran for 100 iterations on x86 device and confirmed test getting pass.
+> > FYI with very high number of the tests it still can fail, but it's
+> > much less likely:
 
-> +test2() {
-> +	local keyring_id key_id test_file="$PWD/test.txt"
-	local keyring_id key_id
-	local test_file="test.txt"
+> > ./clock_gettime03 -i 100000
+> > Summary:
+> > passed   3599972
+> > failed   28
+> > skipped  0
+> > warnings 0
 
-> +	[ -f $CERT_FILE ] || tst_brk TCONF "missing $CERT_FILE"
-	[ -f $CERT_FILE ] || tst_brk TCONF "missing x509 certificate ($CERT_FILE)"
-
-...
-plus removing
-rm $test_file
-
-It's in my branch
-https://github.com/pevik/ltp/tree/Lachlan_Sneff/ima_keys.sh.v3.fixes/
-
-Can you please have a look, so I can push it?
-
-BTW could you please send me your IMA files (ascii_runtime_measurements should
-be enough)?
+> I am wondering why delta will be over 10 ms in any case.
+No idea, I hoped you'd know :).
 
 Kind regards,
 Petr
