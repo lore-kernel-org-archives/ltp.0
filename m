@@ -1,22 +1,30 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Jun 2020 09:35:47 +0200
-Subject: [LTP] [PATCH v4 4/4] mm: add cpuset01 to runtest file
-In-Reply-To: <20200609095102.21153-4-liwang@redhat.com>
-References: <20200609095102.21153-1-liwang@redhat.com>
- <20200609095102.21153-4-liwang@redhat.com>
-Message-ID: <20200619073547.GA4247@dell5510>
+Date: Fri, 19 Jun 2020 09:46:16 +0200
+Subject: [LTP] [LTP v2 1/1] ima_tpm.sh: Fix for calculating boot
+ aggregate
+In-Reply-To: <20200615200121.GG129694@glitch>
+References: <20200527071434.28574-1-pvorel@suse.cz>
+ <1590601280.16219.1.camel@linux.ibm.com>
+ <20200528140747.GA8401@dell5510>
+ <1590679145.4457.39.camel@linux.ibm.com>
+ <20200528160527.GA27243@dell5510> <20200615194134.GF129694@glitch>
+ <20200615200121.GG129694@glitch>
+Message-ID: <20200619074616.GA23036@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Bruno,
 
-> This test was moved to stress test since commit ae8fa55a8, but stress
-> runtest has been removed from commit e752f7c19674 :).
+> > > > > > $ VERBOSE=1 make check TESTS=boog_aggregate.test
+>                                        ^^^^
+> 				       boot
 
-Thanks for fixing my regression :).
+> That's the issue :).
+
+Thanks! Obviously everything is working with correct test name :).
 
 Kind regards,
 Petr
