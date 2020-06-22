@@ -1,56 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 22 Jun 2020 06:56:48 +0200
-Subject: [LTP] [RESENT PATCH 4/5] net/test: Add basic testing for
+Date: Mon, 22 Jun 2020 06:56:47 +0200
+Subject: [LTP] [RESENT PATCH 3/5] tst_net.sh: Drop 'sh -c' use from ssh in
  tst_rhost_run
 In-Reply-To: <20200622045649.5063-1-pvorel@suse.cz>
 References: <20200622045649.5063-1-pvorel@suse.cz>
-Message-ID: <20200622045649.5063-5-pvorel@suse.cz>
+Message-ID: <20200622045649.5063-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Regression test for use of nested single quotes
-(fixed in previous commit).
+This simplifies the command and allows to use double quotes in command
+parameter for ssh, as it removes single nested quotes of command
+parameter (thus fixes like c1a2d53f6 "network/nfs_lib.sh: Use double
+quotes for grep pattern" are not needed any more).
 
+NOTE: 'sh -c' is still required for netns based testing, but does not
+use nested quotes. Now both variants use only double quotes.
+
+Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/newlib_tests/shell/net/tst_rhost_run.sh | 25 +++++++++++++++++++++
- 1 file changed, 25 insertions(+)
- create mode 100755 lib/newlib_tests/shell/net/tst_rhost_run.sh
+ testcases/lib/tst_net.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-new file mode 100755
-index 000000000..4c034a4ac
---- /dev/null
-+++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-@@ -0,0 +1,25 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
-+
-+TST_TESTFUNC=do_test
-+PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
-+. tst_net.sh
-+
-+do_test()
-+{
-+	local file="/etc/fstab"
-+
-+	tst_rhost_run -c 'which grep > /dev/null' || \
-+		tst_res TCONF "grep not found on rhost"
-+
-+	tst_rhost_run -c "[ -f $file ]" || \
-+		tst_res TCONF "$file not found on rhost"
-+
-+	tst_rhost_run -s -c "grep -q \"[^ ]\" $file"
-+	tst_rhost_run -s -c "grep -q '[^ ]' $file"
-+
-+	tst_res TPASS "tst_rhost_run is working"
-+}
-+
-+tst_run
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 1b96b3bf4..2ed570a6b 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -167,12 +167,12 @@ tst_rhost_run()
+ 	fi
+ 
+ 	if [ -n "${TST_USE_NETNS:-}" ]; then
+-		output=`$LTP_NETNS sh -c \
+-			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
++		output=$($LTP_NETNS sh -c \
++			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
+ 	else
+ 		tst_require_cmds ssh
+-		output=`ssh -n -q $user@$RHOST "sh -c \
+-			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
++		output=$(ssh -n -q $user@$RHOST \
++			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
+ 	fi
+ 	echo "$output" | grep -q 'RTERR$' && ret=1
+ 	if [ $ret -eq 1 ]; then
 -- 
 2.27.0
 
