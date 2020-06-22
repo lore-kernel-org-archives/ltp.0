@@ -1,58 +1,40 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 22 Jun 2020 18:05:06 +0800
-Subject: [LTP] [PATCH v2] tst_cgroup: fix tst_cgroup_version to cover more
- situations
-Message-ID: <20200622100506.4285-1-liwang@redhat.com>
+Date: Mon, 22 Jun 2020 18:06:43 +0800
+Subject: [LTP] [PATCH 1/2] cgroup: Fix build with -Werror=return-type
+In-Reply-To: <20200622092213.GA27392@dell5510>
+References: <20200622074314.22098-1-petr.vorel@suse.com>
+ <CAEemH2cz9s71E+VidezUAfYGarOzgpPTf0VucY+OYCYmjBjTGQ@mail.gmail.com>
+ <20200622092213.GA27392@dell5510>
+Message-ID: <CAEemH2dhP-NQB4gedHRDh4Kz1ZSZSWG0TKtYFNt4WOT9PwO1kw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-  * system doesn't support any cgroup(v1, v2): TCONF
-  * system only support cgroup v1: choose v1
-  * system only support cgroup v2: choose v2
-  * system support v1 & v2 but mounting v1: chosse v1
-  * systep support v1 & v2 but mounting v2: choose v2
+On Mon, Jun 22, 2020 at 5:22 PM Petr Vorel <pvorel@suse.com> wrote:
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- lib/tst_cgroup.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+> Hi Li,
+>
+> > >         tst_brk(TCONF, "Cgroup is not configured");
+> > > +       return TST_CGROUP_V1; /* fix -Werror=return-type */
+>
+>
+> > This return looks strange since it will never go to here.
+>
+> > How about this?
+>
+> I'm sorry, I overlooked your mail and push whole patchset.
+>
 
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 0118dd7b2..010baa69e 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -38,18 +38,19 @@ static int tst_cgroup_check(const char *cgroup)
- 
- enum tst_cgroup_ver tst_cgroup_version(void)
- {
--	if (tst_cgroup_check("cgroup2")) {
--		if (!tst_is_mounted("cgroup2") && tst_is_mounted("cgroup"))
--			return TST_CGROUP_V1;
--		else
--			return TST_CGROUP_V2;
--	}
-+	enum tst_cgroup_ver cg_ver;
- 
- 	if (tst_cgroup_check("cgroup"))
--		return TST_CGROUP_V1;
-+		cg_ver = TST_CGROUP_V1;
-+
-+	if (tst_cgroup_check("cgroup2"))
-+		if (!cg_ver || tst_is_mounted("cgroup2"))
-+			cg_ver = TST_CGROUP_V2;
-+
-+	if (!cg_ver)
-+		tst_brk(TCONF, "Cgroup is not configured");
- 
--	tst_brk(TCONF, "Cgroup is not configured");
--	return TST_CGROUP_V1; /* fix -Werror=return-type */
-+	return cg_ver;
- }
- 
- static void tst_cgroup1_mount(const char *name, const char *option,
+Never mind:).
+
+I resend a patch v2 to cover more situations, that would be great if you
+can help review/test again.
+
 -- 
-2.21.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200622/35823e55/attachment.htm>
