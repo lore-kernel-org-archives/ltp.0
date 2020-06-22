@@ -1,38 +1,22 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 22 Jun 2020 06:56:44 +0200
-Subject: [LTP] [RESENT PATCH 0/5] tst_net.sh: Remove rsh,
- update docs add debug & test
-Message-ID: <20200622045649.5063-1-pvorel@suse.cz>
+Date: Mon, 22 Jun 2020 15:10:12 +0200
+Subject: [LTP] [PATCH v4 1/4] lib: add new cgroup test API
+In-Reply-To: <CAEemH2e+BE4=jikyu92CNarVGefd9piwDdWxSzwua3rWj6_dkQ@mail.gmail.com>
+References: <20200609095102.21153-1-liwang@redhat.com>
+ <1111554317.15300411.1591699362992.JavaMail.zimbra@redhat.com>
+ <CAEemH2fkUX2KA+dPqgjqrBftxAZ722k9B7i3fi8eSxEmzSLk6w@mail.gmail.com>
+ <CAEemH2e+BE4=jikyu92CNarVGefd9piwDdWxSzwua3rWj6_dkQ@mail.gmail.com>
+Message-ID: <20200622131012.GA5500@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi all,
 
-It looks this patchset from Friday didn't get to the mailing list, thus
-sending it again.
-
-started as removing rsh, then also update docs and backport testing
-environment I use for some time (but not sure if needed).
+> I have pushed the patchset with the following changes:
+I've updated wiki. Please remember updating it when you touch doc/*.txt.
 
 Kind regards,
 Petr
-
-Petr Vorel (5):
-  tst_net.sh: Remove rsh support
-  net: Update README.md
-  tst_net.sh: Drop 'sh -c' use from ssh in tst_rhost_run
-  net/test: Add basic testing for tst_rhost_run
-  st_net.sh: tst_rhost_run: Add -d option (debug)
-
- lib/newlib_tests/shell/net/tst_rhost_run.sh | 25 +++++++
- testcases/lib/tst_net.sh                    | 37 +++++++----
- testcases/network/README.md                 | 73 ++++++++++-----------
- 3 files changed, 85 insertions(+), 50 deletions(-)
- create mode 100755 lib/newlib_tests/shell/net/tst_rhost_run.sh
-
--- 
-2.27.0
-
