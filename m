@@ -1,32 +1,40 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 22 Jun 2020 10:41:35 +0530
-Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
-In-Reply-To: <20200618134205.GB19072@dell5510>
-References: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
- <CA+G9fYuHsezzit3pzHiz-6ad4AfbgRsdbuqfUKvLif7_Jk5WkA@mail.gmail.com>
- <20200618134205.GB19072@dell5510>
-Message-ID: <20200622051135.dzitlt3tpyftfvqc@vireshk-i7>
+From: Petr Vorel <petr.vorel@suse.com>
+Date: Mon, 22 Jun 2020 09:09:06 +0200
+Subject: [LTP] [RESENT PATCH 0/5] tst_net.sh: Remove rsh,
+ update docs add debug & test
+Message-ID: <20200622070911.16123-1-petr.vorel@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18-06-20, 15:42, Petr Vorel wrote:
-> > Test ran for 100 iterations on x86 device and confirmed test getting pass.
-> FYI with very high number of the tests it still can fail, but it's
-> much less likely:
-> 
-> ./clock_gettime03 -i 100000
-> Summary:
-> passed   3599972
-> failed   28
-> skipped  0
-> warnings 0
+From: Petr Vorel <pvorel@suse.cz>
 
-I am not able to hit it on my x86 box, even after suppressing all the print
-messages (in order to get rid of any delays). Looks like a hardware/platform bug
-to me. I tried a loop of 100,00,000 as well :)
+Hi,
+
+It looks this patchset from Friday didn't get to the mailing list, thus
+sending it again.
+
+started as removing rsh, then also update docs and backport testing
+environment I use for some time (but not sure if needed).
+
+Kind regards,
+Petr
+
+Petr Vorel (5):
+  tst_net.sh: Remove rsh support
+  net: Update README.md
+  tst_net.sh: Drop 'sh -c' use from ssh in tst_rhost_run
+  net/test: Add basic testing for tst_rhost_run
+  st_net.sh: tst_rhost_run: Add -d option (debug)
+
+ lib/newlib_tests/shell/net/tst_rhost_run.sh | 25 +++++++
+ testcases/lib/tst_net.sh                    | 37 +++++++----
+ testcases/network/README.md                 | 73 ++++++++++-----------
+ 3 files changed, 85 insertions(+), 50 deletions(-)
+ create mode 100755 lib/newlib_tests/shell/net/tst_rhost_run.sh
 
 -- 
-viresh
+2.27.0
+
