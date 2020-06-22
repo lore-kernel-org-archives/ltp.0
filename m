@@ -1,35 +1,78 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 20 Jun 2020 00:08:48 +0200
-Subject: [LTP] [PATCH 0/5] tst_net.sh: Remove rsh,
- update docs add debug & test
-Message-ID: <20200619220853.12610-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 22 Jun 2020 17:08:08 +0800
+Subject: [LTP] [PATCH 1/2] cgroup: Fix build with -Werror=return-type
+In-Reply-To: <20200622074314.22098-1-petr.vorel@suse.com>
+References: <20200622074314.22098-1-petr.vorel@suse.com>
+Message-ID: <CAEemH2cz9s71E+VidezUAfYGarOzgpPTf0VucY+OYCYmjBjTGQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Mon, Jun 22, 2020 at 3:43 PM Petr Vorel <petr.vorel@suse.com> wrote:
 
-started as removing rsh, then also update docs and backport testing
-environment I use for some time (but not sure if needed).
+> From: Petr Vorel <pvorel@suse.cz>
+>
+> Adding bogus return to keep compiler happy.
+>
+> Fixes: 3b716981b ("lib: add new cgroup test API")
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+>
+> IMHO using pragma would be better, but I don't know how to write it
+> portable way.
+>
+> Kind regards,
+> Petr
+>
+>  lib/tst_cgroup.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index f55d8818d..0118dd7b2 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -49,6 +49,7 @@ enum tst_cgroup_ver tst_cgroup_version(void)
+>                 return TST_CGROUP_V1;
+>
+>         tst_brk(TCONF, "Cgroup is not configured");
+> +       return TST_CGROUP_V1; /* fix -Werror=return-type */
+>
 
-Kind regards,
-Petr
+This return looks strange since it will never go to here.
 
-Petr Vorel (5):
-  tst_net.sh: Remove rsh support
-  net: Update README.md
-  tst_net.sh: Drop 'sh -c' use from ssh in tst_rhost_run
-  net/test: Add basic testing for tst_rhost_run
-  st_net.sh: tst_rhost_run: Add -d option (debug)
+How about this?
 
- lib/newlib_tests/shell/net/tst_rhost_run.sh | 25 +++++++
- testcases/lib/tst_net.sh                    | 37 +++++++----
- testcases/network/README.md                 | 73 ++++++++++-----------
- 3 files changed, 85 insertions(+), 50 deletions(-)
- create mode 100755 lib/newlib_tests/shell/net/tst_rhost_run.sh
+enum tst_cgroup_ver tst_cgroup_version(void)
+{
+        enum tst_cgroup_ver cg_ver;
+
+        if (tst_cgroup_check("cgroup2")) {
+                if (!tst_is_mounted("cgroup2") && tst_is_mounted("cgroup"))
+                        cg_ver = TST_CGROUP_V1;
+                else
+                        cg_ver = TST_CGROUP_V2;
+
+                goto out;
+        }
+
+        if (tst_cgroup_check("cgroup"))
+                cg_ver = TST_CGROUP_V1;
+
+        if (!tg_ver)
+                tst_brk(TCONF, "Cgroup is not configured");
+
+out:
+        return cg_ver;
+}
+
 
 -- 
-2.27.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200622/445db0f7/attachment.htm>
