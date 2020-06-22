@@ -1,49 +1,32 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Sat, 20 Jun 2020 11:24:27 +0200
-Subject: [LTP] [PATCH v1] Add test case for CVE-2018-11508
-In-Reply-To: <20200620063713.5330-1-niravparmar@zilogic.com>
-References: <20200620063713.5330-1-niravparmar@zilogic.com>
-Message-ID: <20200620092427.GB281578@x230>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 22 Jun 2020 10:41:35 +0530
+Subject: [LTP] [PATCH] clock_gettime03: Fix issues with negative offset
+In-Reply-To: <20200618134205.GB19072@dell5510>
+References: <8b9a7e8ea27894090f1e31e178d7328f118163d0.1591270889.git.viresh.kumar@linaro.org>
+ <CA+G9fYuHsezzit3pzHiz-6ad4AfbgRsdbuqfUKvLif7_Jk5WkA@mail.gmail.com>
+ <20200618134205.GB19072@dell5510>
+Message-ID: <20200622051135.dzitlt3tpyftfvqc@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Nirav,
+On 18-06-20, 15:42, Petr Vorel wrote:
+> > Test ran for 100 iterations on x86 device and confirmed test getting pass.
+> FYI with very high number of the tests it still can fail, but it's
+> much less likely:
+> 
+> ./clock_gettime03 -i 100000
+> Summary:
+> passed   3599972
+> failed   28
+> skipped  0
+> warnings 0
 
-thanks for your patch!
+I am not able to hit it on my x86 box, even after suppressing all the print
+messages (in order to get rid of any delays). Looks like a hardware/platform bug
+to me. I tried a loop of 100,00,000 as well :)
 
-...
-> + * This proves that there are 4 bytes of info leaked. The bug was fixed in
-> + * Kernel Version 4.16.9. Therefore, the below test case will only be
-> + * applicable for the kernel version 4.16.9 and above.
-This is IMHO wrong. The fix 3a4d44b61625 fixes 3a4d44b61625 ("ntp: Move adjtimex
-related compat syscalls to native counterparts"), which was released in
-v4.13-rc1.
-
-...
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.min_kver = "4.16.9",
-Thus there should be .min_kver = "4.13",
-
-And most of the tests doesn't have .min_kver anyway, it might be removed
-entirely.
-
-> +	.test_all = verify_adjtimex,
-> +	.bufs = (struct tst_buffers []) {
-> +		{&buf, .size = sizeof(*buf)},
-> +		{&tim_save, .size = sizeof(*tim_save)},
-> +		{},
-> +	},
-> +	.tags = (const struct tst_tag[]) {
-> +		{"CVE", "2018-11508"},
-> +		{"linux-git", "3a4d44b61625"},
-> +		{},
-> +	}
-> +};
-
-Kind regards,
-Petr
+-- 
+viresh
