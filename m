@@ -1,40 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 22 Jun 2020 19:40:38 +0800
-Subject: [LTP] [PATCH 1/2] cgroup: Fix build with -Werror=return-type
-In-Reply-To: <20200622092213.GA27392@dell5510>
-References: <20200622074314.22098-1-petr.vorel@suse.com>
- <CAEemH2cz9s71E+VidezUAfYGarOzgpPTf0VucY+OYCYmjBjTGQ@mail.gmail.com>
- <20200622092213.GA27392@dell5510>
-Message-ID: <CAEemH2dOpFaJY0DCLwULGBpf6ENEouirRuA2pOK-MzQvfyKR=A@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 22 Jun 2020 06:56:48 +0200
+Subject: [LTP] [RESENT PATCH 4/5] net/test: Add basic testing for
+ tst_rhost_run
+In-Reply-To: <20200622045649.5063-1-pvorel@suse.cz>
+References: <20200622045649.5063-1-pvorel@suse.cz>
+Message-ID: <20200622045649.5063-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jun 22, 2020 at 5:22 PM Petr Vorel <pvorel@suse.com> wrote:
+Regression test for use of nested single quotes
+(fixed in previous commit).
 
-> Hi Li,
->
-> > >         tst_brk(TCONF, "Cgroup is not configured");
-> > > +       return TST_CGROUP_V1; /* fix -Werror=return-type */
->
->
-> > This return looks strange since it will never go to here.
->
-> > How about this?
->
-> I'm sorry, I overlooked your mail and push whole patchset.
->
-> LGTM, feel free to merge.
-> Tested-by: Petr Vorel <pvorel@suse.cz>
->
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/newlib_tests/shell/net/tst_rhost_run.sh | 25 +++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100755 lib/newlib_tests/shell/net/tst_rhost_run.sh
 
-This is correct, I go back to this v1 way and pushed. Thanks Petr!
-
+diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
+new file mode 100755
+index 000000000..4c034a4ac
+--- /dev/null
++++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
+@@ -0,0 +1,25 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
++
++TST_TESTFUNC=do_test
++PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
++. tst_net.sh
++
++do_test()
++{
++	local file="/etc/fstab"
++
++	tst_rhost_run -c 'which grep > /dev/null' || \
++		tst_res TCONF "grep not found on rhost"
++
++	tst_rhost_run -c "[ -f $file ]" || \
++		tst_res TCONF "$file not found on rhost"
++
++	tst_rhost_run -s -c "grep -q \"[^ ]\" $file"
++	tst_rhost_run -s -c "grep -q '[^ ]' $file"
++
++	tst_res TPASS "tst_rhost_run is working"
++}
++
++tst_run
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200622/7d1196ab/attachment-0001.htm>
+2.27.0
+
