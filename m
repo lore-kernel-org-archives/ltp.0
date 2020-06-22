@@ -1,66 +1,83 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 22 Jun 2020 15:46:32 +0530
-Subject: [LTP] [LKP] Re:  [x86/entry] 2bbc68f837: ltp.ptrace08.fail
-In-Reply-To: <87r1ucb0rt.fsf@nanos.tec.linutronix.de>
-References: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
- <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
- <20200616132705.GW2531@hirez.programming.kicks-ass.net>
- <20200617131742.GD8389@yuki.lan>
- <87r1ucb0rt.fsf@nanos.tec.linutronix.de>
-Message-ID: <CA+G9fYu18y4iWOkTCDWi9dUj+FosStVTH-6swN7wE4GePZa=Ng@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 22 Jun 2020 18:17:46 +0800
+Subject: [LTP] [PATCH v2] tst_cgroup: fix tst_cgroup_version to cover
+ more situations
+In-Reply-To: <20200622100506.4285-1-liwang@redhat.com>
+References: <20200622100506.4285-1-liwang@redhat.com>
+Message-ID: <CAEemH2fqTMuHhBx6FjYy68shwsYk5K6WyQk=8JcAWhYHpXVM0g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 19 Jun 2020 at 01:32, Thomas Gleixner <tglx@linutronix.de> wrote:
+On Mon, Jun 22, 2020 at 6:05 PM Li Wang <liwang@redhat.com> wrote:
+
+>   * system doesn't support any cgroup(v1, v2): TCONF
+>   * system only support cgroup v1: choose v1
+>   * system only support cgroup v2: choose v2
+>   * system support v1 & v2 but mounting v1: chosse v1
+>   * systep support v1 & v2 but mounting v2: choose v2
 >
-> Cyril Hrubis <chrubis@suse.cz> writes:
-> > What is does is to write:
-> >
-> >       (void*)1 to u_debugreg[0]
-> >       (void*)1 to u_debugreg[7]
-> >       do_debug addr to u_debugreg[0]
-> >
-> > Looking at the kernel code the write to register 7 enables the breakpoints and
-> > what we attempt here is to change an invalid address to a valid one after we
-> > enabled the breakpoint but that's as far I can go.
-> >
-> > So does anyone has an idea how to trigger the bug without the do_debug function
-> > address? Would any valid kernel function address suffice?
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  lib/tst_cgroup.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 >
-> According to https://www.openwall.com/lists/oss-security/2018/05/01/3
-> the trigger is to set the breakpoint to do_debug() and then execute
-> INT1, aka. ICEBP which ends up in do_debug() ....
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 0118dd7b2..010baa69e 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -38,18 +38,19 @@ static int tst_cgroup_check(const char *cgroup)
 >
-> In principle each kernel address is ok, but do_debug() is interesting
-> due to the recursion issue because user space can reach it by executing
-> INT1.
+>  enum tst_cgroup_ver tst_cgroup_version(void)
+>  {
+> -       if (tst_cgroup_check("cgroup2")) {
+> -               if (!tst_is_mounted("cgroup2") && tst_is_mounted("cgroup"))
+> -                       return TST_CGROUP_V1;
+> -               else
+> -                       return TST_CGROUP_V2;
+> -       }
+> +       enum tst_cgroup_ver cg_ver;
 >
-> So you might check for exc_debug() if do_debug() is not available and
-> make the whole thing fail gracefully with a usefu error message.
+>         if (tst_cgroup_check("cgroup"))
+> -               return TST_CGROUP_V1;
+> +               cg_ver = TST_CGROUP_V1;
+>
 
-My two cents,
-LTP test case ptrace08 fails on x86_64 and i386.
+Ah sorry, it seems we shouldn't searching "cgroup" first, because that will
+be misled by "cgroup2" too. Plz ignore this patch
 
-ptrace08.c:62: BROK: Cannot find address of kernel symbol \"do_debug\"
+This is a little bit tricky, let me think over.
 
-This error is coming from test case setup
-KERNEL_SYM = do_debug
 
-if (strcmp(symname, KERNEL_SYM))
-tst_brk(TBROK, "Cannot find address of kernel symbol \"%s\"",
-KERNEL_SYM);
 
-Test case got pass when DEBUG_INFO config enabled
+> +
+> +       if (tst_cgroup_check("cgroup2"))
+> +               if (!cg_ver || tst_is_mounted("cgroup2"))
+> +                       cg_ver = TST_CGROUP_V2;
+> +
+> +       if (!cg_ver)
+> +               tst_brk(TCONF, "Cgroup is not configured");
+>
+> -       tst_brk(TCONF, "Cgroup is not configured");
+> -       return TST_CGROUP_V1; /* fix -Werror=return-type */
+> +       return cg_ver;
+>  }
+>
+>  static void tst_cgroup1_mount(const char *name, const char *option,
+> --
+> 2.21.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
-CONFIG_DEBUG_INFO=y
-
-ptrace08.c:68: INFO: Kernel symbol \"do_debug\" found at 0xd8898410
-
-Full test log,
-https://lkft.validation.linaro.org/scheduler/job/1483117#L1325
-
-ref:
-https://bugs.linaro.org/show_bug.cgi?id=5651#c1
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200622/8c535eb1/attachment.htm>
