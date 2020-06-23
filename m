@@ -1,149 +1,50 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 23 Jun 2020 13:52:12 +0800
-Subject: [LTP] [RESENT RFC PATCH 5/5] st_net.sh: tst_rhost_run: Add -d
- option (debug)
-In-Reply-To: <20200622070911.16123-6-petr.vorel@suse.com>
-References: <20200622070911.16123-1-petr.vorel@suse.com>
- <20200622070911.16123-6-petr.vorel@suse.com>
-Message-ID: <5EF1988C.3090008@cn.fujitsu.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 23 Jun 2020 11:53:43 +0530
+Subject: [LTP] LTP: crypto: af_alg02 regression on linux-next 20200621
+ tag
+In-Reply-To: <20200622224920.GA4332@42.do-not-panic.com>
+References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
+ <20200622224920.GA4332@42.do-not-panic.com>
+Message-ID: <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/6/22 15:09, Petr Vorel wrote:
-> From: Petr Vorel <pvorel@suse.cz>
+On Tue, 23 Jun 2020 at 04:19, Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
-> -d debug mode (print command and netns/ssh handling into stderr)
+> On Tue, Jun 23, 2020 at 12:04:06AM +0530, Naresh Kamboju wrote:
+> > LTP crypto regressions noticed on linux next 20200621.
+> >
+> > The common case for all tests is timeout after 15 minutes which
+> > means tests got hung and LTP timers killed those test runs after
+> > timeout.
+> > The root cause of the failure is under investigation.
+> >
+> >   ltp-crypto-tests:
+> >     * af_alg02 - failed
+> >     * af_alg05 - failed
+> >   ltp-syscalls-tests:
+> >     * keyctl07 - failed
+> >     * request_key03 - failed
+<trim>
 >
-> Add tst_net_debug() simple helper for printing into stderr.
+> Can you try reverting:
 >
-> Also use new parameter in tst_rhost_run.sh.
+> d13ef8e10756873b0a8b7cc8f230a2d1026710ea
 >
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
->
-> RFC: I use it quite a lot, but not sure if needed.
->
-> Probably using $TST_NET_DEBUG instead of -d would be better.
-Hi Petr,
+> The patch is titled "umh: fix processed error when UMH_WAIT_PROC is used"
 
-Agreed. $TST_NET_DEBUG is better for user to print debug info because we
-don't need to change code(i.e. pass -d to tst_rhost_run()).
-Debug info is only related to tst_rhost_run() so is $TST_RHOST_RUN_DEBUG
-meaningful?
-> If we merge "tst_test.sh: Print tst_{res, brk} into stdout" [1],
-> simple tst_res_ could be used. I was also thinking about adding new flag
-> "DEBUG", but that's probably not needed.
-I think tst_res TINFO is enough. :-)
+Thanks for the investigation.
+After reverting, two test cases got PASS out of four reported failure cases.
+ ltp-crypto-tests:
+     * af_alg02 - still failing - Hung and time out
+     * af_alg05 - still failing - Hung and time out
+  ltp-syscalls-tests:
+     * keyctl07 - PASS
+     * request_key03 - PASS
 
-Thanks,
-Xiao Yang
-> Kind regards,
-> Petr
->
-> [1] https://patchwork.ozlabs.org/project/ltp/patch/20200619192542.20113-1-pvorel@suse.cz/
->
->  lib/newlib_tests/shell/net/tst_rhost_run.sh |  8 +++---
->  testcases/lib/tst_net.sh                    | 29 ++++++++++++++++-----
->  2 files changed, 27 insertions(+), 10 deletions(-)
->
-> diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> index 4c034a4ac..ebcd4ca03 100755
-> --- a/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> +++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> @@ -10,14 +10,14 @@ do_test()
->  {
->  	local file="/etc/fstab"
->  
-> -	tst_rhost_run -c 'which grep > /dev/null' || \
-> +	tst_rhost_run -d -c 'which grep > /dev/null' || \
->  		tst_res TCONF "grep not found on rhost"
->  
-> -	tst_rhost_run -c "[ -f $file ]" || \
-> +	tst_rhost_run -d -c "[ -f $file ]" || \
->  		tst_res TCONF "$file not found on rhost"
->  
-> -	tst_rhost_run -s -c "grep -q \"[^ ]\" $file"
-> -	tst_rhost_run -s -c "grep -q '[^ ]' $file"
-> +	tst_rhost_run -ds -c "grep -q \"[^ ]\" $file"
-> +	tst_rhost_run -ds -c "grep -q '[^ ]' $file"
->  
->  	tst_res TPASS "tst_rhost_run is working"
->  }
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index 2ed570a6b..d6845618d 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -130,11 +130,17 @@ init_ltp_netspace()
->  	tst_restore_ipaddr rhost
->  }
->  
-> +tst_net_debug()
-> +{
-> +	echo "DEBUG: $@" >&2
-> +}
-> +
->  # Run command on remote host.
->  # tst_rhost_run -c CMD [-b] [-s] [-u USER]
->  # Options:
->  # -b run in background
->  # -c CMD specify command to run (this must be binary, not shell builtin/function)
-> +# -d debug mode (print command and netns/ssh handling into stderr)
->  # -s safe option, if something goes wrong, will exit with TBROK
->  # -u USER for ssh (default root)
->  # RETURN: 0 on success, 1 on failure
-> @@ -143,16 +149,17 @@ tst_rhost_run()
->  	local post_cmd=' || echo RTERR'
->  	local user="root"
->  	local ret=0
-> -	local cmd out output pre_cmd safe
-> +	local cmd debug out output pre_cmd rcmd sh_cmd safe use
->  
->  	local OPTIND
-> -	while getopts :bsc:u: opt; do
-> +	while getopts :bc:dsu: opt; do
->  		case "$opt" in
->  		b) [ "${TST_USE_NETNS:-}" ] && pre_cmd= || pre_cmd="nohup"
->  		   post_cmd=" > /dev/null 2>&1 &"
->  		   out="1> /dev/null"
->  		;;
->  		c) cmd="$OPTARG" ;;
-> +		d) debug=1 ;;
->  		s) safe=1 ;;
->  		u) user="$OPTARG" ;;
->  		*) tst_brk_ TBROK "tst_rhost_run: unknown option: $OPTARG" ;;
-> @@ -166,14 +173,24 @@ tst_rhost_run()
->  		return 1
->  	fi
->  
-> +	sh_cmd="$pre_cmd $cmd $post_cmd"
-> +
->  	if [ -n "${TST_USE_NETNS:-}" ]; then
-> -		output=$($LTP_NETNS sh -c \
-> -			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
-> +		use="NETNS"
-> +		rcmd="$LTP_NETNS sh -c"
->  	else
->  		tst_require_cmds ssh
-> -		output=$(ssh -n -q $user@$RHOST \
-> -			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
-> +		use="SSH"
-> +		rcmd="ssh -n -q $user@$RHOST"
->  	fi
-> +
-> +	if [ "$debug" ]; then
-> +		tst_net_debug "tst_rhost_run: cmd: $cmd"
-> +		tst_net_debug "$use: $rcmd \"$sh_cmd\" $out 2>&1"
-> +	fi
-> +
-> +	output=$($rcmd "$sh_cmd" $out 2>&1 || echo 'RTERR')
-> +
->  	echo "$output" | grep -q 'RTERR$' && ret=1
->  	if [ $ret -eq 1 ]; then
->  		output=$(echo "$output" | sed 's/RTERR//')
+Please suggest the way to debug / fix the af_alg02 and af_alg05 failures.
 
-
-
+- Naresh
