@@ -1,586 +1,494 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 Jun 2020 13:28:27 +0200
-Subject: [LTP] [PATCH 2/2] device_drivers/uart01: Add uart01 test
+Date: Tue, 23 Jun 2020 13:28:26 +0200
+Subject: [LTP] [PATCH 1/2] tst_test: Add support for device discovery
 In-Reply-To: <20200623112827.10744-1-chrubis@suse.cz>
 References: <20200623112827.10744-1-chrubis@suse.cz>
-Message-ID: <20200623112827.10744-3-chrubis@suse.cz>
+Message-ID: <20200623112827.10744-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a first example for a device-driver test.
+Device discovery
+----------------
+
+The problem
+-----------
+
+Each lab has a different hardware capabilities and configuration. A test
+that heavily depends on a hardware needs to get this information in
+order to be able to run correctly.
+
+The solution
+------------
+
+The test declares which devices it needs for a testing. In the uart test
+these are UART_RX and UART_TX which are two UART endpoints which are
+connected together.
+
+This information is then passed as a parameter to a device-discovery.sh
+script that prints, possibly several lines, of device listrs, which is
+then parsed by the test library and the test is executed accordingly.
+
+The data are passed to the test as a environment variables, if these are
+set prior to the test start, we do not even attempt to do a device
+discovery. If these are unset, we run the device discovery and loop the
+test around the lists we got.
+
+Why this solution?
+------------------
+
+The device discovery is lab specific and does not belong to the test
+itself. This is an attempt to abstract the interface between the test
+and the hardware so that we can finally add device drivers tests into
+LTP.
+
+Missing pieces
+--------------
+
+There are stil a few missing pieces, but these are probably easy to fix
+as well.
+
+Device reconfiguration
+~~~~~~~~~~~~~~~~~~~~~~
+
+I suppose that we may need to run a command so that the devices are
+reconfigured as we need them. I.e. the device-discovery.sh will have to
+output a comand that needs to be executed in order to prepare the
+physical environment e.g. relays in case of the UART.
+
+Device parameters
+~~~~~~~~~~~~~~~~~
+
+We may as well need some extra info about the devices, e.g. is hardware
+flow connected in case of UART. So the device-discover.sh will add one
+more environment variable e.g. UART_PARS="hwflow" that could be parsed
+in the test as well.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/kernel_misc                           |   5 +
- .../kernel/device-drivers/uart/.gitignore     |   1 +
- testcases/kernel/device-drivers/uart/Makefile |   4 +
- testcases/kernel/device-drivers/uart/uart01.c | 522 ++++++++++++++++++
- 4 files changed, 532 insertions(+)
- create mode 100644 testcases/kernel/device-drivers/uart/.gitignore
- create mode 100644 testcases/kernel/device-drivers/uart/Makefile
- create mode 100644 testcases/kernel/device-drivers/uart/uart01.c
+ device-discovery.sh |   5 +
+ include/tst_test.h  |   3 +
+ lib/tst_devices.c   | 228 ++++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_devices.h   |  32 +++++++
+ lib/tst_test.c      |  60 ++++++++++--
+ 5 files changed, 321 insertions(+), 7 deletions(-)
+ create mode 100755 device-discovery.sh
+ create mode 100644 lib/tst_devices.c
+ create mode 100644 lib/tst_devices.h
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index 7937c7bbf..a7f1d9b56 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -13,3 +13,8 @@ zram01 zram01.sh
- zram02 zram02.sh
- zram03 zram03
- umip_basic_test umip_basic_test
-+uart01_9600 uart01 -b 9600
-+uart01_19200 uart01 -b 19200
-+uart01_38400 uart01 -b 38400
-+uart01_57600 uart01 -b 57600
-+uart01_115200 uart01 -b 115200
-diff --git a/testcases/kernel/device-drivers/uart/.gitignore b/testcases/kernel/device-drivers/uart/.gitignore
-new file mode 100644
-index 000000000..9333e8db9
+diff --git a/device-discovery.sh b/device-discovery.sh
+new file mode 100755
+index 000000000..08460c41f
 --- /dev/null
-+++ b/testcases/kernel/device-drivers/uart/.gitignore
-@@ -0,0 +1 @@
-+uart01
-diff --git a/testcases/kernel/device-drivers/uart/Makefile b/testcases/kernel/device-drivers/uart/Makefile
-new file mode 100644
-index 000000000..1c90e5cd6
---- /dev/null
-+++ b/testcases/kernel/device-drivers/uart/Makefile
-@@ -0,0 +1,4 @@
++++ b/device-discovery.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
 +
-+top_srcdir	?= ../../../..
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/device-drivers/uart/uart01.c b/testcases/kernel/device-drivers/uart/uart01.c
++if [ "$1" = "UART_RX-UART_TX" ]; then
++	echo "UART_RX=/dev/ttyUSB0 UART_TX=/dev/ttyUSB0"
++fi
+diff --git a/include/tst_test.h b/include/tst_test.h
+index b84f7b9dd..3c3693098 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -215,6 +215,9 @@ struct tst_test {
+ 	/* NULL terminated array of needed kernel drivers */
+ 	const char * const *needs_drivers;
+ 
++	/* NULL terminated array of devices */
++	const char *const *needs_devices;
++
+ 	/*
+ 	 * NULL terminated array of (/proc, /sys) files to save
+ 	 * before setup and restore after cleanup
+diff --git a/lib/tst_devices.c b/lib/tst_devices.c
 new file mode 100644
-index 000000000..4647c55e3
+index 000000000..087e2021b
 --- /dev/null
-+++ b/testcases/kernel/device-drivers/uart/uart01.c
-@@ -0,0 +1,522 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/lib/tst_devices.c
+@@ -0,0 +1,228 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
++ */
 +
 +/*
-+   Copyright (c) 2014 Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-+   Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
-+
++ * Device discovery code.
 + */
 +
 +#include <stdio.h>
-+#include <ctype.h>
-+#include <string.h>
 +#include <stdlib.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <termios.h>
-+#include <stdarg.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <stdint.h>
-+#include <poll.h>
-+#include <sys/ioctl.h>
-+#include <linux/serial.h>
 +
++#include "tst_devices.h"
++
++#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
 +
-+static const char hex_asc[] = "0123456789abcdef";
-+#define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
-+#define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
-+
-+struct g_opt {
-+	char *uart_dev;
-+	char *file_trans;
-+	int baud_rate;
-+	unsigned int loops;
-+	unsigned char hwflow;
-+	unsigned char do_termios;
-+#define MODE_TX_ONLY    (1 << 0)
-+#define MODE_RX_ONLY    (1 << 1)
-+#define MODE_DUPLEX     (MODE_TX_ONLY | MODE_RX_ONLY)
-+	unsigned int mode;
-+	unsigned char *cmp_buff;
++struct tst_devlist {
++	struct tst_devlist *next;
++	unsigned int dev_cnt;
++	char *devs[];
 +};
 +
-+static int vscnprintf(char *buf, size_t size, const char *fmt, va_list args)
++static char *create_devstr(const char *const needs_devices[])
 +{
-+	int i;
++	unsigned int i;
++	size_t len = 1;
 +
-+	i = vsnprintf(buf, size, fmt, args);
++	for (i = 0; needs_devices[i]; i++)
++		len += strlen(needs_devices[i]) + 1;
 +
-+	if (i < (int)size)
-+		return i;
-+	if (size != 0)
-+		return size - 1;
-+	return 0;
++	char *res = malloc(len);
++
++	if (!res) {
++		tst_res(TWARN | TERRNO, "Malloc failed");
++		return NULL;
++	}
++
++	char *p = res;
++
++	for (i = 0; needs_devices[i]; i++) {
++		strcpy(p, needs_devices[i]);
++		p += strlen(needs_devices[i]);
++		if (needs_devices[i+1]) {
++			p[0] = '-';
++			p++;
++		}
++	}
++
++	tst_res(TINFO, "Device discovery string '%s'", res);
++
++	return res;
 +}
 +
-+static int scnprintf(char *buf, size_t size, const char *fmt, ...)
++static int get_index(const char *env, const char *const needs_devices[])
 +{
-+	va_list args;
-+	int i;
++	char *p = strdup(env);
++	char *save;
++	char *name = strtok_r(p, "=", &save);
++	unsigned int i;
 +
-+	va_start(args, fmt);
-+	i = vscnprintf(buf, size, fmt, args);
-+	va_end(args);
++	for (i = 0; needs_devices[i]; i++)
++		if (!strcmp(needs_devices[i], name))
++			return i;
++
++	return -1;
++}
++
++static unsigned int count_devices(const char *const needs_devices[])
++{
++	unsigned int i = 0;
++
++	while (needs_devices[i])
++		i++;
 +
 +	return i;
 +}
 +
-+
-+static void hex_dump_to_buffer(const void *buf, int len, int rowsize,
-+		int groupsize, char *linebuf, int linebuflen, int ascii)
++static struct tst_devlist *new_devlist(char *devices[], unsigned int dev_cnt,
++                                       const char *const needs_devices[])
 +{
-+	const uint8_t *ptr = buf;
-+	uint8_t ch;
-+	int j, lx = 0;
-+	int ascii_column;
++	unsigned int i;
++	int incomplete = 0;
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
-+
-+	if (!len)
-+		goto nil;
-+	if (len > rowsize)      /* limit to one line at a time */
-+		len = rowsize;
-+	if ((len % groupsize) != 0)     /* no mixed size output */
-+		groupsize = 1;
-+
-+	switch (groupsize) {
-+	case 8: {
-+		const uint64_t *ptr8 = buf;
-+		int ngroups = len / groupsize;
-+
-+		for (j = 0; j < ngroups; j++)
-+			lx += scnprintf(linebuf + lx, linebuflen - lx,
-+					"%s%16.16llx", j ? " " : "",
-+					(unsigned long long)*(ptr8 + j));
-+		ascii_column = 17 * ngroups + 2;
-+		break;
++	for (i = 0; i < dev_cnt; i++) {
++		if (!devices[i]) {
++			tst_res(TWARN, "Missing env var '%s'", needs_devices[i]);
++			incomplete = 1;
 +		}
-+
-+	case 4: {
-+		const uint32_t *ptr4 = buf;
-+		int ngroups = len / groupsize;
-+
-+		for (j = 0; j < ngroups; j++)
-+			lx += scnprintf(linebuf + lx, linebuflen - lx,
-+					"%s%8.8x", j ? " " : "", *(ptr4 + j));
-+		ascii_column = 9 * ngroups + 2;
-+		break;
-+		}
-+
-+	case 2: {
-+		const uint16_t *ptr2 = buf;
-+		int ngroups = len / groupsize;
-+
-+		for (j = 0; j < ngroups; j++)
-+			lx += scnprintf(linebuf + lx, linebuflen - lx,
-+					"%s%4.4x", j ? " " : "", *(ptr2 + j));
-+		ascii_column = 5 * ngroups + 2;
-+		break;
-+		}
-+
-+	default:
-+		for (j = 0; (j < len) && (lx + 3) <= linebuflen; j++) {
-+			ch = ptr[j];
-+			linebuf[lx++] = hex_asc_hi(ch);
-+			linebuf[lx++] = hex_asc_lo(ch);
-+			linebuf[lx++] = ' ';
-+			if (j == 7)
-+				linebuf[lx++] = ' ';
-+		}
-+		if (j)
-+			lx--;
-+
-+		ascii_column = 3 * rowsize + 2 + 2;
-+		break;
 +	}
-+	if (!ascii)
-+		goto nil;
 +
-+	while (lx < (linebuflen - 1) && lx < (ascii_column - 1))
-+		linebuf[lx++] = ' ';
-+	for (j = 0; (j < len) && (lx + 2) < linebuflen; j++) {
-+		ch = ptr[j];
-+		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
++	if (incomplete)
++		goto err;
++
++	struct tst_devlist *new = malloc(sizeof(struct tst_devlist) + dev_cnt * sizeof(void*));
++
++	if (!new) {
++		tst_res(TWARN, "Malloc failed");
++		goto err;
 +	}
-+nil:
-+	linebuf[lx++] = '\0';
++
++	for (i = 0; i < dev_cnt; i++)
++		new->devs[i] = devices[i];
++
++	new->dev_cnt = dev_cnt;
++
++	return new;
++err:
++	for (i = 0; needs_devices[i]; i++)
++		free(devices[i]);
++
++	return NULL;
 +}
 +
-+static void print_hex_dump(const void *buf, int len, int offset)
++struct tst_devlist *tst_devlist_discover(const char *const needs_devices[])
 +{
-+	const uint8_t *ptr = buf;
-+	int i, linelen, remaining = len;
-+	char linebuf[32 * 3 + 2 + 32 + 2 + 1];
-+	int rowsize = 16;
-+	int groupsize = 1;
++	const char *ltproot = getenv("LTPROOT");
++	const char *device_discovery = getenv("DEVICE_DISCOVERY");
++	char buf[2048];
++	struct tst_devlist *root = NULL;
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
++	if (!device_discovery) {
++		if (!ltproot) {
++			tst_res(TCONF, "No LTPROOT nor DEVICE_DISCOVERY set!");
++			return NULL;
++		}
 +
-+	for (i = 0; i < len; i += rowsize) {
-+		linelen = MIN(remaining, rowsize);
-+		remaining -= rowsize;
++		snprintf(buf, sizeof(buf), "%s/device-discovery.sh", ltproot);
 +
-+		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
-+				linebuf, sizeof(linebuf), 1);
-+
-+		printf("%.8x: %s\n", i + offset, linebuf);
++		device_discovery = buf;
 +	}
-+}
 +
-+static int stress_test_uart_once(struct g_opt *opts, int fd, unsigned char *data,
-+		off_t data_len)
-+{
-+	unsigned char *cmp_data = opts->cmp_buff;
-+	ssize_t size;
-+	int wait_rx;
-+	int wait_tx;
-+	ssize_t progress_rx = 0;
-+	ssize_t progress_tx = 0;
-+	unsigned int reads = 0;
-+	unsigned int writes = 0;
++	char *devstr = create_devstr(needs_devices);
 +
-+	do {
-+		struct pollfd pfd = {
-+			.fd = fd,
-+		};
-+		int ret;
++	if (!devstr)
++		return NULL;
 +
-+		if (opts->mode & MODE_RX_ONLY && progress_rx < data_len) {
-+			pfd.events |= POLLIN;
-+			wait_rx = 1;
-+		} else {
-+			wait_rx = 0;
-+		}
++	char *cmdline = malloc(strlen(buf) + strlen(devstr) + 3);
 +
-+		if (opts->mode & MODE_TX_ONLY && progress_tx < data_len) {
-+			pfd.events |= POLLOUT;
-+			wait_tx = 1;
-+		} else {
-+			wait_tx = 0;
-+		}
++	if (!cmdline) {
++		tst_res(TWARN | TERRNO, "Malloc failed");
++		return NULL;
++	}
 +
-+		ret = poll(&pfd, 1, 10 * 1000);
-+		if (ret == 0) {
-+			tst_res(TFAIL, "timeout, RX/TX: %zd/%zd\n", progress_rx, progress_tx);
-+			break;
-+		}
-+		if (ret < 0) {
-+			tst_res(TFAIL | TERRNO, "poll() failed");
-+			return 1;
-+		}
++	sprintf(cmdline, "%s \"%s\"", device_discovery, devstr);
 +
-+		if (pfd.revents & POLLIN) {
-+			size = read(fd, cmp_data + progress_rx, data_len - progress_rx);
-+			if (size < 0) {
-+				tst_res(TFAIL | TERRNO, "read() failed");
-+				return 1;
-+			}
-+			reads++;
-+			progress_rx += size;
-+			if (progress_rx >= data_len)
-+				wait_rx = 0;
-+		}
++	free(devstr);
 +
-+		if (pfd.revents & POLLOUT) {
++	FILE *pipe = popen(cmdline, "r");
 +
-+			size = write(fd, data + progress_tx, data_len - progress_tx);
-+			if (size < 0) {
-+				tst_res(TFAIL | TERRNO, "write() failed");
-+				return 1;
-+			}
-+			writes++;
-+			progress_tx += size;
-+			if (progress_tx >= data_len)
-+				wait_tx = 0;
-+		}
-+	} while (wait_rx || wait_tx);
++	unsigned int dev_cnt = count_devices(needs_devices);
++	char *devices[dev_cnt];
++	unsigned int devlist_cnt = 0;
 +
-+	tst_res(TINFO, "Needed %u reads %u writes ", reads, writes);
++	memset(devices, 0, sizeof(devices));
 +
-+	if (opts->mode & MODE_RX_ONLY) {
-+		unsigned int i;
-+		int found = 0;
-+		unsigned int min_pos;
-+		unsigned int max_pos;
++	while (fgets(buf, sizeof(buf), pipe)) {
++		char *tok, *save, *str = buf;
 +
-+		if (!memcmp(data, cmp_data, data_len)) {
-+			tst_res(TPASS, "RX passed");
-+			return 0;
-+		}
++		while ((tok = strtok_r(str, " \n\t", &save))) {
++			int i = get_index(tok, needs_devices);
 +
-+		for (i = 0; i < data_len && !found; i++) {
-+			if (data[i] != cmp_data[i]) {
-+				found = 1;
++			if (i < 0) {
++				tst_res(TWARN, "Invalid env var '%s'", tok);
 +				break;
 +			}
++
++			if (devices[i]) {
++				tst_res(TWARN,
++				        "Duplicated env var '%s' and '%s'",
++				        tok, devices[i]);
++				break;
++			}
++
++			devices[i] = strdup(tok);
++
++			str = NULL;
 +		}
 +
-+		if (!found) {
-+			tst_res(TFAIL, "memcmp() didn't match but manual cmp did");
-+			return 1;
++		struct tst_devlist *list = new_devlist(devices, dev_cnt, needs_devices);
++
++		memset(devices, 0, sizeof(devices));
++
++		if (!list)
++			continue;
++
++		list->next = root;
++		root = list;
++		devlist_cnt++;
++	}
++
++	free(cmdline);
++
++	if (!pipe)
++		tst_res(TWARN | TERRNO, "Failed to execute device discovery");
++
++	pclose(pipe);
++
++	tst_res(TINFO, "Loaded %i device list(s)", devlist_cnt);
++
++	return root;
++}
++
++unsigned int tst_devlist_cnt(struct tst_devlist *self)
++{
++	struct tst_devlist *i;
++	unsigned int cnt = 0;
++
++	for (i = self; i; i = i->next)
++		cnt++;
++
++	return cnt;
++}
++
++void tst_devlist_setup(struct tst_devlist *self, unsigned int i)
++{
++	struct tst_devlist *l;
++	unsigned int j, cnt = 0;
++
++	for (l = self; l; l = l->next) {
++		if (i == cnt)
++			break;
++		cnt++;
++	}
++
++	for (j = 0; j < l->dev_cnt; j++)
++		putenv(l->devs[j]);
++}
+diff --git a/lib/tst_devices.h b/lib/tst_devices.h
+new file mode 100644
+index 000000000..dd0047716
+--- /dev/null
++++ b/lib/tst_devices.h
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*
++ * Device discovery code.
++ */
++
++#ifndef TST_DEVICES_H__
++#define TST_DEVICES_H__
++
++struct tst_devlist;
++
++/*
++ * Attempts to run a device discovery scripts for a given needs_devices list.
++ */
++struct tst_devlist *tst_devlist_discover(const char *const needs_devices[]);
++
++/*
++ * Returns the number of device configurations.
++ */
++unsigned int tst_devlist_cnt(struct tst_devlist *self);
++
++/*
++ * Setups the environment for a device list with index i.
++ *
++ * Exports the device list base on the variables.
++ */
++void tst_devlist_setup(struct tst_devlist *self, unsigned int i);
++
++#endif /* TST_DEVICES_H__ */
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index e93c88ba5..4ae6d7d52 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -27,6 +27,7 @@
+ #include "tst_wallclock.h"
+ #include "tst_sys_conf.h"
+ #include "tst_kconfig.h"
++#include "tst_devices.h"
+ 
+ #include "old_resource.h"
+ #include "old_device.h"
+@@ -42,6 +43,8 @@ const char *TCID __attribute__((weak));
+ 
+ struct tst_test *tst_test;
+ 
++static struct tst_devlist *devlist;
++
+ static const char *tid;
+ static int iterations = 1;
+ static float duration = -1;
+@@ -471,6 +474,22 @@ static void print_test_tags(void)
+ 	printf("\n");
+ }
+ 
++static void print_test_devices(void)
++{
++	const char *const *devices = tst_test->needs_devices;
++	int i;
++
++	if (!devices)
++		return;
++
++	printf("\nNeeded devices\n--------------\n");
++
++	for (i = 0; devices[i]; i++)
++		printf("%s\n", devices[i]);
++
++	printf("\n");
++}
++
+ static void check_option_collision(void)
+ {
+ 	unsigned int i, j;
+@@ -550,6 +569,7 @@ static void parse_opts(int argc, char *argv[])
+ 		case 'h':
+ 			print_help();
+ 			print_test_tags();
++			print_test_devices();
+ 			exit(0);
+ 		case 'i':
+ 			iterations = atoi(optarg);
+@@ -907,6 +927,24 @@ static void do_setup(int argc, char *argv[])
+ 				tst_brk(TCONF, "%s driver not available", name);
+ 	}
+ 
++	if (tst_test->needs_devices) {
++		int i;
++		const char *name;
++		int all_set = 1;
++
++		for (i = 0; (name = tst_test->needs_devices[i]); i++) {
++			if (!getenv(name))
++				all_set = 0;
 +		}
 +
-+		max_pos = (i & ~0xfULL) + 16 * 3;
-+		if (max_pos > data_len)
-+			max_pos = data_len;
++		if (!all_set) {
++			devlist = tst_devlist_discover(tst_test->needs_devices);
 +
-+		min_pos = i & ~0xfULL;
-+		if (min_pos > 16 * 3)
-+			min_pos -= 16 * 3;
-+		else
-+			min_pos = 0;
-+
-+		tst_res(TFAIL, "Oh oh, inconsistency at pos %d (0x%x)", i, i);
-+
-+		printf("\nOriginal sample:\n");
-+		print_hex_dump(data + min_pos, max_pos - min_pos, min_pos);
-+
-+		printf("\nReceived sample:\n");
-+		print_hex_dump(cmp_data + min_pos, max_pos - min_pos, min_pos);
-+		return 1;
++			if (!devlist)
++				tst_brk(TCONF, "No devices discovered");
++		}
 +	}
 +
-+	if (opts->mode & MODE_TX_ONLY)
-+		tst_res(TPASS, "TX passed");
+ 	if (tst_test->format_device)
+ 		tst_test->needs_device = 1;
+ 
+@@ -1335,6 +1373,7 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ {
+ 	int ret = 0;
+ 	unsigned int test_variants = 1;
++	unsigned int dev_list, device_lists;
+ 
+ 	lib_pid = getpid();
+ 	tst_test = self;
+@@ -1349,14 +1388,21 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+ 	if (tst_test->test_variants)
+ 		test_variants = tst_test->test_variants;
+ 
+-	for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
+-		if (tst_test->all_filesystems)
+-			ret |= run_tcases_per_fs();
+-		else
+-			ret |= fork_testrun();
++	device_lists = tst_devlist_cnt(devlist);
 +
-+	return 0;
-+}
++	for (dev_list = 0; dev_list < device_lists; dev_list++) {
+ 
+-		if (ret & ~(TCONF))
+-			goto exit;
++		tst_devlist_setup(devlist, dev_list);
 +
-+static int stress_test_uart(struct g_opt *opts, int fd, unsigned char *data, off_t data_len)
-+{
-+	unsigned int loops = 0;
-+	int status;
++		for (tst_variant = 0; tst_variant < test_variants; tst_variant++) {
++			if (tst_test->all_filesystems)
++				ret |= run_tcases_per_fs();
++			else
++				ret |= fork_testrun();
 +
-+	opts->cmp_buff = SAFE_MALLOC(data_len);
-+	memset(opts->cmp_buff, 0, data_len);
-+
-+	do {
-+		status = stress_test_uart_once(opts, fd, data, data_len);
-+		memset(opts->cmp_buff, 0, data_len);
-+	} while (++loops < opts->loops && !status);
-+
-+	free(opts->cmp_buff);
-+
-+	return status;
-+}
-+
-+static int setup_uart(struct g_opt *opts, int open_mode, struct termios *old_term)
-+{
-+	struct termios new_term;
-+	int fd;
-+	int ret;
-+
-+	tst_res(TINFO, "Setting up %s speed %u hwflow=%u",
-+	        opts->uart_dev, opts->baud_rate, opts->hwflow);
-+
-+	fd = SAFE_OPEN(opts->uart_dev, open_mode | O_NONBLOCK);
-+
-+	ret = tcgetattr(fd, old_term);
-+	if (ret < 0)
-+		tst_brk(TBROK, "tcgetattr() failed: %m\n");
-+
-+	new_term = *old_term;
-+
-+	/* or c_cflag |= BOTHER and c_ospeed for any speed */
-+	ret = cfsetspeed(&new_term, opts->baud_rate);
-+	if (ret < 0)
-+		tst_brk(TBROK, "cfsetspeed(, %u) failed %m\n", opts->baud_rate);
-+	cfmakeraw(&new_term);
-+	new_term.c_cflag |= CREAD;
-+	if (opts->hwflow)
-+		new_term.c_cflag |= CRTSCTS;
-+	else
-+		new_term.c_cflag &= ~CRTSCTS;
-+	new_term.c_cc[VMIN] = 64;
-+	new_term.c_cc[VTIME] = 8;
-+
-+	ret = tcsetattr(fd, TCSANOW, &new_term);
-+	if (ret < 0)
-+		tst_brk(TBROK, "tcsetattr failed: %m\n");
-+
-+	if (opts->do_termios) {
-+		ret = tcflush(fd, TCIFLUSH);
-+		if (ret < 0)
-+			tst_brk(TBROK, "tcflush failed: %m\n");
-+	}
-+
-+	ret = fcntl(fd, F_SETFL, 0);
-+	if (ret)
-+		printf("Failed to remove nonblock mode\n");
-+
-+	return fd;
-+}
-+
-+static void restore_uart(int fd, struct termios *old_term)
-+{
-+	int ret = tcsetattr(fd, TCSAFLUSH, old_term);
-+	if (ret)
-+		printf("tcsetattr() of old ones failed: %m\n");
-+}
-+
-+static void print_counters(const char *prefix,
-+                           struct serial_icounter_struct *old,
-+                           struct serial_icounter_struct *new)
-+{
-+#define CNT(x) (new->x - old->x)
-+	printf("%scts: %d dsr: %d rng: %d dcd: %d rx: %d tx: %d "
-+		"frame %d ovr %d par: %d brk: %d buf_ovrr: %d\n", prefix,
-+		CNT(cts), CNT(dsr), CNT(rng), CNT(dcd), CNT(rx),
-+		CNT(tx), CNT(frame), CNT(overrun), CNT(parity),
-+		CNT(brk), CNT(buf_overrun));
-+#undef CNT
-+}
-+
-+static struct g_opt opts = {
-+	.baud_rate = 115200,
-+	.loops = 1,
-+	.do_termios = 1,
-+};
-+
-+static char *uart_rx;
-+static char *uart_tx;
-+
-+unsigned char *data;
-+static long data_len;
-+
-+void run(void)
-+{
-+	struct serial_icounter_struct old_counters;
-+	struct serial_icounter_struct new_counters;
-+	int ret, fd_rx, fd_tx;
-+	struct termios old_term_rx, old_term_tx;
-+
-+	struct g_opt opts_in = opts;
-+	struct g_opt opts_out = opts;
-+
-+	opts_in.uart_dev = uart_rx;
-+	opts_out.uart_dev = uart_tx;
-+
-+	opts_in.mode = MODE_RX_ONLY;
-+	opts_out.mode = MODE_TX_ONLY;
-+
-+	fd_rx = setup_uart(&opts_in, O_RDONLY, &old_term_rx);
-+
-+	if (!strcmp(uart_rx, uart_tx))
-+		fd_tx = SAFE_OPEN(uart_tx, O_WRONLY);
-+	else
-+		fd_tx = setup_uart(&opts_out, O_WRONLY, &old_term_tx);
-+
-+	if (!SAFE_FORK()) {
-+		ioctl(fd_rx, TIOCGICOUNT, &old_counters);
-+		stress_test_uart(&opts_in, fd_rx, data, data_len);
-+		ret = ioctl(fd_rx, TIOCGICOUNT, &new_counters);
-+		if (ret > 0)
-+			print_counters("RX:", &old_counters, &new_counters);
-+		exit(0);
-+	}
-+
-+	if (!SAFE_FORK()) {
-+		ioctl(fd_tx, TIOCGICOUNT, &old_counters);
-+		stress_test_uart(&opts_out, fd_tx, data, data_len);
-+		ret = ioctl(fd_tx, TIOCGICOUNT, &new_counters);
-+		if (ret > 0)
-+			print_counters("TX:", &old_counters, &new_counters);
-+		exit(0);
-+	}
-+
-+	SAFE_WAIT(NULL);
-+	SAFE_WAIT(NULL);
-+
-+	restore_uart(fd_rx, &old_term_rx);
-+
-+	if (strcmp(uart_rx, uart_tx))
-+		restore_uart(fd_tx, &old_term_tx);
-+
-+	close(fd_rx);
-+	close(fd_tx);
-+}
-+
-+static void map_file(const char *fname)
-+{
-+	struct stat st;
-+	int fd;
-+
-+	fd = SAFE_OPEN(fname, O_RDONLY);
-+
-+	SAFE_FSTAT(fd, &st);
-+
-+	data_len = st.st_size;
-+
-+	data = SAFE_MMAP(NULL, data_len, PROT_READ,
-+	                 MAP_SHARED | MAP_LOCKED | MAP_POPULATE, fd, 0);
-+
-+	tst_res(TINFO, "Mapped file '%s' size %li bytes", fname, data_len);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void map_buffer(long buf_size)
-+{
-+	size_t i;
-+
-+	data_len = buf_size;
-+
-+	data = SAFE_MMAP(NULL, data_len, PROT_READ | PROT_WRITE,
-+	                 MAP_ANONYMOUS | MAP_SHARED | MAP_LOCKED, -1, 0);
-+
-+	long *p = (void*)data;
-+
-+	srandom(time(NULL));
-+
-+	for (i = 0; i < data_len / sizeof(long); i++)
-+		p[i] = random();
-+
-+	tst_res(TINFO, "Mapped anynymous memory size %li bytes", data_len);
-+}
-+
-+static char *baud_rate;
-+static char *hwflow;
-+static char *fname;
-+static char *buf_size;
-+
-+static void setup(void)
-+{
-+	long size = 1024;
-+
-+	if (baud_rate)
-+		tst_parse_int(baud_rate, &(opts.baud_rate), 0, INT_MAX);
-+
-+	if (hwflow)
-+		opts.hwflow = 1;
-+
-+	if (fname && buf_size)
-+		tst_brk(TBROK, "Only one of -f and -s could be set!");
-+
-+	if (buf_size)
-+		tst_parse_long(buf_size, &size, 0, LONG_MAX);
-+
-+	uart_rx = getenv("UART_RX");
-+	uart_tx = getenv("UART_TX");
-+
-+	if (fname)
-+		map_file(fname);
-+	else
-+		map_buffer(size);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.options = (struct tst_option[]) {
-+		{"b:", &baud_rate, "-b       Baud rate (9600, ...)"},
-+		{"w",  &hwflow   , "-w       Enable hwflow (RTS/CTS)"},
-+		{"f:",  &fname,    "-f       Binary file for transfers"},
-+		{"s:",  &buf_size, "-s       Binary buffer size"},
-+		{}
-+	},
-+	.needs_devices = (const char *const[]) {"UART_RX", "UART_TX", NULL},
-+	.forks_child = 1,
-+};
++			if (ret & ~(TCONF))
++				goto exit;
++		}
+ 	}
+ 
+ exit:
 -- 
 2.26.2
 
