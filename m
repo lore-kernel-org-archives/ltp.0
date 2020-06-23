@@ -1,63 +1,32 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 22 Jun 2020 22:15:34 +0100
-Subject: [LTP] [PATCH] fzsync: Add 10% margin of error to delay calculation
-Message-ID: <20200622211534.27270-1-rpalethorpe@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 23 Jun 2020 08:10:40 +0800
+Subject: [LTP] [PATCH v4 1/4] lib: add new cgroup test API
+In-Reply-To: <20200622131012.GA5500@dell5510>
+References: <20200609095102.21153-1-liwang@redhat.com>
+ <1111554317.15300411.1591699362992.JavaMail.zimbra@redhat.com>
+ <CAEemH2fkUX2KA+dPqgjqrBftxAZ722k9B7i3fi8eSxEmzSLk6w@mail.gmail.com>
+ <CAEemH2e+BE4=jikyu92CNarVGefd9piwDdWxSzwua3rWj6_dkQ@mail.gmail.com>
+ <20200622131012.GA5500@dell5510>
+Message-ID: <CAEemH2cZ9fLSt_uecP7hb5uoB7rPjqMsw0i5buvU9h8GDWc3dg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It appears that the number of spins required to align the start of A with the
-end of B (or the opposite) can be underestimated by some small amount on
-x86_64. The amount is probably highly dependant on architecture and other
-factors. It may be non-linear, but hopefully 10% will cover most cases.
+On Mon, Jun 22, 2020 at 10:20 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-Consider the following race:
+> Hi all,
+>
+> > I have pushed the patchset with the following changes:
+> I've updated wiki. Please remember updating it when you touch doc/*.txt.
+>
 
-Thread B:
-	tst_fzsync_start_race_b(&pair);
-	nanosleep(&delay, NULL);
-	winner = 'B';
-	tst_fzsync_end_race_b(&pair);
+Ah yes, I have forgotten that more than twice. Sorry for the inconvenience.
 
-Thread A:
-	winner = 'A';
-
-	tst_fzsync_start_race_a(&pair);
-	if (winner == 'A' && winner == 'B')
-		winner = 'A';
-	tst_fzsync_end_race_a(&pair);
-
-delay is 1ns, but nanosleep() takes about ~30,000-60000ns probably because of
-context switching. The race window is only about 1 instruction and A can only
-win if A is delayed for the entire time B is in the kernel.
-
-Because the delay is slightly underestimated (approx by 1000ns on my machine)
-this will only happen on rare occasions when A receives a small extra delay
-for other reasons.
-
-After adding 10% the race is usually won by A within 100K iterations (a few
-seconds on my machine).
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_fuzzy_sync.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 9ff3a78ae..4141f5c64 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -511,7 +511,7 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
- 		per_spin_time = fabsf(pair->diff_ab.avg) / MAX(pair->spins_avg.avg, 1.0f);
- 		time_delay = drand48() * (pair->diff_sa.avg + pair->diff_sb.avg)
- 			- pair->diff_sb.avg;
--		pair->delay += (int)(time_delay / per_spin_time);
-+		pair->delay += (int)(1.1 * time_delay / per_spin_time);
- 
- 		if (!pair->sampling) {
- 			tst_res(TINFO,
 -- 
-2.27.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200623/d658f29f/attachment.htm>
