@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 23 Jun 2020 14:14:57 +0200
-Subject: [LTP] [PATCH ltp] lib/newlib_tests: add test21 into .gitignore
-In-Reply-To: <20200623064424.15273-1-yixin.zhang@intel.com>
-References: <20200623064424.15273-1-yixin.zhang@intel.com>
-Message-ID: <20200623121457.GA11500@yuki.lan>
+Date: Tue, 23 Jun 2020 14:15:06 +0200
+Subject: [LTP] [PATCH] fzsync: Add 10% margin of error to delay
+ calculation
+In-Reply-To: <20200622211534.27270-1-rpalethorpe@suse.com>
+References: <20200622211534.27270-1-rpalethorpe@suse.com>
+Message-ID: <20200623121506.GB11500@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
