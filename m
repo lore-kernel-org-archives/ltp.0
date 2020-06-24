@@ -1,70 +1,111 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Date: Wed, 24 Jun 2020 12:53:16 +0200
-Subject: [LTP] [Automated-testing] [PATCH 1/2] tst_test: Add support for
- device discovery
-In-Reply-To: <20200624092940.GA30917@yuki.lan>
-References: <20200623112827.10744-1-chrubis@suse.cz>
- <20200623112827.10744-2-chrubis@suse.cz>
- <574e52f4-8988-a562-57c5-274a86e6e8cb@xilinx.com>
- <20200624090523.GA29350@yuki.lan>
- <adafab63-4390-a4a3-b3aa-923b31d5ac37@xilinx.com>
- <20200624092940.GA30917@yuki.lan>
-Message-ID: <c2f63582-bd42-30b9-4954-f026c96f1e24@xilinx.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 24 Jun 2020 13:32:17 +0200
+Subject: [LTP] [PATCH v3] syscalls/ioctl_loop05: Use correct blockdev to
+ get logical_block_size
+In-Reply-To: <1591853524-17011-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <660069492.15476972.1591794243308.JavaMail.zimbra@redhat.com>
+ <1591853524-17011-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200624113217.GC30917@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> +static void find_backing_bdpath(char *buf)
+> +{
+> +	const char *const df_cmd[] = {"df", "-T", ".", NULL};
+> +	char line[PATH_MAX];
+> +	FILE *file;
+> +
+> +	SAFE_CMD(df_cmd, "1.txt", NULL);
+> +	file = SAFE_FOPEN("1.txt", "r");
+> +
+> +	while (fgets(line, sizeof(line), file) != NULL) {
+> +		sscanf(line, "%s", buf);
+> +		if (strstr(buf, "/dev/") != NULL)
+> +			break;
+> +	}
+> +	SAFE_FCLOSE(file);
+> +}
 
+I do not like that we are calling df for something like this.
 
-On 24. 06. 20 11:29, Cyril Hrubis wrote:
-> Hi!
->>>> Not exactly sure how LTP handles this in general but I think it makes
->>>> sense to extend your test (txt_test) parameters to pass TX/RX channel
->>>> via parameters directly to test.
->>>>
->>>> Something like this
->>>> uart01_115200 uart01 -b 115200 -t /dev/ttyXX0 -r /dev/ttyXX1
->>>
->>> You can pass them in an environment variables. If UART_TX and UART_RX
->>> are set the device discovery is not attempted at all and the test just
->>> uses these.
->>>
->>> If they are not the script is executed and the test loops over the
->>> result(s). It would be more complicated if the devices were passed over
->>> command line parameters since we would have to re-execute the binary.
->>
->> I didn't run LTP for quite a long time myself but on xilinx devices you
->> have 3 different uart instances which you can wire: cadence uart (or
->> pl011), ns16550 and uartlite.
->> That means with the same hw design you should be able to to test
->> cadence<=>ns16550 and ns16550<=>uartlite. It means you need to exchange
->> variables in the middle of testing.
+Looking at what that command does it's not that complex. It does
+statfs() to get minor and major number, then scans /proc/self/mountinfo
+for these, since these are on third column and then just prints whatever
+it's in the 10th column. This isn't more complex that what we have here
+and avoids needs to execute binaries and parse the output.
+
+Also this function could be in a test library probably in tst_device.h.
+
+>  static void setup(void)
+>  {
+> -	int fd;
+> -	struct stat buf;
+> +	char buf[100];
+>  
+>  	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
+>  		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
+> @@ -109,13 +126,6 @@ static void setup(void)
+>  	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
+>  	tst_fill_file("test.img", 0, 1024, 1024);
+>  
+> -	fd = SAFE_OPEN("test.img", O_RDONLY);
+> -	SAFE_FSTAT(fd, &buf);
+> -	SAFE_CLOSE(fd);
+> -
+> -	logical_block_size = buf.st_blksize;
+> -	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
+> -
+>  	tst_attach_device(dev_path, "test.img");
+>  	attach_flag = 1;
+>  	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+> @@ -130,13 +140,23 @@ static void setup(void)
+>  	 *   size of loop is bigger than the backing device's and the loop
+>  	 *   needn't transform transfer.
+>  	 */
+> -	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
+> +	find_backing_bdpath(buf);
+> +	block_devfd = SAFE_OPEN(buf, O_RDWR);
+> +
+> +	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
+> +	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
+> +	SAFE_CLOSE(block_devfd);
+> +
+> +	if (logical_block_size > 512)
+> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
+>  }
+>  
+>  static void cleanup(void)
+>  {
+>  	if (dev_fd > 0)
+>  		SAFE_CLOSE(dev_fd);
+> +	if (block_devfd > 0)
+> +		SAFE_CLOSE(block_devfd);
+>  	if (attach_flag)
+>  		tst_detach_device(dev_path);
+>  }
+> @@ -150,5 +170,9 @@ static struct tst_test test = {
+>  	.needs_drivers = (const char *const []) {
+>  		"loop",
+>  		NULL
+> +	},
+> +	.needs_cmds = (const char *const []) {
+> +		"df",
+> +		NULL
+>  	}
+>  };
+> -- 
+> 2.23.0
 > 
-> The whole point of the script is that it returns one configuration per
-> line and the test then loops over these, which is a bit more flexible
-> than runtest files.
-
-ok. I expect this will end up that you will share example even with all
-lines commented to show how people should use this script.
-
 > 
->> Not sure if this is supported but I would simply generate runtest
->> description based on information I got from device discovery.
->> But I am far from testing at this stage.
 > 
-> The direction I would like to take in the long term is to slowly get rid
-> of runtest files and replace them with database that would be used by
-> the test execution framework to execute tests. There are too many
-> limitations that are imposed by runtest files, which in the end shape
-> the ways we think about tests. We should have get rid of these long time
-> ago...
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Hopefully that database won't be any complicated one to still have an
-option to run LTP on constrained systems.
-
-Definitely I agree with cleaning that runtest part.
-
-Thanks,
-Michal
+-- 
+Cyril Hrubis
+chrubis@suse.cz
