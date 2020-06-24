@@ -1,40 +1,72 @@
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Date: Wed, 24 Jun 2020 10:23:35 +1000
-Subject: [LTP] LTP: crypto: af_alg02 regression on linux-next 20200621
- tag
-In-Reply-To: <20200623170217.GB150582@gmail.com>
-References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
- <20200622224920.GA4332@42.do-not-panic.com>
- <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
- <20200623064056.GA8121@gondor.apana.org.au>
- <20200623170217.GB150582@gmail.com>
-Message-ID: <20200624002335.GC12716@gondor.apana.org.au>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 24 Jun 2020 11:05:23 +0200
+Subject: [LTP] [Automated-testing] [PATCH 1/2] tst_test: Add support for
+ device discovery
+In-Reply-To: <574e52f4-8988-a562-57c5-274a86e6e8cb@xilinx.com>
+References: <20200623112827.10744-1-chrubis@suse.cz>
+ <20200623112827.10744-2-chrubis@suse.cz>
+ <574e52f4-8988-a562-57c5-274a86e6e8cb@xilinx.com>
+Message-ID: <20200624090523.GA29350@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 23, 2020 at 10:02:17AM -0700, Eric Biggers wrote:
->
-> The source code for the two failing AF_ALG tests is here:
+Hi!
+> > +++ b/device-discovery.sh
+> > @@ -0,0 +1,5 @@
+> > +#!/bin/sh
+> > +
+> > +if [ "$1" = "UART_RX-UART_TX" ]; then
 > 
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg05.c
+> I am not getting this condition and what exactly you want to tell by that.
+> > +	echo "UART_RX=/dev/ttyUSB0 UART_TX=/dev/ttyUSB0"
 > 
-> They use read() and write(), not send() and recv().
-> 
-> af_alg02 uses read() to read from a "salsa20" request socket without writing
-> anything to it.  It is expected that this returns 0, i.e. that behaves like
-> encrypting an empty message.
-> 
-> af_alg05 uses write() to write 15 bytes to a "cbc(aes-generic)" request socket,
-> then read() to read 15 bytes.  It is expected that this fails with EINVAL, since
-> the length is not aligned to the AES block size (16 bytes).
+> In fpga world you can connect two uart inside chip and test different
+> device drivers that's why at the end of day only user knows which uarts
+> are connected to each other and none will be able to come up with
+> universal device-deiscovery.sh script to cover all these cases.
 
-Thanks.  Sounds like it's my introduction of the init variable that
-broke this.  Let me investigate.
+That's the whole point of the patchset.
+
+This is a script I've used for testing with a hardware loopback on the
+USB-to-serial bridge, it's not supposed to be included in the end
+result. I've kept it there so that people will get the idea how it
+should look like.
+
+Also script is passed which devices the test requests, so for i2c eeprom
+the parameters would be different and the script would output, for each
+present eeprom, a line with an address, bus, etc.
+
+The whole point of the script is to do plug into a Lab CI so that the
+information about test device, in this case UART loops, is exposed to
+the test. In a real world situation it would either do a call to a
+whatever is maintaining a lab hardware inventory, or be written down by
+a user before these tests are executed.
+
+> Not exactly sure how LTP handles this in general but I think it makes
+> sense to extend your test (txt_test) parameters to pass TX/RX channel
+> via parameters directly to test.
+> 
+> Something like this
+> uart01_115200 uart01 -b 115200 -t /dev/ttyXX0 -r /dev/ttyXX1
+
+You can pass them in an environment variables. If UART_TX and UART_RX
+are set the device discovery is not attempted at all and the test just
+uses these.
+
+If they are not the script is executed and the test loops over the
+result(s). It would be more complicated if the devices were passed over
+command line parameters since we would have to re-execute the binary.
+
+> IIRC RX and TX device could be the same which can mean that you want to
+> use internal or external loopbacks.
+
+The test works fine with external loopback. We will have to add a way
+how to pass "enable loopback in MCR" to the test if we want to use that,
+but that falls under the "Missing pieces" in the patch description.
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Cyril Hrubis
+chrubis@suse.cz
