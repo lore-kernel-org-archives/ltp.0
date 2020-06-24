@@ -1,28 +1,81 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 24 Jun 2020 09:06:12 -0400 (EDT)
-Subject: [LTP] [PATCH v3] syscalls/ioctl_loop05: Use correct blockdev to
- get logical_block_size
-In-Reply-To: <20200624113217.GC30917@yuki.lan>
-References: <660069492.15476972.1591794243308.JavaMail.zimbra@redhat.com>
- <1591853524-17011-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200624113217.GC30917@yuki.lan>
-Message-ID: <1699837077.18529566.1593003972656.JavaMail.zimbra@redhat.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Wed, 24 Jun 2020 09:21:41 -0400
+Subject: [LTP] [PATCH v3 1/2] IMA: Add a test to verify measurment of
+ keys
+In-Reply-To: <20200617234957.10611-2-t-josne@linux.microsoft.com>
+References: <20200617234957.10611-1-t-josne@linux.microsoft.com>
+ <20200617234957.10611-2-t-josne@linux.microsoft.com>
+Message-ID: <1593004901.27152.17.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Lachian,
 
------ Original Message -----
-> Looking at what that command does it's not that complex. It does
-> statfs() to get minor and major number, then scans /proc/self/mountinfo
-> for these, since these are on third column and then just prints whatever
-> it's in the 10th column. This isn't more complex that what we have here
-> and avoids needs to execute binaries and parse the output.
+> +
+> +# Based on https://lkml.org/lkml/2019/12/13/564.
+> +# (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
+> +test1()
+> +{
+> +	local keyrings keycheck_line templates test_file=$(mktemp)
+> +
+> +	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
+> +
+> +	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
+> +
+> +	[ -r $IMA_POLICY ] || tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
+> +
+> +	keycheck_line=$(grep "func=KEY_CHECK" $IMA_POLICY)
+> +	if [ -z "$keycheck_line" ]; then
+> +		tst_brk TCONF "ima policy does not specify \"func=KEY_CHECK\""
+> +	fi
+> +
+> +	if echo "$keycheck_line" | grep -q "*keyrings*"; then
+> +		tst_brk TCONF "ima policy does not specify a keyrings to check"
+> +	fi
+> +
+> +	keyrings=$(echo "$keycheck_line" | tr " " "\n" | grep "keyrings" | \
+> +		sed "s/\./\\\./g" | cut -d'=' -f2)
+> +	if [ -z "$keyrings" ]; then
+> +		tst_brk TCONF "ima policy has a keyring key-value specifier, but no specified keyrings"
+> +	fi
+> +
+> +	templates=$(echo "$keycheck_line" | tr " " "\n" | grep "template" | \
+> +		cut -d'=' -f2)
+> +
+> +	grep -E "($templates)*($keyrings)" $ASCII_MEASUREMENTS | while read line
 
-Thanks for mountinfo pointer. We went down the stat() route already,
-but hit issues with some filesystems. I tried it now with mountinfo
-approach and that does seem to fix btrfs case too, so I agree that
-parsing /proc/self/mountinfo rather than df output is nicer.
+Probably because I have multiple KEY_CHECK rules, this is failing:
 
+grep: Unmatched ( or \(
+
+And then it continues merrily alongs its way.
+
+ima_keys 1 TPASS: specified keyrings were measured correctly
+ima_keys 2 TCONF: missing /etc/keys/x509_ima.der
+
+Mimi
+
+> +	do
+> +		local digest expected_digest algorithm
+> +
+> +		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
+> +		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
+> +		keyring=$(echo "$line" | cut -d' ' -f5)
+> +
+> +		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
+> +
+> +		expected_digest="$(compute_digest $algorithm $test_file)" || \
+> +			tst_brk TCONF "cannot compute digest for $algorithm"
+> +
+> +		if [ "$digest" != "$expected_digest" ]; then
+> +			tst_res TFAIL "incorrect digest was found for the ($keyring) keyring"
+> +		fi
+> +	done
+> +
+> +	rm $test_file
+> +
+> +	tst_res TPASS "specified keyrings were measured correctly"
+> +}
