@@ -1,42 +1,32 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 25 Jun 2020 16:40:17 +0530
-Subject: [LTP] [PATCH V6 01/17] syscalls/timer_gettime: Add support for
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 25 Jun 2020 13:12:28 +0200
+Subject: [LTP] [PATCH V4 02/17] syscalls/timer_settime: Add support for
  time64 tests
-In-Reply-To: <20200625110751.GB23637@yuki.lan>
-References: <a4a628a637a6eeeed4249656836bd217f5cbb9ac.1590144577.git.viresh.kumar@linaro.org>
- <9621b4f97b539f2e080b00491eb9ba4973878028.1591760262.git.viresh.kumar@linaro.org>
- <20200624142327.GA5181@yuki.lan>
- <20200625095006.d6ndameqblecadp4@vireshk-i7>
- <20200625110751.GB23637@yuki.lan>
-Message-ID: <20200625111017.5yjsqi56u6q3u3s2@vireshk-i7>
+In-Reply-To: <20200625095610.6g5p3tsfsmfl6zrh@vireshk-i7>
+References: <cover.1590144577.git.viresh.kumar@linaro.org>
+ <db9669587a1c19b056a1cca6908fb8b5f316a76d.1590144577.git.viresh.kumar@linaro.org>
+ <20200624143056.GB5181@yuki.lan>
+ <20200625095610.6g5p3tsfsmfl6zrh@vireshk-i7>
+Message-ID: <20200625111228.GC23637@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 25-06-20, 13:07, Cyril Hrubis wrote:
-> >         TEST(tv->func(timer, tst_its_get(&spec)));
-> >         if (TST_RET == 0) {
-> > -               tst_res(TPASS, "timer_gettime() Passed");
-> > +               if ((spec.type == TST_KERN_OLD_TIMESPEC &&
-> > +                       (spec.ts.kern_old_its.it_interval.tv_sec ||
-> > +                        spec.ts.kern_old_its.it_interval.tv_nsec ||
-> > +                        spec.ts.kern_old_its.it_value.tv_sec ||
-> > +                        spec.ts.kern_old_its.it_value.tv_nsec)) ||
-> > +                   (spec.type == TST_KERN_TIMESPEC &&
-> > +                       (spec.ts.kern_its.it_interval.tv_sec ||
-> > +                        spec.ts.kern_its.it_interval.tv_nsec ||
-> > +                        spec.ts.kern_its.it_value.tv_sec ||
-> > +                        spec.ts.kern_its.it_value.tv_nsec)))
-> > +                       tst_res(TFAIL, "timespec should have been zeroed");
+Hi!
+> > So this test depends on the previous one since we are adding the tst_its
+> > piece by piece, shouldn't we add all the functions into the tst_timer.h
+> > in a separate patch?
 > 
-> Indeed that's what I had in mind, can we please abstract this properly
-> as well? I guess that we can add helpers such as tst_its_interval_sec()
-> tst_its_inverval_nsec, etc.
+> You mean functions related only to "its" ? Or all the wrappers for
+> various syscalls that are getting added to tst_timer.h ?
 
-I preferred it this way as no one else uses it and so maybe we can
-live without adding those helpers ?
+I guess that it would be easier to add all the code to tst_timer.h in
+one go, then we can focus on the actual tests. This avoids having
+dependencies between the patches touching the tests and allows them to
+be merged out of order...
 
 -- 
-viresh
+Cyril Hrubis
+chrubis@suse.cz
