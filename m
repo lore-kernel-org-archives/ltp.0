@@ -1,92 +1,71 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Jun 2020 15:25:37 +0200
-Subject: [LTP] [PATCH V3 2/2] syscalls/clock_gettime: Add test to check
- bug during successive readings
-In-Reply-To: <0fb91044431a04c2787bfa121a7e5f969664fc8b.1591948595.git.viresh.kumar@linaro.org>
-References: <cc75beb4074b62e94b8ac92cba17af41b8f5fbdc.1591864369.git.viresh.kumar@linaro.org>
- <0fb91044431a04c2787bfa121a7e5f969664fc8b.1591948595.git.viresh.kumar@linaro.org>
-Message-ID: <20200625132537.GB28350@yuki.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 25 Jun 2020 19:42:30 +0300
+Subject: [LTP] [RESENT PATCH 1/5] tst_net.sh: Remove rsh support
+In-Reply-To: <20200622070911.16123-2-petr.vorel@suse.com>
+References: <20200622070911.16123-1-petr.vorel@suse.com>
+ <20200622070911.16123-2-petr.vorel@suse.com>
+Message-ID: <3c3327ea-3132-255c-f853-c5c2d3f3c338@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +typedef int (*gettime_t)(clockid_t clk_id, void *ts);
-> +static gettime_t ptr_vdso_gettime, ptr_vdso_gettime64;
-> +
-> +static inline int _vdso_gettime(gettime_t vdso, clockid_t clk_id, void *ts)
-> +{
-> +	if (!vdso) {
-> +		errno = ENOSYS;
-> +		return -1;
-> +	}
-> +
-> +	return vdso(clk_id, ts);
-> +}
-> +
-> +static inline int vdso_gettime(clockid_t clk_id, void *ts)
-> +{
-> +	return _vdso_gettime(ptr_vdso_gettime, clk_id, ts);
-> +}
-> +
-> +static inline int vdso_gettime64(clockid_t clk_id, void *ts)
-> +{
-> +	return _vdso_gettime(ptr_vdso_gettime64, clk_id, ts);
-> +}
-> +
-> +static void find_vdso_helpers(void)
-> +{
-> +	/*
-> +	 * Some vDSO exports its clock_gettime() implementation with a different
-> +	 * name and version from other architectures, so we need to handle it as
-> +	 * a special case.
-> +	 */
-> +#if defined(__powerpc__) || defined(__powerpc64__)
-> +	const char *version = "LINUX_2.6.15";
-> +	const char *name = "__kernel_clock_gettime";
-> +#elif defined(__aarch64__)
-> +	const char *version = "LINUX_2.6.39";
-> +	const char *name = "__kernel_clock_gettime";
-> +#elif defined(__s390__)
-> +	const char *version = "LINUX_2.6.29";
-> +	const char *name = "__kernel_clock_gettime";
-> +#elif defined(__nds32__)
-> +	const char *version = "LINUX_4";
-> +	const char *name = "__vdso_clock_gettime";
-> +#elif defined(__riscv)
-> +	const char *version = "LINUX_4.15";
-> +	const char *name = "__vdso_clock_gettime";
-> +#else
-> +	const char *version = "LINUX_2.6";
-> +	const char *name = "__vdso_clock_gettime";
-> +#endif
-> +
-> +	const char *version64 = "LINUX_2.6";
-> +	const char *name64 = "__vdso_clock_gettime64";
-> +
-> +	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
-> +
-> +	if (!sysinfo_ehdr) {
-> +		tst_res(TINFO, "Couldn't find AT_SYSINFO_EHDR");
-> +		return;
-> +	}
-> +
-> +	vdso_init_from_sysinfo_ehdr(sysinfo_ehdr);
-> +
-> +	ptr_vdso_gettime = vdso_sym(version, name);
-> +	if (!ptr_vdso_gettime)
-> +		tst_res(TINFO, "Couldn't find vdso_gettime()");
-> +
-> +	ptr_vdso_gettime64 = vdso_sym(version64, name64);
-> +	if (!ptr_vdso_gettime64)
-> +		tst_res(TINFO, "Couldn't find vdso_gettime64()");
-> +}
+On 22.06.2020 10:09, Petr Vorel wrote:
+> From: Petr Vorel <pvorel@suse.cz>
+> 
+Hi Petr,
 
-Shouldn't we put this code into the vdso lib so that we can add vdso
-variant to all clock_gettime() tests?
+> rsh is not used nowadays. When was the first network library version
+> added in 18739ff06 (2014), it was a default + and ssh replacement was
+> optional. Netns based single machine testing was added in 5f8ca6cf0
+> (2016). After 6 years it's time to drop legacy rsh.
+> 
+> ssh based testing setup requires only RHOST variable, TST_USE_SSH has
+> been removed as unneeded. Also check for ssh in tst_rhost_run().
+> 
+> We still keep $LTP_RSH for some of the network stress tests, which has
+> not been ported to tst_net.sh yet.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+But tst_net.sh not used in such tests, so why keeping LTP_RSH there?
+
+> 
+> Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/tst_net.sh | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index 806b540cd..1b96b3bf4 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -136,7 +136,7 @@ init_ltp_netspace()
+>  # -b run in background
+>  # -c CMD specify command to run (this must be binary, not shell builtin/function)
+>  # -s safe option, if something goes wrong, will exit with TBROK
+> -# -u USER for ssh/rsh (default root)
+> +# -u USER for ssh (default root)
+>  # RETURN: 0 on success, 1 on failure
+>  tst_rhost_run()
+>  {
+> @@ -166,14 +166,12 @@ tst_rhost_run()
+>  		return 1
+>  	fi
+>  
+> -	if [ -n "${TST_USE_SSH:-}" ]; then
+> -		output=`ssh -n -q $user@$RHOST "sh -c \
+> -			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+> -	elif [ -n "${TST_USE_NETNS:-}" ]; then
+> +	if [ -n "${TST_USE_NETNS:-}" ]; then
+>  		output=`$LTP_NETNS sh -c \
+>  			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
+>  	else
+> -		output=`rsh -n -l $user $RHOST "sh -c \
+> +		tst_require_cmds ssh
+> +		output=`ssh -n -q $user@$RHOST "sh -c \
+>  			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+>  	fi
+>  	echo "$output" | grep -q 'RTERR$' && ret=1
+> 
+
