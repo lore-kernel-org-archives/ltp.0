@@ -1,179 +1,173 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 26 Jun 2020 11:52:31 +0530
-Subject: [LTP] [PATCH V7 18/19] syscalls/utimensat: Add support for time64
- tests
+Date: Fri, 26 Jun 2020 11:52:32 +0530
+Subject: [LTP] [PATCH V7 19/19] syscalls: clock_settime: Add test around
+ y2038 vulnerability
 In-Reply-To: <cover.1593152309.git.viresh.kumar@linaro.org>
 References: <cover.1593152309.git.viresh.kumar@linaro.org>
-Message-ID: <ca2669145a2022f5c4543bfe54ad4d67f3ff951e.1593152309.git.viresh.kumar@linaro.org>
+Message-ID: <5b16889b19e969b79fa7d46c533bb5989ace1e46.1593152309.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing utimensat() syscall
-tests.
+This adds a test around the y2038 vulnerability, it sets the system time
+to just before y2038 time (i.e. max value that can be stored in s32),
+and adds a timer to expire just after crossing it.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- runtest/syscalls                              |  2 +-
- testcases/kernel/syscalls/utimensat/Makefile  |  4 -
- .../kernel/syscalls/utimensat/utimensat01.c   | 74 ++++++++++++++++---
- 3 files changed, 65 insertions(+), 15 deletions(-)
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/clock_settime/.gitignore  |   1 +
+ .../syscalls/clock_settime/clock_settime03.c  | 119 ++++++++++++++++++
+ 3 files changed, 121 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime03.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 5b3a0862faea..2d2e24615be6 100644
+index 2d2e24615be6..718ac1148392 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1607,7 +1607,7 @@ utime06 utime06
- utimes01 utimes01
+@@ -101,6 +101,7 @@ leapsec01 leapsec01
  
- # Introduced from Kernel 2.6.22 onwards
--utimensat01 utimensat_tests.sh
-+utimensat01 utimensat01
+ clock_settime01 clock_settime01
+ clock_settime02 clock_settime02
++clock_settime03 clock_settime03
  
- vfork01 vfork01
- vfork02 vfork02
-diff --git a/testcases/kernel/syscalls/utimensat/Makefile b/testcases/kernel/syscalls/utimensat/Makefile
-index 69cab8dbc057..044619fb8724 100644
---- a/testcases/kernel/syscalls/utimensat/Makefile
-+++ b/testcases/kernel/syscalls/utimensat/Makefile
-@@ -5,8 +5,4 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--vpath %.c $(srcdir):$(top_srcdir)/lib
--
--INSTALL_TARGETS		:= utimensat_tests.sh
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index 97a43713454f..0139d6ddfedf 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -16,8 +16,7 @@
- #include <string.h>
- #include <sys/stat.h>
- #include "lapi/fs.h"
--#include "tst_test.h"
--#include "lapi/syscalls.h"
+ clone01 clone01
+ clone02 clone02
+diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
+index 28121755006b..b66169b3eb7b 100644
+--- a/testcases/kernel/syscalls/clock_settime/.gitignore
++++ b/testcases/kernel/syscalls/clock_settime/.gitignore
+@@ -1,2 +1,3 @@
+ clock_settime01
+ clock_settime02
++clock_settime03
+diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
+new file mode 100644
+index 000000000000..7245863137b5
+--- /dev/null
++++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Linaro Limited. All rights reserved.
++ * Author: Viresh Kumar<viresh.kumar@linaro.org>
++ *
++ * Check Year 2038 related vulnerabilities.
++ */
++
++#include <signal.h>
++#include "config.h"
 +#include "tst_timer.h"
- 
- #define UTIME_NOW	((1l << 30) - 1l)
- #define UTIME_OMIT	((1l << 30) - 2l)
-@@ -98,13 +97,68 @@ struct test_case {
- };
- 
- static inline int sys_utimensat(int dirfd, const char *pathname,
--				const struct timespec times[2], int flags)
-+				void *times, int flags)
- {
- 	return tst_syscall(__NR_utimensat, dirfd, pathname, times, flags);
- }
- 
-+static inline int sys_utimensat_time64(int dirfd, const char *pathname,
-+				       void *times, int flags)
-+{
-+	return tst_syscall(__NR_utimensat_time64, dirfd, pathname, times, flags);
-+}
++#include "tst_safe_clocks.h"
++
++#define TIMER_DELTA	3
++#define ALLOWED_DELTA	(50 * 1000) /* 50 ms */
++
++static struct tst_ts start, end;
++static struct tst_its its;
 +
 +static struct test_variants {
-+	int (*utimensat)(int dirfd, const char *pathname, void *times,
-+			 int flags);
++	int (*clock_gettime)(clockid_t clk_id, void *ts);
++	int (*clock_settime)(clockid_t clk_id, void *ts);
++	int (*timer_settime)(timer_t timerid, int flags, void *its,
++			     void *old_its);
 +	enum tst_ts_type type;
 +	char *desc;
 +} variants[] = {
-+#if (__NR_utimensat != __LTP__NR_INVALID_SYSCALL)
-+	{ .utimensat = sys_utimensat, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
++#if (__NR_clock_settime != __LTP__NR_INVALID_SYSCALL)
++	{ .clock_gettime = sys_clock_gettime, .clock_settime = sys_clock_settime, .timer_settime = sys_timer_settime, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
 +#endif
 +
-+#if (__NR_utimensat_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .utimensat = sys_utimensat_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
++#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
++	{ .clock_gettime = sys_clock_gettime64, .clock_settime = sys_clock_settime64, .timer_settime = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
 +#endif
 +};
 +
-+union tst_multi {
-+	struct timespec libc_ts[2];
-+	struct __kernel_old_timespec kern_old_ts[2];
-+	struct __kernel_timespec kern_ts[2];
-+} ts;
-+
-+static void tst_multi_set_time(enum tst_ts_type type, long access_tv_sec,
-+			long access_tv_nsec, long mod_tv_sec, long mod_tv_nsec)
++static void setup(void)
 +{
-+	switch (type) {
-+	case TST_LIBC_TIMESPEC:
-+		ts.libc_ts[0].tv_sec = access_tv_sec;
-+		ts.libc_ts[0].tv_nsec = access_tv_nsec;
-+		ts.libc_ts[1].tv_sec = mod_tv_sec;
-+		ts.libc_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	case TST_KERN_OLD_TIMESPEC:
-+		ts.kern_old_ts[0].tv_sec = access_tv_sec;
-+		ts.kern_old_ts[0].tv_nsec = access_tv_nsec;
-+		ts.kern_old_ts[1].tv_sec = mod_tv_sec;
-+		ts.kern_old_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	case TST_KERN_TIMESPEC:
-+		ts.kern_ts[0].tv_sec = access_tv_sec;
-+		ts.kern_ts[0].tv_nsec = access_tv_nsec;
-+		ts.kern_ts[1].tv_sec = mod_tv_sec;
-+		ts.kern_ts[1].tv_nsec = mod_tv_nsec;
-+		break;
-+	default:
-+		tst_brk(TBROK, "Invalid type: %d", type);
-+	}
++	struct test_variants *tv = &variants[tst_variant];
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	start.type = end.type = its.type = tv->type;
++
++	/* Check if the kernel is y2038 safe */
++	if (tv->type != TST_KERN_OLD_TIMESPEC &&
++	    sizeof(start.ts.kern_old_ts) == 8)
++		tst_brk(TFAIL, "Not Y2038 safe to run test");
 +}
 +
- static void setup(void)
- {
-+	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 	bad_addr = tst_get_bad_addr(NULL);
- }
- 
-@@ -144,8 +198,8 @@ static void change_attr(struct test_case *tc, int fd, int set)
- 
- static void run(unsigned int i)
- {
++static void run(void)
++{
 +	struct test_variants *tv = &variants[tst_variant];
- 	struct test_case *tc = &tcase[i];
--	struct timespec ts[2];
- 	void *tsp = NULL;
- 	char *pathname = NULL;
- 	int dfd = AT_FDCWD, fd = 0;
-@@ -160,11 +214,10 @@ static void run(unsigned int i)
- 	if (tc->mytime) {
- 		struct mytime *mytime = *tc->mytime;
- 
--		ts[0].tv_sec = mytime->access_tv_sec;
--		ts[0].tv_nsec = mytime->access_tv_nsec;
--		ts[1].tv_sec = mytime->mod_tv_sec;
--		ts[1].tv_nsec = mytime->mod_tv_nsec;
--		tsp = ts;
-+		tst_multi_set_time(tv->type, mytime->access_tv_sec,
-+				   mytime->access_tv_nsec, mytime->mod_tv_sec,
-+				   mytime->mod_tv_nsec);
-+		tsp = &ts.libc_ts;
- 	} else if (tc->exp_err == EFAULT) {
- 		tsp = bad_addr;
- 	}
-@@ -178,7 +231,7 @@ static void run(unsigned int i)
- 		pathname = bad_addr;
- 	}
- 
--	TEST(sys_utimensat(dfd, pathname, tsp, tc->flags));
-+	TEST(tv->utimensat(dfd, pathname, tsp, tc->flags));
- 	if (tc->pathname)
- 		change_attr(tc, fd, 0);
- 
-@@ -210,6 +263,7 @@ static void run(unsigned int i)
- static struct tst_test test = {
- 	.test = run,
- 	.tcnt = ARRAY_SIZE(tcase),
++	unsigned long long time = 0x7FFFFFFE; /* Time just before y2038 */
++	struct sigevent ev = {
++		.sigev_notify = SIGEV_SIGNAL,
++		.sigev_signo = SIGABRT,
++	};
++	long long diff;
++	timer_t timer;
++	sigset_t set;
++	int sig, ret;
++
++	if (sigemptyset(&set) == -1)
++		tst_brk(TBROK, "sigemptyset() failed");
++
++	if (sigaddset(&set, SIGABRT) == -1)
++		tst_brk(TBROK, "sigaddset() failed");
++
++	if (sigprocmask(SIG_BLOCK, &set, NULL) == -1)
++		tst_brk(TBROK, "sigprocmask() failed");
++
++	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME_ALARM, &ev, &timer));
++	if (TST_RET != 0)
++		tst_brk(TBROK | TERRNO, "timer_create() failed");
++
++	tst_ts_set_sec(&start, time);
++	tst_ts_set_nsec(&start, 0);
++
++	ret = tv->clock_settime(CLOCK_REALTIME, tst_ts_get(&start));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_settime() failed");
++
++	tst_its_set_interval_sec(&its, 0);
++	tst_its_set_interval_nsec(&its, 0);
++	tst_its_set_value_sec(&its, time + TIMER_DELTA);
++	tst_its_set_value_nsec(&its, 0);
++
++	TEST(tv->timer_settime(timer, TIMER_ABSTIME, tst_its_get(&its), NULL));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "timer_settime() failed");
++
++	if (sigwait(&set, &sig) == -1)
++		tst_brk(TBROK, "sigwait() failed");
++
++	ret = tv->clock_gettime(CLOCK_REALTIME, tst_ts_get(&end));
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "clock_gettime() failed");
++
++	if (sig == SIGABRT) {
++		diff = tst_ts_diff_ms(end, start);
++
++		if (diff < TIMER_DELTA * 1000 - ALLOWED_DELTA ||
++		    diff > TIMER_DELTA * 1000 + ALLOWED_DELTA)
++			tst_res(TINFO, "Slept for unexpected duration, expected:%d, actual:%lld",
++				TIMER_DELTA * 1000, diff);
++		tst_res(TPASS, "clock_settime(): Y2038 test passed");
++		return;
++	}
++
++	tst_res(TFAIL, "clock_settime(): Y2038 test failed");
++}
++
++static struct tst_test test = {
++	.test_all = run,
 +	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
++	.setup = setup,
++	.needs_root = 1,
++	.restore_wallclock = 1,
++};
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
