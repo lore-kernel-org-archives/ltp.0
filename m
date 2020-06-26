@@ -1,176 +1,85 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 26 Jun 2020 11:52:26 +0530
-Subject: [LTP] [PATCH V7 13/19] syscalls/ppoll: Add support for time64 tests
+Date: Fri, 26 Jun 2020 11:52:27 +0530
+Subject: [LTP] [PATCH V7 14/19] syscalls/select6: Add support for time64
+ tests
 In-Reply-To: <cover.1593152309.git.viresh.kumar@linaro.org>
 References: <cover.1593152309.git.viresh.kumar@linaro.org>
-Message-ID: <a014d7718d2a1c08cdf0dd07849f550d42a2db22.1593152309.git.viresh.kumar@linaro.org>
+Message-ID: <883a188e83c201b23074bf0ac974b41d89d818c7.1593152309.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds support for time64 tests to the existing ppoll() syscall
+This adds support for time64 tests to the existing select6() syscall
 tests.
-
-Note that the O_EXCL flag is removed from SAFE_OPEN() calls as it made
-the tests failed when run for the second variant as the file existed.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- testcases/kernel/syscalls/ppoll/ppoll01.c | 71 ++++++++++++++++++-----
- 1 file changed, 55 insertions(+), 16 deletions(-)
+ testcases/kernel/syscalls/select/select_var.h | 25 ++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
-index 2fadd0653948..a217254022d4 100644
---- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-+++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-@@ -21,6 +21,7 @@
- #include "ltp_signal.h"
- #include "tst_sig_proc.h"
- #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
+index b19a1d1bf085..2c7604807cf6 100644
+--- a/testcases/kernel/syscalls/select/select_var.h
++++ b/testcases/kernel/syscalls/select/select_var.h
+@@ -6,6 +6,7 @@
+ #define SELECT_VAR__
+ 
+ #include "lapi/syscalls.h"
 +#include "tst_timer.h"
  
- /* Older versions of glibc don't publish this constant's value. */
- #ifndef POLLRDHUP
-@@ -38,7 +39,7 @@ struct test_case {
- 	unsigned int nfds;	   /* nfds ppoll parameter */
- 	sigset_t *sigmask;	   /* sigmask ppoll parameter */
- 	sigset_t *sigmask_cur;	   /* sigmask set for current process */
--	struct timespec *ts;	   /* ts ppoll parameter */
-+	struct tst_ts *ts;	   /* ts ppoll parameter */
- 	struct pollfd *fds;	   /* fds ppoll parameter */
- 	int sigint_count;	   /* if > 0, spawn process to send SIGINT */
- 				   /* 'count' times to current process */
-@@ -60,14 +61,7 @@ static int fd1 = -1;
- static sigset_t sigmask_empty, sigmask_sigint;
- static struct pollfd fds_good[1], fds_already_closed[1];
- 
--static struct timespec ts_short = {
--	.tv_sec = 0,
--	.tv_nsec = 200000000,
--};
--static struct timespec ts_long = {
--	.tv_sec = 2,
--	.tv_nsec = 0,
--};
-+static struct tst_ts ts_short, ts_long;
- 
- /* Test cases
-  *
-@@ -160,14 +154,53 @@ static struct test_case tcase[] = {
- 	},
- };
- 
-+static inline int libc_ppoll(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+			     const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return ppoll(fds, nfds, tmo_p, sigmask);
-+}
-+
-+static inline int sys_ppoll(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+			    const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return tst_syscall(__NR_ppoll, fds, nfds, tmo_p, sigmask, sigsetsize);
-+}
-+
-+static inline int sys_ppoll_time64(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+				   const sigset_t *sigmask, size_t sigsetsize)
-+{
-+	return tst_syscall(__NR_ppoll_time64, fds, nfds, tmo_p, sigmask,
-+			   sigsetsize);
-+}
-+
-+static struct test_variants {
-+	int (*ppoll)(struct pollfd *fds, nfds_t nfds, void *tmo_p,
-+		     const sigset_t *sigmask, size_t sigsetsize);
-+
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+	{ .ppoll = libc_ppoll, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
-+
-+#if (__NR_ppoll != __LTP__NR_INVALID_SYSCALL)
-+	{ .ppoll = sys_ppoll, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
+ struct compat_sel_arg_struct {
+ 	long _n;
+@@ -38,7 +39,7 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+ 	}
+ 	case 2: {
+ 		int ret;
+-		struct timespec ts = {
++		struct __kernel_old_timespec ts = {
+ 			.tv_sec = timeout->tv_sec,
+ 			.tv_nsec = timeout->tv_usec * 1000,
+ 		};
+@@ -47,7 +48,22 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+ 		timeout->tv_usec = ts.tv_nsec / 1000;
+ 		return ret;
+ 	}
+-	case 3:
++	case 3: {
++		int ret = 0;
++#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
++		struct __kernel_timespec ts = {
++			.tv_sec = timeout->tv_sec,
++			.tv_nsec = timeout->tv_usec * 1000,
++		};
++		ret = tst_syscall(__NR_pselect6_time64, nfds, readfds, writefds, exceptfds, &ts, NULL);
++		timeout->tv_sec = ts.tv_sec;
++		timeout->tv_usec = ts.tv_nsec / 1000;
++#else
++		tst_brk(TCONF, "__NR_pselect6 time64 variant not supported");
 +#endif
-+
-+#if (__NR_ppoll_time64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .ppoll = sys_ppoll_time64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
-+
- static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
- {
++		return ret;
++	}
++	case 4:
+ #ifdef __NR__newselect
+ 		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
+ #else
+@@ -72,11 +88,14 @@ static void select_info(void)
+ 		tst_res(TINFO, "Testing SYS_pselect6 syscall");
+ 	break;
+ 	case 3:
++		tst_res(TINFO, "Testing SYS_pselect6 time64 syscall");
++	break;
++	case 4:
+ 		tst_res(TINFO, "Testing SYS__newselect syscall");
+ 	break;
+ 	}
  }
  
- static void setup(void)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	int fd2;
+-#define TEST_VARIANTS 4
++#define TEST_VARIANTS 5
  
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	SAFE_SIGNAL(SIGINT, sighandler);
- 
- 	if (sigemptyset(&sigmask_empty) == -1)
-@@ -177,18 +210,22 @@ static void setup(void)
- 	if (sigaddset(&sigmask_sigint, SIGINT) == -1)
- 		tst_brk(TBROK | TERRNO, "sigaddset");
- 
--	fd1 = SAFE_OPEN("testfile1", O_CREAT | O_EXCL | O_RDWR,
--		S_IRUSR | S_IWUSR);
-+	fd1 = SAFE_OPEN("testfile1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
- 	fds_good[0].fd = fd1;
- 	fds_good[0].events = POLLIN | POLLPRI | POLLOUT | POLLRDHUP;
- 	fds_good[0].revents = 0;
- 
--	fd2 = SAFE_OPEN("testfile2", O_CREAT | O_EXCL | O_RDWR,
--		S_IRUSR | S_IWUSR);
-+	fd2 = SAFE_OPEN("testfile2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
- 	fds_already_closed[0].fd = fd2;
- 	fds_already_closed[0].events = POLLIN | POLLPRI | POLLOUT | POLLRDHUP;
- 	fds_already_closed[0].revents = 0;
- 	SAFE_CLOSE(fd2);
-+
-+	ts_short.type = ts_long.type = tv->type;
-+	tst_ts_set_sec(&ts_short, 0);
-+	tst_ts_set_nsec(&ts_short, 200000000);
-+	tst_ts_set_sec(&ts_long, 2);
-+	tst_ts_set_nsec(&ts_long, 0);
- }
- 
- static void cleanup(void)
-@@ -199,10 +236,11 @@ static void cleanup(void)
- 
- static void do_test(unsigned int i)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	pid_t pid = 0;
- 	int sys_ret, sys_errno = 0, dummy;
- 	struct test_case *tc = &tcase[i];
--	struct timespec ts, *tsp = NULL;
-+	struct tst_ts ts, *tsp = NULL;
- 
- 	if (tc->ts) {
- 		memcpy(&ts, tc->ts, sizeof(ts));
-@@ -223,8 +261,8 @@ static void do_test(unsigned int i)
- 
- 	/* test */
- 	errno = 0;
--	sys_ret = tst_syscall(__NR_ppoll, tc->fds, tc->nfds, tsp,
--		tc->sigmask, SIGSETSIZE);
-+	sys_ret = tv->ppoll(tc->fds, tc->nfds, tst_ts_get(tsp), tc->sigmask,
-+			    SIGSETSIZE);
- 	sys_errno = errno;
- 
- 	/* cleanup */
-@@ -261,6 +299,7 @@ static void do_test(unsigned int i)
- static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tcase),
- 	.test = do_test,
-+	.test_variants = ARRAY_SIZE(variants),
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
+ #endif /* SELECT_VAR__ */
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
