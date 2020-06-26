@@ -1,141 +1,34 @@
-From: Herbert Xu <herbert@gondor.apana.org.au>
-Date: Fri, 26 Jun 2020 16:29:48 +1000
-Subject: [LTP] [PATCH] crypto: af_alg - Fix regression on empty requests
-In-Reply-To: <20200623170217.GB150582@gmail.com>
-References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
- <20200622224920.GA4332@42.do-not-panic.com>
- <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
- <20200623064056.GA8121@gondor.apana.org.au>
- <20200623170217.GB150582@gmail.com>
-Message-ID: <20200626062948.GA25285@gondor.apana.org.au>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 26 Jun 2020 10:05:29 +0200
+Subject: [LTP] [PATCH V2 1/2] libs: Import vdso parsing lib from kernel
+ tree
+In-Reply-To: <20200626035509.vag5m6fejs6rwl7x@vireshk-i7>
+References: <0f1cc05d6d79238ed94b93417f300e9a026a2063.1591864369.git.viresh.kumar@linaro.org>
+ <20200625132352.GA28350@yuki.lan>
+ <20200626035509.vag5m6fejs6rwl7x@vireshk-i7>
+Message-ID: <20200626080529.GA2631@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jun 23, 2020 at 10:02:17AM -0700, Eric Biggers wrote:
->
-> The source code for the two failing AF_ALG tests is here:
+Hi!
+> > Pushed with minor changes, thanks.
+> > 
+> > * Moved the comment about the function usage to the header
+> > 
+> > * Fixed some compiler warnings
 > 
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg05.c
-> 
-> They use read() and write(), not send() and recv().
-> 
-> af_alg02 uses read() to read from a "salsa20" request socket without writing
-> anything to it.  It is expected that this returns 0, i.e. that behaves like
-> encrypting an empty message.
-> 
-> af_alg05 uses write() to write 15 bytes to a "cbc(aes-generic)" request socket,
-> then read() to read 15 bytes.  It is expected that this fails with EINVAL, since
-> the length is not aligned to the AES block size (16 bytes).
+> I avoided these so in future we can simply copy paste the file from
+> kernel tree to get more updates, and so we keep the delta between them
+> to none.
 
-This patch should fix the regression:
+These were minor changes, so we can copy the file over and redo them.
 
----8<---
-Some user-space programs rely on crypto requests that have no
-control metadata.  This broke when a check was added to require
-the presence of control metadata with the ctx->init flag.
+Also it looks like the kernel Makefile does not enable warnings at all,
+which probably is not optimal, but who am I to complain...
 
-This patch fixes the regression by removing the ctx->init flag.
-
-This means that we do not distinguish the case of no metadata
-as opposed to an empty request.  IOW it is always assumed that
-if you call recv(2) before sending metadata that you are working
-with an empty request.
-
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: f3c802a1f300 ("crypto: algif_aead - Only wake up when...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index 9fcb91ea10c4..2d391117c020 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -635,7 +635,6 @@ void af_alg_pull_tsgl(struct sock *sk, size_t used, struct scatterlist *dst,
- 
- 	if (!ctx->used)
- 		ctx->merge = 0;
--	ctx->init = ctx->more;
- }
- EXPORT_SYMBOL_GPL(af_alg_pull_tsgl);
- 
-@@ -757,8 +756,7 @@ int af_alg_wait_for_data(struct sock *sk, unsigned flags, unsigned min)
- 			break;
- 		timeout = MAX_SCHEDULE_TIMEOUT;
- 		if (sk_wait_event(sk, &timeout,
--				  ctx->init && (!ctx->more ||
--						(min && ctx->used >= min)),
-+				  !ctx->more || (min && ctx->used >= min),
- 				  &wait)) {
- 			err = 0;
- 			break;
-@@ -847,7 +845,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	}
- 
- 	lock_sock(sk);
--	if (ctx->init && (init || !ctx->more)) {
-+	if (!ctx->more && ctx->used) {
- 		err = -EINVAL;
- 		goto unlock;
- 	}
-@@ -858,7 +856,6 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 			memcpy(ctx->iv, con.iv->iv, ivsize);
- 
- 		ctx->aead_assoclen = con.aead_assoclen;
--		ctx->init = true;
- 	}
- 
- 	while (size) {
-diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
-index d48d2156e621..749fe42315be 100644
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -106,7 +106,7 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
- 	size_t usedpages = 0;		/* [in]  RX bufs to be used from user */
- 	size_t processed = 0;		/* [in]  TX bufs to be consumed */
- 
--	if (!ctx->init || ctx->more) {
-+	if (ctx->more) {
- 		err = af_alg_wait_for_data(sk, flags, 0);
- 		if (err)
- 			return err;
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index a51ba22fef58..5b6fa5e8c00d 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -61,7 +61,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 	int err = 0;
- 	size_t len = 0;
- 
--	if (!ctx->init || (ctx->more && ctx->used < bs)) {
-+	if (ctx->more && ctx->used < bs) {
- 		err = af_alg_wait_for_data(sk, flags, bs);
- 		if (err)
- 			return err;
-diff --git a/include/crypto/if_alg.h b/include/crypto/if_alg.h
-index ee6412314f8f..08c087cc89d6 100644
---- a/include/crypto/if_alg.h
-+++ b/include/crypto/if_alg.h
-@@ -135,7 +135,6 @@ struct af_alg_async_req {
-  *			SG?
-  * @enc:		Cryptographic operation to be performed when
-  *			recvmsg is invoked.
-- * @init:		True if metadata has been sent.
-  * @len:		Length of memory allocated for this data structure.
-  */
- struct af_alg_ctx {
-@@ -152,7 +151,6 @@ struct af_alg_ctx {
- 	bool more;
- 	bool merge;
- 	bool enc;
--	bool init;
- 
- 	unsigned int len;
- };
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Cyril Hrubis
+chrubis@suse.cz
