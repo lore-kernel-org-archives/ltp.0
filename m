@@ -1,25 +1,36 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 Jun 2020 11:04:59 +0200
-Subject: [LTP] [PATCH V4 2/2] syscalls/clock_gettime: Add test to check
- bug during successive readings
-In-Reply-To: <20200626085327.GB2631@yuki.lan>
-References: <0fb91044431a04c2787bfa121a7e5f969664fc8b.1591948595.git.viresh.kumar@linaro.org>
- <a92d6492218673113f1b4b45733adad48b805bb3.1593147069.git.viresh.kumar@linaro.org>
- <20200626085327.GB2631@yuki.lan>
-Message-ID: <20200626090459.GC2631@yuki.lan>
+Date: Fri, 26 Jun 2020 11:10:12 +0200
+Subject: [LTP] [PATCH] [COMMITTED] libltpvdso: Fix build on Centos 6
+Message-ID: <20200626091012.11960-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Applied, thanks a lot.
+Since for loop initial declaration are not allowed on old gcc.
 
-With a minor change, indentifiers starting with underscore(s) are
-reserved for libc and kernel headers, we shall not use them, hence I
-renamed the _vdso_gettime() to do_vdso_gettime().
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ libs/libltpvdso/parse_vdso.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/libs/libltpvdso/parse_vdso.c b/libs/libltpvdso/parse_vdso.c
+index 03ba47e85..7bbd168b6 100644
+--- a/libs/libltpvdso/parse_vdso.c
++++ b/libs/libltpvdso/parse_vdso.c
+@@ -232,8 +232,10 @@ void *vdso_sym(const char *version, const char *name)
+ 
+ void vdso_init_from_auxv(void *auxv)
+ {
++	int i;
++
+ 	ELF(auxv_t) *elf_auxv = auxv;
+-	for (int i = 0; elf_auxv[i].a_type != AT_NULL; i++) {
++	for (i = 0; elf_auxv[i].a_type != AT_NULL; i++) {
+ 		if (elf_auxv[i].a_type == AT_SYSINFO_EHDR) {
+ 			vdso_init_from_sysinfo_ehdr(elf_auxv[i].a_un.a_val);
+ 			return;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
