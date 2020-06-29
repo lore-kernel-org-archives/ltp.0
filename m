@@ -1,138 +1,275 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Sun, 28 Jun 2020 15:42:03 +0800
-Subject: [LTP] [PATCH v4 2/2] syscalls/ioctl_loop05: Use correct blockdev to
- get logical_block_size
-In-Reply-To: <1593330123-19631-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20200624113217.GC30917@yuki.lan>
- <1593330123-19631-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1593330123-19631-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Vikas Kumar <vikas.kumar2@arm.com>
+Date: Mon, 29 Jun 2020 11:29:56 +0530
+Subject: [LTP] [PATCH V7] syscall: Add io_uring related tests
+Message-ID: <20200629055956.32677-1-vikas.kumar2@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-At the first, we use BLKSSZGET ioctl to get this size, but using wrong
-block dev(/dev/loopN) intead of correct backing file block dev(such as /dev/sdaN).
+Added asynchronous I/O API tests for io_uring_setup(), io_uring_register()
+and io_uring_enter(). These tests intend to validate io_uring operations.
 
-kernel code(driver/block/loop.c  __loop_update_dio function) as below:
----------------------------------------
-if (inode->i_sb->s_bdev) {
-	sb_bsize = bdev_logical_block_size(inode->i_sb->s_bdev);
-	dio_align = sb_bsize - 1;
-}
-if (dio) {
-	if (queue_logical_block_size(lo->lo_queue) >= sb_bsize &&
-		!(lo->lo_offset & dio_align) &&
-		mapping->a_ops->direct_IO &&!lo->transfer)
-		use_dio = true;
-	else
-		use_dio = false;
-} else {
-        use_dio = false;
-}
--------------------------------------
+1. io_uring_setup() creates submission queue and completion queue to
+   perform subsequent operations on the io_uring instance.
+2. io_uring_register() registers user buffers in kernel for long term
+   usese.
+3. io_uring_enter() initiates I/O operations using the shared SQ and CQ
+   queue.
 
-Using inode block size is also wrong because it is for filesystem io(such as we format
-filesystem can specify block size for data or log or metadata), it is not suitable
-for logical block size.
-
-Using tst_find_backing_dev(path, dev)to get the correct block dev.
-
-Also, "offset is ignored" belongs to the third test(less than logical_block_size) but not
-the second test(equal to logical_block_size)
-
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Vikas Kumar <vikas.kumar2@arm.com>
 ---
-v3->v4:
-1. using tst_find_backing_dev instead of df command
-2. also print block dev name
- .../kernel/syscalls/ioctl/ioctl_loop05.c      | 29 ++++++++++---------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ include/lapi/io_uring.h                       |  12 ++
+ testcases/kernel/syscalls/io_uring/Makefile   |   7 +
+ .../kernel/syscalls/io_uring/io_uring01.c     | 203 ++++++++++++++++++
+ 3 files changed, 222 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_uring/Makefile
+ create mode 100644 testcases/kernel/syscalls/io_uring/io_uring01.c
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index a96997823..e3c14faab 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -32,8 +32,8 @@
- #define DIO_MESSAGE "In dio mode"
- #define NON_DIO_MESSAGE "In non dio mode"
- 
--static char dev_path[1024], sys_loop_diopath[1024];
--static int dev_num, dev_fd, attach_flag, logical_block_size;
-+static char dev_path[1024], sys_loop_diopath[1024], backing_file_path[1024];;
-+static int dev_num, dev_fd, block_devfd, attach_flag, logical_block_size;
- 
- static void check_dio_value(int flag)
- {
-@@ -71,7 +71,7 @@ static void verify_ioctl_loop(void)
- 	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
- 	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
- 	if (TST_RET == 0) {
--		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded, offset is ignored");
-+		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
- 		check_dio_value(1);
- 		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
- 	} else {
-@@ -84,7 +84,7 @@ static void verify_ioctl_loop(void)
- 
- 	TEST(ioctl(dev_fd, LOOP_SET_DIRECT_IO, 1));
- 	if (TST_RET == 0) {
--		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded");
-+		tst_res(TPASS, "LOOP_SET_DIRECT_IO succeeded, offset is ignored");
- 		SAFE_IOCTL(dev_fd, LOOP_SET_DIRECT_IO, 0);
- 		return;
- 	}
-@@ -96,8 +96,7 @@ static void verify_ioctl_loop(void)
- 
- static void setup(void)
- {
--	int fd;
--	struct stat buf;
-+	char bd_path[100];
- 
- 	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
- 		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
-@@ -109,13 +108,6 @@ static void setup(void)
- 	sprintf(sys_loop_diopath, "/sys/block/loop%d/loop/dio", dev_num);
- 	tst_fill_file("test.img", 0, 1024, 1024);
- 
--	fd = SAFE_OPEN("test.img", O_RDONLY);
--	SAFE_FSTAT(fd, &buf);
--	SAFE_CLOSE(fd);
--
--	logical_block_size = buf.st_blksize;
--	tst_res(TINFO, "backing dev logical_block_size is %d", logical_block_size);
--
- 	tst_attach_device(dev_path, "test.img");
- 	attach_flag = 1;
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-@@ -130,13 +122,22 @@ static void setup(void)
- 	 *   size of loop is bigger than the backing device's and the loop
- 	 *   needn't transform transfer.
- 	 */
--	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
-+	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
-+	tst_find_backing_dev(backing_file_path, bd_path);
-+	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
-+	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
-+	tst_res(TINFO, "backing dev(%s) logical_block_size is %d", bd_path, logical_block_size);
-+	SAFE_CLOSE(block_devfd);
-+	if (logical_block_size > 512)
-+		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, logical_block_size), TST_RETVAL_EQ0);
+diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
+index 5fde58e22..8e47501a5 100644
+--- a/include/lapi/io_uring.h
++++ b/include/lapi/io_uring.h
+@@ -280,4 +280,16 @@ int io_uring_enter(int fd, unsigned int to_submit, unsigned int min_complete,
  }
+ #endif /* HAVE_IO_URING_ENTER */
  
- static void cleanup(void)
- {
- 	if (dev_fd > 0)
- 		SAFE_CLOSE(dev_fd);
-+	if (block_devfd > 0)
-+		SAFE_CLOSE(block_devfd);
- 	if (attach_flag)
- 		tst_detach_device(dev_path);
- }
++void io_uring_setup_supported_by_kernel(void)
++{
++	if ((tst_kvercmp(5, 1, 0)) < 0) {
++		TEST(syscall(__NR_io_uring_setup, NULL, 0));
++		if (TST_RET != -1)
++			SAFE_CLOSE(TST_RET);
++		else if (TST_ERR == ENOSYS)
++			tst_brk(TCONF,
++				"Test not supported on kernel version < v5.1");
++	}
++}
++
+ #endif /* IO_URING_H__ */
+diff --git a/testcases/kernel/syscalls/io_uring/Makefile b/testcases/kernel/syscalls/io_uring/Makefile
+new file mode 100644
+index 000000000..94a19de2f
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_uring/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2020 ARM Ltd.  All rights reserved.
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/io_uring/io_uring01.c b/testcases/kernel/syscalls/io_uring/io_uring01.c
+new file mode 100644
+index 000000000..738a2cb46
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_uring/io_uring01.c
+@@ -0,0 +1,203 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 ARM Ltd. All rights reserved.
++ * Author: Vikas Kumar <vikas.kumar2@arm.com>
++ *
++ * Tests for asynchronous I/O raw API i.e io_uring_setup(), io_uring_register()
++ * and io_uring_enter(). This tests validate basic API operation by creating a
++ * submission queue and a completion queue using io_uring_setup(). User buffer
++ * registered in the kernel for long term operation using io_uring_register().
++ * This tests initiates I/O operations with the help of io_uring_enter().
++ */
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++#include <fcntl.h>
++#include "config.h"
++#include "tst_test.h"
++#include "lapi/io_uring.h"
++
++#define QUEUE_DEPTH 1
++#define BLOCK_SZ    1024
++
++static struct tcase {
++	unsigned int setup_flags;
++	unsigned int register_opcode;
++	unsigned int enter_flags;
++} tcases[] = {
++	{IORING_SETUP_IOPOLL, IORING_REGISTER_BUFFERS, IORING_OP_READ_FIXED},
++};
++
++struct io_sq_ring {
++	unsigned int *head;
++	unsigned int *tail;
++	unsigned int *ring_mask;
++	unsigned int *ring_entries;
++	unsigned int *flags;
++	unsigned int *array;
++};
++
++struct io_cq_ring {
++	unsigned int *head;
++	unsigned int *tail;
++	unsigned int *ring_mask;
++	unsigned int *ring_entries;
++	struct io_uring_cqe *cqes;
++};
++
++struct submitter {
++	int ring_fd;
++	struct io_sq_ring sq_ring;
++	struct io_uring_sqe *sqes;
++	struct io_cq_ring cq_ring;
++};
++
++struct buff_info {
++	unsigned int buff_sz;
++	struct iovec iovecs[];
++};
++
++static struct submitter sub_ring;
++static struct submitter *s;
++static struct buff_info *bi;
++static sigset_t sig;
++
++static int setup_io_uring_test(struct submitter *s, struct tcase *tc)
++{
++	struct io_sq_ring *sring = &s->sq_ring;
++	struct io_cq_ring *cring = &s->cq_ring;
++	struct io_uring_params p;
++	void *ptr;
++
++	memset(&p, 0, sizeof(p));
++	p.flags |= tc->setup_flags;
++	s->ring_fd = io_uring_setup(QUEUE_DEPTH, &p);
++	if (s->ring_fd != -1) {
++		tst_res(TPASS, "io_uring_setup() passed");
++	} else {
++		tst_res(TFAIL | TTERRNO, "io_uring_setup() failed");
++		return 1;
++	}
++
++	/* Submission queue ring buffer mapping */
++	ptr = SAFE_MMAP(0, p.sq_off.array +
++			p.sq_entries * sizeof(unsigned int),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_SQ_RING);
++
++	/* Save global submission queue struct info */
++	sring->head = ptr + p.sq_off.head;
++	sring->tail = ptr + p.sq_off.tail;
++	sring->ring_mask = ptr + p.sq_off.ring_mask;
++	sring->ring_entries = ptr + p.sq_off.ring_entries;
++	sring->flags = ptr + p.sq_off.flags;
++	sring->array = ptr + p.sq_off.array;
++
++	/* Submission queue entries ring buffer mapping */
++	s->sqes = SAFE_MMAP(0, p.sq_entries *
++			sizeof(struct io_uring_sqe),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_SQES);
++
++	/* Completion queue ring buffer mapping */
++	ptr = SAFE_MMAP(0,
++			p.cq_off.cqes + p.cq_entries *
++			sizeof(struct io_uring_cqe),
++			PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_POPULATE,
++			s->ring_fd, IORING_OFF_CQ_RING);
++
++	/* Save global completion queue struct info */
++	cring->head = ptr + p.cq_off.head;
++	cring->tail = ptr + p.cq_off.tail;
++	cring->ring_mask = ptr + p.cq_off.ring_mask;
++	cring->ring_entries = ptr + p.cq_off.ring_entries;
++	cring->cqes = ptr + p.cq_off.cqes;
++
++	return 0;
++}
++
++static int submit_to_uring_sq(struct submitter *s, struct tcase *tc)
++{
++	unsigned int index = 0, tail = 0, next_tail = 0;
++	struct io_sq_ring *sring = &s->sq_ring;
++	struct io_uring_sqe *sqe;
++	void  *iov_base;
++	size_t iov_len;
++	int ret;
++
++	bi = SAFE_MALLOC(sizeof(*bi));
++	iov_len = BLOCK_SZ;
++	iov_base = SAFE_MALLOC(iov_len);
++	memset(iov_base, 0, iov_len);
++	bi->iovecs[index].iov_base = (void *)iov_base;
++	bi->iovecs[index].iov_len = (size_t)iov_len;
++
++	ret = io_uring_register(s->ring_fd, tc->register_opcode,
++				bi->iovecs, QUEUE_DEPTH);
++	if (ret == 0) {
++		tst_res(TPASS, "io_uring_register() passed");
++	} else {
++		tst_res(TFAIL | TTERRNO, "io_uring_register() failed");
++		return 1;
++	}
++
++	/* Submission queue entry addition to SQE ring buffer tail */
++	tail = *sring->tail;
++	next_tail = tail;
++	next_tail++;
++	index = tail & *s->sq_ring.ring_mask;
++	sqe = &s->sqes[index];
++	sqe->flags = 0;
++	sqe->opcode = tc->enter_flags;
++	sqe->addr = (unsigned long)bi->iovecs;
++	sqe->user_data = (unsigned long long)bi;
++	sring->array[index] = index;
++	tail = next_tail;
++
++	/* Kernel to notice the tail update */
++	if (*sring->tail != tail)
++		*sring->tail = tail;
++
++	ret =  io_uring_enter(s->ring_fd, 1, 1, IORING_ENTER_GETEVENTS, &sig);
++	if (ret >= 0) {
++		tst_res(TPASS, "io_uring_enter() passed");
++	} else {
++		tst_res(TFAIL | TTERRNO, "io_uring_enter() failed");
++		return 1;
++	}
++
++	return 0;
++}
++
++static void cleanup_io_uring_test(void)
++{
++	io_uring_register(s->ring_fd, IORING_UNREGISTER_BUFFERS,
++			  NULL, QUEUE_DEPTH);
++	SAFE_MUNMAP(s->sqes, sizeof(struct io_uring_sqe));
++}
++
++static void run(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	s = &sub_ring;
++	memset(s, 0, sizeof(*s));
++	if (setup_io_uring_test(s, tc))
++		return;
++
++	if (submit_to_uring_sq(s, tc))
++		return;
++
++	cleanup_io_uring_test();
++	tst_res(TPASS, "functionality of io_uring API is correct");
++}
++
++static struct tst_test test = {
++	.setup = io_uring_setup_supported_by_kernel,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++};
++
 -- 
-2.23.0
-
-
+2.17.1
 
