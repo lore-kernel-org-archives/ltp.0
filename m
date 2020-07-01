@@ -1,24 +1,58 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 1 Jul 2020 15:04:11 +0800
-Subject: [LTP] Memcg testcase failure
-In-Reply-To: <BMXPR01MB2344F43177589233AA67FF27EE6F0@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB2344F43177589233AA67FF27EE6F0@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <CAEemH2df0KiCNmBqJqTHaBrL5rpO7Q4q4+4snAREvpzUAPGAzw@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed,  1 Jul 2020 17:14:55 +0200
+Subject: [LTP] [PATCH v2 1/2] Add tst_get_hugepage_size() to LTP library
+Message-ID: <20200701151456.851-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Pankaj,
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-It has been a known issue there for quite some time, I will take a close
-look recently, if I can figure out the problem will let you know. Thanks!
-https://github.com/linux-test-project/ltp/issues/326
+No changes since v1.
 
+ include/tst_hugepage.h | 5 +++++
+ lib/tst_hugepage.c     | 9 +++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+index 60c03c5c5..e08a2daa2 100644
+--- a/include/tst_hugepage.h
++++ b/include/tst_hugepage.h
+@@ -12,6 +12,11 @@
+ extern char *nr_opt; /* -s num   Set the number of the been allocated hugepages */
+ extern char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H /var/hugetlbfs */
+ 
++/*
++ * Get the default hugepage size. Returns 0 if hugepages are not supported.
++ */
++size_t tst_get_hugepage_size(void);
++
+ /*
+  * Try the best to request a specified number of huge pages from system,
+  * it will store the reserved hpage number in tst_hugepages.
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index f2bf5d20e..3a8dcca90 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -12,6 +12,15 @@ unsigned long tst_hugepages;
+ char *nr_opt;
+ char *Hopt;
+ 
++size_t tst_get_hugepage_size(void)
++{
++	if (access(PATH_HUGEPAGES, F_OK)) {
++		return 0;
++	}
++
++	return SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
++}
++
+ unsigned long tst_request_hugepages(unsigned long hpages)
+ {
+ 	unsigned long val, max_hpages;
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200701/aa323c12/attachment.htm>
+2.26.2
+
