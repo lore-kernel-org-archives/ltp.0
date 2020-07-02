@@ -1,222 +1,180 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 2 Jul 2020 16:08:49 +0200
-Subject: [LTP] [PATCH v1] Add a test case for mmap() MAP_GROWSDOWN flag
-In-Reply-To: <50c6d8d9-7a79-ab71-1e88-ab693403b25e@zilogic.com>
-References: <20200630054405.6115-1-pravinraghul@zilogic.com>
- <20200630095554.GB2684@yuki.lan>
- <50c6d8d9-7a79-ab71-1e88-ab693403b25e@zilogic.com>
-Message-ID: <20200702140849.GE9101@yuki.lan>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu,  2 Jul 2020 16:15:03 +0200
+Subject: [LTP] [PATCH] Use fallocate() to create loop device backing file
+Message-ID: <20200702141503.2556-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Creating large loop device backing files using tst_fill_file() on shared
+testing machines  may lead to performance issues and timeouts. Preallocating
+space using fallocate() is fast and sufficient.
 
-Hi!
-I've added ltp mailing list back to CC, please always keep it in the CC
-when sending patches/discussing testcases.
+Space allocation will fall back to tst_fill_file() if fallocate() fails for any
+other reason than lack of space.
 
-> >> +static void *check_depth_recursive(void *limit)
-> >> +{
-> >> +	if ((off_t) &limit < (off_t) limit)
-> >> +		return NULL;
-> >> +
-> >> +	return check_depth_recursive(limit);
-> >> +}
-> >> +
-> >> +void grow_stack(void *stack, size_t size, void *limit)
-> >> +{
-> >> +	pthread_t test_thread;
-> >> +	pthread_attr_t attr;
-> >> +	int ret;
-> >> +
-> >> +	ret = pthread_attr_init(&attr);
-> >> +	if (ret != 0)
-> >> +		tst_brk(TBROK, "pthread_attr_init failed during setup");
-> >> +
-> >> +	ret = pthread_attr_setstack(&attr, stack, size);
-> >> +	if (ret != 0)
-> >> +		tst_brk(TBROK, "pthread_attr_setstack failed during setup");
-> >> +
-> >> +	SAFE_PTHREAD_CREATE(&test_thread, &attr, check_depth_recursive,
-> >> limit);
-> >> +	SAFE_PTHREAD_JOIN(test_thread, NULL);
-> > Do we really have to use pthreads here? Can't we just touch the guard
-> > page by writing to it? I guess that we can just do for () loop over the
-> > mapping with something as:
-> >
-> > 	for (i = 0; i < size; i++)
-> > 		((char*)stack)[i] = 'a';
-> >
-> I have attached a code below for your reference regarding the method that
-> you have suggested. Please have a look.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ doc/test-writing-guidelines.txt | 20 +++++++++++++++++
+ include/tst_fs.h                | 17 ++++++++++++++
+ lib/tst_device.c                |  2 +-
+ lib/tst_fill_file.c             | 40 +++++++++++++++++++++++++++++++++
+ 4 files changed, 78 insertions(+), 1 deletion(-)
 
-Can you please send v2 patch instead?
-
-> Here we are writing the pages with char 'a' where pages, doesn't
-> grow in the unmapped region, thereby doesn't satify the mmap flag
-> MAP_GROWSDOWN.
-> MAP_GROWSDOWN doesn't work when guard page is touched by the regular
-> pointer.we use pthread to grow stacks via stack pointer.
-
-Looks like you are right, we have to move the RSP in order to reserve
-stack space before we touch it to cause page fault. So I guess that
-setting thread stack may be easiest option.
-
-Also for the tail call, I guess that it would be easier to setup an
-array on the stack then fill it with a for loop or something like that.
-
-> >> +		SAFE_WAIT(&wstatus);
-> >> +		if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) == 0)
-> >> +			tst_res(TPASS, "stack grows in unmapped region");
-> >> +		else
-> >> +			tst_res(TFAIL, "child exited with %d", wstatus);
-> >> +	}
-> > No test result propagation, the child should report the test result
-> > using the tst_res() itself.
-> >
-> we are the testing the stack growth in unmapped region with child process,
-> so test result depends on the child status that's why we are checking
-> the exit status. Handling the child report accordingly If the stack grows
-> properly in unmapped region the test is considered to be passed, otherwise
-> test failed with the return status.
-> 
-> Please let me know your thoughts..!
-> Will update a new patch with changes made regarding other mistakes, after
-> yours thoughts.
-
-The results are propagated from the child process automatically, all we
-need to do here is to check that the child haven't crashed, i.e. that it
-exitted with 0.
-
-We usually do:
-
-	if (!WIFEXITTED(status) || WEXITSTATUS(status) != 0)
-		tst_brk(TBROK, "Child %s", tst_strstatus(status));
-
-> /*
->  * Algorithm:
->  * 1) In this test case we allocated 16 pages.
->  * 2) Then we split the stack space into two and mapped the upper region.
->  * 3) The lower region left unmapped.
->  * 4) Now trying to write the pages with character 'a'.
->  * 5) Writing the page on unmapped region as well.
->  *
->  * The result of the output will show the mapped and unmapped region. 
->  *
->  * Here we are writing the pages with char 'a' where pages, doesn't 
->  * grow in the unmapped region, thereby doesn't satify the mmap flag
->  * MAP_GROWSDOWN.
->  *
->  */
-> 
-> #include <unistd.h>
-> #include <sys/wait.h>
-> #include <pthread.h>
-> #include <sys/mman.h>
-> #include <sys/wait.h>
-> #include <unistd.h>
-> #include <stdlib.h>
-> #include <stdbool.h>
-> 
-> #include "tst_test.h"
-> 
-> #define PAGESIZE 4096
-> #define UNITS(x) ((x) * PAGESIZE)
-> 
-> static void *stack;
-> 
-> static bool check_stackgrow_up(int *local_var_1)
-> {
-> 	int local_var_2;
-> 
-> 	return !(local_var_1 < &local_var_2);
-> }
-> 
-> static void setup(void)
-> {
-> 	int local_var_1;
-> 
-> 	if (check_stackgrow_up(&local_var_1))
-> 		tst_brk(TCONF, "Test can't be performed with stack grows up architecture");
-> }
-> 
-> static void cleanup(void)
-> {
-> 	if (stack)
-> 		SAFE_MUNMAP(stack, UNITS(8));
-> }
-> 
-> static void *find_free_range(size_t size)
-> {
-> 	void *mem;
-> 
-> 	mem = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE,
-> 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> 	SAFE_MUNMAP(mem, size);
-> 
-> 	return mem;
-> }
-> 
-> static void split_unmapped_plus_stack(void *start, size_t size)
-> {
-> 	/* start           start + size
-> 	 * +---------------------+----------------------+
-> 	 * + unmapped            | mapped               |
-> 	 * +---------------------+----------------------+
-> 	 *                       stack
-> 	 */
-> 	stack = SAFE_MMAP(start + size, size, PROT_READ | PROT_WRITE,
-> 			  MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN,
-> 			  -1, 0);
-> 	tst_res(TINFO, "mapped = %p", stack + UNITS(8));
-> 	tst_res(TINFO, "mapped = %p", stack);
-> }
-> 
-> static void grow_stack(void *start, size_t size)
-> {
->   volatile char *ptr1 = start;
-> 	
-> 	for (int i = 0; i < size; i++) {
-> 		ptr1 -= UNITS(1);
-> 		*ptr1 = 'a';
-> 		tst_res(TINFO, "addr   = %p", ptr1);
-> 	}
-> 
-> 	exit(0);
-> }
-> 
-> static void run_test(void)
-> {
-> 	void *mem;
-> 	pid_t child_pid;
-> 	int wstatus;
-> 
-> 	mem = find_free_range(UNITS(16));
-> 	tst_res(TINFO, "unmap = %p", mem + UNITS(16));
-> 	tst_res(TINFO, "unmap = %p", mem);
-> 	split_unmapped_plus_stack(mem, UNITS(8));
-> 
-> 	child_pid = SAFE_FORK();
-> 	if (!child_pid)
-> 		grow_stack(stack + UNITS(8), UNITS(16) / UNITS(1));
-> 
-> 	SAFE_WAIT(child_pid, &wstatus, 0);
-> 	if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) == 0)
-> 		tst_res(TPASS, "stack grows in unmapped region");
-> 	else
-> 		tst_res(TFAIL, "child exited with %d", wstatus);
-> }
-> 
-> static struct tst_test test = {
-> 	.setup = setup,
-> 	.cleanup = cleanup,
-> 	.test_all = run_test,
-> 	.forks_child = 1,
-> };
-
-
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 6e466ed0f..4e7ee1628 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1225,11 +1225,31 @@ Fill a file with specified pattern using file descriptor.
+ -------------------------------------------------------------------------------
+ #include "tst_test.h"
+ 
++int tst_prealloc_size_fd(int fd, size_t bs, size_t bcount);
++-------------------------------------------------------------------------------
++
++Preallocate the specified amount of space using 'fallocate()'. Falls back to
++'tst_fill_fd()' if 'fallocate()' fails.
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ -------------------------------------------------------------------------------
+ 
+ Creates/overwrites a file with specified pattern using file path.
+ 
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++int tst_prealloc_file(const char *path, size_t bs, size_t bcount);
++-------------------------------------------------------------------------------
++
++Create/overwrite a file and preallocate the specified amount of space for it.
++The allocated space will not be initialized to any particular content.
++
+ 2.2.19 Getting an unused PID number
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index bcef87a40..fc0390582 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -140,6 +140,15 @@ int tst_get_path(const char *prog_name, char *buf, size_t buf_len);
+  */
+ int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount);
+ 
++/*
++ * Preallocate space in open file. If fallocate() fails, falls back to
++ * using tst_fill_fd().
++ * @fd: file descriptor
++ * @bs: block size
++ * @bcount: blocks count
++ */
++int tst_prealloc_size_fd(int fd, size_t bs, size_t bcount);
++
+ /*
+  * Creates/ovewrites a file with specified pattern
+  * @path: path to file
+@@ -149,6 +158,14 @@ int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount);
+  */
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
+ 
++/*
++ * Creates file of specified size. Space will be only preallocated if possible.
++ * @path: path to file
++ * @bs: block size
++ * @bcount: blocks amount
++ */
++int tst_prealloc_file(const char *path, size_t bs, size_t bcount);
++
+ #define TST_FS_SKIP_FUSE 0x01
+ 
+ /*
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 67fe90ed6..b46ae722e 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -232,7 +232,7 @@ const char *tst_acquire_loop_device(unsigned int size, const char *filename)
+ {
+ 	unsigned int acq_dev_size = MAX(size, DEV_SIZE_MB);
+ 
+-	if (tst_fill_file(filename, 0, 1024 * 1024, acq_dev_size)) {
++	if (tst_prealloc_file(filename, 1024 * 1024, acq_dev_size)) {
+ 		tst_resm(TWARN | TERRNO, "Failed to create %s", filename);
+ 		return NULL;
+ 	}
+diff --git a/lib/tst_fill_file.c b/lib/tst_fill_file.c
+index f2bc52d42..80472007f 100644
+--- a/lib/tst_fill_file.c
++++ b/lib/tst_fill_file.c
+@@ -19,12 +19,14 @@
+  *
+  */
+ 
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
++#include "lapi/fallocate.h"
+ 
+ #include "test.h"
+ 
+@@ -54,6 +56,22 @@ int tst_fill_fd(int fd, char pattern, size_t bs, size_t bcount)
+ 	return 0;
+ }
+ 
++int tst_prealloc_size_fd(int fd, size_t bs, size_t bcount)
++{
++	int ret;
++
++	errno = 0;
++	ret = fallocate(fd, 0, 0, bs * bcount);
++
++	if (ret && errno == ENOSPC)
++		return ret;
++
++	if (ret)
++		ret = tst_fill_fd(fd, 0, bs, bcount);
++
++	return ret;
++}
++
+ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+ {
+ 	int fd;
+@@ -76,3 +94,25 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount)
+ 
+ 	return 0;
+ }
++
++int tst_prealloc_file(const char *path, size_t bs, size_t bcount)
++{
++	int fd;
++
++	fd = open(path, O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR);
++	if (fd < 0)
++		return -1;
++
++	if (tst_prealloc_size_fd(fd, bs, bcount)) {
++		close(fd);
++		unlink(path);
++		return -1;
++	}
++
++	if (close(fd) < 0) {
++		unlink(path);
++		return -1;
++	}
++
++	return 0;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
