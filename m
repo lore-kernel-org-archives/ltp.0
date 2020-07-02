@@ -1,26 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 2 Jul 2020 11:13:33 +0200
-Subject: [LTP] [PATCH 1/1] numa01.sh: Handle computation error
-In-Reply-To: <20200701233133.122801-1-petr.vorel@gmail.com>
-References: <20200701233133.122801-1-petr.vorel@gmail.com>
-Message-ID: <20200702091333.GA2445@yuki.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 2 Jul 2020 05:18:33 -0400 (EDT)
+Subject: [LTP] [PATCH v5 1/2] tst_device: Add new api
+ tst_find_backing_dev(path, dev)
+In-Reply-To: <1593430883-6131-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1904309747.19085433.1593428894028.JavaMail.zimbra@redhat.com>
+ <1593430883-6131-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <370764327.568888.1593681513002.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Simple fix for https://github.com/linux-test-project/ltp/issues/702,
-> I guess there should be more checks. Not tested.
-> BTW I thought numa01.sh was intended to be replaced with C (@Cyril: am I
-> correct?), thus I didn't bother to split syntax fix into 2 commits.
 
-In the long term yes, a few tests have been removed from it since they
-were reimplemented in C already. The rest is on TODO with a low
-priority. For instance we already have tests for migrate_pages, if we
-cleanup these we can remove the test8 from the numa01.sh etc...
+----- Original Message -----
+> This api uses stat() to get major/minor devnumber of the path, assign the
+> 10th column value to dev when match succeeds in "/proc/self/mountinfo".
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Cyril, any objections to v5?
+
