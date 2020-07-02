@@ -1,50 +1,28 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 2 Jul 2020 14:09:10 +0200
-Subject: [LTP] [PATCH v2 2/2] Add test for CVE 2017-1000405
-In-Reply-To: <CAEemH2f2D9xBYxeQ33w0thxZFpkSHK3gn1bBQWMZSA=X5y-AWQ@mail.gmail.com>
-References: <20200701151456.851-1-mdoucha@suse.cz>
- <20200701151456.851-2-mdoucha@suse.cz>
- <CAEemH2f2D9xBYxeQ33w0thxZFpkSHK3gn1bBQWMZSA=X5y-AWQ@mail.gmail.com>
-Message-ID: <d0bd1421-500a-bc84-bd0a-7b5f25ade684@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 2 Jul 2020 14:27:28 +0200
+Subject: [LTP] [PATCH v5 1/2] tst_device: Add new api
+ tst_find_backing_dev(path, dev)
+In-Reply-To: <370764327.568888.1593681513002.JavaMail.zimbra@redhat.com>
+References: <1904309747.19085433.1593428894028.JavaMail.zimbra@redhat.com>
+ <1593430883-6131-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <370764327.568888.1593681513002.JavaMail.zimbra@redhat.com>
+Message-ID: <20200702122728.GB9101@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02. 07. 20 11:48, Li Wang wrote:
+Hi!
+> > This api uses stat() to get major/minor devnumber of the path, assign the
+> > 10th column value to dev when match succeeds in "/proc/self/mountinfo".
+> > 
+> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 > 
-> Martin Doucha <mdoucha@suse.cz <mailto:mdoucha@suse.cz>> wrote:
-> 
->     ...
->     +static void *alloc_zero_page(void *baseaddr)
->     +{
->     +? ? ? ?int i;
->     +? ? ? ?void *ret;
->     +
->     +? ? ? ?/* Find aligned chunk of address space. MAP_HUGETLB doesn't
->     work. */
->     +? ? ? ?for (i = 0; i < 16; i++, baseaddr += thp_size) {
->     +? ? ? ? ? ? ? ?ret = mmap(baseaddr, thp_size, PROT_READ,
->     +? ? ? ? ? ? ? ? ? ? ? ?MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> 
-> 
-> I'm wondering why here request the READ ONLY memory, shouldn't we write
-> something into the write_thp loopingly then?
+> Cyril, any objections to v5?
 
-We do write into it. Except we do it through /proc/self/mem file
-descriptor. I didn't try with PROT_WRITE but presume that mapping the
-memory as read-only is important for confusing the kernel into thinking
-that the address space doesn't need to be copied on write.
-
-Nevertheless, I've tested the reproducer on a vulnerable kernel and it
-works reliably.
+Looks good, Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
