@@ -1,25 +1,26 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 2 Jul 2020 15:34:18 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/timer_settime01: Improve print
- messages
-In-Reply-To: <7c68854a1b6ef828ed8dd83cb611bd5b5d53c2f8.1593430825.git.viresh.kumar@linaro.org>
-References: <7c68854a1b6ef828ed8dd83cb611bd5b5d53c2f8.1593430825.git.viresh.kumar@linaro.org>
-Message-ID: <20200702133418.GD9101@yuki.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 2 Jul 2020 09:36:47 -0400 (EDT)
+Subject: [LTP] [PATCH v3 2/2] Add test for CVE 2017-1000405
+In-Reply-To: <20200702100151.11780-2-mdoucha@suse.cz>
+References: <20200702100151.11780-1-mdoucha@suse.cz>
+ <20200702100151.11780-2-mdoucha@suse.cz>
+Message-ID: <2038032878.605275.1593697007714.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This improves the print messages by providing additional information
-> about the tests.
 
-Do we really need this?
+----- Original Message -----
+> Fixes #316
+> 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+> 
+> Changes since v1:
+> - include lapi/mmap.h
+> - TCONF if madvise(MADV_HUGEPAGE) fails with EINVAL
 
-We do print which test variant we test at the start of each block and no
-other tests with test variant prefix the messages like this...
+Acked-by: Jan Stancek <jstancek@redhat.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
