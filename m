@@ -1,104 +1,50 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 2 Jul 2020 18:08:16 +0800
-Subject: [LTP] [PATCH] numa01.sh: Fix parsing numastat for given node
-In-Reply-To: <20200702095029.35220-1-harish@linux.ibm.com>
-References: <20200702095029.35220-1-harish@linux.ibm.com>
-Message-ID: <CAEemH2cMx601hD3u_MGME3phSPmUggzCepk46BLkAqChZ0LRog@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 2 Jul 2020 14:09:10 +0200
+Subject: [LTP] [PATCH v2 2/2] Add test for CVE 2017-1000405
+In-Reply-To: <CAEemH2f2D9xBYxeQ33w0thxZFpkSHK3gn1bBQWMZSA=X5y-AWQ@mail.gmail.com>
+References: <20200701151456.851-1-mdoucha@suse.cz>
+ <20200701151456.851-2-mdoucha@suse.cz>
+ <CAEemH2f2D9xBYxeQ33w0thxZFpkSHK3gn1bBQWMZSA=X5y-AWQ@mail.gmail.com>
+Message-ID: <d0bd1421-500a-bc84-bd0a-7b5f25ade684@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 2, 2020 at 5:51 PM Harish <harish@linux.ibm.com> wrote:
+On 02. 07. 20 11:48, Li Wang wrote:
+> 
+> Martin Doucha <mdoucha@suse.cz <mailto:mdoucha@suse.cz>> wrote:
+> 
+>     ...
+>     +static void *alloc_zero_page(void *baseaddr)
+>     +{
+>     +? ? ? ?int i;
+>     +? ? ? ?void *ret;
+>     +
+>     +? ? ? ?/* Find aligned chunk of address space. MAP_HUGETLB doesn't
+>     work. */
+>     +? ? ? ?for (i = 0; i < 16; i++, baseaddr += thp_size) {
+>     +? ? ? ? ? ? ? ?ret = mmap(baseaddr, thp_size, PROT_READ,
+>     +? ? ? ? ? ? ? ? ? ? ? ?MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> 
+> 
+> I'm wondering why here request the READ ONLY memory, shouldn't we write
+> something into the write_thp loopingly then?
 
-> In few systems, the node numbering is not necessarily ordered.
-> E.g.
->
-> Per-node process memory usage (in MBs) for PID 2069 (systemd-udevd)
->                            Node 0          Node 8           Total
->                   --------------- --------------- ---------------
-> ...
-> ...
-> ----------------  --------------- --------------- ---------------
-> Total                       17.50            0.00           17.50
->
-> Patch fixes parsing numastat for given node by finding its awk
-> index so that proper value is utilized in the test.
->
+We do write into it. Except we do it through /proc/self/mem file
+descriptor. I didn't try with PROT_WRITE but presume that mapping the
+memory as read-only is important for confusing the kernel into thinking
+that the address space doesn't need to be copied on write.
 
-Thanks for fixing this Harish, but I'm afraid you have to rebase your code
-on Petr's last patch.
-http://lists.linux.it/pipermail/ltp/2020-July/017893.html
-
-Anyway, this patch makes sense to me.
-
-
-
->
-> Signed-off-by: Harish <harish@linux.ibm.com>
-> ---
->  testcases/kernel/numa/numa01.sh | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/testcases/kernel/numa/numa01.sh
-> b/testcases/kernel/numa/numa01.sh
-> index 1d626327d..fd437cd15 100755
-> --- a/testcases/kernel/numa/numa01.sh
-> +++ b/testcases/kernel/numa/numa01.sh
-> @@ -25,15 +25,26 @@ TST_NEEDS_CMDS="awk bc numactl numastat"
->
->  . tst_test.sh
->
-> +# Awk the field matching the node value for numastat
-> +# $1 - Pid number
-> +# $2 - Node number
-> +get_node_index()
-> +{
-> +       local pid=$1
-> +       local nid="Node $2"
-> +       echo $(numastat -p $pid | sed '3q;d' | awk -F
-> '[[:space:]][[:space:]]+' \
-> +               -v node="$nid" '{ for (i = 1; i <= NF; ++i) if($i==node)
-> print i; exit }')
-> +}
-> +
->  # Extracts the value of given numa node from the `numastat -p` output.
->  # $1 - Pid number.
->  # $2 - Node number.
->  extract_numastat_p()
->  {
->         local pid=$1
-> -       local node=$(($2 + 2))
-> +       local index=$(echo "$(get_node_index $pid $2)")
->
-> -       echo $(numastat -p $pid |awk '/^Total/ {print $'$node'}')
-> +       echo $(numastat -p $pid |awk '/^Total/ {print $'$index'}')
->  }
->
->  check_for_support_numa()
-> @@ -341,8 +352,8 @@ test9()
->                 numactl --cpunodebind=$node --membind=$node support_numa
-> alloc_1huge_page &
->                 pid=$!
->                 TST_RETRY_FUNC "check_for_support_numa $pid" 0
-> -
-> -               Mem_huge=$(echo $(numastat -p $pid |awk '/^Huge/ {print
-> $'$((node+2))'}'))
-> +               local index=$(echo "$(get_node_index $pid $node)")
-> +               Mem_huge=$(echo $(numastat -p $pid |awk '/^Huge/ {print
-> $'$index'}'))
->                 Mem_huge=$((${Mem_huge%.*} * 1024))
->
->                 if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
-> --
-> 2.25.4
->
->
+Nevertheless, I've tested the reproducer on a vulnerable kernel and it
+works reliably.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200702/9d3a1dc3/attachment.htm>
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
