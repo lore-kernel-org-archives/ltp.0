@@ -1,38 +1,76 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 3 Jul 2020 13:48:52 +0530
-Subject: [LTP] [PATCH] syscalls/sched_rr_get_interval: Validate the
- timeslice
-In-Reply-To: <2ced43d0-4bf0-982a-fd7e-3628716890c4@cn.fujitsu.com>
-References: <325a43a851acca8bb242011a1d62063c8154653c.1593152309.git.viresh.kumar@linaro.org>
- <0744cfd7d2f14d8e8c6d8e74420b35ef273a7737.1593761725.git.viresh.kumar@linaro.org>
- <902db9f8-22d9-b641-746b-6ec61b8eaa21@cn.fujitsu.com>
- <20200703075136.enu2ovlfo25cwyca@vireshk-i7>
- <2ced43d0-4bf0-982a-fd7e-3628716890c4@cn.fujitsu.com>
-Message-ID: <20200703081852.7mxbhkfz6vgjfwak@vireshk-i7>
+From: Harish <harish@linux.ibm.com>
+Date: Thu,  2 Jul 2020 15:20:29 +0530
+Subject: [LTP] [PATCH] numa01.sh: Fix parsing numastat for given node
+Message-ID: <20200702095029.35220-1-harish@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03-07-20, 16:00, Yang Xu wrote:
-> We only need to check /proc/sys/kernel/sched_rr_timeslice_ms whether existed in setup phase and
-> then check proc value in run like prctl08.c[1].
-> 
-> [1]https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/prctl/prctl08.c
+In few systems, the node numbering is not necessarily ordered.
+E.g.
 
-This is certainly better, thanks.
+Per-node process memory usage (in MBs) for PID 2069 (systemd-udevd)
+                           Node 0          Node 8           Total
+                  --------------- --------------- ---------------
+...
+...
+----------------  --------------- --------------- ---------------
+Total                       17.50            0.00           17.50
 
-> > What's the regression test you are suggesting here ?
-> 
-> The following kernel patch.
-> 
->  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=975e155ed8732cb81f55c021c441ae662dd040b5
+Patch fixes parsing numastat for given node by finding its awk
+index so that proper value is utilized in the test.
 
-Yeah I got that you were talking about this, but I am not sure of what
-regression test you are asking for and if we should be adding a test
-towards it at all as this is a kernel bug and we should keep showing
-the error for such kernels, isn't it ?
+Signed-off-by: Harish <harish@linux.ibm.com>
+---
+ testcases/kernel/numa/numa01.sh | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 1d626327d..fd437cd15 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -25,15 +25,26 @@ TST_NEEDS_CMDS="awk bc numactl numastat"
+ 
+ . tst_test.sh
+ 
++# Awk the field matching the node value for numastat
++# $1 - Pid number
++# $2 - Node number
++get_node_index()
++{
++	local pid=$1
++	local nid="Node $2"
++	echo $(numastat -p $pid | sed '3q;d' | awk -F '[[:space:]][[:space:]]+' \
++		-v node="$nid" '{ for (i = 1; i <= NF; ++i) if($i==node) print i; exit }')
++}
++
+ # Extracts the value of given numa node from the `numastat -p` output.
+ # $1 - Pid number.
+ # $2 - Node number.
+ extract_numastat_p()
+ {
+ 	local pid=$1
+-	local node=$(($2 + 2))
++	local index=$(echo "$(get_node_index $pid $2)")
+ 
+-	echo $(numastat -p $pid |awk '/^Total/ {print $'$node'}')
++	echo $(numastat -p $pid |awk '/^Total/ {print $'$index'}')
+ }
+ 
+ check_for_support_numa()
+@@ -341,8 +352,8 @@ test9()
+ 		numactl --cpunodebind=$node --membind=$node support_numa alloc_1huge_page &
+ 		pid=$!
+ 		TST_RETRY_FUNC "check_for_support_numa $pid" 0
+-
+-		Mem_huge=$(echo $(numastat -p $pid |awk '/^Huge/ {print $'$((node+2))'}'))
++		local index=$(echo "$(get_node_index $pid $node)")
++		Mem_huge=$(echo $(numastat -p $pid |awk '/^Huge/ {print $'$index'}'))
+ 		Mem_huge=$((${Mem_huge%.*} * 1024))
+ 
+ 		if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
 -- 
-viresh
+2.25.4
+
