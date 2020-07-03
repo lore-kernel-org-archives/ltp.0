@@ -1,224 +1,60 @@
-From: pravin <pravinraghul@zilogic.com>
-Date: Fri, 03 Jul 2020 03:08:11 -0000
-Subject: [LTP] [PATCH v2] Add a test case for mmap MAP_GROWSDOWN flag
-Message-ID: <20200703030811.11521-1-pravinraghul@zilogic.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 3 Jul 2020 08:45:32 +0530
+Subject: [LTP] [PATCH V7 05/19] syscalls/sched_rr_get_interval: Add
+ support for time64 tests
+In-Reply-To: <20200702130654.GC9101@yuki.lan>
+References: <cover.1593152309.git.viresh.kumar@linaro.org>
+ <325a43a851acca8bb242011a1d62063c8154653c.1593152309.git.viresh.kumar@linaro.org>
+ <20200702130654.GC9101@yuki.lan>
+Message-ID: <20200703031532.bjkwhkpfobdsxj4p@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 02-07-20, 15:06, Cyril Hrubis wrote:
+> Btw, we may as well add a check that the value is consistent with
+> /proc/sys/kernel/sched_rr_timeslice_ms.
 
-We assign the memory region allocated using MAP_GROWSDOWN to a thread,
-as a stack, to test the effect of MAP_GROWSDOWN. This is because the
-kernel only grows the memory region when the stack pointer, is within
-guard page, when the guard page is touched.
-
-  1. Map an anyonymous memory region of size X, and unmap it.
-  2. Split the unmapped memory region into two.
-  3. The lower memory region is left unmapped.
-  4. The higher memory region is mapped for use as stack, using MAP_FIXED | MAP_GROWSDOWN.
-  5. The higher memory region is provided as stack to a thread, where
-     a recursive function is invoked.
-  6. The stack grows beyond the allocated region, into the lower memory area.
-  7. If this results in the memory region being extended, into the
-     unmapped region, the test is considered to have passed.
-
-Resolves #300
-Signed-off-by: Pravin Raghul S. <pravinraghul@zilogic.com>
-Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
-
----
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/mmap/.gitignore |   1 +
- testcases/kernel/syscalls/mmap/Makefile   |   7 ++
- testcases/kernel/syscalls/mmap/mmap18.c   | 141 ++++++++++++++++++++++
- 4 files changed, 150 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap18.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b4d523319..d8c9dbe92 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -747,6 +747,7 @@ mmap14 mmap14
- mmap15 mmap15
- mmap16 mmap16
- mmap17 mmap17
-+mmap18 mmap18
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index 31d7b5d56a52..0641b6651502 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -44,6 +44,7 @@ static void setup(void)
+ static void run(void)
+ {
+        struct test_variants *tv = &variants[tst_variant];
++       unsigned long long timeslice_ms;
  
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
-index c5c083d4b..4fd90ab5f 100644
---- a/testcases/kernel/syscalls/mmap/.gitignore
-+++ b/testcases/kernel/syscalls/mmap/.gitignore
-@@ -16,3 +16,4 @@
- /mmap15
- /mmap16
- /mmap17
-+/mmap18
-diff --git a/testcases/kernel/syscalls/mmap/Makefile b/testcases/kernel/syscalls/mmap/Makefile
-index 743ca36e7..bdc49e4be 100644
---- a/testcases/kernel/syscalls/mmap/Makefile
-+++ b/testcases/kernel/syscalls/mmap/Makefile
-@@ -8,3 +8,10 @@ include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+        TEST(tv->func(0, tst_ts_get(&tp)));
  
- LDLIBS 			+= -lpthread
-+#
-+# We use recursive calls to to grow the stack, to test the
-+# MAP_GROSWDOWN flag. But tail call optimization by the compiler
-+# can prevent the recusive call and stack growth. Disable tail
-+# call optmization using -fno-optimize-sibling-calls
-+#
-+mmap18: CFLAGS          += -fno-optimize-sibling-calls
-diff --git a/testcases/kernel/syscalls/mmap/mmap18.c b/testcases/kernel/syscalls/mmap/mmap18.c
-new file mode 100644
-index 000000000..497d5997e
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap18.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
-+ * Email: code@zilogic.com
-+ */
+@@ -54,6 +55,8 @@ static void run(void)
+                        TST_RET);
+        }
+ 
++       SAFE_FILE_SCANF("/proc/sys/kernel/sched_rr_timeslice_ms", "%llu", &timeslice_ms);
 +
-+/*
-+ * Test mmap() MAP_GROWSDOWN flag
-+ *
-+ * We assign the memory region allocated using MAP_GROWSDOWN to a thread,
-+ * as a stack, to test the effect of MAP_GROWSDOWN. This is because the
-+ * kernel only grows the memory region when the stack pointer, is within
-+ * guard page, when the guard page is touched.
-+ *
-+ * 1. Map an anyonymous memory region of size X, and unmap it.
-+ * 2. Split the unmapped memory region into two.
-+ * 3. The lower memory region is left unmapped.
-+ * 4. The higher memory region is mapped for use as stack, using
-+ *    MAP_FIXED | MAP_GROWSDOWN.
-+ * 5. The higher memory region is provided as stack to a thread, where
-+ *    a recursive function is invoked.
-+ * 6. The stack grows beyond the allocated region, into the lower memory area.
-+ * 7. If this results in the memory region being extended, into the
-+ *    unmapped region, the test is considered to have passed.
-+ */
-+
-+#include <unistd.h>
-+#include <pthread.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+
-+#define UNITS(x) ((x) * PTHREAD_STACK_MIN)
-+
-+static void *stack;
-+
-+static bool check_stackgrow_up(int *local_var_1)
-+{
-+	int local_var_2;
-+
-+	return !(local_var_1 < &local_var_2);
-+}
-+
-+static void setup(void)
-+{
-+	int local_var_1;
-+
-+	if (check_stackgrow_up(&local_var_1))
-+		tst_brk(TCONF, "Test can't be performed with stack grows up architecture");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (stack)
-+		SAFE_MUNMAP(stack, UNITS(8));
-+}
-+
-+static void *find_free_range(size_t size)
-+{
-+	void *mem;
-+
-+	mem = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP(mem, size);
-+
-+	return mem;
-+}
-+
-+static void split_unmapped_plus_stack(void *start, size_t size)
-+{
-+	/* start           start + size
-+	 * +---------------------+----------------------+
-+	 * + unmapped            | mapped               |
-+	 * +---------------------+----------------------+
-+	 *                       stack
-+	 */
-+	stack = SAFE_MMAP(start + size, size, PROT_READ | PROT_WRITE,
-+			  MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN,
-+			  -1, 0);
-+}
-+
-+static void *check_depth_recursive(void *limit)
-+{
-+	if ((off_t) &limit < (off_t) limit)
-+		return NULL;
-+
-+	return check_depth_recursive(limit);
-+}
-+
-+static void grow_stack(void *stack, size_t size, void *limit)
-+{
-+	pthread_t test_thread;
-+	pthread_attr_t attr;
-+	int ret;
-+
-+	ret = pthread_attr_init(&attr);
-+	if (ret)
-+		tst_brk(TBROK, "pthread_attr_init failed during setup");
-+
-+	ret = pthread_attr_setstack(&attr, stack, size);
-+	if (ret)
-+		tst_brk(TBROK, "pthread_attr_setstack failed during setup");
-+	SAFE_PTHREAD_CREATE(&test_thread, &attr, check_depth_recursive, limit);
-+	SAFE_PTHREAD_JOIN(test_thread, NULL);
-+
-+	exit(0);
-+}
-+
-+static void run_test(void)
-+{
-+	void *mem;
-+	pid_t child_pid;
-+	int wstatus;
-+
-+	mem = find_free_range(UNITS(16));
-+	split_unmapped_plus_stack(mem, UNITS(8));
-+
-+	child_pid = SAFE_FORK();
-+	if (!child_pid)
-+		grow_stack(stack, UNITS(8), mem + UNITS(1));
-+
-+	SAFE_WAIT(&wstatus);
-+	if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) == 0)
-+		tst_res(TPASS, "Stack grows in unmapped region");
-+	else if (WIFSIGNALED(wstatus))
-+		tst_res(TFAIL, "Child killed by %s", tst_strsig(WTERMSIG(wstatus)));
-+	else
-+		tst_res(TFAIL, "Child %s", tst_strstatus(wstatus));
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.forks_child = 1,
-+};
+        if (!tst_ts_valid(&tp)) {
+                tst_res(TPASS, "Time quantum %llis %llins",
+                        tst_ts_get_sec(tp), tst_ts_get_nsec(tp));
+@@ -62,6 +65,7 @@ static void run(void)
+                        tst_ts_get_sec(tp), tst_ts_get_nsec(tp));
+        }
+ 
++       tst_res(TINFO, "%llu: %llu", timeslice_ms, tst_ts_to_ms(tp));
+ }
+ 
+ static struct tst_test test = {
+
+
+
+and it is coming as:
+
+sched_rr_get_interval01.c:68: INFO: 25: 100
+
+They aren't consistent here. Perhaps because first one is system wide
+while other one is per process ?
+
 -- 
-2.25.1
-
+viresh
