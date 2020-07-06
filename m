@@ -1,143 +1,171 @@
-From: Shwetha Subramanian <shwetha@zilogic.com>
-Date: Mon, 06 Jul 2020 05:08:28 -0000
-Subject: [LTP] [PATCH v2] Add mincore() test for anonymous mappings
-Message-ID: <20200706050828.5134-1-shwetha@zilogic.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 6 Jul 2020 14:23:32 +0800
+Subject: [LTP] [PATCH] syscalls/ioctl09: Add test for BLKRRPART ioctl
+Message-ID: <1594016612-7975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Fixes #699
 
-Changes from v1:
-	1.Changed testcase description.
-	2.Checked ptr before executing SAFE_MUNMAP() in cleanup().
-	3.Added a setup() fuction.
-	4.Fixed formatting issues.
-	5.Changed TPASS and TFAIL messages.
-	6.Changed syntax for conditional statements. 
-
-References: #461
-
-Signed-off-by: Shwetha Subramanian. <shwetha@zilogic.com>
-Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/mincore/.gitignore  |  1 +
- testcases/kernel/syscalls/mincore/mincore03.c | 83 +++++++++++++++++++
- 3 files changed, 85 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mincore/mincore03.c
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/ioctl/.gitignore |   1 +
+ testcases/kernel/syscalls/ioctl/ioctl09.c  | 116 +++++++++++++++++++++
+ 3 files changed, 118 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl09.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index b4d523319..e0fe9f87e 100644
+index 5b3a0862f..aaa81e4ee 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -879,6 +879,7 @@ open_tree02 open_tree02
+@@ -529,6 +529,7 @@ ioctl05      ioctl05
+ ioctl06      ioctl06
+ ioctl07      ioctl07
+ ioctl08      ioctl08
++ioctl09      ioctl09
  
- mincore01 mincore01
- mincore02 mincore02
-+mincore03 mincore03
- 
- madvise01 madvise01
- madvise02 madvise02
-diff --git a/testcases/kernel/syscalls/mincore/.gitignore b/testcases/kernel/syscalls/mincore/.gitignore
-index fdb2070e9..fcbe27eac 100644
---- a/testcases/kernel/syscalls/mincore/.gitignore
-+++ b/testcases/kernel/syscalls/mincore/.gitignore
-@@ -1,2 +1,3 @@
- /mincore01
- /mincore02
-+/mincore03
-\ No newline at end of file
-diff --git a/testcases/kernel/syscalls/mincore/mincore03.c b/testcases/kernel/syscalls/mincore/mincore03.c
+ ioctl_loop01 ioctl_loop01
+ ioctl_loop02 ioctl_loop02
+diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
+index 3a3d49adc..5fff7a61d 100644
+--- a/testcases/kernel/syscalls/ioctl/.gitignore
++++ b/testcases/kernel/syscalls/ioctl/.gitignore
+@@ -6,6 +6,7 @@
+ /ioctl06
+ /ioctl07
+ /ioctl08
++/ioctl09
+ /ioctl_loop01
+ /ioctl_loop02
+ /ioctl_loop03
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
 new file mode 100644
-index 000000000..774fce98b
+index 000000000..1b1360c34
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mincore/mincore03.c
-@@ -0,0 +1,83 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
+@@ -0,0 +1,116 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
-+ * Email: code@zilogic.com
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
++ *
++ * Basic test for the BLKRRPART ioctl, it is the same as blockdev
++ * --rereadpt command.
 + */
 +
-+/*
-+ * mincore03
-+ * Testcase 1: Test shows that pages mapped as anonymous and
-+ * not faulted, are reported as not resident in memory by mincore().
-+ * Testcase 2: Test shows that pages mapped as anonymous and faulted,
-+ * are reported as resident in memory by mincore().
-+ */
-+
-+#include <stdbool.h>
++#include <stdio.h>
 +#include <unistd.h>
-+#include <sys/mman.h>
++#include <string.h>
++#include <sys/mount.h>
++#include <stdbool.h>
++#include "lapi/loop.h"
 +#include "tst_test.h"
 +
-+#define NUM_PAGES 3
++static char dev_path[1024];
++static int dev_num, attach_flag, dev_fd;
++static char loop_partpath[1026], sys_loop_partpath[1026];
 +
-+static struct tcase {
-+	bool mlock;
-+	int expected_pages;
-+	char *desc;
-+} tcases[] = {
-+	{ false, 0, "untouched pages are not resident"},
-+	{ true, NUM_PAGES, "locked pages are resident"},
-+};
++static void change_partition(const char *const cmd[])
++{
++	int ret;
 +
-+static int size, page_size;
-+static void *ptr;
++	ret = tst_cmd(cmd, NULL, NULL, TST_CMD_PASS_RETVAL);
++	switch (ret) {
++	case 0:
++	break;
++	case 255:
++		tst_res(TCONF, "parted binary not installed or failed");
++	break;
++	default:
++		tst_res(TCONF, "parted exited with %i", ret);
++	break;
++	}
++}
++
++static void check_partition(int part_num, bool value)
++{
++	int ret;
++
++	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp%d", dev_num, dev_num, part_num);
++	sprintf(loop_partpath, "%sp%d", dev_path, part_num);
++
++	ret = access(sys_loop_partpath, F_OK);
++	if (ret == 0)
++		tst_res(value ? TPASS : TFAIL, "access %s succeeds", sys_loop_partpath);
++	else
++		tst_res(value ? TFAIL : TPASS, "access %s fails", sys_loop_partpath);
++
++	ret = access(loop_partpath, F_OK);
++	if (ret == 0)
++		tst_res(value ? TPASS : TFAIL, "access %s succeeds", loop_partpath);
++	else
++		tst_res(value ? TFAIL : TPASS, "access %s fails", loop_partpath);
++}
++
++static void verify_ioctl(void)
++{
++	const char *const cmd_parted_old[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
++						"primary", "ext4", "1M", "10M", NULL};
++	const char *const cmd_parted_new[] = {"parted", "-s", "test.img", "mklabel", "msdos", "mkpart",
++						"primary", "ext4", "1M", "10M", "mkpart", "primary", "ext4", "10M", "20M", NULL};
++	struct loop_info loopinfo = {0};
++
++	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
++	if (dev_num < 0)
++		tst_brk(TBROK, "Failed to find free loop device");
++
++	tst_fill_file("test.img", 0, 1024 * 1024, 20);
++
++	change_partition(cmd_parted_old);
++
++	tst_attach_device(dev_path, "test.img");
++	attach_flag = 1;
++
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	loopinfo.lo_flags =  LO_FLAGS_PARTSCAN;
++	SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
++	check_partition(1, true);
++	check_partition(2, false);
++
++	change_partition(cmd_parted_new);
++	TST_RETRY_FUNC(ioctl(dev_fd, BLKRRPART, 0), TST_RETVAL_EQ0);
++	check_partition(1, true);
++	check_partition(2, true);
++
++	SAFE_CLOSE(dev_fd);
++	tst_detach_device(dev_path);
++	attach_flag = 0;
++	unlink("test.img");
++}
 +
 +static void cleanup(void)
 +{
-+	if (ptr)
-+		SAFE_MUNMAP(ptr, size);
-+}
-+
-+static void setup(void)
-+{
-+	page_size = getpagesize();
-+	size = page_size * NUM_PAGES;
-+}
-+
-+static void test_mincore(unsigned int test_nr)
-+{
-+	const struct tcase *tc = &tcases[test_nr];
-+	unsigned char vec[NUM_PAGES];
-+	int locked_pages;
-+	int count, mincore_ret;
-+
-+	ptr = SAFE_MMAP(NULL, size,  PROT_WRITE | PROT_READ, MAP_PRIVATE |  MAP_ANONYMOUS, 0, 0);
-+	if (tc->mlock)
-+		SAFE_MLOCK(ptr, size);
-+
-+	mincore_ret = mincore(ptr, size, vec);
-+	if (mincore_ret == -1)
-+		tst_brk(TBROK | TERRNO, "mincore failed");
-+	locked_pages = 0;
-+	for (count = 0; count < NUM_PAGES; count++)
-+		if (vec[count] & 1)
-+			locked_pages++;
-+
-+	if (locked_pages == tc->expected_pages)
-+		tst_res(TPASS, "mincore() reports %s", tc->desc);
-+	else
-+		tst_res(TFAIL, "mincore reports resident pages as %d, but expected %d",
-+			locked_pages, tc->expected_pages);
-+
-+	if (tc->mlock)
-+		SAFE_MUNLOCK(ptr, size);
-+	SAFE_MUNMAP(ptr, size);
-+	ptr = NULL;
++	if (dev_fd > 0)
++		SAFE_CLOSE(dev_fd);
++	if (attach_flag)
++		tst_detach_device(dev_path);
 +}
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = test_mincore,
++	.test_all = verify_ioctl,
++	.needs_root = 1,
++	.needs_drivers = (const char *const []) {
++		"loop",
++		NULL
++	},
++	.needs_cmds = (const char *const []) {
++		"parted",
++		NULL
++	},
++	.needs_tmpdir = 1,
 +};
-+
 -- 
-2.20.1
+2.23.0
+
+
 
