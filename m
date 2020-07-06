@@ -1,51 +1,78 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon,  6 Jul 2020 08:33:03 +0530
-Subject: [LTP] [PATCH] tst_test: Fix spelling mistake
-Message-ID: <9f82f6280630838380c2db503343848d81c94bf5.1594004560.git.viresh.kumar@linaro.org>
+Date: Mon,  6 Jul 2020 09:01:53 +0530
+Subject: [LTP] [PATCH V2] syscalls/sched_rr_get_interval: Validate the
+ timeslice
+In-Reply-To: <0744cfd7d2f14d8e8c6d8e74420b35ef273a7737.1593761725.git.viresh.kumar@linaro.org>
+References: <0744cfd7d2f14d8e8c6d8e74420b35ef273a7737.1593761725.git.viresh.kumar@linaro.org>
+Message-ID: <81a952af30185d5c72cda19d322d7abbbf7bd8fe.1594006171.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fix few spelling mistakes.
+Validate the timespec returned by sched_rr_get_interval() against the
+value read from /proc/sys/kernel/sched_rr_timeslice_ms.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- lib/tst_test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+V2:
+- Add .tags entry
+- check if file is present or not.
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index e93c88ba564a..175dea7c4ae9 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -363,7 +363,7 @@ static void check_child_status(pid_t pid, int status)
+ .../sched_rr_get_interval01.c                     | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index 31d7b5d56a52..0466be36bec0 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -5,11 +5,18 @@
+  *
+  * Gets round-robin time quantum by calling sched_rr_get_interval() and
+  * checks that the value is sane.
++ *
++ * It is also a regression test for kernel
++ * commit 975e155ed873 ("sched/rt: Show the 'sched_rr_timeslice' SCHED_RR
++ * timeslice tuning knob in milliseconds").
+  */
+ 
+ #include <sched.h>
+ #include "tst_timer.h"
+ 
++#define PROC_SCHED_RR_TIMESLICE_MS	"/proc/sys/kernel/sched_rr_timeslice_ms"
++static int proc_flag;
++
+ struct tst_ts tp;
+ 
+ static struct test_variants {
+@@ -39,6 +46,8 @@ static void setup(void)
+ 
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1)
+ 		tst_res(TFAIL | TTERRNO, "sched_setscheduler() failed");
++
++	proc_flag = !access(PROC_SCHED_RR_TIMESLICE_MS, F_OK);
+ }
+ 
+ static void run(void)
+@@ -62,6 +71,8 @@ static void run(void)
+ 		        tst_ts_get_sec(tp), tst_ts_get_nsec(tp));
  	}
  
- 	if (!(WIFEXITED(status)))
--		tst_brk(TBROK, "Child (%i) exited abnormaly", pid);
-+		tst_brk(TBROK, "Child (%i) exited abnormally", pid);
++	if (proc_flag)
++		TST_ASSERT_INT("/proc/sys/kernel/sched_rr_timeslice_ms", tst_ts_to_ms(tp));
+ }
  
- 	ret = WEXITSTATUS(status);
- 	switch (ret) {
-@@ -673,7 +673,7 @@ static void print_failure_hints(void)
- 				hint_printed = 1;
- 				printf("\n");
- 				print_colored("HINT: ");
--				printf("You _MAY_ be vunerable to CVE(s), see:\n\n");
-+				printf("You _MAY_ be vulnerable to CVE(s), see:\n\n");
- 			}
- 
- 			printf(CVE_DB_URL "%s\n", tags[i].value);
-@@ -790,7 +790,7 @@ static void assert_test_fn(void)
- 		cnt++;
- 
- 	if (!cnt)
--		tst_brk(TBROK, "No test function speficied");
-+		tst_brk(TBROK, "No test function specified");
- 
- 	if (cnt != 1)
- 		tst_brk(TBROK, "You can define only one test function");
+ static struct tst_test test = {
+@@ -69,4 +80,8 @@ static struct tst_test test = {
+ 	.test_variants = ARRAY_SIZE(variants),
+ 	.setup = setup,
+ 	.needs_root = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "975e155ed873"},
++		{}
++	}
+ };
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
