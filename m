@@ -1,45 +1,37 @@
-From: Harish <harish@linux.ibm.com>
-Date: Mon, 6 Jul 2020 14:51:15 +0530
-Subject: [LTP] [PATCH V4 5/6] syscalls: Don't pass struct timespec to
- tst_syscall()
-In-Reply-To: <CAEemH2eSer9ewwSqfs5SA491veL1sy7Xhktkoi6gOT+r3uDQtg@mail.gmail.com>
-References: <c47220ecab3c7570f5387cd71894c977009ad3d8.1590572545.git.viresh.kumar@linaro.org>
- <9562fdf4debd759439ee7f468008177003db9513.1592457867.git.viresh.kumar@linaro.org>
- <CAEemH2cu_o2eCHQB1_Bo0aQiR2WK6knbBtD83-5_77gZZbA-Ow@mail.gmail.com>
- <20200703125927.GA11556@yuki.lan>
- <CAEemH2cN735haDmyqbNa_LwDgumFqAspYfJaKRpsOg0Rij9tEA@mail.gmail.com>
- <1513894e-d23e-055e-df27-d8cf36b8c609@linux.ibm.com>
- <CAEemH2eSer9ewwSqfs5SA491veL1sy7Xhktkoi6gOT+r3uDQtg@mail.gmail.com>
-Message-ID: <8a9a0eb5-0ef1-6140-0dd3-93fe6f5d8910@linux.ibm.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 6 Jul 2020 16:10:33 +0530
+Subject: [LTP] [PATCH V7 07/19] syscalls/futex: Add support for time64
+ tests
+In-Reply-To: <20200703124548.GB2308@yuki.lan>
+References: <cover.1593152309.git.viresh.kumar@linaro.org>
+ <6030fa8c1deda3aab977c7d5745c117fda87708a.1593152309.git.viresh.kumar@linaro.org>
+ <20200703124548.GB2308@yuki.lan>
+Message-ID: <20200706104033.6vk7eqmcdxtqbnjn@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 7/6/20 2:27 PM, Li Wang wrote:
->
-> Harish <harish@linux.ibm.com <mailto:harish@linux.ibm.com>> wrote:
->
->     Hi,
->
->     I tried the suggested patch, but was unsuccessful in running the
->     test. Here is my diff.
->     ...
->     Is there anything I am missing here? Thanks in advance.
->
-> Your diff version looks correct.
->
-> I doubt have you rebuild your LTP or at least rebuild the ltp-lib?
-My bad, I did rebuild the ltp with the diff. But it required a clean 
-before I do so.
-I can confirm tests are running now.
+On 03-07-20, 14:45, Cyril Hrubis wrote:
+> > diff --git a/testcases/kernel/syscalls/futex/futex_wait05.c b/testcases/kernel/syscalls/futex/futex_wait05.c
+> > index 2573ae177d5b..8fad5d858716 100644
+> > --- a/testcases/kernel/syscalls/futex/futex_wait05.c
+> > +++ b/testcases/kernel/syscalls/futex/futex_wait05.c
+> > @@ -19,7 +19,7 @@ int sample_fn(int clk_id, long long usec)
+> >  	futex_t futex = FUTEX_INITIALIZER;
+> >  
+> >  	tst_timer_start(clk_id);
+> > -	TEST(futex_wait(&futex, futex, &to, 0));
+> > +	TEST(syscall(SYS_futex, &futex, FUTEX_WAIT, futex, &to, NULL, 0));
+> >  	tst_timer_stop();
+> >  	tst_timer_sample();
+> 
+> Why aren't we adding the two functions here as well?
 
-Thanks.
->
-> -- 
-> Regards,
-> Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200706/cb163167/attachment.htm>
+I am not sure which two functions are you talking about here ..
+
+> Is the timer library incompatible with test variants?
+
+-- 
+viresh
