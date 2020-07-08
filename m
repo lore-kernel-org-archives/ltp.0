@@ -1,36 +1,57 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 7 Jul 2020 17:16:31 +0200
-Subject: [LTP] [PATCH V7 09/19] syscalls/sigwaitinfo: Migrate to new
- test framework
-In-Reply-To: <20200706023941.ievw6vsdp6gvr3g7@vireshk-i7>
-References: <cover.1593152309.git.viresh.kumar@linaro.org>
- <18d8603306f51f243faca04cf63bcaf2c7168d56.1593152309.git.viresh.kumar@linaro.org>
- <20200703135812.GC2308@yuki.lan>
- <20200706023941.ievw6vsdp6gvr3g7@vireshk-i7>
-Message-ID: <20200707151631.GA5197@rei.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 8 Jul 2020 10:06:21 +0800
+Subject: [LTP] [PATCH] syscalls/ioctl09: Add test for BLKRRPART ioctl
+In-Reply-To: <150668383.1091545.1594129246387.JavaMail.zimbra@redhat.com>
+References: <1594016612-7975-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <150668383.1091545.1594129246387.JavaMail.zimbra@redhat.com>
+Message-ID: <1690c3ad-a7d4-fa18-db19-343e3e345f8c@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Honestly I'm not sure what we should do about this test. Obviously this
-> > is a step into right direction but it still keeps the SUCCEED_OR_DIE()
-> > macro that produces many warnings.
-> > 
-> > I'm also not happy about the fact that we compile different test based
-> > on ifdefs and that there are empty directories where binaries are
-> > magically appear during the build. I would be much happier if we had a
-> > real test sources there and share the large enough common bits in a
-> > different way.
+Hi Jan
+
+Thanks for your review.
 > 
-> What about merging this patch as is (so I don't to keep sending it)
-> and then I fix all the issues you want to get fixed in this test
-> separately ?
+> 
+> ----- Original Message -----
+> 
+> Hi,
+> 
+>> +static void verify_ioctl(void)
+>> +{
+>> +	const char *const cmd_parted_old[] = {"parted", "-s", "test.img",
+>> "mklabel", "msdos", "mkpart",
+>> +						"primary", "ext4", "1M", "10M", NULL};
+>> +	const char *const cmd_parted_new[] = {"parted", "-s", "test.img",
+>> "mklabel", "msdos", "mkpart",
+>> +						"primary", "ext4", "1M", "10M", "mkpart", "primary", "ext4", "10M",
+>> "20M", NULL};
+> 
+> ^^ These (and other lines) goe way over 80 characters.
+> 
+OK.
+>> +	struct loop_info loopinfo = {0};
+>> +
+>> +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+>> +	if (dev_num < 0)
+>> +		tst_brk(TBROK, "Failed to find free loop device");
+>> +
+>> +	tst_fill_file("test.img", 0, 1024 * 1024, 20);
+> 
+> 20MB feels a bit small, even though tests I ran passed on old and new kernels.
+> LTP default is 256, to cover various filesystems, but here we don't even
+> write anything..
+In actually, ioctl_loop01 test case also uses 10M size and we only cover 
+ext4 fileystem in here. I don't have objection about changing this size 
+to 256M. Just reconfirm. If so, we should also modify ioctl_loop01 code.
+> 
+> Other than that, it looks good to me:
+> Acked-by: Jan Stancek <jstancek@redhat.com>
+> 
+> 
+> 
 
-Fair enough, merged.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
