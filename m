@@ -1,74 +1,40 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 9 Jul 2020 17:22:42 +0800
-Subject: [LTP] [PATCH] runltp: let each test acquire/release device
-In-Reply-To: <4cb36d04b5ac4dd60f073d5a5c2f96faaa03cbd4.1594280924.git.jstancek@redhat.com>
-References: <4cb36d04b5ac4dd60f073d5a5c2f96faaa03cbd4.1594280924.git.jstancek@redhat.com>
-Message-ID: <CAEemH2fY4di1VzpTnD5t_ZvTdoXF+=kdNa69qQk_hi2iF+fOnw@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 9 Jul 2020 16:16:35 +0530
+Subject: [LTP] [PATCH V7 09/19] syscalls/sigwaitinfo: Migrate to new
+ test framework
+In-Reply-To: <20200707151631.GA5197@rei.lan>
+References: <cover.1593152309.git.viresh.kumar@linaro.org>
+ <18d8603306f51f243faca04cf63bcaf2c7168d56.1593152309.git.viresh.kumar@linaro.org>
+ <20200703135812.GC2308@yuki.lan>
+ <20200706023941.ievw6vsdp6gvr3g7@vireshk-i7>
+ <20200707151631.GA5197@rei.lan>
+Message-ID: <20200709104635.ce3ehbfggpd32lqc@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 9, 2020 at 3:50 PM Jan Stancek <jstancek@redhat.com> wrote:
+On 07-07-20, 17:16, Cyril Hrubis wrote:
+> Hi!
+> > > Honestly I'm not sure what we should do about this test. Obviously this
+> > > is a step into right direction but it still keeps the SUCCEED_OR_DIE()
+> > > macro that produces many warnings.
+> > > 
+> > > I'm also not happy about the fact that we compile different test based
+> > > on ifdefs and that there are empty directories where binaries are
+> > > magically appear during the build. I would be much happier if we had a
+> > > real test sources there and share the large enough common bits in a
+> > > different way.
+> > 
+> > What about merging this patch as is (so I don't to keep sending it)
+> > and then I fix all the issues you want to get fixed in this test
+> > separately ?
+> 
+> Fair enough, merged.
 
-> Problem with runltp creating and using single loop device for all tests
-> is that if one test fails/gets stuck or fails to umount loop device
-> for any reason, then all subsequent tests also fail, because
-> they try to use mounted device.
->
-> Don't force same loop device on all tests (unless it is chosen via
-> env. variable DEVICE) and let LTP library try to acquire and release
-> first usable loop device for each test.
->
-> Fixes #703
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  runltp | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/runltp b/runltp
-> index ec0811834862..94e290d6dbb9 100755
-> --- a/runltp
-> +++ b/runltp
-> @@ -963,17 +963,7 @@ create_block()
->
->  set_block_device()
->  {
-> -    if [ -z "$DEVICE" ]; then
-> -        create_block
->
-
-This is the only place to use create_block function, if we don't need it
-anymore why not removing the function definition together?
-
-
-
-> -        if [ $? -ne 0 ]; then
-> -            echo "no block device was specified on commandline."
-> -            echo "Block device could not be created using loopback device"
-> -            echo "Tests which require block device are disabled."
-> -            echo "You can specify it with option -b"
-> -       else
-> -            export LTP_DEV=$DEVICE
-> -        fi
-> -    else
-> +    if [ -n "$DEVICE" ]; then
->          export LTP_DEV=$DEVICE
->      fi
->  }
-> --
-> 2.18.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+I believe you will apply the next patch (10/19) as well, which touches
+this file and so I am starting to work on top of that now.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200709/aa9b56e3/attachment.htm>
+viresh
