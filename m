@@ -1,178 +1,175 @@
-From: Shwetha Subramanian <shwetha@zilogic.com>
-Date: Thu, 09 Jul 2020 15:59:29 -0000
-Subject: [LTP] [PATCH v1] Add mincore() test for pages cached by another
- process
-Message-ID: <20200709155929.13269-1-shwetha@zilogic.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 10 Jul 2020 14:39:48 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/ioctl_loop06: Using LOOP_CONFIGURE to
+ test invalid block size
+In-Reply-To: <20200708140034.GD7276@yuki.lan>
+References: <20200708140034.GD7276@yuki.lan>
+Message-ID: <1594363189-20972-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Since kernel commit 3448914e8cc5("loop: Add LOOP_CONFIGURE ioctl"),
+it can set the correct block size immediately by setting loop_config.block_size.
 
-It tests the result of mincore when memory is mapped and cached by
-another process. A file is mapped in both parent and child
-process.Then the mapped memory is accessed in the child process. The
-results of mincore are tested in the parent process.
-
-References:#460
-
-Signed-off-by: Shwetha Subramanian. <shwetha@zilogic.com> 
-Reviewed-by:Vijay Kumar B. <vijaykumar@zilogic.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/mincore/.gitignore  |   2 +
- testcases/kernel/syscalls/mincore/mincore04.c | 119 ++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mincore/mincore04.c
+ .../kernel/syscalls/ioctl/ioctl_loop06.c      | 89 +++++++++++++++----
+ 1 file changed, 73 insertions(+), 16 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2e535abf6..cfcab6708 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -880,6 +880,7 @@ open_tree02 open_tree02
- mincore01 mincore01
- mincore02 mincore02
- mincore03 mincore03
-+mincore04 mincore04
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+index 096ec9363..2f172a09d 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
+@@ -3,8 +3,8 @@
+  * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+  * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+  *
+- * This is a basic ioctl error test about loopdevice
+- * LOOP_SET_BLOCK_SIZE.
++ * This is a basic error test about the invalid block size of loopdevice
++ * by using LOOP_SET_BLOCK_SIZE or LOOP_CONFIGURE ioctl.
+  */
  
- madvise01 madvise01
- madvise02 madvise02
-diff --git a/testcases/kernel/syscalls/mincore/.gitignore b/testcases/kernel/syscalls/mincore/.gitignore
-index 71c3e9864..470eba94e 100644
---- a/testcases/kernel/syscalls/mincore/.gitignore
-+++ b/testcases/kernel/syscalls/mincore/.gitignore
-@@ -1,3 +1,5 @@
- /mincore01
- /mincore02
- /mincore03
-+/mincore04
+ #include <stdio.h>
+@@ -15,41 +15,86 @@
+ #include "tst_test.h"
+ 
+ static char dev_path[1024];
+-static int dev_num, dev_fd, attach_flag;
++static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
+ static unsigned int invalid_value, half_value, unalign_value;
++static struct loop_config loopconfig;
+ 
+ static struct tcase {
+ 	unsigned int *setvalue;
+-	int exp_err;
++	int ioctl_flag;
+ 	char *message;
+ } tcases[] = {
+-	{&half_value, EINVAL, "arg < 512"},
+-	{&invalid_value, EINVAL, "arg > PAGE_SIZE"},
+-	{&unalign_value, EINVAL, "arg != power_of_2"},
++	{&half_value, LOOP_SET_BLOCK_SIZE,
++	"Using LOOP_SET_BLOCK_SIZE with arg < 512"},
 +
-diff --git a/testcases/kernel/syscalls/mincore/mincore04.c b/testcases/kernel/syscalls/mincore/mincore04.c
-new file mode 100644
-index 000000000..0fd386699
---- /dev/null
-+++ b/testcases/kernel/syscalls/mincore/mincore04.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
-+ * Email: code@zilogic.com
-+ */
++	{&invalid_value, LOOP_SET_BLOCK_SIZE,
++	"Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE"},
 +
-+/*
-+ * mincore04
-+ * Test shows that pages mapped in one process(parent) and
-+ * faulted in another(child) results in mincore(in parent) reporting
-+ * that all mapped pages are resident.
-+ */
++	{&unalign_value, LOOP_SET_BLOCK_SIZE,
++	"Using LOOP_SET_BLOCK_SIZE with arg != power_of_2"},
 +
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include "tst_test.h"
++	{&half_value, LOOP_CONFIGURE,
++	"Using LOOP_CONFIGURE with block_size < 512"},
 +
-+#define NUM_PAGES 3
++	{&invalid_value, LOOP_CONFIGURE,
++	"Using LOOP_CONFIGURE with block_size > PAGE_SIZE"},
 +
-+static int fd;
-+static int size;
-+static void *ptr;
-+
-+static void cleanup(void)
++	{&unalign_value, LOOP_CONFIGURE,
++	"Using LOOP_CONFIGURE with block_size != power_of_2"},
+ };
+ 
+ static void verify_ioctl_loop(unsigned int n)
 +{
-+	SAFE_CLOSE(fd);
-+	SAFE_MUNLOCK(ptr, size);
-+	SAFE_MUNMAP(ptr, size);
++	if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
++		TEST(ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig));
++	else
++		TEST(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, *(tcases[n].setvalue)));
++
++	if (TST_RET == 0) {
++		tst_res(TFAIL, "Set block size succeed unexpectedly");
++		if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
++			TST_RETRY_FUNC(ioctl(dev_fd, LOOP_CLR_FD, 0), TST_RETVAL_EQ0);
++		return;
++	}
++	if (TST_ERR == EINVAL)
++		tst_res(TPASS | TTERRNO, "Set block size failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "Set block size failed expected EINVAL got");
 +}
 +
-+static void file_setup(void)
-+{
-+	int PS;
-+
-+	PS = getpagesize();
-+	size = PS * NUM_PAGES;
-+	fd = SAFE_OPEN("FILE", O_CREAT | O_RDWR, 0600);
-+	SAFE_FTRUNCATE(fd, size);
-+}
-+
-+static void mem_sync(void)
-+{
++static void run(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 
+ 	tst_res(TINFO, "%s", tc->message);
+-	TEST(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, *(tc->setvalue)));
+-	if (TST_RET == 0) {
+-		tst_res(TFAIL, "LOOP_SET_BLOCK_SIZE succeed unexpectedly");
++	if (tc->ioctl_flag == LOOP_SET_BLOCK_SIZE) {
++		if (!attach_flag) {
++			tst_attach_device(dev_path, "test.img");
++			attach_flag = 1;
++		}
++		verify_ioctl_loop(n);
+ 		return;
+ 	}
+ 
+-	if (TST_ERR == tc->exp_err) {
+-		tst_res(TPASS | TTERRNO, "LOOP_SET_BLOCK_SIZE failed as expected");
+-	} else {
+-		tst_res(TFAIL | TTERRNO, "LOOP_SET_BLOCK_SIZE failed expected %s got",
+-				tst_strerrno(tc->exp_err));
++	if (tc->ioctl_flag == LOOP_CONFIGURE && !loop_configure_sup) {
++		tst_res(TCONF, "LOOP_CONFIGURE ioctl not supported");
++		return;
++	}
++	if (attach_flag) {
++		SAFE_CLOSE(dev_fd);
++		tst_detach_device(dev_path);
++		attach_flag = 0;
+ 	}
++	if (dev_fd < 0)
++		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	loopconfig.block_size = *(tc->setvalue);
++	verify_ioctl_loop(n);
+ }
+ 
+ static void setup(void)
+ {
+ 	unsigned int pg_size;
 +	int ret;
+ 
+ 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+ 	if (dev_num < 0)
+@@ -67,12 +112,24 @@ static void setup(void)
+ 
+ 	if (ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512) && errno == EINVAL)
+ 		tst_brk(TCONF, "LOOP_SET_BLOCK_SIZE is not supported");
 +
-+	/* File pages from file creation are cleared from cache. */
-+	SAFE_FSYNC(fd);
-+	ret = posix_fadvise(fd, 0, size, POSIX_FADV_DONTNEED);
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "fadvise failed");
-+}
-+
-+static void setup(void)
-+{
-+	file_setup();
-+	mem_sync();
-+}
-+
-+static void mmap_lock_file(void)
-+{
-+	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-+	SAFE_MLOCK(ptr, size);
-+	TST_CHECKPOINT_WAKE(1);
-+	TST_CHECKPOINT_WAIT(2);
-+}
-+
-+static int count_pages_in_cache(void)
-+{
-+	int locked_pages = 0;
-+	int count, ret;
-+	unsigned char vec[NUM_PAGES];
-+
-+	TST_CHECKPOINT_WAIT(1);
-+	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-+
-+	ret = mincore(ptr, size, vec);
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "mincore failed");
-+	for (count = 0; count < NUM_PAGES; count++) {
-+		if (vec[count] & 1)
-+			locked_pages++;
++	file_fd = SAFE_OPEN("test.img", O_RDWR);
++	loopconfig.fd = -1;
++	ret = ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig);
++	if (ret && errno != EBADF) {
++		tst_res(TINFO | TERRNO, "LOOP_CONFIGURE is not supported");
++		loop_configure_sup = 0;
++		return;
 +	}
-+
-+	TST_CHECKPOINT_WAKE(2);
-+	return locked_pages;
-+}
-+
-+static void test_mincore(void)
-+{
-+	int  locked_pages;
-+
-+	pid_t child_pid = SAFE_FORK();
-+
-+	if (child_pid == 0) {
-+		mmap_lock_file();
-+	} else {
-+		locked_pages = count_pages_in_cache();
-+		tst_reap_children();
-+
-+		if (locked_pages == NUM_PAGES)
-+			tst_res(TPASS, "mincore reports all pages locked by child process are resident");
-+		else
-+			tst_res(TFAIL, "mincore reports %d pages resident but %d pages locked by child process",
-+				locked_pages, NUM_PAGES);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.test_all = test_mincore,
-+	.needs_checkpoints = 1,
-+};
-+
++	loopconfig.fd = file_fd;
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (dev_fd > 0)
+ 		SAFE_CLOSE(dev_fd);
++	if (file_fd > 0)
++		SAFE_CLOSE(file_fd);
+ 	if (attach_flag)
+ 		tst_detach_device(dev_path);
+ }
+@@ -80,7 +137,7 @@ static void cleanup(void)
+ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+-	.test = verify_ioctl_loop,
++	.test = run,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
 -- 
-2.20.1
+2.23.0
+
+
 
