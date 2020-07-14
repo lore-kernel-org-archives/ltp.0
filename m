@@ -1,120 +1,146 @@
-From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Tue, 14 Jul 2020 14:17:03 -0400
-Subject: [LTP] [PATCH v5 2/2] IMA: Add a test to verify importing a
- certificate into keyring
-In-Reply-To: <20200714181703.6374-1-t-josne@linux.microsoft.com>
-References: <20200714181703.6374-1-t-josne@linux.microsoft.com>
-Message-ID: <20200714181703.6374-3-t-josne@linux.microsoft.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 14 Jul 2020 22:24:25 +0200
+Subject: [LTP] [PATCH] tst_timer: pass kernel_timer_t type to syscalls
+Message-ID: <bd80f928abee6dac85d051c022afe559f5da8d0a.1594758146.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add an IMA measurement test that verifies that an x509 certificate
-can be imported into the .ima keyring and measured correctly.
+timer_[gs]etttime tests are failing on s390, which is big endian
+system, because tests are passing timer_t type, which is glibc
+type (void *). Kernel expects and sets only int portion, so the
+tests fail for all but first (0) timer id.
 
-Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../kernel/security/integrity/ima/README.md   | 22 ++++++++++
- .../security/integrity/ima/tests/ima_keys.sh  | 44 ++++++++++++++++++-
- 2 files changed, 64 insertions(+), 2 deletions(-)
+ include/tst_timer.h                                       | 8 ++++----
+ testcases/kernel/syscalls/timer_gettime/timer_gettime01.c | 6 +++---
+ testcases/kernel/syscalls/timer_settime/timer_settime01.c | 6 +++---
+ testcases/kernel/syscalls/timer_settime/timer_settime02.c | 8 ++++----
+ 4 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-index 16a1f48c3..9e6790306 100644
---- a/testcases/kernel/security/integrity/ima/README.md
-+++ b/testcases/kernel/security/integrity/ima/README.md
-@@ -16,6 +16,28 @@ CONFIG_INTEGRITY=y
- CONFIG_IMA=y
- ```
- 
-+IMA Key Import test
-+-------------
-+`ima_keys.sh` requires an x509 certificate to be signed by a key on one
-+of the trusted keyrings. The x509 certificate must be placed at
-+`/etc/keys/x509_ima.der` for this test or the path must be passed in
-+the CERT_FILE env var.
-+
-+The x509 public key key must be signed by the private key you generate.
-+Follow these instructions:
-+https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys.
-+
-+The test cannot be set-up automatically because the x509 public key must be
-+built into the kernel and loaded onto a trusted keyring.
-+
-+As well as what's required for the IMA tests, the following are also required
-+in the kernel configuration:
-+```
-+CONFIG_IMA_READ_POLICY=y
-+CONFIG_SYSTEM_TRUSTED_KEYRING=y
-+CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
-+```
-+
- EVM tests
- ---------
- 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 4d53cd04f..c10427481 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -5,10 +5,12 @@
- #
- # Verify that keys are measured correctly based on policy.
- 
--TST_NEEDS_CMDS="grep mktemp cut sed tr"
--TST_CNT=1
-+TST_NEEDS_CMDS="grep mktemp cut sed tr xxd keyctl evmctl openssl cmp"
-+TST_CNT=2
- TST_NEEDS_DEVICE=1
- 
-+CERT_FILE="${CERT_FILE:-/etc/keys/x509_ima.der}"
-+
- . ima_setup.sh
- 
- # Based on https://lkml.org/lkml/2019/12/13/564.
-@@ -68,4 +70,42 @@ test1()
- 	fi
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index e42b54f0e92a..d2c3f3cb1328 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -316,23 +316,23 @@ static inline int sys_sched_rr_get_interval64(pid_t pid, void *ts)
+ 	return tst_syscall(__NR_sched_rr_get_interval_time64, pid, ts);
  }
  
-+
-+# Test that a cert can be imported into the ".ima" keyring correctly.
-+test2() {
-+	local keyring_id key_id test_file="file.txt"
-+
-+	[ -f $CERT_FILE ] || tst_brk TCONF "missing $CERT_FILE"
-+
-+	if ! openssl x509 -in $CERT_FILE -inform der > /dev/null; then
-+		tst_brk TCONF "The suppled cert file ($CERT_FILE) is not a valid x509 certificate"
-+	fi
-+
-+	tst_res TINFO "adding a cert to the .ima keyring ($CERT_FILE)"
-+	
-+	keyring_id=$(keyctl describe %:.ima | cut -d' ' -f2 | tr -d ':') || \
-+		tst_btk TCONF "unable to retrieve .ima keyring id"
-+
-+	if ! tst_is_num	"$keyring_id"; then
-+		tst_brk TCONF "unable to parse keyring id from keyring"
-+	fi
-+
-+	evmctl import $CERT_FILE "$keyring_id" > /dev/null || \
-+		tst_brk TCONF "unable to import a cert into the .ima keyring"
-+
-+	grep -F ".ima" "$ASCII_MEASUREMENTS" | tail -n1 | cut -d' ' -f6 | \
-+		xxd -r -p > $test_file || \
-+		tst_brk TCONF "cert not found in ascii_runtime_measurements log"
-+
-+	if ! openssl x509 -in $test_file -inform der > /dev/null; then
-+		tst_brk TCONF "The cert logged in ascii_runtime_measurements is not a valid x509 certificate"
-+	fi
-+
-+	if cmp -s "$test_file" $CERT_FILE; then
-+		tst_res TPASS "logged cert matches original cert"
-+	else
-+		tst_res TFAIL "logged cert does not match original cert"
-+	fi
-+}
-+
- tst_run
+-static inline int sys_timer_gettime(timer_t timerid, void *its)
++static inline int sys_timer_gettime(kernel_timer_t timerid, void *its)
+ {
+ 	return tst_syscall(__NR_timer_gettime, timerid, its);
+ }
+ 
+-static inline int sys_timer_gettime64(timer_t timerid, void *its)
++static inline int sys_timer_gettime64(kernel_timer_t timerid, void *its)
+ {
+ 	return tst_syscall(__NR_timer_gettime64, timerid, its);
+ }
+ 
+-static inline int sys_timer_settime(timer_t timerid, int flags, void *its,
++static inline int sys_timer_settime(kernel_timer_t timerid, int flags, void *its,
+ 				    void *old_its)
+ {
+ 	return tst_syscall(__NR_timer_settime, timerid, flags, its, old_its);
+ }
+ 
+-static inline int sys_timer_settime64(timer_t timerid, int flags, void *its,
++static inline int sys_timer_settime64(kernel_timer_t timerid, int flags, void *its,
+ 				      void *old_its)
+ {
+ 	return tst_syscall(__NR_timer_settime64, timerid, flags, its, old_its);
+diff --git a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+index f7083917317c..02d5b416d1a2 100644
+--- a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
++++ b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+@@ -15,7 +15,7 @@
+ #include "tst_timer.h"
+ 
+ static struct test_variants {
+-	int (*func)(timer_t timer, void *its);
++	int (*func)(kernel_timer_t timer, void *its);
+ 	enum tst_ts_type type;
+ 	char *desc;
+ } variants[] = {
+@@ -28,7 +28,7 @@ static struct test_variants {
+ #endif
+ };
+ 
+-static timer_t timer;
++static kernel_timer_t timer;
+ 
+ static void setup(void)
+ {
+@@ -66,7 +66,7 @@ static void verify(void)
+ 		tst_res(TFAIL | TTERRNO, "timer_gettime() Failed");
+ 	}
+ 
+-	TEST(tv->func((timer_t)-1, tst_its_get(&spec)));
++	TEST(tv->func((kernel_timer_t)-1, tst_its_get(&spec)));
+ 	if (TST_RET == -1 && TST_ERR == EINVAL)
+ 		tst_res(TPASS, "timer_gettime(-1) Failed: EINVAL");
+ 	else
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+index 76f283b81fe3..48b37d8e7624 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+@@ -29,7 +29,7 @@
+ 
+ static struct tst_ts timenow;
+ static struct tst_its new_set, old_set;
+-static timer_t timer;
++static kernel_timer_t timer;
+ 
+ static struct testcase {
+ 	struct tst_its		*old_ptr;
+@@ -46,8 +46,8 @@ static struct testcase {
+ 
+ static struct test_variants {
+ 	int (*cgettime)(clockid_t clk_id, void *ts);
+-	int (*tgettime)(timer_t timer, void *its);
+-	int (*func)(timer_t timerid, int flags, void *its, void *old_its);
++	int (*tgettime)(kernel_timer_t timer, void *its);
++	int (*func)(kernel_timer_t timerid, int flags, void *its, void *old_its);
+ 	enum tst_ts_type type;
+ 	char *desc;
+ } variants[] = {
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime02.c b/testcases/kernel/syscalls/timer_settime/timer_settime02.c
+index 14c907bd19e1..f1225c1ccfad 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime02.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime02.c
+@@ -30,8 +30,8 @@
+ static struct tst_its new_set, old_set;
+ static struct tst_its *pnew_set = &new_set, *pold_set = &old_set, *null_set = NULL;
+ static void *faulty_set;
+-static timer_t timer;
+-static timer_t timer_inval = (timer_t)-1;
++static kernel_timer_t timer;
++static kernel_timer_t timer_inval = (kernel_timer_t)-1;
+ 
+ /* separate description-array to (hopefully) improve readability */
+ static const char * const descriptions[] = {
+@@ -44,7 +44,7 @@ static const char * const descriptions[] = {
+ };
+ 
+ static struct testcase {
+-	timer_t			*timer_id;
++	kernel_timer_t		*timer_id;
+ 	struct tst_its		**new_ptr;
+ 	struct tst_its		**old_ptr;
+ 	int			it_value_tv_nsec;
+@@ -59,7 +59,7 @@ static struct testcase {
+ };
+ 
+ static struct test_variants {
+-	int (*func)(timer_t timerid, int flags, void *its,
++	int (*func)(kernel_timer_t timerid, int flags, void *its,
+ 		    void *old_its);
+ 	enum tst_ts_type type;
+ 	char *desc;
 -- 
-2.25.1
+2.18.1
 
