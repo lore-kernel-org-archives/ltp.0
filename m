@@ -1,75 +1,63 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Jul 2020 16:28:43 +0200
-Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
- fires
-In-Reply-To: <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
-References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
- <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
-Message-ID: <20200714142843.GA14905@yuki.lan>
+From: Qais Yousef <qais.yousef@arm.com>
+Date: Tue, 14 Jul 2020 16:25:10 +0100
+Subject: [LTP] [PATCH] cpuset_hotplug_test.sh: Fix a race condition
+Message-ID: <20200714152510.13470-1-qais.yousef@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with minor changes, thanks.
+Cpuset performs hotplug updates asynchronously in the kernel. This would
+lead to a race window where userspace could read a stale value before
+the asynchronous update is performed (via a delayed work).
 
-Among other fixes I've moved the signal check from the signal handler to
-the clear_signal() function, since the tst_res() function is not
-signal-async-safe...
+An attempt to fix the issue in the kernel failed.
 
-diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-index f9d1456da..76f283b81 100644
---- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-+++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-@@ -10,7 +10,7 @@
- /*
-  * This tests the timer_settime(2) syscall under various conditions:
-  *
-- * 1) General initialization: No old_value, no flags, 5-second-timer
-+ * 1) General initialization: No old_value, no flags
-  * 2) Setting a pointer to a itimerspec struct as old_set parameter
-  * 3) Using a periodic timer
-  * 4) Using absolute time
-@@ -38,10 +38,10 @@ static struct testcase {
- 	int			flag;
- 	char			*description;
- } tcases[] = {
--	{NULL, 100000, 0, 0, "general initialization"},
--	{&old_set, 100000, 0, 0, "setting old_value"},
--	{&old_set, 100000, 100000, 0, "using periodic timer"},
--	{&old_set, 100000, 0, TIMER_ABSTIME, "using absolute time"},
-+	{NULL, 50000, 0, 0, "general initialization"},
-+	{&old_set, 50000, 0, 0, "setting old_value"},
-+	{&old_set, 50000, 50000, 0, "using periodic timer"},
-+	{&old_set, 50000, 0, TIMER_ABSTIME, "using absolute time"},
- };
+https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/T/#u
+
+There was a patch to make the update synchronous, but it hit a wall and
+was dropped
+
+https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
+
+The sleep is not ideal, but the maintainer has pushed back for a fix in
+the kernel so far.
+
+Fixes #693.
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+---
+ .../cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh  | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+index e973de7b9..1337e0cd6 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+@@ -86,6 +86,11 @@ root_cpu_hotplug_test()
+ 		return 1
+ 	fi
  
- static struct test_variants {
-@@ -71,15 +71,17 @@ static void clear_signal(void)
- 	 */
- 	while (!caught_signal);
- 
-+	if (caught_signal != SIGALRM) {
-+		tst_res(TFAIL, "Received incorrect signal: %s",
-+			tst_strsig(caught_signal));
-+	}
++	# cpuset hotplug is asynchronous operation, we could end up reading a
++	# stale value here. sleep is aweful, but we can't do better.
++	# See https://github.com/linux-test-project/ltp/issues/693
++	sleep 1
 +
- 	caught_signal = 0;
- }
+ 	root_cpus="`cat $CPUSET/cpuset.cpus`"
  
- static void sighandler(int sig)
- {
--	if (sig != SIGALRM)
--		tst_res(TFAIL, "Received incorrect signal: %d", sig);
--
--	caught_signal = 1;
-+	caught_signal = sig;
- }
+ 	task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
+@@ -155,6 +160,11 @@ general_cpu_hotplug_test()
+ 		return 1
+ 	fi
  
- static void setup(void)
-
++	# cpuset hotplug is asynchronous operation, we could end up reading a
++	# stale value here. sleep is aweful, but we can't do better.
++	# See https://github.com/linux-test-project/ltp/issues/693
++	sleep 1
++
+ 	cpus="`cat $path/cpuset.cpus`"
+ 
+ 	task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.17.1
+
