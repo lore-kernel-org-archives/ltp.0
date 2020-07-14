@@ -1,63 +1,59 @@
-From: Qais Yousef <qais.yousef@arm.com>
-Date: Tue, 14 Jul 2020 16:25:10 +0100
-Subject: [LTP] [PATCH] cpuset_hotplug_test.sh: Fix a race condition
-Message-ID: <20200714152510.13470-1-qais.yousef@arm.com>
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Tue, 14 Jul 2020 14:17:01 -0400
+Subject: [LTP] [PATCH v5 0/2] IMA: Verify measurement of certificates
+Message-ID: <20200714181703.6374-1-t-josne@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cpuset performs hotplug updates asynchronously in the kernel. This would
-lead to a race window where userspace could read a stale value before
-the asynchronous update is performed (via a delayed work).
+The IMA subsystem is capable of importing and measuring certificates. This
+set of patches adds tests for verifying that keys are imported and measured
+correctly.
 
-An attempt to fix the issue in the kernel failed.
 
-https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/T/#u
+Changelog:
 
-There was a patch to make the update synchronous, but it hit a wall and
-was dropped
+v5
+- Fix failure case of key measurement test.
 
-https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
+v4
+- Clarify documentation about required certificate.
+- Fix case where multiple KEY_CHECK rules are present.
 
-The sleep is not ideal, but the maintainer has pushed back for a fix in
-the kernel so far.
+v3
+- Document requirements for running the ima key tests and provide resources
+  for generating keys.
 
-Fixes #693.
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
----
- .../cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh  | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+v2
+- Un-linebreak a few strings
+- Enforce that some commands are available before running
+- Move compute_digest function to ima_setup.sh
+- Fix file permissions on ima_key.sh
+- Move IMA_POLICY variable to ima_setup.sh
+- Add keycheck.policy datafile
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-index e973de7b9..1337e0cd6 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
-@@ -86,6 +86,11 @@ root_cpu_hotplug_test()
- 		return 1
- 	fi
- 
-+	# cpuset hotplug is asynchronous operation, we could end up reading a
-+	# stale value here. sleep is aweful, but we can't do better.
-+	# See https://github.com/linux-test-project/ltp/issues/693
-+	sleep 1
-+
- 	root_cpus="`cat $CPUSET/cpuset.cpus`"
- 
- 	task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
-@@ -155,6 +160,11 @@ general_cpu_hotplug_test()
- 		return 1
- 	fi
- 
-+	# cpuset hotplug is asynchronous operation, we could end up reading a
-+	# stale value here. sleep is aweful, but we can't do better.
-+	# See https://github.com/linux-test-project/ltp/issues/693
-+	sleep 1
-+
- 	cpus="`cat $path/cpuset.cpus`"
- 
- 	task_cpus="`cat /proc/$tst_pid/status | grep Cpus_allowed_list`"
+v1
+- The following patchsets should be applied in that order.
+- Add tests that verify measurement of keys and importing certificates.
+
+
+Lachlan Sneff (2):
+  IMA: Add a test to verify measurment of keys
+  IMA: Add a test to verify importing a certificate into keyring
+
+ runtest/ima                                   |   1 +
+ .../kernel/security/integrity/ima/README.md   |  22 ++++
+ .../integrity/ima/datafiles/keycheck.policy   |   1 +
+ .../security/integrity/ima/tests/ima_keys.sh  | 111 ++++++++++++++++++
+ .../integrity/ima/tests/ima_measurements.sh   |  36 +-----
+ .../integrity/ima/tests/ima_policy.sh         |   1 -
+ .../security/integrity/ima/tests/ima_setup.sh |  35 ++++++
+ 7 files changed, 171 insertions(+), 36 deletions(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+
 -- 
-2.17.1
+2.25.1
 
