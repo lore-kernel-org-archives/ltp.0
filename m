@@ -1,51 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 14 Jul 2020 14:10:34 +0200
-Subject: [LTP] [PATCH v3 2/2] IMA: Add a test to verify importing a
- certificate into keyring
-In-Reply-To: <1593028963.27152.153.camel@linux.ibm.com>
-References: <20200617234957.10611-1-t-josne@linux.microsoft.com>
- <20200617234957.10611-3-t-josne@linux.microsoft.com>
- <1593016868.27152.88.camel@linux.ibm.com>
- <20418d14-d464-ec09-e1f2-c1b96e9df5f6@linux.microsoft.com>
- <1593028963.27152.153.camel@linux.ibm.com>
-Message-ID: <20200714121034.GA8020@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Jul 2020 16:28:43 +0200
+Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
+ fires
+In-Reply-To: <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
+References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
+ <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
+Message-ID: <20200714142843.GA14905@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi, Lachlan,
+Hi!
+Pushed with minor changes, thanks.
 
-> > >> +`ima_keys.sh` requires an x509 key to be generated and placed
-> > >> +at `/etc/keys/x509_ima.der`.
-> > > The filename "/etc/keys/x509_ima.der" is configurable. ?It's based on
-> > > CONFIG_IMA_X509_PATH Kconfig option. ?Perhaps extract it from the
-> > > running kernel's Kconfig?
-> > I didn't think pulling it from the kernel config. Will try this. I 
-> > assume `grep "..." /boot/config-$(uname -r)` is the right way to grab a 
-> > line from the config?
+Among other fixes I've moved the signal check from the signal handler to
+the clear_signal() function, since the tst_res() function is not
+signal-async-safe...
 
-> Try using scripts/extract-ikconfig.
-For now I'd just try to grep /boot/config-$(uname -r), but allow to run the test
-with the default value if kconfig not presented / readable (when running without
-root).
+diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+index f9d1456da..76f283b81 100644
+--- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
++++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+@@ -10,7 +10,7 @@
+ /*
+  * This tests the timer_settime(2) syscall under various conditions:
+  *
+- * 1) General initialization: No old_value, no flags, 5-second-timer
++ * 1) General initialization: No old_value, no flags
+  * 2) Setting a pointer to a itimerspec struct as old_set parameter
+  * 3) Using a periodic timer
+  * 4) Using absolute time
+@@ -38,10 +38,10 @@ static struct testcase {
+ 	int			flag;
+ 	char			*description;
+ } tcases[] = {
+-	{NULL, 100000, 0, 0, "general initialization"},
+-	{&old_set, 100000, 0, 0, "setting old_value"},
+-	{&old_set, 100000, 100000, 0, "using periodic timer"},
+-	{&old_set, 100000, 0, TIMER_ABSTIME, "using absolute time"},
++	{NULL, 50000, 0, 0, "general initialization"},
++	{&old_set, 50000, 0, 0, "setting old_value"},
++	{&old_set, 50000, 50000, 0, "using periodic timer"},
++	{&old_set, 50000, 0, TIMER_ABSTIME, "using absolute time"},
+ };
+ 
+ static struct test_variants {
+@@ -71,15 +71,17 @@ static void clear_signal(void)
+ 	 */
+ 	while (!caught_signal);
+ 
++	if (caught_signal != SIGALRM) {
++		tst_res(TFAIL, "Received incorrect signal: %s",
++			tst_strsig(caught_signal));
++	}
++
+ 	caught_signal = 0;
+ }
+ 
+ static void sighandler(int sig)
+ {
+-	if (sig != SIGALRM)
+-		tst_res(TFAIL, "Received incorrect signal: %d", sig);
+-
+-	caught_signal = 1;
++	caught_signal = sig;
+ }
+ 
+ static void setup(void)
 
-I'm not sure if extract-ikconfig as external dependency would be suitable for
-LTP (understand it's great for kselftest as it's already presented).
-
-BTW there is a ticket for adding kernel config related helpers into the LTP
-shell API [1], I'll also note extract-ikconfig there.
-
-LTP refused for long time working with kernel config, because it it's
-requirement meant that SUT without it could not be tested. Always try to not
-make kernel config as hard dependency (various embedded or old android will be
-disabled; some linux distros require root for reading the config).
-Design in [1] also suggest to have possibility to run the test even without config.
-
-[1] https://github.com/linux-test-project/ltp/issues/700
-
-> Mimi
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
