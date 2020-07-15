@@ -1,22 +1,44 @@
 From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Wed, 15 Jul 2020 15:34:10 -0400
-Subject: [LTP] [PATCH v4 1/2] IMA: Add a test to verify measurment of
- keys
-In-Reply-To: <1594773355.12900.210.camel@linux.ibm.com>
-References: <20200626021126.56760-1-t-josne@linux.microsoft.com>
- <20200626021126.56760-2-t-josne@linux.microsoft.com>
- <1594773355.12900.210.camel@linux.ibm.com>
-Message-ID: <7d8ac937-00d6-3cc1-7d38-3417580512d9@linux.microsoft.com>
+Date: Wed, 15 Jul 2020 15:38:19 -0400
+Subject: [LTP] [PATCH 1/2] IMA: Verify that the kernel cmdline is passed
+ and measured correctly through the kexec barrier.
+In-Reply-To: <1594774692.12900.220.camel@linux.ibm.com>
+References: <20200702153545.3126-1-t-josne@linux.microsoft.com>
+ <20200702153545.3126-2-t-josne@linux.microsoft.com>
+ <1594774692.12900.220.camel@linux.ibm.com>
+Message-ID: <53323968-55b9-68ae-dc3f-de9cbd223ff1@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 7/14/20 8:35 PM, Mimi Zohar wrote:
-> An additional test might be to verify that only the keys in the
-> measurement list are actually on the specified keyring and nothing
-> else.
-That seems like a good idea. I may not have time to implement it however.
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-- Lachlan
+
+On 7/14/20 8:58 PM, Mimi Zohar wrote:
+> On Thu, 2020-07-02 at 11:35 -0400, Lachlan Sneff wrote:
+>> Add a testcase that verifies that kexec correctly logs the
+>> kernel command line to the IMA buffer and that the command
+>> line is then correctly measured.
+>>
+>> This test must be run standalone, since it runs kexec
+>> multiple times (and therefore reboots several times).
+> Verifying the kexec boot command line doesn't require rebooting. ?Just
+> loading the kexec kernel image should be enough (kexec -s -l).
+>  ?Verifying that the measurement list, including the kexec boot command
+> line, is carried across kexec could be a separate test.
+
+This is true. However, it only appends to the IMA log once, even if you 
+unload (`kexec -u`) the kexec kernel after `kexec -s -l ...`.
+
+Therefore, the test would only be able to check kexec with the cmdline 
+supplied in one way.
+
+I will have to check internally if that's the right way to go. If it 
+didn't need to reboot, then the test could be integrated into the normal 
+IMA tests,
+which would definitely be a good thing.
+
+Regards,
+
+Lachlan
+
