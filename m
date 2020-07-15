@@ -1,47 +1,55 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Wed, 15 Jul 2020 15:40:52 -0400
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Wed, 15 Jul 2020 15:46:37 -0400
 Subject: [LTP] [PATCH 1/2] IMA: Verify that the kernel cmdline is passed
  and measured correctly through the kexec barrier.
-In-Reply-To: <53323968-55b9-68ae-dc3f-de9cbd223ff1@linux.microsoft.com>
+In-Reply-To: <20200715081857.GB10916@dell5510>
 References: <20200702153545.3126-1-t-josne@linux.microsoft.com>
  <20200702153545.3126-2-t-josne@linux.microsoft.com>
- <1594774692.12900.220.camel@linux.ibm.com>
- <53323968-55b9-68ae-dc3f-de9cbd223ff1@linux.microsoft.com>
-Message-ID: <1594842052.12900.337.camel@linux.ibm.com>
+ <20200715081857.GB10916@dell5510>
+Message-ID: <3ec443ab-f9ed-a435-2a61-e1b7c8f513dd@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 2020-07-15 at 15:38 -0400, Lachlan Sneff wrote:
-> On 7/14/20 8:58 PM, Mimi Zohar wrote:
-> > On Thu, 2020-07-02 at 11:35 -0400, Lachlan Sneff wrote:
-> >> Add a testcase that verifies that kexec correctly logs the
-> >> kernel command line to the IMA buffer and that the command
-> >> line is then correctly measured.
-> >>
-> >> This test must be run standalone, since it runs kexec
-> >> multiple times (and therefore reboots several times).
-> > Verifying the kexec boot command line doesn't require rebooting. ?Just
-> > loading the kexec kernel image should be enough (kexec -s -l).
-> >  ?Verifying that the measurement list, including the kexec boot command
-> > line, is carried across kexec could be a separate test.
-> 
-> This is true. However, it only appends to the IMA log once, even if you 
-> unload (`kexec -u`) the kexec kernel after `kexec -s -l ...`.
-> 
-> Therefore, the test would only be able to check kexec with the cmdline 
-> supplied in one way.
-> 
-> I will have to check internally if that's the right way to go. If it 
-> didn't need to reboot, then the test could be integrated into the normal 
-> IMA tests,
-> which would definitely be a good thing.
 
-For files, there is a single measurement unless the file changes.  I
-would assume that would be the same for the kexec command line as
-well. ?You could modify the command line a bit to force it to be re-
-measured.
+On 7/15/20 4:18 AM, Petr Vorel wrote:
+>> +++ b/testcases/kexec/utils.sh
+>> @@ -0,0 +1,47 @@
+>> +#!/bin/sh
+>> +
+>> +install() {
+>> +    local arg="$1"
+>> +
+>> +    if [ ! -d "/etc/init.d" ]; then
+>> +        mkdir /etc/init.d
+>> +    fi
+> I'm not sure if tests like this are suitable for LTP.
+> Ideal LTP test is a normal test, which is able to run with runltp, cleanup after
+> itself and use LTP C or/and shell API. LTP is full of tests which needs special
+> handling and thus not being run, not sure if it's a good idea to introduce yet
+> another one.
+>
+> Also test shouldn't not significantly modify SUT to make it unbootable, which
+> I'm not sure in this case. This is a big difference to kselftests which are
+> meant to help during kernel development which somehow expects some system
+> modifications (as you install your custom build kernel).
+>
+> I wonder if using QEMU would help to implement this test while not touching SUT
+> (thus be able to run this test with runltp). If you miss something in LTP API
+> just let us know.
+Using qemu is an interesting idea, but would be difficult to generalize.
 
-Mimi
+I actually do agree with you that a test like this may not be 
+appropriate for
+LTP since it's so separate and alien to the rest of the LTP suite.
+
+I need to confirm internally before I make a decision here, but is there
+a better place to put a test like this?
+
+
+Thanks for your review,
+
+Lachlan :)
+
