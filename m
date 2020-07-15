@@ -1,36 +1,29 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Tue, 14 Jul 2020 21:41:49 -0400
-Subject: [LTP] [PATCH 2/2] IMA: Verify IMA buffer passing through the
- kexec barrier
-In-Reply-To: <20200702153545.3126-3-t-josne@linux.microsoft.com>
-References: <20200702153545.3126-1-t-josne@linux.microsoft.com>
- <20200702153545.3126-3-t-josne@linux.microsoft.com>
-Message-ID: <1594777309.12900.237.camel@linux.ibm.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 15 Jul 2020 08:06:42 +0530
+Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
+ fires
+In-Reply-To: <20200714142843.GA14905@yuki.lan>
+References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
+ <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
+ <20200714142843.GA14905@yuki.lan>
+Message-ID: <20200715023642.jlldqjr7phru7ojj@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2020-07-02 at 11:35 -0400, Lachlan Sneff wrote:
-> Add a testcase that verifies that kexec correctly passes
-> the IMA buffer through the soft reboot.
+On 14-07-20, 16:28, Cyril Hrubis wrote:
+> Hi!
+> Pushed with minor changes, thanks.
 > 
-> This test must be run standalone, since it runs kexec.
-> 
-> Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
+> Among other fixes I've moved the signal check from the signal handler to
+> the clear_signal() function, since the tst_res() function is not
+> signal-async-safe...
 
-Depending on the policy, the measurement list could be exactly the
-same from one boot to the next. ?This test simply checks that the
-first N number of measurements are the same. ?It doesn't verify that
-there are additional measurements, nor does it check that there is an
-additional "boot_aggregate" after the kexec. ?At minimum the test
-should verify the existence of multiple "boot_aggregate" values in the
-measurement list.
+What does that mean ? I remember that I added it there in
+clear_signal() first, but then I tried to print the stuff (forcefully)
+from sighandler() and it worked without any issues and so I did that.
 
-A more complete test would walk the measurement list, re-calculating
-the PCR digests, and then compare the recalculated PCRS against the
-TPM PCRs. ?If all the measurements were properly carried across the
-kexec, the PCR digests should match.
-
-Mimi
+-- 
+viresh
