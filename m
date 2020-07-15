@@ -1,29 +1,35 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 15 Jul 2020 08:06:42 +0530
-Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
- fires
-In-Reply-To: <20200714142843.GA14905@yuki.lan>
-References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
- <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
- <20200714142843.GA14905@yuki.lan>
-Message-ID: <20200715023642.jlldqjr7phru7ojj@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 15 Jul 2020 10:03:44 +0200
+Subject: [LTP] [PATCH 1/2] IMA: Verify that the kernel cmdline is passed
+ and measured correctly through the kexec barrier.
+In-Reply-To: <1594774692.12900.220.camel@linux.ibm.com>
+References: <20200702153545.3126-1-t-josne@linux.microsoft.com>
+ <20200702153545.3126-2-t-josne@linux.microsoft.com>
+ <1594774692.12900.220.camel@linux.ibm.com>
+Message-ID: <20200715080344.GA10916@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14-07-20, 16:28, Cyril Hrubis wrote:
-> Hi!
-> Pushed with minor changes, thanks.
-> 
-> Among other fixes I've moved the signal check from the signal handler to
-> the clear_signal() function, since the tst_res() function is not
-> signal-async-safe...
+> On Thu, 2020-07-02 at 11:35 -0400, Lachlan Sneff wrote:
+> > Add a testcase that verifies that kexec correctly logs the
+> > kernel command line to the IMA buffer and that the command
+> > line is then correctly measured.
 
-What does that mean ? I remember that I added it there in
-clear_signal() first, but then I tried to print the stuff (forcefully)
-from sighandler() and it worked without any issues and so I did that.
+> > This test must be run standalone, since it runs kexec
+> > multiple times (and therefore reboots several times).
 
--- 
-viresh
+> Verifying the kexec boot command line doesn't require rebooting. ?Just
+> loading the kexec kernel image should be enough (kexec -s -l).
+> ?Verifying that the measurement list, including the kexec boot command
+> line, is carried across kexec could be a separate test.
+Mimi, thanks for a confirmation.
+Lachlan, so is it possible to turn it as a normal LTP test? And the test looks
+like IMA specific now, thus I'd move it into IMA tests.
+
+I'll post some comments to the test itself.
+
+Kind regards,
+Petr
