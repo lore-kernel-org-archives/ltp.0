@@ -1,192 +1,142 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 16 Jul 2020 09:28:02 +0800
-Subject: [LTP] [PATCH v2] syscalls/ioctl09: Add test for BLKRRPART ioctl
- syscalls/ioctl09: Add test for BLKRRPART ioctl
-In-Reply-To: <1594188398-14148-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <172872545.1186681.1594187187385.JavaMail.zimbra@redhat.com>
- <1594188398-14148-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <35bf774b-3df8-47a8-6cdb-c846306a8f92@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 16 Jul 2020 11:19:49 +0800
+Subject: [LTP] [PATCH 1/2] iopl: convert to new API
+In-Reply-To: <20200715092923.GC7741@yuki.lan>
+References: <20200709085237.10158-1-liwang@redhat.com>
+ <20200715092923.GC7741@yuki.lan>
+Message-ID: <CAEemH2edLfM9icD8o=ZJJ2GvkKvmBwH0hRXFb25E8390tuCNVA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
+On Wed, Jul 15, 2020 at 5:29 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Do you have some comment for this patch?
+> ...
+> > +     /*
+> > +      * Test the system call for possible privelege levels.
+> > +      * As the privelge level for a normal process is 0,
+> > +      * start by setting/changing the level to 0.
+> > +      */
+>
+> This comment should be moved to the test description at the start of the
+> test, right?
+>
 
-Best Regards
-Yang Xu
-> Fixes #699
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Acked-by: Jan Stancek <jstancek@redhat.com>
-> ---
-> v1->v2:
-> code style fix(below 80 characters)
->   runtest/syscalls                           |   1 +
->   testcases/kernel/syscalls/ioctl/.gitignore |   1 +
->   testcases/kernel/syscalls/ioctl/ioctl09.c  | 126 +++++++++++++++++++++
->   3 files changed, 128 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/ioctl/ioctl09.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 5b3a0862f..aaa81e4ee 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -529,6 +529,7 @@ ioctl05      ioctl05
->   ioctl06      ioctl06
->   ioctl07      ioctl07
->   ioctl08      ioctl08
-> +ioctl09      ioctl09
->   
->   ioctl_loop01 ioctl_loop01
->   ioctl_loop02 ioctl_loop02
-> diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-> index 3a3d49adc..5fff7a61d 100644
-> --- a/testcases/kernel/syscalls/ioctl/.gitignore
-> +++ b/testcases/kernel/syscalls/ioctl/.gitignore
-> @@ -6,6 +6,7 @@
->   /ioctl06
->   /ioctl07
->   /ioctl08
-> +/ioctl09
->   /ioctl_loop01
->   /ioctl_loop02
->   /ioctl_loop03
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-> new file mode 100644
-> index 000000000..b39ef9874
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-> @@ -0,0 +1,126 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-> + *
-> + * Basic test for the BLKRRPART ioctl, it is the same as blockdev
-> + * --rereadpt command.
-> + */
-> +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <sys/mount.h>
-> +#include <stdbool.h>
-> +#include "lapi/loop.h"
-> +#include "tst_test.h"
-> +
-> +static char dev_path[1024];
-> +static int dev_num, attach_flag, dev_fd;
-> +static char loop_partpath[1026], sys_loop_partpath[1026];
-> +
-> +static void change_partition(const char *const cmd[])
-> +{
-> +	int ret;
-> +
-> +	ret = tst_cmd(cmd, NULL, NULL, TST_CMD_PASS_RETVAL);
-> +	switch (ret) {
-> +	case 0:
-> +	break;
-> +	case 255:
-> +		tst_res(TCONF, "parted binary not installed or failed");
-> +	break;
-> +	default:
-> +		tst_res(TCONF, "parted exited with %i", ret);
-> +	break;
-> +	}
-> +}
-> +
-> +static void check_partition(int part_num, bool value)
-> +{
-> +	int ret;
-> +
-> +	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp%d",
-> +		dev_num, dev_num, part_num);
-> +	sprintf(loop_partpath, "%sp%d", dev_path, part_num);
-> +
-> +	ret = access(sys_loop_partpath, F_OK);
-> +	if (ret == 0)
-> +		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
-> +			sys_loop_partpath);
-> +	else
-> +		tst_res(value ? TFAIL : TPASS, "access %s fails",
-> +			sys_loop_partpath);
-> +
-> +	ret = access(loop_partpath, F_OK);
-> +	if (ret == 0)
-> +		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
-> +			loop_partpath);
-> +	else
-> +		tst_res(value ? TFAIL : TPASS, "access %s fails",
-> +			loop_partpath);
-> +}
-> +
-> +static void verify_ioctl(void)
-> +{
-> +	const char *const cmd_parted_old[] = {"parted", "-s", "test.img",
-> +					      "mklabel", "msdos", "mkpart",
-> +					      "primary", "ext4", "1M", "10M",
-> +					      NULL};
-> +	const char *const cmd_parted_new[] = {"parted", "-s", "test.img",
-> +					      "mklabel", "msdos", "mkpart",
-> +					      "primary", "ext4", "1M", "10M",
-> +					      "mkpart", "primary", "ext4",
-> +					      "10M", "20M", NULL};
-> +	struct loop_info loopinfo = {0};
-> +
-> +	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-> +	if (dev_num < 0)
-> +		tst_brk(TBROK, "Failed to find free loop device");
-> +
-> +	tst_fill_file("test.img", 0, 1024 * 1024, 20);
-> +
-> +	change_partition(cmd_parted_old);
-> +
-> +	tst_attach_device(dev_path, "test.img");
-> +	attach_flag = 1;
-> +
-> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> +	loopinfo.lo_flags =  LO_FLAGS_PARTSCAN;
-> +	SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
-> +	check_partition(1, true);
-> +	check_partition(2, false);
-> +
-> +	change_partition(cmd_parted_new);
-> +	TST_RETRY_FUNC(ioctl(dev_fd, BLKRRPART, 0), TST_RETVAL_EQ0);
-> +	check_partition(1, true);
-> +	check_partition(2, true);
-> +
-> +	SAFE_CLOSE(dev_fd);
-> +	tst_detach_device(dev_path);
-> +	attach_flag = 0;
-> +	unlink("test.img");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (dev_fd > 0)
-> +		SAFE_CLOSE(dev_fd);
-> +	if (attach_flag)
-> +		tst_detach_device(dev_path);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.cleanup = cleanup,
-> +	.test_all = verify_ioctl,
-> +	.needs_root = 1,
-> +	.needs_drivers = (const char *const []) {
-> +		"loop",
-> +		NULL
-> +	},
-> +	.needs_cmds = (const char *const []) {
-> +		"parted",
-> +		NULL
-> +	},
-> +	.needs_tmpdir = 1,
-> +};
-> 
+Agree, let's move it up.
+
+> -#else /* __i386__ */
+> > -
+> > -#include "test.h"
+> > -
+> > -int TST_TOTAL = 0;
+> > -
+> > -int main(void)
+> > -{
+> > -     tst_resm(TPASS,
+> > -              "LSB v1.3 does not specify iopl() for this
+> architecture.");
+> > -     tst_exit();
+> > -}
+> > +static struct tst_test test = {
+> > +     .test_all = verify_iopl,
+> > +     .needs_root = 1,
+> > +     .cleanup = cleanup,
+> > +};
+> >
+> > -#endif /* __i386__ */
+> > +#else /* __i386__, __x86_64__*/
+> > +TST_TEST_TCONF("LSB v1.3 does not specify iopl() for this architecture.
+> (only for i386 or x86_64)");
+> > +#endif /* __i386_, __x86_64__*/
+> > diff --git a/testcases/kernel/syscalls/iopl/iopl02.c
+> b/testcases/kernel/syscalls/iopl/iopl02.c
+> > index 35d239268..747a1ca56 100644
+> > --- a/testcases/kernel/syscalls/iopl/iopl02.c
+> > +++ b/testcases/kernel/syscalls/iopl/iopl02.c
+> > @@ -1,221 +1,82 @@
+> > ...
+> > +
+> > +#if defined __i386__ || defined(__x86_64__)
+> >
+> >  #define INVALID_LEVEL 4              /* Invalid privilege level */
+> >  #define EXP_RET_VAL -1
+>
+> Do we need to have macros for these? I doubt so...
+>
+
+Yes, we can delete the macros.
 
 
+> +     if (i == 1) {
+> > +             /* setup Non super-user for second test */
+> > +             struct passwd *pw;
+> > +             pw = SAFE_GETPWNAM("nobody");
+>
+> This should be put into the test setup, also the comment is useless.
+>
+
+Good point, it doesn't matter to run all the tests under non-super-user.
+
+
+> > +             if (seteuid(pw->pw_uid) == -1) {
+> > +                     tst_res(TWARN, "Failed to set effective"
+> > +                                     "uid to %d", pw->pw_uid);
+> > +                     return;
+> >               }
+> >       }
+> >
+> > -     /* cleanup and exit */
+> > -     cleanup();
+> > -
+> > -     tst_exit();
+> > -
+> > -}
+> > -
+> > -/* setup1() - set up non-super user for second test case */
+> > -int setup1(void)
+> > -{
+> > -     /* switch to "nobody" user */
+> > -     if (seteuid(ltpuser->pw_uid) == -1) {
+> > -             tst_resm(TWARN, "Failed to set effective"
+> > -                      "uid to %d", ltpuser->pw_uid);
+> > -             return 1;
+> > +     TEST(iopl(tcases[i].level));
+> > +
+> > +     if ((TST_RET == EXP_RET_VAL) && (TST_ERR == tcases[i].exp_errno)) {
+> > +             tst_res(TPASS, "Expected failure for %s, "
+> > +                             "errno: %d", tcases[i].desc,
+> > +                             TST_ERR);
+>
+> Please use TTERRNO to print TST_ERR. Also the tst_res() prints TPASS so
+> we can omit the "Expected failure" as well and print it with something
+> as:
+>
+>         tst_res(TPASS | TTERRNO, "%s", tcases[i].desc);
+>
+> > +     } else {
+> > +             tst_res(TFAIL, "Unexpected results for %s ; "
+> > +                             "returned %ld (expected %d), errno %d "
+> > +                             "(expected errno  %d)",
+> > +                             tcases[i].desc,
+> > +                             TST_RET, EXP_RET_VAL,
+> > +                             TST_ERR, tcases[i].exp_errno);
+>
+> Here as well, the TST_ERR should be printed with TTERRNO and the
+> exp_errno should be printed with tst_strerrno(). We can do this with
+> somethign as:
+>
+>         tst_res(TFAIL | TTERRNO,
+>                 "%s returned %ld expected -1, expected %s got ",
+>                 tcases[i].desc, tst_strerrno(tcases[i].exp_errno));
+>
+
+Quite good suggestions. I missed that TTERRNO.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200716/1b581360/attachment-0001.htm>
