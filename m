@@ -1,82 +1,51 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 17 Jul 2020 18:34:46 +0200
-Subject: [LTP] [PATCH 2/9] syscalls/ipc: shmctl03: Remove.
+Date: Fri, 17 Jul 2020 18:34:47 +0200
+Subject: [LTP] [PATCH 3/9] syscalls/ipc: shmctl04: Rewrite from scratch.
 In-Reply-To: <20200717163453.9587-1-chrubis@suse.cz>
 References: <20200717163453.9587-1-chrubis@suse.cz>
-Message-ID: <20200717163453.9587-3-chrubis@suse.cz>
+Message-ID: <20200717163453.9587-4-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-All these cases are now covered by shmctl02.
+Write the test from a scratch and validate the content of the shm_info
+structure and the return value.
+
+The return value is highest used index to a kernel table, so we call
+shmctl() with SHM_STAT_ANY which shouldn't fail if the value is correct.
+
+We also parse /proc/sysvipc/shm and check that the information is
+consistent with the content of shm_info structure.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/syscalls                              |   1 -
- runtest/syscalls-ipc                          |   1 -
- .../kernel/syscalls/ipc/shmctl/.gitignore     |   1 -
- testcases/kernel/syscalls/ipc/shmctl/Makefile |   2 +-
- .../kernel/syscalls/ipc/shmctl/shmctl03.c     | 204 ------------------
- 5 files changed, 1 insertion(+), 208 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+ testcases/kernel/syscalls/ipc/shmctl/Makefile |   4 +-
+ .../kernel/syscalls/ipc/shmctl/shmctl04.c     | 190 ++++++++++--------
+ 2 files changed, 109 insertions(+), 85 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 819e8d8ee..5ce482dc7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1355,7 +1355,6 @@ shmat03 shmat03
- 
- shmctl01 shmctl01
- shmctl02 shmctl02
--shmctl03 shmctl03
- shmctl04 shmctl04
- shmctl05 shmctl05
- shmctl06 shmctl06
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index c3a35896c..10cb92c7d 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -53,7 +53,6 @@ shmat02 shmat02
- 
- shmctl01 shmctl01
- shmctl02 shmctl02
--shmctl03 shmctl03
- shmctl04 shmctl04
- shmctl05 shmctl05
- shmctl06 shmctl06
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/.gitignore b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-index 46b107344..08aa83c19 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-@@ -1,6 +1,5 @@
- /shmctl01
- /shmctl02
--/shmctl03
- /shmctl04
- /shmctl05
- /shmctl06
 diff --git a/testcases/kernel/syscalls/ipc/shmctl/Makefile b/testcases/kernel/syscalls/ipc/shmctl/Makefile
-index bc5bd7c2e..33e102797 100644
+index 33e102797..30bb1a537 100644
 --- a/testcases/kernel/syscalls/ipc/shmctl/Makefile
 +++ b/testcases/kernel/syscalls/ipc/shmctl/Makefile
 @@ -10,7 +10,7 @@ shmctl05: LDLIBS += -lrt
  
  include $(top_srcdir)/include/mk/testcases.mk
  
--shmctl01 shmctl03 shmctl04 shmctl05: LDLIBS += -lltpipc
-+shmctl01 shmctl04 shmctl05: LDLIBS += -lltpipc
- shmctl02 shmctl06: LDLIBS += -lltpnewipc
+-shmctl01 shmctl04 shmctl05: LDLIBS += -lltpipc
+-shmctl02 shmctl06: LDLIBS += -lltpnewipc
++shmctl01 shmctl05: LDLIBS += -lltpipc
++shmctl02 shmctl04 shmctl06: LDLIBS += -lltpnewipc
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-deleted file mode 100644
-index 798eadad6..000000000
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-+++ /dev/null
-@@ -1,204 +0,0 @@
--/*
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+index 40cfa9419..bbcfd75f0 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+@@ -1,115 +1,139 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
 - *
 - *   Copyright (c) International Business Machines  Corp., 2001
 - *
@@ -93,193 +62,210 @@ index 798eadad6..000000000
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
++ * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
 -
--/*
+ /*
 - * NAME
-- *	shmctl03.c
+- *	shmctl04.c
 - *
 - * DESCRIPTION
-- *	shmctl03 - check for EACCES, and EPERM errors
-- *
-- * ALGORITHM
-- *	create a shared memory segment with root only read & write permissions
-- *	fork a child process
-- *	if child
-- *	  set the ID of the child process to that of "ltpuser1"
-- *	  call do_child()
-- *	  loop if that option was specified
-- *	    call shmctl() using three different invalid cases
-- *	    check the errno value
-- *	      issue a PASS message if we get EACCES or EPERM
-- *	    otherwise, the tests fails
-- *	      issue a FAIL message
-- *	  call cleanup
-- *	if parent
-- *	  wait for child to exit
-- *	  remove the shared memory segment
-- *
+- *	shmctl04 - test the SHM_INFO command
+- *		   they are used with shmctl() in ipcs
++ * Call shmctl() with SHM_INFO flag and check that:
+  *
 - * USAGE:  <for command-line>
-- *  shmctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  shmctl04 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
 - *	       -t   : Turn on syscall timing.
-- *
++ * * The returned index points to a valid SHM by calling SHM_STAT_ANY
++ * * And the data are consistent with /proc/sysvipc/shm
+  *
 - * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
+- *	09/2002 - Written by Mingming Cao
++ * There is a possible race between the call to the shmctl() and read from the
++ * proc file so this test cannot be run in parallel with any IPC testcases that
++ * adds or removes SHM segments.
+  *
 - * RESTRICTIONS
-- *	test must be run as root
-- */
--
+- *	none
++ * Note what we create a SHM segment in the test setup to make sure that there
++ * is at least one during the testrun.
+  */
+ 
 -#include "ipcshm.h"
--#include <sys/types.h>
--#include <sys/wait.h>
--#include "safe_macros.h"
++#define _GNU_SOURCE
++#include <stdio.h>
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
+ 
+-char *TCID = "shmctl04";
+-int TST_TOTAL = 1;
++#define SHM_SIZE 2048
+ 
+-struct shm_info shm_info;
+-int max_ids;
 -
--char *TCID = "shmctl03";
--int shm_id_1 = -1;
--
--uid_t ltp_uid;
--char *ltp_user = "nobody";
--
--struct shmid_ds buf;
--
--struct test_case_t {
--	int *shmid;
--	int cmd;
--	struct shmid_ds *sbuf;
--	int error;
--} TC[] = {
--	/* EACCES - child has no read permission for segment */
--	{
--	&shm_id_1, IPC_STAT, &buf, EACCES},
--	    /* EPERM - IPC_SET - child doesn't have permission to change segment */
--	{
--	&shm_id_1, IPC_SET, &buf, EPERM},
--	    /* EPERM - IPC_RMID - child can not remove the segment */
--	{
--&shm_id_1, IPC_RMID, &buf, EPERM},};
--
--int TST_TOTAL = ARRAY_SIZE(TC);
--
+-/*
+- * These are the various setup and check functions for the commands
+- * that we are checking.
+- */
++static int shm_id = -1;
+ 
 -int main(int ac, char **av)
--{
--	int pid;
--	void do_child(void);
++static void parse_proc_sysvipc(struct shm_info *info, int max_id)
+ {
+-	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();		/* global setup */
--
--	if ((pid = FORK_OR_VFORK()) == -1) {
--		tst_brkm(TBROK, cleanup, "could not fork");
--	}
--
--	if (pid == 0) {		/* child */
--		/* set  the user ID of the child to the non root user */
--		if (setuid(ltp_uid) == -1) {
--			tst_resm(TBROK, "setuid() failed");
--			exit(1);
--		}
--
--		do_child();
--	} else {
--		/* wait for the child to return */
--		SAFE_WAITPID(cleanup, pid, NULL, 0);
--
--		/* if it exists, remove the shared memory resource */
--		rm_shm(shm_id_1);
--
--		tst_rmdir();
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--/*
-- * do_child - make the call as the child process
-- */
--void do_child(void)
--{
--	int i, lc;
--
+-	setup();
++	int page_size = getpagesize();
++	FILE *f = fopen("/proc/sysvipc/shm", "r");
++	int used_ids = 0;
++	int shmid_max = 0;
++	unsigned long shm_rss = 0;
++	unsigned long shm_swp = 0;
++	unsigned long shm_tot = 0;
++
++	/* Eat header */
++	for (;;) {
++		int c = fgetc(f);
++
++		if (c == '\n' || c == EOF)
++			break;
++	}
+ 
 -	/* The following loop checks looping state if -i option given */
--
++	int shmid, size, rss, swap;
+ 
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
--
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
--			/*
--			 * use the TEST() macro to make the call
--			 */
--
--			TEST(shmctl(*(TC[i].shmid), TC[i].cmd, TC[i].sbuf));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - errno = "
--					 "%d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "call failed with an "
--					 "unexpected error - %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			}
+-		TEST(shmctl(0, SHM_INFO, (struct shmid_ds *)&shm_info));
++	/*
++	 * Sum rss, swap and size for all elements listed, which should equal
++	 * the data returned in the shm_info structure.
++	 *
++	 * Note that the size has to be rounded up to nearest multiple of page
++	 * size.
++	 */
++	while (fscanf(f, "%*i %i %*i %i %*i %*i %*i %*i %*i %*i %*i %*i %*i %*i %i %i",
++	              &shmid, &size, &rss, &swap) > 0) {
++		used_ids++;
++		shm_rss += rss/page_size;
++		shm_swp += swap/page_size;
++		shm_tot += (size + page_size - 1) / page_size;
++		if (shmid > shmid_max)
++			shmid_max = shmid;
++	}
+ 
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TPASS, "SHM_INFO call succeeded");
+-			continue;
 -		}
--	}
--}
--
++	if (info->used_ids != used_ids) {
++		tst_res(TFAIL, "used_ids = %i, expected %i",
++		        info->used_ids, used_ids);
++	} else {
++		tst_res(TPASS, "used_ids = %i", used_ids);
++	}
+ 
+-		tst_resm(TFAIL, "SHM_INFO call failed with an unexpected error"
+-			 " - %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
++	if (info->shm_rss != shm_rss) {
++		tst_res(TFAIL, "shm_rss = %li, expected %li",
++		        info->shm_rss, shm_rss);
++	} else {
++		tst_res(TPASS, "shm_rss = %li", shm_rss);
++	}
+ 
++	if (info->shm_swp != shm_swp) {
++		tst_res(TFAIL, "shm_swp = %li, expected %li",
++		        info->shm_swp, shm_swp);
++	} else {
++		tst_res(TPASS, "shm_swp = %li", shm_swp);
+ 	}
+ 
+-	cleanup();
++	if (info->shm_tot != shm_tot) {
++		tst_res(TFAIL, "shm_tot = %li, expected %li",
++		        info->shm_tot, shm_tot);
++	} else {
++		tst_res(TPASS, "shm_tot = %li", shm_tot);
++	}
+ 
+-	tst_exit();
++	if (max_id != shmid_max) {
++		tst_res(TFAIL, "highest shmid = %i, expected %i",
++		        max_id, shmid_max);
++	} else {
++		tst_res(TPASS, "highest shmid = %i", max_id);
++	}
+ }
+ 
 -/*
 - * setup() - performs all the ONE TIME setup for this test.
 - */
 -void setup(void)
--{
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
++static void verify_shminfo(void)
+ {
++	struct shm_info info;
++	struct shmid_ds ds;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	TEST(shmctl(0, SHM_INFO, (struct shmid_ds *)&info));
+ 
 -	TEST_PAUSE;
--
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "shmctl(0, SHM_INFO, ...)");
++		return;
++	}
+ 
 -	/*
 -	 * Create a temporary directory and cd into it.
 -	 * This helps to ensure that a unique msgkey is created.
 -	 * See libs/libltpipc/libipc.c for more information.
 -	 */
 -	tst_tmpdir();
--
--	/* get an IPC resource key */
--	shmkey = getipckey();
--
--	/* create a shared memory segment with read and write permissions */
--	if ((shm_id_1 = shmget(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL |
--			       SHM_RW)) == -1) {
--		tst_brkm(TBROK, cleanup, "couldn't create shared memory "
--			 "segment in setup()");
--	}
--
--	/* get the userid for a non root user */
--	ltp_uid = getuserid(ltp_user);
--}
--
++	TEST(shmctl(TST_RET, SHM_STAT_ANY, &ds));
+ 
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, "SHM_INFO haven't returned a valid index");
++	else
++		tst_res(TPASS, "SHM_INFO returned valid index %li", TST_RET);
++
++	parse_proc_sysvipc(&info, TST_RET);
+ }
+ 
 -/*
-- * cleanup() - performs all the ONE TIME cleanup for this test@completion
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
 - * 	       or premature exit.
 - */
 -void cleanup(void)
--{
++static void setup(void)
+ {
++	shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT | SHM_RW);
++}
+ 
+-	tst_rmdir();
 -
--}
++static void cleanup(void)
++{
++	if (shm_id >= 0)
++		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_shminfo,
++};
 -- 
 2.26.2
 
