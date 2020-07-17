@@ -1,55 +1,37 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 17 Jul 2020 12:13:11 +0800
-Subject: [LTP] [PATCH] lapi/io_uring.h: Add declaration of __kernel_rwf_t
-Message-ID: <1594959191-25155-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Vikas Kumar <vikas.kumar2@arm.com>
+Date: Fri, 17 Jul 2020 10:09:16 +0530
+Subject: [LTP] [PATCH V8] syscall: Add io_uring related tests
+In-Reply-To: <20200716143352.GA11713@yuki.lan>
+References: <20200714032408.9201-1-vikas.kumar2@arm.com>
+ <20200716143352.GA11713@yuki.lan>
+Message-ID: <4144f20f-6097-9e62-0328-c74c09bb68fe@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since kernel commit ddef7ed2b5cb ("annotate RWF_... flags"), fs.h introduced
- __kernel_rwf_t data type in 4.14-rc1.
+Hi Cyril,
 
-Fix build error on old kernel.
-In file included from io_uring01.c:20:
-../../../../include/lapi/io_uring.h:38: error: expected specifier-qualifier-list before ?__kernel_rwf_t?
-io_uring01.c:266: warning: missing initializer
-io_uring01.c:266: warning: (near initialization for ?(anonymous)[1].ptr?)
-io_uring01.c:268: warning: missing initializer
-io_uring01.c:268: warning: (near initialization for ?test.caps?)
-make: *** [io_uring01] Error 1
+> Hi!
+> I've finished the test code and pushed, thanks.
+>
+> I've changed it so that it actually reads data and checks the result,
+> and also properly unmaps the buffers (fixes failures with -i 10 passed
+> to the test), the diff is attached below.
+>
+> Also I will have to check if we need the read/write barriers, I guess
+> that the way we use the interface it's safe, since the syscalls provide
+> natural boundary between kernel and userspace. But they would be needed
+> for a different tests anyways.
+>
+> Also I had to remove the IORING_SETUP_IOPOLL flag since that made all
+> SQEs fail with EOPNOTSUPP for me.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- include/lapi/io_uring.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
-index 8e47501a5..4a8978e87 100644
---- a/include/lapi/io_uring.h
-+++ b/include/lapi/io_uring.h
-@@ -12,6 +12,7 @@
- #include <unistd.h>
- #include <fcntl.h>
- #include <sys/types.h>
-+#include <linux/types.h>
- #include <sys/uio.h>
- #include <stdlib.h>
- #include <linux/fs.h>
-@@ -20,6 +21,10 @@
- 
- #ifndef IOSQE_FIXED_FILE
- 
-+#ifndef __kernel_rwf_t
-+typedef int __bitwise __kernel_rwf_t;
-+#endif
-+
- /*
-  * IO submission data structure (Submission Queue Entry)
-  */
--- 
-2.23.0
+Thank you very much for help and change in test code.
 
 
+Regards,
+
+Vikas
 
