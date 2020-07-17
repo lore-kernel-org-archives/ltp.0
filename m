@@ -1,39 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 Jul 2020 13:04:08 +0200
-Subject: [LTP] [PATCH] lapi/io_uring.h: Add declaration of __kernel_rwf_t
-In-Reply-To: <20200717103816.GA28835@yuki.lan>
-References: <1594959191-25155-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200717073842.GA31254@dell5510> <20200717080840.GB32407@dell5510>
- <1eac1ed9-66dd-5141-0bc2-cc05312704c8@cn.fujitsu.com>
- <20200717103816.GA28835@yuki.lan>
-Message-ID: <20200717110408.GA47598@x230>
+From: Qais Yousef <qais.yousef@arm.com>
+Date: Fri, 17 Jul 2020 12:25:56 +0100
+Subject: [LTP] [PATCH] cpuset_hotplug_test.sh: Fix a race condition
+In-Reply-To: <20200716205654.GB15484@x230>
+References: <20200714152510.13470-1-qais.yousef@arm.com>
+ <20200716060710.GA3812@dell5510>
+ <20200716093316.re67arcm3tbxtwas@e107158-lin.cambridge.arm.com>
+ <20200716095738.GA9395@dell5510>
+ <20200716101250.vd7nan2u2nydzbnf@e107158-lin.cambridge.arm.com>
+ <20200716120852.GA22657@dell5510>
+ <20200716134939.tqxswbdd2lcpcwp3@e107158-lin.cambridge.arm.com>
+ <20200716142153.GA15980@dell5510>
+ <20200716153037.3qpeyxjenditkq6k@e107158-lin.cambridge.arm.com>
+ <20200716205654.GB15484@x230>
+Message-ID: <20200717112555.qewbnhbnfktzn56k@e107158-lin.cambridge.arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 07/16/20 22:56, Petr Vorel wrote:
+> Hi Qais,
+> 
+> merged your original patch.
+> Thanks for your time.
 
-> > how about the follwing change
+Thanks Petr for your responsiveness and helpful remarks. And Huacai for his
+reviewed-and-tested-by.
 
-> > +#ifdef __CHECKER__
-> > +#define __bitwise__ __attribute__((bitwise))
-> > +#else
-> > +#define __bitwise__
-> > +#endif
-> > +#define __bitwise __bitwise__
-> > +
-> > +#ifndef __kernel_rwf_t
-> > +typedef int __bitwise __kernel_rwf_t;
-> > +#endif
+Thanks!
 
-> > Also, I think we should replace _u32 with uint32 in lapi/loop.h if we 
-> > don't want to include linux kernel header for single use.
-
-> The whole __bitwise is used only by a sparse checker, there is no point
-> to include it in LTP. So we can just typedef the __kernel_rwf_t to int.
-Make sense, going to push this variant.
-
-Kind regards,
-Petr
+--
+Qais Yousef
