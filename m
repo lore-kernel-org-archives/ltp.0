@@ -1,27 +1,55 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 16 Jul 2020 22:56:54 +0200
-Subject: [LTP] [PATCH] cpuset_hotplug_test.sh: Fix a race condition
-In-Reply-To: <20200716153037.3qpeyxjenditkq6k@e107158-lin.cambridge.arm.com>
-References: <20200714152510.13470-1-qais.yousef@arm.com>
- <20200716060710.GA3812@dell5510>
- <20200716093316.re67arcm3tbxtwas@e107158-lin.cambridge.arm.com>
- <20200716095738.GA9395@dell5510>
- <20200716101250.vd7nan2u2nydzbnf@e107158-lin.cambridge.arm.com>
- <20200716120852.GA22657@dell5510>
- <20200716134939.tqxswbdd2lcpcwp3@e107158-lin.cambridge.arm.com>
- <20200716142153.GA15980@dell5510>
- <20200716153037.3qpeyxjenditkq6k@e107158-lin.cambridge.arm.com>
-Message-ID: <20200716205654.GB15484@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 17 Jul 2020 12:13:11 +0800
+Subject: [LTP] [PATCH] lapi/io_uring.h: Add declaration of __kernel_rwf_t
+Message-ID: <1594959191-25155-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Qais,
+Since kernel commit ddef7ed2b5cb ("annotate RWF_... flags"), fs.h introduced
+ __kernel_rwf_t data type in 4.14-rc1.
 
-merged your original patch.
-Thanks for your time.
+Fix build error on old kernel.
+In file included from io_uring01.c:20:
+../../../../include/lapi/io_uring.h:38: error: expected specifier-qualifier-list before ?__kernel_rwf_t?
+io_uring01.c:266: warning: missing initializer
+io_uring01.c:266: warning: (near initialization for ?(anonymous)[1].ptr?)
+io_uring01.c:268: warning: missing initializer
+io_uring01.c:268: warning: (near initialization for ?test.caps?)
+make: *** [io_uring01] Error 1
 
-Kind regards,
-Petr
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/lapi/io_uring.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
+index 8e47501a5..4a8978e87 100644
+--- a/include/lapi/io_uring.h
++++ b/include/lapi/io_uring.h
+@@ -12,6 +12,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
++#include <linux/types.h>
+ #include <sys/uio.h>
+ #include <stdlib.h>
+ #include <linux/fs.h>
+@@ -20,6 +21,10 @@
+ 
+ #ifndef IOSQE_FIXED_FILE
+ 
++#ifndef __kernel_rwf_t
++typedef int __bitwise __kernel_rwf_t;
++#endif
++
+ /*
+  * IO submission data structure (Submission Queue Entry)
+  */
+-- 
+2.23.0
+
+
+
