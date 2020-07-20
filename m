@@ -1,39 +1,130 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Mon, 20 Jul 2020 19:24:54 +0800
-Subject: [LTP] [PATCH v4] syscalls/pidfd_open01.c: Add check for
- close-on-exec flag
-In-Reply-To: <20200720085311.h77zxzfsqrhmmy2w@vireshk-mac-ubuntu>
-References: <20200720052755.21105-1-yangx.jy@cn.fujitsu.com>
- <20200720085311.h77zxzfsqrhmmy2w@vireshk-mac-ubuntu>
-Message-ID: <19b160e1-be12-bb32-a2cd-1c2be24428cb@163.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 20 Jul 2020 19:46:54 +0800
+Subject: [LTP] [PATCH] syscalls/msgget04: Add test for
+ /proc/sys/kernel/msg_next_id
+Message-ID: <1595245614-24814-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr, Viresh
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ runtest/syscalls                              |  1 +
+ runtest/syscalls-ipc                          |  1 +
+ .../kernel/syscalls/ipc/msgget/.gitignore     |  1 +
+ .../kernel/syscalls/ipc/msgget/msgget04.c     | 66 +++++++++++++++++++
+ 4 files changed, 69 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/msgget/msgget04.c
 
-Thanks a lot for your review, pushed. :-)
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9d927935b..4cdb123bd 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -808,6 +808,7 @@ msgctl12 msgctl12
+ msgget01 msgget01
+ msgget02 msgget02
+ msgget03 msgget03
++msgget04 msgget04
+ 
+ msgrcv01 msgrcv01
+ msgrcv02 msgrcv02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index 153e827cf..64d6b1c90 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -12,6 +12,7 @@ msgctl12 msgctl12
+ msgget01 msgget01
+ msgget02 msgget02
+ msgget03 msgget03
++msgget04 msgget04
+ 
+ msgrcv01 msgrcv01
+ msgrcv02 msgrcv02
+diff --git a/testcases/kernel/syscalls/ipc/msgget/.gitignore b/testcases/kernel/syscalls/ipc/msgget/.gitignore
+index 3b2dfb518..7a9d5e340 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/.gitignore
++++ b/testcases/kernel/syscalls/ipc/msgget/.gitignore
+@@ -1,3 +1,4 @@
+ /msgget01
+ /msgget02
+ /msgget03
++/msgget04
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+new file mode 100644
+index 000000000..3791f331a
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
++ *
++ * It is a basic test about msg_next_id.
++ * msg_next_id specifies desired id for next allocated IPC message. By default
++ * they are equal to -1, which means generic allocation logic. Possible values
++ * to set are in range {0..INT_MAX}.
++ * Toggle with non-default value will be set back to -1 by kernel after
++ * successful IPC object allocation.
++ */
++
++#include <errno.h>
++#include <string.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
++
++#define NEXT_ID_PATH "/proc/sys/kernel/msg_next_id"
++static int queue_id = 1, pid;
++static key_t msgkey;
++
++static void verify_msgget(void)
++{
++	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
++
++	TEST(msgget(msgkey, IPC_CREAT | MSG_RW));
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "msgget() failed");
++		return;
++	}
++
++	queue_id = TST_RET;
++	if (queue_id == pid)
++		tst_res(TPASS, "msg_next_id succeeded, queue id %d", pid);
++	else
++		tst_res(TFAIL, "msg_next_id failed, expected id %d, but got %d", pid, queue_id);
++
++	TST_ASSERT_INT(NEXT_ID_PATH, -1);
++	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++	pid++;
++}
++
++static void setup(void)
++{
++	msgkey = GETIPCKEY();
++	pid = getpid();
++}
++
++static void cleanup(void)
++{
++	if (queue_id != -1)
++		SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++	SAFE_FILE_SCANF(NEXT_ID_PATH, "-1");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_msgget,
++	.needs_root = 1,
++};
+-- 
+2.23.0
 
-Thanks,
 
-Xiao Yang
-
-On 7/20/20 4:53 PM, Viresh Kumar wrote:
-> On 20-07-20, 13:27, Xiao Yang wrote:
->> pidfd_open(2) will set close-on-exec flag on the file descriptor as
->> it manpage states, so check close-on-exec flag by fcntl(2).
->>
->> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
->> ---
->>
->> 1) We don't care if the test uses the TEST() macro so just keep it.
->> 2) Use bare fcntl() instead of SAFE_FCNTL() so that file descriptor
->>     can be closed when fcntl(F_GETFD) fails.
->>
->>   .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++++--
->>   1 file changed, 16 insertions(+), 2 deletions(-)
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
->
 
