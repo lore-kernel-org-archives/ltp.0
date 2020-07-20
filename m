@@ -1,78 +1,48 @@
-From: bfields@fieldses.org <bfields@fieldses.org>
-Date: Mon, 20 Jul 2020 13:01:17 -0400
-Subject: [LTP] [RFC PATCH 1/1] Remove nfsv4
-In-Reply-To: <20200720151508.GA13786@dell5510>
-References: <20200720091449.19813-1-pvorel@suse.cz>
- <ffb5cd64d5d65b762bdc85b6044b7fdc526d27cb.camel@hammerspace.com>
- <20200720141255.GA25707@fieldses.org>
- <20200720143620.GD21201@dell5510> <20200720151508.GA13786@dell5510>
-Message-ID: <20200720170117.GB25707@fieldses.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 20 Jul 2020 19:36:06 +0200
+Subject: [LTP] [PATCH v2 6/7] net/test: Add basic testing for
+ tst_rhost_run
+In-Reply-To: <9a30538f-bb7b-3fb9-7102-2f75b2d7de8c@163.com>
+References: <20200710172044.21592-1-pvorel@suse.cz>
+ <20200710172044.21592-7-pvorel@suse.cz>
+ <5F155DB2.8080709@cn.fujitsu.com> <20200720115345.GA21201@dell5510>
+ <9a30538f-bb7b-3fb9-7102-2f75b2d7de8c@163.com>
+Message-ID: <20200720173606.GB20642@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jul 20, 2020 at 05:15:08PM +0200, Petr Vorel wrote:
-> Hi Bruce, Trond,
-> 
-> > > On Mon, Jul 20, 2020 at 01:32:09PM +0000, Trond Myklebust wrote:
-> > > > On Mon, 2020-07-20 at 11:14 +0200, Petr Vorel wrote:
-> > > > > Reasons to drop:
-> > > > > * outdated tests (from 2005)
-> > > > > * not used (NFS kernel maintainers use pynfs [1])
-> > > > > * written in Python (we support C and shell, see [2])
-> 
-> > > > > [1] http://git.linux-nfs.org/?p=bfields/pynfs.git;a=summary
-> > > > > [2] https://github.com/linux-test-project/ltp/issues/547
-> 
-> 
-> > > > Unlike pynfs, these tests run on a real NFS client, and were designed
-> > > > to test client implementations, as well as the servers.
-> 
-> > > > So if they get dropped from ltp, then we will have to figure out some
-> > > > other way of continuing to maintain them.
-> 
-> > > Just for fun, I grepped through old mail to see if I could find any
-> > > cases of these tests being used.  I found one, in which Chuck reports an
-> > > nfslock01 failure.  Looks like it did find a real bug, which we fixed:
-> 
-> > > 	https://lore.kernel.org/r/8DF85CB6-5FEB-4A25-9715-C9808F37A4B1@oracle.com
-> > > 	https://lore.kernel.org/r/20160807185024.11705.10864.stgit@klimt.1015granger.net
-> 
-> > Thanks for your explanation, this obviously justify these tests in LTP, unless
-> > you want to move it to git.linux-nfs.org and maintain on your own.
-> Actually, that fix 42691398be08 ("nfsd: Fix race between FREE_STATEID and LOCK")
-> from v4.8-rc2 reported by Alexey Kodanev (LTP network maintainer) was found by
-> nfslock01 test [1], which is integrated into other LTP NFS tests [2]. I'd
-> definitely keep these in LTP.
+Hi Yang,
 
-Whoops, I don't know why I thought I saw nfslock01 in your patch.
-Apologies.
+> > > Hi Petr,
+> > > 1) Do you want to discard stderr as well? For example:
+> > > -------------------------------------------------
+> > > # which gre >/dev/null
+> > > /usr/bin/which: no gre in
+> > > (/opt/ltp/testcases/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin)
+> > That's not needed because tst_rhost_run already redirect stderr to stdout.
 
-> nfsv4 I proposed to remove as outdated and not being used are testing ACL [3]
-> and fcntl locking [4]. ACL tests use rsh and aren't integrated into LTP
-> framework (use their custom [5] runtest file thus I doubt anyone is using it).
-> fcntl locktests are at least integrated into LTP (use fcntl-locktests runtest
-> file[6], I forget to remove it in this patch).
-> Both tests are written in 2005. I don't want to push for removal, if you see any
-> use in it.
+> Hi Petr,
 
-Looks like they may test some things (ACL enforcement, multi-client
-locking), that our other test suites don't.
+> I think you means tst_rhost_run -c 'which grep' >/dev/null rather than
+> tst_rhost_run -c 'which grep > /dev/null'
 
-On the other hand, if nobody's actually running them then maybe it's on
-us to adopt them if we want them.  (Not volunteering for now.)
+> The current code just discard stdout, for example:
 
---b.
+> -------------------------------------------------------
 
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://github.com/linux-test-project/ltp/tree/master/testcases/network/nfs/nfslock01/
-> [2] https://github.com/linux-test-project/ltp/blob/master/runtest/net.nfs
-> [3] https://github.com/linux-test-project/ltp/tree/master/testcases/network/nfsv4/acl
-> [4] https://github.com/linux-test-project/ltp/tree/master/testcases/network/nfsv4/locks
-> [5] https://github.com/linux-test-project/ltp/blob/master/testcases/network/nfsv4/acl/runtest
-> [6] https://github.com/linux-test-project/ltp/blob/master/runtest/fcntl-locktests
+> [root@Fedora-30-workstation net]# ./tst_rhost_run.sh
+> ...
+> tst_rhost_run 1 TINFO: NETNS: ns_exec 3079 net,mnt sh -c " which gre >
+> /dev/null || echo RTERR" 2>&1
+> which: no gre in (./../../../../testcases/lib/:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/root/bin:/opt/ltp/testcases/bin)
+I'm sorry, I accidentally tested on which version from debianutils which prints
+also errors to stdout. which from GNU which (used in openSUSE/SLES, Fedora/RHEL)
+prints errors to stderr => you're right stderr should be redirected.
+On the other hand when not redirected, you can see PATH.
+
+
+Kind regards,
+Petr
