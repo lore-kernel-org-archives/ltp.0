@@ -1,60 +1,31 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 20 Jul 2020 16:49:18 +0800
-Subject: [LTP] [PATCH v2 5/7] tst_net.sh: Drop 'sh -c' use from ssh in
- tst_rhost_run
-In-Reply-To: <20200710172044.21592-6-pvorel@suse.cz>
-References: <20200710172044.21592-1-pvorel@suse.cz>
- <20200710172044.21592-6-pvorel@suse.cz>
-Message-ID: <5F155A8E.2000807@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 20 Jul 2020 14:23:11 +0530
+Subject: [LTP] [PATCH v4] syscalls/pidfd_open01.c: Add check for
+ close-on-exec flag
+In-Reply-To: <20200720052755.21105-1-yangx.jy@cn.fujitsu.com>
+References: <20200720052755.21105-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200720085311.h77zxzfsqrhmmy2w@vireshk-mac-ubuntu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/7/11 1:20, Petr Vorel wrote:
-> This simplifies the command and allows to use double quotes in command
-> parameter for ssh, as it removes single nested quotes of command
-> parameter (thus fixes like c1a2d53f6 "network/nfs_lib.sh: Use double
-> quotes for grep pattern" are not needed any more).
->
-> NOTE: 'sh -c' is still required for netns based testing, but does not
-> use nested quotes. Now both variants use only double quotes.
-Hi Petr,
-
-Acked-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-
-Thanks,
-Xiao Yang
-
-> Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+On 20-07-20, 13:27, Xiao Yang wrote:
+> pidfd_open(2) will set close-on-exec flag on the file descriptor as
+> it manpage states, so check close-on-exec flag by fcntl(2).
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 > ---
->  testcases/lib/tst_net.sh | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index 0a8b2a8ca..f6ac4c087 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -167,12 +167,12 @@ tst_rhost_run()
->  	fi
->  
->  	if [ -n "${TST_USE_NETNS:-}" ]; then
-> -		output=`$LTP_NETNS sh -c \
-> -			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
-> +		output=$($LTP_NETNS sh -c \
-> +			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
->  	else
->  		tst_require_cmds ssh
-> -		output=`ssh -nq $user@$RHOST "sh -c \
-> -			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
-> +		output=$(ssh -nq $user@$RHOST \
-> +			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
->  	fi
->  	echo "$output" | grep -q 'RTERR$' && ret=1
->  	if [ $ret -eq 1 ]; then
+> 
+> 1) We don't care if the test uses the TEST() macro so just keep it.
+> 2) Use bare fcntl() instead of SAFE_FCNTL() so that file descriptor
+>    can be closed when fcntl(F_GETFD) fails.
+> 
+>  .../kernel/syscalls/pidfd_open/pidfd_open01.c  | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-
+-- 
+viresh
