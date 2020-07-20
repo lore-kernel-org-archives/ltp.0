@@ -1,30 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 Jul 2020 16:26:11 +0200
-Subject: [LTP] [RESENT RFC PATCH 1/1] LVM: Drop legacy scripts and
- runtest files
-In-Reply-To: <20200720142206.GC4457@yuki.lan>
-References: <20200710143607.2546-1-pvorel@suse.cz>
- <20200720142206.GC4457@yuki.lan>
-Message-ID: <20200720142611.GC21201@dell5510>
+Date: Mon, 20 Jul 2020 16:36:20 +0200
+Subject: [LTP] [RFC PATCH 1/1] Remove nfsv4
+In-Reply-To: <20200720141255.GA25707@fieldses.org>
+References: <20200720091449.19813-1-pvorel@suse.cz>
+ <ffb5cd64d5d65b762bdc85b6044b7fdc526d27cb.camel@hammerspace.com>
+ <20200720141255.GA25707@fieldses.org>
+Message-ID: <20200720143620.GD21201@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Bruce, Trond,
 
-> Hi!
-> Looks good to me, acked.
-Thanks for your review.
+> On Mon, Jul 20, 2020 at 01:32:09PM +0000, Trond Myklebust wrote:
+> > On Mon, 2020-07-20 at 11:14 +0200, Petr Vorel wrote:
+> > > Reasons to drop:
+> > > * outdated tests (from 2005)
+> > > * not used (NFS kernel maintainers use pynfs [1])
+> > > * written in Python (we support C and shell, see [2])
 
-> I would wait a bit more to see if anyone complains about the removal
-> though.
-Originally posted at the end of May (i.e. more than 1 half month in ML), but it
-does not harm to wait a bit longer before dropping them.
+> > > [1] http://git.linux-nfs.org/?p=bfields/pynfs.git;a=summary
+> > > [2] https://github.com/linux-test-project/ltp/issues/547
 
-https://patchwork.ozlabs.org/project/ltp/patch/20200528110554.10179-3-pvorel@suse.cz/
+
+> > Unlike pynfs, these tests run on a real NFS client, and were designed
+> > to test client implementations, as well as the servers.
+
+> > So if they get dropped from ltp, then we will have to figure out some
+> > other way of continuing to maintain them.
+
+> Just for fun, I grepped through old mail to see if I could find any
+> cases of these tests being used.  I found one, in which Chuck reports an
+> nfslock01 failure.  Looks like it did find a real bug, which we fixed:
+
+> 	https://lore.kernel.org/r/8DF85CB6-5FEB-4A25-9715-C9808F37A4B1@oracle.com
+> 	https://lore.kernel.org/r/20160807185024.11705.10864.stgit@klimt.1015granger.net
+
+Thanks for your explanation, this obviously justify these tests in LTP, unless
+you want to move it to git.linux-nfs.org and maintain on your own.
 
 Kind regards,
 Petr
-
