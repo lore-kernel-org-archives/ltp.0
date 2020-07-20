@@ -1,67 +1,62 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 20 Jul 2020 10:16:32 +0800
-Subject: [LTP] [PATCH] syscalls/msgsnd01: Add check for msg_lspid and
- msg_stime
-Message-ID: <1595211392-17141-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 20 Jul 2020 10:26:58 +0800
+Subject: [LTP] [PATCH 8/9] syscalls/ipc: Add shmctl IPC_SET test
+In-Reply-To: <20200717163453.9587-9-chrubis@suse.cz>
+References: <20200717163453.9587-1-chrubis@suse.cz>
+ <20200717163453.9587-9-chrubis@suse.cz>
+Message-ID: <CAEemH2c6CKEgyUtk3B=Gm+GL4wH=3cR=h3TA2d7WHg1-0Vg5pg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- .../kernel/syscalls/ipc/msgsnd/msgsnd01.c     | 20 +++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+On Sat, Jul 18, 2020 at 12:36 AM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-index fca7c6789..6368690de 100644
---- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-+++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-@@ -18,7 +18,8 @@
- #include "libnewipc.h"
- 
- static key_t msgkey;
--static int queue_id = -1;
-+static time_t creat_time, last_snd_time;
-+static int queue_id = -1, pid;
- static struct buf {
- 	long type;
- 	char text[MSGSIZE];
-@@ -40,15 +41,30 @@ static void verify_msgsnd(void)
- 		tst_res(TPASS, "queue bytes and number of queues matched");
- 	else
- 		tst_res(TFAIL, "queue bytes or number of queues mismatched");
-+	if (qs_buf.msg_lspid == pid)
-+		tst_res(TPASS, "PID of last msgsnd(2) matched");
-+	else
-+		tst_res(TFAIL, "PID of last msgsnd(2) mismatched");
-+
-+	if (qs_buf.msg_stime >= creat_time && qs_buf.msg_stime >= last_snd_time)
-+		tst_res(TPASS, "create time = %lu, last_snd_time = %lu, msg_stime = %lu",
-+			(unsigned long)creat_time, (unsigned long)last_snd_time,
-+			(unsigned long)qs_buf.msg_stime);
-+	else
-+		tst_res(TFAIL, "create time = %lu, last_snd_time = %lu, msg_stime = %lu",
-+			(unsigned long)creat_time, (unsigned long)last_snd_time,
-+			(unsigned long)qs_buf.msg_stime);
- 
- 	SAFE_MSGRCV(queue_id, &rcv_buf, MSGSIZE, 1, 0);
-+	last_snd_time = qs_buf.msg_stime;
- }
- 
- static void setup(void)
- {
- 	msgkey = GETIPCKEY();
--
- 	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
-+	pid = getpid();
-+	time(&creat_time);
- }
- 
- static void cleanup(void)
+> ...
+> +static void verify_shmset(void)
+> +{
+> +       struct shmid_ds ds;
+> +       unsigned short old_mode;
+> +       time_t old_ctime;
+> +
+> +       SAFE_SHMCTL(shm_id, IPC_STAT, &ds);
+> +
+> +       old_mode = ds.shm_perm.mode;
+> +       old_ctime = ds.shm_ctime;
+> +
+> +       sleep(1);
+> +
+> +       ds.shm_perm.mode &= ~0066;
+> +
+> +       if (test_ipc_set(&ds))
+> +               return;
+> +
+> +       memset(&ds, 0, sizeof(ds));
+> +       SAFE_SHMCTL(shm_id, IPC_STAT, &ds);
+> +       check_mode(&ds, old_mode & ~0066);
+> +
+> +       if (ds.shm_ctime - old_ctime > 10) {
+>
+
+Maybe we also need to consider a situation that timestamp is just as
+previous value?
+i.e.
+    if (ds.shm_ctime - old_ctime > 10 || ds.shm_ctime - old_ctime == 0)
+
+> +               tst_res(TFAIL, "shm_ctime not updated old %li new %li",
+> +                       (long)old_ctime, (long)ds.shm_ctime);
+> +       } else {
+> +               tst_res(TPASS, "shm_ctime updated correctly diff=%li",
+> +                       (long)(ds.shm_ctime - old_ctime));
+> +       }
+> +
+>
+
+
 -- 
-2.23.0
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200720/3ac9f733/attachment.htm>
