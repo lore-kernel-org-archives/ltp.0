@@ -1,10 +1,10 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 20 Jul 2020 17:23:01 +0800
-Subject: [LTP] [PATCH v2 7/7] tst_net.sh/tst_rhost_run: Add debugging
-In-Reply-To: <20200710172044.21592-8-pvorel@suse.cz>
+Date: Mon, 20 Jul 2020 17:48:26 +0800
+Subject: [LTP] [PATCH v2 4/7] net: Update README.md
+In-Reply-To: <20200710172044.21592-5-pvorel@suse.cz>
 References: <20200710172044.21592-1-pvorel@suse.cz>
- <20200710172044.21592-8-pvorel@suse.cz>
-Message-ID: <5F156275.6050602@cn.fujitsu.com>
+ <20200710172044.21592-5-pvorel@suse.cz>
+Message-ID: <5F15686A.1070605@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,122 +12,165 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On 2020/7/11 1:20, Petr Vorel wrote:
-> via TST_NET_RHOST_RUN_DEBUG=1 and use it in tst_rhost_run.sh.
+> to previous commits (dropped rsh based testing and rsh, rcp, rlogin
+> tests):
+>
+> * drop rlogin, rsh, rexec setup
+> * rewrite ftp&  telnet setup
+> * remove suggestion to run tests for 24 hrs (we lowered values in the
+>    variables for stress testing in 52857efb7)
+> * mention testcases/network/stress/README
+> * update package names
+> * fix formatting
+>
+> Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> ---
+>   testcases/network/README.md | 96 ++++++++++++++-----------------------
+>   1 file changed, 36 insertions(+), 60 deletions(-)
+>
+> diff --git a/testcases/network/README.md b/testcases/network/README.md
+> index 3a9c98125..1c19a2c15 100644
+> --- a/testcases/network/README.md
+> +++ b/testcases/network/README.md
+> @@ -1,91 +1,67 @@
+>   # LTP Network Tests
+>
+> -## Pre-requisites
+> -Enable all the networking services on test machine(s): rshd, nfsd, fingerd.
+> -
+>   ## Single Host Configuration
+>
+> -It is a default configuration ('RHOST' is not defined). LTP adds 'ltp_ns'
+> -network namespace and auto-configure 'veth' pair according to LTP network
+> -environment variables.
+> +It is the default configuration (if the `RHOST` environment variable is not
+> +defined). LTP adds `ltp_ns` network namespace and auto-configure `veth` pair
+> +according to LTP network environment variables.
+>
+>   ## Two Host Configuration
+>
+> -This setup requires 'RHOST' environment variable to be set properly and
+> -configured SSH or RSH (default) access to a remote host.
+> -
+> -The 'RHOST' variable name must be set to the hostname of the server
+> -(test management link) and PASSWD should be set to the root password
+> -of the remote server.
+> -
+> -In order to have RSH access:
+> -* Edit the "/root/.rhosts" file. Please note that the file may not exist,
+> -so you must create one if it does not. You must add the fully qualified
+> -hostname of the machine you are testing on to this file. By adding the test
+> -machine's hostname to this file, you will be allowing the machine to rsh to itself,
+> -as root, without the requirement of a password.
+> -
+> -```sh
+> -echo $client_hostname>>  /root/.rhosts
+> -```
+> -
+> -You may need to re-label '.rhost' file to make sure rlogind will have access to it:
+> -
+> -```sh
+> -/sbin/restorecon -v /root/.rhosts
+> -```
+> +This setup requires the `RHOST` environment variable to be set properly and
+> +configured SSH access to a remote host.
+>
+> -* Add rlogin, rsh, rexec into /etc/securetty file:
+> +The `RHOST` variable must be set to the hostname of the server (test management
+> +link) and public key setup or login without password is required.
+>
+> -```sh
+> -for i in rlogin rsh rexec; do echo $i>>  /etc/securetty; done
+> -```
+> +Some of the network stress tests which hasn't been ported to network API were
+> +designed to be tested with `rsh` via `LTP_RSH` environment variable. Now it's
+> +by default used `ssh`, for details see `testcases/network/stress/README`.
+>
+>   ## Server Services Configuration
+>   Verify that the below daemon services are running. If not, please install
+>   and start them:
+> -rsh-server, telnet-server, finger-server, rdist, rsync, dhcp-server, http-server.
+> +
+> +dhcp-server, dnsmasq, http-server, nfs-kernel-server, rpcbind, rsync,
+> +telnet-server, vsftpd
 Hi Petr,
 
+These package names are from Debian/Ubuntu, do we need to mention it?
+
+>
+>   Note: If any of the above daemon is not running on server, the test related to
+>   that service running from client will fail.
+>
+> -### FTP setup
+> -* In ?/etc/ftpusers? [or vi /etc/vsftpd.ftpusers], comment the line containing
+> -?root? string. This file lists all those users who are not given access to do ftp
+> +### FTP and telnet setup
+> +Both tests require environment variables `RHOST` (remote machine), `RUSER`
+> +(remote user) and `PASSWD` (remote password). NOTE: `RHOST` will imply two host
+> +configuratioe for other tests.
+> +
+> +If `RHOST` is set to `root`, either of these steps is required:
+> +
+> +* In `/etc/ftpusers` (or `/etc/vsftpd.ftpusers`), comment the line containing
+> +"root" string. This file lists all those users who are not given access to do ftp
+>   on the current system.
+Are this file from Debian/Ubuntu as well?
+
+Other than this, it is good to me. :-)
 Acked-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
 Thanks,
 Xiao Yang
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> changes v1->v2:
-> * Use TST_NET_RHOST_RUN_DEBUG=1 instead of -d in tst_rhost_run
-> This requires to whitelist it in tst_test.sh.
-> * use tst_res_ TINFO instead of tst_net_debug
 >
+> -* If you don?t want to do the previous step, put following entry into /root/.netrc
+> -machine<remote_server_name>  login root password<remote_root_password>.
+> -Otherwise, ftp,rlogin&  telnet fails for ?root? user&  hence needs to be
+> -executed using ?test? user to get successful results.
+> +* If you don?t want to do the previous step, put following entry into `/root/.netrc`:
+> +```
+> +machine<remote_server_name>
+> +login root
+> +password<remote_root_password>
+> +```
 >
-> Kind regards,
-> Petr
+>   ## LTP setup
+> -Install LTP testsuite. In case of two hosts configuration, make sure LTP is installed
+> -on both client and server machines.
+> -
+> -Testcases and network tools must be in PATH, e.g.:
+> +Install LTP testsuite. In case of two hosts configuration, LTP needs to be installed
+> +and `LTPROOT` and `PATH` environment variables set on both client and server
+> +machines (assuming using the default prefix `/opt/ltp`):
 >
->  lib/newlib_tests/shell/net/tst_rhost_run.sh |  2 ++
->  testcases/lib/tst_net.sh                    | 23 +++++++++++++++------
->  testcases/lib/tst_test.sh                   |  2 +-
->  testcases/network/README.md                 |  3 +++
->  4 files changed, 23 insertions(+), 7 deletions(-)
+>   ```sh
+> -export PATH=/opt/ltp/testcases/bin:/usr/bin:$PATH
+> +export LTPROOT="/opt/ltp"; export PATH="$LTPROOT/testcases/bin:$PATH"
+>   ```
+> -Default values for all LTP network variables are set in testcases/lib/tst_net.sh.
+> -If you need to override some parameters please export them before test run or
+> -specify them when running ltp-pan or testscripts/network.sh.
+> +Default values for all LTP network parameters are set in `testcases/lib/tst_net.sh`.
+> +Network stress parameters are documented in `testcases/network/stress/README`.
 >
-> diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> index 4c034a4ac..9b058a57a 100755
-> --- a/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> +++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-> @@ -6,6 +6,8 @@ TST_TESTFUNC=do_test
->  PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
->  . tst_net.sh
->  
-> +export TST_NET_RHOST_RUN_DEBUG=1
-> +
->  do_test()
->  {
->  	local file="/etc/fstab"
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index f6ac4c087..d939a5780 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -138,15 +138,16 @@ init_ltp_netspace()
->  # -s safe option, if something goes wrong, will exit with TBROK
->  # -u USER for ssh (default root)
->  # RETURN: 0 on success, 1 on failure
-> +# TST_NET_RHOST_RUN_DEBUG=1 enables debugging
->  tst_rhost_run()
->  {
->  	local post_cmd=' || echo RTERR'
->  	local user="root"
->  	local ret=0
-> -	local cmd out output pre_cmd safe
-> +	local cmd out output pre_cmd rcmd sh_cmd safe use
->  
->  	local OPTIND
-> -	while getopts :bsc:u: opt; do
-> +	while getopts :bc:su: opt; do
->  		case "$opt" in
->  		b) [ "${TST_USE_NETNS:-}" ] && pre_cmd= || pre_cmd="nohup"
->  		   post_cmd=" > /dev/null 2>&1 &"
-> @@ -166,14 +167,24 @@ tst_rhost_run()
->  		return 1
->  	fi
->  
-> +	sh_cmd="$pre_cmd $cmd $post_cmd"
-> +
->  	if [ -n "${TST_USE_NETNS:-}" ]; then
-> -		output=$($LTP_NETNS sh -c \
-> -			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
-> +		use="NETNS"
-> +		rcmd="$LTP_NETNS sh -c"
->  	else
->  		tst_require_cmds ssh
-> -		output=$(ssh -nq $user@$RHOST \
-> -			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR')
-> +		use="SSH"
-> +		rcmd="ssh -nq $user@$RHOST"
-> +	fi
-> +
-> +	if [ "$TST_NET_RHOST_RUN_DEBUG" = 1 ]; then
-> +		tst_res_ TINFO "tst_rhost_run: cmd: $cmd"
-> +		tst_res_ TINFO "$use: $rcmd \"$sh_cmd\" $out 2>&1"
->  	fi
-> +
-> +	output=$($rcmd "$sh_cmd" $out 2>&1 || echo 'RTERR')
-> +
->  	echo "$output" | grep -q 'RTERR$' && ret=1
->  	if [ $ret -eq 1 ]; then
->  		output=$(echo "$output" | sed 's/RTERR//')
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 2e637b25b..fa97acbac 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -506,7 +506,7 @@ tst_run()
->  			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
->  			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
->  			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
-> -			NET_DATAROOT|NET_MAX_PKT);;
-> +			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG);;
->  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
->  			esac
->  		done
-> diff --git a/testcases/network/README.md b/testcases/network/README.md
-> index 1c19a2c15..081ce834a 100644
-> --- a/testcases/network/README.md
-> +++ b/testcases/network/README.md
-> @@ -1,5 +1,8 @@
->  # LTP Network Tests
->  
-> +Both single and two host configurations support debugging via
-> +`TST_NET_RHOST_RUN_DEBUG=1` environment variable.
-> +
->  ## Single Host Configuration
->  
->  It is the default configuration (if the `RHOST` environment variable is not
+>   ## Running the tests
+> -To run the test type the following:
+>
+>   ```sh
+>   TEST_VARS ./network.sh OPTIONS
+>   ```
+>   Where
+> -* TEST_VARS - non-default network parameters (see testcases/lib/tst_net.sh), they
+> -  could be exported before test run;
+> -* OPTIONS - test group(s), use '-h' to see available ones.
+> -
+> -## Analyzing the results
+> -Generally this test must be run more than 24 hours. When you want to stop the test
+> -press CTRL+C to stop ./network.sh.
+> -
+> -Search failed tests in LTP logfile using grep FAIL<logfile>. For any failures,
+> -run the individual tests and then try to come to the conclusion.
+> +* `TEST_VARS` - non-default network parameters
+> +* `OPTIONS` - test group(s), use `-h` to see available ones.
 
 
 
