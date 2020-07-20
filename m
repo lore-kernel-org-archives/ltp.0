@@ -1,138 +1,187 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 20 Jul 2020 15:30:26 +0800
-Subject: [LTP] [PATCH v1 2/3] syscalls/msgrcv07: Add different msgtyp test
+Date: Mon, 20 Jul 2020 15:30:27 +0800
+Subject: [LTP] [PATCH v1 3/3] syscalls/msgrcv09: Add error test for MSG_COPY
+ flag
 In-Reply-To: <1595230227-21468-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1595230227-21468-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1595230227-21468-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1595230227-21468-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-After lookging msgcrv(2) man-page, the different msgtyp has the following effect:
-1) If msgtyp is 0, then the first message in the queue is read.
-2) If msgtyp is greater than 0, then the first message in the queue of type msgtyp is read.
-3) If msgtyp is less than 0, then the first message in the queue with the lowest type less
- than or equal to the absolute value of msgtyp will be read.
+The MSG_COPY flag was added in 3.8 for the implementation of the kernel
+checkpoint-restore facility and is available only if the kernel was
+built with the CONFIG_CHECKPOINT_RESTORE option.
+
+On old kernel without this support, it only ignores this flag and doesn't
+report ENOSYS/EINVAL error, so I add kconfig and min_kver check.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- .../kernel/syscalls/ipc/msgrcv/msgrcv07.c     | 81 ++++++++++++++++++-
- 1 file changed, 77 insertions(+), 4 deletions(-)
+ include/lapi/msg.h                            | 15 +++
+ runtest/syscalls                              |  1 +
+ runtest/syscalls-ipc                          |  1 +
+ .../kernel/syscalls/ipc/msgrcv/.gitignore     |  1 +
+ .../kernel/syscalls/ipc/msgrcv/msgrcv09.c     | 93 +++++++++++++++++++
+ 5 files changed, 111 insertions(+)
+ create mode 100644 include/lapi/msg.h
+ create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv09.c
 
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-index 39fbdb67a..9b04fd2ac 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
-@@ -3,7 +3,8 @@
-  * Copyright (c) 2014-2020 Fujitsu Ltd.
-  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-  *
-- * Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR
-+ * Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR and different
-+ * msg_typ(zero,positive,negative).
-  */
- 
- #define  _GNU_SOURCE
-@@ -22,15 +23,20 @@ static int queue_id = -1;
- static struct buf {
- 	long type;
- 	char mtext[MSGSIZE];
--} rcv_buf, snd_buf[2] = {
-+} rcv_buf, snd_buf[3] = {
- 	{MSGTYPE1, MSG1},
--	{MSGTYPE2, MSG2}
-+	{MSGTYPE2, MSG2},
- };
- 
- static void test_msg_except(void);
- static void test_msg_noerror(void);
-+static void test_zero_msgtyp(void);
-+static void test_positive_msgtyp(void);
-+static void test_negative_msgtyp(void);
- static void cleanup(void);
--static void (*testfunc[])(void) = {test_msg_except, test_msg_noerror};
-+static void (*testfunc[])(void) = {test_msg_except, test_msg_noerror,
-+				   test_zero_msgtyp, test_positive_msgtyp,
-+				   test_negative_msgtyp};
- 
- static void verify_msgcrv(unsigned int n)
- {
-@@ -81,6 +87,73 @@ static void test_msg_noerror(void)
- 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
- }
- 
-+static void test_zero_msgtyp(void)
-+{
-+	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
-+	SAFE_MSGSND(queue_id, &snd_buf[0], MSGSIZE, 0);
-+	SAFE_MSGSND(queue_id, &snd_buf[1], MSGSIZE, 0);
-+	memset(&rcv_buf, 0, sizeof(rcv_buf));
+diff --git a/include/lapi/msg.h b/include/lapi/msg.h
+new file mode 100644
+index 000000000..d649f3318
+--- /dev/null
++++ b/include/lapi/msg.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ */
++#ifndef LAPI_MSG_H
++#define LAPI_MSG_H
 +
-+	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 0, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "msgrcv(zero_msgtyp) failed");
-+		cleanup();
++#include <sys/msg.h>
++
++#ifndef MSG_COPY
++# define MSG_COPY  040000  /* copy (not remove) all queue messages */
++#endif
++
++#endif
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9d3808d66..9d927935b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -815,6 +815,7 @@ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
+ msgrcv08 msgrcv08
++msgrcv09 msgrcv09
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index 61743be01..153e827cf 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -19,6 +19,7 @@ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
+ msgrcv08 msgrcv08
++msgrcv09 msgrcv09
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
+index 0596ee00f..359f8adfa 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
++++ b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
+@@ -4,3 +4,4 @@
+ /msgrcv06
+ /msgrcv07
+ /msgrcv08
++/msgrcv09
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv09.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv09.c
+new file mode 100644
+index 000000000..99f9a851b
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv09.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
++ *
++ * This is a basic test about MSG_COPY flag.
++ *
++ * 1)msgrcv(2) fails and sets errno to EINVAL if IPC_NOWAIT was not specified
++ *   in msgflag.
++ * 2)msgrcv(2) fails and sets errno to EINVAL if IPC_EXCEPT was specified
++ *   in msgflag.
++ * 3)msgrcv(2) fails and set errno to ENOMSG if IPC_NOWAIT and MSG_COPY were
++ *  specified in msgflg and the queue contains less than msgtyp messages.
++ */
++#define  _GNU_SOURCE
++#include <string.h>
++#include <sys/wait.h>
++#include <sys/msg.h>
++#include <pwd.h>
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
++#include "lapi/msg.h"
++
++static key_t msgkey;
++static int queue_id = -1;
++static struct buf {
++	long type;
++	char mtext[MSGSIZE];
++} rcv_buf, snd_buf = {MSGTYPE, "hello"};
++
++static struct tcase {
++	int exp_err;
++	int msg_flag;
++	int msg_type;
++	char *message;
++} tcases[] = {
++	{EINVAL, 0, MSGTYPE,
++	"Test EINVAL error when msgflg specified MSG_COPY, but not IPC_NOWAIT"},
++
++	{EINVAL, MSG_EXCEPT, MSGTYPE,
++	"Test EINVAL error when msgflg specified both MSG_COPY and MSG_EXCEPT"},
++
++	{ENOMSG, IPC_NOWAIT, 2,
++	"Test ENOMSG error when using IPC_NOWAIT and MSG_COPY but not have"
++	" corresponding msgtype msg"},
++};
++
++static void verify_msgrcv(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	tst_res(TINFO, "%s", tc->message);
++	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "smgrcv() succeeded unexpectedly");
++		SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
 +		return;
 +	}
-+	tst_res(TPASS, "msgrcv(zero_msgtyp) succeeded");
-+	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
-+		tst_res(TPASS, "msgrcv(zero_msgtyp) got the first message");
++
++	if (TST_ERR == tc->exp_err)
++		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
 +	else
-+		tst_res(TFAIL, "msgrcv(zero_msgtyp) didn't get the first message");
-+	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++		tst_res(TFAIL | TTERRNO, "msgrcv() failed unexpectedly,"
++			" expected %s but got", tst_strerrno(tc->exp_err));
 +}
 +
-+static void test_positive_msgtyp(void)
++static void setup(void)
 +{
++	msgkey = GETIPCKEY();
 +	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
-+	SAFE_MSGSND(queue_id, &snd_buf[0], MSGSIZE, 0);
-+	SAFE_MSGSND(queue_id, &snd_buf[1], MSGSIZE, 0);
-+	memset(&rcv_buf, 0, sizeof(rcv_buf));
-+
-+	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, MSGTYPE2, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "msgrcv(positive_msgtyp) failed");
-+		cleanup();
-+		return;
-+	}
-+	tst_res(TPASS, "msgrcv(positive_msgtyp) succeeded");
-+	if (strcmp(rcv_buf.mtext, MSG2) == 0 && rcv_buf.type == MSGTYPE2)
-+		tst_res(TPASS, "msgrcv(positive_msgtyp) got the first message"
-+			       " in the queue of type msgtyp");
-+	else
-+		tst_res(TFAIL, "msgrcv(positive_msgtyp) didn't get the first "
-+			       "message in the queue of type msgtyp");
-+	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++	SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
 +}
 +
-+static void test_negative_msgtyp(void)
++static void cleanup(void)
 +{
-+	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
-+	SAFE_MSGSND(queue_id, &snd_buf[0], MSGSIZE, 0);
-+	SAFE_MSGSND(queue_id, &snd_buf[1], MSGSIZE, 0);
-+	memset(&rcv_buf, 0, sizeof(rcv_buf));
-+
-+	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, -MSGTYPE2, 0));
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "msgrcv(negative_msgtyp) failed");
-+		cleanup();
-+		return;
-+	}
-+	tst_res(TPASS, "msgrcv(negative_msgtyp) succeeded");
-+	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
-+		tst_res(TPASS, "msgrcv(negative_msgtyp) got the first message"
-+				" in the queue with the lowest type");
-+	else
-+		tst_res(TFAIL, "msgrcv(negative_msgtyp) didn't get the first "
-+				"message in the queue with the lowest type");
-+	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++	if (queue_id != -1)
++		SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
 +}
 +
- static void setup(void)
- {
- 	msgkey = GETIPCKEY();
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_CHECKPOINT_RESTORE",
++		NULL
++	},
++	.min_kver = "3.8.0",
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_msgrcv,
++	.setup = setup,
++	.cleanup = cleanup,
++};
 -- 
 2.23.0
 
