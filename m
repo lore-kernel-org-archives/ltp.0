@@ -1,29 +1,34 @@
-From: Yixin Zhang <yixin.zhang@intel.com>
-Date: Mon, 20 Jul 2020 20:54:52 +0800
-Subject: [LTP] [PATCH ltp] syscalls/io_uring: add .gitignore file
-Message-ID: <20200720125452.13821-1-yixin.zhang@intel.com>
+From: Trond Myklebust <trondmy@hammerspace.com>
+Date: Mon, 20 Jul 2020 13:32:09 +0000
+Subject: [LTP] [RFC PATCH 1/1] Remove nfsv4
+In-Reply-To: <20200720091449.19813-1-pvorel@suse.cz>
+References: <20200720091449.19813-1-pvorel@suse.cz>
+Message-ID: <ffb5cd64d5d65b762bdc85b6044b7fdc526d27cb.camel@hammerspace.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add .gitignore file for syscalls/io_uring
+On Mon, 2020-07-20 at 11:14 +0200, Petr Vorel wrote:
+> Reasons to drop:
+> * outdated tests (from 2005)
+> * not used (NFS kernel maintainers use pynfs [1])
+> * written in Python (we support C and shell, see [2])
+> 
+> [1] http://git.linux-nfs.org/?p=bfields/pynfs.git;a=summary
+> [2] https://github.com/linux-test-project/ltp/issues/547
+> 
 
-Fixes: 4c97e173cfdd ("syscall: Add io_uring related tests")
-Signed-off-by: Yixin Zhang <yixin.zhang@intel.com>
----
- testcases/kernel/syscalls/io_uring/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 testcases/kernel/syscalls/io_uring/.gitignore
+Unlike pynfs, these tests run on a real NFS client, and were designed
+to test client implementations, as well as the servers.
 
-diff --git a/testcases/kernel/syscalls/io_uring/.gitignore b/testcases/kernel/syscalls/io_uring/.gitignore
-new file mode 100644
-index 000000000000..bfe22441fbf2
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_uring/.gitignore
-@@ -0,0 +1 @@
-+/io_uring01
+So if they get dropped from ltp, then we will have to figure out some
+other way of continuing to maintain them.
+
 -- 
-2.17.1
+Trond Myklebust
+Linux NFS client maintainer, Hammerspace
+trond.myklebust@hammerspace.com
+
 
