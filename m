@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 21 Jul 2020 17:26:49 +0200
-Subject: [LTP] [PATCH 2/3] ioperm01: skip test if kernel is locked down
-In-Reply-To: <20200720194920.22784-2-ernunes@redhat.com>
+Date: Tue, 21 Jul 2020 17:29:32 +0200
+Subject: [LTP] [PATCH 3/3] iopl01: skip test if kernel is locked down
+In-Reply-To: <20200720194920.22784-3-ernunes@redhat.com>
 References: <20200720194920.22784-1-ernunes@redhat.com>
- <20200720194920.22784-2-ernunes@redhat.com>
-Message-ID: <20200721152649.GB13733@yuki.lan>
+ <20200720194920.22784-3-ernunes@redhat.com>
+Message-ID: <20200721152932.GC13733@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,30 +12,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> ioperm is restricted under kernel lockdown.
+> iopl is restricted under kernel lockdown.
 > 
 > Signed-off-by: Erico Nunes <ernunes@redhat.com>
 > ---
->  testcases/kernel/syscalls/ioperm/ioperm01.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  testcases/kernel/syscalls/iopl/iopl01.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/testcases/kernel/syscalls/ioperm/ioperm01.c b/testcases/kernel/syscalls/ioperm/ioperm01.c
-> index 4c5c0e6ea..d1d633b20 100644
-> --- a/testcases/kernel/syscalls/ioperm/ioperm01.c
-> +++ b/testcases/kernel/syscalls/ioperm/ioperm01.c
-> @@ -42,6 +42,9 @@ static void verify_ioperm(void)
+> diff --git a/testcases/kernel/syscalls/iopl/iopl01.c b/testcases/kernel/syscalls/iopl/iopl01.c
+> index edf586cd1..4237d3f10 100644
+> --- a/testcases/kernel/syscalls/iopl/iopl01.c
+> +++ b/testcases/kernel/syscalls/iopl/iopl01.c
+> @@ -42,6 +42,12 @@ static void verify_iopl(void)
+>  	}
+>  }
 >  
->  static void setup(void)
->  {
-> +	/* ioperm is restricted under kernel lockdown. */
+> +static void setup(void)
+> +{
+> +	/* iopl is restricted under kernel lockdown. */
 > +	tst_lockdown_skip();
+> +}
 > +
+>  static void cleanup(void)
+>  {
 >  	/*
->  	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
->  	 * from kernel 2.6.8 to permit 16-bits ioperm
+> @@ -54,6 +60,7 @@ static void cleanup(void)
+>  static struct tst_test test = {
+>  	.test_all = verify_iopl,
+>  	.needs_root = 1,
+> +	.setup = setup,
+>  	.cleanup = cleanup,
+>  };
 
-This looks good, however shouldn't we as well add a third ioperm test
-that checks that the call fails for root when lockdown is enabled?
+Here as well, shouldn't we add iopl03?
+
+Or at least change the library so that we have a function that returns
+if kernel is locked or not so that someone can write such test.
 
 -- 
 Cyril Hrubis
