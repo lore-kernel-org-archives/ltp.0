@@ -1,29 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Jul 2020 09:48:44 +0200
-Subject: [LTP] [RFC PATCH 1/1] testscripts: Remove exportfs.sh
-In-Reply-To: <5F165D1A.80605@cn.fujitsu.com>
-References: <20200720183208.3140-1-pvorel@suse.cz>
- <5F165D1A.80605@cn.fujitsu.com>
-Message-ID: <20200721074844.GB4088@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Jul 2020 16:00:57 +0800
+Subject: [LTP] [RESENT RFC PATCH 1/1] LVM: Drop legacy scripts and
+ runtest files
+In-Reply-To: <20200720142206.GC4457@yuki.lan>
+References: <20200710143607.2546-1-pvorel@suse.cz>
+ <20200720142206.GC4457@yuki.lan>
+Message-ID: <CAEemH2dy6y7CTie5QmsHY6E5CYDYVN+t3csA66Z3uHx5K-Sb9Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+On Mon, Jul 20, 2020 at 10:21 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> LGTM.
+> Hi!
+> Looks good to me, acked.
+>
+> I would wait a bit more to see if anyone complains about the removal
+> though.
+>
 
-> Acked-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Thanks! Waiting whether there are more responses.
+No objections from me. ACK.
 
-> One question:
-> We need to mount the specified filesystem(e.g. a partition formated with xfs) on $TMPDIR
-> manually if we try to test nfs with different underlying filesystems. Right?
-Yes. We don't have shell API variant for .all_filesystems = 1 (from C API),
-otherwise we could consider converting one NFS tests into all filesystems
-variant.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200721/431545b4/attachment.htm>
