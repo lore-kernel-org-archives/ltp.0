@@ -1,57 +1,49 @@
-From: Erico Nunes <ernunes@redhat.com>
-Date: Tue, 21 Jul 2020 10:57:25 +0200
-Subject: [LTP] [PATCH 1/3] lib: add function to check for kernel lockdown
-In-Reply-To: <CAEemH2c1Sz+pkcLnCoWWCaMCte7QsmUTOoUxU6fzCF32nrrG+w@mail.gmail.com>
-References: <20200720194920.22784-1-ernunes@redhat.com>
- <CAEemH2c1Sz+pkcLnCoWWCaMCte7QsmUTOoUxU6fzCF32nrrG+w@mail.gmail.com>
-Message-ID: <98eaa723-1349-272d-3021-d2fef6e1abdd@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 21 Jul 2020 11:31:15 +0200
+Subject: [LTP] [RFC PATCH 1/1] Remove nfsv4
+In-Reply-To: <20200720181658.GA32123@dell5510>
+References: <20200720091449.19813-1-pvorel@suse.cz>
+ <ffb5cd64d5d65b762bdc85b6044b7fdc526d27cb.camel@hammerspace.com>
+ <20200720151742.GA16973@infradead.org>
+ <20200720181658.GA32123@dell5510>
+Message-ID: <20200721093115.GB1164@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks for the review. I'll address other comments soon, just an initial
-note below:
+Hi Christoph,
 
-On 7/21/20 9:46 AM, Li Wang wrote:
-> Maybe renaming the function to tst_lockdown_enabled() is better? Then we
-> can return?1 if confirm kernel under lockdown mode otherwise 0.
-> 
->     +{
->     +? ? ? ?char line[BUFSIZ];
->     +? ? ? ?FILE *file;
->     +
->     +? ? ? ?if (access("/sys/kernel/security/lockdown", F_OK) != 0)
-> 
-> 
-> After thinking over, I guess it's not enough to only check
-> /sys/../lockdown file. Seems we need to consider the situation that
-> system without supporting this file??
-> 
-> i.e.?
-> ? Test on RHEL8 (no /sys/../lockdown file) with kernel parameter
-> "lockdown" and got the restriction error too.
-> 
-> # cat /proc/cmdline?
-> BOOT_IMAGE=(hd0,msdos1)/vmlinuz-4.18.0-226.el8.x86_64
-> root=/dev/mapper/rhel_bootp--73--3--209-root ro console=ttyS0,115200
-> ...?lockdown
-> ? ??
-> # ll /sys/kernel/security/lockdown
-> ls: cannot access '/sys/kernel/security/lockdown': No such file or directory
+> > On Mon, Jul 20, 2020 at 01:32:09PM +0000, Trond Myklebust wrote:
+> > > On Mon, 2020-07-20 at 11:14 +0200, Petr Vorel wrote:
+> > > > Reasons to drop:
+> > > > * outdated tests (from 2005)
+> > > > * not used (NFS kernel maintainers use pynfs [1])
+> > > > * written in Python (we support C and shell, see [2])
 
-To my understanding, the parameter to enable lockdown through kenrel
-parameters is "lockdown={integrity|confidentiality}", not just
-"lockdown", at least on upstream kernels:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=aefcf2f4b58155d27340ba5f9ddbe9513da8286d
+> > > > [1] http://git.linux-nfs.org/?p=bfields/pynfs.git;a=summary
+> > > > [2] https://github.com/linux-test-project/ltp/issues/547
 
-If /sys/kernel/security/lockdown doesn't exist, I'm not sure there is
-much we can do easily, or that is worth doing now. I think it is ok to
-fall back and fail like it has been happening since the feature was
-merged upstream.
-I can't see a tweak that would enable the feature but not the sysfs file
-in the kernel source. Maybe that kernel only had partial support?
 
-Erico
+> > > Unlike pynfs, these tests run on a real NFS client, and were designed
+> > > to test client implementations, as well as the servers.
 
+> > > So if they get dropped from ltp, then we will have to figure out some
+> > > other way of continuing to maintain them.
+
+> > NFS tests using the kernel sound like a prime candidate for xfstests.
+> In the past Yong Sun moved some ext4 related tests from LTP to xfstests.
+> LTP has various NFS related tests. IMHO more important than where these tests
+> should be is if anybody has a deeper look into them an cleanup them / rewrite
+> them from scratch.
+
+Although xfstests sounds like a natural choice, atm there are quite a lot NFS
+tests in LTP. xfstests contain only single NFS test.
+
+IMHO it's a choice of anybody who rewrites these tests whether he tries to put
+them to LTP or into xfstests. If it were me I'd probably keep them in LTP,
+because I prefer LTP framework capabilities.
+
+Kind regards,
+Petr
