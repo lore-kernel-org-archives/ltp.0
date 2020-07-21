@@ -1,49 +1,103 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Jul 2020 11:31:15 +0200
-Subject: [LTP] [RFC PATCH 1/1] Remove nfsv4
-In-Reply-To: <20200720181658.GA32123@dell5510>
-References: <20200720091449.19813-1-pvorel@suse.cz>
- <ffb5cd64d5d65b762bdc85b6044b7fdc526d27cb.camel@hammerspace.com>
- <20200720151742.GA16973@infradead.org>
- <20200720181658.GA32123@dell5510>
-Message-ID: <20200721093115.GB1164@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Jul 2020 21:19:17 +0800
+Subject: [LTP] [PATCH 1/3] lib: add function to check for kernel lockdown
+In-Reply-To: <98eaa723-1349-272d-3021-d2fef6e1abdd@redhat.com>
+References: <20200720194920.22784-1-ernunes@redhat.com>
+ <CAEemH2c1Sz+pkcLnCoWWCaMCte7QsmUTOoUxU6fzCF32nrrG+w@mail.gmail.com>
+ <98eaa723-1349-272d-3021-d2fef6e1abdd@redhat.com>
+Message-ID: <CAEemH2e0nwt_aOytJz0WzB3CYSirxa4myOZoQqCPTAVBL11gbQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Christoph,
+Erico,
 
-> > On Mon, Jul 20, 2020 at 01:32:09PM +0000, Trond Myklebust wrote:
-> > > On Mon, 2020-07-20 at 11:14 +0200, Petr Vorel wrote:
-> > > > Reasons to drop:
-> > > > * outdated tests (from 2005)
-> > > > * not used (NFS kernel maintainers use pynfs [1])
-> > > > * written in Python (we support C and shell, see [2])
+On Tue, Jul 21, 2020 at 4:57 PM Erico Nunes <ernunes@redhat.com> wrote:
 
-> > > > [1] http://git.linux-nfs.org/?p=bfields/pynfs.git;a=summary
-> > > > [2] https://github.com/linux-test-project/ltp/issues/547
+> ...
+>
+> > Maybe renaming the function to tst_lockdown_enabled() is better? Then we
+> > can return 1 if confirm kernel under lockdown mode otherwise 0.
+>
+
+How do you think about this suggestion? ^^
+
+Another reason to name it as tst_lockdown_enabled() is, we can give more
+flexible
+to test case, because not all tests need a simple skip in lockdown mode(in
+future).
+
+i.e.
+if (tst_lockdown_enabled()) {
+   // skip or not,
+   // do what they wanted in this mode
+}
 
 
-> > > Unlike pynfs, these tests run on a real NFS client, and were designed
-> > > to test client implementations, as well as the servers.
+> After thinking over, I guess it's not enough to only check
+> > /sys/../lockdown file. Seems we need to consider the situation that
+> > system without supporting this file?
+> >
+> > i.e.
+> >   Test on RHEL8 (no /sys/../lockdown file) with kernel parameter
+> > "lockdown" and got the restriction error too.
+> >
+> > # cat /proc/cmdline
+> > BOOT_IMAGE=(hd0,msdos1)/vmlinuz-4.18.0-226.el8.x86_64
+> > root=/dev/mapper/rhel_bootp--73--3--209-root ro console=ttyS0,115200
+> > ... lockdown
+> >
+> > # ll /sys/kernel/security/lockdown
+> > ls: cannot access '/sys/kernel/security/lockdown': No such file or
+> directory
+>
+> To my understanding, the parameter to enable lockdown through kenrel
+> parameters is "lockdown={integrity|confidentiality}", not just
+> "lockdown", at least on upstream kernels:
+>
 
-> > > So if they get dropped from ltp, then we will have to figure out some
-> > > other way of continuing to maintain them.
+Good to know this.
 
-> > NFS tests using the kernel sound like a prime candidate for xfstests.
-> In the past Yong Sun moved some ext4 related tests from LTP to xfstests.
-> LTP has various NFS related tests. IMHO more important than where these tests
-> should be is if anybody has a deeper look into them an cleanup them / rewrite
-> them from scratch.
 
-Although xfstests sounds like a natural choice, atm there are quite a lot NFS
-tests in LTP. xfstests contain only single NFS test.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=aefcf2f4b58155d27340ba5f9ddbe9513da8286d
+>
 
-IMHO it's a choice of anybody who rewrites these tests whether he tries to put
-them to LTP or into xfstests. If it were me I'd probably keep them in LTP,
-because I prefer LTP framework capabilities.
 
-Kind regards,
-Petr
+>
+> If /sys/kernel/security/lockdown doesn't exist, I'm not sure there is
+> much we can do easily, or that is worth doing now. I think it is ok to
+> fall back and fail like it has been happening since the feature was
+> merged upstream.
+>
+
+Yes, it looks a bit tricky.
+
+
+> I can't see a tweak that would enable the feature but not the sysfs file
+> in the kernel source. Maybe that kernel only had partial support?
+>
+
+Seems you're right, there are many differences between mainline-kernel
+and some distros in lockdown code. The reason that some distribution
+(i.e RHEL, Ubuntu) partly customizes the LSM feature, it does not support
+lockdown features completely so far.
+
+But one point we're sure is that the /sys/kernel/../lockdown file was
+introduced from kernel-v5.4.
+
+So maybe we could simply do detect the /sys/kernel/../loackdown file as
+your patch,
+but adding an extra warning print when test failed on older than
+kernel-v5.4.
+
+Or, if others can provide a better way I'd happy to hear.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200721/88b05af2/attachment.htm>
