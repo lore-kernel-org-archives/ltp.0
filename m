@@ -1,85 +1,108 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 21 Jul 2020 16:32:08 +0200
-Subject: [LTP] [PATCH 1/9] syscalls/ipc: shmctl02: Convert to the new
- library
-In-Reply-To: <20200717163453.9587-2-chrubis@suse.cz>
-References: <20200717163453.9587-1-chrubis@suse.cz>
- <20200717163453.9587-2-chrubis@suse.cz>
-Message-ID: <7109b5c3-d923-688a-9521-ae0a39a52d81@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 21 Jul 2020 17:26:06 +0200
+Subject: [LTP] [PATCH 1/3] lib: add function to check for kernel lockdown
+In-Reply-To: <20200720194920.22784-1-ernunes@redhat.com>
+References: <20200720194920.22784-1-ernunes@redhat.com>
+Message-ID: <20200721152606.GA13733@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-Li Wang already suggested the most important fixes so I'll just add two
-more typos on top. Otherwise it looks good.
-
-On 17. 07. 20 18:34, Cyril Hrubis wrote:
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
-
-> ---
->  testcases/kernel/syscalls/ipc/shmctl/Makefile |   4 +-
->  .../kernel/syscalls/ipc/shmctl/shmctl02.c     | 263 ++++++------------
->  2 files changed, 89 insertions(+), 178 deletions(-)
+Hi!
+> Some syscalls are not available if the kernel is booted using the
+> 'lockdown' feature. That can cause some tests to report fail, showing
+> a message like:
 > 
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> index 0b97bb240..7b05325ee 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
-> @@ -1,213 +1,124 @@
+>   Lockdown: iopl01: iopl is restricted; see man kernel_lockdown.7
+> 
+> This patch adds a function that can be used by tests to check for this
+> case, so tests can be skipped rather than reporting a test failure.
+> 
+> Signed-off-by: Erico Nunes <ernunes@redhat.com>
+> ---
+>  include/tst_lockdown.h |  8 ++++++++
+>  include/tst_test.h     |  1 +
+>  lib/tst_lockdown.c     | 28 ++++++++++++++++++++++++++++
+>  3 files changed, 37 insertions(+)
+>  create mode 100644 include/tst_lockdown.h
+>  create mode 100644 lib/tst_lockdown.c
+> 
+> diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
+> new file mode 100644
+> index 000000000..8db26d943
+> --- /dev/null
+> +++ b/include/tst_lockdown.h
+> @@ -0,0 +1,8 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#ifndef TST_LOCKDOWN_H
+> +#define TST_LOCKDOWN_H
+> +
+> +void tst_lockdown_skip(void);
+> +
+> +#endif /* TST_LOCKDOWN_H */
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index b84f7b9dd..b02de4597 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -40,6 +40,7 @@
+>  #include "tst_hugepage.h"
+>  #include "tst_assert.h"
+>  #include "tst_cgroup.h"
+> +#include "tst_lockdown.h"
+>  
 >  /*
-> ...
->   *
-> - *      06/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
-> - *      - Fix concurrency issue. The second key used for this test could
-> - *        conflict with the key from another task.
-> + * * EACCES - segment has no read or write permissions
-> + * * EFAULT - IPC_SET & buf isn't valid
-> + * * EFAULT - IPC_STAT & buf isn't valid
-> + * * EINVAL - the command is not valid
-> + * * EINVAL - the shmid is not valid
-> + * * EINVAL - the shmid belongs to removed shm
->   *
-> - * RESTRICTIONS
-> - *	none
-> + * * EPERM - attempt to stat root owned shm
+>   * Reports testcase result.
+> diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
+> new file mode 100644
+> index 000000000..d57a6bdf3
+> --- /dev/null
+> +++ b/lib/tst_lockdown.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/mount.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+> +#include "tst_safe_stdio.h"
+> +#include "tst_lockdown.h"
+> +
+> +void tst_lockdown_skip(void)
+> +{
+> +	char line[BUFSIZ];
+> +	FILE *file;
+> +
+> +	if (access("/sys/kernel/security/lockdown", F_OK) != 0)
+> +		return;
+> +
+> +	file = SAFE_FOPEN("/sys/kernel/security/lockdown", "r");
+> +	fgets(line, sizeof(line), file);
 
-^ "root-owned" is missing a dash throughout this file
+The compiler complains that we haven't checked the return value here I
+guess that we can silence it with:
 
-> + * * EPERM - attempt delete root owned shm
+	if (!fgets(line, sizeof(line), file)
+		return;
 
-^ attempt *TO* delete ...
-
-> + * * EPERM - attempt to change root owned shm
-> + * * EPERM - attempt to lock root owned shm
-> + * * EPERM - attempt to unlock root owned shm
->   */
->  
-> -#include "ipcshm.h"
->  #include <pwd.h>
->  
-> ...
-> +} tc[] = {
-> +	{&shm_id1, IPC_STAT, &buf, EACCES},
-> +	{&shm_id2, IPC_SET, (struct shmid_ds *)-1, EFAULT},
-> +	{&shm_id2, IPC_STAT, (struct shmid_ds *)-1, EFAULT},
-> +	{&shm_id2, -1, &buf, EINVAL},
-> +	{&shm_bad, IPC_STAT, &buf, EINVAL},
-> +	{&shm_rem, IPC_STAT, &buf, EINVAL},
-> +	/* Operations on root owned shm */
-
-^ Last instance of "root-owned" without a dash
+> +	SAFE_FCLOSE(file);
+> +
+> +	if (strstr(line, "[none]") == NULL)
+> +		tst_brk(TCONF, "Kernel is locked down, skip this test.");
+> +}
+> -- 
+> 2.26.2
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
