@@ -1,182 +1,100 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 21 Jul 2020 10:26:19 +0800
-Subject: [LTP] [PATCH v3] syscalls/ioctl09: Add test for BLKRRPART ioctl
-In-Reply-To: <20200720145646.GA20216@yuki.lan>
-References: <20200720145646.GA20216@yuki.lan>
-Message-ID: <1595298379-4585-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 21 Jul 2020 10:35:09 +0800
+Subject: [LTP] [PATCH v2 4/7] net: Update README.md
+In-Reply-To: <20200720141547.GB21201@dell5510>
+References: <20200710172044.21592-1-pvorel@suse.cz>
+ <20200710172044.21592-5-pvorel@suse.cz> <5F15686A.1070605@cn.fujitsu.com>
+ <20200720141547.GB21201@dell5510>
+Message-ID: <5F16545D.4090103@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes #699
+On 2020/7/20 22:15, Petr Vorel wrote:
+> Hi,
+>
+> ...
+>>> +++ b/testcases/network/README.md
+> ...
+>>>    ## Server Services Configuration
+>>>    Verify that the below daemon services are running. If not, please install
+>>>    and start them:
+>>> -rsh-server, telnet-server, finger-server, rdist, rsync, dhcp-server, http-server.
+>>> +
+>>> +dhcp-server, dnsmasq, http-server, nfs-kernel-server, rpcbind, rsync,
+>>> +telnet-server, vsftpd
+>> Hi Petr,
+>> These package names are from Debian/Ubuntu, do we need to mention it?
+> All these packages are at least in Debian/Ubuntu and openSUSE. IMHO other
+> distros have similar names. Exception is nfs-kernel-server, which is at least on
+> Fedora/RHEL nfs-server. Thus something like:
+>
+> dhcp-server, dnsmasq, http-server, nfs-kernel-server or nfs-server, rpcbind,
+> rsync,telnet-server, vsftpd
+Hi Petr,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Acked-by: Jan Stancek <jstancek@redhat.com>
----
-v2->v3
-1. remove useless cmd judgement about 255 and use tst_brk
-2. move tst_find_free_loopdev into setup
-3. use new api tst_prealloc_file instead of tst_fill_file 
-   and move it into setup
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/ioctl/.gitignore |   1 +
- testcases/kernel/syscalls/ioctl/ioctl09.c  | 119 +++++++++++++++++++++
- 3 files changed, 121 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl09.c
+If these name represent pakcage name, there are some differnets between 
+Debian/Ubuntu/openSUSE and Fedora/RHEL:
+Debian/Ubuntu/openSUSE: isc-dhcp-server, dnsmasq?apache2, 
+nfs-kernel-server, rpcbind?rsync, telnetd + xinetd, vsftpd
+RHEL/Fedora: dhcp, dnsmasq?httpd, nfs-utils?rpcbind?rsync, 
+telnet-server, vsftpd
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 819e8d8ee..c2bfc6df3 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -529,6 +529,7 @@ ioctl05      ioctl05
- ioctl06      ioctl06
- ioctl07      ioctl07
- ioctl08      ioctl08
-+ioctl09      ioctl09
- 
- ioctl_loop01 ioctl_loop01
- ioctl_loop02 ioctl_loop02
-diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
-index 3a3d49adc..5fff7a61d 100644
---- a/testcases/kernel/syscalls/ioctl/.gitignore
-+++ b/testcases/kernel/syscalls/ioctl/.gitignore
-@@ -6,6 +6,7 @@
- /ioctl06
- /ioctl07
- /ioctl08
-+/ioctl09
- /ioctl_loop01
- /ioctl_loop02
- /ioctl_loop03
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-new file mode 100644
-index 000000000..d159869d6
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
-+ *
-+ * Basic test for the BLKRRPART ioctl, it is the same as blockdev
-+ * --rereadpt command.
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <sys/mount.h>
-+#include <stdbool.h>
-+#include "lapi/loop.h"
-+#include "tst_test.h"
-+
-+static char dev_path[1024];
-+static int dev_num, attach_flag, dev_fd;
-+static char loop_partpath[1026], sys_loop_partpath[1026];
-+
-+static void change_partition(const char *const cmd[])
-+{
-+	int ret;
-+
-+	ret = tst_cmd(cmd, NULL, NULL, TST_CMD_PASS_RETVAL);
-+	if (ret)
-+		tst_brk(TBROK, "parted return %i", ret);
-+}
-+
-+static void check_partition(int part_num, bool value)
-+{
-+	int ret;
-+
-+	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp%d",
-+		dev_num, dev_num, part_num);
-+	sprintf(loop_partpath, "%sp%d", dev_path, part_num);
-+
-+	ret = access(sys_loop_partpath, F_OK);
-+	if (ret == 0)
-+		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
-+			sys_loop_partpath);
-+	else
-+		tst_res(value ? TFAIL : TPASS, "access %s fails",
-+			sys_loop_partpath);
-+
-+	ret = access(loop_partpath, F_OK);
-+	if (ret == 0)
-+		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
-+			loop_partpath);
-+	else
-+		tst_res(value ? TFAIL : TPASS, "access %s fails",
-+			loop_partpath);
-+}
-+
-+static void verify_ioctl(void)
-+{
-+	const char *const cmd_parted_old[] = {"parted", "-s", "test.img",
-+					      "mklabel", "msdos", "mkpart",
-+					      "primary", "ext4", "1M", "10M",
-+					      NULL};
-+	const char *const cmd_parted_new[] = {"parted", "-s", "test.img",
-+					      "mklabel", "msdos", "mkpart",
-+					      "primary", "ext4", "1M", "10M",
-+					      "mkpart", "primary", "ext4",
-+					      "10M", "20M", NULL};
-+	struct loop_info loopinfo = {0};
-+
-+	change_partition(cmd_parted_old);
-+	tst_attach_device(dev_path, "test.img");
-+	attach_flag = 1;
-+
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	loopinfo.lo_flags =  LO_FLAGS_PARTSCAN;
-+	SAFE_IOCTL(dev_fd, LOOP_SET_STATUS, &loopinfo);
-+	check_partition(1, true);
-+	check_partition(2, false);
-+
-+	change_partition(cmd_parted_new);
-+	TST_RETRY_FUNC(ioctl(dev_fd, BLKRRPART, 0), TST_RETVAL_EQ0);
-+	check_partition(1, true);
-+	check_partition(2, true);
-+
-+	SAFE_CLOSE(dev_fd);
-+	tst_detach_device(dev_path);
-+	attach_flag = 0;
-+}
-+
-+static void setup(void)
-+{
-+	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-+	if (dev_num < 0)
-+		tst_brk(TBROK, "Failed to find free loop device");
-+	tst_prealloc_file("test.img", 1024 * 1024, 20);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dev_fd > 0)
-+		SAFE_CLOSE(dev_fd);
-+	if (attach_flag)
-+		tst_detach_device(dev_path);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_ioctl,
-+	.needs_root = 1,
-+	.needs_drivers = (const char *const []) {
-+		"loop",
-+		NULL
-+	},
-+	.needs_cmds = (const char *const []) {
-+		"parted",
-+		NULL
-+	},
-+	.needs_tmpdir = 1,
-+};
--- 
-2.23.0
+Could we just represent service name:
+dhcpd(or isc-dhcp-server), dnsmasq, httpd(or apache2), nfs-server, 
+rpcbind, telnet.socket(or xinetd), vsftpd
+
+BTW: I cannot find which test use rsync, did I miss something?
+
+>>>    Note: If any of the above daemon is not running on server, the test related to
+>>>    that service running from client will fail.
+>>> -### FTP setup
+>>> -* In ?/etc/ftpusers? [or vi /etc/vsftpd.ftpusers], comment the line containing
+>>> -?root? string. This file lists all those users who are not given access to do ftp
+>>> +### FTP and telnet setup
+>>> +Both tests require environment variables `RHOST` (remote machine), `RUSER`
+>>> +(remote user) and `PASSWD` (remote password). NOTE: `RHOST` will imply two host
+>>> +configuratioe for other tests.
+>>> +
+>>> +If `RHOST` is set to `root`, either of these steps is required:
+>>> +
+>>> +* In `/etc/ftpusers` (or `/etc/vsftpd.ftpusers`), comment the line containing
+>>> +"root" string. This file lists all those users who are not given access to do ftp
+>>>    on the current system.
+>> Are this file from Debian/Ubuntu as well?
+> Again, /etc/ftpusers is at least for openSUSE and Debian/Ubuntu.
+> Fedora/RHEL has /etc/vsftpd/ftpusers and /etc/vsftpd/user_list
+> /etc/vsftpd.ftpusers looks like to be on RHEL 4/ some old Fedora.
+>
+> Thus:
+> * In `/etc/ftpusers` (or `/etc/vsftpd/ftpusers` or `/etc/vsftpd.ftpusers`),
+> * comment the line containing
+> ...
+
+This change looks good. :-)
+
+> I also wondered if setup should mention something related to single test,
+> but it didn't harm. I was thinking whether ftp test is worth to keep (and thus
+> need to be rewritten), but understand it's useful as a high level smoke test.
+1) It seems better to mention something related to single test.
+2) Perfer to keep and rewrite ftp test.
+
+Thanks,
+Xiao Yang
+> OK with these changes?
+>
+> Kind regards,
+> Petr
+>
+>> Other than this, it is good to me. :-)
+>> Acked-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>> Thanks,
+>> Xiao Yang
+>
+> .
+>
 
 
 
