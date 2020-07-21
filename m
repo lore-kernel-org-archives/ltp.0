@@ -1,126 +1,160 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 21 Jul 2020 18:03:27 +0200
-Subject: [LTP] [PATCH 6/9] syscalls/ipc: Add shmctl() IPC_INFO test
-In-Reply-To: <20200717163453.9587-7-chrubis@suse.cz>
-References: <20200717163453.9587-1-chrubis@suse.cz>
- <20200717163453.9587-7-chrubis@suse.cz>
-Message-ID: <7a26989c-93b8-c390-a87c-3d19c6603721@suse.cz>
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Tue, 21 Jul 2020 14:24:40 -0400
+Subject: [LTP] [PATCH] IMA: Add test for kexec cmdline measurement
+Message-ID: <20200721182440.4169-1-t-josne@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-for patches 2, 4 and 5:
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+IMA policy can be set to measure the command line passed in the kexec system call.
+There needs to be a test to validate this kexec command line measurement.
 
-Patch 3 needs a test scenario redesign as reported by Li Wang.
+Add a testcase that verifies that the IMA subsystem has correctly
+measured the cmdline specified during a kexec.
 
-In this patch, you should also check for other negative return values
-from shmctl() besides -1.
+Note that this test does not actually reboot.
 
-On 17. 07. 20 18:34, Cyril Hrubis wrote:
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  runtest/syscalls                              |  1 +
->  runtest/syscalls-ipc                          |  1 +
->  .../kernel/syscalls/ipc/shmctl/.gitignore     |  1 +
->  .../kernel/syscalls/ipc/shmctl/shmctl03.c     | 38 +++++++++++++++++++
->  4 files changed, 41 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 5ce482dc7..819e8d8ee 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1355,6 +1355,7 @@ shmat03 shmat03
->  
->  shmctl01 shmctl01
->  shmctl02 shmctl02
-> +shmctl03 shmctl03
->  shmctl04 shmctl04
->  shmctl05 shmctl05
->  shmctl06 shmctl06
-> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-> index 10cb92c7d..c3a35896c 100644
-> --- a/runtest/syscalls-ipc
-> +++ b/runtest/syscalls-ipc
-> @@ -53,6 +53,7 @@ shmat02 shmat02
->  
->  shmctl01 shmctl01
->  shmctl02 shmctl02
-> +shmctl03 shmctl03
->  shmctl04 shmctl04
->  shmctl05 shmctl05
->  shmctl06 shmctl06
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/.gitignore b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-> index 08aa83c19..46b107344 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/.gitignore
-> @@ -1,5 +1,6 @@
->  /shmctl01
->  /shmctl02
-> +/shmctl03
->  /shmctl04
->  /shmctl05
->  /shmctl06
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-> new file mode 100644
-> index 000000000..7df8c12ce
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +/*
-> + * Call shmctl() with IPC_INFO flag and check that the data are consistent with
-> + * /proc/sys/kernel/shm*.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include "tst_test.h"
-> +#include "tst_safe_sysv_ipc.h"
-> +#include "libnewipc.h"
-> +
-> +static void verify_ipcinfo(void)
-> +{
-> +	struct shminfo info;
-> +
-> +	TEST(shmctl(0, IPC_INFO, (struct shmid_ds *)&info));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TTERRNO, "shmctl(0, IPC_INFO, ...)");
-> +		return;
-> +	}
-> +
+Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
+---
+ runtest/ima                                   |  1 +
+ .../kernel/security/integrity/ima/README.md   | 11 +++
+ .../security/integrity/ima/tests/ima_kexec.sh | 93 +++++++++++++++++++
+ 3 files changed, 105 insertions(+)
+ create mode 100644 testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
 
-if (TST_RET < 0)
-	tst_res(TFAIL...)
-
-> +	if (info.shmmin != 1)
-> +		tst_res(TFAIL, "shmmin = %li, expected 1", info.shmmin);
-> +	else
-> +		tst_res(TPASS, "shmmin = 1");
-> +
-> +	TST_ASSERT_ULONG("/proc/sys/kernel/shmmax", info.shmmax);
-> +	TST_ASSERT_ULONG("/proc/sys/kernel/shmmni", info.shmmni);
-> +	TST_ASSERT_ULONG("/proc/sys/kernel/shmall", info.shmall);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_ipcinfo,
-> +};
-> 
-
-
+diff --git a/runtest/ima b/runtest/ima
+index 309d47420..5f4b4a7a1 100644
+--- a/runtest/ima
++++ b/runtest/ima
+@@ -4,4 +4,5 @@ ima_policy ima_policy.sh
+ ima_tpm ima_tpm.sh
+ ima_violations ima_violations.sh
+ ima_keys ima_keys.sh
++ima_kexec ima_kexec.sh
+ evm_overlay evm_overlay.sh
+diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
+index db8819a99..926eb8478 100644
+--- a/testcases/kernel/security/integrity/ima/README.md
++++ b/testcases/kernel/security/integrity/ima/README.md
+@@ -30,6 +30,17 @@ measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
+ 
+ The test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
+ 
++### IMA kexec test
++
++This test requires that the ima policy contains:
++```
++measure func=KEXEC_CMDLINE
++```
++
++Even though the test does not actually reboot, it does require a valid,
++signed kernel image. By default, the test will look in `/boot/vmlinuz-$(uname r)`,
++but if no image is accessible there, a valid image be must be placed at `/tmp/Image`.
++
+ ## EVM tests
+ 
+ `evm_overlay.sh` requires a builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+new file mode 100644
+index 000000000..7d71557ee
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+@@ -0,0 +1,93 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2020 Microsoft Corporation
++# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
++#
++# Verify that kexec cmdline is measured correctly.
++
++TST_NEEDS_CMDS="kexec sed xargs printf grep"
++TST_CNT=1
++TST_NEEDS_DEVICE=1
++
++. ima_setup.sh
++
++# Since the test is executed inside some sort of
++# separate shell, *most* environment variables are
++# not accessible, so there's no way to set it from
++# the outside.
++#
++# `/boot/vmlinuz-$(uname-r)` is where the image is
++# located on many systems, but not all. Therefore,
++# if the image is not located there, require the
++# user to copy it to `/tmp/Image`.
++#
++# Ideally, this test shouldn't even require an image,
++# since it doesn't actually reboot, but the IMA cmdline
++# measurement occurs after the image is parsed and verified,
++# so we must pass a valid kernel image. There is a possiblity of
++# putting together a "faux" kernel image that has the right headers
++# and appears to be signed correctly, but doesn't actually contain any
++# code, but, after investigating that possiblity, it appears to be
++# quite difficult (and would require a new faux kernel for each arch).
++IMAGE="/boot/vmlinuz-$(uname -r)"
++if [ ! -f $IMAGE ]; then
++    IMAGE="/tmp/Image"
++fi
++
++measure() {
++    local found temp_file="file.txt" temp_file2="file2.txt" algorithm \
++        digest expected_digest
++
++    echo -n "$1" > $temp_file
++    grep "kexec-cmdline" $ASCII_MEASUREMENTS > $temp_file2
++
++    while read found
++    do
++        algorithm=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f1)
++        digest=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f2)
++
++        expected_digest=$(compute_digest $algorithm $temp_file)
++
++        if [ "$digest" = "$expected_digest" ]; then
++            return 0
++        fi
++    done < $temp_file2
++
++    return 1
++}
++
++# Test that the kexec cmdline is measured correctly.
++# NOTE: This does *not* actually reboot.
++test1() {
++    # Strip the `BOOT_IMAGE=...` part from the cmdline.
++    local cmdline="$(sed 's/BOOT_IMAGE=[^ ]* //' /proc/cmdline)"
++    if ! kexec -sl $IMAGE --reuse-cmdline; then
++        tst_brk TCONF "kexec failed: $?"
++    fi
++
++    if ! measure "$cmdline"; then
++        tst_brk TFAIL "kexec cmdline was measured incorrectly"
++    fi
++
++    cmdline="foo"
++    if ! kexec -sl $IMAGE --append=$cmdline; then
++        tst_brk TCONF "kexec failed: $?"
++    fi
++
++    if ! measure "$cmdline"; then
++        tst_brk TFAIL "kexec cmdline was measured incorrectly"
++    fi
++
++    cmdline="bar"
++    if ! kexec -sl $IMAGE --command-line=$cmdline; then
++        tst_brk TCONF "kexec failed: $?"
++    fi
++
++    if ! measure "$cmdline"; then
++        tst_brk TFAIL "kexec cmdline was measured incorrectly"
++    fi
++
++    tst_res TPASS "kexec cmldine was measured correctly"
++}
++
++tst_run
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.25.1
+
