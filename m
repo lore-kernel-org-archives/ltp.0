@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 21 Jul 2020 17:26:06 +0200
-Subject: [LTP] [PATCH 1/3] lib: add function to check for kernel lockdown
-In-Reply-To: <20200720194920.22784-1-ernunes@redhat.com>
+Date: Tue, 21 Jul 2020 17:26:49 +0200
+Subject: [LTP] [PATCH 2/3] ioperm01: skip test if kernel is locked down
+In-Reply-To: <20200720194920.22784-2-ernunes@redhat.com>
 References: <20200720194920.22784-1-ernunes@redhat.com>
-Message-ID: <20200721152606.GA13733@yuki.lan>
+ <20200720194920.22784-2-ernunes@redhat.com>
+Message-ID: <20200721152649.GB13733@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,97 +12,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Some syscalls are not available if the kernel is booted using the
-> 'lockdown' feature. That can cause some tests to report fail, showing
-> a message like:
-> 
->   Lockdown: iopl01: iopl is restricted; see man kernel_lockdown.7
-> 
-> This patch adds a function that can be used by tests to check for this
-> case, so tests can be skipped rather than reporting a test failure.
+> ioperm is restricted under kernel lockdown.
 > 
 > Signed-off-by: Erico Nunes <ernunes@redhat.com>
 > ---
->  include/tst_lockdown.h |  8 ++++++++
->  include/tst_test.h     |  1 +
->  lib/tst_lockdown.c     | 28 ++++++++++++++++++++++++++++
->  3 files changed, 37 insertions(+)
->  create mode 100644 include/tst_lockdown.h
->  create mode 100644 lib/tst_lockdown.c
+>  testcases/kernel/syscalls/ioperm/ioperm01.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
-> new file mode 100644
-> index 000000000..8db26d943
-> --- /dev/null
-> +++ b/include/tst_lockdown.h
-> @@ -0,0 +1,8 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#ifndef TST_LOCKDOWN_H
-> +#define TST_LOCKDOWN_H
-> +
-> +void tst_lockdown_skip(void);
-> +
-> +#endif /* TST_LOCKDOWN_H */
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index b84f7b9dd..b02de4597 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -40,6 +40,7 @@
->  #include "tst_hugepage.h"
->  #include "tst_assert.h"
->  #include "tst_cgroup.h"
-> +#include "tst_lockdown.h"
+> diff --git a/testcases/kernel/syscalls/ioperm/ioperm01.c b/testcases/kernel/syscalls/ioperm/ioperm01.c
+> index 4c5c0e6ea..d1d633b20 100644
+> --- a/testcases/kernel/syscalls/ioperm/ioperm01.c
+> +++ b/testcases/kernel/syscalls/ioperm/ioperm01.c
+> @@ -42,6 +42,9 @@ static void verify_ioperm(void)
 >  
->  /*
->   * Reports testcase result.
-> diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
-> new file mode 100644
-> index 000000000..d57a6bdf3
-> --- /dev/null
-> +++ b/lib/tst_lockdown.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  static void setup(void)
+>  {
+> +	/* ioperm is restricted under kernel lockdown. */
+> +	tst_lockdown_skip();
 > +
-> +#define TST_NO_DEFAULT_MAIN
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/mount.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
-> +#include "tst_safe_stdio.h"
-> +#include "tst_lockdown.h"
-> +
-> +void tst_lockdown_skip(void)
-> +{
-> +	char line[BUFSIZ];
-> +	FILE *file;
-> +
-> +	if (access("/sys/kernel/security/lockdown", F_OK) != 0)
-> +		return;
-> +
-> +	file = SAFE_FOPEN("/sys/kernel/security/lockdown", "r");
-> +	fgets(line, sizeof(line), file);
+>  	/*
+>  	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
+>  	 * from kernel 2.6.8 to permit 16-bits ioperm
 
-The compiler complains that we haven't checked the return value here I
-guess that we can silence it with:
-
-	if (!fgets(line, sizeof(line), file)
-		return;
-
-> +	SAFE_FCLOSE(file);
-> +
-> +	if (strstr(line, "[none]") == NULL)
-> +		tst_brk(TCONF, "Kernel is locked down, skip this test.");
-> +}
-> -- 
-> 2.26.2
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+This looks good, however shouldn't we as well add a third ioperm test
+that checks that the call fails for root when lockdown is enabled?
 
 -- 
 Cyril Hrubis
