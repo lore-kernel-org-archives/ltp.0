@@ -1,204 +1,90 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 22 Jul 2020 15:51:41 +0800
-Subject: [LTP] [PATCH v1] Add mincore() test for pages cached by another
- process
-In-Reply-To: <20200709155929.13269-1-shwetha@zilogic.com>
-References: <20200709155929.13269-1-shwetha@zilogic.com>
-Message-ID: <bd802a1d-d683-c2c0-2303-b72665e0b1c3@cn.fujitsu.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 22 Jul 2020 13:42:42 +0530
+Subject: [LTP] BUG at mm/vmalloc.c:3089! - invalid opcode: 0000 [#1] SMP
+ KASAN PTI
+Message-ID: <CA+G9fYuj3bHUMz8XQztbmTgF0c5+rZ5-FkUjFyvEftej2jLT+Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-HI!
+Kernel BUG at mm/vmalloc.c:3089! on x86_64 Kasan configured kernel reported
+this while testing LTP cgroup_fj_stress_memory_4_4_none test cases.
 
+Also found on arm64 and i386 devices and qemu.
 
-> 
-> It tests the result of mincore when memory is mapped and cached by
-> another process. A file is mapped in both parent and child
-> process.Then the mapped memory is accessed in the child process. The
-> results of mincore are tested in the parent process.
-> 
-> References:#460
-> 
-> Signed-off-by: Shwetha Subramanian. <shwetha@zilogic.com>
-> Reviewed-by:Vijay Kumar B. <vijaykumar@zilogic.com>
-> ---
->   runtest/syscalls                              |   1 +
->   testcases/kernel/syscalls/mincore/.gitignore  |   2 +
->   testcases/kernel/syscalls/mincore/mincore04.c | 119 ++++++++++++++++++
->   3 files changed, 122 insertions(+)
->   create mode 100644 testcases/kernel/syscalls/mincore/mincore04.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 2e535abf6..cfcab6708 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -880,6 +880,7 @@ open_tree02 open_tree02
->   mincore01 mincore01
->   mincore02 mincore02
->   mincore03 mincore03
-> +mincore04 mincore04
->   
->   madvise01 madvise01
->   madvise02 madvise02
-> diff --git a/testcases/kernel/syscalls/mincore/.gitignore b/testcases/kernel/syscalls/mincore/.gitignore
-> index 71c3e9864..470eba94e 100644
-> --- a/testcases/kernel/syscalls/mincore/.gitignore
-> +++ b/testcases/kernel/syscalls/mincore/.gitignore
-> @@ -1,3 +1,5 @@
->   /mincore01
->   /mincore02
->   /mincore03
-> +/mincore04
-> +
-remove the last new blank line
-> diff --git a/testcases/kernel/syscalls/mincore/mincore04.c b/testcases/kernel/syscalls/mincore/mincore04.c
-> new file mode 100644
-> index 000000000..0fd386699
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mincore/mincore04.c
-> @@ -0,0 +1,119 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
-> + * Email: code@zilogic.com
-> + */
-> +
-> +/*
-> + * mincore04
-> + * Test shows that pages mapped in one process(parent) and
-> + * faulted in another(child) results in mincore(in parent) reporting
-> + * that all mapped pages are resident.
-> + */
-> +
-> +#include <unistd.h>
-> +#include <sys/types.h>
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <fcntl.h>
-> +#include "tst_test.h"
-> +
-> +#define NUM_PAGES 3
-> +
-> +static int fd;
-> +static int size;
-> +static void *ptr;
-> +
-> +static void cleanup(void)
-> +{
-> +	SAFE_CLOSE(fd);
-we should use
-         if (fd > 0)
-		SAFE_CLOSE(fd);
-> +	SAFE_MUNLOCK(ptr, size);
-I guess we should move this into child process.
-> +	SAFE_MUNMAP(ptr, size);
-as well as SAFE_CLOSE(fd)
-> +}
-> +
-> +static void file_setup(void)
-> +{
-> +	int PS;
-I prefer to use page_size variable name instead of PS.
-> +
-> +	PS = getpagesize();
-> +	size = PS * NUM_PAGES;
-> +	fd = SAFE_OPEN("FILE", O_CREAT | O_RDWR, 0600);
-> +	SAFE_FTRUNCATE(fd, size);
-> +}
-> +
-> +static void mem_sync(void)
-> +{
-> +	int ret;
-> +
-> +	/* File pages from file creation are cleared from cache. */
-> +	SAFE_FSYNC(fd);
-> +	ret = posix_fadvise(fd, 0, size, POSIX_FADV_DONTNEED);
-> +	if (ret == -1)
-> +		tst_brk(TBROK | TERRNO, "fadvise failed");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	file_setup();
-> +	mem_sync();
-The two fuctions are simple and not reused. Can we put their code into 
-setup?
-> +}
-> +
-> +static void mmap_lock_file(void)
-> +{
-> +	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-> +	SAFE_MLOCK(ptr, size);
-> +	TST_CHECKPOINT_WAKE(1);
-For TST_CHECKPOINT_WAKE(id) api , this 'id' is a unsigned integer, so we 
-can start with 0.
-> +	TST_CHECKPOINT_WAIT(2);
-Here we should use munlock and munmap.
-> +}
-> +
-> +static int count_pages_in_cache(void)
-> +{
-> +	int locked_pages = 0;
-> +	int count, ret;
-> +	unsigned char vec[NUM_PAGES];
-> +
-> +	TST_CHECKPOINT_WAIT(1);
-> +	ptr = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-> +
-> +	ret = mincore(ptr, size, vec);
-> +	if (ret == -1)
-> +		tst_brk(TBROK | TERRNO, "mincore failed");
-> +	for (count = 0; count < NUM_PAGES; count++) {
-> +		if (vec[count] & 1)
-> +			locked_pages++;
-> +	}
-> +
-> +	TST_CHECKPOINT_WAKE(2);
-> +	return locked_pages;
-> +}
-> +
-> +static void test_mincore(void)
-> +{
-> +	int  locked_pages;
-> +
-> +	pid_t child_pid = SAFE_FORK();
-> +
-> +	if (child_pid == 0) {
-> +		mmap_lock_file();
-> +	} else {
-> +		locked_pages = count_pages_in_cache();
-> +		tst_reap_children();
-> +
-> +		if (locked_pages == NUM_PAGES)
-> +			tst_res(TPASS, "mincore reports all pages locked by child process are resident");
-> +		else
-> +			tst_res(TFAIL, "mincore reports %d pages resident but %d pages locked by child process",
-> +				locked_pages, NUM_PAGES);
-> +	}
-I prefer to use the following code stype because it seems more clear
-	if (child_pid == 0) {
-		/*child do*/
-		exit(0);
-	}
-	/*partent do*/
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: de2e69cfe54a8f2ed4b75f09d3110c514f45d38e
+  git describe: next-20200721
+  make_kernelversion: 5.8.0-rc6
+  kernel-config:
+https://builds.tuxbuild.com/zU-I3LEfC1AaKQ59Er60ZQ/kernel.config
 
-Also, I guess we should printf how many pages locked if passed.
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.forks_child = 1,
-> +	.test_all = test_mincore,
-> +	.needs_checkpoints = 1,
-> +};
-> +
-remove the last new blank line
-> 
+crash log,
+[ 1421.080221] ------------[ cut here ]------------
+[ 1421.084874] kernel BUG at mm/vmalloc.c:3089!
+[ 1421.090356] invalid opcode: 0000 [#1] SMP KASAN PTI
+[ 1421.096009] CPU: 1 PID: 19100 Comm: kworker/1:1 Not tainted
+5.8.0-rc6-next-20200721 #1
+[ 1421.103933] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.0b 07/27/2017
+[ 1421.111418] Workqueue: events pcpu_balance_workfn
+[ 1421.116138] RIP: 0010:free_vm_area+0x2d/0x30
+[ 1421.120413] Code: e5 41 54 49 89 fc 48 83 c7 08 e8 9e 5e 04 00 49
+8b 7c 24 08 e8 74 f8 ff ff 49 39 c4 75 0c 4c 89 e7 e8 97 d2 03 00 41
+5c 5d c3 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 56 49
+89 fe
+[ 1421.139154] RSP: 0018:ffff88840142fc80 EFLAGS: 00010282
+[ 1421.144381] RAX: 0000000000000000 RBX: ffff88841b843738 RCX: ffffffff86ca1d78
+[ 1421.151515] RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffff8883bfacd630
+[ 1421.158647] RBP: ffff88840142fc88 R08: 0000000000000001 R09: ffffed1080285f7e
+[ 1421.165780] R10: 0000000000000003 R11: ffffed1080285f7d R12: ffff888409e89880
+[ 1421.172913] R13: ffff88841b843730 R14: 0000000000000080 R15: 0000000000000080
+[ 1421.180045] FS:  0000000000000000(0000) GS:ffff88841fa80000(0000)
+knlGS:0000000000000000
+[ 1421.188132] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1421.193876] CR2: 00007f1230b41080 CR3: 000000025d40e002 CR4: 00000000003706e0
+[ 1421.201008] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1421.208132] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 1421.215255] Call Trace:
+[ 1421.217703]  pcpu_free_vm_areas+0x30/0x44
+[ 1421.221714]  pcpu_balance_workfn+0x7bd/0x8f0
+[ 1421.225987]  ? pcpu_create_chunk+0x2f0/0x2f0
+[ 1421.230261]  ? read_word_at_a_time+0x12/0x20
+[ 1421.234531]  ? strscpy+0xc1/0x190
+[ 1421.237842]  process_one_work+0x474/0x7b0
+[ 1421.241856]  worker_thread+0x7b/0x6a0
+[ 1421.245521]  ? wake_up_process+0x10/0x20
+[ 1421.249448]  ? process_one_work+0x7b0/0x7b0
+[ 1421.253635]  kthread+0x1aa/0x200
+[ 1421.256867]  ? kthread_create_on_node+0xd0/0xd0
+[ 1421.261400]  ret_from_fork+0x22/0x30
+[ 1421.264978] Modules linked in: x86_pkg_temp_thermal
+[ 1421.269869] ---[ end trace 6352cf97284f07da ]---
+[ 1421.274955] RIP: 0010:free_vm_area+0x2d/0x30
+[ 1421.281026] Code: e5 41 54 49 89 fc 48 83 c7 08 e8 9e 5e 04 00 49
+8b 7c 24 08 e8 74 f8 ff ff 49 39 c4 75 0c 4c 89 e7 e8 97 d2 03 00 41
+5c 5d c3 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 56 49
+89 fe
+[ 1421.300553] RSP: 0018:ffff88840142fc80 EFLAGS: 00010282
+[ 1421.307051] RAX: 0000000000000000 RBX: ffff88841b843738 RCX: ffffffff86ca1d78
+[ 1421.314184] RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffff8883bfacd630
+[ 1421.321317] RBP: ffff88840142fc88 R08: 0000000000000001 R09: ffffed1080285f7e
+[ 1421.328477] R10: 0000000000000003 R11: ffffed1080285f7d R12: ffff888409e89880
+[ 1421.335639] R13: ffff88841b843730 R14: 0000000000000080 R15: 0000000000000080
+[ 1421.342777] FS:  0000000000000000(0000) GS:ffff88841fa80000(0000)
+knlGS:0000000000000000
+[ 1421.350870] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1421.356643] CR2: 00007f1230b41080 CR3: 000000025d40e002 CR4: 00000000003706e0
+[ 1421.363811] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1421.370951] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200721/testrun/2972982/suite/linux-log-parser/test/check-kernel-bug-1594684/log
 
+--
+Linaro LKFT
+https://lkft.linaro.org
