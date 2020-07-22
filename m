@@ -1,53 +1,143 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 Jul 2020 14:59:46 +0200
-Subject: [LTP] [PATCH v2 1/2] syscalls/ioctl_loop06: Using
- LOOP_CONFIGURE to test invalid block size
-In-Reply-To: <13f6db1e-f1b6-1465-b34d-ae418ead2558@cn.fujitsu.com>
-References: <20200708140034.GD7276@yuki.lan>
- <1594363189-20972-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200722094502.GB2319@yuki.lan>
- <13f6db1e-f1b6-1465-b34d-ae418ead2558@cn.fujitsu.com>
-Message-ID: <20200722125946.GA22573@yuki.lan>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Wed, 22 Jul 2020 10:04:42 -0400
+Subject: [LTP] [PATCH] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <20200721182440.4169-1-t-josne@linux.microsoft.com>
+References: <20200721182440.4169-1-t-josne@linux.microsoft.com>
+Message-ID: <1595426682.5311.83.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Do we really need to close and open the dev_fd repeatedly and also we
-> > don't have to attach the device in the test setup?
-> YES, we don't need to attach the device in the setup because 
-> LOOP_SET_BLOCK_SIZE checks works well(return ENXIO if supports, return 
-> EINVAL if not supports) when not attaching device.
-> 
-> But for close and open the dev_fd repeatedly, I think it is necessary 
-> because when we detach device firstly without closing dev fd, it will 
-> report the warnging as below:
-> 
-> tst_device.c:89: INFO: Found free device 0 '/dev/loop0'
-> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg < 512
-> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
-> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
-> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
-> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg != power_of_2
-> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
-> ioctl_loop06.c:69: INFO: Using LOOP_CONFIGURE with block_size < 512
-> tst_device.c:223: WARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for 
-> too long
-> ioctl_loop06.c:62: FAIL: Set block size failed expected EINVAL got: 
-> EBUSY (16)
-> 
-> That is why I close dev_fd firstly and then detach device in cleanup 
-> function.
+On Tue, 2020-07-21 at 14:24 -0400, Lachlan Sneff wrote:
 
-Ah, right, the tst_detach_device() opens the dev_path so the function
-fails to destroy it because the device is opened twice at that point.
+<snip>
 
-I guess that proper solution would be to add a tst_detach_device_by_fd()
-and change the library so that tst_detach_device() opens the dev_path
-and calls tst_detach_device_by_fd() internally.
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+> new file mode 100644
+> index 000000000..7d71557ee
+> --- /dev/null
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+> @@ -0,0 +1,93 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2020 Microsoft Corporation
+> +# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
+> +#
+> +# Verify that kexec cmdline is measured correctly.
+> +
+> +TST_NEEDS_CMDS="kexec sed xargs printf grep"
+> +TST_CNT=1
+> +TST_NEEDS_DEVICE=1
+> +
+> +. ima_setup.sh
+> +
+> +# Since the test is executed inside some sort of
+> +# separate shell, *most* environment variables are
+> +# not accessible, so there's no way to set it from
+> +# the outside.
+> +#
+> +# `/boot/vmlinuz-$(uname-r)` is where the image is
+> +# located on many systems, but not all. Therefore,
+> +# if the image is not located there, require the
+> +# user to copy it to `/tmp/Image`.
+> +#
+> +# Ideally, this test shouldn't even require an image,
+> +# since it doesn't actually reboot, but the IMA cmdline
+> +# measurement occurs after the image is parsed and verified,
+> +# so we must pass a valid kernel image. There is a possiblity of
+> +# putting together a "faux" kernel image that has the right headers
+> +# and appears to be signed correctly, but doesn't actually contain any
+> +# code, but, after investigating that possiblity, it appears to be
+> +# quite difficult (and would require a new faux kernel for each arch).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The comment formatting is inconsistent. ?Please correct.
+
+> +IMAGE="/boot/vmlinuz-$(uname -r)"
+> +if [ ! -f $IMAGE ]; then
+> +    IMAGE="/tmp/Image"
+> +fi
+> +
+> +measure() {
+> +    local found temp_file="file.txt" temp_file2="file2.txt" algorithm \
+> +        digest expected_digest
+> +
+> +    echo -n "$1" > $temp_file
+> +    grep "kexec-cmdline" $ASCII_MEASUREMENTS > $temp_file2
+> +
+> +    while read found
+> +    do
+> +        algorithm=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f1)
+> +        digest=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f2)
+> +
+> +        expected_digest=$(compute_digest $algorithm $temp_file)
+> +
+> +        if [ "$digest" = "$expected_digest" ]; then
+> +            return 0
+> +        fi
+> +    done < $temp_file2
+> +
+> +    return 1
+> +}
+> +
+> +# Test that the kexec cmdline is measured correctly.
+> +# NOTE: This does *not* actually reboot.
+> +test1() {
+> +    # Strip the `BOOT_IMAGE=...` part from the cmdline.
+> +    local cmdline="$(sed 's/BOOT_IMAGE=[^ ]* //' /proc/cmdline)"
+> +    if ! kexec -sl $IMAGE --reuse-cmdline; then
+> +        tst_brk TCONF "kexec failed: $?"
+> +    fi
+
+Most likely one of the reasons for the kexec to fail is that the
+kernel image isn't properly signed. ?How about checking the secure-
+boot status to provide some contextual information.
+
+> +
+> +    if ! measure "$cmdline"; then
+> +        tst_brk TFAIL "kexec cmdline was measured incorrectly"
+> +    fi
+
+This assumes that a kexec command line measurement was found. ?The
+output needs to differentiate between no measurement and an invalid
+measurement. ?In the case that the rule doesn't exist, at that point
+you have a choice of skipping the test or extending the IMA policy.?
+
+The kernel kexec selftests checks both the Kconfig and the IMA runtime
+policy. ?Different testing infrastructures have different policies
+about basing tests on them.
+
+> +
+> +    cmdline="foo"
+
+Wondering if unknown command line options could cause the kexec to
+fail.
+
+> +    if ! kexec -sl $IMAGE --append=$cmdline; then
+> +        tst_brk TCONF "kexec failed: $?"
+> +    fi
+
+Should the first kernel image be unloaded first?
+
+Mimi
+
+> +
+> +    if ! measure "$cmdline"; then
+> +        tst_brk TFAIL "kexec cmdline was measured incorrectly"
+> +    fi
+> +
+> +    cmdline="bar"
+> +    if ! kexec -sl $IMAGE --command-line=$cmdline; then
+> +        tst_brk TCONF "kexec failed: $?"
+> +    fi
+> +
+> +    if ! measure "$cmdline"; then
+> +        tst_brk TFAIL "kexec cmdline was measured incorrectly"
+> +    fi
+> +
+> +    tst_res TPASS "kexec cmldine was measured correctly"
+> +}
+> +
+> +tst_run
+
