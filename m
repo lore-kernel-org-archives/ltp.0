@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 Jul 2020 12:04:15 +0200
-Subject: [LTP] [PATCH V7 00/19] Syscalls: Add support for time64 variants
-In-Reply-To: <20200720101932.rw2uy3twdfftttem@vireshk-mac-ubuntu>
-References: <cover.1593152309.git.viresh.kumar@linaro.org>
- <20200720101932.rw2uy3twdfftttem@vireshk-mac-ubuntu>
-Message-ID: <20200722100415.GB15055@yuki.lan>
+Date: Wed, 22 Jul 2020 12:09:14 +0200
+Subject: [LTP] [PATCH V2 2/3] syscalls: sigwaitinfo: Remove
+ SUCCEED_OR_DIE() macro
+In-Reply-To: <8fbd46e33184029f89829af3cd471c05ee6ce496.1595321086.git.viresh.kumar@linaro.org>
+References: <cover.1595321086.git.viresh.kumar@linaro.org>
+ <8fbd46e33184029f89829af3cd471c05ee6ce496.1595321086.git.viresh.kumar@linaro.org>
+Message-ID: <20200722100914.GC2319@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,10 +13,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Ping for a lot of patches from this series as well.
+> The macro makes it less readable and there isn't a great deal of code it
+> is trying to remove. Get rid of it.
 
-Sorry, I've been a bit overloaded lately, I will get to them hopefully
-soon.
+Looking at the code we may as well add SAFE_SIGEMPTYSET() and
+SAFE_SIGADDSET() instead, what do you think?
 
 -- 
 Cyril Hrubis
