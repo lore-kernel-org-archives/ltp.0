@@ -1,287 +1,188 @@
 From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Wed, 22 Jul 2020 14:35:11 -0400
-Subject: [LTP] [PATCH] IMA: Add a test to verify importing a certificate
- into custom keyring
-In-Reply-To: <20200717205721.18173-1-t-josne@linux.microsoft.com>
-References: <20200717205721.18173-1-t-josne@linux.microsoft.com>
-Message-ID: <77c709cf-fd1c-8061-44b7-d1170fe706b6@linux.microsoft.com>
+Date: Wed, 22 Jul 2020 14:47:39 -0400
+Subject: [LTP] [PATCH v3] IMA: Add test for kexec cmdline measurement
+Message-ID: <20200722184739.19460-1-t-josne@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Gentle ping to Mimi and Petr to review.
+IMA policy can be set to measure the command line passed in the kexec system call.
+There needs to be a test to validate this kexec command line measurement.
 
-On 7/17/20 4:57 PM, Lachlan Sneff wrote:
-> A test for verifying importing an x509 certificate into a keyring and
-> validating the key measurement performed by IMA is needed.
->
-> Add an IMA measurement test that verifies that an x509 certificate
-> can be imported into a custom keyring and measured correctly.
->
-> A certificate used by the test is included in the `datafiles/keys` directory.
->
-> Using a custom keyring for the test is preferred over using a pre-existing/built-in keyring,
-> such as `.ima`, since there may be restrictions to importing any cert into a built-in keyring.
-> For example, the `.ima` keyring requires that the imported certs be signed by a kernel private
-> key in certain kernel configurations.
->
-> Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
-> ---
->   .../kernel/security/integrity/ima/README.md   |  20 +++-----
->   .../security/integrity/ima/datafiles/Makefile |  11 ++---
->   .../integrity/ima/datafiles/keys/Makefile     |  31 ++++++++++++
->   .../integrity/ima/datafiles/keys/x509.der     | Bin 0 -> 784 bytes
->   .../integrity/ima/datafiles/policy/Makefile   |  31 ++++++++++++
->   .../datafiles/{ => policy}/keycheck.policy    |   0
->   .../ima/datafiles/{ => policy}/measure.policy |   0
->   .../{ => policy}/measure.policy-invalid       |   0
->   .../security/integrity/ima/tests/ima_keys.sh  |  45 +++++++++++++++++-
->   9 files changed, 117 insertions(+), 21 deletions(-)
->   create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
->   create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keys/x509.der
->   create mode 100644 testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
->   rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/keycheck.policy (100%)
->   rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/measure.policy (100%)
->   rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/measure.policy-invalid (100%)
->
-> diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-> index 732cd912f..db8819a99 100644
-> --- a/testcases/kernel/security/integrity/ima/README.md
-> +++ b/testcases/kernel/security/integrity/ima/README.md
-> @@ -16,25 +16,19 @@ space, may contain equivalent measurement tcb rules, detecting them would
->   require `IMA_READ_POLICY=y` therefore ignore this option.
->   
->   ### IMA key import test
-> -`ima_keys.sh` requires a x509 public key, by default in `/etc/keys/x509_ima.der`
-> -(defined in `CONFIG_IMA_X509_PATH` kernel config option).
-> -The key must be signed by the private key you generate. Follow these instructions:
-> -https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys
->   
-> -The test cannot be set-up automatically because the x509 public key must be
-> -built into the kernel and loaded onto a trusted keyring
-> -(e.g. `.builtin_trusted_keys`, `.secondary_trusted_keyring`).
-> -
-> -As well as what's required for the IMA tests, the following are also required
-> +As well as what's required for the IMA tests, the following is also required
->   in the kernel configuration:
->   ```
->   CONFIG_IMA_READ_POLICY=y
-> -CONFIG_IMA_X509_PATH="/etc/keys/x509_ima.der"
-> -CONFIG_SYSTEM_TRUSTED_KEYRING=y
-> -CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
->   ```
->   
-> -Test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
-> +You must also add the following line to /etc/ima/ima-policy and reboot.
-> +```
-> +measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
-> +```
-> +
-> +The test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
->   
->   ## EVM tests
->   
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/Makefile b/testcases/kernel/security/integrity/ima/datafiles/Makefile
-> index a960f9d84..5261b9321 100644
-> --- a/testcases/kernel/security/integrity/ima/datafiles/Makefile
-> +++ b/testcases/kernel/security/integrity/ima/datafiles/Makefile
-> @@ -1,5 +1,5 @@
->   #
-> -#    testcases/kernel/security/integrity/ima/policy testcases Makefile.
-> +#    kernel/security/integrity/ima testcase Makefile.
->   #
->   #    Copyright (C) 2009, Cisco Systems Inc.
->   #
-> @@ -18,14 +18,13 @@
->   #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->   #
->   # Ngie Cooper, July 2009
-> +# Lachlan Sneff, July 2020
->   #
->   
->   top_srcdir		?= ../../../../../..
->   
-> -include	$(top_srcdir)/include/mk/env_pre.mk
-> +include $(top_srcdir)/include/mk/env_pre.mk
->   
-> -INSTALL_DIR		:= testcases/data/ima_policy
-> +SUBDIRS			:= policy keys
->   
-> -INSTALL_TARGETS		:= measure*
-> -
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile b/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
-> new file mode 100644
-> index 000000000..3e381089c
-> --- /dev/null
-> +++ b/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
-> @@ -0,0 +1,31 @@
-> +#
-> +#    testcases/kernel/security/integrity/ima/policy testcases Makefile.
-> +#
-> +#    Copyright (C) 2009, Cisco Systems Inc.
-> +#
-> +#    This program is free software; you can redistribute it and/or modify
-> +#    it under the terms of the GNU General Public License as published by
-> +#    the Free Software Foundation; either version 2 of the License, or
-> +#    (at your option) any later version.
-> +#
-> +#    This program is distributed in the hope that it will be useful,
-> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +#    GNU General Public License for more details.
-> +#
-> +#    You should have received a copy of the GNU General Public License along
-> +#    with this program; if not, write to the Free Software Foundation, Inc.,
-> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Lachlan Sneff, July 2020
-> +#
-> +
-> +top_srcdir		?= ../../../../../../..
-> +
-> +include	$(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_DIR		:= testcases/data/ima_keys
-> +
-> +INSTALL_TARGETS		:= x509.der
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/keys/x509.der b/testcases/kernel/security/integrity/ima/datafiles/keys/x509.der
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..538611c7244eac17377031038a97bf5d02c53d3f
-> GIT binary patch
-> literal 784
-> zcmXqLV&*YuV*IjznTe5!Nkm*%!l+fPYOa%w{pGeOu7W)g|5Ocl**LY@JlekVGBR?r
-> zG8lv!@&kpKLs__Z*gSn5b)6jzH4M~10?a(}KmmQ%Fkgk_)S{Biw9Mqhl2nD_%=Em>
-> zymW=^)Jj7M12MR1oQz_e$%zh`xrw^Ti3W1wyha8Frbd>ArbZS<mQg^iArjXhz);YD
-> zA7U*>Mt*TgUSe*lp|pV{#A2cHjQqshOccB13}le);)f`4fN3^poR91^Mpg#q#$E=4
-> z#!jZjMuvqS<2&d4={o*uW**0h|9T%Tw9S&_xXFEO!9t#YW*25;x2$<5W-0eWw?OBy
-> z^v@jizdt`D%q<d|ReAl{bE_$0%^l11#6PRp?#-6J7PfX<qx=M^6KT?qw?*WN1?*@I
-> z%Cqp^b9sffLXO?miT~#3|NU~~-j<6EKTciX{lAO7bFKR(@pL9;Mh3>ku?EowJU|c1
-> z3NtePXJIm6FyIF9_*qz(nb;c)WI-H07BLo)gzIHKKP^@H&nbIpE!y9-E`Uo=(m)<0
-> zt;_-p@&=LZk_VQ~bi1@pYvM`%j}JQk-GBc`6502_h-GeKWMs(U%{uxsJ8V$|&s^U*
-> zuT)C?`L3+KeqYmBdG>)zfpWi7n6jqq>YI1K{O3*;XK_o1>WKamk9bck{$vuzdw37y
-> zvA`0c_d5A+eCHjLThIIJa@MIAVc(m-U;nXmbAi*F0<FyFA#2;;#Isxf2xngNvA$<=
-> z$CMi7RW8Ag|Jk3|uI6~;sc!ZA<5Qn=%P&bzdui}MisQ9MYhlhY|F7HrKV4$gX6yNt
-> zC8pkE<;LwsPD}g`oc<&~`(D3i*QEZk`);XW=B4u<{+H1Ux#t$eaj2M|C+nQUOz~ec
-> zU5)v!tl*ZMaObGw{B>uG+jphhdu=ZLZTh9(PmEsIm`5}$d$_dpOSj%iU{I%d0|3@i
-> BE~)?k
->
-> literal 0
-> HcmV?d00001
->
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile b/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
-> new file mode 100644
-> index 000000000..692bf61ab
-> --- /dev/null
-> +++ b/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
-> @@ -0,0 +1,31 @@
-> +#
-> +#    testcases/kernel/security/integrity/ima/policy testcases Makefile.
-> +#
-> +#    Copyright (C) 2009, Cisco Systems Inc.
-> +#
-> +#    This program is free software; you can redistribute it and/or modify
-> +#    it under the terms of the GNU General Public License as published by
-> +#    the Free Software Foundation; either version 2 of the License, or
-> +#    (at your option) any later version.
-> +#
-> +#    This program is distributed in the hope that it will be useful,
-> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +#    GNU General Public License for more details.
-> +#
-> +#    You should have received a copy of the GNU General Public License along
-> +#    with this program; if not, write to the Free Software Foundation, Inc.,
-> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Ngie Cooper, July 2009
-> +#
-> +
-> +top_srcdir		?= ../../../../../../..
-> +
-> +include	$(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_DIR		:= testcases/data/ima_policy
-> +
-> +INSTALL_TARGETS		:= measure*
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/keycheck.policy b/testcases/kernel/security/integrity/ima/datafiles/policy/keycheck.policy
-> similarity index 100%
-> rename from testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
-> rename to testcases/kernel/security/integrity/ima/datafiles/policy/keycheck.policy
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy b/testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy
-> similarity index 100%
-> rename from testcases/kernel/security/integrity/ima/datafiles/measure.policy
-> rename to testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy
-> diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid b/testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy-invalid
-> similarity index 100%
-> rename from testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
-> rename to testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy-invalid
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> index 904b7515b..101d2ea92 100755
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> @@ -5,8 +5,8 @@
->   #
->   # Verify that keys are measured correctly based on policy.
->   
-> -TST_NEEDS_CMDS="grep mktemp cut sed tr"
-> -TST_CNT=1
-> +TST_NEEDS_CMDS="grep mktemp cut sed tr xxd keyctl evmctl openssl cmp"
-> +TST_CNT=2
->   TST_NEEDS_DEVICE=1
->   
->   . ima_setup.sh
-> @@ -65,4 +65,45 @@ test1()
->   	tst_res TPASS "specified keyrings were measured correctly"
->   }
->   
-> +# Create a custom keyring and import a certficate to that
-> +test2() {
-> +	local custom_keyring_id temp_file="file.txt" \
-> +		cert_file="$TST_DATAROOT/x509.der"
-> +
-> +	tst_res TINFO "checking for correct IMA policy"
-> +
-> +	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
-> +
-> +	[ -r $IMA_POLICY ] || tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
-> +
-> +	if ! grep "measure func=KEY_CHECK.*keyrings=.*key_import_test" $IMA_POLICY > /dev/null; then
-> +		tst_brk TCONF "the IMA policy does not include the key_import_test keyring. See the LTP IMA README."
-> +	fi
-> +
-> +	tst_res TINFO "creating a custom keyring (key_import_test keyring)"
-> +
-> +	custom_keyring_id=$(keyctl newring key_import_test @s) || \
-> +		tst_brk TCONF "unable to create a new keyring"
-> +
-> +	tst_is_num "$custom_keyring_id" || \
-> +		tst_brk TCONF "unable to parse custom keyring id"
-> +
-> +	evmctl import $cert_file "$custom_keyring_id" > /dev/null || \
-> +		tst_brk TCONF "unable to import a cert into the key_import_test keyring"
-> +
-> +	grep "key_import_test" "$ASCII_MEASUREMENTS" | tail -n1 | cut -d' ' -f6 | \
-> +		xxd -r -p > $temp_file || \
-> +		tst_brk TCONF "keyring not found in $ASCII_MEASUREMENTS"
-> +
-> +	if ! openssl x509 -in $temp_file -inform der > /dev/null; then
-> +		tst_brk TCONF "the cert logged in $ASCII_MEASUREMENTS is not a valid x509 certificate"
-> +	fi
-> +
-> +	if cmp -s $temp_file $cert_file; then
-> +		tst_res TPASS "logged cert matches original cert"
-> +	else
-> +		tst_res TFAIL "logged cert does not match original cert"
-> +	fi
-> +}
-> +
->   tst_run
+Add a testcase that verifies that the IMA subsystem has correctly
+measured the cmdline specified during a kexec.
+
+Note that this test does not actually reboot.
+
+Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
+---
+ runtest/ima                                   |   1 +
+ .../kernel/security/integrity/ima/README.md   |  11 ++
+ .../security/integrity/ima/tests/ima_kexec.sh | 121 ++++++++++++++++++
+ 3 files changed, 133 insertions(+)
+ create mode 100644 testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+
+diff --git a/runtest/ima b/runtest/ima
+index 309d47420..5f4b4a7a1 100644
+--- a/runtest/ima
++++ b/runtest/ima
+@@ -4,4 +4,5 @@ ima_policy ima_policy.sh
+ ima_tpm ima_tpm.sh
+ ima_violations ima_violations.sh
+ ima_keys ima_keys.sh
++ima_kexec ima_kexec.sh
+ evm_overlay evm_overlay.sh
+diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
+index db8819a99..926eb8478 100644
+--- a/testcases/kernel/security/integrity/ima/README.md
++++ b/testcases/kernel/security/integrity/ima/README.md
+@@ -30,6 +30,17 @@ measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
+ 
+ The test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
+ 
++### IMA kexec test
++
++This test requires that the ima policy contains:
++```
++measure func=KEXEC_CMDLINE
++```
++
++Even though the test does not actually reboot, it does require a valid,
++signed kernel image. By default, the test will look in `/boot/vmlinuz-$(uname r)`,
++but if no image is accessible there, a valid image be must be placed at `/tmp/Image`.
++
+ ## EVM tests
+ 
+ `evm_overlay.sh` requires a builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+new file mode 100644
+index 000000000..7e3ecaec8
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+@@ -0,0 +1,121 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2020 Microsoft Corporation
++# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
++#
++# Verify that kexec cmdline is measured correctly.
++
++TST_NEEDS_CMDS="kexec sed xargs printf grep tr"
++TST_CNT=1
++TST_NEEDS_DEVICE=1
++
++. ima_setup.sh
++
++# Since the test is executed inside some sort of
++# separate shell, *most* environment variables are
++# not accessible, so there's no way to set it from
++# the outside.
++#
++# `/boot/vmlinuz-$(uname-r)` is where the image is
++# located on many systems, but not all. Therefore,
++# if the image is not located there, require the
++# user to copy it to `/tmp/Image`.
++#
++# Ideally, this test shouldn't even require an image,
++# since it doesn't actually reboot, but the IMA cmdline
++# measurement occurs after the image is parsed and
++# verified, so we must pass a valid kernel image. There
++# is a possiblity of putting together a "faux" kernel
++# image that has the right headers and appears to be
++# signed correctly, but doesn't actually contain any
++# code, but, after investigating that possiblity, it
++# appears to be quite difficult (and would require a
++# new faux kernel for each arch).
++IMAGE="/boot/vmlinuz-$(uname -r)"
++if [ ! -f $IMAGE ]; then
++    IMAGE="/tmp/Image"
++fi
++
++measure() {
++    local found temp_file="file.txt" temp_file2="file2.txt" algorithm \
++        digest expected_digest
++
++    echo -n "$1" > $temp_file
++    grep "kexec-cmdline" $ASCII_MEASUREMENTS > $temp_file2
++
++    while read found
++    do
++        algorithm=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f1)
++        digest=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f2)
++
++        expected_digest=$(compute_digest $algorithm $temp_file)
++
++        if [ "$digest" = "$expected_digest" ]; then
++            return 0
++        fi
++    done < $temp_file2
++
++    return 1
++}
++
++# Test that the kexec cmdline is measured correctly.
++# NOTE: This does *not* actually reboot.
++test1() {
++    # Strip the `BOOT_IMAGE=...` part from the cmdline.
++    local cmdline="$(sed 's/BOOT_IMAGE=[^ ]* //' /proc/cmdline)"
++
++    if ! kexec -sl $IMAGE --reuse-cmdline; then
++        tst_res TCONF "kexec failed: $?"
++
++        local sb_status="$(bootctl status 2>/dev/null | grep 'Secure Boot' \
++            | tr -d ' ' | sed 's/SecureBoot:*//')"
++
++        if [ "$sb_status" = "enabled" ]; then
++            tst_res TINFO "secure boot is enabled, the specified kernel image may not be signed"
++        fi
++
++        return
++    fi
++
++    kexec -su
++
++    if ! measure "$cmdline"; then
++        tst_res TFAIL "unable to find a correct entry in the IMA log"
++
++        if [ ! -r $IMA_POLICY ]; then
++            tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required) to give contextual information"
++        fi
++
++        if ! grep "measure func=KEXEC_CMDLINE" $IMA_POLICY >/dev/null; then
++            tst_brk TCONF "The IMA policy does not specify 'measure func=KEXEC_CMDLINE', see IMA test README"
++        fi
++
++        return
++    fi
++
++    cmdline="foo"
++    if ! kexec -sl $IMAGE --append=$cmdline; then
++        tst_brk TCONF "kexec failed: $?"
++    fi
++
++    kexec -su
++
++    if ! measure "$cmdline"; then
++        tst_brk TFAIL "unable to find a correct entry in the IMA log"
++    fi
++
++    cmdline="bar"
++    if ! kexec -sl $IMAGE --command-line=$cmdline; then
++        tst_brk TCONF "kexec failed: $?"
++    fi
++
++    kexec -su
++
++    if ! measure "$cmdline"; then
++        tst_brk TFAIL "unable to find a correct entry in the IMA log"
++    fi
++
++    tst_res TPASS "kexec cmdline was measured correctly"
++}
++
++tst_run
+-- 
+2.25.1
 
