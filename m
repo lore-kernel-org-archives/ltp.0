@@ -1,57 +1,46 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 23 Jul 2020 17:41:23 +0800
-Subject: [LTP] [PATCH v2 1/2] syscalls/ioctl_loop06: Using
- LOOP_CONFIGURE to test invalid block size
-In-Reply-To: <20200722125946.GA22573@yuki.lan>
-References: <20200708140034.GD7276@yuki.lan>
- <1594363189-20972-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200722094502.GB2319@yuki.lan>
- <13f6db1e-f1b6-1465-b34d-ae418ead2558@cn.fujitsu.com>
- <20200722125946.GA22573@yuki.lan>
-Message-ID: <66653092-9167-5bb0-3000-7f9662e2cfdc@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 23 Jul 2020 13:33:17 +0200
+Subject: [LTP] [PATCH] Convert chdir01 to the new API
+In-Reply-To: <2b209b61-2bbc-c35f-5704-7b84bab9254d@cn.fujitsu.com>
+References: <20200717152450.10787-1-mdoucha@suse.cz>
+ <2b209b61-2bbc-c35f-5704-7b84bab9254d@cn.fujitsu.com>
+Message-ID: <20200723113317.GA18525@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-HI Cyril
+Hi,
 
+> Honestly speak, I don't like merge chdir02 into chdir01 and we should
+> cleanup chdir02 case individually.
+chdir02.c tests chdir("/"); and chdir("/tmp"). Not sure whether full path is
+more coverage than relative path from chdir01.c.
+If we consider these useful, we can just add it into chdir01.c.
 
-> Hi!
->>> Do we really need to close and open the dev_fd repeatedly and also we
->>> don't have to attach the device in the test setup?
->> YES, we don't need to attach the device in the setup because
->> LOOP_SET_BLOCK_SIZE checks works well(return ENXIO if supports, return
->> EINVAL if not supports) when not attaching device.
->>
->> But for close and open the dev_fd repeatedly, I think it is necessary
->> because when we detach device firstly without closing dev fd, it will
->> report the warnging as below:
->>
->> tst_device.c:89: INFO: Found free device 0 '/dev/loop0'
->> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg < 512
->> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
->> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg > PAGE_SIZE
->> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
->> ioctl_loop06.c:69: INFO: Using LOOP_SET_BLOCK_SIZE with arg != power_of_2
->> ioctl_loop06.c:60: PASS: Set block size failed as expected: EINVAL (22)
->> ioctl_loop06.c:69: INFO: Using LOOP_CONFIGURE with block_size < 512
->> tst_device.c:223: WARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for
->> too long
->> ioctl_loop06.c:62: FAIL: Set block size failed expected EINVAL got:
->> EBUSY (16)
->>
->> That is why I close dev_fd firstly and then detach device in cleanup
->> function.
-> 
-> Ah, right, the tst_detach_device() opens the dev_path so the function
-> fails to destroy it because the device is opened twice at that point.
-> 
-> I guess that proper solution would be to add a tst_detach_device_by_fd()
-> and change the library so that tst_detach_device() opens the dev_path
-> and calls tst_detach_device_by_fd() internally.
-Should I send a v3 patch or you directly use the new api for this patch?
-> 
+Although it looks a bit strange to chroot into root, I'd use just that and avoid
+/tmp (it breaks at least for Android with no good reason).
 
+It might makes sense to use .all_filesystems = 1.
 
+> I prefer to merge chdir03 and chdir04 into chdir01 because they are all
+> error test.
+
+> Also, when tesing EACCES error,it succeeded.
+> tst_test.c:1245: INFO: Timeout per run is 0h 05m 00s
+> chdir01.c:68: PASS: chdir("testfile") returns correct value: ENOTDIR (20)
+> chdir01.c:68: PASS: chdir("symloop") returns correct value: ELOOP (40)
+> chdir01.c:61: FAIL: chdir("keep_out") returned unexpected value 0: SUCCESS
+> (0)
+Got the same problem on 5.8.0 (on all filesystems).
+> chdir01.c:68: PASS: chdir("subdir") returns correct value: SUCCESS (0)
+> chdir01.c:68: PASS: chdir(".") returns correct value: SUCCESS (0)
+> chdir01.c:68: PASS: chdir("..") returns correct value: SUCCESS (0)
+> chdir01.c:68: PASS: chdir("missing") returns correct value: ENOENT (2)
+
+> Best regards
+> Yang Xu
+
+Kind regards,
+Petr
