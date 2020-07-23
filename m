@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 23 Jul 2020 13:33:17 +0200
-Subject: [LTP] [PATCH] Convert chdir01 to the new API
-In-Reply-To: <2b209b61-2bbc-c35f-5704-7b84bab9254d@cn.fujitsu.com>
-References: <20200717152450.10787-1-mdoucha@suse.cz>
- <2b209b61-2bbc-c35f-5704-7b84bab9254d@cn.fujitsu.com>
-Message-ID: <20200723113317.GA18525@dell5510>
+Date: Thu, 23 Jul 2020 13:46:00 +0200
+Subject: [LTP] [PATCH v3] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <20200722184739.19460-1-t-josne@linux.microsoft.com>
+References: <20200722184739.19460-1-t-josne@linux.microsoft.com>
+Message-ID: <20200723114600.GB31591@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,34 +12,36 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> Honestly speak, I don't like merge chdir02 into chdir01 and we should
-> cleanup chdir02 case individually.
-chdir02.c tests chdir("/"); and chdir("/tmp"). Not sure whether full path is
-more coverage than relative path from chdir01.c.
-If we consider these useful, we can just add it into chdir01.c.
+...
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+> @@ -0,0 +1,121 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2020 Microsoft Corporation
+> +# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
+> +#
+> +# Verify that kexec cmdline is measured correctly.
+> +
+> +TST_NEEDS_CMDS="kexec sed xargs printf grep tr"
+> +TST_CNT=1
+> +TST_NEEDS_DEVICE=1
+> +
+> +. ima_setup.sh
+> +
+> +# Since the test is executed inside some sort of
+> +# separate shell, *most* environment variables are
+> +# not accessible, so there's no way to set it from
+> +# the outside.
+Do you mean that using this will not work?
+IMA_KEXEC_IMAGE="${IMA_KEXEC_IMAGE:-/boot/vmlinuz-$(uname -r)}"
+I don't understand that as I'm able to set variables even I run some tests in
+dracut.
 
-Although it looks a bit strange to chroot into root, I'd use just that and avoid
-/tmp (it breaks at least for Android with no good reason).
+Also writing same docs doc on 2 places is not good. High level info should go to
+README.md, implementation details to shell script.
 
-It might makes sense to use .all_filesystems = 1.
-
-> I prefer to merge chdir03 and chdir04 into chdir01 because they are all
-> error test.
-
-> Also, when tesing EACCES error,it succeeded.
-> tst_test.c:1245: INFO: Timeout per run is 0h 05m 00s
-> chdir01.c:68: PASS: chdir("testfile") returns correct value: ENOTDIR (20)
-> chdir01.c:68: PASS: chdir("symloop") returns correct value: ELOOP (40)
-> chdir01.c:61: FAIL: chdir("keep_out") returned unexpected value 0: SUCCESS
-> (0)
-Got the same problem on 5.8.0 (on all filesystems).
-> chdir01.c:68: PASS: chdir("subdir") returns correct value: SUCCESS (0)
-> chdir01.c:68: PASS: chdir(".") returns correct value: SUCCESS (0)
-> chdir01.c:68: PASS: chdir("..") returns correct value: SUCCESS (0)
-> chdir01.c:68: PASS: chdir("missing") returns correct value: ENOENT (2)
-
-> Best regards
-> Yang Xu
+Please hold on with posting new version. I have several fixes, thus I'd like to
+send it after we sort this (trying to save you time).
 
 Kind regards,
 Petr
