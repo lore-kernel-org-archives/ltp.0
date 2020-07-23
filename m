@@ -1,63 +1,60 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 23 Jul 2020 21:52:15 +0200
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/futex_wait03: Fix synchronization
-Message-ID: <20200723195215.6351-1-chrubis@suse.cz>
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Thu, 23 Jul 2020 16:52:24 -0400
+Subject: [LTP] [PATCH v3] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <20200723114600.GB31591@dell5510>
+References: <20200722184739.19460-1-t-josne@linux.microsoft.com>
+ <20200723114600.GB31591@dell5510>
+Message-ID: <0a970e3c-a10f-f032-eb26-d738bc220458@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When I was reviewing changes in the test I noticed that the
-synchronization was never working as the getppid() returns the test
-library pid and not the thread that we should wait for.
+Hi Petr,
+Thank you for reviewing
 
-So this fixes the test by passing the correct pid casted to a void* as
-a parameter to the threaded function.
-
-It seems that in practice this cannot be triggered easily, but the
-test without this fix fails easily when you insert bussy loop
-such as "for (volatile int i = 0; i < 1000000000; i++);" between
-the SAFE_PTHRED() and the futex_wait() call.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/futex/futex_wait03.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/futex/futex_wait03.c b/testcases/kernel/syscalls/futex/futex_wait03.c
-index e6e94055b..3e3a7ce23 100644
---- a/testcases/kernel/syscalls/futex/futex_wait03.c
-+++ b/testcases/kernel/syscalls/futex/futex_wait03.c
-@@ -26,12 +26,12 @@ static struct test_variants {
- #endif
- };
- 
--static void *threaded(void *arg LTP_ATTRIBUTE_UNUSED)
-+static void *threaded(void *arg)
- {
- 	struct test_variants *tv = &variants[tst_variant];
--	long ret;
-+	long ret, pid = (long)arg;
- 
--	TST_PROCESS_STATE_WAIT(getppid(), 'S', 0);
-+	TST_PROCESS_STATE_WAIT(pid, 'S', 0);
- 
- 	ret = futex_wake(tv->fntype, &futex, 1, FUTEX_PRIVATE_FLAG);
- 	if (ret != 1)
-@@ -43,10 +43,10 @@ static void *threaded(void *arg LTP_ATTRIBUTE_UNUSED)
- static void run(void)
- {
- 	struct test_variants *tv = &variants[tst_variant];
--	long res;
-+	long res, pid = getpid();
- 	pthread_t t;
- 
--	SAFE_PTHREAD_CREATE(&t, NULL, threaded, NULL);
-+	SAFE_PTHREAD_CREATE(&t, NULL, threaded, (void*)pid);
- 
- 	res = futex_wait(tv->fntype, &futex, futex, NULL, FUTEX_PRIVATE_FLAG);
- 	if (res) {
--- 
-2.26.2
-
+On 7/23/20 7:46 AM, Petr Vorel wrote:
+> Hi,
+>
+> ...
+>> +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+>> @@ -0,0 +1,121 @@
+>> +#!/bin/sh
+>> +# SPDX-License-Identifier: GPL-2.0-or-later
+>> +# Copyright (c) 2020 Microsoft Corporation
+>> +# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
+>> +#
+>> +# Verify that kexec cmdline is measured correctly.
+>> +
+>> +TST_NEEDS_CMDS="kexec sed xargs printf grep tr"
+>> +TST_CNT=1
+>> +TST_NEEDS_DEVICE=1
+>> +
+>> +. ima_setup.sh
+>> +
+>> +# Since the test is executed inside some sort of
+>> +# separate shell, *most* environment variables are
+>> +# not accessible, so there's no way to set it from
+>> +# the outside.
+> Do you mean that using this will not work?
+> IMA_KEXEC_IMAGE="${IMA_KEXEC_IMAGE:-/boot/vmlinuz-$(uname -r)}"
+> I don't understand that as I'm able to set variables even I run some tests in
+> dracut.
+I tried doing this in the past, and couldn't get it to work, but I just 
+tried it again
+and was able to get it working. Essentially, what I tried before was
+`SOME_VAR="..." sudo runltp ...`, which doesn't work, but `sudo 
+SOME_VAR="..." runltp` does pass the variable
+to the test. So, that should be added to this patch.
+>
+> Also writing same docs doc on 2 places is not good. High level info should go to
+> README.md, implementation details to shell script.
+This is a good point. I'll reorganize the documentation of this patch.
+> Please hold on with posting new version. I have several fixes, thus I'd like to
+> send it after we sort this (trying to save you time).
+Okay :)
+> Kind regards,
+> Petr
+Thanks,
+Lachlan
