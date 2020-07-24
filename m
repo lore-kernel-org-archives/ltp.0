@@ -1,38 +1,41 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 24 Jul 2020 18:27:03 +0800
-Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
- fires
-In-Reply-To: <20200724101807.dtf46ydpegj3w43d@vireshk-mac-ubuntu>
-References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
- <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
- <20200714142843.GA14905@yuki.lan>
- <d008820f-22d2-078d-3a62-f1fa20e6750b@cn.fujitsu.com>
- <20200724033732.gwzu2zdhdziwtbtz@vireshk-mac-ubuntu>
- <f9289166-5698-e2ec-ecc8-531fbcbd60c5@cn.fujitsu.com>
- <20200724101807.dtf46ydpegj3w43d@vireshk-mac-ubuntu>
-Message-ID: <480f566f-0354-16ef-4ffb-855a2e367cf0@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 24 Jul 2020 16:04:54 +0530
+Subject: [LTP] [PATCH 4/4] libs: sigwait: Get rid of REPORT_SUCCESS()
+ macro
+In-Reply-To: <20200724055826.GE32086@dell5510>
+References: <e51142a397858a2fe6a040563d3c0795a7d0bb05.1595511710.git.viresh.kumar@linaro.org>
+ <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
+ <20200724055826.GE32086@dell5510>
+Message-ID: <20200724103454.ttaqxq3hzmth7gpr@vireshk-mac-ubuntu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh
-
-
-> On 24-07-20, 13:07, Yang Xu wrote:
->> Yes, only _ALARM fails.
+On 24-07-20, 07:58, Petr Vorel wrote:
+> Hi Viresh,
 > 
-> Right. So this seems this is rather a kernel issue. And I am not
-> really sure how to handle these.
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 > 
-> Cyril, Any ideas ? Do we even try to support 3.10 here ?
+> Although these errors are still here:
 
-ltp supports kernel 3.10. minimal supported kernel and (g)libc version 
-discussion is here[1].  I don't know this is a backport bug or a 
-upstream kernel bug(has fixed). I will figure out this on next week.
+I went to libs/ directory and I don't get any warnings with
 
-[1]https://github.com/linux-test-project/ltp/issues/657
-> 
+$ make clean; make
 
+How can I generate these easily ?
 
+> sigwait.c: In function ?test_masked_matching?:
+> sigwait.c:157:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
+>   157 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
+>       |                                ~~~~~~~~  ^~~~~~~~
+> ../../include/tst_test.h:266:13: note: in definition of macro ?TEST?
+>   266 |   TST_RET = SCALL; \
+ 
+> IMHO we shouldn't use oldmask for src and dest.
+
+And I am not really sure what the error says and why it is there.
+
+-- 
+viresh
