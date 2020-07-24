@@ -1,190 +1,45 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Jul 2020 09:00:38 +0200
-Subject: [LTP] [PATCH v4 2/2] IMA: Add test for kexec cmdline measurement
-In-Reply-To: <20200724070038.29491-1-pvorel@suse.cz>
-References: <20200724070038.29491-1-pvorel@suse.cz>
-Message-ID: <20200724070038.29491-2-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 Jul 2020 10:07:32 +0200
+Subject: [LTP] [PATCH] Convert chdir01 to the new API
+In-Reply-To: <20200723113317.GA18525@dell5510>
+References: <20200717152450.10787-1-mdoucha@suse.cz>
+ <2b209b61-2bbc-c35f-5704-7b84bab9254d@cn.fujitsu.com>
+ <20200723113317.GA18525@dell5510>
+Message-ID: <20200724080732.GA16478@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Hi!
+> > Honestly speak, I don't like merge chdir02 into chdir01 and we should
+> > cleanup chdir02 case individually.
 
-IMA policy can be set to measure the command line passed in the kexec
-system call. Add a testcase that verifies that the IMA subsystem
-correctly measure the cmdline specified during a kexec.
+We usually tend to split test into possitive and negative testcases
+in order to avoid overly complex code. In this case the code looks clean
+enough though.
 
-Note that this test does not actually reboot.
+I guess that if we wanted to have a separate test for possitive tests,
+we would do something more interesting. Maybe something that does
+chdir() and getcwd() in a loop for a while for a random path from a set
+of paths, e.g. $TMPDIR, /, "..", "." and would expect the getcwd() to
+match the new path after successful chdir() and remain unchanged after
+failure. It would probably even more interesting to run chdir() and
+getcwd() in a loop in several different threads, in such case we would
+expect a valid return from getcwd(), i.e. any of the paths we pass to
+chdir().
 
-Ideally, test shouldn't even require an image, since it doesn't actually
-reboot, but the IMA cmdline measurement occurs after the image is parsed
-and verified, so we must pass a valid kernel image.
+> chdir02.c tests chdir("/"); and chdir("/tmp"). Not sure whether full path is
+> more coverage than relative path from chdir01.c.
+> If we consider these useful, we can just add it into chdir01.c.
+> 
+> Although it looks a bit strange to chroot into root, I'd use just that and avoid
+> /tmp (it breaks at least for Android with no good reason).
 
-There is a possibility of putting together a dummy kernel image that has
-the right headers and appears to be signed correctly, but doesn't
-actually contain any code, but, after investigating that possibility, it
-appears to be quite difficult (and would require a dummy kernel for each
-arch).
+I guess that we can add /etc or something that is generally present on
+the system.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
-
-sent version with few my fixes.
-@Mimi: could you please have a quick look? (I know you reviewed previous
-version.)
-
-Kind regards,
-Petr
-
- runtest/ima                                   |   1 +
- .../kernel/security/integrity/ima/README.md   |  11 ++
- .../security/integrity/ima/tests/ima_kexec.sh | 100 ++++++++++++++++++
- 3 files changed, 112 insertions(+)
- create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-
-diff --git a/runtest/ima b/runtest/ima
-index 309d47420..5f4b4a7a1 100644
---- a/runtest/ima
-+++ b/runtest/ima
-@@ -4,4 +4,5 @@ ima_policy ima_policy.sh
- ima_tpm ima_tpm.sh
- ima_violations ima_violations.sh
- ima_keys ima_keys.sh
-+ima_kexec ima_kexec.sh
- evm_overlay evm_overlay.sh
-diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-index 732cd912f..f28bc8e8c 100644
---- a/testcases/kernel/security/integrity/ima/README.md
-+++ b/testcases/kernel/security/integrity/ima/README.md
-@@ -36,6 +36,17 @@ CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
- 
- Test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
- 
-+### IMA kexec test
-+
-+This test requires that the ima policy contains:
-+```
-+measure func=KEXEC_CMDLINE
-+```
-+
-+Even though the test does not actually reboot, it does require a valid,
-+signed kernel image (defined with `$IMA_KEXEC_IMAGE` environment variable,
-+default `/boot/vmlinuz-$(uname r)`).
-+
- ## EVM tests
- 
- `evm_overlay.sh` requires a builtin IMA appraise tcb policy (e.g. `ima_policy=appraise_tcb`
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-new file mode 100755
-index 000000000..15bbca03d
---- /dev/null
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-@@ -0,0 +1,100 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Microsoft Corporation
-+# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
-+#
-+# Verify that kexec cmdline is measured correctly.
-+
-+TST_NEEDS_CMDS="grep kexec sed tr xargs"
-+TST_CNT=1
-+TST_NEEDS_DEVICE=1
-+
-+. ima_setup.sh
-+
-+IMA_KEXEC_IMAGE="${IMA_KEXEC_IMAGE:-/boot/vmlinuz-$(uname -r)}"
-+
-+measure() {
-+	local algorithm digest expected_digest found
-+	local temp_file="file.txt" temp_file2="file2.txt"
-+
-+	echo -n "$1" > $temp_file
-+	grep "kexec-cmdline" $ASCII_MEASUREMENTS > $temp_file2
-+
-+	while read found
-+	do
-+		algorithm=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f1)
-+		digest=$(echo "$found" | cut -d' ' -f4 | cut -d':' -f2)
-+
-+		expected_digest=$(compute_digest $algorithm $temp_file)
-+
-+		if [ "$digest" = "$expected_digest" ]; then
-+			return 0
-+		fi
-+	done < $temp_file2
-+
-+	return 1
-+}
-+
-+# Test that the kexec cmdline is measured correctly.
-+# NOTE: This does *not* actually reboot.
-+test1() {
-+	if [ ! -f "$IMA_KEXEC_IMAGE" ]; then
-+		tst_brk TCONF "Kernel image not found ('$IMA_KEXEC_IMAGE'), specify it in \$IMA_KEXEC_IMAGE"
-+	fi
-+
-+	# Strip the `BOOT_IMAGE=...` part from the cmdline.
-+	local cmdline="$(sed 's/BOOT_IMAGE=[^ ]* //' /proc/cmdline)"
-+
-+	if ! kexec -sl $IMA_KEXEC_IMAGE --reuse-cmdline; then
-+		tst_res TCONF "kexec failed: $?"
-+
-+		local sb_status="$(bootctl status 2>/dev/null | grep 'Secure Boot' \
-+			| tr -d ' ' | sed 's/SecureBoot:*//')"
-+
-+		if [ "$sb_status" = "enabled" ]; then
-+			tst_res TINFO "secure boot is enabled, the specified kernel image may not be signed"
-+		fi
-+
-+		return
-+	fi
-+
-+	kexec -su
-+
-+	if ! measure "$cmdline"; then
-+		tst_res TFAIL "unable to find a correct entry in the IMA log"
-+
-+		check_policy_readable
-+
-+		if ! grep "measure func=KEXEC_CMDLINE" $IMA_POLICY >/dev/null; then
-+			tst_brk TCONF "The IMA policy does not specify 'measure func=KEXEC_CMDLINE', see IMA test README"
-+		fi
-+
-+		return
-+	fi
-+
-+	cmdline="foo"
-+	if ! kexec -sl $IMA_KEXEC_IMAGE --append=$cmdline; then
-+		tst_brk TCONF "kexec failed: $?"
-+	fi
-+
-+	kexec -su
-+
-+	if ! measure "$cmdline"; then
-+		tst_brk TFAIL "unable to find a correct entry in the IMA log"
-+	fi
-+
-+	cmdline="bar"
-+	if ! kexec -sl $IMA_KEXEC_IMAGE --command-line=$cmdline; then
-+		tst_brk TCONF "kexec failed: $?"
-+	fi
-+
-+	kexec -su
-+
-+	if ! measure "$cmdline"; then
-+		tst_brk TFAIL "unable to find a correct entry in the IMA log"
-+	fi
-+
-+	tst_res TPASS "kexec cmdline was measured correctly"
-+}
-+
-+tst_run
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
