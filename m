@@ -1,13 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Jul 2020 14:20:48 +0200
+Date: Fri, 24 Jul 2020 14:32:35 +0200
 Subject: [LTP] [PATCH 4/4] libs: sigwait: Get rid of REPORT_SUCCESS()
  macro
-In-Reply-To: <20200724103454.ttaqxq3hzmth7gpr@vireshk-mac-ubuntu>
+In-Reply-To: <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
 References: <e51142a397858a2fe6a040563d3c0795a7d0bb05.1595511710.git.viresh.kumar@linaro.org>
  <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
- <20200724055826.GE32086@dell5510>
- <20200724103454.ttaqxq3hzmth7gpr@vireshk-mac-ubuntu>
-Message-ID: <20200724122048.GF9768@yuki.lan>
+Message-ID: <20200724123235.GA3539@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,24 +13,31 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > sigwait.c: In function ???test_masked_matching???:
-> > sigwait.c:157:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
-> >   157 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
-> >       |                                ~~~~~~~~  ^~~~~~~~
-> > ../../include/tst_test.h:266:13: note: in definition of macro ???TEST???
-> >   266 |   TST_RET = SCALL; \
+>  void test_empty_set(swi_func sigwaitinfo, int signo,
+>  		    enum tst_ts_type type LTP_ATTRIBUTE_UNUSED)
+>  {
+> @@ -55,7 +22,15 @@ void test_empty_set(swi_func sigwaitinfo, int signo,
+>  	child = create_sig_proc(signo, INT_MAX, 100000);
 >  
-> > IMHO we shouldn't use oldmask for src and dest.
-> 
-> And I am not really sure what the error says and why it is there.
+>  	TEST(sigwaitinfo(&sigs, &si, NULL));
+> -	REPORT_SUCCESS(-1, EINTR);
+> +	if (TST_RET == -1) {
+> +		if (TST_ERR == EINTR)
+> +			tst_res(TPASS, "%s: Test passed", __func__);
+> +		else
+> +			tst_res(TFAIL | TTERRNO, "%s: Unexpected failure", __func__);
 
-I guess that new enough glibc has restrict keyword used on the
-sigprocmask() pointer parameters, which basically means that compiler
-can assume that for the lifetime of the pointer a piece of memory can be
-accessed only via that pointer or pointers directly derived from it.
+Can we please make the messages a bit more user friendly?
 
-And passing the same pointer twice obviously violates that promise,
-hence the warning.
+- the tst_res() already prints line and filename the __func__ is a bit
+  redundant
+
+- it also prints PASS/FAIL so we can omit the "Test passed" we can print
+  something that describes the testcase instead e.g.
+  "Wait interrupted by a signal"
+
+- also in the "Unexpected failure" case we should print which error we
+  expected with someting as: tst_res(TFAIL | TTERRNO, "Expected to return EINTER, got");
 
 -- 
 Cyril Hrubis
