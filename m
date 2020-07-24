@@ -1,59 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Jul 2020 17:32:05 +0200
-Subject: [LTP] [PATCH v2 2/2] Add chdir() test for unprivileged user
-In-Reply-To: <08409821-c9d4-d8a6-3393-b33dfa79fea4@suse.cz>
-References: <20200724125052.20973-1-mdoucha@suse.cz>
- <20200724125052.20973-2-mdoucha@suse.cz>
- <20200724133247.GC24626@dell5510>
- <08409821-c9d4-d8a6-3393-b33dfa79fea4@suse.cz>
-Message-ID: <20200724153205.GA28471@dell5510>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Fri, 24 Jul 2020 12:06:54 -0400
+Subject: [LTP] [PATCH v4 2/2] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <20200724131845.GB24626@dell5510>
+References: <20200724070038.29491-1-pvorel@suse.cz>
+ <20200724070038.29491-2-pvorel@suse.cz>
+ <1595592111.5211.246.camel@linux.ibm.com> <20200724131845.GB24626@dell5510>
+Message-ID: <1595606814.5211.251.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+On Fri, 2020-07-24 at 15:18 +0200, Petr Vorel wrote:
 
-> >> +++ b/runtest/syscalls
-> >> @@ -54,6 +54,7 @@ capset04 capset04
-> >>  cacheflush01 cacheflush01
+> 
+> > Other than the policy "action" - measure/dont_measure,
+> > audit/dont_audit, appraise/dont_appraise - being the first keyword,
+> > the ordering of the policy options and flags is flexible. ?Most
+> > policies do provide the "func" option immediately following the
+> > "action". ?This would normally work.
+> OK, is this correct?
+> if ! grep '^measure.*func=KEXEC_CMDLINE' $IMA_POLICY >/dev/null; then
 
-> >>  chdir01 chdir01
-> >> +chdir02 chdir02
-> >>  chdir01A symlink01 -T chdir01
-> >>  chdir04 chdir04
-> > You missed to add chdir02 to runtest/quickhit. I guess this was deliberate,
-> > right?
-> > (I wonder if we really need runtest/quickhit anyway).
+Yes, that works.
 
-> Yes, this was deliberate since only chdir02 was there originally (the
-> one that was checking only chdir("/"); and chdir("/etc");.
-Understand, thanks for info.
+> 
+> @Mimi, @Lachlan: if you both ack my changes, I can fix the code before merging.
 
-> > I like both tests (nice work, thanks!), just don't like the duplicity. Isn't
-> > there a way to use getopt parameter for one of the variants and have just single
-> > test? But understand if you don't bother with it (maybe better duplicity but
-> > simpler code).
+That's fine. Feel free to add my Reviewed-by.
 
-> > Other that that LGTM.
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Mimi
 
-> I could add a second set of expected values to the test case list and do
-> it like this:
+> If there are more changes needed and thus Lachlan plan new version, please use
+> my patches from https://patchwork.ozlabs.org/project/ltp/list/?series=191990&state=*
+> (download https://patchwork.ozlabs.org/series/191990/mbox/ and import it with "git am")
+> or clone my github fork and use kexec.v3.fixes branch:
+> https://github.com/pevik/ltp/tree/ima/kexec.v3.fixes).
 
-> static void run(unsigned int n) {
-> 	TEST(chdir(tc->name));
-> 	/* result validation here */
-> 	SAFE_SETEUID(ltpuser->pw_uid);
-> 	TEST(chdir(tc->name));
-> 	SAFE_SETEUID(0);
-> 	/* result validation here */
-> }
-LGTM, thank you!
-
-> Should I resubmit that as v3?
-Yes, please.
-
-Kind regards,
-Petr
