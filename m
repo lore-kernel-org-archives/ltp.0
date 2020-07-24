@@ -1,74 +1,61 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Jul 2020 08:43:38 +0200
-Subject: [LTP] [PATCH v3] IMA: Add test for kexec cmdline measurement
-In-Reply-To: <0a970e3c-a10f-f032-eb26-d738bc220458@linux.microsoft.com>
-References: <20200722184739.19460-1-t-josne@linux.microsoft.com>
- <20200723114600.GB31591@dell5510>
- <0a970e3c-a10f-f032-eb26-d738bc220458@linux.microsoft.com>
-Message-ID: <20200724064338.GF32086@dell5510>
+Date: Fri, 24 Jul 2020 09:00:37 +0200
+Subject: [LTP] [PATCH v4 1/2] IMA: Fix policy readability check
+Message-ID: <20200724070038.29491-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi Petr,
-> Thank you for reviewing
-Thanks for your time as well :).
+Check with cat, because file attributes were fixed in
+ffb122de9a60 ("ima: Reflect correct permissions for policy")
+in v4.18.
 
-> On 7/23/20 7:46 AM, Petr Vorel wrote:
-> > Hi,
+Added into ima_setup.sh as it'll be used next commit in another test.
 
-> > ...
-> > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
-> > > @@ -0,0 +1,121 @@
-> > > +#!/bin/sh
-> > > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > > +# Copyright (c) 2020 Microsoft Corporation
-> > > +# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
-> > > +#
-> > > +# Verify that kexec cmdline is measured correctly.
-> > > +
-> > > +TST_NEEDS_CMDS="kexec sed xargs printf grep tr"
-> > > +TST_CNT=1
-> > > +TST_NEEDS_DEVICE=1
-> > > +
-> > > +. ima_setup.sh
-> > > +
-> > > +# Since the test is executed inside some sort of
-> > > +# separate shell, *most* environment variables are
-> > > +# not accessible, so there's no way to set it from
-> > > +# the outside.
-> > Do you mean that using this will not work?
-> > IMA_KEXEC_IMAGE="${IMA_KEXEC_IMAGE:-/boot/vmlinuz-$(uname -r)}"
-> > I don't understand that as I'm able to set variables even I run some tests in
-> > dracut.
-> I tried doing this in the past, and couldn't get it to work, but I just
-> tried it again
-> and was able to get it working. Essentially, what I tried before was
-> `SOME_VAR="..." sudo runltp ...`, which doesn't work, but `sudo
-> SOME_VAR="..." runltp` does pass the variable
-> to the test. So, that should be added to this patch.
-OK, so no any dracut / initramfs involved :).
-Passing variables really works as expected, you need to export it first:
-$ sudo su
-# export IMA_KEXEC_IMAGE=/tmp/foo
-# PATH="/opt/ltp/testcases/bin:$PATH" runltp ...
+Fixes: d2768c84e ("IMA: Add a test to verify measurement of keys")
 
-or just run the script directly:
-$ sudo su
-# IMA_KEXEC_IMAGE=/tmp/foo PATH="/opt/ltp/testcases/bin:$PATH" ima_kexec.sh
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/security/integrity/ima/tests/ima_keys.sh | 4 +---
+ .../kernel/security/integrity/ima/tests/ima_setup.sh      | 8 ++++++++
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-> > Also writing same docs doc on 2 places is not good. High level info should go to
-> > README.md, implementation details to shell script.
-> This is a good point. I'll reorganize the documentation of this patch.
-> > Please hold on with posting new version. I have several fixes, thus I'd like to
-> > send it after we sort this (trying to save you time).
-> Okay :)
-> > Kind regards,
-> > Petr
-> Thanks,
-> Lachlan
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index 904b7515b..26b8eaf84 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -19,9 +19,7 @@ test1()
+ 
+ 	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
+ 
+-	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
+-
+-	[ -r $IMA_POLICY ] || tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
++	check_policy_readable
+ 
+ 	keycheck_lines=$(grep "func=KEY_CHECK" $IMA_POLICY)
+ 	if [ -z "$keycheck_lines" ]; then
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 8ae477c1c..458f67c30 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -111,6 +111,14 @@ print_ima_config()
+ 	tst_res TINFO "/proc/cmdline: $(cat /proc/cmdline)"
+ }
+ 
++check_policy_readable()
++{
++	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
++
++	cat $IMA_POLICY > /dev/null 2>/dev/null || \
++		tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
++}
++
+ ima_setup()
+ {
+ 	SECURITYFS="$(mount_helper securityfs $SYSFS/kernel/security)"
+-- 
+2.27.0
 
-Kind regards,
-Petr
