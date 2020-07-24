@@ -1,133 +1,28 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 24 Jul 2020 11:05:00 +0200
-Subject: [LTP] [PATCH] [COMMITTED] safe_macros: Move sig*set() functions to
- C file
-Message-ID: <20200724090500.2958-1-chrubis@suse.cz>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 24 Jul 2020 15:48:07 +0530
+Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
+ fires
+In-Reply-To: <f9289166-5698-e2ec-ecc8-531fbcbd60c5@cn.fujitsu.com>
+References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
+ <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
+ <20200714142843.GA14905@yuki.lan>
+ <d008820f-22d2-078d-3a62-f1fa20e6750b@cn.fujitsu.com>
+ <20200724033732.gwzu2zdhdziwtbtz@vireshk-mac-ubuntu>
+ <f9289166-5698-e2ec-ecc8-531fbcbd60c5@cn.fujitsu.com>
+Message-ID: <20200724101807.dtf46ydpegj3w43d@vireshk-mac-ubuntu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This fixes the compilation since the tst_strsig() is defined in
-tst_test.h after we include tst_safe_macros.h.
+On 24-07-20, 13:07, Yang Xu wrote:
+> Yes, only _ALARM fails.
 
-Fixes my changes in: 719b8a5df410 (libs: sigwait: Add SAFE_SIG*() macros)
+Right. So this seems this is rather a kernel issue. And I am not
+really sure how to handle these.
 
-Sorry for the breakage.
+Cyril, Any ideas ? Do we even try to support 3.10 here ?
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_safe_macros.h | 42 ++++++---------------------------------
- lib/tst_safe_macros.c     | 36 +++++++++++++++++++++++++++++++++
- 2 files changed, 42 insertions(+), 36 deletions(-)
-
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index f3f83cddd..79f11b5c6 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -431,48 +431,18 @@ int safe_sigaction(const char *file, const int lineno,
- #define SAFE_SIGACTION(signum, act, oldact) \
- 	safe_sigaction(__FILE__, __LINE__, (signum), (act), (oldact))
- 
--static inline void safe_sigaddset(const char *file, const int lineno,
--				  sigset_t *sigs, int signo)
--{
--	int rval;
--
--	rval = sigaddset(sigs, signo);
--	if (rval == -1) {
--		tst_brk_(file, lineno, TBROK | TERRNO,
--		         "sigaddset() %s (%i) failed",
--			 tst_strsig(signo), signo);
--	}
--}
--
-+void safe_sigaddset(const char *file, const int lineno,
-+                    sigset_t *sigs, int signo);
- #define SAFE_SIGADDSET(sigs, signo) \
- 	safe_sigaddset(__FILE__, __LINE__, (sigs), (signo))
- 
--static inline void safe_sigdelset(const char *file, const int lineno,
--				  sigset_t *sigs, int signo)
--{
--	int rval;
--
--	rval = sigdelset(sigs, signo);
--	if (rval == -1) {
--		tst_brk_(file, lineno, TBROK | TERRNO,
--		         "sigdelset() %s (%i) failed",
--			 tst_strsig(signo), signo);
--	}
--}
--
-+void safe_sigdelset(const char *file, const int lineno,
-+                    sigset_t *sigs, int signo);
- #define SAFE_SIGDELSET(sigs, signo) \
- 	safe_sigdelset(__FILE__, __LINE__, (sigs), (signo))
- 
--static inline void safe_sigemptyset(const char *file, const int lineno,
--				    sigset_t *sigs)
--{
--	int rval;
--
--	rval = sigemptyset(sigs);
--	if (rval == -1)
--		tst_brk_(file, lineno, TBROK | TERRNO, "sigemptyset() failed");
--}
--
-+void safe_sigemptyset(const char *file, const int lineno,
-+                      sigset_t *sigs);
- #define SAFE_SIGEMPTYSET(sigs) \
- 	safe_sigemptyset(__FILE__, __LINE__, (sigs))
- 
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index dbdfcc5be..3b44eeafa 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -130,6 +130,42 @@ int safe_sigaction(const char *file, const int lineno,
- 	return rval;
- }
- 
-+void safe_sigaddset(const char *file, const int lineno,
-+                    sigset_t *sigs, int signo)
-+{
-+	int rval;
-+
-+	rval = sigaddset(sigs, signo);
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+		         "sigaddset() %s (%i) failed",
-+			 tst_strsig(signo), signo);
-+	}
-+}
-+
-+void safe_sigdelset(const char *file, const int lineno,
-+                    sigset_t *sigs, int signo)
-+{
-+	int rval;
-+
-+	rval = sigdelset(sigs, signo);
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+		         "sigdelset() %s (%i) failed",
-+			 tst_strsig(signo), signo);
-+	}
-+}
-+
-+void safe_sigemptyset(const char *file, const int lineno,
-+                      sigset_t *sigs)
-+{
-+	int rval;
-+
-+	rval = sigemptyset(sigs);
-+	if (rval == -1)
-+		tst_brk_(file, lineno, TBROK | TERRNO, "sigemptyset() failed");
-+}
-+
- struct group *safe_getgrnam(const char *file, const int lineno,
- 			    const char *name)
- {
 -- 
-2.26.2
-
+viresh
