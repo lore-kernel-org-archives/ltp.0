@@ -1,50 +1,74 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Jul 2020 07:58:26 +0200
-Subject: [LTP] [PATCH 4/4] libs: sigwait: Get rid of REPORT_SUCCESS()
- macro
-In-Reply-To: <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
-References: <e51142a397858a2fe6a040563d3c0795a7d0bb05.1595511710.git.viresh.kumar@linaro.org>
- <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
-Message-ID: <20200724055826.GE32086@dell5510>
+Date: Fri, 24 Jul 2020 08:43:38 +0200
+Subject: [LTP] [PATCH v3] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <0a970e3c-a10f-f032-eb26-d738bc220458@linux.microsoft.com>
+References: <20200722184739.19460-1-t-josne@linux.microsoft.com>
+ <20200723114600.GB31591@dell5510>
+ <0a970e3c-a10f-f032-eb26-d738bc220458@linux.microsoft.com>
+Message-ID: <20200724064338.GF32086@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh,
+> Hi Petr,
+> Thank you for reviewing
+Thanks for your time as well :).
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> On 7/23/20 7:46 AM, Petr Vorel wrote:
+> > Hi,
 
-Although these errors are still here:
+> > ...
+> > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_kexec.sh
+> > > @@ -0,0 +1,121 @@
+> > > +#!/bin/sh
+> > > +# SPDX-License-Identifier: GPL-2.0-or-later
+> > > +# Copyright (c) 2020 Microsoft Corporation
+> > > +# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
+> > > +#
+> > > +# Verify that kexec cmdline is measured correctly.
+> > > +
+> > > +TST_NEEDS_CMDS="kexec sed xargs printf grep tr"
+> > > +TST_CNT=1
+> > > +TST_NEEDS_DEVICE=1
+> > > +
+> > > +. ima_setup.sh
+> > > +
+> > > +# Since the test is executed inside some sort of
+> > > +# separate shell, *most* environment variables are
+> > > +# not accessible, so there's no way to set it from
+> > > +# the outside.
+> > Do you mean that using this will not work?
+> > IMA_KEXEC_IMAGE="${IMA_KEXEC_IMAGE:-/boot/vmlinuz-$(uname -r)}"
+> > I don't understand that as I'm able to set variables even I run some tests in
+> > dracut.
+> I tried doing this in the past, and couldn't get it to work, but I just
+> tried it again
+> and was able to get it working. Essentially, what I tried before was
+> `SOME_VAR="..." sudo runltp ...`, which doesn't work, but `sudo
+> SOME_VAR="..." runltp` does pass the variable
+> to the test. So, that should be added to this patch.
+OK, so no any dracut / initramfs involved :).
+Passing variables really works as expected, you need to export it first:
+$ sudo su
+# export IMA_KEXEC_IMAGE=/tmp/foo
+# PATH="/opt/ltp/testcases/bin:$PATH" runltp ...
 
-sigwait.c: In function ?test_masked_matching?:
-sigwait.c:157:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
-  157 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
-      |                                ~~~~~~~~  ^~~~~~~~
-../../include/tst_test.h:266:13: note: in definition of macro ?TEST?
-  266 |   TST_RET = SCALL; \
-      |             ^~~~~
-sigwait.c: In function ?test_masked_matching_rt?:
-sigwait.c:226:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
-  226 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
-      |                                ~~~~~~~~  ^~~~~~~~
-../../include/tst_test.h:266:13: note: in definition of macro ?TEST?
-  266 |   TST_RET = SCALL; \
-      |             ^~~~~
-sigwait.c: In function ?test_masked_matching_noinfo?:
-sigwait.c:265:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
-  265 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
-      |                                ~~~~~~~~  ^~~~~~~~
-../../include/tst_test.h:266:13: note: in definition of macro ?TEST?
-  266 |   TST_RET = SCALL; \
-      |             ^~~~~
-sigwait.c: In function ?test_bad_address?:
-sigwait.c:312:42: warning: passing argument 3 to restrict-qualified parameter aliases with argument 2 [-Wrestrict]
-  312 |  TEST(sigprocmask(SIG_SETMASK, &oldmask, &oldmask));
-      |                                ~~~~~~~~  ^~~~~~~~
+or just run the script directly:
+$ sudo su
+# IMA_KEXEC_IMAGE=/tmp/foo PATH="/opt/ltp/testcases/bin:$PATH" ima_kexec.sh
 
-IMHO we shouldn't use oldmask for src and dest.
+> > Also writing same docs doc on 2 places is not good. High level info should go to
+> > README.md, implementation details to shell script.
+> This is a good point. I'll reorganize the documentation of this patch.
+> > Please hold on with posting new version. I have several fixes, thus I'd like to
+> > send it after we sort this (trying to save you time).
+> Okay :)
+> > Kind regards,
+> > Petr
+> Thanks,
+> Lachlan
 
 Kind regards,
 Petr
