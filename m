@@ -1,61 +1,46 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 24 Jul 2020 16:47:26 +0200
-Subject: [LTP] [PATCH v2 2/2] Add chdir() test for unprivileged user
-In-Reply-To: <20200724133247.GC24626@dell5510>
-References: <20200724125052.20973-1-mdoucha@suse.cz>
- <20200724125052.20973-2-mdoucha@suse.cz> <20200724133247.GC24626@dell5510>
-Message-ID: <08409821-c9d4-d8a6-3393-b33dfa79fea4@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 24 Jul 2020 16:51:03 +0200
+Subject: [LTP] [PATCH V7 11/19] syscalls/mq_timed{send|receive}: Add
+ support for time64 tests
+In-Reply-To: <bcade4d3066ea789f590267b402277b78e86dd8d.1593152309.git.viresh.kumar@linaro.org>
+References: <cover.1593152309.git.viresh.kumar@linaro.org>
+ <bcade4d3066ea789f590267b402277b78e86dd8d.1593152309.git.viresh.kumar@linaro.org>
+Message-ID: <20200724145103.GA10254@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 24. 07. 20 15:32, Petr Vorel wrote:
-> Hi Martin,
-> 
->> +++ b/runtest/syscalls
->> @@ -54,6 +54,7 @@ capset04 capset04
->>  cacheflush01 cacheflush01
-> 
->>  chdir01 chdir01
->> +chdir02 chdir02
->>  chdir01A symlink01 -T chdir01
->>  chdir04 chdir04
-> You missed to add chdir02 to runtest/quickhit. I guess this was deliberate,
-> right?
-> (I wonder if we really need runtest/quickhit anyway).
+Hi!
+I've put the variant definition to the common header, since we have one
+already it's pointless to keep two copies and pushed, thanks.
 
-Yes, this was deliberate since only chdir02 was there originally (the
-one that was checking only chdir("/"); and chdir("/etc");.
+I've also pushed a patch on the top of that one that modifies the
+timeous so that the test runs reasonably fast.
 
-> I like both tests (nice work, thanks!), just don't like the duplicity. Isn't
-> there a way to use getopt parameter for one of the variants and have just single
-> test? But understand if you don't bother with it (maybe better duplicity but
-> simpler code).
-> 
-> Other that that LGTM.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Also I'm starting to think that it may be easier to add all the syscall
+variants into a single structure into an header that would be then
+included by various tests, something as:
 
-I could add a second set of expected values to the test case list and do
-it like this:
+struct variant {
+	int (*gettime)(clockid_t clk_id, void *ts);
+	int (*settime)(clockid_t clk_id, void *ts);
+	int (*getres)(clockid_t, void *ts);
+	int (*tfd_gettime)(int fd, void *ts);
+	int (*tfd_settime)(int fd, int flags, void *new_ts, void *old_ts);
 
-static void run(unsigned int n) {
-	TEST(chdir(tc->name));
-	/* result validation here */
-	SAFE_SETEUID(ltpuser->pw_uid);
-	TEST(chdir(tc->name));
-	SAFE_SETEUID(0);
-	/* result validation here */
-}
+	...
 
-Should I resubmit that as v3?
+	enum tst_ts_type type;
+	char desc;
+} variants[] = {
+...
+};
+
+Then we can include this to each test that needs it and be done with
+it...
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
