@@ -1,37 +1,42 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 24 Jul 2020 15:32:47 +0200
-Subject: [LTP] [PATCH v2 2/2] Add chdir() test for unprivileged user
-In-Reply-To: <20200724125052.20973-2-mdoucha@suse.cz>
-References: <20200724125052.20973-1-mdoucha@suse.cz>
- <20200724125052.20973-2-mdoucha@suse.cz>
-Message-ID: <20200724133247.GC24626@dell5510>
+Date: Fri, 24 Jul 2020 15:35:24 +0200
+Subject: [LTP] [PATCH 4/4] libs: sigwait: Get rid of REPORT_SUCCESS()
+ macro
+In-Reply-To: <20200724123235.GA3539@yuki.lan>
+References: <e51142a397858a2fe6a040563d3c0795a7d0bb05.1595511710.git.viresh.kumar@linaro.org>
+ <a83166af3a2b432bb11a0876e18e15705479f32d.1595511710.git.viresh.kumar@linaro.org>
+ <20200724123235.GA3539@yuki.lan>
+Message-ID: <20200724133524.GA31265@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi,
 
-> +++ b/runtest/syscalls
-> @@ -54,6 +54,7 @@ capset04 capset04
->  cacheflush01 cacheflush01
+...
+> >  	TEST(sigwaitinfo(&sigs, &si, NULL));
+> > -	REPORT_SUCCESS(-1, EINTR);
+> > +	if (TST_RET == -1) {
+> > +		if (TST_ERR == EINTR)
+> > +			tst_res(TPASS, "%s: Test passed", __func__);
+> > +		else
+> > +			tst_res(TFAIL | TTERRNO, "%s: Unexpected failure", __func__);
 
->  chdir01 chdir01
-> +chdir02 chdir02
->  chdir01A symlink01 -T chdir01
->  chdir04 chdir04
-You missed to add chdir02 to runtest/quickhit. I guess this was deliberate,
-right?
-(I wonder if we really need runtest/quickhit anyway).
+> Can we please make the messages a bit more user friendly?
 
-I like both tests (nice work, thanks!), just don't like the duplicity. Isn't
-there a way to use getopt parameter for one of the variants and have just single
-test? But understand if you don't bother with it (maybe better duplicity but
-simpler code).
+> - the tst_res() already prints line and filename the __func__ is a bit
+>   redundant
 
-Other that that LGTM.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> - it also prints PASS/FAIL so we can omit the "Test passed" we can print
+>   something that describes the testcase instead e.g.
+>   "Wait interrupted by a signal"
+
+> - also in the "Unexpected failure" case we should print which error we
+>   expected with someting as: tst_res(TFAIL | TTERRNO, "Expected to return EINTER, got");
+
++1, sorry for overlooking it.
 
 Kind regards,
 Petr
