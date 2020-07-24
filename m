@@ -1,26 +1,39 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 24 Jul 2020 08:03:38 +0530
-Subject: [LTP] [PATCH V7.1 07/19] syscalls/futex: Add support for time64
- tests
-In-Reply-To: <20200723194445.GC9768@yuki.lan>
-References: <6030fa8c1deda3aab977c7d5745c117fda87708a.1593152309.git.viresh.kumar@linaro.org>
- <8485ad1373a22b8f512eb17cf65d7662a7ede619.1594035467.git.viresh.kumar@linaro.org>
- <20200723194445.GC9768@yuki.lan>
-Message-ID: <20200724023338.47s5qfcaolspjmfv@vireshk-mac-ubuntu>
+Date: Fri, 24 Jul 2020 09:07:32 +0530
+Subject: [LTP] [PATCH V3] syscalls/timer_settime01: Make sure the timer
+ fires
+In-Reply-To: <d008820f-22d2-078d-3a62-f1fa20e6750b@cn.fujitsu.com>
+References: <ede8d1c6a1ad1b23d8dca2297c740c301b329e37.1593743927.git.viresh.kumar@linaro.org>
+ <47e40724c2a7a9612aca0265e493e62c69d65996.1594204153.git.viresh.kumar@linaro.org>
+ <20200714142843.GA14905@yuki.lan>
+ <d008820f-22d2-078d-3a62-f1fa20e6750b@cn.fujitsu.com>
+Message-ID: <20200724033732.gwzu2zdhdziwtbtz@vireshk-mac-ubuntu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23-07-20, 21:44, Cyril Hrubis wrote:
-> Hi!
-> Pushed with minor changes, thanks.
-> 
-> Here is the diff, if something there is puzzling I will explain it
-> tomorrow, I'm too tired to do it now...
+Hi,
 
-No, it looks fine, thanks.
+On 23-07-20, 10:39, Yang Xu wrote:
+> When tesing timer_settime01 on 3.10.0-1136.el7.x86_64, this case fails
+> whether we use any type clock.
+> 
+> timer_settime01.c:174: PASS: timer_settime(CLOCK_BOOTTIME) passed
+> timer_settime01.c:164: FAIL: timer_gettime(CLOCK_BOOTTIME_ALARM) reported
+> bad values (0: 678013000): SUCCESS (0)
+> timer_settime01.c:174: PASS: timer_settime(CLOCK_BOOTTIME_ALARM) passed
+> timer_settime01.c:164: FAIL: timer_gettime(CLOCK_REALTIME_ALARM) reported
+> bad values (0: 358240000): SUCCESS (0)
+> timer_settime01.c:174: PASS: timer_settime(CLOCK_REALTIME_ALARM) passed
+> timer_settime01.c:174: PASS: timer_settime(CLOCK_TAI) passed
+
+Can you share the complete test log? I am not sure if only the _ALARM
+cocks are failing or all. You are getting values in the order of
+300-700 ms, while the max value can't be greater than 50 ms. So seems
+like a kernel issue to me. Over that, both _ALARM type clocks weren't
+supported before 3.11 and looks like your kernel version is 3.10.
 
 -- 
 viresh
