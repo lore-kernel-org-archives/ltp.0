@@ -1,88 +1,35 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Mon, 27 Jul 2020 18:19:04 +0800
-Subject: [LTP] [PATCH] controllers/cpuset: improve the node number
- calculation for N_NODES
-Message-ID: <20200727101904.27424-1-po-hsu.lin@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 27 Jul 2020 12:52:10 +0200
+Subject: [LTP] [blk] 6e6fcbc27e: ltp.fs_fill.fail
+In-Reply-To: <20200727093156.GA29739@dell5510>
+References: <20200726075511.GI1850@shao2-debian>
+ <20200727093156.GA29739@dell5510>
+Message-ID: <20200727105210.GA12348@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-BugLink: https://bugs.launchpad.net/bugs/1836188
+Hi!
+> > tst_test.c:1308: INFO: Testing on vfat
+> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+> > tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+> > fs_fill.c:103: INFO: Running 10 writer threads
+> > Test timeouted, sending SIGKILL!
+> > Test timeouted, sending SIGKILL!
+> > Test timeouted, sending SIGKILL!
+> > Test timeouted, sending SIGKILL!
+> > Test timeouted, sending SIGKILL!
+> > Test timeouted, sending SIGKILL!
+> The only "error" I found is that fs_fill test timeouted on vfat. That might
+> indicate some problems. Note, for slow machines, there is LTP_TIMEOUT_MUL
+> https://github.com/linux-test-project/ltp/wiki/User-Guidelines#1-library-environment-variables
 
-Issue spotted on a Power9 system with Ubuntu Eoan installed, the
-N_NODES obtained from the file contains only "0,8":
+Actually you had removed the most important part, it not only timeouted
+but the process ended up stuck in kernel and could not be killed. So
+this looks like deadlock somewhere in filesystem code.
 
-    $ cat /sys/devices/system/node/has_normal_memory
-    0,8
-
-This will cause the N_NODES calculation in cpuset_funcs.sh failed with:
-
-    cpuset_funcs.sh: arithmetic expression: expecting EOF: "0,8 + 1"
-
-As it's expecting the number of a range (dash seperated), but not comma
-seperated nodes. And this is causing failures to any test that's calling
-this cpuset_funcs.sh:
-    * cpuset_base_ops
-    * cpuset_exclusive
-    * cpuset_hierarchy
-    * cpuset_hotplug cpuset_inherit
-    * cpuset_load_balance
-    * cpuset_memory cpuset_memory_pressure
-    * cpuset_memory_spread
-    * cpuset_sched_domains
-    * cpuset_syscall
-
-Improve the node number calculation by replacing the comma with space,
-iterate through them to count the number of nodes. If we ever encounter
-a range format like "3-6", use shell substitution to get these two
-numbers and with their difference plus 1 to get the number of nodes in
-this range.
-
-Let's assume some extreme examples, if N_NODES is:
-    0,2,4-6,8
-In this case the imporoved algorithm will give you 6.
-And if N_NODES is:
-   0,2,4-6,8,11-15
-This will get you 11.
-
-Patch tested with different arches and Ubuntu kernels, and it works as
-expected.
-
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- .../kernel/controllers/cpuset/cpuset_funcs.sh     | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index 935a41ed0..2665afd31 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -28,12 +28,19 @@
- 
- NR_CPUS=`tst_ncpus`
- if [ -f "/sys/devices/system/node/has_high_memory" ]; then
--	N_NODES="`cat /sys/devices/system/node/has_high_memory`"
-+	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
- else
--	N_NODES="`cat /sys/devices/system/node/has_normal_memory`"
-+	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
- fi
--N_NODES=${N_NODES#*-*}
--N_NODES=$(($N_NODES + 1))
-+count=0
-+for item in $N_NODES; do
-+	delta=1
-+	if [ "${item#*-*}" != "$item" ]; then
-+		delta=$((${item#*-*} - ${item%*-*} + 1))
-+	fi
-+	count=$((count + $delta))
-+done
-+N_NODES=$count
- 
- CPUSET="/dev/cpuset"
- CPUSET_TMP="/tmp/cpuset_tmp"
 -- 
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
