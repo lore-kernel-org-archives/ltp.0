@@ -1,37 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 27 Jul 2020 17:35:01 +0200
-Subject: [LTP] [PATCH V7 17/19] syscalls/utimensat: Migrate to new test
- framework
-In-Reply-To: <f0df00dd69cf02791a99883db1fd6fd7a1462074.1593152309.git.viresh.kumar@linaro.org>
-References: <cover.1593152309.git.viresh.kumar@linaro.org>
- <f0df00dd69cf02791a99883db1fd6fd7a1462074.1593152309.git.viresh.kumar@linaro.org>
-Message-ID: <20200727153501.GD7863@yuki.lan>
+From: aidengao <aiden.gaoyuan@gmail.com>
+Date: Mon, 27 Jul 2020 16:43:55 +0000
+Subject: [LTP] [PATCH] hotplug/memory_hotplug: Remove unused goto label
+Message-ID: <20200727164355.1177602-1-aiden.gaoyuan@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This gets rid of the test script and updates the utimensat01.c file to
-> handle most of the tests covered earlier (apart from testing the same
-> for files owned by root, as the test is run as root right now).
+From: aidengao <aidengao@google.com>
 
-We also lost a check if atime and mtime was modified or not.
+Remove unused goto label in parse_command_line_args function
 
-The original script did set both to 0 and then depending on what have
-been passed as the times and if the call succeeded checked if the value
-stayed zero or was modified. Can we add this back as well?
+Signed-off-by: Yuan Gao <aiden.gaoyuan@gmail.com>
+---
+ testcases/kernel/hotplug/memory_hotplug/memtoy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also the modification for the makefile and runtest file is part of the
-patch that adds the time64 variant while it should have been part of
-this patch.
-
-Other than this there are a few minor things, for instance I do not see
-the reason for double indirection in the struct mytime. And I would have
-done some of the initialization in the test setup, e.g. why do we call
-update_error(), re-create TEST_DIR, etc. on each run.
-
+diff --git a/testcases/kernel/hotplug/memory_hotplug/memtoy.c b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+index 8ac9600de..90bfd7f2f 100644
+--- a/testcases/kernel/hotplug/memory_hotplug/memtoy.c
++++ b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+@@ -447,7 +447,7 @@ int parse_command_line_args(int argc, char *argv[])
+ 			break;
+ 		}
+ 	}
+-done:
++
+ 
+ 	return (error);
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.28.0.rc0.142.g3c755180ce-goog
+
