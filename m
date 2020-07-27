@@ -1,72 +1,50 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 28 Jul 2020 00:30:39 +0200
-Subject: [LTP] [PATCH v5 2/4] IMA: Add policy related helpers
+Date: Tue, 28 Jul 2020 00:30:40 +0200
+Subject: [LTP] [PATCH v5 3/4] IMA/ima_keys.sh: Fix policy readability check
 In-Reply-To: <20200727223041.13110-1-pvorel@suse.cz>
 References: <20200727223041.13110-1-pvorel@suse.cz>
-Message-ID: <20200727223041.13110-3-pvorel@suse.cz>
+Message-ID: <20200727223041.13110-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Using a proper check with cat, because file attributes were fixed in
+ffb122de9a60 ("ima: Reflect correct permissions for policy") in v4.18.
+
+Fixes: d2768c84e ("IMA: Add a test to verify measurement of keys")
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-New in v5.
+Changes v4->v5:
+* use require_ima_policy_content
+* moved helper function to previous commit
 
- .../security/integrity/ima/tests/ima_setup.sh | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ .../kernel/security/integrity/ima/tests/ima_keys.sh    | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 975ce9cbb..c46f273ab 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -54,6 +54,45 @@ compute_digest()
- 	return 1
- }
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index 2f6c2b027..5a77deec1 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -19,15 +19,7 @@ test1()
  
-+check_policy_readable()
-+{
-+	if [ -f $IMA_POLICY ]; then
-+		tst_res TINFO "missing $IMA_POLICY (reboot or CONFIG_IMA_WRITE_POLICY=y required)"
-+		return 1
-+	fi
-+	cat $IMA_POLICY > /dev/null 2>/dev/null
-+}
-+
-+require_policy_readable()
-+{
-+	if [ -f $IMA_POLICY ]; then
-+		tst_brk TCONF "missing $IMA_POLICY (reboot or CONFIG_IMA_WRITE_POLICY=y required)"
-+	fi
-+	if ! check_policy_readable; then
-+		tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
-+	fi
-+}
-+
-+check_ima_policy_content()
-+{
-+	local pattern="$1"
-+	local grep_params="${2--q}"
-+
-+	check_policy_readable || return 1
-+	grep $grep_params "$pattern" $IMA_POLICY
-+}
-+
-+require_ima_policy_content()
-+{
-+	local pattern="$1"
-+	local grep_params="${2--q}"
-+
-+	require_policy_readable
-+	if ! grep $grep_params "$pattern" $IMA_POLICY; then
-+		tst_brk TCONF "IMA policy does not specify '$pattern'"
-+	fi
-+}
-+
- require_ima_policy_cmdline()
- {
- 	local policy="$1"
+ 	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
+ 
+-	[ -f $IMA_POLICY ] || tst_brk TCONF "missing $IMA_POLICY"
+-
+-	[ -r $IMA_POLICY ] || tst_brk TCONF "cannot read IMA policy (CONFIG_IMA_READ_POLICY=y required)"
+-
+-	keycheck_lines=$(grep "func=KEY_CHECK" $IMA_POLICY)
+-	if [ -z "$keycheck_lines" ]; then
+-		tst_brk TCONF "ima policy does not specify \"func=KEY_CHECK\""
+-	fi
+-
++	keycheck_lines=$(require_ima_policy_content "func=KEY_CHECK" "")
+ 	keycheck_line=$(echo "$keycheck_lines" | grep "keyrings" | head -n1)
+ 
+ 	if [ -z "$keycheck_line" ]; then
 -- 
 2.27.0
 
