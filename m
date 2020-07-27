@@ -1,125 +1,110 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 27 Jul 2020 11:31:56 +0200
-Subject: [LTP] [blk] 6e6fcbc27e: ltp.fs_fill.fail
-In-Reply-To: <20200726075511.GI1850@shao2-debian>
-References: <20200726075511.GI1850@shao2-debian>
-Message-ID: <20200727093156.GA29739@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 27 Jul 2020 11:40:30 +0200
+Subject: [LTP] [PATCH V7 14/19] syscalls/select6: Add support for time64
+ tests
+In-Reply-To: <883a188e83c201b23074bf0ac974b41d89d818c7.1593152309.git.viresh.kumar@linaro.org>
+References: <cover.1593152309.git.viresh.kumar@linaro.org>
+ <883a188e83c201b23074bf0ac974b41d89d818c7.1593152309.git.viresh.kumar@linaro.org>
+Message-ID: <20200727094030.GB7863@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> This adds support for time64 tests to the existing select6() syscall
+> tests.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  testcases/kernel/syscalls/select/select_var.h | 25 ++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
+> index b19a1d1bf085..2c7604807cf6 100644
+> --- a/testcases/kernel/syscalls/select/select_var.h
+> +++ b/testcases/kernel/syscalls/select/select_var.h
+> @@ -6,6 +6,7 @@
+>  #define SELECT_VAR__
+>  
+>  #include "lapi/syscalls.h"
+> +#include "tst_timer.h"
+>  
+>  struct compat_sel_arg_struct {
+>  	long _n;
+> @@ -38,7 +39,7 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+>  	}
+>  	case 2: {
+>  		int ret;
+> -		struct timespec ts = {
+> +		struct __kernel_old_timespec ts = {
+>  			.tv_sec = timeout->tv_sec,
+>  			.tv_nsec = timeout->tv_usec * 1000,
+>  		};
 
-> FYI, we noticed the following commit (built with gcc-9):
+I'm a bit lost here, should we actually pass the __kernel_old_timespec
+to all the tst_syscall() fuctions here?
 
-> commit: 6e6fcbc27e7788af54139c53537395d95560f2ef ("blk-mq: support batching dispatch in case of io")
-> https://git.kernel.org/cgit/linux/kernel/git/axboe/linux-block.git for-5.9/drivers
+I guess that the only function that would take the argument as struct
+timeval is the select() glibc function, or do I miss something?
 
+Also this change should be ideally done in a separate patch from the
+second half that adds the __NR_pselect6_time64.
 
-> in testcase: ltp
-> with following parameters:
+> @@ -47,7 +48,22 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
+>  		timeout->tv_usec = ts.tv_nsec / 1000;
+>  		return ret;
+>  	}
+> -	case 3:
+> +	case 3: {
+> +		int ret = 0;
+> +#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
+            ^
+	    __NR_pselect6_time64 ?
 
-> 	disk: 1HDD
-> 	fs: ext4
-> 	test: fs-03
+> +		struct __kernel_timespec ts = {
+> +			.tv_sec = timeout->tv_sec,
+> +			.tv_nsec = timeout->tv_usec * 1000,
+> +		};
+> +		ret = tst_syscall(__NR_pselect6_time64, nfds, readfds, writefds, exceptfds, &ts, NULL);
+> +		timeout->tv_sec = ts.tv_sec;
+> +		timeout->tv_usec = ts.tv_nsec / 1000;
+> +#else
+> +		tst_brk(TCONF, "__NR_pselect6 time64 variant not supported");
+> +#endif
+> +		return ret;
+> +	}
+> +	case 4:
+>  #ifdef __NR__newselect
+>  		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
+>  #else
+> @@ -72,11 +88,14 @@ static void select_info(void)
+>  		tst_res(TINFO, "Testing SYS_pselect6 syscall");
+>  	break;
+>  	case 3:
+> +		tst_res(TINFO, "Testing SYS_pselect6 time64 syscall");
+> +	break;
+> +	case 4:
+>  		tst_res(TINFO, "Testing SYS__newselect syscall");
+>  	break;
+>  	}
+>  }
+>  
+> -#define TEST_VARIANTS 4
+> +#define TEST_VARIANTS 5
 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
+Also lastly but not least we should clean up the rest of the select
+tests and add support for the different variants there as well.
 
+Looking at them these are just copy&paste of the same test with a
+different fds, we can easily merge them into a single test.
 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+And the coverate in these tests is a bit lacking, we do not have a
+single tests that would send a data over a pipe to a fd select is
+watching and check that select was woken up by that. There is no such
+test in the pselect/ directory either.
 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-
-...
-> tst_test.c:1308: INFO: Testing on vfat
-> tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-> tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-> fs_fill.c:103: INFO: Running 10 writer threads
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-The only "error" I found is that fs_fill test timeouted on vfat. That might
-indicate some problems. Note, for slow machines, there is LTP_TIMEOUT_MUL
-https://github.com/linux-test-project/ltp/wiki/User-Guidelines#1-library-environment-variables
-
-Some notes:
-* The "diff" is about 445. It took me some time to realize that it's a
-"diff" which reports some error, because LTP output is also after kernel config
-log(output is still not clear).
-* Log is huge: more than 7746 lines; ok, significant part 6275 lines is kernel config - if it's that huge,
-it should be at the end.
-
-> -------------- next part --------------
-Maybe also have description (sometimes obvious sometimes not).
-
-
-...
-> # CONFIG_HYPERV_TESTING is not set
-> # end of Kernel Testing and Coverage
-> # end of Kernel hacking
-> -------------- next part --------------
-> #!/bin/sh
-
-> export_top_env()
-> {
-> 	export suite='ltp'
-> 	export testcase='ltp'
-> 	export category='functional'
-> 	export need_modules=true
-> 	export need_memory='4G'
-> 	export job_origin='/lkp-src/allot/cyclic:p1:linux-devel:devel-hourly/vm-snb/ltp-1hdd-part2.yaml'
-> 	export queue_cmdline_keys='branch
-> commit
-> queue_at_least_once'
-> 	export queue='validate'
-> 	export testbox='vm-snb-223'
-> 	export tbox_group='vm-snb'
-> 	export kconfig='x86_64-rhel-8.3'
-> 	export nr_vm=64
-> 	export submit_id='5f1b6220d3e994389b75f575'
-> 	export job_file='/lkp/jobs/scheduled/vm-snb-223/ltp-1HDD-ext4-fs-03-debian-10.4-x86_64-20200603.cgz-6e6fcbc27e7788af54139c53537395d95560f2ef-20200725-14491-q8d1h6-26.yaml'
-> 	export id='065bec73e2a4ca800d1cb6ad4c3c7827984bbf55'
-> 	export queuer_version='/lkp-src'
-> 	export model='qemu-system-x86_64 -enable-kvm -cpu SandyBridge'
-> 	export nr_cpu=8
-> 	export memory='16G'
-> 	export hdd_partitions='/dev/vda /dev/vdb /dev/vdc /dev/vdd /dev/vde /dev/vdf'
-> 	export swap_partitions='/dev/vdg'
-> 	export need_kconfig='CONFIG_BLK_DEV_SD
-It looks like this shell function should not be part of the mail.
-Or at least not in the middle of kernel config (repeated several times).
-
-> CONFIG_SCSI
-> CONFIG_BLOCK=y
-> CONFIG_SATA_AHCI
-
-...
-> extract_stats()
-> {
-> 	export stats_part_begin=
-> 	export stats_part_end=
-
-> 	$LKP_SRC/stats/wrapper ltp
-> 	$LKP_SRC/stats/wrapper kmsg
-> 	$LKP_SRC/stats/wrapper meminfo
-
-> 	$LKP_SRC/stats/wrapper time ltp.time
-> 	$LKP_SRC/stats/wrapper dmesg
-> 	$LKP_SRC/stats/wrapper kmsg
-> 	$LKP_SRC/stats/wrapper last_state
-> 	$LKP_SRC/stats/wrapper stderr
-> 	$LKP_SRC/stats/wrapper time
-> }
-
-> "$@"
-
-That repeats till here.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
