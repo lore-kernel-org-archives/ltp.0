@@ -1,33 +1,23 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 28 Jul 2020 01:04:39 +0200
-Subject: [LTP] [PATCH v3] Convert chdir01 to the new API
-In-Reply-To: <20200727134946.1021-1-mdoucha@suse.cz>
-References: <20200727134946.1021-1-mdoucha@suse.cz>
-Message-ID: <20200727230439.GA21602@dell5510>
+Date: Tue, 28 Jul 2020 01:13:17 +0200
+Subject: [LTP] [PATCH v5 4/4] IMA: Add test for kexec cmdline measurement
+In-Reply-To: <1d18419e-413d-ecca-8d99-342aa4ad36f7@linux.microsoft.com>
+References: <20200727223041.13110-1-pvorel@suse.cz>
+ <20200727223041.13110-5-pvorel@suse.cz>
+ <1d18419e-413d-ecca-8d99-342aa4ad36f7@linux.microsoft.com>
+Message-ID: <20200727231317.GA21554@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi Lachlan,
 
-> chdir02 and chdir03 were removed because the updated chdir01 makes them
-> redundant.
-
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
-
-> Changes since v1:
-> - Require root privileges and run the test on all file systems
-> - Fixed expected return value for directory with 0644 access mode
-> - Added test case for chdir("/");
-> - Improved chdir() return value/errno checks
-
-> Changes since v2:
-> - Dropped chdir02 patch and merged the unprivileged tests into chdir01 instead
-
-Thanks, merged!
+> This patch removes the test of the `--reuse-cmdline` option of kexec.
+> Go ahead and merge this, and then I'll post a patch that adds
+> `--reuse-cmdline` back.
+Thanks for the report, I'll send v6.
 
 Kind regards,
 Petr
