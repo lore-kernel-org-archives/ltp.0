@@ -1,191 +1,78 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 28 Jul 2020 12:40:24 +0800
-Subject: [LTP] [PATCH v1 2/2] libs/libltpnewipc: Add libmsgctl.c into new
- ipc library
-In-Reply-To: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1595911224-12470-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 28 Jul 2020 12:40:23 +0800
+Subject: [LTP] [PATCH v1 1/2] libs/libltpnewipc: Use safe macros
+Message-ID: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add libmsgctl.c into new ipc library, so we can use it
-in new api msgstress test case.
-
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- include/libnewipc.h           |  28 ++++------
- libs/libltpnewipc/libnewipc.c | 101 ++++++++++++++++++++++++++++++++--
- 2 files changed, 109 insertions(+), 20 deletions(-)
+ libs/libltpnewipc/libnewipc.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/include/libnewipc.h b/include/libnewipc.h
-index 30288cd68..1256c4668 100644
---- a/include/libnewipc.h
-+++ b/include/libnewipc.h
-@@ -1,21 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program.
-- */
--
--/*
-  * common definitions for the IPC system calls.
-  */
- 
-@@ -56,4 +42,14 @@ void *probe_free_addr(const char *file, const int lineno);
- #define PROBE_FREE_ADDR() \
- 	probe_free_addr(__FILE__, __LINE__)
- 
--#endif /* newlibipc.h */
-+void do_read(const char *file, const int lineno, long key, int tid, \
-+	     long type, int child, int nreps);
-+#define DO_READ(key, tid, type, child, nreps) \
-+	do_read(__FILE__, __LINE__, (key), (tid), (type), (child), (nreps))
-+
-+void do_writer(const char *file, const int lineno, long key, int tid, \
-+	       long type, int child, int nreps);
-+#define DO_WRITER(key, tid, type, child, nreps) \
-+	do_writer(__FILE__, __LINE__, (key), (tid), (type), (child), (nreps))
-+
-+#endif /* libnewipc.h */
 diff --git a/libs/libltpnewipc/libnewipc.c b/libs/libltpnewipc/libnewipc.c
-index 3734040b7..4980ce078 100644
+index b909cb7e6..3734040b7 100644
 --- a/libs/libltpnewipc/libnewipc.c
 +++ b/libs/libltpnewipc/libnewipc.c
-@@ -1,10 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-- */
--
--/*
-- * DESCRIPTION
-+ *
-  * common routines for the IPC system call tests.
-  */
+@@ -21,6 +21,8 @@
  
-@@ -26,6 +23,14 @@
+ #include "tst_test.h"
+ #include "libnewipc.h"
++#include "tst_safe_stdio.h"
++#include "tst_safe_sysv_ipc.h"
  
  #define BUFSIZE 1024
  
-+struct mbuffer {
-+	long type;
-+	struct {
-+		char len;
-+		char pbytes[99];
-+	} data;
-+};
-+
- key_t getipckey(const char *file, const int lineno)
- {
- 	char buf[BUFSIZE];
-@@ -86,3 +91,91 @@ void *probe_free_addr(const char *file, const int lineno)
+@@ -31,7 +33,7 @@ key_t getipckey(const char *file, const int lineno)
+ 	int id;
+ 	static int count;
  
- 	return addr;
- }
-+
-+int verify(char *buf, char val, int size, int child)
-+{
-+	while (size-- > 0) {
-+		if (*buf++ != val) {
-+			tst_res(TFAIL, "Verify error in child %d, *buf = %x, "
-+				"val = %x, size = %d\n", child, *buf, val,
-+				size);
-+			return 1;
-+		}
-+	}
-+	return 0;
-+}
-+
-+void do_reader(const char *file, const int lineno, long key, int tid,
-+	       long type, int child, int nreps)
-+{
-+	int i, size;
-+	int id;
-+	struct mbuffer buffer;
-+
-+	id = safe_msgget(file, lineno, key, 0);
-+	if (id != tid) {
-+		tst_res(TFAIL,
-+			"Message queue mismatch in the reader of child group"
-+			" %d for message queue id %d\n", child, id);
-+		return;
-+	}
-+	for (i = 0; i < nreps; i++) {
-+		memset(&buffer, 0, sizeof(buffer));
-+
-+		size = safe_msgrcv(file, lineno, id, &buffer, 100, type, 0);
-+		if (buffer.type != type) {
-+			tst_res(TFAIL, "Type mismatch in child %d, read #%d, "
-+				"for message got %ld, exected %ld",
-+				child, (i + 1), buffer.type, type);
-+			return;
-+		}
-+		if (buffer.data.len + 1 != size) {
-+			tst_res(TFAIL, "Size mismatch in child %d, read #%d, "
-+				"for message got %d, expected %d",
-+				child, (i + 1), buffer.data.len + 1, size);
-+			return;
-+		}
-+		if (verify(buffer.data.pbytes, (key % 255), size - 1, child)) {
-+			tst_res(TFAIL, "Verify failed in child %d read # = %d, "
-+				"key = %lx\n", child, (i + 1), key);
-+			return;
-+		}
-+		key++;
-+	}
-+}
-+
-+void fill_buffer(char *buf, char val, int size)
-+{
-+	int i;
-+
-+	for (i = 0; i < size; i++)
-+		buf[i] = val;
-+}
-+
-+void do_writer(const char *file, const int lineno, long key, int tid,
-+	       long type, int child, int nreps)
-+{
-+	int i, size;
-+	int id;
-+	struct mbuffer buffer;
-+
-+	id = safe_msgget(file, lineno, key, 0);
-+	if (id != tid) {
-+		tst_res(TFAIL, "Message queue mismatch in the reader of child"
-+			" group %d for message queue id %d\n", child, id);
-+		return;
-+	}
-+
-+	for (i = 0; i < nreps; i++) {
-+		memset(&buffer, 0, sizeof(buffer));
-+
-+		do {
-+			size = (lrand48() % 99);
-+		} while (size == 0);
-+		fill_buffer(buffer.data.pbytes, (key % 255), size);
-+		buffer.data.len = size;
-+		buffer.type = type;
-+		safe_msgsnd(file, lineno, id, &buffer, size + 1, 0);
-+		key++;
-+	}
-+}
+-	SAFE_GETCWD(buf, BUFSIZE);
++	safe_getcwd(file, lineno, NULL, buf, BUFSIZE);
+ 
+ 	id = count % 26 + (int) 'a';
+ 	count++;
+@@ -51,11 +53,7 @@ int get_used_queues(const char *file, const int lineno)
+ 	int used_queues = -1;
+ 	char buf[BUFSIZE];
+ 
+-	fp = fopen("/proc/sysvipc/msg", "r");
+-	if (fp == NULL) {
+-		tst_brk(TBROK | TERRNO,
+-			"fopen() failed at %s:%d", file, lineno);
+-	}
++	fp = safe_fopen(file, lineno, NULL, "/proc/sysvipc/msg", "r");
+ 
+ 	while (fgets(buf, BUFSIZE, fp) != NULL)
+ 		used_queues++;
+@@ -78,19 +76,11 @@ void *probe_free_addr(const char *file, const int lineno)
+ 
+ 	probe_key = GETIPCKEY();
+ 
+-	shm_id = shmget(probe_key, SHMLBA * 2, SHM_RW | IPC_CREAT | IPC_EXCL);
+-	if (shm_id == -1)
+-		tst_brk(TBROK, "probe: shmget() failed at %s:%d", file, lineno);
+-
+-	addr = shmat(shm_id, NULL, 0);
+-	if (addr == (void *) -1)
+-		tst_brk(TBROK, "probe: shmat() failed at %s:%d", file, lineno);
+-
+-	if (shmdt(addr) == -1)
+-		tst_brk(TBROK, "probe: shmdt() failed at %s:%d", file, lineno);
+-
+-	if (shmctl(shm_id, IPC_RMID, NULL) == -1)
+-		tst_brk(TBROK, "probe: shmctl() failed at %s:%d", file, lineno);
++	shm_id = safe_shmget(file, lineno, probe_key, SHMLBA * 2,
++			     SHM_RW | IPC_CREAT | IPC_EXCL);
++	addr = safe_shmat(file, lineno, shm_id, NULL, 0);
++	safe_shmdt(file, lineno, addr);
++	safe_shmctl(file, lineno, shm_id, IPC_RMID, NULL);
+ 
+ 	addr = (void *)(((unsigned long)(addr) + (SHMLBA - 1)) & ~(SHMLBA - 1));
+ 
 -- 
 2.23.0
 
