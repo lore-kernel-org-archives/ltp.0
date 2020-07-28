@@ -1,94 +1,193 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Jul 2020 11:20:58 +0800
-Subject: [LTP] [PATCH v2] Add a test case for mmap MAP_GROWSDOWN flag
-In-Reply-To: <20200703030811.11521-1-pravinraghul@zilogic.com>
-References: <20200703030811.11521-1-pravinraghul@zilogic.com>
-Message-ID: <CAEemH2febKOruSdyVDMa8sOTFNnSEdEwZkY1OP_34=Ac2GDxSA@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 28 Jul 2020 12:40:24 +0800
+Subject: [LTP] [PATCH v1 2/2] libs/libltpnewipc: Add libmsgctl.c into new
+ ipc library
+In-Reply-To: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1595911224-12470-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Add libmsgctl.c into new ipc library, so we can use it
+in new api msgstress test case.
 
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ include/libnewipc.h           |  28 ++++------
+ libs/libltpnewipc/libnewipc.c | 101 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 109 insertions(+), 20 deletions(-)
 
-On Fri, Jul 3, 2020 at 11:09 AM pravin <pravinraghul@zilogic.com> wrote:
-
-> ...
-> +/*
-> + * Test mmap() MAP_GROWSDOWN flag
-> + *
-> + * We assign the memory region allocated using MAP_GROWSDOWN to a thread,
-> + * as a stack, to test the effect of MAP_GROWSDOWN. This is because the
-> + * kernel only grows the memory region when the stack pointer, is within
-> + * guard page, when the guard page is touched.
-> + *
-> + * 1. Map an anyonymous memory region of size X, and unmap it.
-> + * 2. Split the unmapped memory region into two.
-> + * 3. The lower memory region is left unmapped.
-> + * 4. The higher memory region is mapped for use as stack, using
-> + *    MAP_FIXED | MAP_GROWSDOWN.
-> + * 5. The higher memory region is provided as stack to a thread, where
-> + *    a recursive function is invoked.
-> + * 6. The stack grows beyond the allocated region, into the lower memory
-> area.
-> + * 7. If this results in the memory region being extended, into the
-> + *    unmapped region, the test is considered to have passed.
-> + */
-> +
-> +#include <unistd.h>
-> +#include <pthread.h>
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <sys/types.h>
-> +#include <stdlib.h>
-> +#include <stdbool.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_pthread.h"
-> +
-> +#define UNITS(x) ((x) * PTHREAD_STACK_MIN)
-> +
-> +static void *stack;
-> +
-> +static bool check_stackgrow_up(int *local_var_1)
-> +{
-> +       int local_var_2;
-> +
-> +       return !(local_var_1 < &local_var_2);
->
-
-Shouldn't local_var_1 less than local_var_2 on a stack grow up arch? why we
-return the reverse value here?
-
-And the worth to say that the optimization of GCC will break this rule in
-the compilation.
-
- -O2  (ltp default gcc flag)
-mmap18.c:46: INFO: local_var_1 = 0x3ffd177dea0, loval_var_2 = 0x3ffd177dea4
--O0
-mmap18.c:46: INFO: local_var_1 = 0x3ffc86fe614, loval_var_2 = 0x3ffc86fe56c
-
---------
-
-Apart from that, mmap18 also gets FAIL with s390x platform like:
-
-# ./mmap18
-tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-mmap18.c:46: INFO: local_var_1 = 0x3fff537e5d4, loval_var_2 = 0x3fff537e52c
-mmap18.c:126: INFO: mem = 0x3ff8dd3a000, stack = 0x3ff8dd5a000
-mmap18.c:136: FAIL: Child killed by SIGSEGV
-
-Summary:
-passed   0
-failed   1
-skipped  0
-warnings 0
-
+diff --git a/include/libnewipc.h b/include/libnewipc.h
+index 30288cd68..1256c4668 100644
+--- a/include/libnewipc.h
++++ b/include/libnewipc.h
+@@ -1,21 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.
+- */
+-
+-/*
+  * common definitions for the IPC system calls.
+  */
+ 
+@@ -56,4 +42,14 @@ void *probe_free_addr(const char *file, const int lineno);
+ #define PROBE_FREE_ADDR() \
+ 	probe_free_addr(__FILE__, __LINE__)
+ 
+-#endif /* newlibipc.h */
++void do_read(const char *file, const int lineno, long key, int tid, \
++	     long type, int child, int nreps);
++#define DO_READ(key, tid, type, child, nreps) \
++	do_read(__FILE__, __LINE__, (key), (tid), (type), (child), (nreps))
++
++void do_writer(const char *file, const int lineno, long key, int tid, \
++	       long type, int child, int nreps);
++#define DO_WRITER(key, tid, type, child, nreps) \
++	do_writer(__FILE__, __LINE__, (key), (tid), (type), (child), (nreps))
++
++#endif /* libnewipc.h */
+diff --git a/libs/libltpnewipc/libnewipc.c b/libs/libltpnewipc/libnewipc.c
+index 3734040b7..4980ce078 100644
+--- a/libs/libltpnewipc/libnewipc.c
++++ b/libs/libltpnewipc/libnewipc.c
+@@ -1,10 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
+- */
+-
+-/*
+- * DESCRIPTION
++ *
+  * common routines for the IPC system call tests.
+  */
+ 
+@@ -26,6 +23,14 @@
+ 
+ #define BUFSIZE 1024
+ 
++struct mbuffer {
++	long type;
++	struct {
++		char len;
++		char pbytes[99];
++	} data;
++};
++
+ key_t getipckey(const char *file, const int lineno)
+ {
+ 	char buf[BUFSIZE];
+@@ -86,3 +91,91 @@ void *probe_free_addr(const char *file, const int lineno)
+ 
+ 	return addr;
+ }
++
++int verify(char *buf, char val, int size, int child)
++{
++	while (size-- > 0) {
++		if (*buf++ != val) {
++			tst_res(TFAIL, "Verify error in child %d, *buf = %x, "
++				"val = %x, size = %d\n", child, *buf, val,
++				size);
++			return 1;
++		}
++	}
++	return 0;
++}
++
++void do_reader(const char *file, const int lineno, long key, int tid,
++	       long type, int child, int nreps)
++{
++	int i, size;
++	int id;
++	struct mbuffer buffer;
++
++	id = safe_msgget(file, lineno, key, 0);
++	if (id != tid) {
++		tst_res(TFAIL,
++			"Message queue mismatch in the reader of child group"
++			" %d for message queue id %d\n", child, id);
++		return;
++	}
++	for (i = 0; i < nreps; i++) {
++		memset(&buffer, 0, sizeof(buffer));
++
++		size = safe_msgrcv(file, lineno, id, &buffer, 100, type, 0);
++		if (buffer.type != type) {
++			tst_res(TFAIL, "Type mismatch in child %d, read #%d, "
++				"for message got %ld, exected %ld",
++				child, (i + 1), buffer.type, type);
++			return;
++		}
++		if (buffer.data.len + 1 != size) {
++			tst_res(TFAIL, "Size mismatch in child %d, read #%d, "
++				"for message got %d, expected %d",
++				child, (i + 1), buffer.data.len + 1, size);
++			return;
++		}
++		if (verify(buffer.data.pbytes, (key % 255), size - 1, child)) {
++			tst_res(TFAIL, "Verify failed in child %d read # = %d, "
++				"key = %lx\n", child, (i + 1), key);
++			return;
++		}
++		key++;
++	}
++}
++
++void fill_buffer(char *buf, char val, int size)
++{
++	int i;
++
++	for (i = 0; i < size; i++)
++		buf[i] = val;
++}
++
++void do_writer(const char *file, const int lineno, long key, int tid,
++	       long type, int child, int nreps)
++{
++	int i, size;
++	int id;
++	struct mbuffer buffer;
++
++	id = safe_msgget(file, lineno, key, 0);
++	if (id != tid) {
++		tst_res(TFAIL, "Message queue mismatch in the reader of child"
++			" group %d for message queue id %d\n", child, id);
++		return;
++	}
++
++	for (i = 0; i < nreps; i++) {
++		memset(&buffer, 0, sizeof(buffer));
++
++		do {
++			size = (lrand48() % 99);
++		} while (size == 0);
++		fill_buffer(buffer.data.pbytes, (key % 255), size);
++		buffer.data.len = size;
++		buffer.type = type;
++		safe_msgsnd(file, lineno, id, &buffer, size + 1, 0);
++		key++;
++	}
++}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200728/00519f14/attachment-0001.htm>
+2.23.0
+
+
+
