@@ -1,108 +1,101 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Jul 2020 21:29:12 +0800
-Subject: [LTP] [PATCH v2] Add a test case for mmap MAP_GROWSDOWN flag
-In-Reply-To: <CAEemH2febKOruSdyVDMa8sOTFNnSEdEwZkY1OP_34=Ac2GDxSA@mail.gmail.com>
-References: <20200703030811.11521-1-pravinraghul@zilogic.com>
- <CAEemH2febKOruSdyVDMa8sOTFNnSEdEwZkY1OP_34=Ac2GDxSA@mail.gmail.com>
-Message-ID: <CAEemH2egK01VqrZEaedr_YpgGmz8YLvBDq7bOkA2w+cJdupy5g@mail.gmail.com>
+From: Erico Nunes <ernunes@redhat.com>
+Date: Tue, 28 Jul 2020 18:22:05 +0200
+Subject: [LTP] [PATCH v2 1/3] lib: add function to check for kernel lockdown
+Message-ID: <20200728162207.332109-1-ernunes@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jul 28, 2020 at 11:20 AM Li Wang <liwang@redhat.com> wrote:
+Some syscalls are not available if the kernel is booted using the
+'lockdown' feature. That can cause some tests to report fail, showing
+a message like:
 
-> ...
->
->> +       return !(local_var_1 < &local_var_2);
->>
->
-> Shouldn't local_var_1 less than local_var_2 on a stack grow up arch? why
-> we return the reverse value here?
->
-> And the worth to say that the optimization of GCC will break this rule in
-> the compilation.
->
-> -O2  (ltp default gcc flag)
-> mmap18.c:46: INFO: local_var_1 = 0x3ffd177dea0, loval_var_2 = 0x3ffd177dea4
-> -O0
-> mmap18.c:46: INFO: local_var_1 = 0x3ffc86fe614, loval_var_2 = 0x3ffc86fe56c
->
+  Lockdown: iopl01: iopl is restricted; see man kernel_lockdown.7
 
-To avoid the compiler optimization disturbing the address order of
-variables, I'd
-suggest using only one local variable as the baseline to compare with
-itself new
-address in another recursive function calling.
+This patch adds a function that can be used by tests to check for this
+case, so it can be handled accordingly.
 
-Something maybe like this:
+Signed-off-by: Erico Nunes <ernunes@redhat.com>
+---
+v2:
+- just return the lockdown status so tests can handle as needed, instead
+  of just always skipping the test.
+- handle fgets return value to avoid compiler warning (can't return any
+  sensible value so I just ported what I have seen in other similar
+  cases).
+---
+ include/tst_lockdown.h |  8 ++++++++
+ include/tst_test.h     |  1 +
+ lib/tst_lockdown.c     | 31 +++++++++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+)
+ create mode 100644 include/tst_lockdown.h
+ create mode 100644 lib/tst_lockdown.c
 
-static int check_stackgrow_up(void)
-{
-    char local_var;
-    static char *addr = 0;
-
-    if (addr == 0) {
-        addr = &local_var;
-        return check_stackgrow_up();
-    }
-
-    return ((&local_var > addr) ? 1 : 0);
-}
-
-
---------
->
-> Apart from that, mmap18 also gets FAIL with s390x platform like:
->
-> # ./mmap18
-> tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-> mmap18.c:46: INFO: local_var_1 = 0x3fff537e5d4, loval_var_2 = 0x3fff537e52c
-> mmap18.c:126: INFO: mem = 0x3ff8dd3a000, stack = 0x3ff8dd5a000
-> mmap18.c:136: FAIL: Child killed by SIGSEGV
->
-
-From my observation, the failure only occurs on s390x, and it could not
-overstride to the unmap memory area. With the following debug-code
-adding to run_test():
-
-+       memset(stack, 1, getpagesize());
-+       tst_res(TINFO, "write to *stack sucess");
-+       memset(stack - getpagesize(), 1, getpagesize());
-+       tst_res(TINFO, "write to *(stack - %d) sucess", getpagesize());
-
-mmap18 (on s390x) prints:
-
-  tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-  mmap18.c:137: INFO: write to *stack sucess
-  tst_test.c:1292: BROK: Test killed by SIGSEGV!
-
-But trying with other architectures(x86_64, aarch64), they all override
-the stack and write into the unmapped area.
-
-  tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-  mmap18.c:139: INFO: write to *stack sucess
-  mmap18.c:141: INFO: write to *(stack - 65536) sucess
-  mmap18.c:151: PASS: Stack grows in unmapped region
-
-
-And the Linux Manual makes me feel confusing here, what is the correct
-behavior when writing the "guard" page? Can someone help explain this?
-
-?"?
-    MAP_GROWSDOWN
-    ...
-    Touching an address in the "guard" page below the mapping will
-    cause the mapping to grow by a page. This growth can be repeated
-    until the mapping grows to within a page of the high end of the next
-    lower mapping, at which point touching the "guard" page will result
-    in a SIGSEGV signal.
-"""
-
+diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
+new file mode 100644
+index 000000000..383026b1e
+--- /dev/null
++++ b/include/tst_lockdown.h
+@@ -0,0 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#ifndef TST_LOCKDOWN_H
++#define TST_LOCKDOWN_H
++
++int tst_lockdown_enabled(void);
++
++#endif /* TST_LOCKDOWN_H */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index b84f7b9dd..b02de4597 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -40,6 +40,7 @@
+ #include "tst_hugepage.h"
+ #include "tst_assert.h"
+ #include "tst_cgroup.h"
++#include "tst_lockdown.h"
+ 
+ /*
+  * Reports testcase result.
+diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
+new file mode 100644
+index 000000000..024047aae
+--- /dev/null
++++ b/lib/tst_lockdown.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#define TST_NO_DEFAULT_MAIN
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/mount.h>
++
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "tst_safe_stdio.h"
++#include "tst_lockdown.h"
++
++int tst_lockdown_enabled(void)
++{
++	char line[BUFSIZ];
++	const char *lockdown_path = "/sys/kernel/security/lockdown";
++	FILE *file;
++
++	if (access("/sys/kernel/security/lockdown", F_OK) != 0) {
++		tst_res(TINFO, "Unable to determine system lockdown state\n");
++		return 0;
++	}
++
++	file = SAFE_FOPEN(lockdown_path, "r");
++	if (!fgets(line, sizeof(line), file))
++		tst_brk(TBROK | TERRNO, "fgets %s", lockdown_path);
++	SAFE_FCLOSE(file);
++
++	return (strstr(line, "[none]") == NULL);
++}
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200728/c0f8f89b/attachment-0001.htm>
+2.26.2
+
