@@ -1,47 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 28 Jul 2020 11:16:40 +0200
-Subject: [LTP] [PATCH 3/9] syscalls/ipc: shmctl04: Rewrite from scratch.
-In-Reply-To: <20200717163453.9587-4-chrubis@suse.cz>
-References: <20200717163453.9587-1-chrubis@suse.cz>
- <20200717163453.9587-4-chrubis@suse.cz>
-Message-ID: <20200728091640.GA24592@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 28 Jul 2020 13:33:03 +0200
+Subject: [LTP] [PATCH COMMITTED] thp04: avoid warnings in cleanup()
+Message-ID: <a5b38150d2d496927567ef574610fee6d1fd8dd4.1595935959.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Don't call munmap on read/write_thp when test TCONFs earlier:
+  thp04.c:72: CONF: Kernel does not support huge pages
+  safe_macros.c:202: WARN: thp04.c:146: munmap((nil),0) failed: EINVAL (22)
+  safe_macros.c:202: WARN: thp04.c:147: munmap((nil),0) failed: EINVAL (22)
 
-> -	/*
-> -	 * Create a temporary directory and cd into it.
-> -	 * This helps to ensure that a unique msgkey is created.
-> -	 * See libs/libltpipc/libipc.c for more information.
-> -	 */
-> -	tst_tmpdir();
-> +	TEST(shmctl(TST_RET, SHM_STAT_ANY, &ds));
-Several old distros fail [1] as they miss SHM_STAT_ANY in <bits/shm.h> (added to
-glibc in 2.28, to kernel in 4.17).
-Of course, it's just enough to add the definition to include/tst_safe_sysv_ipc.h
-(or some LAPI file).
+Successful call to alloc_zero_page() always returns address > 0,
+so add a NULL check to cleanup().
 
-Kind regards,
-Petr
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/mem/thp/thp04.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-[1] https://travis-ci.org/github/pevik/ltp/builds/712476731
-
-diff --git include/tst_safe_sysv_ipc.h include/tst_safe_sysv_ipc.h
-index 3e0e50e8d..dea85f97c 100644
---- include/tst_safe_sysv_ipc.h
-+++ include/tst_safe_sysv_ipc.h
-@@ -10,6 +10,10 @@
- #include <sys/msg.h>
- #include <sys/shm.h>
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+index d21f77e72de1..e71261c1d986 100644
+--- a/testcases/kernel/mem/thp/thp04.c
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -143,8 +143,10 @@ static void cleanup(void)
+ 	if (writefd >= 0)
+ 		SAFE_CLOSE(writefd);
  
-+#ifndef SHM_STAT_ANY
-+# define SHM_STAT_ANY	15
-+#endif
-+
- int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
- #define SAFE_MSGGET(key, msgflg) \
- 	safe_msgget(__FILE__, __LINE__, (key), (msgflg))
+-	SAFE_MUNMAP(read_thp, thp_size);
+-	SAFE_MUNMAP(write_thp, thp_size);
++	if (read_thp)
++		SAFE_MUNMAP(read_thp, thp_size);
++	if (write_thp)
++		SAFE_MUNMAP(write_thp, thp_size);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.18.1
+
