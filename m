@@ -1,37 +1,51 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 29 Jul 2020 18:43:53 +0800
-Subject: [LTP] [PATCH v3 1/2] syscalls/ioctl_loop06: Using
- LOOP_CONFIGURE to test invalid block size
-In-Reply-To: <20200729100758.GA7152@yuki.lan>
-References: <20200722125946.GA22573@yuki.lan>
- <1595556357-29932-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200729100758.GA7152@yuki.lan>
-Message-ID: <a6b872b4-35e7-c326-1470-4372a02a92ad@cn.fujitsu.com>
+From: Erico Nunes <ernunes@redhat.com>
+Date: Wed, 29 Jul 2020 12:55:46 +0200
+Subject: [LTP] [PATCH v2 1/3] lib: add function to check for kernel
+ lockdown
+In-Reply-To: <CAEemH2d+EOzF8aKAkpsnUO1GqgPh3J40RBDXyBg0E5NC8nrSuw@mail.gmail.com>
+References: <20200728162207.332109-1-ernunes@redhat.com>
+ <CAEemH2d+EOzF8aKAkpsnUO1GqgPh3J40RBDXyBg0E5NC8nrSuw@mail.gmail.com>
+Message-ID: <678ed5c9-d678-6673-666b-05b999567977@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-> Hi!
->>   static void verify_ioctl_loop(unsigned int n)
->> +{
->> +	if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
->> +		TEST(ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig));
->> +	else
->> +		TEST(ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, *(tcases[n].setvalue)));
->> +
->> +	if (TST_RET == 0) {
->> +		tst_res(TFAIL, "Set block size succeed unexpectedly");
->> +		if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
->> +			TST_RETRY_FUNC(ioctl(dev_fd, LOOP_CLR_FD, 0), TST_RETVAL_EQ0);
-> 
-> I guess that we can use the tst_detach_device_by_fd() here as well
-> right?
-> 
-> If you agree with that change I will change this and push the patch.
-Agree.
-> 
 
+
+On 7/29/20 5:14 AM, Li Wang wrote:
+> Thanks Erico for patch V2.
+> 
+> On Wed, Jul 29, 2020 at 12:23 AM Erico Nunes <ernunes@redhat.com
+> <mailto:ernunes@redhat.com>> wrote:
+> 
+>     Some syscalls are not available if the kernel is booted using the
+>     'lockdown' feature. That can cause some tests to report fail, showing
+>     a message like:
+> 
+>     ? Lockdown: iopl01: iopl is restricted; see man kernel_lockdown.7
+> 
+>     This patch adds a function that can be used by tests to check for this
+>     case, so it can be handled accordingly.
+> 
+>     Signed-off-by: Erico Nunes <ernunes@redhat.com
+>     <mailto:ernunes@redhat.com>>
+>     ---
+>     ...
+>     +int tst_lockdown_enabled(void)
+>     +{
+>     +? ? ? ?char line[BUFSIZ];
+>     +? ? ? ?const char *lockdown_path = "/sys/kernel/security/lockdown";
+> 
+> 
+> I prefer to add a macro definition in the header file instead of this ^.
+> ? ? #define PATH_LOCKDOWN? "/sys/kernel/security/lockdown"
+
+I'm ok with that, do you want me to submit another version like this or
+can you change while applying?
+
+Thank you
+
+Erico
 
