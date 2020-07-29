@@ -1,53 +1,54 @@
-From: Erico Nunes <ernunes@redhat.com>
-Date: Tue, 28 Jul 2020 18:22:07 +0200
-Subject: [LTP] [PATCH v2 3/3] iopl01: skip test if kernel is locked down
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 29 Jul 2020 11:14:08 +0800
+Subject: [LTP] [PATCH v2 1/3] lib: add function to check for kernel
+ lockdown
 In-Reply-To: <20200728162207.332109-1-ernunes@redhat.com>
 References: <20200728162207.332109-1-ernunes@redhat.com>
-Message-ID: <20200728162207.332109-3-ernunes@redhat.com>
+Message-ID: <CAEemH2d+EOzF8aKAkpsnUO1GqgPh3J40RBDXyBg0E5NC8nrSuw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-iopl is restricted under kernel lockdown.
+Thanks Erico for patch V2.
 
-Signed-off-by: Erico Nunes <ernunes@redhat.com>
----
-v2:
-- update to skip the test here rather than relying on the helper
-  function to skip.
----
- testcases/kernel/syscalls/iopl/iopl01.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On Wed, Jul 29, 2020 at 12:23 AM Erico Nunes <ernunes@redhat.com> wrote:
 
-diff --git a/testcases/kernel/syscalls/iopl/iopl01.c b/testcases/kernel/syscalls/iopl/iopl01.c
-index edf586cd1..e5ec1147f 100644
---- a/testcases/kernel/syscalls/iopl/iopl01.c
-+++ b/testcases/kernel/syscalls/iopl/iopl01.c
-@@ -42,6 +42,14 @@ static void verify_iopl(void)
- 	}
- }
- 
-+static void setup(void)
-+{
-+	/* iopl is restricted under kernel lockdown. */
-+	if (tst_lockdown_enabled())
-+		tst_brk(TCONF, "Kernel is locked down, skip this test");
-+
-+}
-+
- static void cleanup(void)
- {
- 	/*
-@@ -54,6 +62,7 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.test_all = verify_iopl,
- 	.needs_root = 1,
-+	.setup = setup,
- 	.cleanup = cleanup,
- };
- 
+> Some syscalls are not available if the kernel is booted using the
+> 'lockdown' feature. That can cause some tests to report fail, showing
+> a message like:
+>
+>   Lockdown: iopl01: iopl is restricted; see man kernel_lockdown.7
+>
+> This patch adds a function that can be used by tests to check for this
+> case, so it can be handled accordingly.
+>
+> Signed-off-by: Erico Nunes <ernunes@redhat.com>
+> ---
+> ...
+> +int tst_lockdown_enabled(void)
+> +{
+> +       char line[BUFSIZ];
+> +       const char *lockdown_path = "/sys/kernel/security/lockdown";
+>
+
+I prefer to add a macro definition in the header file instead of this ^.
+    #define PATH_LOCKDOWN  "/sys/kernel/security/lockdown"
+
+Considering some distribution's LSM feature has not aligned with the
+mainline kernel, so I think this method is enough to detect the lockdown
+status at currently, if some new changes happening then we can help improve
+the function as well.
+
+Anyway, the whole patchset looks good, if nobody has objection I will help
+merge it one day later.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
 -- 
-2.26.2
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200729/0be13990/attachment.htm>
