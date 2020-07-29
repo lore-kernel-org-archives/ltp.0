@@ -1,32 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Jul 2020 14:58:15 +0200
-Subject: [LTP] [PATCH v3 2/2] syscalls/ioctl_loop05: Using
- LOOP_CONFIGURE to set direct io
-In-Reply-To: <1595556357-29932-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20200722125946.GA22573@yuki.lan>
- <1595556357-29932-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1595556357-29932-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200729125815.GD7152@yuki.lan>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Wed, 29 Jul 2020 21:05:08 +0800
+Subject: [LTP] [PATCH] hotplug/memory_hotplug: Remove unused goto label
+In-Reply-To: <20200727164355.1177602-1-aiden.gaoyuan@gmail.com>
+References: <20200727164355.1177602-1-aiden.gaoyuan@gmail.com>
+Message-ID: <62530509-aba6-9180-ecea-150f3c5b8ebb@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	/*
-> +	 * When we call loop_configure ioctl successfully and detach it,
-> +	 * the subquent loop_configure without non-zero lo_offset or
-> +	 * sizelimit may trigger the blk_update_request I/O error.
-> +	 * To avoid this, sleep 1s to ensure last blk_update_request has
-> +	 * completed.
-> +	 */
-> +	sleep(1);
+On 7/28/20 12:43 AM, aidengao wrote:
+> From: aidengao <aidengao@google.com>
+>
+> Remove unused goto label in parse_command_line_args function
+>
+> Signed-off-by: Yuan Gao <aiden.gaoyuan@gmail.com>
+> ---
+>   testcases/kernel/hotplug/memory_hotplug/memtoy.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/hotplug/memory_hotplug/memtoy.c b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> index 8ac9600de..90bfd7f2f 100644
+> --- a/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> +++ b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> @@ -447,7 +447,7 @@ int parse_command_line_args(int argc, char *argv[])
+>   			break;
+>   		}
+>   	}
+> -done:
+> +
+>   
 
-This sounds to me like a kernel bug. Have you tried asking kernel
-developers if this is expected behavior before we attempt work around
-the problem in tests?
+Hi Gao,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Pushed with a minor change(delete a redundant blank line). :-)
+
+Thanks,
+
+Xiao Yang
+
+>   	return (error);
+>   }
+
