@@ -1,57 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 30 Jul 2020 11:26:37 +0200
-Subject: [LTP] [PATCH 1/1] semctl: Fix 32 bit build
-Message-ID: <20200730092637.487-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 30 Jul 2020 11:28:02 +0200
+Subject: [LTP] [PATCH v3 2/2] syscalls/ioctl_loop05: Using
+ LOOP_CONFIGURE to set direct io
+In-Reply-To: <924c3fc1-c56c-a752-0720-bb12d6cf8ec0@cn.fujitsu.com>
+References: <20200722125946.GA22573@yuki.lan>
+ <1595556357-29932-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1595556357-29932-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200729113946.GB7152@yuki.lan>
+ <924c3fc1-c56c-a752-0720-bb12d6cf8ec0@cn.fujitsu.com>
+Message-ID: <20200730092802.GA3457@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since dfe45f3cf libltpnewipc started to depend on safe macros from
-libltp.a, thus order for linking must be -lltpnewipc -lltp.
+Hi!
+> > So I guess that we will have to write a parser that reads that
+> > information line by line after all.
+> I doubt how machies will have more or zero fields in (7). But I think 
+> you are right,
 
-Default order (where -lltp goes first) caused build failures on 32 bit:
+Well that's what I do have here.
 
-cd testcases/kernel/syscalls/ipc/semctl
-gcc -m32 -Wformat -Werror=format-security -Werror=implicit-function-declaration -Werror=return-type -fno-common -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -I../../../../../include -I../../../../../include -I../../../../../include/old/ -m32 -L../../../../../libs/libltpipc -L../../../../../libs/libltpnewipc -L../../../../../lib  semctl08.c  -lltp -lltpnewipc -o semctl08
-/usr/bin/ld: ../../../../../libs/libltpnewipc/libltpnewipc.a(libnewipc.o): in function `probe_free_addr':
-libs/libltpnewipc/libnewipc.c:79: undefined reference to `safe_shmget'
-/usr/bin/ld: libs/libltpnewipc/libnewipc.c:81: undefined reference to `safe_shmat'
-/usr/bin/ld: libs/libltpnewipc/libnewipc.c:82: undefined reference to `safe_shmdt'
-/usr/bin/ld: libs/libltpnewipc/libnewipc.c:83: undefined reference to `safe_shmctl'
+> How about using the (3) field and second to last field. Then we can 
+> avoid zero or more filed in (7). the code as below??
 
-NOTE: other uses of -lltpnewipc (msg{ctl,get,snd}, shm{at,ctl})
-are not affected.
+Actually looking into util-linux code it says that th the optional
+fields are terminated with " - ", see:
 
-Fixes: dfe45f3cf ("libs/libltpnewipc: Use safe macros")
+https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/libmount/src/tab_parse.c#n177
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+So I guess the safest option would be:
 
-Reason why I don't push this fix directly is that
-I wonder why msg{ctl,get,snd}, shm{at,ctl} aren't affected and whether
-we can avoid directly specifying -lltp.
+* Match the line by major:minor as you do
+* Then strstr() for " - " should land us directly to field (8)
 
-Kind regards,
-Petr
-
- testcases/kernel/syscalls/ipc/semctl/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
-index 99971a7db..2559b4c28 100644
---- a/testcases/kernel/syscalls/ipc/semctl/Makefile
-+++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
-@@ -8,6 +8,6 @@ LTPLIBS = ltpipc ltpnewipc
- include $(top_srcdir)/include/mk/testcases.mk
- 
- semctl01 semctl02 semctl03 semctl04 semctl05 semctl06 semctl07: LDLIBS += -lltpipc
--semctl08: LDLIBS += -lltpnewipc
-+semctl08: LDLIBS = -lltpnewipc -lltp
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
