@@ -1,78 +1,45 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 30 Jul 2020 11:15:47 +0800
-Subject: [LTP] [PATCH COMMITTED] futex: take use of the .request_hugepages
-Message-ID: <20200730031547.24630-1-liwang@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 30 Jul 2020 12:01:52 +0800
+Subject: [LTP] [PATCH v2] hotplug/memory_hotplug: Remove unused goto
+ label
+In-Reply-To: <20200729185344.3318703-1-aiden.gaoyuan@gmail.com>
+References: <20200729185344.3318703-1-aiden.gaoyuan@gmail.com>
+Message-ID: <5F224630.7090600@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To get rid of warnings when hugetlbfs is not supported.
+Hi,
 
-  futex_wake04.c:65: CONF: Huge page is not supported.
-  safe_file_ops.c:299: WARN: Failed to close FILE '/proc/sys/vm/nr_hugepages' at futex_wake04.c:76: EOPNOTSUPP (95)
+I have pushed with this change, so you don't need to send the v2 path.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- .../kernel/syscalls/futex/futex_wake04.c      | 21 ++++---------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+Thanks,
+Xiao Yang
+On 2020/7/30 2:53, Yuan Gao wrote:
+> Remove unused goto label in parse_command_line_args function
+>
+> Change from v1
+> 1. Remove a redundant blank line
+>
+> Signed-off-by: Yuan Gao<aiden.gaoyuan@gmail.com>
+> ---
+>   testcases/kernel/hotplug/memory_hotplug/memtoy.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/testcases/kernel/hotplug/memory_hotplug/memtoy.c b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> index 8ac9600de..e647f86b6 100644
+> --- a/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> +++ b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
+> @@ -447,7 +447,6 @@ int parse_command_line_args(int argc, char *argv[])
+>   			break;
+>   		}
+>   	}
+> -done:
+>
+>   	return (error);
+>   }
 
-diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
-index 8fae7ced9..f6f571ac4 100644
---- a/testcases/kernel/syscalls/futex/futex_wake04.c
-+++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-@@ -36,8 +36,6 @@ static futex_t *futex1, *futex2;
- 
- static struct tst_ts to;
- 
--static long orig_hugepages;
--
- static struct test_variants {
- 	enum futex_fn_type fntype;
- 	enum tst_ts_type tstype;
-@@ -54,26 +52,15 @@ static struct test_variants {
- 
- static void setup(void)
- {
-+	if (tst_hugepages == 0)
-+		tst_brk(TCONF, "No enough hugepages for testing.");
-+
- 	struct test_variants *tv = &variants[tst_variant];
- 
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	futex_supported_by_kernel(tv->fntype);
- 
- 	to = tst_ts_from_ns(tv->tstype, 30 * NSEC_PER_SEC);
--
--	if (access(PATH_HUGEPAGES, F_OK))
--		tst_brk(TCONF, "Huge page is not supported.");
--
--	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%ld", &orig_hugepages);
--
--	if (orig_hugepages <= 0)
--		SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%d", 1);
--}
--
--static void cleanup(void)
--{
--	if (orig_hugepages <= 0)
--		SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%ld", orig_hugepages);
- }
- 
- static void *wait_thread1(void *arg LTP_ATTRIBUTE_UNUSED)
-@@ -147,10 +134,10 @@ static void wakeup_thread2(void)
- 
- static struct tst_test test = {
- 	.setup = setup,
--	.cleanup = cleanup,
- 	.test_all = wakeup_thread2,
- 	.test_variants = ARRAY_SIZE(variants),
- 	.needs_root = 1,
- 	.min_kver = "2.6.32",
- 	.needs_tmpdir = 1,
-+	.request_hugepages = 1,
- };
--- 
-2.21.1
+
 
