@@ -1,35 +1,29 @@
-From: Yuan Gao <aiden.gaoyuan@gmail.com>
-Date: Wed, 29 Jul 2020 18:53:44 +0000
-Subject: [LTP] [PATCH v2] hotplug/memory_hotplug: Remove unused goto label
-Message-ID: <20200729185344.3318703-1-aiden.gaoyuan@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 30 Jul 2020 08:21:09 +0800
+Subject: [LTP] [PATCH v2 1/3] lib: add function to check for kernel
+ lockdown
+In-Reply-To: <20200729063311.GA30121@rei>
+References: <20200728162207.332109-1-ernunes@redhat.com>
+ <CAEemH2d+EOzF8aKAkpsnUO1GqgPh3J40RBDXyBg0E5NC8nrSuw@mail.gmail.com>
+ <20200729063311.GA30121@rei>
+Message-ID: <CAEemH2dgFTiz82uakmsgWTkXQuHDinO4UVjUYiuiTB=KO1C-EQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Remove unused goto label in parse_command_line_args function
+On Wed, Jul 29, 2020 at 2:33 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Change from v1
-1. Remove a redundant blank line
+>
+> Looks good to me as well.
+>
 
-Signed-off-by: Yuan Gao <aiden.gaoyuan@gmail.com>
----
- testcases/kernel/hotplug/memory_hotplug/memtoy.c | 1 -
- 1 file changed, 1 deletion(-)
+Pushed.
 
-diff --git a/testcases/kernel/hotplug/memory_hotplug/memtoy.c b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-index 8ac9600de..e647f86b6 100644
---- a/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-+++ b/testcases/kernel/hotplug/memory_hotplug/memtoy.c
-@@ -447,7 +447,6 @@ int parse_command_line_args(int argc, char *argv[])
- 			break;
- 		}
- 	}
--done:
- 
- 	return (error);
- }
 -- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200730/ff4123e0/attachment.htm>
