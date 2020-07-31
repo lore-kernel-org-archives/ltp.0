@@ -1,161 +1,39 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 31 Jul 2020 13:48:19 +0200
-Subject: [LTP] [PATCH 5.4 00/19] 5.4.55-rc1 review
-In-Reply-To: <CA+G9fYvCPwwmF-k=Z9Z6P2KYrOMHurcORwa3RW2H1j6pq1QEDg@mail.gmail.com>
-References: <20200730074420.502923740@linuxfoundation.org>
- <CA+G9fYvCPwwmF-k=Z9Z6P2KYrOMHurcORwa3RW2H1j6pq1QEDg@mail.gmail.com>
-Message-ID: <CAK8P3a2wbGAMCdQ6tq0M9=uLxCBB=aqWd9-pQjfKXZ7Ou30H2A@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 31 Jul 2020 15:02:20 +0200
+Subject: [LTP] [PATCH 0/3] Build system fixes
+In-Reply-To: <20200731121508.12805-1-chrubis@suse.cz>
+References: <20200731121508.12805-1-chrubis@suse.cz>
+Message-ID: <20200731130220.GA5413@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jul 31, 2020 at 12:32 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> On Thu, 30 Jul 2020 at 13:36, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.55 release.
-> > There are 19 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.55-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> Results from Linaro?s test farm.
-> Regressions on arm64 Juno-r2 device running LTP controllers-tests
->
-> CONFIG_ARM64_64K_PAGES=y
->
-> Unable to handle kernel paging request at virtual address dead000000000108
+Hi Cyril,
 
-This is LIST_POISON1+8, so something was following a list_head that got
-deleted from a list.
+> This patchset does
 
-> [dead000000000108] address between user and kernel address ranges
-> Internal error: Oops: 96000044 [#1] PREEMPT SMP
->
-> pc : get_page_from_freelist+0xa64/0x1030
-> lr : get_page_from_freelist+0x9c4/0x1030
->
-> We are trying to reproduce this kernel panic and trying to narrow down to
-> specific test cases.
->
-> Summary
-> ------------------------------------------------------------------------
->
-> kernel: 5.4.55-rc1
-> git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> git branch: linux-5.4.y
-> git commit: 6666ca784e9e47288180a15935061d88debc9e4b
-> git describe: v5.4.54-20-g6666ca784e9e
-> Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/build/v5.4.54-20-g6666ca784e9e
->
-> arm64 kernel config and details:
-> config: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/kernel.config
-> vmlinux: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/vmlinux.xz
-> System.map: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/System.map
->
-> steps to reproduce:
-> - boot juno-r2 with 64k page size config
-> - run ltp controllers
->   # cd /opt/ltp
->   # ./runltp -f controllers
->
-> memcg_process: shmget() failed: Invalid argument
-> [  248.372285] Unable to handle kernel paging request at virtual
-> address dead000000000108
-> [  248.380223] Mem abort info:
-> [  248.383015]   ESR = 0x96000044
-> [  248.386071]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [  248.391387]   SET = 0, FnV = 0
-> [  248.394440]   EA = 0, S1PTW = 0
-> [  248.397580] Data abort info:
-> [  248.400460]   ISV = 0, ISS = 0x00000044
-> [  248.404296]   CM = 0, WnR = 1
-> [  248.407264] [dead000000000108] address between user and kernel address ranges
-> [  248.414410] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [  248.419989] Modules linked in: tda998x drm_kms_helper drm crct10dif_ce fuse
-> [  248.426975] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.55-rc1 #1
-> [  248.433249] Hardware name: ARM Juno development board (r2) (DT)
-> [  248.439178] pstate: a0000085 (NzCv daIf -PAN -UAO)
-> [  248.443984] pc : get_page_from_freelist+0xa64/0x1030
-> [  248.448955] lr : get_page_from_freelist+0x9c4/0x1030
+> * Introduce LTPLDLIBS to solve linker dependencies once for all
 
-The function is a little too long for me to see immediately which list this is.
-Using addr2line should help.
+> * Cleans up the output from make a bit, this could be even more fine
+>   tuned if we agree on this part
 
-> [  248.453923] sp : ffff80001000fbb0
-> [  248.457238] x29: ffff80001000fbb0 x28: ffff00097fdbfe48
-> [  248.462557] x27: 0000000000000010 x26: 0000000000000000
-> [  248.467877] x25: ffff00097feabdc0 x24: 0000000000000000
-> [  248.473196] x23: 0000000000000000 x22: 0000000000000000
-> [  248.478515] x21: 0000fff680154180 x20: ffff00097fdbfe38
-> [  248.483835] x19: 0000000000000000 x18: 0000000000000000
-> [  248.489154] x17: 0000000000000000 x16: 0000000000000000
-> [  248.494473] x15: 0000000000000000 x14: 0000000000000000
-> [  248.499792] x13: 0000000000000000 x12: 0000000034d4d91d
-> [  248.505111] x11: 0000000000000000 x10: 0000000000000000
-> [  248.510430] x9 : ffff80096e790000 x8 : ffffffffffffff40
-> [  248.515749] x7 : 0000000000000000 x6 : ffffffe002308b48
-> [  248.521068] x5 : ffff00097fdbfe38 x4 : dead000000000100
-> [  248.526387] x3 : 0000000000000000 x2 : 0000000000000000
-> [  248.531706] x1 : 0000000000000000 x0 : ffffffe002308b40
-> [  248.537026] Call trace:
-> [  248.539475]  get_page_from_freelist+0xa64/0x1030
-> [  248.544099]  __alloc_pages_nodemask+0x144/0x280
-> [  248.548635]  page_frag_alloc+0x70/0x140
-> [  248.552479]  __netdev_alloc_skb+0x158/0x188
-> [  248.556667]  smsc911x_poll+0x90/0x268
+> Cyril Hrubis (3):
+>   build system: Add explicit make rules
+>   testcases: Make use of LTPLDLIBS
+>   build system: Silence the output a bit more
 
-This looks like a regular memory allocation, one common thing that may
-have gone wrong here would be an earlier double-free.
+Thanks for addressing this issue!
+Works as expected:
+https://travis-ci.org/github/pevik/ltp/builds/713670475
+LGTM and silence output is also a nice feature.
 
-There are not a lot of commits in v5.4.55-rc1, and most of these
-are surely unrelated:
+nit: I was thinking how to reduce verbosity (adding --no-print-directory and @
+into a variable), but as there is also echo, it's not worth of it.
 
-6666ca784e9e (HEAD, stable-rc/linux-5.4.y) Linux 5.4.55-rc1
-ee4984bf5748 Revert "dpaa_eth: fix usage as DSA master, try 3"
-783efa432aa4 PM: wakeup: Show statistics for deleted wakeup sources again
-967783c61b31 regmap: debugfs: check count when read regmap file
-3999cdbf89f0 drivers/net/wan/x25_asy: Fix to make it work
-eb8b6691d757 AX.25: Prevent integer overflows in connect and sendmsg
-3c3ae3e4c529 AX.25: Prevent out-of-bounds read in ax25_sendmsg()
-e9380b1e9f82 AX.25: Fix out-of-bounds read in ax25_connect()
-71e00f341e74 rxrpc: Fix sendmsg() returning EPIPE due to recvmsg()
-returning ENODATA
-a385dfd083fb ip6_gre: fix null-ptr-deref in ip6gre_init_net()
-161727c98eb6 net-sysfs: add a newline when printing 'tx_timeout' by sysfs
-a93155189546 qrtr: orphan socket in qrtr_release()
+Tested-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-I don't think any of the above are in use on your machine.
-
-1365360e789d udp: Improve load balancing for SO_REUSEPORT.
-efb2848c55b3 udp: Copy has_conns in reuseport_grow().
-829a46fae4fd sctp: shrink stream outq when fails to do addstream reconf
-a4842355118b sctp: shrink stream outq only when new outcnt < old outcnt
-e99e79382d46 tcp: allow@most one TLP probe per flight
-66007a7d7f4b net: udp: Fix wrong clean up for IS_UDPLITE macro
-
-These seem possible but unlikely to be the culprit
-
-8508b3ca8595 rtnetlink: Fix memory(net_device) leak when ->newlink fails
-c1efeaaebc74 dev: Defer free of skbs in flush_backlog
-
-These both deal with memory allocation in some form, I would try reverting
-the last one first.
-
-       Arnd
+Kind regards,
+Petr
