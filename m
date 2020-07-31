@@ -1,80 +1,54 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 31 Jul 2020 14:15:06 +0200
-Subject: [LTP] [PATCH 1/3] build system: Add explicit make rules
-In-Reply-To: <20200731121508.12805-1-chrubis@suse.cz>
-References: <20200731121508.12805-1-chrubis@suse.cz>
-Message-ID: <20200731121508.12805-2-chrubis@suse.cz>
+Date: Fri, 31 Jul 2020 14:15:05 +0200
+Subject: [LTP] [PATCH 0/3] Build system fixes
+Message-ID: <20200731121508.12805-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commit adds explicit build rules, the main motivation are recent
-build failures caused by library orderings. To fix that this commit
-introduces LTPLDLIBS special variable that is passed to linker before
-the LDLIBS which avoids the need for tricks as
-"LDLIBS := -lltpfoo $(LDLIBS)" in the Makefiles.
+This patchset does
 
-This commit also silences the output by default a bit, the verbose
-output could be enabled by VERBOSE=1 env variable, which is probably
-what most of the build systems will do if this gets commited. I guess
-that we can as well silence a bit the "make entering/leaving directory"
-if this the right way to go.
+* Introduce LTPLDLIBS to solve linker dependencies once for all
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/mk/env_post.mk |  2 ++
- include/mk/rules.mk    | 29 +++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+* Cleans up the output from make a bit, this could be even more fine
+  tuned if we agree on this part
+
+Cyril Hrubis (3):
+  build system: Add explicit make rules
+  testcases: Make use of LTPLDLIBS
+  build system: Silence the output a bit more
+
+ include/mk/env_post.mk                        |  2 ++
+ include/mk/generic_trunk_target.inc           | 14 +++++++++
+ include/mk/lib.mk                             |  2 +-
+ include/mk/rules.mk                           | 29 +++++++++++++++++++
+ include/mk/testcases.mk                       |  5 ++++
+ .../kernel/syscalls/clock_gettime/Makefile    |  2 +-
+ testcases/kernel/syscalls/ipc/msgctl/Makefile |  2 +-
+ testcases/kernel/syscalls/ipc/msgget/Makefile |  2 +-
+ testcases/kernel/syscalls/ipc/msgrcv/Makefile |  2 +-
+ testcases/kernel/syscalls/ipc/msgsnd/Makefile |  2 +-
+ .../kernel/syscalls/ipc/msgstress/Makefile    |  2 +-
+ testcases/kernel/syscalls/ipc/semctl/Makefile |  4 +--
+ testcases/kernel/syscalls/ipc/semget/Makefile |  2 +-
+ testcases/kernel/syscalls/ipc/semop/Makefile  |  2 +-
+ testcases/kernel/syscalls/ipc/shmat/Makefile  |  2 +-
+ testcases/kernel/syscalls/ipc/shmctl/Makefile |  4 +--
+ testcases/kernel/syscalls/ipc/shmdt/Makefile  |  2 +-
+ testcases/kernel/syscalls/ipc/shmget/Makefile |  2 +-
+ testcases/kernel/syscalls/kill/Makefile       |  4 +--
+ testcases/kernel/syscalls/mbind/Makefile      |  6 ++--
+ testcases/kernel/syscalls/mremap/Makefile     |  2 +-
+ .../kernel/syscalls/rt_sigtimedwait/Makefile  |  2 +-
+ .../kernel/syscalls/set_mempolicy/Makefile    |  3 +-
+ .../kernel/syscalls/sigtimedwait/Makefile     |  2 +-
+ testcases/kernel/syscalls/sigwait/Makefile    |  2 +-
+ .../kernel/syscalls/sigwaitinfo/Makefile      |  2 +-
+ 26 files changed, 79 insertions(+), 26 deletions(-)
  create mode 100644 include/mk/rules.mk
 
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index f4169ad66..bdf8c696d 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -107,4 +107,6 @@ $(error You must define $$(prefix) before executing install)
- endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
- endif
- 
-+include $(top_srcdir)/include/mk/rules.mk
-+
- endif
-diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-new file mode 100644
-index 000000000..e9b9c35ef
---- /dev/null
-+++ b/include/mk/rules.mk
-@@ -0,0 +1,29 @@
-+%.o: %.c
-+ifdef VERBOSE
-+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-+else
-+	@$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-+	@echo CC $@
-+endif
-+
-+ifdef VERBOSE
-+COMPILE.c=$(CC) $(CPPFLAGS) $(CFLAGS) -c
-+else
-+COMPILE.c=@echo CC $@; $(CC) $(CPPFLAGS) $(CFLAGS) -c
-+endif
-+
-+%: %.o
-+ifdef VERBOSE
-+	$(CC) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
-+else
-+	@$(CC) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
-+	@echo LD $@
-+endif
-+
-+%: %.c
-+ifdef VERBOSE
-+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
-+else
-+	@$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
-+	@echo CC $@
-+endif
 -- 
 2.26.2
 
