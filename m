@@ -1,39 +1,28 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 31 Jul 2020 07:34:43 +0200
-Subject: [LTP] [PATCH v6 4/4] IMA: Add test for kexec cmdline measurement
-In-Reply-To: <1596139131.25003.14.camel@kernel.org>
-References: <20200728001301.31121-1-pvorel@suse.cz>
- <1596139131.25003.14.camel@kernel.org>
-Message-ID: <20200731053443.GB3900@dell5510>
+Date: Fri, 31 Jul 2020 10:02:21 +0200
+Subject: [LTP] [PATCH] IMA: Add a test to verify importing a certificate
+ into custom keyring
+In-Reply-To: <20200717205721.18173-1-t-josne@linux.microsoft.com>
+References: <20200717205721.18173-1-t-josne@linux.microsoft.com>
+Message-ID: <20200731080221.GA14041@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi, Lachlan,
+Hi Lachlan,
 
-> On Tue, 2020-07-28 at 02:13 +0200, Petr Vorel wrote:
-> > From: Lachlan Sneff <t-josne@linux.microsoft.com>
+> A test for verifying importing an x509 certificate into a keyring and
+> validating the key measurement performed by IMA is needed.
 
-> > IMA policy can be set to measure the command line passed in the kexec
-> > system call. Add a testcase that verifies that the IMA subsystem
-> > correctly measure the cmdline specified during a kexec.
+I suppose you're going to send new version of this patch (rebased + fix
+according to Mimi's comments).
 
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
-> > [ pvorel: improved setup, various LTP API cleanup ]
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+IMHO that should be your last not yet merged patch.
 
-> Thanks, really nice.
-
-> Missing is a short comment explaining the reason for the multiple
-> tests.
-
-Just to reduce duplicity with checks.
-
-Anyway, finally merged, thanks a lot both!
+FYI: I'm planning to fix ima_tpm.sh and then implement autoloading IMA policy
+(when possible).
 
 Kind regards,
 Petr
