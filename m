@@ -1,113 +1,137 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 31 Jul 2020 14:15:08 +0200
-Subject: [LTP] [PATCH 3/3] build system: Silence the output a bit more
-In-Reply-To: <20200731121508.12805-1-chrubis@suse.cz>
-References: <20200731121508.12805-1-chrubis@suse.cz>
-Message-ID: <20200731121508.12805-4-chrubis@suse.cz>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 31 Jul 2020 16:02:16 +0530
+Subject: [LTP] [PATCH 5.4 00/19] 5.4.55-rc1 review
+In-Reply-To: <20200730074420.502923740@linuxfoundation.org>
+References: <20200730074420.502923740@linuxfoundation.org>
+Message-ID: <CA+G9fYvCPwwmF-k=Z9Z6P2KYrOMHurcORwa3RW2H1j6pq1QEDg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This hides a few more messages, mostly make entering/leaving directory
-and the empty library check.
+On Thu, 30 Jul 2020 at 13:36, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.55 release.
+> There are 19 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 01 Aug 2020 07:44:05 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.55-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Now rebuilding a ltp library and test looks like:
+Results from Linaro?s test farm.
+Regressions on arm64 Juno-r2 device running LTP controllers-tests
 
-$ make
-BUILD libltpsigwait.a
-CC sigwait.o
-ar -rc "libltpsigwait.a" sigwait.o
-ranlib "libltpsigwait.a"
-CC sigwait01
+CONFIG_ARM64_64K_PAGES=y
 
-While previously (or with a VERBOSE=1) it looks like:
+Unable to handle kernel paging request at virtual address dead000000000108
+[dead000000000108] address between user and kernel address ranges
+Internal error: Oops: 96000044 [#1] PREEMPT SMP
 
-$ VERBOSE=1 make
-make -C "/home/metan/Work/ltp-dev/libs/libltpsigwait/" -f "/home/metan/Work/ltp-dev/libs/libltpsigwait//Makefile" all
-make[1]: Entering directory '/home/metan/Work/ltp-dev/libs/libltpsigwait'
-gcc  -I../../include -I../../include -I../../include/old/ -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -c -o sigwait.o sigwait.c
-ar -rc "libltpsigwait.a" sigwait.o
-ranlib "libltpsigwait.a"
-make[1]: Leaving directory '/home/metan/Work/ltp-dev/libs/libltpsigwait'
-gcc  -I../../../../include -I../../../../include -I../../../../include/old/ -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition   -L../../../../libs/libltpsigwait -L../../../../lib sigwait01.c -lltpsigwait  -lltp -o sigwait01
+pc : get_page_from_freelist+0xa64/0x1030
+lr : get_page_from_freelist+0x9c4/0x1030
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/mk/generic_trunk_target.inc | 14 ++++++++++++++
- include/mk/lib.mk                   |  2 +-
- include/mk/testcases.mk             |  5 +++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+We are trying to reproduce this kernel panic and trying to narrow down to
+specific test cases.
 
-diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-index cc255c62a..e89c7f4e0 100644
---- a/include/mk/generic_trunk_target.inc
-+++ b/include/mk/generic_trunk_target.inc
-@@ -75,9 +75,16 @@ trunk-install: $(INSTALL_FILES)
- all: trunk-all
- 
- clean:: trunk-clean
-+ifdef VERBOSE
- 	@set -e; for dir in $(SUBDIRS); do \
- 	    $(MAKE) -C "$$dir" -f "$(abs_srcdir)/$$dir/Makefile" $@; \
- 	done
-+else
-+	@set -e; for dir in $(SUBDIRS); do \
-+	    echo "DIR $$dir"; \
-+	    $(MAKE) --no-print-directory -C "$$dir" -f "$(abs_srcdir)/$$dir/Makefile" $@; \
-+	done
-+endif
- ifneq ($(abs_builddir),$(abs_srcdir))
- 	$(RM) -Rf $(SUBDIRS)
- endif
-@@ -90,9 +97,16 @@ ifeq ($(strip $(SUBDIRS)),)
- 	$(error SUBDIRS empty -- did you want generic_leaf_target instead?)
- else
- $(RECURSIVE_TARGETS): %: | $(SUBDIRS)
-+ifdef VERBOSE
- 	@set -e; for dir in $(SUBDIRS); do \
- 	    $(MAKE) -C $$dir -f "$(abs_srcdir)/$$dir/Makefile" $@; \
- 	done
-+else
-+	@set -e; for dir in $(SUBDIRS); do \
-+	    echo "DIR $$dir"; \
-+	    $(MAKE) --no-print-directory -C $$dir -f "$(abs_srcdir)/$$dir/Makefile" $@; \
-+	done
-+endif
- endif
- 
- # vim: syntax=make
-diff --git a/include/mk/lib.mk b/include/mk/lib.mk
-index 36e1ba17b..5c310b42a 100644
---- a/include/mk/lib.mk
-+++ b/include/mk/lib.mk
-@@ -63,7 +63,7 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
- LIBOBJS		:= $(LIBSRCS:.c=.o)
- 
- $(LIB): $(notdir $(LIBOBJS))
--	if [ -z "$(strip $^)" ] ; then \
-+	@if [ -z "$(strip $^)" ] ; then \
- 		echo "Cowardly refusing to create empty archive"; \
- 		exit 1; \
- 	fi
-diff --git a/include/mk/testcases.mk b/include/mk/testcases.mk
-index bb22be82e..1c81773d0 100644
---- a/include/mk/testcases.mk
-+++ b/include/mk/testcases.mk
-@@ -53,7 +53,12 @@ MAKE_DEPS += $(LTPLIBS_FILES)
- $(LTPLIBS_FILES): $(LTPLIBS_DIRS)
- 
- $(LTPLIBS_FILES): %:
-+ifdef VERBOSE
- 	$(MAKE) -C "$(dir $@)" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$(dir $@))/Makefile" all
-+else
-+	@echo "BUILD $(notdir $@)"
-+	@$(MAKE) --no-print-directory -C "$(dir $@)" -f "$(subst $(abs_top_builddir),$(abs_top_srcdir),$(dir $@))/Makefile" all
-+endif
- 
- LDFLAGS += $(addprefix -L$(top_builddir)/libs/lib, $(LTPLIBS))
- 
--- 
-2.26.2
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.4.55-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+git branch: linux-5.4.y
+git commit: 6666ca784e9e47288180a15935061d88debc9e4b
+git describe: v5.4.54-20-g6666ca784e9e
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/build/v5.4.54-20-g6666ca784e9e
+
+arm64 kernel config and details:
+config: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/kernel.config
+vmlinux: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/vmlinux.xz
+System.map: https://builds.tuxbuild.com/iIsSV-1_WtyDUTe88iKaqw/System.map
+
+steps to reproduce:
+- boot juno-r2 with 64k page size config
+- run ltp controllers
+  # cd /opt/ltp
+  # ./runltp -f controllers
+
+memcg_process: shmget() failed: Invalid argument
+[  248.372285] Unable to handle kernel paging request at virtual
+address dead000000000108
+[  248.380223] Mem abort info:
+[  248.383015]   ESR = 0x96000044
+[  248.386071]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  248.391387]   SET = 0, FnV = 0
+[  248.394440]   EA = 0, S1PTW = 0
+[  248.397580] Data abort info:
+[  248.400460]   ISV = 0, ISS = 0x00000044
+[  248.404296]   CM = 0, WnR = 1
+[  248.407264] [dead000000000108] address between user and kernel address ranges
+[  248.414410] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+[  248.419989] Modules linked in: tda998x drm_kms_helper drm crct10dif_ce fuse
+[  248.426975] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.55-rc1 #1
+[  248.433249] Hardware name: ARM Juno development board (r2) (DT)
+[  248.439178] pstate: a0000085 (NzCv daIf -PAN -UAO)
+[  248.443984] pc : get_page_from_freelist+0xa64/0x1030
+[  248.448955] lr : get_page_from_freelist+0x9c4/0x1030
+[  248.453923] sp : ffff80001000fbb0
+[  248.457238] x29: ffff80001000fbb0 x28: ffff00097fdbfe48
+[  248.462557] x27: 0000000000000010 x26: 0000000000000000
+[  248.467877] x25: ffff00097feabdc0 x24: 0000000000000000
+[  248.473196] x23: 0000000000000000 x22: 0000000000000000
+[  248.478515] x21: 0000fff680154180 x20: ffff00097fdbfe38
+[  248.483835] x19: 0000000000000000 x18: 0000000000000000
+[  248.489154] x17: 0000000000000000 x16: 0000000000000000
+[  248.494473] x15: 0000000000000000 x14: 0000000000000000
+[  248.499792] x13: 0000000000000000 x12: 0000000034d4d91d
+[  248.505111] x11: 0000000000000000 x10: 0000000000000000
+[  248.510430] x9 : ffff80096e790000 x8 : ffffffffffffff40
+[  248.515749] x7 : 0000000000000000 x6 : ffffffe002308b48
+[  248.521068] x5 : ffff00097fdbfe38 x4 : dead000000000100
+[  248.526387] x3 : 0000000000000000 x2 : 0000000000000000
+[  248.531706] x1 : 0000000000000000 x0 : ffffffe002308b40
+[  248.537026] Call trace:
+[  248.539475]  get_page_from_freelist+0xa64/0x1030
+[  248.544099]  __alloc_pages_nodemask+0x144/0x280
+[  248.548635]  page_frag_alloc+0x70/0x140
+[  248.552479]  __netdev_alloc_skb+0x158/0x188
+[  248.556667]  smsc911x_poll+0x90/0x268
+[  248.560342]  net_rx_action+0x114/0x340
+[  248.564096]  __do_softirq+0x120/0x25c
+[  248.567766]  irq_exit+0xb8/0xd8
+[  248.570910]  __handle_domain_irq+0x64/0xb8
+[  248.575010]  gic_handle_irq+0x50/0xa8
+[  248.578675]  el1_irq+0xb8/0x180
+[  248.581820]  tick_check_broadcast_expired+0x34/0x40
+[  248.586705]  do_idle+0x8c/0x280
+[  248.589848]  cpu_startup_entry+0x20/0x80
+[  248.593777]  rest_init+0xd4/0xe0
+[  248.597010]  arch_call_rest_init+0xc/0x14
+[  248.601024]  start_kernel+0x418/0x44c
+[  248.604693] Code: 54000a00 f10020c0 540009c0 a9400cc4 (f9000483)
+[  248.610803] ---[ end trace 358f513e280e4dfd ]---
+[  248.615426] Kernel panic - not syncing: Fatal exception in interrupt
+[  248.621789] SMP: stopping secondary CPUs
+[  249.740564] SMP: failed to stop secondary CPUs 0-2
+[  249.745359] Kernel Offset: disabled
+[  249.748849] CPU features: 0x0002,24006000
+[  249.752859] Memory Limit: none
+[  249.755921] ---[ end Kernel panic - not syncing: Fatal exception in
+interrupt ]---
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
