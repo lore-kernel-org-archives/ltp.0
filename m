@@ -1,63 +1,89 @@
 From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Mon,  3 Aug 2020 14:47:24 -0400
-Subject: [LTP] [PATCH 1/3] IMA: Update key test documentation
+Date: Mon,  3 Aug 2020 14:47:25 -0400
+Subject: [LTP] [PATCH 2/3] IMA: Refactor datafiles directory
 In-Reply-To: <20200803184726.2416-1-t-josne@linux.microsoft.com>
 References: <20200803184726.2416-1-t-josne@linux.microsoft.com>
-Message-ID: <20200803184726.2416-2-t-josne@linux.microsoft.com>
+Message-ID: <20200803184726.2416-3-t-josne@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The current documentation for the existing IMA key test was
-left in by accident by a previous merge. It does not apply
-to the test that is currently included in the LTP.
+The IMA datafiles directory is structured so that it cannot be directly
+expanded to include datafiles for tests other than `ima_policy.sh`.
 
-Update the documentation for the IMA key test.
+Move the contents of the IMA datafiles directory into an IMA
+datafiles/policy directory.
 
 Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
 ---
- .../kernel/security/integrity/ima/README.md   | 22 +++++--------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+ .../security/integrity/ima/datafiles/Makefile     |  6 ++----
+ .../integrity/ima/datafiles/policy/Makefile       | 15 +++++++++++++++
+ .../ima/datafiles/{ => policy}/kexec.policy       |  0
+ .../ima/datafiles/{ => policy}/keycheck.policy    |  0
+ .../ima/datafiles/{ => policy}/measure.policy     |  0
+ .../datafiles/{ => policy}/measure.policy-invalid |  0
+ 6 files changed, 17 insertions(+), 4 deletions(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/kexec.policy (100%)
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/keycheck.policy (100%)
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/measure.policy (100%)
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => policy}/measure.policy-invalid (100%)
 
-diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-index d4644ba39..2956ac7fd 100644
---- a/testcases/kernel/security/integrity/ima/README.md
-+++ b/testcases/kernel/security/integrity/ima/README.md
-@@ -15,27 +15,15 @@ Although a custom policy, loaded via dracut, systemd or manually from user
- space, may contain equivalent measurement tcb rules, detecting them would
- require `IMA_READ_POLICY=y` therefore ignore this option.
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/Makefile b/testcases/kernel/security/integrity/ima/datafiles/Makefile
+index 369407112..3772e9a03 100644
+--- a/testcases/kernel/security/integrity/ima/datafiles/Makefile
++++ b/testcases/kernel/security/integrity/ima/datafiles/Makefile
+@@ -24,8 +24,6 @@ top_srcdir		?= ../../../../../..
  
--### IMA key import test
--`ima_keys.sh` requires a x509 public key, by default in `/etc/keys/x509_ima.der`
--(defined in `CONFIG_IMA_X509_PATH` kernel config option).
--The key must be signed by the private key you generate. Follow these instructions:
--https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys
+ include	$(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_DIR		:= testcases/data/ima_policy
++SUBDIRS			:= policy
+ 
+-INSTALL_TARGETS		:= measure.policy-invalid *.policy
 -
--The test cannot be set-up automatically because the x509 public key must be
--built into the kernel and loaded onto a trusted keyring
--(e.g. `.builtin_trusted_keys`, `.secondary_trusted_keyring`).
--
--As well as what's required for the IMA tests, the following are also required
--in the kernel configuration:
-+### IMA key test
-+`ima_keys.sh` requires a readable IMA policy, as well as a loaded policy
-+with `func=KEY_CHECK keyrings=...`, see example in `keycheck.policy`.
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile b/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
+new file mode 100644
+index 000000000..84d1424c6
+--- /dev/null
++++ b/testcases/kernel/security/integrity/ima/datafiles/policy/Makefile
+@@ -0,0 +1,15 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2020 Microsoft Corporation
++# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
++#
++# IMA datafiles/policy Makefile
 +
-+Mandatory kernel configuration for IMA:
- ```
- CONFIG_IMA_READ_POLICY=y
--CONFIG_IMA_X509_PATH="/etc/keys/x509_ima.der"
--CONFIG_SYSTEM_TRUSTED_KEYRING=y
--CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
- ```
- 
--Test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
--
- ### IMA kexec test
- 
- `ima_kexec.sh` requires loaded policy which contains `measure func=KEXEC_CMDLINE`,
++top_srcdir		?= ../../../../../../..
++
++include	$(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_DIR		:= testcases/data/ima_policy
++
++INSTALL_TARGETS		:= measure.policy-invalid *.policy
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+\ No newline at end of file
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/kexec.policy b/testcases/kernel/security/integrity/ima/datafiles/policy/kexec.policy
+similarity index 100%
+rename from testcases/kernel/security/integrity/ima/datafiles/kexec.policy
+rename to testcases/kernel/security/integrity/ima/datafiles/policy/kexec.policy
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/keycheck.policy b/testcases/kernel/security/integrity/ima/datafiles/policy/keycheck.policy
+similarity index 100%
+rename from testcases/kernel/security/integrity/ima/datafiles/keycheck.policy
+rename to testcases/kernel/security/integrity/ima/datafiles/policy/keycheck.policy
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy b/testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy
+similarity index 100%
+rename from testcases/kernel/security/integrity/ima/datafiles/measure.policy
+rename to testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid b/testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy-invalid
+similarity index 100%
+rename from testcases/kernel/security/integrity/ima/datafiles/measure.policy-invalid
+rename to testcases/kernel/security/integrity/ima/datafiles/policy/measure.policy-invalid
 -- 
 2.25.1
 
