@@ -1,81 +1,63 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 3 Aug 2020 15:59:06 +0800
-Subject: [LTP] [PATCH 1/3] build system: Add explicit make rules
-In-Reply-To: <550701550.5736445.1596440755258.JavaMail.zimbra@redhat.com>
-References: <20200731121508.12805-2-chrubis@suse.cz>
- <550701550.5736445.1596440755258.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2dXq2S9Ep3Q8BYGh8XneA=xWa=mKqQPfE5Fn8739iMC_A@mail.gmail.com>
+Date: Mon, 3 Aug 2020 16:47:50 +0800
+Subject: [LTP] [PATCH v1 2/2] libs/libltpnewipc: Add libmsgctl.c into
+ new ipc library
+In-Reply-To: <320f25e9-f0e7-73a9-fe43-284befcce1e2@cn.fujitsu.com>
+References: <1595911224-12470-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1595911224-12470-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200729143451.GG7152@yuki.lan>
+ <320f25e9-f0e7-73a9-fe43-284befcce1e2@cn.fujitsu.com>
+Message-ID: <CAEemH2dAGGFt6esH4srVec=6HCVt3j+Bn1UOdTACwg_5xj1htA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Aug 3, 2020 at 3:48 PM Jan Stancek <jstancek@redhat.com> wrote:
+Hi Xu,
 
+On Thu, Jul 30, 2020 at 3:00 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+wrote:
+
+> Hi Cyril
 >
-> ----- Original Message -----
-> > This commit adds explicit build rules, the main motivation are recent
-> > build failures caused by library orderings. To fix that this commit
-> > introduces LTPLDLIBS special variable that is passed to linker before
-> > the LDLIBS which avoids the need for tricks as
-> > "LDLIBS := -lltpfoo $(LDLIBS)" in the Makefiles.
+>
+> > Hi!
+> >> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> >> ---
+> >>   include/libnewipc.h           |  28 ++++------
+> >>   libs/libltpnewipc/libnewipc.c | 101 ++++++++++++++++++++++++++++++++--
+> >>   2 files changed, 109 insertions(+), 20 deletions(-)
 > >
-> > This commit also silences the output by default a bit, the verbose
-> > output could be enabled by VERBOSE=1 env variable, which is probably
-> > what most of the build systems will do if this gets commited. I guess
-> > that we can as well silence a bit the "make entering/leaving directory"
-> > if this the right way to go.
+> > Just FYI we do not have to put all the code into a single *.c file, we
+> > can have as many as we want in the library directory...
+> I remember you have some comments on my previous patach as below:
+> ------------------------------
+> So unless we plan to use it from different tests it does not make much
+> sense to export it to the top level include and libs.
 >
-> alias for V=0 / V=1 would be nice
+> Or alternatively we do have libltpnewipc we can pust put the
+> libnewmsgctl.c to that directory and with that we will have a single
+> System V IPC helper library.
+> ------------------------------
 >
-> LTPLDLIBS should probably be mentioned in doc/build-system-guide.txt
+> So I merge libnewmsgctl.c into libnewipc.c.
 >
->
-> >
-> > Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> > ---
-> >  include/mk/env_post.mk |  2 ++
-> >  include/mk/rules.mk    | 29 +++++++++++++++++++++++++++++
-> >  2 files changed, 31 insertions(+)
-> >  create mode 100644 include/mk/rules.mk
-> >
-> > diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-> > index f4169ad66..bdf8c696d 100644
-> > --- a/include/mk/env_post.mk
-> > +++ b/include/mk/env_post.mk
-> > @@ -107,4 +107,6 @@ $(error You must define $$(prefix) before executing
-> > install)
-> >  endif # END $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
-> >  endif
-> >
-> > +include $(top_srcdir)/include/mk/rules.mk
-> > +
-> >  endif
-> > diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-> > new file mode 100644
-> > index 000000000..e9b9c35ef
-> > --- /dev/null
-> > +++ b/include/mk/rules.mk
-> > @@ -0,0 +1,29 @@
-> > +%.o: %.c
-> > +ifdef VERBOSE
-> > +     $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-> > +else
-> > +     @$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-> > +     @echo CC $@
-> > +endif
->
-> What if we wouldn't print "DIR" (for non-clean targets) and printed
-> relative paths instead?
+> ps: IMO, libnewipc has only three functions(getipckey,get_used_queues,
+> probe_free_addr) ,It's hard to call it a LIBS library. Can we put it
+> into lib directory and named it as tst_ipc.c?
+> @LI, What do you think about this?
 >
 
-+1
-This looks better, I'd give my vote to this.
+I have no objection to this.
+
+The reason to move it to LIBS is to support both new and old test cases in
+same directory, so if you're going to move back into the general LTP lib,
+we have to convert all the old-tests into new API. Then it will be fine.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200803/bfdd6dc6/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200803/33a860d8/attachment.htm>
