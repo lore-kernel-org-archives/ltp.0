@@ -1,134 +1,95 @@
 From: Filip Bozuta <Filip.Bozuta@syrmia.com>
-Date: Tue,  4 Aug 2020 16:40:43 +0200
-Subject: [LTP] [PATCH 1/3] syscalls/mq_timed{send|receive}: Add test cases
- for bad address
+Date: Tue,  4 Aug 2020 16:40:44 +0200
+Subject: [LTP] [PATCH 2/3] syscalls/clock_nanosleep: add a test case for bad
+ timespec address
 In-Reply-To: <20200804144045.18875-1-Filip.Bozuta@syrmia.com>
 References: <20200804144045.18875-1-Filip.Bozuta@syrmia.com>
-Message-ID: <20200804144045.18875-2-Filip.Bozuta@syrmia.com>
+Message-ID: <20200804144045.18875-3-Filip.Bozuta@syrmia.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch introduces test cases for already existing
-tests for syscalls 'mq_timedsend()' and 'mq_timedreceive()'
-(mq_timedsend01, mq_timedreceive01). These test cases are for
-situations when bad addresses are passed for arguments 'msg_ptr'
-and 'abs_timeout' in which case errno 'EFAULT' is expected to be set.
-Value '(void *)1' is used as a bad address for these arguments.
+This patch introduces test cases for already existing test
+for syscall 'clock_nanosleep()' (clock_nanosleep01). These test
+cases are for situations when bad timespec addresses are passed
+for arguments 'request' and 'remain' in which case errno
+EFAULT ('Bad address') is expected to be set. Value '(void *)1'
+is used as a bad address for these arguments.
 
 Implementation notes:
 
-   Structure 'struct test_case' from file 'mq_timed.h' was modified
-   with addition of two fields (bad_msg_addr and bad_ts_addr) which
-   represent indicators for the implemented testcases. They are set
-   to 1 for the new added test cases. These fileds are checked before
-   running the test to see if bad address value '(void *)1' should be
-   passed for the above mentioned arguments.
-
-   For 'mq_timedreceive()' only the test case for bad 'abs_timeout'
-   was included because the syscall blocks when a bad address for
-   'msg_ptr' is passed.
+   New test types are added in 'enum test_type': BAD_TS_REQ,
+   BAD_TS_REM, for cases when bad timespec addresses are
+   passed for the 'request' and 'remain' argument respectively.
+   Appropriate test cases are added for these types where the
+   'exp_err' is EFAULT. The test checks whether the test case type
+   are one of the newly added types and passes the value '(void *)1'
+   for the above mentioned arguments accordingly.
 
 Signed-off-by: Filip Bozuta <Filip.Bozuta@syrmia.com>
 ---
- .../mq_timedreceive/mq_timedreceive01.c       | 12 +++++++++-
- .../syscalls/mq_timedsend/mq_timedsend01.c    | 23 +++++++++++++++++--
- testcases/kernel/syscalls/utils/mq_timed.h    |  2 ++
- 3 files changed, 34 insertions(+), 3 deletions(-)
+ .../clock_nanosleep/clock_nanosleep01.c       | 27 +++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-index 8e24651c9..01973c76b 100644
---- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-+++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-@@ -123,6 +123,13 @@ static struct test_case tcase[] = {
- 		.ret = -1,
- 		.err = EINTR,
- 	},
-+	{
-+		.fd = &fd,
-+		.len = 16,
-+		.bad_ts_addr = 1,
-+		.ret = -1,
-+		.err = EFAULT,
-+	}
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+index 4542995f2..a9cafe1b5 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+@@ -20,6 +20,8 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ enum test_type {
+ 	NORMAL,
+ 	SEND_SIGINT,
++	BAD_TS_ADDR_REQ,
++	BAD_TS_ADDR_REM,
  };
  
- static void setup(void)
-@@ -164,7 +171,10 @@ static void do_test(unsigned int i)
- 	if (tc->invalid_msg)
- 		len -= 1;
- 
--	TEST(tv->receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
-+	if (tc->bad_ts_addr)
-+		TEST(tv->receive(*tc->fd, rmsg, len, &prio, (void *)1));
-+	else
-+		TEST(tv->receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
- 
- 	if (pid > 0)
- 		kill_pid(pid);
-diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-index f7fc2c533..dbef665dc 100644
---- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-+++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-@@ -129,6 +129,20 @@ static struct test_case tcase[] = {
- 		.ret = -1,
- 		.err = EINTR,
+ #define TYPE_NAME(x) .ttype = x, .desc = #x
+@@ -78,6 +80,22 @@ static struct test_case tcase[] = {
+ 		.exp_ret = -1,
+ 		.exp_err = EINTR,
  	},
 +	{
-+		.fd = &fd,
-+		.len = 16,
-+		.bad_msg_addr = 1,
-+		.ret = -1,
-+		.err = EFAULT,
++		TYPE_NAME(BAD_TS_ADDR_REQ),
++		.clk_id = CLOCK_REALTIME,
++		.flags = 0,
++		.exp_ret = -1,
++		.exp_err = EFAULT,
 +	},
 +	{
-+		.fd = &fd,
-+		.len = 16,
-+		.bad_ts_addr = 1,
-+		.ret = -1,
-+		.err = EFAULT,
-+	}
++		TYPE_NAME(BAD_TS_ADDR_REM),
++		.clk_id = CLOCK_REALTIME,
++		.flags = 0,
++		.tv_sec = 10,
++		.tv_nsec = 0,
++		.exp_ret = -1,
++		.exp_err = EFAULT,
++	},
  };
  
- static void setup(void)
-@@ -168,7 +182,12 @@ static void do_test(unsigned int i)
- 			}
- 	}
+ static struct tst_ts *rq;
+@@ -117,13 +135,18 @@ static void do_test(unsigned int i)
  
--	TEST(tv->send(*tc->fd, smsg, tc->len, tc->prio, tst_ts_get(tc->rq)));
-+	if (tc->bad_msg_addr)
-+		TEST(tv->send(*tc->fd, (void *)1, tc->len, tc->prio, tst_ts_get(tc->rq)));
-+	else if (tc->bad_ts_addr)
-+		TEST(tv->send(*tc->fd, smsg, tc->len, tc->prio, (void *)1));
+ 	tst_res(TINFO, "case %s", tc->desc);
+ 
+-	if (tc->ttype == SEND_SIGINT)
++	if (tc->ttype == SEND_SIGINT || tc->ttype == BAD_TS_ADDR_REM)
+ 		pid = create_sig_proc(SIGINT, 40, 500000);
+ 
+ 	tst_ts_set_sec(rq, tc->tv_sec);
+ 	tst_ts_set_nsec(rq, tc->tv_nsec);
+ 
+-	TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(rq), tst_ts_get(rm)));
++	if (tc->ttype == BAD_TS_ADDR_REQ)
++		TEST(tv->func(tc->clk_id, tc->flags, (void *) 1, NULL));
++	else if (tc->ttype == BAD_TS_ADDR_REM)
++		TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(rq), (void *)1));
 +	else
-+		TEST(tv->send(*tc->fd, smsg, tc->len, tc->prio, tst_ts_get(tc->rq)));
++		TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(rq), tst_ts_get(rm)));
  
- 	if (pid > 0)
- 		kill_pid(pid);
-@@ -179,7 +198,7 @@ static void do_test(unsigned int i)
- 				"mq_timedsend() failed unexpectedly, expected %s",
- 				tst_strerrno(tc->err));
- 		else
--			tst_res(TPASS | TTERRNO, "mq_timedreceive() failed expectedly");
-+			tst_res(TPASS | TTERRNO, "mq_timedsend() failed expectedly");
- 
- 		if (*tc->fd == fd)
- 			cleanup_queue(fd);
-diff --git a/testcases/kernel/syscalls/utils/mq_timed.h b/testcases/kernel/syscalls/utils/mq_timed.h
-index 3a99d9eef..a217e864e 100644
---- a/testcases/kernel/syscalls/utils/mq_timed.h
-+++ b/testcases/kernel/syscalls/utils/mq_timed.h
-@@ -41,6 +41,8 @@ struct test_case {
- 	int send;
- 	int signal;
- 	int timeout;
-+	int bad_msg_addr;
-+	int bad_ts_addr;
- 	int ret;
- 	int err;
- };
+ 	if (tv->func == libc_clock_nanosleep) {
+ 		/*
 -- 
 2.25.1
 
