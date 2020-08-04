@@ -1,182 +1,194 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue,  4 Aug 2020 18:20:08 +0530
-Subject: [LTP] [PATCH V8] syscalls: clock_settime: Add test around y2038
- vulnerability
-Message-ID: <96ce72a605e365a040b258db9323d3962ab80e29.1596545279.git.viresh.kumar@linaro.org>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue,  4 Aug 2020 15:18:11 +0200
+Subject: [LTP] [PATCH v2 2/2] Add test for CVE 2017-2636
+In-Reply-To: <20200804131811.26515-1-mdoucha@suse.cz>
+References: <20200804131811.26515-1-mdoucha@suse.cz>
+Message-ID: <20200804131811.26515-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds a test around the y2038 vulnerability, it sets the system time
-to just before y2038 time (i.e. max value that can be stored in s32),
-and adds a timer to expire just after crossing it.
+Fixes #498
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
-V8:
-- Check compatibility issues for TST_KERN_OLD_TIMESPEC and not the new
-  timespec.
-- s/TFAIL/TCONF/ in setup()
-- Use kernel_timer_t
-- rearrange code and don't expect timer to fire before.
 
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
- .../syscalls/clock_settime/clock_settime03.c       | 123 +++++++++++++++++++++
- 3 files changed, 125 insertions(+)
- create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime03.c
+Changes since v2:
+- LAPI changes split off to separate patch
+- added forgotten .gitignore entry
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 3c6e78a4c6d0..3c2f5f6c0b37 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -99,6 +99,7 @@ leapsec01 leapsec01
+Sorry about resubmitting so quickly.
+
+ runtest/cve                     |   1 +
+ runtest/pty                     |   1 +
+ testcases/kernel/pty/.gitignore |   1 +
+ testcases/kernel/pty/Makefile   |   4 +-
+ testcases/kernel/pty/pty05.c    | 107 ++++++++++++++++++++++++++++++++
+ 5 files changed, 112 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/kernel/pty/pty05.c
+
+diff --git a/runtest/cve b/runtest/cve
+index fdb455af1..fa37ed38e 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -17,6 +17,7 @@ cve-2016-9604 keyctl08
+ cve-2016-9793 setsockopt04
+ cve-2016-10044 cve-2016-10044
+ cve-2017-2618 cve-2017-2618
++cve-2017-2636 pty05
+ cve-2017-2671 cve-2017-2671
+ cve-2017-6951 request_key05
+ cve-2017-7308 setsockopt02
+diff --git a/runtest/pty b/runtest/pty
+index 5587312d3..a43b18f2d 100644
+--- a/runtest/pty
++++ b/runtest/pty
+@@ -3,6 +3,7 @@ pty01 pty01
+ pty02 pty02
+ pty03 pty03
+ pty04 pty04
++pty05 pty05
+ ptem01 ptem01
+ hangup01 hangup01
  
- clock_settime01 clock_settime01
- clock_settime02 clock_settime02
-+clock_settime03 clock_settime03
+diff --git a/testcases/kernel/pty/.gitignore b/testcases/kernel/pty/.gitignore
+index c67d723d2..7f1048483 100644
+--- a/testcases/kernel/pty/.gitignore
++++ b/testcases/kernel/pty/.gitignore
+@@ -4,3 +4,4 @@
+ /pty02
+ /pty03
+ /pty04
++/pty05
+diff --git a/testcases/kernel/pty/Makefile b/testcases/kernel/pty/Makefile
+index 4469775aa..87d70ac1d 100644
+--- a/testcases/kernel/pty/Makefile
++++ b/testcases/kernel/pty/Makefile
+@@ -24,7 +24,7 @@ top_srcdir		?= ../../..
  
- clone01 clone01
- clone02 clone02
-diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
-index 28121755006b..b66169b3eb7b 100644
---- a/testcases/kernel/syscalls/clock_settime/.gitignore
-+++ b/testcases/kernel/syscalls/clock_settime/.gitignore
-@@ -1,2 +1,3 @@
- clock_settime01
- clock_settime02
-+clock_settime03
-diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-pty03: CFLAGS += -pthread
+-pty03: LDLIBS += -lrt
++pty03 pty05: CFLAGS += -pthread
++pty03 pty05: LDLIBS += -lrt
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/pty/pty05.c b/testcases/kernel/pty/pty05.c
 new file mode 100644
-index 000000000000..da062a8d0333
+index 000000000..6e1d7972a
 --- /dev/null
-+++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-@@ -0,0 +1,123 @@
++++ b/testcases/kernel/pty/pty05.c
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2020 Linaro Limited. All rights reserved.
-+ * Author: Viresh Kumar<viresh.kumar@linaro.org>
-+ *
-+ * Check Year 2038 related vulnerabilities.
++ * Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
 + */
 +
-+#include <signal.h>
-+#include "config.h"
-+#include "tst_timer.h"
-+#include "tst_safe_clocks.h"
++/*
++ * CVE-2017-2636
++ *
++ * Check for race between flush_tx_queue() and n_hdlc_send_frames(). Kernel
++ * crash fixed in:
++ *
++ *  commit 82f2341c94d270421f383641b7cd670e474db56b
++ *  Author: Alexander Popov <alex.popov@linux.com>
++ *  Date:   Tue Feb 28 19:54:40 2017 +0300
++ *
++ *  tty: n_hdlc: get rid of racy n_hdlc.tbuf
++ */
 +
-+#define TIMER_DELTA	3
-+#define ALLOWED_DELTA	(50 * 1000) /* 50 ms */
++#define _GNU_SOURCE
++#include <termios.h>
++#include "lapi/ioctl.h"
++#include "lapi/tty.h"
 +
-+static struct tst_ts start, end;
-+static struct tst_its its;
++#include "tst_test.h"
++#include "tst_taint.h"
++#include "tst_fuzzy_sync.h"
 +
-+static struct test_variants {
-+	int (*clock_gettime)(clockid_t clk_id, void *ts);
-+	int (*clock_settime)(clockid_t clk_id, void *ts);
-+	int (*timer_settime)(kernel_timer_t timerid, int flags, void *its,
-+			     void *old_its);
-+	enum tst_ts_type type;
-+	char *desc;
-+} variants[] = {
-+#if (__NR_clock_settime != __LTP__NR_INVALID_SYSCALL)
-+	{ .clock_gettime = sys_clock_gettime, .clock_settime = sys_clock_settime, .timer_settime = sys_timer_settime, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-+#endif
++#define BUF_SIZE 1
 +
-+#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
-+	{ .clock_gettime = sys_clock_gettime64, .clock_settime = sys_clock_settime64, .timer_settime = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-+#endif
-+};
++static struct tst_fzsync_pair fzsync_pair;
++static volatile int ptmx = -1;
++static char buf[BUF_SIZE];
 +
 +static void setup(void)
 +{
-+	struct test_variants *tv = &variants[tst_variant];
++	tst_taint_init(TST_TAINT_W | TST_TAINT_D);
 +
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+	start.type = end.type = its.type = tv->type;
++	fzsync_pair.exec_loops = 100000;
++	tst_fzsync_pair_init(&fzsync_pair);
++}
 +
-+	/* Check if the kernel is y2038 safe */
-+	if (tv->type == TST_KERN_OLD_TIMESPEC &&
-+	    sizeof(start.ts.kern_old_ts) == 8)
-+		tst_brk(TCONF, "Not Y2038 safe to run test");
++static void *thread_run(void *arg)
++{
++	while (tst_fzsync_run_b(&fzsync_pair)) {
++		tst_fzsync_start_race_b(&fzsync_pair);
++		ioctl(ptmx, TCFLSH, TCIOFLUSH);
++		tst_fzsync_end_race_b(&fzsync_pair);
++	}
++
++	return arg;
 +}
 +
 +static void run(void)
 +{
-+	struct test_variants *tv = &variants[tst_variant];
-+	unsigned long long time = 0x7FFFFFFE; /* Time just before y2038 */
-+	struct sigevent ev = {
-+		.sigev_notify = SIGEV_SIGNAL,
-+		.sigev_signo = SIGABRT,
-+	};
-+	long long diff;
-+	kernel_timer_t timer;
-+	sigset_t set;
-+	int sig, ret;
++	int ldisc = N_HDLC;
 +
-+	if (sigemptyset(&set) == -1)
-+		tst_brk(TBROK, "sigemptyset() failed");
++	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
 +
-+	if (sigaddset(&set, SIGABRT) == -1)
-+		tst_brk(TBROK, "sigaddset() failed");
++	while (tst_fzsync_run_a(&fzsync_pair)) {
++		ptmx = SAFE_OPEN("/dev/ptmx", O_RDWR);
++		TEST(ioctl(ptmx, TIOCSETD, &ldisc));
 +
-+	if (sigprocmask(SIG_BLOCK, &set, NULL) == -1)
-+		tst_brk(TBROK, "sigprocmask() failed");
++		if (TST_RET == -1 && TST_ERR == EINVAL) {
++			tst_brk(TCONF, "HDLC line discipline not available");
++		} else if (TST_RET == -1) {
++			tst_brk(TBROK | TTERRNO, "Cannot set line discipline");
++		} else if (TST_RET != 0) {
++			tst_brk(TBROK | TTERRNO,
++				"Invalid ioctl() return value %ld", TST_RET);
++		}
 +
-+	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME_ALARM, &ev, &timer));
-+	if (TST_RET != 0)
-+		tst_brk(TBROK | TERRNO, "timer_create() failed");
++		SAFE_IOCTL(ptmx, TCXONC, TCOOFF);
++		SAFE_WRITE(1, ptmx, buf, BUF_SIZE);
 +
-+	tst_ts_set_sec(&start, time);
-+	tst_ts_set_nsec(&start, 0);
++		tst_fzsync_start_race_a(&fzsync_pair);
++		ioctl(ptmx, TCXONC, TCOON);
++		tst_fzsync_end_race_a(&fzsync_pair);
 +
-+	ret = tv->clock_settime(CLOCK_REALTIME, tst_ts_get(&start));
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "clock_settime() failed");
++		SAFE_CLOSE(ptmx);
 +
-+	tst_its_set_interval_sec(&its, 0);
-+	tst_its_set_interval_nsec(&its, 0);
-+	tst_its_set_value_sec(&its, time + TIMER_DELTA);
-+	tst_its_set_value_nsec(&its, 0);
-+
-+	TEST(tv->timer_settime(timer, TIMER_ABSTIME, tst_its_get(&its), NULL));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "timer_settime() failed");
-+
-+	if (sigwait(&set, &sig) == -1)
-+		tst_brk(TBROK, "sigwait() failed");
-+
-+	ret = tv->clock_gettime(CLOCK_REALTIME, tst_ts_get(&end));
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "clock_gettime() failed");
-+
-+	if (sig != SIGABRT) {
-+		tst_res(TFAIL, "clock_settime(): Y2038 test failed");
-+		return;
++		if (tst_taint_check()) {
++			tst_res(TFAIL, "Kernel is vulnerable");
++			return;
++		}
 +	}
 +
-+	diff = tst_ts_diff_ms(end, start);
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
 +
-+	if (diff < TIMER_DELTA * 1000) {
-+		tst_res(TFAIL, "Timer expired too soon, after %llims", diff);
-+		return;
-+	}
++static void cleanup(void)
++{
++	tst_fzsync_pair_cleanup(&fzsync_pair);
 +
-+	if (diff > TIMER_DELTA * 1000 + ALLOWED_DELTA)
-+		tst_res(TINFO, "Time expired too late, after %llims", diff);
-+	else
-+		tst_res(TPASS, "clock_settime(): Y2038 test passed");
++	if (ptmx >= 0)
++		SAFE_CLOSE(ptmx);
 +}
 +
 +static struct tst_test test = {
 +	.test_all = run,
-+	.test_variants = ARRAY_SIZE(variants),
 +	.setup = setup,
-+	.needs_root = 1,
-+	.restore_wallclock = 1,
++	.cleanup = cleanup,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "82f2341c94d27"},
++		{"CVE", "2017-2636"},
++		{}
++	}
 +};
 -- 
-2.14.1
+2.27.0
 
