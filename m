@@ -1,55 +1,63 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 04 Aug 2020 14:15:50 +0200
-Subject: [LTP] looking for a test library home
-Message-ID: <8cf945033b519ac7240e42d29906d0d4ed3ed292.camel@sipsolutions.net>
+From: Filip Bozuta <Filip.Bozuta@syrmia.com>
+Date: Tue,  4 Aug 2020 16:40:42 +0200
+Subject: [LTP] [PATCH 0/3] testcases/kernel/syscalls: Adding new testcases
+ for existing tests
+Message-ID: <20200804144045.18875-1-Filip.Bozuta@syrmia.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+This series introduces new test cases for existing tests for syscalls
 
-After mentioning this on IRC a few days ago, metan suggested I take it
-to the list.
+    * mq_timedsend()        * sendmmsg()
+    * mq_timedreceive()     * recvmmsg()
+    * clock_nanosleep()
 
-Some time ago, I upstreamed "time-travel" and "time-travel=infcpu" modes
-for UML (User Mode Linux) which allows time inside to run faster than
-real time, and in the =infcpu case completely disconnected from real
-time.
+* First patch in the series introduces bad address test cases for
+  'mq_timedsend()' and 'mq_timedreceive()'
 
-Later, I extended this
- 1) a combined mode where more than one application can take part in the
-    same time simulation; the protocol for this is defined in Linux but
-    this mode requires a controller program;
- 2) an extension of this to virtio/vhost-user devices.
+* Second patch in the series introduces bad timespec address cases
+  for 'clock_nanosleep()'
 
-For 1), the controller program isn't available yet; it's part of my
-library/framework. For 2) you need a special vhost-user device-side
-implementation due to synchronisation etc., libvhost-user from qemu has
-focus on performance and migration and isn't really usable. This is also
-part of the framework.
+* Third patch in the series introduces a timeout case and an errno
+  test for 'sendmmsg()' and 'recvmmsg()'
 
-Since we're using this framework to run mostly real firmware code
-against real driver code (modified to use virtio instead of pcie) and
-also use this framework for unit tests on the device side, there's a
-more code in there for making that easy etc.
+More detailed descriptions of these newly added test cases and the
+implementation details can be found in this series patch commit
+messages.
 
-Consequently, this thing is called the "User Space Firmware
-Simulation/Testing Library".
+These new test cases are part of my work of implementation for 2038
+safe variants of the above mentioned syscalls in QEMU:
 
-For ... reasons, I can neither put it on my personal github nor on
-Intel's, so I'm looking for a good home to have a repository at, and LTP
-was suggested as a perhaps fitting location.
+    * mq_timedsend_time64()
+    * mq_timedreceive_time64()
+    * clock_nanosleep_time64()
+    * recvmmsg_time64()
 
-What do you think? Ultimately, I think that would simply mean creating
-the github.com/linux-test-project/usfstl repository and I could
-contribute the code to there in some way, perhaps by sending email
-patches, or pull requests, or being maintainer there myself, whichever
-you feel is appropriate.
+These test cases are needed to make sure that QEMU implementations of
+the above mentioned time64 syscalls work properly.
 
-Thanks,
-johannes
+These test cases are also used to fix some minor issues with already
+existing implementations of regular variants of these syscalls.
 
+Filip Bozuta (3):
+  syscalls/mq_timed{send|receive}: Add test cases for bad address
+  syscalls/clock_nanosleep: add a test case for bad timespec address
+  syscalls/{send|recv}mmsg: add a test case for timeout and errno test
 
+ runtest/syscalls                              |   1 +
+ .../clock_nanosleep/clock_nanosleep01.c       |  27 ++-
+ .../mq_timedreceive/mq_timedreceive01.c       |  12 +-
+ .../syscalls/mq_timedsend/mq_timedsend01.c    |  23 +-
+ testcases/kernel/syscalls/sendmmsg/.gitignore |   1 +
+ .../kernel/syscalls/sendmmsg/sendmmsg01.c     |  69 ++++--
+ .../kernel/syscalls/sendmmsg/sendmmsg02.c     | 223 ++++++++++++++++++
+ testcases/kernel/syscalls/utils/mq_timed.h    |   2 +
+ 8 files changed, 338 insertions(+), 20 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/sendmmsg/sendmmsg02.c
+
+-- 
+2.25.1
 
