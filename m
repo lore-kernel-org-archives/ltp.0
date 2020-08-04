@@ -1,292 +1,113 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  4 Aug 2020 16:27:05 +0200
-Subject: [LTP] [PATCH 1/1] make: Drop 3.80 support
-Message-ID: <20200804142705.12377-1-pvorel@suse.cz>
+From: Lachlan Sneff <t-josne@linux.microsoft.com>
+Date: Tue, 4 Aug 2020 12:42:33 -0400
+Subject: [LTP] [PATCH 1/3] IMA: Update key test documentation
+In-Reply-To: <20200804043504.GA76360@x230>
+References: <20200803184726.2416-1-t-josne@linux.microsoft.com>
+ <20200803184726.2416-2-t-josne@linux.microsoft.com>
+ <20200804043504.GA76360@x230>
+Message-ID: <1ccacc7c-392c-ad45-2806-048177953acf@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-make 3.81 was released 14 years ago, we can safely require it now.
+Hi Petr,
+Thanks for updating the readme. Should I send a new patch with
+the changes you have proposed?
 
-Removed also make check as not necessary any more because the latest LTP
-release does not compile on systems with make 3.81 due old libc and
-kernel headers.
+Thanks,
+Lachlan
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
-
-I need to adjust some rule for other WIP patchset, thus decided to do
-cleanup first.
-
-NOTE: I guess Cyril should first merge his "Build system fixes" patchset
-[1] and I'll rebase.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=193503&state=*
-
- Makefile                |  8 ++------
- include/mk/env_post.mk  | 21 ++-------------------
- include/mk/env_pre.mk   | 36 ++++--------------------------------
- include/mk/functions.mk | 33 ++-------------------------------
- include/mk/lib.mk       | 10 ++--------
- 5 files changed, 12 insertions(+), 96 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 768ca4606..bf5077231 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,8 +1,8 @@
- #
- #    Top-level Makefile for LTP. See INSTALL for more info.
- #
--#    Copyright (C) 2009-2010, Cisco Systems Inc.
--#    Copyright (C) 2010-2011, Linux Test Project.
-+#    Copyright (c) Linux Test Project, 2009-2020
-+#    Copyright (c) Cisco Systems Inc., 2009-2010
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -89,11 +89,7 @@ include-install: $(top_builddir)/include/config.h include/mk/config.mk include-a
- INSTALL_DIR		:= $(DESTDIR)/$(prefix)
- 
- # DO NOT REMOVE THIS CALL (see clean_install_dir call below...)!!!!
--ifdef MAKE_3_80_COMPAT
--INSTALL_DIR		:= $(call MAKE_3_80_abspath,$(INSTALL_DIR))
--else
- INSTALL_DIR		:= $(abspath $(INSTALL_DIR))
--endif
- 
- # build tree bootstrap targets and $(INSTALL_DIR) target.
- $(sort $(addprefix $(abs_top_builddir)/,$(BOOTSTRAP_TARGETS)) $(INSTALL_DIR) $(DESTDIR)/$(bindir)):
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index f4169ad66..56bc7d454 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -1,7 +1,8 @@
- #
- #    Environment post-setup Makefile.
- #
--#    Copyright (C) 2009, Cisco Systems Inc.
-+#    Copyright (c) Linux Test Project, 2009-2020
-+#    Copyright (c) Cisco Systems Inc., 2009
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -79,28 +80,10 @@ INSTALL_TARGETS			:= $(patsubst $(abs_srcdir)/%,%,$(INSTALL_TARGETS))
- # scripts, so let's chmod them like that.
- INSTALL_MODE			?= 00775
- 
--ifdef MAKE_3_80_COMPAT
--
--INSTALL_PATH			:= $(call MAKE_3_80_abspath,$(DESTDIR)/$(INSTALL_DIR))
--
--INSTALL_TARGETS_ABS		:= $(call MAKE_3_80_abspath,$(addprefix $(INSTALL_PATH)/,$(INSTALL_TARGETS)))
--MAKE_TARGETS_ABS		:= $(call MAKE_3_80_abspath,$(addprefix $(INSTALL_PATH)/,$(MAKE_TARGETS)))
--
--INSTALL_FILES			:= $(INSTALL_TARGETS_ABS) $(MAKE_TARGETS_ABS)
--
--$(INSTALL_TARGETS_ABS):
--	test -d "$(@D)" || mkdir -p "$(@D)"
--	install -m $(INSTALL_MODE) "$(abs_srcdir)/$(subst $(INSTALL_PATH)/,,$@)" "$@"
--
--$(MAKE_TARGETS_ABS):
--	test -d "$(@D)" || mkdir -p "$(@D)"
--	install -m $(INSTALL_MODE) "$(abs_builddir)/$(subst $(INSTALL_PATH)/,,$@)" "$@"
--else
- $(abspath $(addprefix $(DESTDIR)/$(INSTALL_DIR)/,$(sort $(dir $(INSTALL_TARGETS) $(MAKE_TARGETS))))):
- 	mkdir -p "$@"
- $(foreach install_target,$(INSTALL_TARGETS),$(eval $(call generate_install_rule,$(install_target),$(abs_srcdir),$(INSTALL_DIR))))
- $(foreach make_target,$(MAKE_TARGETS),$(eval $(call generate_install_rule,$(make_target),$(abs_builddir),$(INSTALL_DIR))))
--endif
- 
- else  # else ! $(filter-out install,$(MAKECMDGOALS)),$(MAKECMDGOALS)
- $(error You must define $$(prefix) before executing install)
-diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-index c4a1f4708..f87c15c37 100644
---- a/include/mk/env_pre.mk
-+++ b/include/mk/env_pre.mk
-@@ -1,7 +1,8 @@
- #
- #    Make pre-include environment Makefile.
- #
--#    Copyright (C) 2009, Cisco Systems Inc.
-+#    Copyright (c) Linux Test Project, 2009-2020
-+#    Copyright (c) Cisco Systems Inc., 2009
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -36,28 +37,13 @@ BUILD_TREE_NONSRCDIR_INSTALL	:= 3
- # configure not run.
- BUILD_TREE_UNCONFIGURED		:= 4
- 
--ifndef MAKE_VERSION_CHECK
--export MAKE_VERSION_CHECK = 1
--ifneq ($(firstword $(sort 3.80 $(MAKE_VERSION))),3.80)
--$(error Your version of make $(MAKE_VERSION) is too old. Upgrade to at least 3.80; 3.81+ is preferred)
--else
--ifneq ($(filter 3.80%,$(MAKE_VERSION)),)
--export MAKE_3_80_COMPAT	:= 1
--endif # make 3.80?
--endif # At least make 3.80?
--endif # MAKE_VERSION_CHECK
--
- # Get the absolute path for the source directory.
- top_srcdir			?= $(error You must define top_srcdir before including this file)
- 
- include $(top_srcdir)/include/mk/functions.mk
- 
- # Where's the root source directory?
--ifdef MAKE_3_80_COMPAT
--abs_top_srcdir			:= $(call MAKE_3_80_abspath,$(top_srcdir))
--else
- abs_top_srcdir			:= $(abspath $(top_srcdir))
--endif
- 
- #
- # Where's the root object directory?
-@@ -67,12 +53,8 @@ endif
- #
- top_builddir			?= $(top_srcdir)
- 
--# We need the absolute path...
--ifdef MAKE_3_80_COMPAT
--abs_top_builddir		:= $(call MAKE_3_80_abspath,$(top_builddir))
--else
-+# We need the absolute path
- abs_top_builddir		:= $(abspath $(top_builddir))
--endif
- 
- # Where's the root object directory?
- builddir			:= .
-@@ -81,12 +63,8 @@ abs_builddir			:= $(CURDIR)
- 
- cwd_rel_from_top		:= $(subst $(abs_top_builddir),,$(abs_builddir))
- 
--# Where's the source located at? Squish all of the / away by using abspath...
--ifdef MAKE_3_80_COMPAT
--abs_srcdir			:= $(call MAKE_3_80_abspath,$(abs_top_srcdir)/$(cwd_rel_from_top))
--else
-+# Where's the source located at? Squish all of the / away by using abspath
- abs_srcdir			:= $(abspath $(abs_top_srcdir)/$(cwd_rel_from_top))
--endif
- 
- srcdir				:= $(strip $(subst $(abs_top_srcdir)/,,$(abs_srcdir)))
- 
-@@ -136,13 +114,7 @@ BUILD_TREE_STATE		:= $(BUILD_TREE_NONSRCDIR_INSTALL)
- endif
- endif
- 
--ifeq ($(MAKE_3_80_COMPAT),1)
--# Trick make 3.80 into thinking that the default goal is all.
--.PHONY: default
--default: all
--else
- .DEFAULT_GOAL			:= all
--endif
- 
- endif	# END autotools, *clean...
- 
-diff --git a/include/mk/functions.mk b/include/mk/functions.mk
-index 6f67b5af8..79c6193ca 100644
---- a/include/mk/functions.mk
-+++ b/include/mk/functions.mk
-@@ -1,7 +1,8 @@
- #
- #  A Makefile with a collection of reusable functions.
- #
--#    Copyright (C) 2009, Cisco Systems Inc.
-+#    Copyright (c) Linux Test Project, 2009-2020
-+#    Copyright (c) Cisco Systems Inc., 2009
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -20,25 +21,6 @@
- # Ngie Cooper, July 2009
- #
- 
--SQUOTE			:= '
--
--# ' # to keep colorized editors from going nuts
--
--MAKE_3_80_realpath	= $(shell $(top_srcdir)/scripts/realpath.sh '$(subst $(SQUOTE),\\$(SQUOTE),$(1))')
--
--MAKE_3_80_abspath	= $(shell $(top_srcdir)/scripts/abspath.sh '$(subst $(SQUOTE),\\$(SQUOTE),$(1))')
--
--#
--# NOTE (garrcoop):
--#
--# The following functions are (sometimes) split into 3.80 and 3.81+
--# counterparts, and not conditionalized inside of the define(s) to work around
--# an issue with how make 3.80 evaluates defines.
--#
--# SO DO NOT INTERNALIZE CONDITIONALS IN DEFINES OR YOU WILL BREAK MAKE 3.80!
--#
--
--#
- # Generate an install rule which also creates the install directory if needed
- # to avoid unnecessary bourne shell based for-loops and install errors, as well
- # as adhoc install rules.
-@@ -46,17 +28,7 @@ MAKE_3_80_abspath	= $(shell $(top_srcdir)/scripts/abspath.sh '$(subst $(SQUOTE),
- # 1 -> Target basename.
- # 2 -> Source directory.
- # 3 -> Destination directory.
--#
--ifdef MAKE_3_80_COMPAT
--define generate_install_rule
- 
--INSTALL_FILES		+= $$(call MAKE_3_80_abspath,$$(DESTDIR)/$(3)/$(1))
--
--$$(call MAKE_3_80_abspath,$$(DESTDIR)/$(3)/$(1)): \
--    $$(call MAKE_3_80_abspath,$$(dir $$(DESTDIR)/$(3)/$(1)))
--	install -m $$(INSTALL_MODE) "$(2)/$(1)" "$$@"
--endef
--else # not MAKE_3_80_COMPAT
- define generate_install_rule
- 
- INSTALL_FILES		+= $$(abspath $$(DESTDIR)/$(3)/$(1))
-@@ -65,7 +37,6 @@ $$(abspath $$(DESTDIR)/$(3)/$(1)): \
-     $$(abspath $$(dir $$(DESTDIR)/$(3)/$(1)))
- 	install -m $$(INSTALL_MODE) "$(2)/$(1)" "$$@"
- endef
--endif # END MAKE_3_80_COMPAT
- 
- #
- # Set SUBDIRS to the subdirectories where Makefiles were found.
-diff --git a/include/mk/lib.mk b/include/mk/lib.mk
-index 36e1ba17b..f0e56cb00 100644
---- a/include/mk/lib.mk
-+++ b/include/mk/lib.mk
-@@ -1,7 +1,8 @@
- #
- #    library include Makefile.
- #
--#    Copyright (C) 2009, Cisco Systems Inc.
-+#    Copyright (c) Linux Test Project, 2009-2020
-+#    Copyright (c) Cisco Systems Inc., 2009
- #
- #    This program is free software; you can redistribute it and/or modify
- #    it under the terms of the GNU General Public License as published by
-@@ -49,15 +50,8 @@ endif
- MAKE_TARGETS	+= $(LIB)
- 
- LIBSRCS		?= $(wildcard $(abs_srcdir)/*.c)
--
--ifdef MAKE_3_80_COMPAT
--LIBSRCS		:= $(call MAKE_3_80_abspath,$(LIBSRCS))
--else
- LIBSRCS		:= $(abspath $(LIBSRCS))
--endif
--
- LIBSRCS		:= $(subst $(abs_srcdir)/,,$(wildcard $(LIBSRCS)))
--
- LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
- 
- LIBOBJS		:= $(LIBSRCS:.c=.o)
--- 
-2.28.0
+On 8/4/20 12:35 AM, Petr Vorel wrote:
+> Hi Lachlan,
+>
+>> The current documentation for the existing IMA key test was
+>> left in by accident by a previous merge. It does not apply
+>> to the test that is currently included in the LTP.
+>> Update the documentation for the IMA key test.
+> Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
+> Thanks for fixing this, I propose this changes:
+>
+> Fixes: d2768c84e ("IMA: Add a test to verify measurement of keys")
+>
+>> ---
+>>   .../kernel/security/integrity/ima/README.md   | 22 +++++--------------
+>>   1 file changed, 5 insertions(+), 17 deletions(-)
+>> diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
+>> index d4644ba39..2956ac7fd 100644
+>> --- a/testcases/kernel/security/integrity/ima/README.md
+>> +++ b/testcases/kernel/security/integrity/ima/README.md
+>> @@ -15,27 +15,15 @@ Although a custom policy, loaded via dracut, systemd or manually from user
+>>   space, may contain equivalent measurement tcb rules, detecting them would
+>>   require `IMA_READ_POLICY=y` therefore ignore this option.
+>> -### IMA key import test
+>> -`ima_keys.sh` requires a x509 public key, by default in `/etc/keys/x509_ima.der`
+>> -(defined in `CONFIG_IMA_X509_PATH` kernel config option).
+>> -The key must be signed by the private key you generate. Follow these instructions:
+>> -https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys
+>> -
+>> -The test cannot be set-up automatically because the x509 public key must be
+>> -built into the kernel and loaded onto a trusted keyring
+>> -(e.g. `.builtin_trusted_keys`, `.secondary_trusted_keyring`).
+>> -
+>> -As well as what's required for the IMA tests, the following are also required
+>> -in the kernel configuration:
+>> +### IMA key test
+>> +`ima_keys.sh` requires a readable IMA policy, as well as a loaded policy
+>> +with `func=KEY_CHECK keyrings=...`, see example in `keycheck.policy`.
+>> +
+>> +Mandatory kernel configuration for IMA:
+> This "Mandatory kernel configuration for IMA:" would be in docs twice. The above
+> one (CONFIG_INTEGRITY=y, CONFIG_IMA=y) is required for all tests.
+> Take it that "### IMA key test" is header 3, but ## IMA tests
+> is header 2 (upper level).
+>
+>>   ```
+>>   CONFIG_IMA_READ_POLICY=y
+>> -CONFIG_IMA_X509_PATH="/etc/keys/x509_ima.der"
+>> -CONFIG_SYSTEM_TRUSTED_KEYRING=y
+>> -CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
+>>   ```
+>> -Test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
+>> -
+>>   ### IMA kexec test
+>>   `ima_kexec.sh` requires loaded policy which contains `measure func=KEXEC_CMDLINE`,
+> I also removed "IMA" from EVM tests header.
+>
+> Kind regards,
+> Petr
+>
+> diff --git testcases/kernel/security/integrity/ima/README.md testcases/kernel/security/integrity/ima/README.md
+> index 2956ac7fd..392e1e868 100644
+> --- testcases/kernel/security/integrity/ima/README.md
+> +++ testcases/kernel/security/integrity/ima/README.md
+> @@ -19,7 +19,8 @@ require `IMA_READ_POLICY=y` therefore ignore this option.
+>   `ima_keys.sh` requires a readable IMA policy, as well as a loaded policy
+>   with `func=KEY_CHECK keyrings=...`, see example in `keycheck.policy`.
+>   
+> -Mandatory kernel configuration for IMA:
+> +As well as what's required for the IMA tests, the following are also required
+> +-in the kernel configuration:
+>   ```
+>   CONFIG_IMA_READ_POLICY=y
+>   ```
+> @@ -38,7 +39,7 @@ To kexec a different kernel image export `IMA_KEXEC_IMAGE=<pathname>`.
+>   kernel parameter) which appraises the integrity of all files owned by root and EVM setup.
+>   Again, for simplicity ignore possibility to load requires rules via custom policy.
+>   
+> -Mandatory kernel configuration for IMA & EVM:
+> +Mandatory kernel configuration for EVM tests:
+>   ```
+>   CONFIG_INTEGRITY=y
+>   CONFIG_INTEGRITY_SIGNATURE=y
+> @@ -50,7 +51,7 @@ CONFIG_TRUSTED_KEYS=y
+>   CONFIG_ENCRYPTED_KEYS=y
+>   ```
+>   
+> -Example of installing IMA + EVM on openSUSE:
+> +Example of preparing environment on for EVM on openSUSE:
+>   
+>   * Boot install system with `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters
+>     (for IMA measurement, IMA appraisal and EVM protection)
 
