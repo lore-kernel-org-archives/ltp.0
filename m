@@ -1,184 +1,110 @@
-From: Lachlan Sneff <t-josne@linux.microsoft.com>
-Date: Mon,  3 Aug 2020 14:47:26 -0400
-Subject: [LTP] [PATCH 3/3] IMA: Add a test to verify measurement of
- certificate imported into a keyring
-In-Reply-To: <20200803184726.2416-1-t-josne@linux.microsoft.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 4 Aug 2020 06:35:04 +0200
+Subject: [LTP] [PATCH 1/3] IMA: Update key test documentation
+In-Reply-To: <20200803184726.2416-2-t-josne@linux.microsoft.com>
 References: <20200803184726.2416-1-t-josne@linux.microsoft.com>
-Message-ID: <20200803184726.2416-4-t-josne@linux.microsoft.com>
+ <20200803184726.2416-2-t-josne@linux.microsoft.com>
+Message-ID: <20200804043504.GA76360@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The IMA subsystem supports measuring certificates that have been
-imported into either system built-in or user-defined keyrings.
-A test to verify measurement of a certificate imported
-into a keyring is required.
+Hi Lachlan,
 
-Add an IMA measurement test that verifies that an x509 certificate
-can be imported into a newly-created, user-defined keyring and measured
-correctly by the IMA subsystem.
+> The current documentation for the existing IMA key test was
+> left in by accident by a previous merge. It does not apply
+> to the test that is currently included in the LTP.
 
-A certificate used by the test is included in the `datafiles/keys`
-directory.
+> Update the documentation for the IMA key test.
 
-There can be restrictions on importing a certificate into a builtin
-trusted keyring. For example, the `.ima` keyring requires that
-imported certs be signed by a kernel private key in certain
-kernel configurations. For this reason, this test defines
-a user-defined keyring and imports a certificate into that.
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
+Thanks for fixing this, I propose this changes:
 
-Signed-off-by: Lachlan Sneff <t-josne@linux.microsoft.com>
----
- .../kernel/security/integrity/ima/README.md   |  14 ++++++
- .../security/integrity/ima/datafiles/Makefile |   2 +-
- .../integrity/ima/datafiles/keys/Makefile     |  15 ++++++
- .../integrity/ima/datafiles/keys/x509_ima.der | Bin 0 -> 650 bytes
- .../security/integrity/ima/tests/ima_keys.sh  |  44 +++++++++++++++++-
- 5 files changed, 72 insertions(+), 3 deletions(-)
- create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
- create mode 100644 testcases/kernel/security/integrity/ima/datafiles/keys/x509_ima.der
+Fixes: d2768c84e ("IMA: Add a test to verify measurement of keys")
 
-diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
-index 2956ac7fd..bfa015191 100644
---- a/testcases/kernel/security/integrity/ima/README.md
-+++ b/testcases/kernel/security/integrity/ima/README.md
-@@ -23,6 +23,20 @@ Mandatory kernel configuration for IMA:
+> ---
+>  .../kernel/security/integrity/ima/README.md   | 22 +++++--------------
+>  1 file changed, 5 insertions(+), 17 deletions(-)
+
+> diff --git a/testcases/kernel/security/integrity/ima/README.md b/testcases/kernel/security/integrity/ima/README.md
+> index d4644ba39..2956ac7fd 100644
+> --- a/testcases/kernel/security/integrity/ima/README.md
+> +++ b/testcases/kernel/security/integrity/ima/README.md
+> @@ -15,27 +15,15 @@ Although a custom policy, loaded via dracut, systemd or manually from user
+>  space, may contain equivalent measurement tcb rules, detecting them would
+>  require `IMA_READ_POLICY=y` therefore ignore this option.
+
+> -### IMA key import test
+> -`ima_keys.sh` requires a x509 public key, by default in `/etc/keys/x509_ima.der`
+> -(defined in `CONFIG_IMA_X509_PATH` kernel config option).
+> -The key must be signed by the private key you generate. Follow these instructions:
+> -https://manpages.ubuntu.com/manpages/disco/man1/evmctl.1.html#generate%20trusted%20keys
+> -
+> -The test cannot be set-up automatically because the x509 public key must be
+> -built into the kernel and loaded onto a trusted keyring
+> -(e.g. `.builtin_trusted_keys`, `.secondary_trusted_keyring`).
+> -
+> -As well as what's required for the IMA tests, the following are also required
+> -in the kernel configuration:
+> +### IMA key test
+> +`ima_keys.sh` requires a readable IMA policy, as well as a loaded policy
+> +with `func=KEY_CHECK keyrings=...`, see example in `keycheck.policy`.
+> +
+> +Mandatory kernel configuration for IMA:
+This "Mandatory kernel configuration for IMA:" would be in docs twice. The above
+one (CONFIG_INTEGRITY=y, CONFIG_IMA=y) is required for all tests.
+Take it that "### IMA key test" is header 3, but ## IMA tests
+is header 2 (upper level).
+
+>  ```
+>  CONFIG_IMA_READ_POLICY=y
+> -CONFIG_IMA_X509_PATH="/etc/keys/x509_ima.der"
+> -CONFIG_SYSTEM_TRUSTED_KEYRING=y
+> -CONFIG_SYSTEM_TRUSTED_KEYS="/etc/keys/ima-local-ca.pem"
+>  ```
+
+> -Test also requires loaded policy with `func=KEY_CHECK`, see example in `keycheck.policy`.
+> -
+>  ### IMA kexec test
+
+>  `ima_kexec.sh` requires loaded policy which contains `measure func=KEXEC_CMDLINE`,
+
+I also removed "IMA" from EVM tests header.
+
+Kind regards,
+Petr
+
+diff --git testcases/kernel/security/integrity/ima/README.md testcases/kernel/security/integrity/ima/README.md
+index 2956ac7fd..392e1e868 100644
+--- testcases/kernel/security/integrity/ima/README.md
++++ testcases/kernel/security/integrity/ima/README.md
+@@ -19,7 +19,8 @@ require `IMA_READ_POLICY=y` therefore ignore this option.
+ `ima_keys.sh` requires a readable IMA policy, as well as a loaded policy
+ with `func=KEY_CHECK keyrings=...`, see example in `keycheck.policy`.
+ 
+-Mandatory kernel configuration for IMA:
++As well as what's required for the IMA tests, the following are also required
++-in the kernel configuration:
  ```
  CONFIG_IMA_READ_POLICY=y
  ```
-+The certificate import test in `ima_keys.sh` also requires that
-+the `key_import_test` keyring is specified in the IMA policy.
-+
-+One way to do this is to modify an existing KEY_CHECK entry
-+in the IMA policy by adding `key_import_test` for keyrings:
-+```
-+measure func=KEY_CHECK keyrings=.ima|.evm|key_import_test template=ima-buf
-+```
-+
-+If KEY_CHECK entry does not exist in the IMA policy then by adding
-+the following line:
-+```
-+measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
-+```
+@@ -38,7 +39,7 @@ To kexec a different kernel image export `IMA_KEXEC_IMAGE=<pathname>`.
+ kernel parameter) which appraises the integrity of all files owned by root and EVM setup.
+ Again, for simplicity ignore possibility to load requires rules via custom policy.
  
- ### IMA kexec test
+-Mandatory kernel configuration for IMA & EVM:
++Mandatory kernel configuration for EVM tests:
+ ```
+ CONFIG_INTEGRITY=y
+ CONFIG_INTEGRITY_SIGNATURE=y
+@@ -50,7 +51,7 @@ CONFIG_TRUSTED_KEYS=y
+ CONFIG_ENCRYPTED_KEYS=y
+ ```
  
-diff --git a/testcases/kernel/security/integrity/ima/datafiles/Makefile b/testcases/kernel/security/integrity/ima/datafiles/Makefile
-index 3772e9a03..4b4c46b82 100644
---- a/testcases/kernel/security/integrity/ima/datafiles/Makefile
-+++ b/testcases/kernel/security/integrity/ima/datafiles/Makefile
-@@ -24,6 +24,6 @@ top_srcdir		?= ../../../../../..
+-Example of installing IMA + EVM on openSUSE:
++Example of preparing environment on for EVM on openSUSE:
  
- include	$(top_srcdir)/include/mk/env_pre.mk
- 
--SUBDIRS			:= policy
-+SUBDIRS			:= policy keys
- 
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile b/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
-new file mode 100644
-index 000000000..a8ab7a1b5
---- /dev/null
-+++ b/testcases/kernel/security/integrity/ima/datafiles/keys/Makefile
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Microsoft Corporation
-+# Author: Lachlan Sneff <t-josne@linux.microsoft.com>
-+#
-+# IMA datafiles/keys Makefile
-+
-+top_srcdir		?= ../../../../../../..
-+
-+include	$(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_DIR		:= testcases/data/ima_keys
-+
-+INSTALL_TARGETS		:= x509_ima.der
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/security/integrity/ima/datafiles/keys/x509_ima.der b/testcases/kernel/security/integrity/ima/datafiles/keys/x509_ima.der
-new file mode 100644
-index 0000000000000000000000000000000000000000..92be058da22adffa9d6b6e51efa0c737ebbbbdcd
-GIT binary patch
-literal 650
-zcmXqLVrnyJVtl`VnTe5!NhJD#vj69`9|BBf8}FEsx@^_9$Clp>c-c6$+C196^D;7W
-zvoaV27z!HjvoVLVaPe?t<QJFZCFZ6YN*hRmgqV4R$}{p4b2Al+Gt=`j^U@WvQ!5SS
-z3}oO&a59SVLzFncG#ki?^BP(jSQr@@7#Ud_7)6Qm8W{k&hEOgIY;2s5>?=lA2Ij_I
-z27|^<rp88wchfeduxmMW^j9qUxkIugeev4q7u7yrJR_rW$*!>VOo=tim8DK0r^FsU
-zl)K`}`+CO4@4KBkoLmcj?fH`%wbDvU<d=4Z>6-SMf6Eh}{&)1rdsOoNQ-1fgBQ1t{
-zVTqGwuK95LlFE)6i{@=vlP6!2`Y}x<BF&oXU_nlDxy@C+CNp&=W=00a#jys_20XwZ
-zl@(@W{LjK<z+k`);_<VvFf*|?7|4P+d@N!tBCNWX-0#?!UAx9s`mgFmW+nI2#6kmk
-zkhC(3gn?Lt$m4W@56wQ)?QVKW<nOtpT)HJrB?Q^`z&K?FdV8b(y8m)~mOOvswu^9m
-z-o7mOwCAzaT*~`Y4wxFtmNA_89`W;j{r#iww*5OC5vgEziqD_%=ki$*`;s}`Pfwi{
-zbotZ0X`ckHOmaVLm85n@E9hN_K;~PUB>DFAzh(;(UoMln9V>g;W#-LUGS7A`nYQKY
-WBem{7L5JThS+;$vggi%(*E;~nlJ80Y
-
-literal 0
-HcmV?d00001
-
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 3aea26056..f34f40132 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -6,9 +6,10 @@
- #
- # Verify that keys are measured correctly based on policy.
- 
--TST_NEEDS_CMDS="cut grep sed tr xxd"
--TST_CNT=1
-+TST_NEEDS_CMDS="grep cut sed tr xxd evmctl openssl keyctl"
-+TST_CNT=2
- TST_NEEDS_DEVICE=1
-+TST_NEEDS_ROOT=1
- 
- . ima_setup.sh
- 
-@@ -58,4 +59,43 @@ test1()
- 	tst_res TPASS "specified keyrings were measured correctly"
- }
- 
-+# Create a new keyring, import a certificate into it, and verify
-+# that the certificate is measured correctly by IMA.
-+test2() {
-+	local new_keyring_id temp_file="file.txt" \
-+		cert_file="$TST_DATAROOT/x509_ima.der"
-+
-+	if ! check_ima_policy_content '^measure.*func=KEY_CHECK.*keyrings=.*key_import_test'; then
-+		tst_brk TCONF "the IMA policy does not include the key_import_test keyring. See the LTP IMA README."
-+	fi
-+
-+	# Assuming this test is executed in a separate shell,
-+	# create a new session that will be cleaned up when
-+	# the shell exits.
-+	keyctl new_session > /dev/null
-+
-+	new_keyring_id=$(keyctl newring key_import_test @s) || \
-+		tst_brk TCONF "unable to create a new keyring"
-+
-+	tst_is_num "$new_keyring_id" || \
-+		tst_brk TCONF "unable to parse the new keyring id"
-+
-+	evmctl import "$cert_file" "$new_keyring_id" > /dev/null || \
-+		tst_brk TCONF "unable to import a cert into a the key_import_test keyring"
-+
-+	grep "key_import_test" "$ASCII_MEASUREMENTS" | tail -n1 | cut -d' ' -f6 | \
-+		xxd -r -p > "$temp_file" || \
-+		tst_brk TCONF "keyring not found in $ASCII_MEASUREMENTS"
-+
-+	if ! openssl x509 -in "$temp_file" -inform der > /dev/null; then
-+		tst_brk TCONF "the cert logged in $ASCII_MEASUREMENTS is not a valid x509 certificate"
-+	fi
-+
-+	if cmp -s "$temp_file" "$cert_file"; then
-+		tst_res TPASS "logged cert matches original cert"
-+	else
-+		tst_res TFAIL "logged cert does not match original cert"
-+	fi
-+}
-+
- tst_run
--- 
-2.25.1
-
+ * Boot install system with `ima_policy=tcb|appraise_tcb ima_appraise=fix evm=fix` kernel parameters
+   (for IMA measurement, IMA appraisal and EVM protection)
