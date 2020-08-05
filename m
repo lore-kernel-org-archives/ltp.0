@@ -1,29 +1,27 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 5 Aug 2020 08:58:59 -0400 (EDT)
-Subject: [LTP] [PATCH] selftests: vdso: hash entry size on alpha,
- s390x is 8 bytes
-In-Reply-To: <20200805125357.GE5522@yuki.lan>
-References: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
- <1881588710.5797015.1596457102422.JavaMail.zimbra@redhat.com>
- <20200805125357.GE5522@yuki.lan>
-Message-ID: <2103348435.6776074.1596632339725.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 5 Aug 2020 15:11:00 +0200
+Subject: [LTP] looking for a test library home
+In-Reply-To: <8cf945033b519ac7240e42d29906d0d4ed3ed292.camel@sipsolutions.net>
+References: <8cf945033b519ac7240e42d29906d0d4ed3ed292.camel@sipsolutions.net>
+Message-ID: <20200805131100.GF5522@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> What do you think? Ultimately, I think that would simply mean creating
+> the github.com/linux-test-project/usfstl repository and I could
+> contribute the code to there in some way, perhaps by sending email
+> patches, or pull requests, or being maintainer there myself, whichever
+> you feel is appropriate.
 
------ Original Message -----
-> Hi!
-> As much as it's worth the changes looks good to me.
-> 
-> @Jan: I guess that we can as well fix this in LTP first then we can try
->       to get the kernel version fixed...
+As for me I'm fine with creating a git repository and giving you
+developer access there, we do that for lcov and it's working nicely
+there.
 
-Fine by me, I'll give it couple more days then push it.
-
-I did repost it with original author CC-ed:
-  https://lore.kernel.org/lkml/93a07b1808e61babef3a20542cbeb4565d3c8410.1596458924.git.jstancek@redhat.com/
-but haven't heard back yet.
-
+-- 
+Cyril Hrubis
+(aka metan)
+chrubis@suse.cz
