@@ -1,27 +1,22 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 5 Aug 2020 12:40:28 +0200
-Subject: [LTP] [PATCH 1/3] build system: Add explicit make rules
-In-Reply-To: <CAEemH2dAmvMAQxJeRrNGnGo0Gw_Szn8CfOho3KNZTHoCBfUkJQ@mail.gmail.com>
-References: <20200731121508.12805-2-chrubis@suse.cz>
- <550701550.5736445.1596440755258.JavaMail.zimbra@redhat.com>
- <20200805092703.GB5522@yuki.lan>
- <CAEemH2dAmvMAQxJeRrNGnGo0Gw_Szn8CfOho3KNZTHoCBfUkJQ@mail.gmail.com>
-Message-ID: <20200805104028.GC5522@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 5 Aug 2020 12:48:30 +0200
+Subject: [LTP] [PATCH v3 2/2] net: Update network related docs
+In-Reply-To: <d60ee515-3c78-dba3-00a0-51e4e87c1884@oracle.com>
+References: <20200731162410.2637-1-pvorel@suse.cz>
+ <20200731162410.2637-2-pvorel@suse.cz>
+ <d60ee515-3c78-dba3-00a0-51e4e87c1884@oracle.com>
+Message-ID: <20200805104830.GA17282@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> There is still a DIR output at:
->   include/mk/generic_trunk_target.inc:84:     echo "DIR $$dir"; \
-> 
-> Not sure it is on purpose or forgot removing?
+Hi Alexey, Xiao,
 
-That's the one for the clean target, we may clean up 'make clean' output
-as well, but without further changes this shall stay.
+> Apart from the minor typos mentioned above, both patches look fine.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for review and catching those. Merged.
+
+Kind regards,
+Petr
