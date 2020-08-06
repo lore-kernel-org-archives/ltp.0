@@ -1,144 +1,243 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 6 Aug 2020 10:06:44 +0530
-Subject: [LTP] [PATCH V8] syscalls: clock_settime: Add test around y2038
- vulnerability
-In-Reply-To: <20200805151145.GA631@yuki.lan>
-References: <96ce72a605e365a040b258db9323d3962ab80e29.1596545279.git.viresh.kumar@linaro.org>
- <20200805151145.GA631@yuki.lan>
-Message-ID: <20200806043644.n7ea7wxeklix65oq@vireshk-mac-ubuntu>
+From: pravin <pravinraghul@zilogic.com>
+Date: Thu, 06 Aug 2020 05:49:29 -0000
+Subject: [LTP] [PATCH v3] Add a test case for mmap MAP_GROWSDOWN flag
+Message-ID: <20200806054929.13289-1-pravinraghul@zilogic.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05-08-20, 17:11, Cyril Hrubis wrote:
-> Hi!
-> > This adds a test around the y2038 vulnerability, it sets the system time
-> > to just before y2038 time (i.e. max value that can be stored in s32),
-> > and adds a timer to expire just after crossing it.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> > V8:
-> > - Check compatibility issues for TST_KERN_OLD_TIMESPEC and not the new
-> >   timespec.
-> > - s/TFAIL/TCONF/ in setup()
-> > - Use kernel_timer_t
-> > - rearrange code and don't expect timer to fire before.
-> > 
-> >  runtest/syscalls                                   |   1 +
-> >  testcases/kernel/syscalls/clock_settime/.gitignore |   1 +
-> >  .../syscalls/clock_settime/clock_settime03.c       | 123 +++++++++++++++++++++
-> >  3 files changed, 125 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/clock_settime/clock_settime03.c
-> > 
-> > diff --git a/runtest/syscalls b/runtest/syscalls
-> > index 3c6e78a4c6d0..3c2f5f6c0b37 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -99,6 +99,7 @@ leapsec01 leapsec01
-> >  
-> >  clock_settime01 clock_settime01
-> >  clock_settime02 clock_settime02
-> > +clock_settime03 clock_settime03
-> >  
-> >  clone01 clone01
-> >  clone02 clone02
-> > diff --git a/testcases/kernel/syscalls/clock_settime/.gitignore b/testcases/kernel/syscalls/clock_settime/.gitignore
-> > index 28121755006b..b66169b3eb7b 100644
-> > --- a/testcases/kernel/syscalls/clock_settime/.gitignore
-> > +++ b/testcases/kernel/syscalls/clock_settime/.gitignore
-> > @@ -1,2 +1,3 @@
-> >  clock_settime01
-> >  clock_settime02
-> > +clock_settime03
-> > diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-> > new file mode 100644
-> > index 000000000000..da062a8d0333
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-> > @@ -0,0 +1,123 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) 2020 Linaro Limited. All rights reserved.
-> > + * Author: Viresh Kumar<viresh.kumar@linaro.org>
-> > + *
-> > + * Check Year 2038 related vulnerabilities.
-> > + */
-> > +
-> > +#include <signal.h>
-> > +#include "config.h"
-> > +#include "tst_timer.h"
-> > +#include "tst_safe_clocks.h"
-> > +
-> > +#define TIMER_DELTA	3
-> > +#define ALLOWED_DELTA	(50 * 1000) /* 50 ms */
-> > +
-> > +static struct tst_ts start, end;
-> > +static struct tst_its its;
-> > +
-> > +static struct test_variants {
-> > +	int (*clock_gettime)(clockid_t clk_id, void *ts);
-> > +	int (*clock_settime)(clockid_t clk_id, void *ts);
-> > +	int (*timer_settime)(kernel_timer_t timerid, int flags, void *its,
-> > +			     void *old_its);
-> > +	enum tst_ts_type type;
-> > +	char *desc;
-> > +} variants[] = {
-> > +#if (__NR_clock_settime != __LTP__NR_INVALID_SYSCALL)
-> > +	{ .clock_gettime = sys_clock_gettime, .clock_settime = sys_clock_settime, .timer_settime = sys_timer_settime, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
-> > +#endif
-> > +
-> > +#if (__NR_clock_settime64 != __LTP__NR_INVALID_SYSCALL)
-> > +	{ .clock_gettime = sys_clock_gettime64, .clock_settime = sys_clock_settime64, .timer_settime = sys_timer_settime64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
-> > +#endif
-> > +};
-> > +
-> > +static void setup(void)
-> > +{
-> > +	struct test_variants *tv = &variants[tst_variant];
-> > +
-> > +	tst_res(TINFO, "Testing variant: %s", tv->desc);
-> > +	start.type = end.type = its.type = tv->type;
-> > +
-> > +	/* Check if the kernel is y2038 safe */
-> > +	if (tv->type == TST_KERN_OLD_TIMESPEC &&
-> > +	    sizeof(start.ts.kern_old_ts) == 8)
-> > +		tst_brk(TCONF, "Not Y2038 safe to run test");
-> 
-> Thinking of this again, it may be safer to assert the size of the
-> kernel_old_ts.tv_sec, since the compiler is technically allowed to padd
-> the structure. So what about sizeof(start.ts.kernel_old_ts.tv_sec) == 4?
-> 
-> > +}
-> > +
-> > +static void run(void)
-> > +{
-> > +	struct test_variants *tv = &variants[tst_variant];
-> > +	unsigned long long time = 0x7FFFFFFE; /* Time just before y2038 */
-> > +	struct sigevent ev = {
-> > +		.sigev_notify = SIGEV_SIGNAL,
-> > +		.sigev_signo = SIGABRT,
-> > +	};
-> > +	long long diff;
-> > +	kernel_timer_t timer;
-> > +	sigset_t set;
-> > +	int sig, ret;
-> > +
-> > +	if (sigemptyset(&set) == -1)
-> > +		tst_brk(TBROK, "sigemptyset() failed");
-> > +
-> > +	if (sigaddset(&set, SIGABRT) == -1)
-> > +		tst_brk(TBROK, "sigaddset() failed");
-> 
-> We do have a safe macros for these two now.
-> 
-> 
-> Other than that these the code looks good. I can fix these two before
-> applying if you agree.
 
-Sure. Thanks.
+We assign the memory region allocated using MAP_GROWSDOWN to a thread,
+as a stack, to test the effect of MAP_GROWSDOWN. This is because the
+kernel only grows the memory region when the stack pointer, is within
+guard page, when the guard page is touched.
 
+  1. Map an anyonymous memory region of size X, and unmap it.
+  2. Split the unmapped memory region into two.
+  3. The lower memory region is left unmapped.
+  4. The higher memory region is mapped for use as stack, using MAP_FIXED | MAP_GROWSDOWN.
+  5. The higher memory region is provided as stack to a thread, where
+     a recursive function is invoked.
+  6. The stack grows beyond the allocated region, into the lower memory area.
+  7. If this results in the memory region being extended, into the
+     unmapped region, the test is considered to have passed.
+
+Resolves #300
+Signed-off-by: Pravin Raghul S. <pravinraghul@zilogic.com>
+Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
+---
+Issue with s390x architecture:
+ Writing on the unmapped pages results in page fault.
+
+Changes from v2
+1) Fixed check_stackgrows_up() function
+
+Changes from v1
+1) Fixed checkpatch and static missing error
+2) Removed stack grows in mapped region testcase
+
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/mmap/.gitignore |   1 +
+ testcases/kernel/syscalls/mmap/Makefile   |   7 ++
+ testcases/kernel/syscalls/mmap/mmap18.c   | 145 ++++++++++++++++++++++
+ 4 files changed, 154 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap18.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 70b3277d3..0e29babb3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -746,6 +746,7 @@ mmap14 mmap14
+ mmap15 mmap15
+ mmap16 mmap16
+ mmap17 mmap17
++mmap18 mmap18
+ 
+ modify_ldt01 modify_ldt01
+ modify_ldt02 modify_ldt02
+diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
+index c5c083d4b..4fd90ab5f 100644
+--- a/testcases/kernel/syscalls/mmap/.gitignore
++++ b/testcases/kernel/syscalls/mmap/.gitignore
+@@ -16,3 +16,4 @@
+ /mmap15
+ /mmap16
+ /mmap17
++/mmap18
+diff --git a/testcases/kernel/syscalls/mmap/Makefile b/testcases/kernel/syscalls/mmap/Makefile
+index 743ca36e7..2b6b2be1d 100644
+--- a/testcases/kernel/syscalls/mmap/Makefile
++++ b/testcases/kernel/syscalls/mmap/Makefile
+@@ -8,3 +8,10 @@ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ 
+ LDLIBS 			+= -lpthread
++#
++# We use recursive calls to grow the stack, to test the
++# MAP_GROSWDOWN flag. But tail call optimization by the compiler
++# can prevent the recursive call and stack growth. Disable tail
++# call optmization using -fno-optimize-sibling-calls
++#
++mmap18: CFLAGS          += -fno-optimize-sibling-calls
+diff --git a/testcases/kernel/syscalls/mmap/mmap18.c b/testcases/kernel/syscalls/mmap/mmap18.c
+new file mode 100644
+index 000000000..86f2ab5ab
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap18.c
+@@ -0,1 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Zilogic Systems Pvt. Ltd., 2020
++ * Email: code@zilogic.com
++ */
++
++/*
++ * Test mmap() MAP_GROWSDOWN flag
++ *
++ * We assign the memory region allocated using MAP_GROWSDOWN to a thread,
++ * as a stack, to test the effect of MAP_GROWSDOWN. This is because the
++ * kernel only grows the memory region when the stack pointer, is within
++ * guard page, when the guard page is touched.
++ *
++ * 1. Map an anyonymous memory region of size X, and unmap it.
++ * 2. Split the unmapped memory region into two.
++ * 3. The lower memory region is left unmapped.
++ * 4. The higher memory region is mapped for use as stack, using
++ *    MAP_FIXED | MAP_GROWSDOWN.
++ * 5. The higher memory region is provided as stack to a thread, where
++ *    a recursive function is invoked.
++ * 6. The stack grows beyond the allocated region, into the lower memory area.
++ * 7. If this results in the memory region being extended, into the
++ *    unmapped region, the test is considered to have passed.
++ */
++
++#include <unistd.h>
++#include <pthread.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <stdlib.h>
++#include <stdbool.h>
++
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++
++/*
++ * PTHREAD_STACK_SIZE is the minimum stack size required for setting the stack
++ * for a thread, using pthread_attr_setstack(). Allocating less than
++ * PTHREAD_STACK_SIZE will cause EINVAL error. Hence we allocate in
++ * multiples of PTHREAD_STACK_SIZE rather than multiples of page size.
++ */
++#define UNITS(x) ((x) * PTHREAD_STACK_MIN)
++
++static void *stack;
++
++static bool check_stackgrow_up(void)
++{
++	char local_var;
++	static char *addr;
++
++	if (!addr) {
++		addr = &local_var;
++		return check_stackgrow_up();
++	}
++
++	return (addr < &local_var);
++}
++
++static void setup(void)
++{
++	if (check_stackgrow_up())
++		tst_brk(TCONF, "Test can't be performed with stack grows up architecture");
++}
++
++static void cleanup(void)
++{
++	if (stack)
++		SAFE_MUNMAP(stack, UNITS(8));
++}
++
++static void *find_free_range(size_t size)
++{
++	void *mem;
++
++	mem = SAFE_MMAP(NULL, size, PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	SAFE_MUNMAP(mem, size);
++
++	return mem;
++}
++
++static void split_unmapped_plus_stack(void *start, size_t size)
++{
++	/* start           start + size
++	 * +---------------------+----------------------+
++	 * + unmapped            | mapped               |
++	 * +---------------------+----------------------+
++	 *                       stack
++	 */
++	stack = SAFE_MMAP(start + size, size, PROT_READ | PROT_WRITE,
++			  MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS | MAP_GROWSDOWN,
++			  -1, 0);
++}
++
++static void *check_depth_recursive(void *limit)
++{
++	if ((off_t) &limit < (off_t) limit)
++		return NULL;
++
++	return check_depth_recursive(limit);
++}
++
++static void grow_stack(void *stack, size_t size, void *limit)
++{
++	pthread_t test_thread;
++	pthread_attr_t attr;
++	int ret;
++
++	ret = pthread_attr_init(&attr);
++	if (ret)
++		tst_brk(TBROK, "pthread_attr_init failed during setup");
++
++	ret = pthread_attr_setstack(&attr, stack, size);
++	if (ret)
++		tst_brk(TBROK, "pthread_attr_setstack failed during setup");
++	SAFE_PTHREAD_CREATE(&test_thread, &attr, check_depth_recursive, limit);
++	SAFE_PTHREAD_JOIN(test_thread, NULL);
++
++	exit(0);
++}
++
++static void run_test(void)
++{
++	void *mem;
++	pid_t child_pid;
++	int wstatus;
++
++	mem = find_free_range(UNITS(16));
++	split_unmapped_plus_stack(mem, UNITS(8));
++
++	child_pid = SAFE_FORK();
++	if (!child_pid)
++		grow_stack(stack, UNITS(8), mem + UNITS(1));
++
++	SAFE_WAIT(&wstatus);
++	if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) == 0)
++		tst_res(TPASS, "Stack grows in unmapped region");
++	else if (WIFSIGNALED(wstatus))
++		tst_res(TFAIL, "Child killed by %s", tst_strsig(WTERMSIG(wstatus)));
++	else
++		tst_res(TFAIL, "Child %s", tst_strstatus(wstatus));
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.forks_child = 1,
++};
 -- 
-viresh
+2.25.1
+
