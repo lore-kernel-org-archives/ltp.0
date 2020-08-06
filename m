@@ -1,244 +1,322 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 6 Aug 2020 20:14:48 +0530
-Subject: [LTP] [PATCH 02/23] fs: refactor ksys_umount
-In-Reply-To: <20200728163416.556521-3-hch@lst.de>
-References: <20200728163416.556521-1-hch@lst.de>
- <20200728163416.556521-3-hch@lst.de>
-Message-ID: <CA+G9fYuYxGBKR5aQqCQwA=SjLRDbyQKwQYJvbJRaKT7qwy7voQ@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu,  6 Aug 2020 18:23:56 +0200
+Subject: [LTP] [PATCH] Drop the mem01 test
+Message-ID: <20200806162356.16920-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 28 Jul 2020 at 22:04, Christoph Hellwig <hch@lst.de> wrote:
->
-> Factor out a path_umount helper that takes a struct path * instead of the
-> actual file name.  This will allow to convert the init and devtmpfs code
-> to properly mount based on a kernel pointer instead of relying on the
-> implicit set_fs(KERNEL_DS) during early init.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/namespace.c | 40 ++++++++++++++++++----------------------
->  1 file changed, 18 insertions(+), 22 deletions(-)
->
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 6f8234f74bed90..43834b59eff6c3 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -1706,36 +1706,19 @@ static inline bool may_mandlock(void)
->  }
->  #endif
->
-> -/*
-> - * Now umount can handle mount points as well as block devices.
-> - * This is important for filesystems which use unnamed block devices.
-> - *
-> - * We now support a flag for forced unmount like the other 'big iron'
-> - * unixes. Our API is identical to OSF/1 to avoid making a mess of AMD
-> - */
-> -
-> -int ksys_umount(char __user *name, int flags)
-> +static int path_umount(struct path *path, int flags)
->  {
-> -       struct path path;
->         struct mount *mnt;
->         int retval;
-> -       int lookup_flags = LOOKUP_MOUNTPOINT;
->
->         if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
->                 return -EINVAL;
-> -
->         if (!may_mount())
->                 return -EPERM;
->
-> -       if (!(flags & UMOUNT_NOFOLLOW))
-> -               lookup_flags |= LOOKUP_FOLLOW;
-> -
-> -       retval = user_path_at(AT_FDCWD, name, lookup_flags, &path);
-> -       if (retval)
-> -               goto out;
-> -       mnt = real_mount(path.mnt);
-> +       mnt = real_mount(path->mnt);
->         retval = -EINVAL;
-> -       if (path.dentry != path.mnt->mnt_root)
-> +       if (path->dentry != path->mnt->mnt_root)
->                 goto dput_and_out;
->         if (!check_mnt(mnt))
->                 goto dput_and_out;
-> @@ -1748,12 +1731,25 @@ int ksys_umount(char __user *name, int flags)
->         retval = do_umount(mnt, flags);
->  dput_and_out:
->         /* we mustn't call path_put() as that would clear mnt_expiry_mark */
-> -       dput(path.dentry);
-> +       dput(path->dentry);
->         mntput_no_expire(mnt);
-> -out:
->         return retval;
->  }
->
-> +int ksys_umount(char __user *name, int flags)
-> +{
-> +       int lookup_flags = LOOKUP_MOUNTPOINT;
-> +       struct path path;
-> +       int ret;
-> +
-> +       if (!(flags & UMOUNT_NOFOLLOW))
-> +               lookup_flags |= LOOKUP_FOLLOW;
-> +       ret = user_path_at(AT_FDCWD, name, lookup_flags, &path);
-> +       if (ret)
-> +               return ret;
-> +       return path_umount(&path, flags);
-> +}
-> +
->  SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
->  {
->         return ksys_umount(name, flags);
+The mem01 test often fails on PPC systems mainly because it doesn't take into
+account page sizes larger than 4KB. Test scenario review revealed that it's
+not particularly useful because it doesn't have any more specific goal than
+filling large amount of memory and the hardcoded allocation limits are too
+low for modern and future systems. The useful part of this test mostly
+overlaps with coverage by existing OOM tests.
 
-Regressions on linux next 20200803 tag kernel.
-LTP syscalls test umount03 mount a path for testing and
-umount failed and retired for 50 times and test exit with warning
-and following test cases using that mount path failed.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ runtest/crashme                  |   3 -
+ runtest/mm                       |   1 -
+ testcases/kernel/mem/.gitignore  |   1 -
+ testcases/kernel/mem/mem/mem01.c | 249 -------------------------------
+ 4 files changed, 254 deletions(-)
+ delete mode 100644 testcases/kernel/mem/mem/mem01.c
 
-LTP syscalls tests failed list,
-    * umount03
-    * umount2_01
-    * umount2_02
-    * umount2_03
-    * utime06
-    * copy_file_range01
+diff --git a/runtest/crashme b/runtest/crashme
+index 14750749d..47f5f93b4 100644
+--- a/runtest/crashme
++++ b/runtest/crashme
+@@ -10,9 +10,6 @@ crash01 crash01
+ crash02 crash02 -v 2
+ # Generate random syscalls and execute them, less probability
+ # to hose your system, but still.
+-mem01 mem01 -r
+-# Memory eater. Loves to be run in parallel with other programs.
+-# May panic on buggy systems if the OOM killer was not fast enough :-)
+ fork12 fork12
+ # Fork as many children as possible.  On systems with lots of memory
+ # and kernels prior to 2.4.19, this can hang the system by using up all pids
+diff --git a/runtest/mm b/runtest/mm
+index 4701a14bd..481d39691 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -20,7 +20,6 @@ mtest06_3 mmap3 -x 0.002 -p
+ # Remains diabled till the infinite loop problem is solved
+ #mtest-6_4 shmat1 -x 0.00005
+ 
+-mem01 mem01
+ mem02 mem02
+ mem03 mem03
+ 
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index b95ada109..ff2910533 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -23,7 +23,6 @@
+ /ksm/ksm04
+ /ksm/ksm05
+ /ksm/ksm06
+-/mem/mem01
+ /mem/mem02
+ /mmapstress/mmap-corruption01
+ /mmapstress/mmapstress01
+diff --git a/testcases/kernel/mem/mem/mem01.c b/testcases/kernel/mem/mem/mem01.c
+deleted file mode 100644
+index b8fa5b7a0..000000000
+--- a/testcases/kernel/mem/mem/mem01.c
++++ /dev/null
+@@ -1,249 +0,0 @@
+-/*
+- * mem01.c - Basic memory and swapper stress test
+- *
+- * Copyright (C) 2001 Stephane Fillod <f4cfe@free.fr>
+- * Original idea from Rene Cougnenc
+- *
+- * Copyright (C) 2012 Cyril Hrubis <chrubis@suse.cz>
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-
+-#include <unistd.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/types.h>
+-#include <sys/sysinfo.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/user.h>
+-#include <time.h>
+-#include <limits.h>
+-
+-#include "lapi/abisize.h"
+-#include "test.h"
+-
+-/* in KB */
+-#define PROGRESS_LEAP 100
+-
+-/*
+- * TODO:
+- *  - add option for growing direction, when doing linear touching
+- *  - add option for touch running time (or infinite loop?)
+- *  - make it multithreaded with random access to test r/w mm_sem
+- */
+-
+-char *TCID = "mem01";
+-int TST_TOTAL = 1;
+-
+-static int m_opt = 0;		/* memsize */
+-static char *m_copt;
+-
+-static int r_opt = 0;		/* random access versus linear */
+-static int v_opt = 0;		/* verbose progress indication */
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-}
+-
+-static void help(void)
+-{
+-	printf("  -m x    size of malloc in MB (default from /proc/meminfo)\n");
+-	printf("  -r      random touching versus linear\n");
+-	printf("  -v      verbose progress indication\n");
+-}
+-
+-/*
+- * return MemFree+SwapFree, from /proc/meminfo
+- * returned value is in bytes.
+- */
+-size_t get_memsize(void)
+-{
+-	struct sysinfo info;
+-	unsigned long long res;
+-	unsigned long long freeswap;
+-	unsigned long long freeram;
+-	int ret;
+-
+-	ret = sysinfo(&info);
+-	if (ret != 0) {
+-		tst_resm(TFAIL,
+-			 "Could not retrieve memory information using sysinfo()");
+-		cleanup();
+-	}
+-
+-	freeram =
+-	    (unsigned long long)info.freeram *
+-	    (unsigned long long)info.mem_unit;
+-	tst_resm(TINFO, "Free Mem:\t%llu Mb", freeram / 1024 / 1024);
+-	res = freeram;
+-
+-	freeswap =
+-	    (unsigned long long)info.freeswap *
+-	    (unsigned long long)info.mem_unit;
+-	tst_resm(TINFO, "Free Swap:\t%llu Mb", freeswap / 1024 / 1024);
+-	res = res + freeswap;
+-
+-	tst_resm(TINFO, "Total Free:\t%llu Mb", res / 1024 / 1024);
+-#if defined(__s390__)
+-	if (res > 1 * 1024 * 1024 * 1024)
+-		res = 500 * 1024 * 1024;	/* s390's unique 31bit architecture needs smaller default */
+-#elif defined(TST_ABI32)
+-	if (res > 1 * 1024 * 1024 * 1024)
+-		res = 1 * 1024 * 1024 * 1024;
+-#elif defined(TST_ABI64)
+-	if (res > (unsigned long long)3 * 1024 * 1024 * 1024)
+-		res = (unsigned long long)3 *1024 * 1024 * 1024;
+-#endif
+-
+-	/* Always reserve 16MB memory to avoid OOM Killer. */
+-	res -= 16 * 1024 * 1024;
+-	tst_resm(TINFO, "Total Tested:\t%llu Mb", res / 1024 / 1024);
+-	return (size_t) res;
+-}
+-
+-/*
+- * add the -m option whose parameter is the
+- * memory size (MB) to allocate.
+- */
+-option_t options[] = {
+-	{"m:", &m_opt, &m_copt}
+-	,
+-	{"r", &r_opt, NULL}
+-	,
+-	{"v", &v_opt, NULL}
+-	,
+-	{NULL, NULL, NULL}
+-};
+-
+-int main(int argc, char *argv[])
+-{
+-	size_t memsize = 0;	/* at first in MB, limited to 4Gb on 32 bits */
+-	int pagesize;
+-
+-	int i;
+-	int lc;
+-	char *p, *bigmalloc;
+-	int loop_count;		/* limited to 16Go on 32 bits systems */
+-
+-	pagesize = sysconf(_SC_PAGESIZE);
+-
+-	tst_parse_opts(argc, argv, options, help);
+-
+-	if (m_opt) {
+-		memsize = (size_t) atoi(m_copt) * 1024 * 1024;
+-
+-		if (memsize < 1) {
+-			tst_brkm(TBROK, cleanup, "Invalid arg for -m: %s",
+-				 m_copt);
+-		}
+-	}
+-
+-	if (r_opt)
+-		srand(time(NULL));
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		if (!m_opt) {
+-			/* find out by ourselves! */
+-			memsize = get_memsize();
+-			if (memsize < 1) {
+-				tst_brkm(TBROK, cleanup,
+-					 "Unable to guess maxmemsize from /proc/meminfo");
+-			}
+-		}
+-
+-		/* Allocate (virtual) memory */
+-		bigmalloc = p = malloc(memsize);
+-
+-		if (!p) {
+-			tst_resm(TFAIL, "malloc - alloc of %zuMB failed",
+-				 memsize / 1024 / 1024);
+-			cleanup();
+-		}
+-
+-		/*
+-		 * Dirty all the pages, to force physical RAM allocation
+-		 * and exercise eventually the swapper
+-		 */
+-		tst_resm(TINFO, "touching %zuMB of malloc'ed memory (%s)",
+-			 memsize / 1024 / 1024, r_opt ? "random" : "linear");
+-
+-		loop_count = memsize / pagesize;
+-
+-		for (i = 0; i < loop_count; i++) {
+-			if (v_opt
+-			    && (i % (PROGRESS_LEAP * 1024 / pagesize) == 0)) {
+-				printf(".");
+-				fflush(stdout);
+-			}
+-			/*
+-			 * Make the page dirty,
+-			 * and make sure compiler won't optimize it away
+-			 * Touching more than one word per page is useless
+-			 * because of cache.
+-			 */
+-			*(int *)p = 0xdeadbeef ^ i;
+-
+-			if (r_opt) {
+-				p = bigmalloc +
+-				    (size_t) ((double)(memsize - sizeof(int)) *
+-					      rand() / (RAND_MAX + 1.0));
+-			} else {
+-				p += pagesize;
+-			}
+-		}
+-
+-		if (v_opt)
+-			printf("\n");
+-
+-		/* This is not mandatory (except in a loop), but it exercise mm again */
+-		free(bigmalloc);
+-
+-		/*
+-		 * seems that if the malloc'ed area was bad, we'd get SEGV (or kicked
+-		 * somehow by the OOM killer?), hence we can indicate a PASS.
+-		 */
+-		tst_resm(TPASS, "malloc - alloc of %zuMB succeeded",
+-			 memsize / 1024 / 1024);
+-
+-	}
+-
+-	cleanup();
+-
+-	return 0;
+-}
+-- 
+2.27.0
 
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.8.0
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-git branch: master
-git describe: next-20200803
-Test details: https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200803
-------------------------------------------------------------------------
-
-test failed log:
-tst_device.c:262: INFO: Using test device LTP_DEV='/dev/loop0'
-tst_mkfs.c:90: INFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.43.8 (1-Jan-2018)
-tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
-[  870.449934] EXT4-fs (loop0): mounting ext2 file system using the
-ext4 subsystem
-[  870.454338] EXT4-fs (loop0): mounted filesystem without journal. Opts: (null)
-[  870.456412] ext2 filesystem being mounted at
-/tmp/ltp-YQrzWZNEEy/jVhqum/mntpoint supports timestamps until 2038
-(0x7fffffff)
-umount03.c:35: PASS: umount() fails as expected: EPERM (1)
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  1...
-tst_device.c:388: INFO: Likely gvfsd-trash is probing newly mounted
-fs, kill it to speed up tests.
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  2...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  3...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  4...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  5...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  6...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  7...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  8...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try  9...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 10...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 11...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 12...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 13...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 14...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 15...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 16...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 17...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 18...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 19...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 20...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 21...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 22...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 23...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 24...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 25...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 26...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 27...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 28...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 29...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 30...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 31...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 32...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 33...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 34...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 35...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 36...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 37...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 38...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 39...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 40...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 41...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 42...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 43...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 44...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 45...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 46...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 47...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 48...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 49...
-tst_device.c:384: INFO: umount('mntpoint') failed with EBUSY, try 50...
-tst_device.c:394: WARN: Failed to umount('mntpoint') after 50 retries
-tst_tmpdir.c:337: WARN: tst_rmdir: rmobj(/tmp/ltp-YQrzWZNEEy/jVhqum)
-failed: remove(/tmp/ltp-YQrzWZNEEy/jVhqum/mntpoint) failed; errno=16:
-EBUSY
-Summary:
-passed   1
-failed   0
-skipped  0
-warnings 1
-
-mke2fs 1.43.8 (1-Jan-2018)
-/dev/loop0 is mounted; will not make a filesystem here!
-umount2_01    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-umount2_01    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-umount2_01    1  TBROK  :  tst_mkfs.c:103: umount2_01.c:81: mkfs.ext2
-failed with 1
-umount2_01    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
-mke2fs 1.43.8 (1-Jan-2018)
-/dev/loop0 is mounted; will not make a filesystem here!
-umount2_02    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-umount2_02    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-umount2_02    1  TBROK  :  tst_mkfs.c:103: umount2_02.c:121: mkfs.ext2
-failed with 1
-umount2_02    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
-mke2fs 1.43.8 (1-Jan-2018)
-/dev/loop0 is mounted; will not make a filesystem here!
-umount2_03    0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-umount2_03    0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-umount2_03    1  TBROK  :  tst_mkfs.c:103: umount2_03.c:101: mkfs.ext2
-failed with 1
-umount2_03    2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
-
-mke2fs 1.43.8 (1-Jan-2018)
-/dev/loop0 is mounted; will not make a filesystem here!
-utime06     0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
-utime06     0  TINFO  :  Formatting /dev/loop0 with ext2 opts='' extra opts=''
-utime06     1  TBROK  :  tst_mkfs.c:103: utime06.c:122: mkfs.ext2 failed with 1
-utime06     2  TBROK  :  tst_mkfs.c:103: Remaining cases broken
-
-Steps to reproduce:
--------------------------
-cd /opt/ltp
-./runltp -s umount                 --> FAILS
-
-Above command runs all umount tests.
-
-Test case description,
-Verify that umount(2) returns -1 and sets errno to EPERM if the user
-is not the super-user.
-Test case link,
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/umount/umount03.c
-
-full test log,
-https://lkft.validation.linaro.org/scheduler/job/1642287
-
---
-Linaro LKFT
-https://lkft.linaro.org
