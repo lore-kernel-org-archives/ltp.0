@@ -1,90 +1,29 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  6 Aug 2020 11:19:39 +0200
-Subject: [LTP] [PATCH] [COMMITTED] safe_macros: Add SAFE_SIGPROCMASK() and
- SAFE_SIGWAIT()
-Message-ID: <20200806091939.9394-1-chrubis@suse.cz>
+Date: Thu, 6 Aug 2020 11:21:58 +0200
+Subject: [LTP] [PATCH V8] syscalls: clock_settime: Add test around y2038
+ vulnerability
+In-Reply-To: <20200806043644.n7ea7wxeklix65oq@vireshk-mac-ubuntu>
+References: <96ce72a605e365a040b258db9323d3962ab80e29.1596545279.git.viresh.kumar@linaro.org>
+ <20200805151145.GA631@yuki.lan>
+ <20200806043644.n7ea7wxeklix65oq@vireshk-mac-ubuntu>
+Message-ID: <20200806092158.GA3315@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_safe_macros.h | 10 ++++++++++
- lib/tst_safe_macros.c     | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+Hi!
+> > Other than that these the code looks good. I can fix these two before
+> > applying if you agree.
+> 
+> Sure. Thanks.
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 79f11b5c6..45fd0500a 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -446,6 +446,16 @@ void safe_sigemptyset(const char *file, const int lineno,
- #define SAFE_SIGEMPTYSET(sigs) \
- 	safe_sigemptyset(__FILE__, __LINE__, (sigs))
- 
-+void safe_sigprocmask(const char *file, const int lineno,
-+                      int how, sigset_t *set, sigset_t *oldset);
-+#define SAFE_SIGPROCMASK(how, set, oldset) \
-+	safe_sigprocmask(__FILE__, __LINE__, (how), (set), (oldset))
-+
-+void safe_sigwait(const char *file, const int lineno,
-+                  sigset_t *set, int *sig);
-+#define SAFE_SIGWAIT(set, sig) \
-+	safe_sigwait(__FILE__, __LINE__, (set), (sig))
-+
- #define SAFE_EXECLP(file, arg, ...) do {                   \
- 	execlp((file), (arg), ##__VA_ARGS__);              \
- 	tst_brk_(__FILE__, __LINE__, TBROK | TERRNO,       \
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index 3b44eeafa..f18cb4625 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -166,6 +166,44 @@ void safe_sigemptyset(const char *file, const int lineno,
- 		tst_brk_(file, lineno, TBROK | TERRNO, "sigemptyset() failed");
- }
- 
-+static const char *strhow(int how)
-+{
-+	switch (how) {
-+	case SIG_BLOCK:
-+		return "SIG_BLOCK";
-+	case SIG_UNBLOCK:
-+		return "SIG_UNBLOCK";
-+	case SIG_SETMASK:
-+		return "SIG_SETMASK";
-+	default:
-+		return "???";
-+	}
-+}
-+
-+void safe_sigprocmask(const char *file, const int lineno,
-+                      int how, sigset_t *set, sigset_t *oldset)
-+{
-+	int rval;
-+
-+	rval = sigprocmask(how, set, oldset);
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+		         "sigprocmask(%s, %p, %p)", strhow(how), set, oldset);
-+	}
-+}
-+
-+void safe_sigwait(const char *file, const int lineno,
-+                  sigset_t *set, int *sig)
-+{
-+	int rval;
-+
-+	rval = sigwait(set, sig);
-+	if (rval != 0) {
-+		errno = rval;
-+		tst_brk_(file, lineno, TBROK, "sigwait(%p, %p)", set, sig);
-+	}
-+}
-+
- struct group *safe_getgrnam(const char *file, const int lineno,
- 			    const char *name)
- {
+In the end I've also added safe macros for sigprocmask() and sigwait()
+mainly because sigwait() is one of these funcitons that return error
+instead of setting errno. Now the error handling that nobody gets right
+is handled in the library...
+
 -- 
-2.26.2
-
+Cyril Hrubis
+chrubis@suse.cz
