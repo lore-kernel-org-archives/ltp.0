@@ -1,56 +1,34 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Fri, 7 Aug 2020 10:12:34 +0530
-Subject: [LTP] [PATCH V8 1/2] syscalls/utimensat: Migrate to new test
- framework
-In-Reply-To: <20200806125603.GC3315@yuki.lan>
-References: <ebc888947b095fd6a359ad749e50217d0b38954e.1596637728.git.viresh.kumar@linaro.org>
- <20200806125603.GC3315@yuki.lan>
-Message-ID: <20200807044234.basdp5ic4xzleqsx@vireshk-mac-ubuntu>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 7 Aug 2020 14:41:52 +0800
+Subject: [LTP] [PATCH] Drop the mem01 test
+In-Reply-To: <20200806162356.16920-1-mdoucha@suse.cz>
+References: <20200806162356.16920-1-mdoucha@suse.cz>
+Message-ID: <CAEemH2c0xkd8HwQ9NP8BdL3309wgbk-q+giWbdJfQoJdHBHCyg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06-08-20, 14:56, Cyril Hrubis wrote:
-> Hi!
-> > +static void reset_time(char *pathname, int dfd, int flags)
-> > +{
-> > +	struct timespec ts[2];
-> > +	struct stat sb;
-> >  
-> > -		ts[1].tv_sec = atoi(argv[optind + 3]);
-> > -		if (argv[optind + 4][0] == 'n') {
-> > -			ts[1].tv_nsec = UTIME_NOW;
-> > -		} else if (argv[optind + 4][0] == 'o') {
-> > -			ts[1].tv_nsec = UTIME_OMIT;
-> > -		} else {
-> > -			ts[1].tv_nsec = atoi(argv[optind + 4]);
-> > -		}
-> > +	ts[0].tv_sec = 0;
-> > +	ts[0].tv_nsec = 0;
-> > +	ts[1].tv_sec = 0;
-> > +	ts[1].tv_nsec = 0;
-> >  
-> > -		tsp = ts;
-> > +	TEST(sys_utimensat(dfd, pathname, ts, flags));
-> > +	TEST(stat(pathname, &sb));
-> 
-> Wrapping the calls to TEST() macro here is useless.
+On Fri, Aug 7, 2020 at 12:24 AM Martin Doucha <mdoucha@suse.cz> wrote:
 
-The TEST() thing always look like the SAFE_() macros to me somehow and
-so did this mistake.
+> The mem01 test often fails on PPC systems mainly because it doesn't take
+> into
+> account page sizes larger than 4KB. Test scenario review revealed that it's
+> not particularly useful because it doesn't have any more specific goal than
+> filling large amount of memory and the hardcoded allocation limits are too
+> low for modern and future systems. The useful part of this test mostly
+> overlaps with coverage by existing OOM tests.
+>
 
-> Also we do pass libc timespec to a syscall that is supposed to take the
-> old kernel type, right?
-> 
-> I guess that the options are:
-> 
-> * Use the glibc function here instead
-> 
-> * Change the type in the follow up patch
+Agree, we also use some other memory eater or stress tools
+do the same testing, this mem01 test way looks not very necessary and older.
 
-This is already properly fixed in 2/2.
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
-viresh
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200807/07e59c58/attachment-0001.htm>
