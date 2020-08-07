@@ -1,80 +1,103 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  7 Aug 2020 13:29:29 +0200
-Subject: [LTP] [PATCH 1/1] IMA/ima_keys.sh Fix policy content check usage
-Message-ID: <20200807112929.8984-1-pvorel@suse.cz>
+From: Filip Bozuta <Filip.Bozuta@syrmia.com>
+Date: Fri,  7 Aug 2020 13:39:49 +0200
+Subject: [LTP] [PATCH v2 2/3] syscalls/clock_nanosleep: add a test case for
+ bad timespec address
+In-Reply-To: <20200807113950.69052-1-Filip.Bozuta@syrmia.com>
+References: <20200807113950.69052-1-Filip.Bozuta@syrmia.com>
+Message-ID: <20200807113950.69052-3-Filip.Bozuta@syrmia.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-require_ima_policy_content cannot be used in subshell $() evaluation,
-because tst_brk does not quit the test. It calls cleanup for the
-subshell process and main process then continue:
+This patch introduces test cases for already existing test
+for syscall 'clock_nanosleep()' (clock_nanosleep01). These test
+cases are for situations when bad timespec addresses are passed
+for arguments 'request' and 'remain' in which case errno
+EFAULT ('Bad address') is expected to be set.
 
-ima_keys 1 TCONF: IMA policy does not specify 'func=KEY_CHECK'
-=> Here it's running first cleanup. umount errors are because parent
-shell process still has $PWD in directory to be unmounted:
-umount: /tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint: target is busy.
-ima_keys 1 TINFO: umount(/dev/loop0) failed, try 1 ...
-ima_keys 1 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
-umount: /tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint: target is busy.
-...
-ima_keys 1 TINFO: umount(/dev/loop0) failed, try 50 ...
-ima_keys 1 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
-ima_keys 1 TWARN: Failed to umount(/dev/loop0) after 50 retries
-tst_device.c:222: WARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
-
-Usage: tst_device acquire [size [filename]]
-   or: tst_device release /path/to/device
-
-ima_keys 1 TWARN: Failed to release device '/dev/loop0'
-rm: cannot remove '/tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint': Device or resource busy
-ima_keys 1 TINFO: AppArmor enabled, this may affect test results
-ima_keys 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-ima_keys 1 TINFO: loaded AppArmor profiles: none
-/opt/ltp/testcases/bin/ima_keys.sh: line 25:  6166 Terminated              sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid  (wd: ~)
-
-=> Here it should quit after running cleanup, but instead continue running:
-ima_keys 1 TCONF: ima policy does not specify a keyrings to check
-
-Fixes: f20f44d72 ("IMA/ima_keys.sh: Fix policy readability check")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Filip Bozuta <Filip.Bozuta@syrmia.com>
 ---
-Hi,
+ .../clock_nanosleep/clock_nanosleep01.c       | 35 +++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-do I miss some obvious way how to fix either the test,
-require_ima_policy_content or LTP shell API to be able to run just
-require_ima_policy_content in the previous form? (i.e. using subshell
-assigment)
-
-Kind regards,
-Petr
-
- testcases/kernel/security/integrity/ima/tests/ima_keys.sh | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 3aea26056..b5c5c0542 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -16,11 +16,14 @@ TST_NEEDS_DEVICE=1
- # (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
- test1()
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+index 4542995f2..66108ed8e 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+@@ -20,6 +20,8 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ enum test_type {
+ 	NORMAL,
+ 	SEND_SIGINT,
++	BAD_TS_ADDR_REQ,
++	BAD_TS_ADDR_REM,
+ };
+ 
+ #define TYPE_NAME(x) .ttype = x, .desc = #x
+@@ -78,6 +80,22 @@ static struct test_case tcase[] = {
+ 		.exp_ret = -1,
+ 		.exp_err = EINTR,
+ 	},
++	{
++		TYPE_NAME(BAD_TS_ADDR_REQ),
++		.clk_id = CLOCK_REALTIME,
++		.flags = 0,
++		.exp_ret = -1,
++		.exp_err = EFAULT,
++	},
++	{
++		TYPE_NAME(BAD_TS_ADDR_REM),
++		.clk_id = CLOCK_REALTIME,
++		.flags = 0,
++		.tv_sec = 10,
++		.tv_nsec = 0,
++		.exp_ret = -1,
++		.exp_err = EFAULT,
++	},
+ };
+ 
+ static struct tst_ts *rq;
+@@ -106,24 +124,37 @@ void setup(void)
+ 	SAFE_SIGNAL(SIGINT, sighandler);
+ }
+ 
++void cleanup(void) {}
++
+ static void do_test(unsigned int i)
  {
--	local keyrings keycheck_lines keycheck_line templates test_file="file.txt"
-+	local keyrings keycheck_lines keycheck_line templates
-+	local policy="func=KEY_CHECK"
-+	local test_file="file.txt"
+ 	struct test_variants *tv = &variants[tst_variant];
+ 	struct test_case *tc = &tcase[i];
+ 	pid_t pid = 0;
++	void *request, *remain;
  
- 	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
+ 	memset(rm, 0, sizeof(*rm));
+ 	rm->type = rq->type;
  
--	keycheck_lines=$(require_ima_policy_content "func=KEY_CHECK" "")
-+	require_ima_policy_content $policy
-+	keycheck_lines=$(check_ima_policy_content $policy "")
- 	keycheck_line=$(echo "$keycheck_lines" | grep "keyrings" | head -n1)
+ 	tst_res(TINFO, "case %s", tc->desc);
  
- 	if [ -z "$keycheck_line" ]; then
+-	if (tc->ttype == SEND_SIGINT)
++	if (tc->ttype == SEND_SIGINT || tc->ttype == BAD_TS_ADDR_REM)
+ 		pid = create_sig_proc(SIGINT, 40, 500000);
+ 
+ 	tst_ts_set_sec(rq, tc->tv_sec);
+ 	tst_ts_set_nsec(rq, tc->tv_nsec);
+ 
+-	TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(rq), tst_ts_get(rm)));
++	if (tc->ttype == BAD_TS_ADDR_REQ)
++		request = tst_get_bad_addr(cleanup);
++	else
++		request = tst_ts_get(rq);
++
++	if (tc->ttype == BAD_TS_ADDR_REM)
++		remain = tst_get_bad_addr(cleanup);
++	else
++		remain = tst_ts_get(rm);
++
++	TEST(tv->func(tc->clk_id, tc->flags, request, remain));
+ 
+ 	if (tv->func == libc_clock_nanosleep) {
+ 		/*
 -- 
-2.28.0
+2.25.1
 
