@@ -1,30 +1,37 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 7 Aug 2020 07:23:45 -0400 (EDT)
-Subject: [LTP] [PATCH] selftests: vdso: hash entry size on alpha,
- s390x is 8 bytes
-In-Reply-To: <2103348435.6776074.1596632339725.JavaMail.zimbra@redhat.com>
-References: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
- <1881588710.5797015.1596457102422.JavaMail.zimbra@redhat.com>
- <20200805125357.GE5522@yuki.lan>
- <2103348435.6776074.1596632339725.JavaMail.zimbra@redhat.com>
-Message-ID: <282506361.7043502.1596799425598.JavaMail.zimbra@redhat.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 7 Aug 2020 16:54:34 +0530
+Subject: [LTP] [PATCH V8 1/2] syscalls/utimensat: Migrate to new test
+ framework
+In-Reply-To: <20200807084544.GB4931@yuki.lan>
+References: <ebc888947b095fd6a359ad749e50217d0b38954e.1596637728.git.viresh.kumar@linaro.org>
+ <20200806125603.GC3315@yuki.lan>
+ <20200807044234.basdp5ic4xzleqsx@vireshk-mac-ubuntu>
+ <20200807084544.GB4931@yuki.lan>
+Message-ID: <20200807112320.fb5r3myiczldyovx@vireshk-mac-ubuntu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
------ Original Message -----
-> 
-> ----- Original Message -----
-> > Hi!
-> > As much as it's worth the changes looks good to me.
+On 07-08-20, 10:45, Cyril Hrubis wrote:
+> Hi!
+> > > Also we do pass libc timespec to a syscall that is supposed to take the
+> > > old kernel type, right?
+> > > 
+> > > I guess that the options are:
+> > > 
+> > > * Use the glibc function here instead
+> > > 
+> > > * Change the type in the follow up patch
 > > 
-> > @Jan: I guess that we can as well fix this in LTP first then we can try
-> >       to get the kernel version fixed...
+> > This is already properly fixed in 2/2.
 > 
-> Fine by me, I'll give it couple more days then push it.
+> Maybe I'm blind but I do not see anything that would touch the
+> reset_time() function in 2/2.
 
-Pushed.
+I mistakenly thought about the one used in the run() call. Sent V9
+now.
 
+-- 
+viresh
