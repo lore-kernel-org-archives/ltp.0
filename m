@@ -1,34 +1,33 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 7 Aug 2020 14:41:52 +0800
-Subject: [LTP] [PATCH] Drop the mem01 test
-In-Reply-To: <20200806162356.16920-1-mdoucha@suse.cz>
-References: <20200806162356.16920-1-mdoucha@suse.cz>
-Message-ID: <CAEemH2c0xkd8HwQ9NP8BdL3309wgbk-q+giWbdJfQoJdHBHCyg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 7 Aug 2020 09:17:54 +0200
+Subject: [LTP] [PATCH 2/3] IMA: Refactor datafiles directory
+In-Reply-To: <20200803184726.2416-3-t-josne@linux.microsoft.com>
+References: <20200803184726.2416-1-t-josne@linux.microsoft.com>
+ <20200803184726.2416-3-t-josne@linux.microsoft.com>
+Message-ID: <20200807071754.GA9748@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Aug 7, 2020 at 12:24 AM Martin Doucha <mdoucha@suse.cz> wrote:
+Hi Lachlan,
 
-> The mem01 test often fails on PPC systems mainly because it doesn't take
-> into
-> account page sizes larger than 4KB. Test scenario review revealed that it's
-> not particularly useful because it doesn't have any more specific goal than
-> filling large amount of memory and the hardcoded allocation limits are too
-> low for modern and future systems. The useful part of this test mostly
-> overlaps with coverage by existing OOM tests.
->
+> The IMA datafiles directory is structured so that it cannot be directly
+> expanded to include datafiles for tests other than `ima_policy.sh`.
 
-Agree, we also use some other memory eater or stress tools
-do the same testing, this mem01 test way looks not very necessary and older.
+> Move the contents of the IMA datafiles directory into an IMA
+> datafiles/policy directory.
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Why it's required? Can't you use glob for inclusion?
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200807/07e59c58/attachment-0001.htm>
+*.policy for valid policies
+*.policy-invalid for invalid policies
+*.policy* for all policies
+
+BTW I plan to use policies for other tests than just ima_policy.sh
+
+I don't refuse this patch, I just simply don't understand why it's required.
+
+Kind regards,
+Petr
