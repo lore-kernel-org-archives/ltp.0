@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 10 Aug 2020 14:42:16 +0200
-Subject: [LTP] [PATCH v2 1/3] syscalls/mq_timed{send|receive}: Add test
- cases for bad address
-In-Reply-To: <20200807113950.69052-2-Filip.Bozuta@syrmia.com>
+Date: Mon, 10 Aug 2020 14:57:19 +0200
+Subject: [LTP] [PATCH v2 2/3] syscalls/clock_nanosleep: add a test case
+ for bad timespec address
+In-Reply-To: <20200807113950.69052-3-Filip.Bozuta@syrmia.com>
 References: <20200807113950.69052-1-Filip.Bozuta@syrmia.com>
- <20200807113950.69052-2-Filip.Bozuta@syrmia.com>
-Message-ID: <20200810124216.GB11869@yuki.lan>
+ <20200807113950.69052-3-Filip.Bozuta@syrmia.com>
+Message-ID: <20200810125719.GC11869@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,78 +13,121 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with a minor change, thanks.
+> This patch introduces test cases for already existing test
+> for syscall 'clock_nanosleep()' (clock_nanosleep01). These test
+> cases are for situations when bad timespec addresses are passed
+> for arguments 'request' and 'remain' in which case errno
+> EFAULT ('Bad address') is expected to be set.
+> 
+> Signed-off-by: Filip Bozuta <Filip.Bozuta@syrmia.com>
+> ---
+>  .../clock_nanosleep/clock_nanosleep01.c       | 35 +++++++++++++++++--
+>  1 file changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+> index 4542995f2..66108ed8e 100644
+> --- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+> +++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+> @@ -20,6 +20,8 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+>  enum test_type {
+>  	NORMAL,
+>  	SEND_SIGINT,
+> +	BAD_TS_ADDR_REQ,
+> +	BAD_TS_ADDR_REM,
+>  };
+>  
+>  #define TYPE_NAME(x) .ttype = x, .desc = #x
+> @@ -78,6 +80,22 @@ static struct test_case tcase[] = {
+>  		.exp_ret = -1,
+>  		.exp_err = EINTR,
+>  	},
+> +	{
+> +		TYPE_NAME(BAD_TS_ADDR_REQ),
+> +		.clk_id = CLOCK_REALTIME,
+> +		.flags = 0,
+> +		.exp_ret = -1,
+> +		.exp_err = EFAULT,
+> +	},
+> +	{
+> +		TYPE_NAME(BAD_TS_ADDR_REM),
+> +		.clk_id = CLOCK_REALTIME,
+> +		.flags = 0,
+> +		.tv_sec = 10,
+> +		.tv_nsec = 0,
+> +		.exp_ret = -1,
+> +		.exp_err = EFAULT,
+> +	},
+>  };
+>  
+>  static struct tst_ts *rq;
+> @@ -106,24 +124,37 @@ void setup(void)
+>  	SAFE_SIGNAL(SIGINT, sighandler);
+>  }
+>  
+> +void cleanup(void) {}
 
-I've moved the tst_get_bad_addr() to the setup since that funciton
-allocates memory, which would cause failures with large enough -i test
-parameter. The diff is:
+Please just pass NULL to the tst_get_bad_addr() instead.
 
-diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-index d99538e4b..de0505106 100644
---- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-+++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-@@ -17,6 +17,7 @@ static int fd, fd_root, fd_nonblock, fd_maxint = INT_MAX - 1, fd_invalid = -1;
- #include "mq_timed.h"
- 
- static struct tst_ts ts;
-+static void *bad_addr;
- 
- static struct test_case tcase[] = {
- 	{
-@@ -139,6 +140,8 @@ static void setup(void)
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	ts.type = tv->type;
- 
-+	bad_addr = tst_get_bad_addr(NULL);
-+
- 	setup_common();
- }
- 
-@@ -173,7 +176,7 @@ static void do_test(unsigned int i)
- 		len -= 1;
- 
- 	if (tc->bad_ts_addr)
--		abs_timeout = tst_get_bad_addr(cleanup_common);
-+		abs_timeout = bad_addr;
- 	else
- 		abs_timeout = tst_ts_get(tc->rq);
- 
-diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-index 7e220f297..d72f5d41a 100644
---- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-+++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-@@ -17,6 +17,7 @@ static int fd, fd_root, fd_nonblock, fd_maxint = INT_MAX - 1, fd_invalid = -1;
- #include "mq_timed.h"
- 
- static struct tst_ts ts;
-+static void *bad_addr;
- 
- static struct test_case tcase[] = {
- 	{
-@@ -152,6 +153,8 @@ static void setup(void)
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	ts.type = tv->type;
- 
-+	bad_addr = tst_get_bad_addr(cleanup_common);
-+
- 	setup_common();
- }
- 
-@@ -184,12 +187,12 @@ static void do_test(unsigned int i)
- 	}
- 
- 	if (tc->bad_msg_addr)
--		msg_ptr = tst_get_bad_addr(cleanup_common);
-+		msg_ptr = bad_addr;
- 	else
- 		msg_ptr = smsg;
- 
- 	if (tc->bad_ts_addr)
--		abs_timeout = tst_get_bad_addr(cleanup_common);
-+		abs_timeout = bad_addr;
- 	else
- 		abs_timeout = tst_ts_get(tc->rq);
- 
+Also it should be called only once in the test setup, as I explained for
+the previous patch.
+
+>  static void do_test(unsigned int i)
+>  {
+>  	struct test_variants *tv = &variants[tst_variant];
+>  	struct test_case *tc = &tcase[i];
+>  	pid_t pid = 0;
+> +	void *request, *remain;
+>  
+>  	memset(rm, 0, sizeof(*rm));
+>  	rm->type = rq->type;
+>  
+>  	tst_res(TINFO, "case %s", tc->desc);
+>  
+> -	if (tc->ttype == SEND_SIGINT)
+> +	if (tc->ttype == SEND_SIGINT || tc->ttype == BAD_TS_ADDR_REM)
+>  		pid = create_sig_proc(SIGINT, 40, 500000);
+
+Does the kernel access the remaining time only if the call gets
+interrupted by a signal?
+
+I guess that this would be better written down in comment.
+
+Generally LTP testcases usually have short documentation in a comment
+just after the license and copyright. In this case it should be
+something as:
+
+/*
+ * EINVAL - negative tv_nsec
+ * EINVAL - tv_nsec > 1s
+ * ...
+ * EFAULT - invalid request pointer
+ * EFAULT - invalid remain pointer while interrupted by a signal
+ */
+
+>  	tst_ts_set_sec(rq, tc->tv_sec);
+>  	tst_ts_set_nsec(rq, tc->tv_nsec);
+>  
+> -	TEST(tv->func(tc->clk_id, tc->flags, tst_ts_get(rq), tst_ts_get(rm)));
+> +	if (tc->ttype == BAD_TS_ADDR_REQ)
+> +		request = tst_get_bad_addr(cleanup);
+> +	else
+> +		request = tst_ts_get(rq);
+> +
+> +	if (tc->ttype == BAD_TS_ADDR_REM)
+> +		remain = tst_get_bad_addr(cleanup);
+> +	else
+> +		remain = tst_ts_get(rm);
+> +
+> +	TEST(tv->func(tc->clk_id, tc->flags, request, remain));
+>  
+>  	if (tv->func == libc_clock_nanosleep) {
+>  		/*
+> -- 
+> 2.25.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
