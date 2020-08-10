@@ -1,38 +1,32 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 10 Aug 2020 15:09:00 +0200
-Subject: [LTP] [PATCH] [COMMITTED] syscalls/utimensat01: Use lapi/utime.h
- for fallback definitions
-Message-ID: <20200810130900.14986-1-chrubis@suse.cz>
+Date: Mon, 10 Aug 2020 15:32:10 +0200
+Subject: [LTP] [PATCH] [COMMITTED] lapi/fs.h: Include <sys/types.h>
+Message-ID: <20200810133210.19219-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes build failures on musl.
+To get the loff_t defined.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/utimensat/utimensat01.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/lapi/fs.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index 17d2abd74..901f59c0e 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -16,11 +16,9 @@
- #include <string.h>
- #include <sys/stat.h>
- #include "lapi/fs.h"
-+#include "lapi/utime.h"
- #include "tst_timer.h"
+diff --git a/include/lapi/fs.h b/include/lapi/fs.h
+index 430d21f27..8b54afd43 100644
+--- a/include/lapi/fs.h
++++ b/include/lapi/fs.h
+@@ -10,6 +10,7 @@
+ # include <linux/fs.h>
+ #endif
  
--#define UTIME_NOW	((1l << 30) - 1l)
--#define UTIME_OMIT	((1l << 30) - 2l)
--
- #define TEST_FILE	"test_file"
- #define TEST_DIR	"test_dir"
- 
++#include <sys/types.h>
+ #include <sys/user.h>
+ #include <limits.h>
+ #include "lapi/abisize.h"
 -- 
 2.26.2
 
