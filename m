@@ -1,28 +1,30 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Aug 2020 04:24:32 -0400 (EDT)
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 10 Aug 2020 10:31:53 +0200
 Subject: [LTP] [PATCH] Drop the mem01 test
-In-Reply-To: <20200806162356.16920-1-mdoucha@suse.cz>
+In-Reply-To: <752669298.7180757.1597047872449.JavaMail.zimbra@redhat.com>
 References: <20200806162356.16920-1-mdoucha@suse.cz>
-Message-ID: <752669298.7180757.1597047872449.JavaMail.zimbra@redhat.com>
+ <752669298.7180757.1597047872449.JavaMail.zimbra@redhat.com>
+Message-ID: <7878432a-14f8-a4c4-a4fe-09e77c79f27d@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 10. 08. 20 10:24, Jan Stancek wrote:
+> I'm fine with dropping it. Just curious, how is it failing? Do you see it
+> hit TFAIL, OOM or something else?
 
------ Original Message -----
-> The mem01 test often fails on PPC systems mainly because it doesn't take into
-> account page sizes larger than 4KB. Test scenario review revealed that it's
-> not particularly useful because it doesn't have any more specific goal than
-> filling large amount of memory and the hardcoded allocation limits are too
-> low for modern and future systems. The useful part of this test mostly
-> overlaps with coverage by existing OOM tests.
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+It's getting killed by OOM. The test leaves a hard-coded safety margin
+of 16MB unallocated. That's 4096 pages on x86_64 but only 256 pages on
+PPC. Making the safety margin pagesize-dependent would be the obvious
+fix if we wanted to keep the test.
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
-
-I'm fine with dropping it. Just curious, how is it failing? Do you see it
-hit TFAIL, OOM or something else?
-
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
