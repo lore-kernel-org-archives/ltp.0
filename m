@@ -1,42 +1,32 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Aug 2020 11:31:14 +0200
-Subject: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
-In-Reply-To: <CALCETrVX=wxRrv0qw-Enbyg5CEQsy5TigbNt7sSs=MDO6uAnMw@mail.gmail.com>
-References: <87y2onbdtb.fsf@nanos.tec.linutronix.de>
- <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
- <20200616132705.GW2531@hirez.programming.kicks-ass.net>
- <20200617131742.GD8389@yuki.lan>
- <CALCETrVX=wxRrv0qw-Enbyg5CEQsy5TigbNt7sSs=MDO6uAnMw@mail.gmail.com>
-Message-ID: <20200812093114.GA13676@yuki.lan>
+Date: Wed, 12 Aug 2020 14:34:26 +0200
+Subject: [LTP] [PATCH] [COMMITTED] crypto/af_alg07: Include lapi/fcntl.h
+Message-ID: <20200812123426.17528-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> do_debug is a bit of a red herring here.  ptrace should not be able to
-> put a breakpoint on a kernel address, period.  I would just pick a
-> fixed address that's in the kernel text range or even just in the
-> pre-KASLR text range and make sure it gets rejected.  Maybe try a few
-> different addresses for good measure.
+To get AF_EMPTY_PATH defined on older distros.
 
-I've looked at the code and it seems like this would be a bit more
-complicated since the breakpoint is set by an accident in a race and the
-call still fails. Which is why the test triggers the breakpoint and
-causes infinite loop in the kernel...
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/crypto/af_alg07.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I guess that we could instead read back the address with
-PTRACE_PEEKUSER, so something as:
-
-
-break_addr = ptrace(PTRACE_PEEKUSER, child_pid,
-                    (void *)offsetof(struct user, u_debugreg[0]),
-                    NULL);
-
-if (break_addr == kernel_addr)
-	tst_res(TFAIL, "ptrace() set break on a kernel address");
-
+diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
+index efcdd0016..1e37f9858 100644
+--- a/testcases/kernel/crypto/af_alg07.c
++++ b/testcases/kernel/crypto/af_alg07.c
+@@ -28,6 +28,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <pwd.h>
++#include "lapi/fcntl.h"
+ 
+ #include "tst_test.h"
+ #include "tst_af_alg.h"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
