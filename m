@@ -1,98 +1,54 @@
-From: Yuan Gao <aiden.gaoyuan@gmail.com>
-Date: Tue, 11 Aug 2020 18:49:10 +0000
-Subject: [LTP] [PATCH v2 2/3] hotplug/memory_hotplug: Add a memtoy command
- to create a file of specified size
-Message-ID: <20200811184911.4089327-1-aiden.gaoyuan@gmail.com>
+From: gengcixi@gmail.com <gengcixi@gmail.com>
+Date: Wed, 12 Aug 2020 15:35:28 +0800
+Subject: [LTP] [PATCH 1/2] device-discovery: auto detect UART_DEV devices
+ for uart case
+Message-ID: <20200812073529.25715-1-gengcixi@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add a new memtoy command for interactively creating an empty file of
-specified size.
-USAGE: createfile <filename> <size>[k|m|p|g]
-Example: createfile /data/local/tmp 100m
-This will create a file named temp in /data/local/tmp/ with the size of
-100 megabytes.
+From: Cixi Geng <cixi.geng1@unisoc.com>
 
-Change from v1:
-1. Replace printf with fprintf in stderr for error message
+update device-discovery scripts for uart device, it will auto detect
+the test machine uart devices, and filtered out of the on using dev.
+This is an updated version which comes from patch [1] written by Cyril
 
-Signed-off-by: Yuan Gao <aiden.gaoyuan@gmail.com>
+[1] https://patchwork.ozlabs.org/project/ltp/patch/20200623112827.10744-2-chrubis@suse.cz/
+
+Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
 ---
- .../kernel/hotplug/memory_hotplug/commands.c  | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ device-discovery.sh | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/memory_hotplug/commands.c b/testcases/kernel/hotplug/memory_hotplug/commands.c
-index e3438e132..9cd69ebcd 100644
---- a/testcases/kernel/hotplug/memory_hotplug/commands.c
-+++ b/testcases/kernel/hotplug/memory_hotplug/commands.c
-@@ -36,6 +36,7 @@
- #include <sys/mman.h>
- #include <ctype.h>
- #include <errno.h>
-+#include <fcntl.h>
- #include <numa.h>
- #include <numaif.h>
- #include <stdarg.h>
-@@ -726,6 +727,47 @@ static int file_seg(char *args)
- 	return CMD_SUCCESS;
- }
+diff --git a/device-discovery.sh b/device-discovery.sh
+index 08460c41f..09993be36 100755
+--- a/device-discovery.sh
++++ b/device-discovery.sh
+@@ -1,5 +1,20 @@
+ #!/bin/sh
  
-+/*
-+ * createfile <file-name> <size>[k|m|g|p]]
-+ */
-+static int create_file(char *args)
+-if [ "$1" = "UART_RX-UART_TX" ]; then
+-	echo "UART_RX=/dev/ttyUSB0 UART_TX=/dev/ttyUSB0"
++find_uart_devices()
 +{
-+	glctx_t *gcp = &glctx;
-+	char *filename, *nextarg;
-+	size_t len;
-+	int fd;
-+
-+	args += strspn(args, whitespace);
-+	if (!required_arg(args, "<file-name>"))
-+		return CMD_ERROR;
-+	filename = strtok_r(args, whitespace, &nextarg);
-+	args = nextarg + strspn(nextarg, whitespace);
-+
-+	if (!required_arg(args, "<size>"))
-+		return CMD_ERROR;
-+	args = strtok_r(args, whitespace, &nextarg);
-+	len = get_scaled_value(args, "size");
-+	if (len == BOGUS_SIZE)
-+		return CMD_ERROR;
-+	args = get_next_arg(args, nextarg);
-+
-+	fd = open(filename, O_RDWR | O_CREAT, 0600);
-+	if (fd < 0) {
-+		fprintf(stderr, "%s: createfile failed - %s\n",
-+			gcp->program_name, strerror(errno));
-+		return CMD_ERROR;
-+	}
-+
-+	if (posix_fallocate(fd, 0, len)) {
-+		fprintf(stderr, "%s: createfile failed - %s\n",
-+			gcp->program_name, strerror(errno));
-+		return CMD_ERROR;
-+	}
-+	close(fd);
-+	return CMD_SUCCESS;
++	UART_DEVICE=""
++	for i in /dev/tty*; do
++		TTY_DEVICES=`echo $i |grep "tty[[:alpha:]]\{1,\}[0-9]\{1,\}"`
++		if [ -n "${TTY_DEVICES}" ];then
++			if ( stty -a -F ${TTY_DEVICES} > /dev/null 2>&1 ) ;then
++				lsof | grep "${TTY_DEVICES}" 1>/dev/null 2>&1 || \
++				UART_DEVICE="${TTY_DEVICES} ${UART_DEVICE}"
++			fi
++		fi
++	done
++	echo "UART_DEV=${UART_DEVICE}"
 +}
 +
-+
- /*
-  * remove_seg:  <seg-name> [<seg-name> ...]
-  */
-@@ -1030,6 +1072,8 @@ struct command {
- 		    "\tspecified offset into the file.  <offset> and <length> may be\n"
- 		    "\tomitted and specified on the map command.\n"
- 		    "\t<seg-share> := private|shared - default = private\n"}, {
-+	.cmd_name = "createfile", .cmd_func = create_file, .cmd_help =
-+			"createfile <file-name> <size>[k|m|g|p]]",}, {
- 	.cmd_name = "shm",.cmd_func = shmem_seg,.cmd_help =
- 		    "shm <seg-name> <seg-size>[k|m|g|p] - \n"
- 		    "\tdefine a shared memory segment of specified size.\n"
++if [ "$1" = "UART_DEV" ]; then
++	find_uart_devices
+ fi
 -- 
-2.28.0.236.gb10cc79966-goog
+2.17.1
 
