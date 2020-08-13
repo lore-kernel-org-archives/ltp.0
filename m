@@ -1,20 +1,36 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 13 Aug 2020 14:53:55 +0200
-Subject: [LTP] [PATCH v1 1/3] syscalls/msgrcv: Add check for msg_lrpid
- and msg_rtime
-In-Reply-To: <1595230227-21468-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1595230227-21468-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1595230227-21468-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200813125355.GD13292@yuki.lan>
+Date: Thu, 13 Aug 2020 14:57:37 +0200
+Subject: [LTP] [PATCH] [COMMITTED] msgget05: Fix build on centos 6
+Message-ID: <20200813125737.20114-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with the same changes as in msgsnd01, thanks.
+Which has old gcc that does not allow variables decleared inside of the
+for loop.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/ipc/msgget/msgget05.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget05.c b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+index a0758d46d..d6177bbed 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget05.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget05.c
+@@ -51,7 +51,9 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	for (int i = 0; i < 2; i++) {
++	int i;
++
++	for (i = 0; i < 2; i++) {
+ 		if (queue_id[i] != -1)
+ 			SAFE_MSGCTL(queue_id[i], IPC_RMID, NULL);
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
