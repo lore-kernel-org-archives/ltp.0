@@ -1,29 +1,21 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 14 Aug 2020 17:42:12 +0200
-Subject: [LTP] [PATCH 2/4] Update tests to new taint check API
-In-Reply-To: <20200814153803.GB30390@dell5510>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 14 Aug 2020 17:42:17 +0200
+Subject: [LTP] [PATCH 4/4] Add taint check to syscalls/ptrace08
+In-Reply-To: <20200811130502.12010-4-mdoucha@suse.cz>
 References: <20200811130502.12010-1-mdoucha@suse.cz>
- <20200811130502.12010-2-mdoucha@suse.cz> <20200814153803.GB30390@dell5510>
-Message-ID: <2b34ef8e-2697-7692-8c96-9e1fa25140a1@suse.cz>
+ <20200811130502.12010-4-mdoucha@suse.cz>
+Message-ID: <20200814154217.GD30390@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14. 08. 20 17:38, Petr Vorel wrote:
-> Have you tried to use .taint_check also for testcases/kernel/crypto/af_alg07.c
-> and testcases/kernel/syscalls/bpf/bpf_prog04.c?
 
-I'm planning to update those on Monday after I submit the CVE test I'm
-working on right now. But feel free to update them when you merge this
-patchset.
+> The test may pass on some kernels despite triggering a kernel segfault. Check
+> for kernel taint just in case.
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
