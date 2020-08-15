@@ -1,29 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 Aug 2020 20:36:36 +0200
-Subject: [LTP] [PATCH 2/4] Update tests to new taint check API
-In-Reply-To: <2b34ef8e-2697-7692-8c96-9e1fa25140a1@suse.cz>
-References: <20200811130502.12010-1-mdoucha@suse.cz>
- <20200811130502.12010-2-mdoucha@suse.cz>
- <20200814153803.GB30390@dell5510>
- <2b34ef8e-2697-7692-8c96-9e1fa25140a1@suse.cz>
-Message-ID: <20200814183636.GB133866@x230>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Sat, 15 Aug 2020 13:13:11 +0800
+Subject: [LTP] [PATCH 1/2] safe_macros: Add SAFE_SIGFILLSET()
+Message-ID: <20200815051312.25002-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ include/tst_safe_macros.h |  5 +++++
+ lib/tst_safe_macros.c     | 10 ++++++++++
+ 2 files changed, 15 insertions(+)
 
-> On 14. 08. 20 17:38, Petr Vorel wrote:
-> > Have you tried to use .taint_check also for testcases/kernel/crypto/af_alg07.c
-> > and testcases/kernel/syscalls/bpf/bpf_prog04.c?
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 45fd0500a..000381c4f 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -446,6 +446,11 @@ void safe_sigemptyset(const char *file, const int lineno,
+ #define SAFE_SIGEMPTYSET(sigs) \
+ 	safe_sigemptyset(__FILE__, __LINE__, (sigs))
+ 
++void safe_sigfillset(const char *file, const int lineno,
++		     sigset_t *sigs);
++#define SAFE_SIGFILLSET(sigs) \
++	safe_sigfillset(__FILE__, __LINE__, (sigs))
++
+ void safe_sigprocmask(const char *file, const int lineno,
+                       int how, sigset_t *set, sigset_t *oldset);
+ #define SAFE_SIGPROCMASK(how, set, oldset) \
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index f18cb4625..25c37dfd8 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -166,6 +166,16 @@ void safe_sigemptyset(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "sigemptyset() failed");
+ }
+ 
++void safe_sigfillset(const char *file, const int lineno,
++		     sigset_t *sigs)
++{
++	int rval;
++
++	rval = sigfillset(sigs);
++	if (rval == -1)
++		tst_brk_(file, lineno, TBROK | TERRNO, "sigfillset() failed");
++}
++
+ static const char *strhow(int how)
+ {
+ 	switch (how) {
+-- 
+2.21.0
 
-> I'm planning to update those on Monday after I submit the CVE test I'm
-> working on right now. But feel free to update them when you merge this
-> patchset.
-Thanks for info. Sure, I can do. Just wanted to double check if there was a
-reason to omit it. Waiting if anybody else review the library change.
 
-Kind regards,
-Petr
+
