@@ -1,32 +1,33 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 17 Aug 2020 12:29:31 +0800
-Subject: [LTP] [COMMITTED] ioctl_sg01: correct code comment
-Message-ID: <20200817042931.1163-1-liwang@redhat.com>
+Date: Mon, 17 Aug 2020 12:37:59 +0800
+Subject: [LTP] [PATCH v2] lib/tst_cgroup: Reset cgroup.clone_children
+ value
+In-Reply-To: <1596848534-1901-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1596848534-1901-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2cD9oTuUht=CeuD_RgR=0KLGY6sRH25nmTsN0NEc7M86Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reported-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Aug 8, 2020 at 9:02 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-index 046758e50..daaa96be5 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-@@ -7,7 +7,7 @@
-  * CVE-2018-1000204
-  *
-  * Test ioctl(SG_IO) and check that kernel doesn't leak data. Requires
-- * a read-accessible SCSI-compatible device (e.g. SATA disk). Running mem01
-+ * a read-accessible SCSI-compatible device (e.g. SATA disk). Running oom*
-  * test program before this one may increase the chance of successfully
-  * reproducing the bug.
-  *
+> When running cgroup test cases(like cpuset01 or oom05) about cpuset
+> subsystem
+> firstly, then cpuset_inherit case will fail because the value of
+> cgroup.clone_children has been changed into 1 on cgroup-v1. Reset this
+> value
+> when calling tst_cgroupN_umount.
+>
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+>
+
+I have tested and applied the patch. Thanks Xu!
+
 -- 
-2.21.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200817/08a5d425/attachment.htm>
