@@ -1,58 +1,50 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Mon, 17 Aug 2020 20:06:44 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/utimensat01: add exception for Ubuntu
- 4.4 kernel
-In-Reply-To: <20200817120644.9401-1-po-hsu.lin@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 17 Aug 2020 14:34:03 +0200
+Subject: [LTP] [PATCH 1/2] lib/tst_kvercmp: Add support to get distname
+ for Ubuntu in tst_kvcmp_distname
+In-Reply-To: <20200817120644.9401-2-po-hsu.lin@canonical.com>
 References: <20200817120644.9401-1-po-hsu.lin@canonical.com>
-Message-ID: <20200817120644.9401-3-po-hsu.lin@canonical.com>
+ <20200817120644.9401-2-po-hsu.lin@canonical.com>
+Message-ID: <20200817123403.GA8445@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Ubuntu 4.4 kernel got this patch (b3b4283) since 4.4.0-48.69,
-therefore it will return EPERM instead of EACCES.
+Hi!
+> * 4.4.0-187-generic
+> * 5.4.0-1021-kvm
+> * 4.15.0-1093-azure
+> 
+> So it's better to grep for ^ID=ubuntu in /etc/os-release to determine
+> the distname, instead of doing this from checking kver substring like
+> what we did for RHEL / Oracle Linux
+> 
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>  lib/tst_kvercmp.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+> index dc3bb669b..349d45543 100644
+> --- a/lib/tst_kvercmp.c
+> +++ b/lib/tst_kvercmp.c
+> @@ -139,6 +139,11 @@ const char *tst_kvcmp_distname(const char *kver)
+>  	if (strstr(kver, ".el6"))
+>  		return "RHEL6";
+>  
+> +	// Special case for Ubuntu, kernel version cannot reveal the dist_name
+> +	int rc = WEXITSTATUS(system("grep -q ^ID=ubuntu /etc/os-release 2>/dev/null"));
+> +	if (rc == 0)
+> +		return "UBUNTU";
 
-Without this fix, the test will fail on Ubuntu 4.4 kernel with:
-  FAIL: 18: utimensat() failed with incorrect error, expected EACCES: EPERM (1)
-  FAIL: 19: utimensat() failed with incorrect error, expected EACCES: EPERM (1)
+Can we please properly parse the /etc/os-release file insetad of this
+hackery?
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- testcases/kernel/syscalls/utimensat/utimensat01.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+It should be as easy as one SAFE_FILE_SCANF() in the case that the file
+exists.
 
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index 7dabfed6d..469cb61c5 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -158,6 +158,10 @@ static void tst_multi_set_time(enum tst_ts_type type, struct mytime *mytime)
- 
- static void update_error(struct test_case *tc)
- {
-+	static struct tst_kern_exv kvers[] = {
-+		{ "UBUNTU", "4.4.0-48.69" },
-+	};
-+
- 	if (tc->exp_err != -1)
- 		return;
- 
-@@ -167,9 +171,12 @@ static void update_error(struct test_case *tc)
- 	 * This patch has also been merged to stable 4.4 with
- 	 * b3b4283 ("vfs: move permission checking into notify_change() for utimes(NULL)")
- 	 */
--	if (tst_kvercmp(4, 4, 27) < 0)
-+	if (tst_kvercmp(4, 4, 27) < 0) {
- 		tc->exp_err = EACCES;
--	else
-+		// Special case for Ubuntu kernel, which got this patch since 4.4.0-48.69
-+		if (tst_kvercmp2(4, 4, 0, kvers))
-+			tc->exp_err = EPERM;
-+	} else
- 		tc->exp_err = EPERM;
- }
- 
 -- 
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
