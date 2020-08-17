@@ -1,74 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Aug 2020 15:09:13 +0200
-Subject: [LTP] [PATCH v3 1/4] IMA/ima_keys.sh: Fix policy content check usage
-In-Reply-To: <20200817130916.27634-1-pvorel@suse.cz>
-References: <20200817130916.27634-1-pvorel@suse.cz>
-Message-ID: <20200817130916.27634-2-pvorel@suse.cz>
+Date: Mon, 17 Aug 2020 15:09:12 +0200
+Subject: [LTP] [PATCH v3 0/4] IMA: verify measurement of certificate
+ imported into a keyring
+Message-ID: <20200817130916.27634-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-require_ima_policy_content cannot be used in subshell $() evaluation,
-because tst_brk does not quit the test. It calls cleanup for the
-subshell process and main process then continue:
+Hi Mimi, Lakshmi,
 
-ima_keys 1 TCONF: IMA policy does not specify 'func=KEY_CHECK'
-=> Here it's running first cleanup. umount errors are because parent
-shell process still has $PWD in directory to be unmounted:
-umount: /tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint: target is busy.
-ima_keys 1 TINFO: umount(/dev/loop0) failed, try 1 ...
-ima_keys 1 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
-umount: /tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint: target is busy.
-...
-ima_keys 1 TINFO: umount(/dev/loop0) failed, try 50 ...
-ima_keys 1 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it to speed up tests.
-ima_keys 1 TWARN: Failed to umount(/dev/loop0) after 50 retries
-tst_device.c:222: WARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
+changes v2->v3:
+fixed regression in my third commit.
+(please verify it on installed LTP, or at least run make install in
+testcases/kernel/security/integrity/ima/datafiles/ima_keys/)
 
-Usage: tst_device acquire [size [filename]]
-   or: tst_device release /path/to/device
+Kind regards,
+Petr
 
-ima_keys 1 TWARN: Failed to release device '/dev/loop0'
-rm: cannot remove '/tmp/LTP_ima_keys.0dIVrwJKIG/mntpoint': Device or resource busy
-ima_keys 1 TINFO: AppArmor enabled, this may affect test results
-ima_keys 1 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-ima_keys 1 TINFO: loaded AppArmor profiles: none
-/opt/ltp/testcases/bin/ima_keys.sh: line 25:  6166 Terminated              sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid  (wd: ~)
+Lachlan Sneff (1):
+  IMA: Add a test to verify measurement of certificate imported into a
+    keyring
 
-=> Here it should quit after running cleanup, but instead continue running:
-ima_keys 1 TCONF: ima policy does not specify a keyrings to check
+Petr Vorel (3):
+  IMA/ima_keys.sh: Fix policy content check usage
+  IMA: Refactor datafiles directory
+  IMA/ima_keys.sh: Enhance policy checks
 
-Fixes: f20f44d72 ("IMA/ima_keys.sh: Fix policy readability check")
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-The same as v2.
+ .../kernel/security/integrity/ima/README.md   |  12 +-
+ .../security/integrity/ima/datafiles/Makefile |  10 +-
+ .../ima/datafiles/ima_kexec/Makefile          |  11 ++
+ .../datafiles/{ => ima_kexec}/kexec.policy    |   0
+ .../integrity/ima/datafiles/ima_keys/Makefile |  11 ++
+ .../datafiles/{ => ima_keys}/keycheck.policy  |   2 +-
+ .../ima/datafiles/ima_keys/x509_ima.der       | Bin 0 -> 650 bytes
+ .../ima/datafiles/ima_policy/Makefile         |  11 ++
+ .../datafiles/{ => ima_policy}/measure.policy |   0
+ .../{ => ima_policy}/measure.policy-invalid   |   0
+ .../security/integrity/ima/tests/ima_keys.sh  | 104 +++++++++++++++---
+ 11 files changed, 133 insertions(+), 28 deletions(-)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_kexec/Makefile
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => ima_kexec}/kexec.policy (100%)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_keys/Makefile
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => ima_keys}/keycheck.policy (59%)
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_keys/x509_ima.der
+ create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_policy/Makefile
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => ima_policy}/measure.policy (100%)
+ rename testcases/kernel/security/integrity/ima/datafiles/{ => ima_policy}/measure.policy-invalid (100%)
 
- testcases/kernel/security/integrity/ima/tests/ima_keys.sh | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index 3aea26056..53c289054 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -16,11 +16,14 @@ TST_NEEDS_DEVICE=1
- # (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
- test1()
- {
--	local keyrings keycheck_lines keycheck_line templates test_file="file.txt"
-+	local keyrings keycheck_lines keycheck_line templates
-+	local pattern="func=KEY_CHECK"
-+	local test_file="file.txt"
- 
- 	tst_res TINFO "verifying key measurement for keyrings and templates specified in IMA policy file"
- 
--	keycheck_lines=$(require_ima_policy_content "func=KEY_CHECK" "")
-+	require_ima_policy_content "$pattern"
-+	keycheck_lines=$(check_ima_policy_content "$pattern" "")
- 	keycheck_line=$(echo "$keycheck_lines" | grep "keyrings" | head -n1)
- 
- 	if [ -z "$keycheck_line" ]; then
 -- 
 2.28.0
 
