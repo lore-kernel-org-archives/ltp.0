@@ -1,115 +1,44 @@
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Date: Sun, 16 Aug 2020 22:13:20 -0700
-Subject: [LTP] [PATCH v2 3/4] IMA: Add a test to verify measurement of
- certificate imported into a keyring
-In-Reply-To: <25a78f42d15dcb3312a59de587cb9f4e31ccd5b5.camel@linux.ibm.com>
-References: <20200807204652.5928-1-pvorel@suse.cz>
- <20200807204652.5928-4-pvorel@suse.cz>
- <25a78f42d15dcb3312a59de587cb9f4e31ccd5b5.camel@linux.ibm.com>
-Message-ID: <a537bbdb-1383-48f4-99a5-42ce6d082ddf@linux.microsoft.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 17 Aug 2020 10:30:34 +0200
+Subject: [LTP] [PATCH] Drop the mem01 test
+In-Reply-To: <462582af-8a13-e5c1-a8f7-63a7e03571c7@cn.fujitsu.com>
+References: <20200806162356.16920-1-mdoucha@suse.cz>
+ <752669298.7180757.1597047872449.JavaMail.zimbra@redhat.com>
+ <CAEemH2cCq1LL_91pOavNWHmHGQs6EfFsyGXaOBuqh-CrFxP7Pg@mail.gmail.com>
+ <462582af-8a13-e5c1-a8f7-63a7e03571c7@cn.fujitsu.com>
+Message-ID: <32f57d39-a38d-69d0-6c38-6856fd83ca35@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 8/16/20 8:21 PM, Mimi Zohar wrote:
-
-Hi Mimi,
-
->> +# Create a new keyring, import a certificate into it, and verify
->> +# that the certificate is measured correctly by IMA.
->> +test2()
->> +{
->> +	tst_require_cmds evmctl keyctl openssl
->> +
->> +	local cert_file="$TST_DATAROOT/x509_ima.der"
->> +	local keyring_name="key_import_test"
->> +	local temp_file="file.txt"
->> +	local keyring_id
->> +
->> +	tst_res TINFO "verify measurement of certificate imported into a keyring"
->> +
->> +	if ! check_ima_policy_content "^measure.*func=KEY_CHECK.*keyrings=.*$keyring_name"; then
->> +		tst_brk TCONF "IMA policy does not contain $keyring_name keyring"
->> +	fi
->> +
+On 17. 08. 20 5:46, Yang Xu wrote:
+> [root@localhost ltp]# git grep mem01
+> testcases/kernel/syscalls/ioctl/ioctl_sg01.c: * a read-accessible
+> SCSI-compatible device (e.g. SATA disk). Running mem01
+> [root@localhost ltp]#
 > 
-> If the IMA policy contains multiple KEY_CHECK measurement policy rules
-> it complains about "grep: Unmatched ( or \(".
+> ioctl_sg01.c has such description " Running mem01
+> ?* test program before this one may increase the chance of successfully
+> ?* reproducing the bug."
 > 
-> Sample rules:
-> measure func=KEY_CHECK template=ima-buf
-> keyrings=.ima|.builtin_trusted_keys
-> measure func=KEY_CHECK template=ima-buf keyrings=key_import_test
-> 
+> I guess we should also remove this or use oom testcases can also
+> increase this rate(I don't try ).
 
-I tried with the above policy entries, but am unable to reproduce the 
-error you are seeing.
+OOM testcases will work fine. ioctl_sg01 is a CVE test checking for
+kernel information disclosure bug so it just needs the kernel to reuse
+some dirty block of memory for the device buffer that then gets copied
+to userspace.
 
-ima_keys 1 TINFO: verifying key measurement for keyrings and templates 
-specified in IMA policy file
-ima_keys 1 TPASS: specified keyrings were measured correctly
-ima_keys 2 TPASS: logged cert matches original cert
+Maybe I should improve the test by dirtying some kernel memory myself in
+the test setup...
 
->> +	keyctl new_session > /dev/null
->> +
->> +	keyring_id=$(keyctl newring $keyring_name @s) || \
->> +		tst_brk TBROK "unable to create a new keyring"
->> +
->> +	tst_is_num $keyring_id || \
->> +		tst_brk TBROK "unable to parse the new keyring id"
->> +
->> +	evmctl import $cert_file $keyring_id > /dev/null || \
->> +		tst_brk TBROK "unable to import a certificate into $keyring_name keyring"
-> 
-> "cert_file" needs to be updated from
-> "ltp/testcases/kernel/security/integrity/ima/tests/datafiles/x509_ima.d
-> er" to
-> "ltp/testcases/kernel/security/integrity/ima/tests/../datafiles/ima_key
-> s/x509_ima.der".
-> 
-
-The problem is actually due to missing "x509_ima.der" in 
-"INSTALL_TARGETS" in datafiles/keys/Makefile
-
-Adding the following line in the Makefile fixes the problem
-
-INSTALL_TARGETS		:= x509_ima.der
-
-  -lakshmi
-
-> On failure to open the file,
-> errno: No such file or directory (2)
-> ima_keys 2 TBROK: unable to import a certificate into key_import_test keyring
-> ima_keys 2 TINFO: SELinux enabled in enforcing mode, this may affect test results
-> ima_keys 2 TINFO: it can be disabled with TST_DISABLE_SELINUX=1 (requires super/root)
-> ima_keys 2 TINFO: install seinfo to find used SELinux profiles
-> ima_keys 2 TINFO: loaded SELinux profiles: none
-> 
-> Mimi
-> 
->> +
->> +	grep $keyring_name $ASCII_MEASUREMENTS | tail -n1 | cut -d' ' -f6 | \
->> +		xxd -r -p > $temp_file
->> +
->> +	if [ ! -s $temp_file ]; then
->> +		tst_res TFAIL "keyring $keyring_name not found in $ASCII_MEASUREMENTS"
->> +		return
->> +	fi
->> +
->> +	if ! openssl x509 -in $temp_file -inform der > /dev/null; then
->> +		tst_res TFAIL "logged certificate is not a valid x509 certificate"
->> +		return
->> +	fi
->> +
->> +	if cmp -s $temp_file $cert_file; then
->> +		tst_res TPASS "logged certificate matches the original"
->> +	else
->> +		tst_res TFAIL "logged certificate does not match original"
->> +	fi
->> +}
->> +
->>   tst_run
-> 
-
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
