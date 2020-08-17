@@ -1,58 +1,62 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 17 Aug 2020 19:14:04 +0530
-Subject: [LTP] [PATCH 02/23] fs: refactor ksys_umount
-In-Reply-To: <CA+G9fYuYxGBKR5aQqCQwA=SjLRDbyQKwQYJvbJRaKT7qwy7voQ@mail.gmail.com>
-References: <20200728163416.556521-1-hch@lst.de>
- <20200728163416.556521-3-hch@lst.de>
- <CA+G9fYuYxGBKR5aQqCQwA=SjLRDbyQKwQYJvbJRaKT7qwy7voQ@mail.gmail.com>
-Message-ID: <CA+G9fYs4w46bZtgaKTzTLgaqNDcw3vdRaKWuGJ4wN4SSKJqUKA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 17 Aug 2020 16:33:09 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/sigsuspend01.c: Convert to the new
+ API
+In-Reply-To: <20200815051312.25002-2-yangx.jy@cn.fujitsu.com>
+References: <20200815051312.25002-1-yangx.jy@cn.fujitsu.com>
+ <20200815051312.25002-2-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200817143309.GD8445@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 6 Aug 2020 at 20:14, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Tue, 28 Jul 2020 at 22:04, Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > Factor out a path_umount helper that takes a struct path * instead of the
-> > actual file name.  This will allow to convert the init and devtmpfs code
-> > to properly mount based on a kernel pointer instead of relying on the
-> > implicit set_fs(KERNEL_DS) during early init.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  fs/namespace.c | 40 ++++++++++++++++++----------------------
-> >  1 file changed, 18 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/fs/namespace.c b/fs/namespace.c
-> > index 6f8234f74bed90..43834b59eff6c3 100644
-> > --- a/fs/namespace.c
-> > +++ b/fs/namespace.c
+Hi!
+Pushed with a few fixes, thanks.
 
-<trim>
+> +static void setup(void)
+>  {
+> +	struct sigaction sa_new;
+>  
+> +	SAFE_SIGEMPTYSET(&signalset);
+> +	SAFE_SIGEMPTYSET(&sigset1);
+> +	SAFE_SIGADDSET(&sigset1, SIGALRM);
+> +
+> +	sa_new.sa_handler = sig_handler;
+> +	SAFE_SIGACTION(SIGALRM, &sa_new, 0);
 
->
-> Regressions on linux next 20200803 tag kernel.
-> LTP syscalls test umount03 mount a path for testing and
-> umount failed and retired for 50 times and test exit with warning
-> and following test cases using that mount path failed.
->
-> LTP syscalls tests failed list,
->     * umount03
->     * umount2_01
->     * umount2_02
->     * umount2_03
->     * utime06
->     * copy_file_range01
+Here you were passing random data to the sigaction() function, as the
+sa_new was created on a stack and only sa_handler was set.
 
-The reported issue has been fixed in linux next 20200817 tag by
-below patch.
+Which, for instance, breaks the test in a case of the -i 2 option, since
+if you were unlucky the SA_RESETHAND was set in the sa_new and the
+signal handler was uninstalled after the first signal was handled and
+the test process was killed by SIGALRM when the signal arrived for a
+second time.
 
-fs: fix a struct path leak in path_umount
-Make sure we also put the dentry and vfsmnt in the illegal flags and
-!may_umount cases.
-Fixes: 41525f56e256 ("fs: refactor ksys_umount")
+In short there was all kind of mess passed down the call, on strace it
+looked as:
 
-- Naresh
+[pid 3245] rt_sigaction(SIGALRM, {sa_handler=0x557469b59c20, sa_mask=[HUP INT QUIT ILL ABRT USR1 ALRM TERM CHLD TSTP TTOU URG VTALRM PROF WINCH PWR SYS RT_1 RT_2 RT_3 RT_4 RT_6 RT_10 RT_12 RT_13 RT_14 RT_18 RT_20 RT_21 RT_22], sa_flags=SA_RESTORER|SA_ONSTACK|SA_RESTART|SA_NODEFER|SA_RESETHAND|0xe9e4e8, sa_restorer=0x7f26dc368b40}, NULL, 8) = 0
+
+So I changed it to:
+
+	struct sigaction sa_new = {
+		.sa_handler = sig_handler
+	};
+
+Which will clears the rest of the structure.
+
+> +	/* Block SIGALRM */
+> +	SAFE_SIGPROCMASK(SIG_SETMASK, &sigset1, NULL);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test_all = verify_sigsuspend,
+> +};
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
