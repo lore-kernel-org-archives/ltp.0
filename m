@@ -1,44 +1,65 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 17 Aug 2020 10:30:34 +0200
-Subject: [LTP] [PATCH] Drop the mem01 test
-In-Reply-To: <462582af-8a13-e5c1-a8f7-63a7e03571c7@cn.fujitsu.com>
-References: <20200806162356.16920-1-mdoucha@suse.cz>
- <752669298.7180757.1597047872449.JavaMail.zimbra@redhat.com>
- <CAEemH2cCq1LL_91pOavNWHmHGQs6EfFsyGXaOBuqh-CrFxP7Pg@mail.gmail.com>
- <462582af-8a13-e5c1-a8f7-63a7e03571c7@cn.fujitsu.com>
-Message-ID: <32f57d39-a38d-69d0-6c38-6856fd83ca35@suse.cz>
+From: Filip Bozuta <Filip.Bozuta@syrmia.com>
+Date: Mon, 17 Aug 2020 12:22:30 +0200
+Subject: [LTP] [PATCH v3 0/2] testcases/kernel/syscalls: Adding new
+ testcases for existing tests
+Message-ID: <20200817102232.5902-1-Filip.Bozuta@syrmia.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 17. 08. 20 5:46, Yang Xu wrote:
-> [root@localhost ltp]# git grep mem01
-> testcases/kernel/syscalls/ioctl/ioctl_sg01.c: * a read-accessible
-> SCSI-compatible device (e.g. SATA disk). Running mem01
-> [root@localhost ltp]#
-> 
-> ioctl_sg01.c has such description " Running mem01
-> ?* test program before this one may increase the chance of successfully
-> ?* reproducing the bug."
-> 
-> I guess we should also remove this or use oom testcases can also
-> increase this rate(I don't try ).
+This series introduces new test cases for existing tests for syscalls:
 
-OOM testcases will work fine. ioctl_sg01 is a CVE test checking for
-kernel information disclosure bug so it just needs the kernel to reuse
-some dirty block of memory for the device buffer that then gets copied
-to userspace.
+    * clock_nanosleep()
+    * sendmmsg()
+    * recvmmsg()
 
-Maybe I should improve the test by dirtying some kernel memory myself in
-the test setup...
+* First patch in the series introduces bad timespec address cases
+  for 'clock_nanosleep()'
+
+* Second patch in the series introduces a timeout case and an errno
+  test for 'sendmmsg()' and 'recvmmsg()'
+
+More detailed descriptions of these newly added test cases and the
+implementation details can be found in this series patch commit
+messages.
+
+These new test cases are part of my work of implementation for 2038
+safe variants of the above mentioned syscalls in QEMU:
+
+    * clock_nanosleep_time64()
+    * recvmmsg_time64()
+
+These test cases are needed to make sure that QEMU implementations of
+the above mentioned time64 syscalls work properly.
+
+These test cases are also used to fix some minor issues with already
+existing implementations of regular variants of these syscalls.
+
+v2:
+
+    * Changed bad address values from (void *)1 to using function
+      'tst_get_bad_addr()'
+    * Removed unnecessary implementation descriptions that can be
+      seen from the patches
+
+v3:
+    * Removed first patch from the series as it got pushed
+    * Moved the bad adrress intilization in the test 'setup()' part
+
+Filip Bozuta (2):
+  syscalls/clock_nanosleep: add a test case for bad timespec address
+  syscalls/{send|recv}mmsg: add a test case for timeout and errno test
+
+ runtest/syscalls                              |   1 +
+ .../clock_nanosleep/clock_nanosleep01.c       |  43 +++-
+ testcases/kernel/syscalls/sendmmsg/.gitignore |   1 +
+ .../kernel/syscalls/sendmmsg/sendmmsg01.c     |  68 +++--
+ .../kernel/syscalls/sendmmsg/sendmmsg02.c     | 235 ++++++++++++++++++
+ 5 files changed, 329 insertions(+), 19 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/sendmmsg/sendmmsg02.c
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.25.1
+
