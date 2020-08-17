@@ -1,184 +1,42 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 17 Aug 2020 18:05:03 +0200
-Subject: [LTP] [PATCH 2/2] Add test for CVE 2018-12896
-In-Reply-To: <20200817160503.11381-1-mdoucha@suse.cz>
-References: <20200817160503.11381-1-mdoucha@suse.cz>
-Message-ID: <20200817160503.11381-2-mdoucha@suse.cz>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Mon, 17 Aug 2020 15:18:01 -0400
+Subject: [LTP] [PATCH v3 0/4] IMA: verify measurement of certificate
+ imported into a keyring
+In-Reply-To: <20200817130916.27634-1-pvorel@suse.cz>
+References: <20200817130916.27634-1-pvorel@suse.cz>
+Message-ID: <bc89bf8e0c40e6d66c86b42f55f9bf69ec7e335e.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes #353
+On Mon, 2020-08-17 at 15:09 +0200, Petr Vorel wrote:
+> Hi Mimi, Lakshmi,
+> 
+> changes v2->v3:
+> fixed regression in my third commit.
+> (please verify it on installed LTP, or at least run make install in
+> testcases/kernel/security/integrity/ima/datafiles/ima_keys/)
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/timer_settime/.gitignore  |   1 +
- .../syscalls/timer_settime/timer_settime03.c  | 120 ++++++++++++++++++
- 4 files changed, 123 insertions(+)
- create mode 100644 testcases/kernel/syscalls/timer_settime/timer_settime03.c
+I did, but nothing changed.  I probably need to set an environment
+variable.
 
-diff --git a/runtest/cve b/runtest/cve
-index a2ca8d27c..07c69e8ff 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -52,6 +52,7 @@ cve-2018-9568 connect02
- cve-2018-1000001 realpath01
- cve-2018-1000199 ptrace08
- cve-2018-1000204 ioctl_sg01
-+cve-2018-12896 timer_settime03
- cve-2018-18445 bpf_prog04
- cve-2018-18559 bind06
- cve-2018-19854 crypto_user01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 860c5c36d..a589a84dd 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1545,6 +1545,7 @@ timer_gettime01 timer_gettime01
- 
- timer_settime01 timer_settime01
- timer_settime02 timer_settime02
-+timer_settime03 timer_settime03
- 
- tkill01 tkill01
- tkill02 tkill02
-diff --git a/testcases/kernel/syscalls/timer_settime/.gitignore b/testcases/kernel/syscalls/timer_settime/.gitignore
-index e1ed3ef17..2541a5b57 100644
---- a/testcases/kernel/syscalls/timer_settime/.gitignore
-+++ b/testcases/kernel/syscalls/timer_settime/.gitignore
-@@ -1,2 +1,3 @@
- /timer_settime01
- /timer_settime02
-+/timer_settime03
-diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime03.c b/testcases/kernel/syscalls/timer_settime/timer_settime03.c
-new file mode 100644
-index 000000000..68eff853b
---- /dev/null
-+++ b/testcases/kernel/syscalls/timer_settime/timer_settime03.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
-+ */
-+
-+/*
-+ * CVE 2018-12896
-+ *
-+ * Check for possible overflow of posix timer overrun counter. Create
-+ * a CLOCK_REALTIME timer, set extremely low timer interval and expiration
-+ * value just right to cause overrun overflow into negative values, start
-+ * the timer with TIMER_ABSTIME flag to cause overruns immediately. Then just
-+ * check the overrun counter in the timer signal handler. On a patched system,
-+ * the value returned by timer_getoverrun() should be capped at INT_MAX and
-+ * not allowed to overflow into negative range. Bug fixed in:
-+ *
-+ *  commit 78c9c4dfbf8c04883941445a195276bb4bb92c76
-+ *  Author: Thomas Gleixner <tglx@linutronix.de>
-+ *  Date:   Tue Jun 26 15:21:32 2018 +0200
-+ *
-+ *  posix-timers: Sanitize overrun handling
-+ */
-+
-+#include <unistd.h>
-+#include <signal.h>
-+#include <time.h>
-+#include <limits.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_clocks.h"
-+
-+static timer_t timer;
-+static volatile int handler_called;
-+
-+static void sighandler(int sig)
-+{
-+	struct itimerspec spec;
-+
-+	/*
-+	 * Signal handler will be called twice in total because kernel will
-+	 * schedule another pending signal before the timer gets disabled.
-+	 */
-+	if (handler_called)
-+		return;
-+
-+	TEST(timer_getoverrun(timer));
-+
-+	memset(&spec, 0, sizeof(struct itimerspec));
-+	SAFE_TIMER_SETTIME(timer, 0, &spec, NULL);
-+	handler_called = 1;
-+
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "Error reading timer overrun count");
-+
-+	if (TST_RET == INT_MAX) {
-+		tst_res(TPASS, "Timer overrun count is capped");
-+		return;
-+	}
-+
-+	if (TST_RET < 0) {
-+		tst_res(TFAIL, "Timer overrun counter overflow");
-+		return;
-+	}
-+
-+	tst_res(TFAIL, "Timer overrun counter is wrong: %ld; expected %d or "
-+		"negative number", TST_RET, INT_MAX);
-+}
-+
-+static void setup(void)
-+{
-+	struct sigevent sev;
-+
-+	memset(&sev, 0, sizeof(struct sigevent));
-+	sev.sigev_notify = SIGEV_SIGNAL;
-+	sev.sigev_signo = SIGUSR1;
-+
-+	SAFE_SIGNAL(SIGUSR1, sighandler);
-+	SAFE_TIMER_CREATE(CLOCK_REALTIME, &sev, &timer);
-+}
-+
-+static void run(void)
-+{
-+	int handler_delay = INT_MAX / 7;
-+	long nsec;
-+	struct itimerspec spec;
-+
-+	memset(&spec, 0, sizeof(struct itimerspec));
-+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &spec.it_value);
-+	nsec = (handler_delay % 100000000) * 10L;
-+
-+	if (nsec > spec.it_value.tv_nsec) {
-+		spec.it_value.tv_sec -= 1;
-+		spec.it_value.tv_nsec += 1000000000;
-+	}
-+
-+	/* spec.it_value = now - 1.4 * max overrun value */
-+	/* IOW, overflow will land right in the middle of negative range */
-+	spec.it_value.tv_sec -= handler_delay / 100000000;
-+	spec.it_value.tv_nsec -= nsec;
-+	spec.it_interval.tv_nsec = 1;
-+
-+	SAFE_TIMER_SETTIME(timer, TIMER_ABSTIME, &spec, NULL);
-+	while (!handler_called);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_TIMER_DELETE(timer);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "78c9c4dfbf8c"},
-+		{"CVE", "2018-12896"},
-+		{}
-+	}
-+};
--- 
-2.27.0
+After building and installing LTP, it's finding the file, but some of
+the issues still exist:
+
+ima_keys 1 TINFO: $TMPDIR is on tmpfs => run on loop device
+ima_keys 1 TINFO: Formatting /dev/loop0 with ext3 extra opts=''
+ima_keys 1 TINFO: verify key measurement for keyrings and templates specified in IMA policy
+grep: Unmatched ( or \(
+ima_keys 1 TPASS: specified keyrings were measured correctly
+ima_keys 2 TINFO: verify measurement of certificate imported into a keyring
+keyctl_session_to_parent: Operation not permitted
+ima_keys 2 TPASS: logged certificate matches the original
+
+IMA policy:
+measure func=KEY_CHECK keyrings=.ima|.evm|.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf 
+measure func=KEY_CHECK keyrings=key_import_test template=ima-buf 
+
+Mimi
 
