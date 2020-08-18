@@ -1,12 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 18 Aug 2020 17:20:05 +0200
-Subject: [LTP] [PATCH 1/4] Integrate tst_taint_check() into main LTP
- library
-In-Reply-To: <ddde012b-5060-a49e-33dd-bdb6bfcb3e0d@suse.cz>
-References: <20200811130502.12010-1-mdoucha@suse.cz>
- <1124120972.9071386.1597758876284.JavaMail.zimbra@redhat.com>
- <ddde012b-5060-a49e-33dd-bdb6bfcb3e0d@suse.cz>
-Message-ID: <20200818152005.GF27964@yuki.lan>
+Date: Tue, 18 Aug 2020 17:29:41 +0200
+Subject: [LTP] [PATCHv2 1/2] lib/tst_kvercmp: Add support to get
+ distname for different OS in tst_kvcmp_distname
+In-Reply-To: <20200818100422.27775-2-po-hsu.lin@canonical.com>
+References: <20200818100422.27775-1-po-hsu.lin@canonical.com>
+ <20200818100422.27775-2-po-hsu.lin@canonical.com>
+Message-ID: <20200818152941.GG27964@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +13,45 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> The difference matters only in tests that have .all_filesystems = 1.
-> With TBROK, taint will kill the test when the current FS run finishes.
-> With TFAIL, the test will run through the remaining filesystems with
-> broken kernel and print the taint error message after each one (most
-> likely with lots of bogus errors on top).
-> 
-> I prefer the first behavior.
+>  static char *parse_digit(const char *str, int *d)
+>  {
+>  	unsigned long v;
+> @@ -127,6 +130,8 @@ int tst_kvexcmp(const char *tst_exv, const char *cur_ver)
+>  
+>  const char *tst_kvcmp_distname(const char *kver)
+>  {
+> +	static char distname[64];
+> +	char *tok;
+>  	if (strstr(kver, ".el5uek"))
+>  		return "OL5UEK";
+>  
+> @@ -139,6 +144,17 @@ const char *tst_kvcmp_distname(const char *kver)
+>  	if (strstr(kver, ".el6"))
+>  		return "RHEL6";
+>  
+> +	// Special case for other releases with the presencse of /etc/os-release
+> +	if (access(OSRELEASE_PATH, F_OK) != -1) {
+> +		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
+> +		tok = strtok(distname,"\0");
 
-As long as you return TFAIL from the function the test will exit.
+Isn't this strtok() useless?
+
+
+Other than that the patchset looks fine.
+
+> +		while (*tok) {
+> +			*tok = toupper((unsigned char) *tok);
+> +			tok++;
+> +		}
+> +		return distname;
+> +	}
+> +
+>  	return NULL;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
 -- 
 Cyril Hrubis
