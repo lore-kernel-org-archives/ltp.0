@@ -1,200 +1,143 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 18 Aug 2020 11:43:28 +0800
-Subject: [LTP] [PATCH v2] syscalls/msgrcv03: Add error test for MSG_COPY flag
-In-Reply-To: <20200813152536.GH13292@yuki.lan>
-References: <20200813152536.GH13292@yuki.lan>
-Message-ID: <1597722208-3672-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 18 Aug 2020 13:18:44 +0800
+Subject: [LTP] [PATCH v2] syscalls/msgrcv07: Add functional test for
+ MSG_COPY flag
+In-Reply-To: <20200814132855.GC5559@yuki.lan>
+References: <20200814132855.GC5559@yuki.lan>
+Message-ID: <1597727924-4969-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The MSG_COPY flag was added in 3.8 for the implementation of the kernel
-checkpoint-restore facility and is available only if the kernel was
-built with the CONFIG_CHECKPOINT_RESTORE option.
-
-On old kernel without this support, it only ignores this flag and doesn't
-report ENOSYS/EINVAL error, so I add kconfig and min_kver check.
+When specifying MSG_COPY flag, we can read the msg but don't destory
+it in msg queue and mtype is interpreted as number of the message to
+copy. We check the read data whether correctly and use msgctl to
+check whether we still have 2 msg in msg queue after msgrcv(MSG_COPY).
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
 v1->v2:
-1.Rename msgrcv09->msgrcv03
-2.add comment on top level for why we both need min_kernel and kconfig check
- include/lapi/msg.h                            |  15 +++
- runtest/syscalls                              |   1 +
- runtest/syscalls-ipc                          |   1 +
- .../kernel/syscalls/ipc/msgrcv/.gitignore     |   1 +
- .../kernel/syscalls/ipc/msgrcv/msgrcv03.c     | 102 ++++++++++++++++++
- 5 files changed, 120 insertions(+)
- create mode 100644 include/lapi/msg.h
- create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+1.add missing return when not support MSG_COPY flag
+2.modify the test order(also rebase this patch)
+ .../kernel/syscalls/ipc/msgrcv/msgrcv07.c     | 71 +++++++++++++++++--
+ 1 file changed, 66 insertions(+), 5 deletions(-)
 
-diff --git a/include/lapi/msg.h b/include/lapi/msg.h
-new file mode 100644
-index 000000000..d649f3318
---- /dev/null
-+++ b/include/lapi/msg.h
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+index 8005a9acd..3e8b382a9 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+@@ -2,9 +2,10 @@
+ /*
+  * Copyright (c) 2014-2020 Fujitsu Ltd.
+  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-+ */
-+#ifndef LAPI_MSG_H
-+#define LAPI_MSG_H
-+
-+#include <sys/msg.h>
-+
-+#ifndef MSG_COPY
-+# define MSG_COPY  040000  /* copy (not remove) all queue messages */
-+#endif
-+
-+#endif
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 860c5c36d..20bbc022b 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -815,6 +815,7 @@ msgget05 msgget05
- 
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-+msgrcv03 msgrcv03
- msgrcv05 msgrcv05
- msgrcv06 msgrcv06
- msgrcv07 msgrcv07
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index e6837414c..94d1e4001 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -17,6 +17,7 @@ msgget05 msgget05
- 
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-+msgrcv03 msgrcv03
- msgrcv05 msgrcv05
- msgrcv06 msgrcv06
- msgrcv07 msgrcv07
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
-index 0596ee00f..8ab91e763 100644
---- a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
-@@ -1,5 +1,6 @@
- /msgrcv01
- /msgrcv02
-+/msgrcv03
- /msgrcv05
- /msgrcv06
- /msgrcv07
-diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-new file mode 100644
-index 000000000..84456c1cf
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
+  *
+- * Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR and different
+- * msg_typ(zero,positive,negative).
++ * Basic test for msgrcv(2) using MSG_EXCEPT, MSG_NOERROR, MSG_COPY and
++ * different msg_typ(zero,positive,negative).
+  *
+  * * With MSG_EXCEPT flag any message type but the one passed to the function
+  *   is received.
+@@ -12,6 +13,9 @@
+  * * With MSG_NOERROR and buffer size less than message size only part of the
+  *   buffer is received.
+  *
++ * * With MSG_COPY and IPC_NOWAIT flag read the msg but don't destroy it in
++ *   msg queue.
 + *
-+ * This is a basic test about MSG_COPY flag.
-+ * This flag was added in 3.8 for the implementation of the kernel checkpoint
-+ * restore facility and is available only if the kernel was built with the
-+ * CONFIG_CHECKPOINT_RESTORE option.
-+ * On old kernel without this support, it only ignores this flag and doesn't
-+ * report ENOSYS/EINVAL error. The CONFIG_CHECKPOINT_RESTORE has existed
-+ * before kernel 3.8.
-+ * So for using this flag, kernel should greater than 3.8 and enable
-+ * CONFIG_CHECKPOINT_RESTORE together.
-+ *
-+ * 1)msgrcv(2) fails and sets errno to EINVAL if IPC_NOWAIT was not specified
-+ *   in msgflag.
-+ * 2)msgrcv(2) fails and sets errno to EINVAL if IPC_EXCEPT was specified
-+ *   in msgflag.
-+ * 3)msgrcv(2) fails and set errno to ENOMSG if IPC_NOWAIT and MSG_COPY were
-+ *  specified in msgflg and the queue contains less than msgtyp messages.
-+ */
-+
-+#define  _GNU_SOURCE
-+#include <string.h>
-+#include <sys/wait.h>
-+#include <sys/msg.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "libnewipc.h"
-+#include "lapi/msg.h"
-+
-+static key_t msgkey;
-+static int queue_id = -1;
-+static struct buf {
-+	long type;
-+	char mtext[MSGSIZE];
-+} rcv_buf, snd_buf = {MSGTYPE, "hello"};
-+
-+static struct tcase {
-+	int exp_err;
-+	int msg_flag;
-+	int msg_type;
-+	char *message;
-+} tcases[] = {
-+	{EINVAL, 0, MSGTYPE,
-+	"Test EINVAL error when msgflg specified MSG_COPY, but not IPC_NOWAIT"},
-+
-+	{EINVAL, MSG_EXCEPT, MSGTYPE,
-+	"Test EINVAL error when msgflg specified both MSG_COPY and MSG_EXCEPT"},
-+
-+	{ENOMSG, IPC_NOWAIT, 2,
-+	"Test ENOMSG error when using IPC_NOWAIT and MSG_COPY but not have"
-+	" corresponding msgtype msg"},
-+};
-+
-+static void verify_msgrcv(unsigned int n)
+  * * With msgtyp is 0, then the first message in the queue is read.
+  *
+  * * With msgtyp is greater than 0, then the first message in the queue of type
+@@ -33,7 +37,7 @@
+ #define MSG2	"messagetype2"
+ 
+ static key_t msgkey;
+-static int queue_id = -1;
++static int queue_id = -1, msg_copy_sup;
+ static struct buf {
+ 	long type;
+ 	char mtext[MSGSIZE];
+@@ -97,6 +101,46 @@ static void test_msg_noerror(void)
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
++static void test_msg_copy(void)
 +{
-+	struct tcase *tc = &tcases[n];
++	struct msqid_ds buf = {0};
 +
-+	tst_res(TINFO, "%s", tc->message);
-+	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag));
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
-+		SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
++	if (!msg_copy_sup) {
++		tst_res(TCONF, "kernel doesn't support MSG_COPY flag, skip it");
 +		return;
 +	}
++	prepare_queue();
 +
-+	if (TST_ERR == tc->exp_err)
-+		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
++	/*
++	 * If MSG_COPY flag was specified, then mtype is interpreted as number
++	 * of the message to copy.
++	 */
++	SAFE_MSGRCV(queue_id, &rcv_buf, MSGSIZE, 0, MSG_COPY | IPC_NOWAIT);
++	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
++		tst_res(TPASS, "msgrcv(MSG_COPY) got MSGTYPE1 msg data"
++			" correctly");
 +	else
-+		tst_res(TFAIL | TTERRNO, "msgrcv() failed unexpectedly,"
-+			" expected %s but got", tst_strerrno(tc->exp_err));
++		tst_res(TFAIL, "msgrcv(MSG_COPY) got MSGTYPE1 msg data"
++			" incorrectly");
++
++	SAFE_MSGRCV(queue_id, &rcv_buf, MSGSIZE, 1, MSG_COPY | IPC_NOWAIT);
++	if (strcmp(rcv_buf.mtext, MSG2) == 0 && rcv_buf.type == MSGTYPE2)
++		tst_res(TPASS, "msgrcv(MSG_COPY) got MSGTYPE2 msg data"
++			" correctly");
++	else
++		tst_res(TFAIL, "msgrcv(MSG_COPY) got MSGTYPE2 msg data"
++			" incorrectly");
++
++	SAFE_MSGCTL(queue_id, IPC_STAT, &buf);
++	if (buf.msg_qnum == 2)
++		tst_res(TPASS, "msgrcv(MSG_COPY) succeeded, msg queue "
++			"still has 2 msg");
++	else
++		tst_res(TFAIL, "msgrcv(MSG_COPY) msg queue expected 2 msg num,"
++			" but only got %d", (int)buf.msg_qnum);
++	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
 +}
 +
-+static void setup(void)
-+{
-+	msgkey = GETIPCKEY();
-+	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
-+	SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
-+}
+ static void test_zero_msgtyp(void)
+ {
+ 	prepare_queue();
+@@ -159,11 +203,28 @@ static void test_negative_msgtyp(void)
+ static void setup(void)
+ {
+ 	msgkey = GETIPCKEY();
++	prepare_queue();
++	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, MSGTYPE1, MSG_COPY));
++	if (TST_RET != -1)
++		tst_res(TINFO, "msgrcv succeeded unexpectedly, kernel doesn't"
++			" support MSG_COPY flag");
 +
-+static void cleanup(void)
-+{
-+	if (queue_id != -1)
-+		SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_CHECKPOINT_RESTORE",
-+		NULL
-+	},
-+	.min_kver = "3.8.0",
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_msgrcv,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
++	if (TST_ERR == EINVAL) {
++		tst_res(TINFO, "msgrcv failed as expected when not using"
++			" MSG_COPY and IPC_NOWAIT concurrently");
++		msg_copy_sup = 1;
++	} else if (TST_ERR == ENOSYS) {
++		tst_res(TINFO, "kernel doesn't enable CONFIG_CHECKPOINT_RESTORE");
++	} else {
++		tst_res(TINFO | TTERRNO, "msgrcv failed when not using MSG_COPY"
++			"and IPC_NOWAIT concurrently, expected EINVAL but got");
++	}
++	cleanup();
+ }
+ 
+ static void (*testfunc[])(void) = {test_msg_except, test_msg_noerror,
+-				   test_zero_msgtyp, test_positive_msgtyp,
+-				   test_negative_msgtyp};
++				   test_msg_copy, test_zero_msgtyp,
++				   test_positive_msgtyp, test_negative_msgtyp};
+ 
+ static void verify_msgcrv(unsigned int n)
+ {
 -- 
 2.23.0
 
