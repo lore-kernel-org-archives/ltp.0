@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 18 Aug 2020 17:11:50 +0200
+Date: Tue, 18 Aug 2020 17:20:05 +0200
 Subject: [LTP] [PATCH 1/4] Integrate tst_taint_check() into main LTP
  library
-In-Reply-To: <1124120972.9071386.1597758876284.JavaMail.zimbra@redhat.com>
+In-Reply-To: <ddde012b-5060-a49e-33dd-bdb6bfcb3e0d@suse.cz>
 References: <20200811130502.12010-1-mdoucha@suse.cz>
  <1124120972.9071386.1597758876284.JavaMail.zimbra@redhat.com>
-Message-ID: <20200818151150.GE27964@yuki.lan>
+ <ddde012b-5060-a49e-33dd-bdb6bfcb3e0d@suse.cz>
+Message-ID: <20200818152005.GF27964@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,19 +14,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >  static void do_test_setup(void)
-> > @@ -1279,6 +1282,9 @@ static int fork_testrun(void)
-> >  	alarm(0);
-> >  	SAFE_SIGNAL(SIGINT, SIG_DFL);
-> >  
-> > +	if (tst_test->taint_check && tst_taint_check())
-> > +		tst_brk(TBROK, "Kernel is now tainted.");
-> > +
+> The difference matters only in tests that have .all_filesystems = 1.
+> With TBROK, taint will kill the test when the current FS run finishes.
+> With TFAIL, the test will run through the remaining filesystems with
+> broken kernel and print the taint error message after each one (most
+> likely with lots of bogus errors on top).
 > 
-> Shouldn't this be TFAIL?
+> I prefer the first behavior.
 
-I would agree, looking at the code tst_res(TFAIL, ) followed by a
-return TFAIL should work.
+As long as you return TFAIL from the function the test will exit.
 
 -- 
 Cyril Hrubis
