@@ -1,22 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 18 Aug 2020 15:37:21 +0200
-Subject: [LTP] [PATCH v3 1/2] syscalls/clock_nanosleep: add a test case
- for bad timespec address
-In-Reply-To: <20200817102232.5902-2-Filip.Bozuta@syrmia.com>
-References: <20200817102232.5902-1-Filip.Bozuta@syrmia.com>
- <20200817102232.5902-2-Filip.Bozuta@syrmia.com>
-Message-ID: <20200818133721.GB27964@yuki.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 18 Aug 2020 09:54:36 -0400 (EDT)
+Subject: [LTP] [PATCH 1/4] Integrate tst_taint_check() into main LTP
+ library
+In-Reply-To: <20200811130502.12010-1-mdoucha@suse.cz>
+References: <20200811130502.12010-1-mdoucha@suse.cz>
+Message-ID: <1124120972.9071386.1597758876284.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've moved the comment about covered errors to the top of the source
-code (just after copyrights) so that we are consistent with the rest of
-the testcases and pushed, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+----- Original Message -----
+>  static void do_test_setup(void)
+> @@ -1279,6 +1282,9 @@ static int fork_testrun(void)
+>  	alarm(0);
+>  	SAFE_SIGNAL(SIGINT, SIG_DFL);
+>  
+> +	if (tst_test->taint_check && tst_taint_check())
+> +		tst_brk(TBROK, "Kernel is now tainted.");
+> +
+
+Shouldn't this be TFAIL?
+
