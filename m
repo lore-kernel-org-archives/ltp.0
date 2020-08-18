@@ -1,83 +1,202 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Aug 2020 22:39:50 +0200
-Subject: [LTP] [PATCH v3 0/4] IMA: verify measurement of certificate
- imported into a keyring
-In-Reply-To: <cdf45ba0-287b-8fa1-d067-1c6c4f386939@linux.microsoft.com>
-References: <20200817130916.27634-1-pvorel@suse.cz>
- <bc89bf8e0c40e6d66c86b42f55f9bf69ec7e335e.camel@linux.ibm.com>
- <cdf45ba0-287b-8fa1-d067-1c6c4f386939@linux.microsoft.com>
-Message-ID: <20200817203950.GA121577@x230>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 18 Aug 2020 11:43:28 +0800
+Subject: [LTP] [PATCH v2] syscalls/msgrcv03: Add error test for MSG_COPY flag
+In-Reply-To: <20200813152536.GH13292@yuki.lan>
+References: <20200813152536.GH13292@yuki.lan>
+Message-ID: <1597722208-3672-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 8/17/20 12:18 PM, Mimi Zohar wrote:
+The MSG_COPY flag was added in 3.8 for the implementation of the kernel
+checkpoint-restore facility and is available only if the kernel was
+built with the CONFIG_CHECKPOINT_RESTORE option.
 
-> > On Mon, 2020-08-17 at 15:09 +0200, Petr Vorel wrote:
-> > > Hi Mimi, Lakshmi,
+On old kernel without this support, it only ignores this flag and doesn't
+report ENOSYS/EINVAL error, so I add kconfig and min_kver check.
 
-> > > changes v2->v3:
-> > > fixed regression in my third commit.
-> > > (please verify it on installed LTP, or at least run make install in
-> > > testcases/kernel/security/integrity/ima/datafiles/ima_keys/)
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+v1->v2:
+1.Rename msgrcv09->msgrcv03
+2.add comment on top level for why we both need min_kernel and kconfig check
+ include/lapi/msg.h                            |  15 +++
+ runtest/syscalls                              |   1 +
+ runtest/syscalls-ipc                          |   1 +
+ .../kernel/syscalls/ipc/msgrcv/.gitignore     |   1 +
+ .../kernel/syscalls/ipc/msgrcv/msgrcv03.c     | 102 ++++++++++++++++++
+ 5 files changed, 120 insertions(+)
+ create mode 100644 include/lapi/msg.h
+ create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
 
-> > I did, but nothing changed.  I probably need to set an environment
-> > variable.
+diff --git a/include/lapi/msg.h b/include/lapi/msg.h
+new file mode 100644
+index 000000000..d649f3318
+--- /dev/null
++++ b/include/lapi/msg.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
++ */
++#ifndef LAPI_MSG_H
++#define LAPI_MSG_H
++
++#include <sys/msg.h>
++
++#ifndef MSG_COPY
++# define MSG_COPY  040000  /* copy (not remove) all queue messages */
++#endif
++
++#endif
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 860c5c36d..20bbc022b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -815,6 +815,7 @@ msgget05 msgget05
+ 
+ msgrcv01 msgrcv01
+ msgrcv02 msgrcv02
++msgrcv03 msgrcv03
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index e6837414c..94d1e4001 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -17,6 +17,7 @@ msgget05 msgget05
+ 
+ msgrcv01 msgrcv01
+ msgrcv02 msgrcv02
++msgrcv03 msgrcv03
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
+index 0596ee00f..8ab91e763 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
++++ b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
+@@ -1,5 +1,6 @@
+ /msgrcv01
+ /msgrcv02
++/msgrcv03
+ /msgrcv05
+ /msgrcv06
+ /msgrcv07
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+new file mode 100644
+index 000000000..84456c1cf
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
++ *
++ * This is a basic test about MSG_COPY flag.
++ * This flag was added in 3.8 for the implementation of the kernel checkpoint
++ * restore facility and is available only if the kernel was built with the
++ * CONFIG_CHECKPOINT_RESTORE option.
++ * On old kernel without this support, it only ignores this flag and doesn't
++ * report ENOSYS/EINVAL error. The CONFIG_CHECKPOINT_RESTORE has existed
++ * before kernel 3.8.
++ * So for using this flag, kernel should greater than 3.8 and enable
++ * CONFIG_CHECKPOINT_RESTORE together.
++ *
++ * 1)msgrcv(2) fails and sets errno to EINVAL if IPC_NOWAIT was not specified
++ *   in msgflag.
++ * 2)msgrcv(2) fails and sets errno to EINVAL if IPC_EXCEPT was specified
++ *   in msgflag.
++ * 3)msgrcv(2) fails and set errno to ENOMSG if IPC_NOWAIT and MSG_COPY were
++ *  specified in msgflg and the queue contains less than msgtyp messages.
++ */
++
++#define  _GNU_SOURCE
++#include <string.h>
++#include <sys/wait.h>
++#include <sys/msg.h>
++#include <pwd.h>
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
++#include "lapi/msg.h"
++
++static key_t msgkey;
++static int queue_id = -1;
++static struct buf {
++	long type;
++	char mtext[MSGSIZE];
++} rcv_buf, snd_buf = {MSGTYPE, "hello"};
++
++static struct tcase {
++	int exp_err;
++	int msg_flag;
++	int msg_type;
++	char *message;
++} tcases[] = {
++	{EINVAL, 0, MSGTYPE,
++	"Test EINVAL error when msgflg specified MSG_COPY, but not IPC_NOWAIT"},
++
++	{EINVAL, MSG_EXCEPT, MSGTYPE,
++	"Test EINVAL error when msgflg specified both MSG_COPY and MSG_EXCEPT"},
++
++	{ENOMSG, IPC_NOWAIT, 2,
++	"Test ENOMSG error when using IPC_NOWAIT and MSG_COPY but not have"
++	" corresponding msgtype msg"},
++};
++
++static void verify_msgrcv(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	tst_res(TINFO, "%s", tc->message);
++	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | tc->msg_flag));
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
++		SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
++		return;
++	}
++
++	if (TST_ERR == tc->exp_err)
++		tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "msgrcv() failed unexpectedly,"
++			" expected %s but got", tst_strerrno(tc->exp_err));
++}
++
++static void setup(void)
++{
++	msgkey = GETIPCKEY();
++	queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
++	SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
++}
++
++static void cleanup(void)
++{
++	if (queue_id != -1)
++		SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
++}
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_CHECKPOINT_RESTORE",
++		NULL
++	},
++	.min_kver = "3.8.0",
++	.tcnt = ARRAY_SIZE(tcases),
++	.test = verify_msgrcv,
++	.setup = setup,
++	.cleanup = cleanup,
++};
+-- 
+2.23.0
 
-> > After building and installing LTP, it's finding the file, but some of
-> > the issues still exist:
-
-> > ima_keys 1 TINFO: $TMPDIR is on tmpfs => run on loop device
-> > ima_keys 1 TINFO: Formatting /dev/loop0 with ext3 extra opts=''
-> > ima_keys 1 TINFO: verify key measurement for keyrings and templates specified in IMA policy
-> > grep: Unmatched ( or \(
-> > ima_keys 1 TPASS: specified keyrings were measured correctly
-> > ima_keys 2 TINFO: verify measurement of certificate imported into a keyring
-> > keyctl_session_to_parent: Operation not permitted
-> > ima_keys 2 TPASS: logged certificate matches the original
-
-> > IMA policy:
-> > measure func=KEY_CHECK keyrings=.ima|.evm|.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf
-> > measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
 
 
-> I think I see the problem
-
-> keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
-> 		sed "s/\./\\\./g" | cut -d'=' -f2; done | sort -u
-
-> The above line generates the list of keyrings (read from the IMA policy)
-> with a newline after the first policy entry with "keyrings=". Please see
-> below:
-
-> ima_keys 1 TINFO: \.ima|\.builtin_trusted_keys
-> key_import_test
-
-> When this is checked in the "do-done" loop grep returns "mismatched (" due
-> to the newline.
-
-> I tried with "(" removed from the following line and that fixes the problem:
-
-> grep -E "($templates)*($keyrings)" $ASCII_MEASUREMENTS | while read line
-
-> But a better fix might be to remove the "newline" in $keyrings. I'll try
-> that.
-OK, I was too aggressive when removing tr dependency. I'll add another sed
-command to remove new lines.
-
-> Regarding the following error:
-> keyctl_session_to_parent: Operation not permitted
-I missed this problem.
-
-> The following line in test2() can be removed. Not sure if this is needed.
-> 	keyctl new_session > /dev/null
-Not sure, I guess it'd work in existing session. But then it'd be good to
-do cleanup.
-
-> thanks,
->  -lakshmi
-
-Kind regards,
-Petr
