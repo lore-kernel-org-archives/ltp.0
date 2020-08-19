@@ -1,33 +1,31 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Wed, 19 Aug 2020 09:34:12 +0800
-Subject: [LTP] [PATCHv2 1/2] lib/tst_kvercmp: Add support to get
- distname for different OS in tst_kvcmp_distname
-In-Reply-To: <20200818183019.GH27964@yuki.lan>
-References: <20200818100422.27775-1-po-hsu.lin@canonical.com>
- <20200818100422.27775-2-po-hsu.lin@canonical.com>
- <20200818152941.GG27964@yuki.lan>
- <CAMy_GT9kZbvC9=t9e2J4nrfW+vMHzK-DH2bU3=ZbkJepk4TrEQ@mail.gmail.com>
- <20200818183019.GH27964@yuki.lan>
-Message-ID: <CAMy_GT8Ek5f=tNVH-s2yo1iJ5D8oGcUx6ypUzsNqNZYraNo1FA@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 19 Aug 2020 10:30:03 +0530
+Subject: [LTP] [PATCH] syscalls/clone302: drop CLONE_CHILD_SETTID and
+ CLONE_PARENT_SETTID
+In-Reply-To: <8eefb21d278f0846024a16281c5e19b0e3936979.1596797812.git.jstancek@redhat.com>
+References: <8eefb21d278f0846024a16281c5e19b0e3936979.1596797812.git.jstancek@redhat.com>
+Message-ID: <20200819050003.bvamzdr4avawzrce@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Aug 19, 2020 at 2:29 AM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > oh indeed, the delimiter in strtok will become null character anyway.
-> > I think just tok = distname can do the trick here.
-> > I will send v3 tomorrow.
->
-> I can easily fix that before I push the patch, no need for v3.
+On 07-08-20, 12:58, Jan Stancek wrote:
+> Per https://lore.kernel.org/linux-m68k/20200627122332.ki2otaiw3v7wndbl@wittgenstein/T/#u
+> EFAULT isn't propagated back to userspace so these will always appear
+> to succeed. Also issue is that multiple flags are tested together
+> and some arguments persisted between calls, because they were set
+> only when argument != NULL.
+> 
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/clone3/clone302.c | 42 +++++++++++----------
+>  1 file changed, 23 insertions(+), 19 deletions(-)
 
-Hello Cyril,
-that would be great, thanks for the review!
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+-- 
+viresh
