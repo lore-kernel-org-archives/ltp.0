@@ -1,36 +1,35 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 19 Aug 2020 18:03:45 +0530
-Subject: [LTP] [PATCH v2] clock_settime03: change to use CLOCK_REALTIME
-In-Reply-To: <20200819083843.26435-1-liwang@redhat.com>
-References: <20200819083843.26435-1-liwang@redhat.com>
-Message-ID: <20200819123345.guu63kqd6zob5oir@vireshk-i7>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 19 Aug 2020 08:36:18 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/clone302: drop CLONE_CHILD_SETTID and
+ CLONE_PARENT_SETTID
+In-Reply-To: <20200819080204.a5iqoqvlwuizimje@wittgenstein>
+References: <8eefb21d278f0846024a16281c5e19b0e3936979.1596797812.git.jstancek@redhat.com>
+ <20200819080204.a5iqoqvlwuizimje@wittgenstein>
+Message-ID: <1455329861.9212470.1597840578327.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 19-08-20, 08:38, Li Wang wrote:
-> CLOCK_REALTIME_ALARM requires an RTC with alarm support, which may not be
-> present on a system. In that case, the kernel will return EOPNOTSUPP, which
-> is defined as ENOTSUP in userspace.
-> 
-> Here use CLOCK_REALTIME instead of the CLOCK_REALTIME_ALARM because we do
-> NOT need suspend the SUT during test.
-> 
-> For issue #712:
->   https://github.com/linux-test-project/ltp/issues/712
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Viresh Kumar<viresh.kumar@linaro.org>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Cc: Jan Stancek <jstancek@redhat.com>
-> Tested-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/syscalls/clock_settime/clock_settime03.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
--- 
-viresh
+----- Original Message -----
+> On Fri, Aug 07, 2020 at 12:58:44PM +0200, Jan Stancek wrote:
+> > Per
+> > https://lore.kernel.org/linux-m68k/20200627122332.ki2otaiw3v7wndbl@wittgenstein/T/#u
+> > EFAULT isn't propagated back to userspace so these will always appear
+> > to succeed. Also issue is that multiple flags are tested together
+> > and some arguments persisted between calls, because they were set
+> > only when argument != NULL.
+> > 
+> > Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> 
+> Thanks!
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+Pushed.
+
