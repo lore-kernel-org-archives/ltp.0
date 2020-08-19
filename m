@@ -1,45 +1,24 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 19 Aug 2020 08:38:43 +0000
-Subject: [LTP] [PATCH v2] clock_settime03: change to use CLOCK_REALTIME
-Message-ID: <20200819083843.26435-1-liwang@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 19 Aug 2020 10:56:34 +0200
+Subject: [LTP] [PATCHv2 1/2] lib/tst_kvercmp: Add support to get
+ distname for different OS in tst_kvcmp_distname
+In-Reply-To: <CAMy_GT8Ek5f=tNVH-s2yo1iJ5D8oGcUx6ypUzsNqNZYraNo1FA@mail.gmail.com>
+References: <20200818100422.27775-1-po-hsu.lin@canonical.com>
+ <20200818100422.27775-2-po-hsu.lin@canonical.com>
+ <20200818152941.GG27964@yuki.lan>
+ <CAMy_GT9kZbvC9=t9e2J4nrfW+vMHzK-DH2bU3=ZbkJepk4TrEQ@mail.gmail.com>
+ <20200818183019.GH27964@yuki.lan>
+ <CAMy_GT8Ek5f=tNVH-s2yo1iJ5D8oGcUx6ypUzsNqNZYraNo1FA@mail.gmail.com>
+Message-ID: <20200819085634.GK27964@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-CLOCK_REALTIME_ALARM requires an RTC with alarm support, which may not be
-present on a system. In that case, the kernel will return EOPNOTSUPP, which
-is defined as ENOTSUP in userspace.
+Hi!
+Both patches pushed with a minor changes, thanks.
 
-Here use CLOCK_REALTIME instead of the CLOCK_REALTIME_ALARM because we do
-NOT need suspend the SUT during test.
-
-For issue #712:
-  https://github.com/linux-test-project/ltp/issues/712
-
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Viresh Kumar<viresh.kumar@linaro.org>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-Cc: Jan Stancek <jstancek@redhat.com>
-Tested-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/clock_settime/clock_settime03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/clock_settime/clock_settime03.c b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-index 5b75afbe7..ad6183e4c 100644
---- a/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-+++ b/testcases/kernel/syscalls/clock_settime/clock_settime03.c
-@@ -65,7 +65,7 @@ static void run(void)
- 	SAFE_SIGADDSET(&set, SIGABRT);
- 	SAFE_SIGPROCMASK(SIG_BLOCK, &set, NULL);
- 
--	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME_ALARM, &ev, &timer));
-+	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
- 	if (TST_RET != 0)
- 		tst_brk(TBROK | TERRNO, "timer_create() failed");
- 
 -- 
-2.21.1
-
+Cyril Hrubis
+chrubis@suse.cz
