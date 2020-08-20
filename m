@@ -1,53 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Aug 2020 14:25:38 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Aug 2020 14:43:35 +0200
 Subject: [LTP] [PATCH v2 1/1] tst_kvcmp: Strip double quotes when
  parsing /etc/os-release
-In-Reply-To: <20200820120051.331-1-pvorel@suse.cz>
+In-Reply-To: <20200820122538.GC9000@yuki.lan>
 References: <20200820120051.331-1-pvorel@suse.cz>
-Message-ID: <20200820122538.GC9000@yuki.lan>
+ <20200820122538.GC9000@yuki.lan>
+Message-ID: <20200820124335.GA5065@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-> index 185a5c39c..dfd81ac83 100644
-> --- a/lib/tst_kvercmp.c
-> +++ b/lib/tst_kvercmp.c
-> @@ -148,6 +148,12 @@ const char *tst_kvcmp_distname(const char *kver)
->  	if (access(OSRELEASE_PATH, F_OK) != -1) {
->  		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
->  
-> +		if (p[0] == '"')
-> +			memmove(p, p + 1, strlen(p));
+Hi Cyril,
 
-Why can't we just do distname++ and move the p = distname after this
-condition?
+> > diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+> > index 185a5c39c..dfd81ac83 100644
+> > --- a/lib/tst_kvercmp.c
+> > +++ b/lib/tst_kvercmp.c
+> > @@ -148,6 +148,12 @@ const char *tst_kvcmp_distname(const char *kver)
+> >  	if (access(OSRELEASE_PATH, F_OK) != -1) {
+> >  		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
 
-> +		if (p[strlen(p) - 1] == '"')
-> +			p[strlen(p) - 1] = '\0';
+> > +		if (p[0] == '"')
+> > +			memmove(p, p + 1, strlen(p));
 
-I guess that we can move this to the while loop with:
+> Why can't we just do distname++ and move the p = distname after this
+> condition?
+Sure.
 
-	while (*p) {
-		if (*p == '"') {
-			*p = 0;
-			break;
-		}
+> > +		if (p[strlen(p) - 1] == '"')
+> > +			p[strlen(p) - 1] = '\0';
 
-		*p = ....
-		p++;
-	}
+> I guess that we can move this to the while loop with:
 
->  		while (*p) {
->  			*p = toupper((unsigned char)*p);
->  			p++;
-> -- 
-> 2.28.0
-> 
+> 	while (*p) {
+> 		if (*p == '"') {
+> 			*p = 0;
+> 			break;
+> 		}
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 		*p = ....
+> 		p++;
+> 	}
+OK, " shouldn't be in the middle of the character, thus safe
+
+Thanks for the suggestions.
+
+Kind regards,
+Petr
