@@ -1,32 +1,46 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Aug 2020 13:05:50 +0200
-Subject: [LTP] [PATCH 1/1] tst_kvcmp: Fix parsing format for
+Date: Thu, 20 Aug 2020 14:00:51 +0200
+Subject: [LTP] [PATCH v2 1/1] tst_kvcmp: Strip double quotes when parsing
  /etc/os-release
-In-Reply-To: <20200820104623.GB9000@yuki.lan>
-References: <20200820100238.15925-1-pvorel@suse.cz>
- <20200820104623.GB9000@yuki.lan>
-Message-ID: <20200820110550.GA20024@dell5510>
+Message-ID: <20200820120051.331-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Po-Hsu,
+ID is normally without double quotes, e.g.: ID=debian
 
-> >  	if (access(OSRELEASE_PATH, F_OK) != -1) {
-> > -		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
-> > +		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=\"%[^\"]\"",
-> > +				      distname);
+But at least SLES and openSUSE contain double quotes, e.g.:
+ID="opensuse-tumbleweed"
 
-> I guess like opensuse is the only one that uses double quotes there.
-> Does this actually work on, for example debian, that has ID=debian in
-> the /etc/os-release?
-No, sorry for overlooking that.
+thus optionally strip the double quotes after scanning them.
 
-> I guess that it may be actually easier to optionaly strip the double
-> quotes after the scanf().
-+1, I'll send v2.
+Fixes: e2e60a39b ("lib/tst_kvercmp: Add support /etc/os-release")
 
-Kind regards,
-Petr
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_kvercmp.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+index 185a5c39c..dfd81ac83 100644
+--- a/lib/tst_kvercmp.c
++++ b/lib/tst_kvercmp.c
+@@ -148,6 +148,12 @@ const char *tst_kvcmp_distname(const char *kver)
+ 	if (access(OSRELEASE_PATH, F_OK) != -1) {
+ 		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
+ 
++		if (p[0] == '"')
++			memmove(p, p + 1, strlen(p));
++
++		if (p[strlen(p) - 1] == '"')
++			p[strlen(p) - 1] = '\0';
++
+ 		while (*p) {
+ 			*p = toupper((unsigned char)*p);
+ 			p++;
+-- 
+2.28.0
+
