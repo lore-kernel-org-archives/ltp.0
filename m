@@ -1,101 +1,214 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 20 Aug 2020 12:18:43 +0200
-Subject: [LTP] [PATCH] ioctl_sg01: Increase chance of detecting data leak
-Message-ID: <20200820101844.6398-1-mdoucha@suse.cz>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Thu, 20 Aug 2020 06:26:05 -0400
+Subject: [LTP] [PATCH 1/4] syscalls/kill01: Remove it
+Message-ID: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test wasn't reliable if most of available memory was full of zeroes.
-Pollute 256MB of memory in setup() to increase the chance of catching a data
-leak without needing pre-pollution from another program. Then loop the test
-100 times.
+kill11 has covered this test, so remove it.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 36 +++++++++++++-------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ runtest/syscalls                          |   1 -
+ testcases/kernel/syscalls/kill/.gitignore |   1 -
+ testcases/kernel/syscalls/kill/kill01.c   | 161 ------------------------------
+ 3 files changed, 163 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/kill/kill01.c
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-index daaa96be5..7cd22d103 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-@@ -7,9 +7,7 @@
-  * CVE-2018-1000204
-  *
-  * Test ioctl(SG_IO) and check that kernel doesn't leak data. Requires
-- * a read-accessible SCSI-compatible device (e.g. SATA disk). Running oom*
-- * test program before this one may increase the chance of successfully
-- * reproducing the bug.
-+ * a read-accessible generic SCSI device (e.g. a DVD drive).
-  *
-  * Leak fixed in:
-  *
-@@ -30,7 +28,8 @@
- #include <stdio.h>
- #include "tst_test.h"
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 860c5c3..5e2bdb1 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -614,7 +614,6 @@ kcmp01 kcmp01
+ kcmp02 kcmp02
+ kcmp03 kcmp03
  
--#define BUF_SIZE 128 * 4096
-+#define BUF_SIZE (128 * 4096)
-+#define DIRTY_SIZE (256 * 1024 * 1024)
- #define CMD_SIZE 6
- 
- static int devfd = -1;
-@@ -74,12 +73,20 @@ static const char *find_generic_scsi_device(int access_flags)
- 
- static void setup(void)
- {
-+	void *dirty_mem;
- 	const char *devpath = find_generic_scsi_device(O_RDONLY);
- 
- 	if (!devpath)
- 		tst_brk(TCONF, "Could not find any usable SCSI device");
- 
- 	tst_res(TINFO, "Found SCSI device %s", devpath);
-+
-+	/* Pollute some memory to avoid false negatives */
-+	dirty_mem = SAFE_MMAP(NULL, DIRTY_SIZE, PROT_READ | PROT_WRITE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	memset(dirty_mem, 0xda, DIRTY_SIZE);
-+	SAFE_MUNMAP(dirty_mem, DIRTY_SIZE);
-+
- 	devfd = SAFE_OPEN(devpath, O_RDONLY);
- 	query.interface_id = 'S';
- 	query.dxfer_direction = SG_DXFER_FROM_DEV;
-@@ -97,19 +104,22 @@ static void cleanup(void)
- 
- static void run(void)
- {
--	size_t i;
-+	size_t i, j;
- 
- 	memset(buffer, 0, BUF_SIZE);
--	TEST(ioctl(devfd, SG_IO, &query));
- 
--	if (TST_RET != 0 && TST_RET != -1)
--		tst_brk(TBROK | TTERRNO, "Invalid ioctl() return value");
-+	for (i = 0; i < 100; i++) {
-+		TEST(ioctl(devfd, SG_IO, &query));
-+
-+		if (TST_RET != 0 && TST_RET != -1)
-+			tst_brk(TBROK|TTERRNO, "Invalid ioctl() return value");
- 
--	/* Check the output buffer even if ioctl() failed, just in case. */
--	for (i = 0; i < BUF_SIZE; i++) {
--		if (buffer[i]) {
--			tst_res(TFAIL, "Kernel memory leaked");
--			return;
-+		/* Check the buffer even if ioctl() failed, just in case. */
-+		for (j = 0; j < BUF_SIZE; j++) {
-+			if (buffer[j]) {
-+				tst_res(TFAIL, "Kernel memory leaked");
-+				return;
-+			}
- 		}
- 	}
- 
+-kill01 kill01
+ kill02 kill02
+ kill03 kill03
+ kill04 kill04
+diff --git a/testcases/kernel/syscalls/kill/.gitignore b/testcases/kernel/syscalls/kill/.gitignore
+index 490a1e2..b62662f 100644
+--- a/testcases/kernel/syscalls/kill/.gitignore
++++ b/testcases/kernel/syscalls/kill/.gitignore
+@@ -1,4 +1,3 @@
+-/kill01
+ /kill02
+ /kill03
+ /kill04
+diff --git a/testcases/kernel/syscalls/kill/kill01.c b/testcases/kernel/syscalls/kill/kill01.c
+deleted file mode 100644
+index 0aa77b9..0000000
+--- a/testcases/kernel/syscalls/kill/kill01.c
++++ /dev/null
+@@ -1,161 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * NAME
+- *	kill01.c
+- *
+- * DESCRIPTION
+- *	Test case to check the basic functionality of kill().
+- *
+- * ALGORITHM
+- *	call setup
+- *	loop if the -i option was given
+- *	fork a child
+- *	execute the kill system call
+- *	check the return value
+- *	if return value is -1
+- *		issue a FAIL message, break remaining tests and cleanup
+- *	if we are doing functional testing
+- *		if the process was terminated with the expected signal.
+- *			issue a PASS message
+- *		otherwise
+- *			issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE
+- *  kill01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	This test should be ran as a non-root user.
+- */
+-
+-#include "test.h"
+-
+-#include <signal.h>
+-#include <errno.h>
+-#include <sys/wait.h>
+-
+-void cleanup(void);
+-void setup(void);
+-void do_child(void);
+-
+-char *TCID = "kill01";
+-int TST_TOTAL = 1;
+-
+-#define TEST_SIG SIGKILL
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	pid_t pid;
+-	int exno, status, nsig;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child, "");
+-#endif
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-		status = 1;
+-		exno = 1;
+-		pid = FORK_OR_VFORK();
+-		if (pid < 0) {
+-			tst_brkm(TBROK, cleanup, "Fork of child failed");
+-		} else if (pid == 0) {
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "") < 0) {
+-				tst_brkm(TBROK, cleanup,
+-					 "self_exec of child failed");
+-			}
+-#else
+-			do_child();
+-#endif
+-		} else {
+-			TEST(kill(pid, TEST_SIG));
+-			waitpid(pid, &status, 0);
+-		}
+-
+-		if (TEST_RETURN == -1) {
+-			tst_brkm(TFAIL, cleanup, "%s failed - errno = %d : %s",
+-				 TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+-		}
+-
+-		/*
+-		 * Check to see if the process was terminated with the
+-		 * expected signal.
+-		 */
+-		nsig = WTERMSIG(status);
+-		if (nsig == TEST_SIG) {
+-			tst_resm(TPASS, "received expected signal %d",
+-				 nsig);
+-		} else {
+-			tst_resm(TFAIL,
+-				 "expected signal %d received %d",
+-				 TEST_SIG, nsig);
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/*
+- * do_child()
+- */
+-void do_child(void)
+-{
+-	int exno = 1;
+-
+-	pause();
+-	exit(exno);
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test
+- */
+-void setup(void)
+-{
+-
+-	TEST_PAUSE;
+-}
+-
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test@completion
+- * or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-}
 -- 
-2.28.0
+1.8.3.1
+
+
 
