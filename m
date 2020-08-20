@@ -1,50 +1,119 @@
-From: Steven Rostedt <rostedt@goodmis.org>
-Date: Wed, 19 Aug 2020 15:17:01 -0400
-Subject: [LTP] NETDEV WATCHDOG: WARNING: at net/sched/sch_generic.c:442
- dev_watchdog
-In-Reply-To: <20200819102909.000016ac@intel.com>
-References: <CA+G9fYtS_nAX=sPV8zTTs-nOdpJ4uxk9sqeHOZNuS4WLvBcPGg@mail.gmail.com>
- <20200819125732.1c296ce7@oasis.local.home>
- <20200819102909.000016ac@intel.com>
-Message-ID: <20200819151701.747769ce@oasis.local.home>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Aug 2020 15:01:25 +0200
+Subject: [LTP] [PATCH] ioctl_sg01: Increase chance of detecting data leak
+In-Reply-To: <20200820101844.6398-1-mdoucha@suse.cz>
+References: <20200820101844.6398-1-mdoucha@suse.cz>
+Message-ID: <20200820130125.GE9000@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 19 Aug 2020 10:29:09 -0700
-Jesse Brandeburg <jesse.brandeburg@intel.com> wrote:
-
-
-> What I don't understand in the stack trace is this:
-> > > [  107.654661] Call Trace:
-> > > [  107.657735]  <IRQ>
-> > > [  107.663155]  ? ftrace_graph_caller+0xc0/0xc0
-> > > [  107.667929]  call_timer_fn+0x3b/0x1b0
-> > > [  107.672238]  ? netif_carrier_off+0x70/0x70
-> > > [  107.677771]  ? netif_carrier_off+0x70/0x70
-> > > [  107.682656]  ? ftrace_graph_caller+0xc0/0xc0
-> > > [  107.687379]  run_timer_softirq+0x3e8/0xa10
-> > > [  107.694653]  ? call_timer_fn+0x1b0/0x1b0
-> > > [  107.699382]  ? trace_event_raw_event_softirq+0xdd/0x150
-> > > [  107.706768]  ? ring_buffer_unlock_commit+0xf5/0x210
-> > > [  107.712213]  ? call_timer_fn+0x1b0/0x1b0
-> > > [  107.716625]  ? __do_softirq+0x155/0x467  
+Hi!
+> The test wasn't reliable if most of available memory was full of zeroes.
+> Pollute 256MB of memory in setup() to increase the chance of catching a data
+> leak without needing pre-pollution from another program. Then loop the test
+> 100 times.
 > 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 36 +++++++++++++-------
+>  1 file changed, 23 insertions(+), 13 deletions(-)
 > 
-> If the carrier was turned off by something, that could cause the stack
-> to timeout since it appears the driver didn't call this itself after
-> finishing all transmits like it normally would have.
-> 
-> Is the trace above correct? Usually the ? indicate unsure backtrace due
-> to missing symbols, right?
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+> index daaa96be5..7cd22d103 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+> @@ -7,9 +7,7 @@
+>   * CVE-2018-1000204
+>   *
+>   * Test ioctl(SG_IO) and check that kernel doesn't leak data. Requires
+> - * a read-accessible SCSI-compatible device (e.g. SATA disk). Running oom*
+> - * test program before this one may increase the chance of successfully
+> - * reproducing the bug.
+> + * a read-accessible generic SCSI device (e.g. a DVD drive).
+>   *
+>   * Leak fixed in:
+>   *
+> @@ -30,7 +28,8 @@
+>  #include <stdio.h>
+>  #include "tst_test.h"
+>  
+> -#define BUF_SIZE 128 * 4096
+> +#define BUF_SIZE (128 * 4096)
+> +#define DIRTY_SIZE (256 * 1024 * 1024)
 
-The "?" means that there wasn't a stack frame to confirm that this was
-the true call stack. What happens is that the scan of the stack will
-look for any address in the stack that is for a function. If it finds
-one, it will print it and add a "?" to that address. Basically, those
-functions with the "?" are just addresses found in the stack but was not
-part of a stack frame link.
+Can we please check this againts system free memory?
 
--- Steve
+While it's not likely there may be system that have less that 256MB of
+free RAM.
+
+Also when we do check system memory, we can scale up with available
+memory as well and dirty 1GB or more on, which is not that much on
+modern systems.
+
+Also perhaps it may be a good idea to put this code into a library
+function.
+
+>  #define CMD_SIZE 6
+>  
+>  static int devfd = -1;
+> @@ -74,12 +73,20 @@ static const char *find_generic_scsi_device(int access_flags)
+>  
+>  static void setup(void)
+>  {
+> +	void *dirty_mem;
+>  	const char *devpath = find_generic_scsi_device(O_RDONLY);
+>  
+>  	if (!devpath)
+>  		tst_brk(TCONF, "Could not find any usable SCSI device");
+>  
+>  	tst_res(TINFO, "Found SCSI device %s", devpath);
+> +
+> +	/* Pollute some memory to avoid false negatives */
+> +	dirty_mem = SAFE_MMAP(NULL, DIRTY_SIZE, PROT_READ | PROT_WRITE,
+> +		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	memset(dirty_mem, 0xda, DIRTY_SIZE);
+> +	SAFE_MUNMAP(dirty_mem, DIRTY_SIZE);
+> +
+>  	devfd = SAFE_OPEN(devpath, O_RDONLY);
+>  	query.interface_id = 'S';
+>  	query.dxfer_direction = SG_DXFER_FROM_DEV;
+> @@ -97,19 +104,22 @@ static void cleanup(void)
+>  
+>  static void run(void)
+>  {
+> -	size_t i;
+> +	size_t i, j;
+>  
+>  	memset(buffer, 0, BUF_SIZE);
+> -	TEST(ioctl(devfd, SG_IO, &query));
+>  
+> -	if (TST_RET != 0 && TST_RET != -1)
+> -		tst_brk(TBROK | TTERRNO, "Invalid ioctl() return value");
+> +	for (i = 0; i < 100; i++) {
+> +		TEST(ioctl(devfd, SG_IO, &query));
+> +
+> +		if (TST_RET != 0 && TST_RET != -1)
+> +			tst_brk(TBROK|TTERRNO, "Invalid ioctl() return value");
+>  
+> -	/* Check the output buffer even if ioctl() failed, just in case. */
+> -	for (i = 0; i < BUF_SIZE; i++) {
+> -		if (buffer[i]) {
+> -			tst_res(TFAIL, "Kernel memory leaked");
+> -			return;
+> +		/* Check the buffer even if ioctl() failed, just in case. */
+> +		for (j = 0; j < BUF_SIZE; j++) {
+> +			if (buffer[j]) {
+> +				tst_res(TFAIL, "Kernel memory leaked");
+> +				return;
+> +			}
+>  		}
+>  	}
+
+Can we put this part into a seprate patch please?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
