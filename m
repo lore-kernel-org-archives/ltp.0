@@ -1,34 +1,72 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Thu, 20 Aug 2020 22:57:06 +0800
-Subject: [LTP] [PATCH v3 1/1] tst_kvcmp: Strip double quotes when
- parsing /etc/os-release
-In-Reply-To: <20200820134557.GG9000@yuki.lan>
-References: <20200820133032.16840-1-pvorel@suse.cz>
- <20200820134557.GG9000@yuki.lan>
-Message-ID: <CAMy_GT_0yg4CEW+a8TC-9rrYeNWW0Xa+UsMa70v495WBrUXeBA@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 20 Aug 2020 20:57:57 +0530
+Subject: [LTP] [PATCH 5.8 000/232] 5.8.3-rc1 review
+In-Reply-To: <20200820091612.692383444@linuxfoundation.org>
+References: <20200820091612.692383444@linuxfoundation.org>
+Message-ID: <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LGTM,
-Tested with crafted ID, it can correctly parse the ID with or without
-the double quote.
-
-Another thing to note is that I found the loop in tst_kvercmp2 could
-iterate outside the size of "vers" and causing
-tst_test.c:1298: BROK: Test killed by SIGSEGV!
-
-Reviewed-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-
-On Thu, Aug 20, 2020 at 9:45 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi!
-> Looks good to me.
+> This is the start of the stable review cycle for the 5.8.3 release.
+> There are 232 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
+> Anything received after that time might be too late.
 >
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.3-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+> Herbert Xu <herbert@gondor.apana.org.au>
+>     crypto: af_alg - Fix regression on empty requests
+
+Results from Linaro?s test farm.
+Regressions detected.
+
+  ltp-crypto-tests:
+    * af_alg02
+  ltp-cve-tests:
+    * cve-2017-17805
+
+af_alg02.c:52: BROK: Timed out while reading from request socket.
+We are running the LTP 20200515 tag released test suite.
+ https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.8.3-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+git branch: linux-5.8.y
+git commit: 201fff807310ce10485bcff294d47be95f3769eb
+git describe: v5.8.2-233-g201fff807310
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/build/v5.8.2-233-g201fff807310
+
+Regressions (compared to build v5.8.2)
+------------------------------------------------------------------------
+
+x15:
+  ltp-crypto-tests:
+    * af_alg02
+
+  ltp-cve-tests:
+    * cve-2017-17805
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
