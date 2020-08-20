@@ -1,79 +1,32 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Thu, 20 Aug 2020 11:25:16 -0700
-Subject: [LTP] [PATCH 5.8 000/232] 5.8.3-rc1 review
-In-Reply-To: <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
-References: <20200820091612.692383444@linuxfoundation.org>
- <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
-Message-ID: <20200820182516.GA49496@sol.localdomain>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Aug 2020 22:33:35 +0200
+Subject: [LTP] [PATCH v3 1/1] tst_kvcmp: Strip double quotes when
+ parsing /etc/os-release
+In-Reply-To: <CAMy_GT_0yg4CEW+a8TC-9rrYeNWW0Xa+UsMa70v495WBrUXeBA@mail.gmail.com>
+References: <20200820133032.16840-1-pvorel@suse.cz>
+ <20200820134557.GG9000@yuki.lan>
+ <CAMy_GT_0yg4CEW+a8TC-9rrYeNWW0Xa+UsMa70v495WBrUXeBA@mail.gmail.com>
+Message-ID: <20200820203335.GA7560@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Aug 20, 2020 at 08:57:57PM +0530, Naresh Kamboju wrote:
-> On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.8.3 release.
-> > There are 232 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.3-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> > Herbert Xu <herbert@gondor.apana.org.au>
-> >     crypto: af_alg - Fix regression on empty requests
-> 
-> Results from Linaro?s test farm.
-> Regressions detected.
-> 
->   ltp-crypto-tests:
->     * af_alg02
->   ltp-cve-tests:
->     * cve-2017-17805
-> 
-> af_alg02.c:52: BROK: Timed out while reading from request socket.
-> We are running the LTP 20200515 tag released test suite.
->  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
-> 
-> Summary
-> ------------------------------------------------------------------------
-> 
-> kernel: 5.8.3-rc1
-> git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> git branch: linux-5.8.y
-> git commit: 201fff807310ce10485bcff294d47be95f3769eb
-> git describe: v5.8.2-233-g201fff807310
-> Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/build/v5.8.2-233-g201fff807310
-> 
-> Regressions (compared to build v5.8.2)
-> ------------------------------------------------------------------------
-> 
-> x15:
->   ltp-crypto-tests:
->     * af_alg02
-> 
->   ltp-cve-tests:
->     * cve-2017-17805
-> 
+Hi Po-Hsu,
 
-Looks like this test is still "broken" because it assumes behavior that isn't
-clearly specified, as previously discussed at
-https://lkml.kernel.org/r/20200702033221.GA19367@gondor.apana.org.au.
+> LGTM,
+> Tested with crafted ID, it can correctly parse the ID with or without
+> the double quote.
 
-I sent out LTP patches to fix it:
-https://lkml.kernel.org/linux-crypto/20200820181918.404758-1-ebiggers@kernel.org/T/#u
+> Another thing to note is that I found the loop in tst_kvercmp2 could
+> iterate outside the size of "vers" and causing
+> tst_test.c:1298: BROK: Test killed by SIGSEGV!
+Will you post the patch for this?
 
-- Eric
+> Reviewed-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+I'm sorry, I've merged it before, but forget to notify.
+Is the bug mentioned above related to my commit?
+
+Kind regards,
+Petr
