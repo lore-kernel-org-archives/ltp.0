@@ -1,80 +1,46 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 24 Aug 2020 16:28:03 +0200
-Subject: [LTP] [PATCH v2 1/1] prepare_lvm.sh: Allow to define tmp
- directory
-In-Reply-To: <20200824112109.2995-1-pvorel@suse.cz>
-References: <20200824112109.2995-1-pvorel@suse.cz>
-Message-ID: <648dc99d-5079-23ec-eba2-b10215ae8130@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 20 Aug 2020 16:41:02 -0700
+Subject: [LTP] [PATCH v2 1/3] hotplug/memory_hotplug: Handle NULL
+ returned by strtok_r when parsing inputs
+In-Reply-To: <CAEemH2dxX2-t7S0TN3p7=zMLY_=TquSZdKUgqDRE9fpg_t8hdA@mail.gmail.com>
+References: <20200811180604.4073173-1-aiden.gaoyuan@gmail.com>
+ <CAEemH2dxX2-t7S0TN3p7=zMLY_=TquSZdKUgqDRE9fpg_t8hdA@mail.gmail.com>
+Message-ID: <CAJuCfpH_Y6HwtZAiNLzBAf7q7MPjJe2UBchdthMkSc9v0SQ6bg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 24. 08. 20 13:21, Petr Vorel wrote:
-> Many distros don't have enough /tmp size for LVM tests, thus
-> allow to set $LVM_DIR to use different temporary directory.
-> 
-> Most of the space take backing files ($LVM_IMGDIR), but for consistency
-> changed both directories. $LVM_TMPDIR requires to update
-> generate_lvm_runfile.sh.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v1->v2:
-> * Update all required scripts
-> 
->  testcases/misc/lvm/cleanup_lvm.sh          | 5 +++--
->  testcases/misc/lvm/generate_lvm_runfile.sh | 4 +++-
->  testcases/misc/lvm/prepare_lvm.sh          | 5 +++--
->  3 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/misc/lvm/cleanup_lvm.sh b/testcases/misc/lvm/cleanup_lvm.sh
-> index e18efe2b0..03eb384be 100755
-> --- a/testcases/misc/lvm/cleanup_lvm.sh
-> +++ b/testcases/misc/lvm/cleanup_lvm.sh
-> @@ -9,8 +9,9 @@ TST_NEEDS_ROOT=1
->  TST_NEEDS_CMDS="losetup umount vgremove"
->  . tst_test.sh
->  
-> -LVM_TMPDIR="/tmp/ltp/growfiles"
-> -LVM_IMGDIR="/tmp/ltp/imgfiles"
-> +LVM_DIR="${LVM_DIR:-/tmp}"
-> +LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
-> +LVM_IMGDIR="$LVM_DIR/ltp/imgfiles"
->  
->  cleanup_lvm()
->  {
-> diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
-> index 5ca035f22..a8388cf3d 100755
-> --- a/testcases/misc/lvm/generate_lvm_runfile.sh
-> +++ b/testcases/misc/lvm/generate_lvm_runfile.sh
-> @@ -9,6 +9,8 @@ TST_NEEDS_ROOT=1
->  TST_NEEDS_CMDS="sed"
->  . tst_test.sh
->  
-> +LVM_DIR="${LVM_DIR:-/tmp}"
-> +
->  generate_runfile()
->  {
->  	trap 'tst_brk TBROK "Cannot create LVM runfile"' ERR
-> @@ -20,7 +22,7 @@ generate_runfile()
->  	for fsname in $FS_LIST; do
->  		# Btrfs needs too much space for reliable stress testing
->  		if [ "x$fsname" != "xbtrfs" ]; then
-> -			sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-> +			sed -e "s/{fsname}/$fsname/g; s^/tmp/ltp^$LVM_DIR/ltp^g" "$INFILE" >>"$OUTFILE"
+Hi Li,
 
-If you want to change the path in the runfile instead, it'd be cleaner
-to use a placeholder like {tempdir}. Otherwise:
+On Thu, Aug 20, 2020 at 2:16 AM Li Wang <liwang@redhat.com> wrote:
+>
+> Hi Yuan,
+>
+> Thanks for contributing to the memory-hotplug test. I have no objection to these patches, but it seems quite a long time(since it imported to LTP from Linux foundation at the year 2008) nobody actually touches this memtoy except some code cleanup work.
+>
+> I'm wondering whether you guys play with the memtoy regularly? and how do you use it?
 
-Acked-by: Martin Doucha <mdoucha@suse.cz>
+We did use memtoy to run memory experiments on Android (required some
+minor tweaks to be able to build on Android). After Yuan's fixes we
+were able to use it quite successfully.
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+>
+> I take a rough look at the README file but got nothing useful to get a start.
+
+You can see one of the scripts Yuan developed to ramp up memory
+allocations of a given type (anon/file-backed/ion) using memtoy here:
+https://android-review.googlesource.com/c/platform/external/ltp/+/1344879/44/testcases/kernel/hotplug/memory_hotplug/Scripts/ramp.sh
+The usage is currently for experimentation only but we find it pretty
+handy and we would like to keep using it in the future.
+Thanks,
+Suren.
+
+>
+> --
+> Regards,
+> Li Wang
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
