@@ -1,32 +1,39 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Aug 2020 17:15:43 +0800
-Subject: [LTP] [PATCH v2 1/3] hotplug/memory_hotplug: Handle NULL
- returned by strtok_r when parsing inputs
-In-Reply-To: <20200811180604.4073173-1-aiden.gaoyuan@gmail.com>
-References: <20200811180604.4073173-1-aiden.gaoyuan@gmail.com>
-Message-ID: <CAEemH2dxX2-t7S0TN3p7=zMLY_=TquSZdKUgqDRE9fpg_t8hdA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 Aug 2020 12:02:38 +0200
+Subject: [LTP] [PATCH 1/1] tst_kvcmp: Fix parsing format for /etc/os-release
+Message-ID: <20200820100238.15925-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yuan,
+We need to strip double quotes.
+Also for openSUSE Tumbleweed, which contains ID="opensuse-tumbleweed"
+it "\"%s\"" does not remove trailing double quote, thus match all but
+double quote.
 
-Thanks for contributing to the memory-hotplug test. I have no objection to
-these patches, but it seems quite a long time(since it imported to LTP from
-Linux foundation at the year 2008) nobody actually touches this
-memtoy except some code cleanup work.
+Fixes: e2e60a39b ("lib/tst_kvercmp: Add support /etc/os-release")
 
-I'm wondering whether you guys play with the memtoy regularly? and how do
-you use it?
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_kvercmp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I take a rough look at the README file but got nothing useful to get
-a start.
-
+diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+index 185a5c39c..7e980e076 100644
+--- a/lib/tst_kvercmp.c
++++ b/lib/tst_kvercmp.c
+@@ -146,7 +146,8 @@ const char *tst_kvcmp_distname(const char *kver)
+ 		return "RHEL6";
+ 
+ 	if (access(OSRELEASE_PATH, F_OK) != -1) {
+-		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
++		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=\"%[^\"]\"",
++				      distname);
+ 
+ 		while (*p) {
+ 			*p = toupper((unsigned char)*p);
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200820/0cedfc7c/attachment.htm>
+2.28.0
+
