@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Aug 2020 14:43:35 +0200
+Date: Thu, 20 Aug 2020 14:49:59 +0200
 Subject: [LTP] [PATCH v2 1/1] tst_kvcmp: Strip double quotes when
  parsing /etc/os-release
 In-Reply-To: <20200820122538.GC9000@yuki.lan>
 References: <20200820120051.331-1-pvorel@suse.cz>
  <20200820122538.GC9000@yuki.lan>
-Message-ID: <20200820124335.GA5065@dell5510>
+Message-ID: <20200820124959.GB5065@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,25 +27,7 @@ Hi Cyril,
 
 > Why can't we just do distname++ and move the p = distname after this
 > condition?
-Sure.
-
-> > +		if (p[strlen(p) - 1] == '"')
-> > +			p[strlen(p) - 1] = '\0';
-
-> I guess that we can move this to the while loop with:
-
-> 	while (*p) {
-> 		if (*p == '"') {
-> 			*p = 0;
-> 			break;
-> 		}
-
-> 		*p = ....
-> 		p++;
-> 	}
-OK, " shouldn't be in the middle of the character, thus safe
-
-Thanks for the suggestions.
+OK, distname is char[], not a pointer, I guess I have to use memmove().
 
 Kind regards,
 Petr
