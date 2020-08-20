@@ -1,9 +1,9 @@
 From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Thu, 20 Aug 2020 06:26:07 -0400
-Subject: [LTP] [PATCH 3/4] syscalls/kill05:Cleanup && Convert to new library
+Date: Thu, 20 Aug 2020 06:26:08 -0400
+Subject: [LTP] [PATCH 4/4] syscalls/kill06:Cleanup && Convert to new library
 In-Reply-To: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 References: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <1597919168-10702-3-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1597919168-10702-4-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,33 +15,14 @@ To: ltp@lists.linux.it
 Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/kill/Makefile |   4 +-
- testcases/kernel/syscalls/kill/kill05.c | 243 ++++++++------------------------
- 2 files changed, 58 insertions(+), 189 deletions(-)
+ testcases/kernel/syscalls/kill/kill06.c | 208 ++++++--------------------------
+ 1 file changed, 37 insertions(+), 171 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/kill/Makefile b/testcases/kernel/syscalls/kill/Makefile
-index 3d1b146..0cc064b 100644
---- a/testcases/kernel/syscalls/kill/Makefile
-+++ b/testcases/kernel/syscalls/kill/Makefile
-@@ -3,11 +3,11 @@
- 
- top_srcdir		?= ../../../..
- 
--LTPLIBS = ltpipc
-+LTPLIBS = ltpipc ltpnewipc
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
- kill07: LTPLDLIBS  = -lltpipc
--kill05: LTPLDLIBS  = -lltpipc
-+kill05: LTPLDLIBS  = -lltpnewipc
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/kill/kill05.c b/testcases/kernel/syscalls/kill/kill05.c
-index ccef5af..039d510 100644
---- a/testcases/kernel/syscalls/kill/kill05.c
-+++ b/testcases/kernel/syscalls/kill/kill05.c
-@@ -1,56 +1,8 @@
+diff --git a/testcases/kernel/syscalls/kill/kill06.c b/testcases/kernel/syscalls/kill/kill06.c
+index 7a1e8bf..8fcc8bc 100644
+--- a/testcases/kernel/syscalls/kill/kill06.c
++++ b/testcases/kernel/syscalls/kill/kill06.c
+@@ -1,187 +1,53 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
@@ -65,89 +46,70 @@ index ccef5af..039d510 100644
 -
 -/*
 - * NAME
-- *	kill05.c
+- *	kill06.c
 - *
 - * DESCRIPTION
-- *	Test case to check that kill() fails when passed a pid owned by another
-- *	user.
+- *	Test case to check the basic functionality of kill() when killing an
+- *	entire process group with a negative pid.
 - *
 - * ALGORITHM
 - *	call setup
 - *	loop if the -i option was given
-- *	setup a shared memory segment to for a flag which will notify
-- *	ltpuser1's process that life is not worth living in a continuous loop.
-- *	fork a child and set the euid to ltpuser1
-- *	set the parents euid to ltpuser2
-- *	execute the kill system call on ltpuser1's pid
+- *	fork 5 children
+- *	execute the kill system call
 - *	check the return value
-- *	if return value is not -1
+- *	if return value is -1
 - *		issue a FAIL message, break remaining tests and cleanup
-- *      if we are doing functional testing
-- *              if the errno was set to 1 (Operation not permitted)
-- *                      issue a PASS message
-- *              otherwise
-- *                      issue a FAIL message
+- *	if we are doing functional testing
+- *		if the processes were terminated with the expected signal.
+- *			issue a PASS message
+- *		otherwise
+- *			issue a FAIL message
 - *	call cleanup
 - *
 - * USAGE
-- *  kill05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  kill06 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
-+ * Test case to check that kill() fails when passed a pid owned by another user.
++ * Test case to check the basic functionality of kill() when killing an
++ * entire process group with a negative pid.
   *
   * HISTORY
   *	07/2001 Ported by Wayne Boyer
-@@ -66,67 +18,20 @@
-  *	Looping with the -i option does not work correctly.
+- *
+- * RESTRICTIONS
+- *	This test should be run as a non-root user.
   */
  
--#include <sys/types.h>
--#include <sys/ipc.h>
--#include <sys/shm.h>
- #include <sys/wait.h>
--#include <errno.h>
- #include <pwd.h>
--#include <signal.h>
--#include <string.h>
--#include <stdio.h>
- #include <stdlib.h>
--#include <unistd.h>
--
 -#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
-+#include "libnewipc.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "tst_safe_macros.h"
- 
--extern void rm_shm(int);
 -
++#include <sys/types.h>
+ #include <signal.h>
+-#include <errno.h>
+ #include <sys/wait.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include "tst_test.h"
+ 
 -void cleanup(void);
 -void setup(void);
 -void do_child(void);
--void do_master_child(char **av);
 -
--char *TCID = "kill05";
+-char *TCID = "kill06";
 -int TST_TOTAL = 1;
--int shmid1 = -1;
--extern key_t semkey;
-+static uid_t nobody_uid, bin_uid;
- int *flag;
-+static int shm_id = -1;
-+static key_t shm_key;
- 
--extern int getipckey();
 -
 -#define TEST_SIG SIGKILL
 -
 -int main(int ac, char **av)
--{
--	pid_t pid;
--	int status;
++static void verify_kill(void)
+ {
+-	int lc;
+-	pid_t pid1, pid2;
+-	int exno, status, nsig, i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -#ifdef UCLINUX
@@ -156,179 +118,134 @@ index ccef5af..039d510 100644
 -
 -	setup();		/* global setup */
 -
--	pid = FORK_OR_VFORK();
--	if (pid == -1)
--		tst_brkm(TBROK, cleanup, "Fork failed");
--	else if (pid == 0)
--		do_master_child(av);
+-	/* The following loop checks looping state if -i option given */
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
--	if (waitpid(pid, &status, 0) == -1)
--		tst_resm(TBROK | TERRNO, "waitpid failed");
--	else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--		tst_resm(TFAIL, "child exited abnormally");
--	else
--		tst_resm(TPASS, "received expected errno(EPERM)");
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-		status = 1;
+-		exno = 1;
+-
+-		/* Fork a process and set the process group so that */
+-		/* it is different from this one.  Fork 5 more children. */
+-
+-		pid1 = FORK_OR_VFORK();
+-		if (pid1 < 0) {
+-			tst_brkm(TBROK, cleanup, "Fork of first child failed");
+-		} else if (pid1 == 0) {
+-			setpgrp();
+-			for (i = 0; i < 5; i++) {
+-				pid2 = FORK_OR_VFORK();
+-				if (pid2 < 0) {
+-					tst_brkm(TBROK, cleanup, "Fork failed");
+-				} else if (pid2 == 0) {
+-#ifdef UCLINUX
+-					if (self_exec(av[0], "") < 0) {
+-						tst_brkm(TBROK, cleanup,
+-							 "self_exec of "
+-							 "child failed");
+-					}
+-#else
+-					do_child();
+-#endif
+-				}
+-			}
+-			/* Kill all processes in this process group */
+-			TEST(kill(-getpgrp(), TEST_SIG));
+-			sleep(300);
+-
+-			tst_resm(TINFO, "%d never received a"
+-				 " signal", getpid());
+-			exit(exno);
+-		} else {
+-			waitpid(pid1, &status, 0);
+-			if (TEST_RETURN != 0) {
+-				tst_brkm(TFAIL, cleanup, "%s failed - errno = "
+-					 "%d : %s", TCID, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			}
++	pid_t pid, child_pid[5];
++	int nsig, i, status;
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		setpgrp();
++		for (i = 0; i < 5; i++) {
++			child_pid[i] = SAFE_FORK();
++			if (!child_pid[i])
++				pause();
+ 		}
+ 
+-		/*
+-		 * Check to see if the process was terminated with the
+-		 * expected signal.
+-		 */
+-		nsig = WTERMSIG(status);
+-		if (!nsig) {
+-			tst_resm(TFAIL, "Did not receive any signal");
+-		} else if (nsig == TEST_SIG) {
+-			tst_resm(TPASS, "received expected signal %d",
+-				 nsig);
+-		} else {
+-			tst_resm(TFAIL,
+-				 "expected signal %d received %d",
+-				 TEST_SIG, nsig);
+-		}
++		TEST(kill(-getpgrp(), SIGKILL));
++		if (TST_RET != 0)
++			tst_res(TFAIL | TTERRNO, "kill failed");
++		tst_res(TINFO, "%d never received a signal", getpid());
++		exit(0);
+ 	}
+-
 -	cleanup();
 -	tst_exit();
 -}
 -
--void wait_for_flag(int value)
-+static void wait_for_flag(int value)
- {
- 	while (1) {
- 		if (*flag == value)
-@@ -136,107 +41,71 @@ void wait_for_flag(int value)
- 	}
+-/*
+- * do_child()
+- */
+-void do_child(void)
+-{
+-	int exno = 1;
+-
+-	sleep(299);
+-
+-	tst_resm(TINFO, "%d never received a" " signal", getpid());
+-	exit(exno);
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test
+- */
+-void setup(void)
+-{
+-	/* Setup default signal handling */
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++
++	SAFE_WAITPID(pid, &status, 0);
++	nsig = WTERMSIG(status);
++	if (nsig != SIGKILL) {
++		tst_res(TFAIL, "wait: unexpected signal %d returned, "
++			"expected SIGKILL(9)", nsig);
++		return;
++	}
++	tst_res(TPASS, "receive expected signal SIGKILL(9)");
  }
  
 -/*
-- * do_master_child()
+- * cleanup() - performs all the ONE TIME cleanup for this test@completion
+- * or premature exit.
 - */
--void do_master_child(char **av)
-+void do_master_child(void)
- {
- 	pid_t pid1;
--	int status;
--
--	char user1name[] = "nobody";
--	char user2name[] = "bin";
--
--	struct passwd *ltpuser1, *ltpuser2;
--
--	tst_count = 0;
- 
- 	*flag = 0;
--
--	pid1 = FORK_OR_VFORK();
--
--	if (pid1 == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Fork failed");
--
-+	pid1 = SAFE_FORK();
- 	if (pid1 == 0) {
--		ltpuser1 = SAFE_GETPWNAM(NULL, user1name);
--		if (setreuid(ltpuser1->pw_uid, ltpuser1->pw_uid) == -1) {
--			perror("setreuid failed (in child)");
--			exit(1);
--		}
-+		SAFE_SETREUID(nobody_uid, nobody_uid);
- 		*flag = 1;
--#ifdef UCLINUX
--		if (self_exec(av[0], "") < 0) {
--			perror("self_exec failed");
--			exit(1);
--		}
--#else
--		do_child();
--#endif
--	}
--	ltpuser2 = SAFE_GETPWNAM(NULL, user2name);
--	if (setreuid(ltpuser2->pw_uid, ltpuser2->pw_uid) == -1) {
--		perror("seteuid failed");
--		exit(1);
-+		wait_for_flag(2);
-+		exit(0);
- 	}
--
--	/* wait until child sets its euid */
-+	SAFE_SETREUID(bin_uid, bin_uid);
- 	wait_for_flag(1);
--
--	TEST(kill(pid1, TEST_SIG));
--
--	/* signal the child that we're done */
-+	TEST(kill(pid1, SIGKILL));
- 	*flag = 2;
-+	SAFE_WAITPID(pid1, NULL, 0);
- 
--	if (waitpid(pid1, &status, 0) == -1) {
--		perror("waitpid failed");
--		exit(1);
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "kill succeeded unexpectedly");
-+		return;
- 	}
- 
--	if (TEST_RETURN != -1) {
--		printf("kill succeeded unexpectedly\n");
--		exit(1);
--	}
-+	if (TST_ERR == EPERM)
-+		tst_res(TPASS, "kill failed with EPERM");
-+	else
-+		tst_res(TFAIL | TTERRNO, "kill failed expected EPERM, but got");
-+}
- 
--	/*
--	 * Check to see if the errno was set to the expected
--	 * value of 1 : EPERM
--	 */
--	if (TEST_ERRNO == EPERM) {
--		printf("kill failed with EPERM\n");
-+static void verify_kill(void)
-+{
-+	pid_t pid;
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		do_master_child();
- 		exit(0);
- 	}
--	perror("kill failed unexpectedly");
--	exit(1);
--}
- 
--void do_child(void)
--{
--	wait_for_flag(2);
--	exit(0);
-+	tst_reap_children();
- }
- 
--void setup(void)
-+static void setup(void)
- {
--	tst_require_root();
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	semkey = getipckey();
--
--	if ((shmid1 = shmget(semkey, getpagesize(), 0666 | IPC_CREAT)) == -1)
--		tst_brkm(TBROK, cleanup, "Failed to setup shared memory");
--
--	if ((flag = shmat(shmid1, 0, 0)) == (int *)-1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "Failed to attach shared memory:%d", shmid1);
-+	struct passwd *pw;
-+	shm_key = GETIPCKEY();
-+	shm_id = SAFE_SHMGET(shm_key, getpagesize(), 0666 | IPC_CREAT);
-+	flag = SAFE_SHMAT(shm_id, 0, 0);
-+	pw = SAFE_GETPWNAM("nobody");
-+	nobody_uid = pw->pw_uid;
-+	pw = SAFE_GETPWNAM("bin");
-+	bin_uid = pw->pw_uid;
- }
- 
 -void cleanup(void)
-+static void cleanup(void)
- {
--	rm_shm(shmid1);
+-{
 -
--	tst_rmdir();
-+	if (shm_id != -1)
-+		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
- }
-+
+-}
 +static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_kill,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
 +	.forks_child = 1,
++	.test_all = verify_kill,
 +};
 -- 
 1.8.3.1
