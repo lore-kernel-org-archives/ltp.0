@@ -1,40 +1,53 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Aug 2020 20:18:42 +0800
-Subject: [LTP] [PATCH 2/4] syscalls/kill03,
- 04: Cleanup && Convert to new library
-In-Reply-To: <1597919168-10702-2-git-send-email-zhufy.jy@cn.fujitsu.com>
-References: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <1597919168-10702-2-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <CAEemH2eUd3yCuxt3iawHPXKUSryiJprud3HvneSr=JK_1wFhXg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Aug 2020 14:25:38 +0200
+Subject: [LTP] [PATCH v2 1/1] tst_kvcmp: Strip double quotes when
+ parsing /etc/os-release
+In-Reply-To: <20200820120051.331-1-pvorel@suse.cz>
+References: <20200820120051.331-1-pvorel@suse.cz>
+Message-ID: <20200820122538.GC9000@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Feiyu Zhu <zhufy.jy@cn.fujitsu.com> wrote:
+Hi!
+> diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
+> index 185a5c39c..dfd81ac83 100644
+> --- a/lib/tst_kvercmp.c
+> +++ b/lib/tst_kvercmp.c
+> @@ -148,6 +148,12 @@ const char *tst_kvcmp_distname(const char *kver)
+>  	if (access(OSRELEASE_PATH, F_OK) != -1) {
+>  		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
+>  
+> +		if (p[0] == '"')
+> +			memmove(p, p + 1, strlen(p));
 
-...
-> +#include <unistd.h>
-> +#include "tst_test.h"
-> +
-> +static pid_t real_pid, fake_pid, int_min_pid;
-> +static void cleanup(void);
-> +
-> +static struct tcase {
-> +       int test_sig;
-> +       int exp_errno;
-> +       int child_flag;
->
+Why can't we just do distname++ and move the p = distname after this
+condition?
 
-The child_flag field is not necessary, we could prepare a real child in
-setup()
-and reclaim it after testing via check the real_pid value, that will be
-more easily.
+> +		if (p[strlen(p) - 1] == '"')
+> +			p[strlen(p) - 1] = '\0';
+
+I guess that we can move this to the while loop with:
+
+	while (*p) {
+		if (*p == '"') {
+			*p = 0;
+			break;
+		}
+
+		*p = ....
+		p++;
+	}
+
+>  		while (*p) {
+>  			*p = toupper((unsigned char)*p);
+>  			p++;
+> -- 
+> 2.28.0
+> 
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200820/2115494a/attachment.htm>
+Cyril Hrubis
+chrubis@suse.cz
