@@ -1,87 +1,129 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 21 Aug 2020 08:51:05 +0200
-Subject: [LTP] [PATCH 5.8 000/232] 5.8.3-rc1 review
-In-Reply-To: <20200820182516.GA49496@sol.localdomain>
-References: <20200820091612.692383444@linuxfoundation.org>
- <CA+G9fYtebf78TH-XpqArunHc1L6s9mHdLEbpY1EY9tSyDjp=sg@mail.gmail.com>
- <20200820182516.GA49496@sol.localdomain>
-Message-ID: <20200821065105.GB11908@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 21 Aug 2020 14:57:32 +0800
+Subject: [LTP] [PATCH 4/4] syscalls/kill06:Cleanup && Convert to new
+ library
+In-Reply-To: <1597919168-10702-4-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <1597919168-10702-4-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2dPXaV24bT4Ddp47iEWDzV5837SfDtsKEKB7_VbLNg9xA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Feiyu Zhu <zhufy.jy@cn.fujitsu.com> wrote:
 
-> On Thu, Aug 20, 2020 at 08:57:57PM +0530, Naresh Kamboju wrote:
-> > On Thu, 20 Aug 2020 at 14:55, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
+...
+> +       pid_t pid, child_pid[5];
+>
 
-> > > This is the start of the stable review cycle for the 5.8.3 release.
-> > > There are 232 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-
-> > > Responses should be made by Sat, 22 Aug 2020 09:15:09 +0000.
-> > > Anything received after that time might be too late.
-
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.3-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > > and the diffstat can be found below.
-
-> > > thanks,
-
-> > > greg k-h
-
-> > > Herbert Xu <herbert@gondor.apana.org.au>
-> > >     crypto: af_alg - Fix regression on empty requests
-
-> > Results from Linaro?s test farm.
-> > Regressions detected.
-
-> >   ltp-crypto-tests:
-> >     * af_alg02
-> >   ltp-cve-tests:
-> >     * cve-2017-17805
-
-> > af_alg02.c:52: BROK: Timed out while reading from request socket.
-> > We are running the LTP 20200515 tag released test suite.
-> >  https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/crypto/af_alg02.c
-
-> > Summary
-> > ------------------------------------------------------------------------
-
-> > kernel: 5.8.3-rc1
-> > git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > git branch: linux-5.8.y
-> > git commit: 201fff807310ce10485bcff294d47be95f3769eb
-> > git describe: v5.8.2-233-g201fff807310
-> > Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.8-oe/build/v5.8.2-233-g201fff807310
-
-> > Regressions (compared to build v5.8.2)
-> > ------------------------------------------------------------------------
-
-> > x15:
-> >   ltp-crypto-tests:
-> >     * af_alg02
-
-> >   ltp-cve-tests:
-> >     * cve-2017-17805
+I'd suggest dropping these two variables since it makes no sense to
+save the children PIDs in the following testing.
 
 
-> Looks like this test is still "broken" because it assumes behavior that isn't
-> clearly specified, as previously discussed at
-> https://lkml.kernel.org/r/20200702033221.GA19367@gondor.apana.org.au.
 
-> I sent out LTP patches to fix it:
-> https://lkml.kernel.org/linux-crypto/20200820181918.404758-1-ebiggers@kernel.org/T/#u
+> +       int nsig, i, status;
+> +
+> +       pid = SAFE_FORK();
+> +       if (pid == 0) {
+> +               setpgrp();
+> +               for (i = 0; i < 5; i++) {
+> +                       child_pid[i] = SAFE_FORK();
+>
 
-FYI fix for LTP merged.
+if we drop the arrays, that loop would be like:
 
-Kind regards,
-Petr
+                for (i = 0; i < 5; i++) {
+                        if (!SAFE_FORK())
+                                pause();
+                }
 
-> - Eric
+
+
+> +                       if (!child_pid[i])
+> +                               pause();
+>                 }
+>
+> -               /*
+> -                * Check to see if the process was terminated with the
+> -                * expected signal.
+> -                */
+> -               nsig = WTERMSIG(status);
+> -               if (!nsig) {
+> -                       tst_resm(TFAIL, "Did not receive any signal");
+> -               } else if (nsig == TEST_SIG) {
+> -                       tst_resm(TPASS, "received expected signal %d",
+> -                                nsig);
+> -               } else {
+> -                       tst_resm(TFAIL,
+> -                                "expected signal %d received %d",
+> -                                TEST_SIG, nsig);
+> -               }
+> +               TEST(kill(-getpgrp(), SIGKILL));
+> +               if (TST_RET != 0)
+> +                       tst_res(TFAIL | TTERRNO, "kill failed");
+> +               tst_res(TINFO, "%d never received a signal", getpid());
+>
+
+This TINFO is a misleading message to people. If the process receives a
+signal
+but not been killed, how do you say that never received a signal?
+So I suggest deleting this line.
+
+
+> +               exit(0);
+>         }
+> -
+> -       cleanup();
+> -       tst_exit();
+> -}
+> -
+> -/*
+> - * do_child()
+> - */
+> -void do_child(void)
+> -{
+> -       int exno = 1;
+> -
+> -       sleep(299);
+> -
+> -       tst_resm(TINFO, "%d never received a" " signal", getpid());
+> -       exit(exno);
+> -}
+> -
+> -/*
+> - * setup() - performs all ONE TIME setup for this test
+> - */
+> -void setup(void)
+> -{
+> -       /* Setup default signal handling */
+> -       tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -       TEST_PAUSE;
+> +
+> +       SAFE_WAITPID(pid, &status, 0);
+>
+
+What about waiting for any child process here?
+  SAFE_WAITPID(-1, &status, 0);
+
+
+
+> +       nsig = WTERMSIG(status);
+> +       if (nsig != SIGKILL) {
+> +               tst_res(TFAIL, "wait: unexpected signal %d returned, "
+> +                       "expected SIGKILL(9)", nsig);
+> +               return;
+> +       }
+> +       tst_res(TPASS, "receive expected signal SIGKILL(9)");
+>  }
+>
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200821/43a364ab/attachment-0001.htm>
