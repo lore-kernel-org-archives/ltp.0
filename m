@@ -1,129 +1,88 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 21 Aug 2020 14:57:32 +0800
-Subject: [LTP] [PATCH 4/4] syscalls/kill06:Cleanup && Convert to new
- library
-In-Reply-To: <1597919168-10702-4-git-send-email-zhufy.jy@cn.fujitsu.com>
-References: <1597919168-10702-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <1597919168-10702-4-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <CAEemH2dPXaV24bT4Ddp47iEWDzV5837SfDtsKEKB7_VbLNg9xA@mail.gmail.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Fri, 21 Aug 2020 16:50:12 +0800
+Subject: [LTP] [PATCH] controllers/cpuset: improve the node number
+ calculation for N_NODES
+Message-ID: <20200821085012.16808-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Feiyu Zhu <zhufy.jy@cn.fujitsu.com> wrote:
+BugLink: https://bugs.launchpad.net/bugs/1836188
 
-...
-> +       pid_t pid, child_pid[5];
->
+Issue spotted on a Power9 system with Ubuntu Eoan installed, the
+N_NODES obtained from the file contains only "0,8":
 
-I'd suggest dropping these two variables since it makes no sense to
-save the children PIDs in the following testing.
+    $ cat /sys/devices/system/node/has_normal_memory
+    0,8
 
+This will cause the N_NODES calculation in cpuset_funcs.sh failed with:
 
+    cpuset_funcs.sh: arithmetic expression: expecting EOF: "0,8 + 1"
 
-> +       int nsig, i, status;
-> +
-> +       pid = SAFE_FORK();
-> +       if (pid == 0) {
-> +               setpgrp();
-> +               for (i = 0; i < 5; i++) {
-> +                       child_pid[i] = SAFE_FORK();
->
+As it's expecting the number of a range (dash seperated), but not comma
+seperated nodes. And this is causing failures to any test that's calling
+this cpuset_funcs.sh:
+    * cpuset_base_ops
+    * cpuset_exclusive
+    * cpuset_hierarchy
+    * cpuset_hotplug cpuset_inherit
+    * cpuset_load_balance
+    * cpuset_memory cpuset_memory_pressure
+    * cpuset_memory_spread
+    * cpuset_sched_domains
+    * cpuset_syscall
 
-if we drop the arrays, that loop would be like:
+Improve the node number calculation by replacing the comma with space,
+iterate through them to count the number of nodes. If we ever encounter
+a range format like "3-6", use shell substitution to get these two
+numbers and with their difference plus 1 to get the number of nodes in
+this range.
 
-                for (i = 0; i < 5; i++) {
-                        if (!SAFE_FORK())
-                                pause();
-                }
+Let's assume some extreme examples, if N_NODES is:
+    0,2,4-6,8
+In this case the imporoved algorithm will give you 6.
+And if N_NODES is:
+   0,2,4-6,8,11-15
+This will get you 11.
 
+Patch tested with different arches and Ubuntu kernels, and it works as
+expected.
 
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ .../kernel/controllers/cpuset/cpuset_funcs.sh     | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-> +                       if (!child_pid[i])
-> +                               pause();
->                 }
->
-> -               /*
-> -                * Check to see if the process was terminated with the
-> -                * expected signal.
-> -                */
-> -               nsig = WTERMSIG(status);
-> -               if (!nsig) {
-> -                       tst_resm(TFAIL, "Did not receive any signal");
-> -               } else if (nsig == TEST_SIG) {
-> -                       tst_resm(TPASS, "received expected signal %d",
-> -                                nsig);
-> -               } else {
-> -                       tst_resm(TFAIL,
-> -                                "expected signal %d received %d",
-> -                                TEST_SIG, nsig);
-> -               }
-> +               TEST(kill(-getpgrp(), SIGKILL));
-> +               if (TST_RET != 0)
-> +                       tst_res(TFAIL | TTERRNO, "kill failed");
-> +               tst_res(TINFO, "%d never received a signal", getpid());
->
-
-This TINFO is a misleading message to people. If the process receives a
-signal
-but not been killed, how do you say that never received a signal?
-So I suggest deleting this line.
-
-
-> +               exit(0);
->         }
-> -
-> -       cleanup();
-> -       tst_exit();
-> -}
-> -
-> -/*
-> - * do_child()
-> - */
-> -void do_child(void)
-> -{
-> -       int exno = 1;
-> -
-> -       sleep(299);
-> -
-> -       tst_resm(TINFO, "%d never received a" " signal", getpid());
-> -       exit(exno);
-> -}
-> -
-> -/*
-> - * setup() - performs all ONE TIME setup for this test
-> - */
-> -void setup(void)
-> -{
-> -       /* Setup default signal handling */
-> -       tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -       TEST_PAUSE;
-> +
-> +       SAFE_WAITPID(pid, &status, 0);
->
-
-What about waiting for any child process here?
-  SAFE_WAITPID(-1, &status, 0);
-
-
-
-> +       nsig = WTERMSIG(status);
-> +       if (nsig != SIGKILL) {
-> +               tst_res(TFAIL, "wait: unexpected signal %d returned, "
-> +                       "expected SIGKILL(9)", nsig);
-> +               return;
-> +       }
-> +       tst_res(TPASS, "receive expected signal SIGKILL(9)");
->  }
->
-
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index 935a41ed0..2665afd31 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -28,12 +28,19 @@
+ 
+ NR_CPUS=`tst_ncpus`
+ if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+-	N_NODES="`cat /sys/devices/system/node/has_high_memory`"
++	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
+ else
+-	N_NODES="`cat /sys/devices/system/node/has_normal_memory`"
++	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
+ fi
+-N_NODES=${N_NODES#*-*}
+-N_NODES=$(($N_NODES + 1))
++count=0
++for item in $N_NODES; do
++	delta=1
++	if [ "${item#*-*}" != "$item" ]; then
++		delta=$((${item#*-*} - ${item%*-*} + 1))
++	fi
++	count=$((count + $delta))
++done
++N_NODES=$count
+ 
+ CPUSET="/dev/cpuset"
+ CPUSET_TMP="/tmp/cpuset_tmp"
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200821/43a364ab/attachment-0001.htm>
+2.17.1
+
