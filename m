@@ -1,21 +1,40 @@
-From: Cixi Geng <gengcixi@gmail.com>
-Date: Fri, 21 Aug 2020 10:29:49 +0800
-Subject: [LTP] [RFC] ltp test add reboot function
-Message-ID: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Fri, 21 Aug 2020 11:10:03 +0800
+Subject: [LTP] [PATCH v3 1/1] tst_kvcmp: Strip double quotes when
+ parsing /etc/os-release
+In-Reply-To: <20200820203335.GA7560@x230>
+References: <20200820133032.16840-1-pvorel@suse.cz>
+ <20200820134557.GG9000@yuki.lan>
+ <CAMy_GT_0yg4CEW+a8TC-9rrYeNWW0Xa+UsMa70v495WBrUXeBA@mail.gmail.com>
+ <20200820203335.GA7560@x230>
+Message-ID: <CAMy_GT_K5OSg_8ZJqi__VHrEhvHN-QnQJ0YzPJCmYeCBL5xfoA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi ALL:
+On Fri, Aug 21, 2020 at 4:33 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Po-Hsu,
+>
+> > LGTM,
+> > Tested with crafted ID, it can correctly parse the ID with or without
+> > the double quote.
+>
+> > Another thing to note is that I found the loop in tst_kvercmp2 could
+> > iterate outside the size of "vers" and causing
+> > tst_test.c:1298: BROK: Test killed by SIGSEGV!
+> Will you post the patch for this?
+>
+> > Reviewed-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> I'm sorry, I've merged it before, but forget to notify.
+> Is the bug mentioned above related to my commit?
+Hello Petr,
+Don't worry it's not related to this commit :)
+I will have a look at that bug.
 
-I want to add a reboot function in LTP for my team write a memory page
-related case?
-and need reboot to make the memory cache or some likely it pure clear.
-
-So I want to add a tst_needs_reboot. when it was set, reboot the
-machine and continue
-run test from the point before.
-
-I think  this requirement is meaningful? So can you give me some advise?
+Cheers
+>
+> Kind regards,
+> Petr
