@@ -1,29 +1,84 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 24 Aug 2020 13:08:13 +0200
-Subject: [LTP] [PATCH 1/1] prepare_lvm.sh: Allow to define tmp directory
-In-Reply-To: <332d88d9-7a5e-c45a-273e-61da8aaad3c6@suse.cz>
-References: <20200824102439.26587-1-pvorel@suse.cz>
- <332d88d9-7a5e-c45a-273e-61da8aaad3c6@suse.cz>
-Message-ID: <20200824110813.GA13255@dell5510>
+Date: Mon, 24 Aug 2020 13:21:09 +0200
+Subject: [LTP] [PATCH v2 1/1] prepare_lvm.sh: Allow to define tmp directory
+Message-ID: <20200824112109.2995-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Many distros don't have enough /tmp size for LVM tests, thus
+allow to set $LVM_DIR to use different temporary directory.
 
-...
-> You should change only LVM_IMGDIR where the backing files are stored. If
-> you also change LVM_TMPDIR, it'll break the lvm.local runfile.
-Wouldn't be less confusing to change both directories? Updating
-generate_lvm_runfile.sh is trivial (ignoring variable setup in all 3 scripts):
+Most of the space take backing files ($LVM_IMGDIR), but for consistency
+changed both directories. $LVM_TMPDIR requires to update
+generate_lvm_runfile.sh.
 
-- sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
-+ sed -e "s/{fsname}/$fsname/g; s^/tmp/ltp/^$LVM_DIR/ltp^g" "$INFILE" >>"$OUTFILE"
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Changes v1->v2:
+* Update all required scripts
 
-> Also don't forget to update cleanup_lvm.sh.
-Good point, thanks!
+ testcases/misc/lvm/cleanup_lvm.sh          | 5 +++--
+ testcases/misc/lvm/generate_lvm_runfile.sh | 4 +++-
+ testcases/misc/lvm/prepare_lvm.sh          | 5 +++--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/misc/lvm/cleanup_lvm.sh b/testcases/misc/lvm/cleanup_lvm.sh
+index e18efe2b0..03eb384be 100755
+--- a/testcases/misc/lvm/cleanup_lvm.sh
++++ b/testcases/misc/lvm/cleanup_lvm.sh
+@@ -9,8 +9,9 @@ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="losetup umount vgremove"
+ . tst_test.sh
+ 
+-LVM_TMPDIR="/tmp/ltp/growfiles"
+-LVM_IMGDIR="/tmp/ltp/imgfiles"
++LVM_DIR="${LVM_DIR:-/tmp}"
++LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
++LVM_IMGDIR="$LVM_DIR/ltp/imgfiles"
+ 
+ cleanup_lvm()
+ {
+diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
+index 5ca035f22..a8388cf3d 100755
+--- a/testcases/misc/lvm/generate_lvm_runfile.sh
++++ b/testcases/misc/lvm/generate_lvm_runfile.sh
+@@ -9,6 +9,8 @@ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="sed"
+ . tst_test.sh
+ 
++LVM_DIR="${LVM_DIR:-/tmp}"
++
+ generate_runfile()
+ {
+ 	trap 'tst_brk TBROK "Cannot create LVM runfile"' ERR
+@@ -20,7 +22,7 @@ generate_runfile()
+ 	for fsname in $FS_LIST; do
+ 		# Btrfs needs too much space for reliable stress testing
+ 		if [ "x$fsname" != "xbtrfs" ]; then
+-			sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
++			sed -e "s/{fsname}/$fsname/g; s^/tmp/ltp^$LVM_DIR/ltp^g" "$INFILE" >>"$OUTFILE"
+ 		fi
+ 	done
+ 
+diff --git a/testcases/misc/lvm/prepare_lvm.sh b/testcases/misc/lvm/prepare_lvm.sh
+index e7f9c90e4..b6557f221 100755
+--- a/testcases/misc/lvm/prepare_lvm.sh
++++ b/testcases/misc/lvm/prepare_lvm.sh
+@@ -9,8 +9,9 @@ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="mount pvcreate vgcreate lvcreate"
+ . tst_test.sh
+ 
+-LVM_TMPDIR="/tmp/ltp/growfiles"
+-LVM_IMGDIR="/tmp/ltp/imgfiles"
++LVM_DIR="${LVM_DIR:-/tmp}"
++LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
++LVM_IMGDIR="$LVM_DIR/ltp/imgfiles"
+ 
+ error_check()
+ {
+-- 
+2.28.0
+
