@@ -1,46 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 24 Aug 2020 17:12:10 +0200
-Subject: [LTP] [PATCH] travis: Add centos7 build
-In-Reply-To: <1598250984-5141-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1598250984-5141-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20200824151210.GA30969@dell5510>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 24 Aug 2020 17:21:28 +0200
+Subject: [LTP] [PATCH] syscalls/setsockopt05: associate receiver with
+ destination address
+In-Reply-To: <1425720351.9865762.1598281277578.JavaMail.zimbra@redhat.com>
+References: <c73f6b2e1232d6a892ecef76370ea2cf6c7dd044.1598270814.git.jstancek@redhat.com>
+ <de536b1b-0751-f50c-3869-b1b7956bda84@suse.cz>
+ <1425720351.9865762.1598281277578.JavaMail.zimbra@redhat.com>
+Message-ID: <9821e566-3263-36fd-651e-4f5019e486e1@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+On 24. 08. 20 17:01, Jan Stancek wrote:
+> I assumed it's from previous one, not partial one. From man(7) udp:
+> 
+>  ECONNREFUSED
+>               No receiver was associated with the destination address.
+>               This might be caused by a previous packet sent over the socket.
+> 
 
-> I have this idea when I meet ALG_SET_AEAD_ASSOCLEN undefined error on centos7.
-> Add centos7 travis target, it is more friendly for centos7 user and it is more
-> meaningful than centos6.
+Wait, looking closer at the error message, it looks like send(MSG_MORE)
+is broken on your test kernel. Let me quote the man page here:
 
-OK, how about replacing CentOS 6 with CentOS 7?
+>        MSG_MORE (since Linux 2.4.4)
+>               The  caller  has  more data to send.  This flag is used with TCP
+>               sockets to obtain the same effect as the TCP_CORK socket  option
+>               (see tcp(7)), with the difference that this flag can be set on a
+>               per-call basis.
+> 
+>               Since Linux 2.6, this flag is also supported  for  UDP  sockets,
+>               and  informs the kernel to package all of the data sent in calls
+>               with this flag set into a single datagram which  is  transmitted
+>               only  when  a call is performed that does not specify this flag.
+>               (See also the UDP_CORK socket option described in udp(7).)
 
-Kind regards,
-Petr
+The data from the SAFE_SEND() call are supposed to stay in kernel buffer
+until the send() call where we (intentionally) ignore the return value.
 
-> I have tested this patch on my ltp fork:
-> https://travis-ci.org/github/xuyang0410/ltp/jobs/720541105
-
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  .travis.yml | 4 ++++
->  1 file changed, 4 insertions(+)
-
-> diff --git a/.travis.yml b/.travis.yml
-> index e8e3189af..281ec9e96 100644
-> --- a/.travis.yml
-> +++ b/.travis.yml
-> @@ -47,6 +47,10 @@ matrix:
->            env: DISTRO=centos:6 TREE=out
->            compiler: gcc
-
-> +        - os: linux
-> +          env: DISTRO=centos:7 TREE=out
-> +          compiler: gcc
-> +
->          - os: linux
->            env: DISTRO=debian:testing
->            compiler: gcc
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
