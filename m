@@ -1,51 +1,80 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 24 Aug 2020 14:10:11 +0200
-Subject: [LTP] [PATCH] syscalls/setsockopt05: associate receiver with
- destination address
-Message-ID: <c73f6b2e1232d6a892ecef76370ea2cf6c7dd044.1598270814.git.jstancek@redhat.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 24 Aug 2020 16:28:03 +0200
+Subject: [LTP] [PATCH v2 1/1] prepare_lvm.sh: Allow to define tmp
+ directory
+In-Reply-To: <20200824112109.2995-1-pvorel@suse.cz>
+References: <20200824112109.2995-1-pvorel@suse.cz>
+Message-ID: <648dc99d-5079-23ec-eba2-b10215ae8130@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to avoid sporadic ECONNREFUSED errors:
-  safe_net.c:202: BROK: setsockopt05.c:70: send(6, 0x3ffcaf7d828, 4000, 32768) failed: ECONNREFUSED (111)
+On 24. 08. 20 13:21, Petr Vorel wrote:
+> Many distros don't have enough /tmp size for LVM tests, thus
+> allow to set $LVM_DIR to use different temporary directory.
+> 
+> Most of the space take backing files ($LVM_IMGDIR), but for consistency
+> changed both directories. $LVM_TMPDIR requires to update
+> generate_lvm_runfile.sh.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Changes v1->v2:
+> * Update all required scripts
+> 
+>  testcases/misc/lvm/cleanup_lvm.sh          | 5 +++--
+>  testcases/misc/lvm/generate_lvm_runfile.sh | 4 +++-
+>  testcases/misc/lvm/prepare_lvm.sh          | 5 +++--
+>  3 files changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/misc/lvm/cleanup_lvm.sh b/testcases/misc/lvm/cleanup_lvm.sh
+> index e18efe2b0..03eb384be 100755
+> --- a/testcases/misc/lvm/cleanup_lvm.sh
+> +++ b/testcases/misc/lvm/cleanup_lvm.sh
+> @@ -9,8 +9,9 @@ TST_NEEDS_ROOT=1
+>  TST_NEEDS_CMDS="losetup umount vgremove"
+>  . tst_test.sh
+>  
+> -LVM_TMPDIR="/tmp/ltp/growfiles"
+> -LVM_IMGDIR="/tmp/ltp/imgfiles"
+> +LVM_DIR="${LVM_DIR:-/tmp}"
+> +LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
+> +LVM_IMGDIR="$LVM_DIR/ltp/imgfiles"
+>  
+>  cleanup_lvm()
+>  {
+> diff --git a/testcases/misc/lvm/generate_lvm_runfile.sh b/testcases/misc/lvm/generate_lvm_runfile.sh
+> index 5ca035f22..a8388cf3d 100755
+> --- a/testcases/misc/lvm/generate_lvm_runfile.sh
+> +++ b/testcases/misc/lvm/generate_lvm_runfile.sh
+> @@ -9,6 +9,8 @@ TST_NEEDS_ROOT=1
+>  TST_NEEDS_CMDS="sed"
+>  . tst_test.sh
+>  
+> +LVM_DIR="${LVM_DIR:-/tmp}"
+> +
+>  generate_runfile()
+>  {
+>  	trap 'tst_brk TBROK "Cannot create LVM runfile"' ERR
+> @@ -20,7 +22,7 @@ generate_runfile()
+>  	for fsname in $FS_LIST; do
+>  		# Btrfs needs too much space for reliable stress testing
+>  		if [ "x$fsname" != "xbtrfs" ]; then
+> -			sed -e "s/{fsname}/$fsname/g" "$INFILE" >>"$OUTFILE"
+> +			sed -e "s/{fsname}/$fsname/g; s^/tmp/ltp^$LVM_DIR/ltp^g" "$INFILE" >>"$OUTFILE"
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/setsockopt/setsockopt05.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+If you want to change the path in the runfile instead, it'd be cleaner
+to use a placeholder like {tempdir}. Otherwise:
 
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt05.c b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-index e78ef236e337..469e5a64bf71 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-@@ -37,6 +37,7 @@ static void setup(void)
- 	int real_uid = getuid();
- 	int real_gid = getgid();
- 	int sock;
-+	int port = TST_GET_UNUSED_PORT(AF_INET, SOCK_DGRAM);
- 	struct ifreq ifr;
- 
- 	SAFE_UNSHARE(CLONE_NEWUSER);
-@@ -45,14 +46,14 @@ static void setup(void)
- 	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1", real_uid);
- 	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1", real_gid);
- 
--	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 12345);
-+	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, port);
- 	sock = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
- 	strcpy(ifr.ifr_name, "lo");
- 	ifr.ifr_mtu = 1500;
- 	SAFE_IOCTL(sock, SIOCSIFMTU, &ifr);
- 	ifr.ifr_flags = IFF_UP;
- 	SAFE_IOCTL(sock, SIOCSIFFLAGS, &ifr);
--	SAFE_CLOSE(sock);
-+	SAFE_BIND(sock, (struct sockaddr *)&addr, sizeof(struct sockaddr));
- }
- 
- static void run(void)
+Acked-by: Martin Doucha <mdoucha@suse.cz>
+
 -- 
-2.18.1
-
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
