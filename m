@@ -1,24 +1,37 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 24 Aug 2020 15:46:30 +0530
-Subject: [LTP] BUG: Bad page state in process true  pfn:a8fed on arm
-In-Reply-To: <CA+G9fYt=oYWHEG6VNkfEh8+UxbReS6_+9hnz+1bOYZHj5j1F_Q@mail.gmail.com>
-References: <CA+G9fYt=oYWHEG6VNkfEh8+UxbReS6_+9hnz+1bOYZHj5j1F_Q@mail.gmail.com>
-Message-ID: <CA+G9fYtVCb6p_eeBayp_bzJGYFBOx+yG+Bgpda3KcFy-Yj1VgA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 24 Aug 2020 12:24:39 +0200
+Subject: [LTP] [PATCH 1/1] prepare_lvm.sh: Allow to define tmp directory
+Message-ID: <20200824102439.26587-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 24 Aug 2020 at 15:14, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Kernel BUG noticed on arm architecture on linux next 20200824 tag kernel
-> while running LTP CVE "thp01 -I 120" , LTP mm, LTP hugetlb test cases
-> and libhugetlbfs test suite.
+Many distros don't have enough /tmp size for LVM tests, thus
+allow to set $LVM_DIR to use different temporary directory.
 
-BAD: next-20200820
-GOOD: next-20200819
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/misc/lvm/prepare_lvm.sh | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-We are trying to bisect this problem and get back to you shortly.
+diff --git a/testcases/misc/lvm/prepare_lvm.sh b/testcases/misc/lvm/prepare_lvm.sh
+index e7f9c90e4..b6557f221 100755
+--- a/testcases/misc/lvm/prepare_lvm.sh
++++ b/testcases/misc/lvm/prepare_lvm.sh
+@@ -9,8 +9,9 @@ TST_NEEDS_ROOT=1
+ TST_NEEDS_CMDS="mount pvcreate vgcreate lvcreate"
+ . tst_test.sh
+ 
+-LVM_TMPDIR="/tmp/ltp/growfiles"
+-LVM_IMGDIR="/tmp/ltp/imgfiles"
++LVM_DIR="${LVM_DIR:-/tmp}"
++LVM_TMPDIR="$LVM_DIR/ltp/growfiles"
++LVM_IMGDIR="$LVM_DIR/ltp/imgfiles"
+ 
+ error_check()
+ {
+-- 
+2.28.0
 
-- Naresh
