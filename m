@@ -1,58 +1,30 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 25 Aug 2020 15:25:20 +0800
-Subject: [LTP] [PATCH] cpuset_inherit_test: Add cgroup.clone_children
- swith for cpuset.cpus and mems
-In-Reply-To: <CAEemH2dds8rJetEKXfwm5ck_knxOG=QFssbWtiRbxQk4oiZDVQ@mail.gmail.com>
-References: <1597042181-12722-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <b0e940e7-945b-cdd9-695d-025bdc4a1ba1@cn.fujitsu.com>
- <CAEemH2dds8rJetEKXfwm5ck_knxOG=QFssbWtiRbxQk4oiZDVQ@mail.gmail.com>
-Message-ID: <eaf20eff-0b1f-fc59-f4b6-fab6340c462b@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 25 Aug 2020 15:27:59 +0800
+Subject: [LTP] [PATCH] Taint check: Use TFAIL instead of TBROK in
+ fork_testrun()
+In-Reply-To: <20200824174145.GA21133@dell5510>
+References: <20200819110406.25099-1-mdoucha@suse.cz>
+ <20200824174145.GA21133@dell5510>
+Message-ID: <CAEemH2f8qED6Z713qiEmEhK13jAkT-_Xf+sm_EsiokLKmTY-Ow@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
+On Tue, Aug 25, 2020 at 1:42 AM Petr Vorel <pvorel@suse.cz> wrote:
 
+> Hi,
+>
+> LGTM.
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
 
-> Hi Xu,
-> 
-> I helped correct the test counting and pushed after self-testing.
-Oh, yes, I forgot this test counting.
-Thanks.
+Pushed, thanks!
 
-Best Regards
-Yang Xu
-> 
-> ------------
-> 
-> -# Case 1-3
-> +# Case 1-6
->  ?test_cpus
-> 
-> -# Case 4-6
-> +# Case 7-12
->  ?test_mems
-> 
-> -# Case 7-14
-> +# Case 13-20
->  ?test_three_result_similar_flags
-> 
-> -# Case 15-18
-> +# Case 21-24
->  ?test_spread_flags
-> 
-> -# Case 19-20
-> +# Case 25-26
->  ?test_sched_load_balance_flag
-> 
-> -# Case 21-27
-> +# Case 27-33
->  ?test_domain
-> 
-> -- 
-> Regards,
-> Li Wang
-
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200825/0b0b7c7c/attachment-0001.htm>
