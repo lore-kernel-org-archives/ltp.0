@@ -1,162 +1,40 @@
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Tue, 25 Aug 2020 10:53:22 +0200
-Subject: [LTP] BUG: Bad page state in process true pfn:a8fed on arm
-In-Reply-To: <20200825083119.GA69694@linux.ibm.com>
-References: <CA+G9fYt=oYWHEG6VNkfEh8+UxbReS6_+9hnz+1bOYZHj5j1F_Q@mail.gmail.com>
- <20200824110645.GC17456@casper.infradead.org>
- <CA+G9fYvjKGF3HZXyd=JQHzRG=r=bmD0hYQn02VL4Y=5y57OgaA@mail.gmail.com>
- <20200825083119.GA69694@linux.ibm.com>
-Message-ID: <CADYN=9+2RDeUdbNT+XT6WgTW70UCdsARqaAL7PQ0+OPLvrkNng@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 25 Aug 2020 11:43:18 +0200
+Subject: [LTP] [PATCH] syscalls/setsockopt05: associate receiver with
+ destination address
+In-Reply-To: <285733961.9872750.1598285502957.JavaMail.zimbra@redhat.com>
+References: <c73f6b2e1232d6a892ecef76370ea2cf6c7dd044.1598270814.git.jstancek@redhat.com>
+ <de536b1b-0751-f50c-3869-b1b7956bda84@suse.cz>
+ <1425720351.9865762.1598281277578.JavaMail.zimbra@redhat.com>
+ <9821e566-3263-36fd-651e-4f5019e486e1@suse.cz>
+ <285733961.9872750.1598285502957.JavaMail.zimbra@redhat.com>
+Message-ID: <d2a4fdfb-4686-eedc-a22b-464f9ed5982d@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 25 Aug 2020 at 10:32, Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Tue, Aug 25, 2020 at 01:03:53PM +0530, Naresh Kamboju wrote:
-> > On Mon, 24 Aug 2020 at 16:36, Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Mon, Aug 24, 2020 at 03:14:55PM +0530, Naresh Kamboju wrote:
-> > > > [   67.545247] BUG: Bad page state in process true  pfn:a8fed
-> > > > [   67.550767] page:9640c0ab refcount:0 mapcount:-1024
-> > >
-> > > Somebody freed a page table without calling __ClearPageTable() on it.
-> >
-> > After running git bisect on this problem,
-> > The first suspecting of this problem on arm architecture this patch.
-> > 424efe723f7717430bec7c93b4d28bba73e31cf6
-> > ("mm: account PMD tables like PTE tables ")
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Reported-by: Anders Roxell <anders.roxell@linaro.org>
->
-> Can you please check if this fix helps?
+On 24. 08. 20 18:11, Jan Stancek wrote:
+> Aren't we getting propagated ICMP error to send() from previous iteration
+> of the loop?
+> 
+> Per https://tools.ietf.org/html/rfc1122#page-78
+>   The application is also responsible to avoid confusion from a delayed ICMP
+>   error message resulting from an earlier use of the same port(s).
 
-That fixed the problem.
+The test is using the loopback address. There should be no delay. We're
+running this test daily on 7 different kernel versions and 4 different
+archs and I've never seen it fail with ECONNREFUSED, ever.
 
-Cheers,
-Anders
+But you can prove me wrong by adding a few debug prints around both
+send() calls.
 
->
-> diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
-> index 9415222b49ad..b8cbe03ad260 100644
-> --- a/arch/arm/include/asm/tlb.h
-> +++ b/arch/arm/include/asm/tlb.h
-> @@ -59,6 +59,7 @@ __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmdp, unsigned long addr)
->  #ifdef CONFIG_ARM_LPAE
->         struct page *page = virt_to_page(pmdp);
->
-> +       pgtable_pmd_page_dtor(page);
->         tlb_remove_table(tlb, page);
->  #endif
->  }
->
-> > Additional information:
-> > We have tested linux next by reverting this patch and confirmed
-> > that the reported BUG is not reproduced.
-> >
-> > These configs enabled on the running device,
-> >
-> > CONFIG_TRANSPARENT_HUGEPAGE=y
-> > CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
-> >
-> >
-> > -- Suspecting patch --
-> > commit 424efe723f7717430bec7c93b4d28bba73e31cf6
-> > Author: Matthew Wilcox <willy@infradead.org>
-> > Date:   Thu Aug 20 10:01:30 2020 +1000
-> >
-> >     mm: account PMD tables like PTE tables
-> >
-> >     We account the PTE level of the page tables to the process in order to
-> >     make smarter OOM decisions and help diagnose why memory is fragmented.
-> >     For these same reasons, we should account pages allocated for PMDs.  With
-> >     larger process address spaces and ASLR, the number of PMDs in use is
-> >     higher than it used to be so the inaccuracy is starting to matter.
-> >
-> >     Link: http://lkml.kernel.org/r/20200627184642.GF25039@casper.infradead.org
-> >     Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> >     Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-> >     Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-> >     Cc: Andy Lutomirski <luto@kernel.org>
-> >     Cc: Arnd Bergmann <arnd@arndb.de>
-> >     Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >     Cc: Joerg Roedel <joro@8bytes.org>
-> >     Cc: Max Filippov <jcmvbkbc@gmail.com>
-> >     Cc: Peter Zijlstra <peterz@infradead.org>
-> >     Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-> >     Cc: Stafford Horne <shorne@gmail.com>
-> >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >     Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> >
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index b0a15ee77b8a..a4e5b806347c 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2239,7 +2239,7 @@ static inline spinlock_t *pmd_lockptr(struct
-> > mm_struct *mm, pmd_t *pmd)
-> >   return ptlock_ptr(pmd_to_page(pmd));
-> >  }
-> >
-> > -static inline bool pgtable_pmd_page_ctor(struct page *page)
-> > +static inline bool pmd_ptlock_init(struct page *page)
-> >  {
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >   page->pmd_huge_pte = NULL;
-> > @@ -2247,7 +2247,7 @@ static inline bool pgtable_pmd_page_ctor(struct
-> > page *page)
-> >   return ptlock_init(page);
-> >  }
-> >
-> > -static inline void pgtable_pmd_page_dtor(struct page *page)
-> > +static inline void pmd_ptlock_free(struct page *page)
-> >  {
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >   VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
-> > @@ -2264,8 +2264,8 @@ static inline spinlock_t *pmd_lockptr(struct
-> > mm_struct *mm, pmd_t *pmd)
-> >   return &mm->page_table_lock;
-> >  }
-> >
-> > -static inline bool pgtable_pmd_page_ctor(struct page *page) { return true; }
-> > -static inline void pgtable_pmd_page_dtor(struct page *page) {}
-> > +static inline bool pmd_ptlock_init(struct page *page) { return true; }
-> > +static inline void pmd_ptlock_free(struct page *page) {}
-> >
-> >  #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
-> >
-> > @@ -2278,6 +2278,22 @@ static inline spinlock_t *pmd_lock(struct
-> > mm_struct *mm, pmd_t *pmd)
-> >   return ptl;
-> >  }
-> >
-> > +static inline bool pgtable_pmd_page_ctor(struct page *page)
-> > +{
-> > + if (!pmd_ptlock_init(page))
-> > + return false;
-> > + __SetPageTable(page);
-> > + inc_zone_page_state(page, NR_PAGETABLE);
-> > + return true;
-> > +}
-> > +
-> > +static inline void pgtable_pmd_page_dtor(struct page *page)
-> > +{
-> > + pmd_ptlock_free(page);
-> > + __ClearPageTable(page);
-> > + dec_zone_page_state(page, NR_PAGETABLE);
-> > +}
-> > +
-> >  /*
-> >   * No scalability reason to split PUD locks yet, but follow the same pattern
-> >   * as the PMD locks to make it easier if we decide to.  The VM should not be
-> >
-> >
-> >
-> >
-> > - Naresh
->
-> --
-> Sincerely yours,
-> Mike.
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
