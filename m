@@ -1,66 +1,80 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 25 Aug 2020 18:07:34 +0200
-Subject: [LTP] [PATCH v2 3/4] ioctl_sg01: Pollute free memory in setup
+Date: Tue, 25 Aug 2020 18:07:32 +0200
+Subject: [LTP] [PATCH v2 1/4] Add SAFE_SYSINFO() macro
 In-Reply-To: <20200825160735.24602-1-mdoucha@suse.cz>
 References: <20200825160735.24602-1-mdoucha@suse.cz>
-Message-ID: <20200825160735.24602-4-mdoucha@suse.cz>
+Message-ID: <20200825160735.24602-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test wasn't reliable if most of available memory was full of zeroes.
-Pollute free memory to increase the chance of detecting data leak.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1:
-- Split patch
-- Use tst_pollute_memory() instead of allocating and pre-polluting
-  a fixed-size block of memory in setup().
+Changes since v1: New patch
 
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ include/tst_safe_macros.h |  5 +++++
+ lib/safe_macros.c         | 20 ++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-index daaa96be5..8c9fd0dae 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-@@ -7,9 +7,7 @@
-  * CVE-2018-1000204
-  *
-  * Test ioctl(SG_IO) and check that kernel doesn't leak data. Requires
-- * a read-accessible SCSI-compatible device (e.g. SATA disk). Running oom*
-- * test program before this one may increase the chance of successfully
-- * reproducing the bug.
-+ * a read-accessible generic SCSI device (e.g. a DVD drive).
-  *
-  * Leak fixed in:
-  *
-@@ -29,8 +27,9 @@
- #include <sys/ioctl.h>
- #include <stdio.h>
- #include "tst_test.h"
-+#include "tst_memutils.h"
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 000381c4f..053c3bcf9 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -12,6 +12,7 @@
+ #include <sys/resource.h>
+ #include <sys/stat.h>
+ #include <sys/vfs.h>
++#include <sys/sysinfo.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+ #include <signal.h>
+@@ -598,4 +599,8 @@ long tst_safe_ptrace(const char *file, const int lineno, int req, pid_t pid,
+ #define SAFE_PTRACE(req, pid, addr, data) \
+ 	tst_safe_ptrace(__FILE__, __LINE__, req, pid, addr, data)
  
--#define BUF_SIZE 128 * 4096
-+#define BUF_SIZE (128 * 4096)
- #define CMD_SIZE 6
- 
- static int devfd = -1;
-@@ -80,6 +79,10 @@ static void setup(void)
- 		tst_brk(TCONF, "Could not find any usable SCSI device");
- 
- 	tst_res(TINFO, "Found SCSI device %s", devpath);
++int safe_sysinfo(const char *file, const int lineno, struct sysinfo *info);
++#define SAFE_SYSINFO(info) \
++	safe_sysinfo(__FILE__, __LINE__, (info))
 +
-+	/* Pollute some memory to avoid false negatives */
-+	tst_pollute_memory(0, 0x42);
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index dde9b7b5e..5ef9ee1c5 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -11,6 +11,7 @@
+ #include <sys/wait.h>
+ #include <sys/mount.h>
+ #include <sys/xattr.h>
++#include <sys/sysinfo.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+@@ -1088,3 +1089,22 @@ int safe_mincore(const char *file, const int lineno, void *start,
+ 
+ 	return rval;
+ }
 +
- 	devfd = SAFE_OPEN(devpath, O_RDONLY);
- 	query.interface_id = 'S';
- 	query.dxfer_direction = SG_DXFER_FROM_DEV;
++int safe_sysinfo(const char *file, const int lineno, struct sysinfo *info)
++{
++	int ret;
++
++	errno = 0;
++	ret = sysinfo(info);
++
++	if (ret == -1) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"sysinfo() failed");
++	} else if (ret) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"Invalid sysinfo() return value %d", ret);
++
++	}
++
++	return ret;
++}
 -- 
 2.28.0
 
