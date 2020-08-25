@@ -1,35 +1,63 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 25 Aug 2020 18:07:31 +0200
-Subject: [LTP] [PATCH v2 0/4] Improve reliability of ioctl_sg01
-Message-ID: <20200825160735.24602-1-mdoucha@suse.cz>
+Date: Tue, 25 Aug 2020 18:07:35 +0200
+Subject: [LTP] [PATCH v2 4/4] ioctl_sg01: Loop data leak check 100 times
+In-Reply-To: <20200825160735.24602-1-mdoucha@suse.cz>
+References: <20200825160735.24602-1-mdoucha@suse.cz>
+Message-ID: <20200825160735.24602-5-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ioctl_sg01 needs dirty memory to reliably detect kernel data leaks. Its
-description originally recommended running it after mem01 which has been
-recently dropped.
+Even with pre-polluted memory, running the test just once might result in
+a false negative. Loop it a few times to increase reliability.
 
-Add helper function to LTP library for pre-polluting free memory and loop
-the main check in ioctl_sg01 to further decrease the chance of false negative.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-Martin Doucha (4):
-  Add SAFE_SYSINFO() macro
-  Add tst_pollute_memory() helper function
-  ioctl_sg01: Pollute free memory in setup
-  ioctl_sg01: Loop data leak check 100 times
+Changes since v1:
+- New patch (split)
 
- include/tst_memutils.h                       | 22 +++++++
- include/tst_safe_macros.h                    |  5 ++
- lib/safe_macros.c                            | 20 +++++++
- lib/tst_memutils.c                           | 62 ++++++++++++++++++++
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 32 ++++++----
- 5 files changed, 128 insertions(+), 13 deletions(-)
- create mode 100644 include/tst_memutils.h
- create mode 100644 lib/tst_memutils.c
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 21 +++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+index 8c9fd0dae..8ad2ffed5 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+@@ -100,19 +100,22 @@ static void cleanup(void)
+ 
+ static void run(void)
+ {
+-	size_t i;
++	size_t i, j;
+ 
+ 	memset(buffer, 0, BUF_SIZE);
+-	TEST(ioctl(devfd, SG_IO, &query));
+ 
+-	if (TST_RET != 0 && TST_RET != -1)
+-		tst_brk(TBROK | TTERRNO, "Invalid ioctl() return value");
++	for (i = 0; i < 100; i++) {
++		TEST(ioctl(devfd, SG_IO, &query));
+ 
+-	/* Check the output buffer even if ioctl() failed, just in case. */
+-	for (i = 0; i < BUF_SIZE; i++) {
+-		if (buffer[i]) {
+-			tst_res(TFAIL, "Kernel memory leaked");
+-			return;
++		if (TST_RET != 0 && TST_RET != -1)
++			tst_brk(TBROK|TTERRNO, "Invalid ioctl() return value");
++
++		/* Check the buffer even if ioctl() failed, just in case. */
++		for (j = 0; j < BUF_SIZE; j++) {
++			if (buffer[j]) {
++				tst_res(TFAIL, "Kernel memory leaked");
++				return;
++			}
+ 		}
+ 	}
+ 
 -- 
 2.28.0
 
