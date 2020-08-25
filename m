@@ -1,125 +1,66 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 25 Aug 2020 18:07:33 +0200
-Subject: [LTP] [PATCH v2 2/4] Add tst_pollute_memory() helper function
+Date: Tue, 25 Aug 2020 18:07:34 +0200
+Subject: [LTP] [PATCH v2 3/4] ioctl_sg01: Pollute free memory in setup
 In-Reply-To: <20200825160735.24602-1-mdoucha@suse.cz>
 References: <20200825160735.24602-1-mdoucha@suse.cz>
-Message-ID: <20200825160735.24602-3-mdoucha@suse.cz>
+Message-ID: <20200825160735.24602-4-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_pollute_memory() fills available RAM up to specified limit with given fill
-byte. Useful for testing data disclosure vulnerablities.
+The test wasn't reliable if most of available memory was full of zeroes.
+Pollute free memory to increase the chance of detecting data leak.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1: New patch
+Changes since v1:
+- Split patch
+- Use tst_pollute_memory() instead of allocating and pre-polluting
+  a fixed-size block of memory in setup().
 
- include/tst_memutils.h | 22 +++++++++++++++
- lib/tst_memutils.c     | 62 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
- create mode 100644 include/tst_memutils.h
- create mode 100644 lib/tst_memutils.c
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/include/tst_memutils.h b/include/tst_memutils.h
-new file mode 100644
-index 000000000..91dad07cd
---- /dev/null
-+++ b/include/tst_memutils.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
-+ */
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+index daaa96be5..8c9fd0dae 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+@@ -7,9 +7,7 @@
+  * CVE-2018-1000204
+  *
+  * Test ioctl(SG_IO) and check that kernel doesn't leak data. Requires
+- * a read-accessible SCSI-compatible device (e.g. SATA disk). Running oom*
+- * test program before this one may increase the chance of successfully
+- * reproducing the bug.
++ * a read-accessible generic SCSI device (e.g. a DVD drive).
+  *
+  * Leak fixed in:
+  *
+@@ -29,8 +27,9 @@
+ #include <sys/ioctl.h>
+ #include <stdio.h>
+ #include "tst_test.h"
++#include "tst_memutils.h"
+ 
+-#define BUF_SIZE 128 * 4096
++#define BUF_SIZE (128 * 4096)
+ #define CMD_SIZE 6
+ 
+ static int devfd = -1;
+@@ -80,6 +79,10 @@ static void setup(void)
+ 		tst_brk(TCONF, "Could not find any usable SCSI device");
+ 
+ 	tst_res(TINFO, "Found SCSI device %s", devpath);
 +
-+#ifndef TST_MEMUTILS_H__
-+#define TST_MEMUTILS_H__
++	/* Pollute some memory to avoid false negatives */
++	tst_pollute_memory(0, 0x42);
 +
-+/*
-+ * Fill up to maxsize physical memory with fillchar, then free it for reuse.
-+ * If maxsize is zero, fill as much memory as possible. This function is
-+ * intended for data disclosure vulnerability tests to reduce the probability
-+ * that a vulnerable kernel will leak a block of memory that was full of
-+ * zeroes by chance.
-+ *
-+ * The function keeps a safety margin to avoid invoking OOM killer and
-+ * respects the limitations of available address space. (Less than 3GB can be
-+ * polluted on a 32bit system regardless of available physical RAM.)
-+ */
-+void tst_pollute_memory(size_t maxsize, int fillchar);
-+
-+#endif /* TST_MEMUTILS_H__ */
-diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
-new file mode 100644
-index 000000000..f134d90c9
---- /dev/null
-+++ b/lib/tst_memutils.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
-+ */
-+
-+#include <unistd.h>
-+#include <limits.h>
-+#include <sys/sysinfo.h>
-+#include <stdlib.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
-+
-+#define BLOCKSIZE (16 * 1024 * 1024)
-+
-+void tst_pollute_memory(size_t maxsize, int fillchar)
-+{
-+	size_t i, map_count = 0, safety = 0, blocksize = BLOCKSIZE;
-+	void **map_blocks;
-+	struct sysinfo info;
-+
-+	SAFE_SYSINFO(&info);
-+	safety = 4096 * SAFE_SYSCONF(_SC_PAGESIZE) / info.mem_unit;
-+
-+	if (info.freeswap > safety)
-+		safety = 0;
-+
-+	/* Not enough free memory to avoid invoking OOM killer */
-+	if (info.freeram <= safety)
-+		return;
-+
-+	if (!maxsize)
-+		maxsize = SIZE_MAX;
-+
-+	if (info.freeram - safety < maxsize / info.mem_unit)
-+		maxsize = (info.freeram - safety) * info.mem_unit;
-+
-+	blocksize = MIN(maxsize, blocksize);
-+	map_count = maxsize / blocksize;
-+	map_blocks = SAFE_MALLOC(map_count * sizeof(void *));
-+
-+	/*
-+	 * Keep allocating until the first failure. The address space may be
-+	 * too fragmented or just smaller than maxsize.
-+	 */
-+	for (i = 0; i < map_count; i++) {
-+		map_blocks[i] = mmap(NULL, blocksize, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+		if (map_blocks[i] == MAP_FAILED) {
-+			map_count = i;
-+			break;
-+		}
-+
-+		memset(map_blocks[i], fillchar, blocksize);
-+	}
-+
-+	for (i = 0; i < map_count; i++)
-+		SAFE_MUNMAP(map_blocks[i], blocksize);
-+
-+	free(map_blocks);
-+}
+ 	devfd = SAFE_OPEN(devpath, O_RDONLY);
+ 	query.interface_id = 'S';
+ 	query.dxfer_direction = SG_DXFER_FROM_DEV;
 -- 
 2.28.0
 
