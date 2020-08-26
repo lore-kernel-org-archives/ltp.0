@@ -1,43 +1,59 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 26 Aug 2020 12:39:13 +0200
-Subject: [LTP] [PATCH] Re: [PATCH] syscalls/setsockopt05: associate receiver
- with destination address
-In-Reply-To: <1390277350.9966000.1598362700248.JavaMail.zimbra@redhat.com>
-References: <1390277350.9966000.1598362700248.JavaMail.zimbra@redhat.com>
-Message-ID: <20200826103913.27678-1-mdoucha@suse.cz>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Wed, 26 Aug 2020 18:15:42 -0400
+Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
+ certificate imported into a keyring
+In-Reply-To: <20200820090824.3033-5-pvorel@suse.cz>
+References: <20200820090824.3033-1-pvorel@suse.cz>
+ <20200820090824.3033-5-pvorel@suse.cz>
+Message-ID: <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-OK, here's the correct test patch. The source port changes on every iteration
-so different send() calls shouldn't interfere with one another. If you get
-ECONNREFUSED with this patch applied, it's caused by broken implementation
-of send(MSG_MORE), not delayed ICMP packets. If this patch prevents the error,
-resubmit your patch with fixes.
+On Thu, 2020-08-20 at 11:08 +0200, Petr Vorel wrote:
 
-I'll write the test for send(MSG_MORE) either way because if the flag isn't
-honored by the kernel, setsockopt05 will be useless.
+> @@ -63,4 +73,50 @@ test1()
+>  	tst_res TPASS "specified keyrings were measured correctly"
+>  }
+> 
+> +# Create a new keyring, import a certificate into it, and verify
+> +# that the certificate is measured correctly by IMA.
+> +test2()
+> +{
+> +	tst_require_cmds evmctl keyctl openssl
+> +
+> +	local cert_file="$TST_DATAROOT/x509_ima.der"
+> +	local keyring_name="key_import_test"
+> +	local temp_file="file.txt"
+> +
+> +	tst_res TINFO "verify measurement of certificate imported into a keyring"
+> +
+> +	if ! check_ima_policy_content "^measure.*func=KEY_CHECK.*keyrings=.*$keyring_name"; then
+> +		tst_brk TCONF "IMA policy does not contain $keyring_name keyring"
+> +	fi
+> +
+> +	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
+> +		tst_brk TBROK "unable to create a new keyring"
+> +
+> +	if ! tst_is_num $KEYRING_ID; then
+> +		tst_brk TBROK "unable to parse the new keyring id ('$KEYRING_ID')"
+> +	fi
+> +
 
----
- testcases/kernel/syscalls/setsockopt/setsockopt05.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt05.c b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-index e78ef236e..698396390 100644
---- a/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt05.c
-@@ -64,6 +64,9 @@ static void run(void)
+Instead of using TST_DATAROOT, which is defined as
+"$LTPROOT/datafiles", use LTPROOT directly to define the path to the
+cert.  Adding the following will allow the test to run from the build
+directory.
  
- 	for (i = 0; i < 1000; i++) {
- 		sock = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+		addr.sin_port = 12346 + i;
-+		SAFE_BIND(sock, (struct sockaddr *)&addr, sizeof(addr));
-+		addr.sin_port = 12345;
- 		SAFE_CONNECT(sock, (struct sockaddr *)&addr, sizeof(addr));
- 		SAFE_SEND(1, sock, buf, BUFSIZE, MSG_MORE);
- 		SAFE_SETSOCKOPT_INT(sock, SOL_SOCKET, SO_NO_CHECK, 1);
--- 
-2.28.0
+      if [ ! -f $cert_file ]; then
+              cert_file="$LTPROOT/../datafiles/ima_keys/x509_ima.der"
+      fi
+
+Mimi
+
+> +	evmctl import $cert_file $KEYRING_ID > /dev/null || \
+> +		tst_brk TBROK "unable to import a certificate into $keyring_name keyring"
+> +
 
