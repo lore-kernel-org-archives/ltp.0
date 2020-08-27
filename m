@@ -1,30 +1,83 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 27 Aug 2020 13:55:53 -0400 (EDT)
-Subject: [LTP] [PATCH v2] syscalls/setsockopt05: associate receiver with
- destination address
-In-Reply-To: <452994585.10362765.1598543893067.JavaMail.zimbra@redhat.com>
-References: <20200826103913.27678-1-mdoucha@suse.cz>
- <10ca0dc0c59d782bcccd5aedc99dadb5c76fed91.1598530309.git.jstancek@redhat.com>
- <1175d50f-9b07-ec6e-4840-f5b61d677753@suse.cz>
- <452994585.10362765.1598543893067.JavaMail.zimbra@redhat.com>
-Message-ID: <368170331.10374593.1598550953564.JavaMail.zimbra@redhat.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Thu, 27 Aug 2020 17:34:20 -0400
+Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
+ certificate imported into a keyring
+In-Reply-To: <20200827135503.GA11990@dell5510>
+References: <20200820090824.3033-1-pvorel@suse.cz>
+ <20200820090824.3033-5-pvorel@suse.cz>
+ <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
+ <20200827132354.GA20439@dell5510> <20200827135503.GA11990@dell5510>
+Message-ID: <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
------ Original Message -----
-> Hi,
-> I assume that cycling through different source ports prevented the issue?
+Hi Petr,
 
-Yes, it did, it ran fine over night.
+On Thu, 2020-08-27 at 15:55 +0200, Petr Vorel wrote:
+
+> > > > +	if ! tst_is_num $KEYRING_ID; then
+> > > > +		tst_brk TBROK "unable to parse the new keyring id ('$KEYRING_ID')"
+> > > > +	fi
+> > > > +
+> > > Instead of using TST_DATAROOT, which is defined as
+> > > "$LTPROOT/datafiles", use LTPROOT directly to define the path to the
+> > > cert.  Adding the following will allow the test to run from the build
+> > > directory.
+> > >       if [ ! -f $cert_file ]; then
+> > >               cert_file="$LTPROOT/../datafiles/ima_keys/x509_ima.der"
+> > >       fi
+> > Yes, this will work if you set LTPROOT to <ltp git>/testcases/kernel/security/integrity/ima/tests/:
+
+When running any of the tests from build tree test directory -
+ltp/testcases/kernel/security/integrity/ima/tests, supplying LTPROOT
+isn't necessary. "IMA: Refactor datafiles directory" broke running the
+other tests directly from the build tree as well.
+
+> > $ cd <ltp git>/testcases/kernel/security/integrity/ima/tests/
+> > $ LTPROOT=$PWD PATH="../../../../../lib/:.:$PATH" ./ima_keys.sh
+> > But, according to doc [1] $LTPROOT is "Prefix for installed LTP, the default is
+> > /opt/ltp.". Using it like this is confusing (if we want to misuse $LTPROOT, one
+> > would expect it's a cloned git root directory). Running from git root it'd have
+> > to be:
+> > $ cd <ltp git>
+> > $ LTPROOT=$PWD/testcases/kernel/security/integrity/ima/tests/ \
+> > PATH="testcases/lib:testcases/kernel/security/integrity/ima/tests/:$PATH" ima_keys.sh
+> > TL;DR: I'd really prefer people run IMA from installed LTP (make && make install
+> > in both testcases/lib and testcases/kernel/security/integrity/ima/ is just enough),
+> > but I'll add this hack to make your testing easier :). But fixing this in
+> > tst_test.sh is really needed.
+
+I'm looking ...
 
 > 
-> Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+> Suggesting this diff from v4:
+> 
+> +	# hack when running ima_keys.sh locally from ima_keys.sh directory
+> +	# LTPROOT=$PWD PATH="../../../../../lib/:.:$PATH" ./ima_keys.sh
+> +	if [ ! -f "$cert_file" ]; then
+> +		cert_file="$LTPROOT/../datafiles/ima_keys/x509_ima.der"
+> +	fi
+> 
+> Visible also on
+> https://github.com/pevik/ltp/tree/Lachlan_Sneff/ima_keys.sh-second-test.v4.fixes
+> 
+> Not sure if you still doing review & testing, thus waiting for your comments
+> or tags.
 
-Pushed.
+Sorry, yes I'm planning to.
 
-Thanks,
-Jan
+Mimi
+
+> 
+> Kind regards,
+> Petr
+> 
+> > > Mimi
+> > Kind regards,
+> > Petr
+> > [1] https://github.com/linux-test-project/ltp/wiki/User-Guidelines
+
 
