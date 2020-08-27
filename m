@@ -1,59 +1,70 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 28 Aug 2020 00:54:17 +0200
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Thu, 27 Aug 2020 19:37:33 -0400
 Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
  certificate imported into a keyring
-In-Reply-To: <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
+In-Reply-To: <20200827225417.GA29921@dell5510>
 References: <20200820090824.3033-1-pvorel@suse.cz>
  <20200820090824.3033-5-pvorel@suse.cz>
  <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
  <20200827132354.GA20439@dell5510> <20200827135503.GA11990@dell5510>
  <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
-Message-ID: <20200827225417.GA29921@dell5510>
+ <20200827225417.GA29921@dell5510>
+Message-ID: <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi,
+On Fri, 2020-08-28 at 00:54 +0200, Petr Vorel wrote:
+> Hi Mimi,
+> 
+> ...
+> > > > > Instead of using TST_DATAROOT, which is defined as
+> > > > > "$LTPROOT/datafiles", use LTPROOT directly to define the path to the
+> > > > > cert.  Adding the following will allow the test to run from the build
+> > > > > directory.
+> > > > >       if [ ! -f $cert_file ]; then
+> > > > >               cert_file="$LTPROOT/../datafiles/ima_keys/x509_ima.der"
+> > > > >       fi
+> > > > Yes, this will work if you set LTPROOT to <ltp git>/testcases/kernel/security/integrity/ima/tests/:
+> > When running any of the tests from build tree test directory -
+> > ltp/testcases/kernel/security/integrity/ima/tests, supplying LTPROOT
+> > isn't necessary. "IMA: Refactor datafiles directory" broke running the
+> > other tests directly from the build tree as well.
+> Correct, I overlooked $LTPROOT does not have to be set.
+> You're right, there is export LTPROOT="$PWD" in tst_test.sh.
+> 
+> The only broken tests are ima_policy.sh and ima_keys.sh. I fixed that workaround
+> in the commit "IMA: Refactor datafiles directory":
+> 
+> +++ testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -160,6 +160,11 @@ ima_setup()
+>  	BINARY_MEASUREMENTS="$IMA_DIR/binary_runtime_measurements"
+>  	IMA_POLICY="$IMA_DIR/policy"
+>  
+> +	# hack when running tests locally from tests directory
+> +	if [ ! -d "$TST_DATAROOT" ]; then
+> +		TST_DATAROOT="$LTPROOT/../datafiles/$TST_ID/"
+> +	fi
+> +
 
-...
-> > > > Instead of using TST_DATAROOT, which is defined as
-> > > > "$LTPROOT/datafiles", use LTPROOT directly to define the path to the
-> > > > cert.  Adding the following will allow the test to run from the build
-> > > > directory.
-> > > >       if [ ! -f $cert_file ]; then
-> > > >               cert_file="$LTPROOT/../datafiles/ima_keys/x509_ima.der"
-> > > >       fi
-> > > Yes, this will work if you set LTPROOT to <ltp git>/testcases/kernel/security/integrity/ima/tests/:
+Thanks, Petr.  This works properly.  To remove the "hack", would
+require running the test from "ima", not "ima/tests", but that would
+require fixing how ima_setup.sh is called.   It also would still
+require setting TST_DATAROOT to TST_DATAROOT/$TST_ID.
 
-> When running any of the tests from build tree test directory -
-> ltp/testcases/kernel/security/integrity/ima/tests, supplying LTPROOT
-> isn't necessary. "IMA: Refactor datafiles directory" broke running the
-> other tests directly from the build tree as well.
-Correct, I overlooked $LTPROOT does not have to be set.
-You're right, there is export LTPROOT="$PWD" in tst_test.sh.
+Mimi
 
-The only broken tests are ima_policy.sh and ima_keys.sh. I fixed that workaround
-in the commit "IMA: Refactor datafiles directory":
+>  	print_ima_config
+>  
+>  	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+> ---
+> 
+> Again, pushed to:
+> https://github.com/pevik/ltp/tree/Lachlan_Sneff/ima_keys.sh-second-test.v4.fixes
+> 
+> Kind regards,
+> Petr
 
-+++ testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -160,6 +160,11 @@ ima_setup()
- 	BINARY_MEASUREMENTS="$IMA_DIR/binary_runtime_measurements"
- 	IMA_POLICY="$IMA_DIR/policy"
- 
-+	# hack when running tests locally from tests directory
-+	if [ ! -d "$TST_DATAROOT" ]; then
-+		TST_DATAROOT="$LTPROOT/../datafiles/$TST_ID/"
-+	fi
-+
- 	print_ima_config
- 
- 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
----
 
-Again, pushed to:
-https://github.com/pevik/ltp/tree/Lachlan_Sneff/ima_keys.sh-second-test.v4.fixes
-
-Kind regards,
-Petr
