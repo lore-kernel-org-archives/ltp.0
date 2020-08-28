@@ -1,42 +1,49 @@
 From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Fri, 28 Aug 2020 06:59:45 -0400
+Date: Fri, 28 Aug 2020 07:00:37 -0400
 Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
  certificate imported into a keyring
-In-Reply-To: <20200820090824.3033-5-pvorel@suse.cz>
+In-Reply-To: <20200828060554.GB15251@dell5510>
 References: <20200820090824.3033-1-pvorel@suse.cz>
  <20200820090824.3033-5-pvorel@suse.cz>
-Message-ID: <59586987f6050a0cb5b744284895373b7c8232dd.camel@linux.ibm.com>
+ <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
+ <20200827132354.GA20439@dell5510> <20200827135503.GA11990@dell5510>
+ <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
+ <20200827225417.GA29921@dell5510>
+ <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
+ <20200828060554.GB15251@dell5510>
+Message-ID: <009fac799e088345fbddc7ca7456e19a87d893da.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2020-08-20 at 11:08 +0200, Petr Vorel wrote:
-> From: Lachlan Sneff <t-josne@linux.microsoft.com>
+On Fri, 2020-08-28 at 08:05 +0200, Petr Vorel wrote:
+> Hi Mimi,
 > 
-> The IMA subsystem supports measuring certificates that have been
-> imported into either system built-in or user-defined keyrings.
-> A test to verify measurement of a certificate imported
-> into a keyring is required.
-> 
-> Add an IMA measurement test that verifies that an x509 certificate
-> can be imported into a newly-created, user-defined keyring and measured
-> correctly by the IMA subsystem.
-> 
-> A certificate used by the test is included in the `datafiles/keys`
-> directory.
-> 
-> There can be restrictions on importing a certificate into a builtin
-> trusted keyring. For example, the `.ima` keyring requires that
-> imported certs be signed by a kernel private key in certain
-> kernel configurations. For this reason, this test defines
-> a user-defined keyring and imports a certificate into that.
+> > Thanks, Petr.  This works properly.  To remove the "hack", would
+> > require running the test from "ima", not "ima/tests", but that would
+> > require fixing how ima_setup.sh is called.   It also would still
+> > require setting TST_DATAROOT to TST_DATAROOT/$TST_ID.
+> Let's keep it and suppose people run tests from ima/tests.
+> This needs to be fixed on LTP side, I have it on my TODO list.
 
-FYI, similar restrictions could be defined for userspace keyrings. 
-Refer to Mat Martineau's LSS 2019 talk titled "Using and Implementing
-Keyring Restrictions for Userspace" and the keyctl's "restrict_keyring"
-option.
+Sure
+> 
+> Anything else?
+> After that I'll work on ima_tpm.sh and after on policy automatic loading.
+> BTW there are also plans for reboot support [1] [2], that could be used as
+> workaround for configuration without CONFIG_IMA_READ_POLICY=y and
+> CONFIG_IMA_WRITE_POLICY=y.
+> 
+> [1] http://lists.linux.it/pipermail/ltp/2020-August/018636.html
+> [2] http://lists.linux.it/pipermail/ltp/2020-August/018658.html
+
+Sounds good!
+
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com> for the entire patch set.
+
+thanks,
 
 Mimi
 
