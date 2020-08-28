@@ -1,5 +1,5 @@
 From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Fri, 28 Aug 2020 07:00:37 -0400
+Date: Fri, 28 Aug 2020 07:19:34 -0400
 Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
  certificate imported into a keyring
 In-Reply-To: <20200828060554.GB15251@dell5510>
@@ -11,7 +11,7 @@ References: <20200820090824.3033-1-pvorel@suse.cz>
  <20200827225417.GA29921@dell5510>
  <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
  <20200828060554.GB15251@dell5510>
-Message-ID: <009fac799e088345fbddc7ca7456e19a87d893da.camel@linux.ibm.com>
+Message-ID: <3c720a7060a846088f8e60ce8b5c032467e97f23.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,31 +19,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On Fri, 2020-08-28 at 08:05 +0200, Petr Vorel wrote:
-> Hi Mimi,
-> 
-> > Thanks, Petr.  This works properly.  To remove the "hack", would
-> > require running the test from "ima", not "ima/tests", but that would
-> > require fixing how ima_setup.sh is called.   It also would still
-> > require setting TST_DATAROOT to TST_DATAROOT/$TST_ID.
-> Let's keep it and suppose people run tests from ima/tests.
-> This needs to be fixed on LTP side, I have it on my TODO list.
-
-Sure
-> 
-> Anything else?
-> After that I'll work on ima_tpm.sh and after on policy automatic loading.
 > BTW there are also plans for reboot support [1] [2], that could be used as
 > workaround for configuration without CONFIG_IMA_READ_POLICY=y and
 > CONFIG_IMA_WRITE_POLICY=y.
-> 
-> [1] http://lists.linux.it/pipermail/ltp/2020-August/018636.html
-> [2] http://lists.linux.it/pipermail/ltp/2020-August/018658.html
 
-Sounds good!
-
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com> for the entire patch set.
-
-thanks,
+The reboot support could also be used for carrying the IMA measurement
+list across kexec and verifying the TPM PCRs.
 
 Mimi
 
