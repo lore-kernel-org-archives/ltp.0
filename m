@@ -1,11 +1,11 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 28 Aug 2020 17:27:26 +0800
+Date: Fri, 28 Aug 2020 17:34:46 +0800
 Subject: [LTP] [PATCH] tst_af_alg: fix build error when
  ALG_SET_AEAD_ASSOCLEN undefined
-In-Reply-To: <20200828084334.GA1648@dell5510>
+In-Reply-To: <20200828084818.GB1648@dell5510>
 References: <1598005119-2147-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20200828084334.GA1648@dell5510>
-Message-ID: <1e3f9915-13d6-0aaf-2fb5-56bf0d543f33@cn.fujitsu.com>
+ <20200828084818.GB1648@dell5510>
+Message-ID: <373798f7-d1e4-330a-0911-efcd6f1d1480@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +14,9 @@ To: ltp@lists.linux.it
 
 Hi Petr
 
-
 > Hi,
 > 
->>   configure.ac          |  6 ++++++
->>   include/lapi/if_alg.h | 39 ++++++++++++++++++++++++++++++---------
->>   2 files changed, 36 insertions(+), 9 deletions(-)
-> 
->> diff --git a/configure.ac b/configure.ac
->> index 382963d8b..f711ac123 100644
+> ...
 >> --- a/configure.ac
 >> +++ b/configure.ac
 >> @@ -193,6 +193,12 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
@@ -33,44 +27,27 @@ Hi Petr
 >> +#ifdef HAVE_LINUX_IF_ALG_H
 >> +# include <linux/if_alg.h>
 >> +#endif
+> IMHO <linux/if_alg.h> does not need to be guarded.
+> (as the definitions are in it it either fail because missing or fail because not
+> loaded)
 >> +])
-> nit: This list was meant to be sorted. I'll handle that during merge.
-Thanks.
+Yes. Do you merge this patch with deleting this ifdef? Or I sent a v2 
+patch for this.
+
+Also, I think you can remove" #ifdef HAVE_LINUX_IF_PACKET_H" pair in 
+configure.ac
+AC_CHECK_TYPES([struct tpacket_req3],,,[
+#ifdef HAVE_LINUX_IF_PACKET_H
+# include <linux/if_packet.h>
+#endif
+])
+
+Best Regards
+Yang Xu
+
 >> +
 >>   # Tools knobs
-> 
->>   # Expect
->> diff --git a/include/lapi/if_alg.h b/include/lapi/if_alg.h
->> index 5a74df99b..9c04a444c 100644
->> --- a/include/lapi/if_alg.h
->> +++ b/include/lapi/if_alg.h
->> @@ -8,9 +8,10 @@
-> 
->>   #ifdef HAVE_LINUX_IF_ALG_H
->>   #  include <linux/if_alg.h>
->> -#else
->> +#endif
->>   #  include <stdint.h>
-> BTW <stdint.h> is needed only for "#ifndef HAVE_STRUCT_SOCKADDR_ALG" and "#ifndef
-> HAVE_STRUCT_AF_ALG_IVL" (for uint*_t) but we can ignore that as a detail (better
-> than have complicated guarder:
-> #if ! (defined(HAVE_STRUCT_SOCKADDR_ALG) && defined(HAVE_STRUCT_AF_ALG_IVL)
-Agree. ignore it is better.
-> 
-> (and later forgot to update it).
-> 
->> +#ifndef HAVE_STRUCT_SOCKADDR_ALG
->>   struct sockaddr_alg {
->>   	uint16_t	salg_family;
->>   	uint8_t		salg_type[14];
->> @@ -18,21 +19,41 @@ struct sockaddr_alg {
->>   	uint32_t	salg_mask;
->>   	uint8_t		salg_name[64];
->>   };
->> +#endif
-> 
-> The rest lgtm:
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ...
 > 
 > Kind regards,
 > Petr
