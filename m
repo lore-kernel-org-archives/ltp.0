@@ -1,24 +1,80 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 28 Aug 2020 11:15:08 +0200
-Subject: [LTP] looking for a test library home
-In-Reply-To: <f4380b8c123e89662eee8cfbff9fa8c9d84e5e9f.camel@sipsolutions.net>
-References: <8cf945033b519ac7240e42d29906d0d4ed3ed292.camel@sipsolutions.net>
- <20200828090039.GA10501@yuki.lan>
- <f4380b8c123e89662eee8cfbff9fa8c9d84e5e9f.camel@sipsolutions.net>
-Message-ID: <20200828091508.GB10501@yuki.lan>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 28 Aug 2020 17:27:26 +0800
+Subject: [LTP] [PATCH] tst_af_alg: fix build error when
+ ALG_SET_AEAD_ASSOCLEN undefined
+In-Reply-To: <20200828084334.GA1648@dell5510>
+References: <1598005119-2147-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200828084334.GA1648@dell5510>
+Message-ID: <1e3f9915-13d6-0aaf-2fb5-56bf0d543f33@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I'll have to check which IDs any of the others have, but mine is
-> 'jmberg'. Perhaps I'll just shepherd things for now.
+Hi Petr
 
-I've granted you admin rights for that repo, so you can add other devs
-yourself.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi,
+> 
+>>   configure.ac          |  6 ++++++
+>>   include/lapi/if_alg.h | 39 ++++++++++++++++++++++++++++++---------
+>>   2 files changed, 36 insertions(+), 9 deletions(-)
+> 
+>> diff --git a/configure.ac b/configure.ac
+>> index 382963d8b..f711ac123 100644
+>> --- a/configure.ac
+>> +++ b/configure.ac
+>> @@ -193,6 +193,12 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
+>>   #include <linux/netfilter_ipv4/ip_tables.h>
+>>   ])
+> 
+>> +AC_CHECK_TYPES([struct sockaddr_alg, struct af_alg_iv],,,[
+>> +#ifdef HAVE_LINUX_IF_ALG_H
+>> +# include <linux/if_alg.h>
+>> +#endif
+>> +])
+> nit: This list was meant to be sorted. I'll handle that during merge.
+Thanks.
+>> +
+>>   # Tools knobs
+> 
+>>   # Expect
+>> diff --git a/include/lapi/if_alg.h b/include/lapi/if_alg.h
+>> index 5a74df99b..9c04a444c 100644
+>> --- a/include/lapi/if_alg.h
+>> +++ b/include/lapi/if_alg.h
+>> @@ -8,9 +8,10 @@
+> 
+>>   #ifdef HAVE_LINUX_IF_ALG_H
+>>   #  include <linux/if_alg.h>
+>> -#else
+>> +#endif
+>>   #  include <stdint.h>
+> BTW <stdint.h> is needed only for "#ifndef HAVE_STRUCT_SOCKADDR_ALG" and "#ifndef
+> HAVE_STRUCT_AF_ALG_IVL" (for uint*_t) but we can ignore that as a detail (better
+> than have complicated guarder:
+> #if ! (defined(HAVE_STRUCT_SOCKADDR_ALG) && defined(HAVE_STRUCT_AF_ALG_IVL)
+Agree. ignore it is better.
+> 
+> (and later forgot to update it).
+> 
+>> +#ifndef HAVE_STRUCT_SOCKADDR_ALG
+>>   struct sockaddr_alg {
+>>   	uint16_t	salg_family;
+>>   	uint8_t		salg_type[14];
+>> @@ -18,21 +19,41 @@ struct sockaddr_alg {
+>>   	uint32_t	salg_mask;
+>>   	uint8_t		salg_name[64];
+>>   };
+>> +#endif
+> 
+> The rest lgtm:
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> Kind regards,
+> Petr
+> 
+> 
+
+
