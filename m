@@ -1,39 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 28 Aug 2020 15:06:38 +0200
-Subject: [LTP] [RFC] ltp test add reboot function
-In-Reply-To: <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
-References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
- <20200824074226.GB2466@yuki.lan>
- <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
-Message-ID: <20200828130638.GD10501@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 28 Aug 2020 15:18:56 +0200
+Subject: [LTP] [LTP v4 3/5] IMA: Refactor datafiles directory
+In-Reply-To: <20200820090824.3033-4-pvorel@suse.cz>
+References: <20200820090824.3033-1-pvorel@suse.cz>
+ <20200820090824.3033-4-pvorel@suse.cz>
+Message-ID: <20200828131856.GA29915@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Thanks for you experiences on the reboot???
-> So far my opinion is add a reboot service by chkconfig or something like that.
-> the service will start runltp scripts from last break off point.
-> when the tst_test have .tst_needs_reboot =1 flag, it wil strore the
-> run status and
-> reboot the machine before run the test case.
-> Now I want to know what needs to be preserved???
+Hi,
 
-The runltp script and ltp-pan cannot save and restore a testrun,
-although something like that may be possible to implement, I doubt that
-it could be easily added to the current infrastructure. Not to mention
-that ltp-pan has been in a maintenance mode (which means no new
-features) for years now.
+> --- a/testcases/kernel/security/integrity/ima/datafiles/Makefile
+> +++ b/testcases/kernel/security/integrity/ima/datafiles/Makefile
+> @@ -1,6 +1,8 @@
 
-Also I do consider the whole concept of running the test exectution
-framework on the same machine as the testcases broken by desing for
-kernel related tests. The way forward is the patchset send by Richard
-that implements simple test executor that runs on the machine under test
-and communicates with a execution framework that runs on a central
-server.
+>  #    testcases/kernel/security/integrity/ima/policy testcases Makefile.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +#    Copyright (c) Linux Test Project, 2019-2020
+> +#    Copyright (c) 2020 Microsoft Corporation
+>  #    Copyright (C) 2009, Cisco Systems Inc.
+
+>  #    This program is free software; you can redistribute it and/or modify
+> @@ -20,12 +22,10 @@
+>  # Ngie Cooper, July 2009
+
+
+> -top_srcdir		?= ../../../../../..
+> +top_srcdir	?= ../../../../../..
+
+>  include	$(top_srcdir)/include/mk/env_pre.mk
+
+> -INSTALL_DIR		:= testcases/data/ima_policy
+> +SUBDIRS	:= ima_*
+It looks this broke build on out-of-tree build:
+https://travis-ci.org/github/linux-test-project/ltp/builds/722003659
+https://travis-ci.org/github/linux-test-project/ltp/jobs/722003661
+https://travis-ci.org/github/linux-test-project/ltp/jobs/722003662
+https://travis-ci.org/github/linux-test-project/ltp/jobs/722003663
+...
+
+I'm sorry I overlooked that. I'll have look on Monday (unless anybody fixes it).
+
+Kind regards,
+Petr
+
+> -INSTALL_TARGETS		:= measure.policy-invalid *.policy
+> -
+> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
