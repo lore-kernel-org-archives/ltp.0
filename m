@@ -1,41 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 28 Aug 2020 09:17:59 +0200
+Date: Fri, 28 Aug 2020 09:18:57 +0200
 Subject: [LTP] [PATCH v2] travis: Use centos:7 instead of centos:6
-In-Reply-To: <CAEemH2dvu8+GOfd2EHVFuL=KNCQdQyO3xTKz3OXtLqOL_u+7kQ@mail.gmail.com>
+In-Reply-To: <1598339667-24948-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <20200825064706.GA7135@x230>
  <1598339667-24948-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eS0PS=hmpiWBzkfBQ3cO4K2u2bVgcO5ZK4fz9N+xg7uQ@mail.gmail.com>
- <716a3ffc-fa20-01df-a63f-86a5a50239af@cn.fujitsu.com>
- <CAEemH2faKH1xUAx7GAS_01UYwZfya3AbJj12fqzOoZ6=OTJZrQ@mail.gmail.com>
- <CAEemH2dvu8+GOfd2EHVFuL=KNCQdQyO3xTKz3OXtLqOL_u+7kQ@mail.gmail.com>
-Message-ID: <20200828071759.GA24100@dell5510>
+Message-ID: <20200828071857.GB24100@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> I have this idea when I meet ALG_SET_AEAD_ASSOCLEN undefined error on centos7.
+> It is more friendly for centos7 user and more meaningful. centos6 is outdated
+> and we should drop it.
 
-> On Fri, Aug 28, 2020 at 2:40 PM Li Wang <liwang@redhat.com> wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
-> > Hi Xu,
-
-> > Sorry for the delay. I guess many Developers(European or North
-> > America) are busy with the LPC(Linux Plumbers Conference) recently. please
-> > keep patience:).
-+1 :)
-
-> > Btw, there is a new build error on CentOS7(seems unrelated to your patch):
-
-> >   /usr/src/ltp/lib/tst_af_alg.c:205:21: error: 'ALG_SET_AEAD_ASSOCLEN'
-> > undeclared (first use in this function)
-> >   2084 cmsg->cmsg_type = ALG_SET_AEAD_ASSOCLEN;
-
-
-> Ah, seems you have sent a patch for that, I will help to review soon.
-> http://lists.linux.it/pipermail/ltp/2020-August/018651.html
-Looking into that.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
+
+> ---
+>  .travis.yml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> diff --git a/.travis.yml b/.travis.yml
+> index e8e3189af..3c5ff99b7 100644
+> --- a/.travis.yml
+> +++ b/.travis.yml
+> @@ -44,7 +44,7 @@ matrix:
+>            compiler: clang
+
+>          - os: linux
+> -          env: DISTRO=centos:6 TREE=out
+> +          env: DISTRO=centos:7 TREE=out
+>            compiler: gcc
+
+>          - os: linux
