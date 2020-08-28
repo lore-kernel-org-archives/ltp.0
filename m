@@ -1,183 +1,53 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 28 Aug 2020 18:02:59 +0800
-Subject: [LTP] [PATCH v2] syscalls/ioctl_loop07: Using LOOP_CONFIGURE to
- test lo_sizelimit field
-Message-ID: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 28 Aug 2020 12:33:51 +0200
+Subject: [LTP] [PATCH] tst_af_alg: fix build error when
+ ALG_SET_AEAD_ASSOCLEN undefined
+In-Reply-To: <373798f7-d1e4-330a-0911-efcd6f1d1480@cn.fujitsu.com>
+References: <1598005119-2147-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20200828084818.GB1648@dell5510>
+ <373798f7-d1e4-330a-0911-efcd6f1d1480@cn.fujitsu.com>
+Message-ID: <20200828103351.GA12046@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since kernel commit 3448914e8cc5("loop: Add LOOP_CONFIGURE ioctl"),
-it can set the lo_sizelimit by specifying loop_config.info.lo_sizelimit
-value. It is also regression test for
-commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
+Hi Xu,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
-v1->v2:
-add linux tag even this commit is not merged into linux or linux-net(it
-has been merged into block maintainer linux branch)
-https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=block-5.9&id=79e5dc59e2974a48764269fa9ff544ae8ffe3338
- .../kernel/syscalls/ioctl/ioctl_loop07.c      | 90 ++++++++++++++++---
- 1 file changed, 80 insertions(+), 10 deletions(-)
+> Hi Petr
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-index ce4b47690..9d880ffd1 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-@@ -8,6 +8,10 @@
-  * Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
-  * available. If sizelimit is less than loop_size, loopsize will
-  * be truncated.
-+ *
-+ * We also use LOOP_CONFIGURE ioctl to test lo_sizelimit field. It is
-+ * also a regression test for
-+ * commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
-  */
- 
- #include <stdio.h>
-@@ -18,15 +22,26 @@
- #include "tst_test.h"
- 
- static char dev_path[1024], sys_loop_sizepath[1024], sys_loop_sizelimitpath[1024];
--static int dev_num, dev_fd, file_fd, attach_flag;
-+static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
-+static struct loop_config loopconfig;
- 
- static struct tcase {
- 	unsigned int set_sizelimit;
- 	unsigned int exp_loopsize;
-+	int ioctl_flag;
- 	char *message;
- } tcases[] = {
--	{1024 * 4096, 2048, "When sizelimit is greater than loopsize "},
--	{1024 * 512, 1024, "When sizelimit is less than loopsize"},
-+	{1024 * 4096, 2048, LOOP_SET_STATUS64,
-+	"When sizelimit is greater than loopsize by using LOOP_SET_STATUS64"},
-+
-+	{1024 * 512, 1024, LOOP_SET_STATUS64,
-+	"When sizelimit is less than loopsize by using LOOP_SET_STATUS64"},
-+
-+	{1024 * 4096, 2048, LOOP_CONFIGURE,
-+	"When sizelimit is greater than loopsize by using LOOP_CONFIGURE"},
-+
-+	{1024 * 512, 1024, LOOP_CONFIGURE,
-+	"When sizelimit is less than loopsize by using LOOP_CONFIGURE"},
- };
- 
- static void verify_ioctl_loop(unsigned int n)
-@@ -34,12 +49,15 @@ static void verify_ioctl_loop(unsigned int n)
- 	struct tcase *tc = &tcases[n];
- 	struct loop_info64 loopinfo, loopinfoget;
- 
--	tst_res(TINFO, "%s", tc->message);
- 	memset(&loopinfo, 0, sizeof(loopinfo));
- 	memset(&loopinfoget, 0, sizeof(loopinfoget));
- 
--	loopinfo.lo_sizelimit = tc->set_sizelimit;
--	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
-+	if (tc->ioctl_flag == LOOP_CONFIGURE) {
-+		SAFE_IOCTL(dev_fd, LOOP_CONFIGURE, &loopconfig);
-+	} else {
-+		loopinfo.lo_sizelimit = tc->set_sizelimit;
-+		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
-+	}
- 
- 	TST_ASSERT_INT(sys_loop_sizepath, tc->exp_loopsize);
- 	TST_ASSERT_INT(sys_loop_sizelimitpath, tc->set_sizelimit);
-@@ -50,12 +68,46 @@ static void verify_ioctl_loop(unsigned int n)
- 		tst_res(TFAIL, "LOOP_GET_STATUS64 gets wrong lo_sizelimit(%llu), expect %d",
- 				loopinfoget.lo_sizelimit, tc->set_sizelimit);
- 	/*Reset*/
--	loopinfo.lo_sizelimit = 0;
--	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-+	if (tc->ioctl_flag == LOOP_CONFIGURE) {
-+			tst_detach_device_by_fd(dev_path, dev_fd);
-+	} else {
-+		loopinfo.lo_sizelimit = 0;
-+		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-+	}
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	tst_res(TINFO, "%s", tc->message);
-+
-+	if (tc->ioctl_flag == LOOP_SET_STATUS64) {
-+		if (!attach_flag) {
-+			tst_attach_device(dev_path, "test.img");
-+			attach_flag = 1;
-+		}
-+
-+		verify_ioctl_loop(n);
-+		return;
-+	}
-+
-+	if (tc->ioctl_flag == LOOP_CONFIGURE && !loop_configure_sup) {
-+		tst_res(TCONF, "LOOP_CONFIGURE ioctl not supported");
-+		return;
-+	}
-+	if (attach_flag) {
-+		tst_detach_device_by_fd(dev_path, dev_fd);
-+		attach_flag = 0;
-+	}
-+	loopconfig.info.lo_sizelimit = tc->set_sizelimit;
-+	verify_ioctl_loop(n);
- }
- 
- static void setup(void)
- {
-+	int ret;
-+
- 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
- 	if (dev_num < 0)
- 		tst_brk(TBROK, "Failed to find free loop device");
-@@ -67,8 +119,22 @@ static void setup(void)
- 	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
- 	sprintf(sys_loop_sizelimitpath, "/sys/block/loop%d/loop/sizelimit", dev_num);
- 
--	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	tst_detach_device(dev_path);
-+	attach_flag = 0;
-+
- 	tst_res(TINFO, "original loop size 2048 sectors");
-+	file_fd = SAFE_OPEN("test.img", O_RDWR);
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+
-+	loopconfig.fd = -1;
-+	ret = ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig);
-+	if (ret && errno != EBADF) {
-+		tst_res(TINFO | TERRNO, "LOOP_CONFIGURE is not supported");
-+		loop_configure_sup = 0;
-+		return;
-+	}
-+
-+	loopconfig.fd = file_fd;
- }
- 
- static void cleanup(void)
-@@ -84,10 +150,14 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.test = verify_ioctl_loop,
-+	.test = run,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "79e5dc59e297"},
-+		{}
-+	},
- 	.needs_drivers = (const char *const []) {
- 		"loop",
- 		NULL
--- 
-2.23.0
+> > Hi,
 
+> > ...
+> > > --- a/configure.ac
+> > > +++ b/configure.ac
+> > > @@ -193,6 +193,12 @@ AC_CHECK_TYPES([struct xt_entry_match, struct xt_entry_target],,,[
+> > >   #include <linux/netfilter_ipv4/ip_tables.h>
+> > >   ])
 
+> > > +AC_CHECK_TYPES([struct sockaddr_alg, struct af_alg_iv],,,[
+> > > +#ifdef HAVE_LINUX_IF_ALG_H
+> > > +# include <linux/if_alg.h>
+> > > +#endif
+> > IMHO <linux/if_alg.h> does not need to be guarded.
+> > (as the definitions are in it it either fail because missing or fail because not
+> > loaded)
+> > > +])
+> Yes. Do you merge this patch with deleting this ifdef? Or I sent a v2 patch
+> for this.
 
+> Also, I think you can remove" #ifdef HAVE_LINUX_IF_PACKET_H" pair in
+> configure.ac
+> AC_CHECK_TYPES([struct tpacket_req3],,,[
+> #ifdef HAVE_LINUX_IF_PACKET_H
+> # include <linux/if_packet.h>
+> #endif
+> ])
+I'll fix it and merge.
+
+Kind regards,
+Petr
+
+> Best Regards
+> Yang Xu
