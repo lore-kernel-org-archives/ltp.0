@@ -1,72 +1,41 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 28 Aug 2020 11:22:16 +0800
-Subject: [LTP] [PATCH v2] travis: Use centos:7 instead of centos:6
-In-Reply-To: <CAEemH2eS0PS=hmpiWBzkfBQ3cO4K2u2bVgcO5ZK4fz9N+xg7uQ@mail.gmail.com>
-References: <20200825064706.GA7135@x230>
- <1598339667-24948-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eS0PS=hmpiWBzkfBQ3cO4K2u2bVgcO5ZK4fz9N+xg7uQ@mail.gmail.com>
-Message-ID: <716a3ffc-fa20-01df-a63f-86a5a50239af@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 28 Aug 2020 08:05:54 +0200
+Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
+ certificate imported into a keyring
+In-Reply-To: <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
+References: <20200820090824.3033-1-pvorel@suse.cz>
+ <20200820090824.3033-5-pvorel@suse.cz>
+ <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
+ <20200827132354.GA20439@dell5510> <20200827135503.GA11990@dell5510>
+ <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
+ <20200827225417.GA29921@dell5510>
+ <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
+Message-ID: <20200828060554.GB15251@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li, Petr
+Hi Mimi,
 
-Does have anything block this patch? Or, we should listen some advise 
-from Jan and Cyril?
+> Thanks, Petr.  This works properly.  To remove the "hack", would
+> require running the test from "ima", not "ima/tests", but that would
+> require fixing how ima_setup.sh is called.   It also would still
+> require setting TST_DATAROOT to TST_DATAROOT/$TST_ID.
+Let's keep it and suppose people run tests from ima/tests.
+This needs to be fixed on LTP side, I have it on my TODO list.
 
-ps: Also, ALG_SET_AEAD_ASSOCLEN undefined error patch needs to be reviewed.
+Anything else?
+After that I'll work on ima_tpm.sh and after on policy automatic loading.
+BTW there are also plans for reboot support [1] [2], that could be used as
+workaround for configuration without CONFIG_IMA_READ_POLICY=y and
+CONFIG_IMA_WRITE_POLICY=y.
 
-Best Regards
-Yang Xu
-> 
-> 
-> On Tue, Aug 25, 2020 at 3:14 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com 
-> <mailto:xuyang2018.jy@cn.fujitsu.com>> wrote:
-> 
->     I have this idea when I meet ALG_SET_AEAD_ASSOCLEN undefined error
->     on centos7.
->     It is more friendly for centos7 user and more meaningful. centos6 is
->     outdated
->     and we should drop it.
-> 
->     Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com
->     <mailto:xuyang2018.jy@cn.fujitsu.com>>
-> 
-> Acked-by: Li Wang <liwang@redhat.com <mailto:liwang@redhat.com>>
-> 
->     ---
->      ?.travis.yml | 2 +-
->      ?1 file changed, 1 insertion(+), 1 deletion(-)
-> 
->     diff --git a/.travis.yml b/.travis.yml
->     index e8e3189af..3c5ff99b7 100644
->     --- a/.travis.yml
->     +++ b/.travis.yml
->     @@ -44,7 +44,7 @@ matrix:
->      ? ? ? ? ? ?compiler: clang
-> 
->      ? ? ? ? ?- os: linux
->     -? ? ? ? ? env: DISTRO=centos:6 TREE=out
->     +? ? ? ? ? env: DISTRO=centos:7 TREE=out
->      ? ? ? ? ? ?compiler: gcc
-> 
->      ? ? ? ? ?- os: linux
->     -- 
->     2.23.0
-> 
-> 
-> 
-> 
->     -- 
->     Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> 
-> 
-> -- 
-> Regards,
-> Li Wang
+[1] http://lists.linux.it/pipermail/ltp/2020-August/018636.html
+[2] http://lists.linux.it/pipermail/ltp/2020-August/018658.html
 
+> Mimi
 
+Kind regards,
+Petr
