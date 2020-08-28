@@ -1,40 +1,55 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Fri, 28 Aug 2020 11:21:19 -0400
-Subject: [LTP] [LTP v4 4/5] IMA: Add a test to verify measurement of
- certificate imported into a keyring
-In-Reply-To: <20200828124924.GB15355@dell5510>
-References: <20200820090824.3033-1-pvorel@suse.cz>
- <20200820090824.3033-5-pvorel@suse.cz>
- <b58057275ecdc06bb512d39ea46118197f33c33f.camel@linux.ibm.com>
- <20200827132354.GA20439@dell5510> <20200827135503.GA11990@dell5510>
- <b72657042d13f9b8f30d5bdea7e2d06835e4a1d1.camel@linux.ibm.com>
- <20200827225417.GA29921@dell5510>
- <d6087ee43d18605ee6cdc6b80450b0024af14fb6.camel@linux.ibm.com>
- <20200828060554.GB15251@dell5510>
- <3c720a7060a846088f8e60ce8b5c032467e97f23.camel@linux.ibm.com>
- <20200828124924.GB15355@dell5510>
-Message-ID: <889c90c2777e2683749ab6d339e25aa85b192407.camel@linux.ibm.com>
+From: Bird, Tim <Tim.Bird@sony.com>
+Date: Fri, 28 Aug 2020 15:37:52 +0000
+Subject: [LTP] [RFC] ltp test add reboot function
+In-Reply-To: <20200828130638.GD10501@yuki.lan>
+References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
+ <20200824074226.GB2466@yuki.lan>
+ <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
+ <20200828130638.GD10501@yuki.lan>
+Message-ID: <CY4PR13MB11754F0072967B32B007D273FD520@CY4PR13MB1175.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 2020-08-28 at 14:49 +0200, Petr Vorel wrote:
-> > On Fri, 2020-08-28 at 08:05 +0200, Petr Vorel wrote:
-> > > BTW there are also plans for reboot support [1] [2], that could be used as
-> > > workaround for configuration without CONFIG_IMA_READ_POLICY=y and
-> > > CONFIG_IMA_WRITE_POLICY=y.
-> > The reboot support could also be used for carrying the IMA measurement
-> > list across kexec and verifying the TPM PCRs.
 
-> Adding into my TODO list. I'd just run whole test ima_kexec.sh twice and reboot
-> in between.
 
-The ima_kexec.sh tests measures the kexec boot cmdline and kernel
-image.   What's needed is walking the measurement list re-calculating
-the PCRs and then verifying them against the actual TPM PCRs.  Maybe
-running the ima_tpm.sh test twice.
+> -----Original Message-----
+> From:  Cyril Hrubis
+> 
+> Hi!
+> > Thanks for you experiences on the reboot???
+> > So far my opinion is add a reboot service by chkconfig or something like that.
+> > the service will start runltp scripts from last break off point.
+> > when the tst_test have .tst_needs_reboot =1 flag, it wil strore the
+> > run status and
+> > reboot the machine before run the test case.
+> > Now I want to know what needs to be preserved???
+> 
+> The runltp script and ltp-pan cannot save and restore a testrun,
+> although something like that may be possible to implement, I doubt that
+> it could be easily added to the current infrastructure. Not to mention
+> that ltp-pan has been in a maintenance mode (which means no new
+> features) for years now.
+> 
+> Also I do consider the whole concept of running the test exectution
+> framework on the same machine as the testcases broken by desing for
+> kernel related tests. The way forward is the patchset send by Richard
+> that implements simple test executor that runs on the machine under test
+> and communicates with a execution framework that runs on a central
+> server.
 
-Mimi
+I don't have anything to contribute to the primary discussion topic,
+but I just have to chime in here that it's very nice to hear someone
+else express this idea.  Fuego's architecture is built on having the test
+execution driven from a machine external to the machine under test.
+To me, having the machine under test drive its own test execution seems weird,
+in that it requires the machine to potentially perform actions (like reboot,
+or saving panic data), that require operational fitness - which is the very thing
+being tested.
+
+Sorry - just had to vent a little.  I "preach" this a lot, and it's nice to the same
+opinion from someone else.
+ -- Tim
 
