@@ -1,24 +1,30 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 31 Aug 2020 12:47:48 +0200
-Subject: [LTP] [PATCH] [RFC] runtest/quickhit: Remove.
-In-Reply-To: <20200831094617.7764-1-chrubis@suse.cz>
-References: <20200831094617.7764-1-chrubis@suse.cz>
-Message-ID: <20200831104748.GA8144@dell5510>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Mon, 31 Aug 2020 16:44:55 +0530
+Subject: [LTP] [PATCH V9 1/2] syscalls/semtimedop: Add support for
+ semtimedop and its time64 version
+In-Reply-To: <b0d7642a89808c93e059beda06d8519361784686.1597839878.git.viresh.kumar@linaro.org>
+References: <20200807132700.GB9851@yuki.lan>
+ <b0d7642a89808c93e059beda06d8519361784686.1597839878.git.viresh.kumar@linaro.org>
+Message-ID: <20200831111455.mdqzddghovvv2mvq@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+On 19-08-20, 17:57, Viresh Kumar wrote:
+> This adds support for semtimedop() and its time64 variant to the
+> existing semop() syscall tests.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V9:
+> - Removed vDSO from comment
+> - Add additional failure tests for EGAIN errors
+> - Moved timeout configuration change to setup()
+> - Test added for NULL timeout
 
-> The file wasn't properly maintained for last ten years, 99% of the
-> patches touching it were only removing removed tests. We should stop
-> pretending that it's useful anyhow it clearly does not contain well
-> selected set of tests for quick testrun anymore.
-+1
+Ping.
 
-Acked-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+-- 
+viresh
