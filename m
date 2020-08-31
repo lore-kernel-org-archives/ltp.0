@@ -1,47 +1,64 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 31 Aug 2020 06:35:52 +0000
-Subject: [LTP] [COMMITTED] utimensat01: fix kvers arrary boundary
-Message-ID: <20200831063552.11252-1-liwang@redhat.com>
+Date: Mon, 31 Aug 2020 14:40:53 +0800
+Subject: [LTP] [PATCH v2 1/3] hotplug/memory_hotplug: Handle NULL
+ returned by strtok_r when parsing inputs
+In-Reply-To: <CAJuCfpH_Y6HwtZAiNLzBAf7q7MPjJe2UBchdthMkSc9v0SQ6bg@mail.gmail.com>
+References: <20200811180604.4073173-1-aiden.gaoyuan@gmail.com>
+ <CAEemH2dxX2-t7S0TN3p7=zMLY_=TquSZdKUgqDRE9fpg_t8hdA@mail.gmail.com>
+ <CAJuCfpH_Y6HwtZAiNLzBAf7q7MPjJe2UBchdthMkSc9v0SQ6bg@mail.gmail.com>
+Message-ID: <CAEemH2fKBczyzUXJ+sfcuHkXuj9U-nzs2rWmUpGS7=qGqu=bsw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To get rid of errors:
-   8 utimensat01.c:295: INFO: Testing variant: syscall with old kernel spec
-   9 tst_test.c:1300: BROK: Test killed by SIGSEGV!
+Hi Suren,
 
-and,
-  BROK: utimensat01.c:293: mkdir(test_dir,0700) failed: EEXIST (17)
+On Fri, Aug 21, 2020 at 7:41 AM Suren Baghdasaryan <surenb@google.com>
+wrote:
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/utimensat/utimensat01.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Hi Li,
+>
+> On Thu, Aug 20, 2020 at 2:16 AM Li Wang <liwang@redhat.com> wrote:
+> >
+> > Hi Yuan,
+> >
+> > Thanks for contributing to the memory-hotplug test. I have no objection
+> to these patches, but it seems quite a long time(since it imported to LTP
+> from Linux foundation at the year 2008) nobody actually touches this memtoy
+> except some code cleanup work.
+> >
+> > I'm wondering whether you guys play with the memtoy regularly? and how
+> do you use it?
+>
+> We did use memtoy to run memory experiments on Android (required some
+> minor tweaks to be able to build on Android). After Yuan's fixes we
+> were able to use it quite successfully.
+>
 
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index 5cc5f1d33..e2d4fee3e 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -161,6 +161,7 @@ static void update_error(struct test_case *tc)
- 	static struct tst_kern_exv kvers[] = {
- 		/* Ubuntu kernel has patch b3b4283 since 4.4.0-48.69 */
- 		{ "UBUNTU", "4.4.0-48.69" },
-+		{ NULL, NULL},
- 	};
- 
- 	if (tc->exp_err != -1)
-@@ -295,7 +296,8 @@ static void setup(void)
- 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 
- 	bad_addr = tst_get_bad_addr(NULL);
--	SAFE_MKDIR(TEST_DIR, 0700);
-+	if (access(TEST_DIR, R_OK))
-+		SAFE_MKDIR(TEST_DIR, 0700);
- 
- 	for (i = 0; i < ARRAY_SIZE(tcase); i++)
- 		update_error(&tcase[i]);
+Ok, I helped merge the patchset after testing. Thanks.
+
+
+>
+> >
+> > I take a rough look at the README file but got nothing useful to get a
+> start.
+>
+> You can see one of the scripts Yuan developed to ramp up memory
+> allocations of a given type (anon/file-backed/ion) using memtoy here:
+>
+> https://android-review.googlesource.com/c/platform/external/ltp/+/1344879/44/testcases/kernel/hotplug/memory_hotplug/Scripts/ramp.sh
+> The usage is currently for experimentation only but we find it pretty
+> handy and we would like to keep using it in the future.
+>
+
+Yes, it also looks good to me. Maybe you can consider to upstreaming the
+ramp.sh too.
+
 -- 
-2.21.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200831/360976e2/attachment.htm>
