@@ -1,60 +1,128 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 1 Sep 2020 12:02:14 +0200
-Subject: [LTP] [PATCH] [RFC] runtest/quickhit: Remove.
-In-Reply-To: <20200831174948.GA15731@yuki.lan>
-References: <20200831094617.7764-1-chrubis@suse.cz>
- <CY4PR13MB11758CF355D958B797D2EA9FFD510@CY4PR13MB1175.namprd13.prod.outlook.com>
- <CY4PR13MB1175D7238F6A05AA0A668B9AFD510@CY4PR13MB1175.namprd13.prod.outlook.com>
- <20200831174948.GA15731@yuki.lan>
-Message-ID: <20200901100214.GA4076@dell5510>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Tue,  1 Sep 2020 15:46:12 +0200
+Subject: [LTP] [PATCH v2 1/2] Add SAFE_TIMER_*() functions to
+ tst_safe_clocks.h
+Message-ID: <20200901134613.20839-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> > Thinking about this a bit more....
+Changes since v1: None
 
-> > Since this test is used (at least by me), more as a test of the testing
-> > infrastructure rather than the hardware/software under test,
-> > maybe it make sense to repurpose the test and adjust its contents
-> > based on this new purpose.  What would be nice is a test that
-> > exercises a bunch of different possible LTP behaviors or outputs,
-> > to test whether CI systems calling LTP can handle them all correctly.
+ include/tst_safe_clocks.h | 90 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
 
-> > So, there are 2 attributes of the test that are important to me:
-> >  - it runs quickly (more quickly than a "full" ltp)
-> >  - it runs a variety of individual LTP test programs
+diff --git a/include/tst_safe_clocks.h b/include/tst_safe_clocks.h
+index 4cb5f41ed..5909f4083 100644
+--- a/include/tst_safe_clocks.h
++++ b/include/tst_safe_clocks.h
+@@ -55,6 +55,83 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ 	}
+ }
+ 
++static inline int safe_timer_create(const char *file, const int lineno,
++	clockid_t clockid, struct sigevent *sevp, timer_t *timerid)
++{
++	int ret;
++
++	errno = 0;
++	ret = timer_create(clockid, sevp, timerid);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"timer_create(%s) failed", tst_clock_name(clockid));
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid timer_create(%s) return value %d",
++			tst_clock_name(clockid), ret);
++	}
++
++	return ret;
++}
++
++static inline int safe_timer_settime(const char *file, const int lineno,
++	timer_t timerid, int flags, const struct itimerspec *new_value,
++	struct itimerspec *old_value)
++{
++	int ret;
++
++	errno = 0;
++	ret = timer_settime(timerid, flags, new_value, old_value);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"timer_settime() failed");
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid timer_settime() return value %d", ret);
++	}
++
++	return ret;
++}
++
++static inline int safe_timer_gettime(const char *file, const int lineno,
++	timer_t timerid, struct itimerspec *curr_value)
++{
++	int ret;
++
++	errno = 0;
++	ret = timer_gettime(timerid, curr_value);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"timer_gettime() failed");
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid timer_gettime() return value %d", ret);
++	}
++
++	return ret;
++}
++
++static inline int safe_timer_delete(const char *file, const int lineno,
++	timer_t timerid)
++{
++	int ret;
++
++	errno = 0;
++	ret = timer_delete(timerid);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO, "timer_delete() failed");
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid timer_delete() return value %d", ret);
++	}
++
++	return ret;
++}
++
+ #define SAFE_CLOCK_GETRES(clk_id, res)\
+ 	safe_clock_getres(__FILE__, __LINE__, (clk_id), (res))
+ 
+@@ -64,4 +141,17 @@ static inline void safe_clock_settime(const char *file, const int lineno,
+ #define SAFE_CLOCK_SETTIME(clk_id, tp)\
+ 	safe_clock_settime(__FILE__, __LINE__, (clk_id), (tp))
+ 
++#define SAFE_TIMER_CREATE(clockid, sevp, timerid)\
++	safe_timer_create(__FILE__, __LINE__, (clockid), (sevp), (timerid))
++
++#define SAFE_TIMER_SETTIME(timerid, flags, new_value, old_value)\
++	safe_timer_settime(__FILE__, __LINE__, (timerid), (flags),\
++		(new_value), (old_value))
++
++#define SAFE_TIMER_GETTIME(timerid, curr_value)\
++	safe_timer_gettime(__FILE__, __LINE__, (timerid), (curr_value))
++
++#define SAFE_TIMER_DELETE(timerid)\
++	safe_timer_delete(__FILE__, __LINE__, timerid)
++
+ #endif /* SAFE_CLOCKS_H__ */
+-- 
+2.28.0
 
-> > So it might be good to have this be a test that includes items that
-> > behave strangely (but quickly).  That would make this test more
-> > useful for the purpose I'm actually using it for.
-
-> > It might even make sense to rename it to reflect this change of purpose
-> > (if it *is* a change of purpose).  For example, maybe name it
-> > 'smoketest' or 'weirdstuff' or 'selftest'.  But 'quickhit' at least captures
-> > one attribute that is important - that this test is used as a quick
-> > check that basic LTP functionality is working.
-
-> > Just some more ideas....
-
-> I would vote for removing this one and adding either a smoketest or
-> selftest. The quickhit name is way too confusing.
-+1.
-1 or very few tests there which would really test runltp and later runltp-ng
-would be enough. Otherwise I don't like duplicity in runtest files (I don't see
-much sense in it and we often forget to update it).
-
-> Also if we want something as a selftest we can also throw in a few test
-> test library sanity tests that are not even installed at this point.
-FYI: A year ago I submitted 'make check' patch
-https://patchwork.ozlabs.org/project/ltp/patch/20190924182841.4528-1-pvorel@suse.cz/
-I plan to resubmit it + it'd be great to finish Christian's patch which tests
-shell library:
-https://patchwork.ozlabs.org/patch/1151766/
-
-
-Kind regards,
-Petr
