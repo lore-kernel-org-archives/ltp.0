@@ -1,61 +1,43 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 3 Sep 2020 17:10:29 +0800
-Subject: [LTP] [PATCH 3/3] syscalls: select: Verify that data is
- available to read
-In-Reply-To: <aabe6b47c9387e5ef3fc5b2a559295b72adc3c67.1599115178.git.viresh.kumar@linaro.org>
-References: <728ce5d6b7e0f3eba8015c078bfc23ec144ce1c2.1599115178.git.viresh.kumar@linaro.org>
- <aabe6b47c9387e5ef3fc5b2a559295b72adc3c67.1599115178.git.viresh.kumar@linaro.org>
-Message-ID: <CAEemH2cHo=sS8b26988UmruGiK=63Zuaj7+qSM=qjuz+Wh9nnw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Sep 2020 11:24:48 +0200
+Subject: [LTP] [RFC] ltp test add reboot function
+In-Reply-To: <CAF12kFspG2fQKUrA=HGWGQuHy=xJaL0gntqvksq+QmUK3mAdKw@mail.gmail.com>
+References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
+ <20200824074226.GB2466@yuki.lan>
+ <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
+ <20200828130638.GD10501@yuki.lan>
+ <CY4PR13MB11754F0072967B32B007D273FD520@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <CAF12kFspG2fQKUrA=HGWGQuHy=xJaL0gntqvksq+QmUK3mAdKw@mail.gmail.com>
+Message-ID: <20200903092448.GC6285@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Sep 3, 2020 at 2:40 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Hi!
+> >Also I do consider the whole concept of running the test exectution
+> >framework on the same machine as the testcases broken by desing for
+> >kernel related tests. The way forward is the patchset send by Richard
+> >that implements simple test executor that runs on the machine under test
+> >and communicates with a execution framework that runs on a central
+> >server.
+> 
+> I agree with some of your views??? the test architecture server/slave is most
+> common test method. but I also want to know what kind of connection
+> method between test machine and central server,  the ssh , adb or serial?
+> 
+> because my test machine is a cellphone, our purpose is test the kernel before
+> androidOS , so I build debianOS on our haraware, and we can only used the
+> serial port communicate with our testmachine.
 
-> select() returns a positive value on success if timeout hasn't happened,
-> else returns 0. Check that and send some data to the write file
-> descriptor for the same.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->
-> ---
-> Cyril,
->
-> Is this what you were looking for ? I am not sure why, but the last
-> test (with named pipe) times out all the time.
-> ---
->  testcases/kernel/syscalls/select/select01.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/select/select01.c
-> b/testcases/kernel/syscalls/select/select01.c
-> index 4367e7f3af3f..b3dcf1fff6f3 100644
-> --- a/testcases/kernel/syscalls/select/select01.c
-> +++ b/testcases/kernel/syscalls/select/select01.c
-> @@ -25,24 +25,31 @@ static struct select_info {
->         int nfds;
->         fd_set *readfds;
->         fd_set *writefds;
-> +       int *writefd;
->  } tests[] = {
-> -       {4, &readfds_reg, NULL},
-> -       {5, &readfds_pipe, &writefds_pipe},
-> -       {5, &readfds_npipe, &writefds_npipe},
-> +       {4, &readfds_reg, NULL, NULL},
-> +       {5, &readfds_pipe, &writefds_pipe, &fds_pipe[1]},
-> +       {5, &readfds_npipe, &writefds_npipe, &fd_npipe},
->
-
-The 'nfds' should be equal to 'fd + 1', otherwise, it gets timeout as you
-mentioned above.
-
-  {7, &readfds_npipe, &writefds_npipe, &fd_npipe}
+As for LTP the tool Richard is working on is a daemon that runs on the
+SUT[1], will be quite possibly started during the boot and will listen
+on pre-defined transport channels, e.g. TCP, serial, bluetooth, etc. The
+protocol itself should be transport agnostic and should work over
+anything that can transport bytes. But that is something that is under
+development at the moment.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200903/8305fd38/attachment-0001.htm>
+Cyril Hrubis
+chrubis@suse.cz
