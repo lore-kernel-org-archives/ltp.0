@@ -1,40 +1,31 @@
-From: Sang, Oliver <oliver.sang@intel.com>
-Date: Thu, 3 Sep 2020 13:29:57 +0000
-Subject: [LTP] [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
-In-Reply-To: <20200903091123.GO28318@suse.cz>
-References: <20200903062837.GA3654@xsang-OptiPlex-9020>
- <20200903091123.GO28318@suse.cz>
-Message-ID: <06668b52b9ac4d4e81f945e06223d9b7@intel.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 3 Sep 2020 16:03:29 +0200
+Subject: [LTP] [PATCH v2 4/4] ioctl_sg01: Loop data leak check 100 times
+In-Reply-To: <4c6dce78-8801-0ff2-43e5-7d518d79fdf9@suse.cz>
+References: <20200825160735.24602-1-mdoucha@suse.cz>
+ <20200825160735.24602-5-mdoucha@suse.cz>
+ <20200902171717.GC26811@dell5510>
+ <4c6dce78-8801-0ff2-43e5-7d518d79fdf9@suse.cz>
+Message-ID: <20200903140329.GA1002@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> -----Original Message-----
-> From: David Sterba <dsterba@suse.cz>
-> Sent: Thursday, September 3, 2020 5:11 PM
-> To: Sang, Oliver <oliver.sang@intel.com>
-> Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>; David Sterba
-> <dsterba@suse.com>; LKML <linux-kernel@vger.kernel.org>; lkp@lists.01.org;
-> lkp <lkp@intel.com>; ltp@lists.linux.it; linux-btrfs@vger.kernel.org
-> Subject: Re: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
-> 
-> On Thu, Sep 03, 2020 at 02:28:37PM +0800, kernel test robot wrote:
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: c0aaf9b7a114f6b75e0da97be7d99c102347a751 ("btrfs: switch to
-> > iomap_dio_rw() for dio")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git
-> > master
-> 
-> That's probably the O_DIRECT + O_(D)SYNC deadlock that was found recently.
-> One of the cases in diotest4 does
-> 
-> 	open(filename, O_DIRECT | O_RDWR | O_SYNC)
-> 
-> Fix is work in progress, thanks for the report.
+> On 02. 09. 20 19:17, Petr Vorel wrote:
+> > BTW do I understand the test correctly: we expect ioctl() return -1 because we
+> > use uninitialized command[CMD_SIZE] in query.cmdp (as the requirement for empty
+> > command in kernel commit message)?
 
-Thanks a lot for information!
+> command[CMD_SIZE] is initialized to 0 which is the SCSI command TEST
+> UNIT READY. We expect ioctl() to return 0 but also ignore -1 because the
+> only thing we really care about are the contents of query.dxferp buffer.
+> If ioctl() fails for some legitimate reason but kernel still fills the
+> buffer with private data, we need to report that the CVE is present.
+Thanks for info, Martin.
+
+Kind regards,
+Petr
+
+> https://en.wikipedia.org/wiki/SCSI_command
