@@ -1,12 +1,10 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 4 Sep 2020 11:47:01 +0800
-Subject: [LTP] [PATCH v2] syscalls/msgrcv03: Add error test for MSG_COPY
- flag
-In-Reply-To: <091f98e3-2767-3fe8-e4b8-067f591d8002@cn.fujitsu.com>
-References: <20200813152536.GH13292@yuki.lan>
- <1597722208-3672-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <091f98e3-2767-3fe8-e4b8-067f591d8002@cn.fujitsu.com>
-Message-ID: <a7e67dbf-eebe-b578-46ed-a12dc46cc0bd@cn.fujitsu.com>
+Date: Fri, 4 Sep 2020 11:53:59 +0800
+Subject: [LTP] [PATCH v2] syscalls/ioctl_loop07: Using LOOP_CONFIGURE to
+ test lo_sizelimit field
+In-Reply-To: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <406f338b-39a3-0c2c-e3f5-fc598373ecbc@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,213 +12,178 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi
-Ping.
+The correspoding kernel patch has been merged into linux branch.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=79e5dc59e2974a48
 
-> Hi Cyril
+Best Regards
+Yang Xu
+> Since kernel commit 3448914e8cc5("loop: Add LOOP_CONFIGURE ioctl"),
+> it can set the lo_sizelimit by specifying loop_config.info.lo_sizelimit
+> value. It is also regression test for
+> commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
 > 
-> Do you have some comments for this v2 patch?
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+> v1->v2:
+> add linux tag even this commit is not merged into linux or linux-net(it
+> has been merged into block maintainer linux branch)
+> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=block-5.9&id=79e5dc59e2974a48764269fa9ff544ae8ffe3338
+>   .../kernel/syscalls/ioctl/ioctl_loop07.c      | 90 ++++++++++++++++---
+>   1 file changed, 80 insertions(+), 10 deletions(-)
 > 
-> Best Regards
-> Yang Xu
->> The MSG_COPY flag was added in 3.8 for the implementation of the kernel
->> checkpoint-restore facility and is available only if the kernel was
->> built with the CONFIG_CHECKPOINT_RESTORE option.
->>
->> On old kernel without this support, it only ignores this flag and doesn't
->> report ENOSYS/EINVAL error, so I add kconfig and min_kver check.
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> ---
->> v1->v2:
->> 1.Rename msgrcv09->msgrcv03
->> 2.add comment on top level for why we both need min_kernel and kconfig 
->> check
->> ? include/lapi/msg.h??????????????????????????? |? 15 +++
->> ? runtest/syscalls????????????????????????????? |?? 1 +
->> ? runtest/syscalls-ipc????????????????????????? |?? 1 +
->> ? .../kernel/syscalls/ipc/msgrcv/.gitignore???? |?? 1 +
->> ? .../kernel/syscalls/ipc/msgrcv/msgrcv03.c???? | 102 ++++++++++++++++++
->> ? 5 files changed, 120 insertions(+)
->> ? create mode 100644 include/lapi/msg.h
->> ? create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
->>
->> diff --git a/include/lapi/msg.h b/include/lapi/msg.h
->> new file mode 100644
->> index 000000000..d649f3318
->> --- /dev/null
->> +++ b/include/lapi/msg.h
->> @@ -0,0 +1,15 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
->> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
->> + */
->> +#ifndef LAPI_MSG_H
->> +#define LAPI_MSG_H
->> +
->> +#include <sys/msg.h>
->> +
->> +#ifndef MSG_COPY
->> +# define MSG_COPY? 040000? /* copy (not remove) all queue messages */
->> +#endif
->> +
->> +#endif
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index 860c5c36d..20bbc022b 100644
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -815,6 +815,7 @@ msgget05 msgget05
->> ? msgrcv01 msgrcv01
->> ? msgrcv02 msgrcv02
->> +msgrcv03 msgrcv03
->> ? msgrcv05 msgrcv05
->> ? msgrcv06 msgrcv06
->> ? msgrcv07 msgrcv07
->> diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
->> index e6837414c..94d1e4001 100644
->> --- a/runtest/syscalls-ipc
->> +++ b/runtest/syscalls-ipc
->> @@ -17,6 +17,7 @@ msgget05 msgget05
->> ? msgrcv01 msgrcv01
->> ? msgrcv02 msgrcv02
->> +msgrcv03 msgrcv03
->> ? msgrcv05 msgrcv05
->> ? msgrcv06 msgrcv06
->> ? msgrcv07 msgrcv07
->> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore 
->> b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
->> index 0596ee00f..8ab91e763 100644
->> --- a/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
->> +++ b/testcases/kernel/syscalls/ipc/msgrcv/.gitignore
->> @@ -1,5 +1,6 @@
->> ? /msgrcv01
->> ? /msgrcv02
->> +/msgrcv03
->> ? /msgrcv05
->> ? /msgrcv06
->> ? /msgrcv07
->> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c 
->> b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
->> new file mode 100644
->> index 000000000..84456c1cf
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
->> @@ -0,0 +1,102 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
->> + * Author: Yang Xu <xuyang2018.jy@cn.jujitsu.com>
->> + *
->> + * This is a basic test about MSG_COPY flag.
->> + * This flag was added in 3.8 for the implementation of the kernel 
->> checkpoint
->> + * restore facility and is available only if the kernel was built 
->> with the
->> + * CONFIG_CHECKPOINT_RESTORE option.
->> + * On old kernel without this support, it only ignores this flag and 
->> doesn't
->> + * report ENOSYS/EINVAL error. The CONFIG_CHECKPOINT_RESTORE has existed
->> + * before kernel 3.8.
->> + * So for using this flag, kernel should greater than 3.8 and enable
->> + * CONFIG_CHECKPOINT_RESTORE together.
->> + *
->> + * 1)msgrcv(2) fails and sets errno to EINVAL if IPC_NOWAIT was not 
->> specified
->> + *?? in msgflag.
->> + * 2)msgrcv(2) fails and sets errno to EINVAL if IPC_EXCEPT was 
->> specified
->> + *?? in msgflag.
->> + * 3)msgrcv(2) fails and set errno to ENOMSG if IPC_NOWAIT and 
->> MSG_COPY were
->> + *? specified in msgflg and the queue contains less than msgtyp 
->> messages.
->> + */
->> +
->> +#define? _GNU_SOURCE
->> +#include <string.h>
->> +#include <sys/wait.h>
->> +#include <sys/msg.h>
->> +#include <pwd.h>
->> +#include "tst_test.h"
->> +#include "tst_safe_sysv_ipc.h"
->> +#include "libnewipc.h"
->> +#include "lapi/msg.h"
->> +
->> +static key_t msgkey;
->> +static int queue_id = -1;
->> +static struct buf {
->> +??? long type;
->> +??? char mtext[MSGSIZE];
->> +} rcv_buf, snd_buf = {MSGTYPE, "hello"};
->> +
->> +static struct tcase {
->> +??? int exp_err;
->> +??? int msg_flag;
->> +??? int msg_type;
->> +??? char *message;
->> +} tcases[] = {
->> +??? {EINVAL, 0, MSGTYPE,
->> +??? "Test EINVAL error when msgflg specified MSG_COPY, but not 
->> IPC_NOWAIT"},
->> +
->> +??? {EINVAL, MSG_EXCEPT, MSGTYPE,
->> +??? "Test EINVAL error when msgflg specified both MSG_COPY and 
->> MSG_EXCEPT"},
->> +
->> +??? {ENOMSG, IPC_NOWAIT, 2,
->> +??? "Test ENOMSG error when using IPC_NOWAIT and MSG_COPY but not have"
->> +??? " corresponding msgtype msg"},
->> +};
->> +
->> +static void verify_msgrcv(unsigned int n)
->> +{
->> +??? struct tcase *tc = &tcases[n];
->> +
->> +??? tst_res(TINFO, "%s", tc->message);
->> +??? TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, tc->msg_type, MSG_COPY | 
->> tc->msg_flag));
->> +??? if (TST_RET != -1) {
->> +??????? tst_res(TFAIL, "msgrcv() succeeded unexpectedly");
->> +??????? SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
->> +??????? return;
->> +??? }
->> +
->> +??? if (TST_ERR == tc->exp_err)
->> +??????? tst_res(TPASS | TTERRNO, "msgrcv() failed as expected");
->> +??? else
->> +??????? tst_res(TFAIL | TTERRNO, "msgrcv() failed unexpectedly,"
->> +??????????? " expected %s but got", tst_strerrno(tc->exp_err));
->> +}
->> +
->> +static void setup(void)
->> +{
->> +??? msgkey = GETIPCKEY();
->> +??? queue_id = SAFE_MSGGET(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
->> +??? SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +??? if (queue_id != -1)
->> +??????? SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
->> +}
->> +
->> +static struct tst_test test = {
->> +??? .needs_tmpdir = 1,
->> +??? .needs_root = 1,
->> +??? .needs_kconfigs = (const char *[]) {
->> +??????? "CONFIG_CHECKPOINT_RESTORE",
->> +??????? NULL
->> +??? },
->> +??? .min_kver = "3.8.0",
->> +??? .tcnt = ARRAY_SIZE(tcases),
->> +??? .test = verify_msgrcv,
->> +??? .setup = setup,
->> +??? .cleanup = cleanup,
->> +};
->>
-> 
-> 
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
+> index ce4b47690..9d880ffd1 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
+> @@ -8,6 +8,10 @@
+>    * Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
+>    * available. If sizelimit is less than loop_size, loopsize will
+>    * be truncated.
+> + *
+> + * We also use LOOP_CONFIGURE ioctl to test lo_sizelimit field. It is
+> + * also a regression test for
+> + * commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
+>    */
+>   
+>   #include <stdio.h>
+> @@ -18,15 +22,26 @@
+>   #include "tst_test.h"
+>   
+>   static char dev_path[1024], sys_loop_sizepath[1024], sys_loop_sizelimitpath[1024];
+> -static int dev_num, dev_fd, file_fd, attach_flag;
+> +static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
+> +static struct loop_config loopconfig;
+>   
+>   static struct tcase {
+>   	unsigned int set_sizelimit;
+>   	unsigned int exp_loopsize;
+> +	int ioctl_flag;
+>   	char *message;
+>   } tcases[] = {
+> -	{1024 * 4096, 2048, "When sizelimit is greater than loopsize "},
+> -	{1024 * 512, 1024, "When sizelimit is less than loopsize"},
+> +	{1024 * 4096, 2048, LOOP_SET_STATUS64,
+> +	"When sizelimit is greater than loopsize by using LOOP_SET_STATUS64"},
+> +
+> +	{1024 * 512, 1024, LOOP_SET_STATUS64,
+> +	"When sizelimit is less than loopsize by using LOOP_SET_STATUS64"},
+> +
+> +	{1024 * 4096, 2048, LOOP_CONFIGURE,
+> +	"When sizelimit is greater than loopsize by using LOOP_CONFIGURE"},
+> +
+> +	{1024 * 512, 1024, LOOP_CONFIGURE,
+> +	"When sizelimit is less than loopsize by using LOOP_CONFIGURE"},
+>   };
+>   
+>   static void verify_ioctl_loop(unsigned int n)
+> @@ -34,12 +49,15 @@ static void verify_ioctl_loop(unsigned int n)
+>   	struct tcase *tc = &tcases[n];
+>   	struct loop_info64 loopinfo, loopinfoget;
+>   
+> -	tst_res(TINFO, "%s", tc->message);
+>   	memset(&loopinfo, 0, sizeof(loopinfo));
+>   	memset(&loopinfoget, 0, sizeof(loopinfoget));
+>   
+> -	loopinfo.lo_sizelimit = tc->set_sizelimit;
+> -	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
+> +	if (tc->ioctl_flag == LOOP_CONFIGURE) {
+> +		SAFE_IOCTL(dev_fd, LOOP_CONFIGURE, &loopconfig);
+> +	} else {
+> +		loopinfo.lo_sizelimit = tc->set_sizelimit;
+> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
+> +	}
+>   
+>   	TST_ASSERT_INT(sys_loop_sizepath, tc->exp_loopsize);
+>   	TST_ASSERT_INT(sys_loop_sizelimitpath, tc->set_sizelimit);
+> @@ -50,12 +68,46 @@ static void verify_ioctl_loop(unsigned int n)
+>   		tst_res(TFAIL, "LOOP_GET_STATUS64 gets wrong lo_sizelimit(%llu), expect %d",
+>   				loopinfoget.lo_sizelimit, tc->set_sizelimit);
+>   	/*Reset*/
+> -	loopinfo.lo_sizelimit = 0;
+> -	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
+> +	if (tc->ioctl_flag == LOOP_CONFIGURE) {
+> +			tst_detach_device_by_fd(dev_path, dev_fd);
+> +	} else {
+> +		loopinfo.lo_sizelimit = 0;
+> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
+> +	}
+> +}
+> +
+> +static void run(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +
+> +	tst_res(TINFO, "%s", tc->message);
+> +
+> +	if (tc->ioctl_flag == LOOP_SET_STATUS64) {
+> +		if (!attach_flag) {
+> +			tst_attach_device(dev_path, "test.img");
+> +			attach_flag = 1;
+> +		}
+> +
+> +		verify_ioctl_loop(n);
+> +		return;
+> +	}
+> +
+> +	if (tc->ioctl_flag == LOOP_CONFIGURE && !loop_configure_sup) {
+> +		tst_res(TCONF, "LOOP_CONFIGURE ioctl not supported");
+> +		return;
+> +	}
+> +	if (attach_flag) {
+> +		tst_detach_device_by_fd(dev_path, dev_fd);
+> +		attach_flag = 0;
+> +	}
+> +	loopconfig.info.lo_sizelimit = tc->set_sizelimit;
+> +	verify_ioctl_loop(n);
+>   }
+>   
+>   static void setup(void)
+>   {
+> +	int ret;
+> +
+>   	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+>   	if (dev_num < 0)
+>   		tst_brk(TBROK, "Failed to find free loop device");
+> @@ -67,8 +119,22 @@ static void setup(void)
+>   	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
+>   	sprintf(sys_loop_sizelimitpath, "/sys/block/loop%d/loop/sizelimit", dev_num);
+>   
+> -	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+> +	tst_detach_device(dev_path);
+> +	attach_flag = 0;
+> +
+>   	tst_res(TINFO, "original loop size 2048 sectors");
+> +	file_fd = SAFE_OPEN("test.img", O_RDWR);
+> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+> +
+> +	loopconfig.fd = -1;
+> +	ret = ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig);
+> +	if (ret && errno != EBADF) {
+> +		tst_res(TINFO | TERRNO, "LOOP_CONFIGURE is not supported");
+> +		loop_configure_sup = 0;
+> +		return;
+> +	}
+> +
+> +	loopconfig.fd = file_fd;
+>   }
+>   
+>   static void cleanup(void)
+> @@ -84,10 +150,14 @@ static void cleanup(void)
+>   static struct tst_test test = {
+>   	.setup = setup,
+>   	.cleanup = cleanup,
+> -	.test = verify_ioctl_loop,
+> +	.test = run,
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.needs_root = 1,
+>   	.needs_tmpdir = 1,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "79e5dc59e297"},
+> +		{}
+> +	},
+>   	.needs_drivers = (const char *const []) {
+>   		"loop",
+>   		NULL
 > 
 
 
