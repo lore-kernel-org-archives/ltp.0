@@ -1,189 +1,205 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 4 Sep 2020 11:53:59 +0800
-Subject: [LTP] [PATCH v2] syscalls/ioctl_loop07: Using LOOP_CONFIGURE to
- test lo_sizelimit field
-In-Reply-To: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <406f338b-39a3-0c2c-e3f5-fc598373ecbc@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri,  4 Sep 2020 13:58:17 +0200
+Subject: [LTP] [PATCH] syscall/ptrace08: Simplify the test.
+Message-ID: <20200904115817.8024-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
-The correspoding kernel patch has been merged into linux branch.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=79e5dc59e2974a48
+The original test was attempting to crash the kernel by setting a
+breakpoint on do_debug kernel function which, when triggered, caused an
+infinite loop in the kernel. The problem with this approach is that
+kernel internal function names are not stable at all and the name was
+changed recently, which made the test fail for no good reason.
 
-Best Regards
-Yang Xu
-> Since kernel commit 3448914e8cc5("loop: Add LOOP_CONFIGURE ioctl"),
-> it can set the lo_sizelimit by specifying loop_config.info.lo_sizelimit
-> value. It is also regression test for
-> commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
-> v1->v2:
-> add linux tag even this commit is not merged into linux or linux-net(it
-> has been merged into block maintainer linux branch)
-> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=block-5.9&id=79e5dc59e2974a48764269fa9ff544ae8ffe3338
->   .../kernel/syscalls/ioctl/ioctl_loop07.c      | 90 ++++++++++++++++---
->   1 file changed, 80 insertions(+), 10 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-> index ce4b47690..9d880ffd1 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop07.c
-> @@ -8,6 +8,10 @@
->    * Test its lo_sizelimit field. If lo_sizelimit is 0,it means max
->    * available. If sizelimit is less than loop_size, loopsize will
->    * be truncated.
-> + *
-> + * We also use LOOP_CONFIGURE ioctl to test lo_sizelimit field. It is
-> + * also a regression test for
-> + * commit 79e5dc59e297 ("loop: Set correct device size when using LOOP_CONFIGURE").
->    */
->   
->   #include <stdio.h>
-> @@ -18,15 +22,26 @@
->   #include "tst_test.h"
->   
->   static char dev_path[1024], sys_loop_sizepath[1024], sys_loop_sizelimitpath[1024];
-> -static int dev_num, dev_fd, file_fd, attach_flag;
-> +static int dev_num, dev_fd, file_fd, attach_flag, loop_configure_sup = 1;
-> +static struct loop_config loopconfig;
->   
->   static struct tcase {
->   	unsigned int set_sizelimit;
->   	unsigned int exp_loopsize;
-> +	int ioctl_flag;
->   	char *message;
->   } tcases[] = {
-> -	{1024 * 4096, 2048, "When sizelimit is greater than loopsize "},
-> -	{1024 * 512, 1024, "When sizelimit is less than loopsize"},
-> +	{1024 * 4096, 2048, LOOP_SET_STATUS64,
-> +	"When sizelimit is greater than loopsize by using LOOP_SET_STATUS64"},
-> +
-> +	{1024 * 512, 1024, LOOP_SET_STATUS64,
-> +	"When sizelimit is less than loopsize by using LOOP_SET_STATUS64"},
-> +
-> +	{1024 * 4096, 2048, LOOP_CONFIGURE,
-> +	"When sizelimit is greater than loopsize by using LOOP_CONFIGURE"},
-> +
-> +	{1024 * 512, 1024, LOOP_CONFIGURE,
-> +	"When sizelimit is less than loopsize by using LOOP_CONFIGURE"},
->   };
->   
->   static void verify_ioctl_loop(unsigned int n)
-> @@ -34,12 +49,15 @@ static void verify_ioctl_loop(unsigned int n)
->   	struct tcase *tc = &tcases[n];
->   	struct loop_info64 loopinfo, loopinfoget;
->   
-> -	tst_res(TINFO, "%s", tc->message);
->   	memset(&loopinfo, 0, sizeof(loopinfo));
->   	memset(&loopinfoget, 0, sizeof(loopinfoget));
->   
-> -	loopinfo.lo_sizelimit = tc->set_sizelimit;
-> -	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
-> +	if (tc->ioctl_flag == LOOP_CONFIGURE) {
-> +		SAFE_IOCTL(dev_fd, LOOP_CONFIGURE, &loopconfig);
-> +	} else {
-> +		loopinfo.lo_sizelimit = tc->set_sizelimit;
-> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS64, &loopinfo), TST_RETVAL_EQ0);
-> +	}
->   
->   	TST_ASSERT_INT(sys_loop_sizepath, tc->exp_loopsize);
->   	TST_ASSERT_INT(sys_loop_sizelimitpath, tc->set_sizelimit);
-> @@ -50,12 +68,46 @@ static void verify_ioctl_loop(unsigned int n)
->   		tst_res(TFAIL, "LOOP_GET_STATUS64 gets wrong lo_sizelimit(%llu), expect %d",
->   				loopinfoget.lo_sizelimit, tc->set_sizelimit);
->   	/*Reset*/
-> -	loopinfo.lo_sizelimit = 0;
-> -	TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-> +	if (tc->ioctl_flag == LOOP_CONFIGURE) {
-> +			tst_detach_device_by_fd(dev_path, dev_fd);
-> +	} else {
-> +		loopinfo.lo_sizelimit = 0;
-> +		TST_RETRY_FUNC(ioctl(dev_fd, LOOP_SET_STATUS, &loopinfo), TST_RETVAL_EQ0);
-> +	}
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	tst_res(TINFO, "%s", tc->message);
-> +
-> +	if (tc->ioctl_flag == LOOP_SET_STATUS64) {
-> +		if (!attach_flag) {
-> +			tst_attach_device(dev_path, "test.img");
-> +			attach_flag = 1;
-> +		}
-> +
-> +		verify_ioctl_loop(n);
-> +		return;
-> +	}
-> +
-> +	if (tc->ioctl_flag == LOOP_CONFIGURE && !loop_configure_sup) {
-> +		tst_res(TCONF, "LOOP_CONFIGURE ioctl not supported");
-> +		return;
-> +	}
-> +	if (attach_flag) {
-> +		tst_detach_device_by_fd(dev_path, dev_fd);
-> +		attach_flag = 0;
-> +	}
-> +	loopconfig.info.lo_sizelimit = tc->set_sizelimit;
-> +	verify_ioctl_loop(n);
->   }
->   
->   static void setup(void)
->   {
-> +	int ret;
-> +
->   	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
->   	if (dev_num < 0)
->   		tst_brk(TBROK, "Failed to find free loop device");
-> @@ -67,8 +119,22 @@ static void setup(void)
->   	sprintf(sys_loop_sizepath, "/sys/block/loop%d/size", dev_num);
->   	sprintf(sys_loop_sizelimitpath, "/sys/block/loop%d/loop/sizelimit", dev_num);
->   
-> -	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> +	tst_detach_device(dev_path);
-> +	attach_flag = 0;
-> +
->   	tst_res(TINFO, "original loop size 2048 sectors");
-> +	file_fd = SAFE_OPEN("test.img", O_RDWR);
-> +	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> +
-> +	loopconfig.fd = -1;
-> +	ret = ioctl(dev_fd, LOOP_CONFIGURE, &loopconfig);
-> +	if (ret && errno != EBADF) {
-> +		tst_res(TINFO | TERRNO, "LOOP_CONFIGURE is not supported");
-> +		loop_configure_sup = 0;
-> +		return;
-> +	}
-> +
-> +	loopconfig.fd = file_fd;
->   }
->   
->   static void cleanup(void)
-> @@ -84,10 +150,14 @@ static void cleanup(void)
->   static struct tst_test test = {
->   	.setup = setup,
->   	.cleanup = cleanup,
-> -	.test = verify_ioctl_loop,
-> +	.test = run,
->   	.tcnt = ARRAY_SIZE(tcases),
->   	.needs_root = 1,
->   	.needs_tmpdir = 1,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "79e5dc59e297"},
-> +		{}
-> +	},
->   	.needs_drivers = (const char *const []) {
->   		"loop",
->   		NULL
-> 
+So this patch changes the test to read the breakpoint address back
+instead, which also means that we can drop the /proc/kallsyms parsing as
+well.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Alexandre Chartre <alexandre.chartre@oracle.com>
+---
+ testcases/kernel/syscalls/ptrace/ptrace08.c | 120 ++++++++++----------
+ 1 file changed, 60 insertions(+), 60 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
+index 591aa0dd2..5587f0bbb 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace08.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
+@@ -5,8 +5,17 @@
+  *
+  * CVE-2018-1000199
+  *
+- * Test error handling when ptrace(POKEUSER) modifies debug registers.
+- * Even if the call returns error, it may create breakpoint in kernel code.
++ * Test error handling when ptrace(POKEUSER) modified x86 debug registers even
++ * when the call returned error.
++ *
++ * When the bug was present we could create breakpoint in the kernel code,
++ * which shoudn't be possible at all. The original CVE caused a kernel crash by
++ * setting a breakpoint on do_debug kernel function which, when triggered,
++ * caused an infinite loop. However we do not have to crash the kernel in order
++ * to assert if kernel has been fixed or not. All we have to do is to try to
++ * set a breakpoint, on any kernel address, then read it back and check if the
++ * value has been set or not.
++ *
+  * Kernel crash partially fixed in:
+  *
+  *  commit f67b15037a7a50c57f72e69a6d59941ad90a0f0f
+@@ -26,69 +35,42 @@
+ #include "tst_safe_stdio.h"
+ 
+ #if defined(__i386__) || defined(__x86_64__)
+-#define SYMNAME_SIZE 256
+-#define KERNEL_SYM "do_debug"
+ 
+-static unsigned long break_addr;
+ static pid_t child_pid;
+ 
+-static void setup(void)
+-{
+-	int fcount;
+-	char endl, symname[256];
+-	FILE *fr = SAFE_FOPEN("/proc/kallsyms", "r");
+-
+-	/* Find address of do_debug() in /proc/kallsyms */
+-	do {
+-		fcount = fscanf(fr, "%lx %*c %255s%c", &break_addr, symname,
+-			&endl);
+-
+-		if (fcount <= 0 && feof(fr))
+-			break;
+-
+-		if (fcount < 2) {
+-			fclose(fr);
+-			tst_brk(TBROK, "Unexpected data in /proc/kallsyms %d",
+-				fcount);
+-		}
+-
+-		if (fcount >= 3 && endl != '\n')
+-			while (!feof(fr) && fgetc(fr) != '\n');
+-	} while (!feof(fr) && strcmp(symname, KERNEL_SYM));
+-
+-	SAFE_FCLOSE(fr);
+-
+-	if (strcmp(symname, KERNEL_SYM))
+-		tst_brk(TBROK, "Cannot find address of kernel symbol \"%s\"",
+-			KERNEL_SYM);
+-
+-	if (!break_addr)
+-		tst_brk(TCONF, "Addresses in /proc/kallsyms are hidden");
+-
+-	tst_res(TINFO, "Kernel symbol \"%s\" found at 0x%lx", KERNEL_SYM,
+-		break_addr);
+-}
++#if defined(__x86_64__)
++# define KERN_ADDR_MIN 0xffff800000000000
++# define KERN_ADDR_MAX 0xffffffffffffffff
++# define KERN_ADDR_BITS 64
++#elif defined(__i386__)
++# define KERN_ADDR_MIN 0xc0000000
++# define KERN_ADDR_MAX 0xffffffff
++# define KERN_ADDR_BITS 32
++#endif
+ 
+-static void debug_trap(void)
++static void setup(void)
+ {
+-	/* x86 instruction INT1 */
+-	asm volatile (".byte 0xf1");
++	/*
++	 * When running in compat mode we can't pass 64 address to ptrace so we
++	 * have to skip the test.
++	 */
++	if (tst_kernel_bits() != KERN_ADDR_BITS)
++		tst_brk(TCONF, "Cannot pass 64bit kernel address in compat mode");
+ }
+ 
+ static void child_main(void)
+ {
+ 	raise(SIGSTOP);
+-	/* wait for SIGCONT from parent */
+-	debug_trap();
+ 	exit(0);
+ }
+ 
+-static void run(void)
++static void ptrace_try_kern_addr(unsigned long kern_addr)
+ {
+ 	int status;
+-	pid_t child;
+ 
+-	child = child_pid = SAFE_FORK();
++	tst_res(TINFO, "Trying address 0x%lx", kern_addr);
++
++	child_pid = SAFE_FORK();
+ 
+ 	if (!child_pid)
+ 		child_main();
+@@ -103,22 +85,41 @@ static void run(void)
+ 		(void *)offsetof(struct user, u_debugreg[7]), (void *)1);
+ 
+ 	/* Return value intentionally ignored here */
+-	ptrace(PTRACE_POKEUSER, child_pid,
++	TEST(ptrace(PTRACE_POKEUSER, child_pid,
+ 		(void *)offsetof(struct user, u_debugreg[0]),
+-		(void *)break_addr);
++		(void *)kern_addr));
++
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
++	} else {
++		if (TST_ERR == EINVAL) {
++			tst_res(TPASS | TTERRNO,
++				"ptrace() breakpoint with kernel addr failed");
++		} else {
++			tst_res(TFAIL | TTERRNO,
++				"ptrace() breakpoint on kernel addr should return EINVAL, got");
++		}
++	}
++
++	unsigned long addr;
++
++	addr = ptrace(PTRACE_PEEKUSER, child_pid,
++	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
++
++	if (addr == kern_addr)
++		tst_res(TFAIL, "Was able to set breakpoint on kernel addr");
+ 
+ 	SAFE_PTRACE(PTRACE_DETACH, child_pid, NULL, NULL);
+ 	SAFE_KILL(child_pid, SIGCONT);
+ 	child_pid = 0;
++	tst_reap_children();
++}
+ 
+-	if (SAFE_WAITPID(child, &status, 0) != child)
+-		tst_brk(TBROK, "Received event from unexpected PID");
+-
+-	if (!WIFSIGNALED(status))
+-		tst_brk(TBROK, "Received unexpected event from child");
+-
+-	tst_res(TPASS, "Child killed by %s", tst_strsig(WTERMSIG(status)));
+-	tst_res(TPASS, "We're still here. Nothing bad happened, probably.");
++static void run(void)
++{
++	ptrace_try_kern_addr(KERN_ADDR_MIN);
++	ptrace_try_kern_addr(KERN_ADDR_MAX);
++	ptrace_try_kern_addr(KERN_ADDR_MIN + (KERN_ADDR_MAX - KERN_ADDR_MIN)/2);
+ }
+ 
+ static void cleanup(void)
+@@ -133,7 +134,6 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.forks_child = 1,
+-	.taint_check = TST_TAINT_W | TST_TAINT_D,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "f67b15037a7a"},
+ 		{"CVE", "2018-1000199"},
+-- 
+2.26.2
