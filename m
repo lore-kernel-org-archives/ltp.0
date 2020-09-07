@@ -1,64 +1,67 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon,  7 Sep 2020 14:30:06 +0530
-Subject: [LTP] [PATCH V2 3/3] syscalls: select: Verify that data is
- available to read
-In-Reply-To: <fa29d6d05e385170a74a06fbe752fbaac3965358.1599469171.git.viresh.kumar@linaro.org>
-References: <fa29d6d05e385170a74a06fbe752fbaac3965358.1599469171.git.viresh.kumar@linaro.org>
-Message-ID: <3966837943d2ad3e74a69d6c34f18cc152c09536.1599469171.git.viresh.kumar@linaro.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 7 Sep 2020 13:16:40 +0200
+Subject: [LTP] [PATCH 3/9] syscalls/ipc: shmctl04: Rewrite from scratch.
+In-Reply-To: <CAEemH2dHcasASDdXKypSwYkg7Yq1+ynO3-Z6QcxMwP6M=Qh3mQ@mail.gmail.com>
+References: <20200717163453.9587-1-chrubis@suse.cz>
+ <20200717163453.9587-4-chrubis@suse.cz>
+ <CAEemH2dHcasASDdXKypSwYkg7Yq1+ynO3-Z6QcxMwP6M=Qh3mQ@mail.gmail.com>
+Message-ID: <20200907111640.GA10649@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-select() returns a positive value on success if timeout hasn't happened,
-else returns 0. Check that and send some data to the write file
-descriptor for the same.
+Hi!
+> It failed many times on my personal laptop (5.4.19-100.fc30.x86_64).
+> 
+> $ cat /proc/sysvipc/shm
+>        key      shmid   perms        size      cpid    lpid    nattch   uid
+>   gid    cuid    cgid      atime         dtime              ctime
+>      rss        swap
+>          0          6         1600      524288   2778   5447      2     1000
+>  1000  1000  1000 1595120306 1595120306 1595119412      4096        0
+>          0          8         1600      524288   1903   2043      2     1000
+>  1000  1000  1000 1595119515     0                 1595119515     24576
+>    0
+> 
+> $ ./shmctl04
+> tst_test.c:1245: INFO: Timeout per run is 0h 05m 00s
+> shmctl04.c:119: PASS: SHM_INFO returned valid index 8
+> shmctl04.c:70: PASS: used_ids = 3
+> shmctl04.c:77: PASS: shm_rss = 7
+> shmctl04.c:84: PASS: shm_swp = 0
+> shmctl04.c:91: PASS: shm_tot = 257
+> shmctl04.c:95: FAIL: highest shmid = 8, expected 65537
+> 
+> Summary:
+> passed   5
+> failed   1
+> skipped  0
+> warnings 0
+> 
+> After printing the shm_proc during test running, I guess the 'shmid' is not
+> listing in number order sometimes which probably caused that failure.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- testcases/kernel/syscalls/select/select01.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Looking at the result closely, I guess that I messed up and got confused
+here, the return value from SHM_INFO is highest index into the kernel
+array, which is equal to highest shmid only by an accident on a freshly
+booted machine. I will fix that part in v2.
 
-diff --git a/testcases/kernel/syscalls/select/select01.c b/testcases/kernel/syscalls/select/select01.c
-index 4f8afb4e6bd6..4cf139b09598 100644
---- a/testcases/kernel/syscalls/select/select01.c
-+++ b/testcases/kernel/syscalls/select/select01.c
-@@ -25,24 +25,31 @@ static struct select_info {
- 	int *nfds;
- 	fd_set *readfds;
- 	fd_set *writefds;
-+	int *writefd;
- } tests[] = {
--	{&fd_reg, &readfds_reg, NULL},
--	{&fds_pipe[1], &readfds_pipe, &writefds_pipe},
--	{&fd_npipe, &readfds_npipe, &writefds_npipe},
-+	{&fd_reg, &readfds_reg, NULL, NULL},
-+	{&fds_pipe[1], &readfds_pipe, &writefds_pipe, &fds_pipe[1]},
-+	{&fd_npipe, &readfds_npipe, &writefds_npipe, &fd_npipe},
- };
- 
- static void run(unsigned int n)
- {
- 	struct select_info *tc = &tests[n];
- 	struct timeval timeout;
-+	char buf;
- 
- 	timeout.tv_sec = 0;
- 	timeout.tv_usec = 100000;
- 
-+	if (tc->writefd)
-+		SAFE_WRITE(0, *tc->writefd, &buf, sizeof(buf));
-+
- 	TEST(do_select(*tc->nfds + 1, tc->readfds, tc->writefds, 0, &timeout));
- 
- 	if (TST_RET == -1)
- 		tst_res(TFAIL | TTERRNO, "select() failed");
-+	else if (!TST_RET)
-+		tst_res(TFAIL, "select() timed out");
- 	else
- 		tst_res(TPASS, "select() passed");
- }
+> 'SHM_STAT_ANY' is introduced since Linux 4.17. We have to confirm the SUT
+> supporting before we running it.
+> 
+> Also, we'd better define it in "ipcshm.h" to avoid compiling errors with
+> the old distro.
+> 
+> shmctl04.c: In function 'verify_shminfo':
+> shmctl04.c:114: error: 'SHM_STAT_ANY' undeclared (first use in this
+> function)
+> shmctl04.c:114: error: (Each undeclared identifier is reported only once
+> shmctl04.c:114: error: for each function it appears in.)
+
+Will fix as well.
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Cyril Hrubis
+chrubis@suse.cz
