@@ -1,31 +1,55 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 8 Sep 2020 13:17:28 +0530
-Subject: [LTP] [PATCH 2/3] syscalls: select: Rename select04.c to
- select02.c
-In-Reply-To: <a68a049a-c362-ae0e-3cc8-19cac4cfd741@cn.fujitsu.com>
-References: <728ce5d6b7e0f3eba8015c078bfc23ec144ce1c2.1599115178.git.viresh.kumar@linaro.org>
- <f7855857470b26fdbebcfe4adf1cd4779852f7ff.1599115178.git.viresh.kumar@linaro.org>
- <a68a049a-c362-ae0e-3cc8-19cac4cfd741@cn.fujitsu.com>
-Message-ID: <20200908074728.imbxcswztx3h5ssd@vireshk-i7>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Tue, 8 Sep 2020 04:56:10 -0400
+Subject: [LTP] [PATCH] route{4, 6}-rmmod: Declare variables before using them
+Message-ID: <1599555370-11375-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08-09-20, 15:39, Yang Xu wrote:
-> Hi Viresh
-> 
-> IMO, we don't need to rename select04 to select02. The later new case can
-> use select02 name. It makes select history more clean.
+When running route4-rmmod case, it reports the following error:
+/opt/ltp/testcases/bin/route4-rmmod: line 100: lhost_module: unbound variable.
 
-Why keeping such history is important ? I think it will look rather
-confusing why we have files named as 01 and then 04.
+It fails because "set -u" is used in .testcases/lib/cmdlib.sh and
+"set -u" treats unset variables and parameters as errors.
 
-Anyway, I will keep the patch in the series and will leave it for
-Cyril to decide if he wants to pick the patch or not.
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+---
+ testcases/network/stress/route/route4-rmmod | 3 +++
+ testcases/network/stress/route/route6-rmmod | 3 +++
+ 2 files changed, 6 insertions(+)
 
-Thanks Yang.
-
+diff --git a/testcases/network/stress/route/route4-rmmod b/testcases/network/stress/route/route4-rmmod
+index 5947bb3..e449cc7 100644
+--- a/testcases/network/stress/route/route4-rmmod
++++ b/testcases/network/stress/route/route4-rmmod
+@@ -125,6 +125,9 @@ do_setup()
+ 	exit $TST_TOTAL
+     fi
+ 
++    # The module name of the interface at the local host
++    lhost_module=""
++
+     # Make sure to clean up
+     do_cleanup
+ 
+diff --git a/testcases/network/stress/route/route6-rmmod b/testcases/network/stress/route/route6-rmmod
+index 73f26f2..ffd09bd 100644
+--- a/testcases/network/stress/route/route6-rmmod
++++ b/testcases/network/stress/route/route6-rmmod
+@@ -121,6 +121,9 @@ do_setup()
+ 	exit $TST_TOTAL
+     fi
+ 
++    # The module name of the interface at the local host
++    lhost_module=""
++
+     # Make sure to clean up
+     do_cleanup
+ 
 -- 
-viresh
+1.8.3.1
+
+
+
