@@ -1,73 +1,50 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 8 Sep 2020 15:39:36 +0800
-Subject: [LTP] [PATCH 2/3] syscalls: select: Rename select04.c to
- select02.c
-In-Reply-To: <f7855857470b26fdbebcfe4adf1cd4779852f7ff.1599115178.git.viresh.kumar@linaro.org>
-References: <728ce5d6b7e0f3eba8015c078bfc23ec144ce1c2.1599115178.git.viresh.kumar@linaro.org>
- <f7855857470b26fdbebcfe4adf1cd4779852f7ff.1599115178.git.viresh.kumar@linaro.org>
-Message-ID: <a68a049a-c362-ae0e-3cc8-19cac4cfd741@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 8 Sep 2020 15:45:41 +0800
+Subject: [LTP] LTP release
+In-Reply-To: <20200908073138.GB2475@yuki.lan>
+References: <20200908073138.GB2475@yuki.lan>
+Message-ID: <CAEemH2cHvM_KD7W6fyX6z3bc0qfVtkp=yEM8MDvvohouyj5N2w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Viresh
+On Tue, Sep 8, 2020 at 3:31 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-IMO, we don't need to rename select04 to select02. The later new case 
-can use select02 name. It makes select history more clean.
-
-Best Regards
-Yang Xu
-> Do the rename.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   runtest/quickhit                                            | 2 +-
->   runtest/syscalls                                            | 2 +-
->   testcases/kernel/syscalls/select/.gitignore                 | 2 +-
->   testcases/kernel/syscalls/select/{select04.c => select02.c} | 0
->   4 files changed, 3 insertions(+), 3 deletions(-)
->   rename testcases/kernel/syscalls/select/{select04.c => select02.c} (100%)
-> 
-> diff --git a/runtest/quickhit b/runtest/quickhit
-> index c01dc4f30b9f..9ada4c4c47c2 100644
-> --- a/runtest/quickhit
-> +++ b/runtest/quickhit
-> @@ -180,7 +180,7 @@ sbrk01 sbrk01
->   # Basic test for sbrk(2)
->   select01 select01
->   # Basic select tests
-> -select04 select04
-> +select02 select02
->   setgid01 setgid01
->   # Basic test for setgid(2)
->   setpgid01 setpgid01
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 105ca29dd29b..0c6bf0e4d0a7 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1150,7 +1150,7 @@ sched_getattr01 sched_getattr01
->   sched_getattr02 sched_getattr02
->   
->   select01 select01
-> -select04 select04
-> +select02 select02
->   
->   semctl01 semctl01
->   semctl02 semctl02
-> diff --git a/testcases/kernel/syscalls/select/.gitignore b/testcases/kernel/syscalls/select/.gitignore
-> index 243a092ac6ca..f5a43c23326a 100644
-> --- a/testcases/kernel/syscalls/select/.gitignore
-> +++ b/testcases/kernel/syscalls/select/.gitignore
-> @@ -1,2 +1,2 @@
->   /select01
-> -/select04
-> +/select02
-> diff --git a/testcases/kernel/syscalls/select/select04.c b/testcases/kernel/syscalls/select/select02.c
-> similarity index 100%
-> rename from testcases/kernel/syscalls/select/select04.c
-> rename to testcases/kernel/syscalls/select/select02.c
-> 
+> Hi!
+> As usual we should start preparing for a next release.
+>
+> As usuall we will have a week or two where we should merge everthing
+> that should go in before the release, then git freeze for another week
+> and finally a release.
+>
+> So let's start with a list of things that should go in.
+>
+> For me it would be:
+>
+> * ptrace08 fix
+>
+> * if possible the shmctl() rewrite
+>
++1 these rewrite looks good, I will finish my test by the end of today.
 
 
+>
+>
+> What else should go in?
+>
+
+It may be better to fix ioctl_loop01 too.
+https://github.com/linux-test-project/ltp/issues/718
+
+And I'd like to add the MAP_GROWSDOWN test too, but I haven't come up with
+a way to solve the segment fault on s390x.
+http://lists.linux.it/pipermail/ltp/2020-August/018416.html
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200908/3490a74a/attachment.htm>
