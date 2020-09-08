@@ -1,50 +1,31 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 8 Sep 2020 15:45:41 +0800
-Subject: [LTP] LTP release
-In-Reply-To: <20200908073138.GB2475@yuki.lan>
-References: <20200908073138.GB2475@yuki.lan>
-Message-ID: <CAEemH2cHvM_KD7W6fyX6z3bc0qfVtkp=yEM8MDvvohouyj5N2w@mail.gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 8 Sep 2020 13:17:28 +0530
+Subject: [LTP] [PATCH 2/3] syscalls: select: Rename select04.c to
+ select02.c
+In-Reply-To: <a68a049a-c362-ae0e-3cc8-19cac4cfd741@cn.fujitsu.com>
+References: <728ce5d6b7e0f3eba8015c078bfc23ec144ce1c2.1599115178.git.viresh.kumar@linaro.org>
+ <f7855857470b26fdbebcfe4adf1cd4779852f7ff.1599115178.git.viresh.kumar@linaro.org>
+ <a68a049a-c362-ae0e-3cc8-19cac4cfd741@cn.fujitsu.com>
+Message-ID: <20200908074728.imbxcswztx3h5ssd@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 8, 2020 at 3:31 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+On 08-09-20, 15:39, Yang Xu wrote:
+> Hi Viresh
+> 
+> IMO, we don't need to rename select04 to select02. The later new case can
+> use select02 name. It makes select history more clean.
 
-> Hi!
-> As usual we should start preparing for a next release.
->
-> As usuall we will have a week or two where we should merge everthing
-> that should go in before the release, then git freeze for another week
-> and finally a release.
->
-> So let's start with a list of things that should go in.
->
-> For me it would be:
->
-> * ptrace08 fix
->
-> * if possible the shmctl() rewrite
->
-+1 these rewrite looks good, I will finish my test by the end of today.
+Why keeping such history is important ? I think it will look rather
+confusing why we have files named as 01 and then 04.
 
+Anyway, I will keep the patch in the series and will leave it for
+Cyril to decide if he wants to pick the patch or not.
 
->
->
-> What else should go in?
->
-
-It may be better to fix ioctl_loop01 too.
-https://github.com/linux-test-project/ltp/issues/718
-
-And I'd like to add the MAP_GROWSDOWN test too, but I haven't come up with
-a way to solve the segment fault on s390x.
-http://lists.linux.it/pipermail/ltp/2020-August/018416.html
+Thanks Yang.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200908/3490a74a/attachment.htm>
+viresh
