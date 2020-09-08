@@ -1,9 +1,9 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue,  8 Sep 2020 11:49:19 +0530
-Subject: [LTP] [PATCH 06/16] syscalls: semop: Reuse struct time64_variants
+Date: Tue,  8 Sep 2020 11:49:20 +0530
+Subject: [LTP] [PATCH 07/16] syscalls: mq_timed: Reuse struct time64_variants
 In-Reply-To: <cover.1599545766.git.viresh.kumar@linaro.org>
 References: <cover.1599545766.git.viresh.kumar@linaro.org>
-Message-ID: <429ca6f4c2496df28f236ad1366505a9519e68c9.1599545766.git.viresh.kumar@linaro.org>
+Message-ID: <ed55accdb4ceaa11362875959558430ae1f99a6b.1599545766.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,150 +14,160 @@ Lets reuse the common structure here.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- testcases/kernel/syscalls/ipc/semop/semop.h   | 18 +++++++-----------
- testcases/kernel/syscalls/ipc/semop/semop01.c |  6 +++---
- testcases/kernel/syscalls/ipc/semop/semop02.c |  6 +++---
- testcases/kernel/syscalls/ipc/semop/semop03.c |  6 +++---
- 4 files changed, 16 insertions(+), 20 deletions(-)
+ .../mq_timedreceive/mq_timedreceive01.c        | 14 +++++++-------
+ .../syscalls/mq_timedsend/mq_timedsend01.c     | 16 ++++++++--------
+ testcases/kernel/syscalls/utils/mq_timed.h     | 18 +++++-------------
+ 3 files changed, 20 insertions(+), 28 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop.h b/testcases/kernel/syscalls/ipc/semop/semop.h
-index 1fac31818108..73ab9fbbc15c 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop.h
-+++ b/testcases/kernel/syscalls/ipc/semop/semop.h
-@@ -4,6 +4,7 @@
- #define SEMOP_VAR__
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index de0505106d04..be437e19a47f 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -135,10 +135,10 @@ static struct test_case tcase[] = {
  
- #include <sys/sem.h>
+ static void setup(void)
+ {
+-	struct test_variants *tv = &variants[tst_variant];
++	struct time64_variants *tv = &variants[tst_variant];
+ 
+ 	tst_res(TINFO, "Testing variant: %s", tv->desc);
+-	ts.type = tv->type;
++	ts.type = tv->ts_type;
+ 
+ 	bad_addr = tst_get_bad_addr(NULL);
+ 
+@@ -147,7 +147,7 @@ static void setup(void)
+ 
+ static void do_test(unsigned int i)
+ {
+-	struct test_variants *tv = &variants[tst_variant];
++	struct time64_variants *tv = &variants[tst_variant];
+ 	const struct test_case *tc = &tcase[i];
+ 	unsigned int j;
+ 	unsigned int prio;
+@@ -160,13 +160,13 @@ static void do_test(unsigned int i)
+ 	tst_ts_set_nsec(&ts, tc->tv_nsec);
+ 
+ 	if (tc->signal)
+-		pid = set_sig(tc->rq, tv->gettime);
++		pid = set_sig(tc->rq, tv->clock_gettime);
+ 
+ 	if (tc->timeout)
+-		set_timeout(tc->rq, tv->gettime);
++		set_timeout(tc->rq, tv->clock_gettime);
+ 
+ 	if (tc->send) {
+-		if (tv->send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
++		if (tv->mqt_send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
+ 			tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
+ 			return;
+ 		}
+@@ -180,7 +180,7 @@ static void do_test(unsigned int i)
+ 	else
+ 		abs_timeout = tst_ts_get(tc->rq);
+ 
+-	TEST(tv->receive(*tc->fd, rmsg, len, &prio, abs_timeout));
++	TEST(tv->mqt_receive(*tc->fd, rmsg, len, &prio, abs_timeout));
+ 
+ 	if (pid > 0)
+ 		kill_pid(pid);
+diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+index d72f5d41ad61..334131402c9d 100644
+--- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
++++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+@@ -148,10 +148,10 @@ static struct test_case tcase[] = {
+ 
+ static void setup(void)
+ {
+-	struct test_variants *tv = &variants[tst_variant];
++	struct time64_variants *tv = &variants[tst_variant];
+ 
+ 	tst_res(TINFO, "Testing variant: %s", tv->desc);
+-	ts.type = tv->type;
++	ts.type = tv->ts_type;
+ 
+ 	bad_addr = tst_get_bad_addr(cleanup_common);
+ 
+@@ -160,7 +160,7 @@ static void setup(void)
+ 
+ static void do_test(unsigned int i)
+ {
+-	struct test_variants *tv = &variants[tst_variant];
++	struct time64_variants *tv = &variants[tst_variant];
+ 	const struct test_case *tc = &tcase[i];
+ 	unsigned int j;
+ 	unsigned int prio;
+@@ -173,14 +173,14 @@ static void do_test(unsigned int i)
+ 	tst_ts_set_nsec(&ts, tc->tv_nsec);
+ 
+ 	if (tc->signal)
+-		pid = set_sig(tc->rq, tv->gettime);
++		pid = set_sig(tc->rq, tv->clock_gettime);
+ 
+ 	if (tc->timeout)
+-		set_timeout(tc->rq, tv->gettime);
++		set_timeout(tc->rq, tv->clock_gettime);
+ 
+ 	if (tc->send) {
+ 		for (j = 0; j < MSG_LENGTH; j++)
+-			if (tv->send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
++			if (tv->mqt_send(*tc->fd, smsg, tc->len, tc->prio, NULL) < 0) {
+ 				tst_res(TFAIL | TTERRNO, "mq_timedsend() failed");
+ 				return;
+ 			}
+@@ -196,7 +196,7 @@ static void do_test(unsigned int i)
+ 	else
+ 		abs_timeout = tst_ts_get(tc->rq);
+ 
+-	TEST(tv->send(*tc->fd, msg_ptr, tc->len, tc->prio, abs_timeout));
++	TEST(tv->mqt_send(*tc->fd, msg_ptr, tc->len, tc->prio, abs_timeout));
+ 
+ 	if (pid > 0)
+ 		kill_pid(pid);
+@@ -215,7 +215,7 @@ static void do_test(unsigned int i)
+ 		return;
+ 	}
+ 
+-	TEST(tv->receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
++	TEST(tv->mqt_receive(*tc->fd, rmsg, len, &prio, tst_ts_get(tc->rq)));
+ 
+ 	if (*tc->fd == fd)
+ 		cleanup_queue(fd);
+diff --git a/testcases/kernel/syscalls/utils/mq_timed.h b/testcases/kernel/syscalls/utils/mq_timed.h
+index a217e864e1e4..adf46034bdc6 100644
+--- a/testcases/kernel/syscalls/utils/mq_timed.h
++++ b/testcases/kernel/syscalls/utils/mq_timed.h
+@@ -7,26 +7,18 @@
+ #define MQ_TIMED_H
+ 
+ #include "mq.h"
 +#include "time64_variants.h"
  #include "tst_timer.h"
  
- static inline int sys_semtimedop(int semid, struct sembuf *sops, size_t nsops,
-@@ -18,24 +19,19 @@ static inline int sys_semtimedop_time64(int semid, struct sembuf *sops,
- 	return tst_syscall(__NR_semtimedop_time64, semid, sops, nsops, timeout);
- }
- 
--struct test_variants {
--	int (*semop)(int semid, struct sembuf *sops, size_t nsops);
--	int (*semtimedop)(int semid, struct sembuf *sops, size_t nsops, void *timeout);
+-static struct test_variants {
+-	int (*send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
+-		    unsigned int msg_prio, void *abs_timeout);
+-	ssize_t (*receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
+-			   unsigned int *msg_prio, void *abs_timeout);
+-
+-	int (*gettime)(clockid_t clk_id, void *ts);
 -	enum tst_ts_type type;
 -	char *desc;
 -} variants[] = {
--	{ .semop = semop, .type = TST_LIBC_TIMESPEC, .desc = "semop: syscall"},
+-	{ .gettime = libc_clock_gettime, .send = libc_mq_timedsend, .receive = libc_mq_timedreceive, .type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
 +static struct time64_variants variants[] = {
-+	{ .semop = semop, .ts_type = TST_LIBC_TIMESPEC, .desc = "semop: syscall"},
++	{ .clock_gettime = libc_clock_gettime, .mqt_send = libc_mq_timedsend, .mqt_receive = libc_mq_timedreceive, .ts_type = TST_LIBC_TIMESPEC, .desc = "vDSO or syscall with libc spec"},
  
- #if (__NR_semtimedop != __LTP__NR_INVALID_SYSCALL)
--	{ .semtimedop = sys_semtimedop, .type = TST_KERN_OLD_TIMESPEC, .desc = "semtimedop: syscall with old kernel spec"},
-+	{ .semtimedop = sys_semtimedop, .ts_type = TST_KERN_OLD_TIMESPEC, .desc = "semtimedop: syscall with old kernel spec"},
+ #if (__NR_mq_timedsend != __LTP__NR_INVALID_SYSCALL)
+-	{ .gettime = sys_clock_gettime, .send = sys_mq_timedsend, .receive = sys_mq_timedreceive, .type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
++	{ .clock_gettime = sys_clock_gettime, .mqt_send = sys_mq_timedsend, .mqt_receive = sys_mq_timedreceive, .ts_type = TST_KERN_OLD_TIMESPEC, .desc = "syscall with old kernel spec"},
  #endif
  
- #if (__NR_semtimedop_time64 != __LTP__NR_INVALID_SYSCALL)
--	{ .semtimedop = sys_semtimedop_time64, .type = TST_KERN_TIMESPEC, .desc = "semtimedop: syscall time64 with kernel spec"},
-+	{ .semtimedop = sys_semtimedop_time64, .ts_type = TST_KERN_TIMESPEC, .desc = "semtimedop: syscall time64 with kernel spec"},
+ #if (__NR_mq_timedsend_time64 != __LTP__NR_INVALID_SYSCALL)
+-	{ .gettime = sys_clock_gettime64, .send = sys_mq_timedsend64, .receive = sys_mq_timedreceive64, .type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
++	{ .clock_gettime = sys_clock_gettime64, .mqt_send = sys_mq_timedsend64, .mqt_receive = sys_mq_timedreceive64, .ts_type = TST_KERN_TIMESPEC, .desc = "syscall time64 with kernel spec"},
  #endif
  };
- 
--static inline int call_semop(struct test_variants *tv, int semid,
-+static inline int call_semop(struct time64_variants *tv, int semid,
- 		struct sembuf *sops, size_t nsops, void *timeout)
- {
- 	if (tv->semop)
-@@ -44,7 +40,7 @@ static inline int call_semop(struct test_variants *tv, int semid,
- 	return tv->semtimedop(semid, sops, nsops, timeout);
- }
- 
--static inline void semop_supported_by_kernel(struct test_variants *tv)
-+static inline void semop_supported_by_kernel(struct time64_variants *tv)
- {
-        /* Check if the syscall is implemented on the platform */
-        TEST(call_semop(tv, 0, NULL, 0, NULL));
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop01.c b/testcases/kernel/syscalls/ipc/semop/semop01.c
-index add9d07f3ad4..b20eef45cf59 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop01.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop01.c
-@@ -33,7 +33,7 @@ static struct test_case_t {
- 
- static void run(unsigned int n)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 	union semun arr = { .val = 0 };
- 	int fail = 0;
- 	int i;
-@@ -66,13 +66,13 @@ static void run(unsigned int n)
- 
- static void setup(void)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 	int i;
- 
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	semop_supported_by_kernel(tv);
- 
--	timeout.type = tv->type;
-+	timeout.type = tv->ts_type;
- 	tst_ts_set_sec(&timeout, 0);
- 	tst_ts_set_nsec(&timeout, 10000);
- 
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/ipc/semop/semop02.c
-index 9d799e6437cd..2c3ec2c66686 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop02.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop02.c
-@@ -69,7 +69,7 @@ static struct test_case_t {
- 
- static void setup(void)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 	struct passwd *ltpuser;
- 	key_t semkey;
- 	union semun arr;
-@@ -79,7 +79,7 @@ static void setup(void)
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	semop_supported_by_kernel(tv);
- 
--	timeout.type = tv->type;
-+	timeout.type = tv->ts_type;
- 	tst_ts_set_sec(&timeout, 0);
- 	tst_ts_set_nsec(&timeout, 10000);
- 
-@@ -110,7 +110,7 @@ static void setup(void)
- 
- static void run(unsigned int i)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 	union semun arr = {.val = tc[i].arr_val};
- 	struct sembuf buf = {
- 		.sem_op = *tc[i].sem_op,
-diff --git a/testcases/kernel/syscalls/ipc/semop/semop03.c b/testcases/kernel/syscalls/ipc/semop/semop03.c
-index 43d22a8ee1a7..89603f19d651 100644
---- a/testcases/kernel/syscalls/ipc/semop/semop03.c
-+++ b/testcases/kernel/syscalls/ipc/semop/semop03.c
-@@ -36,7 +36,7 @@ struct test_case_t {
- 
- static void do_child(int i)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 	struct sembuf s_buf = {
- 		.sem_op = tc[i].op,
- 		.sem_flg = tc[i].flg,
-@@ -65,12 +65,12 @@ static void sighandler(int sig)
- 
- static void setup(void)
- {
--	struct test_variants *tv = &variants[tst_variant];
-+	struct time64_variants *tv = &variants[tst_variant];
- 
- 	tst_res(TINFO, "Testing variant: %s", tv->desc);
- 	semop_supported_by_kernel(tv);
- 
--	timeout.type = tv->type;
-+	timeout.type = tv->ts_type;
- 	tst_ts_set_sec(&timeout, 0);
- 	tst_ts_set_nsec(&timeout, 10000000);
  
 -- 
 2.25.0.rc1.19.g042ed3e048af
