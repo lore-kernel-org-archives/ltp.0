@@ -1,14 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Sep 2020 15:27:03 +0200
-Subject: [LTP] LTP release
-In-Reply-To: <20200909131327.GA3241@yuki.lan>
-References: <20200908073138.GB2475@yuki.lan>
- <CAEemH2cHvM_KD7W6fyX6z3bc0qfVtkp=yEM8MDvvohouyj5N2w@mail.gmail.com>
- <20200908153659.GA16066@yuki.lan>
- <CAEemH2eq0fwF8zt1uez5vuwM0vtrLtoFd_45sFqE=iQ8hpudfQ@mail.gmail.com>
- <CAEemH2es3sMSfAar8Xj4_Vr+2nsD0isPws4v=8=csLyYROAQGQ@mail.gmail.com>
- <20200909131327.GA3241@yuki.lan>
-Message-ID: <20200909132703.GB3241@yuki.lan>
+Date: Wed, 9 Sep 2020 17:15:36 +0200
+Subject: [LTP] [PATCH v3 1/2] syscalls/msgrcv07: Add functional test for
+ MSG_COPY flag
+In-Reply-To: <1599640046-10135-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20200908140838.GB17482@yuki.lan>
+ <1599640046-10135-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200909151536.GC3241@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,41 +13,84 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Also I would like to get rid of the -fno-optimize-sibling-calls in the
-> Makefile, this makes the test a bit fragile and less portable.
+Pushed with a minor cleanup, thanks.
 
-What about this code:
+The diff:
 
-#include <stdint.h>
-#include <stdio.h>
-
-static intptr_t addr_func(void) __attribute__((noinline));
-
-static intptr_t addr_func(void)
-{
-	int a;
-
-	return (intptr_t)&a;
-}
-
-/*
- * Returns negative number if stack grows down, possitive if stack grows up
- */
-static int stack_dir(void)
-{
-	intptr_t addr = addr_func();
-
-	printf("%p %p\n", &addr, (void*)addr);
-
-	return addr - (intptr_t)&addr;
-}
-
-int main(void)
-{
-	printf("%i\n", stack_dir());
-
-	return 0;
-}
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+index d4568956f..82b119d39 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+@@ -106,9 +106,10 @@ static void test_msg_copy(void)
+ 	struct msqid_ds buf = {0};
+ 
+ 	if (!msg_copy_sup) {
+-		tst_res(TCONF, "MSG_COPY was not supported, skip it");
++		tst_res(TCONF, "MSG_COPY not supported");
+ 		return;
+ 	}
++
+ 	prepare_queue();
+ 
+ 	/*
+@@ -124,10 +125,11 @@ static void test_msg_copy(void)
+ 		} else {
+ 			tst_res(TFAIL | TTERRNO, "msgrcv(0, MSG_COPY) failed");
+ 		}
+-		cleanup();
+-		return;
++		goto exit;
+ 	}
++
+ 	tst_res(TPASS, "msgrcv(0, MSG_COPY) succeeded");
++
+ 	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
+ 		tst_res(TPASS, "MSG_COPY got MSGTYPE1 data correctly");
+ 	else
+@@ -137,21 +139,25 @@ static void test_msg_copy(void)
+ 	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, MSG_COPY | IPC_NOWAIT));
+ 	if (TST_RET == -1) {
+ 		tst_res(TFAIL | TTERRNO, "msgrcv(1, MSG_COPY) failed");
+-		cleanup();
+-		return;
++		goto exit;
+ 	}
++
+ 	tst_res(TPASS, "msgrcv(1, MSG_COPY) succeeded");
++
+ 	if (strcmp(rcv_buf.mtext, MSG2) == 0 && rcv_buf.type == MSGTYPE2)
+ 		tst_res(TPASS, "MSG_COPY got MSGTYPE2 data correctly");
+ 	else
+ 		tst_res(TFAIL, "MSG_COPY got MSGTYPE2 data incorrectly");
+ 
+ 	SAFE_MSGCTL(queue_id, IPC_STAT, &buf);
+-	if (buf.msg_qnum == 2)
++	if (buf.msg_qnum == 2) {
+ 		tst_res(TPASS, "Two messages still in queue");
+-	else
++	} else {
+ 		tst_res(TFAIL, "Expected 2 msgs in queue got %d",
+ 		       (int)buf.msg_qnum);
++	}
++
++exit:
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+@@ -218,11 +224,8 @@ static void setup(void)
+ {
+ 	msgkey = GETIPCKEY();
+ 
+-	if (tst_kvercmp(3, 8, 0) < 0) {
+-		tst_res(TCONF, "MSG_COPY needs Linux 3.8 or newer");
+-		return;
+-	}
+-	msg_copy_sup = 1;
++	if (tst_kvercmp(3, 8, 0) >= 0)
++		msg_copy_sup = 1;
+ }
+ 
+ static void (*testfunc[])(void) = {test_msg_except, test_msg_noerror,
 
 -- 
 Cyril Hrubis
