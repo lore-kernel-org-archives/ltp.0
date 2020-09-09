@@ -1,247 +1,245 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed,  9 Sep 2020 20:56:59 +0300
-Subject: [LTP] [PATCH 02/10] syscalls/fanotify16: Adjust test to use
- FAN_REPORT_DFID_NAME
+Date: Wed,  9 Sep 2020 20:57:00 +0300
+Subject: [LTP] [PATCH 03/10] syscalls/fanotify16: Test more event types with
+ name
 In-Reply-To: <20200909175707.10670-1-amir73il@gmail.com>
 References: <20200909175707.10670-1-amir73il@gmail.com>
-Message-ID: <20200909175707.10670-3-amir73il@gmail.com>
+Message-ID: <20200909175707.10670-4-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The new FAN_DIR_MODIFY event was removed before final v5.7 release
-and will be replaced with a new group flag FAN_REPORT_DFID_NAME to
-report name info for FAN_CREATE, FAN_DELETE and FAN_MOVE events.
-Adjust the test to use this new API.
+- Test events "on child" reported with name
+- Test events on directory itself reported with name "."
+- Test move self event on directory and file
+
+Events open/close are not supported on filesystem mark, so they are set
+on either a subdir inode mark or mount mark.
+
+Events "on child" may or may not be merged with directory modification
+events with same file name, depending on group init flags, so relax the
+exact check to event mask and instead, just expect that all execpted
+event types will arrive.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h | 11 ++-
- .../kernel/syscalls/fanotify/fanotify16.c     | 69 ++++++++++---------
- 2 files changed, 44 insertions(+), 36 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify16.c     | 102 +++++++++++++-----
+ 1 file changed, 77 insertions(+), 25 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 4a7959989..91535718b 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -89,9 +89,6 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
- #ifndef FAN_OPEN_EXEC_PERM
- #define FAN_OPEN_EXEC_PERM	0x00040000
- #endif
--#ifndef FAN_DIR_MODIFY
--#define FAN_DIR_MODIFY		0x00080000
--#endif
- 
- /*
-  * FAN_ALL_PERM_EVENTS has been deprecated, so any new permission events
-@@ -103,6 +100,11 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
- #define LTP_ALL_PERM_EVENTS	(FAN_OPEN_PERM | FAN_OPEN_EXEC_PERM | \
- 				 FAN_ACCESS_PERM)
- 
-+struct fanotify_group_type {
-+	unsigned int flag;
-+	const char * name;
-+};
-+
- struct fanotify_mark_type {
- 	unsigned int flag;
- 	const char * name;
-@@ -201,6 +203,9 @@ static inline void fanotify_save_fid(const char *path,
- }
- #endif /* HAVE_NAME_TO_HANDLE_AT */
- 
-+#define INIT_FANOTIFY_GROUP_TYPE(t) \
-+	{ FAN_ ## t, "FAN_" #t }
-+
- #define INIT_FANOTIFY_MARK_TYPE(t) \
- 	{ FAN_MARK_ ## t, "FAN_MARK_" #t }
- 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
-index d366a455f..f3fbd3bc0 100644
+index f3fbd3bc0..76f053fd7 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify16.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
-@@ -5,7 +5,8 @@
+@@ -5,8 +5,8 @@
   * Started by Amir Goldstein <amir73il@gmail.com>
   *
   * DESCRIPTION
-- *     Check FAN_DIR_MODIFY events with name info
-+ *     Check fanotify directory entry modification events with group
-+ *     init flags FAN_REPORT_DFID_NAME (dir fid + name)
+- *     Check fanotify directory entry modification events with group
+- *     init flags FAN_REPORT_DFID_NAME (dir fid + name)
++ *     Check fanotify directory entry modification events, events on child and
++ *     on self with group init flags FAN_REPORT_DFID_NAME (dir fid + name)
   */
  #define _GNU_SOURCE
  #include "config.h"
-@@ -23,7 +24,6 @@
- 
+@@ -25,7 +25,7 @@
  #if defined(HAVE_SYS_FANOTIFY_H)
  #include <sys/fanotify.h>
--#include <sys/inotify.h>
  
- #define EVENT_MAX 10
+-#define EVENT_MAX 10
++#define EVENT_MAX 20
  
-@@ -59,27 +59,30 @@ static char event_buf[EVENT_BUF_LEN];
- 
- static struct test_case_t {
- 	const char *tname;
-+	struct fanotify_group_type group;
- 	struct fanotify_mark_type mark;
- 	unsigned long mask;
- 	struct fanotify_mark_type sub_mark;
+ /* Size of the event structure, not including file handle */
+ #define EVENT_SIZE (sizeof(struct fanotify_event_metadata) + \
+@@ -66,29 +66,29 @@ static struct test_case_t {
  	unsigned long sub_mask;
  } test_cases[] = {
  	{
--		/* Filesystem watch for dir modify and delete self events */
--		"FAN_REPORT_FID on filesystem with FAN_DIR_MODIFY",
-+		/* Filesystem watch for directory entry modification events */
-+		"FAN_REPORT_DFID_NAME monitor filesystem for create/delete/move",
-+		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME),
+-		/* Filesystem watch for directory entry modification events */
+-		"FAN_REPORT_DFID_NAME monitor filesystem for create/delete/move",
++		"FAN_REPORT_DFID_NAME monitor filesystem for create/delete/move/open/close",
+ 		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME),
  		INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
--		FAN_DIR_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
-+		FAN_CREATE | FAN_DELETE| FAN_MOVE | FAN_DELETE_SELF | FAN_ONDIR,
- 		{},
- 		0,
+-		FAN_CREATE | FAN_DELETE| FAN_MOVE | FAN_DELETE_SELF | FAN_ONDIR,
+-		{},
+-		0,
++		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR,
++		/* Mount watch for events possible on children */
++		INIT_FANOTIFY_MARK_TYPE(MOUNT),
++		FAN_OPEN | FAN_CLOSE | FAN_ONDIR,
  	},
  	{
--		/* Recursive watches for dir modify events */
--		"FAN_REPORT_FID on directories with FAN_DIR_MODIFY",
-+		/* Recursive watches for directory entry modification events */
-+		"FAN_REPORT_DFID_NAME monitor directories for create/delete/move",
-+		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME),
+-		/* Recursive watches for directory entry modification events */
+-		"FAN_REPORT_DFID_NAME monitor directories for create/delete/move",
++		"FAN_REPORT_DFID_NAME monitor directories for create/delete/move/open/close",
+ 		INIT_FANOTIFY_GROUP_TYPE(REPORT_DFID_NAME),
  		INIT_FANOTIFY_MARK_TYPE(INODE),
--		FAN_DIR_MODIFY,
--		/* Watches for delete self event on subdir */
-+		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_ONDIR,
-+		/* Watches for directory entry modification events on subdir */
+ 		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_ONDIR,
+-		/* Watches for directory entry modification events on subdir */
++		/* Watches for self events on subdir and events on subdir's children */
  		INIT_FANOTIFY_MARK_TYPE(INODE),
--		FAN_DIR_MODIFY | FAN_DELETE_SELF | FAN_ONDIR,
-+		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_ONDIR,
+-		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_ONDIR,
++		FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR |
++		FAN_OPEN | FAN_CLOSE | FAN_EVENT_ON_CHILD,
  	},
  };
  
-@@ -87,20 +90,23 @@ static void do_test(unsigned int number)
+ static void do_test(unsigned int number)
  {
- 	int fd, len = 0, i = 0, test_num = 0, tst_count = 0;
+-	int fd, len = 0, i = 0, test_num = 0, tst_count = 0;
++	int fd, dirfd, len = 0, i = 0, test_num = 0, tst_count = 0;
  	struct test_case_t *tc = &test_cases[number];
-+	struct fanotify_group_type *group = &tc->group;
+ 	struct fanotify_group_type *group = &tc->group;
  	struct fanotify_mark_type *mark = &tc->mark;
- 	struct fanotify_mark_type *sub_mark = &tc->sub_mark;
- 	struct fanotify_fid_t root_fid, dir_fid, file_fid;
- 
- 	tst_res(TINFO, "Test #%d: %s", number, tc->tname);
- 
--	fd_notify = fanotify_init(FAN_REPORT_FID, 0);
-+	fd_notify = fanotify_init(group->flag, 0);
- 	if (fd_notify == -1) {
--		if (errno == EINVAL)
--			tst_brk(TCONF,
--				"FAN_REPORT_FID not supported by kernel");
-+		if (errno == EINVAL) {
-+			tst_res(TCONF,
-+				"%s not supported by kernel", group->name);
-+			return;
-+		}
- 
- 		tst_brk(TBROK | TERRNO,
--			"fanotify_init(FAN_REPORT_FID, 0) failed");
-+			"fanotify_init(%s, 0) failed", group->name);
- 	}
+@@ -125,8 +125,10 @@ static void do_test(unsigned int number)
  
  	/*
-@@ -108,10 +114,6 @@ static void do_test(unsigned int number)
+ 	 * Create subdir and watch open events "on children" with name.
++	 * Make it a mount root.
  	 */
- 	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
- 			  AT_FDCWD, MOUNT_PATH) < 0) {
--		if (errno == EINVAL)
--			tst_brk(TCONF,
--				"FAN_DIR_MODIFY not supported by kernel");
--
- 		tst_brk(TBROK | TERRNO,
- 		    "fanotify_mark (%d, FAN_MARK_ADD | %s, 0x%lx, "
- 		    "AT_FDCWD, '"MOUNT_PATH"') failed",
-@@ -138,7 +140,7 @@ static void do_test(unsigned int number)
- 		    fd_notify, sub_mark->name, tc->sub_mask, dname1);
- 	}
+ 	SAFE_MKDIR(dname1, 0755);
++	SAFE_MOUNT(dname1, dname1, "none", MS_BIND, NULL);
  
--	event_set[tst_count].mask = FAN_DIR_MODIFY;
-+	event_set[tst_count].mask = FAN_CREATE | FAN_ONDIR;
- 	event_set[tst_count].fid = &root_fid;
- 	strcpy(event_set[tst_count].name, DIR_NAME1);
- 	tst_count++;
-@@ -160,22 +162,22 @@ static void do_test(unsigned int number)
- 	len += SAFE_READ(0, fd_notify, event_buf + len, EVENT_BUF_LEN - len);
+ 	/* Save the subdir fid */
+ 	fanotify_save_fid(dname1, &dir_fid);
+@@ -153,6 +155,7 @@ static void do_test(unsigned int number)
  
- 	/*
--	 * FAN_DIR_MODIFY events with the same name are merged.
-+	 * FAN_CREATE|FAN_DELETE|FAN_MOVE events with the same name are merged.
- 	 */
--	event_set[tst_count].mask = FAN_DIR_MODIFY;
-+	event_set[tst_count].mask = FAN_CREATE | FAN_MOVED_FROM;
+ 	SAFE_WRITE(1, fd, "1", 1);
+ 	SAFE_RENAME(fname1, fname2);
++
+ 	SAFE_CLOSE(fd);
+ 
+ 	/* Generate delete events with fname2 */
+@@ -168,6 +171,16 @@ static void do_test(unsigned int number)
  	event_set[tst_count].fid = &dir_fid;
  	strcpy(event_set[tst_count].name, FILE_NAME1);
  	tst_count++;
--	event_set[tst_count].mask = FAN_DIR_MODIFY;
-+	event_set[tst_count].mask = FAN_DELETE | FAN_MOVED_TO;
++	/*
++	 * Event on non-dir child with the same name may be merged with the
++	 * directory entry modification events above, unless FAN_REPORT_FID is
++	 * set and child fid is reported.
++	 */
++	event_set[tst_count].mask = FAN_OPEN;
++	event_set[tst_count].fid = &dir_fid;
++	strcpy(event_set[tst_count].name, FILE_NAME1);
++	tst_count++;
++
+ 	event_set[tst_count].mask = FAN_DELETE | FAN_MOVED_TO;
  	event_set[tst_count].fid = &dir_fid;
  	strcpy(event_set[tst_count].name, FILE_NAME2);
- 	tst_count++;
--
- 	/*
- 	 * Directory watch does not get self events on children.
--	 * Filesystem watch gets self event w/o name info.
-+	 * Filesystem watch gets self event w/o name info if FAN_REPORT_FID
-+	 * is set.
+@@ -178,11 +191,37 @@ static void do_test(unsigned int number)
+ 	 * is set.
  	 */
--	if (mark->flag == FAN_MARK_FILESYSTEM) {
-+	if (mark->flag == FAN_MARK_FILESYSTEM && (group->flag & FAN_REPORT_FID)) {
- 		event_set[tst_count].mask = FAN_DELETE_SELF;
+ 	if (mark->flag == FAN_MARK_FILESYSTEM && (group->flag & FAN_REPORT_FID)) {
+-		event_set[tst_count].mask = FAN_DELETE_SELF;
++		event_set[tst_count].mask = FAN_DELETE_SELF | FAN_MOVE_SELF;
  		event_set[tst_count].fid = &file_fid;
  		strcpy(event_set[tst_count].name, "");
-@@ -188,19 +190,20 @@ static void do_test(unsigned int number)
- 	/* Read more events on dirs */
- 	len += SAFE_READ(0, fd_notify, event_buf + len, EVENT_BUF_LEN - len);
+ 		tst_count++;
+ 	}
++	event_set[tst_count].mask = FAN_CLOSE_WRITE;
++	event_set[tst_count].fid = &dir_fid;
++	strcpy(event_set[tst_count].name, FILE_NAME2);
++	tst_count++;
++
++	dirfd = SAFE_OPEN(dname1, O_RDONLY | O_DIRECTORY);
++	SAFE_CLOSE(dirfd);
++
++	SAFE_UMOUNT(dname1);
++
++	/*
++	 * Directory watch gets open/close events on itself and on its subdirs.
++	 * Filesystem watch gets open/close event on all directories with name ".".
++	 */
++	event_set[tst_count].mask = FAN_OPEN | FAN_CLOSE_NOWRITE | FAN_ONDIR;
++	event_set[tst_count].fid = &dir_fid;
++	strcpy(event_set[tst_count].name, ".");
++	tst_count++;
++	/*
++	 * Directory watch gets self event on itself and filesystem watch gets
++	 * self event on all directories with name ".".
++	 */
++	event_set[tst_count].mask = FAN_DELETE_SELF | FAN_MOVE_SELF | FAN_ONDIR;
++	event_set[tst_count].fid = &dir_fid;
++	strcpy(event_set[tst_count].name, ".");
++	tst_count++;
  
--	event_set[tst_count].mask = FAN_DIR_MODIFY;
-+	event_set[tst_count].mask = FAN_MOVED_FROM | FAN_ONDIR;
- 	event_set[tst_count].fid = &root_fid;
- 	strcpy(event_set[tst_count].name, DIR_NAME1);
- 	tst_count++;
--	event_set[tst_count].mask = FAN_DIR_MODIFY;
-+	event_set[tst_count].mask = FAN_DELETE | FAN_MOVED_TO | FAN_ONDIR;
+ 	SAFE_RENAME(dname1, dname2);
+ 	SAFE_RMDIR(dname2);
+@@ -198,14 +237,8 @@ static void do_test(unsigned int number)
  	event_set[tst_count].fid = &root_fid;
  	strcpy(event_set[tst_count].name, DIR_NAME2);
  	tst_count++;
- 	/*
--	 * Directory watch gets self event on itself w/o name info.
-+	 * Directory watch gets self event on itself and filesystem watch gets
-+	 * self event on all directories with name ".".
- 	 */
- 	event_set[tst_count].mask = FAN_DELETE_SELF | FAN_ONDIR;
--	strcpy(event_set[tst_count].name, "");
-+	strcpy(event_set[tst_count].name, ".");
- 	event_set[tst_count].fid = &dir_fid;
- 	tst_count++;
+-	/*
+-	 * Directory watch gets self event on itself and filesystem watch gets
+-	 * self event on all directories with name ".".
+-	 */
+-	event_set[tst_count].mask = FAN_DELETE_SELF | FAN_ONDIR;
+-	strcpy(event_set[tst_count].name, ".");
+-	event_set[tst_count].fid = &dir_fid;
+-	tst_count++;
++	/* Expect no more events */
++	event_set[tst_count].mask = 0;
  
-@@ -224,8 +227,8 @@ static void do_test(unsigned int number)
- 		file_handle = (struct file_handle *)event_fid->handle;
- 		fhlen = file_handle->handle_bytes;
- 		filename = (char *)file_handle->f_handle + fhlen;
--		namelen = ((char *)event + event->event_len) - filename;
--		/* End of event could have name, zero padding, both or none */
-+		namelen = ((char *)event_fid + event_fid->hdr.len) - filename;
-+		/* End of event_fid could have name, zero padding, both or none */
- 		if (namelen > 0) {
- 			namelen = strlen(filename);
- 		} else {
-@@ -236,7 +239,7 @@ static void do_test(unsigned int number)
- 		if (expected->name[0]) {
- 			info_type = FAN_EVENT_INFO_TYPE_DFID_NAME;
- 		} else {
--			info_type = FAN_EVENT_INFO_TYPE_FID;
-+			info_type = FAN_EVENT_INFO_TYPE_DFID;
+ 	/*
+ 	 * Cleanup the marks
+@@ -220,7 +253,7 @@ static void do_test(unsigned int number)
+ 		struct file_handle *file_handle;
+ 		unsigned int fhlen;
+ 		const char *filename;
+-		int namelen, info_type;
++		int namelen, info_type, mask_match;
+ 
+ 		event = (struct fanotify_event_metadata *)&event_buf[i];
+ 		event_fid = (struct fanotify_event_info_fid *)(event + 1);
+@@ -242,6 +275,16 @@ static void do_test(unsigned int number)
+ 			info_type = FAN_EVENT_INFO_TYPE_DFID;
  		}
  
++		/*
++		 * Event may contain more than the expected mask, but it must
++		 * have all the bits in expected mask.
++		 * Expected event on dir must not get event on non dir and the
++		 * other way around.
++		 */
++		mask_match = ((event->mask & expected->mask) &&
++			      !(expected->mask & ~event->mask) &&
++			      !((event->mask ^ expected->mask) & FAN_ONDIR));
++
  		if (test_num >= tst_count) {
+ 			tst_res(TFAIL,
+ 				"got unnecessary event: mask=%llx "
+@@ -259,7 +302,7 @@ static void do_test(unsigned int number)
+ 				(unsigned)event->pid, event->fd,
+ 				event->event_len, event_fid->hdr.info_type,
+ 				event_fid->hdr.len, fhlen);
+-		} else if (event->mask != expected->mask) {
++		} else if (!mask_match) {
+ 			tst_res(TFAIL,
+ 				"got event: mask=%llx (expected %llx) "
+ 				"pid=%u fd=%d name='%s' "
+@@ -356,10 +399,19 @@ static void do_test(unsigned int number)
+ 				event_fid->hdr.len, fhlen);
+ 		}
+ 
++		if (test_num < tst_count)
++			test_num++;
++
++		if (mask_match) {
++			/* In case of merged event match next expected mask */
++			event->mask &= ~expected->mask | FAN_ONDIR;
++			if (event->mask & ~FAN_ONDIR)
++				continue;
++		}
++
+ 		i += event->event_len;
+ 		if (event->fd > 0)
+ 			SAFE_CLOSE(event->fd);
+-		test_num++;
+ 	}
+ 
+ 	for (; test_num < tst_count; test_num++) {
 -- 
 2.17.1
 
