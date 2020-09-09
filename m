@@ -1,201 +1,298 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed,  9 Sep 2020 20:57:06 +0300
-Subject: [LTP] [PATCH 09/10] syscalls/fanotify10: Test with group flag
- FAN_REPORT_NAME
+Date: Wed,  9 Sep 2020 20:57:07 +0300
+Subject: [LTP] [PATCH 10/10] syscalls/fanotify10: Add test cases for merge
+ with ignored mask on directory
 In-Reply-To: <20200909175707.10670-1-amir73il@gmail.com>
 References: <20200909175707.10670-1-amir73il@gmail.com>
-Message-ID: <20200909175707.10670-10-amir73il@gmail.com>
+Message-ID: <20200909175707.10670-11-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The group flag FAN_REPORT_NAME could change the behavior of merging
-inode mark mask with sb/mount marks.
+Pre kernel v5.9, a child mark with ignored mask would not prevent the
+delivery of events to a watching parent of that child.
 
-Add another group class with flag FAN_REPORT_NAME to see how it affects
-merging of events on kernels that support FAN_REPORT_NAME.
+This was fixed by kernel commit eca4784cbb18 ("fsnotify: send event to
+parent and child with single callback").
 
-On old kernels without FAN_REPORT_NAME support, the new group class is
-not tested.
+We add test cases for combination of mark of a directory with ignored
+mask either watching children or not.
+
+Verified that existing test cases still fail on old kernels without the
+relevant fix commits.
+
+In current kernel, there is a limitation that requires setting the event
+also in the parent's mask for ignore mask to be correctly merged with
+other marks. This is a temporary workaround that could be removed in
+the future when the correct behavior could be tested.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify10.c     | 72 +++++++++++--------
- 1 file changed, 44 insertions(+), 28 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify10.c     | 109 ++++++++++++++++--
+ 1 file changed, 99 insertions(+), 10 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index 3cdb25a73..9ebb6d68f 100644
+index 9ebb6d68f..17d2f7578 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -45,16 +45,18 @@
- /* reasonable guess as to size of 1024 events */
- #define EVENT_BUF_LEN        (EVENT_MAX * EVENT_SIZE)
- 
--static unsigned int fanotify_prio[] = {
-+static unsigned int fanotify_class[] = {
- 	FAN_CLASS_PRE_CONTENT,
- 	FAN_CLASS_CONTENT,
--	FAN_CLASS_NOTIF
-+	FAN_CLASS_NOTIF,
-+	/* Reporting dfid+name+fid merges events similar to reporting fd */
-+	FAN_REPORT_DFID_NAME_FID,
+@@ -19,6 +19,10 @@
+  * Test case #16 is a regression test for commit:
+  *
+  *     2f02fd3fa13e fanotify: fix ignore mask logic for events on child...
++ *
++ * Test cases #17-#23 are regression tests for commit:
++ *
++ *     eca4784cbb18 fsnotify: send event to parent and child with single...
+  */
+ #define _GNU_SOURCE
+ #include "config.h"
+@@ -97,6 +101,7 @@ static struct tcase {
+ 	int mark_type;
+ 	const char *ignore_path;
+ 	int ignore_mark_type;
++	unsigned int ignored_onchild;
+ 	const char *event_path;
+ 	unsigned long long expected_mask_with_ignore;
+ 	unsigned long long expected_mask_without_ignore;
+@@ -105,24 +110,28 @@ static struct tcase {
+ 		"ignore mount events created on a specific file",
+ 		MOUNT_PATH, FANOTIFY_MOUNT,
+ 		FILE_MNT2, FANOTIFY_INODE,
++		0,
+ 		FILE_PATH, 0, FAN_OPEN
+ 	},
+ 	{
+ 		"ignore exec mount events created on a specific file",
+ 		MOUNT_PATH, FANOTIFY_MOUNT,
+ 		FILE_EXEC_PATH2, FANOTIFY_INODE,
++		0,
+ 		FILE_EXEC_PATH, FAN_OPEN_EXEC, FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+ 	{
+ 		"don't ignore mount events created on another file",
+ 		MOUNT_PATH, FANOTIFY_MOUNT,
+ 		FILE_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE2_PATH, FAN_OPEN, FAN_OPEN
+ 	},
+ 	{
+ 		"don't ignore exec mount events created on another file",
+ 		MOUNT_PATH, FANOTIFY_MOUNT,
+ 		FILE_EXEC_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE2_EXEC_PATH, FAN_OPEN | FAN_OPEN_EXEC,
+ 		FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+@@ -130,24 +139,28 @@ static struct tcase {
+ 		"ignore inode events created on a specific mount point",
+ 		FILE_PATH, FANOTIFY_INODE,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_MNT2, 0, FAN_OPEN
+ 	},
+ 	{
+ 		"ignore exec inode events created on a specific mount point",
+ 		FILE_EXEC_PATH, FANOTIFY_INODE,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_EXEC_PATH2, FAN_OPEN_EXEC, FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+ 	{
+ 		"don't ignore inode events created on another mount point",
+ 		FILE_MNT2, FANOTIFY_INODE,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_PATH, FAN_OPEN, FAN_OPEN
+ 	},
+ 	{
+ 		"don't ignore exec inode events created on another mount point",
+ 		FILE_EXEC_PATH2, FANOTIFY_INODE,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_EXEC_PATH, FAN_OPEN | FAN_OPEN_EXEC,
+ 		FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+@@ -155,24 +168,28 @@ static struct tcase {
+ 		"ignore fs events created on a specific file",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		FILE_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE_PATH, 0, FAN_OPEN
+ 	},
+ 	{
+ 		"ignore exec fs events created on a specific file",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		FILE_EXEC_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE_EXEC_PATH, FAN_OPEN_EXEC, FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+ 	{
+ 		"don't ignore mount events created on another file",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		FILE_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE2_PATH, FAN_OPEN, FAN_OPEN
+ 	},
+ 	{
+ 		"don't ignore exec mount events created on another file",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		FILE_EXEC_PATH, FANOTIFY_INODE,
++		0,
+ 		FILE2_EXEC_PATH, FAN_OPEN | FAN_OPEN_EXEC,
+ 		FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+@@ -180,24 +197,28 @@ static struct tcase {
+ 		"ignore fs events created on a specific mount point",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_MNT2, 0, FAN_OPEN
+ 	},
+ 	{
+ 		"ignore exec fs events created on a specific mount point",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_EXEC_PATH2, FAN_OPEN_EXEC, FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+ 	{
+ 		"don't ignore fs events created on another mount point",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_PATH, FAN_OPEN, FAN_OPEN
+ 	},
+ 	{
+ 		"don't ignore exec fs events created on another mount point",
+ 		MOUNT_PATH, FANOTIFY_FILESYSTEM,
+ 		MNT2_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_EXEC_PATH, FAN_OPEN | FAN_OPEN_EXEC,
+ 		FAN_OPEN | FAN_OPEN_EXEC
+ 	},
+@@ -205,14 +226,65 @@ static struct tcase {
+ 		"ignore child exec events created on a specific mount point",
+ 		MOUNT_PATH, FANOTIFY_INODE,
+ 		MOUNT_PATH, FANOTIFY_MOUNT,
++		0,
+ 		FILE_EXEC_PATH, FAN_OPEN_EXEC, FAN_OPEN | FAN_OPEN_EXEC
+ 	},
++	{
++		"ignore events on children of directory created on a specific file",
++		MNT2_PATH, FANOTIFY_INODE,
++		FILE_PATH, FANOTIFY_INODE,
++		FAN_EVENT_ON_CHILD,
++		FILE_PATH, 0, FAN_OPEN
++	},
++	{
++		"ignore events on file created inside a parent watching children",
++		FILE_PATH, FANOTIFY_INODE,
++		MNT2_PATH, FANOTIFY_INODE,
++		FAN_EVENT_ON_CHILD,
++		FILE_PATH, 0, FAN_OPEN
++	},
++	{
++		"don't ignore events on file created inside a parent not watching children",
++		FILE_PATH, FANOTIFY_INODE,
++		MNT2_PATH, FANOTIFY_INODE,
++		0,
++		FILE_PATH, FAN_OPEN, FAN_OPEN
++	},
++	{
++		"ignore mount events created inside a parent watching children",
++		FILE_PATH, FANOTIFY_MOUNT,
++		MNT2_PATH, FANOTIFY_INODE,
++		FAN_EVENT_ON_CHILD,
++		FILE_PATH, 0, FAN_OPEN
++	},
++	{
++		"don't ignore mount events created inside a parent not watching children",
++		FILE_PATH, FANOTIFY_MOUNT,
++		MNT2_PATH, FANOTIFY_INODE,
++		0,
++		FILE_PATH, FAN_OPEN, FAN_OPEN
++	},
++	{
++		"ignore fs events created inside a parent watching children",
++		FILE_PATH, FANOTIFY_FILESYSTEM,
++		MNT2_PATH, FANOTIFY_INODE,
++		FAN_EVENT_ON_CHILD,
++		FILE_PATH, 0, FAN_OPEN
++	},
++	{
++		"don't ignore fs events created inside a parent not watching children",
++		FILE_PATH, FANOTIFY_FILESYSTEM,
++		MNT2_PATH, FANOTIFY_INODE,
++		0,
++		FILE_PATH, FAN_OPEN, FAN_OPEN
++	},
  };
--#define FANOTIFY_PRIORITIES ARRAY_SIZE(fanotify_prio)
-+#define NUM_CLASSES ARRAY_SIZE(fanotify_class)
  
- #define GROUPS_PER_PRIO 3
+ static int create_fanotify_groups(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+ 	struct fanotify_mark_type *mark, *ignore_mark;
++	unsigned int mark_ignored, mask;
+ 	unsigned int p, i;
+ 	int ret;
  
--static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
-+static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
- 
- static char event_buf[EVENT_BUF_LEN];
- 
-@@ -75,6 +77,7 @@ static char event_buf[EVENT_BUF_LEN];
- 
- static pid_t child_pid;
- static int bind_mount_created;
-+static unsigned int num_classes = NUM_CLASSES;
- 
- enum {
- 	FANOTIFY_INODE,
-@@ -216,11 +219,23 @@ static int create_fanotify_groups(unsigned int n)
- 	mark = &fanotify_mark_types[tc->mark_type];
- 	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
- 
--	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
-+	for (p = 0; p < num_classes; p++) {
- 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
--			fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_prio[p] |
--							     FAN_NONBLOCK,
--							     O_RDONLY);
-+			fd_notify[p][i] = fanotify_init(fanotify_class[p] |
-+							FAN_NONBLOCK, O_RDONLY);
-+			if (fd_notify[p][i] == -1) {
-+				if (errno == EINVAL &&
-+				    fanotify_class[p] & FAN_REPORT_NAME) {
-+					tst_res(TCONF,
-+						"FAN_REPORT_NAME not supported by kernel?");
-+					/* Do not try creating this group again */
-+					num_classes--;
-+					return -1;
-+				}
+@@ -272,20 +344,36 @@ static int create_fanotify_groups(unsigned int n)
+ 			/* Add ignore mark for groups with higher priority */
+ 			if (p == 0)
+ 				continue;
 +
-+				tst_brk(TBROK | TERRNO,
-+					"fanotify_init(%x, 0) failed", fanotify_class[p]);
-+			}
- 
- 			/*
- 			 * Add mark for each group.
-@@ -281,7 +296,7 @@ static void cleanup_fanotify_groups(void)
- {
- 	unsigned int i, p;
- 
--	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
-+	for (p = 0; p < num_classes; p++) {
- 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
- 			if (fd_notify[p][i] > 0)
- 				SAFE_CLOSE(fd_notify[p][i]);
-@@ -289,22 +304,23 @@ static void cleanup_fanotify_groups(void)
- 	}
- }
- 
--static void verify_event(int group, struct fanotify_event_metadata *event,
-+static void verify_event(int p, int group, struct fanotify_event_metadata *event,
- 			 unsigned long long expected_mask)
- {
- 	if (event->mask != expected_mask) {
--		tst_res(TFAIL, "group %d got event: mask %llx (expected %llx) "
--			"pid=%u fd=%u", group, (unsigned long long)event->mask,
-+		tst_res(TFAIL, "group %d (%x) got event: mask %llx (expected %llx) "
-+			"pid=%u fd=%u", group, fanotify_class[p],
-+			(unsigned long long) event->mask,
- 			(unsigned long long) expected_mask,
- 			(unsigned)event->pid, event->fd);
- 	} else if (event->pid != child_pid) {
--		tst_res(TFAIL, "group %d got event: mask %llx pid=%u "
--			"(expected %u) fd=%u", group,
-+		tst_res(TFAIL, "group %d (%x) got event: mask %llx pid=%u "
-+			"(expected %u) fd=%u", group, fanotify_class[p],
- 			(unsigned long long)event->mask, (unsigned)event->pid,
- 			(unsigned)getpid(), event->fd);
- 	} else {
--		tst_res(TPASS, "group %d got event: mask %llx pid=%u fd=%u",
--			group, (unsigned long long)event->mask,
-+		tst_res(TPASS, "group %d (%x) got event: mask %llx pid=%u fd=%u",
-+			group, fanotify_class[p], (unsigned long long)event->mask,
- 			(unsigned)event->pid, event->fd);
- 	}
- }
-@@ -357,7 +373,7 @@ static void test_fanotify(unsigned int n)
- 		tst_brk(TBROK, "Child process terminated incorrectly");
- 
- 	/* First verify all groups without matching ignore mask got the event */
--	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
-+	for (p = 0; p < num_classes; p++) {
- 		if (p > 0 && !tc->expected_mask_with_ignore)
- 			break;
- 
-@@ -365,9 +381,10 @@ static void test_fanotify(unsigned int n)
- 			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
++			mask = FAN_OPEN;
++			mark_ignored = FAN_MARK_IGNORED_MASK |
++					FAN_MARK_IGNORED_SURV_MODIFY;
++add_mark:
+ 			ret = fanotify_mark(fd_notify[p][i],
+-					    FAN_MARK_ADD | ignore_mark->flag |
+-					    FAN_MARK_IGNORED_MASK |
+-					    FAN_MARK_IGNORED_SURV_MODIFY,
+-					    FAN_OPEN, AT_FDCWD,
+-					    tc->ignore_path);
++					    FAN_MARK_ADD | ignore_mark->flag | mark_ignored,
++					    mask, AT_FDCWD, tc->ignore_path);
  			if (ret < 0) {
- 				if (errno == EAGAIN) {
--					tst_res(TFAIL, "group %d (prio %d) "
-+					tst_res(TFAIL, "group %d (%x) "
- 						"with %s did not get event",
--						i, p, mark->name);
-+						i, fanotify_class[p], mark->name);
-+					continue;
- 				}
  				tst_brk(TBROK | TERRNO,
- 					"reading fanotify events failed");
-@@ -380,12 +397,12 @@ static void test_fanotify(unsigned int n)
+-					"fanotify_mark(%d, FAN_MARK_ADD | %s | "
+-					"FAN_MARK_IGNORED_MASK | "
+-					"FAN_MARK_IGNORED_SURV_MODIFY, "
+-					"FAN_OPEN, AT_FDCWD, %s) failed",
++					"fanotify_mark(%d, FAN_MARK_ADD | %s | %s, "
++					"%x, AT_FDCWD, %s) failed",
+ 					fd_notify[p][i], ignore_mark->name,
+-					tc->ignore_path);
++					mark_ignored ? "FAN_MARK_IGNORED_MASK | "
++					"FAN_MARK_IGNORED_SURV_MODIFY" : "",
++					mask, tc->ignore_path);
++			}
++
++			/*
++			 * If ignored mask is on a parent watching children,
++			 * also set the flag FAN_EVENT_ON_CHILD in mark mask.
++			 * This is needed to indicate that parent ignored mask
++			 * should be applied to events on children.
++			 */
++			if (tc->ignored_onchild && mark_ignored) {
++				mask = tc->ignored_onchild;
++				/* XXX: temporary hack may be removed in the future */
++				mask |= FAN_OPEN;
++				mark_ignored = 0;
++				goto add_mark;
  			}
- 			event = (struct fanotify_event_metadata *)event_buf;
- 			if (ret > (int)event->event_len) {
--				tst_res(TFAIL, "group %d (prio %d) with %s "
-+				tst_res(TFAIL, "group %d (%x) with %s "
- 					"got more than one event (%d > %d)",
--					i, p, mark->name, ret,
-+					i, fanotify_class[p], mark->name, ret,
- 					event->event_len);
- 			} else {
--				verify_event(i, event, p == 0 ?
-+				verify_event(p, i, event, p == 0 ?
- 						tc->expected_mask_without_ignore :
- 						tc->expected_mask_with_ignore);
- 			}
-@@ -394,8 +411,7 @@ static void test_fanotify(unsigned int n)
  		}
  	}
- 	/* Then verify all groups with matching ignore mask did got the event */
--	for (p = 1; p < FANOTIFY_PRIORITIES &&
--			!tc->expected_mask_with_ignore; p++) {
-+	for (p = 1; p < num_classes && !tc->expected_mask_with_ignore; p++) {
- 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
- 			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
- 			if (ret == 0) {
-@@ -403,15 +419,15 @@ static void test_fanotify(unsigned int n)
- 					"zero length read from fanotify fd");
- 			}
- 			if (ret > 0) {
--				tst_res(TFAIL, "group %d (prio %d) with %s and "
-+				tst_res(TFAIL, "group %d (%x) with %s and "
- 					"%s ignore mask got event",
--					i, p, mark->name, ignore_mark->name);
-+					i, fanotify_class[p], mark->name, ignore_mark->name);
- 				if (event->fd != FAN_NOFD)
- 					SAFE_CLOSE(event->fd);
- 			} else if (errno == EAGAIN) {
--				tst_res(TPASS, "group %d (prio %d) with %s and "
-+				tst_res(TPASS, "group %d (%x) with %s and "
- 					"%s ignore mask got no event",
--					i, p, mark->name, ignore_mark->name);
-+					i, fanotify_class[p], mark->name, ignore_mark->name);
- 			} else {
- 				tst_brk(TBROK | TERRNO,
- 					"reading fanotify events failed");
+@@ -478,6 +566,7 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "9bdda4e9cf2d"},
+ 		{"linux-git", "2f02fd3fa13e"},
++		{"linux-git", "eca4784cbb18"},
+ 		{}
+ 	}
+ };
 -- 
 2.17.1
 
