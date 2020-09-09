@@ -1,124 +1,97 @@
-From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Wed, 9 Sep 2020 08:35:10 +0000
-Subject: [LTP] Error with cpuset_inherit
-Message-ID: <BMXPR01MB234415DBFA9A047126CABB85EE260@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 9 Sep 2020 16:27:26 +0800
+Subject: [LTP] [PATCH v3 2/2] syscalls/msgrcv07: improve and short message
+In-Reply-To: <1599640046-10135-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <20200908140838.GB17482@yuki.lan>
+ <1599640046-10135-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1599640046-10135-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-i am running cpuset_inherit from LTP version:20200515-267-g9677c5573 on custom kernel 5.5.6 but i am getting following failure with the mentioned testcase
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../kernel/syscalls/ipc/msgrcv/msgrcv07.c     | 25 +++++++++----------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-earlycon=sbi earlycon=sbi root=/dev/mmcblk0p3 rootwait console=ttySIF0 console=tty0
-
-Gnu C                  gcc (GCC) 8.3.0
-Clang
-Gnu make               4.2.1
-util-linux             2.34
-mount                  linux 2.34 (libmount 2.34.0: btrfs, namespaces, assert, debug)
-modutils               26
-e2fsprogs              1.45.4
-Linux C Library        > libc.2.30
-Dynamic linker (ldd)   2.30
-Linux C++ Library      6.0.25
-Procps                 3.3.15
-iproute2               iproute2-ss190924
-iputils                'V'
-Kbd                    2.2.0
-Sh-utils               8.31
-Modules Loaded         veth ofpart cmdlinepart spi_nor
-
-free reports:
-              total        used        free      shared  buff/cache   available
-Mem:        8167360       63568     7098176       17980     1005616     7994892
-Swap:             0           0           0
-
-cpuinfo:
-Architecture:        riscv64
-Byte Order:          Little Endian
-CPU(s):              4
-On-line CPU(s) list: 0-3
-Thread(s) per core:  4
-Core(s) per socket:  1
-Socket(s):           1
-L1d cache:           32 KiB
-L1i cache:           32 KiB
-L2 cache:            2 MiB
-
-AppArmor disabled
-
-SELinux mode: unknown
-no big block device was specified on commandline.
-Tests which require a big block device are disabled.
-You can specify it with option -z
-COMMAND:    /opt/ltp/bin/ltp-pan   -e -S   -a 10318     -n 10318 -p -f /tmp/ltp-NOCHmuGYM1/alltests -l /opt/ltp/results/LTP_RUN_ON-2020_09_08-11h_09m_36s.log  -C /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.failed -T /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.tconf
-INFO: Restricted to cpuset_inherit
-LOG File: /opt/ltp/results/LTP_RUN_ON-2020_09_08-11h_09m_36s.log
-FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.failed
-TCONF COMMAND File: /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.tconf
-Running tests.......
-<<<test_start>>>
-tag=cpuset_inherit stime=1599563376
-cmdline="cpuset_inherit_testset.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-cat: /sys/devices/system/node/has_normal_memory: No such file or directory
-cpuset_inherit 1 TPASS: cpus: Inherited information is right!
-cpuset_inherit 3 TPASS: cpus: Inherited information is right!
-cpuset_inherit 5 TPASS: cpus: Inherited information is right!
-cpuset_inherit 7 TPASS: cpus: Inherited information is right!
-cpuset_inherit 9 TPASS: cpus: Inherited information is right!
-cpuset_inherit 11 TPASS: cpus: Inherited information is right!
-cpuset_inherit 13 TPASS: mems: Inherited information is right!
-cpuset_inherit 15 TPASS: mems: Inherited information is right!
-cpuset_inherit 17 TPASS: mems: Inherited information is right!
-cpuset_inherit 19 TPASS: mems: Inherited information is right!
-cpuset_inherit 21 TPASS: mems: Inherited information is right!
-cpuset_inherit 23 TFAIL: mems: Test result - 0 Expected string - ""
-cpuset_inherit 25 TPASS: cpu_exclusive: Inherited information is right!
-cpuset_inherit 27 TPASS: cpu_exclusive: Inherited information is right!
-cpuset_inherit 29 TPASS: mem_exclusive: Inherited information is right!
-cpuset_inherit 31 TPASS: mem_exclusive: Inherited information is right!
-cpuset_inherit 33 TPASS: mem_hardwall: Inherited information is right!
-cpuset_inherit 35 TPASS: mem_hardwall: Inherited information is right!
-cpuset_inherit 37 TPASS: memory_migrate: Inherited information is right!
-cpuset_inherit 39 TPASS: memory_migrate: Inherited information is right!
-cpuset_inherit 41 TPASS: memory_spread_page: Inherited information is right!
-cpuset_inherit 43 TPASS: memory_spread_page: Inherited information is right!
-cpuset_inherit 45 TPASS: memory_spread_slab: Inherited information is right!
-cpuset_inherit 47 TPASS: memory_spread_slab: Inherited information is right!
-cpuset_inherit 49 TPASS: sched_load_balance: Inherited information is right!
-cpuset_inherit 51 TPASS: sched_load_balance: Inherited information is right!
-cpuset_inherit 53 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 55 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 57 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 59 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 61 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 63 TPASS: sched_relax_domain_level: Inherited information is right!
-cpuset_inherit 65 TPASS: sched_relax_domain_level: Inherited information is right!
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=3 termination_type=exited termination_id=1 corefile=no
-cutime=131 cstime=194
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20200515-267-g9677c5573
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20200515-267-g9677c5573
-       ###############################################################
-
-Can someone help me why this test is getting failed and how i can resolve it??
-
-Thanks!
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+index d4568956f..04257d257 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv07.c
+@@ -72,9 +72,9 @@ static void test_msg_except(void)
+ 	}
+ 	tst_res(TPASS, "msgrcv(MSG_EXCEPT) succeeded");
+ 	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
+-		tst_res(TPASS, "msgrcv(MSG_EXCEPT) excepted MSGTYPE2 and only got MSGTYPE1");
++		tst_res(TPASS, "MSG_EXCEPT excepted MSGTYPE2 and got MSGTYPE1");
+ 	else
+-		tst_res(TFAIL, "msgrcv(MSG_EXCEPT) didn't get MSGTYPE1 message");
++		tst_res(TFAIL, "MSG_EXCEPT didn't get MSGTYPE1 message");
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+@@ -95,9 +95,9 @@ static void test_msg_noerror(void)
+ 	}
+ 	tst_res(TPASS, "msgrcv(MSG_NOERROR) succeeded");
+ 	if (strncmp(rcv_buf.mtext, MSG1, msg_len) == 0 && rcv_buf.type == MSGTYPE1)
+-		tst_res(TPASS, "msgrcv(MSG_NOERROR) truncated message text correctly");
++		tst_res(TPASS, "MSG_NOERROR truncated message correctly");
+ 	else
+-		tst_res(TFAIL, "msgrcv(MSG_NOERROR) truncated message text incorrectly");
++		tst_res(TFAIL, "MSG_NOERROR truncated message incorrectly");
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+@@ -167,9 +167,9 @@ static void test_zero_msgtyp(void)
+ 	}
+ 	tst_res(TPASS, "msgrcv(zero_msgtyp) succeeded");
+ 	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
+-		tst_res(TPASS, "msgrcv(zero_msgtyp) got the first message");
++		tst_res(TPASS, "zero_msgtyp got the first message");
+ 	else
+-		tst_res(TFAIL, "msgrcv(zero_msgtyp) didn't get the first message");
++		tst_res(TFAIL, "zero_msgtyp didn't get the first message");
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+@@ -185,11 +185,11 @@ static void test_positive_msgtyp(void)
+ 	}
+ 	tst_res(TPASS, "msgrcv(positive_msgtyp) succeeded");
+ 	if (strcmp(rcv_buf.mtext, MSG2) == 0 && rcv_buf.type == MSGTYPE2)
+-		tst_res(TPASS, "msgrcv(positive_msgtyp) got the first message"
+-			       " in the queue of type msgtyp");
++		tst_res(TPASS, "positive_msgtyp got the first message "
++				"in the queue of type msgtyp");
+ 	else
+-		tst_res(TFAIL, "msgrcv(positive_msgtyp) didn't get the first "
+-			       "message in the queue of type msgtyp");
++		tst_res(TFAIL, "positive_msgtyp didn't get the first "
++				"message in the queue of type msgtyp");
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+@@ -205,15 +205,14 @@ static void test_negative_msgtyp(void)
+ 	}
+ 	tst_res(TPASS, "msgrcv(negative_msgtyp) succeeded");
+ 	if (strcmp(rcv_buf.mtext, MSG1) == 0 && rcv_buf.type == MSGTYPE1)
+-		tst_res(TPASS, "msgrcv(negative_msgtyp) got the first message"
++		tst_res(TPASS, "negative_msgtyp got the first message"
+ 				" in the queue with the lowest type");
+ 	else
+-		tst_res(TFAIL, "msgrcv(negative_msgtyp) didn't get the first "
++		tst_res(TFAIL, "negative_msgtyp didn't get the first "
+ 				"message in the queue with the lowest type");
+ 	SAFE_MSGCTL(queue_id, IPC_RMID, NULL);
+ }
+ 
+-
+ static void setup(void)
+ {
+ 	msgkey = GETIPCKEY();
+-- 
+2.23.0
 
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200909/3ccdea66/attachment-0001.htm>
+
