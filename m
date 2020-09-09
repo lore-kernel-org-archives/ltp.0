@@ -1,86 +1,124 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed,  9 Sep 2020 07:53:47 +0000
-Subject: [LTP] [PATCH] ioctl: take use of TST_RETRY_FN* macro
-Message-ID: <20200909075347.2863-1-liwang@redhat.com>
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Wed, 9 Sep 2020 08:35:10 +0000
+Subject: [LTP] Error with cpuset_inherit
+Message-ID: <BMXPR01MB234415DBFA9A047126CABB85EE260@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To avoid of race with udev, let's use TST_RETRY_FN* macro to loop
-access() function for more times.
+Hi,
+i am running cpuset_inherit from LTP version:20200515-267-g9677c5573 on custom kernel 5.5.6 but i am getting following failure with the mentioned testcase
 
----Errors---
-ioctl_loop01.c:59: PASS: /sys/block/loop0/loop/partscan = 1
-ioctl_loop01.c:60: PASS: /sys/block/loop0/loop/autoclear = 0
-ioctl_loop01.c:71: FAIL: access /dev/loop0p1 fails
-ioctl_loop01.c:77: FAIL: access /sys/block/loop0/loop0p1 fails
+earlycon=sbi earlycon=sbi root=/dev/mmcblk0p3 rootwait console=ttySIF0 console=tty0
 
-ioctl09.c:41: PASS: access /sys/block/loop0/loop0p1 succeeds
-ioctl09.c:52: FAIL: access /dev/loop0p1 fails
+Gnu C                  gcc (GCC) 8.3.0
+Clang
+Gnu make               4.2.1
+util-linux             2.34
+mount                  linux 2.34 (libmount 2.34.0: btrfs, namespaces, assert, debug)
+modutils               26
+e2fsprogs              1.45.4
+Linux C Library        > libc.2.30
+Dynamic linker (ldd)   2.30
+Linux C++ Library      6.0.25
+Procps                 3.3.15
+iproute2               iproute2-ss190924
+iputils                'V'
+Kbd                    2.2.0
+Sh-utils               8.31
+Modules Loaded         veth ofpart cmdlinepart spi_nor
 
-Fixes: #718
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Cc: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/ioctl/ioctl09.c      | 8 +++++---
- testcases/kernel/syscalls/ioctl/ioctl_loop01.c | 4 ++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+free reports:
+              total        used        free      shared  buff/cache   available
+Mem:        8167360       63568     7098176       17980     1005616     7994892
+Swap:             0           0           0
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl09.c b/testcases/kernel/syscalls/ioctl/ioctl09.c
-index 151618df4..9e220809d 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl09.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl09.c
-@@ -30,13 +30,15 @@ static void change_partition(const char *const cmd[])
- 
- static void check_partition(int part_num, bool value)
- {
--	int ret;
-+	int ret, time_delay;
- 
- 	sprintf(sys_loop_partpath, "/sys/block/loop%d/loop%dp%d",
- 		dev_num, dev_num, part_num);
- 	sprintf(loop_partpath, "%sp%d", dev_path, part_num);
- 
--	ret = access(sys_loop_partpath, F_OK);
-+	value ? (time_delay = 30) : (time_delay = 1);
-+
-+	ret = TST_RETRY_FN_EXP_BACKOFF(access(sys_loop_partpath, F_OK), TST_RETVAL_EQ0, time_delay);
- 	if (ret == 0)
- 		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
- 			sys_loop_partpath);
-@@ -44,7 +46,7 @@ static void check_partition(int part_num, bool value)
- 		tst_res(value ? TFAIL : TPASS, "access %s fails",
- 			sys_loop_partpath);
- 
--	ret = access(loop_partpath, F_OK);
-+	ret = TST_RETRY_FN_EXP_BACKOFF(access(loop_partpath, F_OK), TST_RETVAL_EQ0, time_delay);
- 	if (ret == 0)
- 		tst_res(value ? TPASS : TFAIL, "access %s succeeds",
- 			loop_partpath);
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-index 845a1399b..cf71184b4 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop01.c
-@@ -64,13 +64,13 @@ static void check_loop_value(int set_flag, int get_flag, int autoclear_field)
- 		return;
- 	}
- 
--	ret = access(loop_partpath, F_OK);
-+	ret = TST_RETRY_FN_EXP_BACKOFF(access(loop_partpath, F_OK), TST_RETVAL_EQ0, 30);
- 	if (ret == 0)
- 		tst_res(TPASS, "access %s succeeds", loop_partpath);
- 	else
- 		tst_res(TFAIL, "access %s fails", loop_partpath);
- 
--	ret = access(sys_loop_partpath, F_OK);
-+	ret = TST_RETRY_FN_EXP_BACKOFF(access(sys_loop_partpath, F_OK), TST_RETVAL_EQ0, 30);
- 	if (ret == 0)
- 		tst_res(TPASS, "access %s succeeds", sys_loop_partpath);
- 	else
--- 
-2.21.1
+cpuinfo:
+Architecture:        riscv64
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  4
+Core(s) per socket:  1
+Socket(s):           1
+L1d cache:           32 KiB
+L1i cache:           32 KiB
+L2 cache:            2 MiB
 
+AppArmor disabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /opt/ltp/bin/ltp-pan   -e -S   -a 10318     -n 10318 -p -f /tmp/ltp-NOCHmuGYM1/alltests -l /opt/ltp/results/LTP_RUN_ON-2020_09_08-11h_09m_36s.log  -C /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.failed -T /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.tconf
+INFO: Restricted to cpuset_inherit
+LOG File: /opt/ltp/results/LTP_RUN_ON-2020_09_08-11h_09m_36s.log
+FAILED COMMAND File: /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.failed
+TCONF COMMAND File: /opt/ltp/output/LTP_RUN_ON-2020_09_08-11h_09m_36s.tconf
+Running tests.......
+<<<test_start>>>
+tag=cpuset_inherit stime=1599563376
+cmdline="cpuset_inherit_testset.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+cat: /sys/devices/system/node/has_normal_memory: No such file or directory
+cpuset_inherit 1 TPASS: cpus: Inherited information is right!
+cpuset_inherit 3 TPASS: cpus: Inherited information is right!
+cpuset_inherit 5 TPASS: cpus: Inherited information is right!
+cpuset_inherit 7 TPASS: cpus: Inherited information is right!
+cpuset_inherit 9 TPASS: cpus: Inherited information is right!
+cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+cpuset_inherit 13 TPASS: mems: Inherited information is right!
+cpuset_inherit 15 TPASS: mems: Inherited information is right!
+cpuset_inherit 17 TPASS: mems: Inherited information is right!
+cpuset_inherit 19 TPASS: mems: Inherited information is right!
+cpuset_inherit 21 TPASS: mems: Inherited information is right!
+cpuset_inherit 23 TFAIL: mems: Test result - 0 Expected string - ""
+cpuset_inherit 25 TPASS: cpu_exclusive: Inherited information is right!
+cpuset_inherit 27 TPASS: cpu_exclusive: Inherited information is right!
+cpuset_inherit 29 TPASS: mem_exclusive: Inherited information is right!
+cpuset_inherit 31 TPASS: mem_exclusive: Inherited information is right!
+cpuset_inherit 33 TPASS: mem_hardwall: Inherited information is right!
+cpuset_inherit 35 TPASS: mem_hardwall: Inherited information is right!
+cpuset_inherit 37 TPASS: memory_migrate: Inherited information is right!
+cpuset_inherit 39 TPASS: memory_migrate: Inherited information is right!
+cpuset_inherit 41 TPASS: memory_spread_page: Inherited information is right!
+cpuset_inherit 43 TPASS: memory_spread_page: Inherited information is right!
+cpuset_inherit 45 TPASS: memory_spread_slab: Inherited information is right!
+cpuset_inherit 47 TPASS: memory_spread_slab: Inherited information is right!
+cpuset_inherit 49 TPASS: sched_load_balance: Inherited information is right!
+cpuset_inherit 51 TPASS: sched_load_balance: Inherited information is right!
+cpuset_inherit 53 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 55 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 57 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 59 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 61 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 63 TPASS: sched_relax_domain_level: Inherited information is right!
+cpuset_inherit 65 TPASS: sched_relax_domain_level: Inherited information is right!
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=3 termination_type=exited termination_id=1 corefile=no
+cutime=131 cstime=194
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20200515-267-g9677c5573
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20200515-267-g9677c5573
+       ###############################################################
+
+Can someone help me why this test is getting failed and how i can resolve it??
+
+Thanks!
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200909/3ccdea66/attachment-0001.htm>
