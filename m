@@ -1,24 +1,57 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 10 Sep 2020 10:13:30 +0800
-Subject: [LTP] [Patch v2] ioctl: take use of TST_RETRY_FN* macro
-In-Reply-To: <1322097859.11602601.1599656780160.JavaMail.zimbra@redhat.com>
-References: <20200909125753.7724-1-liwang@redhat.com>
- <1322097859.11602601.1599656780160.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2ftPnsdaeQeD0Uib-XMVJ9+a_S_MPyEY7iGHGse60oT3g@mail.gmail.com>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Wed, 9 Sep 2020 22:30:28 -0400
+Subject: [LTP] [PATCH v2] route{4,
+ 6}-rmmod: Declare variables before using them
+Message-ID: <1599705028-12889-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Acked-by: Jan Stancek <jstancek@redhat.com>
->
+When running route4-rmmod case, it reports the following error:
+/opt/ltp/testcases/bin/route4-rmmod: line 100: lhost_module: unbound variable.
 
-Pushed, thanks for the review.
+It fails because "set -u" is used in .testcases/lib/cmdlib.sh and
+"set -u" treats unset variables and parameters as errors.
 
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+---
+ testcases/network/stress/route/route4-rmmod | 3 +++
+ testcases/network/stress/route/route6-rmmod | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/testcases/network/stress/route/route4-rmmod b/testcases/network/stress/route/route4-rmmod
+index 5947bb3..7aa1958 100644
+--- a/testcases/network/stress/route/route4-rmmod
++++ b/testcases/network/stress/route/route4-rmmod
+@@ -125,6 +125,9 @@ do_setup()
+ 	exit $TST_TOTAL
+     fi
+ 
++    # The module name of the interface at the local host
++    lhost_module=
++
+     # Make sure to clean up
+     do_cleanup
+ 
+diff --git a/testcases/network/stress/route/route6-rmmod b/testcases/network/stress/route/route6-rmmod
+index 73f26f2..765a57a 100644
+--- a/testcases/network/stress/route/route6-rmmod
++++ b/testcases/network/stress/route/route6-rmmod
+@@ -121,6 +121,9 @@ do_setup()
+ 	exit $TST_TOTAL
+     fi
+ 
++    # The module name of the interface at the local host
++    lhost_module=
++
+     # Make sure to clean up
+     do_cleanup
+ 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200910/9fd2c756/attachment-0001.htm>
+1.8.3.1
+
+
+
