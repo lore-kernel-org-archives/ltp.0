@@ -1,54 +1,47 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 10 Sep 2020 16:50:42 +0300
-Subject: [LTP] [PATCH 00/10] Fanotify tests for v5.9
-In-Reply-To: <CAOQ4uxjAwQcmSnsJ5=O88bi2zxAzAe8uXCgg4+5mF6qOmSBfGQ@mail.gmail.com>
-References: <20200909175707.10670-1-amir73il@gmail.com>
- <20200910112730.GA7194@dell5510>
- <CAOQ4uxjAwQcmSnsJ5=O88bi2zxAzAe8uXCgg4+5mF6qOmSBfGQ@mail.gmail.com>
-Message-ID: <CAOQ4uxi3fv-ONsJoXYwTh2iP5fM2Ssj7GgcrzcEGRtsEbYgNLw@mail.gmail.com>
+Date: Thu, 10 Sep 2020 17:05:01 +0300
+Subject: [LTP] [PATCH 1/1] syscalls/fanotify15: TCONF also on EOPNOTSUPP
+In-Reply-To: <20200910110712.2181-1-pvorel@suse.cz>
+References: <20200910110712.2181-1-pvorel@suse.cz>
+Message-ID: <CAOQ4uxgVkz3Xatg43Py4md7LKEUoJKbb4H-Z5y1PyzPdZbx-Rw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Sep 10, 2020 at 4:36 PM Amir Goldstein <amir73il@gmail.com> wrote:
+On Thu, Sep 10, 2020 at 2:07 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
-> On Thu, Sep 10, 2020 at 2:27 PM Petr Vorel <pvorel@suse.cz> wrote:
-> >
-> > Hi Amir,
-> >
-> > > Following are the tests that were used to develop the upcoming fanotify
-> > > features in v5.9.
-> >
-> > > The inotify/dnotify tests and fanotify09 test case are regression tests
-> > > for a mid series bug that has been fixed before the merge.
-> > Patchset merged.
-> >
-> > > fanotify10 gets another set of test cases to catch yet another ignored
-> > > mask logic bug. The fix commit will be too hard to backport IMO, so
-> > > perhaps these test cases should go into a new test with .min_kver = "5.9".
-> > Can we just skip particular test with tst_parse_kver() or tst_kvcmp()? Because
-> > other tests are valid, thus why to skip them (which would be when using
-> > .min_kver).
+> instead of TBROK:
+> fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
+> fanotify15.c:96: BROK: fanotify_mark(3, FAN_MARK_ADD | FAN_MARK_FILESYSTEM, FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_MODIFY | FAN_ONDIR | 0x400, AT_FDCWD, mntpoint/test_dir) failed: EOPNOTSUPP (95)
 >
-> Sure I did not know about tst_parse_kver() I will send a patch.
+> is now reported:
+> fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
+> fanotify15.c:93: CONF: FAN_REPORT_FID not supported on exfat filesystem
 >
-> BTW, sorry for the wrong commit id in the test.
-> Your fix missed removing the old commit from comment:
+> fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
+> fanotify15.c:93: CONF: FAN_REPORT_FID not supported on ntfs filesystem
 >
->   * Test cases #17-#23 are regression tests for commit:
->   *
->   *     497b0c5a7c06 fsnotify: send event to parent and child with single...
->   *     eca4784cbb18 fsnotify: send event to parent and child with single...
->   */
+> Found on 5.8.0 on openSUSE Tumbleweed.
 >
+> Fixes: 403f11f3a ("syscalls/fanotify15: verify fid for dirent events")
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+>
+> I suppose that EXDEV (in fanotify_test_fid()) is really error which
+> should be caught as TBROK (unlike ENODEV and EOPNOTSUPP). Am I correct?
 
-Actually, I don't see any examples of tests that use tst_kvcmp()
-Do you mind making and testing this change?
+No. EXDEV is also an indication of problematic filesystem.
+You will get it if you try to setup the mark on a btrfs subvolume, which is not
+the root volume, because in that case the "fsid" information from event is
+not reliable.
 
-All the test cases in fanotify10 with non zero tc->ignored_onchild should be
-skipped for kver < 5.9
+Probably this is not going to happen in LTP, but still.
+
+Good spotting.
 
 Thanks,
 Amir.
