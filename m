@@ -1,60 +1,44 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 10 Sep 2020 20:54:09 +0800
-Subject: [LTP] [PATCH v4] Add a test case for mmap MAP_GROWSDOWN flag
-In-Reply-To: <20200910095542.GA4275@yuki.lan>
-References: <20200910093532.20223-1-liwang@redhat.com>
- <20200910095542.GA4275@yuki.lan>
-Message-ID: <CAEemH2eFR63=G-sJyRPv+KwAELh3ukCoZ4NMUsDFQcM=oCNc-A@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 10 Sep 2020 16:36:05 +0300
+Subject: [LTP] [PATCH 00/10] Fanotify tests for v5.9
+In-Reply-To: <20200910112730.GA7194@dell5510>
+References: <20200909175707.10670-1-amir73il@gmail.com>
+ <20200910112730.GA7194@dell5510>
+Message-ID: <CAOQ4uxjAwQcmSnsJ5=O88bi2zxAzAe8uXCgg4+5mF6qOmSBfGQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> +     child_pid = SAFE_FORK();
-> > +     if (!child_pid)
-> > +             grow_stack(stack, stack_size, stack - stack_size +
-> UNITS(1));
+On Thu, Sep 10, 2020 at 2:27 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
-> Why don't we allocate the stack here in the child process? That way we
-> can also get rid of the cleanup() function.
+> Hi Amir,
 >
-
-Ok, that's no problem.
-
-
-> Also when we are at it, can we also add a second test where we mmap() a
-> page in the space the stack is supposed to grow into i.e. do
-> allocate_stack() then mmap() a page in the free address space and check
-> that the child is killed by a SIGSEGV?
+> > Following are the tests that were used to develop the upcoming fanotify
+> > features in v5.9.
 >
-
-Sure, it is a strict way to verify everything goes well with
-MAP_GROWSDOWN:).
-And to guarantee SIGSEGV, it needs mapping into the address higher than the
-(void *)(stack - stack_size), because older kernel set 'stack_guard_gap' as
-1 page.
-
-I'll try this in V5 tomorrow.
-
-
+> > The inotify/dnotify tests and fanotify09 test case are regression tests
+> > for a mid series bug that has been fixed before the merge.
+> Patchset merged.
 >
-> > +     SAFE_WAIT(&wstatus);
-> > +     if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) == 0)
-> > +             tst_res(TPASS, "Stack grows in unmapped region");
-> > +     else if (WIFSIGNALED(wstatus))
-> > +             tst_res(TFAIL, "Child killed by %s",
-> tst_strsig(WTERMSIG(wstatus)));
->
-> There is no point in this else if and tst_res(), the tst_strstatus() will
-> print that info
-> for you.
->
-Agree.
+> > fanotify10 gets another set of test cases to catch yet another ignored
+> > mask logic bug. The fix commit will be too hard to backport IMO, so
+> > perhaps these test cases should go into a new test with .min_kver = "5.9".
+> Can we just skip particular test with tst_parse_kver() or tst_kvcmp()? Because
+> other tests are valid, thus why to skip them (which would be when using
+> .min_kver).
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200910/9891e1ea/attachment.htm>
+Sure I did not know about tst_parse_kver() I will send a patch.
+
+BTW, sorry for the wrong commit id in the test.
+Your fix missed removing the old commit from comment:
+
+  * Test cases #17-#23 are regression tests for commit:
+  *
+  *     497b0c5a7c06 fsnotify: send event to parent and child with single...
+  *     eca4784cbb18 fsnotify: send event to parent and child with single...
+  */
+
+Thanks,
+Amir.
