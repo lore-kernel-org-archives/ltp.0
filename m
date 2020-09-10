@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Sep 2020 16:43:57 +0200
-Subject: [LTP] [PATCH 00/10] Fanotify tests for v5.9
-In-Reply-To: <CAOQ4uxi3fv-ONsJoXYwTh2iP5fM2Ssj7GgcrzcEGRtsEbYgNLw@mail.gmail.com>
-References: <20200909175707.10670-1-amir73il@gmail.com>
- <20200910112730.GA7194@dell5510>
- <CAOQ4uxjAwQcmSnsJ5=O88bi2zxAzAe8uXCgg4+5mF6qOmSBfGQ@mail.gmail.com>
- <CAOQ4uxi3fv-ONsJoXYwTh2iP5fM2Ssj7GgcrzcEGRtsEbYgNLw@mail.gmail.com>
-Message-ID: <20200910144357.GA10114@yuki.lan>
+Date: Thu, 10 Sep 2020 17:24:47 +0200
+Subject: [LTP] [PATCH v2] syscall/ptrace08: Simplify the test.
+In-Reply-To: <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
+References: <20200904140931.10153-1-chrubis@suse.cz>
+ <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
+Message-ID: <20200910152447.GA10844@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,22 +12,36 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Sure I did not know about tst_parse_kver() I will send a patch.
-> >
-> > BTW, sorry for the wrong commit id in the test.
-> > Your fix missed removing the old commit from comment:
-> >
-> >   * Test cases #17-#23 are regression tests for commit:
-> >   *
-> >   *     497b0c5a7c06 fsnotify: send event to parent and child with single...
-> >   *     eca4784cbb18 fsnotify: send event to parent and child with single...
-> >   */
-> >
-> 
-> Actually, I don't see any examples of tests that use tst_kvcmp()
+> looks good and the test passes on older fixed kernels. Just one
+> compatibility issue below.
 
-It's tst_kvercmp() the tst_kvcmp() is internal library function that
-shouldn't be used in testcases.
+I've fixed that and also the kernel version when the behavior had
+changed and pushed, thanks for the review and testing.
+
+...
+
+> > +	if (TST_RET != -1) {
+> > +		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
+> > +	} else {
+> > +		if (TST_ERR == EINVAL) {
+> > +			tst_res(TPASS | TTERRNO,
+> > +				"ptrace() breakpoint with kernel addr failed");
+> > +		} else {
+> > +			tst_res(TFAIL | TTERRNO,
+> > +				"ptrace() breakpoint on kernel addr should return EINVAL, got");
+> > +		}
+> > +	}
+> > +
+> > +	unsigned long addr;
+> 
+> AFAICT, we're not compiling with --std=c99 so older compilers may
+> complain about the variable declaration here.
+
+The default std for gcc has been at least gnu90 for ages, which includes
+subset of c99 features as well including this one. So unless you
+explicitly pass --std=c90 or older it will work just fine.
+
+I've moved the declaration to the top of the function nevertheless.
 
 -- 
 Cyril Hrubis
