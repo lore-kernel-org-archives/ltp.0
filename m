@@ -1,85 +1,36 @@
-From: Chen Hanxiao <chen_han_xiao@126.com>
-Date: Thu, 10 Sep 2020 09:56:31 -0400
-Subject: [LTP] [PATCH] ns-tools/set_ipv4addr: Use ip command as default
-Message-ID: <1599746191-2012-1-git-send-email-chen_han_xiao@126.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 10 Sep 2020 16:43:57 +0200
+Subject: [LTP] [PATCH 00/10] Fanotify tests for v5.9
+In-Reply-To: <CAOQ4uxi3fv-ONsJoXYwTh2iP5fM2Ssj7GgcrzcEGRtsEbYgNLw@mail.gmail.com>
+References: <20200909175707.10670-1-amir73il@gmail.com>
+ <20200910112730.GA7194@dell5510>
+ <CAOQ4uxjAwQcmSnsJ5=O88bi2zxAzAe8uXCgg4+5mF6qOmSBfGQ@mail.gmail.com>
+ <CAOQ4uxi3fv-ONsJoXYwTh2iP5fM2Ssj7GgcrzcEGRtsEbYgNLw@mail.gmail.com>
+Message-ID: <20200910144357.GA10114@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Chen Hanxiao <chenhx.fnst@cn.fujitsu.com>
+Hi!
+> > Sure I did not know about tst_parse_kver() I will send a patch.
+> >
+> > BTW, sorry for the wrong commit id in the test.
+> > Your fix missed removing the old commit from comment:
+> >
+> >   * Test cases #17-#23 are regression tests for commit:
+> >   *
+> >   *     497b0c5a7c06 fsnotify: send event to parent and child with single...
+> >   *     eca4784cbb18 fsnotify: send event to parent and child with single...
+> >   */
+> >
+> 
+> Actually, I don't see any examples of tests that use tst_kvcmp()
 
-Set iproute as the default as ifconfig
-has been deprecated on some of the distributions.
+It's tst_kvercmp() the tst_kvcmp() is internal library function that
+shouldn't be used in testcases.
 
-Signed-off-by: Chen Hanxiao <chenhx.fnst@cn.fujitsu.com>
----
- testcases/network/stress/ns-tools/set_ipv4addr | 40 +++++++++++++++++++++-----
- 1 file changed, 33 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/network/stress/ns-tools/set_ipv4addr b/testcases/network/stress/ns-tools/set_ipv4addr
-index 1ec0769..baf5d4a 100644
---- a/testcases/network/stress/ns-tools/set_ipv4addr
-+++ b/testcases/network/stress/ns-tools/set_ipv4addr
-@@ -57,6 +57,8 @@ export LTPROOT
- # Check the environmanet variable for the test
- . check_envval || exit 1
- 
-+CMD="${CMD:-ip}"
-+
- # Arguments
- if [ $# -ne 4 ]; then
-     echo "Usage: $0 host_type link_num network_portion host_portion" >&2
-@@ -77,17 +79,41 @@ fi
- addr=${network_part}.${host_part}
- netmask=`echo $network_part | sed "s/[[:digit:]]*/255/g"`.`echo $host_part | sed "s/[[:digit:]]*/0/g"`
- broadcast=${network_part}.`echo $host_part | sed "s/[[:digit:]]*/255/g"`
-+prefix=0
-+
-+netmask_to_prefix()
-+{
-+    bits=0
-+    for octet in $(echo $1| sed 's/\./ /g'); do
-+        binbits=$(echo "obase=2; ibase=10; ${octet}"| bc | sed 's/0//g')
-+        let bits+=${#binbits}
-+    done
-+    prefix=$bits
-+}
-+
-+netmask_to_prefix $netmask
- 
- # Assign IPv4 address to the interface belongs the link_num Test Link
- ifname=`get_ifname $host_type $link_num` || exit 1
- 
--if [ $host_type = lhost ]; then
--    ifconfig $ifname up
--    ifconfig $ifname $addr netmask $netmask broadcast $broadcast
--    ret=$?
--else
--    ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ifconfig '$ifname' up && ifconfig '$ifname $addr' netmask '$netmask' broadcast '$broadcast' ) >/dev/null 2>&1; echo $?'`
--fi
-+case $CMD in
-+    ip)
-+        if [ $host_type = lhost ]; then
-+            ip link set $ifname up
-+            ip address add $addr'/'$prefix dev $ifname broadcast $broadcast
-+            ret=$?
-+        else
-+            ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ip link set '$ifname' up && ip address add '$addr'/'$prefix' dev '$ifname' broadcast '$broadcast' ) >/dev/null 2>&1; echo $?'`
-+        fi ;;
-+ifconfig)
-+        if [ $host_type = lhost ]; then
-+            ifconfig $ifname up
-+            ifconfig $ifname $addr netmask $netmask broadcast $broadcast
-+            ret=$?
-+        else
-+            ret=`$LTP_RSH $RHOST '( PATH=/sbin:/usr/sbin:$PATH ; ifconfig '$ifname' up && ifconfig '$ifname $addr' netmask '$netmask' broadcast '$broadcast' ) >/dev/null 2>&1; echo $?'`
-+        fi ;;
-+esac
- 
- if [ $ret -gt 0 ]; then
-     echo "Cannot set $addr to $ifname" >&2
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
