@@ -1,83 +1,62 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 11 Sep 2020 10:38:52 +0300
-Subject: [LTP] [PATCH v2 1/1] fanotify10: Skip non zero ignored_onchild
- tests for < v5.9
-In-Reply-To: <20200911065124.18992-1-pvorel@suse.cz>
-References: <20200911065124.18992-1-pvorel@suse.cz>
-Message-ID: <CAOQ4uxjUj35ePAzQuEO6BrTskrrp0TLX-tnV7L4Opcda0Mm8gg@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 11 Sep 2020 15:42:11 +0800
+Subject: [LTP] [PATCH v5] Add a test case for mmap MAP_GROWSDOWN flag
+In-Reply-To: <20200911070540.GA22970@dell5510>
+References: <20200911035533.30538-1-liwang@redhat.com>
+ <20200911070540.GA22970@dell5510>
+Message-ID: <CAEemH2eC-2SckKbWbQXLYZa=W8RM3hzA4-vWTKJasVFW_HnQKw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Sep 11, 2020 at 9:51 AM Petr Vorel <pvorel@suse.cz> wrote:
->
-> ignored mask in combination with flag FAN_EVENT_ON_CHILD has
-> undefined behavior on kernel < 5.9.
->
-> Also remove wrong kernel commit (left in e8189ff3c).
->
-> Acked-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+On Fri, Sep 11, 2020 at 3:05 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify10.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+> Hi Li,
 >
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> index 2c4401f61..64426b876 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> @@ -20,10 +20,10 @@
->   *
->   *     2f02fd3fa13e fanotify: fix ignore mask logic for events on child...
->   *
-> - * Test cases #17-#23 are regression tests for commit:
-> + * Test cases #17-#23 are regression tests for commit (from v5.9, unlikely to be
-> + * backported thus not in .tags):
-
-If we are being accurate, it is only the 4 test cases with non zero
-ignored_onchild
-that are regression tests for this commit. The other 3 test cases are
-just completing
-the test matrix of possible combinations of marks.
-
-So you may rephrase above as "Test cases with 'ignored_onchild'..."
-or what not.
-
-Thanks,
-Amir.
-
->   *
->   *     497b0c5a7c06 fsnotify: send event to parent and child with single...
-> - *     eca4784cbb18 fsnotify: send event to parent and child with single...
->   */
->  #define _GNU_SOURCE
->  #include "config.h"
-> @@ -451,6 +451,12 @@ static void test_fanotify(unsigned int n)
+> > From: pravin <pravinraghul@zilogic.com>
 >
->         tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+> > We assign the memory region allocated using MAP_GROWSDOWN to a thread,
+> > as a stack, to test the effect of MAP_GROWSDOWN. This is because the
+> > kernel only grows the memory region when the stack pointer, is within
+> > guard page, when the guard page is touched.
 >
-> +       if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
-> +               tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
-> +                               " has undefined behavior on kernel < 5.9");
-> +               return;
-> +       }
-> +
->         if (create_fanotify_groups(n) != 0)
->                 goto cleanup;
+> >   1. Map an anyonymous memory region of size X, and unmap it.
+> >   2. Split the unmapped memory region into two.
+> >   3. The lower memory region is left unmapped.
+> >   4. The higher memory region is mapped for use as stack, using
+> MAP_FIXED | MAP_GROWSDOWN.
+> >   5. The higher memory region is provided as stack to a thread, where
+> >      a recursive function is invoked.
+> >   6. The stack grows beyond the allocated region, into the lower memory
+> area.
+> >   7. If this results in the memory region being extended, into the
+> >      unmapped region, the test is considered to have passed.
 >
-> @@ -567,7 +573,6 @@ static struct tst_test test = {
->         .tags = (const struct tst_tag[]) {
->                 {"linux-git", "9bdda4e9cf2d"},
->                 {"linux-git", "2f02fd3fa13e"},
-> -               {"linux-git", "497b0c5a7c06"},
->                 {}
->         }
->  };
-> --
-> 2.28.0
+> > Also, to verify that(Test2) the stack grows to within a page of the high
+> > end of the next lower map?ping will result in a SIGSEGV signal.
 >
+> > Resolves #300
+> > Signed-off-by: Pravin Raghul S. <pravinraghul@zilogic.com>
+> > Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > Cc: Cyril Hrubis <chrubis@suse.cz>
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> LGTM.
+>
+> Just please fix using spaces instead of tabs in check_stackgrow_up() and
+> run_test() (I suppose your modifications to pravis's code):
+>
+
+Sorry for the chaotic indent, I guess it was caused by my editor.
+
+Anyway, thanks for the review, will fix it after getting Cyril's reviewing.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200911/7a9af66e/attachment.htm>
