@@ -1,56 +1,123 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 Sep 2020 15:47:39 +0200
-Subject: [LTP] [PATCH 00/16] syscalls: Use common variants structure
-In-Reply-To: <20200911110141.6vgc44hrl2hbtq3r@vireshk-i7>
-References: <cover.1599545766.git.viresh.kumar@linaro.org>
- <20200911095314.GA9505@dell5510>
- <20200911103950.kehhklgyie2tqpxh@vireshk-i7>
- <20200911110141.6vgc44hrl2hbtq3r@vireshk-i7>
-Message-ID: <20200911134739.GB4608@yuki.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 11 Sep 2020 22:41:49 +0800
+Subject: [LTP] [PATCH v5] Add a test case for mmap MAP_GROWSDOWN flag
+In-Reply-To: <20200911130836.GA2582@yuki.lan>
+References: <20200911035533.30538-1-liwang@redhat.com>
+ <20200911130836.GA2582@yuki.lan>
+Message-ID: <CAEemH2fPRTh6drs=h=U7OG07SZDgpDfEB0xRadF8Y1FbaHR8Nw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > --- a/include/time64_variants.h
-> > +++ b/include/time64_variants.h
-> > @@ -7,10 +7,13 @@
-> >  #ifndef TIME64_VARIANTS_H
-> >  #define TIME64_VARIANTS_H
-> >  
-> > +#ifdef HAVE_LIBAIO
-> >  #include <libaio.h>
-> > +#endif /* HAVE_LIBAIO */
-> > +
-> >  #include <signal.h>
-> >  #include <stdio.h>
-> > -#include <sys/poll.h>
-> > +#include <poll.h>
-> >  #include <time.h>
-> >  #include "tst_timer.h"
-> >  
-> > @@ -32,8 +35,12 @@ struct time64_variants {
-> >         int (*timer_settime)(kernel_timer_t timerid, int flags, void *its, void *old_its);
-> >         int (*tfd_gettime)(int fd, void *its);
-> >         int (*tfd_settime)(int fd, int flags, void *new_value, void *old_value);
-> > +
-> > +#ifdef HAVE_LIBAIO
-> >         int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
-> >                         struct io_event *events, void *timeout, sigset_t *sigmask);
-> > +#endif /* HAVE_LIBAIO */
-> > +
-> >         int (*mqt_send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
-> >                         unsigned int msg_prio, void *abs_timeout);
-> >         ssize_t (*mqt_receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
-> 
-> And both these changes broke my build. I don't even understand how
-> could the ifdef change break it for me :(
+On Fri, Sep 11, 2020 at 9:08 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-My guess would be missing include for "config.h" in this file to get
-HAVE_LIBAIO definitions.
+> ...
+> > +static void allocate_stack(size_t size)
+> > +{
+> > +     void *start;
+> > +
+> > +     /*
+> > +      * Since the newer kernel does not allow a MAP_GROWSDOWN mapping
+> to grow
+> > +      * closer than 'stack_guard_gap' pages away from a preceding
+> mapping.
+> > +      * The guard then ensures that the next-highest mapped page
+> remains more
+> > +      * than 'stack_guard_gap' below the lowest stack address, and if
+> not then
+> > +      * it will trigger a segfault. So, here adding 256 pages memory
+> spacing
+> > +      * for stack growing safely.
+> > +      *
+> > +      * Btw, kernel default 'stack_guard_gap' size is '256 *
+> getpagesize()'.
+> > +      */
+> > +     long total_size = 256 * getpagesize() + size * 2;
+> > +
+> > +     start = SAFE_MMAP(NULL, total_size, PROT_READ | PROT_WRITE,
+> > +                     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> > +     SAFE_MUNMAP(start, total_size);
+> > +
+> > +     /* start                             stack
+> > +      * +-----------+---------------------+----------------------+
+> > +      * | 256 pages | unmapped (size)     | mapped (size)        |
+> > +      * +-----------+---------------------+----------------------+
+> > +      *
+> > +      */
+> > +     stack = SAFE_MMAP((start + total_size - size), size, PROT_READ |
+> PROT_WRITE,
+> > +                       MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS |
+> MAP_GROWSDOWN,
+> > +                       -1, 0);
+>
+> Well it's not wrong per se but as it is we do not use the pre-allocated
+> part of the stack at all, we directly jump for the guard page as we use
+>
+
+Really? But I think the pthread_attr_setstack(&attr, stack, stack_size) will
+take use of the whole stack memory in function recursive performing.
+How can we say NOT use the pre-allocated stack? I fell a bit confused
+about your words here.
+
+> the stack pointer as a base for the pthread stack. The actual pointer
+> that points to the start of the region is stack - stack_size.
+>
+
+If that's true, it might belong to the internal operation of stack grows,
+should we take care of it in the userspace case?
+
+> There is no point in adding size * 2 here. We can as well reserve 256 *
+> page_size + size. Then map() a single page at the end, which would be at
+> start + total_size - page_size and finally return start + total_size
+> from this function and pass that to pthread_attr_setstack().
+>
+
+I guess that will be work, but sounds a bit stingy. Since the modern system
+does not short of such memory for testing:). And if we decide to go with
+this,
+the code design comments above should be all rewrite.
+
+
+>
+> That way it would look like:
+>
+> | 256 pages | unmapped | 1 mapped page |
+>
+>             | - - -  stack_size  - - - |
+>
+>
+> ...
+> > +     SAFE_PTHREAD_CREATE(&test_thread, &attr, check_depth_recursive,
+> limit);
+> > +     SAFE_PTHREAD_JOIN(test_thread, NULL);
+> > +
+> > +     if (stack)
+> > +             SAFE_MUNMAP(stack, stack_size);
+>
+> I'ts a bit unexpected to unmap the stack here. I guess that unamping it
+> in the run_test() after the grow_stack() call would be a bit cleaner but
+> we would have to move the exit(0) there as well.
+>
+
+I agree with this.
+
+
+> > +     /* Test 2 */
+> > +     child_pid = SAFE_FORK();
+> > +     if (!child_pid) {
+> > +             tst_no_corefile(0);
+>                   ^
+>                  This should go to the test setup.
+>
+
+Only the child_2 will get SIGSEGV, why should we move it to affect the
+whole test?
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200911/b204a692/attachment.htm>
