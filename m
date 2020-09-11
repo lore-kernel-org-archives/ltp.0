@@ -1,46 +1,78 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Sep 2020 11:33:29 +0200
-Subject: [LTP] [PATCH v2 1/1] fanotify10: Skip non zero ignored_onchild
- tests for < v5.9
-In-Reply-To: <CAOQ4uxjUj35ePAzQuEO6BrTskrrp0TLX-tnV7L4Opcda0Mm8gg@mail.gmail.com>
-References: <20200911065124.18992-1-pvorel@suse.cz>
- <CAOQ4uxjUj35ePAzQuEO6BrTskrrp0TLX-tnV7L4Opcda0Mm8gg@mail.gmail.com>
-Message-ID: <20200911093329.GA7459@dell5510>
+Date: Fri, 11 Sep 2020 11:53:14 +0200
+Subject: [LTP] [PATCH 00/16] syscalls: Use common variants structure
+In-Reply-To: <cover.1599545766.git.viresh.kumar@linaro.org>
+References: <cover.1599545766.git.viresh.kumar@linaro.org>
+Message-ID: <20200911095314.GA9505@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi Viresh,
 
-> On Fri, Sep 11, 2020 at 9:51 AM Petr Vorel <pvorel@suse.cz> wrote:
+> Hi Cyril,
 
-> > ignored mask in combination with flag FAN_EVENT_ON_CHILD has
-> > undefined behavior on kernel < 5.9.
+> As you suggested earlier, here is an attempt to use a common structure
+> prototype at most of the places.
 
-> > Also remove wrong kernel commit (left in e8189ff3c).
+> futex, clock_adjtime() and clock_getres() tests are left with their own
+> implementations due to compatibility issues.
 
-> > Acked-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Viresh Kumar (16):
+>   syscalls: Add common time64 variants structure
+>   syscalls: clock_gettime: Reuse struct time64_variants
+>   syscalls: clock_nanosleep: Reuse struct time64_variants
+>   syscalls: clock_settime: Reuse struct time64_variants
+>   syscalls: io_pgetevents: Reuse struct time64_variants
+>   syscalls: semop: Reuse struct time64_variants
+>   syscalls: mq_timed: Reuse struct time64_variants
+>   syscalls: ppoll: Reuse struct time64_variants
+>   syscalls: rt_sigtimedwait: Reuse struct time64_variants
+>   syscalls: sched_rr_get_interval: Reuse struct time64_variants
+>   syscalls: sendmmsg: Reuse struct time64_variants
+>   syscalls: timer_settime: Reuse struct time64_variants
+>   syscalls: timer_gettime: Reuse struct time64_variants
+>   syscalls: timerfd: Reuse struct time64_variants
+>   syscalls: utimensat: Reuse struct time64_variants
+>   futex: Move variants struct definition to common header
+One of the commits fails on various tests [1].
 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Thanks!
+Some failures (I haven't checked all):
 
-...
-> > - * Test cases #17-#23 are regression tests for commit:
-> > + * Test cases #17-#23 are regression tests for commit (from v5.9, unlikely to be
-> > + * backported thus not in .tags):
+* missing nfds_t (<poll.h> is probably from old commits) [2]:
 
-> If we are being accurate, it is only the 4 test cases with non zero
-> ignored_onchild
-> that are regression tests for this commit. The other 3 test cases are
-> just completing
-> the test matrix of possible combinations of marks.
+CC testcases/kernel/syscalls/mq_open/mq_open01
+In file included from ../../../../include/time64_variants.h:13,
+                 from /usr/src/ltp/testcases/kernel/syscalls/mq_timedreceive/../utils/mq_timed.h:10,
+                 from mq_timedreceive01.c:17:
+/usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+    1 | #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+      |  ^~~~~~~
+In file included from /usr/src/ltp/testcases/kernel/syscalls/mq_timedreceive/../utils/mq_timed.h:10,
+                 from mq_timedreceive01.c:17:
+../../../../include/time64_variants.h:41:35: error: unknown type name 'nfds_t'
+41 |  int (*ppoll)(struct pollfd *fds, nfds_t nfds, void *tmo_p,
 
-> So you may rephrase above as "Test cases with 'ignored_onchild'..."
-> or what not.
-Good point, I'll fix it before merge.
+* <libaio.h> not found [3]:
+BUILD libltpnewipc.a
+make[6]: Nothing to be done for 'all'.
+In file included from /usr/src/ltp/testcases/kernel/syscalls/ipc/semop/semop02.c:29:
+In file included from In file included from /usr/src/ltp/testcases/kernel/syscalls/ipc/semop/semop01.c:15:
+In file included from /usr/src/ltp/testcases/kernel/syscalls/ipc/semop/semop.h:7:
+/usr/src/ltp/include/time64_variants.h:10:10: fatal error: /usr/src/ltp/testcases/kernel/syscalls/ipc/semop/semop.h'libaio.h' file not
+      found
+:7:
+/usr/src/ltp/include/time64_variants.h:10:10: fatal error: 'libaio.h' file#include <libaio.h>
+         ^~~~~~~~~~
+ not
+      found
+#include <libaio.h>
+
+[1] https://travis-ci.org/github/pevik/ltp/builds/726197434
+[2] https://travis-ci.org/github/pevik/ltp/jobs/726197439#L5295
+[3] https://travis-ci.org/github/pevik/ltp/jobs/726197440#L6649
 
 Kind regards,
 Petr
