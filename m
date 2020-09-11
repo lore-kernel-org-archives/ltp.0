@@ -1,63 +1,45 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Sep 2020 08:51:24 +0200
-Subject: [LTP] [PATCH v2 1/1] fanotify10: Skip non zero ignored_onchild
- tests for < v5.9
-Message-ID: <20200911065124.18992-1-pvorel@suse.cz>
+Date: Fri, 11 Sep 2020 08:56:35 +0200
+Subject: [LTP] [PATCH 1/1] fanotify10: Treat ignore mask bug as TCONF
+ for < v5.9
+In-Reply-To: <CAOQ4uxjaiT4N1uvwzh8Jer4wc3HR+pqxNM_CLzFWZDbxZDxEHA@mail.gmail.com>
+References: <20200910121628.18505-1-pvorel@suse.cz>
+ <20200910153035.GA12601@yuki.lan>
+ <CAOQ4uxjaiT4N1uvwzh8Jer4wc3HR+pqxNM_CLzFWZDbxZDxEHA@mail.gmail.com>
+Message-ID: <20200911065635.GB3425@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ignored mask in combination with flag FAN_EVENT_ON_CHILD has
-undefined behavior on kernel < 5.9.
+Hi Amir,
 
-Also remove wrong kernel commit (left in e8189ff3c).
+> What I suggested was to skip only the test cases with non zero
+> tc->ignored_onchild for kernel < 5.9.
 
-Acked-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/fanotify/fanotify10.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> Those are the new test cases that are failing due to missing fix
+> "497b0c5a7c06 fsnotify: send event to parent and child with single"
+> Which is not likely to be backported.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index 2c4401f61..64426b876 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -20,10 +20,10 @@
-  *
-  *     2f02fd3fa13e fanotify: fix ignore mask logic for events on child...
-  *
-- * Test cases #17-#23 are regression tests for commit:
-+ * Test cases #17-#23 are regression tests for commit (from v5.9, unlikely to be
-+ * backported thus not in .tags):
-  *
-  *     497b0c5a7c06 fsnotify: send event to parent and child with single...
-- *     eca4784cbb18 fsnotify: send event to parent and child with single...
-  */
- #define _GNU_SOURCE
- #include "config.h"
-@@ -451,6 +451,12 @@ static void test_fanotify(unsigned int n)
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- 
-+	if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
-+		tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
-+				" has undefined behavior on kernel < 5.9");
-+		return;
-+	}
-+
- 	if (create_fanotify_groups(n) != 0)
- 		goto cleanup;
- 
-@@ -567,7 +573,6 @@ static struct tst_test test = {
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "9bdda4e9cf2d"},
- 		{"linux-git", "2f02fd3fa13e"},
--		{"linux-git", "497b0c5a7c06"},
- 		{}
- 	}
- };
--- 
-2.28.0
+> I see no reason to run those test cases and then report the failure as
+> TCONF.
+> The TCONF message can say that ignored mask in combination with
+> flag FAN_EVENT_ON_CHILD have undefined behavior on kernel < 5.9.
+Yep, that makes more sense.
 
+> While at it, please remove the stray line from header comment:
+>  *     497b0c5a7c06 fsnotify: send event to parent and child with single...
+>  *     eca4784cbb18 fsnotify: send event to parent and child with single...
+Apologize for not removing eca4784cbb18.
+
+> And please remove commit id 497b0c5a7c06 from .tags, otherwise,
+> stable kernel maintainers are still going to be bothered by attempting
+> to find a backport if that test fails due to other reasons on a stable kernel.
++1. I kept comment in the commit (in v2) and explicitly mention why it's not in
+tags.
+
+Thanks for all suggestions. Just in case I sent v2 instead of merging it directly.
+
+Kind regards,
+Petr
