@@ -1,56 +1,63 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Sep 2020 07:35:57 +0200
-Subject: [LTP] [PATCH 1/1] syscalls/fanotify15: TCONF also on EOPNOTSUPP
-In-Reply-To: <CAOQ4uxgVkz3Xatg43Py4md7LKEUoJKbb4H-Z5y1PyzPdZbx-Rw@mail.gmail.com>
-References: <20200910110712.2181-1-pvorel@suse.cz>
- <CAOQ4uxgVkz3Xatg43Py4md7LKEUoJKbb4H-Z5y1PyzPdZbx-Rw@mail.gmail.com>
-Message-ID: <20200911053557.GA3425@dell5510>
+Date: Fri, 11 Sep 2020 08:51:24 +0200
+Subject: [LTP] [PATCH v2 1/1] fanotify10: Skip non zero ignored_onchild
+ tests for < v5.9
+Message-ID: <20200911065124.18992-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+ignored mask in combination with flag FAN_EVENT_ON_CHILD has
+undefined behavior on kernel < 5.9.
 
-> On Thu, Sep 10, 2020 at 2:07 PM Petr Vorel <pvorel@suse.cz> wrote:
+Also remove wrong kernel commit (left in e8189ff3c).
 
-> > instead of TBROK:
-> > fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
-> > fanotify15.c:96: BROK: fanotify_mark(3, FAN_MARK_ADD | FAN_MARK_FILESYSTEM, FAN_CREATE | FAN_DELETE | FAN_MOVE | FAN_MODIFY | FAN_ONDIR | 0x400, AT_FDCWD, mntpoint/test_dir) failed: EOPNOTSUPP (95)
+Acked-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify10.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-> > is now reported:
-> > fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
-> > fanotify15.c:93: CONF: FAN_REPORT_FID not supported on exfat filesystem
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 2c4401f61..64426b876 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -20,10 +20,10 @@
+  *
+  *     2f02fd3fa13e fanotify: fix ignore mask logic for events on child...
+  *
+- * Test cases #17-#23 are regression tests for commit:
++ * Test cases #17-#23 are regression tests for commit (from v5.9, unlikely to be
++ * backported thus not in .tags):
+  *
+  *     497b0c5a7c06 fsnotify: send event to parent and child with single...
+- *     eca4784cbb18 fsnotify: send event to parent and child with single...
+  */
+ #define _GNU_SOURCE
+ #include "config.h"
+@@ -451,6 +451,12 @@ static void test_fanotify(unsigned int n)
+ 
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
++	if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
++		tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
++				" has undefined behavior on kernel < 5.9");
++		return;
++	}
++
+ 	if (create_fanotify_groups(n) != 0)
+ 		goto cleanup;
+ 
+@@ -567,7 +573,6 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "9bdda4e9cf2d"},
+ 		{"linux-git", "2f02fd3fa13e"},
+-		{"linux-git", "497b0c5a7c06"},
+ 		{}
+ 	}
+ };
+-- 
+2.28.0
 
-> > fanotify15.c:86: INFO: Test #0: FAN_REPORT_FID on filesystem including FAN_DELETE_SELF
-> > fanotify15.c:93: CONF: FAN_REPORT_FID not supported on ntfs filesystem
-
-> > Found on 5.8.0 on openSUSE Tumbleweed.
-
-> > Fixes: 403f11f3a ("syscalls/fanotify15: verify fid for dirent events")
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Hi,
-
-> > I suppose that EXDEV (in fanotify_test_fid()) is really error which
-> > should be caught as TBROK (unlike ENODEV and EOPNOTSUPP). Am I correct?
-
-> No. EXDEV is also an indication of problematic filesystem.
-> You will get it if you try to setup the mark on a btrfs subvolume, which is not
-> the root volume, because in that case the "fsid" information from event is
-> not reliable.
-
-> Probably this is not going to happen in LTP, but still.
-
-> Good spotting.
-
-Merged commit where handling both EOPNOTSUPP and EXDEV.
-Thanks!
-
-> Thanks,
-> Amir.
-
-Kind regards,
-Petr
