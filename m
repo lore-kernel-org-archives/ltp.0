@@ -1,45 +1,64 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Sep 2020 08:56:35 +0200
-Subject: [LTP] [PATCH 1/1] fanotify10: Treat ignore mask bug as TCONF
- for < v5.9
-In-Reply-To: <CAOQ4uxjaiT4N1uvwzh8Jer4wc3HR+pqxNM_CLzFWZDbxZDxEHA@mail.gmail.com>
-References: <20200910121628.18505-1-pvorel@suse.cz>
- <20200910153035.GA12601@yuki.lan>
- <CAOQ4uxjaiT4N1uvwzh8Jer4wc3HR+pqxNM_CLzFWZDbxZDxEHA@mail.gmail.com>
-Message-ID: <20200911065635.GB3425@dell5510>
+Date: Fri, 11 Sep 2020 09:05:40 +0200
+Subject: [LTP] [PATCH v5] Add a test case for mmap MAP_GROWSDOWN flag
+In-Reply-To: <20200911035533.30538-1-liwang@redhat.com>
+References: <20200911035533.30538-1-liwang@redhat.com>
+Message-ID: <20200911070540.GA22970@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi Li,
 
-> What I suggested was to skip only the test cases with non zero
-> tc->ignored_onchild for kernel < 5.9.
+> From: pravin <pravinraghul@zilogic.com>
 
-> Those are the new test cases that are failing due to missing fix
-> "497b0c5a7c06 fsnotify: send event to parent and child with single"
-> Which is not likely to be backported.
+> We assign the memory region allocated using MAP_GROWSDOWN to a thread,
+> as a stack, to test the effect of MAP_GROWSDOWN. This is because the
+> kernel only grows the memory region when the stack pointer, is within
+> guard page, when the guard page is touched.
 
-> I see no reason to run those test cases and then report the failure as
-> TCONF.
-> The TCONF message can say that ignored mask in combination with
-> flag FAN_EVENT_ON_CHILD have undefined behavior on kernel < 5.9.
-Yep, that makes more sense.
+>   1. Map an anyonymous memory region of size X, and unmap it.
+>   2. Split the unmapped memory region into two.
+>   3. The lower memory region is left unmapped.
+>   4. The higher memory region is mapped for use as stack, using MAP_FIXED | MAP_GROWSDOWN.
+>   5. The higher memory region is provided as stack to a thread, where
+>      a recursive function is invoked.
+>   6. The stack grows beyond the allocated region, into the lower memory area.
+>   7. If this results in the memory region being extended, into the
+>      unmapped region, the test is considered to have passed.
 
-> While at it, please remove the stray line from header comment:
->  *     497b0c5a7c06 fsnotify: send event to parent and child with single...
->  *     eca4784cbb18 fsnotify: send event to parent and child with single...
-Apologize for not removing eca4784cbb18.
+> Also, to verify that(Test2) the stack grows to within a page of the high
+> end of the next lower map?ping will result in a SIGSEGV signal.
 
-> And please remove commit id 497b0c5a7c06 from .tags, otherwise,
-> stable kernel maintainers are still going to be bothered by attempting
-> to find a backport if that test fails due to other reasons on a stable kernel.
-+1. I kept comment in the commit (in v2) and explicitly mention why it's not in
-tags.
+> Resolves #300
+> Signed-off-by: Pravin Raghul S. <pravinraghul@zilogic.com>
+> Reviewed-by: Vijay Kumar B. <vijaykumar@zilogic.com>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
 
-Thanks for all suggestions. Just in case I sent v2 instead of merging it directly.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+LGTM.
+
+Just please fix using spaces instead of tabs in check_stackgrow_up() and
+run_test() (I suppose your modifications to pravis's code):
+
+mmap18.c:55: WARNING: please, no spaces at the start of a line
+mmap18.c:55: WARNING: suspect code indent for conditional statements (7, 15)
+mmap18.c:56: ERROR: code indent should use tabs where possible
+mmap18.c:56: WARNING: please, no spaces at the start of a line
+mmap18.c:57: ERROR: code indent should use tabs where possible
+mmap18.c:57: WARNING: please, no spaces at the start of a line
+mmap18.c:58: WARNING: please, no spaces at the start of a line
+mmap18.c:60: WARNING: please, no spaces at the start of a line
+mmap18.c:167: ERROR: code indent should use tabs where possible
+mmap18.c:167: WARNING: please, no spaces at the start of a line
+mmap18.c:169: ERROR: code indent should use tabs where possible
+mmap18.c:169: WARNING: please, no spaces at the start of a line
+mmap18.c:170: ERROR: code indent should use tabs where possible
+mmap18.c:170: WARNING: please, no spaces at the start of a line
+
 
 Kind regards,
 Petr
