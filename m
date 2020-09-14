@@ -1,53 +1,93 @@
 From: Bird, Tim <Tim.Bird@sony.com>
-Date: Mon, 14 Sep 2020 17:51:04 +0000
+Date: Mon, 14 Sep 2020 22:30:35 +0000
 Subject: [LTP] LTP release
-In-Reply-To: <20200914110006.GD5524@yuki.lan>
-References: <20200908073138.GB2475@yuki.lan>
- <CAEemH2cHvM_KD7W6fyX6z3bc0qfVtkp=yEM8MDvvohouyj5N2w@mail.gmail.com>
- <20200908153659.GA16066@yuki.lan>
- <CAEemH2eq0fwF8zt1uez5vuwM0vtrLtoFd_45sFqE=iQ8hpudfQ@mail.gmail.com>
- <CAEemH2es3sMSfAar8Xj4_Vr+2nsD0isPws4v=8=csLyYROAQGQ@mail.gmail.com>
- <20200909131327.GA3241@yuki.lan> <20200909132703.GB3241@yuki.lan>
- <CAEemH2e+Ck8M22gdgL0OQ24ekBPyDu4FwGrdG+da9E62UZWjRQ@mail.gmail.com>
- <CAEemH2eJCUuf=SQF_GdQ7U9q_8+BD9LsxPAgwuJS9wx8zBzNww@mail.gmail.com>
- <CAF12kFs+Wzm2rt5uE7WoHDXZSpdtZaZPgspKTACpYnw7zR+sgA@mail.gmail.com>
- <20200914110006.GD5524@yuki.lan>
-Message-ID: <CY4PR13MB117519BB030877EC596EDB75FD230@CY4PR13MB1175.namprd13.prod.outlook.com>
+In-Reply-To: <20200914111543.GE5524@yuki.lan>
+References: <20200908073138.GB2475@yuki.lan> <20200910084554.GA21741@dell5510>
+ <20200914111543.GE5524@yuki.lan>
+Message-ID: <CY4PR13MB117529F882F68FED2C60AD09FD230@CY4PR13MB1175.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
+
 > -----Original Message-----
-> From: Cyril Hrubis
+> From: Cyril Hrubis <chrubis@suse.cz>
 > 
 > Hi!
-> > Can we merge the uart device driver testcase and the device-discover
-> > framework ???
+> > > What else should go in?
+> > How about removing runtest/quickhit?
+> > https://patchwork.ozlabs.org/project/ltp/patch/20200831094617.7764-1-chrubis@suse.cz/
 > 
-> Can we please postpone it a little bit again? I've been talking to Tim
-> Bird recenlty and he is interesting in helping to shape the interface so
-> better that it fits into existing hardware labs.
+> I guess that we can do that if we replace it with something Tim can use
+> for infrastructure tests.
+> 
+> Tim what are your expectation from such runtest file? How many tests
+> should be in?
 
-I'm very interested in this work, and how to integrate it with 
-external test frameworks that manage lab equipment (and may
-need to communicate test parameters to tests).
+I don't think that it should be very many.  Otherwise, people will get
+the idea that it is useful for actual device testing. ;-)
 
-I'm not sure the best way to proceed.  I reviewed the device-discovery
-code on patchworks, but I'm not sure I understand the anticipated flow of
-control between the LTP test, the device discovery part, and the test
-framework.
+The current 'quickhit' runtest file has 107 tests.  With the exception of
+qmm01 (which calls mmap001 with '-n 1') and a bunch of tests that do sub-tests
+of symlink01 (12 of them), the remaining test definitions
+just consist of the test name and the test executable (with the same names).
+I only see binary programs - no tests using shell scripts.  So there's really not much variety
+here.
 
-I know you're busy with the LTP release, so I'm not sure this is the best
-time to open up a big thread asking a lot of questions about device discovery
-or describing my own proposal for this - to work towards harmonizing the two.
+Apparently a pipe is allowed in the command invocation line for a test, but there's only
+one example of this in all of the runtests, in syscalls:
+splice02 seq 1 2000 | splice02
 
-But I'm keen on following up on this in the short term (next 4 weeks or so).
-I'm giving a talk at Open Source Summit Europe the end of October,
-where I'll be talking about lab management APIs, and this dovetails
-into that work.
+Really, as an infrastructure test, I only need to run a few testcases to validate that Fuego's
+plumbing around runltp (and ltp-pan) works properly.  And it would be nice if
+the run was very short, so I could do the check quickly.
 
-Let me know when would be a good time to try to hash this out.
+Do you want me to create a runtest for a framework/LTP integration test, by picking a
+few different "representative" tests, as a replacement for quickhit?
+
+IMHO, the selected tests should behave the same on all possible systems, to avoid
+getting results that are inconsistent due to the system under test, rather than a
+problem with the integration between the framework and LTP.
+
+Should I add some outlier cases:
+ - something that times out
+ - something that always fails
+ - tests that return TBROK, TCONF, TWARN, etc.
+ - something where the command doesn't exist
+
+This would be helpful for checking that my parsing for different results works.
+
+Do you have a preferred name for the runtest file?  My proposal, just off the top
+of my head, is: "ltp-selftest-quick", but I'm open to other suggestions.
+
+I'm also open to suggestions for possible tests.  I'd like a shell script command
+to add to the list of binary programs.  Here is what I've chosen so far:
+access01 access01
+chdir01 chdir01
+fork01 fork01
+time01 time01
+wait02 wait02
+write01 write01
+symlink01 symlink01
+stat04 symlink01 -T stat04
+utime01A symlink01 -T utime01
+rename01A symlink01 -T rename01
+splice02 seq 1 20 | splice02
+
+This takes about 5 seconds on one of my test machines.
+
  -- Tim
+
+P.S. Maybe, if you're moving away from runltp and ltp-pan, it's a little late to be
+adding some selftests to make sure they work correctly.  But Fuego is using them.
+I don't know what other frameworks use when they invoke LTP to perform
+tests.
+
+P.P.S How come some tests produce TPASS and some produce just PASS?
+
+
+
 
