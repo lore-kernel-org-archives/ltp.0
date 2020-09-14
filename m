@@ -1,14 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Sep 2020 10:36:23 +0200
+From: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Mon, 14 Sep 2020 08:39:31 +0000
 Subject: [LTP] Error with fs_fill
-In-Reply-To: <BMXPR01MB23445019F67B128E04B26612EE250@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB23445019F67B128E04B26612EE250@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <20200914083623.GA5524@yuki.lan>
+In-Reply-To: <20200914083623.GA5524@yuki.lan>
+References: <BMXPR01MB23445019F67B128E04B26612EE250@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>,
+ <20200914083623.GA5524@yuki.lan>
+Message-ID: <BMXPR01MB23441EA1A33E38BF93274ED1EE230@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+Hi,
+how i can resolve it? is there any way that i can find what's exactly happening ??
+
+
+Thanks!
+________________________________
+From: Cyril Hrubis <chrubis@suse.cz>
+Sent: Monday, September 14, 2020 2:06 PM
+To: Pankaj Vinadrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] Error with fs_fill
 
 Hi!
 > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
@@ -28,6 +41,10 @@ Hi!
 
 This is a bug in Btrfs deallocation metadata reservation.
 
--- 
+--
 Cyril Hrubis
 chrubis@suse.cz
+[EXT]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200914/87071899/attachment-0001.htm>
