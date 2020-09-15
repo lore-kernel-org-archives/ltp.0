@@ -1,63 +1,48 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Sep 2020 15:40:23 +0200
-Subject: [LTP] [PATCH v5] Add a test case for mmap MAP_GROWSDOWN flag
-In-Reply-To: <CAEemH2cXY+-Dgq8PB-ZunzRnjM1iH0KiB5gK5=CLnFDSEiKLdQ@mail.gmail.com>
-References: <20200911035533.30538-1-liwang@redhat.com>
- <20200911130836.GA2582@yuki.lan>
- <CAEemH2fPRTh6drs=h=U7OG07SZDgpDfEB0xRadF8Y1FbaHR8Nw@mail.gmail.com>
- <20200911145730.GA6157@yuki.lan>
- <CAEemH2cXY+-Dgq8PB-ZunzRnjM1iH0KiB5gK5=CLnFDSEiKLdQ@mail.gmail.com>
-Message-ID: <20200915134023.GA18311@yuki.lan>
+From: Bird, Tim <Tim.Bird@sony.com>
+Date: Tue, 15 Sep 2020 20:51:45 +0000
+Subject: [LTP] ltp-selftest-quick runtest file (was RE:  LTP release)
+Message-ID: <CY4PR13MB11752979CBBBBCAD98EC86E0FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > But still the code wasn't exactly right, because the lowest address of
-> > the stack in the previous code was stack - stack_size, which would be
-> > start of the unmapped region and the size of the stack would be 2 *
-> > stack_size, as we expected the mapping to grow.
-> >
+
+
+> -----Original Message-----
+> From: Petr Vorel <pvorel@suse.cz>
+> Sent: Monday, September 14, 2020 11:28 PM
+> To: Bird, Tim <Tim.Bird@sony.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>; ltp@lists.linux.it
+> Subject: Re: [LTP] LTP release
 > 
-> No, I don't think so, the lowest address of the stack in the previous code
-> is:
->     stack = start + total_size - size;
-> and we pass this stack pointer to ptrehad_attr_setstack() is correct here,
-> indeed the stack really starts at stack + stack_size, that's internal steps.
+> Hi Tim, Cyril,
 > 
-> If we go with 'stack + stack_size' as you suggested, that will easily get
-> segmental fault. So I stand by myself understanding unless someone can
-> give enough explanation/demo :).
+> > I'm also open to suggestions for possible tests.  I'd like a shell script command
+> > to add to the list of binary programs.  Here is what I've chosen so far:
+> > access01 access01
+> > chdir01 chdir01
+> > fork01 fork01
+> > time01 time01
+> > wait02 wait02
+> > write01 write01
+> > symlink01 symlink01
+> > stat04 symlink01 -T stat04
+> > utime01A symlink01 -T utime01
+> > rename01A symlink01 -T rename01
+> > splice02 seq 1 20 | splice02
+> Could we please add at least one network test program?
+That sounds good.
 
-No I mean to pass stack - stack_size as a stack lowest addres since that
-is the real end of the stack, i.e. the thread touches the memory close
-to that address and technically we overflow the stack when we pass stack
-as an address to pthread_attr_setstack().
+> e.g. route tests with netlink also uses shell API and it's really quick (real
+> time 0m0,687s):
+> route6-change-netlink-dst route-change-netlink-dst.sh -6
+This particular one gives me:
+...
+ route-change-netlink-dst 1 TINFO: running route-change-netlink -c 10000 -6 -p 65535 -d ltp_ns_veth2 -r 'fd00:23:4::1,fd00:23:3::1,fd00:23:2::1,fd00:23:1::1,fd00:23::1,'
+tst_test.c:871: CONF: libmnl library and headers are required
+route-change-netlink-dst 1 TCONF: not supported configuration
 
-Or we can change the memory layout so that only first page of the stack
-is mapped as I proposed which is much less confusing that this.
-
-> PTHREAD_ATTR_SETSTACK(3) manual says:
->   "stackaddr should point to the lowest addressable byte of a buffer of
-> stacksize bytes that was allocated by the caller.  The pages of the
-> allocated buffer should be both readable and writable."
-
-I would say that what we actually do here is in the gray zone, nobody
-really expected that growable stack would be used with pthreads and
-hence the manual page does not take growable mappings into an account.
-
-It works because libc does really use the stack size only to calculate
-start of the stack, i.e. highest address of the stack, but still I do
-find the code a bit confusing, since the real test starts after we
-overflow the stack we passed to the pthread_attr_setstack().
-
-I.e. regardless if we pass addr=stack size=stack_size or
-addr=stack-stack_size and size=2*stack_size the glibc will end up with
-the same address which is stack + stack_size. But the second one is a
-bit more clear in where the real end of the stack is supposed to be.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Is there a networking one with less requirements, that is basically guaranteed to work?
+ -- Tim
