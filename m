@@ -1,27 +1,19 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 15 Sep 2020 18:59:42 +0800
-Subject: [LTP] [PATCH v2] clock_gettime04: multiply the timediff if test
- in VM
-In-Reply-To: <20200915091217.GA6261@yuki.lan>
-References: <20200915084406.8633-1-liwang@redhat.com>
- <20200915091217.GA6261@yuki.lan>
-Message-ID: <CAEemH2f6Z7o0S98-L401TQxGg0mF73iMRB2v5k0OL7TdY2pq5g@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Sep 2020 14:14:40 +0200
+Subject: [LTP] [PATCH v2] syscalls/ioctl_loop07: Using LOOP_CONFIGURE to
+ test lo_sizelimit field
+In-Reply-To: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1598608979-20788-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <20200915121440.GA19944@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> One minor nit, variables are supposed to be lowercase.
->
-> Other than that, Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
->
-
-Thanks for the review, pushed with lowercase tweaked.
+Hi!
+Pushed with some minor whitespace fixes, thanks.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200915/dc9f8520/attachment.htm>
+Cyril Hrubis
+chrubis@suse.cz
