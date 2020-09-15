@@ -1,60 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 15 Sep 2020 11:14:02 +0800
-Subject: [LTP] [PATCH] clock_gettime04: relax the time diff in VM
-Message-ID: <20200915031402.26519-1-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 15 Sep 2020 07:28:11 +0200
+Subject: [LTP] LTP release
+In-Reply-To: <CY4PR13MB117529F882F68FED2C60AD09FD230@CY4PR13MB1175.namprd13.prod.outlook.com>
+References: <20200908073138.GB2475@yuki.lan> <20200910084554.GA21741@dell5510>
+ <20200914111543.GE5524@yuki.lan>
+ <CY4PR13MB117529F882F68FED2C60AD09FD230@CY4PR13MB1175.namprd13.prod.outlook.com>
+Message-ID: <20200915052811.GA4719@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To balance that the test inside a VM can NOT get enough CPU time, which
-result in sporadically fails with the time comparing.
+Hi Tim, Cyril,
 
-clock_gettime04.c:155: PASS: CLOCK_REALTIME: Difference between successive readings is reasonable
-clock_gettime04.c:155: PASS: CLOCK_REALTIME_COARSE: Difference between successive readings is reasonable
-clock_gettime04.c:148: FAIL: CLOCK_MONOTONIC: Difference between successive readings greater than 5 ms (2): 22
-clock_gettime04.c:155: PASS: CLOCK_MONOTONIC_COARSE: Difference between successive readings is reasonable
-clock_gettime04.c:148: FAIL: CLOCK_MONOTONIC_RAW: Difference between successive readings greater than 5 ms (1): 22
-clock_gettime04.c:148: FAIL: CLOCK_BOOTTIME: Difference between successive readings greater than 5 ms (1): 29
+> I'm also open to suggestions for possible tests.  I'd like a shell script command
+> to add to the list of binary programs.  Here is what I've chosen so far:
+> access01 access01
+> chdir01 chdir01
+> fork01 fork01
+> time01 time01
+> wait02 wait02
+> write01 write01
+> symlink01 symlink01
+> stat04 symlink01 -T stat04
+> utime01A symlink01 -T utime01
+> rename01A symlink01 -T rename01
+> splice02 seq 1 20 | splice02
+Could we please add at least one network test program?
+e.g. route tests with netlink also uses shell API and it's really quick (real
+time 0m0,687s):
+route6-change-netlink-dst route-change-netlink-dst.sh -6
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
----
- .../kernel/syscalls/clock_gettime/clock_gettime04.c      | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-index 2f484c43f..5c4a5d751 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime04.c
-@@ -92,6 +92,7 @@ static void run(unsigned int i)
- 	struct test_variants *tv;
- 	int count = 10000, ret;
- 	unsigned int j;
-+	int virt_env = tst_is_virt(VIRT_ANY);
- 
- 	do {
- 		for (j = 0; j < ARRAY_SIZE(variants); j++) {
-@@ -143,11 +144,17 @@ static void run(unsigned int i)
- 
- 			diff /= 1000000;
- 
--			if (diff >= 5) {
-+			if (!virt_env && diff >= 5) {
- 				tst_res(TFAIL, "%s: Difference between successive readings greater than 5 ms (%d): %lld",
- 					tst_clock_name(clks[i]), j, diff);
- 				return;
- 			}
-+
-+			if (virt_env && diff >= 50) {
-+				tst_res(TFAIL, "%s: Difference between successive readings(in VM) greater than 50 ms (%d): %lld",
-+					tst_clock_name(clks[i]), j, diff);
-+				return;
-+			}
- 		}
- 	} while (--count);
- 
--- 
-2.21.3
+> This takes about 5 seconds on one of my test machines.
++1
 
+>  -- Tim
+
+> P.S. Maybe, if you're moving away from runltp and ltp-pan, it's a little late to be
+> adding some selftests to make sure they work correctly.  But Fuego is using them.
+> I don't know what other frameworks use when they invoke LTP to perform
+> tests.
+
+> P.P.S How come some tests produce TPASS and some produce just PASS?
+Legacy C API and shell API (both legacy and new) add T (i.e. TPASS), new C API
+don't add it (i.e. PASS). It's a minor detail we could fix that.
+
+Kind regards,
+Petr
