@@ -1,7 +1,7 @@
 From: Bird, Tim <Tim.Bird@sony.com>
-Date: Tue, 15 Sep 2020 20:51:45 +0000
-Subject: [LTP] ltp-selftest-quick runtest file (was RE:  LTP release)
-Message-ID: <CY4PR13MB11752979CBBBBCAD98EC86E0FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
+Date: Tue, 15 Sep 2020 20:54:35 +0000
+Subject: [LTP] TPASS in new test lib
+Message-ID: <CY4PR13MB117565A7BA2A8371A3B94ED9FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,37 +12,70 @@ To: ltp@lists.linux.it
 
 > -----Original Message-----
 > From: Petr Vorel <pvorel@suse.cz>
-> Sent: Monday, September 14, 2020 11:28 PM
-> To: Bird, Tim <Tim.Bird@sony.com>
-> Cc: Cyril Hrubis <chrubis@suse.cz>; ltp@lists.linux.it
-> Subject: Re: [LTP] LTP release
 > 
-> Hi Tim, Cyril,
-> 
-> > I'm also open to suggestions for possible tests.  I'd like a shell script command
-> > to add to the list of binary programs.  Here is what I've chosen so far:
-> > access01 access01
-> > chdir01 chdir01
-> > fork01 fork01
-> > time01 time01
-> > wait02 wait02
-> > write01 write01
-> > symlink01 symlink01
-> > stat04 symlink01 -T stat04
-> > utime01A symlink01 -T utime01
-> > rename01A symlink01 -T rename01
-> > splice02 seq 1 20 | splice02
-> Could we please add at least one network test program?
-That sounds good.
-
-> e.g. route tests with netlink also uses shell API and it's really quick (real
-> time 0m0,687s):
-> route6-change-netlink-dst route-change-netlink-dst.sh -6
-This particular one gives me:
 ...
- route-change-netlink-dst 1 TINFO: running route-change-netlink -c 10000 -6 -p 65535 -d ltp_ns_veth2 -r 'fd00:23:4::1,fd00:23:3::1,fd00:23:2::1,fd00:23:1::1,fd00:23::1,'
-tst_test.c:871: CONF: libmnl library and headers are required
-route-change-netlink-dst 1 TCONF: not supported configuration
+> > P.P.S How come some tests produce TPASS and some produce just PASS?
+> Legacy C API and shell API (both legacy and new) add T (i.e. TPASS), new C API
+> don't add it (i.e. PASS). It's a minor detail we could fix that.
 
-Is there a networking one with less requirements, that is basically guaranteed to work?
- -- Tim
+Well, Fuego's parser only checks for PASS (probably due to the inconsistency),
+but personally I'd prefer if it was consistent. The string "TPASS" is much less
+likely to appear in unrelated output than "PASS" is.
+
+It looks like it comes from print_result() in ltp/lib/tst_test.c.
+
+Here's a patch, in case there's interest in changing it:
+
+From 151168bf384135d7c79b0c09bb95267ba1293205 Mon Sep 17 00:00:00 2001
+From: Tim Bird <tim.bird@sony.com>
+Date: Tue, 15 Sep 2020 14:18:37 -0600
+Subject: [PATCH] tst_test: Change result strings to use T prefix
+
+Change PASS to TPASS in the new C library.
+Change other results strings to also include the "T" prefix.
+This makes the new library consistent with previous LTP
+output, and with the shell output.
+
+Signed-off-by: Tim Bird <tim.bird@sony.com>
+---
+ lib/tst_test.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 175dea7..8cc76d5 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -193,22 +193,22 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 
+ 	switch (TTYPE_RESULT(ttype)) {
+ 	case TPASS:
+-		res = "PASS";
++		res = "TPASS";
+ 	break;
+ 	case TFAIL:
+-		res = "FAIL";
++		res = "TFAIL";
+ 	break;
+ 	case TBROK:
+-		res = "BROK";
++		res = "TBROK";
+ 	break;
+ 	case TCONF:
+-		res = "CONF";
++		res = "TCONF";
+ 	break;
+ 	case TWARN:
+-		res = "WARN";
++		res = "TWARN";
+ 	break;
+ 	case TINFO:
+-		res = "INFO";
++		res = "TINFO";
+ 	break;
+ 	default:
+ 		tst_brk(TBROK, "Invalid ttype value %i", ttype);
+-- 
+2.1.4
+
+
+
