@@ -1,63 +1,33 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 16 Sep 2020 11:21:10 +0530
-Subject: [LTP] [PATCH 00/16] syscalls: Use common variants structure
-In-Reply-To: <20200911134739.GB4608@yuki.lan>
-References: <cover.1599545766.git.viresh.kumar@linaro.org>
- <20200911095314.GA9505@dell5510>
- <20200911103950.kehhklgyie2tqpxh@vireshk-i7>
- <20200911110141.6vgc44hrl2hbtq3r@vireshk-i7>
- <20200911134739.GB4608@yuki.lan>
-Message-ID: <20200916055110.2g5sdnpmrufsiayq@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 Sep 2020 09:04:40 +0200
+Subject: [LTP] ltp-selftest-quick runtest file (was RE:  LTP release)
+In-Reply-To: <CY4PR13MB11752979CBBBBCAD98EC86E0FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
+References: <CY4PR13MB11752979CBBBBCAD98EC86E0FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
+Message-ID: <20200916070440.GA1433@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11-09-20, 15:47, Cyril Hrubis wrote:
-> Hi!
-> > > --- a/include/time64_variants.h
-> > > +++ b/include/time64_variants.h
-> > > @@ -7,10 +7,13 @@
-> > >  #ifndef TIME64_VARIANTS_H
-> > >  #define TIME64_VARIANTS_H
-> > >  
-> > > +#ifdef HAVE_LIBAIO
-> > >  #include <libaio.h>
-> > > +#endif /* HAVE_LIBAIO */
-> > > +
-> > >  #include <signal.h>
-> > >  #include <stdio.h>
-> > > -#include <sys/poll.h>
-> > > +#include <poll.h>
-> > >  #include <time.h>
-> > >  #include "tst_timer.h"
-> > >  
-> > > @@ -32,8 +35,12 @@ struct time64_variants {
-> > >         int (*timer_settime)(kernel_timer_t timerid, int flags, void *its, void *old_its);
-> > >         int (*tfd_gettime)(int fd, void *its);
-> > >         int (*tfd_settime)(int fd, int flags, void *new_value, void *old_value);
-> > > +
-> > > +#ifdef HAVE_LIBAIO
-> > >         int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
-> > >                         struct io_event *events, void *timeout, sigset_t *sigmask);
-> > > +#endif /* HAVE_LIBAIO */
-> > > +
-> > >         int (*mqt_send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
-> > >                         unsigned int msg_prio, void *abs_timeout);
-> > >         ssize_t (*mqt_receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
-> > 
-> > And both these changes broke my build. I don't even understand how
-> > could the ifdef change break it for me :(
-> 
-> My guess would be missing include for "config.h" in this file to get
-> HAVE_LIBAIO definitions.
+Hi Tim,
 
-Right. That was it. Thanks.
+...
+> > e.g. route tests with netlink also uses shell API and it's really quick (real
+> > time 0m0,687s):
+> > route6-change-netlink-dst route-change-netlink-dst.sh -6
+> This particular one gives me:
+> ...
+>  route-change-netlink-dst 1 TINFO: running route-change-netlink -c 10000 -6 -p 65535 -d ltp_ns_veth2 -r 'fd00:23:4::1,fd00:23:3::1,fd00:23:2::1,fd00:23:1::1,fd00:23::1,'
+> tst_test.c:871: CONF: libmnl library and headers are required
+> route-change-netlink-dst 1 TCONF: not supported configuration
 
-Though I still get failures if I include poll.h instead of sys/poll.h
-here and the errors happen only in mq_timedsend/receive tests. I am
-trying to figure out why, but no clue yet.
+> Is there a networking one with less requirements, that is basically guaranteed to work?
+Good catch. Although TCONF is also a test for shell API :), let's use plan shell
+implementation:
+route6-change-dst route-change-dst.sh -6
 
--- 
-viresh
+(a bit longer to run, but without libmnl dependency).
+
+Kind regards,
+Petr
