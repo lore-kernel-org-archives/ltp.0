@@ -1,61 +1,97 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 16 Sep 2020 16:07:46 +0530
-Subject: [LTP] [PATCH V2 01/17] syscalls: utils: Remove local copy of poll.h
- definitions
+Date: Wed, 16 Sep 2020 16:07:47 +0530
+Subject: [LTP] [PATCH V2 02/17] syscalls: Add common time64 variants
+ structure
 In-Reply-To: <cover.1600252542.git.viresh.kumar@linaro.org>
 References: <cover.1600252542.git.viresh.kumar@linaro.org>
-Message-ID: <2c5695ebf7d13bd25651faf09d0fb78bbdd4bc31.1600252542.git.viresh.kumar@linaro.org>
+Message-ID: <e1291939d012be2f67b34c5bbb8e6f504d8c2fac.1600252542.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The local copy of these definitions and this file conflicts with the
-system wide ones and make the builds fail sometimes, for example when
-this copy gets included instead of the system wide one.
+This adds a common variants structure which all other syscall tests can
+use.
 
-Remove it.
-
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- testcases/kernel/syscalls/utils/poll.h | 27 --------------------------
- 1 file changed, 27 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/utils/poll.h
+ include/time64_variants.h | 65 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+ create mode 100644 include/time64_variants.h
 
-diff --git a/testcases/kernel/syscalls/utils/poll.h b/testcases/kernel/syscalls/utils/poll.h
-deleted file mode 100644
-index 2cd4929abd40..000000000000
---- a/testcases/kernel/syscalls/utils/poll.h
-+++ /dev/null
-@@ -1,27 +0,0 @@
--#ifndef __i386_POLL_H
--#define __i386_POLL_H
--
--/* These are specified by iBCS2 */
--#define POLLIN		0x0001
--#define POLLPRI		0x0002
--#define POLLOUT		0x0004
--#define POLLERR		0x0008
--#define POLLHUP		0x0010
--#define POLLNVAL	0x0020
--
--/* The rest seem to be more-or-less nonstandard. Check them! */
--#define POLLRDNORM	0x0040
--#define POLLRDBAND	0x0080
--#define POLLWRNORM	0x0100
--#define POLLWRBAND	0x0200
--#define POLLMSG		0x0400
--#define POLLREMOVE	0x1000
--#define POLLRDHUP       0x2000
--
--struct pollfd {
--	int fd;
--	short events;
--	short revents;
--};
--
--#endif
+diff --git a/include/time64_variants.h b/include/time64_variants.h
+new file mode 100644
+index 000000000000..fc52623c868a
+--- /dev/null
++++ b/include/time64_variants.h
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Linaro Limited. All rights reserved.
++ * Author: Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++#ifndef TIME64_VARIANTS_H
++#define TIME64_VARIANTS_H
++
++#include "config.h"
++
++#ifdef HAVE_LIBAIO
++#include <libaio.h>
++#endif
++
++#include <signal.h>
++#include <stdio.h>
++#include <poll.h>
++#include <time.h>
++#include "tst_timer.h"
++
++struct tst_ts;
++struct pollfd;
++struct io_event;
++struct sembuf;
++struct mmsghdr;
++
++struct time64_variants {
++	char *desc;
++
++	enum tst_ts_type ts_type;
++	int (*clock_gettime)(clockid_t clk_id, void *ts);
++	int (*clock_settime)(clockid_t clk_id, void *ts);
++	int (*clock_nanosleep)(clockid_t clock_id, int flags, void *request, void *remain);
++
++	int (*timer_gettime)(kernel_timer_t timer, void *its);
++	int (*timer_settime)(kernel_timer_t timerid, int flags, void *its, void *old_its);
++	int (*tfd_gettime)(int fd, void *its);
++	int (*tfd_settime)(int fd, int flags, void *new_value, void *old_value);
++
++#ifdef HAVE_LIBAIO
++	int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
++			struct io_event *events, void *timeout, sigset_t *sigmask);
++#endif
++
++	int (*mqt_send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
++			unsigned int msg_prio, void *abs_timeout);
++	ssize_t (*mqt_receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
++			       unsigned int *msg_prio, void *abs_timeout);
++	int (*ppoll)(struct pollfd *fds, nfds_t nfds, void *tmo_p,
++		     const sigset_t *sigmask, size_t sigsetsize);
++	int (*sched_rr_get_interval)(pid_t pid, void *ts);
++	int (*semop)(int semid, struct sembuf *sops, size_t nsops);
++	int (*semtimedop)(int semid, struct sembuf *sops, size_t nsops, void *timeout);
++	int (*sigwait) (const sigset_t * set, siginfo_t * info,
++			 void * timeout);
++	int (*recvmmsg)(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
++		       unsigned int flags, void *timeout);
++	int (*sendmmsg)(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
++		    unsigned int flags);
++	int (*utimensat)(int dirfd, const char *pathname, void *times,
++			 int flags);
++};
++
++#endif /* TIME64_VARIANTS_H */
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
