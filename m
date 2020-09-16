@@ -1,86 +1,63 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 16 Sep 2020 12:50:21 +0800
-Subject: [LTP] TPASS in new test lib
-In-Reply-To: <CY4PR13MB117565A7BA2A8371A3B94ED9FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
-References: <CY4PR13MB117565A7BA2A8371A3B94ED9FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
-Message-ID: <5F61998D.7080802@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 16 Sep 2020 11:21:10 +0530
+Subject: [LTP] [PATCH 00/16] syscalls: Use common variants structure
+In-Reply-To: <20200911134739.GB4608@yuki.lan>
+References: <cover.1599545766.git.viresh.kumar@linaro.org>
+ <20200911095314.GA9505@dell5510>
+ <20200911103950.kehhklgyie2tqpxh@vireshk-i7>
+ <20200911110141.6vgc44hrl2hbtq3r@vireshk-i7>
+ <20200911134739.GB4608@yuki.lan>
+Message-ID: <20200916055110.2g5sdnpmrufsiayq@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2020/9/16 4:54, Bird, Tim wrote:
->
->> -----Original Message-----
->> From: Petr Vorel<pvorel@suse.cz>
->>
-> ...
->>> P.P.S How come some tests produce TPASS and some produce just PASS?
->> Legacy C API and shell API (both legacy and new) add T (i.e. TPASS), new C API
->> don't add it (i.e. PASS). It's a minor detail we could fix that.
-> Well, Fuego's parser only checks for PASS (probably due to the inconsistency),
-> but personally I'd prefer if it was consistent. The string "TPASS" is much less
-> likely to appear in unrelated output than "PASS" is.
->
-> It looks like it comes from print_result() in ltp/lib/tst_test.c.
->
-> Here's a patch, in case there's interest in changing it:
->
-> > From 151168bf384135d7c79b0c09bb95267ba1293205 Mon Sep 17 00:00:00 2001
-> From: Tim Bird<tim.bird@sony.com>
-> Date: Tue, 15 Sep 2020 14:18:37 -0600
-> Subject: [PATCH] tst_test: Change result strings to use T prefix
->
-> Change PASS to TPASS in the new C library.
-> Change other results strings to also include the "T" prefix.
-> This makes the new library consistent with previous LTP
-> output, and with the shell output.
-Hi Tim, Petr
+On 11-09-20, 15:47, Cyril Hrubis wrote:
+> Hi!
+> > > --- a/include/time64_variants.h
+> > > +++ b/include/time64_variants.h
+> > > @@ -7,10 +7,13 @@
+> > >  #ifndef TIME64_VARIANTS_H
+> > >  #define TIME64_VARIANTS_H
+> > >  
+> > > +#ifdef HAVE_LIBAIO
+> > >  #include <libaio.h>
+> > > +#endif /* HAVE_LIBAIO */
+> > > +
+> > >  #include <signal.h>
+> > >  #include <stdio.h>
+> > > -#include <sys/poll.h>
+> > > +#include <poll.h>
+> > >  #include <time.h>
+> > >  #include "tst_timer.h"
+> > >  
+> > > @@ -32,8 +35,12 @@ struct time64_variants {
+> > >         int (*timer_settime)(kernel_timer_t timerid, int flags, void *its, void *old_its);
+> > >         int (*tfd_gettime)(int fd, void *its);
+> > >         int (*tfd_settime)(int fd, int flags, void *new_value, void *old_value);
+> > > +
+> > > +#ifdef HAVE_LIBAIO
+> > >         int (*io_pgetevents)(io_context_t ctx, long min_nr, long max_nr,
+> > >                         struct io_event *events, void *timeout, sigset_t *sigmask);
+> > > +#endif /* HAVE_LIBAIO */
+> > > +
+> > >         int (*mqt_send)(mqd_t mqdes, const char *msg_ptr, size_t msg_len,
+> > >                         unsigned int msg_prio, void *abs_timeout);
+> > >         ssize_t (*mqt_receive)(mqd_t mqdes, char *msg_ptr, size_t msg_len,
+> > 
+> > And both these changes broke my build. I don't even understand how
+> > could the ifdef change break it for me :(
+> 
+> My guess would be missing include for "config.h" in this file to get
+> HAVE_LIBAIO definitions.
 
-Is it better to factor out old strttype() and call it in print_result()? 
-:-)
+Right. That was it. Thanks.
 
-Best Regards,
-Xiao Yang
-> Signed-off-by: Tim Bird<tim.bird@sony.com>
-> ---
->   lib/tst_test.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 175dea7..8cc76d5 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -193,22 +193,22 @@ static void print_result(const char *file, const int lineno, int ttype,
->
->   	switch (TTYPE_RESULT(ttype)) {
->   	case TPASS:
-> -		res = "PASS";
-> +		res = "TPASS";
->   	break;
->   	case TFAIL:
-> -		res = "FAIL";
-> +		res = "TFAIL";
->   	break;
->   	case TBROK:
-> -		res = "BROK";
-> +		res = "TBROK";
->   	break;
->   	case TCONF:
-> -		res = "CONF";
-> +		res = "TCONF";
->   	break;
->   	case TWARN:
-> -		res = "WARN";
-> +		res = "TWARN";
->   	break;
->   	case TINFO:
-> -		res = "INFO";
-> +		res = "TINFO";
->   	break;
->   	default:
->   		tst_brk(TBROK, "Invalid ttype value %i", ttype);
+Though I still get failures if I include poll.h instead of sys/poll.h
+here and the errors happen only in mq_timedsend/receive tests. I am
+trying to figure out why, but no clue yet.
 
-
-
+-- 
+viresh
