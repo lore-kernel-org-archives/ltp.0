@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 Sep 2020 10:43:56 +0200
+Date: Wed, 16 Sep 2020 10:54:05 +0200
 Subject: [LTP] TPASS in new test lib
-In-Reply-To: <CY4PR13MB117565A7BA2A8371A3B94ED9FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
+In-Reply-To: <20200916071106.GB1433@dell5510>
 References: <CY4PR13MB117565A7BA2A8371A3B94ED9FD200@CY4PR13MB1175.namprd13.prod.outlook.com>
-Message-ID: <20200916084356.GA4464@yuki.lan>
+ <20200916071106.GB1433@dell5510>
+Message-ID: <20200916085405.GB4464@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,14 +12,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Well, Fuego's parser only checks for PASS (probably due to the inconsistency),
-> but personally I'd prefer if it was consistent. The string "TPASS" is much less
-> likely to appear in unrelated output than "PASS" is.
+> Although leaving this to Cyril (although having T prefix or not is quite
+> cosmetic, he had a reason to omit it).  Also there is ongoing rewrite of tests
+> still using legacy API to use new API, thus the inconsistency will disappear in
+> the long term.
+> 
+> IMHO: don't care that much about legacy API, but synchronize new C and shell
+> API.
 
-The official runltp script checks for exit values from the test
-processes, anything else, such as parsing test output, may not work
-properly and will not work for at least subset of the tests that does
-not use the test library.
+I do not care that much here, but I do not think that we should expect
+exact test output unless we have specified it somewhere.
 
 -- 
 Cyril Hrubis
