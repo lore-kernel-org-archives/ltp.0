@@ -1,102 +1,61 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Wed, 16 Sep 2020 16:07:45 +0530
-Subject: [LTP] [PATCH V2 00/17] syscalls: Use common variants structure
-Message-ID: <cover.1600252542.git.viresh.kumar@linaro.org>
+Date: Wed, 16 Sep 2020 16:07:46 +0530
+Subject: [LTP] [PATCH V2 01/17] syscalls: utils: Remove local copy of poll.h
+ definitions
+In-Reply-To: <cover.1600252542.git.viresh.kumar@linaro.org>
+References: <cover.1600252542.git.viresh.kumar@linaro.org>
+Message-ID: <2c5695ebf7d13bd25651faf09d0fb78bbdd4bc31.1600252542.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+The local copy of these definitions and this file conflicts with the
+system wide ones and make the builds fail sometimes, for example when
+this copy gets included instead of the system wide one.
 
-As you suggested earlier, here is an attempt to use a common structure
-prototype at most of the places.
+Remove it.
 
-futex, clock_adjtime() and clock_getres() tests are left with their own
-implementations due to compatibility issues.
-
-V2:
-- Remove local copy of poll.h as it was making the build fail with this
-  patchset for some of the syscalls (mq_timedsend/receive).
-- Use poll.h instead of sys/poll.h
-- Use libaio stuff from within macros in the 2st patch.
-- Only first two patches are updated, rest are all the same.
-
---
-viresh
-
-Viresh Kumar (17):
-  syscalls: utils: Remove local copy of poll.h definitions
-  syscalls: Add common time64 variants structure
-  syscalls: clock_gettime: Reuse struct time64_variants
-  syscalls: clock_nanosleep: Reuse struct time64_variants
-  syscalls: clock_settime: Reuse struct time64_variants
-  syscalls: io_pgetevents: Reuse struct time64_variants
-  syscalls: semop: Reuse struct time64_variants
-  syscalls: mq_timed: Reuse struct time64_variants
-  syscalls: ppoll: Reuse struct time64_variants
-  syscalls: rt_sigtimedwait: Reuse struct time64_variants
-  syscalls: sched_rr_get_interval: Reuse struct time64_variants
-  syscalls: sendmmsg: Reuse struct time64_variants
-  syscalls: timer_settime: Reuse struct time64_variants
-  syscalls: timer_gettime: Reuse struct time64_variants
-  syscalls: timerfd: Reuse struct time64_variants
-  syscalls: utimensat: Reuse struct time64_variants
-  futex: Move variants struct definition to common header
-
- include/time64_variants.h                     | 65 +++++++++++++++++++
- .../syscalls/clock_gettime/clock_gettime01.c  | 19 +++---
- .../syscalls/clock_gettime/clock_gettime02.c  | 17 ++---
- .../syscalls/clock_gettime/clock_gettime03.c  | 27 ++++----
- .../syscalls/clock_gettime/clock_gettime04.c  | 29 ++++-----
- .../clock_nanosleep/clock_nanosleep01.c       | 21 +++---
- .../clock_nanosleep/clock_nanosleep03.c       | 26 ++++----
- .../clock_nanosleep/clock_nanosleep04.c       | 22 +++----
- .../syscalls/clock_settime/clock_settime01.c  | 26 ++++----
- .../syscalls/clock_settime/clock_settime02.c  | 20 +++---
- .../syscalls/clock_settime/clock_settime03.c  | 22 +++----
- .../syscalls/futex/futex_cmp_requeue01.c      | 12 ++--
- .../syscalls/futex/futex_cmp_requeue02.c      |  9 +--
- .../kernel/syscalls/futex/futex_wait01.c      | 10 +--
- .../kernel/syscalls/futex/futex_wait02.c      | 11 ++--
- .../kernel/syscalls/futex/futex_wait03.c      | 11 ++--
- .../kernel/syscalls/futex/futex_wait04.c      | 10 +--
- .../syscalls/futex/futex_wait_bitset01.c      | 11 +---
- .../kernel/syscalls/futex/futex_wake01.c      |  9 +--
- .../kernel/syscalls/futex/futex_wake02.c      | 11 ++--
- .../kernel/syscalls/futex/futex_wake03.c      | 13 ++--
- .../kernel/syscalls/futex/futex_wake04.c      | 14 ++--
- testcases/kernel/syscalls/futex/futextest.h   |  7 ++
- .../syscalls/io_pgetevents/io_pgetevents01.c  | 16 ++---
- .../syscalls/io_pgetevents/io_pgetevents02.c  | 18 ++---
- testcases/kernel/syscalls/ipc/semop/semop.h   | 18 ++---
- testcases/kernel/syscalls/ipc/semop/semop01.c |  6 +-
- testcases/kernel/syscalls/ipc/semop/semop02.c |  6 +-
- testcases/kernel/syscalls/ipc/semop/semop03.c |  6 +-
- .../mq_timedreceive/mq_timedreceive01.c       | 14 ++--
- .../syscalls/mq_timedsend/mq_timedsend01.c    | 16 ++---
- testcases/kernel/syscalls/ppoll/ppoll01.c     | 21 +++---
- .../rt_sigtimedwait/rt_sigtimedwait01.c       | 15 ++---
- .../sched_rr_get_interval01.c                 | 21 +++---
- .../sched_rr_get_interval02.c                 | 21 +++---
- .../sched_rr_get_interval03.c                 | 21 +++---
- .../kernel/syscalls/sendmmsg/sendmmsg01.c     | 24 +++----
- .../syscalls/timer_gettime/timer_gettime01.c  | 21 +++---
- .../syscalls/timer_settime/timer_settime01.c  | 25 +++----
- .../syscalls/timer_settime/timer_settime02.c  | 18 ++---
- testcases/kernel/syscalls/timerfd/timerfd01.c | 27 ++++----
- testcases/kernel/syscalls/timerfd/timerfd04.c | 20 +++---
- .../syscalls/timerfd/timerfd_gettime01.c      |  8 +--
- .../syscalls/timerfd/timerfd_settime01.c      | 17 ++---
- .../syscalls/timerfd/timerfd_settime02.c      | 15 ++---
- testcases/kernel/syscalls/utils/mq_timed.h    | 18 ++---
- testcases/kernel/syscalls/utils/poll.h        | 27 --------
- .../kernel/syscalls/utimensat/utimensat01.c   | 18 ++---
- 48 files changed, 376 insertions(+), 483 deletions(-)
- create mode 100644 include/time64_variants.h
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ testcases/kernel/syscalls/utils/poll.h | 27 --------------------------
+ 1 file changed, 27 deletions(-)
  delete mode 100644 testcases/kernel/syscalls/utils/poll.h
 
+diff --git a/testcases/kernel/syscalls/utils/poll.h b/testcases/kernel/syscalls/utils/poll.h
+deleted file mode 100644
+index 2cd4929abd40..000000000000
+--- a/testcases/kernel/syscalls/utils/poll.h
++++ /dev/null
+@@ -1,27 +0,0 @@
+-#ifndef __i386_POLL_H
+-#define __i386_POLL_H
+-
+-/* These are specified by iBCS2 */
+-#define POLLIN		0x0001
+-#define POLLPRI		0x0002
+-#define POLLOUT		0x0004
+-#define POLLERR		0x0008
+-#define POLLHUP		0x0010
+-#define POLLNVAL	0x0020
+-
+-/* The rest seem to be more-or-less nonstandard. Check them! */
+-#define POLLRDNORM	0x0040
+-#define POLLRDBAND	0x0080
+-#define POLLWRNORM	0x0100
+-#define POLLWRBAND	0x0200
+-#define POLLMSG		0x0400
+-#define POLLREMOVE	0x1000
+-#define POLLRDHUP       0x2000
+-
+-struct pollfd {
+-	int fd;
+-	short events;
+-	short revents;
+-};
+-
+-#endif
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
