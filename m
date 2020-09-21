@@ -1,59 +1,57 @@
 From: Bird, Tim <Tim.Bird@sony.com>
-Date: Mon, 21 Sep 2020 18:04:30 +0000
-Subject: [LTP] LTP release
-In-Reply-To: <20200918145752.GA16897@yuki.lan>
-References: <20200908073138.GB2475@yuki.lan> <20200910084554.GA21741@dell5510>
- <20200914111543.GE5524@yuki.lan>
- <CY4PR13MB117529F882F68FED2C60AD09FD230@CY4PR13MB1175.namprd13.prod.outlook.com>
- <20200918145752.GA16897@yuki.lan>
-Message-ID: <CY4PR13MB117574DFAE3DBBFF4BF24CF7FD3A0@CY4PR13MB1175.namprd13.prod.outlook.com>
+Date: Mon, 21 Sep 2020 20:02:08 +0000
+Subject: [LTP] [PATCH] tst_test: Change result strings to use T prefix
+Message-ID: <CY4PR13MB117552ABCAA299CEB5F0A52AFD3A0@CY4PR13MB1175.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Just to finish answering questions...
 
-> -----Original Message-----
-> From: Cyril Hrubis <chrubis@suse.cz>
-> 
-> > Do you have a preferred name for the runtest file?  My proposal, just off the top
-> > of my head, is: "ltp-selftest-quick", but I'm open to other suggestions.
-> 
-> Maybe we should call it smoketest, but I'm okay selftest as well.
+Change PASS to TPASS in the new C library.
+Change other results strings to also include the "T" prefix.
+This makes the new library consistent with previous LTP
+output, and with the shell output.
 
-I'm fine with "smoketest".
+Signed-off-by: Tim Bird <tim.bird@sony.com>
+---
+ lib/tst_test.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-...
-> >
-> > This takes about 5 seconds on one of my test machines.
-> 
-> So I will add a network test to the set and push that before a patch
-> that removes quickhit.
-> 
-> It would be nice to have the outliners, but that is a bit more
-> complicated change, so I would like to add these after a release, is
-> that okay?
-
-Yes.  I think that's actually better.  I think a simple change now
-is good.  I'd like to think some more about whether it would be good to
-add things that misbehave to smoketest, or if they should be put into
-a separate selftest group.  My inclination is that a smoketest should really
-just be a super-quick check that should work unless something fundamental
-is broken, while selftest should try as many things as possible, including weird
-stuff and corner cases, to actually test specific features of runtest handling.
-
-I'm satisfied with the current smoketest content.
-
-> 
-> > P.S. Maybe, if you're moving away from runltp and ltp-pan, it's a little late to be
-> > adding some selftests to make sure they work correctly.  But Fuego is using them.
-> > I don't know what other frameworks use when they invoke LTP to perform
-> > tests.
-> 
-> I do expect that we will have ltp-pan included for compatibility reasons
-> at least for a year or two once the replacement would be in place
-> anyways, so having a smoketest wouldn't harm at all.
-Sounds good.
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 175dea7..8cc76d5 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -193,22 +193,22 @@ static void print_result(const char *file, const int lineno, int ttype,
+ 
+ 	switch (TTYPE_RESULT(ttype)) {
+ 	case TPASS:
+-		res = "PASS";
++		res = "TPASS";
+ 	break;
+ 	case TFAIL:
+-		res = "FAIL";
++		res = "TFAIL";
+ 	break;
+ 	case TBROK:
+-		res = "BROK";
++		res = "TBROK";
+ 	break;
+ 	case TCONF:
+-		res = "CONF";
++		res = "TCONF";
+ 	break;
+ 	case TWARN:
+-		res = "WARN";
++		res = "TWARN";
+ 	break;
+ 	case TINFO:
+-		res = "INFO";
++		res = "TINFO";
+ 	break;
+ 	default:
+ 		tst_brk(TBROK, "Invalid ttype value %i", ttype);
+-- 
+2.1.4
 
