@@ -1,35 +1,29 @@
 From: Xiao Yang <ice_yangxiao@163.com>
-Date: Wed, 23 Sep 2020 21:36:08 +0800
-Subject: [LTP] [PATCH] syscalls/recvmmsg01.c: Fix a compiler error
-In-Reply-To: <20200923095106.GB31351@dell5510>
-References: <20200923084422.13101-1-yangx.jy@cn.fujitsu.com>
- <20200923095106.GB31351@dell5510>
-Message-ID: <7cbd84c9-1594-06dd-429b-a0822dd39637@163.com>
+Date: Wed, 23 Sep 2020 22:35:35 +0800
+Subject: [LTP] [PATCH] syscalls/recvmmsg: Add missing .gitignore
+Message-ID: <20200923143535.6124-1-ice_yangxiao@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
-On 9/23/20 5:51 PM, Petr Vorel wrote:
-> BTW: reported by Li Wang
->
-> and also by P.-H. Lin:
-> https://github.com/linux-test-project/ltp/issues/727
+Fixes: 135af8ededd4 ("syscalls/{send|recv}mmsg: add a test case for timeout and errno test")
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/recvmmsg/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testcases/kernel/syscalls/recvmmsg/.gitignore
 
-Hi Petr and Jan,
-
-Sure, I will add Reported-by and the number of issue.
-
-Also thanks for your review. :-)
-
-Thanks,
-
-Xiao Yang
-
->
-> Kind regards,
-> Petr
->
+diff --git a/testcases/kernel/syscalls/recvmmsg/.gitignore b/testcases/kernel/syscalls/recvmmsg/.gitignore
+new file mode 100644
+index 000000000..974ae1ef9
+--- /dev/null
++++ b/testcases/kernel/syscalls/recvmmsg/.gitignore
+@@ -0,0 +1 @@
++recvmmsg01
+-- 
+2.26.2
 
