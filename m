@@ -1,22 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Sep 2020 20:21:02 +0200
-Subject: [LTP] LTP release
-In-Reply-To: <20200908073138.GB2475@yuki.lan>
-References: <20200908073138.GB2475@yuki.lan>
-Message-ID: <20200922182102.GB12980@yuki.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 23 Sep 2020 14:45:28 +0800
+Subject: [LTP] [PATCH 1/1] tst_test.sh: More readable syntax
+In-Reply-To: <20200922144237.9865-1-pvorel@suse.cz>
+References: <20200922144237.9865-1-pvorel@suse.cz>
+Message-ID: <CAEemH2coWxUma1Pm7E-MEz6xHx0V9NFyNcTEU57F3e_7gMBynA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-As far as I can tell I've pushed the last patch that should have been in
-the release just now. With that we should have a week worth of
-pre-release testing since we are aiming for a release at the end of the
-September. If you haven't tried LTP git HEAD yet, please do so now and
-report any problems you find.
+On Tue, Sep 22, 2020 at 10:42 PM Petr Vorel <pvorel@suse.cz> wrote:
+
+> "for cmd; do" works the same way as "for cmd in $*; do", but the latter
+> is more readable. Also sync the code with tst_require_cmds().
+>
+> Fixes: dba1d50cb ("tst_test.sh: Add test cmd helper tst_check_cmds()")
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+>
+
+Reviewed-by: Li Wang <liwang@redhat.com>
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200923/5332a357/attachment.htm>
