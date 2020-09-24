@@ -1,47 +1,39 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 24 Sep 2020 09:55:47 +0100
-Subject: [LTP] [PATCH v4 1/4] lib: add new cgroup test API
-In-Reply-To: <CAEemH2eCEyebEBZhuQJ+FHs9UpWw_+A=D0vJbx6g8KixPTH4jA@mail.gmail.com>
-References: <20200609095102.21153-1-liwang@redhat.com> <87pn6cycui.fsf@suse.de>
- <CAEemH2eqPgS=2n5NAgiVgE6Q+mie0=hiu-wn1OCrxPNEHnd1BA@mail.gmail.com>
- <87mu1gy6r8.fsf@suse.de>
- <CAEemH2eCEyebEBZhuQJ+FHs9UpWw_+A=D0vJbx6g8KixPTH4jA@mail.gmail.com>
-Message-ID: <87blhvy2ng.fsf@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 24 Sep 2020 12:11:24 +0100
+Subject: [LTP] [PATCH] tst_cgroup: Don't try to use V2 if V1 controllers are
+ mounted
+Message-ID: <20200924111124.5666-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+It is not possible to use a controller in V2 cgroups if it has been
+mounted as a V1 controller. So if V1 is mounted we use it regardless
+of if V2 is available.
 
-Li Wang <liwang@redhat.com> writes:
+We have to include a space in tst_is_mounted so that we do not match
+cgroup2.
 
->> Perhaps you meant:
->>
->> if (tst_is_mounted("cgroup"))
->>    cg_ver = TST_CGROUP_V1;
->> else
->>    cg_ver = TST_CGROUP_V2;
->>
->
-> This is not enough for the version choice. As tst_is_mounted(?cgroup?) can't
-> distinguish precisely what "cgroup" or "cgroup2" has been mounted. Because
-> the function is fuzzy matching a string.
->> >
->> > To be honest, I hope a Linux distribution provides a pure way in cgroup
->> > using, which means just mounting V1 or V2 but not to mix together. Or, do
->> > you think LTP should handle the situation for the v1&v2 mixing mount?
->>
->> For now, I think we just need to use V1 if it is mounted. I don't like
->> the fact we have both mounted, but it seems most software can handle it,
->> so LTP should as well.
->>
->
-> Agreed.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ lib/tst_cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK, I will send a patch unless you send one first.
-
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index ba413d874..73ddd4b82 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -44,7 +44,7 @@ enum tst_cgroup_ver tst_cgroup_version(void)
+         enum tst_cgroup_ver cg_ver;
+ 
+         if (tst_cgroup_check("cgroup2")) {
+-                if (!tst_is_mounted("cgroup2") && tst_is_mounted("cgroup"))
++                if (tst_is_mounted("cgroup "))
+                         cg_ver = TST_CGROUP_V1;
+                 else
+                         cg_ver = TST_CGROUP_V2;
 -- 
-Thank you,
-Richard.
+2.28.0
+
