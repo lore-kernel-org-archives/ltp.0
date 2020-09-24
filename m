@@ -1,41 +1,51 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 24 Sep 2020 10:17:37 +0300
-Subject: [LTP] [PATCH 2/5] network/virt_lib: use test ip version in
- virt_compare_netperf()
+Date: Thu, 24 Sep 2020 10:17:38 +0300
+Subject: [LTP] [PATCH resend 3/5] network/nsf_lib.sh: TCONF on mount
+ (udp/udp6) failure for Linux v5.6+
 In-Reply-To: <20200924071740.6963-1-alexey.kodanev@oracle.com>
 References: <20200924071740.6963-1-alexey.kodanev@oracle.com>
-Message-ID: <20200924071740.6963-2-alexey.kodanev@oracle.com>
+Message-ID: <20200924071740.6963-3-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This will match virtual device underlying ip version.
+Most likely support is disabled with NFS_DISABLE_UDP_SUPPORT config
+option (default y).
+commit b24ee6c64ca7 ("NFS: allow deprecation of NFS UDP protocol")
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/virt/virt_lib.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/network/nfs/nfs_stress/nfs_lib.sh | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index f488932ff..827829633 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -292,10 +292,10 @@ virt_compare_netperf()
- 	local vt="$(cat res_ipv4)"
- 	local vt6="$(cat res_ipv6)"
+diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+index e236cd485..1bd057717 100644
+--- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
++++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+@@ -87,11 +87,17 @@ nfs_mount()
  
--	tst_netload -H $ip_remote $opts -d res_ipv4
-+	tst_netload -H $(tst_ipaddr rhost) $opts -d res_lan
+ 	tst_res TINFO "Mounting NFS: $mnt_cmd"
+ 	if [ -n "$LTP_NETNS" ] && [ -z "$LTP_NFS_NETNS_USE_LO" ]; then
+-		tst_rhost_run -s -c "$mnt_cmd"
+-		return
++		tst_rhost_run -c "$mnt_cmd"
++	else
++		$mnt_cmd > /dev/null
+ 	fi
  
--	local lt="$(cat res_ipv4)"
--	tst_res TINFO "time lan($lt) $virt_type IPv4($vt) and IPv6($vt6) ms"
-+	local lt="$(cat res_lan)"
-+	tst_res TINFO "time lan IPv${TST_IPVER}($lt) $virt_type IPv4($vt) and IPv6($vt6) ms"
+-	ROD $mnt_cmd
++	if [ $? -ne 0 ]; then
++		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
++			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
++		fi
++		tst_brk TBROK "mount command failed"
++	fi
+ }
  
- 	per=$(( $vt * 100 / $lt - 100 ))
- 	per6=$(( $vt6 * 100 / $lt - 100 ))
+ nfs_setup()
 -- 
 2.20.1
 
