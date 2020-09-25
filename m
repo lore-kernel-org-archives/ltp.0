@@ -1,51 +1,75 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 24 Sep 2020 16:42:46 +0200
-Subject: [LTP] [PATCH 2/2] mmap18: Increase minimal stack mapping to 8KB
-In-Reply-To: <20200924144246.12750-1-mdoucha@suse.cz>
-References: <20200924144246.12750-1-mdoucha@suse.cz>
-Message-ID: <20200924144246.12750-2-mdoucha@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 25 Sep 2020 10:29:44 +0800
+Subject: [LTP] [PATCH] tst_cgroup: Don't try to use V2 if V1 controllers
+ are mounted
+In-Reply-To: <877dsjxoak.fsf@suse.de>
+References: <20200924111124.5666-1-rpalethorpe@suse.com>
+ <CAEemH2eDPzfdUR78d_mSuaDgi=v1RuboDotNwAGrLHCCg1Q41A@mail.gmail.com>
+ <877dsjxoak.fsf@suse.de>
+Message-ID: <CAEemH2f_PdJABqTYF6JUH-BVAPO+1kH1AOK0b+x9gpvbELzVKA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The first testcase keeps segfaulting on older kernels with only 4KB initial
-stack mapping
+On Thu, Sep 24, 2020 at 10:06 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+> Hello Li,
+>
+> Li Wang <liwang@redhat.com> writes:
+>
+> > Hi Richard,
+> >
+> > On Thu, Sep 24, 2020 at 7:11 PM Richard Palethorpe <rpalethorpe@suse.com
+> >
+> > wrote:
+> >
+> >> It is not possible to use a controller in V2 cgroups if it has been
+> >> mounted as a V1 controller. So if V1 is mounted we use it regardless
+> >> of if V2 is available.
+> >>
+> >> We have to include a space in tst_is_mounted so that we do not match
+> >> cgroup2.
+> >>
+> >> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> >> ---
+> >>  lib/tst_cgroup.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> >> index ba413d874..73ddd4b82 100644
+> >> --- a/lib/tst_cgroup.c
+> >> +++ b/lib/tst_cgroup.c
+> >> @@ -44,7 +44,7 @@ enum tst_cgroup_ver tst_cgroup_version(void)
+> >>          enum tst_cgroup_ver cg_ver;
+> >>
+> >>          if (tst_cgroup_check("cgroup2")) {
+> >> -                if (!tst_is_mounted("cgroup2") &&
+> >> tst_is_mounted("cgroup"))
+> >> +                if (tst_is_mounted("cgroup "))
+> >>
+> >
+> > Add a space in the suffix still not work as expected.
+> >
+> > The reason is that tst_is_mounted("cgroup ") also get non-zero return if
+> > system only mount cgroup_v2, which lead to choose cgroup_v1 in LTP test.
+> >
+> > # cat /proc/mounts |grep cgroup
+> > cgroup2 /sys/fs/cgroup cgroup2 rw,seclabel,nosuid,nodev,noexec,relatime
+> 0 0
+>
+> I wonder if it would be better to simply try mounting/using V2 and if
+> that fails try V1?
+>
 
-Note: Increasing initial stack size to 8KB fixes the segfaults but I'm not
-entirely sure whether we shouldn't use PTHREAD_STACK_MIN as the minimal size
-instead. Pthread man page isn't entirely clear whether PTHREAD_STACK_MIN is
-the minimal value for stack size after it grows to the limit, or the minimal
-size of the initial stack mapping (before it starts growing).
+That will be work but not good, because if cgroup mount fails, how do we
+know it is a bug or not support?
 
-On x86_64, PTHREAD_STACK_MIN is 4 pages (16KB). On PPC64, it's 2 pages
-(128KB).
-
- testcases/kernel/syscalls/mmap/mmap18.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap18.c b/testcases/kernel/syscalls/mmap/mmap18.c
-index 966bf673e..8b149fb93 100644
---- a/testcases/kernel/syscalls/mmap/mmap18.c
-+++ b/testcases/kernel/syscalls/mmap/mmap18.c
-@@ -201,10 +201,11 @@ static void grow_stack_fail(size_t stack_size, size_t mapped_size)
- static void run_test(void)
- {
- 	size_t stack_size = 8 * PTHREAD_STACK_MIN;
-+	size_t minsize = MAX(page_size, 8192);
- 
--	grow_stack_success(stack_size, page_size);
-+	grow_stack_success(stack_size, minsize);
- 	grow_stack_success(stack_size, stack_size/2);
--	grow_stack_fail(stack_size, page_size);
-+	grow_stack_fail(stack_size, minsize);
- 	grow_stack_fail(stack_size, stack_size/2);
- }
- 
 -- 
-2.28.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20200925/67cf14da/attachment-0001.htm>
