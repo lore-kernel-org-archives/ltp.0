@@ -1,84 +1,70 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 25 Sep 2020 18:12:09 +0800
-Subject: [LTP] [PATCH 2/2] mmap18: Increase minimal stack mapping to 8KB
-In-Reply-To: <20200924144246.12750-2-mdoucha@suse.cz>
-References: <20200924144246.12750-1-mdoucha@suse.cz>
- <20200924144246.12750-2-mdoucha@suse.cz>
-Message-ID: <CAEemH2cmi+sL5CkBT--0Mz+Kg9XVvcnxL7EwXdyxOHW9hdLeEw@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 25 Sep 2020 12:27:24 +0200
+Subject: [LTP] [PATCH] Fix search for device ID in tst_find_backing_dev()
+Message-ID: <20200925102724.25815-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Sep 24, 2020 at 10:43 PM Martin Doucha <mdoucha@suse.cz> wrote:
+The current search using substrings can lead to false positives, e.g. search
+for device 0:5 could return device 10:50 instead. Parse device IDs in
+/proc/self/mountinfo properly using sscanf() and also check whether the device
+was really found.
 
-> The first testcase keeps segfaulting on older kernels with only 4KB initial
-> stack mapping
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
->
-Reviewed-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ lib/tst_device.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-
-> ---
->
-> Note: Increasing initial stack size to 8KB fixes the segfaults but I'm not
-> entirely sure whether we shouldn't use PTHREAD_STACK_MIN as the minimal
-> size
-> instead. Pthread man page isn't entirely clear whether PTHREAD_STACK_MIN
-> is
-> the minimal value for stack size after it grows to the limit, or the
-> minimal
-> size of the initial stack mapping (before it starts growing).
->
-
-I slightly think the latter, which means PTHREAD_STACK_MIN is the minimal
-size of the initial stack mapping. So maybe better to use the
-PTHREAD_STACK_MIN
-as mmaped_size, we even don't need to have a MAX() there.
-
-
->
-> On x86_64, PTHREAD_STACK_MIN is 4 pages (16KB). On PPC64, it's 2 pages
-> (128KB).
-
-
->  testcases/kernel/syscalls/mmap/mmap18.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/mmap/mmap18.c
-> b/testcases/kernel/syscalls/mmap/mmap18.c
-> index 966bf673e..8b149fb93 100644
-> --- a/testcases/kernel/syscalls/mmap/mmap18.c
-> +++ b/testcases/kernel/syscalls/mmap/mmap18.c
-> @@ -201,10 +201,11 @@ static void grow_stack_fail(size_t stack_size,
-> size_t mapped_size)
->  static void run_test(void)
->  {
->         size_t stack_size = 8 * PTHREAD_STACK_MIN;
-> +       size_t minsize = MAX(page_size, 8192);
->
-> -       grow_stack_success(stack_size, page_size);
-> +       grow_stack_success(stack_size, minsize);
->         grow_stack_success(stack_size, stack_size/2);
-> -       grow_stack_fail(stack_size, page_size);
-> +       grow_stack_fail(stack_size, minsize);
->         grow_stack_fail(stack_size, stack_size/2);
->  }
->
-> --
-> 2.28.0
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 0e98a7280..c096b418b 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -497,21 +497,26 @@ unsigned long tst_dev_bytes_written(const char *dev)
+ 
+ void tst_find_backing_dev(const char *path, char *dev)
+ {
+-	char fmt[20];
+ 	struct stat buf;
+ 	FILE *file;
+ 	char line[PATH_MAX];
+ 	char *pre = NULL;
+ 	char *next = NULL;
++	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+ 
+ 	if (stat(path, &buf) < 0)
+ 		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+ 
+-	snprintf(fmt, sizeof(fmt), "%u:%u", major(buf.st_dev), minor(buf.st_dev));
++	dev_major = major(buf.st_dev);
++	dev_minor = minor(buf.st_dev);
+ 	file = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
++	*dev = '\0';
+ 
+ 	while (fgets(line, sizeof(line), file)) {
+-		if (strstr(line, fmt) != NULL) {
++		if (sscanf(line, "%*d %*d %d:%d", &line_mjr, &line_mnr) != 2)
++			continue;
++
++		if (line_mjr == dev_major && line_mnr == dev_minor) {
+ 			pre = strstr(line, " - ");
+ 			pre = strtok_r(pre, " ", &next);
+ 			pre = strtok_r(NULL, " ", &next);
+@@ -523,8 +528,11 @@ void tst_find_backing_dev(const char *path, char *dev)
+ 
+ 	SAFE_FCLOSE(NULL, file);
+ 
++	if (!*dev)
++		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
++
+ 	if (stat(dev, &buf) < 0)
+-		 tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
++		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+ 
+ 	if (S_ISBLK(buf.st_mode) != 1)
+ 		tst_brkm(TCONF, NULL, "dev(%s) isn't a block dev", dev);
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200925/9be3da58/attachment.htm>
+2.28.0
+
