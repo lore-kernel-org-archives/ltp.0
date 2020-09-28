@@ -1,33 +1,51 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 Sep 2020 14:34:20 +0800
-Subject: [LTP] [PATCH] cpuset_inherit_test: compatibility fix for DASH
-In-Reply-To: <20200928054043.17058-1-po-hsu.lin@canonical.com>
-References: <20200928054043.17058-1-po-hsu.lin@canonical.com>
-Message-ID: <CAEemH2dfGU3ieQhrFY7t+=1oUp_rji_eAY37tt30z=QzpeYrQA@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 28 Sep 2020 10:00:10 +0100
+Subject: [LTP] [RFC][PATCH] tst_cgroup: Attempt to use CGroups V2 then
+ V1 instead of guessing
+In-Reply-To: <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
+References: <20200925121941.10475-1-rpalethorpe@suse.com>
+ <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
+Message-ID: <87y2kuwa1x.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Sep 28, 2020 at 1:41 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+Hello Li,
 
-> The /bin/sh was symbolically link to dash in Ubuntu, in which the
-> "let" expression does not work, it will complain about:
->     cpuset_inherit_testset.sh: let: not found
+Li Wang <liwang@redhat.com> writes:
+
+>>
+>> -static void tst_cgroup2_mount(const char *mnt_path, const char *new_path)
+>> +static int cgroup2_mount(const char *mnt_path, const char *new_path)
+>>
 >
-> Fix it with double parentheses arithmetic expansion to improve the
-> compatibility.
->
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> We'd like to make the series function name starts with tst_*.
 >
 
-Pushed, thanks!
+The idea is this will be an internal/static function and
+tst_cgroup2_mount will be a public function if it is needed. I guess
+that eventually there will be features only available in cgroup2, in
+which case the test author will want to call tst_cgroup2_mount not
+tst_cgroup_mount and they will just want it to fail with tst_brk if
+cgroup2 can't be mounted.
 
+Infact, if the user wants cpuset or some other V1 only controller, then
+they should probably call tst_cgroup1_mount. AFAICT some of these
+controllers will not be moved to V2. OTOH a functionally similar feature
+may be available in V2, but with a different interface. There is a
+difference between requiring a specific controller to test it and
+needing some functionality without caring how it is provided.
+
+So I suggest providing an API for mounting specific cgroup versions and
+controllers and an API to mount specific controllers of either version
+(i.e. tst_cgroup_mount). Then we can create helper functions to provide
+functionality without caring how it is achieved, if we need to do that.
+
+Other comments sound good! I will try creating another patch with
+diagnostics.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200928/6af8a1f1/attachment.htm>
+Thank you,
+Richard.
