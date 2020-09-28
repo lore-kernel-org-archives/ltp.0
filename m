@@ -1,51 +1,52 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 28 Sep 2020 10:00:10 +0100
-Subject: [LTP] [RFC][PATCH] tst_cgroup: Attempt to use CGroups V2 then
- V1 instead of guessing
-In-Reply-To: <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
-References: <20200925121941.10475-1-rpalethorpe@suse.com>
- <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
-Message-ID: <87y2kuwa1x.fsf@suse.de>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Mon, 28 Sep 2020 12:47:29 -0700
+Subject: [LTP] [PATCH v1 0/1] ima: Add test for selinux measurement
+Message-ID: <20200928194730.20862-1-nramas@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li,
+New functionality is being added to IMA to measure data provided by
+kernel components. With this feature, IMA policy can be set to enable
+measuring data provided by Linux Security Modules (LSM). Currently one
+such LSM namely selinux is being updated to use this functionality.
+This new functionality needs test automation in LTP.
 
-Li Wang <liwang@redhat.com> writes:
+This patch set adds tests which verify that the IMA subsystem correctly
+measures the data provided by selinux.
 
->>
->> -static void tst_cgroup2_mount(const char *mnt_path, const char *new_path)
->> +static int cgroup2_mount(const char *mnt_path, const char *new_path)
->>
->
-> We'd like to make the series function name starts with tst_*.
->
+This patch is based on 
+commit 286401a1c1f3 ("thp04: Add linux tag")
+in "master" branch in https://github.com/linux-test-project/ltp
 
-The idea is this will be an internal/static function and
-tst_cgroup2_mount will be a public function if it is needed. I guess
-that eventually there will be features only available in cgroup2, in
-which case the test author will want to call tst_cgroup2_mount not
-tst_cgroup_mount and they will just want it to fail with tst_brk if
-cgroup2 can't be mounted.
+This patch is dependent on the following patch series in LTP
+https://patchwork.kernel.org/patch/11802771/
 
-Infact, if the user wants cpuset or some other V1 only controller, then
-they should probably call tst_cgroup1_mount. AFAICT some of these
-controllers will not be moved to V2. OTOH a functionally similar feature
-may be available in V2, but with a different interface. There is a
-difference between requiring a specific controller to test it and
-needing some functionality without caring how it is provided.
+This series needs a kernel built on the following repo/branch/patches:
+repo: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+branch: next
+commit 8861d0af642c ("selinux: Add helper functions to get and set checkreqprot")
 
-So I suggest providing an API for mounting specific cgroup versions and
-controllers and an API to mount specific controllers of either version
-(i.e. tst_cgroup_mount). Then we can create helper functions to provide
-functionality without caring how it is achieved, if we need to do that.
+And the following patch series should be applied in the following order:
+  1, https://patchwork.kernel.org/patch/11709527/
+  2, https://patchwork.kernel.org/patch/11795559/
+  3, https://patchwork.kernel.org/patch/11801525/
+  4, https://patchwork.kernel.org/patch/11801585/
 
-Other comments sound good! I will try creating another patch with
-diagnostics.
+Lakshmi Ramasubramanian (1):
+  ima: Add test for selinux measurement
+
+ runtest/ima                                   |   2 +
+ .../kernel/security/integrity/ima/README.md   |  19 +++
+ .../integrity/ima/tests/ima_selinux_policy.sh |  72 ++++++++++
+ .../integrity/ima/tests/ima_selinux_state.sh  | 136 ++++++++++++++++++
+ .../security/integrity/ima/tests/ima_setup.sh |  28 ++++
+ 5 files changed, 257 insertions(+)
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_selinux_policy.sh
+ create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_selinux_state.sh
 
 -- 
-Thank you,
-Richard.
+2.28.0
+
