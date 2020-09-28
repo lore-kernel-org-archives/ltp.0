@@ -1,38 +1,126 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Mon, 28 Sep 2020 13:40:43 +0800
-Subject: [LTP] [PATCH] cpuset_inherit_test: compatibility fix for DASH
-Message-ID: <20200928054043.17058-1-po-hsu.lin@canonical.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 28 Sep 2020 14:13:47 +0800
+Subject: [LTP] [PATCH] controllers/libcpuset.c: Add 'cpuset' prefix for
+ cpuset files
+Message-ID: <20200928061347.275858-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The /bin/sh was symbolically link to dash in Ubuntu, in which the
-"let" expression does not work, it will complain about:
-    cpuset_inherit_testset.sh: let: not found
+cpuset_cpusetofpid() in cpuset_cpu_hog.c cannot find cpuset files by
+wrong names(without 'cpuset' prefix) so cpuset_load_balance_test.sh
+reported the following error:
+---------------------------------------
+cpuset_load_balance 1 TFAIL: load balance test failed.
+---------------------------------------
 
-Fix it with double parentheses arithmetic expansion to improve the
-compatibility.
+Use correct names(with 'cpuset' prefix) to find cpuset files.
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Fixes: #690
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- .../cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh        | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../controllers/cpuset/cpuset_lib/libcpuset.c | 36 +++++++++----------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
-index 86856c3fb..73eed2cb9 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
-@@ -106,7 +106,7 @@ inherit_test()
- test_cpus()
- {
- 	cfile_name="cpus"
--	let "num=$nr_cpus-1"
-+	num=$((nr_cpus-1))
- 	cpu_string="0-$num"
- 	if [ $nr_cpus -eq 1 ]; then
- 		cpu_string="0"
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
+index 172e23714..a687ad2ee 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
+@@ -2093,11 +2093,11 @@ int cpuset_query(struct cpuset *cp, const char *relpath)
+ 
+ 	fullpath(buf, sizeof(buf), relpath);
+ 
+-	if (load_flag(buf, &cp->cpu_exclusive, "cpu_exclusive") < 0)
++	if (load_flag(buf, &cp->cpu_exclusive, "cpuset.cpu_exclusive") < 0)
+ 		goto err;
+ 	cp->cpu_exclusive_valid = 1;
+ 
+-	if (load_flag(buf, &cp->mem_exclusive, "mem_exclusive") < 0)
++	if (load_flag(buf, &cp->mem_exclusive, "cpuset.mem_exclusive") < 0)
+ 		goto err;
+ 	cp->mem_exclusive_valid = 1;
+ 
+@@ -2105,60 +2105,60 @@ int cpuset_query(struct cpuset *cp, const char *relpath)
+ 		goto err;
+ 	cp->notify_on_release_valid = 1;
+ 
+-	if (exists_flag(buf, "memory_migrate")) {
+-		if (load_flag(buf, &cp->memory_migrate, "memory_migrate") < 0)
++	if (exists_flag(buf, "cpuset.memory_migrate")) {
++		if (load_flag(buf, &cp->memory_migrate, "cpuset.memory_migrate") < 0)
+ 			goto err;
+ 		cp->memory_migrate_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "mem_hardwall")) {
+-		if (load_flag(buf, &cp->mem_hardwall, "mem_hardwall") < 0)
++	if (exists_flag(buf, "cpuset.mem_hardwall")) {
++		if (load_flag(buf, &cp->mem_hardwall, "cpuset.mem_hardwall") < 0)
+ 			goto err;
+ 		cp->mem_hardwall_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "memory_pressure_enabled")) {
++	if (exists_flag(buf, "cpuset.memory_pressure_enabled")) {
+ 		if (load_flag
+ 		    (buf, &cp->memory_pressure_enabled,
+-		     "memory_pressure_enabled") < 0)
++		     "cpuset.memory_pressure_enabled") < 0)
+ 			goto err;
+ 		cp->memory_pressure_enabled_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "memory_spread_page")) {
++	if (exists_flag(buf, "cpuset.memory_spread_page")) {
+ 		if (load_flag
+-		    (buf, &cp->memory_spread_page, "memory_spread_page") < 0)
++		    (buf, &cp->memory_spread_page, "cpuset.memory_spread_page") < 0)
+ 			goto err;
+ 		cp->memory_spread_page_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "memory_spread_slab")) {
++	if (exists_flag(buf, "cpuset.memory_spread_slab")) {
+ 		if (load_flag
+-		    (buf, &cp->memory_spread_slab, "memory_spread_slab") < 0)
++		    (buf, &cp->memory_spread_slab, "cpuset.memory_spread_slab") < 0)
+ 			goto err;
+ 		cp->memory_spread_slab_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "sched_load_balance")) {
++	if (exists_flag(buf, "cpuset.sched_load_balance")) {
+ 		if (load_flag
+-		    (buf, &cp->sched_load_balance, "sched_load_balance") < 0)
++		    (buf, &cp->sched_load_balance, "cpuset.sched_load_balance") < 0)
+ 			goto err;
+ 		cp->sched_load_balance_valid = 1;
+ 	}
+ 
+-	if (exists_flag(buf, "sched_relax_domain_level")) {
++	if (exists_flag(buf, "cpuset.sched_relax_domain_level")) {
+ 		if (load_number
+ 		    (buf, &cp->sched_relax_domain_level,
+-		     "sched_relax_domain_level") < 0)
++		     "cpuset.sched_relax_domain_level") < 0)
+ 			goto err;
+ 		cp->sched_relax_domain_level_valid = 1;
+ 	}
+ 
+-	if (load_mask(buf, &cp->cpus, cpuset_cpus_nbits(), "cpus") < 0)
++	if (load_mask(buf, &cp->cpus, cpuset_cpus_nbits(), "cpuset.cpus") < 0)
+ 		goto err;
+ 	cp->cpus_valid = 1;
+ 
+-	if (load_mask(buf, &cp->mems, cpuset_mems_nbits(), "mems") < 0)
++	if (load_mask(buf, &cp->mems, cpuset_mems_nbits(), "cpuset.mems") < 0)
+ 		goto err;
+ 	cp->mems_valid = 1;
+ 
 -- 
-2.17.1
+2.25.1
+
+
 
