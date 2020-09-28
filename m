@@ -1,222 +1,38 @@
-From: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Date: Sun, 27 Sep 2020 20:56:04 -0700
-Subject: [LTP] [PATCH v2 1/2] IMA: generalize key measurement tests
-In-Reply-To: <20200928035605.22701-1-tusharsu@linux.microsoft.com>
-References: <20200928035605.22701-1-tusharsu@linux.microsoft.com>
-Message-ID: <20200928035605.22701-2-tusharsu@linux.microsoft.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Mon, 28 Sep 2020 13:40:43 +0800
+Subject: [LTP] [PATCH] cpuset_inherit_test: compatibility fix for DASH
+Message-ID: <20200928054043.17058-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-New functionality is being added in IMA to measure data provided by
-kernel components. Tests have to be added in LTP to validate this new
-feature. The functionality in ima_keys.sh can be reused to test this new
-feature if it is made generic.
+The /bin/sh was symbolically link to dash in Ubuntu, in which the
+"let" expression does not work, it will complain about:
+    cpuset_inherit_testset.sh: let: not found
 
-Refactor check_keys_policy() and test1() implemented in ima_keys.sh to
-make it generic, and move the functionality to ima_setup.sh as new
-functions - check_policy_pattern() and check_ima_ascii_log_for_policy().
+Fix it with double parentheses arithmetic expansion to improve the
+compatibility.
 
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
- .../security/integrity/ima/tests/ima_keys.sh  | 62 +++------------
- .../security/integrity/ima/tests/ima_setup.sh | 79 +++++++++++++++++++
- 2 files changed, 92 insertions(+), 49 deletions(-)
+ .../cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh        | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-index c9eef4b68..c2120358a 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-@@ -6,7 +6,7 @@
- #
- # Verify that keys are measured correctly based on policy.
- 
--TST_NEEDS_CMDS="cmp cut grep sed xxd"
-+TST_NEEDS_CMDS="cmp cut grep xxd"
- TST_CNT=2
- TST_NEEDS_DEVICE=1
- TST_SETUP=setup
-@@ -28,64 +28,28 @@ cleanup()
- 	tst_is_num $KEYRING_ID && keyctl clear $KEYRING_ID
- }
- 
--check_keys_policy()
--{
--	local pattern="$1"
--
--	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
--		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK, $TEMPLATE_BUF"
--		return 1
--	fi
--	return 0
--}
--
- # Based on https://lkml.org/lkml/2019/12/13/564.
- # (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
- test1()
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
+index 86856c3fb..73eed2cb9 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
+@@ -106,7 +106,7 @@ inherit_test()
+ test_cpus()
  {
- 	local keycheck_lines i keyrings templates
- 	local pattern='keyrings=[^[:space:]]+'
--	local test_file="file.txt" tmp_file="file2.txt"
-+	local policy="keyrings"
-+	local tmp_file="$TST_TMPDIR/keycheck_tmp_file.txt"
-+	local res
- 
- 	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
- 
--	check_keys_policy "$pattern" > $tmp_file || return
--	keycheck_lines=$(cat $tmp_file)
--	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
--		sed "s/\./\\\./g" | cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
--	if [ -z "$keyrings" ]; then
--		tst_res TCONF "IMA policy has a keyring key-value specifier, but no specified keyrings"
--		return
--	fi
--
--	templates=$(for i in $keycheck_lines; do echo "$i" | grep "template" | \
--		cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
--
--	tst_res TINFO "keyrings: '$keyrings'"
--	tst_res TINFO "templates: '$templates'"
--
--	grep -E "($templates).*($keyrings)" $ASCII_MEASUREMENTS | while read line
--	do
--		local digest expected_digest algorithm
--
--		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
--		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
--		keyring=$(echo "$line" | cut -d' ' -f5)
-+	check_policy_pattern "$pattern" $FUNC_KEYCHECK $TEMPLATE_BUF > $tmp_file || return
- 
--		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
-+	res="$(check_ima_ascii_log_for_policy $policy $tmp_file)"
- 
--		if ! expected_digest="$(compute_digest $algorithm $test_file)"; then
--			tst_res TCONF "cannot compute digest for $algorithm"
--			return
--		fi
--
--		if [ "$digest" != "$expected_digest" ]; then
--			tst_res TFAIL "incorrect digest was found for $keyring keyring"
--			return
--		fi
--	done
-+	if [ "$res" = "0" ]; then
-+		tst_res TPASS "specified keyrings were measured correctly"
-+	else
-+		tst_res TFAIL "failed to measure specified keyrings"
-+	fi
- 
--	tst_res TPASS "specified keyrings were measured correctly"
- }
- 
- # Create a new keyring, import a certificate into it, and verify
-@@ -97,11 +61,11 @@ test2()
- 	local cert_file="$TST_DATAROOT/x509_ima.der"
- 	local keyring_name="key_import_test"
- 	local pattern="keyrings=[^[:space:]]*$keyring_name"
--	local temp_file="file.txt"
-+	local temp_file="$TST_TMPDIR/key_import_test_file.txt"
- 
- 	tst_res TINFO "verify measurement of certificate imported into a keyring"
- 
--	check_keys_policy "$pattern" >/dev/null || return
-+	check_policy_pattern "$pattern" $FUNC_KEYCHECK $TEMPLATE_BUF >/dev/null || return
- 
- 	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
- 		tst_brk TBROK "unable to create a new keyring"
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 1f17aa707..2841d7df5 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -54,6 +54,85 @@ compute_digest()
- 	return 1
- }
- 
-+check_policy_pattern()
-+{
-+	local pattern="$1"
-+	local func="$2"
-+	local template="$3"
-+
-+	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
-+		tst_res TCONF "IMA policy must specify $pattern, $func, $template"
-+		return 1
-+	fi
-+	return 0
-+}
-+
-+check_ima_ascii_log_for_policy()
-+{
-+	local test_file="$TST_TMPDIR/ascii_log_test_file.txt"
-+	local grep_file="$TST_TMPDIR/ascii_log_grep_file.txt"
-+	local func_lines sources templates i src 
-+	local input_digest_res=1
-+	local policy_option="$1"
-+	local input_digest="$3"
-+
-+	func_lines=$(cat $2)
-+
-+	sources=$(for i in $func_lines; do echo "$i" | grep "$policy_option" | \
-+		sed "s/\./\\\./g" | cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
-+	if [ -z "$sources" ]; then
-+		tst_res TCONF "IMA policy $policy_option is a key-value specifier, but no values specified"
-+		echo "1"
-+		return
-+	fi
-+
-+	templates=$(for i in $func_lines; do echo "$i" | grep "template" | \
-+		cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
-+
-+	tst_res TINFO "policy sources: '$sources'"
-+	tst_res TINFO "templates: '$templates'"
-+
-+	grep -E "($templates).*($sources)" $ASCII_MEASUREMENTS > $grep_file
-+
-+	while read line
-+	do
-+		local digest expected_digest algorithm
-+
-+		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
-+		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
-+		src_line=$(echo "$line" | cut -d' ' -f5)
-+
-+		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
-+
-+		if ! expected_digest="$(compute_digest $algorithm $test_file)"; then
-+			tst_res TCONF "cannot compute digest for $algorithm"
-+			echo "1"
-+			return
-+		fi
-+
-+		if [ "$digest" != "$expected_digest" ]; then
-+			tst_res TINFO "incorrect digest was found for $src_line $policy_option"
-+			echo "1"	
-+			return
-+		fi
-+
-+		if [ "$input_digest" ]; then
-+			if [ "$digest" = "$input_digest" ]; then
-+				input_digest_res=0
-+			fi
-+		fi
-+
-+	done < $grep_file
-+
-+	if [ "$input_digest" ]; then
-+		echo "$input_digest_res"
-+		return
-+	else
-+		echo "0"
-+		return
-+	fi
-+}
-+
- check_policy_readable()
- {
- 	if [ ! -f $IMA_POLICY ]; then
+ 	cfile_name="cpus"
+-	let "num=$nr_cpus-1"
++	num=$((nr_cpus-1))
+ 	cpu_string="0-$num"
+ 	if [ $nr_cpus -eq 1 ]; then
+ 		cpu_string="0"
 -- 
 2.17.1
 
