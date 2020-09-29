@@ -1,26 +1,46 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 29 Sep 2020 19:33:16 +0800
-Subject: [LTP] [PATCH 1/2] doc/user-guide: Shorten the description
-In-Reply-To: <20200929105824.28793-1-pvorel@suse.cz>
-References: <20200929105824.28793-1-pvorel@suse.cz>
-Message-ID: <CAEemH2d94NWtLHOaegLh=VMU=OT_=P8f1pqLJ_CcK00t6yAAAw@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 29 Sep 2020 12:47:49 +0100
+Subject: [LTP] [PATCH 1/1] io_destroy01: TCONF when unsupported
+In-Reply-To: <5F730501.7050505@cn.fujitsu.com>
+References: <20200929073501.4598-1-pvorel@suse.cz>
+ <5F72E52E.40609@cn.fujitsu.com> <20200929084114.GA7482@dell5510>
+ <5F730501.7050505@cn.fujitsu.com>
+Message-ID: <87v9fwx0re.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Sep 29, 2020 at 6:58 PM Petr Vorel <pvorel@suse.cz> wrote:
+Hello,
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Yang Xu <xuyang2018.jy@cn.fujitsu.com> writes:
+
+> Hi Petr
 >
+>> Hi Yang,
+>>
+>>> Hi Petr
+>>> Why not using kconfig in tst_test struct.
+>>
+>> We should probably use tst_syscall().
+>> But using kconfig is not 1) needed (tst_syscall() most reliable way) 2) kconfig
+>> requires having kernel config available, which is not on some platforms.
+> I see. At the first, I prefer to like to use kconfig because it only 
+> tests io_destory one time on kernel without CONFIG_AIO  when we use -i 
+> parameters,  but using libaio wrapper is stable. So it is ok.
 
-For the series:
+Kconfig can even be wrong (most likely with out-of-tree patches) or we
+might look at the wrong option as things are moved around
+sometimes. This is another instance of us trying to guess if something
+can be done without trying it.
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+I guess there are some things where it is not as simple as trying a
+system call, but in cases where ENOSYS will be returned there is no need
+to look at the config except maybe for diagnostic purposes. If you are
+concerned about '-i' then you can even just make in invalid syscall in
+setup to see what error it returns.
+
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20200929/c7b506c0/attachment.htm>
+Thank you,
+Richard.
