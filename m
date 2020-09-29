@@ -1,105 +1,64 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Sep 2020 20:11:52 +0200
-Subject: [LTP] [PATCH] utimensat01: Test all available FS and handle FS
- with no attributes
-In-Reply-To: <20200929144635.28874-1-rpalethorpe@suse.com>
-References: <20200929144635.28874-1-rpalethorpe@suse.com>
-Message-ID: <20200929181152.GD15188@dell5510>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Tue, 29 Sep 2020 15:01:43 -0400
+Subject: [LTP] [PATCH v3 4/4] ima_tpm.sh: Fix calculating PCR aggregate
+In-Reply-To: <20200929165021.11731-5-pvorel@suse.cz>
+References: <20200929165021.11731-1-pvorel@suse.cz>
+ <20200929165021.11731-5-pvorel@suse.cz>
+Message-ID: <77a75615c8ee019bcd0b0dac7946449b2e26c891.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi Petr,
 
-LGTM.
+On Tue, 2020-09-29 at 18:50 +0200, Petr Vorel wrote:
+> +get_pcr10_aggregate()
+> +{
+> +       local pcr
+> +
+> +       evmctl -v ima_measurement $BINARY_MEASUREMENTS > hash.txt 2>&1
+> +
+> +       pcr=$(grep -E "^($ALGORITHM: )*PCRAgg.*:" hash.txt \
+> +               | awk '{print $NF}')
+> +
+> +       if [ -z "$pcr" ]; then
+> +               tst_res TFAIL "evmctl failed to get aggregate PCR-10"
+> +               cat hash.txt >&2
+> +               return
+> +       fi
+> +
+> +       echo "$pcr"
+> +}
+> +
 
-Although this fails on NTFS and exfat and FUSE.
-I don't remember which flag removes these filesystems, there was some
-workaround. Cyril, Li, Jan, do you remember?
+I'm seeing the following output:
 
-Kind regards,
-Petr
+10 a528ab7a7096e0187aa5c154502f467a0f931873 ima-ng
+sha1:75bf81bc120313f6aa61430fad4a47afceea3e7c
+/usr/local/lib/libimaevm.so.2.0.0
+Failed to match per TPM bank or SHA1 padded TPM digest(s).
+errno: No such file or directory (2)
+ima_tpm 2 TBROK: Test didn't report any results
+ima_tpm 2 TINFO: SELinux enabled in enforcing mode, this may affect
+test results
+ima_tpm 2 TINFO: it can be disabled with TST_DISABLE_SELINUX=1
+(requires super/root)
+ima_tpm 2 TINFO: install seinfo to find used SELinux profiles
+ima_tpm 2 TINFO: loaded SELinux profiles: none
 
-tst_test.c:1248: TINFO: Timeout per run is 0h 05m 00s
-utimensat01.c:298: TINFO: Testing variant: syscall with old kernel spec
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS:  0: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS:  1: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:274: TFAIL:  2: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:278: TFAIL:  3: mtime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:274: TFAIL:  4: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS:  5: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS:  6: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS:  7: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:274: TFAIL:  8: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:278: TFAIL:  9: mtime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:274: TFAIL: 10: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:282: TPASS: 11: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315525600: 315525600)
-utimensat01.c:188: TCONF: Attributes not supported by FS: ENOTTY (25)
-tst_test.c:1316: TINFO: Testing on exfat
-tst_mkfs.c:89: TINFO: Formatting /dev/loop1 with exfat opts='' extra opts=''
-tst_test.c:1248: TINFO: Timeout per run is 0h 05m 00s
-utimensat01.c:298: TINFO: Testing variant: syscall with old kernel spec
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS:  0: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS:  1: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:274: TFAIL:  2: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:278: TFAIL:  3: mtime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:274: TFAIL:  4: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS:  5: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS:  6: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS:  7: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:274: TFAIL:  8: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:278: TFAIL:  9: mtime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:274: TFAIL: 10: atime shouldn't have changed but did
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:282: TPASS: 11: utimensat() passed
-utimensat01.c:213: TFAIL: Failed to reset access and modification time (315532800: 315532800)
-utimensat01.c:188: TCONF: Attributes not supported by FS: ENOTTY (25)
-tst_test.c:1316: TINFO: Testing on ntfs
-tst_mkfs.c:89: TINFO: Formatting /dev/loop1 with ntfs opts='' extra opts=''
-The partition start sector was not specified for /dev/loop1 and it could not be obtained automatically.  It has been set to 0.
-The number of sectors per track was not specified for /dev/loop1 and it could not be obtained automatically.  It has been set to 0.
-The number of heads was not specified for /dev/loop1 and it could not be obtained automatically.  It has been set to 0.
-To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-Windows will not be able to boot from this device.
-safe_macros.c:755: TINFO: Trying FUSE...
-tst_test.c:1248: TINFO: Timeout per run is 0h 05m 00s
-utimensat01.c:298: TINFO: Testing variant: syscall with old kernel spec
-utimensat01.c:282: TPASS:  0: utimensat() passed
-utimensat01.c:282: TPASS:  1: utimensat() passed
-utimensat01.c:282: TPASS:  2: utimensat() passed
-utimensat01.c:274: TFAIL:  3: atime should have changed but didn't
-utimensat01.c:278: TFAIL:  4: mtime should have changed but didn't
-utimensat01.c:282: TPASS:  5: utimensat() passed
-utimensat01.c:282: TPASS:  6: utimensat() passed
-utimensat01.c:282: TPASS:  7: utimensat() passed
-utimensat01.c:282: TPASS:  8: utimensat() passed
-utimensat01.c:274: TFAIL:  9: atime should have changed but didn't
-utimensat01.c:278: TFAIL: 10: mtime should have changed but didn't
-utimensat01.c:282: TPASS: 11: utimensat() passed
-utimensat01.c:190: TBROK: ioctl(fd, FS_IOC_GETFLAGS, &attr) failed: EINVAL (22)
+SELinux is blamed enough for different things.  Let's not add verifying
+the IMA measurement list.  A more likely reason for failing to validate
+the measurement list is that it contains violations.  Normally this is
+because the builtin "ima_policy=tcb" policy has not been replaced with
+a custom policy, based on LSM labels.
+
+Test2 should fail when the measurement list contains violations, but it
+should retry validating the measurement list with the "--ignore-
+violations" option to provide additional context.
+
+thanks,
+
+Mimi
+
