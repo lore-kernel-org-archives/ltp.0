@@ -1,46 +1,51 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 29 Sep 2020 12:47:49 +0100
-Subject: [LTP] [PATCH 1/1] io_destroy01: TCONF when unsupported
-In-Reply-To: <5F730501.7050505@cn.fujitsu.com>
-References: <20200929073501.4598-1-pvorel@suse.cz>
- <5F72E52E.40609@cn.fujitsu.com> <20200929084114.GA7482@dell5510>
- <5F730501.7050505@cn.fujitsu.com>
-Message-ID: <87v9fwx0re.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Sep 2020 14:17:35 +0200
+Subject: [LTP] [PATCH v2 3/4] ima_tpm.sh: Fix calculating boot aggregate
+In-Reply-To: <20200925185034.24155-4-pvorel@suse.cz>
+References: <20200925185034.24155-1-pvorel@suse.cz>
+ <20200925185034.24155-4-pvorel@suse.cz>
+Message-ID: <20200929121735.GA11889@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Yang Xu <xuyang2018.jy@cn.fujitsu.com> writes:
+>  test1()
+>  {
+>  	tst_res TINFO "verify boot aggregate"
 
-> Hi Petr
->
->> Hi Yang,
->>
->>> Hi Petr
->>> Why not using kconfig in tst_test struct.
->>
->> We should probably use tst_syscall().
->> But using kconfig is not 1) needed (tst_syscall() most reliable way) 2) kconfig
->> requires having kernel config available, which is not on some platforms.
-> I see. At the first, I prefer to like to use kconfig because it only 
-> tests io_destory one time on kernel without CONFIG_AIO  when we use -i 
-> parameters,  but using libaio wrapper is stable. So it is ok.
+> -	local zero="0000000000000000000000000000000000000000"
+>  	local tpm_bios="$SECURITYFS/tpm0/binary_bios_measurements"
+> -	local ima_measurements="$ASCII_MEASUREMENTS"
+> -	local boot_aggregate boot_hash line
+> +	local cmd="evmctl ima_boot_aggregate"
+> +	local boot_aggregate cmd zero
 
-Kconfig can even be wrong (most likely with out-of-tree patches) or we
-might look at the wrong option as things are moved around
-sometimes. This is another instance of us trying to guess if something
-can be done without trying it.
+> -	# IMA boot aggregate
+> -	read line < $ima_measurements
+> -	boot_hash=$(echo $line | awk '{print $(NF-1)}' | cut -d':' -f2)
+> +	if [ "$MISSING_EVMCTL" = 1 ]; then
+> +		if [ -f "$tpm_bios" ]; then
+I leaved this error during rebase:
+if [ ! -f "$tpm_bios" ]; then
 
-I guess there are some things where it is not as simple as trying a
-system call, but in cases where ENOSYS will be returned there is no need
-to look at the config except maybe for diagnostic purposes. If you are
-concerned about '-i' then you can even just make in invalid syscall in
-setup to see what error it returns.
+I'm still investigating corner case issue when
+/sys/kernel/security/tpm0/binary_bios_measurements
+is not presented (mostly when no TPM device, thus IMA "TPM-bypass" code being
+used, but sometimes also for TPM 2.0 which does not export event log).
 
--- 
-Thank you,
-Richard.
+I'll send shortly v3.
+
+Kind regards,
+Petr
+
+> +			tst_res TCONF "missing $tpm_bios, $ERRMSG_EVMCTL"
+> +			return
+> +		fi
+> +		tst_check_cmds ima_boot_aggregate || return
+> +		cmd="ima_boot_aggregate -f $tpm_bios"
+> +	fi
+> +	tst_res TINFO "using command: $cmd"
