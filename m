@@ -1,39 +1,40 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Tue, 29 Sep 2020 17:56:15 -0400
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Wed, 30 Sep 2020 02:11:18 +0300
 Subject: [LTP] [PATCH v3 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <20200929165330.GA11939@dell5510>
+In-Reply-To: <20200929165021.11731-1-pvorel@suse.cz>
 References: <20200929165021.11731-1-pvorel@suse.cz>
- <20200929165330.GA11939@dell5510>
-Message-ID: <48cbcb6c03d0938a2e6e97a5b8ca08cac9b706a8.camel@linux.ibm.com>
+Message-ID: <20200929231118.GA805493@linux.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-
-On Tue, 2020-09-29 at 18:53 +0200, Petr Vorel wrote:
-> Hi Mimi, Lakshmi,
+On Tue, Sep 29, 2020 at 06:50:17PM +0200, Petr Vorel wrote:
+> Hi,
 > 
-> sorry for late version. FYI Cyril is planning to release LTP tomorrow evening,
-> thus To get it into this release require review and testing till tomorrow lunch
-> or something.
-> Thus understand if you don't have time for it.
+> few more fixes, mostly touching older kernels or evmctl versions.
+> Changes in 3rd and 4th commit.
 > 
-> NOTE: crazy support for old versions was important to get support for older SLES
-> versions.
+> Kind regards,
+> Petr
+> 
+> Petr Vorel (4):
+>   IMA: Move get_algorithm_digest(), set_digest_index() to ima_setup.sh
+>   IMA: Rewrite ima_boot_aggregate.c to new API
+>   ima_tpm.sh: Fix calculating boot aggregate
+>   ima_tpm.sh: Fix calculating PCR aggregate
+> 
+>  .../integrity/ima/src/ima_boot_aggregate.c    | 113 ++++----
+>  .../integrity/ima/tests/ima_measurements.sh   |  62 +---
+>  .../security/integrity/ima/tests/ima_setup.sh |  70 +++++
+>  .../security/integrity/ima/tests/ima_tpm.sh   | 265 ++++++++++++++----
+>  4 files changed, 341 insertions(+), 169 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
 
-Thank you so much for updating the ima_tpm.sh test.  Of all the
-comments, it would be nice to re-verify the measurement list with "
---ignore-violations" to provide more context.  Anyone running with just
-the ima_policy=tcb, would have violations.  You should be able to test
-that yourself with the logs, PCRs, and directions,  I sent you.
+Hi, is there something specific I should look at in this patch set?
 
-In terms of supporting the "ima" template, I think it would only be for
-old, existing systems, but then I doubt they would be running ltp.  
-The "boot_aggregate" to "sha1" change works on a system with TPM 1.2.
-
-Mimi
-
-
+/Jarkko
