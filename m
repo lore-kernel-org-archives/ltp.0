@@ -1,30 +1,28 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Sep 2020 10:38:46 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Sep 2020 10:41:14 +0200
 Subject: [LTP] [PATCH 1/1] io_destroy01: TCONF when unsupported
-In-Reply-To: <20200929073501.4598-1-pvorel@suse.cz>
+In-Reply-To: <5F72E52E.40609@cn.fujitsu.com>
 References: <20200929073501.4598-1-pvorel@suse.cz>
-Message-ID: <20200929083846.GA2717@yuki.lan>
+ <5F72E52E.40609@cn.fujitsu.com>
+Message-ID: <20200929084114.GA7482@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> to fix test on kernel built without CONFIG_AIO=y.
-> 
-> Cleanup: use return instead of else, join string.
+Hi Yang,
 
-This is both obviously ok, but the cleanup should be in a separate
-patch.
+> Hi Petr
+> Why not using kconfig in tst_test struct.
 
-You can add my reviewed-by if you split the patch into two.
+We should probably use tst_syscall().
+But using kconfig is not 1) needed (tst_syscall() most reliable way) 2) kconfig
+requires having kernel config available, which is not on some platforms.
 
-Also is this the only io_* test that fails?
+(I plan to introduce TWARN_IF_NO_CONFIG to print only warning for platforms
+which don't have kconfig available, see
+https://github.com/linux-test-project/ltp/issues/700).
 
-Looking at the testcases we have the io_setup01 that looks like it will
-fail with TBROK if io_setup() returns -ENOSYS.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
