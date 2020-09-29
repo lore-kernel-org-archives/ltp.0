@@ -1,147 +1,77 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 29 Sep 2020 10:56:06 +0800
-Subject: [LTP] [PATCH] controllers/cpuset_base_ops_testset.sh: Accept either
- 0 or -EINVAL when passing '0-'
-Message-ID: <20200929025606.322543-1-yangx.jy@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Sep 2020 07:23:40 +0200
+Subject: [LTP] [PATCH v1 0/1] ima: Add test for selinux measurement
+In-Reply-To: <20200928194730.20862-1-nramas@linux.microsoft.com>
+References: <20200928194730.20862-1-nramas@linux.microsoft.com>
+Message-ID: <20200929052340.GA4976@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we write '0-' to cpuset.cpus/cpuset.mems, new bitmap_parselist()
-in kernel(e.g. newer than v4.2) treats it as an invalid value and old
-one treats it as a valid '0':
--------------------------------------------
-on v5.8.0:
- # echo 0- > cpuset.cpus
- -bash: echo: write error: Invalid argument
- # echo 0- > cpuset.mems
- -bash: echo: write error: Invalid argument
+Hi Lakshmi,
 
-on v4.0.0:
- # echo '0-' >cpuset.cpus
- # cat cpuset.cpus
- 0
- # echo '0-' >cpuset.mems
- # cat cpuset.cpus
- 0
--------------------------------------------
-Note: commit d9282cb66353b changes the behavior.
+Thanks for your patch. FYI I'll try to have look ASAP, but as there is LTP
+freeze and work needed to review fixes before release I'll probably review this
+after the release (1, max. 2 weeks).
 
-Drop the check of kernel version and accept either 0 or -EINVAL
-because the change of behavior can be backported into old kernel.
+Could you please have a look at fix planned to be part of the release?
+https://patchwork.ozlabs.org/project/ltp/list/?series=204230
 
-Fixes: #695
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
+Kind regards,
+Petr
 
-Hi Cyril, Petr, Jan, Li
+> New functionality is being added to IMA to measure data provided by
+> kernel components. With this feature, IMA policy can be set to enable
+> measuring data provided by Linux Security Modules (LSM). Currently one
+> such LSM namely selinux is being updated to use this functionality.
+> This new functionality needs test automation in LTP.
 
-Do you think it is better to remove '0-' subtest directly?
+> This patch set adds tests which verify that the IMA subsystem correctly
+> measures the data provided by selinux.
 
- .../cpuset_base_ops_testset.sh                | 47 ++++++++-----------
- 1 file changed, 20 insertions(+), 27 deletions(-)
+> This patch is based on 
+> commit 286401a1c1f3 ("thp04: Add linux tag")
+> in "master" branch in https://github.com/linux-test-project/ltp
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-index 67f3611d7..1fa40d2d9 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-@@ -45,7 +45,7 @@ base_op_write_and_test()
- {
- 	local write_file="$1"
- 	local write_string="$2"
--	local expect_string="$3"
-+	local expect_strings="$3"
- 	local write_result=
- 	local ret=0
- 
-@@ -59,24 +59,27 @@ base_op_write_and_test()
- 	ret=$?
- 	write_result="$(cat "$write_file")"
- 
--	case "$expect_string" in
--	EMPTY)
--		test -z "$write_result" -a $ret = 0
--		ret=$?
--		;;
--	WRITE_ERROR)
--		ret=$((!$ret))
--		;;
--	*)
--		test "$expect_string" = "$write_result" -a $ret = 0
--		ret=$?
--		;;
--	esac
-+	for expect_string in $(echo $expect_strings | sed 's/|/ /'); do
-+		case "$expect_string" in
-+		EMPTY)
-+			test -z "$write_result" -a $ret = 0
-+			ret=$?
-+			;;
-+		WRITE_ERROR)
-+			ret=$((!$ret))
-+			;;
-+		*)
-+			test "$expect_string" = "$write_result" -a $ret = 0
-+			ret=$?
-+			;;
-+		esac
-+		[ $ret -eq 0 ] && break
-+	done
- 
- 	if [ $ret -eq 0 ]; then
- 		tst_resm TPASS "$cfile_name: Get the expected string"
- 	else
--		tst_resm TFAIL "$cfile_name: Test result - $write_result Expected string - \"$expect_string\""
-+		tst_resm TFAIL "$cfile_name: Test result - $write_result Expected string - \"$expect_strings\""
- 	fi
- 	return $ret
- }
-@@ -114,6 +117,7 @@ test_cpus()
- 		${cpus_all}$nr_cpus			WRITE_ERROR
- 		0,0					0
- 		0-0					0
-+		0-					0|WRITE_ERROR
- 		0-$((nr_cpus-1))			0-$((nr_cpus-1))
- 		-1					WRITE_ERROR
- 		0-$nr_cpus				WRITE_ERROR
-@@ -127,12 +131,6 @@ test_cpus()
- 		base_op_test "$CPUSET/1/cpuset.cpus" "0,1-$((nr_cpus-2)),$((nr_cpus-1))" "0-$((nr_cpus-1))"
- 		base_op_test "$CPUSET/1/cpuset.cpus" "0,1-$((nr_cpus-2))," "0-$((nr_cpus-2))"
- 	fi
--
--	if tst_kvcmp -lt "3.0 RHEL6:2.6.32"; then
--		base_op_test "$CPUSET/1/cpuset.cpus" "0-" "WRITE_ERROR"
--	else
--		base_op_test "$CPUSET/1/cpuset.cpus" "0-" "0"
--	fi
- }
- 
- test_mems()
-@@ -149,6 +147,7 @@ test_mems()
- 		${mems_all}$nr_mems			WRITE_ERROR
- 		0,0					0
- 		0-0					0
-+		0-					0|WRITE_ERROR
- 		0-$((nr_mems-1))			0-$((nr_mems-1))
- 		-1					WRITE_ERROR
- 		0-$nr_mems				WRITE_ERROR
-@@ -162,12 +161,6 @@ test_mems()
- 		base_op_test "$CPUSET/1/cpuset.mems" "0,1-$((nr_mems-2)),$((nr_mems-1))" "0-$((nr_mems-1))"
- 		base_op_test "$CPUSET/1/cpuset.mems" "0,1-$((nr_mems-2))," "0-$((nr_mems-2))"
- 	fi
--
--	if tst_kvcmp -lt "3.0 RHEL6:2.6.32"; then
--		base_op_test "$CPUSET/1/cpuset.mems" "0-" "WRITE_ERROR"
--	else
--		base_op_test "$CPUSET/1/cpuset.mems" "0-" "0"
--	fi
- }
- 
- test_flags()
--- 
-2.25.1
+> This patch is dependent on the following patch series in LTP
+> https://patchwork.kernel.org/patch/11802771/
+I put link to LTP patchwork to avoid the confusion.
+https://patchwork.ozlabs.org/project/ltp/list/?series=204486
 
+> This series needs a kernel built on the following repo/branch/patches:
+> repo: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+> branch: next
+> commit 8861d0af642c ("selinux: Add helper functions to get and set checkreqprot")
+Thanks for adding this info. It'd be great if it were part of kernel commit
+message and also added as a comment in the test itself (we don't want to get it
+lost).
 
+BTW LTP has 2 kind ways of handling of kernel versions:
 
+* fixes which are meant to be backported to the stable trees:
+In C API it looks like (here also with CVE entry):
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/bpf/bpf_prog03.c#L187
+.tags = (const struct tst_tag[]) {
+		{"linux-git", "95a762e2c8c9"},
+		{"CVE", "2017-16995"},
+		{}
+This is not part of shell API, but I'll add it after the release. Thus we don't
+want to loose this info.
+
+* new kernel features, which are likely not to be backported
+You either have some way to detect this feature is presented (ideally) or you
+specify kernel version since it should be run
+This is used in shell API as:
+https://github.com/linux-test-project/ltp/blob/master/testcases/network/tcp_cc/bbr02.sh#L8
+TST_MIN_KVER="4.13"
+
+> And the following patch series should be applied in the following order:
+>   1, https://patchwork.kernel.org/patch/11709527/
+>   2, https://patchwork.kernel.org/patch/11795559/
+>   3, https://patchwork.kernel.org/patch/11801525/
+>   4, https://patchwork.kernel.org/patch/11801585/
+
+Kind regards,
+Petr
