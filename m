@@ -1,33 +1,55 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Sep 2020 11:41:04 +0200
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 29 Sep 2020 17:57:21 +0800
 Subject: [LTP] [PATCH 1/1] io_destroy01: TCONF when unsupported
-In-Reply-To: <20200929085137.GB2717@yuki.lan>
+In-Reply-To: <20200929084114.GA7482@dell5510>
 References: <20200929073501.4598-1-pvorel@suse.cz>
- <20200929083846.GA2717@yuki.lan> <20200929084809.GB7482@dell5510>
- <20200929085137.GB2717@yuki.lan>
-Message-ID: <20200929094104.GA19870@dell5510>
+ <5F72E52E.40609@cn.fujitsu.com> <20200929084114.GA7482@dell5510>
+Message-ID: <5F730501.7050505@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Petr
 
-> > > > to fix test on kernel built without CONFIG_AIO=y.
+> Hi Yang,
+>
+>> Hi Petr
+>> Why not using kconfig in tst_test struct.
+>
+> We should probably use tst_syscall().
+> But using kconfig is not 1) needed (tst_syscall() most reliable way) 2) kconfig
+> requires having kernel config available, which is not on some platforms.
+I see. At the first, I prefer to like to use kconfig because it only 
+tests io_destory one time on kernel without CONFIG_AIO  when we use -i 
+parameters,  but using libaio wrapper is stable. So it is ok.
+>
+> (I plan to introduce TWARN_IF_NO_CONFIG to print only warning for platforms
+> which don't have kconfig available, see
+> https://github.com/linux-test-project/ltp/issues/700).
 
-> > > > Cleanup: use return instead of else, join string.
+I have seen this ticket, if I understand it corretly,
 
-> > > This is both obviously ok, but the cleanup should be in a separate
-> > > patch.
-> > +1, I'll do.
-> > I suggested to use tst_syscall(), but we probably want here to use libc wrapper
+if platform has kernel config without needed kconfig, test cases still 
+will report TCONF
 
-> These are from libaio library, which is why they return negative errors
-> instead of setting errno.
-Right, thanks for info.
+if platform doesn't have  kernel config, test cases only reports 
+warning(system doesn't have kernel config file) and continue to run test 
+and it maybe lead to a unexpected stat/failure. And we don't add extra 
+check in tests case such as ENOSYS/EINVAL check because it is redundant 
+against kconfig check.
 
-Merged fixed version (2 commits).
+Best Regards
+Yang Xu
 
-Kind regards,
-Petr
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
+
+
+
