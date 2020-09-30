@@ -1,77 +1,43 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 30 Sep 2020 21:38:46 +0800
-Subject: [LTP] [PATCH v2] controllers/cpuset_base_ops_testset.sh: Only
- verify '0-' subtest on kernel v4.3 or newer
-Message-ID: <20200930133846.10034-1-yangx.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 30 Sep 2020 16:05:08 +0200
+Subject: [LTP] [RFC] ltp test add reboot function
+In-Reply-To: <CAF12kFvbGhhwyAFnkv+3w2dwvVovTOeE5z+OnqiGz+rQ-5y6ZA@mail.gmail.com>
+References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
+ <20200824074226.GB2466@yuki.lan>
+ <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
+ <20200828130638.GD10501@yuki.lan>
+ <CY4PR13MB11754F0072967B32B007D273FD520@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <CAF12kFspG2fQKUrA=HGWGQuHy=xJaL0gntqvksq+QmUK3mAdKw@mail.gmail.com>
+ <20200903092448.GC6285@yuki.lan>
+ <CAF12kFvbGhhwyAFnkv+3w2dwvVovTOeE5z+OnqiGz+rQ-5y6ZA@mail.gmail.com>
+Message-ID: <20200930140508.GA12097@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) According to the previous kernel check, '0-' is an invalid
-   value on very old kernel(i.e. v3.0 or older).
-2) '0-' becomes a valid '0' on old kernel(e.g. between v3.1 and v4.2).
-3) '0-' becomes an invalid value again by commit d9282cb66353b
-   on new kernel(e.g. v4.3 kernel or newer).
-For example:
--------------------------------------------
-On v5.8.0:
- # echo 0- > cpuset.cpus
- -bash: echo: write error: Invalid argument
- # echo 0- > cpuset.mems
- -bash: echo: write error: Invalid argument
+Hi!
+> I considered  running ltp with reboot function by HOST controller.
+> And here I found that if case need reboot before or after it run. the
+> HOST controller
+> is easy to implement, BUT when the case want reboot between it's verify_func
+> I hava no idea that how to continue run the rest verify_func
+> continuing after reboot.
+> Can you give some guidance?
 
-On v4.0.0:
- # echo '0-' >cpuset.cpus
- # cat cpuset.cpus
- 0
- # echo '0-' >cpuset.mems
- # cat cpuset.cpus
- 0
--------------------------------------------
+I guess that we would have to add a command line parameter to the test
+library to tell the testcase to continue with the second half of the
+test. Then after the reboot the testcase would be executed with that
+option so that it knows that we are running it for a second time and
+then we have to pass that to the testcases.
 
-In this case, only verify(focus on) '0-' subtest on kernel v4.3
-or newer due to two reasons:
-1) It may catch a bug on mainline kernel in future.
-2) It doesn't trigger any bug on old kernel currently.
+And since the uClinux support is dead, we are free to reuse the -C flag
+for this purpose. Probably easiest solution would be to set a global
+variable (named tst_rebooted or something similar) if -C was passed to
+the test on a command line, then we can use the value of this variable
+in the test setup/verify/cleanup functions.
 
-Fixes: #695
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- .../cpuset_base_ops_test/cpuset_base_ops_testset.sh       | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-index 67f3611d7..367c95d2b 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/cpuset_base_ops_testset.sh
-@@ -128,10 +128,8 @@ test_cpus()
- 		base_op_test "$CPUSET/1/cpuset.cpus" "0,1-$((nr_cpus-2))," "0-$((nr_cpus-2))"
- 	fi
- 
--	if tst_kvcmp -lt "3.0 RHEL6:2.6.32"; then
-+	if tst_kvcmp -ge "4.3"; then
- 		base_op_test "$CPUSET/1/cpuset.cpus" "0-" "WRITE_ERROR"
--	else
--		base_op_test "$CPUSET/1/cpuset.cpus" "0-" "0"
- 	fi
- }
- 
-@@ -163,10 +161,8 @@ test_mems()
- 		base_op_test "$CPUSET/1/cpuset.mems" "0,1-$((nr_mems-2))," "0-$((nr_mems-2))"
- 	fi
- 
--	if tst_kvcmp -lt "3.0 RHEL6:2.6.32"; then
-+	if tst_kvcmp -ge "4.3"; then
- 		base_op_test "$CPUSET/1/cpuset.mems" "0-" "WRITE_ERROR"
--	else
--		base_op_test "$CPUSET/1/cpuset.mems" "0-" "0"
- 	fi
- }
- 
 -- 
-2.25.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
