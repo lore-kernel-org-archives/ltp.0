@@ -1,27 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Sep 2020 07:53:14 +0200
-Subject: [LTP] [PATCH v3 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <20200929231118.GA805493@linux.intel.com>
+Date: Wed, 30 Sep 2020 08:53:48 +0200
+Subject: [LTP] [PATCH v3 2/4] IMA: Rewrite ima_boot_aggregate.c to new
+ API
+In-Reply-To: <4c0ec7617f2686ffdd4565a05beddd34ebf0b6aa.camel@linux.ibm.com>
 References: <20200929165021.11731-1-pvorel@suse.cz>
- <20200929231118.GA805493@linux.intel.com>
-Message-ID: <20200930055314.GA21664@dell5510>
+ <20200929165021.11731-3-pvorel@suse.cz>
+ <4c0ec7617f2686ffdd4565a05beddd34ebf0b6aa.camel@linux.ibm.com>
+Message-ID: <20200930065348.GB21664@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jarkko,
+Hi Mimi,
 
-> Hi, is there something specific I should look at in this patch set?
+> <snip>
 
-I'm sorry to bother you with LTP specific code. Can you have a quick look if I
-didn't overlook anything obvious in reading PCR files (read_pcr_tpm*())?
+> > diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+> > index c69f891f1..dc958eb5c 100755
+> > --- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+> > +++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+> > @@ -33,7 +33,7 @@ test1()
+> >  			tst_res TFAIL "bios boot aggregate is not 0"
+> >  		fi
+> >  	else
+> > -		boot_aggregate=$(ima_boot_aggregate $tpm_bios | grep "boot_aggregate:" | cut -d':' -f2)
+> > +		boot_aggregate=$(ima_boot_aggregate -f $tpm_bios | grep "sha1:" | cut -d':' -f2)
+> >  		if [ "$boot_hash" = "$boot_aggregate" ]; then
+> >  			tst_res TPASS "bios aggregate matches IMA boot aggregate"
+> >  		else
 
-I'm surprised that it's working on my TPM 2.0 which does not export
-/sys/kernel/security/tpm0/binary_bios_measurements (using evmctl).
-
-> /Jarkko
+> The original "ima" template is just the hash digest, without the
+> algorithm.
+Yes, but this code is output of ima_boot_aggregate.c. And code detecting old
+format is still working (verified on ima_measurements.sh with ima_tcb kernel
+parameter on 3.10).
 
 Kind regards,
 Petr
