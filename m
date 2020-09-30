@@ -1,51 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Sep 2020 12:28:54 +0200
-Subject: [LTP] [PATCH v2 1/2] vxlan0{3,4}.sh: Fix exit on error
-Message-ID: <20200930102855.5967-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 30 Sep 2020 12:47:09 +0200
+Subject: [LTP] [PATCH] controllers/cpuset_base_ops_testset.sh: Accept
+ either 0 or -EINVAL when passing '0-'
+In-Reply-To: <20200929025606.322543-1-yangx.jy@cn.fujitsu.com>
+References: <20200929025606.322543-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <20200930104709.GC6611@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-we need return, continue was for original loop (in vxlan03.sh regression
-from f275363d7, then copy pasted to vxlan04.sh).
+Hi!
+> When we write '0-' to cpuset.cpus/cpuset.mems, new bitmap_parselist()
+> in kernel(e.g. newer than v4.2) treats it as an invalid value and old
+> one treats it as a valid '0':
+> -------------------------------------------
+> on v5.8.0:
+>  # echo 0- > cpuset.cpus
+>  -bash: echo: write error: Invalid argument
+>  # echo 0- > cpuset.mems
+>  -bash: echo: write error: Invalid argument
+> 
+> on v4.0.0:
+>  # echo '0-' >cpuset.cpus
+>  # cat cpuset.cpus
+>  0
+>  # echo '0-' >cpuset.mems
+>  # cat cpuset.cpus
+>  0
+> -------------------------------------------
+> Note: commit d9282cb66353b changes the behavior.
+> 
+> Drop the check of kernel version and accept either 0 or -EINVAL
+> because the change of behavior can be backported into old kernel.
 
-Fixes: f275363d7 ("net/{stress,virt}: Migrate virt_lib.sh, ipsec_lib.sh + tests using them")
-Fixes: 503b1cb1e ("network: add new gre02, geneve02, macsec03 and vxlan04 tests")
+Why can't we just simply adjust the kernel check, it looks like the
+commit you mentioned was added to 4.3 so it should be fixed by changing
+the line to:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/network/virt/vxlan03.sh | 2 +-
- testcases/network/virt/vxlan04.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+	if tst_kvcmp -lt "4.3 RHEL6:2.6.32"; then
 
-diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
-index 9ca303930..ef66a57fe 100755
---- a/testcases/network/virt/vxlan03.sh
-+++ b/testcases/network/virt/vxlan03.sh
-@@ -40,7 +40,7 @@ do_test()
- 		tst_brk TBROK "you must specify IP address"
- 	fi
- 
--	virt_check_cmd virt_add ltp_v0 id 0 $2 || continue
-+	virt_check_cmd virt_add ltp_v0 id 0 $2 || return
- 
- 	tst_res TINFO "the same VNI must work"
- 	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
-diff --git a/testcases/network/virt/vxlan04.sh b/testcases/network/virt/vxlan04.sh
-index 0351ea80f..a59b1183f 100755
---- a/testcases/network/virt/vxlan04.sh
-+++ b/testcases/network/virt/vxlan04.sh
-@@ -24,7 +24,7 @@ do_test()
- 		tst_brk TBROK "you must specify IP address"
- 	fi
- 
--	virt_check_cmd virt_add ltp_v0 id 0 $2 || continue
-+	virt_check_cmd virt_add ltp_v0 id 0 $2 || return
- 
- 	tst_res TINFO "the same VNI must work"
- 	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
+We want to at least keep the check for kernels newer than 4.3 just to
+make sure that kernel keeps rejecting the '0-' invalid value.
+
 -- 
-2.28.0
-
+Cyril Hrubis
+chrubis@suse.cz
