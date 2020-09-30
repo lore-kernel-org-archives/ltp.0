@@ -1,101 +1,41 @@
-From: Bird, Tim <Tim.Bird@sony.com>
-Date: Wed, 30 Sep 2020 16:01:00 +0000
-Subject: [LTP] [RFC] ltp test add reboot function
-In-Reply-To: <20200930140508.GA12097@yuki.lan>
-References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
- <20200824074226.GB2466@yuki.lan>
- <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
- <20200828130638.GD10501@yuki.lan>
- <CY4PR13MB11754F0072967B32B007D273FD520@CY4PR13MB1175.namprd13.prod.outlook.com>
- <CAF12kFspG2fQKUrA=HGWGQuHy=xJaL0gntqvksq+QmUK3mAdKw@mail.gmail.com>
- <20200903092448.GC6285@yuki.lan>
- <CAF12kFvbGhhwyAFnkv+3w2dwvVovTOeE5z+OnqiGz+rQ-5y6ZA@mail.gmail.com>
- <20200930140508.GA12097@yuki.lan>
-Message-ID: <CY4PR13MB11757A2A70B0B80BACEA79E0FD330@CY4PR13MB1175.namprd13.prod.outlook.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 30 Sep 2020 18:02:10 +0200
+Subject: [LTP] [PATCH v4 0/4]	TPM 2.0 fixes in IMA tests
+Message-ID: <20200930160214.29358-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Mimi, Lakshmi,
 
+changes v3->v4:
 
-> -----Original Message-----
-> From: Cyril Hrubis <chrubis@suse.cz>
-> 
-> Hi!
-> > I considered  running ltp with reboot function by HOST controller.
-> > And here I found that if case need reboot before or after it run. the
-> > HOST controller
-> > is easy to implement, BUT when the case want reboot between it's verify_func
-> > I hava no idea that how to continue run the rest verify_func
-> > continuing after reboot.
-> > Can you give some guidance?
-> 
-> I guess that we would have to add a command line parameter to the test
-> library to tell the testcase to continue with the second half of the
-> test. Then after the reboot the testcase would be executed with that
-> option so that it knows that we are running it for a second time and
-> then we have to pass that to the testcases.
-> 
-> And since the uClinux support is dead, we are free to reuse the -C flag
-> for this purpose. Probably easiest solution would be to set a global
-> variable (named tst_rebooted or something similar) if -C was passed to
-> the test on a command line, then we can use the value of this variable
-> in the test setup/verify/cleanup functions.
+test1:
+* require 1.3.1 instead of 1.3 (simplification)
 
-Just brainstorming here...
+test2
+* use --ignore-violations if evmctl >= 1.3.1 available
+* check error only for 1.3.1, for others check only the result
+* check for ima_policy=tcb (or ima_tcb) and require 1.3.1 if used
+(to get --ignore-violations)
 
-How about an environment variable that contains the location to resume
-execution.  It could be a specific test case (within a test), or some value that the verify
-function uses to skip down to the place to resume.
+Kind regards,
+Petr
 
-If set, the library would skip the setup operation (or modify it appropriately).
+Petr Vorel (4):
+  IMA: Move get_algorithm_digest(), set_digest_index() to ima_setup.sh
+  IMA: Rewrite ima_boot_aggregate.c to new API
+  ima_tpm.sh: Fix calculating boot aggregate
+  ima_tpm.sh: Fix calculating PCR aggregate
 
-Something like this:
+ .../integrity/ima/src/ima_boot_aggregate.c    | 113 ++++---
+ .../integrity/ima/tests/ima_measurements.sh   |  62 +---
+ .../security/integrity/ima/tests/ima_setup.sh |  84 +++++-
+ .../security/integrity/ima/tests/ima_tpm.sh   | 284 ++++++++++++++----
+ 4 files changed, 371 insertions(+), 172 deletions(-)
 
-LTP_RESUME_POS=reboot_test:testcase_6
-
-(or some better name :-) )
-
-The value for the resume position would have to be sent to the test framework,
-so it could set it (in the variable) on machine reboot.  The test framework has to know
-to set something (either -C or LTP_RESUME_POS) so that the test can recognize it is
-in a resume-after-reboot condition.
-
-OR
-
-Maybe it's sufficient for the test to create a temp file (in a temp directory that is known
-to be persistent across a reboot, which not all of them are).  The presence of the temp
-file could indicate a resume-after-reboot condition, and it's contents could be used
-to indicate the resume position.
-
-Question: does this "resume-after-reboot" condition need to be recognized by ltp-pan?
-
-I'm still not sure what is envisioned for the interface between the test and the
-test framework, to detect that it should resume a particular test on DUT reboot.
-If the test is initiating the reboot, maybe it needs to communicate some data to 
-the test framework (or whatever is performing the reboot), so that things can be
-set up during boot to continue where the test left off.
-
-We have been envisioning in Fuego supporting an API like the following, for 
-a generic reboot mechanism for rebooting a board:
-
-CLI:
-lc board {board_name} reboot
-
-REST API:
-wget https://{lab-control-server}/api/devices/{board_name}/power/reboot
-
-These are both intended to support immediate reboot of the board, and don't take
-any parameters.  It seems like there's a bit of "knowledge" about the board
-bringup that is outside the scope of just a simple board reboot operation, that would have
-to be conveyed to the test framework and possibly the on-board boot initialization
-code, to accomplish a resume operation for a test.  It's a bit hard to figure out
-where the extra information should reside.  Should the data be placed in
-the reboot API?  Should there be a separate call to the test framework/board control
-software to prepare for a reboot-and-resume-test operation?
-
-Just my 2 cents.
- -- Tim
+-- 
+2.28.0
 
