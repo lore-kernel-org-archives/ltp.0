@@ -1,35 +1,55 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Sep 2020 10:21:47 +0200
-Subject: [LTP] [PATCH] utimensat01: Test all available FS and handle FS
- with no attributes
-In-Reply-To: <20200930081655.GA6611@yuki.lan>
-References: <20200929144635.28874-1-rpalethorpe@suse.com>
- <20200929181152.GD15188@dell5510> <20200930081655.GA6611@yuki.lan>
-Message-ID: <20200930082147.GA16382@dell5510>
+Date: Wed, 30 Sep 2020 10:58:51 +0200
+Subject: [LTP] [PATCH 1/1] virt_lib.sh: Remove checks for tst_ipaddr() output
+Message-ID: <20200930085851.21455-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
++ now unused $ip_local and $ip_remote variables.
 
-> Hi!
-> > Although this fails on NTFS and exfat and FUSE.
-> > I don't remember which flag removes these filesystems, there was some
-> > workaround. Cyril, Li, Jan, do you remember?
+These checks were originally (before f275363d7) in tests which use
+virt_compare_netperf also with variables.
 
-> That's the:
+It should be safe to expect tst_ipaddr() output to be safe even for SSH
+based setup ("two host" configuration) due various checks in tst_net.sh.
 
-> .dev_fs_flags = TST_FS_SKIP_FUSE,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+This can wait after the release.
 
-> Which should fix the failures here. Moreover I do wonder if this is a
-> real bug in the fuse implementation or something that have been left out
-> intentionally.
-Thanks for info. Also vfat needs to be filtered out (if it's not a bug, which
-needs to be implemented).
-If we decide to filter out it, we'd need one more flag (something like
-TST_FS_SKIP_MICROSOFT, which would filter out vfat, ntfs and exfat).
+ testcases/network/virt/virt_lib.sh | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index 827829633..cb2b2ba97 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -61,11 +61,9 @@ virt_lib_setup()
+ TST_NEEDS_ROOT=1
+ . tst_net.sh
+ 
+-ip_local=$(tst_ipaddr)
+ ip_virt_local="$(TST_IPV6= tst_ipaddr_un)"
+ ip6_virt_local="$(TST_IPV6=6 tst_ipaddr_un)"
+ 
+-ip_remote=$(tst_ipaddr rhost)
+ ip_virt_remote="$(TST_IPV6= tst_ipaddr_un rhost)"
+ ip6_virt_remote="$(TST_IPV6=6 tst_ipaddr_un rhost)"
+ 
+@@ -376,10 +374,6 @@ virt_gre_setup()
+ 	[ "$TST_IPV6" ] && virt_type="ip6gre"
+ 	virt_lib_setup
+ 
+-	if [ -z $ip_local -o -z $ip_remote ]; then
+-		tst_brk TBROK "you must specify IP address"
+-	fi
+-
+ 	tst_res TINFO "test $virt_type"
+ 	virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
+ 	"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
+-- 
+2.28.0
+
