@@ -1,24 +1,25 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 30 Sep 2020 13:43:35 +0200
-Subject: [LTP] [PATCH v2 1/2] vxlan0{3,4}.sh: Fix exit on error
-In-Reply-To: <20200930102855.5967-1-pvorel@suse.cz>
-References: <20200930102855.5967-1-pvorel@suse.cz>
-Message-ID: <20200930114335.GA20377@dell5510>
+Date: Wed, 30 Sep 2020 13:48:43 +0200
+Subject: [LTP] [PATCH v3] utimensat01: Use FS (default ext2) with
+ timestamps and attributes
+In-Reply-To: <20200930114058.5860-1-rpalethorpe@suse.com>
+References: <20200930114058.5860-1-rpalethorpe@suse.com>
+Message-ID: <20200930114843.GA21683@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi,
 
-> we need return, continue was for original loop (in vxlan03.sh regression
-> from f275363d7, then copy pasted to vxlan04.sh).
+> V3: Use default FS
 
-> Fixes: f275363d7 ("net/{stress,virt}: Migrate virt_lib.sh, ipsec_lib.sh + tests using them")
-> Fixes: 503b1cb1e ("network: add new gre02, geneve02, macsec03 and vxlan04 tests")
+Great Richie, thanks for the fix.
+I guess it could go to the release.
 
-FYI: Patchset merged.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
+
