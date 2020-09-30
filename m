@@ -1,43 +1,78 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 Sep 2020 16:05:08 +0200
-Subject: [LTP] [RFC] ltp test add reboot function
-In-Reply-To: <CAF12kFvbGhhwyAFnkv+3w2dwvVovTOeE5z+OnqiGz+rQ-5y6ZA@mail.gmail.com>
-References: <CAF12kFuE=4-T=eitwSb0F3fkGLLsmM3VEg4VNbioqJt2JiAEww@mail.gmail.com>
- <20200824074226.GB2466@yuki.lan>
- <CAF12kFvScxqxhY5wXTGL2RKnyM5vM0hEKDc+sHD-3Y=_C7FWcw@mail.gmail.com>
- <20200828130638.GD10501@yuki.lan>
- <CY4PR13MB11754F0072967B32B007D273FD520@CY4PR13MB1175.namprd13.prod.outlook.com>
- <CAF12kFspG2fQKUrA=HGWGQuHy=xJaL0gntqvksq+QmUK3mAdKw@mail.gmail.com>
- <20200903092448.GC6285@yuki.lan>
- <CAF12kFvbGhhwyAFnkv+3w2dwvVovTOeE5z+OnqiGz+rQ-5y6ZA@mail.gmail.com>
-Message-ID: <20200930140508.GA12097@yuki.lan>
+From: Qian Cai <cai@redhat.com>
+Date: Wed, 30 Sep 2020 10:11:30 -0400
+Subject: [LTP] [PATCH v2] diotest4: Fix false postives on FUSE
+Message-ID: <20200930141130.13100-1-cai@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I considered  running ltp with reboot function by HOST controller.
-> And here I found that if case need reboot before or after it run. the
-> HOST controller
-> is easy to implement, BUT when the case want reboot between it's verify_func
-> I hava no idea that how to continue run the rest verify_func
-> continuing after reboot.
-> Can you give some guidance?
+It looks like FUSE does not support the unaligned IO, because it does
+not directly backed by a block device. Therefore, in fuse_direct_IO(),
+there is no checking of unaligned IO to return -EINVAL like other
+filesystems from iomap_dio_bio_actor().
 
-I guess that we would have to add a command line parameter to the test
-library to tell the testcase to continue with the second half of the
-test. Then after the reboot the testcase would be executed with that
-option so that it knows that we are running it for a second time and
-then we have to pass that to the testcases.
+diotest4    3  TFAIL  :  diotest4.c:114: read allows odd count. returns 1: Success
+diotest4    4  TFAIL  :  diotest4.c:129: write allows odd count.returns 1: Success
+diotest4    5  TFAIL  :  diotest4.c:180: Odd count of read and write
+...
+diotest4   16  TFAIL  :  diotest4.c:114: read allows  nonaligned buf. returns 4096: Success
+diotest4   17  TFAIL  :  diotest4.c:129: write allows  nonaligned buf.returns 4096: Success
+diotest4   18  TFAIL  :  diotest4.c:180: read, write with non-aligned buffer
 
-And since the uClinux support is dead, we are free to reuse the -C flag
-for this purpose. Probably easiest solution would be to set a global
-variable (named tst_rebooted or something similar) if -C was passed to
-the test on a command line, then we can use the value of this variable
-in the test setup/verify/cleanup functions.
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ include/tst_fs.h                         | 1 +
+ lib/tst_fs_type.c                        | 2 ++
+ testcases/kernel/io/direct_io/diotest4.c | 2 ++
+ 3 files changed, 5 insertions(+)
 
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index fc0390582..4f7dd68d2 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -29,6 +29,7 @@
+ #define TST_NILFS_MAGIC    0x3434
+ #define TST_EXOFS_MAGIC    0x5DF5
+ #define TST_OVERLAYFS_MAGIC 0x794c7630
++#define TST_FUSE_MAGIC     0x65735546
+ 
+ enum {
+ 	TST_BYTES = 1,
+diff --git a/lib/tst_fs_type.c b/lib/tst_fs_type.c
+index 1d0ac9669..d661d5b2a 100644
+--- a/lib/tst_fs_type.c
++++ b/lib/tst_fs_type.c
+@@ -84,6 +84,8 @@ const char *tst_fs_type_name(long f_type)
+ 		return "EXOFS";
+ 	case TST_OVERLAYFS_MAGIC:
+ 		return "OVERLAYFS";
++	case TST_FUSE_MAGIC:
++		return "FUSE";
+ 	default:
+ 		return "Unknown";
+ 	}
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index bf200cd41..f3c9c19d7 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -270,6 +270,7 @@ int main(int argc, char *argv[])
+ 	switch (fs_type) {
+ 	case TST_NFS_MAGIC:
+ 	case TST_BTRFS_MAGIC:
++	case TST_FUSE_MAGIC:
+ 		tst_resm(TCONF, "%s supports odd count IO",
+ 			 tst_fs_type_name(fs_type));
+ 	break;
+@@ -442,6 +443,7 @@ int main(int argc, char *argv[])
+ 	switch (fs_type) {
+ 	case TST_NFS_MAGIC:
+ 	case TST_BTRFS_MAGIC:
++	case TST_FUSE_MAGIC:
+ 		tst_resm(TCONF, "%s supports non-aligned buffer",
+ 			 tst_fs_type_name(fs_type));
+ 	break;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.28.0
+
