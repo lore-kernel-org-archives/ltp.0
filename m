@@ -1,30 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 30 Sep 2020 10:16:55 +0200
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 30 Sep 2020 10:21:47 +0200
 Subject: [LTP] [PATCH] utimensat01: Test all available FS and handle FS
  with no attributes
-In-Reply-To: <20200929181152.GD15188@dell5510>
+In-Reply-To: <20200930081655.GA6611@yuki.lan>
 References: <20200929144635.28874-1-rpalethorpe@suse.com>
- <20200929181152.GD15188@dell5510>
-Message-ID: <20200930081655.GA6611@yuki.lan>
+ <20200929181152.GD15188@dell5510> <20200930081655.GA6611@yuki.lan>
+Message-ID: <20200930082147.GA16382@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Although this fails on NTFS and exfat and FUSE.
-> I don't remember which flag removes these filesystems, there was some
-> workaround. Cyril, Li, Jan, do you remember?
+Hi Cyril,
 
-That's the:
+> Hi!
+> > Although this fails on NTFS and exfat and FUSE.
+> > I don't remember which flag removes these filesystems, there was some
+> > workaround. Cyril, Li, Jan, do you remember?
 
-.dev_fs_flags = TST_FS_SKIP_FUSE,
+> That's the:
 
-Which should fix the failures here. Moreover I do wonder if this is a
-real bug in the fuse implementation or something that have been left out
-intentionally.
+> .dev_fs_flags = TST_FS_SKIP_FUSE,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Which should fix the failures here. Moreover I do wonder if this is a
+> real bug in the fuse implementation or something that have been left out
+> intentionally.
+Thanks for info. Also vfat needs to be filtered out (if it's not a bug, which
+needs to be implemented).
+If we decide to filter out it, we'd need one more flag (something like
+TST_FS_SKIP_MICROSOFT, which would filter out vfat, ntfs and exfat).
+
+Kind regards,
+Petr
