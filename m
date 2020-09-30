@@ -1,78 +1,87 @@
-From: Qian Cai <cai@redhat.com>
-Date: Wed, 30 Sep 2020 10:11:30 -0400
-Subject: [LTP] [PATCH v2] diotest4: Fix false postives on FUSE
-Message-ID: <20200930141130.13100-1-cai@redhat.com>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Wed, 30 Sep 2020 07:26:20 -0700
+Subject: [LTP] [PATCH v1 0/1] ima: Add test for selinux measurement
+In-Reply-To: <20200929052340.GA4976@dell5510>
+References: <20200928194730.20862-1-nramas@linux.microsoft.com>
+ <20200929052340.GA4976@dell5510>
+Message-ID: <281c5fa0-8d3a-0812-9d20-a5c7ee4f7666@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It looks like FUSE does not support the unaligned IO, because it does
-not directly backed by a block device. Therefore, in fuse_direct_IO(),
-there is no checking of unaligned IO to return -EINVAL like other
-filesystems from iomap_dio_bio_actor().
+On 9/28/20 10:23 PM, Petr Vorel wrote:
+> Hi Lakshmi,
+> 
+> Thanks for your patch. FYI I'll try to have look ASAP, but as there is LTP
+> freeze and work needed to review fixes before release I'll probably review this
+> after the release (1, max. 2 weeks).
+> 
+> Could you please have a look at fix planned to be part of the release?
+> https://patchwork.ozlabs.org/project/ltp/list/?series=204230
+> 
 
-diotest4    3  TFAIL  :  diotest4.c:114: read allows odd count. returns 1: Success
-diotest4    4  TFAIL  :  diotest4.c:129: write allows odd count.returns 1: Success
-diotest4    5  TFAIL  :  diotest4.c:180: Odd count of read and write
-...
-diotest4   16  TFAIL  :  diotest4.c:114: read allows  nonaligned buf. returns 4096: Success
-diotest4   17  TFAIL  :  diotest4.c:129: write allows  nonaligned buf.returns 4096: Success
-diotest4   18  TFAIL  :  diotest4.c:180: read, write with non-aligned buffer
+Will do Petr.
 
-Signed-off-by: Qian Cai <cai@redhat.com>
----
- include/tst_fs.h                         | 1 +
- lib/tst_fs_type.c                        | 2 ++
- testcases/kernel/io/direct_io/diotest4.c | 2 ++
- 3 files changed, 5 insertions(+)
+> 
+>> New functionality is being added to IMA to measure data provided by
+>> kernel components. With this feature, IMA policy can be set to enable
+>> measuring data provided by Linux Security Modules (LSM). Currently one
+>> such LSM namely selinux is being updated to use this functionality.
+>> This new functionality needs test automation in LTP.
+> 
+>> This patch set adds tests which verify that the IMA subsystem correctly
+>> measures the data provided by selinux.
+> 
+>> This patch is based on
+>> commit 286401a1c1f3 ("thp04: Add linux tag")
+>> in "master" branch in https://github.com/linux-test-project/ltp
+> 
+>> This patch is dependent on the following patch series in LTP
+>> https://patchwork.kernel.org/patch/11802771/
+> I put link to LTP patchwork to avoid the confusion.
+> https://patchwork.ozlabs.org/project/ltp/list/?series=204486
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index fc0390582..4f7dd68d2 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -29,6 +29,7 @@
- #define TST_NILFS_MAGIC    0x3434
- #define TST_EXOFS_MAGIC    0x5DF5
- #define TST_OVERLAYFS_MAGIC 0x794c7630
-+#define TST_FUSE_MAGIC     0x65735546
- 
- enum {
- 	TST_BYTES = 1,
-diff --git a/lib/tst_fs_type.c b/lib/tst_fs_type.c
-index 1d0ac9669..d661d5b2a 100644
---- a/lib/tst_fs_type.c
-+++ b/lib/tst_fs_type.c
-@@ -84,6 +84,8 @@ const char *tst_fs_type_name(long f_type)
- 		return "EXOFS";
- 	case TST_OVERLAYFS_MAGIC:
- 		return "OVERLAYFS";
-+	case TST_FUSE_MAGIC:
-+		return "FUSE";
- 	default:
- 		return "Unknown";
- 	}
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index bf200cd41..f3c9c19d7 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -270,6 +270,7 @@ int main(int argc, char *argv[])
- 	switch (fs_type) {
- 	case TST_NFS_MAGIC:
- 	case TST_BTRFS_MAGIC:
-+	case TST_FUSE_MAGIC:
- 		tst_resm(TCONF, "%s supports odd count IO",
- 			 tst_fs_type_name(fs_type));
- 	break;
-@@ -442,6 +443,7 @@ int main(int argc, char *argv[])
- 	switch (fs_type) {
- 	case TST_NFS_MAGIC:
- 	case TST_BTRFS_MAGIC:
-+	case TST_FUSE_MAGIC:
- 		tst_resm(TCONF, "%s supports non-aligned buffer",
- 			 tst_fs_type_name(fs_type));
- 	break;
--- 
-2.28.0
+Thanks. On the next update I'll add the LTP patchwork URL.
+
+> 
+>> This series needs a kernel built on the following repo/branch/patches:
+>> repo: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+>> branch: next
+>> commit 8861d0af642c ("selinux: Add helper functions to get and set checkreqprot")
+> Thanks for adding this info. It'd be great if it were part of kernel commit
+> message and also added as a comment in the test itself (we don't want to get it
+> lost).
+> 
+> BTW LTP has 2 kind ways of handling of kernel versions:
+> 
+> * fixes which are meant to be backported to the stable trees:
+> In C API it looks like (here also with CVE entry):
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/bpf/bpf_prog03.c#L187
+> .tags = (const struct tst_tag[]) {
+> 		{"linux-git", "95a762e2c8c9"},
+> 		{"CVE", "2017-16995"},
+> 		{}
+> This is not part of shell API, but I'll add it after the release. Thus we don't
+> want to loose this info.
+> 
+> * new kernel features, which are likely not to be backported
+> You either have some way to detect this feature is presented (ideally) or you
+> specify kernel version since it should be run
+> This is used in shell API as:
+> https://github.com/linux-test-project/ltp/blob/master/testcases/network/tcp_cc/bbr02.sh#L8
+> TST_MIN_KVER="4.13"
+
+Thanks for the info.
+
+  -lakshmi
+
+> 
+>> And the following patch series should be applied in the following order:
+>>    1, https://patchwork.kernel.org/patch/11709527/
+>>    2, https://patchwork.kernel.org/patch/11795559/
+>>    3, https://patchwork.kernel.org/patch/11801525/
+>>    4, https://patchwork.kernel.org/patch/11801585/
+> 
 
