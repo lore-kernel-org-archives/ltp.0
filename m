@@ -1,59 +1,36 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 1 Oct 2020 14:01:25 +0200
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Thu, 1 Oct 2020 21:31:38 +0300
 Subject: [LTP] [PATCH v3 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <20200930115939.GB7612@linux.intel.com>
+In-Reply-To: <20201001120125.GE32109@dell5510>
 References: <20200929165021.11731-1-pvorel@suse.cz>
  <20200929231118.GA805493@linux.intel.com>
  <20200930055314.GA21664@dell5510>
  <20200930115939.GB7612@linux.intel.com>
-Message-ID: <20201001120125.GE32109@dell5510>
+ <20201001120125.GE32109@dell5510>
+Message-ID: <20201001183104.GA15664@linux.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jarkko,
+On Thu, Oct 01, 2020 at 02:01:25PM +0200, Petr Vorel wrote:
+> I'll need to keep these hacks for older kernels, but it's great that there is a
+> better solution.
+> 
+> Other thing: do you know anybody practically uses more TPM devices in single
+> machine? I'm asking that I work with tpm0 in ima_tpm.sh, but maybe I should
+> allow user to redefine it to choose different device (or even run tests for all
+> available devices).
 
-> On Wed, Sep 30, 2020 at 07:53:14AM +0200, Petr Vorel wrote:
-> > Hi Jarkko,
+You can create a proxy TPM device for a TPM emulator or a software TPM
+(e.g. could be an SGX enclave) by using ioctl interface /dev/vtpmx,
+provided by tpm_vtpm_proxy driver. QEMU provides a passthrough interface
+from TPM devices to the VM, which can be utilized for this.
 
-> > > Hi, is there something specific I should look at in this patch set?
+This one I know at least.
 
-> > I'm sorry to bother you with LTP specific code. Can you have a quick look if I
-> > didn't overlook anything obvious in reading PCR files (read_pcr_tpm*())?
+> Kind regards,
+> Petr
 
-> > I'm surprised that it's working on my TPM 2.0 which does not export
-> > /sys/kernel/security/tpm0/binary_bios_measurements (using evmctl).
-
-> Thank you, this was actually really important remark and reminder.
-
-> OK so I think James' patch is stuck because of me, i.e.
-
-> https://lore.kernel.org/linux-integrity/20200911114820.GB6877@linux.intel.com/
-
-> I'm sorry about this. The final final conclusion is that the way it
-> exports PCRs is just fine.
-That's a great, thank you for going to upstream James' patch.
-James, thanks for implementing it!
-
-> Can you test this version?
-Sure, I'll test it next week.
-
-> https://patchwork.kernel.org/patch/11759729/
-
-
-> I can then add reviewd-by and apply it and you don't have to do any sort
-> of stupid hacks.
-I'll need to keep these hacks for older kernels, but it's great that there is a
-better solution.
-
-Other thing: do you know anybody practically uses more TPM devices in single
-machine? I'm asking that I work with tpm0 in ima_tpm.sh, but maybe I should
-allow user to redefine it to choose different device (or even run tests for all
-available devices).
-
-Kind regards,
-Petr
-
-> /Jarkkko
+/Jarkko
