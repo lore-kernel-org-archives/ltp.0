@@ -1,36 +1,216 @@
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Date: Thu, 1 Oct 2020 21:31:38 +0300
-Subject: [LTP] [PATCH v3 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <20201001120125.GE32109@dell5510>
-References: <20200929165021.11731-1-pvorel@suse.cz>
- <20200929231118.GA805493@linux.intel.com>
- <20200930055314.GA21664@dell5510>
- <20200930115939.GB7612@linux.intel.com>
- <20201001120125.GE32109@dell5510>
-Message-ID: <20201001183104.GA15664@linux.intel.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Fri,  2 Oct 2020 01:12:56 +0200
+Subject: [LTP] [RFC PATCH 1/1] lapi: Add sysinfo.h to fix build with MUSL
+ libc
+Message-ID: <20201001231256.6930-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 01, 2020 at 02:01:25PM +0200, Petr Vorel wrote:
-> I'll need to keep these hacks for older kernels, but it's great that there is a
-> better solution.
-> 
-> Other thing: do you know anybody practically uses more TPM devices in single
-> machine? I'm asking that I work with tpm0 in ima_tpm.sh, but maybe I should
-> allow user to redefine it to choose different device (or even run tests for all
-> available devices).
+The reason is to avoid indirect <linux/sysinfo.h> include when using
+some UAPI headers: <linux/netlink.h> or others -> <linux/kernel.h>
+-> <linux/sysinfo.h>
 
-You can create a proxy TPM device for a TPM emulator or a software TPM
-(e.g. could be an SGX enclave) by using ioctl interface /dev/vtpmx,
-provided by tpm_vtpm_proxy driver. QEMU provides a passthrough interface
-from TPM devices to the VM, which can be utilized for this.
+This indirect include causes on MUSL redefinition of struct sysinfo when
+included both <sys/sysinfo.h> and some of UAPI headers:
 
-This one I know at least.
+In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
+                 from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
+                 from ../include/tst_netlink.h:14,
+                 from tst_crypto.c:13:
+x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ?struct sysinfo?
+ struct sysinfo {
+        ^~~~~~~
+In file included from ../include/tst_safe_macros.h:15,
+                 from ../include/tst_test.h:93,
+                 from tst_crypto.c:11:
+x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
 
-> Kind regards,
-> Petr
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+Hi,
 
-/Jarkko
+another MUSL specific workaround. I'm ok if we don't want to accept it.
+
+I also sent patch to kernel, but don't think it will be accepted.
+
+https://lore.kernel.org/linux-api/20201001211942.13336-1-petr.vorel@gmail.com/T/#me9d7d385157ec5f6288bae77d738a96c12ab8ca7
+
+Kind regards,
+Petr
+
+ include/lapi/sysinfo.h                        | 22 +++++++++++++++++++
+ include/tst_safe_macros.h                     |  2 +-
+ lib/safe_macros.c                             |  2 +-
+ lib/tst_memutils.c                            |  2 +-
+ testcases/kernel/mem/mtest01/mtest01.c        |  2 +-
+ testcases/kernel/syscalls/madvise/madvise06.c |  2 +-
+ testcases/kernel/syscalls/sysinfo/sysinfo01.c |  2 +-
+ testcases/kernel/syscalls/sysinfo/sysinfo02.c |  2 +-
+ testcases/kernel/syscalls/sysinfo/sysinfo03.c |  2 +-
+ 9 files changed, 30 insertions(+), 8 deletions(-)
+ create mode 100644 include/lapi/sysinfo.h
+
+diff --git a/include/lapi/sysinfo.h b/include/lapi/sysinfo.h
+new file mode 100644
+index 000000000..d0e0e93d7
+--- /dev/null
++++ b/include/lapi/sysinfo.h
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Petr Vorel <petr.vorel@gmail.com>
++ */
++
++#ifndef SYSINFO_H__
++
++/*
++ * Don't use <sys/sysinfo.h> as it breaks build MUSL toolchain.
++ * Use <linux/sysinfo.h> instead.
++ *
++ * Some kernel UAPI headers do indirect <linux/sysinfo.h> include:
++ * <linux/netlink.h> or others -> <linux/kernel.h> -> <linux/sysinfo.h>
++ *
++ * This indirect include causes on MUSL redefinition of struct sysinfo when
++ * included both <sys/sysinfo.h> and some of UAPI headers:
++ */
++#include <linux/sysinfo.h>
++
++#define SYSINFO_H__
++
++#endif /* SYSINFO_H__ */
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 053c3bcf9..61ea2076d 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -12,7 +12,7 @@
+ #include <sys/resource.h>
+ #include <sys/stat.h>
+ #include <sys/vfs.h>
+-#include <sys/sysinfo.h>
++#include <linux/sysinfo.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+ #include <signal.h>
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 4f48d7529..d8ee03dae 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -11,7 +11,6 @@
+ #include <sys/wait.h>
+ #include <sys/mount.h>
+ #include <sys/xattr.h>
+-#include <sys/sysinfo.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <libgen.h>
+@@ -23,6 +22,7 @@
+ #include <malloc.h>
+ #include "test.h"
+ #include "safe_macros.h"
++#include "lapi/sysinfo.h"
+ 
+ char *safe_basename(const char *file, const int lineno,
+ 		    void (*cleanup_fn) (void), char *path)
+diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+index f134d90c9..647db951e 100644
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -5,11 +5,11 @@
+ 
+ #include <unistd.h>
+ #include <limits.h>
+-#include <sys/sysinfo.h>
+ #include <stdlib.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "lapi/sysinfo.h"
+ 
+ #define BLOCKSIZE (16 * 1024 * 1024)
+ 
+diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
+index f08d3943f..9b4d856f8 100644
+--- a/testcases/kernel/mem/mtest01/mtest01.c
++++ b/testcases/kernel/mem/mtest01/mtest01.c
+@@ -20,7 +20,6 @@
+  */
+ 
+ #include <sys/types.h>
+-#include <sys/sysinfo.h>
+ #include <sys/wait.h>
+ #include <limits.h>
+ #include <signal.h>
+@@ -29,6 +28,7 @@
+ #include <unistd.h>
+ 
+ #include "lapi/abisize.h"
++#include "lapi/sysinfo.h"
+ #include "tst_test.h"
+ 
+ #define FIVE_HUNDRED_MB         (500ULL*1024*1024)
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index f76f3f6aa..b2613670b 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -24,8 +24,8 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <sys/mount.h>
+-#include <sys/sysinfo.h>
+ #include "tst_test.h"
++#include "lapi/sysinfo.h"
+ 
+ #define CHUNK_SZ (400*1024*1024L)
+ #define CHUNK_PAGES (CHUNK_SZ / pg_sz)
+diff --git a/testcases/kernel/syscalls/sysinfo/sysinfo01.c b/testcases/kernel/syscalls/sysinfo/sysinfo01.c
+index 2ea44a2be..a95066bf5 100644
+--- a/testcases/kernel/syscalls/sysinfo/sysinfo01.c
++++ b/testcases/kernel/syscalls/sysinfo/sysinfo01.c
+@@ -69,9 +69,9 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/signal.h>
+-#include <sys/sysinfo.h>
+ 
+ #include "test.h"
++#include "lapi/sysinfo.h"
+ 
+ void setup();
+ void cleanup();
+diff --git a/testcases/kernel/syscalls/sysinfo/sysinfo02.c b/testcases/kernel/syscalls/sysinfo/sysinfo02.c
+index 678b8f1d3..5ce65d20e 100644
+--- a/testcases/kernel/syscalls/sysinfo/sysinfo02.c
++++ b/testcases/kernel/syscalls/sysinfo/sysinfo02.c
+@@ -65,10 +65,10 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/signal.h>
+-#include <sys/sysinfo.h>
+ #include <stdint.h>
+ 
+ #include "test.h"
++#include "lapi/sysinfo.h"
+ 
+ #define INVALID_ADDRESS ((uintptr_t)-1)
+ 
+diff --git a/testcases/kernel/syscalls/sysinfo/sysinfo03.c b/testcases/kernel/syscalls/sysinfo/sysinfo03.c
+index af7cb6421..3b61a05b1 100644
+--- a/testcases/kernel/syscalls/sysinfo/sysinfo03.c
++++ b/testcases/kernel/syscalls/sysinfo/sysinfo03.c
+@@ -13,9 +13,9 @@
+ 
+  */
+ 
+-#include <sys/sysinfo.h>
+ #include "lapi/namespaces_constants.h"
+ #include "lapi/posix_clocks.h"
++#include "lapi/sysinfo.h"
+ #include "tst_test.h"
+ 
+ static int offsets[] = {
+-- 
+2.28.0
+
