@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  5 Oct 2020 15:30:44 +0200
-Subject: [LTP] [PATCH 01/11] make: Support compiling native build tools
+Date: Mon,  5 Oct 2020 15:30:54 +0200
+Subject: [LTP] [PATCH 11/11] docparse: Generate html and pdf using asciidoc{, tor}
 In-Reply-To: <20201005133054.23587-1-chrubis@suse.cz>
 References: <20201005133054.23587-1-chrubis@suse.cz>
-Message-ID: <20201005133054.23587-2-chrubis@suse.cz>
+Message-ID: <20201005133054.23587-12-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,137 +12,555 @@ To: ltp@lists.linux.it
 
 From: Petr Vorel <pvorel@suse.cz>
 
-Add HOST_MAKE_TARGETS make target and HOSTCC,
-HOST_{CFLAGS,LDFLAGS} make variables.
+Rewrite testinfo.pl to generate *.txt pages in asciidoc format which is
+then regenerated to html (and pdf if enabled) using asciidoc,{tor}.
 
-Needed for cross-compilation.
-
-NOTE: detect cross compilation with comparing $(build) and $(host)
-instead of using $cross_compiling configure variable, which would
-require move the detection into m4 macro.
+Replace getting Linux kernel git commit messages from local git
+repository (needed after having all tests in single page, because API
+has access limits; it's also better to generate everything once thus
+don't depend on network connection).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- configure.ac                       |  2 ++
- include/mk/config.mk.in            | 21 +++++++++++++++++++++
- include/mk/env_post.mk             |  3 +--
- include/mk/generic_leaf_target.inc |  6 ++++++
- include/mk/rules.mk                |  8 ++++++++
- 5 files changed, 38 insertions(+), 2 deletions(-)
+ docparse/.gitignore  |   5 +
+ docparse/Makefile    |  58 +++++++
+ docparse/testinfo.pl | 406 +++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 458 insertions(+), 11 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 03e4e09c9..05672f8f6 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -13,6 +13,8 @@ AC_CONFIG_FILES([ \
-     execltp \
- ])
+diff --git a/docparse/.gitignore b/docparse/.gitignore
+index f636ed847..7a87b4234 100644
+--- a/docparse/.gitignore
++++ b/docparse/.gitignore
+@@ -1,2 +1,7 @@
++/*.txt
++/docbook-xsl.css
+ /docparse
+ /metadata.json
++/metadata.html
++/metadata.pdf
++/metadata.chunked/
+diff --git a/docparse/Makefile b/docparse/Makefile
+index 94ba83ffe..a0ae9d965 100644
+--- a/docparse/Makefile
++++ b/docparse/Makefile
+@@ -1,19 +1,77 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
  
-+AC_ARG_VAR(HOSTCC, [The C compiler on the host])
-+
- AM_MAINTAINER_MODE([enable])
+ top_srcdir		?= ..
  
- AC_CANONICAL_HOST
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index 427608a17..8f73a6a34 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -31,6 +31,19 @@ RANLIB			:= @RANLIB@
- STRIP			:= @STRIP@
- YACC			:= @YACC@
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(top_srcdir)/include/mk/functions.mk
  
-+HOSTCC  = @HOSTCC@
-+build := @build@
-+host := @host@
-+ifeq ($(strip $(HOSTCC)),)
-+# native build, respect CC
-+ifeq ($(build),$(host))
-+HOSTCC := $(CC)
++ifeq ($(METADATA_GENERATOR),asciidoctor)
++METADATA_GENERATOR_CMD := asciidoctor
++METADATA_GENERATOR_PARAMS := -d book metadata.txt
++METADATA_GENERATOR_PARAMS_HTML := -b xhtml
++METADATA_GENERATOR_PARAMS_PDF := -b pdf -r asciidoctor-pdf
++else ifeq ($(METADATA_GENERATOR),asciidoc)
++METADATA_GENERATOR_CMD := a2x
++METADATA_GENERATOR_PARAMS := --xsltproc-opts "--stringparam toc.section.depth 1" -d book -L  --resource="$(PWD)" metadata.txt
++METADATA_GENERATOR_PARAMS_HTML := -f xhtml
++METADATA_GENERATOR_PARAMS_PDF := -f pdf
++METADATA_GENERATOR_PARAMS_HTML_CHUNKED := -f chunked
++else ifeq ($(METADATA_GENERATOR),)
++$(error 'METADATA_GENERATOR' not not configured, run ./configure in the root directory)
 +else
-+# cross compilation
-+HOSTCC := cc
-+endif
++$(error '$(METADATA_GENERATOR)' not supported, only asciidoctor and asciidoc are supported)
 +endif
 +
- AIO_LIBS		:= @AIO_LIBS@
- CAP_LIBS		:= @CAP_LIBS@
- ACL_LIBS		:= @ACL_LIBS@
-@@ -70,6 +83,14 @@ WCFLAGS			?= -Wall -W @GCC_WARN_OLDSTYLE@
- LDFLAGS			+= $(WLDFLAGS)
- CFLAGS			+= $(DEBUG_CFLAGS) $(OPT_CFLAGS) $(WCFLAGS)
- 
-+ifeq ($(strip $(HOST_CFLAGS)),)
-+HOST_CFLAGS := $(CFLAGS)
-+endif
-+
-+ifeq ($(strip $(HOST_LDFLAGS)),)
-+HOST_LDFLAGS := $(LDFLAGS)
-+endif
-+
- LINUX_VERSION		:= @LINUX_VERSION@
- LINUX_DIR		:= @LINUX_DIR@
- LINUX_VERSION_MAJOR	:= @LINUX_VERSION_MAJOR@
-diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
-index 44a333198..d52ad9f0b 100644
---- a/include/mk/env_post.mk
-+++ b/include/mk/env_post.mk
-@@ -48,11 +48,10 @@ LDFLAGS				+= -L$(top_builddir)/lib/android_librt
- endif
- 
- MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
--
- MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
- 
- # with only *.dwo, .[0-9]+.dwo can not be cleaned
--CLEAN_TARGETS			+= $(MAKE_TARGETS) *.o *.pyc .cache.mk *.dwo .*.dwo
-+CLEAN_TARGETS			+= $(MAKE_TARGETS) $(HOST_MAKE_TARGETS) *.o *.pyc .cache.mk *.dwo .*.dwo
- 
- # Majority of the files end up in testcases/bin...
- INSTALL_DIR			?= testcases/bin
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index dd54d05e9..e6fa107d1 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -57,6 +57,8 @@
- #				     rope to hang one's self in the event of
- #				     unwanted behavior.
- #
-+# $(HOST_MAKE_TARGETS)	: Host tools which use $HOSTCC.
-+#
- # $(CLEAN_TARGETS)		: What targets should be cleaned (must be
- #				  real files). This will automatically append
- #				  adds the .o suffix to all files referenced
-@@ -92,6 +94,10 @@
- 
- .PHONY: all clean install
- 
-+ifneq ($(strip $(MAKE_TARGETS)),)
-+$(MAKE_TARGETS) += $(HOST_MAKE_TARGETS)
-+endif
-+
- $(MAKE_TARGETS): | $(MAKE_DEPS)
- 
- all: $(MAKE_TARGETS)
-diff --git a/include/mk/rules.mk b/include/mk/rules.mk
-index 6a22e43af..c8f4bbbbe 100644
---- a/include/mk/rules.mk
-+++ b/include/mk/rules.mk
-@@ -22,6 +22,14 @@ else
- 	@echo LD $(target_rel_dir)$@
- endif
- 
-+$(HOST_MAKE_TARGETS): %: %.c
 +ifdef VERBOSE
-+	$(HOSTCC) $(HOST_CFLAGS) $(HOST_LDFLAGS) $< $(HOST_LDLIBS) -o $@
-+else
-+	@$(HOSTCC) $(HOST_CFLAGS) $(HOST_LDFLAGS) $< $(HOST_LDLIBS) -o $@
-+	@echo HOSTCC $(target_rel_dir)$@
++METADATA_GENERATOR_PARAMS += -v
 +endif
 +
- %: %.c
- ifdef VERBOSE
- 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LTPLDLIBS) $(LDLIBS) -o $@
++CLEAN_TARGETS		:= *.txt
+ MAKE_TARGETS		:= metadata.json
++
++ifeq ($(WITH_METADATA_HTML),yes)
++MAKE_TARGETS		+= metadata.html
++ifneq ($(METADATA_GENERATOR_PARAMS_HTML_CHUNKED),)
++MAKE_TARGETS		+= metadata.chunked
++endif
++endif
++
++ifeq ($(WITH_METADATA_PDF),yes)
++MAKE_TARGETS		+= metadata.pdf
++endif
++
+ HOST_MAKE_TARGETS	:= docparse
+ 
+ INSTALL_DIR = metadata
++INSTALL_TARGETS = *.css *.js
++
++ifndef METADATA_GENERATOR
++METADATA_GENERATOR := asciidoctor
++endif
+ 
+ .PHONY: metadata.json
+ 
+ metadata.json: docparse
+ 	$(abs_srcdir)/parse.sh > metadata.json
+ 
++txt: metadata.json
++	$(abs_srcdir)/testinfo.pl metadata.json
++
++ifeq ($(WITH_METADATA_HTML),yes)
++metadata.html: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_HTML)
++
++ifneq ($(METADATA_GENERATOR_PARAMS_HTML_CHUNKED),)
++metadata.chunked: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_HTML_CHUNKED)
++endif
++endif
++
++ifeq ($(WITH_METADATA_PDF),yes)
++metadata.pdf: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_PDF)
++endif
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
+index d93d7d701..d8d9ea663 100755
+--- a/docparse/testinfo.pl
++++ b/docparse/testinfo.pl
+@@ -1,16 +1,21 @@
+ #!/usr/bin/perl
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+ 
+ use strict;
+ use warnings;
+ 
+ use JSON;
+-use Data::Dumper;
++use LWP::Simple;
++use Cwd qw(abs_path);
++use File::Basename qw(dirname);
++
++use constant OUTDIR => dirname(abs_path($0));
+ 
+ sub load_json
+ {
+-	my ($fname) = @_;
++	my ($fname, $mode) = @_;
+ 	local $/;
+ 
+ 	open(my $fh, '<', $fname) or die("Can't open $fname $!");
+@@ -18,23 +23,402 @@ sub load_json
+ 	return <$fh>;
+ }
+ 
+-sub query_flag
++sub log_info
++{
++	my $msg = shift;
++	print STDERR "INFO: $msg\n";
++}
++
++sub log_warn
++{
++	my $msg = shift;
++	print STDERR "WARN: $msg\n";
++}
++
++sub print_asciidoc_page
++{
++	my ($fh, $json, $title, $content) = @_;
++
++	print $fh <<EOL;
++// -*- mode:doc; -*-
++// vim: set syntax=asciidoc:
++
++$title
++
++$content
++EOL
++}
++
++sub tag_url {
++	my ($tag, $value, $scm_url_base) = @_;
++
++    if ($tag eq "CVE") {
++        return "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-" . $value;
++	}
++    if ($tag eq "linux-git") {
++        return "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=" . $value;
++	}
++    if ($tag eq "fname") {
++        return $scm_url_base . $value;
++	}
++}
++
++sub bold
++{
++	return "*$_[0]*";
++}
++
++sub code
++{
++	return "+$_[0]+";
++}
++
++sub hr
++{
++	return "\n\n'''\n\n";
++}
++
++sub html_a
++{
++	my ($url, $text) = @_;
++	return "$url\[$text\]";
++}
++
++sub h1
++{
++	return "== $_[0]\n";
++}
++
++sub h2
++{
++	return "=== $_[0]\n";
++}
++
++sub h3
++{
++	return "==== $_[0]\n";
++}
++
++sub label
++{
++	return "[[$_[0]]]\n";
++}
++
++sub paragraph
++{
++	return "$_[0]\n\n";
++}
++
++sub reference
++{
++	return "xref:$_[0]\[$_[0]\]" . (defined($_[1]) ? $_[1] : "") . "\n";
++}
++
++sub table
++{
++	return "|===\n";
++}
++
++sub print_defined
++{
++	my ($key, $val, $val2) = @_;
++
++	if (defined($val)) {
++		return paragraph(bold($key) . ": " . $val . (defined($val2) ? " $val2" : ""));
++	}
++}
++
++sub content_about
++{
++	my $json = shift;
++	my $content;
++
++	$content .= print_defined("URL", $json->{'url'});
++	$content .= print_defined("Version", $json->{'version'});
++	$content .= print_defined("Default timeout", $json->{'timeout'}, "seconds");
++
++	return $content;
++}
++
++sub uniq {
++	my %seen;
++	grep !$seen{$_}++, @_;
++}
++
++sub get_test_names
++{
++	my @names = @{$_[0]};
++	my ($letter, $prev_letter);
++	my $content;
++
++	for my $name (sort @names) {
++		$letter = substr($name, 0, 1);
++		if (defined($prev_letter) && $letter ne $prev_letter) {
++			$content .= "\n";
++		}
++
++		$content .= reference($name, " ");
++		$prev_letter = $letter;
++	}
++	$content .= "\n";
++
++	return $content;
++}
++
++sub get_test_letters
++{
++	my @names = @{$_[0]};
++	my $letter;
++	my $prev_letter = "";
++	my $content;
++
++	for (@names) {
++		$_ = substr($_, 0, 1);
++	}
++	@names = uniq(@names);
++
++	for my $letter (@names) {
++		$content .= reference($letter);
++	}
++	$content .= "\n";
++
++	return $content;
++}
++
++sub tag2title
+ {
+-	my ($json, $flag) = @_;
++	my $tag = shift;
++	return code(".$tag");
++}
++
++sub get_filters
++{
++	my $json = shift;
++	my %data;
++	while (my ($k, $v) = each %{$json->{'tests'}}) {
++		for my $j (keys %{$v}) {
++
++			next if ($j eq 'fname' || $j eq 'doc');
++
++			$data{$j} = () unless (defined($data{$j}));
++			push @{$data{$j}}, $k;
++		}
++	}
++	return \%data;
++}
++
++# TODO: Handle better .tags (and anything else which contains array)
++# e.g. for .tags there could be separate list for CVE and linux-git
++# (now it's together in single list).
++sub content_filters
++{
++	my $json = shift;
++	my $data = get_filters($json);
++	my %h = %$data;
++	my $content;
++
++	for my $k (sort keys %$data) {
++		my $tag = tag2title($k);
++		my ($letter, $prev_letter);
++		$content .= h2($tag);
++		$content .= paragraph("Tests containing $tag flag.");
++		$content .= get_test_names(\@{$h{$k}});
++	}
++
++	return $content;
++}
++
++sub detect_git
++{
++	unless (defined $ENV{'LINUX_GIT'} && $ENV{'LINUX_GIT'}) {
++		log_warn("kernel git repository not defined. Define it in \$LINUX_GIT");
++		return 0;
++	}
++
++	unless (-d $ENV{'LINUX_GIT'}) {
++		log_warn("\$LINUX_GIT does not exit ('$ENV{'LINUX_GIT'}')");
++		return 0;
++	}
++
++	my $ret = 0;
++	if (system("which git >/dev/null")) {
++		log_warn("git not in \$PATH ('$ENV{'PATH'}')");
++		return 0;
++	}
++
++	chdir($ENV{'LINUX_GIT'});
++	if (!system("git log -1 > /dev/null")) {
++		log_info("using '$ENV{'LINUX_GIT'}' as kernel git repository");
++		$ret = 1;
++	} else {
++		log_warn("git failed, git not installed or \$LINUX_GIT is not a git repository? ('$ENV{'LINUX_GIT'}')");
++	}
++	chdir(OUTDIR);
++
++	return $ret;
++}
++
++sub content_all_tests
++{
++	my $json = shift;
++	my @names = sort keys %{$json->{'tests'}};
++	my $letters = paragraph(get_test_letters(\@names));
++	my $has_kernel_git = detect_git();
++	my $tmp = undef;
++	my $printed = "";
++	my $content;
++
++	unless ($has_kernel_git) {
++		log_info("Parsing git messages from linux git repository skipped due previous error");
++	}
++
++	$content .= paragraph("Total $#names tests.");
++	$content .= $letters;
++	$content .= get_test_names(\@names);
++
++	for my $name (@names) {
++		my $letter = substr($name, 0, 1);
+ 
+-	my $tests = $json->{'tests'};
++		if ($printed ne $letter) {
++			$content .= label($letter);
++			$content .= h2($letter);
++			$printed = $letter;
++		}
++
++		$content .= hr() if (defined($tmp));
++		$content .= label($name);
++		$content .= h3($name);
++		$content .= $letters;
++
++		if (defined($json->{'scm_url_base'}) &&
++			defined($json->{'tests'}{$name}{fname})) {
++			$content .= paragraph(html_a(tag_url("fname", $json->{'tests'}{$name}{fname},
++					$json->{'scm_url_base'}), "source"));
++		}
++
++		if (defined $json->{'tests'}{$name}{doc}) {
++			for my $doc (@{$json->{'tests'}{$name}{doc}}) {
+ 
+-	foreach my $key (sort(keys %$tests)) {
+-		if ($tests->{$key}->{$flag}) {
+-			if ($tests->{$key}->{$flag} eq "1") {
+-				print("$key\n");
++				# fix formatting for asciidoc [DOCUMENTATION] => *DOCUMENTATION*
++				if ($doc =~ s/^\[(.*)\]$/$1/) {
++					$doc = paragraph(bold($doc));
++				}
++
++				$content .= "$doc\n";
++			}
++			$content .= "\n";
++		}
++
++		if ($json->{'tests'}{$name}{timeout}) {
++			if ($json->{'tests'}{$name}{timeout} eq -1) {
++				$content .= paragraph("Test timeout is disabled");
+ 			} else {
+-				print("$key:\n" . Dumper($tests->{$key}->{$flag}) . "\n");
++				$content .= paragraph("Test timeout is $json->{'tests'}{$name}{timeout} seconds");
+ 			}
++		} else {
++			$content .= paragraph("Test timeout defaults to $json->{'timeout'} seconds");
+ 		}
++
++		my $tmp2 = undef;
++		for my $k (sort keys %{$json->{'tests'}{$name}}) {
++			my $v = $json->{'tests'}{$name}{$k};
++			next if ($k eq "tags" || $k eq "fname" || $k eq "doc");
++			if (!defined($tmp2)) {
++				$content .= table . "|Key|Value\n\n"
++			}
++
++			$content .= "|" . tag2title($k) . "\n|";
++			if (ref($v) eq 'ARRAY') {
++				$content .= join(', ', @$v),
++			} else {
++				$content .= $v;
++			}
++			$content .= "\n";
++
++			$tmp2 = 1;
++		}
++		if (defined($tmp2)) {
++			$content .= table . "\n";
++		}
++
++		$tmp2 = undef;
++		my %commits;
++
++		for my $tag (@{$json->{'tests'}{$name}{tags}}) {
++			if (!defined($tmp2)) {
++				$content .= table . "|Tags|Info\n"
++			}
++			my $k = @$tag[0];
++			my $v = @$tag[1];
++			my $text = $k;
++
++            if ($has_kernel_git && $k eq "linux-git") {
++				$text .= "-$v";
++				unless (defined($commits{$v})) {
++					chdir($ENV{'LINUX_GIT'});
++					$commits{$v} = `git log --pretty=format:'%s' -1 $v`;
++					chdir(OUTDIR);
++				}
++				$v = $commits{$v};
++			}
++			my $a = html_a(tag_url($k, @$tag[1]), $text);
++			$content .= "\n|$a\n|$v\n";
++			$tmp2 = 1;
++		}
++		if (defined($tmp2)) {
++			$content .= table . "\n";
++		}
++
++		$tmp = 1;
+ 	}
++
++	return $content;
+ }
+ 
++
+ my $json = decode_json(load_json($ARGV[0]));
+ 
+-query_flag($json, $ARGV[1]);
++my $config = [
++    {
++		file => "about.txt",
++		title => h2("About $json->{'testsuite'}"),
++		content => \&content_about,
++    },
++    {
++		file => "filters.txt",
++		title => h1("Test filtered by used flags"),
++		content => \&content_filters,
++    },
++    {
++		file => "all-tests.txt",
++		title => h1("All tests"),
++		content => \&content_all_tests,
++    },
++];
++
++sub print_asciidoc_main
++{
++	my $config = shift;
++	my $file = "metadata.txt";
++	my $content;
++
++	open(my $fh, '>', $file) or die("Can't open $file $!");
++
++	$content = <<EOL;
++:doctype: inline
++:sectanchors:
++:toc:
++
++EOL
++	for my $c (@{$config}) {
++		$content .= "include::$c->{'file'}\[\]\n";
++	}
++	print_asciidoc_page($fh, $json, h1($json->{'testsuite_short'} . " test catalog"), $content);
++}
++
++for my $c (@{$config}) {
++	open(my $fh, '>', $c->{'file'}) or die("Can't open $c->{'file'} $!");
++	print_asciidoc_page($fh, $json, $c->{'title'}, $c->{'content'}->($json));
++}
++
++print_asciidoc_main($config);
 -- 
 2.26.2
 
