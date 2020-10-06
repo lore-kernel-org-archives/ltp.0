@@ -1,37 +1,27 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 6 Oct 2020 14:47:55 +0800
-Subject: [LTP] [PATCH] crypto/af_alg07: Skip this case when not having
- sockfs_setattr
-Message-ID: <1601966875-5375-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 6 Oct 2020 13:29:46 +0530
+Subject: [LTP] [PATCH V3 1/3] syscalls: select: Merge few tests and
+ migrate to new format
+In-Reply-To: <6fbfc6919c0000e7a7745afbc3c94baab02603fa.1599558175.git.viresh.kumar@linaro.org>
+References: <6fbfc6919c0000e7a7745afbc3c94baab02603fa.1599558175.git.viresh.kumar@linaro.org>
+Message-ID: <20201006075946.cz744zml3fw352zx@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since kernel 4.10-rc1 commit 86741ec25462 ("net: core: Add a UID field to struct sock."),
-it introduced sockfs_setattr function. This test needs to use this function
-to trigger this cve bug, so skip it if kernel < 4.10.
+On 08-09-20, 15:14, Viresh Kumar wrote:
+> This merges the first three tests and updates them to new test format.
+> 
+> Acked-by: Li Wang <liwang@redhat.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V3:
+> - Improved print message
+> - Improved comment at the top
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/crypto/af_alg07.c | 1 +
- 1 file changed, 1 insertion(+)
+Ping.
 
-diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-index 270197bb0..6ad86f4f3 100644
---- a/testcases/kernel/crypto/af_alg07.c
-+++ b/testcases/kernel/crypto/af_alg07.c
-@@ -109,6 +109,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.min_kver = "4.10.0",
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "9060cb719e61"},
 -- 
-2.23.0
-
-
-
+viresh
