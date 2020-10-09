@@ -1,42 +1,35 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Thu, 8 Oct 2020 22:04:06 +0200
-Subject: [LTP] [PATCH 1/1] cacheflush01: Rewrite into new API
-In-Reply-To: <1478290725.17134142.1602069275205.JavaMail.zimbra@redhat.com>
-References: <20201002202416.28972-1-petr.vorel@gmail.com>
- <1478290725.17134142.1602069275205.JavaMail.zimbra@redhat.com>
-Message-ID: <20201008200406.GA18136@dell5510>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 9 Oct 2020 14:37:42 +0800
+Subject: [LTP] [PATCH] controllers/libcpuset.c: Add 'cpuset' prefix for
+ cpuset files
+In-Reply-To: <20200928061347.275858-1-yangx.jy@cn.fujitsu.com>
+References: <20200928061347.275858-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <CAEemH2fwg58fCoNFCwMr4DgF+947kFU7-q__qZzL-ZE1ivkwaQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+On Mon, Sep 28, 2020 at 2:32 PM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 
-> ----- Original Message -----
-> > This syscall is currently (v5.9) supported on these architectures:
-> > arc, csky, mips, m68k, nds32, sh
+> cpuset_cpusetofpid() in cpuset_cpu_hog.c cannot find cpuset files by
+> wrong names(without 'cpuset' prefix) so cpuset_load_balance_test.sh
+> reported the following error:
+> ---------------------------------------
+> cpuset_load_balance 1 TFAIL: load balance test failed.
+> ---------------------------------------
+>
+> Use correct names(with 'cpuset' prefix) to find cpuset files.
+>
+> Fixes: #690
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+>
 
-> > constants are missing for m68k, not sure if the testcase is valid for it.
-> > Untested.
-
-> > Test for __LTP__NR_INVALID_SYSCALL saves adding autotools check for
-> > <asm/cachectl.h>.
-
-> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > ---
-> > Hi,
-
-> > FYI: I was going to ask for removal of this test, but all these archs are
-> > still supported. This test compiles on all archs now, but I haven't run
-> > it (I don't have access to none of these archs, not sure if LTP is even
-> > tested on these archs).
-
-> I haven't tested it too, but rewrite looks good.
-
-> Acked-by: Jan Stancek <jstancek@redhat.com>
-
-Thanks for your review, merged.
-
-Kind regards,
-Petr
+Pushed, thanks for fixing this.
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201009/99923533/attachment.htm>
