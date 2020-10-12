@@ -1,59 +1,33 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 12 Oct 2020 10:53:26 +0200
-Subject: [LTP] [PATCH 00/11] Test metadata extraction
-In-Reply-To: <20201005133054.23587-1-chrubis@suse.cz>
-References: <20201005133054.23587-1-chrubis@suse.cz>
-Message-ID: <20201012085326.GA29137@dell5510>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Mon, 12 Oct 2020 17:12:04 +0800
+Subject: [LTP] [PATCH] ioctl_sg01: correct the fix SHA1
+Message-ID: <20201012091204.875-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Correct the fix SHA1 to match with the one in the comment.
 
-> This patchset adds a test metadata extraction into LTP and also
-> documentation generator that produces browseable HTML documentation from
-> the exported metadata. For detailed description of the idea and
-> implementation see the patch that adds README.md.
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> While the idea is quite new the code is mature enough to be included in
-> the upstream repository and I'm also worried that we will not get any
-> feedback or users of the metadata unless it's included in the upstream
-> git.
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+index 8ad2ffed5..94b30dc6b 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
+@@ -127,7 +127,7 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.tags = (const struct tst_tag[]) {
+-		{"linux-git", "e093c4be760e"},
++		{"linux-git", "a45b599ad808"},
+ 		{"CVE", "2018-1000204"},
+ 		{}
+ 	}
+-- 
+2.17.1
 
-Example of the output:
-(generally I prefer asciidoctor, but PDF support is not always available)
-HTML could have custom javascript (probably jquery) based search/filtering.
-
-= asciidoctor
-* PDF
-https://pevik.github.io/asciidoctor/metadata.pdf
-There is missing TOC (as :toc: does not work and adding '-a toc' to generate as:
-asciidoctor -d book metadata.txt -b pdf -r asciidoctor-pdf -a toc
-
-puts TOC at the top.
-
-* HTML single page
-https://pevik.github.io/asciidoctor/metadata.html
-
-= asciidoc
-* PDF
-https://pevik.github.io/asciidoc/metadata.pdf
-There is ugly revision history at the top.
-
-* HTML single page
-https://pevik.github.io/asciidoc/metadata.html
-
-* HTML chunked
-https://pevik.github.io/asciidoc/metadata.chunked/index.html
-https://pevik.github.io/asciidoc/metadata.chunked/ch01.html
-https://pevik.github.io/asciidoc/metadata.chunked/ch02.html
-https://pevik.github.io/asciidoc/metadata.chunked/ch03.html
-
-> The next step is to use the extracted metadata in runltp-ng in the proof
-> of concept parallel executor that has been written by Ritchie and posted
-> to this mailing list as well.
-
-Kind regards,
-Petr
