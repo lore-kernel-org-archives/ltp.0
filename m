@@ -1,119 +1,57 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 13 Oct 2020 11:19:51 +0800
-Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0gbWVtY2dfdXNlX2hpZXJhcmNo?=
- =?gb2312?b?eV90ZXN0LnNoOiBza2lwIHNldHRpbmcgdXNlX2hpZXJhcmNoeSBpZiBub3Qg?=
- =?gb2312?b?YXZhaWxhYmxl?=
-In-Reply-To: <ebd86e7d991642cbb13e3ce46d032a69@G08CNEXMBPEKD04.g08.fujitsu.local>
-References: <20200911092121.1917-1-chenhx.fnst@cn.fujitsu.com>
- <7584a7ab-bc37-111f-f9bf-38da2d1e8099@cn.fujitsu.com>
- <ebd86e7d991642cbb13e3ce46d032a69@G08CNEXMBPEKD04.g08.fujitsu.local>
-Message-ID: <5F851CD7.8030005@cn.fujitsu.com>
+From: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Date: Tue, 13 Oct 2020 13:22:51 +0900
+Subject: [LTP] [PATCH] syscalls/mq_notify: Don't fail if mq_notify is
+ not supported
+In-Reply-To: <20201005092029.3482531-1-punit1.agrawal@toshiba.co.jp> (Punit
+ Agrawal's message of "Mon, 5 Oct 2020 18:20:29 +0900")
+References: <20201005092029.3482531-1-punit1.agrawal@toshiba.co.jp>
+Message-ID: <87d01mdaas.fsf@kokedama.swc.toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Hanxiao
+[ cc'ing Petr and Cyril ]
 
-> Hi, Yang
+Punit Agrawal <punit1.agrawal@toshiba.co.jp> writes:
+
+> When CONFIG_POSIX_MQUEUE is configured off, the mq_notify02 test
+> erroneously reports a failure rather than a missing configuration.
 >
->> -----????-----
->> ??: Re: [LTP] [PATCH] memcg_use_hierarchy_test.sh: skip setting
->> use_hierarchy if not available
->>
->> Hi hanxiao
->>
->>
->>> The precondition of this case is that we can disable use_hierarchy.
->>> But some distributions such as CentOS 8 had enabled it in root cgroup
->>> and hard to disabled.
-> [snip]
->> /dev/memcg/memory.use_hierarchy" \
->>> +                                    "to 0 failed"
->>> +                        fi
->>> +                fi
->> I test this patch on centos7 and testcase2 skips. On centos7(without installing
->> docker), /sys/fs/cgroup/memory/memory.use_hierarchy value is equal to 1 and I
->> still can disable value for /dev/memcg/memory.use_hierarchy.
->>
-> The behavior above looks conflicting with https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt.
-Yes. Centos7 behavior is different from the documentation.
->> So why not directly use /dev/memcg/memory.use_hierarchy value to judge in
->> testcase after setting 0.
-> In setup_test from memcg_lib.sh, we actually did:
->     mount -t cgroup -omemory memcg /dev/memcg
-> Then kernel will find a suitable cgroup root for us in cgroup1_mount.
+> Update the test case to call this out separate to the failure case.
 >
-> In this case, /sys/fs/cgroup/memory/ would be the good choice.
-> So it's equivalent to read memory.use_hierarchy from either side.
-I understand. Only a minor suggestion, please use tabs instead of spaces
-at the beginning of the line.
+> Signed-off-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+> ---
+> Hi,
+>
+> Noticed the issue while analysing test report on a system with
+> CONFIG_POSIX_MQUEUE turned off.
+>
+> Please cc me on comments as I'm not subscribed to the list.
+>
+> Thanks,
+> Punit
+>
+>  testcases/kernel/syscalls/mq_notify/mq_notify02.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify02.c b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
+> index fe59b5a11..e2269cd8e 100644
+> --- a/testcases/kernel/syscalls/mq_notify/mq_notify02.c
+> +++ b/testcases/kernel/syscalls/mq_notify/mq_notify02.c
+> @@ -77,6 +77,8 @@ static void mq_notify_verify(struct test_case_t *test)
+>  
+>  	if (TEST_ERRNO == test->exp_errno) {
+>  		tst_resm(TPASS | TTERRNO, "mq_notify failed as expected");
+> +	} else if (TEST_ERRNO == ENOSYS) {
+> +		tst_resm(TCONF | TTERRNO, "mq_notify not available (ENOSYS)");
+>  	} else {
+>  		tst_resm(TFAIL | TTERRNO,
+>  			 "mq_notify failed unexpectedly; expected: %d - %s",
 
+If there are no issues with the patch, it would be great to get this
+patch merged.
 
-This patch looks good to me,
-Acked-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-@Li, I think this patch is ok, Do you have some comment about it?
-
-
-Best Regards
-Yang Xu
-
-
-> Regards, 
-> - Hanxiao
->> Best Regards
->> Yang Xu
->>>   	fi
->>>
->>>   	ROD mkdir "/dev/memcg/$TEST_ID"
->>> diff --git
->>> a/testcases/kernel/controllers/memcg/functional/memcg_use_hierarchy_te
->>> st.sh
->>> b/testcases/kernel/controllers/memcg/functional/memcg_use_hierarchy_te
->>> st.sh
->>> index 4cf6b9fc2..1439b6352 100755
->>> ---
->>> a/testcases/kernel/controllers/memcg/functional/memcg_use_hierarchy_te
->>> st.sh
->>> +++ b/testcases/kernel/controllers/memcg/functional/memcg_use_hierarch
->>> +++ y_test.sh
->>> @@ -34,7 +34,9 @@ TST_TOTAL=3
->>>   # test if one of the ancestors goes over its limit, the proces will be killed
->>>   testcase_1()
->>>   {
->>> -	echo 1 > memory.use_hierarchy
->>> +        if [ "$root_memory_use_hierarchy" != "1" ]; then
->>> +                echo 1 > memory.use_hierarchy
->>> +        fi
->>>   	echo $PAGESIZE > memory.limit_in_bytes
->>>
->>>   	mkdir subgroup
->>> @@ -48,6 +50,10 @@ testcase_1()
->>>   # test Enabling will fail if the cgroup already has other cgroups
->>>   testcase_2()
->>>   {
->>> +        if [ "$root_memory_use_hierarchy" = "1" ]; then
->>> +               tst_resm TCONF "root cgroup has use_hierarchy enabled,
->> skip"
->>> +               return
->>> +        fi
->>>   	mkdir subgroup
->>>   	EXPECT_FAIL echo 1 \> memory.use_hierarchy
->>>
->>> @@ -57,7 +63,9 @@ testcase_2()
->>>   # test disabling will fail if the parent cgroup has enabled hierarchy.
->>>   testcase_3()
->>>   {
->>> -	echo 1 > memory.use_hierarchy
->>> +        if [ "$root_memory_use_hierarchy" != "1" ]; then
->>> +               echo 1 > memory.use_hierarchy
->>> +        fi
->>>   	mkdir subgroup
->>>   	EXPECT_FAIL echo 0 \> subgroup/memory.use_hierarchy
->>>
->>>
-
-
-
+Thanks,
+Punit
