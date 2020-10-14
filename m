@@ -1,44 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Oct 2020 16:03:15 +0200
-Subject: [LTP] [PATCH] syscalls/timer_settime01: adjust for rounding
- from nsec to usec
-In-Reply-To: <20201006085309.32227-1-cascardo@canonical.com>
-References: <20201006085309.32227-1-cascardo@canonical.com>
-Message-ID: <20201013140315.GD29925@yuki.lan>
+From: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Date: Wed, 14 Oct 2020 09:44:05 +0900
+Subject: [LTP] [PATCH] syscalls/mq_notify: Don't fail if mq_notify is
+ not supported
+In-Reply-To: <20201013122555.GC29925@yuki.lan> (Cyril Hrubis's message of
+ "Tue, 13 Oct 2020 14:25:55 +0200")
+References: <20201005092029.3482531-1-punit1.agrawal@toshiba.co.jp>
+ <20201013122555.GC29925@yuki.lan>
+Message-ID: <871ri1d4bu.fsf@kokedama.swc.toshiba.co.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-What about this change instead?
+Hi Cyril,
 
-diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-index 67143e8f8..599ef2891 100644
---- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-+++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-@@ -132,11 +132,13 @@ static void run(unsigned int n)
- 					get_clock_str(clock));
- 				continue;
- 			}
--			val += tst_ts_to_us(timenow);
-+			tst_ts_add_us(timenow, val);
-+			tst_its_set_value_from_ts(&new_set, timenow);
-+		} else {
-+			tst_its_set_value_from_us(&new_set, val);
- 		}
- 
- 		tst_its_set_interval_from_us(&new_set, tc->it_interval_tv_usec);
--		tst_its_set_value_from_us(&new_set, val);
- 
- 		TEST(tv->timer_settime(timer, tc->flag, tst_its_get(&new_set), tst_its_get(tc->old_ptr)));
- 
+Cyril Hrubis <chrubis@suse.cz> writes:
 
+> Hi!
+>> +	} else if (TEST_ERRNO == ENOSYS) {
+>> +		tst_resm(TCONF | TTERRNO, "mq_notify not available (ENOSYS)");
+>
+> Pushed with a minor change, removed the ENOSYS from the string since it
+> will be printed because of the TTERRNO flag, thanks.
 
-By adding the us to the timenow first and then setting the its.value
-from it we can avoid the rounding completely.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I see the committed patch. Thanks for fixing it up.
