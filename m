@@ -1,102 +1,173 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 15 Oct 2020 15:20:56 +0300
-Subject: [LTP] [PATCH 5/5] network/virt: add wireguard02: ipsec vs wireguard
+Date: Thu, 15 Oct 2020 15:20:53 +0300
+Subject: [LTP] [PATCH 2/5] lib/tst_net: calc mean in tst_netload()
 In-Reply-To: <20201015122056.20715-1-alexey.kodanev@oracle.com>
 References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
-Message-ID: <20201015122056.20715-5-alexey.kodanev@oracle.com>
+Message-ID: <20201015122056.20715-2-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compare multi-threading performance with IPSec/vti.
+Add TST_NETLOAD_RUN_COUNT to control how many times netstress
+test will be run to calculate the mean time value. Default is 5.
+
+This value will divide the total number of requests in order
+not to significantly increase the time for the test after this
+patch.
+
+Moreover, one of the runs can fail once, it will produce only a
+warning. The test will broke after the second failure. It can
+be useful to make sure we have reproducible results.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/net.features                  |  2 ++
- testcases/lib/tst_test.sh             |  2 +-
- testcases/network/virt/wireguard02.sh | 48 +++++++++++++++++++++++++++
- 3 files changed, 51 insertions(+), 1 deletion(-)
- create mode 100755 testcases/network/virt/wireguard02.sh
+ testcases/lib/tst_net.sh | 95 ++++++++++++++++++++++++++--------------
+ 1 file changed, 62 insertions(+), 33 deletions(-)
 
-diff --git a/runtest/net.features b/runtest/net.features
-index c5a1ba714..617a6b91e 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -81,3 +81,5 @@ fanout01 fanout01
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index b29e076c3..1912b984d 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -623,9 +623,11 @@ tst_wait_ipv6_dad()
+ 	done
+ }
  
- wireguard01 wireguard01.sh
- wireguard01_ipv6 wireguard01.sh -6
-+wireguard02 wireguard02.sh
-+wireguard02_ipv6 wireguard02.sh -6
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index f2bd1e3ef..2417da140 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -506,7 +506,7 @@ tst_run()
- 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
- 			IPV6|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
--			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG);;
-+			NET_DATAROOT|NET_MAX_PKT|NET_RHOST_RUN_DEBUG|NETLOAD_CLN_NUMBER);;
- 			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
- 			esac
- 		done
-diff --git a/testcases/network/virt/wireguard02.sh b/testcases/network/virt/wireguard02.sh
-new file mode 100755
-index 000000000..c16ae68d1
---- /dev/null
-+++ b/testcases/network/virt/wireguard02.sh
-@@ -0,0 +1,48 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Oracle and/or its affiliates. All Rights Reserved.
+-tst_dump_rhost_cmd()
++tst_netload_brk()
+ {
+ 	tst_rhost_run -c "cat $TST_TMPDIR/netstress.log"
++	cat tst_netload.log
++	tst_brk_ $1 $2
+ }
+ 
+ # Run network load test, see 'netstress -h' for option description
+@@ -640,6 +642,7 @@ tst_netload()
+ 	# common options for client and server
+ 	local cs_opts=
+ 
++	local run_cnt="$TST_NETLOAD_RUN_COUNT"
+ 	local c_num="$TST_NETLOAD_CLN_NUMBER"
+ 	local c_requests="$TST_NETLOAD_CLN_REQUESTS"
+ 	local c_opts=
+@@ -692,51 +695,76 @@ tst_netload()
+ 	local expect_ret=0
+ 	[ "$expect_res" != "pass" ] && expect_ret=3
+ 
+-	tst_rhost_run -c "pkill -9 netstress\$"
+-	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
+-	tst_res_ TINFO "run server 'netstress $s_opts'"
+-	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
+-	if [ $? -ne 0 ]; then
+-		cat tst_netload.log
+-		local ttype="TFAIL"
+-		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
+-		tst_brk_ $ttype "server failed"
++	local was_failure=0
++	if [ "$run_cnt" -lt 2 ]; then
++		run_cnt=1
++		was_failure=1
+ 	fi
+ 
+-	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
+-	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
++	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
++	c_opts="${cs_opts}${c_opts}-a $c_num -r $((c_requests / run_cnt)) -d $rfile"
 +
-+TST_CLEANUP=cleanup
-+TST_TESTFUNC=test1
-+TST_SETUP=wireguard_lib_setup
++	tst_res_ TINFO "run server 'netstress $s_opts'"
++	tst_res_ TINFO "run client 'netstress -l $c_opts' $run_cnt times"
+ 
+-	tst_res_ TINFO "run client 'netstress -l $c_opts'"
+-	netstress -l $c_opts > tst_netload.log 2>&1 || ret=$?
+ 	tst_rhost_run -c "pkill -9 netstress\$"
++	rm -f tst_netload.log
 +
-+. ipsec_lib.sh
-+. wireguard_lib.sh
++	local res=0
++	local passed=0
 +
-+IPSEC_MODE="tunnel"
-+IPSEC_PROTO="esp_aead"
-+AEALGO="rfc4106_256"
-+EALGO="aes"
-+AALGO="sha256"
++	for i in $(seq 1 $run_cnt); do
++		tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
++		if [ $? -ne 0 ]; then
++			cat tst_netload.log
++			local ttype="TFAIL"
++			grep -e 'CONF:' tst_netload.log && ttype="TCONF"
++			tst_brk_ $ttype "server failed"
++		fi
+ 
+-	if [ "$expect_ret" -ne 0 ]; then
+-		if [ $((ret & expect_ret)) -ne 0 ]; then
+-			tst_res_ TPASS "netstress failed as expected"
+-		else
+-			tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
++		local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
++		netstress -l ${c_opts} -g $port > tst_netload.log 2>&1
++		ret=$?
++		tst_rhost_run -c "pkill -9 netstress\$"
 +
-+cleanup()
-+{
-+	wireguard_lib_cleanup
-+	tst_ipsec_cleanup
-+}
++		if [ "$expect_ret" -ne 0 ]; then
++			if [ $((ret & expect_ret)) -ne 0 ]; then
++				tst_res_ TPASS "netstress failed as expected"
++			else
++				tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
++			fi
++			return $ret
++		fi
 +
-+test1()
-+{
-+	local wgaddr
-+	local clients_num="$TST_NETLOAD_CLN_NUMBER"
++		if [ "$ret" -ne 0 ]; then
++			[ $((ret & 32)) -ne 0 ] && \
++				tst_netload_brk TCONF "not supported configuration"
 +
-+	# Enforce multi-threading test, at least with 10 TCP clients
-+	[ $clients_num -lt 10 ] && clients_num=10
++			[ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ] && \
++				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
 +
-+	tst_res TINFO "test wireguard"
++			tst_res_ TWARN "netstress failed, ret: $ret"
++			was_failure=1
++			continue
+ 		fi
+-		return $ret
+-	fi
 +
-+	[ -n "$TST_IPV6" ] && wgaddr="$ip6_virt_remote" || wgaddr="$ip_virt_remote"
-+	tst_netload -H $wgaddr -a $clients_num -D ltp_v0
-+	local time_wg=$(cat tst_netload.res)
-+	wireguard_lib_cleanup
++		[ ! -f $rfile ] && \
++			tst_netload_brk TFAIL "can't read $rfile"
 +
-+	tst_res TINFO "test IPSec $IPSEC_MODE/$IPSEC_PROTO $EALGO"
-+	tst_ipsec_setup_vti
-+	tst_netload -H $ip_rmt_tun -a $clients_num -D $tst_vti
-+	local time_ipsec=$(cat tst_netload.res)
-+	tst_ipsec_cleanup
-+
-+	tst_netload_compare $time_ipsec $time_wg -100
-+}
-+
-+tst_run
++		res="$((res + $(cat $rfile)))"
++		passed=$((passed + 1))
++	done
+ 
+ 	if [ "$ret" -ne 0 ]; then
+-		tst_dump_rhost_cmd
+-		cat tst_netload.log
+-		[ $((ret & 3)) -ne 0 ] && \
+-			tst_brk_ TFAIL "expected '$expect_res' but ret: '$ret'"
+-		[ $((ret & 32)) -ne 0 ] && \
+-			tst_brk_ TCONF "not supported configuration"
+ 		[ $((ret & 4)) -ne 0 ] && \
+ 			tst_res_ TWARN "netstress has warnings"
++		tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
+ 	fi
+ 
+-	if [ ! -f $rfile ]; then
+-		tst_dump_rhost_cmd
+-		cat tst_netload.log
+-		tst_brk_ TFAIL "can't read $rfile"
+-	fi
++	res=$((res / $passed))
++	echo "$res" > $rfile
+ 
+-	tst_res_ TPASS "netstress passed, time spent '$(cat $rfile)' ms"
++	tst_res_ TPASS "netstress passed, mean time '$res' ms"
+ 
+ 	return $ret
+ }
+@@ -938,6 +966,7 @@ export TST_NET_DATAROOT="$LTPROOT/testcases/bin/datafiles"
+ export TST_NETLOAD_CLN_REQUESTS="${TST_NETLOAD_CLN_REQUESTS:-10000}"
+ export TST_NETLOAD_CLN_NUMBER="${TST_NETLOAD_CLN_NUMBER:-2}"
+ export TST_NETLOAD_BINDTODEVICE="${TST_NETLOAD_BINDTODEVICE-1}"
++export TST_NETLOAD_RUN_COUNT="${TST_NETLOAD_RUN_COUNT:-5}"
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
+ export FTP_UPLOAD_DIR="${FTP_UPLOAD_DIR:-/var/ftp/pub}"
 -- 
 2.20.1
 
