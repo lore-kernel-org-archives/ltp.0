@@ -1,200 +1,332 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 15 Oct 2020 15:20:55 +0300
-Subject: [LTP] [PATCH 4/5] network/virt: add wireguard01
-In-Reply-To: <20201015122056.20715-1-alexey.kodanev@oracle.com>
-References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
-Message-ID: <20201015122056.20715-4-alexey.kodanev@oracle.com>
+Date: Thu, 15 Oct 2020 15:20:52 +0300
+Subject: [LTP] [PATCH 1/5] lib/tst_net: add generic tst_netload_compare()
+Message-ID: <20201015122056.20715-1-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* performance tests with TCP traffic
+* Remove duplicate code for comparing time-based results in
+  network tests (bbr, busy_poll, sctp, tcp fastopen, virt tests)
 
-* invalid configuration with allowed IPs, public key
+* Expand thresholds for sctp, bbr test-cases, in order to avoid
+  false-positive failures.
 
-* emulation of the lossy link for the underlying interface.
+* In virt_lib.sh, keep sign for VIRT_PERF_THRESHOLD.
+
+* TWARN when the base result is too bad (threshold_hi arg is set)
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/net.features                    |  3 ++
- testcases/network/virt/virt_lib.sh      |  4 +-
- testcases/network/virt/wireguard01.sh   | 56 ++++++++++++++++++++
- testcases/network/virt/wireguard_lib.sh | 68 +++++++++++++++++++++++++
- 4 files changed, 129 insertions(+), 2 deletions(-)
- create mode 100755 testcases/network/virt/wireguard01.sh
- create mode 100755 testcases/network/virt/wireguard_lib.sh
+ testcases/lib/tst_net.sh                      | 31 +++++++++++++++++++
+ testcases/network/busy_poll/busy_poll01.sh    | 10 ++----
+ testcases/network/busy_poll/busy_poll02.sh    |  8 +----
+ testcases/network/busy_poll/busy_poll03.sh    |  8 +----
+ testcases/network/dccp/dccp01.sh              | 15 ++-------
+ testcases/network/sctp/sctp01.sh              |  8 +----
+ testcases/network/tcp_cc/bbr01.sh             |  2 +-
+ testcases/network/tcp_cc/bbr02.sh             |  2 +-
+ testcases/network/tcp_cc/dctcp01.sh           |  2 +-
+ testcases/network/tcp_cc/tcp_cc_lib.sh        |  8 +----
+ .../network/tcp_fastopen/tcp_fastopen_run.sh  | 15 ++-------
+ testcases/network/virt/virt_lib.sh            | 21 ++-----------
+ 12 files changed, 46 insertions(+), 84 deletions(-)
 
-diff --git a/runtest/net.features b/runtest/net.features
-index 44a974563..c5a1ba714 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -78,3 +78,6 @@ mpls03_ipv6 mpls03.sh -6
- mpls04 mpls04.sh
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index d939a5780..b29e076c3 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -741,6 +741,37 @@ tst_netload()
+ 	return $ret
+ }
  
- fanout01 fanout01
-+
-+wireguard01 wireguard01.sh
-+wireguard01_ipv6 wireguard01.sh -6
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index f62120347..abf331428 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -124,7 +124,7 @@ virt_add()
- 	esac
- 
- 	case $virt_type in
--	vxlan|geneve|sit)
-+	vxlan|geneve|sit|wireguard)
- 		ip li add $vname type $virt_type $opt
- 	;;
- 	gre|ip6gre)
-@@ -145,7 +145,7 @@ virt_add_rhost()
- 		[ "$vxlan_dstport" -eq 1 ] && opt="$opt dstport 0"
- 		tst_rhost_run -s -c "ip li add ltp_v0 type $virt_type $@ $opt"
- 	;;
--	sit)
-+	sit|wireguard)
- 		tst_rhost_run -s -c "ip link add ltp_v0 type $virt_type $@"
- 	;;
- 	gre|ip6gre)
-diff --git a/testcases/network/virt/wireguard01.sh b/testcases/network/virt/wireguard01.sh
-new file mode 100755
-index 000000000..ff0c7e92b
---- /dev/null
-+++ b/testcases/network/virt/wireguard01.sh
-@@ -0,0 +1,56 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Oracle and/or its affiliates. All Rights Reserved.
-+
-+TST_NEEDS_CMDS="tc"
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+TST_TESTFUNC=test
-+TST_CNT=3
-+
-+. wireguard_lib.sh
-+
-+setup()
++# Compares results for netload runs.
++# tst_netload_compare TIME_BASE TIME THRESHOLD_LOW [THRESHOLD_HI]
++# TIME_BASE: time taken to run netstress load test - 100%
++# TIME: time that is compared to the base one
++# THRESHOD_LOW: lower limit for TFAIL
++# THRESHOD_HIGH: upper limit for TWARN
++tst_netload_compare()
 +{
-+	if [ -n "$LTP_NETNS" -a "$VIRT_PERF_THRESHOLD" -lt 700 ]; then
-+		tst_res TINFO "Adjust threshold for veth (no encap/encrypt)"
-+		VIRT_PERF_THRESHOLD=700
++	local base_time=$1
++	local new_time=$2
++	local threshold_low=$3
++	local threshold_hi=$4
++
++	if [ -z "$base_time" -o -z "$new_time" -o -z "$threshold_low" ]; then
++		tst_brk_ TBROK "tst_netload_compare: invalid argument(s)"
 +	fi
 +
-+	local netem_opt="reorder 30% 50% delay 1"
-+	tst_res TINFO "Use netem $netem_opt"
-+	ROD tc qdisc add dev $(tst_iface) root netem $netem_opt
-+	wireguard_lib_setup
++	local res=$(((base_time - new_time) * 100 / base_time))
++	local msg="performance result is ${res}%"
++
++	if [ "$res" -lt "$threshold_low" ]; then
++		tst_res_ TFAIL "$msg < threshold ${threshold_low}%"
++		return
++	fi
++
++	[ "$threshold_hi" ] && [ "$res" -gt "$threshold_hi" ] && \
++		tst_res_ TWARN "$msg > threshold ${threshold_hi}%"
++
++	tst_res_ TPASS "$msg, in range [${threshold_low}:${threshold_hi:-}]%"
 +}
 +
-+cleanup()
-+{
-+	tc qdisc del dev $(tst_iface) root netem >/dev/null 2>&1
-+	wireguard_lib_cleanup
-+}
-+
-+test1()
-+{
-+	tst_res TINFO "Using correct wireguard configuration"
-+	virt_netperf_msg_sizes
-+	wireguard_lib_cleanup
-+}
-+
-+test2()
-+{
-+	tst_res TINFO "Invalid configuration with allowed IPs"
-+	wireguard_lib_setup invalid_allowed_ips
-+	virt_minimize_timeout
-+	virt_compare_netperf "fail"
-+	wireguard_lib_cleanup
-+}
-+
-+test3()
-+{
-+	tst_res TINFO "Invalid configuration with public keys"
-+	wireguard_lib_setup invalid_pub_keys
-+	virt_minimize_timeout
-+	virt_compare_netperf "fail"
-+}
-+
-+tst_run
-diff --git a/testcases/network/virt/wireguard_lib.sh b/testcases/network/virt/wireguard_lib.sh
-new file mode 100755
-index 000000000..c6ea7334e
---- /dev/null
-+++ b/testcases/network/virt/wireguard_lib.sh
-@@ -0,0 +1,68 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2020 Oracle and/or its affiliates. All Rights Reserved.
-+
-+TST_NEEDS_TMPDIR=1
-+TST_NEEDS_CMDS="$TST_NEEDS_CMDS wg"
-+TST_TESTFUNC=${TST_TESTFUNC:-virt_netperf_msg_sizes}
-+TST_SETUP=${TST_SETUP:-wireguard_lib_setup}
-+TST_CLEANUP=${TST_CLEANUP:-wireguard_lib_cleanup}
-+TST_NEEDS_DRIVERS="wireguard"
-+VIRT_PERF_THRESHOLD_MIN=${VIRT_PERF_THRESHOLD_MIN:-200}
-+
-+virt_type="wireguard"
-+. virt_lib.sh
-+
-+# Usage: wireguard_lib_setup [TYPE]
-+# TYPE: [ default | invalid_allowed_ips | invalid_pub_keys ]
-+wireguard_lib_setup()
-+{
-+	local type="${1:-default}"
-+	local pub_key0="$(wg genkey | tee wg0.key | wg pubkey)"
-+	local pub_key1="$(wg genkey | tee wg1.key | wg pubkey)"
-+
-+	local port_loc="$(tst_get_unused_port ipv${TST_IPVER} dgram)"
-+	local port_rmt=$(tst_rhost_run -c "tst_get_unused_port ipv${TST_IPVER} dgram")
-+
-+	# copy private key to remote host
-+	tst_rhost_run -s -c "echo '$(cat wg1.key)' > wg1.key"
-+
-+	tst_res TINFO "setup wireguard UDPv${TST_IPVER} tunnel, port $port_loc/$port_rmt"
-+	tst_res TINFO "lhost[$(tst_ipaddr)] <-> rhost[$(tst_ipaddr rhost)]"
-+
-+	virt_setup
-+
-+	local ka_opt="persistent-keepalive 1"
-+	local allow_ip_loc="${ip_virt_local}/32,${ip6_virt_local}/128"
-+	local allow_ip_rmt="${ip_virt_remote}/32,${ip6_virt_remote}/128"
-+
-+	case $type in
-+	invalid_allowed_ips)
-+		allow_ip_loc="${ip_virt_remote}/32,${ip6_virt_remote}/128"
-+		allow_ip_rmt="${ip_virt_local}/32,${ip6_virt_local}/128"
-+		tst_res TINFO "Allowed IPs are source IPs only"
-+		;;
-+	invalid_pub_keys)
-+		pub_key0="$(wg genkey | wg pubkey)"
-+		tst_res TINFO "Invalid peer public key of lhost"
-+		;;
-+	esac
-+
-+	ROD wg set ltp_v0 listen-port $port_loc private-key wg0.key
-+	ROD wg set ltp_v0 peer $pub_key1 endpoint \
-+		$(tst_ipaddr rhost):$port_rmt $ka_opt \
-+		allowed-ips $allow_ip_rmt
-+
-+	tst_rhost_run -s -c \
-+		"wg set ltp_v0 listen-port $port_rmt private-key wg1.key"
-+	tst_rhost_run -s -c "wg set ltp_v0 peer $pub_key0 \
-+		endpoint $(tst_ipaddr):$port_loc $ka_opt \
-+		allowed-ips $allow_ip_loc"
-+
-+	tst_net_run -s "ip route add 128.0.0.0/1 dev ltp_v0"
-+}
-+
-+wireguard_lib_cleanup()
-+{
-+	virt_cleanup
-+}
+ # tst_ping [IFACE] [DST ADDR] [MESSAGE SIZE ARRAY]
+ # Check icmp connectivity
+ # IFACE: source interface name or IP address
+diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
+index 0023f6cef..d306d1be8 100755
+--- a/testcases/network/busy_poll/busy_poll01.sh
++++ b/testcases/network/busy_poll/busy_poll01.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) 2015-2018 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2015-2020 Oracle and/or its affiliates. All Rights Reserved.
+ #
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+ 
+@@ -47,13 +47,7 @@ test()
+ 		tst_netload -H $(tst_ipaddr rhost) -n 10 -N 10 -d res_$x
+ 	done
+ 
+-	local poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
+-
+-	if [ "$poll_cmp" -lt 1 ]; then
+-		tst_res TFAIL "busy poll result is '$poll_cmp' %"
+-	else
+-		tst_res TPASS "busy poll increased performance by '$poll_cmp' %"
+-	fi
++	tst_netload_compare $(cat res_0) $(cat res_50) 1
+ }
+ 
+ tst_run
+diff --git a/testcases/network/busy_poll/busy_poll02.sh b/testcases/network/busy_poll/busy_poll02.sh
+index 1f25b7373..abb5160f9 100755
+--- a/testcases/network/busy_poll/busy_poll02.sh
++++ b/testcases/network/busy_poll/busy_poll02.sh
+@@ -37,13 +37,7 @@ test()
+ 		tst_netload -H $(tst_ipaddr rhost) -n 10 -N 10 -d res_$x -b $x
+ 	done
+ 
+-	local poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
+-
+-	if [ "$poll_cmp" -lt 1 ]; then
+-		tst_res TFAIL "busy poll result is '$poll_cmp' %"
+-	else
+-		tst_res TPASS "busy poll increased performance by '$poll_cmp' %"
+-	fi
++	tst_netload_compare $(cat res_0) $(cat res_50) 1
+ }
+ 
+ tst_run
+diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
+index 3c7029927..55ffefb07 100755
+--- a/testcases/network/busy_poll/busy_poll03.sh
++++ b/testcases/network/busy_poll/busy_poll03.sh
+@@ -40,13 +40,7 @@ test()
+ 			    -b $x -T $2
+ 	done
+ 
+-	local poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
+-
+-	if [ "$poll_cmp" -lt 1 ]; then
+-		tst_res TFAIL "busy poll result is '$poll_cmp' %"
+-	else
+-		tst_res TPASS "busy poll increased performance by '$poll_cmp' %"
+-	fi
++	tst_netload_compare $(cat res_0) $(cat res_50) 1
+ }
+ 
+ tst_run
+diff --git a/testcases/network/dccp/dccp01.sh b/testcases/network/dccp/dccp01.sh
+index d18ac6f18..52f232591 100755
+--- a/testcases/network/dccp/dccp01.sh
++++ b/testcases/network/dccp/dccp01.sh
+@@ -9,17 +9,6 @@ TST_NEEDS_ROOT=1
+ 
+ . tst_net.sh
+ 
+-compare()
+-{
+-	local per=$(( $res0 * 100 / $res1 - 100 ))
+-
+-	if [ "$per" -gt "100" -o "$per" -lt "-100" ]; then
+-		tst_res TFAIL "$1 performance $per %"
+-	else
+-		tst_res TPASS "$1 performance $per % in range -100 ... 100 %"
+-	fi
+-}
+-
+ test1()
+ {
+ 	tst_res TINFO "run UDP"
+@@ -31,14 +20,14 @@ test2()
+ 	tst_res TINFO "compare UDP/DCCP performance"
+ 	tst_netload -H $(tst_ipaddr rhost) -T dccp
+ 	res1="$(cat tst_netload.res)"
+-	compare DCCP
++	tst_netload_compare $res0 $res1 -100 100
+ }
+ test3()
+ {
+ 	tst_res TINFO "compare UDP/UDP-Lite performance"
+ 	tst_netload -H $(tst_ipaddr rhost) -T udp_lite
+ 	res1="$(cat tst_netload.res)"
+-	compare UDP-Lite
++	tst_netload_compare $res0 $res1 -100 100
+ }
+ 
+ tst_run
+diff --git a/testcases/network/sctp/sctp01.sh b/testcases/network/sctp/sctp01.sh
+index a66020061..a42bd4975 100755
+--- a/testcases/network/sctp/sctp01.sh
++++ b/testcases/network/sctp/sctp01.sh
+@@ -23,13 +23,7 @@ test()
+ 	tst_netload -S $(tst_ipaddr) -H $(tst_ipaddr rhost) -T sctp -R 3 $opts
+ 	local res1="$(cat tst_netload.res)"
+ 
+-	local per=$(( $res0 * 100 / $res1 - 100 ))
+-
+-	if [ "$per" -gt "100" -o "$per" -lt "-100" ]; then
+-		tst_res TFAIL "sctp performance $per %"
+-	else
+-		tst_res TPASS "sctp performance $per % in range -100 ... 100 %"
+-	fi
++	tst_netload_compare $res0 $res1 -200 200
+ }
+ 
+ tst_run
+diff --git a/testcases/network/tcp_cc/bbr01.sh b/testcases/network/tcp_cc/bbr01.sh
+index a6592b32d..3b80d50e4 100755
+--- a/testcases/network/tcp_cc/bbr01.sh
++++ b/testcases/network/tcp_cc/bbr01.sh
+@@ -27,7 +27,7 @@ setup()
+ 
+ do_test()
+ {
+-	tcp_cc_test01 bbr -50
++	tcp_cc_test01 bbr -100
+ }
+ 
+ tst_run
+diff --git a/testcases/network/tcp_cc/bbr02.sh b/testcases/network/tcp_cc/bbr02.sh
+index b04c0c173..3a61e8726 100755
+--- a/testcases/network/tcp_cc/bbr02.sh
++++ b/testcases/network/tcp_cc/bbr02.sh
+@@ -34,7 +34,7 @@ setup()
+ do_test()
+ {
+ 	tcp_cc_set_qdisc $2 || return
+-	tcp_cc_test01 bbr -50
++	tcp_cc_test01 bbr -100
+ }
+ 
+ tst_run
+diff --git a/testcases/network/tcp_cc/dctcp01.sh b/testcases/network/tcp_cc/dctcp01.sh
+index 14ee96dbf..45311c5a2 100755
+--- a/testcases/network/tcp_cc/dctcp01.sh
++++ b/testcases/network/tcp_cc/dctcp01.sh
+@@ -33,7 +33,7 @@ setup()
+ 
+ do_test()
+ {
+-	tcp_cc_test01 dctcp 10
++	tcp_cc_test01 dctcp -100
+ }
+ 
+ tst_run
+diff --git a/testcases/network/tcp_cc/tcp_cc_lib.sh b/testcases/network/tcp_cc/tcp_cc_lib.sh
+index 815cc9c0e..dff8cef19 100755
+--- a/testcases/network/tcp_cc/tcp_cc_lib.sh
++++ b/testcases/network/tcp_cc/tcp_cc_lib.sh
+@@ -101,11 +101,5 @@ tcp_cc_test01()
+ 	tst_netload -H $(tst_ipaddr rhost) -A $TST_NET_MAX_PKT
+ 	local res1="$(cat tst_netload.res)"
+ 
+-	local per=$(( $res0 * 100 / $res1 - 100 ))
+-
+-	if [ "$per" -lt "$threshold" ]; then
+-		tst_res TFAIL "$alg performance $per %"
+-	else
+-		tst_res TPASS "$alg performance $per %"
+-	fi
++	tst_netload_compare $res0 $res1 $threshold
+ }
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+index a4b542220..fb2cb8fc2 100755
+--- a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
++++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+@@ -36,17 +36,6 @@ cleanup()
+ 	tc qdisc del dev $(tst_iface) root netem delay 100 >/dev/null
+ }
+ 
+-compare()
+-{
+-	tfo_cmp=$(( 100 - ($time_tfo_on * 100) / $time_tfo_off ))
+-
+-	if [ "$tfo_cmp" -lt 3 ]; then
+-		tst_res TFAIL "$1 perf result is '$tfo_cmp' percent"
+-	else
+-		tst_res TPASS "$1 perf result is '$tfo_cmp' percent"
+-	fi
+-}
+-
+ setup()
+ {
+ 	if tst_kvcmp -lt "3.16" && [ "$TST_IPV6" ]; then
+@@ -66,7 +55,7 @@ test1()
+ 	tst_netload -H $(tst_ipaddr rhost) -f -t 3 -R $srv_replies
+ 	time_tfo_on=$(cat tst_netload.res)
+ 
+-	compare
++	tst_netload_compare $time_tfo_off $time_tfo_on 3
+ }
+ 
+ test2()
+@@ -78,7 +67,7 @@ test2()
+ 	tst_netload -H $(tst_ipaddr rhost) -F -t 3 -R $srv_replies
+ 	time_tfo_on=$(cat tst_netload.res)
+ 
+-	compare
++	tst_netload_compare $time_tfo_off $time_tfo_on 3
+ }
+ 
+ tst_run
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index cb2b2ba97..80b9bcc90 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -295,25 +295,8 @@ virt_compare_netperf()
+ 	local lt="$(cat res_lan)"
+ 	tst_res TINFO "time lan IPv${TST_IPVER}($lt) $virt_type IPv4($vt) and IPv6($vt6) ms"
+ 
+-	per=$(( $vt * 100 / $lt - 100 ))
+-	per6=$(( $vt6 * 100 / $lt - 100 ))
+-
+-	case "$virt_type" in
+-	vxlan|geneve)
+-		tst_res TINFO "IP4 $virt_type over IP$TST_IPVER slower by $per %"
+-		tst_res TINFO "IP6 $virt_type over IP$TST_IPVER slower by $per6 %"
+-	;;
+-	*)
+-		tst_res TINFO "IP4 $virt_type slower by $per %"
+-		tst_res TINFO "IP6 $virt_type slower by $per6 %"
+-	esac
+-
+-	if [ "$per" -ge "$VIRT_PERF_THRESHOLD" -o \
+-	     "$per6" -ge "$VIRT_PERF_THRESHOLD" ]; then
+-		tst_res TFAIL "Test failed, threshold: $VIRT_PERF_THRESHOLD %"
+-	else
+-		tst_res TPASS "Test passed, threshold: $VIRT_PERF_THRESHOLD %"
+-	fi
++	tst_netload_compare $lt $vt "-$VIRT_PERF_THRESHOLD"
++	tst_netload_compare $lt $vt6 "-$VIRT_PERF_THRESHOLD"
+ }
+ 
+ virt_check_cmd()
 -- 
 2.20.1
 
