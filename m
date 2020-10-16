@@ -1,61 +1,63 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 16 Oct 2020 16:05:21 +0100
+From: Roman Gushchin <guro@fb.com>
+Date: Fri, 16 Oct 2020 10:02:45 -0700
 Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <87sgaesba0.fsf@suse.de>
+In-Reply-To: <20201016145308.GA312010@cmpxchg.org>
 References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook> <87sgaesba0.fsf@suse.de>
-Message-ID: <87pn5irz2m.fsf@suse.de>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+Message-ID: <20201016170245.GB230727@carbon.DHCP.thefacebook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On Fri, Oct 16, 2020 at 10:53:08AM -0400, Johannes Weiner wrote:
+> On Fri, Oct 16, 2020 at 11:47:02AM +0200, Michal Koutn? wrote:
+> > Hello.
+> > 
+> > On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> > > SLAB objects which outlive their memcg are moved to their parent
+> > > memcg where they may be uncharged. However if they are moved to the
+> > > root memcg, uncharging will result in negative page counter values as
+> > > root has no page counters.
+> > Why do you think those are reparented objects? If those are originally
+> > charged in a non-root cgroup, then the charge value should be propagated up the
+> > hierarchy, including root memcg, so if they're later uncharged in root
+> > after reparenting, it should still break even. (Or did I miss some stock
+> > imbalance?)
+> 
+> Looking a bit closer at this code, it's kind of a mess right now.
+> 
+> The central try_charge() function charges recursively all the way up
+> to and including the root. But not if it's called directly on the
+> root, in which case it bails and does nothing.
+> 
+> kmem and objcg use try_charge(), so they have the same
+> behavior. get_obj_cgroup_from_current() does it's own redundant
+> filtering for root_mem_cgroup, whereas get_mem_cgroup_from_current()
+> does not, but its callsite __memcg_kmem_charge_page() does.
+> 
+> We should clean this up one way or another: either charge the root or
+> don't, but do it consistently.
 
-Richard Palethorpe <rpalethorpe@suse.de> writes:
++1
 
-> Hello Michal,
->
-> Michal Koutn? <mkoutny@suse.com> writes:
->
->> Hello.
->>
->> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
->>> SLAB objects which outlive their memcg are moved to their parent
->>> memcg where they may be uncharged. However if they are moved to the
->>> root memcg, uncharging will result in negative page counter values as
->>> root has no page counters.
->> Why do you think those are reparented objects? If those are originally
->> charged in a non-root cgroup, then the charge value should be propagated up the
->> hierarchy, including root memcg, so if they're later uncharged in root
->> after reparenting, it should still break even. (Or did I miss some stock
->> imbalance?)
->
-> I traced it and can see they are reparented objects and that the root
-> groups counters are zero (or negative if I run madvise06 multiple times)
-> before a drain takes place. I'm guessing this is because the root group
-> has 'use_hierachy' set to false so that the childs page_counter parents
-> are set to NULL. However I will check, because I'm not sure about
-> either.
+> 
+> Since we export memory.stat at the root now, we should probably just
+> always charge the root instead of special-casing it all over the place
+> and risking bugs.
 
-Yes, it appears that use_hierarchy=0 which is probably because the test
-mounts cgroup v1, creates a child group within that and does not set
-use_hierarchy on the root. On v2 root always has use_hierarchy enabled.
+Hm, we export memory.stat but not memory.current. Charging the root memcg
+seems to be an extra atomic operation, which can be avoided.
 
->
->>
->> (But the patch seems justifiable to me as objects (not)charged directly to
->> root memcg may be incorrectly uncharged.)
->>
->> Thanks,
->> Michal
+I wonder if we can handle it in page_counter.c, so there will be a single
+place where we do the check.
 
-I'm don't know if that could happen without reparenting. I suppose if
-use_hierarchy=1 then actually this patch will result in root being
-overcharged, so perhaps it should also check for use_hierarchy?
+> 
+> Indeed, it looks like there is at least one bug where the root-level
+> memory.stat shows non-root slab objects, but not root ones, whereas it
+> shows all anon and cache pages, root or no root.
 
--- 
-Thank you,
-Richard.
+I'll take a look.
