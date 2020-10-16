@@ -1,31 +1,28 @@
 From: Michal =?unknown-8bit?q?Koutn=C3=BD?= <mkoutny@suse.com>
-Date: Fri, 16 Oct 2020 19:15:02 +0200
+Date: Fri, 16 Oct 2020 19:26:35 +0200
 Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <20201016145308.GA312010@cmpxchg.org>
+In-Reply-To: <87pn5irz2m.fsf@suse.de>
 References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
-Message-ID: <20201016171502.GA102311@blackbook>
+ <20201016094702.GA95052@blackbook> <87sgaesba0.fsf@suse.de>
+ <87pn5irz2m.fsf@suse.de>
+Message-ID: <20201016172635.GB102311@blackbook>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 16, 2020 at 10:53:08AM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> The central try_charge() function charges recursively all the way up
-> to and including the root.
-Except for use_hiearchy=0 (which is the case here as Richard
-wrote). The reparenting is hence somewhat incompatible with
-new_parent.use_hiearchy=0 :-/
+On Fri, Oct 16, 2020 at 04:05:21PM +0100, Richard Palethorpe <rpalethorpe@suse.de> wrote:
+> I'm don't know if that could happen without reparenting. I suppose if
+> use_hierarchy=1 then actually this patch will result in root being
+> overcharged, so perhaps it should also check for use_hierarchy?
+Right, you'd need to distinguish whether the uncharged objcg was
+originally (not)charged in the root memcg or it was only reparented to
+it. (I originally considered only the genuine root objcgs.)
 
-> We should clean this up one way or another: either charge the root or
-> don't, but do it consistently.
-I agree this'd be good to unify. One upside of excluding root memcg from
-charging is that users are spared from the charging overhead when memcg
-tree is not created.  (Actually, I thought that was the reason for this
-exception.)
+In this light, homogenous charing to root memcg looks really simpler but
+I wonder what other surprises it brings about.
 
 Michal
 -------------- next part --------------
@@ -34,4 +31,4 @@ Name: signature.asc
 Type: application/pgp-signature
 Size: 833 bytes
 Desc: Digital signature
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201016/5a06c060/attachment.sig>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201016/4bdadf77/attachment-0001.sig>
