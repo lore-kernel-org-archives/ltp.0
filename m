@@ -1,157 +1,61 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 16 Oct 2020 15:30:07 +0300
-Subject: [LTP] [PATCH] syscalls/send02: Improve message
-In-Reply-To: <1602834345-24019-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1602834345-24019-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <71c2d6b7-5c49-96c6-f1ba-1370fd7a5dd6@oracle.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 16 Oct 2020 16:05:21 +0100
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <87sgaesba0.fsf@suse.de>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook> <87sgaesba0.fsf@suse.de>
+Message-ID: <87pn5irz2m.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 16.10.2020 10:45, Yang Xu wrote:
-> This case sometimes fails, output as below:
-> 
-> tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-> send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-> send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-> send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-> send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-> 
-> From this output, we don't know which subcase fails(tcp,udp,send,sendto).
-> So add some message and make this clear.
-> 
-> Now this case fails as below:
-> tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-> send02.c:124: TINFO: Testing TCP send
-> send02.c:87: TFAIL: recv() error at the 776 times(expsize 17): EAGAIN/EWOULDBLOCK (11)
+Hello,
 
-recv(..., MSG_DONTWAIT) can fail with EAGAIN/EWOULDBLOCK at any time,
-so it should be a valid error... why it is a failure in the test?
+Richard Palethorpe <rpalethorpe@suse.de> writes:
 
-If we expect some message to receive, we should call recv() again
-for EAGAIN/EWOULDBLOCK errors. And with MSG_MORE case, just return
-immediately, i.e. something like this:
+> Hello Michal,
+>
+> Michal Koutn? <mkoutny@suse.com> writes:
+>
+>> Hello.
+>>
+>> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>>> SLAB objects which outlive their memcg are moved to their parent
+>>> memcg where they may be uncharged. However if they are moved to the
+>>> root memcg, uncharging will result in negative page counter values as
+>>> root has no page counters.
+>> Why do you think those are reparented objects? If those are originally
+>> charged in a non-root cgroup, then the charge value should be propagated up the
+>> hierarchy, including root memcg, so if they're later uncharged in root
+>> after reparenting, it should still break even. (Or did I miss some stock
+>> imbalance?)
+>
+> I traced it and can see they are reparented objects and that the root
+> groups counters are zero (or negative if I run madvise06 multiple times)
+> before a drain takes place. I'm guessing this is because the root group
+> has 'use_hierachy' set to false so that the childs page_counter parents
+> are set to NULL. However I will check, because I'm not sure about
+> either.
 
-       while (1) {
-                TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
+Yes, it appears that use_hierarchy=0 which is probably because the test
+mounts cgroup v1, creates a child group within that and does not set
+use_hierarchy on the root. On v2 root always has use_hierarchy enabled.
 
-                if (TST_RET == -1) {
-                        if (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK) {
-                                if (expsize)
-                                        continue;
-                                else
-                                        break;
-                        }
+>
+>>
+>> (But the patch seems justifiable to me as objects (not)charged directly to
+>> root memcg may be incorrectly uncharged.)
+>>
+>> Thanks,
+>> Michal
 
-                        /* unexpected error */
-                        tst_res(TFAIL | TTERRNO, "recv() error, expsize %ld, it %d", expsize, i);
-                        return 0;
-                }
+I'm don't know if that could happen without reparenting. I suppose if
+use_hierarchy=1 then actually this patch will result in root being
+overcharged, so perhaps it should also check for use_hierarchy?
 
-		if (TST_RET < 0) {
-                        tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
-                                TST_RET);
-                        return 0;
-                }
-
-                if (!expsize || TST_RET != expsize) {
-                        tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
-                                expsize);
-                        return 0;
-                }
-
-		break;
-	}
-
-
-> send02.c:124: TINFO: Testing UDP send
-> send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-> send02.c:124: TINFO: Testing UDP sendto
-> send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-> send02.c:124: TINFO: Testing UDP sendmsg
-> send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/send/send02.c | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/send/send02.c b/testcases/kernel/syscalls/send/send02.c
-> index 5630230fa..719e86a90 100644
-> --- a/testcases/kernel/syscalls/send/send02.c
-> +++ b/testcases/kernel/syscalls/send/send02.c
-> @@ -71,7 +71,7 @@ static void setup(void)
->  	memset(sendbuf, 0x42, SENDSIZE);
->  }
->  
-> -static int check_recv(int sock, long expsize)
-> +static int check_recv(int sock, long expsize, int loop)
->  {
->  	char recvbuf[RECVSIZE] = {0};
->  
-> @@ -83,19 +83,20 @@ static int check_recv(int sock, long expsize)
->  			return 1;
->  
->  		/* unexpected error */
-> -		tst_res(TFAIL | TTERRNO, "recv() error");
-> +		tst_res(TFAIL | TTERRNO, "recv() error at the %d times(expsize"
-> +			" %ld)", loop, expsize);
-
-It's better to have a single line message, and arguments on another one:
-tst_res(TFAIL | TTERRNO, "recv() error at step %d, expsize %ld",
-        ...);
-
->  		return 0;
->  	}
->  
->  	if (TST_RET < 0) {
-> -		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
-> -			TST_RET);
-> +		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld at"
-> +			" the %d times(expsize %ld)", TST_RET, loop, expsize);
->  		return 0;
->  	}
->  
->  	if (TST_RET != expsize) {
-> -		tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
-> -			expsize);
-> +		tst_res(TFAIL, "recv() read %ld bytes, expected %ld at the"
-> +			" %d times", TST_RET, expsize, loop);
->  		return 0;
->  	}
->  
-> @@ -120,6 +121,7 @@ static void run(unsigned int n)
->  	struct test_case *tc = testcase_list + n;
->  	socklen_t len = sizeof(addr);
->  
-> +	tst_res(TINFO, "Testing %s", tc->name);
->  	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 0);
->  	listen_sock = SAFE_SOCKET(tc->domain, tc->type, tc->protocol);
->  	dst_sock = listen_sock;
-> @@ -139,19 +141,19 @@ static void run(unsigned int n)
->  			dst_sock = SAFE_ACCEPT(listen_sock, NULL, NULL);
->  
->  		tc->send(sock, sendbuf, SENDSIZE, 0);
-> -		ret = check_recv(dst_sock, SENDSIZE);
-> +		ret = check_recv(dst_sock, SENDSIZE, i + 1);
->  
->  		if (!ret)
->  			break;
->  
->  		tc->send(sock, sendbuf, SENDSIZE, MSG_MORE);
-> -		ret = check_recv(dst_sock, 0);
-> +		ret = check_recv(dst_sock, 0, i + 1);
->  
->  		if (!ret)
->  			break;
->  
->  		tc->send(sock, sendbuf, 1, 0);
-> -		ret = check_recv(dst_sock, SENDSIZE + 1);
-> +		ret = check_recv(dst_sock, SENDSIZE + 1, i + 1);
->  
->  		if (!ret)
->  			break;
-> 
-
+-- 
+Thank you,
+Richard.
