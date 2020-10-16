@@ -1,112 +1,57 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 16 Oct 2020 15:45:45 +0800
-Subject: [LTP] [PATCH] syscalls/send02: Improve message
-Message-ID: <1602834345-24019-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Luo Fenglin <luofenglin1@huawei.com>
+Date: Fri, 16 Oct 2020 17:51:14 +0800
+Subject: [LTP] [PATCH v1] sched/sched_stress:Modify sched driver param to
+ run long term testcases
+Message-ID: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This case sometimes fails, output as below:
+From: luofenglin <luofenglin1@huawei.com>
 
-tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
-send02.c:86: TFAIL: recv() error: EAGAIN/EWOULDBLOCK (11)
+Add sched_driver process slots param to 10, then long term testcases can run.
+Additionally, add sched_driver run time 0.05 hour, long term testcases
+run 1/5 of total time.
 
-From this output, we don't know which subcase fails(tcp,udp,send,sendto).
-So add some message and make this clear.
-
-Now this case fails as below:
-tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-send02.c:124: TINFO: Testing TCP send
-send02.c:87: TFAIL: recv() error at the 776 times(expsize 17): EAGAIN/EWOULDBLOCK (11)
-send02.c:124: TINFO: Testing UDP send
-send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-send02.c:124: TINFO: Testing UDP sendto
-send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-send02.c:124: TINFO: Testing UDP sendmsg
-send02.c:87: TFAIL: recv() error at the 1 times(expsize 16): EAGAIN/EWOULDBLOCK (11)
-
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Signed-off-by: luofenglin <luofenglin1@huawei.com>
 ---
- testcases/kernel/syscalls/send/send02.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ testcases/kernel/sched/sched_stress/sched_driver.c  | 6 +++++-
+ testcases/kernel/sched/sched_stress/sched_stress.sh | 3 ++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/send/send02.c b/testcases/kernel/syscalls/send/send02.c
-index 5630230fa..719e86a90 100644
---- a/testcases/kernel/syscalls/send/send02.c
-+++ b/testcases/kernel/syscalls/send/send02.c
-@@ -71,7 +71,7 @@ static void setup(void)
- 	memset(sendbuf, 0x42, SENDSIZE);
- }
- 
--static int check_recv(int sock, long expsize)
-+static int check_recv(int sock, long expsize, int loop)
- {
- 	char recvbuf[RECVSIZE] = {0};
- 
-@@ -83,19 +83,20 @@ static int check_recv(int sock, long expsize)
- 			return 1;
- 
- 		/* unexpected error */
--		tst_res(TFAIL | TTERRNO, "recv() error");
-+		tst_res(TFAIL | TTERRNO, "recv() error at the %d times(expsize"
-+			" %ld)", loop, expsize);
- 		return 0;
- 	}
- 
- 	if (TST_RET < 0) {
--		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
--			TST_RET);
-+		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld at"
-+			" the %d times(expsize %ld)", TST_RET, loop, expsize);
- 		return 0;
- 	}
- 
- 	if (TST_RET != expsize) {
--		tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
--			expsize);
-+		tst_res(TFAIL, "recv() read %ld bytes, expected %ld@the"
-+			" %d times", TST_RET, expsize, loop);
- 		return 0;
- 	}
- 
-@@ -120,6 +121,7 @@ static void run(unsigned int n)
- 	struct test_case *tc = testcase_list + n;
- 	socklen_t len = sizeof(addr);
- 
-+	tst_res(TINFO, "Testing %s", tc->name);
- 	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 0);
- 	listen_sock = SAFE_SOCKET(tc->domain, tc->type, tc->protocol);
- 	dst_sock = listen_sock;
-@@ -139,19 +141,19 @@ static void run(unsigned int n)
- 			dst_sock = SAFE_ACCEPT(listen_sock, NULL, NULL);
- 
- 		tc->send(sock, sendbuf, SENDSIZE, 0);
--		ret = check_recv(dst_sock, SENDSIZE);
-+		ret = check_recv(dst_sock, SENDSIZE, i + 1);
- 
- 		if (!ret)
- 			break;
- 
- 		tc->send(sock, sendbuf, SENDSIZE, MSG_MORE);
--		ret = check_recv(dst_sock, 0);
-+		ret = check_recv(dst_sock, 0, i + 1);
- 
- 		if (!ret)
- 			break;
- 
- 		tc->send(sock, sendbuf, 1, 0);
--		ret = check_recv(dst_sock, SENDSIZE + 1);
-+		ret = check_recv(dst_sock, SENDSIZE + 1, i + 1);
- 
- 		if (!ret)
- 			break;
--- 
-2.23.0
+diff --git a/testcases/kernel/sched/sched_stress/sched_driver.c b/testcases/kernel/sched/sched_stress/sched_driver.c
+index 61573d788..1bee9d130 100644
+--- a/testcases/kernel/sched/sched_stress/sched_driver.c
++++ b/testcases/kernel/sched/sched_stress/sched_driver.c
+@@ -202,8 +202,12 @@ int main(int argc, char **argv)
 
+ 	/*
+ 	 * Start the long-term testcases running
++	 * Run time set 1/5 of total
+ 	 */
+-	start_long_term_testcases(long_term_slot_total, argv[2]);
++	char run_long_term_time[20];
++	int runlongtime = runseconds / 5;
++	sprintf(run_long_term_time, "%d", runlongtime);
++	start_long_term_testcases(long_term_slot_total, run_long_term_time);
+ 	short_term_slot_total = workslots / 2;
+ 	fflush(stdout);
 
+diff --git a/testcases/kernel/sched/sched_stress/sched_stress.sh b/testcases/kernel/sched/sched_stress/sched_stress.sh
+index 797d0601b..0205446a7 100755
+--- a/testcases/kernel/sched/sched_stress/sched_stress.sh
++++ b/testcases/kernel/sched/sched_stress/sched_stress.sh
+@@ -30,6 +30,7 @@ export KERNEL=./sched_datafile
+ touch $KERNEL
+ echo 0.000000 > sch.measure
+ export RAWDEV=`df / | grep dev | awk {'print $1'}`
+-sched_driver -s 0.9 -t 0.02 -p 2 > /tmp/tmp$$
++echo "Result file: /tmp/tmp$$"
++sched_driver -s 0.9 -t 0.05 -p 10 -d > /tmp/tmp$$
+ tail -n 5 /tmp/tmp$$
+ rm -rf /tmp/tmp$$ ./sched_datafile sch.measure
+--
+2.17.1
 
