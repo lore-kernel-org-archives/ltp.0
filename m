@@ -1,38 +1,49 @@
-From: Michal =?unknown-8bit?q?Koutn=C3=BD?= <mkoutny@suse.com>
-Date: Fri, 16 Oct 2020 11:47:02 +0200
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 16 Oct 2020 11:41:43 +0100
 Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <20201014190749.24607-1-rpalethorpe@suse.com>
+In-Reply-To: <20201016094702.GA95052@blackbook>
 References: <20201014190749.24607-1-rpalethorpe@suse.com>
-Message-ID: <20201016094702.GA95052@blackbook>
+ <20201016094702.GA95052@blackbook>
+Message-ID: <87sgaesba0.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello.
+Hello Michal,
 
-On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
-> SLAB objects which outlive their memcg are moved to their parent
-> memcg where they may be uncharged. However if they are moved to the
-> root memcg, uncharging will result in negative page counter values as
-> root has no page counters.
-Why do you think those are reparented objects? If those are originally
-charged in a non-root cgroup, then the charge value should be propagated up the
-hierarchy, including root memcg, so if they're later uncharged in root
-after reparenting, it should still break even. (Or did I miss some stock
-imbalance?)
+Michal Koutn? <mkoutny@suse.com> writes:
 
-(But the patch seems justifiable to me as objects (not)charged directly to
-root memcg may be incorrectly uncharged.)
+> Hello.
+>
+> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>> SLAB objects which outlive their memcg are moved to their parent
+>> memcg where they may be uncharged. However if they are moved to the
+>> root memcg, uncharging will result in negative page counter values as
+>> root has no page counters.
+> Why do you think those are reparented objects? If those are originally
+> charged in a non-root cgroup, then the charge value should be propagated up the
+> hierarchy, including root memcg, so if they're later uncharged in root
+> after reparenting, it should still break even. (Or did I miss some stock
+> imbalance?)
 
-Thanks,
-Michal
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 833 bytes
-Desc: Digital signature
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201016/f8747070/attachment.sig>
+I traced it and can see they are reparented objects and that the root
+groups counters are zero (or negative if I run madvise06 multiple times)
+before a drain takes place. I'm guessing this is because the root group
+has 'use_hierachy' set to false so that the childs page_counter parents
+are set to NULL. However I will check, because I'm not sure about
+either.
+
+>
+> (But the patch seems justifiable to me as objects (not)charged directly to
+> root memcg may be incorrectly uncharged.)
+>
+> Thanks,
+> Michal
+
+
+-- 
+Thank you,
+Richard.
