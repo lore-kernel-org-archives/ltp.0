@@ -1,252 +1,38 @@
-From: Luo Fenglin <luofenglin1@huawei.com>
-Date: Fri, 16 Oct 2020 17:51:16 +0800
-Subject: [LTP] [PATCH v3] sched/sched_stress:Bugfix for setting real time
- priority
-In-Reply-To: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
-References: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
-Message-ID: <1602841876-91490-3-git-send-email-luofenglin1@huawei.com>
+From: Michal =?unknown-8bit?q?Koutn=C3=BD?= <mkoutny@suse.com>
+Date: Fri, 16 Oct 2020 11:47:02 +0200
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201014190749.24607-1-rpalethorpe@suse.com>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+Message-ID: <20201016094702.GA95052@blackbook>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: luofenglin <luofenglin1@huawei.com>
+Hello.
 
-When real time flag is set, setpriority function is used for user-time
-policy setting, here use sched_setscheduler to set real time policy RR
-instead
+On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> SLAB objects which outlive their memcg are moved to their parent
+> memcg where they may be uncharged. However if they are moved to the
+> root memcg, uncharging will result in negative page counter values as
+> root has no page counters.
+Why do you think those are reparented objects? If those are originally
+charged in a non-root cgroup, then the charge value should be propagated up the
+hierarchy, including root memcg, so if they're later uncharged in root
+after reparenting, it should still break even. (Or did I miss some stock
+imbalance?)
 
---------
+(But the patch seems justifiable to me as objects (not)charged directly to
+root memcg may be incorrectly uncharged.)
 
-Upxxxx
-
-Signed-off-by: luofenglin <luofenglin1@huawei.com>
----
- testcases/kernel/sched/sched_stress/sched.h     |  2 ++
- testcases/kernel/sched/sched_stress/sched_tc0.c | 10 ++++++----
- testcases/kernel/sched/sched_stress/sched_tc1.c | 10 ++++++----
- testcases/kernel/sched/sched_stress/sched_tc2.c | 10 ++++++----
- testcases/kernel/sched/sched_stress/sched_tc3.c | 10 ++++++----
- testcases/kernel/sched/sched_stress/sched_tc4.c |  9 +++++----
- testcases/kernel/sched/sched_stress/sched_tc5.c |  9 +++++----
- testcases/kernel/sched/sched_stress/sched_tc6.c |  8 +++++---
- 8 files changed, 41 insertions(+), 27 deletions(-)
-
-diff --git a/testcases/kernel/sched/sched_stress/sched.h b/testcases/kernel/sched/sched_stress/sched.h
-index 8ed941eba..bcdecacc5 100644
---- a/testcases/kernel/sched/sched_stress/sched.h
-+++ b/testcases/kernel/sched/sched_stress/sched.h
-@@ -46,8 +46,10 @@
- #include <time.h>
- #include <errno.h>
- #include <stdio.h>
-+#include <sched.h>
- 
- #define DEFAULT_PRIORITY 70
-+#define SET_RT_SCHEDULER(paraA, paraB, paraC) sched_setscheduler(paraA, paraB, paraC)
- 
- #if 0
- int  openlog (char *);
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc0.c b/testcases/kernel/sched/sched_stress/sched_tc0.c
-index 9acbc2f58..290ad1e63 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc0.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc0.c
-@@ -90,7 +90,9 @@ int verbose = 0;
- int debug = 0;
- long execution_time = DEFAULT_EXECUTION_TIME;
- char *priority = DEFAULT_PRIORITY_TYPE;
--
-+struct sched_param param = {
-+		.sched_priority = DEFAULT_PRIORITY
-+};
- /*---------------------------------------------------------------------+
- |                                 main                                 |
- | ==================================================================== |
-@@ -127,10 +129,10 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	}
- 
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc1.c b/testcases/kernel/sched/sched_stress/sched_tc1.c
-index c771ef421..cd6b14a09 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc1.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc1.c
-@@ -72,7 +72,9 @@
- void process_file(char *);
- void parse_args(int, char **);
- void signal_handler();
--
-+struct sched_param param = {
-+	                .sched_priority = DEFAULT_PRIORITY
-+};
- /*
-  * Global variables:
-  *
-@@ -128,10 +130,10 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	}
- 
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc2.c b/testcases/kernel/sched/sched_stress/sched_tc2.c
-index 1e2e3e629..166efc726 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc2.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc2.c
-@@ -47,7 +47,9 @@
- #include <sys/time.h>
- #include <sys/resource.h>
- #include   "sched.h"
--
-+struct sched_param param = {
-+	                .sched_priority = DEFAULT_PRIORITY
-+};
- /*
-  * Defines:
-  *
-@@ -129,10 +131,10 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	}
- 
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc3.c b/testcases/kernel/sched/sched_stress/sched_tc3.c
-index 8064e9eda..ca13e9929 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc3.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc3.c
-@@ -95,7 +95,9 @@ int verbose = 0;
- int debug = 0;
- int signaled = 0;
- char *priority = DEFAULT_PRIORITY_TYPE;
--
-+struct sched_param param = {
-+	                .sched_priority = DEFAULT_PRIORITY
-+};
- /*---------------------------------------------------------------------+
- |                                 main                                 |
- | ==================================================================== |
-@@ -131,10 +133,10 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	}
- 
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc4.c b/testcases/kernel/sched/sched_stress/sched_tc4.c
-index 5bffb6478..81a8e170c 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc4.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc4.c
-@@ -99,7 +99,7 @@ int debug = 0;
- int priority = DEFAULT_PRIORITY;
- char *logfile = DEFAULT_LOGFILE;
- char *priority_type = DEFAULT_PRIORITY_TYPE;
--
-+struct sched_param param;
- /*---------------------------------------------------------------------+
- |                                 main                                 |
- | ==================================================================== |
-@@ -133,10 +133,11 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority_type, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		param.sched_priority = priority;
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	} else {
- 		if (nice((priority - 50) - (nice(0) + 20)) < 0 && errno != 0)
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc5.c b/testcases/kernel/sched/sched_stress/sched_tc5.c
-index db5ce963c..c315f9ade 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc5.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc5.c
-@@ -95,7 +95,7 @@ int debug = 0;
- int priority = DEFAULT_PRIORITY;
- char *logfile = DEFAULT_LOGFILE;
- char *priority_type = DEFAULT_PRIORITY_TYPE;
--
-+struct sched_param param;
- /*---------------------------------------------------------------------+
- |                                 main                                 |
- | ==================================================================== |
-@@ -130,10 +130,11 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority_type, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		param.sched_priority = priority;
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	} else {
- 		if (nice((priority - 50) - (nice(0) + 20)) < 0 && errno != 0)
-diff --git a/testcases/kernel/sched/sched_stress/sched_tc6.c b/testcases/kernel/sched/sched_stress/sched_tc6.c
-index e70e8f250..20987f571 100644
---- a/testcases/kernel/sched/sched_stress/sched_tc6.c
-+++ b/testcases/kernel/sched/sched_stress/sched_tc6.c
-@@ -117,6 +117,7 @@ char *logfile = DEFAULT_LOGFILE;
- char *priority_type = DEFAULT_PRIORITY_TYPE;
- struct flock flock_struct;
- struct flock *flock_ptr = &flock_struct;
-+struct sched_param param;
- 
- int open_file(char *, int);
- 
-@@ -163,10 +164,11 @@ int main(int argc, char **argv)
- 	if (!strcmp(priority_type, "fixed")) {
- #ifndef __linux__
- 		if (setpri(0, DEFAULT_PRIORITY) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #else
--		if (setpriority(PRIO_PROCESS, 0, 0) < 0)
--			sys_error("setpri failed", __FILE__, __LINE__);
-+		param.sched_priority = priority;
-+		if (SET_RT_SCHEDULER(0, SCHED_RR, &param) < 0)
-+			sys_error("set rt pri failed", __FILE__, __LINE__);
- #endif
- 	} else {
- 		if (nice((priority - 50) - (nice(0) + 20)) < 0 && errno != 0)
--- 
-2.17.1
-
+Thanks,
+Michal
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: Digital signature
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201016/f8747070/attachment.sig>
