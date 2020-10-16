@@ -1,44 +1,44 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Oct 2020 11:20:55 +0800
-Subject: [LTP] [PATCH 1/2] fanotify: Move safe_fanotify_init() + safe
- macro into fanotify.h
-In-Reply-To: <20201014180221.GC19540@dell5510>
-References: <20200428113501.24711-1-pvorel@suse.cz>
- <20201014134648.GA13224@yuki.lan> <20201014180221.GC19540@dell5510>
-Message-ID: <CAEemH2eg7RZCWu66Z81x9RLmHGX=XC06ttK4x3_zmbw2jZnG9A@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 16 Oct 2020 06:40:57 +0100
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201014200833.GA19363@carbon.lan>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201014200833.GA19363@carbon.lan>
+Message-ID: <87v9fasp7a.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 15, 2020 at 2:02 AM Petr Vorel <pvorel@suse.cz> wrote:
+Hello Roman,
 
-> Hi,
->
-> > > Fanotify code is used only in testcases/kernel/syscalls/fanotify/,
-> which
-> > > justify breaking rule of having safe function and macro outside of
-> > > library. This will be further cleaned in next commit.
->
-> > I guess that this is OK, I doubt that we will need a fanotify_init()
-> > anywhere else but the fanotify testcases.
-> Amir acked whole patch some time ago, thus I guess he's not against this
-> first one.
->
-> The original motivation was to do further modifications for libc wrapper
-> vs.
-> syscall() for fanotify_init() and fanotify_mark(). But I guess even without
-> second commit it makes sense to have all fanotify helpers together.
-> We can always revert it if really need them as safe macros.
->
-+1
+Roman Gushchin <guro@fb.com> writes:
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+> Hi Richard!
+>
+>> SLAB objects which outlive their memcg are moved to their parent
+>> memcg where they may be uncharged. However if they are moved to the
+>> root memcg, uncharging will result in negative page counter values as
+>> root has no page counters.
+>> 
+>> To prevent this, we check whether we are about to uncharge the root
+>> memcg and skip it if we are. Possibly instead; the obj_cgroups should
+>> be removed from their slabs and any per cpu stocks instead of
+>> reparenting them to root?
+>
+> It would be really complex. I think your fix is totally fine.
+> We have similar checks in cancel_charge(), uncharge_batch(),
+> mem_cgroup_swapout(), mem_cgroup_uncharge_swap() etc.
+>
+>
+> Acked-by: Roman Gushchin <guro@fb.com>
+>
+> Thanks!
+
+Great I will respin.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201016/9eb28f53/attachment-0001.htm>
+Thank you,
+Richard.
