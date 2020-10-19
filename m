@@ -1,145 +1,163 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 19 Oct 2020 18:31:17 +0300
-Subject: [LTP] [PATCH v2] syscalls/send02: Ensure recv() succeed when
- not using MSG_MORE flag
-In-Reply-To: <1603107373-20807-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <71c2d6b7-5c49-96c6-f1ba-1370fd7a5dd6@oracle.com>
- <1603107373-20807-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <8a4dec7c-92c1-10c9-ecfe-40678ace1ad1@oracle.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Mon, 19 Oct 2020 09:58:03 -0700
+Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201019095812.25710-1-rpalethorpe@suse.com>
+References: <87lfg2ob83.fsf@suse.de>
+ <20201019095812.25710-1-rpalethorpe@suse.com>
+Message-ID: <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 19.10.2020 14:36, Yang Xu wrote:
-> In this test, we only check send()/sendto()/sendmsg() calls
-> with MSG_MORE flag whether get EAGAIN/EWOULDBLOCK error immediately.
-> 
-> For other flag, we just call recv again when meeting EAGAIN/EWOULDBLOCK
-> error.
-> 
-> Also, improve message and make this case more clean when failed.
-> 
-
-Hi Yang,
-
-Fixed quoted strings and applied, thanks!
-
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+On Mon, Oct 19, 2020 at 2:59 AM Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>
+> SLAB objects which outlive their descendant memcg are moved to their
+> parent memcg where they may be uncharged. However if they are moved to
+> the root memcg and use_hierarchy=0, uncharging will result in negative
+> page counter values. This is because when use_hierarchy=0, the root
+> memcg's page counters are disconnected from its children.
+>
+> To prevent this, we check whether we are about to uncharge the root
+> memcg and whether use_hierarchy=0. If this is the case then we skip
+> uncharging.
+>
+> Note that on the default hierarchy (CGroupV2 now) root always has
+> use_hierarchy=1. So this only effects CGroupV1. Also it is possible to
+> have a deeper hierarchy where descendants also have use_hierarchy=0;
+> this is not considered valid by the kernel, but it is still allowed
+> and in such cases reparenting may still result in negative page
+> counter values.
+>
+> The warning can be, unreliably, reproduced with the LTP test
+> madvise06 if the entire patch series
+> https://lore.kernel.org/linux-mm/20200623174037.3951353-1-guro@fb.com/
+> is present. Although the listed commit in 'fixes' appears to introduce
+> the bug, I can not reproduce it with just that commit and bisecting
+> runs into other bugs.
+>
+> [   12.029417] WARNING: CPU: 2 PID: 21 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [   12.029539] Modules linked in:
+> [   12.029611] CPU: 2 PID: 21 Comm: ksoftirqd/2 Not tainted 5.9.0-rc7-22-default #76
+> [   12.029729] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+> [   12.029908] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [ 12.029991] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 db 47 36 27 48 8b 17 48 39 d6 72 41 41 54 49 89
+> [   12.030258] RSP: 0018:ffffa5d8000efd08 EFLAGS: 00010086
+> [   12.030344] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: 0000000000000009
+> [   12.030455] RDX: 000000000000000b RSI: ffffffffffffffff RDI: ffff8ef8c7d2b248
+> [   12.030561] RBP: ffff8ef8c7d2b248 R08: ffff8ef8c78b19c8 R09: 0000000000000001
+> [   12.030672] R10: 0000000000000000 R11: ffff8ef8c780e0d0 R12: 0000000000000001
+> [   12.030784] R13: ffffffffffffffff R14: ffff8ef9478b19c8 R15: 0000000000000000
+> [   12.030895] FS:  0000000000000000(0000) GS:ffff8ef8fbc80000(0000) knlGS:0000000000000000
+> [   12.031017] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   12.031104] CR2: 00007f72c0af93ec CR3: 000000005c40a000 CR4: 00000000000006e0
+> [   12.031209] Call Trace:
+> [   12.031267] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+> [   12.031470] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+> [   12.031594] refill_obj_stock (mm/memcontrol.c:3166)
+> [   12.031733] ? rcu_do_batch (kernel/rcu/tree.c:2438)
+> [   12.032075] memcg_slab_free_hook (./include/linux/mm.h:1294 ./include/linux/mm.h:1441 mm/slab.h:368 mm/slab.h:348)
+> [   12.032339] kmem_cache_free (mm/slub.c:3107 mm/slub.c:3143 mm/slub.c:3158)
+> [   12.032464] rcu_do_batch (kernel/rcu/tree.c:2438)
+> [   12.032567] rcu_core (kernel/rcu/tree_plugin.h:2122 kernel/rcu/tree_plugin.h:2157 kernel/rcu/tree.c:2661)
+> [   12.032664] __do_softirq (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/irq.h:142 kernel/softirq.c:299)
+> [   12.032766] run_ksoftirqd (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 kernel/softirq.c:653 kernel/softirq.c:644)
+> [   12.032852] smpboot_thread_fn (kernel/smpboot.c:165)
+> [   12.032940] ? smpboot_register_percpu_thread (kernel/smpboot.c:108)
+> [   12.033059] kthread (kernel/kthread.c:292)
+> [   12.033148] ? __kthread_bind_mask (kernel/kthread.c:245)
+> [   12.033269] ret_from_fork (arch/x86/entry/entry_64.S:300)
+> [   12.033357] ---[ end trace 961dbfc01c109d1f ]---
+>
+> [    9.841552] ------------[ cut here ]------------
+> [    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [    9.841982] Modules linked in:
+> [    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
+> [    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+> [    9.842571] Workqueue: events drain_local_stock
+> [    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
+> [    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
+> [    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803bc2cae0
+> [    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff948007d2b248
+> [    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff948007da05ac
+> [    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000001
+> [    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803bc2cac0
+> [    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlGS:0000000000000000
+> [    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 00000000000006f0
+> [    9.845319] Call Trace:
+> [    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+> [    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+> [    9.845684] drain_local_stock (mm/memcontrol.c:2255)
+> [    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
+> [    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
+> [    9.846034] ? process_one_work (kernel/workqueue.c:2358)
+> [    9.846162] kthread (kernel/kthread.c:292)
+> [    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
+> [    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
+> [    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
+>
+> Reported-by: ltp@lists.linux.it
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
 > ---
->  testcases/kernel/syscalls/send/send02.c | 65 +++++++++++++++----------
->  1 file changed, 38 insertions(+), 27 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/send/send02.c b/testcases/kernel/syscalls/send/send02.c
-> index 5630230fa..b2ab3b79c 100644
-> --- a/testcases/kernel/syscalls/send/send02.c
-> +++ b/testcases/kernel/syscalls/send/send02.c
-> @@ -71,32 +71,41 @@ static void setup(void)
->  	memset(sendbuf, 0x42, SENDSIZE);
->  }
->  
-> -static int check_recv(int sock, long expsize)
-> +static int check_recv(int sock, long expsize, int loop)
->  {
->  	char recvbuf[RECVSIZE] = {0};
->  
-> -	TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
-> -
-> -	if (TST_RET == -1) {
-> -		/* expected error immediately after send(MSG_MORE) */
-> -		if (!expsize && (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK))
-> -			return 1;
-> -
-> -		/* unexpected error */
-> -		tst_res(TFAIL | TTERRNO, "recv() error");
-> -		return 0;
-> -	}
-> -
-> -	if (TST_RET < 0) {
-> -		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
-> -			TST_RET);
-> -		return 0;
-> -	}
-> -
-> -	if (TST_RET != expsize) {
-> -		tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
-> -			expsize);
-> -		return 0;
-> +	while (1) {
-> +		TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
-> +
-> +		if (TST_RET == -1) {
-> +			/* expected error immediately after send(MSG_MORE) */
-> +			if (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK) {
-> +				if (expsize)
-> +					continue;
-> +				else
-> +					break;
-> +			}
-> +
-> +			/* unexpected error */
-> +			tst_res(TFAIL | TTERRNO, "recv() error at step %d, expsize %ld",
-> +				loop, expsize);
-> +			return 0;
-> +		}
-> +
-> +		if (TST_RET < 0) {
-> +			tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld"
-> +				" at step %d, expsize is %ld",
-> +				TST_RET, loop, expsize);
-> +			return 0;
-> +		}
-> +
-> +		if (TST_RET != expsize) {
-> +			tst_res(TFAIL, "recv() read %ld bytes, expected %ld"
-> +				" at step %d ", TST_RET, expsize, loop);
-> +			return 0;
-> +		}
-> +		return 1;
->  	}
->  
->  	return 1;
-> @@ -120,6 +129,8 @@ static void run(unsigned int n)
->  	struct test_case *tc = testcase_list + n;
->  	socklen_t len = sizeof(addr);
->  
-> +	tst_res(TINFO, "Tesing %s", tc->name);
-> +
->  	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 0);
->  	listen_sock = SAFE_SOCKET(tc->domain, tc->type, tc->protocol);
->  	dst_sock = listen_sock;
-> @@ -139,19 +150,19 @@ static void run(unsigned int n)
->  			dst_sock = SAFE_ACCEPT(listen_sock, NULL, NULL);
->  
->  		tc->send(sock, sendbuf, SENDSIZE, 0);
-> -		ret = check_recv(dst_sock, SENDSIZE);
-> +		ret = check_recv(dst_sock, SENDSIZE, i + 1);
->  
->  		if (!ret)
->  			break;
->  
->  		tc->send(sock, sendbuf, SENDSIZE, MSG_MORE);
-> -		ret = check_recv(dst_sock, 0);
-> +		ret = check_recv(dst_sock, 0, i + 1);
->  
->  		if (!ret)
->  			break;
->  
->  		tc->send(sock, sendbuf, 1, 0);
-> -		ret = check_recv(dst_sock, SENDSIZE + 1);
-> +		ret = check_recv(dst_sock, SENDSIZE + 1, i + 1);
->  
->  		if (!ret)
->  			break;
-> @@ -163,7 +174,7 @@ static void run(unsigned int n)
->  	}
->  
->  	if (ret)
-> -		tst_res(TPASS, "%s(MSG_MORE) works correctly", tc->name);
-> +		tst_res(TPASS, "MSG_MORE works correctly");
->  
->  	cleanup();
->  	dst_sock = -1;
-> 
+>
+> V3: Handle common case where use_hierarchy=1 and update description.
+>
+>  mm/memcontrol.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6877c765b8d0..34b8c4a66853 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+>
+>         spin_lock_irqsave(&css_set_lock, flags);
+>         memcg = obj_cgroup_memcg(objcg);
+> -       if (nr_pages)
+> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
 
+If we have non-root memcg with use_hierarchy as 0 and this objcg was
+reparented then this __memcg_kmem_uncharge() can potentially underflow
+the page counter and give the same warning.
+
+We never set root_mem_cgroup->objcg, so, no need to check for root
+here. I think checking just memcg->use_hierarchy should be sufficient.
+
+>                 __memcg_kmem_uncharge(memcg, nr_pages);
+>         list_del(&objcg->list);
+>         mem_cgroup_put(memcg);
+> @@ -3100,6 +3100,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  {
+>         struct obj_cgroup *old = stock->cached_objcg;
+> +       struct mem_cgroup *memcg;
+>
+>         if (!old)
+>                 return;
+> @@ -3110,7 +3111,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>
+>                 if (nr_pages) {
+>                         rcu_read_lock();
+> -                       __memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
+> +                       memcg = obj_cgroup_memcg(old);
+> +                       if (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy)
+> +                               __memcg_kmem_uncharge(memcg, nr_pages);
+>                         rcu_read_unlock();
+>                 }
+>
+> --
+> 2.28.0
+>
