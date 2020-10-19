@@ -1,108 +1,141 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Mon, 19 Oct 2020 15:40:48 +0530
-Subject: [LTP] [PATCH V3 2/3] syscalls: select: Verify that data is
- available to read
-In-Reply-To: <20201014121343.GD31816@yuki.lan>
-References: <6fbfc6919c0000e7a7745afbc3c94baab02603fa.1599558175.git.viresh.kumar@linaro.org>
- <fb31dd18ad396ab602ba8957ee01a666f79ad9bb.1599558175.git.viresh.kumar@linaro.org>
- <20201014121343.GD31816@yuki.lan>
-Message-ID: <20201019101048.knbl2w3q2xev6ywc@vireshk-i7>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 19 Oct 2020 19:36:13 +0800
+Subject: [LTP] [PATCH v2] syscalls/send02: Ensure recv() succeed when not
+ using MSG_MORE flag
+In-Reply-To: <71c2d6b7-5c49-96c6-f1ba-1370fd7a5dd6@oracle.com>
+References: <71c2d6b7-5c49-96c6-f1ba-1370fd7a5dd6@oracle.com>
+Message-ID: <1603107373-20807-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 14-10-20, 14:13, Cyril Hrubis wrote:
-> Hi!
-> > select() returns a positive value on success if timeout hasn't happened,
-> > else returns 0. Check that and send some data to the write file
-> > descriptor for the same.
-> > 
-> > Acked-by: Li Wang <liwang@redhat.com>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  testcases/kernel/syscalls/select/select01.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/select/select01.c b/testcases/kernel/syscalls/select/select01.c
-> > index 1213aa931251..c6b30aa67dd7 100644
-> > --- a/testcases/kernel/syscalls/select/select01.c
-> > +++ b/testcases/kernel/syscalls/select/select01.c
-> > @@ -25,25 +25,32 @@ static struct select_info {
-> >  	int *nfds;
-> >  	fd_set *readfds;
-> >  	fd_set *writefds;
-> > +	int *writefd;
-> >  	char *desc;
-> >  } tests[] = {
-> > -	{&fd_reg, &readfds_reg, NULL, "with regular file"},
-> > -	{&fds_pipe[1], &readfds_pipe, &writefds_pipe, "with system pipe"},
-> > -	{&fd_npipe, &readfds_npipe, &writefds_npipe, "with named pipe (FIFO)"},
-> > +	{&fd_reg, &readfds_reg, NULL, NULL, "with regular file"},
-> > +	{&fds_pipe[1], &readfds_pipe, &writefds_pipe, &fds_pipe[1], "with system pipe"},
-> > +	{&fd_npipe, &readfds_npipe, &writefds_npipe, &fd_npipe, "with named pipe (FIFO)"},
-> >  };
-> >  
-> >  static void run(unsigned int n)
-> >  {
-> >  	struct select_info *tc = &tests[n];
-> >  	struct timeval timeout;
-> > +	char buf;
-> >  
-> >  	timeout.tv_sec = 0;
-> >  	timeout.tv_usec = 100000;
-> >  
-> > +	if (tc->writefd)
-> > +		SAFE_WRITE(0, *tc->writefd, &buf, sizeof(buf));
-> 
-> I'm not sure why we are writing data here. For both the pipe and fifo
-> the select() will return that we can write there, hence the return would
-> be non-zero regardless.
+In this test, we only check send()/sendto()/sendmsg() calls
+with MSG_MORE flag whether get EAGAIN/EWOULDBLOCK error immediately.
 
-Maybe I haven't understood what you meant when you said this earlier:
+For other flag, we just call recv again when meeting EAGAIN/EWOULDBLOCK
+error.
 
-  And the coverate in these tests is a bit lacking, we do not have a
-  single tests that would send a data over a pipe to a fd select is
-  watching and check that select was woken up by that. There is no such
-  test in the pselect/ directory either.
+Also, improve message and make this case more clean when failed.
 
-> Also I would like to be more specific. E.g. expecting specific return
-> instead of just non-zero and also making sure the right bits are enabled
-> in the fd sets.
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/send/send02.c | 65 +++++++++++++++----------
+ 1 file changed, 38 insertions(+), 27 deletions(-)
 
-Something like this ?
-
-diff --git a/testcases/kernel/syscalls/select/select01.c b/testcases/kernel/syscalls/select/select01.c
-index e4b5caecbb10..4b33c0a01380 100644
---- a/testcases/kernel/syscalls/select/select01.c
-+++ b/testcases/kernel/syscalls/select/select01.c
-@@ -38,12 +38,15 @@ static void run(unsigned int n)
-        struct tcases *tc = &tests[n];
-        struct timeval timeout;
-        char buf;
-+       int exp_ret = 1;
- 
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 100000;
- 
--       if (tc->writefd)
-+       if (tc->writefd) {
-                SAFE_WRITE(0, *tc->writefd, &buf, sizeof(buf));
-+               exp_ret++;
-+       }
- 
-        TEST(do_select(*tc->nfds + 1, tc->readfds, tc->writefds, 0, &timeout));
- 
-@@ -51,6 +54,8 @@ static void run(unsigned int n)
-                tst_res(TFAIL | TTERRNO, "select() failed %s", tc->desc);
-        else if (!TST_RET)
-                tst_res(TFAIL, "select() timed out %s", tc->desc);
-+       else if (TST_RET != exp_ret)
-+               tst_res(TFAIL, "select() returned incorrect value: %s, expected: %d, got: %lu", tc->desc, exp_ret, TST_RET);
-        else
-                tst_res(TPASS, "select() passed %s", tc->desc);
+diff --git a/testcases/kernel/syscalls/send/send02.c b/testcases/kernel/syscalls/send/send02.c
+index 5630230fa..b2ab3b79c 100644
+--- a/testcases/kernel/syscalls/send/send02.c
++++ b/testcases/kernel/syscalls/send/send02.c
+@@ -71,32 +71,41 @@ static void setup(void)
+ 	memset(sendbuf, 0x42, SENDSIZE);
  }
-
+ 
+-static int check_recv(int sock, long expsize)
++static int check_recv(int sock, long expsize, int loop)
+ {
+ 	char recvbuf[RECVSIZE] = {0};
+ 
+-	TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
+-
+-	if (TST_RET == -1) {
+-		/* expected error immediately after send(MSG_MORE) */
+-		if (!expsize && (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK))
+-			return 1;
+-
+-		/* unexpected error */
+-		tst_res(TFAIL | TTERRNO, "recv() error");
+-		return 0;
+-	}
+-
+-	if (TST_RET < 0) {
+-		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
+-			TST_RET);
+-		return 0;
+-	}
+-
+-	if (TST_RET != expsize) {
+-		tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
+-			expsize);
+-		return 0;
++	while (1) {
++		TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
++
++		if (TST_RET == -1) {
++			/* expected error immediately after send(MSG_MORE) */
++			if (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK) {
++				if (expsize)
++					continue;
++				else
++					break;
++			}
++
++			/* unexpected error */
++			tst_res(TFAIL | TTERRNO, "recv() error at step %d, expsize %ld",
++				loop, expsize);
++			return 0;
++		}
++
++		if (TST_RET < 0) {
++			tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld"
++				" at step %d, expsize is %ld",
++				TST_RET, loop, expsize);
++			return 0;
++		}
++
++		if (TST_RET != expsize) {
++			tst_res(TFAIL, "recv() read %ld bytes, expected %ld"
++				"@step %d ", TST_RET, expsize, loop);
++			return 0;
++		}
++		return 1;
+ 	}
+ 
+ 	return 1;
+@@ -120,6 +129,8 @@ static void run(unsigned int n)
+ 	struct test_case *tc = testcase_list + n;
+ 	socklen_t len = sizeof(addr);
+ 
++	tst_res(TINFO, "Tesing %s", tc->name);
++
+ 	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 0);
+ 	listen_sock = SAFE_SOCKET(tc->domain, tc->type, tc->protocol);
+ 	dst_sock = listen_sock;
+@@ -139,19 +150,19 @@ static void run(unsigned int n)
+ 			dst_sock = SAFE_ACCEPT(listen_sock, NULL, NULL);
+ 
+ 		tc->send(sock, sendbuf, SENDSIZE, 0);
+-		ret = check_recv(dst_sock, SENDSIZE);
++		ret = check_recv(dst_sock, SENDSIZE, i + 1);
+ 
+ 		if (!ret)
+ 			break;
+ 
+ 		tc->send(sock, sendbuf, SENDSIZE, MSG_MORE);
+-		ret = check_recv(dst_sock, 0);
++		ret = check_recv(dst_sock, 0, i + 1);
+ 
+ 		if (!ret)
+ 			break;
+ 
+ 		tc->send(sock, sendbuf, 1, 0);
+-		ret = check_recv(dst_sock, SENDSIZE + 1);
++		ret = check_recv(dst_sock, SENDSIZE + 1, i + 1);
+ 
+ 		if (!ret)
+ 			break;
+@@ -163,7 +174,7 @@ static void run(unsigned int n)
+ 	}
+ 
+ 	if (ret)
+-		tst_res(TPASS, "%s(MSG_MORE) works correctly", tc->name);
++		tst_res(TPASS, "MSG_MORE works correctly");
+ 
+ 	cleanup();
+ 	dst_sock = -1;
 -- 
-viresh
+2.23.0
+
+
+
