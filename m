@@ -1,24 +1,145 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Oct 2020 13:55:00 +0200
-Subject: [LTP] Power Management Test
-In-Reply-To: <BMXPR01MB234447E6D624AF3311D14760EE1E0@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB234447E6D624AF3311D14760EE1E0@BMXPR01MB2344.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <20201019115500.GA21912@yuki.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Oct 2020 18:31:17 +0300
+Subject: [LTP] [PATCH v2] syscalls/send02: Ensure recv() succeed when
+ not using MSG_MORE flag
+In-Reply-To: <1603107373-20807-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <71c2d6b7-5c49-96c6-f1ba-1370fd7a5dd6@oracle.com>
+ <1603107373-20807-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <8a4dec7c-92c1-10c9-ecfe-40678ace1ad1@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I am running LTP on my RISCV arch with custom kernel 5.5.6 and i am  trying to run power management tests from LTP. i want to test following states
-> 1) Suspend to idle 2) Suspend to RAM 3) OFF state
+On 19.10.2020 14:36, Yang Xu wrote:
+> In this test, we only check send()/sendto()/sendmsg() calls
+> with MSG_MORE flag whether get EAGAIN/EWOULDBLOCK error immediately.
 > 
-> Are the test covered in power management suite  are only x86 specific ?? Does the test included in power management suite of LTP  covers above ?
+> For other flag, we just call recv again when meeting EAGAIN/EWOULDBLOCK
+> error.
+> 
+> Also, improve message and make this case more clean when failed.
+> 
 
-As far as I can tell there are no tests for suspend states in LTP. The
-power_managenent tests are testing mostly cpufreq related.
+Hi Yang,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Fixed quoted strings and applied, thanks!
+
+> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/send/send02.c | 65 +++++++++++++++----------
+>  1 file changed, 38 insertions(+), 27 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/send/send02.c b/testcases/kernel/syscalls/send/send02.c
+> index 5630230fa..b2ab3b79c 100644
+> --- a/testcases/kernel/syscalls/send/send02.c
+> +++ b/testcases/kernel/syscalls/send/send02.c
+> @@ -71,32 +71,41 @@ static void setup(void)
+>  	memset(sendbuf, 0x42, SENDSIZE);
+>  }
+>  
+> -static int check_recv(int sock, long expsize)
+> +static int check_recv(int sock, long expsize, int loop)
+>  {
+>  	char recvbuf[RECVSIZE] = {0};
+>  
+> -	TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
+> -
+> -	if (TST_RET == -1) {
+> -		/* expected error immediately after send(MSG_MORE) */
+> -		if (!expsize && (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK))
+> -			return 1;
+> -
+> -		/* unexpected error */
+> -		tst_res(TFAIL | TTERRNO, "recv() error");
+> -		return 0;
+> -	}
+> -
+> -	if (TST_RET < 0) {
+> -		tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld",
+> -			TST_RET);
+> -		return 0;
+> -	}
+> -
+> -	if (TST_RET != expsize) {
+> -		tst_res(TFAIL, "recv() read %ld bytes, expected %ld", TST_RET,
+> -			expsize);
+> -		return 0;
+> +	while (1) {
+> +		TEST(recv(sock, recvbuf, RECVSIZE, MSG_DONTWAIT));
+> +
+> +		if (TST_RET == -1) {
+> +			/* expected error immediately after send(MSG_MORE) */
+> +			if (TST_ERR == EAGAIN || TST_ERR == EWOULDBLOCK) {
+> +				if (expsize)
+> +					continue;
+> +				else
+> +					break;
+> +			}
+> +
+> +			/* unexpected error */
+> +			tst_res(TFAIL | TTERRNO, "recv() error at step %d, expsize %ld",
+> +				loop, expsize);
+> +			return 0;
+> +		}
+> +
+> +		if (TST_RET < 0) {
+> +			tst_res(TFAIL | TTERRNO, "Invalid recv() return value %ld"
+> +				" at step %d, expsize is %ld",
+> +				TST_RET, loop, expsize);
+> +			return 0;
+> +		}
+> +
+> +		if (TST_RET != expsize) {
+> +			tst_res(TFAIL, "recv() read %ld bytes, expected %ld"
+> +				" at step %d ", TST_RET, expsize, loop);
+> +			return 0;
+> +		}
+> +		return 1;
+>  	}
+>  
+>  	return 1;
+> @@ -120,6 +129,8 @@ static void run(unsigned int n)
+>  	struct test_case *tc = testcase_list + n;
+>  	socklen_t len = sizeof(addr);
+>  
+> +	tst_res(TINFO, "Tesing %s", tc->name);
+> +
+>  	tst_init_sockaddr_inet_bin(&addr, INADDR_LOOPBACK, 0);
+>  	listen_sock = SAFE_SOCKET(tc->domain, tc->type, tc->protocol);
+>  	dst_sock = listen_sock;
+> @@ -139,19 +150,19 @@ static void run(unsigned int n)
+>  			dst_sock = SAFE_ACCEPT(listen_sock, NULL, NULL);
+>  
+>  		tc->send(sock, sendbuf, SENDSIZE, 0);
+> -		ret = check_recv(dst_sock, SENDSIZE);
+> +		ret = check_recv(dst_sock, SENDSIZE, i + 1);
+>  
+>  		if (!ret)
+>  			break;
+>  
+>  		tc->send(sock, sendbuf, SENDSIZE, MSG_MORE);
+> -		ret = check_recv(dst_sock, 0);
+> +		ret = check_recv(dst_sock, 0, i + 1);
+>  
+>  		if (!ret)
+>  			break;
+>  
+>  		tc->send(sock, sendbuf, 1, 0);
+> -		ret = check_recv(dst_sock, SENDSIZE + 1);
+> +		ret = check_recv(dst_sock, SENDSIZE + 1, i + 1);
+>  
+>  		if (!ret)
+>  			break;
+> @@ -163,7 +174,7 @@ static void run(unsigned int n)
+>  	}
+>  
+>  	if (ret)
+> -		tst_res(TPASS, "%s(MSG_MORE) works correctly", tc->name);
+> +		tst_res(TPASS, "MSG_MORE works correctly");
+>  
+>  	cleanup();
+>  	dst_sock = -1;
+> 
+
