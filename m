@@ -1,202 +1,86 @@
-From: Roman Gushchin <guro@fb.com>
-Date: Mon, 19 Oct 2020 15:28:45 -0700
-Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 20 Oct 2020 06:52:08 +0100
+Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <20201016171502.GA102311@blackbook>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
-Message-ID: <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+In-Reply-To: <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
+References: <87lfg2ob83.fsf@suse.de>
+ <20201019095812.25710-1-rpalethorpe@suse.com>
+ <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
+Message-ID: <87mu0hwik7.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 16, 2020 at 07:15:02PM +0200, Michal Koutny wrote:
-> On Fri, Oct 16, 2020 at 10:53:08AM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > The central try_charge() function charges recursively all the way up
-> > to and including the root.
-> Except for use_hiearchy=0 (which is the case here as Richard
-> wrote). The reparenting is hence somewhat incompatible with
-> new_parent.use_hiearchy=0 :-/
-> 
-> > We should clean this up one way or another: either charge the root or
-> > don't, but do it consistently.
-> I agree this'd be good to unify. One upside of excluding root memcg from
-> charging is that users are spared from the charging overhead when memcg
-> tree is not created.  (Actually, I thought that was the reason for this
-> exception.)
+Hello Shakeel,
 
-Yeah, I'm completely on the same page. Moving a process to the root memory
-cgroup is currently a good way to estimate the memory cgroup overhead.
+Shakeel Butt <shakeelb@google.com> writes:
+>>
+>> V3: Handle common case where use_hierarchy=1 and update description.
+>>
+>>  mm/memcontrol.c | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 6877c765b8d0..34b8c4a66853 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+>>
+>>         spin_lock_irqsave(&css_set_lock, flags);
+>>         memcg = obj_cgroup_memcg(objcg);
+>> -       if (nr_pages)
+>> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
+>
+> If we have non-root memcg with use_hierarchy as 0 and this objcg was
+> reparented then this __memcg_kmem_uncharge() can potentially underflow
+> the page counter and give the same warning.
 
-How about the patch below, which consistently avoids charging the root
-memory cgroup? It seems like it doesn't add too many checks.
+Yes, although the kernel considers such a config to be broken, and
+prints a warning to the log, it does allow it.
 
-Thanks!
+>
+> We never set root_mem_cgroup->objcg, so, no need to check for root
 
---
+I don't think that is relevant as we get the memcg from objcg->memcg
+which is set during reparenting. I suppose however, we can determine if
+the objcg was reparented by inspecting memcg->objcg.
 
-From f50ea74d8f118b9121da3754acdde630ddc060a7 Mon Sep 17 00:00:00 2001
-From: Roman Gushchin <guro@fb.com>
-Date: Mon, 19 Oct 2020 14:37:35 -0700
-Subject: [PATCH RFC] mm: memcontrol: do not charge the root memory cgroup
+> here. I think checking just memcg->use_hierarchy should be sufficient.
 
-Currently the root memory cgroup is never charged directly, but
-if an ancestor cgroup is charged, the charge is propagated up to the
-root memory cgroup. The root memory cgroup doesn't show the charge
-to a user, neither it does allow to set any limits/protections.
-So the information about the current charge is completely useless.
+If we just check use_hierarchy then objects directly charged to the
+memcg where use_hierarchy=0 will not be uncharged. However, maybe it is
+better to check if it was reparented and if use_hierarchy=0.
 
-Avoiding to charge the root memory cgroup allows to:
-1) simplify the model and the code, so, hopefully, fewer bugs will
-   be introduced in the future;
-2) avoid unnecessary atomic operations, which are used to (un)charge
-   corresponding root page counters.
+>
+>>                 __memcg_kmem_uncharge(memcg, nr_pages);
+>>         list_del(&objcg->list);
+>>         mem_cgroup_put(memcg);
+>> @@ -3100,6 +3100,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>>  static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>>  {
+>>         struct obj_cgroup *old = stock->cached_objcg;
+>> +       struct mem_cgroup *memcg;
+>>
+>>         if (!old)
+>>                 return;
+>> @@ -3110,7 +3111,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>>
+>>                 if (nr_pages) {
+>>                         rcu_read_lock();
+>> -                       __memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
+>> +                       memcg = obj_cgroup_memcg(old);
+>> +                       if (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy)
+>> +                               __memcg_kmem_uncharge(memcg, nr_pages);
+>>                         rcu_read_unlock();
+>>                 }
+>>
+>> --
+>> 2.28.0
+>>
 
-In the default hierarchy case or if use_hiearchy == true, it's very
-straightforward: when the page counters tree is traversed to the root,
-the root page counter (the one with parent == NULL), should be
-skipped. To avoid multiple identical checks over the page counters
-code, for_each_nonroot_ancestor() macro is introduced.
 
-To handle the use_hierarchy == false case without adding custom
-checks, let's make page counters of all non-root memory cgroup
-direct ascendants of the corresponding root memory cgroup's page
-counters. In this case for_each_nonroot_ancestor() will work correctly
-as well.
-
-Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
-However, it's not based on page counters (refer to mem_cgroup_usage()).
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- mm/memcontrol.c   | 21 ++++++++++++++++-----
- mm/page_counter.c | 21 ++++++++++++---------
- 2 files changed, 28 insertions(+), 14 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2636f8bad908..34cac7522e74 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5339,17 +5339,28 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 		memcg->swappiness = mem_cgroup_swappiness(parent);
- 		memcg->oom_kill_disable = parent->oom_kill_disable;
- 	}
--	if (parent && parent->use_hierarchy) {
-+	if (!parent) {
-+		/* root memory cgroup */
-+		page_counter_init(&memcg->memory, NULL);
-+		page_counter_init(&memcg->swap, NULL);
-+		page_counter_init(&memcg->kmem, NULL);
-+		page_counter_init(&memcg->tcpmem, NULL);
-+	} else if (parent->use_hierarchy) {
- 		memcg->use_hierarchy = true;
- 		page_counter_init(&memcg->memory, &parent->memory);
- 		page_counter_init(&memcg->swap, &parent->swap);
- 		page_counter_init(&memcg->kmem, &parent->kmem);
- 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
- 	} else {
--		page_counter_init(&memcg->memory, NULL);
--		page_counter_init(&memcg->swap, NULL);
--		page_counter_init(&memcg->kmem, NULL);
--		page_counter_init(&memcg->tcpmem, NULL);
-+		/*
-+		 * If use_hierarchy == false, consider all page counters direct
-+		 * descendants of the corresponding root level counters.
-+		 */
-+		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
-+		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
-+		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
-+		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
-+
- 		/*
- 		 * Deeper hierachy with use_hierarchy == false doesn't make
- 		 * much sense so let cgroup subsystem know about this
-diff --git a/mm/page_counter.c b/mm/page_counter.c
-index b24a60b28bb0..8901b184b9d5 100644
---- a/mm/page_counter.c
-+++ b/mm/page_counter.c
-@@ -13,6 +13,9 @@
- #include <linux/bug.h>
- #include <asm/page.h>
- 
-+#define for_each_nonroot_ancestor(c, counter) \
-+	for ((c) = (counter); ((c) && ((c)->parent)); (c) = (c)->parent)
-+
- static void propagate_protected_usage(struct page_counter *c,
- 				      unsigned long usage)
- {
-@@ -20,9 +23,6 @@ static void propagate_protected_usage(struct page_counter *c,
- 	unsigned long low, min;
- 	long delta;
- 
--	if (!c->parent)
--		return;
--
- 	min = READ_ONCE(c->min);
- 	if (min || atomic_long_read(&c->min_usage)) {
- 		protected = min(usage, min);
-@@ -68,7 +68,7 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
- {
- 	struct page_counter *c;
- 
--	for (c = counter; c; c = c->parent) {
-+	for_each_nonroot_ancestor(c, counter) {
- 		long new;
- 
- 		new = atomic_long_add_return(nr_pages, &c->usage);
-@@ -97,7 +97,7 @@ bool page_counter_try_charge(struct page_counter *counter,
- {
- 	struct page_counter *c;
- 
--	for (c = counter; c; c = c->parent) {
-+	for_each_nonroot_ancestor(c, counter) {
- 		long new;
- 		/*
- 		 * Charge speculatively to avoid an expensive CAS.  If
-@@ -137,8 +137,11 @@ bool page_counter_try_charge(struct page_counter *counter,
- 	return true;
- 
- failed:
--	for (c = counter; c != *fail; c = c->parent)
-+	for_each_nonroot_ancestor(c, counter) {
-+		if (c == *fail)
-+			break;
- 		page_counter_cancel(c, nr_pages);
-+	}
- 
- 	return false;
- }
-@@ -152,7 +155,7 @@ void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages)
- {
- 	struct page_counter *c;
- 
--	for (c = counter; c; c = c->parent)
-+	for_each_nonroot_ancestor(c, counter)
- 		page_counter_cancel(c, nr_pages);
- }
- 
-@@ -211,7 +214,7 @@ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages)
- 
- 	WRITE_ONCE(counter->min, nr_pages);
- 
--	for (c = counter; c; c = c->parent)
-+	for_each_nonroot_ancestor(c, counter)
- 		propagate_protected_usage(c, atomic_long_read(&c->usage));
- }
- 
-@@ -228,7 +231,7 @@ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages)
- 
- 	WRITE_ONCE(counter->low, nr_pages);
- 
--	for (c = counter; c; c = c->parent)
-+	for_each_nonroot_ancestor(c, counter)
- 		propagate_protected_usage(c, atomic_long_read(&c->usage));
- }
- 
 -- 
-2.26.2
-
+Thank you,
+Richard.
