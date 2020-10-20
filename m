@@ -1,157 +1,189 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 20 Oct 2020 16:39:40 +0200
-Subject: [LTP] [PATCH 2/5] lib/tst_net: calc mean in tst_netload()
-In-Reply-To: <20201015122056.20715-2-alexey.kodanev@oracle.com>
-References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
- <20201015122056.20715-2-alexey.kodanev@oracle.com>
-Message-ID: <20201020143940.GB23197@dell5510>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 20 Oct 2020 15:48:11 +0100
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook> <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+Message-ID: <87blgxvtqs.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Add TST_NETLOAD_RUN_COUNT to control how many times netstress
-> test will be run to calculate the mean time value. Default is 5.
+Hello Roman,
 
-> This value will divide the total number of requests in order
-> not to significantly increase the time for the test after this
-> patch.
+Roman Gushchin <guro@fb.com> writes:
 
-> Moreover, one of the runs can fail once, it will produce only a
-> warning. The test will broke after the second failure. It can
-> be useful to make sure we have reproducible results.
-
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> On Fri, Oct 16, 2020 at 07:15:02PM +0200, Michal Koutny wrote:
+>
+> From f50ea74d8f118b9121da3754acdde630ddc060a7 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Mon, 19 Oct 2020 14:37:35 -0700
+> Subject: [PATCH RFC] mm: memcontrol: do not charge the root memory cgroup
+>
+> Currently the root memory cgroup is never charged directly, but
+> if an ancestor cgroup is charged, the charge is propagated up to the
+> root memory cgroup. The root memory cgroup doesn't show the charge
+> to a user, neither it does allow to set any limits/protections.
+> So the information about the current charge is completely useless.
+>
+> Avoiding to charge the root memory cgroup allows to:
+> 1) simplify the model and the code, so, hopefully, fewer bugs will
+>    be introduced in the future;
+> 2) avoid unnecessary atomic operations, which are used to (un)charge
+>    corresponding root page counters.
+>
+> In the default hierarchy case or if use_hiearchy == true, it's very
+> straightforward: when the page counters tree is traversed to the root,
+> the root page counter (the one with parent == NULL), should be
+> skipped. To avoid multiple identical checks over the page counters
+> code, for_each_nonroot_ancestor() macro is introduced.
+>
+> To handle the use_hierarchy == false case without adding custom
+> checks, let's make page counters of all non-root memory cgroup
+> direct ascendants of the corresponding root memory cgroup's page
+> counters. In this case for_each_nonroot_ancestor() will work correctly
+> as well.
+>
+> Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
+> However, it's not based on page counters (refer to mem_cgroup_usage()).
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 > ---
->  testcases/lib/tst_net.sh | 95 ++++++++++++++++++++++++++--------------
->  1 file changed, 62 insertions(+), 33 deletions(-)
-
-> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-> index b29e076c3..1912b984d 100644
-> --- a/testcases/lib/tst_net.sh
-> +++ b/testcases/lib/tst_net.sh
-> @@ -623,9 +623,11 @@ tst_wait_ipv6_dad()
->  	done
->  }
-
-> -tst_dump_rhost_cmd()
-> +tst_netload_brk()
+>  mm/memcontrol.c   | 21 ++++++++++++++++-----
+>  mm/page_counter.c | 21 ++++++++++++---------
+>  2 files changed, 28 insertions(+), 14 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2636f8bad908..34cac7522e74 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5339,17 +5339,28 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>  		memcg->swappiness = mem_cgroup_swappiness(parent);
+>  		memcg->oom_kill_disable = parent->oom_kill_disable;
+>  	}
+> -	if (parent && parent->use_hierarchy) {
+> +	if (!parent) {
+> +		/* root memory cgroup */
+> +		page_counter_init(&memcg->memory, NULL);
+> +		page_counter_init(&memcg->swap, NULL);
+> +		page_counter_init(&memcg->kmem, NULL);
+> +		page_counter_init(&memcg->tcpmem, NULL);
+> +	} else if (parent->use_hierarchy) {
+>  		memcg->use_hierarchy = true;
+>  		page_counter_init(&memcg->memory, &parent->memory);
+>  		page_counter_init(&memcg->swap, &parent->swap);
+>  		page_counter_init(&memcg->kmem, &parent->kmem);
+>  		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+>  	} else {
+> -		page_counter_init(&memcg->memory, NULL);
+> -		page_counter_init(&memcg->swap, NULL);
+> -		page_counter_init(&memcg->kmem, NULL);
+> -		page_counter_init(&memcg->tcpmem, NULL);
+> +		/*
+> +		 * If use_hierarchy == false, consider all page counters direct
+> +		 * descendants of the corresponding root level counters.
+> +		 */
+> +		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
+> +		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
+> +		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
+> +		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+> +
+>  		/*
+>  		 * Deeper hierachy with use_hierarchy == false doesn't make
+>  		 * much sense so let cgroup subsystem know about this
+> diff --git a/mm/page_counter.c b/mm/page_counter.c
+> index b24a60b28bb0..8901b184b9d5 100644
+> --- a/mm/page_counter.c
+> +++ b/mm/page_counter.c
+> @@ -13,6 +13,9 @@
+>  #include <linux/bug.h>
+>  #include <asm/page.h>
+>  
+> +#define for_each_nonroot_ancestor(c, counter) \
+> +	for ((c) = (counter); ((c) && ((c)->parent)); (c) = (c)->parent)
+> +
+>  static void propagate_protected_usage(struct page_counter *c,
+>  				      unsigned long usage)
 >  {
->  	tst_rhost_run -c "cat $TST_TMPDIR/netstress.log"
-> +	cat tst_netload.log
-> +	tst_brk_ $1 $2
+> @@ -20,9 +23,6 @@ static void propagate_protected_usage(struct page_counter *c,
+>  	unsigned long low, min;
+>  	long delta;
+>  
+> -	if (!c->parent)
+> -		return;
+> -
+>  	min = READ_ONCE(c->min);
+>  	if (min || atomic_long_read(&c->min_usage)) {
+>  		protected = min(usage, min);
+> @@ -68,7 +68,7 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent) {
+> +	for_each_nonroot_ancestor(c, counter) {
+>  		long new;
+>  
+>  		new = atomic_long_add_return(nr_pages, &c->usage);
+> @@ -97,7 +97,7 @@ bool page_counter_try_charge(struct page_counter *counter,
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent) {
+> +	for_each_nonroot_ancestor(c, counter) {
+>  		long new;
+>  		/*
+>  		 * Charge speculatively to avoid an expensive CAS.  If
+> @@ -137,8 +137,11 @@ bool page_counter_try_charge(struct page_counter *counter,
+>  	return true;
+>  
+>  failed:
+> -	for (c = counter; c != *fail; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter) {
+> +		if (c == *fail)
+> +			break;
+>  		page_counter_cancel(c, nr_pages);
+> +	}
+>  
+>  	return false;
+>  }
+> @@ -152,7 +155,7 @@ void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages)
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		page_counter_cancel(c, nr_pages);
+>  }
+>  
+> @@ -211,7 +214,7 @@ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages)
+>  
+>  	WRITE_ONCE(counter->min, nr_pages);
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		propagate_protected_usage(c, atomic_long_read(&c->usage));
+>  }
+>  
+> @@ -228,7 +231,7 @@ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages)
+>  
+>  	WRITE_ONCE(counter->low, nr_pages);
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		propagate_protected_usage(c, atomic_long_read(&c->usage));
 >  }
 
->  # Run network load test, see 'netstress -h' for option description
-> @@ -640,6 +642,7 @@ tst_netload()
->  	# common options for client and server
->  	local cs_opts=
+This for sure prevents the counter underflow reported by madvise06 and
+makes my patch redundant. Although perhaps this is significantly more
+intrusive, so not suitable for the 5.9 stable branch?
 
-> +	local run_cnt="$TST_NETLOAD_RUN_COUNT"
->  	local c_num="$TST_NETLOAD_CLN_NUMBER"
->  	local c_requests="$TST_NETLOAD_CLN_REQUESTS"
->  	local c_opts=
-> @@ -692,51 +695,76 @@ tst_netload()
->  	local expect_ret=0
->  	[ "$expect_res" != "pass" ] && expect_ret=3
+Tested-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-> -	tst_rhost_run -c "pkill -9 netstress\$"
-> -	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
-> -	tst_res_ TINFO "run server 'netstress $s_opts'"
-> -	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
-> -	if [ $? -ne 0 ]; then
-> -		cat tst_netload.log
-> -		local ttype="TFAIL"
-> -		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
-> -		tst_brk_ $ttype "server failed"
-> +	local was_failure=0
-nit: I prefer have local variables at the top and boolean like variables as empty vs.
-"1" (tested with [ "$foo" = 1 ] (see: if [ "$bind_to_device" = 1 -a "$TST_NETLOAD_BINDTODEVICE" = 1 ]; then
-few lines above).
-
-This style is used in tst_test.sh, which is consistent, but style in tst_net.sh
-varies on this a lot. It's just a style and it wasn't introduced before this
-commit, thus feel free to ignore it, but it'd be nice to be consistent in
-library file.
-
-> +	if [ "$run_cnt" -lt 2 ]; then
-maybe: if [ "$run_cnt" -lt 1 ]; then
-
-BTW we should also check all numeric variables (TST_NETLOAD_CLN_REQUESTS, ...)
-with tst_is_int (but don't bother with it now).
-
-> +		run_cnt=1
-> +		was_failure=1
-Hm, $was_failure set before loop. Shouldn't it be inside for i in $(seq 1
-$run_cnt); do loop? And updated on each failure (be a error counter, not boolean)?
->  	fi
-
-> -	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
-> -	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
-> +	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
-> +	c_opts="${cs_opts}${c_opts}-a $c_num -r $((c_requests / run_cnt)) -d $rfile"
-> +
-> +	tst_res_ TINFO "run server 'netstress $s_opts'"
-> +	tst_res_ TINFO "run client 'netstress -l $c_opts' $run_cnt times"
-
-> -	tst_res_ TINFO "run client 'netstress -l $c_opts'"
-> -	netstress -l $c_opts > tst_netload.log 2>&1 || ret=$?
->  	tst_rhost_run -c "pkill -9 netstress\$"
-> +	rm -f tst_netload.log
-> +
-> +	local res=0
-> +	local passed=0
-> +
-> +	for i in $(seq 1 $run_cnt); do
-> +		tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
-> +		if [ $? -ne 0 ]; then
-> +			cat tst_netload.log
-> +			local ttype="TFAIL"
-> +			grep -e 'CONF:' tst_netload.log && ttype="TCONF"
-> +			tst_brk_ $ttype "server failed"
-> +		fi
-
-> -	if [ "$expect_ret" -ne 0 ]; then
-> -		if [ $((ret & expect_ret)) -ne 0 ]; then
-> -			tst_res_ TPASS "netstress failed as expected"
-> -		else
-> -			tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
-> +		local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
-> +		netstress -l ${c_opts} -g $port > tst_netload.log 2>&1
-> +		ret=$?
-> +		tst_rhost_run -c "pkill -9 netstress\$"
-> +
-> +		if [ "$expect_ret" -ne 0 ]; then
-> +			if [ $((ret & expect_ret)) -ne 0 ]; then
-> +				tst_res_ TPASS "netstress failed as expected"
-> +			else
-> +				tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
-> +			fi
-> +			return $ret
-> +		fi
-> +
-> +		if [ "$ret" -ne 0 ]; then
-> +			[ $((ret & 32)) -ne 0 ] && \
-> +				tst_netload_brk TCONF "not supported configuration"
-> +
-> +			[ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ] && \
-> +				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
-Instead the 2 lines above maybe this? Or am I missing something?
-
-			if [ $((ret & 3)) -ne 0 ]; then
-				was_failure=$((was_failure+1))
-			fi
-			[ $was_failure -gt 0 ] && \
-				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
-> +
-> +			tst_res_ TWARN "netstress failed, ret: $ret"
-> +			was_failure=1
-> +			continue
->  		fi
-> -		return $ret
-> -	fi
-...
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
