@@ -1,67 +1,93 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 20 Oct 2020 14:49:47 +0100
-Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <87mu0hwik7.fsf@suse.de>
-References: <87lfg2ob83.fsf@suse.de>
- <20201019095812.25710-1-rpalethorpe@suse.com>
- <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
- <87mu0hwik7.fsf@suse.de>
-Message-ID: <87eeltvwg4.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 20 Oct 2020 15:52:10 +0200
+Subject: [LTP] [PATCH 1/5] lib/tst_net: add generic tst_netload_compare()
+In-Reply-To: <20201015122056.20715-1-alexey.kodanev@oracle.com>
+References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
+Message-ID: <20201020135210.GA23197@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Alexey,
 
-Richard Palethorpe <rpalethorpe@suse.de> writes:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Hello Shakeel,
->
-> Shakeel Butt <shakeelb@google.com> writes:
->>>
->>> V3: Handle common case where use_hierarchy=1 and update description.
->>>
->>>  mm/memcontrol.c | 7 +++++--
->>>  1 file changed, 5 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index 6877c765b8d0..34b8c4a66853 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
->>>
->>>         spin_lock_irqsave(&css_set_lock, flags);
->>>         memcg = obj_cgroup_memcg(objcg);
->>> -       if (nr_pages)
->>> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
->>
->> If we have non-root memcg with use_hierarchy as 0 and this objcg was
->> reparented then this __memcg_kmem_uncharge() can potentially underflow
->> the page counter and give the same warning.
->
-> Yes, although the kernel considers such a config to be broken, and
-> prints a warning to the log, it does allow it.
+> * Remove duplicate code for comparing time-based results in
+>   network tests (bbr, busy_poll, sctp, tcp fastopen, virt tests)
 
-Actually this can not happen because if use_hierarchy=0 then the objcg
-will be reparented to root.
+> * Expand thresholds for sctp, bbr test-cases, in order to avoid
+>   false-positive failures.
+I'm ok to keep more changes in single commit, but this change is affecting the
+result, thus maybe put into separate commit?
+(easier if somebody wants to bisect).
 
->
->>
->> We never set root_mem_cgroup->objcg, so, no need to check for root
->
-> I don't think that is relevant as we get the memcg from objcg->memcg
-> which is set during reparenting. I suppose however, we can determine if
-> the objcg was reparented by inspecting memcg->objcg.
->
->> here. I think checking just memcg->use_hierarchy should be sufficient.
->
-> If we just check use_hierarchy then objects directly charged to the
-> memcg where use_hierarchy=0 will not be uncharged. However, maybe it is
-> better to check if it was reparented and if use_hierarchy=0.
+> * In virt_lib.sh, keep sign for VIRT_PERF_THRESHOLD.
 
--- 
-Thank you,
-Richard.
+> * TWARN when the base result is too bad (threshold_hi arg is set)
+
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  testcases/lib/tst_net.sh                      | 31 +++++++++++++++++++
+>  testcases/network/busy_poll/busy_poll01.sh    | 10 ++----
+>  testcases/network/busy_poll/busy_poll02.sh    |  8 +----
+>  testcases/network/busy_poll/busy_poll03.sh    |  8 +----
+>  testcases/network/dccp/dccp01.sh              | 15 ++-------
+>  testcases/network/sctp/sctp01.sh              |  8 +----
+>  testcases/network/tcp_cc/bbr01.sh             |  2 +-
+>  testcases/network/tcp_cc/bbr02.sh             |  2 +-
+>  testcases/network/tcp_cc/dctcp01.sh           |  2 +-
+>  testcases/network/tcp_cc/tcp_cc_lib.sh        |  8 +----
+>  .../network/tcp_fastopen/tcp_fastopen_run.sh  | 15 ++-------
+>  testcases/network/virt/virt_lib.sh            | 21 ++-----------
+>  12 files changed, 46 insertions(+), 84 deletions(-)
+
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index d939a5780..b29e076c3 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -741,6 +741,37 @@ tst_netload()
+>  	return $ret
+>  }
+
+> +# Compares results for netload runs.
+> +# tst_netload_compare TIME_BASE TIME THRESHOLD_LOW [THRESHOLD_HI]
+> +# TIME_BASE: time taken to run netstress load test - 100%
+> +# TIME: time that is compared to the base one
+> +# THRESHOD_LOW: lower limit for TFAIL
+> +# THRESHOD_HIGH: upper limit for TWARN
+> +tst_netload_compare()
+> +{
+> +	local base_time=$1
+> +	local new_time=$2
+> +	local threshold_low=$3
+> +	local threshold_hi=$4
+> +
+> +	if [ -z "$base_time" -o -z "$new_time" -o -z "$threshold_low" ]; then
+> +		tst_brk_ TBROK "tst_netload_compare: invalid argument(s)"
+> +	fi
+> +
+> +	local res=$(((base_time - new_time) * 100 / base_time))
+> +	local msg="performance result is ${res}%"
+> +
+> +	if [ "$res" -lt "$threshold_low" ]; then
+> +		tst_res_ TFAIL "$msg < threshold ${threshold_low}%"
+> +		return
+> +	fi
+> +
+> +	[ "$threshold_hi" ] && [ "$res" -gt "$threshold_hi" ] && \
+> +		tst_res_ TWARN "$msg > threshold ${threshold_hi}%"
+> +
+> +	tst_res_ TPASS "$msg, in range [${threshold_low}:${threshold_hi:-}]%"
+
+Do you mean ${threshold_hi:--} (to print "-" when $threshold_hi not set?)
+As ${threshold_hi:-} prints empty string when unset (equivalent of ${threshold_hi}).
+
+
+> +}
+
+...
+
+Kind regards,
+Petr
