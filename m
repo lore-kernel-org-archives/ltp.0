@@ -1,55 +1,57 @@
-From: Shakeel Butt <shakeelb@google.com>
-Date: Tue, 20 Oct 2020 09:56:51 -0700
-Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
+From: Roman Gushchin <guro@fb.com>
+Date: Tue, 20 Oct 2020 10:07:17 -0700
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <87eeltvwg4.fsf@suse.de>
-References: <87lfg2ob83.fsf@suse.de>
- <20201019095812.25710-1-rpalethorpe@suse.com>
- <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
- <87mu0hwik7.fsf@suse.de> <87eeltvwg4.fsf@suse.de>
-Message-ID: <CALvZod45mAzyo9LNR4YtX_3J0gZJDagYTNv8NbJAuXzwK5A2DA@mail.gmail.com>
+In-Reply-To: <20201020162714.GC46039@blackbook>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+Message-ID: <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Oct 20, 2020 at 6:49 AM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> Hello,
->
-> Richard Palethorpe <rpalethorpe@suse.de> writes:
->
-> > Hello Shakeel,
-> >
-> > Shakeel Butt <shakeelb@google.com> writes:
-> >>>
-> >>> V3: Handle common case where use_hierarchy=1 and update description.
-> >>>
-> >>>  mm/memcontrol.c | 7 +++++--
-> >>>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >>> index 6877c765b8d0..34b8c4a66853 100644
-> >>> --- a/mm/memcontrol.c
-> >>> +++ b/mm/memcontrol.c
-> >>> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
-> >>>
-> >>>         spin_lock_irqsave(&css_set_lock, flags);
-> >>>         memcg = obj_cgroup_memcg(objcg);
-> >>> -       if (nr_pages)
-> >>> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
-> >>
-> >> If we have non-root memcg with use_hierarchy as 0 and this objcg was
-> >> reparented then this __memcg_kmem_uncharge() can potentially underflow
-> >> the page counter and give the same warning.
-> >
-> > Yes, although the kernel considers such a config to be broken, and
-> > prints a warning to the log, it does allow it.
->
-> Actually this can not happen because if use_hierarchy=0 then the objcg
-> will be reparented to root.
->
+On Tue, Oct 20, 2020 at 06:27:14PM +0200, Michal Koutny wrote:
+> Hi.
+> 
+> On Mon, Oct 19, 2020 at 03:28:45PM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > Currently the root memory cgroup is never charged directly, but
+> > if an ancestor cgroup is charged, the charge is propagated up to the
+> s/ancestor/descendant/
 
-Yup, you are right. I do wonder if we should completely deprecate
-use_hierarchy=0.
+Oops, will fix, thanks!
+
+> 
+> > The root memory cgroup doesn't show the charge to a user, neither it
+> > does allow to set any limits/protections.
+> An appealing claim, I'd like this to be true...
+> 
+> > Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
+> > However, it's not based on page counters (refer to mem_cgroup_usage()).
+> ...and it almost is. But there are still exposed kmem and tcpmem counters.
+
+Hm, I wonder what do they show given that we never set sk->sk_memcg
+to the root_mem_cgroup (see mem_cgroup_sk_alloc()) and we never charge
+the root_mem_cgroup for !slab kmem allocations (see __memcg_kmem_charge_page()).
+
+So yeah, it's quite a mess now, and it looks like it has been broken
+in multiple places and for a while.
+
+If we want these counter to function properly, then we should go into the opposite
+direction and remove the special handling of the root memory cgroup in many places.
+
+> > To avoid multiple identical checks over the page counters
+> > code, for_each_nonroot_ancestor() macro is introduced.
+> If the assumptions behind this patch's idea were true, I think the
+> implementation would be simpler by merely (not)connecting the root
+> counters and keep the traversal as is.
+
+We use some fields in root page counters to calculate protections:
+see propagate_protected_usage().
+
+Thanks!
