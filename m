@@ -1,43 +1,30 @@
-From: Michal =?unknown-8bit?q?Koutn=C3=BD?= <mkoutny@suse.com>
-Date: Tue, 20 Oct 2020 19:24:02 +0200
-Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Tue, 20 Oct 2020 14:18:22 -0400
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
  from charging root
-In-Reply-To: <87mu0hwik7.fsf@suse.de>
-References: <87lfg2ob83.fsf@suse.de>
- <20201019095812.25710-1-rpalethorpe@suse.com>
- <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
- <87mu0hwik7.fsf@suse.de>
-Message-ID: <20201020172402.GD46039@blackbook>
+In-Reply-To: <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+ <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+Message-ID: <20201020181822.GA397401@cmpxchg.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi.
+On Tue, Oct 20, 2020 at 10:07:17AM -0700, Roman Gushchin wrote:
+> If we want these counter to function properly, then we should go into the opposite
+> direction and remove the special handling of the root memory cgroup in many places.
 
-On Tue, Oct 20, 2020 at 06:52:08AM +0100, Richard Palethorpe <rpalethorpe@suse.de> wrote:
-> I don't think that is relevant as we get the memcg from objcg->memcg
-> which is set during reparenting. I suppose however, we can determine if
-> the objcg was reparented by inspecting memcg->objcg.
-+1
+I suspect this is also by far the most robust solution from a code and
+maintenance POV.
 
-> If we just check use_hierarchy then objects directly charged to the
-> memcg where use_hierarchy=0 will not be uncharged. However, maybe it is
-> better to check if it was reparented and if use_hierarchy=0.
-I think (I had to make a table) the yielded condition would be:
-
-if ((memcg->use_hierarchy && reparented) || (!mem_cgroup_is_root(memcg) && !reparented))
-	 __memcg_kmem_uncharge(memcg, nr_pages);
-
-(I admit it's not very readable.)
-
-
-Michal
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 833 bytes
-Desc: Digital signature
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201020/e1aefbf7/attachment.sig>
+I don't recall the page counter at the root level having been a
+concern in recent years, even though it's widely used in production
+environments. It's lockless and cache compact. It's also per-cpu
+batched, which means it isn't actually part of the memcg hotpath.
