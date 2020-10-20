@@ -1,49 +1,42 @@
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Fri, 16 Oct 2020 10:53:08 -0400
-Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <20201016094702.GA95052@blackbook>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
-Message-ID: <20201016145308.GA312010@cmpxchg.org>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Oct 2020 12:09:07 +0200
+Subject: [LTP] [PATCH 0/3] Add support for kconfig constraints
+Message-ID: <20201020100910.10828-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 16, 2020 at 11:47:02AM +0200, Michal Koutn? wrote:
-> Hello.
-> 
-> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
-> > SLAB objects which outlive their memcg are moved to their parent
-> > memcg where they may be uncharged. However if they are moved to the
-> > root memcg, uncharging will result in negative page counter values as
-> > root has no page counters.
-> Why do you think those are reparented objects? If those are originally
-> charged in a non-root cgroup, then the charge value should be propagated up the
-> hierarchy, including root memcg, so if they're later uncharged in root
-> after reparenting, it should still break even. (Or did I miss some stock
-> imbalance?)
+This patchset adds a support for generic boolean expressions in order to
+be able to check for a more complex kernel configurations.
 
-Looking a bit closer at this code, it's kind of a mess right now.
+The motivation for this is recent rename in kernel config names that
+cannot be checked for by a simplistic approach we previously
+implemented.
 
-The central try_charge() function charges recursively all the way up
-to and including the root. But not if it's called directly on the
-root, in which case it bails and does nothing.
+The boolean expression parser was written as a generic as possible since
+I do expect that we will reuse it for different types of assertions in
+the future.
 
-kmem and objcg use try_charge(), so they have the same
-behavior. get_obj_cgroup_from_current() does it's own redundant
-filtering for root_mem_cgroup, whereas get_mem_cgroup_from_current()
-does not, but its callsite __memcg_kmem_charge_page() does.
+Cyril Hrubis (3):
+  lib/tst_kconfig: Rewrite the parser internals
+  lib: Add generic boolean expression parser and eval
+  lib/tst_kconfig: Make use of boolean expression eval
 
-We should clean this up one way or another: either charge the root or
-don't, but do it consistently.
+ doc/test-writing-guidelines.txt  |  21 +-
+ include/tst_bool_expr.h          |  80 +++++
+ include/tst_kconfig.h            |  34 ++-
+ lib/newlib_tests/.gitignore      |   1 +
+ lib/newlib_tests/test_kconfig.c  |   1 +
+ lib/newlib_tests/tst_bool_expr.c | 127 ++++++++
+ lib/tst_bool_expr.c              | 504 +++++++++++++++++++++++++++++++
+ lib/tst_kconfig.c                | 310 ++++++++++++-------
+ 8 files changed, 939 insertions(+), 139 deletions(-)
+ create mode 100644 include/tst_bool_expr.h
+ create mode 100644 lib/newlib_tests/tst_bool_expr.c
+ create mode 100644 lib/tst_bool_expr.c
 
-Since we export memory.stat at the root now, we should probably just
-always charge the root instead of special-casing it all over the place
-and risking bugs.
+-- 
+2.26.2
 
-Indeed, it looks like there is at least one bug where the root-level
-memory.stat shows non-root slab objects, but not root ones, whereas it
-shows all anon and cache pages, root or no root.
