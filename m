@@ -1,173 +1,399 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 21 Oct 2020 12:56:30 +0300
-Subject: [LTP] [PATCH 2/5] lib/tst_net: calc mean in tst_netload()
-In-Reply-To: <20201020143940.GB23197@dell5510>
-References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
- <20201015122056.20715-2-alexey.kodanev@oracle.com>
- <20201020143940.GB23197@dell5510>
-Message-ID: <711809cc-28c3-a51d-72a2-6d3f64db0a1c@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 21 Oct 2020 12:06:05 +0200
+Subject: [LTP] [PATCH 1/3] lib/tst_kconfig: Rewrite the parser internals
+In-Reply-To: <878sbzx66b.fsf@suse.de>
+References: <20201020100910.10828-1-chrubis@suse.cz>
+ <20201020100910.10828-2-chrubis@suse.cz> <878sbzx66b.fsf@suse.de>
+Message-ID: <20201021100605.GA10861@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 20.10.2020 17:39, Petr Vorel wrote:
->> Add TST_NETLOAD_RUN_COUNT to control how many times netstress
->> test will be run to calculate the mean time value. Default is 5.
+Hi!
+> > diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+> > index 2d2cfd782..1bb21fea8 100644
+> > --- a/include/tst_kconfig.h
+> > +++ b/include/tst_kconfig.h
+> > @@ -6,27 +6,27 @@
+> >  #ifndef TST_KCONFIG_H__
+> >  #define TST_KCONFIG_H__
+> >  
+> > -struct tst_kconfig_res {
+> > -	char match;
+> > -	char *value;
+> > +struct tst_kconfig_var {
+> > +	char id[64];
+> > +	unsigned int id_len;
+> > +	char choice;
 > 
->> This value will divide the total number of requests in order
->> not to significantly increase the time for the test after this
->> patch.
-> 
->> Moreover, one of the runs can fail once, it will produce only a
->> warning. The test will broke after the second failure. It can
->> be useful to make sure we have reproducible results.
-> 
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
->> ---
->>  testcases/lib/tst_net.sh | 95 ++++++++++++++++++++++++++--------------
->>  1 file changed, 62 insertions(+), 33 deletions(-)
-> 
->> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
->> index b29e076c3..1912b984d 100644
->> --- a/testcases/lib/tst_net.sh
->> +++ b/testcases/lib/tst_net.sh
->> @@ -623,9 +623,11 @@ tst_wait_ipv6_dad()
->>  	done
->>  }
-> 
->> -tst_dump_rhost_cmd()
->> +tst_netload_brk()
->>  {
->>  	tst_rhost_run -c "cat $TST_TMPDIR/netstress.log"
->> +	cat tst_netload.log
->> +	tst_brk_ $1 $2
->>  }
-> 
->>  # Run network load test, see 'netstress -h' for option description
->> @@ -640,6 +642,7 @@ tst_netload()
->>  	# common options for client and server
->>  	local cs_opts=
-> 
->> +	local run_cnt="$TST_NETLOAD_RUN_COUNT"
->>  	local c_num="$TST_NETLOAD_CLN_NUMBER"
->>  	local c_requests="$TST_NETLOAD_CLN_REQUESTS"
->>  	local c_opts=
->> @@ -692,51 +695,76 @@ tst_netload()
->>  	local expect_ret=0
->>  	[ "$expect_res" != "pass" ] && expect_ret=3
-> 
->> -	tst_rhost_run -c "pkill -9 netstress\$"
->> -	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
->> -	tst_res_ TINFO "run server 'netstress $s_opts'"
->> -	tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
->> -	if [ $? -ne 0 ]; then
->> -		cat tst_netload.log
->> -		local ttype="TFAIL"
->> -		grep -e 'CONF:' tst_netload.log && ttype="TCONF"
->> -		tst_brk_ $ttype "server failed"
->> +	local was_failure=0
-> nit: I prefer have local variables at the top and boolean like variables as empty vs.
-> "1" (tested with [ "$foo" = 1 ] (see: if [ "$bind_to_device" = 1 -a "$TST_NETLOAD_BINDTODEVICE" = 1 ]; then
-> few lines above).
-> 
-> This style is used in tst_test.sh, which is consistent, but style in tst_net.sh
-> varies on this a lot. It's just a style and it wasn't introduced before this
-> commit, thus feel free to ignore it, but it'd be nice to be consistent in
-> library file.
-> 
->> +	if [ "$run_cnt" -lt 2 ]; then
-> maybe: if [ "$run_cnt" -lt 1 ]; then
-> 
-> BTW we should also check all numeric variables (TST_NETLOAD_CLN_REQUESTS, ...)
-> with tst_is_int (but don't bother with it now).
-> 
->> +		run_cnt=1
->> +		was_failure=1
-> Hm, $was_failure set before loop. Shouldn't it be inside for i in $(seq 1
-> $run_cnt); do loop? And updated on each failure (be a error counter, not boolean)?
+> This should probably be an enum to give the compiler more info. Even if
+> we use the current char values as the enum entries.
 
+Actually I was thinking of getting rid of this entirely in a follow up
+patch and just keep the val, because after the last patch these values
+are not special anymore.
 
-It is set to 1 for the special case, i.e. when run_cnt is 1, in that case
-we should tbrok the test at once. I don't see how the error counter will be
-better?
-
->>  	fi
+> > +	char *val;
+> >  };
+> >  
+> >  /**
+> > - * Reads a kernel config and parses it for values defined in kconfigs array.
+> > + *
+> > + * Reads a kernel config, parses it and writes results into an array of
+> > + * tst_kconfig_var structures.
+> >   *
+> >   * The path to the kernel config should be autodetected in most of the cases as
+> >   * the code looks for know locations. It can be explicitely set/overrided with
+> >   * the KCONFIG_PATH environment variable as well.
+> >   *
+> > - * The kcofings array is expected to contain strings in a format "CONFIG_FOO"
+> > - * or "CONFIG_FOO=bar". The result array has to be suitably sized to fit the
+> > - * results.
+> > - *
+> > - * @param kconfigs array of config strings to look for
+> > - * @param results array to store results to
+> > - * @param cnt size of the arrays
+> > + * The caller has to initialize the tst_kconfig_var structure. The id has to be
+> > + * filled with config variable name such as 'CONFIG_FOO', the id_len should
+> > + * hold the id string length and the choice and val has to be zeroed.
+> >   *
+> > - * The match in the tst_kconfig_res structure is set as follows:
+> > + * After a call to this function each choice be set as follows:
+> >   *
+> >   *  'm' - config option set to m
+> >   *  'y' - config option set to y
+> > @@ -34,11 +34,13 @@ struct tst_kconfig_res {
+> >   *  'n' - config option is not set
+> >   *   0  - config option not found
+> >   *
+> > - * In the case that match is set to 'v' the value points to a newly allocated
+> > - * string that holds the value.
+> > + * In the case that match is set to 'v' the val pointer points to a newly
+> > + * allocated string that holds the value.
+> > + *
+> > + * @param vars An array of caller initalized tst_kconfig_var structures.
+> > + * @param vars_len Length of the vars array.
+> >   */
+> > -void tst_kconfig_read(const char *const kconfigs[],
+> > -		      struct tst_kconfig_res results[], size_t cnt);
+> > +void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
+> >  
+> >  /**
+> >   * Checks if required kernel configuration options are set in the kernel
+> > diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> > index d49187b6f..f80925cc9 100644
+> > --- a/lib/tst_kconfig.c
+> > +++ b/lib/tst_kconfig.c
+> > @@ -84,15 +84,6 @@ static void close_kconfig(FILE *fp)
+> >  		fclose(fp);
+> >  }
+> >  
+> > -struct match {
+> > -	/* match len, string length up to \0 or = */
+> > -	size_t len;
+> > -	/* if set part of conf string after = */
+> > -	const char *val;
+> > -	/* if set the config option was matched already */
+> > -	int match;
+> > -};
+> > -
+> >  static int is_set(const char *str, const char *val)
+> >  {
+> >  	size_t vlen = strlen(val);
+> > @@ -114,96 +105,70 @@ static int is_set(const char *str, const char *val)
+> >  	}
+> >  }
+> >  
+> > -static inline int match(struct match *match, const char *conf,
+> > -                        struct tst_kconfig_res *result, const char *line)
+> > +static inline int kconfig_parse_line(const char *line,
+> > +                                     struct tst_kconfig_var *vars,
+> > +                                     unsigned int vars_len)
+> >  {
+> > -	if (match->match)
+> > -		return 0;
+> > +	unsigned int i;
+> >  
+> > -	const char *cfg = strstr(line, "CONFIG_");
+> > +	for (i = 0; i < vars_len; i++) {
+> > +		if (!strncmp(vars[i].id, line, vars[i].id_len)) {
+> > +			const char *val = &line[vars[i].id_len];
+> > +
 > 
->> -	local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
->> -	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
->> +	s_opts="${cs_opts}${s_opts}-R $s_replies -B $TST_TMPDIR"
->> +	c_opts="${cs_opts}${c_opts}-a $c_num -r $((c_requests / run_cnt)) -d $rfile"
->> +
->> +	tst_res_ TINFO "run server 'netstress $s_opts'"
->> +	tst_res_ TINFO "run client 'netstress -l $c_opts' $run_cnt times"
-> 
->> -	tst_res_ TINFO "run client 'netstress -l $c_opts'"
->> -	netstress -l $c_opts > tst_netload.log 2>&1 || ret=$?
->>  	tst_rhost_run -c "pkill -9 netstress\$"
->> +	rm -f tst_netload.log
->> +
->> +	local res=0
->> +	local passed=0
->> +
->> +	for i in $(seq 1 $run_cnt); do
->> +		tst_rhost_run -c "netstress $s_opts" > tst_netload.log 2>&1
->> +		if [ $? -ne 0 ]; then
->> +			cat tst_netload.log
->> +			local ttype="TFAIL"
->> +			grep -e 'CONF:' tst_netload.log && ttype="TCONF"
->> +			tst_brk_ $ttype "server failed"
->> +		fi
-> 
->> -	if [ "$expect_ret" -ne 0 ]; then
->> -		if [ $((ret & expect_ret)) -ne 0 ]; then
->> -			tst_res_ TPASS "netstress failed as expected"
->> -		else
->> -			tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
->> +		local port=$(tst_rhost_run -s -c "cat $TST_TMPDIR/netstress_port")
->> +		netstress -l ${c_opts} -g $port > tst_netload.log 2>&1
->> +		ret=$?
->> +		tst_rhost_run -c "pkill -9 netstress\$"
->> +
->> +		if [ "$expect_ret" -ne 0 ]; then
->> +			if [ $((ret & expect_ret)) -ne 0 ]; then
->> +				tst_res_ TPASS "netstress failed as expected"
->> +			else
->> +				tst_res_ TFAIL "expected '$expect_res' but ret: '$ret'"
->> +			fi
->> +			return $ret
->> +		fi
->> +
->> +		if [ "$ret" -ne 0 ]; then
->> +			[ $((ret & 32)) -ne 0 ] && \
->> +				tst_netload_brk TCONF "not supported configuration"
->> +
->> +			[ $((ret & 3)) -ne 0 -a $was_failure -gt 0 ] && \
->> +				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
-> Instead the 2 lines above maybe this? Or am I missing something?
-> 
-> 			if [ $((ret & 3)) -ne 0 ]; then
-> 				was_failure=$((was_failure+1))
-> 			fi
-> 			[ $was_failure -gt 0 ] && \
-> 				tst_netload_brk TFAIL "expected '$expect_res' but ret: '$ret'"
+> It is valid to have 'CONFIG_VAR = y'. We should probably tokenize the
+> lines first to remove whitespace issues and expose the parser to all
+> possible variable name symbols and values instead of just the ones which
+> appear in our current tests.
 
-With this, it should exit on the first error, as it was before this patch...
+I guess that it's techincally possible to have a whitespaces there, but
+will not happen unless you hand-edit the config file before compilation,
+which I doubt will ever happen.
 
-And I'm expecting to do this only on the second one, if run_cnt >= 2.
-
-
->> +
->> +			tst_res_ TWARN "netstress failed, ret: $ret"
->> +			was_failure=1
->> +			continue
->>  		fi
->> -		return $ret
->> -	fi
-> ...
+> > +			switch (val[0]) {
+> > +			case '=':
+> > +				break;
+> > +			case ' ':
+> > +				if (is_set(val, "is not set")) {
+> > +					vars[i].choice = 'n';
+> > +					return 1;
+> > +				}
 > 
-> Kind regards,
-> Petr
-> 
+> Typically such lines begin with a comment '#' and I don't see where that
+> is handled. Possibly this will only match non standard configs?
 
+It does work actually, since we use strstr() to get the "CONFIG_" prefix
+from each line of the configuration, but I guess this needs to be fixed
+anyways since we would detect "# CONFIG_FOO=y" as enabled config feature
+even if it's commented. Again this will not happen unless you hand-edit
+the file, but it's probably worth fixing in a follow up patch.
+
+> > +				return 1;
+> > +			/* vars[i].id may be prefix to longer config var */
+> > +			default:
+> > +				return 0;
+> > +			}
+> >  
+> > -	if (!cfg)
+> > -		return 0;
+> > +			if (is_set(val, "=y")) {
+> > +				vars[i].choice = 'y';
+> > +				return 1;
+> > +			}
+> >  
+> > -	if (strncmp(cfg, conf, match->len))
+> > -		return 0;
+> > +			if (is_set(val, "=m")) {
+> > +				vars[i].choice = 'm';
+> > +				return 1;
+> > +			}
+> >  
+> > -	const char *val = &cfg[match->len];
+> > +			vars[i].choice = 'v';
+> > +			vars[i].val = strndup(val+1, strlen(val)-2);
+> >  
+> > -	switch (cfg[match->len]) {
+> > -	case '=':
+> > -		break;
+> > -	case ' ':
+> > -		if (is_set(val, "is not set")) {
+> > -			result->match = 'n';
+> > -			goto match;
+> > +			return 1;
+> >  		}
+> > -	/* fall through */
+> > -	default:
+> > -		return 0;
+> > -	}
+> > -
+> > -	if (is_set(val, "=y")) {
+> > -		result->match = 'y';
+> > -		goto match;
+> >  	}
+> >  
+> > -	if (is_set(val, "=m")) {
+> > -		result->match = 'm';
+> > -		goto match;
+> > -	}
+> > -
+> > -	result->match = 'v';
+> > -	result->value = strndup(val+1, strlen(val)-2);
+> > -
+> > -match:
+> > -	match->match = 1;
+> > -	return 1;
+> > +	return 0;
+> >  }
+> >  
+> > -void tst_kconfig_read(const char *const *kconfigs,
+> > -                      struct tst_kconfig_res results[], size_t cnt)
+> > +void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
+> >  {
+> > -	struct match matches[cnt];
+> > -	FILE *fp;
+> > -	unsigned int i, j;
+> > -	char buf[1024];
+> > -
+> > -	for (i = 0; i < cnt; i++) {
+> > -		const char *val = strchr(kconfigs[i], '=');
+> > -
+> > -		if (strncmp("CONFIG_", kconfigs[i], 7))
+> > -			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
+> > +	char line[128];
+> > +	unsigned int vars_found = 0;
+> >  
+> > -		matches[i].match = 0;
+> > -		matches[i].len = strlen(kconfigs[i]);
+> > -
+> > -		if (val) {
+> > -			matches[i].val = val + 1;
+> > -			matches[i].len -= strlen(val);
+> > -		}
+> > -
+> > -		results[i].match = 0;
+> > -		results[i].value = NULL;
+> > -	}
+> > -
+> > -	fp = open_kconfig();
+> > +	FILE *fp = open_kconfig();
+> >  	if (!fp)
+> >  		tst_brk(TBROK, "Cannot parse kernel .config");
+> >  
+> > -	while (fgets(buf, sizeof(buf), fp)) {
+> > -		for (i = 0; i < cnt; i++) {
+> > -			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
+> > -				for (j = 0; j < cnt; j++) {
+> > -					if (matches[j].match)
+> > -						break;
+> > -				}
+> > +	while (fgets(line, sizeof(line), fp)) {
+> > +		char *cfg = strstr(line, "CONFIG_");
+> >  
+> > -				if (j == cnt)
+> > -					goto exit;
+> > -			}
+> > -		}
+> > +		if (!cfg)
+> > +			continue;
+> 
+> This filtering seems unecessary and maybe will hide some corner cases
+> because it reduces kconfig_parses_line's exposure. Also practically
+> every line has 'CONFIG_' in it.
+
+Not really, there are empty lines and plenty of comments in the file
+generated by kernel infrastructure.
+
+> > +
+> > +		if (kconfig_parse_line(line, vars, vars_len))
+> > +			vars_found++;
+> >  
+> > +		if (vars_found == vars_len)
+> > +			goto exit;
+> >  	}
+> 
+> Generally, this approach seems like to result in spurious TCONFs. We
+> need to properly parse the file and fail if some line can't be
+> interpreted.
+
+Well we do expect well formatted .config file from a start, if you hand
+edit it and put whitespaces into unexpected places more things may
+fail.
+
+> >  exit:
+> > @@ -219,42 +184,63 @@ static size_t array_len(const char *const kconfigs[])
+> >  	return i;
+> >  }
+> >  
+> > -static int compare_res(struct tst_kconfig_res *res, const char *kconfig,
+> > -                       char match, const char *val)
+> > +static int compare_res(struct tst_kconfig_var *var, const char *kconfig,
+> > +                       char choice, const char *val)
+> >  {
+> > -	if (res->match != match) {
+> > -		tst_res(TINFO, "Needs kernel %s, have %c", kconfig, res->match);
+> > +	if (var->choice != choice) {
+> > +		tst_res(TINFO, "Needs kernel %s, have %c", kconfig, var->choice);
+> >  		return 1;
+> >  	}
+> >  
+> > -	if (match != 'v')
+> > +	if (choice != 'v')
+> >  		return 0;
+> >  
+> > -	if (strcmp(res->value, val)) {
+> > -		tst_res(TINFO, "Needs kernel %s, have %s", kconfig, res->value);
+> > +	if (strcmp(var->val, val)) {
+> > +		tst_res(TINFO, "Needs kernel %s, have %s", kconfig, var->val);
+> >  		return 1;
+> >  	}
+> >  
+> >  	return 0;
+> >  }
+> >  
+> > +static inline unsigned int get_len(const char* kconfig)
+> > +{
+> > +	char *sep = index(kconfig, '=');
+> > +
+> > +	if (!sep)
+> > +		return strlen(kconfig);
+> > +
+> > +	return sep - kconfig;
+> > +}
+> > +
+> >  void tst_kconfig_check(const char *const kconfigs[])
+> >  {
+> > -	size_t cnt = array_len(kconfigs);
+> > -	struct tst_kconfig_res results[cnt];
+> > +	size_t vars_cnt = array_len(kconfigs);
+> > +	struct tst_kconfig_var vars[vars_cnt];
+> >  	unsigned int i;
+> >  	int abort_test = 0;
+> >  
+> > -	tst_kconfig_read(kconfigs, results, cnt);
+> > +	memset(vars, 0, sizeof(*vars) * vars_cnt);
+> > +
+> > +	for (i = 0; i < vars_cnt; i++) {
+> > +		vars[i].id_len = get_len(kconfigs[i]);
+> > +
+> > +		if (vars[i].id_len >= sizeof(vars[i].id))
+> > +			tst_brk(TBROK, "kconfig var id too long!");
+> > +
+> > +		strncpy(vars[i].id, kconfigs[i], vars[i].id_len);
+> > +	}
+> > +
+> > +	tst_kconfig_read(vars, vars_cnt);
+> >  
+> > -	for (i = 0; i < cnt; i++) {
+> > -		if (results[i].match == 0) {
+> > +	for (i = 0; i < vars_cnt; i++) {
+> > +		if (vars[i].choice == 0) {
+> >  			tst_res(TINFO, "Missing kernel %s", kconfigs[i]);
+> >  			abort_test = 1;
+> >  			continue;
+> >  		}
+> >  
+> > -		if (results[i].match == 'n') {
+> > +		if (vars[i].choice == 'n') {
+> >  			tst_res(TINFO, "Kernel %s is not set", kconfigs[i]);
+> >  			abort_test = 1;
+> >  			continue;
+> > @@ -263,21 +249,21 @@ void tst_kconfig_check(const char *const kconfigs[])
+> >  		const char *val = strchr(kconfigs[i], '=');
+> >  
+> >  		if (val) {
+> > -			char match = 'v';
+> > +			char choice = 'v';
+> >  			val++;
+> >  
+> >  			if (!strcmp(val, "y"))
+> > -				match = 'y';
+> > +				choice = 'y';
+> >  
+> >  			if (!strcmp(val, "m"))
+> > -				match = 'm';
+> > +				choice = 'm';
+> >  
+> > -			if (compare_res(&results[i], kconfigs[i], match, val))
+> > +			if (compare_res(&vars[i], kconfigs[i], choice, val))
+> >  				abort_test = 1;
+> >  
+> >  		}
+> >  
+> > -		free(results[i].value);
+> > +		free(vars[i].val);
+> >  	}
+> >  
+> >  	if (abort_test)
+> > -- 
+> > 2.26.2
+> 
+> I suppose most of the problems here stem from the original code, but
+> your patch may as well clear it up :-)
+
+Actually the clear way how to fix this is in a separate patch so that
+logical changes are split into different patches.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
