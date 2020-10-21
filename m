@@ -1,246 +1,862 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 21 Oct 2020 21:42:25 +0530
-Subject: [LTP] FAIL: LTP: clone08.c:135: FAIL: ctid != getpid() (0 != 1008)
-Message-ID: <CA+G9fYsZJXU+BDkhAXqxq=fq5hNr1RJaenDDW8P4gC6-=Q=dQg@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 21 Oct 2020 17:34:04 +0100
+Subject: [LTP] [PATCH 2/3] lib: Add generic boolean expression parser
+ and eval
+In-Reply-To: <20201020100910.10828-3-chrubis@suse.cz>
+References: <20201020100910.10828-1-chrubis@suse.cz>
+ <20201020100910.10828-3-chrubis@suse.cz>
+Message-ID: <871rhrwnb7.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LTP syscalls clone08 and clone301 FAILED on x86_64 KASAN enabled build
-But tests are getting PASS on Non KASAN build.
-This regression started happening from Linux next-20201015 nowards
-Please refer to the strace output at the bottom of this email.
+Hello,
 
-There are few more regression on linux next i will share those failure
-in a separate email,
- ltp-syscalls-tests:
-    * clone08
-    * clone301
-    * fcntl34
-    * fcntl34_64
-    * fcntl36
-    * fcntl36_64
-    * keyctl02
-    * rt_tgsigqueueinfo01
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git describe: next-20201015
-  kernel-config:
-https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/kernel.config
+> Add a simple and generic boolean expression parser and evaluator. This
+> is a second step in order to implement more complex kconfig expressions,
+> but since we are likely to reuse the parser for other purposes in the
+> future it's implemented as a generic boolean parser.
 
-steps to reproduce:
-  # boot x86_64 with KASAN enabled kernel and run tests
-  # cd /opt/ltp/testcases/bin
-  # ./clone08
-  # ./clone301
+This looks really excellent in general!
 
-clone08:
----------
-clone08.c:71: INFO: running CLONE_PARENT
-clone08.c:115: PASS: clone and forked child has the same parent
-clone08.c:71: INFO: running CLONE_CHILD_SETTID
-clone08.c:135: FAIL: ctid != getpid() (0 != 1008)
-clone08.c:71: INFO: running CLONE_PARENT_SETTID
-clone08.c:145: FAIL: ptid != getpid() (0 != 1009)
-clone08.c:71: INFO: running CLONE_THREAD
-clone08.c:222: PASS: clone has the same thread id
-clone08.c:212: PASS: futex exit on ctid change, ctid: 0
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  include/tst_bool_expr.h          |  80 +++++
+>  lib/newlib_tests/.gitignore      |   1 +
+>  lib/newlib_tests/tst_bool_expr.c | 127 ++++++++
+>  lib/tst_bool_expr.c              | 504 +++++++++++++++++++++++++++++++
+>  4 files changed, 712 insertions(+)
+>  create mode 100644 include/tst_bool_expr.h
+>  create mode 100644 lib/newlib_tests/tst_bool_expr.c
+>  create mode 100644 lib/tst_bool_expr.c
+>
+> diff --git a/include/tst_bool_expr.h b/include/tst_bool_expr.h
+> new file mode 100644
+> index 000000000..e163690ab
+> --- /dev/null
+> +++ b/include/tst_bool_expr.h
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
+> + */
+> +
+> +#ifndef TST_BOOL_EXPR_H__
+> +#define TST_BOOL_EXPR_H__
+> +
+> +enum tst_op {
+> +	TST_OP_NOT,
+> +	TST_OP_AND,
+> +	TST_OP_OR,
+> +	TST_OP_VAR,
+> +	/* Used only internally */
+> +	TST_OP_LPAR,
+> +	TST_OP_RPAR,
+> +};
+> +
+> +struct tst_expr {
+> +	enum tst_op op;
+> +	struct tst_expr *next;
+> +	char *err;
+> +	void *priv;
 
-clone301:
-----------
-clone301.c:159: PASS: Parent got correct signal SIGCHLD
-clone301.c:159: PASS: Parent got correct signal SIGUSR2
-clone301.c:159: PASS: Parent got correct signal SIGCHLD
-clone301.c:159: PASS: Parent got correct signal SIGCHLD
-clone301.c:138: FAIL: pidfd_send_signal() failed: EBADF (9)
-clone301.c:79: FAIL: Child haven't got signal
+I'm not sure if this is used?
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> +	char val[];
 
-full test log link,
-https://lkft.validation.linaro.org/scheduler/job/1844087
+This could be replaced by 'struct tok', see below.
 
-strace output:
-+ strace -f ./clone08
-execve(\"./clone08\", [\"./clone08\"], 0x7ffe70dccb78 /* 22 vars */) = 0
-brk(NULL)                               = 0x2531000
-access(\"/etc/ld.so.preload\", R_OK)      = -1 ENOENT (No such file or
-directory)
-openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=19408, ...}) = 0
-mmap(NULL, 19408, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f7e61446000
-close(3)                                = 0
-openat(AT_FDCWD, \"/lib/libc.so.6\", O_RDONLY|O_CLOEXEC) = 3
-read(3, \"\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p\2\0\0\0\0\0\"...,
-832) = 832
-fstat(3, {st_mode=S_IFREG|0755, st_size=1771456, ...}) = 0
-mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7f7e61444000
-mmap(NULL, 3877600, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
-0) = 0x7f7e60e74000
-mprotect(0x7f7e6101e000, 2093056, PROT_NONE) = 0
-mmap(0x7f7e6121d000, 24576, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1a9000) = 0x7f7e6121d000
-mmap(0x7f7e61223000, 15072, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f7e61223000
-close(3)                                = 0
-arch_prctl(ARCH_SET_FS, 0x7f7e61445580) = 0
-mprotect(0x7f7e6121d000, 16384, PROT_READ) = 0
-mprotect(0x61c000, 4096, PROT_READ)     = 0
-mprotect(0x7f7e6144b000, 4096, PROT_READ) = 0
-munmap(0x7f7e61446000, 19408)           = 0
-getpid()                                = 525
-access(\"/dev/shm\", F_OK)                = 0
-getpid()                                = 525
-openat(AT_FDCWD, \"/dev/shm/ltp_clone08_525\", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
-chmod(\"/dev/shm/ltp_clone08_525\", 0666) = 0
-ftruncate(3, 4096)                      = 0
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0x7f7e6144a000
-unlink(\"/dev/shm/ltp_clone08_525\")      = 0
-close(3)                                = 0
-rt_sigaction(SIGALRM, {sa_handler=0x403e40, sa_mask=[ALRM],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-rt_sigaction(SIGUSR1, {sa_handler=0x403ce0, sa_mask=[USR1],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-ioctl(2, TCGETS, {B115200 opost isig icanon echo ...}) = 0
-write(2, \"tst_test.c:1246: INFO: [\"..., 64tst_test.c:1246: INFO:
-Timeout per run is 0h 05m 00s
-) = 64
-getpid()                                = 525
-alarm(300)                              = 0
-rt_sigaction(SIGINT, {sa_handler=0x403df0, sa_mask=[INT],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-clone(strace: Process 526 attached
-child_stack=NULL,
-flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
-child_tidptr=0x7f7e61445850) = 526
-[pid   525] wait4(526,  <unfinished ...>
-[pid   526] rt_sigaction(SIGALRM, {sa_handler=SIG_DFL, sa_mask=[ALRM],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=0x403e40, sa_mask=[ALRM], sa_flags=SA_RESTORER|SA_RESTART,
-sa_restorer=0x7f7e60ea85b0}, 8) = 0
-[pid   526] rt_sigaction(SIGUSR1, {sa_handler=SIG_DFL, sa_mask=[USR1],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=0x403ce0, sa_mask=[USR1], sa_flags=SA_RESTORER|SA_RESTART,
-sa_restorer=0x7f7e60ea85b0}, 8) = 0
-[pid   526] rt_sigaction(SIGINT, {sa_handler=SIG_DFL, sa_mask=[INT],
-sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
-{sa_handler=0x403df0, sa_mask=[INT], sa_flags=SA_RESTORER|SA_RESTART,
-sa_restorer=0x7f7e60ea85b0}, 8) = 0
-[pid   526] setpgid(0, 0)               = 0
-[pid   526] clock_gettime(CLOCK_MONOTONIC, {tv_sec=248, tv_nsec=252551861}) = 0
-[pid   526] getppid()                   = 525
-[pid   526] kill(525, SIGUSR1)          = 0
-[pid   525] <... wait4 resumed> 0x7ffc8bca80d8, 0, NULL) = ?
-ERESTARTSYS (To be restarted if SA_RESTART is set)
-[pid   525] --- SIGUSR1 {si_signo=SIGUSR1, si_code=SI_USER,
-si_pid=526, si_uid=0} ---
-[pid   525] alarm(300 <unfinished ...>
-[pid   526] brk(NULL <unfinished ...>
-[pid   525] <... alarm resumed> )       = 300
-[pid   526] <... brk resumed> )         = 0x2531000
-[pid   525] rt_sigreturn({mask=[]} <unfinished ...>
-[pid   526] brk(0x2552000 <unfinished ...>
-[pid   525] <... rt_sigreturn resumed> ) = 61
-[pid   526] <... brk resumed> )         = 0x2552000
-[pid   525] wait4(526,  <unfinished ...>
-[pid   526] getpid()                    = 526
-[pid   526] mmap(NULL, 1052672, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f7e61343000
-[pid   526] getpid()                    = 526
-[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 52clone08.c:71:
-INFO: running CLONE_PARENT
-) = 52
-[pid   526] clone(child_stack=NULL,
-flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
-child_tidptr=0x7f7e61445850) = 527
-strace: Process 527 attached
-[pid   526] wait4(-1,  <unfinished ...>
-[pid   527] getppid()                   = 526
-[pid   527] clone(strace: Process 528 attached
- <unfinished ...>
-[pid   528] getppid( <unfinished ...>
-[pid   527] <... clone resumed> child_stack=0x7f7e61443000,
-flags=CLONE_PARENT|SIGCHLD) = 528
-[pid   528] <... getppid resumed> )     = 526
-[pid   527] exit_group(0)               = ?
-[pid   528] write(2, \"clone08.c:115: PASS: "..., 75clone08.c:115:
-PASS: clone and forked child has the same parent
-) = 75
-[pid   528] exit(0)                     = ?
-[pid   527] +++ exited with 0 +++
-[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
-0}], 0, NULL) = 527
-[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
-si_pid=527, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
-[pid   526] wait4(-1,  <unfinished ...>
-[pid   528] +++ exited with 0 +++
-[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
-0}], 0, NULL) = 528
-[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
-si_pid=528, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
-[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
-[pid   526] getpid()                    = 526
-[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
-[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 58clone08.c:71:
-INFO: running CLONE_CHILD_SETTID
-) = 58
-[pid   526] clone(strace: Process 529 attached
-child_stack=0x7f7e61443000, flags=CLONE_CHILD_SETTID|SIGCHLD,
-child_tidptr=0x61d2e4) = 529
-[pid   529] getpid( <unfinished ...>
-[pid   526] wait4(-1,  <unfinished ...>
-[pid   529] <... getpid resumed> )      = 529
-[pid   529] getpid()                    = 529
-[pid   529] write(2, \"clone08.c:135: FAIL: "..., 60clone08.c:135:
-FAIL: ctid != getpid() (0 != 529)
-) = 60
-[pid   529] exit(0)                     = ?
-[pid   529] +++ exited with 0 +++
-[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
-0}], 0, NULL) = 529
-[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
-si_pid=529, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
-[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
-[pid   526] getpid()                    = 526
-[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
-[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 59clone08.c:71:
-INFO: running CLONE_PARENT_SETTID
-) = 59
-[pid   526] clone(strace: Process 530 attached
-child_stack=0x7f7e61443000,
-flags=CLONE_VM|CLONE_PARENT_SETTID|SIGCHLD, parent_tidptr=0x61d2e8) =
-530
-[pid   530] getpid( <unfinished ...>
-[pid   526] wait4(-1,  <unfinished ...>
-[pid   530] <... getpid resumed> )      = 530
-[pid   530] getpid()                    = 530
-[pid   530] write(2, \"clone08.c:145: FAIL: "..., 60clone08.c:145:
-FAIL: ptid != getpid() (0 != 530)
-) = 60
-[pid   530] exit(0)                     = ?
-[pid   530] +++ exited with 0 +++
-[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
-0}], 0, NULL) = 530
-[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
-si_pid=530, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
-[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
-[pid   526] getpid()                    = 526
+> +};
+> +
+> +/*
+> + * Parses an boolean expression and returns a simplified RPN version.
+> + *
+> + * If expression is not valid the call prints error into stderr and returns
+> + * NULL. On success pointer to an expression is returned which can be evaluated
+> + * by the tst_bool_expr_eval() function and has to be later freed by the
+> + * caller.
+> + *
+> + * The boolean expression can consists of:
+> + *
+> + * - unary negation opeartion !
+> + * - two binary operations & and |
+> + * - correct sequence of parentheses ()
+> + * - strings that are treated as boolean variables
+> + *
+> + *  e.g. '(A | B) & C' or 'Variable_1 & Variable_2' are both a valid boolean
+> + *  expressions.
+> + *
+> + *  @expr String containing a boolean expression to be parsed.
+> + *  @return Pointer to an RPN expression.
+> + */
+> +struct tst_expr *tst_bool_expr_parse(const char *expr);
+> +
+> +/*
+> + * Prints an string representation of the expression into a FILE.
+> + *
+> + * @param A FILE to print to.
+> + * @expr An expression to print.
+> + */
+> +void tst_bool_expr_print(FILE *f, struct tst_expr *expr);
+> +
+> +/*
+> + * Evaluates an expression given a map for variables.
+> + *
+> + * The call will fail if:
+> + * - map function returns -1 which indicates undefined variable
+> + * - the eval function runs out of stack
+> + *
+> + * @param expr Boolean expression in RPN.
+> + * @param map Mapping function for boolean variables.
+> + *
+> + * @return Returns 0 or 1 if expression was evaluated correctly and -1 on error.
+> + */
+> +int tst_bool_expr_eval(struct tst_expr *expr,
+> +                       int (*map)(struct tst_expr *var));
+> +
+> +/*
+> + * Frees the memory allocated by the tst_bool_expr_parse().
+> + *
+> + * @param Boolean expression.
+> + */
+> +void tst_bool_expr_free(struct tst_expr *expr);
+> +
+> +#endif	/* TST_BOOL_EXPR_H__ */
+> diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+> index 44bc6526f..1e96db1da 100644
+> --- a/lib/newlib_tests/.gitignore
+> +++ b/lib/newlib_tests/.gitignore
+> @@ -33,3 +33,4 @@ test_exec_child
+>  test_kconfig
+>  variant
+>  test_guarded_buf
+> +tst_bool_expr
+> diff --git a/lib/newlib_tests/tst_bool_expr.c b/lib/newlib_tests/tst_bool_expr.c
+> new file mode 100644
+> index 000000000..5f5e618dc
+> --- /dev/null
+> +++ b/lib/newlib_tests/tst_bool_expr.c
+> @@ -0,0 +1,127 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
+> + */
+> +
+> +/*
+> + * Basic unit test for the tst_strstatus() function.
+> + */
+> +
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include "tst_test.h"
+> +#include "tst_bool_expr.h"
+> +
+> +static int a, b, c;
+> +
+> +static int map(struct tst_expr *var)
+> +{
+> +	if (!strcmp(var->val, "A"))
+> +		return a;
+> +
+> +	if (!strcmp(var->val, "B"))
+> +		return b;
+> +
+> +	if (!strcmp(var->val, "C"))
+> +		return c;
+> +
+> +	if (!strcmp(var->val, "True"))
+> +		return 1;
+> +
+> +	if (!strcmp(var->val, "False"))
+> +		return 0;
+> +
+> +	return -1;
+> +}
+> +
+> +static void parse_fail(const char *expr)
+> +{
+> +	struct tst_expr *res;
+> +
+> +	tst_res(TINFO, "Parsing '%s'", expr);
+> +
+> +	res = tst_bool_expr_parse(expr);
+> +
+> +	if (res) {
+> +		printf("In RPN: ");
+> +		tst_bool_expr_print(stdout, res);
+> +		printf("\n");
+> +		tst_bool_expr_free(res);
+> +		tst_res(TFAIL, "Expression was parsed");
+> +	} else {
+> +		tst_res(TPASS, "Parser returned an error");
+> +	}
+> +}
+> +
+> +static void do_eval_test(const char *expr_str, int set_a, int set_b, int set_c, int exp_res)
+> +{
+> +	struct tst_expr *expr;
+> +	int res;
+> +
+> +	a = set_a;
+> +	b = set_b;
+> +	c = set_c;
+> +
+> +	tst_res(TINFO, "'%s' A=%i B=%i C=%i == %i", expr_str, a, b, c, exp_res);
+> +
+> +	expr = tst_bool_expr_parse(expr_str);
+> +
+> +	if (!expr) {
+> +		tst_res(TFAIL, "Parser returned error");
+> +		return;
+> +	}
+> +
+> +	printf("In RPN: ");
+> +	tst_bool_expr_print(stdout, expr);
+> +	printf("\n");
+> +
+> +	res = tst_bool_expr_eval(expr, map);
+> +
+> +	if (res == exp_res)
+> +		tst_res(TPASS, "Got %i", res);
+> +	else
+> +		tst_res(TFAIL, "Got %i", res);
+> +
+> +	tst_bool_expr_free(expr);
+> +}
+> +
+> +static void do_test(void)
+> +{
+> +	do_eval_test("(A | B) & !!C", 0, 0, 0, 0);
+> +	do_eval_test("(A | B) & !!C", 1, 0, 1, 1);
+> +	do_eval_test("!A & B", 1, 0, 0, 0);
+> +	do_eval_test("!A & B", 0, 1, 0, 1);
+> +	do_eval_test("A & !B", 1, 0, 0, 1);
+> +	do_eval_test("!!A & !!B", 0, 1, 0, 0);
+> +	do_eval_test("!!A & !!B", 1, 1, 0, 1);
+> +	do_eval_test("!(A & B) & C", 1, 1, 0, 0);
+> +	do_eval_test("A & (B | C)", 1, 1, 0, 1);
+> +	do_eval_test("((((A)))&(B))", 1, 1, 0, 1);
+> +	do_eval_test("True | A", 0, 0, 0, 1);
+> +	do_eval_test("False & A", 1, 0, 0, 0);
+> +	do_eval_test("! Undefined", 0, 0, 0, -1);
 
-strace output log link,
-https://lkft.validation.linaro.org/scheduler/job/1865313#L2121
+Can we also test "A & B | C" without brackets?
 
-Test case links:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/clone/clone08.c
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/clone3/clone301.c
+> +
+> +	parse_fail("A!");
+> +	parse_fail("A &");
+> +	parse_fail("A B");
+> +	parse_fail("A ) B");
+> +	parse_fail("A ( B");
+> +	parse_fail("A ( B )");
+> +	parse_fail("A |");
+> +	parse_fail("A ! B");
+> +	parse_fail("A! & B");
+> +	parse_fail("A & | B");
+> +	parse_fail("A & (B |)");
+> +	parse_fail("A & ( | B)");
+> +	parse_fail("A & B &");
+> +	parse_fail("((A )");
+> +	parse_fail("& A");
+> +	parse_fail("! &");
+> +	parse_fail(")");
+> +	parse_fail("| A");
+> +	parse_fail("");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = do_test,
+> +};
+> diff --git a/lib/tst_bool_expr.c b/lib/tst_bool_expr.c
+> new file mode 100644
+> index 000000000..3cb395664
+> --- /dev/null
+> +++ b/lib/tst_bool_expr.c
+> @@ -0,0 +1,504 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
+> + */
+> +/*
+> + * Boolean expression is evaluated in three steps.
+> + *
+> + * First of all the string containing the expression is tokenized.
+> + *
+> + * Secondly the the expression is transformed to a postfix (RPN) notation by
+> + * the shunting yard algorithm and the correctness of the expression is checked
+> + * during the transformation as well. The fact that parenthesis are matched is
+> + * asserted by the shunting yard algorithm itself while the rest is checked
+> + * simply by checking if the preceding token is in a set of allowed tokens.
+> + * This could be thought of as a simple open-coded state machine.
+> + *
+> + * An expression in the RPN form can be evaluated given a variable mapping
+> + * function. The evaluation ignores most of errors because invalid expression
+> + * will be rejected in the second step.
+> + */
+> +
+> +#include <string.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include "tst_bool_expr.h"
+> +
+> +#define MAX_TOK 1024
+> +
+> +struct tok {
+> +	unsigned int pos;
+> +	char buf[MAX_TOK];
+
+Instead we could save an index into the input string here and record the
+length. Then there is no need to copy the string or guess a suitable
+buffer length and we record the original token location for error
+reporting (although it seems you reconstruct the expression so it's not
+so useful).
+
+Ofcourse that assumes the original string will remain in memory, but
+usually it will be a static string in tst_test. If we use the same
+parser for .config, then it still could just be mmapped in until we have
+finished with it.
+
+I guess if we used the same tokenizer for the concurrent executor then
+the original string may not exist, but that can be dealt with later.
+
+> +};
+> +
+> +static inline void tok_append(struct tok *tok, char c)
+> +{
+> +	if (tok->pos + 2 >= MAX_TOK) {
+> +		tok->buf[tok->pos+1] = 0;
+> +		fprintf(stderr, "Truncating token '%s'!", tok->buf);
+> +	}
+> +
+> +	tok->buf[tok->pos++] = c;
+> +}
+> +
+> +static inline char *tok_get(struct tok *tok)
+> +{
+> +	if (!tok->pos)
+> +		return NULL;
+> +
+> +	tok->buf[tok->pos] = '\0';
+> +
+> +	tok->pos = 0;
+> +
+> +	return tok->buf;
+> +}
+> +
+> +static struct tst_expr *new_var(const char *val)
+
+This could be modifed to accept 'struct tok' instead of a null
+terminated string. In any case it shouldn't the arg be const?
+
+> +{
+> +	struct tst_expr *ret;
+> +
+> +	if (!val)
+> +		return NULL;
+> +
+> +	ret = malloc(sizeof(struct tst_expr) + strlen(val) + 1);
+> +	if (!ret)
+> +		return NULL;
+> +
+> +	ret->op = TST_OP_VAR;
+> +	ret->next = NULL;
+> +	ret->err = NULL;
+> +	strcpy(ret->val, val);
+
+and another string copy can be removed.
+
+> +
+> +	return ret;
+> +}
+> +
+> +enum tst_op char_to_op(char c)
+> +{
+> +	switch (c) {
+> +	case '(':
+> +		return TST_OP_LPAR;
+> +	case ')':
+> +		return TST_OP_RPAR;
+> +	case '&':
+> +		return TST_OP_AND;
+> +	case '|':
+> +		return TST_OP_OR;
+> +	case '!':
+> +		return TST_OP_NOT;
+> +	default:
+> +		return -1;
+
+This should probably be an enum value like TST_OP_INVAL (still may be
+-1), otherwise it is likely to confuse static anlyses tools.
+
+> +	}
+> +}
+> +
+> +static struct tst_expr *new_op(char c)
+> +{
+> +	struct tst_expr *ret;
+> +
+> +	ret = malloc(sizeof(struct tst_expr));
+> +	if (!ret)
+> +		return NULL;
+> +
+> +	ret->op = char_to_op(c);
+> +	ret->next = NULL;
+> +	ret->err = NULL;
+> +
+> +	return ret;
+> +}
+> +
+> +struct op_list {
+> +	struct tst_expr *first;
+> +	struct tst_expr *last;
+> +	unsigned int cnt;
+> +};
+> +
+> +static void op_list_append(struct op_list *list, struct tst_expr *val)
+> +{
+> +	if (!val)
+> +		return;
+> +
+> +	if (!list->first)
+> +		list->first = val;
+> +
+> +	if (list->last)
+> +		list->last->next = val;
+> +
+> +	list->last = val;
+> +
+> +	list->cnt++;
+> +}
+> +
+> +static void tokenize(const char *expr, struct op_list *ret)
+> +{
+> +	struct tok buf = {};
+> +	size_t i;
+> +
+> +	for (i = 0; expr[i]; i++) {
+> +		switch (expr[i]) {
+> +		case '(':
+> +		case ')':
+> +		case '!':
+> +		case '&':
+> +		case '|':
+> +			op_list_append(ret, new_var(tok_get(&buf)));
+> +			op_list_append(ret, new_op(expr[i]));
+> +		break;
+> +		case '\t':
+> +		case ' ':
+> +			op_list_append(ret, new_var(tok_get(&buf)));
+> +		break;
+> +		default:
+> +			tok_append(&buf, expr[i]);
+> +		break;
+> +		}
+> +	}
+> +
+> +	op_list_append(ret, new_var(tok_get(&buf)));
+> +}
+> +
+> +void tst_bool_expr_print(FILE *f, struct tst_expr *expr)
+> +{
+> +	struct tst_expr *i;
+> +	int prev_op = 0;
+> +
+> +	for (i = expr; i; i = i->next) {
+> +		if (i->op != TST_OP_VAR && prev_op)
+> +			fprintf(f, " ");
+> +
+> +		switch (i->op) {
+> +		case TST_OP_AND:
+> +			fprintf(f, "&");
+> +		break;
+> +		case TST_OP_OR:
+> +			fprintf(f, "|");
+> +		break;
+> +		case TST_OP_NOT:
+> +			fprintf(f, "!");
+> +		break;
+> +		case TST_OP_LPAR:
+> +			fprintf(f, "(");
+> +		break;
+> +		case TST_OP_RPAR:
+> +			fprintf(f, ")");
+> +		break;
+> +		case TST_OP_VAR:
+> +			fprintf(f, " %s ", i->val);
+> +		break;
+> +		}
+> +
+> +		if (i->op == TST_OP_VAR)
+> +			prev_op = 0;
+> +		else
+> +			prev_op = 1;
+> +	}
+> +}
+> +
+> +static void tst_bool_expr_err(FILE *f, struct tst_expr *expr)
+> +{
+> +	struct tst_expr *i;
+> +	int prev_op = 0;
+> +	unsigned int spaces = 0;
+> +
+> +	fprintf(f, "\n");
+> +
+> +	for (i = expr; i; i = i->next) {
+> +		if (i->err)
+> +			break;
+> +
+> +		if (i->op != TST_OP_VAR && prev_op)
+> +			spaces++;
+> +
+> +		switch (i->op) {
+> +		case TST_OP_VAR:
+> +			spaces += 2 + strlen(i->val);
+> +		break;
+> +		default:
+> +			spaces++;
+> +		}
+> +
+> +		if (i->op == TST_OP_VAR)
+> +			prev_op = 0;
+> +		else
+> +			prev_op = 1;
+> +	}
+> +
+> +	while (spaces--)
+> +		putc(' ', f);
+> +
+> +	fprintf(f, "^\n");
+> +	fprintf(f, "%s\n", i->err);
+> +}
+> +
+> +static inline void stack_push(struct tst_expr *stack[], unsigned int *stack_pos,
+> +                              struct tst_expr *op)
+> +{
+> +	stack[(*stack_pos)++] = op;
+> +}
+> +
+> +static inline int stack_empty(unsigned int stack_pos)
+> +{
+> +	return stack_pos == 0;
+> +}
+> +
+> +static inline struct tst_expr *stack_pop(struct tst_expr *stack[],
+> +                                          unsigned int *stack_pos)
+> +{
+> +	if (stack_empty(*stack_pos))
+> +		return NULL;
+> +
+> +	return stack[--(*stack_pos)];
+> +}
+> +
+> +static inline enum tst_op stack_top_op(struct tst_expr *stack[],
+> +                                       unsigned int stack_pos)
+
+Just a nit, but usually this is called peek, right?
+
+As we are peeking at the top/next entry without removing it.
+
+> +{
+> +	if (stack_empty(stack_pos))
+> +		return -1;
+> +
+> +	return stack[stack_pos - 1]->op;
+> +}
+
+Perhaps we should copy & paste the dynamic preallocated vector we
+created for gfxprim? We are doing a bunch of mallocs and reinventing
+linked lists and stacks, which can all be represented by the vector
+IIRC.
+
+> +
+> +/*
+> + * This is a complete list of which tokens can happen before any of:
+> + *  - variable
+> + *  - left parentesis
+> + *  - negation
+> + *
+> + * The -1 represents start of the expression.
+
+Then it should have an entry in the enum.
+
+> + */
+> +static inline int check_one(int op)
+
+I guess there is no good name for this xD
+
+> +{
+> +	switch (op) {
+> +	case TST_OP_AND:
+> +	case TST_OP_OR:
+> +	case TST_OP_NOT:
+> +	case -1:
+> +	case TST_OP_LPAR:
+> +		return 0;
+> +	default:
+> +		return 1;
+> +	}
+> +}
+> +
+> +/*
+> + * And this checks for tokens that can happen before any of:
+> + * - right parentesis
+> + * - and
+> + * - or
+> + *
+> + * This is also used to check that the last token in expression is correct one.
+> + */
+> +static inline int check_two(int op)
+> +{
+> +	switch (op) {
+> +	case TST_OP_VAR:
+> +	case TST_OP_RPAR:
+> +		return 1;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static struct tst_expr *shunting_yard(struct op_list *list)
+> +{
+
+        /* Translator stack */
+> +	struct tst_expr *stack[list->cnt];
+> +	unsigned int stack_pos = 0;
+> +	struct tst_expr *out[list->cnt + 1];
+> +	unsigned int out_pos = 0;
+> +	struct tst_expr *pars[list->cnt];
+> +	unsigned int pars_pos = 0;
+
+It seems we just push stuff to this stack then free everything at the
+end?
+
+> +	struct tst_expr *i;
+> +	unsigned int j;
+> +	int prev_op = -1;
+
+enum tst_op prev_op = TST_OP_START;
+
+> +
+> +	for (i = list->first; i; i = i->next) {
+> +		switch (i->op) {
+> +		case TST_OP_VAR:
+> +			if (check_one(prev_op) && prev_op != TST_OP_LPAR) {
+> +				i->err = "Expected operation";
+> +				goto err;
+> +			}
+> +
+> +			stack_push(out, &out_pos, i);
+> +
+> +			/* pop all negations */
+
+Clearly :-)
+
+This is not the hardest thing to understand here!
+
+> +			while (stack_top_op(stack, stack_pos) == TST_OP_NOT)
+> +				stack_push(out, &out_pos, stack_pop(stack, &stack_pos));
+> +		break;
+> +		case TST_OP_LPAR:
+> +			if (check_one(prev_op)) {
+> +				i->err = "Expected operation";
+> +				goto err;
+> +			}
+> +
+> +			stack_push(stack, &stack_pos, i);
+> +		break;
+> +		case TST_OP_RPAR:
+> +			if (!check_two(prev_op)) {
+> +				i->err = "Expected variable or )";
+> +				goto err;
+> +			}
+> +
+> +			stack_push(pars, &pars_pos, i);
+> +
+> +			/* pop everything till ( */
+> +			for (;;) {
+> +				struct tst_expr *op = stack_pop(stack, &stack_pos);
+> +
+> +				if (!op) {
+> +					i->err = "Missing (";
+> +					goto err;
+> +				}
+> +
+> +				if (op->op == TST_OP_LPAR) {
+> +					stack_push(pars, &pars_pos, op);
+> +					break;
+> +				}
+> +
+> +				stack_push(out, &out_pos, op);
+> +			}
+> +
+> +			/* pop all negations */
+> +			while (stack_top_op(stack, stack_pos) == TST_OP_NOT)
+> +				stack_push(out, &out_pos, stack_pop(stack, &stack_pos));
+> +		break;
+> +		case TST_OP_NOT:
+> +			if (check_one(prev_op)) {
+> +				i->err = "Expected operation";
+> +				goto err;
+> +			}
+> +			stack_push(stack, &stack_pos, i);
+> +		break;
+> +		case TST_OP_AND:
+> +		case TST_OP_OR:
+> +			if (!check_two(prev_op)) {
+> +				i->err = "Expected variable or (";
+> +				goto err;
+> +			}
+> +
+> +			/* pop all binary ops */
+> +			for (;;) {
+
+It seems that we can only have at most one previous binary op (i.e. '&'
+or '|') on the stack before '(' or NULL. Any additional ops after '(' or
+NULL are removed.
+
+So the loop can be limited to two iterations and we can assert it never
+reaches a third.
+
+> +				enum tst_op top_op;
+> +
+> +				if (stack_empty(stack_pos))
+> +					break;
+> +
+> +				top_op = stack_top_op(stack, stack_pos);
+> +
+> +				if (top_op == TST_OP_LPAR ||
+> +				    top_op == TST_OP_NOT)
+> +					break;
+
+'!'s are removed directly after a variable is seen or a '(' is
+removed. So it should be an error to find one on the stack at this
+point.
+
+> +
+> +				stack_push(out, &out_pos, stack_pop(stack, &stack_pos));
+> +			}
+> +			stack_push(stack, &stack_pos, i);
+> +		break;
+> +		}
+> +
+> +		prev_op = i->op;
+> +	}
+> +
+> +	if (!check_two(list->last->op)) {
+> +		list->last->err = "Unfinished expression";
+> +		goto err;
+> +	}
+> +
+> +	/* pop remaining operations */
+> +	while ((i = stack_pop(stack, &stack_pos))) {
+> +		if (i->op == TST_OP_LPAR) {
+> +			i->err = "Missing )";
+> +			goto err;
+> +		}
+> +
+> +		stack_push(out, &out_pos, i);
+> +	}
+> +
+> +	/* free parentesis */
+> +	for (j = 0; j < pars_pos; j++)
+> +		free(pars[j]);
+> +
+> +	/* reconstruct the list */
+> +	out[out_pos] = NULL;
+> +
+> +	for (j = 0; j < out_pos; j++)
+> +		out[j]->next = out[j + 1];
+> +
+> +	return out[0];
+> +err:
+> +	return NULL;
+> +}
+> +
+> +struct tst_expr *tst_bool_expr_parse(const char *expr)
+> +{
+> +	struct op_list list = {};
+> +	struct tst_expr *ret;
+> +
+> +	tokenize(expr, &list);
+> +
+> +	if (!list.first)
+> +		return NULL;
+> +
+> +	ret = shunting_yard(&list);
+> +
+> +	if (!ret) {
+> +		tst_bool_expr_print(stderr, list.first);
+> +		tst_bool_expr_err(stderr, list.first);
+> +		tst_bool_expr_free(list.first);
+> +		return NULL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +#define MAX_STACK 16
+> +
+> +int tst_bool_expr_eval(struct tst_expr *expr,
+> +                       int (*map)(struct tst_expr *var))
+> +{
+> +	struct tst_expr *i;
+> +	int stack[MAX_STACK];
+> +	int pos = -1;
+> +
+> +	for (i = expr; i; i = i->next) {
+> +		switch (i->op) {
+> +		case TST_OP_NOT:
+> +			stack[pos] = !stack[pos];
+> +		break;
+> +		case TST_OP_OR:
+> +			stack[pos-1] = stack[pos] || stack[pos-1];
+> +			pos--;
+> +		break;
+> +		case TST_OP_AND:
+> +			stack[pos-1] = stack[pos] && stack[pos-1];
+> +			pos--;
+> +		break;
+> +		case TST_OP_VAR:
+> +			if (pos + 1 >= MAX_STACK) {
+> +				fprintf(stderr, "Eval out of stack!\n");
+> +				return -1;
+> +			}
+> +
+> +			stack[++pos] = map(i);
+> +
+> +			/* map reported undefined variable -> abort */
+> +			if (stack[pos] == -1)
+> +				return -1;
+> +		break;
+> +		/* does not happen */
+> +		default:
+> +		break;
+> +		}
+> +	}
+> +
+> +	return stack[0];
+> +}
+> +
+> +void tst_bool_expr_free(struct tst_expr *expr)
+> +{
+> +	struct tst_expr *i = expr, *tmp;
+> +
+> +	while (i) {
+> +		tmp = i;
+> +		i = i->next;
+> +		free(tmp);
+> +	}
+> +}
+> -- 
+> 2.26.2
+
+Again, looks really nice!
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Thank you,
+Richard.
