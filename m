@@ -1,116 +1,125 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 22 Oct 2020 08:04:58 +0100
-Subject: [LTP] [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <20201020172402.GD46039@blackbook>
-References: <87lfg2ob83.fsf@suse.de>
- <20201019095812.25710-1-rpalethorpe@suse.com>
- <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
- <87mu0hwik7.fsf@suse.de> <20201020172402.GD46039@blackbook>
-Message-ID: <87sga6vizp.fsf@suse.de>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 22 Oct 2020 15:09:24 +0800
+Subject: [LTP] [PATCH] Remove ftime and sys/timeb.h
+In-Reply-To: <5F912C97.9030204@cn.fujitsu.com>
+References: <1603339033-8451-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <5F912C97.9030204@cn.fujitsu.com>
+Message-ID: <5F913024.7050303@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-
-Michal Koutn? <mkoutny@suse.com> writes:
-
-> Hi.
+Hi Xiao
+> On 2020/10/22 11:57, Yang Xu wrote:
+>> The two case use ftime to get the current milliseconds and it was
+>> used to generate random value. Use gettimeofday() to get the microseconds
+>> can reach the same aim.
+>>
+>> This also fixes the travis build error[1] on Fedora:Rawhide because
+>> the<sys/timeb.h>
+>> has been deprecated[2].
+>>
+>> [1] https://travis-ci.org/github/linux-test-project/ltp/jobs/737698948
+>> [2] https://www.spinics.net/lists/fedora-devel/msg279545.html
+>>
+>> Reported-by: Petr Vorel<petr.vorel@gmail.com>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>> testcases/kernel/mem/hugetlb/lib/hugetlb.c | 12 ++++++------
+>> testcases/kernel/sched/tool/trace_sched.c | 8 ++++----
+>> 2 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+>> b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+>> index 4bb2d500e..1204f21d2 100644
+>> --- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+>> +++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+>> @@ -35,7 +35,7 @@
+>> #include<sys/types.h>
+>> #include<sys/ipc.h>
+>> #include<sys/shm.h>
+>> -#include<sys/timeb.h>
+>> +#include<sys/time.h>
+>> #include<pwd.h>
+>> #include "hugetlb.h"
+>>
+>> @@ -52,7 +52,7 @@ int getipckey(void)
+>> char *curdir = NULL;
+>> size_t size = 0;
+>> key_t ipc_key;
+>> - struct timeb time_info;
+>> + struct timeval time_info;
+>>
+>> curdir = getcwd(curdir, size);
+>> if (curdir == NULL)
+>> @@ -67,11 +67,11 @@ int getipckey(void)
+>> * project identifier is a "random character" produced by
+>> * generating a random number between 0 and 25 and then adding
+>> * that to the ascii value of 'a'. The "seed" for the random
+>> - * number is the millisecond value that is set in the timeb
+>> - * structure after calling ftime().
+>> + * number is the microseconds value that is set in the timeval
+>> + * structure after calling gettimeofday().
+>> */
+>> - ftime(&time_info);
+>> - srandom((unsigned int)time_info.millitm);
+>> + gettimeofday(&time_info, NULL);
+>> + srandom((unsigned int)time_info.tv_usec);
+>>
+>> ipc_key = ftok(curdir, ascii_a + random() % 26);
+>> if (ipc_key == -1)
+>> diff --git a/testcases/kernel/sched/tool/trace_sched.c
+>> b/testcases/kernel/sched/tool/trace_sched.c
+>> index 71caf239a..e23fc7399 100644
+>> --- a/testcases/kernel/sched/tool/trace_sched.c
+>> +++ b/testcases/kernel/sched/tool/trace_sched.c
+>> @@ -52,7 +52,7 @@
+>> #include<sys/types.h>
+>> #include<sys/stat.h>
+>> #include<sys/wait.h>
+>> -#include<sys/timeb.h>
+>> +#include<sys/time.h>
+>> #include<unistd.h>
+>> #include<string.h>
+>>
+>> @@ -199,7 +199,7 @@ void *thread_func(void *args)
+>> static int sched_policy; /* scheduling policy as set by user/default */
+>> struct sched_param ssp; /* set schedule priority. */
+>> struct sched_param gsp; /* gsp schedule priority. */
+>> - struct timeb tptr; /* tptr.millitm will be used to seed srand. */
+>> + struct timeval tptr; /* tv_usec will be used to seed srand. */
+>> thread_sched_t *locargptr = /* local ptr to the arguments. */
+>> (thread_sched_t *) args;
+>>
+>> @@ -215,8 +215,8 @@ void *thread_func(void *args)
+>> ssp.sched_priority = 0;
+>> else {
+>> /* Set a random value between max_priority and min_priority */
+>> - ftime(&tptr);
+>> - srand((tptr.millitm) % 1000);
+>> + gettimeofday(&tptr, NULL);
+>> + srand((tptr.tv_usec) % 1000000);
+> Hi Yang,
 >
-> On Tue, Oct 20, 2020 at 06:52:08AM +0100, Richard Palethorpe <rpalethorpe@suse.de> wrote:
->> I don't think that is relevant as we get the memcg from objcg->memcg
->> which is set during reparenting. I suppose however, we can determine if
->> the objcg was reparented by inspecting memcg->objcg.
-> +1
+> One minor issue:
+> '% 1000000' seems useless because the range of tv_usec is 0~999999.
+Agree. Will fix it in v2 patch.
+
+Best Regards
+Yang Xu
 >
->> If we just check use_hierarchy then objects directly charged to the
->> memcg where use_hierarchy=0 will not be uncharged. However, maybe it is
->> better to check if it was reparented and if use_hierarchy=0.
-> I think (I had to make a table) the yielded condition would be:
+> Other than that, it's good to me.
 >
-> if ((memcg->use_hierarchy && reparented) || (!mem_cgroup_is_root(memcg) && !reparented))
-
-This looks correct, but I don't think we need to check for reparenting
-after all. We have the following unique scenarious:
-
-use_hierarchy=1, memcg=?, reparented=?:
-Because use_hierarchy=1 any descendants will have charged the current
-memcg, including root, so we can simply uncharge regardless of the memcg
-or objcg.
-
-use_hierarchy=0, memcg!=root, reparented=?:
-When use_hierarchy=0, objcgs are *only* reparented to root, so if we are
-not root the objcg must belong to us.
-
-use_hierarchy=0, memcg=root, reparented=?:
-We must have been reparented because root is not initialised with an
-objcg, but use_hierarchy=0 so we can not uncharge.
-
-So I believe that the following is sufficient.
-
-if (memcg->use_hierarchy || !mem_cgroup_is_root(memcg))
-> 	 __memcg_kmem_uncharge(memcg, nr_pages);
+> Best Regards,
+> Xiao Yang
+>> set_priority = (min_priority + (int)((float)max_priority
+>> * rand() / (RAND_MAX +
+>> 1.0)));
 >
-> (I admit it's not very readable.)
+> .
 >
->
-> Michal
 
-For the record, I did create the following patch which checks for
-reparenting, but it appears to be unecessary.
 
-----
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6877c765b8d0..0285f760f003 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -257,6 +257,14 @@ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
- #ifdef CONFIG_MEMCG_KMEM
- extern spinlock_t css_set_lock;
-
-+/* Assumes objcg originated from a descendant of memcg or is memcg's */
-+static bool obj_cgroup_did_charge(const struct obj_cgroup *objcg,
-+                                 const struct mem_cgroup *memcg)
-+{
-+       return memcg->use_hierarchy ||
-+               rcu_access_pointer(memcg->objcg) == objcg;
-+}
-+
- static void obj_cgroup_release(struct percpu_ref *ref)
- {
-        struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
-@@ -291,7 +299,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
-
-        spin_lock_irqsave(&css_set_lock, flags);
-        memcg = obj_cgroup_memcg(objcg);
--       if (nr_pages)
-+       if (nr_pages && obj_cgroup_did_charge(objcg, memcg))
-                __memcg_kmem_uncharge(memcg, nr_pages);
-        list_del(&objcg->list);
-        mem_cgroup_put(memcg);
-@@ -3100,6 +3108,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- static void drain_obj_stock(struct memcg_stock_pcp *stock)
- {
-        struct obj_cgroup *old = stock->cached_objcg;
-+       struct mem_cgroup *memcg;
-
-        if (!old)
-                return;
-@@ -3110,7 +3119,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
-
-                if (nr_pages) {
-                        rcu_read_lock();
--                       __memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
-+                       memcg = obj_cgroup_memcg(old);
-+                       if (obj_cgroup_did_charge(old, memcg))
-+                               __memcg_kmem_uncharge(memcg, nr_pages);
-                        rcu_read_unlock();
-                }
-
--- 
-Thank you,
-Richard.
