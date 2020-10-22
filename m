@@ -1,37 +1,29 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 22 Oct 2020 13:47:38 +0800
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 22 Oct 2020 02:01:36 -0400 (EDT)
 Subject: [LTP] Broken Fedora build
-In-Reply-To: <5F91163D.9030307@cn.fujitsu.com>
+In-Reply-To: <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
 References: <20201021193547.GA49488@x230>
  <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
- <5F90F214.20102@cn.fujitsu.com> <5F91163D.9030307@cn.fujitsu.com>
-Message-ID: <CAEemH2eUfSgvmDB4EA6i3K6O9CCgiSa8CA5sKLQS2a_wOhDtXw@mail.gmail.com>
+Message-ID: <493039434.18941934.1603346496769.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 
-> >> I prefer to go replace ftime() by gettimeofday() or clock_gettime()
-> >> way to solve this from root.
-> > +1
-> >
-> > I have seen the hugetlb.c and trace_sched.c code, they all use the
-> > time to generate a random value for ftok or sched_priority. So using
-> > gettimeofday() also looks ok.
-> Hi,
->
-> It is fine for me to replace ftime(), but I wonder if we can remove
-> fime() and srand()/srandom() directly? :-)
-> It seems unnecessary to set the seed for random number.
 
-That's true, but random() will generate the same number each time.
-I slightly tend to keep setting the seed by srandom() to get a different
-randomized number for test variety.
+----- Original Message -----
+> Petr Vorel <pvorel@suse.cz> wrote:
+> 
+> > Fedora build is broken due missing <sys/timeb.h> [1].
+> > Quick fix would probably be to use Fedora 33 instead of Rawhide. [2]
+> > But we should port hugetlb.c and trace_sched.c (if used) to gettimeofday or
+> > clock_gettime. [3]
+> 
+> +1
+> I prefer to go replace ftime() by gettimeofday() or clock_gettime()
+> way to solve this from root.
 
--- 
-Regards,
-Li Wang
+Agreed, ftime is marked as obsolete.
 
