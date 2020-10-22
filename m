@@ -1,27 +1,38 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 22 Oct 2020 10:36:16 +0800
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 22 Oct 2020 10:44:36 +0800
 Subject: [LTP] Broken Fedora build
-In-Reply-To: <20201021193547.GA49488@x230>
+In-Reply-To: <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
 References: <20201021193547.GA49488@x230>
-Message-ID: <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
+ <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
+Message-ID: <5F90F214.20102@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Petr Vorel <pvorel@suse.cz> wrote:
-
-> Fedora build is broken due missing <sys/timeb.h> [1].
-> Quick fix would probably be to use Fedora 33 instead of Rawhide. [2]
-> But we should port hugetlb.c and trace_sched.c (if used) to gettimeofday or
-> clock_gettime. [3]
-
+Hi Li,Petr
+> Petr Vorel<pvorel@suse.cz>  wrote:
+>
+>> Fedora build is broken due missing<sys/timeb.h>  [1].
+>> Quick fix would probably be to use Fedora 33 instead of Rawhide. [2]
+>> But we should port hugetlb.c and trace_sched.c (if used) to gettimeofday or
+>> clock_gettime. [3]
+>
+> +1
+> I prefer to go replace ftime() by gettimeofday() or clock_gettime()
+> way to solve this from root.
 +1
-I prefer to go replace ftime() by gettimeofday() or clock_gettime()
-way to solve this from root.
 
--- 
-Regards,
-Li Wang
+I have seen the hugetlb.c and trace_sched.c code, they all use the time 
+to generate a random value for ftok or sched_priority. So using 
+gettimeofday() also looks ok.
+
+I will send a patch to use gettimeofday.
+
+Best Regards
+Yang Xu
+>
+
+
 
