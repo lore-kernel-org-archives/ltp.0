@@ -1,103 +1,24 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 22 Oct 2020 11:57:13 +0800
-Subject: [LTP] [PATCH] Remove ftime and sys/timeb.h
-Message-ID: <1603339033-8451-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 22 Oct 2020 10:24:06 +0530
+Subject: [LTP] [PATCH V4 2/3] syscalls: select: Verify that data is
+ available to read
+In-Reply-To: <20201021120434.GB10861@yuki.lan>
+References: <fb31dd18ad396ab602ba8957ee01a666f79ad9bb.1599558175.git.viresh.kumar@linaro.org>
+ <63646c1ba9e1a3061b44be4f1f9a29d9d6d03f2e.1603254560.git.viresh.kumar@linaro.org>
+ <20201021120434.GB10861@yuki.lan>
+Message-ID: <20201022045406.4m6pgqfmwvyx7mh2@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The two case use ftime to get the current milliseconds and it was
-used to generate random value. Use gettimeofday() to get the microseconds
-can reach the same aim.
+On 21-10-20, 14:04, Cyril Hrubis wrote:
+> I guess that we still need a test where select would clear the bits from
+> fd->set though, I supposes that the easiest solution would be to add
+> select04.c for that...
 
-This also fixes the travis build error[1] on Fedora:Rawhide because the <sys/timeb.h>
-has been deprecated[2].
+I am not sure how to do that and why would that matter ? :)
 
-[1] https://travis-ci.org/github/linux-test-project/ltp/jobs/737698948
-[2] https://www.spinics.net/lists/fedora-devel/msg279545.html
-
-Reported-by: Petr Vorel <petr.vorel@gmail.com>
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/mem/hugetlb/lib/hugetlb.c | 12 ++++++------
- testcases/kernel/sched/tool/trace_sched.c  |  8 ++++----
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-index 4bb2d500e..1204f21d2 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-@@ -35,7 +35,7 @@
- #include <sys/types.h>
- #include <sys/ipc.h>
- #include <sys/shm.h>
--#include <sys/timeb.h>
-+#include <sys/time.h>
- #include <pwd.h>
- #include "hugetlb.h"
- 
-@@ -52,7 +52,7 @@ int getipckey(void)
- 	char *curdir = NULL;
- 	size_t size = 0;
- 	key_t ipc_key;
--	struct timeb time_info;
-+	struct timeval time_info;
- 
- 	curdir = getcwd(curdir, size);
- 	if (curdir == NULL)
-@@ -67,11 +67,11 @@ int getipckey(void)
- 	 * project identifier is a "random character" produced by
- 	 * generating a random number between 0 and 25 and then adding
- 	 * that to the ascii value of 'a'.  The "seed" for the random
--	 * number is the millisecond value that is set in the timeb
--	 * structure after calling ftime().
-+	 * number is the microseconds value that is set in the timeval
-+	 * structure after calling gettimeofday().
- 	 */
--	ftime(&time_info);
--	srandom((unsigned int)time_info.millitm);
-+	gettimeofday(&time_info, NULL);
-+	srandom((unsigned int)time_info.tv_usec);
- 
- 	ipc_key = ftok(curdir, ascii_a + random() % 26);
- 	if (ipc_key == -1)
-diff --git a/testcases/kernel/sched/tool/trace_sched.c b/testcases/kernel/sched/tool/trace_sched.c
-index 71caf239a..e23fc7399 100644
---- a/testcases/kernel/sched/tool/trace_sched.c
-+++ b/testcases/kernel/sched/tool/trace_sched.c
-@@ -52,7 +52,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/wait.h>
--#include <sys/timeb.h>
-+#include <sys/time.h>
- #include <unistd.h>
- #include <string.h>
- 
-@@ -199,7 +199,7 @@ void *thread_func(void *args)
- 	static int sched_policy;	/* scheduling policy as set by user/default   */
- 	struct sched_param ssp;	/* set schedule priority.                     */
- 	struct sched_param gsp;	/* gsp schedule priority.                     */
--	struct timeb tptr;	/* tptr.millitm will be used to seed srand.   */
-+	struct timeval tptr;	/* tv_usec will be used to seed srand.   */
- 	thread_sched_t *locargptr =	/* local ptr to the arguments.                */
- 	    (thread_sched_t *) args;
- 
-@@ -215,8 +215,8 @@ void *thread_func(void *args)
- 		ssp.sched_priority = 0;
- 	else {
- 		/* Set a random value between max_priority and min_priority */
--		ftime(&tptr);
--		srand((tptr.millitm) % 1000);
-+		gettimeofday(&tptr, NULL);
-+		srand((tptr.tv_usec) % 1000000);
- 		set_priority = (min_priority + (int)((float)max_priority
- 						     * rand() / (RAND_MAX +
- 								 1.0)));
 -- 
-2.23.0
-
-
-
+viresh
