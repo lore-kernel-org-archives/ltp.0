@@ -1,24 +1,53 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 22 Oct 2020 10:24:06 +0530
-Subject: [LTP] [PATCH V4 2/3] syscalls: select: Verify that data is
- available to read
-In-Reply-To: <20201021120434.GB10861@yuki.lan>
-References: <fb31dd18ad396ab602ba8957ee01a666f79ad9bb.1599558175.git.viresh.kumar@linaro.org>
- <63646c1ba9e1a3061b44be4f1f9a29d9d6d03f2e.1603254560.git.viresh.kumar@linaro.org>
- <20201021120434.GB10861@yuki.lan>
-Message-ID: <20201022045406.4m6pgqfmwvyx7mh2@vireshk-i7>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 22 Oct 2020 13:18:53 +0800
+Subject: [LTP] Broken Fedora build
+In-Reply-To: <5F90F214.20102@cn.fujitsu.com>
+References: <20201021193547.GA49488@x230>
+ <CAEemH2cAeMzbr6WWDOTTNYkU8b+1J+7WEHjGU283r3qWtXP8TA@mail.gmail.com>
+ <5F90F214.20102@cn.fujitsu.com>
+Message-ID: <5F91163D.9030307@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 21-10-20, 14:04, Cyril Hrubis wrote:
-> I guess that we still need a test where select would clear the bits from
-> fd->set though, I supposes that the easiest solution would be to add
-> select04.c for that...
+On 2020/10/22 10:44, Yang Xu wrote:
+> Hi Li,Petr
+>> Petr Vorel<pvorel@suse.cz>  wrote:
+>>
+>>> Fedora build is broken due missing<sys/timeb.h>  [1].
+>>> Quick fix would probably be to use Fedora 33 instead of Rawhide. [2]
+>>> But we should port hugetlb.c and trace_sched.c (if used) to 
+>>> gettimeofday or
+>>> clock_gettime. [3]
+>>
+>> +1
+>> I prefer to go replace ftime() by gettimeofday() or clock_gettime()
+>> way to solve this from root.
+> +1
+>
+> I have seen the hugetlb.c and trace_sched.c code, they all use the 
+> time to generate a random value for ftok or sched_priority. So using 
+> gettimeofday() also looks ok.
+Hi,
 
-I am not sure how to do that and why would that matter ? :)
+It is fine for me to replace ftime(), but I wonder if we can remove 
+fime() and srand()/srandom() directly? :-)
+It seems unnecessary to set the seed for random number.
 
--- 
-viresh
+Best Regards,
+Xiao Yang
+>
+> I will send a patch to use gettimeofday.
+>
+> Best Regards
+> Yang Xu
+>>
+>
+>
+>
+>
+
+
+
