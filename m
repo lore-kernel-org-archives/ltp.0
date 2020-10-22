@@ -1,34 +1,34 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 22 Oct 2020 16:43:29 -0700
-Subject: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
- libc-2.27.so[7f3d77058000+1aa000]
-In-Reply-To: <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
-Message-ID: <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Thu, 22 Oct 2020 16:59:56 -0700
+Subject: [LTP] [PATCH v4] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201022172508.GF300658@carbon.dhcp.thefacebook.com>
+References: <87sga6vizp.fsf@suse.de>
+ <20201022122858.8638-1-rpalethorpe@suse.com>
+ <CALvZod4u79DSwyM=Kg8g5tR1L5eomHgUkaJmp6s9D3jC7OnN0A@mail.gmail.com>
+ <20201022172508.GF300658@carbon.dhcp.thefacebook.com>
+Message-ID: <CALvZod5p-O72gCY-R+oLcDZjEkPRioz7e7p5Jg=nXxhmtiwKWw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Oct 22, 2020 at 1:55 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
+On Thu, Oct 22, 2020 at 10:25 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> The bad commit points to,
+[snip]
+> >
+> > Since bf4f059954dc ("mm: memcg/slab: obj_cgroup API") is in 5.9, I
+> > think we can take this patch for 5.9 and 5.10 but keep Roman's cleanup
+> > for 5.11.
+> >
+> > What does everyone think?
 >
-> commit d55564cfc222326e944893eff0c4118353e349ec
-> x86: Make __put_user() generate an out-of-line call
+> I think we should use the link to the root approach both for stable backports
+> and for 5.11+, to keep them in sync. The cleanup (always charging the root cgroup)
+> is not directly related to this problem, and we can keep it for 5.11+ only.
 >
-> I have reverted this single patch and confirmed the reported
-> problem is not seen anymore.
+> Thanks!
 
-Thanks. Very funky, but thanks. I've been running that commit on my
-machine for over half a year, and it still looks "trivially correct"
-to me, but let me go look at it one more time. Can't argue with a
-reliable bisect and revert..
-
-            Linus
+Roman, can you send the signed-off patch for the root linking for
+use_hierarchy=0?
