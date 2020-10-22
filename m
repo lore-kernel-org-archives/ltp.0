@@ -1,36 +1,64 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 22 Oct 2020 12:13:36 +0200
-Subject: [LTP] [PATCH V4 2/3] syscalls: select: Verify that data is
- available to read
-In-Reply-To: <20201022045406.4m6pgqfmwvyx7mh2@vireshk-i7>
-References: <fb31dd18ad396ab602ba8957ee01a666f79ad9bb.1599558175.git.viresh.kumar@linaro.org>
- <63646c1ba9e1a3061b44be4f1f9a29d9d6d03f2e.1603254560.git.viresh.kumar@linaro.org>
- <20201021120434.GB10861@yuki.lan>
- <20201022045406.4m6pgqfmwvyx7mh2@vireshk-i7>
-Message-ID: <20201022101336.GC2427@yuki.lan>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Thu, 22 Oct 2020 06:12:28 -0400
+Subject: [LTP] [PATCH] route{4,6}-rmmod: Filter out ":" and fix typos
+Message-ID: <1603361548-1534-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I guess that we still need a test where select would clear the bits from
-> > fd->set though, I supposes that the easiest solution would be to add
-> > select04.c for that...
-> 
-> I am not sure how to do that and why would that matter ? :)
+Reported-by: Jin Cao <caoj.fnst@cn.fujitsu.com>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+---
+ testcases/network/stress/route/route4-rmmod | 4 ++--
+ testcases/network/stress/route/route6-rmmod | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-So the tests we do have now are checking that the bits in the fdset are
-not cleared when there are data ready to be read/written from/to the
-filke descriptor, right?
-
-What we need is a test where we ask for a data to be read from an empty
-pipe, ask for data to be written to a pipe filled with data (write there
-till we get EAGAIN in setup), etc. We can do this with a very short
-timeout or even with a timeout set to zero (polling) and check that the
-bits were cleared once we have returned from the call.
-
+diff --git a/testcases/network/stress/route/route4-rmmod b/testcases/network/stress/route/route4-rmmod
+index 7aa1958..1ba255e 100644
+--- a/testcases/network/stress/route/route4-rmmod
++++ b/testcases/network/stress/route/route4-rmmod
+@@ -164,14 +164,14 @@ do_setup()
+     lhost_module=`ethtool -i $lhost_ifname | grep driver | sed "s/driver:[[:blank:]]*//"`
+ 
+     # Chack the other active interface uses the same driver
+-    for ifname in `ifconfig | grep ^eth | awk '{ print $1}'`; do
++    for ifname in `ifconfig | grep ^eth | awk '{print $1}' | sed "s/://"`; do
+ 	if [ $lhost_ifname = $ifname ]; then
+ 	    continue
+ 	fi
+ 
+ 	module=`ethtool -i $ifname | grep driver | sed "s/driver:[[:blank:]]*//"`
+ 	if [ $lhost_module = $module ]; then
+-	    tst_resm TBROK "An active interface $ifname uses the same network deriver $module with the test intreface."
++	    tst_resm TBROK "An active interface $ifname uses the same network driver $module with the test interface."
+ 	    exit $TST_TOTAL
+ 	fi
+     done
+diff --git a/testcases/network/stress/route/route6-rmmod b/testcases/network/stress/route/route6-rmmod
+index 765a57a..146fa77 100644
+--- a/testcases/network/stress/route/route6-rmmod
++++ b/testcases/network/stress/route/route6-rmmod
+@@ -160,14 +160,14 @@ do_setup()
+     lhost_module=`ethtool -i $lhost_ifname | grep driver | sed "s/driver:[[:blank:]]*//"`
+ 
+     # Chack the other active interface uses the same driver
+-    for ifname in `ifconfig | grep ^eth | awk '{ print $1}'`; do
++    for ifname in `ifconfig | grep ^eth | awk '{print $1}' | sed "s/://"`; do
+ 	if [ $lhost_ifname = $ifname ]; then
+ 	    continue
+ 	fi
+ 
+ 	module=`ethtool -i $ifname | grep driver | sed "s/driver:[[:blank:]]*//"`
+ 	if [ $lhost_module = $module ]; then
+-	    tst_resm TBROK "An active interface $ifname uses the same network deriver $module with the test intreface."
++	    tst_resm TBROK "An active interface $ifname uses the same network driver $module with the test interface."
+ 	    exit $TST_TOTAL
+ 	fi
+     done
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
