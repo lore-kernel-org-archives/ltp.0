@@ -1,12 +1,11 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 22 Oct 2020 09:09:40 +0100
-Subject: [LTP] [PATCH 1/3] lib/tst_kconfig: Rewrite the parser internals
-In-Reply-To: <20201021141157.GC10861@yuki.lan>
+Date: Thu, 22 Oct 2020 09:38:14 +0100
+Subject: [LTP] [PATCH 3/3] lib/tst_kconfig: Make use of boolean
+ expression eval
+In-Reply-To: <20201020100910.10828-4-chrubis@suse.cz>
 References: <20201020100910.10828-1-chrubis@suse.cz>
- <20201020100910.10828-2-chrubis@suse.cz> <878sbzx66b.fsf@suse.de>
- <20201021100605.GA10861@yuki.lan> <874kmnwy6g.fsf@suse.de>
- <20201021141157.GC10861@yuki.lan>
-Message-ID: <87mu0evfzv.fsf@suse.de>
+ <20201020100910.10828-4-chrubis@suse.cz>
+Message-ID: <87imb2veo9.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,223 +14,329 @@ To: ltp@lists.linux.it
 
 Hello,
 
+I don't see anything obviously wrong here, just some nits.
+
 Cyril Hrubis <chrubis@suse.cz> writes:
 
-> Hi!
->> >> lines first to remove whitespace issues and expose the parser to all
->> >> possible variable name symbols and values instead of just the ones which
->> >> appear in our current tests.
->> >
->> > I guess that it's techincally possible to have a whitespaces there, but
->> > will not happen unless you hand-edit the config file before compilation,
->> > which I doubt will ever happen.
->> >
->> 
->> It can also happen if someone has their own script to modify the
->> config. At any rate, if you are confident that it will never happen then
->> there should be no problem failing hard if it does.
+> Now each string in the kconfig[] array in tst_test structure is an
+> boolean expression which is evaluated. All expressions has to be true in
+> order for the test to continue.
 >
-> It would be probably easier to eat the whitespace around the = if
-> present. But still I would ignore anything that isn't correct variable
-> assignment, since such config would fail kernel compilation anyways.
+> + Update the docs.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Pengfei Xu <pengfei.xu@intel.com>
+> ---
+>  doc/test-writing-guidelines.txt |  21 ++--
+>  lib/newlib_tests/test_kconfig.c |   1 +
+>  lib/tst_kconfig.c               | 186 ++++++++++++++++++++++++--------
+>  3 files changed, 154 insertions(+), 54 deletions(-)
+>
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index 1a51ef7c7..3c2ab7166 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -1643,21 +1643,26 @@ on the system, disabled syscalls can be detected by checking for 'ENOSYS'
+>  errno etc.
+>  
+>  However in rare cases core kernel features couldn't be detected based on the
+> -kernel userspace API and we have to resort to kernel .config parsing.
+> +kernel userspace API and we have to resort to parse the kernel .config.
+>  
+> -For this cases the test should set the 'NULL' terminated '.needs_kconfigs' array
+> -of kernel config options required for the test. The config option can be
+> -specified either as plain "CONFIG_FOO" in which case it's sufficient for the
+> -test continue if it's set to any value (typically =y or =m). Or with a value
+> -as "CONFIG_FOO=bar" in which case the value has to match as well. The test is
+> -aborted with 'TCONF' if any of the required options were not set.
+> +For this cases the test should set the 'NULL' terminated '.needs_kconfigs'
+> +array of boolean expressions with constraints on the kconfig variables. The
+> +boolean expression consits of variables, two binary operations '&' and '|',
+> +negation '!' and correct sequence of parentesis '()'. Variables are expected
+> +to be in a form of "CONFIG_FOO[=bar]".
+> +
+> +The test will continue to run if all expressions are evaluated to 'True'.
+> +Missing variable is mapped to 'False' as well as variable with different than
+> +specified value, e.g. 'CONFIG_FOO=bar' will evaluate to 'False' if the value
+> +is anything else but 'bar'. If config variable is specified as plain
+> +'CONFIG_FOO' it's evaluated to true it's set to any value (typically =y or =m).
+>  
+>  [source,c]
+>  -------------------------------------------------------------------------------
+>  #include "tst_test.h"
+>  
+>  static const char *kconfigs[] = {
+> -	"CONFIG_X86_INTEL_UMIP",
+> +	"CONFIG_X86_INTEL_UMIP | CONFIG_X86_UMIP",
+>  	NULL
+>  };
+>  
+> diff --git a/lib/newlib_tests/test_kconfig.c b/lib/newlib_tests/test_kconfig.c
+> index d9c662fc5..183d55611 100644
+> --- a/lib/newlib_tests/test_kconfig.c
+> +++ b/lib/newlib_tests/test_kconfig.c
+> @@ -14,6 +14,7 @@ static const char *kconfigs[] = {
+>  	"CONFIG_MMU",
+>  	"CONFIG_EXT4_FS=m",
+>  	"CONFIG_PGTABLE_LEVELS=4",
+> +	"CONFIG_MMU & CONFIG_EXT4_FS=m",
+>  	NULL
+>  };
+>  
+> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> index f80925cc9..cd99a3034 100644
+> --- a/lib/tst_kconfig.c
+> +++ b/lib/tst_kconfig.c
+> @@ -12,6 +12,7 @@
+>  #define TST_NO_DEFAULT_MAIN
+>  #include "tst_test.h"
+>  #include "tst_kconfig.h"
+> +#include "tst_bool_expr.h"
+>  
+>  static const char *kconfig_path(char *path_buf, size_t path_buf_len)
+>  {
+> @@ -184,86 +185,179 @@ static size_t array_len(const char *const kconfigs[])
+>  	return i;
+>  }
+>  
+> -static int compare_res(struct tst_kconfig_var *var, const char *kconfig,
+> -                       char choice, const char *val)
+> +static inline unsigned int get_len(const char* kconfig)
+>  {
+> -	if (var->choice != choice) {
+> -		tst_res(TINFO, "Needs kernel %s, have %c", kconfig, var->choice);
+> -		return 1;
+> -	}
+> +	char *sep = index(kconfig, '=');
+>  
+> -	if (choice != 'v')
+> -		return 0;
+> +	if (!sep)
+> +		return strlen(kconfig);
+>  
+> -	if (strcmp(var->val, val)) {
+> -		tst_res(TINFO, "Needs kernel %s, have %s", kconfig, var->val);
+> -		return 1;
+> +	return sep - kconfig;
+> +}
+> +
+> +static inline unsigned int get_var_cnt(struct tst_expr *exprs[],
 
-Works for me :-)
+const *?
 
->
->> >> > +			switch (val[0]) {
->> >> > +			case '=':
->> >> > +				break;
->> >> > +			case ' ':
->> >> > +				if (is_set(val, "is not set")) {
->> >> > +					vars[i].choice = 'n';
->> >> > +					return 1;
->> >> > +				}
->> >> 
->> >> Typically such lines begin with a comment '#' and I don't see where that
->> >> is handled. Possibly this will only match non standard configs?
->> >
->> > It does work actually, since we use strstr() to get the "CONFIG_" prefix
->> > from each line of the configuration, but I guess this needs to be fixed
->> > anyways since we would detect "# CONFIG_FOO=y" as enabled config feature
->> > even if it's commented. Again this will not happen unless you hand-edit
->> > the file, but it's probably worth fixing in a follow up patch.
->> 
->> We don't actually use the result of strstr anymore?
->
-> Ah right, that's a bug, the cfg should be passed to the
-> kconfig_parse_line() instead, at least that's how the previous version
-> worked in order to differentiate between unset and unknown variables.
->
->> >> > +				return 1;
->> >> > +			/* vars[i].id may be prefix to longer config var */
->> >> > +			default:
->> >> > +				return 0;
->> >> > +			}
->> >> >  
->> >> > -	if (!cfg)
->> >> > -		return 0;
->> >> > +			if (is_set(val, "=y")) {
->> >> > +				vars[i].choice = 'y';
->> >> > +				return 1;
->> >> > +			}
->> >> >  
->> >> > -	if (strncmp(cfg, conf, match->len))
->> >> > -		return 0;
->> >> > +			if (is_set(val, "=m")) {
->> >> > +				vars[i].choice = 'm';
->> >> > +				return 1;
->> >> > +			}
->> >> >  
->> >> > -	const char *val = &cfg[match->len];
->> >> > +			vars[i].choice = 'v';
->> >> > +			vars[i].val = strndup(val+1, strlen(val)-2);
->> >> >  
->> >> > -	switch (cfg[match->len]) {
->> >> > -	case '=':
->> >> > -		break;
->> >> > -	case ' ':
->> >> > -		if (is_set(val, "is not set")) {
->> >> > -			result->match = 'n';
->> >> > -			goto match;
->> >> > +			return 1;
->> >> >  		}
->> >> > -	/* fall through */
->> >> > -	default:
->> >> > -		return 0;
->> >> > -	}
->> >> > -
->> >> > -	if (is_set(val, "=y")) {
->> >> > -		result->match = 'y';
->> >> > -		goto match;
->> >> >  	}
->> >> >  
->> >> > -	if (is_set(val, "=m")) {
->> >> > -		result->match = 'm';
->> >> > -		goto match;
->> >> > -	}
->> >> > -
->> >> > -	result->match = 'v';
->> >> > -	result->value = strndup(val+1, strlen(val)-2);
->> >> > -
->> >> > -match:
->> >> > -	match->match = 1;
->> >> > -	return 1;
->> >> > +	return 0;
->> >> >  }
->> >> >  
->> >> > -void tst_kconfig_read(const char *const *kconfigs,
->> >> > -                      struct tst_kconfig_res results[], size_t cnt)
->> >> > +void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
->> >> >  {
->> >> > -	struct match matches[cnt];
->> >> > -	FILE *fp;
->> >> > -	unsigned int i, j;
->> >> > -	char buf[1024];
->> >> > -
->> >> > -	for (i = 0; i < cnt; i++) {
->> >> > -		const char *val = strchr(kconfigs[i], '=');
->> >> > -
->> >> > -		if (strncmp("CONFIG_", kconfigs[i], 7))
->> >> > -			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
->> >> > +	char line[128];
->> >> > +	unsigned int vars_found = 0;
->> >> >  
->> >> > -		matches[i].match = 0;
->> >> > -		matches[i].len = strlen(kconfigs[i]);
->> >> > -
->> >> > -		if (val) {
->> >> > -			matches[i].val = val + 1;
->> >> > -			matches[i].len -= strlen(val);
->> >> > -		}
->> >> > -
->> >> > -		results[i].match = 0;
->> >> > -		results[i].value = NULL;
->> >> > -	}
->> >> > -
->> >> > -	fp = open_kconfig();
->> >> > +	FILE *fp = open_kconfig();
->> >> >  	if (!fp)
->> >> >  		tst_brk(TBROK, "Cannot parse kernel .config");
->> >> >  
->> >> > -	while (fgets(buf, sizeof(buf), fp)) {
->> >> > -		for (i = 0; i < cnt; i++) {
->> >> > -			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
->> >> > -				for (j = 0; j < cnt; j++) {
->> >> > -					if (matches[j].match)
->> >> > -						break;
->> >> > -				}
->> >> > +	while (fgets(line, sizeof(line), fp)) {
->> >> > +		char *cfg = strstr(line, "CONFIG_");
->> >> >  
->> >> > -				if (j == cnt)
->> >> > -					goto exit;
->> >> > -			}
->> >> > -		}
->> >> > +		if (!cfg)
->> >> > +			continue;
->> >> 
->> >> This filtering seems unecessary and maybe will hide some corner cases
->> >> because it reduces kconfig_parses_line's exposure. Also practically
->> >> every line has 'CONFIG_' in it.
->> >
->> > Not really, there are empty lines and plenty of comments in the file
->> > generated by kernel infrastructure.
->> 
->> It seems about 80-90% of lines contain CONFIG_, however if you pass it
->> to kconfig_parse_line then this makes more sense. Still I think with
->> proper parsing this shouldn't be there.
->
-> What exactly do you mean by a proper parsing?
+> +                                       unsigned int expr_cnt)
+> +{
+> +	unsigned int i;
+> +	struct tst_expr *j;
+> +	unsigned int cnt = 0;
+> +
+> +	for (i = 0; i < expr_cnt; i++) {
+> +		for (j = exprs[i]; j; j = j->next) {
+> +			if (j->op == TST_OP_VAR)
+> +				cnt++;
+> +		}
+>  	}
+>  
+> -	return 0;
+> +	return cnt;
+>  }
+>  
+> -static inline unsigned int get_len(const char* kconfig)
+> +static struct tst_kconfig_var *find_var(struct tst_kconfig_var
+> vars[],
 
-Tokenize it and remove whitespace.
+also const []?
 
->
-> The file is format is very simple each line starts either with # which
-> is a comment or consists of 'key=val' pair and the key is by definition
-> prefixed with CONFIG_.
->
->> >> > +
->> >> > +		if (kconfig_parse_line(line, vars, vars_len))
->> >> > +			vars_found++;
->> >> >  
->> >> > +		if (vars_found == vars_len)
->> >> > +			goto exit;
->> >> >  	}
->> >> 
->> >> Generally, this approach seems like to result in spurious TCONFs. We
->> >> need to properly parse the file and fail if some line can't be
->> >> interpreted.
->> >
->> > Well we do expect well formatted .config file from a start, if you hand
->> > edit it and put whitespaces into unexpected places more things may
->> > fail.
->> 
->> Kernel build system seems to have no problem with it. More generally
->> though we should fail hard if there is something unexpected, not produce
->> TCONF which people don't check.
->
-> Even if we do I do not think that we should care about anything but
-> syntactically correct input, since if you modify the file after kernel
-> compilation you have lost anyways.
->
->> >> I suppose most of the problems here stem from the original code, but
->> >> your patch may as well clear it up :-)
->> >
->> > Actually the clear way how to fix this is in a separate patch so that
->> > logical changes are split into different patches.
->> 
->> I suppose that elements of the boolean parser can be used to parse the
->> kconfig and it can be combined (in a later patch). It's kind of
->> unecessary to parse a config file into RPN, but will work perfectly well
->> so we can share some code here.
->
-> I do not get what you are trying to say. Are you saying that we should
-> tokenize the input? I do not think that this is necessary since the file
-> format is pretty simple.
+> +                                        unsigned int var_cnt,
+> +                                        const char *var)
+>  {
+> -	char *sep = index(kconfig, '=');
+> +	unsigned int i;
+>  
+> -	if (!sep)
+> -		return strlen(kconfig);
+> +	for (i = 0; i < var_cnt; i++) {
+> +		if (!strcmp(vars[i].id, var))
+> +			return &vars[i];
+> +	}
+>  
+> -	return sep - kconfig;
+> +	return NULL;
+>  }
+>  
+> -void tst_kconfig_check(const char *const kconfigs[])
+> +/*
+> + * Fill in the kconfig variables array from the expressions. Also makes sure
+> + * that each variable is copied to the array exaclty once.
+> + */
+> +static inline unsigned int get_vars(struct tst_expr *exprs[],
+> +                                    unsigned int expr_cnt,
+> +                                    struct tst_kconfig_var vars[])
 
-Yes or atleast test the assumption you won't find configs with spaces or
-other wierd stuff in by throwing an error if we find something
-unexpected. If someone has a broken config we can tell them that.
+get_vars sounds like a read-onlyl operation, maybe populate_vars or similar?
+
+>  {
+> -	size_t vars_cnt = array_len(kconfigs);
+> -	struct tst_kconfig_var vars[vars_cnt];
+>  	unsigned int i;
+> -	int abort_test = 0;
+> +	struct tst_expr *j;
+> +	unsigned int cnt = 0;
+> +
+> +	for (i = 0; i < expr_cnt; i++) {
+> +		for (j = exprs[i]; j; j = j->next) {
+> +			struct tst_kconfig_var *var;
+>  
+> -	memset(vars, 0, sizeof(*vars) * vars_cnt);
+> +			if (j->op != TST_OP_VAR)
+> +				continue;
+>  
+> -	for (i = 0; i < vars_cnt; i++) {
+> -		vars[i].id_len = get_len(kconfigs[i]);
+> +			vars[cnt].id_len = get_len(j->val);
+>  
+> -		if (vars[i].id_len >= sizeof(vars[i].id))
+> -			tst_brk(TBROK, "kconfig var id too long!");
+> +			if (vars[cnt].id_len >= sizeof(vars[cnt].id))
+> +				tst_brk(TBROK, "kconfig var id too long!");
+>  
+> -		strncpy(vars[i].id, kconfigs[i], vars[i].id_len);
+> +			strncpy(vars[cnt].id, j->val, vars[cnt].id_len);
+> +
+> +			var = find_var(vars, cnt, vars[cnt].id);
+> +
+> +			if (var)
+> +				j->priv = var;
+> +			else
+> +				j->priv = &vars[cnt++];
+> +		}
+>  	}
+>  
+> -	tst_kconfig_read(vars, vars_cnt);
+> +	return cnt;
+> +}
+> +
+> +static int map(struct tst_expr *expr)
+> +{
+> +	struct tst_kconfig_var *var = expr->priv;
+>  
+> -	for (i = 0; i < vars_cnt; i++) {
+> -		if (vars[i].choice == 0) {
+> -			tst_res(TINFO, "Missing kernel %s", kconfigs[i]);
+> -			abort_test = 1;
+> +	if (var->choice == 0)
+> +		return 0;
+> +
+> +	const char *val = strchr(expr->val, '=');
+> +
+> +	/* CONFIG_FOO evaluates to true if y or m */
+> +	if (!val)
+> +		return var->choice == 'y' || var->choice == 'm';
+> +
+> +	char choice = 'v';
+> +	val++;
+> +
+> +	if (!strcmp(val, "n"))
+> +		choice = 'n';
+> +
+> +	if (!strcmp(val, "y"))
+> +		choice = 'y';
+> +
+> +	if (!strcmp(val, "m"))
+> +		choice = 'm';
+> +
+> +	if (choice != 'v')
+> +		return var->choice == choice;
+> +
+> +	return !strcmp(val, var->val);
+> +}
+> +
+> +static void dump_vars(struct tst_expr *expr)
+
+const *?
+
+> +{
+> +	struct tst_expr *i;
+> +	struct tst_kconfig_var *var;
+> +
+> +	tst_res(TINFO, "Variables:");
+> +
+> +	for (i = expr; i; i = i->next) {
+> +		if (i->op != TST_OP_VAR)
+> +			continue;
+> +
+> +		var = i->priv;
+> +
+> +		if (!var->choice) {
+> +			tst_res(TINFO, "%s Undefined", var->id);
+>  			continue;
+>  		}
+>  
+> -		if (vars[i].choice == 'n') {
+> -			tst_res(TINFO, "Kernel %s is not set", kconfigs[i]);
+> -			abort_test = 1;
+> +		if (var->choice == 'v') {
+> +			tst_res(TINFO, "%s = %s", var->id, var->val);
+>  			continue;
+>  		}
+>  
+> -		const char *val = strchr(kconfigs[i], '=');
+> +		tst_res(TINFO, "%s = %c", var->id, var->choice);
+> +	}
+> +}
+>  
+> -		if (val) {
+> -			char choice = 'v';
+> -			val++;
+> +void tst_kconfig_check(const char *const kconfigs[])
+> +{
+> +	size_t expr_cnt = array_len(kconfigs);
+> +	struct tst_expr *exprs[expr_cnt];
+> +	unsigned int i, var_cnt;
+> +	int abort_test = 0;
+> +
+> +	for (i = 0; i < expr_cnt; i++) {
+> +		exprs[i] = tst_bool_expr_parse(kconfigs[i]);
+> +
+> +		if (!exprs[i])
+> +			tst_brk(TBROK, "Invalid kconfig expression!");
+> +	}
+>  
+> -			if (!strcmp(val, "y"))
+> -				choice = 'y';
+> +	var_cnt = get_var_cnt(exprs, expr_cnt);
+> +	struct tst_kconfig_var vars[var_cnt];
+>  
+> -			if (!strcmp(val, "m"))
+> -				choice = 'm';
+> +	var_cnt = get_vars(exprs, expr_cnt, vars);
+>  
+> -			if (compare_res(&vars[i], kconfigs[i], choice, val))
+> -				abort_test = 1;
+> +	tst_kconfig_read(vars, var_cnt);
+>  
+> +	for (i = 0; i < expr_cnt; i++) {
+> +		int val = tst_bool_expr_eval(exprs[i], map);
+> +
+> +		if (val != 1) {
+> +			abort_test = 1;
+> +			tst_res(TINFO, "Expression '%s' not satisfied!", kconfigs[i]);
+> +			dump_vars(exprs[i]);
+>  		}
+>  
+> -		free(vars[i].val);
+> +		tst_bool_expr_free(exprs[i]);
+> +	}
+> +
+> +	for (i = 0; i < var_cnt; i++) {
+> +		if (vars[i].choice == 'v')
+> +			free(vars[i].val);
+>  	}
+>  
+>  	if (abort_test)
+> -- 
+> 2.26.2
+
 
 -- 
 Thank you,
