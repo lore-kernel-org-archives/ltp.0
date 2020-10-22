@@ -1,12 +1,12 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 22 Oct 2020 08:55:00 +0100
-Subject: [LTP] [PATCH 2/3] lib: Add generic boolean expression parser
- and eval
-In-Reply-To: <20201021182001.GF10861@yuki.lan>
+Date: Thu, 22 Oct 2020 09:09:40 +0100
+Subject: [LTP] [PATCH 1/3] lib/tst_kconfig: Rewrite the parser internals
+In-Reply-To: <20201021141157.GC10861@yuki.lan>
 References: <20201020100910.10828-1-chrubis@suse.cz>
- <20201020100910.10828-3-chrubis@suse.cz> <871rhrwnb7.fsf@suse.de>
- <20201021182001.GF10861@yuki.lan>
-Message-ID: <87pn5avgob.fsf@suse.de>
+ <20201020100910.10828-2-chrubis@suse.cz> <878sbzx66b.fsf@suse.de>
+ <20201021100605.GA10861@yuki.lan> <874kmnwy6g.fsf@suse.de>
+ <20201021141157.GC10861@yuki.lan>
+Message-ID: <87mu0evfzv.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,339 +16,222 @@ To: ltp@lists.linux.it
 Hello,
 
 Cyril Hrubis <chrubis@suse.cz> writes:
->
->> > +enum tst_op char_to_op(char c)
->> > +{
->> > +	switch (c) {
->> > +	case '(':
->> > +		return TST_OP_LPAR;
->> > +	case ')':
->> > +		return TST_OP_RPAR;
->> > +	case '&':
->> > +		return TST_OP_AND;
->> > +	case '|':
->> > +		return TST_OP_OR;
->> > +	case '!':
->> > +		return TST_OP_NOT;
->> > +	default:
->> > +		return -1;
+
+> Hi!
+>> >> lines first to remove whitespace issues and expose the parser to all
+>> >> possible variable name symbols and values instead of just the ones which
+>> >> appear in our current tests.
+>> >
+>> > I guess that it's techincally possible to have a whitespaces there, but
+>> > will not happen unless you hand-edit the config file before compilation,
+>> > which I doubt will ever happen.
+>> >
 >> 
->> This should probably be an enum value like TST_OP_INVAL (still may be
->> -1), otherwise it is likely to confuse static anlyses tools.
+>> It can also happen if someone has their own script to modify the
+>> config. At any rate, if you are confident that it will never happen then
+>> there should be no problem failing hard if it does.
 >
-> I tried to avoid adding more enum values since that means that we have
-> to explicitly handle them in all switch () bodies. So I'm not sure what
-> is worse, adding nop case to a few of these or having numeric value like
-> that.
+> It would be probably easier to eat the whitespace around the = if
+> present. But still I would ignore anything that isn't correct variable
+> assignment, since such config would fail kernel compilation anyways.
 
-I think it is usually enough to have a 'default' in the switch statement
-to prevent warnings about unhandled values?
-
-Of course there is still a tradeoff here, because you end up with an
-enum containing unrelated values.
+Works for me :-)
 
 >
->> > +	}
->> > +}
->> > +
->> > +static struct tst_expr *new_op(char c)
->> > +{
->> > +	struct tst_expr *ret;
->> > +
->> > +	ret = malloc(sizeof(struct tst_expr));
->> > +	if (!ret)
->> > +		return NULL;
->> > +
->> > +	ret->op = char_to_op(c);
->> > +	ret->next = NULL;
->> > +	ret->err = NULL;
->> > +
->> > +	return ret;
->> > +}
->> > +
->> > +struct op_list {
->> > +	struct tst_expr *first;
->> > +	struct tst_expr *last;
->> > +	unsigned int cnt;
->> > +};
->> > +
->> > +static void op_list_append(struct op_list *list, struct tst_expr *val)
->> > +{
->> > +	if (!val)
->> > +		return;
->> > +
->> > +	if (!list->first)
->> > +		list->first = val;
->> > +
->> > +	if (list->last)
->> > +		list->last->next = val;
->> > +
->> > +	list->last = val;
->> > +
->> > +	list->cnt++;
->> > +}
->> > +
->> > +static void tokenize(const char *expr, struct op_list *ret)
->> > +{
->> > +	struct tok buf = {};
->> > +	size_t i;
->> > +
->> > +	for (i = 0; expr[i]; i++) {
->> > +		switch (expr[i]) {
->> > +		case '(':
->> > +		case ')':
->> > +		case '!':
->> > +		case '&':
->> > +		case '|':
->> > +			op_list_append(ret, new_var(tok_get(&buf)));
->> > +			op_list_append(ret, new_op(expr[i]));
->> > +		break;
->> > +		case '\t':
->> > +		case ' ':
->> > +			op_list_append(ret, new_var(tok_get(&buf)));
->> > +		break;
->> > +		default:
->> > +			tok_append(&buf, expr[i]);
->> > +		break;
->> > +		}
->> > +	}
->> > +
->> > +	op_list_append(ret, new_var(tok_get(&buf)));
->> > +}
->> > +
->> > +void tst_bool_expr_print(FILE *f, struct tst_expr *expr)
->> > +{
->> > +	struct tst_expr *i;
->> > +	int prev_op = 0;
->> > +
->> > +	for (i = expr; i; i = i->next) {
->> > +		if (i->op != TST_OP_VAR && prev_op)
->> > +			fprintf(f, " ");
->> > +
->> > +		switch (i->op) {
->> > +		case TST_OP_AND:
->> > +			fprintf(f, "&");
->> > +		break;
->> > +		case TST_OP_OR:
->> > +			fprintf(f, "|");
->> > +		break;
->> > +		case TST_OP_NOT:
->> > +			fprintf(f, "!");
->> > +		break;
->> > +		case TST_OP_LPAR:
->> > +			fprintf(f, "(");
->> > +		break;
->> > +		case TST_OP_RPAR:
->> > +			fprintf(f, ")");
->> > +		break;
->> > +		case TST_OP_VAR:
->> > +			fprintf(f, " %s ", i->val);
->> > +		break;
->> > +		}
->> > +
->> > +		if (i->op == TST_OP_VAR)
->> > +			prev_op = 0;
->> > +		else
->> > +			prev_op = 1;
->> > +	}
->> > +}
->> > +
->> > +static void tst_bool_expr_err(FILE *f, struct tst_expr *expr)
->> > +{
->> > +	struct tst_expr *i;
->> > +	int prev_op = 0;
->> > +	unsigned int spaces = 0;
->> > +
->> > +	fprintf(f, "\n");
->> > +
->> > +	for (i = expr; i; i = i->next) {
->> > +		if (i->err)
->> > +			break;
->> > +
->> > +		if (i->op != TST_OP_VAR && prev_op)
->> > +			spaces++;
->> > +
->> > +		switch (i->op) {
->> > +		case TST_OP_VAR:
->> > +			spaces += 2 + strlen(i->val);
->> > +		break;
->> > +		default:
->> > +			spaces++;
->> > +		}
->> > +
->> > +		if (i->op == TST_OP_VAR)
->> > +			prev_op = 0;
->> > +		else
->> > +			prev_op = 1;
->> > +	}
->> > +
->> > +	while (spaces--)
->> > +		putc(' ', f);
->> > +
->> > +	fprintf(f, "^\n");
->> > +	fprintf(f, "%s\n", i->err);
->> > +}
->> > +
->> > +static inline void stack_push(struct tst_expr *stack[], unsigned int *stack_pos,
->> > +                              struct tst_expr *op)
->> > +{
->> > +	stack[(*stack_pos)++] = op;
->> > +}
->> > +
->> > +static inline int stack_empty(unsigned int stack_pos)
->> > +{
->> > +	return stack_pos == 0;
->> > +}
->> > +
->> > +static inline struct tst_expr *stack_pop(struct tst_expr *stack[],
->> > +                                          unsigned int *stack_pos)
->> > +{
->> > +	if (stack_empty(*stack_pos))
->> > +		return NULL;
->> > +
->> > +	return stack[--(*stack_pos)];
->> > +}
->> > +
->> > +static inline enum tst_op stack_top_op(struct tst_expr *stack[],
->> > +                                       unsigned int stack_pos)
+>> >> > +			switch (val[0]) {
+>> >> > +			case '=':
+>> >> > +				break;
+>> >> > +			case ' ':
+>> >> > +				if (is_set(val, "is not set")) {
+>> >> > +					vars[i].choice = 'n';
+>> >> > +					return 1;
+>> >> > +				}
+>> >> 
+>> >> Typically such lines begin with a comment '#' and I don't see where that
+>> >> is handled. Possibly this will only match non standard configs?
+>> >
+>> > It does work actually, since we use strstr() to get the "CONFIG_" prefix
+>> > from each line of the configuration, but I guess this needs to be fixed
+>> > anyways since we would detect "# CONFIG_FOO=y" as enabled config feature
+>> > even if it's commented. Again this will not happen unless you hand-edit
+>> > the file, but it's probably worth fixing in a follow up patch.
 >> 
->> Just a nit, but usually this is called peek, right?
->> 
->> As we are peeking at the top/next entry without removing it.
+>> We don't actually use the result of strstr anymore?
 >
-> I guess that stack_peek_op() may be better name, it has to have the
-> _op there since we dereference.
+> Ah right, that's a bug, the cfg should be passed to the
+> kconfig_parse_line() instead, at least that's how the previous version
+> worked in order to differentiate between unset and unknown variables.
+>
+>> >> > +				return 1;
+>> >> > +			/* vars[i].id may be prefix to longer config var */
+>> >> > +			default:
+>> >> > +				return 0;
+>> >> > +			}
+>> >> >  
+>> >> > -	if (!cfg)
+>> >> > -		return 0;
+>> >> > +			if (is_set(val, "=y")) {
+>> >> > +				vars[i].choice = 'y';
+>> >> > +				return 1;
+>> >> > +			}
+>> >> >  
+>> >> > -	if (strncmp(cfg, conf, match->len))
+>> >> > -		return 0;
+>> >> > +			if (is_set(val, "=m")) {
+>> >> > +				vars[i].choice = 'm';
+>> >> > +				return 1;
+>> >> > +			}
+>> >> >  
+>> >> > -	const char *val = &cfg[match->len];
+>> >> > +			vars[i].choice = 'v';
+>> >> > +			vars[i].val = strndup(val+1, strlen(val)-2);
+>> >> >  
+>> >> > -	switch (cfg[match->len]) {
+>> >> > -	case '=':
+>> >> > -		break;
+>> >> > -	case ' ':
+>> >> > -		if (is_set(val, "is not set")) {
+>> >> > -			result->match = 'n';
+>> >> > -			goto match;
+>> >> > +			return 1;
+>> >> >  		}
+>> >> > -	/* fall through */
+>> >> > -	default:
+>> >> > -		return 0;
+>> >> > -	}
+>> >> > -
+>> >> > -	if (is_set(val, "=y")) {
+>> >> > -		result->match = 'y';
+>> >> > -		goto match;
+>> >> >  	}
+>> >> >  
+>> >> > -	if (is_set(val, "=m")) {
+>> >> > -		result->match = 'm';
+>> >> > -		goto match;
+>> >> > -	}
+>> >> > -
+>> >> > -	result->match = 'v';
+>> >> > -	result->value = strndup(val+1, strlen(val)-2);
+>> >> > -
+>> >> > -match:
+>> >> > -	match->match = 1;
+>> >> > -	return 1;
+>> >> > +	return 0;
+>> >> >  }
+>> >> >  
+>> >> > -void tst_kconfig_read(const char *const *kconfigs,
+>> >> > -                      struct tst_kconfig_res results[], size_t cnt)
+>> >> > +void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
+>> >> >  {
+>> >> > -	struct match matches[cnt];
+>> >> > -	FILE *fp;
+>> >> > -	unsigned int i, j;
+>> >> > -	char buf[1024];
+>> >> > -
+>> >> > -	for (i = 0; i < cnt; i++) {
+>> >> > -		const char *val = strchr(kconfigs[i], '=');
+>> >> > -
+>> >> > -		if (strncmp("CONFIG_", kconfigs[i], 7))
+>> >> > -			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
+>> >> > +	char line[128];
+>> >> > +	unsigned int vars_found = 0;
+>> >> >  
+>> >> > -		matches[i].match = 0;
+>> >> > -		matches[i].len = strlen(kconfigs[i]);
+>> >> > -
+>> >> > -		if (val) {
+>> >> > -			matches[i].val = val + 1;
+>> >> > -			matches[i].len -= strlen(val);
+>> >> > -		}
+>> >> > -
+>> >> > -		results[i].match = 0;
+>> >> > -		results[i].value = NULL;
+>> >> > -	}
+>> >> > -
+>> >> > -	fp = open_kconfig();
+>> >> > +	FILE *fp = open_kconfig();
+>> >> >  	if (!fp)
+>> >> >  		tst_brk(TBROK, "Cannot parse kernel .config");
+>> >> >  
+>> >> > -	while (fgets(buf, sizeof(buf), fp)) {
+>> >> > -		for (i = 0; i < cnt; i++) {
+>> >> > -			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
+>> >> > -				for (j = 0; j < cnt; j++) {
+>> >> > -					if (matches[j].match)
+>> >> > -						break;
+>> >> > -				}
+>> >> > +	while (fgets(line, sizeof(line), fp)) {
+>> >> > +		char *cfg = strstr(line, "CONFIG_");
+>> >> >  
+>> >> > -				if (j == cnt)
+>> >> > -					goto exit;
+>> >> > -			}
+>> >> > -		}
+>> >> > +		if (!cfg)
+>> >> > +			continue;
+>> >> 
+>> >> This filtering seems unecessary and maybe will hide some corner cases
+>> >> because it reduces kconfig_parses_line's exposure. Also practically
+>> >> every line has 'CONFIG_' in it.
+>> >
+>> > Not really, there are empty lines and plenty of comments in the file
+>> > generated by kernel infrastructure.
+>> 
+>> It seems about 80-90% of lines contain CONFIG_, however if you pass it
+>> to kconfig_parse_line then this makes more sense. Still I think with
+>> proper parsing this shouldn't be there.
+>
+> What exactly do you mean by a proper parsing?
 
-+1
+Tokenize it and remove whitespace.
 
 >
->> > +{
->> > +	if (stack_empty(stack_pos))
->> > +		return -1;
->> > +
->> > +	return stack[stack_pos - 1]->op;
->> > +}
->> 
->> Perhaps we should copy & paste the dynamic preallocated vector we
->> created for gfxprim? We are doing a bunch of mallocs and reinventing
->> linked lists and stacks, which can all be represented by the vector
->> IIRC.
+> The file is format is very simple each line starts either with # which
+> is a comment or consists of 'key=val' pair and the key is by definition
+> prefixed with CONFIG_.
 >
-> I do not think that it would work for the tokenizer/RPN since we reorder
-> that and free things from the middle vector is not ideal data structure
-> for that, link list is better suited for that work. And as for the stack
-> we use, these have nice upper bound on size so we do not really need
-> dynamic array for that.
+>> >> > +
+>> >> > +		if (kconfig_parse_line(line, vars, vars_len))
+>> >> > +			vars_found++;
+>> >> >  
+>> >> > +		if (vars_found == vars_len)
+>> >> > +			goto exit;
+>> >> >  	}
+>> >> 
+>> >> Generally, this approach seems like to result in spurious TCONFs. We
+>> >> need to properly parse the file and fail if some line can't be
+>> >> interpreted.
+>> >
+>> > Well we do expect well formatted .config file from a start, if you hand
+>> > edit it and put whitespaces into unexpected places more things may
+>> > fail.
+>> 
+>> Kernel build system seems to have no problem with it. More generally
+>> though we should fail hard if there is something unexpected, not produce
+>> TCONF which people don't check.
+>
+> Even if we do I do not think that we should care about anything but
+> syntactically correct input, since if you modify the file after kernel
+> compilation you have lost anyways.
+>
+>> >> I suppose most of the problems here stem from the original code, but
+>> >> your patch may as well clear it up :-)
+>> >
+>> > Actually the clear way how to fix this is in a separate patch so that
+>> > logical changes are split into different patches.
+>> 
+>> I suppose that elements of the boolean parser can be used to parse the
+>> kconfig and it can be combined (in a later patch). It's kind of
+>> unecessary to parse a config file into RPN, but will work perfectly well
+>> so we can share some code here.
+>
+> I do not get what you are trying to say. Are you saying that we should
+> tokenize the input? I do not think that this is necessary since the file
+> format is pretty simple.
 
-Well it is not really about needing it just for this, I'm more thinking
-about deduplicating array, stack and list code in general. However I
-guess this can be dealt with separately.
-
->
->> > +
->> > +/*
->> > + * This is a complete list of which tokens can happen before any of:
->> > + *  - variable
->> > + *  - left parentesis
->> > + *  - negation
->> > + *
->> > + * The -1 represents start of the expression.
->> 
->> Then it should have an entry in the enum.
->
-> Same here, if we do that we will end up with nop cases in a few switches
-> to avoid warnings.
->
->> > + */
->> > +static inline int check_one(int op)
->> 
->> I guess there is no good name for this xD
->
-> As far as I can tell no there isn't :-).
->
->> > +{
->> > +	switch (op) {
->> > +	case TST_OP_AND:
->> > +	case TST_OP_OR:
->> > +	case TST_OP_NOT:
->> > +	case -1:
->> > +	case TST_OP_LPAR:
->> > +		return 0;
->> > +	default:
->> > +		return 1;
->> > +	}
->> > +}
->> > +
->> > +/*
->> > + * And this checks for tokens that can happen before any of:
->> > + * - right parentesis
->> > + * - and
->> > + * - or
->> > + *
->> > + * This is also used to check that the last token in expression is correct one.
->> > + */
->> > +static inline int check_two(int op)
->> > +{
->> > +	switch (op) {
->> > +	case TST_OP_VAR:
->> > +	case TST_OP_RPAR:
->> > +		return 1;
->> > +	default:
->> > +		return 0;
->> > +	}
->> > +}
->> > +
->> > +static struct tst_expr *shunting_yard(struct op_list *list)
->> > +{
->> 
->>         /* Translator stack */
->> > +	struct tst_expr *stack[list->cnt];
->> > +	unsigned int stack_pos = 0;
->
-> Or we can reame this to op_stack[]; I prefer naming variables
-> reasonably.
->
->> > +	struct tst_expr *out[list->cnt + 1];
->> > +	unsigned int out_pos = 0;
->> > +	struct tst_expr *pars[list->cnt];
->> > +	unsigned int pars_pos = 0;
->> 
->> It seems we just push stuff to this stack then free everything at the
->> end?
->
-> Yes, since we eliminate parentesis during the RPN transformation but we
-> have to free the allocated memory at the end.
->
->> > +	struct tst_expr *i;
->> > +	unsigned int j;
->> > +	int prev_op = -1;
->> 
->> enum tst_op prev_op = TST_OP_START;
->> 
->> > +
->> > +	for (i = list->first; i; i = i->next) {
->> > +		switch (i->op) {
->> > +		case TST_OP_VAR:
->> > +			if (check_one(prev_op) && prev_op != TST_OP_LPAR) {
->> > +				i->err = "Expected operation";
->> > +				goto err;
->> > +			}
->> > +
->> > +			stack_push(out, &out_pos, i);
->> > +
->> > +			/* pop all negations */
->> 
->> Clearly :-)
->> 
->> This is not the hardest thing to understand here!
->
-> I guess so, will remove the comment.
->
-> Are there any places in the code that are not commented and should be?
-
-I don't think so, unless you have references/links which you think would
-be particularly useful for understanding this implementation of the
-algorithm?
+Yes or atleast test the assumption you won't find configs with spaces or
+other wierd stuff in by throwing an error if we find something
+unexpected. If someone has a broken config we can tell them that.
 
 -- 
 Thank you,
