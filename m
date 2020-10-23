@@ -1,141 +1,74 @@
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Fri, 23 Oct 2020 12:30:53 -0400
-Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
- <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
- <20201020162714.GC46039@blackbook>
- <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
- <20201020181822.GA397401@cmpxchg.org>
- <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
-Message-ID: <20201023163053.GB535375@cmpxchg.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 23 Oct 2020 09:32:54 -0700
+Subject: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+ 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
+ libc-2.27.so[7f3d77058000+1aa000]
+In-Reply-To: <CAHk-=whFb3wk0ff8jb3BCyoNvNJ1TSZxoYRKaAoW=Y43iQFNkw@mail.gmail.com>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+ <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+ <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
+ <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+ <20201023050214.GG23681@linux.intel.com>
+ <356811ab-cb08-7685-ca01-fe58b5654953@rasmusvillemoes.dk>
+ <CAHk-=whFb3wk0ff8jb3BCyoNvNJ1TSZxoYRKaAoW=Y43iQFNkw@mail.gmail.com>
+Message-ID: <CAHk-=whGbM1E0BbSVvxGRj5nBaNRXXD-oKcgrM40s4gvYV_C+w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Oct 21, 2020 at 12:33:22PM -0700, Roman Gushchin wrote:
-> On Tue, Oct 20, 2020 at 02:18:22PM -0400, Johannes Weiner wrote:
-> > On Tue, Oct 20, 2020 at 10:07:17AM -0700, Roman Gushchin wrote:
-> > > If we want these counter to function properly, then we should go into the opposite
-> > > direction and remove the special handling of the root memory cgroup in many places.
-> > 
-> > I suspect this is also by far the most robust solution from a code and
-> > maintenance POV.
-> > 
-> > I don't recall the page counter at the root level having been a
-> > concern in recent years, even though it's widely used in production
-> > environments. It's lockless and cache compact. It's also per-cpu
-> > batched, which means it isn't actually part of the memcg hotpath.
-> 
-> 
-> I agree.
-> 
-> Here is my first attempt. Comments are welcome!
-> 
-> It doesn't solve the original problem though (use_hierarchy == false and
-> objcg reparenting), I'll send a separate patch for that.
-> 
-> Thanks!
-> 
-> --
-> 
-> From 9c7d94a3f999447417b02a7100527ce1922bc252 Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Tue, 20 Oct 2020 18:05:43 -0700
-> Subject: [PATCH RFC] mm: memcontrol: do not treat the root memory cgroup
->  specially
-> 
-> Currently the root memory cgroup is treated in a special way:
-> it's not charged and uncharged directly (only indirectly with their
-> descendants), processes belonging to the root memory cgroup are exempt
-> from the kernel- and the socket memory accounting.
-> 
-> At the same time some of root level statistics and data are available
-> to a user:
->   - cgroup v2: memory.stat
->   - cgroup v1: memory.stat, memory.usage_in_bytes, memory.memsw.usage_in_bytes,
->                memory.kmem.usage_in_bytes and memory.kmem.tcp.usage_in_bytes
-> 
-> Historically the reason for a special treatment was an avoidance
-> of extra performance cost, however now it's unlikely a good reason:
-> over years there was a significant improvement in the performance
-> of the memory cgroup code. Also on a modern system actively using
-> cgroups (e.g. managed by systemd) there are usually no (significant)
-> processes in the root memory cgroup.
-> 
-> The special treatment of the root memory cgroups creates a number of
-> issues visible to a user:
-> 1) slab stats on the root level do not include the slab memory
->    consumed by processes in the root memory cgroup
-> 2) non-slab kernel memory consumed by processes in the root memory cgroup
->    is not included into memory.kmem.usage_in_bytes
-> 3) socket memory consumed by processes in the root memory cgroup
->    is not included into memory.kmem.tcp.usage_in_bytes
-> 
-> It complicates the code and increases a risk of new bugs.
-> 
-> This patch removes a number of exceptions related to the handling of
-> the root memory cgroup. With this patch applied the root memory cgroup
-> is treated uniformly to other cgroups in the following cases:
-> 1) root memory cgroup is charged and uncharged directly, try_charge()
->    and cancel_charge() do not return immediately if the root memory
->    cgroups is passed. uncharge_batch() and __mem_cgroup_clear_mc()
->    do not handle the root memory cgroup specially.
-> 2) per-memcg slab statistics is gathered for the root memory cgroup
-> 3) shrinkers infra treats the root memory cgroup as any other memory
->    cgroup
-> 4) non-slab kernel memory accounting doesn't exclude pages allocated
->    by processes belonging to the root memory cgroup
-> 5) if a socket is opened by a process in the root memory cgroup,
->    the socket memory is accounted
-> 6) root cgroup is charged for the used swap memory.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+On Fri, Oct 23, 2020 at 8:54 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Oct 23, 2020 at 12:14 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+> >
+> > That's certainly garbage. Now, I don't know if it's a sufficient fix (or
+> > could break something else), but the obvious first step of rearranging
+> > so that the ptr argument is evaluated before the assignment to __val_pu
+>
+> Ack. We could do that.
+>
+> I'm more inclined to just bite the bullet and go back to the ugly
+> conditional on the size that I had hoped to avoid, but if that turns
+> out too ugly, mind signing off on your patch and I'll have that as a
+> fallback?
 
-This looks great.
+Actually, looking at that code, and the fact that we've used the
+"register asm()" format forever for the get_user() side, I think your
+approach is the right one.
 
-The try_charge(), cancel_charge() etc. paths are relatively
-straight-forward and look correct to me.
+I'd rename the internal ptr variable to "__ptr_pu", and make sure the
+assignments happen just before the asm call (with the __val_pu
+assignment being the final thing).
 
-The swap counters too.
+lso, it needs to be
 
-Slab is a bit trickier, but it also looks correct to me.
+        void __user *__ptr_pu;
 
-I'm having some trouble with the shrinkers. Currently, tracked objects
-allocated in non-root cgroups live in that cgroup. Tracked objects in
-the root cgroup, as well as untracked objects, live in a global pool.
-When reclaim iterates all memcgs and calls shrink_slab(), we special
-case the root_mem_cgroup and redirect to the global pool.
+instead of
 
-After your patch we have tracked objects allocated in the root cgroup
-actually live in the root cgroup. Removing the shrinker special case
-is correct in order to shrink those - but it removes the call to
-shrink the global pool of untracked allocation classes.
+        __typeof__(ptr) __ptr = (ptr);
 
-I think we need to restore the double call to shrink_slab() we had
-prior to this:
+because "ptr" may actually be an array, and we need to have the usual
+C "array to pointer" conversions happen, rather than try to make
+__ptr_pu be an array too.
 
-commit aeed1d325d429ac9699c4bf62d17156d60905519
-Author: Vladimir Davydov <vdavydov.dev@gmail.com>
-Date:   Fri Aug 17 15:48:17 2018 -0700
+So the patch would become something like the appended instead, but I'd
+still like your sign-off (and I'd put you as author of the fix).
 
-    mm/vmscan.c: generalize shrink_slab() calls in shrink_node()
-    
-    The patch makes shrink_slab() be called for root_mem_cgroup in the same
-    way as it's called for the rest of cgroups.  This simplifies the logic
-    and improves the readability.
+Narest, can you confirm that this patch fixes the issue for you?
 
-where we iterate through all cgroups, including the root, to reclaim
-objects accounted to those respective groups; and then a call to scan
-the global pool of untracked objects in that numa node.
-
-For ease of review/verification, it could be helpful to split the
-patch and remove the root exception case-by-case (not callsite by
-callsite, but e.g. the swap counter, the memory counter etc.).
+                  Linus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch
+Type: application/octet-stream
+Size: 862 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201023/2e2931c9/attachment.obj>
