@@ -1,80 +1,81 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 23 Oct 2020 17:36:26 +0800
-Subject: [LTP] [PATCH 03/11] docparse: Add test documentation parser
-In-Reply-To: <CAEemH2e397yh+sa68_YkHwEr+QAV+NC0ROhbXHUm0CvrEd9gng@mail.gmail.com>
-References: <20201005133054.23587-1-chrubis@suse.cz>
- <20201005133054.23587-4-chrubis@suse.cz>
- <CAEemH2e397yh+sa68_YkHwEr+QAV+NC0ROhbXHUm0CvrEd9gng@mail.gmail.com>
-Message-ID: <CAEemH2cKVRnSbifdEmjxdTX3Pkmvy5cwcZWQ8QBTVK0g2xA+0A@mail.gmail.com>
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Fri, 23 Oct 2020 11:44:47 -0400
+Subject: [LTP] [PATCH v4] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201023004026.GG300658@carbon.dhcp.thefacebook.com>
+References: <87sga6vizp.fsf@suse.de>
+ <20201022122858.8638-1-rpalethorpe@suse.com>
+ <CALvZod4u79DSwyM=Kg8g5tR1L5eomHgUkaJmp6s9D3jC7OnN0A@mail.gmail.com>
+ <20201022172508.GF300658@carbon.dhcp.thefacebook.com>
+ <CALvZod5p-O72gCY-R+oLcDZjEkPRioz7e7p5Jg=nXxhmtiwKWw@mail.gmail.com>
+ <20201023004026.GG300658@carbon.dhcp.thefacebook.com>
+Message-ID: <20201023154447.GA535375@cmpxchg.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Oct 23, 2020 at 3:01 PM Li Wang <liwang@redhat.com> wrote:
+On Thu, Oct 22, 2020 at 05:40:26PM -0700, Roman Gushchin wrote:
+> From 19d66695f0ef1bf1ef7c51073ab91d67daa91362 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Thu, 22 Oct 2020 17:12:32 -0700
+> Subject: [PATCH] mm: memcg: link page counters to root if use_hierarchy is false
+> 
+> Richard reported a warning which can be reproduced by running the LTP
+> madvise6 test (cgroup v1 in the non-hierarchical mode should be used):
+> 
+> [    9.841552] ------------[ cut here ]------------
+> [    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [    9.841982] Modules linked in:
+> [    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
+> [    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+> [    9.842571] Workqueue: events drain_local_stock
+> [    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+> [ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
+> [    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
+> [    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803bc2cae0
+> [    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff948007d2b248
+> [    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff948007da05ac
+> [    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000001
+> [    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803bc2cac0
+> [    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlGS:0000000000000000
+> [    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 00000000000006f0
+> [    9.845319] Call Trace:
+> [    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+> [    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+> [    9.845684] drain_local_stock (mm/memcontrol.c:2255)
+> [    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
+> [    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
+> [    9.846034] ? process_one_work (kernel/workqueue.c:2358)
+> [    9.846162] kthread (kernel/kthread.c:292)
+> [    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
+> [    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
+> [    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
+> 
+> The problem occurs because in the non-hierarchical mode non-root page
+> counters are not linked to root page counters, so the charge is not
+> propagated to the root memory cgroup.
+> 
+> After the removal of the original memory cgroup and reparenting of the
+> object cgroup, the root cgroup might be uncharged by draining a objcg
+> stock, for example. It leads to an eventual underflow of the charge
+> and triggers a warning.
+> 
+> Fix it by linking all page counters to corresponding root page
+> counters in the non-hierarchical mode.
+> 
+> The patch doesn't affect how the hierarchical mode is working,
+> which is the only sane and truly supported mode now.
+> 
+> Thanks to Richard for reporting, debugging and providing an
+> alternative version of the fix!
+> 
+> Reported-by: ltp@lists.linux.it
+> Debugged-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Cc: stable@vger.kernel.org
 
->
-> Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> > +const char *next_token(FILE *f, struct data_node *doc)
-> > +{
-> > +       size_t i = 0;
-> > +       static char buf[4096];
-> > +       int c;
-> > +       int in_str = 0;
-> > +
-> > +       for (;;) {
-> > +               c = fgetc(f);
-> > +
-> > +               if (c == EOF)
-> > +                       goto exit;
-> > +
-> > +               if (in_str) {
-> > +                       if (c == '"') {
-> > +                               if (i == 0 || buf[i-1] != '\\')
-> > +                                       goto exit;
-> > +                       }
->
-> There is a problem in handle a special string token here,
-> which can not parse the "" correctly in many test cases.
->
-> e.g.
->
-> # ./docparse ../testcases/kernel/syscalls/fsopen/fsopen01.c
-> # ./docparse ../testcases/kernel/fs/ftest/ftest02.c
->
-
-The ftest02.c has not been converted to new API, please ignore.
-
-To fix this problem I propose to add a simple line as:
-
-@@ -137,8 +138,10 @@ const char *next_token(FILE *f, struct data_node *doc)
-
-                if (in_str) {
-                        if (c == '"') {
--                               if (i == 0 || buf[i-1] != '\\')
-+                               if (i == 0 || buf[i-1] != '\\') {
-+                                       buf[i++] = c;
-                                        goto exit;
-+                               }
-                        }
-
-
-
-> ....
->
-> We got nothing output from the above two tests parsing because they
-> contains "" in their sentence, it makes next_token() exit too early.
->
->      TEST(move_mount(fsmfd, "", AT_FDCWD, MNTPOINT,
->             MOVE_MOUNT_F_EMPTY_PATH));
->
-
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201023/6111a36b/attachment.htm>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
