@@ -1,38 +1,27 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 23 Oct 2020 09:18:36 +0200
-Subject: [LTP] [PATCH v2] Remove ftime and sys/timeb.h
-In-Reply-To: <CAEemH2enndeLbZ8Kr8EgVEc1OF7znrtB4vJwpacpBxyTY7YdGA@mail.gmail.com>
-References: <5F913024.7050303@cn.fujitsu.com>
- <1603352029-11446-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2enndeLbZ8Kr8EgVEc1OF7znrtB4vJwpacpBxyTY7YdGA@mail.gmail.com>
-Message-ID: <20201023071836.GA2310@x230>
+Date: Fri, 23 Oct 2020 09:19:39 +0200
+Subject: [LTP] [PATCH 11/11] docparse: Generate html and pdf using
+ asciidoc{, tor}
+In-Reply-To: <CAEemH2cE64fq2Qn1AEuLQN5aBWv7MRykEpc5Bw=_4H5N1ZJYkw@mail.gmail.com>
+References: <20201005133054.23587-1-chrubis@suse.cz>
+ <20201005133054.23587-12-chrubis@suse.cz>
+ <CAEemH2cE64fq2Qn1AEuLQN5aBWv7MRykEpc5Bw=_4H5N1ZJYkw@mail.gmail.com>
+Message-ID: <20201023071939.GB2310@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi,
 
-> Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+> Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> > The two case uses ftime to get the current milliseconds and it was
-> > used to generate random value. Using gettimeofday() to get the microseconds
-> > can reach the same aim.
+> > +
+> > +CLEAN_TARGETS          := *.txt
 
-> > This also fixes the travis build error[1] on Fedora:Rawhide because the <sys/timeb.h>
-> > has been deprecated[2].
-
-> > [1] https://travis-ci.org/github/linux-test-project/ltp/jobs/737698948
-> > [2] https://www.spinics.net/lists/fedora-devel/msg279545.html
-
-> > Reviewed-by: Li Wang <liwang@redhat.com>
-> > Acked-by: Jan Stancek <jstancek@redhat.com>
-> > Acked-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-> Pushed, thanks!
-Thanks for handling these!
+> I guess the generated  *.css *.js files should be deleted as well.
++1
 
 Kind regards,
 Petr
