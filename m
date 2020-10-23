@@ -1,9 +1,9 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 23 Oct 2020 23:20:13 +0530
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 23 Oct 2020 10:50:55 -0700
 Subject: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
  00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
  libc-2.27.so[7f3d77058000+1aa000]
-In-Reply-To: <CAHk-=whGbM1E0BbSVvxGRj5nBaNRXXD-oKcgrM40s4gvYV_C+w@mail.gmail.com>
+In-Reply-To: <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com>
 References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
  <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
  <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
@@ -12,70 +12,37 @@ References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
  <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
  <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
  <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
- <20201023050214.GG23681@linux.intel.com>
- <356811ab-cb08-7685-ca01-fe58b5654953@rasmusvillemoes.dk>
- <CAHk-=whFb3wk0ff8jb3BCyoNvNJ1TSZxoYRKaAoW=Y43iQFNkw@mail.gmail.com>
- <CAHk-=whGbM1E0BbSVvxGRj5nBaNRXXD-oKcgrM40s4gvYV_C+w@mail.gmail.com>
-Message-ID: <CA+G9fYtR9p_OqYNT6=tKh=hsQDXC_1m1TgERPFH0ubuZGcg-DA@mail.gmail.com>
+ <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com>
+Message-ID: <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, 23 Oct 2020 at 22:03, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Fri, Oct 23, 2020 at 10:00 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> On Fri, Oct 23, 2020 at 8:54 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Fri, Oct 23, 2020 at 12:14 AM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> > >
-> > > That's certainly garbage. Now, I don't know if it's a sufficient fix (or
-> > > could break something else), but the obvious first step of rearranging
-> > > so that the ptr argument is evaluated before the assignment to __val_pu
-> >
-> > Ack. We could do that.
-> >
-> > I'm more inclined to just bite the bullet and go back to the ugly
-> > conditional on the size that I had hoped to avoid, but if that turns
-> > out too ugly, mind signing off on your patch and I'll have that as a
-> > fallback?
+> [Old patch from yesterday]
 >
-> Actually, looking at that code, and the fact that we've used the
-> "register asm()" format forever for the get_user() side, I think your
-> approach is the right one.
->
-> I'd rename the internal ptr variable to "__ptr_pu", and make sure the
-> assignments happen just before the asm call (with the __val_pu
-> assignment being the final thing).
->
-> lso, it needs to be
->
->         void __user *__ptr_pu;
->
-> instead of
->
->         __typeof__(ptr) __ptr = (ptr);
->
-> because "ptr" may actually be an array, and we need to have the usual
-> C "array to pointer" conversions happen, rather than try to make
-> __ptr_pu be an array too.
->
-> So the patch would become something like the appended instead, but I'd
-> still like your sign-off (and I'd put you as author of the fix).
->
-> Narest, can you confirm that this patch fixes the issue for you?
+> After applying your patch on top on linux next tag 20201015
+> there are two observations,
+>   1) i386 build failed. please find build error build
 
-This patch fixed the reported problem.
+Yes, this was expected. That patch explicitly only works on x86-64,
+because 32-bit needs the double register handling for 64-bit values
+(mainly loff_t).
 
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>   2) x86_64 kasan test PASS and the reported error not found.
 
-Build location:
-https://builds.tuxbuild.com/uDAiW8jkN61oWoyxZDkEYA/
+Ok, good. That confirms that the problem you reported is indeed the
+register allocation.
 
-Test logs,
-https://lkft.validation.linaro.org/scheduler/job/1868045#L1597
+The patch I sent an hour ago (the one based on Rasmus' one from
+yesterday) should fix things too, and - unlike yesterday's - work on
+32-bit.
 
-- Naresh
+But I'll wait for confirmation (and hopefully a sign-off from Rasmus
+so that I can give him authorship) before actually committing it.
+
+              Linus
