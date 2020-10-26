@@ -1,76 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Oct 2020 08:00:06 +0100
-Subject: [LTP] [PATCH 1/1] net: Remove legacy tests from runtest
-Message-ID: <20201026070006.25298-1-pvorel@suse.cz>
+Date: Mon, 26 Oct 2020 08:01:48 +0100
+Subject: [LTP] [PATCH] route{4,6}-rmmod: Filter out ":" and fix typos
+In-Reply-To: <e0bdc892-6ade-f694-7c14-ca7ef7cb052f@oracle.com>
+References: <1603361548-1534-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <e0bdc892-6ade-f694-7c14-ca7ef7cb052f@oracle.com>
+Message-ID: <20201026070148.GC21306@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Remove all network stress tests which haven't been rewritten to the new
-API yet from the runtest file (mostly multicast tests + some route tests).
-These tests use check_envval and other deprecated tools.
+Hi Alexey, Feiyu,
 
-See also:
-https://github.com/linux-test-project/ltp/issues/310
-https://github.com/linux-test-project/ltp/issues/440
+> On 22.10.2020 13:12, Feiyu Zhu wrote:
+> > Reported-by: Jin Cao <caoj.fnst@cn.fujitsu.com>
+> > Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+> > ---
+> >  testcases/network/stress/route/route4-rmmod | 4 ++--
+> >  testcases/network/stress/route/route6-rmmod | 4 ++--
+> >  2 files changed, 4 insertions(+), 4 deletions(-)
 
-Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- runtest/net_stress.multicast | 16 ----------------
- runtest/net_stress.route     |  4 ----
- 2 files changed, 20 deletions(-)
+> > diff --git a/testcases/network/stress/route/route4-rmmod b/testcases/network/stress/route/route4-rmmod
+> > index 7aa1958..1ba255e 100644
+> > --- a/testcases/network/stress/route/route4-rmmod
+> > +++ b/testcases/network/stress/route/route4-rmmod
+> > @@ -164,14 +164,14 @@ do_setup()
+> >      lhost_module=`ethtool -i $lhost_ifname | grep driver | sed "s/driver:[[:blank:]]*//"`
 
-diff --git a/runtest/net_stress.multicast b/runtest/net_stress.multicast
-index d2288df62..463fe17ab 100644
---- a/runtest/net_stress.multicast
-+++ b/runtest/net_stress.multicast
-@@ -6,24 +6,8 @@ mcast4-group-single-socket mcast-group-single-socket
- mcast4-group-multiple-socket mcast-group-multiple-socket
- mcast4-group-same-group mcast-group-same-group
- mcast4-group-source-filter mcast-group-source-filter
--mcast4-pktfld01 mcast4-pktfld01
--mcast4-pktfld02 mcast4-pktfld02
--mcast4-queryfld01 mcast4-queryfld01
--mcast4-queryfld02 mcast4-queryfld02
--mcast4-queryfld03 mcast4-queryfld03
--mcast4-queryfld04 mcast4-queryfld04
--mcast4-queryfld05 mcast4-queryfld05
--mcast4-queryfld06 mcast4-queryfld06
- 
- mcast6-group-single-socket mcast-group-single-socket -6
- mcast6-group-multiple-socket mcast-group-multiple-socket -6
- mcast6-group-same-group mcast-group-same-group -6
- mcast6-group-source-filter mcast-group-source-filter -6
--mcast6-pktfld01 mcast6-pktfld01
--mcast6-pktfld02 mcast6-pktfld02
--mcast6-queryfld01 mcast6-queryfld01
--mcast6-queryfld02 mcast6-queryfld02
--mcast6-queryfld03 mcast6-queryfld03
--mcast6-queryfld04 mcast6-queryfld04
--mcast6-queryfld05 mcast6-queryfld05
--mcast6-queryfld06 mcast6-queryfld06
-diff --git a/runtest/net_stress.route b/runtest/net_stress.route
-index 8755ef0be..b60e55bd6 100644
---- a/runtest/net_stress.route
-+++ b/runtest/net_stress.route
-@@ -5,8 +5,6 @@ route4-change-if route-change-if.sh
- route4-change-netlink-dst route-change-netlink-dst.sh
- route4-change-netlink-gw route-change-netlink-gw.sh
- route4-change-netlink-if route-change-netlink-if.sh
--route4-redirect route4-redirect
--route4-rmmod route4-rmmod
- 
- route6-change-dst route-change-dst.sh -6
- route6-change-gw route-change-gw.sh -6
-@@ -14,5 +12,3 @@ route6-change-if route-change-if.sh -6
- route6-change-netlink-dst route-change-netlink-dst.sh -6
- route6-change-netlink-gw route-change-netlink-gw.sh -6
- route6-change-netlink-if route-change-netlink-if.sh -6
--route6-redirect route6-redirect
--route6-rmmod route6-rmmod
--- 
-2.28.0
+> >      # Chack the other active interface uses the same driver
+> > -    for ifname in `ifconfig | grep ^eth | awk '{ print $1}'`; do
+> > +    for ifname in `ifconfig | grep ^eth | awk '{print $1}' | sed "s/://"`; do
+
+> Thanks for fixing it, but it is not enough here. This command is wrong,
+> not only does it use obsolete tool, but also assumes that interface
+> names start with 'eth'. So it skips the check for active connections
+> that already in use with the driver (it is going to remove) for all
+> modern systems.
++1
+
+> I think we should at least remove this test from the runtest file
+> until the proper fix.
+Good idea, I've sent a patch for this.
+https://patchwork.ozlabs.org/project/ltp/patch/20201026070006.25298-1-pvorel@suse.cz/
+
+> Also this test and route4{6}-redirect are
+> really need to be rewritten with new test API, please have a look
+> at route-change-*.sh.
+
+Kind regards,
+Petr
 
