@@ -1,9 +1,10 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Oct 2020 17:47:48 +0100
-Subject: [LTP] [PATCH 11/19] Unify error handling in lib/tst_fs_setup.c
+Date: Mon, 26 Oct 2020 17:47:53 +0100
+Subject: [LTP] [PATCH 16/19] Unify error handling in
+ include/tst_safe_posix_ipc.h
 In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
 References: <20201026164756.30556-1-mdoucha@suse.cz>
-Message-ID: <20201026164756.30556-12-mdoucha@suse.cz>
+Message-ID: <20201026164756.30556-17-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,29 +15,27 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- lib/tst_fs_setup.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/tst_safe_posix_ipc.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
-index 54ea37077..a2dacd2ad 100644
---- a/lib/tst_fs_setup.c
-+++ b/lib/tst_fs_setup.c
-@@ -36,11 +36,11 @@ int mount_overlay(const char *file, const int lineno, int skip)
+diff --git a/include/tst_safe_posix_ipc.h b/include/tst_safe_posix_ipc.h
+index d74ef4ee8..b60c12c9e 100644
+--- a/include/tst_safe_posix_ipc.h
++++ b/include/tst_safe_posix_ipc.h
+@@ -36,9 +36,11 @@ static inline int safe_mq_open(const char *file, const int lineno,
+ 	va_end(ap);
  
- 	if (errno == ENODEV) {
- 		if (skip) {
--			tst_brk(TCONF, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG,
--				file, lineno);
-+			tst_brk_(file, lineno, TCONF,
-+				TST_FS_SETUP_OVERLAYFS_MSG);
- 		} else {
--			tst_res(TINFO, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG,
--				file, lineno);
-+			tst_res_(file, lineno, TINFO,
-+				TST_FS_SETUP_OVERLAYFS_MSG);
- 		}
- 	} else {
- 		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
+ 	rval = mq_open(pathname, oflags, mode, attr);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO, "%s:%d: mq_open(%s,%d,0%o,%p) failed",
+-			 file, lineno, pathname, oflags, mode, attr);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"mq_open(%s,%d,%04o,%p) failed", pathname, oflags,
++			mode, attr);
+ 	}
+ 
+ 	return rval;
 -- 
 2.28.0
 
