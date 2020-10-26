@@ -1,46 +1,45 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Oct 2020 14:45:46 +0100
-Subject: [LTP] [PATCH 4/5] network/virt: add wireguard01
-In-Reply-To: <34dfc67f-5234-a06b-c824-066bc70ecc8a@oracle.com>
-References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
- <20201015122056.20715-4-alexey.kodanev@oracle.com>
- <20201026084939.GE21306@dell5510>
- <34dfc67f-5234-a06b-c824-066bc70ecc8a@oracle.com>
-Message-ID: <20201026134546.GA9542@dell5510>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
+Date: Mon, 26 Oct 2020 15:04:48 +0100
+Subject: [LTP] syscalls/timer_settime01: adjust for rounding from nsec
+ to usec
+In-Reply-To: <20201006085309.32227-1-cascardo@canonical.com>
+Message-ID: <87v9exf5hb.fsf@oc8242746057.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
 
-...
-> >> +	tst_net_run -s "ip route add 128.0.0.0/1 dev ltp_v0"
-> > Out of curiosity: why is IPv4 enough? (we test also IPv6)
+Hi all,
 
-> Hi Petr,
+the patch from Chris fixes the below issue on s390x:
 
-> Looks like no need for additional route table setup, and overriding
-> default route... tst_netload() uses addresses of wireguard device.
-> Will remove it.
-ack.
+timer_settime01.c:96: TINFO: Testing for using absolute time:
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_REALTIME) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_MONOTONIC) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_PROCESS_CPUTIME_ID) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_THREAD_CPUTIME_ID) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_BOOTTIME) passed
+timer_settime01.c:111: TCONF: CLOCK_BOOTTIME_ALARM unsupported: EOPNOTSUPP (95)
+timer_settime01.c:111: TCONF: CLOCK_REALTIME_ALARM unsupported: EOPNOTSUPP (95)
+timer_settime01.c:156: TFAIL: timer_gettime(CLOCK_TAI) reported bad values (0: 50000019): SUCCESS (0)
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_TAI) passed
 
-> >> +}
-> >> +
-> >> +wireguard_lib_cleanup()
-> >> +{
-> >> +	virt_cleanup
-> >> +}
+and
 
-> > Why not use just virt_cleanup() ?
+timer_settime01.c:96: TINFO: Testing for using absolute time:
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_REALTIME) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_MONOTONIC) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_PROCESS_CPUTIME_ID) passed
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_THREAD_CPUTIME_ID) passed
+timer_settime01.c:156: TFAIL: timer_gettime(CLOCK_BOOTTIME) reported bad values (0: 50000097): SUCCESS (0)
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_BOOTTIME) passed
+timer_settime01.c:111: TCONF: CLOCK_BOOTTIME_ALARM unsupported: EOPNOTSUPP (95)
+timer_settime01.c:111: TCONF: CLOCK_REALTIME_ALARM unsupported: EOPNOTSUPP (95)
+timer_settime01.c:169: TPASS: timer_settime(CLOCK_TAI) passed
 
-> Yes, it's just a wrapper, but it is used in wirguard01/02 tests.
-> In case we need additional setup/cleanup we would have to change
-> both tests too.
 
-Sure, no problem. Looking forward this patchset to be merged :).
-Thanks for your work!
 
-Kind regards,
-Petr
+Regards
+Alex
