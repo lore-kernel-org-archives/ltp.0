@@ -1,65 +1,104 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Oct 2020 17:47:37 +0100
-Subject: [LTP] [PATCH 00/19] Unify error handling in LTP library
-Message-ID: <20201026164756.30556-1-mdoucha@suse.cz>
+Date: Mon, 26 Oct 2020 17:47:45 +0100
+Subject: [LTP] [PATCH 08/19] Unify error handling in lib/tst_mkfs.c
+In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
+References: <20201026164756.30556-1-mdoucha@suse.cz>
+Message-ID: <20201026164756.30556-9-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-LTP helper functions, mainly safe syscalls, often report two different source
-code locations in error messages and sometimes handle syscall return values
-incorrectly. This patchset unifies source code location formatting to only
-show the calling line in the test program and fixes invalid return value
-handling. Safe syscalls now make pedantic distinction between common errors
-and invalid return values where applicable.
+- Properly format caller file:line location
 
-Some safe syscalls returned no value so they were not usable in test cleanup.
-This is also fixed along with potential control flow issues when tst_brk()
-does not immediately terminate the program.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ lib/tst_mkfs.c | 36 +++++++++++++++++++-----------------
+ 1 file changed, 19 insertions(+), 17 deletions(-)
 
-Martin Doucha (19):
-  Unify error handling in lib/tst_safe_macros.c
-  Unify error handling in lib/tst_safe_sysv_ipc.c
-  Unify error handling in lib/tst_safe_timerfd.c
-  Unify error handling in lib/safe_file_ops.c
-  Unify error handling in lib/safe_macros.c
-  Unify error handling in lib/safe_net.c
-  Unify error handling in lib/safe_stdio.c
-  Unify error handling in lib/tst_mkfs.c
-  Unify error handling in lib/tst_checkpoint.c
-  Unify error handling in lib/tst_net.c
-  Unify error handling in lib/tst_fs_setup.c
-  Unify error handling in include/tst_safe_clocks.h
-  Move executable code out of tst_safe_macros.h
-  Unify error handling in moved functions
-  Unify error handling in include/tst_safe_macros.h
-  Unify error handling in include/tst_safe_posix_ipc.h
-  Unify error handling in include/tst_safe_prw.h
-  Unify error handling in lib/tst_resource.c
-  Unify error handling in include/lapi/safe_rt_signal.h
-
- include/lapi/safe_rt_signal.h |  25 +-
- include/safe_file_ops_fn.h    |   8 +-
- include/tst_safe_clocks.h     |  48 ++-
- include/tst_safe_macros.h     | 130 ++++----
- include/tst_safe_posix_ipc.h  |   6 +-
- include/tst_safe_prw.h        |  16 +-
- lib/safe_file_ops.c           | 207 +++++++-----
- lib/safe_macros.c             | 602 ++++++++++++++++++++++------------
- lib/safe_net.c                | 262 +++++++++------
- lib/safe_stdio.c              |  34 +-
- lib/tst_checkpoint.c          |  23 +-
- lib/tst_fs_setup.c            |   8 +-
- lib/tst_mkfs.c                |  36 +-
- lib/tst_net.c                 |   9 +-
- lib/tst_resource.c            |   9 +-
- lib/tst_safe_macros.c         | 201 ++++++++++--
- lib/tst_safe_sysv_ipc.c       |  79 +++--
- lib/tst_safe_timerfd.c        |  32 +-
- 18 files changed, 1100 insertions(+), 635 deletions(-)
-
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 38b2e7151..45dd83ad3 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -33,14 +33,14 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	char extra_opts_str[1024] = "";
+ 
+ 	if (!dev) {
+-		tst_brkm(TBROK, cleanup_fn,
+-			 "%s:%d: No device specified", file, lineno);
++		tst_brkm_(file, lineno, TBROK, cleanup_fn,
++			"No device specified");
+ 		return;
+ 	}
+ 
+ 	if (!fs_type) {
+-		tst_brkm(TBROK, cleanup_fn,
+-			 "%s:%d: No fs_type specified", file, lineno);
++		tst_brkm_(file, lineno, TBROK, cleanup_fn,
++			"No fs_type specified");
+ 		return;
+ 	}
+ 
+@@ -51,9 +51,8 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 			argv[pos++] = fs_opts[i];
+ 
+ 			if (pos + 2 > OPTS_MAX) {
+-				tst_brkm(TBROK, cleanup_fn,
+-				         "%s:%d: Too much mkfs options",
+-					 file, lineno);
++				tst_brkm_(file, lineno, TBROK, cleanup_fn,
++					"Too many mkfs options");
+ 				return;
+ 			}
+ 
+@@ -70,8 +69,8 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 			argv[pos++] = extra_opts[i];
+ 
+ 			if (pos + 1 > OPTS_MAX) {
+-				tst_brkm(TBROK, cleanup_fn,
+-				         "%s:%d: Too much mkfs options", file, lineno);
++				tst_brkm_(file, lineno, TBROK, cleanup_fn,
++					"Too many mkfs options");
+ 				return;
+ 			}
+ 
+@@ -83,11 +82,14 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	argv[pos] = NULL;
+ 
+-	if (tst_clear_device(dev))
+-		tst_brkm(TBROK, cleanup_fn, "tst_clear_device() failed");
++	if (tst_clear_device(dev)) {
++		tst_brkm_(file, lineno, TBROK, cleanup_fn,
++			"tst_clear_device() failed");
++	}
+ 
+-	tst_resm(TINFO, "Formatting %s with %s opts='%s' extra opts='%s'",
+-	         dev, fs_type, fs_opts_str, extra_opts_str);
++	tst_resm_(file, lineno, TINFO,
++		"Formatting %s with %s opts='%s' extra opts='%s'",
++		dev, fs_type, fs_opts_str, extra_opts_str);
+ 	ret = tst_cmd(cleanup_fn, argv, "/dev/null", NULL, TST_CMD_PASS_RETVAL |
+ 				  TST_CMD_TCONF_ON_MISSING);
+ 
+@@ -95,12 +97,12 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	case 0:
+ 	break;
+ 	case 255:
+-		tst_brkm(TCONF, cleanup_fn,
+-			 "%s:%d: %s not found in $PATH", file, lineno, mkfs);
++		tst_brkm_(file, lineno, TCONF, cleanup_fn,
++			"%s not found in $PATH", mkfs);
+ 	break;
+ 	default:
+-		tst_brkm(TBROK, cleanup_fn,
+-			 "%s:%d: %s failed with %i", file, lineno, mkfs, ret);
++		tst_brkm_(file, lineno, TBROK, cleanup_fn,
++			"%s failed with exit code %i", mkfs, ret);
+ 	}
+ }
+ 
 -- 
 2.28.0
 
