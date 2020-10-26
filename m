@@ -1,32 +1,55 @@
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
-Date: Mon, 26 Oct 2020 16:07:52 +0100
-Subject: [LTP] syscalls/timer_settime01: adjust for rounding from nsec
- to usec
-In-Reply-To: <20201026143424.GA31934@yuki.lan>
-References: <87v9exf5hb.fsf@oc8242746057.ibm.com>
- <20201026143424.GA31934@yuki.lan>
-Message-ID: <87sga1f2k7.fsf@oc8242746057.ibm.com>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Mon, 26 Oct 2020 12:12:50 -0300
+Subject: [LTP] [PATCH] syscalls/timer_settime01: adjust for rounding
+ from nsec to usec
+In-Reply-To: <20201020122351.GA15920@yuki.lan>
+References: <20201006085309.32227-1-cascardo@canonical.com>
+ <20201013140315.GD29925@yuki.lan> <20201020122351.GA15920@yuki.lan>
+Message-ID: <20201026151250.GA370402@mussarela>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
-
+On Tue, Oct 20, 2020 at 02:23:51PM +0200, Cyril Hrubis wrote:
 > Hi!
->> the patch from Chris fixes the below issue on s390x:
->
-> And what about the simpler solution I've proposed in the reply, does
-> that one work fine as well?
+> > What about this change instead?
+> > 
+> > diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+> > index 67143e8f8..599ef2891 100644
+> > --- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+> > +++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
+> > @@ -132,11 +132,13 @@ static void run(unsigned int n)
+> >  					get_clock_str(clock));
+> >  				continue;
+> >  			}
+> > -			val += tst_ts_to_us(timenow);
+> > +			tst_ts_add_us(timenow, val);
+> > +			tst_its_set_value_from_ts(&new_set, timenow);
+> > +		} else {
+> > +			tst_its_set_value_from_us(&new_set, val);
+> >  		}
+> >  
+> >  		tst_its_set_interval_from_us(&new_set, tc->it_interval_tv_usec);
+> > -		tst_its_set_value_from_us(&new_set, val);
+> >  
+> >  		TEST(tv->timer_settime(timer, tc->flag, tst_its_get(&new_set), tst_its_get(tc->old_ptr)));
+> >  
+> > 
+> > 
+> > By adding the us to the timenow first and then setting the its.value
+> > from it we can avoid the rounding completely.
+> 
+> Does this fix work for you?
+> 
 
-Hi Cyril,
+Sorry, I was out on vacation. This fixes it for me when using
+clocksource=jiffies.
 
-first, sorry for butchering your name :/
+Thanks.
+Cascardo.
 
-Second, I tested now both patches on a heavy loaded system (with
-stress-ng) and both seem to solve my issues. I ran a test 1000 times
-(-i 1000) and couldn't reproduce it anymore.
-
-Regards
-Alex
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
