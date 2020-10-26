@@ -1,9 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Oct 2020 17:47:41 +0100
-Subject: [LTP] [PATCH 04/19] Unify error handling in lib/safe_file_ops.c
+Date: Mon, 26 Oct 2020 17:47:38 +0100
+Subject: [LTP] [PATCH 01/19] Unify error handling in lib/tst_safe_macros.c
 In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
 References: <20201026164756.30556-1-mdoucha@suse.cz>
-Message-ID: <20201026164756.30556-5-mdoucha@suse.cz>
+Message-ID: <20201026164756.30556-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,442 +11,437 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 - Properly format caller file:line location
-- Pedantically check invalid syscall return values
-- Always return success/failure value so that all SAFE_*() functions can be
-  called in test cleanup
+- Pedantically check for invalid syscall return values, don't ignore silently
+- Always return syscall result so that all SAFE_*() functions can be called
+  in test cleanup
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/safe_file_ops_fn.h |   8 +-
- lib/safe_file_ops.c        | 207 +++++++++++++++++++++----------------
- 2 files changed, 120 insertions(+), 95 deletions(-)
+ include/tst_safe_macros.h |  30 ++++----
+ lib/tst_safe_macros.c     | 154 ++++++++++++++++++++++++++++++--------
+ 2 files changed, 137 insertions(+), 47 deletions(-)
 
-diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
-index 052fb1b9a..98730de82 100644
---- a/include/safe_file_ops_fn.h
-+++ b/include/safe_file_ops_fn.h
-@@ -30,7 +30,7 @@ int file_scanf(const char *file, const int lineno,
- 		const char *path, const char *fmt, ...)
- 		__attribute__ ((format (scanf, 4, 5)));
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index fd0fcd278..42d923370 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -130,7 +130,7 @@ int safe_setreuid(const char *file, const int lineno,
+ int safe_setpgid(const char *file, const int lineno, pid_t pid, pid_t pgid);
  
--void safe_file_scanf(const char *file, const int lineno,
-+int safe_file_scanf(const char *file, const int lineno,
-                      void (*cleanup_fn)(void),
- 		     const char *path, const char *fmt, ...)
- 		     __attribute__ ((format (scanf, 5, 6)));
-@@ -47,7 +47,7 @@ int file_printf(const char *file, const int lineno,
-                       const char *path, const char *fmt, ...)
-                       __attribute__ ((format (printf, 4, 5)));
+ #define SAFE_SETPGID(pid, pgid) \
+-	safe_setpgid(__FILE__, __LINE__, (pid), (pgid));
++	safe_setpgid(__FILE__, __LINE__, (pid), (pgid))
  
--void safe_file_printf(const char *file, const int lineno,
-+int safe_file_printf(const char *file, const int lineno,
-                       void (*cleanup_fn)(void),
-                       const char *path, const char *fmt, ...)
-                       __attribute__ ((format (printf, 5, 6)));
-@@ -55,7 +55,7 @@ void safe_file_printf(const char *file, const int lineno,
- /*
-  * Safe function to copy files, no more system("cp ...") please.
-  */
--void safe_cp(const char *file, const int lineno,
-+int safe_cp(const char *file, const int lineno,
-              void (*cleanup_fn)(void),
- 	     const char *src, const char *dst);
+ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
  
-@@ -71,7 +71,7 @@ void safe_cp(const char *file, const int lineno,
-  * times is a timespec[2] (as for utimensat(2)). If times is NULL then
-  * the access/modification times of the file is set to the current time.
-  */
--void safe_touch(const char *file, const int lineno,
-+int safe_touch(const char *file, const int lineno,
- 		void (*cleanup_fn)(void),
- 		const char *pathname,
- 		mode_t mode, const struct timespec times[2]);
-diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
-index e06d399fa..a63368875 100644
---- a/lib/safe_file_ops.c
-+++ b/lib/safe_file_ops.c
-@@ -84,9 +84,8 @@ int file_scanf(const char *file, const int lineno,
- 	f = fopen(path, "r");
+@@ -141,7 +141,7 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+ 	safe_unlink(__FILE__, __LINE__, NULL, (pathname))
  
- 	if (f == NULL) {
--		tst_resm(TWARN,
--			"Failed to open FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to open FILE '%s'",
-+			path);
- 		return 1;
- 	}
+ #define SAFE_LINK(oldpath, newpath) \
+-        safe_link(__FILE__, __LINE__, NULL, (oldpath), (newpath))
++	safe_link(__FILE__, __LINE__, NULL, (oldpath), (newpath))
  
-@@ -97,23 +96,21 @@ int file_scanf(const char *file, const int lineno,
- 	va_end(va);
+ #define SAFE_LINKAT(olddirfd, oldpath, newdirfd, newpath, flags) \
+ 	safe_linkat(__FILE__, __LINE__, NULL, (olddirfd), (oldpath), \
+@@ -151,7 +151,7 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+ 	safe_readlink(__FILE__, __LINE__, NULL, (path), (buf), (bufsize))
  
- 	if (ret == EOF) {
--		tst_resm(TWARN,
--			 "The FILE '%s' ended prematurely at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN,
-+			"The FILE '%s' ended prematurely", path);
- 		goto err;
- 	}
+ #define SAFE_SYMLINK(oldpath, newpath) \
+-        safe_symlink(__FILE__, __LINE__, NULL, (oldpath), (newpath))
++	safe_symlink(__FILE__, __LINE__, NULL, (oldpath), (newpath))
  
- 	if (ret != exp_convs) {
--		tst_resm(TWARN,
--			"Expected %i conversions got %i FILE '%s' at %s:%d",
--			 exp_convs, ret, path, file, lineno);
-+		tst_resm_(file, lineno, TWARN,
-+			"Expected %i conversions got %i FILE '%s'",
-+			exp_convs, ret, path);
- 		goto err;
- 	}
+ #define SAFE_WRITE(len_strict, fildes, buf, nbyte) \
+ 	safe_write(__FILE__, __LINE__, NULL, (len_strict), (fildes), (buf), (nbyte))
+@@ -178,10 +178,10 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+ 	safe_fchown(__FILE__, __LINE__, NULL, (fd), (owner), (group))
  
- 	if (fclose(f)) {
--		tst_resm(TWARN,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to close FILE '%s'",
-+			path);
- 		return 1;
- 	}
+ #define SAFE_WAIT(status) \
+-        safe_wait(__FILE__, __LINE__, NULL, (status))
++	safe_wait(__FILE__, __LINE__, NULL, (status))
  
-@@ -121,14 +118,14 @@ int file_scanf(const char *file, const int lineno,
+ #define SAFE_WAITPID(pid, status, opts) \
+-        safe_waitpid(__FILE__, __LINE__, NULL, (pid), (status), (opts))
++	safe_waitpid(__FILE__, __LINE__, NULL, (pid), (status), (opts))
  
- err:
- 	if (fclose(f)) {
--		tst_resm(TWARN,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to close FILE '%s'",
-+			path);
- 	}
-+
- 	return 1;
+ #define SAFE_KILL(pid, sig) \
+ 	safe_kill(__FILE__, __LINE__, NULL, (pid), (sig))
+@@ -350,7 +350,7 @@ static inline int safe_statfs(const char *file, const int lineno,
+ 	return rval;
  }
+ #define SAFE_STATFS(path, buf) \
+-        safe_statfs(__FILE__, __LINE__, (path), (buf))
++	safe_statfs(__FILE__, __LINE__, (path), (buf))
  
--void safe_file_scanf(const char *file, const int lineno,
-+int safe_file_scanf(const char *file, const int lineno,
- 		     void (*cleanup_fn) (void),
- 		     const char *path, const char *fmt, ...)
+ static inline off_t safe_lseek(const char *file, const int lineno,
+                                int fd, off_t offset, int whence)
+@@ -432,32 +432,32 @@ int safe_sigaction(const char *file, const int lineno,
+ #define SAFE_SIGACTION(signum, act, oldact) \
+ 	safe_sigaction(__FILE__, __LINE__, (signum), (act), (oldact))
+ 
+-void safe_sigaddset(const char *file, const int lineno,
++int safe_sigaddset(const char *file, const int lineno,
+                     sigset_t *sigs, int signo);
+ #define SAFE_SIGADDSET(sigs, signo) \
+ 	safe_sigaddset(__FILE__, __LINE__, (sigs), (signo))
+ 
+-void safe_sigdelset(const char *file, const int lineno,
++int safe_sigdelset(const char *file, const int lineno,
+                     sigset_t *sigs, int signo);
+ #define SAFE_SIGDELSET(sigs, signo) \
+ 	safe_sigdelset(__FILE__, __LINE__, (sigs), (signo))
+ 
+-void safe_sigemptyset(const char *file, const int lineno,
++int safe_sigemptyset(const char *file, const int lineno,
+                       sigset_t *sigs);
+ #define SAFE_SIGEMPTYSET(sigs) \
+ 	safe_sigemptyset(__FILE__, __LINE__, (sigs))
+ 
+-void safe_sigfillset(const char *file, const int lineno,
++int safe_sigfillset(const char *file, const int lineno,
+ 		     sigset_t *sigs);
+ #define SAFE_SIGFILLSET(sigs) \
+ 	safe_sigfillset(__FILE__, __LINE__, (sigs))
+ 
+-void safe_sigprocmask(const char *file, const int lineno,
++int safe_sigprocmask(const char *file, const int lineno,
+                       int how, sigset_t *set, sigset_t *oldset);
+ #define SAFE_SIGPROCMASK(how, set, oldset) \
+ 	safe_sigprocmask(__FILE__, __LINE__, (how), (set), (oldset))
+ 
+-void safe_sigwait(const char *file, const int lineno,
++int safe_sigwait(const char *file, const int lineno,
+                   sigset_t *set, int *sig);
+ #define SAFE_SIGWAIT(set, sig) \
+ 	safe_sigwait(__FILE__, __LINE__, (set), (sig))
+@@ -563,11 +563,11 @@ int safe_personality(const char *filename, unsigned int lineno,
+ 	}							\
+ 	} while (0)
+ 
+-void safe_unshare(const char *file, const int lineno, int flags);
++int safe_unshare(const char *file, const int lineno, int flags);
+ #define SAFE_UNSHARE(flags) safe_unshare(__FILE__, __LINE__, (flags))
+ 
+-void safe_setns(const char *file, const int lineno, int fd, int nstype);
+-#define SAFE_SETNS(fd, nstype) safe_setns(__FILE__, __LINE__, (fd), (nstype));
++int safe_setns(const char *file, const int lineno, int fd, int nstype);
++#define SAFE_SETNS(fd, nstype) safe_setns(__FILE__, __LINE__, (fd), (nstype))
+ 
+ static inline void safe_cmd(const char *file, const int lineno, const char *const argv[],
+ 				  const char *stdout_path, const char *stderr_path)
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index 41b2141d7..dd7f604eb 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -23,10 +23,14 @@ int safe_setpgid(const char *file, const int lineno, pid_t pid, pid_t pgid)
+ 	int rval;
+ 
+ 	rval = setpgid(pid, pgid);
+-	if (rval) {
+-		tst_brk(TBROK | TERRNO,
+-		        "%s:%d: setpgid(%i, %i) failed",
+-			file, lineno, pid, pgid);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"setpgid(%i, %i) failed", pid, pgid);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid setpgid(%i, %i) return value %d", pid, pgid,
++			rval);
+ 	}
+ 
+ 	return rval;
+@@ -37,9 +41,13 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid)
+ 	pid_t pgid;
+ 
+ 	pgid = getpgid(pid);
++
+ 	if (pgid == -1) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d: getpgid(%i) failed", file, lineno, pid);
++		tst_brk_(file, lineno, TBROK | TERRNO, "getpgid(%i) failed",
++			pid);
++	} else if (pgid < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid getpgid(%i) return value %d", pid, pgid);
+ 	}
+ 
+ 	return pgid;
+@@ -50,9 +58,13 @@ int safe_personality(const char *filename, unsigned int lineno,
  {
-@@ -139,10 +136,9 @@ void safe_file_scanf(const char *file, const int lineno,
- 	f = fopen(path, "r");
+ 	int prev_persona = personality(persona);
  
- 	if (f == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "Failed to open FILE '%s' for reading at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to open FILE '%s' for reading", path);
-+		return 1;
+-	if (prev_persona < 0) {
++	if (prev_persona == -1) {
+ 		tst_brk_(filename, lineno, TBROK | TERRNO,
+ 			 "persona(%ld) failed", persona);
++	} else if (prev_persona < 0) {
++		tst_brk_(filename, lineno, TBROK | TERRNO,
++			 "Invalid persona(%ld) return value %d", persona,
++			 prev_persona);
  	}
  
- 	exp_convs = count_scanf_conversions(fmt);
-@@ -152,25 +148,25 @@ void safe_file_scanf(const char *file, const int lineno,
- 	va_end(va);
+ 	return prev_persona;
+@@ -64,10 +76,14 @@ int safe_setregid(const char *file, const int lineno,
+ 	int rval;
  
- 	if (ret == EOF) {
--		tst_brkm(TBROK, cleanup_fn,
--			 "The FILE '%s' ended prematurely at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn,
-+			"The FILE '%s' ended prematurely", path);
-+		return 1;
- 	}
- 
- 	if (ret != exp_convs) {
--		tst_brkm(TBROK, cleanup_fn,
--			 "Expected %i conversions got %i FILE '%s' at %s:%d",
--			 exp_convs, ret, path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn,
-+			"Expected %i conversions got %i FILE '%s'",
-+			exp_convs, ret, path);
-+		return 1;
- 	}
- 
- 	if (fclose(f)) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to close FILE '%s'", path);
-+		return 1;
- 	}
+ 	rval = setregid(rgid, egid);
 +
-+	return 0;
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-			 "setregid(%li, %li) failed",
+-			 (long)rgid, (long)egid);
++			 "setregid(%li, %li) failed", (long)rgid, (long)egid);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "Invalid setregid(%li, %li) return value %d",
++			 (long)rgid, (long)egid, rval);
+ 	}
+ 
+ 	return rval;
+@@ -79,10 +95,14 @@ int safe_setreuid(const char *file, const int lineno,
+ 	int rval;
+ 
+ 	rval = setreuid(ruid, euid);
++
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-			 "setreuid(%li, %li) failed",
+-			 (long)ruid, (long)euid);
++			 "setreuid(%li, %li) failed", (long)ruid, (long)euid);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "Invalid setreuid(%li, %li) return value %d",
++			 (long)ruid, (long)euid, rval);
+ 	}
+ 
+ 	return rval;
+@@ -101,55 +121,87 @@ int safe_sigaction(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"sigaction(%s (%d), %p, %p) failed",
+ 			tst_strsig(signum), signum, act, oldact);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigaction(%s (%d), %p, %p) return value %d",
++			tst_strsig(signum), signum, act, oldact, rval);
+ 	}
+ 
+ 	return rval;
  }
  
- 
-@@ -190,16 +186,14 @@ int file_lines_scanf(const char *file, const int lineno,
- 	va_list ap;
- 
- 	if (!fmt) {
--		tst_brkm(TBROK, cleanup_fn, "pattern is NULL, %s:%d",
--			file, lineno);
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn, "pattern is NULL");
- 		return 1;
- 	}
- 
- 	fp = fopen(path, "r");
- 	if (fp == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			"Failed to open FILE '%s' for reading at %s:%d",
--			path, file, lineno);
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to open FILE '%s' for reading", path);
- 		return 1;
- 	}
- 
-@@ -216,8 +210,9 @@ int file_lines_scanf(const char *file, const int lineno,
- 	fclose(fp);
- 
- 	if (strict && ret != arg_count) {
--		tst_brkm(TBROK, cleanup_fn, "Expected %i conversions got %i"
--			" FILE '%s' at %s:%d", arg_count, ret, path, file, lineno);
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn,
-+			"Expected %i conversions got %i FILE '%s'",
-+			arg_count, ret, path);
- 		return 1;
- 	}
- 
-@@ -233,27 +228,24 @@ int file_printf(const char *file, const int lineno,
- 	f = fopen(path, "w");
- 
- 	if (f == NULL) {
--		tst_resm(TWARN,
--			 "Failed to open FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to open FILE '%s'",
-+			path);
- 		return 1;
- 	}
- 
- 	va_start(va, fmt);
- 
- 	if (vfprintf(f, fmt, va) < 0) {
--		tst_resm(TWARN,
--			"Failed to print to FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to print to FILE '%s'",
-+			path);
- 		goto err;
- 	}
- 
- 	va_end(va);
- 
- 	if (fclose(f)) {
--		tst_resm(TWARN,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to close FILE '%s'",
-+			path);
- 		return 1;
- 	}
- 
-@@ -261,14 +253,14 @@ int file_printf(const char *file, const int lineno,
- 
- err:
- 	if (fclose(f)) {
--		tst_resm(TWARN,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
-+		tst_resm_(file, lineno, TWARN, "Failed to close FILE '%s'",
-+			path);
- 	}
-+
- 	return 1;
- }
- 
--void safe_file_printf(const char *file, const int lineno,
-+int safe_file_printf(const char *file, const int lineno,
- 		      void (*cleanup_fn) (void),
- 		      const char *path, const char *fmt, ...)
+-void safe_sigaddset(const char *file, const int lineno,
++int safe_sigaddset(const char *file, const int lineno,
+                     sigset_t *sigs, int signo)
  {
-@@ -278,33 +270,32 @@ void safe_file_printf(const char *file, const int lineno,
- 	f = fopen(path, "w");
+ 	int rval;
  
- 	if (f == NULL) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "Failed to open FILE '%s' for writing at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to open FILE '%s' for writing", path);
-+		return 1;
- 	}
- 
- 	va_start(va, fmt);
- 
- 	if (vfprintf(f, fmt, va) < 0) {
--		tst_brkm(TBROK, cleanup_fn,
--			 "Failed to print to FILE '%s' at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn,
-+			"Failed to print to FILE '%s'", path);
-+		return 1;
- 	}
- 
- 	va_end(va);
- 
- 	if (fclose(f)) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "Failed to close FILE '%s' at %s:%d",
--			 path, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to close FILE '%s'", path);
-+		return 1;
+ 	rval = sigaddset(sigs, signo);
++
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-		         "sigaddset() %s (%i) failed",
+-			 tst_strsig(signo), signo);
++			"sigaddset() %s (%i) failed", tst_strsig(signo),
++			signo);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigaddset() %s (%i) return value %d",
++			tst_strsig(signo), signo, rval);
  	}
 +
-+	return 0;
++	return rval;
  }
  
- //TODO: C implementation? better error condition reporting?
--void safe_cp(const char *file, const int lineno,
-+int safe_cp(const char *file, const int lineno,
- 	     void (*cleanup_fn) (void), const char *src, const char *dst)
+-void safe_sigdelset(const char *file, const int lineno,
++int safe_sigdelset(const char *file, const int lineno,
+                     sigset_t *sigs, int signo)
  {
- 	size_t len = strlen(src) + strlen(dst) + 16;
-@@ -316,10 +307,12 @@ void safe_cp(const char *file, const int lineno,
- 	ret = system(buf);
+ 	int rval;
  
- 	if (ret) {
--		tst_brkm(TBROK, cleanup_fn,
--			 "Failed to copy '%s' to '%s' at %s:%d",
--			 src, dst, file, lineno);
-+		tst_brkm_(file, lineno, TBROK, cleanup_fn,
-+			"Failed to copy '%s' to '%s'", src, dst);
-+		return ret;
+ 	rval = sigdelset(sigs, signo);
++
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-		         "sigdelset() %s (%i) failed",
+-			 tst_strsig(signo), signo);
++			"sigdelset() %s (%i) failed", tst_strsig(signo),
++			signo);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigdelset() %s (%i) return value %d",
++			tst_strsig(signo), signo, rval);
  	}
 +
-+	return 0;
++	return rval;
  }
  
- #ifndef HAVE_UTIMENSAT
-@@ -342,7 +335,7 @@ static void set_time(struct timeval *res, const struct timespec *src,
+-void safe_sigemptyset(const char *file, const int lineno,
++int safe_sigemptyset(const char *file, const int lineno,
+                       sigset_t *sigs)
+ {
+ 	int rval;
  
- #endif
+ 	rval = sigemptyset(sigs);
+-	if (rval == -1)
++
++	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "sigemptyset() failed");
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigemptyset() return value %d", rval);
++	}
++
++	return rval;
+ }
  
--void safe_touch(const char *file, const int lineno,
-+int safe_touch(const char *file, const int lineno,
- 		void (*cleanup_fn)(void),
- 		const char *pathname,
- 		mode_t mode, const struct timespec times[2])
-@@ -353,28 +346,41 @@ void safe_touch(const char *file, const int lineno,
- 	defmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+-void safe_sigfillset(const char *file, const int lineno,
++int safe_sigfillset(const char *file, const int lineno,
+ 		     sigset_t *sigs)
+ {
+ 	int rval;
  
- 	ret = open(pathname, O_CREAT | O_WRONLY, defmode);
+ 	rval = sigfillset(sigs);
+-	if (rval == -1)
++
++	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "sigfillset() failed");
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigfillset() return value %d", rval);
++	}
++
++	return rval;
+ }
+ 
+ static const char *strhow(int how)
+@@ -166,28 +218,44 @@ static const char *strhow(int how)
+ 	}
+ }
+ 
+-void safe_sigprocmask(const char *file, const int lineno,
++int safe_sigprocmask(const char *file, const int lineno,
+                       int how, sigset_t *set, sigset_t *oldset)
+ {
+ 	int rval;
+ 
+ 	rval = sigprocmask(how, set, oldset);
++
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-		         "sigprocmask(%s, %p, %p)", strhow(how), set, oldset);
++			"sigprocmask(%s, %p, %p) failed", strhow(how), set,
++			oldset);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid sigprocmask(%s, %p, %p) return value %d",
++			strhow(how), set, oldset, rval);
+ 	}
++
++	return rval;
+ }
+ 
+-void safe_sigwait(const char *file, const int lineno,
++int safe_sigwait(const char *file, const int lineno,
+                   sigset_t *set, int *sig)
+ {
+ 	int rval;
+ 
+ 	rval = sigwait(set, sig);
+-	if (rval != 0) {
++
++	if (rval > 0) {
+ 		errno = rval;
+-		tst_brk_(file, lineno, TBROK, "sigwait(%p, %p)", set, sig);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"sigwait(%p, %p) failed", set, sig);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK,
++			"Invalid sigwait(%p, %p) return value %d", set, sig,
++			rval);
+ 	}
++
++	return rval;
+ }
+ 
+ struct group *safe_getgrnam(const char *file, const int lineno,
+@@ -241,19 +309,24 @@ int safe_chroot(const char *file, const int lineno, const char *path)
+ 	int rval;
+ 
+ 	rval = chroot(path);
++
+ 	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO, "chroot(%s) failed",
++			path);
++	} else if (rval) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-			 "chroot(%s) failed", path);
++			 "Invalid chroot(%s) return value %d", path, rval);
+ 	}
+ 
+ 	return rval;
+ }
+ 
+-void safe_unshare(const char *file, const int lineno, int flags)
++int safe_unshare(const char *file, const int lineno, int flags)
+ {
+ 	int res;
+ 
+ 	res = unshare(flags);
++
+ 	if (res == -1) {
+ 		if (errno == EINVAL) {
+ 			tst_brk_(file, lineno, TCONF | TERRNO,
+@@ -262,18 +335,30 @@ void safe_unshare(const char *file, const int lineno, int flags)
+ 			tst_brk_(file, lineno, TBROK | TERRNO,
+ 				 "unshare(%d) failed", flags);
+ 		}
++	} else if (res) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "Invalid unshare(%d) return value %d", flags, res);
+ 	}
++
++	return res;
+ }
+ 
+-void safe_setns(const char *file, const int lineno, int fd, int nstype)
++int safe_setns(const char *file, const int lineno, int fd, int nstype)
+ {
+ 	int ret;
+ 
+ 	ret = setns(fd, nstype);
 +
  	if (ret == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			"Failed to open file '%s' at %s:%d",
--			pathname, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to open file '%s'", pathname);
-+		return ret;
-+	} else if (ret < 0) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Invalid open(%s) return value %d", pathname, ret);
-+		return ret;
- 	}
- 
- 	ret = close(ret);
-+
- 	if (ret == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			"Failed to close file '%s' at %s:%d",
--			pathname, file, lineno);
--		return;
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Failed to close file '%s'", pathname);
-+		return ret;
+ 		tst_brk_(file, lineno, TBROK | TERRNO, "setns(%i, %i) failed",
+-		         fd, nstype);
++			fd, nstype);
 +	} else if (ret) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Invalid close('%s') return value %d", pathname, ret);
-+		return ret;
- 	}
- 
- 	if (mode != 0) {
- 		ret = chmod(pathname, mode);
-+
- 		if (ret == -1) {
--			tst_brkm(TBROK | TERRNO, cleanup_fn,
--				"Failed to chmod file '%s' at %s:%d",
--				pathname, file, lineno);
--			return;
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Failed to chmod file '%s'", pathname);
-+			return ret;
-+		} else if (ret) {
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Invalid chmod('%s') return value %d",
-+				pathname, ret);
-+			return ret;
- 		}
- 	}
- 
-@@ -389,19 +395,28 @@ void safe_touch(const char *file, const int lineno,
- 		struct timeval cotimes[2];
- 
- 		ret = stat(pathname, &sb);
-+
- 		if (ret == -1) {
--			tst_brkm(TBROK | TERRNO, cleanup_fn,
--				"Failed to stat file '%s' at %s:%d",
--				pathname, file, lineno);
--			return;
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Failed to stat file '%s'", pathname);
-+			return ret;
-+		} else if (ret) {
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Invalid stat('%s') return value %d",
-+				pathname, ret);
-+			return ret;
- 		}
- 
- 		ret = gettimeofday(cotimes, NULL);
-+
- 		if (ret == -1) {
--			tst_brkm(TBROK | TERRNO, cleanup_fn,
--				"Failed to gettimeofday() at %s:%d",
--				file, lineno);
--			return;
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Failed to gettimeofday()");
-+			return ret;
-+		} else if (ret) {
-+			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+				"Invalid gettimeofday() return value %d", ret);
-+			return ret;
- 		}
- 
- 		cotimes[1] = cotimes[0];
-@@ -415,8 +430,18 @@ void safe_touch(const char *file, const int lineno,
- 	}
- #endif
- 	if (ret == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
- 			"Failed to update the access/modification time on file"
--			" '%s'@%s:%d", pathname, file, lineno);
-+			" '%s'", pathname);
-+	} else if (ret) {
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+#ifdef HAVE_UTIMENSAT
-+			"Invalid utimensat('%s') return value %d",
-+#else
-+			"Invalid utimes('%s') return value %d",
-+#endif
-+			pathname, ret);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid setns(%i, %i) return value %d", fd, nstype,
++			ret);
  	}
 +
 +	return ret;
  }
+ 
+ long tst_safe_ptrace(const char *file, const int lineno, int req, pid_t pid,
+@@ -299,10 +384,15 @@ int safe_pipe2(const char *file, const int lineno, int fildes[2], int flags)
+ 	int ret;
+ 
+ 	ret = pipe2(fildes, flags);
++
+ 	if (ret == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+-			"pipe2({%d,%d}) failed with flag(%d)",
+-			fildes[0], fildes[1], flags);
++			"pipe2({%d,%d}) failed with flag(%d)", fildes[0],
++			fildes[1], flags);
++	} else if (ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid pipe2({%d,%d}, %d) return value %d",
++			fildes[0], fildes[1], flags, ret);
+ 	}
+ 
+ 	return ret;
 -- 
 2.28.0
 
