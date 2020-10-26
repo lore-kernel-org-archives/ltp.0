@@ -1,79 +1,177 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 26 Oct 2020 18:35:32 +0300
-Subject: [LTP] [PATCH 1/1] net: Remove legacy tests from runtest
-In-Reply-To: <20201026070006.25298-1-pvorel@suse.cz>
-References: <20201026070006.25298-1-pvorel@suse.cz>
-Message-ID: <006134e8-4e18-b4d5-e8a5-c24aa39cd9a1@oracle.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 26 Oct 2020 17:47:39 +0100
+Subject: [LTP] [PATCH 02/19] Unify error handling in lib/tst_safe_sysv_ipc.c
+In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
+References: <20201026164756.30556-1-mdoucha@suse.cz>
+Message-ID: <20201026164756.30556-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26.10.2020 10:00, Petr Vorel wrote:
-> Remove all network stress tests which haven't been rewritten to the new
-> API yet from the runtest file (mostly multicast tests + some route tests).
-> These tests use check_envval and other deprecated tools.
-> 
-> See also:
-> https://urldefense.com/v3/__https://github.com/linux-test-project/ltp/issues/310__;!!GqivPVa7Brio!MvVbMbVUxZVNN5X25o3dg_mCzHyf7VivMPlPoQu9cDCSBdlu03MeKdnTdBUphVfiS-QT$ 
-> https://urldefense.com/v3/__https://github.com/linux-test-project/ltp/issues/440__;!!GqivPVa7Brio!MvVbMbVUxZVNN5X25o3dg_mCzHyf7VivMPlPoQu9cDCSBdlu03MeKdnTdBUpheD5F6hF$ 
-> 
-> Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  runtest/net_stress.multicast | 16 ----------------
->  runtest/net_stress.route     |  4 ----
->  2 files changed, 20 deletions(-)
-> 
-> diff --git a/runtest/net_stress.multicast b/runtest/net_stress.multicast
-> index d2288df62..463fe17ab 100644
-> --- a/runtest/net_stress.multicast
-> +++ b/runtest/net_stress.multicast
-> @@ -6,24 +6,8 @@ mcast4-group-single-socket mcast-group-single-socket
->  mcast4-group-multiple-socket mcast-group-multiple-socket
->  mcast4-group-same-group mcast-group-same-group
->  mcast4-group-source-filter mcast-group-source-filter
-> -mcast4-pktfld01 mcast4-pktfld01
-> -mcast4-pktfld02 mcast4-pktfld02
-> -mcast4-queryfld01 mcast4-queryfld01
-> -mcast4-queryfld02 mcast4-queryfld02
-> -mcast4-queryfld03 mcast4-queryfld03
-> -mcast4-queryfld04 mcast4-queryfld04
-> -mcast4-queryfld05 mcast4-queryfld05
-> -mcast4-queryfld06 mcast4-queryfld06
->  
->  mcast6-group-single-socket mcast-group-single-socket -6
->  mcast6-group-multiple-socket mcast-group-multiple-socket -6
->  mcast6-group-same-group mcast-group-same-group -6
->  mcast6-group-source-filter mcast-group-source-filter -6
-> -mcast6-pktfld01 mcast6-pktfld01
-> -mcast6-pktfld02 mcast6-pktfld02
-> -mcast6-queryfld01 mcast6-queryfld01
-> -mcast6-queryfld02 mcast6-queryfld02
-> -mcast6-queryfld03 mcast6-queryfld03
-> -mcast6-queryfld04 mcast6-queryfld04
-> -mcast6-queryfld05 mcast6-queryfld05
-> -mcast6-queryfld06 mcast6-queryfld06
-> diff --git a/runtest/net_stress.route b/runtest/net_stress.route
-> index 8755ef0be..b60e55bd6 100644
-> --- a/runtest/net_stress.route
-> +++ b/runtest/net_stress.route
-> @@ -5,8 +5,6 @@ route4-change-if route-change-if.sh
->  route4-change-netlink-dst route-change-netlink-dst.sh
->  route4-change-netlink-gw route-change-netlink-gw.sh
->  route4-change-netlink-if route-change-netlink-if.sh
-> -route4-redirect route4-redirect
-> -route4-rmmod route4-rmmod
->  
->  route6-change-dst route-change-dst.sh -6
->  route6-change-gw route-change-gw.sh -6
-> @@ -14,5 +12,3 @@ route6-change-if route-change-if.sh -6
->  route6-change-netlink-dst route-change-netlink-dst.sh -6
->  route6-change-netlink-gw route-change-netlink-gw.sh -6
->  route6-change-netlink-if route-change-netlink-if.sh -6
-> -route6-redirect route6-redirect
-> -route6-rmmod route6-rmmod
-> 
+- Properly format caller file:line locations
+- Pedantically check for invalid syscall return values, don't ignore silently
 
-Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ lib/tst_safe_sysv_ipc.c | 79 +++++++++++++++++++++++++++++------------
+ 1 file changed, 56 insertions(+), 23 deletions(-)
+
+diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
+index 30b5f6ec7..49c929b2a 100644
+--- a/lib/tst_safe_sysv_ipc.c
++++ b/lib/tst_safe_sysv_ipc.c
+@@ -25,7 +25,7 @@ static int ret_check(int cmd, int ret)
+ 	case IPC_RMID:
+ 		return ret != 0;
+ 	default:
+-		return ret == -1;
++		return ret < 0;
+ 	}
+ }
+ 
+@@ -34,9 +34,14 @@ int safe_msgget(const char *file, const int lineno, key_t key, int msgflg)
+ 	int rval;
+ 
+ 	rval = msgget(key, msgflg);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO, "%s:%d: msgget(%i, %x) failed",
+-			file, lineno, (int)key, msgflg);
++		tst_brk_(file, lineno, TBROK | TERRNO, "msgget(%i, %x) failed",
++			(int)key, msgflg);
++	} else if (rval < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid msgget(%i, %x) return value %d", (int)key,
++			msgflg, rval);
+ 	}
+ 
+ 	return rval;
+@@ -48,10 +53,15 @@ int safe_msgsnd(const char *file, const int lineno, int msqid, const void *msgp,
+ 	int rval;
+ 
+ 	rval = msgsnd(msqid, msgp, msgsz, msgflg);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d: msgsnd(%i, %p, %zu, %x) failed",
+-			file, lineno, msqid, msgp, msgsz, msgflg);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"msgsnd(%i, %p, %zu, %x) failed", msqid, msgp, msgsz,
++			msgflg);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid msgsnd(%i, %p, %zu, %x) return value %d",
++			msqid, msgp, msgsz, msgflg, rval);
+ 	}
+ 
+ 	return rval;
+@@ -63,10 +73,15 @@ ssize_t safe_msgrcv(const char *file, const int lineno, int msqid, void *msgp,
+ 	ssize_t rval;
+ 
+ 	rval = msgrcv(msqid, msgp, msgsz, msgtyp, msgflg);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d: msgrcv(%i, %p, %zu, %li, %x) failed",
+-			file, lineno, msqid, msgp, msgsz, msgtyp, msgflg);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"msgrcv(%i, %p, %zu, %li, %x) failed",
++			msqid, msgp, msgsz, msgtyp, msgflg);
++	} else if (rval < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid msgrcv(%i, %p, %zu, %li, %x) return value %ld",
++			msqid, msgp, msgsz, msgtyp, msgflg, rval);
+ 	}
+ 
+ 	return rval;
+@@ -78,12 +93,15 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
+ 	int rval;
+ 
+ 	rval = msgctl(msqid, cmd, buf);
+-	if (ret_check(cmd, rval)) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d: msgctl(%i, %i, %p) = %i failed",
+-			file, lineno, msqid, cmd, buf, rval);
+-	}
+ 
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"msgctl(%i, %i, %p) failed", msqid, cmd, buf);
++	} else if (ret_check(cmd, rval)) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid msgctl(%i, %i, %p) return value %d", msqid,
++			cmd, buf, rval);
++	}
+ 
+ 	return rval;
+ }
+@@ -94,9 +112,14 @@ int safe_shmget(const char *file, const int lineno, key_t key, size_t size,
+ 	int rval;
+ 
+ 	rval = shmget(key, size, shmflg);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO, "%s:%d: shmget(%i, %zu, %x) failed",
+-			file, lineno, (int)key, size, shmflg);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"shmget(%i, %zu, %x) failed", (int)key, size, shmflg);
++	} else if (rval < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid shmget(%i, %zu, %x) return value %d",
++			(int)key, size, shmflg, rval);
+ 	}
+ 
+ 	return rval;
+@@ -108,9 +131,10 @@ void *safe_shmat(const char *file, const int lineno, int shmid,
+ 	void *rval;
+ 
+ 	rval = shmat(shmid, shmaddr, shmflg);
++
+ 	if (rval == (void *)-1) {
+-		tst_brk(TBROK | TERRNO, "%s:%d: shmat(%i, %p, %x) failed",
+-			file, lineno, shmid, shmaddr, shmflg);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"shmat(%i, %p, %x) failed", shmid, shmaddr, shmflg);
+ 	}
+ 
+ 	return rval;
+@@ -121,9 +145,13 @@ int safe_shmdt(const char *file, const int lineno, const void *shmaddr)
+ 	int rval;
+ 
+ 	rval = shmdt(shmaddr);
++
+ 	if (rval == -1) {
+-		tst_brk(TBROK | TERRNO, "%s:%d: shmdt(%p) failed",
+-			file, lineno, shmaddr);
++		tst_brk_(file, lineno, TBROK | TERRNO, "shmdt(%p) failed",
++			shmaddr);
++	} else if (rval) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid shmdt(%p) return value %d", shmaddr, rval);
+ 	}
+ 
+ 	return rval;
+@@ -135,10 +163,15 @@ int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
+ 	int rval;
+ 
+ 	rval = shmctl(shmid, cmd, buf);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"shmctl(%i, %i, %p) failed", shmid, cmd, buf);
++	}
+ 	if (ret_check(cmd, rval)) {
+-		tst_brk(TBROK | TERRNO,
+-			"%s:%d: shmctl(%i, %i, %p) = %i failed",
+-			file, lineno, shmid, cmd, buf, rval);
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid shmctl(%i, %i, %p) return value %d", shmid,
++			cmd, buf, rval);
+ 	}
+ 
+ 	return rval;
+-- 
+2.28.0
+
