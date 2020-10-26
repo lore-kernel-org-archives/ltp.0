@@ -1,39 +1,76 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Oct 2020 07:46:25 +0100
-Subject: [LTP] [PATCH 2/5] lib/tst_net: calc mean in tst_netload()
-In-Reply-To: <711809cc-28c3-a51d-72a2-6d3f64db0a1c@oracle.com>
-References: <20201015122056.20715-1-alexey.kodanev@oracle.com>
- <20201015122056.20715-2-alexey.kodanev@oracle.com>
- <20201020143940.GB23197@dell5510>
- <711809cc-28c3-a51d-72a2-6d3f64db0a1c@oracle.com>
-Message-ID: <20201026064625.GB21306@dell5510>
+Date: Mon, 26 Oct 2020 08:00:06 +0100
+Subject: [LTP] [PATCH 1/1] net: Remove legacy tests from runtest
+Message-ID: <20201026070006.25298-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Remove all network stress tests which haven't been rewritten to the new
+API yet from the runtest file (mostly multicast tests + some route tests).
+These tests use check_envval and other deprecated tools.
 
-...
-> >> +	if [ "$run_cnt" -lt 2 ]; then
-> > maybe: if [ "$run_cnt" -lt 1 ]; then
+See also:
+https://github.com/linux-test-project/ltp/issues/310
+https://github.com/linux-test-project/ltp/issues/440
 
-> > BTW we should also check all numeric variables (TST_NETLOAD_CLN_REQUESTS, ...)
-> > with tst_is_int (but don't bother with it now).
+Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/net_stress.multicast | 16 ----------------
+ runtest/net_stress.route     |  4 ----
+ 2 files changed, 20 deletions(-)
 
-> >> +		run_cnt=1
-> >> +		was_failure=1
-> > Hm, $was_failure set before loop. Shouldn't it be inside for i in $(seq 1
-> > $run_cnt); do loop? And updated on each failure (be a error counter, not boolean)?
+diff --git a/runtest/net_stress.multicast b/runtest/net_stress.multicast
+index d2288df62..463fe17ab 100644
+--- a/runtest/net_stress.multicast
++++ b/runtest/net_stress.multicast
+@@ -6,24 +6,8 @@ mcast4-group-single-socket mcast-group-single-socket
+ mcast4-group-multiple-socket mcast-group-multiple-socket
+ mcast4-group-same-group mcast-group-same-group
+ mcast4-group-source-filter mcast-group-source-filter
+-mcast4-pktfld01 mcast4-pktfld01
+-mcast4-pktfld02 mcast4-pktfld02
+-mcast4-queryfld01 mcast4-queryfld01
+-mcast4-queryfld02 mcast4-queryfld02
+-mcast4-queryfld03 mcast4-queryfld03
+-mcast4-queryfld04 mcast4-queryfld04
+-mcast4-queryfld05 mcast4-queryfld05
+-mcast4-queryfld06 mcast4-queryfld06
+ 
+ mcast6-group-single-socket mcast-group-single-socket -6
+ mcast6-group-multiple-socket mcast-group-multiple-socket -6
+ mcast6-group-same-group mcast-group-same-group -6
+ mcast6-group-source-filter mcast-group-source-filter -6
+-mcast6-pktfld01 mcast6-pktfld01
+-mcast6-pktfld02 mcast6-pktfld02
+-mcast6-queryfld01 mcast6-queryfld01
+-mcast6-queryfld02 mcast6-queryfld02
+-mcast6-queryfld03 mcast6-queryfld03
+-mcast6-queryfld04 mcast6-queryfld04
+-mcast6-queryfld05 mcast6-queryfld05
+-mcast6-queryfld06 mcast6-queryfld06
+diff --git a/runtest/net_stress.route b/runtest/net_stress.route
+index 8755ef0be..b60e55bd6 100644
+--- a/runtest/net_stress.route
++++ b/runtest/net_stress.route
+@@ -5,8 +5,6 @@ route4-change-if route-change-if.sh
+ route4-change-netlink-dst route-change-netlink-dst.sh
+ route4-change-netlink-gw route-change-netlink-gw.sh
+ route4-change-netlink-if route-change-netlink-if.sh
+-route4-redirect route4-redirect
+-route4-rmmod route4-rmmod
+ 
+ route6-change-dst route-change-dst.sh -6
+ route6-change-gw route-change-gw.sh -6
+@@ -14,5 +12,3 @@ route6-change-if route-change-if.sh -6
+ route6-change-netlink-dst route-change-netlink-dst.sh -6
+ route6-change-netlink-gw route-change-netlink-gw.sh -6
+ route6-change-netlink-if route-change-netlink-if.sh -6
+-route6-redirect route6-redirect
+-route6-rmmod route6-rmmod
+-- 
+2.28.0
 
-
-> It is set to 1 for the special case, i.e. when run_cnt is 1, in that case
-> we should tbrok the test at once. I don't see how the error counter will be
-> better?
-
-I'm sorry, I just misinterpret the code, please ignore my comment.
-
-
-Kind regards,
-Petr
