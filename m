@@ -1,9 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 26 Oct 2020 17:47:47 +0100
-Subject: [LTP] [PATCH 10/19] Unify error handling in lib/tst_net.c
+Date: Mon, 26 Oct 2020 17:47:48 +0100
+Subject: [LTP] [PATCH 11/19] Unify error handling in lib/tst_fs_setup.c
 In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
 References: <20201026164756.30556-1-mdoucha@suse.cz>
-Message-ID: <20201026164756.30556-11-mdoucha@suse.cz>
+Message-ID: <20201026164756.30556-12-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,29 +14,29 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- lib/tst_net.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ lib/tst_fs_setup.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/tst_net.c b/lib/tst_net.c
-index 8a589b0ad..de343bb39 100644
---- a/lib/tst_net.c
-+++ b/lib/tst_net.c
-@@ -212,10 +212,11 @@ void safe_getaddrinfo(const char *file, const int lineno, const char *src_addr,
- {
- 	int err = getaddrinfo(src_addr, port, hints, addr_info);
+diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
+index 54ea37077..a2dacd2ad 100644
+--- a/lib/tst_fs_setup.c
++++ b/lib/tst_fs_setup.c
+@@ -36,11 +36,11 @@ int mount_overlay(const char *file, const int lineno, int skip)
  
--	if (err)
--		tst_brk(TBROK, "%s:%d: getaddrinfo failed, %s", file, lineno,
--				gai_strerror(err));
-+	if (err) {
-+		tst_brk_(file, lineno, TBROK, "getaddrinfo failed, %s",
-+			gai_strerror(err));
-+	}
- 
- 	if (!*addr_info)
--		tst_brk(TBROK, "%s:%d: failed to get the address", file, lineno);
-+		tst_brk_(file, lineno, TBROK, "failed to get the address");
- }
+ 	if (errno == ENODEV) {
+ 		if (skip) {
+-			tst_brk(TCONF, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG,
+-				file, lineno);
++			tst_brk_(file, lineno, TCONF,
++				TST_FS_SETUP_OVERLAYFS_MSG);
+ 		} else {
+-			tst_res(TINFO, "%s:%d: " TST_FS_SETUP_OVERLAYFS_MSG,
+-				file, lineno);
++			tst_res_(file, lineno, TINFO,
++				TST_FS_SETUP_OVERLAYFS_MSG);
+ 		}
+ 	} else {
+ 		tst_brk(TBROK | TERRNO, "overlayfs mount failed");
 -- 
 2.28.0
 
