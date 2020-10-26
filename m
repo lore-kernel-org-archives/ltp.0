@@ -1,55 +1,79 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Mon, 26 Oct 2020 12:12:50 -0300
-Subject: [LTP] [PATCH] syscalls/timer_settime01: adjust for rounding
- from nsec to usec
-In-Reply-To: <20201020122351.GA15920@yuki.lan>
-References: <20201006085309.32227-1-cascardo@canonical.com>
- <20201013140315.GD29925@yuki.lan> <20201020122351.GA15920@yuki.lan>
-Message-ID: <20201026151250.GA370402@mussarela>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 26 Oct 2020 18:35:32 +0300
+Subject: [LTP] [PATCH 1/1] net: Remove legacy tests from runtest
+In-Reply-To: <20201026070006.25298-1-pvorel@suse.cz>
+References: <20201026070006.25298-1-pvorel@suse.cz>
+Message-ID: <006134e8-4e18-b4d5-e8a5-c24aa39cd9a1@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Oct 20, 2020 at 02:23:51PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > What about this change instead?
-> > 
-> > diff --git a/testcases/kernel/syscalls/timer_settime/timer_settime01.c b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-> > index 67143e8f8..599ef2891 100644
-> > --- a/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-> > +++ b/testcases/kernel/syscalls/timer_settime/timer_settime01.c
-> > @@ -132,11 +132,13 @@ static void run(unsigned int n)
-> >  					get_clock_str(clock));
-> >  				continue;
-> >  			}
-> > -			val += tst_ts_to_us(timenow);
-> > +			tst_ts_add_us(timenow, val);
-> > +			tst_its_set_value_from_ts(&new_set, timenow);
-> > +		} else {
-> > +			tst_its_set_value_from_us(&new_set, val);
-> >  		}
-> >  
-> >  		tst_its_set_interval_from_us(&new_set, tc->it_interval_tv_usec);
-> > -		tst_its_set_value_from_us(&new_set, val);
-> >  
-> >  		TEST(tv->timer_settime(timer, tc->flag, tst_its_get(&new_set), tst_its_get(tc->old_ptr)));
-> >  
-> > 
-> > 
-> > By adding the us to the timenow first and then setting the its.value
-> > from it we can avoid the rounding completely.
+On 26.10.2020 10:00, Petr Vorel wrote:
+> Remove all network stress tests which haven't been rewritten to the new
+> API yet from the runtest file (mostly multicast tests + some route tests).
+> These tests use check_envval and other deprecated tools.
 > 
-> Does this fix work for you?
+> See also:
+> https://urldefense.com/v3/__https://github.com/linux-test-project/ltp/issues/310__;!!GqivPVa7Brio!MvVbMbVUxZVNN5X25o3dg_mCzHyf7VivMPlPoQu9cDCSBdlu03MeKdnTdBUphVfiS-QT$ 
+> https://urldefense.com/v3/__https://github.com/linux-test-project/ltp/issues/440__;!!GqivPVa7Brio!MvVbMbVUxZVNN5X25o3dg_mCzHyf7VivMPlPoQu9cDCSBdlu03MeKdnTdBUpheD5F6hF$ 
+> 
+> Suggested-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  runtest/net_stress.multicast | 16 ----------------
+>  runtest/net_stress.route     |  4 ----
+>  2 files changed, 20 deletions(-)
+> 
+> diff --git a/runtest/net_stress.multicast b/runtest/net_stress.multicast
+> index d2288df62..463fe17ab 100644
+> --- a/runtest/net_stress.multicast
+> +++ b/runtest/net_stress.multicast
+> @@ -6,24 +6,8 @@ mcast4-group-single-socket mcast-group-single-socket
+>  mcast4-group-multiple-socket mcast-group-multiple-socket
+>  mcast4-group-same-group mcast-group-same-group
+>  mcast4-group-source-filter mcast-group-source-filter
+> -mcast4-pktfld01 mcast4-pktfld01
+> -mcast4-pktfld02 mcast4-pktfld02
+> -mcast4-queryfld01 mcast4-queryfld01
+> -mcast4-queryfld02 mcast4-queryfld02
+> -mcast4-queryfld03 mcast4-queryfld03
+> -mcast4-queryfld04 mcast4-queryfld04
+> -mcast4-queryfld05 mcast4-queryfld05
+> -mcast4-queryfld06 mcast4-queryfld06
+>  
+>  mcast6-group-single-socket mcast-group-single-socket -6
+>  mcast6-group-multiple-socket mcast-group-multiple-socket -6
+>  mcast6-group-same-group mcast-group-same-group -6
+>  mcast6-group-source-filter mcast-group-source-filter -6
+> -mcast6-pktfld01 mcast6-pktfld01
+> -mcast6-pktfld02 mcast6-pktfld02
+> -mcast6-queryfld01 mcast6-queryfld01
+> -mcast6-queryfld02 mcast6-queryfld02
+> -mcast6-queryfld03 mcast6-queryfld03
+> -mcast6-queryfld04 mcast6-queryfld04
+> -mcast6-queryfld05 mcast6-queryfld05
+> -mcast6-queryfld06 mcast6-queryfld06
+> diff --git a/runtest/net_stress.route b/runtest/net_stress.route
+> index 8755ef0be..b60e55bd6 100644
+> --- a/runtest/net_stress.route
+> +++ b/runtest/net_stress.route
+> @@ -5,8 +5,6 @@ route4-change-if route-change-if.sh
+>  route4-change-netlink-dst route-change-netlink-dst.sh
+>  route4-change-netlink-gw route-change-netlink-gw.sh
+>  route4-change-netlink-if route-change-netlink-if.sh
+> -route4-redirect route4-redirect
+> -route4-rmmod route4-rmmod
+>  
+>  route6-change-dst route-change-dst.sh -6
+>  route6-change-gw route-change-gw.sh -6
+> @@ -14,5 +12,3 @@ route6-change-if route-change-if.sh -6
+>  route6-change-netlink-dst route-change-netlink-dst.sh -6
+>  route6-change-netlink-gw route-change-netlink-gw.sh -6
+>  route6-change-netlink-if route-change-netlink-if.sh -6
+> -route6-redirect route6-redirect
+> -route6-rmmod route6-rmmod
 > 
 
-Sorry, I was out on vacation. This fixes it for me when using
-clocksource=jiffies.
-
-Thanks.
-Cascardo.
-
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
