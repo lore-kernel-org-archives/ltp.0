@@ -1,32 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Oct 2020 16:45:29 +0100
-Subject: [LTP] [PATCH v2 1/2] lib: Add generic boolean expression parser
- and eval
-In-Reply-To: <874kmfvg3q.fsf@suse.de>
-References: <20201027110446.20416-1-chrubis@suse.cz>
- <20201027110446.20416-2-chrubis@suse.cz> <874kmfvg3q.fsf@suse.de>
-Message-ID: <20201027154529.GA20643@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Oct 2020 19:49:26 +0100
+Subject: [LTP] Ocassional dropping of uevent of loop device (possible race)
+Message-ID: <20201027184926.GA24024@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +/*
-> > + * Note that we avoid modifying the list until the end so that the caller can
-> > + * free memory correctly, which is the reason we have a stack for
-> > parentesis
-> 
-> If you use a new vector/stack for the output queue instead of an
-> intrusive list then this problem should go away. We have an upper bound
-> for any token/expr vector which is the length of the input string. So it
-> is possible to preallocate an input array instead of using a dynamically
-> allocated linked list.
+Hi
 
-Or we can run the tokenizer twice and first time only record number of
-tokens...
+commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify()")
+from v5.8-rc1 caused occasional dropping of uevent of attached or detached loop
+device (not sure which one). The only difference is that
+set_capacity_revalidate_and_notify() has condition:
+if (capacity != size && capacity != 0 && size != 0)
+thus notification is not triggered here but in a different part of code.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+It was found with LTP test uevent01 [1]:
+
+# i=0; while true; do i=$((i+1)); echo "== $i =="; rmmod -f loop; ./uevent01 || break; done
+
+It looks to be a race. Usually ~ 10 loops is enough.
+
+Kind regards,
+Petr
