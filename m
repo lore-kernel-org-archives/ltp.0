@@ -1,76 +1,24 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 27 Oct 2020 21:32:41 +0800
-Subject: [LTP] [PATCH 00/19] Unify error handling in LTP library
-In-Reply-To: <20201026164756.30556-1-mdoucha@suse.cz>
-References: <20201026164756.30556-1-mdoucha@suse.cz>
-Message-ID: <5F982179.1070804@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 27 Oct 2020 14:39:44 +0100
+Subject: [LTP] [PATCH] syscalls/timer_settime01: adjust for rounding
+ from nsec to usec
+In-Reply-To: <20201026151250.GA370402@mussarela>
+References: <20201006085309.32227-1-cascardo@canonical.com>
+ <20201013140315.GD29925@yuki.lan> <20201020122351.GA15920@yuki.lan>
+ <20201026151250.GA370402@mussarela>
+Message-ID: <20201027133944.GA23030@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin
+Hi!
+> Sorry, I was out on vacation. This fixes it for me when using
+> clocksource=jiffies.
 
-I have seen the patchset and send some comments on 2,3,5,11 patch,
-for the patchset,  you can add Acked-by.
-Acked-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Thanks a lot for testing, pushed.
 
-
-Best Regard
-Yang Xu
-> LTP helper functions, mainly safe syscalls, often report two different source
-> code locations in error messages and sometimes handle syscall return values
-> incorrectly. This patchset unifies source code location formatting to only
-> show the calling line in the test program and fixes invalid return value
-> handling. Safe syscalls now make pedantic distinction between common errors
-> and invalid return values where applicable.
->
-> Some safe syscalls returned no value so they were not usable in test cleanup.
-> This is also fixed along with potential control flow issues when tst_brk()
-> does not immediately terminate the program.
->
-> Martin Doucha (19):
->    Unify error handling in lib/tst_safe_macros.c
->    Unify error handling in lib/tst_safe_sysv_ipc.c
->    Unify error handling in lib/tst_safe_timerfd.c
->    Unify error handling in lib/safe_file_ops.c
->    Unify error handling in lib/safe_macros.c
->    Unify error handling in lib/safe_net.c
->    Unify error handling in lib/safe_stdio.c
->    Unify error handling in lib/tst_mkfs.c
->    Unify error handling in lib/tst_checkpoint.c
->    Unify error handling in lib/tst_net.c
->    Unify error handling in lib/tst_fs_setup.c
->    Unify error handling in include/tst_safe_clocks.h
->    Move executable code out of tst_safe_macros.h
->    Unify error handling in moved functions
->    Unify error handling in include/tst_safe_macros.h
->    Unify error handling in include/tst_safe_posix_ipc.h
->    Unify error handling in include/tst_safe_prw.h
->    Unify error handling in lib/tst_resource.c
->    Unify error handling in include/lapi/safe_rt_signal.h
->
->   include/lapi/safe_rt_signal.h |  25 +-
->   include/safe_file_ops_fn.h    |   8 +-
->   include/tst_safe_clocks.h     |  48 ++-
->   include/tst_safe_macros.h     | 130 ++++----
->   include/tst_safe_posix_ipc.h  |   6 +-
->   include/tst_safe_prw.h        |  16 +-
->   lib/safe_file_ops.c           | 207 +++++++-----
->   lib/safe_macros.c             | 602 ++++++++++++++++++++++------------
->   lib/safe_net.c                | 262 +++++++++------
->   lib/safe_stdio.c              |  34 +-
->   lib/tst_checkpoint.c          |  23 +-
->   lib/tst_fs_setup.c            |   8 +-
->   lib/tst_mkfs.c                |  36 +-
->   lib/tst_net.c                 |   9 +-
->   lib/tst_resource.c            |   9 +-
->   lib/tst_safe_macros.c         | 201 ++++++++++--
->   lib/tst_safe_sysv_ipc.c       |  79 +++--
->   lib/tst_safe_timerfd.c        |  32 +-
->   18 files changed, 1100 insertions(+), 635 deletions(-)
->
-
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
