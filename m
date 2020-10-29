@@ -1,44 +1,63 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 29 Oct 2020 17:23:40 +0100
-Subject: [LTP] [PATCH 04/19] Unify error handling in lib/safe_file_ops.c
-In-Reply-To: <20201029161714.GE8378@yuki.lan>
-References: <20201026164756.30556-1-mdoucha@suse.cz>
- <20201026164756.30556-5-mdoucha@suse.cz> <20201029155907.GC8378@yuki.lan>
- <20201029160222.GD8378@yuki.lan>
- <af6cdfdd-23e8-1593-9509-43685e4706c3@suse.cz>
- <20201029161714.GE8378@yuki.lan>
-Message-ID: <fbb52689-5797-7615-e4b8-a8bcabee09e8@suse.cz>
+From: Yang Xu <xuyang_jy_0410@163.com>
+Date: Fri, 30 Oct 2020 00:35:45 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/ptrace08: Add exception for RHEL8 4.18
+ kernel
+In-Reply-To: <20201029163545.9829-1-xuyang_jy_0410@163.com>
+References: <20201029163545.9829-1-xuyang_jy_0410@163.com>
+Message-ID: <20201029163545.9829-2-xuyang_jy_0410@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 29. 10. 20 17:17, Cyril Hrubis wrote:
-> Hi!
->>> That's true for printf() scanf returns EOF instead. But I guess that
->>> anything < 0 would work better than 1 which means that one input item
->>> was matched successfuly...
->>
->> These safe file functions could use some additional improvements but
->> changing the return value is out of scope of my patchset. That would
->> probably require reviewing and modifying some test code as well. The
->> patchset is over 4000 lines long as is.
-> 
-> It's actually not since you are chaning the void functions to return
-> int, if you kept them void that would mean that it's out of scope.
+RHEL 4.18 kernel got this patch
+commit bd14406b78e6d("perf/hw_breakpoint: Modify breakpoint even if the new attrhas disabled set") since 4.18.0-49.
 
-Changing return type from void to int is fully backwards compatible
-because the return value is ignored everywhere anyway. On the other
-hand, changing return value in functions which already return int could
-break a lot of existing test code. Especially when you do it in a
-control flow branch that doesn't terminates the test through tst_brk().
+Without this fix, this case failed as below on RHEL8:
+tst_kernel.c:79: TINFO: uname.machine=x86_64 kernel is 64bit
+ptrace08.c:96: TINFO: Trying address 0xffff800000000000
+ptrace08.c:122: TFAIL: ptrace() breakpoint with kernel addr succeeded
+ptrace08.c:96: TINFO: Trying address 0xffffffffffffffff
+ptrace08.c:122: TFAIL: ptrace() breakpoint with kernel addr succeeded
+ptrace08.c:96: TINFO: Trying address 0xffffbfffffffffff
+ptrace08.c:122: TFAIL: ptrace() breakpoint with kernel addr succeeded
 
+Signed-off-by: Yang Xu <xuyang_jy_0410@163.com>
+---
+ testcases/kernel/syscalls/ptrace/ptrace08.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
+index 63086f1fd..2796c40e2 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace08.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
+@@ -56,6 +56,11 @@ static pid_t child_pid;
+ 
+ static int deffered_check;
+ 
++static struct tst_kern_exv kvers[] = {
++	{"RHEL8", "4.18.0-49"},
++	{NULL, NULL},
++};
++
+ static void setup(void)
+ {
+ 	/*
+@@ -70,9 +75,10 @@ static void setup(void)
+ 	 * The original fix for the kernel haven't rejected the kernel address
+ 	 * right away when breakpoint was modified from userspace it was
+ 	 * disabled instead and the EINVAL was returned when dr7 was written to
+-	 * enable it again.
++	 * enable it again. On RHEL8, it has introduced the right fix since
++	 * 4.18.0-49.
+ 	 */
+-	if (tst_kvercmp(4, 19, 0) < 0)
++	if (tst_kvercmp2(4, 19, 0, kvers) < 0)
+ 		deffered_check = 1;
+ }
+ 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.18.1
+
+
