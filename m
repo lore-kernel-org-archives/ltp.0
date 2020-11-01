@@ -1,145 +1,97 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 30 Oct 2020 16:32:23 +0100
-Subject: [LTP] [PATCH] Convert dup01 to new API and clean up
-In-Reply-To: <20201030145350.23829-2-radoslav.kolev@suse.com>
-References: <20201030145350.23829-1-radoslav.kolev@suse.com>
- <20201030145350.23829-2-radoslav.kolev@suse.com>
-Message-ID: <20201030153223.GA2962@yuki.lan>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sun, 1 Nov 2020 12:34:42 +0530
+Subject: [LTP] [PATCH 5.9 00/74] 5.9.3-rc1 review
+In-Reply-To: <20201031113500.031279088@linuxfoundation.org>
+References: <20201031113500.031279088@linuxfoundation.org>
+Message-ID: <CA+G9fYshNJgQFZ_oxb4VgSbe2xWym9am6ajpr-SVH_bw4psa1Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> + * Copyright (c) 2020 SUSE LLC
-> + * 
-> + * 03/30/1992 AUTHOR: William Roske CO-PILOT: Dave Fenner
-> + * 30/10/2020 Convert to new api Radoslav Kolev <radoslav.kolev@suse.com>
+On Sat, 31 Oct 2020 at 17:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.9.3 release.
+> There are 74 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 02 Nov 2020 11:34:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.3-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-While I tend to keep the historical changelog in the tests I do not add
-new entries since that information is being kept in git metadata now.
+Results from Linaro?s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> -#include <sys/types.h>
-> -#include <fcntl.h>
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> +#include "tst_test.h"
->  
-> -void setup();
-> -void cleanup();
-> +static int fd;
-> +static int dup_fd;
->  
-> -char *TCID = "dup01";
-> -int TST_TOTAL = 1;
-> -
-> -char filename[255];
-> -int fd;
-> -
-> -int main(int ac, char **av)
-> +static void verify_dup(void)
->  {
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * Call dup(2)
-> -		 */
-> -		TEST(dup(fd));
-> -
-> -		/* check return code */
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL, "dup(%s) Failed, errno=%d : %s",
-> -				 filename, TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS, "dup(%s) returned %ld",
-> -				 filename, TEST_RETURN);
-> -
-> -			/* close the new file so loops do not open too many files */
-> -			SAFE_CLOSE(cleanup, TEST_RETURN);
-> -		}
-> -
-> +	TEST(dup_fd = dup(fd));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TFAIL | TERRNO, "dup(%d) Failed, %s",
-> +			fd);
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-This line does not seem to be over 80 characters, why it's broken before
-the fd?
+NOTE:
+LTP version upgrade to 20200930. Due to this change we have noticed few test
+failures and fixes which are not related to kernel changes.
 
-Also the format string does not match parameters.
+Summary
+------------------------------------------------------------------------
 
-And maybe we should be more pedantic with the check here, since any
-negative value != -1 will be caught at the SAFE_CLOSE() which less than
-optimal.
+kernel: 5.9.3-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+git branch: linux-5.9.y
+git commit: dae2c902d0480f9e51891768862f034ee97f4db1
+git describe: v5.9.2-75-gdae2c902d048
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.2-75-gdae2c902d048
 
-> +	} else {
-> +		tst_res(TPASS, "dup(%d) returned %ld",
-> +			fd, TST_RET);
+No regressions (compared to build v5.9.2)
 
-Here as well, the line does not need to be broken.
+No fixes (compared to build v5.9.2)
 
-> +		SAFE_CLOSE(dup_fd);
+Fixes (compared to LTP 20200515)
+These fixes are coming from LTP upgrade 20200930.
+  ltp-commands-tests:
+    * logrotate_sh
 
-What's wrong with SAFE_CLOSE(TST_RET) ?
+  ltp-containers-tests:
+    * netns_netlink
 
->  	}
-> -
-> -	cleanup();
-> -	tst_exit();
->  }
->  
-> -void setup(void)
-> +static void setup(void)
->  {
-> -	fd = -1;
-> -
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	sprintf(filename, "dupfile");
-> -	if ((fd = open(filename, O_RDWR | O_CREAT, 0700)) == -1)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-> +	fd = SAFE_OPEN("dupfile", O_RDWR | O_CREAT, 0700);
->  }
->  
-> -void cleanup(void)
-> +static void cleanup(void)
->  {
-> -	if (fd != -1)
-> -		if (close(fd) == -1)
-> -			tst_resm(TWARN | TERRNO, "closing %s failed", filename);
-> -
-> -	tst_rmdir();
-> -
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
->  }
-> +
-> +static struct tst_test test = {
-> +	.test_all = verify_dup,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +};
+  ltp-controllers-tests:
+    * cpuset_hotplug
 
-Other than these the rest looks fine.
+  ltp-crypto-tests:
+    * af_alg02
+
+  ltp-cve-tests:
+    * cve-2017-17805
+    * cve-2018-1000199
+
+  ltp-syscalls-tests:
+    * clock_gettime03
+    * clone302
+    * copy_file_range02
+    * mknod07
+    * ptrace08
+    * syslog01
+    * syslog02
+    * syslog03
+    * syslog04
+    * syslog05
+    * syslog07
+    * syslog08
+    * syslog09
+    * syslog10
+
+  ltp-open-posix-tests:
+    * clocks_invaliddates
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Linaro LKFT
+https://lkft.linaro.org
