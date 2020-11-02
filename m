@@ -1,69 +1,71 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 2 Nov 2020 14:28:03 +0800
-Subject: [LTP] [PATCH] syscalls/ptrace08: Add another linux tag
-Message-ID: <1604298483-18563-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 2 Nov 2020 14:53:12 +0800
+Subject: [LTP] [PATCH v2] madvise06: Increase reliability and diagnostic
+ info
+In-Reply-To: <CAEemH2cevcmS1Cq-t0667CwQmxWL=6YNdBzvKNem2YV1E5EVSg@mail.gmail.com>
+References: <CAEemH2d8+5qLLKWsuf5WJeLHdv2VfPZiyM9-oW=WyH4m==h=8g@mail.gmail.com>
+ <20201027132334.1027-1-rpalethorpe@suse.com>
+ <CAEemH2cevcmS1Cq-t0667CwQmxWL=6YNdBzvKNem2YV1E5EVSg@mail.gmail.com>
+Message-ID: <CAEemH2f2-ByWBtrwukF_B8q_yGMj4Km6VN15viT7cAeisa8w0w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since "syscall/ptrace08: Simplify the test", on older kernels we check that the
-POKEUSER to dr7 that enables the breakpoint fails properly after the dr0 has been
-set to an address in the kernel range.
+Cc LTP ML.
 
-on centos7.8GA, it can expose a failure as below:
-tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-tst_kernel.c:79: TINFO: uname.machine=x86_64 kernel is 64bit
-ptrace08.c:90: TINFO: Trying address 0xffff800000000000
-ptrace08.c:120: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL (22)
-ptrace08.c:129: TINFO: 0xffff800000000000
-ptrace08.c:90: TINFO: Trying address 0xffffffffffffffff
-ptrace08.c:116: TFAIL: ptrace() breakpoint with kernel addr succeeded
-ptrace08.c:129: TINFO: 0xffffffffffffffff
-ptrace08.c:90: TINFO: Trying address 0xffffbfffffffffff
-ptrace08.c:120: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL (22)
-ptrace08.c:129: TINFO: 0xffffbfffffffffff
+On Mon, Nov 2, 2020 at 2:50 PM Li Wang <liwang@redhat.com> wrote:
 
-It fails because x86 hw_breakpoint code can't parse this 0xffffffffffffffff kernel
-address on x86_64 platform.
+>
+>
+> On Tue, Oct 27, 2020 at 9:24 PM Richard Palethorpe <rpalethorpe@suse.com>
+> wrote:
+>
+>> When memcg.limit_in_bytes is set to PASS_THRESHOLD it's unlikely
+>> swapcached will increase by more than PASS_THRESHOLD unless processes
+>> in other memcgs are also increasing it. Additionally MADV_WILLNEED
+>> must remove pages from memory as it adds more so that the first page
+>> may not be in memory by the time the last page is faulted if the
+>> amount exceeds the memory limit (which it does because CHUNK_SZ >
+>> PASS_THRESSHOLD). Worse if pages are faulted in a non-linear way, or
+>> the process must access some other pages, then there is no guarantee
+>> which parts of the range will be resident in memory. This results in
+>> spurious test failures.
+>>
+>> To solve this we can set PASS_THRESHOLD to 1/4 of CHUNK_SZ and
+>> memcg.limit_in_bytes to 1/2 of CHUNK_SZ (MEM_LIMIT), then mark
+>> MEM_LIMIT bytes as needed. That way the amount in the SwapCache will
+>> easily be more than the threshold. Secondly we can run madvise again
+>> on PASS_THRESHOLD bytes and check that dirtying all of these does not
+>> result in too many page faults. We also run the second test on every
+>> occasion to ensure the test code itself is still valid. If the
+>> original bug is present then both tests fail.
+>>
+>> Finally this prints more diagnostic information to help with debugging
+>> the test.
+>>
+>> While debugging the test a kernel bug was found in 5.9 which effects
+>> CGroupV1 when use_hierarchy=0. This is unlikely to effect many users,
+>> but a fix is pending and will be referenced in the test when
+>> available. It is recommended that you set use_hierarchy=1.
+>>
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>> Reviewed-by: Li Wang <liwang@redhat.com>
+>> ---
+>>
+>
+> Applied the patch V2, thanks!
+>
+> --
+> Regards,
+> Li Wang
+>
 
-arch/x86/kernel/hw_breakpoint.c
- int arch_check_bp_in_kernelspace(struct perf_event *bp)
- 	return (va >= TASK_SIZE) && ((va + len - 1) >= TASK_SIZE);
 
-TASK_SIZE is small and value will overflow if we use 0xffffffffffffffff address
-(va is unsigned long and len is unsigned int).
-
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ptrace/ptrace08.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
-index 741923e36..870701317 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace08.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
-@@ -29,6 +29,9 @@
-  *  Date:   Mon Mar 26 15:39:07 2018 -1000
-  *
-  *  perf/hwbp: Simplify the perf-hwbp code, fix documentation
-+ *
-+ * On Centos7, this is also a regression test for
-+ * commit 27747f8bc355 ("perf/x86/hw_breakpoints: Fix check for kernel-space breakpoints").
-  */
- 
- #include <stdlib.h>
-@@ -163,6 +166,7 @@ static struct tst_test test = {
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "f67b15037a7a"},
- 		{"CVE", "2018-1000199"},
-+		{"linux-git", "27747f8bc355"},
- 		{}
- 	}
- };
 -- 
-2.23.0
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201102/6b67adeb/attachment-0001.htm>
