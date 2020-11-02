@@ -1,76 +1,69 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Mon,  2 Nov 2020 10:49:45 +0800
-Subject: [LTP] [PATCHv2] syscalls/statx05: add mkfs.ext4 package version
- check
-Message-ID: <20201102024945.6605-1-po-hsu.lin@canonical.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 2 Nov 2020 14:28:03 +0800
+Subject: [LTP] [PATCH] syscalls/ptrace08: Add another linux tag
+Message-ID: <1604298483-18563-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The encryption feature was added in e2fsprogs 1.43:
-  e2fsprogs (1.43~WIP.2015.05.18-1) unstable; urgency=low
-    * Add support for file encryption feature
+Since "syscall/ptrace08: Simplify the test", on older kernels we check that the
+POKEUSER to dr7 that enables the breakpoint fails properly after the dr0 has been
+set to an address in the kernel range.
 
-The test should be skipped when running with older package, otherwise
-it will fail with:
-  Invalid filesystem option set: encrypt
+on centos7.8GA, it can expose a failure as below:
+tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+tst_kernel.c:79: TINFO: uname.machine=x86_64 kernel is 64bit
+ptrace08.c:90: TINFO: Trying address 0xffff800000000000
+ptrace08.c:120: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL (22)
+ptrace08.c:129: TINFO: 0xffff800000000000
+ptrace08.c:90: TINFO: Trying address 0xffffffffffffffff
+ptrace08.c:116: TFAIL: ptrace() breakpoint with kernel addr succeeded
+ptrace08.c:129: TINFO: 0xffffffffffffffff
+ptrace08.c:90: TINFO: Trying address 0xffffbfffffffffff
+ptrace08.c:120: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL (22)
+ptrace08.c:129: TINFO: 0xffffbfffffffffff
 
-Use popen and fscanf to get mkfs.ext4 -V output for version
-comparison. This version checking by adding digits together does not
-work with alphabets in the number like rc1, but in that case the test
-will still be tested.
+It fails because x86 hw_breakpoint code can't parse this 0xffffffffffffffff kernel
+address on x86_64 platform.
 
-It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
-  statx05.c:102: TCONF: Test needs mkfs.ext4 >= 1.43 for encrypt option, test skipped
+arch/x86/kernel/hw_breakpoint.c
+ int arch_check_bp_in_kernelspace(struct perf_event *bp)
+ 	return (va >= TASK_SIZE) && ((va + len - 1) >= TASK_SIZE);
 
-Fixes: #542
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+TASK_SIZE is small and value will overflow if we use 0xffffffffffffffff address
+(va is unsigned long and len is unsigned int).
+
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/statx/statx05.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/ptrace/ptrace08.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-index 77684e1ed..d7ac24418 100644
---- a/testcases/kernel/syscalls/statx/statx05.c
-+++ b/testcases/kernel/syscalls/statx/statx05.c
-@@ -17,6 +17,7 @@
-  * Second directory has no flags set.
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
+index 741923e36..870701317 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace08.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
+@@ -29,6 +29,9 @@
+  *  Date:   Mon Mar 26 15:39:07 2018 -1000
   *
-  * Minimum kernel version required is 4.11.
-+ * Minimum e2fsprogs version required is 1.43.
+  *  perf/hwbp: Simplify the perf-hwbp code, fix documentation
++ *
++ * On Centos7, this is also a regression test for
++ * commit 27747f8bc355 ("perf/x86/hw_breakpoints: Fix check for kernel-space breakpoints").
   */
  
- #define _GNU_SOURCE
-@@ -24,6 +25,7 @@
- #include <stdio.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+#include "tst_safe_stdio.h"
- #include "tst_test.h"
- #include "lapi/fs.h"
- #include "lapi/stat.h"
-@@ -86,9 +88,18 @@ static void run(unsigned int i)
- 
- static void setup(void)
- {
-+	FILE *f;
- 	char opt_bsize[32];
- 	const char *const fs_opts[] = {"-O encrypt", opt_bsize, NULL};
--	int ret;
-+	int ret, rc, major, minor, patch;
-+
-+	f = SAFE_POPEN("mkfs.ext4 -V 2>&1", "r");
-+	rc = fscanf(f, "mke2fs %d.%d.%d", &major, &minor, &patch);
-+	if (rc != 3)
-+		tst_res(TWARN, "Unable parse version number");
-+	else if (major * 10000 + minor * 100 + patch < 14300)
-+		tst_brk(TCONF, "Test needs mkfs.ext4 >= 1.43 for encrypt option, test skipped");
-+	pclose(f);
- 
- 	snprintf(opt_bsize, sizeof(opt_bsize), "-b %i", getpagesize());
- 
+ #include <stdlib.h>
+@@ -163,6 +166,7 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "f67b15037a7a"},
+ 		{"CVE", "2018-1000199"},
++		{"linux-git", "27747f8bc355"},
+ 		{}
+ 	}
+ };
 -- 
-2.17.1
+2.23.0
+
+
 
