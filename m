@@ -1,123 +1,135 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 03 Nov 2020 16:34:04 +0000
-Subject: [LTP] [PATCH] pty04: Limit the number of packets sent to avoid
- timeout
-In-Reply-To: <20201103154247.GA10565@yuki.lan>
-References: <20201028171056.2151-1-rpalethorpe@suse.com>
- <20201103154247.GA10565@yuki.lan>
-Message-ID: <875z6m5rib.fsf@suse.de>
+From: akpm@linux-foundation.org <akpm@linux-foundation.org>
+Date: Tue, 03 Nov 2020 10:16:55 -0800
+Subject: [LTP] [merged]
+ mm-memcg-link-page-counters-to-root-if-use_hierarchy-is-false.patch removed
+ from -mm tree
+Message-ID: <20201103181655.kLttb0Xdl%akpm@linux-foundation.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+The patch titled
+     Subject: mm: memcg: link page counters to root if use_hierarchy is false
+has been removed from the -mm tree.  Its filename was
+     mm-memcg-link-page-counters-to-root-if-use_hierarchy-is-false.patch
 
-> Hi!
->> At the end of the test we transmit many packets while closing the PTY
->> to check for races in the kernel. However if the process which closes
->> the PTY is delayed this can result a very large number of packets
->> being transmitted. The kernel appears to handle this quite slowly
->> which can cause the test to timeout or even a softlockup.
->> 
->> This is not supposed to be a performance test, so this commit puts an
->> upper bound on the number of packets transmitted.
->> 
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->> 
->> Hopefully will solve: https://github.com/linux-test-project/ltp/issues/674
->> 
->>  testcases/kernel/pty/pty04.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->> 
->> diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
->> index 4adf2cbb7..a59de7830 100644
->> --- a/testcases/kernel/pty/pty04.c
->> +++ b/testcases/kernel/pty/pty04.c
->> @@ -136,7 +136,8 @@ static int open_pty(const struct ldisc_info *ldisc)
->>  static ssize_t try_write(int fd, const char *data,
->>  			 ssize_t size, ssize_t *written)
->>  {
->> -	ssize_t ret = write(fd, data, size);
->> +	ssize_t off = written ? *written : 0;
->> +	ssize_t ret = write(fd, data + off, size);
->
-> This seems to be correct, but should be send in a seprate patch.
+This patch was dropped because it was merged into mainline or a subsystem tree
 
-I suppose I can, but this is actually part of limiting the number of
-packets otherwise we don't care that we try to resend the whole packet
-each time.
+------------------------------------------------------
+From: Roman Gushchin <guro@fb.com>
+Subject: mm: memcg: link page counters to root if use_hierarchy is false
 
->
->>  	if (ret < 0)
->>  		return -(errno != EAGAIN);
->> @@ -149,6 +150,7 @@ static void write_pty(const struct ldisc_info *ldisc)
->>  	char *data;
->>  	ssize_t written, ret;
->>  	size_t len = 0;
->> +	int max_writes = 1000;
->>  
->>  	switch (ldisc->n) {
->>  	case N_SLIP:
->> @@ -190,7 +192,8 @@ static void write_pty(const struct ldisc_info *ldisc)
->>  
->>  	tst_res(TPASS, "Wrote PTY %s %d (2)", ldisc->name, ptmx);
->>  
->> -	while (try_write(ptmx, data, len, NULL) >= 0)
->> +	TST_CHECKPOINT_WAIT2(0, 100000);
->> +	while (max_writes-- && try_write(ptmx, data, len, NULL) >= 0)
->>  		;
->
-> I wonder if we should change this to be time based instead. I.e. try to
-> write packets for 10 seconds or so, since hardcoding number of
-> iterations usually does not scale from embedded to supercomputers.
+Richard reported a warning which can be reproduced by running the LTP
+madvise6 test (cgroup v1 in the non-hierarchical mode should be used):
 
-Writing is most likely far quicker than reading on any computer, so
-limiting it by time worries me more. On a system that is very fast, but
-highly contended (e.g. OpenQA guests), one CPU may be able to fill the
-TTY buffer before another gets chance to start converting that data to
-CAN packets. This will most likely result in a softlockup/timeout which
-is what we are trying to avoid. With an iteration limit the fast system
-will simply exit the loop before we get chance to read (if contended).
+[    9.841552] ------------[ cut here ]------------
+[    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[    9.841982] Modules linked in:
+[    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
+[    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+[    9.842571] Workqueue: events drain_local_stock
+[    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
+[    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
+[    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803bc2cae0
+[    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff948007d2b248
+[    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff948007da05ac
+[    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000001
+[    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803bc2cac0
+[    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlGS:0000000000000000
+[    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 00000000000006f0
+[    9.845319] Call Trace:
+[    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+[    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+[    9.845684] drain_local_stock (mm/memcontrol.c:2255)
+[    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
+[    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
+[    9.846034] ? process_one_work (kernel/workqueue.c:2358)
+[    9.846162] kthread (kernel/kthread.c:292)
+[    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
+[    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
+[    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
 
-On a slow system which is also highly contended we just have to hope the
-iteration limit is low enough. If we set a time limit instead, we still
-have the issue of how many seconds to set before the TTY buffers are
-full enough to queue up too much work.
+The problem occurs because in the non-hierarchical mode non-root page
+counters are not linked to root page counters, so the charge is not
+propagated to the root memory cgroup.
 
-I guess we could do two-way communication instead of just writing to the
-PTY...
+After the removal of the original memory cgroup and reparenting of the
+object cgroup, the root cgroup might be uncharged by draining a objcg
+stock, for example.  It leads to an eventual underflow of the charge and
+triggers a warning.
 
->
->>  	tst_res(TPASS, "Writing to PTY interrupted by hangup");
->
-> And this should be true only if we do not run out of tries meanwhile,
-> right?
+Fix it by linking all page counters to corresponding root page counters in
+the non-hierarchical mode.
 
-Yes, I suppose we should not print that if the while loop finishes
+Please note, that in the non-hierarchical mode all objcgs are always
+reparented to the root memory cgroup, even if the hierarchy has more than
+1 level.  This patch doesn't change it.
 
->
->> @@ -331,7 +334,7 @@ static void read_netdev(const struct ldisc_info *ldisc)
->>  	check_data(ldisc, data, plen);
->>  	tst_res(TPASS, "Read netdev %s %d (2)", ldisc->name, sk);
->>  
->> -	TST_CHECKPOINT_WAKE(0);
->> +	TST_CHECKPOINT_WAKE2(0, 2);
->>  	while ((rlen = read(sk, data, plen)) > 0)
->>  		check_data(ldisc, data, rlen);
->>  
->> -- 
->> 2.28.0
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+The patch also doesn't affect how the hierarchical mode is working, which
+is the only sane and truly supported mode now.
 
+Thanks to Richard for reporting, debugging and providing an alternative
+version of the fix!
 
--- 
-Thank you,
-Richard.
+Link: https://lkml.kernel.org/r/20201026231326.3212225-1-guro@fb.com
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Debugged-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reported-by: <ltp@lists.linux.it>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Michal Koutn? <mkoutny@suse.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+--- a/mm/memcontrol.c~mm-memcg-link-page-counters-to-root-if-use_hierarchy-is-false
++++ a/mm/memcontrol.c
+@@ -5345,17 +5345,22 @@ mem_cgroup_css_alloc(struct cgroup_subsy
+ 		memcg->swappiness = mem_cgroup_swappiness(parent);
+ 		memcg->oom_kill_disable = parent->oom_kill_disable;
+ 	}
+-	if (parent && parent->use_hierarchy) {
++	if (!parent) {
++		page_counter_init(&memcg->memory, NULL);
++		page_counter_init(&memcg->swap, NULL);
++		page_counter_init(&memcg->kmem, NULL);
++		page_counter_init(&memcg->tcpmem, NULL);
++	} else if (parent->use_hierarchy) {
+ 		memcg->use_hierarchy = true;
+ 		page_counter_init(&memcg->memory, &parent->memory);
+ 		page_counter_init(&memcg->swap, &parent->swap);
+ 		page_counter_init(&memcg->kmem, &parent->kmem);
+ 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+ 	} else {
+-		page_counter_init(&memcg->memory, NULL);
+-		page_counter_init(&memcg->swap, NULL);
+-		page_counter_init(&memcg->kmem, NULL);
+-		page_counter_init(&memcg->tcpmem, NULL);
++		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
++		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
++		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
++		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+ 		/*
+ 		 * Deeper hierachy with use_hierarchy == false doesn't make
+ 		 * much sense so let cgroup subsystem know about this
+_
+
+Patches currently in -mm which might be from guro@fb.com are
+
+mm-memcontrol-use-helpers-to-read-pages-memcg-data.patch
+mm-memcontrol-slab-use-helpers-to-access-slab-pages-memcg_data.patch
+mm-introduce-page-memcg-flags.patch
+mm-convert-page-kmemcg-type-to-a-page-memcg-flag.patch
+mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+
