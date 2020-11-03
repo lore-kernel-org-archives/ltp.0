@@ -1,41 +1,92 @@
-From: Michal Hocko <mhocko@suse.com>
-Date: Tue, 3 Nov 2020 14:22:21 +0100
-Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
- <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
- <20201020162714.GC46039@blackbook>
- <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
- <20201020181822.GA397401@cmpxchg.org>
- <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
-Message-ID: <20201103132221.GI21990@dhcp22.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Nov 2020 16:42:47 +0100
+Subject: [LTP] [PATCH] pty04: Limit the number of packets sent to avoid
+ timeout
+In-Reply-To: <20201028171056.2151-1-rpalethorpe@suse.com>
+References: <20201028171056.2151-1-rpalethorpe@suse.com>
+Message-ID: <20201103154247.GA10565@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-I am sorry but I was quite busy at the time this has been discussed.
-Now that I got to this thread finally I am wondering whether this
-resp. other root cgroup exceptions have any follow up.
+Hi!
+> At the end of the test we transmit many packets while closing the PTY
+> to check for races in the kernel. However if the process which closes
+> the PTY is delayed this can result a very large number of packets
+> being transmitted. The kernel appears to handle this quite slowly
+> which can cause the test to timeout or even a softlockup.
+> 
+> This is not supposed to be a performance test, so this commit puts an
+> upper bound on the number of packets transmitted.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+> 
+> Hopefully will solve: https://github.com/linux-test-project/ltp/issues/674
+> 
+>  testcases/kernel/pty/pty04.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
+> index 4adf2cbb7..a59de7830 100644
+> --- a/testcases/kernel/pty/pty04.c
+> +++ b/testcases/kernel/pty/pty04.c
+> @@ -136,7 +136,8 @@ static int open_pty(const struct ldisc_info *ldisc)
+>  static ssize_t try_write(int fd, const char *data,
+>  			 ssize_t size, ssize_t *written)
+>  {
+> -	ssize_t ret = write(fd, data, size);
+> +	ssize_t off = written ? *written : 0;
+> +	ssize_t ret = write(fd, data + off, size);
 
-I have seen the issue is fixed in Linus tree by 8de15e920dc8 ("mm:
-memcg: link page counters to root if use_hierarchy is false"). Thanks
-for taking care of that! I do agree that this approach is the most
-reasonable immediate fix.
+This seems to be correct, but should be send in a seprate patch.
 
-Btw. we have been carrying a warning about non hierarchical hierarchies
-for years in our distribution kernels and haven't heard of any actual
-bug reports (except for LTP driven ones). So we might be really close to
-simply drop this functionality completely. This would simplify the code
-and prevent from future surprises.
+>  	if (ret < 0)
+>  		return -(errno != EAGAIN);
+> @@ -149,6 +150,7 @@ static void write_pty(const struct ldisc_info *ldisc)
+>  	char *data;
+>  	ssize_t written, ret;
+>  	size_t len = 0;
+> +	int max_writes = 1000;
+>  
+>  	switch (ldisc->n) {
+>  	case N_SLIP:
+> @@ -190,7 +192,8 @@ static void write_pty(const struct ldisc_info *ldisc)
+>  
+>  	tst_res(TPASS, "Wrote PTY %s %d (2)", ldisc->name, ptmx);
+>  
+> -	while (try_write(ptmx, data, len, NULL) >= 0)
+> +	TST_CHECKPOINT_WAIT2(0, 100000);
+> +	while (max_writes-- && try_write(ptmx, data, len, NULL) >= 0)
+>  		;
 
-Thanks!
+I wonder if we should change this to be time based instead. I.e. try to
+write packets for 10 seconds or so, since hardcoding number of
+iterations usually does not scale from embedded to supercomputers.
+
+>  	tst_res(TPASS, "Writing to PTY interrupted by hangup");
+
+And this should be true only if we do not run out of tries meanwhile,
+right?
+
+> @@ -331,7 +334,7 @@ static void read_netdev(const struct ldisc_info *ldisc)
+>  	check_data(ldisc, data, plen);
+>  	tst_res(TPASS, "Read netdev %s %d (2)", ldisc->name, sk);
+>  
+> -	TST_CHECKPOINT_WAKE(0);
+> +	TST_CHECKPOINT_WAKE2(0, 2);
+>  	while ((rlen = read(sk, data, plen)) > 0)
+>  		check_data(ldisc, data, rlen);
+>  
+> -- 
+> 2.28.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-Michal Hocko
-SUSE Labs
+Cyril Hrubis
+chrubis@suse.cz
