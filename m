@@ -1,71 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Nov 2020 14:18:13 +0100
-Subject: [LTP] [PATCH] [COMMITTED] openposix: Fix another three failures
-Message-ID: <20201103131813.9098-1-chrubis@suse.cz>
+From: Michal Hocko <mhocko@suse.com>
+Date: Tue, 3 Nov 2020 14:22:21 +0100
+Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
+ from charging root
+In-Reply-To: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+ <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+ <20201020181822.GA397401@cmpxchg.org>
+ <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
+Message-ID: <20201103132221.GI21990@dhcp22.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is a continuation of:
+Hi,
+I am sorry but I was quite busy at the time this has been discussed.
+Now that I got to this thread finally I am wondering whether this
+resp. other root cgroup exceptions have any follow up.
 
-commit 38cc030092a54067a9f08dea0173a0d032a15820
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Thu Oct 29 15:16:30 2020 +0100
+I have seen the issue is fixed in Linus tree by 8de15e920dc8 ("mm:
+memcg: link page counters to root if use_hierarchy is false"). Thanks
+for taking care of that! I do agree that this approach is the most
+reasonable immediate fix.
 
-    openposix: Fix two test failures
+Btw. we have been carrying a warning about non hierarchical hierarchies
+for years in our distribution kernels and haven't heard of any actual
+bug reports (except for LTP driven ones). So we might be really close to
+simply drop this functionality completely. This would simplify the code
+and prevent from future surprises.
 
-Where I missed three more testcases that depended on variable being
-changed from a different thread or signal handler.
-
-Fixes: 8c22a59107dc (openposix: add "static" to all global variables and functions)
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../conformance/interfaces/pthread_setschedparam/5-1.c          | 2 +-
- .../conformance/interfaces/pthread_sigmask/18-1.c               | 2 +-
- .../conformance/interfaces/sem_unlink/9-1.c                     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c
-index 52b7ff629..db155d033 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c
-@@ -76,7 +76,7 @@
- /*****************************    Test case   *********************************/
- /******************************************************************************/
- 
--static char do_it = 1;
-+static volatile char do_it = 1;
- static unsigned long count_ope = 0;
- #ifdef WITH_SYNCHRO
- static sem_t semsig1;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
-index 0617210bf..7e2906c7d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_sigmask/18-1.c
-@@ -75,7 +75,7 @@
- /***********************************    Test cases  *****************************************/
- /********************************************************************************************/
- 
--static char do_it = 1;
-+static volatile char do_it = 1;
- static unsigned long count_ope = 0;
- #ifdef WITH_SYNCHRO
- static sem_t semsig1;
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/9-1.c
-index 288f1224f..24a575ff9 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/9-1.c
-@@ -82,7 +82,7 @@
- /******************************************************************************/
- /***************************    Test case   ***********************************/
- /******************************************************************************/
--static int thread_state = 0;
-+static int volatile thread_state = 0;
- 
- static void *threaded(void *arg)
- {
+Thanks!
 -- 
-2.26.2
-
+Michal Hocko
+SUSE Labs
