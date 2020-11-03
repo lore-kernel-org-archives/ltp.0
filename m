@@ -1,684 +1,149 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue,  3 Nov 2020 12:38:21 +0100
-Subject: [LTP] [PATCH v3 2/2] lib/tst_kconfig: Make use of boolean
- expression eval
-In-Reply-To: <20201103113821.6820-1-chrubis@suse.cz>
-References: <20201103113821.6820-1-chrubis@suse.cz>
-Message-ID: <20201103113821.6820-3-chrubis@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 03 Nov 2020 11:39:04 +0000
+Subject: [LTP] [RFC][PATCH] tst_cgroup: Attempt to use CGroups V2 then
+ V1 instead of guessing
+In-Reply-To: <CAEemH2ef9t+az4b=1zWyjuWYnUOkENL7471g0KczhUx-XFRFjQ@mail.gmail.com>
+References: <20200925121941.10475-1-rpalethorpe@suse.com>
+ <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
+ <87y2kuwa1x.fsf@suse.de>
+ <CAEemH2ef9t+az4b=1zWyjuWYnUOkENL7471g0KczhUx-XFRFjQ@mail.gmail.com>
+Message-ID: <87eela655z.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Now each string in the kconfig[] array in tst_test structure is an
-boolean expression which is evaluated. All expressions has to be true in
-order for the test to continue.
+Hello,
 
-This also makes the parser for the kernel config a bit more robust as it
-was pointed out that there may have been cases where it could be mislead
-by hand edited config files.
+Li Wang <liwang@redhat.com> writes:
 
-+ Update the docs.
+> On Mon, Sep 28, 2020 at 5:00 PM Richard Palethorpe <rpalethorpe@suse.de>
+> wrote:
+>
+>> Hello Li,
+>>
+>> Li Wang <liwang@redhat.com> writes:
+>>
+>> >>
+>> >> -static void tst_cgroup2_mount(const char *mnt_path, const char
+>> *new_path)
+>> >> +static int cgroup2_mount(const char *mnt_path, const char *new_path)
+>> >>
+>> >
+>> > We'd like to make the series function name starts with tst_*.
+>> >
+>>
+>> The idea is this will be an internal/static function and
+>> tst_cgroup2_mount will be a public function if it is needed. I guess
+>> that eventually there will be features only available in cgroup2, in
+>> which case the test author will want to call tst_cgroup2_mount not
+>> tst_cgroup_mount and they will just want it to fail with tst_brk if
+>> cgroup2 can't be mounted.
+>>
+>
+> Sounds good.
+>
+>
+>>
+>> Infact, if the user wants cpuset or some other V1 only controller, then
+>> they should probably call tst_cgroup1_mount. AFAICT some of these
+>> controllers will not be moved to V2. OTOH a functionally similar feature
+>> may be available in V2, but with a different interface. There is a
+>> difference between requiring a specific controller to test it and
+>> needing some functionality without caring how it is provided.
+>>
+>> So I suggest providing an API for mounting specific cgroup versions and
+>> controllers and an API to mount specific controllers of either version
+>> (i.e. tst_cgroup_mount). Then we can create helper functions to provide
+>> functionality without caring how it is achieved, if we need to do that.
+>>
+>
+> This is a really good suggestion.
+>
+>
+>> Other comments sound good! I will try creating another patch with
+>> diagnostics.
+>>
+>
+> Thanks!
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Pengfei Xu <pengfei.xu@intel.com>
----
+Well, I have learnt some more about CGroups and reviewed some of our
+tests which use them and am now considering the following. This is so
+complicated that the below will probably turn out to be wrong as I try
+to implement it.
 
- v3:
-     - fix segfaults caused by off-by-one in the map() function
-     - fix the acct02 test, that uses the kconfig loader in setup()
+1) Scan the system for mounted Cgroup controllers and create a data
+   structure describing what controllers are mounted and where.
 
- doc/test-writing-guidelines.txt         |  21 +-
- include/tst_kconfig.h                   |  34 +--
- lib/newlib_tests/.gitignore             |   1 +
- lib/newlib_tests/config06               |   1 +
- lib/newlib_tests/test_kconfig.c         |   2 +
- lib/newlib_tests/test_kconfig01.c       |  23 ++
- lib/tst_kconfig.c                       | 366 ++++++++++++++++--------
- testcases/kernel/syscalls/acct/acct02.c |  14 +-
- 8 files changed, 307 insertions(+), 155 deletions(-)
- create mode 100644 lib/newlib_tests/config06
- create mode 100644 lib/newlib_tests/test_kconfig01.c
+There is only one cgroup root, it is possible to mount it multiple
+times, but it simplifies matters if we try to reuse whatever is already
+mounted. Especially in the case of V1 where remounting with different
+controller combinations will fail. Possibly there is some advantage to
+remounting, but I can't see what because changes to one mount are likely
+to be reflected in others, plus remounting is likely to fail if you
+don't use the same mount options.
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 1a51ef7c7..3c2ab7166 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1643,21 +1643,26 @@ on the system, disabled syscalls can be detected by checking for 'ENOSYS'
- errno etc.
- 
- However in rare cases core kernel features couldn't be detected based on the
--kernel userspace API and we have to resort to kernel .config parsing.
-+kernel userspace API and we have to resort to parse the kernel .config.
- 
--For this cases the test should set the 'NULL' terminated '.needs_kconfigs' array
--of kernel config options required for the test. The config option can be
--specified either as plain "CONFIG_FOO" in which case it's sufficient for the
--test continue if it's set to any value (typically =y or =m). Or with a value
--as "CONFIG_FOO=bar" in which case the value has to match as well. The test is
--aborted with 'TCONF' if any of the required options were not set.
-+For this cases the test should set the 'NULL' terminated '.needs_kconfigs'
-+array of boolean expressions with constraints on the kconfig variables. The
-+boolean expression consits of variables, two binary operations '&' and '|',
-+negation '!' and correct sequence of parentesis '()'. Variables are expected
-+to be in a form of "CONFIG_FOO[=bar]".
-+
-+The test will continue to run if all expressions are evaluated to 'True'.
-+Missing variable is mapped to 'False' as well as variable with different than
-+specified value, e.g. 'CONFIG_FOO=bar' will evaluate to 'False' if the value
-+is anything else but 'bar'. If config variable is specified as plain
-+'CONFIG_FOO' it's evaluated to true it's set to any value (typically =y or =m).
- 
- [source,c]
- -------------------------------------------------------------------------------
- #include "tst_test.h"
- 
- static const char *kconfigs[] = {
--	"CONFIG_X86_INTEL_UMIP",
-+	"CONFIG_X86_INTEL_UMIP | CONFIG_X86_UMIP",
- 	NULL
- };
- 
-diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
-index 2d2cfd782..1bb21fea8 100644
---- a/include/tst_kconfig.h
-+++ b/include/tst_kconfig.h
-@@ -6,27 +6,27 @@
- #ifndef TST_KCONFIG_H__
- #define TST_KCONFIG_H__
- 
--struct tst_kconfig_res {
--	char match;
--	char *value;
-+struct tst_kconfig_var {
-+	char id[64];
-+	unsigned int id_len;
-+	char choice;
-+	char *val;
- };
- 
- /**
-- * Reads a kernel config and parses it for values defined in kconfigs array.
-+ *
-+ * Reads a kernel config, parses it and writes results into an array of
-+ * tst_kconfig_var structures.
-  *
-  * The path to the kernel config should be autodetected in most of the cases as
-  * the code looks for know locations. It can be explicitely set/overrided with
-  * the KCONFIG_PATH environment variable as well.
-  *
-- * The kcofings array is expected to contain strings in a format "CONFIG_FOO"
-- * or "CONFIG_FOO=bar". The result array has to be suitably sized to fit the
-- * results.
-- *
-- * @param kconfigs array of config strings to look for
-- * @param results array to store results to
-- * @param cnt size of the arrays
-+ * The caller has to initialize the tst_kconfig_var structure. The id has to be
-+ * filled with config variable name such as 'CONFIG_FOO', the id_len should
-+ * hold the id string length and the choice and val has to be zeroed.
-  *
-- * The match in the tst_kconfig_res structure is set as follows:
-+ * After a call to this function each choice be set as follows:
-  *
-  *  'm' - config option set to m
-  *  'y' - config option set to y
-@@ -34,11 +34,13 @@ struct tst_kconfig_res {
-  *  'n' - config option is not set
-  *   0  - config option not found
-  *
-- * In the case that match is set to 'v' the value points to a newly allocated
-- * string that holds the value.
-+ * In the case that match is set to 'v' the val pointer points to a newly
-+ * allocated string that holds the value.
-+ *
-+ * @param vars An array of caller initalized tst_kconfig_var structures.
-+ * @param vars_len Length of the vars array.
-  */
--void tst_kconfig_read(const char *const kconfigs[],
--		      struct tst_kconfig_res results[], size_t cnt);
-+void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
- 
- /**
-  * Checks if required kernel configuration options are set in the kernel
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 1e96db1da..89de61cf7 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -31,6 +31,7 @@ test_timer
- test_exec
- test_exec_child
- test_kconfig
-+test_kconfig01
- variant
- test_guarded_buf
- tst_bool_expr
-diff --git a/lib/newlib_tests/config06 b/lib/newlib_tests/config06
-new file mode 100644
-index 000000000..b7db25411
---- /dev/null
-+++ b/lib/newlib_tests/config06
-@@ -0,0 +1 @@
-+# Empty
-diff --git a/lib/newlib_tests/test_kconfig.c b/lib/newlib_tests/test_kconfig.c
-index d9c662fc5..1f659b95a 100644
---- a/lib/newlib_tests/test_kconfig.c
-+++ b/lib/newlib_tests/test_kconfig.c
-@@ -14,6 +14,8 @@ static const char *kconfigs[] = {
- 	"CONFIG_MMU",
- 	"CONFIG_EXT4_FS=m",
- 	"CONFIG_PGTABLE_LEVELS=4",
-+	"CONFIG_MMU & CONFIG_EXT4_FS=m",
-+	"CONFIG_EXT4_FS=m | CONFIG_MMU",
- 	NULL
- };
- 
-diff --git a/lib/newlib_tests/test_kconfig01.c b/lib/newlib_tests/test_kconfig01.c
-new file mode 100644
-index 000000000..ee919dcac
---- /dev/null
-+++ b/lib/newlib_tests/test_kconfig01.c
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * Invalid boolean expression test.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void do_test(void)
-+{
-+	tst_res(TPASS, "Test passed!");
-+}
-+
-+static const char *kconfigs[] = {
-+	"CONFIG_EXT4_FS=m | CONFIG_MMU)",
-+	NULL
-+};
-+
-+static struct tst_test test = {
-+	.test_all = do_test,
-+	.needs_kconfigs = kconfigs,
-+};
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index d49187b6f..cf257843f 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -12,6 +12,7 @@
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_kconfig.h"
-+#include "tst_bool_expr.h"
- 
- static const char *kconfig_path(char *path_buf, size_t path_buf_len)
- {
-@@ -84,126 +85,108 @@ static void close_kconfig(FILE *fp)
- 		fclose(fp);
- }
- 
--struct match {
--	/* match len, string length up to \0 or = */
--	size_t len;
--	/* if set part of conf string after = */
--	const char *val;
--	/* if set the config option was matched already */
--	int match;
--};
--
--static int is_set(const char *str, const char *val)
-+static inline int kconfig_parse_line(const char *line,
-+                                     struct tst_kconfig_var *vars,
-+                                     unsigned int vars_len)
- {
--	size_t vlen = strlen(val);
-+	unsigned int i, var_len = 0;
-+	const char *var;
-+	int is_not_set = 0;
- 
--	while (isspace(*str))
--		str++;
-+	while (isspace(*line))
-+		line++;
- 
--	if (strncmp(str, val, vlen))
--		return 0;
-+	if (*line == '#') {
-+		if (!strstr(line, "is not set"))
-+			return 0;
- 
--	switch (str[vlen]) {
--	case ' ':
--	case '\n':
--	case '\0':
--		return 1;
--	break;
--	default:
--		return 0;
-+		is_not_set = 1;
- 	}
--}
--
--static inline int match(struct match *match, const char *conf,
--                        struct tst_kconfig_res *result, const char *line)
--{
--	if (match->match)
--		return 0;
- 
--	const char *cfg = strstr(line, "CONFIG_");
-+	var = strstr(line, "CONFIG_");
- 
--	if (!cfg)
-+	if (!var)
- 		return 0;
- 
--	if (strncmp(cfg, conf, match->len))
--		return 0;
--
--	const char *val = &cfg[match->len];
--
--	switch (cfg[match->len]) {
--	case '=':
-+	for (;;) {
-+		switch (var[var_len]) {
-+		case 'A' ... 'Z':
-+		case '0' ... '9':
-+		case '_':
-+			var_len++;
-+		break;
-+		default:
-+			goto out;
- 		break;
--	case ' ':
--		if (is_set(val, "is not set")) {
--			result->match = 'n';
--			goto match;
- 		}
--	/* fall through */
--	default:
--		return 0;
- 	}
- 
--	if (is_set(val, "=y")) {
--		result->match = 'y';
--		goto match;
--	}
-+out:
- 
--	if (is_set(val, "=m")) {
--		result->match = 'm';
--		goto match;
--	}
-+	for (i = 0; i < vars_len; i++) {
-+		const char *val;
-+		unsigned int val_len = 0;
- 
--	result->match = 'v';
--	result->value = strndup(val+1, strlen(val)-2);
-+		if (vars[i].id_len != var_len)
-+			continue;
- 
--match:
--	match->match = 1;
--	return 1;
--}
-+		if (strncmp(vars[i].id, var, var_len))
-+			continue;
- 
--void tst_kconfig_read(const char *const *kconfigs,
--                      struct tst_kconfig_res results[], size_t cnt)
--{
--	struct match matches[cnt];
--	FILE *fp;
--	unsigned int i, j;
--	char buf[1024];
-+		if (is_not_set) {
-+			vars[i].choice = 'n';
-+			return 1;
-+		}
- 
--	for (i = 0; i < cnt; i++) {
--		const char *val = strchr(kconfigs[i], '=');
-+		val = var + var_len;
- 
--		if (strncmp("CONFIG_", kconfigs[i], 7))
--			tst_brk(TBROK, "Invalid config string '%s'", kconfigs[i]);
-+		while (isspace(*val))
-+			val++;
- 
--		matches[i].match = 0;
--		matches[i].len = strlen(kconfigs[i]);
-+		if (*val != '=')
-+			return 0;
- 
--		if (val) {
--			matches[i].val = val + 1;
--			matches[i].len -= strlen(val);
-+		val++;
-+
-+		while (isspace(*val))
-+			val++;
-+
-+		while (!isspace(val[val_len]))
-+			val_len++;
-+
-+		if (val_len == 1) {
-+			switch (val[0]) {
-+			case 'y':
-+				vars[i].choice = 'y';
-+				return 1;
-+			case 'm':
-+				vars[i].choice = 'm';
-+				return 1;
-+			}
- 		}
- 
--		results[i].match = 0;
--		results[i].value = NULL;
-+		vars[i].choice = 'v';
-+		vars[i].val = strndup(val, val_len);
- 	}
- 
--	fp = open_kconfig();
-+	return 0;
-+}
-+
-+void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len)
-+{
-+	char line[128];
-+	unsigned int vars_found = 0;
-+
-+	FILE *fp = open_kconfig();
- 	if (!fp)
- 		tst_brk(TBROK, "Cannot parse kernel .config");
- 
--	while (fgets(buf, sizeof(buf), fp)) {
--		for (i = 0; i < cnt; i++) {
--			if (match(&matches[i], kconfigs[i], &results[i], buf)) {
--				for (j = 0; j < cnt; j++) {
--					if (matches[j].match)
--						break;
--				}
--
--				if (j == cnt)
--					goto exit;
--			}
--		}
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (kconfig_parse_line(line, vars, vars_len))
-+			vars_found++;
- 
-+		if (vars_found == vars_len)
-+			goto exit;
- 	}
- 
- exit:
-@@ -219,65 +202,198 @@ static size_t array_len(const char *const kconfigs[])
- 	return i;
- }
- 
--static int compare_res(struct tst_kconfig_res *res, const char *kconfig,
--                       char match, const char *val)
-+static const char *strnchr(const char *s, int c, unsigned int len)
- {
--	if (res->match != match) {
--		tst_res(TINFO, "Needs kernel %s, have %c", kconfig, res->match);
--		return 1;
-+	unsigned int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (s[i] == c)
-+			return s + i;
- 	}
- 
--	if (match != 'v')
--		return 0;
-+	return NULL;
-+}
-+
-+static inline unsigned int get_len(const char* kconfig, unsigned int len)
-+{
-+	const char *sep = strnchr(kconfig, '=', len);
-+
-+	if (!sep)
-+		return len;
- 
--	if (strcmp(res->value, val)) {
--		tst_res(TINFO, "Needs kernel %s, have %s", kconfig, res->value);
--		return 1;
-+	return sep - kconfig;
-+}
-+
-+static inline unsigned int get_var_cnt(struct tst_expr *const exprs[],
-+                                       unsigned int expr_cnt)
-+{
-+	unsigned int i;
-+	const struct tst_expr_tok *j;
-+	unsigned int cnt = 0;
-+
-+	for (i = 0; i < expr_cnt; i++) {
-+		for (j = exprs[i]->expr; j; j = j->next) {
-+			if (j->op == TST_OP_VAR)
-+				cnt++;
-+		}
- 	}
- 
--	return 0;
-+	return cnt;
- }
- 
--void tst_kconfig_check(const char *const kconfigs[])
-+static const struct tst_kconfig_var *find_var(const struct tst_kconfig_var vars[],
-+                                        unsigned int var_cnt,
-+                                        const char *var)
- {
--	size_t cnt = array_len(kconfigs);
--	struct tst_kconfig_res results[cnt];
- 	unsigned int i;
--	int abort_test = 0;
- 
--	tst_kconfig_read(kconfigs, results, cnt);
-+	for (i = 0; i < var_cnt; i++) {
-+		if (!strcmp(vars[i].id, var))
-+			return &vars[i];
-+	}
- 
--	for (i = 0; i < cnt; i++) {
--		if (results[i].match == 0) {
--			tst_res(TINFO, "Missing kernel %s", kconfigs[i]);
--			abort_test = 1;
-+	return NULL;
-+}
-+
-+/*
-+ * Fill in the kconfig variables array from the expressions. Also makes sure
-+ * that each variable is copied to the array exaclty once.
-+ */
-+static inline unsigned int populate_vars(struct tst_expr *exprs[],
-+                                         unsigned int expr_cnt,
-+                                    struct tst_kconfig_var vars[])
-+{
-+	unsigned int i;
-+	struct tst_expr_tok *j;
-+	unsigned int cnt = 0;
-+
-+	for (i = 0; i < expr_cnt; i++) {
-+		for (j = exprs[i]->expr; j; j = j->next) {
-+			const struct tst_kconfig_var *var;
-+
-+			if (j->op != TST_OP_VAR)
-+				continue;
-+
-+			vars[cnt].id_len = get_len(j->tok, j->tok_len);
-+
-+			if (vars[cnt].id_len + 1 >= sizeof(vars[cnt].id))
-+				tst_brk(TBROK, "kconfig var id too long!");
-+
-+			strncpy(vars[cnt].id, j->tok, vars[cnt].id_len);
-+			vars[cnt].id[vars[cnt].id_len] = 0;
-+			vars[cnt].choice = 0;
-+
-+			var = find_var(vars, cnt, vars[cnt].id);
-+
-+			if (var)
-+				j->priv = var;
-+			else
-+				j->priv = &vars[cnt++];
-+		}
-+	}
-+
-+	return cnt;
-+}
-+
-+static int map(struct tst_expr_tok *expr)
-+{
-+	const struct tst_kconfig_var *var = expr->priv;
-+
-+	if (var->choice == 0)
-+		return 0;
-+
-+	const char *val = strnchr(expr->tok, '=', expr->tok_len);
-+
-+	/* CONFIG_FOO evaluates to true if y or m */
-+	if (!val)
-+		return var->choice == 'y' || var->choice == 'm';
-+
-+	val++;
-+
-+	unsigned int len = expr->tok_len - (val - expr->tok);
-+	char choice = 'v';
-+
-+	if (!strncmp(val, "n", len))
-+		choice = 'n';
-+
-+	if (!strncmp(val, "y", len))
-+		choice = 'y';
-+
-+	if (!strncmp(val, "m", len))
-+		choice = 'm';
-+
-+	if (choice != 'v')
-+		return var->choice == choice;
-+
-+	if (strlen(var->val) != len)
-+		return 0;
-+
-+	return !strncmp(val, var->val, len);
-+}
-+
-+static void dump_vars(const struct tst_expr *expr)
-+{
-+	const struct tst_expr_tok *i;
-+	const struct tst_kconfig_var *var;
-+
-+	tst_res(TINFO, "Variables:");
-+
-+	for (i = expr->expr; i; i = i->next) {
-+		if (i->op != TST_OP_VAR)
-+			continue;
-+
-+		var = i->priv;
-+
-+		if (!var->choice) {
-+			tst_res(TINFO, " %s Undefined", var->id);
- 			continue;
- 		}
- 
--		if (results[i].match == 'n') {
--			tst_res(TINFO, "Kernel %s is not set", kconfigs[i]);
--			abort_test = 1;
-+		if (var->choice == 'v') {
-+			tst_res(TINFO, " %s=%s", var->id, var->val);
- 			continue;
- 		}
- 
--		const char *val = strchr(kconfigs[i], '=');
-+		tst_res(TINFO, " %s=%c", var->id, var->choice);
-+	}
-+}
- 
--		if (val) {
--			char match = 'v';
--			val++;
-+void tst_kconfig_check(const char *const kconfigs[])
-+{
-+	size_t expr_cnt = array_len(kconfigs);
-+	struct tst_expr *exprs[expr_cnt];
-+	unsigned int i, var_cnt;
-+	int abort_test = 0;
- 
--			if (!strcmp(val, "y"))
--				match = 'y';
-+	for (i = 0; i < expr_cnt; i++) {
-+		exprs[i] = tst_bool_expr_parse(kconfigs[i]);
- 
--			if (!strcmp(val, "m"))
--				match = 'm';
-+		if (!exprs[i])
-+			tst_brk(TBROK, "Invalid kconfig expression!");
-+	}
- 
--			if (compare_res(&results[i], kconfigs[i], match, val))
--				abort_test = 1;
-+	var_cnt = get_var_cnt(exprs, expr_cnt);
-+	struct tst_kconfig_var vars[var_cnt];
- 
-+	var_cnt = populate_vars(exprs, expr_cnt, vars);
-+
-+	tst_kconfig_read(vars, var_cnt);
-+
-+	for (i = 0; i < expr_cnt; i++) {
-+		int val = tst_bool_expr_eval(exprs[i], map);
-+
-+		if (val != 1) {
-+			abort_test = 1;
-+			tst_res(TINFO, "Constrain '%s' not satisfied!", kconfigs[i]);
-+			dump_vars(exprs[i]);
- 		}
- 
--		free(results[i].value);
-+		tst_bool_expr_free(exprs[i]);
-+	}
-+
-+	for (i = 0; i < var_cnt; i++) {
-+		if (vars[i].choice == 'v')
-+			free(vars[i].val);
- 	}
- 
- 	if (abort_test)
-diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
-index 8ee1bfcf8..1bf6378db 100644
---- a/testcases/kernel/syscalls/acct/acct02.c
-+++ b/testcases/kernel/syscalls/acct/acct02.c
-@@ -49,18 +49,20 @@ static union acct_union {
- 	struct acct_v3	v3;
- } acct_struct;
- 
-+#define ACCT_V3 "CONFIG_BSD_PROCESS_ACCT_V3"
-+
- static int acct_version_is_3(void)
- {
--	const char *kconfig_acct_v3[] = {
--		"CONFIG_BSD_PROCESS_ACCT_V3",
--		NULL
-+	struct tst_kconfig_var kconfig = {
-+		.id = ACCT_V3,
-+		.id_len = sizeof(ACCT_V3)-1,
- 	};
- 
--	struct tst_kconfig_res results[1];
-+	tst_kconfig_read(&kconfig, 1);
- 
--	tst_kconfig_read(kconfig_acct_v3, results, 1);
-+	tst_res(TINFO, ACCT_V3 "=%c", kconfig.choice);
- 
--	return results[0].match == 'y';
-+	return kconfig.choice == 'y';
- }
- 
- static void run_command(void)
+2) The user requests some controller values to be set in a unified
+   hierarchy. The LTP library then tries to translate this to whatever
+   CGroup setup the system is actually using.
+
+If no cgroups are mounted, then we try to mount a simple V2 setup
+falling back to the standard V1 setup with the (required) controllers in
+separate hierarchies. For some tests this will result in a hybrid setup
+because they first request a V2 compatible controller then a V1 only
+controller (or the inverse if there are any V2 only controllers). At
+least SUSE and Ubuntu are using hybrid setups so this is a valid thing
+to test (unfortunately).
+
+If we find mounted controllers then try to create a new LTP hierarchy in
+the root of each controller (on V2 all the controllers are mounted to
+the same place, but V1 allows all kinds of stuff).
+
+3) The user requests some process is moved to a node of the unified
+   hierarchy for one or more controllers.
+
+Do the same setup as 2) if necessary. For V2 setups or V1 setups where
+all the controllers are mounted to the same place the controller
+argument is ignored. It is only relevant for V1 setups with separate
+hierarchies for some of the controllers. Of course a version of the
+interface can be provided without the controller argument.
+
+4) The user requests processes are removed from our hierarchy (back to
+root) and/or we destroy our hierarchy.
+
+If we mounted any controllers unmount them, otherwise we just drain our
+hierarchy and remove it. Some tests currently just move their process
+into a cgroup (on each iteration instead of in setup) and never out of
+it. I don't think this makes sense, so that is another thing to
+investigate.
+
+I think the above will work for tests which are simply trying to use
+CGroup features even on systems which have an unusual V1 setup (but not
+all V1 setups). For tests which are trying to test CGroups themselves,
+then we will have to look at each test case and figure out if any code
+can be shared.
+
+For some tests (e.g. madvise06) we can provide a declarative interface
+like:
+
+tst_test.cgroup = {
+                {"memory", "max", 256MB},
+                {"memory", "swappiness", 60},
+                { NULL },
+};
+
+Then the library will create a cgroup, set the memory controllers limit
+and put the test process in the cgroup. However a more thorough review
+of our cgroup usage is needed before deciding on a declarative
+interface.
+
+Note that so far I have not seen a need to create complex hierarchies
+for our tests or use threaded V2 controllers, but we will need to do
+this to test cgroups themselves. However most tests just need some basic
+cgroup features and we can use test variants to enable random cgroup
+features on any test or implement cgroups in the test runner.
+
 -- 
-2.26.2
-
+Thank you,
+Richard.
