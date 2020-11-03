@@ -1,9 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  3 Nov 2020 20:13:20 +0100
-Subject: [LTP] [PATCH v2 04/11] docparse: Add README
+Date: Tue,  3 Nov 2020 20:13:21 +0100
+Subject: [LTP] [PATCH v2 05/11] syscalls: Add a few documentation comments
 In-Reply-To: <20201103191327.11081-1-pvorel@suse.cz>
 References: <20201103191327.11081-1-pvorel@suse.cz>
-Message-ID: <20201103191327.11081-5-pvorel@suse.cz>
+Message-ID: <20201103191327.11081-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,272 +12,133 @@ To: ltp@lists.linux.it
 
 From: Cyril Hrubis <metan@ucw.cz>
 
-* example of C source and JSON
-* note about exporting timeouts
+So that it shows up in the resulting json file.
 
-Signed-off-by: Tim Bird <tim.bird@sony.com>
-[ Tim: fix typos and clean up grammar ]
 Signed-off-by: Cyril Hrubis <metan@ucw.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- docparse/README.md | 248 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 248 insertions(+)
- create mode 100644 docparse/README.md
+ testcases/kernel/syscalls/abort/abort01.c   | 16 ++++++++++------
+ testcases/kernel/syscalls/accept/accept01.c |  8 +++++---
+ testcases/kernel/syscalls/accept/accept02.c |  7 +++++--
+ testcases/kernel/syscalls/acct/acct01.c     |  5 +++++
+ testcases/kernel/syscalls/acct/acct02.c     |  6 ++++--
+ 5 files changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/docparse/README.md b/docparse/README.md
-new file mode 100644
-index 000000000..7e4847ba2
---- /dev/null
-+++ b/docparse/README.md
-@@ -0,0 +1,248 @@
-+Motivation for metadata exctraction
-+===================================
-+
-+Exporting documentation
-+-----------------------
-+
-+This allow us to build browseable documentation for the testcases, e.g. a
-+catalogue of test information that would be searchable etc. At this point there
-+is a single page generated from the extracted data that tries to outline the
-+intent.
-+
-+
-+Propagating test requirements
-+-----------------------------
-+
-+Some subtests require differnt hardware resources/software versions/etc. the
-+test execution framework needs to consume these so that it can locate proper
-+hardware, install proper software, etc.
-+
-+Some examples of requriments are:
-+
-+* Test needs at least 1GB of RAM.
-+
-+* Test needs a block device at least 512MB in size
-+
-+* Test needs a NUMA machine with two memory nodes and at least 300 free pages on each node
-+
-+* Test needs i2c eeprom connected on a i2c bus
-+
-+* Test needs two serial ports connected via null-modem cable
-+
-+
-+With this information extracted from the tests the testrunner can then map the
-+requiremnts on the available machines in a lab and select a proper machine for
-+the particular (sub)set of testcases as well as supply a particular test with
-+additional information needed for the test, such as address of the i2c device,
-+paths to the serial devices, etc. In the case of virtual machines the test could
-+also dynamically prepare the correct environment for the test on demand.
-+
-+
-+Parallel test execution
-+-----------------------
-+
-+An LTP testrun on a modern hardware wastes most of the machine resources
-+because the testcases are running sequentially. However in order to execute
-+tests in parallel we need to know which system resources are utilized by a
-+given test, as obviously we cannot run two tests that monopolize the same
-+resource. In some cases we would also need to partition the system resource
-+accordingly, e.g. if we have two memory stress tests running at the same time
-+we will need to cap each of these tests on half of the available memory, or
-+make sure that sum of the memory used by these two tests is not greater an
-+available memory.
-+
-+Examples of such tests are:
-+
-+* Tests that mess with global system state
-+   - system time (e.g. settimeofday() test and leap second test)
-+   - SysV SHM
-+   - ...
-+
-+* Tests that use block device
-+
-+* Tests that work with a particular hardware resource
-+  - i2c eeprom test
-+  - serial port tests
-+  - ...
-+
-+Exporting test runtime/timeout to the testrunner
-+------------------------------------------------
-+
-+Currently most of the testrunners usually do not know for how long is the test
-+supposed to run, this means that we have to guess some upper limit on how long
-+a test is supposed to run. The value is usually twice of the maximal runtime
-+for all testcases or whole suite or even larger. This means that we are wasting
-+time in the case that the test ends up stuck and we could have failed it much
-+sooner in most of the cases. This becomes quite important for a kernel
-+regression tests that do crash the host, if the information that the test is
-+supposed to crash a kernel under a minute is exported to the testrunner we can
-+reboot the machine much faster in an event of a crash.
-+
-+Getting rid of runtest files
-+----------------------------
-+
-+This would also allow us to get rid of the unflexible and hard to maintain
-+runtest files. Once this system is in place we will have a list of all tests
-+along with their respective metadata - which means that we will be able to
-+generate subsets of the test easily on the fly.
-+
-+In order to achieve this we need two things:
-+
-+Each test will describe which syscall/functionality it tests in the metadata.
-+Then we could define groups of tests based on that. I.e. instead of having
-+syscall runtest file we would ask the testrunner to run all test that have a
-+defined which syscall they test, or whose filename matches a particular syscall name.
-+
-+Secondly we will have to store the test variants in the test metadata instead
-+of putting them in a file that is unrelated to the test.
-+
-+For example:
-+
-+* To run CVE related test we would select testcases with CVE tag
-+
-+* To run IPC test we will define a list of IPC syscalls and run all syscall
-+  test that are in the list
-+
-+* And many more...
-+
-+
-+Implementation
-+==============
-+
-+The docparser is implemented as a minimal C tokenizer that can parse and
-+extract code comments and C structures. The docparser then runs over all C
-+sources in the testcases directory and if tst\_test structure is present in the
-+source it's parsed and the result is included in the resulting metadata.
-+
-+During parsing the metadata is stored in a simple key/value storage that more
-+or less follows C structure layout, i.e. can include hash, array, and string.
-+Once the parsing is finished the result is filtered so that only interesting
-+fields of the tst\_test structure are included and then converted into JSON
-+output.
-+
-+This process produces one big JSON file with metadata for all tests, that
-+is then installed along with the testcases. This would then be used by the
-+testrunner.
-+
-+The test requirements are stored in the tst\_test structure either as
-+bitflags, integers or arrays of strings:
-+
-+```c
-+struct tst_test test = {
-+	...
-+	/* tests needs to run with UID=1 */
-+	.needs_root = 1,
-+
-+	/*
-+	 * Tests needs a block device at least 1024MB in size and also
-+	 * mkfs.ext4 installed.
-+	 */
-+	.needs_device = 1,
-+	.dev_min_size = 1024,
-+	.dev_fs_type = ext4,
-+
-+	/* Indicates that the test is messing with system wall clock */
-+	.restore_wallclock = 1,
-+
-+	/* Tests needs uinput either compiled in or loaded as a module */
-+	.needs_drivers = (const char *[]) {
-+		"uinput",
-+		NULL
-+	},
-+
-+	/* Tests needs enabled kernel config flags */
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_X86_INTEL_UMIP=y",
-+		NULL
-+	},
-+
-+	/* Additional array of key value pairs */
-+	.tags = (const struct tst_tag[]) {
-+                {"linux-git", "43a6684519ab"},
-+                {"CVE", "2017-2671"},
-+                {NULL, NULL}
-+        }
-+};
-+```
-+
-+The test documentation is stored in a special comment such as:
-+
-+```
+diff --git a/testcases/kernel/syscalls/abort/abort01.c b/testcases/kernel/syscalls/abort/abort01.c
+index 9505a5eec..b93324b34 100644
+--- a/testcases/kernel/syscalls/abort/abort01.c
++++ b/testcases/kernel/syscalls/abort/abort01.c
+@@ -5,14 +5,18 @@
+  *   01/02/2003	Port to LTP	avenkat@us.ibm.com
+  *   11/11/2002: Ported to LTP Suite by Ananda
+  *   06/30/2001	Port to Linux	nsharoff@us.ibm.com
+- *
+- * ALGORITHM
+- *	Fork child.  Have child abort, check return status.
+- *
+- * RESTRICTIONS
+- *      The ulimit for core file size must be greater than 0.
+  */
+ 
 +/*\
-+ * Test description
++ * [DESCRIPTION]
++ *  Checks that process which called abort() gets killed by SIGIOT and dumps core.
 + *
-+ * This is a test description.
-+ * Consisting of several lines.
++ * [ALGORITHM]
++ *  - Fork child.
++ *  - Child calls abort.
++ *  - Parent checks return status.
 +\*/
-+```
 +
-+Which will yield following json output:
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
+index 4e30906f2..01d6db84c 100644
+--- a/testcases/kernel/syscalls/accept/accept01.c
++++ b/testcases/kernel/syscalls/accept/accept01.c
+@@ -3,11 +3,13 @@
+ /*
+  *   Copyright (c) International Business Machines  Corp., 2001
+  *   07/2001 Ported by Wayne Boyer
+- *
+- *   Description:
+- *     Verify that accept() returns the proper errno for various failure cases
+  */
+ 
++/*\
++ * [DESCRIPTION]
++ * Verify that accept() returns the proper errno for various failure cases.
++\*/
 +
-+```json
-+ "testcaseXY": {
-+  "needs_root": "1",
-+  "needs_device": "1",
-+  "dev_min_size": "1024",
-+  "dev_fs_type": "ext4",
-+  "restore_wallclock": "1",
-+  "needs_drivers": [
-+    "uinput",
-+  ],
-+  "needs_kconfigs": [
-+    "CONFIG_X86_INTEL_UMIP=y",
-+  ],
-+  "tags": [
-+    [
-+     "linux-git",
-+     "43a6684519ab"
-+    ],
-+    [
-+     "CVE",
-+     "2017-2671"
-+    ],
-+   ],
-+  "doc": [
-+    "Test description",
-+    "",
-+    "This is a test description.",
-+    "Consisting of several lines."
-+  ],
-+  "fname": "testcases/kernel/syscalls/foo/testcaseXY.c"
-+ },
-+```
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/accept/accept02.c b/testcases/kernel/syscalls/accept/accept02.c
+index 37ab8b64f..7fb6a494a 100644
+--- a/testcases/kernel/syscalls/accept/accept02.c
++++ b/testcases/kernel/syscalls/accept/accept02.c
+@@ -3,7 +3,10 @@
+  * Copyright (c) 2019 SUSE LLC
+  * Author: Christian Amann <camann@suse.com>
+  */
+-/* Test for CVE-2017-8890
++/*\
++ * [DESCRIPTION]
++ *
++ * Test for CVE-2017-8890
+  *
+  * In Kernels up to 4.10.15 missing commit 657831ff the multicast
+  * group information of a socket gets copied over to a newly created
+@@ -16,7 +19,7 @@
+  *
+  * For more information about this CVE see:
+  * https://www.suse.com/security/cve/CVE-2017-8890/
+- */
++\*/
+ 
+ #include <errno.h>
+ #include <sys/socket.h>
+diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
+index c161d2a2c..60e81bfad 100644
+--- a/testcases/kernel/syscalls/acct/acct01.c
++++ b/testcases/kernel/syscalls/acct/acct01.c
+@@ -7,6 +7,11 @@
+ /* 12/03/2002	Port to LTP     robbiew@us.ibm.com */
+ /* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
+ 
++/*\
++ * [DOCUMENTATION]
++ *  Verify that acct() returns proper errno on failure.
++\*/
 +
-+The final JSON file is JSON object of test descriptions indexed by a test name
-+with a header describing the testsuite:
-+
-+```json
-+{
-+ "testsuite": "Linux Test Project",
-+ "testsuite_short": "LTP",
-+ "url": "https://github.com/linux-test-project/ltp/",
-+ "scm_url_base": "https://github.com/linux-test-project/ltp/tree/master/",
-+ "timeout": 300,
-+ "version": "20200930",
-+ "tests": {
-+  "testcaseXY": {
-+   ...
-+  },
-+  ...
-+ }
-+}
-+```
-+
-+Open Points
-+===========
-+
-+There are stil some loose ends. Mostly it's not well defined where to put
-+things and how to format them.
-+
-+* Some of the hardware requirements are already listed in the tst\_test. Should
-+  we put all of them there?
-+
-+* What would be the format for test documentation and how to store things such
-+  as test variants there?
-+
-+So far this proof of concept generates a metadata file. I guess that we need
-+actual consumers which will help to settle things down, I will try to look into
-+making use of this in the runltp-ng at least as a reference implementation.
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <errno.h>
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index 8ee1bfcf8..e718e7df4 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -3,7 +3,9 @@
+  *  Copyright (c) SUSE LLC, 2019
+  *  Author: Christian Amann <camann@suse.com>
+  */
+-/*
++/*\
++ * [DOCUMENTATION]
++ *
+  * This tests if the kernel writes correct data to the
+  * process accounting file.
+  *
+@@ -19,7 +21,7 @@
+  *
+  * This is also accidental regression test for:
+  * 4d9570158b626 kernel/acct.c: fix the acct->needcheck check in check_free_space()
+- */
++\*/
+ 
+ #include <sys/stat.h>
+ #include <errno.h>
 -- 
 2.29.1
 
