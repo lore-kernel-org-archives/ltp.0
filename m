@@ -1,56 +1,155 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  3 Nov 2020 20:13:24 +0100
-Subject: [LTP] [PATCH v2 08/11] make: Allow CLEAN_TARGETS to remove
- directories
+Date: Tue,  3 Nov 2020 20:13:25 +0100
+Subject: [LTP] [PATCH v2 09/11] travis: Install docparse dependencies
 In-Reply-To: <20201103191327.11081-1-pvorel@suse.cz>
 References: <20201103191327.11081-1-pvorel@suse.cz>
-Message-ID: <20201103191327.11081-9-pvorel@suse.cz>
+Message-ID: <20201103191327.11081-10-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-make clean on leaf target can contain also directories.
-
-Changing delete to recursive delete (-r parameter for rm) should be safe
-thus detection whether actually requited is not implemented.
-
-This will be needed for metadata metadata.chunked target.
-
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/mk/generic_leaf_target.inc | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ travis/alpine.sh         |  3 +++
+ travis/debian.minimal.sh |  8 +++++++-
+ travis/debian.sh         |  9 ++++++++-
+ travis/fedora.sh         | 12 +++++++++---
+ travis/tumbleweed.sh     |  8 +++++++-
+ 5 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
-index e6fa107d1..64953f89a 100644
---- a/include/mk/generic_leaf_target.inc
-+++ b/include/mk/generic_leaf_target.inc
-@@ -60,10 +60,10 @@
- # $(HOST_MAKE_TARGETS)	: Host tools which use $HOSTCC.
- #
- # $(CLEAN_TARGETS)		: What targets should be cleaned (must be
--#				  real files). This will automatically append
--#				  adds the .o suffix to all files referenced
--#				  by $(MAKE_TARGETS)) to CLEAN_TARGETS, if
--#				  MAKE_TARGETS wasn't defined (see
-+#				  real files or directories). This will automatically append
-+#				  adds the .o suffix to all files referenced by
-+#				  $(MAKE_TARGETS)) to CLEAN_TARGETS, if MAKE_TARGETS wasn't
-+#				  defined (see
- #				  $(MAKE_TARGETS)).
- # $(INSTALL_MODE)		: What mode should we using when calling
- # 				  install(1)?
-@@ -103,7 +103,7 @@ $(MAKE_TARGETS): | $(MAKE_DEPS)
- all: $(MAKE_TARGETS)
+diff --git a/travis/alpine.sh b/travis/alpine.sh
+index f8960bed0..b793a9fbe 100755
+--- a/travis/alpine.sh
++++ b/travis/alpine.sh
+@@ -6,6 +6,8 @@ apk update
  
- clean:: $(CLEAN_DEPS)
--	-$(RM) -f $(CLEAN_TARGETS)
-+	-$(RM) -f -r $(CLEAN_TARGETS)
+ apk add \
+ 	acl-dev \
++	asciidoc \
++	asciidoctor \
+ 	autoconf \
+ 	automake \
+ 	clang \
+@@ -23,6 +25,7 @@ apk add \
+ 	musl-dev \
+ 	numactl-dev \
+ 	openssl-dev \
++	perl-json \
+ 	pkgconfig
  
- $(INSTALL_FILES): | $(INSTALL_DEPS)
+ cat /etc/os-release
+diff --git a/travis/debian.minimal.sh b/travis/debian.minimal.sh
+index 3f1941969..5e6ba8662 100755
+--- a/travis/debian.minimal.sh
++++ b/travis/debian.minimal.sh
+@@ -2,7 +2,11 @@
+ # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
+ set -ex
  
+-apt remove -y \
++apt="apt remove -y"
++
++$apt \
++	asciidoc \
++	asciidoctor \
+ 	libacl1-dev \
+ 	libaio-dev \
+ 	libaio1 \
+@@ -17,3 +21,5 @@ apt remove -y \
+ 	libsepol1-dev \
+ 	libssl-dev \
+ 	libtirpc-dev
++
++$apt asciidoc-base ruby-asciidoctor || true
+diff --git a/travis/debian.sh b/travis/debian.sh
+index 28685f4d3..743b79001 100755
+--- a/travis/debian.sh
++++ b/travis/debian.sh
+@@ -8,8 +8,12 @@ grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/s
+ 
+ apt update
+ 
+-apt install -y --no-install-recommends \
++apt="apt install -y --no-install-recommends"
++
++$apt \
+ 	acl-dev \
++	asciidoc \
++	asciidoctor \
+ 	autoconf \
+ 	automake \
+ 	build-essential \
+@@ -26,6 +30,7 @@ apt install -y --no-install-recommends \
+ 	libcap2 \
+ 	libc6 \
+ 	libc6-dev \
++	libjson-perl \
+ 	libkeyutils-dev \
+ 	libkeyutils1 \
+ 	libmm-dev \
+@@ -40,4 +45,6 @@ apt install -y --no-install-recommends \
+ 	lsb-release \
+ 	pkg-config
+ 
++$apt ruby-asciidoctor-pdf || true
++
+ df -hT
+diff --git a/travis/fedora.sh b/travis/fedora.sh
+index 3c224f71e..665915a47 100755
+--- a/travis/fedora.sh
++++ b/travis/fedora.sh
+@@ -2,7 +2,10 @@
+ # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
+ set -ex
+ 
+-yum -y install \
++yum="yum -y install"
++
++$yum \
++	asciidoc \
+ 	autoconf \
+ 	automake \
+ 	make \
+@@ -12,8 +15,11 @@ yum -y install \
+ 	findutils \
+ 	libtirpc \
+ 	libtirpc-devel \
++	perl-JSON \
++	perl-libwww-perl \
+ 	pkg-config \
+ 	redhat-lsb-core
+ 
+-# CentOS 8 doesn't have libmnl-devel
+-yum -y install libmnl-devel || yum -y install libmnl
++# CentOS 8 fixes
++$yum libmnl-devel || $yum libmnl
++$yum rubygem-asciidoctor || true
+diff --git a/travis/tumbleweed.sh b/travis/tumbleweed.sh
+index 6247daa98..43ca3252a 100755
+--- a/travis/tumbleweed.sh
++++ b/travis/tumbleweed.sh
+@@ -2,7 +2,10 @@
+ # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
+ set -ex
+ 
+-zypper --non-interactive install --force-resolution --no-recommends \
++zyp="zypper --non-interactive install --force-resolution --no-recommends"
++
++$zyp \
++	asciidoc \
+ 	autoconf \
+ 	automake \
+ 	clang \
+@@ -23,4 +26,7 @@ zypper --non-interactive install --force-resolution --no-recommends \
+ 	libtirpc-devel \
+ 	linux-glibc-devel \
+ 	lsb-release \
++	perl-JSON \
+ 	pkg-config
++
++$zyp ruby2.7-rubygem-asciidoctor || $zyp ruby2.5-rubygem-asciidoctor
 -- 
 2.29.1
 
