@@ -1,155 +1,565 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  3 Nov 2020 20:13:25 +0100
-Subject: [LTP] [PATCH v2 09/11] travis: Install docparse dependencies
+Date: Tue,  3 Nov 2020 20:13:27 +0100
+Subject: [LTP] [PATCH v2 11/11] docparse: Generate html and pdf using
+ asciidoc{, tor}
 In-Reply-To: <20201103191327.11081-1-pvorel@suse.cz>
 References: <20201103191327.11081-1-pvorel@suse.cz>
-Message-ID: <20201103191327.11081-10-pvorel@suse.cz>
+Message-ID: <20201103191327.11081-12-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Rewrite testinfo.pl to generate *.txt pages in asciidoc format which is
+then regenerated to html (and pdf if enabled) using asciidoc,{tor}.
+
+Replace getting Linux kernel git commit messages from local git
+repository (needed after having all tests in single page, because API
+has access limits; it's also better to generate everything once thus
+don't depend on network connection).
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- travis/alpine.sh         |  3 +++
- travis/debian.minimal.sh |  8 +++++++-
- travis/debian.sh         |  9 ++++++++-
- travis/fedora.sh         | 12 +++++++++---
- travis/tumbleweed.sh     |  8 +++++++-
- 5 files changed, 34 insertions(+), 6 deletions(-)
+ docparse/.gitignore  |   5 +
+ docparse/Makefile    |  58 +++++++
+ docparse/testinfo.pl | 406 +++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 458 insertions(+), 11 deletions(-)
 
-diff --git a/travis/alpine.sh b/travis/alpine.sh
-index f8960bed0..b793a9fbe 100755
---- a/travis/alpine.sh
-+++ b/travis/alpine.sh
-@@ -6,6 +6,8 @@ apk update
+diff --git a/docparse/.gitignore b/docparse/.gitignore
+index f636ed847..7a87b4234 100644
+--- a/docparse/.gitignore
++++ b/docparse/.gitignore
+@@ -1,2 +1,7 @@
++/*.txt
++/docbook-xsl.css
+ /docparse
+ /metadata.json
++/metadata.html
++/metadata.pdf
++/metadata.chunked/
+diff --git a/docparse/Makefile b/docparse/Makefile
+index 94ba83ffe..e2defad38 100644
+--- a/docparse/Makefile
++++ b/docparse/Makefile
+@@ -1,19 +1,77 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
  
- apk add \
- 	acl-dev \
-+	asciidoc \
-+	asciidoctor \
- 	autoconf \
- 	automake \
- 	clang \
-@@ -23,6 +25,7 @@ apk add \
- 	musl-dev \
- 	numactl-dev \
- 	openssl-dev \
-+	perl-json \
- 	pkgconfig
+ top_srcdir		?= ..
  
- cat /etc/os-release
-diff --git a/travis/debian.minimal.sh b/travis/debian.minimal.sh
-index 3f1941969..5e6ba8662 100755
---- a/travis/debian.minimal.sh
-+++ b/travis/debian.minimal.sh
-@@ -2,7 +2,11 @@
- # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
- set -ex
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(top_srcdir)/include/mk/functions.mk
  
--apt remove -y \
-+apt="apt remove -y"
++ifeq ($(METADATA_GENERATOR),asciidoctor)
++METADATA_GENERATOR_CMD := asciidoctor
++METADATA_GENERATOR_PARAMS := -d book metadata.txt
++METADATA_GENERATOR_PARAMS_HTML := -b xhtml
++METADATA_GENERATOR_PARAMS_PDF := -b pdf -r asciidoctor-pdf
++else ifeq ($(METADATA_GENERATOR),asciidoc)
++METADATA_GENERATOR_CMD := a2x
++METADATA_GENERATOR_PARAMS := --xsltproc-opts "--stringparam toc.section.depth 1" -d book -L  --resource="$(PWD)" metadata.txt
++METADATA_GENERATOR_PARAMS_HTML := -f xhtml
++METADATA_GENERATOR_PARAMS_PDF := -f pdf
++METADATA_GENERATOR_PARAMS_HTML_CHUNKED := -f chunked
++else ifeq ($(METADATA_GENERATOR),)
++$(error 'METADATA_GENERATOR' not not configured, run ./configure in the root directory)
++else
++$(error '$(METADATA_GENERATOR)' not supported, only asciidoctor and asciidoc are supported)
++endif
 +
-+$apt \
-+	asciidoc \
-+	asciidoctor \
- 	libacl1-dev \
- 	libaio-dev \
- 	libaio1 \
-@@ -17,3 +21,5 @@ apt remove -y \
- 	libsepol1-dev \
- 	libssl-dev \
- 	libtirpc-dev
++ifdef VERBOSE
++METADATA_GENERATOR_PARAMS += -v
++endif
 +
-+$apt asciidoc-base ruby-asciidoctor || true
-diff --git a/travis/debian.sh b/travis/debian.sh
-index 28685f4d3..743b79001 100755
---- a/travis/debian.sh
-+++ b/travis/debian.sh
-@@ -8,8 +8,12 @@ grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/s
- 
- apt update
- 
--apt install -y --no-install-recommends \
-+apt="apt install -y --no-install-recommends"
++CLEAN_TARGETS		:= *.css *.js *.txt
+ MAKE_TARGETS		:= metadata.json
 +
-+$apt \
- 	acl-dev \
-+	asciidoc \
-+	asciidoctor \
- 	autoconf \
- 	automake \
- 	build-essential \
-@@ -26,6 +30,7 @@ apt install -y --no-install-recommends \
- 	libcap2 \
- 	libc6 \
- 	libc6-dev \
-+	libjson-perl \
- 	libkeyutils-dev \
- 	libkeyutils1 \
- 	libmm-dev \
-@@ -40,4 +45,6 @@ apt install -y --no-install-recommends \
- 	lsb-release \
- 	pkg-config
- 
-+$apt ruby-asciidoctor-pdf || true
++ifeq ($(WITH_METADATA_HTML),yes)
++MAKE_TARGETS		+= metadata.html
++ifneq ($(METADATA_GENERATOR_PARAMS_HTML_CHUNKED),)
++MAKE_TARGETS		+= metadata.chunked
++endif
++endif
 +
- df -hT
-diff --git a/travis/fedora.sh b/travis/fedora.sh
-index 3c224f71e..665915a47 100755
---- a/travis/fedora.sh
-+++ b/travis/fedora.sh
-@@ -2,7 +2,10 @@
- # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
- set -ex
- 
--yum -y install \
-+yum="yum -y install"
++ifeq ($(WITH_METADATA_PDF),yes)
++MAKE_TARGETS		+= metadata.pdf
++endif
 +
-+$yum \
-+	asciidoc \
- 	autoconf \
- 	automake \
- 	make \
-@@ -12,8 +15,11 @@ yum -y install \
- 	findutils \
- 	libtirpc \
- 	libtirpc-devel \
-+	perl-JSON \
-+	perl-libwww-perl \
- 	pkg-config \
- 	redhat-lsb-core
+ HOST_MAKE_TARGETS	:= docparse
  
--# CentOS 8 doesn't have libmnl-devel
--yum -y install libmnl-devel || yum -y install libmnl
-+# CentOS 8 fixes
-+$yum libmnl-devel || $yum libmnl
-+$yum rubygem-asciidoctor || true
-diff --git a/travis/tumbleweed.sh b/travis/tumbleweed.sh
-index 6247daa98..43ca3252a 100755
---- a/travis/tumbleweed.sh
-+++ b/travis/tumbleweed.sh
-@@ -2,7 +2,10 @@
- # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
- set -ex
+ INSTALL_DIR = metadata
++INSTALL_TARGETS = *.css *.js
++
++ifndef METADATA_GENERATOR
++METADATA_GENERATOR := asciidoctor
++endif
  
--zypper --non-interactive install --force-resolution --no-recommends \
-+zyp="zypper --non-interactive install --force-resolution --no-recommends"
+ .PHONY: metadata.json
+ 
+ metadata.json: docparse
+ 	$(abs_srcdir)/parse.sh > metadata.json
+ 
++txt: metadata.json
++	$(abs_srcdir)/testinfo.pl metadata.json
 +
-+$zyp \
-+	asciidoc \
- 	autoconf \
- 	automake \
- 	clang \
-@@ -23,4 +26,7 @@ zypper --non-interactive install --force-resolution --no-recommends \
- 	libtirpc-devel \
- 	linux-glibc-devel \
- 	lsb-release \
-+	perl-JSON \
- 	pkg-config
++ifeq ($(WITH_METADATA_HTML),yes)
++metadata.html: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_HTML)
 +
-+$zyp ruby2.7-rubygem-asciidoctor || $zyp ruby2.5-rubygem-asciidoctor
++ifneq ($(METADATA_GENERATOR_PARAMS_HTML_CHUNKED),)
++metadata.chunked: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_HTML_CHUNKED)
++endif
++endif
++
++ifeq ($(WITH_METADATA_PDF),yes)
++metadata.pdf: txt
++	$(METADATA_GENERATOR_CMD) $(METADATA_GENERATOR_PARAMS) $(METADATA_GENERATOR_PARAMS_PDF)
++endif
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
+index d93d7d701..d8d9ea663 100755
+--- a/docparse/testinfo.pl
++++ b/docparse/testinfo.pl
+@@ -1,16 +1,21 @@
+ #!/usr/bin/perl
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2019 Cyril Hrubis <chrubis@suse.cz>
++# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+ 
+ use strict;
+ use warnings;
+ 
+ use JSON;
+-use Data::Dumper;
++use LWP::Simple;
++use Cwd qw(abs_path);
++use File::Basename qw(dirname);
++
++use constant OUTDIR => dirname(abs_path($0));
+ 
+ sub load_json
+ {
+-	my ($fname) = @_;
++	my ($fname, $mode) = @_;
+ 	local $/;
+ 
+ 	open(my $fh, '<', $fname) or die("Can't open $fname $!");
+@@ -18,23 +23,402 @@ sub load_json
+ 	return <$fh>;
+ }
+ 
+-sub query_flag
++sub log_info
++{
++	my $msg = shift;
++	print STDERR "INFO: $msg\n";
++}
++
++sub log_warn
++{
++	my $msg = shift;
++	print STDERR "WARN: $msg\n";
++}
++
++sub print_asciidoc_page
++{
++	my ($fh, $json, $title, $content) = @_;
++
++	print $fh <<EOL;
++// -*- mode:doc; -*-
++// vim: set syntax=asciidoc:
++
++$title
++
++$content
++EOL
++}
++
++sub tag_url {
++	my ($tag, $value, $scm_url_base) = @_;
++
++    if ($tag eq "CVE") {
++        return "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-" . $value;
++	}
++    if ($tag eq "linux-git") {
++        return "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=" . $value;
++	}
++    if ($tag eq "fname") {
++        return $scm_url_base . $value;
++	}
++}
++
++sub bold
++{
++	return "*$_[0]*";
++}
++
++sub code
++{
++	return "+$_[0]+";
++}
++
++sub hr
++{
++	return "\n\n'''\n\n";
++}
++
++sub html_a
++{
++	my ($url, $text) = @_;
++	return "$url\[$text\]";
++}
++
++sub h1
++{
++	return "== $_[0]\n";
++}
++
++sub h2
++{
++	return "=== $_[0]\n";
++}
++
++sub h3
++{
++	return "==== $_[0]\n";
++}
++
++sub label
++{
++	return "[[$_[0]]]\n";
++}
++
++sub paragraph
++{
++	return "$_[0]\n\n";
++}
++
++sub reference
++{
++	return "xref:$_[0]\[$_[0]\]" . (defined($_[1]) ? $_[1] : "") . "\n";
++}
++
++sub table
++{
++	return "|===\n";
++}
++
++sub print_defined
++{
++	my ($key, $val, $val2) = @_;
++
++	if (defined($val)) {
++		return paragraph(bold($key) . ": " . $val . (defined($val2) ? " $val2" : ""));
++	}
++}
++
++sub content_about
++{
++	my $json = shift;
++	my $content;
++
++	$content .= print_defined("URL", $json->{'url'});
++	$content .= print_defined("Version", $json->{'version'});
++	$content .= print_defined("Default timeout", $json->{'timeout'}, "seconds");
++
++	return $content;
++}
++
++sub uniq {
++	my %seen;
++	grep !$seen{$_}++, @_;
++}
++
++sub get_test_names
++{
++	my @names = @{$_[0]};
++	my ($letter, $prev_letter);
++	my $content;
++
++	for my $name (sort @names) {
++		$letter = substr($name, 0, 1);
++		if (defined($prev_letter) && $letter ne $prev_letter) {
++			$content .= "\n";
++		}
++
++		$content .= reference($name, " ");
++		$prev_letter = $letter;
++	}
++	$content .= "\n";
++
++	return $content;
++}
++
++sub get_test_letters
++{
++	my @names = @{$_[0]};
++	my $letter;
++	my $prev_letter = "";
++	my $content;
++
++	for (@names) {
++		$_ = substr($_, 0, 1);
++	}
++	@names = uniq(@names);
++
++	for my $letter (@names) {
++		$content .= reference($letter);
++	}
++	$content .= "\n";
++
++	return $content;
++}
++
++sub tag2title
+ {
+-	my ($json, $flag) = @_;
++	my $tag = shift;
++	return code(".$tag");
++}
++
++sub get_filters
++{
++	my $json = shift;
++	my %data;
++	while (my ($k, $v) = each %{$json->{'tests'}}) {
++		for my $j (keys %{$v}) {
++
++			next if ($j eq 'fname' || $j eq 'doc');
++
++			$data{$j} = () unless (defined($data{$j}));
++			push @{$data{$j}}, $k;
++		}
++	}
++	return \%data;
++}
++
++# TODO: Handle better .tags (and anything else which contains array)
++# e.g. for .tags there could be separate list for CVE and linux-git
++# (now it's together in single list).
++sub content_filters
++{
++	my $json = shift;
++	my $data = get_filters($json);
++	my %h = %$data;
++	my $content;
++
++	for my $k (sort keys %$data) {
++		my $tag = tag2title($k);
++		my ($letter, $prev_letter);
++		$content .= h2($tag);
++		$content .= paragraph("Tests containing $tag flag.");
++		$content .= get_test_names(\@{$h{$k}});
++	}
++
++	return $content;
++}
++
++sub detect_git
++{
++	unless (defined $ENV{'LINUX_GIT'} && $ENV{'LINUX_GIT'}) {
++		log_warn("kernel git repository not defined. Define it in \$LINUX_GIT");
++		return 0;
++	}
++
++	unless (-d $ENV{'LINUX_GIT'}) {
++		log_warn("\$LINUX_GIT does not exit ('$ENV{'LINUX_GIT'}')");
++		return 0;
++	}
++
++	my $ret = 0;
++	if (system("which git >/dev/null")) {
++		log_warn("git not in \$PATH ('$ENV{'PATH'}')");
++		return 0;
++	}
++
++	chdir($ENV{'LINUX_GIT'});
++	if (!system("git log -1 > /dev/null")) {
++		log_info("using '$ENV{'LINUX_GIT'}' as kernel git repository");
++		$ret = 1;
++	} else {
++		log_warn("git failed, git not installed or \$LINUX_GIT is not a git repository? ('$ENV{'LINUX_GIT'}')");
++	}
++	chdir(OUTDIR);
++
++	return $ret;
++}
++
++sub content_all_tests
++{
++	my $json = shift;
++	my @names = sort keys %{$json->{'tests'}};
++	my $letters = paragraph(get_test_letters(\@names));
++	my $has_kernel_git = detect_git();
++	my $tmp = undef;
++	my $printed = "";
++	my $content;
++
++	unless ($has_kernel_git) {
++		log_info("Parsing git messages from linux git repository skipped due previous error");
++	}
++
++	$content .= paragraph("Total $#names tests.");
++	$content .= $letters;
++	$content .= get_test_names(\@names);
++
++	for my $name (@names) {
++		my $letter = substr($name, 0, 1);
+ 
+-	my $tests = $json->{'tests'};
++		if ($printed ne $letter) {
++			$content .= label($letter);
++			$content .= h2($letter);
++			$printed = $letter;
++		}
++
++		$content .= hr() if (defined($tmp));
++		$content .= label($name);
++		$content .= h3($name);
++		$content .= $letters;
++
++		if (defined($json->{'scm_url_base'}) &&
++			defined($json->{'tests'}{$name}{fname})) {
++			$content .= paragraph(html_a(tag_url("fname", $json->{'tests'}{$name}{fname},
++					$json->{'scm_url_base'}), "source"));
++		}
++
++		if (defined $json->{'tests'}{$name}{doc}) {
++			for my $doc (@{$json->{'tests'}{$name}{doc}}) {
+ 
+-	foreach my $key (sort(keys %$tests)) {
+-		if ($tests->{$key}->{$flag}) {
+-			if ($tests->{$key}->{$flag} eq "1") {
+-				print("$key\n");
++				# fix formatting for asciidoc [DOCUMENTATION] => *DOCUMENTATION*
++				if ($doc =~ s/^\[(.*)\]$/$1/) {
++					$doc = paragraph(bold($doc));
++				}
++
++				$content .= "$doc\n";
++			}
++			$content .= "\n";
++		}
++
++		if ($json->{'tests'}{$name}{timeout}) {
++			if ($json->{'tests'}{$name}{timeout} eq -1) {
++				$content .= paragraph("Test timeout is disabled");
+ 			} else {
+-				print("$key:\n" . Dumper($tests->{$key}->{$flag}) . "\n");
++				$content .= paragraph("Test timeout is $json->{'tests'}{$name}{timeout} seconds");
+ 			}
++		} else {
++			$content .= paragraph("Test timeout defaults to $json->{'timeout'} seconds");
+ 		}
++
++		my $tmp2 = undef;
++		for my $k (sort keys %{$json->{'tests'}{$name}}) {
++			my $v = $json->{'tests'}{$name}{$k};
++			next if ($k eq "tags" || $k eq "fname" || $k eq "doc");
++			if (!defined($tmp2)) {
++				$content .= table . "|Key|Value\n\n"
++			}
++
++			$content .= "|" . tag2title($k) . "\n|";
++			if (ref($v) eq 'ARRAY') {
++				$content .= join(', ', @$v),
++			} else {
++				$content .= $v;
++			}
++			$content .= "\n";
++
++			$tmp2 = 1;
++		}
++		if (defined($tmp2)) {
++			$content .= table . "\n";
++		}
++
++		$tmp2 = undef;
++		my %commits;
++
++		for my $tag (@{$json->{'tests'}{$name}{tags}}) {
++			if (!defined($tmp2)) {
++				$content .= table . "|Tags|Info\n"
++			}
++			my $k = @$tag[0];
++			my $v = @$tag[1];
++			my $text = $k;
++
++            if ($has_kernel_git && $k eq "linux-git") {
++				$text .= "-$v";
++				unless (defined($commits{$v})) {
++					chdir($ENV{'LINUX_GIT'});
++					$commits{$v} = `git log --pretty=format:'%s' -1 $v`;
++					chdir(OUTDIR);
++				}
++				$v = $commits{$v};
++			}
++			my $a = html_a(tag_url($k, @$tag[1]), $text);
++			$content .= "\n|$a\n|$v\n";
++			$tmp2 = 1;
++		}
++		if (defined($tmp2)) {
++			$content .= table . "\n";
++		}
++
++		$tmp = 1;
+ 	}
++
++	return $content;
+ }
+ 
++
+ my $json = decode_json(load_json($ARGV[0]));
+ 
+-query_flag($json, $ARGV[1]);
++my $config = [
++    {
++		file => "about.txt",
++		title => h2("About $json->{'testsuite'}"),
++		content => \&content_about,
++    },
++    {
++		file => "filters.txt",
++		title => h1("Test filtered by used flags"),
++		content => \&content_filters,
++    },
++    {
++		file => "all-tests.txt",
++		title => h1("All tests"),
++		content => \&content_all_tests,
++    },
++];
++
++sub print_asciidoc_main
++{
++	my $config = shift;
++	my $file = "metadata.txt";
++	my $content;
++
++	open(my $fh, '>', $file) or die("Can't open $file $!");
++
++	$content = <<EOL;
++:doctype: inline
++:sectanchors:
++:toc:
++
++EOL
++	for my $c (@{$config}) {
++		$content .= "include::$c->{'file'}\[\]\n";
++	}
++	print_asciidoc_page($fh, $json, h1($json->{'testsuite_short'} . " test catalog"), $content);
++}
++
++for my $c (@{$config}) {
++	open(my $fh, '>', $c->{'file'}) or die("Can't open $c->{'file'} $!");
++	print_asciidoc_page($fh, $json, $c->{'title'}, $c->{'content'}->($json));
++}
++
++print_asciidoc_main($config);
 -- 
 2.29.1
 
