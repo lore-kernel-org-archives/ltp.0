@@ -1,103 +1,44 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  3 Nov 2020 14:09:23 +0100
-Subject: [LTP] [PATCH] lib/tst_cgroup: fix short reads of mems/cpus
-Message-ID: <5d6e978c803e4e6449cabd89596729bfad996a17.1604408825.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Nov 2020 14:10:43 +0100
+Subject: [LTP] [PATCH v3 1/2] lib: Add generic boolean expression parser
+ and eval
+In-Reply-To: <87blge62vs.fsf@suse.de>
+References: <20201103113821.6820-1-chrubis@suse.cz>
+ <20201103113821.6820-2-chrubis@suse.cz> <87blge62vs.fsf@suse.de>
+Message-ID: <20201103131043.GB8061@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_cgroup_cpuset_read_files() is wrongly using sizeof on pointer
-type to figure out length of buffer. On some systems there's
-more content in cgroup mems/cpus, which leads to partial read
-and subsequent EINVAL on write.
+Hi!
+> > +struct tst_expr {
+> > +	struct tst_expr_tok *expr;
+> 
+> Maybe call this 'first' or 'head'?
+> 
+> > +	struct tst_expr_tok *buf;
+> 
+> I suppose that buf could be a trailing array saving a call to malloc and
+> free :-)
 
-Also the retval buffer should be zero terminated, since buffer
-can be passed uninitialized, subsequently leading to writing garbage
-to cgroup and again hitting EINVAL.
+Good point I do not know how I missed the simplest solution here.
 
-Before:
-  tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-  tst_device.c:423: TINFO: No device is mounted at cgroup2
-  tst_device.c:423: TINFO: No device is mounted at /tmp/cgroup_cst
-  tst_cgroup.c:100: TINFO: Cgroup(cpuset) v1 mount at /tmp/cgroup_cst success
-  safe_macros.c:458: TBROK: tst_cgroup.c:449: write(6,0x7fffc0425410,18446744073709551615) failed: EINVAL (22)
-  tst_cgroup.c:173: TWARN: umount /tmp/cgroup_cst: EBUSY (16)
-  tst_cgroup.c:175: TWARN: rmdir /tmp/cgroup_cst: EBUSY (16)
-  tst_cgroup.c:178: TINFO: Cgroup v1 unmount success
+> > +	if (!check_two(expr->buf[cnt-1].op)) {
+> > +		expr->buf[cnt-1].priv = "Unfinished expression";
+> > +		goto err;
+> > +	}
+> 
+> This looks a bit odd as it is the only place you use buf like this. Why
+> not only use buf until setting expr=out[0] (and only set buf=tok
+> initially) or only use expr until free(expr->buf) and/or do --i and use
+> that?
 
-After:
-  tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-  tst_device.c:423: TINFO: No device is mounted at cgroup2
-  tst_device.c:423: TINFO: No device is mounted at /tmp/cgroup_cst
-  tst_cgroup.c:100: TINFO: Cgroup(cpuset) v1 mount at /tmp/cgroup_cst success
-  cpuset01.c:83: TPASS: cpuset test pass
-  tst_cgroup.c:178: TINFO: Cgroup v1 unmount success
+I guess that makes sense. I will changed that anyways if I convert the
+structure to a trailing array.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- include/tst_cgroup.h                   | 6 ++++--
- lib/tst_cgroup.c                       | 6 ++++--
- testcases/kernel/mem/cpuset/cpuset01.c | 4 ++--
- 3 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index 77780e0d64c9..bfd8482608c4 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -39,7 +39,9 @@ int  tst_cgroup_mem_swapacct_enabled(const char *cgroup_dir);
- void tst_cgroup_mem_set_maxswap(const char *cgroup_dir, long memsz);
- 
- /* Set of functions to read/write cpuset controller files content */
--void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char *filename, char *retbuf);
--void tst_cgroup_cpuset_write_files(const char *cgroup_dir, const char *filename, const char *buf);
-+void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char *filename,
-+	char *retbuf, size_t retbuf_sz);
-+void tst_cgroup_cpuset_write_files(const char *cgroup_dir, const char *filename,
-+	const char *buf);
- 
- #endif /* TST_CGROUP_H */
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index ba413d874f69..96c9524d2b3a 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -393,7 +393,8 @@ void tst_cgroup_mem_set_maxswap(const char *cgroup_dir, long memsz)
- 		tst_cgroup_set_knob(cgroup_dir, "memory.swap.max", memsz);
- }
- 
--void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char *filename, char *retbuf)
-+void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char *filename,
-+	char *retbuf, size_t retbuf_sz)
- {
- 	int fd;
- 	char *cgroup_new_dir;
-@@ -417,7 +418,8 @@ void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char *filename,
- 			tst_brk(TBROK | TERRNO, "open %s", knob_path);
- 	}
- 
--	if (read(fd, retbuf, sizeof(retbuf)) < 0)
-+	memset(retbuf, 0, retbuf_sz);
-+	if (read(fd, retbuf, retbuf_sz) < 0)
- 		tst_brk(TBROK | TERRNO, "read %s", knob_path);
- 
- 	close(fd);
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index f70ae0e486c2..fcd22040f7dd 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -51,9 +51,9 @@ static void test_cpuset(void)
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
- 	char mems[BUFSIZ], buf[BUFSIZ];
- 
--	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf);
-+	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf, sizeof(buf));
- 	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "cpus", buf);
--	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems);
-+	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems, sizeof(buf));
- 	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", mems);
- 	tst_cgroup_move_current(PATH_TMP_CG_CST);
- 
 -- 
-2.18.1
-
+Cyril Hrubis
+chrubis@suse.cz
