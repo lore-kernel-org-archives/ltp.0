@@ -1,32 +1,240 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 4 Nov 2020 09:50:28 +0800
-Subject: [LTP] [PATCH] madvise06: Add tag for "mm: memcg: link page
- counters to root ..."
-In-Reply-To: <20201103154950.32000-1-rpalethorpe@suse.com>
-References: <20201103154950.32000-1-rpalethorpe@suse.com>
-Message-ID: <CAEemH2c2pm438iDTZZDOAoFBHL_AW0-kUh=qB5e6JhssG0+img@mail.gmail.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 4 Nov 2020 11:06:17 +0800
+Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
+In-Reply-To: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <5FA21AA9.9020208@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Nov 3, 2020 at 11:50 PM Richard Palethorpe <rpalethorpe@suse.com>
-wrote:
+Hi!
+Ping. I think this patchset is simple.
 
-> The test may trigger a warning if bf4f059 is present (5.9) and
-> use_hierarchy=0 which is fixed by 8de15e920dc8. Full details of the
-> bug are in the kernel commit description and I do not want to repeat
-> them in the test description as they are likely to be irrelevant to
-> most readers.
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->
+Best Regards
+Yang Xu
+> This case tests whether sync() can return the correct value. But as man-page
+> said "sync() is always successful". So this case is meaningless
+> and remove it.
+> 
+> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+> ---
+>   runtest/syscalls                          |   1 -
+>   testcases/kernel/syscalls/sync/.gitignore |   1 -
+>   testcases/kernel/syscalls/sync/sync01.c   | 182 ----------------------
+>   3 files changed, 184 deletions(-)
+>   delete mode 100644 testcases/kernel/syscalls/sync/sync01.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 0443f9f3d..2e7108655 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1477,7 +1477,6 @@ symlink05 symlink05
+>   #symlinkat test cases
+>   symlinkat01 symlinkat01
+> 
+> -sync01 sync01
+>   sync02 sync02
+>   sync03 sync03
+> 
+> diff --git a/testcases/kernel/syscalls/sync/.gitignore b/testcases/kernel/syscalls/sync/.gitignore
+> index 04f4710dd..d006746c2 100644
+> --- a/testcases/kernel/syscalls/sync/.gitignore
+> +++ b/testcases/kernel/syscalls/sync/.gitignore
+> @@ -1,3 +1,2 @@
+> -/sync01
+>   /sync02
+>   /sync03
+> diff --git a/testcases/kernel/syscalls/sync/sync01.c b/testcases/kernel/syscalls/sync/sync01.c
+> deleted file mode 100644
+> index dd0a336c2..000000000
+> --- a/testcases/kernel/syscalls/sync/sync01.c
+> +++ /dev/null
+> @@ -1,182 +0,0 @@
+> -/*
+> - * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it is
+> - * free of the rightful claim of any third person regarding infringement
+> - * or the like.  Any license provided herein, whether implied or
+> - * otherwise, applies only to this software file.  Patent licenses, if
+> - * any, provided herein do not apply to combinations of this program with
+> - * other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+> - * Mountain View, CA  94043, or:
+> - *
+> - * http://www.sgi.com
+> - *
+> - * For further information regarding this notice, see:
+> - *
+> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+> - *
+> - */
+> -/* $Id: sync01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
+> -/**********************************************************
+> - *
+> - *    OS Test - Silicon Graphics, Inc.
+> - *
+> - *    TEST IDENTIFIER	: sync01
+> - *
+> - *    EXECUTED BY	: anyone
+> - *
+> - *    TEST TITLE	: Basic test for sync(2)
+> - *
+> - *    PARENT DOCUMENT	: usctpl01
+> - *
+> - *    TEST CASE TOTAL	: 1
+> - *
+> - *    WALL CLOCK TIME	: 1
+> - *
+> - *    CPU TYPES		: ALL
+> - *
+> - *    AUTHOR		: William Roske
+> - *
+> - *    CO-PILOT		: Dave Fenner
+> - *
+> - *    DATE STARTED	: 03/30/92
+> - *
+> - *    INITIAL RELEASE	: UNICOS 7.0
+> - *
+> - *    TEST CASES
+> - *
+> - *	1.) sync(2) returns...(See Description)
+> - *
+> - *    INPUT SPECIFICATIONS
+> - *	The standard options for system call tests are accepted.
+> - *	(See the parse_opts(3) man page).
+> - *
+> - *    OUTPUT SPECIFICATIONS
+> - *
+> - *    DURATION
+> - *	Terminates - with frequency and infinite modes.
+> - *
+> - *    SIGNALS
+> - *	Uses SIGUSR1 to pause before test if option set.
+> - *	(See the parse_opts(3) man page).
+> - *
+> - *    RESOURCES
+> - *	None
+> - *
+> - *    ENVIRONMENTAL NEEDS
+> - *      No run-time environmental needs.
+> - *
+> - *    SPECIAL PROCEDURAL REQUIREMENTS
+> - *	None
+> - *
+> - *    INTERCASE DEPENDENCIES
+> - *	None
+> - *
+> - *    DETAILED DESCRIPTION
+> - *	This is a Phase I test for the sync(2) system call.  It is intended
+> - *	to provide a limited exposure of the system call, for now.  It
+> - *	should/will be extended when full functional tests are written for
+> - *	sync(2).
+> - *
+> - *	Setup:
+> - *	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - *	Test:
+> - *	 Loop if the proper options are given.
+> - *	  Execute system call
+> - *	  Check return code, if system call failed (return=-1)
+> - *		Log the errno and Issue a FAIL message.
+> - *	  Otherwise, Issue a PASS message.
+> - *
+> - *	Cleanup:
+> - *	  Print errno log and/or timing stats if options given
+> - *
+> - *
+> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+> -
+> -#include<errno.h>
+> -#include<string.h>
+> -#include<signal.h>
+> -#include "test.h"
+> -
+> -void setup();
+> -void cleanup();
+> -
+> -char *TCID = "sync01";
+> -int TST_TOTAL = 1;
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int lc;
+> -
+> -    /***************************************************************
+> -     * parse standard options
+> -     ***************************************************************/
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -    /***************************************************************
+> -     * perform global setup for test
+> -     ***************************************************************/
+> -	setup();
+> -
+> -    /***************************************************************
+> -     * check looping state if -c option given
+> -     ***************************************************************/
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		/*
+> -		 * Call sync(2)
+> -		 */
+> -		TEST_VOID(sync());
+> -
+> -		/* check return code */
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL, "sync() Failed, errno=%d : %s",
+> -				 TEST_ERRNO, strerror(TEST_ERRNO));
+> -		} else {
+> -			tst_resm(TPASS, "sync() returned %ld",
+> -				 TEST_RETURN);
+> -		}
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -}
+> -
+> -/***************************************************************
+> - * setup() - performs all ONE TIME setup for this test.
+> - ***************************************************************/
+> -void setup(void)
+> -{
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -}
+> -
+> -/***************************************************************
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *		completion or premature exit.
+> - ***************************************************************/
+> -void cleanup(void)
+> -{
+> -
+> -}
 
-Pushed.
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201104/c44afaed/attachment.htm>
+
+
