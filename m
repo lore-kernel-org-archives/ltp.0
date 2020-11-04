@@ -1,71 +1,48 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 4 Nov 2020 19:12:52 +0100
-Subject: [LTP] [PATCH] Convert dup02 to new API and clean up
-In-Reply-To: <20201104132116.20712-1-radoslav.kolev@suse.com>
-References: <20201104132116.20712-1-radoslav.kolev@suse.com>
-Message-ID: <20201104181252.GA10153@pevik>
+Date: Wed, 4 Nov 2020 23:42:21 +0100
+Subject: [LTP] [PATCHv2] syscalls/quotactl04: add mkfs.ext4 package
+ version check
+In-Reply-To: <CAMy_GT-wq+=oYMgyZsVgpZxJ4vU-6PJR2OfWoPx2L=9jDjRo3g@mail.gmail.com>
+References: <20201104070405.24044-1-po-hsu.lin@canonical.com>
+ <5FA25444.1080008@cn.fujitsu.com>
+ <CAMy_GT-wq+=oYMgyZsVgpZxJ4vU-6PJR2OfWoPx2L=9jDjRo3g@mail.gmail.com>
+Message-ID: <20201104224221.GA20360@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Radoslav,
+Hi,
 
->  testcases/kernel/syscalls/dup/dup02.c | 212 ++++++--------------------
-...
+> On Wed, Nov 4, 2020 at 3:12 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-> +	struct tcase *testcase = &testcases[n];
-Maybe shorter names (tc)?
+> > Hi Po-Hsu
+> > > The project quota feature was added in e2fsprogs 1.43 [1]:
+> > >    E2fsprogs 1.43 (May 17, 2016)
+> > >      Add support for the ext4 metadata checksum, checksum seed, inline
+> > >      data, encryption, project quota, and read-only features.
 
-> +
-> +	TEST(dup(testcase->fd));
-> +
-> +	if (TST_RET < -1) {
-> +		tst_res(TFAIL, "Invalid dup() return value %ld", TST_RET);
-I'd use here also TERRNO (on this unexpected error.
+> > > The test should be skipped when running with older package, otherwise
+> > > it will fail with:
+> > >    Invalid filesystem option set: quota,project
 
-> +	} else if (TST_RET == -1) {
-> +		if (TST_ERR == testcase->expected_errno) {
-		if (testcase->expected_errno ==  TST_ERR) {
-(checkpatch.pl script from kernel warning; checkpatch.pl warnings aren't hard
-requirements but it's good try to remove them if possible).
+> > > Use popen and fscanf to get mkfs.ext4 -V output for version
+> > > comparison. This version checking by adding digits together does not
+> > > work with alphabets in the number like rc1, but in that case the test
+> > > will still be tested.
 
-> +			tst_res(TPASS | TERRNO, "dup(%d) failed as expected",
-> +				testcase->fd);
-> +		} else {
-> +			tst_res(TFAIL | TERRNO, "dup(%d) Failed unexpectedly",
-> +				testcase->fd);
->  		}
-> +	} else {
-> +		tst_res(TFAIL, "dup(%d) Succeeded unexpectedly", testcase->fd);
-> +		SAFE_CLOSE(TST_RET);
->  	}
+> > > It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
+> > >    quotactl04.c:118: TCONF: Test needs mkfs.ext4>= 1.43 for encrypt
+> > >    option, test skipped
+> > Commit message is also wrong. But I think maintainer will correct this
+> > and don't need to send a v3.
+> My apology for this.
+> That would be great.
+> Thanks!
 
-Nested if/else blocks are hard to read. We're trying to reduce them with return:
-(not hard requirement, but really more readable)
-
-	if (TST_RET < -1) {
-		tst_res(TFAIL | TTERRNO, "Invalid dup() return value %ld", TST_RET);
-		return;
-	}
-
-	if (TST_RET == -1) {
-		if (testcase->expected_errno ==  TST_ERR) {
-			tst_res(TPASS | TERRNO, "dup(%d) failed as expected",
-				testcase->fd);
-		} else {
-			tst_res(TFAIL | TERRNO, "dup(%d) Failed unexpectedly",
-				testcase->fd);
-		}
-
-		return;
-	}
-
-	tst_res(TFAIL, "dup(%d) Succeeded unexpectedly", testcase->fd);
-	SAFE_CLOSE(TST_RET);
-
-Otherwise LGTM :).
+Fixed commit message and merged.
+Thanks!
 
 Kind regards,
 Petr
