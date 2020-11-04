@@ -1,89 +1,139 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 4 Nov 2020 12:46:21 +0800
-Subject: [LTP] [PATCH] syscalls/quotactl04: add mkfs.ext4 package
- version check
-In-Reply-To: <20201104041544.17048-1-po-hsu.lin@canonical.com>
-References: <20201104041544.17048-1-po-hsu.lin@canonical.com>
-Message-ID: <5FA2321D.30907@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 4 Nov 2020 14:22:49 +0800
+Subject: [LTP] [PATCH] lib/tst_cgroup: fix short reads of mems/cpus
+In-Reply-To: <5d6e978c803e4e6449cabd89596729bfad996a17.1604408825.git.jstancek@redhat.com>
+References: <5d6e978c803e4e6449cabd89596729bfad996a17.1604408825.git.jstancek@redhat.com>
+Message-ID: <CAEemH2dHXYbmkbzccWNurYURZQJJ4GENRBr=6KfQaL5HJaBO2g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Po-hsu
+On Tue, Nov 3, 2020 at 9:10 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-> The project quota feature was added in e2fsprogs 1.43 [1]:
->    E2fsprogs 1.43 (May 17, 2016)
->      Add support for the ext4 metadata checksum, checksum seed, inline
->      data, encryption, project quota, and read-only features.
+> tst_cgroup_cpuset_read_files() is wrongly using sizeof on pointer
+> type to figure out length of buffer. On some systems there's
+> more content in cgroup mems/cpus, which leads to partial read
+> and subsequent EINVAL on write.
 >
-> The test should be skipped when running with older package, otherwise
-> it will fail with:
->    Invalid filesystem option set: quota,project
+> Also the retval buffer should be zero terminated, since buffer
+> can be passed uninitialized, subsequently leading to writing garbage
+> to cgroup and again hitting EINVAL.
 >
-> Use popen and fscanf to get mkfs.ext4 -V output for version
-> comparison. This version checking by adding digits together does not
-> work with alphabets in the number like rc1, but in that case the test
-> will still be tested.
+> Before:
+>   tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+>   tst_device.c:423: TINFO: No device is mounted at cgroup2
+>   tst_device.c:423: TINFO: No device is mounted at /tmp/cgroup_cst
+>   tst_cgroup.c:100: TINFO: Cgroup(cpuset) v1 mount at /tmp/cgroup_cst
+> success
+>   safe_macros.c:458: TBROK: tst_cgroup.c:449:
+> write(6,0x7fffc0425410,18446744073709551615) failed: EINVAL (22)
+>   tst_cgroup.c:173: TWARN: umount /tmp/cgroup_cst: EBUSY (16)
+>   tst_cgroup.c:175: TWARN: rmdir /tmp/cgroup_cst: EBUSY (16)
+>   tst_cgroup.c:178: TINFO: Cgroup v1 unmount success
 >
-> It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
->    quotactl04.c:118: TCONF: Test needs mkfs.ext4>= 1.43 for encrypt
->    option, test skipped
+> After:
+>   tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+>   tst_device.c:423: TINFO: No device is mounted at cgroup2
+>   tst_device.c:423: TINFO: No device is mounted at /tmp/cgroup_cst
+>   tst_cgroup.c:100: TINFO: Cgroup(cpuset) v1 mount at /tmp/cgroup_cst
+> success
+>   cpuset01.c:83: TPASS: cpuset test pass
+>   tst_cgroup.c:178: TINFO: Cgroup v1 unmount success
 >
-> [1] http://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.42.13
->
-> Signed-off-by: Po-Hsu Lin<po-hsu.lin@canonical.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 > ---
->   testcases/kernel/syscalls/quotactl/quotactl04.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
+>  include/tst_cgroup.h                   | 6 ++++--
+>  lib/tst_cgroup.c                       | 6 ++++--
+>  testcases/kernel/mem/cpuset/cpuset01.c | 4 ++--
+>  3 files changed, 10 insertions(+), 6 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> index 73980d7e9..1cef8fcf3 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> @@ -19,6 +19,8 @@
->    * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
->    *    ID with Q_GETNEXTQUOTA flag for project.
->    * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
-> + *
-> + * Minimum e2fsprogs version required is 1.43.
->    */
+> diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+> index 77780e0d64c9..bfd8482608c4 100644
+> --- a/include/tst_cgroup.h
+> +++ b/include/tst_cgroup.h
+> @@ -39,7 +39,9 @@ int  tst_cgroup_mem_swapacct_enabled(const char
+> *cgroup_dir);
+>  void tst_cgroup_mem_set_maxswap(const char *cgroup_dir, long memsz);
 >
->   #include<errno.h>
-> @@ -28,6 +30,7 @@
->   #include<sys/stat.h>
->   #include "config.h"
->   #include "lapi/quotactl.h"
-> +#include "tst_safe_stdio.h"
->   #include "tst_test.h"
+>  /* Set of functions to read/write cpuset controller files content */
+> -void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char
+> *filename, char *retbuf);
+> -void tst_cgroup_cpuset_write_files(const char *cgroup_dir, const char
+> *filename, const char *buf);
+> +void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char
+> *filename,
+> +       char *retbuf, size_t retbuf_sz);
+> +void tst_cgroup_cpuset_write_files(const char *cgroup_dir, const char
+> *filename,
+> +       const char *buf);
 >
->   #ifndef QFMT_VFS_V1
-> @@ -102,9 +105,18 @@ static struct tcase {
+>  #endif /* TST_CGROUP_H */
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index ba413d874f69..96c9524d2b3a 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -393,7 +393,8 @@ void tst_cgroup_mem_set_maxswap(const char
+> *cgroup_dir, long memsz)
+>                 tst_cgroup_set_knob(cgroup_dir, "memory.swap.max", memsz);
+>  }
 >
->   static void setup(void)
->   {
-> +	FILE *f;
->   	const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
-> +	int rc, major, minor, patch;
+> -void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char
+> *filename, char *retbuf)
+> +void tst_cgroup_cpuset_read_files(const char *cgroup_dir, const char
+> *filename,
+> +       char *retbuf, size_t retbuf_sz)
+>  {
+>         int fd;
+>         char *cgroup_new_dir;
+> @@ -417,7 +418,8 @@ void tst_cgroup_cpuset_read_files(const char
+> *cgroup_dir, const char *filename,
+>                         tst_brk(TBROK | TERRNO, "open %s", knob_path);
+>         }
 >
->   	test_id = geteuid();
-> +	f = SAFE_POPEN("mkfs.ext4 -V 2>&1", "r");
-> +	rc = fscanf(f, "mke2fs %d.%d.%d",&major,&minor,&patch);
-> +	if (rc != 3)
-> +		tst_res(TWARN, "Unable parse version number");
-> +	else if (major * 10000 + minor * 100 + patch<  14300)
-> +		tst_brk(TCONF, "Test needs mkfs.ext4>= 1.43 for encrypt option, test skipped");
+> -       if (read(fd, retbuf, sizeof(retbuf)) < 0)
+> +       memset(retbuf, 0, retbuf_sz);
+> +       if (read(fd, retbuf, retbuf_sz) < 0)
+>                 tst_brk(TBROK | TERRNO, "read %s", knob_path);
+>
+>         close(fd);
+> diff --git a/testcases/kernel/mem/cpuset/cpuset01.c
+> b/testcases/kernel/mem/cpuset/cpuset01.c
+> index f70ae0e486c2..fcd22040f7dd 100644
+> --- a/testcases/kernel/mem/cpuset/cpuset01.c
+> +++ b/testcases/kernel/mem/cpuset/cpuset01.c
+> @@ -51,9 +51,9 @@ static void test_cpuset(void)
+>         unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+>         char mems[BUFSIZ], buf[BUFSIZ];
+>
+> -       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf);
+> +       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf,
+> sizeof(buf));
+>         tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "cpus", buf);
+> -       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems);
+> +       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems,
+> sizeof(buf));
+>
 
-Test needs quota,project instead of encrypt option,
-other than this, it looks good to me
+sizeof() is generally used to calculate the size (in bytes) of a data type,
+e.g sizeof(char *).
+I think here to pass 'BUFSIZ' directly is better than sizeof(buf).
 
-Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-
-> +	pclose(f);
->   	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
->   	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
->   	mount_flag = 1;
+Otherwise, looks good to me.
 
 
+>         tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", mems);
+>         tst_cgroup_move_current(PATH_TMP_CG_CST);
+>
+> --
+> 2.18.1
+>
+>
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201104/ea1346c6/attachment.htm>
