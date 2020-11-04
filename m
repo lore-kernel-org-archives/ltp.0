@@ -1,32 +1,43 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 04 Nov 2020 13:32:16 +0000
-Subject: [LTP] [PATCH v4 1/2] lib: Add generic boolean expression parser
- and eval
-In-Reply-To: <20201103161052.13260-2-chrubis@suse.cz>
-References: <20201103161052.13260-1-chrubis@suse.cz>
- <20201103161052.13260-2-chrubis@suse.cz>
-Message-ID: <87wnz1459b.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 4 Nov 2020 16:54:58 +0100
+Subject: [LTP] [PATCH v2 05/11] syscalls: Add a few documentation
+ comments
+In-Reply-To: <d0e937e67108585af4423e9f688941cb194476ba.camel@suse.com>
+References: <20201103191327.11081-1-pvorel@suse.cz>
+ <20201103191327.11081-6-pvorel@suse.cz>
+ <d0e937e67108585af4423e9f688941cb194476ba.camel@suse.com>
+Message-ID: <20201104155458.GB12971@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Rado, all,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+> Hello Petr,
 
-> Add a simple and generic boolean expression parser and evaluator. This
-> is a first step in order to implement more complex kconfig expressions,
-> but since we are likely to reuse the parser for other purposes in the
-> future it's implemented as a generic boolean parser.
->
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> On Tue, 2020-11-03 at 20:13 +0100, Petr Vorel wrote:
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+> > + * [DESCRIPTION]
+> > + *  Checks that process which called abort() gets killed by SIGIOT
+> > and dumps core.
 
-LGTM!
+> ...
 
--- 
-Thank you,
-Richard.
+> > +/*\
+> > + * [DOCUMENTATION]
+> > + *  Verify that acct() returns proper errno on failure.
+> > +\*/
+> > +
+
+> I noticed that in some places the DESCRIPTION tag is used and in
+> another DOCUMENTATION. What is the difference between the two and which
+> should be used when?
+I'd suggest to use [DESCRIPTION] and drop [DOCUMENTATION] (whole metadata are
+documentation).
+
+It'd be good to document that in README.md
+
+Kind regards,
+Petr
