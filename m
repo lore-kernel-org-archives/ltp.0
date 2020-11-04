@@ -1,240 +1,79 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 4 Nov 2020 11:06:17 +0800
-Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
-In-Reply-To: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <5FA21AA9.9020208@cn.fujitsu.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Wed,  4 Nov 2020 12:15:44 +0800
+Subject: [LTP] [PATCH] syscalls/quotactl04: add mkfs.ext4 package version
+ check
+Message-ID: <20201104041544.17048-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Ping. I think this patchset is simple.
+The project quota feature was added in e2fsprogs 1.43 [1]:
+  E2fsprogs 1.43 (May 17, 2016)
+    Add support for the ext4 metadata checksum, checksum seed, inline
+    data, encryption, project quota, and read-only features.
 
-Best Regards
-Yang Xu
-> This case tests whether sync() can return the correct value. But as man-page
-> said "sync() is always successful". So this case is meaningless
-> and remove it.
-> 
-> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> ---
->   runtest/syscalls                          |   1 -
->   testcases/kernel/syscalls/sync/.gitignore |   1 -
->   testcases/kernel/syscalls/sync/sync01.c   | 182 ----------------------
->   3 files changed, 184 deletions(-)
->   delete mode 100644 testcases/kernel/syscalls/sync/sync01.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 0443f9f3d..2e7108655 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1477,7 +1477,6 @@ symlink05 symlink05
->   #symlinkat test cases
->   symlinkat01 symlinkat01
-> 
-> -sync01 sync01
->   sync02 sync02
->   sync03 sync03
-> 
-> diff --git a/testcases/kernel/syscalls/sync/.gitignore b/testcases/kernel/syscalls/sync/.gitignore
-> index 04f4710dd..d006746c2 100644
-> --- a/testcases/kernel/syscalls/sync/.gitignore
-> +++ b/testcases/kernel/syscalls/sync/.gitignore
-> @@ -1,3 +1,2 @@
-> -/sync01
->   /sync02
->   /sync03
-> diff --git a/testcases/kernel/syscalls/sync/sync01.c b/testcases/kernel/syscalls/sync/sync01.c
-> deleted file mode 100644
-> index dd0a336c2..000000000
-> --- a/testcases/kernel/syscalls/sync/sync01.c
-> +++ /dev/null
-> @@ -1,182 +0,0 @@
-> -/*
-> - * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - *
-> - */
-> -/* $Id: sync01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
-> -/**********************************************************
-> - *
-> - *    OS Test - Silicon Graphics, Inc.
-> - *
-> - *    TEST IDENTIFIER	: sync01
-> - *
-> - *    EXECUTED BY	: anyone
-> - *
-> - *    TEST TITLE	: Basic test for sync(2)
-> - *
-> - *    PARENT DOCUMENT	: usctpl01
-> - *
-> - *    TEST CASE TOTAL	: 1
-> - *
-> - *    WALL CLOCK TIME	: 1
-> - *
-> - *    CPU TYPES		: ALL
-> - *
-> - *    AUTHOR		: William Roske
-> - *
-> - *    CO-PILOT		: Dave Fenner
-> - *
-> - *    DATE STARTED	: 03/30/92
-> - *
-> - *    INITIAL RELEASE	: UNICOS 7.0
-> - *
-> - *    TEST CASES
-> - *
-> - *	1.) sync(2) returns...(See Description)
-> - *
-> - *    INPUT SPECIFICATIONS
-> - *	The standard options for system call tests are accepted.
-> - *	(See the parse_opts(3) man page).
-> - *
-> - *    OUTPUT SPECIFICATIONS
-> - *
-> - *    DURATION
-> - *	Terminates - with frequency and infinite modes.
-> - *
-> - *    SIGNALS
-> - *	Uses SIGUSR1 to pause before test if option set.
-> - *	(See the parse_opts(3) man page).
-> - *
-> - *    RESOURCES
-> - *	None
-> - *
-> - *    ENVIRONMENTAL NEEDS
-> - *      No run-time environmental needs.
-> - *
-> - *    SPECIAL PROCEDURAL REQUIREMENTS
-> - *	None
-> - *
-> - *    INTERCASE DEPENDENCIES
-> - *	None
-> - *
-> - *    DETAILED DESCRIPTION
-> - *	This is a Phase I test for the sync(2) system call.  It is intended
-> - *	to provide a limited exposure of the system call, for now.  It
-> - *	should/will be extended when full functional tests are written for
-> - *	sync(2).
-> - *
-> - *	Setup:
-> - *	  Setup signal handling.
-> - *	  Pause for SIGUSR1 if option specified.
-> - *
-> - *	Test:
-> - *	 Loop if the proper options are given.
-> - *	  Execute system call
-> - *	  Check return code, if system call failed (return=-1)
-> - *		Log the errno and Issue a FAIL message.
-> - *	  Otherwise, Issue a PASS message.
-> - *
-> - *	Cleanup:
-> - *	  Print errno log and/or timing stats if options given
-> - *
-> - *
-> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
-> -
-> -#include<errno.h>
-> -#include<string.h>
-> -#include<signal.h>
-> -#include "test.h"
-> -
-> -void setup();
-> -void cleanup();
-> -
-> -char *TCID = "sync01";
-> -int TST_TOTAL = 1;
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -
-> -    /***************************************************************
-> -     * parse standard options
-> -     ***************************************************************/
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -    /***************************************************************
-> -     * perform global setup for test
-> -     ***************************************************************/
-> -	setup();
-> -
-> -    /***************************************************************
-> -     * check looping state if -c option given
-> -     ***************************************************************/
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * Call sync(2)
-> -		 */
-> -		TEST_VOID(sync());
-> -
-> -		/* check return code */
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL, "sync() Failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS, "sync() returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -/***************************************************************
-> - * setup() - performs all ONE TIME setup for this test.
-> - ***************************************************************/
-> -void setup(void)
-> -{
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -}
-> -
-> -/***************************************************************
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *		completion or premature exit.
-> - ***************************************************************/
-> -void cleanup(void)
-> -{
-> -
-> -}
+The test should be skipped when running with older package, otherwise
+it will fail with:
+  Invalid filesystem option set: quota,project
 
+Use popen and fscanf to get mkfs.ext4 -V output for version
+comparison. This version checking by adding digits together does not
+work with alphabets in the number like rc1, but in that case the test
+will still be tested.
 
+It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
+  quotactl04.c:118: TCONF: Test needs mkfs.ext4 >= 1.43 for encrypt
+  option, test skipped
+
+[1] http://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.42.13
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/syscalls/quotactl/quotactl04.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+index 73980d7e9..1cef8fcf3 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl04.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
+@@ -19,6 +19,8 @@
+  * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
+  *    ID with Q_GETNEXTQUOTA flag for project.
+  * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
++ *
++ * Minimum e2fsprogs version required is 1.43.
+  */
+ 
+ #include <errno.h>
+@@ -28,6 +30,7 @@
+ #include <sys/stat.h>
+ #include "config.h"
+ #include "lapi/quotactl.h"
++#include "tst_safe_stdio.h"
+ #include "tst_test.h"
+ 
+ #ifndef QFMT_VFS_V1
+@@ -102,9 +105,18 @@ static struct tcase {
+ 
+ static void setup(void)
+ {
++	FILE *f;
+ 	const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
++	int rc, major, minor, patch;
+ 
+ 	test_id = geteuid();
++	f = SAFE_POPEN("mkfs.ext4 -V 2>&1", "r");
++	rc = fscanf(f, "mke2fs %d.%d.%d", &major, &minor, &patch);
++	if (rc != 3)
++		tst_res(TWARN, "Unable parse version number");
++	else if (major * 10000 + minor * 100 + patch < 14300)
++		tst_brk(TCONF, "Test needs mkfs.ext4 >= 1.43 for encrypt option, test skipped");
++	pclose(f);
+ 	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+ 	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
+ 	mount_flag = 1;
+-- 
+2.17.1
 
