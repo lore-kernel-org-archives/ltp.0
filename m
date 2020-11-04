@@ -1,139 +1,92 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 04 Nov 2020 11:44:12 +0000
-Subject: [LTP] [RFC][PATCH] tst_cgroup: Attempt to use CGroups V2 then
- V1 instead of guessing
-In-Reply-To: <CAEemH2dA2n2k_kquCtBSZVXNF_qtteDS+QA2vZd75NBaHMcWEw@mail.gmail.com>
-References: <20200925121941.10475-1-rpalethorpe@suse.com>
- <CAEemH2eo6qVt0D36QVDFeW_2csWFEDnnghxRjd3_Ysu=CD-8Hw@mail.gmail.com>
- <87y2kuwa1x.fsf@suse.de>
- <CAEemH2ef9t+az4b=1zWyjuWYnUOkENL7471g0KczhUx-XFRFjQ@mail.gmail.com>
- <87eela655z.fsf@suse.de>
- <CAEemH2dA2n2k_kquCtBSZVXNF_qtteDS+QA2vZd75NBaHMcWEw@mail.gmail.com>
-Message-ID: <87zh3x4a9f.fsf@suse.de>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Wed, 4 Nov 2020 20:52:02 +0800
+Subject: [LTP] [PATCHv2] syscalls/quotactl04: add mkfs.ext4 package
+ version check
+In-Reply-To: <5FA25444.1080008@cn.fujitsu.com>
+References: <20201104070405.24044-1-po-hsu.lin@canonical.com>
+ <5FA25444.1080008@cn.fujitsu.com>
+Message-ID: <CAMy_GT-wq+=oYMgyZsVgpZxJ4vU-6PJR2OfWoPx2L=9jDjRo3g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li,
-
-Li Wang <liwang@redhat.com> writes:
-
-> Hi Richard,
+On Wed, Nov 4, 2020 at 3:12 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 >
-> Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> ...
->>
->> Well, I have learnt some more about CGroups and reviewed some of our
->> tests which use them and am now considering the following. This is so
->> complicated that the below will probably turn out to be wrong as I try
->> to implement it.
->>
->
-> Glad to see your improvement plan.
->
-> It's okay, we can try it in practice. Sometimes the perfect solution
-> will be born in the code iteration :).
+> Hi Po-Hsu
+> > The project quota feature was added in e2fsprogs 1.43 [1]:
+> >    E2fsprogs 1.43 (May 17, 2016)
+> >      Add support for the ext4 metadata checksum, checksum seed, inline
+> >      data, encryption, project quota, and read-only features.
+> >
+> > The test should be skipped when running with older package, otherwise
+> > it will fail with:
+> >    Invalid filesystem option set: quota,project
+> >
+> > Use popen and fscanf to get mkfs.ext4 -V output for version
+> > comparison. This version checking by adding digits together does not
+> > work with alphabets in the number like rc1, but in that case the test
+> > will still be tested.
+> >
+> > It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
+> >    quotactl04.c:118: TCONF: Test needs mkfs.ext4>= 1.43 for encrypt
+> >    option, test skipped
+> Commit message is also wrong. But I think maintainer will correct this
+> and don't need to send a v3.
+My apology for this.
+That would be great.
+Thanks!
 
-+1
-
->
->
->>
->> 1) Scan the system for mounted Cgroup controllers and create a data
->>    structure describing what controllers are mounted and where.
->>
->> There is only one cgroup root, it is possible to mount it multiple
->> times, but it simplifies matters if we try to reuse whatever is already
->> mounted. Especially in the case of V1 where remounting with different
->> controller combinations will fail. Possibly there is some advantage to
->> remounting, but I can't see what because changes to one mount are likely
->> to be reflected in others, plus remounting is likely to fail if you
->> don't use the same mount options.
->>
->
-> I doubt that will be simplified to reuse the existing CGroup, It
-> sounds a bit idealization. Since there might be different paths
-> mounted on their Linux distributions or self-customized system,
-> we have to cover/scan all unsure situations if go this way, isn't it?
-
-To clarify; I think the only option is to reuse existing CGroups if the
-system has already mounted them. We can rebind/mount them to a new path,
-but it is the same structure underneath.
-
-If you try to remount the CGroup with different options from the
-original mount then it will fail. This is especially true for V1
-controllers which may be mounted together or separately. So we must
-parse the mounts file and look at the options anyway.
-
-The alternative would be to not run the test if cgroups are already
-mounted or refuse to run if they are mounted in a way we can't handle.
-
-Note that the kernel self-tests scan the system for an existing V2
-hierarchy and don't try to mount anything. Because they only test V2
-this is pretty simple.
-
->
->
->>
->> 2) The user requests some controller values to be set in a unified
->>    hierarchy. The LTP library then tries to translate this to whatever
->>    CGroup setup the system is actually using.
->>
->> If no cgroups are mounted, then we try to mount a simple V2 setup
->> falling back to the standard V1 setup with the (required) controllers in
->> separate hierarchies. For some tests this will result in a hybrid setup
->> because they first request a V2 compatible controller then a V1 only
->> controller (or the inverse if there are any V2 only controllers). At
->> least SUSE and Ubuntu are using hybrid setups so this is a valid thing
->> to test (unfortunately).
->>
-> +1
-> Yes, I totally agree to handle this kind of issue, which currently
-> LTP-CGroup-Lib has not done it. This is the new progress for us.
+> >
+> > [1] http://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.42.13
+> >
+> > Signed-off-by: Po-Hsu Lin<po-hsu.lin@canonical.com>
+> > Reviewed-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+> > ---
+> >   testcases/kernel/syscalls/quotactl/quotactl04.c | 12 ++++++++++++
+> >   1 file changed, 12 insertions(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+> > index 73980d7e9..3cc2b974f 100644
+> > --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
+> > +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
+> > @@ -19,6 +19,8 @@
+> >    * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
+> >    *    ID with Q_GETNEXTQUOTA flag for project.
+> >    * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
+> > + *
+> > + * Minimum e2fsprogs version required is 1.43.
+> >    */
+> >
+> >   #include<errno.h>
+> > @@ -28,6 +30,7 @@
+> >   #include<sys/stat.h>
+> >   #include "config.h"
+> >   #include "lapi/quotactl.h"
+> > +#include "tst_safe_stdio.h"
+> >   #include "tst_test.h"
+> >
+> >   #ifndef QFMT_VFS_V1
+> > @@ -102,9 +105,18 @@ static struct tcase {
+> >
+> >   static void setup(void)
+> >   {
+> > +     FILE *f;
+> >       const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
+> > +     int rc, major, minor, patch;
+> >
+> >       test_id = geteuid();
+> > +     f = SAFE_POPEN("mkfs.ext4 -V 2>&1", "r");
+> > +     rc = fscanf(f, "mke2fs %d.%d.%d",&major,&minor,&patch);
+> > +     if (rc != 3)
+> > +             tst_res(TWARN, "Unable parse version number");
+> > +     else if (major * 10000 + minor * 100 + patch<  14300)
+> > +             tst_brk(TCONF, "Test needs mkfs.ext4>= 1.43 for quota,project option, test skipped");
+> > +     pclose(f);
+> >       SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+> >       SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
+> >       mount_flag = 1;
 >
 >
->>
->> If we find mounted controllers then try to create a new LTP hierarchy in
->> the root of each controller (on V2 all the controllers are mounted to
->> the same place, but V1 allows all kinds of stuff).
->>
 >
-> That sounds too complicated, there would be a situation that partly
-> used V2 in the root CGroup and also to use the V1-only controller
-> in a newly mounted V1 hierarchy.
->
-> Another concern is about the cleanup work, I'm not sure this will
-> be more simple or needs unify way to remove all created dir in the
-> hierarchy for both V2 and V1 mixed.
->
-> And, it is probably much difficult for debugging if hitting some
-> problems.
-
-This is why CGroups V1 is deprecated and V2 only has a unified hierarchy
-:-p.
-
-Again if the system has already mounted some unusual V1 setup then you
-can not change that. We either have to scan it and create our hierarchy
-multiple times for each set of mounted controllers or refuse to run.
-
-For example try something like the following (with no cgroups mounted):
-
-$ mount -t cgroup -o cpu,cpuacct nodev /tmp/a
-$ mount -t cgroup -o cpu         nodev /tmp/b
-
-The second mount should fail, however the following should work:
-
-$ mount -t cgroup -o cpuacct nodev /tmp/a
-$ mount -t cgroup -o cpu     nodev /tmp/b
-
-This is because there is only one instance of each controller and the
-hierarchy it is attached to. The controllers and cgroup hierarchies are
-created during the first mount, but are then reused by any further
-mounts.
-
--- 
-Thank you,
-Richard.
