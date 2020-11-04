@@ -1,92 +1,106 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Wed, 4 Nov 2020 20:52:02 +0800
-Subject: [LTP] [PATCHv2] syscalls/quotactl04: add mkfs.ext4 package
- version check
-In-Reply-To: <5FA25444.1080008@cn.fujitsu.com>
-References: <20201104070405.24044-1-po-hsu.lin@canonical.com>
- <5FA25444.1080008@cn.fujitsu.com>
-Message-ID: <CAMy_GT-wq+=oYMgyZsVgpZxJ4vU-6PJR2OfWoPx2L=9jDjRo3g@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 4 Nov 2020 21:20:24 +0800
+Subject: [LTP] [PATCH v2 03/11] docparse: Add test documentation parser
+In-Reply-To: <20201104073008.GB8632@pevik>
+References: <20201103191327.11081-1-pvorel@suse.cz>
+ <20201103191327.11081-4-pvorel@suse.cz>
+ <20201104073008.GB8632@pevik>
+Message-ID: <CAEemH2dx2wYT0dHcDnFnZ0sqY8MO1QOb1-qEmgRSPdFLO=9NUw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Nov 4, 2020 at 3:12 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
->
-> Hi Po-Hsu
-> > The project quota feature was added in e2fsprogs 1.43 [1]:
-> >    E2fsprogs 1.43 (May 17, 2016)
-> >      Add support for the ext4 metadata checksum, checksum seed, inline
-> >      data, encryption, project quota, and read-only features.
-> >
-> > The test should be skipped when running with older package, otherwise
-> > it will fail with:
-> >    Invalid filesystem option set: quota,project
-> >
-> > Use popen and fscanf to get mkfs.ext4 -V output for version
-> > comparison. This version checking by adding digits together does not
-> > work with alphabets in the number like rc1, but in that case the test
-> > will still be tested.
-> >
-> > It will now be skipped with (Tested with Ubuntu Xenial + 4.15 kernel):
-> >    quotactl04.c:118: TCONF: Test needs mkfs.ext4>= 1.43 for encrypt
-> >    option, test skipped
-> Commit message is also wrong. But I think maintainer will correct this
-> and don't need to send a v3.
-My apology for this.
-That would be great.
-Thanks!
+On Wed, Nov 4, 2020 at 3:30 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> >
-> > [1] http://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.42.13
-> >
-> > Signed-off-by: Po-Hsu Lin<po-hsu.lin@canonical.com>
-> > Reviewed-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
-> > ---
-> >   testcases/kernel/syscalls/quotactl/quotactl04.c | 12 ++++++++++++
-> >   1 file changed, 12 insertions(+)
-> >
-> > diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> > index 73980d7e9..3cc2b974f 100644
-> > --- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-> > +++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-> > @@ -19,6 +19,8 @@
-> >    * 7) quotactl(2) succeeds to get disk quota limit greater than or equal to
-> >    *    ID with Q_GETNEXTQUOTA flag for project.
-> >    * 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for project.
-> > + *
-> > + * Minimum e2fsprogs version required is 1.43.
-> >    */
-> >
-> >   #include<errno.h>
-> > @@ -28,6 +30,7 @@
-> >   #include<sys/stat.h>
-> >   #include "config.h"
-> >   #include "lapi/quotactl.h"
-> > +#include "tst_safe_stdio.h"
-> >   #include "tst_test.h"
-> >
-> >   #ifndef QFMT_VFS_V1
-> > @@ -102,9 +105,18 @@ static struct tcase {
-> >
-> >   static void setup(void)
-> >   {
-> > +     FILE *f;
-> >       const char *const fs_opts[] = {"-I 256", "-O quota,project", NULL};
-> > +     int rc, major, minor, patch;
-> >
-> >       test_id = geteuid();
-> > +     f = SAFE_POPEN("mkfs.ext4 -V 2>&1", "r");
-> > +     rc = fscanf(f, "mke2fs %d.%d.%d",&major,&minor,&patch);
-> > +     if (rc != 3)
-> > +             tst_res(TWARN, "Unable parse version number");
-> > +     else if (major * 10000 + minor * 100 + patch<  14300)
-> > +             tst_brk(TCONF, "Test needs mkfs.ext4>= 1.43 for quota,project option, test skipped");
-> > +     pclose(f);
-> >       SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
-> >       SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
-> >       mount_flag = 1;
+> Hi,
 >
+> > --- /dev/null
+> > +++ b/docparse/docparse.c
 >
+> ...
+> > +const char *next_token(FILE *f, struct data_node *doc)
+> > +{
+> > +     size_t i = 0;
+> > +     static char buf[4096];
+> > +     int c;
+> > +     int in_str = 0;
+> > +
+> > +     for (;;) {
+> > +             c = fgetc(f);
+> > +
+> > +             if (c == EOF)
+> > +                     goto exit;
+> > +
+> > +             if (in_str) {
+> > +                     if (c == '"') {
+> > +                             if (i == 0 || buf[i-1] != '\\') {
+> > +                                     buf[i++] = c;
+> > +                                     goto exit;
+> > +                             }
+> IMHO this change (adding buf[i++] = c;), which Li suggested,
+> is causing build failures:
+> https://travis-ci.org/github/pevik/ltp/builds/741217630
 >
+> /usr/src/ltp/docparse/testinfo.pl metadata.json
+> , or ] expected while parsing array, at character offset 340 (before
+> "",\n      "0c461cb72...") at /usr/src/ltp/docparse/testinfo.pl line 379.
+> make[1]: *** [/usr/src/ltp/docparse/Makefile:60: txt] Error 255
+> make[1]: Leaving directory '/usr/src/ltp-build/docparse'
+> make: *** [/usr/src/ltp/Makefile:108: docparse-all] Error 2
+> make: *** Waiting for unfinished jobs....
+>
+
+Sorry for the error, it because of wrongly parsed tst_test struct with
+including .min_kver = "2.6.32",  then output into metada.json like:
+
+# cat metadata.json
+...
+  "cpuset01": {
+   "needs_root": "1",
+   "forks_child": "1",
+   "min_kver": "2.6.32"",  <====== here has two "" in the end
+   "fname": "testcases/kernel/mem/cpuset/cpuset01.c"
+  },
+
+So the "$(abs_srcdir)/testinfo.pl metadata.json" in Makefile report failure
+as above.
+
+==========
+
+Another fix I can think of is just to avoid return NULL if detecting in the
+string("").
+Hope this will work for us, I will help to check it again tomorrow.
+
+--- a/docparse/docparse.c
++++ b/docparse/docparse.c
+@@ -138,10 +138,8 @@ const char *next_token(FILE *f, struct data_node *doc)
+
+                if (in_str) {
+                        if (c == '"') {
+-                               if (i == 0 || buf[i-1] != '\\') {
+-                                       buf[i++] = c;
++                               if (i == 0 || buf[i-1] != '\\')
+                                        goto exit;
+-                               }
+                        }
+
+                        buf[i++] = c;
+@@ -189,7 +187,7 @@ const char *next_token(FILE *f, struct data_node *doc)
+        }
+
+ exit:
+-       if (i == 0)
++       if (i == 0 && !in_str)
+                return NULL;
+
+        buf[i] = 0;
+
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201104/56373c64/attachment-0001.htm>
