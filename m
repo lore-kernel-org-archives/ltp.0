@@ -1,49 +1,32 @@
-From: Roman Gushchin <guro@fb.com>
-Date: Tue, 3 Nov 2020 13:30:10 -0800
-Subject: [LTP] [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups
- from charging root
-In-Reply-To: <20201103132221.GI21990@dhcp22.suse.cz>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
- <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
- <20201020162714.GC46039@blackbook>
- <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
- <20201020181822.GA397401@cmpxchg.org>
- <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
- <20201103132221.GI21990@dhcp22.suse.cz>
-Message-ID: <20201103213010.GA1938922@carbon.dhcp.thefacebook.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 4 Nov 2020 09:50:28 +0800
+Subject: [LTP] [PATCH] madvise06: Add tag for "mm: memcg: link page
+ counters to root ..."
+In-Reply-To: <20201103154950.32000-1-rpalethorpe@suse.com>
+References: <20201103154950.32000-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2c2pm438iDTZZDOAoFBHL_AW0-kUh=qB5e6JhssG0+img@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Nov 03, 2020 at 02:22:21PM +0100, Michal Hocko wrote:
-> Hi,
-> I am sorry but I was quite busy at the time this has been discussed.
-> Now that I got to this thread finally I am wondering whether this
-> resp. other root cgroup exceptions have any follow up.
+On Tue, Nov 3, 2020 at 11:50 PM Richard Palethorpe <rpalethorpe@suse.com>
+wrote:
 
-I'll address a feedback I've got from Johannes and will post and updated
-version soon.
+> The test may trigger a warning if bf4f059 is present (5.9) and
+> use_hierarchy=0 which is fixed by 8de15e920dc8. Full details of the
+> bug are in the kernel commit description and I do not want to repeat
+> them in the test description as they are likely to be irrelevant to
+> most readers.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>
 
-> 
-> I have seen the issue is fixed in Linus tree by 8de15e920dc8 ("mm:
-> memcg: link page counters to root if use_hierarchy is false"). Thanks
-> for taking care of that! I do agree that this approach is the most
-> reasonable immediate fix.
-
-Thanks!
-
-> 
-> Btw. we have been carrying a warning about non hierarchical hierarchies
-> for years in our distribution kernels and haven't heard of any actual
-> bug reports (except for LTP driven ones). So we might be really close to
-> simply drop this functionality completely. This would simplify the code
-> and prevent from future surprises.
-
-Just sent an rfc patchset. Your feedback will be greatly appreciated!
-
-Thanks!
+Pushed.
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201104/c44afaed/attachment.htm>
