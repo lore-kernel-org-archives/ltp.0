@@ -1,43 +1,36 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 6 Nov 2020 18:32:38 +0800
-Subject: [LTP] [PATCH v4 2/2] lib/tst_kconfig: Make use of boolean
- expression eval
-In-Reply-To: <20201106103108.GB25324@yuki.lan>
-References: <20201103161052.13260-1-chrubis@suse.cz>
- <20201103161052.13260-3-chrubis@suse.cz>
- <CAEemH2dUmmFx8cEhqMP6CLpRwszeBD=kMM4i3xpBKYSV+S2d8Q@mail.gmail.com>
- <20201106103108.GB25324@yuki.lan>
-Message-ID: <CAEemH2d-qNTDMgehYo1OWzFTKp8TwxSDhj2kq0c2QYqMHomuJg@mail.gmail.com>
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Fri,  6 Nov 2020 11:37:48 +0100
+Subject: [LTP] [PATCH] tcp_cmds/ping: TCONF on unknown -f parameter
+Message-ID: <20201106103748.20241-1-kory.maincent@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 6, 2020 at 6:30 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+The ping from busybox does not have -f parameter.
+Return TCONF in that case.
 
-> Hi!
-> > I tried with more complicated configurations for test parsing, most works
-> > as expected but except the below one with parentheses ():
-> >
-> >     "CONFIG_DEFAULT_HOSTNAME=\"(none)\"",
-> >
-> > That's because the parentheses are the element of expression and used
-> > to distinguish tokens, I???m not sure whether we can change it as a
-> general
-> > character to fix this problem, if no, we might need to comment on this in
-> > the documentation.
->
-> Well we would have to teach the tokenizer about strings, i.e. treat
-> everything inside of double quotes as single token. That shouldn't be
-> that hard, I can try to add this later on.
->
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+ testcases/network/tcp_cmds/ping/ping02.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-That would be great, thank you!
-
+diff --git a/testcases/network/tcp_cmds/ping/ping02.sh b/testcases/network/tcp_cmds/ping/ping02.sh
+index e0a63c5f6..6daf22635 100755
+--- a/testcases/network/tcp_cmds/ping/ping02.sh
++++ b/testcases/network/tcp_cmds/ping/ping02.sh
+@@ -27,6 +27,10 @@ do_test()
+ 	local ipaddr=$(tst_ipaddr rhost)
+ 	local s
+ 
++	if ! $PING -c 1 -f $ipaddr >/dev/null; then
++		tst_brk TCONF "$PING: invalid option -- 'f'"
++	fi
++
+ 	for s in $PACKETSIZES; do
+ 		EXPECT_PASS $PING -c $COUNT -f -s $s $ipaddr -p "$pat" \>/dev/null
+ 	done
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201106/aaf5cc1a/attachment.htm>
+2.17.1
+
