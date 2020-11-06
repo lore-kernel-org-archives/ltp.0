@@ -1,19 +1,24 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 6 Nov 2020 14:05:47 +0100
-Subject: [LTP] [PATCH 18/19] Unify error handling in lib/tst_resource.c
-In-Reply-To: <20201026164756.30556-19-mdoucha@suse.cz>
-References: <20201026164756.30556-1-mdoucha@suse.cz>
- <20201026164756.30556-19-mdoucha@suse.cz>
-Message-ID: <20201106130547.GC30097@yuki.lan>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
+Date: Fri,  6 Nov 2020 14:06:22 +0100
+Subject: [LTP] [PATCH 0/2] lib/tst_virt: support IBM/Z LPAR and z/VM
+ virtualization environments
+Message-ID: <20201106130624.454614-1-egorenar@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Applied, thanks.
+Support detection of virtualization environment on IBM System Z.
+
+Alexander Egorenkov (2):
+  lib/tst_virt: fix detection when systemd-detect-virt returns 1
+  lib/tst_virt: support IBM/Z LPAR and z/VM virtualization environments
+
+ include/tst_cpu.h |  3 +++
+ lib/tst_virt.c    | 66 ++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 66 insertions(+), 3 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
