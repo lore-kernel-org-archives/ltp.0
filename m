@@ -1,51 +1,118 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Sat, 7 Nov 2020 08:53:25 +0800
-Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
-In-Reply-To: <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
-References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5FA21AA9.9020208@cn.fujitsu.com> <20201106123604.GA30097@yuki.lan>
- <0bc685ce-1983-b900-787f-3d89e75ca48d@163.com>
- <20201106164742.GA6449@rei.lan>
- <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
-Message-ID: <5FA5F005.7080408@cn.fujitsu.com>
+From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+Date: Sat, 07 Nov 2020 16:39:37 +0100
+Subject: [LTP] FAILED: patch "[PATCH] mm: memcg: link page counters to root
+ if use_hierarchy is" failed to apply to 5.9-stable tree
+Message-ID: <1604763577148237@kroah.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xiao, Cyril
-> On 11/7/20 12:47 AM, Cyril Hrubis wrote:
->> Hi!
->>> I have a doubt after reading Xu's patch[1] and Martin's patch[2]:
->>>
->>> 1) Xu removed sync01 because sync() always return 0.
->> Actually sync() is defined as void function, so the tests were bogusly
->> checking the TST_RET value which haven't been set at all.
->
-> Hi Cyril,
->
-> Oops, I gave a wrong example. :-(
->
-> On error, I just wonder if we need to check all return value(i.e.
-> negative value except -1).
->
-> IOW, Is it possible for syscall to get a error value which is not -1?
-IMO, get a error and syscall return -1 that is a normal situation. 
-Martin creates a standard model for it and doesn't match this rule is 
-wrong, so we can check syscall whether return the right value when 
-kernel changes these api in the future.
 
-Best Regards,
-Yang Xu
->
-> Best Regards,
->
-> Xiao Yang
->
->>
->
->
+The patch below does not apply to the 5.9-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
+thanks,
 
+greg k-h
+
+------------------ original commit in Linus's tree ------------------
+
+From 8de15e920dc85d1705ab9c202c95d56845bc2d48 Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <guro@fb.com>
+Date: Sun, 1 Nov 2020 17:07:34 -0800
+Subject: [PATCH] mm: memcg: link page counters to root if use_hierarchy is
+ false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Richard reported a warning which can be reproduced by running the LTP
+madvise6 test (cgroup v1 in the non-hierarchical mode should be used):
+
+  WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+  Modules linked in:
+  CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+  Workqueue: events drain_local_stock
+  RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+  Call Trace:
+    __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+    drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+    drain_local_stock (mm/memcontrol.c:2255)
+    process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
+    worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
+    kthread (kernel/kthread.c:292)
+    ret_from_fork (arch/x86/entry/entry_64.S:300)
+
+The problem occurs because in the non-hierarchical mode non-root page
+counters are not linked to root page counters, so the charge is not
+propagated to the root memory cgroup.
+
+After the removal of the original memory cgroup and reparenting of the
+object cgroup, the root cgroup might be uncharged by draining a objcg
+stock, for example.  It leads to an eventual underflow of the charge and
+triggers a warning.
+
+Fix it by linking all page counters to corresponding root page counters
+in the non-hierarchical mode.
+
+Please note, that in the non-hierarchical mode all objcgs are always
+reparented to the root memory cgroup, even if the hierarchy has more
+than 1 level.  This patch doesn't change it.
+
+The patch also doesn't affect how the hierarchical mode is working,
+which is the only sane and truly supported mode now.
+
+Thanks to Richard for reporting, debugging and providing an alternative
+version of the fix!
+
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Reported-by: <ltp@lists.linux.it>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Michal Koutn? <mkoutny@suse.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201026231326.3212225-1-guro@fb.com
+Debugged-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c3b6dc7d5c94..3dcbf24d2227 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5345,17 +5345,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 		memcg->swappiness = mem_cgroup_swappiness(parent);
+ 		memcg->oom_kill_disable = parent->oom_kill_disable;
+ 	}
+-	if (parent && parent->use_hierarchy) {
++	if (!parent) {
++		page_counter_init(&memcg->memory, NULL);
++		page_counter_init(&memcg->swap, NULL);
++		page_counter_init(&memcg->kmem, NULL);
++		page_counter_init(&memcg->tcpmem, NULL);
++	} else if (parent->use_hierarchy) {
+ 		memcg->use_hierarchy = true;
+ 		page_counter_init(&memcg->memory, &parent->memory);
+ 		page_counter_init(&memcg->swap, &parent->swap);
+ 		page_counter_init(&memcg->kmem, &parent->kmem);
+ 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+ 	} else {
+-		page_counter_init(&memcg->memory, NULL);
+-		page_counter_init(&memcg->swap, NULL);
+-		page_counter_init(&memcg->kmem, NULL);
+-		page_counter_init(&memcg->tcpmem, NULL);
++		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
++		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
++		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
++		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+ 		/*
+ 		 * Deeper hierachy with use_hierarchy == false doesn't make
+ 		 * much sense so let cgroup subsystem know about this
 
