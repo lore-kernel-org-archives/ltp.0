@@ -1,45 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 7 Nov 2020 17:42:14 +0100
-Subject: [LTP] [PATCH 03/19] Unify error handling in
- lib/tst_safe_timerfd.c
-In-Reply-To: <5FA5E8D6.4040401@cn.fujitsu.com>
-References: <20201026164756.30556-1-mdoucha@suse.cz>
- <20201026164756.30556-4-mdoucha@suse.cz>
- <5F97E6A0.8090506@cn.fujitsu.com> <20201106173545.GA30641@pevik>
- <5FA5E8D6.4040401@cn.fujitsu.com>
-Message-ID: <20201107164214.GA10159@pevik>
+Date: Sat, 7 Nov 2020 17:55:18 +0100
+Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
+In-Reply-To: <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
+References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <5FA21AA9.9020208@cn.fujitsu.com> <20201106123604.GA30097@yuki.lan>
+ <0bc685ce-1983-b900-787f-3d89e75ca48d@163.com>
+ <20201106164742.GA6449@rei.lan>
+ <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
+Message-ID: <20201107165518.GB10159@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin, Xu,
+Hi,
 
-> > Hi Martin, Xu,
+> On 11/7/20 12:47 AM, Cyril Hrubis wrote:
+> > Hi!
+> > > I have a doubt after reading Xu's patch[1] and Martin's patch[2]:
 
-> > > > diff --git a/lib/tst_safe_timerfd.c b/lib/tst_safe_timerfd.c
-> > > > index ffe7b2ef7..4c36a309c 100644
-> > > > --- a/lib/tst_safe_timerfd.c
-> > > > +++ b/lib/tst_safe_timerfd.c
-> > > > @@ -17,9 +17,14 @@ int safe_timerfd_create(const char *file, const int lineno,
-> > > >    	int fd;
+> > > 1) Xu removed sync01 because sync() always return 0.
+> > Actually sync() is defined as void function, so the tests were bogusly
+> > checking the TST_RET value which haven't been set at all.
 
-> > > >    	fd = timerfd_create(clockid, flags);
-> > > > -	if (fd<   0) {
-> > > > -		tst_brk(TTYPE | TERRNO, "%s:%d timerfd_create(%s) failed",
-> > > > -			file, lineno, tst_clock_name(clockid));
-> > > > +
-> > > > +	if (fd == -1) {
-> > > > +		tst_brk_(file, lineno, TTYPE | TERRNO,
-> > > > +			"timerfd_create(%s) failed", tst_clock_name(clockid));
-> > > > +	} else if (fd<   0) {
-> > nit: fd<   0 =>  fd<   0
-> Sorry, It is my email format problem, on patchwork[1], the format is right.
+> Hi Cyril,
 
-Martin, sorry for not checking what you send in the patch.
+> Oops, I gave a wrong example. :-(
 
-> [1]https://patchwork.ozlabs.org/project/ltp/patch/20201026164756.30556-4-mdoucha@suse.cz/
+> On error, I just wonder if we need to check all return value(i.e. negative
+> value except -1).
+
+> IOW, Is it possible for syscall to get a error value which is not -1?
+There are probably other examples, but I've found only these:
+
+man malloc_get_state(3)
+
+	If the implementation detects that state does not point to a correctly
+	formed data structure, malloc_set_state() returns -1.
+	If the implementation detects that the version of the data structure
+	referred to by state is a more recent version than this implementation knows
+	about, malloc_set_state() returns -2.
+
+man mmap(2)
+	On error, the value MAP_FAILED (that is, (void *) -1) is returned.
+
+> Best Regards,
+
+> Xiao Yang
+
 
 Kind regards,
 Petr
