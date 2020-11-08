@@ -1,54 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 7 Nov 2020 17:55:18 +0100
-Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
-In-Reply-To: <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
-References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5FA21AA9.9020208@cn.fujitsu.com> <20201106123604.GA30097@yuki.lan>
- <0bc685ce-1983-b900-787f-3d89e75ca48d@163.com>
- <20201106164742.GA6449@rei.lan>
- <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
-Message-ID: <20201107165518.GB10159@pevik>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sun, 8 Nov 2020 10:43:03 +0200
+Subject: [LTP] [PATCH 1/1] fanotify16: Introduce SAFE_FANOTIFY_MARK()
+ macro
+In-Reply-To: <20201020070017.GA4263@dell5510>
+References: <20201016112441.4838-1-pvorel@suse.cz>
+ <CAOQ4uxixzOtXjyVTUNR03ffJHgTQCm5+L46zNNgdxvB0n9ZuhA@mail.gmail.com>
+ <20201020070017.GA4263@dell5510>
+Message-ID: <CAOQ4uxgAk_k8de0XTewYoFKYYr2Ykpe3Ww5vy7Xfqy9hbUb7VA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Tue, Oct 20, 2020 at 10:00 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Amir,
+>
+> thanks for your suggestions, I'll send v2 shortly.
+> I've been thinking about it for a while and agree it's better to simplify
+> safe_fanotify_mark() hints.
+> I'll also separate fixes into more commits to be more readable.
+>
 
-> On 11/7/20 12:47 AM, Cyril Hrubis wrote:
-> > Hi!
-> > > I have a doubt after reading Xu's patch[1] and Martin's patch[2]:
+Hi Petr,
 
-> > > 1) Xu removed sync01 because sync() always return 0.
-> > Actually sync() is defined as void function, so the tests were bogusly
-> > checking the TST_RET value which haven't been set at all.
+I guess v2 got delayed, so while at it let me ask -
+Did you maybe consider also moving the checks for
+"FAN_REPORT_FID not supported in kernel?" and
+"FAN_REPORT_NAME not supported in kernel?"
+into safe_fanotify_init()?
 
-> Hi Cyril,
+The reason I am asking is because I am working on adding a test case
+to fanotify09 [1], which involves converting SAFE_FANOTIFY_INIT()
+to fanotify_init(), due to pottenitally unsupported init flags in the kernel.
 
-> Oops, I gave a wrong example. :-(
+Thanks,
+Amir.
 
-> On error, I just wonder if we need to check all return value(i.e. negative
-> value except -1).
-
-> IOW, Is it possible for syscall to get a error value which is not -1?
-There are probably other examples, but I've found only these:
-
-man malloc_get_state(3)
-
-	If the implementation detects that state does not point to a correctly
-	formed data structure, malloc_set_state() returns -1.
-	If the implementation detects that the version of the data structure
-	referred to by state is a more recent version than this implementation knows
-	about, malloc_set_state() returns -2.
-
-man mmap(2)
-	On error, the value MAP_FAILED (that is, (void *) -1) is returned.
-
-> Best Regards,
-
-> Xiao Yang
-
-
-Kind regards,
-Petr
+[1] https://github.com/amir73il/ltp/commits/fsnotify-fixes
