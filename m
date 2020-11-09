@@ -1,55 +1,95 @@
-From: Radoslav Kolev <radoslav.kolev@suse.com>
-Date: Mon, 09 Nov 2020 20:15:55 +0200
-Subject: [LTP] [PATCH 1/4] syscalls/sync01: Remove it
-In-Reply-To: <20201109124233.GA9991@yuki.lan>
-References: <1603691317-22811-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <5FA21AA9.9020208@cn.fujitsu.com> <20201106123604.GA30097@yuki.lan>
- <0bc685ce-1983-b900-787f-3d89e75ca48d@163.com>
- <20201106164742.GA6449@rei.lan>
- <f99d3484-f86d-dd8a-e64e-7d9d94533de4@163.com>
- <20201107165518.GB10159@pevik> <5FA8BE07.4040201@cn.fujitsu.com>
- <20201109124233.GA9991@yuki.lan>
-Message-ID: <260dd94635a3dead2e946b2c40096061aa18d25b.camel@suse.com>
+From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
+Date: Mon, 9 Nov 2020 19:27:53 +0100
+Subject: [LTP] [PATCH v2] tcp_cmds/ping/ping02: Make it compatible with
+ Busybox
+In-Reply-To: <5de346c3-ccd6-743e-c83c-e16c592c7ac5@oracle.com>
+References: <20201106143605.27230-1-kory.maincent@bootlin.com>
+ <5de346c3-ccd6-743e-c83c-e16c592c7ac5@oracle.com>
+Message-ID: <20201109192753.70167ef1@kmaincent-XPS-13-7390>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 2020-11-09 at 13:42 +0100, Cyril Hrubis wrote:
-> Hi!
-> > 1) open(2) will return -1 if an error occur.
-> >      Is it necessary to check invalid return value(except -1) if
-> > an 
-> > error occur?
-> 
-> Well if there are values that are never supposed to be returned it
-> makes
-> sense to catch these and return a TBROK or TFAIL.
-> 
-> If we are expecially testing a syscall() I would say that we should
-> check for all kinds of errors including the values that shall not be
-> returned e.g.:
-> 
-> 	TEST(open(...));
-> 
-> 	if (TST_RET == -1) {
-> 		tst_ret(TFAIL | TTERRNO, "open() failed");
-> 		return;
-> 	}
-> 
-> 	if (TST_RET < 0) {
-> 		tst_ret(TFAIL | TTERRNO, "Invalid open() retval %ld",
-> TST_RET);
-> 		return;
-> 	}
-> 
-> 	...
+Hello Alexey,
 
-I see no downside in checking for this unexpected negative value,
-except copy/pasting this test condition in every syscall testcase.
+Thank for your feedback.
 
-I don't know the LTP codebase well enough yet, but what would you say
-is a good way to have this somewhere in the library. A TEST_SYSCALL
-macro, or something else, which fails if the return value is < -1?
+On Mon, 9 Nov 2020 14:09:24 +0300
+Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
 
+> On 06.11.2020 17:36, Kory Maincent wrote:
+> > The ping from busybox does not have -f parameter, use -i parameter instead.
+> > BusyBox does not accept pattern longer than 2 bytes.
+> > 
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> >  testcases/network/tcp_cmds/ping/ping02.sh | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/testcases/network/tcp_cmds/ping/ping02.sh
+> > b/testcases/network/tcp_cmds/ping/ping02.sh index e0a63c5f6..2784c8160
+> > 100755 --- a/testcases/network/tcp_cmds/ping/ping02.sh
+> > +++ b/testcases/network/tcp_cmds/ping/ping02.sh
+> > @@ -20,7 +20,7 @@ do_setup()
+> >  
+> >  do_test()
+> >  {
+> > -	local pat="000102030405060708090a0b0c0d0e0f"
+> > +	local pat="aa"
+> >    
+> 
+> Hi Kory,
+> 
+> I think we should replace the options only if ping doesn't support
+> '-f', i.e. something like in the first version and this patch:
+> 
+> local ping_opts="-f -p 000102030405060708090a0b0c0d0e0f"
+> local ipaddr=$(tst_ipaddr rhost)
+> local s
+> 
+> $PING -h 2>&1 | grep -q '[-]f' || ping_opts="-i 0.01 -p aa"
+
+The grep in parameter is not working for all cases.
+For example the ping usage of my Ubuntu laptop is:
+Usage: ping [-aAbBdDfhLnOqrRUvV64] [-c count] [-i interval] [-I interface]
+            [-m mark] [-M pmtudisc_option] [-l preload] [-p pattern] [-Q tos]
+            [-s packetsize] [-S sndbuf] [-t ttl] [-T timestamp_option]
+            [-w deadline] [-W timeout] [hop1 ...] destination
+
+
+I may use test like this:
+$PING -c 1 -f $ipaddr >/dev/null 2>&1 || ping_opts="-i 0.01 -p aa"
+
+What do you think?
+
+Regards,
+
+> 
+> for s in $PACKETSIZES; do
+> 	EXPECT_PASS $PING -c $COUNT -s $s $ipaddr $ping_opts \>/dev/null
+> done
+> 
+> 
+> >  	tst_res TINFO "flood $PING: ICMP packets filled with pattern
+> > '$pat'" 
+> > @@ -28,7 +28,7 @@ do_test()
+> >  	local s
+> >  
+> >  	for s in $PACKETSIZES; do
+> > -		EXPECT_PASS $PING -c $COUNT -f -s $s $ipaddr -p "$pat"
+> > \>/dev/null
+> > +		EXPECT_PASS $PING -c $COUNT -i 0.001 -s $s $ipaddr -p
+> > "$pat" \>/dev/null done
+> >  }
+> >  
+> >   
+> 
+
+
+
+-- 
+K?ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
