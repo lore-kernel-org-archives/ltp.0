@@ -1,147 +1,149 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon,  9 Nov 2020 17:46:05 +0100
-Subject: [LTP] [PATCH v3 2/2] syscalls/iopl,
- ioperm: Check for SecureBoot lockdown
-In-Reply-To: <20201109164605.25965-1-mdoucha@suse.cz>
-References: <20201109164605.25965-1-mdoucha@suse.cz>
-Message-ID: <20201109164605.25965-2-mdoucha@suse.cz>
+Date: Mon,  9 Nov 2020 17:46:04 +0100
+Subject: [LTP] [PATCH v3 1/2] Add tst_secureboot_enabled() helper function
+Message-ID: <20201109164605.25965-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-SecureBoot implies integrity lockdown even if tst_lockdown_enabled() cannot
-check lockdown status directly. Udpate skip condition in ioperm() and iopl()
-tests.
+Also check for SecureBoot status in tst_lockdown_enabled() if the lockdown
+sysfile is not available/readable
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
+Changes since v1:
+- check whether machine is in EFI mode first
+
 Changes since v2:
-- new patch
+- move tst_secureboot_enabled() code to a separate header file
+- move EFIVAR_CFLAGS and EFIVAR_LIBS out of global CFLAGS and LDLIBS
 
- testcases/kernel/syscalls/ioperm/Makefile   | 3 +++
- testcases/kernel/syscalls/ioperm/ioperm01.c | 3 ++-
- testcases/kernel/syscalls/ioperm/ioperm02.c | 5 +++++
- testcases/kernel/syscalls/iopl/Makefile     | 3 +++
- testcases/kernel/syscalls/iopl/iopl01.c     | 3 ++-
- testcases/kernel/syscalls/iopl/iopl02.c     | 6 ++++++
- 6 files changed, 21 insertions(+), 2 deletions(-)
+ configure.ac             |  1 +
+ include/mk/config.mk.in  |  2 ++
+ include/tst_lockdown.h   |  4 +++
+ include/tst_secureboot.h | 53 ++++++++++++++++++++++++++++++++++++++++
+ m4/ltp-libefivar.m4      |  9 +++++++
+ 5 files changed, 69 insertions(+)
+ create mode 100644 include/tst_secureboot.h
+ create mode 100644 m4/ltp-libefivar.m4
 
-diff --git a/testcases/kernel/syscalls/ioperm/Makefile b/testcases/kernel/syscalls/ioperm/Makefile
-index 044619fb8..8624e2c99 100644
---- a/testcases/kernel/syscalls/ioperm/Makefile
-+++ b/testcases/kernel/syscalls/ioperm/Makefile
-@@ -5,4 +5,7 @@ top_srcdir		?= ../../../..
+diff --git a/configure.ac b/configure.ac
+index 03e4e09c9..d9ca5ad38 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -296,6 +296,7 @@ LTP_CHECK_CAPABILITY_SUPPORT
+ LTP_CHECK_CC_WARN_OLDSTYLE
+ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+ LTP_CHECK_CRYPTO
++LTP_CHECK_EFIVAR
+ LTP_CHECK_FORTIFY_SOURCE
+ LTP_CHECK_KERNEL_DEVEL
+ LTP_CHECK_KEYUTILS_SUPPORT
+diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+index 427608a17..45105cdab 100644
+--- a/include/mk/config.mk.in
++++ b/include/mk/config.mk.in
+@@ -45,6 +45,8 @@ KEYUTILS_LIBS		:= @KEYUTILS_LIBS@
+ HAVE_FTS_H		:= @HAVE_FTS_H@
+ LIBMNL_LIBS		:= @LIBMNL_LIBS@
+ LIBMNL_CFLAGS		:= @LIBMNL_CFLAGS@
++EFIVAR_CFLAGS		:= @EFIVAR_CFLAGS@
++EFIVAR_LIBS		:= @EFIVAR_LIBS@
  
- include $(top_srcdir)/include/mk/testcases.mk
+ prefix			:= @prefix@
  
-+CFLAGS			+= $(EFIVAR_CFLAGS)
-+LDLIBS			+= $(EFIVAR_LIBS)
+diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
+index 78eaeccea..1c60151a9 100644
+--- a/include/tst_lockdown.h
++++ b/include/tst_lockdown.h
+@@ -5,6 +5,10 @@
+ 
+ #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
+ 
++/*
++ * Note: Also check tst_secureboot_enabled(). It may indicate integrity
++ * lockdown even if tst_lockdown_enabled() returns 0.
++ */
+ int tst_lockdown_enabled(void);
+ 
+ #endif /* TST_LOCKDOWN_H */
+diff --git a/include/tst_secureboot.h b/include/tst_secureboot.h
+new file mode 100644
+index 000000000..70980a76a
+--- /dev/null
++++ b/include/tst_secureboot.h
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
 +
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ioperm/ioperm01.c b/testcases/kernel/syscalls/ioperm/ioperm01.c
-index fc5754be9..01f83aefe 100644
---- a/testcases/kernel/syscalls/ioperm/ioperm01.c
-+++ b/testcases/kernel/syscalls/ioperm/ioperm01.c
-@@ -15,6 +15,7 @@
- #include <unistd.h>
- 
- #include "tst_test.h"
-+#include "tst_secureboot.h"
- 
- #if defined __i386__ || defined(__x86_64__)
- #include <sys/io.h>
-@@ -43,7 +44,7 @@ static void verify_ioperm(void)
- static void setup(void)
- {
- 	/* ioperm() is restricted under kernel lockdown. */
--	if (tst_lockdown_enabled())
-+	if (tst_lockdown_enabled() || tst_secureboot_enabled() > 0)
- 		tst_brk(TCONF, "Kernel is locked down, skip this test");
- 
- 	/*
-diff --git a/testcases/kernel/syscalls/ioperm/ioperm02.c b/testcases/kernel/syscalls/ioperm/ioperm02.c
-index 1808191bf..129ca265c 100644
---- a/testcases/kernel/syscalls/ioperm/ioperm02.c
-+++ b/testcases/kernel/syscalls/ioperm/ioperm02.c
-@@ -22,6 +22,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_macros.h"
-+#include "tst_secureboot.h"
- 
- #if defined __i386__ || defined(__x86_64__)
- #include <sys/io.h>
-@@ -45,6 +46,10 @@ static struct tcase_t {
- 
- static void setup(void)
- {
-+	/* ioperm() is restricted under kernel lockdown. */
-+	if (tst_lockdown_enabled() || tst_secureboot_enabled() > 0)
-+		tst_brk(TCONF, "Kernel is locked down, skip this test");
++#ifndef TST_SECUREBOOT_H
++#define TST_SECUREBOOT_H
 +
- 	/*
- 	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
- 	 * from kernel 2.6.8 to permit 16-bits (65536) ioperm
-diff --git a/testcases/kernel/syscalls/iopl/Makefile b/testcases/kernel/syscalls/iopl/Makefile
-index 044619fb8..8624e2c99 100644
---- a/testcases/kernel/syscalls/iopl/Makefile
-+++ b/testcases/kernel/syscalls/iopl/Makefile
-@@ -5,4 +5,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
-+CFLAGS			+= $(EFIVAR_CFLAGS)
-+LDLIBS			+= $(EFIVAR_LIBS)
++#include "config.h"
++#include <stdlib.h>
 +
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/iopl/iopl01.c b/testcases/kernel/syscalls/iopl/iopl01.c
-index dcf2cc406..60fc529e8 100644
---- a/testcases/kernel/syscalls/iopl/iopl01.c
-+++ b/testcases/kernel/syscalls/iopl/iopl01.c
-@@ -18,6 +18,7 @@
- #include <unistd.h>
- 
- #include "tst_test.h"
-+#include "tst_secureboot.h"
- 
- #if defined __i386__ || defined(__x86_64__)
- #include <sys/io.h>
-@@ -45,7 +46,7 @@ static void verify_iopl(void)
- static void setup(void)
- {
- 	/* iopl() is restricted under kernel lockdown. */
--	if (tst_lockdown_enabled())
-+	if (tst_lockdown_enabled() || tst_secureboot_enabled() > 0)
- 		tst_brk(TCONF, "Kernel is locked down, skip this test");
- }
- 
-diff --git a/testcases/kernel/syscalls/iopl/iopl02.c b/testcases/kernel/syscalls/iopl/iopl02.c
-index 6a817cf2d..f27cfd098 100644
---- a/testcases/kernel/syscalls/iopl/iopl02.c
-+++ b/testcases/kernel/syscalls/iopl/iopl02.c
-@@ -21,6 +21,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_macros.h"
-+#include "tst_secureboot.h"
- 
- #if defined __i386__ || defined(__x86_64__)
- #include <sys/io.h>
-@@ -52,6 +53,11 @@ static void verify_iopl(unsigned int i)
- static void setup(void)
- {
- 	struct passwd *pw;
++#ifdef HAVE_EFIVAR
++#include <efivar.h>
++#endif /* HAVE_EFIVAR */
 +
-+	/* ioperm() is restricted under kernel lockdown. */
-+	if (tst_lockdown_enabled() || tst_secureboot_enabled() > 0)
-+		tst_brk(TCONF, "Kernel is locked down, skip this test");
++static inline int tst_secureboot_enabled(void)
++{
++#ifdef HAVE_EFIVAR
++	int ret, status = 0;
++	uint8_t *data = NULL;
++	size_t size = 0;
++	uint32_t attrs = 0;
 +
- 	pw = SAFE_GETPWNAM("nobody");
- 	SAFE_SETEUID(pw->pw_uid);
- }
++	if (!efi_variables_supported()) {
++		tst_res(TINFO, "SecureBoot: off (non-EFI system)");
++		return 0;
++	}
++
++	efi_error_clear();
++	ret = efi_get_variable(EFI_GLOBAL_GUID, "SecureBoot", &data, &size,
++		&attrs);
++
++	if (ret) {
++		char *fn, *func, *msg;
++		int ln, err, i = 0;
++
++		while (efi_error_get(i++, &fn, &func, &ln, &msg, &err) > 0)
++			tst_res(TINFO, "Efivar error: %s", msg);
++
++		efi_error_clear();
++	} else if (data) {
++		status = *data;
++		tst_res(TINFO, "SecureBoot: %s", status ? "on" : "off");
++	}
++
++	if (data)
++		free(data);
++
++	return status;
++#else /* HAVE_EFIVAR */
++	tst_res(TINFO, "%s(): LTP was built without efivar support", __func__);
++	return -1;
++#endif /* HAVE_EFIVAR */
++}
++
++#endif /* TST_SECUREBOOT_H */
+diff --git a/m4/ltp-libefivar.m4 b/m4/ltp-libefivar.m4
+new file mode 100644
+index 000000000..0a2750701
+--- /dev/null
++++ b/m4/ltp-libefivar.m4
+@@ -0,0 +1,9 @@
++dnl SPDX-License-Identifier: GPL-2.0-or-later
++dnl Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
++
++AC_DEFUN([LTP_CHECK_EFIVAR], [
++	dnl efivar library and headers
++	PKG_CHECK_MODULES([EFIVAR], [efivar], [
++		AC_DEFINE([HAVE_EFIVAR], [1], [Define to 1 if you have libefivar library and headers])
++	], [have_efivar=no])
++])
 -- 
 2.28.0
 
