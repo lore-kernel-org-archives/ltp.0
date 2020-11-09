@@ -1,39 +1,63 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 9 Nov 2020 17:23:30 +0800
-Subject: [LTP] [PATCH] lib/tst_cgroup: fix short reads of mems/cpus
-In-Reply-To: <CAEemH2dHXYbmkbzccWNurYURZQJJ4GENRBr=6KfQaL5HJaBO2g@mail.gmail.com>
-References: <5d6e978c803e4e6449cabd89596729bfad996a17.1604408825.git.jstancek@redhat.com>
- <CAEemH2dHXYbmkbzccWNurYURZQJJ4GENRBr=6KfQaL5HJaBO2g@mail.gmail.com>
-Message-ID: <CAEemH2f-okBCGktRfT5-RgkXziAu3FrFAN7Qih2vz=A9mfJzRw@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 9 Nov 2020 14:09:24 +0300
+Subject: [LTP] [PATCH v2] tcp_cmds/ping/ping02: Make it compatible with
+ Busybox
+In-Reply-To: <20201106143605.27230-1-kory.maincent@bootlin.com>
+References: <20201106143605.27230-1-kory.maincent@bootlin.com>
+Message-ID: <5de346c3-ccd6-743e-c83c-e16c592c7ac5@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Nov 4, 2020 at 2:22 PM Li Wang <liwang@redhat.com> wrote:
+On 06.11.2020 17:36, Kory Maincent wrote:
+> The ping from busybox does not have -f parameter, use -i parameter instead.
+> BusyBox does not accept pattern longer than 2 bytes.
+> 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+>  testcases/network/tcp_cmds/ping/ping02.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/ping/ping02.sh b/testcases/network/tcp_cmds/ping/ping02.sh
+> index e0a63c5f6..2784c8160 100755
+> --- a/testcases/network/tcp_cmds/ping/ping02.sh
+> +++ b/testcases/network/tcp_cmds/ping/ping02.sh
+> @@ -20,7 +20,7 @@ do_setup()
+>  
+>  do_test()
+>  {
+> -	local pat="000102030405060708090a0b0c0d0e0f"
+> +	local pat="aa"
+>  
 
-> ...
->> -       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf);
->> +       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf,
->> sizeof(buf));
->>         tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "cpus", buf);
->> -       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems);
->> +       tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems,
->> sizeof(buf));
->>
->
-> sizeof() is generally used to calculate the size (in bytes) of a data type,
-> e.g sizeof(char *).
-> I think here to pass 'BUFSIZ' directly is better than sizeof(buf).
->
+Hi Kory,
 
-Jan, do you agree with this point?
-If yes, I can help to modify and apply this patch.
+I think we should replace the options only if ping doesn't support
+'-f', i.e. something like in the first version and this patch:
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201109/b2c2e584/attachment.htm>
+local ping_opts="-f -p 000102030405060708090a0b0c0d0e0f"
+local ipaddr=$(tst_ipaddr rhost)
+local s
+
+$PING -h 2>&1 | grep -q '[-]f' || ping_opts="-i 0.01 -p aa"
+
+for s in $PACKETSIZES; do
+	EXPECT_PASS $PING -c $COUNT -s $s $ipaddr $ping_opts \>/dev/null
+done
+
+
+>  	tst_res TINFO "flood $PING: ICMP packets filled with pattern '$pat'"
+>  
+> @@ -28,7 +28,7 @@ do_test()
+>  	local s
+>  
+>  	for s in $PACKETSIZES; do
+> -		EXPECT_PASS $PING -c $COUNT -f -s $s $ipaddr -p "$pat" \>/dev/null
+> +		EXPECT_PASS $PING -c $COUNT -i 0.001 -s $s $ipaddr -p "$pat" \>/dev/null
+>  	done
+>  }
+>  
+> 
+
