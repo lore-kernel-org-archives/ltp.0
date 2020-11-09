@@ -1,35 +1,38 @@
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
-Date: Mon, 09 Nov 2020 16:13:45 +0100
-Subject: [LTP] [PATCH v2 1/1] lib/tst_virt: support IBM/Z LPAR and z/VM
- virtualization environments
-In-Reply-To: <20201109150943.GB25892@yuki.lan>
-References: <20201109145657.602251-1-egorenar@linux.ibm.com>
- <20201109150943.GB25892@yuki.lan>
-Message-ID: <875z6e5zrq.fsf@oc8242746057.ibm.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 9 Nov 2020 16:15:03 +0100
+Subject: [LTP] [PATCH v2] Add tst_secureboot_enabled() helper function
+In-Reply-To: <9d91a462-9aa1-eb1f-6bfc-c2db28967840@suse.cz>
+References: <20201109133245.10879-1-mdoucha@suse.cz>
+ <20201109135627.GA18105@yuki.lan>
+ <9d91a462-9aa1-eb1f-6bfc-c2db28967840@suse.cz>
+Message-ID: <20201109151503.GA15566@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Hi Martin, Cyril,
 
-> Hi!
-> Actually we can simplify the code like this:
->
-> +static int is_ibmz(int virt_type)
-> +{
-> +	FILE *sysinfo;
-> +	char line[64];
-> +	int found_lpar, found_zvm;
-> +
-> +	if (virt_type != VIRT_IBMZ_LPAR && virt_type != VIRT_IBMZ_ZVM)
-> +		return 0;
+...
+> >> diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
+> >> index 427608a17..cffd11245 100644
+> >> --- a/include/mk/config.mk.in
+> >> +++ b/include/mk/config.mk.in
+> >> @@ -56,8 +56,8 @@ libdir			:= @libdir@
+> >>  mandir			:= @mandir@
 
-Missed VIRT_IBMZ.
+> >>  CPPFLAGS		:= @CPPFLAGS@
+> >> -CFLAGS			:= @CFLAGS@
+> >> -LDLIBS			:= @LIBS@
+> >> +CFLAGS			:= @CFLAGS@ @EFIVAR_CFLAGS@
+> >> +LDLIBS			:= @LIBS@ @EFIVAR_LIBS@
 
-Otherwise is good.
-Shall i create a new patch ?
+> > Please do not do this.
 
-Regards
-Alex
+> > This should be handled like any other library, i.e. we should define
+> > EFIVAR_CFLAGS and EFIVAR_LIBS and use them in respective Makefile.
++1 (and sorry for overlooking this).
+
+Kind regards,
+Petr
