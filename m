@@ -1,51 +1,27 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Nov 2020 14:46:25 +0100
-Subject: [LTP] [PATCH 1/1] travis: Add libefivar support
-In-Reply-To: <20201110120035.20543-1-pvorel@suse.cz>
-References: <20201110120035.20543-1-pvorel@suse.cz>
-Message-ID: <20201110134625.GA6482@pevik>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 10 Nov 2020 17:31:12 +0300
+Subject: [LTP] [PATCH v3] tcp_cmds/ping/ping02: Make it compatible with
+ Busybox
+In-Reply-To: <20201110123616.GA31347@pevik>
+References: <20201109191618.4442-1-kory.maincent@bootlin.com>
+ <20201110122854.GA30193@pevik> <20201110123616.GA31347@pevik>
+Message-ID: <48e1bd71-021d-d405-fd67-c35dcd8b53e2@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 10.11.2020 15:36, Petr Vorel wrote:
+> Hi Kory, Alexey,
+> 
+>> -i option was added in busybox 1.30 (2 years old), it'd be good to note that in
+>> the commit message.
+> Actually, maybe also test -i option and if even -i not working run?
+> 
+> tst_brk TCONF "unsupported ping version (old busybox?)"
 
-> Travis CI:
-> https://travis-ci.org/github/pevik/ltp/builds/742684375
+Hi Petr,
 
-Looks like Debian does not ship libefivar-dev for ppc64el
-https://travis-ci.org/github/pevik/ltp/jobs/742684377
-
-Kind regards,
-Petr
-
-Fix:
-diff --git travis/debian.cross-compile.sh travis/debian.cross-compile.sh
-index e27c6c9bc..69ddf225c 100755
---- travis/debian.cross-compile.sh
-+++ travis/debian.cross-compile.sh
-@@ -2,6 +2,8 @@
- # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
- set -ex
- 
-+apt="apt install -y --no-install-recommends"
-+
- if [ -z "$ARCH" ]; then
- 	echo "missing \$ARCH!" >&2
- 	exit 1
-@@ -17,9 +19,11 @@ esac
- dpkg --add-architecture $ARCH
- apt update
- 
--apt install -y --no-install-recommends \
-+$apt \
- 	gcc-${gcc_arch}-linux-gnu \
- 	libc6-dev-${ARCH}-cross \
--	libefivar-dev:$ARCH \
- 	libmnl-dev:$ARCH \
- 	libtirpc-dev:$ARCH
-+
-+# efivar is currently missing on ppc64el
-+$apt libefivar-dev:$ARCH || true
+What if it failed for some other reason, it would be a wrong assumption
+that ping doesn't support -i...
