@@ -1,38 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Nov 2020 11:23:55 +0100
-Subject: [LTP] [PATCH v3 2/2] syscalls/iopl,
- ioperm: Check for SecureBoot lockdown
-In-Reply-To: <20201110085225.GA3767@yuki.lan>
-References: <20201109164605.25965-1-mdoucha@suse.cz>
- <20201109164605.25965-2-mdoucha@suse.cz>
- <CAEemH2egUaO=ebaRFOZDNCZYi1QKZN168xE=_J_U_yoBH5PyLQ@mail.gmail.com>
- <20201110085225.GA3767@yuki.lan>
-Message-ID: <20201110102355.GA10788@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 10 Nov 2020 11:26:41 +0100
+Subject: [LTP] [PATCH] pan/ltp-pan.c: fix file descriptors leaks
+In-Reply-To: <5FAA0151.3030002@cn.fujitsu.com>
+References: <1604925271-4811-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <20201109125938.GC9991@yuki.lan> <5FA9ED44.7080909@cn.fujitsu.com>
+ <5FAA0151.3030002@cn.fujitsu.com>
+Message-ID: <20201110102641.GA11262@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> > Yes, musl-libc doesn't support "e" mode for fopen[1].
+> Sorry, I ignore __fmodeflags function, musl libc supports "e" mode since 
+> 0.9.7 after this commit 8582a6e9f ("add 'e' modifier (close-on-exec) to 
+> fopen and fdopen").
+> 
+> https://git.musl-libc.org/cgit/musl/commit/src?id=8582a6e9f25dd7b87d72961f58008052a4cac473
+> 
+> It is about 8 years since musl libc fopen() supports "e". glibc2.7 
+> fopen() supports "e" is about 13 years.  Maybe we can use "e" mode now?
 
-...
-> > >  include $(top_srcdir)/include/mk/testcases.mk
+To be honest I haven't had used ltp-pan for last two years, so if that
+change works for everyone still using it, then we can go ahead with it.
 
-> > > +CFLAGS                 += $(EFIVAR_CFLAGS)
-> > > +LDLIBS                 += $(EFIVAR_LIBS)
-
-
-> > Where can we get the value of these two variables? Shouldn't we
-> > add AC_SUBST() in the m4 file?
-
-> These are exported by the PKG_CHECK_MODULES() pkgconfig autotools macro.
-FYI: I added a fix for old pkg-config (< 0.24) into m4/ltp-tirpc.m4
-(the first m4 file which started to use pkg-config)
-https://autotools.io/pkgconfig/pkg_check_modules.html
-
-But 0.24 is probably old enough (2010; 0.23 was released 2008), thus we should
-probably remove it.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
