@@ -1,36 +1,51 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 11 Nov 2020 09:46:28 +0800
-Subject: [LTP] [PATCH] pan/ltp-pan.c: fix file descriptors leaks
-In-Reply-To: <20201110102641.GA11262@yuki.lan>
-References: <1604925271-4811-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <20201109125938.GC9991@yuki.lan> <5FA9ED44.7080909@cn.fujitsu.com>
- <5FAA0151.3030002@cn.fujitsu.com> <20201110102641.GA11262@yuki.lan>
-Message-ID: <5FAB4274.6090505@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 11 Nov 2020 17:22:09 +0800
+Subject: [LTP] [PATCH 1/1] travis: Add libefivar support
+In-Reply-To: <20201110134625.GA6482@pevik>
+References: <20201110120035.20543-1-pvorel@suse.cz>
+ <20201110134625.GA6482@pevik>
+Message-ID: <CAEemH2cP8Tub5UjBcRoo2Nkwtku7KjtUYP9U9v75GHEywe=aXw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-> Hi!
->>> Yes, musl-libc doesn't support "e" mode for fopen[1].
->> Sorry, I ignore __fmodeflags function, musl libc supports "e" mode since
->> 0.9.7 after this commit 8582a6e9f ("add 'e' modifier (close-on-exec) to
->> fopen and fdopen").
->>
->> https://git.musl-libc.org/cgit/musl/commit/src?id=8582a6e9f25dd7b87d72961f58008052a4cac473
->>
->> It is about 8 years since musl libc fopen() supports "e". glibc2.7
->> fopen() supports "e" is about 13 years.  Maybe we can use "e" mode now?
+On Tue, Nov 10, 2020 at 9:46 PM Petr Vorel <pvorel@suse.cz> wrote:
+
+> Hi,
 >
-> To be honest I haven't had used ltp-pan for last two years, so if that
-> change works for everyone still using it, then we can go ahead with it.
-OK. I will wait a week. If nobody has objection, I will merge it.
-
-Best Regards
-Yang Xu
+> > Travis CI:
+> > https://travis-ci.org/github/pevik/ltp/builds/742684375
 >
+> Looks like Debian does not ship libefivar-dev for ppc64el
+> https://travis-ci.org/github/pevik/ltp/jobs/742684377
 
 
+From Travis CI, the CentOS8 reports miss efivar-devel package too.
 
+Maybe fix it by the following?
+
+--- a/travis/fedora.sh
++++ b/travis/fedora.sh
+@@ -9,11 +9,11 @@ yum -y install \
+        clang \
+        gcc \
+        findutils \
+-       efivar-devel \
+        libtirpc \
+        libtirpc-devel \
+        pkg-config \
+        redhat-lsb-core
+
+-# CentOS 8 doesn't have libmnl-devel
++# CentOS 8 doesn't have libmnl-devel and efivar-devel
+ yum -y install libmnl-devel || yum -y install libmnl
++yum -y --skip-broken install efivar-devel
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201111/0d77aaab/attachment-0001.htm>
