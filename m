@@ -1,69 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 11 Nov 2020 15:40:05 +0100
-Subject: [LTP] [PATCH v4] tcp_cmds/ping/ping02: Make it compatible with
- Busybox
-In-Reply-To: <20201110180533.28595-1-kory.maincent@bootlin.com>
-References: <20201110180533.28595-1-kory.maincent@bootlin.com>
-Message-ID: <20201111144005.GA3358@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 11 Nov 2020 15:54:41 +0100
+Subject: [LTP] [PATCH 1/2] syscalls/uname{01,
+ 03}: Convert to new API and cleanup
+In-Reply-To: <20201106065014.1118435-1-yangx.jy@cn.fujitsu.com>
+References: <20201106065014.1118435-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <20201111145441.GB16874@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Kory, Alexey,
+Hi!
+Pushed with diff:
 
-> The ping from busybox does not have -f parameter, use -i parameter instead.
-> BusyBox does not accept pattern longer than 2 bytes.
-> BusyBox support -i option since version 1.30
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-
-LGTM.
-
-I suggest to merge with few changes below.
-
-* more precise message "ping from old busybox?"
-* use just $(tst_ipaddr rhost) instead of $ipaddr
-(some time ago we've started to use function calls for these simple evaluations)
-* upper case for global variable (ugly, but easily recognizable
-
-Kind regards,
-Petr
-
-diff --git testcases/network/tcp_cmds/ping/ping02.sh testcases/network/tcp_cmds/ping/ping02.sh
-index d4290c873..acf2737bf 100755
---- testcases/network/tcp_cmds/ping/ping02.sh
-+++ testcases/network/tcp_cmds/ping/ping02.sh
-@@ -17,13 +17,12 @@ do_setup()
+diff --git a/testcases/kernel/syscalls/uname/uname01.c b/testcases/kernel/syscalls/uname/uname01.c
+index 37722947f..bd3b05303 100644
+--- a/testcases/kernel/syscalls/uname/uname01.c
++++ b/testcases/kernel/syscalls/uname/uname01.c
+@@ -24,6 +24,12 @@ static void verify_uname(void)
+                return;
+        }
  
- 	tst_require_cmds $PING
- 
--	ping_opts="-f -p 000102030405060708090a0b0c0d0e0f"
--	ipaddr=$(tst_ipaddr rhost)
-+	PING_OPTS="-f -p 000102030405060708090a0b0c0d0e0f"
- 
--	if ! $PING -c 1 -f $ipaddr >/dev/null 2>&1; then
--		ping_opts="-i 0.01 -p aa"
-+	if ! $PING -c 1 -f $(tst_ipaddr rhost) >/dev/null 2>&1; then
-+		PING_OPTS="-i 0.01 -p aa"
- 		if $PING -i 2>&1 | grep -q "invalid option"; then
--			tst_brk TCONF "unsupported ping version (old busybox?)"
-+			tst_brk TCONF "unsupported ping version (ping from old busybox?)"
- 		fi
- 	fi
- }
-@@ -32,10 +31,10 @@ do_test()
- {
- 	local s
- 
--	tst_res TINFO "flood $PING: ICMP packets with options '$ping_opts'"
-+	tst_res TINFO "flood $PING: ICMP packets with options '$PING_OPTS'"
- 
- 	for s in $PACKETSIZES; do
--		EXPECT_PASS $PING -c $COUNT -s $s $ipaddr $ping_opts \>/dev/null
-+		EXPECT_PASS $PING -c $COUNT -s $s $(tst_ipaddr rhost) $PING_OPTS \>/dev/null
- 	done
- }
- 
++       if (TST_RET != 0) {
++               tst_res(TFAIL | TTERRNO,
++                       "uname() returned invalid value %ld", TST_RET);
++               return;
++       }
++
+        if (strcmp(un.sysname, "Linux")) {
+                tst_res(TFAIL, "sysname is not Linux");
+                return;
+
+
+Also I guess that we can check the hostname against gethostname(), but that can
+be added in follow up patch, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
