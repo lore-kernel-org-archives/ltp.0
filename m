@@ -1,168 +1,84 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 12 Nov 2020 09:26:13 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/uname02: Convert to new API and
- cleanup
-In-Reply-To: <20201111145733.GC16874@yuki.lan>
-References: <20201111145733.GC16874@yuki.lan>
-Message-ID: <20201112012613.1426897-1-yangx.jy@cn.fujitsu.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 12 Nov 2020 14:31:12 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/ptrace02: Add another EPERM error
+ test
+In-Reply-To: <20201111150926.GA21539@yuki.lan>
+References: <1604317409-22871-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20201111150926.GA21539@yuki.lan>
+Message-ID: <5FACD6B0.8080908@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/uname/uname02.c | 121 ++++------------------
- 1 file changed, 21 insertions(+), 100 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/uname/uname02.c b/testcases/kernel/syscalls/uname/uname02.c
-index 8b45a763d..09c26939e 100644
---- a/testcases/kernel/syscalls/uname/uname02.c
-+++ b/testcases/kernel/syscalls/uname/uname02.c
-@@ -1,119 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * Basic test for uname():
-+ * Calling uname() with invalid buf got EFAULT.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
--/*
-- * NAME
-- *	uname02.c
-- *
-- * DESCRIPTION
-- *	uname02 - call uname() with an invalid address to produce a failure
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	issue the system call
-- *	check the errno value
-- *	  issue a PASS message if we get EFAULT - errno 14
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  uname02 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *		where,  -c n : Run n copies concurrently.
-- *			-e   : Turn on errno logging.
-- *			-i n : Execute test n times.
-- *			-I x : Execute test for x seconds.
-- *			-P x : Pause for x seconds between iterations.
-- *			-t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *
-- * Restrictions
-- *	none
-- */
--
--#include "test.h"
--
- #include <errno.h>
- #include <sys/utsname.h>
-+#include "tst_test.h"
- 
--void cleanup(void);
--void setup(void);
-+static void *bad_addr;
- 
--char *TCID = "uname02";
--int TST_TOTAL = 1;
--
--#if !defined(UCLINUX)
--
--int main(int ac, char **av)
-+static void verify_uname(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		/*
--		 * call the system call with the TEST() macro
--		 * send -1 for an illegal address
--		 */
--
--		TEST(uname((struct utsname *)-1));
--
--		if (TEST_RETURN == 0)
--			tst_resm(TFAIL, "call succeed when failure expected");
--
--		switch (TEST_ERRNO) {
--		case EFAULT:
--			tst_resm(TPASS | TTERRNO, "uname failed as expected");
--			break;
--		default:
--			tst_resm(TFAIL | TTERRNO, "uname failed unexpectedly");
--		}
-+	TEST(uname((struct utsname *)bad_addr));
-+	if (TST_RET == 0) {
-+		tst_res(TFAIL, "uname() succeed when failure expected");
-+		return;
- 	}
- 
--	cleanup();
--
--	tst_exit();
-+	if (TST_ERR == EFAULT)
-+		tst_res(TPASS, "uname() got EFAULT as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "uname() failed unexpectedly");
- 
- }
- 
--void setup(void)
-+static void setup(void)
- {
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	bad_addr = tst_get_bad_addr(NULL);
- }
- 
--void cleanup(void)
--{
--}
--#else
--int main(void)
--{
--	tst_resm(TCONF, NULL, "test is not available on uClinux");
--}
--#endif /* if !defined(UCLINUX) */
-+static struct tst_test test = {
-+	.test_all = verify_uname,
-+	.setup = setup,
-+};
--- 
-2.25.1
+Hi Cyril
+> Hi!
+>> +static void verify_ptrace(void)
+>> +{
+>> +	int child_pid;
+>> +
+>> +	tst_res(TINFO, "Trace a process that don't have CAP_SYS_PTRACE capability(nobody user) for it");
+>
+> I wouldn't be printing this verbose info here, anyone who will have to
+> debug the test failures will look into the source code and at the test
+> description in the top level comment.
+Will remove it.
+>
+>> +	child_pid = SAFE_FORK();
+>> +	if (!child_pid)
+>> +		pause();
+>> +
+>> +	if (!SAFE_FORK()) {
+>> +		SAFE_SETUID(uid);
+>> +		TEST(ptrace(PTRACE_ATTACH, child_pid, NULL, NULL));
+>> +		if (TST_RET == 0) {
+>> +			tst_res(TFAIL, "ptrace() succeeded unexpectedly");
+>> +			TST_CHECKPOINT_WAKE(0);
+>> +			exit(0);
+>> +		}
+>> +		if (TST_ERR == EPERM)
+>> +			tst_res(TPASS | TTERRNO, "ptrace() failed as expected");
+>> +		else
+>> +			tst_res(TFAIL | TTERRNO, "ptrace() expected EPERM, but got");
+>> +		TST_CHECKPOINT_WAKE(0);
+>> +		exit(0);
+>> +	}
+>> +	TST_CHECKPOINT_WAIT(0);
+>> +	SAFE_KILL(child_pid, SIGKILL);
+>> +	SAFE_WAITPID(child_pid, NULL, 0);
+>
+> We do not need the checkpoints here at all, we just need to waitpid for
+> the second child before we kill the first one.
+Yes, Will fix it in v2.
+>
+>> +	tst_reap_children();
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	struct passwd *pw;
+>> +
+>> +	pw = SAFE_GETPWNAM("nobody");
+>> +	uid = pw->pw_uid;
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.test_all = verify_ptrace,
+>> +	.forks_child = 1,
+>> +	.needs_root = 1,
+>> +	.needs_checkpoints = 1,
+>> +};
+>> --
+>> 2.23.0
+>>
+>>
+>>
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
 
 
