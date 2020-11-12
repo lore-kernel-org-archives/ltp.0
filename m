@@ -1,51 +1,44 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 12 Nov 2020 14:02:30 +0000
-Subject: [LTP] [PATCH] lib: tst_bool_expr: Add support for strings
-In-Reply-To: <20201112130224.GA17493@yuki.lan>
-References: <20201111131131.17360-1-chrubis@suse.cz>
- <87mtzoou23.fsf@suse.de> <20201111143744.GA16874@yuki.lan>
- <87k0urpzdf.fsf@suse.de> <20201112130224.GA17493@yuki.lan>
-Message-ID: <87h7puptah.fsf@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 12 Nov 2020 15:21:46 +0100
+Subject: [LTP] [PATCH v3 1/2] Add tst_secureboot_enabled() helper
+ function
+In-Reply-To: <20201109164605.25965-1-mdoucha@suse.cz>
+References: <20201109164605.25965-1-mdoucha@suse.cz>
+Message-ID: <20201112142146.GA19824@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+I've looked into the library and what it actually does in this case is
+that it opens a sysfs file and reads a few bytes from there. I guess
+that we can even avoid linking the library in this case, since we just
+want to know a value of the single bit in the SecureBoot file.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+The full path is:
 
-> Hi!
->> I suppose it depends how much later and how such an error would look. If
->> the error will happen directly after leaving this function then I don't
->> think it matters either, but if it is possible that it manages to
->> complete the whole evaluation process before failing with TCONF because
->> the vars don't match then this has the potential to waste some time.
->
-> Well I can easily add this kind of check here, however out of all
-> possible mistakes that you can do with misplaced quotes this would only
-> catch the cases where the number of quotes is odd. I.e. only a subset of
-> all possible errors, everything else would be caught later on when we
-> attempt to evaluate the expression.
->
-> E.g.
->
-> 	CONFIG_FOO"=val"
-> 	"CONFIG_FOO=val & CONFIG_BAR"
-> 	"CONFIG_FOO"
-> 	etc.
->
-> are all valid in this context, but completely wrong when evaluated.
->
-> I guess that it would make more sense to check if variable token is sane
-> in the upper layer, i.e. in the kconfig parser since we do have the full
-> information about how it should look like there. And this check would
-> also cover this case as well.
+/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c
 
-+1
+The SecureBoot is the name of the variable and the hex numbers
+represends the global GUID.
 
+Now on my system with secure boot disabled the content of the file looks
+like:
+
+cat /sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c  |xxd
+00000000: 0600 0000 00                             .....
+
+The first four bytes are attributes, we can ingore them and the last
+byte is the data byte, which tells us if secure boot is enabled or not.
+
+So it may be as well easier to:
+
+* Check if that file exists
+
+* Read five bytes and return the last one
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
