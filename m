@@ -1,9 +1,11 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 12 Nov 2020 14:48:43 +0800
-Subject: [LTP] [PATCH v2 1/2] syscalls/ptrace02: Add another EPERM error test
-In-Reply-To: <20201111150926.GA21539@yuki.lan>
+Date: Thu, 12 Nov 2020 14:48:44 +0800
+Subject: [LTP] [PATCH v2 2/2] syscalls/ptrace11: Add test for tracing init
+ process
+In-Reply-To: <1605163724-20306-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <20201111150926.GA21539@yuki.lan>
-Message-ID: <1605163724-20306-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1605163724-20306-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1605163724-20306-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,45 +16,44 @@ Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/ptrace/.gitignore |  1 +
- testcases/kernel/syscalls/ptrace/ptrace02.c | 61 +++++++++++++++++++++
- 3 files changed, 63 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ptrace/ptrace02.c
+ testcases/kernel/syscalls/ptrace/ptrace11.c | 39 +++++++++++++++++++++
+ 3 files changed, 41 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace11.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 3ddf70c54..aeacb8bc8 100644
+index aeacb8bc8..6b5908662 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -990,6 +990,7 @@ pselect03 pselect03
- pselect03_64 pselect03_64
+@@ -1000,6 +1000,7 @@ ptrace07 ptrace07
+ ptrace08 ptrace08
+ ptrace09 ptrace09
+ ptrace10 ptrace10
++ptrace11 ptrace11
  
- ptrace01 ptrace01
-+ptrace02 ptrace02
- ptrace03 ptrace03
- ptrace04 ptrace04
- ptrace05 ptrace05
+ pwrite01 pwrite01
+ pwrite02 pwrite02
 diff --git a/testcases/kernel/syscalls/ptrace/.gitignore b/testcases/kernel/syscalls/ptrace/.gitignore
-index 7ee3b3c47..34be5148f 100644
+index 34be5148f..01cbc6072 100644
 --- a/testcases/kernel/syscalls/ptrace/.gitignore
 +++ b/testcases/kernel/syscalls/ptrace/.gitignore
-@@ -1,4 +1,5 @@
- /ptrace01
-+/ptrace02
- /ptrace03
- /ptrace04
- /ptrace05
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace02.c b/testcases/kernel/syscalls/ptrace/ptrace02.c
+@@ -7,3 +7,4 @@
+ /ptrace08
+ /ptrace09
+ /ptrace10
++/ptrace11
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace11.c b/testcases/kernel/syscalls/ptrace/ptrace11.c
 new file mode 100644
-index 000000000..cacaeeb96
+index 000000000..6375964f9
 --- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace02.c
-@@ -0,0 +1,61 @@
++++ b/testcases/kernel/syscalls/ptrace/ptrace11.c
+@@ -0,0 +1,39 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
 + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com
 + *
-+ * ptrace() returns -1 and sets errno to EPERM if tracer doesn't have
-+ * CAP_SYS_PTRACE capability for the process. Such as nobody user.
++ * This case just check whether we can trace init(1) process and
++ * doesn't trigger error.
 + */
 +
 +#include <errno.h>
@@ -64,47 +65,25 @@ index 000000000..cacaeeb96
 +#include "ptrace.h"
 +#include "tst_test.h"
 +
-+uid_t uid;
-+
 +static void verify_ptrace(void)
 +{
-+	int child_pid[2];
++	TEST(ptrace(PTRACE_ATTACH, 1, NULL, NULL));
++	if (TST_RET == 0)
++		tst_res(TPASS, "ptrace() traces init process succeeded");
++	else
++		tst_res(TFAIL | TTERRNO,
++			"ptrace() returns %ld, failed unexpectedly", TST_RET);
 +
-+	child_pid[0] = SAFE_FORK();
-+	if (!child_pid[0])
-+		pause();
-+
-+	child_pid[1] = SAFE_FORK();
-+	if (!child_pid[1]) {
-+		SAFE_SETUID(uid);
-+		TEST(ptrace(PTRACE_ATTACH, child_pid[0], NULL, NULL));
-+		if (TST_RET == 0) {
-+			tst_res(TFAIL, "ptrace() succeeded unexpectedly");
-+			exit(0);
-+		}
-+		if (TST_ERR == EPERM)
-+			tst_res(TPASS | TTERRNO, "ptrace() failed as expected");
-+		else
-+			tst_res(TFAIL | TTERRNO, "ptrace() expected EPERM, but got");
-+		exit(0);
-+	}
-+	SAFE_WAITPID(child_pid[1], NULL, 0);
-+	SAFE_KILL(child_pid[0], SIGKILL);
-+	SAFE_WAITPID(child_pid[0], NULL, 0);
-+}
-+
-+static void setup(void)
-+{
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+	uid = pw->pw_uid;
++	/*
++	 * Running attach/detach more times will trigger a ESRCH error because
++	 * ptrace_check_attach function in kernel will report it if its process
++	 * stats is not __TASK_TRACED.
++	 */
++	TST_RETRY_FUNC(ptrace(PTRACE_DETACH, 1, NULL, NULL), TST_RETVAL_EQ0);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
 +	.test_all = verify_ptrace,
-+	.forks_child = 1,
 +	.needs_root = 1,
 +};
 -- 
