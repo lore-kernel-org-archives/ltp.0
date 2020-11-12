@@ -1,43 +1,83 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Nov 2020 14:02:24 +0100
-Subject: [LTP] [PATCH] lib: tst_bool_expr: Add support for strings
-In-Reply-To: <87k0urpzdf.fsf@suse.de>
-References: <20201111131131.17360-1-chrubis@suse.cz> <87mtzoou23.fsf@suse.de>
- <20201111143744.GA16874@yuki.lan> <87k0urpzdf.fsf@suse.de>
-Message-ID: <20201112130224.GA17493@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Nov 2020 14:11:39 +0100
+Subject: [LTP] [PATCH v2 00/11] 	Test metadata extraction
+In-Reply-To: <20201103191327.11081-1-pvorel@suse.cz>
+References: <20201103191327.11081-1-pvorel@suse.cz>
+Message-ID: <20201112131139.GA4962@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I suppose it depends how much later and how such an error would look. If
-> the error will happen directly after leaving this function then I don't
-> think it matters either, but if it is possible that it manages to
-> complete the whole evaluation process before failing with TCONF because
-> the vars don't match then this has the potential to waste some time.
+Hi,
 
-Well I can easily add this kind of check here, however out of all
-possible mistakes that you can do with misplaced quotes this would only
-catch the cases where the number of quotes is odd. I.e. only a subset of
-all possible errors, everything else would be caught later on when we
-attempt to evaluate the expression.
+> address some of the notes added by Li.
 
-E.g.
+> changes v1->v2:
 
-	CONFIG_FOO"=val"
-	"CONFIG_FOO=val & CONFIG_BAR"
-	"CONFIG_FOO"
-	etc.
+> 3rd commit
+> https://patchwork.ozlabs.org/project/ltp/patch/20201005133054.23587-4-chrubis@suse.cz/
+> * add buf[i++] = c; to fix parsing ""
+> * check fname is valid before opening it
+> * fix some of checkpatch.pl problems
 
-are all valid in this context, but completely wrong when evaluated.
+> 9th commit
+> * add perl-libwww-perl for fedora/centos
 
-I guess that it would make more sense to check if variable token is sane
-in the upper layer, i.e. in the kconfig parser since we do have the full
-information about how it should look like there. And this check would
-also cover this case as well.
+> 11 th commit
+> * add *.css *.js to CLEAN_TARGETS
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> TODO
+> * I didn't filter "options". But agree they should be handled better than now.
+> * some checkpatch.pl warnings left, do we want to bother?
+> docparse/docparse.c:53: WARNING: Missing a blank line after declarations
+> docparse/docparse.c:206: ERROR: do not use assignment in if condition
+> docparse/docparse.c:211: WARNING: Missing a blank line after declarations
+> docparse/docparse.c:246: ERROR: do not use assignment in if condition
+> docparse/docparse.c:288: WARNING: Missing a blank line after declarations
+> docparse/docparse.c:297: WARNING: static const char * array should probably be static const char * const
+> docparse/docparse.c:352: WARNING: static const char * array should probably be static const char * const
+> total: 2 errors, 5 warnings, 423 lines checked
+
+> * I didn't change docparse/README.md (4th commit, Jan had some notes,
+> could you phrase what should be there?)
+
+> Anything else to change?
+
+Anybody against pushing whole patchset [1] with fix below for third commit
+("docparse: Add test documentation parser").
+
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/project/ltp/list/?series=211956&state=*
+
+Fix for third commit:
+
+diff --git docparse/docparse.c docparse/docparse.c
+index 63d131c87..be6125353 100644
+--- docparse/docparse.c
++++ docparse/docparse.c
+@@ -138,10 +138,8 @@ const char *next_token(FILE *f, struct data_node *doc)
+ 
+ 		if (in_str) {
+ 			if (c == '"') {
+-				if (i == 0 || buf[i-1] != '\\') {
+-					buf[i++] = c;
++				if (i == 0 || buf[i-1] != '\\')
+ 					goto exit;
+-				}
+ 			}
+ 
+ 			buf[i++] = c;
+@@ -189,7 +187,7 @@ const char *next_token(FILE *f, struct data_node *doc)
+ 	}
+ 
+ exit:
+-	if (i == 0)
++	if (i == 0 && !in_str)
+ 		return NULL;
+ 
+ 	buf[i] = 0;
