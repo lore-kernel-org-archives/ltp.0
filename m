@@ -1,35 +1,60 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Nov 2020 16:47:46 +0100
-Subject: [LTP] [PATCH v2 0/2] Add support for kconfig strings
-Message-ID: <20201112154748.17857-1-chrubis@suse.cz>
+From: Christoph Hellwig <hch@lst.de>
+Date: Thu, 12 Nov 2020 17:50:05 +0100
+Subject: [LTP] [PATCH 2/2] loop: Fix occasional uevent drop
+In-Reply-To: <20201112165005.4022502-1-hch@lst.de>
+References: <20201112165005.4022502-1-hch@lst.de>
+Message-ID: <20201112165005.4022502-3-hch@lst.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We add a support for strings into the boolean tokenizer and also
-validator for kconfig variables into the kconfig parser so that we find
-most of the typos even before we attempt to evaluate the expressions.
+From: Petr Vorel <pvorel@suse.cz>
 
-Cyril Hrubis (2):
-  lib: tst_bool_expr: Add support for strings
-  lib/tst_kconfig: Validate variables
+Commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+causes an occasional drop of loop device uevent, which are no longer
+triggered in loop_set_size() but in a different part of code.
 
- lib/newlib_tests/.gitignore       |   1 +
- lib/newlib_tests/config01         |   1 +
- lib/newlib_tests/config02         |   1 +
- lib/newlib_tests/config03         |   1 +
- lib/newlib_tests/config04         |   1 +
- lib/newlib_tests/config05         |   1 +
- lib/newlib_tests/test_kconfig.c   |   1 +
- lib/newlib_tests/test_kconfig02.c |  29 +++++++++
- lib/newlib_tests/tst_bool_expr.c  |   3 +
- lib/tst_bool_expr.c               |   7 ++
- lib/tst_kconfig.c                 | 102 ++++++++++++++++++++++++++++++
- 11 files changed, 148 insertions(+)
- create mode 100644 lib/newlib_tests/test_kconfig02.c
+Bug is reproducible with LTP test uevent01 [1]:
 
+i=0; while true; do
+    i=$((i+1)); echo "== $i =="
+    lsmod |grep -q loop && rmmod -f loop
+    ./uevent01 || break
+done
+
+Put back triggering through code called in loop_set_size().
+
+Fix required to add yet another parameter to
+set_capacity_revalidate_and_notify().
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/uevents/uevent01.c
+
+Fixes: 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+Reported-by: <ltp@lists.linux.it>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+[hch: rebased on a different change to the prototype of
+ set_capacity_revalidate_and_notify]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/loop.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index cb1191d6e945f2..a58084c2ed7ceb 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -255,7 +255,8 @@ static void loop_set_size(struct loop_device *lo, loff_t size)
+ 
+ 	bd_set_nr_sectors(bdev, size);
+ 
+-	set_capacity_revalidate_and_notify(lo->lo_disk, size, false);
++	if (!set_capacity_revalidate_and_notify(lo->lo_disk, size, false))
++		kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
+ }
+ 
+ static inline int
 -- 
-2.26.2
+2.28.0
 
