@@ -1,13 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Nov 2020 13:05:05 +0100
-Subject: [LTP] [PATCH v2 2/2] syscalls/ptrace11: Add test for tracing
- init process
-In-Reply-To: <20201112103217.GD11365@yuki.lan>
-References: <20201111150926.GA21539@yuki.lan>
- <1605163724-20306-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1605163724-20306-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20201112103217.GD11365@yuki.lan>
-Message-ID: <20201112120505.GA15765@yuki.lan>
+Date: Thu, 12 Nov 2020 14:02:24 +0100
+Subject: [LTP] [PATCH] lib: tst_bool_expr: Add support for strings
+In-Reply-To: <87k0urpzdf.fsf@suse.de>
+References: <20201111131131.17360-1-chrubis@suse.cz> <87mtzoou23.fsf@suse.de>
+ <20201111143744.GA16874@yuki.lan> <87k0urpzdf.fsf@suse.de>
+Message-ID: <20201112130224.GA17493@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,19 +12,31 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-> > + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com
-> > + *
-> > + * This case just check whether we can trace init(1) process and
-> > + * doesn't trigger error.
-> > + */
-> 
-> Why is init(1) special here? Is this a regression test?
+> I suppose it depends how much later and how such an error would look. If
+> the error will happen directly after leaving this function then I don't
+> think it matters either, but if it is possible that it manages to
+> complete the whole evaluation process before failing with TCONF because
+> the vars don't match then this has the potential to waste some time.
 
-Looking into the manual page this wasn't supported until 2.6.26. I guess
-that we should mention that here in the test description.
+Well I can easily add this kind of check here, however out of all
+possible mistakes that you can do with misplaced quotes this would only
+catch the cases where the number of quotes is odd. I.e. only a subset of
+all possible errors, everything else would be caught later on when we
+attempt to evaluate the expression.
+
+E.g.
+
+	CONFIG_FOO"=val"
+	"CONFIG_FOO=val & CONFIG_BAR"
+	"CONFIG_FOO"
+	etc.
+
+are all valid in this context, but completely wrong when evaluated.
+
+I guess that it would make more sense to check if variable token is sane
+in the upper layer, i.e. in the kconfig parser since we do have the full
+information about how it should look like there. And this check would
+also cover this case as well.
 
 -- 
 Cyril Hrubis
