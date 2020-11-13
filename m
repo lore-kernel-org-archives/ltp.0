@@ -1,35 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Nov 2020 17:07:03 +0100
-Subject: [LTP] [PATCH] [COMMITTED] openposix: threads_scenarii: Fix a
- warnings.
-Message-ID: <20201113160703.4523-1-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Nov 2020 17:07:35 +0100
+Subject: [LTP] Failing Fedora rawhide (again)
+Message-ID: <20201113160735.GA8018@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fix many warnings caused by non-static declaration of the threaded()
-function in the threads_scenarii.c.
+Hi,
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- .../conformance/interfaces/testfrmw/threads_scenarii.c          | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this time it's on autoconf broken:
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/threads_scenarii.c b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/threads_scenarii.c
-index 4597c43e8..baf30a87c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/threads_scenarii.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/testfrmw/threads_scenarii.c
-@@ -486,7 +486,7 @@ static unsigned int sc;
- 
- #ifdef STD_MAIN
- 
--extern void *threaded(void *arg);
-+static void *threaded(void *arg);
- 
- int main(void)
- {
--- 
-2.26.2
+    /usr/bin/autoconf: This script requires a shell more modern than all
+    /usr/bin/autoconf: the shells that I found on your system.
+    /usr/bin/autoconf: Please tell bug-autoconf@gnu.org about your system,
+    /usr/bin/autoconf: including any error possibly output before this
+    /usr/bin/autoconf: message. Then install a modern shell, or manually run
+    /usr/bin/autoconf: the script under such a shell if you do have one.
 
+I suspect this is just for docker image (I remember some discussion on github,
+but cannot find anything at [1] now).
+
+I checked autoconf file and it's perfectly ok, thus I'll downgrade to Fedora
+latest (33). I like rawhide for newest software (together with Tumbleweed),
+but it must be working.
+
+Kind regards,
+Petr
+
+[1] https://github.com/fedora-cloud/docker-brew-fedora/issues
