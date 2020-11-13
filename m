@@ -1,33 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Nov 2020 16:26:54 +0100
-Subject: [LTP] [PATCH v3 1/4] syscalls/msgstress: Add common file for
- msgstress
-In-Reply-To: <5FAE244C.3030806@cn.fujitsu.com>
-References: <20200722154558.GB2714@yuki.lan>
- <1603285074-28392-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <20201111154437.GA23576@yuki.lan> <5FAE244C.3030806@cn.fujitsu.com>
-Message-ID: <20201113152654.GB16827@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Nov 2020 16:51:19 +0100
+Subject: [LTP] [PATCH v2 1/5] fanotify12: Drop incorrect hint
+In-Reply-To: <20201113155123.5959-1-pvorel@suse.cz>
+References: <20201113155123.5959-1-pvorel@suse.cz>
+Message-ID: <20201113155123.5959-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Well if we add msg to the function names there would be no harm in
-> > putting these functions into the ipc library, right? E.g. we would have
-> > msg_do_reader() etc.
-> 
-> Yes. it is no harm. But I don't see any other case using these api.
+hint "CONFIG_FANOTIFY_ACCESS_PERMISSIONS not configured in kernel?"
+is wrong here (fanotify12 does not use FAN_ACCESS_PERM).
 
-Well it makes it easier to maintain the build system since we do not end
-up with hacks in random Makefiles.
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+New in v2.
 
-> Also this patch looks has wrongly merged into ltp master.
+ testcases/kernel/syscalls/fanotify/fanotify12.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Sorry I must have pushed that by accident yesterday, I've reverted it
-now.
-
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+index fcb7ec0d3..7f23fc9dc 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify12.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+@@ -146,10 +146,6 @@ static int setup_mark(unsigned int n)
+ 					"FAN_OPEN_EXEC not supported in "
+ 					"kernel?");
+ 				return -1;
+-			} else if (errno == EINVAL) {
+-				tst_brk(TCONF | TERRNO,
+-					"CONFIG_FANOTIFY_ACCESS_PERMISSIONS "
+-					"not configured in kernel?");
+ 			}else {
+ 				tst_brk(TBROK | TERRNO,
+ 					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.29.2
+
