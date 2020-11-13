@@ -1,42 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Nov 2020 20:25:40 +0100
-Subject: [LTP] [PATCH 2/2] loop: Fix occasional uevent drop
-In-Reply-To: <20201112165005.4022502-3-hch@lst.de>
-References: <20201112165005.4022502-1-hch@lst.de>
- <20201112165005.4022502-3-hch@lst.de>
-Message-ID: <20201112192540.GB14767@pevik>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 13 Nov 2020 09:29:38 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/ptrace02: Add another EPERM error
+ test
+In-Reply-To: <20201112103123.GC11365@yuki.lan>
+References: <20201111150926.GA21539@yuki.lan>
+ <1605163724-20306-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20201112102725.GB11365@yuki.lan> <20201112103123.GC11365@yuki.lan>
+Message-ID: <5FADE182.80800@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Christoph,
+Hi Cyril
+> Hi!
+>> Pushed, thanks.
+>
+> I've pushed a follow up patch that adds an explicit test for return value.
+>
+> Please be strict in checking the return values in your testcases from
+> now on.
+Ok. I Will notice this.
 
-> From: Petr Vorel <pvorel@suse.cz>
-Thanks for rebasing my code. Using loop.c specific code in the file instead of
-the function is indeed much better.
+Best Regards
+Yang Xu
+>
 
-I also like your cleanup for 5.11 (remove the update_bdev parameter from
-set_capacity_revalidate_and_notify).
 
-> Commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
-> causes an occasional drop of loop device uevent, which are no longer
-> triggered in loop_set_size() but in a different part of code.
 
-> Bug is reproducible with LTP test uevent01 [1]:
-
-> i=0; while true; do
->     i=$((i+1)); echo "== $i =="
->     lsmod |grep -q loop && rmmod -f loop
->     ./uevent01 || break
-> done
-
-> Put back triggering through code called in loop_set_size().
-
-> Fix required to add yet another parameter to
-> set_capacity_revalidate_and_notify().
-This ^ is no longer true and should be removed.
-
-Kind regards,
-Petr
