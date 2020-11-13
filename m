@@ -1,29 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Nov 2020 16:12:39 +0100
-Subject: [LTP] [PATCH v3] syscalls/ptrace11: Add test for tracing init
- process
-In-Reply-To: <1605233273-3784-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20201112120505.GA15765@yuki.lan>
- <1605233273-3784-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <20201113151239.GB16315@yuki.lan>
+From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
+Date: Fri, 13 Nov 2020 16:17:39 +0100
+Subject: [LTP] Need support on host01 test command.
+Message-ID: <20201113161739.37034d68@kmaincent-XPS-13-7390>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	/*
-> +	 * Running attach/detach more times will trigger a ESRCH error because
-> +	 * ptrace_check_attach function in kernel will report it if its process
-> +	 * stats is not __TASK_TRACED.
-> +	 */
-> +	TST_RETRY_FUNC(ptrace(PTRACE_DETACH, 1, NULL, NULL), TST_RETVAL_EQ0);
+Hello,
 
-Why do we have to retry the detach here?
+I am trying to update host01 test to the new API, but I got some problem with
+that task.
 
-Other than that the rest looks fine now.
+I am not a network expert and I am wondering why I got this issue:
+# host $(hostname)
+;; connection timed out; no servers could be reached
+# host localchost
+;; connection timed out; no servers could be reached
+
+
+I am working on an embedded board with an OpenEmbedded based distribution.
+I may miss some network package, could you give me a hint to go further.
+
+Regards,
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+K?ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
