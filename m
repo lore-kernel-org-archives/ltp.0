@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 13 Nov 2020 14:14:20 +0100
-Subject: [LTP] [PATCH 02/10] syscalls/uname: Make use of TEST_MACROS
+Date: Fri, 13 Nov 2020 14:14:21 +0100
+Subject: [LTP] [PATCH 03/10] syscalls/accept: Make use of TEST_MACROS
 In-Reply-To: <20201113131428.13199-1-chrubis@suse.cz>
 References: <20201113131428.13199-1-chrubis@suse.cz>
-Message-ID: <20201113131428.13199-3-chrubis@suse.cz>
+Message-ID: <20201113131428.13199-4-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,70 +12,37 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/uname/uname01.c | 13 +++----------
- testcases/kernel/syscalls/uname/uname02.c | 17 +----------------
- 2 files changed, 4 insertions(+), 26 deletions(-)
+ testcases/kernel/syscalls/accept/accept01.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/uname/uname01.c b/testcases/kernel/syscalls/uname/uname01.c
-index bd3b05303..999a9efd2 100644
---- a/testcases/kernel/syscalls/uname/uname01.c
-+++ b/testcases/kernel/syscalls/uname/uname01.c
-@@ -18,24 +18,17 @@ static void verify_uname(void)
+diff --git a/testcases/kernel/syscalls/accept/accept01.c b/testcases/kernel/syscalls/accept/accept01.c
+index 4e30906f2..141400e54 100644
+--- a/testcases/kernel/syscalls/accept/accept01.c
++++ b/testcases/kernel/syscalls/accept/accept01.c
+@@ -95,21 +95,8 @@ void verify_accept(unsigned int nr)
+ {
+ 	struct test_case *tcase = &tcases[nr];
  
- 	memset(&un, 0, sizeof(un));
- 
--	TEST(uname(&un));
--	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "uname() failed");
+-	TEST(accept(*tcase->fd, tcase->sockaddr, &tcase->salen));
+-
+-	if (TST_RET != -1) {
+-		tst_res(TFAIL, "%s: returned %li, expected -1",
+-				tcase->desc, TST_RET);
 -		return;
 -	}
-+	TEST_PASS(uname(&un));
- 
--	if (TST_RET != 0) {
--		tst_res(TFAIL | TTERRNO,
--			"uname() returned invalid value %ld", TST_RET);
-+	if (!TST_PASS)
- 		return;
+-
+-	if (TST_ERR != tcase->experrno) {
+-		tst_res(TFAIL | TTERRNO, "%s: expected errno %s, got ",
+-				tcase->desc, tst_strerrno(tcase->experrno));
+-		return;
 -	}
- 
- 	if (strcmp(un.sysname, "Linux")) {
- 		tst_res(TFAIL, "sysname is not Linux");
- 		return;
- 	}
- 
--	tst_res(TPASS, "uname() succeeded");
-+	tst_res(TPASS, "sysname set to Linux");
+-
+-	tst_res(TPASS | TTERRNO, "%s successful", tcase->desc);
++	TEST_FAIL(accept(*tcase->fd, tcase->sockaddr, &tcase->salen),
++	          tcase->experrno, "%s", tcase->desc);
  }
  
  static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/uname/uname02.c b/testcases/kernel/syscalls/uname/uname02.c
-index 1903dae24..b4c5457cd 100644
---- a/testcases/kernel/syscalls/uname/uname02.c
-+++ b/testcases/kernel/syscalls/uname/uname02.c
-@@ -16,22 +16,7 @@ static void *bad_addr;
- 
- static void verify_uname(void)
- {
--	TEST(uname(bad_addr));
--	if (TST_RET == 0) {
--		tst_res(TFAIL, "uname() succeed when failure expected");
--		return;
--	}
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "Invalid uname() return value %ld", TST_RET);
--		return;
--	}
--
--	if (TST_ERR == EFAULT)
--		tst_res(TPASS, "uname() got EFAULT as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "uname() failed unexpectedly");
--
-+	TEST_FAIL(uname(bad_addr), EFAULT);
- }
- 
- static void setup(void)
 -- 
 2.26.2
 
