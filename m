@@ -1,42 +1,54 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Nov 2020 16:51:23 +0100
-Subject: [LTP] [PATCH v2 5/5] fanotify: Add a pedantic check for return value
-In-Reply-To: <20201113155123.5959-1-pvorel@suse.cz>
-References: <20201113155123.5959-1-pvorel@suse.cz>
-Message-ID: <20201113155123.5959-6-pvorel@suse.cz>
+Date: Fri, 13 Nov 2020 16:51:18 +0100
+Subject: [LTP] [PATCH v2 0/5] Introduce SAFE_FANOTIFY_MARK() macro + cleanup
+Message-ID: <20201113155123.5959-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-for fanotify_init() in safe_fanotify_init()
+Hi Amir,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-New in v2.
+Changes v1->v2
+New commits:
+* fanotify12: Drop incorrect hint
+* fanotify: Handle supported features checks in setup()
+* fanotify: Add a pedantic check for return value
+* fanotify: Check FAN_REPORT_{FID,NAME} support
 
-FYI We agreed in LTP to test these.
++ implemented changes you suggested for the original commit "fanotify:
+Introduce SAFE_FANOTIFY_MARK() macro":
 
- testcases/kernel/syscalls/fanotify/fanotify.h | 5 +++++
- 1 file changed, 5 insertions(+)
+More info at the patches.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 277760c09..f3c2d48b3 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -67,6 +67,11 @@ int safe_fanotify_init(const char *file, const int lineno,
- 		tst_brk(TBROK | TERRNO, "%s:%d: fanotify_init() failed",
- 			file, lineno);
- 	}
-+
-+	if (rval < -1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: invalid fanotify_init() return %d",
-+			file, lineno, rval);
-+	}
- #else
- 	tst_brk(TCONF, "Header <sys/fanotify.h> is not present");
- #endif /* HAVE_SYS_FANOTIFY_H */
+Kind regards,
+Petr
+
+Petr Vorel (5):
+  fanotify12: Drop incorrect hint
+  fanotify: Handle supported features checks in setup()
+  fanotify: Introduce SAFE_FANOTIFY_MARK() macro
+  fanotify: Check FAN_REPORT_{FID,NAME} support
+  fanotify: Add a pedantic check for return value
+
+ testcases/kernel/syscalls/fanotify/fanotify.h | 108 +++++++++++++++++-
+ .../kernel/syscalls/fanotify/fanotify01.c     |  53 ++-------
+ .../kernel/syscalls/fanotify/fanotify02.c     |  22 +---
+ .../kernel/syscalls/fanotify/fanotify03.c     |  48 +++-----
+ .../kernel/syscalls/fanotify/fanotify04.c     |  32 +-----
+ .../kernel/syscalls/fanotify/fanotify05.c     |   9 +-
+ .../kernel/syscalls/fanotify/fanotify06.c     |  21 +---
+ .../kernel/syscalls/fanotify/fanotify07.c     |  17 +--
+ .../kernel/syscalls/fanotify/fanotify09.c     |  19 +--
+ .../kernel/syscalls/fanotify/fanotify10.c     |  44 ++-----
+ .../kernel/syscalls/fanotify/fanotify11.c     |   5 +-
+ .../kernel/syscalls/fanotify/fanotify12.c     |  57 +++------
+ .../kernel/syscalls/fanotify/fanotify13.c     |  33 +-----
+ .../kernel/syscalls/fanotify/fanotify15.c     |  24 +---
+ .../kernel/syscalls/fanotify/fanotify16.c     |  20 +---
+ 15 files changed, 188 insertions(+), 324 deletions(-)
+
 -- 
 2.29.2
 
