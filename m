@@ -1,35 +1,47 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 13 Nov 2020 19:22:39 +0300
-Subject: [LTP] Need support on host01 test command.
-In-Reply-To: <20201113161739.37034d68@kmaincent-XPS-13-7390>
-References: <20201113161739.37034d68@kmaincent-XPS-13-7390>
-Message-ID: <509d120d-35b5-d435-c052-4d34314dd438@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 13 Nov 2020 17:49:39 +0100
+Subject: [LTP] [PATCH v3 0/5] Introduce SAFE_FANOTIFY_MARK() macro + cleanup
+Message-ID: <20201113164944.26101-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13.11.2020 18:17, K?ry Maincent wrote:
-> Hello,
-> 
-> I am trying to update host01 test to the new API, but I got some problem with
-> that task.
-> 
-> I am not a network expert and I am wondering why I got this issue:
-> # host $(hostname)
-> ;; connection timed out; no servers could be reached
-> # host localchost
-> ;; connection timed out; no servers could be reached
-> 
-> 
-> I am working on an embedded board with an OpenEmbedded based distribution.
-> I may miss some network package, could you give me a hint to go further.
-> 
+Hi Amir,
 
-Hi Kory,
+quick fix for old distros.
 
-Either you don't have /etc/resolv.conf or it is empty.
+changes v2->v3:
+* move safe_fanotify_*() after constant definitions
 
+Kind regards,
+Petr
 
+Petr Vorel (5):
+  fanotify12: Drop incorrect hint
+  fanotify: Handle supported features checks in setup()
+  fanotify: Introduce SAFE_FANOTIFY_MARK() macro
+  fanotify: Check FAN_REPORT_{FID,NAME} support
+  fanotify: Add a pedantic check for return value
+
+ testcases/kernel/syscalls/fanotify/fanotify.h | 150 +++++++++++++++---
+ .../kernel/syscalls/fanotify/fanotify01.c     |  53 ++-----
+ .../kernel/syscalls/fanotify/fanotify02.c     |  22 +--
+ .../kernel/syscalls/fanotify/fanotify03.c     |  48 ++----
+ .../kernel/syscalls/fanotify/fanotify04.c     |  32 +---
+ .../kernel/syscalls/fanotify/fanotify05.c     |   9 +-
+ .../kernel/syscalls/fanotify/fanotify06.c     |  21 +--
+ .../kernel/syscalls/fanotify/fanotify07.c     |  17 +-
+ .../kernel/syscalls/fanotify/fanotify09.c     |  19 +--
+ .../kernel/syscalls/fanotify/fanotify10.c     |  44 ++---
+ .../kernel/syscalls/fanotify/fanotify11.c     |   5 +-
+ .../kernel/syscalls/fanotify/fanotify12.c     |  57 ++-----
+ .../kernel/syscalls/fanotify/fanotify13.c     |  33 +---
+ .../kernel/syscalls/fanotify/fanotify15.c     |  24 +--
+ .../kernel/syscalls/fanotify/fanotify16.c     |  20 +--
+ 15 files changed, 209 insertions(+), 345 deletions(-)
+
+-- 
+2.29.2
 
