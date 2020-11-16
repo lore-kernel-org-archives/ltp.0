@@ -1,52 +1,53 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 16 Nov 2020 16:41:02 +0800
-Subject: [LTP] [PATCH 01/10] lib: Introduce more TEST_* macros
-In-Reply-To: <20201113202828.GA2229@pevik>
-References: <20201113131428.13199-1-chrubis@suse.cz>
- <20201113131428.13199-2-chrubis@suse.cz>
- <20201113202828.GA2229@pevik>
-Message-ID: <CAEemH2fXD-gFF_7PogAPB1txUrgQmmzeK8p=MaMSn1zam0YeVg@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 16 Nov 2020 08:58:44 +0000
+Subject: [LTP] [PATCH] madvise06: Do no set swap limit
+Message-ID: <20201116085844.29499-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Sat, Nov 14, 2020 at 4:28 AM Petr Vorel <pvorel@suse.cz> wrote:
+Setting the swap limit is unnecessary for this test. By default it
+appears to be set to some large value which is OK. Setting it may fail
+for reasons unrelated to the test's purpose making the test less
+reliable.
 
-> > In order to simplify common return value checks.
->
-> Great improvement, thanks!
->
-> The only concern I have is for tests which does not end 0
-> as it's not obvious from the output (without looking into the test source)
-> that everything it's working, but not a big deal.
->
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
 
-+1
-I agree to add an expected value check for TEST_PASS(), e.g
+I should not have included this in the first update to the test. It
+appears that it fails with EACCES on at least one configuration, where
+the test ran previously. Also it could fail with EBUSY in theory.
 
-#define TEST_PASS(SCALL, EXPECTED, ...)
+I don't know why limit_in_bytes can be set, but memsw.limit_in_bytes
+results in EACCES. This is interesting, however should be the focus of
+a different test IMO.
 
+ testcases/kernel/syscalls/madvise/madvise06.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> FYI I plan to send a patchset which runs tests in lib/newlib_tests/.
-> First I thought simple check for 0 would be ok, but with non-zero results
-> it
-> might be good to not only check expected return value but maybe for whole
-> output (the same approach we have unfinished in patchset from Christian
-> Lanig).
->
-> Kind regards,
-> Petr
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
-
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 817faae39..2ba2bac6f 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -46,7 +46,6 @@
+ 
+ #define CHUNK_SZ (400*1024*1024L)
+ #define MEM_LIMIT (CHUNK_SZ / 2)
+-#define MEMSW_LIMIT (2 * CHUNK_SZ)
+ #define PASS_THRESHOLD (CHUNK_SZ / 4)
+ #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
+ 
+@@ -124,8 +123,6 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes", "%ld\n",
+ 			 MEM_LIMIT);
+-	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes", "%ld\n",
+-			 MEMSW_LIMIT);
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.swappiness", "60");
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/tasks", "%d\n", getpid());
+ 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201116/957aa64f/attachment.htm>
+2.29.1
+
