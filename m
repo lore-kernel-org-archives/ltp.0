@@ -1,37 +1,115 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 16 Nov 2020 14:11:48 +0100
-Subject: [LTP] [PATCH] pipe13: Increase time to wait for child processes to
- terminate
-Message-ID: <20201116131148.19243-1-lkml@jv-coder.de>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 16 Nov 2020 13:52:33 +0000
+Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove memory limitation
+In-Reply-To: <9478db1a-1005-1262-05e4-220bc74c0b02@jv-coder.de>
+References: <20191106061808.67330-1-lkml@jv-coder.de>
+ <9478db1a-1005-1262-05e4-220bc74c0b02@jv-coder.de>
+Message-ID: <87eektpfxa.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Hello,
 
-If the system is not fast enough, to clean up
-the child processes, the test shows a false negative result.
+Joerg Vehlow <lkml@jv-coder.de> writes:
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- testcases/kernel/syscalls/pipe/pipe13.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi,
+>
+> a little ping for this patch?
+> I recently updated the ltp suite for our tests to 20200930 and stumbled 
+> over this error again.
+> Any reason for not applying it?
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe13.c b/testcases/kernel/syscalls/pipe/pipe13.c
-index 4e6777e63..5d76e1f00 100644
---- a/testcases/kernel/syscalls/pipe/pipe13.c
-+++ b/testcases/kernel/syscalls/pipe/pipe13.c
-@@ -60,7 +60,7 @@ static void verify_pipe(unsigned int n)
- 	SAFE_CLOSE(fds[0]);
- 	SAFE_CLOSE(fds[1]);
- 
--	while (cnt < child_num && sleep_us < 100000) {
-+	while (cnt < child_num && sleep_us < 1000000) {
- 		ret = waitpid(-1, NULL, WNOHANG);
- 		if (ret < 0)
- 			tst_brk(TBROK | TERRNO, "waitpid()");
+If there was no response it's safe to assume it was forgotten
+about. Thanks for bumping it.
+
+>
+> J?rg
+>
+> On 11/6/2019 7:18 AM, Joerg Vehlow wrote:
+>> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+>>
+>> The test is supposed to verify, that memory used by a task
+>> is not migrated to a subgroup, when the task is migrated.
+>> In order to test this, it is not required, to limit
+>> the memory at all, because accounting is done anyway and
+>> the test checks the memory statistics.
+>>
+>> Therefore all memory limiting is removed. This also gets
+>> rid of a faulty assumption when writing the test:
+>> The test allocates 33 pages using mmap. It is expected,
+>> that it does not need more than 33 * pagesize of memory.
+>> But sometimes the kernel has to allocate new page tables.
+>> This is accounted as kmem AND user memory.
+>> (See kernel doc cgroup-v1/memory.txt section 2.7)
+>> If this happend, the test failed, if the system has no swap,
+>> because the oom killer kills the process.
+
+Perhaps they were checking for side effects from setting the limit... I
+think though it is correct to remove these limits.
+
+Both check_stat lines are suspect to me as some unrelated tasklet could
+run in the processes context and allocate some memory. Possibly this
+should be converted to only an approximate check?
+
+>>
+>> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+>> ---
+>>   .../kernel/controllers/memcg/functional/memcg_lib.sh |  4 ----
+>>   .../memcg/functional/memcg_subgroup_charge.sh        | 12 +-----------
+>>   2 files changed, 1 insertion(+), 15 deletions(-)
+>>
+>> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+>> index aadaae4d2..aec8a00ab 100755
+>> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+>> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+>> @@ -404,13 +404,9 @@ test_hugepage()
+>>   }
+>>   
+>>   # Test the memory charge won't move to subgroup
+>> -# $1 - memory.limit_in_bytes in parent group
+>> -# $2 - memory.limit_in_bytes in sub group
+>>   test_subgroup()
+>>   {
+>>   	mkdir subgroup
+>> -	echo $1 > memory.limit_in_bytes
+>> -	echo $2 > subgroup/memory.limit_in_bytes
+>>   
+>>   	tst_resm TINFO "Running memcg_process --mmap-anon -s $PAGESIZES"
+>>   	memcg_process --mmap-anon -s $PAGESIZES &
+>> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> index 9b11f7b58..98e5ad68d 100755
+>> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> @@ -26,7 +26,7 @@
+>>   ################################################################################
+>>   
+>>   TCID="memcg_subgroup_charge"
+>> -TST_TOTAL=3
+>> +TST_TOTAL=1
+>>   
+>>   . memcg_lib.sh
+>>   
+>> @@ -36,15 +36,5 @@ testcase_1()
+>>   	test_subgroup $PAGESIZES $((2*PAGESIZES))
+>>   }
+>>   
+>> -testcase_2()
+>> -{
+>> -	test_subgroup $PAGESIZES $PAGESIZES
+>> -}
+>> -
+>> -testcase_3()
+>> -{
+>> -	test_subgroup $PAGESIZES 0
+>> -}
+>> -
+>>   run_tests
+>>   tst_exit
+
+
 -- 
-2.25.1
-
+Thank you,
+Richard.
