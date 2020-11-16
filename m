@@ -1,88 +1,59 @@
-From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
-Date: Mon, 16 Nov 2020 17:03:00 +0100
-Subject: [LTP] Patch "loop: Fix occasional uevent drop" has been added to
- the 5.9-stable tree
-Message-ID: <16055425807438@kroah.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 16 Nov 2020 18:03:20 +0100
+Subject: [LTP] [PATCH] Define SYS_futex on 32bit arches using 64-bit
+ time_t
+In-Reply-To: <CAMKF1sqjVMexm38VVt=grmL-K63=hyfA-0aoNyi=53TyFVXJ0w@mail.gmail.com>
+References: <20201116003345.3261577-1-raj.khem@gmail.com>
+ <20201116070857.GB81864@pevik>
+ <CAMKF1sqjVMexm38VVt=grmL-K63=hyfA-0aoNyi=53TyFVXJ0w@mail.gmail.com>
+Message-ID: <20201116170320.GC152616@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Khem,
 
-This is a note to let you know that I've just added the patch titled
+> On Sun, Nov 15, 2020 at 11:08 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-    loop: Fix occasional uevent drop
+> > Hi Khem,
 
-to the 5.9-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> > > Newer 32bit arches like RISCV32 and ARC are using 64bit time_t
+> > > from get go unlike other 32bit architecture therefore aliasing
+> > __NR_futex to
+> > > __NR_futex_time64 helps avoid the below errors
 
-The filename of the patch is:
-     loop-fix-occasional-uevent-drop.patch
-and it can be found in the queue-5.9 subdirectory.
+> > > tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+> > Thanks for your fix.
 
-
-From c01a21b77722db0474bbcc4eafc8c4e0d8fed6d8 Mon Sep 17 00:00:00 2001
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Nov 2020 17:50:05 +0100
-Subject: loop: Fix occasional uevent drop
-
-From: Petr Vorel <pvorel@suse.cz>
-
-commit c01a21b77722db0474bbcc4eafc8c4e0d8fed6d8 upstream.
-
-Commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
-causes an occasional drop of loop device uevent, which are no longer
-triggered in loop_set_size() but in a different part of code.
-
-Bug is reproducible with LTP test uevent01 [1]:
-
-i=0; while true; do
-    i=$((i+1)); echo "== $i =="
-    lsmod |grep -q loop && rmmod -f loop
-    ./uevent01 || break
-done
-
-Put back triggering through code called in loop_set_size().
-
-Fix required to add yet another parameter to
-set_capacity_revalidate_and_notify().
-
-[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/uevents/uevent01.c
-
-[hch: rebased on a different change to the prototype of
- set_capacity_revalidate_and_notify]
-
-Cc: stable@vger.kernel.org # v5.9
-Fixes: 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
-Reported-by: <ltp@lists.linux.it>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/block/loop.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -255,7 +255,8 @@ static void loop_set_size(struct loop_de
- 
- 	bd_set_size(bdev, size << SECTOR_SHIFT);
- 
--	set_capacity_revalidate_and_notify(lo->lo_disk, size, false);
-+	if (!set_capacity_revalidate_and_notify(lo->lo_disk, size, false))
-+		kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
- }
- 
- static inline int
+> > I wonder if this could be defined just in include/lapi/futex.h and this:
 
 
-Patches currently in stable-queue which might be from pvorel@suse.cz are
+> > https://github.com/pevik/ltp/commit/a20107ab47554798e0de0347dd4d7259f01675af
 
-queue-5.9/block-add-a-return-value-to-set_capacity_revalidate_and_notify.patch
-queue-5.9/loop-fix-occasional-uevent-drop.patch
+
+> It could be but it did not work everywhere when I tried it I guess this
+> header has to be included in all needed placed
+
+Sure, but that's done :)
+
+You put the changes into 3 files:
+lib/tst_checkpoint.c
+testcases/kernel/syscalls/clone/clone08.c
+testcases/kernel/syscalls/futex/futextest.h
+
+Check the affected files:
+
+I put changes into include/lapi/futex.h
+and load it in
+testcases/kernel/syscalls/clone/clone08.c
+
+The other two (testcases/kernel/syscalls/clone/clone08.c
+testcases/kernel/syscalls/futex/futextest.h) already include lapi/futex.h.
+
+Are you sure it's failing when you try my patchset?
+
+Kind regards,
+Petr
