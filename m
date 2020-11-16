@@ -1,56 +1,145 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 16 Nov 2020 19:48:25 +0100
-Subject: [LTP] [PATCH] net/host: update to new api
-In-Reply-To: <20201116184143.GA171432@pevik>
-References: <20201116101840.15433-1-kory.maincent@bootlin.com>
- <20201116184143.GA171432@pevik>
-Message-ID: <20201116184825.GB171432@pevik>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 16 Nov 2020 20:31:30 +0100
+Subject: [LTP] [PATCH 1/3] network/stress/mutlicast/packet-flood: Update
+ to tst_net.sh
+In-Reply-To: <20201116124611.16919-2-lkml@jv-coder.de>
+References: <20201116124611.16919-1-lkml@jv-coder.de>
+ <20201116124611.16919-2-lkml@jv-coder.de>
+Message-ID: <20201116193130.GA181383@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Kory, Alexey,
+Hi Joerg,
 
-> Hi Kory,
+> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-> thanks for your patch.
-> ...
-> >  do_test()
-> >  {
+> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> ---
+>  .../multicast/packet-flood/mcast4-pktfld01    | 114 ++++-------------
+>  .../multicast/packet-flood/mcast4-pktfld02    | 116 ++++--------------
+>  .../multicast/packet-flood/mcast6-pktfld01    | 112 ++++-------------
+>  .../multicast/packet-flood/mcast6-pktfld02    | 114 ++++-------------
+Thanks a lot!
+Could you please merge files into single one:
+mcast{4,6}-pktfld01 => mcast-pktfld01
+mcast{4,6}-pktfld02 => mcast-pktfld02
 
-> > -    tst_resm TINFO "test basic functionality of the \`$TC' command."
-> > +    tst_res TINFO "test basic functionality of the host command."
+as done previously in other multicast and route tests?
 
-> > -    while [ $TST_COUNT -lt $NUMLOOPS ]; do
-> > +    while [ $TST_COUNT -le $NUMLOOPS ]; do
-> IMHO there is no need to have loop like this.
-> If required, we'd just add -iN parameter to it in the runtest file (where N is
-> <1,max int), but IMHO it's enough to test host only once.
+Could you also add ".sh" extension to the files? (it's then obvious it's shell,
+not a compiled binary).
 
-> >          if rhost_addr=$(host $RHOST); then
-> > -            rhost_addr=$(echo "$rhost_addr" | awk -F, '{print $NF}') >/dev/null 2>&1
-> > -            if ! host $rhost_addr >/dev/null 2>&1; then
-> > -                end_testcase "reverse lookup with host failed"
-> > -            fi
-> > -
-> > +            rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}') >/dev/null 2>&1
-> > +            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1
-> We need to redirect also second > and &:
-> EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
+NOTE: $TST_IPVER is often used.
 
-BTW 2>&1 does not make sense in this context (it's a redirection of error
-message of EXPECT_PASS function, which would be to stdout.
-I also noticed this part of traceroute01.sh is also wrong:
-EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2>&1
+Also, please remove all bogus comments like GPL verbose text (replaced by SPDX)
+and also bogus comments like:
+# Test description
 
-It should be:
-EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2\>\&1
+The comment at the top should be small, e.g.:
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) International Business Machines  Corp., 2006
+# your copyright
+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
 
-But IMHO it'd be better in both cases to keep stderr not redirected
-(don't hide problems). Therefore, unless you're against it, I'll remove
-redirection from traceroute01.sh.
+# joining a IPv4/IPv6 multicast group on a single socket, then receiving a large
+# number of UDP packets at the socket
+
+You also mix tabs and spaces. We usually prefer tabs, but please reformat whole
+file.
+
+>  4 files changed, 85 insertions(+), 371 deletions(-)
+
+> diff --git a/testcases/network/stress/multicast/packet-flood/mcast4-pktfld01 b/testcases/network/stress/multicast/packet-flood/mcast4-pktfld01
+> index c1ee513d4..20284569d 100644
+> --- a/testcases/network/stress/multicast/packet-flood/mcast4-pktfld01
+> +++ b/testcases/network/stress/multicast/packet-flood/mcast4-pktfld01
+> @@ -42,41 +42,20 @@
+>  #trace_logic=${trace_logic:-"set -x"}
+>  $trace_logic
+Please remove this.
+
+> -# The test case ID, the test case count and the total number of test case
+> -TCID=mcast4-pktfld01
+> -TST_TOTAL=1
+> -TST_COUNT=1
+> -export TCID
+> -export TST_COUNT
+> -export TST_TOTAL
+> -
+> -# Make sure the value of LTPROOT
+> -LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
+> -export LTPROOT
+> -
+> -# Check the environmanet variable
+> -. check_envval || exit $TST_TOTAL
+> -
+> -# Dulation of the test [sec]
+> -NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+> +TST_TESTFUNC=test_body
+> +TST_NEEDS_ROOT=1
+> +TST_SETUP=do_setup
+> +TST_CLEANUP=do_cleanup
+
+>  # The number of the test link where tests run
+>  LINK_NUM=${LINK_NUM:-0}
+LINK_NUM is not needed
+
+> -# Network portion of the IPv4 address
+> -NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
+> -
+> -# Netmask of the IPv4 network
+> -NETWORK_MASK=24
+> -
+> -# Host portion of the IPv4 address
+> -LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
+> -RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
+> -
+>  # Multicast Address
+>  MCAST_ADDR=224.10.0.1
+MCAST_ADDR is replaced by MCAST_IPV{4,6}_ADDR in tst_net_stress.sh (which is
+used by mcast-lib.sh, see below).
+
+> +. tst_net.sh
+
+NOTE:
+other multicast tests use
+testcases/network/stress/multicast/grp-operation/mcast-lib.sh, which also uses
+testcases/network/stress/ns-tools/tst_net_stress.sh. I wrote them some time ago
+(today I'd do things differently), they deserve cleanup (so does also my rewrite
+of multicast stress tests). Even they're not perfect, it'd be probably better to
+use it to avoid redundancy.
+
+>  # Function: do_cleanup
+> @@ -89,11 +68,7 @@ do_cleanup()
+>  {
+>      # Make sure to kill the multicast receiver and sender
+>      killall -SIGHUP ns-mcast_receiver >/dev/null 2>&1
+> -    $LTP_RSH $RHOST killall -SIGHUP ns-udpsender >/dev/null 2>&1
+> -
+> -    # Clean up each interface
+> -    initialize_if lhost ${LINK_NUM}
+> -    initialize_if rhost ${LINK_NUM}
+> +	tst_rhost_run -c "killall -SIGHUP ns-udpsender >/dev/null 2>&1"
+>  }
+Also cleanup is handled safer (if I remember correctly using killall -SIGHUP in
+original do_cleanup() does not work).
+
+
+> @@ -107,57 +82,15 @@ do_cleanup()
+>  #-----------------------------------------------------------------------
+>  do_setup()
+>  {
+> -    # Initialize the system configuration
+> -    do_cleanup
+> -
+> -    # Call do_cleanup function before exit
+> -    trap do_cleanup 0
+> +	local lhost_ifname=$(tst_iface lhost ${LINK_NUM})
+Also {l,r}host_ifname is not needed. You use $(tst_iface rhost) for -I
+parameter, see mcast_setup() in mcast-lib.sh.
 
 Kind regards,
 Petr
