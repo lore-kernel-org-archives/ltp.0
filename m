@@ -1,39 +1,71 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 16 Nov 2020 07:30:53 +0100
-Subject: [LTP] [PATCH v2 00/11] Test metadata extraction
-In-Reply-To: <CAEemH2f0UntruTFqPZDxbU=zLsQdFLmKFqtseVhTWWqq175EZg@mail.gmail.com>
-References: <20201103191327.11081-1-pvorel@suse.cz>
- <20201112131139.GA4962@pevik> <20201113170652.GA29443@pevik>
- <CAEemH2f0UntruTFqPZDxbU=zLsQdFLmKFqtseVhTWWqq175EZg@mail.gmail.com>
-Message-ID: <20201116063053.GA68300@pevik>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Sun, 15 Nov 2020 16:33:45 -0800
+Subject: [LTP] [PATCH] Define SYS_futex on 32bit arches using 64-bit time_t
+Message-ID: <20201116003345.3261577-1-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Newer 32bit arches like RISCV32 and ARC are using 64bit time_t
+from get go unlike other 32bit architecture therefore aliasing __NR_futex to
+__NR_futex_time64 helps avoid the below errors
 
-> Hi Petr,
+tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
 
-> On Sat, Nov 14, 2020 at 1:07 AM Petr Vorel <pvorel@suse.cz> wrote:
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ lib/tst_checkpoint.c                        | 4 ++++
+ testcases/kernel/syscalls/clone/clone08.c   | 4 ++++
+ testcases/kernel/syscalls/futex/futextest.h | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-> > Hi Li,
+diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+index 5e5b11496c..80e82c13f4 100644
+--- a/lib/tst_checkpoint.c
++++ b/lib/tst_checkpoint.c
+@@ -31,6 +31,10 @@
+ #include "safe_macros.h"
+ #include "lapi/futex.h"
+ 
++#if !defined(SYS_futex) && defined(SYS_futex_time64)
++#define SYS_futex SYS_futex_time64
++#endif
++
+ #define DEFAULT_MSEC_TIMEOUT 10000
+ 
+ futex_t *tst_futexes;
+diff --git a/testcases/kernel/syscalls/clone/clone08.c b/testcases/kernel/syscalls/clone/clone08.c
+index 8e115b0421..aaaff94aa0 100644
+--- a/testcases/kernel/syscalls/clone/clone08.c
++++ b/testcases/kernel/syscalls/clone/clone08.c
+@@ -17,6 +17,10 @@
+ #include "clone_platform.h"
+ #include "lapi/syscalls.h"
+ 
++#if !defined(SYS_futex) && defined(SYS_futex_time64)
++#define SYS_futex SYS_futex_time64
++#endif
++
+ static pid_t ptid, ctid, tgid;
+ static void *child_stack;
+ 
+diff --git a/testcases/kernel/syscalls/futex/futextest.h b/testcases/kernel/syscalls/futex/futextest.h
+index c50876fa67..06e2275d55 100644
+--- a/testcases/kernel/syscalls/futex/futextest.h
++++ b/testcases/kernel/syscalls/futex/futextest.h
+@@ -20,6 +20,10 @@
+ #include "lapi/futex.h"
+ #include "tst_timer.h"
+ 
++#if !defined(SYS_futex) && defined(SYS_futex_time64)
++#define SYS_futex SYS_futex_time64
++#endif
++
+ #define FUTEX_INITIALIZER 0
+ 
+ #ifndef FUTEX_CMP_REQUEUE
+-- 
+2.29.2
 
-> > ...
-> > > Anybody against pushing whole patchset [1] with fix below for third
-> > commit
-> > > ("docparse: Add test documentation parser").
-
-> > Going to merge whole patchset with diff below
-> > (https://github.com/pevik/ltp/commits/test-metadata-extraction.v2.fixes).
-
-> > Can I add you Reviewed-by: tag to whole patchset or a subset?
-
-
-> For the whole patchset:
-> Reviewed-by: Li Wang <liwang@redhat.com>
-Thanks a lot, merged!
-
-Kind regards,
-Petr
