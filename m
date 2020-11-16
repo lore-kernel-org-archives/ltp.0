@@ -1,10 +1,11 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 16 Nov 2020 13:52:33 +0000
-Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove memory limitation
-In-Reply-To: <9478db1a-1005-1262-05e4-220bc74c0b02@jv-coder.de>
-References: <20191106061808.67330-1-lkml@jv-coder.de>
- <9478db1a-1005-1262-05e4-220bc74c0b02@jv-coder.de>
-Message-ID: <87eektpfxa.fsf@suse.de>
+Date: Mon, 16 Nov 2020 14:46:35 +0000
+Subject: [LTP] [PATCH] cpuset_regression_test: Fix for already existing
+ cpusets
+In-Reply-To: <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de>
+References: <20191115101039.43386-1-lkml@jv-coder.de>
+ <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de>
+Message-ID: <87blfxpdf8.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,98 +18,40 @@ Joerg Vehlow <lkml@jv-coder.de> writes:
 
 > Hi,
 >
-> a little ping for this patch?
-> I recently updated the ltp suite for our tests to 20200930 and stumbled 
-> over this error again.
-> Any reason for not applying it?
+> a ping for this patch? Is something like that (workaround environment 
+> issues) not wanted in ltp?
 
-If there was no response it's safe to assume it was forgotten
-about. Thanks for bumping it.
+Generally speaking, yes, again you are right to bump it and these tests
+are in need of more attention. However I have a couple of concerns about
+this.
 
 >
+> Greets
 > J?rg
 >
-> On 11/6/2019 7:18 AM, Joerg Vehlow wrote:
+> On 11/15/2019 11:10 AM, Joerg Vehlow wrote:
 >> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 >>
->> The test is supposed to verify, that memory used by a task
->> is not migrated to a subgroup, when the task is migrated.
->> In order to test this, it is not required, to limit
->> the memory at all, because accounting is done anyway and
->> the test checks the memory statistics.
+>> If there are already cpusets defined on the system, that use cpu 0-1,
+>> the test fails, because it tries to exclusively use cpu 0-1 for the
+>> testcase.
 >>
->> Therefore all memory limiting is removed. This also gets
->> rid of a faulty assumption when writing the test:
->> The test allocates 33 pages using mmap. It is expected,
->> that it does not need more than 33 * pagesize of memory.
->> But sometimes the kernel has to allocate new page tables.
->> This is accounted as kmem AND user memory.
->> (See kernel doc cgroup-v1/memory.txt section 2.7)
->> If this happend, the test failed, if the system has no swap,
->> because the oom killer kills the process.
+>> The fix sets the cpuset for all cgroups to 0 and disables exclusive
+>> cpu usage for the duration of the test and restores it on cleanup.
+>> For the test only cpu 1 is set as exclusive. This is enough to
+>> trigger the bug this regression test was designed for.
+>> This was tested by reverting the commit mentioned in the testcase.
 
-Perhaps they were checking for side effects from setting the limit... I
-think though it is correct to remove these limits.
+If the system has already set exclusive cpus then it is unlikely this
+regression effects it. Either the kernel has been patched or the system
+manager configures the cpus first before setting the exclusive knob.
 
-Both check_stat lines are suspect to me as some unrelated tasklet could
-run in the processes context and allocate some memory. Possibly this
-should be converted to only an approximate check?
+Normally I would say the test should try to run anyway, but you are
+having to make some intrusive changes to the cgroup setup which could
+lead to other problems.
 
->>
->> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
->> ---
->>   .../kernel/controllers/memcg/functional/memcg_lib.sh |  4 ----
->>   .../memcg/functional/memcg_subgroup_charge.sh        | 12 +-----------
->>   2 files changed, 1 insertion(+), 15 deletions(-)
->>
->> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
->> index aadaae4d2..aec8a00ab 100755
->> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
->> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
->> @@ -404,13 +404,9 @@ test_hugepage()
->>   }
->>   
->>   # Test the memory charge won't move to subgroup
->> -# $1 - memory.limit_in_bytes in parent group
->> -# $2 - memory.limit_in_bytes in sub group
->>   test_subgroup()
->>   {
->>   	mkdir subgroup
->> -	echo $1 > memory.limit_in_bytes
->> -	echo $2 > subgroup/memory.limit_in_bytes
->>   
->>   	tst_resm TINFO "Running memcg_process --mmap-anon -s $PAGESIZES"
->>   	memcg_process --mmap-anon -s $PAGESIZES &
->> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> index 9b11f7b58..98e5ad68d 100755
->> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> @@ -26,7 +26,7 @@
->>   ################################################################################
->>   
->>   TCID="memcg_subgroup_charge"
->> -TST_TOTAL=3
->> +TST_TOTAL=1
->>   
->>   . memcg_lib.sh
->>   
->> @@ -36,15 +36,5 @@ testcase_1()
->>   	test_subgroup $PAGESIZES $((2*PAGESIZES))
->>   }
->>   
->> -testcase_2()
->> -{
->> -	test_subgroup $PAGESIZES $PAGESIZES
->> -}
->> -
->> -testcase_3()
->> -{
->> -	test_subgroup $PAGESIZES 0
->> -}
->> -
->>   run_tests
->>   tst_exit
-
+So why not just call 'tst_brk TCONF' if the system already has exclusive
+cpus configured?
 
 -- 
 Thank you,
