@@ -1,10 +1,9 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 16 Nov 2020 12:58:29 +0100
-Subject: [LTP] [PATCH] cpuset_regression_test: Fix for already existing
- cpusets
-In-Reply-To: <20191115101039.43386-1-lkml@jv-coder.de>
-References: <20191115101039.43386-1-lkml@jv-coder.de>
-Message-ID: <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de>
+Date: Mon, 16 Nov 2020 13:00:50 +0100
+Subject: [LTP] [PATCH] memcg_subgroup_charge: Remove memory limitation
+In-Reply-To: <20191106061808.67330-1-lkml@jv-coder.de>
+References: <20191106061808.67330-1-lkml@jv-coder.de>
+Message-ID: <9478db1a-1005-1262-05e4-220bc74c0b02@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,123 +12,83 @@ To: ltp@lists.linux.it
 
 Hi,
 
-a ping for this patch? Is something like that (workaround environment 
-issues) not wanted in ltp?
+a little ping for this patch?
+I recently updated the ltp suite for our tests to 20200930 and stumbled 
+over this error again.
+Any reason for not applying it?
 
-Greets
 J?rg
 
-On 11/15/2019 11:10 AM, Joerg Vehlow wrote:
+On 11/6/2019 7:18 AM, Joerg Vehlow wrote:
 > From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 >
-> If there are already cpusets defined on the system, that use cpu 0-1,
-> the test fails, because it tries to exclusively use cpu 0-1 for the
-> testcase.
+> The test is supposed to verify, that memory used by a task
+> is not migrated to a subgroup, when the task is migrated.
+> In order to test this, it is not required, to limit
+> the memory at all, because accounting is done anyway and
+> the test checks the memory statistics.
 >
-> The fix sets the cpuset for all cgroups to 0 and disables exclusive
-> cpu usage for the duration of the test and restores it on cleanup.
-> For the test only cpu 1 is set as exclusive. This is enough to
-> trigger the bug this regression test was designed for.
-> This was tested by reverting the commit mentioned in the testcase.
+> Therefore all memory limiting is removed. This also gets
+> rid of a faulty assumption when writing the test:
+> The test allocates 33 pages using mmap. It is expected,
+> that it does not need more than 33 * pagesize of memory.
+> But sometimes the kernel has to allocate new page tables.
+> This is accounted as kmem AND user memory.
+> (See kernel doc cgroup-v1/memory.txt section 2.7)
+> If this happend, the test failed, if the system has no swap,
+> because the oom killer kills the process.
 >
 > Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 > ---
->   .../cpuset/cpuset_regression_test.sh          | 58 +++++++++++++++++--
->   1 file changed, 54 insertions(+), 4 deletions(-)
+>   .../kernel/controllers/memcg/functional/memcg_lib.sh |  4 ----
+>   .../memcg/functional/memcg_subgroup_charge.sh        | 12 +-----------
+>   2 files changed, 1 insertion(+), 15 deletions(-)
 >
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-> index dccfd91cd..ed5e30f2a 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
-> @@ -26,6 +26,49 @@ TCID=cpuset_regression_test
->   TST_TOTAL=1
->   . test.sh
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index aadaae4d2..aec8a00ab 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -404,13 +404,9 @@ test_hugepage()
+>   }
 >   
-> +# cpuset_backup_and_update <backup_dir> <what> <value>
-> +# Create backup of the values of a specific file (<what>)
-> +# in all cpuset groups and set the value to <value>
-> +# The backup is written to <backup_dir> in the same structure
-> +# as in the cpuset filesystem
-> +cpuset_backup_and_update()
-> +{
-> +	local backup_dir=$1
-> +	local what=$2
-> +	local value=$3
-> +	local old_dir=$(pwd)
-> +
-> +	cd ${root_cpuset_dir}
-> +	find . -mindepth 2 -name ${what} -print0 |
-> +	while IFS= read -r -d '' file; do
-> +		tst_resm TINFO "Backup ${file} ($(cat "${file}"))"
-> +		mkdir -p "$(dirname "${backup_dir}/${file}")"
-> +		cat "${file}" > "${backup_dir}/${file}"
-> +		echo "${value}" > "${file}"
-> +	done
-> +
-> +	cd ${old_dir}
-> +}
-> +
-> +# cpuset_restore <backup_dir> <what>
-> +# Restores the value of a file (<what>) in all cpuset
-> +# groups from the backup created by cpuset_backup_and_update
-> +cpuset_restore()
-> +{
-> +	local backup_dir=$1
-> +	local what=$2
-> +	local old_dir=$(pwd)
-> +
-> +	cd ${backup_dir}
-> +	find . -mindepth 2 -name ${what} -print0 |
-> +	while IFS= read -r -d '' file; do
-> +		tst_resm TINFO "Restore ${file} ($(cat "${file}"))"
-> +		cat "${file}" > "${root_cpuset_dir}/${file}"
-> +	done
-> +
-> +	cd ${old_dir}
-> +}
-> +
->   setup()
+>   # Test the memory charge won't move to subgroup
+> -# $1 - memory.limit_in_bytes in parent group
+> -# $2 - memory.limit_in_bytes in sub group
+>   test_subgroup()
 >   {
->   	tst_require_root
-> @@ -69,6 +112,10 @@ setup()
->   			       "do not exist."
->   	fi
+>   	mkdir subgroup
+> -	echo $1 > memory.limit_in_bytes
+> -	echo $2 > subgroup/memory.limit_in_bytes
 >   
-> +	mkdir cpuset_backup
-> +	cpuset_backup_and_update "$(pwd)/cpuset_backup" ${cpu_exclusive} 0
-> +	cpuset_backup_and_update "$(pwd)/cpuset_backup" cpuset.cpus 0
-> +
->   	cpu_exclusive_value=$(cat ${root_cpuset_dir}/${cpu_exclusive})
->   	if [ "${cpu_exclusive_value}" != "1" ];then
->   		echo 1 > ${root_cpuset_dir}/${cpu_exclusive}
-> @@ -86,6 +133,9 @@ cleanup()
->   		rmdir ${root_cpuset_dir}/testdir
->   	fi
+>   	tst_resm TINFO "Running memcg_process --mmap-anon -s $PAGESIZES"
+>   	memcg_process --mmap-anon -s $PAGESIZES &
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> index 9b11f7b58..98e5ad68d 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> @@ -26,7 +26,7 @@
+>   ################################################################################
 >   
-> +	cpuset_restore "$(pwd)/cpuset_backup" cpuset.cpus
-> +	cpuset_restore "$(pwd)/cpuset_backup" ${cpu_exclusive}
-> +
->   	if [ "$cpu_exclusive_value" != 1 ]; then
->   		# Need to flush, or may be output:
->   		# "write error: Device or resource busy"
-> @@ -129,15 +179,15 @@ cpuset_test()
->   	fi
+>   TCID="memcg_subgroup_charge"
+> -TST_TOTAL=3
+> +TST_TOTAL=1
 >   
->   	# ${cpus} is empty at the begin, that maybe make the system *crash*.
-> -	echo 0-1 > ${root_cpuset_dir}/testdir/${cpus}
-> +	echo 1 > ${root_cpuset_dir}/testdir/${cpus}
->   	if [ $? -ne 0 ]; then
-> -		tst_brkm TFAIL "'echo 0-1 >" \
-> +		tst_brkm TFAIL "'echo 1 >" \
->   			       "${root_cpuset_dir}/testdir/${cpus}' failed"
->   	fi
+>   . memcg_lib.sh
 >   
->   	local cpus_value=$(cat ${root_cpuset_dir}/testdir/${cpus})
-> -	if [ "${cpus_value}" != "0-1" ]; then
-> -		tst_brkm TFAIL "${cpus} is '${cpus_value}', expected '0-1'"
-> +	if [ "${cpus_value}" != "1" ]; then
-> +		tst_brkm TFAIL "${cpus} is '${cpus_value}', expected '1'"
->   	fi
+> @@ -36,15 +36,5 @@ testcase_1()
+>   	test_subgroup $PAGESIZES $((2*PAGESIZES))
+>   }
 >   
->   	tst_resm TPASS "Bug is not reproduced"
+> -testcase_2()
+> -{
+> -	test_subgroup $PAGESIZES $PAGESIZES
+> -}
+> -
+> -testcase_3()
+> -{
+> -	test_subgroup $PAGESIZES 0
+> -}
+> -
+>   run_tests
+>   tst_exit
 
