@@ -1,130 +1,67 @@
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Mon, 16 Nov 2020 11:18:40 +0100
-Subject: [LTP] [PATCH] net/host: update to new api
-Message-ID: <20201116101840.15433-1-kory.maincent@bootlin.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 16 Nov 2020 18:51:30 +0800
+Subject: [LTP] [PATCH v3] syscalls/ptrace11: Add test for tracing init
+ process
+In-Reply-To: <20201113151239.GB16315@yuki.lan>
+References: <20201112120505.GA15765@yuki.lan>
+ <1605233273-3784-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20201113151239.GB16315@yuki.lan>
+Message-ID: <5FB259B2.4040106@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixed awk field separator parsing.
+Hi Cyril
+> Hi!
+>> +	/*
+>> +	 * Running attach/detach more times will trigger a ESRCH error because
+>> +	 * ptrace_check_attach function in kernel will report it if its process
+>> +	 * stats is not __TASK_TRACED.
+>> +	 */
+>> +	TST_RETRY_FUNC(ptrace(PTRACE_DETACH, 1, NULL, NULL), TST_RETVAL_EQ0);
+>
+> Why do we have to retry the detach here?
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
- testcases/network/tcp_cmds/host/host01.sh | 80 +++++------------------
- 1 file changed, 18 insertions(+), 62 deletions(-)
+I add a retry here because running attach/detach serval times may make 
+init process isn't traced status . Even we have do attach action, detach 
+will get ESRCH error .
 
-diff --git a/testcases/network/tcp_cmds/host/host01.sh b/testcases/network/tcp_cmds/host/host01.sh
-index 1308870f7..4987cb838 100755
---- a/testcases/network/tcp_cmds/host/host01.sh
-+++ b/testcases/network/tcp_cmds/host/host01.sh
-@@ -1,87 +1,43 @@
- #!/bin/sh
- #
--#   Copyright (c) International Business Machines  Corp., 2000
--#
--#   This program is free software;  you can redistribute it and/or modify
--#   it under the terms of the GNU General Public License as published by
--#   the Free Software Foundation; either version 2 of the License, or
--#   (at your option) any later version.
--#
--#   This program is distributed in the hope that it will be useful,
--#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
--#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
--#   the GNU General Public License for more details.
--#
--#   You should have received a copy of the GNU General Public License
--#   along with this program;  if not, write to the Free Software
--#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--#
--#
--#
--#  FILE   : host
--#
--#  PURPOSE: To test the basic functionality of the `host` command.
--#
--#  SETUP: If "RHOST" is not exported, then the local hostname is used.
--#
--#  HISTORY:
--#    06/06/03 Manoj Iyer manjo@mail.utexas.edu
--#      - Modified to use LTP tests APIs
--#    03/01 Robbie Williamson (robbiew@us.ibm.com)
--#      -Ported
--#
--#
--#-----------------------------------------------------------------------
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) K?ry Maincent <kory.maincent@bootlin.com> 2020
-+# Copyright (c) Manoj Iyer <manjo@mail.utexas.edu> 2003
-+# Copyright (c) Robbie Williamson <robbiew@us.ibm.com> 2001
-+# Copyright (c) International Business Machines  Corp., 2000
-+
-+TST_SETUP="do_setup"
-+TST_TESTFUNC="do_test"
-+TST_NEEDS_CMDS="awk host hostname"
-+
-+. tst_net.sh
- 
- do_setup()
- {
-     NUMLOOPS=${NUMLOOPS:-1}
-     SLEEPTIME=${SLEEPTIME:-0}
--
--    tst_setup
--
--    exists awk host hostname
--
-     RHOST=${RHOST:-`hostname`}
--
- }
- 
--#-----------------------------------------------------------------------
--#
--# FUNCTION:  do_test
--#
--#-----------------------------------------------------------------------
--
- do_test()
- {
- 
--    tst_resm TINFO "test basic functionality of the \`$TC' command."
-+    tst_res TINFO "test basic functionality of the host command."
- 
--    while [ $TST_COUNT -lt $NUMLOOPS ]; do
-+    while [ $TST_COUNT -le $NUMLOOPS ]; do
- 
-         if rhost_addr=$(host $RHOST); then
--            rhost_addr=$(echo "$rhost_addr" | awk -F, '{print $NF}') >/dev/null 2>&1
--            if ! host $rhost_addr >/dev/null 2>&1; then
--                end_testcase "reverse lookup with host failed"
--            fi
--
-+            rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}') >/dev/null 2>&1
-+            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1
-         else
--            end_testcase "host $RHOST on local machine failed"
-+            tst_brk TFAIL "host $RHOST on local machine failed"
-         fi
- 
--        incr_tst_count
-+        TST_COUNT=$((TST_COUNT + 1))
-         sleep $SLEEPTIME
- 
-     done
- 
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION: MAIN
--#-----------------------------------------------------------------------
--. net_cmdlib.sh
--
--read_opts $*
--do_setup
--do_test
--end_testcase
-+tst_run
--- 
-2.17.1
+In kernel/ptrace.c code, it has the following calltrace
+SYSCALL_DEFINE4(ptrace...
+    =>ptrace_check_attach   //if we don't use PTRACE_ATTACH/PTRACE_SEIZE
+      =>ptrace_freeze_traced
+
+/* Ensure that nothing can wake it up, even SIGKILL */
+static bool ptrace_freeze_traced(struct task_struct *task)
+{
+         bool ret = false;
+
+         /* Lockless, nobody but us can set this flag */
+         if (task->jobctl & JOBCTL_LISTENING)
+                 return ret;
+         spin_lock_irq(&task->sighand->siglock);
+         if (task_is_traced(task) && !__fatal_signal_pending(task)) {
+                 task->state = __TASK_TRACED;
+                 ret = true;
+         }
+         spin_unlock_irq(&task->sighand->siglock);
+
+         return ret;
+}
+
+ptrace_freeze_traced() may returns false when we run attach/detach 
+serval times, so ptrace_check_attach returns ESRCH error .
+
+To be honset, I don't figure out why task->stat is not task_traced 
+status after attaching. I am looking into this.
+
+Best Regards
+Yang Xu
+>
+> Other than that the rest looks fine now.
+>
+
+
 
