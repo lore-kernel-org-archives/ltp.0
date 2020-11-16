@@ -1,49 +1,52 @@
-From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
-Date: Mon, 16 Nov 2020 09:33:39 +0100
-Subject: [LTP] Need support on host01 test command.
-In-Reply-To: <509d120d-35b5-d435-c052-4d34314dd438@oracle.com>
-References: <20201113161739.37034d68@kmaincent-XPS-13-7390>
- <509d120d-35b5-d435-c052-4d34314dd438@oracle.com>
-Message-ID: <20201116093339.46687d76@kmaincent-XPS-13-7390>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 16 Nov 2020 16:41:02 +0800
+Subject: [LTP] [PATCH 01/10] lib: Introduce more TEST_* macros
+In-Reply-To: <20201113202828.GA2229@pevik>
+References: <20201113131428.13199-1-chrubis@suse.cz>
+ <20201113131428.13199-2-chrubis@suse.cz>
+ <20201113202828.GA2229@pevik>
+Message-ID: <CAEemH2fXD-gFF_7PogAPB1txUrgQmmzeK8p=MaMSn1zam0YeVg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Alexey,
+On Sat, Nov 14, 2020 at 4:28 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-On Fri, 13 Nov 2020 19:22:39 +0300
-Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
+> > In order to simplify common return value checks.
+>
+> Great improvement, thanks!
+>
+> The only concern I have is for tests which does not end 0
+> as it's not obvious from the output (without looking into the test source)
+> that everything it's working, but not a big deal.
+>
 
-> On 13.11.2020 18:17, K?ry Maincent wrote:
-> > Hello,
-> > 
-> > I am trying to update host01 test to the new API, but I got some problem
-> > with that task.
-> > 
-> > I am not a network expert and I am wondering why I got this issue:
-> > # host $(hostname)
-> > ;; connection timed out; no servers could be reached
-> > # host localchost
-> > ;; connection timed out; no servers could be reached
-> > 
-> > 
-> > I am working on an embedded board with an OpenEmbedded based distribution.
-> > I may miss some network package, could you give me a hint to go further.
-> >   
-> 
-> Hi Kory,
-> 
-> Either you don't have /etc/resolv.conf or it is empty.
++1
+I agree to add an expected value check for TEST_PASS(), e.g
 
-Ok, thank you for pointing me out the cause.
-In fact, the file exist and is linked to /run/systemd/resolve/resolv.conf but
-my issue was if nothing is plugged on the ethernet port it is not working. 
+#define TEST_PASS(SCALL, EXPECTED, ...)
 
-Regards,
+
+> FYI I plan to send a patchset which runs tests in lib/newlib_tests/.
+> First I thought simple check for 0 would be ok, but with non-zero results
+> it
+> might be good to not only check expected return value but maybe for whole
+> output (the same approach we have unfinished in patchset from Christian
+> Lanig).
+>
+> Kind regards,
+> Petr
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
 
 -- 
-K?ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201116/957aa64f/attachment.htm>
