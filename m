@@ -1,52 +1,42 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 16 Nov 2020 14:09:15 +0100
-Subject: [LTP] [PATCH] overcommit_memory: Remove unstable subtest
-In-Reply-To: <20201116130915.18264-1-lkml@jv-coder.de>
-References: <20201116130915.18264-1-lkml@jv-coder.de>
-Message-ID: <20201116130915.18264-2-lkml@jv-coder.de>
+Date: Mon, 16 Nov 2020 14:09:14 +0100
+Subject: [LTP] [PATCH 0/1] overcommit_memory: Remove unstable subtest
+Message-ID: <20201116130915.18264-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-The test sets overcommit policy to never overcommit and then tries
-to allocate all possible memory. This should fail, since there is already
-some memory allocated for running the test programm, but due to inaccurate
-memory accounting in mm/util.c __vm_enough_memory(), the allocation can still
-succeed.
-The commited memory is stored in a percpu counter, that counts in 1 + ncpu
-variables. For small allocations and deallocations, the memory is counted
-in a counter per cpu, without locking. For larger (de-)allocations, it is
-counted in a unified counter under lock. This can lead to this szenario:
-The counters for each cpu account for all used memory, while the unified
-counter might even be negative (because it only registered deallocations).
-The function __vm_enough_memory() takes only the unified counter into
-account and truncates negative values. This leads to the successfull
-allocation of commit_limit sometimes.
-This may be a design decision to prevent lock contention, since the more
-accurate percpu_counter_sum (in contrast to percpu_counter_read_positive)
-needs to lock the spinlock in order to get correct values.
+Hi,
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- testcases/kernel/mem/tunable/overcommit_memory.c | 1 -
- 1 file changed, 1 deletion(-)
+this is something like an RFC. (I think I mixed my thoughts
+between this and the patch description. Maybe read the patch
+description first).
+I found the overcommit_memory test, that tries to allocate
+all alocatable memory for overcommit policy never, failed 
+a lot and a lot more often, if the system has more memory.
+When looking at the kernel source I found the reason: 
+The percpu counter that counts the used memory uses a 
+counter for every cpu, if the allocation or deallocations 
+are very small. The more memory the system has, 
+the bigger "small" is defined. See mm_compute_batch.
 
-diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-index f77939908..3ce0f05c8 100644
---- a/testcases/kernel/mem/tunable/overcommit_memory.c
-+++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-@@ -154,7 +154,6 @@ static void overcommit_memory_test(void)
- 
- 	update_mem_commit();
- 	alloc_and_check(commit_left * 2, EXPECT_FAIL);
--	alloc_and_check(commit_limit, EXPECT_FAIL);
- 	update_mem_commit();
- 	alloc_and_check(commit_left / 2, EXPECT_PASS);
- 
--- 
-2.25.1
+I started seeing this issue a lot after upgrading to 20200930
+comming from 20190115. Some changes in the framework may have
+led to this.
+
+I don't think this is a kernel bug, but a result from switching
+between overcommit modes. In overcommit mode never, the batch
+size is a lot smaller than in the other modes
+(ram_pages/cpus/256 instead of ra,_pages/cpus/4).
+This leads to allocations done before switching the mode to be
+accounted in the per cpu counters, and deallocated after in the
+global counter, making the global counter negative. If the
+overcommit mode was the same all the time, it should all have
+been accounted in the same counters and the global counter
+wouldn't be negative.
+
+J?rg
 
