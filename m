@@ -1,84 +1,56 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 16 Nov 2020 19:41:43 +0100
+Date: Mon, 16 Nov 2020 19:48:25 +0100
 Subject: [LTP] [PATCH] net/host: update to new api
-In-Reply-To: <20201116101840.15433-1-kory.maincent@bootlin.com>
+In-Reply-To: <20201116184143.GA171432@pevik>
 References: <20201116101840.15433-1-kory.maincent@bootlin.com>
-Message-ID: <20201116184143.GA171432@pevik>
+ <20201116184143.GA171432@pevik>
+Message-ID: <20201116184825.GB171432@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Kory,
+Hi Kory, Alexey,
 
-thanks for your patch.
-...
->  do_test()
->  {
+> Hi Kory,
 
-> -    tst_resm TINFO "test basic functionality of the \`$TC' command."
-> +    tst_res TINFO "test basic functionality of the host command."
+> thanks for your patch.
+> ...
+> >  do_test()
+> >  {
 
-> -    while [ $TST_COUNT -lt $NUMLOOPS ]; do
-> +    while [ $TST_COUNT -le $NUMLOOPS ]; do
-IMHO there is no need to have loop like this.
-If required, we'd just add -iN parameter to it in the runtest file (where N is
-<1,max int), but IMHO it's enough to test host only once.
+> > -    tst_resm TINFO "test basic functionality of the \`$TC' command."
+> > +    tst_res TINFO "test basic functionality of the host command."
 
->          if rhost_addr=$(host $RHOST); then
-> -            rhost_addr=$(echo "$rhost_addr" | awk -F, '{print $NF}') >/dev/null 2>&1
-> -            if ! host $rhost_addr >/dev/null 2>&1; then
-> -                end_testcase "reverse lookup with host failed"
-> -            fi
-> -
-> +            rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}') >/dev/null 2>&1
-> +            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1
-We need to redirect also second > and &:
-EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
+> > -    while [ $TST_COUNT -lt $NUMLOOPS ]; do
+> > +    while [ $TST_COUNT -le $NUMLOOPS ]; do
+> IMHO there is no need to have loop like this.
+> If required, we'd just add -iN parameter to it in the runtest file (where N is
+> <1,max int), but IMHO it's enough to test host only once.
 
->          else
-> -            end_testcase "host $RHOST on local machine failed"
-> +            tst_brk TFAIL "host $RHOST on local machine failed"
->          fi
+> >          if rhost_addr=$(host $RHOST); then
+> > -            rhost_addr=$(echo "$rhost_addr" | awk -F, '{print $NF}') >/dev/null 2>&1
+> > -            if ! host $rhost_addr >/dev/null 2>&1; then
+> > -                end_testcase "reverse lookup with host failed"
+> > -            fi
+> > -
+> > +            rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}') >/dev/null 2>&1
+> > +            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1
+> We need to redirect also second > and &:
+> EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
 
-> -        incr_tst_count
-> +        TST_COUNT=$((TST_COUNT + 1))
->          sleep $SLEEPTIME
-Also sleep time is not really needed.
+BTW 2>&1 does not make sense in this context (it's a redirection of error
+message of EXPECT_PASS function, which would be to stdout.
+I also noticed this part of traceroute01.sh is also wrong:
+EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2>&1
 
-...
+It should be:
+EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2\>\&1
 
-Can I merge this simplified variant?
+But IMHO it'd be better in both cases to keep stderr not redirected
+(don't hide problems). Therefore, unless you're against it, I'll remove
+redirection from traceroute01.sh.
 
 Kind regards,
 Petr
-
-#!/bin/sh
-# SPDX-License-Identifier: GPL-2.0-or-later
-# Copyright (c) K?ry Maincent <kory.maincent@bootlin.com> 2020
-# Copyright (c) Manoj Iyer <manjo@mail.utexas.edu> 2003
-# Copyright (c) Robbie Williamson <robbiew@us.ibm.com> 2001
-# Copyright (c) International Business Machines  Corp., 2000
-
-TST_TESTFUNC="do_test"
-TST_NEEDS_CMDS="awk host hostname"
-
-. tst_net.sh
-
-do_test()
-{
-	local rhost=${RHOST:-$(hostname)}
-	local rhost_addr
-
-    tst_res TINFO "test basic functionality of the host command"
-
-	if rhost_addr=$(host $rhost); then
-		rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}')
-		EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
-	else
-		tst_brk TFAIL "host $rhost on local machine failed"
-	fi
-}
-
-tst_run
