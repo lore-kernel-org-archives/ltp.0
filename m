@@ -1,58 +1,88 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 16 Nov 2020 14:46:35 +0000
-Subject: [LTP] [PATCH] cpuset_regression_test: Fix for already existing
- cpusets
-In-Reply-To: <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de>
-References: <20191115101039.43386-1-lkml@jv-coder.de>
- <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de>
-Message-ID: <87blfxpdf8.fsf@suse.de>
+From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+Date: Mon, 16 Nov 2020 17:03:00 +0100
+Subject: [LTP] Patch "loop: Fix occasional uevent drop" has been added to
+ the 5.9-stable tree
+Message-ID: <16055425807438@kroah.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
 
-Joerg Vehlow <lkml@jv-coder.de> writes:
+This is a note to let you know that I've just added the patch titled
 
-> Hi,
->
-> a ping for this patch? Is something like that (workaround environment 
-> issues) not wanted in ltp?
+    loop: Fix occasional uevent drop
 
-Generally speaking, yes, again you are right to bump it and these tests
-are in need of more attention. However I have a couple of concerns about
-this.
+to the 5.9-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
->
-> Greets
-> J?rg
->
-> On 11/15/2019 11:10 AM, Joerg Vehlow wrote:
->> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
->>
->> If there are already cpusets defined on the system, that use cpu 0-1,
->> the test fails, because it tries to exclusively use cpu 0-1 for the
->> testcase.
->>
->> The fix sets the cpuset for all cgroups to 0 and disables exclusive
->> cpu usage for the duration of the test and restores it on cleanup.
->> For the test only cpu 1 is set as exclusive. This is enough to
->> trigger the bug this regression test was designed for.
->> This was tested by reverting the commit mentioned in the testcase.
+The filename of the patch is:
+     loop-fix-occasional-uevent-drop.patch
+and it can be found in the queue-5.9 subdirectory.
 
-If the system has already set exclusive cpus then it is unlikely this
-regression effects it. Either the kernel has been patched or the system
-manager configures the cpus first before setting the exclusive knob.
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
 
-Normally I would say the test should try to run anyway, but you are
-having to make some intrusive changes to the cgroup setup which could
-lead to other problems.
 
-So why not just call 'tst_brk TCONF' if the system already has exclusive
-cpus configured?
+From c01a21b77722db0474bbcc4eafc8c4e0d8fed6d8 Mon Sep 17 00:00:00 2001
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Nov 2020 17:50:05 +0100
+Subject: loop: Fix occasional uevent drop
 
--- 
-Thank you,
-Richard.
+From: Petr Vorel <pvorel@suse.cz>
+
+commit c01a21b77722db0474bbcc4eafc8c4e0d8fed6d8 upstream.
+
+Commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+causes an occasional drop of loop device uevent, which are no longer
+triggered in loop_set_size() but in a different part of code.
+
+Bug is reproducible with LTP test uevent01 [1]:
+
+i=0; while true; do
+    i=$((i+1)); echo "== $i =="
+    lsmod |grep -q loop && rmmod -f loop
+    ./uevent01 || break
+done
+
+Put back triggering through code called in loop_set_size().
+
+Fix required to add yet another parameter to
+set_capacity_revalidate_and_notify().
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/uevents/uevent01.c
+
+[hch: rebased on a different change to the prototype of
+ set_capacity_revalidate_and_notify]
+
+Cc: stable@vger.kernel.org # v5.9
+Fixes: 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+Reported-by: <ltp@lists.linux.it>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/block/loop.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -255,7 +255,8 @@ static void loop_set_size(struct loop_de
+ 
+ 	bd_set_size(bdev, size << SECTOR_SHIFT);
+ 
+-	set_capacity_revalidate_and_notify(lo->lo_disk, size, false);
++	if (!set_capacity_revalidate_and_notify(lo->lo_disk, size, false))
++		kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
+ }
+ 
+ static inline int
+
+
+Patches currently in stable-queue which might be from pvorel@suse.cz are
+
+queue-5.9/block-add-a-return-value-to-set_capacity_revalidate_and_notify.patch
+queue-5.9/loop-fix-occasional-uevent-drop.patch
