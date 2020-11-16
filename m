@@ -1,29 +1,49 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 16 Nov 2020 08:08:57 +0100
-Subject: [LTP] [PATCH] Define SYS_futex on 32bit arches using 64-bit
- time_t
-In-Reply-To: <20201116003345.3261577-1-raj.khem@gmail.com>
-References: <20201116003345.3261577-1-raj.khem@gmail.com>
-Message-ID: <20201116070857.GB81864@pevik>
+From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
+Date: Mon, 16 Nov 2020 09:33:39 +0100
+Subject: [LTP] Need support on host01 test command.
+In-Reply-To: <509d120d-35b5-d435-c052-4d34314dd438@oracle.com>
+References: <20201113161739.37034d68@kmaincent-XPS-13-7390>
+ <509d120d-35b5-d435-c052-4d34314dd438@oracle.com>
+Message-ID: <20201116093339.46687d76@kmaincent-XPS-13-7390>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Khem,
+Hello Alexey,
 
-> Newer 32bit arches like RISCV32 and ARC are using 64bit time_t
-> from get go unlike other 32bit architecture therefore aliasing __NR_futex to
-> __NR_futex_time64 helps avoid the below errors
+On Fri, 13 Nov 2020 19:22:39 +0300
+Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
 
-> tst_checkpoint.c:99:17: error: use of undeclared identifier 'SYS_futex'
+> On 13.11.2020 18:17, K?ry Maincent wrote:
+> > Hello,
+> > 
+> > I am trying to update host01 test to the new API, but I got some problem
+> > with that task.
+> > 
+> > I am not a network expert and I am wondering why I got this issue:
+> > # host $(hostname)
+> > ;; connection timed out; no servers could be reached
+> > # host localchost
+> > ;; connection timed out; no servers could be reached
+> > 
+> > 
+> > I am working on an embedded board with an OpenEmbedded based distribution.
+> > I may miss some network package, could you give me a hint to go further.
+> >   
+> 
+> Hi Kory,
+> 
+> Either you don't have /etc/resolv.conf or it is empty.
 
-Thanks for your fix.
+Ok, thank you for pointing me out the cause.
+In fact, the file exist and is linked to /run/systemd/resolve/resolv.conf but
+my issue was if nothing is plugged on the ethernet port it is not working. 
 
-I wonder if this could be defined just in include/lapi/futex.h and this:
+Regards,
 
-https://github.com/pevik/ltp/commit/a20107ab47554798e0de0347dd4d7259f01675af
-
-Kind regards,
-Petr
+-- 
+K?ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
