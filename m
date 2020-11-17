@@ -1,51 +1,89 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 17 Nov 2020 11:06:54 +0100
-Subject: [LTP] [PATCH 0/1] overcommit_memory: Remove unstable subtest
-In-Reply-To: <875z64pc1r.fsf@suse.de>
-References: <20201116130915.18264-1-lkml@jv-coder.de> <875z64pc1r.fsf@suse.de>
-Message-ID: <648d7b53-2451-718b-6736-e6dffd4c72e8@jv-coder.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 17 Nov 2020 10:17:17 +0000
+Subject: [LTP] [PATCH v2] madvise06: Allow for kmem and memsw counters being
+ disabled
+In-Reply-To: <20201116105209.20395-1-rpalethorpe@suse.com>
+References: <20201116105209.20395-1-rpalethorpe@suse.com>
+Message-ID: <20201117101717.30478-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
-> Possibly /proc/sys/vm/stat_refresh can be used to flush these counters
-> after changing the overcommit policy?
-This sounds interesting. From the code I cannot see that it works with 
-vm_committed_as.
-If this is not done with some "invisible" magic, I do not think it will 
-help.
-> I guess that if these counters turning negative is considered a bug then
-> a warning will be printed otherwise the test needs to be smarter.
-No I do not think so. For correct memory accounting, used for e.g. 
-Commited_AS in /proc /meminfo, the memory is summed up correctly using 
-global_counter + sum(cpu_counters). If global_counter is negative, than 
-the cpu_counters are positive by at least the same amount and the 
-overall memory is reported correctly again.
+These may be missing in which case we can not read them for diagnostic
+info or set the swap limit to a value which is known to be large
+enough. However if there is no swap counter then there is no swap
+limit, so we just try to set the limit if the counter exists.
 
-The problem here is, that __vm_enough_memory in mm/util.c uses only the 
-global_counter truncated at 0, through percpu_counter_read_positive. I 
-guess this is intentional, because it prevents locking for memory 
-allocations. The summation function used above requires locking.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
+---
 
-The test cannot know what value the 1+ncpu counters have, so it cannot 
-print a warning or anything.
+V2: Check if the memsw limit exists before writing to it. This
+    replaces another patch which removed it altogether.
 
-While writing this an checking the kernel code I realized that this 
-issue shouldn't exist anymore with linux 5.9.
-Commit 56f3547bfa4d361148aa748ccb86073bc57f5e6c syncs the counters (i.e. 
-summing up the total value in the gobal_counter), when the overcommit 
-policy is changed to NEVER.
-Yet this subtest cannot be considered a test f or this change, because 
-for that allocations and deallocations have to be carefully constructed, 
-to trigger the behavior I described.
+ testcases/kernel/syscalls/madvise/madvise06.c | 29 ++++++++++++-------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-I am not sure what ltp's policy is for supporting older kernel versions. 
-Probably not supporting them, then this patch should be rejected, but 
-maybe the commit id should be mentioned there.
-
-J?rg
-
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 817faae39..7e9e9ef84 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -65,14 +65,16 @@ static void check_path(const char *path)
+ }
+ 
+ #define READ_CGMEM(item)						\
+-	({long tst_rval;						\
+-	  SAFE_FILE_LINES_SCANF(MNT_NAME"/"GROUP_NAME"/memory."item, 	\
+-				"%ld",					\
+-				&tst_rval);				\
++	({long tst_rval = 0;						\
++	  const char *cgpath = MNT_NAME"/"GROUP_NAME"/memory."item;	\
++	  if (!access(cgpath, R_OK))					\
++		  SAFE_FILE_LINES_SCANF(cgpath, "%ld", &tst_rval);	\
+ 	  tst_rval;})
+ 
+ static void meminfo_diag(const char *point)
+ {
++	long rval;
++
+ 	FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
+ 	tst_res(TINFO, "%s", point);
+ 	tst_res(TINFO, "\tSwap: %ld Kb",
+@@ -83,10 +85,14 @@ static void meminfo_diag(const char *point)
+ 		SAFE_READ_MEMINFO("Cached:") - init_cached);
+ 	tst_res(TINFO, "\tcgmem.usage_in_bytes: %ld Kb",
+ 		READ_CGMEM("usage_in_bytes") / 1024);
+-	tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb",
+-		READ_CGMEM("memsw.usage_in_bytes") / 1024);
+-	tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb",
+-		READ_CGMEM("kmem.usage_in_bytes") / 1024);
++
++	rval = READ_CGMEM("memsw.usage_in_bytes") / 1024;
++	if (rval)
++		tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb", rval);
++
++	rval = READ_CGMEM("kmem.usage_in_bytes") / 1024;
++	if (rval)
++		tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb", rval);
+ }
+ 
+ static void setup(void)
+@@ -124,8 +130,11 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes", "%ld\n",
+ 			 MEM_LIMIT);
+-	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes", "%ld\n",
+-			 MEMSW_LIMIT);
++
++	if (!access(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes", W_OK)) {
++		SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes",
++				 "%ld\n", MEMSW_LIMIT);
++	}
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.swappiness", "60");
+ 	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/tasks", "%d\n", getpid());
+ 
+-- 
+2.29.1
 
