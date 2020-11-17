@@ -1,9 +1,10 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 17 Nov 2020 14:17:36 +0800
-Subject: [LTP] [PATCH] madvise06: Do no set swap limit
-In-Reply-To: <20201116085844.29499-1-rpalethorpe@suse.com>
-References: <20201116085844.29499-1-rpalethorpe@suse.com>
-Message-ID: <CAEemH2frY_yJhm1sh6YQFH84J6CzTr0z2UzW-Ofz4fnod1O3fA@mail.gmail.com>
+Date: Tue, 17 Nov 2020 14:43:57 +0800
+Subject: [LTP] [PATCH] madvise06: Allow for kmem and memsw counters
+ being disabled
+In-Reply-To: <20201116105209.20395-1-rpalethorpe@suse.com>
+References: <20201116105209.20395-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2cLAygaDZcohNwZ7Yx_tnjtywYXD7MmXs=J0upwgBdE-Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,72 +13,70 @@ To: ltp@lists.linux.it
 
 Hi Richard,
 
-On Mon, Nov 16, 2020 at 4:59 PM Richard Palethorpe <rpalethorpe@suse.com>
+This one looks good to me.
+
+On Mon, Nov 16, 2020 at 6:52 PM Richard Palethorpe <rpalethorpe@suse.com>
 wrote:
 
-> Setting the swap limit is unnecessary for this test. By default it
-> appears to be set to some large value which is OK. Setting it may fail
-> for reasons unrelated to the test's purpose making the test less
-> reliable.
->
-
-Generally, this is right. And if the 'memory.limit_in_bytes' has been set
-successfully, that means the default value of 'memory.memsw.limit_in_bytes'
-is bigger than or equal to it.
-(an invalid argument error will occur if not like this)
-
-But in this madvise06, set 'memory.memsw.limit_in_bytes' will safer to test.
-
-The reason is to make sure memsw.limit_in_bytes' is bigger(twifold) than
-'memory.limit_in_bytes' otherwise it can't be finished as we expected.
-(madvise06 will be stuck when memsw.limit_in_bytes < 2 *
-memory.limit_in_bytes)
-
-
+> These may be missing and we only access them for printing diagnostic
+> info.
 >
 > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+
 > ---
->
-> I should not have included this in the first update to the test. It
-> appears that it fails with EACCES on at least one configuration, where
-> the test ran previously. Also it could fail with EBUSY in theory.
->
-> I don't know why limit_in_bytes can be set, but memsw.limit_in_bytes
-> results in EACCES. This is interesting, however should be the focus of
-> a different test IMO.
->
-
-This sounds like a cgroup issue or related configuration caused.
-
-
->
->  testcases/kernel/syscalls/madvise/madvise06.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  testcases/kernel/syscalls/madvise/madvise06.c | 22 ++++++++++++-------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
 >
 > diff --git a/testcases/kernel/syscalls/madvise/madvise06.c
 > b/testcases/kernel/syscalls/madvise/madvise06.c
-> index 817faae39..2ba2bac6f 100644
+> index 2ba2bac6f..dc515d528 100644
 > --- a/testcases/kernel/syscalls/madvise/madvise06.c
 > +++ b/testcases/kernel/syscalls/madvise/madvise06.c
-> @@ -46,7 +46,6 @@
+> @@ -64,14 +64,16 @@ static void check_path(const char *path)
+>  }
 >
->  #define CHUNK_SZ (400*1024*1024L)
->  #define MEM_LIMIT (CHUNK_SZ / 2)
-> -#define MEMSW_LIMIT (2 * CHUNK_SZ)
->  #define PASS_THRESHOLD (CHUNK_SZ / 4)
->  #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
+>  #define READ_CGMEM(item)                                               \
+> -       ({long tst_rval;                                                \
+> -         SAFE_FILE_LINES_SCANF(MNT_NAME"/"GROUP_NAME"/memory."item,    \
+> -                               "%ld",                                  \
+> -                               &tst_rval);                             \
+> +       ({long tst_rval = 0;                                            \
+> +         const char *cgpath = MNT_NAME"/"GROUP_NAME"/memory."item;     \
+> +         if (!access(cgpath, R_OK))                                    \
+> +                 SAFE_FILE_LINES_SCANF(cgpath, "%ld", &tst_rval);      \
+>           tst_rval;})
 >
-> @@ -124,8 +123,6 @@ static void setup(void)
->         SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
->         SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes",
-> "%ld\n",
->                          MEM_LIMIT);
-> -       SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes",
-> "%ld\n",
-> -                        MEMSW_LIMIT);
->         SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.swappiness", "60");
->         SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/tasks", "%d\n", getpid());
+>  static void meminfo_diag(const char *point)
+>  {
+> +       long rval;
+> +
+>         FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
+>         tst_res(TINFO, "%s", point);
+>         tst_res(TINFO, "\tSwap: %ld Kb",
+> @@ -82,10 +84,14 @@ static void meminfo_diag(const char *point)
+>                 SAFE_READ_MEMINFO("Cached:") - init_cached);
+>         tst_res(TINFO, "\tcgmem.usage_in_bytes: %ld Kb",
+>                 READ_CGMEM("usage_in_bytes") / 1024);
+> -       tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb",
+> -               READ_CGMEM("memsw.usage_in_bytes") / 1024);
+> -       tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb",
+> -               READ_CGMEM("kmem.usage_in_bytes") / 1024);
+> +
+> +       rval = READ_CGMEM("memsw.usage_in_bytes") / 1024;
+> +       if (rval)
+> +               tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb",
+> rval);
+> +
+> +       rval = READ_CGMEM("kmem.usage_in_bytes") / 1024;
+> +       if (rval)
+> +               tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb",
+> rval);
+>  }
 >
+>  static void setup(void)
 > --
 > 2.29.1
 >
@@ -88,4 +87,4 @@ Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201117/7a1f19f3/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201117/4729d55c/attachment.htm>
