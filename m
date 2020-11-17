@@ -1,58 +1,83 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 17 Nov 2020 09:28:32 +0000
-Subject: [LTP] [PATCH 0/1] overcommit_memory: Remove unstable subtest
-In-Reply-To: <20201116130915.18264-1-lkml@jv-coder.de>
-References: <20201116130915.18264-1-lkml@jv-coder.de>
-Message-ID: <875z64pc1r.fsf@suse.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 17 Nov 2020 12:39:57 +0300
+Subject: [LTP] [PATCH] net/host: update to new api
+In-Reply-To: <20201116184143.GA171432@pevik>
+References: <20201116101840.15433-1-kory.maincent@bootlin.com>
+ <20201116184143.GA171432@pevik>
+Message-ID: <80a391bf-b305-13ab-df79-169c8d4a0a28@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 16.11.2020 21:41, Petr Vorel wrote:
+> Hi Kory,
+> 
+> thanks for your patch.
+> ...
+>>  do_test()
+>>  {
+> 
+>> -    tst_resm TINFO "test basic functionality of the \`$TC' command."
+>> +    tst_res TINFO "test basic functionality of the host command."
+> 
+>> -    while [ $TST_COUNT -lt $NUMLOOPS ]; do
+>> +    while [ $TST_COUNT -le $NUMLOOPS ]; do
+> IMHO there is no need to have loop like this.
+> If required, we'd just add -iN parameter to it in the runtest file (where N is
+> <1,max int), but IMHO it's enough to test host only once.
+> 
+>>          if rhost_addr=$(host $RHOST); then
+>> -            rhost_addr=$(echo "$rhost_addr" | awk -F, '{print $NF}') >/dev/null 2>&1
+>> -            if ! host $rhost_addr >/dev/null 2>&1; then
+>> -                end_testcase "reverse lookup with host failed"
+>> -            fi
+>> -
+>> +            rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}') >/dev/null 2>&1
+>> +            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1
+> We need to redirect also second > and &:
+> EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
+> 
+>>          else
+>> -            end_testcase "host $RHOST on local machine failed"
+>> +            tst_brk TFAIL "host $RHOST on local machine failed"
+>>          fi
+> 
+>> -        incr_tst_count
+>> +        TST_COUNT=$((TST_COUNT + 1))
+>>          sleep $SLEEPTIME
+> Also sleep time is not really needed.
+> 
+> ...
+> 
+> Can I merge this simplified variant?
+...
+> 
+> . tst_net.sh
+> 
+> do_test()
+> {
+> 	local rhost=${RHOST:-$(hostname)}
 
-Joerg Vehlow <lkml@jv-coder.de> writes:
+Hi Petr, Kory
 
-> Hi,
->
-> this is something like an RFC. (I think I mixed my thoughts
-> between this and the patch description. Maybe read the patch
-> description first).
-> I found the overcommit_memory test, that tries to allocate
-> all alocatable memory for overcommit policy never, failed 
-> a lot and a lot more often, if the system has more memory.
-> When looking at the kernel source I found the reason: 
-> The percpu counter that counts the used memory uses a 
-> counter for every cpu, if the allocation or deallocations 
-> are very small. The more memory the system has, 
-> the bigger "small" is defined. See mm_compute_batch.
->
-> I started seeing this issue a lot after upgrading to 20200930
-> comming from 20190115. Some changes in the framework may have
-> led to this.
->
-> I don't think this is a kernel bug, but a result from switching
-> between overcommit modes. In overcommit mode never, the batch
-> size is a lot smaller than in the other modes
-> (ram_pages/cpus/256 instead of ra,_pages/cpus/4).
-> This leads to allocations done before switching the mode to be
-> accounted in the per cpu counters, and deallocated after in the
-> global counter, making the global counter negative. If the
-> overcommit mode was the same all the time, it should all have
-> been accounted in the same counters and the global counter
-> wouldn't be negative.
->
-> J?rg
+For new API we shouldn't use RHOST. Also the naming is misleading,
+it can be a local host name.
 
-Possibly /proc/sys/vm/stat_refresh can be used to flush these counters
-after changing the overcommit policy?
 
-For reference see Documentation/admin-guide/sysctl/vm.rst.
+> 	local rhost_addr
+> 
+>     tst_res TINFO "test basic functionality of the host command"
+> 
+> 	if rhost_addr=$(host $rhost); then
+> 		rhost_addr=$(echo "$rhost_addr" | awk '{print $NF}')
+> 		EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1
+> 	else
+> 		tst_brk TFAIL "host $rhost on local machine failed"
+> 	fi
+> }
+> 
+> tst_run
+> 
 
-I guess that if these counters turning negative is considered a bug then
-a warning will be printed otherwise the test needs to be smarter.
-
--- 
-Thank you,
-Richard.
