@@ -1,10 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 17 Nov 2020 08:55:04 +0000
-Subject: [LTP] [PATCH] madvise06: Do no set swap limit
-In-Reply-To: <CAEemH2frY_yJhm1sh6YQFH84J6CzTr0z2UzW-Ofz4fnod1O3fA@mail.gmail.com>
-References: <20201116085844.29499-1-rpalethorpe@suse.com>
- <CAEemH2frY_yJhm1sh6YQFH84J6CzTr0z2UzW-Ofz4fnod1O3fA@mail.gmail.com>
-Message-ID: <878sb0pdlj.fsf@suse.de>
+Date: Tue, 17 Nov 2020 09:28:32 +0000
+Subject: [LTP] [PATCH 0/1] overcommit_memory: Remove unstable subtest
+In-Reply-To: <20201116130915.18264-1-lkml@jv-coder.de>
+References: <20201116130915.18264-1-lkml@jv-coder.de>
+Message-ID: <875z64pc1r.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,52 +12,46 @@ To: ltp@lists.linux.it
 
 Hello,
 
-Li Wang <liwang@redhat.com> writes:
+Joerg Vehlow <lkml@jv-coder.de> writes:
 
-> Hi Richard,
+> Hi,
 >
-> On Mon, Nov 16, 2020 at 4:59 PM Richard Palethorpe <rpalethorpe@suse.com>
-> wrote:
+> this is something like an RFC. (I think I mixed my thoughts
+> between this and the patch description. Maybe read the patch
+> description first).
+> I found the overcommit_memory test, that tries to allocate
+> all alocatable memory for overcommit policy never, failed 
+> a lot and a lot more often, if the system has more memory.
+> When looking at the kernel source I found the reason: 
+> The percpu counter that counts the used memory uses a 
+> counter for every cpu, if the allocation or deallocations 
+> are very small. The more memory the system has, 
+> the bigger "small" is defined. See mm_compute_batch.
 >
->> Setting the swap limit is unnecessary for this test. By default it
->> appears to be set to some large value which is OK. Setting it may fail
->> for reasons unrelated to the test's purpose making the test less
->> reliable.
->>
+> I started seeing this issue a lot after upgrading to 20200930
+> comming from 20190115. Some changes in the framework may have
+> led to this.
 >
-> Generally, this is right. And if the 'memory.limit_in_bytes' has been set
-> successfully, that means the default value of 'memory.memsw.limit_in_bytes'
-> is bigger than or equal to it.
-> (an invalid argument error will occur if not like this)
+> I don't think this is a kernel bug, but a result from switching
+> between overcommit modes. In overcommit mode never, the batch
+> size is a lot smaller than in the other modes
+> (ram_pages/cpus/256 instead of ra,_pages/cpus/4).
+> This leads to allocations done before switching the mode to be
+> accounted in the per cpu counters, and deallocated after in the
+> global counter, making the global counter negative. If the
+> overcommit mode was the same all the time, it should all have
+> been accounted in the same counters and the global counter
+> wouldn't be negative.
 >
-> But in this madvise06, set 'memory.memsw.limit_in_bytes' will safer to test.
->
-> The reason is to make sure memsw.limit_in_bytes' is bigger(twifold) than
-> 'memory.limit_in_bytes' otherwise it can't be finished as we expected.
-> (madvise06 will be stuck when memsw.limit_in_bytes < 2 *
-> memory.limit_in_bytes)
+> J?rg
 
-OK.
+Possibly /proc/sys/vm/stat_refresh can be used to flush these counters
+after changing the overcommit policy?
 
->
->
->>
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>
->> I should not have included this in the first update to the test. It
->> appears that it fails with EACCES on at least one configuration, where
->> the test ran previously. Also it could fail with EBUSY in theory.
->>
->> I don't know why limit_in_bytes can be set, but memsw.limit_in_bytes
->> results in EACCES. This is interesting, however should be the focus of
->> a different test IMO.
->>
->
-> This sounds like a cgroup issue or related configuration caused.
+For reference see Documentation/admin-guide/sysctl/vm.rst.
 
-Yes, it is probably due to the memsw counter being disabled. So I will
-send a V2 of the other madvise06 patch.
+I guess that if these counters turning negative is considered a bug then
+a warning will be printed otherwise the test needs to be smarter.
 
 -- 
 Thank you,
