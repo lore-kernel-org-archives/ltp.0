@@ -1,48 +1,65 @@
-From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
-Date: Tue, 17 Nov 2020 09:33:06 +0100
-Subject: [LTP] [PATCH] net/host: update to new api
-In-Reply-To: <20201116184825.GB171432@pevik>
-References: <20201116101840.15433-1-kory.maincent@bootlin.com>
- <20201116184143.GA171432@pevik> <20201116184825.GB171432@pevik>
-Message-ID: <20201117093306.15a64998@kmaincent-XPS-13-7390>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 17 Nov 2020 08:55:04 +0000
+Subject: [LTP] [PATCH] madvise06: Do no set swap limit
+In-Reply-To: <CAEemH2frY_yJhm1sh6YQFH84J6CzTr0z2UzW-Ofz4fnod1O3fA@mail.gmail.com>
+References: <20201116085844.29499-1-rpalethorpe@suse.com>
+ <CAEemH2frY_yJhm1sh6YQFH84J6CzTr0z2UzW-Ofz4fnod1O3fA@mail.gmail.com>
+Message-ID: <878sb0pdlj.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Petr,
+Hello,
 
-On Mon, 16 Nov 2020 19:48:25 +0100
-Petr Vorel <pvorel@suse.cz> wrote:
+Li Wang <liwang@redhat.com> writes:
 
-> > > +            EXPECT_PASS host $rhost_addr \>/dev/null 2>&1  
-> > We need to redirect also second > and &:
-> > EXPECT_PASS host $rhost_addr \>/dev/null 2\>\&1  
-> 
-> BTW 2>&1 does not make sense in this context (it's a redirection of error
-> message of EXPECT_PASS function, which would be to stdout.
-> I also noticed this part of traceroute01.sh is also wrong:
-> EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2>&1
-> 
-> It should be:
-> EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2\>\&1
-> 
-> But IMHO it'd be better in both cases to keep stderr not redirected
-> (don't hide problems). Therefore, unless you're against it, I'll remove
-> redirection from traceroute01.sh.
+> Hi Richard,
+>
+> On Mon, Nov 16, 2020 at 4:59 PM Richard Palethorpe <rpalethorpe@suse.com>
+> wrote:
+>
+>> Setting the swap limit is unnecessary for this test. By default it
+>> appears to be set to some large value which is OK. Setting it may fail
+>> for reasons unrelated to the test's purpose making the test less
+>> reliable.
+>>
+>
+> Generally, this is right. And if the 'memory.limit_in_bytes' has been set
+> successfully, that means the default value of 'memory.memsw.limit_in_bytes'
+> is bigger than or equal to it.
+> (an invalid argument error will occur if not like this)
+>
+> But in this madvise06, set 'memory.memsw.limit_in_bytes' will safer to test.
+>
+> The reason is to make sure memsw.limit_in_bytes' is bigger(twifold) than
+> 'memory.limit_in_bytes' otherwise it can't be finished as we expected.
+> (madvise06 will be stuck when memsw.limit_in_bytes < 2 *
+> memory.limit_in_bytes)
 
-Yes, your right.
-I am new to LTP so I still make some obvious mistakes, thank you for taking
-time to correct me.
-The simplified variant without stderr redirection seems okay to me.
+OK.
 
-Regards,
+>
+>
+>>
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>> ---
+>>
+>> I should not have included this in the first update to the test. It
+>> appears that it fails with EACCES on at least one configuration, where
+>> the test ran previously. Also it could fail with EBUSY in theory.
+>>
+>> I don't know why limit_in_bytes can be set, but memsw.limit_in_bytes
+>> results in EACCES. This is interesting, however should be the focus of
+>> a different test IMO.
+>>
+>
+> This sounds like a cgroup issue or related configuration caused.
 
-K?ry
-
+Yes, it is probably due to the memsw counter being disabled. So I will
+send a V2 of the other madvise06 patch.
 
 -- 
-K?ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Thank you,
+Richard.
