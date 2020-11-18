@@ -1,171 +1,46 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 18 Nov 2020 20:04:46 +0300
-Subject: [LTP] [PATCH v2 1/3] network/stress/multicast/packet-flood:
- Update to new API
-In-Reply-To: <20201117124320.783802-1-lkml@jv-coder.de>
-References: <20201117124320.783802-1-lkml@jv-coder.de>
-Message-ID: <057bc703-d3b6-5d8a-4831-609e332fdc36@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Nov 2020 22:19:26 +0100
+Subject: [LTP] [PATCH] pan/ltp-pan.c: fix file descriptors leaks
+In-Reply-To: <5FB4BC97.8030300@cn.fujitsu.com>
+References: <1604925271-4811-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <20201109125938.GC9991@yuki.lan> <5FA9ED44.7080909@cn.fujitsu.com>
+ <5FAA0151.3030002@cn.fujitsu.com> <20201110102641.GA11262@yuki.lan>
+ <5FAB4274.6090505@cn.fujitsu.com> <5FB4BC97.8030300@cn.fujitsu.com>
+Message-ID: <20201118211926.GA182229@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 17.11.2020 15:43, Joerg Vehlow wrote:
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
-...
-> --- /dev/null
-> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
-> @@ -0,0 +1,43 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2006 International Business Machines  Corp.
-> +# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> +#
-> +# Verify that the kernel is not crashed when joining a multicast group with
-> +# a single socket, then receiving a large number of UDP packets at the socket
-> +
-> +TST_NEEDS_ROOT=1
-> +. mcast-lib.sh
-> +
-> +do_setup()
-> +{
-> +	mcast_setup $MCASTNUM_NORMAL
-> +	MCAST_LCMD=ns-mcast_receiver
-> +	MCAST_RCMD=ns-udpsender
-> +}
-> +
-> +do_test()
-> +{
-> +	local mcast_addr="$MCAST_IPV4_ADDR"
-> +	[ "$TST_IPV6" ] && mcast_addr="$MCAST_IPV6_ADDR"
-> +
-> +	# Find the available consecutive ports
-> +	local mcast_port=$(find_portbundle udp 1025 1)
+Hi Xu,
 
-Hi Joerg,
+> Hi Petr
+> > Hi Cyril
+> > > Hi!
+> > > > > Yes, musl-libc doesn't support "e" mode for fopen[1].
+> > > > Sorry, I ignore __fmodeflags function, musl libc supports "e" mode since
+> > > > 0.9.7 after this commit 8582a6e9f ("add 'e' modifier (close-on-exec) to
+> > > > fopen and fdopen").
 
-The following command should support both udp/udp6:
-
-local mcast_port=$(tst_get_unused_port ipv${TST_IPVER} dgram)
-
-> +	if [ $? -ne 0 ]; then
-> +		tst_brk TBROK "No free udp port available."
-> +	fi
-> +
-> +	# Run a receiver
-> +	ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $mcast_addr -p $mcast_port -b
-> +	if [ $? -ne 0 ]; then
-> +		tst_brk TBROK "Failed to start multicast receiver"
-> +	fi
-
-This check can be replaced with
-
-ROD ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $mcast_addr -p $mcast_port -b
+> > > > https://git.musl-libc.org/cgit/musl/commit/src?id=8582a6e9f25dd7b87d72961f58008052a4cac473
 
 
-> +
-> +	# Run a sender
-> +	tst_rhost_run -s -c "ns-udpsender -D $mcast_addr -f $TST_IPVER -p $mcast_port -s 32767 -m -I $(tst_iface rhost) -t $NS_DURATION"
-> +
+> > > > It is about 8 years since musl libc fopen() supports "e". glibc2.7
+> > > > fopen() supports "e" is about 13 years. Maybe we can use "e" mode now?
 
-What if we swap sender and receiver, i.e.
+> > > To be honest I haven't had used ltp-pan for last two years, so if that
+> > > change works for everyone still using it, then we can go ahead with it.
+> > OK. I will wait a week. If nobody has objection, I will merge it.
+> I plan to merge this patch today. Before it, I want to listen some advise
+> from you( IMO, you know musl-libc a lot and other libc on embedded system).
 
-local ns_opts="-f $TST_IPVER -p $mcast_port"
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-tst_rhost_run -s -c "ns-mcast_receiver $ns_opts -I $(tst_iface rhost) -m $mcast_addr -b"
-EXPECT_PASS ns-udpsender -D $mcast_addr $ns_opts -s 32767 -m -I $(tst_iface) -t $NS_DURATION
+Should be safe.
 
-By default, ltp is using network namespace, so it's probably better
-to run the background service there.
+Kind regards,
+Petr
 
-
-> +	tst_res TPASS "Test finished successfully."
-
-No need for it if using EXPECT_PASS as above.
-
-> +}
-> +
-> +tst_run
-> diff --git a/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> new file mode 100755
-> index 000000000..4ffde186b
-> --- /dev/null
-> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> @@ -0,0 +1,60 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2006 International Business Machines  Corp.
-> +# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> +#
-> +# Verify that the kernel is not crashed when joining multiple multicast
-> +# groups on separate sockets, then receiving a large number of UDP
-> +# packets at each socket
-> +
-> +TST_NEEDS_ROOT=1
-> +. mcast-lib.sh
-> +
-> +do_setup()
-> +{
-> +	mcast_setup $MCASTNUM_NORMAL
-> +	MCAST_LCMD=ns-mcast_receiver
-> +	MCAST_RCMD=ns-udpsender
-> +}
-> +
-> +do_test()
-> +{
-> +	local mcast_port_range=$(find_portbundle udp 1025 $MCASTNUM_NORMAL)
-> +	if [ $? -ne 0 ]; then
-> +		tst_brk TBROK "Failed to find enough consecutive free udp ports."
-> +	fi
-> +	local mcast_port_top=$(echo $mcast_port_range | cut -f 1 -d '-')
-> +
-> +	local mcastnum=0
-> +	while [ $mcastnum -lt $MCASTNUM_NORMAL ]; do
-> +		local mcast_port=$((mcast_port_top + mcastnum))
-                                       ^
-I guess it's fine to use $(tst_get_unused_port ipv${TST_IPVER} dgram) here,
-and removing getting the port range.
-
-> +
-> +		# Define the multicast address
-> +		if [ "$TST_IPV6" ]; then
-> +    		local mcastnum_hex=$(printf "%x" $mcastnum)
-> +    		local mcast_addr=${MCAST_IPV6_ADDR_PREFIX}:${mcastnum_hex}
-> +		else
-> +			local x=$((mcastnum / 254))
-> +			local y=$((mcastnum % 254 + 1))
-> +			local mcast_addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
-> +		fi
-> +
-> +		# Run a receiver
-> +		ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $mcast_addr -p $mcast_port -b
-> +		if [ $? -ne 0 ]; then
-> +			tst_brk TBROK "Failed to start multicast receiver"
-> +		fi
-> +
-> +		# Run a sender
-> +		tst_rhost_run -s -c "ns-udpsender -D $mcast_addr -f $TST_IPVER -p $mcast_port -m -I $(tst_iface rhost) -b -t $NS_DURATION"
-> +
-> +		: $((mcastnum += 1))
-
-The same, better swap sender/receiver.
-
-> +	done
-> +
-> +	sleep $NS_DURATION
-
-
-It would be nice to have a small loop instead of a single 'sleep' and
-periodically check that the background senders are really running...
-
-> +
-> +	tst_res TPASS "Test finished successfully."
-> +}
-> +
-> +tst_run
+> > Best Regards
+> > Yang Xu
