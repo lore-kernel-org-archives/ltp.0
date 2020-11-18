@@ -1,43 +1,36 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 18 Nov 2020 14:17:59 +0800
-Subject: [LTP] [PATCH] pan/ltp-pan.c: fix file descriptors leaks
-In-Reply-To: <5FAB4274.6090505@cn.fujitsu.com>
-References: <1604925271-4811-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <20201109125938.GC9991@yuki.lan> <5FA9ED44.7080909@cn.fujitsu.com>
- <5FAA0151.3030002@cn.fujitsu.com> <20201110102641.GA11262@yuki.lan>
- <5FAB4274.6090505@cn.fujitsu.com>
-Message-ID: <5FB4BC97.8030300@cn.fujitsu.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 18 Nov 2020 08:54:31 +0100
+Subject: [LTP] [PATCH 0/1] overcommit_memory: Remove unstable subtest
+In-Reply-To: <87zh3gnod3.fsf@suse.de>
+References: <20201116130915.18264-1-lkml@jv-coder.de> <875z64pc1r.fsf@suse.de>
+ <648d7b53-2451-718b-6736-e6dffd4c72e8@jv-coder.de>
+ <873618p7ns.fsf@suse.de>
+ <0d2a3cc5-e257-ebc5-1488-2a186411d8ad@jv-coder.de> <87zh3gnod3.fsf@suse.de>
+Message-ID: <2ff51aa8-a017-35b2-5fd3-87f1483a62cb@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr
-> Hi Cyril
->> Hi!
->>>> Yes, musl-libc doesn't support "e" mode for fopen[1].
->>> Sorry, I ignore __fmodeflags function, musl libc supports "e" mode since
->>> 0.9.7 after this commit 8582a6e9f ("add 'e' modifier (close-on-exec) to
->>> fopen and fdopen").
->>>
->>> https://git.musl-libc.org/cgit/musl/commit/src?id=8582a6e9f25dd7b87d72961f58008052a4cac473
->>>
->>>
->>> It is about 8 years since musl libc fopen() supports "e". glibc2.7
->>> fopen() supports "e" is about 13 years. Maybe we can use "e" mode now?
->>
->> To be honest I haven't had used ltp-pan for last two years, so if that
->> change works for everyone still using it, then we can go ahead with it.
-> OK. I will wait a week. If nobody has objection, I will merge it.
-I plan to merge this patch today. Before it, I want to listen some 
-advise from you( IMO, you know musl-libc a lot and other libc on 
-embedded system).
->
-> Best Regards
-> Yang Xu
->>
->
+Hi,
 
+I did some experiments and made the per cpu counters visible. Then I 
+realized kernel developers are not that stupid ;)
+The per cpu counters can only grow up to batch size and down to negative 
+batch size, then they are flushed back to the global counter.
 
+That means the counter seen by __vm_enough_memory can only be off in the 
+interval [-numcpu * batch_size, numcpu * batch_size]. So the test can be 
+fixed by trying to allocate commit_left + numcpu * batch_size.
+Now the only problem is, that the batch size is not visible to 
+userspace, so has to be calculated. It depends on the number of cpus and 
+total memory pages:
+max(ncpus*2, 32, min(int32_max, ram_pages / ncpus / 256) = batch_size 
+(in pages)
 
+I guess we can determine these two values from userspace and add the 
+batch size to commit_left.
+I will prepare a new patch with this approach.
+
+J?rg
