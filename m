@@ -1,130 +1,49 @@
-From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
-Date: Thu, 19 Nov 2020 15:23:00 +0100
-Subject: [LTP] [PATCH 1/1] net/traceroute01: Check also -T flag
-In-Reply-To: <20201112173609.4123-1-petr.vorel@suse.com>
-References: <20201112173609.4123-1-petr.vorel@suse.com>
-Message-ID: <20201119152300.05ef03b0@kmaincent-XPS-13-7390>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 19 Nov 2020 16:31:16 +0100
+Subject: [LTP] [PATCH v3] syscalls/ptrace11: Add test for tracing init
+ process
+In-Reply-To: <5FB259B2.4040106@cn.fujitsu.com>
+References: <20201112120505.GA15765@yuki.lan>
+ <1605233273-3784-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20201113151239.GB16315@yuki.lan> <5FB259B2.4040106@cn.fujitsu.com>
+Message-ID: <20201119153116.GA18048@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Petr,
+Hi!
+> >> +	/*
+> >> +	 * Running attach/detach more times will trigger a ESRCH error because
+> >> +	 * ptrace_check_attach function in kernel will report it if its process
+> >> +	 * stats is not __TASK_TRACED.
+> >> +	 */
+> >> +	TST_RETRY_FUNC(ptrace(PTRACE_DETACH, 1, NULL, NULL), TST_RETVAL_EQ0);
+> >
+> > Why do we have to retry the detach here?
+> 
+> I add a retry here because running attach/detach serval times may make 
+> init process isn't traced status . Even we have do attach action, detach 
+> will get ESRCH error .
 
-Just find out you didn't merge your patch which makes the code cleaner. :)
+Looking at the manual page it says:
 
-Regards,
+PTRACE_ATTACH
 
+...
+The tracee is sent a SIGSTOP, but will not necessarily have stopped by
+the completion of this call; use waitpid(2) to wait for the tracee to
+stop.
+...
 
-On Thu, 12 Nov 2020 18:36:09 +0100
-Petr Vorel <petr.vorel@suse.com> wrote:
+So my guess is that if we call PTRACE_ATTACH followed by the
+PTRACE_DETACH we may end up in a state where the SIGSTOP for the traced
+process haven't arrived yet and in this case we should get ESCRCH.
 
-> From: Petr Vorel <pvorel@suse.cz>
-> 
-> and move checks to run_trace()
-> 
-> There are 3 traceroute versions:
-> 
-> * Dmitry Butskoy (http://traceroute.sourceforge.net/)
-> * busybox
-> * iputils (only tracepath6; deprecated, but still used (e.g. OpenWrt Project)
-> 
-> -I is supported by Dmitry Butskoy's and busybox implementation
-> -T is supported only by Dmitry Butskoy's implementation
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi Alexey, Kory,
-> 
-> follow up to Kory's fix (there are some problems with suse.cz
-> mailserver, thus I haven't reply about pushing your patch).
-> 
-> Kind regards,
-> Petr
-> 
->  testcases/network/traceroute/traceroute01.sh | 30 +++++++++++---------
->  1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/testcases/network/traceroute/traceroute01.sh
-> b/testcases/network/traceroute/traceroute01.sh index 38f4d3b85..90030af39
-> 100755 --- a/testcases/network/traceroute/traceroute01.sh
-> +++ b/testcases/network/traceroute/traceroute01.sh
-> @@ -13,9 +13,12 @@ TST_NEEDS_TMPDIR=1
->  
->  setup()
->  {
-> -	tst_res TINFO "traceroute version:"
-> -	tst_res TINFO $(traceroute --version 2>&1)
-> -	[ "$TST_IPV6" ] && tst_res TINFO "NOTE: tracepath6 from iputils is
-> not supported" +
-> +	TRACEROUTE=traceroute${TST_IPV6}
-> +	tst_require_cmds $TRACEROUTE
-> +
-> +	tst_res TINFO "$TRACEROUTE version:"
-> +	tst_res TINFO $($TRACEROUTE --version 2>&1)
->  }
->  
->  run_trace()
-> @@ -24,18 +27,23 @@ run_trace()
->  	local ip=$(tst_ipaddr rhost)
->  	local pattern="^[ ]+1[ ]+$ip([ ]+[0-9]+[.][0-9]+ ms){3}"
->  
-> +	if $TRACEROUTE $opts 2>&1 | grep -q "invalid option"; then
-> +		tst_res TCONF "$opts flag not supported"
-> +		return
-> +	fi
-> +
->  	# According to man pages, default sizes:
->  	local bytes=60
->  	[ "$TST_IPV6" ] && bytes=80
->  
-> -	EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2>&1
-> +	EXPECT_PASS $TRACEROUTE $ip $bytes -n -m 2 $opts \>out.log 2>&1
->  
->  	grep -q "$bytes byte" out.log
->  	if [ $? -ne 0 ]; then
->  		cat out.log
->  		tst_res TFAIL "'$bytes byte' not found"
->  	else
-> -		tst_res TPASS "traceroute use $bytes bytes"
-> +		tst_res TPASS "$TRACEROUTE use $bytes bytes"
->  	fi
->  
->  	tail -1 out.log | grep -qE "$pattern"
-> @@ -43,24 +51,20 @@ run_trace()
->  		cat out.log
->  		tst_res TFAIL "pattern '$pattern' not found in log"
->  	else
-> -		tst_res TPASS "traceroute test completed with 1 hop"
-> +		tst_res TPASS "$TRACEROUTE test completed with 1 hop"
->  	fi
->  }
->  
->  test1()
->  {
-> -	tst_res TINFO "run traceroute with ICMP ECHO"
-> +	tst_res TINFO "run $TRACEROUTE with ICMP ECHO"
->  	run_trace -I
->  }
->  
->  test2()
->  {
-> -	tst_res TINFO "run traceroute with TCP SYN"
-> -	if traceroute -T 2>&1 | grep -q "invalid option"; then
-> -		tst_res TCONF "-T flag (TCP SYN) not supported"
-> -	else
-> -		run_trace -T
-> -	fi
-> +	tst_res TINFO "run $TRACEROUTE with TCP SYN"
-> +	run_trace -T
->  }
->  
->  tst_run
-
-
+So the correct solution is waitpid() for the traced process before we
+detach it.
 
 -- 
-K?ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Cyril Hrubis
+chrubis@suse.cz
