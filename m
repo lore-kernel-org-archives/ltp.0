@@ -1,52 +1,63 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date: Thu, 19 Nov 2020 18:06:17 +0800
-Subject: [LTP] [PATCH] acct02: make explicit kernel config requirement
-Message-ID: <20201119100617.70968-1-po-hsu.lin@canonical.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 19 Nov 2020 11:16:55 +0100
+Subject: [LTP] [PATCH v3 2/5] fanotify: Handle supported features checks
+ in setup()
+In-Reply-To: <20201113164944.26101-3-pvorel@suse.cz>
+References: <20201113164944.26101-1-pvorel@suse.cz>
+ <20201113164944.26101-3-pvorel@suse.cz>
+Message-ID: <20201119101655.GC2785@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With commit eeed458492cc ("lib/tst_kconfig: Validate variables"), the
-kernel config check is now more strict.
+Hi!
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+> index c2e185710..f4e8ac9e6 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+> @@ -195,6 +195,8 @@ static void test_fanotify(void)
+>  
+>  static void setup(void)
+>  {
+> +	fanotify_access_permissions_supported_by_kernel();
+> +
+>  	sprintf(fname, "fname_%d", getpid());
+>  	SAFE_FILE_PRINTF(fname, "%s", fname);
+>  }
 
-In this acct02 test, it will fail on an ARM64 system running with
-Ubuntu Bionic 4.15 kernel:
-  tag=acct02 stime=1605709219 dur=0 exit=exited stat=2 core=no cu=0 cs=0
-  startup='Wed Nov 18 14:20:19 2020'
-  CONFIG_BSD_PROCESS_ACCT
-  ^
-  Missing value
+Shouldn't we drop the check for EINVAL in setup_instance() as well?
 
-  tst_kconfig.c:475: TBROK: Invalid kconfig variables!
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> index 90cf5cb5f..b95efb998 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> @@ -64,6 +64,7 @@ static unsigned int fanotify_class[] = {
+>  static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+>  
+>  static char event_buf[EVENT_BUF_LEN];
+> +static int support_exec_events;
+>  
+>  #define MOUNT_PATH "fs_mnt"
+>  #define MNT2_PATH "mntpoint"
+> @@ -451,6 +452,11 @@ static void test_fanotify(unsigned int n)
+>  
+>  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+>  
+> +	if (support_exec_events != 0 && tc->expected_mask_with_ignore & FAN_OPEN_EXEC) {
+> +		tst_res(TCONF | TERRNO, "FAN_OPEN_EXEC not supported in kernel?");
+> +		return;
+> +	}
+> +
 
-While the kernel config shows:
-  $ grep CONFIG_BSD_PROCESS_ACCT /boot/config-4.15.0-1087-aws
-  CONFIG_BSD_PROCESS_ACCT=y
-  CONFIG_BSD_PROCESS_ACCT_V3=y
+Maybe we should rename the variable to "exec_events_unsupported" then
+we could write:
 
-Change the kernel config requirement to CONFIG_BSD_PROCESS_ACCT=y
-to solve this issue.
+	if (exec_events_unsupported && tc->mask & FAM_OPEN_EXEC)
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- testcases/kernel/syscalls/acct/acct02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Which is a bit easier to understand.
 
-diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
-index fbcde0bcb..bd0427848 100644
---- a/testcases/kernel/syscalls/acct/acct02.c
-+++ b/testcases/kernel/syscalls/acct/acct02.c
-@@ -255,7 +255,7 @@ static void cleanup(void)
- }
- 
- static const char *kconfigs[] = {
--	"CONFIG_BSD_PROCESS_ACCT",
-+	"CONFIG_BSD_PROCESS_ACCT=y",
- 	NULL
- };
- 
 -- 
-2.25.1
-
+Cyril Hrubis
+chrubis@suse.cz
