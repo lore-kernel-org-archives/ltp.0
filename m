@@ -1,94 +1,67 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 19 Nov 2020 12:52:29 +0100
-Subject: [LTP] [PATCH v4 2/3] Add tst_secureboot_enabled() helper function
-In-Reply-To: <20201119115230.8829-1-mdoucha@suse.cz>
-References: <20201119115230.8829-1-mdoucha@suse.cz>
-Message-ID: <20201119115230.8829-2-mdoucha@suse.cz>
+Date: Thu, 19 Nov 2020 12:52:28 +0100
+Subject: [LTP] [PATCH v4 1/3] Add tst_kconfig_get() helper function
+Message-ID: <20201119115230.8829-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also check for SecureBoot status in tst_lockdown_enabled() if the lockdown
-sysfile is not available/readable and the kernel is configured to enable
-lockdown automatically under SecureBoot.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/tst_lockdown.h |  1 +
- lib/tst_lockdown.c     | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ include/tst_kconfig.h | 10 ++++++++++
+ lib/tst_kconfig.c     | 21 +++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
-index 78eaeccea..172a7daf5 100644
---- a/include/tst_lockdown.h
-+++ b/include/tst_lockdown.h
-@@ -5,6 +5,7 @@
+diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+index 1bb21fea8..f56b12919 100644
+--- a/include/tst_kconfig.h
++++ b/include/tst_kconfig.h
+@@ -55,4 +55,14 @@ void tst_kconfig_read(struct tst_kconfig_var vars[], size_t vars_len);
+  */
+ void tst_kconfig_check(const char *const kconfigs[]);
  
- #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
- 
-+int tst_secureboot_enabled(void);
- int tst_lockdown_enabled(void);
- 
- #endif /* TST_LOCKDOWN_H */
-diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
-index e7c19813c..a753ca752 100644
---- a/lib/tst_lockdown.c
-+++ b/lib/tst_lockdown.c
-@@ -9,14 +9,52 @@
- #include "tst_test.h"
- #include "tst_safe_macros.h"
- #include "tst_safe_stdio.h"
-+#include "tst_kconfig.h"
- #include "tst_lockdown.h"
- 
-+#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
++/**
++ * Checks kernel config for a single configuration option and returns its
++ * state if found. The possible return values are the same as for
++ * tst_kconfig_var.choice, with the same meaning. See tst_kconfig_read()
++ * description for details.
++ *
++ * @param confname The configuration option name to search for.
++ */
++char tst_kconfig_get(const char *confname);
 +
-+int tst_secureboot_enabled(void)
+ #endif	/* TST_KCONFIG_H__ */
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 35f20e7a4..4d231175f 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -511,3 +511,24 @@ void tst_kconfig_check(const char *const kconfigs[])
+ 	if (abort_test)
+ 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+ }
++
++char tst_kconfig_get(const char *confname)
 +{
-+	int fd;
-+	char data[5];
++	struct tst_kconfig_var var;
 +
-+	if (access(EFIVAR_SECUREBOOT, F_OK)) {
-+		tst_res(TINFO, "Efivar FS not available");
-+		return -1;
-+	}
++	var.id_len = strlen(confname);
 +
-+	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
++	if (var.id_len >= sizeof(var.id))
++		tst_brk(TBROK, "Kconfig var name \"%s\" too long", confname);
 +
-+	if (fd == -1) {
-+		tst_res(TINFO | TERRNO,
-+			"Cannot open SecureBoot Efivar sysfile");
-+		return -1;
-+	} else if (fd < 0) {
-+		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
-+		return -1;
-+	}
++	strcpy(var.id, confname);
++	var.choice = 0;
++	var.val = NULL;
 +
-+	SAFE_READ(1, fd, data, 5);
-+	SAFE_CLOSE(fd);
-+	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
-+	return data[4];
++	tst_kconfig_read(&var, 1);
++
++	if (var.choice == 'v')
++		free(var.val);
++
++	return var.choice;
 +}
-+
- int tst_lockdown_enabled(void)
- {
- 	char line[BUFSIZ];
- 	FILE *file;
- 
- 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
-+		char flag;
-+
-+		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN");
-+
-+		/* SecureBoot enabled could mean integrity lockdown */
-+		if (flag == 'y' && tst_secureboot_enabled() > 0)
-+			return 1;
-+
- 		tst_res(TINFO, "Unable to determine system lockdown state");
- 		return 0;
- 	}
 -- 
 2.29.2
 
