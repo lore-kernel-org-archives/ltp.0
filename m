@@ -1,24 +1,36 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Nov 2020 13:12:14 +0100
-Subject: [LTP] [PATCH v4 2/3] Add tst_secureboot_enabled() helper
- function
-In-Reply-To: <20201119115230.8829-2-mdoucha@suse.cz>
-References: <20201119115230.8829-1-mdoucha@suse.cz>
- <20201119115230.8829-2-mdoucha@suse.cz>
-Message-ID: <20201119121214.GJ2785@yuki.lan>
+Date: Thu, 19 Nov 2020 13:31:50 +0100
+Subject: [LTP] [PATCH] [COMMITTED] lib/tst_kconfig: Fix off-by-one in string
+ check
+Message-ID: <20201119123150.13275-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN");
+Fixed the condition for "Garbage after string" that was previously
+triggered on a correct strings.
 
-So this is being used in the test library, I guess that having the
-config parsed here is inevitable, but still I do not want this function
-to be exported for testcases.
+Fixes: eeed458492cc ("lib/tst_kconfig: Validate variables")
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_kconfig.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 35f20e7a4..734039e37 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -291,7 +291,7 @@ static int validate_var(const struct tst_expr_tok *var)
+ 			i++;
+ 		} while (i < var->tok_len && var->tok[i] != '"');
+ 
+-		if (i < var->tok_len) {
++		if (i < var->tok_len - 1) {
+ 			print_err(stderr, var, i, "Garbage after a string");
+ 			return 1;
+ 		}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
