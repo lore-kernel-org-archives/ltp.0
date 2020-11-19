@@ -1,45 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Nov 2020 11:06:43 +0100
-Subject: [LTP] [PATCH v3 1/5] fanotify12: Drop incorrect hint
-In-Reply-To: <20201113164944.26101-2-pvorel@suse.cz>
-References: <20201113164944.26101-1-pvorel@suse.cz>
- <20201113164944.26101-2-pvorel@suse.cz>
-Message-ID: <20201119100643.GB2785@yuki.lan>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Thu, 19 Nov 2020 18:06:17 +0800
+Subject: [LTP] [PATCH] acct02: make explicit kernel config requirement
+Message-ID: <20201119100617.70968-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> hint "CONFIG_FANOTIFY_ACCESS_PERMISSIONS not configured in kernel?"
-> is wrong here (fanotify12 does not use FAN_ACCESS_PERM).
-> 
-> Suggested-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify12.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
-> index fcb7ec0d3..7f23fc9dc 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify12.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
-> @@ -146,10 +146,6 @@ static int setup_mark(unsigned int n)
->  					"FAN_OPEN_EXEC not supported in "
->  					"kernel?");
->  				return -1;
-> -			} else if (errno == EINVAL) {
-> -				tst_brk(TCONF | TERRNO,
-> -					"CONFIG_FANOTIFY_ACCESS_PERMISSIONS "
-> -					"not configured in kernel?");
->  			}else {
->  				tst_brk(TBROK | TERRNO,
->  					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
+With commit eeed458492cc ("lib/tst_kconfig: Validate variables"), the
+kernel config check is now more strict.
 
-Looking at the source there is the same message just couple of lines
-below this one, should we get rid of that one as well?
+In this acct02 test, it will fail on an ARM64 system running with
+Ubuntu Bionic 4.15 kernel:
+  tag=acct02 stime=1605709219 dur=0 exit=exited stat=2 core=no cu=0 cs=0
+  startup='Wed Nov 18 14:20:19 2020'
+  CONFIG_BSD_PROCESS_ACCT
+  ^
+  Missing value
 
+  tst_kconfig.c:475: TBROK: Invalid kconfig variables!
+
+While the kernel config shows:
+  $ grep CONFIG_BSD_PROCESS_ACCT /boot/config-4.15.0-1087-aws
+  CONFIG_BSD_PROCESS_ACCT=y
+  CONFIG_BSD_PROCESS_ACCT_V3=y
+
+Change the kernel config requirement to CONFIG_BSD_PROCESS_ACCT=y
+to solve this issue.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index fbcde0bcb..bd0427848 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -255,7 +255,7 @@ static void cleanup(void)
+ }
+ 
+ static const char *kconfigs[] = {
+-	"CONFIG_BSD_PROCESS_ACCT",
++	"CONFIG_BSD_PROCESS_ACCT=y",
+ 	NULL
+ };
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
