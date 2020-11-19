@@ -1,63 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Nov 2020 11:16:55 +0100
-Subject: [LTP] [PATCH v3 2/5] fanotify: Handle supported features checks
- in setup()
-In-Reply-To: <20201113164944.26101-3-pvorel@suse.cz>
-References: <20201113164944.26101-1-pvorel@suse.cz>
- <20201113164944.26101-3-pvorel@suse.cz>
-Message-ID: <20201119101655.GC2785@yuki.lan>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date: Thu, 19 Nov 2020 18:18:18 +0800
+Subject: [LTP] [PATCH] msgrcv03: make explicit kernel config requirement
+Message-ID: <20201119101818.71869-1-po-hsu.lin@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> index c2e185710..f4e8ac9e6 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> @@ -195,6 +195,8 @@ static void test_fanotify(void)
->  
->  static void setup(void)
->  {
-> +	fanotify_access_permissions_supported_by_kernel();
-> +
->  	sprintf(fname, "fname_%d", getpid());
->  	SAFE_FILE_PRINTF(fname, "%s", fname);
->  }
+With commit eeed458492cc ("lib/tst_kconfig: Validate variables"), the
+kernel config check is now more strict.
 
-Shouldn't we drop the check for EINVAL in setup_instance() as well?
+In this msgrcv03 test, it will fail on an ARM64 system running with
+Ubuntu Bionic 4.15 kernel:
+  tag=msgrcv03 stime=1605780268
+  cmdline=msgrcv03
+  contacts=
+  analysis=exit
+  <<<test_output>>>
+  CONFIG_CHECKPOINT_RESTORE
+                           ^
+  Missing value
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> index 90cf5cb5f..b95efb998 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> @@ -64,6 +64,7 @@ static unsigned int fanotify_class[] = {
->  static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
->  
->  static char event_buf[EVENT_BUF_LEN];
-> +static int support_exec_events;
->  
->  #define MOUNT_PATH "fs_mnt"
->  #define MNT2_PATH "mntpoint"
-> @@ -451,6 +452,11 @@ static void test_fanotify(unsigned int n)
->  
->  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
->  
-> +	if (support_exec_events != 0 && tc->expected_mask_with_ignore & FAN_OPEN_EXEC) {
-> +		tst_res(TCONF | TERRNO, "FAN_OPEN_EXEC not supported in kernel?");
-> +		return;
-> +	}
-> +
+  tst_kconfig.c:475: TBROK: Invalid kconfig variables!
 
-Maybe we should rename the variable to "exec_events_unsupported" then
-we could write:
+While the kernel config shows:
+  $ grep CONFIG_CHECKPOINT_RESTORE /boot/config-4.15.0-1087-aws
+  CONFIG_CHECKPOINT_RESTORE=y
 
-	if (exec_events_unsupported && tc->mask & FAM_OPEN_EXEC)
+Change the kernel config requirement to CONFIG_CHECKPOINT_RESTORE=y
+to solve this issue.
 
-Which is a bit easier to understand.
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+index b578e2810..015351a65 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv03.c
+@@ -93,7 +93,7 @@ static struct tst_test test = {
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+ 	.needs_kconfigs = (const char *[]) {
+-		"CONFIG_CHECKPOINT_RESTORE",
++		"CONFIG_CHECKPOINT_RESTORE=y",
+ 		NULL
+ 	},
+ 	.min_kver = "3.8.0",
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
