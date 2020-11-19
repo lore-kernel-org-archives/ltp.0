@@ -1,50 +1,54 @@
 From: Pengfei Xu <pengfei.xu@intel.com>
-Date: Thu, 19 Nov 2020 14:29:34 -0500
-Subject: [LTP] [PATCH] lib/tst_kconfig: Fix unexpected error when checking
- Kconfig containing numbers
-Message-ID: <20201119192934.5653-1-pengfei.xu@intel.com>
+Date: Thu, 19 Nov 2020 15:28:27 -0500
+Subject: [LTP] [PATCH] kernel/security/umip: update umip basic test for
+ kernel v5.10 update
+Message-ID: <20201119202827.5783-1-pengfei.xu@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fix unexpected error when checking Kconfig containing numbers after commit:
-eeed458492cc7dc01ad3a5fff500b09d1fda4922:"lib/tst_kconfig: Validate variables",
-unexpected error sample is as below:
-"
-CONFIG_X86_INTEL_UMIP=y
-        ^
-Unexpected character in variable name
-
-CONFIG_X86_UMIP=y
-        ^
-Unexpected character in variable name
-
-tst_kconfig.c:475: TBROK: Invalid kconfig variables!
-"
+After linux kernel v5.10 mainline, SLDT and STR will return
+dummy value and not trigger SIGSEGV due to v5.10 kernel code change.
+For detailed kernel update info, you could search below in v5.10 git log:
+"x86/umip: Add emulation/spoofing for SLDT and STR instructions"
+Commit link info: https://lkml.org/lkml/2020/7/10/1206
+Update umip basic test to match with expected results.
 
 Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- lib/tst_kconfig.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../kernel/security/umip/umip_basic_test.c      | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index 72830703c..8dc623952 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -262,6 +262,11 @@ static int validate_var(const struct tst_expr_tok *var)
- 			continue;
- 		}
+diff --git a/testcases/kernel/security/umip/umip_basic_test.c b/testcases/kernel/security/umip/umip_basic_test.c
+index 13c317022..d581c5bf1 100644
+--- a/testcases/kernel/security/umip/umip_basic_test.c
++++ b/testcases/kernel/security/umip/umip_basic_test.c
+@@ -129,6 +129,23 @@ static void verify_umip_instruction(unsigned int n)
+ 			return;
+ 		} else
+ 			tst_res(TINFO, "Linux kernel version is before than v5.4");
++		break;
++	case 2:
++	case 4:
++		/* after Linux kernel v5.10 mainline, SLDT and STR will return
++		   dummy value and not trigger SIGSEGV due to kernel code change */
++		if ((tst_kvercmp(5, 10, 0)) >= 0) {
++			tst_res(TINFO, "Linux kernel version is v5.10 or higher");
++			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
++				tst_res(TFAIL, "Got SIGSEGV");
++				return;
++			}
++			tst_res(TPASS, "Didn't receive SIGSEGV, child exited with %s",
++				tst_strstatus(status));
++			return;
++		} else
++			tst_res(TINFO, "Linux kernel version is earlier than v5.10");
++		break;
+ 	}
  
-+		if (c >= '0' && c <= '9') {
-+			i++;
-+			continue;
-+		}
-+
- 		if (c == '=') {
- 			i++;
- 			break;
+ 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV) {
 -- 
 2.20.1
 
