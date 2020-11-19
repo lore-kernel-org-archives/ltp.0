@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Nov 2020 11:01:47 +0100
-Subject: [LTP] [PATCH] lib/tst_kconfig: Fix unexpected error when
- checking Kconfig containing numbers
-In-Reply-To: <20201119192934.5653-1-pengfei.xu@intel.com>
-References: <20201119192934.5653-1-pengfei.xu@intel.com>
-Message-ID: <20201119100147.GA2785@yuki.lan>
+Date: Thu, 19 Nov 2020 11:06:43 +0100
+Subject: [LTP] [PATCH v3 1/5] fanotify12: Drop incorrect hint
+In-Reply-To: <20201113164944.26101-2-pvorel@suse.cz>
+References: <20201113164944.26101-1-pvorel@suse.cz>
+ <20201113164944.26101-2-pvorel@suse.cz>
+Message-ID: <20201119100643.GB2785@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,33 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Good catch, applied, thanks.
+> hint "CONFIG_FANOTIFY_ACCESS_PERMISSIONS not configured in kernel?"
+> is wrong here (fanotify12 does not use FAN_ACCESS_PERM).
+> 
+> Suggested-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/syscalls/fanotify/fanotify12.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+> index fcb7ec0d3..7f23fc9dc 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify12.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+> @@ -146,10 +146,6 @@ static int setup_mark(unsigned int n)
+>  					"FAN_OPEN_EXEC not supported in "
+>  					"kernel?");
+>  				return -1;
+> -			} else if (errno == EINVAL) {
+> -				tst_brk(TCONF | TERRNO,
+> -					"CONFIG_FANOTIFY_ACCESS_PERMISSIONS "
+> -					"not configured in kernel?");
+>  			}else {
+>  				tst_brk(TBROK | TERRNO,
+>  					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
+
+Looking at the source there is the same message just couple of lines
+below this one, should we get rid of that one as well?
 
 -- 
 Cyril Hrubis
