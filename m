@@ -1,498 +1,763 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 20 Nov 2020 11:41:05 +0100
-Subject: [LTP] [PATCH] syscalls: Add tests for name_to_handle_at() and
- open_by_handle_at()
-In-Reply-To: <9c4453f49394a7864ec9c84ccd561663f54bae51.1605862411.git.viresh.kumar@linaro.org>
-References: <9c4453f49394a7864ec9c84ccd561663f54bae51.1605862411.git.viresh.kumar@linaro.org>
-Message-ID: <20201120104105.GB4910@yuki.lan>
+From: j.nixdorf@avm.de <j.nixdorf@avm.de>
+Date: Fri, 20 Nov 2020 12:56:56 +0100
+Subject: [LTP] [PATCH v3] getdents: update to the new api,
+ don't mix libc and kernel types
+In-Reply-To: <20201119130046.GA12628@yuki.lan>
+References: <20201119130046.GA12628@yuki.lan>,
+ <20201118135852.GA13912@yuki.lan>
+ <OFFFCF0315.CB01D2B7-ONC125861F.003C7A03-C1258622.0045EF86@avm.de>
+ <OFFDAAA0B7.3C11EE41-ONC1258625.002F2EA3-C1258625.002FFCAE@avm.de>
+Message-ID: <OF2A463655.07C868E8-ONC1258626.00412BF5-C1258626.0041A363@avm.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  configure.ac                                  |   1 +
->  runtest/syscalls                              |   5 +
->  .../syscalls/name_to_handle_at/.gitignore     |   3 +
->  .../syscalls/name_to_handle_at/Makefile       |   7 +
->  .../name_to_handle_at/name_to_handle_at01.c   | 131 +++++++++++++++++
->  .../name_to_handle_at/name_to_handle_at02.c   |  79 ++++++++++
->  .../name_to_handle_at/open_by_handle_at01.c   | 139 ++++++++++++++++++
->  7 files changed, 365 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/.gitignore
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/Makefile
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
->  create mode 100644 testcases/kernel/syscalls/name_to_handle_at/open_by_handle_at01.c
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 06be1c09417a..39ba301b855d 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -99,6 +99,7 @@ AC_CHECK_FUNCS_ONCE([ \
->      modify_ldt \
->      move_mount \
->      name_to_handle_at \
-> +    open_by_handle_at \
->      open_tree \
->      openat \
->      openat2 \
+Before this commit the tests called libc's getdents(64) with the kernel
+types struct linux_dirent(64) as arguments, mixing libc functions and
+kernel types.
 
-I'm a bit confused here, what do we need to add the function to the
-configure check for?
+This breaks on musl libc, as it provides getdents and struct dirent as
+an alias to getdents64 and struct dirent64.
 
-We does not seem to use it in any way, I guess that we should add
-fallback definitions to a lapi header in the same way we do for example
-in lapi/setns.h so that these tests would compile on older libcs.
+To not lose coverage we now test both supported configurations: the
+syscall with the kernel types and the libc wrappers with the libc types.
 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index a5363277f478..aa33c1cb322f 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -846,6 +846,9 @@ nanosleep01 nanosleep01
->  nanosleep02 nanosleep02
->  nanosleep04 nanosleep04
->  
-> +name_to_handle_at01 name_to_handle_at01
-> +name_to_handle_at02 name_to_handle_at02
-> +
->  nftw01 nftw01
->  nftw6401 nftw6401
->  
-> @@ -879,6 +882,8 @@ openat201 openat201
->  openat202 openat202
->  openat203 openat203
->  
-> +open_by_handle_at01 open_by_handle_at01
-> +
->  open_tree01 open_tree01
->  open_tree02 open_tree02
->  
-> diff --git a/testcases/kernel/syscalls/name_to_handle_at/.gitignore b/testcases/kernel/syscalls/name_to_handle_at/.gitignore
-> new file mode 100644
-> index 000000000000..cefa82727253
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/name_to_handle_at/.gitignore
-> @@ -0,0 +1,3 @@
-> +name_to_handle_at01
-> +name_to_handle_at02
-> +open_by_handle_at01
+To take advantage of support for multiple test_variants the tests were
+converted to the new test API at the same time.
 
-I'm not sure if we want to put both name_to_handle and open_by_handle
-into the same directory, it would probably be cleaner to have the
-open_by_handle ones in open_by_handle_at() directory.
+Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
 
-> diff --git a/testcases/kernel/syscalls/name_to_handle_at/Makefile b/testcases/kernel/syscalls/name_to_handle_at/Makefile
-> new file mode 100644
-> index 000000000000..18896b6f28c0
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/name_to_handle_at/Makefile
-> @@ -0,0 +1,7 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-> new file mode 100644
-> index 000000000000..36f22c003568
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * Basic name_to_handle_at() and open_by_handle_at() tests.
-> + */
+---
 
-Since we merged the docparse patchset can we please start formatting the
-description comments accordingly?
+v2:
+  - Converted to the new test API, using test_variants for all libc and
+    syscall variants.
 
-See the end of the readme at:
+v3:
+  - Added SPDX indentifers.
+  - Removed superflous calls to test_brk(TCONF, ...) after
+    getdents_info from getdents.h.
+  - Removed tst_dirp_alloc from getdents.h.
+  - Removed useless forward declarations from getdents01.c.
+  - Allocate the buffer for getdents01.c through the field bufs on the
+    test description object.
+  - Rewrite getdents02.c in a data-driven way.
 
-https://github.com/linux-test-project/ltp/tree/master/docparse
+ runtest/syscalls                              |   3 -
+ testcases/kernel/syscalls/getdents/getdents.h | 136 ++++++++++--
+ .../kernel/syscalls/getdents/getdents01.c     | 202 +++++++-----------
+ .../kernel/syscalls/getdents/getdents02.c     | 187 +++++-----------
+ travis/alpine.sh                              |   2 -
+ 5 files changed, 247 insertions(+), 283 deletions(-)
 
-> +#define _GNU_SOURCE
-> +#include <fcntl.h>
-> +#include <malloc.h>
-> +#include <sys/stat.h>
-> +#include "lapi/syscalls.h"
-> +#include "tst_test.h"
-> +
-> +#define TEST_FILE "test_file"
-> +#define TEST_DIR "test_dir"
-> +
-> +static int dir_fd, fd_atcwd = AT_FDCWD;
-> +
-> +static struct tcase {
-> +	int *dfd;
-> +	const char *pathname;
-> +	int name_flags;
-> +	int flags;
-> +} tcases[] = {
-> +	{&dir_fd, TEST_FILE, 0, O_RDWR},
-> +	{&dir_fd, TEST_FILE, 0, O_RDONLY},
-> +	{&dir_fd, TEST_FILE, 0, O_WRONLY},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH, O_RDWR},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH, O_RDONLY},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH, O_WRONLY},
-> +	{&dir_fd, TEST_FILE, AT_SYMLINK_FOLLOW, O_RDWR},
-> +	{&dir_fd, TEST_FILE, AT_SYMLINK_FOLLOW, O_RDONLY},
-> +	{&dir_fd, TEST_FILE, AT_SYMLINK_FOLLOW, O_WRONLY},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_RDWR},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_RDONLY},
-> +	{&dir_fd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_WRONLY},
-> +	{&dir_fd, "", AT_EMPTY_PATH, O_RDONLY},
-> +
-> +	{&fd_atcwd, TEST_FILE, 0, O_RDWR},
-> +	{&fd_atcwd, TEST_FILE, 0, O_RDONLY},
-> +	{&fd_atcwd, TEST_FILE, 0, O_WRONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH, O_RDWR},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH, O_RDONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH, O_WRONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_SYMLINK_FOLLOW, O_RDWR},
-> +	{&fd_atcwd, TEST_FILE, AT_SYMLINK_FOLLOW, O_RDONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_SYMLINK_FOLLOW, O_WRONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_RDWR},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_RDONLY},
-> +	{&fd_atcwd, TEST_FILE, AT_EMPTY_PATH | AT_SYMLINK_FOLLOW, O_WRONLY},
-> +	{&fd_atcwd, "", AT_EMPTY_PATH, O_RDONLY},
-> +};
-> +
-> +static void cleanup(void)
-> +{
-> +	SAFE_CLOSE(dir_fd);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_MKDIR(TEST_DIR, 0700);
-> +	dir_fd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
-> +	SAFE_CHDIR(TEST_DIR);
-> +	SAFE_TOUCH(TEST_FILE, 0600, NULL);
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	struct file_handle fh = {0, }, *fhp;
-
-The = {0, } can as well be just = {}
-
-> +	struct stat file_stat;
-> +	int fd, mount_id;
-> +
-> +	/*
-> +	 * Make an initial call to name_to_handle_at() to discover the size
-> +	 * required for the file handle.
-> +	 */
-> +	TEST(name_to_handle_at(*tc->dfd, tc->pathname, &fh, &mount_id,
-> +			       tc->name_flags));
-> +
-> +	if (TST_RET != -1 || TST_ERR != EOVERFLOW) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"name_to_handle_at() should fail with %s (%d)",
-> +			tst_strerrno(EOVERFLOW), n);
-
-Can we just put the EOVERFLOW into the string instead?
-
-> +		return;
-> +	}
-> +
-> +	fhp = malloc(sizeof(*fhp) + fh.handle_bytes);
-> +	if (!fhp) {
-> +		tst_res(TFAIL, "Failed to allocate memory for fhp (%d)", n);
-> +		return;
-> +	}
-
-Can we just instead do the call to get the size in the test setup and
-allocate guarded buffer for all testcases with tst_alloc() instead?
-
-> +	fhp->handle_type = fh.handle_type;
-> +	fhp->handle_bytes = fh.handle_bytes;
-> +
-> +	TEST(name_to_handle_at(*tc->dfd, tc->pathname, fhp, &mount_id,
-> +			       tc->name_flags));
-> +	if (TST_RET) {
-> +		tst_res(TFAIL | TTERRNO, "name_to_handle_at() failed (%d)", n);
-> +		goto out;
-> +	}
-> +
-> +	TEST(fd = open_by_handle_at(*tc->dfd, fhp, tc->flags));
-> +	if (fd < 0) {
-> +		tst_res(TFAIL | TTERRNO, "open_by_handle_at() failed (%d)", n);
-> +		goto out;
-> +	}
-> +
-> +	SAFE_FSTAT(fd, &file_stat);
-> +
-> +	/* Don't check stats when pathname is empty */
-> +	if (file_stat.st_size == 0 || !strlen(tc->pathname))
-                                                ^
-						This is the same as
-						!tc->pathname[0]
-> +		tst_res(TPASS, "name_to_handle_at() and open_by_handle_at() passed (%d)", n);
-> +	else
-> +		tst_res(TFAIL, "fstat() didn't work as expected (%d)", n);
-> +
-> +	SAFE_CLOSE(fd);
-> +
-> +out:
-> +	free(fhp);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +};
-> diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
-> new file mode 100644
-> index 000000000000..2e97847a6996
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
-> @@ -0,0 +1,79 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * name_to_handle_at() failure tests.
-> + */
-> +#define _GNU_SOURCE
-> +#include <fcntl.h>
-> +#include "lapi/syscalls.h"
-> +#include "tst_test.h"
-> +
-> +#define TEST_FILE "test_file"
-> +
-> +static struct file_handle fh, high_fh = {.handle_bytes = MAX_HANDLE_SZ + 1};
-> +static struct file_handle *valid_fhp = &fh, *invalid_fhp, *high_fhp = &high_fh;
-> +static int mount_id, *valid_mount_id = &mount_id, *invalid_mount_id;
-> +static const char *valid_path = TEST_FILE, *invalid_path, *empty_path = "";
-> +
-> +static struct tcase {
-> +	const char *name;
-> +	int dfd;
-> +	const char **pathname;
-> +	int flags;
-> +	struct file_handle **fhp;
-> +	int **mount_id;
-> +	int exp_errno;
-> +} tcases[] = {
-> +	{"invalid-dfd", -1, &valid_path, 0, &valid_fhp, &valid_mount_id, EBADF},
-> +	{"not a directory", 0, &valid_path, 0, &valid_fhp, &valid_mount_id, ENOTDIR},
-> +	{"invalid-path", AT_FDCWD, &invalid_path, 0, &valid_fhp, &valid_mount_id, EFAULT},
-> +	{"invalid-file-handle", AT_FDCWD, &valid_path, 0, &invalid_fhp, &valid_mount_id, EFAULT},
-> +	{"zero-file-handle-size", AT_FDCWD, &valid_path, 0, &valid_fhp, &valid_mount_id, EOVERFLOW},
-> +	{"high-file-handle-size", AT_FDCWD, &valid_path, 0, &high_fhp, &valid_mount_id, EINVAL},
-> +	{"invalid-mount_id", AT_FDCWD, &valid_path, 0, &valid_fhp, &invalid_mount_id, EFAULT},
-> +	{"invalid-flags", AT_FDCWD, &valid_path, -1, &valid_fhp, &valid_mount_id, EINVAL},
-> +	{"empty-path", AT_FDCWD, &empty_path, 0, &valid_fhp, &valid_mount_id, ENOENT},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +	void *faulty_address;
-> +
-> +	SAFE_TOUCH(TEST_FILE, 0600, NULL);
-> +	faulty_address = tst_get_bad_addr(NULL);
-> +	invalid_fhp = faulty_address;
-> +	invalid_mount_id = faulty_address;
-> +	invalid_path = faulty_address;
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +
-> +	TEST(name_to_handle_at(tc->dfd, *tc->pathname, *tc->fhp, *tc->mount_id,
-> +			       tc->flags));
-> +
-> +	if (TST_RET != -1) {
-> +		tst_res(TFAIL, "%s: name_to_handle_at() passed unexpectedly",
-> +			tc->name);
-> +		return;
-> +	}
-> +
-> +	if (tc->exp_errno != TST_ERR) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"%s: name_to_handle_at() should fail with %s", tc->name,
-> +			tst_strerrno(tc->exp_errno));
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS | TTERRNO, "%s: name_to_handle_at() failed as expected",
-> +		tc->name);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
-> +	.needs_tmpdir = 1,
-> +};
-> diff --git a/testcases/kernel/syscalls/name_to_handle_at/open_by_handle_at01.c b/testcases/kernel/syscalls/name_to_handle_at/open_by_handle_at01.c
-> new file mode 100644
-> index 000000000000..e3c24790c1f8
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/name_to_handle_at/open_by_handle_at01.c
-> @@ -0,0 +1,139 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-> + *
-> + * open_by_handle_at() failure tests.
-> + */
-> +#define _GNU_SOURCE
-> +#include <linux/capability.h>
-> +#include <fcntl.h>
-> +#include <malloc.h>
-> +#include "lapi/syscalls.h"
-> +#include "tst_capability.h"
-> +#include "tst_test.h"
-> +
-> +#define TEST_FILE "test_file"
-> +#define FOO_SYMLINK "foo_symlink"
-> +
-> +static struct file_handle high_fh = {.handle_bytes = MAX_HANDLE_SZ + 1}, *high_fhp = &high_fh;
-> +static struct file_handle zero_fh, *zero_fhp = &zero_fh;
-> +static struct file_handle *valid_fhp, *invalid_fhp, *link_fhp;
-> +
-> +static struct tst_cap cap_req = TST_CAP(TST_CAP_REQ, CAP_DAC_READ_SEARCH);
-> +static struct tst_cap cap_drop = TST_CAP(TST_CAP_DROP, CAP_DAC_READ_SEARCH);
-> +
-> +static struct tcase {
-> +	const char *name;
-> +	int dfd;
-> +	struct file_handle **fhp;
-> +	int flags;
-> +	int cap;
-> +	int exp_errno;
-> +} tcases[] = {
-> +	{"invalid-dfd", -1, &valid_fhp, O_RDWR, 0, EBADF},
-> +	{"stale-dfd", 0, &valid_fhp, O_RDWR, 0, ESTALE},
-> +	{"invalid-file-handle", AT_FDCWD, &invalid_fhp, O_RDWR, 0, EFAULT},
-> +	{"high-file-handle-size", AT_FDCWD, &high_fhp, O_RDWR, 0, EINVAL},
-> +	{"zero-file-handle-size", AT_FDCWD, &zero_fhp, O_RDWR, 0, EINVAL},
-> +	{"no-capability", AT_FDCWD, &valid_fhp, O_RDWR, 1, EPERM},
-> +	{"symlink", AT_FDCWD, &link_fhp, O_RDWR, 0, ELOOP},
-> +};
-> +
-> +static void cleanup(void)
-> +{
-> +	free(valid_fhp);
-> +	free(link_fhp);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	struct file_handle fh = {0, }, *fhp;
-> +	void *faulty_address;
-> +	int mount_id;
-> +
-> +	SAFE_TOUCH(TEST_FILE, 0600, NULL);
-> +	SAFE_SYMLINK(TEST_FILE, FOO_SYMLINK);
-> +	faulty_address = tst_get_bad_addr(NULL);
-> +	invalid_fhp = faulty_address;
-> +
-> +	/*
-> +	 * Make an initial call to name_to_handle_at() to discover the size
-> +	 * required for the file handle.
-> +	 */
-> +	TEST(name_to_handle_at(AT_FDCWD, TEST_FILE, &fh, &mount_id, 0));
-> +	if (TST_RET != -1 || TST_ERR != EOVERFLOW) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"name_to_handle_at() should fail with %s",
-> +			tst_strerrno(EOVERFLOW));
-> +		return;
-> +	}
-
-Maybe there should be a function in a common header for this?
-
-> +	/* Valid file handle */
-> +	fhp = malloc(sizeof(*fhp) + fh.handle_bytes);
-> +	if (!fhp) {
-> +		tst_res(TFAIL, "Failed to allocate memory for fhp");
-> +		return;
-> +	}
-> +	valid_fhp = fhp;
-
-Here as well, can we use tst_alloc() for this?
-
-> +	fhp->handle_type = fh.handle_type;
-> +	fhp->handle_bytes = fh.handle_bytes;
-> +
-> +	TEST(name_to_handle_at(AT_FDCWD, TEST_FILE, fhp, &mount_id, 0));
-> +	if (TST_RET)
-> +		tst_res(TFAIL | TTERRNO, "name_to_handle_at() failed");
-> +
-> +	/* Symlink file handle */
-> +	link_fhp = malloc(sizeof(*link_fhp) + fh.handle_bytes);
-> +	if (!link_fhp) {
-> +		tst_res(TFAIL, "Failed to allocate memory for fhp");
-> +		return;
-> +	}
-
-And here as well, tst_alloc()?
-
-> +	link_fhp->handle_type = fh.handle_type;
-> +	link_fhp->handle_bytes = fh.handle_bytes;
-> +
-> +	TEST(name_to_handle_at(AT_FDCWD, FOO_SYMLINK, link_fhp, &mount_id, 0));
-> +	if (TST_RET)
-> +		tst_res(TFAIL | TTERRNO, "name_to_handle_at() failed");
-> +}
-> +
-> +static void run(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	int fd;
-> +
-> +	if (tc->cap)
-> +		tst_cap_action(&cap_drop);
-> +
-> +	TEST(fd = open_by_handle_at(tc->dfd, *tc->fhp, tc->flags));
-> +
-> +	if (tc->cap)
-> +		tst_cap_action(&cap_req);
-> +
-> +	if (TST_RET != -1) {
-> +		SAFE_CLOSE(fd);
-> +		tst_res(TFAIL, "%s: open_by_handle_at() passed unexpectedly",
-> +			tc->name);
-> +		return;
-> +	}
-> +
-> +	if (tc->exp_errno != TST_ERR) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"%s: open_by_handle_at() should fail with %s", tc->name,
-> +			tst_strerrno(tc->exp_errno));
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS | TTERRNO, "%s: open_by_handle_at() failed as expected",
-> +		tc->name);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
-
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 0443f9f3d..8f2fe0db2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -410,9 +410,6 @@ getcwd04 getcwd04
+ getdents01 getdents01
+ getdents02 getdents02
+ 
+-getdents01_64 getdents01 -l
+-getdents02_64 getdents02 -l
+-
+ getdomainname01 getdomainname01
+ 
+ getdtablesize01 getdtablesize01
+diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
+index a20b1811a..560df4126 100644
+--- a/testcases/kernel/syscalls/getdents/getdents.h
++++ b/testcases/kernel/syscalls/getdents/getdents.h
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
+@@ -21,9 +22,13 @@
+ #define GETDENTS_H
+ 
+ #include <stdint.h>
+-#include "test.h"
+-#include "lapi/syscalls.h"
+ #include "config.h"
++#include "lapi/syscalls.h"
++
++#if HAVE_GETDENTS || HAVE_GETDENTS64
++#include <unistd.h>
++#endif
++
+ /*
+  * See fs/compat.c struct compat_linux_dirent
+  */
+@@ -34,17 +39,12 @@ struct linux_dirent {
+ 	char            d_name[];
+ };
+ 
+-#if HAVE_GETDENTS
+-#include <unistd.h>
+-#else
+ static inline int
+-getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
++linux_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
+ {
+-	return ltp_syscall(__NR_getdents, fd, dirp, size);
++	return tst_syscall(__NR_getdents, fd, dirp, size);
+ }
+ 
+-#endif /* HAVE_GETDENTS */
+-
+ struct linux_dirent64 {
+ 	uint64_t	d_ino;
+ 	int64_t		d_off;
+@@ -53,14 +53,120 @@ struct linux_dirent64 {
+ 	char		d_name[];
+ };
+ 
++static inline int
++linux_getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
++{
++	return tst_syscall(__NR_getdents64, fd, dirp64, size);
++}
++
++static inline size_t
++tst_dirp_size(void)
++{
++	switch (tst_variant) {
++	case 0:
++		return sizeof(struct linux_dirent);
++	case 1:
++		return sizeof(struct linux_dirent64);
++#if HAVE_GETDENTS
++	case 2:
++		return sizeof(struct dirent);
++#endif
+ #if HAVE_GETDENTS64
+-#include <dirent.h>
+-#include <unistd.h>
+-#else
++	case 3:
++		return sizeof(struct dirent64);
++#endif
++	}
++	return 0;
++}
++
++static inline const char *
++tst_dirp_name(void *dirp)
++{
++	switch (tst_variant) {
++	case 0:
++		return ((struct linux_dirent *)dirp)->d_name;
++	case 1:
++		return ((struct linux_dirent64 *)dirp)->d_name;
++#if HAVE_GETDENTS
++	case 2:
++		return ((struct dirent *)dirp)->d_name;
++#endif
++#if HAVE_GETDENTS64
++	case 3:
++		return ((struct dirent64 *)dirp)->d_name;
++#endif
++	}
++	return NULL;
++}
++
++static inline size_t
++tst_dirp_reclen(void *dirp)
++{
++	switch (tst_variant) {
++	case 0:
++		return ((struct linux_dirent *)dirp)->d_reclen;
++	case 1:
++		return ((struct linux_dirent64 *)dirp)->d_reclen;
++#if HAVE_GETDENTS
++	case 2:
++		return ((struct dirent *)dirp)->d_reclen;
++#endif
++#if HAVE_GETDENTS64
++	case 3:
++		return ((struct dirent64 *)dirp)->d_reclen;
++#endif
++
++	}
++	return 0;
++}
++
+ static inline int
+-getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
++tst_getdents(int fd, void *dirp, unsigned int size)
++{
++	switch (tst_variant) {
++	case 0:
++		return linux_getdents(fd, dirp, size);
++	case 1:
++		return linux_getdents64(fd, dirp, size);
++#if HAVE_GETDENTS
++	case 2:
++		return getdents(fd, dirp, size);
++#endif
++#if HAVE_GETDENTS64
++	case 3:
++		return getdents64(fd, dirp, size);
++#endif
++	}
++	return -1;
++}
++
++static inline void
++getdents_info(void)
+ {
+-	return ltp_syscall(__NR_getdents64, fd, dirp64, size);
++	switch (tst_variant) {
++	case 0:
++		tst_res(TINFO, "Testing the SYS_getdents syscall");
++		break;
++	case 1:
++		tst_res(TINFO, "Testing the SYS_getdents64 syscall");
++		break;
++	case 2:
++#if HAVE_GETDENTS
++		tst_res(TINFO, "Testing libc getdents()");
++#else
++		tst_brk(TCONF, "libc getdents() is not implemented");
++#endif
++		break;
++	case 3:
++#if HAVE_GETDENTS64
++		tst_res(TINFO, "Testing libc getdents64()");
++#else
++		tst_brk(TCONF, "libc getdents64() is not implemented");
++#endif
++		break;
++	}
+ }
+-#endif /* HAVE_GETDENTS64 */
++
++#define TEST_VARIANTS 4
++
+ #endif /* GETDENTS_H */
+diff --git a/testcases/kernel/syscalls/getdents/getdents01.c b/testcases/kernel/syscalls/getdents/getdents01.c
+index eca572d42..81cebf76c 100644
+--- a/testcases/kernel/syscalls/getdents/getdents01.c
++++ b/testcases/kernel/syscalls/getdents/getdents01.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *	         written by Wayne Boyer
+@@ -20,38 +21,17 @@
+  */
+ 
+ #define _GNU_SOURCE
+-#include <stdio.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++
++#include "tst_test.h"
+ #include "getdents.h"
+ 
+-static void cleanup(void);
+-static void setup(void);
++#include <stdlib.h>
+ 
+ static void reset_flags(void);
+ static void check_flags(void);
+ static void set_flag(const char *name);
+ 
+-char *TCID = "getdents01";
+-int TST_TOTAL = 1;
+-
+-static int longsyscall;
+-
+-static option_t options[] = {
+-		/* -l long option. Tests getdents64 */
+-		{"l", &longsyscall, NULL},
+-		{NULL, NULL, NULL}
+-};
+-
+-static void help(void)
+-{
+-	printf("  -l      Test the getdents64 system call\n");
+-}
++static int fd;
+ 
+ enum entry_type {
+ 	ENTRY_DIR,
+@@ -80,95 +60,48 @@ struct testcase testcases[] = {
+  */
+ #define BUFSIZE 512
+ 
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int rval, fd;
+-	struct linux_dirent64 *dirp64;
+-	struct linux_dirent *dirp;
+-	void *buf;
+-
+-	tst_parse_opts(ac, av, options, &help);
+-
+-	/* The buffer is allocated to make sure it's suitably aligned */
+-	buf = malloc(BUFSIZE);
+-
+-	if (buf == NULL)
+-		tst_brkm(TBROK, NULL, "malloc failed");
+-
+-	dirp64 = buf;
+-	dirp = buf;
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		const char *d_name;
+-
+-		tst_count = 0;
+-
+-		if ((fd = open(".", O_RDONLY)) == -1)
+-			tst_brkm(TBROK, cleanup, "open of directory failed");
++static void *dirp;
+ 
+-		if (longsyscall)
+-			rval = getdents64(fd, dirp64, BUFSIZE);
+-		else
+-			rval = getdents(fd, dirp, BUFSIZE);
++static void run(void)
++{
++	int rval;
+ 
+-		if (rval < 0) {
+-			if (errno == ENOSYS)
+-				tst_resm(TCONF, "syscall not implemented");
+-			else
+-				tst_resm(TFAIL | TERRNO,
+-				         "getdents failed unexpectedly");
+-			continue;
+-		}
++	rval = tst_getdents(fd, dirp, BUFSIZE);
+ 
+-		if (rval == 0) {
+-			tst_resm(TFAIL,
+-				 "getdents failed - returned end of directory");
+-			continue;
++	if (rval < 0) {
++		if (errno == ENOSYS)
++			tst_brk(TCONF, "syscall not implemented");
++		else {
++			tst_res(TFAIL | TERRNO, "getdents failed unexpectedly");
++			return;
+ 		}
++	}
+ 
+-		reset_flags();
+-
+-		do {
+-			size_t d_reclen;
+-
+-			if (longsyscall) {
+-				d_reclen = dirp64->d_reclen;
+-				d_name = dirp64->d_name;
+-			} else {
+-				d_reclen = dirp->d_reclen;
+-				d_name = dirp->d_name;
+-			}
++	if (rval == 0) {
++		tst_res(TFAIL, "getdents failed - returned end of directory");
++		return;
++	}
+ 
+-			set_flag(d_name);
++	reset_flags();
+ 
+-			tst_resm(TINFO, "Found '%s'", d_name);
+-			
+-			rval -= d_reclen;
+-			
+-			if (longsyscall)
+-				dirp64 = (void*)dirp64 + d_reclen;
+-			else
+-				dirp = (void*)dirp + d_reclen;
++	do {
++		size_t d_reclen = tst_dirp_reclen(dirp);
++		const char *d_name = tst_dirp_name(dirp);
+ 
+-		} while (rval > 0);
++		set_flag(d_name);
+ 
+-		SAFE_CLOSE(cleanup, fd);
+-	
+-		check_flags();
+-	}
++		tst_res(TINFO, "Found '%s'", d_name);
+ 
+-	free(buf);
++		rval -= d_reclen;
++		dirp += d_reclen;
++	} while (rval > 0);
+ 
+-	cleanup();
+-	tst_exit();
++	check_flags();
+ }
+ 
+ static void reset_flags(void)
+ {
+-	int i;
++	size_t i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(testcases); i++)
+ 		testcases[i].found = 0;
+@@ -176,24 +109,25 @@ static void reset_flags(void)
+ 
+ static void check_flags(void)
+ {
+-	int i, err = 0;
++	size_t i;
++	int err = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
+ 		if (!testcases[i].found) {
+-			tst_resm(TINFO, "Entry '%s' not found", testcases[i].name);
++			tst_res(TINFO, "Entry '%s' not found", testcases[i].name);
+ 			err++;
+ 		}
+ 	}
+ 
+ 	if (err)
+-		tst_resm(TFAIL, "Some entires not found");
++		tst_res(TFAIL, "Some entries not found");
+ 	else
+-		tst_resm(TPASS, "All entires found");
++		tst_res(TPASS, "All entries found");
+ }
+ 
+ static void set_flag(const char *name)
+ {
+-	int i;
++	size_t i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
+ 		if (!strcmp(name, testcases[i].name)) {
+@@ -202,39 +136,51 @@ static void set_flag(const char *name)
+ 		}
+ 	}
+ 
+-	tst_resm(TFAIL, "Unexpected entry '%s' found", name);
++	tst_res(TFAIL, "Unexpected entry '%s' found", name);
+ }
+ 
+ static void setup(void)
+ {
+-	int i;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+-	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
+-		
+-		if (!testcases[i].create)
+-			continue;
+-	
+-		switch (testcases[i].type) {
+-		case ENTRY_DIR:
+-			SAFE_MKDIR(cleanup, testcases[i].name, 0777);
+-		break;
+-		case ENTRY_FILE:
+-			SAFE_FILE_PRINTF(cleanup, testcases[i].name, " ");
+-		break;
+-		case ENTRY_SYMLINK:
+-			SAFE_SYMLINK(cleanup, "nonexistent", testcases[i].name);
+-		break;
++	size_t i;
++
++	getdents_info();
++
++	if (!tst_variant) {
++		for (i = 0; i < ARRAY_SIZE(testcases); i++) {
++			if (!testcases[i].create)
++				continue;
++
++			switch (testcases[i].type) {
++			case ENTRY_DIR:
++				SAFE_MKDIR(testcases[i].name, 0777);
++			break;
++			case ENTRY_FILE:
++				SAFE_FILE_PRINTF(testcases[i].name, " ");
++			break;
++			case ENTRY_SYMLINK:
++				SAFE_SYMLINK("nonexistent", testcases[i].name);
++			break;
++			}
+ 		}
+ 	}
+ 
+-	TEST_PAUSE;
++	fd = SAFE_OPEN(".", O_RDONLY|O_DIRECTORY);
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	if (fd != 0)
++		SAFE_CLOSE(fd);
+ }
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.bufs = (struct tst_buffers []) {
++		{&dirp, .size = BUFSIZE},
++		{},
++	},
++	.test_variants = TEST_VARIANTS,
++};
+diff --git a/testcases/kernel/syscalls/getdents/getdents02.c b/testcases/kernel/syscalls/getdents/getdents02.c
+index 4cf54aea3..42691f5f0 100644
+--- a/testcases/kernel/syscalls/getdents/getdents02.c
++++ b/testcases/kernel/syscalls/getdents/getdents02.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+  *	         written by Wayne Boyer
+@@ -34,164 +35,80 @@
+  */
+ 
+ #define _GNU_SOURCE
+-#include <stdio.h>
+ #include <errno.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+ 
+-#include "test.h"
++#include "tst_test.h"
+ #include "getdents.h"
+-#include "safe_macros.h"
+ 
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+ 			 S_IXGRP|S_IROTH|S_IXOTH)
+ #define TEST_DIR	"test_dir"
+ 
+-static void cleanup(void);
+-static void setup(void);
+-static void print_test_result(int err, int exp_errno);
+-
+ char *TCID = "getdents02";
+ 
+-static void test_ebadf(void);
+-static void test_einval(void);
+-static void test_enotdir(void);
+-static void test_enoent(void);
+-
+-static void (*testfunc[])(void) = { test_ebadf, test_einval,
+-				    test_enotdir, test_enoent };
+-
+-int TST_TOTAL = ARRAY_SIZE(testfunc);
+-
+-static int longsyscall;
+-
+-option_t options[] = {
+-		/* -l long option. Tests getdents64 */
+-		{"l", &longsyscall, NULL},
+-		{NULL, NULL, NULL}
++static char *dirp;
++static size_t size;
++
++static char dirp1_arr[1];
++static char *dirp1 = dirp1_arr;
++static size_t size1 = 1;
++
++static int fd_inv = -5;
++static int fd;
++static int fd_file;
++static int fd_unlinked;
++
++static struct tcase {
++	int *fd;
++	char **dirp;
++	size_t *size;
++	int exp_errno;
++} tcases[] = {
++	{ &fd_inv, &dirp, &size, EBADF },
++	{ &fd, &dirp1, &size1, EINVAL },
++	{ &fd_file, &dirp, &size, ENOTDIR },
++	{ &fd_unlinked, &dirp, &size, ENOENT },
+ };
+ 
+-static void help(void)
+-{
+-	printf("  -l      Test the getdents64 system call\n");
+-}
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc, i;
++	getdents_info();
+ 
+-	tst_parse_opts(ac, av, options, &help);
++	size = tst_dirp_size();
++	dirp = tst_alloc(size);
+ 
+-	setup();
++	fd = SAFE_OPEN(".", O_RDONLY);
++	fd_file = SAFE_OPEN("test", O_CREAT | O_RDWR, 0644);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	SAFE_MKDIR(TEST_DIR, DIR_MODE);
++	fd_unlinked = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
++	SAFE_RMDIR(TEST_DIR);
+ 
+-		for (i = 0; i < TST_TOTAL; i++)
+-			(*testfunc[i])();
+-	}
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+-static void setup(void)
++static void run(unsigned int i)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	struct tcase *tc = tcases + i;
+ 
+-	tst_tmpdir();
++	tst_getdents(*tc->fd, *tc->dirp, *tc->size);
+ 
+-	TEST_PAUSE;
+-}
+-
+-static void print_test_result(int err, int exp_errno)
+-{
+-	if (err == 0) {
+-		tst_resm(TFAIL, "call succeeded unexpectedly");
+-	} else if  (err == exp_errno) {
+-		tst_resm(TPASS, "getdents failed as expected: %s",
+-			 strerror(err));
+-	} else if (err == ENOSYS) {
+-		tst_resm(TCONF, "syscall not implemented");
++	if (errno == 0) {
++		tst_res(TFAIL, "call succeeded unexpectedly");
++	} else if (errno == tc->exp_errno) {
++		tst_res(TPASS, "getdents failed as expected: %s",
++			 strerror(errno));
++	} else if (errno == ENOSYS) {
++		tst_res(TCONF, "syscall not implemented");
+ 	} else {
+-		tst_resm(TFAIL, "getdents failed unexpectedly: %s",
+-			 strerror(err));
++		tst_res(TFAIL, "getdents failed unexpectedly: %s",
++			 strerror(errno));
+ 	}
+ }
+ 
+-static void test_ebadf(void)
+-{
+-	int fd = -5;
+-	struct linux_dirent64 dirp64;
+-	struct linux_dirent dirp;
+-
+-	if (longsyscall)
+-		getdents64(fd, &dirp64, sizeof(dirp64));
+-	else
+-		getdents(fd, &dirp, sizeof(dirp));
+-
+-	print_test_result(errno, EBADF);
+-}
+-
+-static void test_einval(void)
+-{
+-	int fd;
+-	char buf[1];
+-
+-	fd = SAFE_OPEN(cleanup, ".", O_RDONLY);
+-
+-	/* Pass one byte long buffer. The result should be EINVAL */
+-	if (longsyscall)
+-		getdents64(fd, (void *)buf, sizeof(buf));
+-	else
+-		getdents(fd, (void *)buf, sizeof(buf));
+-
+-	print_test_result(errno, EINVAL);
+-
+-	SAFE_CLOSE(cleanup, fd);
+-}
+-
+-static void test_enotdir(void)
+-{
+-	int fd;
+-	struct linux_dirent64 dir64;
+-	struct linux_dirent dir;
+-
+-	fd = SAFE_OPEN(cleanup, "test", O_CREAT | O_RDWR, 0644);
+-
+-	if (longsyscall)
+-		getdents64(fd, &dir64, sizeof(dir64));
+-	else
+-		getdents(fd, &dir, sizeof(dir));
+-
+-	print_test_result(errno, ENOTDIR);
+-
+-	SAFE_CLOSE(cleanup, fd);
+-}
+-
+-static void test_enoent(void)
+-{
+-	int fd;
+-	struct linux_dirent64 dir64;
+-	struct linux_dirent dir;
+-
+-	SAFE_MKDIR(cleanup, TEST_DIR, DIR_MODE);
+-
+-	fd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
+-	SAFE_RMDIR(cleanup, TEST_DIR);
+-
+-	if (longsyscall)
+-		getdents64(fd, &dir64, sizeof(dir64));
+-	else
+-		getdents(fd, &dir, sizeof(dir));
+-
+-	print_test_result(errno, ENOENT);
+-
+-	SAFE_CLOSE(cleanup, fd);
+-}
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test = run,
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.test_variants = TEST_VARIANTS,
++};
+diff --git a/travis/alpine.sh b/travis/alpine.sh
+index 61ef144a8..ffd5a8ebc 100755
+--- a/travis/alpine.sh
++++ b/travis/alpine.sh
+@@ -33,8 +33,6 @@ rm -rfv \
+ 	testcases/kernel/syscalls/confstr/confstr01.c \
+ 	testcases/kernel/syscalls/fmtmsg/fmtmsg01.c \
+ 	testcases/kernel/syscalls/getcontext/getcontext01.c \
+-	testcases/kernel/syscalls/getdents/getdents01.c \
+-	testcases/kernel/syscalls/getdents/getdents02.c \
+ 	testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c \
+ 	testcases/kernel/syscalls/timer_create/timer_create01.c \
+ 	testcases/kernel/syscalls/timer_create/timer_create03.c \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.17.1
+
