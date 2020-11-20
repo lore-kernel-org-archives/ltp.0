@@ -1,47 +1,53 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 19 Nov 2020 20:56:18 +0100
-Subject: [LTP] [PATCH 1/1] net/traceroute01: Check also -T flag
-In-Reply-To: <cf76949d-32a7-7b2d-4d5b-6117676ecea6@oracle.com>
-References: <20201112173609.4123-1-petr.vorel@suse.com>
- <20201119152300.05ef03b0@kmaincent-XPS-13-7390>
- <20201119154132.GA16438@pevik>
- <cf76949d-32a7-7b2d-4d5b-6117676ecea6@oracle.com>
-Message-ID: <20201119195618.GA3181@pevik>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 20 Nov 2020 10:30:57 +0800
+Subject: [LTP] [PATCH v3] syscalls/ptrace11: Add test for tracing init
+ process
+In-Reply-To: <20201119153116.GA18048@yuki.lan>
+References: <20201112120505.GA15765@yuki.lan>
+ <1605233273-3784-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <20201113151239.GB16315@yuki.lan> <5FB259B2.4040106@cn.fujitsu.com>
+ <20201119153116.GA18048@yuki.lan>
+Message-ID: <5FB72A61.4010007@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Cyril
+> Hi!
+>>>> +	/*
+>>>> +	 * Running attach/detach more times will trigger a ESRCH error because
+>>>> +	 * ptrace_check_attach function in kernel will report it if its process
+>>>> +	 * stats is not __TASK_TRACED.
+>>>> +	 */
+>>>> +	TST_RETRY_FUNC(ptrace(PTRACE_DETACH, 1, NULL, NULL), TST_RETVAL_EQ0);
+>>>
+>>> Why do we have to retry the detach here?
+>>
+>> I add a retry here because running attach/detach serval times may make
+>> init process isn't traced status . Even we have do attach action, detach
+>> will get ESRCH error .
+>
+> Looking at the manual page it says:
+>
+> PTRACE_ATTACH
+>
+> ...
+> The tracee is sent a SIGSTOP, but will not necessarily have stopped by
+> the completion of this call; use waitpid(2) to wait for the tracee to
+> stop.
+Oh, I ignored it. Sorry.
+> ...
+>
+> So my guess is that if we call PTRACE_ATTACH followed by the
+> PTRACE_DETACH we may end up in a state where the SIGSTOP for the traced
+> process haven't arrived yet and in this case we should get ESCRCH.
+>
+> So the correct solution is waitpid() for the traced process before we
+> detach it.
+Yes, using waitpid() is ok. I Will send a v4 soon.
+>
 
-> On 19.11.2020 18:41, Petr Vorel wrote:
-> > Hi Kory, Alexey,
 
-> >> Hello Petr,
 
-> >> Just find out you didn't merge your patch which makes the code cleaner. :)
-> > Waiting for Alexey's review.
-> > Also hesitate about tracepath6 symlink to traceroute being always installed
-I meant here traceroute6 symlink to traceroute.
-> > on all distros (hopefully yes).
-
-> Hi Petr,
-
-> From the subject it seems you are adding a new check for -T flag
-> but it is actually for -I option?
-Good catch, thanks!
-
-> I think it's ok using symlink or -4/-6,
-If nobody complains I'd keep symlink version as it can check
-traceroute from iputils. -4/-6 is more portable. If anybody complains and we
-revert it back, I'd also put back iputils related warning.
-
-> it is also adding an extra
-> check for ipv6 that $(tst_ipaddr rhost) is indeed ipv6.
-Sorry, I didn't get this.
-
-BTW ack this change?
-
-Kind regards,
-Petr
