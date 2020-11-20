@@ -1,31 +1,43 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 20 Nov 2020 14:04:35 +0100
-Subject: [LTP] [PATCH v3] getdents: update to the new api,
- don't mix libc and kernel types
-In-Reply-To: <OF2A463655.07C868E8-ONC1258626.00412BF5-C1258626.0041A363@avm.de>
-References: <20201119130046.GA12628@yuki.lan> <20201118135852.GA13912@yuki.lan>
- <OFFFCF0315.CB01D2B7-ONC125861F.003C7A03-C1258622.0045EF86@avm.de>
- <OFFDAAA0B7.3C11EE41-ONC1258625.002F2EA3-C1258625.002FFCAE@avm.de>
- <OF2A463655.07C868E8-ONC1258626.00412BF5-C1258626.0041A363@avm.de>
-Message-ID: <20201120130435.GA20520@yuki.lan>
+Date: Fri, 20 Nov 2020 14:08:10 +0100
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/acct02: Decleare kconfigs inline
+Message-ID: <20201120130810.14995-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with a minor changes, thanks.
+So that it's picked up correctly by the docparser.
 
-* Removed the GPL license text since it's replaced by the SPDX identifier
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/acct/acct02.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-* Formatted the test description into asciidoc and changed the comment
-  so that it's picked up by documentation parser
-
-* Checked explictily for -1 return value in negative test
-
-* Made use of TERROR flags instead of usings strerror() to print errnos
-
+diff --git a/testcases/kernel/syscalls/acct/acct02.c b/testcases/kernel/syscalls/acct/acct02.c
+index fbcde0bcb..aee96e365 100644
+--- a/testcases/kernel/syscalls/acct/acct02.c
++++ b/testcases/kernel/syscalls/acct/acct02.c
+@@ -254,14 +254,12 @@ static void cleanup(void)
+ 	acct(NULL);
+ }
+ 
+-static const char *kconfigs[] = {
+-	"CONFIG_BSD_PROCESS_ACCT",
+-	NULL
+-};
+-
+ static struct tst_test test = {
+ 	.test_all = run,
+-	.needs_kconfigs = kconfigs,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_BSD_PROCESS_ACCT",
++		NULL
++	},
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_tmpdir = 1,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
