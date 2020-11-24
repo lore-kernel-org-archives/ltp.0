@@ -1,123 +1,56 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 24 Nov 2020 10:56:26 +0800
-Subject: [LTP] [PATCH 2/2] syscalls: shift to time() if __NR_time not
- support
-In-Reply-To: <20201123083137.11575-2-liwang@redhat.com>
-References: <20201123083137.11575-1-liwang@redhat.com>
- <20201123083137.11575-2-liwang@redhat.com>
-Message-ID: <5FBC765A.3020102@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 24 Nov 2020 10:33:53 +0530
+Subject: [LTP] [PATCH V2 1/2] syscalls: Add tests for name_to_handle_at()
+In-Reply-To: <20201123140630.GA17077@yuki.lan>
+References: <b758999c1bd02a52a68cbb6449bb3d82dd2a4e69.1606120441.git.viresh.kumar@linaro.org>
+ <20201123140630.GA17077@yuki.lan>
+Message-ID: <20201124050353.xyvyjar5vcfwmwhk@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
+On 23-11-20, 15:06, Cyril Hrubis wrote:
+> Hi!
+> > diff --git a/include/lapi/name_to_handle_at.h b/include/lapi/name_to_handle_at.h
+> > new file mode 100644
+> > index 000000000000..19c08545802a
+> > --- /dev/null
+> > +++ b/include/lapi/name_to_handle_at.h
+> > @@ -0,0 +1,54 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2020 Linaro Limited. All rights reserved.
+> > + * Author: Viresh Kumar <viresh.kumar@linaro.org>
+> > + */
+> > +
+> > +#ifndef NAME_TO_HANDLE_AT_H__
+> > +#define NAME_TO_HANDLE_AT_H__
+> > +
+> > +#include <sys/syscall.h>
+> > +#include "config.h"
+> > +#include "tst_buffers.h"
+> > +#include "tst_test.h"
+> > +
+> > +#ifndef HAVE_NAME_TO_HANDLE_AT
+> > +struct file_handle {
+> > +	unsigned int handle_bytes;
+> > +	int handle_type;
+> > +	/* File identifier.  */
+> > +	unsigned char f_handle[0];
+> > +};
+> > +
+> > +int name_to_handle_at(int dfd, const char *pathname, struct file_handle *handle,
+> > +		      int *mount_id, int flags);
+> > +int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags);
+> 
+> This still is not complete solution. As far as I can tell this will fail
+> to link on machine where libc does not implement these, so we have to
+> make them static inline functions that actually call the tst_syscall().
 
-I have seen this patchset, Can we use a function to check whether kernel 
-supports time syscall (like time_supported_by_kernel()) in setup
-and then we use time() - !return value in verify funtion?
-> On some platforms(aarch64) __NR_time is not supported, if that happens,
-> go back to invoke time() and relax 1-second in low bound for comparing.
->
-> This also to fix:
->    TFAIL: msg_stime = 1605730573 out of [1605730574, 1605730574]
->
-> Signed-off-by: Li Wang<liwang@redhat.com>
-> Cc: Chunyu Hu<chuhu@redhat.com>
-> Cc: Cyril Hrubis<chrubis@suse.cz>
-> ---
->   testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c | 14 ++++++++++++--
->   testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c | 14 ++++++++++++--
->   testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 14 ++++++++++++--
->   3 files changed, 36 insertions(+), 6 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> index 6fdc47dc3..9dc778ca7 100644
-> --- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> @@ -26,13 +26,23 @@ static void verify_msgrcv(void)
->
->   	SAFE_MSGSND(queue_id,&snd_buf, MSGSIZE, 0);
->
-> -	tst_syscall(__NR_time,&before_rcv);
-> +	before_rcv = syscall(__NR_time, NULL);
-> +	if (before_rcv == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		before_rcv = time(NULL) - 1;
-> +	}
-> +
->   	TEST(msgrcv(queue_id,&rcv_buf, MSGSIZE, 1, 0));
->   	if (TST_RET == -1) {
->   		tst_res(TFAIL | TTERRNO, "msgrcv failed");
->   		return;
->   	}
-> -	tst_syscall(__NR_time,&after_rcv);
-> +
-> +	after_rcv = syscall(__NR_time, NULL);
-> +	if (after_rcv == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		after_rcv = time(NULL);
-> +	}
->
->   	if (strcmp(rcv_buf.mtext, snd_buf.mtext) == 0)
->   		tst_res(TPASS, "message received(%s) = message sent(%s)",
-> diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> index 9101f2668..27464e79f 100644
-> --- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> +++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> @@ -30,13 +30,23 @@ static void verify_msgsnd(void)
->   	struct msqid_ds qs_buf;
->   	time_t before_snd, after_snd;
->
-> -	tst_syscall(__NR_time,&before_snd);
-> +	before_snd = syscall(__NR_time, NULL);
-> +	if (before_snd == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		before_snd = time(NULL) - 1;
-> +	}
-> +
->   	TEST(msgsnd(queue_id,&snd_buf, MSGSIZE, 0));
->   	if (TST_RET == -1) {
->   		tst_res(TFAIL | TTERRNO, "msgsnd() failed");
->   		return;
->   	}
-> -	tst_syscall(__NR_time,&after_snd);
-> +
-> +	after_snd = syscall(__NR_time, NULL);
-> +	if (after_snd == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		after_snd = time(NULL);
-> +	}
->
->   	SAFE_MSGCTL(queue_id, IPC_STAT,&qs_buf);
->
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> index f5b8eaef9..356513726 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> @@ -241,9 +241,19 @@ static int get_shm_idx_from_id(int shm_id)
->
->   static void setup(void)
->   {
-> -	ctime_min = tst_syscall(__NR_time, NULL);
-> +	ctime_min = syscall(__NR_time, NULL);
-> +	if (ctime_min == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		ctime_min = time(NULL) - 1;
-> +	}
-> +
->   	shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT | SHM_RW);
-> -	ctime_max = tst_syscall(__NR_time, NULL);
-> +
-> +	ctime_max = syscall(__NR_time, NULL);
-> +	if (ctime_max == -1&&  errno == ENOSYS) {
-> +		tst_res(TINFO, "__NR_time not supported");
-> +		ctime_max = time(NULL);
-> +	}
->
->   	shm_idx = get_shm_idx_from_id(shm_id);
->
+This is embarrassing. Not that I was doing this for the first time, I
+just completely forgot to update this path, damn. Sorry about that.
 
-
-
+-- 
+viresh
