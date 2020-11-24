@@ -1,53 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Nov 2020 14:04:25 +0100
-Subject: [LTP] [PATCH 2/2] syscalls: quotactl04,
- statx05: Fix TWARN on missing mkfs
-Message-ID: <20201124130425.4264-1-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 24 Nov 2020 21:16:24 +0800
+Subject: [LTP] [PATCH] syscalls/select03: Fix segfaults on aarch64
+In-Reply-To: <20201124120154.27017-1-chrubis@suse.cz>
+References: <20201124120154.27017-1-chrubis@suse.cz>
+Message-ID: <CAEemH2eKQq_s+RbtVoadRF7Hg_1ddqLUv0HSAG28bKGT54e9Kg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When mkfs.ext4 was missing we would get TWARN because the setup will fail to
-parse the mkfs version followed by TCONF from the library function that
-attempts format the device.
+On Tue, Nov 24, 2020 at 8:00 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Fix this by requiring the mkfs.ext4 in the tst_test structure which will exit
-the test before we attempt to parse the mkfs version.
+> The select() syscall is implemented via pselect6() in aarch64 glibc, which
+> means that glibc has to convert the timeout from timeval to timespec hence
+> it
+> will segfault rather than return EFAULT.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> CC: Viresh Kumar <viresh.kumar@linaro.org>
+>
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/quotactl/quotactl04.c | 4 ++++
- testcases/kernel/syscalls/statx/statx05.c       | 4 ++++
- 2 files changed, 8 insertions(+)
+Acked-by: Li Wang <liwang@redhat.com>
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-index 3cc2b974f..8b17b1fbc 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -170,4 +170,8 @@ static struct tst_test test = {
- 	.needs_device = 1,
- 	.dev_fs_type = "ext4",
- 	.mntpoint = MNTPOINT,
-+	.needs_cmds = (const char *[]) {
-+		"mkfs.ext4",
-+		NULL
-+	}
- };
-diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-index d7ac24418..81a5bcbf2 100644
---- a/testcases/kernel/syscalls/statx/statx05.c
-+++ b/testcases/kernel/syscalls/statx/statx05.c
-@@ -135,4 +135,8 @@ static struct tst_test test = {
- 	.needs_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.dev_fs_type = "ext4",
-+	.needs_cmds = (const char *[]) {
-+		"mkfs.ext4",
-+		NULL
-+	}
- };
 -- 
-2.26.2
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201124/ff0c17c7/attachment.htm>
