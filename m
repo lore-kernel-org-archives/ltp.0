@@ -1,148 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Nov 2020 16:38:37 +0100
-Subject: [LTP] [PATCH 1/2] syscalls: avoid time() using
- __cvdso_gettimeofday in use-level's VDSO
-In-Reply-To: <20201123083137.11575-1-liwang@redhat.com>
-References: <20201123083137.11575-1-liwang@redhat.com>
-Message-ID: <20201124153837.GA24470@yuki.lan>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date: Tue, 24 Nov 2020 18:16:28 +0100
+Subject: [LTP] kernel BUG at mm/highmem.c:417! invalid opcode: 0000 EIP:
+ zero_user_segments
+In-Reply-To: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
+References: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
+Message-ID: <20201124171628.dk6tle5lh3sx2jxg@linutronix.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-[CC Thomas Gleixner]
+On 2020-11-24 18:52:44 [+0530], Naresh Kamboju wrote:
+> While running LTP test case access01 the following kernel BUG
+> noticed on linux next 20201124 tag kernel on i386.
+> 
+> git short log:
+> ----------------
+> git log --oneline next-20201120..next-20201124 -- mm/highmem.c
+> d9927d46febf Merge branch 'akpm-current/current'
+> 72d22a0d0e86 mm: support THPs in zero_user_segments
+> 2a656cad337e mm/highmem: Take kmap_high_get() properly into account
+> 
+> Please find these easy steps to reproduce the kernel build and boot.
 
-Thomas can you please have a look? It looks like we can get the SysV IPC
-ctime to be one second off compared to what we get from realtime clock.
+This BUG_ON() is in zero_user_segments() which ash been added in commit
+   72d22a0d0e86 mm: support THPs in zero_user_segments
 
-Do we care to get this fixed in kernel or should we fix the tests?
+> [   50.852189] kernel BUG at mm/highmem.c:417!
 
-> This shmctl01 test detect the time as the number of seconds twice
-> (before and after) the shmget() instruction, then it verifies
-> whether the 'struct shmid_ds ds' gets data correctly. But here it
-> shows 'ds->ctime' out of the seconds range (1604298586, 1604298586),
-> 
-> The reason is that shmget()/msgsnd() always use ktime_get_real_second
-> to get real seconds, but time() on aarch64 via gettimeofday() or (it
-> depends on different kernel versions) clock_gettime() in use-level's
-> VDSO to return tv_sec.
-> 
-> time()
->   __cvdso_gettimeofday
->    ...
->      do_gettimeofday
->        ktime_get_real_ts64
->         timespc64_add_ns
-> 
-> Situation can be simplify as difference between ktime_get_real_second
-> and ktime_get_real_ts64. As we can see ktime_get_real_second return
-> tk->xtime_sec directly, however
-> 
-> timespc64_add_ns more easily add 1 more second via "a->tv_sec +=..."
-> on a virtual machine, that's why we got occasional errors like:
-> 
-> shmctl01.c:183: TFAIL: SHM_STAT: shm_ctime=1604298585, expected <1604298586,1604298586>
-> ...
-> msgsnd01.c:59: TFAIL: msg_stime = 1605730573 out of [1605730574, 1605730574]
-> 
-> Here we propose to use '__NR_time' to invoke syscall directly that makes
-> test all get real seconds via ktime_get_real_second.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Chunyu Hu <chuhu@redhat.com>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c | 5 +++--
->  testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c | 5 +++--
->  testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 5 +++--
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> index 5c1e317e9..6fdc47dc3 100644
-> --- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> +++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
-> @@ -10,6 +10,7 @@
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
->  #include "libnewipc.h"
-> +#include "tst_timer.h"
->  
->  static key_t msgkey;
->  static int queue_id = -1, pid;
-> @@ -25,13 +26,13 @@ static void verify_msgrcv(void)
->  
->  	SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
->  
-> -	time(&before_rcv);
-> +	tst_syscall(__NR_time, &before_rcv);
->  	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0));
->  	if (TST_RET == -1) {
->  		tst_res(TFAIL | TTERRNO, "msgrcv failed");
->  		return;
->  	}
-> -	time(&after_rcv);
-> +	tst_syscall(__NR_time, &after_rcv);
->  
->  	if (strcmp(rcv_buf.mtext, snd_buf.mtext) == 0)
->  		tst_res(TPASS, "message received(%s) = message sent(%s)",
-> diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> index 5f5da52d2..9101f2668 100644
-> --- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> +++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
-> @@ -16,6 +16,7 @@
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
->  #include "libnewipc.h"
-> +#include "tst_timer.h"
->  
->  static key_t msgkey;
->  static int queue_id = -1, pid;
-> @@ -29,13 +30,13 @@ static void verify_msgsnd(void)
->  	struct msqid_ds qs_buf;
->  	time_t before_snd, after_snd;
->  
-> -	time(&before_snd);
-> +	tst_syscall(__NR_time, &before_snd);
->  	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
->  	if (TST_RET == -1) {
->  		tst_res(TFAIL | TTERRNO, "msgsnd() failed");
->  		return;
->  	}
-> -	time(&after_snd);
-> +	tst_syscall(__NR_time, &after_snd);
->  
->  	SAFE_MSGCTL(queue_id, IPC_STAT, &qs_buf);
->  
-> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> index 3a39a4d74..f5b8eaef9 100644
-> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
-> @@ -19,6 +19,7 @@
->  #include "tst_test.h"
->  #include "tst_safe_sysv_ipc.h"
->  #include "libnewipc.h"
-> +#include "tst_timer.h"
->  
->  #define NCHILD 20
->  
-> @@ -240,9 +241,9 @@ static int get_shm_idx_from_id(int shm_id)
->  
->  static void setup(void)
->  {
-> -	ctime_min = time(NULL);
-> +	ctime_min = tst_syscall(__NR_time, NULL);
->  	shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT | SHM_RW);
-> -	ctime_max = time(NULL);
-> +	ctime_max = tst_syscall(__NR_time, NULL);
->  
->  	shm_idx = get_shm_idx_from_id(shm_id);
->  
-> -- 
-> 2.21.1
-> 
+I managed to capture one invocation with:
+zero_user_segments(0xd4367a90,
+		   0x1000, 0x1000,
+		   0x0, 0x50)
+page_compound() -> 1
+page_size() -> 4096
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+And at the end it BUGs because end2 is still 0x50.
+
+because:
+|         for (i = 0; i < compound_nr(page); i++) {
+|                 void *kaddr;
+|                 unsigned this_end;
+| 
+|                 if (end1 == 0 && start2 >= PAGE_SIZE) {
+|                         start2 -= PAGE_SIZE;
+|                         end2 -= PAGE_SIZE;
+|                         continue;
+|                 }
+| 
+|                 if (start1 >= PAGE_SIZE) {
+start1 0x1000 is >= PAGE_SIZE.
+|                         start1 -= PAGE_SIZE;
+|                         end1 -= PAGE_SIZE;
+|                         if (start2) {
+start2 is 0.
+|                                 start2 -= PAGE_SIZE;
+|                                 end2 -= PAGE_SIZE;
+|                         }
+|                         continue;
+|                 }
+
+I don't know why the logic for start1/end1 and start2/end2 is coupled
+here.  Based on how __block_write_begin_int() invokes it seems to zero
+two independent blocks (or it is a bug in caller).
+The generic implementation would do nothing for start1/end1 and for
+second part if would memset(page + 0, 0, 0x50 - 0).
+
+Sebastian
