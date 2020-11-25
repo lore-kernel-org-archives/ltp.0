@@ -1,10 +1,9 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 25 Nov 2020 06:34:58 +0100
-Subject: [LTP] [PATCH v3 2/3] network/stress/multicast/query-flood: Convert
- to new API
+Date: Wed, 25 Nov 2020 06:34:59 +0100
+Subject: [LTP] [PATCH v3 3/3] network/stress/route-change: Convert to new API
 In-Reply-To: <20201125053459.3314021-1-lkml@jv-coder.de>
 References: <20201125053459.3314021-1-lkml@jv-coder.de>
-Message-ID: <20201125053459.3314021-2-lkml@jv-coder.de>
+Message-ID: <20201125053459.3314021-3-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,395 +14,108 @@ From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- runtest/net_stress.multicast                  |  12 +
- .../multicast/query-flood/mcast-queryfld01.sh |  37 +++
- .../multicast/query-flood/mcast-queryfld02.sh |  38 +++
- .../multicast/query-flood/mcast-queryfld03.sh |  46 ++++
- .../multicast/query-flood/mcast-queryfld04.sh |  38 +++
- .../multicast/query-flood/mcast-queryfld05.sh |  57 +++++
- .../multicast/query-flood/mcast-queryfld06.sh |  65 ++++++
- .../multicast/query-flood/mcast4-queryfld01   | 199 ----------------
- .../multicast/query-flood/mcast4-queryfld02   | 202 ----------------
- .../multicast/query-flood/mcast4-queryfld03   | 208 -----------------
- .../multicast/query-flood/mcast4-queryfld04   | 202 ----------------
- .../multicast/query-flood/mcast4-queryfld05   | 213 -----------------
- .../multicast/query-flood/mcast4-queryfld06   | 219 ------------------
- .../multicast/query-flood/mcast6-queryfld01   | 197 ----------------
- .../multicast/query-flood/mcast6-queryfld02   | 199 ----------------
- .../multicast/query-flood/mcast6-queryfld03   | 205 ----------------
- .../multicast/query-flood/mcast6-queryfld04   | 199 ----------------
- .../multicast/query-flood/mcast6-queryfld05   | 209 -----------------
- .../multicast/query-flood/mcast6-queryfld06   | 213 -----------------
- 19 files changed, 293 insertions(+), 2465 deletions(-)
- create mode 100755 testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
- create mode 100644 testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
- create mode 100644 testcases/network/stress/multicast/query-flood/mcast-queryfld03.sh
- create mode 100644 testcases/network/stress/multicast/query-flood/mcast-queryfld04.sh
- create mode 100644 testcases/network/stress/multicast/query-flood/mcast-queryfld05.sh
- create mode 100644 testcases/network/stress/multicast/query-flood/mcast-queryfld06.sh
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld01
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld02
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld03
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld04
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld05
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast4-queryfld06
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld01
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld02
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld03
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld04
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld05
- delete mode 100644 testcases/network/stress/multicast/query-flood/mcast6-queryfld06
+ runtest/net_stress.route                      |   2 +
+ .../network/stress/route/route-redirect.sh    |  64 ++++++
+ .../network/stress/route/route4-redirect      | 212 ------------------
+ .../network/stress/route/route6-redirect      | 207 -----------------
+ 4 files changed, 66 insertions(+), 419 deletions(-)
+ create mode 100644 testcases/network/stress/route/route-redirect.sh
+ delete mode 100644 testcases/network/stress/route/route4-redirect
+ delete mode 100644 testcases/network/stress/route/route6-redirect
 
-diff --git a/runtest/net_stress.multicast b/runtest/net_stress.multicast
-index fff5133f6..0d61db289 100644
---- a/runtest/net_stress.multicast
-+++ b/runtest/net_stress.multicast
-@@ -8,6 +8,12 @@ mcast4-group-same-group mcast-group-same-group
- mcast4-group-source-filter mcast-group-source-filter
- mcast4-pktfld01 mcast-pktfld01.sh
- mcast4-pktfld02 mcast-pktfld02.sh
-+mcast4-queryfld01 mcast-queryfld01.sh
-+mcast4-queryfld02 mcast-queryfld02.sh
-+mcast4-queryfld03 mcast-queryfld03.sh
-+mcast4-queryfld04 mcast-queryfld04.sh
-+mcast4-queryfld05 mcast-queryfld05.sh
-+mcast4-queryfld06 mcast-queryfld06.sh
+diff --git a/runtest/net_stress.route b/runtest/net_stress.route
+index b60e55bd6..5590ef023 100644
+--- a/runtest/net_stress.route
++++ b/runtest/net_stress.route
+@@ -5,6 +5,7 @@ route4-change-if route-change-if.sh
+ route4-change-netlink-dst route-change-netlink-dst.sh
+ route4-change-netlink-gw route-change-netlink-gw.sh
+ route4-change-netlink-if route-change-netlink-if.sh
++route4-redirect route-redirect.sh
  
- mcast6-group-single-socket mcast-group-single-socket -6
- mcast6-group-multiple-socket mcast-group-multiple-socket -6
-@@ -15,3 +21,9 @@ mcast6-group-same-group mcast-group-same-group -6
- mcast6-group-source-filter mcast-group-source-filter -6
- mcast6-pktfld01 mcast-pktfld01.sh -6
- mcast6-pktfld02 mcast-pktfld02.sh -6
-+mcast6-queryfld01 mcast-queryfld01.sh -6
-+mcast6-queryfld02 mcast-queryfld02.sh -6
-+mcast6-queryfld03 mcast-queryfld03.sh -6
-+mcast6-queryfld04 mcast-queryfld04.sh -6
-+mcast6-queryfld05 mcast-queryfld05.sh -6
-+mcast6-queryfld06 mcast-queryfld06.sh -6
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
-new file mode 100755
-index 000000000..e54499864
---- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
-@@ -0,0 +1,37 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2006 International Business Machines  Corp.
-+# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-+#
-+# Verify that the kernel is not crashed when joining a multicast group
-+# on a single socket, then receiving a large number of General Queries
-+
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
-+
-+do_setup()
-+{
-+	mcast_setup $MCASTNUM_NORMAL
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining an IPv${TST_IPVER} multicast group on a single socket, then receiving a large number of General Queries in $NS_DURATION seconds"
-+
-+	local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
-+
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix \> $tmpfile
-+	tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+	# Send General Query from the remote host
-+	local params
-+	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m"
-+	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
-+}
-+
-+tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
+ route6-change-dst route-change-dst.sh -6
+ route6-change-gw route-change-gw.sh -6
+@@ -12,3 +13,4 @@ route6-change-if route-change-if.sh -6
+ route6-change-netlink-dst route-change-netlink-dst.sh -6
+ route6-change-netlink-gw route-change-netlink-gw.sh -6
+ route6-change-netlink-if route-change-netlink-if.sh -6
++route6-redirect route-redirect.sh -6
+diff --git a/testcases/network/stress/route/route-redirect.sh b/testcases/network/stress/route/route-redirect.sh
 new file mode 100644
-index 000000000..f1f2d062c
+index 000000000..682d0d9b0
 --- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
-@@ -0,0 +1,38 @@
++++ b/testcases/network/stress/route/route-redirect.sh
+@@ -0,0 +1,64 @@
 +#!/bin/sh
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +# Copyright (c) 2006 International Business Machines  Corp.
 +# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
 +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
 +#
-+# Verify that the kernel is not crashed when joining a multicast group
-+# on a single socket, then receiving a large number of Multicast Address
-+# Specific Query
++# Verify the kernel is not crashed when the route is modified by
++# ICMP Redirects frequently
 +
++TST_SETUP=do_setup
++TST_CLEANUP=do_cleanup
++TST_TESTFUNC=do_test
 +TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
++TST_NEEDS_CMDS="ip"
++
++. tst_net.sh
++
++DST_HOST=""
++DST_PORT="7"
 +
 +do_setup()
 +{
-+	mcast_setup $MCASTNUM_NORMAL
++	local lhost_ifname=$(tst_iface lhost)
++	local rhost_ifname=$(tst_iface rhost)
++	local rhost_net="$(tst_ipaddr_un -p 1)"
++	DST_HOST="$(tst_ipaddr_un 1 5)"
++
++	# Remove the link-local address of the remote host
++	tst_rhost_run -s -c "ip addr flush dev $rhost_ifname"
++
++	# Add route to the initial gateway
++	ip route add $rhost_net dev $lhost_ifname
++
++	# Make sure the sysctl value is set for accepting the redirect
++	sysctl -w net.ipv${TST_IPVER}.conf.${lhost_ifname}.accept_redirects=1 > /dev/null
++	[ ! "$TST_IPV6" ] && sysctl -w net.ipv4.conf.${lhost_ifname}.secure_redirects=0 > /dev/null
++
++	# Run the redirector utility at the remote host
++	tst_rhost_run -s -c "ns-icmp_redirector -I $rhost_ifname -b"
++}
++
++do_cleanup()
++{
++	# Kill the redirector utility
++	tst_rhost_run -c "killall -SIGHUP ns-icmp_redirector"
 +}
 +
 +do_test()
 +{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining an IPv${TST_IPVER} multicast group on a single socket, then receiving a large number of Multicast Address Specific Query in $NS_DURATION seconds"
-+
-+	local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
-+
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix \> $tmpfile
-+	tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+	# Send IGMP Multicast Address Specific Query from the remote host
-+	local params="-m $MCAST_IPV4_ADDR"
-+	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m -D $MCAST_IPV6_ADDR"
-+	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
-+}
-+
-+tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld03.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld03.sh
-new file mode 100644
-index 000000000..b15b273c5
---- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld03.sh
-@@ -0,0 +1,46 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2006 International Business Machines  Corp.
-+# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-+#
-+# Verify that the kernel is not crashed when joining a multicast group
-+# on a single socket, then receiving a large number of Multicast Address
-+# and Source Specific Queries
-+
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
-+
-+SRC_ADDR_IPV4=10.10.10.1
-+SRC_ADDR_IPV6=fec0:100:100:100::1
-+FILTER_MODE="include"
-+
-+do_setup()
-+{
-+	mcast_setup $MCASTNUM_NORMAL
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining an IPv${TST_IPVER} multicast group on a single socket, then receiving a large number of Multicast Address and Source Specific Queries in $NS_DURATION seconds"
-+
-+	local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	local src_addr="$SRC_ADDR_IPV4"
-+	if [ "$TST_IPV6" ]; then
-+		prefix="$MCAST_IPV6_ADDR_PREFIX"
-+		src_addr="$SRC_ADDR_IPV6"
-+	fi
-+
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix -s $src_addr -F $FILTER_MODE \> $tmpfile
-+	tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+    # Send Multicast Address and Source Specific Queries from the remote host
-+	local params="-m $MCAST_IPV4_ADDR -s $src_addr"
-+	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m -D $MCAST_IPV6_ADDR -a $src_addr"
-+	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
-+}
-+
-+tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld04.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld04.sh
-new file mode 100644
-index 000000000..ede04980a
---- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld04.sh
-@@ -0,0 +1,38 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2006 International Business Machines  Corp.
-+# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-+#
-+# Verify that the kernel is not crashed when joining multiple multicast
-+# groups on separate socket, then receiving a large number of General Queries
-+
-+
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
-+
-+do_setup()
-+{
-+	mcast_setup $MCASTNUM_NORMAL
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate socket, then receiving a large number of General Queries in $NS_DURATION seconds"
-+
-+	local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
-+
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n $MCASTNUM_NORMAL -p $prefix \> $tmpfile
-+	tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+	# Send General Queries from the remote host
-+	local params
-+	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m"
-+	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
-+}
-+
-+tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld05.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld05.sh
-new file mode 100644
-index 000000000..7db63f124
---- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld05.sh
-@@ -0,0 +1,57 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2006 International Business Machines  Corp.
-+# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-+#
-+# Verify that the kernel is not crashed when joining multiple 
-+# multicast groups on separate sockets, then receiving a large number of
-+# Multicast Address Specific Queries
-+
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
-+
-+do_setup()
-+{
-+	mcast_setup $MCASTNUM_NORMAL
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of Multicast Address Specific Queries in $NS_DURATION seconds"
-+
-+	local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
-+
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n $MCASTNUM_NORMAL -p $prefix \> $tmpfile
-+	tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+	# Send IGMP Multicast Address Specific Query from the remote host
-+	local n=0
-+	while [ $n -lt $MCASTNUM_NORMAL ]; do
-+		# Define the multicast address
-+		if [ "$TST_IPV6" ]; then
-+    		local n_hex=$(printf "%x" $n)
-+    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
-+		else
-+			local x=$((n / 254))
-+			local y=$((n % 254 + 1))
-+			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
++	tst_res TINFO "Verify the kernel is not crashed when the route is modified by ICMP Redirects frequently"
++	# Loop for changing the route
++	local cnt=0
++	while [ $cnt -lt $NS_TIMES ]; do
++		ns-udpsender -f $TST_IPVER -D $DST_HOST -p $DST_PORT -o -s 8
++		if [ $? -ne 0 ]; then
++			tst_res TBROK "Failed to run udp packet sender"
 +		fi
-+
-+		local params="-m $addr"
-+		[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m -D $addr"
-+		tst_rhost_run -c "$MCAST_RCMD -t $NS_DURATION -r 0 -b $params"
-+
-+		: $((n += 1))
++		: $((cnt += 1))
 +	done
-+
-+	sleep $NS_DURATION
 +
 +	tst_res TPASS "Test finished successfully"
 +}
 +
 +tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld06.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld06.sh
-new file mode 100644
-index 000000000..3745f12fb
---- /dev/null
-+++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld06.sh
-@@ -0,0 +1,65 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2006 International Business Machines  Corp.
-+# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-+#
-+# Verify that the kernel is not crashed when joining multiple 
-+# multicast groups on separate sockets, then receiving a large number of
-+# Multicast Address and Source Specific Queries
-+
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+. mcast-lib.sh
-+
-+SRC_ADDR_IPV4=10.10.10.1
-+SRC_ADDR_IPV6=fec0:100:100:100::1
-+FILTER_MODE="include"
-+
-+do_setup()
-+{
-+	mcast_setup $MCASTNUM_NORMAL
-+}
-+
-+do_test()
-+{
-+	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of Multicast Address and Source Specific Queries in $NS_DURATION seconds"
-+
-+    local prefix="$MCAST_IPV4_ADDR_PREFIX"
-+	local src_addr="$SRC_ADDR_IPV4"
-+	if [ "$TST_IPV6" ]; then
-+		prefix="$MCAST_IPV6_ADDR_PREFIX"
-+		src_addr="$SRC_ADDR_IPV6"
-+	fi
-+    
-+	# Run a multicast join tool
-+	local tmpfile=$$
-+	EXPECT_PASS $MCAST_LCMD -n $MCASTNUM_NORMAL -p $prefix -s $src_addr -F $FILTER_MODE \> $tmpfile
-+    tst_res TINFO "joined $(grep groups $tmpfile)"
-+
-+    # Send Multicast Address Specific Queries from the remote host
-+    local n=0
-+    while [ $n -lt $MCASTNUM_NORMAL ]; do
-+		# Define the multicast address
-+		if [ "$TST_IPV6" ]; then
-+    		local n_hex=$(printf "%x" $n)
-+    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
-+		else
-+			local x=$((n / 254))
-+			local y=$((n % 254 + 1))
-+			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
-+		fi
-+
-+	    local params="-m $addr -s $src_addr"
-+	    [ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m -D $addr -a $src_addr"
-+        tst_rhost_run -c "$MCAST_RCMD -t $NS_DURATION -r 0 -b $params"
-+
-+        : $((n += 1))
-+    done
-+
-+    sleep $NS_DURATION
-+
-+    tst_res TPASS "Test finished successfully"
-+}
-+
-+tst_run
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld01 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld01
+diff --git a/testcases/network/stress/route/route4-redirect b/testcases/network/stress/route/route4-redirect
 deleted file mode 100644
-index 992cf423e..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld01
+index 53df9abf2..000000000
+--- a/testcases/network/stress/route/route4-redirect
 +++ /dev/null
-@@ -1,199 +0,0 @@
+@@ -1,212 +0,0 @@
 -#!/bin/sh
 -
 -################################################################################
@@ -428,11 +140,11 @@ index 992cf423e..000000000
 -################################################################################
 -#
 -# File:
--#   mcast4-queryfld01
+-#   route4-redirect
 -#
 -# Description:
--#   Verify that the kernel is not crashed when joining an IPv4 multicast group
--#   on a single socket, then receiving a large number of General Query
+-#   Verify the kernel is not crashed when the IPv4 route is modified by
+-#   ICMP Redirects frequently
 -#
 -# Setup:
 -#   See testcases/network/stress/README
@@ -441,7 +153,7 @@ index 992cf423e..000000000
 -#   Mitsuru Chinen <mitch@jp.ibm.com>
 -#
 -# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
+-#	Apr 07 2006 - Created (Mitsuru Chinen)
 -#
 -#-----------------------------------------------------------------------
 -# Uncomment line below for debug output.
@@ -449,55 +161,63 @@ index 992cf423e..000000000
 -$trace_logic
 -
 -# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld01
+-TCID=route4-redirect01
 -TST_TOTAL=1
 -TST_COUNT=1
 -export TCID
 -export TST_COUNT
 -export TST_TOTAL
 -
+-# Test description
+-tst_resm TINFO "Verify the kernel is not crashed when the IPv4 route is modified by  ICMP Redirects frequently"
+-
 -# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
+-LTPROOT=${LTPROOT:-`(cd ../../../.. ; pwd)`}
 -export LTPROOT
 -
 -# Check the environmanet variable
 -. check_envval || exit $TST_TOTAL
 -
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
+-# The number of times where route is changed
+-NS_TIMES=${NS_TIMES:-10000}
 -
 -# The number of the test link where tests run
 -LINK_NUM=${LINK_NUM:-0}
 -
 -# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
+-IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
 -
--# Netmask of the IPv4 network
--NETWORK_MASK=24
+-# Netmask of for the tested network
+-IPV4_NETMASK_NUM=24
+-
+-# Broadcast address of the tested network
+-IPV4_BROADCAST=${IPV4_NETWORK}.255
 -
 -# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
+-LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"1"}	# src
+-RHOST_IPV4_HOST="2"	# gateway
 -
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
+-# The destination network
+-DST_NETWORK="10.10.0"   # destination network would be 10.10.0.0/24
+-DST_HOST="5"
+-DST_PORT="7"
 -
 -
 -#-----------------------------------------------------------------------
 -#
--# Function: do_cleanup
+-# NAME:
+-#   do_cleanup
 -#
--# Description:
--#   Recover the system configuration
+-# DESCRIPTION:
+-#   Recover the tested interfaces
 -#
 -#-----------------------------------------------------------------------
 -do_cleanup()
 -{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
+-    # Kill the redirector utility
+-    $LTP_RSH $RHOST killall -SIGHUP ns-icmp_redirector >/dev/null 2>&1
 -
--    # Clean up each interface
+-    # Initialize the interfaces
 -    initialize_if lhost ${LINK_NUM}
 -    initialize_if rhost ${LINK_NUM}
 -}
@@ -505,67 +225,92 @@ index 992cf423e..000000000
 -
 -#-----------------------------------------------------------------------
 -#
--# Function: do_setup
+-# NAME:
+-#   do_setup
 -#
--# Description:
--#   Configure the ssystem for the test
+-# DESCRIPTION:
+-#   Set the initial route and start icmp redirect on the remote host
+-#
+-# SET VALUES:
+-#   rhost_ipv4addr      - IPv4 Address of the remote host
+-#   lhost_ifname        - Interface name of the local host
+-#   rhost_ifname        - Interface name of the remote host
 -#
 -#-----------------------------------------------------------------------
 -do_setup()
 -{
--    # Initialize the system configuration
+-    # Make sure to clean up
 -    do_cleanup
 -
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
+-    # Get the Interface name of local host
+-    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
 -    if [ $? -ne 0 ]; then
 -	tst_resm TBROK "Failed to get the interface name at the local host"
 -	exit $TST_TOTAL
 -    fi
 -
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
+-    # Get the Interface name of remote host
+-    rhost_ifname=`get_ifname rhost ${LINK_NUM}`
 -    if [ $? -ne 0 ]; then
 -	tst_resm TBROK "Failed to get the interface name at the remote host"
 -	exit $TST_TOTAL
 -    fi
 -
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
+-    # Remove the link-local address of the remote host
+-    sleep 3
+-    $LTP_RSH $RHOST "ip addr flush dev $rhost_ifname" > /dev/null
+-
+-    # Assign IPv4 address to the interface of the local host
+-    set_ipv4addr lhost ${LINK_NUM} ${IPV4_NETWORK} ${LHOST_IPV4_HOST}
 -    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
+-	tst_resm TBROK "Failed to assign an IPv4 address at the local host"
+-	return 1
 -    fi
 -
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
+-    # Add route to the initial gateway
+-    route add -net ${DST_NETWORK}.0 netmask 255.255.255.0 gw ${IPV4_NETWORK}.${RHOST_IPV4_HOST} dev $lhost_ifname
 -
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
+-    # Make sure the sysctl value is set for accepting the redirect
+-    sysctl -w net.ipv4.conf.${lhost_ifname}.accept_redirects=1 >/dev/null
+-    sysctl -w net.ipv4.conf.${lhost_ifname}.secure_redirects=0 >/dev/null
 -
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
+-    # Run the redirector utility at the remote host
+-    ret=`$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-icmp_redirector -I $rhost_ifname -b ; "'echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TBROK "Failed to run icmp redirector at the remote host"
 -	exit $TST_TOTAL
 -    fi
+-}
 -
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:
+-#   test_body
+-#
+-# DESCRIPTION:
+-#   main code of the test
+-#
+-# Arguments:
+-#   None
+-#
+-#-----------------------------------------------------------------------
+-test_body()
+-{
+-    # Loop for changing the route
+-    cnt=0
+-    while [ $cnt -lt $NS_TIMES ]; do
+-	ns-udpsender -f 4 -D ${DST_NETWORK}.${DST_HOST} -p $DST_PORT -o -s 8
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to run udp packet sender"
+-	    return 1
+-	fi
+-	cnt=`expr $cnt + 1`
+-    done
+-
+-    tst_resm TPASS "Test is finished correctly."
+-    return 0
 -}
 -
 -
@@ -573,891 +318,22 @@ index 992cf423e..000000000
 -#
 -# Main
 -#
+-# Exit Value:
+-#   The number of the failure
 -#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv4 multicast group on a single socket, then receiving a large number of General Query in $NS_DURATION [sec]"
--
+-#-----------------------------------------------------------------------
+-RC=0
 -do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP General Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -t $NS_DURATION -r 0' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start IGMP querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld02 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld02
-deleted file mode 100644
-index b731e0218..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld02
-+++ /dev/null
-@@ -1,202 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast4-queryfld02
--#
--# Description:
--#   Verify that the kernel is not crashed when joining an IPv4 multicast group
--#   on a single socket, then receiving a large number of Multicast Address
--#   Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld02
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
--
--# Netmask of the IPv4 network
--NETWORK_MASK=24
--
--# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
--
--# Multicast Address
--MCAST_ADDR=224.10.0.1	# If you modify this, please refer ns-mcast_join.c
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv4 multicast group on a single socket, then receiving a large number of Multicast Address Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP Multicast Address Specific Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -m $MCAST_ADDR -t $NS_DURATION -r 0' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start IGMP querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld03 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld03
-deleted file mode 100644
-index 568178b32..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld03
-+++ /dev/null
-@@ -1,208 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast4-queryfld03
--#
--# Description:
--#   Verify that the kernel is not crashed when joining an IPv4 multicast group
--#   on a single socket, then receiving a large number of Multicast Address
--#   and Source Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld03
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
--
--# Netmask of the IPv4 network
--NETWORK_MASK=24
--
--# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
--
--# Multicast Address
--MCAST_ADDR=224.10.0.1	# If you modify this, please refer ns-mcast_join.c
--
--# Source Address
--SRC_ADDR=10.10.10.1
--
--# Filter Mode
--FILTER_MODE="include"
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv4 multicast group on a single socket, then receiving a large number of Multicast Address and Source Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX -s $SRC_ADDR -F $FILTER_MODE >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP Multicast Address and Source Specific Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -m $MCAST_ADDR -s $SRC_ADDR -t $NS_DURATION -r 0' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start IGMP querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld04 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld04
-deleted file mode 100644
-index f89393ffc..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld04
-+++ /dev/null
-@@ -1,202 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast4-queryfld04
--#
--# Description:
--#   Verify that the kernel is not crashed when joining plural IPv4 multicast
--#   groups on separate socket, then receiving a large number of General Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld04
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
--
--# Netmask of the IPv4 network
--NETWORK_MASK=24
--
--# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv4 multicast groups on separate sockets, then receiving a large number of General Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP General Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -t $NS_DURATION -r 0' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start IGMP querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld05 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld05
-deleted file mode 100644
-index 6d73027a6..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld05
-+++ /dev/null
-@@ -1,213 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast4-queryfld05
--#
--# Description:
--#   Verify that the kernel is not crashed when joining joining plural IPv4
--#   multicast groups on separate socket, then receiving a large number of
--#   Multicast Address Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld05
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
--
--# Netmask of the IPv4 network
--NETWORK_MASK=24
--
--# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv4 multicast groups on separate sockets, then receiving a large number of Multicast Address Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX > /dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP Multicast Address Specific Query from the remote host
--querier_num=0
--while [ $querier_num -lt $MCASTNUM_NORMAL ]; do
--    # Define the multicast address
--    x=`expr $querier_num \/ 254`
--    y=`expr $querier_num % 254 + 1`
--    if [ $x -gt 254 ]; then
--	tst_resm TINFO "The number of the connection is less than $querier_num"
--	break
--    fi
--    mcast_addr=${MCAST_ADDR_PREFIX}.${x}.${y}
--
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -m $mcast_addr -t $NS_DURATION -r 0 -b
--
--    querier_num=`expr $querier_num + 1`
--done
--sleep $NS_DURATION
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
+-test_body || RC=`expr $RC + 1`
 -do_cleanup
--tst_resm TPASS "Test is finished successfully."
 -
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast4-queryfld06 b/testcases/network/stress/multicast/query-flood/mcast4-queryfld06
+-exit $RC
+diff --git a/testcases/network/stress/route/route6-redirect b/testcases/network/stress/route/route6-redirect
 deleted file mode 100644
-index b45162045..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast4-queryfld06
+index e12c7c816..000000000
+--- a/testcases/network/stress/route/route6-redirect
 +++ /dev/null
-@@ -1,219 +0,0 @@
+@@ -1,207 +0,0 @@
 -#!/bin/sh
 -
 -################################################################################
@@ -1482,12 +358,11 @@ index b45162045..000000000
 -################################################################################
 -#
 -# File:
--#   mcast4-queryfld06
+-#   route6-redirect
 -#
 -# Description:
--#   Verify that the kernel is not crashed when joining joining plural IPv4
--#   multicast groups on separate socket, then receiving a large number of
--#   Multicast Address and Source Specific Query
+-#   Verify the kernel is not crashed when the route is modified by
+-#   ICMP Redirects frequently
 -#
 -# Setup:
 -#   See testcases/network/stress/README
@@ -1496,7 +371,7 @@ index b45162045..000000000
 -#   Mitsuru Chinen <mitch@jp.ibm.com>
 -#
 -# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
+-#	Apr 07 2006 - Created (Mitsuru Chinen)
 -#
 -#-----------------------------------------------------------------------
 -# Uncomment line below for debug output.
@@ -1504,63 +379,60 @@ index b45162045..000000000
 -$trace_logic
 -
 -# The test case ID, the test case count and the total number of test case
--TCID=mcast4-queryfld06
+-TCID=route6-redirect01
 -TST_TOTAL=1
 -TST_COUNT=1
 -export TCID
 -export TST_COUNT
 -export TST_TOTAL
 -
+-# Test description
+-tst_resm TINFO "Verify the kernel is not crashed when the IPv6 route is modified by  ICMP Redirects frequently"
+-
 -# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
+-LTPROOT=${LTPROOT:-`(cd ../../../.. ; pwd)`}
 -export LTPROOT
 -
 -# Check the environmanet variable
 -. check_envval || exit $TST_TOTAL
 -
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
+-# The number of times where route is changed
+-NS_TIMES=${NS_TIMES:-10000}
 -
 -# The number of the test link where tests run
 -LINK_NUM=${LINK_NUM:-0}
 -
--# Network portion of the IPv4 address
--NETWORK_PART=${IPV4_NETWORK:-"10.0.0"}
+-# Network portion of the IPv6 address
+-IPV6_NETWORK="fec0:1:1:1"
 -
--# Netmask of the IPv4 network
--NETWORK_MASK=24
+-# Netmask of for the tested network
+-IPV6_NETMASK_NUM=64
 -
--# Host portion of the IPv4 address
--LHOST_HOST_PART=${LHOST_IPV4_HOST:-"2"}     # local host
--RHOST_HOST_PART=${RHOST_IPV4_HOST:-"1"}     # remote host
+-# Host portion of the IPv6 address
+-LHOST_IPV6_HOST=":1"	# src
+-RHOST_IPV6_HOST=":2"	# gateway
 -
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=224.10
+-# The destination network
+-DST_NETWORK="fec0:100:100:100"   # destination network
+-DST_HOST=":5"
+-DST_PORT="7"
 -
--# Source Address
--SRC_ADDR=10.10.10.1
--
--# Filter Mode
--FILTER_MODE="include"
 -
 -#-----------------------------------------------------------------------
 -#
--# Function: do_cleanup
+-# NAME:
+-#   do_cleanup
 -#
--# Description:
--#   Recover the system configuration
+-# DESCRIPTION:
+-#   Recover the tested interfaces
 -#
 -#-----------------------------------------------------------------------
 -do_cleanup()
 -{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-igmp_querier >/dev/null 2>&1
+-    # Kill the redirector utility
+-    $LTP_RSH $RHOST killall -SIGHUP ns-icmp_redirector >/dev/null 2>&1
 -
--    # Clean up each interface
+-    # Initialize the interfaces
 -    initialize_if lhost ${LINK_NUM}
 -    initialize_if rhost ${LINK_NUM}
 -}
@@ -1568,67 +440,90 @@ index b45162045..000000000
 -
 -#-----------------------------------------------------------------------
 -#
--# Function: do_setup
+-# NAME:
+-#   do_setup
 -#
--# Description:
--#   Configure the ssystem for the test
+-# DESCRIPTION:
+-#   Set the initial route and start icmp redirect on the remote host
+-#
+-# SET VALUES:
+-#   rhost_ipv6addr      - IPv6 Address of the remote host
+-#   lhost_ifname        - Interface name of the local host
+-#   rhost_ifname        - Interface name of the remote host
 -#
 -#-----------------------------------------------------------------------
 -do_setup()
 -{
--    # Initialize the system configuration
+-    # Make sure to cleanup the test environment
 -    do_cleanup
 -
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
+-    # Get the Interface name of local host
+-    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
 -    if [ $? -ne 0 ]; then
 -	tst_resm TBROK "Failed to get the interface name at the local host"
 -	exit $TST_TOTAL
 -    fi
 -
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
+-    # Get the Interface name of remote host
+-    rhost_ifname=`get_ifname rhost ${LINK_NUM}`
 -    if [ $? -ne 0 ]; then
 -	tst_resm TBROK "Failed to get the interface name at the remote host"
 -	exit $TST_TOTAL
 -    fi
 -
--    # Set IPv4 addresses to the interfaces
--    set_ipv4addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
+-    # Remove the link-local address of the remote host
+-    sleep 5
+-    $LTP_RSH $RHOST "ip addr flush dev $rhost_ifname" > /dev/null
+-
+-    # Assign IPv6 address to the interface of the local host
+-    add_ipv6addr lhost ${LINK_NUM} ${IPV6_NETWORK} ${LHOST_IPV6_HOST}
 -    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
+-	tst_resm TBROK "Failed to assign an IPv6 address at the local host"
+-	return 1
 -    fi
 -
--    set_ipv4addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
+-    # Add route to the initial gateway
+-    route -A inet6 add ${DST_NETWORK}::/64 gw fe80:${RHOST_IPV6_HOST} dev $lhost_ifname
 -
--    # IPv4 address of the local/remote host
--    lhost_addr="${NETWORK_PART}.${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}.${RHOST_HOST_PART}"
+-    # Make sure the sysctl value is set for accepting the redirect
+-    sysctl -w net.ipv6.conf.${lhost_ifname}.accept_redirects=1 >/dev/null
 -
--    # Make sure the connectvity
--    check_icmpv4_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv4.igmp_max_memberships=20 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
+-    # Run the redirector utility at the remote host
+-    ret=`$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-icmp_redirector -I $rhost_ifname -b ; "'echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TBROK "Failed to run icmp redirector at the remote host"
 -	exit $TST_TOTAL
 -    fi
+-}
 -
--    sysctl -w net.ipv4.igmp_max_msf=10 >/dev/null
--    sysctl -w net.ipv4.conf.${lhost_ifname}.force_igmp_version=0 >/dev/null
--    sysctl -w net.ipv4.conf.all.force_igmp_version=0 >/dev/null
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:
+-#   test_body
+-#
+-# DESCRIPTION:
+-#   main code of the test
+-#
+-# Arguments:
+-#   None
+-#
+-#-----------------------------------------------------------------------
+-test_body()
+-{
+-    # Loop for changing the route
+-    cnt=0
+-    while [ $cnt -lt $NS_TIMES ]; do
+-	ns-udpsender -f 6 -D ${DST_NETWORK}:${DST_HOST} -p $DST_PORT -o -s 8
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to run udp packet sender"
+-	    return 1
+-	fi
+-	cnt=`expr $cnt + 1`
+-    done
+-
+-    tst_resm TPASS "Test is finished correctly."
+-    return 0
 -}
 -
 -
@@ -1636,1305 +531,16 @@ index b45162045..000000000
 -#
 -# Main
 -#
+-# Exit Value:
+-#   The number of the failure
 -#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv4 multicast groups on separate sockets, then receiving a large number of Multicast Address and Source Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 4 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX -s $SRC_ADDR -F $FILTER_MODE > /dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send IGMP Multicast Address Specific Query from the remote host
--querier_num=0
--while [ $querier_num -lt $MCASTNUM_NORMAL ]; do
--    # Define the multicast address
--    x=`expr $querier_num \/ 254`
--    y=`expr $querier_num % 254 + 1`
--    if [ $x -gt 254 ]; then
--	tst_resm TINFO "The number of the connection is less than $querier_num"
--	break
--    fi
--    mcast_addr=${MCAST_ADDR_PREFIX}.${x}.${y}
--
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-igmp_querier -I $rhost_ifname -m $mcast_addr -s $SRC_ADDR -t $NS_DURATION -r 0 -b
--
--    querier_num=`expr $querier_num + 1`
--done
--sleep $NS_DURATION
--
 -#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
+-RC=0
+-do_setup
+-test_body || RC=`expr $RC + 1`
 -do_cleanup
--tst_resm TPASS "Test is finished successfully."
 -
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld01 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld01
-deleted file mode 100644
-index 8c09d4897..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld01
-+++ /dev/null
-@@ -1,197 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld01
--#
--# Description:
--#   Verify that the kernel is not crashed when joining an IPv6 multicast
--#   group on a single socket, then receiving a large number of General Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 7 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld01
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"	# local host
--RHOST_HOST_PART=":1"	# remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv6 multicast group on a single socket, then receiving a large number of General Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD General Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -r 0 -t $NS_DURATION' ; echo $?'`
--
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start MLD querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld02 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld02
-deleted file mode 100644
-index 17cdae75d..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld02
-+++ /dev/null
-@@ -1,199 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld02
--#
--# Description:
--#   Verify that the kernel is not crashed when joining an IPv6 multicast group
--#   on a single socket, then receiving a large number of Multicast Address
--#   Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 7 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld02
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"	# local host
--RHOST_HOST_PART=":1"	# remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--# Multicast Address
--MCAST_ADDR=ff0e::1	# If you modify this, please refer ns-mcast_join.c
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv6 multicast group on a single socket, then receiving a large number of Multicast Address Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD Multicast Address Specific Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -D $MCAST_ADDR -r 0 -t $NS_DURATION' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start MLD querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld03 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld03
-deleted file mode 100644
-index bac7726a9..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld03
-+++ /dev/null
-@@ -1,205 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld03
--#
--# Description:
--#   Verify that the kernel is not crashed when joining an IPv6 multicast group
--#   on a single socket, then receiving a large number of Multicast Address
--#   and Source Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 1 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld03
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"     # local host
--RHOST_HOST_PART=":1"     # remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--# Multicast Address
--MCAST_ADDR=ff0e::1	# If you modify this, please refer ns-mcast_join.c
--
--# Source Address
--SRC_ADDR=fec0:100:100:100::1
--
--# Filter Mode
--FILTER_MODE="include"
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining an IPv6 multicast group on a single socket, then receiving a large number of Multicast Address and Source Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n 1 -p $MCAST_ADDR_PREFIX -s $SRC_ADDR -F $FILTER_MODE >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD Multicast Address and Source Specific Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -D $MCAST_ADDR -a $SRC_ADDR -r 0 -t $NS_DURATION' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start MLD querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld04 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld04
-deleted file mode 100644
-index cd56d4b40..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld04
-+++ /dev/null
-@@ -1,199 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld04
--#
--# Description:
--#   Verify that the kernel is not crashed when joining plural IPv6 multicast
--#   groups on separate socket, then receiving a large number of General Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 7 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld04
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"	# local host
--RHOST_HOST_PART=":1"	# remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv6 multicast groups on separate sockets, then receiving a large number of General Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX >/dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD General Query from the remote host
--ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -r 0 -t $NS_DURATION' ; echo $?'`
--if [ $ret -ne 0 ]; then
--    tst_resm TBROK "Failed to start MLD querier"
--    exit 1
--fi
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld05 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld05
-deleted file mode 100644
-index 84c2ee109..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld05
-+++ /dev/null
-@@ -1,209 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld05
--#
--# Description:
--#   Verify that the kernel is not crashed when joining joining plural IPv6
--#   multicast groups on separate socket, then receiving a large number of
--#   Multicast Address Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 7 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld05
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"	# local host
--RHOST_HOST_PART=":1"	# remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv6 multicast groups on separate sockets, then receiving a large number of Multicast Address Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX > /dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD Multicast Address Specific Query from the remote host
--querier_num=0
--while [ $querier_num -lt $MCASTNUM_NORMAL ]; do
--    # Define the multicast address
--    if [ $querier_num -gt 65535 ]; then
--	tst_resm TINFO "The number of the querier is less than 65535"
--	break
--    fi
--    querier_num_hex=`printf "%x" $querier_num`
--    mcast_addr=${MCAST_ADDR_PREFIX}:${querier_num_hex}
--
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -D $mcast_addr -r 0 -t $NS_DURATION -b
--
--    querier_num=`expr $querier_num + 1`
--done
--sleep $NS_DURATION
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--do_cleanup
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
-diff --git a/testcases/network/stress/multicast/query-flood/mcast6-queryfld06 b/testcases/network/stress/multicast/query-flood/mcast6-queryfld06
-deleted file mode 100644
-index d94a78efe..000000000
---- a/testcases/network/stress/multicast/query-flood/mcast6-queryfld06
-+++ /dev/null
-@@ -1,213 +0,0 @@
--#!/bin/sh
--
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2006                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--##                                                                            ##
--################################################################################
--#
--# File:
--#   mcast6-queryfld06
--#
--# Description:
--#   Verify that the kernel is not crashed when joining joining plural IPv6
--#   multicast groups on separate socket, then receiving a large number of
--#   Multicast Address and Source Specific Query
--#
--# Setup:
--#   See testcases/network/stress/README
--#
--# Author:
--#   Mitsuru Chinen <mitch@jp.ibm.com>
--#
--# History:
--#	May 7 2006 - Created (Mitsuru Chinen)
--#
--#-----------------------------------------------------------------------
--# Uncomment line below for debug output.
--#trace_logic=${trace_logic:-"set -x"}
--$trace_logic
--
--# The test case ID, the test case count and the total number of test case
--TCID=mcast6-queryfld06
--TST_TOTAL=1
--TST_COUNT=1
--export TCID
--export TST_COUNT
--export TST_TOTAL
--
--# Make sure the value of LTPROOT
--LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
--export LTPROOT
--
--# Check the environmanet variable
--. check_envval || exit $TST_TOTAL
--
--# Dulation of the test [sec]
--NS_DURATION=${NS_DURATION:-3600}	# 1 hour
--
--# Number of the multicast to join
--MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-20}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
--
--# Network portion of the IPv6 address
--NETWORK_PART="fec0:1:1:1"
--
--# Host portion of the IPv6 address
--LHOST_HOST_PART=":2"	# local host
--RHOST_HOST_PART=":1"	# remote host
--
--# Prefix of the Multicast Address
--MCAST_ADDR_PREFIX=ff0e:
--
--# Source Address
--SRC_ADDR=fec0:100:100:100::1
--
--# Filter Mode
--FILTER_MODE="include"
--
--#-----------------------------------------------------------------------
--#
--# Function: do_cleanup
--#
--# Description:
--#   Recover the system configuration
--#
--#-----------------------------------------------------------------------
--do_cleanup()
--{
--    # Make sure to kill the multicast receiver and sender
--    killall -SIGHUP ns-mcast_join >/dev/null 2>&1
--    $LTP_RSH $RHOST killall -SIGHUP ns-icmpv6_sender >/dev/null 2>&1
--
--    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Function: do_setup
--#
--# Description:
--#   Configure the ssystem for the test
--#
--#-----------------------------------------------------------------------
--do_setup()
--{
--    # Initialize the system configuration
--    do_cleanup
--
--    # Call do_cleanup function before exit
--    trap do_cleanup 0
--
--    # name of interface of the local/remote host
--    lhost_ifname=`get_ifname lhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the local host"
--	exit $TST_TOTAL
--    fi
--
--    rhost_ifname=`get_ifname rhost $LINK_NUM`
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to get the interface name at the remote host"
--	exit $TST_TOTAL
--    fi
--
--    # Set IPv6 addresses to the interfaces
--    add_ipv6addr lhost $LINK_NUM $NETWORK_PART $LHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
--    fi
--
--    add_ipv6addr rhost $LINK_NUM $NETWORK_PART $RHOST_HOST_PART
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
--    fi
--
--    # IPv6 address of the local/remote host
--    lhost_addr="${NETWORK_PART}:${LHOST_HOST_PART}"
--    rhost_addr="${NETWORK_PART}:${RHOST_HOST_PART}"
--    rhost_linklocal="fe80:${RHOST_HOST_PART}"
--
--    # Make sure the connectvity
--    check_icmpv6_connectivity $lhost_ifname $rhost_addr
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--
--    # Make sure the sysctl values
--    sysctl -w net.ipv6.conf.all.force_mld_version=0 >/dev/null
--    if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to set the sysctl value regarding multicast"
--	exit $TST_TOTAL
--    fi
--
--    sysctl -w net.ipv6.conf.${lhost_ifname}.force_mld_version=0 >/dev/null
--    sysctl -w net.ipv6.mld_max_msf=10 >/dev/null
--}
--
--
--#-----------------------------------------------------------------------
--#
--# Main
--#
--#
--
--# Test description
--tst_resm TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv6 multicast groups on separate sockets, then receiving a large number of Multicast Address and Source Specific Query in $NS_DURATION [sec]"
--
--do_setup
--
--# Run a multicast join tool
--ns-mcast_join -f 6 -I $lhost_ifname -n $MCASTNUM_NORMAL -p $MCAST_ADDR_PREFIX -s $SRC_ADDR -F $FILTER_MODE > /dev/null
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to start multicast joining tool Please check the environment"
--    exit 1
--fi
--
--# Send MLD Multicast Address Specific Query from the remote host
--querier_num=0
--while [ $querier_num -lt $MCASTNUM_NORMAL ]; do
--    if [ $querier_num -gt 65535 ]; then
--	tst_resm TINFO "The number of the querier is less than 65535"
--	break
--    fi
--    querier_num_hex=`printf "%x" $querier_num`
--    mcast_addr=${MCAST_ADDR_PREFIX}:${querier_num_hex}
--
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/ns-icmpv6_sender -I $rhost_ifname -S $rhost_linklocal -m -D $mcast_addr -a $SRC_ADDR -r 0 -t $NS_DURATION -b
--    querier_num=`expr $querier_num + 1`
--done
--sleep $NS_DURATION
--
--#-----------------------------------------------------------------------
--#
--# Clean up
--#
--
--do_cleanup
--tst_resm TPASS "Test is finished successfully."
--
--exit 0
+-exit $RC
 -- 
 2.25.1
 
