@@ -1,106 +1,74 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 25 Nov 2020 17:54:29 +0100
-Subject: [LTP] [PATCH 01/10] lib: Introduce more TEST_* macros
-In-Reply-To: <20201113131428.13199-2-chrubis@suse.cz>
-References: <20201113131428.13199-1-chrubis@suse.cz>
- <20201113131428.13199-2-chrubis@suse.cz>
-Message-ID: <0c6f7b59-c1ec-5ff9-d261-7b4772ed9b1a@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 25 Nov 2020 17:56:24 +0100
+Subject: [LTP] [PATCH v3 2/5] fanotify: Handle supported features checks
+ in setup()
+In-Reply-To: <20201119101655.GC2785@yuki.lan>
+References: <20201113164944.26101-1-pvorel@suse.cz>
+ <20201113164944.26101-3-pvorel@suse.cz>
+ <20201119101655.GC2785@yuki.lan>
+Message-ID: <20201125165624.GB32471@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 13. 11. 20 14:14, Cyril Hrubis wrote:
-> In order to simplify common return value checks.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  include/tst_test.h               |  28 +------
->  include/tst_test_macros.h        | 131 +++++++++++++++++++++++++++++++
->  lib/newlib_tests/.gitignore      |   3 +
->  lib/newlib_tests/test_macros01.c |  40 ++++++++++
->  lib/newlib_tests/test_macros02.c |  42 ++++++++++
->  lib/newlib_tests/test_macros03.c |  40 ++++++++++
->  lib/tst_test.c                   |   1 +
->  7 files changed, 258 insertions(+), 27 deletions(-)
->  create mode 100644 include/tst_test_macros.h
->  create mode 100644 lib/newlib_tests/test_macros01.c
->  create mode 100644 lib/newlib_tests/test_macros02.c
->  create mode 100644 lib/newlib_tests/test_macros03.c
-> 
-> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-> new file mode 100644
-> index 000000000..69de2ce3d
-> --- /dev/null
-> +++ b/include/tst_test_macros.h
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2015-2020 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +#ifndef TST_TEST_MACROS_H__
-> +#define TST_TEST_MACROS_H__
-> +
-> +#define TEST(SCALL) \
-> +	do { \
-> +		errno = 0; \
-> +		TST_RET = SCALL; \
-> +		TST_ERR = errno; \
-> +	} while (0)
-> +
-> +#define TEST_VOID(SCALL) \
-> +	do { \
-> +		errno = 0; \
-> +		SCALL; \
-> +		TST_ERR = errno; \
-> +	} while (0)
-> +
-> +extern long TST_RET;
-> +extern int TST_ERR;
-> +extern int TST_PASS;
-> +
-> +extern void *TST_RET_PTR;
-> +
-> +#define TESTPTR(SCALL) \
-> +	do { \
-> +		errno = 0; \
-> +		TST_RET_PTR = (void*)SCALL; \
-> +		TST_ERR = errno; \
-> +	} while (0)
-> +
-> +
-> +#define TEST_2(_1, _2, ...) _2
-> +
-> +#define TEST_FMT_(FMT, _1, ...) FMT, ##__VA_ARGS__
-> +
-> +#define TEST_MSG(RES, FMT, SCALL, ...) \
-> +	tst_res_(__FILE__, __LINE__, RES, \
-> +		TEST_FMT_(TEST_2(dummy, ##__VA_ARGS__, SCALL) FMT, __VA_ARGS__))
-> +
-> +#define TEST_MSGP(RES, FMT, PAR, SCALL, ...) \
-> +	tst_res_(__FILE__, __LINE__, RES, \
-> +		TEST_FMT_(TEST_2(dummy, ##__VA_ARGS__, SCALL) FMT, __VA_ARGS__), PAR)
-> +
-> +#define TEST_FD(SCALL, ...)                                                    \
+Hi Cyril,
 
-I'd recommend adding TEST_*_IMPL() variant with extra arguments that'll
-allow special handling of ENOSYS, ENOTSUP and possibly also a
-zero-terminated array of allowed errnos. TEST_FD() etc. would then call
-the respective IMPL macro with default arguments:
+> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+> > index c2e185710..f4e8ac9e6 100644
+> > --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
+> > +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+> > @@ -195,6 +195,8 @@ static void test_fanotify(void)
 
-#define TEST_FD_IMPL(SCALL, NOSYS_RES, NOTSUP_RES, ERRNO_LIST, ...) \
-    ...
+> >  static void setup(void)
+> >  {
+> > +	fanotify_access_permissions_supported_by_kernel();
+> > +
+> >  	sprintf(fname, "fname_%d", getpid());
+> >  	SAFE_FILE_PRINTF(fname, "%s", fname);
+> >  }
 
-#define TEST_FD(SCALL, ...) \
-    TEST_FD_IMPL((SCALL), TFAIL, TFAIL, NULL, ##__VA_ARGS__)
+> Shouldn't we drop the check for EINVAL in setup_instance() as well?
+I postponed that cleanup to next commit - whole part is being replaced by:
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+SAFE_FANOTIFY_MARK(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, fname);
+
+https://patchwork.ozlabs.org/project/ltp/patch/20201113164944.26101-4-pvorel@suse.cz/
+
+But if you find this confusing, I can remove CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+already in this commit.
+
+> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > index 90cf5cb5f..b95efb998 100644
+> > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > @@ -64,6 +64,7 @@ static unsigned int fanotify_class[] = {
+> >  static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+
+> >  static char event_buf[EVENT_BUF_LEN];
+> > +static int support_exec_events;
+
+> >  #define MOUNT_PATH "fs_mnt"
+> >  #define MNT2_PATH "mntpoint"
+> > @@ -451,6 +452,11 @@ static void test_fanotify(unsigned int n)
+
+> >  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+
+> > +	if (support_exec_events != 0 && tc->expected_mask_with_ignore & FAN_OPEN_EXEC) {
+> > +		tst_res(TCONF | TERRNO, "FAN_OPEN_EXEC not supported in kernel?");
+> > +		return;
+> > +	}
+> > +
+
+> Maybe we should rename the variable to "exec_events_unsupported" then
+> we could write:
+
+> 	if (exec_events_unsupported && tc->mask & FAM_OPEN_EXEC)
+
+> Which is a bit easier to understand.
+
++1.
+
+Kind regards,
+Petr
