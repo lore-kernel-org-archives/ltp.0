@@ -1,74 +1,120 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Nov 2020 17:56:24 +0100
-Subject: [LTP] [PATCH v3 2/5] fanotify: Handle supported features checks
- in setup()
-In-Reply-To: <20201119101655.GC2785@yuki.lan>
+Date: Wed, 25 Nov 2020 19:24:03 +0100
+Subject: [LTP] [PATCH v3 3/5] fanotify: Introduce SAFE_FANOTIFY_MARK()
+ macro
+In-Reply-To: <20201125141624.GA32471@pevik>
 References: <20201113164944.26101-1-pvorel@suse.cz>
- <20201113164944.26101-3-pvorel@suse.cz>
- <20201119101655.GC2785@yuki.lan>
-Message-ID: <20201125165624.GB32471@pevik>
+ <20201113164944.26101-4-pvorel@suse.cz>
+ <20201119102740.GD2785@yuki.lan>
+ <CAOQ4uxigsk5e7GHgDHydd03D1bAih1SJv36dB4209mpE_dU6PQ@mail.gmail.com>
+ <20201125141624.GA32471@pevik>
+Message-ID: <20201125182403.GB7323@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Amir,
 
-> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> > index c2e185710..f4e8ac9e6 100644
-> > --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-> > +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> > @@ -195,6 +195,8 @@ static void test_fanotify(void)
+> > > > +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+> > > > @@ -101,19 +101,8 @@ static void test_fanotify(unsigned int n)
+> > > >                       "failed", tc->init_flags);
+> > > >       }
 
-> >  static void setup(void)
-> >  {
-> > +	fanotify_access_permissions_supported_by_kernel();
-> > +
-> >  	sprintf(fname, "fname_%d", getpid());
-> >  	SAFE_FILE_PRINTF(fname, "%s", fname);
-> >  }
+> > > > -     if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+> > > > -                       FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
+> > > > -                       AT_FDCWD, fname) < 0) {
+> > > > -             if (errno == EINVAL && mark->flag == FAN_MARK_FILESYSTEM) {
+> > > > -                     tst_res(TCONF,
+> > > > -                             "FAN_MARK_FILESYSTEM not supported in kernel?");
+> > > > -                     return;
+> > > > -             }
 
-> Shouldn't we drop the check for EINVAL in setup_instance() as well?
-I postponed that cleanup to next commit - whole part is being replaced by:
+> > > Here we had tst_res(TCONF, ...) followed by a return but we will can
+> > > tst_brk() after the change. I guess that we may skip part of the test on
+> > > older kernels with that change.
 
-SAFE_FANOTIFY_MARK(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, fname);
 
-https://patchwork.ozlabs.org/project/ltp/patch/20201113164944.26101-4-pvorel@suse.cz/
+> > That's not good. I missed that in my review.
+> > There are many tests where only the FAN_MARK_FILESYSTEM
+> > test cases are expected to result in TCONF, but the rest of the test
+> > cases should run.
 
-But if you find this confusing, I can remove CONFIG_FANOTIFY_ACCESS_PERMISSIONS
-already in this commit.
+> I'm not sure if I understand you. Is my approach correct here?
+OK, I got that, I cannot use SAFE_FANOTIFY_MARK() in test_fanotify() in fanotify01.c
+and in setup_marks() in fanotify13.c.
 
-> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > index 90cf5cb5f..b95efb998 100644
-> > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > @@ -64,6 +64,7 @@ static unsigned int fanotify_class[] = {
-> >  static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+But FAN_REPORT_FID in is on both files already checked after fanotify_init()
+call. Not sure if it must be check also for fanotify_mark(), because it's
+only in FANOTIFY_INIT_FLAGS (via FANOTIFY_FID_BITS). FANOTIFY_MARK_FLAGS has
+other flags.
 
-> >  static char event_buf[EVENT_BUF_LEN];
-> > +static int support_exec_events;
+If yes, I'll probably need to create fanotify_supported_by_kernel(...), which
+check for all not supported flags and will be used in those 2 places and in
+safe_fanotify_init(). Something like this:
 
-> >  #define MOUNT_PATH "fs_mnt"
-> >  #define MNT2_PATH "mntpoint"
-> > @@ -451,6 +452,11 @@ static void test_fanotify(unsigned int n)
+typedef void (*tst_res_func_t)(const char *file, const int lineno,
+		int ttype, const char *fmt, ...);
 
-> >  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+int fanotify_flags_supported_by_kernel(const char *file, const int lineno,
+	unsigned int flags, int strict)
+{
+	tst_res_func_t res_func = tst_res_;
+	int unsupported = 0;
 
-> > +	if (support_exec_events != 0 && tc->expected_mask_with_ignore & FAN_OPEN_EXEC) {
-> > +		tst_res(TCONF | TERRNO, "FAN_OPEN_EXEC not supported in kernel?");
-> > +		return;
-> > +	}
-> > +
+	if (strict)
+		res_func = tst_brk_;
 
-> Maybe we should rename the variable to "exec_events_unsupported" then
-> we could write:
+	if (errno == EINVAL) {
+		if (flags & FAN_REPORT_TID) {
+			tst_res_(file, lineno, TINFO,
+					 "FAN_REPORT_TID not supported by kernel?");
+			unsupported = 1;
+		}
 
-> 	if (exec_events_unsupported && tc->mask & FAM_OPEN_EXEC)
+		if (flags & FAN_REPORT_FID) {
+			tst_res_(file, lineno, TINFO,
+					 "FAN_REPORT_FID not supported by kernel?");
+			unsupported = 1;
+		}
 
-> Which is a bit easier to understand.
+		if (flags & FAN_REPORT_DIR_FID) {
+			tst_res_(file, lineno, TINFO,
+					 "FAN_REPORT_DIR_FID not supported by kernel?");
+			unsupported = 1;
+		}
 
-+1.
+		if (flags & FAN_REPORT_NAME) {
+			tst_res_(file, lineno, TINFO,
+					 "FAN_REPORT_NAME not supported by kernel?");
+			unsupported = 1;
+		}
+
+		if (unsupported)
+			res_func(file, lineno, TCONF, "Unsupported configuration, see above");
+		else
+			tst_brk_(file, lineno, TBROK, "Unknown failure");
+
+		return -1;
+	}
+
+	return 0;
+}
+
+These are flags for fanotify_init(). Flags for fanotify_mark() are currently
+handled by fanotify_exec_events_supported_by_kernel() (used for FAN_OPEN_EXEC
+and FAN_OPEN_EXEC_PERM), using different approach. Testing fanotify_mark() flags
+support in advance in setup makes tests faster, I'm just not happy we use
+different approach. Any tip for improving this or improving readability is
+welcome.
 
 Kind regards,
 Petr
+
+> > In most of these tests the FAN_MARK_FILESYSTEM test cases are
+> > last because they were added later. This is not the case with fanotify01
+> > and fanotify15 and we do not want to reply on the ordering anyway.
+
+> > Thanks,
+> > Amir.
