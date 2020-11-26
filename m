@@ -1,44 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 26 Nov 2020 17:05:14 +0300
+From: j.nixdorf@avm.de <j.nixdorf@avm.de>
+Date: Thu, 26 Nov 2020 15:52:28 +0100
 Subject: [LTP] [PATCH] netstress: explicitly set a thread stack size
-In-Reply-To: <OFCE604BCE.4F62924B-ONC125862B.004801C0-C125862B.0048027B@avm.de>
-References: <OFCE604BCE.4F62924B-ONC125862B.004801C0-C125862B.0048027B@avm.de>
-Message-ID: <edf96c93-8f16-6545-629a-be727d4c8eb2@oracle.com>
+In-Reply-To: <edf96c93-8f16-6545-629a-be727d4c8eb2@oracle.com>
+References: <edf96c93-8f16-6545-629a-be727d4c8eb2@oracle.com>,
+ <OFCE604BCE.4F62924B-ONC125862B.004801C0-C125862B.0048027B@avm.de>
+Message-ID: <OF47EE0279.8BED1D35-ONC125862C.0051B56D-C125862C.0051B570@avm.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 25.11.2020 16:06, Johannes Nixdorf via ltp wrote:
-> Musl libc uses a relatively small thread stack size (128k [1]). This
-> gets used up on 2 local buffers sized max_msg_len (64k by default),
-> which causes a segfault due to a stack overflow in the error reporting
-> path.
+Hi Alexey,
+
+On Thu, Nov 26, 2020 at 05:05:14PM +0300, Alexey Kodanev wrote:
+> > +		tst_brk(TBROK | TERRNO, "pthread_attr_init failed");
+> > +
+> > +	errno = pthread_attr_setstacksize(&attr, 128*1024 + 2*max_msg_len);
 > 
-> Set the stack size to 128kB + 2*max_msg_len instead, which is enough for
-> both buffers with an additional allowance for the remaining stack usage
-> by netstress and called libc or ltp helper functions.
-> 
-> [1]: https://urldefense.com/v3/__https://wiki.musl-libc.org/functional-differences-from-glibc.html*Thread_stack_size__;Iw!!GqivPVa7Brio!JiKwkv8uMgJNgh9ARntUpseI9zZW6h6u3Pm6AeF_sgqVyDcsHIQ_MyJWVVKbh_rVk-8u$ 
-> 
+> Since max_msg_len is 65535, the result won't be even 4 bytes aligned,
+> perhaps using just 256 * 1024?
 
-Hi Johannes,
+The function pthread_attr_setstacksize does not have any alignment
+requirements specified and only sets the minimum stack size. This means
+the libc is required to over-allocate and suitably align the stack to
+match platform requirements. Is this broken on any libraries the LTP
+project cares about?
 
-> +	errno = pthread_attr_init(&attr);
-> +	if (errno != 0)
+Note that this is different from pthread_attr_setstack, as there the
+memory region is provided by the caller and the libc can't change the
+alignment later on.
 
-if (errno = pthread_attr_init(&attr))
+I'm reluctant to use a static value here as max_msg_len may be modified
+by command line arguments.
 
-> +		tst_brk(TBROK | TERRNO, "pthread_attr_init failed");
-> +
-> +	errno = pthread_attr_setstacksize(&attr, 128*1024 + 2*max_msg_len);
-
-Since max_msg_len is 65535, the result won't be even 4 bytes aligned,
-perhaps using just 256 * 1024?
-
-
-> +	if (errno != 0)
-> +		tst_brk(TBROK | TERRNO, "pthread_attr_setstacksize failed");
-
-In case of error, it would be good to print the used stack size.
+Regards,
+Johannes
