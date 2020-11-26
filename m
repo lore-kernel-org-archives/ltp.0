@@ -1,55 +1,34 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 26 Nov 2020 14:47:22 +0800
-Subject: [LTP] [PATCH] lapi/name_to_handle_at.h: Fix compiler error on
- centos6
-In-Reply-To: <5FBF3A16.6090101@cn.fujitsu.com>
-References: <20201126012838.531070-1-yangx.jy@cn.fujitsu.com>
- <CAEemH2eQNTy9V+NSn+kwV8zZ0BTr+PEHuD_RPhx3Ns1v=+iPNw@mail.gmail.com>
- <5FBF3A16.6090101@cn.fujitsu.com>
-Message-ID: <CAEemH2c3U7DY70QiVKZoUhdtLdr0QBc+VqAkFt9GzoUp-kmbyA@mail.gmail.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Thu, 26 Nov 2020 09:30:53 +0100
+Subject: [LTP] [PATCH] realtime/m4: Re-add define for robust mutexattr
+ APIs
+In-Reply-To: <20201119113816.GH2785@yuki.lan>
+References: <20201119095227.921830-1-lkml@jv-coder.de>
+ <20201119113816.GH2785@yuki.lan>
+Message-ID: <8dc13989-88bf-1727-1dbd-83a2163ffb03@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 26, 2020 at 1:16 PM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+Hi,
 
-> On 2020/11/26 12:33, Li Wang wrote:
->
-> Hi Xiao,
->
-> The patch itself looks good, but I remember we were planning to
-> drop support for the old distro e.g CentOS6.
->
-> The previous discussion here:
-> http://lists.linux.it/pipermail/ltp/2020-March/016164.html
->
-> Hi Li,
->
-> Thanks for sharing the infomation.
-> When do you plan to remove old distro? next release?
->
+On 11/19/2020 12:38 PM, Cyril Hrubis wrote:
+> Hi!
+> The code switched to the POSIX variants later on so I wonder if we even
+> need this configure check or if we can remove the ifdefs from the
+> testcases completely.
+either that or this patch. At least at the moment these tests are 
+completely broken.
+I am not sure how long pthread_mutexattr_*roboust* api is part of posix 
+and if ltp is supposed to be supported on platforms, that may not 
+implement it.
 
-As discussed in the previous mail, it should be accomplished in the current
-release 20200930.
-@Petr Vorel <pvorel@suse.cz>  @Cyril Hrubis <chrubis@suse.cz> what do you
-think?
+But should accepting this patch wouldn't do any harm for now, but would 
+fix the tests. In the future it can still be removed completely.
 
+J?rg
 
-> BTW:
-> It may also resolve the compiler error on uclibc as Fabrice Fontaine
-> reported before:
->
-> https://github.com/linux-test-project/ltp/commit/cb11e718ce04261cb6ff4c09442b949da33b8797
->
+PS: @Cyril Sorry for the resending this, forgot to include the mail list
 
-Thanks, I helped merge this one since CentOS6 is still supported in
-Travis-CI now.
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201126/73de7ef7/attachment.htm>
