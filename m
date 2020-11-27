@@ -1,145 +1,142 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 27 Nov 2020 17:36:02 +0200
-Subject: [LTP] [PATCH v4 0/6] Introduce SAFE_FANOTIFY_MARK() macro +
- cleanup
-In-Reply-To: <20201126214121.6836-1-pvorel@suse.cz>
-References: <20201126214121.6836-1-pvorel@suse.cz>
-Message-ID: <CAOQ4uxhbHmtTcub3KKOdtOC6JXm+5jThYMROFqhK6UpAps82NA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 27 Nov 2020 17:31:49 +0100
+Subject: [LTP] [PATCH 1/2] lib: tst_test.c: Add TBROK counter.
+In-Reply-To: <20201127163150.22903-1-chrubis@suse.cz>
+References: <20201127163150.22903-1-chrubis@suse.cz>
+Message-ID: <20201127163150.22903-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Nov 26, 2020 at 11:41 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Amir,
->
-> another cleanup version, hopefully the last.
-> Sorry for lengthy comments.
+This ensures that TBROK is never lost.
 
-Don't be :)
+If test process forks a child and the child calls SAFE_MACRO() the
+failure will be lost unless the test process handles the exit value
+properly and propagates the TBROK.
 
->
-> Changes v3->v4:
-> * fixed unwanted tst_brk() (quitting the test too early). In the end it
-> was problem just in fanotify01.c and fanotify03.c.
->
-> In fanotify13.c it was already
->
-> tst_test.c:1316: TINFO: Testing on exfat
-> fanotify.h:209: TCONF: filesystem exfat does not support file handles
-> ...
-> tst_test.c:859: TINFO: Trying FUSE...
-> fanotify13.c:161: TINFO: Test #0: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
-> fanotify13.c:161: TINFO: Test #1: FAN_REPORT_FID with mark flag: FAN_MARK_INODE
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
-> fanotify13.c:161: TINFO: Test #2: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
-> fanotify13.c:161: TINFO: Test #3: FAN_REPORT_FID with mark flag: FAN_MARK_MOUNT
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
-> fanotify13.c:161: TINFO: Test #4: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
-> fanotify13.c:161: TINFO: Test #5: FAN_REPORT_FID with mark flag: FAN_MARK_FILESYSTEM
-> fanotify13.c:130: TCONF: FAN_REPORT_FID not supported on filesystem type ntfs
->
-> * new commit fanotify: Check for FAN_REPORT_FID support on fs
-> This one I hesitated, whether keep EOPNOTSUPP also as fallback in fanotify.h
-> On all but one test (fanotify01.c) FAN_REPORT_FID was used in all tests.
->
-> The only check I kept untouched is this one from fanotify16.c:
->         fd_notify = fanotify_init(group->flag, 0);
->         if (fd_notify == -1) {
->                 if (errno == EINVAL) {
->                         tst_res(TCONF,
->                                 "%s not supported by kernel", group->name);
->                         return;
->                 }
->
->                 tst_brk(TBROK | TERRNO,
->                         "fanotify_init(%s, 0) failed", group->name);
->         }
->
-> Because this:
-> fanotify16.c:160: TINFO: Test #0: FAN_REPORT_DFID_NAME monitor filesystem for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_NAME not supported by kernel
-> fanotify16.c:160: TINFO: Test #1: FAN_REPORT_DFID_NAME monitor directories for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_NAME not supported by kernel
-> fanotify16.c:160: TINFO: Test #2: FAN_REPORT_DIR_FID monitor filesystem for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DIR_FID not supported by kernel
-> fanotify16.c:160: TINFO: Test #3: FAN_REPORT_DIR_FID monitor directories for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DIR_FID not supported by kernel
-> fanotify16.c:160: TINFO: Test #4: FAN_REPORT_DFID_FID monitor filesystem for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_FID not supported by kernel
-> fanotify16.c:160: TINFO: Test #5: FAN_REPORT_DFID_FID monitor directories for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_FID not supported by kernel
-> fanotify16.c:160: TINFO: Test #6: FAN_REPORT_DFID_NAME_FID monitor filesystem for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_NAME_FID not supported by kernel
-> fanotify16.c:160: TINFO: Test #7: FAN_REPORT_DFID_NAME_FID monitor directories for create/delete/move/open/close
-> fanotify16.c:166: TCONF: FAN_REPORT_DFID_NAME_FID not supported by kernel
->
-> would be replaced by single message which is misleading:
-> fanotify16.c:163: TCONF: FAN_REPORT_NAME not supported in kernel?
-> if I use
-> fd_notify = SAFE_FANOTIFY_INIT(group->flag, 0);
-> + that problem with skipping what we don't want to skip (although here
-> are skipped all and on old kernel I get
-> fanotify.h:342: TCONF: FAN_REPORT_FID not supported in kernel?
+It is also strange that TBROK is the only return value that is solely
+propagated by the exit value and not by the counters. This has been
+mistake to begin with.
 
-That's because you should have tested FAN_REPORT_NAME before
-testing FAN_REPORT_FID.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/newlib_tests/.gitignore |  1 +
+ lib/newlib_tests/test22.c   | 34 ++++++++++++++++++++++++++++++++++
+ lib/tst_test.c              | 13 +++++++++++--
+ 3 files changed, 46 insertions(+), 2 deletions(-)
+ create mode 100644 lib/newlib_tests/test22.c
 
-Also, instead of testing FAN_REPORT_NAME you can test for
-(flags & FAN_REPORT_DIR_FID) both flags were added together
-in the same kernel but FAN_REPORT_NAME cannot be used without
-FAN_REPORT_DIR_FID.
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index ac1d19be0..6fc549cf2 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -25,6 +25,7 @@ test18
+ test19
+ test20
+ test21
++test22
+ tst_expiration_timer
+ test_assert
+ test_timer
+diff --git a/lib/newlib_tests/test22.c b/lib/newlib_tests/test22.c
+new file mode 100644
+index 000000000..520b8dad8
+--- /dev/null
++++ b/lib/newlib_tests/test22.c
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*
++ * Test that TBROK is propagated correctly to the results even if we wait on
++ * child and throw away the status.
++ */
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	int pid = SAFE_FORK();
++
++	if (pid) {
++		tst_res(TPASS, "Test main pid");
++		SAFE_WAITPID(pid, NULL, 0);
++		return;
++	}
++
++	if (tst_variant == 1)
++		tst_brk(TBROK, "Test child!");
++	else
++		tst_brk(TCONF, "Test child!");
++
++	tst_res(TPASS, "Test child");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.test_variants = 2,
++	.forks_child = 1,
++};
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 535c0ff4c..128058e6e 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -56,6 +56,7 @@ struct results {
+ 	int skipped;
+ 	int failed;
+ 	int warnings;
++	int broken;
+ 	unsigned int timeout;
+ };
+ 
+@@ -179,6 +180,9 @@ static void update_results(int ttype)
+ 	case TFAIL:
+ 		tst_atomic_inc(&results->failed);
+ 	break;
++	case TBROK:
++		tst_atomic_inc(&results->broken);
++	break;
+ 	}
+ }
+ 
+@@ -368,10 +372,8 @@ static void check_child_status(pid_t pid, int status)
+ 	ret = WEXITSTATUS(status);
+ 	switch (ret) {
+ 	case TPASS:
+-	break;
+ 	case TBROK:
+ 	case TCONF:
+-		tst_brk(ret, "Reported by child (%i)", pid);
+ 	break;
+ 	default:
+ 		tst_brk(TBROK, "Invalid child (%i) exit value %i", pid, ret);
+@@ -698,9 +700,13 @@ static void do_exit(int ret)
+ 		if (results->warnings)
+ 			ret |= TWARN;
+ 
++		if (results->broken)
++			ret |= TBROK;
++
+ 		printf("\nSummary:\n");
+ 		printf("passed   %d\n", results->passed);
+ 		printf("failed   %d\n", results->failed);
++		printf("broken   %d\n", results->broken);
+ 		printf("skipped  %d\n", results->skipped);
+ 		printf("warnings %d\n", results->warnings);
+ 	}
+@@ -737,6 +743,9 @@ static int results_equal(struct results *a, struct results *b)
+ 	if (a->skipped != b->skipped)
+ 		return 0;
+ 
++	if (a->broken != b->broken)
++		return 0;
++
+ 	return 1;
+ }
+ 
+-- 
+2.26.2
 
->
-> and on new kernel problematic fs are skipped anyway:
-> fanotify.h:363: TCONF: FAN_REPORT_FID not supported on exfat filesystem
->
-> Feel free to suggest what to do or simply send a following patch.
->
-
-I am not sure if my answers addressed all the problems you encountered
-with fanotify16. Feel free to leave the remaining problem out of the cleanup
-and I will fix it later.
-
-> In following commit "fanotify: Introduce SAFE_FANOTIFY_MARK() macro".
-> I'd prefer to keep it (fallback if we forget to add a check), but probably instead of
-> "some FAN_REPORT_* flag not supported on %s filesystem",
-> there should be
-> "FAN_REPORT_FID flag not supported on %s filesystem",
-> But on my machine with 5.10.0-rc4-1.gea0f69f-default, this failed on FAN_REPORT_DFID_NAME
-> (synonym for (FAN_REPORT_DIR_FID|FAN_REPORT_NAME) => no FAN_REPORT_FID,
-> so this would be misleading:
-> fanotify16.c:160: TINFO: Test #0: FAN_REPORT_DFID_NAME monitor filesystem for create/delete/move/open/close
-> fanotify16.c:177: TCONF: FAN_REPORT_FID not supported on exfat filesystem
->
-> * more cleanup in commit "fanotify: Check FAN_REPORT_{FID,NAME} support"
->
-> Other changes (suggested mostly by Cyril):
-> * rename s/support_exec_events/exec_events_unsupported/
->
-> * Add "require_" prefix for functions which use tst_brk()
->
-> * use tst_res_() and tst_brk_() for safe_*() functions
->
-> BTW fanotify16.c use .dev_fs_flags = TST_FS_SKIP_FUSE, this could be
-> added also into fanotify13.c (it'd avoid running ntfs).
->
-> If LTP had something like TST_FS_SKIP_MICROSOFT (TST_FS_SKIP_FUSE +
-> exfat), could get rid of "FAN_REPORT_FID not supported on foo
-> filesystem" testing. But it's already implemented, so it's just a note
-> to be ignored.
->
-
-It is better to check support by trying unless there is a very good reason
-for special casing filesystems. I don't remember what was the special case
-for ntfs that test support checks did not catch.
-
-I guess the TST_FS_SKIP_FUSE flag may not be needed after your fixes?
-
-Thanks,
-Amir.
