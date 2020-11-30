@@ -1,33 +1,37 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 30 Nov 2020 10:51:55 +0800
-Subject: [LTP] [COMMITTED] docparse/README.md: Fix root uid value typo
-Message-ID: <1606704715-2344-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 30 Nov 2020 08:53:46 +0100
+Subject: [LTP] [PATCH] fzsync: skip test when avaliable CPUs less than 2
+In-Reply-To: <87blflo9hx.fsf@suse.de>
+References: <20201125101633.30154-1-liwang@redhat.com>
+ <87eekhof3i.fsf@suse.de> <04c4b073-6ad3-836a-7f63-7632a4e6ddb7@suse.cz>
+ <87blflo9hx.fsf@suse.de>
+Message-ID: <f9b2e084-f2e0-1016-f505-6218d7c1853e@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- docparse/README.md | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
+>> No, af_alg07 requires 2 CPUs, otherwise it'll report false positives.
+>> The test will pass only if fchownat() hits a half-closed socket and
+>> returns error. But IIRC the half-closed socket will be destroyed during
+>> reschedule which means there's no race window to hit anymore. But it
+>> would be better to put the TCONF condition into the test itself.
+> Interesting, I wonder if this is also true for the real-time kernel with
+> the threads set to RT priority?
+It looks like the test can fail even with more than one cpu. I've seen 
+this sporadic failure on different hardware with more than two cores, at 
+least on intel denverton (x86_64) and renesas r-car (aarch64) systems. 
+Both with kernel 4.19 with the fix included, on the denverton system the 
+rt parches were included and on the r-car not. The test passes most of 
+the time, but sometimes fails with the message Li posted.
 
-diff --git a/docparse/README.md b/docparse/README.md
-index 7e4847ba2..2c2541760 100644
---- a/docparse/README.md
-+++ b/docparse/README.md
-@@ -130,7 +130,7 @@ bitflags, integers or arrays of strings:
- ```c
- struct tst_test test = {
- 	...
--	/* tests needs to run with UID=1 */
-+	/* tests needs to run with UID=0 */
- 	.needs_root = 1,
- 
- 	/*
--- 
-2.23.0
+It also seems to fail sporadically on other systems as well: 
+https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1892860
 
+Additionally I tested on qemu-x86 with 4.19 with and without rt patches. 
+The test succeeds even with only one virtualized cpu. So either Martin's 
+assumption is wrong or it holds only for newer kernel versions?
 
-
+J?rg
