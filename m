@@ -1,102 +1,104 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 30 Nov 2020 17:03:32 +0800
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 30 Nov 2020 15:16:22 +0100
 Subject: [LTP] [PATCH] fzsync: skip test when avaliable CPUs less than 2
-In-Reply-To: <821eeadf-acd2-0de6-033d-1c3442a20407@jv-coder.de>
-References: <20201125101633.30154-1-liwang@redhat.com> <87eekhof3i.fsf@suse.de>
- <04c4b073-6ad3-836a-7f63-7632a4e6ddb7@suse.cz> <87blflo9hx.fsf@suse.de>
- <f9b2e084-f2e0-1016-f505-6218d7c1853e@jv-coder.de>
+In-Reply-To: <87wny3md61.fsf@suse.de>
+References: <20201125101633.30154-1-liwang@redhat.com>
+ <87eekhof3i.fsf@suse.de> <04c4b073-6ad3-836a-7f63-7632a4e6ddb7@suse.cz>
+ <87blflo9hx.fsf@suse.de> <f9b2e084-f2e0-1016-f505-6218d7c1853e@jv-coder.de>
  <CAEemH2fXpPXvQVi_UUovp+eB5JeWfdTjv47KXnCBhF=VG0Rsog@mail.gmail.com>
- <821eeadf-acd2-0de6-033d-1c3442a20407@jv-coder.de>
-Message-ID: <CAEemH2duSNvpEvTGNhWO1ZkAMGUeOhjiJxhN-zCjkjeUN0O72Q@mail.gmail.com>
+ <87wny3md61.fsf@suse.de>
+Message-ID: <cbc0bc4c-9165-63ab-ded4-1153f3766b16@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+On 30. 11. 20 10:01, Richard Palethorpe wrote:
+> Hello,
+> 
+> Li Wang <liwang@redhat.com> writes:
+> 
+>> Hi Joerg,
+>>
+>> On Mon, Nov 30, 2020 at 3:53 PM Joerg Vehlow <lkml@jv-coder.de> wrote:
+>>
+>>> Hi,
+>>>>> No, af_alg07 requires 2 CPUs, otherwise it'll report false positives.
+>>>>> The test will pass only if fchownat() hits a half-closed socket and
+>>>>> returns error. But IIRC the half-closed socket will be destroyed during
+>>>>> reschedule which means there's no race window to hit anymore. But it
+>>>>> would be better to put the TCONF condition into the test itself.
+>>>> Interesting, I wonder if this is also true for the real-time kernel with
+>>>> the threads set to RT priority?
+>>> It looks like the test can fail even with more than one cpu. I've seen
+>>> this sporadic failure on different hardware with more than two cores, at
+>>> least on intel denverton (x86_64) and renesas r-car (aarch64) systems.
+>>> Both with kernel 4.19 with the fix included, on the denverton system the
+>>> rt parches were included and on the r-car not. The test passes most of
+>>> the time, but sometimes fails with the message Li posted.
+>>>
+>>> It also seems to fail sporadically on other systems as well:
+>>> https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1892860
+>>>
+>>> Additionally I tested on qemu-x86 with 4.19 with and without rt patches.
+>>> The test succeeds even with only one virtualized cpu. So either Martin's
+>>> assumption is wrong or it holds only for newer kernel versions?
+>>>
+>>
+>> No, Mertin is not wrong, and you are also right.
+>>
+>> They are totally two different issues of af_alg07, the test on 1CPU
+>> should be fixed with TCONF. But the fail with aarch64 is more like a
+>> hardware issue, Chunyu has a drafted patch to add init delay value for
+>> such a system.
+>>
+>> Can you try this on your aarm64 platform?
+>> -----------------------------
+>> fzsync can't get a random delay range on hpe-moonshot systems, so run with
+>> delay=0 during all the tests. This is probably the hardware issue such as
+>> cache line design so can't get a stable state during the execution of the
+>> critical
+>> section. Provide an experience delay value on hpe-moonshot to make it hit
+>> the race window immediately without exceeding samples.
+>>
+>> ---
+>>  testcases/kernel/crypto/af_alg07.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/testcases/kernel/crypto/af_alg07.c
+>> b/testcases/kernel/crypto/af_alg07.c
+>> index 6ad86f4f3..24f5b8088 100644
+>> --- a/testcases/kernel/crypto/af_alg07.c
+>> +++ b/testcases/kernel/crypto/af_alg07.c
+>> @@ -47,6 +47,7 @@ static void setup(void)
+>>   fd = SAFE_OPEN("tmpfile", O_RDWR | O_CREAT, 0644);
+>>
+>>   tst_fzsync_pair_init(&fzsync_pair);
+>> + fzsync_pair.delay_bias = 700;
+> 
+> I hope there is some way to set this dynamically. Similar to
+> CVE-2016-7117.
+> 
+> If we know that we should get some particular error we could modify the
+> bias until the error happens.
 
-On Mon, Nov 30, 2020 at 4:39 PM Joerg Vehlow <lkml@jv-coder.de> wrote:
+There are three possible outcomes of the race:
+1) fchownat() returns 0 => fchownat() was called too early or the kernel
+is vulnerable, you can adjust bias here
+2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
+3) fchownat() fails with EBADF => fchownat() was called too late, you
+can adjust bias here
 
-> Hi Li,
->
-> On 11/30/2020 9:14 AM, Li Wang wrote:
-> > Hi Joerg,
-> >
-> > On Mon, Nov 30, 2020 at 3:53 PM Joerg Vehlow <lkml@jv-coder.de
-> > <mailto:lkml@jv-coder.de>> wrote:
-> >
-> >     Hi,
-> >     >> No, af_alg07 requires 2 CPUs, otherwise it'll report false
-> >     positives.
-> >     >> The test will pass only if fchownat() hits a half-closed socket
-> and
-> >     >> returns error. But IIRC the half-closed socket will be
-> >     destroyed during
-> >     >> reschedule which means there's no race window to hit anymore.
-> >     But it
-> >     >> would be better to put the TCONF condition into the test itself.
-> >     > Interesting, I wonder if this is also true for the real-time
-> >     kernel with
-> >     > the threads set to RT priority?
-> >     It looks like the test can fail even with more than one cpu. I've
-> >     seen
-> >     this sporadic failure on different hardware with more than two
-> >     cores, at
-> >     least on intel denverton (x86_64) and renesas r-car (aarch64)
-> >     systems.
-> >     Both with kernel 4.19 with the fix included, on the denverton
-> >     system the
-> >     rt parches were included and on the r-car not. The test passes
-> >     most of
-> >     the time, but sometimes fails with the message Li posted.
-> >
-> >     It also seems to fail sporadically on other systems as well:
-> >     https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1892860
-> >     <https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1892860>
-> >
-> >     Additionally I tested on qemu-x86 with 4.19 with and without rt
-> >     patches.
-> >     The test succeeds even with only one virtualized cpu. So either
-> >     Martin's
-> >     assumption is wrong or it holds only for newer kernel versions?
-> >
-> >
-> > No, Mertin is not wrong, and you are also right.
-> >
-> > They are totally two different issues of af_alg07, the test on 1CPU
-> > should be fixed with TCONF. But the fail with aarch64 is more like a
-> > hardware issue, Chunyu has a drafted patch to add init delay value for
-> > such a system.
-> I think you misunderstood something. I see random fails with "TFAIL:
-> fchownat() failed to fail, kernel may be vulnerable" on both x86_64 and
-> aarch64 with more than one cpu core (4 for x86_64 and 2 or 4 for aarch64).
->
-
-Well, seems I was somewhat arbitrary on this problem a moment ago.
-
-Probably I was missing the 4cores fails on x86_64 you mentioned, we just
-observed that FAIL on 1CPU x86_64 and hpe_moonshot(aarch64) so far.
-The tentative conclusion of our debugging result:
-
-  1. FAIL with 1CPU KVM x86_64 is false positives
-  2. FAIL with hpe_moonshot aarch64 is caused by cache line design
-
-
->
-> I see no error ("TPASS: fchownat() failed successfully: ENOENT (2)") on
-> single core qemu-x86. This is why I think Martin's assumption may be
-> wrong. If it was right, it should never succeed on a single core system
-> right?
->
-
-Hmm, it's hard to say never, it is also possible to create a race window on
-a single-core system.
-Anyway, we need to do more investigation.
+IIRC I didn't play with bias in this test because on x86_64 it passes
+almost instantly on a fixed kernel. Feel free to add dynamic bias
+adjustment for ARM.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201130/14a94947/attachment-0001.htm>
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
