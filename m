@@ -1,10 +1,13 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 30 Nov 2020 08:54:44 +0000
-Subject: [LTP] [PATCH v3] overcommit_memory: Fix unstable subtest
-In-Reply-To: <01818271-8dba-96a3-76f3-575243c93243@jv-coder.de>
-References: <20201127071419.20370-1-lkml@jv-coder.de> <87360rnuio.fsf@suse.de>
- <01818271-8dba-96a3-76f3-575243c93243@jv-coder.de>
-Message-ID: <87zh2zmdgr.fsf@suse.de>
+Date: Mon, 30 Nov 2020 09:01:10 +0000
+Subject: [LTP] [PATCH] fzsync: skip test when avaliable CPUs less than 2
+In-Reply-To: <CAEemH2fXpPXvQVi_UUovp+eB5JeWfdTjv47KXnCBhF=VG0Rsog@mail.gmail.com>
+References: <20201125101633.30154-1-liwang@redhat.com>
+ <87eekhof3i.fsf@suse.de> <04c4b073-6ad3-836a-7f63-7632a4e6ddb7@suse.cz>
+ <87blflo9hx.fsf@suse.de>
+ <f9b2e084-f2e0-1016-f505-6218d7c1853e@jv-coder.de>
+ <CAEemH2fXpPXvQVi_UUovp+eB5JeWfdTjv47KXnCBhF=VG0Rsog@mail.gmail.com>
+Message-ID: <87wny3md61.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,43 +16,78 @@ To: ltp@lists.linux.it
 
 Hello,
 
-Joerg Vehlow <lkml@jv-coder.de> writes:
+Li Wang <liwang@redhat.com> writes:
 
-> Hi,
->>> +static long get_total_batch_size_bytes(void)
->>> +{
->>> +	struct sysinfo info;
->>> +	long ncpus = tst_ncpus_conf();
->> I'm not completely sure if this is the same value as num_cpus_present()
->> in the kernel? I'm just wondering if CPU hotplugging could result in the
->> wrong value being calculated (other than if it is hotplugged while the test
->> is running).
+> Hi Joerg,
 >
-> I was thinking about this as well when I implemented this. Here is my
-> reasoning:
+> On Mon, Nov 30, 2020 at 3:53 PM Joerg Vehlow <lkml@jv-coder.de> wrote:
 >
-> If hotplug is disabled possible=present and possible=nr cpus at
-> boot. Otherwise present is the real number of existing (not
-> necessarily enabled cpus), and possible=NR_CPU
-> In both cases it is the number of cpus installed in the system,
-> enabled or not.
+>> Hi,
+>> >> No, af_alg07 requires 2 CPUs, otherwise it'll report false positives.
+>> >> The test will pass only if fchownat() hits a half-closed socket and
+>> >> returns error. But IIRC the half-closed socket will be destroyed during
+>> >> reschedule which means there's no race window to hit anymore. But it
+>> >> would be better to put the TCONF condition into the test itself.
+>> > Interesting, I wonder if this is also true for the real-time kernel with
+>> > the threads set to RT priority?
+>> It looks like the test can fail even with more than one cpu. I've seen
+>> this sporadic failure on different hardware with more than two cores, at
+>> least on intel denverton (x86_64) and renesas r-car (aarch64) systems.
+>> Both with kernel 4.19 with the fix included, on the denverton system the
+>> rt parches were included and on the r-car not. The test passes most of
+>> the time, but sometimes fails with the message Li posted.
+>>
+>> It also seems to fail sporadically on other systems as well:
+>> https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1892860
+>>
+>> Additionally I tested on qemu-x86 with 4.19 with and without rt patches.
+>> The test succeeds even with only one virtualized cpu. So either Martin's
+>> assumption is wrong or it holds only for newer kernel versions?
+>>
 >
-> tst_ncpus_conf is _SC_NPROCESSORS_CONF, which is documented as
-> "returns the number of processors the operating system configured. But
-> it might be possible for the operating system to disable individual
-> processors and so the call", in contrast to _SC_NPROCESSORS_ONLN
-> "returns the number of processors which are currently online (i.e.,
-> available).".
+> No, Mertin is not wrong, and you are also right.
 >
-> I would interpret _SC_NPROCESSORS_CONF as equal to present and
-> _SC_NPROCESSORS_ONLN as equal to online.
+> They are totally two different issues of af_alg07, the test on 1CPU
+> should be fixed with TCONF. But the fail with aarch64 is more like a
+> hardware issue, Chunyu has a drafted patch to add init delay value for
+> such a system.
 >
-> Anything flaw in my logic?
+> Can you try this on your aarm64 platform?
+> -----------------------------
+> fzsync can't get a random delay range on hpe-moonshot systems, so run with
+> delay=0 during all the tests. This is probably the hardware issue such as
+> cache line design so can't get a stable state during the execution of the
+> critical
+> section. Provide an experience delay value on hpe-moonshot to make it hit
+> the race window immediately without exceeding samples.
 >
-> J?rg
+> ---
+>  testcases/kernel/crypto/af_alg07.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/crypto/af_alg07.c
+> b/testcases/kernel/crypto/af_alg07.c
+> index 6ad86f4f3..24f5b8088 100644
+> --- a/testcases/kernel/crypto/af_alg07.c
+> +++ b/testcases/kernel/crypto/af_alg07.c
+> @@ -47,6 +47,7 @@ static void setup(void)
+>   fd = SAFE_OPEN("tmpfile", O_RDWR | O_CREAT, 0644);
+>
+>   tst_fzsync_pair_init(&fzsync_pair);
+> + fzsync_pair.delay_bias = 700;
 
-This sounds correct, it would be strange if _SC_NPROCESSORS_CONF
-returned num_possible_cpus().
+I hope there is some way to set this dynamically. Similar to
+CVE-2016-7117.
+
+If we know that we should get some particular error we could modify the
+bias until the error happens.
+
+>  }
+>
+>  static void *thread_run(void *arg)
+> -- 
+> 2.19.1
+
 
 -- 
 Thank you,
