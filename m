@@ -1,41 +1,41 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  1 Dec 2020 18:42:09 +0100
-Subject: [LTP] [PATCH v5 05/10] fanotify16: Test also on FUSE
+Date: Tue,  1 Dec 2020 18:42:13 +0100
+Subject: [LTP] [PATCH v5 09/10] fanotify: Add a pedantic check for return
+ value
 In-Reply-To: <20201201174214.24625-1-pvorel@suse.cz>
 References: <20201201174214.24625-1-pvorel@suse.cz>
-Message-ID: <20201201174214.24625-6-pvorel@suse.cz>
+Message-ID: <20201201174214.24625-10-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-.dev_fs_flags = TST_FS_SKIP_FUSE flag was requested due missing
-FAN_REPORT_FID support. But that's now covered (in previous commit).
+for fanotify_init() in safe_fanotify_init()
 
-It's better to not cast the filesystem when not needed (it might gain
-the support later) + unify with other tests (fanotify13.c).
-
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-New in v5.
+Same as v4.
 
- testcases/kernel/syscalls/fanotify/fanotify16.c | 1 -
- 1 file changed, 1 deletion(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
-index c02a57dcd..a379226f8 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify16.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
-@@ -579,7 +579,6 @@ static void cleanup(void)
- static struct tst_test test = {
- 	.test = do_test,
- 	.tcnt = ARRAY_SIZE(test_cases),
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.mount_device = 1,
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 0e99b4ac1..540c2b0fc 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -54,6 +54,11 @@ int safe_fanotify_init(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"%s:%d: fanotify_init() failed", file, lineno);
+ 	}
++
++	if (rval < -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "invalid fanotify_init() return %d", rval);
++	}
+ #else
+ 	tst_brk_(file, lineno, TCONF, "Header <sys/fanotify.h> is not present");
+ #endif /* HAVE_SYS_FANOTIFY_H */
 -- 
 2.29.2
 
