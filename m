@@ -1,296 +1,104 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  1 Dec 2020 18:42:07 +0100
-Subject: [LTP] [PATCH v5 03/10] fanotify: Add helper for event support check
+Date: Tue,  1 Dec 2020 18:42:06 +0100
+Subject: [LTP] [PATCH v5 02/10] fanotify: Add helper for access permission
+ check
 In-Reply-To: <20201201174214.24625-1-pvorel@suse.cz>
 References: <20201201174214.24625-1-pvorel@suse.cz>
-Message-ID: <20201201174214.24625-4-pvorel@suse.cz>
+Message-ID: <20201201174214.24625-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-i.e. FAN_OPEN_EXEC and FAN_OPEN_EXEC_PERM
+i.e. CONFIG_FANOTIFY_ACCESS_PERMISSIONS
 and use it in relevant tests setup().
 
 The purpose is to reduce checks (cleanup).
-
-Due this change test with FAN_OPEN_EXEC_PERM in fanotify03.c no longer
-needs to be a first test.
-
-Also rename variable s/support_exec_events/exec_events_unsupported/
-for readability.
+Permission is required by all tests cases, hence tst_brk().
 
 Suggested-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Originally part of "[v4,2/6] fanotify: Handle supported features checks in setup()"
-(but fixed name - drop "exec").
+Originally part of "[v4,2/6] fanotify: Handle supported features checks in setup()".
 
- testcases/kernel/syscalls/fanotify/fanotify.h | 22 ++++++++
- .../kernel/syscalls/fanotify/fanotify03.c     | 34 ++++--------
- .../kernel/syscalls/fanotify/fanotify10.c     | 15 +++---
- .../kernel/syscalls/fanotify/fanotify12.c     | 53 +++++++++----------
- 4 files changed, 63 insertions(+), 61 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h | 19 +++++++++++++++++++
+ .../kernel/syscalls/fanotify/fanotify03.c     |  2 ++
+ .../kernel/syscalls/fanotify/fanotify07.c     | 14 +++++---------
+ 3 files changed, 26 insertions(+), 9 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 687089ace..8c677643f 100644
+index 0afbc02aa..687089ace 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -60,6 +60,7 @@ int safe_fanotify_init(const char *file, const int lineno,
+@@ -242,4 +242,23 @@ static inline void fanotify_save_fid(const char *path,
+ #define INIT_FANOTIFY_MARK_TYPE(t) \
+ 	{ FAN_MARK_ ## t, "FAN_MARK_" #t }
  
- 	return rval;
- }
-+
- #define SAFE_FANOTIFY_INIT(fan, mode)  \
- 	safe_fanotify_init(__FILE__, __LINE__, (fan), (mode))
- 
-@@ -261,4 +262,25 @@ static inline void require_fanotify_access_permissions_supported_by_kernel(void)
- 	SAFE_CLOSE(fd);
- }
- 
-+static inline int fanotify_events_supported_by_kernel(uint64_t mask)
++static inline void require_fanotify_access_permissions_supported_by_kernel(void)
 +{
 +	int fd;
-+	int rval = 0;
 +
 +	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
 +
-+	if (fanotify_mark(fd, FAN_MARK_ADD, mask, AT_FDCWD, ".") < 0) {
++	if (fanotify_mark(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, ".") < 0) {
 +		if (errno == EINVAL) {
-+			rval = -1;
++			tst_brk(TCONF | TERRNO,
++				"CONFIG_FANOTIFY_ACCESS_PERMISSIONS not configured in kernel?");
 +		} else {
 +			tst_brk(TBROK | TERRNO,
-+				"fanotify_mark (%d, FAN_MARK_ADD, ..., AT_FDCWD, \".\") failed", fd);
++				"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, \".\") failed", fd);
 +		}
 +	}
 +
 +	SAFE_CLOSE(fd);
-+
-+	return rval;
 +}
 +
  #endif /* __FANOTIFY_H__ */
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index cd5576f3a..75e5b852d 100644
+index 1ef1c206b..cd5576f3a 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -48,18 +48,13 @@ static volatile int fd_notify;
- static pid_t child_pid;
+@@ -347,6 +347,8 @@ static void test_fanotify(unsigned int n)
  
- static char event_buf[EVENT_BUF_LEN];
--static int support_exec_events;
-+static int exec_events_unsupported;
- 
- struct event {
- 	unsigned long long mask;
- 	unsigned int response;
- };
- 
--/*
-- * Ensure to keep the first FAN_OPEN_EXEC_PERM test case before the first
-- * MARK_TYPE(FILESYSTEM) in order to allow for correct detection between
-- * exec events not supported and filesystem marks not supported.
-- */
- static struct tcase {
- 	const char *tname;
- 	struct fanotify_mark_type mark;
-@@ -212,28 +207,23 @@ static int setup_mark(unsigned int n)
- 	char *const files[] = {fname, FILE_EXEC_PATH};
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
-+
-+	if (exec_events_unsupported && tc->mask & FAN_OPEN_EXEC_PERM) {
-+		tst_res(TCONF, "FAN_OPEN_EXEC_PERM not supported in kernel?");
-+		return -1;
-+	}
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
- 
- 	for (; i < ARRAY_SIZE(files); i++) {
- 		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 				  tc->mask, AT_FDCWD, files[i]) < 0) {
- 			if (errno == EINVAL &&
--				(tc->mask & FAN_OPEN_EXEC_PERM &&
--				 !support_exec_events)) {
--				tst_res(TCONF,
--					"FAN_OPEN_EXEC_PERM not supported in "
--					"kernel?");
--				return -1;
--			} else if (errno == EINVAL &&
- 					mark->flag == FAN_MARK_FILESYSTEM) {
- 				tst_res(TCONF,
- 					"FAN_MARK_FILESYSTEM not supported in "
- 					"kernel?");
- 				return -1;
--			} else if (errno == EINVAL) {
--				tst_brk(TCONF | TERRNO,
--					"CONFIG_FANOTIFY_ACCESS_PERMISSIONS "
--					"not configured in kernel?");
- 			} else {
- 				tst_brk(TBROK | TERRNO,
- 					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
-@@ -241,14 +231,6 @@ static int setup_mark(unsigned int n)
- 					"AT_FDCWD, %s) failed.",
- 					fd_notify, mark->name, fname);
- 			}
--		} else {
--			/*
--			 * To distinguish between perm not supported, exec
--			 * events not supported and filesystem mark not
--			 * supported.
--			 */
--			if (tc->mask & FAN_OPEN_EXEC_PERM)
--				support_exec_events = 1;
- 		}
- 	}
- 
-@@ -349,6 +331,8 @@ static void setup(void)
+ static void setup(void)
  {
- 	require_fanotify_access_permissions_supported_by_kernel();
- 
-+	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC_PERM);
++	require_fanotify_access_permissions_supported_by_kernel();
 +
  	sprintf(fname, MOUNT_PATH"/fname_%d", getpid());
  	SAFE_FILE_PRINTF(fname, "1");
  
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index 90cf5cb5f..73702285c 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -64,6 +64,7 @@ static unsigned int fanotify_class[] = {
- static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+index c2e185710..8822e9c51 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify07.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+@@ -106,15 +106,9 @@ static int setup_instance(void)
+ 	if (fanotify_mark(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD,
+ 			  fname) < 0) {
+ 		close(fd);
+-		if (errno == EINVAL) {
+-			tst_brk(TCONF | TERRNO,
+-				"CONFIG_FANOTIFY_ACCESS_PERMISSIONS not "
+-				"configured in kernel?");
+-		} else {
+-			tst_brk(TBROK | TERRNO,
+-				"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS_PERM, "
+-				"AT_FDCWD, %s) failed.", fd, fname);
+-		}
++		tst_brk(TBROK | TERRNO,
++			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, %s) failed",
++			fd, fname);
+ 	}
  
- static char event_buf[EVENT_BUF_LEN];
-+static int exec_events_unsupported;
- 
- #define MOUNT_PATH "fs_mnt"
- #define MNT2_PATH "mntpoint"
-@@ -323,13 +324,6 @@ static int create_fanotify_groups(unsigned int n)
- 					    AT_FDCWD, tc->mark_path);
- 			if (ret < 0) {
- 				if (errno == EINVAL &&
--				    tc->expected_mask_without_ignore &
--				    FAN_OPEN_EXEC) {
--					tst_res(TCONF,
--						"FAN_OPEN_EXEC not supported "
--						"by kernel?");
--					return -1;
--				} else if (errno == EINVAL &&
- 					tc->mark_type == FANOTIFY_FILESYSTEM) {
- 					tst_res(TCONF,
- 						"FAN_MARK_FILESYSTEM not "
-@@ -451,6 +445,11 @@ static void test_fanotify(unsigned int n)
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- 
-+	if (exec_events_unsupported && tc->expected_mask_with_ignore & FAN_OPEN_EXEC) {
-+		tst_res(TCONF, "FAN_OPEN_EXEC not supported in kernel?");
-+		return;
-+	}
-+
- 	if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
- 		tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
- 				" has undefined behavior on kernel < 5.9");
-@@ -535,6 +534,8 @@ cleanup:
+ 	return fd;
+@@ -195,6 +189,8 @@ static void test_fanotify(void)
  
  static void setup(void)
  {
-+	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC);
-+
- 	/* Create another bind mount@another path for generating events */
- 	SAFE_MKDIR(MNT2_PATH, 0755);
- 	SAFE_MOUNT(MOUNT_PATH, MNT2_PATH, "none", MS_BIND, NULL);
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
-index fea7cb607..0d049fc6b 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify12.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
-@@ -39,6 +39,7 @@ static char fname[BUF_SIZE];
- static volatile int fd_notify;
- static volatile int complete;
- static char event_buf[EVENT_BUF_LEN];
-+static int exec_events_unsupported;
- 
- static struct test_case_t {
- 	const char *tname;
-@@ -135,26 +136,26 @@ static int setup_mark(unsigned int n)
- 	const char *const files[] = {fname, TEST_APP};
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
-+
-+	if (exec_events_unsupported && ((tc->mask & FAN_OPEN_EXEC) ||
-+					tc->ignore_mask & FAN_OPEN_EXEC)) {
-+		tst_res(TCONF, "FAN_OPEN_EXEC not supported in kernel?");
-+		return -1;
-+	}
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
- 
- 	for (; i < ARRAY_SIZE(files); i++) {
- 		/* Setup normal mark on object */
- 		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 					tc->mask, AT_FDCWD, files[i]) < 0) {
--			if (errno == EINVAL && tc->mask & FAN_OPEN_EXEC) {
--				tst_res(TCONF,
--					"FAN_OPEN_EXEC not supported in "
--					"kernel?");
--				return -1;
--			}else {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--					"%llx, AT_FDCWD, %s) failed",
--					fd_notify,
--					mark->name,
--					tc->mask,
--					files[i]);
--			}
-+			tst_brk(TBROK | TERRNO,
-+				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
-+				"%llx, AT_FDCWD, %s) failed",
-+				fd_notify,
-+				mark->name,
-+				tc->mask,
-+				files[i]);
- 		}
- 
- 		/* Setup ignore mark on object */
-@@ -163,21 +164,13 @@ static int setup_mark(unsigned int n)
- 						| FAN_MARK_IGNORED_MASK,
- 						tc->ignore_mask, AT_FDCWD,
- 						files[i]) < 0) {
--				if (errno == EINVAL &&
--					tc->ignore_mask & FAN_OPEN_EXEC) {
--					tst_res(TCONF,
--						"FAN_OPEN_EXEC not supported "
--						"in kernel?");
--					return -1;
--				} else {
--					tst_brk(TBROK | TERRNO,
--						"fanotify_mark (%d, "
--						"FAN_MARK_ADD | %s "
--						"| FAN_MARK_IGNORED_MASK, "
--						"%llx, AT_FDCWD, %s) failed",
--						fd_notify, mark->name,
--						tc->ignore_mask, files[i]);
--				}
-+				tst_brk(TBROK | TERRNO,
-+					"fanotify_mark (%d, "
-+					"FAN_MARK_ADD | %s "
-+					"| FAN_MARK_IGNORED_MASK, "
-+					"%llx, AT_FDCWD, %s) failed",
-+					fd_notify, mark->name,
-+					tc->ignore_mask, files[i]);
- 			}
- 		}
- 	}
-@@ -244,6 +237,8 @@ cleanup:
- 
- static void do_setup(void)
- {
-+	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC);
++	require_fanotify_access_permissions_supported_by_kernel();
 +
  	sprintf(fname, "fname_%d", getpid());
- 	SAFE_FILE_PRINTF(fname, "1");
+ 	SAFE_FILE_PRINTF(fname, "%s", fname);
  }
 -- 
 2.29.2
