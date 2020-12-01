@@ -1,37 +1,60 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 1 Dec 2020 15:01:28 +0300
-Subject: [LTP] [PATCH v2] netstress: explicitly set a thread stack size
-In-Reply-To: <OF2BEB2003.14B7181E-ONC125862D.003F33FC-C125862D.003FF6BA@avm.de>
-References: <OFCE604BCE.4F62924B-ONC125862B.004801C0-C125862B.0048027B@avm.de>
- <OF2BEB2003.14B7181E-ONC125862D.003F33FC-C125862D.003FF6BA@avm.de>
-Message-ID: <28ab3390-a16b-6183-62c8-50d782da2ad6@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 1 Dec 2020 13:17:21 +0100
+Subject: [LTP] [PATCH v2 2/2] lib: Add test library design document
+In-Reply-To: <738639647.26717511.1606819632601.JavaMail.zimbra@redhat.com>
+References: <20201127163150.22903-3-chrubis@suse.cz>
+ <0f8ede1f55d67b7ff4fd17c38f9bfc6a835b43a3.1606813521.git.jstancek@redhat.com>
+ <20201201092040.GB20076@yuki.lan>
+ <738639647.26717511.1606819632601.JavaMail.zimbra@redhat.com>
+Message-ID: <20201201121721.GA27684@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 27.11.2020 14:38, Johannes Nixdorf via ltp wrote:
-> Musl libc uses a relatively small thread stack size (128k [1]). This
-> gets used up on 2 local buffers sized max_msg_len (64k by default),
-> which causes a segfault due to a stack overflow in the error reporting
-> path.
+Hi!
+> > > +## High-level picture
+> > > +
+> > > +    library process
+> > > +    +----------------------------+
+> > > +    | main                       |
+> > > +    |  tst_run_tcases            |
+> > > +    |   do_setup                 |
+> > > +    |   for_each_variant         |
+> > > +    |    for_each_filesystem     |   test process
+> > > +    |     fork_testrun
+> > > ------------->+--------------------------------------------+
+> > > +    |      waitpid               |   | testrun
+> > > |
+> > > +    |                            |   |  do_test_setup
+> > > |
+> > > +    |                            |   |   tst_test->setup
+> > > |
+> > > +    |                            |   |  run_tests
+> > > |
+> > > +    |                            |   |   tst_test->test(i) or
+> > > tst_test->test_all  |
+> > > +    |                            |   |  do_test_cleanup
+> > > |
+> > > +    |                            |   |   tst_test->cleanup
+> > > |
+> > > +    |                            |   |  exit(0)
+> > > |
+> > > +    |   do_exit                  |
+> > > +--------------------------------------------+
+> > > +    |    do_cleanup              |
+> > > +    |     exit(ret)              |
+> > > +    +----------------------------+
+> > 
+> > Shouldn't we wrap this to ``` so that it renders nicely on the web?
 > 
-> Set the stack size to 256k instead, which is enough for both buffers
-> with an additional allowance for the remaining stack usage by netstress
-> and called libc or ltp helper functions.
-> 
-> [1]: https://urldefense.com/v3/__https://wiki.musl-libc.org/functional-differences-from-glibc.html*Thread_stack_size__;Iw!!GqivPVa7Brio!Nat9ZPBR2P2QxOM2IsBWR2WdfOQ1ZNM4IJzjNy5a_bTsHUko9bULz88kJAVK8yQ7Kk8-$ 
-> 
-> Signed-off-by: Johannes Nixdorf <j.nixdorf@avm.de>
-> 
-> ---
-> 
-> v2:
->   - Use a static limit of 256k.
->   - Document the requested stack size in the error message.
->   - Coding style fixup.
-> 
+> I thought the 4 spaces prefix will already do that. I was testing
+> it online on dillinger.io and stackedit.io. But I'm fine with adding ```,
+> if that's better for github.
 
-Added extra parenthesis to silence possible compiler warnings
-and applied, thanks Johannes!
+My bad, four spaces should work here.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
