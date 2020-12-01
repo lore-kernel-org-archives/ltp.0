@@ -1,653 +1,253 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  1 Dec 2020 18:42:11 +0100
-Subject: [LTP] [PATCH v5 07/10] fanotify: Introduce SAFE_FANOTIFY_MARK()
- macro
+Date: Tue,  1 Dec 2020 18:42:10 +0100
+Subject: [LTP] [PATCH v5 06/10] fanotify: Add helper for mark support check
 In-Reply-To: <20201201174214.24625-1-pvorel@suse.cz>
 References: <20201201174214.24625-1-pvorel@suse.cz>
-Message-ID: <20201201174214.24625-8-pvorel@suse.cz>
+Message-ID: <20201201174214.24625-7-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-and safe_fanotify_mark() function and use it in all tests which use
-fanotify_mark().
+i.e. FAN_MARK_FILESYSTEM and use it in relevant tests setup().
+The purpose is to reduce checks (cleanup).
 
-Simple checking in safe_fanotify_mark() was possible due helpers added
-in previous commits which are used in tests' setup functions.
+NOTE: all tests check only for FAN_MARK_FILESYSTEM, but keep helper
+generic for future use.
 
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Changes v4->v5:
-* Less cleanup here, because many TCONF messages were removed earlier.
+New in v5.
 
- testcases/kernel/syscalls/fanotify/fanotify.h | 23 +++++++++
- .../kernel/syscalls/fanotify/fanotify01.c     | 48 ++++---------------
- .../kernel/syscalls/fanotify/fanotify02.c     | 22 ++-------
- .../kernel/syscalls/fanotify/fanotify03.c     | 10 +---
- .../kernel/syscalls/fanotify/fanotify04.c     | 32 +++----------
- .../kernel/syscalls/fanotify/fanotify05.c     |  9 +---
- .../kernel/syscalls/fanotify/fanotify06.c     | 21 ++------
- .../kernel/syscalls/fanotify/fanotify07.c     |  9 +---
- .../kernel/syscalls/fanotify/fanotify09.c     | 19 ++------
- .../kernel/syscalls/fanotify/fanotify10.c     | 22 ++-------
- .../kernel/syscalls/fanotify/fanotify11.c     |  5 +-
- .../kernel/syscalls/fanotify/fanotify12.c     | 24 ++--------
- .../kernel/syscalls/fanotify/fanotify13.c     | 18 ++-----
- .../kernel/syscalls/fanotify/fanotify15.c     | 20 ++------
- .../kernel/syscalls/fanotify/fanotify16.c     | 20 ++------
- 15 files changed, 77 insertions(+), 225 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h | 21 ++++++++++++++++
+ .../kernel/syscalls/fanotify/fanotify01.c     | 12 +++++----
+ .../kernel/syscalls/fanotify/fanotify03.c     | 25 +++++++++----------
+ .../kernel/syscalls/fanotify/fanotify10.c     | 14 +++++------
+ .../kernel/syscalls/fanotify/fanotify13.c     | 15 +++++------
+ 5 files changed, 55 insertions(+), 32 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 2275a1da3..e0504ba81 100644
+index 821e6cb29..2275a1da3 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -61,6 +61,29 @@ int safe_fanotify_init(const char *file, const int lineno,
- 	return rval;
- }
+@@ -351,4 +351,25 @@ static inline void require_fanotify_fan_report_fid_supported_on_fs(const char *f
+ #define REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(fname) \
+ 	require_fanotify_fan_report_fid_supported_on_fs(__FILE__, __LINE__, (fname))
  
-+static inline int safe_fanotify_mark(const char *file, const int lineno,
-+			int fd, unsigned int flags, uint64_t mask,
-+			int dfd, const char *pathname)
++static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
 +{
-+	int rval;
++	int fd;
++	int rval = 0;
 +
-+	rval = fanotify_mark(fd, flags, mask, dfd, pathname);
++	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
 +
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO, "fanotify_mark() failed");
++	if (fanotify_mark(fd, FAN_MARK_ADD | flag, FAN_ACCESS_PERM, AT_FDCWD, ".") < 0) {
++		if (errno == EINVAL) {
++			rval = -1;
++		} else {
++			tst_brk(TBROK | TERRNO,
++				"fanotify_mark (%d, FAN_MARK_ADD, ..., FAN_ACCESS_PERM, AT_FDCWD, \".\") failed", fd);
++		}
 +	}
 +
-+	if (rval < -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "invalid fanotify_mark() return %d", rval);
-+	}
++	SAFE_CLOSE(fd);
 +
 +	return rval;
 +}
 +
-+#define SAFE_FANOTIFY_MARK(fd, flags, mask, dfd, pathname)  \
-+	safe_fanotify_mark(__FILE__, __LINE__, (fd), (flags), (mask), (dfd), (pathname))
-+
- #define SAFE_FANOTIFY_INIT(fan, mode)  \
- 	safe_fanotify_init(__FILE__, __LINE__, (fan), (mode))
- 
+ #endif /* __FANOTIFY_H__ */
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-index c8ab41695..a1eafb277 100644
+index 5f2544931..c8ab41695 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify01.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -102,14 +102,8 @@ static void test_fanotify(unsigned int n)
+@@ -75,6 +75,7 @@ static char fname[BUF_SIZE];
+ static char buf[BUF_SIZE];
+ static int fd_notify;
+ static int fan_report_fid_unsupported;
++static int filesystem_mark_unsupported;
  
+ static unsigned long long event_set[EVENT_MAX];
+ 
+@@ -94,16 +95,16 @@ static void test_fanotify(unsigned int n)
+ 		return;
+ 	}
+ 
++	if (filesystem_mark_unsupported && mark->flag == FAN_MARK_FILESYSTEM) {
++		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
++		return;
++	}
++
  	fd_notify = SAFE_FANOTIFY_INIT(tc->init_flags, O_RDONLY);
  
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
--			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
--			  AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | %s | "
--			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
--			"failed", fd_notify, mark->name, fname);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag,
-+			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, fname);
- 
- 	/*
- 	 * generate sequence of events
-@@ -157,14 +151,9 @@ static void test_fanotify(unsigned int n)
- 	 */
- 
- 	/* Ignore access events */
--	if (fanotify_mark(fd_notify,
-+	SAFE_FANOTIFY_MARK(fd_notify,
- 			  FAN_MARK_ADD | mark->flag | FAN_MARK_IGNORED_MASK,
--			  FAN_ACCESS, AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD | %s | "
--			"FAN_MARK_IGNORED_MASK, FAN_ACCESS, AT_FDCWD, %s) "
--			"failed", fd_notify, mark->name, fname);
--	}
-+			  FAN_ACCESS, AT_FDCWD, fname);
- 
- 	fd = SAFE_OPEN(fname, O_RDWR);
- 	event_set[tst_count] = FAN_OPEN;
-@@ -207,15 +196,9 @@ static void test_fanotify(unsigned int n)
- 	 * Now ignore open & close events regardless of file
- 	 * modifications
- 	 */
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag |
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag |
- 			  FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY,
--			  FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD | %s | "
--			"FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY, "
--			"FAN_OPEN | FAN_CLOSE, AT_FDCWD, %s) failed",
--			fd_notify, mark->name, fname);
--	}
-+			  FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname);
- 
- 	/* This event should be ignored */
- 	fd = SAFE_OPEN(fname, O_RDWR);
-@@ -236,15 +219,9 @@ static void test_fanotify(unsigned int n)
- 	len += ret;
- 
- 	/* Now remove open and close from ignored mask */
--	if (fanotify_mark(fd_notify,
-+	SAFE_FANOTIFY_MARK(fd_notify,
- 			  FAN_MARK_REMOVE | mark->flag | FAN_MARK_IGNORED_MASK,
--			  FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_REMOVE | %s | "
--			"FAN_MARK_IGNORED_MASK, FAN_OPEN | FAN_CLOSE, "
--			"AT_FDCWD, %s) failed", fd_notify,
--			mark->name, fname);
--	}
-+			  FAN_OPEN | FAN_CLOSE, AT_FDCWD, fname);
- 
- 	SAFE_CLOSE(fd);
- 	event_set[tst_count] = FAN_CLOSE_WRITE;
-@@ -340,14 +317,9 @@ pass:
- 
- 	}
- 	/* Remove mark to clear FAN_MARK_IGNORED_SURV_MODIFY */
--	if (fanotify_mark(fd_notify, FAN_MARK_REMOVE | mark->flag,
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE | mark->flag,
+ 	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
  			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
--			  AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_REMOVE | %s, FAN_ACCESS | "
--			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
--			"failed", fd_notify, mark->name, fname);
--	}
-+			  AT_FDCWD, fname);
- 
- 	SAFE_CLOSE(fd_notify);
- }
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify02.c b/testcases/kernel/syscalls/fanotify/fanotify02.c
-index c578e0ae8..36c87648e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify02.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify02.c
-@@ -46,16 +46,9 @@ void test01(void)
- 
- 	int tst_count = 0;
- 
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_ACCESS |
--			  FAN_MODIFY | FAN_CLOSE | FAN_OPEN |
--			  FAN_EVENT_ON_CHILD | FAN_ONDIR, AT_FDCWD,
--			  ".") < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | "
--			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN | "
--			"FAN_EVENT_ON_CHILD | FAN_ONDIR, AT_FDCWD, '.') "
--			"failed", fd_notify);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD, FAN_ACCESS |
-+			  FAN_MODIFY | FAN_CLOSE | FAN_OPEN | FAN_EVENT_ON_CHILD |
-+			  FAN_ONDIR, AT_FDCWD, ".");
- 
- 	/*
- 	 * generate sequence of events
-@@ -102,13 +95,8 @@ void test01(void)
- 	/*
- 	 * now remove child mark
- 	 */
--	if (fanotify_mark(fd_notify, FAN_MARK_REMOVE,
--			  FAN_EVENT_ON_CHILD, AT_FDCWD, ".") < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK REMOVE, "
--			"FAN_EVENT_ON_CHILD, AT_FDCWD, '.') failed",
--			fd_notify);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE,
-+			  FAN_EVENT_ON_CHILD, AT_FDCWD, ".");
- 
- 	/*
- 	 * Do something to verify events didn't get generated
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 8b54e42c4..2cd90e8b0 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -222,14 +222,8 @@ static int setup_mark(unsigned int n)
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
- 
- 	for (; i < ARRAY_SIZE(files); i++) {
--		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
--				  tc->mask, AT_FDCWD, files[i]) < 0) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--				"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
--				"AT_FDCWD, %s) failed.",
--				fd_notify, mark->name, fname);
+ 			  AT_FDCWD, fname) < 0) {
+-		if (errno == EINVAL && mark->flag == FAN_MARK_FILESYSTEM) {
+-			tst_res(TCONF,
+-				"FAN_MARK_FILESYSTEM not supported in kernel?");
+-			return;
 -		}
-+		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag,
-+				  tc->mask, AT_FDCWD, files[i]);
- 	}
+ 		tst_brk(TBROK | TERRNO,
+ 			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | %s | "
+ 			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
+@@ -363,6 +364,7 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF(fname, "1");
  
- 	return 0;
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify04.c b/testcases/kernel/syscalls/fanotify/fanotify04.c
-index 722ad5d41..a24e7f7c3 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify04.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify04.c
-@@ -77,13 +77,8 @@ static void check_mark(char *file, unsigned long long flag, char *flagstr,
- 		if (test_event)
- 			test_event(file);
- 
--		if (fanotify_mark(fd_notify, FAN_MARK_REMOVE | flag,
--				  FAN_OPEN, AT_FDCWD, file) < 0) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark (%d, FAN_MARK_REMOVE | %s, "
--				"FAN_OPEN, AT_FDCWD, '%s') failed",
--				fd_notify, flagstr, file);
--		}
-+		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_REMOVE | flag,
-+				  FAN_OPEN, AT_FDCWD, file);
- 	}
- }
- 
-@@ -191,29 +186,14 @@ void test01(void)
- 	CHECK_MARK(sname, 0, 0, test_open_file);
- 
- 	/* Verify FAN_MARK_FLUSH destroys all inode marks */
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD,
--			  FAN_OPEN, AT_FDCWD, fname) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD, FAN_OPEN, "
--			"AT_FDCWD, '%s') failed", fd_notify, fname);
--	}
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD,
--			  FAN_OPEN | FAN_ONDIR, AT_FDCWD, dir) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD, FAN_OPEN | "
--			"FAN_ONDIR, AT_FDCWD, '%s') failed", fd_notify,
--			dir);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD, FAN_OPEN, AT_FDCWD, fname);
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD, FAN_OPEN | FAN_ONDIR,
-+			   AT_FDCWD, dir);
- 	open_file(fname);
- 	verify_event(S_IFREG);
- 	open_dir(dir);
- 	verify_event(S_IFDIR);
--	if (fanotify_mark(fd_notify, FAN_MARK_FLUSH,
--			  0, AT_FDCWD, ".") < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_FLUSH, 0, "
--			"AT_FDCWD, '.') failed", fd_notify);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_FLUSH, 0, AT_FDCWD, ".");
- 
- 	open_dir(dir);
- 	verify_no_event();
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
-index e53cc333a..c13b9ad7b 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify05.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
-@@ -107,13 +107,8 @@ static void setup(void)
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF | FAN_NONBLOCK,
- 			O_RDONLY);
- 
--	if (fanotify_mark(fd_notify, FAN_MARK_MOUNT | FAN_MARK_ADD, FAN_OPEN,
--			  AT_FDCWD, MOUNT_PATH) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_MOUNT | FAN_MARK_ADD, "
--			"FAN_OPEN, AT_FDCWD, \".\") failed",
--			fd_notify);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_MOUNT | FAN_MARK_ADD, FAN_OPEN,
-+			  AT_FDCWD, MOUNT_PATH);
+ 	fan_report_fid_unsupported = fanotify_fan_report_fid_supported_on_fs(fname);
++	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
  }
  
  static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
-index 99e312a4f..ac4901f6f 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify06.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
-@@ -78,7 +78,6 @@ static struct tcase {
- static void create_fanotify_groups(void)
- {
- 	unsigned int p, i;
--	int ret;
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 75e5b852d..8b54e42c4 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -49,6 +49,7 @@ static pid_t child_pid;
  
- 	for (p = 0; p < FANOTIFY_PRIORITIES; p++) {
- 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
-@@ -87,32 +86,20 @@ static void create_fanotify_groups(void)
- 							     O_RDONLY);
+ static char event_buf[EVENT_BUF_LEN];
+ static int exec_events_unsupported;
++static int filesystem_mark_unsupported;
  
- 			/* Add mount mark for each group */
--			ret = fanotify_mark(fd_notify[p][i],
-+			SAFE_FANOTIFY_MARK(fd_notify[p][i],
- 					    FAN_MARK_ADD | FAN_MARK_MOUNT,
- 					    FAN_MODIFY,
- 					    AT_FDCWD, fname);
--			if (ret < 0) {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | "
--					"FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD,"
--					" %s) failed", fd_notify[p][i], fname);
--			}
-+
- 			/* Add ignore mark for groups with higher priority */
- 			if (p == 0)
- 				continue;
--			ret = fanotify_mark(fd_notify[p][i],
-+
-+			SAFE_FANOTIFY_MARK(fd_notify[p][i],
- 					    FAN_MARK_ADD |
- 					    FAN_MARK_IGNORED_MASK |
- 					    FAN_MARK_IGNORED_SURV_MODIFY,
- 					    FAN_MODIFY, AT_FDCWD, fname);
--			if (ret < 0) {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | "
--					"FAN_MARK_IGNORED_MASK | "
--					"FAN_MARK_IGNORED_SURV_MODIFY, "
--					"FAN_MODIFY, AT_FDCWD, %s) failed",
--					fd_notify[p][i], fname);
--			}
- 		}
- 	}
- }
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
-index 8822e9c51..4bf17661a 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-@@ -102,14 +102,7 @@ static int setup_instance(void)
- 	int fd;
- 
- 	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
--
--	if (fanotify_mark(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD,
--			  fname) < 0) {
--		close(fd);
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, %s) failed",
--			fd, fname);
--	}
-+	SAFE_FANOTIFY_MARK(fd, FAN_MARK_ADD, FAN_ACCESS_PERM, AT_FDCWD, fname);
- 
- 	return fd;
- }
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-index 83210bc1c..9c9938619 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-@@ -99,7 +99,6 @@ static void create_fanotify_groups(struct tcase *tc)
- {
- 	struct fanotify_mark_type *mark = &tc->mark;
- 	unsigned int i, onchild, ondir = tc->ondir;
--	int ret;
- 
- 	for (i = 0; i < NUM_GROUPS; i++) {
- 		fd_notify[i] = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF |
-@@ -111,17 +110,11 @@ static void create_fanotify_groups(struct tcase *tc)
- 		 * but only the first group requests events on dir.
- 		 */
- 		onchild = (i == 0) ? FAN_EVENT_ON_CHILD | ondir : 0;
--		ret = fanotify_mark(fd_notify[i],
-+		SAFE_FANOTIFY_MARK(fd_notify[i],
- 				    FAN_MARK_ADD | mark->flag,
- 				    FAN_CLOSE_NOWRITE | onchild,
- 				    AT_FDCWD, tc->testdir);
--		if (ret < 0) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--				"%x, AT_FDCWD, '%s') failed",
--				fd_notify[i], mark->name,
--				FAN_CLOSE_NOWRITE | ondir, tc->testdir);
--		}
-+
- 		/*
- 		 * Add inode mark on parent for each group with MODIFY event,
- 		 * but only the first group requests events on child.
-@@ -129,15 +122,9 @@ static void create_fanotify_groups(struct tcase *tc)
- 		 * setting the DCACHE_FSNOTIFY_PARENT_WATCHED dentry
- 		 * flag.
- 		 */
--		ret = fanotify_mark(fd_notify[i], FAN_MARK_ADD,
-+		SAFE_FANOTIFY_MARK(fd_notify[i], FAN_MARK_ADD,
- 				    FAN_MODIFY | ondir | onchild,
- 				    AT_FDCWD, ".");
--		if (ret < 0) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark(%d, FAN_MARK_ADD, "
--				"%x, AT_FDCWD, '.') failed",
--				fd_notify[i], FAN_MODIFY | ondir | onchild);
--		}
- 	}
- }
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index 6d048958c..4d081a843 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -289,7 +289,6 @@ static int create_fanotify_groups(unsigned int n)
- 	struct fanotify_mark_type *mark, *ignore_mark;
- 	unsigned int mark_ignored, mask;
- 	unsigned int p, i;
--	int ret;
- 
- 	mark = &fanotify_mark_types[tc->mark_type];
- 	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
-@@ -318,18 +317,12 @@ static int create_fanotify_groups(unsigned int n)
- 			 * FAN_EVENT_ON_CHILD has no effect on filesystem/mount
- 			 * or inode mark on non-directory.
- 			 */
--			ret = fanotify_mark(fd_notify[p][i],
-+			SAFE_FANOTIFY_MARK(fd_notify[p][i],
- 					    FAN_MARK_ADD | mark->flag,
- 					    tc->expected_mask_without_ignore |
- 					    FAN_EVENT_ON_CHILD,
- 					    AT_FDCWD, tc->mark_path);
--			if (ret < 0) {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | %s,"
--					"FAN_OPEN, AT_FDCWD, %s) failed",
--					fd_notify[p][i], mark->name,
--					tc->mark_path);
--			}
-+
- 			/* Add ignore mark for groups with higher priority */
- 			if (p == 0)
- 				continue;
-@@ -338,18 +331,9 @@ static int create_fanotify_groups(unsigned int n)
- 			mark_ignored = FAN_MARK_IGNORED_MASK |
- 					FAN_MARK_IGNORED_SURV_MODIFY;
- add_mark:
--			ret = fanotify_mark(fd_notify[p][i],
-+			SAFE_FANOTIFY_MARK(fd_notify[p][i],
- 					    FAN_MARK_ADD | ignore_mark->flag | mark_ignored,
- 					    mask, AT_FDCWD, tc->ignore_path);
--			if (ret < 0) {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | %s | %s, "
--					"%x, AT_FDCWD, %s) failed",
--					fd_notify[p][i], ignore_mark->name,
--					mark_ignored ? "FAN_MARK_IGNORED_MASK | "
--					"FAN_MARK_IGNORED_SURV_MODIFY" : "",
--					mask, tc->ignore_path);
--			}
- 
- 			/*
- 			 * If ignored mask is on a parent watching children,
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify11.c b/testcases/kernel/syscalls/fanotify/fanotify11.c
-index 9e8606c72..56b7153f8 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify11.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify11.c
-@@ -55,7 +55,6 @@ static unsigned int tcases[] = {
- 
- void test01(unsigned int i)
- {
--	int ret;
- 	pthread_t p_id;
- 	struct fanotify_event_metadata event;
- 	int fd_notify;
-@@ -76,10 +75,8 @@ void test01(unsigned int i)
- 				tcases[i]);
+ struct event {
+ 	unsigned long long mask;
+@@ -213,24 +214,21 @@ static int setup_mark(unsigned int n)
+ 		return -1;
  	}
  
--	ret = fanotify_mark(fd_notify, FAN_MARK_ADD,
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD,
- 			FAN_ALL_EVENTS | FAN_EVENT_ON_CHILD, AT_FDCWD, ".");
--	if (ret != 0)
--		tst_brk(TBROK, "fanotify_mark FAN_MARK_ADD fail ret=%d", ret);
- 
- 	SAFE_PTHREAD_CREATE(&p_id, NULL, thread_create_file, NULL);
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
-index 0d049fc6b..18b96c430 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify12.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
-@@ -147,31 +147,15 @@ static int setup_mark(unsigned int n)
++	if (filesystem_mark_unsupported && mark->flag == FAN_MARK_FILESYSTEM) {
++		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
++		return -1;
++	}
++
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
  
  	for (; i < ARRAY_SIZE(files); i++) {
- 		/* Setup normal mark on object */
--		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
--					tc->mask, AT_FDCWD, files[i]) < 0) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--				"%llx, AT_FDCWD, %s) failed",
--				fd_notify,
--				mark->name,
--				tc->mask,
--				files[i]);
--		}
-+		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag,
-+					tc->mask, AT_FDCWD, files[i]);
- 
- 		/* Setup ignore mark on object */
- 		if (tc->ignore_mask) {
--			if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag
-+			SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag
- 						| FAN_MARK_IGNORED_MASK,
- 						tc->ignore_mask, AT_FDCWD,
--						files[i]) < 0) {
+ 		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
+ 				  tc->mask, AT_FDCWD, files[i]) < 0) {
+-			if (errno == EINVAL &&
+-					mark->flag == FAN_MARK_FILESYSTEM) {
+-				tst_res(TCONF,
+-					"FAN_MARK_FILESYSTEM not supported in "
+-					"kernel?");
+-				return -1;
+-			} else {
 -				tst_brk(TBROK | TERRNO,
--					"fanotify_mark (%d, "
--					"FAN_MARK_ADD | %s "
--					"| FAN_MARK_IGNORED_MASK, "
--					"%llx, AT_FDCWD, %s) failed",
--					fd_notify, mark->name,
--					tc->ignore_mask, files[i]);
+-					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
+-					"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
+-					"AT_FDCWD, %s) failed.",
+-					fd_notify, mark->name, fname);
 -			}
-+						files[i]);
++			tst_brk(TBROK | TERRNO,
++				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
++				"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
++				"AT_FDCWD, %s) failed.",
++				fd_notify, mark->name, fname);
  		}
  	}
  
+@@ -331,6 +329,7 @@ static void setup(void)
+ {
+ 	require_fanotify_access_permissions_supported_by_kernel();
+ 
++	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
+ 	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC_PERM);
+ 
+ 	sprintf(fname, MOUNT_PATH"/fname_%d", getpid());
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 73702285c..6d048958c 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -65,6 +65,7 @@ static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+ 
+ static char event_buf[EVENT_BUF_LEN];
+ static int exec_events_unsupported;
++static int filesystem_mark_unsupported;
+ 
+ #define MOUNT_PATH "fs_mnt"
+ #define MNT2_PATH "mntpoint"
+@@ -323,13 +324,6 @@ static int create_fanotify_groups(unsigned int n)
+ 					    FAN_EVENT_ON_CHILD,
+ 					    AT_FDCWD, tc->mark_path);
+ 			if (ret < 0) {
+-				if (errno == EINVAL &&
+-					tc->mark_type == FANOTIFY_FILESYSTEM) {
+-					tst_res(TCONF,
+-						"FAN_MARK_FILESYSTEM not "
+-						"supported in kernel?");
+-					return -1;
+-				}
+ 				tst_brk(TBROK | TERRNO,
+ 					"fanotify_mark(%d, FAN_MARK_ADD | %s,"
+ 					"FAN_OPEN, AT_FDCWD, %s) failed",
+@@ -450,6 +444,11 @@ static void test_fanotify(unsigned int n)
+ 		return;
+ 	}
+ 
++	if (filesystem_mark_unsupported && tc->mark_type == FANOTIFY_FILESYSTEM) {
++		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
++		return;
++	}
++
+ 	if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
+ 		tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
+ 				" has undefined behavior on kernel < 5.9");
+@@ -535,6 +534,7 @@ cleanup:
+ static void setup(void)
+ {
+ 	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC);
++	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
+ 
+ 	/* Create another bind mount@another path for generating events */
+ 	SAFE_MKDIR(MNT2_PATH, 0755);
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 33989d902..d28d1a6de 100644
+index 81fe02db2..33989d902 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify13.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -117,13 +117,8 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
- 	struct fanotify_mark_type *mark = &tc->mark;
+@@ -88,6 +88,7 @@ static struct test_case_t {
  
+ static int nofid_fd;
+ static int fanotify_fd;
++static int filesystem_mark_unsupported;
+ static char events_buf[BUF_SIZE];
+ static struct event_t event_set[EVENT_MAX];
+ 
+@@ -118,13 +119,6 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
  	for (i = 0; i < ARRAY_SIZE(objects); i++) {
--		if (fanotify_mark(fd, FAN_MARK_ADD | mark->flag, tc->mask,
--					AT_FDCWD, objects[i].path) == -1) {
--			tst_brk(TBROK | TERRNO,
--				"fanotify_mark(%d, FAN_MARK_ADD, FAN_OPEN, "
--				"AT_FDCWD, %s) failed",
--				fanotify_fd, objects[i].path);
--		}
-+		SAFE_FANOTIFY_MARK(fd, FAN_MARK_ADD | mark->flag, tc->mask,
-+				   AT_FDCWD, objects[i].path);
+ 		if (fanotify_mark(fd, FAN_MARK_ADD | mark->flag, tc->mask,
+ 					AT_FDCWD, objects[i].path) == -1) {
+-			if (errno == EINVAL &&
+-				mark->flag & FAN_MARK_FILESYSTEM) {
+-				tst_res(TCONF,
+-					"FAN_MARK_FILESYSTEM not supported by "
+-					"kernel");
+-				return 1;
+-			}
+ 			tst_brk(TBROK | TERRNO,
+ 				"fanotify_mark(%d, FAN_MARK_ADD, FAN_OPEN, "
+ 				"AT_FDCWD, %s) failed",
+@@ -154,6 +148,11 @@ static void do_test(unsigned int number)
+ 		"Test #%d: FAN_REPORT_FID with mark flag: %s",
+ 		number, mark->name);
  
- 		/* Setup the expected mask for each generated event */
- 		event_set[i].expected_mask = tc->mask;
-@@ -276,13 +271,8 @@ static void do_setup(void)
- 	 * uninitialized connector->fsid cache. This mark remains for all test
- 	 * cases and is not expected to get any events (no writes in this test).
- 	 */
--	if (fanotify_mark(nofid_fd, FAN_MARK_ADD, FAN_CLOSE_WRITE, AT_FDCWD,
--			  FILE_PATH_ONE) == -1) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark(%d, FAN_MARK_ADD, FAN_CLOSE_WRITE, "
--			"AT_FDCWD, "FILE_PATH_ONE") failed",
--			nofid_fd);
--	}
-+	SAFE_FANOTIFY_MARK(nofid_fd, FAN_MARK_ADD, FAN_CLOSE_WRITE, AT_FDCWD,
-+			  FILE_PATH_ONE);
++	if (filesystem_mark_unsupported && mark->flag & FAN_MARK_FILESYSTEM) {
++		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
++		return;
++	}
++
+ 	fanotify_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
  
- 	/* Get the filesystem fsid and file handle for each created object */
- 	get_object_stats();
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-index 2e3044ad7..6dd5de699 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify15.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-@@ -85,17 +85,10 @@ static void do_test(unsigned int number)
- 
- 	tst_res(TINFO, "Test #%d: %s", number, tc->tname);
- 
--	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | mark->flag, tc->mask |
-+	SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | mark->flag, tc->mask |
- 				FAN_CREATE | FAN_DELETE | FAN_MOVE |
- 				FAN_MODIFY | FAN_ONDIR,
--				AT_FDCWD, TEST_DIR) == -1) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--			"FAN_CREATE | FAN_DELETE | FAN_MOVE | "
--			"FAN_MODIFY | FAN_ONDIR | 0x%lx, "
--			"AT_FDCWD, %s) failed",
--			fanotify_fd, mark->name, tc->mask, TEST_DIR);
--	}
-+				AT_FDCWD, TEST_DIR);
- 
- 	/* Save the test root dir fid */
- 	fanotify_save_fid(TEST_DIR, &root_fid);
-@@ -187,13 +180,8 @@ static void do_test(unsigned int number)
  	/*
- 	 * Cleanup the mark
- 	 */
--	if (fanotify_mark(fanotify_fd, FAN_MARK_FLUSH | mark->flag, 0,
--			  AT_FDCWD, TEST_DIR) < 0) {
--		tst_brk(TBROK | TERRNO,
--			"fanotify_mark (%d, FAN_MARK_FLUSH | %s, 0,"
--			"AT_FDCWD, '"TEST_DIR"') failed",
--			fanotify_fd, mark->name);
--	}
-+	SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_FLUSH | mark->flag, 0,
-+			  AT_FDCWD, TEST_DIR);
+@@ -265,6 +264,8 @@ static void do_setup(void)
+ {
+ 	REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(MOUNT_PATH);
  
- 	/* Process each event in buffer */
- 	for (i = 0, metadata = (struct fanotify_event_metadata *) events_buf;
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
-index a379226f8..0e4afac13 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify16.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
-@@ -174,13 +174,8 @@ static void do_test(unsigned int number)
- 	/*
- 	 * Watch dir modify events with name in filesystem/dir
- 	 */
--	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
--			  AT_FDCWD, MOUNT_PATH) < 0) {
--		tst_brk(TBROK | TERRNO,
--		    "fanotify_mark (%d, FAN_MARK_ADD | %s, 0x%lx, "
--		    "AT_FDCWD, '"MOUNT_PATH"') failed",
--		    fd_notify, mark->name, tc->mask);
--	}
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | mark->flag, tc->mask,
-+			   AT_FDCWD, MOUNT_PATH);
++	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
++
+ 	nofid_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
  
- 	/* Save the mount root fid */
- 	fanotify_save_fid(MOUNT_PATH, &root_fid);
-@@ -195,14 +190,9 @@ static void do_test(unsigned int number)
- 	/* Save the subdir fid */
- 	fanotify_save_fid(dname1, &dir_fid);
- 
--	if (tc->sub_mask &&
--	    fanotify_mark(fd_notify, FAN_MARK_ADD | sub_mark->flag, tc->sub_mask,
--			  AT_FDCWD, dname1) < 0) {
--		tst_brk(TBROK | TERRNO,
--		    "fanotify_mark (%d, FAN_MARK_ADD | %s, 0x%lx, "
--		    "AT_FDCWD, '%s') failed",
--		    fd_notify, sub_mark->name, tc->sub_mask, dname1);
--	}
-+	if (tc->sub_mask)
-+		SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | sub_mark->flag,
-+				   tc->sub_mask, AT_FDCWD, dname1);
- 
- 	event_set[tst_count].mask = FAN_CREATE | FAN_ONDIR;
- 	event_set[tst_count].fid = &root_fid;
+ 	/* Create file and directory objects for testing */
 -- 
 2.29.2
 
