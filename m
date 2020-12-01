@@ -1,8 +1,9 @@
 From: Luo Fenglin <luofenglin1@huawei.com>
-Date: Tue, 1 Dec 2020 19:49:24 +0800
-Subject: [LTP] [PATCH 1/3] sched/sched_stress: Modify sched driver param to
- run long term testcases
-Message-ID: <1606823366-121520-1-git-send-email-luofenglin1@huawei.com>
+Date: Tue, 1 Dec 2020 19:49:25 +0800
+Subject: [LTP] [PATCH 2/3] sched/sched_stress: Fixed param of sched_tc
+In-Reply-To: <1606823366-121520-1-git-send-email-luofenglin1@huawei.com>
+References: <1606823366-121520-1-git-send-email-luofenglin1@huawei.com>
+Message-ID: <1606823366-121520-2-git-send-email-luofenglin1@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,47 +12,93 @@ To: ltp@lists.linux.it
 
 From: luofenglin <luofenglin1@huawei.com>
 
-Add sched_driver process slots param to 10, then long term testcases can run.
-Additionally, add sched_driver run time 0.05 hour, long term testcases
-run 1/5 of total time.
+Rt flag of sched_tc must like "-pfixed" or "-pvariable"
 
 Signed-off-by: luofenglin <luofenglin1@huawei.com>
 ---
- testcases/kernel/sched/sched_stress/sched_driver.c  | 6 +++++-
- testcases/kernel/sched/sched_stress/sched_stress.sh | 3 ++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ .../kernel/sched/sched_stress/sched_driver.c  | 51 ++++++++++---------
+ 1 file changed, 27 insertions(+), 24 deletions(-)
 
 diff --git a/testcases/kernel/sched/sched_stress/sched_driver.c b/testcases/kernel/sched/sched_stress/sched_driver.c
-index 61573d788..1bee9d130 100644
+index 1bee9d130..475369b46 100644
 --- a/testcases/kernel/sched/sched_stress/sched_driver.c
 +++ b/testcases/kernel/sched/sched_stress/sched_driver.c
-@@ -202,8 +202,12 @@ int main(int argc, char **argv)
+@@ -621,25 +621,28 @@ char *execution_time;		/* runtime hours to pass to each testcase */
+ 		printf("long-term slots available:  %d\n",
+ 		       long_term_slot_total);
 
- 	/*
- 	 * Start the long-term testcases running
-+	 * Run time set 1/5 of total
- 	 */
--	start_long_term_testcases(long_term_slot_total, argv[2]);
-+	char run_long_term_time[20];
-+	int runlongtime = runseconds / 5;
-+	sprintf(run_long_term_time, "%d", runlongtime);
-+	start_long_term_testcases(long_term_slot_total, run_long_term_time);
- 	short_term_slot_total = workslots / 2;
- 	fflush(stdout);
++	char timeparam[30];
++	sprintf(timeparam, "-t%s", execution_time);
++
+ 	for (i = 0; i < (long_term_slot_total / 4); i++) {
+ #if defined(_IA64) && !defined(__64BIT__)
+-		start_testcase("./sched_tc0.32", "sched_tc0 -t", execution_time,
+-			       " -p1", NULL, NULL);
+-		start_testcase("./sched_tc2.32", "sched_tc2", execution_time,
+-			       "1", NULL, NULL);
+-		start_testcase("./sched_tc0.32", "sched_tc0 -t", execution_time,
+-			       " -p0", NULL, NULL);
+-		start_testcase("./sched_tc2.32", "sched_tc2", execution_time,
+-			       "0", NULL, NULL);
++		start_testcase("./sched_tc0.32", "sched_tc0", timeparam,
++			       "-pfixed", "-d", NULL);
++		start_testcase("./sched_tc2.32", "sched_tc2", timeparam,
++			       "-pfixed", "-d", NULL);
++		start_testcase("./sched_tc0.32", "sched_tc0", timeparam,
++			       "-pvariable", "-d", NULL);
++		start_testcase("./sched_tc2.32", "sched_tc2", timeparam,
++			       "-pvariable", "-d", NULL);
+ #else
+-		start_testcase("./sched_tc0", "sched_tc0 -t", execution_time,
+-			       " -p1", NULL, NULL);
+-		start_testcase("./sched_tc2", "sched_tc2", execution_time, "1",
+-			       NULL, NULL);
+-		start_testcase("./sched_tc0", "sched_tc0 -t", execution_time,
+-			       " -p0", NULL, NULL);
+-		start_testcase("./sched_tc2", "sched_tc2", execution_time, "0",
+-			       NULL, NULL);
++		start_testcase("./sched_tc0", "sched_tc0", timeparam,
++			       "-pfixed", "-d", NULL);
++		start_testcase("./sched_tc2", "sched_tc2", timeparam, "-pfixed",
++			       "-d", NULL);
++		start_testcase("./sched_tc0", "sched_tc0", timeparam,
++			       "-pvariable", "-d", NULL);
++		start_testcase("./sched_tc2", "sched_tc2", timeparam, "-pvariable",
++			       "-d", NULL);
+ #endif
+ 	}
+ }
+@@ -674,22 +677,22 @@ void start_short_term_testcases(int short_term_slot_total,
 
-diff --git a/testcases/kernel/sched/sched_stress/sched_stress.sh b/testcases/kernel/sched/sched_stress/sched_stress.sh
-index 797d0601b..0205446a7 100755
---- a/testcases/kernel/sched/sched_stress/sched_stress.sh
-+++ b/testcases/kernel/sched/sched_stress/sched_stress.sh
-@@ -30,6 +30,7 @@ export KERNEL=./sched_datafile
- touch $KERNEL
- echo 0.000000 > sch.measure
- export RAWDEV=`df / | grep dev | awk {'print $1'}`
--sched_driver -s 0.9 -t 0.02 -p 2 > /tmp/tmp$$
-+echo "Result file: /tmp/tmp$$"
-+sched_driver -s 0.9 -t 0.05 -p 10 -d > /tmp/tmp$$
- tail -n 5 /tmp/tmp$$
- rm -rf /tmp/tmp$$ ./sched_datafile sch.measure
+ 	for (i = 0; i < (short_term_slots / 4); i++) {
+ #if defined(_IA64) && !defined(__64BIT__)
+-		start_testcase("./sched_tc1.32", "sched_tc1", "1", NULL, NULL,
++		start_testcase("./sched_tc1.32", "sched_tc1", "-pfixed", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc3.32", "sched_tc3", "1", NULL, NULL,
++		start_testcase("./sched_tc3.32", "sched_tc3", "-pfixed", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc1.32", "sched_tc1", "0", NULL, NULL,
++		start_testcase("./sched_tc1.32", "sched_tc1", "-pvariable", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc3.32", "sched_tc3", "0", NULL, NULL,
++		start_testcase("./sched_tc3.32", "sched_tc3", "-pvariable", "-d", NULL,
+ 			       NULL);
+ #else
+-		start_testcase("./sched_tc1", "sched_tc1", "1", NULL, NULL,
++		start_testcase("./sched_tc1", "sched_tc1", "-pfixed", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc3", "sched_tc3", "1", NULL, NULL,
++		start_testcase("./sched_tc3", "sched_tc3", "-pfixed", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc1", "sched_tc1", "0", NULL, NULL,
++		start_testcase("./sched_tc1", "sched_tc1", "-pvariable", "-d", NULL,
+ 			       NULL);
+-		start_testcase("./sched_tc3", "sched_tc3", "0", NULL, NULL,
++		start_testcase("./sched_tc3", "sched_tc3", "-pvariable", "-d", NULL,
+ 			       NULL);
+ #endif
+ #if 0
 --
 2.17.1
 
