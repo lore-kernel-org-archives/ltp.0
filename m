@@ -1,27 +1,23 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 1 Dec 2020 19:04:43 +0100
-Subject: [LTP] [PATCH v2] net/ip_tests: Return TCONF if driver dummy not
- present
-In-Reply-To: <20201201134356.28635-1-kory.maincent@bootlin.com>
-References: <20201201134356.28635-1-kory.maincent@bootlin.com>
-Message-ID: <X8aFuymYt4Vz+3kC@pevik>
+Date: Tue, 1 Dec 2020 19:17:09 +0100
+Subject: [LTP] [PATCH] net: netstat: clean and update to the new API
+In-Reply-To: <20201201105739.11205-1-kory.maincent@bootlin.com>
+References: <20201201105739.11205-1-kory.maincent@bootlin.com>
+Message-ID: <X8aIpeP2/yXr+/J0@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Kory, Alexey,
+Hi Kory,
 
-...
->  	# test #5
-> -	ip route show | grep $ip4_addr && ip route del $ip4_addr
-> +	[ "$ip4_addr" ] && ip route show | grep $ip4_addr && ip route del $ip4_addr
+> Make it compatible with busybox
 
-Added -q to grep and merged.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
 
-Thanks for your patch!
-Alexey, thanks for review!
+LGTM, thanks!
 
 Kind regards,
 Petr
