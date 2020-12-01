@@ -1,29 +1,67 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 1 Dec 2020 13:55:42 +0100
-Subject: [LTP] linux kernel versions vs. ltp release tags
-In-Reply-To: <CAPeFc=TgA6ABrvDthLBoruqfmopx5nhqYYDAv7h0B+CjaFY-CA@mail.gmail.com>
-References: <CAPeFc=TgA6ABrvDthLBoruqfmopx5nhqYYDAv7h0B+CjaFY-CA@mail.gmail.com>
-Message-ID: <20201201125542.GB27684@yuki.lan>
+From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
+Date: Tue, 1 Dec 2020 14:18:50 +0100
+Subject: [LTP] [PATCH] net/ip_tests: Return TCONF if ip command can not
+ create dummy interface
+In-Reply-To: <1fac3929-a7ce-e35f-0adb-914a74e38843@oracle.com>
+References: <20201130160235.25105-1-kory.maincent@bootlin.com>
+ <1fac3929-a7ce-e35f-0adb-914a74e38843@oracle.com>
+Message-ID: <20201201141850.3ff2eefb@kmaincent-XPS-13-7390>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I would like to test linux with kernel version 5.4.47.
-> Is there any relation between ltp releases and kernel versions?
+Hello Alexey,
 
-Short answer: No.
+On Tue, 1 Dec 2020 13:54:37 +0300
+Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
 
-More detailed answer:
+> On 30.11.2020 19:02, Kory Maincent wrote:
+> > Test if the dummy interface can be created, return TCONF if not.
+> > Move ip4_addr before, to have it defined and avoid cleanup error.
+> >   
+> 
+> There is TST_NEEDS_DRIVERS for checking missing modules, so it
+> should TCONF if some are not found.
+> 
+> TST_NEEDS_DRIVERS="dummy"
 
-LTP should be backwards compatible for about 10 years back for both
-kernel and userspace (libc, gcc, etc.). I.e. latest should run fine on
-10 years old distribution and anything newer. Latest LTP also contains
-more testcases and fixes so in 99% of the cases it makes senes to use
-either latest stable release or a git HEAD.
+Ah yes thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+
+K?ry
+
+> 
+> 
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> >  testcases/network/iproute/ip_tests.sh | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/testcases/network/iproute/ip_tests.sh
+> > b/testcases/network/iproute/ip_tests.sh index 41c515696..1f0c4634d 100755
+> > --- a/testcases/network/iproute/ip_tests.sh
+> > +++ b/testcases/network/iproute/ip_tests.sh
+> > @@ -23,11 +23,14 @@ init()
+> >  	tst_res TINFO "inititalizing tests"
+> >  
+> >  	iface=ltp_dummy
+> > +	ip4_addr=${IPV4_NET16_UNUSED}.6.6
+> >  	lsmod | grep -q dummy || rm_dummy=1
+> >  
+> > -	ROD ip li add $iface type dummy
+> > +	if ! ip li add $iface type dummy >/dev/null; then
+> > +		rm_dummy=
+> > +		tst_brk TCONF "Module 'dummy' not found"
+> > +	fi
+> >  
+> > -	ip4_addr=${IPV4_NET16_UNUSED}.6.6
+> >  	ROD ip a add ${ip4_addr}/24 dev $iface
+> >  
+> >  	cat > tst_ip02.exp <<-EOF
+> >   
+> 
+
+
