@@ -1,59 +1,52 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 1 Dec 2020 05:47:12 -0500 (EST)
-Subject: [LTP] [PATCH v2 2/2] lib: Add test library design document
-In-Reply-To: <20201201092040.GB20076@yuki.lan>
-References: <20201127163150.22903-3-chrubis@suse.cz>
- <0f8ede1f55d67b7ff4fd17c38f9bfc6a835b43a3.1606813521.git.jstancek@redhat.com>
- <20201201092040.GB20076@yuki.lan>
-Message-ID: <738639647.26717511.1606819632601.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 1 Dec 2020 13:54:37 +0300
+Subject: [LTP] [PATCH] net/ip_tests: Return TCONF if ip command can not
+ create dummy interface
+In-Reply-To: <20201130160235.25105-1-kory.maincent@bootlin.com>
+References: <20201130160235.25105-1-kory.maincent@bootlin.com>
+Message-ID: <1fac3929-a7ce-e35f-0adb-914a74e38843@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> Hi!
-> > +## High-level picture
-> > +
-> > +    library process
-> > +    +----------------------------+
-> > +    | main                       |
-> > +    |  tst_run_tcases            |
-> > +    |   do_setup                 |
-> > +    |   for_each_variant         |
-> > +    |    for_each_filesystem     |   test process
-> > +    |     fork_testrun
-> > ------------->+--------------------------------------------+
-> > +    |      waitpid               |   | testrun
-> > |
-> > +    |                            |   |  do_test_setup
-> > |
-> > +    |                            |   |   tst_test->setup
-> > |
-> > +    |                            |   |  run_tests
-> > |
-> > +    |                            |   |   tst_test->test(i) or
-> > tst_test->test_all  |
-> > +    |                            |   |  do_test_cleanup
-> > |
-> > +    |                            |   |   tst_test->cleanup
-> > |
-> > +    |                            |   |  exit(0)
-> > |
-> > +    |   do_exit                  |
-> > +--------------------------------------------+
-> > +    |    do_cleanup              |
-> > +    |     exit(ret)              |
-> > +    +----------------------------+
+On 30.11.2020 19:02, Kory Maincent wrote:
+> Test if the dummy interface can be created, return TCONF if not.
+> Move ip4_addr before, to have it defined and avoid cleanup error.
 > 
-> Shouldn't we wrap this to ``` so that it renders nicely on the web?
 
-I thought the 4 spaces prefix will already do that. I was testing
-it online on dillinger.io and stackedit.io. But I'm fine with adding ```,
-if that's better for github.
+There is TST_NEEDS_DRIVERS for checking missing modules, so it
+should TCONF if some are not found.
+
+TST_NEEDS_DRIVERS="dummy"
 
 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+>  testcases/network/iproute/ip_tests.sh | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/iproute/ip_tests.sh b/testcases/network/iproute/ip_tests.sh
+> index 41c515696..1f0c4634d 100755
+> --- a/testcases/network/iproute/ip_tests.sh
+> +++ b/testcases/network/iproute/ip_tests.sh
+> @@ -23,11 +23,14 @@ init()
+>  	tst_res TINFO "inititalizing tests"
+>  
+>  	iface=ltp_dummy
+> +	ip4_addr=${IPV4_NET16_UNUSED}.6.6
+>  	lsmod | grep -q dummy || rm_dummy=1
+>  
+> -	ROD ip li add $iface type dummy
+> +	if ! ip li add $iface type dummy >/dev/null; then
+> +		rm_dummy=
+> +		tst_brk TCONF "Module 'dummy' not found"
+> +	fi
+>  
+> -	ip4_addr=${IPV4_NET16_UNUSED}.6.6
+>  	ROD ip a add ${ip4_addr}/24 dev $iface
+>  
+>  	cat > tst_ip02.exp <<-EOF
+> 
 
