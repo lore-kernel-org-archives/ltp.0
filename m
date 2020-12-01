@@ -1,253 +1,382 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  1 Dec 2020 18:42:10 +0100
-Subject: [LTP] [PATCH v5 06/10] fanotify: Add helper for mark support check
+Date: Tue,  1 Dec 2020 18:42:14 +0100
+Subject: [LTP] [PATCH] fanotify: Cleanup <sys/fanotify.h> use
 In-Reply-To: <20201201174214.24625-1-pvorel@suse.cz>
 References: <20201201174214.24625-1-pvorel@suse.cz>
-Message-ID: <20201201174214.24625-7-pvorel@suse.cz>
+Message-ID: <20201201174214.24625-11-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-i.e. FAN_MARK_FILESYSTEM and use it in relevant tests setup().
-The purpose is to reduce checks (cleanup).
+fanotify.h is included only by fanotify tests. That's why fb2cd7934
+moved safe_fanotify_{init,mark}() was moved into this header.
+All fanotify tests require <sys/fanotify.h> anyway, thus move inclusion
+behind HAVE_SYS_FANOTIFY_H guard and remove checks and raw syscall
+fallbacks from the header.
 
-NOTE: all tests check only for FAN_MARK_FILESYSTEM, but keep helper
-generic for future use.
-
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 New in v5.
 
- testcases/kernel/syscalls/fanotify/fanotify.h | 21 ++++++++++++++++
- .../kernel/syscalls/fanotify/fanotify01.c     | 12 +++++----
- .../kernel/syscalls/fanotify/fanotify03.c     | 25 +++++++++----------
- .../kernel/syscalls/fanotify/fanotify10.c     | 14 +++++------
- .../kernel/syscalls/fanotify/fanotify13.c     | 15 +++++------
- 5 files changed, 55 insertions(+), 32 deletions(-)
+It should be pretty obvious. There are probably some unused includes,
+but again, let's don't prolong this patchset.
+
+ testcases/kernel/syscalls/fanotify/fanotify.h | 27 -------------------
+ .../kernel/syscalls/fanotify/fanotify01.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify02.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify03.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify04.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify05.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify06.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify07.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify08.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify09.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify10.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify11.c     |  7 +++--
+ .../kernel/syscalls/fanotify/fanotify12.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify13.c     |  5 ++--
+ .../kernel/syscalls/fanotify/fanotify14.c     |  6 ++---
+ .../kernel/syscalls/fanotify/fanotify15.c     |  6 ++---
+ .../kernel/syscalls/fanotify/fanotify16.c     |  5 ++--
+ 17 files changed, 33 insertions(+), 78 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 821e6cb29..2275a1da3 100644
+index 540c2b0fc..ea3771cce 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -351,4 +351,25 @@ static inline void require_fanotify_fan_report_fid_supported_on_fs(const char *f
- #define REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(fname) \
- 	require_fanotify_fan_report_fid_supported_on_fs(__FILE__, __LINE__, (fname))
+@@ -13,37 +13,13 @@
+ #include <sys/stat.h>
+ #include <errno.h>
+ #include <fcntl.h>
+-
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-
+ #include <sys/fanotify.h>
  
-+static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
-+{
-+	int fd;
-+	int rval = 0;
-+
-+	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-+
-+	if (fanotify_mark(fd, FAN_MARK_ADD | flag, FAN_ACCESS_PERM, AT_FDCWD, ".") < 0) {
-+		if (errno == EINVAL) {
-+			rval = -1;
-+		} else {
-+			tst_brk(TBROK | TERRNO,
-+				"fanotify_mark (%d, FAN_MARK_ADD, ..., FAN_ACCESS_PERM, AT_FDCWD, \".\") failed", fd);
-+		}
-+	}
-+
-+	SAFE_CLOSE(fd);
-+
-+	return rval;
-+}
-+
- #endif /* __FANOTIFY_H__ */
+-#else /* HAVE_SYS_FANOTIFY_H */
+-
+-/* fanotify(7) wrappers */
+-
+-#include <stdint.h>
+-#include "lapi/syscalls.h"
+-
+-static int fanotify_init(unsigned int flags, unsigned int event_f_flags)
+-{
+-	return syscall(__NR_fanotify_init, flags, event_f_flags);
+-}
+-
+-static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
+-                     int dfd, const char *pathname)
+-{
+-	return syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
+-}
+-
+-#endif /* HAVE_SYS_FANOTIFY_H */
+-
+ int safe_fanotify_init(const char *file, const int lineno,
+ 	unsigned int flags, unsigned int event_f_flags)
+ {
+ 	int rval;
+ 
+-#ifdef HAVE_SYS_FANOTIFY_H
+ 	rval = fanotify_init(flags, event_f_flags);
+ 
+ 	if (rval == -1) {
+@@ -59,9 +35,6 @@ int safe_fanotify_init(const char *file, const int lineno,
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			 "invalid fanotify_init() return %d", rval);
+ 	}
+-#else
+-	tst_brk_(file, lineno, TCONF, "Header <sys/fanotify.h> is not present");
+-#endif /* HAVE_SYS_FANOTIFY_H */
+ 
+ 	return rval;
+ }
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-index 5f2544931..c8ab41695 100644
+index a1eafb277..d6d72dad9 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify01.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -75,6 +75,7 @@ static char fname[BUF_SIZE];
- static char buf[BUF_SIZE];
- static int fd_notify;
- static int fan_report_fid_unsupported;
-+static int filesystem_mark_unsupported;
+@@ -18,10 +18,9 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
- static unsigned long long event_set[EVENT_MAX];
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
-@@ -94,16 +95,16 @@ static void test_fanotify(unsigned int n)
- 		return;
- 	}
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify02.c b/testcases/kernel/syscalls/fanotify/fanotify02.c
+index 36c87648e..155875dd0 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify02.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify02.c
+@@ -18,10 +18,9 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
-+	if (filesystem_mark_unsupported && mark->flag == FAN_MARK_FILESYSTEM) {
-+		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
-+		return;
-+	}
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(tc->init_flags, O_RDONLY);
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
- 	if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 			  FAN_ACCESS | FAN_MODIFY | FAN_CLOSE | FAN_OPEN,
- 			  AT_FDCWD, fname) < 0) {
--		if (errno == EINVAL && mark->flag == FAN_MARK_FILESYSTEM) {
--			tst_res(TCONF,
--				"FAN_MARK_FILESYSTEM not supported in kernel?");
--			return;
--		}
- 		tst_brk(TBROK | TERRNO,
- 			"fanotify_mark (%d, FAN_MARK_ADD, FAN_ACCESS | %s | "
- 			"FAN_MODIFY | FAN_CLOSE | FAN_OPEN, AT_FDCWD, %s) "
-@@ -363,6 +364,7 @@ static void setup(void)
- 	SAFE_FILE_PRINTF(fname, "1");
- 
- 	fan_report_fid_unsupported = fanotify_fan_report_fid_supported_on_fs(fname);
-+	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
- }
- 
- static void cleanup(void)
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
-index 75e5b852d..8b54e42c4 100644
+index 2cd90e8b0..1368bf0e2 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-@@ -49,6 +49,7 @@ static pid_t child_pid;
+@@ -22,10 +22,9 @@
+ #include <sys/syscall.h>
+ #include <stdlib.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
- static char event_buf[EVENT_BUF_LEN];
- static int exec_events_unsupported;
-+static int filesystem_mark_unsupported;
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++# include "fanotify.h"
  
- struct event {
- 	unsigned long long mask;
-@@ -213,24 +214,21 @@ static int setup_mark(unsigned int n)
- 		return -1;
- 	}
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify04.c b/testcases/kernel/syscalls/fanotify/fanotify04.c
+index a24e7f7c3..7ac2645bb 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify04.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify04.c
+@@ -19,10 +19,9 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
-+	if (filesystem_mark_unsupported && mark->flag == FAN_MARK_FILESYSTEM) {
-+		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
-+		return -1;
-+	}
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
- 	for (; i < ARRAY_SIZE(files); i++) {
- 		if (fanotify_mark(fd_notify, FAN_MARK_ADD | mark->flag,
- 				  tc->mask, AT_FDCWD, files[i]) < 0) {
--			if (errno == EINVAL &&
--					mark->flag == FAN_MARK_FILESYSTEM) {
--				tst_res(TCONF,
--					"FAN_MARK_FILESYSTEM not supported in "
--					"kernel?");
--				return -1;
--			} else {
--				tst_brk(TBROK | TERRNO,
--					"fanotify_mark(%d, FAN_MARK_ADD | %s, "
--					"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
--					"AT_FDCWD, %s) failed.",
--					fd_notify, mark->name, fname);
--			}
-+			tst_brk(TBROK | TERRNO,
-+				"fanotify_mark(%d, FAN_MARK_ADD | %s, "
-+				"FAN_ACCESS_PERM | FAN_OPEN_PERM, "
-+				"AT_FDCWD, %s) failed.",
-+				fd_notify, mark->name, fname);
- 		}
- 	}
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
+index c13b9ad7b..851cb6c8f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify05.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
+@@ -22,10 +22,9 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
-@@ -331,6 +329,7 @@ static void setup(void)
- {
- 	require_fanotify_access_permissions_supported_by_kernel();
- 
-+	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
- 	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC_PERM);
- 
- 	sprintf(fname, MOUNT_PATH"/fname_%d", getpid());
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-index 73702285c..6d048958c 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-@@ -65,6 +65,7 @@ static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
- 
- static char event_buf[EVENT_BUF_LEN];
- static int exec_events_unsupported;
-+static int filesystem_mark_unsupported;
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
  #define MOUNT_PATH "fs_mnt"
- #define MNT2_PATH "mntpoint"
-@@ -323,13 +324,6 @@ static int create_fanotify_groups(unsigned int n)
- 					    FAN_EVENT_ON_CHILD,
- 					    AT_FDCWD, tc->mark_path);
- 			if (ret < 0) {
--				if (errno == EINVAL &&
--					tc->mark_type == FANOTIFY_FILESYSTEM) {
--					tst_res(TCONF,
--						"FAN_MARK_FILESYSTEM not "
--						"supported in kernel?");
--					return -1;
--				}
- 				tst_brk(TBROK | TERRNO,
- 					"fanotify_mark(%d, FAN_MARK_ADD | %s,"
- 					"FAN_OPEN, AT_FDCWD, %s) failed",
-@@ -450,6 +444,11 @@ static void test_fanotify(unsigned int n)
- 		return;
- 	}
  
-+	if (filesystem_mark_unsupported && tc->mark_type == FANOTIFY_FILESYSTEM) {
-+		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
-+		return;
-+	}
-+
- 	if (tc->ignored_onchild && tst_kvercmp(5, 9, 0) < 0) {
- 		tst_res(TCONF, "ignored mask in combination with flag FAN_EVENT_ON_CHILD"
- 				" has undefined behavior on kernel < 5.9");
-@@ -535,6 +534,7 @@ cleanup:
- static void setup(void)
- {
- 	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC);
-+	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
+index ac4901f6f..0d70a955f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify06.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+@@ -36,10 +36,9 @@
+ #include <sys/mount.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
- 	/* Create another bind mount@another path for generating events */
- 	SAFE_MKDIR(MNT2_PATH, 0755);
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify07.c b/testcases/kernel/syscalls/fanotify/fanotify07.c
+index 4bf17661a..830af32b6 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify07.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+@@ -30,10 +30,9 @@
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define BUF_SIZE 256
+ static char fname[BUF_SIZE];
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify08.c b/testcases/kernel/syscalls/fanotify/fanotify08.c
+index a4031b4ad..f63b5a931 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify08.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify08.c
+@@ -18,10 +18,9 @@
+ #include <string.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ static int fd_notify;
+ 
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+index 9c9938619..daeb712d2 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify09.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+@@ -33,10 +33,9 @@
+ #include <sys/syscall.h>
+ #include <stdint.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 4d081a843..404e57daa 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -39,10 +39,9 @@
+ #include <sys/mount.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define EVENT_MAX 1024
+ /* size of the event structure, not counting name */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify11.c b/testcases/kernel/syscalls/fanotify/fanotify11.c
+index 56b7153f8..785b5c5a5 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify11.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify11.c
+@@ -29,10 +29,9 @@
+ #include <linux/limits.h>
+ #include "tst_test.h"
+ #include "tst_safe_pthread.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define gettid() syscall(SYS_gettid)
+ static int tid;
+@@ -112,5 +111,5 @@ static struct tst_test test = {
+ };
+ 
+ #else
+-TST_TEST_TCONF("system doesn't have required fanotify support");
++	TST_TEST_TCONF("system doesn't have required fanotify support");
+ #endif
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+index 18b96c430..17086ef71 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify12.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+@@ -21,10 +21,9 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define EVENT_MAX 1024
+ #define EVENT_SIZE (sizeof (struct fanotify_event_metadata))
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 81fe02db2..33989d902 100644
+index d28d1a6de..a402cdb13 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify13.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -88,6 +88,7 @@ static struct test_case_t {
+@@ -25,10 +25,9 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
  
- static int nofid_fd;
- static int fanotify_fd;
-+static int filesystem_mark_unsupported;
- static char events_buf[BUF_SIZE];
- static struct event_t event_set[EVENT_MAX];
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
-@@ -118,13 +119,6 @@ static int setup_marks(unsigned int fd, struct test_case_t *tc)
- 	for (i = 0; i < ARRAY_SIZE(objects); i++) {
- 		if (fanotify_mark(fd, FAN_MARK_ADD | mark->flag, tc->mask,
- 					AT_FDCWD, objects[i].path) == -1) {
--			if (errno == EINVAL &&
--				mark->flag & FAN_MARK_FILESYSTEM) {
--				tst_res(TCONF,
--					"FAN_MARK_FILESYSTEM not supported by "
--					"kernel");
--				return 1;
--			}
- 			tst_brk(TBROK | TERRNO,
- 				"fanotify_mark(%d, FAN_MARK_ADD, FAN_OPEN, "
- 				"AT_FDCWD, %s) failed",
-@@ -154,6 +148,11 @@ static void do_test(unsigned int number)
- 		"Test #%d: FAN_REPORT_FID with mark flag: %s",
- 		number, mark->name);
+ #define PATH_LEN 128
+ #define BUF_SIZE 256
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
+index 349177d9a..817d5ecd5 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify14.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
+@@ -12,12 +12,10 @@
+  */
+ #define _GNU_SOURCE
+ #include "tst_test.h"
+-#include "fanotify.h"
+-
+ #include <errno.h>
  
-+	if (filesystem_mark_unsupported && mark->flag & FAN_MARK_FILESYSTEM) {
-+		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported in kernel?");
-+		return;
-+	}
-+
- 	fanotify_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
- 	/*
-@@ -265,6 +264,8 @@ static void do_setup(void)
- {
- 	REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(MOUNT_PATH);
+ #define MNTPOINT "mntpoint"
+ #define FILE1 MNTPOINT"/file1"
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
+index 6dd5de699..9e3748bc2 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify15.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
+@@ -22,12 +22,10 @@
+ #include <fcntl.h>
+ #include <sys/statfs.h>
+ #include <sys/types.h>
+-
+ #include "tst_test.h"
+-#include "fanotify.h"
  
-+	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
-+
- 	nofid_fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
  
- 	/* Create file and directory objects for testing */
+ #define EVENT_MAX 10
+ 
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
+index 0e4afac13..a554c7d39 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify16.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
+@@ -24,10 +24,9 @@
+ #include <sys/mount.h>
+ #include <sys/syscall.h>
+ #include "tst_test.h"
+-#include "fanotify.h"
+ 
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-#include <sys/fanotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
+ 
+ #define EVENT_MAX 20
+ 
 -- 
 2.29.2
 
