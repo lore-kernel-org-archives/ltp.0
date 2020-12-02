@@ -1,11 +1,10 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 2 Dec 2020 08:27:29 +0200
-Subject: [LTP] [PATCH v5 06/10] fanotify: Add helper for mark support
- check
-In-Reply-To: <20201201174214.24625-7-pvorel@suse.cz>
+Date: Wed, 2 Dec 2020 08:47:30 +0200
+Subject: [LTP] [PATCH v5 00/10] Introduce SAFE_FANOTIFY_MARK() macro +
+ cleanup
+In-Reply-To: <20201201174214.24625-1-pvorel@suse.cz>
 References: <20201201174214.24625-1-pvorel@suse.cz>
- <20201201174214.24625-7-pvorel@suse.cz>
-Message-ID: <CAOQ4uxg_Kwmx1K=om9aA6Sh=+L129=YpneDW1ZLP2sL96ELNgw@mail.gmail.com>
+Message-ID: <CAOQ4uxhVu9YHMLj-YgosMPgvP1gNE=RpZPOWocuD0tGxGpj8GQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,54 +13,41 @@ To: ltp@lists.linux.it
 
 On Tue, Dec 1, 2020 at 7:42 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
-> i.e. FAN_MARK_FILESYSTEM and use it in relevant tests setup().
-> The purpose is to reduce checks (cleanup).
+> Hi Amir,
 >
-> NOTE: all tests check only for FAN_MARK_FILESYSTEM, but keep helper
-> generic for future use.
+> Changes v4->v5:
+> * Fix issue with "fanotify: Add helper for FAN_REPORT_FID support on fs"
+>   on fanotify01 (unwanted skipping tests). FAN_REPORT_FID is now tested
+>   both for general support in kernel with fanotify_init() and support on
+>   tested filesystem in fanotify_mark().
 >
-> Suggested-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> New in v5.
+> * Fix issue with FAN_MARK_FILESYSTEM (new commit "fanotify: Add helper
+>   for mark support check").
 >
->  testcases/kernel/syscalls/fanotify/fanotify.h | 21 ++++++++++++++++
->  .../kernel/syscalls/fanotify/fanotify01.c     | 12 +++++----
->  .../kernel/syscalls/fanotify/fanotify03.c     | 25 +++++++++----------
->  .../kernel/syscalls/fanotify/fanotify10.c     | 14 +++++------
->  .../kernel/syscalls/fanotify/fanotify13.c     | 15 +++++------
->  5 files changed, 55 insertions(+), 32 deletions(-)
+> * Split "[v4,2/6] fanotify: Handle supported features checks in setup()"
+>   into two commits:
+>   fanotify: Add helper for access permission check
+>   fanotify: Add helper for event support check
+>   (easier to review).
 >
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index 821e6cb29..2275a1da3 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -351,4 +351,25 @@ static inline void require_fanotify_fan_report_fid_supported_on_fs(const char *f
->  #define REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(fname) \
->         require_fanotify_fan_report_fid_supported_on_fs(__FILE__, __LINE__, (fname))
->
-> +static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
-> +{
-> +       int fd;
-> +       int rval = 0;
-> +
-> +       fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-> +
-> +       if (fanotify_mark(fd, FAN_MARK_ADD | flag, FAN_ACCESS_PERM, AT_FDCWD, ".") < 0) {
-> +               if (errno == EINVAL) {
-> +                       rval = -1;
-> +               } else {
-> +                       tst_brk(TBROK | TERRNO,
-> +                               "fanotify_mark (%d, FAN_MARK_ADD, ..., FAN_ACCESS_PERM, AT_FDCWD, \".\") failed", fd);
-> +               }
+> * Drop commit "[v4,5/6] fanotify: Check FAN_REPORT_{FID, NAME} support"
+>   => IMHO not needed now, as there are {REQUIRE_,}FANOTIFY_FAN_REPORT_FID_ERR_MSG()
+>   helpers which check for FAN_REPORT_FID. Or am I'm wrong and you need it
+>   for your patchset?
 
-You meant FAN_ACCESS.
+You are right.
+My patch set can and will use FANOTIFY_FAN_REPORT_FID_ERR_MSG.
 
-FAN_ACCESS_PERM requires CONFIG_FANOTIFY_ACCESS_PERMISSIONS which is not
-a requirement for most of the affected tests.
+>   There will be needed to add also helper for FAN_REPORT_NAME/FAN_REPORT_DIR_FID
+>   for fanotify10.c (for kernels > 5.1 && < 5.9), but this is now covered by check
+>   in create_fanotify_groups() and I don't want to block your patchset even more.
+>   And this helper should eliminate a need for check in safe_fanotify_init().
+>
 
-Patch set is super! it's the only issue I found, so I don't think you
-need to re-post for that.
+My patch set grows another test case with FAN_REPORT_NAME to fanotify09
+so it is more than fare to leave that last cleanup to me ;-)
 
-Thanks,
+Looking forward for the merge of your work.
+Thanks!
+
 Amir.
