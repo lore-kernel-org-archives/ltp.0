@@ -1,71 +1,41 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 3 Dec 2020 15:27:59 +0100
-Subject: [LTP] [PATCH 3/3] af_alg07: add dynamic bias for ARM
-In-Reply-To: <878saf6pe1.fsf@suse.de>
-References: <20201203110616.28302-1-liwang@redhat.com>
- <20201203110616.28302-3-liwang@redhat.com> <878saf6pe1.fsf@suse.de>
-Message-ID: <30b58fc3-ac3d-8bbc-345a-1384dfe52a65@suse.cz>
+Date: Thu, 3 Dec 2020 15:34:17 +0100
+Subject: [LTP] [PATCH 01/10] lib: Introduce more TEST_* macros
+In-Reply-To: <20201203123041.GB5809@yuki.lan>
+References: <20201113131428.13199-1-chrubis@suse.cz>
+ <20201113131428.13199-2-chrubis@suse.cz>
+ <0c6f7b59-c1ec-5ff9-d261-7b4772ed9b1a@suse.cz>
+ <20201203123041.GB5809@yuki.lan>
+Message-ID: <400e683b-97a6-bab6-702c-365937c406e8@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 03. 12. 20 13:32, Richard Palethorpe wrote:
-> Hello,
-> 
-> Li Wang <liwang@redhat.com> writes:
-> 
->> We observed that af_alg07 sporadically failed on hpe-moonshot(aarch64) with
->> fixed kernel, but after trying manually we can NOT reproduce it again, one
->> possibility is that the FAIL is caused by an unaligned race window between
->> two threads, so here add dynamic bias adjustment to see if it helps.
+On 03. 12. 20 13:30, Cyril Hrubis wrote:
+> Hi!
+>> I'd recommend adding TEST_*_IMPL() variant with extra arguments that'll
+>> allow special handling of ENOSYS, ENOTSUP and possibly also a
+>> zero-terminated array of allowed errnos. TEST_FD() etc. would then call
+>> the respective IMPL macro with default arguments:
 >>
->> Point of view from Martin Doucha:
->> 1) fchownat() returns 0 => fchownat() was called too early or the kernel is vulnerable
->> 2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
->> 3) fchownat() fails with EBADF => fchownat() was called too late
-> 
-> Just FYI, what really prevents fzsync from working is if the temporal
-> behaviour (time to execute) of a syscall changes dramatically depending
-> on the outcome of a race[1].
-> 
-> For example if fchownat returns very quickly after EBADF, but takes a
-> long time otherwise, then the delay will be too small. I guess most
-> syscalls will check the FD very early so this is likely to be the
-> problem.
-> 
+>> #define TEST_FD_IMPL(SCALL, NOSYS_RES, NOTSUP_RES, ERRNO_LIST, ...) \
+>>     ...
 >>
->> Signed-off-by: Li Wang <liwang@redhat.com>
->> CC: Richard Palethorpe <rpalethorpe@suse.com>
->> CC: Martin Doucha <mdoucha@suse.cz>
->> CC: Joerg Vehlow <lkml@jv-coder.de>
->> CC: Chunyu Hu <chuhu@redhat.com>
->> CC: Cyril Hrubis <chrubis@suse.cz>
->> ---
->>  testcases/kernel/crypto/af_alg07.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
->> index 539ebee11..ee48c2edb 100644
->> --- a/testcases/kernel/crypto/af_alg07.c
->> +++ b/testcases/kernel/crypto/af_alg07.c
->> @@ -76,6 +76,16 @@ static void run(void)
->>  			return;
->>  		}
->>  
->> +		if (TST_RET == 0) {
->> +			tst_fzsync_pair_add_bias(&fzsync_pair, -1);
->> +			continue;
->> +		}
+>> #define TEST_FD(SCALL, ...) \
+>>     TEST_FD_IMPL((SCALL), TFAIL, TFAIL, NULL, ##__VA_ARGS__)
 > 
-> It may actually be better to remove this and only increase the delay if
-> EBADF?
+> I do plan adding something like this later on once I run out of the
+> simple cases to convert, then I would like to review what is left there
+> and how to make best interface for the rest of the testcases.
+> 
+> So for now I would like to proceed with the patchset as it is in order
+> not to make it overly complicated.
 
-Agreed. Adjusting delay in both directions would be acceptable if the
-test takes too much time or doesn't work at all without it. Otherwise
-it's preferable to adjust delay only when syscalls return an error state
-that clearly falls outside the race window.
+Great, looking forward to the follow-up patchset. I haven't reviewed
+everything so I won't add any signoff but consider my comments resolved.
+Feel free to push the patchset when you have enough reviews from others.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
