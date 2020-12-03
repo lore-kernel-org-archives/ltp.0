@@ -1,107 +1,25 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  3 Dec 2020 16:28:03 +0100
-Subject: [LTP] [PATCH 1/2] libnewipc: Add get_ipc_timestamp()
-In-Reply-To: <20201203152804.846-1-chrubis@suse.cz>
-References: <20201203152804.846-1-chrubis@suse.cz>
-Message-ID: <20201203152804.846-2-chrubis@suse.cz>
+Date: Thu,  3 Dec 2020 16:28:02 +0100
+Subject: [LTP] [PATCH 0/2] Fix timestamp tests in SysV IPC tests
+Message-ID: <20201203152804.846-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-That returns timestamps that should return values comparable to the
-stime/rtime/ctime.
+Cyril Hrubis (2):
+  libnewipc: Add get_ipc_timestamp()
+  syscalls/ipc: Make use of get_ipc_timestamp()
 
-From Thomas Gleixner:
+ include/libnewipc.h                             |  3 +++
+ libs/libltpnewipc/libnewipc.c                   | 13 +++++++++++++
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c |  4 ++--
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c |  4 ++--
+ testcases/kernel/syscalls/ipc/shmctl/Makefile   |  2 +-
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c |  4 ++--
+ 6 files changed, 23 insertions(+), 7 deletions(-)
 
-> Due to the internal implementation of ktime_get_real_seconds(), which is
-> a 2038 safe replacement for the former get_seconds() function, this
-> accumulation issue can be observed. (time(2) via syscall and newer
-> versions of VDSO use the same mechanism).
->
->      clock_gettime(CLOCK_REALTIME, &ts);
->      sec = time();
->      assert(sec >= ts.tv_sec);
->
-> That assert can trigger for two reasons:
->
->  1) Clock was set between the clock_gettime() and time().
->
->  2) The clock has advanced far enough that:
->
->     timekeeper.tv_nsec + (clock_now_ns() - last_update_ns) > NSEC_PER_SEC
-> The same problem exists for CLOCK_XXX vs. CLOCK_XXX_COARSE
->
->      clock_gettime(CLOCK_XXX, &ts);
->      clock_gettime(CLOCK_XXX_COARSE, &tc);
->      assert(tc.tv_sec >= ts.tv_sec);
->
-> The _COARSE variants return their associated timekeeper.tv_sec,tv_nsec
-> pair without reading the clock. Same as #2 above just extended to clock
-> MONOTONIC.
-
-Which means the timestamps in the structure we get from msg* calls can
-be 1 second smaller that timestamps returned from realtime timers.
-
-However it also means that the _COARSE timers should be the same as the
-SysV timestamps and could be used for these tests instead. Also these
-timers should be available since 2.6.32 which is old enough to assume
-that they are present.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/libnewipc.h           |  3 +++
- libs/libltpnewipc/libnewipc.c | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/include/libnewipc.h b/include/libnewipc.h
-index 30288cd68..075364f85 100644
---- a/include/libnewipc.h
-+++ b/include/libnewipc.h
-@@ -22,6 +22,7 @@
- #ifndef __LIBNEWIPC_H
- #define __LIBNEWIPC_H	1
- 
-+#include <time.h>
- #include <sys/types.h>
- 
- #define MSG_RD	0400
-@@ -56,4 +57,6 @@ void *probe_free_addr(const char *file, const int lineno);
- #define PROBE_FREE_ADDR() \
- 	probe_free_addr(__FILE__, __LINE__)
- 
-+time_t get_ipc_timestamp(void);
-+
- #endif /* newlibipc.h */
-diff --git a/libs/libltpnewipc/libnewipc.c b/libs/libltpnewipc/libnewipc.c
-index 3734040b7..d0974bbe0 100644
---- a/libs/libltpnewipc/libnewipc.c
-+++ b/libs/libltpnewipc/libnewipc.c
-@@ -23,6 +23,7 @@
- #include "libnewipc.h"
- #include "tst_safe_stdio.h"
- #include "tst_safe_sysv_ipc.h"
-+#include "tst_clocks.h"
- 
- #define BUFSIZE 1024
- 
-@@ -86,3 +87,15 @@ void *probe_free_addr(const char *file, const int lineno)
- 
- 	return addr;
- }
-+
-+time_t get_ipc_timestamp(void)
-+{
-+	struct timespec ts;
-+	int ret;
-+
-+	ret = tst_clock_gettime(CLOCK_REALTIME_COARSE, &ts);
-+	if (ret < 0)
-+		tst_brk(TBROK | TERRNO, "clock_gettime(CLOCK_REALTIME_COARSE)");
-+
-+	return ts.tv_sec;
-+}
 -- 
 2.26.2
 
