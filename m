@@ -1,71 +1,36 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 03 Dec 2020 12:18:54 +0000
-Subject: [LTP] [PATCH 1/3] lib: add .min_cpus in tst_test struct
-In-Reply-To: <20201203110616.28302-1-liwang@redhat.com>
-References: <20201203110616.28302-1-liwang@redhat.com>
-Message-ID: <87blfb6q1d.fsf@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Dec 2020 13:30:41 +0100
+Subject: [LTP] [PATCH 01/10] lib: Introduce more TEST_* macros
+In-Reply-To: <0c6f7b59-c1ec-5ff9-d261-7b4772ed9b1a@suse.cz>
+References: <20201113131428.13199-1-chrubis@suse.cz>
+ <20201113131428.13199-2-chrubis@suse.cz>
+ <0c6f7b59-c1ec-5ff9-d261-7b4772ed9b1a@suse.cz>
+Message-ID: <20201203123041.GB5809@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello li,
+Hi!
+> I'd recommend adding TEST_*_IMPL() variant with extra arguments that'll
+> allow special handling of ENOSYS, ENOTSUP and possibly also a
+> zero-terminated array of allowed errnos. TEST_FD() etc. would then call
+> the respective IMPL macro with default arguments:
+> 
+> #define TEST_FD_IMPL(SCALL, NOSYS_RES, NOTSUP_RES, ERRNO_LIST, ...) \
+>     ...
+> 
+> #define TEST_FD(SCALL, ...) \
+>     TEST_FD_IMPL((SCALL), TFAIL, TFAIL, NULL, ##__VA_ARGS__)
 
-Only some minor nits.
+I do plan adding something like this later on once I run out of the
+simple cases to convert, then I would like to review what is left there
+and how to make best interface for the rest of the testcases.
 
-Li Wang <liwang@redhat.com> writes:
-
-> As the name implies, this new field is mainly to set minimum numbers
-> of CPU for LTP testcase. If system online CPUs are less than .min_cpus,
-> test will be exit with TCONF.
->
-> Note: I wouldn't add more description in test-writing-guidelines.txt,
-> because it is easy to understand the usage from the name.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  include/tst_test.h | 3 +++
->  lib/tst_test.c     | 3 +++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index c91d3f18a..64a0934dd 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -157,6 +157,9 @@ struct tst_test {
->  	 */
->  	int all_filesystems:1;
->  
-> +	/* Minimal numbers of CPU online required by the test */
-
-*Mininum number of online CPUs required by the test*
-
-> +	unsigned long min_cpus;
-> +
->  	/*
->  	 * If set non-zero number of request_hugepages, test will try to reserve the
->  	 * expected number of hugepage for testing in setup phase. If system does not
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 535c0ff4c..90b69789c 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -918,6 +918,9 @@ static void do_setup(int argc, char *argv[])
->  	if (tst_test->all_filesystems)
->  		tst_test->needs_device = 1;
->  
-> +	if (tst_test->min_cpus > tst_ncpus())
-> +		tst_brk(TCONF, "Test needs %lu CPUs online", tst_test->min_cpus);
-                                          ^at least 
-
-> +
->  	if (tst_test->request_hugepages)
->  		tst_request_hugepages(tst_test->request_hugepages);
->  
-> -- 
-> 2.21.3
-
+So for now I would like to proceed with the patchset as it is in order
+not to make it overly complicated.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
