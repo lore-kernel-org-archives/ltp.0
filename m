@@ -1,54 +1,56 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu,  3 Dec 2020 11:06:14 +0000
-Subject: [LTP] [PATCH 1/3] lib: add .min_cpus in tst_test struct
-Message-ID: <20201203110616.28302-1-liwang@redhat.com>
+Date: Thu,  3 Dec 2020 11:06:16 +0000
+Subject: [LTP] [PATCH 3/3] af_alg07: add dynamic bias for ARM
+In-Reply-To: <20201203110616.28302-1-liwang@redhat.com>
+References: <20201203110616.28302-1-liwang@redhat.com>
+Message-ID: <20201203110616.28302-3-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-As the name implies, this new field is mainly to set minimum numbers
-of CPU for LTP testcase. If system online CPUs are less than .min_cpus,
-test will be exit with TCONF.
+We observed that af_alg07 sporadically failed on hpe-moonshot(aarch64) with
+fixed kernel, but after trying manually we can NOT reproduce it again, one
+possibility is that the FAIL is caused by an unaligned race window between
+two threads, so here add dynamic bias adjustment to see if it helps.
 
-Note: I wouldn't add more description in test-writing-guidelines.txt,
-because it is easy to understand the usage from the name.
+Point of view from Martin Doucha:
+1) fchownat() returns 0 => fchownat() was called too early or the kernel is vulnerable
+2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
+3) fchownat() fails with EBADF => fchownat() was called too late
 
 Signed-off-by: Li Wang <liwang@redhat.com>
+CC: Richard Palethorpe <rpalethorpe@suse.com>
+CC: Martin Doucha <mdoucha@suse.cz>
+CC: Joerg Vehlow <lkml@jv-coder.de>
+CC: Chunyu Hu <chuhu@redhat.com>
+CC: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_test.h | 3 +++
- lib/tst_test.c     | 3 +++
- 2 files changed, 6 insertions(+)
+ testcases/kernel/crypto/af_alg07.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index c91d3f18a..64a0934dd 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -157,6 +157,9 @@ struct tst_test {
- 	 */
- 	int all_filesystems:1;
+diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
+index 539ebee11..ee48c2edb 100644
+--- a/testcases/kernel/crypto/af_alg07.c
++++ b/testcases/kernel/crypto/af_alg07.c
+@@ -76,6 +76,16 @@ static void run(void)
+ 			return;
+ 		}
  
-+	/* Minimal numbers of CPU online required by the test */
-+	unsigned long min_cpus;
++		if (TST_RET == 0) {
++			tst_fzsync_pair_add_bias(&fzsync_pair, -1);
++			continue;
++		}
 +
- 	/*
- 	 * If set non-zero number of request_hugepages, test will try to reserve the
- 	 * expected number of hugepage for testing in setup phase. If system does not
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 535c0ff4c..90b69789c 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -918,6 +918,9 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->all_filesystems)
- 		tst_test->needs_device = 1;
- 
-+	if (tst_test->min_cpus > tst_ncpus())
-+		tst_brk(TCONF, "Test needs %lu CPUs online", tst_test->min_cpus);
++		if (TST_RET == -1 && TST_ERR == EBADF) {
++			tst_fzsync_pair_add_bias(&fzsync_pair, 1);
++			continue;
++		}
 +
- 	if (tst_test->request_hugepages)
- 		tst_request_hugepages(tst_test->request_hugepages);
- 
+ 		if (TST_RET == -1 && TST_ERR == ENOENT) {
+ 			tst_res(TPASS | TTERRNO,
+ 				"fchownat() failed successfully");
 -- 
 2.21.3
 
