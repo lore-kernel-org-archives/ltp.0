@@ -1,78 +1,38 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 03 Dec 2020 12:32:54 +0000
-Subject: [LTP] [PATCH 3/3] af_alg07: add dynamic bias for ARM
-In-Reply-To: <20201203110616.28302-3-liwang@redhat.com>
-References: <20201203110616.28302-1-liwang@redhat.com>
- <20201203110616.28302-3-liwang@redhat.com>
-Message-ID: <878saf6pe1.fsf@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Dec 2020 13:47:27 +0100
+Subject: [LTP] [PATCH] realtime/m4: Re-add define for robust mutexattr
+ APIs
+In-Reply-To: <8dc13989-88bf-1727-1dbd-83a2163ffb03@jv-coder.de>
+References: <20201119095227.921830-1-lkml@jv-coder.de>
+ <20201119113816.GH2785@yuki.lan>
+ <8dc13989-88bf-1727-1dbd-83a2163ffb03@jv-coder.de>
+Message-ID: <20201203124727.GC5809@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> > The code switched to the POSIX variants later on so I wonder if we even
+> > need this configure check or if we can remove the ifdefs from the
+> > testcases completely.
+> either that or this patch. At least at the moment these tests are 
+> completely broken.
+> I am not sure how long pthread_mutexattr_*roboust* api is part of posix 
+> and if ltp is supposed to be supported on platforms, that may not 
+> implement it.
 
-Li Wang <liwang@redhat.com> writes:
+As for LTP the only part that is supposed to be used on anything else
+than Linux is the open posix testsuite. The rest, including the relatime
+tests, is strictly Linux only.
 
-> We observed that af_alg07 sporadically failed on hpe-moonshot(aarch64) with
-> fixed kernel, but after trying manually we can NOT reproduce it again, one
-> possibility is that the FAIL is caused by an unaligned race window between
-> two threads, so here add dynamic bias adjustment to see if it helps.
->
-> Point of view from Martin Doucha:
-> 1) fchownat() returns 0 => fchownat() was called too early or the kernel is vulnerable
-> 2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
-> 3) fchownat() fails with EBADF => fchownat() was called too late
+Looking at the glibc the pthread_mutexattr_*robust* calls were
+implemented in 2010 which is 10 years from now, which means that it's
+old enough to just remove the checks.
 
-Just FYI, what really prevents fzsync from working is if the temporal
-behaviour (time to execute) of a syscall changes dramatically depending
-on the outcome of a race[1].
-
-For example if fchownat returns very quickly after EBADF, but takes a
-long time otherwise, then the delay will be too small. I guess most
-syscalls will check the FD very early so this is likely to be the
-problem.
-
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> CC: Richard Palethorpe <rpalethorpe@suse.com>
-> CC: Martin Doucha <mdoucha@suse.cz>
-> CC: Joerg Vehlow <lkml@jv-coder.de>
-> CC: Chunyu Hu <chuhu@redhat.com>
-> CC: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/crypto/af_alg07.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-> index 539ebee11..ee48c2edb 100644
-> --- a/testcases/kernel/crypto/af_alg07.c
-> +++ b/testcases/kernel/crypto/af_alg07.c
-> @@ -76,6 +76,16 @@ static void run(void)
->  			return;
->  		}
->  
-> +		if (TST_RET == 0) {
-> +			tst_fzsync_pair_add_bias(&fzsync_pair, -1);
-> +			continue;
-> +		}
-
-It may actually be better to remove this and only increase the delay if
-EBADF?
-
-> +
-> +		if (TST_RET == -1 && TST_ERR == EBADF) {
-> +			tst_fzsync_pair_add_bias(&fzsync_pair, 1);
-> +			continue;
-> +		}
-> +
->  		if (TST_RET == -1 && TST_ERR == ENOENT) {
->  			tst_res(TPASS | TTERRNO,
->  				"fchownat() failed successfully");
-
-[1] Not necessarily the race which causes the bug.
+Will you send a patch or should I do so?
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
