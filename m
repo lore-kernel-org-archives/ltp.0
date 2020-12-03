@@ -1,176 +1,91 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 3 Dec 2020 15:48:18 +0100
-Subject: [LTP] [PATCH v2] overcommit_memory: Fix unstable subtest
-In-Reply-To: <20201118102022.898238-1-lkml@jv-coder.de>
-References: <20201118102022.898238-1-lkml@jv-coder.de>
-Message-ID: <20201203144818.GD5809@yuki.lan>
+Date: Thu,  3 Dec 2020 16:28:04 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/ipc: Make use of get_ipc_timestamp()
+In-Reply-To: <20201203152804.846-1-chrubis@suse.cz>
+References: <20201203152804.846-1-chrubis@suse.cz>
+Message-ID: <20201203152804.846-3-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The test sets overcommit policy to never overcommit and then tries
-> to allocate the commit limit reported by /proc/meminfo. This value is an exact
-> value (at least at that point in time) of memory, that can be allocated
-> according to the policy and ratio settings. This should fail, since there
-> is already some memory allocated for running the test programm, but due to
-> inaccurate memory accounting in mm/util.c __vm_enough_memory(), the allocation
-> can still succeed.
-> 
-> The commited memory is stored in a percpu counter, that counts in 1 + ncpu
-> variables. For small allocations and deallocations, the memory is counted
-> in a counter per cpu, without locking. If this counter reaches a threshold,
-> the value is committed to a global counter. Due to this the global counter
-> can become negative. This global counter is the only thing taken into
-> account in __vm_enough_memory, propably for performance reasons, because
-> otherwise a lock is required.
-> 
-> Because of the inaccuracy the system can overcommit a bit by number of cpus
-> times threshold value. By adding this value to the exact commit limit
-> reported by /proc/meminfo, we can be sure, that we really always hit the
-> memory limit.
-> 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> ---
->  .../kernel/mem/tunable/overcommit_memory.c    | 56 +++++++++++++------
->  1 file changed, 39 insertions(+), 17 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-> index f77939908..8f05a3f70 100644
-> --- a/testcases/kernel/mem/tunable/overcommit_memory.c
-> +++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-> @@ -1,18 +1,7 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Copyright (c) Linux Test Project, 2012-2020
-> - * Copyright (C) 2012-2017  Red Hat, Inc.
-> - *
-> - * This program is free software;  you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - * the GNU General Public License for more details.
-> - *
-> - * Descriptions:
-> + * Copyright (c) 2012-2020 Linux Test Project
-> + * Copyright (c) 2012-2017 Red Hat, Inc.
->   *
->   * There are two tunables overcommit_memory and overcommit_ratio under
->   * /proc/sys/vm/, which can control memory overcommitment.
-> @@ -53,12 +42,16 @@
->   * the system is limited to CommitLimit(Swap+RAM*overcommit_ratio)
->   * commit_left(allocatable memory) = CommitLimit - Committed_AS
->   * a. less than commit_left:    commit_left / 2, alloc should pass
-> - * b. greater than commit_left: commit_left * 2, alloc should fail
-> - * c. overcommit limit:         CommitLimit,     alloc should fail
-> + * b. overcommit limit:         CommitLimit + TotalBatchSize, should fail
-> + * c. greater than commit_left: commit_left * 2, alloc should fail
->   * *note: CommitLimit is the current overcommit limit.
->   *        Committed_AS is the amount of memory that system has used.
->   * it couldn't choose 'equal to commit_left' as a case, because
->   * commit_left rely on Committed_AS, but the Committed_AS is not stable.
-> + * *note2: TotalBatchSize is the total number of bytes, that can be
-> + *         accounted for in the per cpu counters for the vm_committed_as
-> + *         counter. Since the check used by malloc only looks at the
-> + *         global counter of vm_committed_as, it can overallocate a bit.
->   *
->   * References:
->   * - Documentation/sysctl/vm.txt
-> @@ -94,6 +87,7 @@ static int heavy_malloc(long size);
->  static void alloc_and_check(long size, int expect_result);
->  static void update_mem(void);
->  static void update_mem_commit(void);
-> +static long get_total_batch_size_bytes(void);
->  
->  static void setup(void)
->  {
-> @@ -154,7 +148,8 @@ static void overcommit_memory_test(void)
->  
->  	update_mem_commit();
->  	alloc_and_check(commit_left * 2, EXPECT_FAIL);
-> -	alloc_and_check(commit_limit, EXPECT_FAIL);
-> +	alloc_and_check(commit_limit
-> +					+ get_total_batch_size_bytes(), EXPECT_FAIL);
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c | 4 ++--
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c | 4 ++--
+ testcases/kernel/syscalls/ipc/shmctl/Makefile   | 2 +-
+ testcases/kernel/syscalls/ipc/shmctl/shmctl01.c | 4 ++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-Can we please call the get_total_back_size_bytes() in the test setup and
-store the value. The overcommit_memory_test() function can be looped
-over and there is no need to recompute it on each iteration.
-
->  	update_mem_commit();
->  	alloc_and_check(commit_left / 2, EXPECT_PASS);
->  
-> @@ -232,6 +227,8 @@ static void update_mem_commit(void)
->  	committed = SAFE_READ_MEMINFO("Committed_AS:");
->  	commit_left = commit_limit - committed;
->  
-> +	get_total_batch_size_bytes();
-
-Why do we call the function here? We do not store the value and, as far
-as I can tell, there are no side efect either.
-
->  	if (commit_left < 0) {
->  		tst_res(TINFO, "CommitLimit is %ld, Committed_AS is %ld",
->  			commit_limit, committed);
-> @@ -247,6 +244,31 @@ static void update_mem_commit(void)
->  	}
->  }
->  
-> +static long get_total_batch_size_bytes(void)
-> +{
-> +	struct sysinfo info;
-> +	long ncpus = tst_ncpus_conf();
-> +	long pagesize = getpagesize();
-> +	SAFE_SYSINFO(&info);
-> +
-> +	/* see linux source mm/mm_init.c mm_compute_batch() (This is in pages) */
-> +	long batch_size = MAX(
-> +			ncpus * 2,
-> +			MAX(
-> +				32,
-> +				MIN(
-> +					INT32_MAX,
-> +					(long)(info.totalram / pagesize) / ncpus / 256
-> +				)
-> +			)
-> +		);
-
-Why don't we put the first arguemnt on the same line as the MAX( or MIN(
-here? That would be much more compact but still nicely readable.
-
-	MAX(ncpus * 2,
-	    MAX(32,
-	        MIN(INT32_MAX,
-		    ...
-		)
-	    )
-	);
-
-> +	/* there are ncpu separate counters, that can all grow up to
-> +	 * batch_size. So the maximum error for __vm_enough_memory is
-> +	 * batch_size * ncpus. */
-> +	return batch_size * ncpus * pagesize;
-
-I do wonder, are the counters flushed if task is migrated between CPUs?
-If so we wouldn't need the multiplication by bcpus.
-
-> +}
-> +
->  static struct tst_test test = {
->  	.needs_root = 1,
->  	.options = options,
-> -- 
-> 2.25.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
+index 5c1e317e9..afe552c4f 100644
+--- a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c
+@@ -25,13 +25,13 @@ static void verify_msgrcv(void)
+ 
+ 	SAFE_MSGSND(queue_id, &snd_buf, MSGSIZE, 0);
+ 
+-	time(&before_rcv);
++	before_rcv = get_ipc_timestamp();
+ 	TEST(msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0));
+ 	if (TST_RET == -1) {
+ 		tst_res(TFAIL | TTERRNO, "msgrcv failed");
+ 		return;
+ 	}
+-	time(&after_rcv);
++	after_rcv = get_ipc_timestamp();
+ 
+ 	if (strcmp(rcv_buf.mtext, snd_buf.mtext) == 0)
+ 		tst_res(TPASS, "message received(%s) = message sent(%s)",
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
+index 5f5da52d2..432b03def 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
++++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
+@@ -29,13 +29,13 @@ static void verify_msgsnd(void)
+ 	struct msqid_ds qs_buf;
+ 	time_t before_snd, after_snd;
+ 
+-	time(&before_snd);
++	before_snd = get_ipc_timestamp();
+ 	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
+ 	if (TST_RET == -1) {
+ 		tst_res(TFAIL | TTERRNO, "msgsnd() failed");
+ 		return;
+ 	}
+-	time(&after_snd);
++	after_snd = get_ipc_timestamp();
+ 
+ 	SAFE_MSGCTL(queue_id, IPC_STAT, &qs_buf);
+ 
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/Makefile b/testcases/kernel/syscalls/ipc/shmctl/Makefile
+index 106b73697..06d72d968 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/shmctl/Makefile
+@@ -10,6 +10,6 @@ shmctl05: LDLIBS += -lrt
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-shmctl02 shmctl04 shmctl06: LTPLDLIBS = -lltpnewipc
++shmctl01 shmctl02 shmctl04 shmctl06: LTPLDLIBS = -lltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index 3a39a4d74..eb5307d1e 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -240,9 +240,9 @@ static int get_shm_idx_from_id(int shm_id)
+ 
+ static void setup(void)
+ {
+-	ctime_min = time(NULL);
++	ctime_min = get_ipc_timestamp();
+ 	shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT | SHM_RW);
+-	ctime_max = time(NULL);
++	ctime_max = get_ipc_timestamp();
+ 
+ 	shm_idx = get_shm_idx_from_id(shm_id);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
