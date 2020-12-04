@@ -1,43 +1,82 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 4 Dec 2020 11:32:10 +0100
-Subject: [LTP] [PATCH] cpuset_regression_test: Fix for already existing
- cpusets
-In-Reply-To: <87blfxpdf8.fsf@suse.de>
-References: <20191115101039.43386-1-lkml@jv-coder.de>
- <a42725d1-1469-e71f-e28d-1eff42e3e86d@jv-coder.de> <87blfxpdf8.fsf@suse.de>
-Message-ID: <c9d59aa0-3589-0dff-8dc1-b4792b1bfaa6@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  4 Dec 2020 14:09:23 +0100
+Subject: [LTP] [PATCH 1/1] build.sh: PKG_CONFIG_LIBDIR auto-detection for
+ x86_64
+Message-ID: <20201204130923.14693-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 11/16/2020 3:46 PM, Richard Palethorpe wrote:
-> If the system has already set exclusive cpus then it is unlikely this
-> regression effects it. Either the kernel has been patched or the system
-> manager configures the cpus first before setting the exclusive knob.
-Yes "either or". If the system manager or whatever configured the 
-cgroups did it in the
-"right" order, that cannot trigger the bug, we do not know, if the bug 
-still exists.
+That allows not having to remove 64bit pkg-config
+on distros which support both (or define PKG_CONFIG_LIBDIR itself).
 
-> Normally I would say the test should try to run anyway, but you are
-> having to make some intrusive changes to the cgroup setup which could
-> lead to other problems.
->
-> So why not just call 'tst_brk TCONF' if the system already has exclusive
-> cpus configured?
-The question is, should ltp try hard to run a test or not. You may be right,
-that this could have other effects, but ltp tests can crash a system anyway,
-so I wouldn't worry about that. Of course TCONF would be simpler, but it 
-would
-also skip the test...
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Tested:
+https://travis-ci.org/github/pevik/ltp/builds/747398921
 
-Do you have a scenario in mind, where changing the cpusets could potentially
-cause problems? This would require a system, where something meaningful is
-running, that requires specific cpu time or a specific cpu. But if that 
-would
-be the case, all ltp tests could interfere with it right?
+Kind regards,
+Petr
 
-J?rg
+ build.sh | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
+
+diff --git a/build.sh b/build.sh
+index 45669bd91..452cc6f4c 100755
+--- a/build.sh
++++ b/build.sh
+@@ -22,7 +22,29 @@ MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
+ 
+ build_32()
+ {
++	local dir
++	local arch="$(uname -m)"
++
+ 	echo "===== 32-bit ${1}-tree build into $PREFIX ====="
++
++	if [ -z "$PKG_CONFIG_LIBDIR" ]; then
++		if [ "$arch" != "x86_64" ]; then
++			echo "ERROR: auto-detection not supported platform $arch, export PKG_CONFIG_LIBDIR!"
++			exit 1
++		fi
++
++		for dir in /usr/lib/i386-linux-gnu/pkgconfig \
++			/usr/lib32/pkgconfig /usr/lib/pkgconfig; do
++			if [ -d "$dir" ]; then
++				PKG_CONFIG_LIBDIR="$dir"
++				break
++			fi
++		done
++		if [ -z "$PKG_CONFIG_LIBDIR" ]; then
++			echo "WARNING: PKG_CONFIG_LIBDIR not found, build might fail"
++		fi
++	fi
++
+ 	CFLAGS="-m32 $CFLAGS" LDFLAGS="-m32 $LDFLAGS"
+ 	build $1 $2
+ }
+@@ -108,8 +130,8 @@ run_configure()
+ 	local configure=$1
+ 	shift
+ 
+-	export CC CFLAGS LDFLAGS
+-	echo "CC='$CC' CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'"
++	export CC CFLAGS LDFLAGS PKG_CONFIG_LIBDIR
++	echo "CC='$CC' CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS' PKG_CONFIG_LIBDIR='$PKG_CONFIG_LIBDIR'"
+ 
+ 	echo "=== configure $configure $@ ==="
+ 	if ! $configure $@; then
+@@ -147,7 +169,7 @@ in       in-tree build
+ out      out-of-tree build
+ 
+ BUILD TYPES:
+-32       32-bit build
++32       32-bit build (PKG_CONFIG_LIBDIR auto-detection for x86_64)
+ cross    cross-compile build (requires set compiler via -c switch)
+ native   native build
+ EOF
+-- 
+2.29.2
+
