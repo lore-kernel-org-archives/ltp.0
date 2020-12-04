@@ -1,68 +1,57 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri,  4 Dec 2020 06:33:04 +0000
-Subject: [LTP] [PATCH v2 2/3] syscalls: make use of .min_cpus
+Date: Fri,  4 Dec 2020 06:33:05 +0000
+Subject: [LTP] [PATCH v2 3/3] af_alg07: add dynamic bias for ARM
 In-Reply-To: <20201204063305.6820-1-liwang@redhat.com>
 References: <20201203110616.28302-1-liwang@redhat.com>
  <20201204063305.6820-1-liwang@redhat.com>
-Message-ID: <20201204063305.6820-2-liwang@redhat.com>
+Message-ID: <20201204063305.6820-3-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To set the minimum numbers of online CPU for test.
+We observed that af_alg07 sporadically failed on hpe-moonshot(aarch64) with
+fixed kernel, but after trying manually we can NOT reproduce it again, one
+possibility is that the FAIL is caused by an unaligned race window between
+two threads, so here add dynamic bias adjustment to see if it helps.
 
 From Martin Doucha:
 
-af_alg07 requires 2 CPUs, otherwise it'll report false positives.
-The test will pass only if fchownat() hits a half-closed socket and
-returns error. But IIRC the half-closed socket will be destroyed during
-reschedule which means there's no race window to hit anymore. But it
-would be better to put the TCONF condition into the test itself.
+1) fchownat() returns 0 => fchownat() was called too early or the kernel is vulnerable
+2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
+3) fchownat() fails with EBADF => fchownat() was called too late
 
-getcwd04: as itself requirements.
+Considering the test does NOT takes too time in 1) so we only adjust
+delay when syscalls return an error state that clearly falls outside
+the race window.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
+CC: Richard Palethorpe <rpalethorpe@suse.com>
+CC: Martin Doucha <mdoucha@suse.cz>
+CC: Joerg Vehlow <lkml@jv-coder.de>
+CC: Chunyu Hu <chuhu@redhat.com>
+CC: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/crypto/af_alg07.c          | 1 +
- testcases/kernel/syscalls/getcwd/getcwd04.c | 6 ++----
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ testcases/kernel/crypto/af_alg07.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-index 6ad86f4f3..539ebee11 100644
+index 539ebee11..c94bb292f 100644
 --- a/testcases/kernel/crypto/af_alg07.c
 +++ b/testcases/kernel/crypto/af_alg07.c
-@@ -110,6 +110,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.min_kver = "4.10.0",
-+	.min_cpus = 2,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "9060cb719e61"},
-diff --git a/testcases/kernel/syscalls/getcwd/getcwd04.c b/testcases/kernel/syscalls/getcwd/getcwd04.c
-index 2fa65fb2c..2e07e675f 100644
---- a/testcases/kernel/syscalls/getcwd/getcwd04.c
-+++ b/testcases/kernel/syscalls/getcwd/getcwd04.c
-@@ -68,9 +68,6 @@ static void verify_getcwd(void)
+@@ -76,6 +76,11 @@ static void run(void)
+ 			return;
+ 		}
  
- static void setup(void)
- {
--	if (tst_ncpus() == 1)
--		tst_brk(TCONF, "This test needs two cpus at least");
--
- 	SAFE_SIGNAL(SIGALRM, sigproc);
- 
- 	alarm(TIMEOUT);
-@@ -101,5 +98,6 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.test_all = verify_getcwd,
- 	.needs_tmpdir = 1,
--	.forks_child = 1
-+	.forks_child = 1,
-+	.min_cpus = 2
- };
++		if (TST_RET == -1 && TST_ERR == EBADF) {
++			tst_fzsync_pair_add_bias(&fzsync_pair, 1);
++			continue;
++		}
++
+ 		if (TST_RET == -1 && TST_ERR == ENOENT) {
+ 			tst_res(TPASS | TTERRNO,
+ 				"fchownat() failed successfully");
 -- 
 2.21.3
 
