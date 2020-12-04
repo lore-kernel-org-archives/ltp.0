@@ -1,82 +1,66 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  4 Dec 2020 14:09:23 +0100
-Subject: [LTP] [PATCH 1/1] build.sh: PKG_CONFIG_LIBDIR auto-detection for
- x86_64
-Message-ID: <20201204130923.14693-1-pvorel@suse.cz>
+Date: Fri, 4 Dec 2020 14:47:55 +0100
+Subject: [LTP] [PATCH v5 04/10] fanotify: Add helper for FAN_REPORT_FID
+ support on fs
+In-Reply-To: <CAOQ4uxhdW2x=gUD1D39Pc3Ke3QmkDUZswcLuA4djH6jcQZP_=w@mail.gmail.com>
+References: <20201201174214.24625-1-pvorel@suse.cz>
+ <20201201174214.24625-5-pvorel@suse.cz>
+ <20201202154604.GD12342@yuki.lan> <X8fXG3ix4oq2Gab6@pevik>
+ <CAOQ4uxhdW2x=gUD1D39Pc3Ke3QmkDUZswcLuA4djH6jcQZP_=w@mail.gmail.com>
+Message-ID: <X8o+C0WZV8f8VONT@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-That allows not having to remove 64bit pkg-config
-on distros which support both (or define PKG_CONFIG_LIBDIR itself).
+Hi Amir,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Tested:
-https://travis-ci.org/github/pevik/ltp/builds/747398921
+...
+> > > Maybe this would be just easier to read as a macro:
+
+> > > #define FANOTIFY_FAN_REPORT_FID_ERR_MSG(res_func, fail) do { \
+> > >       if (fail == -1) \
+> > >               res_func(TCONF, "FAN_REPORT_FID not supported in kernel?"); \
+> > >       if (fail == -2) \
+> > >               res_func(TCONF, ...); \
+> > >       } while (0)
+
+
+> Sorry, I ended up reverting that back to a function.
+np, probably better anyway.
+
+...
+> > > The rest is good.
+
+> > Both your comments fixed, patchset merged.
+
+> > Thank you both for your patient review,
+
+> > Amir, I'm sorry it took me that long.
+
+> No worries.
+> I know there was a lot of black magic behind all the flag checks
+> that needed explanations.
+
+> > Looking forward to your patchset :).
+
+
+> Posted.
+Thanks!
+
+> Note that I only tested upstream, v5.8, v4.20 and not kernels
+> without permission events support and not exfat.
+
+> I trust you will help to fill those testing gaps.
+Sure! I should get into that early next week.
+
+> If I am not mistaken, before my fixes, fanotify10 was going to fail
+> instead of TCONF on exfat/ntfs and kernel >= v5.9, but I did not check.
+Don't fail on master on my openSUSE kernel 5.10.0-rc5-2.ge84a0b5-default
+
+> Thanks,
+> Amir.
 
 Kind regards,
 Petr
-
- build.sh | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
-
-diff --git a/build.sh b/build.sh
-index 45669bd91..452cc6f4c 100755
---- a/build.sh
-+++ b/build.sh
-@@ -22,7 +22,29 @@ MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
- 
- build_32()
- {
-+	local dir
-+	local arch="$(uname -m)"
-+
- 	echo "===== 32-bit ${1}-tree build into $PREFIX ====="
-+
-+	if [ -z "$PKG_CONFIG_LIBDIR" ]; then
-+		if [ "$arch" != "x86_64" ]; then
-+			echo "ERROR: auto-detection not supported platform $arch, export PKG_CONFIG_LIBDIR!"
-+			exit 1
-+		fi
-+
-+		for dir in /usr/lib/i386-linux-gnu/pkgconfig \
-+			/usr/lib32/pkgconfig /usr/lib/pkgconfig; do
-+			if [ -d "$dir" ]; then
-+				PKG_CONFIG_LIBDIR="$dir"
-+				break
-+			fi
-+		done
-+		if [ -z "$PKG_CONFIG_LIBDIR" ]; then
-+			echo "WARNING: PKG_CONFIG_LIBDIR not found, build might fail"
-+		fi
-+	fi
-+
- 	CFLAGS="-m32 $CFLAGS" LDFLAGS="-m32 $LDFLAGS"
- 	build $1 $2
- }
-@@ -108,8 +130,8 @@ run_configure()
- 	local configure=$1
- 	shift
- 
--	export CC CFLAGS LDFLAGS
--	echo "CC='$CC' CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'"
-+	export CC CFLAGS LDFLAGS PKG_CONFIG_LIBDIR
-+	echo "CC='$CC' CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS' PKG_CONFIG_LIBDIR='$PKG_CONFIG_LIBDIR'"
- 
- 	echo "=== configure $configure $@ ==="
- 	if ! $configure $@; then
-@@ -147,7 +169,7 @@ in       in-tree build
- out      out-of-tree build
- 
- BUILD TYPES:
--32       32-bit build
-+32       32-bit build (PKG_CONFIG_LIBDIR auto-detection for x86_64)
- cross    cross-compile build (requires set compiler via -c switch)
- native   native build
- EOF
--- 
-2.29.2
-
