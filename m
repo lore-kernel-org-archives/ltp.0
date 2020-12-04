@@ -1,168 +1,162 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri,  4 Dec 2020 11:59:26 +0200
-Subject: [LTP] [PATCH 1/5] syscalls/fanotify: Generalize check for
- FAN_REPORT_FID support
+Date: Fri,  4 Dec 2020 11:59:27 +0200
+Subject: [LTP] [PATCH 2/5] syscalls/fanotify: Use generic checks for
+ fanotify_init flags
 In-Reply-To: <20201204095930.866421-1-amir73il@gmail.com>
 References: <20201204095930.866421-1-amir73il@gmail.com>
-Message-ID: <20201204095930.866421-2-amir73il@gmail.com>
+Message-ID: <20201204095930.866421-3-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Generalize the helpers to be able to check any fanotify_init() flags
-and pass FAN_REPORT_FID as argument in call sites.
-
-Add helper fanotify_init_flags_supported_by_kernel() to check for
-kernel support for fanotify_init flags without checking fs support
-for those flags.
+Convert remaining tests to SAFE_FANOTIFY_INIT and use the generic
+helpers to check requires kernel/fs support for fanotify_init flags
+in advance.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h | 46 ++++++++++++-------
- .../kernel/syscalls/fanotify/fanotify01.c     |  4 +-
- .../kernel/syscalls/fanotify/fanotify13.c     |  2 +-
- .../kernel/syscalls/fanotify/fanotify15.c     |  2 +-
- .../kernel/syscalls/fanotify/fanotify16.c     |  2 +-
- 5 files changed, 34 insertions(+), 22 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify10.c     | 26 ++++++++-----------
+ .../kernel/syscalls/fanotify/fanotify11.c     | 21 ++++++---------
+ .../kernel/syscalls/fanotify/fanotify16.c     | 14 ++--------
+ 3 files changed, 21 insertions(+), 40 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 82e03db26..8907db052 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -286,15 +286,15 @@ static inline int fanotify_events_supported_by_kernel(uint64_t mask)
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 404e57daa..cc164359f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -57,6 +57,7 @@ static unsigned int fanotify_class[] = {
+ 	FAN_REPORT_DFID_NAME_FID,
+ };
+ #define NUM_CLASSES ARRAY_SIZE(fanotify_class)
++#define NUM_PRIORITIES 3
  
- /*
-  * @return  0: fanotify supported both in kernel and on tested filesystem
-- * @return -1: FAN_REPORT_FID not supported in kernel
-- * @return -2: FAN_REPORT_FID not supported on tested filesystem
-+ * @return -1: @flags not supported in kernel
-+ * @return -2: @flags not supported on tested filesystem (tested if @fname is not NULL)
-  */
--static inline int fanotify_fan_report_fid_supported_on_fs(const char *fname)
-+static inline int fanotify_init_flags_supported_on_fs(unsigned int flags, const char *fname)
+ #define GROUPS_PER_PRIO 3
+ 
+@@ -64,6 +65,7 @@ static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
+ 
+ static char event_buf[EVENT_BUF_LEN];
+ static int exec_events_unsupported;
++static int fan_report_dfid_unsupported;
+ static int filesystem_mark_unsupported;
+ 
+ #define MOUNT_PATH "fs_mnt"
+@@ -294,21 +296,8 @@ static int create_fanotify_groups(unsigned int n)
+ 
+ 	for (p = 0; p < num_classes; p++) {
+ 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+-			fd_notify[p][i] = fanotify_init(fanotify_class[p] |
+-							FAN_NONBLOCK, O_RDONLY);
+-			if (fd_notify[p][i] == -1) {
+-				if (errno == EINVAL &&
+-				    fanotify_class[p] & FAN_REPORT_NAME) {
+-					tst_res(TCONF,
+-						"FAN_REPORT_NAME not supported by kernel?");
+-					/* Do not try creating this group again */
+-					num_classes--;
+-					return -1;
+-				}
+-
+-				tst_brk(TBROK | TERRNO,
+-					"fanotify_init(%x, 0) failed", fanotify_class[p]);
+-			}
++			fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_class[p] |
++							     FAN_NONBLOCK, O_RDONLY);
+ 
+ 			/*
+ 			 * Add mark for each group.
+@@ -518,6 +507,13 @@ static void setup(void)
  {
- 	int fd;
- 	int rval = 0;
+ 	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC);
+ 	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
++	fan_report_dfid_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_DFID_NAME,
++									  MOUNT_PATH);
++	if (fan_report_dfid_unsupported) {
++		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_DFID_NAME, fan_report_dfid_unsupported);
++		/* Limit tests to legacy priority classes */
++		num_classes = NUM_PRIORITIES;
++	}
  
--	fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
-+	fd = fanotify_init(flags, O_RDONLY);
+ 	/* Create another bind mount@another path for generating events */
+ 	SAFE_MKDIR(MNT2_PATH, 0755);
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify11.c b/testcases/kernel/syscalls/fanotify/fanotify11.c
+index 785b5c5a5..f3b60cecb 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify11.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify11.c
+@@ -36,6 +36,8 @@
+ #define gettid() syscall(SYS_gettid)
+ static int tid;
  
- 	if (fd < 0) {
- 		if (errno == ENOSYS)
-@@ -306,7 +306,7 @@ static inline int fanotify_fan_report_fid_supported_on_fs(const char *fname)
- 		tst_brk(TBROK | TERRNO, "fanotify_init() failed");
++static int fan_report_tid_unsupported;
++
+ void *thread_create_file(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	char tid_file[64] = {0};
+@@ -63,17 +65,13 @@ void test01(unsigned int i)
+ 			i, (tcases[i] & FAN_REPORT_TID) ? "with" : "without",
+ 			tgid, tid, event.pid);
+ 
+-	fd_notify = fanotify_init(tcases[i], 0);
+-	if (fd_notify < 0) {
+-		if (errno == EINVAL && (tcases[i] & FAN_REPORT_TID)) {
+-			tst_res(TCONF,
+-				"FAN_REPORT_TID not supported in kernel?");
+-			return;
+-		}
+-		tst_brk(TBROK | TERRNO, "fanotify_init(0x%x, 0) failed",
+-				tcases[i]);
++	if (fan_report_tid_unsupported && (tcases[i] & FAN_REPORT_TID)) {
++		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_TID, fan_report_tid_unsupported);
++		return;
  	}
  
--	if (fanotify_mark(fd, FAN_MARK_ADD, FAN_ACCESS, AT_FDCWD, fname) < 0) {
-+	if (fname && fanotify_mark(fd, FAN_MARK_ADD, FAN_ACCESS, AT_FDCWD, fname) < 0) {
- 		if (errno == ENODEV || errno == EOPNOTSUPP || errno == EXDEV) {
- 			rval = -2;
- 		} else {
-@@ -321,20 +321,32 @@ static inline int fanotify_fan_report_fid_supported_on_fs(const char *fname)
- 	return rval;
- }
- 
--#define FANOTIFY_FAN_REPORT_FID_ERR_MSG_(res_func, fail) do { \
--	if (fail == -1) \
--		res_func(TCONF, "FAN_REPORT_FID not supported in kernel?"); \
--	if (fail == -2) \
--		res_func(TCONF, "FAN_REPORT_FID not supported on %s filesystem", \
--			tst_device->fs_type); \
--	} while (0)
-+static inline int fanotify_init_flags_supported_by_kernel(unsigned int flags)
-+{
-+	return fanotify_init_flags_supported_on_fs(flags, NULL);
-+}
++	fd_notify = SAFE_FANOTIFY_INIT(tcases[i], 0);
 +
-+typedef void (*tst_res_func_t)(const char *file, const int lineno,
-+			       int ttype, const char *fmt, ...);
-+
-+static inline void fanotify_init_flags_err_msg(const char *flags_str,
-+	const char *file, const int lineno, tst_res_func_t res_func, int fail)
-+{
-+	if (fail == -1)
-+		res_func(file, lineno, TCONF,
-+			 "%s not supported in kernel?", flags_str);
-+	if (fail == -2)
-+		res_func(file, lineno, TCONF,
-+			 "%s not supported on %s filesystem",
-+			 flags_str, tst_device->fs_type);
-+}
+ 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD,
+ 			FAN_ALL_EVENTS | FAN_EVENT_ON_CHILD, AT_FDCWD, ".");
  
--#define FANOTIFY_FAN_REPORT_FID_ERR_MSG(fail) \
--	FANOTIFY_FAN_REPORT_FID_ERR_MSG_(tst_res, (fail))
-+#define FANOTIFY_INIT_FLAGS_ERR_MSG(flags, fail) \
-+	fanotify_init_flags_err_msg(#flags, __FILE__, __LINE__, tst_res_, (fail))
- 
--#define REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(fname) do { \
--	FANOTIFY_FAN_REPORT_FID_ERR_MSG_(tst_brk, \
--		fanotify_fan_report_fid_supported_on_fs(fname)); \
-+#define REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(flags, fname) do { \
-+	fanotify_init_flags_err_msg(#flags, __FILE__, __LINE__, tst_brk_, \
-+		fanotify_init_flags_supported_on_fs(flags, fname)); \
- 	} while (0)
- 
- static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
-index d6d72dad9..cdb01730f 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify01.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
-@@ -90,7 +90,7 @@ static void test_fanotify(unsigned int n)
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- 
- 	if (fan_report_fid_unsupported && (tc->init_flags & FAN_REPORT_FID)) {
--		FANOTIFY_FAN_REPORT_FID_ERR_MSG(fan_report_fid_unsupported);
-+		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_FID, fan_report_fid_unsupported);
- 		return;
- 	}
- 
-@@ -334,7 +334,7 @@ static void setup(void)
- 	sprintf(fname, MOUNT_PATH"/tfile_%d", getpid());
- 	SAFE_FILE_PRINTF(fname, "1");
- 
--	fan_report_fid_unsupported = fanotify_fan_report_fid_supported_on_fs(fname);
-+	fan_report_fid_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_FID, fname);
- 	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
- }
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index a402cdb13..c9cf10555 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -256,7 +256,7 @@ out:
- 
- static void do_setup(void)
- {
--	REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(MOUNT_PATH);
-+	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, MOUNT_PATH);
- 
- 	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-index 9e3748bc2..ba8259c7c 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify15.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-@@ -270,7 +270,7 @@ static void do_test(unsigned int number)
- static void do_setup(void)
- {
- 	SAFE_MKDIR(TEST_DIR, 0755);
--	REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(TEST_DIR);
-+	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, TEST_DIR);
- 	fanotify_fd = SAFE_FANOTIFY_INIT(FAN_REPORT_FID, O_RDONLY);
- }
- 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
-index a554c7d39..a4409df14 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify16.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
-@@ -551,7 +551,7 @@ check_match:
+@@ -96,10 +94,7 @@ void test01(unsigned int i)
  
  static void setup(void)
  {
--	REQUIRE_FANOTIFY_FAN_REPORT_FID_SUPPORTED_ON_FS(MOUNT_PATH);
-+	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, MOUNT_PATH);
+-	int fd;
+-
+-	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_NOTIF, O_RDONLY);
+-	SAFE_CLOSE(fd);
++	fan_report_tid_unsupported = fanotify_init_flags_supported_by_kernel(FAN_REPORT_TID);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
+index a4409df14..5ffaec92f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify16.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
+@@ -158,17 +158,7 @@ static void do_test(unsigned int number)
+ 
+ 	tst_res(TINFO, "Test #%d: %s", number, tc->tname);
+ 
+-	fd_notify = fanotify_init(group->flag, 0);
+-	if (fd_notify == -1) {
+-		if (errno == EINVAL) {
+-			tst_res(TCONF,
+-				"%s not supported by kernel", group->name);
+-			return;
+-		}
+-
+-		tst_brk(TBROK | TERRNO,
+-			"fanotify_init(%s, 0) failed", group->name);
+-	}
++	fd_notify = SAFE_FANOTIFY_INIT(group->flag, 0);
+ 
+ 	/*
+ 	 * Watch dir modify events with name in filesystem/dir
+@@ -551,7 +541,7 @@ check_match:
+ 
+ static void setup(void)
+ {
+-	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, MOUNT_PATH);
++	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_DIR_FID, MOUNT_PATH);
  
  	sprintf(dname1, "%s/%s", MOUNT_PATH, DIR_NAME1);
  	sprintf(dname2, "%s/%s", MOUNT_PATH, DIR_NAME2);
