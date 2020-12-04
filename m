@@ -1,57 +1,30 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri,  4 Dec 2020 06:33:05 +0000
-Subject: [LTP] [PATCH v2 3/3] af_alg07: add dynamic bias for ARM
-In-Reply-To: <20201204063305.6820-1-liwang@redhat.com>
-References: <20201203110616.28302-1-liwang@redhat.com>
- <20201204063305.6820-1-liwang@redhat.com>
-Message-ID: <20201204063305.6820-3-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 4 Dec 2020 04:22:19 -0500 (EST)
+Subject: [LTP] [PATCH 0/2] Fix timestamp tests in SysV IPC tests
+In-Reply-To: <20201203152804.846-1-chrubis@suse.cz>
+References: <20201203152804.846-1-chrubis@suse.cz>
+Message-ID: <1412193890.27401950.1607073739303.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We observed that af_alg07 sporadically failed on hpe-moonshot(aarch64) with
-fixed kernel, but after trying manually we can NOT reproduce it again, one
-possibility is that the FAIL is caused by an unaligned race window between
-two threads, so here add dynamic bias adjustment to see if it helps.
 
-From Martin Doucha:
 
-1) fchownat() returns 0 => fchownat() was called too early or the kernel is vulnerable
-2) fchwonat() fails with ENOENT => kernel is fixed, print TPASS and exit
-3) fchownat() fails with EBADF => fchownat() was called too late
+----- Original Message -----
+> Cyril Hrubis (2):
+>   libnewipc: Add get_ipc_timestamp()
+>   syscalls/ipc: Make use of get_ipc_timestamp()
+> 
+>  include/libnewipc.h                             |  3 +++
+>  libs/libltpnewipc/libnewipc.c                   | 13 +++++++++++++
+>  testcases/kernel/syscalls/ipc/msgrcv/msgrcv01.c |  4 ++--
+>  testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c |  4 ++--
+>  testcases/kernel/syscalls/ipc/shmctl/Makefile   |  2 +-
+>  testcases/kernel/syscalls/ipc/shmctl/shmctl01.c |  4 ++--
+>  6 files changed, 23 insertions(+), 7 deletions(-)
+> 
 
-Considering the test does NOT takes too time in 1) so we only adjust
-delay when syscalls return an error state that clearly falls outside
-the race window.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
-CC: Richard Palethorpe <rpalethorpe@suse.com>
-CC: Martin Doucha <mdoucha@suse.cz>
-CC: Joerg Vehlow <lkml@jv-coder.de>
-CC: Chunyu Hu <chuhu@redhat.com>
-CC: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/crypto/af_alg07.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-index 539ebee11..c94bb292f 100644
---- a/testcases/kernel/crypto/af_alg07.c
-+++ b/testcases/kernel/crypto/af_alg07.c
-@@ -76,6 +76,11 @@ static void run(void)
- 			return;
- 		}
- 
-+		if (TST_RET == -1 && TST_ERR == EBADF) {
-+			tst_fzsync_pair_add_bias(&fzsync_pair, 1);
-+			continue;
-+		}
-+
- 		if (TST_RET == -1 && TST_ERR == ENOENT) {
- 			tst_res(TPASS | TTERRNO,
- 				"fchownat() failed successfully");
--- 
-2.21.3
+Acked-by: Jan Stancek <jstancek@redhat.com>
 
