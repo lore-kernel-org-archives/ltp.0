@@ -1,47 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 7 Dec 2020 15:22:40 +0100
-Subject: [LTP] [PATCH 3/5] syscalls/fanotify09: Read variable length
- events
-In-Reply-To: <CAOQ4uxiCtAJVyVau3un2AnMNmn1Yub18sG10YopLRySmLAcpnw@mail.gmail.com>
-References: <20201204095930.866421-1-amir73il@gmail.com>
- <20201204095930.866421-4-amir73il@gmail.com>
- <X84VqaD4+FqAix5h@pevik>
- <CAOQ4uxiCtAJVyVau3un2AnMNmn1Yub18sG10YopLRySmLAcpnw@mail.gmail.com>
-Message-ID: <X846sHuckxS/lLEV@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 7 Dec 2020 15:41:36 +0100
+Subject: [LTP] [PATCH v2 1/3] lib: add .min_cpus in tst_test struct
+In-Reply-To: <20201204063305.6820-1-liwang@redhat.com>
+References: <20201203110616.28302-1-liwang@redhat.com>
+ <20201204063305.6820-1-liwang@redhat.com>
+Message-ID: <X84/IAwVIwXjN+6Z@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
-> > > In preparation of testing events with filename info, teach the
-> > > how to read variable length events and parse the name info.
+Hi!
+Pushed with two fixes, thanks.
 
-> > This commit broke umount() on old kernels. (LTP lib doing multiple attempts is
-> > useless here). Not sure what exactly is being used, it's not by staing in
-> > mounted directory. Any idea how to fix it?
+> +	/* Minimum numbers of online CPU required by the test */
+                      ^
+		      number
+> +	unsigned long min_cpus;
+> +
+>  	/*
+>  	 * If set non-zero number of request_hugepages, test will try to reserve the
+>  	 * expected number of hugepage for testing in setup phase. If system does not
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 535c0ff4c..c4e04eb4a 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -918,6 +918,9 @@ static void do_setup(int argc, char *argv[])
+>  	if (tst_test->all_filesystems)
+>  		tst_test->needs_device = 1;
+>  
+> +	if (tst_test->min_cpus > tst_ncpus())
+                                   ^
+				   Added (unsigned long) cast to silence
+				   warnings.
+> +		tst_brk(TCONF, "Test needs at least %lu CPUs online", tst_test->min_cpus);
+> +
+>  	if (tst_test->request_hugepages)
+>  		tst_request_hugepages(tst_test->request_hugepages);
+>  
+> -- 
+> 2.21.3
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-
-> --- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-> @@ -265,6 +265,7 @@ static void test_fanotify(unsigned int n)
->         for (i = 1; i < NUM_GROUPS; i++) {
->                 ret = read(fd_notify[i], event_buf, FAN_EVENT_METADATA_LEN);
->                 if (ret > 0) {
-> +                       event = (struct fanotify_event_metadata *)event_buf;
->                         event_res(TFAIL, i, event, "");
->                         if (event->fd != FAN_NOFD)
->                                 SAFE_CLOSE(event->fd);
-
-> The fix exists in the following patch, therefore I did not notice the
-> mid series regression.
-While this is valid to be added in this commit and I'll add it, it does not fix
-our solution. I might not be clear: since this commit it's broken.
-Thus any other tip?
-
-Kind regards,
-Petr
-
-> Thanks,
-> Amir.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
