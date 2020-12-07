@@ -1,20 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 7 Dec 2020 15:41:46 +0100
-Subject: [LTP] [PATCH v2 2/3] syscalls: make use of .min_cpus
-In-Reply-To: <20201204063305.6820-2-liwang@redhat.com>
-References: <20201203110616.28302-1-liwang@redhat.com>
- <20201204063305.6820-1-liwang@redhat.com>
- <20201204063305.6820-2-liwang@redhat.com>
-Message-ID: <X84/KsQ5Os70Z+UL@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  7 Dec 2020 15:56:39 +0100
+Subject: [LTP] [PATCH 1/1] doc: Document .min_cpus
+Message-ID: <20201207145639.8424-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+Recently added (in fa32a727d).
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Feel free to document it more.
+
+Kind regards,
+Petr
+
+ doc/test-writing-guidelines.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 3c2ab7166..dcb5d9d43 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -2134,8 +2134,14 @@ struct tst_test test = {
+ 	.test_all = run,
+ 	...
+ };
+-
+ -------------------------------------------------------------------------------
++
++2.2.37 Require minimum numbers of CPU for a testcase
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Some tests require more than single CPU. It can be defined with
++`.min_cpus = N`.
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.29.2
+
