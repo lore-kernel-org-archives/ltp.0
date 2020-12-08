@@ -1,129 +1,219 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 8 Dec 2020 16:46:14 +0100
-Subject: [LTP] [PATCH 3/3] syscalls/ipc: msgctl06: Add a test for
- MSG_STAT_ANY
-In-Reply-To: <1607422067-15500-3-git-send-email-zhufy.jy@cn.fujitsu.com>
-References: <1607422067-15500-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <1607422067-15500-3-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <X8+fxq1wppq1SjtP@yuki.lan>
+Date: Tue,  8 Dec 2020 17:05:16 +0100
+Subject: [LTP] [PATCH] [COMMITTED] syscalls/ipc/shmctl: Reformat doc comments
+Message-ID: <20201208160516.32672-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with a few changes, thanks.
+So that they are properly picked up by the docparser.
 
-* Reformatted the top level description so that it's picked by the
-  docparser
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ .../kernel/syscalls/ipc/shmctl/shmctl01.c     | 11 ++++++----
+ .../kernel/syscalls/ipc/shmctl/shmctl02.c     |  6 +++--
+ .../kernel/syscalls/ipc/shmctl/shmctl03.c     |  7 ++++--
+ .../kernel/syscalls/ipc/shmctl/shmctl04.c     |  7 ++++--
+ .../kernel/syscalls/ipc/shmctl/shmctl05.c     | 22 +++++++++++--------
+ .../kernel/syscalls/ipc/shmctl/shmctl06.c     |  8 +++++--
+ .../kernel/syscalls/ipc/shmctl/shmctl07.c     |  7 ++++--
+ .../kernel/syscalls/ipc/shmctl/shmctl08.c     |  7 ++++--
+ 8 files changed, 50 insertions(+), 25 deletions(-)
 
-* Renamed the variables in the proc parsing function to make it more
-  clear what they referring to
-
-+ Fixed some typos.
-
-Full diff:
-
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-index c931bbfd3..99e44851c 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-@@ -3,7 +3,9 @@
-  * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
-  * Author: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+index eb5307d1e..c22a8bcc6 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl01.c
+@@ -3,16 +3,19 @@
+  * Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
   */
+-/*
++
++/*\
++ * [DESCRIPTION]
++ *
+  * Verify that shmctl() IPC_STAT and SHM_STAT reports correct data.
+  *
+  * The shm_nattach is excercised by:
+  *
+- * 1. forking() children that attach and detach SHM
+- * 2. attaching the SHM before fork and letting the children detach it
++ * - forking() children that attach and detach SHM
++ * - attaching the SHM before fork and letting the children detach it
+  *
+  * We check that the number shm_nattach is correct after each step we do.
+- */
++\*/
+ 
+ #define _GNU_SOURCE
+ #include <stdlib.h>
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
+index 677b15d40..fde17ffbb 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl02.c
+@@ -8,7 +8,9 @@
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+ 
 -/*
 +/*\
 + * [DESCRIPTION]
 + *
-  * Call msgctl() with MSG_INFO flag and check that:
+  * Test for EACCES, EFAULT and EINVAL errors.
   *
-  * * The returned index points to a valid MSG by calling MSG_STAT_ANY
-@@ -16,7 +18,10 @@
-  *
-  * Note what we create a MSG segment in the test setup and send msg to make sure
-  * that there is at least one during the testrun.
+  * * EACCES - segment has no read or write permissions
+@@ -23,7 +25,7 @@
+  * * EPERM  - attempt to change root-owned shm
+  * * EPERM  - attempt to lock root-owned shm
+  * * EPERM  - attempt to unlock root-owned shm
 - */
-+ *
-+ * Also note that for MSG_INFO the members of the msginfo structure have
-+ * completely different meaning than their names seems to suggest.
 +\*/
  
- #include <stdio.h>
  #include <pwd.h>
-@@ -40,8 +45,8 @@ static struct tcases {
- static void parse_proc_sysvipc(struct msginfo *info)
- {
- 	FILE *f = fopen("/proc/sysvipc/msg", "r");
--	int used_ids = 0;
--	int queue_nums = 0;
-+	int queue_cnt = 0;
-+	int msg_cnt = 0;
- 	int msg_bytes = 0;
  
- 	/* Eat header */
-@@ -52,38 +57,38 @@ static void parse_proc_sysvipc(struct msginfo *info)
- 			break;
- 	}
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+index 8868ab1cb..f5d3e4f17 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl03.c
+@@ -2,10 +2,13 @@
+ /*
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+-/*
++
++/*\
++ * [DESCRIPTION]
++ *
+  * Call shmctl() with IPC_INFO flag and check that the data are consistent with
+  * /proc/sys/kernel/shm*.
+- */
++\*/
  
--	int msgid, cbytes, qnum;
-+	int cbytes, msgs;
+ #define _GNU_SOURCE
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+index f4235ff40..3068b7ace 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+@@ -2,7 +2,10 @@
+ /*
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+-/*
++
++/*\
++ * [DESCRIPTION]
++ *
+  * Call shmctl() with SHM_INFO flag and check that:
+  *
+  * * The returned index points to a valid SHM by calling SHM_STAT_ANY
+@@ -15,7 +18,7 @@
+  *
+  * Note what we create a SHM segment in the test setup to make sure that there
+  * is at least one during the testrun.
+- */
++\*/
  
- 	/*
- 	 * Sum queue and byte for all elements listed, which should equal
- 	 * the data returned in the msginfo structure.
- 	 */
--	while (fscanf(f, "%*i %i %*i %i %i %*i %*i %*i %*i %*i %*i %*i %*i %*i",
--			&msgid, &cbytes, &qnum) > 0){
--		used_ids++;
--		queue_nums += qnum;
-+	while (fscanf(f, "%*i %*i %*i %i %i %*i %*i %*i %*i %*i %*i %*i %*i %*i",
-+	              &cbytes, &msgs) > 0){
-+		queue_cnt++;
-+		msg_cnt += msgs;
- 		msg_bytes += cbytes;
- 	}
+ #define _GNU_SOURCE
+ #include <stdio.h>
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+index 50196ae99..263e06e4c 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl05.c
+@@ -3,15 +3,19 @@
+  * Copyright (c) 2018 Google, Inc.
+  */
  
--	if (info->msgpool != used_ids) {
-+	if (info->msgpool != queue_cnt) {
- 		tst_res(TFAIL, "msgpool = %i, expected %i",
--			info->msgpool, used_ids);
-+			info->msgpool, queue_cnt);
- 	} else {
--		tst_res(TPASS, "used_ids = %i", used_ids);
-+		tst_res(TPASS, "queue_cnt = %i", queue_cnt);
- 	}
+-/*
+- * Regression test for commit 3f05317d9889 ("ipc/shm: fix use-after-free of shm
+- * file via remap_file_pages()").  This bug allowed the remap_file_pages()
+- * syscall to use the file of a System V shared memory segment after its ID had
+- * been reallocated and the file freed.  This test reproduces the bug as a NULL
+- * pointer dereference in touch_atime(), although it's a race condition so it's
+- * not guaranteed to work.  This test is based on the reproducer provided in the
+- * fix's commit message.
+- */
++/*\
++ * [DESCRIPTION]
++ *
++ * Regression test for commit
++ * 3f05317d9889 (ipc/shm: fix use-after-free of shm file via remap_file_pages()).
++ *
++ * This bug allowed the remap_file_pages() syscall to use the file of a System
++ * V shared memory segment after its ID had been reallocated and the file
++ * freed. This test reproduces the bug as a NULL pointer dereference in
++ * touch_atime(), although it's a race condition so it's not guaranteed to
++ * work. This test is based on the reproducer provided in the fix's commit
++ * message.
++\*/
  
--	if (info->msgmap != queue_nums) {
-+	if (info->msgmap != msg_cnt) {
- 		tst_res(TFAIL, "msgmap = %i, expected %i",
--			info->msgpool, queue_nums);
-+			info->msgpool, msg_cnt);
- 	} else {
--		tst_res(TPASS, "msgnums = %i", queue_nums);
-+		tst_res(TPASS, "msg_cnt = %i", msg_cnt);
- 	}
+ #include "lapi/syscalls.h"
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
+index 368759980..c804b3208 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl06.c
+@@ -1,10 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
++ */
++
++/*\
++ * [DESCRIPTION]
+  *
+- * Description:
+  * Cross verify the _high fields being set to 0 by the kernel.
+- */
++\*/
++
+ #include <sys/shm.h>
+ #include "lapi/shmbuf.h"
+ #include "libnewipc.h"
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
+index 39b9ad78a..8f74435f9 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl07.c
+@@ -2,9 +2,12 @@
+ /*
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+-/*
++
++/*\
++ * [DESCRIPTION]
++ *
+  * Test for a SHM_LOCK and SHM_UNLOCK.
+- */
++\*/
  
- 	if (info->msgtql != msg_bytes) {
- 		tst_res(TFAIL, "msgtql = %i, expected %i",
- 			info->msgtql, msg_bytes);
- 	} else {
--		tst_res(TPASS, "msgbytes = %i", msg_bytes);
-+		tst_res(TPASS, "msg_bytes = %i", msg_bytes);
- 	}
+ #define _GNU_SOURCE
+ #include <stdio.h>
+diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
+index 157ced608..f763a07eb 100644
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl08.c
+@@ -2,12 +2,15 @@
+ /*
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+-/*
++
++/*\
++ * [DESCRIPTION]
++ *
+  * Test for a SHM_SET.
+  *
+  * The test clears the group and others bits from the shm_perm.mode and checks
+  * the result as well as if the ctime was updated correctly.
+- */
++\*/
  
- 	fclose(f);
-@@ -100,7 +105,7 @@ static void verify_msgctl(unsigned int n)
- 
- 	SAFE_SETEUID(*tc->uid);
- 
--	TEST(msgctl(0, MSG_INFO, (struct msgid_ds *)&info));
-+	TEST(msgctl(0, MSG_INFO, (struct msqid_ds *)&info));
- 
- 	if (TST_RET == -1) {
- 		tst_res(TFAIL | TTERRNO, "msgctl(0, MSG_INFO, ...)");
-
+ #define _GNU_SOURCE
+ #include <stdio.h>
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
