@@ -1,154 +1,136 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Dec 2020 15:15:47 +0100
-Subject: [LTP] [PATCH v2 09/10] syscalls/capset: Make use of TST_EXP_MACROS
+Date: Thu, 10 Dec 2020 15:15:48 +0100
+Subject: [LTP] [PATCH v2 10/10] syscalls/open: Make use of TST_EXP_MACROS
 In-Reply-To: <20201210141548.10982-1-chrubis@suse.cz>
 References: <20201210141548.10982-1-chrubis@suse.cz>
-Message-ID: <20201210141548.10982-10-chrubis@suse.cz>
+Message-ID: <20201210141548.10982-11-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+In the newlib testcases at least.
+
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/capset/capset01.c | 14 ++++-------
- testcases/kernel/syscalls/capset/capset02.c | 28 +++++++--------------
- testcases/kernel/syscalls/capset/capset03.c | 10 +-------
- testcases/kernel/syscalls/capset/capset04.c | 13 +++-------
- 4 files changed, 18 insertions(+), 47 deletions(-)
+ testcases/kernel/syscalls/open/open01.c | 11 ++++-------
+ testcases/kernel/syscalls/open/open02.c | 25 ++++++-------------------
+ testcases/kernel/syscalls/open/open11.c | 22 ++++++++++------------
+ 3 files changed, 20 insertions(+), 38 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/capset/capset01.c b/testcases/kernel/syscalls/capset/capset01.c
-index f8540539d..6b064517a 100644
---- a/testcases/kernel/syscalls/capset/capset01.c
-+++ b/testcases/kernel/syscalls/capset/capset01.c
-@@ -20,16 +20,15 @@ static struct tcase {
- 	int version;
- 	char *message;
+diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
+index c689a4b9b..1172f832b 100644
+--- a/testcases/kernel/syscalls/open/open01.c
++++ b/testcases/kernel/syscalls/open/open01.c
+@@ -36,8 +36,8 @@ static struct tcase {
+ 	unsigned short tst_bit;
+ 	char *desc;
  } tcases[] = {
--	{0x19980330, "Test on LINUX_CAPABILITY_VERSION_1"},
--	{0x20071026, "Test on LINUX_CAPABILITY_VERSION_2"},
--	{0x20080522, "Test on LINUX_CAPABILITY_VERSION_3"},
-+	{0x19980330, "LINUX_CAPABILITY_VERSION_1"},
-+	{0x20071026, "LINUX_CAPABILITY_VERSION_2"},
-+	{0x20080522, "LINUX_CAPABILITY_VERSION_3"},
+-	{TEST_FILE, O_RDWR | O_CREAT, 01444, S_ISVTX, "Sticky bit"},
+-	{TEST_DIR, O_DIRECTORY, 0, S_IFDIR, "Directory bit"}
++	{TEST_FILE, O_RDWR | O_CREAT, 01444, S_ISVTX, "sticky bit"},
++	{TEST_DIR, O_DIRECTORY, 0, S_IFDIR, "sirectory bit"}
  };
  
- static void verify_capset(unsigned int n)
+ static void verify_open(unsigned int n)
+@@ -45,12 +45,9 @@ static void verify_open(unsigned int n)
+ 	struct tcase *tc = &tcases[n];
+ 	struct stat buf;
+ 
+-	TEST(open(tc->filename, tc->flag, tc->mode));
++	TST_EXP_FD(open(tc->filename, tc->flag, tc->mode),
++	           "open() with %s", tc->desc);
+ 	fd = TST_RET;
+-	if (fd == -1) {
+-		tst_res(TFAIL, "Cannot open a file");
+-		return;
+-	}
+ 
+ 	SAFE_FSTAT(fd, &buf);
+ 	if (!(buf.st_mode & tc->tst_bit))
+diff --git a/testcases/kernel/syscalls/open/open02.c b/testcases/kernel/syscalls/open/open02.c
+index 7195b1b6c..ca9839c2d 100644
+--- a/testcases/kernel/syscalls/open/open02.c
++++ b/testcases/kernel/syscalls/open/open02.c
+@@ -25,12 +25,13 @@
+ #define TEST_FILE2	"test_file2"
+ 
+ static struct tcase {
+-	char *filename;
++	const char *filename;
+ 	int flag;
+ 	int exp_errno;
++	const char *desc;
+ } tcases[] = {
+-	{TEST_FILE, O_RDWR, ENOENT},
+-	{TEST_FILE2, O_RDONLY | O_NOATIME, EPERM},
++	{TEST_FILE, O_RDWR, ENOENT, "new file without O_CREAT"},
++	{TEST_FILE2, O_RDONLY | O_NOATIME, EPERM, "unpriviledget O_RDONLY | O_NOATIME"},
+ };
+ 
+ void setup(void)
+@@ -48,22 +49,8 @@ static void verify_open(unsigned int n)
  {
  	struct tcase *tc = &tcases[n];
  
--	tst_res(TINFO, "%s", tc->message);
- 	header->version = tc->version;
- 	header->pid = pid;
+-	TEST(open(tc->filename, tc->flag, 0444));
+-
+-	if (TST_RET != -1) {
+-		tst_res(TFAIL, "open(%s) succeeded unexpectedly",
+-			tc->filename);
+-		return;
+-	}
+-
+-	if (tc->exp_errno != TST_ERR) {
+-		tst_res(TFAIL | TTERRNO,
+-			"open() should fail with %s",
+-			tst_strerrno(tc->exp_errno));
+-		return;
+-	}
+-
+-	tst_res(TPASS | TTERRNO, "open() failed as expected");
++	TST_EXP_FAIL(open(tc->filename, tc->flag, 0444),
++	             tc->exp_errno, "open() %s", tc->desc);
+ }
  
-@@ -38,11 +37,8 @@ static void verify_capset(unsigned int n)
- 		return;
+ void cleanup(void)
+diff --git a/testcases/kernel/syscalls/open/open11.c b/testcases/kernel/syscalls/open/open11.c
+index cfd04fdcd..ded384fa8 100644
+--- a/testcases/kernel/syscalls/open/open11.c
++++ b/testcases/kernel/syscalls/open/open11.c
+@@ -277,21 +277,19 @@ static struct test_case {
+ 
+ static void verify_open(unsigned int n)
+ {
+-	int fd;
+-
+-	TEST(open(tc[n].path, tc[n].flags, tc[n].mode));
+-	fd = TST_RET;
+-
+-	if (fd > 0)
+-		SAFE_CLOSE(fd);
+-
+-	if (tc[n].err == -1 || TST_ERR == tc[n].err) {
++	if (tc[n].err > 0) {
++		TST_EXP_FAIL(open(tc[n].path, tc[n].flags, tc[n].mode),
++		             tc[n].err, "%s", tc[n].desc);
++	} else if (tc[n].err == 0) {
++		TST_EXP_FD(open(tc[n].path, tc[n].flags, tc[n].mode),
++		           "%s", tc[n].desc);
++	} else {
++		TEST(open(tc[n].path, tc[n].flags, tc[n].mode));
+ 		tst_res(TPASS, "%s", tc[n].desc);
+-		return;
  	}
  
--	TEST(tst_syscall(__NR_capset, header, data));
--	if (TST_RET == 0)
--		tst_res(TPASS, "capset() returned %ld", TST_RET);
--	else
--		tst_res(TFAIL | TTERRNO, "Test Failed, capset() returned %ld", TST_RET);
-+	TST_EXP_PASS(tst_syscall(__NR_capset, header, data),
-+	             "capset() with %s", tc->message);
+-	tst_res(TFAIL | TTERRNO, "%s - expected %s",
+-			tc[n].desc, tst_strerrno(tc[n].err));
++	if (TST_RET > 0)
++		SAFE_CLOSE(TST_RET);
  }
  
  static void setup(void)
-diff --git a/testcases/kernel/syscalls/capset/capset02.c b/testcases/kernel/syscalls/capset/capset02.c
-index a6c4f29a0..5173be09b 100644
---- a/testcases/kernel/syscalls/capset/capset02.c
-+++ b/testcases/kernel/syscalls/capset/capset02.c
-@@ -43,12 +43,12 @@ static struct tcase {
- 	int flag;
- 	char *message;
- } tcases[] = {
--	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 1, "Test bad address header"},
--	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 2, "Test bad address data"},
--	{0, 0, CAP1, CAP1, CAP1, EINVAL, 0, "Test bad version"},
--	{0x20080522, 0, CAP2, CAP1, CAP1, EPERM, 0, "Test bad value data(when pE is not in pP)"},
--	{0x20080522, 0, CAP1, CAP2, CAP1, EPERM, 0, "Test bad value data(when pP is not in old pP)"},
--	{0x20080522, 0, CAP1, CAP1, CAP2, EPERM, 0, "Test bad value data(when pI is not in bounding set or old pI)"},
-+	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 1, "bad address header"},
-+	{0x20080522, 0, CAP1, CAP1, CAP1, EFAULT, 2, "bad address data"},
-+	{0, 0, CAP1, CAP1, CAP1, EINVAL, 0, "bad version"},
-+	{0x20080522, 0, CAP2, CAP1, CAP1, EPERM, 0, "bad value data(when pE is not in pP)"},
-+	{0x20080522, 0, CAP1, CAP2, CAP1, EPERM, 0, "bad value data(when pP is not in old pP)"},
-+	{0x20080522, 0, CAP1, CAP1, CAP2, EPERM, 0, "bad value data(when pI is not in bounding set or old pI)"},
- };
- 
- static void verify_capset(unsigned int n)
-@@ -62,19 +62,9 @@ static void verify_capset(unsigned int n)
- 	data->permitted = tc->permitted;
- 	data->inheritable = tc->inheritable;
- 
--	tst_res(TINFO, "%s", tc->message);
--
--	TEST(tst_syscall(__NR_capset, tc->flag - 1 ? header : bad_addr,
--				tc->flag - 2 ? data : bad_addr));
--	if (TST_RET == 0) {
--		tst_res(TFAIL, "capset() succeed unexpectedly");
--		return;
--	}
--	if (TST_ERR == tc->exp_err)
--		tst_res(TPASS | TTERRNO, "capset() failed as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "capset() expected %s got ",
--			tst_strerrno(tc->exp_err));
-+	TST_EXP_FAIL(tst_syscall(__NR_capset, tc->flag - 1 ? header : bad_addr,
-+	                         tc->flag - 2 ? data : bad_addr),
-+	             tc->exp_err, "capset() with %s", tc->message);
- 	/*
- 	 * When an unsupported version value is specified, it will
- 	 * return the kernel preferred value of _LINUX_CAPABILITY_VERSION_?.
-diff --git a/testcases/kernel/syscalls/capset/capset03.c b/testcases/kernel/syscalls/capset/capset03.c
-index d5754753d..074ab1f50 100644
---- a/testcases/kernel/syscalls/capset/capset03.c
-+++ b/testcases/kernel/syscalls/capset/capset03.c
-@@ -23,15 +23,7 @@ static void verify_capset(void)
- {
- 	tst_res(TINFO, "Test bad value data(when pI is not old pP or old pI without CAP_SETPCAP)");
- 	data[0].inheritable = CAP2;
--	TEST(tst_syscall(__NR_capset, header, data));
--	if (TST_RET == 0) {
--		tst_res(TFAIL, "capset succeed unexpectedly");
--		return;
--	}
--	if (TST_ERR == EPERM)
--		tst_res(TPASS | TTERRNO, "capset() failed as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "capset expected EPERM, bug got");
-+	TST_EXP_FAIL(tst_syscall(__NR_capset, header, data), EPERM, "capset()");
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/capset/capset04.c b/testcases/kernel/syscalls/capset/capset04.c
-index 81ad7a35f..f929be555 100644
---- a/testcases/kernel/syscalls/capset/capset04.c
-+++ b/testcases/kernel/syscalls/capset/capset04.c
-@@ -24,18 +24,11 @@ static void verify_capset(void)
- 	if (!child_pid)
- 		pause();
- 
--	header->pid = child_pid;
-+	tst_res(TINFO, "Test capset() for a different process");
- 
--	TEST(tst_syscall(__NR_capset, header, data));
--	if (TST_RET == 0) {
--		tst_res(TFAIL, "capset succeed unexpectedly");
--		return;
--	}
-+	header->pid = child_pid;
- 
--	if (TST_ERR == EPERM)
--		tst_res(TPASS, "capset can't modify other process capabilities");
--	else
--		tst_res(TFAIL | TTERRNO, "capset expected EPERM, bug got");
-+	TST_EXP_FAIL(tst_syscall(__NR_capset, header, data), EPERM, "capset()");
- 
- 	SAFE_KILL(child_pid, SIGTERM);
- 	SAFE_WAIT(NULL);
 -- 
 2.26.2
 
