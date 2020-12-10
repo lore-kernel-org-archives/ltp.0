@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Dec 2020 15:15:45 +0100
-Subject: [LTP] [PATCH v2 07/10] syscalls/cacheflush: Make use of
- TST_EXP_MACROS
+Date: Thu, 10 Dec 2020 15:15:46 +0100
+Subject: [LTP] [PATCH v2 08/10] syscalls/capget: Make use of TEST_MACROS
 In-Reply-To: <20201210141548.10982-1-chrubis@suse.cz>
 References: <20201210141548.10982-1-chrubis@suse.cz>
-Message-ID: <20201210141548.10982-8-chrubis@suse.cz>
+Message-ID: <20201210141548.10982-9-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,28 +12,96 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/cacheflush/cacheflush01.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ testcases/kernel/syscalls/capget/capget01.c | 17 +++++---------
+ testcases/kernel/syscalls/capget/capget02.c | 26 +++++++--------------
+ 2 files changed, 14 insertions(+), 29 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/cacheflush/cacheflush01.c b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-index 6ad8b953a..3daaff624 100644
---- a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-+++ b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-@@ -45,12 +45,8 @@ static void test_cacheflush(unsigned int i)
+diff --git a/testcases/kernel/syscalls/capget/capget01.c b/testcases/kernel/syscalls/capget/capget01.c
+index f3767594b..6c17a7c7c 100644
+--- a/testcases/kernel/syscalls/capget/capget01.c
++++ b/testcases/kernel/syscalls/capget/capget01.c
+@@ -20,25 +20,20 @@ static struct tcase {
+ 	int version;
+ 	char *message;
+ } tcases[] = {
+-	{0x19980330, "Test on LINUX_CAPABILITY_VERSION_1"},
+-	{0x20071026, "Test on LINUX_CAPABILITY_VERSION_2"},
+-	{0x20080522, "Test on LINUX_CAPABILITY_VERSION_3"},
++	{0x19980330, "LINUX_CAPABILITY_VERSION_1"},
++	{0x20071026, "LINUX_CAPABILITY_VERSION_2"},
++	{0x20080522, "LINUX_CAPABILITY_VERSION_3"},
+ };
+ 
+ static void verify_capget(unsigned int n)
  {
- 	struct test_case_t *tc = &test_cases[i];
+ 	struct tcase *tc = &tcases[n];
  
--	TEST(tst_syscall(__NR_cacheflush, addr, getpagesize(), tc->cache));
+-	tst_res(TINFO, "%s", tc->message);
+-
+ 	hdr->version = tc->version;
+ 	hdr->pid = pid;
+-	TEST(tst_syscall(__NR_capget, hdr, data));
+-	if (TST_RET == 0)
+-		tst_res(TPASS, "capget() returned %ld", TST_RET);
+-	else
+-		tst_res(TFAIL | TTERRNO, "Test Failed, capget() returned %ld",
+-				TST_RET);
++
++	TST_EXP_PASS(tst_syscall(__NR_capget, hdr, data),
++	             "capget() with %s", tc->message);
+ 
+ 	if (data[0].effective & 1 << CAP_NET_RAW)
+ 		tst_res(TFAIL, "capget() gets CAP_NET_RAW unexpectedly in pE");
+diff --git a/testcases/kernel/syscalls/capget/capget02.c b/testcases/kernel/syscalls/capget/capget02.c
+index e770ea0a9..f4a2b471c 100644
+--- a/testcases/kernel/syscalls/capget/capget02.c
++++ b/testcases/kernel/syscalls/capget/capget02.c
+@@ -31,11 +31,11 @@ static struct tcase {
+ 	int flag;
+ 	char *message;
+ } tcases[] = {
+-	{0x20080522, 0, EFAULT, 1, "Test bad address header"},
+-	{0x20080522, 0, EFAULT, 2, "Test bad address data"},
+-	{0, 0, EINVAL, 0, "Test bad version"},
+-	{0x20080522, -1, EINVAL, 0, "Test bad pid"},
+-	{0x20080522, 1, ESRCH, 0, "Test unused pid"},
++	{0x20080522, 0, EFAULT, 1, "bad address header"},
++	{0x20080522, 0, EFAULT, 2, "bad address data"},
++	{0, 0, EINVAL, 0, "bad version"},
++	{0x20080522, -1, EINVAL, 0, "bad pid"},
++	{0x20080522, 1, ESRCH, 0, "unused pid"},
+ };
+ 
+ static void verify_capget(unsigned int n)
+@@ -48,25 +48,15 @@ static void verify_capget(unsigned int n)
+ 	else
+ 		header->pid = tc->pid;
+ 
+-	tst_res(TINFO, "%s", tc->message);
+-
+ 	/*
+ 	 * header must not be NULL. data may be NULL only when the user is
+ 	 * trying to determine the preferred capability version format
+ 	 * supported by the kernel. So use tst_get_bad_addr() to get
+ 	 * this error.
+ 	 */
+-	TEST(tst_syscall(__NR_capget, tc->flag - 1 ? header : NULL,
+-				tc->flag - 2 ? data : bad_data));
 -	if (TST_RET == 0) {
--		tst_res(TPASS, "%s passed", tc->desc);
--	} else {
--		tst_res(TFAIL | TTERRNO, "%s failed", tc->desc);
+-		tst_res(TFAIL, "capget() succeed unexpectedly");
+-		return;
 -	}
-+	TST_EXP_PASS(tst_syscall(__NR_cacheflush, addr, getpagesize(), tc->cache),
-+	             "%s", tc->desc);
- }
+-	if (TST_ERR == tc->exp_err)
+-		tst_res(TPASS | TTERRNO, "capget() failed as expected");
+-	else
+-		tst_res(TFAIL | TTERRNO, "capget() expected %s got ",
+-			tst_strerrno(tc->exp_err));
++	TST_EXP_FAIL(tst_syscall(__NR_capget, tc->flag - 1 ? header : NULL,
++	                         tc->flag - 2 ? data : bad_data),
++		     tc->exp_err, "capget() with %s", tc->message);
  
- static struct tst_test test = {
+ 	/*
+ 	 * When an unsupported version value is specified, it will
 -- 
 2.26.2
 
