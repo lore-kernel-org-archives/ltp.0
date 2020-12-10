@@ -1,36 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Dec 2020 08:15:45 +0100
-Subject: [LTP] [PATCH 1/1] host01.sh: Allow to overwrite the default hostname
-Message-ID: <20201211071545.10209-1-pvorel@suse.cz>
+From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Date: Thu, 10 Dec 2020 18:51:16 +0200
+Subject: [LTP] [PATCH v1] openposix/fork/7-1.c: A bug fix
+Message-ID: <20201210165116.5052-1-bogdan.lezhepekov@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using hostname for test requires DNS setup.
-Allow to set hostname (e.g. github.com) via $HOSTNAME in case host not
-set. This restores the old behavior (the legacy API version used $RHOST).
+The function output interferes with the variable errno, that leads to
+the false positive result on limited test setups. The issue fixed.
 
-Suggested-by: Petr Cervinka <pcervinka@suse.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
 ---
- testcases/network/tcp_cmds/host/host01.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../open_posix_testsuite/conformance/interfaces/fork/7-1.c    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/network/tcp_cmds/host/host01.sh b/testcases/network/tcp_cmds/host/host01.sh
-index 662afe8b4..e6d8d4d06 100755
---- a/testcases/network/tcp_cmds/host/host01.sh
-+++ b/testcases/network/tcp_cmds/host/host01.sh
-@@ -12,7 +12,7 @@ TST_NEEDS_CMDS="awk host hostname"
- 
- do_test()
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
+index c3db90c00..4249d713d 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
+@@ -53,12 +53,14 @@ static void read_catalog(nl_catd cat, char *who)
  {
--	local lhost="$(hostname)"
-+	local lhost="${HOSTNAME:-$(hostname)}"
- 	local addr
+ 	char *msg = NULL;
+ 	int i, j;
+-	errno = 0;
  
- 	tst_res TINFO "test basic functionality of the host command"
+ #if VERBOSE > 0
+ 	output("Reading the message catalog from %s...\n", who);
+ #endif
+ 
++	/* the output function interferes with errno */ 
++	errno = 0;
++
+ 	for (i = 1; i <= 2; i++) {
+ 		for (j = 1; j <= 2; j++) {
+ 
 -- 
-2.29.2
+2.26.2
 
