@@ -1,81 +1,80 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Dec 2020 15:15:40 +0100
-Subject: [LTP] [PATCH v2 02/10] syscalls/uname: Make use of TST_EXP_MACROS
-In-Reply-To: <20201210141548.10982-1-chrubis@suse.cz>
-References: <20201210141548.10982-1-chrubis@suse.cz>
-Message-ID: <20201210141548.10982-3-chrubis@suse.cz>
+Date: Thu, 10 Dec 2020 15:15:38 +0100
+Subject: [LTP] [PATCH v2 00/10] Introduce TST_EXP_MACROS
+Message-ID: <20201210141548.10982-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/uname/uname01.c | 13 +++----------
- testcases/kernel/syscalls/uname/uname02.c | 17 +----------------
- 2 files changed, 4 insertions(+), 26 deletions(-)
+This patchset adds TST_EXP_MACROS() implementation.
 
-diff --git a/testcases/kernel/syscalls/uname/uname01.c b/testcases/kernel/syscalls/uname/uname01.c
-index bd3b05303..5e2f5ffac 100644
---- a/testcases/kernel/syscalls/uname/uname01.c
-+++ b/testcases/kernel/syscalls/uname/uname01.c
-@@ -18,24 +18,17 @@ static void verify_uname(void)
- 
- 	memset(&un, 0, sizeof(un));
- 
--	TEST(uname(&un));
--	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "uname() failed");
--		return;
--	}
-+	TST_EXP_PASS(uname(&un));
- 
--	if (TST_RET != 0) {
--		tst_res(TFAIL | TTERRNO,
--			"uname() returned invalid value %ld", TST_RET);
-+	if (!TST_PASS)
- 		return;
--	}
- 
- 	if (strcmp(un.sysname, "Linux")) {
- 		tst_res(TFAIL, "sysname is not Linux");
- 		return;
- 	}
- 
--	tst_res(TPASS, "uname() succeeded");
-+	tst_res(TPASS, "sysname set to Linux");
- }
- 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/uname/uname02.c b/testcases/kernel/syscalls/uname/uname02.c
-index 1903dae24..cd4b15487 100644
---- a/testcases/kernel/syscalls/uname/uname02.c
-+++ b/testcases/kernel/syscalls/uname/uname02.c
-@@ -16,22 +16,7 @@ static void *bad_addr;
- 
- static void verify_uname(void)
- {
--	TEST(uname(bad_addr));
--	if (TST_RET == 0) {
--		tst_res(TFAIL, "uname() succeed when failure expected");
--		return;
--	}
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "Invalid uname() return value %ld", TST_RET);
--		return;
--	}
--
--	if (TST_ERR == EFAULT)
--		tst_res(TPASS, "uname() got EFAULT as expected");
--	else
--		tst_res(TFAIL | TTERRNO, "uname() failed unexpectedly");
--
-+	TST_EXP_FAIL(uname(bad_addr), EFAULT);
- }
- 
- static void setup(void)
+These macros are intended to simplify and unify syscall unit tests.
+
+This patchset converts a few testcases to use TST_EXP_MACROS() it's
+intenteded to serve as an example since there is a lot of testcases that
+could use them as well.
+
+Also the documentation for these macros is ommited at this point, I will
+add it in a case that we agree to include them in the test library.
+
+
+Changes in v2:
+
+- renamed the macros so that it's more clear that they do
+- added documentation to test-writing-guidelines
+- minor fixed in the converted testcases
+
+Cyril Hrubis (10):
+  lib: Introduce TST_EXP_* macros
+  syscalls/uname: Make use of TST_EXP_MACROS
+  syscalls/accept: Make use of TST_EXP_MACROS
+  syscalls/access: Make use of TST_EXP_MACROS
+  syscalls/bind: Make use of TST_EXP_MACROS
+  syscalls/brk01: Make use of TST_EXP_MACROS
+  syscalls/cacheflush: Make use of TST_EXP_MACROS
+  syscalls/capget: Make use of TEST_MACROS
+  syscalls/capset: Make use of TST_EXP_MACROS
+  syscalls/open: Make use of TST_EXP_MACROS
+
+ doc/test-writing-guidelines.txt               |  54 ++++++++
+ include/tst_test.h                            |  28 +---
+ include/tst_test_macros.h                     | 130 ++++++++++++++++++
+ lib/newlib_tests/.gitignore                   |   3 +
+ lib/newlib_tests/test_macros01.c              |  40 ++++++
+ lib/newlib_tests/test_macros02.c              |  42 ++++++
+ lib/newlib_tests/test_macros03.c              |  40 ++++++
+ lib/tst_test.c                                |   1 +
+ testcases/kernel/syscalls/accept/accept01.c   |  17 +--
+ testcases/kernel/syscalls/access/access01.c   |  45 +-----
+ testcases/kernel/syscalls/access/access02.c   |   8 +-
+ testcases/kernel/syscalls/access/access03.c   |  28 +---
+ testcases/kernel/syscalls/access/access04.c   |  17 +--
+ testcases/kernel/syscalls/bind/bind01.c       |  12 +-
+ testcases/kernel/syscalls/bind/bind02.c       |  11 +-
+ testcases/kernel/syscalls/bind/bind03.c       |  26 +---
+ testcases/kernel/syscalls/bind/bind04.c       |   5 +-
+ testcases/kernel/syscalls/bind/bind05.c       |   5 +-
+ testcases/kernel/syscalls/brk/brk01.c         |   9 +-
+ .../kernel/syscalls/cacheflush/cacheflush01.c |   8 +-
+ testcases/kernel/syscalls/capget/capget01.c   |  17 +--
+ testcases/kernel/syscalls/capget/capget02.c   |  26 ++--
+ testcases/kernel/syscalls/capset/capset01.c   |  14 +-
+ testcases/kernel/syscalls/capset/capset02.c   |  28 ++--
+ testcases/kernel/syscalls/capset/capset03.c   |  10 +-
+ testcases/kernel/syscalls/capset/capset04.c   |  13 +-
+ testcases/kernel/syscalls/open/open01.c       |  11 +-
+ testcases/kernel/syscalls/open/open02.c       |  25 +---
+ testcases/kernel/syscalls/open/open11.c       |  22 ++-
+ testcases/kernel/syscalls/uname/uname01.c     |  13 +-
+ testcases/kernel/syscalls/uname/uname02.c     |  17 +--
+ 31 files changed, 403 insertions(+), 322 deletions(-)
+ create mode 100644 include/tst_test_macros.h
+ create mode 100644 lib/newlib_tests/test_macros01.c
+ create mode 100644 lib/newlib_tests/test_macros02.c
+ create mode 100644 lib/newlib_tests/test_macros03.c
+
 -- 
 2.26.2
 
