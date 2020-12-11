@@ -1,24 +1,31 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 11 Dec 2020 13:45:03 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 11 Dec 2020 14:34:01 +0100
 Subject: [LTP] [PATCH v2 00/10] Introduce TST_EXP_MACROS
-In-Reply-To: <20201210141548.10982-1-chrubis@suse.cz>
+In-Reply-To: <CAEemH2epbXuk-npooQWxHW3THOX-3k-_9PpREqNO5hLZ9=__hA@mail.gmail.com>
 References: <20201210141548.10982-1-chrubis@suse.cz>
-Message-ID: <X9Npz/HslBQWdGFb@pevik>
+ <CAEemH2epbXuk-npooQWxHW3THOX-3k-_9PpREqNO5hLZ9=__hA@mail.gmail.com>
+Message-ID: <X9N1SZjbKOTeJvSd@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> One more point, we might have to handle the unsupported syscall
+> issue in TST_EXP_*. Otherwise, we can NOT make use of these
+> macros in tests like madvise01.c. But, I agree to merge patchset
+> as V2, and solve that in follow-up changes.
 
-Very nice helpers!
+We should add versions that will take zero terminated array of errnos
+that should end up in TCONF later on, but as said I want to convert the
+easy cases for now.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> For the series:
+> Acked-by: Li Wang <liwang@redhat.com>
 
-Another tip for future: many tests would benefit for handling some errno as
-TCONF (e.g. TST_EXP_{FAIL,PASS}_TCONF(), but it's be nice if more than one could
-be passed).
+Pushed, thanks.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
