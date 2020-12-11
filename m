@@ -1,12 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 11 Dec 2020 16:16:41 +0100
-Subject: [LTP] [PATCH v4 1/1] syscalls/{send|recv}mmsg: add a test case
- for timeout and errno test
-In-Reply-To: <20200922135244.GA4167@yuki.lan>
-References: <20200920154633.27255-1-Filip.Bozuta@syrmia.com>
- <20200920154633.27255-2-Filip.Bozuta@syrmia.com>
- <20200922135244.GA4167@yuki.lan>
-Message-ID: <X9ONWQwAt8ZXqkms@yuki.lan>
+Date: Fri, 11 Dec 2020 16:17:19 +0100
+Subject: [LTP] [PATCH v2] pty04: Limit the number of packets sent to
+ avoid timeout
+In-Reply-To: <20201105155400.GA15701@yuki.lan>
+References: <875z6m5rib.fsf@suse.de>
+ <20201104163528.13833-1-rpalethorpe@suse.com>
+ <20201105155400.GA15701@yuki.lan>
+Message-ID: <X9ONfxzTVLT4Rgfd@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,7 +14,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Ping. Are you planning on finishing these?
+Ping.
 
 -- 
 Cyril Hrubis
