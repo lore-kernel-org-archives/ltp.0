@@ -1,47 +1,28 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 11 Dec 2020 18:45:56 +0800
-Subject: [LTP] [PATCH v2 00/10] Introduce TST_EXP_MACROS
-In-Reply-To: <20201210141548.10982-1-chrubis@suse.cz>
-References: <20201210141548.10982-1-chrubis@suse.cz>
-Message-ID: <CAEemH2epbXuk-npooQWxHW3THOX-3k-_9PpREqNO5hLZ9=__hA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 11 Dec 2020 11:53:43 +0100
+Subject: [LTP] [PATCH v1] openposix/fork/7-1.c: A bug fix
+In-Reply-To: <750CB65B-8F87-484D-9373-5CE4E1003413@getmailspring.com>
+References: <X9NB12pkaskYs8+l@yuki.lan>
+ <750CB65B-8F87-484D-9373-5CE4E1003413@getmailspring.com>
+Message-ID: <X9NPty84RhoUmgSE@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Dec 10, 2020 at 10:15 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+Hi!
+> By adding this comment I wanted to stress that the place of "errno =
+> 0" is not randomly chosen, to prevent somebody from moving it back to
+> the beginning of the file :) But if you find it not necessary, then
+> please go ahead.
 
-> This patchset adds TST_EXP_MACROS() implementation.
->
-> These macros are intended to simplify and unify syscall unit tests.
->
-> This patchset converts a few testcases to use TST_EXP_MACROS() it's
-> intenteded to serve as an example since there is a lot of testcases that
-> could use them as well.
->
-> Also the documentation for these macros is ommited at this point, I will
-> add it in a case that we agree to include them in the test library.
->
->
-> Changes in v2:
->
-> - renamed the macros so that it's more clear that they do
-> - added documentation to test-writing-guidelines
-> - minor fixed in the converted testcases
->
-
-One more point, we might have to handle the unsupported syscall
-issue in TST_EXP_*. Otherwise, we can NOT make use of these
-macros in tests like madvise01.c. But, I agree to merge patchset
-as V2, and solve that in follow-up changes.
-
-For the series:
-Acked-by: Li Wang <liwang@redhat.com>
+I think that this still falls under "do not comment the obvious" rule.
+We do have more than hundred of testcases that do "errno = 0" and as far
+as I can tell none of them includes a comment that says that we cannot
+move the code around and I do not think that we should add hundred of
+comments into these testcases either.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201211/2c269794/attachment-0001.htm>
+Cyril Hrubis
+chrubis@suse.cz
