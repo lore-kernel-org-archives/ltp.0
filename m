@@ -1,25 +1,23 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 14 Dec 2020 14:21:00 +0300
-Subject: [LTP] [PATCH 1/1] host01.sh: Allow to overwrite the default
- hostname
-In-Reply-To: <20201211071545.10209-1-pvorel@suse.cz>
-References: <20201211071545.10209-1-pvorel@suse.cz>
-Message-ID: <e504fd30-aacd-ec7b-6f09-172242573e6e@oracle.com>
+Date: Mon, 14 Dec 2020 14:48:29 +0300
+Subject: [LTP] [PATCH 2/2] network/ping02: use tst_ping() from the
+ library
+In-Reply-To: <X9Mz9gfrtg2/g+cv@pevik>
+References: <20201208162440.14538-1-alexey.kodanev@oracle.com>
+ <20201208162440.14538-2-alexey.kodanev@oracle.com> <X9Mz9gfrtg2/g+cv@pevik>
+Message-ID: <727ee088-ade0-e9ac-84a9-873201ebec1d@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11.12.2020 10:15, Petr Vorel wrote:
-> Using hostname for test requires DNS setup.
-> Allow to set hostname (e.g. github.com) via $HOSTNAME in case host not
-> set. This restores the old behavior (the legacy API version used $RHOST).
+On 11.12.2020 11:55, Petr Vorel wrote:
+> Hi Alexey,
 > 
-> Suggested-by: Petr Cervinka <pcervinka@suse.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/tcp_cmds/host/host01.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
 
-Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Petr, thanks for the review!
+
+Applied.
