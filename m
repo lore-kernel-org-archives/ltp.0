@@ -1,54 +1,32 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 14 Dec 2020 13:18:48 +0000
-Subject: [LTP] [PATCH v4] overcommit_memory: Fix unstable subtest
-In-Reply-To: <20201214065528.453216-1-lkml@jv-coder.de>
-References: <20201214065528.453216-1-lkml@jv-coder.de>
-Message-ID: <87pn3ch6fb.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 14 Dec 2020 14:47:00 +0100
+Subject: [LTP] [PATCH 1/1] host01.sh: Allow to overwrite the default
+ hostname
+In-Reply-To: <e504fd30-aacd-ec7b-6f09-172242573e6e@oracle.com>
+References: <20201211071545.10209-1-pvorel@suse.cz>
+ <e504fd30-aacd-ec7b-6f09-172242573e6e@oracle.com>
+Message-ID: <X9ds1PGTYPALB5DE@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Alexey,
 
-Joerg Vehlow <lkml@jv-coder.de> writes:
+> On 11.12.2020 10:15, Petr Vorel wrote:
+> > Using hostname for test requires DNS setup.
+> > Allow to set hostname (e.g. github.com) via $HOSTNAME in case host not
+> > set. This restores the old behavior (the legacy API version used $RHOST).
 
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
->
-> Changes to v3:
->  - Change total_batch_size to kB. All sizes used in this test are in kB,
->    using bytes was wrong here
->  - Calculate total_batch_size during setup
->  - Formating of MIN/MAX construct
->
-> The test sets overcommit policy to never overcommit and then tries
-> to allocate the commit limit reported by /proc/meminfo. This value is an exact
-> value (at least at that point in time) of memory, that can be allocated
-> according to the policy and ratio settings. This should fail, since there
-> is already some memory allocated for running the test programm, but due to
-> inaccurate memory accounting in mm/util.c __vm_enough_memory(), the allocation
-> can still succeed.
->
-> The commited memory is stored in a percpu counter, that counts in 1 + ncpu
-> variables. For small allocations and deallocations, the memory is counted
-> in a counter per cpu, without locking. If this counter reaches a threshold,
-> the value is committed to a global counter. Due to this the global counter
-> can become negative. This global counter is the only thing taken into
-> account in __vm_enough_memory, propably for performance reasons, because
-> otherwise a lock is required.
->
-> Because of the inaccuracy the system can overcommit a bit by number of cpus
-> times threshold value. By adding this value to the exact commit limit
-> reported by /proc/meminfo, we can be sure, that we really always hit the
-> memory limit.
->
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> > Suggested-by: Petr Cervinka <pcervinka@suse.com>
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> >  testcases/network/tcp_cmds/host/host01.sh | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 
-LGTM
+> Acked-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Thanks! Merged.
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
