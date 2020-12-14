@@ -1,329 +1,257 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 14 Dec 2020 23:19:46 +0100
-Subject: [LTP] [PATCH v5 4/4] ima_tpm.sh: Fix calculating PCR aggregate
+Date: Mon, 14 Dec 2020 23:19:45 +0100
+Subject: [LTP] [PATCH v5 3/4] ima_tpm.sh: Fix calculating boot aggregate
 In-Reply-To: <20201214221946.6340-1-pvorel@suse.cz>
 References: <20201214221946.6340-1-pvorel@suse.cz>
-Message-ID: <20201214221946.6340-5-pvorel@suse.cz>
+Message-ID: <20201214221946.6340-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-for TPM 2.0 and support more evmctl versions.
+for TPM 2.0 or kernel >= v5.8-rc1:
+6f1a1d103b48 ima: ("Switch to ima_hash_algo for boot aggregate")
 
-Because exporting PCR registers for TPM 2.0 has not been upstreamed [1],
-we use user space code, which requires evmctl >= 1.3.1 and tsspcrread.
-Using evmctl allows to test for TPM devices which does not export event
-log (/sys/kernel/security/tpm0/binary_bios_measurements).
+Test still fails with newer TPM 2.0 on kernel < v5.8-rc1.
 
-For TPM 1.2 read tpm0 device's pcrs file from sysfs. (tss1pcrread could
-be also used, but it's not yet packaged by distros.)
+Test was failing, because it expect SHA1 (we ignore MD5) hash, but for TPM 2.0
+is now used IMA default hash algorithm (by default default SHA256).
+This is similar for entries in IMA measurement list so we can reuse
+already existing code.
 
-For old kernels which use SHA1/MD5, any evmctl version is required (evmctl
-ima_measurement was introduced in very old v0.7), but
-* newer sysctl path /sys/class/tpm/tpm0/device/pcrs requires evmctl 1.1
-* using ima_policy=tcb requires 1.3.1 due --ignore-violations
+Reading other algorithms than SHA1 or support TPM 2.0 requires evmctl
+>= 1.3.1 (1.3 would also work for test1, but will be required for test2).
 
-We now support output format of ima_measurement command for various
-evmctl versions:
-* 1.3: "sha256: TPM PCR-10:" (or other algorithm, e.g. "sha1:")
-* 1.1-1.2.1: "HW PCR-10:" (the only previously supported format)
-* 0.7-1.0: "PCR-10:"
+Although recent evmctl is recommended, to support older kernels and TPMs
+which support only SHA1, get boot aggregate with old our legacy
+ima_boot_aggregate.c.
 
-NOTE: we ignore evmctl failure for evmctl < 1.3.1 (missing --ignore-violations,
-also evmctl < 1.1 fails with "PCRAgg does not match PCR-10")
+Also fixed cases:
+* testing with no TPM device:
+* TPM TPM 2.0 devices which does not export event log
+(/sys/kernel/security/tpm0/binary_bios_measurements).
 
-As for previous commit fix testing with TPM 2.0 device which does not
+Also fixed test without TPM device (when IMA TPM-bypass is tested)
+as some TPM 2.0 devices does not export event log
+(/sys/kernel/security/tpm0/binary_bios_measurements).
+This does not require evmctl at all.
+
+Also try best to detect TPM major version (1, 2 or none - assume
+TPM-bypass). This fixes testing with TPM 2.0 device which does not
 export event log (/sys/kernel/security/tpm0/binary_bios_measurements):
 not wrongly assuming TPM-bypass when kernel didn't export other TPM
 2.0 files we check in get_tpm_version() but bios boot aggregate is
 correct (i.e. not 0x00s). In that case evmctl ima_boot_aggregate can get
 boot aggregate even without TPM event log.
 
-[1] https://patchwork.kernel.org/patch/11759729/
-
 Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
 Changes v4->v5:
-* improved TPM 2.0 detection (e.g. check for /dev/tpmrm0 and /dev/tpm0)
-* test2: if evmctl ima_measurement fails, run again with --ignore-violations
-* test2: assume TPM 2, if not detected
-* print TPM kernel config
-* cleanup
+* add .needs_root = 1
 
- .../security/integrity/ima/tests/ima_setup.sh |  14 +-
- .../security/integrity/ima/tests/ima_tpm.sh   | 176 +++++++++++++-----
- 2 files changed, 144 insertions(+), 46 deletions(-)
+ .../security/integrity/ima/tests/ima_tpm.sh   | 176 +++++++++++++++---
+ 1 file changed, 154 insertions(+), 22 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index dbf8a1db4..59a7ffeac 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -93,7 +93,7 @@ require_ima_policy_content()
- 	fi
- }
- 
--require_ima_policy_cmdline()
-+check_ima_policy_cmdline()
- {
- 	local policy="$1"
- 	local i
-@@ -101,10 +101,18 @@ require_ima_policy_cmdline()
- 	grep -q "ima_$policy" /proc/cmdline && return
- 	for i in $(cat /proc/cmdline); do
- 		if echo "$i" | grep -q '^ima_policy='; then
--			echo "$i" | grep -q -e "|[ ]*$policy" -e "$policy[ ]*|" -e "=$policy" && return
-+			echo "$i" | grep -q -e "|[ ]*$policy" -e "$policy[ ]*|" -e "=$policy" && return 0
- 		fi
- 	done
--	tst_brk TCONF "IMA measurement tests require builtin IMA $policy policy (e.g. ima_policy=$policy kernel parameter)"
-+	return 1
-+}
-+
-+require_ima_policy_cmdline()
-+{
-+	local policy="$1"
-+
-+	check_ima_policy_cmdline $policy || \
-+		tst_brk TCONF "IMA measurement tests require builtin IMA $policy policy (e.g. ima_policy=$policy kernel parameter)"
- }
- 
- mount_helper()
 diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-index 195fcb16c..233fdeed8 100755
+index dc958eb5c..195fcb16c 100755
 --- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
 +++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-@@ -7,13 +7,14 @@
+@@ -7,39 +7,171 @@
  # Verify the boot and PCR aggregates.
  
  TST_CNT=2
--TST_NEEDS_CMDS="awk cut"
-+TST_NEEDS_CMDS="awk cut tail"
- TST_SETUP="setup"
+-TST_NEEDS_CMDS="awk cut ima_boot_aggregate"
++TST_NEEDS_CMDS="awk cut"
++TST_SETUP="setup"
  
  . ima_setup.sh
  
- EVMCTL_REQUIRED='1.3.1'
- ERRMSG_EVMCTL="=> install evmctl >= $EVMCTL_REQUIRED"
-+ERRMSG_TPM="TPM hardware support not enabled in kernel or no TPM chip found"
- 
- setup()
- {
-@@ -31,7 +32,7 @@ setup()
- 
- 	TPM_VERSION="$(get_tpm_version)"
- 	if [ -z "$TPM_VERSION" ]; then
--		tst_res TINFO "TPM hardware support not enabled in kernel or no TPM chip found, testing TPM-bypass"
-+		tst_res TINFO "$ERRMSG_TPM, testing TPM-bypass"
- 	else
- 		tst_res TINFO "TMP major version: $TPM_VERSION"
- 	fi
-@@ -121,6 +122,93 @@ get_tpm_version()
- 	fi
- }
- 
-+read_pcr_tpm1()
-+{
-+	local pcrs_path="/sys/class/tpm/tpm0/device/pcrs"
-+	local evmctl_required="1.1"
-+	local hash pcr
-+
-+	if [ ! -f "$pcrs_path" ]; then
-+		pcrs_path="/sys/class/misc/tpm0/device/pcrs"
-+	elif ! check_evmctl $evmctl_required; then
-+		echo "evmctl >= $evmctl_required required"
-+		return 32
-+	fi
-+
-+	if [ ! -f "$pcrs_path" ]; then
-+		echo "missing PCR file $pcrs_path ($ERRMSG_TPM)"
-+		return 32
-+	fi
-+
-+	while read line; do
-+		pcr="$(echo $line | cut -d':' -f1)"
-+		hash="$(echo $line | cut -d':' -f2 | awk '{ gsub (" ", "", $0); print tolower($0) }')"
-+		echo "$pcr: $hash"
-+	done < $pcrs_path
-+
-+	return 0
-+}
-+
-+# NOTE: TPM 1.2 would require to use tss1pcrread which is not fully adopted
-+# by distros yet.
-+read_pcr_tpm2()
-+{
-+	local pcrmax=23
-+	local pcrread="tsspcrread -halg $ALGORITHM"
-+	local i pcr
-+
-+	tst_check_cmds tsspcrread || return 1
-+
-+	for i in $(seq 0 $pcrmax); do
-+		pcr=$($pcrread -ha "$i" -ns)
-+		if [ $? -ne 0 ]; then
-+			echo "tsspcrread failed: $pcr"
-+			return 1
-+		fi
-+		printf "PCR-%02d: %s\n" $i "$pcr"
-+	done
-+
-+	return 0
-+}
-+
-+get_pcr10_aggregate()
-+{
-+	local cmd="evmctl -vv ima_measurement $BINARY_MEASUREMENTS"
-+	local msg="$ERRMSG_EVMCTL"
-+	local res=TCONF
-+	local pcr ret
-+
-+	if [ -z "$MISSING_EVMCTL" ]; then
-+		msg=
-+		res=TFAIL
-+	fi
-+
-+	$cmd > hash.txt 2>&1
-+	ret=$?
-+	if [ $ret -ne 0 -a -z "$MISSING_EVMCTL" ]; then
-+		tst_res TFAIL "evmctl failed, trying with --ignore-violations"
-+		cmd="$cmd --ignore-violations"
-+		$cmd > hash.txt 2>&1
-+		ret=$?
-+	elif [ $ret -ne 0 -a "$MISSING_EVMCTL" = 1 ]; then
-+		tst_brk TFAIL "evmctl failed $msg"
-+	fi
-+
-+	[ $ret -ne 0 ] && tst_res TWARN "evmctl failed, trying to continue $msg"
-+
-+	pcr=$(grep -E "^($ALGORITHM: )*PCRAgg(.*10)*:" hash.txt | tail -1 \
-+		| awk '{print $NF}')
-+
-+	if [ -z "$pcr" ]; then
-+		tst_res $res "failed to find aggregate PCR-10 $msg"
-+		tst_res TINFO "hash file:"
-+		cat hash.txt >&2
-+		return
-+	fi
-+
-+	echo "$pcr"
-+}
-+
- test1_tpm_bypass_mode()
- {
- 	local zero=$(echo $DIGEST | awk '{gsub(/./, "0")}; {print}')
-@@ -139,8 +227,10 @@ test1_hw_tpm()
- 	local cmd="evmctl ima_boot_aggregate -v"
- 	local boot_aggregate
- 
--	[ -z "$TPM_VERSION" ] && \
-+	if [ -z "$TPM_VERSION" ]; then
- 		tst_res TWARN "TPM-bypass failed, trying to test TPM device (unknown TPM version)"
-+		MAYBE_TPM2=1
-+	fi
- 
- 	if [ "$MISSING_EVMCTL" = 1 ]; then
- 		if [ ! -f "$tpm_bios" ]; then
-@@ -174,57 +264,57 @@ test1()
- 	[ -z "$TPM_VERSION" ] && test1_tpm_bypass_mode || test1_hw_tpm
- }
- 
--# Probably cleaner to programmatically read the PCR values directly
--# from the TPM, but that would require a TPM library. For now, use
--# the PCR values from /sys/devices.
--validate_pcr()
-+test2()
- {
--	tst_res TINFO "verify PCR (Process Control Register)"
-+	local hash pcr_aggregate out ret
- 
--	local dev_pcrs="$1"
--	local pcr hash aggregate_pcr
-+	tst_res TINFO "verify PCR values"
- 
--	aggregate_pcr="$(evmctl -v ima_measurement $BINARY_MEASUREMENTS 2>&1 | \
--		grep 'HW PCR-10:' | awk '{print $3}')"
--	if [ -z "$aggregate_pcr" ]; then
--		tst_res TFAIL "failed to get PCR-10"
--		return 1
-+	if [ "$MAYBE_TPM2" = 1 ]; then
-+		tst_res TINFO "TMP version not detected ($ERRMSG_TPM), assume TPM 2"
-+		TPM_VERSION=2
- 	fi
- 
--	while read line; do
--		pcr="$(echo $line | cut -d':' -f1)"
--		if [ "$pcr" = "PCR-10" ]; then
--			hash="$(echo $line | cut -d':' -f2 | awk '{ gsub (" ", "", $0); print tolower($0) }')"
--			[ "$hash" = "$aggregate_pcr" ]
--			return $?
--		fi
--	done < $dev_pcrs
--	return 1
--}
-+	if [ -z "$TPM_VERSION" ]; then
-+		tst_brk TCONF "TMP version not detected ($ERRMSG_TPM)"
-+	fi
- 
--test2()
+-test1()
 -{
--	tst_res TINFO "verify PCR values"
--	tst_check_cmds evmctl || return
-+	if [ "$ALGORITHM" = "sha1" -a "$MISSING_EVMCTL" = 1 ]; then
-+		tst_check_cmds evmctl || return 1
+-	tst_res TINFO "verify boot aggregate"
++EVMCTL_REQUIRED='1.3.1'
++ERRMSG_EVMCTL="=> install evmctl >= $EVMCTL_REQUIRED"
+ 
+-	local zero="0000000000000000000000000000000000000000"
+-	local tpm_bios="$SECURITYFS/tpm0/binary_bios_measurements"
+-	local ima_measurements="$ASCII_MEASUREMENTS"
+-	local boot_aggregate boot_hash line
++setup()
++{
++	local config="${KCONFIG_PATH:-/boot/config-$(uname -r)}"
++	local line tmp
+ 
+-	# IMA boot aggregate
+-	read line < $ima_measurements
+-	boot_hash=$(echo $line | awk '{print $(NF-1)}' | cut -d':' -f2)
++	read line < $ASCII_MEASUREMENTS
++	if tmp=$(get_algorithm_digest "$line"); then
++		ALGORITHM=$(echo "$tmp" | cut -d'|' -f1)
++		DIGEST=$(echo "$tmp" | cut -d'|' -f2)
++	else
++		tst_brk TBROK "failed to get algorithm/digest: $tmp"
++	fi
++	tst_res TINFO "used algorithm: $ALGORITHM"
+ 
+-	if [ ! -f "$tpm_bios" ]; then
+-		tst_res TINFO "TPM Hardware Support not enabled in kernel or no TPM chip found"
++	TPM_VERSION="$(get_tpm_version)"
++	if [ -z "$TPM_VERSION" ]; then
++		tst_res TINFO "TPM hardware support not enabled in kernel or no TPM chip found, testing TPM-bypass"
++	else
++		tst_res TINFO "TMP major version: $TPM_VERSION"
 +	fi
  
--	tst_res TINFO "evmctl version: $(evmctl --version)"
-+	out=$(read_pcr_tpm$TPM_VERSION)
-+	ret=$?
- 
--	local pcrs_path="/sys/class/tpm/tpm0/device/pcrs"
--	if [ -f "$pcrs_path" ]; then
--		tst_res TINFO "new PCRS path, evmctl >= 1.1 required"
--	else
--		pcrs_path="/sys/class/misc/tpm0/device/pcrs"
-+	if [ $ret -ne 0 ]; then
-+		case "$ret" in
-+			1) tst_res TFAIL "$out";;
-+			32) tst_res TCONF "$out";;
-+			*) tst_brk TBROK "unsupported return type '$1'";;
-+		esac
-+		return
- 	fi
- 
--	if [ -f "$pcrs_path" ]; then
--		validate_pcr $pcrs_path
--		if [ $? -eq 0 ]; then
--			tst_res TPASS "aggregate PCR value matches real PCR value"
+-		if [ "$boot_hash" = "$zero" ]; then
+-			tst_res TPASS "bios boot aggregate is 0"
 -		else
--			tst_res TFAIL "aggregate PCR value does not match real PCR value"
--		fi
-+	hash=$(echo "$out" | grep "^PCR-10" | cut -d' ' -f2)
+-			tst_res TFAIL "bios boot aggregate is not 0"
++	if ! check_evmctl $EVMCTL_REQUIRED; then
++		if [ "$ALGORITHM" != "sha1" ]; then
++			tst_brk TCONF "algorithm not sha1 ($ALGORITHM) $ERRMSG_EVMCTL"
+ 		fi
++		MISSING_EVMCTL=1
++	fi
 +
-+	if [ -z "$out" ]; then
-+		tst_res TFAIL "PCR-10 hash not found"
++	if [ -r "$config" ]; then
++		tst_res TINFO "TPM kernel config:"
++		for i in $(grep -e ^CONFIG_.*_TPM -e ^CONFIG_TCG $config); do
++			tst_res TINFO "$i"
++		done
++	fi
++}
++
++# check_evmctl REQUIRED_TPM_VERSION
++# return: 0: evmctl is new enough, 1: version older than required (or version < v0.9)
++check_evmctl()
++{
++	local required="$1"
++
++	local r1="$(echo $required | cut -d. -f1)"
++	local r2="$(echo $required | cut -d. -f2)"
++	local r3="$(echo $required | cut -d. -f3)"
++	[ -z "$r3" ] && r3=0
++
++	tst_is_int "$r1" || tst_brk TBROK "required major version not int ($v1)"
++	tst_is_int "$r2" || tst_brk TBROK "required minor version not int ($v2)"
++	tst_is_int "$r3" || tst_brk TBROK "required patch version not int ($v3)"
++
++	tst_check_cmds evmctl || return 1
++
++	local v="$(evmctl --version | cut -d' ' -f2)"
++	[ -z "$v" ] && return 1
++	tst_res TINFO "evmctl version: $v"
++
++	local v1="$(echo $v | cut -d. -f1)"
++	local v2="$(echo $v | cut -d. -f2)"
++	local v3="$(echo $v | cut -d. -f3)"
++	[ -z "$v3" ] && v3=0
++
++	if [ $v1 -lt $r1 ] || [ $v1 -eq $r1 -a $v2 -lt $r2 ] || \
++		[ $v1 -eq $r1 -a $v2 -eq $r2 -a $v3 -lt $r3 ]; then
++		return 1
++	fi
++	return 0
++}
++
++# prints major version: 1: TPM 1.2, 2: TPM 2.0
++# or nothing on TPM-bypass (no TPM device)
++# WARNING: Detecting TPM 2.0 can fail due kernel not exporting TPM 2.0 files.
++get_tpm_version()
++{
++	if [ -f /sys/class/tpm/tpm0/tpm_version_major ]; then
++		cat /sys/class/tpm/tpm0/tpm_version_major
 +		return
 +	fi
 +
-+	tst_res TINFO "real PCR-10: '$hash'"
-+
-+	get_pcr10_aggregate > tmp.txt
-+	pcr_aggregate="$(cat tmp.txt)"
-+	if [ -z "$pcr_aggregate" ]; then
++	if [ -f /sys/class/tpm/tpm0/device/caps -o \
++		-f /sys/class/misc/tpm0/device/caps ]; then
++		echo 1
 +		return
 +	fi
-+	tst_res TINFO "aggregate PCR-10: '$pcr_aggregate'"
 +
-+	if [ "$hash" = "$pcr_aggregate" ]; then
-+		tst_res TPASS "aggregate PCR value matches real PCR value"
++	if [ -c /dev/tpmrm0 -a -c /dev/tpm0 ]; then
++		echo 2
++		return
++	fi
++
++	if [ ! -d /sys/class/tpm/tpm0/ -a ! -d /sys/class/misc/tpm0/ ]; then
++		return
++	fi
++
++	tst_require_cmds dmesg
++	if dmesg | grep -q 'activating TPM-bypass'; then
++		return
++	elif dmesg | grep -q '1\.2 TPM (device-id'; then
++		echo 1
++		return
++	elif dmesg | grep -q '2\.0 TPM (device-id'; then
++		echo 2
++		return
++	fi
++}
++
++test1_tpm_bypass_mode()
++{
++	local zero=$(echo $DIGEST | awk '{gsub(/./, "0")}; {print}')
++
++	if [ "$DIGEST" = "$zero" ]; then
++		tst_res TPASS "bios boot aggregate is $zero"
  	else
--		tst_res TCONF "TPM Hardware Support not enabled in kernel or no TPM chip found"
-+		tst_res TFAIL "aggregate PCR value does not match real PCR value"
+-		boot_aggregate=$(ima_boot_aggregate -f $tpm_bios | grep "sha1:" | cut -d':' -f2)
+-		if [ "$boot_hash" = "$boot_aggregate" ]; then
+-			tst_res TPASS "bios aggregate matches IMA boot aggregate"
+-		else
+-			tst_res TFAIL "bios aggregate does not match IMA boot aggregate"
++		tst_res TFAIL "bios boot aggregate is not $zero ($DIGEST), kernel didn't export TPM 2.0 files for TPM device?"
++		return 1
++	fi
++}
++
++test1_hw_tpm()
++{
++	local tpm_bios="$SECURITYFS/tpm0/binary_bios_measurements"
++	local cmd="evmctl ima_boot_aggregate -v"
++	local boot_aggregate
++
++	[ -z "$TPM_VERSION" ] && \
++		tst_res TWARN "TPM-bypass failed, trying to test TPM device (unknown TPM version)"
++
++	if [ "$MISSING_EVMCTL" = 1 ]; then
++		if [ ! -f "$tpm_bios" ]; then
++			tst_res TCONF "missing $tpm_bios $ERRMSG_EVMCTL"
++			return
+ 		fi
++		tst_check_cmds ima_boot_aggregate || return
++		cmd="ima_boot_aggregate -f $tpm_bios"
  	fi
++	tst_res TINFO "using command: $cmd"
++
++	boot_aggregate=$($cmd | grep "$ALGORITHM:" | cut -d':' -f2)
++	if [ -z "$boot_aggregate" ]; then
++		tst_res TFAIL "failed to get boot aggregate"
++		return
++	fi
++	tst_res TINFO "IMA boot aggregate: '$boot_aggregate'"
++
++	if [ "$DIGEST" = "$boot_aggregate" ]; then
++		tst_res TPASS "bios boot aggregate matches IMA boot aggregate"
++	else
++		tst_res TFAIL "bios boot aggregate does not match IMA boot aggregate ($DIGEST)"
++	fi
++}
++
++test1()
++{
++	tst_res TINFO "verify boot aggregate"
++
++	# deliberately try test1_hw_tpm() if test1_tpm_bypass_mode() fails
++	[ -z "$TPM_VERSION" ] && test1_tpm_bypass_mode || test1_hw_tpm
  }
  
+ # Probably cleaner to programmatically read the PCR values directly
 -- 
 2.29.2
 
