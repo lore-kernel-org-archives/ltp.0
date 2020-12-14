@@ -1,219 +1,329 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 14 Dec 2020 23:19:44 +0100
-Subject: [LTP] [PATCH v5 2/4] IMA: Rewrite ima_boot_aggregate.c to new API
+Date: Mon, 14 Dec 2020 23:19:46 +0100
+Subject: [LTP] [PATCH v5 4/4] ima_tpm.sh: Fix calculating PCR aggregate
 In-Reply-To: <20201214221946.6340-1-pvorel@suse.cz>
 References: <20201214221946.6340-1-pvorel@suse.cz>
-Message-ID: <20201214221946.6340-3-pvorel@suse.cz>
+Message-ID: <20201214221946.6340-5-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The main reason was to see TCONF messages, which are printed into stderr
-in new API (but to stdout in legacy API) and thus visible as the output
-is redirected into the variable.
+for TPM 2.0 and support more evmctl versions.
 
-Changing boot_aggregate: to sha1: to be compatible with evmctl
-ima_boot_aggregate.
+Because exporting PCR registers for TPM 2.0 has not been upstreamed [1],
+we use user space code, which requires evmctl >= 1.3.1 and tsspcrread.
+Using evmctl allows to test for TPM devices which does not export event
+log (/sys/kernel/security/tpm0/binary_bios_measurements).
 
-Also require root (needed for reading
-/sys/kernel/security/tpm0/binary_bios_measurements).
+For TPM 1.2 read tpm0 device's pcrs file from sysfs. (tss1pcrread could
+be also used, but it's not yet packaged by distros.)
 
+For old kernels which use SHA1/MD5, any evmctl version is required (evmctl
+ima_measurement was introduced in very old v0.7), but
+* newer sysctl path /sys/class/tpm/tpm0/device/pcrs requires evmctl 1.1
+* using ima_policy=tcb requires 1.3.1 due --ignore-violations
+
+We now support output format of ima_measurement command for various
+evmctl versions:
+* 1.3: "sha256: TPM PCR-10:" (or other algorithm, e.g. "sha1:")
+* 1.1-1.2.1: "HW PCR-10:" (the only previously supported format)
+* 0.7-1.0: "PCR-10:"
+
+NOTE: we ignore evmctl failure for evmctl < 1.3.1 (missing --ignore-violations,
+also evmctl < 1.1 fails with "PCRAgg does not match PCR-10")
+
+As for previous commit fix testing with TPM 2.0 device which does not
+export event log (/sys/kernel/security/tpm0/binary_bios_measurements):
+not wrongly assuming TPM-bypass when kernel didn't export other TPM
+2.0 files we check in get_tpm_version() but bios boot aggregate is
+correct (i.e. not 0x00s). In that case evmctl ima_boot_aggregate can get
+boot aggregate even without TPM event log.
+
+[1] https://patchwork.kernel.org/patch/11759729/
+
+Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../integrity/ima/src/ima_boot_aggregate.c    | 114 +++++++++---------
- .../security/integrity/ima/tests/ima_tpm.sh   |   2 +-
- 2 files changed, 58 insertions(+), 58 deletions(-)
+Changes v4->v5:
+* improved TPM 2.0 detection (e.g. check for /dev/tpmrm0 and /dev/tpm0)
+* test2: if evmctl ima_measurement fails, run again with --ignore-violations
+* test2: assume TPM 2, if not detected
+* print TPM kernel config
+* cleanup
 
-diff --git a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-index 98893b99a..04d106662 100644
---- a/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-+++ b/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-@@ -1,19 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
--* Copyright (c) International Business Machines  Corp., 2009
--*
--* Authors:
--* Mimi Zohar <zohar@us.ibm.com>
--*
--* This program is free software; you can redistribute it and/or
--* modify it under the terms of the GNU General Public License as
--* published by the Free Software Foundation, version 2 of the
--* License.
--*
--* File: ima_boot_aggregate.c
--*
--* Calculate a SHA1 boot aggregate value based on the TPM
--* binary_bios_measurements.
--*/
-+ * Copyright (c) International Business Machines  Corp., 2009
-+ * Copyright (c) 2016-2019 Petr Vorel <pvorel@suse.cz>
-+ *
-+ * Authors: Mimi Zohar <zohar@us.ibm.com>
-+ *
-+ * Calculate a SHA1 boot aggregate value based on the TPM 1.2
-+ * binary_bios_measurements.
-+ */
-+
-+#include "config.h"
- #include <stdio.h>
- #include <stdlib.h>
- #include <sys/types.h>
-@@ -23,10 +19,8 @@
- #include <unistd.h>
- #include <limits.h>
- 
--#include "config.h"
--#include "test.h"
--
--char *TCID = "ima_boot_aggregate";
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
- 
- #if HAVE_LIBCRYPTO
- #include <openssl/sha.h>
-@@ -36,7 +30,24 @@ char *TCID = "ima_boot_aggregate";
- #define MAX_EVENT_DATA_SIZE (MAX_EVENT_SIZE - EVENT_HEADER_SIZE)
- #define NUM_PCRS 8		/*  PCR registers 0-7 in boot aggregate */
- 
--int TST_TOTAL = 1;
-+static char *debug;
-+static char *file;
-+
-+static unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
-+
-+static struct {
-+	struct {
-+		u_int32_t pcr;
-+		u_int32_t type;
-+		u_int8_t digest[SHA_DIGEST_LENGTH];
-+		u_int32_t len;
-+	} header __attribute__ ((packed));
-+	char *data;
-+} event;
-+
-+static struct {
-+	unsigned char digest[SHA_DIGEST_LENGTH];
-+} pcr[NUM_PCRS];
- 
- static void display_sha1_digest(unsigned char *pcr)
- {
-@@ -47,45 +58,24 @@ static void display_sha1_digest(unsigned char *pcr)
- 	printf("\n");
+ .../security/integrity/ima/tests/ima_setup.sh |  14 +-
+ .../security/integrity/ima/tests/ima_tpm.sh   | 176 +++++++++++++-----
+ 2 files changed, 144 insertions(+), 46 deletions(-)
+
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index dbf8a1db4..59a7ffeac 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -93,7 +93,7 @@ require_ima_policy_content()
+ 	fi
  }
  
--int main(int argc, char *argv[])
-+static void do_test(void)
+-require_ima_policy_cmdline()
++check_ima_policy_cmdline()
  {
--	unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
--	struct {
--		struct {
--			u_int32_t pcr;
--			u_int32_t type;
--			u_int8_t digest[SHA_DIGEST_LENGTH];
--			u_int32_t len;
--		} header __attribute__ ((packed));
--		char *data;
--	} event;
--	struct {
--		unsigned char digest[SHA_DIGEST_LENGTH];
--	} pcr[NUM_PCRS];
- 	FILE *fp;
--	int i;
--	int debug = 0;
- 	SHA_CTX c;
-+	int i;
- 
--	if (argc != 2) {
--		printf("format: %s binary_bios_measurement file\n", argv[0]);
--		return 1;
--	}
--	fp = fopen(argv[1], "r");
--	if (!fp) {
--		perror("unable to open pcr file\n");
--		return 1;
--	}
-+	if (!file)
-+		tst_brk(TBROK, "missing binary_bios_measurement file, specify with -f");
+ 	local policy="$1"
+ 	local i
+@@ -101,10 +101,18 @@ require_ima_policy_cmdline()
+ 	grep -q "ima_$policy" /proc/cmdline && return
+ 	for i in $(cat /proc/cmdline); do
+ 		if echo "$i" | grep -q '^ima_policy='; then
+-			echo "$i" | grep -q -e "|[ ]*$policy" -e "$policy[ ]*|" -e "=$policy" && return
++			echo "$i" | grep -q -e "|[ ]*$policy" -e "$policy[ ]*|" -e "=$policy" && return 0
+ 		fi
+ 	done
+-	tst_brk TCONF "IMA measurement tests require builtin IMA $policy policy (e.g. ima_policy=$policy kernel parameter)"
++	return 1
++}
 +
-+	fp = SAFE_FOPEN(file, "r");
- 
- 	/* Initialize psuedo PCR registers 0 - 7 */
- 	for (i = 0; i < NUM_PCRS; i++)
- 		memset(&pcr[i].digest, 0, SHA_DIGEST_LENGTH);
- 
- 	event.data = malloc(MAX_EVENT_DATA_SIZE);
--	if (!event.data) {
--		printf("Cannot allocate memory\n");
--		return 1;
--	}
-+	if (!event.data)
-+		tst_brk(TBROK, "cannot allocate memory");
- 
- 	/* Extend the pseudo PCRs with the event digest */
- 	while (fread(&event, sizeof(event.header), 1, fp)) {
-@@ -105,13 +95,14 @@ int main(int argc, char *argv[])
- 
- #if MAX_EVENT_DATA_SIZE < USHRT_MAX
- 		if (event.header.len > MAX_EVENT_DATA_SIZE) {
--			printf("Error event too long\n");
-+			tst_res(TWARN, "error event too long");
- 			break;
- 		}
- #endif
- 		fread(event.data, event.header.len, 1, fp);
- 	}
--	fclose(fp);
++require_ima_policy_cmdline()
++{
++	local policy="$1"
 +
-+	SAFE_FCLOSE(fp);
- 	free(event.data);
- 
- 	/* Extend the boot aggregate with the pseudo PCR digest values */
-@@ -126,14 +117,23 @@ int main(int argc, char *argv[])
- 	}
- 	SHA1_Final(boot_aggregate, &c);
- 
--	printf("boot_aggregate:");
-+	printf("sha1:");
- 	display_sha1_digest(boot_aggregate);
--	tst_exit();
-+	tst_res(TPASS, "found sha1 hash");
++	check_ima_policy_cmdline $policy || \
++		tst_brk TCONF "IMA measurement tests require builtin IMA $policy policy (e.g. ima_policy=$policy kernel parameter)"
  }
  
-+static struct tst_option options[] = {
-+	{"d", &debug, "-d       enable debug"},
-+	{"f:", &file, "-f x     binary_bios_measurement file (required)\n"},
-+	{NULL, NULL, NULL}
-+};
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.test_all = do_test,
-+	.options = options,
-+};
-+
- #else
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "test requires libcrypto and openssl development packages");
--}
-+TST_TEST_TCONF("libcrypto and openssl development packages required");
- #endif
+ mount_helper()
 diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-index c69f891f1..dc958eb5c 100755
+index 195fcb16c..233fdeed8 100755
 --- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
 +++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-@@ -33,7 +33,7 @@ test1()
- 			tst_res TFAIL "bios boot aggregate is not 0"
- 		fi
+@@ -7,13 +7,14 @@
+ # Verify the boot and PCR aggregates.
+ 
+ TST_CNT=2
+-TST_NEEDS_CMDS="awk cut"
++TST_NEEDS_CMDS="awk cut tail"
+ TST_SETUP="setup"
+ 
+ . ima_setup.sh
+ 
+ EVMCTL_REQUIRED='1.3.1'
+ ERRMSG_EVMCTL="=> install evmctl >= $EVMCTL_REQUIRED"
++ERRMSG_TPM="TPM hardware support not enabled in kernel or no TPM chip found"
+ 
+ setup()
+ {
+@@ -31,7 +32,7 @@ setup()
+ 
+ 	TPM_VERSION="$(get_tpm_version)"
+ 	if [ -z "$TPM_VERSION" ]; then
+-		tst_res TINFO "TPM hardware support not enabled in kernel or no TPM chip found, testing TPM-bypass"
++		tst_res TINFO "$ERRMSG_TPM, testing TPM-bypass"
  	else
--		boot_aggregate=$(ima_boot_aggregate $tpm_bios | grep "boot_aggregate:" | cut -d':' -f2)
-+		boot_aggregate=$(ima_boot_aggregate -f $tpm_bios | grep "sha1:" | cut -d':' -f2)
- 		if [ "$boot_hash" = "$boot_aggregate" ]; then
- 			tst_res TPASS "bios aggregate matches IMA boot aggregate"
- 		else
+ 		tst_res TINFO "TMP major version: $TPM_VERSION"
+ 	fi
+@@ -121,6 +122,93 @@ get_tpm_version()
+ 	fi
+ }
+ 
++read_pcr_tpm1()
++{
++	local pcrs_path="/sys/class/tpm/tpm0/device/pcrs"
++	local evmctl_required="1.1"
++	local hash pcr
++
++	if [ ! -f "$pcrs_path" ]; then
++		pcrs_path="/sys/class/misc/tpm0/device/pcrs"
++	elif ! check_evmctl $evmctl_required; then
++		echo "evmctl >= $evmctl_required required"
++		return 32
++	fi
++
++	if [ ! -f "$pcrs_path" ]; then
++		echo "missing PCR file $pcrs_path ($ERRMSG_TPM)"
++		return 32
++	fi
++
++	while read line; do
++		pcr="$(echo $line | cut -d':' -f1)"
++		hash="$(echo $line | cut -d':' -f2 | awk '{ gsub (" ", "", $0); print tolower($0) }')"
++		echo "$pcr: $hash"
++	done < $pcrs_path
++
++	return 0
++}
++
++# NOTE: TPM 1.2 would require to use tss1pcrread which is not fully adopted
++# by distros yet.
++read_pcr_tpm2()
++{
++	local pcrmax=23
++	local pcrread="tsspcrread -halg $ALGORITHM"
++	local i pcr
++
++	tst_check_cmds tsspcrread || return 1
++
++	for i in $(seq 0 $pcrmax); do
++		pcr=$($pcrread -ha "$i" -ns)
++		if [ $? -ne 0 ]; then
++			echo "tsspcrread failed: $pcr"
++			return 1
++		fi
++		printf "PCR-%02d: %s\n" $i "$pcr"
++	done
++
++	return 0
++}
++
++get_pcr10_aggregate()
++{
++	local cmd="evmctl -vv ima_measurement $BINARY_MEASUREMENTS"
++	local msg="$ERRMSG_EVMCTL"
++	local res=TCONF
++	local pcr ret
++
++	if [ -z "$MISSING_EVMCTL" ]; then
++		msg=
++		res=TFAIL
++	fi
++
++	$cmd > hash.txt 2>&1
++	ret=$?
++	if [ $ret -ne 0 -a -z "$MISSING_EVMCTL" ]; then
++		tst_res TFAIL "evmctl failed, trying with --ignore-violations"
++		cmd="$cmd --ignore-violations"
++		$cmd > hash.txt 2>&1
++		ret=$?
++	elif [ $ret -ne 0 -a "$MISSING_EVMCTL" = 1 ]; then
++		tst_brk TFAIL "evmctl failed $msg"
++	fi
++
++	[ $ret -ne 0 ] && tst_res TWARN "evmctl failed, trying to continue $msg"
++
++	pcr=$(grep -E "^($ALGORITHM: )*PCRAgg(.*10)*:" hash.txt | tail -1 \
++		| awk '{print $NF}')
++
++	if [ -z "$pcr" ]; then
++		tst_res $res "failed to find aggregate PCR-10 $msg"
++		tst_res TINFO "hash file:"
++		cat hash.txt >&2
++		return
++	fi
++
++	echo "$pcr"
++}
++
+ test1_tpm_bypass_mode()
+ {
+ 	local zero=$(echo $DIGEST | awk '{gsub(/./, "0")}; {print}')
+@@ -139,8 +227,10 @@ test1_hw_tpm()
+ 	local cmd="evmctl ima_boot_aggregate -v"
+ 	local boot_aggregate
+ 
+-	[ -z "$TPM_VERSION" ] && \
++	if [ -z "$TPM_VERSION" ]; then
+ 		tst_res TWARN "TPM-bypass failed, trying to test TPM device (unknown TPM version)"
++		MAYBE_TPM2=1
++	fi
+ 
+ 	if [ "$MISSING_EVMCTL" = 1 ]; then
+ 		if [ ! -f "$tpm_bios" ]; then
+@@ -174,57 +264,57 @@ test1()
+ 	[ -z "$TPM_VERSION" ] && test1_tpm_bypass_mode || test1_hw_tpm
+ }
+ 
+-# Probably cleaner to programmatically read the PCR values directly
+-# from the TPM, but that would require a TPM library. For now, use
+-# the PCR values from /sys/devices.
+-validate_pcr()
++test2()
+ {
+-	tst_res TINFO "verify PCR (Process Control Register)"
++	local hash pcr_aggregate out ret
+ 
+-	local dev_pcrs="$1"
+-	local pcr hash aggregate_pcr
++	tst_res TINFO "verify PCR values"
+ 
+-	aggregate_pcr="$(evmctl -v ima_measurement $BINARY_MEASUREMENTS 2>&1 | \
+-		grep 'HW PCR-10:' | awk '{print $3}')"
+-	if [ -z "$aggregate_pcr" ]; then
+-		tst_res TFAIL "failed to get PCR-10"
+-		return 1
++	if [ "$MAYBE_TPM2" = 1 ]; then
++		tst_res TINFO "TMP version not detected ($ERRMSG_TPM), assume TPM 2"
++		TPM_VERSION=2
+ 	fi
+ 
+-	while read line; do
+-		pcr="$(echo $line | cut -d':' -f1)"
+-		if [ "$pcr" = "PCR-10" ]; then
+-			hash="$(echo $line | cut -d':' -f2 | awk '{ gsub (" ", "", $0); print tolower($0) }')"
+-			[ "$hash" = "$aggregate_pcr" ]
+-			return $?
+-		fi
+-	done < $dev_pcrs
+-	return 1
+-}
++	if [ -z "$TPM_VERSION" ]; then
++		tst_brk TCONF "TMP version not detected ($ERRMSG_TPM)"
++	fi
+ 
+-test2()
+-{
+-	tst_res TINFO "verify PCR values"
+-	tst_check_cmds evmctl || return
++	if [ "$ALGORITHM" = "sha1" -a "$MISSING_EVMCTL" = 1 ]; then
++		tst_check_cmds evmctl || return 1
++	fi
+ 
+-	tst_res TINFO "evmctl version: $(evmctl --version)"
++	out=$(read_pcr_tpm$TPM_VERSION)
++	ret=$?
+ 
+-	local pcrs_path="/sys/class/tpm/tpm0/device/pcrs"
+-	if [ -f "$pcrs_path" ]; then
+-		tst_res TINFO "new PCRS path, evmctl >= 1.1 required"
+-	else
+-		pcrs_path="/sys/class/misc/tpm0/device/pcrs"
++	if [ $ret -ne 0 ]; then
++		case "$ret" in
++			1) tst_res TFAIL "$out";;
++			32) tst_res TCONF "$out";;
++			*) tst_brk TBROK "unsupported return type '$1'";;
++		esac
++		return
+ 	fi
+ 
+-	if [ -f "$pcrs_path" ]; then
+-		validate_pcr $pcrs_path
+-		if [ $? -eq 0 ]; then
+-			tst_res TPASS "aggregate PCR value matches real PCR value"
+-		else
+-			tst_res TFAIL "aggregate PCR value does not match real PCR value"
+-		fi
++	hash=$(echo "$out" | grep "^PCR-10" | cut -d' ' -f2)
++
++	if [ -z "$out" ]; then
++		tst_res TFAIL "PCR-10 hash not found"
++		return
++	fi
++
++	tst_res TINFO "real PCR-10: '$hash'"
++
++	get_pcr10_aggregate > tmp.txt
++	pcr_aggregate="$(cat tmp.txt)"
++	if [ -z "$pcr_aggregate" ]; then
++		return
++	fi
++	tst_res TINFO "aggregate PCR-10: '$pcr_aggregate'"
++
++	if [ "$hash" = "$pcr_aggregate" ]; then
++		tst_res TPASS "aggregate PCR value matches real PCR value"
+ 	else
+-		tst_res TCONF "TPM Hardware Support not enabled in kernel or no TPM chip found"
++		tst_res TFAIL "aggregate PCR value does not match real PCR value"
+ 	fi
+ }
+ 
 -- 
 2.29.2
 
