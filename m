@@ -1,29 +1,53 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 14 Dec 2020 14:37:29 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/sched_getparam03: Convert to new API and
- cleanup
-In-Reply-To: <20201214063729.1656200-1-yangx.jy@cn.fujitsu.com>
-References: <20201214063729.1656200-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <20201214063729.1656200-2-yangx.jy@cn.fujitsu.com>
+Date: Mon, 14 Dec 2020 14:37:28 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/sched_getparam{01,
+ 02}: Convert to new API and cleanup
+Message-ID: <20201214063729.1656200-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Also merge sched_getparam02 into sched_getparam01.
+
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- .../sched_getparam/sched_getparam03.c         | 168 ++++--------------
- 1 file changed, 31 insertions(+), 137 deletions(-)
+ runtest/syscalls                              |   1 -
+ .../kernel/syscalls/sched_getparam/.gitignore |   1 -
+ .../sched_getparam/sched_getparam01.c         | 165 +++++------------
+ .../sched_getparam/sched_getparam02.c         | 172 ------------------
+ 4 files changed, 49 insertions(+), 290 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
 
-diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
-index ceec4c380..f8723008f 100644
---- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
-+++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
-@@ -1,88 +1,26 @@
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 409800dbb..aae227a69 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1132,7 +1132,6 @@ sched_get_priority_min01 sched_get_priority_min01
+ sched_get_priority_min02 sched_get_priority_min02
+ 
+ sched_getparam01 sched_getparam01
+-sched_getparam02 sched_getparam02
+ sched_getparam03 sched_getparam03
+ 
+ sched_rr_get_interval01 sched_rr_get_interval01
+diff --git a/testcases/kernel/syscalls/sched_getparam/.gitignore b/testcases/kernel/syscalls/sched_getparam/.gitignore
+index d1a7402e7..b7f9fd029 100644
+--- a/testcases/kernel/syscalls/sched_getparam/.gitignore
++++ b/testcases/kernel/syscalls/sched_getparam/.gitignore
+@@ -1,3 +1,2 @@
+ /sched_getparam01
+-/sched_getparam02
+ /sched_getparam03
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
+index 82e97713b..df11fc8f0 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam01.c
+@@ -1,137 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -33,187 +57,358 @@ index ceec4c380..f8723008f 100644
 - * WITHOUT ANY WARRANTY; without even the implied warranty of
 - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
++ * * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
   */
-- /*******************************************************************
+-/**********************************************************
 - *
-- *    TEST IDENTIFIER   : sched_getparam03
+- *    TEST IDENTIFIER	: sched_getparam01
 - *
-- *    EXECUTED BY       : anyone
+- *    EXECUTED BY	: anyone
 - *
-- *    TEST TITLE        : testing error conditions for sched_getparam(2)
+- *    TEST TITLE	: Basic test for sched_getparam(2)
 - *
-- *    TEST CASE TOTAL   : 3
+- *    TEST CASE TOTAL	: 1
 - *
-- *    AUTHOR            : Saji Kumar.V.R <saji.kumar@wipro.com>
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
 - *
 - *    SIGNALS
-- *      Uses SIGUSR1 to pause before test if option set.
-- *      (See the parse_opts(3) man page).
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
 - *
-- * DESCRIPTION
-- * 	Verify that,
-- *   1) sched_getparam(2) returns -1 and sets errno to ESRCH if the
-- *	process with specified pid could not be found
-- *   2) sched_getparam(2) returns -1 and sets errno to EINVAL if
-- *	the parameter pid is an invalid value (-1)
-- *   3) sched_getparam(2) returns -1 and sets errno to EINVAL if the
-- *	parameter p is an invalid address
+- *    DESCRIPTION
+- *	This is a Phase I test for the sched_getparam(2) system call.
+- *	It is intended to provide a limited exposure of the system call.
 - *
-- * ALGORITHM
-- * Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
 - *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if (system call failed (return=-1)) &
-- *			   (errno set == expected errno)
-- *              Issue sys call fails with expected return value and errno.
-- *   Otherwise,
-- *      Issue sys call returns unexpected value.
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
 - *
-- *  Cleanup:
-- *        Print errno log and/or timing stats if options given
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
 +
-+ /*\
++/*\
 + * [DESCRIPTION]
   *
 - * USAGE:  <for command-line>
-- *  sched_getparam03 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
-- *		where,  -c n : Run n copies concurrently.
-- *			-e   : Turn on errno logging.
-- *			-h   : Show help screen
-- *			-f   : Turn off functional testing
-- *			-i n : Execute test n times.
-- *			-I x : Execute test for x seconds.
-- *			-p   : Pause for SIGUSR1 before starting
-- *			-P x : Pause for x seconds between iterations.
-- *			-t   : Turn on syscall timing.
+- *  sched_getparam01 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
 + * Verify that:
   *
-- *********************************************************************/
-+ * - sched_getparam(2) returns -1 and sets errno to ESRCH if the
-+ * process with specified pid could not be found
-+ * - sched_getparam(2) returns -1 and sets errno to EINVAL if
-+ * the parameter pid is an invalid value (-1)
-+ * - sched_getparam(2) returns -1 and sets errno to EINVAL if the
-+ * parameter p is an invalid address
-+ \*/
+- ****************************************************************/
++ * - sched_getparam(2) gets correct scheduling parameters for
++ * the specified process:
++ * - If pid is zero, sched_getparam(2) gets the scheduling parameters
++ * for the calling process.
++ * - If pid is not zero, sched_getparam(2) gets the scheduling
++ * parameters for the specified [pid] process.
++\*/
  
  #include <errno.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <unistd.h>
  #include <sched.h>
 -#include "test.h"
 -
--#define LARGE_PID 999999
+-static void setup();
+-static void cleanup();
 -
--static void cleanup(void);
--static void setup(void);
+-char *TCID = "sched_getparam01";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
  
- static struct sched_param param;
--
--char *TCID = "sched_getparam03";
--
- static pid_t unused_pid;
- static pid_t zero_pid;
- static pid_t inval_pid = -1;
-@@ -92,73 +30,29 @@ static struct test_case_t {
- 	pid_t *pid;
- 	struct sched_param *p;
- 	int exp_errno;
--	char err_desc[10];
- } test_cases[] = {
--	{
--	"test with non-existing pid", &unused_pid, &param, ESRCH, "ESRCH"}, {
--	"test invalid pid value", &inval_pid, &param, EINVAL, "EINVAL"}, {
--	"test with invalid address for p", &zero_pid, NULL, EINVAL, "EINVAL"},};
--
--int TST_TOTAL = sizeof(test_cases) / sizeof(test_cases[0]);
--
+-static struct sched_param param;
++static pid_t pids[2] = {0, 0};
+ 
 -int main(int ac, char **av)
-+	{"sched_getparam() with non-existing pid",
-+	 &unused_pid, &param, ESRCH},
-+	{"sched_getparam() with invalid pid",
-+	 &inval_pid, &param, EINVAL},
-+	{"sched_getparam() with invalid address for param",
-+	 &zero_pid, NULL, EINVAL},
-+};
-+
 +static void verify_sched_getparam(unsigned int n)
  {
--	int lc, ind;
++	pid_t child_pid;
++	struct sched_param param = {
++		.sched_priority = 100,
++	};
+ 
+-	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
--	setup();		/* global setup */
+-	setup();
 -
--	/* The following loop checks looping state if -i option given */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
+-
 -		tst_count = 0;
 -
--		for (ind = 0; ind < TST_TOTAL; ind++) {
+-		param.sched_priority = 100;
++	child_pid = SAFE_FORK();
++	if (!child_pid) {
++		TST_EXP_PASS(sched_getparam(pids[n], &param), "sched_getparam(%d)", pids[n]);
++		if (!TST_PASS)
++			exit(1);
+ 
+ 		/*
+-		 * Call sched_getparam(2) with pid=0 sothat it will
+-		 * get the scheduling parameters for the calling process
+-		 */
+-		TEST(sched_getparam(0, &param));
 -
--			/* Call sched_getparam(2) to test different test
--			 * conditions. verify that it fails with -1 return
--			 * value and sets appropriate errno.
--			 */
--			TEST(sched_getparam(*(test_cases[ind].pid),
--					    test_cases[ind].p));
--
--			if ((TEST_RETURN == -1) &&
--			    (TEST_ERRNO == test_cases[ind].exp_errno)) {
--				tst_resm(TPASS, "expected failure; Got %s",
--					 test_cases[ind].err_desc);
--			} else {
--				tst_resm(TFAIL, "Call failed to produce "
--					 "expected error;  Expected errno: %d "
--					 "Got : %d, %s",
--					 test_cases[ind].exp_errno,
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			}
--		}
+-		/*
+-		 * Check return code & priority. For normal process,
+-		 * scheduling policy is SCHED_OTHER. For this scheduling
+-		 * policy, only allowed priority value is 0. So we should
+-		 * get 0 for priority value
+-		 */
+-		if ((TEST_RETURN == 0) && (param.sched_priority == 0)) {
+-			tst_resm(TPASS, "sched_getparam() returned %ld",
+-				 TEST_RETURN);
+-		} else {
+-			tst_resm(TFAIL, "Test Failed, sched_getparam()"
+-				 "returned %ld, errno = %d : %s; returned "
+-				 "process priority value is %d", TEST_RETURN,
+-				 TEST_ERRNO, strerror(TEST_ERRNO),
+-				 param.sched_priority);
++	 	* For normal process, scheduling policy is SCHED_OTHER.
++	 	* For this scheduling policy, only allowed priority value is 0.
++	 	*/
++		if (param.sched_priority) {
++			tst_res(TFAIL,
++				"sched_getparam(%d) got wrong sched_priority %d, expected 0",
++				pids[n], param.sched_priority);
++			exit(1);
+ 		}
 -	}
--
+ 
 -	cleanup();
 -	tst_exit();
-+	struct test_case_t *tc = &test_cases[n];
++		tst_res(TPASS, "sched_getparam(%d) got expected sched_priority 0", pids[n]);
++		exit(0);
++	}
  
-+	TST_EXP_FAIL(sched_getparam(*(tc->pid), tc->p), tc->exp_errno, "%s", tc->desc);
++	tst_reap_children();
  }
  
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
+-/* setup() - performs all ONE TIME setup for this test */
 -void setup(void)
 +static void setup(void)
  {
--	unused_pid = tst_get_unused_pid(cleanup);
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
-+	unused_pid = tst_get_unused_pid();
++	pids[1] = getpid();
  }
  
 -/*
-- * cleanup() -  performs all the ONE TIME cleanup for this test at completion
-- * 		or premature exit.
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
 - */
 -void cleanup(void)
 -{
 -}
 +static struct tst_test test = {
++	.forks_child = 1,
 +	.setup = setup,
-+	.tcnt = ARRAY_SIZE(test_cases),
++	.tcnt = ARRAY_SIZE(pids),
 +	.test = verify_sched_getparam,
 +};
++
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
+deleted file mode 100644
+index 1bbf686ae..000000000
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam02.c
++++ /dev/null
+@@ -1,172 +0,0 @@
+-/*
+- * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER	: sched_getparam02
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Get scheduling parametes for parent process
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    AUTHOR		: Saji Kumar.V.R <saji.kumar@wipro.com>
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    DESCRIPTION
+- *	Verifies functionality of sched_getparam() for a process other than
+- *	current process (ie, pid != 0). Here we get the scheduling parameters
+- *	for parent process.
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- *	 fork a child
+- *
+- *	 CHILD:
+- * 	  Gets the scheduling parameters for parent process
+- *	  If successfull,
+- *		TEST passed
+- *	  else
+- *		TEST failed.
+- *
+- *	 PARENT:
+- *	  wait for child to finish
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- * USAGE:  <for command-line>
+- *  sched_getparam02 [-c n] [-e] [-i n] [-I x] [-P x] [-t] [-h] [-f] [-p]
+- *			where,  -c n : Run n copies concurrently.
+- *				-e   : Turn on errno logging.
+- *				-h   : Show help screen
+- *				-f   : Turn off functional testing
+- *				-i n : Execute test n times.
+- *				-I x : Execute test for x seconds.
+- *				-p   : Pause for SIGUSR1 before starting
+- *				-P x : Pause for x seconds between iterations.
+- *				-t   : Turn on syscall timing.
+- *
+- ****************************************************************/
+-
+-#include <errno.h>
+-#include <sched.h>
+-#include <sys/wait.h>
+-#include <stdlib.h>
+-#include "test.h"
+-
+-static void setup();
+-static void cleanup();
+-
+-char *TCID = "sched_getparam02";
+-int TST_TOTAL = 1;
+-
+-static struct sched_param param;
+-
+-int main(int ac, char **av)
+-{
+-
+-	int lc;
+-	int status;
+-	pid_t child_pid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		switch (child_pid = FORK_OR_VFORK()) {
+-
+-		case -1:
+-			/* fork() failed */
+-			tst_resm(TFAIL, "fork() failed");
+-			continue;
+-
+-		case 0:
+-			/* Child */
+-			param.sched_priority = 100;
+-
+-			/*
+-			 * Call sched_getparam(2) with pid = getppid() sothat
+-			 * it will get the scheduling parameters for parent
+-			 * process
+-			 */
+-			TEST(sched_getparam(getppid(), &param));
+-
+-			/*
+-			 * Check return code & priority. For normal process,
+-			 * scheduling policy is SCHED_OTHER. For this
+-			 * scheduling policy, only allowed priority value is 0.
+-			 * So we should get 0 for priority value
+-			 */
+-			if (TEST_RETURN == 0 && param.sched_priority == 0)
+-				exit(0);
+-			else {
+-				tst_resm(TWARN, "sched_getparam()"
+-					 "returned %ld, errno = %d : %s;"
+-					 " returned process priority value"
+-					 " is %d", TEST_RETURN, TEST_ERRNO,
+-					 strerror(TEST_ERRNO),
+-					 param.sched_priority);
+-				exit(1);
+-			}
+-
+-		default:
+-			/* Parent */
+-			if ((waitpid(child_pid, &status, 0)) < 0) {
+-				tst_resm(TFAIL, "wait() failed");
+-				continue;
+-			}
+-			if ((WIFEXITED(status)) && (WEXITSTATUS(status) == 0))
+-				tst_resm(TPASS, "Test Passed");
+-			else
+-				tst_resm(TFAIL, "Test Failed");
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-/* setup() - performs all ONE TIME setup for this test */
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-}
+-
+-/*
+- *cleanup() -  performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-}
 -- 
 2.25.1
 
