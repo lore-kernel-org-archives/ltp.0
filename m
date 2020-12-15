@@ -1,36 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Dec 2020 11:18:54 +0100
-Subject: [LTP] [RFC] openposix: Use TMPDIR instead of hardcoded /tmp
-In-Reply-To: <20201215060702.507970-1-lkml@jv-coder.de>
-References: <20201215060702.507970-1-lkml@jv-coder.de>
-Message-ID: <X9iNjuaLFLuVoQ0n@yuki.lan>
+From: Radoslav Kolev <radoslav.kolev@suse.com>
+Date: Tue, 15 Dec 2020 17:56:50 +0200
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05.c: skip test on overlay
+ filesystem
+Message-ID: <20201215155650.6496-1-radoslav.kolev@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> What is your opionion? Does a change like this make sense or would
-> you do it differently?
+The undelrying device can't be properly detected and causes failure
+when running in an overlay filesystem.
 
-Sounds reasonable.
+Signed-off-by: Radoslav Kolev <radoslav.kolev@suse.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I guess that we should also bump the buffer sizes a bit since tests
-seems to use 256 bytes, which is not that hard to overflow. I would go
-for at least 4096.
-
-Or we may as well give up on passing a stack allocated buffer and use
-malloc() for the path instead.
-
-As for mkdtemp() if we added that we would have to add a function to
-remove the directory at the end, so I wouldn't do that unless we want to
-actually write a test library for the openposix tests.
-
-And lastly but not least we do have testcases there that open files in
-current directory, these should be ideally converted to create the files
-in TMPDIR as well.
-
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+index e3c14faab..f8fa413a9 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+@@ -101,6 +101,9 @@ static void setup(void)
+ 	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
+ 		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
+ 
++	if (tst_fs_type(".") == TST_OVERLAYFS_MAGIC)
++		tst_brk(TCONF, "device isn't properly detected in overlay fs");
++
+ 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+ 	if (dev_num < 0)
+ 		tst_brk(TBROK, "Failed to find free loop device");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
