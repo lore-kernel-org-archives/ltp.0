@@ -1,43 +1,28 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 16 Dec 2020 10:10:31 +0800
-Subject: [LTP] [PATCH] syscalls/ioctl_loop05.c: skip test on overlay
- filesystem
-In-Reply-To: <20201215155650.6496-1-radoslav.kolev@suse.com>
-References: <20201215155650.6496-1-radoslav.kolev@suse.com>
-Message-ID: <5FD96C97.6020602@cn.fujitsu.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Wed, 16 Dec 2020 11:42:33 +0530
+Subject: [LTP] [PATCH] syscalls: recvmmsg: Add gitignore
+Message-ID: <a23e8cb8ae3f227d4355b89347b36d6dda6160c6.1608099138.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Radoslav
-> The undelrying device can't be properly detected and causes failure
-> when running in an overlay filesystem.
+Add the missing gitignore file.
 
-I guess the best way is to change tst_find_backing_dev api, so it can 
-detect the correct underlying device.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ testcases/kernel/syscalls/recvmmsg/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 testcases/kernel/syscalls/recvmmsg/.gitignore
 
->
-> Signed-off-by: Radoslav Kolev<radoslav.kolev@suse.com>
-> ---
->   testcases/kernel/syscalls/ioctl/ioctl_loop05.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> index e3c14faab..f8fa413a9 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-> @@ -101,6 +101,9 @@ static void setup(void)
->   	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
->   		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
->
-> +	if (tst_fs_type(".") == TST_OVERLAYFS_MAGIC)
-> +		tst_brk(TCONF, "device isn't properly detected in overlay fs");
-> +
->   	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
->   	if (dev_num<  0)
->   		tst_brk(TBROK, "Failed to find free loop device");
-
-
+diff --git a/testcases/kernel/syscalls/recvmmsg/.gitignore b/testcases/kernel/syscalls/recvmmsg/.gitignore
+new file mode 100644
+index 000000000000..974ae1ef90ea
+--- /dev/null
++++ b/testcases/kernel/syscalls/recvmmsg/.gitignore
+@@ -0,0 +1 @@
++recvmmsg01
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
