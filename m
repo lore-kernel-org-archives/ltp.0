@@ -1,33 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 16 Dec 2020 20:15:32 +0100
+Date: Wed, 16 Dec 2020 22:14:47 +0100
 Subject: [LTP] [PATCH 1/1] Docparse: Escape | in table content
-In-Reply-To: <X9ovkdN27zTsK+PN@pevik>
+In-Reply-To: <X9ooMiuT3DKHwHjJ@yuki.lan>
 References: <20201216143244.8180-1-pvorel@suse.cz> <X9oc1p0Z7LbBhKr0@yuki.lan>
  <X9ojaYZkNuwOOsyk@pevik> <X9ooMiuT3DKHwHjJ@yuki.lan>
- <X9ovkdN27zTsK+PN@pevik>
-Message-ID: <X9pc1MSXJetCuPTk@pevik>
+Message-ID: <X9p4x3rnqr7t+0BR@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > Hi!
-> > > BTW I wonder how to fix .test_variants in JSON:
-> > > "test_variants": "ARRAY_SIZE"
+Hi Cyril,
 
-> > > It's in many tests, e.g.  testcases/kernel/syscalls/clock_gettime/clock_gettime02.c.
+...
+> > Also many arrays should be anonymous, e.g. exe_options (for .options) and
+> > resource_files (for .resource_files) in testcases/kernel/syscalls/execve/execve05.c.
+> > I wonder if there can be smarter solution before we fix it.
 
-> > I guess that we can filter out test_variants for now, I do not think
-> > that it will be useful for the metadata that much.
+> Well either we teach the C parser about variables, or we move all the
+> definitions inline. I would just move them since that's easier to do.
+I've fixed most of .options and .save_restore.
+There are still some (e.g. CORE_PATTERN in madvise08 - use macro).
 
-> +1, I'll do it.
+> > But using inline for .options (and other two dimensional array needs to be fixed
+> > again in the parser: it now prints array reference: ARRAY(0x563186f58048)
+> > (for testcases/kernel/syscalls/ioctl/ioctl01.c).
 
-Actually, thinking about it twice I'd quite like to have all tags.
-Here test variant is for me info that test either test both raw syscall and libc
-wrapper or these tests have support for time64 (Viresh Kumar's patches).
+> That's a bug in the perl that produces the asciidoc, it's parsed just
+> fine in the json:
 
-So for me would be enough boolean info, not the actual number of variants.
+>   "ioctl01": {
+>    "needs_root": "1",
+>    "needs_tmpdir": "1",
+>    "options": [
+>      [
+>       "D:",
+>       "device",
+>       "-D <tty device> : for example, /dev/tty[0-9]"
+>      ]
+>     ],
+>    "fname": "testcases/kernel/syscalls/ioctl/ioctl01.c"
+>   },
+
+I've fixed this in dca56c567.
 
 Kind regards,
 Petr
