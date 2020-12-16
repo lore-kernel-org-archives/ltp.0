@@ -1,36 +1,28 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 16 Dec 2020 14:40:36 +0800
-Subject: [LTP] [PATCH] syscalls: recvmmsg: Add gitignore
-In-Reply-To: <a23e8cb8ae3f227d4355b89347b36d6dda6160c6.1608099138.git.viresh.kumar@linaro.org>
-References: <a23e8cb8ae3f227d4355b89347b36d6dda6160c6.1608099138.git.viresh.kumar@linaro.org>
-Message-ID: <5FD9ABE4.1080508@cn.fujitsu.com>
+From: Radoslav Kolev <radoslav.kolev@suse.com>
+Date: Wed, 16 Dec 2020 10:16:35 +0200
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05.c: skip test on overlay
+ filesystem
+In-Reply-To: <5FD96C97.6020602@cn.fujitsu.com>
+References: <20201215155650.6496-1-radoslav.kolev@suse.com>
+ <5FD96C97.6020602@cn.fujitsu.com>
+Message-ID: <c6340b4dc96458ddd972beb28059324d44f44a99.camel@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+On Wed, 2020-12-16 at 10:10 +0800, Yang Xu wrote:
+> Hi Radoslav
+> > The undelrying device can't be properly detected and causes failure
+> > when running in an overlay filesystem.
+> 
+> I guess the best way is to change tst_find_backing_dev api, so it
+> can 
+> detect the correct underlying device.
 
-Pushed, thanks.
+Yes, that would be the best solution. If you have and idea of how to do
+it that's not too complicated please give me some pointers.
 
-Best Regards
-Yang Xu
-> Add the missing gitignore file.
->
-> Signed-off-by: Viresh Kumar<viresh.kumar@linaro.org>
-> ---
->   testcases/kernel/syscalls/recvmmsg/.gitignore | 1 +
->   1 file changed, 1 insertion(+)
->   create mode 100644 testcases/kernel/syscalls/recvmmsg/.gitignore
->
-> diff --git a/testcases/kernel/syscalls/recvmmsg/.gitignore b/testcases/kernel/syscalls/recvmmsg/.gitignore
-> new file mode 100644
-> index 000000000000..974ae1ef90ea
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/recvmmsg/.gitignore
-> @@ -0,0 +1 @@
-> +recvmmsg01
-
-
+I looked into it briefly, but didn't see a straighforward way.
 
