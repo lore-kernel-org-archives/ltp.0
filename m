@@ -1,204 +1,164 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 16 Dec 2020 10:01:17 +0000
-Subject: [LTP] [RFC PATCH 1/5] safe_file_ops: Introduce openat and printfat
- API
+Date: Wed, 16 Dec 2020 10:01:19 +0000
+Subject: [LTP] [RFC PATCH 3/5] CGroup API tests
 In-Reply-To: <20201216100121.16683-1-rpalethorpe@suse.com>
 References: <20201216100121.16683-1-rpalethorpe@suse.com>
-Message-ID: <20201216100121.16683-2-rpalethorpe@suse.com>
+Message-ID: <20201216100121.16683-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Create safe wrappers for the *at commands. This allows us to print to
-files in a directory without constructing the full file path using
-sprintf.
+Rewrite of existing test and new test for the CGroups API.
 ---
- include/tst_safe_file_ops.h |  38 +++++++++++
- lib/tst_safe_file_ops.c     | 126 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 164 insertions(+)
- create mode 100644 lib/tst_safe_file_ops.c
+ lib/newlib_tests/.gitignore   |  1 +
+ lib/newlib_tests/test21.c     | 30 +++++------------
+ lib/newlib_tests/tst_cgroup.c | 61 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 70 insertions(+), 22 deletions(-)
+ create mode 100644 lib/newlib_tests/tst_cgroup.c
 
-diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
-index 894c16123..fb3510557 100644
---- a/include/tst_safe_file_ops.h
-+++ b/include/tst_safe_file_ops.h
-@@ -46,4 +46,42 @@
- #define TST_MOUNT_OVERLAY() \
- 	(mount_overlay(__FILE__, __LINE__, 0) == 0)
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 6c2612259..799f088ba 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -16,6 +16,7 @@ test15
+ test16
+ tst_capability01
+ tst_capability02
++tst_cgroup
+ tst_device
+ tst_safe_fileops
+ tst_res_hexd
+diff --git a/lib/newlib_tests/test21.c b/lib/newlib_tests/test21.c
+index f29a2f702..4d40c2e1e 100644
+--- a/lib/newlib_tests/test21.c
++++ b/lib/newlib_tests/test21.c
+@@ -11,8 +11,6 @@
+ #include "tst_test.h"
+ #include "tst_cgroup.h"
  
-+#define SAFE_OPENAT(dirfd, path, oflags, ...)			\
-+	safe_openat(__FILE__, __LINE__,				\
-+		    (dirfd), (path), (oflags), ## __VA_ARGS__)
-+
-+#define SAFE_FILE_READAT(dirfd, path, buf, nbyte)			\
-+	safe_file_readat(__FILE__, __LINE__,				\
-+			 (dirfd), (path), (buf), (nbyte))
-+
-+
-+#define SAFE_FILE_PRINTFAT(dirfd, path, fmt, ...)			\
-+	safe_file_printfat(__FILE__, __LINE__,				\
-+			   (dirfd), (path), (fmt), __VA_ARGS__)
-+
-+#define SAFE_UNLINKAT(dirfd, path, flags)				\
-+	safe_unlinkat(__FILE__, __LINE__, (dirfd), (path), (flags))
-+
-+
-+int safe_openat(const char *file, const int lineno,
-+		int dirfd, const char *path, int oflags, ...);
-+
-+ssize_t safe_file_readat(const char *file, const int lineno,
-+			 int dirfd, const char *path, char *buf, size_t nbyte);
-+
-+int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va);
-+int tst_file_printfat(int dirfd, const char *path, char *fmt, ...)
-+			__attribute__ ((format (printf, 3, 4)));
-+
-+int safe_file_vprintfat(const char *file, const int lineno,
-+			int dirfd, const char *path,
-+			const char *fmt, va_list va);
-+
-+int safe_file_printfat(const char *file, const int lineno,
-+		       int dirfd, const char *path, char *fmt, ...)
-+			__attribute__ ((format (printf, 5, 6)));
-+
-+int safe_unlinkat(const char *file, const int lineno,
-+		  int dirfd, const char *path, int flags);
-+
- #endif /* TST_SAFE_FILE_OPS */
-diff --git a/lib/tst_safe_file_ops.c b/lib/tst_safe_file_ops.c
+-#define PATH_CGROUP1 "/mnt/liwang1"
+-#define PATH_CGROUP2 "/mnt/liwang2"
+ #define MEMSIZE 1024 * 1024
+ 
+ static void do_test(void)
+@@ -21,19 +19,16 @@ static void do_test(void)
+ 
+ 	switch (pid) {
+ 	case 0:
+-		tst_cgroup_move_current(PATH_CGROUP1);
+-		tst_cgroup_mem_set_maxbytes(PATH_CGROUP1, MEMSIZE);
+-		tst_cgroup_mem_set_maxswap(PATH_CGROUP1, MEMSIZE);
+-
+-		tst_cgroup_move_current(PATH_CGROUP2);
+-
++		tst_cgroup_move_current(TST_CGROUP_MEMORY);
++		tst_cgroup_mem_set_maxbytes(MEMSIZE);
++		tst_cgroup_mem_set_maxswap(MEMSIZE);
+ 	break;
+ 	default:
+-		tst_cgroup_move_current(PATH_TMP_CG_CST);
++		tst_cgroup_move_current(TST_CGROUP_CPUSET);
+ 
+-		tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-		tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, MEMSIZE);
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, MEMSIZE);
++		tst_cgroup_move_current(TST_CGROUP_MEMORY);
++		tst_cgroup_mem_set_maxbytes(MEMSIZE);
++		tst_cgroup_mem_set_maxswap(MEMSIZE);
+ 	break;
+ 	}
+ 
+@@ -42,20 +37,11 @@ static void do_test(void)
+ 
+ static void setup(void)
+ {
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_CGROUP1);
+-
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_CGROUP2);
++	tst_cgroup_require(TST_CGROUP_MEMORY, NULL);
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
+-	tst_cgroup_umount(PATH_CGROUP1);
+-
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
+-	tst_cgroup_umount(PATH_CGROUP2);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/lib/newlib_tests/tst_cgroup.c b/lib/newlib_tests/tst_cgroup.c
 new file mode 100644
-index 000000000..e857bdd14
+index 000000000..e4e7d8f28
 --- /dev/null
-+++ b/lib/tst_safe_file_ops.c
-@@ -0,0 +1,126 @@
++++ b/lib/newlib_tests/tst_cgroup.c
+@@ -0,0 +1,61 @@
 +#include <stdio.h>
-+#include <stdlib.h>
-+#include "lapi/fcntl.h"
 +
-+#define TST_NO_DEFAULT_MAIN
 +#include "tst_test.h"
++#include "tst_cgroup.h"
 +
-+int safe_openat(const char *file, const int lineno,
-+		int dirfd, const char *path, int oflags, ...)
++static char *only_mount_v1;
++static char *no_cleanup;
++static struct tst_option opts[] = {
++	{"v", &only_mount_v1, "-v\tOnly try to mount CGroups V1"},
++	{"n", &no_cleanup, "-n\tLeave CGroups created by test"},
++	{NULL, NULL, NULL},
++};
++struct tst_cgroup_opts cgopts;
++
++static void do_test(void)
 +{
-+	va_list ap;
-+	int fd;
-+	mode_t mode;
++	char buf[BUFSIZ];
++	pid_t pid = SAFE_FORK();
 +
-+	va_start(ap, oflags);
-+	mode = va_arg(ap, int);
-+	va_end(ap);
++	if (!pid) {
++		tst_cgroup_mem_set_maxbytes((1UL << 24) - 1);
++		tst_cgroup_mem_set_maxswap(1UL << 31);
++		tst_cgroup_move_current(TST_CGROUP_MEMORY);
 +
-+	fd = openat(dirfd, path, oflags, mode);
++		tst_cgroup_cpuset_read_files("mems", buf, sizeof(buf));
++		tst_cgroup_cpuset_write_files("mems", buf);
++		tst_cgroup_move_current(TST_CGROUP_CPUSET);
 +
-+	if (fd < 0) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: openat(%d, \"%s\", O_RDONLY)",
-+			file, lineno, dirfd, path);
++		tst_res(TPASS, "Cgroup mount test");
 +	}
 +
-+	return fd;
++	tst_reap_children();
 +}
 +
-+ssize_t safe_file_readat(const char *file, const int lineno,
-+			 int dirfd, const char *path, char *buf, size_t nbyte)
++static void setup(void)
 +{
-+	int fd = safe_openat(file, lineno, dirfd, path, O_RDONLY);
-+	ssize_t rval = safe_read(file, lineno, NULL, 0, fd, buf, nbyte - 1);
++	cgopts.only_mount_v1 = !!only_mount_v1,
++	cgopts.cleanup =
++		no_cleanup ? TST_CGROUP_CLEANUP_NONE : TST_CGROUP_CLEANUP_ROOT;
 +
-+	close(fd);
-+	buf[rval] = '\0';
++	tst_cgroup_scan();
++	tst_cgroup_print_config();
 +
-+	if (rval >= (ssize_t)nbyte - 1) {
-+		tst_brk(TBROK,
-+			"%s:%d: Buffer length %zu too small to read (%d)/%s",
-+			file, lineno, nbyte, dirfd, path);
-+	}
-+
-+	return rval;
++	tst_cgroup_require(TST_CGROUP_MEMORY, &cgopts);
++	tst_cgroup_print_config();
++	tst_cgroup_require(TST_CGROUP_CPUSET, &cgopts);
++	tst_cgroup_print_config();
 +}
 +
-+int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va)
++static void cleanup(void)
 +{
-+	int fd = openat(dirfd, path, O_WRONLY);
-+
-+	if (fd < 0) {
-+		tst_res(TINFO | TERRNO,
-+			"openat(%d, %s, O_WRONLY)", dirfd, path);
-+		return fd;
-+	}
-+
-+	TEST(vdprintf(fd, fmt, va));
-+	close(fd);
-+
-+	if (TST_RET < 0)
-+		tst_res(TINFO | TTERRNO, "vdprintf(%d, %s, ...)", fd, fmt);
-+	errno = TST_ERR;
-+
-+	return TST_RET;
++	tst_cgroup_cleanup(&cgopts);
 +}
 +
-+int tst_file_printfat(int dirfd, const char *path, char *fmt, ...)
-+{
-+	va_list va;
-+	int rval;
-+
-+	va_start(va, fmt);
-+	rval = tst_file_vprintfat(dirfd, path, fmt, va);
-+	va_end(va);
-+
-+	return rval;
-+}
-+
-+int safe_file_vprintfat(const char *file, const int lineno,
-+			int dirfd, const char *path,
-+			const char *fmt, va_list va)
-+{
-+	int rval, fd = safe_openat(file, lineno, dirfd, path, O_WRONLY);
-+
-+	if (fd < 1)
-+		return fd;
-+
-+	rval = vdprintf(fd, fmt, va);
-+
-+	if (rval > -1)
-+		return rval;
-+
-+	tst_brk(TBROK | TERRNO, "%s:%d: printfat((%d)/%s, %s, ...)",
-+		file, lineno, dirfd, path, fmt);
-+
-+	return 0;
-+}
-+
-+int safe_file_printfat(const char *file, const int lineno,
-+		       int dirfd, const char *path, char *fmt, ...)
-+{
-+	va_list va;
-+	int rval;
-+
-+	va_start(va, fmt);
-+	rval = safe_file_vprintfat(file, lineno, dirfd, path, fmt, va);
-+	va_end(va);
-+
-+	return rval;
-+}
-+
-+int safe_unlinkat(const char *file, const int lineno,
-+		  int dirfd, const char *path, int flags)
-+{
-+	int rval = unlinkat(dirfd, path, flags);
-+
-+	if (rval < 0) {
-+		tst_brk(TBROK | TERRNO,
-+			"%s:%d: unlinkat(%d, %s, %s)", file, lineno,
-+			dirfd, path,
-+			flags == AT_REMOVEDIR ? "AT_REMOVEDIR" :
-+						(flags ? "?" : "0"));
-+	}
-+
-+	return rval;
-+}
++static struct tst_test test = {
++	.test_all = do_test,
++	.setup = setup,
++	.cleanup = cleanup,
++	.options = opts,
++	.forks_child = 1,
++};
 -- 
 2.29.2
 
