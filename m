@@ -1,64 +1,167 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 16 Dec 2020 14:10:34 +0300
-Subject: [LTP] [PATCH] ipsec_lib.sh: test xfrm_user driver locally
- before rhost
-In-Reply-To: <20201216115558.2964253d@kmaincent-XPS-13-7390>
-References: <20201216094037.5886-1-kory.maincent@bootlin.com>
- <6abb1c7a-47d7-97dd-96c2-665c1030a554@oracle.com>
- <20201216115558.2964253d@kmaincent-XPS-13-7390>
-Message-ID: <adc0cd36-8b6b-7323-7d08-d997f2f146e2@oracle.com>
+Date: Wed, 16 Dec 2020 15:08:15 +0300
+Subject: [LTP] [PATCH 1/1] if-mtu-change.sh: Add max packet size
+ detection for IPv4
+In-Reply-To: <20201215190545.19939-1-pvorel@suse.cz>
+References: <20201215190545.19939-1-pvorel@suse.cz>
+Message-ID: <53607e8b-176f-5aaf-4b5f-9efabd1d756f@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 16.12.2020 13:55, K?ry Maincent wrote:
-> Hello Alexey,
+On 15.12.2020 22:05, Petr Vorel wrote:
+> Although theoretical maximum IP packet size is 65507, this does not work
+> on s390x on low MTU. But according to Wenjia Zhang the same problem is
+> on more platforms, e.g. x86:
 > 
-> On Wed, 16 Dec 2020 13:31:36 +0300
-> Alexey Kodanev <alexey.kodanev@oracle.com> wrote:
+> A big IP packet is fragmented into small packets according to the MTU
+> size.  Each small packet consumes an amount of system memory, which are
+> recorded in ?skb->truesize?. And the sum of the space all of the small
+> packets need is limited by ?2 * sk->sk_sndbuf? (which you can find in
+> '__ip_append_data' function in net/ipv4/ip_output.c), that is inherited
+> from the system default set during socket initialization. The problem on
+> s390 is that ?skb->truesize? is got by aligning the size of the data
+> buffer to the L1 cache line (using SKB_DATA_ALIGN), which on s390 and
+> only on s390 is 256 bytes, while on other processors less than or equal
+> to 128 bytes. So the sum on s390 is much easier to exceed the limit,
+> that the big packet can not be sent successfully.
 > 
->> On 16.12.2020 12:40, Kory Maincent wrote:
->>> First, test the presence of the driver locally to avoid a misleading TWARN
->>> from tst_net_run in case of driver not present.
->>>
->>> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
->>> ---
->>>  testcases/network/stress/ipsec/ipsec_lib.sh | 5 +++--
->>>  1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh
->>> b/testcases/network/stress/ipsec/ipsec_lib.sh index 198c9315d..1db5fc6af
->>> 100644 --- a/testcases/network/stress/ipsec/ipsec_lib.sh
->>> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
->>> @@ -83,8 +83,9 @@ ipsec_lib_setup()
->>>  	ALGR=
->>>  
->>>  	if [ -n "$IPSEC_MODE" ]; then
->>> -		tst_net_run "tst_check_drivers xfrm_user" || \
->>> -			tst_brk TCONF "xfrm_user driver not available on
->>> lhost or rhost"
->>> +		tst_check_drivers xfrm_user || tst_brk TCONF "xfrm_user
->>> driver not available"
->>> +		tst_rhost_run -c "tst_check_drivers xfrm_user" || \
->>> +			tst_brk TCONF "xfrm_user driver not available on
->>> rhost"  
->>
->> Hi Kory,
->>
->> tst_net_run() checks the driver locally first, so I don't
->> quite understand why do exactly the same what tst_net_run()
->> supposed to do?
+> Because of the big cache line size on s390, the maximum size of the
+> packet is limited in between 53816 and 64960, if the MTU is set to
+> between 484 and 588.
+> However, this problem not only occurs on s390, but also on some other
+> processor e.g. x86. If the MTU is set to less than 340, an IP packet
+> with the theoretical maximum size (65507 bytes) likewise can not be sent
+> successfully.
 > 
-> Indeed but it returns a TWARN because the command "tst_check_drivers xfrm_user"
-> not end properly, but in fact it should return a TCONF due to the missing
-> xfrm_drivers.
-> In the final result file we got a FAIL error with the value 36 in place of a
-> CONF with value 32 which should be the right message.
+> NOTE: the detection isn't precise. I didn't consider it important enough
+> to implement bisection method. Detected only for IPv4, because IPv6 uses
+> high enough MTU (and function is not IPv6 ready).
+> 
+> Link: https://urldefense.com/v3/__https://lore.kernel.org/lkml/ab8289e5-547c-5375-5d0f-e9a363005db1@linux.ibm.com/__;!!GqivPVa7Brio!I-DjoaVAyYBR7vfzBbvQC5DTwXdU7kKn2lkcphosAI5PK2DLKjbAuaaBl6XG6hh1Ydlh$ 
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi Alexey,
+> 
+> This simple change would be enough:
+> [ "$(uname -m)" = "s390x" ] && MAX_PACKET_SIZE="61244"
+> 
+> But I wanted to fix this for all platforms at once.
 > 
 
-Perhaps it needs -q option here:
+Hi Petr,
 
-tst_net_run -q "tst_check_drivers xfrm_user" ... so it skips TWARN?
+Another option would be to limit max size according to the size of
+the set mtu, so that we test packets with and without fragmentation,
+i.e. tst_ping -s "1 $((mtu / 2)) $mtu $((5 * mtu))", where "$mtu"
+size - for minor fragmentation.
 
+Anyway the patch looks good, minor comments below.
+
+> Kind regards,
+> Petr
+> 
+>  .../network/stress/interface/if-mtu-change.sh | 61 ++++++++++++++-----
+>  1 file changed, 45 insertions(+), 16 deletions(-)
+> 
+> diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
+> index f7ec35619..bc05ee187 100755
+> --- a/testcases/network/stress/interface/if-mtu-change.sh
+> +++ b/testcases/network/stress/interface/if-mtu-change.sh
+> @@ -21,11 +21,53 @@ CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
+>  CHANGE6_VALUES="1280 1445 1335 1390 1500 1280 1500 1280 1335 1500"
+>  saved_mtu=
+>  
+> +MAX_PACKET_SIZE=65507
+> +
+> +set_mtu()
+> +{
+> +	local mtu="$1"
+> +	local cmd="$2"
+> +	local ret=0
+> +	local iface=$(tst_iface)
+> +	local iface_rmt=$(tst_iface rhost)
+> +
+> +	case $cmd in
+> +		ifconfig) ifconfig $iface mtu $mtu || ret=1
+> +			tst_rhost_run -c "ifconfig $iface_rmt mtu $mtu" || ret=1
+> +			;;
+> +		ip) ip link set $iface mtu $mtu || ret=1
+> +			tst_rhost_run -c "ip link set $iface_rmt mtu $mtu" || ret=1
+> +			;;
+> +		*) tst_brk TBROK "unknown cmd '$cmd'"
+> +			;;
+> +	esac
+> +
+> +	return $ret
+> +}
+> +
+> +find_ipv4_max_packet_size()
+> +{
+> +	local min_mtu=552
+> +	local size=$MAX_PACKET_SIZE
+> +
+> +	set_mtu $min_mtu $CMD || tst_brk TBROK "failed to set MTU to $mtu"
+> +	tst_res TINFO "checking max MTU"
+> +	while [ $size -gt 0 ]; do
+> +		if ping -I $(tst_iface) -c1 -w1 -s $size $(tst_ipaddr rhost) >/dev/null; then
+> +			tst_res TINFO "use max MTU $size"
+> +			MAX_PACKET_SIZE=$size
+> +			return
+> +		fi
+> +		size=$((size - 500))
+> +	done
+
+Should we TBROK here?
+
+> +}
+> +
+>  do_setup()
+>  {
+>  	[ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
+>  	if_setup
+>  	saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
+> +	[ "$TST_IPV6" ] || find_ipv4_max_packet_size
+>  }
+>  
+>  do_cleanup()
+> @@ -41,9 +83,6 @@ test_body()
+>  {
+>  	local cmd="$CMD"
+>  
+> -	local iface=$(tst_iface)
+> -	local iface_rmt=$(tst_iface rhost)
+> -
+>  	tst_res TINFO "'$cmd' changes MTU $MTU_CHANGE_TIMES times" \
+>  	               "every $CHANGE_INTERVAL seconds"
+>  
+> @@ -59,24 +98,14 @@ test_body()
+>  		make_background_tcp_traffic
+>  
+>  		tst_res TINFO "set MTU to $mtu $cnt/$MTU_CHANGE_TIMES"
+> -		local ret=0
+> -		case $cmd in
+> -		ifconfig) ifconfig $iface mtu $mtu || ret=1
+> -			tst_rhost_run -c "ifconfig $iface_rmt mtu $mtu"
+> -		;;
+> -		ip) ip link set $iface mtu $mtu || ret=1
+> -			tst_rhost_run -c "ip link set $iface_rmt mtu $mtu"
+> -		;;
+> -		esac
+> -
+> -		if [ $? -ne 0 -o $ret -ne 0 ]; then
+> -			tst_res TFAIL "Failed to change the mtu at $cnt time"
+> +		if ! set_mtu $mtu $cmd; then
+> +			tst_res TFAIL "failed to change MTU to $mtu at $cnt time"
+>  			return
+>  		fi
+>  
+>  		tst_sleep $CHANGE_INTERVAL
+>  
+> -		tst_ping -s "1 1000 65507"
+> +		tst_ping -s "1 1000 $MAX_PACKET_SIZE"
+
+tst_ping -s "1 $((mtu / 2)) $mtu $MAX_PACKET_SIZE"?
