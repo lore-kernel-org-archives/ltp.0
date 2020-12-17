@@ -1,38 +1,42 @@
-From: =?unknown-8bit?q?K=C3=B6ry?= Maincent <kory.maincent@bootlin.com>
-Date: Thu, 17 Dec 2020 15:29:57 +0100
-Subject: [LTP] [PATCH] fastopen: add require to sch_netem driver
-In-Reply-To: <X9tcZzYQUkkw6abP@pevik>
-References: <20201217085852.26032-1-kory.maincent@bootlin.com>
- <X9tcZzYQUkkw6abP@pevik>
-Message-ID: <20201217152957.685200a9@kmaincent-XPS-13-7390>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 15:44:23 +0100
+Subject: [LTP] [PATCH v4 2/3] tst_test.sh: Warn on missing cleanup function
+In-Reply-To: <20201217144424.19414-1-pvorel@suse.cz>
+References: <20201217144424.19414-1-pvorel@suse.cz>
+Message-ID: <20201217144424.19414-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+.i.e. be more informative than:
+/opt/ltp/testcases/bin/tst_test.sh: line 33: cleanup: command not found
 
-On Thu, 17 Dec 2020 14:25:59 +0100
-Petr Vorel <pvorel@suse.cz> wrote:
+tst_brk does not make sense here, thus only warning.
 
-> Hi Kory,
-> 
-> > +TST_NEEDS_DRIVERS="sch_netem"  
-> On my system also veth, xfrm_algo and xfrm_user are loaded.
-> 
-> veth is added because I use network namespaces based testing (I'll add it on
-> separate patch) and xfrm_algo is used xfrm_user.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_test.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The xfrm_user driver seems not to be needed for the fastopen test.
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index c205bc91b..dbf1d2a97 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -29,7 +29,11 @@ _tst_do_exit()
+ 	TST_DO_EXIT=1
+ 
+ 	if [ -n "$TST_RUN_STARTED" -a -n "$TST_CLEANUP" -a -z "$TST_NO_CLEANUP" ]; then
+-		$TST_CLEANUP
++		if type $TST_CLEANUP >/dev/null 2>/dev/null; then
++			$TST_CLEANUP
++		else
++			tst_res TWARN "TST_CLEANUP=$TST_CLEANUP declared, but function not defined (or cmd not found)"
++		fi
+ 	fi
+ 
+ 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
+-- 
+2.29.2
 
-Regards,
-
-K?ry 
-
-> 
-> Thus maybe add also xfrm_user?
-> TST_NEEDS_DRIVERS="sch_netem xfrm_user"
-> 
-> Kind regards,
-> Petr
