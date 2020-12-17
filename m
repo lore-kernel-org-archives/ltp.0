@@ -1,87 +1,107 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Thu, 17 Dec 2020 14:23:12 -0500
-Subject: [LTP] [PATCH v5 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <X9sXxGacmaPYN8hp@pevik>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 20:36:15 +0100
+Subject: [LTP] [PATCH v5 3/4] ima_tpm.sh: Fix calculating boot aggregate
+In-Reply-To: <25e41786777f814455780915dfe1bc2c769dc99c.camel@linux.ibm.com>
 References: <20201214221946.6340-1-pvorel@suse.cz>
- <aec8d4d757c674b3fdb4caaf3d89317d230b91e7.camel@linux.ibm.com>
- <X9sXxGacmaPYN8hp@pevik>
-Message-ID: <3df04bcb427a225de4fe7cb4886a3539b8735dbc.camel@linux.ibm.com>
+ <20201214221946.6340-4-pvorel@suse.cz>
+ <25e41786777f814455780915dfe1bc2c769dc99c.camel@linux.ibm.com>
+Message-ID: <20201217193615.GA491754@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2020-12-17 at 09:33 +0100, Petr Vorel wrote:
-> Hi Mimi,
-> 
-> > Hi Petr,
-> 
-> > On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
-> > > The only problem which bothers me is failure on ima_policy=tcb:
-> 
-> > > evmctl ima_measurement /sys/kernel/security/integrity/ima/binary_runtime_measurements -vv
-> > > ...
-> > > sha256: PCRAgg  10: c19866f10132282d4cf20ca45f50078db843f95dc8d1ea8819d0e240cdf3b21c
-> > > sha256: TPM PCR-10: df913daa0437a2365f710f6d93a4f2d37146414425d9aaa60740dc635d187158
-> > > sha256: PCRAgg 10 does not match TPM PCR-10
-> > > Failed to match per TPM bank or SHA1 padded TPM digest(s) (count 1446)
-> > > errno: No such file or directory (2)
-> 
-> > > Thus test get failure for the fist run without --ignore-violations
-> > > ...
-> > > ima_tpm 1 TINFO: using command: evmctl ima_boot_aggregate -v
-> > > Using tss2-rc-decode to read PCRs.
-> > > ima_tpm 1 TINFO: IMA boot aggregate: '0756853d9378ff6473966e20610a8d1cb97e4dc613cb87adf5e870c8eb93fd0f'
-> > > ima_tpm 1 TPASS: bios boot aggregate matches IMA boot aggregate
-> > > ima_tpm 2 TINFO: verify PCR values
-> > > ima_tpm 2 TINFO: real PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
-> > > ima_tpm 2 TFAIL: evmctl failed, trying with --ignore-violations
-> > > ima_tpm 2 TINFO: aggregate PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
-> > > ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
-> > > ima_tpm 3 TINFO: AppArmor enabled, this may affect test results
-> > > ima_tpm 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-> > > ima_tpm 3 TINFO: loaded AppArmor profiles: none
-> 
-> > > Summary:
-> > > passed   2
-> > > failed   1
-> > > skipped  0
-> > > warnings 0
-> 
-> > > IMHO unless this is specific for this particular TPM we should skip test
-> > > if ima_policy=tcb.
-> 
-> > No, I don't think so.  Violations are a result of a file being opened
-> > for read and write at the same time.  Opening a file for write, when it
-> > is already open for read, results in a Time of Measure/Time of Use
-> > (ToMToU) violation.  Opening a file for read, when it is already open
-> > for write, results in an open_writer violation.  One of the more common
-> > reasons for these violations are log files.
-> 
-> > With the builtin TCB measurement policy enabled on the boot command
-> > line, files are measured from the beginning, before a custom policy is
-> > loaded.  Normally a custom policy is loaded after an LSM policy has
-> > been loaded, allowing IMA policy rules to be defined in terms of LSM
-> > labels.
-> 
-> > Verifying the IMA measurement list against the TPM PCRs is an important
-> > test.  Ignoring violations doesn't make sense either.   Perhaps if a
-> > custom policy has not been loaded, emit an informational message and
-> > skip the test without "--ignore-violations".
-> 
-> Thanks for an explanation. Agree, you're right. It's most likely wrong setup
-> (there were some temporary files in /tmp and even postfix pid file in /var/run/),
-> I need to properly setup dracut-ima. It'd be then good to document this, but I'd
-> do it as separate effort.
-> 
-> So, can I merge the patchset with your ack/review-by?
+Hi Mimi,
 
-Yes, I just finished reviewing the patches.   Other that clarifying the
-patch descriptions and fixing the one typo  ("tmp" -> "tpm"), it looks
-really.
+TL;DR: thank you for comments, I update commit message.
+Details below.
 
-thanks! 
+> Hi Petr,
 
-Mimi
+> On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
+> > for TPM 2.0 or kernel >= v5.8-rc1:
+> > 6f1a1d103b48 ima: ("Switch to ima_hash_algo for boot aggregate")
 
+> > Test still fails with newer TPM 2.0 on kernel < v5.8-rc1.
+
+> The above commit was backported in stable.  Do you know if the failing
+> systems backported the above patch?
+SLES kernel got it.
+
+> I've recently asked for commit
+> 20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
+> also be backported.
+I see, it got backported to v5.4 (LTS).
+
+FYI shell API doesn't have yet support for hint for commits to backport
+(my TODO: #700 [1]). Once it's implemented, I'll add 20c59ce010f8 as this tag.
+
+[1] https://github.com/linux-test-project/ltp/issues/700
+
+> > Test was failing, because it expect SHA1 (we ignore MD5) hash, but for TPM 2.0
+> > is now used IMA default hash algorithm (by default default SHA256).
+> > This is similar for entries in IMA measurement list so we can reuse
+> > already existing code.
+
+> > Reading other algorithms than SHA1 or support TPM 2.0 requires evmctl
+> > >= 1.3.1 (1.3 would also work for test1, but will be required for test2).
+
+> > Although recent evmctl is recommended, to support older kernels and TPMs
+> > which support only SHA1, get boot aggregate with old our legacy
+> > ima_boot_aggregate.c.
+
+> ^ the LTP legacy ima_boot_aggregate.c still works, without the evmctl
+> dependency.
+Yes, I meant in my description this LTP legacy ima_boot_aggregate.c.
+Test does not require evmctl for SHA1 hash.
+
+So maybe:
+Although recent evmctl is recommended, for older kernels and TPMs
+which support only SHA1 is still used the legacy ima_boot_aggregate.c
+(no evmctl update required).
+
+> > Also fixed cases:
+> > * testing with no TPM device:
+> > * TPM TPM 2.0 devices which does not export event log
+> > (/sys/kernel/security/tpm0/binary_bios_measurements).
+
+> ^ firmware which does not export the TPM 2.0 binary event log
++1
+
+> > Also fixed test without TPM device (when IMA TPM-bypass is tested)
+> > as some TPM 2.0 devices does not export event log
+> > (/sys/kernel/security/tpm0/binary_bios_measurements).
+
+> This looks like a duplicate of above.  Maybe just add another bullet
+> *
+> detecting IMA TPM-bypass mode
++1
+
+> > This does not require evmctl at all.
+
+> I assume this comment refers to TPM 2.0 calculating the
+> "boot_aggregate" based on the existing PCR values, as opposed to TPM
+> 1.2 which first walks the TPM event log, calculating the PCRs.
+No, that's meant for IMA TPM-bypass (test1). Because we only check zero.
+Both TPM 1.2 and TPM 2.0 require evmctl for reading PCR-10 (test2).
+So just a note for * detecting IMA TPM-bypass mode.
+
+> > Also try best to detect TPM major version (1, 2 or none - assume
+> > TPM-bypass). This fixes testing with TPM 2.0 device which does not
+> > export event log (/sys/kernel/security/tpm0/binary_bios_measurements):
+> > not wrongly assuming TPM-bypass when kernel didn't export other TPM
+> > 2.0 files we check in get_tpm_version() but bios boot aggregate is
+> > correct (i.e. not 0x00s). In that case evmctl ima_boot_aggregate can get
+> > boot aggregate even without TPM event log.
+
+> > Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+> Thanks, Petr!
+Thanks a lot for patient review and info.
+
+Kind regards,
+Petr
+
+> Mimi
