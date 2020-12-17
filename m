@@ -1,71 +1,250 @@
-From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Thu, 17 Dec 2020 00:20:55 -0500
-Subject: [LTP] [PATCH v5 0/4] TPM 2.0 fixes in IMA tests
-In-Reply-To: <20201214221946.6340-1-pvorel@suse.cz>
-References: <20201214221946.6340-1-pvorel@suse.cz>
-Message-ID: <aec8d4d757c674b3fdb4caaf3d89317d230b91e7.camel@linux.ibm.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Thu, 17 Dec 2020 12:57:51 +0530
+Subject: [LTP] [PATCH V2 1/3] tst_module: Add separate declarations of
+ helpers for new tests framework
+Message-ID: <b48115a8d6dc3036f08e0166332035fab078b34a.1608189944.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+The tests using the new test framework must not use the headers from the
+old one, fix that by declaring the helpers in tst_module.h. To achieve
+that rename the original routines in tst_module.c with an underscore and
+use static inline wrappers to call them.
 
-On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
-> The only problem which bothers me is failure on ima_policy=tcb:
-> 
-> evmctl ima_measurement /sys/kernel/security/integrity/ima/binary_runtime_measurements -vv
-> ...
-> sha256: PCRAgg  10: c19866f10132282d4cf20ca45f50078db843f95dc8d1ea8819d0e240cdf3b21c
-> sha256: TPM PCR-10: df913daa0437a2365f710f6d93a4f2d37146414425d9aaa60740dc635d187158
-> sha256: PCRAgg 10 does not match TPM PCR-10
-> Failed to match per TPM bank or SHA1 padded TPM digest(s) (count 1446)
-> errno: No such file or directory (2)
-> 
-> Thus test get failure for the fist run without --ignore-violations
-> ...
-> ima_tpm 1 TINFO: using command: evmctl ima_boot_aggregate -v
-> Using tss2-rc-decode to read PCRs.
-> ima_tpm 1 TINFO: IMA boot aggregate: '0756853d9378ff6473966e20610a8d1cb97e4dc613cb87adf5e870c8eb93fd0f'
-> ima_tpm 1 TPASS: bios boot aggregate matches IMA boot aggregate
-> ima_tpm 2 TINFO: verify PCR values
-> ima_tpm 2 TINFO: real PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
-> ima_tpm 2 TFAIL: evmctl failed, trying with --ignore-violations
-> ima_tpm 2 TINFO: aggregate PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
-> ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
-> ima_tpm 3 TINFO: AppArmor enabled, this may affect test results
-> ima_tpm 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
-> ima_tpm 3 TINFO: loaded AppArmor profiles: none
-> 
-> Summary:
-> passed   2
-> failed   1
-> skipped  0
-> warnings 0
-> 
-> IMHO unless this is specific for this particular TPM we should skip test
-> if ima_policy=tcb.
+Also update the delete_module tests to use the new header.
 
-No, I don't think so.  Violations are a result of a file being opened
-for read and write at the same time.  Opening a file for write, when it
-is already open for read, results in a Time of Measure/Time of Use
-(ToMToU) violation.  Opening a file for read, when it is already open
-for write, results in an open_writer violation.  One of the more common
-reasons for these violations are log files.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2:
+- New patch.
 
-With the builtin TCB measurement policy enabled on the boot command
-line, files are measured from the beginning, before a custom policy is
-loaded.  Normally a custom policy is loaded after an LSM policy has
-been loaded, allowing IMA policy rules to be defined in terms of LSM
-labels.
+ include/old/old_module.h                      | 27 ++++++++++++---
+ include/tst_module.h                          | 33 +++++++++++++++++++
+ lib/tst_module.c                              |  8 ++---
+ .../syscalls/delete_module/delete_module01.c  |  6 ++--
+ .../syscalls/delete_module/delete_module03.c  | 12 +++----
+ 5 files changed, 68 insertions(+), 18 deletions(-)
+ create mode 100644 include/tst_module.h
 
-Verifying the IMA measurement list against the TPM PCRs is an important
-test.  Ignoring violations doesn't make sense either.   Perhaps if a
-custom policy has not been loaded, emit an informational message and
-skip the test without "--ignore-violations".
-
-thanks,
-
-Mimi
+diff --git a/include/old/old_module.h b/include/old/old_module.h
+index c50efec76244..1af7d1f68027 100644
+--- a/include/old/old_module.h
++++ b/include/old/old_module.h
+@@ -34,6 +34,14 @@
+ #ifndef TST_MODULE
+ #define TST_MODULE
+ 
++void tst_module_exist_(void (cleanup_fn)(void), const char *mod_name,
++					 char **mod_path);
++
++void tst_module_load_(void (cleanup_fn)(void), const char *mod_name,
++					char *const argv[]);
++
++void tst_module_unload_(void (cleanup_fn)(void), const char *mod_name);
++
+ /*
+  * Check module existence.
+  *
+@@ -44,8 +52,11 @@
+  *
+  * In case of failure, test'll call cleanup_fn and exit with TCONF return value.
+  */
+-void tst_module_exist(void (cleanup_fn)(void), const char *mod_name,
+-	char **mod_path);
++static inline void tst_module_exist(void (cleanup_fn)(void),
++				    const char *mod_name, char **mod_path)
++{
++	tst_module_exist_(cleanup_fn, mod_name, mod_path);
++}
+ 
+ /*
+  * Load a module using insmod program.
+@@ -58,8 +69,11 @@ void tst_module_exist(void (cleanup_fn)(void), const char *mod_name,
+  * In case of insmod failure, test will call cleanup_fn and exit with TBROK
+  * return value.
+  */
+-void tst_module_load(void (cleanup_fn)(void),
+-	const char *mod_name, char *const argv[]);
++static inline void tst_module_load(void (cleanup_fn)(void),
++				   const char *mod_name, char *const argv[])
++{
++	tst_module_load_(cleanup_fn, mod_name, argv);
++}
+ 
+ /*
+  * Unload a module using rmmod program. In case of failure, test will call
+@@ -67,6 +81,9 @@ void tst_module_load(void (cleanup_fn)(void),
+  *
+  * @mod_name: can be module name or module's file name.
+  */
+-void tst_module_unload(void (cleanup_fn)(void), const char *mod_name);
++static inline void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
++{
++	tst_module_unload_(cleanup_fn, mod_name);
++}
+ 
+ #endif /* TST_MODULE */
+diff --git a/include/tst_module.h b/include/tst_module.h
+new file mode 100644
+index 000000000000..637e85c0bf2f
+--- /dev/null
++++ b/include/tst_module.h
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ * Alexey Kodanev <alexey.kodanev@oracle.com>
++ */
++
++#ifndef TST_MODULE_H
++#define TST_MODULE_H
++
++void tst_module_exist_(void (cleanup_fn)(void), const char *mod_name,
++					 char **mod_path);
++
++static inline void tst_module_exist(const char *mod_name, char **mod_path)
++{
++	tst_module_exist_(NULL, mod_name, mod_path);
++}
++
++void tst_module_load_(void (cleanup_fn)(void), const char *mod_name,
++					char *const argv[]);
++
++static inline void tst_module_load(const char *mod_name, char *const argv[])
++{
++	tst_module_load_(NULL, mod_name, argv);
++}
++
++void tst_module_unload_(void (cleanup_fn)(void), const char *mod_name);
++
++static inline void tst_module_unload(const char *mod_name)
++{
++	tst_module_unload_(NULL, mod_name);
++}
++
++#endif /* TST_MODULE_H */
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index eda61872fe01..9bd443623616 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -28,7 +28,7 @@
+ #include "ltp_priv.h"
+ #include "old_module.h"
+ 
+-void tst_module_exists(void (cleanup_fn)(void),
++void tst_module_exists_(void (cleanup_fn)(void),
+ 	const char *mod_name, char **mod_path)
+ {
+ 	/* check current working directory */
+@@ -77,11 +77,11 @@ void tst_module_exists(void (cleanup_fn)(void),
+ 		free(buf);
+ }
+ 
+-void tst_module_load(void (cleanup_fn)(void),
++void tst_module_load_(void (cleanup_fn)(void),
+ 	const char *mod_name, char *const argv[])
+ {
+ 	char *mod_path = NULL;
+-	tst_module_exists(cleanup_fn, mod_name, &mod_path);
++	tst_module_exists_(cleanup_fn, mod_name, &mod_path);
+ 
+ 	const int offset = 2; /* command name & module path */
+ 	int size = 0;
+@@ -101,7 +101,7 @@ void tst_module_load(void (cleanup_fn)(void),
+ 	free(mod_path);
+ }
+ 
+-void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
++void tst_module_unload_(void (cleanup_fn)(void), const char *mod_name)
+ {
+ 	int i, rc;
+ 
+diff --git a/testcases/kernel/syscalls/delete_module/delete_module01.c b/testcases/kernel/syscalls/delete_module/delete_module01.c
+index e5cb53cc9ec3..8fb559f0c703 100644
+--- a/testcases/kernel/syscalls/delete_module/delete_module01.c
++++ b/testcases/kernel/syscalls/delete_module/delete_module01.c
+@@ -14,9 +14,9 @@
+  */
+ 
+ #include <errno.h>
+-#include "old_module.h"
+ #include "lapi/syscalls.h"
+ #include "tst_test.h"
++#include "tst_module.h"
+ 
+ #define MODULE_NAME	"dummy_del_mod"
+ #define MODULE_NAME_KO	"dummy_del_mod.ko"
+@@ -26,7 +26,7 @@ static int module_loaded;
+ static void do_delete_module(void)
+ {
+ 	if (module_loaded == 0) {
+-		tst_module_load(NULL, MODULE_NAME_KO, NULL);
++		tst_module_load(MODULE_NAME_KO, NULL);
+ 		module_loaded = 1;
+ 	}
+ 
+@@ -44,7 +44,7 @@ static void do_delete_module(void)
+ static void cleanup(void)
+ {
+ 	if (module_loaded == 1)
+-		tst_module_unload(NULL, MODULE_NAME_KO);
++		tst_module_unload(MODULE_NAME_KO);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/delete_module/delete_module03.c b/testcases/kernel/syscalls/delete_module/delete_module03.c
+index 8bd51be07dc2..7178e8ef13b0 100644
+--- a/testcases/kernel/syscalls/delete_module/delete_module03.c
++++ b/testcases/kernel/syscalls/delete_module/delete_module03.c
+@@ -14,7 +14,7 @@
+ 
+ #include <errno.h>
+ #include "tst_test.h"
+-#include "old_module.h"
++#include "tst_module.h"
+ #include "lapi/syscalls.h"
+ 
+ #define DUMMY_MOD		"dummy_del_mod"
+@@ -43,7 +43,7 @@ static void do_delete_module(void)
+ 		 * insmod DUMMY_MOD_KO again in case running
+ 		 * with -i option
+ 		 */
+-		tst_module_load(NULL, DUMMY_MOD_KO, NULL);
++		tst_module_load(DUMMY_MOD_KO, NULL);
+ 		dummy_mod_loaded = 1;
+ 	}
+ }
+@@ -51,11 +51,11 @@ static void do_delete_module(void)
+ static void setup(void)
+ {
+ 	/* Load first kernel module */
+-	tst_module_load(NULL, DUMMY_MOD_KO, NULL);
++	tst_module_load(DUMMY_MOD_KO, NULL);
+ 	dummy_mod_loaded = 1;
+ 
+ 	/* Load dependant kernel module */
+-	tst_module_load(NULL, DUMMY_MOD_DEP_KO, NULL);
++	tst_module_load(DUMMY_MOD_DEP_KO, NULL);
+ 	dummy_mod_dep_loaded = 1;
+ }
+ 
+@@ -63,11 +63,11 @@ static void cleanup(void)
+ {
+ 	/* Unload dependent kernel module */
+ 	if (dummy_mod_dep_loaded == 1)
+-		tst_module_unload(NULL, DUMMY_MOD_DEP_KO);
++		tst_module_unload(DUMMY_MOD_DEP_KO);
+ 
+ 	/* Unload first kernel module */
+ 	if (dummy_mod_loaded == 1)
+-		tst_module_unload(NULL, DUMMY_MOD_KO);
++		tst_module_unload(DUMMY_MOD_KO);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
