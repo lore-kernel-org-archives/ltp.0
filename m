@@ -1,48 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 17 Dec 2020 13:02:43 +0100
-Subject: [LTP] [PATCH V3 3/3] syscalls: finit_module: Add tests
-In-Reply-To: <d537c9be33a54d31f70bd25e3268dbebbb67ea8f.1608200941.git.viresh.kumar@linaro.org>
-References: <0279beda4660ab1b401164e369c79475633bd067.1608189944.git.viresh.kumar@linaro.org>
- <d537c9be33a54d31f70bd25e3268dbebbb67ea8f.1608200941.git.viresh.kumar@linaro.org>
-Message-ID: <X9tI4w6K0cz3hhNf@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 13:15:19 +0100
+Subject: [LTP] [PATCH 1/2] docparse/parse.sh: Fix parsing on dash
+In-Reply-To: <20201217121520.25713-1-pvorel@suse.cz>
+References: <20201217121520.25713-1-pvorel@suse.cz>
+Message-ID: <20201217121520.25713-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void setup(void)
-> +{
-> +	finit_module_supported_by_kernel();
-> +
-> +	/* Kernel returned ENOEXEC for fd = -1 earlier */
-> +	if ((tst_kvercmp(4, 6, 0)) < 0)
-> +		tcases[0].exp_errno = ENOEXEC;
+bash keeps escape sequences (e.g. \t and \n) when using echo:
 
-There are plenty of ways how to avoid hackery like that.
+$ a="-v\tverbose output\n"; echo "$a"
+-v\tverbose output\n
+$
 
-What about we defined a setup function in the test structure and then
-loop over the testcases in the test setup() and execute all per-test
-setup functions we have.
+But dash interprets them (behaves like echo -e on bash):
 
-The we can keep the errno set to zero in the static structure and
-initialize it in the per-testcase setup as:
+$ a="-v\tverbose output\n"; echo -e "$a"
+-e -v	verbose output
 
-static void bad_fd_setup(struct tcase *tc)
-{
-	if (tst_kvercmp(4, 6, 0)) < 0)
-		tc->errno = ENOEXEC;
-	else
-		tc->errno = EBADFD;
-}
+$
 
+Using printf does not help, because it'd have to be separated with --
+which cannot be used for printing variables.
+Fortunately cat << EOF redirection is portable.
+In the future we should probably avoid shell as much as possible.
 
-Also I think that the last test needs to handle ETXTBSY in the same way
-and we may possibly add more tests since I guess that most of the errors
-that apply to execve() would apply here as well. What happpens for
-example if we pass a fd that points to a directory?
+Fixes: 0962c9a37 ("syscalls/perf_event_open02: Use anonymous .options")
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ docparse/parse.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/docparse/parse.sh b/docparse/parse.sh
+index 4ae0c42b2..172eab702 100755
+--- a/docparse/parse.sh
++++ b/docparse/parse.sh
+@@ -32,7 +32,9 @@ for test in `find testcases/ -name '*.c'`; do
+ 			echo ','
+ 		fi
+ 		first=
+-		echo -n "$a"
++		cat <<EOF
++$a
++EOF
+ 	fi
+ done
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.29.2
+
