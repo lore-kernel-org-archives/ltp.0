@@ -1,301 +1,84 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 17 Dec 2020 12:57:53 +0530
-Subject: [LTP] [PATCH V2 3/3] syscalls: finit_module: Add tests
-In-Reply-To: <b48115a8d6dc3036f08e0166332035fab078b34a.1608189944.git.viresh.kumar@linaro.org>
-References: <b48115a8d6dc3036f08e0166332035fab078b34a.1608189944.git.viresh.kumar@linaro.org>
-Message-ID: <0279beda4660ab1b401164e369c79475633bd067.1608189944.git.viresh.kumar@linaro.org>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 09:33:08 +0100
+Subject: [LTP] [PATCH v5 0/4] TPM 2.0 fixes in IMA tests
+In-Reply-To: <aec8d4d757c674b3fdb4caaf3d89317d230b91e7.camel@linux.ibm.com>
+References: <20201214221946.6340-1-pvorel@suse.cz>
+ <aec8d4d757c674b3fdb4caaf3d89317d230b91e7.camel@linux.ibm.com>
+Message-ID: <X9sXxGacmaPYN8hp@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch adds success and failure tests for finit_module() syscall.
+Hi Mimi,
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V2:
-- Remove unwanted header
-- Use TST_EXP_*() macros
-- Rename module.
+> Hi Petr,
 
- include/lapi/init_module.h                    | 16 ++++
- runtest/syscalls                              |  3 +
- .../kernel/syscalls/finit_module/.gitignore   |  3 +
- .../kernel/syscalls/finit_module/Makefile     | 21 +++++
- .../syscalls/finit_module/finit_module.c      | 37 ++++++++
- .../syscalls/finit_module/finit_module01.c    | 49 +++++++++++
- .../syscalls/finit_module/finit_module02.c    | 84 +++++++++++++++++++
- 7 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/syscalls/finit_module/.gitignore
- create mode 100644 testcases/kernel/syscalls/finit_module/Makefile
- create mode 100644 testcases/kernel/syscalls/finit_module/finit_module.c
- create mode 100644 testcases/kernel/syscalls/finit_module/finit_module01.c
- create mode 100644 testcases/kernel/syscalls/finit_module/finit_module02.c
+> On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
+> > The only problem which bothers me is failure on ima_policy=tcb:
 
-diff --git a/include/lapi/init_module.h b/include/lapi/init_module.h
-index 65ff70356c60..9e79e11b8557 100644
---- a/include/lapi/init_module.h
-+++ b/include/lapi/init_module.h
-@@ -16,4 +16,20 @@ static inline int init_module(void *module_image, unsigned long len,
- {
- 	return tst_syscall(__NR_init_module, module_image, len, param_values);
- }
-+
-+static inline int finit_module(int fd, const char *param_values, int flags)
-+{
-+	return tst_syscall(__NR_finit_module, fd, param_values, flags);
-+}
-+
-+void finit_module_supported_by_kernel(void)
-+{
-+       if ((tst_kvercmp(3, 8, 0)) < 0) {
-+               /* Check if the syscall is backported on an older kernel */
-+               TEST(syscall(__NR_finit_module, 0, "", 0));
-+               if (TST_RET == -1 && TST_ERR == ENOSYS)
-+                       tst_brk(TCONF, "Test not supported on kernel version < v3.8");
-+       }
-+}
-+
- #endif /* INIT_MODULE_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 28174dddd716..961545e73834 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -327,6 +327,9 @@ fgetxattr01 fgetxattr01
- fgetxattr02 fgetxattr02
- fgetxattr03 fgetxattr03
- 
-+finit_module01 finit_module01
-+finit_module02 finit_module02
-+
- flistxattr01 flistxattr01
- flistxattr02 flistxattr02
- flistxattr03 flistxattr03
-diff --git a/testcases/kernel/syscalls/finit_module/.gitignore b/testcases/kernel/syscalls/finit_module/.gitignore
-new file mode 100644
-index 000000000000..5fcafdb3736d
---- /dev/null
-+++ b/testcases/kernel/syscalls/finit_module/.gitignore
-@@ -0,0 +1,3 @@
-+/finit_module01
-+/finit_module02
-+/*.ko
-diff --git a/testcases/kernel/syscalls/finit_module/Makefile b/testcases/kernel/syscalls/finit_module/Makefile
-new file mode 100644
-index 000000000000..a529695d23cc
---- /dev/null
-+++ b/testcases/kernel/syscalls/finit_module/Makefile
-@@ -0,0 +1,21 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+ifneq ($(KERNELRELEASE),)
-+
-+obj-m := finit_module.o
-+
-+else
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+REQ_VERSION_MAJOR	:= 3
-+REQ_VERSION_PATCH	:= 8
-+
-+MAKE_TARGETS		:= finit_module01 finit_module02 finit_module.ko
-+
-+include $(top_srcdir)/include/mk/module.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+endif
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module.c b/testcases/kernel/syscalls/finit_module/finit_module.c
-new file mode 100644
-index 000000000000..78d03b899a7e
---- /dev/null
-+++ b/testcases/kernel/syscalls/finit_module/finit_module.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ *
-+ * Dummy test module.
-+ *
-+ * The module accepts a single argument named "status" and it fails
-+ * initialization if the status is set to "invalid".
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/proc_fs.h>
-+#include <linux/kernel.h>
-+
-+static char status[20];
-+module_param_string(status, status, 20, 0444);
-+
-+static int dummy_init(void)
-+{
-+	struct proc_dir_entry *proc_dummy;
-+
-+	if (!strcmp(status, "invalid"))
-+		return -EINVAL;
-+
-+	proc_dummy = proc_mkdir("dummy", 0);
-+	return 0;
-+}
-+module_init(dummy_init);
-+
-+static void dummy_exit(void)
-+{
-+	remove_proc_entry("dummy", 0);
-+}
-+module_exit(dummy_exit);
-+
-+MODULE_LICENSE("GPL");
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module01.c b/testcases/kernel/syscalls/finit_module/finit_module01.c
-new file mode 100644
-index 000000000000..c31c0c2dce4c
---- /dev/null
-+++ b/testcases/kernel/syscalls/finit_module/finit_module01.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ */
-+
-+/*\
-+ * [DESCRIPTION]
-+ *
-+ * Basic finit_module() tests.
-+ *
-+ * [ALGORITHM]
-+ *
-+ * Inserts a simple module after opening and mmaping the module file.
-+\*/
-+
-+#include <errno.h>
-+#include "lapi/init_module.h"
-+#include "tst_module.h"
-+
-+#define MODULE_NAME	"finit_module.ko"
-+
-+int fd;
-+
-+static void setup(void)
-+{
-+	finit_module_supported_by_kernel();
-+	fd = SAFE_OPEN(MODULE_NAME, O_RDONLY|O_CLOEXEC);
-+}
-+
-+static void run(void)
-+{
-+	TST_EXP_PASS(finit_module(fd, "status=valid", 0));
-+	if (!TST_PASS)
-+		return;
-+
-+	tst_module_unload(MODULE_NAME);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+};
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
-new file mode 100644
-index 000000000000..220c83fd4d1c
---- /dev/null
-+++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
-+ */
-+
-+/*\
-+ * [DESCRIPTION]
-+ *
-+ * Basic finit_module() failure tests.
-+ *
-+ * [ALGORITHM]
-+ *
-+ * Tests various failure scenarios for finit_module().
-+\*/
-+
-+#include <linux/capability.h>
-+#include <errno.h>
-+#include "lapi/init_module.h"
-+#include "tst_module.h"
-+#include "tst_capability.h"
-+
-+#define MODULE_NAME	"finit_module.ko"
-+
-+static int fd, fd_zero, fd_invalid = -1;
-+
-+static struct tst_cap cap_req = TST_CAP(TST_CAP_REQ, CAP_SYS_MODULE);
-+static struct tst_cap cap_drop = TST_CAP(TST_CAP_DROP, CAP_SYS_MODULE);
-+
-+static struct tcase {
-+	const char *name;
-+	int *fd;
-+	const char *param;
-+	int open_flags;
-+	int flags;
-+	int cap;
-+	int exp_errno;
-+} tcases[] = {
-+	{"zero-fd", &fd_zero, "", O_RDONLY | O_CLOEXEC, 0, 0, EINVAL},
-+	{"invalid-fd", &fd_invalid, "", O_RDONLY | O_CLOEXEC, 0, 0, ENOEXEC},
-+	{"null-param", &fd, NULL, O_RDONLY | O_CLOEXEC, 0, 0, EFAULT},
-+	{"invalid-param", &fd, "status=invalid", O_RDONLY | O_CLOEXEC, 0, 0, EINVAL},
-+	{"invalid-flags", &fd, "", O_RDONLY | O_CLOEXEC, -1, 0, EINVAL},
-+	{"no-perm", &fd, "", O_RDONLY | O_CLOEXEC, 0, 1, EPERM},
-+	{"module-exists", &fd, "", O_RDONLY | O_CLOEXEC, 0, 0, EEXIST},
-+	{"file-not-readable", &fd, "", O_WRONLY | O_CLOEXEC, 0, 0, EBADF},
-+};
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	fd = SAFE_OPEN(MODULE_NAME, tc->open_flags);
-+
-+	if (tc->cap)
-+		tst_cap_action(&cap_drop);
-+
-+	/* Insert module twice */
-+	if (tc->exp_errno == EEXIST) {
-+		TST_EXP_PASS(finit_module(*tc->fd, tc->param, tc->flags));
-+		if (!TST_PASS)
-+			goto out;
-+
-+		TST_EXP_FAIL(finit_module(*tc->fd, tc->param, tc->flags), tc->exp_errno);
-+		tst_module_unload(MODULE_NAME);
-+	} else {
-+		TST_EXP_FAIL(finit_module(*tc->fd, tc->param, tc->flags), tc->exp_errno);
-+	}
-+
-+	if (!TST_PASS && !TST_RET)
-+		tst_module_unload(MODULE_NAME);
-+
-+out:
-+	if (tc->cap)
-+		tst_cap_action(&cap_req);
-+
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = finit_module_supported_by_kernel,
-+	.needs_root = 1,
-+};
--- 
-2.25.0.rc1.19.g042ed3e048af
+> > evmctl ima_measurement /sys/kernel/security/integrity/ima/binary_runtime_measurements -vv
+> > ...
+> > sha256: PCRAgg  10: c19866f10132282d4cf20ca45f50078db843f95dc8d1ea8819d0e240cdf3b21c
+> > sha256: TPM PCR-10: df913daa0437a2365f710f6d93a4f2d37146414425d9aaa60740dc635d187158
+> > sha256: PCRAgg 10 does not match TPM PCR-10
+> > Failed to match per TPM bank or SHA1 padded TPM digest(s) (count 1446)
+> > errno: No such file or directory (2)
+
+> > Thus test get failure for the fist run without --ignore-violations
+> > ...
+> > ima_tpm 1 TINFO: using command: evmctl ima_boot_aggregate -v
+> > Using tss2-rc-decode to read PCRs.
+> > ima_tpm 1 TINFO: IMA boot aggregate: '0756853d9378ff6473966e20610a8d1cb97e4dc613cb87adf5e870c8eb93fd0f'
+> > ima_tpm 1 TPASS: bios boot aggregate matches IMA boot aggregate
+> > ima_tpm 2 TINFO: verify PCR values
+> > ima_tpm 2 TINFO: real PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
+> > ima_tpm 2 TFAIL: evmctl failed, trying with --ignore-violations
+> > ima_tpm 2 TINFO: aggregate PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
+> > ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
+> > ima_tpm 3 TINFO: AppArmor enabled, this may affect test results
+> > ima_tpm 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
+> > ima_tpm 3 TINFO: loaded AppArmor profiles: none
+
+> > Summary:
+> > passed   2
+> > failed   1
+> > skipped  0
+> > warnings 0
+
+> > IMHO unless this is specific for this particular TPM we should skip test
+> > if ima_policy=tcb.
+
+> No, I don't think so.  Violations are a result of a file being opened
+> for read and write at the same time.  Opening a file for write, when it
+> is already open for read, results in a Time of Measure/Time of Use
+> (ToMToU) violation.  Opening a file for read, when it is already open
+> for write, results in an open_writer violation.  One of the more common
+> reasons for these violations are log files.
+
+> With the builtin TCB measurement policy enabled on the boot command
+> line, files are measured from the beginning, before a custom policy is
+> loaded.  Normally a custom policy is loaded after an LSM policy has
+> been loaded, allowing IMA policy rules to be defined in terms of LSM
+> labels.
+
+> Verifying the IMA measurement list against the TPM PCRs is an important
+> test.  Ignoring violations doesn't make sense either.   Perhaps if a
+> custom policy has not been loaded, emit an informational message and
+> skip the test without "--ignore-violations".
+
+Thanks for an explanation. Agree, you're right. It's most likely wrong setup
+(there were some temporary files in /tmp and even postfix pid file in /var/run/),
+I need to properly setup dracut-ima. It'd be then good to document this, but I'd
+do it as separate effort.
+
+So, can I merge the patchset with your ack/review-by?
+
+Kind regards,
+Petr
+
+> thanks,
+
+> Mimi
 
