@@ -1,47 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 17 Dec 2020 13:22:31 +0100
-Subject: [LTP] [PATCH 2/2] docparse/parse.sh: Fix running with relative
- path
-In-Reply-To: <20201217121520.25713-3-pvorel@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 13:36:15 +0100
+Subject: [LTP] [PATCH 1/2] docparse/parse.sh: Fix parsing on dash
+In-Reply-To: <X9tNEoMlQsCaSZPD@yuki.lan>
 References: <20201217121520.25713-1-pvorel@suse.cz>
- <20201217121520.25713-3-pvorel@suse.cz>
-Message-ID: <X9tNhwYzPyXpOEfx@yuki.lan>
+ <20201217121520.25713-2-pvorel@suse.cz> <X9tNEoMlQsCaSZPD@yuki.lan>
+Message-ID: <X9tQv3da2WftcH0z@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> that's not needed for build, but useful for debugging.
-> 
-> Running as ./parse.sh fails:
-> cat: ./../VERSION: No such file or directory
-> 
-> top_srcdir must be absolute path.
-> 
-> Fixes: a069cd36b ("docparse: Add test documentation parser")
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  docparse/parse.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/docparse/parse.sh b/docparse/parse.sh
-> index 172eab702..79011bc10 100755
-> --- a/docparse/parse.sh
-> +++ b/docparse/parse.sh
-> @@ -5,7 +5,7 @@
->  set -e
->  
->  top_builddir=$PWD/..
-> -top_srcdir="$(dirname $0)/.."
-> +top_srcdir="$(cd $(dirname $0)/..; pwd)"
->  
->  cd $top_srcdir
+> Hi!
+> > bash keeps escape sequences (e.g. \t and \n) when using echo:
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > $ a="-v\tverbose output\n"; echo "$a"
+> > -v\tverbose output\n
+> > $
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > But dash interprets them (behaves like echo -e on bash):
+
+> > $ a="-v\tverbose output\n"; echo -e "$a"
+> > -e -v	verbose output
+
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Thanks for both reviews!
+
+> Can we remove the \t from the perf_event_open02.c as well please? I
+> doubt that it will do any good when we pass the strings into asciidoc
+> parser...
+Sure, I'll replace it with <tab>.
+
+Kind regards,
+Petr
