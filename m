@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 17 Dec 2020 13:20:34 +0100
-Subject: [LTP] [PATCH 1/2] docparse/parse.sh: Fix parsing on dash
-In-Reply-To: <20201217121520.25713-2-pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 13:22:31 +0100
+Subject: [LTP] [PATCH 2/2] docparse/parse.sh: Fix running with relative
+ path
+In-Reply-To: <20201217121520.25713-3-pvorel@suse.cz>
 References: <20201217121520.25713-1-pvorel@suse.cz>
- <20201217121520.25713-2-pvorel@suse.cz>
-Message-ID: <X9tNEoMlQsCaSZPD@yuki.lan>
+ <20201217121520.25713-3-pvorel@suse.cz>
+Message-ID: <X9tNhwYzPyXpOEfx@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,22 +13,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> bash keeps escape sequences (e.g. \t and \n) when using echo:
+> that's not needed for build, but useful for debugging.
 > 
-> $ a="-v\tverbose output\n"; echo "$a"
-> -v\tverbose output\n
-> $
+> Running as ./parse.sh fails:
+> cat: ./../VERSION: No such file or directory
 > 
-> But dash interprets them (behaves like echo -e on bash):
+> top_srcdir must be absolute path.
 > 
-> $ a="-v\tverbose output\n"; echo -e "$a"
-> -e -v	verbose output
+> Fixes: a069cd36b ("docparse: Add test documentation parser")
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  docparse/parse.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/docparse/parse.sh b/docparse/parse.sh
+> index 172eab702..79011bc10 100755
+> --- a/docparse/parse.sh
+> +++ b/docparse/parse.sh
+> @@ -5,7 +5,7 @@
+>  set -e
+>  
+>  top_builddir=$PWD/..
+> -top_srcdir="$(dirname $0)/.."
+> +top_srcdir="$(cd $(dirname $0)/..; pwd)"
+>  
+>  cd $top_srcdir
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-Can we remove the \t from the perf_event_open02.c as well please? I
-doubt that it will do any good when we pass the strings into asciidoc
-parser...
 
 -- 
 Cyril Hrubis
