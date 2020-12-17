@@ -1,99 +1,97 @@
 From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 17 Dec 2020 12:57:52 +0530
-Subject: [LTP] [PATCH V2 2/3] syscalls: init_module: Add tests
+Date: Thu, 17 Dec 2020 12:57:53 +0530
+Subject: [LTP] [PATCH V2 3/3] syscalls: finit_module: Add tests
 In-Reply-To: <b48115a8d6dc3036f08e0166332035fab078b34a.1608189944.git.viresh.kumar@linaro.org>
 References: <b48115a8d6dc3036f08e0166332035fab078b34a.1608189944.git.viresh.kumar@linaro.org>
-Message-ID: <50d28b5f804ee13cf4efca28cbd0b2d08929d46a.1608189944.git.viresh.kumar@linaro.org>
+Message-ID: <0279beda4660ab1b401164e369c79475633bd067.1608189944.git.viresh.kumar@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch adds success and failure tests for init_module() syscall.
+This patch adds success and failure tests for finit_module() syscall.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
 V2:
 - Remove unwanted header
 - Use TST_EXP_*() macros
-- Always provide definition of init_module().
 - Rename module.
 
- include/lapi/init_module.h                    | 19 ++++
+ include/lapi/init_module.h                    | 16 ++++
  runtest/syscalls                              |  3 +
- .../kernel/syscalls/init_module/.gitignore    |  3 +
- .../kernel/syscalls/init_module/Makefile      | 21 ++++
- .../kernel/syscalls/init_module/init_module.c | 37 +++++++
- .../syscalls/init_module/init_module01.c      | 54 ++++++++++
- .../syscalls/init_module/init_module02.c      | 99 +++++++++++++++++++
- 7 files changed, 236 insertions(+)
- create mode 100644 include/lapi/init_module.h
- create mode 100644 testcases/kernel/syscalls/init_module/.gitignore
- create mode 100644 testcases/kernel/syscalls/init_module/Makefile
- create mode 100644 testcases/kernel/syscalls/init_module/init_module.c
- create mode 100644 testcases/kernel/syscalls/init_module/init_module01.c
- create mode 100644 testcases/kernel/syscalls/init_module/init_module02.c
+ .../kernel/syscalls/finit_module/.gitignore   |  3 +
+ .../kernel/syscalls/finit_module/Makefile     | 21 +++++
+ .../syscalls/finit_module/finit_module.c      | 37 ++++++++
+ .../syscalls/finit_module/finit_module01.c    | 49 +++++++++++
+ .../syscalls/finit_module/finit_module02.c    | 84 +++++++++++++++++++
+ 7 files changed, 213 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/finit_module/.gitignore
+ create mode 100644 testcases/kernel/syscalls/finit_module/Makefile
+ create mode 100644 testcases/kernel/syscalls/finit_module/finit_module.c
+ create mode 100644 testcases/kernel/syscalls/finit_module/finit_module01.c
+ create mode 100644 testcases/kernel/syscalls/finit_module/finit_module02.c
 
 diff --git a/include/lapi/init_module.h b/include/lapi/init_module.h
-new file mode 100644
-index 000000000000..65ff70356c60
---- /dev/null
+index 65ff70356c60..9e79e11b8557 100644
+--- a/include/lapi/init_module.h
 +++ b/include/lapi/init_module.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2020 Linaro Limited. All rights reserved.
-+ * Author: Viresh Kumar <viresh.kumar@linaro.org>
-+ */
+@@ -16,4 +16,20 @@ static inline int init_module(void *module_image, unsigned long len,
+ {
+ 	return tst_syscall(__NR_init_module, module_image, len, param_values);
+ }
 +
-+#ifndef INIT_MODULE_H__
-+#define INIT_MODULE_H__
-+
-+#include "config.h"
-+#include "lapi/syscalls.h"
-+#include "tst_test.h"
-+
-+static inline int init_module(void *module_image, unsigned long len,
-+			      const char *param_values)
++static inline int finit_module(int fd, const char *param_values, int flags)
 +{
-+	return tst_syscall(__NR_init_module, module_image, len, param_values);
++	return tst_syscall(__NR_finit_module, fd, param_values, flags);
 +}
-+#endif /* INIT_MODULE_H__ */
++
++void finit_module_supported_by_kernel(void)
++{
++       if ((tst_kvercmp(3, 8, 0)) < 0) {
++               /* Check if the syscall is backported on an older kernel */
++               TEST(syscall(__NR_finit_module, 0, "", 0));
++               if (TST_RET == -1 && TST_ERR == ENOSYS)
++                       tst_brk(TCONF, "Test not supported on kernel version < v3.8");
++       }
++}
++
+ #endif /* INIT_MODULE_H__ */
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9c328697b4a3..28174dddd716 100644
+index 28174dddd716..961545e73834 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -517,6 +517,9 @@ getxattr03 getxattr03
- getxattr04 getxattr04
- getxattr05 getxattr05
+@@ -327,6 +327,9 @@ fgetxattr01 fgetxattr01
+ fgetxattr02 fgetxattr02
+ fgetxattr03 fgetxattr03
  
-+init_module01 init_module01
-+init_module02 init_module02
++finit_module01 finit_module01
++finit_module02 finit_module02
 +
- #Needs tty device.
- #ioctl01 ioctl01 -D /dev/tty0
- #ioctl02 ioctl02 -D /dev/tty0
-diff --git a/testcases/kernel/syscalls/init_module/.gitignore b/testcases/kernel/syscalls/init_module/.gitignore
+ flistxattr01 flistxattr01
+ flistxattr02 flistxattr02
+ flistxattr03 flistxattr03
+diff --git a/testcases/kernel/syscalls/finit_module/.gitignore b/testcases/kernel/syscalls/finit_module/.gitignore
 new file mode 100644
-index 000000000000..b4d11e958544
+index 000000000000..5fcafdb3736d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/init_module/.gitignore
++++ b/testcases/kernel/syscalls/finit_module/.gitignore
 @@ -0,0 +1,3 @@
-+/init_module01
-+/init_module02
++/finit_module01
++/finit_module02
 +/*.ko
-diff --git a/testcases/kernel/syscalls/init_module/Makefile b/testcases/kernel/syscalls/init_module/Makefile
+diff --git a/testcases/kernel/syscalls/finit_module/Makefile b/testcases/kernel/syscalls/finit_module/Makefile
 new file mode 100644
-index 000000000000..ebdca67d401d
+index 000000000000..a529695d23cc
 --- /dev/null
-+++ b/testcases/kernel/syscalls/init_module/Makefile
++++ b/testcases/kernel/syscalls/finit_module/Makefile
 @@ -0,0 +1,21 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +
 +ifneq ($(KERNELRELEASE),)
 +
-+obj-m := init_module.o
++obj-m := finit_module.o
 +
 +else
 +
@@ -101,20 +99,20 @@ index 000000000000..ebdca67d401d
 +
 +include $(top_srcdir)/include/mk/testcases.mk
 +
-+REQ_VERSION_MAJOR	:= 2
-+REQ_VERSION_PATCH	:= 6
++REQ_VERSION_MAJOR	:= 3
++REQ_VERSION_PATCH	:= 8
 +
-+MAKE_TARGETS		:= init_module01 init_module02 init_module.ko
++MAKE_TARGETS		:= finit_module01 finit_module02 finit_module.ko
 +
 +include $(top_srcdir)/include/mk/module.mk
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 +
 +endif
-diff --git a/testcases/kernel/syscalls/init_module/init_module.c b/testcases/kernel/syscalls/init_module/init_module.c
+diff --git a/testcases/kernel/syscalls/finit_module/finit_module.c b/testcases/kernel/syscalls/finit_module/finit_module.c
 new file mode 100644
 index 000000000000..78d03b899a7e
 --- /dev/null
-+++ b/testcases/kernel/syscalls/init_module/init_module.c
++++ b/testcases/kernel/syscalls/finit_module/finit_module.c
 @@ -0,0 +1,37 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -153,12 +151,12 @@ index 000000000000..78d03b899a7e
 +module_exit(dummy_exit);
 +
 +MODULE_LICENSE("GPL");
-diff --git a/testcases/kernel/syscalls/init_module/init_module01.c b/testcases/kernel/syscalls/init_module/init_module01.c
+diff --git a/testcases/kernel/syscalls/finit_module/finit_module01.c b/testcases/kernel/syscalls/finit_module/finit_module01.c
 new file mode 100644
-index 000000000000..478ccf1c5fdf
+index 000000000000..c31c0c2dce4c
 --- /dev/null
-+++ b/testcases/kernel/syscalls/init_module/init_module01.c
-@@ -0,0 +1,54 @@
++++ b/testcases/kernel/syscalls/finit_module/finit_module01.c
+@@ -0,0 +1,49 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
@@ -167,7 +165,7 @@ index 000000000000..478ccf1c5fdf
 +/*\
 + * [DESCRIPTION]
 + *
-+ * Basic init_module() tests.
++ * Basic finit_module() tests.
 + *
 + * [ALGORITHM]
 + *
@@ -178,24 +176,19 @@ index 000000000000..478ccf1c5fdf
 +#include "lapi/init_module.h"
 +#include "tst_module.h"
 +
-+#define MODULE_NAME	"init_module.ko"
++#define MODULE_NAME	"finit_module.ko"
 +
-+static struct stat sb;
-+static void *buf;
++int fd;
 +
 +static void setup(void)
 +{
-+	int fd;
-+
++	finit_module_supported_by_kernel();
 +	fd = SAFE_OPEN(MODULE_NAME, O_RDONLY|O_CLOEXEC);
-+	SAFE_FSTAT(fd, &sb);
-+	buf = SAFE_MMAP(0, sb.st_size, PROT_READ|PROT_EXEC, MAP_PRIVATE, fd, 0);
-+	SAFE_CLOSE(fd);
 +}
 +
 +static void run(void)
 +{
-+	TST_EXP_PASS(init_module(buf, sb.st_size, "status=valid"));
++	TST_EXP_PASS(finit_module(fd, "status=valid", 0));
 +	if (!TST_PASS)
 +		return;
 +
@@ -204,7 +197,7 @@ index 000000000000..478ccf1c5fdf
 +
 +static void cleanup(void)
 +{
-+	munmap(buf, sb.st_size);
++	SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
@@ -213,12 +206,12 @@ index 000000000000..478ccf1c5fdf
 +	.cleanup = cleanup,
 +	.needs_root = 1,
 +};
-diff --git a/testcases/kernel/syscalls/init_module/init_module02.c b/testcases/kernel/syscalls/init_module/init_module02.c
+diff --git a/testcases/kernel/syscalls/finit_module/finit_module02.c b/testcases/kernel/syscalls/finit_module/finit_module02.c
 new file mode 100644
-index 000000000000..102242dba98d
+index 000000000000..220c83fd4d1c
 --- /dev/null
-+++ b/testcases/kernel/syscalls/init_module/init_module02.c
-@@ -0,0 +1,99 @@
++++ b/testcases/kernel/syscalls/finit_module/finit_module02.c
+@@ -0,0 +1,84 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2020 Viresh Kumar <viresh.kumar@linaro.org>
@@ -227,11 +220,11 @@ index 000000000000..102242dba98d
 +/*\
 + * [DESCRIPTION]
 + *
-+ * Basic init_module() failure tests.
++ * Basic finit_module() failure tests.
 + *
 + * [ALGORITHM]
 + *
-+ * Tests various failure scenarios for init_module().
++ * Tests various failure scenarios for finit_module().
 +\*/
 +
 +#include <linux/capability.h>
@@ -240,62 +233,51 @@ index 000000000000..102242dba98d
 +#include "tst_module.h"
 +#include "tst_capability.h"
 +
-+#define MODULE_NAME	"init_module.ko"
++#define MODULE_NAME	"finit_module.ko"
 +
-+static unsigned long size, zero_size;
-+static void *buf, *faulty_buf, *null_buf;
++static int fd, fd_zero, fd_invalid = -1;
 +
 +static struct tst_cap cap_req = TST_CAP(TST_CAP_REQ, CAP_SYS_MODULE);
 +static struct tst_cap cap_drop = TST_CAP(TST_CAP_DROP, CAP_SYS_MODULE);
 +
 +static struct tcase {
 +	const char *name;
-+	void **buf;
-+	unsigned long *size;
++	int *fd;
 +	const char *param;
++	int open_flags;
++	int flags;
 +	int cap;
 +	int exp_errno;
 +} tcases[] = {
-+	{"NULL-buffer", &null_buf, &size, "", 0, EFAULT},
-+	{"faulty-buffer", &faulty_buf, &size, "", 0, EFAULT},
-+	{"null-param", &buf, &size, NULL, 0, EFAULT},
-+	{"zero-size", &buf, &zero_size, "", 0, ENOEXEC},
-+	{"invalid_param", &buf, &size, "status=invalid", 0, EINVAL},
-+	{"no-perm", &buf, &size, "", 1, EPERM},
-+	{"module-exists", &buf, &size, "", 0, EEXIST},
++	{"zero-fd", &fd_zero, "", O_RDONLY | O_CLOEXEC, 0, 0, EINVAL},
++	{"invalid-fd", &fd_invalid, "", O_RDONLY | O_CLOEXEC, 0, 0, ENOEXEC},
++	{"null-param", &fd, NULL, O_RDONLY | O_CLOEXEC, 0, 0, EFAULT},
++	{"invalid-param", &fd, "status=invalid", O_RDONLY | O_CLOEXEC, 0, 0, EINVAL},
++	{"invalid-flags", &fd, "", O_RDONLY | O_CLOEXEC, -1, 0, EINVAL},
++	{"no-perm", &fd, "", O_RDONLY | O_CLOEXEC, 0, 1, EPERM},
++	{"module-exists", &fd, "", O_RDONLY | O_CLOEXEC, 0, 0, EEXIST},
++	{"file-not-readable", &fd, "", O_WRONLY | O_CLOEXEC, 0, 0, EBADF},
 +};
-+
-+static void setup(void)
-+{
-+	struct stat sb;
-+	int fd;
-+
-+	fd = SAFE_OPEN(MODULE_NAME, O_RDONLY|O_CLOEXEC);
-+	SAFE_FSTAT(fd, &sb);
-+	size = sb.st_size;
-+	buf = SAFE_MMAP(0, size, PROT_READ|PROT_EXEC, MAP_PRIVATE, fd, 0);
-+	SAFE_CLOSE(fd);
-+
-+	faulty_buf = tst_get_bad_addr(NULL);
-+}
 +
 +static void run(unsigned int n)
 +{
 +	struct tcase *tc = &tcases[n];
++
++	fd = SAFE_OPEN(MODULE_NAME, tc->open_flags);
 +
 +	if (tc->cap)
 +		tst_cap_action(&cap_drop);
 +
 +	/* Insert module twice */
 +	if (tc->exp_errno == EEXIST) {
-+		TST_EXP_PASS(init_module(*tc->buf, *tc->size, tc->param));
++		TST_EXP_PASS(finit_module(*tc->fd, tc->param, tc->flags));
 +		if (!TST_PASS)
 +			goto out;
 +
-+		TST_EXP_FAIL(init_module(*tc->buf, *tc->size, tc->param), tc->exp_errno);
++		TST_EXP_FAIL(finit_module(*tc->fd, tc->param, tc->flags), tc->exp_errno);
 +		tst_module_unload(MODULE_NAME);
 +	} else {
-+		TST_EXP_FAIL(init_module(*tc->buf, *tc->size, tc->param), tc->exp_errno);
++		TST_EXP_FAIL(finit_module(*tc->fd, tc->param, tc->flags), tc->exp_errno);
 +	}
 +
 +	if (!TST_PASS && !TST_RET)
@@ -304,18 +286,14 @@ index 000000000000..102242dba98d
 +out:
 +	if (tc->cap)
 +		tst_cap_action(&cap_req);
-+}
 +
-+static void cleanup(void)
-+{
-+	munmap(buf, size);
++	SAFE_CLOSE(fd);
 +}
 +
 +static struct tst_test test = {
 +	.test = run,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
++	.setup = finit_module_supported_by_kernel,
 +	.needs_root = 1,
 +};
 -- 
