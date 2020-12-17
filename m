@@ -1,49 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 Dec 2020 16:42:30 +0100
-Subject: [LTP] [PATCH 5/5] syscalls/move_pages12: Add one more kernel
- git hash
-In-Reply-To: <20201216101012.14644-6-chrubis@suse.cz>
-References: <20201216101012.14644-1-chrubis@suse.cz>
- <20201216101012.14644-6-chrubis@suse.cz>
-Message-ID: <X9t8ZjwhY+Db7nRq@pevik>
+From: Mimi Zohar <zohar@linux.ibm.com>
+Date: Thu, 17 Dec 2020 11:56:51 -0500
+Subject: [LTP] [PATCH v5 1/4] IMA: Move get_algorithm_digest(),
+ set_digest_index() to ima_setup.sh
+In-Reply-To: <20201214221946.6340-2-pvorel@suse.cz>
+References: <20201214221946.6340-1-pvorel@suse.cz>
+ <20201214221946.6340-2-pvorel@suse.cz>
+Message-ID: <aed2e8ee7b05772a8cc2988ae275282bec7ef504.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> + Reformat the comment to asciidoc
-Thanks!
+Hi Petr,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Thank you!
 
-...
-> -/*
-> - * Description:
-> +/*\
-> + * [DESCRIPTION]
-> + *
-> + * *Test 1*
->   *
-> - * Test #1:
-> - *  This is a regression test for the race condition between move_pages()
-> - *  and freeing hugepages, where move_pages() calls follow_page(FOLL_GET)
-> - *  for hugepages internally and tries to get its refcount without
-> - *  preventing concurrent freeing.
-> + * This is a regression test for the race condition between move_pages()
-> + * and freeing hugepages, where move_pages() calls follow_page(FOLL_GET)
-> + * for hugepages internally and tries to get its refcount without
-> + * preventing concurrent freeing.
->   *
-> - *  This test can crash the buggy kernel, and the bug was fixed in:
-> + * This test can crash the buggy kernel, and the bug was fixed in:
->   *
->   *   commit e66f17ff71772b209eed39de35aaa99ba819c93d
->   *   Author: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
+> To be reusable by more tests (preparation for next commit).
+> 
+> Call set_digest_index() inside get_algorithm_digest() if needed
+> instead of expecting get_algorithm_digest() caller to call
+> set_digest_index() before.
 
-I wonder if we should format "commit XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" as
-link to Linus' tree (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX).
+For the existing builtin templates, the algorithm/digest field is
+consistent.  With support for per policy rule template formats, there
+isn't necessarily a single template format for the entire list.
 
+In the future "set_digest_index" might need to be renamed to
+"get_digest_index" and the lookup done for each line.
 
-Kind regards,
-Petr
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
