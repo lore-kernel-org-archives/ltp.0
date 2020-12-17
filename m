@@ -1,42 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 17 Dec 2020 13:15:20 +0100
-Subject: [LTP] [PATCH 2/2] docparse/parse.sh: Fix running with relative path
-In-Reply-To: <20201217121520.25713-1-pvorel@suse.cz>
-References: <20201217121520.25713-1-pvorel@suse.cz>
-Message-ID: <20201217121520.25713-3-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 17 Dec 2020 13:18:28 +0100
+Subject: [LTP] Holidays and LTP release
+Message-ID: <X9tMlNxJbwCWIRnO@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-that's not needed for build, but useful for debugging.
+Hi!
+As usuall I will start my Christmas vacation tomorrow and then return
+back to work after the New Year.
 
-Running as ./parse.sh fails:
-cat: ./../VERSION: No such file or directory
+And as usually we are due to produce a release somewhere at the end of
+January, that means that we should have our usuall git freeze and
+pre-relase testing ideally somewhere at the end of the first week in
+January.
 
-top_srcdir must be absolute path.
+I've tried to review and merge as many patches as possible during this
+week, but if there is something that should definitly get in before the
+release, just let me know and I will have a look.
 
-Fixes: a069cd36b ("docparse: Add test documentation parser")
+And lastly but not least Merry Christmas and Happy New Year to everyone
+who celbrates these.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- docparse/parse.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/docparse/parse.sh b/docparse/parse.sh
-index 172eab702..79011bc10 100755
---- a/docparse/parse.sh
-+++ b/docparse/parse.sh
-@@ -5,7 +5,7 @@
- set -e
- 
- top_builddir=$PWD/..
--top_srcdir="$(dirname $0)/.."
-+top_srcdir="$(cd $(dirname $0)/..; pwd)"
- 
- cd $top_srcdir
- 
 -- 
-2.29.2
-
+Cyril Hrubis
+chrubis@suse.cz
