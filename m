@@ -1,105 +1,87 @@
 From: Mimi Zohar <zohar@linux.ibm.com>
-Date: Thu, 17 Dec 2020 14:16:04 -0500
-Subject: [LTP] [PATCH v5 4/4] ima_tpm.sh: Fix calculating PCR aggregate
-In-Reply-To: <20201214221946.6340-5-pvorel@suse.cz>
+Date: Thu, 17 Dec 2020 14:23:12 -0500
+Subject: [LTP] [PATCH v5 0/4] TPM 2.0 fixes in IMA tests
+In-Reply-To: <X9sXxGacmaPYN8hp@pevik>
 References: <20201214221946.6340-1-pvorel@suse.cz>
- <20201214221946.6340-5-pvorel@suse.cz>
-Message-ID: <b9408c3ccf8260d9a2232074c7a0433119b83d42.camel@linux.ibm.com>
+ <aec8d4d757c674b3fdb4caaf3d89317d230b91e7.camel@linux.ibm.com>
+ <X9sXxGacmaPYN8hp@pevik>
+Message-ID: <3df04bcb427a225de4fe7cb4886a3539b8735dbc.camel@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
-> for TPM 2.0 and support more evmctl versions.
+On Thu, 2020-12-17 at 09:33 +0100, Petr Vorel wrote:
+> Hi Mimi,
 > 
-> Because exporting PCR registers for TPM 2.0 has not been upstreamed [1],
-> we use user space code, which requires evmctl >= 1.3.1 and tsspcrread.
+> > Hi Petr,
+> 
+> > On Mon, 2020-12-14 at 23:19 +0100, Petr Vorel wrote:
+> > > The only problem which bothers me is failure on ima_policy=tcb:
+> 
+> > > evmctl ima_measurement /sys/kernel/security/integrity/ima/binary_runtime_measurements -vv
+> > > ...
+> > > sha256: PCRAgg  10: c19866f10132282d4cf20ca45f50078db843f95dc8d1ea8819d0e240cdf3b21c
+> > > sha256: TPM PCR-10: df913daa0437a2365f710f6d93a4f2d37146414425d9aaa60740dc635d187158
+> > > sha256: PCRAgg 10 does not match TPM PCR-10
+> > > Failed to match per TPM bank or SHA1 padded TPM digest(s) (count 1446)
+> > > errno: No such file or directory (2)
+> 
+> > > Thus test get failure for the fist run without --ignore-violations
+> > > ...
+> > > ima_tpm 1 TINFO: using command: evmctl ima_boot_aggregate -v
+> > > Using tss2-rc-decode to read PCRs.
+> > > ima_tpm 1 TINFO: IMA boot aggregate: '0756853d9378ff6473966e20610a8d1cb97e4dc613cb87adf5e870c8eb93fd0f'
+> > > ima_tpm 1 TPASS: bios boot aggregate matches IMA boot aggregate
+> > > ima_tpm 2 TINFO: verify PCR values
+> > > ima_tpm 2 TINFO: real PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
+> > > ima_tpm 2 TFAIL: evmctl failed, trying with --ignore-violations
+> > > ima_tpm 2 TINFO: aggregate PCR-10: '6d8aec6291c0c19efdee50e20899939135be073cd4d6e9063e53386f54f9487d'
+> > > ima_tpm 2 TPASS: aggregate PCR value matches real PCR value
+> > > ima_tpm 3 TINFO: AppArmor enabled, this may affect test results
+> > > ima_tpm 3 TINFO: it can be disabled with TST_DISABLE_APPARMOR=1 (requires super/root)
+> > > ima_tpm 3 TINFO: loaded AppArmor profiles: none
+> 
+> > > Summary:
+> > > passed   2
+> > > failed   1
+> > > skipped  0
+> > > warnings 0
+> 
+> > > IMHO unless this is specific for this particular TPM we should skip test
+> > > if ima_policy=tcb.
+> 
+> > No, I don't think so.  Violations are a result of a file being opened
+> > for read and write at the same time.  Opening a file for write, when it
+> > is already open for read, results in a Time of Measure/Time of Use
+> > (ToMToU) violation.  Opening a file for read, when it is already open
+> > for write, results in an open_writer violation.  One of the more common
+> > reasons for these violations are log files.
+> 
+> > With the builtin TCB measurement policy enabled on the boot command
+> > line, files are measured from the beginning, before a custom policy is
+> > loaded.  Normally a custom policy is loaded after an LSM policy has
+> > been loaded, allowing IMA policy rules to be defined in terms of LSM
+> > labels.
+> 
+> > Verifying the IMA measurement list against the TPM PCRs is an important
+> > test.  Ignoring violations doesn't make sense either.   Perhaps if a
+> > custom policy has not been loaded, emit an informational message and
+> > skip the test without "--ignore-violations".
+> 
+> Thanks for an explanation. Agree, you're right. It's most likely wrong setup
+> (there were some temporary files in /tmp and even postfix pid file in /var/run/),
+> I need to properly setup dracut-ima. It'd be then good to document this, but I'd
+> do it as separate effort.
+> 
+> So, can I merge the patchset with your ack/review-by?
 
-Yes, really annoying.
+Yes, I just finished reviewing the patches.   Other that clarifying the
+patch descriptions and fixing the one typo  ("tmp" -> "tpm"), it looks
+really.
 
-> Using evmctl allows to test for TPM devices which does not export event
-> log (/sys/kernel/security/tpm0/binary_bios_measurements).
-
-Interesting way of phrasing the lack of a TPM 2.0 event log parser in
-ima-evm-utils.   Until someone contributes a TPM 2.0 event log parser,
-we're dependent on users verifying the event log against the TPM 2.0
-PCR banks some other way (e.g. "tsseventextend -sim -if
-/sys/kernel/security/tpm0/binary_bios_measurements -ns").
-
-> 
-> For TPM 1.2 read tpm0 device's pcrs file from sysfs. (tss1pcrread could
-> be also used, but it's not yet packaged by distros.)
-> 
-> For old kernels which use SHA1/MD5, any evmctl version is required (evmctl
-> ima_measurement was introduced in very old v0.7), but
-> * newer sysctl path /sys/class/tpm/tpm0/device/pcrs requires evmctl 1.1
-> * using ima_policy=tcb requires 1.3.1 due --ignore-violations
-> 
-> We now support output format of ima_measurement command for various
-> evmctl versions:
-> * 1.3: "sha256: TPM PCR-10:" (or other algorithm, e.g. "sha1:")
-> * 1.1-1.2.1: "HW PCR-10:" (the only previously supported format)
-> * 0.7-1.0: "PCR-10:"
-> 
-> NOTE: we ignore evmctl failure for evmctl < 1.3.1 (missing --ignore-violations,
-> also evmctl < 1.1 fails with "PCRAgg does not match PCR-10")
-> 
-> As for previous commit fix testing with TPM 2.0 device which does not
-> export event log (/sys/kernel/security/tpm0/binary_bios_measurements):
-> not wrongly assuming TPM-bypass when kernel didn't export other TPM
-> 2.0 files we check in get_tpm_version() but bios boot aggregate is
-> correct (i.e. not 0x00s). In that case evmctl ima_boot_aggregate can get
-> boot aggregate even without TPM event log.
-> 
-> [1] https://patchwork.kernel.org/patch/11759729/
-> 
-> Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-
-Thanks, Petr!
-
-Other than the typo below, it looks good.
+thanks! 
 
 Mimi
-
-
-> +test2()
->  {
-> -	tst_res TINFO "verify PCR (Process Control Register)"
-> +	local hash pcr_aggregate out ret
->  
-> -	local dev_pcrs="$1"
-> -	local pcr hash aggregate_pcr
-> +	tst_res TINFO "verify PCR values"
->  
-> -	aggregate_pcr="$(evmctl -v ima_measurement $BINARY_MEASUREMENTS 2>&1 | \
-> -		grep 'HW PCR-10:' | awk '{print $3}')"
-> -	if [ -z "$aggregate_pcr" ]; then
-> -		tst_res TFAIL "failed to get PCR-10"
-> -		return 1
-> +	if [ "$MAYBE_TPM2" = 1 ]; then
-> +		tst_res TINFO "TMP version not detected ($ERRMSG_TPM), assume TPM 2"
-
-
-^ TPM  above and below
-
-> +		TPM_VERSION=2
->  	fi
->  
-> -	while read line; do
-> -		pcr="$(echo $line | cut -d':' -f1)"
-> -		if [ "$pcr" = "PCR-10" ]; then
-> -			hash="$(echo $line | cut -d':' -f2 | awk '{ gsub (" ", "", $0); print tolower($0) }')"
-> -			[ "$hash" = "$aggregate_pcr" ]
-> -			return $?
-> -		fi
-> -	done < $dev_pcrs
-> -	return 1
-> -}
-> +	if [ -z "$TPM_VERSION" ]; then
-> +		tst_brk TCONF "TMP version not detected ($ERRMSG_TPM)"
-
- and here
 
