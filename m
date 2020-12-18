@@ -1,39 +1,27 @@
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Fri, 18 Dec 2020 15:41:56 +0100
-Subject: [LTP] [PATCH v2] ipsec_lib: make tst_net_run "tst_check_driver"
- quiet
-Message-ID: <20201218144156.29866-1-kory.maincent@bootlin.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 18 Dec 2020 17:23:45 +0100
+Subject: [LTP] [PATCH 0/3] inotify tests for v5.9 regression
+In-Reply-To: <X9xv+6e0tJgVDN/9@pevik>
+References: <20201218070631.1182292-1-amir73il@gmail.com>
+ <X9xv+6e0tJgVDN/9@pevik>
+Message-ID: <X9zXkVLKhRjee5bE@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Make tst_net_run quiet when using tst_check_drivers to avoid wrong TWARN message
+Hi Amir,
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+> > Hi Petr,
 
-Change since v1:
-  Considered Alexey's review
-  http://lists.linux.it/pipermail/ltp/2020-December/020285.html
+> > Here is the test for the other v5.9 regression that I mentioned earlier.
+> > The fix commit has just been merged to master.
+> Thanks for your patch, LGTM. I'll probably merge it later today.
+Merged.
 
- testcases/network/stress/ipsec/ipsec_lib.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for your pathset. I wish other kernel subsystems were getting the
+same care as {fa,i}notify.
 
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-index 198c9315d..e395e1ff3 100644
---- a/testcases/network/stress/ipsec/ipsec_lib.sh
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -83,7 +83,7 @@ ipsec_lib_setup()
- 	ALGR=
- 
- 	if [ -n "$IPSEC_MODE" ]; then
--		tst_net_run "tst_check_drivers xfrm_user" || \
-+		tst_net_run -q "tst_check_drivers xfrm_user" || \
- 			tst_brk TCONF "xfrm_user driver not available on lhost or rhost"
- 		cleanup_xfrm=1
- 	fi
--- 
-2.17.1
-
+Kind regards,
+Petr
