@@ -1,115 +1,271 @@
 From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Tue, 22 Dec 2020 03:48:26 -0500
-Subject: [LTP] [PATCH 1/3] Add SAFE_SEMCTL() and SAFE_SEMGET() macro
-Message-ID: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Date: Tue, 22 Dec 2020 03:48:28 -0500
+Subject: [LTP] [PATCH 3/3] syscalls/ipc: semctl09: add a test for
+ SEM_STAT_ANY
+In-Reply-To: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1608626908-8117-3-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Validate the content of the seminfo structure and the return value.
+
+The return value is highest used index to a kernel table, so we call
+semctl() with SEM_STAT_ANY which shouldn't fail if the value is correct.
+
+We also test SEM_STAT_ANY by calling semctl() directly by syscall(),
+because glibc have a bug that caused fails to pass the buffer specified
+by the caller to the kernel.
+
+We parse /proc/sysvipc/sem and check that the information is
+consistent with the content of seminfo structure.
+
 Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
- include/tst_safe_sysv_ipc.h | 14 +++++++++++++
- lib/tst_safe_sysv_ipc.c     | 48 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+ runtest/syscalls                                |   1 +
+ runtest/syscalls-ipc                            |   1 +
+ testcases/kernel/syscalls/ipc/semctl/.gitignore |   1 +
+ testcases/kernel/syscalls/ipc/semctl/Makefile   |   2 +-
+ testcases/kernel/syscalls/ipc/semctl/semctl09.c | 182 ++++++++++++++++++++++++
+ 5 files changed, 186 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/ipc/semctl/semctl09.c
 
-diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-index 3e0e50e..bb65326 100644
---- a/include/tst_safe_sysv_ipc.h
-+++ b/include/tst_safe_sysv_ipc.h
-@@ -9,6 +9,7 @@
- #include <sys/ipc.h>
- #include <sys/msg.h>
- #include <sys/shm.h>
-+#include <sys/sem.h>
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 28174dd..1549916 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1179,6 +1179,7 @@ semctl05 semctl05
+ semctl06 semctl06
+ semctl07 semctl07
+ semctl08 semctl08
++semctl09 semctl09
  
- int safe_msgget(const char *file, const int lineno, key_t key, int msgflg);
- #define SAFE_MSGGET(key, msgflg) \
-@@ -51,4 +52,17 @@ int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
- 	(shmid) = ((cmd) == IPC_RMID ? -1 : (shmid)); \
- 	tst_ret_;})
+ semget01 semget01
+ semget02 semget02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index 9524b1a..68fff40 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -37,6 +37,7 @@ semctl05 semctl05
+ semctl06 semctl06
+ semctl07 semctl07
+ semctl08 semctl08
++semctl09 semctl09
  
-+int safe_semget(const char *file, const int lineno, key_t key, int nsems,
-+		int semflg);
-+#define SAFE_SEMGET(key, nsems, semflg) \
-+	safe_semget(__FILE__, __LINE__, (key), (nsems), (semflg))
+ semget01 semget01
+ semget02 semget02
+diff --git a/testcases/kernel/syscalls/ipc/semctl/.gitignore b/testcases/kernel/syscalls/ipc/semctl/.gitignore
+index 6189a04..87d8393 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/.gitignore
++++ b/testcases/kernel/syscalls/ipc/semctl/.gitignore
+@@ -6,3 +6,4 @@
+ /semctl06
+ /semctl07
+ /semctl08
++/semctl09
+diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
+index f711e77..42f8a94 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/Makefile
++++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
+@@ -8,6 +8,6 @@ LTPLIBS = ltpipc ltpnewipc
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ semctl01 semctl02 semctl03 semctl04 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
+-semctl08: LTPLDLIBS = -lltpnewipc
++semctl08 semctl09: LTPLDLIBS = -lltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+new file mode 100644
+index 0000000..2bbd6e4
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+@@ -0,0 +1,182 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
++ */
++/*\
++ * [DESCRIPTION]
++ *
++ * Call msgctl() with SEM_INFO flag and check that:
++ *
++ * * The returned index points to a valid SEM by calling SEM_STAT_ANY
++ * * Also count that valid indexes < returned max index sums up to used_ids
++ * * And the data are consistent with /proc/sysvipc/sem
++ *
++ * There is a possible race between the call to the semctl() and read from the
++ * proc file so this test cannot be run in parallel with any IPC testcases that
++ * adds or removes semaphore set.
++ *
++ * Note what we create a semaphore set in the test setup to make sure
++ * that there is@least one during the testrun.
++ *
++ * Also note that for SEM_INFO the members of the seminfo structure have
++ * completely different meaning than their names seems to suggest.
++ *
++ * We also calling semctl() directly by syscall(), because of a glibc bug:
++ * * semctl SEM_STAT_ANY fails to pass the buffer specified by the caller
++ * * to the kernel.
++ * * https://sourceware.org/bugzilla/show_bug.cgi?id=26637
++ *
++ * The glibc bug was fixed in:
++ * * commit  574500a108be1d2a6a0dc97a075c9e0a98371aba
++ * * Author: Dmitry V. Levin <ldv@altlinux.org>
++ * * Date:   Tue, 29 Sep 2020 17:10:20 +0000
++\*/
 +
-+int safe_semctl(const char *file, const int lineno, int semid, int semnum,
-+		int cmd, ...);
-+#define SAFE_SEMCTL(semid, semnum, cmd, ...) ({ \
-+	int tst_ret_ = safe_semctl(__FILE__, __LINE__, (semid), (semnum), \
-+				(cmd), ##__VA_ARGS__); \
-+	(semid) = ((cmd) == IPC_RMID ? -1 : (semid)); \
-+	tst_ret_; })
-+
- #endif /* TST_SAFE_SYSV_IPC_H__ */
-diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index 155e03b..3bad219 100644
---- a/lib/tst_safe_sysv_ipc.c
-+++ b/lib/tst_safe_sysv_ipc.c
-@@ -7,9 +7,11 @@
- #include <sys/ipc.h>
- #include <sys/msg.h>
- #include <sys/shm.h>
++#include <stdio.h>
++#include <pwd.h>
 +#include <sys/sem.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
++#include "libnewipc.h"
 +#include "lapi/semun.h"
- 
- /*
-  * The IPC_STAT, IPC_SET and IPC_RMID can return either 0 or -1.
-@@ -175,3 +177,49 @@ int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
- 
- 	return rval;
- }
++#include "lapi/sem.h"
++#include "lapi/syscalls.h"
 +
-+int safe_semget(const char *file, const int lineno, key_t key, int nsems,
-+		int semflg)
++static int sem_id = -1;
++static uid_t nobody_uid, root_uid;
++static union semun un;
++
++static inline int tst_sys_semctl(int semid, int semnum, int cmd)
 +{
-+	int rval;
-+
-+	rval = semget(key, nsems, semflg);
-+
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"semget(%i, %i, %x) failed", (int)key, nsems, semflg);
-+	} else if (rval < 0) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid semget(%i, %i, %x) return value %d",
-+			(int)key, nsems, semflg, rval);
-+	}
-+
-+	return rval;
++	return tst_syscall(__NR_semctl, semid, semnum, cmd, &un.buf);
 +}
 +
-+int safe_semctl(const char *file, const int lineno, int semid, int semnum,
-+		int cmd, ...)
++static inline int tst_semctl(int semid, int semnum, int cmd)
 +{
-+	int rval;
-+	va_list va;
-+	union semun un;
++	return semctl(semid, semnum, cmd, &un.buf);
++}
 +
-+	va_start(va, cmd);
++static struct tcases {
++	uid_t *uid;
++	int (*test_semctl) ();
++	char *desc;
++} tests[] = {
++	{&nobody_uid, tst_sys_semctl, "with nobody user by syscall()",},
++	{&nobody_uid, tst_semctl, "with nobody user",},
++	{&root_uid, tst_sys_semctl, "with root user by syscall()",},
++	{&root_uid, tst_semctl, "with root user",}
++};
 +
-+	un = va_arg(va, union semun);
++static void parse_proc_sysvipc(struct seminfo *info)
++{
++	FILE *f = fopen("/proc/sysvipc/sem", "r");
++	int semset_cnt = 0;
++	int sem_cnt = 0;
 +
-+	va_end(va);
++	/* Eat header */
++	for (;;) {
++		int c = fgetc(f);
 +
-+	rval = semctl(semid, semnum, cmd, un);
-+
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+		"semctl(%i, %i, %i,...) failed", semid, semnum, cmd);
-+	} else if (ret_check(cmd, rval)) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid semctl(%i, %i, %i,...) return value %d", semid,
-+			semnum, cmd, rval);
++		if (c == '\n' || c == EOF)
++			break;
 +	}
 +
-+	return rval;
++	int nsems;
++	/*
++	 * Sum sem set, nsems for all elements listed, which should equal
++	 * the data returned in the seminfo structure.
++	 */
++	while (fscanf(f, "%*i %*i %*i %i %*i %*i %*i %*i %*i %*i",
++		      &nsems) > 0){
++		semset_cnt++;
++		sem_cnt += nsems;
++	}
++
++	if (info->semusz != semset_cnt) {
++		tst_res(TFAIL, "semusz = %i, expected %i",
++				info->semusz, semset_cnt);
++	} else {
++		tst_res(TPASS, "semset_cnt = %i", semset_cnt);
++	}
++
++	if (info->semaem != sem_cnt) {
++		tst_res(TFAIL, "semaem = %i, expected %i",
++				info->semaem, sem_cnt);
++	} else {
++		tst_res(TPASS, "sen_cnt = %i", sem_cnt);
++	}
++
++	fclose(f);
 +}
++
++static void verify_semctl(unsigned int n)
++{
++	struct tcases *tc = &tests[n];
++	int i, semid, cnt = 0;
++	struct seminfo info;
++	union semun arg;
++
++	tst_res(TINFO, "Test SEM_STAT_ANY %s", tc->desc);
++
++	SAFE_SETEUID(*tc->uid);
++
++	arg.__buf = &info;
++
++	TEST(semctl(sem_id, 0, SEM_INFO, arg));
++
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "semctl(sem_id, 0, SEM_INFO, ...)");
++		return;
++	}
++
++	semid = (*tc->test_semctl) (TST_RET, 0, SEM_STAT_ANY);
++
++	if (errno == EFAULT) {
++		tst_res(TFAIL, "SEM_STAT_ANY doesn't pass the buffer "
++				"specified by the caller to kernel");
++		return;
++	} else if (semid == -1) {
++		tst_res(TFAIL | TTERRNO, "SEM_INFO haven't returned a valid index");
++	} else {
++		tst_res(TPASS, "SEM_INFO returned valid index %li to semid %i",
++			TST_RET, semid);
++	}
++
++	for (i = 0; i <= TST_RET; i++) {
++		if (((*tc->test_semctl) (i, 0, SEM_STAT_ANY)) != -1)
++			cnt++;
++	}
++
++	if (cnt == info.semusz) {
++		tst_res(TPASS, "Counted used = %i", cnt);
++	} else {
++		tst_res(TFAIL, "Counted used = %i, semuse = %i",
++			cnt, info.semusz);
++	}
++
++	parse_proc_sysvipc(&info);
++}
++
++static void setup(void)
++{
++	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
++	nobody_uid = ltpuser->pw_uid;
++	root_uid = 0;
++
++	sem_id = SAFE_SEMGET(IPC_PRIVATE, 2, IPC_CREAT | 0600);
++}
++
++static void cleanup(void)
++{
++	if (sem_id >= 0)
++		SAFE_SEMCTL(sem_id, 0, IPC_RMID);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_semctl,
++	.tcnt = ARRAY_SIZE(tests),
++	.needs_root = 1,
++};
 -- 
 1.8.3.1
 
