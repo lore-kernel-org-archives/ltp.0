@@ -1,9 +1,9 @@
 From: gengcixi@gmail.com <gengcixi@gmail.com>
-Date: Tue, 22 Dec 2020 13:48:38 +0800
-Subject: [LTP] [PATCH 1/4] delete_module: add gitignore file
+Date: Tue, 22 Dec 2020 13:48:39 +0800
+Subject: [LTP] [PATCH 2/4] init_module: add gitignore file
 In-Reply-To: <20201222054841.736529-1-gengcixi@gmail.com>
 References: <20201222054841.736529-1-gengcixi@gmail.com>
-Message-ID: <20201222054841.736529-2-gengcixi@gmail.com>
+Message-ID: <20201222054841.736529-3-gengcixi@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,40 +12,32 @@ To: ltp@lists.linux.it
 
 From: Cixi Geng <cixi.geng1@unisoc.com>
 
-When build ltp, there have generate some module files in delete_module,
+When build ltp, there have generate some module files in init_module,
 add these files into .gitignore
 Untracked files:
    (Use "git add <file>..." to include the content to be submitted)
-	testcases/kernel/syscalls/delete_module/.built-in.a.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod.ko.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod.mod.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod.mod.o.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod.o.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod_dep.ko.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod_dep.mod.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod_dep.mod.o.cmd
-	testcases/kernel/syscalls/delete_module/.dummy_del_mod_dep.o.cmd
-	testcases/kernel/syscalls/delete_module/Module.symvers
-	testcases/kernel/syscalls/delete_module/dummy_del_mod.mod.c
-	testcases/kernel/syscalls/delete_module/dummy_del_mod_dep.mod.c
-	testcases/kernel/syscalls/delete_module/modules.order
+	testcases/kernel/syscalls/init_module/.built-in.a.cmd
+	testcases/kernel/syscalls/init_module/.init_module.ko.cmd
+	testcases/kernel/syscalls/init_module/.init_module.mod.cmd
+	testcases/kernel/syscalls/init_module/.init_module.mod.o.cmd
+	testcases/kernel/syscalls/init_module/.init_module.o.cmd
+	testcases/kernel/syscalls/init_module/Module.symvers
+	testcases/kernel/syscalls/init_module/init_module.mod.c
+	testcases/kernel/syscalls/init_module/modules.order
 
 Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
 ---
- testcases/kernel/syscalls/delete_module/.gitignore | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/init_module/.gitignore | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/delete_module/.gitignore b/testcases/kernel/syscalls/delete_module/.gitignore
-index 8ffd4256e..1a774a6d5 100644
---- a/testcases/kernel/syscalls/delete_module/.gitignore
-+++ b/testcases/kernel/syscalls/delete_module/.gitignore
-@@ -1,5 +1,12 @@
- /delete_module01
- /delete_module02
- /delete_module03
--/dummy_del_mod.ko
--/dummy_del_mod_dep.ko
-+/*.ko
+diff --git a/testcases/kernel/syscalls/init_module/.gitignore b/testcases/kernel/syscalls/init_module/.gitignore
+index b4d11e958..23baeb651 100644
+--- a/testcases/kernel/syscalls/init_module/.gitignore
++++ b/testcases/kernel/syscalls/init_module/.gitignore
+@@ -1,3 +1,11 @@
+ /init_module01
+ /init_module02
+ /*.ko
 +/*.mod.c
 +/*.ko.cmd
 +/*.mod.cmd
