@@ -1,50 +1,44 @@
-From: gengcixi@gmail.com <gengcixi@gmail.com>
-Date: Tue, 22 Dec 2020 13:48:41 +0800
-Subject: [LTP] [PATCH 4/4] lsmod: add gitignore files
-In-Reply-To: <20201222054841.736529-1-gengcixi@gmail.com>
-References: <20201222054841.736529-1-gengcixi@gmail.com>
-Message-ID: <20201222054841.736529-5-gengcixi@gmail.com>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Tue, 22 Dec 2020 03:48:27 -0500
+Subject: [LTP] [PATCH 2/3] lapi/sem.h: Add SEM_STAT_ANY
+In-Reply-To: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1608626908-8117-2-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Cixi Geng <cixi.geng1@unisoc.com>
-
-add compile module generate files into .gitignore
-
-file:
-	testcases/commands/lsmod/.built-in.a.cmd
-	testcases/commands/lsmod/.ltp_lsmod01.ko.cmd
-	testcases/commands/lsmod/.ltp_lsmod01.mod.cmd
-	testcases/commands/lsmod/.ltp_lsmod01.mod.o.cmd
-	testcases/commands/lsmod/.ltp_lsmod01.o.cmd
-	testcases/commands/lsmod/Module.symvers
-	testcases/commands/lsmod/ltp_lsmod01.mod.c
-	testcases/commands/lsmod/modules.order
-
-Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
- testcases/commands/lsmod/.gitignore | 9 +++++++++
- 1 file changed, 9 insertions(+)
- create mode 100644 testcases/commands/lsmod/.gitignore
+ include/lapi/sem.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 include/lapi/sem.h
 
-diff --git a/testcases/commands/lsmod/.gitignore b/testcases/commands/lsmod/.gitignore
+diff --git a/include/lapi/sem.h b/include/lapi/sem.h
 new file mode 100644
-index 000000000..0e19fb3fd
+index 0000000..5d86a2f
 --- /dev/null
-+++ b/testcases/commands/lsmod/.gitignore
-@@ -0,0 +1,9 @@
-+*.ko
-+*.mod.c
-+*.ko.cmd
-+*.mod.cmd
-+*.mod.o.cmd
-+*.o.cmd
-+.built-in.a.cmd
-+Module.symvers
-+modules.order
++++ b/include/lapi/sem.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
++ * Author: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
++ */
++
++#ifndef LAPI_SEM_H
++#define LAPI_SEM_H
++
++#ifndef SEM_STAT_ANY
++# define SEM_STAT_ANY 20
++#endif
++
++#endif /* LAPI_SEM_H */
++
 -- 
-2.25.1
+1.8.3.1
+
+
 
