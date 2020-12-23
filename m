@@ -1,10 +1,9 @@
 From: gengcixi@gmail.com <gengcixi@gmail.com>
-Date: Wed, 23 Dec 2020 11:35:16 +0800
-Subject: [LTP] [PATCH 2/3] lib: implement rtctime_save and rtctime_restore
- function
+Date: Wed, 23 Dec 2020 11:35:17 +0800
+Subject: [LTP] [PATCH 3/3] rtc02: add rtc set time verify case
 In-Reply-To: <20201223033517.1464263-1-gengcixi@gmail.com>
 References: <20201223033517.1464263-1-gengcixi@gmail.com>
-Message-ID: <20201223033517.1464263-3-gengcixi@gmail.com>
+Message-ID: <20201223033517.1464263-4-gengcixi@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,93 +12,153 @@ To: ltp@lists.linux.it
 
 From: Cixi Geng <cixi.geng1@unisoc.com>
 
-* Reading the RTC in the setup as well as timestamping with monotonic
-  timer
-* Getting a second monotonic timestamp in the cleanup
-* Setting the RTC to the value taken in setup plus the difference in
-  the monotonic timer timestamps
+Test for the Real Time Clock driver.
+ * Veirify that,
+ * 1) set a RTC time
+ * 2) read the RTC time after set RTC time at once
+ * 3) compare the set time and the read is identical
 
 Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
 ---
- include/tst_wallclock.h |  4 ++++
- lib/tst_wallclock.c     | 42 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 46 insertions(+)
+ runtest/kernel_misc                           |   1 +
+ .../kernel/device-drivers/rtc/.gitignore      |   1 +
+ testcases/kernel/device-drivers/rtc/rtc02.c   | 108 ++++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 testcases/kernel/device-drivers/rtc/rtc02.c
 
-diff --git a/include/tst_wallclock.h b/include/tst_wallclock.h
-index 7d6723a7a..5103c8321 100644
---- a/include/tst_wallclock.h
-+++ b/include/tst_wallclock.h
-@@ -12,4 +12,8 @@ void tst_wallclock_save(void);
- 
- void tst_wallclock_restore(void);
- 
-+void tst_rtctime_save(void);
+diff --git a/runtest/kernel_misc b/runtest/kernel_misc
+index 7937c7bbf..abb75ebaf 100644
+--- a/runtest/kernel_misc
++++ b/runtest/kernel_misc
+@@ -1,6 +1,7 @@
+ kmsg01 kmsg01
+ fw_load fw_load
+ rtc01 rtc01
++rtc02 rtc02
+ block_dev block_dev
+ tpci tpci
+ tbio tbio
+diff --git a/testcases/kernel/device-drivers/rtc/.gitignore b/testcases/kernel/device-drivers/rtc/.gitignore
+index 8412fe679..0c0161eba 100644
+--- a/testcases/kernel/device-drivers/rtc/.gitignore
++++ b/testcases/kernel/device-drivers/rtc/.gitignore
+@@ -1 +1,2 @@
+ /rtc01
++/rtc02
+diff --git a/testcases/kernel/device-drivers/rtc/rtc02.c b/testcases/kernel/device-drivers/rtc/rtc02.c
+new file mode 100644
+index 000000000..cb8f7fea0
+--- /dev/null
++++ b/testcases/kernel/device-drivers/rtc/rtc02.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 Unisoc Communications Inc.
++ *
++ * Filename : rtc02.c
++ * Abstract : This file is a implementation test rtc set function.
++ */
 +
-+void tst_rtctime_restore(void);
++/*
++ * Test description
++ *
++ * Test for the Real Time Clock driver.
++ * Veirify that,
++ * 1) set a RTC time
++ * 2) read the RTC time after set RTC time at once
++ * 3) compare the set time and the read is identical
++ *
++ */
 +
- #endif	/* TST_WALLCLK_H__ */
-diff --git a/lib/tst_wallclock.c b/lib/tst_wallclock.c
-index 282d6ada3..5be1f46d8 100644
---- a/lib/tst_wallclock.c
-+++ b/lib/tst_wallclock.c
-@@ -11,11 +11,14 @@
- #include "tst_test.h"
- #include "tst_timer.h"
- #include "tst_clocks.h"
 +#include "tst_rtctime.h"
- #include "tst_wallclock.h"
- #include "lapi/posix_clocks.h"
- 
- static struct timespec real_begin, mono_begin;
- 
-+static struct rtc_time rtc_begin;
++#include "tst_wallclock.h"
++#include "tst_test.h"
 +
- static int clock_saved;
- 
- void tst_wallclock_save(void)
-@@ -58,3 +61,42 @@ void tst_wallclock_restore(void)
- 	if (tst_clock_settime(CLOCK_REALTIME, &adjust))
- 		tst_brk(TBROK | TERRNO, "tst_clock_settime() realtime failed");
- }
++static struct rtc_time show_tm;
 +
-+void tst_rtctime_save(void)
++static char *tst_show_rtctime(struct rtc_time *tm)
 +{
-+	/* save initial monotonic time to restore it when needed */
-+	if (tst_rtc_gettime(&rtc_begin))
-+		tst_brk(TBROK | TERRNO, "tst_rtc_gettime() realtime failed");
++	static char rtctime_buf[20];
 +
-+	if (tst_clock_gettime(CLOCK_MONOTONIC_RAW, &mono_begin))
-+		tst_brk(TBROK | TERRNO, "tst_clock_gettime() monotonic failed");
-+
-+	clock_saved = 1;
++	sprintf(rtctime_buf, "%04d-%02d-%02d %02d:%02d:%02d",
++		tm->tm_year + 1900,
++		tm->tm_mon + 1,
++		tm->tm_mday,
++		tm->tm_hour,
++		tm->tm_min,
++		tm->tm_sec);
++	return rtctime_buf;
 +}
 +
-+void tst_rtctime_restore(void)
++static void rtc_setup(void)
 +{
-+	static struct timespec mono_end, elapsed;
-+	static struct timespec rtc_begin_tm, rtc_adjust;
-+	static struct rtc_time rtc_restore;
++	tst_rtctime_save();
++}
 +
-+	if (!clock_saved)
++static int rtc_tm_cmp(struct rtc_time *set_tm, struct rtc_time *read_tm)
++{
++	if ((set_tm->tm_sec == read_tm->tm_sec)
++		&& (set_tm->tm_min == read_tm->tm_min)
++		&& (set_tm->tm_hour == read_tm->tm_hour)
++		&& (set_tm->tm_mday == read_tm->tm_mday)
++		&& (set_tm->tm_mon == read_tm->tm_mon)
++		&& (set_tm->tm_year == read_tm->tm_year)) {
++		return 0;
++	}
++	return -1;
++}
++
++static void set_rtc_test(void)
++{
++	struct rtc_time read_tm;
++	int ret;
++
++	struct rtc_time set_tm = {
++		.tm_sec = 30,
++		.tm_min = 23,
++		.tm_hour = 13,
++		.tm_mday = 9,
++		.tm_mon = 9,
++		.tm_year = 120,
++	};
++
++	/* set rtc to 2020.10.9 13:23:30 */
++	tst_res(TINFO, "To set RTC date/time is: %s", tst_show_rtctime(&set_tm));
++
++	ret = tst_rtc_settime(&set_tm);
++	if (ret != 0) {
++		tst_res(TFAIL | TERRNO, "RTC_SET_TIME failed");
 +		return;
++	}
 +
-+	clock_saved = 0;
++	/* Read current RTC Time */
++	ret = tst_rtc_gettime(&read_tm);
++	if (ret != 0) {
++		tst_res(TFAIL | TERRNO, "RTC_RD_TIME failed");
++		return;
++	}
++	tst_res(TINFO, "read RTC date/time is: %s", tst_show_rtctime(&read_tm));
 +
-+	if (tst_clock_gettime(CLOCK_MONOTONIC_RAW, &mono_end))
-+		tst_brk(TBROK | TERRNO, "tst_clock_gettime() monotonic failed");
++	if (rtc_tm_cmp(&set_tm, &read_tm)) {
++		tst_res(TFAIL | TERRNO, "RTC SET TEST Failed");
++		return;
++	}
++	tst_res(TPASS, "The read RTC time is consistent with set");
 +
-+	elapsed = tst_timespec_diff(mono_end, mono_begin);
-+
-+	rtc_begin_tm.tv_sec = tst_rtc_tm_to_time(&rtc_begin);
-+
-+	rtc_adjust = tst_timespec_add(rtc_begin_tm, elapsed);
-+
-+	tst_rtc_time_to_tm(rtc_adjust.tv_sec, &rtc_restore);
-+
-+	/* restore realtime clock based on monotonic delta */
-+	if (tst_rtc_settime(&rtc_restore))
-+		tst_brk(TBROK | TERRNO, "tst_rtc_settime() realtime failed");
 +}
++
++static void rtc_cleanup(void)
++{
++	tst_rtctime_restore();
++}
++
++static struct tst_test test = {
++	.setup = rtc_setup,
++	.test_all = set_rtc_test,
++	.cleanup = rtc_cleanup,
++	/* tests needs to run with UID=0 */
++	.needs_root = 1,
++};
 -- 
 2.25.1
 
