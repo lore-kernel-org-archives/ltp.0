@@ -1,9 +1,10 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 23 Dec 2020 16:20:01 +0800
-Subject: [LTP] [PATCH 1/3] Add SAFE_SEMCTL() and SAFE_SEMGET() macro
-In-Reply-To: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Date: Wed, 23 Dec 2020 16:29:02 +0800
+Subject: [LTP] [PATCH 2/3] lapi/sem.h: Add SEM_STAT_ANY
+In-Reply-To: <1608626908-8117-2-git-send-email-zhufy.jy@cn.fujitsu.com>
 References: <1608626908-8117-1-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <5FE2FDB1.9090402@cn.fujitsu.com>
+ <1608626908-8117-2-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <5FE2FFCE.2030500@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,45 +12,37 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi Feiyu
-> +int safe_semctl(const char *file, const int lineno, int semid, int semnum,
-> +		int cmd, ...)
-> +{
-> +	int rval;
-> +	va_list va;
-> +	union semun un;
+> Signed-off-by: Feiyu Zhu<zhufy.jy@cn.fujitsu.com>
+> ---
+>   include/lapi/sem.h | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+>   create mode 100644 include/lapi/sem.h
+>
+> diff --git a/include/lapi/sem.h b/include/lapi/sem.h
+> new file mode 100644
+> index 0000000..5d86a2f
+> --- /dev/null
+> +++ b/include/lapi/sem.h
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2020 FUJITSU LIMITED. All rights reserved.
+> + * Author: Feiyu Zhu<zhufy.jy@cn.fujitsu.com>
+> + */
 > +
-> +	va_start(va, cmd);
-> +
-> +	un = va_arg(va, union semun);
-> +
-> +	va_end(va);
-> +
-> +	rval = semctl(semid, semnum, cmd, un);
-> +
-> +	if (rval == -1) {
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
-> +		"semctl(%i, %i, %i,...) failed", semid, semnum, cmd);
-> +	} else if (ret_check(cmd, rval)) {
-It looks good to me,
-Reviewed-by:Yang Xu <xuyang2018.jy@cn.fujitsucom.com>
+I prefer to add #include <sys/sem.h> in here, so we only need to include 
+lapi/sem.h  in subsequent semctl09.c
 
-
-BTW, we can add some cmds in ret_check function in separate patch.
- From semctl man-pages, it looks like  SETALL/SETVAL  also return 0 on 
-success. Also for shmctl man-pages, SHM_LOCK/SHM_UNLOCK also return 0 on 
-success. When we write these new cases in future, these cmds should be 
-added into ret_check function.
-
-Best Regards
-Yang Xu
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
-> +			"Invalid semctl(%i, %i, %i,...) return value %d", semid,
-> +			semnum, cmd, rval);
-> +	}
+Reviewed-by:Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> +#ifndef LAPI_SEM_H
+> +#define LAPI_SEM_H
 > +
-> +	return rval;
-> +}
-> --
+> +#ifndef SEM_STAT_ANY
+> +# define SEM_STAT_ANY 20
+> +#endif
+> +
+> +#endif /* LAPI_SEM_H */
+> +
 
 
 
