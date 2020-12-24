@@ -1,61 +1,284 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 23 Dec 2020 11:36:36 +0000
-Subject: [LTP] [PATCH] af_alg07: Add linux-git reference to more general fix
-Message-ID: <20201223113636.9617-1-rpalethorpe@suse.com>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Thu, 24 Dec 2020 04:58:14 -0500
+Subject: [LTP] [PATCH v2 1/3] lapi/sem.h: Add SEM_STAT_ANY
+Message-ID: <1608803896-17634-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-While trying to reintroduce this error on kernel 5.10 I found that a
-secondary fix has been applied which fixes many more socket types and
-may obsolete the original fix. Ideally we would create a new test
-based on Eric's reproducer, but for now I will just include a
-reference to the second fix.
+1) Rename semun.h to sem.h and apply it
+2) Add SEM_STAT_ANY
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- testcases/kernel/crypto/af_alg07.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/ipcsem.h                                |  2 +-
+ include/lapi/sem.h                              | 28 +++++++++++++++++++++++++
+ include/lapi/semun.h                            | 22 -------------------
+ testcases/kernel/containers/sysvipc/sem_comm.c  |  3 +--
+ testcases/kernel/ipc/pipeio/pipeio.c            |  3 +--
+ testcases/kernel/ipc/semaphore/sem01.c          |  3 +--
+ testcases/kernel/ipc/semaphore/sem02.c          |  3 +--
+ testcases/kernel/sched/process_stress/process.c |  3 +--
+ testcases/kernel/syscalls/ipc/semctl/semctl08.c |  2 +-
+ testcases/kernel/syscalls/ipc/semop/semop01.c   |  3 +--
+ testcases/kernel/syscalls/ipc/semop/semop02.c   |  3 +--
+ testcases/kernel/syscalls/ipc/semop/semop03.c   |  3 +--
+ testcases/kernel/syscalls/sendmsg/sendmsg02.c   |  3 +--
+ 13 files changed, 39 insertions(+), 42 deletions(-)
+ create mode 100644 include/lapi/sem.h
+ delete mode 100644 include/lapi/semun.h
 
-diff --git a/testcases/kernel/crypto/af_alg07.c b/testcases/kernel/crypto/af_alg07.c
-index c94bb292f..ef13ad764 100644
---- a/testcases/kernel/crypto/af_alg07.c
-+++ b/testcases/kernel/crypto/af_alg07.c
-@@ -15,13 +15,22 @@
-  *
-  * The race window is small and it's hard to trigger a kernel crash but
-  * fchownat() will return ENOENT as it should only when the bug is not
-- * present. Race fixed in:
-+ * present. Race fixed specifically for af_alg in:
-  *
-  *  commit 9060cb719e61b685ec0102574e10337fa5f445ea
-  *  Author: Mao Wenan <maowenan@huawei.com>
-  *  Date:   Mon Feb 18 10:44:44 2019 +0800
-  *
-  *  net: crypto set sk to NULL when af_alg_release.
-+ *
-+ * It was observed that the same bug is present on many other
-+ * protocols. A more general fix is in:
-+ *
-+ *  commit ff7b11aa481f682e0e9711abfeb7d03f5cd612bf
-+ *  Author: Eric Biggers <ebiggers@google.com>
-+ *  Date:   Thu Feb 21 14:13:56 2019 -0800
-+ *
-+ *  net: socket: set sock->sk to NULL after calling proto_ops::release()
+diff --git a/include/ipcsem.h b/include/ipcsem.h
+index 6a37672..09a0b3c 100644
+--- a/include/ipcsem.h
++++ b/include/ipcsem.h
+@@ -29,7 +29,7 @@
+ #include <sys/sem.h>
+ 
+ #include "test.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ void cleanup(void);
+ void setup(void);
+diff --git a/include/lapi/sem.h b/include/lapi/sem.h
+new file mode 100644
+index 0000000..7cef3d5
+--- /dev/null
++++ b/include/lapi/sem.h
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2015 Linux Test Project
++ */
++
++#include <sys/sem.h>
++
++#ifndef LAPI_SEM_H
++#define LAPI_SEM_H
++
++#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
++/* union semun is defined by including <sys/sem.h> */
++#else
++/* according to X/OPEN we have to define it ourselves */
++union semun {
++	int val;                /* value for SETVAL */
++	struct semid_ds *buf;   /* buffer for IPC_STAT, IPC_SET */
++	unsigned short *array;  /* array for GETALL, SETALL */
++	/* Linux specific part: */
++	struct seminfo *__buf;  /* buffer for IPC_INFO */
++};
++#endif
++
++#ifndef SEM_STAT_ANY
++# define SEM_STAT_ANY 20
++#endif
++
++#endif /* LAPI_SEM_H */
+diff --git a/include/lapi/semun.h b/include/lapi/semun.h
+deleted file mode 100644
+index 1a9dc98..0000000
+--- a/include/lapi/semun.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (c) 2015 Linux Test Project
+- */
+-
+-#ifndef SEMUN_H__
+-#define SEMUN_H__
+-
+-#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
+-/* union semun is defined by including <sys/sem.h> */
+-#else
+-/* according to X/OPEN we have to define it ourselves */
+-union semun {
+-	int val;                /* value for SETVAL */
+-	struct semid_ds *buf;   /* buffer for IPC_STAT, IPC_SET */
+-	unsigned short *array;  /* array for GETALL, SETALL */
+-	/* Linux specific part: */
+-	struct seminfo *__buf;  /* buffer for IPC_INFO */
+-};
+-#endif
+-
+-#endif /* SEMUN_H__ */
+diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c b/testcases/kernel/containers/sysvipc/sem_comm.c
+index 09cc163..a2c354a 100644
+--- a/testcases/kernel/containers/sysvipc/sem_comm.c
++++ b/testcases/kernel/containers/sysvipc/sem_comm.c
+@@ -27,7 +27,6 @@
+ 
+ #define _GNU_SOURCE
+ #include <sys/ipc.h>
+-#include <sys/sem.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <stdio.h>
+@@ -35,7 +34,7 @@
+ #include "ipcns_helper.h"
+ #include "test.h"
+ #include "safe_macros.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ #define TESTKEY 124426L
+ char *TCID	= "sem_comm";
+diff --git a/testcases/kernel/ipc/pipeio/pipeio.c b/testcases/kernel/ipc/pipeio/pipeio.c
+index b9421cb..ab5c2cf 100644
+--- a/testcases/kernel/ipc/pipeio/pipeio.c
++++ b/testcases/kernel/ipc/pipeio/pipeio.c
+@@ -47,13 +47,12 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <sys/stat.h>
+-#include <sys/sem.h>
+ 
+ #include "tlibio.h"
+ 
+ #include "test.h"
+ #include "safe_macros.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ char *TCID = "pipeio";
+ int TST_TOTAL = 1;
+diff --git a/testcases/kernel/ipc/semaphore/sem01.c b/testcases/kernel/ipc/semaphore/sem01.c
+index 5a45238..582624d 100644
+--- a/testcases/kernel/ipc/semaphore/sem01.c
++++ b/testcases/kernel/ipc/semaphore/sem01.c
+@@ -40,8 +40,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <sys/ipc.h>
+-#include <sys/sem.h>
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ int verbose = 0;
+ int loops = 100;
+diff --git a/testcases/kernel/ipc/semaphore/sem02.c b/testcases/kernel/ipc/semaphore/sem02.c
+index 81e77d6..34b714b 100644
+--- a/testcases/kernel/ipc/semaphore/sem02.c
++++ b/testcases/kernel/ipc/semaphore/sem02.c
+@@ -45,12 +45,11 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+-#include <sys/sem.h>
+ #include <errno.h>
+ #include <pthread.h>
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ #include "test.h"
+ 
+ #define KEY IPC_PRIVATE
+diff --git a/testcases/kernel/sched/process_stress/process.c b/testcases/kernel/sched/process_stress/process.c
+index f23dcbb..a5ff809 100644
+--- a/testcases/kernel/sched/process_stress/process.c
++++ b/testcases/kernel/sched/process_stress/process.c
+@@ -40,11 +40,10 @@
+ #include <sys/msg.h>
+ #include <sys/resource.h>
+ #include <sys/select.h>
+-#include <sys/sem.h>
+ #include <sys/shm.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ /* indexes into environment variable array */
+ #define ADBG 0
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl08.c b/testcases/kernel/syscalls/ipc/semctl/semctl08.c
+index 40c2e17..1878bd4 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl08.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl08.c
+@@ -6,7 +6,7 @@
+  * Cross verify the _high fields being set to 0 by the kernel.
+  */
+ #include "lapi/sembuf.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ #include "tst_test.h"
+ #include "libnewipc.h"
+ 
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop01.c b/testcases/kernel/syscalls/ipc/semop/semop01.c
+index b20eef4..2072635 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop01.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop01.c
+@@ -8,10 +8,9 @@
   */
  
+ #include <stdlib.h>
+-#include <sys/sem.h>
+ #include "tst_test.h"
+ #include "libnewipc.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ #include "semop.h"
+ 
+ #define NSEMS 4
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop02.c b/testcases/kernel/syscalls/ipc/semop/semop02.c
+index 2c3ec2c..d8181db 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop02.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop02.c
+@@ -22,10 +22,9 @@
+ #define _GNU_SOURCE
+ #include <pwd.h>
+ #include <sys/ipc.h>
+-#include <sys/sem.h>
+ #include "tst_test.h"
+ #include "libnewipc.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ #include "semop.h"
+ 
+ static int valid_sem_id = -1;
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop03.c b/testcases/kernel/syscalls/ipc/semop/semop03.c
+index 3a79ed3..636b715 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop03.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop03.c
+@@ -11,10 +11,9 @@
+ #include <stdlib.h>
  #include <sys/types.h>
-@@ -118,6 +127,7 @@ static struct tst_test test = {
- 	.min_cpus = 2,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "ff7b11aa481f"},
- 		{"linux-git", "9060cb719e61"},
- 		{"CVE", "2019-8912"},
- 		{}
+ #include <sys/wait.h>
+-#include <sys/sem.h>
+ #include "tst_test.h"
+ #include "libnewipc.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ #include "semop.h"
+ 
+ static key_t semkey;
+diff --git a/testcases/kernel/syscalls/sendmsg/sendmsg02.c b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+index aa3c88d..f72e9db 100644
+--- a/testcases/kernel/syscalls/sendmsg/sendmsg02.c
++++ b/testcases/kernel/syscalls/sendmsg/sendmsg02.c
+@@ -34,7 +34,6 @@
+ #define _GNU_SOURCE
+ #include <sys/ipc.h>
+ #include <sys/stat.h>
+-#include <sys/sem.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+ #include <sys/un.h>
+@@ -45,7 +44,7 @@
+ #include "config.h"
+ #include "test.h"
+ #include "safe_macros.h"
+-#include "lapi/semun.h"
++#include "lapi/sem.h"
+ 
+ char *TCID = "sendmsg02";
+ 
 -- 
-2.29.2
+1.8.3.1
+
+
 
