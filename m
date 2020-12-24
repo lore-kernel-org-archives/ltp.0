@@ -1,98 +1,67 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 31 Dec 2020 19:19:29 +0800
-Subject: [LTP] [RFC PATCH 0/5] CGroups
-In-Reply-To: <20201216100121.16683-1-rpalethorpe@suse.com>
-References: <20201216100121.16683-1-rpalethorpe@suse.com>
-Message-ID: <CAEemH2dR+W8ypMED_xqw2JVO7E_Y0Kp+0iS=QVH_h2r0pDBVJA@mail.gmail.com>
+From: Gao =?unknown-8bit?b?TWVpdGFv77yI6auY546r5rab77yJ?= <meitaogao@asrmicro.com>
+Date: Thu, 24 Dec 2020 05:56:14 +0000
+Subject: [LTP] LTP testcase(sysctl02) failed
+Message-ID: <0efaa481ffd24bc48fd41385159be66c@exch01.asrmicro.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+All:
 
-Thanks for your work, comments see below.
+I am currently condulting Ltp test for our own yocto project, now I encouter below error.
 
-On Wed, Dec 16, 2020 at 6:02 PM Richard Palethorpe via ltp <
-ltp@lists.linux.it> wrote:
+sysctl02_sh                                        FAIL       1
+sysctl02 1 TFAIL: /proc/sys/fs/file-max overflows and is set to 0
+sysctl02 2 TINFO: trying to set fs.file-max=18446744073709551615
+sysctl02 2 TPASS: /proc/sys/fs/file-max keeps old value (33398)
+sysctl02 3 TINFO: trying to set fs.file-max=9223372036854775808
+sysctl02 3 TFAIL: /proc/sys/fs/file-max overflows and is set to 0
+sysctl02 4 TCONF: kernel doesn't support KASAN
 
-> This is a request for comment on a new CGroups API. I have tried to
-> keep the existing API functions, but there are many changes in the
-> implementation. Please see the commit message to "CGroup API rewrite"
-> in this series.
->
-> A previous failed attempt to correct some problems and discussion is
-> here: http://lists.linux.it/pipermail/ltp/2020-November/019586.html
-> This is a much bigger change than I would like, but CGroups make it
-> very difficult to do anything simply.
->
-> I have done a direct conversion of the test cases to the new API, but
-> I am not sure that it makes sense to call tst_cgroup_move_current
-> within the run method of a test because after the first iteration it
->
+after investigated it, this testcase is for bufffer overflow, I checked source code (kernel 4.19),
+all of required patched had been applied, I dig into it and found new patch applied as flow , that might make testcase failed
 
-Hmm, I feel that is a rare scenario in our real test. Mostly we
-just need to set it once in a process.
+commit b227f15712691096027163a4600a7af1c4864320
+Author: Christian Brauner <christian@brauner.io>
+Date:   Thu Mar 7 16:29:43 2019 -0800
 
-Also, another race condition we are facing is to set the same
-hierarchy in a different process parallel. i.e.
+    sysctl: handle overflow for file-max
 
-// Child_1: set MEMSIZE maxbytes
-if (fork() == 0) {
-    tst_cgroup_move_current(TST_CGROUP_MEMORY);
-    tst_cgroup_mem_set_maxbytes(MEMSIZE);
-}
-// Child_2: set MEMSIZE/2 maxbytes
-if (fork() == 0) {
-    tst_cgroup_move_current(TST_CGROUP_MEMORY);
-    tst_cgroup_mem_set_maxbytes(MEMSIZE/2);
-}
+    [ Upstream commit 32a5ad9c22852e6bd9e74bdec5934ef9d1480bc5 ]
 
-For the previous CGroup test-lib, we solved that via mount the
-same controller at different places. In this new CGroup lib, I guess
-creating dynamic directories in tst_cgroup_move_current might
-work for us, and I'll comment more about it in patch2/5.
+    Currently, when writing
 
+      echo 18446744073709551616 > /proc/sys/fs/file-max
 
-> will be a NOP. There is also the issue that on the unified hierarchy
-> when calling
->
-> tst_cgroup_move_current(TST_CGROUP_MEMORY);
-> ... testing ...
-> tst_cgroup_move_current(TST_CGROUP_CPUSET);
->
-> the second call is a NOP as there is only one CGroup, but when the
-> hierarchies are mounted seperately on V1 the current process will not
-> be added to cpuset CGroup until the second call. We probably do not
-> want different behaviour between commonly used hierarchies.
->
+    /proc/sys/fs/file-max will overflow and be set to 0.  That quickly
+    crashes the system.
 
-That's true, but it is mainly caused by different versions of
-CGroup. We could NOT unify the unsupported behavior, so
-maybe the wiser choice is to let _CPUSET test skipping(TCONF)
-directly on CGroup_V2?
+    This commit sets the max and min value for file-max.  The max value is
+    set to long int.  Any higher value cannot currently be used as the
+    percpu counters are long ints and not unsigned integers.
+
+    Note that the file-max value is ultimately parsed via
+    __do_proc_doulongvec_minmax().  This function does not report error when
+    min or max are exceeded.  Which means if a value largen that long int is
+    written userspace will not receive an error instead the old value will be
+    kept.  There is an argument to be made that this should be changed and
+    __do_proc_doulongvec_minmax() should return an error when a dedicated min
+    or max value are exceeded.  However this has the potential to break
+    userspace so let's defer this to an RFC patch.
+
+so is this testcase out of date or something wrong wih my kernel ?
+who can help me figure this out? Thanks in advance.
 
 
->
-> In a lot of cases, the test probably only requires the process to be
-> moved into a CGroup during setup, but this requires an investigation
-> of each test. Some tests scan for NUMA information and use this in the
-> CGroup config which complicates matters. However it seems unlikely to
-> me that the available NUMA nodes will change between test iterations
-> unless we are testing hotplugging or failover.
->
-> For tests which are actually testing CGroups themselves, most of the
-> API is too high-level. Please see the kernel self tests for what may
-> be required for those kinds of tests.
->
-> This is not meant for full review and has not been tested on older
-> setups yet.
+-----------------------------------
+Best Regards
+Meitao Gao
+------------------------------------
 
 
--- 
-Regards,
-Li Wang
+
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201231/7a901c48/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201224/4393242d/attachment.htm>
