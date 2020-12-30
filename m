@@ -1,48 +1,41 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 30 Dec 2020 17:25:24 +0800
-Subject: [LTP] [PATCH] lib/tst_safe_sysv_ipc.c: add other cmds in ret_check
-Message-ID: <1609320324-8405-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Date: Wed, 30 Dec 2020 18:48:56 +0300
+Subject: [LTP] [PATCH v1] include/tst_cgroup.h: Replace hardcoded cgroup
+ paths
+Message-ID: <20201230154856.26252-1-bogdan.lezhepekov@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From semctl and shmctl manpage, these cmds(SHM_LOCK, SHM_UNLOCK,
-SETALL,SETVAL) also return 0 on success, so add them in ret_check function.
+Macros PATH_TMP_CG_CST and PATH_TMP_CG_MEM defined cgroup
+temporary directory paths to be in /tmp that can be a mount point.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Enable an option to set PATH_TMP_CG_CST and PATH_TMP_CG_MEM
+through TMPDIR environment variable keeping old paths as default ones.
+
+Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
 ---
- lib/tst_safe_sysv_ipc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ include/tst_cgroup.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index 70f2568cb..e72985d61 100644
---- a/lib/tst_safe_sysv_ipc.c
-+++ b/lib/tst_safe_sysv_ipc.c
-@@ -13,7 +13,8 @@
- #include "lapi/sem.h"
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index bfd848260..0f7db5487 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -7,8 +7,9 @@
+ #ifndef TST_CGROUP_H
+ #define TST_CGROUP_H
  
- /*
-- * The IPC_STAT, IPC_SET and IPC_RMID can return either 0 or -1.
-+ * The IPC_STAT, IPC_SET, IPC_RMID, SHM_LOCK, SHM_UNLOCK, SETALL and SETVAL
-+ * can return either 0 or -1.
-  *
-  * Linux specific cmds either returns -1 on failure or positive integer
-  * either index into an kernel array or shared primitive indentifier.
-@@ -24,6 +25,10 @@ static int ret_check(int cmd, int ret)
- 	case IPC_STAT:
- 	case IPC_SET:
- 	case IPC_RMID:
-+	case SHM_LOCK:
-+	case SHM_UNLOCK:
-+	case SETALL:
-+	case SETVAL:
- 		return ret != 0;
- 	default:
- 		return ret < 0;
+-#define PATH_TMP_CG_MEM	"/tmp/cgroup_mem"
+-#define PATH_TMP_CG_CST	"/tmp/cgroup_cst"
++#define PATH_BASE (getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp")
++#define PATH_TMP_CG_CST (strcat(PATH_BASE, "/cgroup_cst"))
++#define PATH_TMP_CG_MEM (strcat(PATH_BASE, "/cgroup_mem"))
+ 
+ enum tst_cgroup_ver {
+ 	TST_CGROUP_V1 = 1,
 -- 
-2.23.0
-
-
+2.26.2
 
