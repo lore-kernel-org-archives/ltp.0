@@ -1,25 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 28 Dec 2020 21:03:57 +0100
-Subject: [LTP] [PATCH 1/1] tst_net.sh: Require veth for netns
-In-Reply-To: <20201217134620.10128-1-pvorel@suse.cz>
-References: <20201217134620.10128-1-pvorel@suse.cz>
-Message-ID: <20201228200357.GA18526@pevik>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 30 Dec 2020 16:28:41 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/ipc: semctl09: add a test for
+ SEM_STAT_ANY
+In-Reply-To: <1608803896-17634-3-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1608803896-17634-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <1608803896-17634-3-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <5FEC3A39.6070607@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+Merged this patchset, thanks!
 
-> new error message is more informative:
-> tcp_fastopen_run 1 TCONF: veth driver not available
+Best Regards
+Yang Xu
+> Validate the content of the seminfo structure and the return value.
+>
+> The return value is highest used index to a kernel table, so we call
+> semctl() with SEM_STAT_ANY which shouldn't fail if the value is correct.
+>
+> We also test SEM_STAT_ANY by calling semctl() directly by syscall(),
+> because glibc have a bug that caused fails to pass the buffer specified
+> by the caller to the kernel.
+>
+> We parse /proc/sysvipc/sem and check that the information is
+> consistent with the content of seminfo structure.
+>
+> Signed-off-by: Feiyu Zhu<zhufy.jy@cn.fujitsu.com>
+> Reviewed-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+> ---
 
-> then the old one:
-> Error: Unknown device type.
-> tcp_fastopen_run 1 TBROK: ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2 failed
 
-Merged.
 
-Kind regards,
-Petr
