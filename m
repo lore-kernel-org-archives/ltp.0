@@ -1,67 +1,58 @@
-From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Wed, 30 Dec 2020 19:36:15 +0300
-Subject: [LTP] [PATCH v1] mem/mtest06: mmap1: Limit distant mmap size
-Message-ID: <20201230163615.318-1-bogdan.lezhepekov@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 31 Dec 2020 11:01:27 +0800
+Subject: [LTP] [PATCH v1] include/tst_cgroup.h: Replace hardcoded cgroup
+ paths
+In-Reply-To: <20201230154856.26252-1-bogdan.lezhepekov@suse.com>
+References: <20201230154856.26252-1-bogdan.lezhepekov@suse.com>
+Message-ID: <CAEemH2d88KVzzidLyEmCPm+LrXiE0zG7YvXG=r=AgEy+2jKU-A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Limit the distant mmap size by a total memory value.
+Hi Bogdan,
 
-Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
----
- testcases/kernel/mem/mtest06/mmap1.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+On Wed, Dec 30, 2020 at 11:49 PM Bogdan Lezhepekov via ltp <
+ltp@lists.linux.it> wrote:
 
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index 9d3e9d097..18c4e67e2 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -32,11 +32,7 @@
- #include "tst_test.h"
- #include "tst_safe_pthread.h"
- 
--#ifdef TST_ABI32
--#  define DISTANT_MMAP_SIZE (256*1024*1024)
--#else
--#  define DISTANT_MMAP_SIZE (2L*1024*1024*1024)
--#endif
-+#define GIGABYTE (1L*1024*1024*1024)
- #define TEST_FILENAME "ashfile"
- 
- /* seconds remaining before reaching timeout */
-@@ -189,17 +185,26 @@ int mkfile(int size)
- static void setup(void)
- {
- 	struct sigaction sigptr;
-+	size_t distant_mmap_size;
-+	long mem_total;
- 
- 	page_sz = getpagesize();
-+	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-+	mem_total *= 1024;
- 
-+#ifdef TST_ABI32
-+	distant_mmap_size = 256*1024*1024;
-+#else
-+	distant_mmap_size = (mem_total > 2 * GIGABYTE) ? 2 * GIGABYTE : mem_total;
-+#endif
- 	/*
- 	 * Used as hint for mmap thread, so it doesn't interfere
- 	 * with other potential (temporary) mappings from libc
- 	 */
--	distant_area = SAFE_MMAP(0, DISTANT_MMAP_SIZE, PROT_WRITE | PROT_READ,
-+	distant_area = SAFE_MMAP(0, distant_mmap_size, PROT_WRITE | PROT_READ,
- 			MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
--	SAFE_MUNMAP(distant_area, (size_t)DISTANT_MMAP_SIZE);
--	distant_area += DISTANT_MMAP_SIZE / 2;
-+	SAFE_MUNMAP(distant_area, distant_mmap_size);
-+	distant_area += distant_mmap_size / 2;
- 
- 	if (tst_parse_float(str_exec_time, &exec_time, 0, FLT_MAX)) {
- 		tst_brk(TBROK, "Invalid number for exec_time '%s'",
+> Macros PATH_TMP_CG_CST and PATH_TMP_CG_MEM defined cgroup
+> temporary directory paths to be in /tmp that can be a mount point.
+>
+> Enable an option to set PATH_TMP_CG_CST and PATH_TMP_CG_MEM
+> through TMPDIR environment variable keeping old paths as default ones.
+>
+> Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+> ---
+>  include/tst_cgroup.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+> index bfd848260..0f7db5487 100644
+> --- a/include/tst_cgroup.h
+> +++ b/include/tst_cgroup.h
+> @@ -7,8 +7,9 @@
+>  #ifndef TST_CGROUP_H
+>  #define TST_CGROUP_H
+>
+> -#define PATH_TMP_CG_MEM        "/tmp/cgroup_mem"
+> -#define PATH_TMP_CG_CST        "/tmp/cgroup_cst"
+> +#define PATH_BASE (getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp")
+> +#define PATH_TMP_CG_CST (strcat(PATH_BASE, "/cgroup_cst"))
+> +#define PATH_TMP_CG_MEM (strcat(PATH_BASE, "/cgroup_mem"))
+>
+
+As described on strcat() manual page, the potential risk is that buffer
+overruns might cause an unpredictable problem.
+
+I won't like to merge this patch because, Richard raised a new method to
+refactor the whole CGroup API. And the patchset is pending on reviewing.
+
+http://lists.linux.it/pipermail/ltp/2020-December/020274.html
+
 -- 
-2.26.2
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201231/19f96021/attachment.htm>
