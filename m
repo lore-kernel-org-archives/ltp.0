@@ -1,68 +1,98 @@
-From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
-Date: Thu, 31 Dec 2020 13:38:13 +0300
-Subject: [LTP] [PATCH v1] include/tst_cgroup.h: Replace hardcoded cgroup
- paths
-In-Reply-To: <CAEemH2d88KVzzidLyEmCPm+LrXiE0zG7YvXG=r=AgEy+2jKU-A@mail.gmail.com>
-References: <CAEemH2d88KVzzidLyEmCPm+LrXiE0zG7YvXG=r=AgEy+2jKU-A@mail.gmail.com>
-Message-ID: <96F5BFE2-CF01-480E-B607-807A87003ABF@getmailspring.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 31 Dec 2020 19:19:29 +0800
+Subject: [LTP] [RFC PATCH 0/5] CGroups
+In-Reply-To: <20201216100121.16683-1-rpalethorpe@suse.com>
+References: <20201216100121.16683-1-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dR+W8ypMED_xqw2JVO7E_Y0Kp+0iS=QVH_h2r0pDBVJA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Richard,
 
-Thanks for the review and pointing to the Richard's update, haven't seen that before.
+Thanks for your work, comments see below.
+
+On Wed, Dec 16, 2020 at 6:02 PM Richard Palethorpe via ltp <
+ltp@lists.linux.it> wrote:
+
+> This is a request for comment on a new CGroups API. I have tried to
+> keep the existing API functions, but there are many changes in the
+> implementation. Please see the commit message to "CGroup API rewrite"
+> in this series.
+>
+> A previous failed attempt to correct some problems and discussion is
+> here: http://lists.linux.it/pipermail/ltp/2020-November/019586.html
+> This is a much bigger change than I would like, but CGroups make it
+> very difficult to do anything simply.
+>
+> I have done a direct conversion of the test cases to the new API, but
+> I am not sure that it makes sense to call tst_cgroup_move_current
+> within the run method of a test because after the first iteration it
+>
+
+Hmm, I feel that is a rare scenario in our real test. Mostly we
+just need to set it once in a process.
+
+Also, another race condition we are facing is to set the same
+hierarchy in a different process parallel. i.e.
+
+// Child_1: set MEMSIZE maxbytes
+if (fork() == 0) {
+    tst_cgroup_move_current(TST_CGROUP_MEMORY);
+    tst_cgroup_mem_set_maxbytes(MEMSIZE);
+}
+// Child_2: set MEMSIZE/2 maxbytes
+if (fork() == 0) {
+    tst_cgroup_move_current(TST_CGROUP_MEMORY);
+    tst_cgroup_mem_set_maxbytes(MEMSIZE/2);
+}
+
+For the previous CGroup test-lib, we solved that via mount the
+same controller at different places. In this new CGroup lib, I guess
+creating dynamic directories in tst_cgroup_move_current might
+work for us, and I'll comment more about it in patch2/5.
+
+
+> will be a NOP. There is also the issue that on the unified hierarchy
+> when calling
+>
+> tst_cgroup_move_current(TST_CGROUP_MEMORY);
+> ... testing ...
+> tst_cgroup_move_current(TST_CGROUP_CPUSET);
+>
+> the second call is a NOP as there is only one CGroup, but when the
+> hierarchies are mounted seperately on V1 the current process will not
+> be added to cpuset CGroup until the second call. We probably do not
+> want different behaviour between commonly used hierarchies.
+>
+
+That's true, but it is mainly caused by different versions of
+CGroup. We could NOT unify the unsupported behavior, so
+maybe the wiser choice is to let _CPUSET test skipping(TCONF)
+directly on CGroup_V2?
+
+
+>
+> In a lot of cases, the test probably only requires the process to be
+> moved into a CGroup during setup, but this requires an investigation
+> of each test. Some tests scan for NUMA information and use this in the
+> CGroup config which complicates matters. However it seems unlikely to
+> me that the available NUMA nodes will change between test iterations
+> unless we are testing hotplugging or failover.
+>
+> For tests which are actually testing CGroups themselves, most of the
+> API is too high-level. Please see the kernel self tests for what may
+> be required for those kinds of tests.
+>
+> This is not meant for full review and has not been tested on older
+> setups yet.
+
+
+-- 
 Regards,
-Bogdan
-
-On Dec 31 2020, at 6:01 am, Li Wang <liwang@redhat.com> wrote:
-> Hi Bogdan,
->
->
-> On Wed, Dec 30, 2020 at 11:49 PM Bogdan Lezhepekov via ltp <ltp@lists.linux.it (mailto:ltp@lists.linux.it)> wrote:
-> > Macros PATH_TMP_CG_CST and PATH_TMP_CG_MEM defined cgroup
-> > temporary directory paths to be in /tmp that can be a mount point.
-> >
-> > Enable an option to set PATH_TMP_CG_CST and PATH_TMP_CG_MEM
-> > through TMPDIR environment variable keeping old paths as default ones.
-> >
-> > Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com (mailto:bogdan.lezhepekov@suse.com)>
-> > ---
-> > include/tst_cgroup.h | 5 +++--
-> > 1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-> > index bfd848260..0f7db5487 100644
-> > --- a/include/tst_cgroup.h
-> > +++ b/include/tst_cgroup.h
-> > @@ -7,8 +7,9 @@
-> > #ifndef TST_CGROUP_H
-> > #define TST_CGROUP_H
-> >
-> > -#define PATH_TMP_CG_MEM "/tmp/cgroup_mem"
-> > -#define PATH_TMP_CG_CST "/tmp/cgroup_cst"
-> > +#define PATH_BASE (getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp")
-> > +#define PATH_TMP_CG_CST (strcat(PATH_BASE, "/cgroup_cst"))
-> > +#define PATH_TMP_CG_MEM (strcat(PATH_BASE, "/cgroup_mem"))
->
->
-> As described on strcat() manual page, the potential risk is that buffer overruns might cause an unpredictable problem.
->
-> I won't like to merge this patch because, Richard raised a new method to refactor the whole CGroup API. And the patchset is pending on reviewing.
->
-> http://lists.linux.it/pipermail/ltp/2020-December/020274.html
->
-> --
-> Regards,
->
-> Li Wang
->
->
->
->
-
+Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20201231/3a4f3ac0/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20201231/7a901c48/attachment.htm>
