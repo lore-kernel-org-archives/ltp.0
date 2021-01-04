@@ -1,53 +1,46 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 4 Jan 2021 18:00:31 +0800
-Subject: [LTP] [RFC PATCH 0/5] CGroups
-In-Reply-To: <87h7nxdptp.fsf@suse.de>
+Date: Mon, 4 Jan 2021 18:03:43 +0800
+Subject: [LTP] [RFC PATCH 2/5] CGroup API rewrite
+In-Reply-To: <87eej1dpgm.fsf@suse.de>
 References: <20201216100121.16683-1-rpalethorpe@suse.com>
- <CAEemH2dR+W8ypMED_xqw2JVO7E_Y0Kp+0iS=QVH_h2r0pDBVJA@mail.gmail.com>
- <87h7nxdptp.fsf@suse.de>
-Message-ID: <CAEemH2ee-kFC2ax+ODL3SKsCrbFPKqfgu9oAPCbVGUCTarn5xw@mail.gmail.com>
+ <20201216100121.16683-3-rpalethorpe@suse.com>
+ <CAEemH2ddomP4XO=61vNx5=3vQYNj4WOurUX2zcuC-46RxhMk0g@mail.gmail.com>
+ <87eej1dpgm.fsf@suse.de>
+Message-ID: <CAEemH2diKwkvjZ=20+MGpNJsWzM3OskDbcyuY7MH3tEsGV4U=Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Richard Palethorpe <rpalethorpe@suse.de> wrote:
+On Mon, Jan 4, 2021 at 5:24 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-
-> >> I have done a direct conversion of the test cases to the new API, but
-> >> I am not sure that it makes sense to call tst_cgroup_move_current
-> >> within the run method of a test because after the first iteration it
+> Hello Li,
+>
+> Li Wang <liwang@redhat.com> writes:
+>
 > >>
 > >
-> > Hmm, I feel that is a rare scenario in our real test. Mostly we
-> > just need to set it once in a process.
+> > As I was mentioned in 0/5 that maybe we should create test_cgroup_dir
+> > for different progress so that the test could use the same controller
+> with
+> > various configurations in parallel.
+> >
+> > e.g. child_1 set SIZE to memory.limit_in_bytes
+> >        child_2 set SIZE/2 to memory.limit_in_bytes
+> >
+> > Any possibility to move this to tst_cgroup_move_current?
 >
-> I suppose we can just move it into setup then?
->
-
-For tests that only need a one-time CGroup setting we can, but for
-multiple requirements of the same controller in many processes it
-seems not working.
-
-
-
-> > That's true, but it is mainly caused by different versions of
-> > CGroup. We could NOT unify the unsupported behavior, so
-> > maybe the wiser choice is to let _CPUSET test skipping(TCONF)
-> > directly on CGroup_V2?
->
-> Yes. I wonder if tst_cgroup_move_current should return a value to
-> indicate it was a NOP? Or maybe it should throw an error when called on
-> CGroup_V2 and it would have been a NOP?
+> Yes I suppose we can try this. Is there a test which already requires it?
 >
 
-That sound like we have to handle the returned value/error additionally?
-If so, I'd prefer to encapsulate that in CGroup-lib.
+So far we don't have such a test, I remember that in the previous Lib is
+also to keep expandability.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210104/624a097e/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210104/38a04d2e/attachment.htm>
