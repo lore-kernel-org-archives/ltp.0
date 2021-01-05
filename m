@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 5 Jan 2021 14:15:39 +0100
-Subject: [LTP] [PATCH 1/2] syscalls/open01.c: Don't continue when open()
- failed
-In-Reply-To: <20210104125423.19183-1-yangx.jy@cn.fujitsu.com>
+Date: Tue, 5 Jan 2021 14:36:59 +0100
+Subject: [LTP] [RFC PATCH 2/2] include/tst_test_macros.h: Report TINFO
+ when TST_EXP_FD() succeeded
+In-Reply-To: <20210104125423.19183-2-yangx.jy@cn.fujitsu.com>
 References: <20210104125423.19183-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <X/RmeykJSClh7a5/@yuki.lan>
+ <20210104125423.19183-2-yangx.jy@cn.fujitsu.com>
+Message-ID: <X/Rre6xb0cAg1Emw@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,36 +13,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Avoid calling fstat() with invalid fd:
-> -------------------------------------------
+> In Summary output, avoid counting the double passed for one test:
+> -------------------------------------
 > ./open01
-> ...
-> open01.c:53: TBROK: fstat(-1,0x7fff731410a0) failed: EBADF (9)
-> -------------------------------------------
+> tst_test.c:1261: TINFO: Timeout per run is 0h 05m 00s
+> open01.c:48: TPASS: open() with sticky bit returned fd 3
+> open01.c:59: TPASS: sticky bit is set as expected
+> open01.c:48: TPASS: open() with sirectory bit returned fd 3
+> open01.c:59: TPASS: sirectory bit is set as expected
 > 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/open/open01.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
-> index 1172f832b..2f0ad550a 100644
-> --- a/testcases/kernel/syscalls/open/open01.c
-> +++ b/testcases/kernel/syscalls/open/open01.c
-> @@ -47,6 +47,9 @@ static void verify_open(unsigned int n)
->  
->  	TST_EXP_FD(open(tc->filename, tc->flag, tc->mode),
->  	           "open() with %s", tc->desc);
-> +	if (!TST_PASS)
-> +		return;
-> +
+> Summary:
+> passed   4
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+> -------------------------------------
 
-Doesn't this only happen if the open() that is supposed to return a
-valid file descriptor fails unexpectedly? In that the test fails, right?
+What exactly is the problem of having TPASS generated for each open()
+that produces a valid file descriptor in the open testcases?
 
-But I guess that it does not harm, so:
-
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+These macros are especially tailored to generate TPASS/TFAIL messages so
+that the caller does not have to. So even if having two TPASS per run()
+function in open01 was a problem, which I do not think is the case, we
+should just use SAFE_OPEN() there instead.
 
 -- 
 Cyril Hrubis
