@@ -1,12 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 5 Jan 2021 16:03:53 +0100
-Subject: [LTP] [RFC PATCH 2/2] include/tst_test_macros.h: Report TINFO
- when TST_EXP_FD() succeeded
-In-Reply-To: <5FF47A04.4030908@cn.fujitsu.com>
-References: <20210104125423.19183-1-yangx.jy@cn.fujitsu.com>
- <20210104125423.19183-2-yangx.jy@cn.fujitsu.com>
- <X/Rre6xb0cAg1Emw@yuki.lan> <5FF47A04.4030908@cn.fujitsu.com>
-Message-ID: <X/R/2VVe1dJxGhHN@yuki.lan>
+Date: Tue, 5 Jan 2021 16:24:39 +0100
+Subject: [LTP] [PATCH] syscalls/ioctl_loop05.c: skip test on overlay
+ filesystem
+In-Reply-To: <5FD9C58B.9020807@cn.fujitsu.com>
+References: <20201215155650.6496-1-radoslav.kolev@suse.com>
+ <5FD96C97.6020602@cn.fujitsu.com>
+ <c6340b4dc96458ddd972beb28059324d44f44a99.camel@suse.com>
+ <5FD9C58B.9020807@cn.fujitsu.com>
+Message-ID: <X/SEt8EfjP+w4EYw@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,70 +15,35 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > What exactly is the problem of having TPASS generated for each open()
-> > that produces a valid file descriptor in the open testcases?
-> >
-> > These macros are especially tailored to generate TPASS/TFAIL messages so
-> > that the caller does not have to. So even if having two TPASS per run()
-> > function in open01 was a problem, which I do not think is the case, we
-> > should just use SAFE_OPEN() there instead.
-> Hi Cyril,
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index c096b418b..de64fd908 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -534,6 +534,10 @@ void tst_find_backing_dev(const char *path, char *dev)
+>          if (stat(dev, &buf) < 0)
+>                  tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
 > 
-> I perfer to report one TPASS message when finishing one subtest instead 
-> of one step.
->      because of two reasons:
->     a) It seems clearer for user to know how many subtests were run 
-> sucessfully.
+> -       if (S_ISBLK(buf.st_mode) != 1)
+> -               tst_brkm(TCONF, NULL, "dev(%s) isn't a block dev", dev);
+> +       if (S_ISBLK(buf.st_mode) != 1) {
+> +               if (tst_is_mounted(dev))
+> +                       tst_find_backing_dev(dev, dev);
+> +               else
+> +                       tst_brkm(TCONF, NULL, "dev(%s) isn't a block 
+> dev", dev);
+> +       }
+>   }
+> 
+> My test environment is that
+> /dev/sda10              20G  623M   18G   4% /mnt/xfstests/test
+> /mnt/xfstests/test      20G  623M   18G   4% /mnt/xfstests/test/ovl-mnt
+> /dev/sda11              20G   46M   19G   1% /mnt/xfstests/scratch
+> /mnt/xfstests/scratch   20G   46M   19G   1% /mnt/xfstests/scratch/ovl-mnt
+> 
+> and my TMPDIR env is /mnt/xfstests/test/ovl-mnt.
 
-This depends on a definition of subtest which, as far as I can tell, is
-not that well defined.
-
-If you want to make the output easier to read in the case of a test
-function that is called more than once we should change the test library
-to insert empty lines between the iterations or something along these
-lines, so that the output would look like:
-
-./open01
-tst_test.c:1261: TINFO: Timeout per run is 0h 05m 00s
-
-open01.c:48: TPASS: open() with sticky bit returned fd 3
-open01.c:56: TPASS: sticky bit is set as expected
-
-open01.c:48: TPASS: open() with sirectory bit returned fd 3
-open01.c:56: TPASS: sirectory bit is set as expected
-
-Summary:
-passed   4
-failed   0
-broken   0
-skipped  0
-warnings 0
-
-Which is way better than imposing any rules on how many TPASS/TFAIL
-messages should be printed per iteration.
-
->     b) There are too many TPASS/TFAIL messages when a testcase(e.g. 
-> open11) contains many subtests or multiple TST_EXP_* macros.
-
-There are 28 testcases in open11 and we print 28 messages TPASS/TFAIL
-messages, we just use different EXP macro for different testcases. I do
-not think that silencing the output would make things any better.
-
-> Could we make TST_EXP_* macros do common check and generate only TFAIL 
-> messages? (Make testcases report TPASS message by themself)
-
-The whole idea of having the TST_EXP_* macros is that they replace code
-that looks like:
-
-	if (condition)
-		tst_res(TPASS, "...");
-	else
-		tst_res(TFAIL, "...");
-
-And that they actually unify how these messages are formatted.
-
-If you think that there are places where we use these macros where
-SAFE_MACRO() would be better we can talk about changing these.
+Does this code works for everyone or should we apply patch that disables
+the test on overlay so that it's fixed for next release?
 
 -- 
 Cyril Hrubis
