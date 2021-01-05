@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 5 Jan 2021 12:12:05 +0100
-Subject: [LTP] [PATCH] cpio_tests.sh: Fix failure with BusyBox cpio
-In-Reply-To: <20201222171033.GB126602@pevik>
-References: <20201221110120.26165-1-radoslav.kolev@suse.com>
- <20201222171033.GB126602@pevik>
-Message-ID: <X/RJhbNBfja6/Snr@pevik>
+Date: Tue, 5 Jan 2021 12:30:43 +0100
+Subject: [LTP] [PATCH] df01.sh: Fix failure when block size < 1024
+In-Reply-To: <20201221113449.30656-1-radoslav.kolev@suse.com>
+References: <20201221113449.30656-1-radoslav.kolev@suse.com>
+Message-ID: <X/RN4xt92HwVfDBE@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,17 +12,11 @@ To: ltp@lists.linux.it
 
 Hi Radoslav,
 
-...
-> > +
-> > +if cpio 2>&1 | grep -q '\-o\sCreate (requires -H newc)'; then
-Thanks for your fix, merged with these changes:
+> If block size is < 1024 shell integer division will always round down.
+> Add 512 (1024/2) to the left side, to cause round up for values >= .5.
 
-* grep for BusyBox because some older versions does not contain the
-hint, but actually require it.
-
-* move things to setup function due my following commit, which cannot be
-outside API functions (setup/test function):
-And check for -o (which is on BusyBox optional).
+Correct, merged.
+Thanks!
 
 Kind regards,
 Petr
