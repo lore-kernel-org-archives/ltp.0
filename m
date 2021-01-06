@@ -1,10 +1,10 @@
 From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Wed, 6 Jan 2021 02:27:41 -0500
-Subject: [LTP] [PATCH 3/5] syscalls/ipc: semctl04: Convert to new API and
+Date: Wed, 6 Jan 2021 02:27:42 -0500
+Subject: [LTP] [PATCH 4/5] syscalls/ipc: semctl05: Convert to new API and
  cleanup
 In-Reply-To: <1609918063-15810-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 References: <1609918063-15810-1-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <1609918063-15810-3-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1609918063-15810-4-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,28 +16,28 @@ Also make use of TST_EXP_FAIL
 Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
  testcases/kernel/syscalls/ipc/semctl/Makefile   |   4 +-
- testcases/kernel/syscalls/ipc/semctl/semctl04.c | 212 ++++++------------------
- 2 files changed, 49 insertions(+), 167 deletions(-)
+ testcases/kernel/syscalls/ipc/semctl/semctl05.c | 169 +++++-------------------
+ 2 files changed, 34 insertions(+), 139 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
-index 2f64ccf..2a379d9 100644
+index 2a379d9..4923010 100644
 --- a/testcases/kernel/syscalls/ipc/semctl/Makefile
 +++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
 @@ -7,7 +7,7 @@ LTPLIBS = ltpipc ltpnewipc
  
  include $(top_srcdir)/include/mk/testcases.mk
  
--semctl01 semctl04 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
--semctl02 semctl03 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
-+semctl01 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
-+semctl02 semctl03 semctl04 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
+-semctl01 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
+-semctl02 semctl03 semctl04 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
++semctl01 semctl06 semctl07: LTPLDLIBS = -lltpipc
++semctl02 semctl03 semctl04 semctl05 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl04.c b/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-index b1f199e..39af8b6 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl04.c
-@@ -1,200 +1,82 @@
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
+index 84dace4..86297e2 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl05.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
+@@ -1,59 +1,19 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -56,35 +56,28 @@ index b1f199e..39af8b6 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- *	semctl04.c
 + * Copyright (c) International Business Machines  Corp., 2001
-  *
+  */
+-
+ /*
+- * NAME
+- *	semctl05.c
+- *
   * DESCRIPTION
-  *	semctl04 - test for EPERM error
+  *	semctl05 - test for ERANGE error
   *
 - * ALGORITHM
-- *	create a semaphore set without read or alter permissions
-- *	get the user id for "nobody"
-- *	fork a child process
-- *	if child
-- *	  set the ID of the child process to that of "nobody"
-- *	  loop if that option was specified
-- *	    call semctl() with two different invalid cases
-- *	    check the errno value
-- *	      issue a PASS message if we get EPERM
-- *	    otherwise, the tests fails
-- *	      issue a FAIL message
-- *	  call cleanup
-- *	if parent
-- *	  wait for child to exit
-- *	  remove the semaphore set
+- *	create a semaphore set with read and alter permissions
+- *	loop if that option was specified
+- *	call semctl() with three different invalid cases
+- *	check the errno value
+- *	  issue a PASS message if we get ERANGE
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
 - *
 - * USAGE:  <for command-line>
-- *  semctl04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  semctl05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
@@ -96,94 +89,73 @@ index b1f199e..39af8b6 100644
   *	03/2001 - Written by Wayne Boyer
 - *
 - * RESTRICTIONS
-- *	test must be run as root
+- *	none
   */
  
 -#include "ipcsem.h"
 -
- #include <pwd.h>
- #include <sys/wait.h>
+-char *TCID = "semctl05";
+-int TST_TOTAL = 3;
 +#include "tst_safe_sysv_ipc.h"
 +#include "tst_test.h"
 +#include "lapi/sem.h"
 +#include "libnewipc.h"
  
--char *TCID = "semctl04";
--int TST_TOTAL = 2;
-+static uid_t ltp_uid;
-+static int sem_id = -1;
+ #ifdef _XLC_COMPILER
+ #define SEMUN_CAST
+@@ -61,118 +21,53 @@ int TST_TOTAL = 3;
+ #define SEMUN_CAST (union semun)
+ #endif
  
 -int sem_id_1 = -1;
-+static int tcases[] = { IPC_SET, IPC_RMID };
++static int sem_id = -1;
  
--uid_t ltp_uid;
--char *ltp_user = "nobody";
+ #define BIGV	65535		/* a number ((2^16)-1) that should be larger */
+ 				/* than the maximum for a semaphore value    */
+ 
+-#ifdef _XLC_COMPILER
+-#define SEMUN_CAST
+-#else
+-#define SEMUN_CAST (union semun)
+-#endif
 -
--int TC[] = { IPC_SET, IPC_RMID };
--
+ unsigned short big_arr[] = { BIGV, BIGV, BIGV, BIGV, BIGV, BIGV, BIGV, BIGV,
+ 	BIGV, BIGV
+ };
+ 
+-struct test_case_t {
++static struct tcases {
+ 	int count;
+ 	int cmd;
+ 	union semun t_arg;
+-} TC[] = {
+-	/* ERANGE - the value to set is less than zero - SETVAL */
+-	{
+-	5, SETVAL, SEMUN_CAST - 1},
+-	    /* ERANGE - the values to set are too large, > semaphore max value */
+-	{
+-	0, SETALL, SEMUN_CAST big_arr},
+-	    /* ERANGE - the value to set is too large, > semaphore max value */
+-	{
+-	5, SETVAL, SEMUN_CAST BIGV}
++	char *message;
++} tests[] = {
++	{5, SETVAL, SEMUN_CAST - 1, "the value to set is less than zero"},
++	{0, SETALL, SEMUN_CAST big_arr, "the value to set are too large"},
++	{5, SETVAL, SEMUN_CAST BIGV, "the value to set is too large"}
+ };
+ 
 -int main(int ac, char **av)
-+static void do_child(void)
++static void verify_semctl(unsigned int n)
  {
--	pid_t pid;
--	void do_child(void);
+-	int lc;
+-	int i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();		/* global setup */
--
--	if ((pid = FORK_OR_VFORK()) == -1) {
--		tst_brkm(TBROK, cleanup, "could not fork");
--	}
--
--	if (pid == 0) {		/* child */
--		/* set the user ID of the child to the non root user */
--		if (setuid(ltp_uid) == -1) {
--			tst_resm(TBROK, "setuid() failed");
--			exit(1);
--		}
--
--		do_child();
-+	int i;
-+	union semun arg;
-+	struct semid_ds perm;
++	struct tcases *tc = &tests[n];
  
--	} else {
--		if (waitpid(pid, NULL, 0) == -1) {
--			tst_resm(TBROK, "waitpid() failed");
--			tst_resm(TINFO, "waitpid() error = %d : %s", errno,
--				 strerror(errno));
-+	for (i = 0; i < 2; i++) {
-+		if (tcases[i] == IPC_SET) {
-+			arg.buf = &perm;
-+			memset(&perm, 0, sizeof(perm));
-+			perm.sem_perm.uid = getuid() + 1;
-+			perm.sem_perm.gid = getgid() + 1;
-+			perm.sem_perm.mode = 0666;
- 		}
- 
--		/* if it exists, remove the semaphore resouce */
--		rm_sema(sem_id_1);
--
--		tst_rmdir();
-+		TST_EXP_FAIL(semctl(sem_id, 0, tcases[i], arg), EPERM,
-+			     "semctl() with nobody user in child");
- 	}
--	cleanup();
--
--	tst_exit();
- }
- 
--/*
-- * do_child() - make the TEST call as the child process
-- */
--void do_child(void)
-+static void verify_semctl(void)
- {
--	int lc;
--	int i;
--	union semun arg;
--	struct semid_ds perm;
--
 -	/* The following loop checks looping state if -i option given */
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
@@ -192,27 +164,18 @@ index b1f199e..39af8b6 100644
 -
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
--			if (TC[i] == IPC_SET) {
--				arg.buf = &perm;
--				memset(&perm, 0, sizeof perm);
--				perm.sem_perm.uid = getuid() + 1;
--				perm.sem_perm.gid = getgid() + 1;
--				perm.sem_perm.mode = 0666;
--			}
+-			TEST(semctl(sem_id_1, TC[i].count,
+-				    TC[i].cmd, TC[i].t_arg));
 -
--			TEST(semctl(sem_id_1, 0, TC[i], arg));
-+	pid_t pid;
- 
 -			if (TEST_RETURN != -1) {
 -				tst_resm(TFAIL, "call succeeded unexpectedly");
 -				continue;
 -			}
-+	pid = SAFE_FORK();
- 
+-
 -			switch (TEST_ERRNO) {
--			case EPERM:
--				tst_resm(TPASS, "expected failure - errno ="
--					 " %d : %s", TEST_ERRNO,
+-			case ERANGE:
+-				tst_resm(TPASS, "expected failure - errno = "
+-					 "%d : %s", TEST_ERRNO,
 -					 strerror(TEST_ERRNO));
 -				break;
 -			default:
@@ -222,12 +185,13 @@ index b1f199e..39af8b6 100644
 -				break;
 -			}
 -		}
-+	if (pid == 0) {		/* child */
-+		SAFE_SETEUID(ltp_uid);
-+		do_child();
-+	} else {
-+		SAFE_WAITPID(pid, NULL, 0);
- 	}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
++	TST_EXP_FAIL(semctl(sem_id, tc->count, tc->cmd, tc->t_arg), ERANGE,
++		     "semctl() with %s", tc->message);
  }
  
 -/*
@@ -236,34 +200,29 @@ index b1f199e..39af8b6 100644
 -void setup(void)
 +static void setup(void)
  {
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
 +	static key_t semkey;
  
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	semkey = GETIPCKEY();
+ 
+-	TEST_PAUSE;
+-
 -	/*
 -	 * Create a temporary directory and cd into it.
 -	 * This helps to ensure that a unique msgkey is created.
 -	 * See libs/libltpipc/libipc.c for more information.
 -	 */
 -	tst_tmpdir();
-+	semkey = GETIPCKEY();
- 
+-
 -	/* get an IPC resource key */
 -	semkey = getipckey();
-+	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL);
- 
--	/* create a semaphore set without read or alter permissions */
--	if ((sem_id_1 = semget(semkey, PSEMS, IPC_CREAT | IPC_EXCL)) == -1) {
+-
+-	/* create a semaphore set with read and alter permissions */
+-	if ((sem_id_1 =
+-	     semget(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA)) == -1) {
 -		tst_brkm(TBROK, cleanup, "couldn't create semaphore in setup");
 -	}
--
--	/* get the userid for a non root user */
--	ltp_uid = getuserid(ltp_user);
-+	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
-+	ltp_uid = ltpuser->pw_uid;
++	sem_id = SAFE_SEMGET(semkey, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
  }
  
 -/*
@@ -273,6 +232,10 @@ index b1f199e..39af8b6 100644
 -void cleanup(void)
 +static void cleanup(void)
  {
+-	/* if it exists, remove the semaphore resouce */
+-	rm_sema(sem_id_1);
+-
+-	tst_rmdir();
 -
 +	if (sem_id != -1)
 +		SAFE_SEMCTL(sem_id, 0, IPC_RMID);
@@ -281,9 +244,9 @@ index b1f199e..39af8b6 100644
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.forks_child = 1,
 +	.needs_root = 1,
-+	.test_all = verify_semctl,
++	.test = verify_semctl,
++	.tcnt = ARRAY_SIZE(tests),
 +};
 -- 
 1.8.3.1
