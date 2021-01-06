@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Jan 2021 11:29:35 +0100
-Subject: [LTP] [PATCH v2] sched/sched_stress:Fixed param of sched_tc
-In-Reply-To: <1602841876-91490-2-git-send-email-luofenglin1@huawei.com>
+Date: Wed, 6 Jan 2021 11:44:16 +0100
+Subject: [LTP] [PATCH v3] sched/sched_stress:Bugfix for setting real
+ time priority
+In-Reply-To: <1602841876-91490-3-git-send-email-luofenglin1@huawei.com>
 References: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
- <1602841876-91490-2-git-send-email-luofenglin1@huawei.com>
-Message-ID: <X/WRDyuFbxDnVLYS@yuki.lan>
+ <1602841876-91490-3-git-send-email-luofenglin1@huawei.com>
+Message-ID: <X/WUgOgHiWj1+9Nb@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,27 +13,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Rt flag of sched_tc must like "-pfixed" or "-pvariable"
-> 
-> Signed-off-by: luofenglin <luofenglin1@huawei.com>
-> ---
->  .../kernel/sched/sched_stress/sched_driver.c  | 51 ++++++++++---------
->  1 file changed, 27 insertions(+), 24 deletions(-)
-> 
-> diff --git a/testcases/kernel/sched/sched_stress/sched_driver.c b/testcases/kernel/sched/sched_stress/sched_driver.c
-> index 1bee9d130..475369b46 100644
-> --- a/testcases/kernel/sched/sched_stress/sched_driver.c
-> +++ b/testcases/kernel/sched/sched_stress/sched_driver.c
-> @@ -621,25 +621,28 @@ char *execution_time;		/* runtime hours to pass to each testcase */
->  		printf("long-term slots available:  %d\n",
->  		       long_term_slot_total);
->  
-> +	char timeparam[30];
-> +	sprintf(timeparam, "-t%s", execution_time);
+> When real time flag is set, setpriority function is used for user-time
+> policy setting, here use sched_setscheduler to set real time policy RR
+> instead
 
-Why do we need this? It's not explained in the commit message at all.
+This explains what has been changed, which is not useful, everyone can
+see read the code diff.
 
-The other change looks obviously fine.
+What is missing here is why this has been changed, as when you change
+the testcases to run with realtime priority the test behavior changes
+and we do end up testing something different that the test originally
+did.
+
+The main problem with the testsuite is that it's missing high level
+description what exactly is being tested and why. The README just says
+run sched_stress.sh, that's not useful at all.
 
 -- 
 Cyril Hrubis
