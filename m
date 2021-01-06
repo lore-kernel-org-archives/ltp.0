@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 6 Jan 2021 11:00:40 +0100
-Subject: [LTP] [PATCH V4 3/3] syscalls: finit_module: Add tests
-In-Reply-To: <6c5fc72fcdc5e10a85249ae6d6f8cbb3f822ddf4.1608274502.git.viresh.kumar@linaro.org>
-References: <0279beda4660ab1b401164e369c79475633bd067.1608189944.git.viresh.kumar@linaro.org>
- <6c5fc72fcdc5e10a85249ae6d6f8cbb3f822ddf4.1608274502.git.viresh.kumar@linaro.org>
-Message-ID: <X/WKSKKSKAKzcKbC@yuki.lan>
+Date: Wed, 6 Jan 2021 11:25:20 +0100
+Subject: [LTP] [PATCH v1] sched/sched_stress:Modify sched driver param
+ to run long term testcases
+In-Reply-To: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
+References: <1602841876-91490-1-git-send-email-luofenglin1@huawei.com>
+Message-ID: <X/WQEEj8Kx+tvz78@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,19 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Applied, thanks.
+> Add sched_driver process slots param to 10, then long term testcases can run.
+> Additionally, add sched_driver run time 0.05 hour, long term testcases
+> run 1/5 of total time.
+
+This does not say why should we run the long term testcases for 1/5 of
+total time. As far as I can tell the code looks like the long term tests
+are supposed to run on background while we execute the short term tests
+in a loop while changing their priority.
+
+Also each logical change should be in a separate patch.
+
+The change to to increase the slots looks good, but should really go in
+as a separate patch that explains the change.
 
 -- 
 Cyril Hrubis
