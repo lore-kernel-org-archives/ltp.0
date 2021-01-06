@@ -1,10 +1,10 @@
 From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Wed, 6 Jan 2021 02:27:42 -0500
-Subject: [LTP] [PATCH 4/5] syscalls/ipc: semctl05: Convert to new API and
+Date: Wed, 6 Jan 2021 02:27:40 -0500
+Subject: [LTP] [PATCH 2/5] syscalls/ipc: semctl03: Convert to new API and
  cleanup
 In-Reply-To: <1609918063-15810-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 References: <1609918063-15810-1-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <1609918063-15810-4-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <1609918063-15810-2-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,28 +16,28 @@ Also make use of TST_EXP_FAIL
 Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
  testcases/kernel/syscalls/ipc/semctl/Makefile   |   4 +-
- testcases/kernel/syscalls/ipc/semctl/semctl05.c | 169 +++++-------------------
- 2 files changed, 34 insertions(+), 139 deletions(-)
+ testcases/kernel/syscalls/ipc/semctl/semctl03.c | 173 +++++-------------------
+ 2 files changed, 36 insertions(+), 141 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
-index 2a379d9..4923010 100644
+index f04983d..2f64ccf 100644
 --- a/testcases/kernel/syscalls/ipc/semctl/Makefile
 +++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
 @@ -7,7 +7,7 @@ LTPLIBS = ltpipc ltpnewipc
  
  include $(top_srcdir)/include/mk/testcases.mk
  
--semctl01 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
--semctl02 semctl03 semctl04 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
-+semctl01 semctl06 semctl07: LTPLDLIBS = -lltpipc
-+semctl02 semctl03 semctl04 semctl05 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
+-semctl01 semctl03 semctl04 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
+-semctl02 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
++semctl01 semctl04 semctl05 semctl06 semctl07: LTPLDLIBS = -lltpipc
++semctl02 semctl03 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl05.c b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-index 84dace4..86297e2 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl05.c
-@@ -1,59 +1,19 @@
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
+index dc851bf..7650355 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl03.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
+@@ -1,56 +1,18 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -56,28 +56,28 @@ index 84dace4..86297e2 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
+- */
 -
- /*
+-/*
 - * NAME
-- *	semctl05.c
-- *
+- *	semctl03.c
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
   * DESCRIPTION
-  *	semctl05 - test for ERANGE error
+  *	semctl03 - test for EINVAL and EFAULT errors
   *
 - * ALGORITHM
 - *	create a semaphore set with read and alter permissions
 - *	loop if that option was specified
-- *	call semctl() with three different invalid cases
+- *	call semctl() using four different invalid cases
 - *	check the errno value
-- *	  issue a PASS message if we get ERANGE
+- *	  issue a PASS message if we get EINVAL or EFAULT
 - *	otherwise, the tests fails
 - *	  issue a FAIL message
 - *	call cleanup
 - *
 - * USAGE:  <for command-line>
-- *  semctl05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  semctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
@@ -93,9 +93,6 @@ index 84dace4..86297e2 100644
   */
  
 -#include "ipcsem.h"
--
--char *TCID = "semctl05";
--int TST_TOTAL = 3;
 +#include "tst_safe_sysv_ipc.h"
 +#include "tst_test.h"
 +#include "lapi/sem.h"
@@ -103,46 +100,53 @@ index 84dace4..86297e2 100644
  
  #ifdef _XLC_COMPILER
  #define SEMUN_CAST
-@@ -61,118 +21,53 @@ int TST_TOTAL = 3;
+@@ -58,118 +20,51 @@
  #define SEMUN_CAST (union semun)
  #endif
  
--int sem_id_1 = -1;
+-char *TCID = "semctl03";
+-int TST_TOTAL = 4;
 +static int sem_id = -1;
- 
- #define BIGV	65535		/* a number ((2^16)-1) that should be larger */
- 				/* than the maximum for a semaphore value    */
++static int bad_id = -1;
  
 -#ifdef _XLC_COMPILER
 -#define SEMUN_CAST
 -#else
 -#define SEMUN_CAST (union semun)
 -#endif
--
- unsigned short big_arr[] = { BIGV, BIGV, BIGV, BIGV, BIGV, BIGV, BIGV, BIGV,
- 	BIGV, BIGV
- };
++static struct semid_ds sem_ds;
  
+-int sem_id_1 = -1;
+-int bad_id = -1;
+-
+-struct semid_ds sem_ds;
+-
 -struct test_case_t {
 +static struct tcases {
- 	int count;
- 	int cmd;
- 	union semun t_arg;
+ 	int *sem_id;
+ 	int ipc_cmd;
+ 	union semun arg;
+ 	int error;
 -} TC[] = {
--	/* ERANGE - the value to set is less than zero - SETVAL */
+-	/* EINVAL - the IPC command is not valid */
 -	{
--	5, SETVAL, SEMUN_CAST - 1},
--	    /* ERANGE - the values to set are too large, > semaphore max value */
+-	&sem_id_1, -1, SEMUN_CAST & sem_ds, EINVAL},
+-	    /* EINVAL - the semaphore ID is not valid */
 -	{
--	0, SETALL, SEMUN_CAST big_arr},
--	    /* ERANGE - the value to set is too large, > semaphore max value */
+-	&bad_id, IPC_STAT, SEMUN_CAST & sem_ds, EINVAL},
+-	    /* EFAULT - the union arg is invalid when expecting "ushort *array" */
 -	{
--	5, SETVAL, SEMUN_CAST BIGV}
+-	&sem_id_1, GETALL, SEMUN_CAST - 1, EFAULT},
+-	    /* EFAULT - the union arg is invalid when expecting */
+-	    /* "struct semid_ds *buf */
+-	{
+-	&sem_id_1, IPC_SET, SEMUN_CAST - 1, EFAULT}
 +	char *message;
 +} tests[] = {
-+	{5, SETVAL, SEMUN_CAST - 1, "the value to set is less than zero"},
-+	{0, SETALL, SEMUN_CAST big_arr, "the value to set are too large"},
-+	{5, SETVAL, SEMUN_CAST BIGV, "the value to set is too large"}
++	{&sem_id, -1, SEMUN_CAST & sem_ds, EINVAL, "invalid IPC command"},
++	{&bad_id, IPC_STAT, SEMUN_CAST & sem_ds, EINVAL, "invalid sem id"},
++	{&sem_id, GETALL, SEMUN_CAST - 1, EFAULT, "invalid union arg"},
++	{&sem_id, IPC_SET, SEMUN_CAST - 1, EFAULT, "invalid union arg"}
  };
  
 -int main(int ac, char **av)
@@ -164,25 +168,21 @@ index 84dace4..86297e2 100644
 -
 -		for (i = 0; i < TST_TOTAL; i++) {
 -
--			TEST(semctl(sem_id_1, TC[i].count,
--				    TC[i].cmd, TC[i].t_arg));
+-			TEST(semctl(*(TC[i].sem_id), 0, TC[i].ipc_cmd,
+-				    TC[i].arg));
 -
 -			if (TEST_RETURN != -1) {
 -				tst_resm(TFAIL, "call succeeded unexpectedly");
 -				continue;
 -			}
 -
--			switch (TEST_ERRNO) {
--			case ERANGE:
--				tst_resm(TPASS, "expected failure - errno = "
--					 "%d : %s", TEST_ERRNO,
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - errno = %d"
+-					 " : %s", TEST_ERRNO,
 -					 strerror(TEST_ERRNO));
--				break;
--			default:
--				tst_resm(TFAIL, "unexpected error "
--					 "- %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--				break;
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
 -			}
 -		}
 -	}
@@ -190,8 +190,8 @@ index 84dace4..86297e2 100644
 -	cleanup();
 -
 -	tst_exit();
-+	TST_EXP_FAIL(semctl(sem_id, tc->count, tc->cmd, tc->t_arg), ERANGE,
-+		     "semctl() with %s", tc->message);
++	TST_EXP_FAIL(semctl(*(tc->sem_id), 0, tc->ipc_cmd, tc->arg),
++		     tc->error, "semctl() with %s", tc->message);
  }
  
 -/*
@@ -229,8 +229,7 @@ index 84dace4..86297e2 100644
 - * cleanup() - performs all the ONE TIME cleanup for this test at completion
 - * 	       or premature exit.
 - */
--void cleanup(void)
-+static void cleanup(void)
+ void cleanup(void)
  {
 -	/* if it exists, remove the semaphore resouce */
 -	rm_sema(sem_id_1);
