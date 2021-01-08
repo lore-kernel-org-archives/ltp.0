@@ -1,57 +1,260 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 8 Jan 2021 14:22:54 +0800
-Subject: [LTP] [PATCH v2 1/1] syscalls/get_mempolicy01: Rewrite to new
- API
-In-Reply-To: <20210106181735.1588-1-pvorel@suse.cz>
-References: <20210106181735.1588-1-pvorel@suse.cz>
-Message-ID: <CAEemH2dVgwHREFGrOe1tNUgZXZn5OAo5PJ-nne_yoj2nRHt=pw@mail.gmail.com>
+From: Cixi Geng <gengcixi@gmail.com>
+Date: Fri, 8 Jan 2021 16:30:43 +0800
+Subject: [LTP] [PATCH 1/3] lib: add tst_rtctime* for rtc test
+In-Reply-To: <X/cRkxEahPFoAYms@yuki.lan>
+References: <20201223033517.1464263-1-gengcixi@gmail.com>
+ <20201223033517.1464263-2-gengcixi@gmail.com>
+ <X/cRkxEahPFoAYms@yuki.lan>
+Message-ID: <CAF12kFsg6yKjh7NF9-A+dqHXYx3Zq=Gvbwoomb=OPc4q=zsK2A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-
-Petr Vorel <pvorel@suse.cz> wrote:
-
-[...]
-> +static void do_test(unsigned int i)
->  {
-> -       /* check syscall availability */
-> -       ltp_syscall(__NR_get_mempolicy, NULL, NULL, 0, NULL, 0);
-> +       struct test_case *tc = &tcase[i];
-> +       int policy;
-> +
-> +       tst_res(TINFO, "test #%d: %s", i+1, tc->desc);
+Cyril Hrubis <chrubis@suse.cz> ?2021?1?7??? ??9:49???
 >
-> -       if (!is_numa(NULL, NH_MEMS, 1))
-> -               tst_brkm(TCONF, NULL, "requires NUMA with at least 1
-> node");
-> +       TST_EXP_PASS(get_mempolicy(&policy, getnodemask->maskp,
-> getnodemask->size,
-> +                          tc->addr, tc->flags), "%s", tc->desc);
+> Hi!
+> >     get rtc time and set rtc time in default /dev/rtc;
+> >     Implemented a function that covert rtc time to time_t
+> >     this will be used in tst_rtc_save and tst_rtc_restore
+> >
+> > Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+> > ---
+> >  include/tst_rtctime.h |  15 ++++
+> >  lib/tst_rtctime.c     | 161 ++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 176 insertions(+)
+> >  create mode 100644 include/tst_rtctime.h
+> >  create mode 100644 lib/tst_rtctime.c
+> >
+> > diff --git a/include/tst_rtctime.h b/include/tst_rtctime.h
+> > new file mode 100644
+> > index 000000000..61ec6f0eb
+> > --- /dev/null
+> > +++ b/include/tst_rtctime.h
+> > @@ -0,0 +1,15 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
 >
-> -       TEST_PAUSE;
-> -       tst_tmpdir();
-> +               struct bitmask *exp_mask = *(tc->exp_nodemask);
-> +
-> +               if (!numa_bitmask_equal(exp_mask, getnodemask)) {
-> +                       tst_res(TFAIL, "masks are not equal");
-> +                       tst_res_hexd(TINFO, exp_mask->maskp,
-> +                               exp_mask->size / 8, "expected:");
-> +                       tst_res_hexd(TINFO, getnodemask->maskp,
-> +                               getnodemask->size / 8, "returned:");
-> +               }
+> This is not correct format for the identifiers, the comment has to start
+> with //
 >
+> Also the default license for new LTP code i GPL-2.0-or-later, so please
+> us that unless you have a reason to stick to GPL-2.0.
+>
+> > +/*
+> > + * Copyright (C) 2020 Unisoc Inc.
+> > + */
+> > +
+> > +#ifndef TST_RTCTIME
+> > +#define TST_RTCTIME
+> > +
+> > +#include <linux/rtc.h>
+> > +
+> > +int tst_rtc_gettime(struct rtc_time *rtc_tm);
+> > +
+> > +int tst_rtc_settime(struct rtc_time *rtc_tm);
+>
+> Should we add a path to the RTC device to these functions as well?
+>
+> Are there any boards that have more than one RTC where we would need to
+> loop over all available devices during the test?
 
-These few lines have a code indent issue, otherwise looks good.
+I test this case in x86_64 and arm64, in these machines? I check the /dev/rtc is
+a linked file which link to /dev/rtc0.  so I use the /dev/rtc0 as
+default device. but I
+wiil take adopt your suggestion, add a device path parameter.
+>
+> > +#endif /* TST_RTCTIME */
+> > diff --git a/lib/tst_rtctime.c b/lib/tst_rtctime.c
+> > new file mode 100644
+> > index 000000000..580ef0fdf
+> > --- /dev/null
+> > +++ b/lib/tst_rtctime.c
+> > @@ -0,0 +1,161 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2020 Unisoc Communications Inc.
+> > + *
+> > + * Filename : tst_rtctime.c
+> > + * Abstract : This file is a implementation for rtc set read,covert to tm functions
+> > + */
+> > +
+> > +#include <linux/rtc.h>
+> > +#include <stdbool.h>
+> > +#include <limits.h>
+> > +#define TST_NO_DEFAULT_MAIN
+> > +#include "tst_test.h"
+> > +#include "tst_rtctime.h"
+> > +
+> > +#define LEAPS_THRU_END_OF(y) ((y) / 4 - (y) / 100 + (y) / 400)
+> > +
+> > +static const unsigned char rtc_days_in_month[] = {
+> > +     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+> > +};
+> > +
+> > +static inline bool is_leap_year(unsigned int year)
+> > +{
+> > +     return (!(year % 4) && (year % 100)) || !(year % 400);
+> > +}
+> > +
+> > +static long long tst_mktime(const unsigned int year0, const unsigned int mon0,
+> > +             const unsigned int day, const unsigned int hour,
+> > +             const unsigned int min, const unsigned int sec)
+> > +{
+> > +     unsigned int mon = mon0, year = year0;
+> > +
+> > +     /* 1..12 -> 11,12,1..10 */
+> > +     mon -= 2;
+> > +     if (0 >= (int) (mon)) {
+> > +             mon += 12;      /* Puts Feb last since it has leap day */
+> > +             year -= 1;
+> > +     }
+> > +
+> > +     return ((((long long)
+> > +             (year/4 - year/100 + year/400 + 367*mon/12 + day) +
+> > +             year*365 - 719499
+> > +             )*24 + hour /* now have hours - midnight tomorrow handled here */
+> > +             )*60 + min /* now have minutes */
+> > +             )*60 + sec; /* finally seconds */
+> > +}
+> > +
+> > +/*
+> > + * The number of days in the month.
+> > + */
+> > +static int rtc_month_days(unsigned int month, unsigned int year)
+> > +{
+> > +     return rtc_days_in_month[month] + (is_leap_year(year) && month == 1);
+> > +}
+> > +
+> > +/*
+> > + * tst_rtc_time_to_tm - Converts time_t to rtc_time.
+> > + * Convert seconds since 01-01-1970 00:00:00 to Gregorian date.
+> > + */
+> > +void tst_rtc_time_to_tm(long long time, struct rtc_time *tm)
+> > +{
+> > +     unsigned int month, year, secs;
+> > +     int days;
+> > +
+> > +     /* time must be positive */
+> > +     days = time / 86400;
+> > +     secs = time % 86400;
+> > +
+> > +     /* day of the week, 1970-01-01 was a Thursday */
+> > +     tm->tm_wday = (days + 4) % 7;
+> > +
+> > +     year = 1970 + days / 365;
+> > +     days -= (year - 1970) * 365
+> > +             + LEAPS_THRU_END_OF(year - 1)
+> > +             - LEAPS_THRU_END_OF(1970 - 1);
+> > +     while (days < 0) {
+> > +             year -= 1;
+> > +             days += 365 + is_leap_year(year);
+> > +     }
+> > +     tm->tm_year = year - 1900;
+> > +     tm->tm_yday = days + 1;
+> > +
+> > +     for (month = 0; month < 11; month++) {
+> > +             int newdays;
+> > +
+> > +             newdays = days - rtc_month_days(month, year);
+> > +             if (newdays < 0)
+> > +                     break;
+> > +             days = newdays;
+> > +     }
+> > +     tm->tm_mon = month;
+> > +     tm->tm_mday = days + 1;
+> > +
+> > +     tm->tm_hour = secs / 3600;
+> > +     secs -= tm->tm_hour * 3600;
+> > +     tm->tm_min = secs / 60;
+> > +     tm->tm_sec = secs - tm->tm_min * 60;
+> > +
+> > +     tm->tm_isdst = 0;
+> > +}
+> > +
+> > +/*
+> > + * tst_rtc_tm_to_time - Converts rtc_time to time_t.
+> > + * Convert Gregorian date to seconds since 01-01-1970 00:00:00.
+> > + */
+> > +long long tst_rtc_tm_to_time(struct rtc_time *tm)
+> > +{
+> > +     return tst_mktime(((unsigned int)tm->tm_year + 1900), tm->tm_mon + 1,
+> > +                     tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+>
+> So I guess that the reason why we can't use libc mktime() and gmtime_r()
+> is that time_t is 32bit on older 32bit architectures, right?
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+these functions is porting int kernel rtc-lib.c  rtc_tm_to_time64() which defaut
+retrun is time64_t, mktime64. so I convert time64_t to long long type
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210108/e7367c68/attachment.htm>
+>
+> > +}
+> > +
+> > +static int rtc_supported_by_kernel(const char *rtc_dev)
+> > +{
+> > +     int exists = access(rtc_dev, F_OK);
+> > +
+> > +     if (exists < 0)
+> > +             tst_brk(TCONF, "RTC device %s not available", rtc_dev);
+> > +     return 0;
+> > +}
+>
+> This function should be called by the tests rather than from the test
+> library.
+
+next version modify it.
+
+>
+> > +static int tst_rtc_ioctl(unsigned long request, struct rtc_time *rtc_tm)
+> > +{
+> > +     int ret;
+> > +     int rtc_fd = -1;
+> > +     static const char *rtc_dev = "/dev/rtc";
+> > +
+> > +     if (!rtc_supported_by_kernel(rtc_dev))
+> > +             rtc_fd = SAFE_OPEN(rtc_dev, O_RDONLY);
+> > +
+> > +     ret = ioctl(rtc_fd, request, rtc_tm);
+> > +
+> > +     if (ret != 0)
+> > +             return -1;
+> > +
+> > +     if (rtc_fd > 0)
+> > +             SAFE_CLOSE(rtc_fd);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +int tst_rtc_gettime(struct rtc_time *rtc_tm)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = tst_rtc_ioctl(RTC_RD_TIME, rtc_tm);
+> > +
+> > +     if (ret != 0)
+> > +             return -1;
+> > +     return 0;
+> > +}
+> > +
+> > +int tst_rtc_settime(struct rtc_time *rtc_tm)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = tst_rtc_ioctl(RTC_SET_TIME, rtc_tm);
+> > +
+> > +     if (ret != 0)
+> > +             return -1;
+> > +     return 0;
+> > +}
+>
+> These two functions can be static inline and declared in the header as:
+>
+>
+> static inline int tst_rtc_settime(struct rtc_time *rtc_tm)
+> {
+>         return tst_rtc_ioctl(RTC_SET_TIME, rtc_tm);
+> }
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
