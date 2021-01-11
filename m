@@ -1,50 +1,105 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 11 Jan 2021 16:28:36 +0100
-Subject: [LTP] [PATCH 1/2] build.sh: Remove deprecated CROSS_COMPILE
-In-Reply-To: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-References: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-Message-ID: <X/xupJgktrYI4LyG@pevik>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 11 Jan 2021 17:11:02 +0100
+Subject: [LTP] [PATCH v5 2/3] Add tst_secureboot_enabled() helper function
+In-Reply-To: <20210111161103.22433-1-mdoucha@suse.cz>
+References: <20210111161103.22433-1-mdoucha@suse.cz>
+Message-ID: <20210111161103.22433-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Also check for SecureBoot status in tst_lockdown_enabled() if the lockdown
+sysfile is not available/readable and the kernel is configured to enable
+lockdown automatically under SecureBoot.
 
-> The CROSS_COMPILE was no longer used by ltp since 400ac9bbe20.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> ---
->  build.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1:
+- check whether machine is in EFI mode first
 
-> diff --git a/build.sh b/build.sh
-> index 452cc6f4c..602ca419e 100755
-> --- a/build.sh
-> +++ b/build.sh
-> @@ -64,7 +64,7 @@ build_cross()
->  	fi
+Changes since v2:
+- move tst_secureboot_enabled() code to a separate header file
+- move EFIVAR_CFLAGS and EFIVAR_LIBS out of global CFLAGS and LDLIBS
 
->  	echo "===== cross-compile ${host} ${1}-tree build into $PREFIX ====="
-> -	build $1 $2 "--host=$host" CROSS_COMPILE="${host}-"
-I looked what would require CROSS_COMPILE support. It's somehow duplicate to
-autoconf --host parameter.
+Changes since v3:
+- rewritten using direct read from /sys/ (without libefivar)
 
-Although it wouldn't be difficult to add a support into configure.ac and
-include/mk/config.mk.in via AC_ARG_VAR, it's use would require:
+ include/tst_lockdown.h |  1 +
+ lib/tst_lockdown.c     | 38 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-1) either migrate everything to pkg-config (but libnuma and libaio does not
-support it) and use PKG_CONFIG_LIBDIR
+diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
+index 78eaeccea..172a7daf5 100644
+--- a/include/tst_lockdown.h
++++ b/include/tst_lockdown.h
+@@ -5,6 +5,7 @@
+ 
+ #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
+ 
++int tst_secureboot_enabled(void);
+ int tst_lockdown_enabled(void);
+ 
+ #endif /* TST_LOCKDOWN_H */
+diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
+index e7c19813c..a753ca752 100644
+--- a/lib/tst_lockdown.c
++++ b/lib/tst_lockdown.c
+@@ -9,14 +9,52 @@
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+ #include "tst_safe_stdio.h"
++#include "tst_kconfig.h"
+ #include "tst_lockdown.h"
+ 
++#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
++
++int tst_secureboot_enabled(void)
++{
++	int fd;
++	char data[5];
++
++	if (access(EFIVAR_SECUREBOOT, F_OK)) {
++		tst_res(TINFO, "Efivar FS not available");
++		return -1;
++	}
++
++	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
++
++	if (fd == -1) {
++		tst_res(TINFO | TERRNO,
++			"Cannot open SecureBoot Efivar sysfile");
++		return -1;
++	} else if (fd < 0) {
++		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
++		return -1;
++	}
++
++	SAFE_READ(1, fd, data, 5);
++	SAFE_CLOSE(fd);
++	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
++	return data[4];
++}
++
+ int tst_lockdown_enabled(void)
+ {
+ 	char line[BUFSIZ];
+ 	FILE *file;
+ 
+ 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
++		char flag;
++
++		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN");
++
++		/* SecureBoot enabled could mean integrity lockdown */
++		if (flag == 'y' && tst_secureboot_enabled() > 0)
++			return 1;
++
+ 		tst_res(TINFO, "Unable to determine system lockdown state");
+ 		return 0;
+ 	}
+-- 
+2.29.2
 
-2) fix host cpu detection in m4/ltp-host-cpu.m4 (parse CROSS_COMPILE).
-
-=> IMHO it's not worth of doing it, thus good we removed it.
-
-Kind regards,
-Petr
-
-> +	build $1 $2 "--host=$host"
->  }
-
->  build()
