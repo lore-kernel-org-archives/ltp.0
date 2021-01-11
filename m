@@ -1,19 +1,12 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 11 Jan 2021 17:11:03 +0100
-Subject: [LTP] [PATCH v5 3/3] syscalls/iopl02,
- ioperm02: Skip when kernel is locked down
-In-Reply-To: <20210111161103.22433-1-mdoucha@suse.cz>
-References: <20210111161103.22433-1-mdoucha@suse.cz>
-Message-ID: <20210111161103.22433-3-mdoucha@suse.cz>
+Date: Mon, 11 Jan 2021 17:11:01 +0100
+Subject: [LTP] [PATCH v5 1/3] Add tst_kconfig_get() helper function
+Message-ID: <20210111161103.22433-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
-
-The iopl() and ioperm() syscalls are blocked when the kernel is locked down.
-The order of sanity checks is not guaranteed so it's better to skip these
-tests even if they accidentally work.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
@@ -21,41 +14,59 @@ Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 Changes since v3:
 - new patch
 
- testcases/kernel/syscalls/ioperm/ioperm02.c | 4 ++++
- testcases/kernel/syscalls/iopl/iopl02.c     | 5 +++++
- 2 files changed, 9 insertions(+)
+Changes since v4:
+- moved tst_kconfig_get() declaration to tst_private.h
 
-diff --git a/testcases/kernel/syscalls/ioperm/ioperm02.c b/testcases/kernel/syscalls/ioperm/ioperm02.c
-index 1808191bf..80dcb992e 100644
---- a/testcases/kernel/syscalls/ioperm/ioperm02.c
-+++ b/testcases/kernel/syscalls/ioperm/ioperm02.c
-@@ -45,6 +45,10 @@ static struct tcase_t {
+ include/tst_private.h |  8 ++++++++
+ lib/tst_kconfig.c     | 21 +++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/include/tst_private.h b/include/tst_private.h
+index e30d34740..fe0955f3b 100644
+--- a/include/tst_private.h
++++ b/include/tst_private.h
+@@ -29,4 +29,12 @@ void tst_print_svar_change(const char *name, const char *val);
  
- static void setup(void)
- {
-+	/* ioperm() is restricted under kernel lockdown. */
-+	if (tst_lockdown_enabled())
-+		tst_brk(TCONF, "Kernel is locked down, skip this test");
+ int tst_get_prefix(const char *ip_str, int is_ipv6);
+ 
++/*
++ * Checks kernel config for a single configuration option and returns its
++ * state if found. The possible return values are the same as for
++ * tst_kconfig_var.choice, with the same meaning. See tst_kconfig_read()
++ * description in tst_kconfig.h.
++ */
++char tst_kconfig_get(const char *confname);
 +
- 	/*
- 	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
- 	 * from kernel 2.6.8 to permit 16-bits (65536) ioperm
-diff --git a/testcases/kernel/syscalls/iopl/iopl02.c b/testcases/kernel/syscalls/iopl/iopl02.c
-index 6a817cf2d..a6135ddf3 100644
---- a/testcases/kernel/syscalls/iopl/iopl02.c
-+++ b/testcases/kernel/syscalls/iopl/iopl02.c
-@@ -52,6 +52,11 @@ static void verify_iopl(unsigned int i)
- static void setup(void)
- {
- 	struct passwd *pw;
-+
-+	/* iopl() is restricted under kernel lockdown. */
-+	if (tst_lockdown_enabled())
-+		tst_brk(TCONF, "Kernel is locked down, skip this test");
-+
- 	pw = SAFE_GETPWNAM("nobody");
- 	SAFE_SETEUID(pw->pw_uid);
+ #endif
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 734039e37..2b1087a8d 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -511,3 +511,24 @@ void tst_kconfig_check(const char *const kconfigs[])
+ 	if (abort_test)
+ 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
  }
++
++char tst_kconfig_get(const char *confname)
++{
++	struct tst_kconfig_var var;
++
++	var.id_len = strlen(confname);
++
++	if (var.id_len >= sizeof(var.id))
++		tst_brk(TBROK, "Kconfig var name \"%s\" too long", confname);
++
++	strcpy(var.id, confname);
++	var.choice = 0;
++	var.val = NULL;
++
++	tst_kconfig_read(&var, 1);
++
++	if (var.choice == 'v')
++		free(var.val);
++
++	return var.choice;
++}
 -- 
 2.29.2
 
