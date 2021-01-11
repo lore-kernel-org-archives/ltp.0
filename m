@@ -1,105 +1,61 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 11 Jan 2021 17:11:02 +0100
-Subject: [LTP] [PATCH v5 2/3] Add tst_secureboot_enabled() helper function
+Date: Mon, 11 Jan 2021 17:11:03 +0100
+Subject: [LTP] [PATCH v5 3/3] syscalls/iopl02,
+ ioperm02: Skip when kernel is locked down
 In-Reply-To: <20210111161103.22433-1-mdoucha@suse.cz>
 References: <20210111161103.22433-1-mdoucha@suse.cz>
-Message-ID: <20210111161103.22433-2-mdoucha@suse.cz>
+Message-ID: <20210111161103.22433-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also check for SecureBoot status in tst_lockdown_enabled() if the lockdown
-sysfile is not available/readable and the kernel is configured to enable
-lockdown automatically under SecureBoot.
+The iopl() and ioperm() syscalls are blocked when the kernel is locked down.
+The order of sanity checks is not guaranteed so it's better to skip these
+tests even if they accidentally work.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1:
-- check whether machine is in EFI mode first
-
-Changes since v2:
-- move tst_secureboot_enabled() code to a separate header file
-- move EFIVAR_CFLAGS and EFIVAR_LIBS out of global CFLAGS and LDLIBS
-
 Changes since v3:
-- rewritten using direct read from /sys/ (without libefivar)
+- new patch
 
- include/tst_lockdown.h |  1 +
- lib/tst_lockdown.c     | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ testcases/kernel/syscalls/ioperm/ioperm02.c | 4 ++++
+ testcases/kernel/syscalls/iopl/iopl02.c     | 5 +++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
-index 78eaeccea..172a7daf5 100644
---- a/include/tst_lockdown.h
-+++ b/include/tst_lockdown.h
-@@ -5,6 +5,7 @@
+diff --git a/testcases/kernel/syscalls/ioperm/ioperm02.c b/testcases/kernel/syscalls/ioperm/ioperm02.c
+index 1808191bf..80dcb992e 100644
+--- a/testcases/kernel/syscalls/ioperm/ioperm02.c
++++ b/testcases/kernel/syscalls/ioperm/ioperm02.c
+@@ -45,6 +45,10 @@ static struct tcase_t {
  
- #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
- 
-+int tst_secureboot_enabled(void);
- int tst_lockdown_enabled(void);
- 
- #endif /* TST_LOCKDOWN_H */
-diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
-index e7c19813c..a753ca752 100644
---- a/lib/tst_lockdown.c
-+++ b/lib/tst_lockdown.c
-@@ -9,14 +9,52 @@
- #include "tst_test.h"
- #include "tst_safe_macros.h"
- #include "tst_safe_stdio.h"
-+#include "tst_kconfig.h"
- #include "tst_lockdown.h"
- 
-+#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
-+
-+int tst_secureboot_enabled(void)
-+{
-+	int fd;
-+	char data[5];
-+
-+	if (access(EFIVAR_SECUREBOOT, F_OK)) {
-+		tst_res(TINFO, "Efivar FS not available");
-+		return -1;
-+	}
-+
-+	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
-+
-+	if (fd == -1) {
-+		tst_res(TINFO | TERRNO,
-+			"Cannot open SecureBoot Efivar sysfile");
-+		return -1;
-+	} else if (fd < 0) {
-+		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
-+		return -1;
-+	}
-+
-+	SAFE_READ(1, fd, data, 5);
-+	SAFE_CLOSE(fd);
-+	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
-+	return data[4];
-+}
-+
- int tst_lockdown_enabled(void)
+ static void setup(void)
  {
- 	char line[BUFSIZ];
- 	FILE *file;
- 
- 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
-+		char flag;
++	/* ioperm() is restricted under kernel lockdown. */
++	if (tst_lockdown_enabled())
++		tst_brk(TCONF, "Kernel is locked down, skip this test");
 +
-+		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN");
+ 	/*
+ 	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
+ 	 * from kernel 2.6.8 to permit 16-bits (65536) ioperm
+diff --git a/testcases/kernel/syscalls/iopl/iopl02.c b/testcases/kernel/syscalls/iopl/iopl02.c
+index 6a817cf2d..a6135ddf3 100644
+--- a/testcases/kernel/syscalls/iopl/iopl02.c
++++ b/testcases/kernel/syscalls/iopl/iopl02.c
+@@ -52,6 +52,11 @@ static void verify_iopl(unsigned int i)
+ static void setup(void)
+ {
+ 	struct passwd *pw;
 +
-+		/* SecureBoot enabled could mean integrity lockdown */
-+		if (flag == 'y' && tst_secureboot_enabled() > 0)
-+			return 1;
++	/* iopl() is restricted under kernel lockdown. */
++	if (tst_lockdown_enabled())
++		tst_brk(TCONF, "Kernel is locked down, skip this test");
 +
- 		tst_res(TINFO, "Unable to determine system lockdown state");
- 		return 0;
- 	}
+ 	pw = SAFE_GETPWNAM("nobody");
+ 	SAFE_SETEUID(pw->pw_uid);
+ }
 -- 
 2.29.2
 
