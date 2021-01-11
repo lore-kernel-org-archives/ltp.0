@@ -1,42 +1,108 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 11 Jan 2021 11:45:34 +0800
-Subject: [LTP] [PATCH 1/2] build.sh: Remove deprecated CROSS_COMPILE
-In-Reply-To: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-References: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-Message-ID: <5FFBC9DE.90302@cn.fujitsu.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 11 Jan 2021 07:44:06 +0100
+Subject: [LTP] [PATCH v3 1/3] network/stress/multicast/packet-flood:
+ Update to new API
+In-Reply-To: <20201221221838.GC4453@pevik>
+References: <20201125053459.3314021-1-lkml@jv-coder.de>
+ <20201221221838.GC4453@pevik>
+Message-ID: <d575ea47-142c-2ff3-1a55-58fc8f55801b@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Petr,
 
-Thanks for your work, I pushed the patch set. :-)
+On 12/21/2020 11:18 PM, Petr Vorel wrote:
+> Hi Joerg,
+>
+>
+> Minor comments, please update them if v4 needed.
+> Otherwise it can be fixed during merge.
+> Thanks for your work.
+I don't think I'll submit a v4, if you want to fix this during merge, it 
+is ok to me.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Kind regards,
+> Petr
+>
+>> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+>> @@ -0,0 +1,55 @@
+>> +#!/bin/sh
+>> +# SPDX-License-Identifier: GPL-2.0-or-later
+>> +# Copyright (c) 2006 International Business Machines  Corp.
+>> +# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
+>> +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
+>> +#
+>> +# Verify that the kernel is not crashed when joining multiple multicast
+>> +# groups on separate sockets, then receiving a large number of UDP
+>> +# packets at each socket
+>> +
+>> +TST_NEEDS_ROOT=1
+>> +. mcast-lib.sh
+>> +
+>> +do_setup()
+>> +{
+>> +	mcast_setup $n_NORMAL
+>
+> This should be (error during global replace):
+>
+> 	mcast_setup $MCASTNUM_NORMAL
+Yes sorry...
+>
+>> +	MCAST_LCMD=ns-mcast_receiver
+>> +	MCAST_RCMD=ns-udpsender
+>> +}
+>> +
+>> +do_test()
+>> +{
+>> +	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
+> I'd prefer these drop boilerplate "Verify that the kernel is not crashed when"
+> + the same in the description at the top of the file.
+Do you want this completely removed? I added this, because you asked me 
+to in v2?
+>
+>> +
+>> +	local n=0
+>> +	while [ $n -lt $MCASTNUM_NORMAL ]; do
+>> +		# Define the multicast address
+>> +		if [ "$TST_IPV6" ]; then
+>> +    		local n_hex=$(printf "%x" $n)
+>> +    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
+> nit: wrong indent
+Strange ;)
+>
+>> +		else
+>> +			local x=$((n / 254))
+>> +			local y=$((n % 254 + 1))
+>> +			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
+>> +		fi
+>> +
+>> +		local port=$(tst_get_unused_port ipv${TST_IPVER} dgram)
+>> +		[ $? -ne 0 ] && tst_brk TBROK "No free udp port available."
+> nit: no dot please.
+>
+>> +		tst_res TINFO Port: $port
+> This should be quoted.
+Could also be removed. I guess this was for testing...
+>
+>> +
+>> +		# Run a receiver
+>> +		ROD ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $addr -p $port -b
+>> +	
+>> +		# Run a sender
+>> +		tst_rhost_run -s -c "ns-udpsender -D $addr -f $TST_IPVER -p $port -m -I $(tst_iface rhost) -b -t $NS_DURATION"
+>> +
+>> +		: $((n += 1))
+> sure this works, but I'd prefer:
+> n=$((n += 1))
+I don't care
+>> +	done
+> The rest LGTM.
 
-Best Regards,
-Xiao Yang
-On 2021/1/11 11:07, Li Zhijian wrote:
-> The CROSS_COMPILE was no longer used by ltp since 400ac9bbe20.
->
-> Signed-off-by: Li Zhijian<lizhijian@cn.fujitsu.com>
-> ---
->   build.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/build.sh b/build.sh
-> index 452cc6f4c..602ca419e 100755
-> --- a/build.sh
-> +++ b/build.sh
-> @@ -64,7 +64,7 @@ build_cross()
->   	fi
->
->   	echo "===== cross-compile ${host} ${1}-tree build into $PREFIX ====="
-> -	build $1 $2 "--host=$host" CROSS_COMPILE="${host}-"
-> +	build $1 $2 "--host=$host"
->   }
->
->   build()
-
-
+Thanks
+J?rg
 
