@@ -1,43 +1,120 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 11 Jan 2021 16:45:00 +0800
-Subject: [LTP] [PATCH 1/2] build.sh: Remove deprecated CROSS_COMPILE
-In-Reply-To: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-References: <20210111030704.5761-1-lizhijian@cn.fujitsu.com>
-Message-ID: <5FFC100C.5080200@cn.fujitsu.com>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Mon, 11 Jan 2021 17:04:38 +0800
+Subject: [LTP] [PATCH] cpuset_inherit: Use the original mem value
+ instead of N_NODES
+In-Reply-To: <X/hdjNT81M9CxbaD@yuki.lan>
+References: <1606701966-1596-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <X/hdjNT81M9CxbaD@yuki.lan>
+Message-ID: <5FFC14A6.3030408@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-
-I have merged it because CROSS_COMPILE seems unneeded.
-Please tell me if you have any objection.
-
-Best Regards,
-Xiao Yang
-On 2021/1/11 11:07, Li Zhijian wrote:
-> The CROSS_COMPILE was no longer used by ltp since 400ac9bbe20.
+Hi Cyril
+> Hi!
+>> Since ltp commit cf33086a1ca, we add cgroup.clone_children switch for
+>> cpuset.cpus and mems, we used the original memory value to set in cpuset_inherit case.
+>>
+>> After ltp commit 6872ad15a, we improve the node number calculation for N_NODES,
+>> so it can calculate for N_NODES obtained from the file contains only "0,8".
+>>
+>> But it doesn't think about this patch will affect mem_string value, so this
+>> cpuset_inherit case will fail on 4 numa nodes pc, as below:
+>>
+>> cpuset_inherit 1 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 3 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 5 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 7 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 9 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+>> cpuset_inherit 13 TPASS: mems: Inherited information is right!
+>> cpuset_inherit 15 TPASS: mems: Inherited information is right!
+>> cpuset_inherit 17 TPASS: mems: Inherited information is right!
+>> cpuset_inherit 19 TPASS: mems: Inherited information is right!
+>> cpuset_inherit 21 TPASS: mems: Inherited information is right!
+>> cpuset_inherit 23 TFAIL: mems: Test result - 0-3 Expected string - "4"
+>>
+>> Fix this by using original mem value.
+>>
+>> Signed-off-by: Yang Xu<xuyang2018.jy@cn.fujitsu.com>
+>> ---
+>>   testcases/kernel/controllers/cpuset/cpuset_funcs.sh        | 7 +++----
+>>   .../cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh   | 6 ++----
+>>   2 files changed, 5 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> index f4365af2c..b469140ca 100755
+>> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>> @@ -28,10 +28,11 @@
+>>
+>>   NR_CPUS=`tst_ncpus`
+>>   if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+>> -	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
+>> +	mem_string="`cat /sys/devices/system/node/has_high_memory`"
+>>   else
+>> -	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
+>> +	mem_string="`cat /sys/devices/system/node/has_normal_memory`"
+>>   fi
+>> +N_NODES="`echo $mem_string | tr ',' ' '`"
+>>   count=0
+>>   for item in $N_NODES; do
+>>   	delta=1
+>> @@ -42,8 +43,6 @@ for item in $N_NODES; do
+>>   done
+>>   N_NODES=$count
+>>
+>> -mem_string="$N_NODES"
+>> -
+>>   CPUSET="/dev/cpuset"
+>>   CPUSET_TMP="/tmp/cpuset_tmp"
+>>   CLONE_CHILDREN="/dev/cpuset/cgroup.clone_children"
+>>
+>> diff --git a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
+>> index 73eed2cb9..27ff19532 100755
+>> --- a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
+>> +++ b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/cpuset_inherit_testset.sh
+>> @@ -31,10 +31,8 @@ export TST_COUNT=1
+>>   check 1 1
+>>
+>>   nr_cpus=$NR_CPUS
+>> -nr_mems=$N_NODES
+>>
+>>   cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+>> -mems_all="$(seq -s, 0 $((nr_mems-1)))"
+>>
+>>   exit_status=0
+>>
+>> @@ -134,10 +132,10 @@ test_mems()
+>>   	done<<- EOF
+>>   		0	NULL					EMPTY
+>>   		0	0					EMPTY
+>> -		0	$mems_all				EMPTY
+>> +		0	$mem_string				EMPTY
+>>   		1	NULL					EMPTY
+>>   		1	0					0
+>> -		1	$mems_all				$mem_string
+>> +		1	$mems_string				$mem_string
+here has a typo, mems_string->mem_string
+>>   	EOF
+>>   	# while read mems result
+>>   }
 >
-> Signed-off-by: Li Zhijian<lizhijian@cn.fujitsu.com>
-> ---
->   build.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> I guess that it looks okay to me. I guess that we can commit this before
+> the release, so acked.
 >
-> diff --git a/build.sh b/build.sh
-> index 452cc6f4c..602ca419e 100755
-> --- a/build.sh
-> +++ b/build.sh
-> @@ -64,7 +64,7 @@ build_cross()
->   	fi
+> But don't we have the same problem for cpus_all? If we, for instance,
+> have a machine where cpus are not numbered continously we will fail as
+> well, right?
+Yes, it has the same problem for cpus_all.
 >
->   	echo "===== cross-compile ${host} ${1}-tree build into $PREFIX ====="
-> -	build $1 $2 "--host=$host" CROSS_COMPILE="${host}-"
-> +	build $1 $2 "--host=$host"
->   }
+> I guess that a proper fix would be to rewrite the tests to parse the
+> strings into a bitflag arrays and compare these arrays instead of the
+> string comparsion and hacks that keeps up pilling up.
+Will do it in v2.
 >
->   build()
 
 
 
