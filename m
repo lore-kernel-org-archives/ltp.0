@@ -1,154 +1,99 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 11 Jan 2021 13:36:26 +0100
-Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils detection
-Message-ID: <20210111123626.28932-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 11 Jan 2021 15:07:36 +0100
+Subject: [LTP] [RFC PATCH v2 1/2] include/tst_test_macros.h: Add
+ TST_EXP_SILENT_{PASS, FD} macros
+In-Reply-To: <20210110130436.9514-1-yangx.jy@cn.fujitsu.com>
+References: <X/R/2VVe1dJxGhHN@yuki.lan>
+ <20210110130436.9514-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <X/xbqGf+q8LQkXCw@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using pkg-config is less error prone during cross compilation.
+Hi!
+> 1) TST_EXP_SILENT_{PASS,FD} don't report TPASS when SCALL succeeds.
+> 2) TST_EXP_{PASS,FD} calls TST_EXP_SILENT_{PASS,FD} and report
+>    TPASS when SCALL succeeds.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+I think that the macros should have the silent after the {PASS,FD} since
+that would be less confusing. I other words what is silent fd?
 
-if you agree with this, I'll replace (probably after release) ACL_LIBS,
-CAP_LIBS, CRYPTO_LIBS, SELINUX_LIBS (to follow libmnl and libtirpc).
+So I would name these as TST_EXP_FD_SILENT() or maybe
+TST_EXP_FD_QUIET().
 
-libaio and libnuma does not support pkg-config.
+Other than that the change looks good.
 
-Tested: https://travis-ci.org/github/pevik/ltp/builds/753925166
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  include/tst_test_macros.h | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 3016d95c2..8b71da00b 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -46,7 +46,7 @@ extern void *TST_RET_PTR;
+>  	tst_res_(__FILE__, __LINE__, RES, \
+>  		TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, SCALL) FMT, __VA_ARGS__), PAR)
+>  
+> -#define TST_EXP_FD(SCALL, ...)                                                 \
+> +#define TST_EXP_SILENT_FD(SCALL, ...)                                          \
+>  	do {                                                                   \
+>  		TEST(SCALL);                                                   \
+>  		                                                               \
+> @@ -64,14 +64,20 @@ extern void *TST_RET_PTR;
+>  			break;                                                 \
+>  		}                                                              \
+>                                                                                 \
+> -		TST_MSGP_(TPASS, " returned fd %ld", TST_RET,                  \
+> -		         #SCALL, ##__VA_ARGS__);                               \
+> -                                                                               \
+>  		TST_PASS = 1;                                                  \
+>                                                                                 \
+>  	} while (0)
+>  
+> -#define TST_EXP_PASS(SCALL, ...)                                               \
+> +#define TST_EXP_FD(SCALL, ...)                                                 \
+> +	do {                                                                   \
+> +		TST_EXP_SILENT_FD(SCALL, __VA_ARGS__);                         \
+> +		                                                               \
+> +		if (TST_PASS)                                                  \
+> +			TST_MSGP_(TPASS, " returned fd %ld", TST_RET,          \
+> +				#SCALL, ##__VA_ARGS__);                        \
+> +	} while (0)
+> +
+> +#define TST_EXP_SILENT_PASS(SCALL, ...)                                        \
+>  	do {                                                                   \
+>  		TEST(SCALL);                                                   \
+>  		                                                               \
+> @@ -89,12 +95,17 @@ extern void *TST_RET_PTR;
+>  			break;                                                 \
+>  		}                                                              \
+>                                                                                 \
+> -		TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);             \
+> -                                                                               \
+>  		TST_PASS = 1;                                                  \
+>                                                                                 \
+>  	} while (0)
+>  
+> +#define TST_EXP_PASS(SCALL, ...)                                               \
+> +	do {                                                                   \
+> +		TST_EXP_SILENT_PASS(SCALL, __VA_ARGS__);                       \
+> +		                                                               \
+> +		if (TST_PASS)                                                  \
+> +			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
+> +	} while (0)                                                            \
+>  
+>  #define TST_EXP_FAIL(SCALL, ERRNO, ...)                                        \
+>  	do {                                                                   \
+> -- 
+> 2.21.0
+> 
+> 
+> 
 
-Kind regards,
-Petr
-
- configure.ac                                   |  2 +-
- include/mk/config.mk.in                        |  6 +++---
- m4/ltp-keyutils.m4                             | 10 ----------
- m4/ltp-libkeyutils.m4                          |  8 ++++++++
- testcases/cve/Makefile                         |  2 +-
- testcases/kernel/syscalls/add_key/Makefile     |  2 +-
- testcases/kernel/syscalls/keyctl/Makefile      |  2 +-
- testcases/kernel/syscalls/request_key/Makefile |  2 +-
- 8 files changed, 16 insertions(+), 18 deletions(-)
- delete mode 100644 m4/ltp-keyutils.m4
- create mode 100644 m4/ltp-libkeyutils.m4
-
-diff --git a/configure.ac b/configure.ac
-index 06be1c094..8d667eb1e 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -328,7 +328,7 @@ LTP_CHECK_CLONE_SUPPORTS_7_ARGS
- LTP_CHECK_CRYPTO
- LTP_CHECK_FORTIFY_SOURCE
- LTP_CHECK_KERNEL_DEVEL
--LTP_CHECK_KEYUTILS_SUPPORT
-+LTP_CHECK_LIBKEYUTILS
- LTP_CHECK_LIBMNL
- LTP_CHECK_LINUX_PTRACE
- LTP_CHECK_LINUXRANDOM
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index 218447ef3..382b7fda2 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -52,12 +52,12 @@ LEXLIB			:= @LEXLIB@
- NUMA_LIBS		:= @NUMA_LIBS@
- SELINUX_LIBS		:= @SELINUX_LIBS@
- HAVE_RPC		:= @HAVE_RPC@
--LIBTIRPC_CFLAGS		:= @LIBTIRPC_CFLAGS@
--LIBTIRPC_LIBS		:= @LIBTIRPC_LIBS@
--KEYUTILS_LIBS		:= @KEYUTILS_LIBS@
- HAVE_FTS_H		:= @HAVE_FTS_H@
-+LIBKEYUTILS_LIBS	:= @LIBKEYUTILS_LIBS@
- LIBMNL_LIBS		:= @LIBMNL_LIBS@
- LIBMNL_CFLAGS		:= @LIBMNL_CFLAGS@
-+LIBTIRPC_CFLAGS		:= @LIBTIRPC_CFLAGS@
-+LIBTIRPC_LIBS		:= @LIBTIRPC_LIBS@
- 
- prefix			:= @prefix@
- 
-diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
-deleted file mode 100644
-index 451c549f3..000000000
---- a/m4/ltp-keyutils.m4
-+++ /dev/null
-@@ -1,10 +0,0 @@
--dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) 2016 Fujitsu Ltd.
--dnl Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
--dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
--
--AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
--	AC_CHECK_LIB([keyutils], [add_key],
--	[AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have libkeyutils installed.])
--	      AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
--])
-diff --git a/m4/ltp-libkeyutils.m4 b/m4/ltp-libkeyutils.m4
-new file mode 100644
-index 000000000..f5d128969
---- /dev/null
-+++ b/m4/ltp-libkeyutils.m4
-@@ -0,0 +1,8 @@
-+dnl SPDX-License-Identifier: GPL-2.0-or-later
-+dnl Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
-+
-+AC_DEFUN([LTP_CHECK_LIBKEYUTILS], [
-+    PKG_CHECK_MODULES([LIBKEYUTILS], [libkeyutils], [
-+        AC_DEFINE([HAVE_LIBKEYUTILS], [1], [Define to 1 if you have libkeyutils library and headers])
-+	], [have_libkeyutils=no])
-+])
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index da44fff60..90921dd85 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -21,7 +21,7 @@ CFLAGS			+= -D_GNU_SOURCE
- 
- stack_clash:	CFLAGS += -fno-optimize-sibling-calls
- 
--cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
-+cve-2016-7042:	LDLIBS += $(LIBKEYUTILS_LIBS)
- 
- cve-2016-7117:	CFLAGS += -pthread
- cve-2016-7117:	LDLIBS += -lrt
-diff --git a/testcases/kernel/syscalls/add_key/Makefile b/testcases/kernel/syscalls/add_key/Makefile
-index 0f51e0bc2..6c2102247 100644
---- a/testcases/kernel/syscalls/add_key/Makefile
-+++ b/testcases/kernel/syscalls/add_key/Makefile
-@@ -5,6 +5,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS  += $(KEYUTILS_LIBS)
-+LDLIBS  += $(LIBKEYUTILS_LIBS)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/keyctl/Makefile b/testcases/kernel/syscalls/keyctl/Makefile
-index 180ece25a..343c5e359 100644
---- a/testcases/kernel/syscalls/keyctl/Makefile
-+++ b/testcases/kernel/syscalls/keyctl/Makefile
-@@ -5,7 +5,7 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS	+= $(KEYUTILS_LIBS)
-+LDLIBS	+= $(LIBKEYUTILS_LIBS)
- keyctl02: LDLIBS	+= -lpthread
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/request_key/Makefile b/testcases/kernel/syscalls/request_key/Makefile
-index 58a99875e..e69774b96 100644
---- a/testcases/kernel/syscalls/request_key/Makefile
-+++ b/testcases/kernel/syscalls/request_key/Makefile
-@@ -6,6 +6,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS		+= $(KEYUTILS_LIBS)
-+LDLIBS		+= $(LIBKEYUTILS_LIBS)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
-2.29.2
-
+Cyril Hrubis
+chrubis@suse.cz
