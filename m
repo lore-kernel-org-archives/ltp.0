@@ -1,101 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 Jan 2021 12:31:34 +0100
-Subject: [LTP] [PATCH v3 1/3] network/stress/multicast/packet-flood:
- Update to new API
-In-Reply-To: <d575ea47-142c-2ff3-1a55-58fc8f55801b@jv-coder.de>
-References: <20201125053459.3314021-1-lkml@jv-coder.de>
- <20201221221838.GC4453@pevik>
- <d575ea47-142c-2ff3-1a55-58fc8f55801b@jv-coder.de>
-Message-ID: <X/2IlsUpmW6+kK/N@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 12 Jan 2021 20:53:50 +0800
+Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils
+ detection
+In-Reply-To: <X/2E2GD/wimgo5Hi@pevik>
+References: <20210111123626.28932-1-pvorel@suse.cz>
+ <CAEemH2eTEEZVZc71=HF+251t_d7Rnu7XdFY2t54u=ORwY3M-7A@mail.gmail.com>
+ <X/2E2GD/wimgo5Hi@pevik>
+Message-ID: <CAEemH2cmHrUGx3WXWfh6huNh-sv_GY56A+EvGVj-BiXT3WQ32A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi Petr,
 
-> > Minor comments, please update them if v4 needed.
-> > Otherwise it can be fixed during merge.
-> > Thanks for your work.
-> I don't think I'll submit a v4, if you want to fix this during merge, it is
-> ok to me.
-Don't worry with v4, I'll fix all these tiny style issues.
+Petr Vorel <pvorel@suse.cz> wrote:
 
-I'll also implement restoring sysctl value in route-redirect.sh.
+> > +
+> > > +AC_DEFUN([LTP_CHECK_LIBKEYUTILS], [
+> > > +    PKG_CHECK_MODULES([LIBKEYUTILS], [libkeyutils], [
+>
+>
+> > I guess the list-of-modules should be [keyutils-libs] but not
+> [libkeyutils]?
+> No problem to change that, but can you explain why?
+>
 
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+From what I understanding, this macro runs the pkg-config tool to check
+for the presence of packages against keyutils-libs and sets two variables:
+LIBKEYUTILS_CFLAGS, LIBKEYUTILS_LIBS accordingly.
 
-> > Kind regards,
-> > Petr
+So the list-of-modules should be the precise name(or version) of the
+library, am I right?
+See: https://autotools.io/pkgconfig/pkg_check_modules.html
 
-> > > +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> > > @@ -0,0 +1,55 @@
-> > > +#!/bin/sh
-> > > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > > +# Copyright (c) 2006 International Business Machines  Corp.
-> > > +# Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> > > +# Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> > > +#
-> > > +# Verify that the kernel is not crashed when joining multiple multicast
-> > > +# groups on separate sockets, then receiving a large number of UDP
-> > > +# packets at each socket
-> > > +
-> > > +TST_NEEDS_ROOT=1
-> > > +. mcast-lib.sh
-> > > +
-> > > +do_setup()
-> > > +{
-> > > +	mcast_setup $n_NORMAL
 
-> > This should be (error during global replace):
 
-> > 	mcast_setup $MCASTNUM_NORMAL
-> Yes sorry...
-np
+> Tested: https://travis-ci.org/github/pevik/ltp/builds/753925166
 
-> > > +	MCAST_LCMD=ns-mcast_receiver
-> > > +	MCAST_RCMD=ns-udpsender
-> > > +}
-> > > +
-> > > +do_test()
-> > > +{
-> > > +	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
-> > I'd prefer these drop boilerplate "Verify that the kernel is not crashed when"
-> > + the same in the description at the top of the file.
-> Do you want this completely removed? I added this, because you asked me to
-> in v2?
-I added into my version:
-	tst_res TINFO "joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
 
-i.e. remove boilerplate "Verify that the kernel is not crashed when".
+The reason for test all get passed is the "include/lapi/keyctl.h" has the
+second choice to include <linux/keyctl.h> I guess.
 
-> > > +
-> > > +	local n=0
-> > > +	while [ $n -lt $MCASTNUM_NORMAL ]; do
-> > > +		# Define the multicast address
-> > > +		if [ "$TST_IPV6" ]; then
-> > > +    		local n_hex=$(printf "%x" $n)
-> > > +    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
-> > nit: wrong indent
-> Strange ;)
-It easily happens when you modify existing test (I had the same in my last
-patchset). Anyway, no problem.
+#if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
+# include <keyutils.h>
+#else
+# ifdef HAVE_LINUX_KEYCTL_H
+#  include <linux/keyctl.h>
+# endif /* HAVE_LINUX_KEYCTL_H */
 
-> > > +		else
-> > > +			local x=$((n / 254))
-> > > +			local y=$((n % 254 + 1))
-> > > +			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
-> > > +		fi
-> > > +
-> > > +		local port=$(tst_get_unused_port ipv${TST_IPVER} dgram)
-> > > +		[ $? -ne 0 ] && tst_brk TBROK "No free udp port available."
-> > nit: no dot please.
-
-> > > +		tst_res TINFO Port: $port
-> > This should be quoted.
-> Could also be removed. I guess this was for testing...
-+1
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210112/188d5d54/attachment.htm>
