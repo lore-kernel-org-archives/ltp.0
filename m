@@ -1,30 +1,61 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 12 Jan 2021 10:57:44 +0100
-Subject: [LTP] [PATCH v5 2/3] Add tst_secureboot_enabled() helper
- function
-In-Reply-To: <CAEemH2e_5gCmtieHVDiXRv27=hPA+ZOyH+vRSjkhnRO5e=ZcxA@mail.gmail.com>
-References: <20210111161103.22433-1-mdoucha@suse.cz>
- <20210111161103.22433-2-mdoucha@suse.cz>
- <CAEemH2e_5gCmtieHVDiXRv27=hPA+ZOyH+vRSjkhnRO5e=ZcxA@mail.gmail.com>
-Message-ID: <194adee8-76e5-f83a-d2dc-b6078cc0a513@suse.cz>
+Date: Tue, 12 Jan 2021 10:57:59 +0100
+Subject: [LTP] [PATCH v6 3/3] syscalls/iopl02,
+ ioperm02: Skip when kernel is locked down
+In-Reply-To: <20210112095759.11910-1-mdoucha@suse.cz>
+References: <20210112095759.11910-1-mdoucha@suse.cz>
+Message-ID: <20210112095759.11910-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 12. 01. 21 9:34, Li Wang wrote:
-> We have to include?the "tst_private.h" header file otherwise compiler
-> failed to build it.
+The iopl() and ioperm() syscalls are blocked when the kernel is locked down.
+The order of sanity checks is not guaranteed so it's better to skip these
+tests even if they accidentally work.
 
-Right, sorry. I ran a clean build after moving the declaration and
-didn't notice the implicit declaration warning. I'll resubmit in a moment.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
+Changes since v3:
+- new patch
+
+ testcases/kernel/syscalls/ioperm/ioperm02.c | 4 ++++
+ testcases/kernel/syscalls/iopl/iopl02.c     | 5 +++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/ioperm/ioperm02.c b/testcases/kernel/syscalls/ioperm/ioperm02.c
+index 1808191bf..80dcb992e 100644
+--- a/testcases/kernel/syscalls/ioperm/ioperm02.c
++++ b/testcases/kernel/syscalls/ioperm/ioperm02.c
+@@ -45,6 +45,10 @@ static struct tcase_t {
+ 
+ static void setup(void)
+ {
++	/* ioperm() is restricted under kernel lockdown. */
++	if (tst_lockdown_enabled())
++		tst_brk(TCONF, "Kernel is locked down, skip this test");
++
+ 	/*
+ 	 * The value of IO_BITMAP_BITS (include/asm-i386/processor.h) changed
+ 	 * from kernel 2.6.8 to permit 16-bits (65536) ioperm
+diff --git a/testcases/kernel/syscalls/iopl/iopl02.c b/testcases/kernel/syscalls/iopl/iopl02.c
+index 6a817cf2d..a6135ddf3 100644
+--- a/testcases/kernel/syscalls/iopl/iopl02.c
++++ b/testcases/kernel/syscalls/iopl/iopl02.c
+@@ -52,6 +52,11 @@ static void verify_iopl(unsigned int i)
+ static void setup(void)
+ {
+ 	struct passwd *pw;
++
++	/* iopl() is restricted under kernel lockdown. */
++	if (tst_lockdown_enabled())
++		tst_brk(TCONF, "Kernel is locked down, skip this test");
++
+ 	pw = SAFE_GETPWNAM("nobody");
+ 	SAFE_SETEUID(pw->pw_uid);
+ }
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.29.2
+
