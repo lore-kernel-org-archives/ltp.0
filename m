@@ -1,58 +1,92 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 12 Jan 2021 20:53:50 +0800
-Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils
- detection
-In-Reply-To: <X/2E2GD/wimgo5Hi@pevik>
-References: <20210111123626.28932-1-pvorel@suse.cz>
- <CAEemH2eTEEZVZc71=HF+251t_d7Rnu7XdFY2t54u=ORwY3M-7A@mail.gmail.com>
- <X/2E2GD/wimgo5Hi@pevik>
-Message-ID: <CAEemH2cmHrUGx3WXWfh6huNh-sv_GY56A+EvGVj-BiXT3WQ32A@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Jan 2021 14:29:11 +0100
+Subject: [LTP] [PATCH] syscalls: epoll_pwait01: Work around a race
+Message-ID: <20210112132911.4031-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+There was a race that would manifest on slower machines.
 
-Petr Vorel <pvorel@suse.cz> wrote:
+The call to epoll_pwait() could time out before the child has chance to
+run, and that would cause the signal to be sent to the parent when it
+was already sleeping in wait().
 
-> > +
-> > > +AC_DEFUN([LTP_CHECK_LIBKEYUTILS], [
-> > > +    PKG_CHECK_MODULES([LIBKEYUTILS], [libkeyutils], [
->
->
-> > I guess the list-of-modules should be [keyutils-libs] but not
-> [libkeyutils]?
-> No problem to change that, but can you explain why?
->
+Ideally the whole test should be rewritten into new library and fixed
+properly, however as we are just before a release this is an attempt for
+a minimal fix.
 
-From what I understanding, this macro runs the pkg-config tool to check
-for the presence of packages against keyutils-libs and sets two variables:
-LIBKEYUTILS_CFLAGS, LIBKEYUTILS_LIBS accordingly.
+The logic in the test is changed so that:
 
-So the list-of-modules should be the precise name(or version) of the
-library, am I right?
-See: https://autotools.io/pkgconfig/pkg_check_modules.html
+- epoll_wait() sleeps indefinitely
+- the child:
+  - waits for the parent to get asleep
+  - sends the signal
+  - sleeps
+  - writes to the pipe
 
+This causes the child to actually run, while the parent is blocked in
+the epoll_wait(), which greatly increases the changes of the signal
+arriving at the right time.
 
+Fixes: #765
 
-> Tested: https://travis-ci.org/github/pevik/ltp/builds/753925166
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-
-The reason for test all get passed is the "include/lapi/keyctl.h" has the
-second choice to include <linux/keyctl.h> I guess.
-
-#if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
-# include <keyutils.h>
-#else
-# ifdef HAVE_LINUX_KEYCTL_H
-#  include <linux/keyctl.h>
-# endif /* HAVE_LINUX_KEYCTL_H */
-
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+index ed05da8fe..1f08112ad 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+@@ -121,8 +121,8 @@ static void verify_sigmask(void)
+ 		return;
+ 	}
+ 
+-	if (TEST_RETURN != 0) {
+-		tst_resm(TFAIL, "epoll_pwait() returned %li, expected 0",
++	if (TEST_RETURN != 1) {
++		tst_resm(TFAIL, "epoll_pwait() returned %li, expected 1",
+ 			 TEST_RETURN);
+ 		return;
+ 	}
+@@ -153,6 +153,7 @@ static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ static void do_test(sigset_t *sigmask)
+ {
+ 	pid_t cpid;
++	char b;
+ 
+ 	cpid = tst_fork();
+ 	if (cpid < 0)
+@@ -161,13 +162,15 @@ static void do_test(sigset_t *sigmask)
+ 	if (cpid == 0)
+ 		do_child();
+ 
+-	TEST(epoll_pwait(epfd, &epevs, 1, 100, sigmask));
++	TEST(epoll_pwait(epfd, &epevs, 1, -1, sigmask));
+ 
+ 	if (sigmask != NULL)
+ 		verify_sigmask();
+ 	else
+ 		verify_nonsigmask();
+ 
++	SAFE_READ(cleanup, 1, fds[0], &b, 1);
++
+ 	tst_record_childstatus(cleanup, cpid);
+ }
+ 
+@@ -179,6 +182,8 @@ static void do_child(void)
+ 	}
+ 
+ 	SAFE_KILL(cleanup, getppid(), SIGUSR1);
++	usleep(10000);
++	SAFE_WRITE(cleanup, 1, fds[1], "w", 1);
+ 
+ 	cleanup();
+ 	tst_exit();
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210112/188d5d54/attachment.htm>
+2.26.2
+
