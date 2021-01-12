@@ -1,48 +1,73 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 Jan 2021 11:29:58 +0100
-Subject: [LTP] Holidays and LTP release
-In-Reply-To: <X/xi2iBZZFixnCQo@yuki.lan>
-References: <X9tMlNxJbwCWIRnO@yuki.lan> <X/Wq28noppvB5MGw@yuki.lan>
- <X/b1tUeAVrTpVQBJ@yuki.lan> <X/xi2iBZZFixnCQo@yuki.lan>
-Message-ID: <X/16JnZ4MmA6PINI@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 12 Jan 2021 18:34:17 +0800
+Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils
+ detection
+In-Reply-To: <20210111123626.28932-1-pvorel@suse.cz>
+References: <20210111123626.28932-1-pvorel@suse.cz>
+Message-ID: <CAEemH2eTEEZVZc71=HF+251t_d7Rnu7XdFY2t54u=ORwY3M-7A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+On Mon, Jan 11, 2021 at 8:36 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> Hi!
-> As I anounced last week please consider git frozen for anything but
-> important fixes now.
+> Using pkg-config is less error prone during cross compilation.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi,
+>
+> if you agree with this, I'll replace (probably after release) ACL_LIBS,
+> CAP_LIBS, CRYPTO_LIBS, SELINUX_LIBS (to follow libmnl and libtirpc).
+>
++1
 
-I was thinking about speedup if-mtu-change.sh [1], but unless Alexey ack that it
-might be better to wait after the release.
 
-I planned to merge two rewrites to new API (v2 get_mempolicy [2] and v3
-multicast packed flood [3]), which are ready, but as there is a git freeze it
-can wait after the release.
+>
+> libaio and libnuma does not support pkg-config.
+>
+> Tested: https://travis-ci.org/github/pevik/ltp/builds/753925166
+>
+> [...]
 
-I'd also like to add some docs to ima_tpm.sh setup when running with
-ima_policy=tcb on real HW, if I figure out what's needed.
 
-I might have look into sigwaitinfo01 problems on MUSL.
-There is a patch which needs to be rebased [4] (tests and libsigwait were
-rewritten to new API). But simply remove all testcases because they does not
-work on MUSL is probably no-go. I guess the problem is with using (void *)1 in
-in various sigwaitinfo tests in test_bad_address{,2,3}()
-(libs/libltpsigwait/sigwait.c).
-Maybe use tst_get_bad_addr(NULL) here?
+> diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
+> deleted file mode 100644
+> index 451c549f3..000000000
+> --- a/m4/ltp-keyutils.m4
+> +++ /dev/null
+> @@ -1,10 +0,0 @@
+> -dnl SPDX-License-Identifier: GPL-2.0-or-later
+> -dnl Copyright (c) 2016 Fujitsu Ltd.
+> -dnl Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+> -dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> -
+> -AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
+> -       AC_CHECK_LIB([keyutils], [add_key],
+> -       [AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have
+> libkeyutils installed.])
+> -             AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
+> -])
+> diff --git a/m4/ltp-libkeyutils.m4 b/m4/ltp-libkeyutils.m4
+> new file mode 100644
+> index 000000000..f5d128969
+> --- /dev/null
+> +++ b/m4/ltp-libkeyutils.m4
+> @@ -0,0 +1,8 @@
+> +dnl SPDX-License-Identifier: GPL-2.0-or-later
+> +dnl Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+> +
+> +AC_DEFUN([LTP_CHECK_LIBKEYUTILS], [
+> +    PKG_CHECK_MODULES([LIBKEYUTILS], [libkeyutils], [
+>
 
-> Also if you haven't done so yet, please test latest git head now and
-> report any problems you find.
-Going to.
+I guess the list-of-modules should be [keyutils-libs] but not [libkeyutils]?
 
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210107120247.31465-1-pvorel@suse.cz/
-[2] https://patchwork.ozlabs.org/project/ltp/patch/20210106181735.1588-1-pvorel@suse.cz/
-[3] https://patchwork.ozlabs.org/project/ltp/list/?series=216562&state=*
-[4] https://patchwork.ozlabs.org/project/ltp/patch/20200529014448.3815022-1-raj.khem@gmail.com/
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210112/acb79e9a/attachment.htm>
