@@ -1,82 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 00:13:00 +0100
-Subject: [LTP] [PATCH v2 2/2] IMA: Add test for dm-crypt measurement
-In-Reply-To: <20200928035605.22701-3-tusharsu@linux.microsoft.com>
-References: <20200928035605.22701-1-tusharsu@linux.microsoft.com>
- <20200928035605.22701-3-tusharsu@linux.microsoft.com>
-Message-ID: <X/4s/AhZ6+eTcYnv@pevik>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 13 Jan 2021 00:37:58 +0100
+Subject: [LTP] [PATCH 1/1] Fix struct __kernel_old_timeval redefinition on
+ 64bit sparc
+Message-ID: <20210112233758.11658-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Tushar,
+64bit sparc is the only arch which defines struct __kernel_old_timeval
+in it's asm/posix_types.h header, thus guard it.
 
-...
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_dm_crypt.sh
-> @@ -0,0 +1,60 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2020 Microsoft Corporation
-> +# Author: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-> +#
-> +# Verify that DM target dm-crypt are measured correctly based on policy.
-> +
-> +TST_NEEDS_CMDS="dmsetup"
-> +TST_CNT=1
-> +TST_NEEDS_DEVICE=1
-> +TST_SETUP=setup
-> +TST_CLEANUP=cleanup
-> +
-> +. ima_setup.sh
-> +
-> +FUNC_CRIT_DATA='func=CRITICAL_DATA'
-> +TEMPLATE_BUF='template=ima-buf'
-> +REQUIRED_POLICY="^measure.*($FUNC_CRIT_DATA.*$TEMPLATE_BUF|$TEMPLATE_BUF.*$FUNC_CRIT_DATA)"
-> +
-> +setup()
-> +{
-> +	require_ima_policy_content "$REQUIRED_POLICY" '-E' > $TST_TMPDIR/policy.txt
-> +}
-> +
-> +cleanup()
-> +{
-> +	ROD "dmsetup remove test-crypt"
-FYI: there should be check that dmsetup create was run.
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#a-word-about-the-cleanup-callback
+NOTE: previously it was guarded with __kernel_timex, which worked as well.
 
-i.e. here:
+Fixes: a6607b81b ("syscalls: Don't pass struct timeval to tst_syscall()")
 
-[ "$dmsetup_run" ] || return
-ROD "dmsetup remove test-crypt"
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ include/tst_timer.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-+ see below.
+diff --git a/include/tst_timer.h b/include/tst_timer.h
+index d2c3f3cb1..657c0824f 100644
+--- a/include/tst_timer.h
++++ b/include/tst_timer.h
+@@ -99,10 +99,12 @@ static inline long long tst_timeval_diff_ms(struct timeval t1,
+ 
+ typedef __kernel_long_t	__kernel_old_time_t;
+ 
++#ifndef __kernel_old_timeval
+ struct __kernel_old_timeval {
+ 	__kernel_old_time_t	tv_sec;		/* seconds */
+ 	__kernel_suseconds_t	tv_usec;	/* microseconds */
+ };
++#endif
+ 
+ struct __kernel_old_timespec {
+ 	__kernel_old_time_t	tv_sec;		/* seconds */
+-- 
+2.29.2
 
-> +}
-> +
-> +test1()
-> +{
-> +	local input_digest="039d8ff71918608d585adca3e5aab2e3f41f84d6"
-> +	local pattern='data_sources=[^[:space:]]+'
-> +	local tmp_file="$TST_TMPDIR/dm_crypt_tmp.txt"
-> +	local policy="data_sources"
-> +	local arg key res
-> +
-> +	tst_res TINFO "verifying dm target - dmcrypt gets measured correctly"
-> +
-> +	check_policy_pattern "$pattern" $FUNC_CRIT_DATA $TEMPLATE_BUF > $tmp_file || return
-> +
-> +	tgt="crypt"
-> +	key="faf453b4ee938cff2f0d2c869a0b743f59125c0a37f5bcd8f1dbbd911a78abaa"
-> +
-> +	arg="'0 1953125 crypt aes-xts-plain64 "
-> +	arg="$arg $key 0 "
-> +	arg="$arg /dev/loop0 0 1 allow_discards'"
-> +
-> +	ROD "dmsetup create test-crypt --table $arg"
-adding 
-dmsetup_run=1
-
-Kind regards,
-Petr
