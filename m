@@ -1,131 +1,83 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 12 Jan 2021 20:30:39 +0100
-Subject: [LTP] [PATCH 3/3] syscalls: Remove unused include <fcntl.h>
-In-Reply-To: <20210112193039.12506-1-pvorel@suse.cz>
-References: <20210112193039.12506-1-pvorel@suse.cz>
-Message-ID: <20210112193039.12506-4-pvorel@suse.cz>
+Date: Tue, 12 Jan 2021 23:35:10 +0100
+Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils
+ detection
+In-Reply-To: <CAEemH2cmHrUGx3WXWfh6huNh-sv_GY56A+EvGVj-BiXT3WQ32A@mail.gmail.com>
+References: <20210111123626.28932-1-pvorel@suse.cz>
+ <CAEemH2eTEEZVZc71=HF+251t_d7Rnu7XdFY2t54u=ORwY3M-7A@mail.gmail.com>
+ <X/2E2GD/wimgo5Hi@pevik>
+ <CAEemH2cmHrUGx3WXWfh6huNh-sv_GY56A+EvGVj-BiXT3WQ32A@mail.gmail.com>
+Message-ID: <X/4kHp818UKMRmXm@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tests should always use lapi/fcntl.h instead of <fcntl.h> to fix
-possible missing definitions.
+Hi Li,
 
-But in this case removing include, because fanotify tests include
-<fcntl.h> in lapi/fcntl.h (via fanotify.h) and
-{name_to,open_by}_handle_at tests include lapi/fcntl.h in
-lapi/name_to_handle_at.h.
+> Hi Petr,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/fanotify/fanotify09.c                  | 1 -
- testcases/kernel/syscalls/fanotify/fanotify13.c                  | 1 -
- testcases/kernel/syscalls/fanotify/fanotify15.c                  | 1 -
- testcases/kernel/syscalls/fanotify/fanotify16.c                  | 1 -
- .../kernel/syscalls/name_to_handle_at/name_to_handle_at01.c      | 1 -
- .../kernel/syscalls/name_to_handle_at/name_to_handle_at02.c      | 1 -
- .../kernel/syscalls/open_by_handle_at/open_by_handle_at01.c      | 1 -
- .../kernel/syscalls/open_by_handle_at/open_by_handle_at02.c      | 1 -
- 8 files changed, 8 deletions(-)
+> Petr Vorel <pvorel@suse.cz> wrote:
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
-index 30e212f44..918e40274 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify09.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
-@@ -30,7 +30,6 @@
- #include <stdio.h>
- #include <sys/stat.h>
- #include <sys/types.h>
--#include <fcntl.h>
- #include <errno.h>
- #include <string.h>
- #include <sys/mount.h>
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index c9cf10555..6d812cdd1 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -21,7 +21,6 @@
- #include <sys/statfs.h>
- #include <sys/types.h>
- #include <sys/stat.h>
--#include <fcntl.h>
- #include <errno.h>
- #include <unistd.h>
- #include "tst_test.h"
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
-index ba8259c7c..fe143823e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify15.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
-@@ -19,7 +19,6 @@
- 
- #include <string.h>
- #include <errno.h>
--#include <fcntl.h>
- #include <sys/statfs.h>
- #include <sys/types.h>
- #include "tst_test.h"
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
-index 5ffaec92f..c4b8a5abc 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify16.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
-@@ -18,7 +18,6 @@
- #include <stdio.h>
- #include <sys/stat.h>
- #include <sys/types.h>
--#include <fcntl.h>
- #include <errno.h>
- #include <string.h>
- #include <sys/mount.h>
-diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-index 84ac32eab..1ac9d8214 100644
---- a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-+++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-@@ -15,7 +15,6 @@
- \*/
- 
- #define _GNU_SOURCE
--#include <fcntl.h>
- #include <sys/stat.h>
- #include "lapi/name_to_handle_at.h"
- 
-diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
-index 7c0d57485..020b25531 100644
---- a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
-+++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
-@@ -10,7 +10,6 @@
- \*/
- 
- #define _GNU_SOURCE
--#include <fcntl.h>
- #include "lapi/name_to_handle_at.h"
- 
- #define TEST_FILE "test_file"
-diff --git a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-index c1b08f1b8..0d09e1ed8 100644
---- a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-+++ b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-@@ -15,7 +15,6 @@
- \*/
- 
- #define _GNU_SOURCE
--#include <fcntl.h>
- #include <sys/stat.h>
- #include "lapi/name_to_handle_at.h"
- 
-diff --git a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
-index 3c8f06d85..0f60752c4 100644
---- a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
-+++ b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
-@@ -10,7 +10,6 @@
- \*/
- #define _GNU_SOURCE
- #include <linux/capability.h>
--#include <fcntl.h>
- #include "tst_capability.h"
- #include "lapi/name_to_handle_at.h"
- 
--- 
-2.29.2
+> > > +
+> > > > +AC_DEFUN([LTP_CHECK_LIBKEYUTILS], [
+> > > > +    PKG_CHECK_MODULES([LIBKEYUTILS], [libkeyutils], [
 
+
+> > > I guess the list-of-modules should be [keyutils-libs] but not
+> > [libkeyutils]?
+> > No problem to change that, but can you explain why?
+
+
+> From what I understanding, this macro runs the pkg-config tool to check
+> for the presence of packages against keyutils-libs and sets two variables:
+> LIBKEYUTILS_CFLAGS, LIBKEYUTILS_LIBS accordingly.
+
+> So the list-of-modules should be the precise name(or version) of the
+> library, am I right?
+> See: https://autotools.io/pkgconfig/pkg_check_modules.html
+
+Thanks for an explanation, but I'm still missing something.
+In openSUSE:
+
+$ pkg-config --libs --cflags libkeyutils
+-lkeyutils
+
+$ pkg-config --libs --cflags keyutils-libs
+Package keyutils-libs was not found in the pkg-config search path.
+Perhaps you should add the directory containing `keyutils-libs.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'keyutils-libs', required by 'virtual:world', not found
+
+That's correct, because keyutils-devel package has file:
+/usr/lib64/pkgconfig/libkeyutils.pc
+
+The same is for Debian, which has
+/usr/lib/x86_64-linux-gnu/pkgconfig/libkeyutils.pc
+
+Looking at Fedora:
+keyutils-libs-devel [1] has /usr/lib64/pkgconfig/libkeyutils.pc.
+
+Download and unpack the package and run:
+$ PKG_CONFIG_LIBDIR="$PWD/usr/lib64/pkgconfig/" pkg-config --libs --cflags libkeyutils
+-lkeyutils
+
+> > Tested: https://travis-ci.org/github/pevik/ltp/builds/753925166
+
+
+> The reason for test all get passed is the "include/lapi/keyctl.h" has the
+> second choice to include <linux/keyctl.h> I guess.
+
+> #if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
+> # include <keyutils.h>
+In my case (openSUSE) I have HAVE_LIBKEYUTILS defined.
+> #else
+> # ifdef HAVE_LINUX_KEYCTL_H
+> #  include <linux/keyctl.h>
+> # endif /* HAVE_LINUX_KEYCTL_H */
+
+Kind regards,
+Petr
+
+[1] https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/33/Everything/x86_64/Packages/k/keyutils-libs-devel-1.6.1-1.fc33.x86_64.rpm
