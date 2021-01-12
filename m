@@ -1,107 +1,48 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 12 Jan 2021 10:57:58 +0100
-Subject: [LTP] [PATCH v6 2/3] Add tst_secureboot_enabled() helper function
-In-Reply-To: <20210112095759.11910-1-mdoucha@suse.cz>
-References: <20210112095759.11910-1-mdoucha@suse.cz>
-Message-ID: <20210112095759.11910-2-mdoucha@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 12 Jan 2021 11:29:58 +0100
+Subject: [LTP] Holidays and LTP release
+In-Reply-To: <X/xi2iBZZFixnCQo@yuki.lan>
+References: <X9tMlNxJbwCWIRnO@yuki.lan> <X/Wq28noppvB5MGw@yuki.lan>
+ <X/b1tUeAVrTpVQBJ@yuki.lan> <X/xi2iBZZFixnCQo@yuki.lan>
+Message-ID: <X/16JnZ4MmA6PINI@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also check for SecureBoot status in tst_lockdown_enabled() if the lockdown
-sysfile is not available/readable and the kernel is configured to enable
-lockdown automatically under SecureBoot.
+Hi Cyril,
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+> Hi!
+> As I anounced last week please consider git frozen for anything but
+> important fixes now.
 
-Changes since v1:
-- check whether machine is in EFI mode first
+I was thinking about speedup if-mtu-change.sh [1], but unless Alexey ack that it
+might be better to wait after the release.
 
-Changes since v2:
-- move tst_secureboot_enabled() code to a separate header file
-- move EFIVAR_CFLAGS and EFIVAR_LIBS out of global CFLAGS and LDLIBS
+I planned to merge two rewrites to new API (v2 get_mempolicy [2] and v3
+multicast packed flood [3]), which are ready, but as there is a git freeze it
+can wait after the release.
 
-Changes since v3:
-- rewritten using direct read from /sys/ (without libefivar)
+I'd also like to add some docs to ima_tpm.sh setup when running with
+ima_policy=tcb on real HW, if I figure out what's needed.
 
-Changes since v5:
-- fixed #includes
+I might have look into sigwaitinfo01 problems on MUSL.
+There is a patch which needs to be rebased [4] (tests and libsigwait were
+rewritten to new API). But simply remove all testcases because they does not
+work on MUSL is probably no-go. I guess the problem is with using (void *)1 in
+in various sigwaitinfo tests in test_bad_address{,2,3}()
+(libs/libltpsigwait/sigwait.c).
+Maybe use tst_get_bad_addr(NULL) here?
 
- include/tst_lockdown.h |  1 +
- lib/tst_lockdown.c     | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+> Also if you haven't done so yet, please test latest git head now and
+> report any problems you find.
+Going to.
 
-diff --git a/include/tst_lockdown.h b/include/tst_lockdown.h
-index 78eaeccea..172a7daf5 100644
---- a/include/tst_lockdown.h
-+++ b/include/tst_lockdown.h
-@@ -5,6 +5,7 @@
- 
- #define PATH_LOCKDOWN	"/sys/kernel/security/lockdown"
- 
-+int tst_secureboot_enabled(void);
- int tst_lockdown_enabled(void);
- 
- #endif /* TST_LOCKDOWN_H */
-diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
-index e7c19813c..cda7d7abd 100644
---- a/lib/tst_lockdown.c
-+++ b/lib/tst_lockdown.c
-@@ -10,6 +10,36 @@
- #include "tst_safe_macros.h"
- #include "tst_safe_stdio.h"
- #include "tst_lockdown.h"
-+#include "tst_private.h"
-+
-+#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
-+
-+int tst_secureboot_enabled(void)
-+{
-+	int fd;
-+	char data[5];
-+
-+	if (access(EFIVAR_SECUREBOOT, F_OK)) {
-+		tst_res(TINFO, "Efivar FS not available");
-+		return -1;
-+	}
-+
-+	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
-+
-+	if (fd == -1) {
-+		tst_res(TINFO | TERRNO,
-+			"Cannot open SecureBoot Efivar sysfile");
-+		return -1;
-+	} else if (fd < 0) {
-+		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
-+		return -1;
-+	}
-+
-+	SAFE_READ(1, fd, data, 5);
-+	SAFE_CLOSE(fd);
-+	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
-+	return data[4];
-+}
- 
- int tst_lockdown_enabled(void)
- {
-@@ -17,6 +47,14 @@ int tst_lockdown_enabled(void)
- 	FILE *file;
- 
- 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
-+		char flag;
-+
-+		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN");
-+
-+		/* SecureBoot enabled could mean integrity lockdown */
-+		if (flag == 'y' && tst_secureboot_enabled() > 0)
-+			return 1;
-+
- 		tst_res(TINFO, "Unable to determine system lockdown state");
- 		return 0;
- 	}
--- 
-2.29.2
+Kind regards,
+Petr
 
+[1] https://patchwork.ozlabs.org/project/ltp/patch/20210107120247.31465-1-pvorel@suse.cz/
+[2] https://patchwork.ozlabs.org/project/ltp/patch/20210106181735.1588-1-pvorel@suse.cz/
+[3] https://patchwork.ozlabs.org/project/ltp/list/?series=216562&state=*
+[4] https://patchwork.ozlabs.org/project/ltp/patch/20200529014448.3815022-1-raj.khem@gmail.com/
