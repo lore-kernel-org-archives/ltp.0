@@ -1,27 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 07:33:50 +0100
-Subject: [LTP] [PATCH 0/3] Build fix undefined struct file_handle
-In-Reply-To: <5FFE59B2.1040903@cn.fujitsu.com>
-References: <20210112193039.12506-1-pvorel@suse.cz>
- <5FFE59B2.1040903@cn.fujitsu.com>
-Message-ID: <X/6UTkNHsjJ9xH2r@pevik>
+Date: Wed, 13 Jan 2021 08:51:09 +0100
+Subject: [LTP] [PATCH v2 2/3] fanotify: Fix build on undefined struct
+ file_handle
+In-Reply-To: <20210113075110.31628-1-pvorel@suse.cz>
+References: <20210113075110.31628-1-pvorel@suse.cz>
+Message-ID: <20210113075110.31628-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+This fixes error:
+fanotify09.c:201:32: error: dereferencing pointer to incomplete type ?struct file_handle?
+  201 |  filename = (char *)file_handle->f_handle + file_handle->handle_bytes;
 
-> Hi Petr
-> I think detecting file_handle struct(it is in fcntl.h) in configure.ac is
-> correct instead of using HAVE_NAME_TO_HANDLE_AT macro directly.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/fanotify/fanotify.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You're right, using AC_CHECK_TYPES([struct, ],,,[#include <fcntl.h>]) is
-probably safer. I'll send v2.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 8907db052..039379961 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -12,8 +12,8 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <errno.h>
+-#include <fcntl.h>
+ #include <sys/fanotify.h>
++#include "lapi/fcntl.h"
+ 
+ int safe_fanotify_init(const char *file, const int lineno,
+ 	unsigned int flags, unsigned int event_f_flags)
+-- 
+2.29.2
 
-Kind regards,
-Petr Vorel
-
-> Best Regards
-> Yang Xu
