@@ -1,47 +1,111 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 11:39:00 +0100
-Subject: [LTP] [PATCH 1/1] autoconf: Use pkg-config for keyutils
- detection
-In-Reply-To: <5FFEBDCC.6020102@cn.fujitsu.com>
-References: <20210111123626.28932-1-pvorel@suse.cz>
- <5FFEBDCC.6020102@cn.fujitsu.com>
-Message-ID: <X/7NxM9EaGiXvjDy@pevik>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 13 Jan 2021 20:03:43 +0800
+Subject: [LTP] [PATCH v2] cpuset: skip test when cpu or nodes are not
+ numbered continously from 0
+In-Reply-To: <X/29dySZb8kL5Nms@rei.lan>
+References: <X/29dySZb8kL5Nms@rei.lan>
+Message-ID: <1610539423-4315-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+These cpuset cases(cpuset_base_ops_test, cpuset_hierarchy_test, cpuset_inherit_test...) seem all
+not consider the situation(cpus/memory are not numbered continuously). It is continuously from 0
+as default. Skip test if there are not numbered continuously to avoid unexpected error.
 
-> On 2021/1/11 20:36, Petr Vorel wrote:
-> > Using pkg-config is less error prone during cross compilation.
-> Hi Petr,
+This patch also fix cpu_inherit error by using original mem value.
 
-> Is there any detailed example about the above point?
-Sometimes I experienced problems during cross compilation with installed library
-for build architecture but missing library for host architecture build failed
-during linking because library was expected but missing.
+cpuset_inherit case fails on 4 numa nodes pc, as below:
+cpuset_inherit 1 TPASS: cpus: Inherited information is right!
+cpuset_inherit 3 TPASS: cpus: Inherited information is right!
+cpuset_inherit 5 TPASS: cpus: Inherited information is right!
+cpuset_inherit 7 TPASS: cpus: Inherited information is right!
+cpuset_inherit 9 TPASS: cpus: Inherited information is right!
+cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+cpuset_inherit 13 TPASS: mems: Inherited information is right!
+cpuset_inherit 15 TPASS: mems: Inherited information is right!
+cpuset_inherit 17 TPASS: mems: Inherited information is right!
+cpuset_inherit 19 TPASS: mems: Inherited information is right!
+cpuset_inherit 21 TPASS: mems: Inherited information is right!
+cpuset_inherit 23 TFAIL: mems: Test result - 0-3 Expected string - "4"
 
-But I it turned out to be when using our CROSS_COMPILE implementation (without
-specifying --host). When configuring with just --host libraries are properly
-detected with AC_CHECK_LIB().
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+---
+ .../kernel/controllers/cpuset/cpuset_funcs.sh | 29 +++++++++++++++++--
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
-pkg-config has some pros and cons.
-Pros:
-* easily require specific library version
-* getting CFLAGS from *.pc file
-* IMHO it's a standard way nowadays
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index f4365af2c..5b1bde114 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -26,23 +26,34 @@
+ 
+ . test.sh
+ 
++cpu_string="`cat /sys/devices/system/cpu/online`"
+ NR_CPUS=`tst_ncpus`
++
+ if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+-	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
++	mem_string="`cat /sys/devices/system/node/has_high_memory`"
+ else
+-	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
++	mem_string="`cat /sys/devices/system/node/has_normal_memory`"
+ fi
++N_NODES="`echo $mem_string | tr ',' ' '`"
+ count=0
++final_node=0
+ for item in $N_NODES; do
+ 	delta=1
+ 	if [ "${item#*-*}" != "$item" ]; then
+ 		delta=$((${item#*-*} - ${item%*-*} + 1))
+ 	fi
++	final_node=${item#*-*}
+ 	count=$((count + $delta))
+ done
++final_node=`expr $final_node + 1`
+ N_NODES=$count
+ 
+-mem_string="$N_NODES"
++final_cpu=0
++N_CPUS="`echo $cpu_string | tr ',' ' '`"
++for item in $N_CPUS; do
++	final_cpu=${item#*-*}
++done
++final_cpu=`expr $final_cpu + 1`
+ 
+ CPUSET="/dev/cpuset"
+ CPUSET_TMP="/tmp/cpuset_tmp"
+@@ -78,6 +89,12 @@ ncpus_check()
+ 	if [ $NR_CPUS -lt $1 ]; then
+ 		tst_brkm TCONF "The total of CPUs is less than $1"
+ 	fi
++	# check online cpu whether match 0-num
++	if [ $final_cpu -eq $NR_CPUS ]; then
++		tst_resm TINFO "cpus enable continuously from 0($cpu_string)"
++	else
++		tst_brkm TCONF "cpus don't enable continuously from 0($cpu_string)"
++	fi
+ }
+ 
+ nnodes_check()
+@@ -85,6 +102,12 @@ nnodes_check()
+ 	if [ $N_NODES -lt $1 ]; then
+ 		tst_brkm TCONF "The total of nodes is less than $1"
+ 	fi
++	# check online whether match 0-num
++	if [ $final_node -eq $count ]; then
++		tst_resm TINFO "nodes enable continuously from 0($mem_string)"
++	else
++		tst_brkm TCONF "nodes don't enable continuously from 0($mem_string)"
++	fi
+ }
+ 
+ user_check()
+-- 
+2.23.0
 
-Cons:
-* For cross compilation it's reuired to set correctly PKG_CONFIG_LIBDIR.
 
-I brought pkg-config as dependency to LTP due checking libtirpc >= 0.2.4.
-But this version is already 7 years old so we might not need this version check now.
-(and one day it'd be best to fix (or rewrite from scratch) rpc/tirpc tests and
-move them to libtirpc upstream as Sun-RPC was removed from glibc in 2.32).
 
-Thus we can safely reconsider if we want pkg-config or not.
-
-Kind regards,
-Petr
