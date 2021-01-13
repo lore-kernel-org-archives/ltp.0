@@ -1,111 +1,60 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Wed, 13 Jan 2021 20:03:43 +0800
-Subject: [LTP] [PATCH v2] cpuset: skip test when cpu or nodes are not
- numbered continously from 0
-In-Reply-To: <X/29dySZb8kL5Nms@rei.lan>
-References: <X/29dySZb8kL5Nms@rei.lan>
-Message-ID: <1610539423-4315-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 13 Jan 2021 16:25:45 +0300
+Subject: [LTP] [PATCH 1/1] if-mtu-change.sh: Lower CHANGE_INTERVAL to 1
+In-Reply-To: <20210107120247.31465-1-pvorel@suse.cz>
+References: <20210107120247.31465-1-pvorel@suse.cz>
+Message-ID: <d7eba485-08db-1cc7-abe6-38d23c244bfb@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These cpuset cases(cpuset_base_ops_test, cpuset_hierarchy_test, cpuset_inherit_test...) seem all
-not consider the situation(cpus/memory are not numbered continuously). It is continuously from 0
-as default. Skip test if there are not numbered continuously to avoid unexpected error.
+On 07.01.2021 15:02, Petr Vorel wrote:
+> to make testing faster.
+> 
+> Tested only on netns based testing.
+> 
 
-This patch also fix cpu_inherit error by using original mem value.
+Hi Petr,
 
-cpuset_inherit case fails on 4 numa nodes pc, as below:
-cpuset_inherit 1 TPASS: cpus: Inherited information is right!
-cpuset_inherit 3 TPASS: cpus: Inherited information is right!
-cpuset_inherit 5 TPASS: cpus: Inherited information is right!
-cpuset_inherit 7 TPASS: cpus: Inherited information is right!
-cpuset_inherit 9 TPASS: cpus: Inherited information is right!
-cpuset_inherit 11 TPASS: cpus: Inherited information is right!
-cpuset_inherit 13 TPASS: mems: Inherited information is right!
-cpuset_inherit 15 TPASS: mems: Inherited information is right!
-cpuset_inherit 17 TPASS: mems: Inherited information is right!
-cpuset_inherit 19 TPASS: mems: Inherited information is right!
-cpuset_inherit 21 TPASS: mems: Inherited information is right!
-cpuset_inherit 23 TFAIL: mems: Test result - 0-3 Expected string - "4"
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Hi Alexey,
+> 
+> any reason why CHANGE_INTERVAL was set 5s?
 
-Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
----
- .../kernel/controllers/cpuset/cpuset_funcs.sh | 29 +++++++++++++++++--
- 1 file changed, 26 insertions(+), 3 deletions(-)
+It's more or less safe time for default setup. Not sure why we don't
+have tst_sleep in if_updown.sh though. I think this is for preventing
+link-flap errors on the switch...
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index f4365af2c..5b1bde114 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -26,23 +26,34 @@
- 
- . test.sh
- 
-+cpu_string="`cat /sys/devices/system/cpu/online`"
- NR_CPUS=`tst_ncpus`
-+
- if [ -f "/sys/devices/system/node/has_high_memory" ]; then
--	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
-+	mem_string="`cat /sys/devices/system/node/has_high_memory`"
- else
--	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
-+	mem_string="`cat /sys/devices/system/node/has_normal_memory`"
- fi
-+N_NODES="`echo $mem_string | tr ',' ' '`"
- count=0
-+final_node=0
- for item in $N_NODES; do
- 	delta=1
- 	if [ "${item#*-*}" != "$item" ]; then
- 		delta=$((${item#*-*} - ${item%*-*} + 1))
- 	fi
-+	final_node=${item#*-*}
- 	count=$((count + $delta))
- done
-+final_node=`expr $final_node + 1`
- N_NODES=$count
- 
--mem_string="$N_NODES"
-+final_cpu=0
-+N_CPUS="`echo $cpu_string | tr ',' ' '`"
-+for item in $N_CPUS; do
-+	final_cpu=${item#*-*}
-+done
-+final_cpu=`expr $final_cpu + 1`
- 
- CPUSET="/dev/cpuset"
- CPUSET_TMP="/tmp/cpuset_tmp"
-@@ -78,6 +89,12 @@ ncpus_check()
- 	if [ $NR_CPUS -lt $1 ]; then
- 		tst_brkm TCONF "The total of CPUs is less than $1"
- 	fi
-+	# check online cpu whether match 0-num
-+	if [ $final_cpu -eq $NR_CPUS ]; then
-+		tst_resm TINFO "cpus enable continuously from 0($cpu_string)"
-+	else
-+		tst_brkm TCONF "cpus don't enable continuously from 0($cpu_string)"
-+	fi
- }
- 
- nnodes_check()
-@@ -85,6 +102,12 @@ nnodes_check()
- 	if [ $N_NODES -lt $1 ]; then
- 		tst_brkm TCONF "The total of nodes is less than $1"
- 	fi
-+	# check online whether match 0-num
-+	if [ $final_node -eq $count ]; then
-+		tst_resm TINFO "nodes enable continuously from 0($mem_string)"
-+	else
-+		tst_brkm TCONF "nodes don't enable continuously from 0($mem_string)"
-+	fi
- }
- 
- user_check()
--- 
-2.23.0
+For netns it's can be set far less of cause by overriding CHANGE_INTERVAL.
+
+> It'd be nice to speedup the tests, which were slow even before
+> 2d422edbf ("if-mtu-change.sh: Add max packet size detection for IPv4")
+> which added 25% slowdown.
+> 
+> Could you please test this on two host based setup?
+> 
+> Kind regards,
+> Petr
+> 
+>  testcases/network/stress/interface/if-mtu-change.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
+> index d2816606b..3efe00461 100755
+> --- a/testcases/network/stress/interface/if-mtu-change.sh
+> +++ b/testcases/network/stress/interface/if-mtu-change.sh
+> @@ -11,7 +11,7 @@ TST_CLEANUP="do_cleanup"
+>  . if-lib.sh
+>  
+>  # The interval of the mtu change [second]
+> -CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
+> +CHANGE_INTERVAL=${CHANGE_INTERVAL:-1}
+>  
+>  TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
 
 
-
+It's better to remove TST_TIMEOUT so that CHANGE_INTERVAL can be set,
+for example, to "100ms" for netns setup.
