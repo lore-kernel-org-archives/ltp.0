@@ -1,10 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 01:23:24 +0100
-Subject: [LTP] [PATCH v3 1/3] network/stress/multicast/packet-flood:
- Update to new API
-In-Reply-To: <20201125053459.3314021-1-lkml@jv-coder.de>
+Date: Wed, 13 Jan 2021 01:40:54 +0100
+Subject: [LTP] [PATCH v3 3/3] network/stress/route-change: Convert to
+ new API
+In-Reply-To: <20201125053459.3314021-3-lkml@jv-coder.de>
 References: <20201125053459.3314021-1-lkml@jv-coder.de>
-Message-ID: <X/49fDxHpYWfnlE2@pevik>
+ <20201125053459.3314021-3-lkml@jv-coder.de>
+Message-ID: <X/5BlpO5QU7mhyEP@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,39 +14,21 @@ To: ltp@lists.linux.it
 
 Hi Joerg,
 
-> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+> +++ b/testcases/network/stress/route/route-redirect.sh
 ...
-> +do_test()
+> +do_cleanup()
 > +{
-> +	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
-> +
-> +	local n=0
-> +	while [ $n -lt $MCASTNUM_NORMAL ]; do
-> +		# Define the multicast address
-> +		if [ "$TST_IPV6" ]; then
-> +    		local n_hex=$(printf "%x" $n)
-> +    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
-> +		else
-> +			local x=$((n / 254))
-> +			local y=$((n % 254 + 1))
-> +			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
-> +		fi
-> +
-> +		local port=$(tst_get_unused_port ipv${TST_IPVER} dgram)
-> +		[ $? -ne 0 ] && tst_brk TBROK "No free udp port available."
-> +		tst_res TINFO Port: $port
-> +
-> +		# Run a receiver
-> +		ROD ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $addr -p $port -b
-> +	
-> +		# Run a sender
-> +		tst_rhost_run -s -c "ns-udpsender -D $addr -f $TST_IPVER -p $port -m -I $(tst_iface rhost) -b -t $NS_DURATION"
-> +
-> +		: $((n += 1))
-> +	done
-> +
-> +	sleep $NS_DURATION
-FYI: although this is in old tests, IMHO it's useless, thus I'll remove it.
+> +	# Kill the redirector utility
+> +	tst_rhost_run -c "killall -SIGHUP ns-icmp_redirector"
+FYI: route_cleanup is required (from route-lib.sh) otherwise next test in the
+runtest file (route6-change-dst) is broken:
+route-change-dst 1 TFAIL: ping6 -c1 -I fd00:1:1:1::2 fd00:23:1::1 >/dev/null failed unexpectedly
+
+But anyway, I've fixed everything and tested:
+https://github.com/pevik/ltp/commits/joerg/multicast.v3.fixes
+
+It might be merged before the release, or immediately after the release.
 
 Kind regards,
 Petr
+
