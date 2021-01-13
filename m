@@ -1,43 +1,51 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Wed, 13 Jan 2021 00:37:58 +0100
-Subject: [LTP] [PATCH 1/1] Fix struct __kernel_old_timeval redefinition on
- 64bit sparc
-Message-ID: <20210112233758.11658-1-petr.vorel@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 13 Jan 2021 01:23:24 +0100
+Subject: [LTP] [PATCH v3 1/3] network/stress/multicast/packet-flood:
+ Update to new API
+In-Reply-To: <20201125053459.3314021-1-lkml@jv-coder.de>
+References: <20201125053459.3314021-1-lkml@jv-coder.de>
+Message-ID: <X/49fDxHpYWfnlE2@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-64bit sparc is the only arch which defines struct __kernel_old_timeval
-in it's asm/posix_types.h header, thus guard it.
+Hi Joerg,
 
-NOTE: previously it was guarded with __kernel_timex, which worked as well.
+> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+...
+> +do_test()
+> +{
+> +	tst_res TINFO "Verify that the kernel is not crashed when joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
+> +
+> +	local n=0
+> +	while [ $n -lt $MCASTNUM_NORMAL ]; do
+> +		# Define the multicast address
+> +		if [ "$TST_IPV6" ]; then
+> +    		local n_hex=$(printf "%x" $n)
+> +    		local addr=${MCAST_IPV6_ADDR_PREFIX}:${n_hex}
+> +		else
+> +			local x=$((n / 254))
+> +			local y=$((n % 254 + 1))
+> +			local addr=${MCAST_IPV4_ADDR_PREFIX}.${x}.${y}
+> +		fi
+> +
+> +		local port=$(tst_get_unused_port ipv${TST_IPVER} dgram)
+> +		[ $? -ne 0 ] && tst_brk TBROK "No free udp port available."
+> +		tst_res TINFO Port: $port
+> +
+> +		# Run a receiver
+> +		ROD ns-mcast_receiver -f $TST_IPVER -I $(tst_iface lhost) -m $addr -p $port -b
+> +	
+> +		# Run a sender
+> +		tst_rhost_run -s -c "ns-udpsender -D $addr -f $TST_IPVER -p $port -m -I $(tst_iface rhost) -b -t $NS_DURATION"
+> +
+> +		: $((n += 1))
+> +	done
+> +
+> +	sleep $NS_DURATION
+FYI: although this is in old tests, IMHO it's useless, thus I'll remove it.
 
-Fixes: a6607b81b ("syscalls: Don't pass struct timeval to tst_syscall()")
-
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
- include/tst_timer.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index d2c3f3cb1..657c0824f 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -99,10 +99,12 @@ static inline long long tst_timeval_diff_ms(struct timeval t1,
- 
- typedef __kernel_long_t	__kernel_old_time_t;
- 
-+#ifndef __kernel_old_timeval
- struct __kernel_old_timeval {
- 	__kernel_old_time_t	tv_sec;		/* seconds */
- 	__kernel_suseconds_t	tv_usec;	/* microseconds */
- };
-+#endif
- 
- struct __kernel_old_timespec {
- 	__kernel_old_time_t	tv_sec;		/* seconds */
--- 
-2.29.2
-
+Kind regards,
+Petr
