@@ -1,34 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 01:40:54 +0100
-Subject: [LTP] [PATCH v3 3/3] network/stress/route-change: Convert to
- new API
-In-Reply-To: <20201125053459.3314021-3-lkml@jv-coder.de>
-References: <20201125053459.3314021-1-lkml@jv-coder.de>
- <20201125053459.3314021-3-lkml@jv-coder.de>
-Message-ID: <X/5BlpO5QU7mhyEP@pevik>
+Date: Wed, 13 Jan 2021 01:54:35 +0100
+Subject: [LTP] [PATCH] syscalls: epoll_pwait01: Work around a race
+In-Reply-To: <20210112132911.4031-1-chrubis@suse.cz>
+References: <20210112132911.4031-1-chrubis@suse.cz>
+Message-ID: <X/5Ey68D0T8oYInJ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi Cyril,
 
-> +++ b/testcases/network/stress/route/route-redirect.sh
-...
-> +do_cleanup()
-> +{
-> +	# Kill the redirector utility
-> +	tst_rhost_run -c "killall -SIGHUP ns-icmp_redirector"
-FYI: route_cleanup is required (from route-lib.sh) otherwise next test in the
-runtest file (route6-change-dst) is broken:
-route-change-dst 1 TFAIL: ping6 -c1 -I fd00:1:1:1::2 fd00:23:1::1 >/dev/null failed unexpectedly
+> There was a race that would manifest on slower machines.
 
-But anyway, I've fixed everything and tested:
-https://github.com/pevik/ltp/commits/joerg/multicast.v3.fixes
+> The call to epoll_pwait() could time out before the child has chance to
+> run, and that would cause the signal to be sent to the parent when it
+> was already sleeping in wait().
 
-It might be merged before the release, or immediately after the release.
+> Ideally the whole test should be rewritten into new library and fixed
+> properly, however as we are just before a release this is an attempt for
+> a minimal fix.
+
+> The logic in the test is changed so that:
+
+> - epoll_wait() sleeps indefinitely
+> - the child:
+>   - waits for the parent to get asleep
+>   - sends the signal
+>   - sleeps
+>   - writes to the pipe
+
+> This causes the child to actually run, while the parent is blocked in
+> the epoll_wait(), which greatly increases the changes of the signal
+> arriving at the right time.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+LGTM.
+
+> Fixes: #765
 
 Kind regards,
 Petr
-
