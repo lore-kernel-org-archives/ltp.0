@@ -1,39 +1,131 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 13 Jan 2021 08:51:09 +0100
-Subject: [LTP] [PATCH v2 2/3] fanotify: Fix build on undefined struct
- file_handle
+Date: Wed, 13 Jan 2021 08:51:10 +0100
+Subject: [LTP] [PATCH v2 3/3] syscalls: Remove unused include <fcntl.h>
 In-Reply-To: <20210113075110.31628-1-pvorel@suse.cz>
 References: <20210113075110.31628-1-pvorel@suse.cz>
-Message-ID: <20210113075110.31628-3-pvorel@suse.cz>
+Message-ID: <20210113075110.31628-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This fixes error:
-fanotify09.c:201:32: error: dereferencing pointer to incomplete type ?struct file_handle?
-  201 |  filename = (char *)file_handle->f_handle + file_handle->handle_bytes;
+Tests should always use lapi/fcntl.h instead of <fcntl.h> to fix
+possible missing definitions.
+
+But in this case removing include, because fanotify tests include
+<fcntl.h> in lapi/fcntl.h (via fanotify.h) and
+{name_to,open_by}_handle_at tests include lapi/fcntl.h in
+lapi/name_to_handle_at.h.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/syscalls/fanotify/fanotify09.c                  | 1 -
+ testcases/kernel/syscalls/fanotify/fanotify13.c                  | 1 -
+ testcases/kernel/syscalls/fanotify/fanotify15.c                  | 1 -
+ testcases/kernel/syscalls/fanotify/fanotify16.c                  | 1 -
+ .../kernel/syscalls/name_to_handle_at/name_to_handle_at01.c      | 1 -
+ .../kernel/syscalls/name_to_handle_at/name_to_handle_at02.c      | 1 -
+ .../kernel/syscalls/open_by_handle_at/open_by_handle_at01.c      | 1 -
+ .../kernel/syscalls/open_by_handle_at/open_by_handle_at02.c      | 1 -
+ 8 files changed, 8 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index 8907db052..039379961 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify.h
-+++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -12,8 +12,8 @@
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify09.c b/testcases/kernel/syscalls/fanotify/fanotify09.c
+index 30e212f44..918e40274 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify09.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify09.c
+@@ -30,7 +30,6 @@
+ #include <stdio.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <sys/mount.h>
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index c9cf10555..6d812cdd1 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -21,7 +21,6 @@
+ #include <sys/statfs.h>
  #include <sys/types.h>
  #include <sys/stat.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include <unistd.h>
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify15.c b/testcases/kernel/syscalls/fanotify/fanotify15.c
+index ba8259c7c..fe143823e 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify15.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify15.c
+@@ -19,7 +19,6 @@
+ 
+ #include <string.h>
  #include <errno.h>
 -#include <fcntl.h>
- #include <sys/fanotify.h>
-+#include "lapi/fcntl.h"
+ #include <sys/statfs.h>
+ #include <sys/types.h>
+ #include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify16.c b/testcases/kernel/syscalls/fanotify/fanotify16.c
+index 5ffaec92f..c4b8a5abc 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify16.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify16.c
+@@ -18,7 +18,6 @@
+ #include <stdio.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <fcntl.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <sys/mount.h>
+diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
+index 84ac32eab..1ac9d8214 100644
+--- a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
++++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
+@@ -15,7 +15,6 @@
+ \*/
  
- int safe_fanotify_init(const char *file, const int lineno,
- 	unsigned int flags, unsigned int event_f_flags)
+ #define _GNU_SOURCE
+-#include <fcntl.h>
+ #include <sys/stat.h>
+ #include "lapi/name_to_handle_at.h"
+ 
+diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
+index 7c0d57485..020b25531 100644
+--- a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
++++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at02.c
+@@ -10,7 +10,6 @@
+ \*/
+ 
+ #define _GNU_SOURCE
+-#include <fcntl.h>
+ #include "lapi/name_to_handle_at.h"
+ 
+ #define TEST_FILE "test_file"
+diff --git a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
+index c1b08f1b8..0d09e1ed8 100644
+--- a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
++++ b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
+@@ -15,7 +15,6 @@
+ \*/
+ 
+ #define _GNU_SOURCE
+-#include <fcntl.h>
+ #include <sys/stat.h>
+ #include "lapi/name_to_handle_at.h"
+ 
+diff --git a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+index 3c8f06d85..0f60752c4 100644
+--- a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
++++ b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at02.c
+@@ -10,7 +10,6 @@
+ \*/
+ #define _GNU_SOURCE
+ #include <linux/capability.h>
+-#include <fcntl.h>
+ #include "tst_capability.h"
+ #include "lapi/name_to_handle_at.h"
+ 
 -- 
 2.29.2
 
