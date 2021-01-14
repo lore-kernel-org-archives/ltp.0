@@ -1,83 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 14 Jan 2021 16:15:25 +0100
-Subject: [LTP] [PATCH 1/1] device-drivers/zram: Fix false-judgement on
- zram's presence
-In-Reply-To: <20210114074603.GB32318@andestech.com>
-References: <20210114074603.GB32318@andestech.com>
-Message-ID: <YABgDXi2WHSWmwHF@pevik>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 14 Jan 2021 18:36:03 +0300
+Subject: [LTP] [PATCH 1/1] if-mtu-change.sh: Lower CHANGE_INTERVAL to 1
+In-Reply-To: <YABZkHIQmDUnKFZF@pevik>
+References: <20210107120247.31465-1-pvorel@suse.cz>
+ <d7eba485-08db-1cc7-abe6-38d23c244bfb@oracle.com> <X/7+vk6WsJ2LDJlC@pevik>
+ <dced71df-28f6-056e-9518-338cccce4c11@oracle.com> <YABZkHIQmDUnKFZF@pevik>
+Message-ID: <95ee938f-e045-4564-f6b2-952d54d2505b@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo,
+On 14.01.2021 17:47, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>> Hi Petr,
+> 
+>> Do you mean "sleep $NS_DURATION" in mcast-pktfld02.sh is not needed
+> Yes: sleep $NS_DURATION in mcast-pktfld02.sh and other mcast*.sh tests in:
+> https://urldefense.com/v3/__https://patchwork.ozlabs.org/project/ltp/patch/20201125053459.3314021-2-lkml@jv-coder.de/__;!!GqivPVa7Brio!P0xbdqXlRQX7GPsKJmcPapdEOX5VV4OnkCKv-P9OqIWNcTvY9a9KXhOSjdJ1dKco5YbG$ 
+> https://urldefense.com/v3/__https://patchwork.ozlabs.org/project/ltp/patch/20201125053459.3314021-1-lkml@jv-coder.de/__;!!GqivPVa7Brio!P0xbdqXlRQX7GPsKJmcPapdEOX5VV4OnkCKv-P9OqIWNcTvY9a9KXhOSjdJ1dKjzIVpO$ 
+> 
 
-> Date: Thu, 14 Jan 2021 15:27:34 +0800
-> From: Leo Yu-Chi Liang <ycliang@andestech.com>
-> Subject: [LTP][PATCH 1/1] device-drivers/zram: Fix false-judgement on zram's presence
-
-> zram_lib.sh uses the return value of modinfo to check if zram module exists,
-> but the behavior of modinfo implemented by busybox is different.
-
-> The busybox-implemented modinfo would also return true (code: 0)
-> even if zram module is not present,
-> so grep the info that only shows when the module exists.
-
-> -modinfo zram > /dev/null 2>&1 ||
-> +modinfo zram | grep "filename" > /dev/null 2>&1 ||
-nit: 
-modinfo zram | grep -q "filename" ||
-
->  	tst_brk TCONF "zram not configured in kernel"
-
-Thank you for a report. Actually, we have a helper for it:
-TST_NEEDS_DRIVERS="zram"
-
-But this helper is broken for BusyBox, which means it's broken for many tests.
-
-The helper calls tst_check_driver() C function (lib/tst_kernel.c):
-
-int tst_check_driver(const char *name)
-{
-#ifndef __ANDROID__
-	const char * const argv[] = { "modprobe", "-n", name, NULL };
-	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
-			       TST_CMD_PASS_RETVAL);
-
-	/* 255 - it looks like modprobe not available */
-	return (res == 255) ? 0 : res;
-#else
-	/* Android modprobe may not have '-n', or properly installed
-	 * module.*.bin files to determine built-in drivers. Assume
-	 * all drivers are available.
-	 */
-	return 0;
-#endif
-}
-
-and the problem is that modprobe from busybox does not support -n.
-It does support -D, which could be used, *but* unless is busybox binary
-configured with CONFIG_MODPROBE_SMALL=y (IMHO the default) => not suitable
-for us.
-
-IMHO we have only 2 options:
-* write something on our own which would look into /lib/modules and
-/system/lib/modules (Android). That's what BusyBox implementation does
-(also kmod implementation looks into /lib/modules). BusyBox has this path in
-defined in build time configuration (CONFIG_DEFAULT_MODULES_DIR), but I'd be
-surprised if any system had both directories.
-pros: no external dependency
-cons: more code
-
-* use modinfo, but grep for output: for 'filename:' (turn Leo's suggestion into
-C code in the API):
-cons: module not checked, when modprobe missing (we check for 255 exit code).
-
-BTW not sure whether bother about android support anyway. On Android phone I
-have available (Android 8), there is empty /system/lib/modules directory and no
-/proc/modules:, thus nor BusyBox neither even toybox modprobe/modinfo
-implementations work.
-
-Kind regards,
-Petr
+It's needed because the commands run in parallel in the background
+during $NS_DURATION. Without it, the test terminates them all shortly
+after starting.
