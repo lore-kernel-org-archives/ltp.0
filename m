@@ -1,39 +1,77 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 14 Jan 2021 18:38:31 +0100
-Subject: [LTP] [PATCH 1/1] if-mtu-change.sh: Lower CHANGE_INTERVAL to 1
-In-Reply-To: <95ee938f-e045-4564-f6b2-952d54d2505b@oracle.com>
-References: <20210107120247.31465-1-pvorel@suse.cz>
- <d7eba485-08db-1cc7-abe6-38d23c244bfb@oracle.com>
- <X/7+vk6WsJ2LDJlC@pevik>
- <dced71df-28f6-056e-9518-338cccce4c11@oracle.com>
- <YABZkHIQmDUnKFZF@pevik>
- <95ee938f-e045-4564-f6b2-952d54d2505b@oracle.com>
-Message-ID: <YACBly6oZQqXE0Tg@pevik>
+Date: Thu, 14 Jan 2021 19:32:26 +0100
+Subject: [LTP] [PATCH 1/1] zram: Check properly command dependencies
+Message-ID: <20210114183226.794-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Instead of relying that there is mkfs.ext2 as a backup,
+search for supported default.
 
-> On 14.01.2021 17:47, Petr Vorel wrote:
-> > Hi Alexey,
+Always check ext2 (in case there is enough space for btrfs but
+no mkfs.btrfs).
 
-> >> Hi Petr,
+This fixes error when even the default ext2 is not supported:
 
-> >> Do you mean "sleep $NS_DURATION" in mcast-pktfld02.sh is not needed
-> > Yes: sleep $NS_DURATION in mcast-pktfld02.sh and other mcast*.sh tests in:
-> > https://urldefense.com/v3/__https://patchwork.ozlabs.org/project/ltp/patch/20201125053459.3314021-2-lkml@jv-coder.de/__;!!GqivPVa7Brio!P0xbdqXlRQX7GPsKJmcPapdEOX5VV4OnkCKv-P9OqIWNcTvY9a9KXhOSjdJ1dKco5YbG$ 
-> > https://urldefense.com/v3/__https://patchwork.ozlabs.org/project/ltp/patch/20201125053459.3314021-1-lkml@jv-coder.de/__;!!GqivPVa7Brio!P0xbdqXlRQX7GPsKJmcPapdEOX5VV4OnkCKv-P9OqIWNcTvY9a9KXhOSjdJ1dKjzIVpO$ 
+zram01 5 TINFO: make ext2 filesystem on /dev/zram0
+/opt/ltp/testcases/bin/zram01.sh: line 188: mkfs.ext2: not found
+zram01 5 TFAIL: failed to make ext2 on /dev/zram0
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-> It's needed because the commands run in parallel in the background
-> during $NS_DURATION. Without it, the test terminates them all shortly
-> after starting.
+fix to be merged before release.
 
-Thanks for info. Yes, that's right. I got confused, because on netns it's (at
-least on the default setup), that it passes even without sleep.
-Maybe we could remove it for netns.
+NOTE: Bug affecting BusyBox needs to be discussed:
+http://lists.linux.it/pipermail/ltp/2021-January/020568.html
 
 Kind regards,
 Petr
+
+ .../kernel/device-drivers/zram/zram_lib.sh    | 21 +++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index 3f4d1d55f..1a611b974 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -178,13 +178,30 @@ zram_swapoff()
+ zram_makefs()
+ {
+ 	tst_require_cmds mkfs
++
++	local default_fs fs
+ 	local i=0
+ 
++	for fs in $zram_filesystems ext2; do
++		if tst_supported_fs $fs 2> /dev/null; then
++			default_fs="$fs"
++			break
++		fi
++	done
++
++	if [ -z "$default_fs" ]; then
++		tst_res TINFO "supported filesystems"
++		tst_supported_fs > /dev/null
++		tst_brk TCONF "missing kernel support or mkfs for all of these filesystems: $zram_filesystems"
++	fi
++
+ 	for fs in $zram_filesystems; do
+-		# if requested fs not supported default it to ext2
+-		tst_supported_fs $fs 2> /dev/null || fs=ext2
++		# use default if requested fs not supported or missing mkfs
++		tst_supported_fs $fs 2> /dev/null && tst_cmd_available mkfs.$fs \
++			|| fs=$default_fs
+ 
+ 		tst_res TINFO "make $fs filesystem on /dev/zram$i"
++
+ 		mkfs.$fs /dev/zram$i > err.log 2>&1
+ 		if [ $? -ne 0 ]; then
+ 			cat err.log
+-- 
+2.29.2
+
