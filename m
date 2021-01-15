@@ -1,108 +1,104 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 15 Jan 2021 14:14:26 +0800
-Subject: [LTP] [PATCH 1/1] zram: Check properly command dependencies
-In-Reply-To: <20210114183226.794-1-pvorel@suse.cz>
-References: <20210114183226.794-1-pvorel@suse.cz>
-Message-ID: <CAEemH2cQRNQ3_sko-rBSNf4hgR0p3a5sp1qXgpyXoY1T4aOf7Q@mail.gmail.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Fri, 15 Jan 2021 07:42:06 +0100
+Subject: [LTP] [PATCH v2] sigwaitinfo: Do not run invalid/undefined test
+ cases
+In-Reply-To: <20200529014448.3815022-1-raj.khem@gmail.com>
+References: <20200529014448.3815022-1-raj.khem@gmail.com>
+Message-ID: <YAE5PnVdLD0nmN/H@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Khem,
 
-On Fri, Jan 15, 2021 at 2:32 AM Petr Vorel <pvorel@suse.cz> wrote:
+> These testcases run for eternity on musl
 
-> Instead of relying that there is mkfs.ext2 as a backup,
-> search for supported default.
->
-> Always check ext2 (in case there is enough space for btrfs but
-> no mkfs.btrfs).
->
-> This fixes error when even the default ext2 is not supported:
->
-> zram01 5 TINFO: make ext2 filesystem on /dev/zram0
-> /opt/ltp/testcases/bin/zram01.sh: line 188: mkfs.ext2: not found
-> zram01 5 TFAIL: failed to make ext2 on /dev/zram0
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> test_bad_address* cases are passing invalid pointers to a function; that's always UB
+> empty_set and timeout rely on the implementation-defined "may fail" for EINTR in sigtimedwait [1]
+
+> normally "may fail" is an "unspecified" but here the impl
+> is supposed to document it so it's "impl-defined"
+
+> [1] https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
+
+I tested sigtimedwait01.c, sigwaitinfo01.c and rt_sigtimedwait01.c on Alpine
+3.12.3 on RPI on current LTP master.
+
+rt_sigtimedwait01.c os PL am cam be left as it is.
+sigtimedwait01.c and sigwaitinfo01.c is blocked just by first test:
+{ test_empty_set, SIGUSR1}
+removing it is enough to fix test.
+
+$ strace ./sigwaitinfo01
+getpid()                                = 27859
+setitimer(ITIMER_REAL, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=300, tv_usec=0}}, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=0, tv_usec=0}}) = 0
+rt_sigaction(SIGINT, {sa_handler=0x5570b661e8, sa_mask=[], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7fa0385a6c}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone(child_stack=NULL, flags=SIGCHLD)  = 27860
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+--- SIGUSR1 {si_signo=SIGUSR1, si_code=SI_USER, si_pid=27860, si_uid=0} ---
+setitimer(ITIMER_REAL, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=300, tv_usec=0}}, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=299, tv_usec=989256}}) = 0
+rt_sigreturn({mask=[]})                 = 0
+wait4(27860,
+
+I haven't look into musl implementation what could be wrong.
+
+Kind regards,
+Petr
+
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> Cc: Rich Felker <dalias@aerifal.cx>
 > ---
-> Hi,
->
-> fix to be merged before release.
->
-> NOTE: Bug affecting BusyBox needs to be discussed:
-> http://lists.linux.it/pipermail/ltp/2021-January/020568.html
->
-> Kind regards,
-> Petr
->
->  .../kernel/device-drivers/zram/zram_lib.sh    | 21 +++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh
-> b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> index 3f4d1d55f..1a611b974 100755
-> --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-> +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> @@ -178,13 +178,30 @@ zram_swapoff()
->  zram_makefs()
->  {
->         tst_require_cmds mkfs
-> +
-> +       local default_fs fs
->         local i=0
->
-> +       for fs in $zram_filesystems ext2; do
-> +               if tst_supported_fs $fs 2> /dev/null; then
-> +                       default_fs="$fs"
-> +                       break
-> +               fi
-> +       done
->
+> v2: Extend same fixes to include sigwaitinfo01
 
-This workaround makes some sense but a bit overlap to traverse
- $zram_filesystems.
+>  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c      | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
 
-Maybe we can remove the unsupported filesystems from $zram_filesystems
-list via tst_supported_fs and tst_cmd_available, to avoid involving that
-additional
-variable 'default_fs', then in following test if $zram_filesystems is a
-null string
-just exit with TCONF directly?
-
-
-
-> +
-> +       if [ -z "$default_fs" ]; then
-> +               tst_res TINFO "supported filesystems"
-> +               tst_supported_fs > /dev/null
-> +               tst_brk TCONF "missing kernel support or mkfs for all of
-> these filesystems: $zram_filesystems"
-> +       fi
-> +
->         for fs in $zram_filesystems; do
-> -               # if requested fs not supported default it to ext2
-> -               tst_supported_fs $fs 2> /dev/null || fs=ext2
-> +               # use default if requested fs not supported or missing mkfs
-> +               tst_supported_fs $fs 2> /dev/null && tst_cmd_available
-> mkfs.$fs \
-> +                       || fs=$default_fs
->
->                 tst_res TINFO "make $fs filesystem on /dev/zram$i"
-> +
->                 mkfs.$fs /dev/zram$i > err.log 2>&1
->                 if [ $? -ne 0 ]; then
->                         cat err.log
-> --
-> 2.29.2
->
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210115/32d8530d/attachment.htm>
+> --- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+> +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+> @@ -422,15 +422,10 @@ struct test_desc {
+>  } tests[] = {
+>  #ifdef TEST_RT_SIGTIMEDWAIT
+>  	{
+> -	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
+>  	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
+>  	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
+>  	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
+> -	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
+> -	test_timeout, my_rt_sigtimedwait, 0},
+> +	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, 
+>  	    /* Special cases */
+>  	    /* 1: sigwaitinfo does respond to ignored signal */
+>  	{
+> @@ -452,25 +447,17 @@ struct test_desc {
+>  #endif
+>  #if defined TEST_SIGWAITINFO
+>  	{
+> -	test_empty_set, my_sigwaitinfo, SIGUSR1}, {
+>  	test_unmasked_matching, my_sigwaitinfo, SIGUSR1}, {
+>  	test_masked_matching, my_sigwaitinfo, SIGUSR1}, {
+>  	test_unmasked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
+> -	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
+> -	test_bad_address, my_sigwaitinfo, SIGUSR1}, {
+> -	test_bad_address2, my_sigwaitinfo, SIGUSR1},
+> +	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1},
+>  #endif
+>  #if defined TEST_SIGTIMEDWAIT
+>  	{
+> -	test_empty_set, my_sigtimedwait, SIGUSR1}, {
+>  	test_unmasked_matching, my_sigtimedwait, SIGUSR1}, {
+>  	test_masked_matching, my_sigtimedwait, SIGUSR1}, {
+>  	test_unmasked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
+> -	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address, my_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address2, my_sigtimedwait, SIGUSR1}, {
+> -	test_bad_address3, my_sigtimedwait, SIGUSR1}, {
+> -	test_timeout, my_sigtimedwait, 0},
+> +	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1},
+>  #endif
+>  };
