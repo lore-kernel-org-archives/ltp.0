@@ -1,67 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 15 Jan 2021 10:38:34 +0100
-Subject: [LTP] [PATCH 1/1] device-drivers/zram: Fix false-judgement on
- zram's presence
-In-Reply-To: <20210115085406.GA23267@andestech.com>
-References: <20210114074603.GB32318@andestech.com> <YABgDXi2WHSWmwHF@pevik>
- <20210115085406.GA23267@andestech.com>
-Message-ID: <YAFimsGMMIkf+xU3@pevik>
+From: Xinpeng Liu <liuxp11@chinatelecom.cn>
+Date: Fri, 15 Jan 2021 08:53:51 +0800
+Subject: [LTP] [PATCH] fs/proc01.c:add known issues
+Message-ID: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Leo,
+Test in ubuntu20.10,there are several failure tests.
 
-...
-> > IMHO we have only 2 options:
-> > * write something on our own which would look into /lib/modules and
-> > /system/lib/modules (Android). That's what BusyBox implementation does
-> > (also kmod implementation looks into /lib/modules). BusyBox has this path in
-> > defined in build time configuration (CONFIG_DEFAULT_MODULES_DIR), but I'd be
-> > surprised if any system had both directories.
-> > pros: no external dependency
-> > cons: more code
+proc01      1  TFAIL  :  proc01.c:396: read failed:
+/proc/self/task/61595/attr/smack/current: errno=EINVAL(22): Invalid argument
+proc01      2  TFAIL  :  proc01.c:396: read failed:
+/proc/self/task/61595/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+proc01      3  TFAIL  :  proc01.c:396: read failed:
+/proc/self/task/61595/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
+proc01      4  TFAIL  :  proc01.c:396: read failed:
+/proc/self/attr/smack/current: errno=EINVAL(22): Invalid argument
+proc01      5  TFAIL  :  proc01.c:396: read failed:
+/proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+proc01      6  TFAIL  :  proc01.c:396: read failed:
+/proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
 
-> > * use modinfo, but grep for output: for 'filename:' (turn Leo's suggestion into
-> > C code in the API):
-> > cons: module not checked, when modprobe missing (we check for 255 exit code).
+Signed-off-by: Xinpeng Liu <liuxp11@chinatelecom.cn>
+---
+ testcases/kernel/fs/proc/proc01.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index 9684369..96441d1 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -63,7 +63,7 @@ static char *opt_maxmbytesstr;
+ static char *procpath = "/proc";
+ static const char selfpath[] = "/proc/self";
+ size_t buffsize = 1024;
+-static long long maxbytes;
++static unsigned long long maxbytes;
+ 
+ unsigned long long total_read;
+ unsigned int total_obj;
+@@ -97,7 +97,11 @@ static const struct mapping known_issues[] = {
+ 	{"read", "/proc/self/mem", EIO},
+ 	{"read", "/proc/self/task/[0-9]*/mem", EIO},
+ 	{"read", "/proc/self/attr/*", EINVAL},
++	{"read", "/proc/self/attr/smack/*", EINVAL},
++	{"read", "/proc/self/attr/apparmor/*", EINVAL},
+ 	{"read", "/proc/self/task/[0-9]*/attr/*", EINVAL},
++	{"read", "/proc/self/task/[0-9]*/attr/smack/*", EINVAL},
++	{"read", "/proc/self/task/[0-9]*/attr/apparmor/*", EINVAL},
+ 	{"read", "/proc/self/ns/*", EINVAL},
+ 	{"read", "/proc/self/task/[0-9]*/ns/*", EINVAL},
+ 	{"read", "/proc/ppc64/rtas/error_log", EINVAL},
+-- 
+1.8.3.1
 
-> Thanks for breaking things down in such detail!
-
-> I personally prefer the first option that looking into those directories ourselves.
-> So let's drop this patch and stay as is for now!
-
-FYI: I'm going to implement 1) (own search, written in C API).
-Hope to have it on Monday (before the release). If not, we should revert
-305a78e4c ("tst_net.sh: Require veth for netns") which breaks *all* network
-tests for BusyBox.
-
-> > BTW not sure whether bother about android support anyway. On Android phone I
-> > have available (Android 8), there is empty /system/lib/modules directory and no
-> > /proc/modules:, thus nor BusyBox neither even toybox modprobe/modinfo
-> > implementations work.
-
-> BTW, I found that there's a ver_linux script that detects the version of util-linux.
-Yes, but ver_linux it's just legacy info script (we don't have anything better
-than this).
-
-> But as I searched through commit log of LTP, there are a lot of workarounds
-> regarding the compatibility issue with Busybox (around 10 commits or so).
-Yes, these fixes are specific to particular tests. But detecting module in LTP
-API affect many tests.
-
-> Is there a certain version of util-linux is expected to conduct a full run of LTP ?
-No. We just fix problems when reported (usually reported send a patch).
-
-FYI: We haven't even set minimal supported kernel and (g)libc version.
-https://github.com/linux-test-project/ltp/issues/657
-
-> Thanks again,
-> Leo
-
-
-Kind regards,
-Petr
