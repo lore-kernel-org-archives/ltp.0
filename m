@@ -1,62 +1,32 @@
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
-Date: Fri, 15 Jan 2021 15:32:46 +0100
-Subject: [LTP] [PATCH 1/1] swapping01: make test more robust
-Message-ID: <20210115143246.369676-1-egorenar@linux.ibm.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 Jan 2021 09:54:05 -0500 (EST)
+Subject: [LTP] [PATCH] fs/proc01.c:add known issues
+In-Reply-To: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>
+References: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>
+Message-ID: <95241263.33332311.1610722445185.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Increase time waiting for swap memory to settle before
-performing checks with occupied swap memory. This decreases the chance
-of the test to fail in the case of the swap memory taking longer
-than expected to settle.
 
-This fixes sporadic failures observed on IBM s390x systems such as this:
+----- Original Message -----
+> Test in ubuntu20.10,there are several failure tests.
+> 
+> proc01      1  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/smack/current: errno=EINVAL(22): Invalid argument
+> proc01      2  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+> proc01      3  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
+> proc01      4  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/smack/current: errno=EINVAL(22): Invalid argument
+> proc01      5  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+> proc01      6  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
 
-swapping01.c:149: TPASS: no heavy swapping detected, 4534 MB swapped.
-swapping01.c:106: TINFO: available physical memory: 7348 MB
-swapping01.c:109: TINFO: try to allocate: 9552 MB
-swapping01.c:112: TINFO: memory allocated: 9552 MB
-swapping01.c:140: TINFO: swap free init: 25019 MB
-swapping01.c:141: TINFO: swap free now: 20484 MB
-swapping01.c:149: TPASS: no heavy swapping detected, 4534 MB swapped.
-swapping01.c:106: TINFO: available physical memory: 7348 MB
-swapping01.c:109: TINFO: try to allocate: 9553 MB
-swapping01.c:112: TINFO: memory allocated: 9553 MB
-swapping01.c:140: TINFO: swap free init: 25018 MB
-swapping01.c:141: TINFO: swap free now: 17694 MB
-swapping01.c:149: TPASS: no heavy swapping detected, 7323 MB swapped.
-swapping01.c:106: TINFO: available physical memory: 7318 MB
-swapping01.c:109: TINFO: try to allocate: 9514 MB
-swapping01.c:112: TINFO: memory allocated: 9514 MB
-swapping01.c:140: TINFO: swap free init: 25019 MB
-swapping01.c:141: TINFO: swap free now: 17697 MB
-swapping01.c:145: TFAIL: heavy swapping detected: 7322 MB swapped.
-
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
----
- testcases/kernel/mem/swapping/swapping01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 24b8313f3..befb52e91 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -127,10 +127,10 @@ static void check_swapping(void)
- 
- 	/* Still occupying memory, loop for a while */
- 	i = 0;
--	while (i < 10) {
-+	while (i < 30) {
- 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
- 		sleep(1);
--		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
-+		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 10)
- 			break;
- 
- 		i++;
--- 
-2.26.2
+I'm OK with ignoring it, but commit log could explain more why we get EINVAL
+on read here.
 
