@@ -1,48 +1,45 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 Jan 2021 16:19:36 +0100
-Subject: [LTP] [PATCH] include/tst_timer.h: Fix overflows
-Message-ID: <20210115151936.18809-1-chrubis@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 15 Jan 2021 16:19:10 +0100
+Subject: [LTP] [PATCH] semctl09: Fix heap smash
+Message-ID: <20210115151910.3592-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This fixes overflows in tst_timeval_to_us() and tst_timeval_to_ns() on
-32bit hardware. We have to cast the tv_sec (ulong) to (long long)
-explicitly otherwise the tv_sec will overflow the multiplication.
+semctl() expects pointer to a buffer as its fourth argument, not pointer
+to a pointer. Passing &un.buf results in heap smash that corrupts internal
+LTP data structures on some archs.
 
-This fixes clock_gettime04 where the overflow corrupted the result from
-gettimeofday() when it was converted from timeval to timespec.
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+CC: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/tst_timer.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/ipc/semctl/semctl09.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/tst_timer.h b/include/tst_timer.h
-index 657c0824f..4a79ae208 100644
---- a/include/tst_timer.h
-+++ b/include/tst_timer.h
-@@ -26,7 +26,7 @@
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+index 131bfbc07..d36ba62e5 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+@@ -51,11 +51,15 @@ static union semun un;
   */
- static inline long long tst_timeval_to_us(struct timeval t)
+ static inline int do_semctl(int semid, int semnum, int cmd)
  {
--	return t.tv_sec * 1000000 + t.tv_usec;
-+	return ((long long)t.tv_sec) * 1000000 + t.tv_usec;
++	struct semid_ds info;
++
++	un.buf = &info;
++
+ 	switch (tst_variant) {
+ 	case 0:
+-		return tst_syscall(__NR_semctl, semid, semnum, cmd, &un.buf);
++		return tst_syscall(__NR_semctl, semid, semnum, cmd, un);
+ 	case 1:
+-		return semctl(semid, semnum, cmd, &un.buf);
++		return semctl(semid, semnum, cmd, un);
+ 	}
+ 	return -1;
  }
- 
- /*
-@@ -34,7 +34,7 @@ static inline long long tst_timeval_to_us(struct timeval t)
-  */
- static inline long long tst_timeval_to_ms(struct timeval t)
- {
--	return t.tv_sec * 1000 + (t.tv_usec + 500) / 1000;
-+	return ((long long)t.tv_sec) * 1000 + (t.tv_usec + 500) / 1000;
- }
- 
- /*
 -- 
-2.26.2
+2.29.2
 
