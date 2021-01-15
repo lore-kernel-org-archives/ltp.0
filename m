@@ -1,53 +1,62 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 15 Jan 2021 15:27:58 +0100
-Subject: [LTP] Holidays and LTP release
-In-Reply-To: <YAGgEcFEN8/ElosC@yuki.lan>
-References: <X9tMlNxJbwCWIRnO@yuki.lan> <X/Wq28noppvB5MGw@yuki.lan>
- <20210113095724.214c904a@kmaincent-XPS-13-7390>
- <CA+G9fYv1UFr+7ePC7tLjCY4JPsoQdBdf-6Jpr40zmsoYRWVrdQ@mail.gmail.com>
- <YABW1ZcnfFbjUoBq@yuki.lan>
- <CA+G9fYs2bv98uFgrH+WEYzDagFPy0PWruk=Em9GdMXmnQQUTCw@mail.gmail.com>
- <YAGgEcFEN8/ElosC@yuki.lan>
-Message-ID: <YAGmbrmtAtyI8zQ4@yuki.lan>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
+Date: Fri, 15 Jan 2021 15:32:46 +0100
+Subject: [LTP] [PATCH 1/1] swapping01: make test more robust
+Message-ID: <20210115143246.369676-1-egorenar@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > > getrlimit03.c:168: TPASS: __NR_prlimit64(0) and __NR_ugetrlimit(0)
-> > > > gave consistent results
-> > > > tst_test.c:1313: TBROK: Test killed by SIGILL!
-> > >
-> > > Can we have a backtrace here? It's impossible to say what happened here
-> > > without further debugging.
-> > 
-> > I do not have backtrace log for this now.
-> > Let me share strace output log in this link,
-> > # strace -f ./getrlimit03
-> > https://lkft.validation.linaro.org/scheduler/job/2145166#L2569
-> 
-> Thanks.
-> 
-> I've managed to reproduce as well but I have no idea what happens there,
-> it looks like something gets corrupted and the processor attempts to
-> execute invalid code.
-> 
-> Maybe we pass wrong size of the rlim structure somewhere and kernel
-> writes over a stack.
+Increase time waiting for swap memory to settle before
+performing checks with occupied swap memory. This decreases the chance
+of the test to fail in the case of the swap memory taking longer
+than expected to settle.
 
-This is really strange it looks like glibc has wrong syscall number for
-getrlimit.
+This fixes sporadic failures observed on IBM s390x systems such as this:
 
-On 32bit ARM I do have in /usr/include/asm-generic/unistd.h
+swapping01.c:149: TPASS: no heavy swapping detected, 4534 MB swapped.
+swapping01.c:106: TINFO: available physical memory: 7348 MB
+swapping01.c:109: TINFO: try to allocate: 9552 MB
+swapping01.c:112: TINFO: memory allocated: 9552 MB
+swapping01.c:140: TINFO: swap free init: 25019 MB
+swapping01.c:141: TINFO: swap free now: 20484 MB
+swapping01.c:149: TPASS: no heavy swapping detected, 4534 MB swapped.
+swapping01.c:106: TINFO: available physical memory: 7348 MB
+swapping01.c:109: TINFO: try to allocate: 9553 MB
+swapping01.c:112: TINFO: memory allocated: 9553 MB
+swapping01.c:140: TINFO: swap free init: 25018 MB
+swapping01.c:141: TINFO: swap free now: 17694 MB
+swapping01.c:149: TPASS: no heavy swapping detected, 7323 MB swapped.
+swapping01.c:106: TINFO: available physical memory: 7318 MB
+swapping01.c:109: TINFO: try to allocate: 9514 MB
+swapping01.c:112: TINFO: memory allocated: 9514 MB
+swapping01.c:140: TINFO: swap free init: 25019 MB
+swapping01.c:141: TINFO: swap free now: 17697 MB
+swapping01.c:145: TFAIL: heavy swapping detected: 7322 MB swapped.
 
-#define __NR_getrlimit 163
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+---
+ testcases/kernel/mem/swapping/swapping01.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-While the getrlimit should be 191. It looks like x86-64 syscall
-definitions are installed on the system for some strange reason, even
-the header says that it's for x86-64.
-
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 24b8313f3..befb52e91 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -127,10 +127,10 @@ static void check_swapping(void)
+ 
+ 	/* Still occupying memory, loop for a while */
+ 	i = 0;
+-	while (i < 10) {
++	while (i < 30) {
+ 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
+ 		sleep(1);
+-		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
++		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 10)
+ 			break;
+ 
+ 		i++;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
