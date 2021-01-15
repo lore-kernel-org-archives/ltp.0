@@ -1,104 +1,87 @@
-From: Petr Vorel <petr.vorel@gmail.com>
-Date: Fri, 15 Jan 2021 07:42:06 +0100
-Subject: [LTP] [PATCH v2] sigwaitinfo: Do not run invalid/undefined test
- cases
-In-Reply-To: <20200529014448.3815022-1-raj.khem@gmail.com>
-References: <20200529014448.3815022-1-raj.khem@gmail.com>
-Message-ID: <YAE5PnVdLD0nmN/H@pevik>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 15 Jan 2021 07:58:54 +0100
+Subject: [LTP] [PATCH 1/1] zram: Check properly command dependencies
+In-Reply-To: <CAEemH2cQRNQ3_sko-rBSNf4hgR0p3a5sp1qXgpyXoY1T4aOf7Q@mail.gmail.com>
+References: <20210114183226.794-1-pvorel@suse.cz>
+ <CAEemH2cQRNQ3_sko-rBSNf4hgR0p3a5sp1qXgpyXoY1T4aOf7Q@mail.gmail.com>
+Message-ID: <YAE9Lkgj09qVupsN@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Khem,
+Hi Li,
 
-> These testcases run for eternity on musl
+...
+> > diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > index 3f4d1d55f..1a611b974 100755
+> > --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+> > @@ -178,13 +178,30 @@ zram_swapoff()
+> >  zram_makefs()
+> >  {
+> >         tst_require_cmds mkfs
+> > +
+> > +       local default_fs fs
+> >         local i=0
 
-> test_bad_address* cases are passing invalid pointers to a function; that's always UB
-> empty_set and timeout rely on the implementation-defined "may fail" for EINTR in sigtimedwait [1]
+> > +       for fs in $zram_filesystems ext2; do
+> > +               if tst_supported_fs $fs 2> /dev/null; then
+> > +                       default_fs="$fs"
+> > +                       break
+> > +               fi
+> > +       done
 
-> normally "may fail" is an "unspecified" but here the impl
-> is supposed to document it so it's "impl-defined"
 
-> [1] https://pubs.opengroup.org/onlinepubs/9699919799/functions/sigtimedwait.html
+> This workaround makes some sense but a bit overlap to traverse
+>  $zram_filesystems.
+Not sure if I understand you.
 
-I tested sigtimedwait01.c, sigwaitinfo01.c and rt_sigtimedwait01.c on Alpine
-3.12.3 on RPI on current LTP master.
+> Maybe we can remove the unsupported filesystems from $zram_filesystems
+> list via tst_supported_fs and tst_cmd_available, to avoid involving that
+> additional
+> variable 'default_fs', then in following test if $zram_filesystems is a
+> null string
+> just exit with TCONF directly?
 
-rt_sigtimedwait01.c os PL am cam be left as it is.
-sigtimedwait01.c and sigwaitinfo01.c is blocked just by first test:
-{ test_empty_set, SIGUSR1}
-removing it is enough to fix test.
+I understood, that there must be 4 runs, because 4 /dev/zram* has been used
+(dev_num=4). Do you mean to check supported systems in the setup (it'd be safer
+to move the calculation to the setup) and lower dev_num if needed?
 
-$ strace ./sigwaitinfo01
-getpid()                                = 27859
-setitimer(ITIMER_REAL, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=300, tv_usec=0}}, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=0, tv_usec=0}}) = 0
-rt_sigaction(SIGINT, {sa_handler=0x5570b661e8, sa_mask=[], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7fa0385a6c}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
-rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
-clone(child_stack=NULL, flags=SIGCHLD)  = 27860
-rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
---- SIGUSR1 {si_signo=SIGUSR1, si_code=SI_USER, si_pid=27860, si_uid=0} ---
-setitimer(ITIMER_REAL, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=300, tv_usec=0}}, {it_interval={tv_sec=0, tv_usec=0}, it_value={tv_sec=299, tv_usec=989256}}) = 0
-rt_sigreturn({mask=[]})                 = 0
-wait4(27860,
+And tst_cmd_available is not needed, because tst_supported_fs checks also for
+mkfs.foo presence.
 
-I haven't look into musl implementation what could be wrong.
+Also further cleanup after release: it'd make sense to move zram_makefs and
+zram_mount to zram01.sh, which is the only test which use them. And zram_makefs
+uses $zram_filesystems.
+Or keep them in zram_lib.sh, but pass $zram_filesystems to zram_makefs as a
+parameter. Current state is confusing a bit.
 
 Kind regards,
 Petr
 
-> Signed-off-by: Khem Raj <raj.khem@gmail.com>
-> Cc: Rich Felker <dalias@aerifal.cx>
-> ---
-> v2: Extend same fixes to include sigwaitinfo01
+> > +
+> > +       if [ -z "$default_fs" ]; then
+> > +               tst_res TINFO "supported filesystems"
+> > +               tst_supported_fs > /dev/null
+> > +               tst_brk TCONF "missing kernel support or mkfs for all of
+> > these filesystems: $zram_filesystems"
+> > +       fi
+> > +
+> >         for fs in $zram_filesystems; do
+> > -               # if requested fs not supported default it to ext2
+> > -               tst_supported_fs $fs 2> /dev/null || fs=ext2
+> > +               # use default if requested fs not supported or missing mkfs
+> > +               tst_supported_fs $fs 2> /dev/null && tst_cmd_available
+> > mkfs.$fs \
+> > +                       || fs=$default_fs
 
->  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c      | 12 ++----------
->  1 file changed, 2 insertions(+), 10 deletions(-)
-
-> --- a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> @@ -422,15 +422,10 @@ struct test_desc {
->  } tests[] = {
->  #ifdef TEST_RT_SIGTIMEDWAIT
->  	{
-> -	test_empty_set, my_rt_sigtimedwait, SIGUSR1}, {
->  	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1}, {
->  	test_masked_matching, my_rt_sigtimedwait, SIGUSR1}, {
->  	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
-> -	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address, my_rt_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address2, my_rt_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address3, my_rt_sigtimedwait, SIGUSR1}, {
-> -	test_timeout, my_rt_sigtimedwait, 0},
-> +	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1}, 
->  	    /* Special cases */
->  	    /* 1: sigwaitinfo does respond to ignored signal */
->  	{
-> @@ -452,25 +447,17 @@ struct test_desc {
->  #endif
->  #if defined TEST_SIGWAITINFO
->  	{
-> -	test_empty_set, my_sigwaitinfo, SIGUSR1}, {
->  	test_unmasked_matching, my_sigwaitinfo, SIGUSR1}, {
->  	test_masked_matching, my_sigwaitinfo, SIGUSR1}, {
->  	test_unmasked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
-> -	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1}, {
-> -	test_bad_address, my_sigwaitinfo, SIGUSR1}, {
-> -	test_bad_address2, my_sigwaitinfo, SIGUSR1},
-> +	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1},
->  #endif
->  #if defined TEST_SIGTIMEDWAIT
->  	{
-> -	test_empty_set, my_sigtimedwait, SIGUSR1}, {
->  	test_unmasked_matching, my_sigtimedwait, SIGUSR1}, {
->  	test_masked_matching, my_sigtimedwait, SIGUSR1}, {
->  	test_unmasked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
-> -	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address, my_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address2, my_sigtimedwait, SIGUSR1}, {
-> -	test_bad_address3, my_sigtimedwait, SIGUSR1}, {
-> -	test_timeout, my_sigtimedwait, 0},
-> +	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1},
->  #endif
->  };
+> >                 tst_res TINFO "make $fs filesystem on /dev/zram$i"
+> > +
+> >                 mkfs.$fs /dev/zram$i > err.log 2>&1
+> >                 if [ $? -ne 0 ]; then
+> >                         cat err.log
+> > --
+> > 2.29.2
