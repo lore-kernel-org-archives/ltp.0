@@ -1,40 +1,41 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 15 Jan 2021 11:49:42 +0100
-Subject: [LTP] [PATCH] fs/proc01.c:add known issues
-In-Reply-To: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>
-References: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>
-Message-ID: <b575ead7-dcc2-f4ab-49d2-eac727469187@jv-coder.de>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
+Date: Fri, 15 Jan 2021 13:25:43 +0100
+Subject: [LTP] [PATCH 1/1] swapping01: fix parameter truncation in abs
+Message-ID: <20210115122543.288948-1-egorenar@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Parameters passed to abs(int) are of type long. Use labs(long) instead
+to avoid value truncation.
 
-On 1/15/2021 1:53 AM, Xinpeng Liu wrote:
-> Test in ubuntu20.10,there are several failure tests.
->
-> proc01      1  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/task/61595/attr/smack/current: errno=EINVAL(22): Invalid argument
-> proc01      2  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/task/61595/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-> proc01      3  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/task/61595/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
-> proc01      4  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/attr/smack/current: errno=EINVAL(22): Invalid argument
-> proc01      5  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-> proc01      6  TFAIL  :  proc01.c:396: read failed:
-> /proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
->
-> Signed-off-by: Xinpeng Liu <liuxp11@chinatelecom.cn>
+Fixes the following warning:
 
-Reviewed-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+swapping01.c: In function ?check_swapping?:
+swapping01.c:133:7: warning: absolute value function ?abs? given an argument of type ?long int? but has parameter of type ?int? which may cause truncation of value [-Wabsolute-value]
+  133 |   if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
+      |       ^~~
 
-Tested on ubuntu 20.04.
-I guess it is ok to completely exclude smack and apparmor folders from 
-the test. Maybe there are some files in there, that can be read without 
-error, but I think that should be up to testcases for these features.
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+---
+ testcases/kernel/mem/swapping/swapping01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-J?rg
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index ff40c85c0..24b8313f3 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -130,7 +130,7 @@ static void check_swapping(void)
+ 	while (i < 10) {
+ 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
+ 		sleep(1);
+-		if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
++		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
+ 			break;
+ 
+ 		i++;
+-- 
+2.26.2
+
