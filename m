@@ -1,132 +1,154 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 15 Jan 2021 15:58:49 +0800
-Subject: [LTP] [PATCH 1/1] zram: Check properly command dependencies
-In-Reply-To: <YAE9Lkgj09qVupsN@pevik>
-References: <20210114183226.794-1-pvorel@suse.cz>
- <CAEemH2cQRNQ3_sko-rBSNf4hgR0p3a5sp1qXgpyXoY1T4aOf7Q@mail.gmail.com>
- <YAE9Lkgj09qVupsN@pevik>
-Message-ID: <CAEemH2cmyKFuL9=OWFB-PcpvCmCa2v6BPSijeEqaV6626EmsJQ@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 15 Jan 2021 13:57:57 +0530
+Subject: [LTP] Holidays and LTP release
+In-Reply-To: <YABW1ZcnfFbjUoBq@yuki.lan>
+References: <X9tMlNxJbwCWIRnO@yuki.lan> <X/Wq28noppvB5MGw@yuki.lan>
+ <20210113095724.214c904a@kmaincent-XPS-13-7390>
+ <CA+G9fYv1UFr+7ePC7tLjCY4JPsoQdBdf-6Jpr40zmsoYRWVrdQ@mail.gmail.com>
+ <YABW1ZcnfFbjUoBq@yuki.lan>
+Message-ID: <CA+G9fYs2bv98uFgrH+WEYzDagFPy0PWruk=Em9GdMXmnQQUTCw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-
-On Fri, Jan 15, 2021 at 2:59 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-> Hi Li,
+On Thu, 14 Jan 2021 at 20:05, Cyril Hrubis <chrubis@suse.cz> wrote:
 >
-> ...
-> > > diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh
-> > > b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> > > index 3f4d1d55f..1a611b974 100755
-> > > --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-> > > +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> > > @@ -178,13 +178,30 @@ zram_swapoff()
-> > >  zram_makefs()
-> > >  {
-> > >         tst_require_cmds mkfs
-> > > +
-> > > +       local default_fs fs
-> > >         local i=0
+> Hi!
+> > I have a similar problem for semctl09 failed on arm, arm64, i386 and x86_64.
+> >
+> > semctl09.c:67: TINFO: Test SYS_semc[ 1067.769270] audit: type=1701
+> > audit(1610604534.411:38): auid=4294967295 uid=0 gid=0 ses=4294967295
+> > pid=6275 comm=\"semctl09\" exe=\"/opt/ltp/testcases/bin/semctl09\"
+> > sig=11 res=1
+> > tl syscall
+> > semctl09.c:132: TINFO: Test SEM_STAT_ANY with nobody user
+> > semctl09.c:155: TPASS: SEM_INFO returned valid index 10 to semid 10
+> > semctl09.c:164: TPASS: Counted used = 1
+> > semctl09.c:112: TPASS: semset_cnt = 1
+> > semctl09.c:119: TPASS: sen_cnt = 2
+> > tst_test.c:1313: TBROK: Test killed by SIGSEGV!
 >
-> > > +       for fs in $zram_filesystems ext2; do
-> > > +               if tst_supported_fs $fs 2> /dev/null; then
-> > > +                       default_fs="$fs"
-> > > +                       break
-> > > +               fi
-> > > +       done
+> There seems to be a part of the log missing here, if it's segfaulting in
+> the libc semctl() there used to be glibc bug for SEM_STAT_ANY which may
+> cause SIGSEGV:
 >
+> https://sourceware.org/bugzilla/show_bug.cgi?id=26637
 >
-> > This workaround makes some sense but a bit overlap to traverse
-> >  $zram_filesystems.
-> Not sure if I understand you.
-
-
-> > Maybe we can remove the unsupported filesystems from $zram_filesystems
-> > list via tst_supported_fs and tst_cmd_available, to avoid involving that
-> > additional
-> > variable 'default_fs', then in following test if $zram_filesystems is a
-> > null string
-> > just exit with TCONF directly?
+> > And on i386,
+> >
+> > tst_test.c:1263: TINFO: Timeout per run is 0h 15m 00s
+> > semctl09.c:67: TINFO: Test SYS_semctl syscall
+> > semctl09.c:132: TINFO: Test SEM_STAT_ANY with nobody user
+> > semctl09.c:155: TPASS: SEM_INFO returned valid index 11 to semid 11
+> > semctl09.c:164: TPASS: Counted used = 1
+> > semctl09.c:112: TPASS: semset_cnt = 1
+> > semctl09.c:119: TPASS: sen_cnt = 2
+> > semctl09.c:132: TINFO: Test SEM_STAT_ANY with root user
+> > semctl09.c:155: TPASS: SEM_INFO returned valid index 11 to semid 11
+> > semctl09.c:164: TPASS: Counted used = 1
+> > semctl09.c:112: TPASS: semset_cnt = 1
+> > semctl09.c:119: TPASS: sen_cnt = 2
+> > tst_test.c:1263: TINFO: Timeout per run is 0h 15m 00s
+> > semctl09.c:70: TINFO: Test libc semctl()
+> > semctl09.c:132: TINFO: Test SEM_STAT_ANY with nobody user
+> > semctl09.c:149: TFAIL: SEM_STAT_ANY doesn't pass the buffer specified
+> > by the caller to kernel
+> > semctl09.c:132: TINFO: Test SEM_STAT_ANY with root user
+> > semctl09.c:149: TFAIL: SEM_STAT_ANY doesn't pass the buffer specified
+> > by the caller to kernel
 >
-> I understood, that there must be 4 runs, because 4 /dev/zram* has been used
-> (dev_num=4). Do you mean to check supported systems in the setup (it'd be
-> safer
-> to move the calculation to the setup) and lower dev_num if needed?
+> This just says that the glibc bug is present so it's likely that the
+> same bug is causing segfaults on the rest of the architectures.
 >
-
-My fault, seems I ignored the dev_num in the previous review, I just looked
-into
-the zram_makefs() and suggest pruning the $zram_filesystems.
-
-You are right, we could have two ways now:
-1. check supported filesystems and recalculate relative parameters in the
-setup
-(I prefer this, but needs more work/time to refactor code)
-
-2. add variable default_fs as what you did
-(the cons side might have duplicated test, but I'm not against it because
-of the coming LTP release date)
-
-
+> > only fails on the arm beagleboard-x15 device.
+> >
+> > accept02.c:55: TBROK: setsockopt(3, 0, 42, 0xb6f4cf7c, 132) failed: ENODEV (19)
 >
-> And tst_cmd_available is not needed, because tst_supported_fs checks also
-> for
-> mkfs.foo presence.
->
-Great.
+> Looks like muticast groups is not compiled in kernel here.
+
+True.
+We have not enabled multicast groups.
+# CONFIG_IP_MULTICAST is not set
 
 
 >
-> Also further cleanup after release: it'd make sense to move zram_makefs and
-> zram_mount to zram01.sh, which is the only test which use them. And
-> zram_makefs
-> uses $zram_filesystems.
-> Or keep them in zram_lib.sh, but pass $zram_filesystems to zram_makefs as a
-> parameter. Current state is confusing a bit.
->
+> We should handle this and report TCONF instead, however this is not a
+> regression, the test has been like this for three years.
 
-Yes, or let's do the refactoring after release.
-
+Reporting TCONF would be right here.
 
 >
-> Kind regards,
-> Petr
+> > clock_gettime04.c:143: TFAIL: CLOCK_REALTIME: Time travelled backwards
+> > (5): -1610153174499293029 ns
+> > clock_gettime04.c:151: TFAIL: CLOCK_REALTIME_COARSE: Difference
+> > between successive readings greater than 5 ms (4): 9
+> > clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC: Difference between
+> > successive readings is reasonable
+> > clock_gettime04.c:151: TFAIL: CLOCK_MONOTONIC_COARSE: Difference
+> > between successive readings greater than 5 ms (2): 9
+> > clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC_RAW: Difference between
+> > successive readings is reasonable
+> > clock_gettime04.c:158: TPASS: CLOCK_BOOTTIME: Difference between
+> > successive readings is reasonable
 >
-> > > +
-> > > +       if [ -z "$default_fs" ]; then
-> > > +               tst_res TINFO "supported filesystems"
-> > > +               tst_supported_fs > /dev/null
-> > > +               tst_brk TCONF "missing kernel support or mkfs for all
-> of
-> > > these filesystems: $zram_filesystems"
-> > > +       fi
-> > > +
-> > >         for fs in $zram_filesystems; do
-> > > -               # if requested fs not supported default it to ext2
-> > > -               tst_supported_fs $fs 2> /dev/null || fs=ext2
-> > > +               # use default if requested fs not supported or missing
-> mkfs
-> > > +               tst_supported_fs $fs 2> /dev/null && tst_cmd_available
-> > > mkfs.$fs \
-> > > +                       || fs=$default_fs
->
-> > >                 tst_res TINFO "make $fs filesystem on /dev/zram$i"
-> > > +
-> > >                 mkfs.$fs /dev/zram$i > err.log 2>&1
-> > >                 if [ $? -ne 0 ]; then
-> > >                         cat err.log
-> > > --
-> > > 2.29.2
->
->
+> This shouldn't really happen, what this says is that time jumped 51
+> years back. That is really absurd.
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210115/dd6cdaa2/attachment.htm>
+This is always reproduced on arm beagleboard-x15, i386 32-bit qemu_i386
+and qemu_arm.
+
+clock_gettime04.c:143: TFAIL: CLOCK_REALTIME: Time travelled backwards
+(5): -1610599851098100352 ns
+
+https://lkft.validation.linaro.org/scheduler/job/2142122#L3885
+https://lkft.validation.linaro.org/scheduler/job/2144548#L2534
+
+
+>
+> > getrlimit03.c:168: TPASS: __NR_prlimit64(0) and __NR_ugetrlimit(0)
+> > gave consistent results
+> > tst_test.c:1313: TBROK: Test killed by SIGILL!
+>
+> Can we have a backtrace here? It's impossible to say what happened here
+> without further debugging.
+
+I do not have backtrace log for this now.
+Let me share strace output log in this link,
+# strace -f ./getrlimit03
+https://lkft.validation.linaro.org/scheduler/job/2145166#L2569
+
+>
+> > on x86_64:
+> > The ioctl_sg01 test killed and reported failed.
+> >
+> > tst_test.c:1263: TINFO: Timeout per run is 0h 15m 00s
+> > ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg1
+> > [  332.383394] ioctl_sg01 invoked oom-killer:
+>
+> That's likely due to tst_pollutte_memory().
+>
+> What are the overcommit settings on that machine?
+
+overcommit_memory is 0.
+After changing overcommit to 2 the test got PASS.
+
+> This is probably worth fixing before the release if we manage to figure
+> out the cause.
+
+cat /proc/sys/vm/overcommit_memory
+0
+cat /proc/sys/vm/overcommit_ratio
+50
+./runltp -s ioctl_sg01 --> FAILED
+
+echo 2 > /proc/sys/vm/overcommit_memory
+cat /proc/sys/vm/overcommit_memory
+2
+./runltp -s ioctl_sg01 --> PASS
+
+Full test run  link,
+https://lkft.validation.linaro.org/scheduler/job/2142340#L8823
+
+- Naresh
