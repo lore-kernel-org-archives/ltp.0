@@ -1,41 +1,22 @@
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
-Date: Fri, 15 Jan 2021 13:25:43 +0100
-Subject: [LTP] [PATCH 1/1] swapping01: fix parameter truncation in abs
-Message-ID: <20210115122543.288948-1-egorenar@linux.ibm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 Jan 2021 13:49:05 +0100
+Subject: [LTP] LTP testcase(sysctl02) failed
+In-Reply-To: <f3136f18-edd5-08b7-a720-72baeeed7fbc@jv-coder.de>
+References: <0efaa481ffd24bc48fd41385159be66c@exch01.asrmicro.com>
+ <f3136f18-edd5-08b7-a720-72baeeed7fbc@jv-coder.de>
+Message-ID: <YAGPQRoBmwg488jJ@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Parameters passed to abs(int) are of type long. Use labs(long) instead
-to avoid value truncation.
+Hi!
+> @Cyril I guess you may know how and who to report this to?
 
-Fixes the following warning:
+Patches are proposed for inclusion into stable trees at
+stable@vger.kernel.org so I would drop an email there.
 
-swapping01.c: In function ?check_swapping?:
-swapping01.c:133:7: warning: absolute value function ?abs? given an argument of type ?long int? but has parameter of type ?int? which may cause truncation of value [-Wabsolute-value]
-  133 |   if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
-      |       ^~~
-
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
----
- testcases/kernel/mem/swapping/swapping01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index ff40c85c0..24b8313f3 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -130,7 +130,7 @@ static void check_swapping(void)
- 	while (i < 10) {
- 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
- 		sleep(1);
--		if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
-+		if (labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
- 			break;
- 
- 		i++;
 -- 
-2.26.2
-
+Cyril Hrubis
+chrubis@suse.cz
