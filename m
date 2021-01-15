@@ -1,62 +1,97 @@
-From: Gao =?unknown-8bit?b?TWVpdGFv77yI6auY546r5rab77yJ?= <meitaogao@asrmicro.com>
-Date: Fri, 15 Jan 2021 08:29:40 +0000
-Subject: [LTP] =?utf-8?b?562U5aSNOiAgTFRQIHRlc3RjYXNlKHN5c2N0bDAyKSBmYWls?=
- =?utf-8?q?ed?=
-In-Reply-To: <f3136f18-edd5-08b7-a720-72baeeed7fbc@jv-coder.de>
-References: <0efaa481ffd24bc48fd41385159be66c@exch01.asrmicro.com>
- <f3136f18-edd5-08b7-a720-72baeeed7fbc@jv-coder.de>
-Message-ID: <57bd563d22b642ec8618fc4f45e2811e@exch01.asrmicro.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Fri, 15 Jan 2021 16:54:07 +0800
+Subject: [LTP] [PATCH 1/1] device-drivers/zram: Fix false-judgement on
+ zram's presence
+In-Reply-To: <YABgDXi2WHSWmwHF@pevik>
+References: <20210114074603.GB32318@andestech.com>
+ <YABgDXi2WHSWmwHF@pevik>
+Message-ID: <20210115085406.GA23267@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joery:
+Hi Petr,
+On Thu, Jan 14, 2021 at 11:15:25PM +0800, Petr Vorel wrote:
+> Hi Leo,
+> 
+> > zram_lib.sh uses the return value of modinfo to check if zram module exists,
+> > but the behavior of modinfo implemented by busybox is different.
+> 
+> > The busybox-implemented modinfo would also return true (code: 0)
+> > even if zram module is not present,
+> > so grep the info that only shows when the module exists.
+> 
+> > -modinfo zram > /dev/null 2>&1 ||
+> > +modinfo zram | grep "filename" > /dev/null 2>&1 ||
+> nit: 
+> modinfo zram | grep -q "filename" ||
+> 
+> >  	tst_brk TCONF "zram not configured in kernel"
+> 
+> Thank you for a report. Actually, we have a helper for it:
+> TST_NEEDS_DRIVERS="zram"
+> 
+> But this helper is broken for BusyBox, which means it's broken for many tests.
+> 
+> The helper calls tst_check_driver() C function (lib/tst_kernel.c):
+> 
+> int tst_check_driver(const char *name)
+> {
+> #ifndef __ANDROID__
+> 	const char * const argv[] = { "modprobe", "-n", name, NULL };
+> 	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
+> 			       TST_CMD_PASS_RETVAL);
+> 
+> 	/* 255 - it looks like modprobe not available */
+> 	return (res == 255) ? 0 : res;
+> #else
+> 	/* Android modprobe may not have '-n', or properly installed
+> 	 * module.*.bin files to determine built-in drivers. Assume
+> 	 * all drivers are available.
+> 	 */
+> 	return 0;
+> #endif
+> }
+> 
+> and the problem is that modprobe from busybox does not support -n.
+> It does support -D, which could be used, *but* unless is busybox binary
+> configured with CONFIG_MODPROBE_SMALL=y (IMHO the default) => not suitable
+> for us.
+> 
+> IMHO we have only 2 options:
+> * write something on our own which would look into /lib/modules and
+> /system/lib/modules (Android). That's what BusyBox implementation does
+> (also kmod implementation looks into /lib/modules). BusyBox has this path in
+> defined in build time configuration (CONFIG_DEFAULT_MODULES_DIR), but I'd be
+> surprised if any system had both directories.
+> pros: no external dependency
+> cons: more code
+> 
+> * use modinfo, but grep for output: for 'filename:' (turn Leo's suggestion into
+> C code in the API):
+> cons: module not checked, when modprobe missing (we check for 255 exit code).
+> 
 
-	Thanks for your information and clearing this out, Ah, I am not alone with this.
-	After I checked this patch (7f2923c), found that it seem be necessary , so patch it into my codebase.
+Thanks for breaking things down in such detail!
 
+I personally prefer the first option that looking into those directories ourselves.
+So let's drop this patch and stay as is for now!
 
-Best wishes.
------------------------------------
-Best Regards
-Meitao Gao
-021-6109-2999 ext. 8300
-------------------------------------
+> BTW not sure whether bother about android support anyway. On Android phone I
+> have available (Android 8), there is empty /system/lib/modules directory and no
+> /proc/modules:, thus nor BusyBox neither even toybox modprobe/modinfo
+> implementations work.
+ 
+BTW, I found that there's a ver_linux script that detects the version of util-linux.
+But as I searched through commit log of LTP, there are a lot of workarounds
+regarding the compatibility issue with Busybox (around 10 commits or so).
 
+Is there a certain version of util-linux is expected to conduct a full run of LTP ?
 
+Thanks again,
+Leo
 
------????-----
-???: Joerg Vehlow [mailto:lkml@jv-coder.de] 
-????: 2021?1?15? 14:14
-???: Gao Meitao?????; ltp@lists.linux.it; Cyril Hrubis
-??: Re: [LTP] LTP testcase(sysctl02) failed
-
-Hi Gao,
-
-On 12/24/2020 6:56 AM, Gao Meitao????? wrote:
->
-> after investigated it, this testcase is for bufffer overflow, I 
-> checked source code (kernel 4.19),
->
-> all of required patched had been applied, I dig into it and found new 
-> patch applied as flow , that might make testcase failed
->
-> so is this testcase out of date or something wrong wih my kernel ?
->
-> who can help me figure this out? Thanks in advance.
->
-I also saw this on 4.19. From the mailing list of the kernel, it looks like there was some confusion when they ported the patches back to 4.19.
-I do not find the mails on the mailing list anymore. But the commit 7f2923c from master is missing IIRC.
-Christian Brauner made two changes:
-1. Prevent over and underflow by just keeping the old value (7f2923c together with 32a5ad9c). This introduced a kasan bug fixed in 9002b21 2. Return EINVAL, if an overflow or underflow of the new value is detected (e260ad01f)
-
- From what I remember Christian wanted the first change completely backported to 4.19 (7f2923c, 32a5ad9c and 9002b21) and he wanted to omit the change done in e260ad01f, because that changed the behavior of the interface towards the user.
-But when the changed were backported to 4.19, the commit 32a5ad9c,
-9002b21 and e260ad01f were backported. Since 7f2923c is the commit, that really enables over- and underflow detection, this is not backported and all the other commit (including e260ad01f) have no effect.
-
-At the time I found this, I had no time to find out how and where to report this.
-@Cyril I guess you may know how and who to report this to?
-
-J?rg
+> Kind regards,
+> Petr
