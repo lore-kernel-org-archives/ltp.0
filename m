@@ -1,186 +1,155 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 18 Jan 2021 15:56:28 +0000
-Subject: [LTP] [PATCH 5/5] can: Remove obsolete test wrapper script
-In-Reply-To: <20210118155628.9248-1-rpalethorpe@suse.com>
-References: <20210118155628.9248-1-rpalethorpe@suse.com>
-Message-ID: <20210118155628.9248-6-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 18 Jan 2021 17:13:08 +0100
+Subject: [LTP] [PATCH v2 1/2] lib: Fix kernel module detection on BusyBox
+Message-ID: <20210118161308.30771-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Functionality moved into can_common.h and the test executables.
+BusyBox modprobe implementation does not support -n switch.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+It does support -D, which could be used, *but* unless is busybox binary
+configured with CONFIG_MODPROBE_SMALL=y (IMHO the default).
+
+We could use modinfo and grep output for 'filename:', but we agreed on
+ML that having our own implementation will be the best as it also
+does not require modinfo as external dependency.
+
+Implementation searches for for module presence in /lib/modules/$(uname
+-r)/modules.{dep,builtin}. On Android expect files in /system/lib/modules
+directory.
+
+On Android still assume all drivers are available as config files might
+not be available).
+
+This fixes many tests on BusyBox, e.g. *all* network tests (tests using
+tst_net.sh) after 305a78e4c ("tst_net.sh: Require veth for netns").
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/can/Makefile                |   2 -
- .../can/filter-tests/00_Descriptions.txt      |   1 +
- testcases/network/can/filter-tests/INSTALL    |   3 +-
- testcases/network/can/filter-tests/Makefile   |   2 -
- .../network/can/filter-tests/can_run_tests.sh | 106 ------------------
- 5 files changed, 3 insertions(+), 111 deletions(-)
- delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
+Changes v1->v2:
+* Check also modules.builtin (built-in dependency).
 
-diff --git a/testcases/network/can/Makefile b/testcases/network/can/Makefile
-index 31744534a..a69f6be87 100644
---- a/testcases/network/can/Makefile
-+++ b/testcases/network/can/Makefile
-@@ -22,6 +22,4 @@ top_srcdir		?= ../../..
+Kind regards,
+Petr
+
+ lib/tst_kernel.c | 81 ++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 72 insertions(+), 9 deletions(-)
+
+diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+index 57fa4b2be..ab324a643 100644
+--- a/lib/tst_kernel.c
++++ b/lib/tst_kernel.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -17,8 +18,11 @@
  
- include $(top_srcdir)/include/mk/env_pre.mk
+ #include <sys/personality.h>
+ #include <sys/utsname.h>
++#include <limits.h>
++
+ #include "test.h"
+ #include "tst_kernel.h"
++#include "old_safe_stdio.h"
  
--INSTALL_TARGETS		:= *.sh
--
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/can/filter-tests/00_Descriptions.txt b/testcases/network/can/filter-tests/00_Descriptions.txt
-index 89610982c..55d213456 100644
---- a/testcases/network/can/filter-tests/00_Descriptions.txt
-+++ b/testcases/network/can/filter-tests/00_Descriptions.txt
-@@ -5,5 +5,6 @@ information on the CAN network protocol family PF_CAN is contained in
- <Kernel/Documentation/networking/can.txt>.
+ static int get_kernel_bits_from_uname(struct utsname *buf)
+ {
+@@ -81,20 +85,79 @@ int tst_kernel_bits(void)
+ 	return kernel_bits;
+ }
  
- For any issue(s) with CAN tests please write to:
-+<ltp@lists.linux.it>
- <socketcan-users@lists.berlios.de>,
- Oliver Hartkopp <oliver.hartkopp@volkswagen.de>,
-diff --git a/testcases/network/can/filter-tests/INSTALL b/testcases/network/can/filter-tests/INSTALL
-index e549aed0f..7d62d65fe 100644
---- a/testcases/network/can/filter-tests/INSTALL
-+++ b/testcases/network/can/filter-tests/INSTALL
-@@ -12,7 +12,8 @@ enable CAN protocol, please see ltp/README file.
- $ make
+-int tst_check_driver(const char *name)
++#ifndef __ANDROID__
++# define MODULES_DIR "/lib/modules"
++#else
++# define MODULES_DIR "/system/lib/modules"
++#endif
++
++
++int tst_search_driver(const char *driver, const char *file)
+ {
++	struct stat st;
++	char *path = NULL;
++	char buf[PATH_MAX], module[PATH_MAX], search[PATH_MAX] = "/";
++	FILE *f;
++
+ #ifndef __ANDROID__
+-	const char * const argv[] = { "modprobe", "-n", name, NULL };
+-	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
+-			       TST_CMD_PASS_RETVAL);
++	struct utsname uts;
  
- 2) To Run the tests from this directory, do:
--$ ./run_ltp-can_tests.sh
-+$ ./can_filter
-+$ ./can_rcv_own_msgs
- 
- 3) To let LTP run the tests from $LTPROOT, execute:
- $ ./runltp -f can
-diff --git a/testcases/network/can/filter-tests/Makefile b/testcases/network/can/filter-tests/Makefile
-index 6a9474164..29aaa3240 100644
---- a/testcases/network/can/filter-tests/Makefile
-+++ b/testcases/network/can/filter-tests/Makefile
-@@ -23,6 +23,4 @@ include $(top_srcdir)/include/mk/testcases.mk
- 
- CPPFLAGS		+= -DETH_P_CAN=0x000C -DPF_CAN=29 -DAF_CAN=PF_CAN
- 
--INSTALL_TARGETS		:= *.sh
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/can/filter-tests/can_run_tests.sh b/testcases/network/can/filter-tests/can_run_tests.sh
-deleted file mode 100755
-index 762d90eca..000000000
---- a/testcases/network/can/filter-tests/can_run_tests.sh
-+++ /dev/null
-@@ -1,106 +0,0 @@
--#!/bin/sh
--################################################################################
--## Copyright (c) Oliver Hartkopp <oliver.hartkopp@volkswagen.de>, 2011        ##
--## Copyright (c) International Business Machines  Corp., 2009                 ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software Foundation,   ##
--## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
--##                                                                            ##
--################################################################################
--
--TCID="$1"
--TST_TOTAL=1
--export TST_COUNT
--
--. test.sh
--
--setup()
--{
--	tst_require_root
--
--	# load needed CAN networklayer modules
--	modprobe can
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe can failed: ret - $ret"
--	fi
--
--	modprobe can_raw
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe can_raw failed: ret - $ret"
--	fi
--
--	# ensure the vcan driver to perform the ECHO on driver level
--	modprobe -r vcan
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe -r vcan failed: ret - $ret"
--	fi
--
--	modprobe vcan echo=1
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TCONF "modprobe vcan echo=1 failed: ret - $ret"
--	fi
--
--	VCAN=vcan0
--
--	# create virtual CAN device
--	ip link add dev $VCAN type vcan
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TBROK \
--			 "ip link add dev $VCAN type vcan failed: ret - $ret"
--	fi
--
--	ip link set dev $VCAN up
--	ret=$?
--	if [ $ret -ne 0 ]; then
--		tst_brkm TBROK "ip link set dev $VCAN up failed: ret - $ret"
--	fi
--
--	# check precondition for CAN frame flow test
--	HAS_ECHO=`ip link show $VCAN | grep -c ECHO`
--	if [ $HAS_ECHO -ne 1 ]; then
--		tst_brkm TBROK "ECHO is not 1"
--	fi
--}
--
--cleanup()
--{
--	ip link set dev $VCAN down
--	ip link del dev $VCAN
--	modprobe -r vcan
--	modprobe -r can_raw
--	modprobe -r can
--}
--
--if [ $# -ne 1 ]; then
--	tst_brkm TBROK "Usage: $0 [can_filter | can_rcv_own_msgs]"
--fi
--
--setup
--TST_CLEANUP=cleanup
--
--"$1" "$VCAN"
--ret=$?
--case "$ret" in
--0)	tst_resm TPASS "Test $1 PASS";;
--1)	tst_resm TFAIL "Test $1 FAIL";;
--32)	tst_resm TCONF "$1 is not appropriate for configuration flag";;
--*)	tst_resm TBROK "Invalid resm type $ret";;
--esac
--
--tst_exit
+-	/* 255 - it looks like modprobe not available */
+-	return (res == 255) ? 0 : res;
++	if (uname(&uts)) {
++		tst_brkm(TBROK | TERRNO, NULL, "uname() failed");
++		return -1;
++	}
++	SAFE_ASPRINTF(NULL, &path, "%s/%s/%s", MODULES_DIR, uts.release, file);
+ #else
+-	/* Android modprobe may not have '-n', or properly installed
+-	 * module.*.bin files to determine built-in drivers. Assume
+-	 * all drivers are available.
++	SAFE_ASPRINTF(NULL, &path, "%s/%s", MODULES_DIR, file);
++#endif
++
++	if (stat(path, &st) || !(S_ISREG(st.st_mode) || S_ISLNK(st.st_mode))) {
++#ifndef __ANDROID__
++		tst_resm(TWARN, "expected file %s does not exist or not a file", path);
++#endif
++		return -1;
++	}
++
++	if (access(path, R_OK)) {
++#ifndef __ANDROID__
++		tst_resm(TWARN, "file %s cannot be read", path);
++#endif
++		return -1;
++	}
++
++	strcat(search, driver);
++	strcat(search, ".ko");
++
++	f = SAFE_FOPEN(NULL, path, "r");
++
++	while (fgets(buf, sizeof(buf), f)) {
++		if (sscanf(buf, "%s", module) != 1)
++			continue;
++
++		if (strstr(module, search) != NULL) {
++			SAFE_FCLOSE(NULL, f);
++			return 0;
++		}
++	}
++
++	SAFE_FCLOSE(NULL, f);
++
++	return -1;
++}
++
++int tst_check_driver(const char *driver)
++{
++#ifdef __ANDROID__
++	/*
++	 * Android may not have properly installed modules.* files to determine
++	 * built-in drivers. Assume all drivers are available.
+ 	 */
+ 	return 0;
+ #endif
++
++	if (!tst_search_driver(driver, "modules.dep") ||
++		!tst_search_driver(driver, "modules.builtin"))
++		return 0;
++
++	return 1;
+ }
 -- 
 2.29.2
 
