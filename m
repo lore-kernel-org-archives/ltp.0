@@ -1,132 +1,51 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Jan 2021 13:34:32 +0100
-Subject: [LTP] [RFC PATCH 1/2] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <20210118123433.17071-1-pvorel@suse.cz>
-References: <20210118123433.17071-1-pvorel@suse.cz>
-Message-ID: <20210118123433.17071-2-pvorel@suse.cz>
+Date: Mon, 18 Jan 2021 13:34:31 +0100
+Subject: [LTP] [RFC PATCH 0/2] kernel module detection (own implementation)
+Message-ID: <20210118123433.17071-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-BusyBox modprobe implementation does not support -n switch.
+Hi,
 
-It does support -D, which could be used, *but* unless is busybox binary
-configured with CONFIG_MODPROBE_SMALL=y (IMHO the default).
+pre-release fix for BusyBox. It depends on modules.dep.
 
-We could use modinfo and grep output for 'filename:', but we agreed on
-ML that having our own implementation will be the best as it also
-does not require modinfo as external dependency.
+This implementation fails to detect built-in modules. IMHO the only
+option is to run modprobe -n or modinfo from kmod:
 
-Implementation searches for for module presence in /lib/modules/$(uname
--r)/modules.dep, for Android in /system/lib/modules/modules.dep.
+$ modprobe -n aead; echo $?
+0
 
-Android is always a bit tricky, thus does not fail when depmod.dep (it
-might not be available or or modules directory not readable for non-root
-user) or module itself not found.
+$ modinfo aead
+name:           aead
+filename:       (builtin)
+description:    Authenticated Encryption with Associated Data (AEAD)
+license:        GPL
+file:           crypto/aead
 
-This fixes many tests on BusyBox, e.g. *all* network tests (tests using
-tst_net.sh) after 305a78e4c ("tst_net.sh: Require veth for netns").
+kmod implementation searches in /lib/modules/$(uname -r)/modules.builtin.modinfo,
+thus I'll have look at that /lib/modules/$(uname -r)/modules.builtin.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- lib/tst_kernel.c | 63 ++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 58 insertions(+), 5 deletions(-)
+But maybe we should just search for module in /lib/modules/$(uname -r)
+(/system/lib/modules for android) instead expecting modules.dep + check
+content of modules.builtin for built-in if file available.
 
-diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-index 57fa4b2be..ef01cda3d 100644
---- a/lib/tst_kernel.c
-+++ b/lib/tst_kernel.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -17,8 +18,11 @@
- 
- #include <sys/personality.h>
- #include <sys/utsname.h>
-+#include <limits.h>
-+
- #include "test.h"
- #include "tst_kernel.h"
-+#include "old_safe_stdio.h"
- 
- static int get_kernel_bits_from_uname(struct utsname *buf)
- {
-@@ -81,15 +85,64 @@ int tst_kernel_bits(void)
- 	return kernel_bits;
- }
- 
-+#ifndef __ANDROID__
-+# define MODULES_DIR "/lib/modules"
-+#else
-+# define MODULES_DIR "/system/lib/modules"
-+#endif
-+
- int tst_check_driver(const char *name)
- {
-+	struct stat st;
-+	char *depmod_path = NULL;
-+	char buf[PATH_MAX], module[PATH_MAX], search[PATH_MAX] = "/";
-+	FILE *f;
-+
-+#ifndef __ANDROID__
-+	struct utsname uts;
-+
-+	if (uname(&uts)) {
-+		tst_brkm(TBROK | TERRNO, NULL, "uname()");
-+		return -1;
-+	}
-+	SAFE_ASPRINTF(NULL, &depmod_path, "%s/%s/modules.dep", MODULES_DIR, uts.release);
-+#else
-+	SAFE_ASPRINTF(NULL, &depmod_path, "%s/modules.dep", MODULES_DIR);
-+#endif
-+
-+	if (stat(depmod_path, &st) || !(S_ISREG(st.st_mode) || S_ISLNK(st.st_mode))) {
- #ifndef __ANDROID__
--	const char * const argv[] = { "modprobe", "-n", name, NULL };
--	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
--			       TST_CMD_PASS_RETVAL);
-+		tst_resm(TWARN, "expected depmod file %s does not exist or not a file", depmod_path);
-+#endif
-+		return 0;
-+	}
-+
-+	if (access(depmod_path, R_OK)) {
-+#ifndef __ANDROID__
-+		tst_resm(TWARN, "depmod file %s cannot be read", depmod_path);
-+#endif
-+		return 0;
-+	}
-+
-+	strcat(search, name);
-+	strcat(search, ".ko");
- 
--	/* 255 - it looks like modprobe not available */
--	return (res == 255) ? 0 : res;
-+	f = SAFE_FOPEN(NULL, depmod_path, "r");
-+
-+	while (fgets(buf, sizeof(buf), f)) {
-+		if (sscanf(buf, "%s:", module) != 1)
-+			continue;
-+
-+		if (strstr(module, search) != NULL) {
-+			SAFE_FCLOSE(NULL, f);
-+			return 0;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(NULL, f);
-+
-+#ifndef __ANDROID__
-+	return 1;
- #else
- 	/* Android modprobe may not have '-n', or properly installed
- 	 * module.*.bin files to determine built-in drivers. Assume
+@Sandeep @Steve: could you have a quick look on Android part?
+Not sure if modules.dep (and modules.builtin) is available at all on AOSP.
+
+Kind regards,
+Petr
+
+Petr Vorel (2):
+  lib: Fix kernel module detection on BusyBox
+  zram: Fix module detection on BusyBox
+
+ lib/tst_kernel.c                              | 63 +++++++++++++++++--
+ .../kernel/device-drivers/zram/zram_lib.sh    |  6 +-
+ 2 files changed, 60 insertions(+), 9 deletions(-)
+
 -- 
 2.29.2
 
