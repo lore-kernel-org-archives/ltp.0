@@ -1,27 +1,25 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 18 Jan 2021 11:35:41 +0100
-Subject: [LTP] [PATCH 1/1] travis: Temporary workaround for pull rate
- limit
-In-Reply-To: <60055B2C.1080607@cn.fujitsu.com>
-References: <20210118081350.21418-1-pvorel@suse.cz>
- <60055B2C.1080607@cn.fujitsu.com>
-Message-ID: <YAVkff08KAIh8l+s@pevik>
+Date: Mon, 18 Jan 2021 11:42:26 +0100
+Subject: [LTP] [PATCH] include/tst_timer.h: Fix overflows
+In-Reply-To: <20210115151936.18809-1-chrubis@suse.cz>
+References: <20210115151936.18809-1-chrubis@suse.cz>
+Message-ID: <YAVmErn6g+dCfSEr@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Hi Cyril,
 
-> Hi Petr
-> I think using gcr.io mirror as a temporary solution is OK. But why we
-> not migrate into Github Actions directly? Now, it is time to this
-> release and do we should apply it before release?
-Lack of time on my side (working on other fixes before release).
+> This fixes overflows in tst_timeval_to_us() and tst_timeval_to_ns() on
+> 32bit hardware. We have to cast the tv_sec (ulong) to (long long)
+> explicitly otherwise the tv_sec will overflow the multiplication.
 
-> Best Regards
-> Yang Xu
+> This fixes clock_gettime04 where the overflow corrupted the result from
+> gettimeofday() when it was converted from timeval to timespec.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
