@@ -1,41 +1,102 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 18 Jan 2021 15:56:23 +0000
-Subject: [LTP] [PATCH 0/5] Convert CAN tests to new LTP API
-Message-ID: <20210118155628.9248-1-rpalethorpe@suse.com>
+Date: Mon, 18 Jan 2021 15:56:25 +0000
+Subject: [LTP] [PATCH 2/5] can: Add can_common.h for vcan device setup
+In-Reply-To: <20210118155628.9248-1-rpalethorpe@suse.com>
+References: <20210118155628.9248-1-rpalethorpe@suse.com>
+Message-ID: <20210118155628.9248-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Note that we call modprobe to set echo=1. However this does seem to be
+necessary for the current tests on 5.10. It has been kept to avoid
+changing the test behavior unnecessarily, but can most likely be
+safely removed if it causes problems.
 
-This is an attempt to convert the CAN tests to the (modern) LTP API
-and removes the wrapper script. I have tried to keep the core test
-behaviour the same, but (for example) moving to the SAFE_ functions
-will naturally introduce some changes in error checking. Deliberate
-behavioral changes have been noted in the commit messages.
-
-Richard Palethorpe (5):
-  API: Add FILE_SCANF to new lib
-  can: Add can_common.h for vcan device setup
-  can_filter: Convert to new library
-  can_recv_own_msgs: Convert to new library
-  can: Remove obsolete test wrapper script
-
- include/tst_safe_file_ops.h                   |   3 +
- testcases/network/can/Makefile                |   2 -
- .../can/filter-tests/00_Descriptions.txt      |   1 +
- testcases/network/can/filter-tests/INSTALL    |   3 +-
- testcases/network/can/filter-tests/Makefile   |   2 -
- .../network/can/filter-tests/can_common.h     |  70 ++++
- .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
- .../can/filter-tests/can_rcv_own_msgs.c       | 273 +++++----------
- .../network/can/filter-tests/can_run_tests.sh | 106 ------
- 9 files changed, 288 insertions(+), 489 deletions(-)
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ .../network/can/filter-tests/can_common.h     | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
  create mode 100644 testcases/network/can/filter-tests/can_common.h
- delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
 
+diff --git a/testcases/network/can/filter-tests/can_common.h b/testcases/network/can/filter-tests/can_common.h
+new file mode 100644
+index 000000000..d01694b80
+--- /dev/null
++++ b/testcases/network/can/filter-tests/can_common.h
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 SUSE LLC
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/ioctl.h>
++#include <sys/time.h>
++#include <net/if.h>
++
++#include "tst_cmd.h"
++#include "tst_safe_stdio.h"
++#include "tst_safe_file_ops.h"
++
++#include <linux/if.h>
++#include <linux/can.h>
++#include <linux/can/raw.h>
++
++static char *can_dev_name;
++static int can_created_dev;
++
++static void can_cmd(const char *const argv[])
++{
++	tst_cmd(argv, NULL, NULL, TST_CMD_TCONF_ON_MISSING);
++}
++
++#define CAN_CMD(...) can_cmd((const char *const[]){ __VA_ARGS__, NULL })
++
++static void can_setup_vcan(void)
++{
++	unsigned int flags;
++	char *path;
++
++	if (can_dev_name)
++		goto check_echo;
++
++	can_dev_name = "vcan0";
++
++	tst_res(TINFO, "Creating vcan0 device; use -D option to avoid this");
++
++	CAN_CMD("modprobe", "-r", "vcan");
++	CAN_CMD("modprobe", "vcan", "echo=1");
++
++	can_created_dev = 1;
++
++	CAN_CMD("ip", "link", "add", "dev", "vcan0", "type", "vcan");
++	CAN_CMD("ip", "link", "set", "dev", "vcan0", "up");
++
++check_echo:
++	/* Precondition for the frame flow test? */
++	SAFE_ASPRINTF(&path, "/sys/class/net/%s/flags", can_dev_name);
++	if (FILE_SCANF(path, "%x", &flags) || !(flags & IFF_ECHO))
++		tst_res(TWARN, "Could not determine if ECHO is set on vcan0");
++}
++
++static void can_cleanup_vcan(void)
++{
++	if (!can_created_dev)
++		return;
++
++	CAN_CMD("ip", "link", "set", "dev", "vcan0", "down");
++	CAN_CMD("ip", "link", "del", "dev", "vcan0");
++	CAN_CMD("modprobe", "-r", "vcan");
++}
 -- 
 2.29.2
 
