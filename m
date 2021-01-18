@@ -1,45 +1,65 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 15 Jan 2021 16:19:10 +0100
-Subject: [LTP] [PATCH] semctl09: Fix heap smash
-Message-ID: <20210115151910.3592-1-mdoucha@suse.cz>
+From: liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn>
+Date: Mon, 18 Jan 2021 11:34:45 +0800
+Subject: [LTP] [PATCH] fs/proc01.c:add known issues
+References: <1610672031-5044-1-git-send-email-liuxp11@chinatelecom.cn>, 
+ <95241263.33332311.1610722445185.JavaMail.zimbra@redhat.com>
+Message-ID: <202101181134453606602@chinatelecom.cn>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-semctl() expects pointer to a buffer as its fourth argument, not pointer
-to a pointer. Passing &un.buf results in heap smash that corrupts internal
-LTP data structures on some archs.
+thanks for good question.
 
-CC: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- testcases/kernel/syscalls/ipc/semctl/semctl09.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+i check the source linux-source-5.8.0,in filesecurity/smack/smack_lsm.c:smack_getprocattr
+directly return -EINVAL.
 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-index 131bfbc07..d36ba62e5 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-@@ -51,11 +51,15 @@ static union semun un;
-  */
- static inline int do_semctl(int semid, int semnum, int cmd)
- {
-+	struct semid_ds info;
-+
-+	un.buf = &info;
-+
- 	switch (tst_variant) {
- 	case 0:
--		return tst_syscall(__NR_semctl, semid, semnum, cmd, &un.buf);
-+		return tst_syscall(__NR_semctl, semid, semnum, cmd, un);
- 	case 1:
--		return semctl(semid, semnum, cmd, &un.buf);
-+		return semctl(semid, semnum, cmd, un);
- 	}
- 	return -1;
- }
--- 
-2.29.2
+static int smack_getprocattr(struct task_struct *p, char *name, char **value)
+{
+        struct smack_known *skp = smk_of_task_struct(p);
+        char *cp;
+        int slen;
 
+        if (strcmp(name, "current") != 0 && strcmp(name, "context") != 0)
+                return -EINVAL;
+
+        cp = kstrdup(skp->smk_known, GFP_KERNEL);
+        if (cp == NULL)
+                return -ENOMEM;
+
+        slen = strlen(cp);
+        *value = cp;
+        return slen;
+}
+
+
+ 
+From: Jan Stancek
+Date: 2021-01-15 22:54
+To: Xinpeng Liu
+CC: ltp
+Subject: Re: [LTP] [PATCH] fs/proc01.c:add known issues
+ 
+----- Original Message -----
+> Test in ubuntu20.10,there are several failure tests.
+> 
+> proc01      1  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/smack/current: errno=EINVAL(22): Invalid argument
+> proc01      2  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+> proc01      3  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/task/61595/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
+> proc01      4  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/smack/current: errno=EINVAL(22): Invalid argument
+> proc01      5  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
+> proc01      6  TFAIL  :  proc01.c:396: read failed:
+> /proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
+ 
+I'm OK with ignoring it, but commit log could explain more why we get EINVAL
+on read here.
+ 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210118/c5aa8f84/attachment.htm>
