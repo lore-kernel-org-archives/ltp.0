@@ -1,191 +1,100 @@
-From: Sandeep Patil <sspatil@android.com>
-Date: Tue, 19 Jan 2021 11:56:52 -0800
-Subject: [LTP] [PATCH v3 1/2] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <20210119160316.4776-2-pvorel@suse.cz>
-References: <20210119160316.4776-1-pvorel@suse.cz>
- <20210119160316.4776-2-pvorel@suse.cz>
-Message-ID: <YAc5hMnHm0GIQJ96@google.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Tue, 19 Jan 2021 22:34:25 +0100
+Subject: [LTP] [PATCH v2 4/6] can_recv_own_msgs: Convert to new library
+In-Reply-To: <85d808dd-c8c3-1216-ee6e-94d63ddf0f2b@pengutronix.de>
+References: <20210119093143.17222-1-rpalethorpe@suse.com>
+ <20210119093143.17222-5-rpalethorpe@suse.com>
+ <322f1056-0a73-65e6-531a-3275029df256@pengutronix.de>
+ <YAb1Wncn2/x6LBYj@yuki.lan>
+ <3277a88e-0301-7f3d-b024-c728e1041092@pengutronix.de>
+ <87bldkq41l.fsf@suse.de>
+ <85d808dd-c8c3-1216-ee6e-94d63ddf0f2b@pengutronix.de>
+Message-ID: <29fef223-bb59-bc88-8e3c-6e63de0af210@hartkopp.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jan 19, 2021 at 05:03:15PM +0100, Petr Vorel wrote:
-> BusyBox modprobe implementation does not support -n switch.
-> 
-> It does support -D, which could be used, *but* unless is busybox binary
-> configured with CONFIG_MODPROBE_SMALL=y (IMHO the default).
-> 
-> We could use modinfo and grep output for 'filename:', but we agreed on
-> ML that having our own implementation will be the best as it also
-> does not require modinfo as external dependency.
-> 
-> Implementation searches for for module presence in /lib/modules/$(uname
-> -r)/modules.{dep,builtin}. On Android expect files in /system/lib/modules
-> directory.
-> 
-> Also treat '-' and '_' in module name as the same (follow kmod implementation).
-> 
-> On Android still assume all drivers are available because modules.* files might
-> not be available. We could search modules in /system/lib/modules, but to
-> to determine built-in drivers we need modules.builtin (it's required
-> also by Busybox mod{info,probe} implementation).
-> 
-> This fixes many tests on BusyBox, e.g. *all* network tests (tests using
-> tst_net.sh) after 305a78e4c ("tst_net.sh: Require veth for netns").
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  lib/tst_kernel.c | 99 ++++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 87 insertions(+), 12 deletions(-)
-> 
-> diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-> index 57fa4b2be..279c8936c 100644
-> --- a/lib/tst_kernel.c
-> +++ b/lib/tst_kernel.c
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-> + * Copyright (c) 2020-2021 Petr Vorel <pvorel@suse.cz>
->   *
->   * This program is free software: you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License as published by
-> @@ -17,8 +18,11 @@
->  
->  #include <sys/personality.h>
->  #include <sys/utsname.h>
-> +#include <limits.h>
-> +
->  #include "test.h"
->  #include "tst_kernel.h"
-> +#include "old_safe_stdio.h"
->  
->  static int get_kernel_bits_from_uname(struct utsname *buf)
->  {
-> @@ -81,20 +85,91 @@ int tst_kernel_bits(void)
->  	return kernel_bits;
->  }
->  
-> -int tst_check_driver(const char *name)
-> +int tst_search_driver(const char *driver, const char *file)
->  {
-> -#ifndef __ANDROID__
-> -	const char * const argv[] = { "modprobe", "-n", name, NULL };
-> -	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
-> -			       TST_CMD_PASS_RETVAL);
-> -
-> -	/* 255 - it looks like modprobe not available */
-> -	return (res == 255) ? 0 : res;
-> -#else
-> -	/* Android modprobe may not have '-n', or properly installed
-> -	 * module.*.bin files to determine built-in drivers. Assume
-> -	 * all drivers are available.
-> +	struct stat st;
-> +	char *path = NULL, *search = NULL;
-> +	char buf[PATH_MAX], module[PATH_MAX];
-> +	FILE *f;
-> +
-> +	struct utsname uts;
-> +
-> +	if (uname(&uts)) {
-> +		tst_brkm(TBROK | TERRNO, NULL, "uname() failed");
-> +		return -1;
-> +	}
-> +	SAFE_ASPRINTF(NULL, &path, "/lib/modules/%s/%s", uts.release, file);
 
-This is just the ramdisk location, the on-disk location is
-/vendor/lib/modules/. I also think that the ramdisk one goes away after we
-switch over 2nd stage init. Is there a test I can run that uses these
-functions now to make sure this works?
 
-Also, unfortunately (and sadly) we may have to do something Android specific
-downstream as the /vendor/lib/modules and /lib/modules only started to appear
-as of android 11 :(.
-
-Once you share how I can test, I'm happy to test and add my Tested-by for
-Android.
-
-+cc: kernel-team@android.com
-> +
-> +	if (stat(path, &st) || !(S_ISREG(st.st_mode) || S_ISLNK(st.st_mode))) {
-> +		tst_resm(TWARN, "expected file %s does not exist or not a file", path);
-> +		return -1;
-> +	}
-> +
-> +	if (access(path, R_OK)) {
-> +		tst_resm(TWARN, "file %s cannot be read", path);
-> +		return -1;
-> +	}
-> +
-> +	SAFE_ASPRINTF(NULL, &search, "/%s.ko", driver);
-> +
-> +	f = SAFE_FOPEN(NULL, path, "r");
-> +
-> +	while (fgets(buf, sizeof(buf), f)) {
-> +		if (sscanf(buf, "%s", module) != 1)
-> +			continue;
-> +
-> +		if (strstr(module, search) != NULL) {
-> +			SAFE_FCLOSE(NULL, f);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	SAFE_FCLOSE(NULL, f);
-> +
-> +	return -1;
-> +}
-> +
-> +int tst_check_driver_(const char *driver)
-> +{
-> +	if (!tst_search_driver(driver, "modules.dep") ||
-> +		!tst_search_driver(driver, "modules.builtin"))
-> +		return 0;
-> +
-> +	return 1;
-> +}
-> +
-> +int tst_check_driver(const char *driver)
-> +{
-> +#ifdef __ANDROID__
-> +	/*
-> +	 * Android may not have properly installed modules.* files. We could
-> +	 * search modules in /system/lib/modules, but to to determine built-in
-
-the appropriate location would be /lib/modules OR /vendor/lib/modules.
-> +	 * drivers we need modules.builtin. Therefore assume all drivers are
-> +	 * available.
->  	 */
->  	return 0;
->  #endif
-> +
-> +	if (!tst_check_driver_(driver))
-> +		return 0;
-> +
-> +	if (strrchr(driver, '-') || strrchr(driver, '_')) {
-> +		char *driver2 = strdup(driver);
-> +		char *ix = driver2;
-> +		char find = '-', replace = '_';
-> +
-> +		if (strrchr(driver, '_')) {
-> +			find = '_';
-> +			replace = '-';
-> +		}
-> +
-> +		while ((ix = strchr(ix, find)) != NULL) {
-> +			*ix++ = replace;
-> +		}
-> +
-> +		if (!tst_check_driver_(driver2))
-> +			return 0;
-> +	}
-> +
-> +	return 1;
->  }
-> -- 
-> 2.30.0
+On 19.01.21 17:39, Marc Kleine-Budde wrote:
+> On 1/19/21 5:34 PM, Richard Palethorpe wrote:
+>> Hello All,
+>>
+>> Marc Kleine-Budde <mkl@pengutronix.de> writes:
+>>
+>>> On 1/19/21 4:06 PM, Cyril Hrubis wrote:
+>>>> Hi!
+>>>>>>   /*
+>>>>>> - * tst-rcv-own-msgs.c
+>>>>>> - *
+>>>>>> - * Copyright (c) 2010 Volkswagen Group Electronic Research
+>>>>>> - * All rights reserved.
+>>>>>> - *
+>>>>>> - * Redistribution and use in source and binary forms, with or without
+>>>>>> - * modification, are permitted provided that the following conditions
+>>>>>> - * are met:
+>>>>>> - * 1. Redistributions of source code must retain the above copyright
+>>>>>> - *    notice, this list of conditions and the following disclaimer.
+>>>>>> - * 2. Redistributions in binary form must reproduce the above copyright
+>>>>>> - *    notice, this list of conditions and the following disclaimer in the
+>>>>>> - *    documentation and/or other materials provided with the distribution.
+>>>>>> - * 3. Neither the name of Volkswagen nor the names of its contributors
+>>>>>> - *    may be used to endorse or promote products derived from this software
+>>>>>> - *    without specific prior written permission.
+>>>>>
+>>>>> IANAL, I think you're missing this license. Is looks like some sort
+>>>>> of BSD to me.
+>>
+>> Ufff, thanks, I should pay more attention when it is a test imported
+>> from elsewhere.
+>>
+>>>>>
+>>>>>> - *
+>>>>>> - * Alternatively, provided that this notice is retained in full, this
+>>>>>> - * software may be distributed under the terms of the GNU General
+>>>>>> - * Public License ("GPL") version 2, in which case the provisions of the
+>>>>>> - * GPL apply INSTEAD OF those given above.
+>>>>>
+>>>>> It doesn't say "or later".
+>>>>
+>>>> Looks like we cannot just remove this license. So what about moving this
+>>>> text into a separate COPYING file and changing the SPDX to GPL-v2.0?
+>>>
+>>> This file is dual licensed, better keep it dual licensed.
+>>>
+>>> regards,
+>>> Marc
+>>
+>> HHmm, this appears to be the BSD-3-Clause license with the following
+>> text inserted in the middle:
+>>
+>>   * Alternatively, provided that this notice is retained in full, this
+>>   * software may be distributed under the terms of the GNU General
+>>   * Public License ("GPL") version 2, in which case the provisions of the
+>>   * GPL apply INSTEAD OF those given above.
+>>   *
+>>   * The provided data structures and external interfaces from this code
+>>   * are not restricted to be used by modules with a GPL compatible license.
+>>
+>> I don't see any corresponding SPDX identifier or exception for this. It
+>> is probably easiest and safest just to keep it as-is.
 > 
+> I think the Linux kernel uses:
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> /* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR
+> BSD-3-Clause) */
+> 
+> e.g.:
+> 
+> https://elixir.bootlin.com/linux/v5.10/source/include/uapi/linux/can/gw.h
+> 
+
+Thanks Marc!
+
+Yes, indeed it is a GPLv2 / BSD3 dual license to use it in both 
+environments.
+
+Regards,
+Oliver
