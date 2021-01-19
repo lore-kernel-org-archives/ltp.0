@@ -1,28 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 Jan 2021 08:41:59 +0100
-Subject: [LTP] [PATCH v2 1/2] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <20210118161308.30771-1-pvorel@suse.cz>
-References: <20210118161308.30771-1-pvorel@suse.cz>
-Message-ID: <YAaNR0PzZt5A1Fjm@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 19 Jan 2021 09:31:38 +0000
+Subject: [LTP] [PATCH v2 1/6] API: Add FILE_SCANF to new lib
+In-Reply-To: <20210119093143.17222-1-rpalethorpe@suse.com>
+References: <20210119093143.17222-1-rpalethorpe@suse.com>
+Message-ID: <20210119093143.17222-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_safe_file_ops.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-...
-> -int tst_check_driver(const char *name)
-> +#ifndef __ANDROID__
-> +# define MODULES_DIR "/lib/modules"
-> +#else
-> +# define MODULES_DIR "/system/lib/modules"
-> +#endif
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 894c16123..ea8f89263 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -7,6 +7,9 @@
+ 
+ #include "safe_file_ops_fn.h"
+ 
++#define FILE_SCANF(path, fmt, ...) \
++	file_scanf(__FILE__, __LINE__, (path), (fmt), ## __VA_ARGS__)
++
+ #define SAFE_FILE_SCANF(path, fmt, ...) \
+ 	safe_file_scanf(__FILE__, __LINE__, NULL, \
+ 	                (path), (fmt), ## __VA_ARGS__)
+-- 
+2.29.2
 
-OK, MODULES_DIR is not needed now as I kept Android skipped (unless somebody
-contributes code or share algorithm for Android).
-
-Kind regards,
-Petr
