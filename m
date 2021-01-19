@@ -1,52 +1,80 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 Jan 2021 17:03:16 +0100
-Subject: [LTP] [PATCH v3 2/2] zram: Fix module detection on BusyBox
-In-Reply-To: <20210119160316.4776-1-pvorel@suse.cz>
-References: <20210119160316.4776-1-pvorel@suse.cz>
-Message-ID: <20210119160316.4776-3-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 19 Jan 2021 16:34:14 +0000
+Subject: [LTP] [PATCH v2 4/6] can_recv_own_msgs: Convert to new library
+In-Reply-To: <3277a88e-0301-7f3d-b024-c728e1041092@pengutronix.de>
+References: <20210119093143.17222-1-rpalethorpe@suse.com>
+ <20210119093143.17222-5-rpalethorpe@suse.com>
+ <322f1056-0a73-65e6-531a-3275029df256@pengutronix.de>
+ <YAb1Wncn2/x6LBYj@yuki.lan>
+ <3277a88e-0301-7f3d-b024-c728e1041092@pengutronix.de>
+Message-ID: <87bldkq41l.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-BusyBox modinfo implementation does not exit with 0 when module not
-found. Our own API implementation used for module detection in
-tst_check_driver() was fixed in previous commit thus use it.
+Hello All,
 
-Reported-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/device-drivers/zram/zram_lib.sh | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Marc Kleine-Budde <mkl@pengutronix.de> writes:
 
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index 3f4d1d55f..bdbf2453a 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
--# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
- # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
- 
- dev_makeswap=-1
-@@ -9,6 +9,7 @@ dev_mounted=-1
- TST_NEEDS_TMPDIR=1
- TST_SETUP="zram_load"
- TST_CLEANUP="zram_cleanup"
-+TST_NEEDS_DRIVERS="zram"
- . tst_test.sh
- 
- zram_cleanup()
-@@ -210,6 +211,3 @@ zram_mount()
- 
- 	tst_res TPASS "mount of zram device(s) succeeded"
- }
--
--modinfo zram > /dev/null 2>&1 ||
--	tst_brk TCONF "zram not configured in kernel"
+> On 1/19/21 4:06 PM, Cyril Hrubis wrote:
+>> Hi!
+>>>>  /*
+>>>> - * tst-rcv-own-msgs.c
+>>>> - *
+>>>> - * Copyright (c) 2010 Volkswagen Group Electronic Research
+>>>> - * All rights reserved.
+>>>> - *
+>>>> - * Redistribution and use in source and binary forms, with or without
+>>>> - * modification, are permitted provided that the following conditions
+>>>> - * are met:
+>>>> - * 1. Redistributions of source code must retain the above copyright
+>>>> - *    notice, this list of conditions and the following disclaimer.
+>>>> - * 2. Redistributions in binary form must reproduce the above copyright
+>>>> - *    notice, this list of conditions and the following disclaimer in the
+>>>> - *    documentation and/or other materials provided with the distribution.
+>>>> - * 3. Neither the name of Volkswagen nor the names of its contributors
+>>>> - *    may be used to endorse or promote products derived from this software
+>>>> - *    without specific prior written permission.
+>>>
+>>> IANAL, I think you're missing this license. Is looks like some sort
+>>> of BSD to me.
+
+Ufff, thanks, I should pay more attention when it is a test imported
+from elsewhere.
+
+>>>
+>>>> - *
+>>>> - * Alternatively, provided that this notice is retained in full, this
+>>>> - * software may be distributed under the terms of the GNU General
+>>>> - * Public License ("GPL") version 2, in which case the provisions of the
+>>>> - * GPL apply INSTEAD OF those given above.
+>>>
+>>> It doesn't say "or later".
+>> 
+>> Looks like we cannot just remove this license. So what about moving this
+>> text into a separate COPYING file and changing the SPDX to GPL-v2.0?
+>
+> This file is dual licensed, better keep it dual licensed.
+>
+> regards,
+> Marc
+
+HHmm, this appears to be the BSD-3-Clause license with the following
+text inserted in the middle:
+
+ * Alternatively, provided that this notice is retained in full, this
+ * software may be distributed under the terms of the GNU General
+ * Public License ("GPL") version 2, in which case the provisions of the
+ * GPL apply INSTEAD OF those given above.
+ *
+ * The provided data structures and external interfaces from this code
+ * are not restricted to be used by modules with a GPL compatible license.
+
+I don't see any corresponding SPDX identifier or exception for this. It
+is probably easiest and safest just to keep it as-is.
+
 -- 
-2.30.0
-
+Thank you,
+Richard.
