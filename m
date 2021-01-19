@@ -1,100 +1,99 @@
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Tue, 19 Jan 2021 22:34:25 +0100
-Subject: [LTP] [PATCH v2 4/6] can_recv_own_msgs: Convert to new library
-In-Reply-To: <85d808dd-c8c3-1216-ee6e-94d63ddf0f2b@pengutronix.de>
-References: <20210119093143.17222-1-rpalethorpe@suse.com>
- <20210119093143.17222-5-rpalethorpe@suse.com>
- <322f1056-0a73-65e6-531a-3275029df256@pengutronix.de>
- <YAb1Wncn2/x6LBYj@yuki.lan>
- <3277a88e-0301-7f3d-b024-c728e1041092@pengutronix.de>
- <87bldkq41l.fsf@suse.de>
- <85d808dd-c8c3-1216-ee6e-94d63ddf0f2b@pengutronix.de>
-Message-ID: <29fef223-bb59-bc88-8e3c-6e63de0af210@hartkopp.net>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 19 Jan 2021 22:48:46 +0100
+Subject: [LTP] [PATCH v3 1/2] lib: Fix kernel module detection on BusyBox
+In-Reply-To: <YAc5hMnHm0GIQJ96@google.com>
+References: <20210119160316.4776-1-pvorel@suse.cz>
+ <20210119160316.4776-2-pvorel@suse.cz>
+ <YAc5hMnHm0GIQJ96@google.com>
+Message-ID: <YAdTvomK8qSjpD0l@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Sandeep,
 
+thanks for your comments!
 
-On 19.01.21 17:39, Marc Kleine-Budde wrote:
-> On 1/19/21 5:34 PM, Richard Palethorpe wrote:
->> Hello All,
->>
->> Marc Kleine-Budde <mkl@pengutronix.de> writes:
->>
->>> On 1/19/21 4:06 PM, Cyril Hrubis wrote:
->>>> Hi!
->>>>>>   /*
->>>>>> - * tst-rcv-own-msgs.c
->>>>>> - *
->>>>>> - * Copyright (c) 2010 Volkswagen Group Electronic Research
->>>>>> - * All rights reserved.
->>>>>> - *
->>>>>> - * Redistribution and use in source and binary forms, with or without
->>>>>> - * modification, are permitted provided that the following conditions
->>>>>> - * are met:
->>>>>> - * 1. Redistributions of source code must retain the above copyright
->>>>>> - *    notice, this list of conditions and the following disclaimer.
->>>>>> - * 2. Redistributions in binary form must reproduce the above copyright
->>>>>> - *    notice, this list of conditions and the following disclaimer in the
->>>>>> - *    documentation and/or other materials provided with the distribution.
->>>>>> - * 3. Neither the name of Volkswagen nor the names of its contributors
->>>>>> - *    may be used to endorse or promote products derived from this software
->>>>>> - *    without specific prior written permission.
->>>>>
->>>>> IANAL, I think you're missing this license. Is looks like some sort
->>>>> of BSD to me.
->>
->> Ufff, thanks, I should pay more attention when it is a test imported
->> from elsewhere.
->>
->>>>>
->>>>>> - *
->>>>>> - * Alternatively, provided that this notice is retained in full, this
->>>>>> - * software may be distributed under the terms of the GNU General
->>>>>> - * Public License ("GPL") version 2, in which case the provisions of the
->>>>>> - * GPL apply INSTEAD OF those given above.
->>>>>
->>>>> It doesn't say "or later".
->>>>
->>>> Looks like we cannot just remove this license. So what about moving this
->>>> text into a separate COPYING file and changing the SPDX to GPL-v2.0?
->>>
->>> This file is dual licensed, better keep it dual licensed.
->>>
->>> regards,
->>> Marc
->>
->> HHmm, this appears to be the BSD-3-Clause license with the following
->> text inserted in the middle:
->>
->>   * Alternatively, provided that this notice is retained in full, this
->>   * software may be distributed under the terms of the GNU General
->>   * Public License ("GPL") version 2, in which case the provisions of the
->>   * GPL apply INSTEAD OF those given above.
->>   *
->>   * The provided data structures and external interfaces from this code
->>   * are not restricted to be used by modules with a GPL compatible license.
->>
->> I don't see any corresponding SPDX identifier or exception for this. It
->> is probably easiest and safest just to keep it as-is.
-> 
-> I think the Linux kernel uses:
-> 
-> /* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR
-> BSD-3-Clause) */
-> 
-> e.g.:
-> 
-> https://elixir.bootlin.com/linux/v5.10/source/include/uapi/linux/can/gw.h
-> 
+> > +	SAFE_ASPRINTF(NULL, &path, "/lib/modules/%s/%s", uts.release, file);
 
-Thanks Marc!
+> This is just the ramdisk location, the on-disk location is
+> /vendor/lib/modules/. I also think that the ramdisk one goes away after we
+> switch over 2nd stage init. Is there a test I can run that uses these
+> functions now to make sure this works?
+Any C based test which defines needs_drivers (e.g. fsetxattr02, ioctl08,
+uevent01, ...) (or shell based tests with TST_NEEDS_DRIVERS, but you probably
+don't run any shell test).
 
-Yes, indeed it is a GPLv2 / BSD3 dual license to use it in both 
-environments.
+> Also, unfortunately (and sadly) we may have to do something Android specific
+> downstream as the /vendor/lib/modules and /lib/modules only started to appear
+> as of android 11 :(.
+Feel free to send a patch upstream. If not that much complicated and you're
+willing to maintain it, it might get to upstream (depends on other maintainers,
+but we're quite open).
 
-Regards,
-Oliver
+> Once you share how I can test, I'm happy to test and add my Tested-by for
+> Android.
+
+> +cc: kernel-team@android.com
+> > +
+> > +	if (stat(path, &st) || !(S_ISREG(st.st_mode) || S_ISLNK(st.st_mode))) {
+> > +		tst_resm(TWARN, "expected file %s does not exist or not a file", path);
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (access(path, R_OK)) {
+> > +		tst_resm(TWARN, "file %s cannot be read", path);
+> > +		return -1;
+> > +	}
+> > +
+> > +	SAFE_ASPRINTF(NULL, &search, "/%s.ko", driver);
+> > +
+> > +	f = SAFE_FOPEN(NULL, path, "r");
+> > +
+> > +	while (fgets(buf, sizeof(buf), f)) {
+> > +		if (sscanf(buf, "%s", module) != 1)
+> > +			continue;
+> > +
+> > +		if (strstr(module, search) != NULL) {
+> > +			SAFE_FCLOSE(NULL, f);
+> > +			return 0;
+> > +		}
+> > +	}
+> > +
+> > +	SAFE_FCLOSE(NULL, f);
+> > +
+> > +	return -1;
+> > +}
+> > +
+> > +int tst_check_driver_(const char *driver)
+> > +{
+> > +	if (!tst_search_driver(driver, "modules.dep") ||
+> > +		!tst_search_driver(driver, "modules.builtin"))
+> > +		return 0;
+> > +
+> > +	return 1;
+> > +}
+> > +
+> > +int tst_check_driver(const char *driver)
+> > +{
+> > +#ifdef __ANDROID__
+> > +	/*
+> > +	 * Android may not have properly installed modules.* files. We could
+> > +	 * search modules in /system/lib/modules, but to to determine built-in
+
+> the appropriate location would be /lib/modules OR /vendor/lib/modules.
+OK. I tested only old aosp (Oreo, Nougat and KitKat).
+Out of curiosity, does have Android 11 modules.{builtin,dep}? If yes, it'd make
+sense to treat it as Linux (apply "modules always available" approach only if
+files aren't available).
+
+Kind regards,
+Petr
+
+> > +	 * drivers we need modules.builtin. Therefore assume all drivers are
+> > +	 * available.
+> >  	 */
+> >  	return 0;
+> >  #endif
