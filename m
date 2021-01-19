@@ -1,53 +1,75 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 19 Jan 2021 12:01:35 +0100
-Subject: [LTP] [PATCH] fs/lftest: Convert to new library
-In-Reply-To: <20201215092534.757347-1-lkml@jv-coder.de>
-References: <20201215092534.757347-1-lkml@jv-coder.de>
-Message-ID: <YAa8D8iQwaQr2tAm@pevik>
+Date: Tue, 19 Jan 2021 12:21:34 +0100
+Subject: [LTP] [PATCH v3 1/2] cpuset: skip test when cpu or nodes are
+ not numbered continuously from 0
+In-Reply-To: <600543C9.9080708@cn.fujitsu.com>
+References: <X/8ehCeZbWs6TIA4@yuki.lan>
+ <1610590728-15813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <600543C9.9080708@cn.fujitsu.com>
+Message-ID: <YAbAvorwMJUaeIGP@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi Xu,
 
-> Additonal changes:
->  - Use temp directory instead of working dir
->  - 100 buffers is teh default  now and can be changed using -n
->  - Removed some useless output (nseek, nwrite was always bufnum)
+> > These cpuset cases(cpuset_base_ops_test, cpuset_hierarchy_test, cpuset_inherit_test...)
+> > seem all not consider the situation(cpus/memory are not numbered continuously). It is
+> > continuously from 0 as default. Skip test if there are not numbered continuously to
+> > avoid unexpected error.
+
+> > This patch also fix cpu_inherit error by using original mem value.
+
+> > cpuset_inherit case fails on 4 numa nodes pc, as below:
+> > cpuset_inherit 1 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 3 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 5 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 7 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 9 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 13 TPASS: mems: Inherited information is right!
+> > cpuset_inherit 15 TPASS: mems: Inherited information is right!
+> > cpuset_inherit 17 TPASS: mems: Inherited information is right!
+> > cpuset_inherit 19 TPASS: mems: Inherited information is right!
+> > cpuset_inherit 21 TPASS: mems: Inherited information is right!
+> > cpuset_inherit 23 TFAIL: mems: Test result - 0-3 Expected string - "4"
+
+Good catch :).
+
+BTW how this happen? hot-unplug on lpar?
+Maybe add brief note about it into commit message.
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-LGTM, going to merge it after Jan 2021 release.
-
-Below are 2 tiny details I'll fix during merge.
-
 ...
-> +++ b/runtest/fs
-> @@ -58,7 +58,7 @@ ftest06 ftest06
->  ftest07 ftest07
->  ftest08 ftest08
+> > +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> > @@ -26,23 +26,34 @@
 
-> -lftest01	lftest 100
-> +lftest01	lftest
+> >   . test.sh
 
-Not sure if anybody uses runtest/fs_readonly, but we still haven't removed it.
-Thus it must be also updated:
+> > +cpu_string="`cat /sys/devices/system/cpu/online`"
+> >   NR_CPUS=`tst_ncpus`
+> > +
+> >   if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+> > -	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
+> > +	mem_string="`cat /sys/devices/system/node/has_high_memory`"
+> >   else
+> > -	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
+> > +	mem_string="`cat /sys/devices/system/node/has_normal_memory`"
+> >   fi
+> > +N_NODES="`echo $mem_string | tr ',' ' '`"
 
--test_robind54 test_robind.sh -c "lftest 80"
-+test_robind54 test_robind.sh -c "lftest"
+nit: I'd personally do:
 
-...
-> +++ b/testcases/kernel/fs/lftest/lftest.c
-...
-> +	if (str_bufnum) {
-> +		if (tst_parse_int(str_bufnum ,&bufnum, 0, INT_MAX)) {
-nit: formatting:
-		if (tst_parse_int(str_bufnum, &bufnum, 0, INT_MAX)) {
+f="/sys/devices/system/node/has_high_memory"
+[ -f "$f" ] || f="/sys/devices/system/node/has_normal_memory"
+N_NODES="$(cat $f | tr ',' ' ')"
 
-> +			tst_brk(TBROK, "Invalid buffer count '%s'", str_bufnum);
-> +		}
+but that's a tiny detail.
+
+It'd be great to rewrite these tests into C.
 
 Kind regards,
 Petr
