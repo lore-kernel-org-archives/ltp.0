@@ -1,50 +1,28 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Jan 2021 12:00:21 +0100
-Subject: [LTP] [PATCH] cpio_tests.sh: Fix failure with BusyBox cpio
-In-Reply-To: <6007D97A.9010804@cn.fujitsu.com>
-References: <20201221110120.26165-1-radoslav.kolev@suse.com>
- <20201222171033.GB126602@pevik> <X/RJhbNBfja6/Snr@pevik>
- <6007D97A.9010804@cn.fujitsu.com>
-Message-ID: <YAgNRVjYFkCxWopH@pevik>
+Date: Wed, 20 Jan 2021 12:11:27 +0100
+Subject: [LTP] [PATCH 1/1] swapping01: fix parameter truncation in abs
+In-Reply-To: <20210115122543.288948-1-egorenar@linux.ibm.com>
+References: <20210115122543.288948-1-egorenar@linux.ibm.com>
+Message-ID: <YAgP38nzhxIe3mQ0@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zhu,
+Hi Alexander,
 
-> Hi Petr
-> > Hi Radoslav,
+> Parameters passed to abs(int) are of type long. Use labs(long) instead
+> to avoid value truncation.
 
-> > ...
-> > > > +
-> > > > +if cpio 2>&1 | grep -q '\-o\sCreate (requires -H newc)'; then
-> > Thanks for your fix, merged with these changes:
+> Fixes the following warning:
 
-> > * grep for BusyBox because some older versions does not contain the
-> > hint, but actually require it.
+> swapping01.c: In function ?check_swapping?:
+> swapping01.c:133:7: warning: absolute value function ?abs? given an argument of type ?long int? but has parameter of type ?int? which may cause truncation of value [-Wabsolute-value]
+>   133 |   if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
+>       |       ^~~
 
-> > * move things to setup function due my following commit, which cannot be
-> > outside API functions (setup/test function):
-> > And check for -o (which is on BusyBox optional).
-> On my test environment, just executing cpio with no arguments will only
-> output:
-> cpio: You must specify one of -oipt options.
-> Try `cpio --help' or `cpio --usage' for more information.
-
-> So the result of cpio01_sh is changed from PASS to CONF after commit
-> 5910bdb65c.
-> Is there any difference in the output from executing this command on your
-> environment?
-
-Fixed in c698801a8 ("cpio: Fix -o compatibility detection").
-
-Thanks a lot for a bug report!
+Merged this obvious fix. Thanks!
 
 Kind regards,
 Petr
-
-
-> Best Regards
-> Feiyu Zhu
