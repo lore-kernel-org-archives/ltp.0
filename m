@@ -1,91 +1,88 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 20 Jan 2021 17:51:39 +0800
-Subject: [LTP] [PATCH v3 1/3] include/tst_test_macros.h: Add
- TST_EXP_{PASS, FD}_SILENT macros
-In-Reply-To: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
-References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
-Message-ID: <6007FD2B.9080300@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 20 Jan 2021 10:00:14 +0000
+Subject: [LTP] [PATCH 1/1] fzsync: Add sched_yield for single core
+ machine
+In-Reply-To: <20210120070053.11490-1-ycliang@andestech.com>
+References: <20210120070053.11490-1-ycliang@andestech.com>
+Message-ID: <87sg6w9bdd.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello Leo,
 
-If you have no objection, I will push the patchset after the new
-release. :-)
+Leo Yu-Chi Liang <ycliang@andestech.com> writes:
 
-Best Regards?
-Xiao Yang
-On 2021/1/12 10:02, Xiao Yang wrote:
-> 1) TST_EXP_{PASS,FD}_SILENT don't report TPASS when SCALL succeeds.
-> 2) TST_EXP_{PASS,FD} calls TST_EXP_{PASS,FD}_SILENT and reports
->    TPASS when SCALL succeeds.
+> Fuzzy sync library uses spin waiting mechanism
+> to implement thread barrier behavior, which would
+> cause this test to be time-consuming on single core machine.
 >
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> Fix this by adding sched_yield in the spin waiting loop,
+> so that the thread yields cpu as soon as it enters the waiting loop.
+
+Thanks for sending this in. Comments below.
+
+>
+> Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
 > ---
->  include/tst_test_macros.h | 25 ++++++++++++++++++-------
->  1 file changed, 18 insertions(+), 7 deletions(-)
+>  include/tst_fuzzy_sync.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-> index 3016d95c2..92cb5c66b 100644
-> --- a/include/tst_test_macros.h
-> +++ b/include/tst_test_macros.h
-> @@ -46,7 +46,7 @@ extern void *TST_RET_PTR;
->  	tst_res_(__FILE__, __LINE__, RES, \
->  		TST_FMT_(TST_2_(dummy, ##__VA_ARGS__, SCALL) FMT, __VA_ARGS__), PAR)
+> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> index 4141f5c64..64d172681 100644
+> --- a/include/tst_fuzzy_sync.h
+> +++ b/include/tst_fuzzy_sync.h
+> @@ -59,9 +59,11 @@
+>   * @sa tst_fzsync_pair
+>   */
 >  
-> -#define TST_EXP_FD(SCALL, ...)                                                 \
-> +#define TST_EXP_FD_SILENT(SCALL, ...)                                          \
->  	do {                                                                   \
->  		TEST(SCALL);                                                   \
->  		                                                               \
-> @@ -64,14 +64,20 @@ extern void *TST_RET_PTR;
->  			break;                                                 \
->  		}                                                              \
->                                                                                 \
-> -		TST_MSGP_(TPASS, " returned fd %ld", TST_RET,                  \
-> -		         #SCALL, ##__VA_ARGS__);                               \
-> -                                                                               \
->  		TST_PASS = 1;                                                  \
->                                                                                 \
->  	} while (0)
->  
-> -#define TST_EXP_PASS(SCALL, ...)                                               \
-> +#define TST_EXP_FD(SCALL, ...)                                                 \
-> +	do {                                                                   \
-> +		TST_EXP_FD_SILENT(SCALL, __VA_ARGS__);                         \
-> +		                                                               \
-> +		if (TST_PASS)                                                  \
-> +			TST_MSGP_(TPASS, " returned fd %ld", TST_RET,          \
-> +				#SCALL, ##__VA_ARGS__);                        \
-> +	} while (0)
-> +
-> +#define TST_EXP_PASS_SILENT(SCALL, ...)                                        \
->  	do {                                                                   \
->  		TEST(SCALL);                                                   \
->  		                                                               \
-> @@ -89,12 +95,17 @@ extern void *TST_RET_PTR;
->  			break;                                                 \
->  		}                                                              \
->                                                                                 \
-> -		TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);             \
-> -                                                                               \
->  		TST_PASS = 1;                                                  \
->                                                                                 \
->  	} while (0)
->  
-> +#define TST_EXP_PASS(SCALL, ...)                                               \
-> +	do {                                                                   \
-> +		TST_EXP_PASS_SILENT(SCALL, __VA_ARGS__);                       \
-> +		                                                               \
-> +		if (TST_PASS)                                                  \
-> +			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
-> +	} while (0)                                                            \
->  
->  #define TST_EXP_FAIL(SCALL, ERRNO, ...)                                        \
->  	do {                                                                   \
+> +#include <sys/sysinfo.h>
+>  #include <sys/time.h>
+>  #include <time.h>
+>  #include <math.h>
+> +#include <sched.h>
+>  #include <stdlib.h>
+>  #include <pthread.h>
+>  #include "tst_atomic.h"
+> @@ -564,6 +566,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+>  		       && tst_atomic_load(our_cntr) < INT_MAX) {
+>  			if (spins)
+>  				(*spins)++;
+> +			if(get_nprocs() == 1)
 
+We should use tst_ncpus() and then cache the value so we are not making
+a function call within the loop. It is probably best to avoid calling
+this function inside tst_fzsync_pair_wait, it may even result in a
+system call.
 
+We should probably cache the value in tst_fzsync_pair, maybe as a
+boolean e.g. "yield_in_wait". This can be set/checked in the
+tst_fzsync_pair_init function. Also this will allow the user to handle
+CPUs being offlined if the test itself can cause that.
 
+> +				sched_yield();
+>  		}
+>  
+>  		tst_atomic_store(0, other_cntr);
+> @@ -581,6 +585,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+>  		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
+>  			if (spins)
+>  				(*spins)++;
+> +			if(get_nprocs() == 1)
+> +				sched_yield();
+>  		}
+>  	}
+>  }
+
+Everyone please note that we will have to test this extensively to
+ensure it does break existing reproducers.
+
+Alternatively to this approach we could create seperate implementations
+of pair_wait and use a function pointer. I am thinking it may be best to
+do it both ways and perform some measurements.
+
+-- 
+Thank you,
+Richard.
