@@ -1,27 +1,59 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 20 Jan 2021 06:30:37 +0100
-Subject: [LTP] [PATCH] fs/lftest: Convert to new library
-In-Reply-To: <YAa8D8iQwaQr2tAm@pevik>
-References: <20201215092534.757347-1-lkml@jv-coder.de> <YAa8D8iQwaQr2tAm@pevik>
-Message-ID: <964d7c42-dcdc-321b-9b4e-f0ae540eb5c1@jv-coder.de>
+From: Leo Yu-Chi Liang <ycliang@andestech.com>
+Date: Wed, 20 Jan 2021 15:00:53 +0800
+Subject: [LTP] [PATCH 1/1] fzsync: Add sched_yield for single core machine
+Message-ID: <20210120070053.11490-1-ycliang@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Fuzzy sync library uses spin waiting mechanism
+to implement thread barrier behavior, which would
+cause this test to be time-consuming on single core machine.
 
-On 1/19/2021 12:01 PM, Petr Vorel wrote:
-> Not sure if anybody uses runtest/fs_readonly, but we still haven't 
-> removed it.
-> Thus it must be also updated:
->
-> -test_robind54 test_robind.sh -c "lftest 80"
-> +test_robind54 test_robind.sh -c "lftest"
-Oh did not see that...
-The default parameter to lftest is now 100, so this should probably be
-+test_robind54 test_robind.sh -c "lftest -n 80
-Don't know if it is important
+Fix this by adding sched_yield in the spin waiting loop,
+so that the thread yields cpu as soon as it enters the waiting loop.
 
-J?rg
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ include/tst_fuzzy_sync.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+index 4141f5c64..64d172681 100644
+--- a/include/tst_fuzzy_sync.h
++++ b/include/tst_fuzzy_sync.h
+@@ -59,9 +59,11 @@
+  * @sa tst_fzsync_pair
+  */
+ 
++#include <sys/sysinfo.h>
+ #include <sys/time.h>
+ #include <time.h>
+ #include <math.h>
++#include <sched.h>
+ #include <stdlib.h>
+ #include <pthread.h>
+ #include "tst_atomic.h"
+@@ -564,6 +566,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+ 		       && tst_atomic_load(our_cntr) < INT_MAX) {
+ 			if (spins)
+ 				(*spins)++;
++			if(get_nprocs() == 1)
++				sched_yield();
+ 		}
+ 
+ 		tst_atomic_store(0, other_cntr);
+@@ -581,6 +585,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+ 		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
+ 			if (spins)
+ 				(*spins)++;
++			if(get_nprocs() == 1)
++				sched_yield();
+ 		}
+ 	}
+ }
+-- 
+2.17.0
+
