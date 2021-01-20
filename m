@@ -1,44 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jan 2021 11:34:58 +0100
-Subject: [LTP] [PATCH v3 3/3] syscalls: Take use of TST_EXP_PASS_SILENT
-In-Reply-To: <20210112020227.11775-3-yangx.jy@cn.fujitsu.com>
-References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
- <20210112020227.11775-3-yangx.jy@cn.fujitsu.com>
-Message-ID: <YAgHUvIge6svN0gu@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 20 Jan 2021 12:00:21 +0100
+Subject: [LTP] [PATCH] cpio_tests.sh: Fix failure with BusyBox cpio
+In-Reply-To: <6007D97A.9010804@cn.fujitsu.com>
+References: <20201221110120.26165-1-radoslav.kolev@suse.com>
+ <20201222171033.GB126602@pevik> <X/RJhbNBfja6/Snr@pevik>
+ <6007D97A.9010804@cn.fujitsu.com>
+Message-ID: <YAgNRVjYFkCxWopH@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/capget/capget01.c b/testcases/kernel/syscalls/capget/capget01.c
-> index 6c17a7c7c..af088e2fc 100644
-> --- a/testcases/kernel/syscalls/capget/capget01.c
-> +++ b/testcases/kernel/syscalls/capget/capget01.c
-> @@ -32,8 +32,10 @@ static void verify_capget(unsigned int n)
->  	hdr->version = tc->version;
->  	hdr->pid = pid;
->  
-> -	TST_EXP_PASS(tst_syscall(__NR_capget, hdr, data),
-> +	TST_EXP_PASS_SILENT(tst_syscall(__NR_capget, hdr, data),
->  	             "capget() with %s", tc->message);
-> +	if (!TST_PASS)
-> +		return;
->  
->  	if (data[0].effective & 1 << CAP_NET_RAW)
->  		tst_res(TFAIL, "capget() gets CAP_NET_RAW unexpectedly in pE");
+Hi Zhu,
 
-I do not agree with the change in the capget01 here since there are
-really two testcases there and the test was producing the same amount of
-TPASS messages before the change to the TST_EXP_PASS() as well.
+> Hi Petr
+> > Hi Radoslav,
 
-Other than that the patchset is fine.
+> > ...
+> > > > +
+> > > > +if cpio 2>&1 | grep -q '\-o\sCreate (requires -H newc)'; then
+> > Thanks for your fix, merged with these changes:
 
-So with the capget change removed you can add my:
+> > * grep for BusyBox because some older versions does not contain the
+> > hint, but actually require it.
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > * move things to setup function due my following commit, which cannot be
+> > outside API functions (setup/test function):
+> > And check for -o (which is on BusyBox optional).
+> On my test environment, just executing cpio with no arguments will only
+> output:
+> cpio: You must specify one of -oipt options.
+> Try `cpio --help' or `cpio --usage' for more information.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> So the result of cpio01_sh is changed from PASS to CONF after commit
+> 5910bdb65c.
+> Is there any difference in the output from executing this command on your
+> environment?
+
+Fixed in c698801a8 ("cpio: Fix -o compatibility detection").
+
+Thanks a lot for a bug report!
+
+Kind regards,
+Petr
+
+
+> Best Regards
+> Feiyu Zhu
