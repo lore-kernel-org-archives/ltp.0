@@ -1,99 +1,85 @@
-From: liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn>
-Date: Wed, 20 Jan 2021 08:42:23 +0800
-Subject: [LTP] [PATCH v2 1/1] fs/proc01.c: Whitelist attr and task files
- for apparmor and smack
-References: <20210119123308.24578-1-pvorel@suse.cz>
-Message-ID: <202101200842236418021@chinatelecom.cn>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Wed, 20 Jan 2021 09:45:37 +0800
+Subject: [LTP] [PATCH v3 1/2] cpuset: skip test when cpu or nodes are
+ not numbered continuously from 0
+In-Reply-To: <YAbAvorwMJUaeIGP@pevik>
+References: <X/8ehCeZbWs6TIA4@yuki.lan>
+ <1610590728-15813-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <600543C9.9080708@cn.fujitsu.com> <YAbAvorwMJUaeIGP@pevik>
+Message-ID: <60078B41.4020906@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thanks for your rewritten!
- 
-From: Petr Vorel
-Date: 2021-01-19 20:33
-To: ltp
-CC: Xinpeng Liu; Cyril Hrubis; Joerg Vehlow; Jan Stancek; Petr Vorel
-Subject: [PATCH v2 1/1] fs/proc01.c: Whitelist attr and task files for apparmor and smack
-From: Xinpeng Liu <liuxp11@chinatelecom.cn>
- 
-We are already whitelisting LSM files (/proc/self/attr/* and
-/proc/self/task/[0-9]*/attr/*) since 2009. That's probably due the
-default value for {g,s}etprocattr LSM_HOOK is -EINVAL when LSM module
-not enabled.
- 
-Both AppArmor and SMACK allow to read only
-/proc/self/attr/apparmor/current, the rest return EINVAL.
- 
-While reading /proc/self/attr/apparmor/current (for AppArmor) and
-/proc/self/attr/current (for both AppArmor and SELinux) mostly work
-(e.g. value contains unconfined), in some cases it's not working (e.g.
-AppArmor module loaded, but filesystem is not mounted). Thus keep it
-also disabled.
- 
-Ubuntu 20.10 (AppArmor and SMACK enabled):
-proc01      1  TFAIL  :  proc01.c:396: read failed: /proc/self/task/61595/attr/smack/current: errno=EINVAL(22): Invalid argument
-proc01      2  TFAIL  :  proc01.c:396: read failed: /proc/self/task/61595/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-proc01      3  TFAIL  :  proc01.c:396: read failed: /proc/self/task/61595/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
-proc01      4  TFAIL  :  proc01.c:396: read failed: /proc/self/attr/smack/current: errno=EINVAL(22): Invalid argument
-proc01      5  TFAIL  :  proc01.c:396: read failed: /proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-proc01      6  TFAIL  :  proc01.c:396: read failed: /proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
- 
-openSUSE (kernel 5.10.7, AppArmor enabled):
-proc01      1  TFAIL  :  proc01.c:396: read failed: /proc/self/task/6367/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-proc01      2  TFAIL  :  proc01.c:396: read failed: /proc/self/task/6367/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
-proc01      3  TFAIL  :  proc01.c:396: read failed: /proc/self/attr/apparmor/prev: errno=EINVAL(22): Invalid argument
-proc01      4  TFAIL  :  proc01.c:396: read failed: /proc/self/attr/apparmor/exec: errno=EINVAL(22): Invalid argument
- 
-+ While at it, fix a comparison warning.
- 
-Reviewed-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Xinpeng Liu <liuxp11@chinatelecom.cn>
-[ pvorel: rewritten commit message ]
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi Liu, Jan,
- 
-as we agreed with Cyril that this is a valid fix, I dared to do the
-investigation and send v2 with improved commit message.
- 
-Kind regards,
-Petr
- 
-testcases/kernel/fs/proc/proc01.c | 6 +++++-
-1 file changed, 5 insertions(+), 1 deletion(-)
- 
-diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
-index 96843695c..96441d153 100644
---- a/testcases/kernel/fs/proc/proc01.c
-+++ b/testcases/kernel/fs/proc/proc01.c
-@@ -63,7 +63,7 @@ static char *opt_maxmbytesstr;
-static char *procpath = "/proc";
-static const char selfpath[] = "/proc/self";
-size_t buffsize = 1024;
--static long long maxbytes;
-+static unsigned long long maxbytes;
-unsigned long long total_read;
-unsigned int total_obj;
-@@ -97,7 +97,11 @@ static const struct mapping known_issues[] = {
-{"read", "/proc/self/mem", EIO},
-{"read", "/proc/self/task/[0-9]*/mem", EIO},
-{"read", "/proc/self/attr/*", EINVAL},
-+ {"read", "/proc/self/attr/smack/*", EINVAL},
-+ {"read", "/proc/self/attr/apparmor/*", EINVAL},
-{"read", "/proc/self/task/[0-9]*/attr/*", EINVAL},
-+ {"read", "/proc/self/task/[0-9]*/attr/smack/*", EINVAL},
-+ {"read", "/proc/self/task/[0-9]*/attr/apparmor/*", EINVAL},
-{"read", "/proc/self/ns/*", EINVAL},
-{"read", "/proc/self/task/[0-9]*/ns/*", EINVAL},
-{"read", "/proc/ppc64/rtas/error_log", EINVAL},
--- 
-2.30.0
- 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210120/fc8d8159/attachment-0001.htm>
+Hi Petr
+> Hi Xu,
+>
+>>> These cpuset cases(cpuset_base_ops_test, cpuset_hierarchy_test, cpuset_inherit_test...)
+>>> seem all not consider the situation(cpus/memory are not numbered continuously). It is
+>>> continuously from 0 as default. Skip test if there are not numbered continuously to
+>>> avoid unexpected error.
+>
+>>> This patch also fix cpu_inherit error by using original mem value.
+>
+>>> cpuset_inherit case fails on 4 numa nodes pc, as below:
+>>> cpuset_inherit 1 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 3 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 5 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 7 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 9 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+>>> cpuset_inherit 13 TPASS: mems: Inherited information is right!
+>>> cpuset_inherit 15 TPASS: mems: Inherited information is right!
+>>> cpuset_inherit 17 TPASS: mems: Inherited information is right!
+>>> cpuset_inherit 19 TPASS: mems: Inherited information is right!
+>>> cpuset_inherit 21 TPASS: mems: Inherited information is right!
+>>> cpuset_inherit 23 TFAIL: mems: Test result - 0-3 Expected string - "4"
+>
+> Good catch :).
+>
+> BTW how this happen? hot-unplug on lpar?
+> Maybe add brief note about it into commit message.
+I have added it and merged this patchset, thanks for you and cyril's review.
+>
+> Reviewed-by: Petr Vorel<pvorel@suse.cz>
+>
+> ...
+>>> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+>>> @@ -26,23 +26,34 @@
+>
+>>>    . test.sh
+>
+>>> +cpu_string="`cat /sys/devices/system/cpu/online`"
+>>>    NR_CPUS=`tst_ncpus`
+>>> +
+>>>    if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+>>> -	N_NODES="`cat /sys/devices/system/node/has_high_memory | tr ',' ' '`"
+>>> +	mem_string="`cat /sys/devices/system/node/has_high_memory`"
+>>>    else
+>>> -	N_NODES="`cat /sys/devices/system/node/has_normal_memory | tr ',' ' '`"
+>>> +	mem_string="`cat /sys/devices/system/node/has_normal_memory`"
+>>>    fi
+>>> +N_NODES="`echo $mem_string | tr ',' ' '`"
+>
+> nit: I'd personally do:
+>
+> f="/sys/devices/system/node/has_high_memory"
+> [ -f "$f" ] || f="/sys/devices/system/node/has_normal_memory"
+> N_NODES="$(cat $f | tr ',' ' ')"
+>
+> but that's a tiny detail.
+>
+> It'd be great to rewrite these tests into C.
+Yes, I will create a issue to avoid we forget this.
+>
+> Kind regards,
+> Petr
+>
+>
+> .
+>
+
+
+
