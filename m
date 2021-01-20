@@ -1,373 +1,49 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 20 Jan 2021 14:37:21 +0000
-Subject: [LTP] [PATCH v3 5/7] can_recv_own_msgs: Convert to new library
+Date: Wed, 20 Jan 2021 14:37:23 +0000
+Subject: [LTP] [PATCH v3 7/7] can: Update contact details
 In-Reply-To: <20210120143723.26483-1-rpalethorpe@suse.com>
 References: <20210120143723.26483-1-rpalethorpe@suse.com>
-Message-ID: <20210120143723.26483-6-rpalethorpe@suse.com>
+Message-ID: <20210120143723.26483-8-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Behavior is approximately the same except for the following:
-
-* Test will continue after non-fatal errors.
-* We now check the return value of `setsocketopt` and that I/O
-  completed the specified number of bytes.
-* The command line arg, device name, must be prepended with `-D`
+socketcan-users appears to be no more.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- .../can/filter-tests/can_rcv_own_msgs.c       | 273 ++++++------------
- 1 file changed, 88 insertions(+), 185 deletions(-)
+ testcases/network/can/filter-tests/00_Descriptions.txt | 5 +++--
+ testcases/network/can/filter-tests/Makefile            | 2 --
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/network/can/filter-tests/can_rcv_own_msgs.c b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-index 8ad51d298..517daae51 100644
---- a/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-+++ b/testcases/network/can/filter-tests/can_rcv_own_msgs.c
-@@ -1,88 +1,31 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
- /*
-- * tst-rcv-own-msgs.c
-- *
-- * Copyright (c) 2010 Volkswagen Group Electronic Research
-- * All rights reserved.
-- *
-- * Redistribution and use in source and binary forms, with or without
-- * modification, are permitted provided that the following conditions
-- * are met:
-- * 1. Redistributions of source code must retain the above copyright
-- *    notice, this list of conditions and the following disclaimer.
-- * 2. Redistributions in binary form must reproduce the above copyright
-- *    notice, this list of conditions and the following disclaimer in the
-- *    documentation and/or other materials provided with the distribution.
-- * 3. Neither the name of Volkswagen nor the names of its contributors
-- *    may be used to endorse or promote products derived from this software
-- *    without specific prior written permission.
-- *
-- * Alternatively, provided that this notice is retained in full, this
-- * software may be distributed under the terms of the GNU General
-- * Public License ("GPL") version 2, in which case the provisions of the
-- * GPL apply INSTEAD OF those given above.
-- *
-- * The provided data structures and external interfaces from this code
-- * are not restricted to be used by modules with a GPL compatible license.
-- *
-- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-- * DAMAGE.
-- *
-- * Send feedback to <socketcan-users@lists.berlios.de>
-- *
-+ * Copyright (c) 2011 Volkswagen Group Electronic Research
-+ * Copyright (c) 2021 SUSE LLC
-  */
+diff --git a/testcases/network/can/filter-tests/00_Descriptions.txt b/testcases/network/can/filter-tests/00_Descriptions.txt
+index 55d213456..9623d29a0 100644
+--- a/testcases/network/can/filter-tests/00_Descriptions.txt
++++ b/testcases/network/can/filter-tests/00_Descriptions.txt
+@@ -6,5 +6,6 @@ information on the CAN network protocol family PF_CAN is contained in
  
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--
--#include <sys/types.h>
--#include <sys/socket.h>
--#include <sys/ioctl.h>
--#include <sys/time.h>
--#include <net/if.h>
- #include "config.h"
--#include "tst_res_flags.h"
--#include "tst_minmax.h"
-+#include "tst_test.h"
- 
- #ifdef HAVE_LINUX_CAN_H
- 
--#include <linux/can.h>
--#include <linux/can/raw.h>
-+#include "can_common.h"
-+#include "tst_minmax.h"
- 
--struct rxs {
--	int s;
--	int t;
--};
-+static int s, t;
- 
--struct rxs test_sockets(int s, int t, canid_t can_id)
-+void test_sockets(canid_t can_id, int expect_rxs, int expect_rxt)
- {
- 	fd_set rdfs;
- 	struct timeval tv;
- 	int m = MAX(s, t) + 1;
- 	int have_rx = 1;
- 	struct can_frame frame;
--	struct rxs rx;
--	int ret;
-+	int rxs = 0, rxt = 0;
- 
- 	frame.can_id = can_id;
- 	frame.can_dlc = 0;
--	if (write(s, &frame, sizeof(frame)) < 0) {
--		perror("write");
--		exit(1);
--	}
--
--	rx.s = rx.t = 0;
-+	SAFE_WRITE(1, s, &frame, sizeof(frame));
- 
- 	while (have_rx) {
- 
-@@ -93,164 +36,124 @@ struct rxs test_sockets(int s, int t, canid_t can_id)
- 		tv.tv_usec = 50000;	/* 50ms timeout */
- 		have_rx = 0;
- 
--		ret = select(m, &rdfs, NULL, NULL, &tv);
--		if (ret < 0) {
--			perror("select");
--			exit(1);
--		}
-+		if (select(m, &rdfs, NULL, NULL, &tv) < 0)
-+			tst_brk(TBROK | TERRNO, "select");
- 
- 		if (FD_ISSET(s, &rdfs)) {
- 
- 			have_rx = 1;
--			ret = read(s, &frame, sizeof(struct can_frame));
--			if (ret < 0) {
--				perror("read");
--				exit(1);
--			}
--			if (frame.can_id != can_id) {
--				fprintf(stderr, "received wrong can_id!\n");
--				exit(1);
--			}
--			rx.s++;
-+			SAFE_READ(1, s, &frame, sizeof(struct can_frame));
+ For any issue(s) with CAN tests please write to:
+ <ltp@lists.linux.it>
+-<socketcan-users@lists.berlios.de>,
+-Oliver Hartkopp <oliver.hartkopp@volkswagen.de>,
++Oliver Hartkopp <socketcan@hartkopp.net>
++Linux-CAN ML <linux-can@vger.kernel.org>
 +
-+			if (frame.can_id != can_id)
-+				tst_res(TFAIL, "received wrong can_id!");
-+
-+			rxs++;
- 		}
+diff --git a/testcases/network/can/filter-tests/Makefile b/testcases/network/can/filter-tests/Makefile
+index 29aaa3240..bd57c7fff 100644
+--- a/testcases/network/can/filter-tests/Makefile
++++ b/testcases/network/can/filter-tests/Makefile
+@@ -14,8 +14,6 @@
+ #    You should have received a copy of the GNU General Public License along
+ #    with this program; if not, write to the Free Software Foundation, Inc.,
+ #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-#  Send feedback to <socketcan-users@lists.berlios.de>
  
- 		if (FD_ISSET(t, &rdfs)) {
+ top_srcdir		?= ../../../..
  
- 			have_rx = 1;
--			ret = read(t, &frame, sizeof(struct can_frame));
--			if (ret < 0) {
--				perror("read");
--				exit(1);
--			}
--			if (frame.can_id != can_id) {
--				fprintf(stderr, "received wrong can_id!\n");
--				exit(1);
--			}
--			rx.t++;
-+			SAFE_READ(1, t, &frame, sizeof(struct can_frame));
-+
-+			if (frame.can_id != can_id)
-+				tst_res(TFAIL, "received wrong can_id!");
-+
-+			rxt++;
- 		}
- 	}
- 
- 	/* timeout */
- 
--	return rx;
-+	tst_res(rxs == expect_rxs && rxt == expect_rxt ? TPASS : TFAIL,
-+		"s received %d of %d, t received %d of %d",
-+		rxs, expect_rxs, rxt, expect_rxt);
- }
- 
--void setopts(int s, int loopback, int recv_own_msgs)
-+static void setopts(int loopback, int recv_own_msgs)
- {
--	setsockopt(s, SOL_CAN_RAW, CAN_RAW_LOOPBACK, &loopback,
--		   sizeof(loopback));
--	setsockopt(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &recv_own_msgs,
--		   sizeof(recv_own_msgs));
-+	SAFE_SETSOCKOPT(s, SOL_CAN_RAW, CAN_RAW_LOOPBACK, &loopback,
-+			sizeof(loopback));
-+	SAFE_SETSOCKOPT(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &recv_own_msgs,
-+			sizeof(recv_own_msgs));
- 
--	printf("check loopback %d recv_own_msgs %d ... ", loopback,
--	       recv_own_msgs);
-+	tst_res(TINFO, "set loopback = %d, recv_own_msgs = %d",
-+		loopback, recv_own_msgs);
- }
- 
--int main(int argc, char **argv)
-+static void setup(void)
- {
--	int s, t;
- 	struct sockaddr_can addr;
- 	struct ifreq ifr;
--	struct rxs rx;
- 
--	/* check command line options */
--	if (argc != 2) {
--		fprintf(stderr, "Usage: %s <device>\n", argv[0]);
--		return TFAIL;
--	}
-+	can_setup_vcan();
- 
--	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
--	if (s < 0) {
--		perror("socket");
--		return TFAIL;
--	}
--	t = socket(PF_CAN, SOCK_RAW, CAN_RAW);
--	if (t < 0) {
--		perror("socket");
--		return TFAIL;
--	}
-+	s = SAFE_SOCKET(PF_CAN, SOCK_RAW, CAN_RAW);
-+	t = SAFE_SOCKET(PF_CAN, SOCK_RAW, CAN_RAW);
-+
-+	strcpy(ifr.ifr_name, can_dev_name);
-+	SAFE_IOCTL(s, SIOCGIFINDEX, &ifr);
- 
--	strcpy(ifr.ifr_name, argv[1]);
--	if (ioctl(s, SIOCGIFINDEX, &ifr) < 0) {
--		perror("SIOCGIFINDEX");
--		return TFAIL;
--	}
- 	addr.can_ifindex = ifr.ifr_ifindex;
- 	addr.can_family = AF_CAN;
- 
--	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
--		perror("bind");
--		return TFAIL;
--	}
--	if (bind(t, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
--		perror("bind");
--		return TFAIL;
--	}
-+	SAFE_BIND(s, (struct sockaddr *)&addr, sizeof(addr));
-+	SAFE_BIND(t, (struct sockaddr *)&addr, sizeof(addr));
-+}
- 
--	printf("Starting PF_CAN frame flow test.\n");
--	printf("checking socket default settings ... ");
--	rx = test_sockets(s, t, 0x340);
--	if (rx.s == 0 && rx.t == 1)
--		printf("ok.\n");
--	else {
--		printf("failure!\n");
--		return TFAIL;
--	}
-+static void cleanup(void)
-+{
-+	if (s)
-+		SAFE_CLOSE(s);
-+	if (t)
-+		SAFE_CLOSE(t);
- 
--	/* check loopback 0 recv_own_msgs 0 */
--	setopts(s, 0, 0);
--	rx = test_sockets(s, t, 0x341);
--	if (rx.s == 0 && rx.t == 0)
--		printf("ok.\n");
--	else {
--		printf("failure!\n");
--		return TFAIL;
--	}
-+	can_cleanup_vcan();
-+}
- 
--	/* check loopback 0 recv_own_msgs 1 */
--	setopts(s, 0, 1);
--	rx = test_sockets(s, t, 0x342);
--	if (rx.s == 0 && rx.t == 0)
--		printf("ok.\n");
--	else {
--		printf("failure!\n");
--		return TFAIL;
--	}
-+static void run(void)
-+{
-+	tst_res(TINFO, "Starting PF_CAN frame flow test.");
-+	tst_res(TINFO, "checking socket default settings");
-+	test_sockets(0x340, 0, 1);
- 
--	/* check loopback 1 recv_own_msgs 0 */
--	setopts(s, 1, 0);
--	rx = test_sockets(s, t, 0x343);
--	if (rx.s == 0 && rx.t == 1)
--		printf("ok.\n");
--	else {
--		printf("failure!\n");
--		return TFAIL;
--	}
-+	setopts(0, 0);
-+	test_sockets(0x341, 0, 0);
- 
--	/* check loopback 1 recv_own_msgs 1 */
--	setopts(s, 1, 1);
--	rx = test_sockets(s, t, 0x344);
--	if (rx.s == 1 && rx.t == 1)
--		printf("ok.\n");
--	else {
--		printf("failure!\n");
--		return TFAIL;
--	}
-+	setopts(0, 1);
-+	test_sockets(0x342, 0, 0);
- 
--	printf("PF_CAN frame flow test was successful.\n");
-+	setopts(1, 0);
-+	test_sockets(0x343, 0, 1);
- 
--	close(s);
--	close(t);
-+	setopts(1, 1);
-+	test_sockets(0x344, 1, 1);
- 
--	return TPASS;
-+	/* Return to defaults for when -i is used */
-+	setopts(1, 0);
- }
- 
-+static struct tst_test test = {
-+	.options = (struct tst_option[]) {
-+		{"D:", &can_dev_name, "-D <device>	CAN device name"},
-+		{}
-+	},
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_REQ, CAP_NET_RAW),
-+		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-+		{}
-+	},
-+	.needs_drivers = (const char *const[]) {
-+		"vcan",
-+		"can-raw",
-+		NULL
-+	}
-+};
-+
- #else
- 
--int main(void)
--{
--	printf("The linux/can.h was missing upon compilation.\n");
--	return TCONF;
--}
-+TST_TEST_TCONF("The linux/can.h was missing upon compilation");
- 
- #endif /* HAVE_LINUX_CAN_H */
 -- 
 2.30.0
 
