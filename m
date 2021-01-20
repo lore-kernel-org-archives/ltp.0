@@ -1,146 +1,56 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jan 2021 15:14:25 +0100
-Subject: [LTP] [PATCH v3 1/2] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <20210119160316.4776-2-pvorel@suse.cz>
-References: <20210119160316.4776-1-pvorel@suse.cz>
- <20210119160316.4776-2-pvorel@suse.cz>
-Message-ID: <YAg6wTVc6AB28smR@yuki.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 20 Jan 2021 14:37:16 +0000
+Subject: [LTP] [PATCH v3 0/7] Convert CAN tests to new LTP API
+Message-ID: <20210120143723.26483-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  #include <sys/personality.h>
->  #include <sys/utsname.h>
-> +#include <limits.h>
-> +
->  #include "test.h"
->  #include "tst_kernel.h"
-> +#include "old_safe_stdio.h"
->  
->  static int get_kernel_bits_from_uname(struct utsname *buf)
->  {
-> @@ -81,20 +85,91 @@ int tst_kernel_bits(void)
->  	return kernel_bits;
->  }
->  
-> -int tst_check_driver(const char *name)
-> +int tst_search_driver(const char *driver, const char *file)
->  {
-> -#ifndef __ANDROID__
-> -	const char * const argv[] = { "modprobe", "-n", name, NULL };
-> -	int res = tst_cmd_(NULL, argv, "/dev/null", "/dev/null",
-> -			       TST_CMD_PASS_RETVAL);
-> -
-> -	/* 255 - it looks like modprobe not available */
-> -	return (res == 255) ? 0 : res;
-> -#else
-> -	/* Android modprobe may not have '-n', or properly installed
-> -	 * module.*.bin files to determine built-in drivers. Assume
-> -	 * all drivers are available.
-> +	struct stat st;
-> +	char *path = NULL, *search = NULL;
-> +	char buf[PATH_MAX], module[PATH_MAX];
-> +	FILE *f;
-> +
-> +	struct utsname uts;
-> +
-> +	if (uname(&uts)) {
-> +		tst_brkm(TBROK | TERRNO, NULL, "uname() failed");
-> +		return -1;
-> +	}
-> +	SAFE_ASPRINTF(NULL, &path, "/lib/modules/%s/%s", uts.release, file);
-> +
-> +	if (stat(path, &st) || !(S_ISREG(st.st_mode) || S_ISLNK(st.st_mode))) {
-> +		tst_resm(TWARN, "expected file %s does not exist or not a file", path);
-> +		return -1;
-> +	}
-> +
-> +	if (access(path, R_OK)) {
-> +		tst_resm(TWARN, "file %s cannot be read", path);
-> +		return -1;
-> +	}
-> +
-> +	SAFE_ASPRINTF(NULL, &search, "/%s.ko", driver);
-> +
-> +	f = SAFE_FOPEN(NULL, path, "r");
-> +
-> +	while (fgets(buf, sizeof(buf), f)) {
-> +		if (sscanf(buf, "%s", module) != 1)
-> +			continue;
+Hello,
 
-What is the point in the sscanf() here?
+This is an attempt to convert the CAN tests to the (modern) Linux Test
+Project API and removes the wrapper script. To be clear, this is a
+patch-set for the LTP *not* the kernel tree or can-utils.
 
-Why can't we just strstr(buf, search) here?
+I have tried to keep the core test behaviour the same, but (for
+example) moving to the SAFE_ functions will naturally introduce some
+changes in error checking. Deliberate behavioral changes have been
+noted in the commit messages.
 
-> +		if (strstr(module, search) != NULL) {
-> +			SAFE_FCLOSE(NULL, f);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	SAFE_FCLOSE(NULL, f);
-> +
-> +	return -1;
-> +}
-> +
-> +int tst_check_driver_(const char *driver)
-> +{
-> +	if (!tst_search_driver(driver, "modules.dep") ||
-> +		!tst_search_driver(driver, "modules.builtin"))
-> +		return 0;
-> +
-> +	return 1;
-> +}
-> +
-> +int tst_check_driver(const char *driver)
-> +{
-> +#ifdef __ANDROID__
-> +	/*
-> +	 * Android may not have properly installed modules.* files. We could
-> +	 * search modules in /system/lib/modules, but to to determine built-in
-> +	 * drivers we need modules.builtin. Therefore assume all drivers are
-> +	 * available.
->  	 */
->  	return 0;
->  #endif
-> +
-> +	if (!tst_check_driver_(driver))
-> +		return 0;
-> +
-> +	if (strrchr(driver, '-') || strrchr(driver, '_')) {
-> +		char *driver2 = strdup(driver);
-> +		char *ix = driver2;
-> +		char find = '-', replace = '_';
-> +
-> +		if (strrchr(driver, '_')) {
-> +			find = '_';
-> +			replace = '-';
-> +		}
-> +
-> +		while ((ix = strchr(ix, find)) != NULL) {
-> +			*ix++ = replace;
-> +		}
+FYI, we appear to have 4 CAN tests in LTP including two tests for
+SLCAN (pty03, pty04).
 
-Just:
-		while ((ix = strchr(ix, find))
-			*ix++ = replace;
+V2: Update e-mail addresses and resend
+V3:
+* Add COPYING and use dual license SPDX identifier
+* Fix compilation issues with can_common.h
 
-> +		if (!tst_check_driver_(driver2))
+Richard Palethorpe (7):
+  API: Add FILE_SCANF to new lib
+  can: Add can_common.h for vcan device setup
+  can: Add COPYING with dual license text
+  can_filter: Convert to new library
+  can_recv_own_msgs: Convert to new library
+  can: Remove obsolete test wrapper script
+  can: Update contact details
 
-free(driver2) ?
-
-> +			return 0;
-> +	}
-> +
-> +	return 1;
->  }
-> -- 
-> 2.30.0
-> 
+ include/tst_safe_file_ops.h                   |   3 +
+ testcases/network/can/Makefile                |   2 -
+ .../can/filter-tests/00_Descriptions.txt      |   6 +-
+ testcases/network/can/filter-tests/COPYING    |  35 ++
+ testcases/network/can/filter-tests/INSTALL    |   3 +-
+ testcases/network/can/filter-tests/Makefile   |   4 -
+ .../network/can/filter-tests/can_common.h     |  75 +++++
+ .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
+ .../can/filter-tests/can_rcv_own_msgs.c       | 273 +++++----------
+ .../network/can/filter-tests/can_run_tests.sh | 106 ------
+ 10 files changed, 331 insertions(+), 493 deletions(-)
+ create mode 100644 testcases/network/can/filter-tests/COPYING
+ create mode 100644 testcases/network/can/filter-tests/can_common.h
+ delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0
+
