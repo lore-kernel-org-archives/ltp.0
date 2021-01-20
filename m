@@ -1,13 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 20 Jan 2021 11:26:10 +0100
-Subject: [LTP] Holidays and LTP release
-In-Reply-To: <CA+G9fYvRqOH7D04NHwPQNXKyMzak5bDo=GN3k13tcwV3bwN5Yw@mail.gmail.com>
-References: <X9tMlNxJbwCWIRnO@yuki.lan> <X/Wq28noppvB5MGw@yuki.lan>
- <20210113095724.214c904a@kmaincent-XPS-13-7390>
- <CA+G9fYv1UFr+7ePC7tLjCY4JPsoQdBdf-6Jpr40zmsoYRWVrdQ@mail.gmail.com>
- <db866679-a5e8-35d6-f57a-18a202c7937b@suse.cz>
- <CA+G9fYvRqOH7D04NHwPQNXKyMzak5bDo=GN3k13tcwV3bwN5Yw@mail.gmail.com>
-Message-ID: <YAgFQnIazPBpkWwL@yuki.lan>
+Date: Wed, 20 Jan 2021 11:34:58 +0100
+Subject: [LTP] [PATCH v3 3/3] syscalls: Take use of TST_EXP_PASS_SILENT
+In-Reply-To: <20210112020227.11775-3-yangx.jy@cn.fujitsu.com>
+References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
+ <20210112020227.11775-3-yangx.jy@cn.fujitsu.com>
+Message-ID: <YAgHUvIge6svN0gu@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,28 +12,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> do you mean something like this ?
-> But this change did not solve the problem (ioctl_sg01) i have reported.
-> 
-> diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
-> index f134d90c9..00bf45e9c 100644
-> --- a/lib/tst_memutils.c
-> +++ b/lib/tst_memutils.c
-> @@ -20,7 +20,7 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
->         struct sysinfo info;
-> 
->         SAFE_SYSINFO(&info);
-> -       safety = 4096 * SAFE_SYSCONF(_SC_PAGESIZE) / info.mem_unit;
-> +       safety = 8192 * SAFE_SYSCONF(_SC_PAGESIZE) / info.mem_unit;
+> diff --git a/testcases/kernel/syscalls/capget/capget01.c b/testcases/kernel/syscalls/capget/capget01.c
+> index 6c17a7c7c..af088e2fc 100644
+> --- a/testcases/kernel/syscalls/capget/capget01.c
+> +++ b/testcases/kernel/syscalls/capget/capget01.c
+> @@ -32,8 +32,10 @@ static void verify_capget(unsigned int n)
+>  	hdr->version = tc->version;
+>  	hdr->pid = pid;
+>  
+> -	TST_EXP_PASS(tst_syscall(__NR_capget, hdr, data),
+> +	TST_EXP_PASS_SILENT(tst_syscall(__NR_capget, hdr, data),
+>  	             "capget() with %s", tc->message);
+> +	if (!TST_PASS)
+> +		return;
+>  
+>  	if (data[0].effective & 1 << CAP_NET_RAW)
+>  		tst_res(TFAIL, "capget() gets CAP_NET_RAW unexpectedly in pE");
 
-Actually Martin sugessted a different patch that chooses the margin to
-be the greater of 4096 pages or 64MB, which would effectivelly set the
-safety to "16384 * SAFE_SYSCONF(_SC_PAGESIZE) / info.mem_unit" on most
-systems.
+I do not agree with the change in the capget01 here since there are
+really two testcases there and the test was producing the same amount of
+TPASS messages before the change to the TST_EXP_PASS() as well.
 
-Also I've been playing with a VM and I've been able to reproduce
-occasional failures with swap turned off and memory_overcommit set to 1
-that Martin's patch fixed for me.
+Other than that the patchset is fine.
+
+So with the capget change removed you can add my:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
