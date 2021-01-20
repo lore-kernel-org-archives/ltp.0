@@ -1,59 +1,46 @@
-From: Leo Yu-Chi Liang <ycliang@andestech.com>
-Date: Wed, 20 Jan 2021 15:00:53 +0800
-Subject: [LTP] [PATCH 1/1] fzsync: Add sched_yield for single core machine
-Message-ID: <20210120070053.11490-1-ycliang@andestech.com>
+From: Zhu Feiyu <zhufy.jy@cn.fujitsu.com>
+Date: Wed, 20 Jan 2021 15:19:22 +0800
+Subject: [LTP] [PATCH] cpio_tests.sh: Fix failure with BusyBox cpio
+In-Reply-To: <X/RJhbNBfja6/Snr@pevik>
+References: <20201221110120.26165-1-radoslav.kolev@suse.com>
+ <20201222171033.GB126602@pevik> <X/RJhbNBfja6/Snr@pevik>
+Message-ID: <6007D97A.9010804@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fuzzy sync library uses spin waiting mechanism
-to implement thread barrier behavior, which would
-cause this test to be time-consuming on single core machine.
+Hi Petr
+> Hi Radoslav,
+>
+> ...
+>>> +
+>>> +if cpio 2>&1 | grep -q '\-o\sCreate (requires -H newc)'; then
+> Thanks for your fix, merged with these changes:
+>
+> * grep for BusyBox because some older versions does not contain the
+> hint, but actually require it.
+>
+> * move things to setup function due my following commit, which cannot be
+> outside API functions (setup/test function):
+> And check for -o (which is on BusyBox optional).
+On my test environment, just executing cpio with no arguments will only 
+output:
+cpio: You must specify one of -oipt options.
+Try `cpio --help' or `cpio --usage' for more information.
 
-Fix this by adding sched_yield in the spin waiting loop,
-so that the thread yields cpu as soon as it enters the waiting loop.
+So the result of cpio01_sh is changed from PASS to CONF after commit 
+5910bdb65c.
+Is there any difference in the output from executing this command on 
+your environment?
 
-Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
----
- include/tst_fuzzy_sync.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+Best Regards
+Feiyu Zhu
+>
+> Kind regards,
+> Petr
+>
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 4141f5c64..64d172681 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -59,9 +59,11 @@
-  * @sa tst_fzsync_pair
-  */
- 
-+#include <sys/sysinfo.h>
- #include <sys/time.h>
- #include <time.h>
- #include <math.h>
-+#include <sched.h>
- #include <stdlib.h>
- #include <pthread.h>
- #include "tst_atomic.h"
-@@ -564,6 +566,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
- 		       && tst_atomic_load(our_cntr) < INT_MAX) {
- 			if (spins)
- 				(*spins)++;
-+			if(get_nprocs() == 1)
-+				sched_yield();
- 		}
- 
- 		tst_atomic_store(0, other_cntr);
-@@ -581,6 +585,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
- 		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
- 			if (spins)
- 				(*spins)++;
-+			if(get_nprocs() == 1)
-+				sched_yield();
- 		}
- 	}
- }
--- 
-2.17.0
+
 
