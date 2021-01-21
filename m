@@ -1,43 +1,52 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Jan 2021 14:32:33 +0100
-Subject: [LTP] [PATCH v4 3/3] tst_net.sh: Require veth for netns (again)
+Date: Thu, 21 Jan 2021 14:32:32 +0100
+Subject: [LTP] [PATCH v4 2/3] zram: Fix module detection on BusyBox
 In-Reply-To: <20210121133233.29007-1-pvorel@suse.cz>
 References: <20210121133233.29007-1-pvorel@suse.cz>
-Message-ID: <20210121133233.29007-4-pvorel@suse.cz>
+Message-ID: <20210121133233.29007-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-new error message is more informative:
-tcp_fastopen_run 1 TCONF: veth driver not available
+BusyBox modinfo implementation does not exit with 0 when module not
+found. Our own API implementation used for module detection in
+tst_check_driver() was fixed in previous commit thus use it.
 
-then the old one:
-Error: Unknown device type.
-tcp_fastopen_run 1 TBROK: ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2 failed
-
-NOTE: originally added in 305a78e4c and temporarily reverted in
-7fe2ad11d due problems which were fixed in commit
-"lib: Fix kernel module detection on BusyBox".
-
+Reported-by: Leo Yu-Chi Liang <ycliang@andestech.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/tst_net.sh | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index ef9354903..1ddef2fea 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -106,6 +106,7 @@ init_ltp_netspace()
- 		tst_require_cmds ip
- 		tst_require_root
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index 3f4d1d55f..bdbf2453a 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
  
-+		tst_require_drivers veth
- 		ROD ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2
- 		pid="$(ROD ns_create net,mnt)"
- 		mkdir -p /var/run/netns
+ dev_makeswap=-1
+@@ -9,6 +9,7 @@ dev_mounted=-1
+ TST_NEEDS_TMPDIR=1
+ TST_SETUP="zram_load"
+ TST_CLEANUP="zram_cleanup"
++TST_NEEDS_DRIVERS="zram"
+ . tst_test.sh
+ 
+ zram_cleanup()
+@@ -210,6 +211,3 @@ zram_mount()
+ 
+ 	tst_res TPASS "mount of zram device(s) succeeded"
+ }
+-
+-modinfo zram > /dev/null 2>&1 ||
+-	tst_brk TCONF "zram not configured in kernel"
 -- 
 2.30.0
 
