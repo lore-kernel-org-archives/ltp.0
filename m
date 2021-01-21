@@ -1,75 +1,100 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 20 Jan 2021 20:27:48 +0100
-Subject: [LTP] [PATCH v3 1/2] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <YAhMCz4j9Q2ltGcJ@yuki.lan>
-References: <20210119160316.4776-1-pvorel@suse.cz>
- <20210119160316.4776-2-pvorel@suse.cz> <YAg6wTVc6AB28smR@yuki.lan>
- <YAhKe84FcrNEYFcC@pevik> <YAhMCz4j9Q2ltGcJ@yuki.lan>
-Message-ID: <YAiENOUzMVpDThsk@pevik>
+From: Leo Liang <ycliang@andestech.com>
+Date: Thu, 21 Jan 2021 10:19:23 +0800
+Subject: [LTP] [PATCH 1/1] fzsync: Add sched_yield for single core
+ machine
+In-Reply-To: <87sg6w9bdd.fsf@suse.de>
+References: <20210120070053.11490-1-ycliang@andestech.com>
+ <87sg6w9bdd.fsf@suse.de>
+Message-ID: <20210121021923.GA2366@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On Wed, Jan 20, 2021 at 06:00:14PM +0800, Richard Palethorpe wrote:
+> Hello Leo,
+> 
+> Leo Yu-Chi Liang <ycliang@andestech.com> writes:
+> 
+> > Fuzzy sync library uses spin waiting mechanism
+> > to implement thread barrier behavior, which would
+> > cause this test to be time-consuming on single core machine.
+> >
+> > Fix this by adding sched_yield in the spin waiting loop,
+> > so that the thread yields cpu as soon as it enters the waiting loop.
+> 
+> Thanks for sending this in. Comments below.
+> 
+> >
+> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> > ---
+> >  include/tst_fuzzy_sync.h | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> > index 4141f5c64..64d172681 100644
+> > --- a/include/tst_fuzzy_sync.h
+> > +++ b/include/tst_fuzzy_sync.h
+> > @@ -59,9 +59,11 @@
+> >   * @sa tst_fzsync_pair
+> >   */
+> >  
+> > +#include <sys/sysinfo.h>
+> >  #include <sys/time.h>
+> >  #include <time.h>
+> >  #include <math.h>
+> > +#include <sched.h>
+> >  #include <stdlib.h>
+> >  #include <pthread.h>
+> >  #include "tst_atomic.h"
+> > @@ -564,6 +566,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+> >  		       && tst_atomic_load(our_cntr) < INT_MAX) {
+> >  			if (spins)
+> >  				(*spins)++;
+> > +			if(get_nprocs() == 1)
+> 
+> We should use tst_ncpus() and then cache the value so we are not making
+> a function call within the loop. It is probably best to avoid calling
+> this function inside tst_fzsync_pair_wait, it may even result in a
+> system call.
+> 
+> We should probably cache the value in tst_fzsync_pair, maybe as a
+> boolean e.g. "yield_in_wait". This can be set/checked in the
+> tst_fzsync_pair_init function. Also this will allow the user to handle
+> CPUs being offlined if the test itself can cause that.
+> 
 
-> > modules.dep has format:
-> > module:[dependency [another-dependency ...]]
+Got it! Thanks for reviewing the patch and all the heads-ups!
+I will refine it and send a v2.
 
-> > e.g.:
-> > kernel/arch/x86/kernel/cpu/mce/mce-inject.ko.xz:
-> > kernel/arch/x86/crypto/twofish-x86_64.ko.xz: kernel/crypto/twofish_common.ko.xz
-> > kernel/arch/x86/crypto/aesni-intel.ko.xz: kernel/crypto/crypto_simd.ko.xz kernel/crypto/cryptd.ko.xz kernel/arch/x86/crypto/glue_helper.ko.xz
+> > +				sched_yield();
+> >  		}
+> >  
+> >  		tst_atomic_store(0, other_cntr);
+> > @@ -581,6 +585,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+> >  		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
+> >  			if (spins)
+> >  				(*spins)++;
+> > +			if(get_nprocs() == 1)
+> > +				sched_yield();
+> >  		}
+> >  	}
+> >  }
+> 
+> Everyone please note that we will have to test this extensively to
+> ensure it does break existing reproducers.
+>
 
-> > First reading "%s" reads only first module with ':' separator.
-> > Searching without it could find first module which is as dependency (e.g.
-> > "/twofish_common.ko.xz" instead of "/twofish-x86_64.ko.xz"). Although that
-> > shouldn't be a problem, because it's very unlikely that module dependency is
-> > missing. Do you want me to drop sscanf() or put some comment?
+Got it as well, will try to reproduce the cve with this patch applied.
 
-> Well it would be probably cleaner to do something as:
+Thanks again,
+Leo
 
-> 	/* Cut dependencies after : */
-> 	if ((sep = strchr(buf, ':')))
-> 		*sep = 0;
-
-> No need to copy the string just because we neet to cut part of it.
-+1, thanks!
-
-> > Also man modules.dep(5) warns about using text format as "their format is
-> > subject to change in the future". Hopefully we can depend on it. Or should we
-> > use binary format?
-
-> That depends on how complicated is to parse the binary format...
-I'll have a look.
-
-I was also thinking whether whole thing really works on toolchains which use
-BusyBox. BusyBox's depmod implementation does not generate modules.builtin
-(it generates only modules.{alias,dep,symbols}, i.e. only few text files, no
-binary). But the only distro I know which installs BusyBox depmod/modinfo/modprobe
-instead of kmod is Alpine Linux and even this distro clearly generates all
-modules.* files for its kernel package with kmod.
-
-It looks to me that kernel supports generating modules.builtin.modinfo
-since v5.2-rc1 (898490c010b5 "moduleparam: Save information about built-in
-modules in separate file") and kmod used this change in v27 (in 60084cf
-"libkmod: Add parser for modules.builtin.modinfo" released a year ago).
-Thus built-in modules are impossible to detect on old kernels no matter we use
-kmod or our own implementation.
-
-But built-in modules are mostly problem for embedded: we require modules like
-btrfs, loop, tun, uinput, ...  which are loadable modules on typical linux
-distros.
-
-Thus generally using modules.{dep,builtin} seems to me as a good approach for
-linux distros including embedded ones and we could also use binary variants.
-
-Other possible improvements:
-* last resort effort search in /lib/modules/$(uname -r) or a directory defined
-in environment variable (with or without version) - fallback for old android or
-some embedded (again - not working for built-in modules)
-* environment variable to skip the detection.
-
-Kind regards,
-Petr
+> Alternatively to this approach we could create seperate implementations
+> of pair_wait and use a function pointer. I am thinking it may be best to
+> do it both ways and perform some measurements.
+>
+> -- 
+> Thank you,
+> Richard.
