@@ -1,47 +1,37 @@
-From: Enji Cooper <yaneurabeya@gmail.com>
-Date: Thu, 21 Jan 2021 07:37:05 -0800
-Subject: [LTP] [PATCH 1/1] travis: Test NUMA also on Fedora/CentOS
-In-Reply-To: <20210121105959.1002-1-pvorel@suse.cz>
-References: <20210121105959.1002-1-pvorel@suse.cz>
-Message-ID: <4303D927-20AA-4161-A91B-460FE14E1703@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 21 Jan 2021 16:43:55 +0100
+Subject: [LTP] [PATCH 1/2] docparse: Replace \t with space
+In-Reply-To: <YAmUwVWvm84w8ITB@yuki.lan>
+References: <20210121130033.20764-1-pvorel@suse.cz> <87mtx29wiq.fsf@suse.de>
+ <YAmUwVWvm84w8ITB@yuki.lan>
+Message-ID: <YAmhO8gMJ1KZ4EHA@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Reviewed by: Enji Cooper <yaneurabeya@gmail.com>
+Hi,
 
-> On Jan 21, 2021, at 03:00, Petr Vorel <pvorel@suse.cz> wrote:
-> 
-> ?Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
-> 
-> tested (affected distros only)
-> https://travis-ci.org/github/pevik/ltp/builds/755505691
-> 
-> Kind regards,
-> Petr
-> 
-> travis/fedora.sh | 1 +
-> 1 file changed, 1 insertion(+)
-> 
-> diff --git a/travis/fedora.sh b/travis/fedora.sh
-> index 665915a47..ef2d32f47 100755
-> --- a/travis/fedora.sh
-> +++ b/travis/fedora.sh
-> @@ -13,6 +13,7 @@ $yum \
->    gcc \
->    git \
->    findutils \
-> +    numactl-devel \
->    libtirpc \
->    libtirpc-devel \
->    perl-JSON \
-> -- 
-> 2.30.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> > JQ says "control characters from U+0000 through U+001F must be
+> > escaped". So I expect it is only a matter of time until some other
+> > control character is used.
++1
+
+> > Perhaps we should escape all control characters into the \uXXXX
+> > hexidecimal form?
+
+> Or fail the compilation if we get one of these into the parser?
+We do fail already, but it's a bit hidden now.
+I don't know why build continues for so long.
+
+Also there would have to be striking error message.
+But docparser is not mandatory (people might have it disabled), thus mostly it
+will be us the maintainers who is going to fix these whitespace issues :(.
+
+> There is no point in having them in the metadata anyways.
+That would be solved by replacing some reasonable subset. So far it was the tab
+character.
+
+Kind regards,
+Petr
