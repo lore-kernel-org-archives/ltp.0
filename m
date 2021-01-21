@@ -1,46 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Jan 2021 11:37:27 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Jan 2021 11:41:48 +0100
 Subject: [LTP] [PATCH v2 1/1] configure.ac: More descriptive NUMA error
  message
-Message-ID: <20210121103727.28534-1-pvorel@suse.cz>
+In-Reply-To: <20210121103727.28534-1-pvorel@suse.cz>
+References: <20210121103727.28534-1-pvorel@suse.cz>
+Message-ID: <YAlabAZEuX6DbSur@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some people were confused and searched for libnuma.so.2,
-which does not exist.
+Hi!
+> Some people were confused and searched for libnuma.so.2,
+> which does not exist.
+> 
+> Required is libnuma.so.1, but with LIBNUMA_API_VERSION >= 2.
+> The API version is tighten to libnuma version in git, but that has
+> nothing to do with library soname version, which is still 1.0.0.
+> 
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-Required is libnuma.so.1, but with LIBNUMA_API_VERSION >= 2.
-The API version is tighten to libnuma version in git, but that has
-nothing to do with library soname version, which is still 1.0.0.
+I consider this safe for the release, please push.
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-* Changes v1->v2:
-Used Cyril's version, which is more readable.
-
-Kind regards,
-Petr
-
- configure.ac | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/configure.ac b/configure.ac
-index e44e25cc6..aa8532119 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -347,7 +347,7 @@ LTP_CHECK_SYSCALL_FCNTL
- 
- if test "x$with_numa" = xyes; then
- 	LTP_CHECK_SYSCALL_NUMA
--	numa_error_msg="test requires libnuma >= 2 and it's development packages"
-+	numa_error_msg="test requires libnuma development packages with LIBNUMA_API_VERSION >= 2"
- else
- 	numa_error_msg="NUMA support was disabled during build"
- fi
 -- 
-2.30.0
-
+Cyril Hrubis
+chrubis@suse.cz
