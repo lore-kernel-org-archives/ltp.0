@@ -1,86 +1,131 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 21 Jan 2021 10:21:06 +0800
-Subject: [LTP] [PATCH v3 3/3] syscalls: Take use of TST_EXP_PASS_SILENT
-In-Reply-To: <YAgHUvIge6svN0gu@yuki.lan>
-References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
- <20210112020227.11775-3-yangx.jy@cn.fujitsu.com> <YAgHUvIge6svN0gu@yuki.lan>
-Message-ID: <6008E512.50704@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 21 Jan 2021 17:30:23 +0800
+Subject: [LTP] [PATCH 1/1] swapping01: make test more robust
+In-Reply-To: <87zh14rrxm.fsf@oc8242746057.ibm.com>
+References: <20210115143246.369676-1-egorenar@linux.ibm.com>
+ <CAEemH2fDzPp3D6KZ_G0UDbS=eh2tWDAcy7CTt_4Yw7FUT4zGxg@mail.gmail.com>
+ <87zh14rrxm.fsf@oc8242746057.ibm.com>
+Message-ID: <CAEemH2fy8Zsu6Vz_DWOSHtBxQDMSemsw3bQNDqTdLOG27JiMPQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2021/1/20 18:34, Cyril Hrubis wrote:
-> Hi!
->> diff --git a/testcases/kernel/syscalls/capget/capget01.c b/testcases/kernel/syscalls/capget/capget01.c
->> index 6c17a7c7c..af088e2fc 100644
->> --- a/testcases/kernel/syscalls/capget/capget01.c
->> +++ b/testcases/kernel/syscalls/capget/capget01.c
->> @@ -32,8 +32,10 @@ static void verify_capget(unsigned int n)
->>   	hdr->version = tc->version;
->>   	hdr->pid = pid;
->>
->> -	TST_EXP_PASS(tst_syscall(__NR_capget, hdr, data),
->> +	TST_EXP_PASS_SILENT(tst_syscall(__NR_capget, hdr, data),
->>   	             "capget() with %s", tc->message);
->> +	if (!TST_PASS)
->> +		return;
->>
->>   	if (data[0].effective&  1<<  CAP_NET_RAW)
->>   		tst_res(TFAIL, "capget() gets CAP_NET_RAW unexpectedly in pE");
-> I do not agree with the change in the capget01 here since there are
-> really two testcases there and the test was producing the same amount of
-> TPASS messages before the change to the TST_EXP_PASS() as well.
-Hi Cyril,
+Hi Alexander,
 
-Running  capget01 with TST_EXP_PASS() shows:
---------------------------------------------------------
-capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_1 passed
-capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
-capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_2 passed
-capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
-capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_3 passed
-capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+On Wed, Jan 20, 2021 at 3:26 PM Alexander Egorenkov <egorenar@linux.ibm.com>
+wrote:
 
-Summary:
-passed   6
---------------------------------------------------------
-
-Running  capget01 with TST_EXP_PASS_SILENT() shows:
---------------------------------------------------------
-capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
-capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
-capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
-
-Summary:
-passed   3
---------------------------------------------------------
-
-If you want to keep two TPASS for a subtest, how about merging two TPASS 
-into one? like this:
-------------------------------------------------------------------------------------------
-capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_1 doesn't 
-get CAP_NET_RAW as expected in PE
-capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_2 doesn't 
-get CAP_NET_RAW as expected in PE
-capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_3 doesn't 
-get CAP_NET_RAW as expected in PE
-
-Summary:
-passed   3
------------------------------------------------------------------------------------------- 
-
-BTW, I just want to avoid many TPASS for a subtest.
-
-Best Regards,
-Xiao Yang
-> Other than that the patchset is fine.
+> ...
 >
-> So with the capget change removed you can add my:
+> Hi,
 >
-> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
+> i did more tests as promised.
+> Your patch didn't help :( Still seeing failures.
+>
+> With your patch:
+> ----------------
+> swapping01.c:148: TPASS: no heavy swapping detected, 7282 MB swapped.
+> swapping01.c:107: TINFO: available physical memory: 7303 MB
+> swapping01.c:110: TINFO: try to allocate: 9494 MB
+> swapping01.c:113: TINFO: memory allocated: 9494 MB
+> swapping01.c:148: TPASS: no heavy swapping detected, 6204 MB swapped.
+> swapping01.c:107: TINFO: available physical memory: 7299 MB
+> swapping01.c:110: TINFO: try to allocate: 9488 MB
+> swapping01.c:113: TINFO: memory allocated: 9488 MB
+> swapping01.c:144: TFAIL: heavy swapping detected: 9490 MB swapped.
+>
+> Summary:
+> passed   27
+> failed   1
+> skipped  0
+> warnings 0
+>
+>
+> W/O your patch:
+> ---------------
+> swapping01.c:147: TPASS: no heavy swapping detected, 2229 MB swapped.
+> swapping01.c:106: TINFO: available physical memory: 7311 MB
+> swapping01.c:109: TINFO: try to allocate: 9504 MB
+> swapping01.c:112: TINFO: memory allocated: 9504 MB
+> swapping01.c:147: TPASS: no heavy swapping detected, 2249 MB swapped.
+> swapping01.c:106: TINFO: available physical memory: 7306 MB
+> swapping01.c:109: TINFO: try to allocate: 9498 MB
+> swapping01.c:112: TINFO: memory allocated: 9498 MB
+> swapping01.c:143: TFAIL: heavy swapping detected: 9496 MB swapped.
+>
+> Summary:
+> passed   23
+> failed   1
+> skipped  0
+> warnings 0
+>
+>
+>
+> I can easily reproduce the problem inside an LPAR with 8GB RAM and 20GB
+> swap. But could *NOT* reproduce it inside a zVM w/o any patches, might be
+> fluke or some other unknown factors probably.
+
+
+> My patch seems to work very well, couldn't reproduce the problem with it
+> applied :/
 >
 
+I'm now a little bit doubt the lawful of swapping01 since I can easily get
+heavy-swapping[1] when increasing the value of COE_SLIGHT_OVER
+(which means just to request more available memory).
 
+The original purpose of swapping01 seems to verify NO heavy-swapping
+with slightly over-use available memory, but it doesn't have a standard
+to evaluate/say how much is slightly over-use(the default set 1.3*phy_mem).
+But I guess that might influence by different config of system, e.g the
+system
+you tried with 8GB RAM and 20GB swap, that swap more likely to be overused.
 
+Anyway, these are my personal perspective, maybe wrong, we still need more
+investigation.
+
+[1] the conception of heavy-swapping in this test define by:
+     swapped > mem_available_init
+
+--------------------------------
+
+The test FAIL(With and W/O your patch) on an aarch64 platform:
+(allocate 2*mem_available but not 1.3*mem_available)
+
+# free -h
+              total        used        free      shared  buff/cache
+available
+Mem:          5.4Gi       329Mi       5.0Gi       0.0Ki       152Mi
+4.6Gi
+Swap:         6.0Gi       194Mi       5.8Gi
+
+ # ./swapping01
+tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
+swapping01.c:107: TINFO: available physical memory: 4745 MB
+swapping01.c:109: TINFO: try to allocate: 9491 MB
+swapping01.c:112: TINFO: memory allocated: 9491 MB
+swapping01.c:135: TINFO: DEBUG-INFO: swap_free_init = 6107200,
+swap_free_now = 1339520, swap_consum(swap_free_init - swap_free_now) =
+4767680
+swapping01.c:135: TINFO: DEBUG-INFO: swap_free_init = 6107200,
+swap_free_now = 1196160, swap_consum(swap_free_init - swap_free_now) =
+4911040
+swapping01.c:135: TINFO: DEBUG-INFO: swap_free_init = 6107200,
+swap_free_now = 1200256, swap_consum(swap_free_init - swap_free_now) =
+4906944
+swapping01.c:150: TFAIL: heavy swapping detected: 4791 MB swapped.
+
+(Debug-Info shows that 'swap_free_now' dynamically changes
+not only decrease but also increase during the testing, it looks like
+the system tries to reclaim some memory and do balance for a while.
+But the worth saying, no OOM occurred during the above memory
+overused.)
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210121/1fb09957/attachment.htm>
