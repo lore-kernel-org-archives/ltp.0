@@ -1,100 +1,86 @@
-From: Leo Liang <ycliang@andestech.com>
-Date: Thu, 21 Jan 2021 10:19:23 +0800
-Subject: [LTP] [PATCH 1/1] fzsync: Add sched_yield for single core
- machine
-In-Reply-To: <87sg6w9bdd.fsf@suse.de>
-References: <20210120070053.11490-1-ycliang@andestech.com>
- <87sg6w9bdd.fsf@suse.de>
-Message-ID: <20210121021923.GA2366@andestech.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 21 Jan 2021 10:21:06 +0800
+Subject: [LTP] [PATCH v3 3/3] syscalls: Take use of TST_EXP_PASS_SILENT
+In-Reply-To: <YAgHUvIge6svN0gu@yuki.lan>
+References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
+ <20210112020227.11775-3-yangx.jy@cn.fujitsu.com> <YAgHUvIge6svN0gu@yuki.lan>
+Message-ID: <6008E512.50704@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jan 20, 2021 at 06:00:14PM +0800, Richard Palethorpe wrote:
-> Hello Leo,
-> 
-> Leo Yu-Chi Liang <ycliang@andestech.com> writes:
-> 
-> > Fuzzy sync library uses spin waiting mechanism
-> > to implement thread barrier behavior, which would
-> > cause this test to be time-consuming on single core machine.
-> >
-> > Fix this by adding sched_yield in the spin waiting loop,
-> > so that the thread yields cpu as soon as it enters the waiting loop.
-> 
-> Thanks for sending this in. Comments below.
-> 
-> >
-> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> > ---
-> >  include/tst_fuzzy_sync.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-> > index 4141f5c64..64d172681 100644
-> > --- a/include/tst_fuzzy_sync.h
-> > +++ b/include/tst_fuzzy_sync.h
-> > @@ -59,9 +59,11 @@
-> >   * @sa tst_fzsync_pair
-> >   */
-> >  
-> > +#include <sys/sysinfo.h>
-> >  #include <sys/time.h>
-> >  #include <time.h>
-> >  #include <math.h>
-> > +#include <sched.h>
-> >  #include <stdlib.h>
-> >  #include <pthread.h>
-> >  #include "tst_atomic.h"
-> > @@ -564,6 +566,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
-> >  		       && tst_atomic_load(our_cntr) < INT_MAX) {
-> >  			if (spins)
-> >  				(*spins)++;
-> > +			if(get_nprocs() == 1)
-> 
-> We should use tst_ncpus() and then cache the value so we are not making
-> a function call within the loop. It is probably best to avoid calling
-> this function inside tst_fzsync_pair_wait, it may even result in a
-> system call.
-> 
-> We should probably cache the value in tst_fzsync_pair, maybe as a
-> boolean e.g. "yield_in_wait". This can be set/checked in the
-> tst_fzsync_pair_init function. Also this will allow the user to handle
-> CPUs being offlined if the test itself can cause that.
-> 
+On 2021/1/20 18:34, Cyril Hrubis wrote:
+> Hi!
+>> diff --git a/testcases/kernel/syscalls/capget/capget01.c b/testcases/kernel/syscalls/capget/capget01.c
+>> index 6c17a7c7c..af088e2fc 100644
+>> --- a/testcases/kernel/syscalls/capget/capget01.c
+>> +++ b/testcases/kernel/syscalls/capget/capget01.c
+>> @@ -32,8 +32,10 @@ static void verify_capget(unsigned int n)
+>>   	hdr->version = tc->version;
+>>   	hdr->pid = pid;
+>>
+>> -	TST_EXP_PASS(tst_syscall(__NR_capget, hdr, data),
+>> +	TST_EXP_PASS_SILENT(tst_syscall(__NR_capget, hdr, data),
+>>   	             "capget() with %s", tc->message);
+>> +	if (!TST_PASS)
+>> +		return;
+>>
+>>   	if (data[0].effective&  1<<  CAP_NET_RAW)
+>>   		tst_res(TFAIL, "capget() gets CAP_NET_RAW unexpectedly in pE");
+> I do not agree with the change in the capget01 here since there are
+> really two testcases there and the test was producing the same amount of
+> TPASS messages before the change to the TST_EXP_PASS() as well.
+Hi Cyril,
 
-Got it! Thanks for reviewing the patch and all the heads-ups!
-I will refine it and send a v2.
+Running  capget01 with TST_EXP_PASS() shows:
+--------------------------------------------------------
+capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_1 passed
+capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_2 passed
+capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+capget01.c:35: TPASS: capget() with LINUX_CAPABILITY_VERSION_3 passed
+capget01.c:41: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
 
-> > +				sched_yield();
-> >  		}
-> >  
-> >  		tst_atomic_store(0, other_cntr);
-> > @@ -581,6 +585,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
-> >  		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
-> >  			if (spins)
-> >  				(*spins)++;
-> > +			if(get_nprocs() == 1)
-> > +				sched_yield();
-> >  		}
-> >  	}
-> >  }
-> 
-> Everyone please note that we will have to test this extensively to
-> ensure it does break existing reproducers.
+Summary:
+passed   6
+--------------------------------------------------------
+
+Running  capget01 with TST_EXP_PASS_SILENT() shows:
+--------------------------------------------------------
+capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+capget01.c:43: TPASS: capget() doesn't get CAP_NET_RAW as expected in PE
+
+Summary:
+passed   3
+--------------------------------------------------------
+
+If you want to keep two TPASS for a subtest, how about merging two TPASS 
+into one? like this:
+------------------------------------------------------------------------------------------
+capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_1 doesn't 
+get CAP_NET_RAW as expected in PE
+capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_2 doesn't 
+get CAP_NET_RAW as expected in PE
+capget01.c:43: TPASS: capget() with LINUX_CAPABILITY_VERSION_3 doesn't 
+get CAP_NET_RAW as expected in PE
+
+Summary:
+passed   3
+------------------------------------------------------------------------------------------ 
+
+BTW, I just want to avoid many TPASS for a subtest.
+
+Best Regards,
+Xiao Yang
+> Other than that the patchset is fine.
+>
+> So with the capget change removed you can add my:
+>
+> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
 >
 
-Got it as well, will try to reproduce the cve with this patch applied.
 
-Thanks again,
-Leo
 
-> Alternatively to this approach we could create seperate implementations
-> of pair_wait and use a function pointer. I am thinking it may be best to
-> do it both ways and perform some measurements.
->
-> -- 
-> Thank you,
-> Richard.
