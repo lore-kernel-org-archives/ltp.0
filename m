@@ -1,79 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 21 Jan 2021 16:03:46 +0100
-Subject: [LTP] [PATCH 1/1] mallopt01: Rewrite to new API
-In-Reply-To: <6007A999.7090903@cn.fujitsu.com>
-References: <20210119132427.6342-1-pvorel@suse.cz>
- <6007A999.7090903@cn.fujitsu.com>
-Message-ID: <YAmX0tCKisM14QzS@pevik>
+From: Enji Cooper <yaneurabeya@gmail.com>
+Date: Thu, 21 Jan 2021 07:35:32 -0800
+Subject: [LTP] [PATCH 1/1] configure.ac: More descriptive NUMA error
+ message
+In-Reply-To: <20210121102239.18643-1-pvorel@suse.cz>
+References: <20210121102239.18643-1-pvorel@suse.cz>
+Message-ID: <1157B504-C0F4-421B-B91F-B58692D6A9C7@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu,
+Typo: ?it?s? should be ?its?. Otherwise, ship it!
 
-thanks for your review and more search in man page than I did!
+Reviewed-by: Enji Cooper <yaneurabeya@gmail.com>
 
-...
-> > diff --git a/configure.ac b/configure.ac
-> > index e44e25cc6..17ef76c1a 100644
-> > --- a/configure.ac
-> > +++ b/configure.ac
-> > @@ -94,6 +94,7 @@ AC_CHECK_FUNCS_ONCE([ \
-> >       io_uring_register \
-> >       io_uring_enter \
-> >       kcmp \
-> > +    mallopt \
-> If glibc/ulibc supports mallopt, it also should support mallinfo. So only
-> check mallopt, I think it is ok.
-Yes. These are glibc specific and uclibc tries to be API compatible with glibc.
-
-
-> I guess musl libc doesn't support it, is it right?
-Correct, musl don't support it, neither binder.
-
-> > diff --git a/testcases/kernel/syscalls/mallopt/mallopt01.c b/testcases/kernel/syscalls/mallopt/mallopt01.c
-...
-> > -/*
-> > - * NAME
-> > - *	mallopt
-> > - *
-> > - * CALLS
-> > - *	malloc(3x), mallopt(3x), mallinfo(3x).
-> > - *
-> > - * ALGORITHM
-> > - *	Set options, malloc memory, and check resource ussage.
-> > +/*\
-> > + * [DESCRIPTION]
-> >    *
-> > - * RESTRICTIONS
-> > - */
-> > + * Basic mallinfo() and mallopt() testing (M_MXFAST, M_NLBLKS).
-> > +\*/
-> I see glibc code, it said "Only one of these (M_MXFAST) is used
->   in this malloc. The others (M_NLBLKS, M_GRAIN, M_KEEP) don't apply,
->   so setting them has no effect. But this malloc also supports four
->   other options in mallopt. "
-
-> Also, I don't see M_NLBLKS handle in __libc_mallopt.
-
-> I think that is why man-pages said "The SVID defined
-> options M_MXFAST, M_NLBLKS, M_GRAIN, and M_KEEP, but only the first of these
-> is implemented in glibc."
-
-> I guess we can remove useless M_NLBLKS test.
-Good catch! Agree. And it's also not supported on uclibc.
-
-...
-> >   	info = mallinfo();
-> The lastest mallinfo man-pages said " However, the older function,
-> mallinfo(), is deprecated since the type used for the fields is too small".
-> The mallinfo2 structure used size_t data type instead of int data type in
-> mallinfo struct. Maybe we can add a new test for it.
-
-+1.
-mallinfo2() was added few months ago to glibc by Martin Liska, released in 2.33.
-
-Kind regards,
-Petr
+> On Jan 21, 2021, at 02:23, Petr Vorel <pvorel@suse.cz> wrote:
+> 
+> ?Some people were confused and searched for libnuma.so.2,
+> which does not exist.
+> 
+> Required is libnuma.so.1, but with LIBNUMA_API_VERSION >= 2.
+> The API version is tighten to libnuma version in git, but that has
+> nothing to do with library soname version, which is still 1.0.0.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> configure.ac | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/configure.ac b/configure.ac
+> index e44e25cc6..521a2e835 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -347,7 +347,7 @@ LTP_CHECK_SYSCALL_FCNTL
+> 
+> if test "x$with_numa" = xyes; then
+>    LTP_CHECK_SYSCALL_NUMA
+> -    numa_error_msg="test requires libnuma >= 2 and it's development packages"
+> +    numa_error_msg="test requires libnuma1 with LIBNUMA_API_VERSION >= 2 and it's development packages"
+> else
+>    numa_error_msg="NUMA support was disabled during build"
+> fi
+> -- 
+> 2.30.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
