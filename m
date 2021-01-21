@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Jan 2021 17:25:32 +0100
-Subject: [LTP] [PATCH v4 1/3] lib: Fix kernel module detection on BusyBox
-In-Reply-To: <20210121133233.29007-2-pvorel@suse.cz>
-References: <20210121133233.29007-1-pvorel@suse.cz>
- <20210121133233.29007-2-pvorel@suse.cz>
-Message-ID: <YAmq/L8u+vh9JL2w@yuki.lan>
+Date: Thu, 21 Jan 2021 17:28:54 +0100
+Subject: [LTP] [PATCH 1/2] docparse: Replace \t with space
+In-Reply-To: <YAmpuuYfNQLOpi67@pevik>
+References: <20210121130033.20764-1-pvorel@suse.cz> <87mtx29wiq.fsf@suse.de>
+ <YAmUwVWvm84w8ITB@yuki.lan> <YAmhO8gMJ1KZ4EHA@pevik>
+ <87k0s69t6z.fsf@suse.de> <YAmpuuYfNQLOpi67@pevik>
+Message-ID: <YAmrxoKsiIG8UzsS@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,34 +13,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +int tst_check_driver(const char *driver)
-> +{
-> +#ifdef __ANDROID__
-> +	/*
-> +	 * Android may not have properly installed modules.* files. We could
-> +	 * search modules in /system/lib/modules, but to to determine built-in
-> +	 * drivers we need modules.builtin. Therefore assume all drivers are
-> +	 * available.
->  	 */
->  	return 0;
->  #endif
-> +
-> +	if (!tst_check_driver_(driver))
-> +		return 0;
-> +
-> +	int ret = 1;
+> > The Makefile doesn't seem to allow this. Although it is quite easy to
+> > compile docparse without it.
+> That'd be easy to change.
+> 
+> But, there is perl package dependency. If possible I'd allow people to compile
+> LTP without bothering with CPAN (mainly due these embedded build source distros,
+> e.g. Buildroot, Yocto).
 
-One last nit, shouldn't this be -1?
-
-Since the tst_check_driver_() returns either 0 or -1.
-
-Or should we change tst_check_driver_() to return 0 or 1 instead?
-
-
-
-Other than that this version looks good,
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+I guess that we can easily catch any non-ascii characters in the C
+docparse tool, no perl needed.
 
 -- 
 Cyril Hrubis
