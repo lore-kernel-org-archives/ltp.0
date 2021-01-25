@@ -1,34 +1,42 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 25 Jan 2021 11:44:45 +0800
-Subject: [LTP] [PATCH v3 3/3] syscalls: Take use of TST_EXP_PASS_SILENT
-In-Reply-To: <YArXjchkIvhgjsg3@yuki.lan>
-References: <20210112020227.11775-1-yangx.jy@cn.fujitsu.com>
- <20210112020227.11775-3-yangx.jy@cn.fujitsu.com> <YAgHUvIge6svN0gu@yuki.lan>
- <6008E512.50704@cn.fujitsu.com> <YArXjchkIvhgjsg3@yuki.lan>
-Message-ID: <600E3EAD.3020406@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 25 Jan 2021 06:47:46 +0000
+Subject: [LTP] [PATCH RFC 1/2] lib: add SAFE_READ_PROC_STATUS macro
+Message-ID: <20210125064747.26759-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2021/1/22 21:47, Cyril Hrubis wrote:
-> Hi!
->> BTW, I just want to avoid many TPASS for a subtest.
-> Why? The capget01 clearly does two different tests per iteration.
->
-> There is absolutely no correlation between the number of TPASS test
-> produces and the number of iteration test does.
-Hi Cyril,
+To parse /proc/PID/status files, for example:
+    SAFE_READ_PROC_STATUS(pid, "VmSwap:");
 
-I pushed the patchset without capget01 for now.  But I think
-there is a whole test per iteration, like three steps:
-1) Drop CAP_NET_RAW.
-2) Get effective by specifying kernel revision.
-3) Check that the effective doesn't include CAP_NET_RAW.
-Is it necessary for per steps to report TPASS? :-)
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Petr Vorel <pvorel@suse.cz>
+Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
+---
+ include/tst_safe_file_ops.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Best Regards,
-Xiao Yang
-
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 894c16123..7a4076c4c 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -25,6 +25,14 @@
+                         &tst_rval); \
+         tst_rval;})
+ 
++#define SAFE_READ_PROC_STATUS(pid, item) \
++       ({long tst_rval_; \
++        char tst_path_[128]; \
++        sprintf(tst_path_, "/proc/%d/status", pid); \
++        SAFE_FILE_LINES_SCANF(tst_path_, item " %ld", \
++                        &tst_rval_); \
++        tst_rval_;})
++
+ #define FILE_PRINTF(path, fmt, ...) \
+ 	file_printf(__FILE__, __LINE__, \
+ 		    (path), (fmt), ## __VA_ARGS__)
+-- 
+2.21.3
 
