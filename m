@@ -1,91 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jan 2021 10:58:14 +0100
-Subject: [LTP] [PATCH 1/1] lib: Add test for tst_check_driver()
-Message-ID: <20210125095814.31741-1-pvorel@suse.cz>
+Date: Mon, 25 Jan 2021 11:02:53 +0100
+Subject: [LTP] [PATCH v2 1/1] syscalls/get_mempolicy01: Rewrite to new
+ API
+In-Reply-To: <CAEemH2dVgwHREFGrOe1tNUgZXZn5OAo5PJ-nne_yoj2nRHt=pw@mail.gmail.com>
+References: <20210106181735.1588-1-pvorel@suse.cz>
+ <CAEemH2dVgwHREFGrOe1tNUgZXZn5OAo5PJ-nne_yoj2nRHt=pw@mail.gmail.com>
+Message-ID: <YA6XTdOpqlXg2ybX@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test for 8f7013ba6.
+Hi Li,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- lib/newlib_tests/shell/tst_check_driver.sh | 64 ++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
- create mode 100755 lib/newlib_tests/shell/tst_check_driver.sh
+...
+> > +               struct bitmask *exp_mask = *(tc->exp_nodemask);
+> > +
+> > +               if (!numa_bitmask_equal(exp_mask, getnodemask)) {
+> > +                       tst_res(TFAIL, "masks are not equal");
+> > +                       tst_res_hexd(TINFO, exp_mask->maskp,
+> > +                               exp_mask->size / 8, "expected:");
+> > +                       tst_res_hexd(TINFO, getnodemask->maskp,
+> > +                               getnodemask->size / 8, "returned:");
+> > +               }
 
-diff --git a/lib/newlib_tests/shell/tst_check_driver.sh b/lib/newlib_tests/shell/tst_check_driver.sh
-new file mode 100755
-index 000000000..1d438700b
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_driver.sh
-@@ -0,0 +1,64 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+
-+TST_TESTFUNC=test
-+TST_SETUP=setup
-+TST_CNT=3
-+TST_NEEDS_CMDS="tst_check_drivers find grep head sed"
-+. tst_test.sh
-+
-+MODULES_DIR="${MODULES_DIR:-/lib/modules/$(uname -r)}"
-+
-+setup()
-+{
-+	tst_res TINFO "using modules directory '$MODULES_DIR'"
-+
-+	[ -d "$MODULES_DIR" ] || \
-+		tst_brk TCONF "modules directory '$MODULES_DIR' missing"
-+}
-+
-+get_name()
-+{
-+	local path="$1"
-+	local drv
-+
-+	echo $path | sed 's/.*\/\([^/]\+\)\.ko.*/\1/'
-+}
-+
-+test1()
-+{
-+	local drv
-+
-+	for drv in $(find $MODULES_DIR | grep -E '_[^/]+\.ko' | head -3); do
-+		drv="$(get_name $drv)"
-+		EXPECT_PASS tst_check_drivers $drv
-+
-+		drv="$(echo $drv | sed 's/_/-/g')"
-+		EXPECT_PASS tst_check_drivers $drv
-+	done
-+}
-+
-+test2()
-+{
-+	tst_res TINFO "check non-existing module detection"
-+	EXPECT_FAIL tst_check_drivers not-existing-kernel-module
-+}
-+
-+test3()
-+{
-+	local f="$MODULES_DIR/modules.builtin"
-+	local drv
-+
-+	tst_res TINFO "check built-in module detection"
-+
-+	[ -f "$f" ] || \
-+		tst_brk TCONF "missing '$f'"
-+
-+	for drv in $(head -3 $f); do
-+		drv="$(get_name $drv)"
-+		EXPECT_PASS tst_check_drivers "$(get_name $drv)"
-+	done
-+}
-+
-+tst_run
--- 
-2.30.0
 
+> These few lines have a code indent issue, otherwise looks good.
+
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+Thanks for your review, merged with fixed indent.
+
+Kind regards,
+Petr
