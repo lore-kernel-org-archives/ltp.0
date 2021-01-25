@@ -1,100 +1,115 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 25 Jan 2021 22:01:48 +0530
-Subject: [LTP] LTP: madvise08.c:203: TFAIL: No sequence in dump after
- MADV_DODUMP.
-In-Reply-To: <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
-References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
- <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
-Message-ID: <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 25 Jan 2021 19:06:30 +0100
+Subject: [LTP] [PATCH v2 1/1] lib: Add test for tst_check_driver()
+Message-ID: <20210125180630.15163-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Arnd,
+Test for 8f7013ba6.
 
-On Mon, 25 Jan 2021 at 20:41, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Mon, Jan 25, 2021 at 3:48 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > LTP syscalls madvise08 test case failed on all devices from
-> > Linux next 20210118 to till day.
-> > strace log attached to this email and link provided below.
-> >
-> > BAD: next-20210118
-> > GOOD: next-20210115
-> >
-> > This failure is easily reproducible on Linux next tag 20210118 above.
-> >
-> > tst_test.c:1250: TINFO: Timeout per run is 0h 15m 00s
-> > madvise08.c:73: TINFO: Temporary core pattern is
-> > '/scratch/ltp-2nftQzNI1K/HclFMH/dump-%p'
-> > madvise08.c:112: TINFO: Dump file should be dump-10109
-> > madvise08.c:196: TPASS: madvise(..., MADV_DONTDUMP)
-> > madvise08.c:112: TINFO: Dump file should be dump-10110
-> > madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
-> >
-> > strace log,
-> > https://lkft.validation.linaro.org/scheduler/job/2184866#L1257
->
-> Ok, so in this part of the log,
->
-> [pid   485] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_DUMPED,
-> si_pid=487, si_uid=0, si_status=SIGABRT, si_utime=0, si_stime=0} ---
-> [pid   485] write(2, \"madvise08.c:117: \33[1;34mTINFO: \33\"...,
-> 64madvise08.c:117: [1;34mTINFO: [0mDump file should be dump-487
-> ) = 64
-> [pid   485] access(\"dump-487\", F_OK)    = 0
-> [pid   485] openat(AT_FDCWD, \"dump-487\", O_RDONLY) = 3
-> [pid   485] read(3,
-> \"\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\4\0>\0\1\0\0\0\0\0\0\0\0\0\0\0\"...,
-> 1024) = 1024
-> [pid   485] read(3,
-> \"\0\320\3\0\0\0\0\0\0\340\375\24\304\177\0\0\0\0\0\0\0\0\0\0\0\20\0\0\0\0\0\0\"...,
-> 1024) = 292
-> [pid   485] read(3, \"\", 1024)           = 0
-> [pid   485] close(3)                    = 0
-> [pid   485] write(2, \"madvise08.c:208: \33[1;31mTFAIL: \33\"...,
-> 74madvise08.c:208: [1;31mTFAIL: [0mNo sequence in dump after
-> MADV_DODUMP.
->
-> it seems that the data that was requested to be dumped with MADV_DODUMP is
-> indeed completely absent.
->
-> There was exactly one commit that got merged between next-20210115 and
-> next-20120118
-> related to core dumps: 8a3cc755b138 ("coredump: don't bother with
-> do_truncate()").
-> Adding Al Viro to Cc for that.
->
-> Naresh, could you try reverting that patch?
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi Cyril,
 
-This suspecting commit reverted and tested and the test case PASS.
+thanks for previous review. I modified the test more thus sending v2.
 
-commit 8a3cc755b13808eba74846dfd1033fcbc21f9a65
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Sun Mar 8 09:16:37 2020 -0400
+Changes v1-v2:
+* Check two version of module (using '_' and '-' also on built-in
+  modules) => more coverage.
+* Fix test when $MODULES_DIR exists, but does not contain modules
+(in v1 it TBROK: Test didn't report any results), now at least check non-existing module:
 
-    coredump: don't bother with do_truncate()
+Kind regards,
+Petr
 
-    have dump_skip() just remember how much needs to be skipped,
-    leave actual seeks/writing zeroes to the next dump_emit()
-    or the end of coredump output, whichever comes first.
-    And instead of playing with do_truncate() in the end, just
-    write one NUL at the end of the last gap (if any).
+tst_check_driver 1 TINFO: timeout per run is 0h 5m 0s
+tst_check_driver 1 TINFO: using modules directory '/tmp/xx'
+tst_check_driver 1 TINFO: check loadable module detection
+tst_check_driver 1 TCONF: no modules found
+tst_check_driver 2 TINFO: check non-existing module detection
+tst_check_driver 2 TPASS: tst_check_drivers not-existing-kernel-module failed as expected
+tst_check_driver 3 TINFO: check built-in module detection
+tst_check_driver 3 TCONF: missing '/tmp/xx/modules.builtin'
 
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Kind regards,
+Petr
 
- fs/binfmt_elf.c          |  1 -
- fs/coredump.c            | 56 +++++++++++++++++++++++++++---------------------
- include/linux/binfmts.h  |  1 +
- include/linux/coredump.h |  1 -
+ lib/newlib_tests/shell/tst_check_driver.sh | 63 ++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100755 lib/newlib_tests/shell/tst_check_driver.sh
 
+diff --git a/lib/newlib_tests/shell/tst_check_driver.sh b/lib/newlib_tests/shell/tst_check_driver.sh
+new file mode 100755
+index 000000000..b1418ef8e
+--- /dev/null
++++ b/lib/newlib_tests/shell/tst_check_driver.sh
+@@ -0,0 +1,63 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
++
++TST_TESTFUNC=test
++TST_SETUP=setup
++TST_CNT=3
++TST_NEEDS_CMDS="tst_check_drivers find grep head sed"
++. tst_test.sh
++
++MODULES_DIR="${MODULES_DIR:-/lib/modules/$(uname -r)}"
++
++setup()
++{
++	tst_res TINFO "using modules directory '$MODULES_DIR'"
++
++	[ -d "$MODULES_DIR" ] || \
++		tst_brk TCONF "modules directory '$MODULES_DIR' missing"
++}
++
++test_drivers()
++{
++	local paths="$@"
++	local drv
++
++	if [ -z "$paths" ]; then
++		tst_res TCONF "no modules found"
++		return
++	fi
++
++	for drv in $paths; do
++		drv="$(echo $drv | sed 's/.*\/\([^/]\+\)\.ko.*/\1/')"
++		EXPECT_PASS tst_check_drivers $drv
++		drv="$(echo $drv | sed 's/_/-/g')"
++		EXPECT_PASS tst_check_drivers $drv
++	done
++}
++
++test1()
++{
++	tst_res TINFO "check loadable module detection"
++	test_drivers $(find $MODULES_DIR | grep -E '_[^/]+\.ko' | head -3)
++}
++
++test2()
++{
++	tst_res TINFO "check non-existing module detection"
++	EXPECT_FAIL tst_check_drivers not-existing-kernel-module
++}
++
++test3()
++{
++	local f="$MODULES_DIR/modules.builtin"
++
++	tst_res TINFO "check built-in module detection"
++
++	[ -f "$f" ] || \
++		tst_brk TCONF "missing '$f'"
++
++	test_drivers $(grep -E '_[^/]+\.ko' $f | head -3)
++}
++
++tst_run
+-- 
+2.30.0
 
-Test case output link,
-https://lkft.validation.linaro.org/scheduler/job/2184975#L1369
-https://lkft.validation.linaro.org/scheduler/job/2184972#L1358
-
-- Naresh
