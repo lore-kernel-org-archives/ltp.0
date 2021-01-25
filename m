@@ -1,262 +1,88 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 27 Jan 2021 11:26:13 +0800
-Subject: [LTP] [PATCH] syscalls/times01: Convert to new API
-In-Reply-To: <e9a9481d-60a6-68f3-859b-8ab25722a0b3@cn.fujitsu.com>
-References: <20210127025112.1226584-1-ruansy.fnst@cn.fujitsu.com>
- <6010D950.30002@cn.fujitsu.com>
- <e9a9481d-60a6-68f3-859b-8ab25722a0b3@cn.fujitsu.com>
-Message-ID: <6010DD55.8010600@cn.fujitsu.com>
+From: Xinpeng Liu <liuxp11@chinatelecom.cn>
+Date: Mon, 25 Jan 2021 18:24:47 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01 invoked
+ oom-killer
+Message-ID: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2021/1/27 11:12, Ruan Shiyang wrote:
->
->
-> On 2021/1/27 ??11:09, Xiao Yang wrote:
->> On 2021/1/27 10:51, Shiyang Ruan wrote:
->>> Signed-off-by: Shiyang Ruan<ruansy.fnst@cn.fujitsu.com>
->>> ---
->>>   testcases/kernel/syscalls/times/times01.c | 168 
->>> +++-------------------
->>>   1 file changed, 20 insertions(+), 148 deletions(-)
->>>
->>> diff --git a/testcases/kernel/syscalls/times/times01.c 
->>> b/testcases/kernel/syscalls/times/times01.c
->>> index 293a52957..87a0f6144 100644
->>> --- a/testcases/kernel/syscalls/times/times01.c
->>> +++ b/testcases/kernel/syscalls/times/times01.c
->>> @@ -1,162 +1,34 @@
->>> +// SPDX-License-Identifier: GPL-2.0-or-later
->>>   /*
->>>    * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
->>>    *
->>> - * This program is free software; you can redistribute it and/or 
->>> modify it
->>> - * under the terms of version 2 of the GNU General Public License as
->>> - * published by the Free Software Foundation.
->>> - *
->>> - * This program is distributed in the hope that it would be useful, 
->>> but
->>> - * WITHOUT ANY WARRANTY; without even the implied warranty of
->>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->>> - *
->>> - * Further, this software is distributed without any warranty that 
->>> it is
->>> - * free of the rightful claim of any third person regarding 
->>> infringement
->>> - * or the like.  Any license provided herein, whether implied or
->>> - * otherwise, applies only to this software file.  Patent licenses, if
->>> - * any, provided herein do not apply to combinations of this 
->>> program with
->>> - * other software, or any other product whatsoever.
->>> - *
->>> - * You should have received a copy of the GNU General Public 
->>> License along
->>> - * with this program; if not, write the Free Software Foundation, 
->>> Inc.,
->>> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->>> - *
->>> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre 
->>> Pkwy,
->>> - * Mountain View, CA  94043, or:
->>> - *
->>> - * http://www.sgi.com
->>> - *
->>> - * For further information regarding this notice, see:
->>> - *
->>> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
->>> - *
->>> - */
->>> -/* $Id: times01.c,v 1.6 2009/10/26 14:55:48 subrata_modak Exp $ */
->>> -/**********************************************************
->>> - *
->>> - *    OS Test - Silicon Graphics, Inc.
->>> - *
->>> - *    TEST IDENTIFIER    : times01
->>> - *
->>> - *    EXECUTED BY    : anyone
->>> - *
->>> - *    TEST TITLE    : Basic test for times(2)
->>> - *
->>> - *    PARENT DOCUMENT    : usctpl01
->>> - *
->>> - *    TEST CASE TOTAL    : 1
->>> - *
->>> - *    WALL CLOCK TIME    : 1
->>> - *
->>> - *    CPU TYPES        : ALL
->>> - *
->>> - *    AUTHOR        : William Roske
->>> - *
->>> - *    CO-PILOT        : Dave Fenner
->>> - *
->>> - *    DATE STARTED    : 03/30/92
->>> - *
->>> - *    INITIAL RELEASE    : UNICOS 7.0
->>> - *
->>> - *    TEST CASES
->>> - *
->>> - *     1.) times(2) returns...(See Description)
->>> - *
->>> - *    INPUT SPECIFICATIONS
->>> - *     The standard options for system call tests are accepted.
->>> - *    (See the parse_opts(3) man page).
->>> - *
->>> - *    OUTPUT SPECIFICATIONS
->>> - *$
->>> - *    DURATION
->>> - *     Terminates - with frequency and infinite modes.
->>> - *
->>> - *    SIGNALS
->>> - *     Uses SIGUSR1 to pause before test if option set.
->>> - *     (See the parse_opts(3) man page).
->>> - *
->>> - *    RESOURCES
->>> - *     None
->>> - *
->>> - *    ENVIRONMENTAL NEEDS
->>> - *      No run-time environmental needs.
->>> - *
->>> - *    SPECIAL PROCEDURAL REQUIREMENTS
->>> - *     None
->>> - *
->>> - *    INTERCASE DEPENDENCIES
->>> - *     None
->>> - *
->>> - *    DETAILED DESCRIPTION
->>> + * DESCRIPTION
->>>    *    This is a Phase I test for the times(2) system call.  It is 
->>> intended
->>> - *    to provide a limited exposure of the system call, for now.  It
->>> - *    should/will be extended when full functional tests are 
->>> written for
->>> - *    times(2).
->>> - *
->>> - *     Setup:
->>> - *       Setup signal handling.
->>> - *      Pause for SIGUSR1 if option specified.
->>> - *
->>> - *     Test:
->>> - *     Loop if the proper options are given.
->>> - *       Execute system call
->>> - *      Check return code, if system call failed (return=-1)
->>> - *        Log the errno and Issue a FAIL message.
->>> - *      Otherwise, Issue a PASS message.
->>> + *    to provide a limited exposure of the system call.
->>>    *
->>> - *     Cleanup:
->>> - *       Print errno log and/or timing stats if options given
->>
->> Hi Ruan,
->>
->> Please use the following format of description comment so that it can 
->> be picked up by docparser:
->> --------------------------------------
->> /*\
->>    * [DESCRIPTION]
->> ...
->> \*/
->> --------------------------------------
->>
->>> - *
->>> - *
->>> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
->>> + * ALGORITHM:
->>> + *    Execute system call
->>> + *    Check return code, if system call failed (return=-1)
->>> + *        Log the errno and Issue a FAIL message.
->>> + *    Otherwise, Issue a PASS message.
->>> + */
->>
->> This test is very easy so remove the algorithm comment directly.
->>
->>>
->>> -#include<sys/types.h>
->>>   #include<sys/times.h>
->>>   #include<errno.h>
->>> -#include<string.h>
->>> -#include<signal.h>
->>> -#include "test.h"
->>> -
->>> -void setup();
->>> -void cleanup();
->>> -
->>> -char *TCID = "times01";
->>> -int TST_TOTAL = 1;
->>> -
->>> -struct tms mytimes;
->>> +#include "tst_test.h"
->>>
->>> -int main(int ac, char **av)
->>> +static void verify_times(void)
->>>   {
->>> -    int lc;
->>> +    struct tms mytimes;
->>>
->>> -    tst_parse_opts(ac, av, NULL, NULL);
->>> +    TEST(times(&mytimes));
->>>
->>> -    setup();
->>> -
->>> -    for (lc = 0; TEST_LOOPING(lc); lc++) {
->>> -
->>> -        tst_count = 0;
->>> -
->>> -        TEST(times(&mytimes));
->>> -
->>> -        if (TEST_RETURN == -1)
->>> -            tst_resm(TFAIL | TTERRNO, "times failed");
->>> -        else
->>> -            tst_resm(TPASS, "times(&mytimes) returned %ld",
->>> -                 TEST_RETURN);
->>> -
->>> -    }
->>> -
->>> -    cleanup();
->>> -    tst_exit();
->>> +    if (TST_RET == -1)
->>> +        tst_res(TFAIL | TTERRNO, "times failed");
->>> +    else
->>> +        tst_res(TPASS, "times(&mytimes) returned %ld", TST_RET);
->> It is simpler to use TST_EXP_PASS() here (replace TEST()).
->
-> Got it.  Thanks a lot.
-Hi Ruan,
+Kernel version is 5.4.81+,the available RAM is less than free,as follow:
+[root@liuxp mywork]# head /proc/meminfo
+MemTotal:       198101744 kB
+MemFree:        189303148 kB
+MemAvailable:   188566732 kB
 
-Sorry, times() returns the number of clock ticks instead of zero on success.
-It is wrong to use TST_EXP_PASS() and just keep it.
+So use available RAM to avoid OOM killer.
 
-Best Regards,
-Xiao Yang
->
->
-> -- 
-> Thanks,
-> Ruan Shiyang.
->>
->> Best Regards,
->> Xiao Yang
->>>   }
->>>
->>> -void setup(void)
->>> -{
->>> -    tst_sig(NOFORK, DEF_HANDLER, cleanup);
->>> -
->>> -    TEST_PAUSE;
->>> -}
->>> -
->>> -void cleanup(void)
->>> -{
->>> -}
->>> +static struct tst_test test = {
->>> +    .test_all = verify_times,
->>> +};
->>
-> .
->
+Signed-off-by: Xinpeng Liu <liuxp11@chinatelecom.cn>
+---
+ lib/tst_memutils.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
-
+diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+index dd09db4..21df9a8 100644
+--- a/lib/tst_memutils.c
++++ b/lib/tst_memutils.c
+@@ -10,14 +10,33 @@
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
++#include "tst_safe_stdio.h"
+ 
+ #define BLOCKSIZE (16 * 1024 * 1024)
+ 
++static unsigned long get_available_ram(void)
++{
++	char buf[60]; /* actual lines we expect are ~30 chars or less */
++	unsigned long available_kb = 0;
++	FILE *fp;
++
++	fp = SAFE_FOPEN("/proc/meminfo","r");
++	while (fgets(buf, sizeof(buf), fp)) {
++		if (sscanf(buf, "MemAvailable: %lu %*s\n", &available_kb) == 1){
++			break;
++		}
++	}
++	SAFE_FCLOSE(fp);
++
++	return 1024 * available_kb;
++}
++
+ void tst_pollute_memory(size_t maxsize, int fillchar)
+ {
+ 	size_t i, map_count = 0, safety = 0, blocksize = BLOCKSIZE;
+ 	void **map_blocks;
+ 	struct sysinfo info;
++	unsigned long available_ram = get_available_ram();
+ 
+ 	SAFE_SYSINFO(&info);
+ 	safety = MAX(4096 * SAFE_SYSCONF(_SC_PAGESIZE), 128 * 1024 * 1024);
+@@ -26,15 +45,19 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
+ 	if (info.freeswap > safety)
+ 		safety = 0;
+ 
++	/*"MemAvailable" field maybe not exist, or freeram less than available_ram*/
++	if(available_ram == 0 || info.freeram < available_ram)
++		available_ram = info.freeram;
++
+ 	/* Not enough free memory to avoid invoking OOM killer */
+-	if (info.freeram <= safety)
++	if (available_ram <= safety)
+ 		return;
+ 
+ 	if (!maxsize)
+ 		maxsize = SIZE_MAX;
+ 
+-	if (info.freeram - safety < maxsize / info.mem_unit)
+-		maxsize = (info.freeram - safety) * info.mem_unit;
++	if (available_ram - safety < maxsize / info.mem_unit)
++		maxsize = (available_ram - safety) * info.mem_unit;
+ 
+ 	blocksize = MIN(maxsize, blocksize);
+ 	map_count = maxsize / blocksize;
+-- 
+1.8.3.1
 
