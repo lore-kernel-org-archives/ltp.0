@@ -1,42 +1,43 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 25 Jan 2021 06:47:46 +0000
-Subject: [LTP] [PATCH RFC 1/2] lib: add SAFE_READ_PROC_STATUS macro
-Message-ID: <20210125064747.26759-1-liwang@redhat.com>
+Date: Mon, 25 Jan 2021 06:47:47 +0000
+Subject: [LTP] [PATCH RFC 2/2] swapping01: check memory swap usage per
+ process
+In-Reply-To: <20210125064747.26759-1-liwang@redhat.com>
+References: <20210125064747.26759-1-liwang@redhat.com>
+Message-ID: <20210125064747.26759-2-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To parse /proc/PID/status files, for example:
-    SAFE_READ_PROC_STATUS(pid, "VmSwap:");
+Since previously swapping01 read the system FreeSwap for counting
+usage of swap-size, that's not precise on system especially with
+eating-memory daemon?in the background. Now, we try to check the
+'VmmSwap' in proc/PID/status?per process, to get rid of?the potential
+influence from?other processes?which easily leads to false positive.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 Cc: Petr Vorel <pvorel@suse.cz>
 Cc: Alexander Egorenkov <egorenar@linux.ibm.com>
 ---
- include/tst_safe_file_ops.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ testcases/kernel/mem/swapping/swapping01.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
-index 894c16123..7a4076c4c 100644
---- a/include/tst_safe_file_ops.h
-+++ b/include/tst_safe_file_ops.h
-@@ -25,6 +25,14 @@
-                         &tst_rval); \
-         tst_rval;})
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 8106f6466..0f693f313 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -137,8 +137,7 @@ static void check_swapping(void)
+ 		i++;
+ 	}
  
-+#define SAFE_READ_PROC_STATUS(pid, item) \
-+       ({long tst_rval_; \
-+        char tst_path_[128]; \
-+        sprintf(tst_path_, "/proc/%d/status", pid); \
-+        SAFE_FILE_LINES_SCANF(tst_path_, item " %ld", \
-+                        &tst_rval_); \
-+        tst_rval_;})
-+
- #define FILE_PRINTF(path, fmt, ...) \
- 	file_printf(__FILE__, __LINE__, \
- 		    (path), (fmt), ## __VA_ARGS__)
+-	swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
+-	swapped = swap_free_init - swap_free_now;
++	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
+ 	if (swapped > mem_over_max) {
+ 		kill(pid, SIGCONT);
+ 		tst_brk(TFAIL, "heavy swapping detected: "
 -- 
 2.21.3
 
