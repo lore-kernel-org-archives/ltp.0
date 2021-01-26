@@ -1,115 +1,73 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 25 Jan 2021 19:06:30 +0100
-Subject: [LTP] [PATCH v2 1/1] lib: Add test for tst_check_driver()
-Message-ID: <20210125180630.15163-1-pvorel@suse.cz>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 26 Jan 2021 09:41:38 +0800
+Subject: [LTP] [PATCH] syscalls/msync: Assgin value for page_sz
+Message-ID: <1611625298-2425-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test for 8f7013ba6.
+Since the previous patch, it removes useless getpagesize()
+check because this function never fail. But it also remove
+the page_size assignment and it lead case fail as below:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+msync02     1  TBROK  :  msync02.c:133: mmap failed: errno=EINVAL(22): Invalid argument
+msync02     2  TBROK  :  msync02.c:133: Remaining cases broken
+msync02     3  TBROK  :  msync02.c:147: munmap failed: errno=EINVAL(22): Invalid argument
+
+Fix this and also fix compiler warning by using size_t data type instead of int.
+
+Fixes: 60f4b01194ca ("syscalls/msync01: Remove useless getpagesize() check")
+Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
-Hi Cyril,
+ testcases/kernel/syscalls/msync/msync01.c | 4 +++-
+ testcases/kernel/syscalls/msync/msync02.c | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-thanks for previous review. I modified the test more thus sending v2.
-
-Changes v1-v2:
-* Check two version of module (using '_' and '-' also on built-in
-  modules) => more coverage.
-* Fix test when $MODULES_DIR exists, but does not contain modules
-(in v1 it TBROK: Test didn't report any results), now at least check non-existing module:
-
-Kind regards,
-Petr
-
-tst_check_driver 1 TINFO: timeout per run is 0h 5m 0s
-tst_check_driver 1 TINFO: using modules directory '/tmp/xx'
-tst_check_driver 1 TINFO: check loadable module detection
-tst_check_driver 1 TCONF: no modules found
-tst_check_driver 2 TINFO: check non-existing module detection
-tst_check_driver 2 TPASS: tst_check_drivers not-existing-kernel-module failed as expected
-tst_check_driver 3 TINFO: check built-in module detection
-tst_check_driver 3 TCONF: missing '/tmp/xx/modules.builtin'
-
-Kind regards,
-Petr
-
- lib/newlib_tests/shell/tst_check_driver.sh | 63 ++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100755 lib/newlib_tests/shell/tst_check_driver.sh
-
-diff --git a/lib/newlib_tests/shell/tst_check_driver.sh b/lib/newlib_tests/shell/tst_check_driver.sh
-new file mode 100755
-index 000000000..b1418ef8e
---- /dev/null
-+++ b/lib/newlib_tests/shell/tst_check_driver.sh
-@@ -0,0 +1,63 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/syscalls/msync/msync01.c b/testcases/kernel/syscalls/msync/msync01.c
+index 121fd86e8..cb740565d 100644
+--- a/testcases/kernel/syscalls/msync/msync01.c
++++ b/testcases/kernel/syscalls/msync/msync01.c
+@@ -153,12 +153,14 @@ int main(int ac, char **av)
+  */
+ void setup(void)
+ {
+-	int c_total = 0, nwrite = 0;	/* no. of bytes to be written */
++	size_t c_total = 0, nwrite = 0;	/* no. of bytes to be written */
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
++	page_sz = (size_t)getpagesize();
 +
-+TST_TESTFUNC=test
-+TST_SETUP=setup
-+TST_CNT=3
-+TST_NEEDS_CMDS="tst_check_drivers find grep head sed"
-+. tst_test.sh
+ 	tst_tmpdir();
+ 
+ 	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0)
+diff --git a/testcases/kernel/syscalls/msync/msync02.c b/testcases/kernel/syscalls/msync/msync02.c
+index c7b7e9e9c..11ed29e3b 100644
+--- a/testcases/kernel/syscalls/msync/msync02.c
++++ b/testcases/kernel/syscalls/msync/msync02.c
+@@ -106,13 +106,15 @@ int main(int ac, char **av)
+ 
+ void setup(void)
+ {
+-	int c_total = 0, nwrite = 0;	/* no. of bytes to be written */
++	size_t c_total = 0, nwrite = 0;	/* no. of bytes to be written */
+ 	char tst_buf[BUF_SIZE];
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
+ 
++	page_sz = (size_t)getpagesize();
 +
-+MODULES_DIR="${MODULES_DIR:-/lib/modules/$(uname -r)}"
-+
-+setup()
-+{
-+	tst_res TINFO "using modules directory '$MODULES_DIR'"
-+
-+	[ -d "$MODULES_DIR" ] || \
-+		tst_brk TCONF "modules directory '$MODULES_DIR' missing"
-+}
-+
-+test_drivers()
-+{
-+	local paths="$@"
-+	local drv
-+
-+	if [ -z "$paths" ]; then
-+		tst_res TCONF "no modules found"
-+		return
-+	fi
-+
-+	for drv in $paths; do
-+		drv="$(echo $drv | sed 's/.*\/\([^/]\+\)\.ko.*/\1/')"
-+		EXPECT_PASS tst_check_drivers $drv
-+		drv="$(echo $drv | sed 's/_/-/g')"
-+		EXPECT_PASS tst_check_drivers $drv
-+	done
-+}
-+
-+test1()
-+{
-+	tst_res TINFO "check loadable module detection"
-+	test_drivers $(find $MODULES_DIR | grep -E '_[^/]+\.ko' | head -3)
-+}
-+
-+test2()
-+{
-+	tst_res TINFO "check non-existing module detection"
-+	EXPECT_FAIL tst_check_drivers not-existing-kernel-module
-+}
-+
-+test3()
-+{
-+	local f="$MODULES_DIR/modules.builtin"
-+
-+	tst_res TINFO "check built-in module detection"
-+
-+	[ -f "$f" ] || \
-+		tst_brk TCONF "missing '$f'"
-+
-+	test_drivers $(grep -E '_[^/]+\.ko' $f | head -3)
-+}
-+
-+tst_run
+ 	tst_tmpdir();
+ 
+ 	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0)
 -- 
-2.30.0
+2.23.0
+
+
 
