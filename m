@@ -1,38 +1,35 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 26 Jan 2021 15:02:42 +0800
-Subject: [LTP] [PATCH] syscalls/msync: Assgin value for page_sz
-In-Reply-To: <1611625298-2425-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1611625298-2425-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <CAEemH2cHD43cw0nRNHDYF3R5sr0PQYAhtPHz+oxbDMSqsyEJ+g@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 26 Jan 2021 09:03:26 +0100
+Subject: [LTP] [binfmt_elf] d97e11e25d: ltp.DS000.fail
+In-Reply-To: <20210126055112.GA19582@xsang-OptiPlex-9020>
+References: <20210106075112.1593084-1-geert@linux-m68k.org>
+ <20210126055112.GA19582@xsang-OptiPlex-9020>
+Message-ID: <CAMuHMdUFsRSCDJeML+0i17ig6oFr+-cz660xyhkhkfg2UtPTzQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Jan 26, 2021 at 9:42 AM Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-wrote:
+Hi Oliver,
 
-> Since the previous patch, it removes useless getpagesize()
-> check because this function never fail. But it also remove
-> the page_size assignment and it lead case fail as below:
+On Tue, Jan 26, 2021 at 6:35 AM kernel test robot <oliver.sang@intel.com> wrote:
+> FYI, we noticed the following commit (built with gcc-9):
 >
-> msync02     1  TBROK  :  msync02.c:133: mmap failed: errno=EINVAL(22):
-> Invalid argument
-> msync02     2  TBROK  :  msync02.c:133: Remaining cases broken
-> msync02     3  TBROK  :  msync02.c:147: munmap failed: errno=EINVAL(22):
-> Invalid argument
->
-> Fix this and also fix compiler warning by using size_t data type instead
-> of int.
->
+> commit: d97e11e25dd226c44257284f95494bb06d1ebf5a ("[PATCH v2] binfmt_elf: Fix fill_prstatus() call in fill_note_info()")
+> url: https://github.com/0day-ci/linux/commits/Geert-Uytterhoeven/binfmt_elf-Fix-fill_prstatus-call-in-fill_note_info/20210106-155236
+> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
 
-Pushed, thanks for the fix.
+My patch (which you applied on top of v5.11-rc2) is a build fix for
+a commit that is not part of v5.11-rc2.  Hence the test run is invalid.
 
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210126/a40c17fd/attachment.htm>
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
