@@ -1,26 +1,70 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Jan 2021 17:18:35 +0100
-Subject: [LTP] [PATCH 4/5] syscalls/ipc: semctl05: Convert to new API
- and cleanup
-In-Reply-To: <1609918063-15810-4-git-send-email-zhufy.jy@cn.fujitsu.com>
-References: <1609918063-15810-1-git-send-email-zhufy.jy@cn.fujitsu.com>
- <1609918063-15810-4-git-send-email-zhufy.jy@cn.fujitsu.com>
-Message-ID: <YBBA2+QObcpo73bc@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 26 Jan 2021 22:28:55 +0100
+Subject: [LTP] [PATCH v3 2/7] can: Add can_common.h for vcan device setup
+In-Reply-To: <87bldd9t9i.fsf@suse.de>
+References: <20210120143723.26483-1-rpalethorpe@suse.com>
+ <20210120143723.26483-3-rpalethorpe@suse.com>
+ <058a6f05-d5ca-0746-dc4e-007253d3a84d@hartkopp.net>
+ <87bldd9t9i.fsf@suse.de>
+Message-ID: <20210126212855.GC15365@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with a minor changes, thanks.
+Hi Oliver, Richie,
 
-- Reformated the test description for docparser
+> >> --- /dev/null
+> >> +++ b/testcases/network/can/filter-tests/can_common.h
+> >> @@ -0,0 +1,75 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >> +/*
+> >> + * Copyright (c) 2021 SUSE LLC
+> >> + */
+> >> +
+> >> +#include <stdio.h>
+> >> +#include <stdlib.h>
+> >> +#include <unistd.h>
+> >> +#include <string.h>
+> >> +
+> >> +#include <sys/types.h>
+> >> +#include <sys/socket.h>
+> >> +#include <sys/ioctl.h>
+> >> +#include <sys/time.h>
+> >> +
+> >> +#include "tst_cmd.h"
+> >> +#include "tst_safe_stdio.h"
+> >> +#include "tst_safe_file_ops.h"
+> >> +
+> >> +#include <linux/if.h>
+> >> +#include <linux/can.h>
+> >> +#include <linux/can/raw.h>
+> >> +
+> >> +#ifndef IFF_ECHO
+> >> +# define IFF_ECHO (1<<18)
+> >> +#endif
+Thanks a lot, Richie!
 
-- Got rid of the XLC compiler workaround
+> > IFF_ECHO was included into Linux 2.6.25 together with the CAN
+> > subsystem itself.
 
-- Removed .needs_root
+> > So when you run the tests on Kernels < 2.6.25 you don't have CAN
+> > support and don't need IFF_ECHO too.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Petr, what kernel version and/or distro version did compilation fail on?
+
+> There is a small chance someone might be compiling with old kernel
+> headers relative to their kernel. However it is a challenge to compile
+> LTP with such an old user land.
+
+No, we don't support 2.6.25 :). I was playing with Buildroot distro in my spare time.
+These embedded toolchains suffer compatibility problems (usually uclibc-ng and
+sometimes musl lack the support). This problem was when using sourcery-arm-*.
+
+But this is definitely not a blocker for this patchset. That lapi is not a must,
+I can fix it some time later. I usually fix few of these problems before each
+LTP release.
+
+Kind regards,
+Petr
