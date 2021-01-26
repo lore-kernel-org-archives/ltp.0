@@ -1,57 +1,83 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 26 Jan 2021 17:55:24 +0800
-Subject: [LTP] [PATCH v1 2/3] syscalls/mallinfo02: Add a basic test to check
- use mmap or sbrk
-In-Reply-To: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1611654925-8994-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 26 Jan 2021 17:55:23 +0800
+Subject: [LTP] [PATCH v1 1/3] syscalls/mallinfo01: Add a basic test for
+ mallinfo
+Message-ID: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According mallinfo man-page, hblkhd member represents
-"The number of bytes in blocks currently allocated using mmap(2).".
-For allocations greater than or equal to 128K and that can't be satisfied from
-the free list, the memory-allocation functions employ mmap(2) instead of increasing
-the program break using sbrk(2).
+Referring to glibc test tst-mallinfo2.c[1], add a test to test mallinfo.
+Also check mallinfo in autotools.
 
-In this case, we test 20k size to use sbrk and 128k size to use mmap.
+[1]https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/tst-mallinfo2.c
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |  1 +
+ configure.ac                                  |  1 +
+ runtest/syscalls                              |  2 +
  testcases/kernel/syscalls/mallinfo/.gitignore |  1 +
- .../kernel/syscalls/mallinfo/mallinfo02.c     | 76 +++++++++++++++++++
- 3 files changed, 78 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mallinfo/mallinfo02.c
+ testcases/kernel/syscalls/mallinfo/Makefile   |  8 ++
+ .../kernel/syscalls/mallinfo/mallinfo01.c     | 84 +++++++++++++++++++
+ 5 files changed, 96 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mallinfo/.gitignore
+ create mode 100644 testcases/kernel/syscalls/mallinfo/Makefile
+ create mode 100644 testcases/kernel/syscalls/mallinfo/mallinfo01.c
 
+diff --git a/configure.ac b/configure.ac
+index 8bdb96300..223900ca1 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -94,6 +94,7 @@ AC_CHECK_FUNCS_ONCE([ \
+     io_uring_register \
+     io_uring_enter \
+     kcmp \
++    mallinfo \
+     mallopt \
+     mkdirat \
+     mknodat \
 diff --git a/runtest/syscalls b/runtest/syscalls
-index d0a9a5145..74ad999e8 100644
+index 576eacf83..d0a9a5145 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -683,6 +683,7 @@ lstat02 lstat02
+@@ -682,6 +682,8 @@ lstat01_64 lstat01_64
+ lstat02 lstat02
  lstat02_64 lstat02_64
  
- mallinfo01 mallinfo01
-+mallinfo02 mallinfo02
- 
++mallinfo01 mallinfo01
++
  mallopt01 mallopt01
  
+ mbind01 mbind01
 diff --git a/testcases/kernel/syscalls/mallinfo/.gitignore b/testcases/kernel/syscalls/mallinfo/.gitignore
-index a7e32a637..678ac277e 100644
---- a/testcases/kernel/syscalls/mallinfo/.gitignore
-+++ b/testcases/kernel/syscalls/mallinfo/.gitignore
-@@ -1 +1,2 @@
- /mallinfo01
-+/mallinfo02
-diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo02.c b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
 new file mode 100644
-index 000000000..f0c9cb99c
+index 000000000..a7e32a637
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
-@@ -0,0 +1,76 @@
++++ b/testcases/kernel/syscalls/mallinfo/.gitignore
+@@ -0,0 +1 @@
++/mallinfo01
+diff --git a/testcases/kernel/syscalls/mallinfo/Makefile b/testcases/kernel/syscalls/mallinfo/Makefile
+new file mode 100644
+index 000000000..044619fb8
+--- /dev/null
++++ b/testcases/kernel/syscalls/mallinfo/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) International Business Machines  Corp., 2001
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo01.c b/testcases/kernel/syscalls/mallinfo/mallinfo01.c
+new file mode 100644
+index 000000000..1a2a30af1
+--- /dev/null
++++ b/testcases/kernel/syscalls/mallinfo/mallinfo01.c
+@@ -0,0 +1,84 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
@@ -61,9 +87,8 @@ index 000000000..f0c9cb99c
 +/*\
 + * [DESCRIPTION]
 + *
-+ * Basic mallinfo() test for malloc() using sbrk or mmap.
-+ * It size > 128k, it will use mmap and deallocated space is not placed on
-+ * the free list for reuse by later allocations.
++ * Basic mallinfo() test. Refer to glibc test
++ * https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/tst-mallinfo2.c
 +\*/
 +
 +#include <malloc.h>
@@ -72,8 +97,11 @@ index 000000000..f0c9cb99c
 +#include "tst_safe_macros.h"
 +
 +#ifdef HAVE_MALLINFO
-+static int reuse_size;
-+static void print_mallinfo(const char *msg, struct mallinfo *m)
++static char *buf;
++static struct mallinfo info1;
++
++static void
++print_mallinfo(const char *msg, struct mallinfo *m)
 +{
 +	tst_res(TINFO, "%s...", msg);
 +#define P(f) tst_res(TINFO, "%s: %d", #f, m->f)
@@ -89,40 +117,46 @@ index 000000000..f0c9cb99c
 +	P(keepcost);
 +}
 +
-+void test_mallopt(void)
++void test_mallinfo(void)
 +{
-+	struct mallinfo info;
-+	int size;
-+	char *buf;
++	struct mallinfo info2;
++	int i;
++	int total = 0;
 +
-+	buf = SAFE_MALLOC(20480);
-+
-+	info = mallinfo();
-+	if (info.uordblks > 20480 && info.hblkhd == 0) {
-+		tst_res(TPASS, "malloc() uses sbrk when size < 128k");
-+	} else {
-+		tst_res(TFAIL, "malloc() use mmap when size < 128k");
-+		print_mallinfo("Test malloc(20480)", &info);
-+	}
-+	free(buf);
-+
-+	info = mallinfo();
-+	size = MAX(info.fordblks, 131072) + reuse_size;
-+	buf = SAFE_MALLOC(size);
-+	info = mallinfo();
-+	if (info.hblkhd > size) {
-+		tst_res(TPASS, "malloc() uses mmap when size >= 128k");
-+	} else {
-+		tst_res(TFAIL, "malloc uses sbrk when size >= 128k");
-+		print_mallinfo("Test malloc(1024*128)", &info);
++	for (i = 1; i < 20; i++) {
++		buf = SAFE_MALLOC(160 * i);
++		total += 16 * i;
 +	}
 +
-+	reuse_size = info.hblkhd;
-+	free(buf);
++	info2 = mallinfo();
++	print_mallinfo("Test", &info2);
++	if (info2.uordblks > info1.uordblks + total)
++		tst_res(TPASS, "mallinfo() passed");
++	else
++		tst_res(TFAIL, "mallinfo() failed");
++
++	info1 = info2;
++}
++
++static void setup(void)
++{
++	if (sizeof(info1.arena) != sizeof(int))
++		tst_res(TFAIL, "The member of mallinfo struct is not int");
++
++	info1 = mallinfo();
++	print_mallinfo("Start", &info1);
++}
++
++static void cleanup(void)
++{
++	if (buf)
++		free(buf);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = test_mallopt,
++	.setup = setup,
++	.test_all = test_mallinfo,
++	.cleanup = cleanup,
 +};
 +
 +#else
