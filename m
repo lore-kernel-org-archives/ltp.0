@@ -1,37 +1,91 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 27 Jan 2021 16:05:34 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01
- invoked oom-killer
-In-Reply-To: <CAEemH2dhpbm19HEaHkhv1WE+70VkDjM9C5L1-KJZqPX2G2BgrQ@mail.gmail.com>
-References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
- <CAEemH2csSFf7Ujz8H+KV7hTdmDVsxn5_oW2JZbwY=NsJUSat_w@mail.gmail.com>
- <2021012714540739834212@chinatelecom.cn>
- <CAEemH2dhpbm19HEaHkhv1WE+70VkDjM9C5L1-KJZqPX2G2BgrQ@mail.gmail.com>
-Message-ID: <CAEemH2cwEzLr0dXvskn-hprn0-iOCr=rrLPgDUE1YdbnHu=5AQ@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 27 Jan 2021 08:18:33 +0000
+Subject: [LTP] [PATCH v3 2/7] can: Add can_common.h for vcan device setup
+In-Reply-To: <64f599af-f2a7-901d-06a6-a5ff56a107a2@hartkopp.net>
+References: <20210120143723.26483-1-rpalethorpe@suse.com>
+ <20210120143723.26483-3-rpalethorpe@suse.com>
+ <058a6f05-d5ca-0746-dc4e-007253d3a84d@hartkopp.net>
+ <87bldd9t9i.fsf@suse.de> <20210126212855.GC15365@pevik>
+ <64f599af-f2a7-901d-06a6-a5ff56a107a2@hartkopp.net>
+Message-ID: <87im7i94iu.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Li Wang <liwang@redhat.com> wrote:
+Hello Petr & Oliver,
 
-Hi Xinpeng,
->
-> I sent to you the case swapping01 solving this(via FILE_LINES_SCANF)
-> already, feel free to take an reference:
->
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/swapping/swapping01.c#L85
->
+Oliver Hartkopp <socketcan@hartkopp.net> writes:
 
-Or, maybe we can extract this process into a function and put it in
-tst_memutils.h, to convinently reuse by other testcases too?
+> Hi Petr,
+>
+> On 26.01.21 22:28, Petr Vorel wrote:
+>> Hi Oliver, Richie,
+>> 
+>>>>> --- /dev/null
+>>>>> +++ b/testcases/network/can/filter-tests/can_common.h
+>>>>> @@ -0,0 +1,75 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>>>> +/*
+>>>>> + * Copyright (c) 2021 SUSE LLC
+>>>>> + */
+>>>>> +
+>>>>> +#include <stdio.h>
+>>>>> +#include <stdlib.h>
+>>>>> +#include <unistd.h>
+>>>>> +#include <string.h>
+>>>>> +
+>>>>> +#include <sys/types.h>
+>>>>> +#include <sys/socket.h>
+>>>>> +#include <sys/ioctl.h>
+>>>>> +#include <sys/time.h>
+>>>>> +
+>>>>> +#include "tst_cmd.h"
+>>>>> +#include "tst_safe_stdio.h"
+>>>>> +#include "tst_safe_file_ops.h"
+>>>>> +
+>>>>> +#include <linux/if.h>
+>>>>> +#include <linux/can.h>
+>>>>> +#include <linux/can/raw.h>
+>>>>> +
+>>>>> +#ifndef IFF_ECHO
+>>>>> +# define IFF_ECHO (1<<18)
+>>>>> +#endif
+>> Thanks a lot, Richie!
+>> 
+>>>> IFF_ECHO was included into Linux 2.6.25 together with the CAN
+>>>> subsystem itself.
+>> 
+>>>> So when you run the tests on Kernels < 2.6.25 you don't have CAN
+>>>> support and don't need IFF_ECHO too.
+>> 
+>>> Petr, what kernel version and/or distro version did compilation fail on?
+>> 
+>>> There is a small chance someone might be compiling with old kernel
+>>> headers relative to their kernel. However it is a challenge to compile
+>>> LTP with such an old user land.
+>> No, we don't support 2.6.25 :). I was playing with Buildroot distro
+>> in my spare time.
+>> These embedded toolchains suffer compatibility problems (usually uclibc-ng and
+>> sometimes musl lack the support). This problem was when using sourcery-arm-*.
+>
+> :-/
+>
+>> But this is definitely not a blocker for this patchset. That lapi is not a must,
+>> I can fix it some time later. I usually fix few of these problems before each
+>> LTP release.
+>
+> Ok. No problem. I wasn't aware that e.g. musl or other toolchains
+> select such strange starting points for their include files.
 
-void tst_get_MemAvailable(void);
+I wonder Petr, is it still necessary to define IFF_ECHO now only
+<linux/if.h> is included? Or do they somehow symlink linux/if.h ->
+net/if.h?
+
+Indeed it seems the current version of uclibc-ng doesn't include
+IFF_ECHO in <net/if.h>. OTOH musl does define it.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210127/3b37c2f4/attachment.htm>
+Thank you,
+Richard.
