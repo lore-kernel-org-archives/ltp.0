@@ -1,70 +1,207 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 26 Jan 2021 22:28:55 +0100
-Subject: [LTP] [PATCH v3 2/7] can: Add can_common.h for vcan device setup
-In-Reply-To: <87bldd9t9i.fsf@suse.de>
-References: <20210120143723.26483-1-rpalethorpe@suse.com>
- <20210120143723.26483-3-rpalethorpe@suse.com>
- <058a6f05-d5ca-0746-dc4e-007253d3a84d@hartkopp.net>
- <87bldd9t9i.fsf@suse.de>
-Message-ID: <20210126212855.GC15365@pevik>
+From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Date: Wed, 27 Jan 2021 10:51:12 +0800
+Subject: [LTP] [PATCH] syscalls/times01: Convert to new API
+Message-ID: <20210127025112.1226584-1-ruansy.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Oliver, Richie,
+Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/times/times01.c | 168 +++-------------------
+ 1 file changed, 20 insertions(+), 148 deletions(-)
 
-> >> --- /dev/null
-> >> +++ b/testcases/network/can/filter-tests/can_common.h
-> >> @@ -0,0 +1,75 @@
-> >> +// SPDX-License-Identifier: GPL-2.0-or-later
-> >> +/*
-> >> + * Copyright (c) 2021 SUSE LLC
-> >> + */
-> >> +
-> >> +#include <stdio.h>
-> >> +#include <stdlib.h>
-> >> +#include <unistd.h>
-> >> +#include <string.h>
-> >> +
-> >> +#include <sys/types.h>
-> >> +#include <sys/socket.h>
-> >> +#include <sys/ioctl.h>
-> >> +#include <sys/time.h>
-> >> +
-> >> +#include "tst_cmd.h"
-> >> +#include "tst_safe_stdio.h"
-> >> +#include "tst_safe_file_ops.h"
-> >> +
-> >> +#include <linux/if.h>
-> >> +#include <linux/can.h>
-> >> +#include <linux/can/raw.h>
-> >> +
-> >> +#ifndef IFF_ECHO
-> >> +# define IFF_ECHO (1<<18)
-> >> +#endif
-Thanks a lot, Richie!
+diff --git a/testcases/kernel/syscalls/times/times01.c b/testcases/kernel/syscalls/times/times01.c
+index 293a52957..87a0f6144 100644
+--- a/testcases/kernel/syscalls/times/times01.c
++++ b/testcases/kernel/syscalls/times/times01.c
+@@ -1,162 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+- */
+-/* $Id: times01.c,v 1.6 2009/10/26 14:55:48 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: times01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for times(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) times(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
++ * DESCRIPTION
+  *	This is a Phase I test for the times(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	times(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
++ *	to provide a limited exposure of the system call.
+  *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
++ * ALGORITHM:
++ *	Execute system call
++ *	Check return code, if system call failed (return=-1)
++ *	    Log the errno and Issue a FAIL message.
++ *	Otherwise, Issue a PASS message.
++ */
+ 
+-#include <sys/types.h>
+ #include <sys/times.h>
+ #include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
+-
+-char *TCID = "times01";
+-int TST_TOTAL = 1;
+-
+-struct tms mytimes;
++#include "tst_test.h"
+ 
+-int main(int ac, char **av)
++static void verify_times(void)
+ {
+-	int lc;
++	struct tms mytimes;
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	TEST(times(&mytimes));
+ 
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(times(&mytimes));
+-
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "times failed");
+-		else
+-			tst_resm(TPASS, "times(&mytimes) returned %ld",
+-				 TEST_RETURN);
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, "times failed");
++	else
++		tst_res(TPASS, "times(&mytimes) returned %ld", TST_RET);
+ }
+ 
+-void setup(void)
+-{
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = verify_times,
++};
+-- 
+2.30.0
 
-> > IFF_ECHO was included into Linux 2.6.25 together with the CAN
-> > subsystem itself.
 
-> > So when you run the tests on Kernels < 2.6.25 you don't have CAN
-> > support and don't need IFF_ECHO too.
 
-> Petr, what kernel version and/or distro version did compilation fail on?
-
-> There is a small chance someone might be compiling with old kernel
-> headers relative to their kernel. However it is a challenge to compile
-> LTP with such an old user land.
-
-No, we don't support 2.6.25 :). I was playing with Buildroot distro in my spare time.
-These embedded toolchains suffer compatibility problems (usually uclibc-ng and
-sometimes musl lack the support). This problem was when using sourcery-arm-*.
-
-But this is definitely not a blocker for this patchset. That lapi is not a must,
-I can fix it some time later. I usually fix few of these problems before each
-LTP release.
-
-Kind regards,
-Petr
