@@ -1,240 +1,38 @@
-From: Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Date: Wed, 27 Jan 2021 17:52:50 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/time01: Convert to new API
-In-Reply-To: <601130E0.7030607@cn.fujitsu.com>
-References: <20210127080147.1265100-1-ruansy.fnst@cn.fujitsu.com>
- <601130E0.7030607@cn.fujitsu.com>
-Message-ID: <239ec6b6-f1df-66ae-5e3f-bf2e1d02a84b@cn.fujitsu.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 27 Jan 2021 10:53:13 +0100
+Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01
+ invoked oom-killer
+In-Reply-To: <YBE03REJywKIlM0X@yuki.lan>
+References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
+ <YBE03REJywKIlM0X@yuki.lan>
+Message-ID: <a49e7375-e7c6-9915-da23-963a4e534e1f@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 2021/1/27 ??5:22, Xiao Yang wrote:
-> Hi Ruan,
+On 27. 01. 21 10:39, Cyril Hrubis wrote:
+> Hi!
+>> MemTotal:       198101744 kB
+>> MemFree:        189303148 kB
+>> MemAvailable:   188566732 kB
 > 
-> I perfer to merge them into one test because they have similar and few 
-> steps.
-
-OK.  I'll merge them in next patch.
-
-
---
-Thanks,
-Ruan Shiyang.
+> This sounds really strange, usually MemFree is smaller than MemAvailable
+> since MemFree does not include page cache.
 > 
-> Best Regards,
-> Xiao Yang
-> On 2021/1/27 16:01, Shiyang Ruan wrote:
->> Signed-off-by: Shiyang Ruan<ruansy.fnst@cn.fujitsu.com>
->> ---
->> ? testcases/kernel/syscalls/time/time01.c | 180 +++---------------------
->> ? 1 file changed, 18 insertions(+), 162 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/time/time01.c 
->> b/testcases/kernel/syscalls/time/time01.c
->> index 616a21fa8..ee08c69f1 100644
->> --- a/testcases/kernel/syscalls/time/time01.c
->> +++ b/testcases/kernel/syscalls/time/time01.c
->> @@ -1,173 +1,29 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> ? /*
->> ?? * Copyright (c) 2000 Silicon Graphics, Inc.? All Rights Reserved.
->> - *
->> - * This program is free software; you can redistribute it and/or 
->> modify it
->> - * under the terms of version 2 of the GNU General Public License as
->> - * published by the Free Software Foundation.
->> - *
->> - * This program is distributed in the hope that it would be useful, but
->> - * WITHOUT ANY WARRANTY; without even the implied warranty of
->> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->> - *
->> - * Further, this software is distributed without any warranty that it is
->> - * free of the rightful claim of any third person regarding infringement
->> - * or the like.? Any license provided herein, whether implied or
->> - * otherwise, applies only to this software file.? Patent licenses, if
->> - * any, provided herein do not apply to combinations of this program 
->> with
->> - * other software, or any other product whatsoever.
->> - *
->> - * You should have received a copy of the GNU General Public License 
->> along
->> - * with this program; if not, write the Free Software Foundation, Inc.,
->> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> - *
->> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
->> - * Mountain View, CA? 94043, or:
->> - *
->> - * http://www.sgi.com
->> - *
->> - * For further information regarding this notice, see:
->> - *
->> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
->> - *
->> ?? */
->> -/* $Id: time01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
->> -/**********************************************************
->> - *
->> - *??? OS Test - Silicon Graphics, Inc.
->> - *
->> - *??? TEST IDENTIFIER??? : time01
->> - *
->> - *??? EXECUTED BY??? : anyone
->> - *
->> - *??? TEST TITLE??? : Basic test for time(2)
->> - *
->> - *??? PARENT DOCUMENT??? : usctpl01
->> - *
->> - *??? TEST CASE TOTAL??? : 1
->> - *
->> - *??? WALL CLOCK TIME??? : 1
->> - *
->> - *??? CPU TYPES??????? : ALL
->> - *
->> - *??? AUTHOR??????? : William Roske
->> - *
->> - *??? CO-PILOT??????? : Dave Fenner
->> - *
->> - *??? DATE STARTED??? : 03/30/92
->> - *
->> - *??? INITIAL RELEASE??? : UNICOS 7.0
->> - *
->> - *??? TEST CASES
->> - *
->> - *??? 1.) time(2) returns...(See Description)
->> - *
->> - *??? INPUT SPECIFICATIONS
->> - *??? The standard options for system call tests are accepted.
->> - *??? (See the parse_opts(3) man page).
->> - *
->> - *??? OUTPUT SPECIFICATIONS
->> - *
->> - *??? DURATION
->> - *??? Terminates - with frequency and infinite modes.
->> - *
->> - *??? SIGNALS
->> - *??? Uses SIGUSR1 to pause before test if option set.
->> - *??? (See the parse_opts(3) man page).
->> - *
->> - *??? RESOURCES
->> - *??? None
->> - *
->> - *??? ENVIRONMENTAL NEEDS
->> - *????? No run-time environmental needs.
->> - *
->> - *??? SPECIAL PROCEDURAL REQUIREMENTS
->> - *??? None
->> - *
->> - *??? INTERCASE DEPENDENCIES
->> - *??? None
->> - *
->> - *??? DETAILED DESCRIPTION
->> - *??? This is a Phase I test for the time(2) system call.? It is 
->> intended
->> - *??? to provide a limited exposure of the system call, for now.? It
->> - *??? should/will be extended when full functional tests are written for
->> - *??? time(2).
->> - *
->> - *??? Setup:
->> - *????? Setup signal handling.
->> - *????? Pause for SIGUSR1 if option specified.
->> - *
->> - *??? Test:
->> - *???? Loop if the proper options are given.
->> - *????? Execute system call
->> - *????? Check return code, if system call failed (return=-1)
->> - *??????? Log the errno and Issue a FAIL message.
->> - *????? Otherwise, Issue a PASS message.
->> - *
->> - *??? Cleanup:
->> - *????? Print errno log and/or timing stats if options given
->> - *
->> - *
->> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
->>
->> -#include<errno.h>
->> -#include<string.h>
->> -#include<signal.h>
->> -#include<time.h>
->> -#include "test.h"
->> -
->> -void setup();
->> -void cleanup();
->> -
->> -char *TCID = "time01";
->> -int TST_TOTAL = 1;
->> -
->> -int main(int ac, char **av)
->> -{
->> -??? int lc;
->> -
->> -??? tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -??? setup();
->> -
->> -??? for (lc = 0; TEST_LOOPING(lc); lc++) {
->> +/*\
->> + * [DESCRIPTION]
->> + * This is a Phase I test for the time(2) system call. It is intended to
->> + * provide a limited exposure of the system call.
->> +\*/
->>
->> -??????? tst_count = 0;
->> -
->> -??????? /*
->> -???????? * Call time(2)
->> -???????? */
->> -??????? TEST(time(0));
->> -
->> -??????? /* check return code */
->> -??????? if (TEST_RETURN == -1) {
->> -??????????? tst_resm(TFAIL, "time(0) Failed, errno=%d : %s",
->> -???????????????? TEST_ERRNO, strerror(TEST_ERRNO));
->> -??????? } else {
->> -??????????? tst_resm(TPASS, "time(0) returned %ld",
->> -???????????????? TEST_RETURN);
->> -??????? }
->> -??? }
->> +#include<time.h>
->> +#include<errno.h>
->>
->> -??? cleanup();
->> -??? tst_exit();
->> -}
->> +#include "tst_test.h"
->>
->> -/***************************************************************
->> - * setup() - performs all ONE TIME setup for this test.
->> - ***************************************************************/
->> -void setup(void)
->> +static void verify_time(void)
->> ? {
->> -??? void trapper();
->> -
->> -??? tst_sig(NOFORK, DEF_HANDLER, cleanup);
->> +??? TEST(time(0));
->>
->> -??? TEST_PAUSE;
->> +??? if (TST_RET == -1)
->> +??????? tst_res(TFAIL | TTERRNO, "time(0)");
->> +??? else
->> +??????? tst_res(TPASS, "time(0) returned %ld", TST_RET);
->> ? }
->>
->> -/***************************************************************
->> - * cleanup() - performs all ONE TIME cleanup for this test at
->> - *??????? completion or premature exit.
->> - ***************************************************************/
->> -void cleanup(void)
->> -{
->> -}
->> +static struct tst_test test = {
->> +??? .test_all = verify_time,
->> +};
+> Is this freshly booted system?
 > 
+> Can you send the whole meminfo here please?
 
+Please also send the contents of /proc/sys/vm/min_free_kbytes. I suspect
+that that's where the OOM issues are actually coming from.
 
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
