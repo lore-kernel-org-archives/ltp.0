@@ -1,98 +1,240 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 27 Jan 2021 09:52:11 +0000
-Subject: [LTP] [PATCH v2 1/1] fzsync: Add sched_yield for single core
- machine
-In-Reply-To: <20210127031853.3485-1-ycliang@andestech.com>
-References: <20210127031853.3485-1-ycliang@andestech.com>
-Message-ID: <87ft2m906s.fsf@suse.de>
+From: Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Date: Wed, 27 Jan 2021 17:52:50 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/time01: Convert to new API
+In-Reply-To: <601130E0.7030607@cn.fujitsu.com>
+References: <20210127080147.1265100-1-ruansy.fnst@cn.fujitsu.com>
+ <601130E0.7030607@cn.fujitsu.com>
+Message-ID: <239ec6b6-f1df-66ae-5e3f-bf2e1d02a84b@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Leo,
 
-Leo Yu-Chi Liang <ycliang@andestech.com> writes:
 
-> Fuzzy sync library uses spin waiting mechanism to implement thread
-> barrier behavior, which would cause this test to be time-consuming
-> on single core machine.
->
-> Fix this by adding sched_yield in the spin waiting loop, so that the
-> thread yields cpu as soon as it enters the waiting loop.
+On 2021/1/27 ??5:22, Xiao Yang wrote:
+> Hi Ruan,
+> 
+> I perfer to merge them into one test because they have similar and few 
+> steps.
 
-Thanks for this, a full review will take some time, but I have some
-minor comments already.
+OK.  I'll merge them in next patch.
 
->
-> Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> ---
->  include/tst_fuzzy_sync.h | 34 ++++++++++++++++++++++++++--------
->  1 file changed, 26 insertions(+), 8 deletions(-)
->
-> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-> index 4141f5c64..37f3d06f2 100644
-> --- a/include/tst_fuzzy_sync.h
-> +++ b/include/tst_fuzzy_sync.h
-> @@ -59,12 +59,15 @@
->   * @sa tst_fzsync_pair
->   */
->  
-> -#include <sys/time.h>
-> -#include <time.h>
->  #include <math.h>
-> -#include <stdlib.h>
 
-Please don't sort existing includes. It will apear in git-blame that you
-added these. :-)
+--
+Thanks,
+Ruan Shiyang.
+> 
+> Best Regards,
+> Xiao Yang
+> On 2021/1/27 16:01, Shiyang Ruan wrote:
+>> Signed-off-by: Shiyang Ruan<ruansy.fnst@cn.fujitsu.com>
+>> ---
+>> ? testcases/kernel/syscalls/time/time01.c | 180 +++---------------------
+>> ? 1 file changed, 18 insertions(+), 162 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/time/time01.c 
+>> b/testcases/kernel/syscalls/time/time01.c
+>> index 616a21fa8..ee08c69f1 100644
+>> --- a/testcases/kernel/syscalls/time/time01.c
+>> +++ b/testcases/kernel/syscalls/time/time01.c
+>> @@ -1,173 +1,29 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> ? /*
+>> ?? * Copyright (c) 2000 Silicon Graphics, Inc.? All Rights Reserved.
+>> - *
+>> - * This program is free software; you can redistribute it and/or 
+>> modify it
+>> - * under the terms of version 2 of the GNU General Public License as
+>> - * published by the Free Software Foundation.
+>> - *
+>> - * This program is distributed in the hope that it would be useful, but
+>> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>> - *
+>> - * Further, this software is distributed without any warranty that it is
+>> - * free of the rightful claim of any third person regarding infringement
+>> - * or the like.? Any license provided herein, whether implied or
+>> - * otherwise, applies only to this software file.? Patent licenses, if
+>> - * any, provided herein do not apply to combinations of this program 
+>> with
+>> - * other software, or any other product whatsoever.
+>> - *
+>> - * You should have received a copy of the GNU General Public License 
+>> along
+>> - * with this program; if not, write the Free Software Foundation, Inc.,
+>> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>> - *
+>> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+>> - * Mountain View, CA? 94043, or:
+>> - *
+>> - * http://www.sgi.com
+>> - *
+>> - * For further information regarding this notice, see:
+>> - *
+>> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+>> - *
+>> ?? */
+>> -/* $Id: time01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
+>> -/**********************************************************
+>> - *
+>> - *??? OS Test - Silicon Graphics, Inc.
+>> - *
+>> - *??? TEST IDENTIFIER??? : time01
+>> - *
+>> - *??? EXECUTED BY??? : anyone
+>> - *
+>> - *??? TEST TITLE??? : Basic test for time(2)
+>> - *
+>> - *??? PARENT DOCUMENT??? : usctpl01
+>> - *
+>> - *??? TEST CASE TOTAL??? : 1
+>> - *
+>> - *??? WALL CLOCK TIME??? : 1
+>> - *
+>> - *??? CPU TYPES??????? : ALL
+>> - *
+>> - *??? AUTHOR??????? : William Roske
+>> - *
+>> - *??? CO-PILOT??????? : Dave Fenner
+>> - *
+>> - *??? DATE STARTED??? : 03/30/92
+>> - *
+>> - *??? INITIAL RELEASE??? : UNICOS 7.0
+>> - *
+>> - *??? TEST CASES
+>> - *
+>> - *??? 1.) time(2) returns...(See Description)
+>> - *
+>> - *??? INPUT SPECIFICATIONS
+>> - *??? The standard options for system call tests are accepted.
+>> - *??? (See the parse_opts(3) man page).
+>> - *
+>> - *??? OUTPUT SPECIFICATIONS
+>> - *
+>> - *??? DURATION
+>> - *??? Terminates - with frequency and infinite modes.
+>> - *
+>> - *??? SIGNALS
+>> - *??? Uses SIGUSR1 to pause before test if option set.
+>> - *??? (See the parse_opts(3) man page).
+>> - *
+>> - *??? RESOURCES
+>> - *??? None
+>> - *
+>> - *??? ENVIRONMENTAL NEEDS
+>> - *????? No run-time environmental needs.
+>> - *
+>> - *??? SPECIAL PROCEDURAL REQUIREMENTS
+>> - *??? None
+>> - *
+>> - *??? INTERCASE DEPENDENCIES
+>> - *??? None
+>> - *
+>> - *??? DETAILED DESCRIPTION
+>> - *??? This is a Phase I test for the time(2) system call.? It is 
+>> intended
+>> - *??? to provide a limited exposure of the system call, for now.? It
+>> - *??? should/will be extended when full functional tests are written for
+>> - *??? time(2).
+>> - *
+>> - *??? Setup:
+>> - *????? Setup signal handling.
+>> - *????? Pause for SIGUSR1 if option specified.
+>> - *
+>> - *??? Test:
+>> - *???? Loop if the proper options are given.
+>> - *????? Execute system call
+>> - *????? Check return code, if system call failed (return=-1)
+>> - *??????? Log the errno and Issue a FAIL message.
+>> - *????? Otherwise, Issue a PASS message.
+>> - *
+>> - *??? Cleanup:
+>> - *????? Print errno log and/or timing stats if options given
+>> - *
+>> - *
+>> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+>>
+>> -#include<errno.h>
+>> -#include<string.h>
+>> -#include<signal.h>
+>> -#include<time.h>
+>> -#include "test.h"
+>> -
+>> -void setup();
+>> -void cleanup();
+>> -
+>> -char *TCID = "time01";
+>> -int TST_TOTAL = 1;
+>> -
+>> -int main(int ac, char **av)
+>> -{
+>> -??? int lc;
+>> -
+>> -??? tst_parse_opts(ac, av, NULL, NULL);
+>> -
+>> -??? setup();
+>> -
+>> -??? for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> +/*\
+>> + * [DESCRIPTION]
+>> + * This is a Phase I test for the time(2) system call. It is intended to
+>> + * provide a limited exposure of the system call.
+>> +\*/
+>>
+>> -??????? tst_count = 0;
+>> -
+>> -??????? /*
+>> -???????? * Call time(2)
+>> -???????? */
+>> -??????? TEST(time(0));
+>> -
+>> -??????? /* check return code */
+>> -??????? if (TEST_RETURN == -1) {
+>> -??????????? tst_resm(TFAIL, "time(0) Failed, errno=%d : %s",
+>> -???????????????? TEST_ERRNO, strerror(TEST_ERRNO));
+>> -??????? } else {
+>> -??????????? tst_resm(TPASS, "time(0) returned %ld",
+>> -???????????????? TEST_RETURN);
+>> -??????? }
+>> -??? }
+>> +#include<time.h>
+>> +#include<errno.h>
+>>
+>> -??? cleanup();
+>> -??? tst_exit();
+>> -}
+>> +#include "tst_test.h"
+>>
+>> -/***************************************************************
+>> - * setup() - performs all ONE TIME setup for this test.
+>> - ***************************************************************/
+>> -void setup(void)
+>> +static void verify_time(void)
+>> ? {
+>> -??? void trapper();
+>> -
+>> -??? tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>> +??? TEST(time(0));
+>>
+>> -??? TEST_PAUSE;
+>> +??? if (TST_RET == -1)
+>> +??????? tst_res(TFAIL | TTERRNO, "time(0)");
+>> +??? else
+>> +??????? tst_res(TPASS, "time(0) returned %ld", TST_RET);
+>> ? }
+>>
+>> -/***************************************************************
+>> - * cleanup() - performs all ONE TIME cleanup for this test at
+>> - *??????? completion or premature exit.
+>> - ***************************************************************/
+>> -void cleanup(void)
+>> -{
+>> -}
+>> +static struct tst_test test = {
+>> +??? .test_all = verify_time,
+>> +};
+> 
 
->  #include <pthread.h>
-> +#include <sched.h>
-> +#include <stdbool.h>
-> +#include <stdlib.h>
-> +#include <sys/time.h>
-> +#include <time.h>
->  #include "tst_atomic.h"
-> +#include "tst_cpu.h"
->  #include "tst_timer.h"
->  #include "tst_safe_pthread.h"
->  
-> @@ -180,6 +183,15 @@ struct tst_fzsync_pair {
->  	int exec_loop;
->  	/** Internal; The second thread or 0 */
->  	pthread_t thread_b;
-> +	/** 
-> +	 * Internal; The flag indicates single core machines or not
 
-Actually I think the user can set this. It does not have to be internal.
-
-> +	 * 
-> +	 * If running on single core machines, it would take considerable
-> +	 * amount of time to run fuzzy sync library.
-> +	 * Thus call sched_yield to give up cpu to decrease the test time.
-> +	 */
-> +	bool yield_in_wait;
-> +
->  };
->  
->  #define CHK(param, low, hi, def) do {					      \
-> @@ -206,6 +218,7 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
->  	CHK(max_dev_ratio, 0, 1, 0.1);
->  	CHK(exec_time_p, 0, 1, 0.5);
->  	CHK(exec_loops, 20, INT_MAX, 3000000);
-> +	CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
-
-The CHK macro will override the user if they set yield_in_wait to
-zero. This only effects single core machines; so that it is impossible
-for the user to disable yield (at least before calling init which is the
-"correct way").
-
-It still allows the user to enable yield on multicore which is good.
-
-To avoid confusion I think it should be noted that users can force
-enable yield on multicore, but they can not disable it on single core.
-
--- 
-Thank you,
-Richard.
