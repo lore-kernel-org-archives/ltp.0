@@ -1,78 +1,98 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 27 Jan 2021 18:03:37 +0800
+From: liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn>
+Date: Wed, 27 Jan 2021 18:04:35 +0800
 Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01
  invoked oom-killer
-In-Reply-To: <YBExXT8HzFAGsTNI@yuki.lan>
-References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
- <CAEemH2csSFf7Ujz8H+KV7hTdmDVsxn5_oW2JZbwY=NsJUSat_w@mail.gmail.com>
- <2021012714540739834212@chinatelecom.cn>
- <CAEemH2dhpbm19HEaHkhv1WE+70VkDjM9C5L1-KJZqPX2G2BgrQ@mail.gmail.com>
- <CAEemH2cwEzLr0dXvskn-hprn0-iOCr=rrLPgDUE1YdbnHu=5AQ@mail.gmail.com>
- <YBExXT8HzFAGsTNI@yuki.lan>
-Message-ID: <CAEemH2frpP09ZXJDB4n-4nDBYgaSCEEwe8Fe==dp92WF7ohU9w@mail.gmail.com>
+References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>, 
+ <YBE03REJywKIlM0X@yuki.lan>
+Message-ID: <2021012718043566596022@chinatelecom.cn>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jan 27, 2021 at 5:23 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+[root@test-env-nm05-compute-14e5e72e38 ~]# cat /proc/meminfo
+MemTotal:       526997420 kB
+MemFree:        520224908 kB
+MemAvailable:   519936744 kB
+Buffers:               0 kB
+Cached:          2509036 kB
+SwapCached:            0 kB
+Active:           906868 kB
+Inactive:        2398084 kB
+Active(anon):     816396 kB
+Inactive(anon):    77236 kB
+Active(file):      90472 kB
+Inactive(file):  2320848 kB
+Unevictable:      610056 kB
+Mlocked:          610056 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:       1406336 kB
+Mapped:           118628 kB
+Shmem:             84400 kB
+KReclaimable:     193752 kB
+Slab:             703668 kB
+SReclaimable:     193752 kB
+SUnreclaim:       509916 kB
+KernelStack:       12672 kB
+PageTables:        14056 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    263498708 kB
+Committed_AS:   10263760 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      651756 kB
+VmallocChunk:          0 kB
+Percpu:            62464 kB
+HardwareCorrupted:    88 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:     1371808 kB
+DirectMap2M:    49661952 kB
+DirectMap1G:    486539264 kB
 
-> Hi!
-> > > I sent to you the case swapping01 solving this(via FILE_LINES_SCANF)
-> > > already, feel free to take an reference:
-> > >
-> > >
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/swapping/swapping01.c#L85
-> > >
-> >
-> > Or, maybe we can extract this process into a function and put it in
-> > tst_memutils.h, to convinently reuse by other testcases too?
-> >
-> > void tst_get_MemAvailable(void);
->
-> Please do not use CamelCase.
->
-
-+1
-Sorry, I just pasted the name by the editor, and YES, we should avoid that.
-
-
-> It should be tst_get_mem_available(void) and it should also return
-> unsigned long.
->
-
-Absolutely right.
-
-
-liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn> wrote:
-
-In this testcase,we first check MemAvailable. If MemAvailable doesn't
-> exist,then use info.freeram.
-> Maybe not other cases need do these.
->
-
-Yes, but we also could make use of tst_get_mem_available() here because,
-in the patch, you're trying to avoid that (MemFree > MemAvailable)
-situation.
-If the fix is correct, we just need to get both and choose the smaller one
-to use, isn't it?
+[root@test-env-nm05-compute-14e5e72e38 ~]# cat  /proc/sys/vm/min_free_kbytes
+90112
 
 
 
-> Have a question about using macro SAFE_READ_MEMINFO get MemAvailable
->> value,
->> Some old kernels maybe not privode "MemAvailable" field, which will
->> broken.
->>
->
-The most different of SAFE_* macro is that will exit with TBROK if not
-get it expected. As Cyril proposes another one FILE_LINES_SCANF
-has no such concern.
 
+ 
+From: Cyril Hrubis
+Date: 2021-01-27 17:39
+To: Xinpeng Liu
+CC: ltp
+Subject: Re: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01 invoked oom-killer
+Hi!
+> MemTotal:       198101744 kB
+> MemFree:        189303148 kB
+> MemAvailable:   188566732 kB
+ 
+This sounds really strange, usually MemFree is smaller than MemAvailable
+since MemFree does not include page cache.
+ 
+Is this freshly booted system?
+ 
+Can you send the whole meminfo here please?
+ 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210127/22cc467d/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210127/d67a18b3/attachment.htm>
