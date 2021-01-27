@@ -1,85 +1,30 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 27 Jan 2021 10:37:03 +0000
-Subject: [LTP] [PATCH v2 1/1] fzsync: Add sched_yield for single core
- machine
-In-Reply-To: <20210127031853.3485-1-ycliang@andestech.com>
-References: <20210127031853.3485-1-ycliang@andestech.com>
-Message-ID: <87czxq8y40.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 27 Jan 2021 12:28:36 +0100
+Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01
+ invoked oom-killer
+In-Reply-To: <2021012718043566596022@chinatelecom.cn>
+References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
+ <YBE03REJywKIlM0X@yuki.lan> <2021012718043566596022@chinatelecom.cn>
+Message-ID: <29f6bd4d-bb20-6558-8e23-a29cadc19860@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Leo,
+On 27. 01. 21 11:04, liuxp11@chinatelecom.cn wrote:
+> [root@test-env-nm05-compute-14e5e72e38 ~]# cat ?/proc/sys/vm/min_free_kbytes
+> 90112
 
-Leo Yu-Chi Liang <ycliang@andestech.com> writes:
-
-> +	/**
-
-Trailing whitespace
-
-> +	 * Internal; The flag indicates single core machines or not
-> +	 *
-
-Same as above
-
-> +	 * If running on single core machines, it would take considerable
-> +	 * amount of time to run fuzzy sync library.
-> +	 * Thus call sched_yield to give up cpu to decrease the test time.
-> +	 */
-> +	bool yield_in_wait;
-
-Actually it appears the CHK macro is not compatible with bool, it
-produces compiler warnings. You can either just change this to 'int
-yield_in_wait:1;' or don't use the CHK macro.
-
-
-> +
->  };
->  
->  #define CHK(param, low, hi, def) do {					      \
-> @@ -206,6 +218,7 @@ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
->  	CHK(max_dev_ratio, 0, 1, 0.1);
->  	CHK(exec_time_p, 0, 1, 0.5);
->  	CHK(exec_loops, 20, INT_MAX, 3000000);
-> +	CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
->  }
->  #undef CHK
->  
-> @@ -550,7 +563,8 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
->   */
->  static inline void tst_fzsync_pair_wait(int *our_cntr,
->  					int *other_cntr,
-> -					int *spins)
-> +					int *spins,
-> +					bool yield_in_wait)
->  {
->  	if (tst_atomic_inc(other_cntr) == INT_MAX) {
->  		/*
-> @@ -564,6 +578,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
->  		       && tst_atomic_load(our_cntr) < INT_MAX) {
->  			if (spins)
->  				(*spins)++;
-> +			if(yield_in_wait)
-> +				sched_yield();
->  		}
->  
->  		tst_atomic_store(0, other_cntr);
-> @@ -581,6 +597,8 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
->  		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
->  			if (spins)
->  				(*spins)++;
-> +			if(yield_in_wait)
-> +				sched_yield();
-
-After disassembling this, it appears the compiler does not move the
-yield branch outside the loop. The spins branch is optimised out because
-it is a compile time constant when NULL.
-
-This might not matter, but it will need testing on a lot of
-platforms. OTOH we could manually move the branch outside of the loop.
+Yep, there it is. min_free_kbytes is 90MB but we only leave 64MB safety
+margin. I'll prepare a patch that'll increase safety margin to
+2*min_free_kbytes if needed.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
