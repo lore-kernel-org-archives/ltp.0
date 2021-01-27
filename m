@@ -1,69 +1,211 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 27 Jan 2021 12:41:03 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/ioctl: ioctl_sg01.c:TBROK: Test
- killed!
-In-Reply-To: <1611570288-23040-2-git-send-email-liuxp11@chinatelecom.cn>
-References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>
- <1611570288-23040-2-git-send-email-liuxp11@chinatelecom.cn>
-Message-ID: <CAEemH2fCwJhSA=B-Km96NfHE4nkjpUH21cW1iQRfWUGe+k-OJw@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 27 Jan 2021 12:52:34 +0800
+Subject: [LTP] [PATCH v2] syscalls/times01: Convert to new API
+In-Reply-To: <20210127033905.1231558-1-ruansy.fnst@cn.fujitsu.com>
+References: <20210127033905.1231558-1-ruansy.fnst@cn.fujitsu.com>
+Message-ID: <6010F192.8070301@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Jan 27, 2021 at 11:33 AM Xinpeng Liu <liuxp11@chinatelecom.cn>
-wrote:
+Hi Ruan,
 
-> [root@test ioctl]# ./ioctl_sg01
-> tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
-> ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg2
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> Test timeouted, sending SIGKILL!
-> tst_test.c:1308: TINFO: If you are running on slow machine, try exporting
-> LTP_TIMEOUT_MUL > 1
-> tst_test.c:1309: TBROK: Test killed! (timeout?)
->
-> [root@test ioctl]# lscpu |grep Model
-> Model:                 85
-> Model name:            Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz
->
-> [root@test ioctl]# free -h
->       total   used    free   shared  buff/cache   available
-> Mem:   502G    2.7G    499G    82M      820M        497G
-> Swap:  0B      0B      0B
->
-> 512G RAM is too common,so add timeout 600 seconds,result is TPASS.
->
-> Signed-off-by: Xinpeng Liu <liuxp11@chinatelecom.cn>
+Thanks for your patch, pushed.
+
+Best Regards,
+Xiao Yang
+On 2021/1/27 11:39, Shiyang Ruan wrote:
+> Signed-off-by: Shiyang Ruan<ruansy.fnst@cn.fujitsu.com>
 > ---
->  testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 1 +
->  1 file changed, 1 insertion(+)
+>   testcases/kernel/syscalls/times/times01.c | 166 +++-------------------
+>   1 file changed, 17 insertions(+), 149 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-> b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-> index 94b30dc..d1f2d3c 100644
-> --- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-> @@ -123,6 +123,7 @@ static void run(void)
->  }
+> diff --git a/testcases/kernel/syscalls/times/times01.c b/testcases/kernel/syscalls/times/times01.c
+> index 293a52957..53c5603d7 100644
+> --- a/testcases/kernel/syscalls/times/times01.c
+> +++ b/testcases/kernel/syscalls/times/times01.c
+> @@ -1,162 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>   /*
+>    * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it is
+> - * free of the rightful claim of any third person regarding infringement
+> - * or the like.  Any license provided herein, whether implied or
+> - * otherwise, applies only to this software file.  Patent licenses, if
+> - * any, provided herein do not apply to combinations of this program with
+> - * other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+> - * Mountain View, CA  94043, or:
+> - *
+> - * http://www.sgi.com
+> - *
+> - * For further information regarding this notice, see:
+> - *
+> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+> - *
+>    */
+> -/* $Id: times01.c,v 1.6 2009/10/26 14:55:48 subrata_modak Exp $ */
+> -/**********************************************************
+> - *
+> - *    OS Test - Silicon Graphics, Inc.
+> - *
+> - *    TEST IDENTIFIER	: times01
+> - *
+> - *    EXECUTED BY	: anyone
+> - *
+> - *    TEST TITLE	: Basic test for times(2)
+> - *
+> - *    PARENT DOCUMENT	: usctpl01
+> - *
+> - *    TEST CASE TOTAL	: 1
+> - *
+> - *    WALL CLOCK TIME	: 1
+> - *
+> - *    CPU TYPES		: ALL
+> - *
+> - *    AUTHOR		: William Roske
+> - *
+> - *    CO-PILOT		: Dave Fenner
+> - *
+> - *    DATE STARTED	: 03/30/92
+> - *
+> - *    INITIAL RELEASE	: UNICOS 7.0
+> - *
+> - *    TEST CASES
+> - *
+> - * 	1.) times(2) returns...(See Description)
+> - *
+> - *    INPUT SPECIFICATIONS
+> - * 	The standard options for system call tests are accepted.
+> - *	(See the parse_opts(3) man page).
+> - *
+> - *    OUTPUT SPECIFICATIONS
+> - *$
+> - *    DURATION
+> - * 	Terminates - with frequency and infinite modes.
+> +/*\
+> + * [DESCRIPTION]
+>    *
+> - *    SIGNALS
+> - * 	Uses SIGUSR1 to pause before test if option set.
+> - * 	(See the parse_opts(3) man page).
+> - *
+> - *    RESOURCES
+> - * 	None
+> - *
+> - *    ENVIRONMENTAL NEEDS
+> - *      No run-time environmental needs.
+> - *
+> - *    SPECIAL PROCEDURAL REQUIREMENTS
+> - * 	None
+> - *
+> - *    INTERCASE DEPENDENCIES
+> - * 	None
+> - *
+> - *    DETAILED DESCRIPTION
+> - *	This is a Phase I test for the times(2) system call.  It is intended
+> - *	to provide a limited exposure of the system call, for now.  It
+> - *	should/will be extended when full functional tests are written for
+> - *	times(2).
+> - *
+> - * 	Setup:
+> - * 	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - * 	Test:
+> - *	 Loop if the proper options are given.
+> - * 	  Execute system call
+> - *	  Check return code, if system call failed (return=-1)
+> - *		Log the errno and Issue a FAIL message.
+> - *	  Otherwise, Issue a PASS message.
+> - *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> - *
+> - *
+> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+> + * This is a Phase I test for the times(2) system call.  It is intended to
+> + * provide a limited exposure of the system call.
+> +\*/
 >
->  static struct tst_test test = {
-> +       .timeout = 600,
+> -#include<sys/types.h>
+>   #include<sys/times.h>
+>   #include<errno.h>
+> -#include<string.h>
+> -#include<signal.h>
+> -#include "test.h"
+> -
+> -void setup();
+> -void cleanup();
+> -
+> -char *TCID = "times01";
+> -int TST_TOTAL = 1;
+> -
+> -struct tms mytimes;
+> +#include "tst_test.h"
 >
+> -int main(int ac, char **av)
+> +static void verify_times(void)
+>   {
+> -	int lc;
+> +	struct tms mytimes;
+>
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> +	TEST(times(&mytimes));
+>
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		TEST(times(&mytimes));
+> -
+> -		if (TEST_RETURN == -1)
+> -			tst_resm(TFAIL | TTERRNO, "times failed");
+> -		else
+> -			tst_resm(TPASS, "times(&mytimes) returned %ld",
+> -				 TEST_RETURN);
+> -
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TTERRNO, "times failed");
+> +	else
+> +		tst_res(TPASS, "times(&mytimes) returned %ld", TST_RET);
+>   }
+>
+> -void setup(void)
+> -{
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -}
+> -
+> -void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.test_all = verify_times,
+> +};
 
-It's hard to say 600s is proper for other huge systems.
-
-What about setting .timeout = -1 to disable it like what we did for the
-oom0* series test:
-https://github.com/linux-test-project/ltp/blob/master/lib/tst_test.c#L1251
 
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210127/f4afeaf0/attachment.htm>
