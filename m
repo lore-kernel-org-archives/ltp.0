@@ -1,44 +1,264 @@
-From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
-Date: Thu, 28 Jan 2021 04:40:57 -0500
-Subject: [LTP] [PATCH v2] syscalls/ipc: semctl07: Convert to new API and
- cleanup
-Message-ID: <1611826857-21076-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Date: Thu, 28 Jan 2021 17:51:54 +0800
+Subject: [LTP] [PATCH v3] syscalls/time{01,
+ 02}: Convert to new API and merge them
+Message-ID: <20210128095154.1348230-1-ruansy.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/ipc/semctl/Makefile   |   4 +-
- testcases/kernel/syscalls/ipc/semctl/semctl07.c | 248 +++++++++++-------------
- 2 files changed, 114 insertions(+), 138 deletions(-)
+Merge the two cases because each of them is very simple.
 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/Makefile b/testcases/kernel/syscalls/ipc/semctl/Makefile
-index 4923010..7b7a11d 100644
---- a/testcases/kernel/syscalls/ipc/semctl/Makefile
-+++ b/testcases/kernel/syscalls/ipc/semctl/Makefile
-@@ -7,7 +7,7 @@ LTPLIBS = ltpipc ltpnewipc
+Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+---
+ runtest/syscalls                          |   1 -
+ testcases/kernel/syscalls/time/.gitignore |   1 -
+ testcases/kernel/syscalls/time/time01.c   | 191 ++++------------------
+ testcases/kernel/syscalls/time/time02.c   | 147 -----------------
+ 4 files changed, 33 insertions(+), 307 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/time/time02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 576eacf83..a5d224c82 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1539,7 +1539,6 @@ tgkill02 tgkill02
+ tgkill03 tgkill03
  
- include $(top_srcdir)/include/mk/testcases.mk
+ time01 time01
+-time02 time02
  
--semctl01 semctl06 semctl07: LTPLDLIBS = -lltpipc
--semctl02 semctl03 semctl04 semctl05 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
-+semctl01 semctl06: LTPLDLIBS = -lltpipc
-+semctl02 semctl03 semctl04 semctl05 semctl07 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-index 5d7fad3..789d4ca 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
-@@ -1,176 +1,152 @@
+ times01 times01
+ times03 times03
+diff --git a/testcases/kernel/syscalls/time/.gitignore b/testcases/kernel/syscalls/time/.gitignore
+index 01da407ae..e422fac77 100644
+--- a/testcases/kernel/syscalls/time/.gitignore
++++ b/testcases/kernel/syscalls/time/.gitignore
+@@ -1,2 +1 @@
+ /time01
+-/time02
+diff --git a/testcases/kernel/syscalls/time/time01.c b/testcases/kernel/syscalls/time/time01.c
+index 616a21fa8..11aa90afa 100644
+--- a/testcases/kernel/syscalls/time/time01.c
++++ b/testcases/kernel/syscalls/time/time01.c
+@@ -1,173 +1,48 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-+ * Copyright (c) International Business Machines  Corp., 2002
-  *
-- *   Copyright (c) International Business Machines  Corp., 2002
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+  */
+-/* $Id: time01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: time01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for time(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- *	1.) time(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- *	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *
+- *    DURATION
+- *	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- *	Uses SIGUSR1 to pause before test if option set.
+- *	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- *	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- *	None
+- *
+- *    INTERCASE DEPENDENCIES
+- *	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the time(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	time(2).
+- *
+- *	Setup:
+- *	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- *	Test:
+- *	 Loop if the proper options are given.
+- *	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- *	Cleanup:
+- *	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+ 
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
++/*\
++ * [DESCRIPTION]
++ * - Basic test for the time(2) system call. It is intended to provide a
++ * limited exposure of the system call.
++ * - Verify that time(2) returns the value of time in seconds since the Epoch
++ * and stores this value in the memory pointed to by the parameter.
++\*/
++
+ #include <time.h>
+-#include "test.h"
++#include <errno.h>
+ 
+-void setup();
+-void cleanup();
++#include "tst_test.h"
+ 
+-char *TCID = "time01";
+-int TST_TOTAL = 1;
++time_t tlocal;
++time_t *targs[] = {
++	NULL, &tlocal,
++};
+ 
+-int main(int ac, char **av)
++static void verify_time(unsigned int i)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
++	time_t *tloc = targs[i];
+ 
+-		/*
+-		 * Call time(2)
+-		 */
+-		TEST(time(0));
++	TEST(time(tloc));
+ 
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "time(0) Failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS, "time(0) returned %ld",
+-				 TEST_RETURN);
+-		}
++	if (TST_RET == -1) {
++		tst_res(TFAIL | TTERRNO, "time()");
++		return;
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	if (!tloc)
++		tst_res(TPASS, "time() returned value %ld", TST_RET);
++	else if (*tloc == TST_RET)
++		tst_res(TPASS, "time() returned value %ld, stored value %jd "
++			       "are same", TST_RET, (intmax_t) *tloc);
++	else
++		tst_res(TFAIL, "time() returned value %ld, stored value %jd "
++			       "are different", TST_RET, (intmax_t) *tloc);
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
+-{
+-	void trapper();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test = verify_time,
++	.tcnt = ARRAY_SIZE(targs),
++};
+diff --git a/testcases/kernel/syscalls/time/time02.c b/testcases/kernel/syscalls/time/time02.c
+deleted file mode 100644
+index 137a3fda4..000000000
+--- a/testcases/kernel/syscalls/time/time02.c
++++ /dev/null
+@@ -1,147 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
 - *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
@@ -53,277 +273,138 @@ index 5d7fad3..789d4ca 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * HISTORY
-+ *	06/30/2001   Port to Linux   nsharoff@us.ibm.com
-+ *	10/30/2002   Port to LTP     dbarrera@us.ibm.com
-+ *	10/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
-+ *	- Fix concurrency issue. A statically defined key was used. Leading
-+ *	  to conflict with other instances of the same test.
-  */
--
--/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
--/* 10/30/2002	Port to LTP	dbarrera@us.ibm.com */
+- */
 -
 -/*
-- * NAME
-- *	semctl07
-+/*\
-+ * [DESCRIPTION]
-  *
-- * CALLS
-- *	semctl(2) semget(2)
-+ * Basic tests for semctl().
-  *
-- * ALGORITHM
-- *	Get and manipulate a set of semaphores.
-+ * - semctl() with IPC_STAT where we check the semid_ds buf content
-+ * - semctl() with SETVAL and GETVAL
-+ * - semctl() with GETPID
-+ * - semctl() with GETNCNT and GETZCNT
-  *
-- * RESTRICTIONS
+- * Test Name: time02
 - *
-- * HISTORY
-- *      10/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
-- *      - Fix concurrency issue. A statically defined key was used. Leading
-- *        to conflict with other instances of the same test.
+- * Test Description:
+- *  Verify that time(2) returns the value of time in seconds since
+- *  the Epoch and stores this value in the memory pointed to by the parameter.
+- *
+- * Expected Result:
+- *  time() should return the time (seconds) since the Epoch and this value
+- *  should be equal to the value stored in the specified parameter.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *	Verify the Functionality of system call
+- *      if successful,
+- *		Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  time02 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
+- *	where,  -c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-f   : Turn off functionality Testing.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions:
+- *  None.
+- *
 - */
-+\*/
- 
--#include <sys/types.h>
--#include <sys/ipc.h>
--#include <sys/sem.h>
--#include <signal.h>
--#include <errno.h>
+-
 -#include <stdio.h>
--#include <sys/wait.h>
--#include "ipcsem.h"
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <time.h>
+-#include <sys/types.h>
+-#include <stdint.h>
+-
 -#include "test.h"
-+#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "libnewipc.h"
-+#include "lapi/sem.h"
- 
--void setup(void);
--void cleanup(void);
-+static int semid = -1;
-+static unsigned long nsems;
- 
--char *TCID = "semctl07";
+-
+-void setup();			/* setup function for the test */
+-void cleanup();			/* cleanup function for the test */
+-
+-char *TCID = "time02";
 -int TST_TOTAL = 1;
 -
--key_t key;
--int semid = -1, nsems;
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	time_t tloc;		/* time_t variables for time(2) */
 -
--int main(int argc, char *argv[])
-+static void verify_semctl(void)
- {
- 	int status;
- 	struct semid_ds buf_ds;
- 	union semun arg;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
+-	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
- 	arg.buf = &buf_ds;
--	if ((status = semctl(semid, 0, IPC_STAT, arg)) == -1) {
--		tst_resm(TFAIL, "semctl() failed errno = %d", errno);
--		semctl(semid, 1, IPC_RMID, arg);
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
+-		tst_count = 0;
+-
+-		/*
+-		 * Call time() to get the time in seconds$
+-		 * since Epoch.
+-		 */
+-		TEST(time(&tloc));
+-
+-		/* Check return code from time(2) */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "time(0) Failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			if (tloc == TEST_RETURN) {
+-				tst_resm(TPASS, "time() returned value "
+-					 "%ld, stored value %jd are same",
+-					 TEST_RETURN, (intmax_t) tloc);
+-			} else {
+-				tst_resm(TFAIL, "time() returned value "
+-					 "%ld, stored value %jd are "
+-					 "different", TEST_RETURN,
+-					 (intmax_t) tloc);
+-			}
+-
+-		}
+-		tst_count++;	/* incr. TEST_LOOP counter */
 -	}
 -
--	/*
--	 * Check contents of semid_ds structure.
--	 */
-+	TST_EXP_PASS(semctl(semid, 0, IPC_STAT, arg));
- 
- 	if (arg.buf->sem_nsems != nsems) {
--		tst_resm(TFAIL, "error: unexpected number of sems %lu",
--			 arg.buf->sem_nsems);
--
--	}
--	if (arg.buf->sem_perm.uid != getuid()) {
--		tst_resm(TFAIL, "error: unexpected uid %d",
--			 arg.buf->sem_perm.uid);
--
--	}
--	if (arg.buf->sem_perm.gid != getgid()) {
--		tst_resm(TFAIL, "error: unexpected gid %d",
--			 arg.buf->sem_perm.gid);
--
--	}
--	if (arg.buf->sem_perm.cuid != getuid()) {
--		tst_resm(TFAIL, "error: unexpected cuid %d",
--			 arg.buf->sem_perm.cuid);
--
--	}
--	if (arg.buf->sem_perm.cgid != getgid()) {
--		tst_resm(TFAIL, "error: unexpected cgid %d",
--			 arg.buf->sem_perm.cgid);
--
-+		tst_res(TFAIL, "sem_nsems = %lu, expected %lu",
-+			 arg.buf->sem_nsems, nsems);
-+	} else {
-+		tst_res(TPASS, "sem_nsems = %lu", arg.buf->sem_nsems);
- 	}
--	if ((status = semctl(semid, 0, GETVAL, arg)) == -1) {
--		tst_resm(TFAIL, "semctl(GETVAL) failed errno = %d", errno);
--
--	}
--	arg.val = 1;
--	if ((status = semctl(semid, 0, SETVAL, arg)) == -1) {
--		tst_resm(TFAIL, "SEMCTL(SETVAL) failed errno = %d", errno);
--
--	}
--	if ((status = semctl(semid, 0, GETVAL, arg)) == -1) {
--		tst_resm(TFAIL, "semctl(GETVAL) failed errno = %d", errno);
--
--	}
--	if (status != arg.val) {
--		tst_resm(TFAIL, "error: unexpected value %d", status);
- 
-+	if (arg.buf->sem_perm.uid != getuid()) {
-+		tst_res(TFAIL, "sem_perm.uid = %d, expected %d",
-+			 arg.buf->sem_perm.uid, getuid());
-+	} else {
-+		tst_res(TPASS, "sem_perm.uid = %d", arg.buf->sem_perm.uid);
- 	}
--	if ((status = semctl(semid, 0, GETPID, arg)) == -1) {
--		tst_resm(TFAIL, "semctl(GETPID) failed errno = %d", errno);
- 
-+	if (arg.buf->sem_perm.gid != getgid()) {
-+		tst_res(TFAIL, "sem_perm.gid = %d, expected %d",
-+			 arg.buf->sem_perm.gid, getgid());
-+	} else {
-+		tst_res(TPASS, "sem_perm.gid = %d", arg.buf->sem_perm.gid);
- 	}
--	status = getpid();
--	if (status == 0) {
--		tst_resm(TFAIL, "error: unexpected pid %d", status);
- 
-+	if (arg.buf->sem_perm.cuid != getuid()) {
-+		tst_res(TFAIL, "sem_perm.cuid = %d, expected %d",
-+			 arg.buf->sem_perm.cuid, getuid());
-+	} else {
-+		tst_res(TPASS, "sem_perm.cuid = %d", arg.buf->sem_perm.cuid);
- 	}
--	if ((status = semctl(semid, 0, GETNCNT, arg)) == -1) {
--		tst_resm(TFAIL, "semctl(GETNCNT) failed errno = %d", errno);
- 
-+	if (arg.buf->sem_perm.cgid != getgid()) {
-+		tst_res(TFAIL, "sem_perm.cgid = %d, expected %d",
-+			 arg.buf->sem_perm.cgid, getgid());
-+	} else {
-+		tst_res(TPASS, "sem_perm.cgid = %d", arg.buf->sem_perm.cgid);
- 	}
--	if (status != 0) {
--		tst_resm(TFAIL, "error: unexpected semncnt %d", status);
- 
--	}
--	if ((status = semctl(semid, 0, GETZCNT, arg)) == -1) {
--		tst_resm(TFAIL, "semctl(GETZCNT) failed errno = %d", errno);
-+	if ((status = semctl(semid, 0, GETVAL)) == -1)
-+		tst_res(TFAIL, "semctl(GETVAL) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(GETVAL) succeeded");
- 
--	}
--	if (status != 0) {
--		tst_resm(TFAIL, "error: unexpected semzcnt %d", status);
-+	arg.val = 1;
- 
--	}
-+	if ((status = semctl(semid, 0, SETVAL, arg)) == -1)
-+		tst_res(TFAIL, "SEMCTL(SETVAL) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(SETVAL) succeeded");
- 
--	tst_resm(TPASS, "semctl07 ran successfully!");
-+	if ((status = semctl(semid, 0, GETVAL)) == -1)
-+		tst_res(TFAIL, "semctl(GETVAL) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(GETVAL) succeeded");
- 
 -	cleanup();
 -	tst_exit();
-+	if (status != arg.val) {
-+		tst_res(TFAIL, "semctl(GETVAL) returned %d expected %d",
-+			status, arg.val);
-+	} else {
-+		tst_res(TPASS, "semctl(GETVAL) returned %d", status);
-+	}
-+
-+	if ((status = semctl(semid, 0, GETPID)) == -1)
-+		tst_res(TFAIL, "semctl(GETPID) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(GETPID) succeeded");
-+
-+	if (status != getpid()) {
-+		tst_res(TFAIL, "semctl(GETPID) returned %d expected %d",
-+			status, getpid());
-+	} else {
-+		tst_res(TPASS, "semctl(GETPID) returned %d", status);
-+	}
-+
-+	if ((status = semctl(semid, 0, GETNCNT)) == -1)
-+		tst_res(TFAIL, "semctl(GETNCNT) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(GETNCNT) succeeded");
-+
-+	if (status != 0)
-+		tst_res(TFAIL, "semctl(GETNCNT) returned %d expected 0",
-+			status);
-+	else
-+		tst_res(TPASS, "semctl(GETNCNT) returned 0");
-+
-+	if ((status = semctl(semid, 0, GETZCNT)) == -1)
-+		tst_res(TFAIL, "semctl(GETZCNT) failed errno = %d", errno);
-+	else
-+		tst_res(TPASS, "semctl(GETZCNT) succeeded");
-+
-+	if (status != 0)
-+		tst_res(TFAIL, "error: unexpected semzcnt %d", status);
-+	else
-+		tst_res(TPASS, "semctl(GETZCNT) succeeded 0");
- }
- 
+-}
+-
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- */
 -void setup(void)
-+static void setup(void)
- {
+-{
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
+-}
 -
--	tst_tmpdir();
--
--	/* get an IPC resource key */
--	key = getipckey();
-+	key_t key = GETIPCKEY();
- 	nsems = 1;
- 
--	if ((semid = semget(key, nsems, SEM_RA | IPC_CREAT)) == -1) {
--		tst_brkm(TFAIL, NULL, "semget() failed errno = %d", errno);
--	}
-+	semid = SAFE_SEMGET(key, nsems, SEM_RA | IPC_CREAT);
- }
- 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- */
 -void cleanup(void)
-+static void cleanup(void)
- {
--	rm_sema(semid);
--	tst_rmdir();
-+	if (semid != -1)
-+		SAFE_SEMCTL(semid, 0, IPC_RMID);
- }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_semctl,
-+};
+-{
+-
+-}
 -- 
-1.8.3.1
+2.30.0
 
 
 
