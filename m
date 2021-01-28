@@ -1,49 +1,109 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 28 Jan 2021 16:42:15 +0100
-Subject: [LTP] [PATCH v1 3/3] syscalls/mallinfo03: Add an overflow test
- when setting 2G size
-In-Reply-To: <1611654925-8994-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Thu, 28 Jan 2021 16:50:02 +0100
+Subject: [LTP] [PATCH v1 1/3] syscalls/mallinfo01: Add a basic test for
+ mallinfo
+In-Reply-To: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1611654925-8994-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <YBLbV2EhTWKihyE2@yuki.lan>
+Message-ID: <YBLdKsBkrLuyvbjA@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+> diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo01.c b/testcases/kernel/syscalls/mallinfo/mallinfo01.c
+> new file mode 100644
+> index 000000000..1a2a30af1
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/mallinfo/mallinfo01.c
+> @@ -0,0 +1,84 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> + */
+> +
+> +/*\
+> + * [DESCRIPTION]
+> + *
+> + * Basic mallinfo() test. Refer to glibc test
+> + * https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/tst-mallinfo2.c
+> +\*/
+> +
+> +#include <malloc.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+> +
+> +#ifdef HAVE_MALLINFO
+> +static char *buf;
+> +static struct mallinfo info1;
+> +
+> +static void
+> +print_mallinfo(const char *msg, struct mallinfo *m)
+> +{
+> +	tst_res(TINFO, "%s...", msg);
+> +#define P(f) tst_res(TINFO, "%s: %d", #f, m->f)
+> +	P(arena);
+> +	P(ordblks);
+> +	P(smblks);
+> +	P(hblks);
+> +	P(hblkhd);
+> +	P(usmblks);
+> +	P(fsmblks);
+> +	P(uordblks);
+> +	P(fordblks);
+> +	P(keepcost);
+> +}
+> +
 > +void test_mallinfo(void)
 > +{
-> +	struct mallinfo info;
-> +	char *buf;
-> +	size_t size = 2UL * 1024UL * 1024UL * 1024UL;
+> +	struct mallinfo info2;
+> +	int i;
+> +	int total = 0;
 > +
-> +	buf = SAFE_MALLOC(size);
+> +	for (i = 1; i < 20; i++) {
+> +		buf = SAFE_MALLOC(160 * i);
 
-If nothing else use of SAFE_MALLOC() here is wrong. The call may
-potentionally fail and return NULL since we are passing overly large
-value there.
+The buf here has to be array and we have to free the buffers at the end
+of this function, otherwise the malloc() will fail sooner or later when
+the test_mallinfo() function runs in a loop.
 
-For example it will fail if memory overcommit is disabled and there is
-not enough free memory.
-
-So we should, at least, use malloc() instead and skip the test if NULL
-was returned.
-
-> +	info = mallinfo();
-> +	if (info.hblkhd < 0) {
-> +		print_mallinfo("Test malloc 2G", &info);
-> +		tst_res(TFAIL, "The member of struct mallinfo overflow, we should use mallinfo2");
-> +	} else {
-> +		/*We will never get here*/
-> +		tst_res(TPASS, "The member of struct mallinfo doesn't overflow");
+> +		total += 16 * i;
 > +	}
-> +	free(buf);
+> +
+> +	info2 = mallinfo();
+> +	print_mallinfo("Test", &info2);
+> +	if (info2.uordblks > info1.uordblks + total)
+> +		tst_res(TPASS, "mallinfo() passed");
+> +	else
+> +		tst_res(TFAIL, "mallinfo() failed");
+> +
+> +	info1 = info2;
+
+And then we cannot do this either.
+
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if (sizeof(info1.arena) != sizeof(int))
+> +		tst_res(TFAIL, "The member of mallinfo struct is not int");
+> +
+> +	info1 = mallinfo();
+> +	print_mallinfo("Start", &info1);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (buf)
+> +		free(buf);
 > +}
 > +
 > +static struct tst_test test = {
+> +	.setup = setup,
 > +	.test_all = test_mallinfo,
+> +	.cleanup = cleanup,
 > +};
 > +
 > +#else
