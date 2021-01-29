@@ -1,21 +1,20 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 29 Jan 2021 14:38:18 +0100
-Subject: [LTP] [PATCH v2 2/2] syscalls/sched_getparam03: Convert to new
- API and cleanup
-In-Reply-To: <20210126022631.2566169-2-yangx.jy@cn.fujitsu.com>
-References: <20201214063729.1656200-1-yangx.jy@cn.fujitsu.com>
- <20210126022631.2566169-1-yangx.jy@cn.fujitsu.com>
- <20210126022631.2566169-2-yangx.jy@cn.fujitsu.com>
-Message-ID: <YBQPytKumktd/vag@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 29 Jan 2021 14:47:19 +0100
+Subject: [LTP] [PATCH] sctp/func_test: add check on the sctp driver
+In-Reply-To: <20210129090759.16534-1-kory.maincent@bootlin.com>
+References: <20210129090759.16534-1-kory.maincent@bootlin.com>
+Message-ID: <YBQR50ltZa+d1Or7@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Hi Kory,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +	if (tst_check_driver("sctp"))
+> +		tst_brkm(TCONF, tst_exit, "sctp driver not available");
+Using tst_check_driver requires #include "tst_kernel.h".
+
+Kind regards,
+Petr
