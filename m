@@ -1,87 +1,74 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 29 Jan 2021 20:41:41 +0100
-Subject: [LTP] [PATCH v2 3/6] zram: Move zram_compress_alg() to zram02.sh
+Date: Fri, 29 Jan 2021 20:41:43 +0100
+Subject: [LTP] [RFC PATCH v2 5/6] tst_test.sh: Run _tst_setup_timer after
+ $TST_SETUP
 In-Reply-To: <20210129194144.31299-1-pvorel@suse.cz>
 References: <20210129194144.31299-1-pvorel@suse.cz>
-Message-ID: <20210129194144.31299-4-pvorel@suse.cz>
+Message-ID: <20210129194144.31299-6-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Quit at setup in case there is no fs support (change in previous commit)
-can lead to skipping zram_compress_alg(). Move to zram02.sh where is no
-such limitation.
+Postpone starting timer a bit after the execution allow to setup
+timer in test setup. This is useful if test length depends on input
+decided during setup.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-The same as in v1.
+New in v2.
 
- testcases/kernel/device-drivers/zram/zram01.sh | 13 ++++++-------
- testcases/kernel/device-drivers/zram/zram02.sh | 11 ++++++-----
- 2 files changed, 12 insertions(+), 12 deletions(-)
+Hi,
 
-diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index c5d4a3e51..5e99f8bb8 100755
---- a/testcases/kernel/device-drivers/zram/zram01.sh
-+++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -6,7 +6,7 @@
- # Test creates several zram devices with different filesystems on them.
- # It fills each device with zeros and checks that compression works.
+I'm ok, if you consider this risky.
+Next commit can be then changed to have TST_TIMEOUT=-1.
+
+Kind regards,
+Petr
+
+ doc/test-writing-guidelines.txt | 5 ++++-
+ testcases/lib/tst_test.sh       | 4 ++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index f3a55cf26..61dccd400 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -2398,7 +2398,10 @@ simply by setting right '$TST_NEEDS_FOO'.
+ | 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be int >= 1,
+                        or -1 (special value to disable timeout), default is 300.
+                        Variable is meant be set in tests, not by user.
+-                       It's equivalent of `tst_test.timeout` in C.
++                       It's equivalent of `tst_test.timeout` in C, but (unlike
++                       the C API) it can be set also in the setup function.
++                       This is useful if test length depends on input decided
++                       during setup.
+ |=============================================================================
  
--TST_CNT=7
-+TST_CNT=6
- TST_TESTFUNC="do_test"
- TST_NEEDS_CMDS="awk bc dd grep"
- . zram_lib.sh
-@@ -108,12 +108,11 @@ do_test()
- {
- 	case $1 in
- 	 1) zram_max_streams;;
--	 2) zram_compress_alg;;
--	 3) zram_set_disksizes;;
--	 4) zram_set_memlimit;;
--	 5) zram_makefs;;
--	 6) zram_mount;;
--	 7) zram_fill_fs;;
-+	 2) zram_set_disksizes;;
-+	 3) zram_set_memlimit;;
-+	 4) zram_makefs;;
-+	 5) zram_mount;;
-+	 6) zram_fill_fs;;
- 	esac
- }
+ NOTE: Network tests (see testcases/network/README.md) use additional variables
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 69f007d89..4fa1674cd 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -552,8 +552,6 @@ tst_run()
+ 			tst_brk TCONF "test requires kernel $TST_MIN_KVER+"
+ 	fi
  
-diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-index b4d706568..d09977ec1 100755
---- a/testcases/kernel/device-drivers/zram/zram02.sh
-+++ b/testcases/kernel/device-drivers/zram/zram02.sh
-@@ -5,7 +5,7 @@
- #
- # Test checks that we can create swap zram device.
+-	_tst_setup_timer
+-
+ 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
  
--TST_CNT=5
-+TST_CNT=6
- TST_TESTFUNC="do_test"
- . zram_lib.sh
+ 	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
+@@ -594,6 +592,8 @@ tst_run()
+ 		fi
+ 	fi
  
-@@ -27,10 +27,11 @@ do_test()
- {
- 	case $1 in
- 	 1) zram_max_streams;;
--	 2) zram_set_disksizes;;
--	 3) zram_set_memlimit;;
--	 4) zram_makeswap;;
--	 5) zram_swapoff;;
-+	 2) zram_compress_alg;;
-+	 3) zram_set_disksizes;;
-+	 4) zram_set_memlimit;;
-+	 5) zram_makeswap;;
-+	 6) zram_swapoff;;
- 	esac
- }
- 
++	_tst_setup_timer
++
+ 	#TODO check that test reports some results for each test function call
+ 	while [ $TST_ITERATIONS -gt 0 ]; do
+ 		if [ -n "$TST_TEST_DATA" ]; then
 -- 
 2.30.0
 
