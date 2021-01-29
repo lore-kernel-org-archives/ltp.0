@@ -1,250 +1,188 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 29 Jan 2021 20:41:42 +0100
-Subject: [LTP] [PATCH v2 4/6] zram: Move test specific functions out of
- zram_lib.sh
+Date: Fri, 29 Jan 2021 20:41:40 +0100
+Subject: [LTP] [PATCH v2 2/6] zram01.sh: Generate test setup variables in
+ setup
 In-Reply-To: <20210129194144.31299-1-pvorel@suse.cz>
 References: <20210129194144.31299-1-pvorel@suse.cz>
-Message-ID: <20210129194144.31299-5-pvorel@suse.cz>
+Message-ID: <20210129194144.31299-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Refactoring, as code is confusing enough, when use global variables and
-functions which are single test specific + there is zram_fill_fs already
-in zram01.sh.
+Generate variables in setup, based on output of tst_supported_fs.
+This is more clean approach and it fixes various things:
+
+* Error when there is no filesystem support and also mkfs.ext2
+  (fallback) not installed:
+/opt/ltp/testcases/bin/zram01.sh: line 198: mkfs.ext2: not found
+Instead quit if there is no fs support. But this can lead to skipping
+zram_compress_alg(), it will be solved next commit by moving
+zram_compress_alg() to zram02.sh.
+
+* Having ext2 as fallback could lead to run it more than once.
+There is no much point to do that.
+
+* Drop tst_require_cmds mkfs check, because mkfs is not actually needed.
+
+Improvements:
+
+* Test all suitable filesystems (will need increase timeout).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-The same as in v1.
+changes v1->v2:
+Completely rewritten.
 
- .../kernel/device-drivers/zram/zram01.sh      | 34 +++++++
- .../kernel/device-drivers/zram/zram02.sh      | 58 ++++++++++++
- .../kernel/device-drivers/zram/zram_lib.sh    | 92 -------------------
- 3 files changed, 92 insertions(+), 92 deletions(-)
+ .../kernel/device-drivers/zram/zram01.sh      | 62 ++++++++++++++-----
+ .../kernel/device-drivers/zram/zram_lib.sh    | 18 +++---
+ 2 files changed, 56 insertions(+), 24 deletions(-)
 
 diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index 5e99f8bb8..695de14a1 100755
+index a795ff89f..c5d4a3e51 100755
 --- a/testcases/kernel/device-drivers/zram/zram01.sh
 +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -66,6 +66,40 @@ setup()
- 	zram_load
- }
+@@ -8,23 +8,25 @@
  
-+zram_makefs()
+ TST_CNT=7
+ TST_TESTFUNC="do_test"
+-TST_NEEDS_CMDS="awk bc dd"
++TST_NEEDS_CMDS="awk bc dd grep"
+ . zram_lib.sh
++TST_SETUP="setup"
+ 
+-# List of parameters for zram devices.
+-# For each number the test creates own zram device.
+-zram_max_streams="2 3 5 8"
+-
+-FS_SIZE="402653184"
+-FS_TYPE="btrfs"
++get_btrfs_size()
 +{
-+	local i=0
-+	local fs
++	local ram_size
+ 
+-RAM_SIZE=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
+-if [ "$RAM_SIZE" -lt 1048576 ]; then
+-	tst_res TINFO "not enough space for Btrfs"
+-	FS_SIZE="26214400"
+-	FS_TYPE="ext2"
+-fi
++	ram_size=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
++	if [ "$ram_size" -lt 1048576 ]; then
++		tst_res TINFO "not enough space for Btrfs"
++		return 1
++	fi
++	return 0
++}
+ 
++# List of parameters for zram devices.
++# For each number the test creates own zram device.
++# NOTE about size:
+ # The zram sysfs node 'disksize' value can be either in bytes,
+ # or you can use mem suffixes. But in some old kernels, mem
+ # suffixes are not supported, for example, in RHEL6.6GA's kernel
+@@ -32,9 +34,37 @@ fi
+ # not support mem suffixes, in some newer kernels, they use
+ # memparse() which supports mem suffixes. So here we just use
+ # bytes to make sure everything works correctly.
+-zram_sizes="26214400 26214400 26214400 $FS_SIZE"
+-zram_mem_limits="25M 25M 25M $((FS_SIZE/1024/1024))M"
+-zram_filesystems="ext3 ext4 xfs $FS_TYPE"
++generate_vars()
++{
++	local fs limit size stream=-1
++	dev_num=0
 +
-+	for fs in $zram_filesystems; do
-+		tst_res TINFO "make $fs filesystem on /dev/zram$i"
-+		mkfs.$fs /dev/zram$i > err.log 2>&1
-+		if [ $? -ne 0 ]; then
-+			cat err.log
-+			tst_brk TFAIL "failed to make $fs on /dev/zram$i"
++	for fs in $(tst_supported_fs | grep -v -e fat -e ntfs -e fuse); do
++		size="26214400"
++		limit="25M"
++		if [ "$fs" = "btrfs" ]; then
++			get_btrfs_size || continue
++			size="402653184"
++			limit="$((size/1024/1024))M"
 +		fi
 +
-+		i=$(($i + 1))
-+		[ $i -eq $dev_num ] && break
++		stream=$((stream+3))
++		dev_num=$((dev_num+1))
++		zram_filesystems="$zram_filesystems $fs"
++		zram_mem_limits="$zram_mem_limits $limit"
++		zram_sizes="$zram_sizes $size"
++		zram_max_streams="$zram_max_streams $stream"
 +	done
 +
-+	tst_res TPASS "zram_makefs succeeded"
++	[ $dev_num -eq 0 ] && \
++		tst_brk TCONF "no suitable filesystem"
 +}
 +
-+zram_mount()
++setup()
 +{
-+	local i=0
-+
-+	for i in $(seq 0 $(($dev_num - 1))); do
-+		tst_res TINFO "mount /dev/zram$i"
-+		mkdir zram$i
-+		ROD mount /dev/zram$i zram$i
-+		dev_mounted=$i
-+	done
-+
-+	tst_res TPASS "mount of zram device(s) succeeded"
++	generate_vars
++	zram_load
 +}
-+
+ 
  zram_fill_fs()
  {
- 	for i in $(seq 0 $(($dev_num - 1))); do
-diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-index d09977ec1..803b8dc29 100755
---- a/testcases/kernel/device-drivers/zram/zram02.sh
-+++ b/testcases/kernel/device-drivers/zram/zram02.sh
-@@ -23,6 +23,64 @@ zram_max_streams="2"
- zram_sizes="107374182400" # 100GB
- zram_mem_limits="1M"
- 
-+zram_compress_alg()
-+{
-+	if tst_kvcmp -lt "3.15"; then
-+		tst_res TCONF "device attribute comp_algorithm is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	fi
-+
-+	local i=0
-+
-+	tst_res TINFO "test that we can set compression algorithm"
-+	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
-+	tst_res TINFO "supported algs: $algs"
-+
-+	local dev_max=$(($dev_num - 1))
-+
-+	for i in $(seq 0 $dev_max); do
-+		for alg in $algs; do
-+			local sys_path="/sys/block/zram${i}/comp_algorithm"
-+			echo "$alg" >  $sys_path || \
-+				tst_brk TFAIL "can't set '$alg' to $sys_path"
-+			tst_res TINFO "$sys_path = '$alg' ($i/$dev_max)"
-+		done
-+	done
-+
-+	tst_res TPASS "test succeeded"
-+}
-+
-+zram_makeswap()
-+{
-+	tst_res TINFO "make swap with zram device(s)"
-+	tst_require_cmds mkswap swapon swapoff
-+	local i=0
-+
-+	for i in $(seq 0 $(($dev_num - 1))); do
-+		ROD mkswap /dev/zram$i
-+		ROD swapon /dev/zram$i
-+		tst_res TINFO "done with /dev/zram$i"
-+		dev_makeswap=$i
-+	done
-+
-+	tst_res TPASS "making zram swap succeeded"
-+}
-+
-+zram_swapoff()
-+{
-+	tst_require_cmds swapoff
-+	local i
-+
-+	for i in $(seq 0 $dev_makeswap); do
-+		ROD swapoff /dev/zram$i
-+	done
-+	dev_makeswap=-1
-+
-+	tst_res TPASS "swapoff completed"
-+}
-+
- do_test()
- {
- 	case $1 in
 diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index d4aaf0c3e..26ed1846b 100755
+index a7e8b9f5b..d4aaf0c3e 100755
 --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
 +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -89,35 +89,6 @@ zram_max_streams()
- 	tst_res TPASS "test succeeded"
- }
- 
--zram_compress_alg()
--{
--	if tst_kvcmp -lt "3.15"; then
--		tst_res TCONF "device attribute comp_algorithm is"\
--			"introduced since kernel v3.15, the running kernel"\
--			"does not support it"
--		return
--	fi
--
--	local i=0
--
--	tst_res TINFO "test that we can set compression algorithm"
--	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
--	tst_res TINFO "supported algs: $algs"
--
--	local dev_max=$(($dev_num - 1))
--
--	for i in $(seq 0 $dev_max); do
--		for alg in $algs; do
--			local sys_path="/sys/block/zram${i}/comp_algorithm"
--			echo "$alg" >  $sys_path || \
--				tst_brk TFAIL "can't set '$alg' to $sys_path"
--			tst_res TINFO "$sys_path = '$alg' ($i/$dev_max)"
--		done
--	done
--
--	tst_res TPASS "test succeeded"
--}
--
- zram_set_disksizes()
+@@ -36,10 +36,12 @@ zram_load()
  {
- 	local i=0
-@@ -163,66 +134,3 @@ zram_set_memlimit()
+ 	local tmp
+ 
+-	dev_num=0
+-	for tmp in $zram_max_streams; do
+-		dev_num=$((dev_num+1))
+-	done
++	if [ -z "$dev_num" ]; then
++		dev_num=0
++		for tmp in $zram_max_streams; do
++			dev_num=$((dev_num+1))
++		done
++	fi
+ 
+ 	if [ $dev_num -le 0 ]; then
+ 		tst_brk TBROK "dev_num must be > 0"
+@@ -129,6 +131,7 @@ zram_set_disksizes()
+ 
+ 		i=$(($i + 1))
+ 		tst_res TINFO "$sys_path = '$ds' ($i/$dev_num)"
++		[ $i -eq $dev_num ] && break
+ 	done
  
  	tst_res TPASS "test succeeded"
- }
+@@ -155,6 +158,7 @@ zram_set_memlimit()
+ 
+ 		i=$(($i + 1))
+ 		tst_res TINFO "$sys_path = '$ds' ($i/$dev_num)"
++		[ $i -eq $dev_num ] && break
+ 	done
+ 
+ 	tst_res TPASS "test succeeded"
+@@ -191,13 +195,10 @@ zram_swapoff()
+ 
+ zram_makefs()
+ {
+-	tst_require_cmds mkfs
+ 	local i=0
++	local fs
+ 
+ 	for fs in $zram_filesystems; do
+-		# if requested fs not supported default it to ext2
+-		tst_supported_fs $fs 2> /dev/null || fs=ext2
 -
--zram_makeswap()
--{
--	tst_res TINFO "make swap with zram device(s)"
--	tst_require_cmds mkswap swapon swapoff
--	local i=0
--
--	for i in $(seq 0 $(($dev_num - 1))); do
--		ROD mkswap /dev/zram$i
--		ROD swapon /dev/zram$i
--		tst_res TINFO "done with /dev/zram$i"
--		dev_makeswap=$i
--	done
--
--	tst_res TPASS "making zram swap succeeded"
--}
--
--zram_swapoff()
--{
--	tst_require_cmds swapoff
--	local i
--
--	for i in $(seq 0 $dev_makeswap); do
--		ROD swapoff /dev/zram$i
--	done
--	dev_makeswap=-1
--
--	tst_res TPASS "swapoff completed"
--}
--
--zram_makefs()
--{
--	local i=0
--	local fs
--
--	for fs in $zram_filesystems; do
--		tst_res TINFO "make $fs filesystem on /dev/zram$i"
--		mkfs.$fs /dev/zram$i > err.log 2>&1
--		if [ $? -ne 0 ]; then
--			cat err.log
--			tst_brk TFAIL "failed to make $fs on /dev/zram$i"
--		fi
--
--		i=$(($i + 1))
--		[ $i -eq $dev_num ] && break
--	done
--
--	tst_res TPASS "zram_makefs succeeded"
--}
--
--zram_mount()
--{
--	local i=0
--
--	for i in $(seq 0 $(($dev_num - 1))); do
--		tst_res TINFO "mount /dev/zram$i"
--		mkdir zram$i
--		ROD mount /dev/zram$i zram$i
--		dev_mounted=$i
--	done
--
--	tst_res TPASS "mount of zram device(s) succeeded"
--}
+ 		tst_res TINFO "make $fs filesystem on /dev/zram$i"
+ 		mkfs.$fs /dev/zram$i > err.log 2>&1
+ 		if [ $? -ne 0 ]; then
+@@ -206,6 +207,7 @@ zram_makefs()
+ 		fi
+ 
+ 		i=$(($i + 1))
++		[ $i -eq $dev_num ] && break
+ 	done
+ 
+ 	tst_res TPASS "zram_makefs succeeded"
 -- 
 2.30.0
 
