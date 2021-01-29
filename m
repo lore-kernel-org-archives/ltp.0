@@ -1,248 +1,106 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 29 Jan 2021 13:18:17 +0100
-Subject: [LTP] [PATCH 5/5] zram: Move test specific functions out of
- zram_lib.sh
+Date: Fri, 29 Jan 2021 13:18:14 +0100
+Subject: [LTP] [PATCH 2/5] zram: Calculate dev_num variable
 In-Reply-To: <20210129121817.12563-1-pvorel@suse.cz>
 References: <20210129121817.12563-1-pvorel@suse.cz>
-Message-ID: <20210129121817.12563-6-pvorel@suse.cz>
+Message-ID: <20210129121817.12563-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Refactoring, as code is confusing enough, when use global variables and
-functions which are single test specific + there is zram_fill_fs already
-in zram01.sh.
+Instead of requiring to be set.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../kernel/device-drivers/zram/zram01.sh      | 34 +++++++
- .../kernel/device-drivers/zram/zram02.sh      | 58 ++++++++++++
- .../kernel/device-drivers/zram/zram_lib.sh    | 92 -------------------
- 3 files changed, 92 insertions(+), 92 deletions(-)
+ testcases/kernel/device-drivers/zram/zram01.sh   |  8 +++-----
+ testcases/kernel/device-drivers/zram/zram02.sh   |  8 +++-----
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 12 ++++++++++--
+ 3 files changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index bb1532c1e..b2c384547 100755
+index 8de2c0cad..a795ff89f 100755
 --- a/testcases/kernel/device-drivers/zram/zram01.sh
 +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -78,6 +78,40 @@ setup()
- 	zram_load
- }
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+ #
+ # Test creates several zram devices with different filesystems on them.
+@@ -11,10 +11,8 @@ TST_TESTFUNC="do_test"
+ TST_NEEDS_CMDS="awk bc dd"
+ . zram_lib.sh
  
-+zram_makefs()
-+{
-+	local i=0
-+	local fs
-+
-+	for fs in $zram_filesystems; do
-+		tst_res TINFO "make $fs filesystem on /dev/zram$i"
-+		mkfs.$fs /dev/zram$i > err.log 2>&1
-+		if [ $? -ne 0 ]; then
-+			cat err.log
-+			tst_brk TFAIL "failed to make $fs on /dev/zram$i"
-+		fi
-+
-+		i=$(($i + 1))
-+		[ $i -eq $dev_num ] && break
-+	done
-+
-+	tst_res TPASS "zram_makefs succeeded"
-+}
-+
-+zram_mount()
-+{
-+	local i=0
-+
-+	for i in $(seq 0 $(($dev_num - 1))); do
-+		tst_res TINFO "mount /dev/zram$i"
-+		mkdir zram$i
-+		ROD mount /dev/zram$i zram$i
-+		dev_mounted=$i
-+	done
-+
-+	tst_res TPASS "mount of zram device(s) succeeded"
-+}
-+
- zram_fill_fs()
- {
- 	for i in $(seq 0 $(($dev_num - 1))); do
+-# Test will create the following number of zram devices:
+-dev_num=4
+-# This is a list of parameters for zram devices.
+-# Number of items must be equal to 'dev_num' parameter.
++# List of parameters for zram devices.
++# For each number the test creates own zram device.
+ zram_max_streams="2 3 5 8"
+ 
+ FS_SIZE="402653184"
 diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-index d09977ec1..803b8dc29 100755
+index f97cf646c..b4d706568 100755
 --- a/testcases/kernel/device-drivers/zram/zram02.sh
 +++ b/testcases/kernel/device-drivers/zram/zram02.sh
-@@ -23,6 +23,64 @@ zram_max_streams="2"
- zram_sizes="107374182400" # 100GB
- zram_mem_limits="1M"
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2019-2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+ #
+ # Test checks that we can create swap zram device.
+@@ -9,10 +9,8 @@ TST_CNT=5
+ TST_TESTFUNC="do_test"
+ . zram_lib.sh
  
-+zram_compress_alg()
-+{
-+	if tst_kvcmp -lt "3.15"; then
-+		tst_res TCONF "device attribute comp_algorithm is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	fi
-+
-+	local i=0
-+
-+	tst_res TINFO "test that we can set compression algorithm"
-+	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
-+	tst_res TINFO "supported algs: $algs"
-+
-+	local dev_max=$(($dev_num - 1))
-+
-+	for i in $(seq 0 $dev_max); do
-+		for alg in $algs; do
-+			local sys_path="/sys/block/zram${i}/comp_algorithm"
-+			echo "$alg" >  $sys_path || \
-+				tst_brk TFAIL "can't set '$alg' to $sys_path"
-+			tst_res TINFO "$sys_path = '$alg' ($i/$dev_max)"
-+		done
-+	done
-+
-+	tst_res TPASS "test succeeded"
-+}
-+
-+zram_makeswap()
-+{
-+	tst_res TINFO "make swap with zram device(s)"
-+	tst_require_cmds mkswap swapon swapoff
-+	local i=0
-+
-+	for i in $(seq 0 $(($dev_num - 1))); do
-+		ROD mkswap /dev/zram$i
-+		ROD swapon /dev/zram$i
-+		tst_res TINFO "done with /dev/zram$i"
-+		dev_makeswap=$i
-+	done
-+
-+	tst_res TPASS "making zram swap succeeded"
-+}
-+
-+zram_swapoff()
-+{
-+	tst_require_cmds swapoff
-+	local i
-+
-+	for i in $(seq 0 $dev_makeswap); do
-+		ROD swapoff /dev/zram$i
-+	done
-+	dev_makeswap=-1
-+
-+	tst_res TPASS "swapoff completed"
-+}
-+
- do_test()
- {
- 	case $1 in
+-# Test will create the following number of zram devices:
+-dev_num=1
+-# This is a list of parameters for zram devices.
+-# Number of items must be equal to 'dev_num' parameter.
++# List of parameters for zram devices.
++# For each number the test creates own zram device.
+ zram_max_streams="2"
+ 
+ # The zram sysfs node 'disksize' value can be either in bytes,
 diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index b2dce1d7d..39615180e 100755
+index 6fa6552ca..24bd37e1e 100755
 --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
 +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -85,35 +85,6 @@ zram_max_streams()
- 	tst_res TPASS "test succeeded"
- }
+@@ -34,7 +34,15 @@ zram_cleanup()
  
--zram_compress_alg()
--{
--	if tst_kvcmp -lt "3.15"; then
--		tst_res TCONF "device attribute comp_algorithm is"\
--			"introduced since kernel v3.15, the running kernel"\
--			"does not support it"
--		return
--	fi
--
--	local i=0
--
--	tst_res TINFO "test that we can set compression algorithm"
--	local algs="$(sed 's/[][]//g' /sys/block/zram0/comp_algorithm)"
--	tst_res TINFO "supported algs: $algs"
--
--	local dev_max=$(($dev_num - 1))
--
--	for i in $(seq 0 $dev_max); do
--		for alg in $algs; do
--			local sys_path="/sys/block/zram${i}/comp_algorithm"
--			echo "$alg" >  $sys_path || \
--				tst_brk TFAIL "can't set '$alg' to $sys_path"
--			tst_res TINFO "$sys_path = '$alg' ($i/$dev_max)"
--		done
--	done
--
--	tst_res TPASS "test succeeded"
--}
--
- zram_set_disksizes()
+ zram_load()
  {
- 	local i=0
-@@ -159,66 +130,3 @@ zram_set_memlimit()
++	local tmp
++
++	dev_num=0
++	for tmp in $zram_max_streams; do
++		dev_num=$((dev_num+1))
++	done
++
+ 	tst_res TINFO "create '$dev_num' zram device(s)"
++
+ 	modprobe zram num_devices=$dev_num || \
+ 		tst_brk TBROK "failed to insert zram module"
  
- 	tst_res TPASS "test succeeded"
+@@ -42,9 +50,9 @@ zram_load()
+ 
+ 	if [ "$dev_num_created" -ne "$dev_num" ]; then
+ 		tst_brk TFAIL "unexpected num of devices: $dev_num_created"
+-	else
+-		tst_res TPASS "test succeeded"
+ 	fi
++
++	tst_res TPASS "all zram devices successfully created"
  }
--
--zram_makeswap()
--{
--	tst_res TINFO "make swap with zram device(s)"
--	tst_require_cmds mkswap swapon swapoff
--	local i=0
--
--	for i in $(seq 0 $(($dev_num - 1))); do
--		ROD mkswap /dev/zram$i
--		ROD swapon /dev/zram$i
--		tst_res TINFO "done with /dev/zram$i"
--		dev_makeswap=$i
--	done
--
--	tst_res TPASS "making zram swap succeeded"
--}
--
--zram_swapoff()
--{
--	tst_require_cmds swapoff
--	local i
--
--	for i in $(seq 0 $dev_makeswap); do
--		ROD swapoff /dev/zram$i
--	done
--	dev_makeswap=-1
--
--	tst_res TPASS "swapoff completed"
--}
--
--zram_makefs()
--{
--	local i=0
--	local fs
--
--	for fs in $zram_filesystems; do
--		tst_res TINFO "make $fs filesystem on /dev/zram$i"
--		mkfs.$fs /dev/zram$i > err.log 2>&1
--		if [ $? -ne 0 ]; then
--			cat err.log
--			tst_brk TFAIL "failed to make $fs on /dev/zram$i"
--		fi
--
--		i=$(($i + 1))
--		[ $i -eq $dev_num ] && break
--	done
--
--	tst_res TPASS "zram_makefs succeeded"
--}
--
--zram_mount()
--{
--	local i=0
--
--	for i in $(seq 0 $(($dev_num - 1))); do
--		tst_res TINFO "mount /dev/zram$i"
--		mkdir zram$i
--		ROD mount /dev/zram$i zram$i
--		dev_mounted=$i
--	done
--
--	tst_res TPASS "mount of zram device(s) succeeded"
--}
+ 
+ zram_max_streams()
 -- 
 2.30.0
 
