@@ -1,33 +1,23 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 29 Jan 2021 21:15:50 +0100
-Subject: [LTP] [PATCH v2 6/6] zram: Increase timeout according to used
- devices
-In-Reply-To: <YBRroFhaxdqCLv2i@pevik>
+Date: Fri, 29 Jan 2021 21:17:06 +0100
+Subject: [LTP] [RFC PATCH v2 5/6] tst_test.sh: Run _tst_setup_timer
+ after $TST_SETUP
+In-Reply-To: <20210129194144.31299-6-pvorel@suse.cz>
 References: <20210129194144.31299-1-pvorel@suse.cz>
- <20210129194144.31299-7-pvorel@suse.cz> <YBRroFhaxdqCLv2i@pevik>
-Message-ID: <YBRs9sySYXT6Bwlk@pevik>
+ <20210129194144.31299-6-pvorel@suse.cz>
+Message-ID: <YBRtQjmeiHpA3pCA@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi,
+Hi,
 
-> > +	TST_TIMEOUT=$((dev_num*200))
-> Actually on heavy loaded machine this is not enough due BTRFS.
-> I can add something like dev_num*600 or even -1 (then previous commit would not
-> be needed, but IMHO still useful).
-And bad thing is that it breaks other zram tests, because the timer probably
-does not allow to run the cleanup:
-
-_tst_setup_timer()
-{
-...
-	sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid &
-
-I'm not sure if shell allow us to do it better. Maybe sent different signal than
-SIGKILL and define 'trap _tst_do_exit' for that signal?
+> I'm ok, if you consider this risky.
+If taken, I'll write a test for it.
 
 Kind regards,
 Petr
+
+> Next commit can be then changed to have TST_TIMEOUT=-1.
