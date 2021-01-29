@@ -1,70 +1,63 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 29 Jan 2021 17:11:00 +0100
-Subject: [LTP] [PATCH 3/5] zram01.sh: Check properly mkfs.* dependencies
-In-Reply-To: <20210129121817.12563-4-pvorel@suse.cz>
-References: <20210129121817.12563-1-pvorel@suse.cz>
- <20210129121817.12563-4-pvorel@suse.cz>
-Message-ID: <YBQzlEoPLUAT3NFi@yuki.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 29 Jan 2021 17:02:58 +0000
+Subject: [LTP] [PATCH v4 0/7] Convert CAN tests to new LTP API
+Message-ID: <20210129170305.27383-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +check_fs_support()
-> +{
-> +	local fs unsupported
-> +	local msg="missing kernel support or mkfs for filesystems:"
-> +	dev_num=0
-> +
-> +	for fs in $zram_filesystems; do
-> +		if tst_supported_fs $fs 2> /dev/null; then
+Hello,
 
-Why are we silencing the output here?
+This converts the CAN tests to the modern Linux Test Project API and
+removes the wrapper script. To be clear, this is a patch-set for the
+LTP *not* the kernel tree or can-utils.
 
-> +			dev_num=$((dev_num+1))
-> +		else
-> +			unsupported="$unsupported $fs"
-> +		fi
-> +	done
+I have tried to keep the core test behaviour the same, but (for
+example) moving to the SAFE_ functions will naturally introduce some
+changes in error checking. Deliberate behavioral changes have been
+noted in the commit messages.
 
-Maybe we should put the Btrfs space check here as well, so that all
-checks are in a single place.
+FYI, we appear to have 4 CAN tests in LTP including two tests for
+SLCAN (pty03, pty04). It appears these could be quite easily extended.
 
-> +	if [ $dev_num -eq 0 -a "$fallback_filesystem" != "$FS_TYPE" ]; then
-> +		if tst_supported_fs $fallback_filesystem 2> /dev/null; then
-> +			dev_num=1
-> +		fi
-> +	fi
-> +
-> +	if [ $dev_num -eq 0 ]; then
-> +		tst_res TINFO "filesystems on the system"
-> +		tst_supported_fs > /dev/null
+V2: Update e-mail addresses and resend
+V3:
+* Add COPYING and use dual license SPDX identifier
+* Fix compilation issues with can_common.h
+V4:
+* Remove IFF_ECHO fallback which is not needed with only linux/if.h
+* Add missing static to function
+* State effect of echo on coverage
+* remove shell script from runtest file
+* Add various git trailers
 
-And producing different output here.
+Richard Palethorpe (7):
+  API: Add FILE_SCANF to new lib
+  can: Add can_common.h for vcan device setup
+  can: Add COPYING with dual license text
+  can_filter: Convert to new library
+  can_recv_own_msgs: Convert to new library
+  can: Remove obsolete test wrapper script
+  can: Update contact details
 
-> +		msg="$msg $zram_filesystems"
-> +		if [ "$fallback_filesystem" != "$FS_TYPE" ]; then
-> +			msg="$msg $fallback_filesystem"
-> +		fi
-> +		tst_brk TCONF "$msg"
-> +	fi
-> +
-> +	[ "$unsupported" ] && tst_res TINFO "$msg$unsupported"
-
-And here.
-
-I guess that we end up with a bit nicer output but the code is much more
-complex.
-
-
-Also I'm confused how this is supposed to work, we do limit the dev_num
-but the zram_filesystems is untouched? That isn't going to work right.
-
-I guess the best shoot would be generating the zram_filesystems here on
-the fly based on output of the tst_supported_fs.
+ include/tst_safe_file_ops.h                   |   3 +
+ runtest/can                                   |   4 +-
+ testcases/network/can/Makefile                |   2 -
+ .../can/filter-tests/00_Descriptions.txt      |   6 +-
+ testcases/network/can/filter-tests/COPYING    |  35 ++
+ testcases/network/can/filter-tests/INSTALL    |   3 +-
+ testcases/network/can/filter-tests/Makefile   |   4 -
+ .../network/can/filter-tests/can_common.h     |  71 ++++
+ .../network/can/filter-tests/can_filter.c     | 317 +++++++-----------
+ .../can/filter-tests/can_rcv_own_msgs.c       | 273 +++++----------
+ .../network/can/filter-tests/can_run_tests.sh | 106 ------
+ 11 files changed, 329 insertions(+), 495 deletions(-)
+ create mode 100644 testcases/network/can/filter-tests/COPYING
+ create mode 100644 testcases/network/can/filter-tests/can_common.h
+ delete mode 100755 testcases/network/can/filter-tests/can_run_tests.sh
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0
+
