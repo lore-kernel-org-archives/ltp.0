@@ -1,63 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  2 Feb 2021 11:19:42 +0100
-Subject: [LTP] [RFC PATCH v2 1/1] tst_test.sh: Run cleanup also on timeout
-Message-ID: <20210202101942.31328-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Feb 2021 19:16:52 +0800
+Subject: [LTP] [PATCH v2 2/6] zram01.sh: Generate test setup variables
+ in setup
+In-Reply-To: <YBj8bMKfxqvQ6lYt@pevik>
+References: <20210129194144.31299-1-pvorel@suse.cz>
+ <20210129194144.31299-3-pvorel@suse.cz>
+ <CAEemH2ffReVSE_210nyRZVZHOwoMMy-F4Cye08RwPa5bh7PZ0w@mail.gmail.com>
+ <YBj8bMKfxqvQ6lYt@pevik>
+Message-ID: <CAEemH2f5tJtgcZG8WaAU1qpKwU7yHDdjzGahhL814goL5sAv-g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also timeout requires to run a test cleanup (e.g. zram01.sh).
-Thus send first SIGINT, but keep also SIGKILL for safety reasons
-(after 5 sec to give cleanup function some time.
+Hi Petr,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-changes v1->v2:
-* put code into separate function
-* s/timeout/timed out/
+Petr Vorel <pvorel@suse.cz> wrote:
 
- testcases/lib/tst_test.sh | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+...
+> > > +get_btrfs_size()
+>
+>
+> > What about renaming at_least_1G_mem() or check_space_for_btrfs()?
+> Good point. I'm slightly for check_space_for_btrfs().
+>
+> at_least_1G_mem() is also good, but for that I'd also move tst_res TINFO
+> "not
+> enough space for Btrfs" out of the function and put it into
+> generate_vars(). But
+> since it's used only for btrfs I slightly prefer check_space_for_btrfs().
+> But no
+> strong opinion about it.
+>
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 69f007d89..bcf379c8e 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -21,7 +21,7 @@ export TST_LIB_LOADED=1
- . tst_security.sh
- 
- # default trap function
--trap "tst_brk TBROK 'test interrupted'" INT
-+trap "tst_brk TBROK 'test interrupted or timed out'" INT
- 
- _tst_do_exit()
- {
-@@ -437,6 +437,14 @@ _tst_multiply_timeout()
- 	return 0
- }
- 
-+_tst_handle_timeout()
-+{
-+	tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
-+	kill -2 -$pid
-+	sleep 5
-+	kill -9 -$pid
-+}
-+
- _tst_setup_timer()
- {
- 	TST_TIMEOUT=${TST_TIMEOUT:-300}
-@@ -459,7 +467,7 @@ _tst_setup_timer()
- 
- 	tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
- 
--	sleep $sec && tst_res TBROK "test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9 -$pid &
-+	sleep $sec && _tst_handle_timeout &
- 
- 	_tst_setup_timer_pid=$!
- }
+Agree, thanks!
+
+Btw I suddenly think that we could have a nicer name initialize_vars()
+to replace generate_vars(), because we just use it once to initiate the
+test variables in the setup phase.
+
+Anyway, it's only my feelings and also depends on your preference too.
+
+
 -- 
-2.30.0
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210202/64014556/attachment.htm>
