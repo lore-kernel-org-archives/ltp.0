@@ -1,35 +1,85 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 2 Feb 2021 13:04:41 +0100
-Subject: [LTP] [RFC PATCH 1/1] tst_test.sh: Run cleanup also on timeout
-In-Reply-To: <YBkmQl1lFmxbdpcb@pevik>
-References: <20210202074753.31516-1-pvorel@suse.cz>
- <47060cdf-58a3-2568-3508-31436b9c6e12@jv-coder.de> <YBkmQl1lFmxbdpcb@pevik>
-Message-ID: <6c7e6893-efe2-0ac2-2a68-b7e4796e85d7@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue,  2 Feb 2021 14:04:40 +0100
+Subject: [LTP] [PATCH 1/2] lib: Add function to detect FIPS mode
+Message-ID: <20210202130441.17861-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
->>> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
->>> index 69f007d89..35ad6d2d7 100644
->>> --- a/testcases/lib/tst_test.sh
->>> +++ b/testcases/lib/tst_test.sh
->>> @@ -21,7 +21,7 @@ export TST_LIB_LOADED=1
->>>    . tst_security.sh
->>>    # default trap function
->>> -trap "tst_brk TBROK 'test interrupted'" INT
->>> +trap "tst_brk TBROK 'test interrupted or timeout'" INT
->> should be "timed out" for consistency
-> You probably mean consistency with TST_RETRY_FN_EXP_BACKOFF()
-> I tried to be consistent with previous message:
-> zram01 1 TBROK: test killed, timeout! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
-> That one should be changed as well.
-> I slightly prefer "timeout", but I'm not a native speaker.
-No I was meant the "test interrupted" part. "test interrupt or timeout" 
-would be consistent.
-I am not a native speaker either, but "test interrupted or timed out" 
-sound more correct to me.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_fips.h | 17 +++++++++++++++++
+ include/tst_test.h |  1 +
+ lib/tst_fips.c     | 22 ++++++++++++++++++++++
+ 3 files changed, 40 insertions(+)
+ create mode 100644 include/tst_fips.h
+ create mode 100644 lib/tst_fips.c
 
-J?rg
+diff --git a/include/tst_fips.h b/include/tst_fips.h
+new file mode 100644
+index 000000000..2bc90e8e8
+--- /dev/null
++++ b/include/tst_fips.h
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
++ */
++
++#ifndef TST_FIPS_H__
++#define TST_FIPS_H__
++
++#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
++
++/*
++ * Detect whether FIPS enabled
++ * @return 0: FIPS not enabled, 1: FIPS enabled
++ */
++int tst_fips_enabled(void);
++
++#endif /* TST_FIPS_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index c87251870..84cbcbb0c 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -42,6 +42,7 @@
+ #include "tst_assert.h"
+ #include "tst_cgroup.h"
+ #include "tst_lockdown.h"
++#include "tst_fips.h"
+ #include "tst_taint.h"
+ 
+ /*
+diff --git a/lib/tst_fips.c b/lib/tst_fips.c
+new file mode 100644
+index 000000000..c1d3e284c
+--- /dev/null
++++ b/lib/tst_fips.c
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
++ */
++
++#define TST_NO_DEFAULT_MAIN
++
++#include "tst_test.h"
++#include "tst_safe_macros.h"
++#include "tst_fips.h"
++
++int tst_fips_enabled(void)
++{
++	int fips = 0;
++
++	if (access(PATH_FIPS, R_OK) == 0) {
++		SAFE_FILE_SCANF(PATH_FIPS, "%d", &fips);
++	}
++
++	tst_res(TINFO, "FIPS: %s", fips ? "on" : "off");
++	return fips;
++}
+-- 
+2.30.0
+
