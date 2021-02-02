@@ -1,85 +1,55 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  2 Feb 2021 14:04:40 +0100
-Subject: [LTP] [PATCH 1/2] lib: Add function to detect FIPS mode
-Message-ID: <20210202130441.17861-1-pvorel@suse.cz>
+Date: Tue,  2 Feb 2021 14:04:41 +0100
+Subject: [LTP] [PATCH 2/2] keyctl05: TCONF on FIPS mode
+In-Reply-To: <20210202130441.17861-1-pvorel@suse.cz>
+References: <20210202130441.17861-1-pvorel@suse.cz>
+Message-ID: <20210202130441.17861-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+asymmetric key test fails on FIPS with dmesg:
+RSA: key size not allowed in FIPS mode
+
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_fips.h | 17 +++++++++++++++++
- include/tst_test.h |  1 +
- lib/tst_fips.c     | 22 ++++++++++++++++++++++
- 3 files changed, 40 insertions(+)
- create mode 100644 include/tst_fips.h
- create mode 100644 lib/tst_fips.c
+ testcases/kernel/syscalls/keyctl/keyctl05.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/include/tst_fips.h b/include/tst_fips.h
-new file mode 100644
-index 000000000..2bc90e8e8
---- /dev/null
-+++ b/include/tst_fips.h
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+ */
-+
-+#ifndef TST_FIPS_H__
-+#define TST_FIPS_H__
-+
-+#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
-+
-+/*
-+ * Detect whether FIPS enabled
-+ * @return 0: FIPS not enabled, 1: FIPS enabled
-+ */
-+int tst_fips_enabled(void);
-+
-+#endif /* TST_FIPS_H__ */
-diff --git a/include/tst_test.h b/include/tst_test.h
-index c87251870..84cbcbb0c 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -42,6 +42,7 @@
- #include "tst_assert.h"
- #include "tst_cgroup.h"
- #include "tst_lockdown.h"
-+#include "tst_fips.h"
- #include "tst_taint.h"
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl05.c b/testcases/kernel/syscalls/keyctl/keyctl05.c
+index 55ce852b8..1cd665ba4 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl05.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl05.c
+@@ -85,19 +85,25 @@ static void test_update_nonupdatable(const char *type,
  
- /*
-diff --git a/lib/tst_fips.c b/lib/tst_fips.c
-new file mode 100644
-index 000000000..c1d3e284c
---- /dev/null
-+++ b/lib/tst_fips.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+ */
+ 	new_session_keyring();
+ 
++	int is_asymmetric = !strcmp(type, "asymmetric");
 +
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_fips.h"
-+
-+int tst_fips_enabled(void)
-+{
-+	int fips = 0;
-+
-+	if (access(PATH_FIPS, R_OK) == 0) {
-+		SAFE_FILE_SCANF(PATH_FIPS, "%d", &fips);
-+	}
-+
-+	tst_res(TINFO, "FIPS: %s", fips ? "on" : "off");
-+	return fips;
-+}
+ 	TEST(add_key(type, "desc", payload, plen, KEY_SPEC_SESSION_KEYRING));
+ 	if (TST_RET < 0) {
++		if (TST_ERR == EINVAL && is_asymmetric && tst_fips_enabled()) {
++			tst_res(TCONF, "key size not allowed in FIPS mode");
++			return;
++		}
+ 		if (TST_ERR == ENODEV) {
+ 			tst_res(TCONF, "kernel doesn't support key type '%s'",
+ 				type);
+ 			return;
+ 		}
+-		if (TST_ERR == EBADMSG && !strcmp(type, "asymmetric")) {
++		if (TST_ERR == EBADMSG && is_asymmetric) {
+ 			tst_res(TCONF, "kernel is missing x509 cert parser "
+ 				"(CONFIG_X509_CERTIFICATE_PARSER)");
+ 			return;
+ 		}
+-		if (TST_ERR == ENOENT && !strcmp(type, "asymmetric")) {
++		if (TST_ERR == ENOENT && is_asymmetric) {
+ 			tst_res(TCONF, "kernel is missing crypto algorithms "
+ 				"needed to parse x509 cert (CONFIG_CRYPTO_RSA "
+ 				"and/or CONFIG_CRYPTO_SHA256)");
 -- 
 2.30.0
 
