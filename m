@@ -1,61 +1,58 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 4 Feb 2021 20:12:41 +0800
-Subject: [LTP] [PATCH v2 4/5] syscalls/mallinfo02: Add a basic test to check
- use mmap or sbrk
+Date: Thu, 4 Feb 2021 20:12:42 +0800
+Subject: [LTP] [PATCH v2 5/5] syscalls/mallinfo03: Add an overflow test when
+ setting 2G size
 In-Reply-To: <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
  <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <1612440762-22389-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1612440762-22389-5-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According mallinfo man-page, hblkhd member represents
-"The number of bytes in blocks currently allocated using mmap(2).".
-For allocations greater than or equal to 128K and that can't be satisfied from
-the free list, the memory-allocation functions employ mmap(2) instead of increasing
-the program break using sbrk(2).
-
-In this case, we test 20k size to use sbrk and 128k size to use mmap.
+Since these members of mallinfo struct use int data type, it will overflow
+when allocating 2G size. mallinfo() is deprecated and we should use mallinfo2()
+in the future.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 ---
-v1->v2:
-1.Use mallopt(M_MMAP_THRESHOLD, 131072) to avoid dynamic mmap threshold
-2.Use tst_print_malinfo api 
+v1->v2
+1.use tst_print_mallinfo api
+2.skip test if we can't malloc 2g space
  runtest/syscalls                              |  1 +
  testcases/kernel/syscalls/mallinfo/.gitignore |  1 +
- .../kernel/syscalls/mallinfo/mallinfo02.c     | 64 +++++++++++++++++++
- 3 files changed, 66 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mallinfo/mallinfo02.c
+ .../kernel/syscalls/mallinfo/mallinfo03.c     | 51 +++++++++++++++++++
+ 3 files changed, 53 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mallinfo/mallinfo03.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 753340068..a8fa3f7bf 100644
+index a8fa3f7bf..c5cf78381 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -683,6 +683,7 @@ lstat02 lstat02
- lstat02_64 lstat02_64
+@@ -684,6 +684,7 @@ lstat02_64 lstat02_64
  
  mallinfo01 mallinfo01
-+mallinfo02 mallinfo02
+ mallinfo02 mallinfo02
++mallinfo03 mallinfo03
  
  mallopt01 mallopt01
  
 diff --git a/testcases/kernel/syscalls/mallinfo/.gitignore b/testcases/kernel/syscalls/mallinfo/.gitignore
-index a7e32a637..678ac277e 100644
+index 678ac277e..30c315cf2 100644
 --- a/testcases/kernel/syscalls/mallinfo/.gitignore
 +++ b/testcases/kernel/syscalls/mallinfo/.gitignore
-@@ -1 +1,2 @@
+@@ -1,2 +1,3 @@
  /mallinfo01
-+/mallinfo02
-diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo02.c b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
+ /mallinfo02
++/mallinfo03
+diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo03.c b/testcases/kernel/syscalls/mallinfo/mallinfo03.c
 new file mode 100644
-index 000000000..d5bed45a8
+index 000000000..36d9e5d85
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
-@@ -0,0 +1,64 @@
++++ b/testcases/kernel/syscalls/mallinfo/mallinfo03.c
+@@ -0,0 +1,51 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
@@ -65,8 +62,10 @@ index 000000000..d5bed45a8
 +/*\
 + * [DESCRIPTION]
 + *
-+ * Basic mallinfo() test for malloc() using sbrk or mmap.
-+ * It size > MMAP_THRESHOLD, it will use mmap. Otherwise, use sbrk.
++ * Basic mallinfo() test. Test the member of struct mallinfo
++ * whether overflow when setting 2G size. mallinfo() is deprecated
++ * since the type used for the fields is too small. We should use
++ * mallinfo2() and it was added since glibc 2.33.
 +\*/
 +
 +#include "tst_test.h"
@@ -74,47 +73,32 @@ index 000000000..d5bed45a8
 +#include "tst_mallinfo.h"
 +
 +#ifdef HAVE_MALLINFO
-+void test_mallopt(void)
++
++void test_mallinfo(void)
 +{
 +	struct mallinfo info;
-+	int size;
 +	char *buf;
++	size_t size = 2UL * 1024UL * 1024UL * 1024UL;
 +
-+	buf = SAFE_MALLOC(20480);
-+
-+	info = mallinfo();
-+	if (info.uordblks > 20480 && info.hblkhd == 0) {
-+		tst_res(TPASS, "malloc() uses sbrk when size < 128k");
-+	} else {
-+		tst_res(TFAIL, "malloc() use mmap when size < 128k");
-+		tst_print_mallinfo("Test malloc(20480)", &info);
++	buf = malloc(size);
++	if (!buf) {
++		tst_res(TCONF, "Current system can not malloc 2G space, skip it");
++		return;
 +	}
-+	free(buf);
-+
 +	info = mallinfo();
-+	size = MAX(info.fordblks, 131072);
-+
-+	buf = SAFE_MALLOC(size);
-+	info = mallinfo();
-+	if (info.hblkhd > size && info.hblks > 0) {
-+		tst_res(TPASS, "malloc() uses mmap when size >= 128k");
++	if (info.hblkhd < 0) {
++		tst_print_mallinfo("Test malloc 2G", &info);
++		tst_res(TFAIL, "The member of struct mallinfo overflow, we should use mallinfo2");
 +	} else {
-+		tst_res(TFAIL, "malloc uses sbrk when size >= 128k");
-+		tst_print_mallinfo("Test malloc(1024*128)", &info);
++		/*We will never get here*/
++		tst_res(TPASS, "The member of struct mallinfo doesn't overflow");
 +	}
 +
 +	free(buf);
-+}
-+
-+static void setup(void)
-+{
-+	if (mallopt(M_MMAP_THRESHOLD, 131072) == 0)
-+		tst_res(TFAIL, "mallopt(M_MMAP_THRESHOLD, 128K) failed");
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = test_mallopt,
++	.test_all = test_mallinfo,
 +};
 +
 +#else
