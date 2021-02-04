@@ -1,56 +1,28 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Thu, 4 Feb 2021 18:01:02 +0800
-Subject: [LTP] [PATCH v1 3/3] syscalls/mallinfo03: Add an overflow test
- when setting 2G size
-In-Reply-To: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
-References: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1611654925-8994-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
-Message-ID: <601BC5DE.506@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 4 Feb 2021 19:02:11 +0800
+Subject: [LTP] [PATCH] bugfix for lib/tst_capability.c
+ sched_setaffinity/sched_setaffinity01.c timerfd/timerfd04.c
+In-Reply-To: <20210204092114.8726-1-zhaogongyi@huawei.com>
+References: <20210204092114.8726-1-zhaogongyi@huawei.com>
+Message-ID: <CAEemH2f_EXhBKDCgBVNh6qnEmcagyrOXMZAWLtazmba4ZPg7xw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
-> Hi Xu,
->
->     +void test_mallinfo(void)
->     +{
->     + struct mallinfo info;
->     + char *buf;
->     + size_t size = 2UL * 1024UL * 1024UL * 1024UL;
->     +
->     + buf = SAFE_MALLOC(size);
->     + info = mallinfo();
->     + if (info.hblkhd < 0) {
->     + print_mallinfo("Test malloc 2G", &info);
->     + tst_res(TFAIL, "The member of struct mallinfo overflow, we should
->     use mallinfo2");
->
-> TPASS?
->
->     + } else {
->     + /*We will never get here*/
->     + tst_res(TPASS, "The member of struct mallinfo doesn't overflow");
->
->
-> TFAIL?
->
->     + }
->     + free(buf);
->     +}
+Hi Gongyi,
 
-It is a "always" fail test.  We should use mallinfo2 in the future. I 
-guess failure may attract user's attention than pass.
+On Thu, Feb 4, 2021 at 5:22 PM zhao gongyi <zhaogongyi@huawei.com> wrote:
 
+> Use TERRNO because we're not using the TEST() macro.
 >
->
->
-> --
-> Regards,
-> Li Wang
 
+I rewrote the subject and applied it. Thanks!
 
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210204/aaf317d6/attachment.htm>
