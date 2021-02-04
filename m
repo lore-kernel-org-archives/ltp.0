@@ -1,257 +1,35 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu,  4 Feb 2021 12:03:42 +0100
-Subject: [LTP] [PATCH v2 4/4] Add test for CVE 2020-29373
+Date: Thu,  4 Feb 2021 12:03:41 +0100
+Subject: [LTP] [PATCH v2 3/4] Add CAP_SYS_CHROOT to lapi/capability.h
 In-Reply-To: <20210204110342.11821-1-mdoucha@suse.cz>
 References: <20210204110342.11821-1-mdoucha@suse.cz>
-Message-ID: <20210204110342.11821-4-mdoucha@suse.cz>
+Message-ID: <20210204110342.11821-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes #770
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
+ include/lapi/capability.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Changes since v1:
-- Added another patch reference
-
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/io_uring/io_uring02.c     | 204 ++++++++++++++++++
- 3 files changed, 206 insertions(+)
- create mode 100644 testcases/kernel/syscalls/io_uring/io_uring02.c
-
-diff --git a/runtest/cve b/runtest/cve
-index 0bb1983bc..f650854f9 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -60,3 +60,4 @@ cve-2019-8912 af_alg07
- cve-2020-11494 pty04
- cve-2020-14386 sendto03
- cve-2020-14416 pty03
-+cve-2020-29373 io_uring02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 11a1e83c2..dbb33a2cd 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1712,3 +1712,4 @@ statx07 statx07
- membarrier01 membarrier01
+diff --git a/include/lapi/capability.h b/include/lapi/capability.h
+index fde27efd3..95cb6819b 100644
+--- a/include/lapi/capability.h
++++ b/include/lapi/capability.h
+@@ -24,6 +24,10 @@
+ # define CAP_NET_RAW          13
+ #endif
  
- io_uring01 io_uring01
-+io_uring02 io_uring02
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring02.c b/testcases/kernel/syscalls/io_uring/io_uring02.c
-new file mode 100644
-index 000000000..08f4a1714
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_uring/io_uring02.c
-@@ -0,0 +1,204 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SUSE LLC
-+ * Author: Nicolai Stange <nstange@suse.de>
-+ * LTP port: Martin Doucha <mdoucha@suse.cz>
-+ *
-+ * CVE-2020-29373
-+ *
-+ * Check that io_uring does not bypass chroot. Fixed in:
-+ *
-+ *  commit 9392a27d88b9707145d713654eb26f0c29789e50
-+ *  Author: Jens Axboe <axboe@kernel.dk>
-+ *  Date:   Thu Feb 6 21:42:51 2020 -0700
-+ *
-+ *  io-wq: add support for inheriting ->fs
-+ *
-+ *  commit ff002b30181d30cdfbca316dadd099c3ca0d739c
-+ *  Author: Jens Axboe <axboe@kernel.dk>
-+ *  Date:   Fri Feb 7 16:05:21 2020 -0700
-+ *
-+ *  io_uring: grab ->fs as part of async preparation
-+ */
++#ifndef CAP_SYS_CHROOT
++# define CAP_SYS_CHROOT       18
++#endif
 +
-+#include <stdio.h>
-+#include <sys/socket.h>
-+#include <sys/un.h>
-+#include "tst_test.h"
-+#include "tst_safe_io_uring.h"
-+
-+#define CHROOT_DIR "test_root"
-+#define SOCK_NAME "sock"
-+#define SPAM_MARK 0xfa7
-+#define BEEF_MARK 0xbeef
-+
-+static struct sockaddr_un addr;
-+static int sendsock = -1, recvsock = -1, sockpair[2] = {-1, -1};
-+static struct io_uring_params params;
-+static struct tst_io_uring uring = { .fd = -1 };
-+static char buf[16];
-+static struct iovec iov = {
-+	.iov_base = buf,
-+	.iov_len = sizeof(buf)
-+};
-+
-+static struct msghdr spam_header = {
-+	.msg_name = NULL,
-+	.msg_namelen = 0,
-+	.msg_iov = &iov,
-+	.msg_iovlen = 1
-+};
-+
-+static struct msghdr beef_header = {
-+	.msg_name = &addr,
-+	.msg_namelen = sizeof(addr),
-+	.msg_iov = &iov,
-+	.msg_iovlen = 1
-+};
-+
-+static void setup(void)
-+{
-+	char *tmpdir = tst_get_tmpdir();
-+	int ret;
-+
-+	addr.sun_family = AF_UNIX;
-+	ret = snprintf(addr.sun_path, sizeof(addr.sun_path), "%s/%s", tmpdir,
-+		SOCK_NAME);
-+	free(tmpdir);
-+
-+	if (ret >= (int)sizeof(addr.sun_path))
-+		tst_brk(TBROK, "Tempdir path is too long");
-+
-+	io_uring_setup_supported_by_kernel();
-+
-+	sendsock = SAFE_SOCKET(AF_UNIX, SOCK_DGRAM, 0);
-+	recvsock = SAFE_SOCKET(AF_UNIX, SOCK_DGRAM, 0);
-+	SAFE_BIND(recvsock, (struct sockaddr *)&addr, sizeof(addr));
-+
-+	SAFE_MKDIR(CHROOT_DIR, 0755);
-+	SAFE_CHROOT(CHROOT_DIR);
-+}
-+
-+static void run(void)
-+{
-+	uint32_t i, count, tail;
-+	int beef_found = 0;
-+	struct io_uring_sqe *sqe_ptr;
-+	const struct io_uring_cqe *cqe_ptr;
-+
-+	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sockpair);
-+	SAFE_SETSOCKOPT_INT(sockpair[0], SOL_SOCKET, SO_SNDBUF,
-+		32+sizeof(buf));
-+	SAFE_FCNTL(sockpair[0], F_SETFL, O_NONBLOCK);
-+
-+	SAFE_IO_URING_INIT(512, &params, &uring);
-+	sqe_ptr = uring.sqr_entries;
-+
-+	/* Add spam requests to force async processing of the real test */
-+	for (i = 0, tail = *uring.sqr_tail; i < 255; i++, tail++, sqe_ptr++) {
-+		memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-+		sqe_ptr->opcode = IORING_OP_SENDMSG;
-+		sqe_ptr->flags = IOSQE_IO_DRAIN;
-+		sqe_ptr->fd = sockpair[0];
-+		sqe_ptr->addr = (__u64)&spam_header;
-+		sqe_ptr->user_data = SPAM_MARK;
-+		uring.sqr_array[tail & *uring.sqr_mask] = i;
-+	}
-+
-+	/* Add the real test to queue */
-+	memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-+	sqe_ptr->opcode = IORING_OP_SENDMSG;
-+	sqe_ptr->flags = IOSQE_IO_DRAIN;
-+	sqe_ptr->fd = sendsock;
-+	sqe_ptr->addr = (__u64)&beef_header;
-+	sqe_ptr->user_data = BEEF_MARK;
-+	uring.sqr_array[tail & *uring.sqr_mask] = i;
-+	count = ++i;
-+	tail++;
-+
-+	__atomic_store(uring.sqr_tail, &tail, __ATOMIC_RELEASE);
-+	SAFE_IO_URING_ENTER(1, uring.fd, count, count, IORING_ENTER_GETEVENTS,
-+		NULL);
-+
-+	/* Check test results */
-+	__atomic_load(uring.cqr_tail, &tail, __ATOMIC_ACQUIRE);
-+
-+	for (i = *uring.cqr_head; i != tail; i++, count--) {
-+		cqe_ptr = uring.cqr_entries + (i & *uring.cqr_mask);
-+		TST_ERR = -cqe_ptr->res;
-+
-+		if (cqe_ptr->user_data == SPAM_MARK) {
-+			if (cqe_ptr->res >= 0 || cqe_ptr->res == -EAGAIN)
-+				continue;
-+
-+			tst_res(TFAIL | TTERRNO,
-+				"Spam request failed unexpectedly");
-+			continue;
-+		}
-+
-+		if (cqe_ptr->user_data != BEEF_MARK) {
-+			tst_res(TFAIL, "Unexpected entry in completion queue");
-+			count++;
-+			continue;
-+		}
-+
-+		beef_found = 1;
-+
-+		if (cqe_ptr->res >= 0) {
-+			tst_res(TFAIL, "Write outside chroot succeeded.");
-+		} else if (cqe_ptr->res != -ENOENT) {
-+			tst_res(TFAIL | TTERRNO,
-+				"Write outside chroot failed unexpectedly");
-+		} else {
-+			tst_res(TPASS,
-+				"Write outside chroot failed as expected");
-+		}
-+	}
-+
-+	__atomic_store(uring.cqr_head, &i, __ATOMIC_RELEASE);
-+
-+	if (!beef_found)
-+		tst_res(TFAIL, "Write outside chroot result not found");
-+
-+	if (count)
-+		tst_res(TFAIL, "Wrong number of entries in completion queue");
-+
-+	/* iteration cleanup */
-+	SAFE_IO_URING_CLOSE(&uring);
-+	SAFE_CLOSE(sockpair[0]);
-+	SAFE_CLOSE(sockpair[1]);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (uring.fd >= 0)
-+		SAFE_IO_URING_CLOSE(&uring);
-+
-+	if (sockpair[0] >= 0) {
-+		SAFE_CLOSE(sockpair[0]);
-+		SAFE_CLOSE(sockpair[1]);
-+	}
-+
-+	if (recvsock >= 0)
-+		SAFE_CLOSE(recvsock);
-+
-+	if (sendsock >= 0)
-+		SAFE_CLOSE(sendsock);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_REQ, CAP_SYS_CHROOT),
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "9392a27d88b9"},
-+		{"linux-git", "ff002b30181d"},
-+		{"CVE", "2020-29373"},
-+		{}
-+	}
-+};
+ #ifndef CAP_SYS_ADMIN
+ # define CAP_SYS_ADMIN        21
+ #endif
 -- 
 2.30.0
 
