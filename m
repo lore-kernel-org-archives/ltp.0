@@ -1,68 +1,41 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 4 Feb 2021 21:56:46 +0800
-Subject: [LTP] [PATCH v1 3/3] syscalls/mallinfo03: Add an overflow test
- when setting 2G size
-In-Reply-To: <601BC5DE.506@cn.fujitsu.com>
-References: <1611654925-8994-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1611654925-8994-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
- <601BC5DE.506@cn.fujitsu.com>
-Message-ID: <CAEemH2c01CEkm-S667xUL3J=nRVsEhEYK6yFFQXdNt5+dWA7Mw@mail.gmail.com>
+From: zhao gongyi <zhaogongyi@huawei.com>
+Date: Fri, 5 Feb 2021 09:16:35 +0800
+Subject: [LTP] [PATCH] ttype: using TERRNO to macth errno
+Message-ID: <20210205011635.177469-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> >     + tst_res(TFAIL, "The member of struct mallinfo overflow, we should
-> >     use mallinfo2");
-> >
-> > TPASS?
-> >
-> >     + } else {
-> >     + /*We will never get here*/
-> >     + tst_res(TPASS, "The member of struct mallinfo doesn't overflow");
-> >
-> >
-> > TFAIL?
-> >
-> >     + }
-> >     + free(buf);
-> >     +}
->
-> It is a "always" fail test.  We should use mallinfo2 in the future. I
-> guess failure may attract user's attention than pass.
->
+Use TERRNO because we're not using the TEST() macro.
 
-Sorry, I don't understand the intention here. I got failures like below,
-allow it to report FAIL each time in CI/CD system?
+Signed-off-by: zhao gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/syscalls/prctl/prctl06.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-# ./mallinfo03
-tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
-tst_mallinfo.c:15: TINFO: Test malloc 2G...
-tst_mallinfo.c:17: TINFO: arena: 135168
-tst_mallinfo.c:18: TINFO: ordblks: 1
-tst_mallinfo.c:19: TINFO: smblks: 0
-tst_mallinfo.c:20: TINFO: hblks: 1
-tst_mallinfo.c:21: TINFO: hblkhd: -2147479552
-tst_mallinfo.c:22: TINFO: usmblks: 0
-tst_mallinfo.c:23: TINFO: fsmblks: 0
-tst_mallinfo.c:24: TINFO: uordblks: 848
-tst_mallinfo.c:25: TINFO: fordblks: 134320
-tst_mallinfo.c:26: TINFO: keepcost: 134320
-mallinfo03.c:36: TFAIL: The member of struct mallinfo overflow, we should
-use mallinfo2
+diff --git a/testcases/kernel/syscalls/prctl/prctl06.c b/testcases/kernel/syscalls/prctl/prctl06.c
+index d6517e6b1..21d336c07 100644
+--- a/testcases/kernel/syscalls/prctl/prctl06.c
++++ b/testcases/kernel/syscalls/prctl/prctl06.c
+@@ -50,14 +50,14 @@ static void do_prctl(void)
+ 	if (childpid == 0) {
+ 		check_no_new_privs(1, "After fork, child process", proc_flag);
+ 		execve(BIN_PATH, childargv, envp);
+-		tst_brk(TFAIL | TTERRNO,
++		tst_brk(TFAIL | TERRNO,
+ 			"child process failed to execute prctl_execve");
 
-Summary:
-passed   0
-failed   1
-broken   0
-skipped  0
-warnings 0
+ 	} else {
+ 		tst_reap_children();
+ 		check_no_new_privs(1, "parent process", proc_flag);
+ 		execve(BIN_PATH, argv, envp);
+-		tst_brk(TFAIL | TTERRNO,
++		tst_brk(TFAIL | TERRNO,
+ 			"parent process failed to execute prctl_execve");
+ 	}
+ }
+--
+2.17.1
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210204/1680b7bd/attachment.htm>
