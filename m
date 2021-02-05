@@ -1,73 +1,171 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  5 Feb 2021 15:20:51 +0100
-Subject: [LTP] [PATCH 2/2] if-mtu-change.sh: Lower CHANGE_INTERVAL for netns
-In-Reply-To: <20210205142051.32055-1-pvorel@suse.cz>
-References: <20210205142051.32055-1-pvorel@suse.cz>
-Message-ID: <20210205142051.32055-2-pvorel@suse.cz>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 5 Feb 2021 15:51:21 +0800
+Subject: [LTP] [PATCH v2 4/5] syscalls/mallinfo02: Add a basic test to
+ check use mmap or sbrk
+In-Reply-To: <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
+References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
+ <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1612440762-22389-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
+Message-ID: <601CF8F9.7040006@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to make testing faster.
+Hi Li
+>
+>
+> On Thu, Feb 4, 2021 at 8:12 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com
+> <mailto:xuyang2018.jy@cn.fujitsu.com>> wrote:
+>
+>     According mallinfo man-page, hblkhd member represents
+>     "The number of bytes in blocks currently allocated using mmap(2).".
+>     For allocations greater than or equal to 128K and that can't be
+>     satisfied from
+>     the free list, the memory-allocation functions employ mmap(2)
+>     instead of increasing
+>     the program break using sbrk(2).
+>
+>     In this case, we test 20k size to use sbrk and 128k size to use mmap.
+>
+>     Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com
+>     <mailto:xuyang2018.jy@cn.fujitsu.com>>
+>     ---
+>     v1->v2:
+>     1.Use mallopt(M_MMAP_THRESHOLD, 131072) to avoid dynamic mmap threshold
+>     2.Use tst_print_malinfo api
+>     runtest/syscalls | 1 +
+>     testcases/kernel/syscalls/mallinfo/.gitignore | 1 +
+>     .../kernel/syscalls/mallinfo/mallinfo02.c | 64 +++++++++++++++++++
+>     3 files changed, 66 insertions(+)
+>     create mode 100644 testcases/kernel/syscalls/mallinfo/mallinfo02.c
+>
+>     diff --git a/runtest/syscalls b/runtest/syscalls
+>     index 753340068..a8fa3f7bf 100644
+>     --- a/runtest/syscalls
+>     +++ b/runtest/syscalls
+>     @@ -683,6 +683,7 @@ lstat02 lstat02
+>     lstat02_64 lstat02_64
+>
+>     mallinfo01 mallinfo01
+>     +mallinfo02 mallinfo02
+>
+>     mallopt01 mallopt01
+>
+>     diff --git a/testcases/kernel/syscalls/mallinfo/.gitignore
+>     b/testcases/kernel/syscalls/mallinfo/.gitignore
+>     index a7e32a637..678ac277e 100644
+>     --- a/testcases/kernel/syscalls/mallinfo/.gitignore
+>     +++ b/testcases/kernel/syscalls/mallinfo/.gitignore
+>     @@ -1 +1,2 @@
+>     /mallinfo01
+>     +/mallinfo02
+>     diff --git a/testcases/kernel/syscalls/mallinfo/mallinfo02.c
+>     b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
+>     new file mode 100644
+>     index 000000000..d5bed45a8
+>     --- /dev/null
+>     +++ b/testcases/kernel/syscalls/mallinfo/mallinfo02.c
+>     @@ -0,0 +1,64 @@
+>     +// SPDX-License-Identifier: GPL-2.0-or-later
+>     +/*
+>     + * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
+>     + * Author: Yang Xu <xuyang2018.jy@cn.fujitsu.com
+>     <mailto:xuyang2018.jy@cn.fujitsu.com>>
+>     + */
+>     +
+>     +/*\
+>     + * [DESCRIPTION]
+>     + *
+>     + * Basic mallinfo() test for malloc() using sbrk or mmap.
+>     + * It size > MMAP_THRESHOLD, it will use mmap. Otherwise, use sbrk.
+>     +\*/
+>     +
+>     +#include "tst_test.h"
+>     +#include "tst_safe_macros.h"
+>     +#include "tst_mallinfo.h"
+>     +
+>     +#ifdef HAVE_MALLINFO
+>     +void test_mallopt(void)
+>
+>
+> what about renaming to test_mallinfo(void) ?
+Yes, sorry for typo.
+>
+>     +{
+>     + struct mallinfo info;
+>     + int size;
+>     + char *buf;
+>     +
+>     + buf = SAFE_MALLOC(20480);
+>     +
+>     + info = mallinfo();
+>     + if (info.uordblks > 20480 && info.hblkhd == 0) {
+>     + tst_res(TPASS, "malloc() uses sbrk when size < 128k");
+>     + } else {
+>     + tst_res(TFAIL, "malloc() use mmap when size < 128k");
+>     + tst_print_mallinfo("Test malloc(20480)", &info);
+>     + }
+>     + free(buf);
+>     +
+>     + info = mallinfo();
+>     + size = MAX(info.fordblks, 131072);
+>     +
+>     + buf = SAFE_MALLOC(size);
+>     + info = mallinfo();
+>     + if (info.hblkhd > size && info.hblks > 0) {
+>     + tst_res(TPASS, "malloc() uses mmap when size >= 128k");
+>     + } else {
+>     + tst_res(TFAIL, "malloc uses sbrk when size >= 128k");
+>
+>
+> Why not 'TFAIL | TERRNO' ?
+I don't see mallinfo() will fail and it should always succeed.
+>
+>     + tst_print_mallinfo("Test malloc(1024*128)", &info);
+>     + }
+>     +
+>     + free(buf);
+>     +}
+>     +
+>     +static void setup(void)
+>     +{
+>     + if (mallopt(M_MMAP_THRESHOLD, 131072) == 0)
+>     + tst_res(TFAIL, "mallopt(M_MMAP_THRESHOLD, 128K) failed");
+>
+>
+> Here as well.
+Look mallopt man-pages, it said "
+RETURN VALUE
+        On success, mallopt() returns 1.  On error, it returns 0.
+ERRORS
+        On error, errno is not set
+"
+That is why I don't use TERRNO.
 
-NOTE: the default sleep 5s is needed for ssh based testing to prevent
-link-flap errors on the switch. It can be lower down by user.
+>
+>     +}
+>     +
+>     +static struct tst_test test = {
+>     + .setup = setup,
+>     + .test_all = test_mallopt,
+>     +};
+>     +
+>     +#else
+>     +TST_TEST_TCONF("system doesn't implement non-POSIX mallinfo()");
+>     +#endif
+>     --
+>     2.23.0
+>
+>
+>
+>
+>
+> --
+> Regards,
+> Li Wang
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .../network/stress/interface/if-mtu-change.sh      | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
-index d2816606b..49ac5e3fc 100755
---- a/testcases/network/stress/interface/if-mtu-change.sh
-+++ b/testcases/network/stress/interface/if-mtu-change.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
--# Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2017-2021 Petr Vorel <pvorel@suse.cz>
- # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) International Business Machines  Corp., 2005
- # Author: Mitsuru Chinen <mitch@jp.ibm.com>
-@@ -12,9 +12,13 @@ TST_CLEANUP="do_cleanup"
- 
- # The interval of the mtu change [second]
- CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
--
- TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
- 
-+if tst_net_use_netns; then
-+	CHANGE_INTERVAL="100ms"
-+	TST_TIMEOUT=$((30 * MTU_CHANGE_TIMES))
-+fi
-+
- # The array of the value which MTU is changed into sequentially
- # 552 - net.ipv4.route.min_pmtu
- CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
-@@ -65,6 +69,7 @@ find_ipv4_max_packet_size()
- 
- do_setup()
- {
-+
- 	[ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
- 	if_setup
- 	saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
-@@ -83,9 +88,10 @@ do_cleanup()
- test_body()
- {
- 	local cmd="$CMD"
-+	local msg="'$cmd' changes MTU $MTU_CHANGE_TIMES times every $CHANGE_INTERVAL"
- 
--	tst_res TINFO "'$cmd' changes MTU $MTU_CHANGE_TIMES times" \
--	               "every $CHANGE_INTERVAL seconds"
-+	tst_is_int $CHANGE_INTERVAL && msg="$msg seconds"
-+	tst_res TINFO "$msg"
- 
- 	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
- 	local cnt=0
--- 
-2.30.0
 
