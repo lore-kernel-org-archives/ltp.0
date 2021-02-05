@@ -1,5 +1,5 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 5 Feb 2021 17:00:02 +0800
+Date: Fri, 5 Feb 2021 16:15:13 +0800
 Subject: [LTP] [PATCH v2 4/5] syscalls/mallinfo02: Add a basic test to
  check use mmap or sbrk
 In-Reply-To: <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
@@ -7,7 +7,7 @@ References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
  <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
  <1612440762-22389-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
  <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
-Message-ID: <601D0912.8@cn.fujitsu.com>
+Message-ID: <601CFE91.2030909@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,7 +17,7 @@ To: ltp@lists.linux.it
 Hi Li
 
 I have reply this email, but I don't see it on inbox or patchwork, so again
-
+>     +
 >     +#ifdef HAVE_MALLINFO
 >     +void test_mallopt(void)
 >
@@ -53,7 +53,7 @@ Yes, sorry for this typo.
 >
 >
 > Why not 'TFAIL | TERRNO' ?
-mallinfo should succeed always.
+mallinfo should always succeed.
 >
 >     + tst_print_mallinfo("Test malloc(1024*128)", &info);
 >     + }
@@ -68,8 +68,9 @@ mallinfo should succeed always.
 >
 >
 > Here as well.
+mallopt man-pages said even mallopt fails, return 0 and it doesn't set 
+errno.
 >
- From mallopt man-page, even it fail, it doesn't set errno and only return 0
 >     +}
 >     +
 >     +static struct tst_test test = {
