@@ -1,59 +1,108 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 5 Feb 2021 16:00:35 +0800
-Subject: [LTP] [PATCH v2 1/5] tst_mallinfo.c: Add a common print helper
- for mallinfo
-In-Reply-To: <601CF76D.8020705@cn.fujitsu.com>
-References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
- <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2f_mvjt4couA++RcOf9bAMO8fnqapkgG59Qvs9Ud-2SHw@mail.gmail.com>
- <601CF76D.8020705@cn.fujitsu.com>
-Message-ID: <CAEemH2dwK-mabPKHKboFePgrABHDNe35XD-8ed4cjgp3yr7cLg@mail.gmail.com>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Fri, 5 Feb 2021 08:43:33 +0000
+Subject: [LTP] =?utf-8?b?562U5aSNOiAgW1BBVENIXSB0dHlwZTogdXNpbmcgVEVSUk5P?=
+ =?utf-8?q?_to_macth_errno?=
+In-Reply-To: <CAEemH2fb8vHKoU-04izd0EqBz9fF2TGjE3ABaXtGkRdPxbU=Sg@mail.gmail.com>
+References: <F3D3F6AC3820BB4C9FCA340DB5C32CB40385FF8E@dggeml531-mbx.china.huawei.com>
+ <CAEemH2fb8vHKoU-04izd0EqBz9fF2TGjE3ABaXtGkRdPxbU=Sg@mail.gmail.com>
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB403860217@dggeml531-mbx.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Feb 5, 2021 at 3:44 PM Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
+Hi Li,
 
-> Hi Li
-> > Hi Xu,
-> >
-> > Thanks for your work.
-> >
-> >     --- /dev/null
-> >     +++ b/include/tst_mallinfo.h
-> >
-> >
-> > Do we really need to export this function into the LTP library?
-> > (I assumed no other tests will using this lib function anymore)
-> Maybe we can add tst_print_mallinfo2 in the future and mallinfo2() case
-> can use this header.
->
+The check script may be as follows:
 
-Or put it into the tst_memutils.h, I guess this header file is a
-general-purpose for providing kinds of memory helpers.
+#!/bin/bash
+
+grep TTERRNO . -rn -B 3 --exclude=grep.output --exclude=check.sh > grep.output
+
+##Prepare for checking line by line
+sed -i '1i\--' grep.output
+
+do_check()
+{
+        grep TEST $i && return 0
+        grep TST_RET $i && return 0
+        grep TST_ERR $i && return 0
+        grep TEST_RETURN $i && return 0
+        return 1
+}
+
+start=0
+i=0
+while read line
+do
+        echo $line | grep \\\-\\\-
+        ret=$?
+        if [ $ret -eq 0 -a $start -eq 0 ];then
+                        start=1
+                        continue
+        fi
+        if [ $ret -eq 0 -a $start -eq 1 ];then
+                start=0
+                do_check $i
+                if [ $? -eq 0 ];then
+                        rm $i
+                fi
+                let i=$i+1
+                continue
+        fi
+        echo $line >> $i
+done < grep.output
 
 
+Thank You
 
->
-> >
-> > So I prefer to create a common header file as:
-> > ../syscalls/mallinfo/mallinfo_common.h,
-> > and just use it locally.
-> >
-> > If you're hoping mallopt01.c also benefits from it, only need to
-> > build something like mallinfo_commo.o via Makefile and include
-> > it in mallopt01.c by "../mallinfo/mallinfo_common.h".
-> Just want to avoid random makefile. I am not sure which way is better.
-> Let's listen advise from other maintainers.
->
+???: Li Wang [mailto:liwang@redhat.com]
+????: 2021?2?5? 12:38
+???: zhaogongyi <zhaogongyi@huawei.com>
+??: LTP List <ltp@lists.linux.it>
+??: Re: [LTP] [PATCH] ttype: using TERRNO to macth errno
 
-Sure, my pleasure to hear more voice~
+Hi Gongyi,
 
--- 
+Thanks for your work!
+
+That'd be awesome if you posting/sharing the method of your script too.
+
+On Fri, Feb 5, 2021 at 11:44 AM zhaogongyi <zhaogongyi@huawei.com<mailto:zhaogongyi@huawei.com>> wrote:
+Hi Li
+
+The problem of wrong usage of TTERRNO has been checked all of the project by my local script.
+
+The problem of wrong usage of TERRNO will be fixed in my next patch.
+
+Thank You
+
+???: Li Wang [mailto:liwang@redhat.com<mailto:liwang@redhat.com>]
+????: 2021?2?5? 10:49
+???: zhaogongyi <zhaogongyi@huawei.com<mailto:zhaogongyi@huawei.com>>
+??: LTP List <ltp@lists.linux.it<mailto:ltp@lists.linux.it>>
+??: Re: [LTP] [PATCH] ttype: using TERRNO to macth errno
+
+Hi Gongyi,
+
+Any possibility of finding a way to correct all of the unprecise res-flags in LTP tests?
+
+--
+Regards,
+Li Wang
+
+
+--
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210205/c6b2fe84/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210205/06e3aaef/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: check.sh
+Type: application/octet-stream
+Size: 602 bytes
+Desc: check.sh
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210205/06e3aaef/attachment-0001.obj>
