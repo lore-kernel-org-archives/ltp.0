@@ -1,96 +1,120 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Fri, 5 Feb 2021 16:15:13 +0800
-Subject: [LTP] [PATCH v2 4/5] syscalls/mallinfo02: Add a basic test to
- check use mmap or sbrk
-In-Reply-To: <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
-References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
- <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1612440762-22389-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
-Message-ID: <601CFE91.2030909@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri,  5 Feb 2021 16:10:14 +0100
+Subject: [LTP] [PATCH 3/4] net/multicast: Remove duplicity
+In-Reply-To: <20210205151015.7465-1-pvorel@suse.cz>
+References: <20210205151015.7465-1-pvorel@suse.cz>
+Message-ID: <20210205151015.7465-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../multicast/grp-operation/mcast-lib.sh       | 18 +++++++++++++++++-
+ .../multicast/query-flood/mcast-queryfld01.sh  | 13 ++-----------
+ .../multicast/query-flood/mcast-queryfld02.sh  | 14 ++++----------
+ 3 files changed, 23 insertions(+), 22 deletions(-)
 
-I have reply this email, but I don't see it on inbox or patchwork, so again
->     +
->     +#ifdef HAVE_MALLINFO
->     +void test_mallopt(void)
->
->
-> what about renaming to test_mallinfo(void) ?
-Yes, sorry for this typo.
->
->     +{
->     + struct mallinfo info;
->     + int size;
->     + char *buf;
->     +
->     + buf = SAFE_MALLOC(20480);
->     +
->     + info = mallinfo();
->     + if (info.uordblks > 20480 && info.hblkhd == 0) {
->     + tst_res(TPASS, "malloc() uses sbrk when size < 128k");
->     + } else {
->     + tst_res(TFAIL, "malloc() use mmap when size < 128k");
->     + tst_print_mallinfo("Test malloc(20480)", &info);
->     + }
->     + free(buf);
->     +
->     + info = mallinfo();
->     + size = MAX(info.fordblks, 131072);
->     +
->     + buf = SAFE_MALLOC(size);
->     + info = mallinfo();
->     + if (info.hblkhd > size && info.hblks > 0) {
->     + tst_res(TPASS, "malloc() uses mmap when size >= 128k");
->     + } else {
->     + tst_res(TFAIL, "malloc uses sbrk when size >= 128k");
->
->
-> Why not 'TFAIL | TERRNO' ?
-mallinfo should always succeed.
->
->     + tst_print_mallinfo("Test malloc(1024*128)", &info);
->     + }
->     +
->     + free(buf);
->     +}
->     +
->     +static void setup(void)
->     +{
->     + if (mallopt(M_MMAP_THRESHOLD, 131072) == 0)
->     + tst_res(TFAIL, "mallopt(M_MMAP_THRESHOLD, 128K) failed");
->
->
-> Here as well.
-mallopt man-pages said even mallopt fails, return 0 and it doesn't set 
-errno.
->
->     +}
->     +
->     +static struct tst_test test = {
->     + .setup = setup,
->     + .test_all = test_mallopt,
->     +};
->     +
->     +#else
->     +TST_TEST_TCONF("system doesn't implement non-POSIX mallinfo()");
->     +#endif
->     --
->     2.23.0
->
->
->
->
->
-> --
-> Regards,
-> Li Wang
-
-
+diff --git a/testcases/network/stress/multicast/grp-operation/mcast-lib.sh b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
+index 851aadd5b..555501df7 100644
+--- a/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
++++ b/testcases/network/stress/multicast/grp-operation/mcast-lib.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) 2017-2018 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2017-2021 Petr Vorel <pvorel@suse.cz>
+ # Copyright (c) International Business Machines Corp., 2006
+ # Author: Petr Vorel <pvorel@suse.cz>
+ #
+@@ -141,3 +141,19 @@ do_multicast_test_join_leave()
+ 
+ 	tst_res TPASS "test is finished successfully"
+ }
++
++do_multicast_test_join_single_socket()
++{
++	local extra="$1"
++	local prefix="$MCAST_IPV4_ADDR_PREFIX"
++	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
++
++	# Run a multicast join tool
++	local tmpfile=$$
++	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix \> $tmpfile
++	tst_res TINFO "joined $(grep groups $tmpfile)"
++
++	local params
++	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m"
++	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params $extra
++}
+diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
+index faa1c08ef..e80026720 100755
+--- a/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
++++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld01.sh
+@@ -2,6 +2,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2006 International Business Machines  Corp.
+ # Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
++# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ #
+ # Verify that the kernel is not crashed when joining a multicast group
+@@ -18,18 +19,8 @@ do_test()
+ {
+ 	tst_res TINFO "joining an IPv${TST_IPVER} multicast group on a single socket, then receiving a large number of General Queries in $NS_DURATION seconds"
+ 
+-	local prefix="$MCAST_IPV4_ADDR_PREFIX"
+-	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
+-
+-	# Run a multicast join tool
+-	local tmpfile=$$
+-	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix \> $tmpfile
+-	tst_res TINFO "joined $(grep groups $tmpfile)"
+-
+ 	# Send General Query from the remote host
+-	local params
+-	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m"
+-	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
++	do_multicast_test_join_single_socket
+ }
+ 
+ tst_run
+diff --git a/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh b/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
+index 66012a6f3..8773bd86b 100755
+--- a/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
++++ b/testcases/network/stress/multicast/query-flood/mcast-queryfld02.sh
+@@ -2,6 +2,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2006 International Business Machines  Corp.
+ # Copyright (c) 2020 Joerg Vehlow <joerg.vehlow@aox-tech.de>
++# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+ #
+ # Verify that the kernel is not crashed when joining a multicast group
+@@ -19,18 +20,11 @@ do_test()
+ {
+ 	tst_res TINFO "joining an IPv${TST_IPVER} multicast group on a single socket, then receiving a large number of Multicast Address Specific Query in $NS_DURATION seconds"
+ 
+-	local prefix="$MCAST_IPV4_ADDR_PREFIX"
+-	[ "$TST_IPV6" ] && prefix="$MCAST_IPV6_ADDR_PREFIX"
+-
+-	# Run a multicast join tool
+-	local tmpfile=$$
+-	EXPECT_PASS $MCAST_LCMD -n 1 -p $prefix \> $tmpfile
+-	tst_res TINFO "joined $(grep groups $tmpfile)"
++	local extra="-m $MCAST_IPV4_ADDR"
++	[ "$TST_IPV6" ] && extra="-D $MCAST_IPV6_ADDR"
+ 
+ 	# Send IGMP Multicast Address Specific Query from the remote host
+-	local params="-m $MCAST_IPV4_ADDR"
+-	[ "$TST_IPV6" ] && params="-S $(tst_ipaddr) -m -D $MCAST_IPV6_ADDR"
+-	EXPECT_RHOST_PASS $MCAST_RCMD -t $NS_DURATION -r 0 $params
++	do_multicast_test_join_single_socket "$extra"
+ }
+ 
+ tst_run
+-- 
+2.30.0
 
