@@ -1,25 +1,32 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Fri, 5 Feb 2021 10:12:13 +0100
-Subject: [LTP] LTP testcase(sysctl02) failed
-In-Reply-To: <YAGPQRoBmwg488jJ@yuki.lan>
-References: <0efaa481ffd24bc48fd41385159be66c@exch01.asrmicro.com>
- <f3136f18-edd5-08b7-a720-72baeeed7fbc@jv-coder.de>
- <YAGPQRoBmwg488jJ@yuki.lan>
-Message-ID: <a08e95f6-7931-246f-4e30-8935b1b50c97@jv-coder.de>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 5 Feb 2021 17:20:18 +0800
+Subject: [LTP] [PATCH v2 4/5] syscalls/mallinfo02: Add a basic test to
+ check use mmap or sbrk
+In-Reply-To: <601D0912.8@cn.fujitsu.com>
+References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
+ <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1612440762-22389-4-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2ehgnR0Ad5VzR63KgtjFBoqH5N_1b13T7f5Gw6n3EkzdA@mail.gmail.com>
+ <601D0912.8@cn.fujitsu.com>
+Message-ID: <CAEemH2fDKbTna-+pSMkav+bn6hNtkWdRt1rbuGNfsrKfYH_bWA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Xu,
 
-On 1/15/2021 1:49 PM, Cyril Hrubis wrote:
-> Hi!
->> @Cyril I guess you may know how and who to report this to?
-> Patches are proposed for inclusion into stable trees at
-> stable@vger.kernel.org so I would drop an email there.
+Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
 
-Just FYI: I reported this and the patch is now queued for the next 4.19
+I have reply this email, but I don't see it on inbox or patchwork, so again
+>
 
-J?rg
+Plz stop replying to this, I have received three same emails so far :).
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210205/e3f21ac7/attachment.htm>
