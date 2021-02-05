@@ -1,34 +1,46 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 5 Feb 2021 07:59:53 +0100
-Subject: [LTP] [PATCH 1/3] lib/tst_net.sh: print all netstress results
- in tst_netload()
-In-Reply-To: <20210202133454.59224-2-alexey.kodanev@oracle.com>
-References: <20210202133454.59224-1-alexey.kodanev@oracle.com>
- <20210202133454.59224-2-alexey.kodanev@oracle.com>
-Message-ID: <YBzs6V68xkamzfcx@pevik>
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+Date: Fri, 5 Feb 2021 15:44:45 +0800
+Subject: [LTP] [PATCH v2 1/5] tst_mallinfo.c: Add a common print helper
+ for mallinfo
+In-Reply-To: <CAEemH2f_mvjt4couA++RcOf9bAMO8fnqapkgG59Qvs9Ud-2SHw@mail.gmail.com>
+References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
+ <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2f_mvjt4couA++RcOf9bAMO8fnqapkgG59Qvs9Ud-2SHw@mail.gmail.com>
+Message-ID: <601CF76D.8020705@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Li
+> Hi Xu,
+>
+> Thanks for your work.
+>
+>     --- /dev/null
+>     +++ b/include/tst_mallinfo.h
+>
+>
+> Do we really need to export this function into the LTP library?
+> (I assumed no other tests will using this lib function anymore)
+Maybe we can add tst_print_mallinfo2 in the future and mallinfo2() case
+can use this header.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> So I prefer to create a common header file as:
+> ../syscalls/mallinfo/mallinfo_common.h,
+> and just use it locally.
+>
+> If you're hoping mallopt01.c also benefits from it, only need to
+> build something like mallinfo_commo.o via Makefile and include
+> it in mallopt01.c by "../mallinfo/mallinfo_common.h".
+Just want to avoid random makefile. I am not sure which way is better. 
+Let's listen advise from other maintainers.
+>
+> --
+> Regards,
+> Li Wang
 
-...
-> -	res=$((res / $passed))
-> -	echo "$res" > $rfile
-> +	local mean res_sum
-r should be also local.
-> +	for r in $results; do
-> +		res_sum="$((res_sum + r))"
-> +	done
-> +	mean=$((res_sum / passed))
-> +	echo "$mean" > $rfile
 
-> -	tst_res_ TPASS "netstress passed, mean time '$res' ms"
-> +	tst_res_ TPASS "netstress passed, mean time $mean ms, data:$results"
 
-Kind regards,
-Petr
