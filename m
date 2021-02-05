@@ -1,11 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 5 Feb 2021 11:17:27 +0100
-Subject: [LTP] [PATCH 3/3] lib/tst_net.sh: calc median instead of mean
+Date: Fri, 5 Feb 2021 11:21:56 +0100
+Subject: [LTP] [PATCH 0/3] lib/tst_net.sh: calc median instead of mean
  in tst_netload()
-In-Reply-To: <20210202133454.59224-4-alexey.kodanev@oracle.com>
+In-Reply-To: <20210202133454.59224-1-alexey.kodanev@oracle.com>
 References: <20210202133454.59224-1-alexey.kodanev@oracle.com>
- <20210202133454.59224-4-alexey.kodanev@oracle.com>
-Message-ID: <YB0bN4BMGZyVvNeA@pevik>
+Message-ID: <YB0cRKmBcO4qgLf8@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,27 +13,23 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> Sometimes the tests can get the following results on a test network:
+> This series of patches is intended to improve the reliability
+> of results in network tests that using tst_netload().
 
-> gre01   1 TINFO: run server 'netstress -D ltp_v0...
-> gre01   1 TINFO: run client 'netstress -l -D ltp_v0... 5 times
-> gre01   1 TPASS: netstress passed, mean time 4633 ms, data: 128 22627 134 142 137
-> ...
-> vxlan03 1 TINFO: run server 'netstress -D ltp_v0...
-> vxlan03 1 TINFO: run client 'netstress -l -D ltp_v0... 5 times
-> vxlan03 1 TPASS: netstress passed, mean time 4584 ms, data: 142 140 146 145 22350
+> After TST_NETLOAD_RUN_COUNT was added, we get several results (5 by
+> default). The first patch allows all of them to be displayed along
+> with the final result. It helps to debug test performance failures.
 
-> One unsuccessful run can have a huge impact on the final result,
-> when using the mean time with such data.
+> Further patches replace the mean calculation of such data set with
+> the median one. It allows to exclude extreme points from the final
+> result.
 
-> A more suitable solution for short runs would be to obtain a median
-> time that can remove all outliers. This will lead to more consistent
-> performance test results. For example, instead of the above runs, we
-> would get this:
+Thanks for improving stability of these tests!
+I've also noticed often failures in net.features and some of ipsec tests,
+this should help.
 
-> gre01   1 TPASS: netstress passed, median time 137 ms, data: 128 22627 134 142 137
-> vxlan03 1 TPASS: netstress passed, median time 145 ms, data: 142 140 146 145 22350
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+FYI as TODO I'd like some of net.features have also as functional tests
+(ignoring the performance).
 
 Kind regards,
 Petr
