@@ -1,39 +1,103 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 5 Feb 2021 18:06:08 +0100
-Subject: [LTP] [PATCH v2 2/4] Add safe functions for io_uring to LTP
- library
-In-Reply-To: <28ce5f25-ee74-adad-ba59-d25e3e72aa1d@suse.cz>
-References: <20210204110342.11821-1-mdoucha@suse.cz>
- <20210204110342.11821-2-mdoucha@suse.cz> <YB1qyucNa+aN3p2V@pevik>
- <28ce5f25-ee74-adad-ba59-d25e3e72aa1d@suse.cz>
-Message-ID: <YB17ABVa99GD/vLD@pevik>
+Date: Sat, 6 Feb 2021 20:14:01 +0100
+Subject: [LTP] [PATCH 1/4] net/multicast: Create mcast_setup_normal()
+In-Reply-To: <20210205151015.7465-1-pvorel@suse.cz>
+References: <20210205151015.7465-1-pvorel@suse.cz>
+Message-ID: <YB7qefsNWbCJXUEu@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi,
 
-> >> +++ b/lib/tst_safe_io_uring.c
-> > ...
-> >> +	uring->sqr_base = safe_mmap(file, lineno, NULL, uring->sqr_mapsize,
-> >> +		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, uring->fd,
-> >> +		IORING_OFF_SQ_RING);
-> >> +
-> >> +	if (uring->sqr_base == MAP_FAILED)
-> >> +		return -1;
-> > IMHO this is not needed, safe_mmap() breaks on rval == MAP_FAILED.
+> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
+> @@ -8,14 +8,11 @@
+>  # a single socket, then receiving a large number of UDP packets at the socket
 
-> Except when called in cleanup() where it prints a warning and returns as
-> usual. That's why safe_io_uring_init() returns int instead of void in
-> the first place.
+>  TST_NEEDS_ROOT=1
+> +TST_SETUP="mcast_setup_normal"
+>  . mcast-lib.sh
 
-> I don't expect that safe_io_uring_init() will be used in cleanup() very
-> often but I've made all the other SAFE_*() functions cleanup()-safe and
-> I want to stick with that here as well.
+> -do_setup()
+> -{
+> -	mcast_setup $MCASTNUM_NORMAL
+> -	MCAST_LCMD=ns-mcast_receiver
+> -	MCAST_RCMD=ns-udpsender
+> -}
+> +MCAST_LCMD="ns-mcast_receiver"
+> +MCAST_RCMD="ns-udpsender"
+Actually, this is wrong.
+Variables must be set after setup has been run.
 
-Good point, makes sense. Thanks for an explanation.
+>  do_test()
+>  {
+> diff --git a/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+> index 76d184995..2c356917a 100755
+> --- a/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+> @@ -9,14 +9,11 @@
+>  # packets at each socket
+
+>  TST_NEEDS_ROOT=1
+> +TST_SETUP="mcast_setup_normal"
+>  . mcast-lib.sh
+
+> -do_setup()
+> -{
+> -	mcast_setup $MCASTNUM_NORMAL
+> -	MCAST_LCMD=ns-mcast_receiver
+> -	MCAST_RCMD=ns-udpsender
+> -}
+> +MCAST_LCMD="ns-mcast_receiver"
+> +MCAST_RCMD="ns-udpsender"
+And here as well.
+
+Fix is to move it into test function.
 
 Kind regards,
 Petr
+
+diff --git testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
+index 1db7b0605..1b9fe9d79 100755
+--- testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
++++ testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
+@@ -11,13 +11,13 @@ TST_NEEDS_ROOT=1
+ TST_SETUP="mcast_setup_normal"
+ . mcast-lib.sh
+ 
+-MCAST_LCMD="ns-mcast_receiver"
+-MCAST_RCMD="ns-udpsender"
+-
+ do_test()
+ {
+ 	tst_res TINFO "joining an IPv${TST_IPVER} multicast group with a single socket, then receiving a large number of UDP packets at the socket in $NS_DURATION seconds"
+ 
++	MCAST_LCMD="ns-mcast_receiver"
++	MCAST_RCMD="ns-udpsender"
++
+ 	local addr="$MCAST_IPV4_ADDR"
+ 	[ "$TST_IPV6" ] && addr="$MCAST_IPV6_ADDR"
+ 
+diff --git testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+index ee62b347e..9b5de60db 100755
+--- testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
++++ testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
+@@ -12,13 +12,13 @@ TST_NEEDS_ROOT=1
+ TST_SETUP="mcast_setup_normal"
+ . mcast-lib.sh
+ 
+-MCAST_LCMD="ns-mcast_receiver"
+-MCAST_RCMD="ns-udpsender"
+-
+ do_test()
+ {
+ 	tst_res TINFO "joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
+ 
++	MCAST_LCMD="ns-mcast_receiver"
++	MCAST_RCMD="ns-udpsender"
++
+ 	local addr port
+ 	local n=0
+ 
