@@ -1,103 +1,53 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Sat, 6 Feb 2021 20:14:01 +0100
-Subject: [LTP] [PATCH 1/4] net/multicast: Create mcast_setup_normal()
-In-Reply-To: <20210205151015.7465-1-pvorel@suse.cz>
-References: <20210205151015.7465-1-pvorel@suse.cz>
-Message-ID: <YB7qefsNWbCJXUEu@pevik>
+Date: Sat, 6 Feb 2021 20:54:26 +0100
+Subject: [LTP] [PATCH 1/1] travis: Add libefivar support
+In-Reply-To: <CAEemH2cP8Tub5UjBcRoo2Nkwtku7KjtUYP9U9v75GHEywe=aXw@mail.gmail.com>
+References: <20201110120035.20543-1-pvorel@suse.cz>
+ <20201110134625.GA6482@pevik>
+ <CAEemH2cP8Tub5UjBcRoo2Nkwtku7KjtUYP9U9v75GHEywe=aXw@mail.gmail.com>
+Message-ID: <YB7z8hk85v6jZBXd@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Li,
 
-> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
-> @@ -8,14 +8,11 @@
->  # a single socket, then receiving a large number of UDP packets at the socket
+> On Tue, Nov 10, 2020 at 9:46 PM Petr Vorel <pvorel@suse.cz> wrote:
 
->  TST_NEEDS_ROOT=1
-> +TST_SETUP="mcast_setup_normal"
->  . mcast-lib.sh
+> > Hi,
 
-> -do_setup()
-> -{
-> -	mcast_setup $MCASTNUM_NORMAL
-> -	MCAST_LCMD=ns-mcast_receiver
-> -	MCAST_RCMD=ns-udpsender
-> -}
-> +MCAST_LCMD="ns-mcast_receiver"
-> +MCAST_RCMD="ns-udpsender"
-Actually, this is wrong.
-Variables must be set after setup has been run.
+> > > Travis CI:
+> > > https://travis-ci.org/github/pevik/ltp/builds/742684375
 
->  do_test()
->  {
-> diff --git a/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> index 76d184995..2c356917a 100755
-> --- a/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> +++ b/testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> @@ -9,14 +9,11 @@
->  # packets at each socket
+> > Looks like Debian does not ship libefivar-dev for ppc64el
+> > https://travis-ci.org/github/pevik/ltp/jobs/742684377
 
->  TST_NEEDS_ROOT=1
-> +TST_SETUP="mcast_setup_normal"
->  . mcast-lib.sh
 
-> -do_setup()
-> -{
-> -	mcast_setup $MCASTNUM_NORMAL
-> -	MCAST_LCMD=ns-mcast_receiver
-> -	MCAST_RCMD=ns-udpsender
-> -}
-> +MCAST_LCMD="ns-mcast_receiver"
-> +MCAST_RCMD="ns-udpsender"
-And here as well.
+> From Travis CI, the CentOS8 reports miss efivar-devel package too.
 
-Fix is to move it into test function.
+> Maybe fix it by the following?
+
+> --- a/travis/fedora.sh
+> +++ b/travis/fedora.sh
+> @@ -9,11 +9,11 @@ yum -y install \
+>         clang \
+>         gcc \
+>         findutils \
+> -       efivar-devel \
+>         libtirpc \
+>         libtirpc-devel \
+>         pkg-config \
+>         redhat-lsb-core
+
+> -# CentOS 8 doesn't have libmnl-devel
+> +# CentOS 8 doesn't have libmnl-devel and efivar-devel
+>  yum -y install libmnl-devel || yum -y install libmnl
+> +yum -y --skip-broken install efivar-devel
+
+I'm sorry, I completely overlook your comment.
+In the end it's not needed as we use our own implementation.
 
 Kind regards,
 Petr
-
-diff --git testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
-index 1db7b0605..1b9fe9d79 100755
---- testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
-+++ testcases/network/stress/multicast/packet-flood/mcast-pktfld01.sh
-@@ -11,13 +11,13 @@ TST_NEEDS_ROOT=1
- TST_SETUP="mcast_setup_normal"
- . mcast-lib.sh
- 
--MCAST_LCMD="ns-mcast_receiver"
--MCAST_RCMD="ns-udpsender"
--
- do_test()
- {
- 	tst_res TINFO "joining an IPv${TST_IPVER} multicast group with a single socket, then receiving a large number of UDP packets at the socket in $NS_DURATION seconds"
- 
-+	MCAST_LCMD="ns-mcast_receiver"
-+	MCAST_RCMD="ns-udpsender"
-+
- 	local addr="$MCAST_IPV4_ADDR"
- 	[ "$TST_IPV6" ] && addr="$MCAST_IPV6_ADDR"
- 
-diff --git testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-index ee62b347e..9b5de60db 100755
---- testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-+++ testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-@@ -12,13 +12,13 @@ TST_NEEDS_ROOT=1
- TST_SETUP="mcast_setup_normal"
- . mcast-lib.sh
- 
--MCAST_LCMD="ns-mcast_receiver"
--MCAST_RCMD="ns-udpsender"
--
- do_test()
- {
- 	tst_res TINFO "joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
- 
-+	MCAST_LCMD="ns-mcast_receiver"
-+	MCAST_RCMD="ns-udpsender"
-+
- 	local addr port
- 	local n=0
- 
