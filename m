@@ -1,83 +1,94 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Feb 2021 10:48:15 +0100
-Subject: [LTP] [PATCH v2 4/4] Add test for CVE 2020-29373
-In-Reply-To: <9a49f90c-7467-ae65-84be-2f559a8771dd@suse.cz>
-References: <20210204110342.11821-1-mdoucha@suse.cz>
- <20210204110342.11821-4-mdoucha@suse.cz> <YB13HM7so0YBwO8v@pevik>
- <9a49f90c-7467-ae65-84be-2f559a8771dd@suse.cz>
-Message-ID: <YCEI39Xxo80VkIE9@pevik>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 8 Feb 2021 15:49:10 +0300
+Subject: [LTP] [PATCH 2/2] if-mtu-change.sh: Lower CHANGE_INTERVAL for
+ netns
+In-Reply-To: <20210205142051.32055-2-pvorel@suse.cz>
+References: <20210205142051.32055-1-pvorel@suse.cz>
+ <20210205142051.32055-2-pvorel@suse.cz>
+Message-ID: <c5322d13-c69d-aa4d-193c-7c047a405d9a@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+On 05.02.2021 17:20, Petr Vorel wrote:
+> to make testing faster.
+> 
+> NOTE: the default sleep 5s is needed for ssh based testing to prevent
+> link-flap errors on the switch. It can be lower down by user.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  .../network/stress/interface/if-mtu-change.sh      | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
+> index d2816606b..49ac5e3fc 100755
+> --- a/testcases/network/stress/interface/if-mtu-change.sh
+> +++ b/testcases/network/stress/interface/if-mtu-change.sh
+> @@ -1,6 +1,6 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
+> +# Copyright (c) 2017-2021 Petr Vorel <pvorel@suse.cz>
+>  # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2005
+>  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
+> @@ -12,9 +12,13 @@ TST_CLEANUP="do_cleanup"
+>  
+>  # The interval of the mtu change [second]
+>  CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
+> -
+>  TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
+>  
+> +if tst_net_use_netns; then
+> +	CHANGE_INTERVAL="100ms"
 
-> >> +	/* Add spam requests to force async processing of the real test */
-> >> +	for (i = 0, tail = *uring.sqr_tail; i < 255; i++, tail++, sqe_ptr++) {
-> >> +		memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-> >> +		sqe_ptr->opcode = IORING_OP_SENDMSG;
-> >> +		sqe_ptr->flags = IOSQE_IO_DRAIN;
-> >> +		sqe_ptr->fd = sockpair[0];
-> >> +		sqe_ptr->addr = (__u64)&spam_header;
-> >> +		sqe_ptr->user_data = SPAM_MARK;
-> > Interesting, original reproducer uses here i
+Hi Petr,
 
-> >> +		uring.sqr_array[tail & *uring.sqr_mask] = i;
-> >> +	}
-> >> +
-> >> +	/* Add the real test to queue */
-> >> +	memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-> >> +	sqe_ptr->opcode = IORING_OP_SENDMSG;
-> >> +	sqe_ptr->flags = IOSQE_IO_DRAIN;
-> >> +	sqe_ptr->fd = sendsock;
-> >> +	sqe_ptr->addr = (__u64)&beef_header;
-> >> +	sqe_ptr->user_data = BEEF_MARK;
-> > and here also 255, you use much higher 0xbeef.
+What about adding the option to change this value too for netns,
+for example like this:
 
-> > You probably have a good reason to use here 0xfa7 (higher value). But maybe
-> > explaining why?
+TST_TIMEOUT=1
+if tst_net_use_netns; then
+    CHANGE_INTERVAL=${CHANGE_INTERVAL:-100ms}
+else
+    CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
+    tst_is_int $CHANGE_INTERVAL && TST_TIMEOUT=$CHANGE_INTERVAL
+fi
 
-> The good reason is that I like puns. sqe_ptr->user_data is not processed
-> by the kernel in any way except for copying the value into the
-> completion queue when the I/O request finishes. And we don't care
-> whether we can tell apart the spam request results from one another so
-> giving them all the same marker is good enough.
-Thanks for an explanation!
+TST_TIMEOUT=$(((TST_TIMEOUT + 30) * MTU_CHANGE_TIMES))
 
-> >> +	uring.sqr_array[tail & *uring.sqr_mask] = i;
-> >> +	count = ++i;
-> >> +	tail++;
-> >> +
-> >> +	__atomic_store(uring.sqr_tail, &tail, __ATOMIC_RELEASE);
-> >> +	SAFE_IO_URING_ENTER(1, uring.fd, count, count, IORING_ENTER_GETEVENTS,
-> >> +		NULL);
-> >> +
-> >> +	/* Check test results */
-> >> +	__atomic_load(uring.cqr_tail, &tail, __ATOMIC_ACQUIRE);
-> >> +
-> >> +	for (i = *uring.cqr_head; i != tail; i++, count--) {
-> >> +		cqe_ptr = uring.cqr_entries + (i & *uring.cqr_mask);
-> >> +		TST_ERR = -cqe_ptr->res;
-> >> +
-> >> +		if (cqe_ptr->user_data == SPAM_MARK) {
-> >> +			if (cqe_ptr->res >= 0 || cqe_ptr->res == -EAGAIN)
-> >> +				continue;
-> >> +
-> >> +			tst_res(TFAIL | TTERRNO,
-> >> +				"Spam request failed unexpectedly");
-> > I'm sorry, I'm lost to which TEST*() call this TTERRNO refers (there are mostly
-> > SAFE_*() macros.
 
-> I'm setting TST_ERR manually 6 lines above the tst_res() call. The errno
-> value is in cqe_ptr->res.
-Thank you, I'm blind :).
+> +	TST_TIMEOUT=$((30 * MTU_CHANGE_TIMES))
+> +fi
+> +
+>  # The array of the value which MTU is changed into sequentially
+>  # 552 - net.ipv4.route.min_pmtu
+>  CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
+> @@ -65,6 +69,7 @@ find_ipv4_max_packet_size()
+>  
+>  do_setup()
+>  {
+> +
 
-Anyway, merged. Thanks for your work!
+empty new line?
 
-BTW: test fails on my openSUSE kernel 5.11.0-rc6, which should have both kernel
-fixes.
-
-Kind regards,
-Petr
+>  	[ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
+>  	if_setup
+>  	saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
+> @@ -83,9 +88,10 @@ do_cleanup()
+>  test_body()
+>  {
+>  	local cmd="$CMD"
+> +	local msg="'$cmd' changes MTU $MTU_CHANGE_TIMES times every $CHANGE_INTERVAL"
+>  
+> -	tst_res TINFO "'$cmd' changes MTU $MTU_CHANGE_TIMES times" \
+> -	               "every $CHANGE_INTERVAL seconds"
+> +	tst_is_int $CHANGE_INTERVAL && msg="$msg seconds"
+> +	tst_res TINFO "$msg"
+>  
+>  	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
+>  	local cnt=0
+>
