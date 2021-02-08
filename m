@@ -1,94 +1,37 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 8 Feb 2021 15:49:10 +0300
-Subject: [LTP] [PATCH 2/2] if-mtu-change.sh: Lower CHANGE_INTERVAL for
- netns
-In-Reply-To: <20210205142051.32055-2-pvorel@suse.cz>
-References: <20210205142051.32055-1-pvorel@suse.cz>
- <20210205142051.32055-2-pvorel@suse.cz>
-Message-ID: <c5322d13-c69d-aa4d-193c-7c047a405d9a@oracle.com>
+Date: Mon, 8 Feb 2021 18:24:11 +0300
+Subject: [LTP] [PATCH 0/3] lib/tst_net.sh: calc median instead of mean
+ in tst_netload()
+In-Reply-To: <YB0cRKmBcO4qgLf8@pevik>
+References: <20210202133454.59224-1-alexey.kodanev@oracle.com>
+ <YB0cRKmBcO4qgLf8@pevik>
+Message-ID: <07a6d0f9-6bbc-63ff-5401-ab2d6af04364@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05.02.2021 17:20, Petr Vorel wrote:
-> to make testing faster.
+On 05.02.2021 13:21, Petr Vorel wrote:
+> Hi Alexey,
 > 
-> NOTE: the default sleep 5s is needed for ssh based testing to prevent
-> link-flap errors on the switch. It can be lower down by user.
+>> This series of patches is intended to improve the reliability
+>> of results in network tests that using tst_netload().
 > 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  .../network/stress/interface/if-mtu-change.sh      | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+>> After TST_NETLOAD_RUN_COUNT was added, we get several results (5 by
+>> default). The first patch allows all of them to be displayed along
+>> with the final result. It helps to debug test performance failures.
 > 
-> diff --git a/testcases/network/stress/interface/if-mtu-change.sh b/testcases/network/stress/interface/if-mtu-change.sh
-> index d2816606b..49ac5e3fc 100755
-> --- a/testcases/network/stress/interface/if-mtu-change.sh
-> +++ b/testcases/network/stress/interface/if-mtu-change.sh
-> @@ -1,6 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> -# Copyright (c) 2017-2019 Petr Vorel <pvorel@suse.cz>
-> +# Copyright (c) 2017-2021 Petr Vorel <pvorel@suse.cz>
->  # Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
->  # Copyright (c) International Business Machines  Corp., 2005
->  # Author: Mitsuru Chinen <mitch@jp.ibm.com>
-> @@ -12,9 +12,13 @@ TST_CLEANUP="do_cleanup"
->  
->  # The interval of the mtu change [second]
->  CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
-> -
->  TST_TIMEOUT=$(((CHANGE_INTERVAL + 30) * MTU_CHANGE_TIMES))
->  
-> +if tst_net_use_netns; then
-> +	CHANGE_INTERVAL="100ms"
-
-Hi Petr,
-
-What about adding the option to change this value too for netns,
-for example like this:
-
-TST_TIMEOUT=1
-if tst_net_use_netns; then
-    CHANGE_INTERVAL=${CHANGE_INTERVAL:-100ms}
-else
-    CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
-    tst_is_int $CHANGE_INTERVAL && TST_TIMEOUT=$CHANGE_INTERVAL
-fi
-
-TST_TIMEOUT=$(((TST_TIMEOUT + 30) * MTU_CHANGE_TIMES))
-
-
-> +	TST_TIMEOUT=$((30 * MTU_CHANGE_TIMES))
-> +fi
-> +
->  # The array of the value which MTU is changed into sequentially
->  # 552 - net.ipv4.route.min_pmtu
->  CHANGE_VALUES="784 1142 552 1500 552 1500 552 748 552 1142 1500"
-> @@ -65,6 +69,7 @@ find_ipv4_max_packet_size()
->  
->  do_setup()
->  {
-> +
-
-empty new line?
-
->  	[ "$TST_IPV6" ] && CHANGE_VALUES=$CHANGE6_VALUES
->  	if_setup
->  	saved_mtu="$(cat /sys/class/net/$(tst_iface)/mtu)"
-> @@ -83,9 +88,10 @@ do_cleanup()
->  test_body()
->  {
->  	local cmd="$CMD"
-> +	local msg="'$cmd' changes MTU $MTU_CHANGE_TIMES times every $CHANGE_INTERVAL"
->  
-> -	tst_res TINFO "'$cmd' changes MTU $MTU_CHANGE_TIMES times" \
-> -	               "every $CHANGE_INTERVAL seconds"
-> +	tst_is_int $CHANGE_INTERVAL && msg="$msg seconds"
-> +	tst_res TINFO "$msg"
->  
->  	mtu_array_len=$(echo $CHANGE_VALUES | wc -w)
->  	local cnt=0
+>> Further patches replace the mean calculation of such data set with
+>> the median one. It allows to exclude extreme points from the final
+>> result.
+> 
+> Thanks for improving stability of these tests!
+> I've also noticed often failures in net.features and some of ipsec tests,
+> this should help.
 >
+> FYI as TODO I'd like some of net.features have also as functional tests
+> (ignoring the performance).
+> 
+
+Merged, thanks for review Petr!
