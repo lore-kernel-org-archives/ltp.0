@@ -1,40 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 8 Feb 2021 08:11:07 +0100
-Subject: [LTP] [PATCH v2 2/6] zram01.sh: Generate test setup variables
- in setup
-In-Reply-To: <YB71JBi757ong63Y@pevik>
-References: <20210129194144.31299-1-pvorel@suse.cz>
- <20210129194144.31299-3-pvorel@suse.cz>
- <CAEemH2ffReVSE_210nyRZVZHOwoMMy-F4Cye08RwPa5bh7PZ0w@mail.gmail.com>
- <YBj8bMKfxqvQ6lYt@pevik>
- <CAEemH2f5tJtgcZG8WaAU1qpKwU7yHDdjzGahhL814goL5sAv-g@mail.gmail.com>
- <YB71JBi757ong63Y@pevik>
-Message-ID: <YCDkC2YG22X+OOFs@pevik>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Mon, 8 Feb 2021 03:14:38 -0500
+Subject: [LTP] [PATCH] netns_helper: Make iproute version check work
+ correctly
+Message-ID: <1612772078-29651-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Since the iproute2 patch[1]("replace SNAPSHOT with auto-generated version string"),
+the output format of "ip -V" has changed form "ip utility, iproute2-ss*" to
+"ip utility, iproute2-*", which leads to an exception when checking the version
+of iproute. Use return to avoid unexpected TCONF.
 
-> BTW I tested zram on all filesystems including fuse/*fat/ntfs:
-> zram01 4 TINFO: make ext2 filesystem on /dev/zram0
-> zram01 4 TINFO: make ext3 filesystem on /dev/zram1
-> zram01 4 TINFO: make ext4 filesystem on /dev/zram2
-> zram01 4 TINFO: make xfs filesystem on /dev/zram3
-> zram01 4 TINFO: make btrfs filesystem on /dev/zram4
-> zram01 4 TINFO: make vfat filesystem on /dev/zram5
-> zram01 4 TINFO: make exfat filesystem on /dev/zram6
-> zram01 4 TINFO: make ntfs filesystem on /dev/zram7
+[1]https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit/?id=fbef655568
 
-> and it's working well, thus I suggest to test everything available:
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+---
+ testcases/kernel/containers/netns/netns_helper.h  | 10 ++++++++--
+ testcases/kernel/containers/netns/netns_helper.sh |  9 +++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-> -       for fs in $(tst_supported_fs | grep -v -e fat -e ntfs -e fuse); do
-> +       for fs in $(tst_supported_fs); do
+diff --git a/testcases/kernel/containers/netns/netns_helper.h b/testcases/kernel/containers/netns/netns_helper.h
+index 8b87645..8337051 100644
+--- a/testcases/kernel/containers/netns/netns_helper.h
++++ b/testcases/kernel/containers/netns/netns_helper.h
+@@ -37,6 +37,7 @@ static void check_iproute(unsigned int spe_ipver)
+ 	FILE *ipf;
+ 	int n;
+ 	unsigned int ipver = 0;
++	char ver;
+ 
+ 	ipf = popen("ip -V", "r");
+ 	if (ipf == NULL)
+@@ -44,7 +45,14 @@ static void check_iproute(unsigned int spe_ipver)
+ 				"Failed while opening pipe for iproute check");
+ 
+ 	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
++	pclose(ipf);
+ 	if (n < 1) {
++		ipf = popen("ip -V", "r");
++		n = fscanf(ipf, "ip utility, iproute2-%s", &ver);
++		if (n >= 1) {
++			pclose(ipf);
++			return;
++		}
+ 		tst_brkm(TCONF, NULL,
+ 			"Failed while obtaining version for iproute check");
+ 	}
+@@ -52,8 +60,6 @@ static void check_iproute(unsigned int spe_ipver)
+ 		tst_brkm(TCONF, NULL, "The commands in iproute tools do "
+ 			"not support required objects");
+ 	}
+-
+-	pclose(ipf);
+ }
+ 
+ static int dummy(void *arg)
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+index a5b77a0..bec43ac 100755
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -50,6 +50,15 @@ tst_check_iproute()
+ 	local cur_ipver="$(ip -V)"
+ 	local spe_ipver="$1"
+ 
++	echo $cur_ipver | grep "ip utility, iproute2-ss" > /dev/null
++	ret1=$?
++	echo $cur_ipver | grep "ip utility, iproute2-" > /dev/null
++	ret2=$?
++
++	if [ $ret1 -ne 0 -a $ret2 -eq 0 ]; then
++		return
++	fi
++
+ 	cur_ipver=${cur_ipver##*s}
+ 
+ 	if [ -z "$cur_ipver" -o -z "$spe_ipver" ]; then
+-- 
+1.8.3.1
 
-Although running all 8 filesystems run takes more than 10 min. If it's too long,
-it might be better to keep grep and also limit number of tested filesystems.
 
-Kind regards,
-Petr
+
