@@ -1,37 +1,30 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 8 Feb 2021 18:24:11 +0300
-Subject: [LTP] [PATCH 0/3] lib/tst_net.sh: calc median instead of mean
- in tst_netload()
-In-Reply-To: <YB0cRKmBcO4qgLf8@pevik>
-References: <20210202133454.59224-1-alexey.kodanev@oracle.com>
- <YB0cRKmBcO4qgLf8@pevik>
-Message-ID: <07a6d0f9-6bbc-63ff-5401-ab2d6af04364@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 8 Feb 2021 16:30:15 +0100
+Subject: [LTP] [PATCH v2 1/5] tst_mallinfo.c: Add a common print helper
+ for mallinfo
+In-Reply-To: <CAEemH2dwK-mabPKHKboFePgrABHDNe35XD-8ed4cjgp3yr7cLg@mail.gmail.com>
+References: <CAEemH2eiTY7YgSYLr6_skK6PaRZb2_GchbmHUJKVuW7btA15rQ@mail.gmail.com>
+ <1612440762-22389-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2f_mvjt4couA++RcOf9bAMO8fnqapkgG59Qvs9Ud-2SHw@mail.gmail.com>
+ <601CF76D.8020705@cn.fujitsu.com>
+ <CAEemH2dwK-mabPKHKboFePgrABHDNe35XD-8ed4cjgp3yr7cLg@mail.gmail.com>
+Message-ID: <YCFZB1/VMSsfxyPA@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05.02.2021 13:21, Petr Vorel wrote:
-> Hi Alexey,
-> 
->> This series of patches is intended to improve the reliability
->> of results in network tests that using tst_netload().
-> 
->> After TST_NETLOAD_RUN_COUNT was added, we get several results (5 by
->> default). The first patch allows all of them to be displayed along
->> with the final result. It helps to debug test performance failures.
-> 
->> Further patches replace the mean calculation of such data set with
->> the median one. It allows to exclude extreme points from the final
->> result.
-> 
-> Thanks for improving stability of these tests!
-> I've also noticed often failures in net.features and some of ipsec tests,
-> this should help.
->
-> FYI as TODO I'd like some of net.features have also as functional tests
-> (ignoring the performance).
-> 
+Hi!
+> > Just want to avoid random makefile. I am not sure which way is better.
+> > Let's listen advise from other maintainers.
 
-Merged, thanks for review Petr!
+Given that its only one single function I would just put it into a
+header as a static inline function.
+
+Also mallopt is glibc specific so I guess that it makes sense to keep it
+in a separate header.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
