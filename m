@@ -1,24 +1,82 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Date: Tue, 9 Feb 2021 14:37:04 +0000
-Subject: [LTP] [PATCH 0/1] Test brk vma code path
-Message-ID: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
+Date: Tue, 9 Feb 2021 14:37:05 +0000
+Subject: [LTP] [PATCH 1/1] brk02: Add test for removing more than one VMA
+In-Reply-To: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
+References: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
+Message-ID: <20210209143702.2003038-2-Liam.Howlett@Oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The brk system call uses a slightly different code path through the
-kernel to expand/contract across VMAs.  This new test is written to
-force the VMA to create a two new entries and shrink back across VMA
-boundaries.
+When brk expands, it attempts to expand a VMA.  This expansion will
+succeed depending on the anonymous VMA chain and if the vma flags are
+compatible.  This test expands brk() then calls mprotect to ensure the
+next brk call will create a new VMA, then it calls brk a final time to
+restore the first brk address.  The test is the final brk call which
+will remove more than an entire VMA from the vm area.
 
-Liam R. Howlett (1):
-  brk02: Add test for removing more than one VMA
-
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
  testcases/kernel/syscalls/brk/brk02.c | 49 +++++++++++++++++++++++++++
  1 file changed, 49 insertions(+)
  create mode 100644 testcases/kernel/syscalls/brk/brk02.c
 
+diff --git a/testcases/kernel/syscalls/brk/brk02.c b/testcases/kernel/syscalls/brk/brk02.c
+new file mode 100644
+index 000000000..834fe9f2f
+--- /dev/null
++++ b/testcases/kernel/syscalls/brk/brk02.c
+@@ -0,0 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 Liam R. Howlett <liam.howlett@oracle.com>
++ *
++ *  
++ *  Expand the brk by 2 pages to ensure there is a newly created VMA and not
++ *  expanding the original due to multiple anon pages.  mprotect that new VMA
++ *  then brk back to the original address therefore causing a munmap of at
++ *  least one full VMA.
++ */
++
++#include <unistd.h>
++#include <stdint.h>
++#include <sys/mman.h>
++
++#include "tst_test.h"
++
++void brk_down_vmas(void)
++{
++	void *brk_addr = sbrk(0);
++	unsigned long page_size = getpagesize();
++	void *addr = brk_addr + page_size;
++
++	if (brk(addr))
++		return;
++
++	addr += page_size;
++	if (brk(addr))
++		return;
++
++	if (mprotect(addr - page_size, page_size,
++			PROT_READ|PROT_WRITE|PROT_EXEC))
++		return;
++
++	addr += page_size;
++	if (brk(addr))
++		return;
++
++	if (brk(brk_addr))
++		return;
++
++
++
++	tst_res(TPASS, "munmap two VMAs of brk() passed.");
++}
++
++static struct tst_test test = {
++	.test_all = brk_down_vmas,
++};
 -- 
 2.28.0
