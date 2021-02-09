@@ -1,41 +1,87 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 9 Feb 2021 15:12:22 +0100
-Subject: [LTP] [PATCH 2/2] if-mtu-change.sh: Lower CHANGE_INTERVAL for
- netns
-In-Reply-To: <45f388a1-4c96-d35c-8c61-879631fcae51@oracle.com>
-References: <20210205142051.32055-1-pvorel@suse.cz>
- <20210205142051.32055-2-pvorel@suse.cz>
- <c5322d13-c69d-aa4d-193c-7c047a405d9a@oracle.com>
- <YCFhIs/lyRGTh8IR@pevik>
- <45f388a1-4c96-d35c-8c61-879631fcae51@oracle.com>
-Message-ID: <YCKYRhZzAQ3VVKzk@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 9 Feb 2021 15:56:27 +0100
+Subject: [LTP] [PATCH] netns_helper: Make iproute version check work
+ correctly
+In-Reply-To: <1612772078-29651-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+References: <1612772078-29651-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+Message-ID: <YCKim8Pvg+ZTrHXI@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi!
+> diff --git a/testcases/kernel/containers/netns/netns_helper.h b/testcases/kernel/containers/netns/netns_helper.h
+> index 8b87645..8337051 100644
+> --- a/testcases/kernel/containers/netns/netns_helper.h
+> +++ b/testcases/kernel/containers/netns/netns_helper.h
+> @@ -37,6 +37,7 @@ static void check_iproute(unsigned int spe_ipver)
+>  	FILE *ipf;
+>  	int n;
+>  	unsigned int ipver = 0;
+> +	char ver;
+>  
+>  	ipf = popen("ip -V", "r");
+>  	if (ipf == NULL)
+> @@ -44,7 +45,14 @@ static void check_iproute(unsigned int spe_ipver)
+>  				"Failed while opening pipe for iproute check");
+>  
+>  	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
+> +	pclose(ipf);
+>  	if (n < 1) {
+> +		ipf = popen("ip -V", "r");
+> +		n = fscanf(ipf, "ip utility, iproute2-%s", &ver);
+> +		if (n >= 1) {
+> +			pclose(ipf);
+> +			return;
+> +		}
 
-> On 08.02.2021 19:04, Petr Vorel wrote:
-> > How about allow to overwrite CHANGE_INTERVAL even for netns?
-> > i.e move tst_is_int $CHANGE_INTERVAL && TST_TIMEOUT=$CHANGE_INTERVAL
-> > after the test (although it's unlikely anybody would use sec value for netns
-> > and ms value for ssh):
+Can we please instead read the whole string after the dash (-), skip
+the 'ss' prefix when present and then convert the string into an
+itneger?
 
-> > # CHANGE_INTERVAL: The interval of the mtu change
-> > TST_TIMEOUT=1
-> > if tst_net_use_netns; then
-> >     CHANGE_INTERVAL=${CHANGE_INTERVAL:-100ms}
-> > else
-> >     CHANGE_INTERVAL=${CHANGE_INTERVAL:-5}
-> > fi
-> > tst_is_int $CHANGE_INTERVAL && TST_TIMEOUT=$CHANGE_INTERVAL
-> > TST_TIMEOUT=$(((TST_TIMEOUT + 30) * MTU_CHANGE_TIMES))
+There is absolutely no reason to run the command twice.
 
+>  static int dummy(void *arg)
+> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+> index a5b77a0..bec43ac 100755
+> --- a/testcases/kernel/containers/netns/netns_helper.sh
+> +++ b/testcases/kernel/containers/netns/netns_helper.sh
+> @@ -50,6 +50,15 @@ tst_check_iproute()
+>  	local cur_ipver="$(ip -V)"
+>  	local spe_ipver="$1"
+>  
+> +	echo $cur_ipver | grep "ip utility, iproute2-ss" > /dev/null
+> +	ret1=$?
+> +	echo $cur_ipver | grep "ip utility, iproute2-" > /dev/null
+> +	ret2=$?
+> +
+> +	if [ $ret1 -ne 0 -a $ret2 -eq 0 ]; then
+> +		return
+> +	fi
 
-> Yeah, looks good.
-Thanks for your ack, merged!
+How is this supposed to fix the problem?
 
-Kind regards,
-Petr
+This just skips the test if we haven't found one of the strings in the
+version, right? Which is wrong anyway.
+
+>  	cur_ipver=${cur_ipver##*s}
+
+But the version here is still wrong if the original string haven't
+contained the ss. We would end up with cur_ipver with iproute2-123456,
+which will be used in the numerical comparsion.
+
+>  	if [ -z "$cur_ipver" -o -z "$spe_ipver" ]; then
+> -- 
+> 1.8.3.1
+> 
+> 
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
