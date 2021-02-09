@@ -1,32 +1,24 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 Feb 2021 22:39:25 +0100
-Subject: [LTP] CVE-2020-29373 reproducer fails on v5.11
-In-Reply-To: <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
-References: <YCQvL8/DMNVLLuuf@pevik>
- <b74d54ed-85ba-df4c-c114-fe11d50a3bce@gmail.com>
- <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
-Message-ID: <YCRSjQal+HFnzHs6@pevik>
+From: Liam Howlett <liam.howlett@oracle.com>
+Date: Tue, 9 Feb 2021 14:37:04 +0000
+Subject: [LTP] [PATCH 0/1] Test brk vma code path
+Message-ID: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jens, Pavel,
+The brk system call uses a slightly different code path through the
+kernel to expand/contract across VMAs.  This new test is written to
+force the VMA to create a two new entries and shrink back across VMA
+boundaries.
 
-> On 2/10/21 12:32 PM, Pavel Begunkov wrote:
-> > On 10/02/2021 19:08, Petr Vorel wrote:
-> >> Hi all,
+Liam R. Howlett (1):
+  brk02: Add test for removing more than one VMA
 
-> >> I found that the reproducer for CVE-2020-29373 from Nicolai Stange (source attached),
-> >> which was backported to LTP as io_uring02 by Martin Doucha [1] is failing since
-> >> 10cad2c40dcb ("io_uring: don't take fs for recvmsg/sendmsg") from v5.11-rc1.
+ testcases/kernel/syscalls/brk/brk02.c | 49 +++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/brk/brk02.c
 
-> > Thanks for letting us know, we need to revert it
-
-> I'll queue up a revert. Would also be nice to turn that into
-> a liburing regression test.
-Thanks a lot for a quick feedback and fix!
-
-Kind regards,
-Petr
+-- 
+2.28.0
