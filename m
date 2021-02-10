@@ -1,47 +1,61 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 Feb 2021 14:08:56 +0100
-Subject: [LTP] [PATCH 1/4] net/multicast: Create mcast_setup_normal()
-In-Reply-To: <5f9aecc2-096b-6b24-bdfa-f9d361fcbac7@oracle.com>
-References: <20210205151015.7465-1-pvorel@suse.cz> <YB7qefsNWbCJXUEu@pevik>
- <5f9aecc2-096b-6b24-bdfa-f9d361fcbac7@oracle.com>
-Message-ID: <YCPa6EI4zyGzDEz1@pevik>
+Date: Wed, 10 Feb 2021 14:38:30 +0100
+Subject: [LTP] [PATCH] netns_helper: Make iproute version check work
+ correctly
+In-Reply-To: <YCOUXtwBk0ZPjDL3@pevik>
+References: <1612772078-29651-1-git-send-email-zhufy.jy@cn.fujitsu.com>
+ <YCOUXtwBk0ZPjDL3@pevik>
+Message-ID: <YCPh1qzZU51C0HY8@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Zhu,
 
-> > +++ testcases/network/stress/multicast/packet-flood/mcast-pktfld02.sh
-> > @@ -12,13 +12,13 @@ TST_NEEDS_ROOT=1
-> >  TST_SETUP="mcast_setup_normal"
-> >  . mcast-lib.sh
+...
+> FYI my shell version.
 
-> > -MCAST_LCMD="ns-mcast_receiver"
-> > -MCAST_RCMD="ns-udpsender"
-> > -
-> >  do_test()
-> >  {
-> >  	tst_res TINFO "joining $MCASTNUM_NORMAL IPv${TST_IPVER} multicast groups on separate sockets, then receiving a large number of UDP packets at each socket in $NS_DURATION seconds"
+> Kind regards,
+> Petr
 
-> > +	MCAST_LCMD="ns-mcast_receiver"
-> > +	MCAST_RCMD="ns-udpsender"
-> > +
+> --- testcases/kernel/containers/netns/netns_helper.sh
+> +++ testcases/kernel/containers/netns/netns_helper.sh
+> @@ -47,16 +47,21 @@ IFCONF_IN6_ARG=
 
-> Hi Petr,
+>  tst_check_iproute()
+>  {
+> -	local cur_ipver="$(ip -V)"
+> -	local spe_ipver="$1"
+> +	local current_ver="$(ip -V)"
+> +	local expected_ver="111010"
 
-> Perhaps it would be better to move this to another wrapper
-> in the lib along with mcast_setup_normal()?
+> -	cur_ipver=${cur_ipver##*s}
+> +	current_ver=${current_ver##*s}
 
-Good idea, thanks!
+> -	if [ -z "$cur_ipver" -o -z "$spe_ipver" ]; then
+> +	if [ -z "$current_ver" -o -z "$expected_ver" ]; then
+I'm sorry, this was supposed to be only this:
+    if [ -z "$current_ver" ]; then
+($expected_ver is set few lines above).
 
-> mcast_setup_normal_udp()
-> {
->         mcast_setup_normal
-> 	MCAST_LCMD="ns-mcast_receiver"
-> 	MCAST_RCMD="ns-udpsender"
-> }
+Kind regards,
+Petr
+
+>  		tst_brk TBROK "failed to obtain valid iproute version"
+>  	fi
+
+> -	if [ $cur_ipver -lt $spe_ipver ]; then
+> +	# new version scheme since v5.7.0-77-gb687d1067169
+> +	if echo "$current_ver" | grep -q 'iproute2-v\?[0-9]\+\.'; then
+> +		return
+> +	fi
+> +
+> +	if [ $current_ver -lt $expected_ver ]; then
+>  		tst_brk TCONF "too old iproute version"
+>  	fi
+>  }
 
 Kind regards,
 Petr
