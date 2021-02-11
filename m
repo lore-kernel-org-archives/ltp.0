@@ -1,224 +1,96 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 11 Feb 2021 11:03:13 +0000
-Subject: [LTP] [PATCH 1/5] close_range: Add syscall number
-In-Reply-To: <20210211110317.31942-1-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 11 Feb 2021 13:51:36 +0100
+Subject: [LTP] [PATCH 4/5] API: Add tst_clone
+In-Reply-To: <20210211110317.31942-5-rpalethorpe@suse.com>
 References: <20210211110317.31942-1-rpalethorpe@suse.com>
-Message-ID: <20210211110317.31942-2-rpalethorpe@suse.com>
+ <20210211110317.31942-5-rpalethorpe@suse.com>
+Message-ID: <YCUoWPHssRVkQ+vf@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/lapi/syscalls/aarch64.in   | 1 +
- include/lapi/syscalls/arc.in       | 1 +
- include/lapi/syscalls/arm.in       | 1 +
- include/lapi/syscalls/hppa.in      | 1 +
- include/lapi/syscalls/i386.in      | 1 +
- include/lapi/syscalls/ia64.in      | 1 +
- include/lapi/syscalls/mips_n32.in  | 1 +
- include/lapi/syscalls/mips_n64.in  | 1 +
- include/lapi/syscalls/mips_o32.in  | 1 +
- include/lapi/syscalls/powerpc.in   | 1 +
- include/lapi/syscalls/powerpc64.in | 1 +
- include/lapi/syscalls/s390.in      | 1 +
- include/lapi/syscalls/s390x.in     | 1 +
- include/lapi/syscalls/sh.in        | 1 +
- include/lapi/syscalls/sparc.in     | 1 +
- include/lapi/syscalls/sparc64.in   | 1 +
- include/lapi/syscalls/x86_64.in    | 1 +
- 17 files changed, 17 insertions(+)
+Hi!
+> +	int flags;
+> +	pid_t pid = -1;
+> +
+> +	tst_flush();
+> +
+> +	errno = ENOSYS;
+> +	if (__NR_clone3 != __LTP__NR_INVALID_SYSCALL)
+> +		pid = syscall(__NR_clone3, &args, sizeof(args));
+> +
+> +	if (pid == -1 && errno != ENOSYS)
+> +		return -1;
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index 07556933f..2def6ba3d 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -310,6 +310,7 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-index 0cadb150c..9bcd84706 100644
---- a/include/lapi/syscalls/arc.in
-+++ b/include/lapi/syscalls/arc.in
-@@ -310,5 +310,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 395d53a68..98c840cb8 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -388,5 +388,6 @@ fsmount (__NR_SYSCALL_BASE+432)
- fspick (__NR_SYSCALL_BASE+433)
- pidfd_open (__NR_SYSCALL_BASE+434)
- clone3 (__NR_SYSCALL_BASE+435)
-+close_range (__NR_SYSCALL_BASE+436)
- openat2 (__NR_SYSCALL_BASE+437)
- pidfd_getfd (__NR_SYSCALL_BASE+438)
-diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
-index 7f9b5e0a0..e1628c4b1 100644
---- a/include/lapi/syscalls/hppa.in
-+++ b/include/lapi/syscalls/hppa.in
-@@ -39,3 +39,4 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+close_range 436
-\ No newline at end of file
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index d6773abcb..aaa02c7bf 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -424,5 +424,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
-index 427b711b1..5467f80f2 100644
---- a/include/lapi/syscalls/ia64.in
-+++ b/include/lapi/syscalls/ia64.in
-@@ -337,5 +337,6 @@ fsconfig 1455
- fsmount 1456
- fspick 1457
- pidfd_open 1458
-+close_range 1460
- openat2 1461
- pidfd_getfd 1462
-diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
-index eb6140ebc..a509ca5c6 100644
---- a/include/lapi/syscalls/mips_n32.in
-+++ b/include/lapi/syscalls/mips_n32.in
-@@ -362,5 +362,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
-index 5480aa3c9..532c69dd8 100644
---- a/include/lapi/syscalls/mips_n64.in
-+++ b/include/lapi/syscalls/mips_n64.in
-@@ -338,5 +338,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
-index feee8fbf3..c71a62a35 100644
---- a/include/lapi/syscalls/mips_o32.in
-+++ b/include/lapi/syscalls/mips_o32.in
-@@ -408,5 +408,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index cdbebc62d..2d287a606 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -417,5 +417,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index cdbebc62d..2d287a606 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -417,5 +417,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index c3f249aed..c978b6660 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -404,5 +404,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 88cc9b86b..d123db6cb 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -352,5 +352,6 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 06055ed10..22da7d6ff 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -398,5 +398,6 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index 522e3c997..7324b4ac6 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -403,5 +403,6 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 6f884a7bf..862d806fa 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -368,5 +368,6 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index c76328c93..1345002f5 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -345,6 +345,7 @@ fsmount 432
- fspick 433
- pidfd_open 434
- clone3 435
-+close_range 436
- openat2 437
- pidfd_getfd 438
- rt_sigaction 512
+As far as I can tell when kernel is too old we would get EINVAL because
+the syscall number is not allocated. ENOSYS happens mostly when syscall
+number is allocated and kernel does not implement the functionality,
+e.g. it's disabled in .config.
+
+I wonder if it's even menaningful to handle ENOSYS here, I doubt that
+clone3() can be disabled, or do I miss something?
+
+> +	if (pid != -1)
+> +		return pid;
+> +
+> +	flags = args.exit_signal | args.flags;
+> +
+> +#ifdef __s390x__
+> +	pid = syscall(__NR_clone, NULL, flags);
+> +#else
+> +	pid = syscall(__NR_clone, flags, NULL);
+> +#endif
+> +
+> +	if (pid == -1)
+> +		return -2;
+> +
+> +	return pid;
+> +}
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 0714f0a0e..6bbee030b 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -424,6 +424,31 @@ pid_t safe_fork(const char *filename, unsigned int lineno)
+>  	return pid;
+>  }
+>  
+> +pid_t safe_clone(const char *file, const int lineno,
+> +		 const struct tst_clone_args *args)
+> +{
+> +	pid_t pid;
+> +
+> +	if (!tst_test->forks_child)
+> +		tst_brk(TBROK, "test.forks_child must be set!");
+> +
+> +	pid = tst_clone(args);
+> +
+> +	switch (pid) {
+> +	case -1:
+> +		tst_brk_(file, lineno, TBROK | TERRNO, "clone3 failed");
+> +		break;
+> +	case -2:
+> +		tst_brk_(file, lineno, TBROK | TERRNO, "clone failed");
+> +		return -1;
+> +	}
+> +
+> +	if (!pid)
+> +		atexit(tst_free_all);
+> +
+> +	return pid;
+> +}
+> +
+>  static struct option {
+>  	char *optstr;
+>  	char *help;
+> -- 
+> 2.30.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.30.0
-
+Cyril Hrubis
+chrubis@suse.cz
