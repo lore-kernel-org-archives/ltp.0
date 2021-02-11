@@ -1,43 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 Feb 2021 16:30:29 +0100
-Subject: [LTP] [PATCH 4/5] API: Add tst_clone
-In-Reply-To: <874kii63to.fsf@suse.de>
-References: <20210211110317.31942-1-rpalethorpe@suse.com>
- <20210211110317.31942-5-rpalethorpe@suse.com>
- <YCUoWPHssRVkQ+vf@yuki.lan> <877dne65s5.fsf@suse.de>
- <YCVAwoQDKJWMi6hX@rei.lan> <874kii63to.fsf@suse.de>
-Message-ID: <YCVNlU3JRCddZ4Z9@yuki.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 11 Feb 2021 17:45:40 +0000
+Subject: [LTP] [PATCH v2 2/5] API: Add SAFE_DUP2
+In-Reply-To: <20210211174543.25003-1-rpalethorpe@suse.com>
+References: <20210211174543.25003-1-rpalethorpe@suse.com>
+Message-ID: <20210211174543.25003-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I don't know where you are getting EINVAL from?
-> 
-> Try the following
-> 
-> #include <errno.h>
-> #include <unistd.h>
-> #include <sys/syscall.h>
-> 
-> int main(int argc, const char* argv[])
-> {
-> 	syscall(~0ULL);
-> 
-> 	return errno;
-> }
-> 
-> It returns ENOSYS and strace shows this is not due to any sanity
-> checking by glibc.
-> 
-> I guess it would actually be a bug if it returned EINVAL although I am
-> not sure this is specified anywhere.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_safe_macros.h |  5 +++++
+ lib/tst_safe_macros.c     | 18 ++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-And I guess that I got confused again. You get EINVAL when you pass
-unsupported flags to a syscall, not unsupported syscall number.
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index ee3df4142..2a2b0088a 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -50,6 +50,11 @@ int safe_dup(const char *file, const int lineno, int oldfd);
+ #define SAFE_DUP(oldfd) \
+ 	safe_dup(__FILE__, __LINE__, (oldfd))
+ 
++int safe_dup2(const char *file, const int lineno, int oldfd, int newfd);
++
++#define SAFE_DUP2(oldfd, newfd)			\
++	safe_dup2(__FILE__, __LINE__, (oldfd), (newfd))
++
+ #define SAFE_GETCWD(buf, size) \
+ 	safe_getcwd(__FILE__, __LINE__, NULL, (buf), (size))
+ 
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index aa03a6d5c..182b690bb 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -415,6 +415,24 @@ int safe_dup(const char *file, const int lineno, int oldfd)
+ 	return rval;
+ }
+ 
++int safe_dup2(const char *file, const int lineno, int oldfd, int newfd)
++{
++	int rval;
++
++	rval = dup2(oldfd, newfd);
++
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "dup2(%i, %i) failed", oldfd, newfd);
++	} else if (rval != newfd) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			 "Invalid dup2(%i, %i) return value %d",
++			 oldfd, newfd, rval);
++	}
++
++	return rval;
++}
++
+ sighandler_t safe_signal(const char *file, const int lineno,
+ 	int signum, sighandler_t handler)
+ {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0
+
