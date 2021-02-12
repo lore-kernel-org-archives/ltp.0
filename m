@@ -1,96 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Feb 2021 11:27:19 +0100
-Subject: [LTP] [PATCH 1/1] brk02: Add test for removing more than one VMA
-In-Reply-To: <20210209143702.2003038-2-Liam.Howlett@Oracle.com>
-References: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
- <20210209143702.2003038-2-Liam.Howlett@Oracle.com>
-Message-ID: <YCZYB2w+Il5F0TlI@pevik>
+Date: Fri, 12 Feb 2021 13:49:41 +0100
+Subject: [LTP] CVE-2020-29373 reproducer fails on v5.11
+In-Reply-To: <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
+References: <YCQvL8/DMNVLLuuf@pevik>
+ <b74d54ed-85ba-df4c-c114-fe11d50a3bce@gmail.com>
+ <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
+Message-ID: <YCZ5ZS5Sr2tPiUvP@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Liam,
+Hi all,
 
-thanks for your patch. Minor notes below.
+> On 2/10/21 12:32 PM, Pavel Begunkov wrote:
+> > On 10/02/2021 19:08, Petr Vorel wrote:
+> >> Hi all,
 
-> When brk expands, it attempts to expand a VMA.  This expansion will
-> succeed depending on the anonymous VMA chain and if the vma flags are
-> compatible.  This test expands brk() then calls mprotect to ensure the
-> next brk call will create a new VMA, then it calls brk a final time to
-> restore the first brk address.  The test is the final brk call which
-> will remove more than an entire VMA from the vm area.
+> >> I found that the reproducer for CVE-2020-29373 from Nicolai Stange (source attached),
+> >> which was backported to LTP as io_uring02 by Martin Doucha [1] is failing since
+> >> 10cad2c40dcb ("io_uring: don't take fs for recvmsg/sendmsg") from v5.11-rc1.
 
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-> ---
->  testcases/kernel/syscalls/brk/brk02.c | 49 +++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/brk/brk02.c
+> > Thanks for letting us know, we need to revert it
 
-> diff --git a/testcases/kernel/syscalls/brk/brk02.c b/testcases/kernel/syscalls/brk/brk02.c
-> new file mode 100644
-> index 000000000..834fe9f2f
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/brk/brk02.c
-> @@ -0,0 +1,49 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2021 Liam R. Howlett <liam.howlett@oracle.com>
-> + *
-> + *  
-nit: blank line
-> + *  Expand the brk by 2 pages to ensure there is a newly created VMA and not
-> + *  expanding the original due to multiple anon pages.  mprotect that new VMA
-> + *  then brk back to the original address therefore causing a munmap of at
-> + *  least one full VMA.
-> + */
-> +
-> +#include <unistd.h>
-> +#include <stdint.h>
-nit: Not sure if <stdint.h> is needed.
+> I'll queue up a revert. Would also be nice to turn that into
+> a liburing regression test.
 
-> +#include <sys/mman.h>
-> +
-> +#include "tst_test.h"
-> +
-> +void brk_down_vmas(void)
-> +{
-> +	void *brk_addr = sbrk(0);
-> +	unsigned long page_size = getpagesize();
-> +	void *addr = brk_addr + page_size;
-> +
-> +	if (brk(addr))
-> +		return;
-> +
-> +	addr += page_size;
-> +	if (brk(addr))
-> +		return;
-You need to add tst_ret(TFAIL, "failed due ..."); before each return otherwise
-you get error:
-tst_test.c:1080: TBROK: Test haven't reported results!
-
-> +
-> +	if (mprotect(addr - page_size, page_size,
-> +			PROT_READ|PROT_WRITE|PROT_EXEC))
-> +		return;
-> +
-> +	addr += page_size;
-> +	if (brk(addr))
-> +		return;
-> +
-> +	if (brk(brk_addr))
-> +		return;
-> +
-> +
-> +
-Please remove these blank lines.
-> +	tst_res(TPASS, "munmap two VMAs of brk() passed.");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = brk_down_vmas,
-> +};
+Jens (or others), could you please have look that the other commit 907d1df30a51
+("io_uring: fix wqe->lock/completion_lock deadlock") from v5.11-rc6 didn't cause
+any regression? Changed behavior causing io_uring02 test [1] and the original
+reproducer [2] to fail is probably a test bug, but better double check that.
 
 Kind regards,
 Petr
+
+[1] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/syscalls/io_uring/io_uring02.c
+[2] https://lore.kernel.org/io-uring/YCQvL8%2FDMNVLLuuf@pevik/
