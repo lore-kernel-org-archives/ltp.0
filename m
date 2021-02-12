@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 12 Feb 2021 14:16:47 +0100
+Date: Fri, 12 Feb 2021 14:23:06 +0100
 Subject: [LTP] [PATCH v2 5/5] close_range: Add test
-In-Reply-To: <YCZ9FaUwcitx3hNL@pevik>
+In-Reply-To: <20210211174543.25003-6-rpalethorpe@suse.com>
 References: <20210211174543.25003-1-rpalethorpe@suse.com>
  <20210211174543.25003-6-rpalethorpe@suse.com>
- <YCZ9FaUwcitx3hNL@pevik>
-Message-ID: <YCZ/v82SPHjCtPI2@yuki.lan>
+Message-ID: <YCaBOqMhTqNlRhH5@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +12,32 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >  .../kernel/syscalls/close_range/.gitignore    |   1 +
-> >  .../kernel/syscalls/close_range/Makefile      |  10 +
-> >  .../syscalls/close_range/close_range01.c      | 200 ++++++++++++++++++
-> 
-> It looks like you haven't added close_range01 to runtest file.
-> It should probably go to syscalls and Cyril can add it before merging.
+Pushed with small changes, thanks.
 
-That's what I did along with a few more minor changes and pushed.
+* Added a runtest file entry
 
-> Patchset LGTM and compiles ok.
+* Add .needs_root which is what we have for tests that utilize loop devices
 
-Sorry I haven't included your review in the tags.
+* Reformatted the top level comment so it's picked by docparser
+
+* Shortened the git hash to 12 characters, since that's what we have in
+  the rest of the tests
+
+
+Also we are missing simple test for a negative cases, that is:
+
+* Check that EINVAL is returned if we pass ~0 to flags
+
+* And check that EINVAL is returned when fd < fd_max as well
+
+
+And one more a bit more complicated test:
+
+We should also get EMFILE if we do CLOSE_RANGE_UNSHARE and the parent
+rlimit is exhausted.
+
+
+Will you write these tests as well, or should I have a look?
 
 -- 
 Cyril Hrubis
