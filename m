@@ -1,62 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 12 Feb 2021 17:02:23 +0100
-Subject: [LTP] [PATCH 2/2] keyctl05: TCONF on FIPS mode
-In-Reply-To: <20210202130441.17861-2-pvorel@suse.cz>
-References: <20210202130441.17861-1-pvorel@suse.cz>
- <20210202130441.17861-2-pvorel@suse.cz>
-Message-ID: <YCamj5IAuyPMOcBo@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 12 Feb 2021 19:59:33 +0100
+Subject: [LTP] [PATCH 1/2] lib: Add function to detect FIPS mode
+In-Reply-To: <YCamFRCWW6a4zgLv@yuki.lan>
+References: <20210202130441.17861-1-pvorel@suse.cz> <YCamFRCWW6a4zgLv@yuki.lan>
+Message-ID: <YCbQFWEUUpU3IIY/@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	int is_asymmetric = !strcmp(type, "asymmetric");
-> +
->  	TEST(add_key(type, "desc", payload, plen, KEY_SPEC_SESSION_KEYRING));
->  	if (TST_RET < 0) {
-> +		if (TST_ERR == EINVAL && is_asymmetric && tst_fips_enabled()) {
-                                                          ^
-							  I guess that
-							  we can save
-							  the value in
-							  test setup
-							  instead of
-							  re-reading it
-							  on every
-							  iteration.
+Hi,
 
-Other than that it looks good to me.
+> Hi!
+> > +#ifndef TST_FIPS_H__
+> > +#define TST_FIPS_H__
+> > +
+> > +#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> I'm not sure that this belongs to the header, at least it's not prefixed
+> with TST_.
+Good catch. As it's not needed I'll move it to C source, because it's not needed
+for other tests so far.
 
-> +			tst_res(TCONF, "key size not allowed in FIPS mode");
-> +			return;
-> +		}
->  		if (TST_ERR == ENODEV) {
->  			tst_res(TCONF, "kernel doesn't support key type '%s'",
->  				type);
->  			return;
->  		}
-> -		if (TST_ERR == EBADMSG && !strcmp(type, "asymmetric")) {
-> +		if (TST_ERR == EBADMSG && is_asymmetric) {
->  			tst_res(TCONF, "kernel is missing x509 cert parser "
->  				"(CONFIG_X509_CERTIFICATE_PARSER)");
->  			return;
->  		}
-> -		if (TST_ERR == ENOENT && !strcmp(type, "asymmetric")) {
-> +		if (TST_ERR == ENOENT && is_asymmetric) {
->  			tst_res(TCONF, "kernel is missing crypto algorithms "
->  				"needed to parse x509 cert (CONFIG_CRYPTO_RSA "
->  				"and/or CONFIG_CRYPTO_SHA256)");
-> -- 
-> 2.30.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+BTW the same problem is with PATH_LOCKDOWN from tst_lockdown.[ch].
+It'd be better to move them to tst_lockdown.c as well.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Other than that Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Thanks!
+
+Kind regards,
+Petr
