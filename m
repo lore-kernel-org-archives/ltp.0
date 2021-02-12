@@ -1,34 +1,62 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Feb 2021 14:31:16 +0100
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 12 Feb 2021 14:09:06 +0000
 Subject: [LTP] [PATCH v2 5/5] close_range: Add test
-In-Reply-To: <YCZ/v82SPHjCtPI2@yuki.lan>
+In-Reply-To: <YCaBOqMhTqNlRhH5@yuki.lan>
 References: <20210211174543.25003-1-rpalethorpe@suse.com>
- <20210211174543.25003-6-rpalethorpe@suse.com>
- <YCZ9FaUwcitx3hNL@pevik> <YCZ/v82SPHjCtPI2@yuki.lan>
-Message-ID: <YCaDJAlQOEF5wulw@pevik>
+ <20210211174543.25003-6-rpalethorpe@suse.com> <YCaBOqMhTqNlRhH5@yuki.lan>
+Message-ID: <871rdl5qf1.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello,
+
+Cyril Hrubis <chrubis@suse.cz> writes:
 
 > Hi!
-> > >  .../kernel/syscalls/close_range/.gitignore    |   1 +
-> > >  .../kernel/syscalls/close_range/Makefile      |  10 +
-> > >  .../syscalls/close_range/close_range01.c      | 200 ++++++++++++++++++
+> Pushed with small changes, thanks.
+>
+> * Added a runtest file entry
+>
+> * Add .needs_root which is what we have for tests that utilize loop
+> devices
 
-> > It looks like you haven't added close_range01 to runtest file.
-> > It should probably go to syscalls and Cyril can add it before merging.
+Ah, of course. I guess in that case we may also want to drop
+CAP_SYS_ADMIN in caps.
 
-> That's what I did along with a few more minor changes and pushed.
-Great :).
+>
+> * Reformatted the top level comment so it's picked by docparser
+>
+> * Shortened the git hash to 12 characters, since that's what we have in
+>   the rest of the tests
+>
 
-> > Patchset LGTM and compiles ok.
+Ah, OK.
 
-> Sorry I haven't included your review in the tags.
-np :). Thanks for handling this.
+>
+> Also we are missing simple test for a negative cases, that is:
+>
+> * Check that EINVAL is returned if we pass ~0 to flags
+>
+> * And check that EINVAL is returned when fd < fd_max as well
+>
+>
+> And one more a bit more complicated test:
+>
+> We should also get EMFILE if we do CLOSE_RANGE_UNSHARE and the parent
+> rlimit is exhausted.
 
-Kind regards,
-Petr
+Indeed those may be missing in the self tests as well.
+
+>
+>
+> Will you write these tests as well, or should I have a look?
+
+If you want to do it today very quickly, then feel free. Otherwise I
+will do it next week.
+
+-- 
+Thank you,
+Richard.
