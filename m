@@ -1,23 +1,37 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 12 Feb 2021 16:15:09 +0100
-Subject: [LTP] [PATCH 2/2] mq_timedreceive_5-3: Fix test for timestamp
- after INT32_MAX
-In-Reply-To: <54607759-e48f-0a45-fab8-5d07ec32f004@jv-coder.de>
-References: <20210203074520.18401-1-lkml@jv-coder.de>
- <20210203074520.18401-2-lkml@jv-coder.de>
- <54607759-e48f-0a45-fab8-5d07ec32f004@jv-coder.de>
-Message-ID: <YCabfZtfQdFDFxiw@yuki.lan>
+Date: Fri, 12 Feb 2021 16:15:25 +0100
+Subject: [LTP] [COMMITTED] [PATCH] mq_timedreceive_5-3: Initialize maxmsg
+ properly
+Message-ID: <20210212151525.20112-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Good catch, I've removed trailing whitespaces from the first patch and
-pushed both, thanks.
+The test can be actually executed as non-root user but the maxmsg must
+be set to a value that is less by user limit for messages and since we
+do not send any messages we can safely initialize it to 1.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ .../conformance/interfaces/mq_timedreceive/5-3.c               | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
+index cc592f5a7..87f3365d5 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_timedreceive/5-3.c
+@@ -55,7 +55,8 @@ int main(void)
+ 	sprintf(mqname, "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	attr.mq_msgsize = BUFFER;
+-	attr.mq_maxmsg = BUFFER;
++	attr.mq_maxmsg = 1;
++
+ 	mqdes = mq_open(mqname, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, &attr);
+ 	if (mqdes == (mqd_t) - 1) {
+ 		perror(ERROR_PREFIX "mq_open");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.2
+
