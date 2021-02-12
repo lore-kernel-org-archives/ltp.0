@@ -1,33 +1,39 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Feb 2021 19:59:33 +0100
-Subject: [LTP] [PATCH 1/2] lib: Add function to detect FIPS mode
-In-Reply-To: <YCamFRCWW6a4zgLv@yuki.lan>
-References: <20210202130441.17861-1-pvorel@suse.cz> <YCamFRCWW6a4zgLv@yuki.lan>
-Message-ID: <YCbQFWEUUpU3IIY/@pevik>
+Date: Fri, 12 Feb 2021 20:10:14 +0100
+Subject: [LTP] [PATCH 2/2] keyctl05: TCONF on FIPS mode
+In-Reply-To: <YCamj5IAuyPMOcBo@yuki.lan>
+References: <20210202130441.17861-1-pvorel@suse.cz>
+ <20210202130441.17861-2-pvorel@suse.cz> <YCamj5IAuyPMOcBo@yuki.lan>
+Message-ID: <YCbSlgcTS8XM5yp/@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
 > Hi!
-> > +#ifndef TST_FIPS_H__
-> > +#define TST_FIPS_H__
+> > +	int is_asymmetric = !strcmp(type, "asymmetric");
 > > +
-> > +#define PATH_FIPS	"/proc/sys/crypto/fips_enabled"
+> >  	TEST(add_key(type, "desc", payload, plen, KEY_SPEC_SESSION_KEYRING));
+> >  	if (TST_RET < 0) {
+> > +		if (TST_ERR == EINVAL && is_asymmetric && tst_fips_enabled()) {
+>                                                           ^
+> 							  I guess that
+> 							  we can save
+> 							  the value in
+> 							  test setup
+> 							  instead of
+> 							  re-reading it
+> 							  on every
+> 							  iteration.
 
-> I'm not sure that this belongs to the header, at least it's not prefixed
-> with TST_.
-Good catch. As it's not needed I'll move it to C source, because it's not needed
-for other tests so far.
+> Other than that it looks good to me.
+Good point, thanks! Moved to variable set at setup and merged.
 
-BTW the same problem is with PATH_LOCKDOWN from tst_lockdown.[ch].
-It'd be better to move them to tst_lockdown.c as well.
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> Other than that Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Thanks!
 
 Kind regards,
 Petr
