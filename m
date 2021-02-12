@@ -1,39 +1,29 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Feb 2021 13:49:41 +0100
-Subject: [LTP] CVE-2020-29373 reproducer fails on v5.11
-In-Reply-To: <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
-References: <YCQvL8/DMNVLLuuf@pevik>
- <b74d54ed-85ba-df4c-c114-fe11d50a3bce@gmail.com>
- <270c474f-476a-65d2-1f5b-57d3330efb04@kernel.dk>
-Message-ID: <YCZ5ZS5Sr2tPiUvP@pevik>
+Date: Fri, 12 Feb 2021 14:05:25 +0100
+Subject: [LTP] [PATCH v2 5/5] close_range: Add test
+In-Reply-To: <20210211174543.25003-6-rpalethorpe@suse.com>
+References: <20210211174543.25003-1-rpalethorpe@suse.com>
+ <20210211174543.25003-6-rpalethorpe@suse.com>
+Message-ID: <YCZ9FaUwcitx3hNL@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi Richie,
 
-> On 2/10/21 12:32 PM, Pavel Begunkov wrote:
-> > On 10/02/2021 19:08, Petr Vorel wrote:
-> >> Hi all,
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  .../kernel/syscalls/close_range/.gitignore    |   1 +
+>  .../kernel/syscalls/close_range/Makefile      |  10 +
+>  .../syscalls/close_range/close_range01.c      | 200 ++++++++++++++++++
 
-> >> I found that the reproducer for CVE-2020-29373 from Nicolai Stange (source attached),
-> >> which was backported to LTP as io_uring02 by Martin Doucha [1] is failing since
-> >> 10cad2c40dcb ("io_uring: don't take fs for recvmsg/sendmsg") from v5.11-rc1.
+It looks like you haven't added close_range01 to runtest file.
+It should probably go to syscalls and Cyril can add it before merging.
 
-> > Thanks for letting us know, we need to revert it
-
-> I'll queue up a revert. Would also be nice to turn that into
-> a liburing regression test.
-
-Jens (or others), could you please have look that the other commit 907d1df30a51
-("io_uring: fix wqe->lock/completion_lock deadlock") from v5.11-rc6 didn't cause
-any regression? Changed behavior causing io_uring02 test [1] and the original
-reproducer [2] to fail is probably a test bug, but better double check that.
+Patchset LGTM and compiles ok.
+Thanks!
 
 Kind regards,
 Petr
-
-[1] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/syscalls/io_uring/io_uring02.c
-[2] https://lore.kernel.org/io-uring/YCQvL8%2FDMNVLLuuf@pevik/
