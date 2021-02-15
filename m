@@ -1,38 +1,30 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Feb 2021 12:04:19 +0100
-Subject: [LTP] [PATCH 1/1] configure: Improve error message on missing
- pkg-config
-Message-ID: <20210215110419.2964-1-pvorel@suse.cz>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 15 Feb 2021 12:31:18 +0100
+Subject: [LTP] [COMMITTED] [PATCH] mq_timedreceive_5-3: Initialize
+ maxmsg properly
+In-Reply-To: <YCpTHC2FLaC5vzVH@yuki.lan>
+References: <20210212151525.20112-1-chrubis@suse.cz>
+ <853a0890-6426-5708-88a8-692885b9dd6f@jv-coder.de>
+ <YCpTHC2FLaC5vzVH@yuki.lan>
+Message-ID: <20de105c-086d-0116-c8a2-bc4c68684b31@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-make autotools
-configure:7350: error: possibly undefined macro: AC_DEFINE
+Hi,
 
-Fixes: #787
+On 2/15/2021 11:55 AM, Cyril Hrubis wrote:
+> Feel free to send a patch for the rest :-).
+Don't want to many open patches at the same time ;)
+> Looking at the rest of the tests I guess the original author either did
+> not care that much or was clueless since it does not really make sense
+> to set mq_maxmsg to the same number as mq_msgsize in tests that send
+> just one or two message.
+>
+> So we should either set it to 2 in all tests, or set it to 1 or 2
+> depending on how many messages test sends.
+Couldn't agree more
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- configure.ac | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/configure.ac b/configure.ac
-index d4bef5e45..c1f24891d 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -30,6 +30,9 @@ AC_DEFUN([AC_PROG_STRIP], [AC_CHECK_TOOL(STRIP, strip, :)])
- AC_PROG_STRIP
- AC_PROG_YACC
- 
-+m4_ifndef([PKG_PREREQ],
-+	[m4_fatal([must install pkg-config or pkgconfig and pkg.m4 macro (usual dependency)])])
-+
- AC_PREFIX_DEFAULT(/opt/ltp)
- 
- AC_CHECK_DECLS([IFLA_NET_NS_PID],,,[#include <linux/if_link.h>])
--- 
-2.30.0
-
+J?rg
