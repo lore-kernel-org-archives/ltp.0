@@ -1,42 +1,42 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 15 Feb 2021 10:27:25 +0100
-Subject: [LTP] [PATCH] memcg/functional: Convert to newlib
-In-Reply-To: <f4ee229f-ea33-cbdd-5dbe-889e16629ed1@jv-coder.de>
-References: <20210125131746.74630-1-lkml@jv-coder.de>
- <e573f919-8205-40e2-5187-49bff0983872@jv-coder.de>
- <YBG4hFVo5wdaFnPa@pevik>
- <f4ee229f-ea33-cbdd-5dbe-889e16629ed1@jv-coder.de>
-Message-ID: <YCo+fdFmRJwu2UFE@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 15 Feb 2021 11:55:24 +0100
+Subject: [LTP] [COMMITTED] [PATCH] mq_timedreceive_5-3: Initialize
+ maxmsg properly
+In-Reply-To: <853a0890-6426-5708-88a8-692885b9dd6f@jv-coder.de>
+References: <20210212151525.20112-1-chrubis@suse.cz>
+ <853a0890-6426-5708-88a8-692885b9dd6f@jv-coder.de>
+Message-ID: <YCpTHC2FLaC5vzVH@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi!
+> > The test can be actually executed as non-root user but the maxmsg must
+> > be set to a value that is less by user limit for messages and since we
+> > do not send any messages we can safely initialize it to 1.
+> This is applies to more than only this test. I also recognized this when 
+> fixing the time issue, but decided not to change it, because it is not 
+> the only affected test.
 
-> I'd like to submit some more patches on top of this.
+Feel free to send a patch for the rest :-).
 
-You probably noticed some failures (on 5.10.14 openSUSE kernel):
+Setting the mq_maxmsg to BUFFER which is supposed to be constant for the
+mq_msgsize is quite confusing and also prevents these tests from being
+executed as ordinary user so I think that it's worth fixing.
 
-memcg_stat_rss, memcg_subgroup_charge, memcg_move_charge_at_immigrate, memcg_stat:
-TBROK: timed out on memory.usage_in_bytes
-=> maybe just timeout?
+> The max message size could be up to /proc/sys/fs/mqueue/msg_max. This is 
+> usually 10.
 
-memcg_max_usage_in_bytes
-memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is 4325376, 4194304 expected
-memcg_max_usage_in_bytes_test 2 TFAIL: memory.memsw.max_usage_in_bytes is 4325376, 4194304 expected
-memcg_max_usage_in_bytes_test 3 TFAIL: memory.max_usage_in_bytes is 4325376, 4194304 expected
-memcg_max_usage_in_bytes_test 3 TFAIL: memory.max_usage_in_bytes is 126976, 0 expected
+Looking at the rest of the tests I guess the original author either did
+not care that much or was clueless since it does not really make sense
+to set mq_maxmsg to the same number as mq_msgsize in tests that send
+just one or two message.
 
-memcg_usage_in_bytes
-memcg_usage_in_bytes_test 1 TFAIL: memory.usage_in_bytes is 4325376, 4194304 expected
-memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is 4325376, 4194304 expected
+So we should either set it to 2 in all tests, or set it to 1 or 2
+depending on how many messages test sends.
 
-Tests which needs further cleanup/rewrite (less important than fixing previous)
-testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
-testcases/kernel/controllers/memcg/regression/memcg_test_4.sh
-testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
