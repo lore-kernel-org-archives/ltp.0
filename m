@@ -1,26 +1,23 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 15 Feb 2021 06:35:15 +0100
-Subject: [LTP] [COMMITTED] [PATCH] mq_timedreceive_5-3: Initialize
- maxmsg properly
-In-Reply-To: <20210212151525.20112-1-chrubis@suse.cz>
-References: <20210212151525.20112-1-chrubis@suse.cz>
-Message-ID: <853a0890-6426-5708-88a8-692885b9dd6f@jv-coder.de>
+Date: Mon, 15 Feb 2021 06:37:59 +0100
+Subject: [LTP] [PATCH] memcg/functional: Convert to newlib
+In-Reply-To: <YBG4hFVo5wdaFnPa@pevik>
+References: <20210125131746.74630-1-lkml@jv-coder.de>
+ <e573f919-8205-40e2-5187-49bff0983872@jv-coder.de> <YBG4hFVo5wdaFnPa@pevik>
+Message-ID: <f4ee229f-ea33-cbdd-5dbe-889e16629ed1@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Petr,
 
-On 2/12/2021 4:15 PM, Cyril Hrubis wrote:
-> The test can be actually executed as non-root user but the maxmsg must
-> be set to a value that is less by user limit for messages and since we
-> do not send any messages we can safely initialize it to 1.
-This is applies to more than only this test. I also recognized this when 
-fixing the time issue, but decided not to change it, because it is not 
-the only affected test.
-The max message size could be up to /proc/sys/fs/mqueue/msg_max. This is 
-usually 10.
+> On a first look good cleanup, thank you!
+>
+> I hope these tests aren't planned to be rewritten to C (like NUMA tests).
+> I suppose not, but better to ask earlier.
+can this be merged then?
+I'd like to submit some more patches on top of this.
 
 J?rg
