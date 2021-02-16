@@ -1,38 +1,33 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 16 Feb 2021 07:47:47 +0000
-Subject: [LTP] [PATCH v2 1/2] close_range01: Drop CAP_SYS_ADMIN
-Message-ID: <20210216074748.6873-1-rpalethorpe@suse.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 16 Feb 2021 08:59:01 +0100
+Subject: [LTP] [PATCH v2 2/2] close_range02: Add simpler test and Check
+ invalid params
+In-Reply-To: <20210216074748.6873-2-rpalethorpe@suse.com>
+References: <20210216074748.6873-1-rpalethorpe@suse.com>
+ <20210216074748.6873-2-rpalethorpe@suse.com>
+Message-ID: <YCt7RUD/PeRkupr7@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
+Hi Richard,
 
-V2: Try Closing the path file descriptor at the end if it was opened
-    to prevent hitting the FD limit with -i
+> This adds some coverage for invalid parameters and a min fd above or
+> on the limits. There is also some overlap with close_range01, but this
+> test is simpler and has less requirements.
 
- testcases/kernel/syscalls/close_range/close_range01.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
 
-diff --git a/testcases/kernel/syscalls/close_range/close_range01.c b/testcases/kernel/syscalls/close_range/close_range01.c
-index f4be60bb3..56def2426 100644
---- a/testcases/kernel/syscalls/close_range/close_range01.c
-+++ b/testcases/kernel/syscalls/close_range/close_range01.c
-@@ -197,6 +197,10 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.needs_root = 1,
- 	.test = run,
-+	.caps = (struct tst_cap []) {
-+		TST_CAP(TST_CAP_DROP, CAP_SYS_ADMIN),
-+		{}
-+	},
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.setup = setup,
- 	.tags = (const struct tst_tag[]) {
--- 
-2.30.0
+> V2: Try Closing the path file descriptor at the end if it was opened
+>     to prevent hitting the FD limit with -i
 
+Thanks! And yes, using close_range() is much better than plain close().
+
+Waiting little longer for feedback before merging.
+
+Kind regards,
+Petr
