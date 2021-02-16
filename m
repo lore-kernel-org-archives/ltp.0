@@ -1,178 +1,75 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 15 Feb 2021 15:53:22 +0000
-Subject: [LTP] [PATCH 2/2] close_range02: Add simpler test and Check invalid
- params
-Message-ID: <20210215155322.32623-1-rpalethorpe@suse.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 16 Feb 2021 06:33:12 +0530
+Subject: [LTP] LTP: madvise08.c:203: TFAIL: No sequence in dump after
+ MADV_DODUMP.
+In-Reply-To: <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
+References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
+ <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
+ <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
+ <YCmAGNyFAOZs7GCG@zeniv-ca.linux.org.uk>
+ <CA+G9fYsZnBv4wAEKYb0mgMd-BsgXcPUGBQ=VRKcONqAZry_4XQ@mail.gmail.com>
+ <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
+Message-ID: <CA+G9fYuq7bpDhY3cA5O66bf0nxKUkbtiTMcLMqBYvWKLhNfrjQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds some coverage for invalid parameters and a min fd above or
-on the limits. There is also some overlap with close_range01, but this
-test is simpler and has less requirements.
+On Mon, 15 Feb 2021 at 20:05, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, Feb 15, 2021 at 02:11:15PM +0530, Naresh Kamboju wrote:
+>
+> > fs/coredump.c:903:9: error: 'return' with a value, in function
+> > returning void [-Werror=return-type]
+> >  903 | return 0;
+> >         | ^
+> >
+> > Build failed due to above error.
+>
+> FWIW, here the test results in
+> Running tests.......
+> <<<test_start>>>
+> tag=madvise08 stime=1613398818
+> cmdline="madvise08"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+> madvise08.c:78: TINFO: Temporary core pattern is '/tmp/ltp-tgvQ3Lz1UZ/B6lwy6/dump-%p'
+> madvise08.c:117: TINFO: Dump file should be dump-2276
+> madvise08.c:201: TPASS: madvise(..., MADV_DONTDUMP)
+> madvise08.c:117: TINFO: Dump file should be dump-2277
+> madvise08.c:205: TPASS: madvise(..., MADV_DODUMP)
+>
+> Summary:
+> passed   2
+> failed   0
+> skipped  0
+> warnings 0
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=0 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+>
+> (built without -Werror=return-type, so I'd missed the warnings)
+>
+> Anyway, I've folded the fix (with those stray return 0 removed, of course)
+> into #work.coredump and #for-next; works here.  Could you test either
+> branch (in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git)?
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
+By using Linaro tuxsuite [1] I have built your tree and tested on x86_64 and
+the reported test PASS now.
 
-This does not include a check for EMFILE during unsharing because it
-only happens if the _system's_ maximum file count is reduced after
-clone and before unshare. This should probably go into a separate
-test. Also it seems like a corner case which is not likely to happen
-in practice and can not be done without CAP_SYS_ADMIN AFAICT.
+LTP syscalls [2] and LTP fs [3] tested on x86_64 and both PASS.
 
-More tests could be added, but I think we can leave it to the fuzzers
-to find where coverage is lacking now that we have the basics. Also
-Cyrils and I discussed creating generic data copying tests which copy
-data between various types of FD (file system files, pipes, sockets,
-etc.)  using various system calls (e.g (vm)splice, send/recvmsg,
-write) and these could also use close_range() in addtion to close(). I
-think that would be more productive than adding just to
-close_range.
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/close_range/.gitignore    |   1 +
- .../syscalls/close_range/close_range02.c      | 110 ++++++++++++++++++
- 3 files changed, 112 insertions(+)
- create mode 100644 testcases/kernel/syscalls/close_range/close_range02.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index c71f2b371..ae47a6d5e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -121,6 +121,7 @@ close02 close02
- close08 close08
- 
- close_range01 close_range01
-+close_range02 close_range02
- 
- confstr01 confstr01
- 
-diff --git a/testcases/kernel/syscalls/close_range/.gitignore b/testcases/kernel/syscalls/close_range/.gitignore
-index dddc1b7f8..4b8bab442 100644
---- a/testcases/kernel/syscalls/close_range/.gitignore
-+++ b/testcases/kernel/syscalls/close_range/.gitignore
-@@ -1 +1,2 @@
- close_range01
-+close_range02
-\ No newline at end of file
-diff --git a/testcases/kernel/syscalls/close_range/close_range02.c b/testcases/kernel/syscalls/close_range/close_range02.c
-new file mode 100644
-index 000000000..9e099cec4
---- /dev/null
-+++ b/testcases/kernel/syscalls/close_range/close_range02.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 SUSE LLC
-+ */
-+/*\
-+ * [DESCRIPTION]
-+ *
-+ * - First check close_range works on a valid range.
-+ * - Then check close_range does not accept invalid paramters.
-+ * - Then check it accepts a large lower fd.
-+ * - Finally check CLOEXEC works
-+ *
-+\*/
-+
-+#include <stdlib.h>
-+
-+#include "tst_test.h"
-+#include "tst_clone.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/close_range.h"
-+#include "lapi/clone.h"
-+
-+static int try_close_range(int fd, int flags)
-+{
-+	int res;
-+
-+	TEST(close_range(fd, fd, flags));
-+
-+	if (TST_RET == -1 && TST_ERR == EINVAL)
-+		res = TCONF;
-+	else if (TST_RET == -1)
-+		res = TFAIL;
-+	else
-+		res = TPASS;
-+
-+	return res;
-+}
-+
-+static void run(unsigned int n)
-+{
-+	const struct tst_clone_args args = {
-+		.flags = CLONE_FILES,
-+		.exit_signal = SIGCHLD,
-+	};
-+	int fd, res;
-+
-+	switch (n) {
-+	case 0:
-+		fd = SAFE_OPEN("/", O_PATH);
-+		SAFE_DUP2(fd, 100);
-+
-+		TST_EXP_PASS(close_range(fd, 100, 0),
-+			     "close_range(%d, 100, 0)", fd);
-+		TST_EXP_FAIL(fcntl(fd, F_GETFD), EBADF,
-+			     "fcntl(%d, F_GETFD)", fd);
-+		TST_EXP_FAIL(fcntl(100, F_GETFD), EBADF);
-+		break;
-+	case 1:
-+		TST_EXP_FAIL(close_range(4, 3, 0), EINVAL);
-+		break;
-+	case 2:
-+		TST_EXP_FAIL(close_range(3, ~0U, ~0U), EINVAL);
-+		break;
-+	case 3:
-+		TST_EXP_PASS(close_range(~0U, ~0U, 0));
-+		break;
-+	case 4:
-+		fd = SAFE_OPEN("/", O_PATH);
-+
-+		res = try_close_range(fd, CLOSE_RANGE_CLOEXEC);
-+		tst_res(res | TTERRNO,
-+			"close_range(%d, %d, CLOSE_RANGE_CLOEXEC)", fd, fd);
-+
-+		if (res != TPASS)
-+			break;
-+
-+		TST_EXP_FD_SILENT(fcntl(fd, F_GETFD), "fcntl(%d, F_GETFD)", fd);
-+		if (TST_RET & FD_CLOEXEC)
-+			tst_res(TPASS, "FD_CLOEXEC was set on %d", fd);
-+		else
-+			tst_res(TFAIL, "FD_CLOEXEC not set on %d", fd);
-+		break;
-+	case 5:
-+		fd = SAFE_OPEN("/", O_PATH);
-+
-+		if (!SAFE_CLONE(&args)) {
-+			res = try_close_range(fd, CLOSE_RANGE_UNSHARE);
-+			tst_res(res | TTERRNO,
-+				"close_range(%d, %d, CLOSE_RANGE_UNSHARE)",
-+				fd, fd);
-+
-+			if (res != TPASS)
-+				exit(0);
-+
-+			TST_EXP_FAIL(fcntl(fd, F_GETFD), EBADF,
-+				     "fcntl(%d, F_GETFD)", fd);
-+			exit(0);
-+		}
-+
-+		tst_reap_children();
-+
-+		TST_EXP_PASS(fcntl(fd, F_GETFD), "%d is open", fd);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = 6,
-+	.forks_child = 1,
-+	.test = run,
-+};
--- 
-2.30.0
+[1] https://gitlab.com/Linaro/tuxsuite
+[2] https://lkft.validation.linaro.org/results/2278012
+[3] https://lkft.validation.linaro.org/results/2280979
 
+- Naresh
