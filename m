@@ -1,130 +1,391 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 17 Feb 2021 13:04:59 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/io_uring02: Use IOSQE_ASYNC when
- available
-In-Reply-To: <20210217120459.17500-1-mdoucha@suse.cz>
-References: <20210217120459.17500-1-mdoucha@suse.cz>
-Message-ID: <20210217120459.17500-2-mdoucha@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 17 Feb 2021 16:24:47 +0100
+Subject: [LTP] [PATCH] include/lapi: Change functions to static inline
+Message-ID: <20210217152447.15459-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- .../kernel/syscalls/io_uring/io_uring02.c     | 70 ++++++++++++++++---
- 1 file changed, 62 insertions(+), 8 deletions(-)
+There are a few function left in the lapi/rt_sigaction.h since we
+actually store pointers to them and store them in the sigaction
+structure.
 
-diff --git a/testcases/kernel/syscalls/io_uring/io_uring02.c b/testcases/kernel/syscalls/io_uring/io_uring02.c
-index 08f4a1714..cd90fbdc3 100644
---- a/testcases/kernel/syscalls/io_uring/io_uring02.c
-+++ b/testcases/kernel/syscalls/io_uring/io_uring02.c
-@@ -79,11 +79,11 @@ static void setup(void)
- 	SAFE_CHROOT(CHROOT_DIR);
+Fixes #781
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/lapi/execveat.h          |  6 +++---
+ include/lapi/fsmount.h           | 19 ++++++++++---------
+ include/lapi/init_module.h       |  2 +-
+ include/lapi/mkdirat.h           |  2 +-
+ include/lapi/openat2.h           |  5 +++--
+ include/lapi/pidfd_open.h        |  2 +-
+ include/lapi/pidfd_send_signal.h |  4 ++--
+ include/lapi/preadv2.h           |  4 ++--
+ include/lapi/pwritev2.h          |  4 ++--
+ include/lapi/readlinkat.h        |  3 ++-
+ include/lapi/renameat.h          |  4 ++--
+ include/lapi/sched.h             | 11 ++++-------
+ include/lapi/setns.h             |  2 +-
+ include/lapi/splice.h            |  4 ++--
+ include/lapi/syncfs.h            |  2 +-
+ include/lapi/tee.h               |  3 ++-
+ include/lapi/timerfd.h           |  9 +++++----
+ include/lapi/vmsplice.h          |  4 ++--
+ 18 files changed, 46 insertions(+), 44 deletions(-)
+
+diff --git a/include/lapi/execveat.h b/include/lapi/execveat.h
+index a7406f7c0..7a7032288 100644
+--- a/include/lapi/execveat.h
++++ b/include/lapi/execveat.h
+@@ -11,9 +11,9 @@
+ #include "lapi/syscalls.h"
+ 
+ #if !defined(HAVE_EXECVEAT)
+-int execveat(int dirfd, const char *pathname,
+-			char *const argv[], char *const envp[],
+-			int flags)
++static inline int execveat(int dirfd, const char *pathname,
++			   char *const argv[], char *const envp[],
++			   int flags)
+ {
+ 	return tst_syscall(__NR_execveat, dirfd, pathname, argv, envp, flags);
+ }
+diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
+index 09a2c1611..d6ebed9b4 100644
+--- a/include/lapi/fsmount.h
++++ b/include/lapi/fsmount.h
+@@ -16,37 +16,38 @@
+ #include "lapi/syscalls.h"
+ 
+ #ifndef HAVE_FSOPEN
+-int fsopen(const char *fsname, unsigned int flags)
++static inline int fsopen(const char *fsname, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_fsopen, fsname, flags);
+ }
+ #endif /* HAVE_FSOPEN */
+ 
+ #ifndef HAVE_FSCONFIG
+-int fsconfig(int fd, unsigned int cmd, const char *key,
+-	     const void *value, int aux)
++static inline int fsconfig(int fd, unsigned int cmd, const char *key,
++                           const void *value, int aux)
+ {
+ 	return tst_syscall(__NR_fsconfig, fd, cmd, key, value, aux);
+ }
+ #endif /* HAVE_FSCONFIG */
+ 
+ #ifndef HAVE_FSMOUNT
+-int fsmount(int fd, unsigned int flags, unsigned int mount_attrs)
++static inline int fsmount(int fd, unsigned int flags, unsigned int mount_attrs)
+ {
+ 	return tst_syscall(__NR_fsmount, fd, flags, mount_attrs);
+ }
+ #endif /* HAVE_FSMOUNT */
+ 
+ #ifndef HAVE_FSPICK
+-int fspick(int dirfd, const char *pathname, unsigned int flags)
++static inline int fspick(int dirfd, const char *pathname, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_fspick, dirfd, pathname, flags);
+ }
+ #endif /* HAVE_FSPICK */
+ 
+ #ifndef HAVE_MOVE_MOUNT
+-int move_mount(int from_dirfd, const char *from_pathname, int to_dirfd,
+-	       const char *to_pathname, unsigned int flags)
++static inline int move_mount(int from_dirfd, const char *from_pathname,
++                             int to_dirfd, const char *to_pathname,
++                             unsigned int flags)
+ {
+ 	return tst_syscall(__NR_move_mount, from_dirfd, from_pathname, to_dirfd,
+ 			   to_pathname, flags);
+@@ -54,7 +55,7 @@ int move_mount(int from_dirfd, const char *from_pathname, int to_dirfd,
+ #endif /* HAVE_MOVE_MOUNT */
+ 
+ #ifndef HAVE_OPEN_TREE
+-int open_tree(int dirfd, const char *pathname, unsigned int flags)
++static inline int open_tree(int dirfd, const char *pathname, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_open_tree, dirfd, pathname, flags);
+ }
+@@ -130,7 +131,7 @@ enum fsconfig_command {
+ 
+ #endif /* OPEN_TREE_CLONE */
+ 
+-void fsopen_supported_by_kernel(void)
++static inline void fsopen_supported_by_kernel(void)
+ {
+ 	if ((tst_kvercmp(5, 2, 0)) < 0) {
+ 		/* Check if the syscall is backported on an older kernel */
+diff --git a/include/lapi/init_module.h b/include/lapi/init_module.h
+index 9e79e11b8..14eaabee6 100644
+--- a/include/lapi/init_module.h
++++ b/include/lapi/init_module.h
+@@ -22,7 +22,7 @@ static inline int finit_module(int fd, const char *param_values, int flags)
+ 	return tst_syscall(__NR_finit_module, fd, param_values, flags);
  }
  
--static void run(void)
-+static void drain_fallback(void)
+-void finit_module_supported_by_kernel(void)
++static inline void finit_module_supported_by_kernel(void)
  {
- 	uint32_t i, count, tail;
- 	int beef_found = 0;
--	struct io_uring_sqe *sqe_ptr;
-+	struct io_uring_sqe *sqe_ptr = uring.sqr_entries;
- 	const struct io_uring_cqe *cqe_ptr;
+        if ((tst_kvercmp(3, 8, 0)) < 0) {
+                /* Check if the syscall is backported on an older kernel */
+diff --git a/include/lapi/mkdirat.h b/include/lapi/mkdirat.h
+index bb8c6d869..ae2c7284b 100644
+--- a/include/lapi/mkdirat.h
++++ b/include/lapi/mkdirat.h
+@@ -11,7 +11,7 @@
+ #include "lapi/fcntl.h"
  
- 	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sockpair);
-@@ -91,9 +91,6 @@ static void run(void)
- 		32+sizeof(buf));
- 	SAFE_FCNTL(sockpair[0], F_SETFL, O_NONBLOCK);
+ #ifndef HAVE_MKDIRAT
+-int mkdirat(int dirfd, const char *dirname, int mode)
++static inline int mkdirat(int dirfd, const char *dirname, int mode)
+ {
+ 	return ltp_syscall(__NR_mkdirat, dirfd, dirname, mode);
+ }
+diff --git a/include/lapi/openat2.h b/include/lapi/openat2.h
+index 62da1a04c..d4154c26e 100644
+--- a/include/lapi/openat2.h
++++ b/include/lapi/openat2.h
+@@ -47,7 +47,8 @@ struct open_how {
+ 					be scoped inside the dirfd
+ 					(similar to chroot(2)). */
  
--	SAFE_IO_URING_INIT(512, &params, &uring);
--	sqe_ptr = uring.sqr_entries;
--
- 	/* Add spam requests to force async processing of the real test */
- 	for (i = 0, tail = *uring.sqr_tail; i < 255; i++, tail++, sqe_ptr++) {
- 		memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-@@ -150,7 +147,7 @@ static void run(void)
- 			tst_res(TFAIL | TTERRNO,
- 				"Write outside chroot failed unexpectedly");
- 		} else {
--			tst_res(TPASS,
-+			tst_res(TPASS | TTERRNO,
- 				"Write outside chroot failed as expected");
- 		}
- 	}
-@@ -163,12 +160,69 @@ static void run(void)
- 	if (count)
- 		tst_res(TFAIL, "Wrong number of entries in completion queue");
+-int openat2(int dfd, const char *pathname, struct open_how *how, size_t size)
++static inline int openat2(int dfd, const char *pathname,
++                          struct open_how *how, size_t size)
+ {
+ 	return tst_syscall(__NR_openat2, dfd, pathname, how, size);
+ }
+@@ -59,7 +60,7 @@ struct open_how_pad {
+ 	uint64_t pad;
+ };
  
--	/* iteration cleanup */
--	SAFE_IO_URING_CLOSE(&uring);
- 	SAFE_CLOSE(sockpair[0]);
- 	SAFE_CLOSE(sockpair[1]);
+-void openat2_supported_by_kernel(void)
++static inline void openat2_supported_by_kernel(void)
+ {
+ 	if ((tst_kvercmp(5, 6, 0)) < 0) {
+ 		/* Check if the syscall is backported on an older kernel */
+diff --git a/include/lapi/pidfd_open.h b/include/lapi/pidfd_open.h
+index 9f532f86e..2b0c5b073 100644
+--- a/include/lapi/pidfd_open.h
++++ b/include/lapi/pidfd_open.h
+@@ -15,7 +15,7 @@
+ #include "config.h"
+ 
+ #ifndef HAVE_PIDFD_OPEN
+-int pidfd_open(pid_t pid, unsigned int flags)
++static inline int pidfd_open(pid_t pid, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_pidfd_open, pid, flags);
+ }
+diff --git a/include/lapi/pidfd_send_signal.h b/include/lapi/pidfd_send_signal.h
+index 8352d2adf..512174def 100644
+--- a/include/lapi/pidfd_send_signal.h
++++ b/include/lapi/pidfd_send_signal.h
+@@ -17,8 +17,8 @@ static inline void pidfd_send_signal_supported(void)
  }
  
-+static void check_result(void)
-+{
-+	const struct io_uring_cqe *cqe_ptr;
-+
-+	cqe_ptr = uring.cqr_entries + (*uring.cqr_head & *uring.cqr_mask);
-+	++*uring.cqr_head;
-+	TST_ERR = -cqe_ptr->res;
-+
-+	if (cqe_ptr->user_data != BEEF_MARK) {
-+		tst_res(TFAIL, "Unexpected entry in completion queue");
-+		return;
-+	}
-+
-+	if (cqe_ptr->res == -EINVAL) {
-+		tst_res(TINFO, "IOSQE_ASYNC is not supported, using fallback");
-+		drain_fallback();
-+		return;
-+	}
-+
-+	tst_res(TINFO, "IOSQE_ASYNC is supported");
-+
-+	if (cqe_ptr->res >= 0) {
-+		tst_res(TFAIL, "Write outside chroot succeeded.");
-+		return;
-+	}
-+
-+	if (cqe_ptr->res != -ENOENT) {
-+		tst_res(TFAIL | TTERRNO,
-+			"Write outside chroot failed unexpectedly");
-+		return;
-+	}
-+
-+	tst_res(TPASS | TTERRNO, "Write outside chroot failed as expected");
-+}
-+
-+static void run(void)
-+{
-+	uint32_t tail;
-+	struct io_uring_sqe *sqe_ptr;
-+
-+	SAFE_IO_URING_INIT(512, &params, &uring);
-+	sqe_ptr = uring.sqr_entries;
-+	tail = *uring.sqr_tail;
-+
-+	memset(sqe_ptr, 0, sizeof(*sqe_ptr));
-+	sqe_ptr->opcode = IORING_OP_SENDMSG;
-+	sqe_ptr->flags = IOSQE_ASYNC;
-+	sqe_ptr->fd = sendsock;
-+	sqe_ptr->addr = (__u64)&beef_header;
-+	sqe_ptr->user_data = BEEF_MARK;
-+	uring.sqr_array[tail & *uring.sqr_mask] = 0;
-+	tail++;
-+
-+	__atomic_store(uring.sqr_tail, &tail, __ATOMIC_RELEASE);
-+	SAFE_IO_URING_ENTER(1, uring.fd, 1, 1, IORING_ENTER_GETEVENTS, NULL);
-+	check_result();
-+	SAFE_IO_URING_CLOSE(&uring);
-+}
-+
- static void cleanup(void)
+ #ifndef HAVE_PIDFD_SEND_SIGNAL
+-static int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
+-				 unsigned int flags)
++static inline int pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
++                                    unsigned int flags)
  {
- 	if (uring.fd >= 0)
+ 	return tst_syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
+ }
+diff --git a/include/lapi/preadv2.h b/include/lapi/preadv2.h
+index 538ed7218..19ac589f3 100644
+--- a/include/lapi/preadv2.h
++++ b/include/lapi/preadv2.h
+@@ -19,8 +19,8 @@
+ /* LO_HI_LONG taken from glibc */
+ # define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
+ 
+-ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
+-		int flags)
++static inline ssize_t preadv2(int fd, const struct iovec *iov, int iovcnt,
++                              off_t offset, int flags)
+ {
+ 	return tst_syscall(__NR_preadv2, fd, iov, iovcnt,
+ 			   LO_HI_LONG(offset), flags);
+diff --git a/include/lapi/pwritev2.h b/include/lapi/pwritev2.h
+index 305e48e02..a93f017c6 100644
+--- a/include/lapi/pwritev2.h
++++ b/include/lapi/pwritev2.h
+@@ -15,8 +15,8 @@
+ /* LO_HI_LONG taken from glibc */
+ # define LO_HI_LONG(val) (long) (val), (long) (((uint64_t) (val)) >> 32)
+ 
+-ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
+-		int flags)
++static inline ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt,
++                               off_t offset, int flags)
+ {
+ 	return tst_syscall(__NR_pwritev2, fd, iov, iovcnt,
+ 			   LO_HI_LONG(offset), flags);
+diff --git a/include/lapi/readlinkat.h b/include/lapi/readlinkat.h
+index 5a3a7b2d6..4205d0070 100644
+--- a/include/lapi/readlinkat.h
++++ b/include/lapi/readlinkat.h
+@@ -11,7 +11,8 @@
+ #include "lapi/fcntl.h"
+ 
+ #ifndef HAVE_READLINKAT
+-int readlinkat(int dirfd, const char *pathname, char *buf, size_t bufsiz)
++static inline int readlinkat(int dirfd, const char *pathname,
++                             char *buf, size_t bufsiz)
+ {
+ 	return ltp_syscall(__NR_readlinkat, dirfd, pathname, buf, bufsiz);
+ }
+diff --git a/include/lapi/renameat.h b/include/lapi/renameat.h
+index 66d3e2140..c92b30a9a 100644
+--- a/include/lapi/renameat.h
++++ b/include/lapi/renameat.h
+@@ -12,8 +12,8 @@
+ #include "lapi/syscalls.h"
+ 
+ #if !defined(HAVE_RENAMEAT)
+-int renameat(int olddirfd, const char *oldpath, int newdirfd,
+-			const char *newpath)
++static inline int renameat(int olddirfd, const char *oldpath, int newdirfd,
++                           const char *newpath)
+ {
+ 	return ltp_syscall(__NR_renameat, olddirfd, oldpath, newdirfd,
+ 					newpath);
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 26fe445e9..ee38c3a1c 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -28,17 +28,14 @@ struct sched_attr {
+ 	uint64_t sched_period;
+ };
+ 
+-int sched_setattr(pid_t pid,
+-	const struct sched_attr *attr,
+-	unsigned int flags)
++static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
++                                unsigned int flags)
+ {
+ 	return syscall(__NR_sched_setattr, pid, attr, flags);
+ }
+ 
+-int sched_getattr(pid_t pid,
+-	struct sched_attr *attr,
+-	unsigned int size,
+-	unsigned int flags)
++static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
++                                unsigned int size, unsigned int flags)
+ {
+ 	return syscall(__NR_sched_getattr, pid, attr, size, flags);
+ }
+diff --git a/include/lapi/setns.h b/include/lapi/setns.h
+index 7b0a7afc4..2d0be8846 100644
+--- a/include/lapi/setns.h
++++ b/include/lapi/setns.h
+@@ -11,7 +11,7 @@
+ #include <sched.h>
+ 
+ #ifndef HAVE_SETNS
+-int setns(int fd, int nstype)
++static inline int setns(int fd, int nstype)
+ {
+ 	return tst_syscall(__NR_setns, fd, nstype);
+ }
+diff --git a/include/lapi/splice.h b/include/lapi/splice.h
+index 0cd6f55d2..76ac7084a 100644
+--- a/include/lapi/splice.h
++++ b/include/lapi/splice.h
+@@ -11,8 +11,8 @@
+ #include "lapi/syscalls.h"
+ 
+ #if !defined(HAVE_SPLICE)
+-ssize_t splice(int fd_in, loff_t *off_in, int fd_out,
+-	loff_t *off_out, size_t len, unsigned int flags)
++static inline ssize_t splice(int fd_in, loff_t *off_in, int fd_out,
++                             loff_t *off_out, size_t len, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_splice, fd_in, off_in,
+ 		fd_out, off_out, len, flags);
+diff --git a/include/lapi/syncfs.h b/include/lapi/syncfs.h
+index e5d29fa96..d3c0c8a2a 100644
+--- a/include/lapi/syncfs.h
++++ b/include/lapi/syncfs.h
+@@ -12,7 +12,7 @@
+ #include "lapi/syscalls.h"
+ 
+ #if !defined(HAVE_SYNCFS)
+-int syncfs(int fd)
++static inline int syncfs(int fd)
+ {
+ 	return tst_syscall(__NR_syncfs, fd);
+ }
+diff --git a/include/lapi/tee.h b/include/lapi/tee.h
+index 422e81177..237f4e1e0 100644
+--- a/include/lapi/tee.h
++++ b/include/lapi/tee.h
+@@ -11,7 +11,8 @@
+ #include "lapi/syscalls.h"
+ 
+ #if !defined(HAVE_TEE)
+-ssize_t tee(int fd_in, int fd_out, size_t len, unsigned int flags)
++static inline ssize_t tee(int fd_in, int fd_out,
++                          size_t len, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_tee, fd_in, fd_out, len, flags);
+ }
+diff --git a/include/lapi/timerfd.h b/include/lapi/timerfd.h
+index 50e09726b..91773ff72 100644
+--- a/include/lapi/timerfd.h
++++ b/include/lapi/timerfd.h
+@@ -16,15 +16,16 @@
+ #endif
+ 
+ #if !defined(HAVE_TIMERFD_CREATE)
+-int timerfd_create(int clockid, int flags)
++static inline int timerfd_create(int clockid, int flags)
+ {
+ 	return ltp_syscall(__NR_timerfd_create, clockid, flags);
+ }
+ #endif
+ 
+ #if !defined(HAVE_TIMERFD_GETTIME)
+-int timerfd_settime(int fd, int flags, const struct itimerspec *new_value,
+-		    struct itimerspec *old_value)
++static inline int timerfd_settime(int fd, int flags,
++                                  const struct itimerspec *new_value,
++                                  struct itimerspec *old_value)
+ {
+ 	return ltp_syscall(__NR_timerfd_settime, fd, flags, new_value,
+ 			   old_value);
+@@ -32,7 +33,7 @@ int timerfd_settime(int fd, int flags, const struct itimerspec *new_value,
+ #endif
+ 
+ #if !defined(HAVE_TIMERFD_SETTIME)
+-int timerfd_gettime(int fd, struct itimerspec *curr_value)
++static inline int timerfd_gettime(int fd, struct itimerspec *curr_value)
+ {
+ 	return ltp_syscall(__NR_timerfd_gettime, fd, curr_value);
+ }
+diff --git a/include/lapi/vmsplice.h b/include/lapi/vmsplice.h
+index ba0fcca27..96b32f3fa 100644
+--- a/include/lapi/vmsplice.h
++++ b/include/lapi/vmsplice.h
+@@ -13,8 +13,8 @@
+ #include "lapi/iovec.h"
+ 
+ #if !defined(HAVE_VMSPLICE)
+-ssize_t vmsplice(int fd, const struct iovec *iov,
+-	         unsigned long nr_segs, unsigned int flags)
++static inline ssize_t vmsplice(int fd, const struct iovec *iov,
++	                       unsigned long nr_segs, unsigned int flags)
+ {
+ 	return tst_syscall(__NR_vmsplice, fd, iov, nr_segs, flags);
+ }
 -- 
-2.30.0
+2.26.2
 
