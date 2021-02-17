@@ -1,124 +1,65 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 16 Feb 2021 13:38:41 +0100
-Subject: [LTP] [PATCH] memcg/stat_test: Use more memory for tests
-Message-ID: <20210216123841.3424969-1-lkml@jv-coder.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 17 Feb 2021 13:04:58 +0100
+Subject: [LTP] [PATCH 1/2] lapi/io_uring.h: Define constants that may be
+ missing
+Message-ID: <20210217120459.17500-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Early liburing headers did not include IOSQE_ASYNC and IOSQE_IO_HARDLINK.
+Check for their presence separately even if the system header file is present
+and define them if needed.
 
-f0b9d187d increased the memory used by a lot of
-memcg tests to 33*pagesize, because some counters in
-memory.stat are only updated in batches of 32.
-With kernel commit 766a4c19d this batching is also applied
-to some more counters.
-
-Use 33 * pagesize for all test now should make them pass
-before and after this commit.
-
-Fixes: #780
-This should also fix part of #93 and #783
-
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- .../memcg/functional/memcg_stat_test.sh       | 40 +++++++++----------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ include/lapi/io_uring.h | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-index 3a6239134..cc4550cb6 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-@@ -27,15 +27,15 @@ test2()
- test3()
- {
- 	tst_res TINFO "Test unevictable with MAP_LOCKED"
--	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE \
--		"unevictable" $PAGESIZE false
-+	test_mem_stat "--mmap-lock1" $PAGESIZES $PAGESIZES \
-+		"unevictable" $PAGESIZES false
- }
+diff --git a/include/lapi/io_uring.h b/include/lapi/io_uring.h
+index 9d280f155..897ed7c64 100644
+--- a/include/lapi/io_uring.h
++++ b/include/lapi/io_uring.h
+@@ -71,8 +71,6 @@ enum {
+ 	IOSQE_FIXED_FILE_BIT,
+ 	IOSQE_IO_DRAIN_BIT,
+ 	IOSQE_IO_LINK_BIT,
+-	IOSQE_IO_HARDLINK_BIT,
+-	IOSQE_ASYNC_BIT,
+ };
  
- test4()
- {
- 	tst_res TINFO "Test unevictable with mlock"
--	test_mem_stat "--mmap-lock2" $PAGESIZE $PAGESIZE \
--		"unevictable" $PAGESIZE false
-+	test_mem_stat "--mmap-lock2" $PAGESIZES $PAGESIZES \
-+		"unevictable" $PAGESIZES false
- }
+ /*
+@@ -84,10 +82,6 @@ enum {
+ #define IOSQE_IO_DRAIN		(1U << IOSQE_IO_DRAIN_BIT)
+ /* links next sqe */
+ #define IOSQE_IO_LINK		(1U << IOSQE_IO_LINK_BIT)
+-/* like LINK, but stronger */
+-#define IOSQE_IO_HARDLINK	(1U << IOSQE_IO_HARDLINK_BIT)
+-/* always go async */
+-#define IOSQE_ASYNC		(1U << IOSQE_ASYNC_BIT)
  
- test5()
-@@ -44,11 +44,11 @@ test5()
- 	echo 1 > memory.use_hierarchy
+ /*
+  * io_uring_setup() flags
+@@ -262,6 +256,17 @@ struct io_uring_probe {
  
- 	mkdir subgroup
--	echo $PAGESIZE > memory.limit_in_bytes
--	echo $((PAGESIZE*2)) > subgroup/memory.limit_in_bytes
-+	echo $PAGESIZES > memory.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
+ #endif /* IOSQE_FIXED_FILE */
  
- 	cd subgroup
--	check_mem_stat "hierarchical_memory_limit" $PAGESIZE
-+	check_mem_stat "hierarchical_memory_limit" $PAGESIZES
++#ifndef IOSQE_IO_HADRLINK
++/* like LINK, but stronger */
++#define IOSQE_IO_HARDLINK_BIT	3
++#define IOSQE_IO_HARDLINK	(1U << IOSQE_IO_HARDLINK_BIT)
++#endif /* IOSQE_IO_HADRLINK */
++
++#ifndef IOSQE_ASYNC
++/* always go async */
++#define IOSQE_ASYNC_BIT		4
++#define IOSQE_ASYNC		(1U << IOSQE_ASYNC_BIT)
++#endif /* IOSQE_ASYNC */
  
- 	cd ..
- 	rmdir subgroup
-@@ -62,11 +62,11 @@ test6()
- 	echo 0 > memory.use_hierarchy
- 
- 	mkdir subgroup
--	echo $PAGESIZE > memory.limit_in_bytes
--	echo $((PAGESIZE * 2)) > subgroup/memory.limit_in_bytes
-+	echo $PAGESIZES > memory.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
- 
- 	cd subgroup
--	check_mem_stat "hierarchical_memory_limit" $((PAGESIZE * 2))
-+	check_mem_stat "hierarchical_memory_limit" $((PAGESIZES * 2))
- 
- 	cd ..
- 	rmdir subgroup
-@@ -80,13 +80,13 @@ test7()
- 	ROD echo 1 \> memory.use_hierarchy
- 
- 	mkdir subgroup
--	echo $PAGESIZE > memory.limit_in_bytes
--	echo $PAGESIZE > memory.memsw.limit_in_bytes
--	echo $((PAGESIZE*2)) > subgroup/memory.limit_in_bytes
--	echo $((PAGESIZE*2)) > subgroup/memory.memsw.limit_in_bytes
-+	echo $PAGESIZES > memory.limit_in_bytes
-+	echo $PAGESIZES > memory.memsw.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.memsw.limit_in_bytes
- 
- 	cd subgroup
--	check_mem_stat "hierarchical_memsw_limit" $PAGESIZE
-+	check_mem_stat "hierarchical_memsw_limit" $PAGESIZES
- 
- 	cd ..
- 	rmdir subgroup
-@@ -101,13 +101,13 @@ test8()
- 	ROD echo 0 \> memory.use_hierarchy
- 
- 	mkdir subgroup
--	echo $PAGESIZE > memory.limit_in_bytes
--	echo $PAGESIZE > memory.memsw.limit_in_bytes
--	echo $((PAGESIZE*2)) > subgroup/memory.limit_in_bytes
--	echo $((PAGESIZE*2)) > subgroup/memory.memsw.limit_in_bytes
-+	echo $PAGESIZES > memory.limit_in_bytes
-+	echo $PAGESIZES > memory.memsw.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.limit_in_bytes
-+	echo $((PAGESIZES * 2)) > subgroup/memory.memsw.limit_in_bytes
- 
- 	cd subgroup
--	check_mem_stat "hierarchical_memsw_limit" $((PAGESIZE*2))
-+	check_mem_stat "hierarchical_memsw_limit" $((PAGESIZES * 2))
- 
- 	cd .
- 	rmdir subgroup
+ #ifndef HAVE_IO_URING_REGISTER
+ static inline int io_uring_register(int fd, unsigned int opcode, void *arg,
 -- 
-2.25.1
+2.30.0
 
