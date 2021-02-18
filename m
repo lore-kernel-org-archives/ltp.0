@@ -1,32 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 Feb 2021 11:16:22 +0100
-Subject: [LTP] [PATCH 1/1] configure: Improve error message on missing
- pkg-config
-In-Reply-To: <YCugPYQxkf61gxiK@pevik>
-References: <20210215110419.2964-1-pvorel@suse.cz>
- <YCugPYQxkf61gxiK@pevik>
-Message-ID: <YC4+dlPsqvmYaAks@yuki.lan>
+From: Palmer Dabbelt <palmerdabbelt@google.com>
+Date: Wed, 17 Feb 2021 20:45:52 -0800
+Subject: [LTP] [PATCH 1/2] fsstress: Indicate sg_handler's argument is unused
+Message-ID: <20210218044553.2514218-1-palmerdabbelt@google.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +m4_ifndef([PKG_PREREQ],
-> > +	[m4_fatal([must install pkg-config or pkgconfig and pkg.m4 macro (usual dependency)])])
-> Maybe mention also INSTALL file (feedback from
-> https://github.com/linux-test-project/ltp/issues/787):
-> 
-> 	[m4_fatal([must install pkg-config or pkgconfig and pkg.m4 macro (usual dependency), see INSTALL for all dependencies])])
+This argument can't be removed because it's part of sigaction, but it's
+triggering an unused argument warning.
 
-Maybe just shorten it to "..., see INSTALL"
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ testcases/kernel/fs/fsstress/fsstress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Other than that no complaints, anything that prints reasonable message
-is much better than the cryptic error we produce without this patch.
-
-So Acked-by: Cyril Hrubis <chrubis@suse.cz>
-
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index 811e6ff14..b53a99180 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -280,7 +280,7 @@ void usage(void);
+ void write_freq(void);
+ void zero_freq(void);
+ 
+-void sg_handler(int signum)
++void sg_handler(int signum __attribute__((unused)))
+ {
+ 	should_stop = 1;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0.478.g8a0d178c01-goog
+
