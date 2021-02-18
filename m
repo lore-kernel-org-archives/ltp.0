@@ -1,39 +1,21 @@
-From: zhao gongyi <zhaogongyi@huawei.com>
-Date: Thu, 18 Feb 2021 14:57:58 +0800
-Subject: [LTP] [PATCH] lib/tst_mkfs: bugfix for lib/tst_mkfs.c
-Message-ID: <20210218065758.230880-1-zhaogongyi@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 18 Feb 2021 15:08:21 +0800
+Subject: [LTP] [PATCH] ttype: using TERRNO to macth errno
+In-Reply-To: <20210205011635.177469-1-zhaogongyi@huawei.com>
+References: <20210205011635.177469-1-zhaogongyi@huawei.com>
+Message-ID: <CAEemH2fmNvrYWcaBepS7gSXSJdZo+oHLAfBSFHGkiEQmxN8DHw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tmpfs is the only one filesystem in many embedded system, so
-LTP_DEV_FS_TYPE should be set to tmpfs in many testcases, for
-example syscalls/chown04, and in these cases, tests will be failed
-because there is no mkfs tool for tmpfs.
+Pushed, thanks!
 
-Signed-off-by: zhao gongyi <zhaogongyi@huawei.com>
----
- lib/tst_mkfs.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 45dd83ad3..40141fead 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -44,6 +44,11 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 		return;
- 	}
-
-+	if (!strcmp(fs_type, "tmpfs")) {
-+		tst_resm_(file, lineno, TINFO, "Need not fomat for TMPFS filesystem");
-+		return;
-+	}
-+
- 	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
-
- 	if (fs_opts) {
---
-2.17.1
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210218/3264d87f/attachment-0001.htm>
