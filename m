@@ -1,10 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 19 Feb 2021 15:57:59 +0000
-Subject: [LTP] [PATCH 2/2] netns_netlink: Rewrite into new API
-In-Reply-To: <20210219144704.20433-3-pvorel@suse.cz>
-References: <20210219144704.20433-1-pvorel@suse.cz>
- <20210219144704.20433-3-pvorel@suse.cz>
-Message-ID: <878s7k59tk.fsf@suse.de>
+Date: Fri, 19 Feb 2021 16:02:00 +0000
+Subject: [LTP] LTP madvise06.c
+In-Reply-To: <BMXPR01MB2870FA73C10D2EDB69D61050EE849@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
+References: <BMXPR01MB2870FA73C10D2EDB69D61050EE849@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
+Message-ID: <875z2o59mv.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,36 +12,19 @@ To: ltp@lists.linux.it
 
 Hello,
 
-Petr Vorel <pvorel@suse.cz> writes:
+Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com> writes:
 
-> From: Richard Palethorpe <rpalethorpe@suse.com>
+> Hi,
+> i am running madvise06.c but i am getting message madvise06.c:63:
+> CONF: System swap is too small (838860800 bytes needed) can someone
+> suggest if i can increase size of swap and make this testcase work ??
 
-I don't remember this :-)
+Yes, you can increase your swap partition.
 
 >
-> This also require to rewrite netns_helper.h.
-> New test still uses legacy libclone.h.
+>
+> Thanks!
 
-> ...
-
->  	pclose(ipf);
-> @@ -67,14 +53,14 @@ static void check_netns(void)
->  	int pid, status;
->  	/* Checking if the kernel supports unshare with netns capabilities. */
->  	if (CLONE_NEWNS == -1)
-> -		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS (%d) not supported",
-> +		tst_brk(TCONF | TERRNO, "CLONE_NEWNS (%d) not supported",
->  			 CLONE_NEWNS);
->  
->  	pid = do_clone_unshare_test(T_UNSHARE, CLONE_NEWNET | CLONE_NEWNS,
->  	                            dummy, NULL);
-
-I guess you are considering replacing this with something that uses
-SAFE_CLONE?
-
-This should be quite easy as this function is not cloning with CLONE_VM
-or anything special. It is just fork() with CLONE_NEWNET | CLONE_NEWNS,
-so we probably don't need most of the wierdness in libclone.
 
 -- 
 Thank you,
