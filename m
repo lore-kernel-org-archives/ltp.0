@@ -1,251 +1,34 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 19 Feb 2021 14:35:09 +0000
-Subject: [LTP] [PATCH] Add test for possible writev() issues with NULL
- buffer in iovec
-In-Reply-To: <20210219125728.18580-1-mdoucha@suse.cz>
-References: <20210219125728.18580-1-mdoucha@suse.cz>
-Message-ID: <87blcg5dnm.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Feb 2021 15:47:02 +0100
+Subject: [LTP] [PATCH 0/2] netns_netlink: Rewrite into new API
+Message-ID: <20210219144704.20433-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Martin Doucha <mdoucha@suse.cz> writes:
+this is cleanup before needed fix of check_iproute().
+More at second commit.
 
-> Fixes #790
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->
-> This test triggers temporary write of invalid data into test file on some
-> file systems on kernel 4.4.21 and older.
->
->  runtest/syscalls                            |   1 +
->  testcases/kernel/syscalls/writev/.gitignore |   1 +
->  testcases/kernel/syscalls/writev/Makefile   |   3 +
->  testcases/kernel/syscalls/writev/writev03.c | 142 ++++++++++++++++++++
->  4 files changed, 147 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/writev/writev03.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index ae47a6d5e..f01d94540 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1675,6 +1675,7 @@ write05 write05
->  
->  writev01 writev01
->  writev02 writev02
-> +writev03 writev03
->  writev05 writev05
->  writev06 writev06
->  writev07 writev07
-> diff --git a/testcases/kernel/syscalls/writev/.gitignore b/testcases/kernel/syscalls/writev/.gitignore
-> index d60da0f43..167779736 100644
-> --- a/testcases/kernel/syscalls/writev/.gitignore
-> +++ b/testcases/kernel/syscalls/writev/.gitignore
-> @@ -1,5 +1,6 @@
->  /writev01
->  /writev02
-> +/writev03
->  /writev05
->  /writev06
->  /writev07
-> diff --git a/testcases/kernel/syscalls/writev/Makefile b/testcases/kernel/syscalls/writev/Makefile
-> index 4844a6910..6627abaed 100644
-> --- a/testcases/kernel/syscalls/writev/Makefile
-> +++ b/testcases/kernel/syscalls/writev/Makefile
-> @@ -9,4 +9,7 @@ endif
->  
->  include $(top_srcdir)/include/mk/testcases.mk
->  
-> +writev03: CFLAGS += -pthread
-> +writev03: LDLIBS += -lrt
-> +
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
-> new file mode 100644
-> index 000000000..f48efccf2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/writev/writev03.c
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
-> + *
-> + * Check for potential issues in writev() if the first iovec entry is NULL
-> + * and the next one is not present in RAM. This can result in a brief window
-> + * where writev() first writes uninitialized data into the file (possibly
-> + * exposing internal kernel structures) and then overwrites it with the real
-> + * iovec contents later. Bugs fixed in:
-> + *
-> + *  commit d4690f1e1cdabb4d61207b6787b1605a0dc0aeab
-> + *  Author: Al Viro <viro@ZenIV.linux.org.uk>
-> + *  Date:   Fri Sep 16 00:11:45 2016 +0100
-> + *
-> + *  fix iov_iter_fault_in_readable()
-> + */
-> +
-> +#include <sys/uio.h>
-> +#include "tst_test.h"
-> +#include "tst_fuzzy_sync.h"
-> +
-> +#define CHUNK_SIZE 256
-> +#define BUF_SIZE (2 * CHUNK_SIZE)
-> +#define MNTPOINT "mntpoint"
-> +#define TEMPFILE MNTPOINT "/test_file"
-> +#define MAPFILE MNTPOINT "/map_file"
-> +
-> +static unsigned char buf[BUF_SIZE], *map_ptr;
-> +static int mapfd = -1, writefd = -1;
-> +static volatile ssize_t written;
+Kind regards,
+Petr
 
-written should be atomic type (see below)
+Petr Vorel (1):
+  libclone: Move test.h include to C file
 
-> +static struct tst_fzsync_pair fzsync_pair;
-> +struct iovec iov[5];
-> +
-> +static void setup(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < BUF_SIZE; i++)
-> +		buf[i] = i & 0xff;
-> +
-> +	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
-> +	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
-> +
-> +	tst_fzsync_pair_init(&fzsync_pair);
-> +}
-> +
-> +static void *thread_run(void *arg)
-> +{
-> +	while (tst_fzsync_run_b(&fzsync_pair)) {
-> +		writefd = SAFE_OPEN(TEMPFILE, O_CREAT|O_WRONLY|O_TRUNC, 0644);
-> +		written = BUF_SIZE;
-> +		tst_fzsync_wait_b(&fzsync_pair);
-> +
-> +		/*
-> +		 * Do *NOT* preload the data using MAP_POPULATE or touching
-> +		 * the mapped range. We're testing whether writev() handles
-> +		 * fault-in correctly.
-> +		 */
-> +		map_ptr = SAFE_MMAP(NULL, BUF_SIZE, PROT_READ, MAP_SHARED,
-> +			mapfd, 0);
+Richard Palethorpe (1):
+  netns_netlink: Rewrite into new API
 
-Possibly, instead of recreating the mapping each loop you could call
-madvise MADV_DONTNEED on the mapping. In which case it may also be best
-to use MAP_PRIVATE as well. Of courese if it is already fast then this
-does not matter.
-
-> +		iov[1].iov_base = map_ptr;
-> +		iov[1].iov_len = CHUNK_SIZE;
-> +		iov[3].iov_base = map_ptr + CHUNK_SIZE;
-> +		iov[3].iov_len = CHUNK_SIZE;
-> +
-> +		tst_fzsync_start_race_b(&fzsync_pair);
-> +		written = writev(writefd, iov, ARRAY_SIZE(iov));
-
-To be on the safe side we should write to written with the atomic
-functions (see below).
-
-> +		tst_fzsync_end_race_b(&fzsync_pair);
-> +
-> +		SAFE_MUNMAP(map_ptr, BUF_SIZE);
-> +		map_ptr = NULL;
-> +		SAFE_CLOSE(writefd);
-> +	}
-> +
-> +	return arg;
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int fd, failed = 0;
-> +	ssize_t total_read;
-> +	unsigned char readbuf[BUF_SIZE];
-> +
-> +	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
-> +
-> +	while (!failed && tst_fzsync_run_a(&fzsync_pair)) {
-> +		tst_fzsync_wait_a(&fzsync_pair);
-> +		fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
-> +		tst_fzsync_start_race_a(&fzsync_pair);
-> +
-> +		for (total_read = 0; total_read < written;) {
-
-Also read from written with the tst_atomic functions. This is especially
-important for weak memory models because written may not be synchronised
-straight away. Then it could block on read().
-
-There is also a small chance some architecture will update ssize_t
-non-atomically so written is smaller than expected. This would lead to a
-false positive.
-
-I suppose an alternative would be to complete writing the data just using
-an ordinary write() call or however you want.
-
-> +			total_read += SAFE_READ(0, fd, readbuf + total_read,
-> +				BUF_SIZE - total_read);
-> +		}
-> +
-> +		tst_fzsync_end_race_a(&fzsync_pair);
-> +		SAFE_CLOSE(fd);
-> +
-> +		if (total_read > BUF_SIZE)
-> +			tst_brk(TBROK, "read() returned too much data");
-> +
-> +		if (total_read <= 0)
-> +			continue;
-> +
-> +		if (memcmp(readbuf, buf, (size_t)total_read)) {
-> +			tst_res(TFAIL, "writev() wrote invalid data");
-> +			failed = 1;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!failed)
-> +		tst_res(TPASS, "writev() handles page fault-in correctly");
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (map_ptr && map_ptr != MAP_FAILED)
-> +		SAFE_MUNMAP(map_ptr, BUF_SIZE);
-> +
-> +	if (mapfd >= 0)
-> +		SAFE_CLOSE(mapfd);
-> +
-> +	if (writefd >= 0)
-> +		SAFE_CLOSE(writefd);
-> +
-> +	tst_fzsync_pair_cleanup(&fzsync_pair);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.all_filesystems = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "d4690f1e1cda"},
-
-I guess CVE is on the way?
-
-> +		{}
-> +	}
-> +};
-> -- 
-> 2.30.0
-
-Apart from the volatile variable looks good!
+ .../kernel/containers/libclone/libclone.c     |   1 +
+ .../kernel/containers/libclone/libclone.h     |   1 -
+ .../kernel/containers/mqns/mqns_helper.h      |   2 +-
+ .../kernel/containers/netns/netns_helper.h    |  38 ++----
+ .../kernel/containers/netns/netns_netlink.c   | 115 +++++++-----------
+ 5 files changed, 58 insertions(+), 99 deletions(-)
 
 -- 
-Thank you,
-Richard.
+2.30.1
+
