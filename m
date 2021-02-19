@@ -1,113 +1,94 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 19 Feb 2021 16:15:50 +0000
-Subject: [LTP] Error on few tests, asking for help on debug
-In-Reply-To: <20210218174756.702dc94d@kmaincent-XPS-13-7390>
-References: <20210218174756.702dc94d@kmaincent-XPS-13-7390>
-Message-ID: <8735xs58zt.fsf@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 19 Feb 2021 18:37:56 +0100
+Subject: [LTP] [PATCH] Add test for possible writev() issues with NULL
+ buffer in iovec
+In-Reply-To: <87blcg5dnm.fsf@suse.de>
+References: <20210219125728.18580-1-mdoucha@suse.cz> <87blcg5dnm.fsf@suse.de>
+Message-ID: <446bc235-8bc7-9a78-44b5-7151b3c85f47@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+On 19. 02. 21 15:35, Richard Palethorpe wrote:
+>> +static void *thread_run(void *arg)
+>> +{
+>> +	while (tst_fzsync_run_b(&fzsync_pair)) {
+>> +		writefd = SAFE_OPEN(TEMPFILE, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+>> +		written = BUF_SIZE;
+>> +		tst_fzsync_wait_b(&fzsync_pair);
+>> +
+>> +		/*
+>> +		 * Do *NOT* preload the data using MAP_POPULATE or touching
+>> +		 * the mapped range. We're testing whether writev() handles
+>> +		 * fault-in correctly.
+>> +		 */
+>> +		map_ptr = SAFE_MMAP(NULL, BUF_SIZE, PROT_READ, MAP_SHARED,
+>> +			mapfd, 0);
+> 
+> Possibly, instead of recreating the mapping each loop you could call
+> madvise MADV_DONTNEED on the mapping. In which case it may also be best
+> to use MAP_PRIVATE as well. Of courese if it is already fast then this
+> does not matter.
 
-K?ry Maincent <kory.maincent@bootlin.com> writes:
+I considered using madvise(MADV_DONTNEED) but decided against it because
+it might only mark the memory page as stale but otherwise leave the
+contents untouched. That would result in writev() always writing the
+correct data after the first iteration even if the page-in is completely
+broken and the first iteration only passed due to lucky timing.
+Recreating the mapping is fast enough and more reliable for reproducing
+the expected bugs.
 
-> Hello,
->
-> I have issues with tests: msgstress03, msgstress04, semctl09 and iptables.
-> I join the error message above.
-> Could you point me out what could be the problems?
->
-> Thanks, Regards,
->
-> K?ry
->
->
-> msgstress03
-> [  983.559819] cgroup: fork rejected by pids controller
-> in /user.slice/user-0.slice/session-c2.scope
-> Fork failed (may be OK if under stress)
-> Fork failed (may be OK if under stress)
-> Fork failed (may be OK if under stress)
-> Fork failed (may be OK if under stress)
-> Fork failed (may be OK if under stress)
-> Fork failed (may be OK if under stress)
-> msgstress03    1  TFAIL  :  msgstress03.c:155:  Fork failed (may be OK if under
-> stress)
->
-> msgstress04
-> msgstress04    0  TINFO  :  Found 32000 available message queues
-> msgstress04    0  TINFO  :  Using upto 2097091 pids
-> Fork failure in the first child of child group 6331
-> Fork failure in the second child of child group 6325
-> Fork failure in the first child of child group 6320
-> Fork failure in the first child of child group 6323
-> Fork failure in the second child of child group 6308
-> Fork failure in the first child of child group 6332
-> Fork failure in the second child of child group 6297
-> Fork failure in the second child of child group 6333
-> Fork failure in the first child of child group 6326
-> msgstress04    1  TFAIL  :  msgstress04.c:204: Fork failed (may be OK if under
-> stress)
+>> +static void run(void)
+>> +{
+>> +	int fd, failed = 0;
+>> +	ssize_t total_read;
+>> +	unsigned char readbuf[BUF_SIZE];
+>> +
+>> +	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
+>> +
+>> +	while (!failed && tst_fzsync_run_a(&fzsync_pair)) {
+>> +		tst_fzsync_wait_a(&fzsync_pair);
+>> +		fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
+>> +		tst_fzsync_start_race_a(&fzsync_pair);
+>> +
+>> +		for (total_read = 0; total_read < written;) {
+> 
+> Also read from written with the tst_atomic functions. This is especially
+> important for weak memory models because written may not be synchronised
+> straight away. Then it could block on read().
+> 
+> There is also a small chance some architecture will update ssize_t
+> non-atomically so written is smaller than expected. This would lead to a
+> false positive.
+> 
+> I suppose an alternative would be to complete writing the data just using
+> an ordinary write() call or however you want.
 
-Probably you just hit some resource limit. You could trace it to find
-out, but this is a common error on this type of test.
+This test does not care whether writev() actually writes anything to the
+test file. Returning -1 is perfectly valid result and the test will
+simply skip to the next iteration. The only failure states are:
+- read() fails (returning 0 is OK)
+- read() finds too much data in the file (I should adjust readbuf size
+to actually detect that)
+- read() loads something that doesn't match what was supposed to be
+written (and in case of short write, we care only about the portion that
+was actually written)
 
->
-> semctl09  
-> tst_test.c:1261: TINFO: Timeout per run is 0h 05m 00s                           
-> semctl09.c:71: TINFO: Test SYS_semctl syscall        
-> semctl09.c:136: TINFO: Test SEM_STAT_ANY with nobody user                 
-> semctl09.c:158: TPASS: SEM_INFO returned valid index 10 to semid 10
-> semctl09.c:168: TPASS: Counted used = 1                            
-> semctl09.c:116: TPASS: semset_cnt = 1                              
-> semctl09.c:123: TPASS: sen_cnt = 2                                 
-> semctl09.c:136: TINFO: Test SEM_STAT_ANY with root user                        
-> semctl09.c:158: TPASS: SEM_INFO returned valid index 10 to semid 10            
-> semctl09.c:168: TPASS: Counted used = 1                            
-> semctl09.c:116: TPASS: semset_cnt = 1                              
-> semctl09.c:123: TPASS: sen_cnt = 2                                 
-> tst_test.c:1261: TINFO: Timeout per run is 0h 05m 00s              
-> semctl09.c:74: TINFO: Test libc semctl()             
-> semctl09.c:136: TINFO: Test SEM_STAT_ANY with nobody user                       
-> semctl09.c:152: TFAIL: SEM_STAT_ANY doesn't pass the buffer specified by the cal
-> semctl09.c:136: TINFO: Test SEM_STAT_ANY with root user                         
-> semctl09.c:152: TFAIL: SEM_STAT_ANY doesn't pass the buffer specified
-> by the cal
+> I guess CVE is on the way?
 
-Check that your glibc does not have the bug listed in the test source.
+I'm not aware of any existing CVE and the bugfix is almost 4 years old
+so I don't expect any.
 
->
-> iptables
-> iptables01 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface              
-> iptables01 1 TINFO: add local addr 10.0.0.2/24                               
-> iptables01 1 TINFO: add local addr fd00:1:1:1::2/64                          
-> iptables01 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface              
-> iptables01 1 TINFO: add remote addr 10.0.0.1/24                              
-> iptables01 1 TINFO: add remote addr fd00:1:1:1::1/64                         
-> iptables01 1 TINFO: Network config (local -- remote):              
-> iptables01 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1                   
-> iptables01 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24                                  
-> iptables01 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64                        
-> iptables01 1 TINFO: timeout per run is 0h 5m 0s                                 
-> iptables01 1 TINFO: INIT: Flushing all rules                                    
-> iptables01 1 TINFO: iptables -L -t filter will list all rules in table filter
-> iptables01 1 TINFO: iptables -L -t filter lists rules                        
-> iptables01 1 TINFO: iptables -L -t nat will list all rules in table nat      
-> iptables01 1 TINFO: iptables -L -t nat lists rules                           
-> iptables01 1 TINFO: iptables -L -t mangle will list all rules in table mangle
-> iptables01 1 TINFO: iptables -L -t mangle lists rules                        
-> iptables01 1 TPASS: iptables -L lists rules                                     
-> iptables01 2 TINFO: Use iptables to DROP packets from particular IP             
-> iptables01 2 TINFO: Rule to block icmp from 127.0.0.1                           
-> iptables01 2 TINFO: Pinging 127.0.0.1                                           
-> iptables01 1 TBROK: test killed, timeout! If you are running on slow machine,
-> try exporting LTP_TIMEOUT_MUL > 1
-
-I don't know about this one.
+I'll resubmit on Monday after some improvements, including atomic
+load/store.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
