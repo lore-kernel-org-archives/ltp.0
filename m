@@ -1,94 +1,41 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 19 Feb 2021 18:37:56 +0100
-Subject: [LTP] [PATCH] Add test for possible writev() issues with NULL
- buffer in iovec
-In-Reply-To: <87blcg5dnm.fsf@suse.de>
-References: <20210219125728.18580-1-mdoucha@suse.cz> <87blcg5dnm.fsf@suse.de>
-Message-ID: <446bc235-8bc7-9a78-44b5-7151b3c85f47@suse.cz>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Sat, 20 Feb 2021 00:58:05 +0000
+Subject: [LTP] [PATCH] openposix/fork/11-1.c: Clean up temporary file
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB403872DDE@dggeml511-mbs.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 19. 02. 21 15:35, Richard Palethorpe wrote:
->> +static void *thread_run(void *arg)
->> +{
->> +	while (tst_fzsync_run_b(&fzsync_pair)) {
->> +		writefd = SAFE_OPEN(TEMPFILE, O_CREAT|O_WRONLY|O_TRUNC, 0644);
->> +		written = BUF_SIZE;
->> +		tst_fzsync_wait_b(&fzsync_pair);
->> +
->> +		/*
->> +		 * Do *NOT* preload the data using MAP_POPULATE or touching
->> +		 * the mapped range. We're testing whether writev() handles
->> +		 * fault-in correctly.
->> +		 */
->> +		map_ptr = SAFE_MMAP(NULL, BUF_SIZE, PROT_READ, MAP_SHARED,
->> +			mapfd, 0);
-> 
-> Possibly, instead of recreating the mapping each loop you could call
-> madvise MADV_DONTNEED on the mapping. In which case it may also be best
-> to use MAP_PRIVATE as well. Of courese if it is already fast then this
-> does not matter.
+Hi Li,
 
-I considered using madvise(MADV_DONTNEED) but decided against it because
-it might only mark the memory page as stale but otherwise leave the
-contents untouched. That would result in writev() always writing the
-correct data after the first iteration even if the page-in is completely
-broken and the first iteration only passed due to lucky timing.
-Recreating the mapping is fast enough and more reliable for reproducing
-the expected bugs.
+That?s right, i will modify the patch and resubmit it.
 
->> +static void run(void)
->> +{
->> +	int fd, failed = 0;
->> +	ssize_t total_read;
->> +	unsigned char readbuf[BUF_SIZE];
->> +
->> +	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
->> +
->> +	while (!failed && tst_fzsync_run_a(&fzsync_pair)) {
->> +		tst_fzsync_wait_a(&fzsync_pair);
->> +		fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
->> +		tst_fzsync_start_race_a(&fzsync_pair);
->> +
->> +		for (total_read = 0; total_read < written;) {
-> 
-> Also read from written with the tst_atomic functions. This is especially
-> important for weak memory models because written may not be synchronised
-> straight away. Then it could block on read().
-> 
-> There is also a small chance some architecture will update ssize_t
-> non-atomically so written is smaller than expected. This would lead to a
-> false positive.
-> 
-> I suppose an alternative would be to complete writing the data just using
-> an ordinary write() call or however you want.
+Thanks
 
-This test does not care whether writev() actually writes anything to the
-test file. Returning -1 is perfectly valid result and the test will
-simply skip to the next iteration. The only failure states are:
-- read() fails (returning 0 is OK)
-- read() finds too much data in the file (I should adjust readbuf size
-to actually detect that)
-- read() loads something that doesn't match what was supposed to be
-written (and in case of short write, we care only about the portion that
-was actually written)
 
-> I guess CVE is on the way?
+On Fri, Feb 19, 2021 at 5:34 PM zhaogongyi <zhaogongyi@huawei.com<mailto:zhaogongyi@huawei.com>> wrote:
+Hi Li,
 
-I'm not aware of any existing CVE and the bugfix is almost 4 years old
-so I don't expect any.
+I think we need to delete the tempfile after the testing(in the cleanup phase).
 
-I'll resubmit on Monday after some improvements, including atomic
-load/store.
+In this case, we just hope that call unlink after open/mkstemp since unlink would not destroy the inode,
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+so call unlink before fork would not affect the test?
+
+Right, but better to put behind of close(fd) that makes logic more clear.
+
+
+BTW, seems the child report a wrong status of the locked file, while
+fcntl(fd, F_SETLK, &fl) return -1 and sets errno to EACCES or EAGAIN,
+shouldn't that mean the file already been locked by the parent?
+
+And what do u think about this?
+
+--
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210220/bb35b0f0/attachment-0001.htm>
