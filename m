@@ -1,39 +1,53 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 22 Feb 2021 14:40:39 +0800
-Subject: [LTP] [PATCH v3 3/4] syscalls/mallinfo02: Add a basic test to
- check use mmap or sbrk
-In-Reply-To: <CAEemH2crZjLK1MtzkEYyxCU0-Pbqp8G5MR4CU7UEG4VQr-ksVQ@mail.gmail.com>
-References: <YCFZB1/VMSsfxyPA@yuki.lan>
- <1613627572-5213-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1613627572-5213-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2crZjLK1MtzkEYyxCU0-Pbqp8G5MR4CU7UEG4VQr-ksVQ@mail.gmail.com>
-Message-ID: <603351E7.4060008@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 22 Feb 2021 09:28:11 +0100
+Subject: [LTP] [PATCH 2/2] netns_netlink: Rewrite into new API
+In-Reply-To: <878s7k59tk.fsf@suse.de>
+References: <20210219144704.20433-1-pvorel@suse.cz>
+ <20210219144704.20433-3-pvorel@suse.cz> <878s7k59tk.fsf@suse.de>
+Message-ID: <YDNrG9A8Dlm2k8uh@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li
-> Hi Xu,
->
-> For patch 1/4 ~ 3/4, looks good to me.
-> Reviewed-by: Li Wang <liwang@redhat.com <mailto:liwang@redhat.com>>
->
-> For 4/4, I slightly think it does not make much sense to test, because
-> it just verifies the info.hblkhd integer overflow at unsuggested usage.
-> Anyway, that's only my thoughts, maybe a one-sided view:).
-I guess we can just add a valid test for mallinfo2 to test it still can 
-get the correct info when setting 2G size instead of this case.
+Hi Richie,
 
-ps: I need to find a new enough system to have supported mallinfo2.
+> Hello,
 
-Best Regards
-Yang Xu
->
-> --
-> Regards,
-> Li Wang
+> Petr Vorel <pvorel@suse.cz> writes:
 
+> > From: Richard Palethorpe <rpalethorpe@suse.com>
 
+> I don't remember this :-)
 
+I'm sorry, that should be me :). I normally does not have problems with git,
+but this time I messed things up with rebasing.
+
+> > This also require to rewrite netns_helper.h.
+> > New test still uses legacy libclone.h.
+
+> > ...
+
+> >  	pclose(ipf);
+> > @@ -67,14 +53,14 @@ static void check_netns(void)
+> >  	int pid, status;
+> >  	/* Checking if the kernel supports unshare with netns capabilities. */
+> >  	if (CLONE_NEWNS == -1)
+> > -		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS (%d) not supported",
+> > +		tst_brk(TCONF | TERRNO, "CLONE_NEWNS (%d) not supported",
+> >  			 CLONE_NEWNS);
+
+> >  	pid = do_clone_unshare_test(T_UNSHARE, CLONE_NEWNET | CLONE_NEWNS,
+> >  	                            dummy, NULL);
+
+> I guess you are considering replacing this with something that uses
+> SAFE_CLONE?
+
+> This should be quite easy as this function is not cloning with CLONE_VM
+> or anything special. It is just fork() with CLONE_NEWNET | CLONE_NEWNS,
+> so we probably don't need most of the wierdness in libclone.
++1, I'd also like to get rid of libclone.
+
+Kind regards,
+Petr
