@@ -1,40 +1,33 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 20 Feb 2021 12:37:24 +0000
-Subject: [LTP] [PATCH] open_posix_testsuite: correct fork11-1 report log
-Message-ID: <20210220123724.16939-1-liwang@redhat.com>
+From: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
+Date: Sun, 21 Feb 2021 21:32:14 -0500
+Subject: [LTP] [PATCH] memcg_stat_test.sh: Add missing dot in cd command
+Message-ID: <1613961134-31207-1-git-send-email-zhufy.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Feiyu Zhu <zhufy.jy@cn.fujitsu.com>
 ---
- .../open_posix_testsuite/conformance/interfaces/fork/11-1.c   | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/fork/11-1.c b/testcases/open_posix_testsuite/conformance/interfaces/fork/11-1.c
-index 8a7796cfd..e31f3896f 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/fork/11-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/fork/11-1.c
-@@ -47,7 +47,7 @@ static int child(int fd)
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
+index 3a62391..f531f87 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
+@@ -109,7 +109,7 @@ test8()
+ 	cd subgroup
+ 	check_mem_stat "hierarchical_memsw_limit" $((PAGESIZE*2))
  
- 	if (fcntl(fd, F_SETLK, &fl) == -1) {
- 		if (errno == EACCES || errno == EAGAIN) {
--			printf("PASSED: child did not inherit the lock\n");
-+			printf("PASSED: Child locked file already locked by parent\n");
- 			return PTS_PASS;
- 		}
- 
-@@ -56,7 +56,7 @@ static int child(int fd)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	printf("Child locked file already locked by parent\n");
-+	printf("Child did not inherit the lock\n");
- 	return PTS_FAIL;
+-	cd .
++	cd ..
+ 	rmdir subgroup
  }
  
 -- 
-2.21.3
+1.8.3.1
+
+
 
