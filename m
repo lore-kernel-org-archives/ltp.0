@@ -1,63 +1,222 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 22 Feb 2021 17:02:43 +0100
-Subject: [LTP] [PATCH 4/4] semctl09: Add glibc-git tag
-In-Reply-To: <20210222160243.507-1-pvorel@suse.cz>
-References: <20210222160243.507-1-pvorel@suse.cz>
-Message-ID: <20210222160243.507-5-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 22 Feb 2021 18:20:43 +0100
+Subject: [LTP] [PATCH v2] Add test for possible writev() issues with NULL
+ buffer in iovec
+Message-ID: <20210222172043.24294-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also fix formatting:
+Fixes #790
 
-* remove new line at "to the kernel"
-* put glibc info out of docparse (this info is included in glibc-git)
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/ipc/semctl/semctl09.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-index f0c757cdd..8cdadd061 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-@@ -23,15 +23,20 @@
-  * completely different meaning than their names seems to suggest.
-  *
-  * We also calling semctl() directly by syscall(), because of a glibc bug:
-- * * semctl SEM_STAT_ANY fails to pass the buffer specified by the caller
-- * * to the kernel.
-- * * https://sourceware.org/bugzilla/show_bug.cgi?id=26637
-  *
-+ * semctl SEM_STAT_ANY fails to pass the buffer specified by the caller
-+ * to the kernel.
-+ *
-+ * https://sourceware.org/bugzilla/show_bug.cgi?id=26637
-+\*/
-+
-+/*
-  * The glibc bug was fixed in:
-+ *
-  * * commit  574500a108be1d2a6a0dc97a075c9e0a98371aba
-  * * Author: Dmitry V. Levin <ldv@altlinux.org>
-  * * Date:   Tue, 29 Sep 2020 17:10:20 +0000 (14:10 -0300)
--\*/
-+ */
+This test triggers temporary write of invalid data into test file on some
+file systems on kernel 4.4.21 and older.
+
+Changes since v1:
+- Simplify main thread
+- Use atomic load/store when passing read limit between threads (I hope I'm
+  doing it correctly)
+- Check for too big writes just in case
+- Require at least 2 CPUs, the bugs are not reproducible on single-CPU systems
+
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/writev/.gitignore |   1 +
+ testcases/kernel/syscalls/writev/Makefile   |   3 +
+ testcases/kernel/syscalls/writev/writev03.c | 145 ++++++++++++++++++++
+ 4 files changed, 150 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/writev/writev03.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index ae47a6d5e..f01d94540 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1675,6 +1675,7 @@ write05 write05
  
- #include <stdio.h>
- #include <pwd.h>
-@@ -200,4 +205,8 @@ static struct tst_test test = {
- 	.tcnt = ARRAY_SIZE(tests),
- 	.test_variants = 2,
- 	.needs_root = 1,
+ writev01 writev01
+ writev02 writev02
++writev03 writev03
+ writev05 writev05
+ writev06 writev06
+ writev07 writev07
+diff --git a/testcases/kernel/syscalls/writev/.gitignore b/testcases/kernel/syscalls/writev/.gitignore
+index d60da0f43..167779736 100644
+--- a/testcases/kernel/syscalls/writev/.gitignore
++++ b/testcases/kernel/syscalls/writev/.gitignore
+@@ -1,5 +1,6 @@
+ /writev01
+ /writev02
++/writev03
+ /writev05
+ /writev06
+ /writev07
+diff --git a/testcases/kernel/syscalls/writev/Makefile b/testcases/kernel/syscalls/writev/Makefile
+index 4844a6910..6627abaed 100644
+--- a/testcases/kernel/syscalls/writev/Makefile
++++ b/testcases/kernel/syscalls/writev/Makefile
+@@ -9,4 +9,7 @@ endif
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++writev03: CFLAGS += -pthread
++writev03: LDLIBS += -lrt
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
+new file mode 100644
+index 000000000..58d6931d2
+--- /dev/null
++++ b/testcases/kernel/syscalls/writev/writev03.c
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
++ *
++ * Check for potential issues in writev() if the first iovec entry is NULL
++ * and the next one is not present in RAM. This can result in a brief window
++ * where writev() first writes uninitialized data into the file (possibly
++ * exposing internal kernel structures) and then overwrites it with the real
++ * iovec contents later. Bugs fixed in:
++ *
++ *  commit d4690f1e1cdabb4d61207b6787b1605a0dc0aeab
++ *  Author: Al Viro <viro@ZenIV.linux.org.uk>
++ *  Date:   Fri Sep 16 00:11:45 2016 +0100
++ *
++ *  fix iov_iter_fault_in_readable()
++ */
++
++#include <sys/uio.h>
++#include "tst_test.h"
++#include "tst_atomic.h"
++#include "tst_fuzzy_sync.h"
++
++#define CHUNK_SIZE 256
++#define BUF_SIZE (2 * CHUNK_SIZE)
++#define MNTPOINT "mntpoint"
++#define TEMPFILE MNTPOINT "/test_file"
++#define MAPFILE MNTPOINT "/map_file"
++
++static unsigned char buf[BUF_SIZE], *map_ptr;
++static int mapfd = -1, writefd = -1, readfd = -1;
++static int written;
++static struct tst_fzsync_pair fzsync_pair;
++struct iovec iov[5];
++
++static void setup(void)
++{
++	int i;
++
++	for (i = 0; i < BUF_SIZE; i++)
++		buf[i] = i & 0xff;
++
++	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
++	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
++
++	tst_fzsync_pair_init(&fzsync_pair);
++}
++
++static void *thread_run(void *arg)
++{
++	while (tst_fzsync_run_b(&fzsync_pair)) {
++		writefd = SAFE_OPEN(TEMPFILE, O_CREAT|O_WRONLY|O_TRUNC, 0644);
++		written = BUF_SIZE;
++		tst_fzsync_wait_b(&fzsync_pair);
++
++		/*
++		 * Do *NOT* preload the data using MAP_POPULATE or touching
++		 * the mapped range. We're testing whether writev() handles
++		 * fault-in correctly.
++		 */
++		map_ptr = SAFE_MMAP(NULL, BUF_SIZE, PROT_READ, MAP_SHARED,
++			mapfd, 0);
++		iov[1].iov_base = map_ptr;
++		iov[1].iov_len = CHUNK_SIZE;
++		iov[3].iov_base = map_ptr + CHUNK_SIZE;
++		iov[3].iov_len = CHUNK_SIZE;
++
++		tst_fzsync_start_race_b(&fzsync_pair);
++		tst_atomic_store(writev(writefd, iov, ARRAY_SIZE(iov)),
++			&written);
++		tst_fzsync_end_race_b(&fzsync_pair);
++
++		SAFE_MUNMAP(map_ptr, BUF_SIZE);
++		map_ptr = NULL;
++		SAFE_CLOSE(writefd);
++	}
++
++	return arg;
++}
++
++static void run(void)
++{
++	int total_read;
++	unsigned char readbuf[BUF_SIZE + 1];
++
++	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
++
++	while (tst_fzsync_run_a(&fzsync_pair)) {
++		tst_fzsync_wait_a(&fzsync_pair);
++		readfd = SAFE_OPEN(TEMPFILE, O_RDONLY);
++		tst_fzsync_start_race_a(&fzsync_pair);
++
++		for (total_read = 0; total_read < tst_atomic_load(&written);) {
++			total_read += SAFE_READ(0, readfd, readbuf+total_read,
++				BUF_SIZE + 1 - total_read);
++		}
++
++		tst_fzsync_end_race_a(&fzsync_pair);
++		SAFE_CLOSE(readfd);
++
++		if (total_read > BUF_SIZE)
++			tst_brk(TBROK, "writev() wrote too much data");
++
++		if (total_read <= 0)
++			continue;
++
++		if (memcmp(readbuf, buf, total_read)) {
++			tst_res(TFAIL, "writev() wrote invalid data");
++			return;
++		}
++	}
++
++	tst_res(TPASS, "writev() handles page fault-in correctly");
++}
++
++static void cleanup(void)
++{
++	if (map_ptr && map_ptr != MAP_FAILED)
++		SAFE_MUNMAP(map_ptr, BUF_SIZE);
++
++	if (mapfd >= 0)
++		SAFE_CLOSE(mapfd);
++
++	if (readfd >= 0)
++		SAFE_CLOSE(readfd);
++
++	if (writefd >= 0)
++		SAFE_CLOSE(writefd);
++
++	tst_fzsync_pair_cleanup(&fzsync_pair);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNTPOINT,
++	.all_filesystems = 1,
++	.min_cpus = 2,
++	.setup = setup,
++	.cleanup = cleanup,
 +	.tags = (const struct tst_tag[]) {
-+		{"glibc-git", "574500a108be"},
++		{"linux-git", "d4690f1e1cda"},
 +		{}
 +	}
- };
++};
 -- 
-2.30.1
+2.30.0
 
