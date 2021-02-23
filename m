@@ -1,48 +1,64 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue, 23 Feb 2021 13:00:12 +0100
-Subject: [LTP] [PATCH v2] Add test for possible writev() issues with
- NULL buffer in iovec
-In-Reply-To: <YDTrAVVmOXB98Xjt@pevik>
-References: <20210222172043.24294-1-mdoucha@suse.cz> <YDTrAVVmOXB98Xjt@pevik>
-Message-ID: <d95f8ec9-9d0b-4178-c735-80cdbd313932@suse.cz>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Tue, 23 Feb 2021 22:03:23 +0800
+Subject: [LTP] [PATCH] unshare01.sh: Setup parent mount flag before unshare
+ testing
+Message-ID: <20210223140323.126555-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 23. 02. 21 12:46, Petr Vorel wrote:
-> It takes some time to run due .all_filesystems, but I guess there is a reason to
-> test it on all available fs.
+We need setup parent mount flag to shared before unshare testing, or it will
+fail for system which has no systemd service since the propagation flag is
+changed by systemd. From man 7 mount_namespaces.
 
-Yes, test results depend on FS-specific backend implementation bugs.
-ext2, ext3 and vfat fail; ext4, xfs and btrfs pass on unpatched kernels.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/commands/unshare/unshare01.sh | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> ...
->> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
->> new file mode 100644
->> index 000000000..58d6931d2
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/writev/writev03.c
->> @@ -0,0 +1,145 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
->> + *
->> + * Check for potential issues in writev() if the first iovec entry is NULL
->> + * and the next one is not present in RAM. This can result in a brief window
->> + * where writev() first writes uninitialized data into the file (possibly
->> + * exposing internal kernel structures) and then overwrites it with the real
->> + * iovec contents later. Bugs fixed in:
-> Maybe this doc part should be in * [DESCRIPTION] to get into docparse.
+diff --git a/testcases/commands/unshare/unshare01.sh b/testcases/commands/unshare/unshare01.sh
+index bf163a7f4..e1fb15035 100755
+--- a/testcases/commands/unshare/unshare01.sh
++++ b/testcases/commands/unshare/unshare01.sh
+@@ -31,7 +31,6 @@ TST_SETUP=setup
+ TST_CLEANUP=cleanup
+ TST_TESTFUNC=do_test
+ TST_NEEDS_ROOT=1
+-TST_NEEDS_TMPDIR=1
+ TST_NEEDS_CMDS="unshare id mount umount"
+ . tst_test.sh
 
-Yes, please add it before pushing the patch.
+@@ -39,6 +38,7 @@ max_userns_path="/proc/sys/user/max_user_namespaces"
+ max_mntns_path="/proc/sys/user/max_mnt_namespaces"
+ default_max_userns=-1
+ default_max_mntns=-1
++CURR=$(pwd)
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+ setup()
+ {
+@@ -55,6 +55,10 @@ setup()
+ 		echo 1024 > "${max_mntns_path}"
+ 	fi
+
++	mkdir $CURR/dir_C
++	mount -t tmpfs none dir_C
++	mount --make-shared dir_C
++	cd dir_C
+ 	mkdir -p dir_A dir_B
+ 	touch dir_A/A dir_B/B
+ }
+@@ -66,6 +70,9 @@ cleanup()
+ 		echo ${default_max_userns} > "${max_userns_path}"
+ 	[ ${default_max_mntns} -ne -1 ] && \
+ 		echo ${default_max_mntns} > "${max_mntns_path}"
++	cd $CURR
++	umount dir_C
++	rm -rf dir_C
+ }
+
+ check_id()
+--
+2.17.1
+
