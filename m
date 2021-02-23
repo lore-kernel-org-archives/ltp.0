@@ -1,38 +1,57 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 23 Feb 2021 12:30:03 +0100
-Subject: [LTP] [PATCH 1/4] lib: Add support for linux stable and glibc
- tags
-In-Reply-To: <YDTNtBH/9mz4I2OL@yuki.lan>
-References: <20210222160243.507-1-pvorel@suse.cz>
- <20210222160243.507-2-pvorel@suse.cz> <YDTNtBH/9mz4I2OL@yuki.lan>
-Message-ID: <YDTnO83+enCs5Wdn@pevik>
+Date: Tue, 23 Feb 2021 12:46:09 +0100
+Subject: [LTP] [PATCH v2] Add test for possible writev() issues with
+ NULL buffer in iovec
+In-Reply-To: <20210222172043.24294-1-mdoucha@suse.cz>
+References: <20210222172043.24294-1-mdoucha@suse.cz>
+Message-ID: <YDTrAVVmOXB98Xjt@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Martin,
 
-> Hi!
-> >  #define LINUX_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id="
-> > +#define LINUX_STABLE_GIT_URL "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id="
-> > +#define GLIBC_GIT_URL "https://sourceware.org/git/?p=glibc.git;a=commit;h="
-> >  #define CVE_DB_URL "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-"
+> Fixes #790
 
-> >  struct tst_test *tst_test;
-> > @@ -492,6 +495,8 @@ static void print_test_tags(void)
-> >  			printf(CVE_DB_URL "%s\n", tags[i].value);
-> >  		else if (!strcmp(tags[i].name, "linux-git"))
-> >  			printf(LINUX_GIT_URL "%s\n", tags[i].value);
-> > +		else if (!strcmp(tags[i].name, "linux-stable-git"))
-> > +			printf(LINUX_STABLE_GIT_URL "%s\n", tags[i].value);
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 
-> Shouldn't we add GLIBC_GIT_URL handling here as well?
-+1 thanks.
+> This test triggers temporary write of invalid data into test file on some
+> file systems on kernel 4.4.21 and older.
 
-> The rest looks good.
-Thanks! (counting your Reviewed-by: tag for this commit).
+> Changes since v1:
+> - Simplify main thread
+> - Use atomic load/store when passing read limit between threads (I hope I'm
+>   doing it correctly)
+> - Check for too big writes just in case
+> - Require at least 2 CPUs, the bugs are not reproducible on single-CPU systems
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+It takes some time to run due .all_filesystems, but I guess there is a reason to
+test it on all available fs.
+
+...
+> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
+> new file mode 100644
+> index 000000000..58d6931d2
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/writev/writev03.c
+> @@ -0,0 +1,145 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 SUSE LLC <mdoucha@suse.cz>
+> + *
+> + * Check for potential issues in writev() if the first iovec entry is NULL
+> + * and the next one is not present in RAM. This can result in a brief window
+> + * where writev() first writes uninitialized data into the file (possibly
+> + * exposing internal kernel structures) and then overwrites it with the real
+> + * iovec contents later. Bugs fixed in:
+Maybe this doc part should be in * [DESCRIPTION] to get into docparse.
+
+The rest LGTM.
 
 Kind regards,
 Petr
