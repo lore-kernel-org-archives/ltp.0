@@ -1,44 +1,124 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 23 Feb 2021 23:59:28 +0100
-Subject: [LTP] [PATCH v3 0/2]	IMA: Add test for dm-crypt measurement
-Message-ID: <20210223225930.27095-1-pvorel@suse.cz>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Tue, 23 Feb 2021 15:01:47 -0800
+Subject: [LTP] [PATCH] IMA: Add test for selinux measurement
+In-Reply-To: <YDV+SdQqGnCoykph@pevik>
+References: <20210222023805.12846-1-nramas@linux.microsoft.com>
+ <YDVCsNAfn+Ot6QIB@pevik>
+ <fdda206c-e156-d66b-7f53-0ee9c1417597@linux.microsoft.com>
+ <YDV+SdQqGnCoykph@pevik>
+Message-ID: <21490e27-a965-7d25-4c44-07bd89d0ac40@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+On 2/23/21 2:14 PM, Petr Vorel wrote:
+>> On 2/23/21 10:00 AM, Petr Vorel wrote:
+> 
+> 
+>>>> +++ b/testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+>>> ...
+>>>> +validate_policy_capabilities()
+>>>> +{
+>>>> +	local measured_cap measured_value expected_value
+>>>> +	local result=1
+>>>> +	local inx=7
+>>>> +
+>>>> +	# Policy capabilities flags start from "network_peer_controls"
+>>>> +	# in the measured SELinux state at offset 7 for 'awk'
+>>>> +	while [ $inx -lt 20 ]; do
+>>>> +		measured_cap=$(echo $1 | awk -F'[=;]' -v inx="$inx" '{print $inx}')
+>>>> +		inx=$(( $inx + 1 ))
+>>>> +
+>>>> +		measured_value=$(echo $1 | awk -F'[=;]' -v inx="$inx" '{print $inx}')
+>>>> +		expected_value=$(cat "$SELINUX_DIR/policy_capabilities/$measured_cap")
+>>>> +		if [ "$measured_value" != "$expected_value" ];then
+>>>> +			tst_res TWARN "$measured_cap: expected: $expected_value, got: $digest"
+>>> We rarely use TWARN in the tests, only when the error is not related to the test result.
+>>> Otherwise we use TFAIL.
+>> ok - I will change it to TFAIL.
+> Thanks!
+> But I've noticed that this error is handled twice, first in validate_policy_capabilities()
+> as TWARN (or TFAIL) and then in test2(). Let's use TPASS/TFAIL in
+> validate_policy_capabilities():
+Sure - will make that change.
 
-I updated Tushar's patchset to speedup things.
+> 
+> validate_policy_capabilities()
+> {
+> 	local measured_cap measured_value expected_value
+> 	local inx=7
+> 
+> 	# Policy capabilities flags start from "network_peer_controls"
+> 	# in the measured SELinux state at offset 7 for 'awk'
+> 	while [ $inx -lt 20 ]; do
+> 		measured_cap=$(echo $1 | awk -F'[=;]' -v inx="$inx" '{print $inx}')
+> 		inx=$(($inx + 1))
+> 
+> 		measured_value=$(echo $1 | awk -F'[=;]' -v inx="$inx" '{print $inx}')
+> 		expected_value=$(cat "$SELINUX_DIR/policy_capabilities/$measured_cap")
+> 		if [ "$measured_value" != "$expected_value" ]; then
+> 			tst_res TFAIL "$measured_cap: expected: $expected_value, got: $digest"
+> 			return
+> 		fi
+> 
+> 		inx=$(($inx + 1))
+> 	done
+> 
+> 	tst_res TPASS "SELinux state measured correctly"
+> }
+> 
+> test2()
+> {
+> 	...
+> 	validate_policy_capabilities $measured_data
+> }
+> 
+> ...
+>>> As we discuss, I'm going tom merge test when patchset is merged in maintainers tree,
+>>> please ping me. And ideally we should mention kernel commit hash as a comment in
+>>> the test.
+>> Will do. Thank you.
+> Thanks!
+> 
+> ...
+>>> +++ testcases/kernel/security/integrity/ima/tests/ima_selinux.sh
+>>> @@ -13,16 +13,14 @@ TST_SETUP="setup"
+>>>    . ima_setup.sh
+>>>    FUNC_CRITICAL_DATA='func=CRITICAL_DATA'
+>>> -REQUIRED_POLICY="^measure.*($FUNC_CRITICAL_DATA)"
+>>> +REQUIRED_POLICY="^measure.*$FUNC_CRITICAL_DATA"
+>>>    setup()
+>>>    {
+>>> -	SELINUX_DIR=$(tst_get_selinux_dir)
+>>> -	if [ -z "$SELINUX_DIR" ]; then
+>>> -		tst_brk TCONF "SELinux is not enabled"
+>>> -		return
+>>> -	fi
+>>> +	tst_require_selinux_enabled
+>> Please correct me if I have misunderstood this one:
+> 
+>> tst_require_selinux_enabled is checking if SELinux is enabled in "enforce"
+>> mode. Would this check fail if SELinux is enabled in "permissive" mode?
+> 
+>> For running the test, we just need SELinux to be enabled. I verify that by
+>> checking for the presence of SELINUX_DIR.
+> 
+> Good catch. Your original version is correct (put it back into ima/selinux.v2.fixes).
+> I didn't put a helper for it, because you need $SELINUX_DIR anyway.
+> Thus removed tst_require_selinux_enabled() as not needed.
+Thanks
 
-Changes v2->v3
-* rename function s/check_ima_ascii_log_for_policy/test_policy_measurement/
-* move tst_res TPASS/TFAIL into test_policy_measurement()
-* drop template=ima-buf (see Lakshmi's patch [1] and discussion about
-  it, it will be removed from ima_keys.sh as well)
-* moved ima_dm_crypt.sh specific changes to second commit
-* further API and style related cleanup
+> 
+> I renamed tst_selinux_enabled() to tst_selinux_enforced() to make the purpose clearer
+> (commit 82b598ea1 IMA: Add test for selinux measurement).
+> 
+> I've updated branch ima/selinux.v2.fixes with all mentioned changes
+> https://github.com/pevik/ltp/commits/ima/selinux.v2.fixes
+> 
+Thanks again. I'll make my changes in this branch and post the patches 
+later this week.
 
-Could you please check this patchset?
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210222023421.12576-1-nramas@linux.microsoft.com/
-
-Tushar Sugandhi (2):
-  IMA: Generalize key measurement tests
-  IMA: Add test for dm-crypt measurement
-
- runtest/ima                                   |  1 +
- .../kernel/security/integrity/ima/README.md   | 20 ++++++
- .../integrity/ima/tests/ima_dm_crypt.sh       | 41 +++++++++++
- .../security/integrity/ima/tests/ima_keys.sh  | 58 ++-------------
- .../security/integrity/ima/tests/ima_setup.sh | 71 +++++++++++++++++++
- 5 files changed, 139 insertions(+), 52 deletions(-)
- create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_dm_crypt.sh
-
--- 
-2.30.1
+  -lakshmi
 
