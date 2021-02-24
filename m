@@ -1,42 +1,107 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 24 Feb 2021 09:15:18 +0200
-Subject: [LTP] [PATCH v4] vfs: fix copy_file_range regression in
- cross-fs copies
-In-Reply-To: <20210218143635.24916-1-lhenriques@suse.de>
-References: <CAOQ4uxjGkm0Pn84UW6JKSK3mFkrPKykfkXDLL1V4YPSgAOXULA@mail.gmail.com>
- <20210218143635.24916-1-lhenriques@suse.de>
-Message-ID: <CAOQ4uxjtap0jQat19h7g+6xvpMnqrwEihgN7pw11d57kkRVsaw@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 24 Feb 2021 16:04:26 +0800
+Subject: [LTP] [PATCH RFC 2/2] swapping01: check memory swap usage per
+ process
+In-Reply-To: <CAEemH2cSwtVXi2fXam2aKG0XOEd3-hfZGgQ+o4K2_vyThMrTEg@mail.gmail.com>
+References: <20210125064747.26759-1-liwang@redhat.com>
+ <20210125064747.26759-2-liwang@redhat.com>
+ <YA7i/eQagkj0Jxsy@yuki.lan>
+ <CAEemH2cSwtVXi2fXam2aKG0XOEd3-hfZGgQ+o4K2_vyThMrTEg@mail.gmail.com>
+Message-ID: <CAEemH2fVTtYP-5KwAU8O7Nr8NQawMb3p6_qo4e37Hxahnay8VA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Feb 18, 2021 at 4:35 PM Luis Henriques <lhenriques@suse.de> wrote:
+Hi,
+
+On Tue, Jan 26, 2021 at 1:25 PM Li Wang <liwang@redhat.com> wrote:
+
+> Hi Cyril,
 >
-> A regression has been reported by Nicolas Boichat, found while using the
-> copy_file_range syscall to copy a tracefs file.  Before commit
-> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> kernel would return -EXDEV to userspace when trying to copy a file across
-> different filesystems.  After this commit, the syscall doesn't fail anymore
-> and instead returns zero (zero bytes copied), as this file's content is
-> generated on-the-fly and thus reports a size of zero.
+> On Mon, Jan 25, 2021 at 11:24 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 >
-> This patch restores some cross-filesystem copy restrictions that existed
-> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> devices").  Filesystems are still allowed to fall-back to the VFS
-> generic_copy_file_range() implementation, but that has now to be done
-> explicitly.
+>> Hi!
+>> > Since previously swapping01 read the system FreeSwap for counting
+>> > usage of swap-size, that's not precise on system especially with
+>> > eating-memory daemon??in the background. Now, we try to check the
+>> > 'VmmSwap' in proc/PID/status??per process, to get rid of??the potential
+>> > influence from??other processes??which easily leads to false positive.
+>>
+>> I've been looking for a while at the kernel commit:
+>>
+>> commit 50a15981a1fac7e019ff7c3cba87531fb580f065
+>> Author: Martin Schwidefsky <schwidefsky@de.ibm.com>
+>> Date:   Sun Jul 24 10:47:59 2011 +0200
+>>
+>>     [S390] reference bit testing for unmapped pages
+>>
+>> For which this test seems to be a reproducer and as far as I can tell
+>> this fix is not correct.
+>>
+>> If I understand correctly what we are trying to test here is that the
+>> kernel will not attempt to swap out unreferenced pages, so we have to,
+>> by definition, look at the system counters not the process ones.
+>>
+>
+> Thanks for point out this! Seems we were all working towards
+> making the test robust but neglect it's a reproducer:).
+>
+>
+> As we have discussed many unsure things will take side effect to
+> the system swap-counting, that's what we do NOT want to expect.
+> Maybe, can we encapsulate all of the means in a process to avoid
+> involving the whole system swap-counting. e.g.
+>
+> Child:
+>          to touch unreferenced pages (via
+> alloc&write&free 1.3*MemAvailable) [1]
+>          alloc&wirte 1.3*MemAvailable
+>          raise(SIGSTOP)
+>          ...
+> Parent:
+>          waiting for child suspension
+>          check child's VmSwap to see if heavy-swap occurs in a process
+>          ...
+>
+> Does this make some sense to the test or, any else suggestion?
+>
+> [1] As to perform alloc&write&free, the system pages will go through a
+> completed life cycle from buddy-system to active-list to inactive-list
+> then back to buddy-system, which reflect to a page status is theoretically
+> like:
+> "inactive,unreferenced -> active,referenced -> ... ->inactive,unreferenced"
+> so that might helpful to produce what the kernel target commit fixed
+> situation.
 >
 
-Petr,
+To verify this assumption, I run the swapping01 with/without my patch-V2
+against an unfix-kernel(2.6.39). Seems swap out unreferenced pages also
+could be occurred in a single process, which gives me some confidence to
+send out my patch V2.
 
-Please note that the check for verify_cross_fs_copy_support() in LTP
-tests can no longer be used to determine if copy_file_range() is post v5.3.
-You will need to fix the tests to expect cross-fs failures (this change of
-behavior is supposed to be backported to stable kernels as well).
+-------
+Reproduce the bug easily with an unfix-kernel
 
-I guess the copy_file_range() tests will need to use min_kver.
+# uname  -r
+2.6.39
 
-Thanks,
-Amir.
+# free -m
+             total       used       free     shared    buffers     cached
+Mem:          2006       1559        447          0         22       1359
+-/+ buffers/cache:        178       1828
+Swap:         4031         12       4019
+
+# ./swapping01
+tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
+swapping01.c:110: TINFO: available physical memory: 1896 MB
+swapping01.c:113: TINFO: try to allocate: 2466 MB
+swapping01.c:148: TFAIL: heavy swapping detected: 1905 MB swapped.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210224/24561ebb/attachment-0001.htm>
