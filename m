@@ -1,107 +1,122 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 24 Feb 2021 16:04:26 +0800
-Subject: [LTP] [PATCH RFC 2/2] swapping01: check memory swap usage per
- process
-In-Reply-To: <CAEemH2cSwtVXi2fXam2aKG0XOEd3-hfZGgQ+o4K2_vyThMrTEg@mail.gmail.com>
-References: <20210125064747.26759-1-liwang@redhat.com>
- <20210125064747.26759-2-liwang@redhat.com>
- <YA7i/eQagkj0Jxsy@yuki.lan>
- <CAEemH2cSwtVXi2fXam2aKG0XOEd3-hfZGgQ+o4K2_vyThMrTEg@mail.gmail.com>
-Message-ID: <CAEemH2fVTtYP-5KwAU8O7Nr8NQawMb3p6_qo4e37Hxahnay8VA@mail.gmail.com>
+Date: Wed, 24 Feb 2021 08:25:00 +0000
+Subject: [LTP] [PATCH v2] swapping01: check memory swap usage per process
+Message-ID: <20210224082500.18106-1-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Issue:
 
-On Tue, Jan 26, 2021 at 1:25 PM Li Wang <liwang@redhat.com> wrote:
+Currently test swapping01 read the system FreeSwap for counting usage of
+swap-size, that's not precise on system especially with eating-memory daemon
+in the background.
 
-> Hi Cyril,
->
-> On Mon, Jan 25, 2021 at 11:24 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> Hi!
->> > Since previously swapping01 read the system FreeSwap for counting
->> > usage of swap-size, that's not precise on system especially with
->> > eating-memory daemon??in the background. Now, we try to check the
->> > 'VmmSwap' in proc/PID/status??per process, to get rid of??the potential
->> > influence from??other processes??which easily leads to false positive.
->>
->> I've been looking for a while at the kernel commit:
->>
->> commit 50a15981a1fac7e019ff7c3cba87531fb580f065
->> Author: Martin Schwidefsky <schwidefsky@de.ibm.com>
->> Date:   Sun Jul 24 10:47:59 2011 +0200
->>
->>     [S390] reference bit testing for unmapped pages
->>
->> For which this test seems to be a reproducer and as far as I can tell
->> this fix is not correct.
->>
->> If I understand correctly what we are trying to test here is that the
->> kernel will not attempt to swap out unreferenced pages, so we have to,
->> by definition, look at the system counters not the process ones.
->>
->
-> Thanks for point out this! Seems we were all working towards
-> making the test robust but neglect it's a reproducer:).
->
->
-> As we have discussed many unsure things will take side effect to
-> the system swap-counting, that's what we do NOT want to expect.
-> Maybe, can we encapsulate all of the means in a process to avoid
-> involving the whole system swap-counting. e.g.
->
-> Child:
->          to touch unreferenced pages (via
-> alloc&write&free 1.3*MemAvailable) [1]
->          alloc&wirte 1.3*MemAvailable
->          raise(SIGSTOP)
->          ...
-> Parent:
->          waiting for child suspension
->          check child's VmSwap to see if heavy-swap occurs in a process
->          ...
->
-> Does this make some sense to the test or, any else suggestion?
->
-> [1] As to perform alloc&write&free, the system pages will go through a
-> completed life cycle from buddy-system to active-list to inactive-list
-> then back to buddy-system, which reflect to a page status is theoretically
-> like:
-> "inactive,unreferenced -> active,referenced -> ... ->inactive,unreferenced"
-> so that might helpful to produce what the kernel target commit fixed
-> situation.
->
+Improvement:
 
-To verify this assumption, I run the swapping01 with/without my patch-V2
-against an unfix-kernel(2.6.39). Seems swap out unreferenced pages also
-could be occurred in a single process, which gives me some confidence to
-send out my patch V2.
+Considering that swap out unreferenced pages also could be occurred in a
+single process. So that we encapsulate all of the means in a single process
+to avoid involving the whole system swap-counting. Then only try to check the
+'VmSwap' in proc/PID/status?per process, to get rid of?the potential influence
+from?other processes?which easily leads to false positive.  e.g.
 
--------
-Reproduce the bug easily with an unfix-kernel
+Child:
+         touch unreferenced pages (via alloc&write&free 1.3*MemAvailable) [1]
+         alloc&wirte 1.3*MemAvailable
+         raise(SIGSTOP)
+         ...
+Parent:
+         waiting for child suspension
+         check child's VmSwap to see if heavy-swap occurs in a process
+         ...
 
-# uname  -r
-2.6.39
+[1] As to perform alloc&write&free, the system pages will go through a
+completed life cycle from buddy-system to active-list to inactive-list
+then back to buddy-system, which reflect to a page status is theoretically like:
+"inactive,unreferenced -> active,referenced -> ... ->inactive,unreferenced"
+so that will helpful to produce what the kernel target commit fixed situation.
 
-# free -m
-             total       used       free     shared    buffers     cached
-Mem:          2006       1559        447          0         22       1359
--/+ buffers/cache:        178       1828
-Swap:         4031         12       4019
+New reproducer works well with unfix-kernel:
 
-# ./swapping01
-tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
-swapping01.c:110: TINFO: available physical memory: 1896 MB
-swapping01.c:113: TINFO: try to allocate: 2466 MB
-swapping01.c:148: TFAIL: heavy swapping detected: 1905 MB swapped.
+  # uname  -r
+  2.6.39
 
+  # ./swapping01
+  tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
+  swapping01.c:110: TINFO: available physical memory: 1896 MB
+  swapping01.c:113: TINFO: try to allocate: 2466 MB
+  swapping01.c:148: TFAIL: heavy swapping detected: 1905 MB swapped.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/swapping/swapping01.c | 23 ++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 8106f6466..66fc65cbe 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -53,7 +53,7 @@
+ #define COE_SLIGHT_OVER 0.3
+ 
+ static void init_meminfo(void);
+-static void do_alloc(void);
++static void do_alloc(int allow_raise);
+ static void check_swapping(void);
+ 
+ static long mem_available_init;
+@@ -72,7 +72,8 @@ static void test_swapping(void)
+ 
+ 	switch (pid = SAFE_FORK()) {
+ 		case 0:
+-			do_alloc();
++			do_alloc(0);
++			do_alloc(1);
+ 			exit(0);
+ 		default:
+ 			check_swapping();
+@@ -99,20 +100,23 @@ static void init_meminfo(void)
+ 				swap_free_init, mem_over_max);
+ }
+ 
+-static void do_alloc(void)
++static void do_alloc(int allow_raise)
+ {
+ 	long mem_count;
+ 	void *s;
+ 
+-	tst_res(TINFO, "available physical memory: %ld MB",
+-		mem_available_init / 1024);
++	if (allow_raise == 1)
++		tst_res(TINFO, "available physical memory: %ld MB",
++				mem_available_init / 1024);
+ 	mem_count = mem_available_init + mem_over;
+-	tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
++	if (allow_raise == 1)
++		tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
+ 	s = SAFE_MALLOC(mem_count * 1024);
+ 	memset(s, 1, mem_count * 1024);
+-	tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
+-	if (raise(SIGSTOP) == -1)
++	if ((allow_raise == 1) && (raise(SIGSTOP) == -1)) {
++		tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
+ 		tst_brk(TBROK | TERRNO, "kill");
++	}
+ 	free(s);
+ }
+ 
+@@ -137,8 +141,7 @@ static void check_swapping(void)
+ 		i++;
+ 	}
+ 
+-	swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
+-	swapped = swap_free_init - swap_free_now;
++	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
+ 	if (swapped > mem_over_max) {
+ 		kill(pid, SIGCONT);
+ 		tst_brk(TFAIL, "heavy swapping detected: "
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210224/24561ebb/attachment-0001.htm>
+2.21.3
+
