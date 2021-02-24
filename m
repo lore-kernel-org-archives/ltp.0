@@ -1,21 +1,13 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 24 Feb 2021 12:02:09 +0100
-Subject: [LTP] [PATCH v2] swapping01: check memory swap usage per process
-In-Reply-To: <20210224082500.18106-1-liwang@redhat.com>
-References: <20210224082500.18106-1-liwang@redhat.com>
-Message-ID: <YDYyMQO5+Iu8zFpt@pevik>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 24 Feb 2021 15:10:44 +0100
+Subject: [LTP] [PATCH] memcg/stat_test: Use more memory for tests
+In-Reply-To: <20210216123841.3424969-1-lkml@jv-coder.de>
+References: <20210216123841.3424969-1-lkml@jv-coder.de>
+Message-ID: <deefa607-a79f-ce97-46a2-8957bbc7e958@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
-
-looks like as a good approach. LGTM.
-Thanks for taking care.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+A friendly ping ;)
