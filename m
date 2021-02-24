@@ -1,122 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 24 Feb 2021 08:25:00 +0000
-Subject: [LTP] [PATCH v2] swapping01: check memory swap usage per process
-Message-ID: <20210224082500.18106-1-liwang@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 24 Feb 2021 09:30:03 +0100
+Subject: [LTP] [PATCH v4] vfs: fix copy_file_range regression in
+ cross-fs copies
+In-Reply-To: <CAOQ4uxjtap0jQat19h7g+6xvpMnqrwEihgN7pw11d57kkRVsaw@mail.gmail.com>
+References: <CAOQ4uxjGkm0Pn84UW6JKSK3mFkrPKykfkXDLL1V4YPSgAOXULA@mail.gmail.com>
+ <20210218143635.24916-1-lhenriques@suse.de>
+ <CAOQ4uxjtap0jQat19h7g+6xvpMnqrwEihgN7pw11d57kkRVsaw@mail.gmail.com>
+Message-ID: <YDYOi5QTuas+ScAZ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Issue:
+Hi Amir,
 
-Currently test swapping01 read the system FreeSwap for counting usage of
-swap-size, that's not precise on system especially with eating-memory daemon
-in the background.
+> On Thu, Feb 18, 2021 at 4:35 PM Luis Henriques <lhenriques@suse.de> wrote:
 
-Improvement:
+> > A regression has been reported by Nicolas Boichat, found while using the
+> > copy_file_range syscall to copy a tracefs file.  Before commit
+> > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> > kernel would return -EXDEV to userspace when trying to copy a file across
+> > different filesystems.  After this commit, the syscall doesn't fail anymore
+> > and instead returns zero (zero bytes copied), as this file's content is
+> > generated on-the-fly and thus reports a size of zero.
 
-Considering that swap out unreferenced pages also could be occurred in a
-single process. So that we encapsulate all of the means in a single process
-to avoid involving the whole system swap-counting. Then only try to check the
-'VmSwap' in proc/PID/status?per process, to get rid of?the potential influence
-from?other processes?which easily leads to false positive.  e.g.
+> > This patch restores some cross-filesystem copy restrictions that existed
+> > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> > devices").  Filesystems are still allowed to fall-back to the VFS
+> > generic_copy_file_range() implementation, but that has now to be done
+> > explicitly.
 
-Child:
-         touch unreferenced pages (via alloc&write&free 1.3*MemAvailable) [1]
-         alloc&wirte 1.3*MemAvailable
-         raise(SIGSTOP)
-         ...
-Parent:
-         waiting for child suspension
-         check child's VmSwap to see if heavy-swap occurs in a process
-         ...
 
-[1] As to perform alloc&write&free, the system pages will go through a
-completed life cycle from buddy-system to active-list to inactive-list
-then back to buddy-system, which reflect to a page status is theoretically like:
-"inactive,unreferenced -> active,referenced -> ... ->inactive,unreferenced"
-so that will helpful to produce what the kernel target commit fixed situation.
+> Petr,
 
-New reproducer works well with unfix-kernel:
+> Please note that the check for verify_cross_fs_copy_support() in LTP
+> tests can no longer be used to determine if copy_file_range() is post v5.3.
+> You will need to fix the tests to expect cross-fs failures (this change of
+> behavior is supposed to be backported to stable kernels as well).
 
-  # uname  -r
-  2.6.39
+> I guess the copy_file_range() tests will need to use min_kver.
 
-  # ./swapping01
-  tst_test.c:1263: TINFO: Timeout per run is 0h 05m 00s
-  swapping01.c:110: TINFO: available physical memory: 1896 MB
-  swapping01.c:113: TINFO: try to allocate: 2466 MB
-  swapping01.c:148: TFAIL: heavy swapping detected: 1905 MB swapped.
+Thanks for info! I see, after "vfs: fix copy_file_range regression in cross-fs
+copies" and backported to 5.4.x, 5.10.x and 5.11.x we'll probably have to
+replace verify_cross_fs_copy_support() with .min_kver = "5.3".
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/mem/swapping/swapping01.c | 23 ++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+We have also tst_kvercmp2() in case original 5dae222a5ff0 ("vfs: allow
+copy_file_range to copy across devices") was backported to any enterprise distro
+(and then this fix would follow).
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 8106f6466..66fc65cbe 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -53,7 +53,7 @@
- #define COE_SLIGHT_OVER 0.3
- 
- static void init_meminfo(void);
--static void do_alloc(void);
-+static void do_alloc(int allow_raise);
- static void check_swapping(void);
- 
- static long mem_available_init;
-@@ -72,7 +72,8 @@ static void test_swapping(void)
- 
- 	switch (pid = SAFE_FORK()) {
- 		case 0:
--			do_alloc();
-+			do_alloc(0);
-+			do_alloc(1);
- 			exit(0);
- 		default:
- 			check_swapping();
-@@ -99,20 +100,23 @@ static void init_meminfo(void)
- 				swap_free_init, mem_over_max);
- }
- 
--static void do_alloc(void)
-+static void do_alloc(int allow_raise)
- {
- 	long mem_count;
- 	void *s;
- 
--	tst_res(TINFO, "available physical memory: %ld MB",
--		mem_available_init / 1024);
-+	if (allow_raise == 1)
-+		tst_res(TINFO, "available physical memory: %ld MB",
-+				mem_available_init / 1024);
- 	mem_count = mem_available_init + mem_over;
--	tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
-+	if (allow_raise == 1)
-+		tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
- 	s = SAFE_MALLOC(mem_count * 1024);
- 	memset(s, 1, mem_count * 1024);
--	tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
--	if (raise(SIGSTOP) == -1)
-+	if ((allow_raise == 1) && (raise(SIGSTOP) == -1)) {
-+		tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
- 		tst_brk(TBROK | TERRNO, "kill");
-+	}
- 	free(s);
- }
- 
-@@ -137,8 +141,7 @@ static void check_swapping(void)
- 		i++;
- 	}
- 
--	swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
--	swapped = swap_free_init - swap_free_now;
-+	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
- 	if (swapped > mem_over_max) {
- 		kill(pid, SIGCONT);
- 		tst_brk(TFAIL, "heavy swapping detected: "
--- 
-2.21.3
+Kind regards,
+Petr
 
+> Thanks,
+> Amir.
