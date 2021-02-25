@@ -1,19 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Feb 2021 14:32:08 +0100
-Subject: [LTP] [PATCH v2] syscalls/timer_settime03.c: Add kconfig
- requirement of CONFIG_HIGH_RES_TIMERS=y
-In-Reply-To: <20210225113722.29953-1-zhaogongyi@huawei.com>
-References: <20210225113722.29953-1-zhaogongyi@huawei.com>
-Message-ID: <YDem2LVDnec09l3k@yuki.lan>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 25 Feb 2021 15:09:25 +0100
+Subject: [LTP] [PATCH] Reduce writev03 fuzzy_sync timeout
+Message-ID: <20210225140925.16187-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+Writev03 is fairly slow and tests multiple filesystems, each getting another
+round of timeout. Reduce fuzzy sync time limit to 25% of standard timeout
+to make the test finish slightly faster.
 
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/kernel/syscalls/writev/writev03.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
+index 4dc55c191..6514404e6 100644
+--- a/testcases/kernel/syscalls/writev/writev03.c
++++ b/testcases/kernel/syscalls/writev/writev03.c
+@@ -49,6 +49,7 @@ static void setup(void)
+ 	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
+ 	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
+ 
++	fzsync_pair.exec_time_p = 0.25;
+ 	tst_fzsync_pair_init(&fzsync_pair);
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0
+
