@@ -1,100 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Feb 2021 16:39:55 +0100
-Subject: [LTP] [PATCH v2 1/2] syscalls/getpid01: Convert to new API
-In-Reply-To: <20210225110118.583486-1-ruansy.fnst@cn.fujitsu.com>
-References: <20210225110118.583486-1-ruansy.fnst@cn.fujitsu.com>
-Message-ID: <YDfEy9K+p3cyGL2/@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 25 Feb 2021 19:45:36 +0100
+Subject: [LTP] [PATCH] Reduce writev03 fuzzy_sync timeout
+In-Reply-To: <20210225140925.16187-1-mdoucha@suse.cz>
+References: <20210225140925.16187-1-mdoucha@suse.cz>
+Message-ID: <YDfwUJGckLfKexxY@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with small changes, thanks.
+Hi Martin,
 
-I've fixed some typos plus two changes explained below.
+> Writev03 is fairly slow and tests multiple filesystems, each getting another
+> round of timeout. Reduce fuzzy sync time limit to 25% of standard timeout
+> to make the test finish slightly faster.
 
-> +static void verify_getpid(void)
->  {
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		TEST(getpid());
-> -
-> -		if (TEST_RETURN == -1)
-> -			tst_resm(TFAIL | TTERRNO, "getpid failed");
-> -		else
-> -			tst_resm(TPASS, "getpid returned %ld", TEST_RETURN);
-> -
-> +	pid_t pid_max, pid;
-> +	int status;
-> +
-> +	/* get pid_max of this system */
-> +	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
-> +
-> +	for (int i = 0; i < 100; i++) {
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 
-This int declaration inside of a for () statement will cause error with
-older compiters, so I moved the variable declaration out of the
-statement.
+LGTM
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/kernel/syscalls/writev/writev03.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-> +		pid = SAFE_FORK();
-> +		if (pid == 0) {
-> +			pid = getpid();
-> +
-> +			/* pid should not be 1 or out of maximum */
-> +			if (1 < pid && pid <= pid_max)
-> +				tst_res(TPASS, "getpid() returns %d", pid);
-> +			else
-> +				tst_res(TFAIL | TTERRNO,
-> +					"getpid() returns out of range: %d", pid);
-> +		} else {
-> +			SAFE_WAIT(&status);
-> +			break;
+> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
+> index 4dc55c191..6514404e6 100644
+> --- a/testcases/kernel/syscalls/writev/writev03.c
+> +++ b/testcases/kernel/syscalls/writev/writev03.c
+> @@ -49,6 +49,7 @@ static void setup(void)
+>  	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
+>  	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
 
-This is parent process, which should continue to run the for loop, so
-I've removed the break; here and added exit(0) at the end fo thec child
-instead.
-
-> +		}
->  	}
-> -
-> -	cleanup();
-> -	tst_exit();
+> +	fzsync_pair.exec_time_p = 0.25;
+>  	tst_fzsync_pair_init(&fzsync_pair);
 >  }
->  
-> -void setup(void)
-> -{
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -}
-> -
-> -void cleanup(void)
-> -{
-> -}
-> +static struct tst_test test = {
-> +	.forks_child = 1,
-> +	.test_all = verify_getpid,
-> +};
-> -- 
-> 2.30.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
