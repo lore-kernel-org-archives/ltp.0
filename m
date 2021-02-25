@@ -1,184 +1,77 @@
-From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Date: Thu, 25 Feb 2021 19:01:18 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/getpid02: Convert to new API
-In-Reply-To: <20210225110118.583486-1-ruansy.fnst@cn.fujitsu.com>
-References: <20210225110118.583486-1-ruansy.fnst@cn.fujitsu.com>
-Message-ID: <20210225110118.583486-2-ruansy.fnst@cn.fujitsu.com>
+From: Pankaj-Joshi <pankaj.joshi347@gmail.com>
+Date: Thu, 25 Feb 2021 16:41:43 +0530
+Subject: [LTP] [PATCH] Updated README.kernel_config
+Message-ID: <20210225111143.26068-1-pankaj.joshi347@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+From: pankajjoshi347 <pankaj.joshi347@gmail.com>
+
 ---
- testcases/kernel/syscalls/getpid/getpid02.c | 140 +++-----------------
- 1 file changed, 21 insertions(+), 119 deletions(-)
+ README.kernel_config | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/getpid/getpid02.c b/testcases/kernel/syscalls/getpid/getpid02.c
-index 6c44ea96a..73011b2b0 100644
---- a/testcases/kernel/syscalls/getpid/getpid02.c
-+++ b/testcases/kernel/syscalls/getpid/getpid02.c
-@@ -1,136 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
+diff --git a/README.kernel_config b/README.kernel_config
+index 547dd4f33..eed19e557 100644
+--- a/README.kernel_config
++++ b/README.kernel_config
+@@ -18,8 +18,11 @@ CONFIG_IPC_NS=y
+ CONFIG_USER_NS=y
+ CONFIG_PID_NS=y
+ CONFIG_NET_NS=y
++CONFIG_TIME_NS=y
+ CONFIG_VETH=y
+ CONFIG_MACVLAN=y
++CONFIG_TUN=y
++CONFIG_TAP=y
  
--/*
-- * Test Name: getpid02
-- *
-- * Test Description:
-- *  Verify that getpid() system call gets the process ID of the of the
-- *  calling process.
-- *
-- * Expected Result:
-- *  getpid() should return pid of the process on success.
-+/*\
-+ * [DESCRIPTION]
-  *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *
-- * Usage:  <for command-line>
-- *  getpid02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
-- *  None.
-- */
-+ * Check that getppid() in child returns the same pid as getpid() in parent.
-+\*/
+ The IPC namespaces do not automatically enable IPC, so you may
+ also want to have:
+@@ -128,6 +131,8 @@ CONFIG_CRASH_DUMP=y
+ CONFIG_PM=y
+ CONFIG_HIBERNATION=y
+ CONFIG_KEXEC_JUMP=y
++CONFIG_SECCOMP=y
++CONFIG_NUMA=y
+ ---------------------------------
+ Enabling HOTPLUG for your Kernels
+ ---------------------------------
+@@ -281,10 +286,32 @@ end
+ 1) Add or modify testcases when relevant kernel functionality changes.
+ ---------------------------------
  
--#include <unistd.h>
--#include <sys/types.h>
- #include <errno.h>
--#include <unistd.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/wait.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--void setup();			/* Main setup function of test */
--void cleanup();			/* cleanup function for the test */
- 
--char *TCID = "getpid02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--int main(int ac, char **av)
-+static void verify_getpid(void)
- {
--	int lc;
- 	pid_t proc_id;		/* process id of the test process */
- 	pid_t pid;		/* process id of the child process */
- 	pid_t pproc_id;		/* parent process id */
--	int status;		/* exit status of child process */
- 
--	tst_parse_opts(ac, av, NULL, NULL);
-+	proc_id = getpid();
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		pproc_id = getppid();
- 
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(getpid());
--
--		proc_id = TEST_RETURN;
--
--		if ((pid = FORK_OR_VFORK()) == -1)
--			tst_resm(TFAIL | TERRNO, "fork failed");
--		else if (pid == 0) {
--			pproc_id = getppid();
--
--			if (pproc_id != proc_id)
--				exit(1);
--			exit(0);
--		} else {
--			SAFE_WAIT(cleanup, &status);
--			if (!WIFEXITED(status) ||
--			    WEXITSTATUS(status) != 0)
--				tst_resm(TFAIL, "getpid() returned "
--					 "invalid pid %d", proc_id);
--			else
--				tst_resm(TPASS,
--					 "getpid functionality is correct");
--		}
-+		if (pproc_id != proc_id)
-+			tst_res(TFAIL, "child's ppid(%d) not equal to parent's pid(%d)",
-+				pproc_id, proc_id);
-+		else
-+			tst_res(TPASS, "getpid() functionality is correct");
- 	}
--
--	cleanup();
--	tst_exit();
- }
- 
--void setup(void)
--{
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.forks_child = 1,
-+	.test_all = verify_getpid,
-+};
++---------------------------------
++Enabling Kernel Configuration to test Memory management features
++---------------------------------
++CONFIG_KSM=y
++CONFIG_THP_SWAP=y
++CONFIG_MEMORY_FAILURE=y
++---------------------------------
++Enabling Kernel Configuration to test other filesystems
++---------------------------------
++CONFIG_PROC_FS=y
++CONFIG_PROC_KCORE=y
++CONFIG_SWAP=y
++CONFIG_FANOTIFY=y
++CONFIG_QFMT_V2=y
++CONFIG_XFS_QUOTA=y
++CONFIG_HUGETLBFS=y
++CONFIG_HUGETLB_PAGE=y
++---------------------------------
++Enabling Kernel Configuration to test CPU/Task time and stats accounting
++---------------------------------
++CONFIG_BSD_PROCESS_ACCT=y
+ ---------------------------------
+ Enabling Kernel Configuration to test ext4 new features
+ ---------------------------------
+ CONFIG_EXT4_FS=y
++CONFIG_EXT4_ENCRYPTION=y
+ CONFIG_EXT4DEV_COMPAT=y
+ CONFIG_EXT4_FS_XATTR=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
 -- 
-2.30.1
-
-
+2.17.1
 
