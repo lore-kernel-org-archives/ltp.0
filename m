@@ -1,32 +1,30 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 25 Feb 2021 13:36:59 +0800
-Subject: [LTP] [PATCH v2] swapping01: check memory swap usage per process
-In-Reply-To: <YDYyMQO5+Iu8zFpt@pevik>
-References: <20210224082500.18106-1-liwang@redhat.com> <YDYyMQO5+Iu8zFpt@pevik>
-Message-ID: <CAEemH2fO3fxtP7K4KNK+3sBzc4pBh=Gv5b3pHqZ_ASsPGMgsqw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 25 Feb 2021 09:00:02 +0100
+Subject: [LTP] [PATCH 1/1] brk02: Add test for removing more than one VMA
+In-Reply-To: <20210224213520.rfdk2hdslqua7a2c@revolver>
+References: <20210209143702.2003038-1-Liam.Howlett@Oracle.com>
+ <20210209143702.2003038-2-Liam.Howlett@Oracle.com>
+ <YCZYB2w+Il5F0TlI@pevik> <20210224213520.rfdk2hdslqua7a2c@revolver>
+Message-ID: <YDdZAu9KlOsVToML@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Liam,
 
-On Wed, Feb 24, 2021 at 7:02 PM Petr Vorel <pvorel@suse.cz> wrote:
+> > > +	addr += page_size;
+> > > +	if (brk(addr))
+> > > +		return;
+> > You need to add tst_ret(TFAIL, "failed due ..."); before each return otherwise
+> > you get error:
+> > tst_test.c:1080: TBROK: Test haven't reported results!
 
-> Hi Li,
->
-> looks like as a good approach. LGTM.
-> Thanks for taking care.
->
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
+> I believe you mean tst_res().  I will fix it.
+Yes, sorry for typo.
 
-Thanks for the review, merged.
+Thanks for your work!
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210225/0c152bd7/attachment.htm>
+Kind regards,
+Petr
