@@ -1,46 +1,46 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Fri, 26 Feb 2021 06:37:42 +0000
-Subject: [LTP] [PATCH] syscalls/ioctl: Remove requirement of loop driver
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387A866@dggeml511-mbs.china.huawei.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 26 Feb 2021 08:00:11 +0000
+Subject: [LTP] [PATCH] Reduce writev03 fuzzy_sync timeout
+In-Reply-To: <20210225140925.16187-1-mdoucha@suse.cz>
+References: <20210225140925.16187-1-mdoucha@suse.cz>
+Message-ID: <87zgzr6yyc.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Yang,
+Hello,
 
-> 1) I think .needs_driver can parse either CONFIG_BLK_DEV_LOOP=y or
-> CONFIG_BLK_DEV_LOOP=m correctly.
->      Do you have any issue that .needs_driver cannot parse
+Martin Doucha <mdoucha@suse.cz> writes:
 
-I known the reason why test fail and report TCONF, there is no file modules.builtin on my system.
-
-> CONFIG_BLK_DEV_LOOP=y correctly?
-> 2) If CONFIG_BLK_DEV_LOOP is not set, we would like to report TCONF
-> by .needs_driver rather than TBROK by tst_find_free_loopdev().
+> Writev03 is fairly slow and tests multiple filesystems, each getting another
+> round of timeout. Reduce fuzzy sync time limit to 25% of standard timeout
+> to make the test finish slightly faster.
 >
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/kernel/syscalls/writev/writev03.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
+> index 4dc55c191..6514404e6 100644
+> --- a/testcases/kernel/syscalls/writev/writev03.c
+> +++ b/testcases/kernel/syscalls/writev/writev03.c
+> @@ -49,6 +49,7 @@ static void setup(void)
+>  	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
+>  	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
+>  
+> +	fzsync_pair.exec_time_p = 0.25;
+>  	tst_fzsync_pair_init(&fzsync_pair);
+>  }
+>  
+> -- 
+> 2.30.0
 
-It looks like good.
+LGTM.
 
 
-Thanks!
-
-----------------------------------------------------------------------------------------------------
-
-> 
-> On 2021/2/26 12:00, Zhao Gongyi wrote:
-> > There is no loop driver when config CONFIG_BLK_DEV_LOOP is set to y,
-> > and we have check the loop device in tst_find_free_loopdev. So we can
-> > remove the requirement of loop driver.
-> Hi Zhongyi,
-> 
-> 1) I think .needs_driver can parse either CONFIG_BLK_DEV_LOOP=y or
-> CONFIG_BLK_DEV_LOOP=m correctly.
->      Do you have any issue that .needs_driver cannot parse
-> CONFIG_BLK_DEV_LOOP=y correctly?
-> 2) If CONFIG_BLK_DEV_LOOP is not set, we would like to report TCONF
-> by .needs_driver rather than TBROK by tst_find_free_loopdev().
-> 
-> Best Regards,
-> Xiao Yang
+-- 
+Thank you,
+Richard.
