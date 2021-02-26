@@ -1,24 +1,56 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 26 Feb 2021 09:30:15 +0100
-Subject: [LTP] [PATCH] syscalls/ioctl: Remove requirement of loop driver
-In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387A866@dggeml511-mbs.china.huawei.com>
-References: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387A866@dggeml511-mbs.china.huawei.com>
-Message-ID: <YDixlxtJN/sgu/2l@yuki.lan>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Fri, 26 Feb 2021 17:06:15 +0800
+Subject: [LTP] [PATCH] lib/tst_supported_fs_types.c: Add tmpfs to filesystem
+ whitelist
+Message-ID: <20210226090615.231970-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > 1) I think .needs_driver can parse either CONFIG_BLK_DEV_LOOP=y or
-> > CONFIG_BLK_DEV_LOOP=m correctly.
-> >      Do you have any issue that .needs_driver cannot parse
-> 
-> I known the reason why test fail and report TCONF, there is no file modules.builtin on my system.
+In many Embedded system, we need add tmpfs wo filesystem whitelist since
+there is only tmpfs can be used to test.
 
-Then I would say that your system is broken.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ lib/tst_supported_fs_types.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+index 00ede549d..696b6731e 100644
+--- a/lib/tst_supported_fs_types.c
++++ b/lib/tst_supported_fs_types.c
+@@ -22,6 +22,7 @@ static const char *const fs_type_whitelist[] = {
+ 	"vfat",
+ 	"exfat",
+ 	"ntfs",
++	"tmpfs",
+ 	NULL
+ };
+
+@@ -34,6 +35,10 @@ static int has_mkfs(const char *fs_type)
+
+ 	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
+
++	if (strstr(buf, "mkfs.tmpfs")) {
++		return 1;
++	}
++
+ 	ret = tst_system(buf);
+
+ 	if (WEXITSTATUS(ret) == 127) {
+@@ -55,8 +60,8 @@ static int has_kernel_support(const char *fs_type, int flags)
+ 	if (!tmpdir)
+ 		tmpdir = "/tmp";
+
+-	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
+-	if (errno != ENODEV) {
++	ret = mount("/dev/zero", tmpdir, fs_type, 0, NULL);
++	if (!ret) {
+ 		tst_res(TINFO, "Kernel supports %s", fs_type);
+ 		return 1;
+ 	}
+--
+2.17.1
+
