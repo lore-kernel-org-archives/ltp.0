@@ -1,46 +1,24 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 26 Feb 2021 08:00:11 +0000
-Subject: [LTP] [PATCH] Reduce writev03 fuzzy_sync timeout
-In-Reply-To: <20210225140925.16187-1-mdoucha@suse.cz>
-References: <20210225140925.16187-1-mdoucha@suse.cz>
-Message-ID: <87zgzr6yyc.fsf@suse.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 26 Feb 2021 09:30:15 +0100
+Subject: [LTP] [PATCH] syscalls/ioctl: Remove requirement of loop driver
+In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387A866@dggeml511-mbs.china.huawei.com>
+References: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387A866@dggeml511-mbs.china.huawei.com>
+Message-ID: <YDixlxtJN/sgu/2l@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi!
+> > 1) I think .needs_driver can parse either CONFIG_BLK_DEV_LOOP=y or
+> > CONFIG_BLK_DEV_LOOP=m correctly.
+> >      Do you have any issue that .needs_driver cannot parse
+> 
+> I known the reason why test fail and report TCONF, there is no file modules.builtin on my system.
 
-Martin Doucha <mdoucha@suse.cz> writes:
-
-> Writev03 is fairly slow and tests multiple filesystems, each getting another
-> round of timeout. Reduce fuzzy sync time limit to 25% of standard timeout
-> to make the test finish slightly faster.
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->  testcases/kernel/syscalls/writev/writev03.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
-> index 4dc55c191..6514404e6 100644
-> --- a/testcases/kernel/syscalls/writev/writev03.c
-> +++ b/testcases/kernel/syscalls/writev/writev03.c
-> @@ -49,6 +49,7 @@ static void setup(void)
->  	mapfd = SAFE_OPEN(MAPFILE, O_CREAT|O_RDWR|O_TRUNC, 0644);
->  	SAFE_WRITE(1, mapfd, buf, BUF_SIZE);
->  
-> +	fzsync_pair.exec_time_p = 0.25;
->  	tst_fzsync_pair_init(&fzsync_pair);
->  }
->  
-> -- 
-> 2.30.0
-
-LGTM.
-
+Then I would say that your system is broken.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
