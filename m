@@ -1,47 +1,97 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Sat, 27 Feb 2021 11:32:30 +0800
-Subject: [LTP] [PATCH] fanotify13.c/setxattr01.c: Remove requirement of
- needs_tmpdir
-Message-ID: <20210227033230.175881-1-zhaogongyi@huawei.com>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Sat, 27 Feb 2021 09:33:48 +0000
+Subject: [LTP] [PATCH] lib/tst_supported_fs_types.c: Add tmpfs to
+ filesystem whitelist
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40387BFA9@dggeml511-mbs.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcases aim to run on all_filesystems, so we need remove the
-requirement of needs_tmpdir.
+Hi Cyril,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/fanotify/fanotify13.c | 1 -
- testcases/kernel/syscalls/setxattr/setxattr01.c | 1 -
- 2 files changed, 2 deletions(-)
+> 
+> But there is another problem there, since the code still mounts tmpfs on
+> tmpdir for a short while, which is temporary directory used by all LTP tests,
+> which may potentially break tests that runs in parallel.
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
-index 6d812cdd1..1fb12ae68 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify13.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
-@@ -289,7 +289,6 @@ static struct tst_test test = {
- 	.setup = do_setup,
- 	.cleanup = do_cleanup,
- 	.needs_root = 1,
--	.needs_tmpdir = 1,
- 	.mount_device = 1,
- 	.mntpoint = MOUNT_PATH,
- 	.all_filesystems = 1,
-diff --git a/testcases/kernel/syscalls/setxattr/setxattr01.c b/testcases/kernel/syscalls/setxattr/setxattr01.c
-index 8b84dfe0d..8cd2821d0 100644
---- a/testcases/kernel/syscalls/setxattr/setxattr01.c
-+++ b/testcases/kernel/syscalls/setxattr/setxattr01.c
-@@ -210,7 +210,6 @@ static struct tst_test test = {
- 	.mntpoint = MNTPOINT,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
--	.needs_tmpdir = 1,
- 	.needs_root = 1,
- };
+	In general, when all_filesystems has been set to 1,  the needs_tmpdir would be set to 1 and the mntpoint must has been set to some path, so the test run in /tmp/tmpxxxxxx/mntpoint and
+	other LTP tests would run in another tmpdir. So it has no problem for running in parallel.
 
---
-2.17.1
+	I don't know if I understand it right.
+> 
+> So we will have to prepare a temporary directory with mkdtemp() under
+> the tmpdir as well and pass that to the mount() syscall instead.
+>
 
+Thanks so much!
+
+-------------------------------------------------------------------------------------------------------
+> 
+> Hi!
+> > diff --git a/lib/tst_supported_fs_types.c
+> > b/lib/tst_supported_fs_types.c index 00ede549d..696b6731e 100644
+> > --- a/lib/tst_supported_fs_types.c
+> > +++ b/lib/tst_supported_fs_types.c
+> > @@ -22,6 +22,7 @@ static const char *const fs_type_whitelist[] = {
+> >  	"vfat",
+> >  	"exfat",
+> >  	"ntfs",
+> > +	"tmpfs",
+> >  	NULL
+> >  };
+> >
+> > @@ -34,6 +35,10 @@ static int has_mkfs(const char *fs_type)
+> >
+> >  	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
+> >
+> > +	if (strstr(buf, "mkfs.tmpfs")) {
+> > +		return 1;
+> > +	}
+> > +
+> >  	ret = tst_system(buf);
+> >
+> >  	if (WEXITSTATUS(ret) == 127) {
+> > @@ -55,8 +60,8 @@ static int has_kernel_support(const char *fs_type,
+> int flags)
+> >  	if (!tmpdir)
+> >  		tmpdir = "/tmp";
+> >
+> > -	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
+> > -	if (errno != ENODEV) {
+> > +	ret = mount("/dev/zero", tmpdir, fs_type, 0, NULL);
+> 
+> The manual page explicitly says that errno is set to ENODEV if filesystem is
+> not supported by kernel. So the check for errno should stay, since the
+> statement above will fail to mount any real filesystem since we pass
+> "/dev/zero" instead of valid filesystem image there.
+> 
+> I.e. if we pass a real filesystem there it will either fail with EINVAL (since
+> /dev/zero does not have a valid superblock) or ENODEV if there is no
+> kernel driver for the filesystem.
+> 
+> > +	if (!ret) {
+> 
+> I guess that tmpfs succeeds to mount there. So I guess that we should
+> change the condition to:
+> 
+> 	if ((ret && errno != ENODEV) || !ret) {
+> 		if (!ret)
+> 			tst_umount(tmpdir);
+> 
+> 		tst_res(TINFO, "Kernel supports %s", fs_type);
+> 		return 1;
+> 	}
+> 
+> 
+> But there is another problem there, since the code still mounts tmpfs on
+> tmpdir for a short while, which is temporary directory used by all LTP tests,
+> which may potentially break tests that runs in parallel.
+> 
+> So we will have to prepare a temporary directory with mkdtemp() under
+> the tmpdir as well and pass that to the mount() syscall instead.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
