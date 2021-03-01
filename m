@@ -1,27 +1,57 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 1 Mar 2021 17:04:14 +0100
-Subject: [LTP] [PATCH v2 2/6] zram01.sh: Generate test setup variables
- in setup
-In-Reply-To: <YDz7WqyTUnTXrnXc@yuki.lan>
+Date: Mon, 1 Mar 2021 17:18:17 +0100
+Subject: [LTP] [PATCH v2 6/6] zram: Increase timeout according to used
+ devices
+In-Reply-To: <YD0MvpaWz7gTjp9V@yuki.lan>
 References: <20210129194144.31299-1-pvorel@suse.cz>
- <20210129194144.31299-3-pvorel@suse.cz> <YDz7WqyTUnTXrnXc@yuki.lan>
-Message-ID: <YD0QftayUp+PNso4@pevik>
+ <20210129194144.31299-7-pvorel@suse.cz> <YBRroFhaxdqCLv2i@pevik>
+ <YD0EuJtWxhis24ZX@yuki.lan> <YD0LMzlHtms7WYEi@pevik>
+ <YD0MvpaWz7gTjp9V@yuki.lan>
+Message-ID: <YD0TyRdBm9FO6wLj@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-
 > Hi!
-> Looks good including the changes proposed in the thread.
+> > > I would still prefer if we had a timeout there, -1 is for something that
+> > > cannot be predicted.
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > > Also we do not expect machine to be heavily loaded, in that case half of
+> > > LTP tests would time out.
 
-Thanks! I suppose this include keep "grep -v -e fat -e ntfs -e fuse"
-to avoid fat/ntfs testing (I'd personally use it, because we don't whitelist
-testing them for other tests, e.g. fanotify).
+> > > So I would just measure how long the test takes, then multiply it by 5
+> > > or something like that and put that in as a timeout.
+> > Do you mean to use high enough static timeout defined before startup (working
+> > for maximum possible filesystems)? And create tst_set_timeout() for shell as
+> > independent effort?
+
+> I would do:
+
+> * Add tst_set_timeout for shell, so that it mirrors the C API
++1. BTW C has .all_filesystems for timeout for each run, which allows not to
+bother with timeout depending on number of filesystems (unlike fuzzy sync, which
+also sometimes needs tweak fzsync_pair.exec_time_p). I'm for ignoring this fact,
+just to let know that shell API is far behind C API.
+
+> * Measure runtime of the test divide it by the number of supported
+>   filesystems, that way we would get mean runtime per filesystem
+
+>   now I would multiply this number with arbitrary constantm, e.g. 5 or
+>   even more, this is now timeout per iteration
+
+>   with this number the actuall timeout would be:
+
+>   number_of_filesystems * mean_max_per_run
+
+
+> Does this sound sane?
++1, thanks!
+
+> I guess that in the end we will end up with something similar what you
+> had there, but we would have some data that supports this decision.
++1
 
 Kind regards,
 Petr
