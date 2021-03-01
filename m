@@ -1,21 +1,27 @@
-From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Mon, 1 Mar 2021 10:57:30 +0800
-Subject: [LTP] [PATCH] De-duplication: Remove requirement of needs_tmpdir
-In-Reply-To: <20210301022550.96228-1-zhaogongyi@huawei.com>
-References: <20210301022550.96228-1-zhaogongyi@huawei.com>
-Message-ID: <603C581A.9040202@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 1 Mar 2021 14:36:07 +0800
+Subject: [LTP] [PATCH] syscalls/getpid02: Also check the fork() retval
+In-Reply-To: <20210226153711.13645-1-chrubis@suse.cz>
+References: <20210226153711.13645-1-chrubis@suse.cz>
+Message-ID: <CAEemH2ebeC=fi0U_OahsOBz=c4RKF7J29gbJBsb7c3nrcroFLw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Gongyi
-> The flag is not needed to be set when use these flags: '.all_filesystems',
-> '.format_device', '.mntpoint', '.mount_device' '.needs_checkpoints',
-> '.needs_device', '.resource_file'. These flags imply creating temporary
-> directory.
-Merged, thanks!
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
+The return value from fork() in parent must be equal to getpid() in child.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+>
 
+Reviewed-by: Li Wang <liwang@redhat.com>
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210301/ad9cb211/attachment.htm>
