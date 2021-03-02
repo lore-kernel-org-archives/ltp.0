@@ -1,77 +1,164 @@
-From: Pankaj-Joshi <pankaj.joshi347@gmail.com>
-Date: Tue,  2 Mar 2021 13:02:48 +0530
-Subject: [LTP] [PATCH] Updated README.kernel_config
-Message-ID: <20210302073248.10204-1-pankaj.joshi347@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 2 Mar 2021 16:53:16 +0800
+Subject: [LTP] [PATCH 5/7] tst_test.sh: Introduce
+ tst_set_timeout(timeout)
+In-Reply-To: <20210301220222.22705-6-pvorel@suse.cz>
+References: <20210301220222.22705-1-pvorel@suse.cz>
+ <20210301220222.22705-6-pvorel@suse.cz>
+Message-ID: <CAEemH2cr0TFvFiis_05Fh4bEe1ZUmFtMO5ysYFped5ZQYucvAg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: pankajjoshi347 <pankaj.joshi347@gmail.com>
+Hi Petr,
 
----
- README.kernel_config | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+On Tue, Mar 2, 2021 at 6:02 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-diff --git a/README.kernel_config b/README.kernel_config
-index 547dd4f33..eed19e557 100644
---- a/README.kernel_config
-+++ b/README.kernel_config
-@@ -18,8 +18,11 @@ CONFIG_IPC_NS=y
- CONFIG_USER_NS=y
- CONFIG_PID_NS=y
- CONFIG_NET_NS=y
-+CONFIG_TIME_NS=y
- CONFIG_VETH=y
- CONFIG_MACVLAN=y
-+CONFIG_TUN=y
-+CONFIG_TAP=y
- 
- The IPC namespaces do not automatically enable IPC, so you may
- also want to have:
-@@ -128,6 +131,8 @@ CONFIG_CRASH_DUMP=y
- CONFIG_PM=y
- CONFIG_HIBERNATION=y
- CONFIG_KEXEC_JUMP=y
-+CONFIG_SECCOMP=y
-+CONFIG_NUMA=y
- ---------------------------------
- Enabling HOTPLUG for your Kernels
- ---------------------------------
-@@ -281,10 +286,32 @@ end
- 1) Add or modify testcases when relevant kernel functionality changes.
- ---------------------------------
- 
-+---------------------------------
-+Enabling Kernel Configuration to test Memory management features
-+---------------------------------
-+CONFIG_KSM=y
-+CONFIG_THP_SWAP=y
-+CONFIG_MEMORY_FAILURE=y
-+---------------------------------
-+Enabling Kernel Configuration to test other filesystems
-+---------------------------------
-+CONFIG_PROC_FS=y
-+CONFIG_PROC_KCORE=y
-+CONFIG_SWAP=y
-+CONFIG_FANOTIFY=y
-+CONFIG_QFMT_V2=y
-+CONFIG_XFS_QUOTA=y
-+CONFIG_HUGETLBFS=y
-+CONFIG_HUGETLB_PAGE=y
-+---------------------------------
-+Enabling Kernel Configuration to test CPU/Task time and stats accounting
-+---------------------------------
-+CONFIG_BSD_PROCESS_ACCT=y
- ---------------------------------
- Enabling Kernel Configuration to test ext4 new features
- ---------------------------------
- CONFIG_EXT4_FS=y
-+CONFIG_EXT4_ENCRYPTION=y
- CONFIG_EXT4DEV_COMPAT=y
- CONFIG_EXT4_FS_XATTR=y
- CONFIG_EXT4_FS_POSIX_ACL=y
+> to sync with C API. This allows to setup timer after test has started.
+> It's useful when test length depends on input decided during setup.
+>
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v3.
+>
+>  doc/test-writing-guidelines.txt | 16 ++++++++++++----
+>  testcases/lib/tst_test.sh       | 23 ++++++++++++++++++-----
+>  2 files changed, 30 insertions(+), 9 deletions(-)
+>
+> diff --git a/doc/test-writing-guidelines.txt
+> b/doc/test-writing-guidelines.txt
+> index dd1911ceb..50696e14a 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -2393,8 +2393,8 @@ tst_run
+>  '$TST_TEST_DATA' can be used with '$TST_CNT'. If '$TST_TEST_DATA_IFS' not
+> specified,
+>  space as default value is used. Of course, it's possible to use separate
+> functions.
+>
+> -2.3.2 Library environment variables for shell
+> -^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> +2.3.2 Library environment variables and functions for shell
+> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>  Similarily to the C library various checks and preparations can be
+> requested
+>  simply by setting right '$TST_NEEDS_FOO'.
+> @@ -2415,11 +2415,19 @@ simply by setting right '$TST_NEEDS_FOO'.
+>  | 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be
+> int >= 1,
+>                         or -1 (special value to disable timeout), default
+> is 300.
+>                         Variable is meant be set in tests, not by user.
+> -                       It's equivalent of `tst_test.timeout` in C.
+> +                       It's an equivalent of `tst_test.timeout` in C, can
+> be set
+> +                       via 'tst_set_timeout(timeout)' after test has
+> started.
+>
+> +|=============================================================================
+> +
+> +[options="header"]
+>
+> +|=============================================================================
+> +| Function name              | Action done
+> +| 'tst_set_timeout(timeout)' | Maximum timeout set for the test in sec.
+> +                               See 'TST_TIMEOUT' variable.
+>
+>  |=============================================================================
+>
+>  NOTE: Network tests (see testcases/network/README.md) use additional
+> variables
+> -in 'tst_net.sh'.
+> +and functions in 'tst_net.sh'.
+>
+>  Checking for presence of commands
+>  +++++++++++++++++++++++++++++++++
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 69f007d89..58056e28b 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -1,6 +1,6 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) Linux Test Project, 2014-2020
+> +# Copyright (c) Linux Test Project, 2014-2021
+>  # Author: Cyril Hrubis <chrubis@suse.cz>
+>  #
+>  # LTP test library for shell.
+> @@ -23,6 +23,14 @@ export TST_LIB_LOADED=1
+>  # default trap function
+>  trap "tst_brk TBROK 'test interrupted'" INT
+>
+> +_tst_cleanup_timer()
+> +{
+> +       if [ -n "$_tst_setup_timer_pid" ]; then
+> +               kill $_tst_setup_timer_pid 2>/dev/null
+> +               wait $_tst_setup_timer_pid 2>/dev/null
+> +       fi
+> +}
+> +
+>  _tst_do_exit()
+>  {
+>         local ret=0
+> @@ -48,10 +56,7 @@ _tst_do_exit()
+>                 [ "$TST_TMPDIR_RHOST" = 1 ] && tst_cleanup_rhost
+>         fi
+>
+> -       if [ -n "$_tst_setup_timer_pid" ]; then
+> -               kill $_tst_setup_timer_pid 2>/dev/null
+> -               wait $_tst_setup_timer_pid 2>/dev/null
+> -       fi
+> +       _tst_cleanup_timer
+>
+>         if [ $TST_FAIL -gt 0 ]; then
+>                 ret=$((ret|1))
+> @@ -459,6 +464,8 @@ _tst_setup_timer()
+>
+>         tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
+>
+> +       _tst_cleanup_timer
+> +
+>         sleep $sec && tst_res TBROK "test killed, timeout! If you are
+> running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9
+> -$pid &
+>
+>         _tst_setup_timer_pid=$!
+> @@ -492,6 +499,12 @@ tst_require_module()
+>         tst_res TINFO "Found module at '$TST_MODPATH'"
+>  }
+>
+> +tst_set_timeout()
+> +{
+> +       TST_TIMEOUT="$1"
+>
+
+Not sure if we should check "$1" is valid again before using it.
+
+I guess in most scenarios, the function is invoked by tests, so
+just needs to guarantee $1 > $TST_TIMEOUT, otherwise, it
+looks meaningless to reset TST_TIMEOUT?
+(especially to avoid people set a smaller value by a typo)
+
+
+
+> +       _tst_setup_timer
+> +}
+> +
+>  tst_run()
+>  {
+>         local _tst_i
+> --
+> 2.30.1
+>
+>
+
 -- 
-2.17.1
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210302/b2aa7a21/attachment.htm>
