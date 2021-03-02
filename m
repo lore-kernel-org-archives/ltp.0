@@ -1,156 +1,84 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 2 Mar 2021 16:53:16 +0800
-Subject: [LTP] [PATCH 5/7] tst_test.sh: Introduce
- tst_set_timeout(timeout)
-In-Reply-To: <20210301220222.22705-6-pvorel@suse.cz>
+Date: Tue, 2 Mar 2021 16:59:51 +0800
+Subject: [LTP] [PATCH 6/7] tst_test.sh: Run cleanup also after test
+ timeout
+In-Reply-To: <20210301220222.22705-7-pvorel@suse.cz>
 References: <20210301220222.22705-1-pvorel@suse.cz>
- <20210301220222.22705-6-pvorel@suse.cz>
-Message-ID: <CAEemH2cr0TFvFiis_05Fh4bEe1ZUmFtMO5ysYFped5ZQYucvAg@mail.gmail.com>
+ <20210301220222.22705-7-pvorel@suse.cz>
+Message-ID: <CAEemH2c2Bma-xXTcf+1M4CFVjM7ZQS36rV_6i9kJ6Es-19kghA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
-
 On Tue, Mar 2, 2021 at 6:02 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-> to sync with C API. This allows to setup timer after test has started.
-> It's useful when test length depends on input decided during setup.
+> Also timeout requires to run a test cleanup (e.g. zram01.sh).
+> Thus send first SIGINT, but keep also SIGKILL for safety reasons
+> (after 5 sec to give some time to the cleanup function and
+> _tst_check_security_modules()).
 >
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
-> New in v3.
+> Originally posted in
 >
->  doc/test-writing-guidelines.txt | 16 ++++++++++++----
->  testcases/lib/tst_test.sh       | 23 ++++++++++++++++++-----
->  2 files changed, 30 insertions(+), 9 deletions(-)
+> https://patchwork.ozlabs.org/project/ltp/patch/20210202101942.31328-1-pvorel@suse.cz/
 >
-> diff --git a/doc/test-writing-guidelines.txt
-> b/doc/test-writing-guidelines.txt
-> index dd1911ceb..50696e14a 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -2393,8 +2393,8 @@ tst_run
->  '$TST_TEST_DATA' can be used with '$TST_CNT'. If '$TST_TEST_DATA_IFS' not
-> specified,
->  space as default value is used. Of course, it's possible to use separate
-> functions.
+> * renamed function
+> * use signal names instead of numbers in kill parameters
 >
-> -2.3.2 Library environment variables for shell
-> -^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +2.3.2 Library environment variables and functions for shell
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  testcases/lib/tst_test.sh | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 >
->  Similarily to the C library various checks and preparations can be
-> requested
->  simply by setting right '$TST_NEEDS_FOO'.
-> @@ -2415,11 +2415,19 @@ simply by setting right '$TST_NEEDS_FOO'.
->  | 'TST_TIMEOUT'      | Maximum timeout set for the test in sec. Must be
-> int >= 1,
->                         or -1 (special value to disable timeout), default
-> is 300.
->                         Variable is meant be set in tests, not by user.
-> -                       It's equivalent of `tst_test.timeout` in C.
-> +                       It's an equivalent of `tst_test.timeout` in C, can
-> be set
-> +                       via 'tst_set_timeout(timeout)' after test has
-> started.
->
-> +|=============================================================================
-> +
-> +[options="header"]
->
-> +|=============================================================================
-> +| Function name              | Action done
-> +| 'tst_set_timeout(timeout)' | Maximum timeout set for the test in sec.
-> +                               See 'TST_TIMEOUT' variable.
->
->  |=============================================================================
->
->  NOTE: Network tests (see testcases/network/README.md) use additional
-> variables
-> -in 'tst_net.sh'.
-> +and functions in 'tst_net.sh'.
->
->  Checking for presence of commands
->  +++++++++++++++++++++++++++++++++
 > diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 69f007d89..58056e28b 100644
+> index 58056e28b..097f672a1 100644
 > --- a/testcases/lib/tst_test.sh
 > +++ b/testcases/lib/tst_test.sh
-> @@ -1,6 +1,6 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> -# Copyright (c) Linux Test Project, 2014-2020
-> +# Copyright (c) Linux Test Project, 2014-2021
->  # Author: Cyril Hrubis <chrubis@suse.cz>
->  #
->  # LTP test library for shell.
-> @@ -23,6 +23,14 @@ export TST_LIB_LOADED=1
+> @@ -21,7 +21,7 @@ export TST_LIB_LOADED=1
+>  . tst_security.sh
+>
 >  # default trap function
->  trap "tst_brk TBROK 'test interrupted'" INT
+> -trap "tst_brk TBROK 'test interrupted'" INT
+> +trap "tst_brk TBROK 'test interrupted or timed out'" INT
 >
-> +_tst_cleanup_timer()
-> +{
-> +       if [ -n "$_tst_setup_timer_pid" ]; then
-> +               kill $_tst_setup_timer_pid 2>/dev/null
-> +               wait $_tst_setup_timer_pid 2>/dev/null
-> +       fi
-> +}
-> +
->  _tst_do_exit()
+>  _tst_cleanup_timer()
 >  {
->         local ret=0
-> @@ -48,10 +56,7 @@ _tst_do_exit()
->                 [ "$TST_TMPDIR_RHOST" = 1 ] && tst_cleanup_rhost
->         fi
->
-> -       if [ -n "$_tst_setup_timer_pid" ]; then
-> -               kill $_tst_setup_timer_pid 2>/dev/null
-> -               wait $_tst_setup_timer_pid 2>/dev/null
-> -       fi
-> +       _tst_cleanup_timer
->
->         if [ $TST_FAIL -gt 0 ]; then
->                 ret=$((ret|1))
-> @@ -459,6 +464,8 @@ _tst_setup_timer()
->
->         tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
->
-> +       _tst_cleanup_timer
-> +
->         sleep $sec && tst_res TBROK "test killed, timeout! If you are
-> running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9
-> -$pid &
->
->         _tst_setup_timer_pid=$!
-> @@ -492,6 +499,12 @@ tst_require_module()
->         tst_res TINFO "Found module at '$TST_MODPATH'"
+> @@ -442,6 +442,14 @@ _tst_multiply_timeout()
+>         return 0
 >  }
 >
-> +tst_set_timeout()
-> +{
-> +       TST_TIMEOUT="$1"
+> +_tst_run_timer()
 >
 
-Not sure if we should check "$1" is valid again before using it.
-
-I guess in most scenarios, the function is invoked by tests, so
-just needs to guarantee $1 > $TST_TIMEOUT, otherwise, it
-looks meaningless to reset TST_TIMEOUT?
-(especially to avoid people set a smaller value by a typo)
+Hmm, this name is not good than before, or rename to _tst_kill_timer_pid(),
+_tst_stop_timer()?
 
 
 
-> +       _tst_setup_timer
+> +{
+> +       tst_res TBROK "test killed, timeout! If you are running on slow
+> machine, try exporting LTP_TIMEOUT_MUL > 1"
+> +       kill -INT -$pid
+> +       sleep 5
+> +       kill -KILL -$pid
 > +}
 > +
->  tst_run()
+>  _tst_setup_timer()
 >  {
->         local _tst_i
+>         TST_TIMEOUT=${TST_TIMEOUT:-300}
+> @@ -465,8 +473,7 @@ _tst_setup_timer()
+>         tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
+>
+>         _tst_cleanup_timer
+> -
+> -       sleep $sec && tst_res TBROK "test killed, timeout! If you are
+> running on slow machine, try exporting LTP_TIMEOUT_MUL > 1" && kill -9
+> -$pid &
+> +       sleep $sec && _tst_run_timer &
+>
+>         _tst_setup_timer_pid=$!
+>  }
 > --
 > 2.30.1
 >
@@ -161,4 +89,4 @@ Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210302/b2aa7a21/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210302/f675fe6c/attachment-0001.htm>
