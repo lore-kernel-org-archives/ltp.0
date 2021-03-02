@@ -1,12 +1,12 @@
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 2 Mar 2021 15:42:25 +0530
+Date: Tue, 2 Mar 2021 15:45:13 +0530
 Subject: [LTP] [PATCH 5.10 000/661] 5.10.20-rc2 review
 In-Reply-To: <YD4L57LQb8Nh/A85@kroah.com>
 References: <20210301193642.707301430@linuxfoundation.org>
  <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
  <CA+G9fYsivUPRRQgMXpnA_XdXH8i2wx_DPH70t+6OzHkjOaswrg@mail.gmail.com>
  <YD4L57LQb8Nh/A85@kroah.com>
-Message-ID: <CA+G9fYtbYENvUk8z78k3OHj5cULbd5Tc3Dfew0EE6sKfndOJxA@mail.gmail.com>
+Message-ID: <CA+G9fYsuLBo86PVUGVx=w6w8t9UCmNw+Co53_g_suE_my9Mmug@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -67,10 +67,7 @@ On Tue, 2 Mar 2021 at 15:26, Greg Kroah-Hartman
 >
 > Is 5.12-rc1 also failing with this test as well?
 
-5.10 Failed
-5.11 Failed
-5.12 PASS
-
-This LTP pty hangup01 PASS Linux mainline and linux next.
+No.
+Test PASS on v5.12-rc1.
 
 - Naresh
