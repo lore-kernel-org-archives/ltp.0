@@ -1,44 +1,46 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 2 Mar 2021 11:20:26 +0100
-Subject: [LTP] [PATCH 6/7] tst_test.sh: Run cleanup also after test
- timeout
-In-Reply-To: <CAEemH2c2Bma-xXTcf+1M4CFVjM7ZQS36rV_6i9kJ6Es-19kghA@mail.gmail.com>
+Date: Tue, 2 Mar 2021 11:26:10 +0100
+Subject: [LTP] [PATCH 5/7] tst_test.sh: Introduce
+ tst_set_timeout(timeout)
+In-Reply-To: <YD4Ny76lh0+ydBqQ@yuki.lan>
 References: <20210301220222.22705-1-pvorel@suse.cz>
- <20210301220222.22705-7-pvorel@suse.cz>
- <CAEemH2c2Bma-xXTcf+1M4CFVjM7ZQS36rV_6i9kJ6Es-19kghA@mail.gmail.com>
-Message-ID: <YD4RairzgAuyBn7S@pevik>
+ <20210301220222.22705-6-pvorel@suse.cz>
+ <CAEemH2cr0TFvFiis_05Fh4bEe1ZUmFtMO5ysYFped5ZQYucvAg@mail.gmail.com>
+ <YD4Ny76lh0+ydBqQ@yuki.lan>
+Message-ID: <YD4SwkQYyBxMWaay@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Cyril,
 
-...
-> >  _tst_cleanup_timer()
-> >  {
-> > @@ -442,6 +442,14 @@ _tst_multiply_timeout()
-> >         return 0
-> >  }
-
-> > +_tst_run_timer()
+> Hi!
+> > > +tst_set_timeout()
+> > > +{
+> > > +       TST_TIMEOUT="$1"
 
 
-> Hmm, this name is not good than before, or rename to _tst_kill_timer_pid(),
-> _tst_stop_timer()?
+> > Not sure if we should check "$1" is valid again before using it.
 
-Good point. I slightly prefer _tst_stop_timer, but no hard feeling about it.
+> > I guess in most scenarios, the function is invoked by tests, so
+> > just needs to guarantee $1 > $TST_TIMEOUT, otherwise, it
+> > looks meaningless to reset TST_TIMEOUT?
+> > (especially to avoid people set a smaller value by a typo)
 
+> I can image where it may make sense to set the timeout smaller than
+> default dynamically. If we had a test that consists of many iterations
+> whose number depends on the actuall system we run on (the same as the
+> supported filesystem) but if the iterations are rather quick we may end
+> up in a situation where we run only one iteration and we will attempt to
+> set a timeout smaller than default in the setup() which wouldn't be
+> wrong.
++1, I couldn't agree more.
+
+> Hence I would check that the value is greater than zero here instead.
+I'd allow also to disable timeout with -1. And the rest of the checks
+(i.e. int -1 or > 0) is in _tst_setup_timer().
 
 Kind regards,
 Petr
-
-> > +{
-> > +       tst_res TBROK "test killed, timeout! If you are running on slow
-> > machine, try exporting LTP_TIMEOUT_MUL > 1"
-> > +       kill -INT -$pid
-> > +       sleep 5
-> > +       kill -KILL -$pid
-> > +}
-> > +
