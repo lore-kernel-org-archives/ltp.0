@@ -1,73 +1,45 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 2 Mar 2021 15:45:13 +0530
-Subject: [LTP] [PATCH 5.10 000/661] 5.10.20-rc2 review
-In-Reply-To: <YD4L57LQb8Nh/A85@kroah.com>
-References: <20210301193642.707301430@linuxfoundation.org>
- <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
- <CA+G9fYsivUPRRQgMXpnA_XdXH8i2wx_DPH70t+6OzHkjOaswrg@mail.gmail.com>
- <YD4L57LQb8Nh/A85@kroah.com>
-Message-ID: <CA+G9fYsuLBo86PVUGVx=w6w8t9UCmNw+Co53_g_suE_my9Mmug@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 2 Mar 2021 11:17:18 +0100
+Subject: [LTP] [PATCH 5/7] tst_test.sh: Introduce
+ tst_set_timeout(timeout)
+In-Reply-To: <CAEemH2cr0TFvFiis_05Fh4bEe1ZUmFtMO5ysYFped5ZQYucvAg@mail.gmail.com>
+References: <20210301220222.22705-1-pvorel@suse.cz>
+ <20210301220222.22705-6-pvorel@suse.cz>
+ <CAEemH2cr0TFvFiis_05Fh4bEe1ZUmFtMO5ysYFped5ZQYucvAg@mail.gmail.com>
+Message-ID: <YD4QrlVCIJOYj0ze@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 2 Mar 2021 at 15:26, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Mar 02, 2021 at 03:20:32PM +0530, Naresh Kamboju wrote:
-> > Hi Greg and Linus,
-> >
-> > On Tue, 2 Mar 2021 at 12:45, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > >
-> > > On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.10.20 release.
-> > > > There are 661 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc2.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > >
-> > > Results from Linaro?s test farm.
-> > > Regressions detected on all devices (arm64, arm, x86_64 and i386).
-> > >
-> > > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-> > >
-> > > This failure is specific to stable-rc 5.10 and 5.11.
-> > > Test PASS on mainline and Linux next kernel.
-> > >
-> >
-> > I have reverted these two patches and the test case got PASS
-> > on Linux version 5.10.20-rc2.
-> >
-> > hangup01 1 TPASS : child process exited with status 0
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: implement read_iter
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: convert tty_ldisc_ops 'read()' function to take a kernel pointer
->
-> Odd.
->
-> Is 5.12-rc1 also failing with this test as well?
+Hi Li,
 
-No.
-Test PASS on v5.12-rc1.
+...
+> > +tst_set_timeout()
+> > +{
+> > +       TST_TIMEOUT="$1"
 
-- Naresh
+
+> Not sure if we should check "$1" is valid again before using it.
+General check for int is done in _tst_setup_timer, but that's not what you mean.
+
+> I guess in most scenarios, the function is invoked by tests, so
+> just needs to guarantee $1 > $TST_TIMEOUT, otherwise, it
+> looks meaningless to reset TST_TIMEOUT?
+> (especially to avoid people set a smaller value by a typo)
+
+I thought it's not necessary. TST_TIMEOUT is meant to be set in the test. But we
+currently don't check for that (it can be wrongly set as environment variable)
+and it'd be difficult to check that (I'd prefer not grep $TST_TEST_PATH, because
+that would not work for shell libraries (e.g. zram_lib.sh).
+
+The main reason for me is that C API allows to set lower value in the code, thus
+I didn't want to prevent it in the shell => it'd be a diverse from C API.
+We could add warning: "don't set TST_TIMEOUT" in docs and print warning/reset it
+in runltp and runltp-ng, but that would not protect when running test itself.
+It's really hard trying to have at least similar API with two fairly different
+languages :).
+
+Kind regards,
+Petr
