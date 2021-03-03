@@ -1,62 +1,43 @@
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 3 Mar 2021 14:02:20 +0530
-Subject: [LTP] [PATCH 5.11 000/773] 5.11.3-rc3 review
-In-Reply-To: <20210302192719.741064351@linuxfoundation.org>
-References: <20210302192719.741064351@linuxfoundation.org>
-Message-ID: <CA+G9fYvkW+84U9e0Cjft_pq9bGnBBqCXST7Hg+gx4pKNyuGPFQ@mail.gmail.com>
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Wed,  3 Mar 2021 10:35:42 +0100
+Subject: [LTP] [PATCH] cmdlib: Update exists function to exit with TCONF
+Message-ID: <20210303093542.9292-1-kory.maincent@bootlin.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.3 release.
-> There are 773 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.3-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The exists function which tests the existence of a command was returning
+an error.
+Update it to return TCONF and exit with the value 32.
 
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
 
-Results from Linaro?s test farm.
-All our builds are getting PASS now.
-But,
-Regressions detected on all devices (arm64, arm, x86_64 and i386).
-LTP pty test case hangup01 failed on all devices
+This function is only used by ftp01.sh test.
+The real effort should be to rewrite ftp01 test to the new API, but I did
+not manage to do it properly and makes it compatible with the other
+ftp clients.
 
-hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+ testcases/lib/cmdlib.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
-Test PASS on the v5.12-rc1 mainline and Linux next kernel.
-
-Following two commits caused this test failure,
-
-   Linus Torvalds <torvalds@linux-foundation.org>
-       tty: implement read_iter
-
-   Linus Torvalds <torvalds@linux-foundation.org>
-       tty: convert tty_ldisc_ops 'read()' function to take a kernel pointer
-
-Test case failed link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11.2-774-g6ca52dbc58df/testrun/4070143/suite/ltp-pty-tests/test/hangup01/log
-
-
+diff --git a/testcases/lib/cmdlib.sh b/testcases/lib/cmdlib.sh
+index e4986c39c..ad93e3cc8 100644
+--- a/testcases/lib/cmdlib.sh
++++ b/testcases/lib/cmdlib.sh
+@@ -103,8 +103,8 @@ exists()
+ {
+     for cmd in $*; do
+         if ! command -v $cmd >/dev/null 2>&1; then
+-            end_testcase "$cmd: command not found"
+-            exit 1
++            tst_brkm TCONF NULL "$1: command $2 not found."
++            exit 32
+         fi
+     done
+ }
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.17.1
+
