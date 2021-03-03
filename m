@@ -1,37 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 Mar 2021 11:28:39 +0100
-Subject: [LTP] Runtime test CI?
-In-Reply-To: <20210303104833.3d36364e@kmaincent-XPS-13-7390>
-References: <20210303104833.3d36364e@kmaincent-XPS-13-7390>
-Message-ID: <YD9k15Clrdd/tqtq@yuki.lan>
+From: Martin Loviska <mloviska@suse.de>
+Date: Wed,  3 Mar 2021 14:24:03 +0100
+Subject: [LTP] [PATCH] Wait for complete input provided by `seq`
+Message-ID: <20210303132403.6427-1-mloviska@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I have seen you are using Travis to build CI.
-> Have you a runtime CI or a testbench to validate all the LTP tests on several
-> distributions and architectures before the release?
+From: mloviska <mloviska@suse.com>
 
-Unfortunatelly we do not, it's on my long term TODO though.
+`splice02` may exit before `seq` therefore broken pipe occurs.
 
-I'm slowly getting all the required pieces together, it's mostly done at
-this point and I'm using these tools to validate LTP releases.
+Found with SLES JeOS (https://progress.opensuse.org/issues/77260).
 
-If you want to experiment have a look at runltp-ng:
+Suggested-by: Fabian Vogt <fvogt@suse.de>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Martin Loviska <mloviska@suse.com>
+---
+ runtest/smoketest | 2 +-
+ runtest/syscalls  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-https://github.com/metan-ucw/runltp-ng
-
-What I do before the release is to run similar scripts to the
-compare_syscalls.sh to generate results in json for different LTP
-runtest files on different VMs then diff them with res_diff.pl
-
-What is missing there is a bit of scripts to automate all that so it
-could be executed in a loop on a dedicated server and a better output
-from res_diff.pl, maybe a html page that would be uploaded somewhere.
-
+diff --git a/runtest/smoketest b/runtest/smoketest
+index 0c24fc1fa..e6800d283 100644
+--- a/runtest/smoketest
++++ b/runtest/smoketest
+@@ -11,5 +11,5 @@ symlink01 symlink01
+ stat04 symlink01 -T stat04
+ utime01A symlink01 -T utime01
+ rename01A symlink01 -T rename01
+-splice02 seq 1 20 | splice02
++splice02 (seq 1 20 || :) | splice02
+ route4-change-dst route-change-dst.sh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fe22ae5b6..13b87e6bc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1446,7 +1446,7 @@ socketpair02 socketpair02
+ sockioctl01 sockioctl01
+ 
+ splice01 splice01
+-splice02 seq 1 20000 | splice02
++splice02 (seq 1 20000 || :) | splice02
+ splice03 splice03
+ splice04 splice04
+ splice05 splice05
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.1
+
