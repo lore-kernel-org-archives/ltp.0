@@ -1,234 +1,307 @@
-From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Date: Wed, 3 Mar 2021 10:22:21 +0800
-Subject: [LTP] [PATCH] syscalls/chdir04: Convert to the new API
-Message-ID: <20210303022221.1044234-1-ruansy.fnst@fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 3 Mar 2021 10:32:35 +0800
+Subject: [LTP] [PATCH] syscalls: Use anonymous .resource_files for docparse
+Message-ID: <20210303023235.431238-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/chdir/chdir04.c | 185 ++++++----------------
- 1 file changed, 47 insertions(+), 138 deletions(-)
+ testcases/kernel/syscalls/creat/creat07.c       | 10 ++++------
+ testcases/kernel/syscalls/execve/execve02.c     | 10 ++++------
+ testcases/kernel/syscalls/execve/execve04.c     | 10 ++++------
+ testcases/kernel/syscalls/execve/execve05.c     | 10 ++++------
+ testcases/kernel/syscalls/execveat/execveat01.c | 10 ++++------
+ testcases/kernel/syscalls/execveat/execveat02.c | 10 ++++------
+ testcases/kernel/syscalls/execveat/execveat03.c | 10 ++++------
+ testcases/kernel/syscalls/fanotify/fanotify10.c | 10 ++++------
+ testcases/kernel/syscalls/fanotify/fanotify12.c | 10 ++++------
+ testcases/kernel/syscalls/pipe2/pipe2_02.c      | 10 ++++------
+ testcases/kernel/syscalls/prctl/prctl06.c       | 10 ++++------
+ 11 files changed, 44 insertions(+), 66 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/chdir/chdir04.c b/testcases/kernel/syscalls/chdir/chdir04.c
-index f0420e4c9..8bf68977f 100644
---- a/testcases/kernel/syscalls/chdir/chdir04.c
-+++ b/testcases/kernel/syscalls/chdir/chdir04.c
-@@ -1,162 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
+diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+index 1e9779476..7bd32ab4d 100644
+--- a/testcases/kernel/syscalls/creat/creat07.c
++++ b/testcases/kernel/syscalls/creat/creat07.c
+@@ -47,14 +47,12 @@ static void verify_creat(void)
+ 	SAFE_WAITPID(pid, NULL, 0);
+ }
  
--/*
-- * NAME
-- * 	chdir04.c
-- *
-- * DESCRIPTION
-- *	Testcase to test whether chdir(2) sets errno correctly.
-- *
-- * ALGORITHM
-- *	1.	Test for ENAMETOOLONG:
-- *		Create a bad directory name with length more than
-- *
-- *		VFS_MAXNAMELEN (Linux kernel variable), and attempt to
-- *		chdir(2) to it.
-- *
-- *	2.	Test for ENOENT:
-- *		Attempt to chdir(2) on a non-existent directory
-- *
-- *	3.	Test for EFAULT:
-- *		Pass an address which lies outside the address space of the
-- *		process, and expect an EFAULT.
-- *
-- * USAGE:  <for command-line>
-- * chdir04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+/*\
-+ * [DESCRIPTION]
-  *
-- * RESTRICTIONS
-- *	NONE
-- */
-+ * Testcase to test whether chdir(2) sets errno correctly.
-+\*/
- 
--#include <stdio.h>
- #include <errno.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--#include "test.h"
--
--char *TCID = "chdir04";
-+#include "tst_test.h"
- 
- char bad_dir[] =
-     "abcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
--
- char noexist_dir[] = "/tmp/noexistdir";
--
--struct test_case_t {
--	char *dname;
--	int error;
--} TC[] = {
--	/*
--	 * to test whether chdir() is setting ENAMETOOLONG if the
--	 * directory is more than VFS_MAXNAMELEN
--	 */
--	{
--	bad_dir, ENAMETOOLONG},
--	    /*
--	     * to test whether chdir() is setting ENOENT if the
--	     * directory is not existing.
--	     */
--	{
--	noexist_dir, ENOENT},
--	    /*
--	     * to test whether chdir() is setting EFAULT if the
--	     * directory is an invalid address.
--	     */
--	{
--	(void *)-1, EFAULT}
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
 -};
 -
--int TST_TOTAL = ARRAY_SIZE(TC);
--
--int flag;
--#define	FAILED	1
--
--void setup(void);
--void cleanup(void);
--
- char *bad_addr = 0;
- 
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(chdir(TC[i].dname));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error)
--				tst_resm(TPASS | TTERRNO, "failed as expected");
--			else {
--				tst_resm(TFAIL | TTERRNO,
--					 "didn't fail as expected (expected %d)",
--					 TC[i].error);
--			}
--		}
--	}
--	cleanup();
--
--	tst_exit();
--
--}
-+static struct test_case_t {
-+	char *dir_name;
-+	int expected_error;
-+} testcase_list[] = {
-+	{bad_dir, ENAMETOOLONG},
-+	{noexist_dir, ENOENT},
-+	{(void *)-1, EFAULT}
-+};
- 
--void setup(void)
-+static void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
- #ifdef UCLINUX
- 	bad_addr = mmap(0, 1, PROT_NONE,
- 			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
- 	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap() failed");
--	TC[2].dname = bad_addr;
-+		tst_brk(TBROK | TERRNO, "mmap() failed");
-+	testcase_list[2].dir_name = bad_addr;
-+#endif
-+}
-+
-+static void cleanup(void)
-+{
-+#ifdef UCLINUX
-+	munmap(bad_addr, 1);
- #endif
+ static struct tst_test test = {
+ 	.test_all = verify_creat,
+ 	.needs_checkpoints = 1,
+ 	.forks_child = 1,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	}
+ };
+diff --git a/testcases/kernel/syscalls/execve/execve02.c b/testcases/kernel/syscalls/execve/execve02.c
+index d9fb5b919..4e6be826b 100644
+--- a/testcases/kernel/syscalls/execve/execve02.c
++++ b/testcases/kernel/syscalls/execve/execve02.c
+@@ -74,16 +74,14 @@ static void setup(void)
+ 	nobody_uid = pwd->pw_uid;
  }
  
--void cleanup(void)
-+static void verify_chdir(unsigned int i)
- {
--	tst_rmdir();
-+	TEST(chdir(testcase_list[i].dir_name));
-+
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "call succeeded unexpectedly");
-+		return;
-+	}
- 
-+	if (TST_ERR == testcase_list[i].expected_error)
-+		tst_res(TPASS | TTERRNO, "failed as expected");
-+	else {
-+		tst_res(TFAIL | TTERRNO,
-+			"didn't fail as expected (expected %d)",
-+			testcase_list[i].expected_error);
-+	}
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.child_needs_reinit = 1,
+ 	.setup = setup,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.test_all = verify_execve,
+ };
+diff --git a/testcases/kernel/syscalls/execve/execve04.c b/testcases/kernel/syscalls/execve/execve04.c
+index c7b8c1614..18e883ab3 100644
+--- a/testcases/kernel/syscalls/execve/execve04.c
++++ b/testcases/kernel/syscalls/execve/execve04.c
+@@ -63,15 +63,13 @@ static void do_child(void)
+ 	exit(0);
  }
-+
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.test = verify_chdir,
-+	.tcnt = ARRAY_SIZE(testcase_list),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+ 	.test_all = verify_execve,
+ 	.forks_child = 1,
+ 	.child_needs_reinit = 1,
+ 	.needs_checkpoints = 1,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	}
+ };
+diff --git a/testcases/kernel/syscalls/execve/execve05.c b/testcases/kernel/syscalls/execve/execve05.c
+index 4c9789cc5..a26eba79a 100644
+--- a/testcases/kernel/syscalls/execve/execve05.c
++++ b/testcases/kernel/syscalls/execve/execve05.c
+@@ -44,11 +44,6 @@ static int nchild = 8;
+ 
+ static char *opt_nchild;
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static void do_child(void)
+ {
+ 	char *argv[3] = {TEST_APP, "canary", NULL};
+@@ -86,6 +81,9 @@ static struct tst_test test = {
+ 	.forks_child = 1,
+ 	.child_needs_reinit = 1,
+ 	.needs_checkpoints = 1,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.setup = setup,
+ };
+diff --git a/testcases/kernel/syscalls/execveat/execveat01.c b/testcases/kernel/syscalls/execveat/execveat01.c
+index 16d27acf6..55891b74c 100644
+--- a/testcases/kernel/syscalls/execveat/execveat01.c
++++ b/testcases/kernel/syscalls/execveat/execveat01.c
+@@ -84,13 +84,11 @@ static void cleanup(void)
+ 		SAFE_CLOSE(fd4);
+ }
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_execveat,
+ 	.child_needs_reinit = 1,
+diff --git a/testcases/kernel/syscalls/execveat/execveat02.c b/testcases/kernel/syscalls/execveat/execveat02.c
+index 9b08efb78..c057b8eaf 100644
+--- a/testcases/kernel/syscalls/execveat/execveat02.c
++++ b/testcases/kernel/syscalls/execveat/execveat02.c
+@@ -85,11 +85,6 @@ static void setup(void)
+ 	fd = SAFE_OPEN(TEST_REL_APP, O_PATH);
+ }
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static void cleanup(void)
+ {
+ 	if (fd > 0)
+@@ -97,7 +92,10 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_execveat,
+ 	.child_needs_reinit = 1,
+diff --git a/testcases/kernel/syscalls/execveat/execveat03.c b/testcases/kernel/syscalls/execveat/execveat03.c
+index 78b26ab56..97df8f33e 100644
+--- a/testcases/kernel/syscalls/execveat/execveat03.c
++++ b/testcases/kernel/syscalls/execveat/execveat03.c
+@@ -68,11 +68,6 @@ static void setup(void)
+ 	check_execveat();
+ }
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.mount_device = 1,
+@@ -82,7 +77,10 @@ static struct tst_test test = {
+ 	.child_needs_reinit = 1,
+ 	.setup = setup,
+ 	.test_all = verify_execveat,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "8db6c34f1dbc"},
+ 		{"linux-git", "355139a8dba4"},
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index eeba87568..b2eb909a7 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -534,11 +534,6 @@ static void cleanup(void)
+ 		tst_brk(TBROK | TERRNO, "bind umount failed");
+ }
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL
+-};
+-
+ static struct tst_test test = {
+ 	.test = test_fanotify,
+ 	.tcnt = ARRAY_SIZE(tcases),
+@@ -548,7 +543,10 @@ static struct tst_test test = {
+ 	.mntpoint = MOUNT_PATH,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+-	.resource_files = resource_files,
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "9bdda4e9cf2d"},
+ 		{"linux-git", "2f02fd3fa13e"},
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify12.c b/testcases/kernel/syscalls/fanotify/fanotify12.c
+index 17086ef71..7070b9e4f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify12.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify12.c
+@@ -232,11 +232,6 @@ static void do_cleanup(void)
+ 		SAFE_CLOSE(fd_notify);
+ }
+ 
+-static const char *const resource_files[] = {
+-	TEST_APP,
+-	NULL
+-};
+-
+ static struct tst_test test = {
+ 	.setup = do_setup,
+ 	.test = do_test,
+@@ -244,7 +239,10 @@ static struct tst_test test = {
+ 	.cleanup = do_cleanup,
+ 	.forks_child = 1,
+ 	.needs_root = 1,
+-	.resource_files = resource_files
++	.resource_files = (const char *const []) {
++		TEST_APP,
++		NULL
++	}
+ };
+ #else
+ 	TST_TEST_TCONF("System does not contain required fanotify support");
+diff --git a/testcases/kernel/syscalls/pipe2/pipe2_02.c b/testcases/kernel/syscalls/pipe2/pipe2_02.c
+index 9ba69667b..ee317668b 100644
+--- a/testcases/kernel/syscalls/pipe2/pipe2_02.c
++++ b/testcases/kernel/syscalls/pipe2/pipe2_02.c
+@@ -54,13 +54,11 @@ static void verify_pipe2(void)
+ 	cleanup();
+ }
+ 
+-static const char *const resfile[] = {
+-	TESTBIN,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+-	.resource_files = resfile,
++	.resource_files = (const char *const []) {
++		TESTBIN,
++		NULL
++	},
+ 	.cleanup = cleanup,
+ 	.forks_child = 1,
+ 	.needs_root = 1,
+diff --git a/testcases/kernel/syscalls/prctl/prctl06.c b/testcases/kernel/syscalls/prctl/prctl06.c
+index 21d336c07..2395f1adc 100644
+--- a/testcases/kernel/syscalls/prctl/prctl06.c
++++ b/testcases/kernel/syscalls/prctl/prctl06.c
+@@ -107,13 +107,11 @@ static void setup(void)
+ 		"current environment doesn't permit PR_GET/SET_NO_NEW_PRIVS");
+ }
+ 
+-static const char *const resfile[] = {
+-	TESTBIN,
+-	NULL,
+-};
+-
+ static struct tst_test test = {
+-	.resource_files = resfile,
++	.resource_files = (const char *const []) {
++		TESTBIN,
++		NULL
++	},
+ 	.setup = setup,
+ 	.test_all = verify_prctl,
+ 	.forks_child = 1,
 -- 
-2.30.1
+2.25.1
 
 
 
