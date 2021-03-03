@@ -1,103 +1,99 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 Mar 2021 16:26:37 +0100
-Subject: [LTP] [PATCH] syscalls/chdir04: Convert to the new API
-In-Reply-To: <20210303022221.1044234-1-ruansy.fnst@fujitsu.com>
-References: <20210303022221.1044234-1-ruansy.fnst@fujitsu.com>
-Message-ID: <YD+qrfp1cuX96Ftd@yuki.lan>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Wed,  3 Mar 2021 12:32:54 -0800
+Subject: [LTP] [PATCH] IMA: Allow only ima-buf template for key measurement
+Message-ID: <20210303203254.12856-1-nramas@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static struct test_case_t {
-> +	char *dir_name;
-> +	int expected_error;
-> +} testcase_list[] = {
-> +	{bad_dir, ENAMETOOLONG},
-> +	{noexist_dir, ENOENT},
-> +	{(void *)-1, EFAULT}
-> +};
+ima-buf is the default IMA template used for all buffer measurements.
+Therefore, IMA policy rule for measuring keys need not specify
+an IMA template.  But if a template is specified for key measurement
+rule then it must be only ima-buf.
 
-This is way to verbose, we can just name these:
+Update keys tests to not require a template to be specified for
+key measurement rule, but if a template is specified verify it is
+only ima-buf.
 
-struct test_case_t -> struct tcase
-testcase_list -> tcases
-dir_name -> dir
-expected_error -> exp_errno
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ .../security/integrity/ima/tests/ima_keys.sh     | 10 +++++++---
+ .../security/integrity/ima/tests/ima_setup.sh    | 16 ++++++++++++++++
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
-without loosing any information.
-
-> -void setup(void)
-> +static void setup(void)
->  {
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
->  #ifdef UCLINUX
->  	bad_addr = mmap(0, 1, PROT_NONE,
->  			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
->  	if (bad_addr == MAP_FAILED)
-> -		tst_brkm(TBROK | TERRNO, cleanup, "mmap() failed");
-> -	TC[2].dname = bad_addr;
-> +		tst_brk(TBROK | TERRNO, "mmap() failed");
-> +	testcase_list[2].dir_name = bad_addr;
-> +#endif
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +#ifdef UCLINUX
-> +	munmap(bad_addr, 1);
->  #endif
->  }
-
-We do not support uClinux anymore, please remove that part as well.
-
-> -void cleanup(void)
-> +static void verify_chdir(unsigned int i)
->  {
-> -	tst_rmdir();
-> +	TEST(chdir(testcase_list[i].dir_name));
-> +
-> +	if (TST_RET != -1) {
-> +		tst_res(TFAIL, "call succeeded unexpectedly");
-> +		return;
-> +	}
->  
-> +	if (TST_ERR == testcase_list[i].expected_error)
-> +		tst_res(TPASS | TTERRNO, "failed as expected");
-> +	else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"didn't fail as expected (expected %d)",
-> +			testcase_list[i].expected_error);
-> +	}
-
-We do have TST_EXP_FAIL() macro that should replace all of this.
-
->  }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.test = verify_chdir,
-> +	.tcnt = ARRAY_SIZE(testcase_list),
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +};
-> -- 
-> 2.30.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index c9eef4b68..8b214b413 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -15,8 +15,7 @@ TST_CLEANUP=cleanup
+ . ima_setup.sh
+ 
+ FUNC_KEYCHECK='func=KEY_CHECK'
+-TEMPLATE_BUF='template=ima-buf'
+-REQUIRED_POLICY="^measure.*($FUNC_KEYCHECK.*$TEMPLATE_BUF|$TEMPLATE_BUF.*$FUNC_KEYCHECK)"
++REQUIRED_POLICY="^measure.*$FUNC_KEYCHECK"
+ 
+ setup()
+ {
+@@ -33,9 +32,10 @@ check_keys_policy()
+ 	local pattern="$1"
+ 
+ 	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
+-		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK, $TEMPLATE_BUF"
++		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK"
+ 		return 1
+ 	fi
++
+ 	return 0
+ }
+ 
+@@ -49,6 +49,8 @@ test1()
+ 
+ 	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
+ 
++	check_policy_template "template=ima-buf" $FUNC_KEYCHECK || return
++
+ 	check_keys_policy "$pattern" > $tmp_file || return
+ 	keycheck_lines=$(cat $tmp_file)
+ 	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
+@@ -101,6 +103,8 @@ test2()
+ 
+ 	tst_res TINFO "verify measurement of certificate imported into a keyring"
+ 
++	check_policy_template "template=ima-buf" $FUNC_KEYCHECK || return
++
+ 	check_keys_policy "$pattern" >/dev/null || return
+ 
+ 	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 59a7ffeac..01ebec2b6 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -107,6 +107,22 @@ check_ima_policy_cmdline()
+ 	return 1
+ }
+ 
++check_policy_template()
++{
++	local template="$1"
++	local func="$2"
++	grep -E "template=" $TST_TMPDIR/policy.txt | while read line
++	do
++		ima_template=$(echo $line | grep $template)
++		if [ -z "$ima_template" ]; then
++			tst_res TCONF "Only $template can be specified for $func"
++			return 1
++		fi
++	done
++
++	return 0
++}
++
+ require_ima_policy_cmdline()
+ {
+ 	local policy="$1"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.0
+
