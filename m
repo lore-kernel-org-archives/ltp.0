@@ -1,55 +1,48 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Thu, 4 Mar 2021 02:14:32 +0000
-Subject: [LTP] [PATCH] lib/tst_supported_fs_types.c: Add tmpfs to
- filesystem whitelist
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40388B77D@dggeml511-mbs.china.huawei.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 4 Mar 2021 10:21:27 +0800
+Subject: [LTP] [PATCH] syscalls/getpid01.c: Remove unneeded TTERRNO and
+ status
+Message-ID: <20210304022127.535431-1-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/getpid/getpid01.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I have resubmit the patch according to your review.
+diff --git a/testcases/kernel/syscalls/getpid/getpid01.c b/testcases/kernel/syscalls/getpid/getpid01.c
+index 229172a64..326ee5840 100644
+--- a/testcases/kernel/syscalls/getpid/getpid01.c
++++ b/testcases/kernel/syscalls/getpid/getpid01.c
+@@ -15,7 +15,7 @@
+ static void verify_getpid(void)
+ {
+ 	pid_t pid_max, pid;
+-	int status, i;
++	int i;
+ 
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
+ 
+@@ -28,11 +28,11 @@ static void verify_getpid(void)
+ 			if (1 < pid && pid <= pid_max)
+ 				tst_res(TPASS, "getpid() returns %d", pid);
+ 			else
+-				tst_res(TFAIL | TTERRNO,
++				tst_res(TFAIL,
+ 					"getpid() returns out of range: %d", pid);
+ 			exit(0);
+ 		} else {
+-			SAFE_WAIT(&status);
++			SAFE_WAIT(NULL);
+ 		}
+ 	}
+ }
+-- 
+2.25.1
 
-Thanks so much!
 
-> 
-> Hi!
-> > > But there is another problem there, since the code still mounts
-> > > tmpfs on tmpdir for a short while, which is temporary directory used
-> > > by all LTP tests, which may potentially break tests that runs in parallel.
-> >
-> > 	In general, when all_filesystems has been set to 1,  the
-> needs_tmpdir would be set to 1 and the mntpoint must has been set to
-> some path, so the test run in /tmp/tmpxxxxxx/mntpoint and
-> > 	other LTP tests would run in another tmpdir. So it has no problem for
-> running in parallel.
-> >
-> > 	I don't know if I understand it right.
-> 
-> The has_kernel_support() uses TMPDIR as the mount point, which is the
-> parent directory for all LTP tests, moreover it often points to just "/tmp". If
-> you mount anything over that directory, even for a short while, the whole
-> system will get different and empty "/tmp" which will possibly break many
-> things.
-> 
-> We may get over this with using "." instead, in a case that testcase has
-> created temporary directory and changed the PWD to it, but it's not that
-> simple either, since tst_test.c is not the only place that calls
-> has_kernel_support().
-> 
-> We have testcases/lib/tst_supported_fs.c helper as well that is used by
-> shell tests. This is a standalone binary that does not create a temporary
-> directory and should work even without TMPDIR being set, which is the
-> reason we have the if (!tmpdir) tmpdir = "/tmp"; check in the
-> has_kernel_support() function to begin with.
-> 
-> So all in all I guess that safest option would be to create a unique
-> temporary directory under TMPDIR and use it as a mount point in the
-> has_kernel_support() function.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+
