@@ -1,57 +1,76 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 4 Mar 2021 18:02:03 +0100
-Subject: [LTP] NFS tests failure: RPC: Couldn't create auth handle
- (flavor 390004)
-In-Reply-To: <89a20590-e81c-4959-f7d7-da95e6423107@oracle.com>
-References: <YD0NapQGu/HEi5HK@pevik>
- <89a20590-e81c-4959-f7d7-da95e6423107@oracle.com>
-Message-ID: <YEESix61jnGdJ4P/@pevik>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Thu, 4 Mar 2021 18:02:23 +0100
+Subject: [LTP] [PATCH 5.11 000/773] 5.11.3-rc3 review
+In-Reply-To: <20210304165247.GA131220@roeck-us.net>
+References: <20210302192719.741064351@linuxfoundation.org>
+ <CA+G9fYvkW+84U9e0Cjft_pq9bGnBBqCXST7Hg+gx4pKNyuGPFQ@mail.gmail.com>
+ <YEDDIzz32JqSvi1S@kroah.com> <20210304165247.GA131220@roeck-us.net>
+Message-ID: <YEESn1JboVRjfJGN@kroah.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > I'm looking to some NFS failures on recent openSUSE kernel 5.11.
+On Thu, Mar 04, 2021 at 08:52:47AM -0800, Guenter Roeck wrote:
+> On Thu, Mar 04, 2021 at 12:23:15PM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Mar 03, 2021 at 02:02:20PM +0530, Naresh Kamboju wrote:
+> > > On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > This is the start of the stable review cycle for the 5.11.3 release.
+> > > > There are 773 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > >
+> > > > Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> > > > Anything received after that time might be too late.
+> > > >
+> > > > The whole patch series can be found in one patch at:
+> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.3-rc3.gz
+> > > > or in the git tree and branch at:
+> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > > > and the diffstat can be found below.
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > > 
+> > > 
+> > > Results from Linaro?s test farm.
+> > > All our builds are getting PASS now.
+> > > But,
+> > > Regressions detected on all devices (arm64, arm, x86_64 and i386).
+> > > LTP pty test case hangup01 failed on all devices
+> > > 
+> > > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+> > > 
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > 
+> > > This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
+> > > Test PASS on the v5.12-rc1 mainline and Linux next kernel.
+> > > 
+> > > Following two commits caused this test failure,
+> > > 
+> > >    Linus Torvalds <torvalds@linux-foundation.org>
+> > >        tty: implement read_iter
+> > > 
+> > >    Linus Torvalds <torvalds@linux-foundation.org>
+> > >        tty: convert tty_ldisc_ops 'read()' function to take a kernel pointer
+> > > 
+> > > Test case failed link,
+> > > https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11.2-774-g6ca52dbc58df/testrun/4070143/suite/ltp-pty-tests/test/hangup01/log
+> > > 
+> > 
+> > Thanks for testing them all, I'll try to debug this later today...
+> > 
+> 
+> Did you see my response to v5.10.y ? It looks like two related patches
+> may be missing from v5.10.y and v5.11.y.
 
-> > "RPC:       Couldn't create auth handle (flavor 390004)" error has something to
-> > do with krb5i, but module rpcsec_gss_krb5 is loaded.
+I did, thank you, I need to get through some other tasks first before
+trying the reproducer and see if the patches you list fix it or not...
 
-Hi Alexey,
+thanks,
 
-> Hi Petr,
-
-> Do other security flavours work well, or without them using "none" opt?
-> Also 'sys' is not default in your setup? If it doesn't work just for
-> krb5 it might be some misconfiguration with kerberos setup there...
-
-thanks for a tip. No, define sec=... in /etc/nfsmount.conf does not help.
-
-* Adding sec=sys into /etc/nfsmount.conf leads to (or keeping the default):
-nfs01 1 TINFO: Mounting NFS: mount -t nfs -o proto=tcp,vers=4.1 10.0.0.2:/tmp/LTP_nfs01.nM6Epvvg20/4.1/tcp /tmp/LTP_nfs01.nM6Epvvg20/4.1/0
-mount.nfs: mounting 10.0.0.2:/tmp/LTP_nfs01.nM6Epvvg20/4.1/tcp failed, reason given by server: No such file or directory
-nfs01 1 TBROK: mount command failed
-
-* sec=none
-nfs01 1 TINFO: setup NFSv4.1, socket type tcp
-nfs01 1 TINFO: Mounting NFS: mount -t nfs -o proto=tcp,vers=4.1 10.0.0.2:/tmp/LTP_nfs01.pCXxr8Cr0I/4.1/tcp /tmp/LTP_nfs01.pCXxr8Cr0I/4.1/0
-mount.nfs: Operation not permitted
-
-* sec=krb5 or sec=krb5i or sec=krb5p
-nfs01 1 TINFO: setup NFSv4.1, socket type tcp
-nfs01 1 TINFO: Mounting NFS: mount -t nfs -o proto=tcp,vers=4.1 10.0.0.2:/tmp/LTP_nfs01.9oZybEIlye/4.1/tcp /tmp/LTP_nfs01.9oZybEIlye/4.1/0
-mount.nfs: an incorrect mount option was specified
-
-I have to dig more into the docs.
-
-BTW what services are required to be running for NFS tests?
-I have running: proc-fs-nfsd.mount, var-lib-nfs-rpc_pipefs.mount, nfs-idmapd.service, nfs-mountd.service, nfs-server.service, nfsdcld.servicenfs-client.target.
-
-Kind regards,
-Petr
-
-> > Any idea what could cause "nfs41_sequence_process: Error 0 free the slot"
-> > and "NFS reply lookup: -2"?
-
-> > Kind regards,
-> > Petr
+greg k-h
