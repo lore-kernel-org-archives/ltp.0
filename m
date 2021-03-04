@@ -1,163 +1,55 @@
-From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Date: Thu, 4 Mar 2021 10:13:04 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
-In-Reply-To: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
-References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
-Message-ID: <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Thu, 4 Mar 2021 02:14:32 +0000
+Subject: [LTP] [PATCH] lib/tst_supported_fs_types.c: Add tmpfs to
+ filesystem whitelist
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40388B77D@dggeml511-mbs.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The logic is same as syscalls/getpid02, which is to check whether
-parent's pid equals child's ppid.
+Hi Cyril,
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/getppid/getppid02.c | 122 ++++--------------
- 1 file changed, 27 insertions(+), 95 deletions(-)
+I have resubmit the patch according to your review.
 
-diff --git a/testcases/kernel/syscalls/getppid/getppid02.c b/testcases/kernel/syscalls/getppid/getppid02.c
-index ae3c8eb26..d0bf984dd 100644
---- a/testcases/kernel/syscalls/getppid/getppid02.c
-+++ b/testcases/kernel/syscalls/getppid/getppid02.c
-@@ -1,106 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
- 
--/*
-- * NAME
-- * 	getppid02.c
-- *
-- * DESCRIPTION
-- * 	Testcase to check the basic functionality of the getppid() syscall.
-- *
-- * USAGE:  <for command-line>
-- *  getppid02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-+/*\
-+ * [DESCRIPTION]
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- * 	None
-- */
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <err.h>
--#include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
-+ * Check that getppid() in child returns the same pid as getpid() in parent.
-+\*/
- 
--char *TCID = "getppid02";
--int TST_TOTAL = 1;
-+#include <errno.h>
- 
--void setup(void);
--void cleanup(void);
-+#include "tst_test.h"
- 
--int main(int ac, char **av)
-+static void verify_getppid(void)
- {
--
--	int lc;
--	int status;
--	pid_t pid, ppid;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		ppid = getpid();
--		pid = FORK_OR_VFORK();
--		if (pid == -1)
--			tst_brkm(TBROK, cleanup, "fork failed");
--
--		if (pid == 0) {
--			TEST(getppid());
--
--			if (TEST_RETURN != ppid)
--				errx(1, "getppid failed (%ld != %d)",
--				     TEST_RETURN, ppid);
--			else
--				printf("return value and parent's pid "
--				       "value match\n");
--			exit(0);
--		} else {
--			SAFE_WAIT(cleanup, &status);
--			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--				tst_resm(TFAIL,
--					 "getppid functionality incorrect");
--		}
-+	pid_t proc_id;
-+	pid_t pid;
-+	pid_t pproc_id;
-+
-+	proc_id = getpid();
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		pproc_id = getppid();
-+
-+		if (pproc_id != proc_id)
-+			tst_res(TFAIL, "child's ppid(%d) not equal to parent's pid(%d)",
-+				pproc_id, proc_id);
-+		else
-+			tst_res(TPASS, "getppid() functionality is correct");
- 	}
--	cleanup();
--
--	tst_exit();
- }
- 
--void setup(void)
--{
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.forks_child = 1,
-+	.test_all = verify_getppid,
-+};
--- 
-2.30.1
+Thanks so much!
 
-
-
+> 
+> Hi!
+> > > But there is another problem there, since the code still mounts
+> > > tmpfs on tmpdir for a short while, which is temporary directory used
+> > > by all LTP tests, which may potentially break tests that runs in parallel.
+> >
+> > 	In general, when all_filesystems has been set to 1,  the
+> needs_tmpdir would be set to 1 and the mntpoint must has been set to
+> some path, so the test run in /tmp/tmpxxxxxx/mntpoint and
+> > 	other LTP tests would run in another tmpdir. So it has no problem for
+> running in parallel.
+> >
+> > 	I don't know if I understand it right.
+> 
+> The has_kernel_support() uses TMPDIR as the mount point, which is the
+> parent directory for all LTP tests, moreover it often points to just "/tmp". If
+> you mount anything over that directory, even for a short while, the whole
+> system will get different and empty "/tmp" which will possibly break many
+> things.
+> 
+> We may get over this with using "." instead, in a case that testcase has
+> created temporary directory and changed the PWD to it, but it's not that
+> simple either, since tst_test.c is not the only place that calls
+> has_kernel_support().
+> 
+> We have testcases/lib/tst_supported_fs.c helper as well that is used by
+> shell tests. This is a standalone binary that does not create a temporary
+> directory and should work even without TMPDIR being set, which is the
+> reason we have the if (!tmpdir) tmpdir = "/tmp"; check in the
+> has_kernel_support() function to begin with.
+> 
+> So all in all I guess that safest option would be to create a unique
+> temporary directory under TMPDIR and use it as a mount point in the
+> has_kernel_support() function.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
