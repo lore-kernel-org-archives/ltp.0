@@ -1,36 +1,41 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri,  5 Mar 2021 15:51:19 +0000
-Subject: [LTP] [PATCH 2/6] fzsync: Reset delay bias
+Date: Fri,  5 Mar 2021 15:51:20 +0000
+Subject: [LTP] [PATCH 3/6] fzsync: Correctly print positive lower delay
+ range bound
 In-Reply-To: <20210305155123.18199-1-rpalethorpe@suse.com>
 References: <20210305155123.18199-1-rpalethorpe@suse.com>
-Message-ID: <20210305155123.18199-3-rpalethorpe@suse.com>
+Message-ID: <20210305155123.18199-4-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If the delay bias a preserved then it breaks tests which have multiple
-scenarios and/or use -i. The test author could reset it manually in
-this case, but it's likely to be error prone.
+If the magnitude of delay_bias is large enough then it can turn the
+lower bound positive.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_fuzzy_sync.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/tst_fuzzy_sync.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 4141f5c64..b8841d96d 100644
+index b8841d96d..4063e95cb 100644
 --- a/include/tst_fuzzy_sync.h
 +++ b/include/tst_fuzzy_sync.h
-@@ -289,6 +289,7 @@ static void tst_fzsync_pair_reset(struct tst_fzsync_pair *pair,
- 	tst_init_stat(&pair->diff_ab);
- 	tst_init_stat(&pair->spins_avg);
- 	pair->delay = 0;
-+	pair->delay_bias = 0;
- 	pair->sampling = pair->min_samples;
- 
- 	pair->exec_loop = 0;
+@@ -518,9 +518,9 @@ static void tst_fzsync_pair_update(struct tst_fzsync_pair *pair)
+ 			tst_res(TINFO,
+ 				"Reached deviation ratios < %.2f, introducing randomness",
+ 				pair->max_dev_ratio);
+-			tst_res(TINFO, "Delay range is [-%d, %d]",
+-				(int)(pair->diff_sb.avg / per_spin_time) + pair->delay_bias,
+-				(int)(pair->diff_sa.avg / per_spin_time) - pair->delay_bias);
++			tst_res(TINFO, "Delay range is [%d, %d]",
++				-(int)(pair->diff_sb.avg / per_spin_time) + pair->delay_bias,
++				(int)(pair->diff_sa.avg / per_spin_time) + pair->delay_bias);
+ 			tst_fzsync_pair_info(pair);
+ 			pair->sampling = -1;
+ 		}
 -- 
 2.30.1
 
