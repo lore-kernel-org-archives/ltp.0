@@ -1,76 +1,55 @@
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Date: Fri, 5 Mar 2021 14:10:20 -0800
-Subject: [LTP] [PATCH] IMA: Allow only ima-buf template for key
- measurement
-In-Reply-To: <YEJZIQqa1arYKwK+@pevik>
-References: <20210303203254.12856-1-nramas@linux.microsoft.com>
- <YEJZIQqa1arYKwK+@pevik>
-Message-ID: <33ba6274-e7ef-27de-b481-5a702136c0df@linux.microsoft.com>
+From: Masayoshi Mizuma <msys.mizuma@gmail.com>
+Date: Fri,  5 Mar 2021 17:27:14 -0500
+Subject: [LTP] [PATCH] memcg: memcg_subgroup_charge.sh: Fix the parent
+ memory limit
+Message-ID: <20210305222714.257839-1-msys.mizuma@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 3/5/21 8:15 AM, Petr Vorel wrote:
+From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
 
-Hi Petr,
+memcg_subgroup_charge.sh fails on v5.9 and later kernel.
+That's because memory.limit_in_bytes isn't set the suitable value
+so mem_process is killed by OOM accidentally.
 
-A small change is needed:
+The memory.limit_in_bytes is now wrong value because commit
+3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the parent cgroup")
+changed the charging memory usage. The percpu memory, which is
+needed to create the subgroup, is charged to the parent's usage.
 
-In the while loop, for each line of the KEY_CHECK policy, we need to 
-check if a "template" is specified, and if it is then verify if it is 
-"ima-buf".
+Since we can get the amount of the percpu memory as memory.usage_in_bytes
+after the subgroup is created, extend the limit to limit_in_bytes + usage_in_bytes.
 
-> You need to do:
-> while read line; do
-> 	if ! echo $line | grep -q $template; then
-> 		tst_res TCONF "only $template can be specified for $func"
-> 		return 1
-> 	fi
-> done < $TST_TMPDIR/policy.txt
-> return 0
+Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+---
+ .../memcg/functional/memcg_subgroup_charge.sh            | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Please see the change below:
-
-while read line; do
-	if echo $line | grep -q 'template=' && ! echo $line | grep -q $template 
-; then
-		tst_res TCONF "only $template can be specified for $func"
-		return 1
-	fi
-done < $TST_TMPDIR/policy.txt
-return 0
-
-With check_policy_template() moved from ima_setup.sh to ima_keys.sh, the 
-test works fine
-
-When the policy contains the following
-    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
-    measure func=KEY_CHECK keyrings=.builtin_trusted_keys
-
-the test passes:
-
-ima_keys 1 TINFO: verify key measurement for keyrings and templates 
-specified in IMA policy
-ima_keys 1 TINFO: keyrings: 'key_import_test|\.builtin_trusted_keys'
-ima_keys 1 TINFO: templates: 'ima-buf'
-ima_keys 1 TPASS: specified keyrings were measured correctly
-
-
-But if the policy is changed to below:
-    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
-    measure func=KEY_CHECK keyrings=.builtin_trusted_keys template=ima-sig
-
-the test fails as expected.
-
-ima_keys 1 TINFO: verify key measurement for keyrings and templates 
-specified in IMA policy
-ima_keys 1 TCONF: only template=ima-buf can be specified for func=KEY_CHECK
-
-I'll post the updated patch shortly.
-
-thanks,
-  -lakshmi
-
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+index 9b23177a4..512a4e3dd 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -20,9 +20,16 @@ TST_CNT=3
+ test_subgroup()
+ {
+ 	mkdir subgroup
+-	echo $1 > memory.limit_in_bytes
+ 	echo $2 > subgroup/memory.limit_in_bytes
+ 
++	# v5.9 and later kernel, percpu memory which is needed to create
++	# the subgroup is charged to the parent's usage.
++	# Extend the parent limit so that we can observe the rss of
++	# memcg_process correctly.
++	pre_used=$(cat memory.usage_in_bytes)
++	newlimit=$(( $1 + pre_used ))
++	echo $newlimit > memory.limit_in_bytes
++
+ 	start_memcg_process --mmap-anon -s $PAGESIZES
+ 
+ 	warmup
+-- 
+2.27.0
 
