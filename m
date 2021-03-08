@@ -1,99 +1,161 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 08 Mar 2021 15:30:14 +0000
-Subject: [LTP] [PATCH 6/6] fzsync: Check processor affinity
-In-Reply-To: <YEY6bJ/FYL240kK9@yuki.lan>
-References: <20210305155123.18199-1-rpalethorpe@suse.com>
- <20210305155123.18199-7-rpalethorpe@suse.com> <YEY6bJ/FYL240kK9@yuki.lan>
-Message-ID: <87blbthddl.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon,  8 Mar 2021 16:44:21 +0100
+Subject: [LTP] [PATCH] splice02: Generate input in C
+Message-ID: <20210308154421.2002-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+instead relying on shell piping data into it.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+Found on SLES JeOS (https://progress.opensuse.org/issues/77260).
 
-> Hi!
->> It is useful for testing Fuzzy Sync itself to set the CPU affinity to
->> a single core. The current processes affinity does not effect
->                                                            ^
-> 							 affect?
+Also add metadata docs.
 
-Yup.
+Reported-by: Martin Loviska <mloviska@suse.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
->> tst_ncpus(), but we can get the affinity separately.
->> 
->> Note that checking this still does not guarantee we will use yield
->> when restricted to only one core. We would have to periodically probe
->> which CPUs threads are running on until we detect more than one CPU.
->> 
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>  include/tst_fuzzy_sync.h | 20 ++++++++++++++++++--
->>  1 file changed, 18 insertions(+), 2 deletions(-)
->> 
->> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
->> index 36a604e13..ea356ab44 100644
->> --- a/include/tst_fuzzy_sync.h
->> +++ b/include/tst_fuzzy_sync.h
->> @@ -59,9 +59,11 @@
->>   * @sa tst_fzsync_pair
->>   */
->>  
->> +#define _GNU_SOURCE
->> +
->>  #include <math.h>
->>  #include <pthread.h>
->> -#include <sched.h>
->> +#include "lapi/cpuset.h"
->>  #include <stdbool.h>
->>  #include <stdlib.h>
->>  #include <sys/time.h>
->> @@ -213,12 +215,26 @@ struct tst_fzsync_pair {
->>   */
->>  static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
->>  {
->> +	long ncpus = tst_ncpus();
->> +#ifdef CPU_COUNT
->> +	size_t cpusz = CPU_ALLOC_SIZE(ncpus);
->> +	cpu_set_t *cpus = CPU_ALLOC(ncpus);
->> +
->> +	if (sched_getaffinity(0, cpusz, cpus)) {
->> +		tst_res(TWARN | TERRNO, "sched_getaffinity(0, %zu, %zx)",
->> +			cpusz, (size_t)cpus);
->> +	} else {
->> +		ncpus = CPU_COUNT(cpus);
->> +	}
->> +	free(cpus);
->> +#endif
->
-> Can we instead put this into the lib/tst_cpu.c and call it
-> tst_allowed_cpus() or something like this?
+Hope using TST_CHECKPOINT_*() correctly.
+Not using tst_tag for such old kernel.
 
-Yeah sure, I guess this will allow me to handle the GNU feature test
-macro better as well.
+Kind regards,
+Petr
 
->
->>  	CHK(avg_alpha, 0, 1, 0.25);
->>  	CHK(min_samples, 20, INT_MAX, 1024);
->>  	CHK(max_dev_ratio, 0, 1, 0.1);
->>  	CHK(exec_time_p, 0, 1, 0.5);
->>  	CHK(exec_loops, 20, INT_MAX, 3000000);
->> -	CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
->> +	CHK(yield_in_wait, 0, 1, (ncpus <= 1));
->>  }
->>  #undef CHK
->>  
->> -- 
->> 2.30.1
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
+ runtest/smoketest                           |  2 +-
+ runtest/syscalls                            |  2 +-
+ testcases/kernel/syscalls/splice/splice02.c | 67 ++++++++++++++++++++-
+ 3 files changed, 66 insertions(+), 5 deletions(-)
 
-
+diff --git a/runtest/smoketest b/runtest/smoketest
+index 0c24fc1fa..ec0c088cb 100644
+--- a/runtest/smoketest
++++ b/runtest/smoketest
+@@ -11,5 +11,5 @@ symlink01 symlink01
+ stat04 symlink01 -T stat04
+ utime01A symlink01 -T utime01
+ rename01A symlink01 -T rename01
+-splice02 seq 1 20 | splice02
++splice02 splice02 -n 20
+ route4-change-dst route-change-dst.sh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fe22ae5b6..355e71144 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1446,7 +1446,7 @@ socketpair02 socketpair02
+ sockioctl01 sockioctl01
+ 
+ splice01 splice01
+-splice02 seq 1 20000 | splice02
++splice02 splice02 -n 20000
+ splice03 splice03
+ splice04 splice04
+ splice05 splice05
+diff --git a/testcases/kernel/syscalls/splice/splice02.c b/testcases/kernel/syscalls/splice/splice02.c
+index b579667b9..6e183ac7e 100644
+--- a/testcases/kernel/syscalls/splice/splice02.c
++++ b/testcases/kernel/syscalls/splice/splice02.c
+@@ -1,9 +1,24 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Jens Axboe <axboe@kernel.dk>, 2009
+- * http://lkml.org/lkml/2009/4/2/55
++ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+  */
+ 
++/*\
++ * [DESCRIPTION]
++ * Original reproducer for kernel fix
++ * bf40d3435caf NFS: add support for splice writes
++ * from v2.6.31-rc1.
++ *
++ * http://lkml.org/lkml/2009/4/2/55
++ *
++ * [ALGORITHM]
++ * - create pipe
++ * - fork(), child replace stdin with pipe
++ * - parent write to pipe
++ * - child slice from pipe
++\*/
++
+ #define _GNU_SOURCE
+ 
+ #include <stdio.h>
+@@ -15,11 +30,27 @@
+ #include "lapi/splice.h"
+ 
+ #define SPLICE_SIZE (64*1024)
++#define DEFAULT_NARG 20000
+ 
+-static void splice_test(void)
++static char *narg;
++static int num = DEFAULT_NARG;
++static int pipe_fd[2];
++
++static void setup(void)
++{
++	if (tst_parse_int(narg, &num, 1, INT_MAX))
++		tst_brk(TBROK, "invalid number of input '%s'", narg);
++}
++
++static void do_child(void)
+ {
+ 	int fd;
+ 
++	SAFE_CLOSE(pipe_fd[1]);
++	close(STDIN_FILENO);
++	SAFE_DUP2(pipe_fd[0], STDIN_FILENO);
++
++	TST_CHECKPOINT_WAIT(0);
+ 	fd = SAFE_OPEN("splice02-temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+ 
+ 	TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
+@@ -31,10 +62,40 @@ static void splice_test(void)
+ 	}
+ 
+ 	SAFE_CLOSE(fd);
++
++	exit(0);
++}
++
++static void run(void)
++{
++	int i;
++
++	SAFE_PIPE(pipe_fd);
++
++	if (SAFE_FORK())
++		do_child();
++
++	tst_res(TINFO, "writting %d times", num);
++
++	for (i = 0; i < num; i++)
++		SAFE_WRITE(1, pipe_fd[1], "x", 1);
++
++	TST_CHECKPOINT_WAKE(0);
++	tst_reap_children();
++
++	SAFE_CLOSE(pipe_fd[0]);
++	SAFE_CLOSE(pipe_fd[1]);
+ }
+ 
+ static struct tst_test test = {
+-	.test_all = splice_test,
++	.test_all = run,
++	.setup = setup,
++	.needs_checkpoints = 1,
+ 	.needs_tmpdir = 1,
++	.forks_child = 1,
+ 	.min_kver = "2.6.17",
++	.options = (struct tst_option[]) {
++		{"n:", &narg, "-n x     Number of input"},
++		{}
++	},
+ };
 -- 
-Thank you,
-Richard.
+2.30.1
+
