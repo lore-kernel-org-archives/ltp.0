@@ -1,55 +1,33 @@
-From: Masayoshi Mizuma <msys.mizuma@gmail.com>
-Date: Fri,  5 Mar 2021 17:27:14 -0500
-Subject: [LTP] [PATCH] memcg: memcg_subgroup_charge.sh: Fix the parent
- memory limit
-Message-ID: <20210305222714.257839-1-msys.mizuma@gmail.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Mon, 8 Mar 2021 11:34:28 +0800
+Subject: [LTP] [PATCH] proc01: Add /proc/dirty/dirty_list to known_issues
+Message-ID: <20210308033428.20924-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+When we open the file /proc/dirty/dirty_list directly, it will return -1 and
+set the errno to ENOMEM.
 
-memcg_subgroup_charge.sh fails on v5.9 and later kernel.
-That's because memory.limit_in_bytes isn't set the suitable value
-so mem_process is killed by OOM accidentally.
-
-The memory.limit_in_bytes is now wrong value because commit
-3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the parent cgroup")
-changed the charging memory usage. The percpu memory, which is
-needed to create the subgroup, is charged to the parent's usage.
-
-Since we can get the amount of the percpu memory as memory.usage_in_bytes
-after the subgroup is created, extend the limit to limit_in_bytes + usage_in_bytes.
-
-Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- .../memcg/functional/memcg_subgroup_charge.sh            | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ testcases/kernel/fs/proc/proc01.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-index 9b23177a4..512a4e3dd 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
-@@ -20,9 +20,16 @@ TST_CNT=3
- test_subgroup()
- {
- 	mkdir subgroup
--	echo $1 > memory.limit_in_bytes
- 	echo $2 > subgroup/memory.limit_in_bytes
- 
-+	# v5.9 and later kernel, percpu memory which is needed to create
-+	# the subgroup is charged to the parent's usage.
-+	# Extend the parent limit so that we can observe the rss of
-+	# memcg_process correctly.
-+	pre_used=$(cat memory.usage_in_bytes)
-+	newlimit=$(( $1 + pre_used ))
-+	echo $newlimit > memory.limit_in_bytes
-+
- 	start_memcg_process --mmap-anon -s $PAGESIZES
- 
- 	warmup
--- 
-2.27.0
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index 96441d153..5ccac9c4d 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -85,6 +85,7 @@ static const struct mapping known_issues[] = {
+ 	{"open", "/proc/sal/init/data", EBUSY},
+ 	{"open", "/proc/sal/mca/data", EBUSY},
+ 	{"open", "/proc/fs/nfsd/pool_stats", ENODEV},
++	{"open", "/proc/dirty/dirty_list", ENOMEM},
+ 	{"read", "/proc/fs/nfsd/clients/*/ctl", EINVAL},
+ 	{"read", "/proc/acpi/event", EAGAIN},
+ 	{"read", "/proc/kmsg", EAGAIN},
+--
+2.17.1
 
