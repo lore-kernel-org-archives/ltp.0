@@ -1,238 +1,45 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 8 Mar 2021 16:37:26 +0800
-Subject: [LTP] [RFC PATCH v2 1/7] API: Add safe openat, printfat,
- readat and unlinkat
-In-Reply-To: <20210302152510.15116-2-rpalethorpe@suse.com>
+Date: Mon, 8 Mar 2021 16:39:33 +0800
+Subject: [LTP] [RFC PATCH v2 2/7] API: Add macro for the container_of
+ trick
+In-Reply-To: <20210302152510.15116-3-rpalethorpe@suse.com>
 References: <20210302152510.15116-1-rpalethorpe@suse.com>
- <20210302152510.15116-2-rpalethorpe@suse.com>
-Message-ID: <CAEemH2euh6gV2C163izom9S=xHvRsRbydjdztQW=r-3cTdFGUQ@mail.gmail.com>
+ <20210302152510.15116-3-rpalethorpe@suse.com>
+Message-ID: <CAEemH2f0Q8fLLEaExHwB5Pm+yKyqnSiAGPXr6WpM=weMSvfa1Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+On Tue, Mar 2, 2021 at 11:28 PM Richard Palethorpe <rpalethorpe@suse.com>
+wrote:
 
-Richard Palethorpe <rpalethorpe@suse.com> wrote:
-
-...
-> +char *tst_decode_fd(int fd);
-> +
-> +int safe_openat(const char *file, const int lineno,
-> +               int dirfd, const char *path, int oflags, ...);
-> +
-> +ssize_t safe_file_readat(const char *file, const int lineno,
-> +                        int dirfd, const char *path, char *buf, size_t
-> nbyte);
-> +
-> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt,
-> va_list va);
-> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
-> +                       __attribute__ ((format (printf, 3, 4)));
-> +
-> +int safe_file_vprintfat(const char *file, const int lineno,
-> +                       int dirfd, const char *path,
-> +                       const char *fmt, va_list va);
-> +
-> +int safe_file_printfat(const char *file, const int lineno,
-> +                      int dirfd, const char *path, const char *fmt, ...)
-> +                       __attribute__ ((format (printf, 5, 6)));
-> +
-> +int safe_unlinkat(const char *file, const int lineno,
-> +                 int dirfd, const char *path, int flags);
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  include/tst_common.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/include/tst_common.h b/include/tst_common.h
+> index fd7a900d4..317925d1d 100644
+> --- a/include/tst_common.h
+> +++ b/include/tst_common.h
+> @@ -83,4 +83,9 @@
+>  #define TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(condition) \
+>         TST_BUILD_BUG_ON(condition)
+>
+> +#define tst_container_of(ptr, type, member) ({              \
 >
 
-I guess these prototypes should be moved to "safe_file_ops_fn.h"?
-(It seems the author did that on purpose to separate macros and function
-declaration)
-
-
---- /dev/null
-> +++ b/lib/tst_safe_file_ops.c
->
-
-Then we can achieve all the above functions in "lib/safe_file_ops.c"
-without creating a new file.
+What about using uppercase here?  i.e  TST_CONTAINER_OF(...)
 
 
 
-> @@ -0,0 +1,171 @@
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include "lapi/fcntl.h"
+> +       const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+> +       (type *)( (char *)__mptr - offsetof(type,member) );  \
+> +})
 > +
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +
-> +char fd_path[PATH_MAX];
-> +
-> +char *tst_decode_fd(int fd)
-> +{
-> +       ssize_t ret;
-> +       char proc_path[32];
-> +
-> +       if (fd < 0)
-> +               return "!";
-> +
-> +       sprintf(proc_path, "/proc/self/fd/%d", fd);
-> +       ret = readlink(proc_path, fd_path, sizeof(fd_path));
-> +
-> +       if (ret < 0)
-> +               return "?";
-> +
-> +       fd_path[ret] = '\0';
-> +
-> +       return fd_path;
-> +}
-> +
-> +int safe_openat(const char *file, const int lineno,
-> +               int dirfd, const char *path, int oflags, ...)
-> +{
-> +       va_list ap;
-> +       int fd;
-> +       mode_t mode;
-> +
-> +       va_start(ap, oflags);
-> +       mode = va_arg(ap, int);
-> +       va_end(ap);
-> +
-> +       fd = openat(dirfd, path, oflags, mode);
-> +       if (fd > -1)
-> +               return fd;
-> +
-> +       tst_brk_(file, lineno, TBROK | TERRNO,
-> +                "openat(%d<%s>, '%s', %o, %o)",
-> +                dirfd, tst_decode_fd(dirfd), path, oflags, mode);
-> +
-> +       return fd;
-> +}
-> +
-> +ssize_t safe_file_readat(const char *file, const int lineno,
-> +                        int dirfd, const char *path, char *buf, size_t
-> nbyte)
-> +{
-> +       int fd = safe_openat(file, lineno, dirfd, path, O_RDONLY);
-> +       ssize_t rval;
-> +
-> +       if (fd < 0)
-> +               return -1;
-> +
-> +       rval = safe_read(file, lineno, NULL, 0, fd, buf, nbyte - 1);
-> +       if (rval < 0)
-> +               return -1;
-> +
-> +       close(fd);
-> +       buf[rval] = '\0';
-> +
-> +       if (rval >= (ssize_t)nbyte - 1) {
-> +               tst_brk_(file, lineno, TBROK,
-> +                       "Buffer length %zu too small to read %d<%s>/%s",
-> +                       nbyte, dirfd, tst_decode_fd(dirfd), path);
-> +       }
-> +
-> +       return rval;
-> +}
-> +
-> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt,
-> va_list va)
-> +{
-> +       int fd = openat(dirfd, path, O_WRONLY);
-> +
-> +       if (fd < 0)
-> +               return -1;
-> +
-> +       TEST(vdprintf(fd, fmt, va));
-> +       close(fd);
-> +
-> +       if (TST_RET < 0) {
-> +               errno = TST_ERR;
-> +               return -2;
-> +       }
-> +
-> +       return TST_RET;
-> +}
-> +
-> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
-> +{
-> +       va_list va;
-> +       int rval;
-> +
-> +       va_start(va, fmt);
-> +       rval = tst_file_vprintfat(dirfd, path, fmt, va);
-> +       va_end(va);
-> +
-> +       return rval;
-> +}
-> +
-> +int safe_file_vprintfat(const char *file, const int lineno,
-> +                       int dirfd, const char *path,
-> +                       const char *fmt, va_list va)
-> +{
-> +       char buf[16];
-> +       va_list vac;
-> +       int rval;
-> +
-> +       va_copy(vac, va);
-> +
-> +       TEST(tst_file_vprintfat(dirfd, path, fmt, va));
-> +
-> +       if (TST_RET == -2) {
-> +               rval = vsnprintf(buf, sizeof(buf), fmt, vac);
-> +               va_end(vac);
-> +
-> +               if (rval >= (ssize_t)sizeof(buf))
-> +                       strcpy(buf + sizeof(buf) - 5, "...");
-> +
-> +               tst_brk_(file, lineno, TBROK | TTERRNO,
-> +                        "vdprintf(%d<%s>, '%s', '%s'<%s>)",
-> +                        dirfd, tst_decode_fd(dirfd), path, fmt,
-> +                        rval > 0 ? buf : "???");
-> +               return -1;
-> +       }
-> +
-> +       va_end(vac);
-> +
-> +       if (TST_RET == -1) {
-> +               tst_brk_(file, lineno, TBROK | TTERRNO,
-> +                       "openat(%d<%s>, '%s', O_WRONLY)",
-> +                       dirfd, tst_decode_fd(dirfd), path);
-> +       }
-> +
-> +       return TST_RET;
-> +}
-> +
-> +int safe_file_printfat(const char *file, const int lineno,
-> +                      int dirfd, const char *path,
-> +                      const char *fmt, ...)
-> +{
-> +       va_list va;
-> +       int rval;
-> +
-> +       va_start(va, fmt);
-> +       rval = safe_file_vprintfat(file, lineno, dirfd, path, fmt, va);
-> +       va_end(va);
-> +
-> +       return rval;
-> +}
-> +
-> +int safe_unlinkat(const char *file, const int lineno,
-> +                 int dirfd, const char *path, int flags)
-> +{
-> +       int rval = unlinkat(dirfd, path, flags);
-> +
-> +       if (rval > -1)
-> +               return rval;
-> +
-> +       tst_brk_(file, lineno, TBROK | TERRNO,
-> +                "unlinkat(%d<%s>, '%s', %s)", dirfd,
-> tst_decode_fd(dirfd), path,
-> +                flags == AT_REMOVEDIR ? "AT_REMOVEDIR" : (flags ? "?" :
-> "0"));
-> +
-> +       return rval;
-> +}
+>  #endif /* TST_COMMON_H__ */
 > --
 > 2.30.0
 >
@@ -243,4 +50,4 @@ Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210308/2850f86f/attachment-0001.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210308/963b416b/attachment.htm>
