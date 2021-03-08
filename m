@@ -1,142 +1,153 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 8 Mar 2021 19:24:49 +0800
-Subject: [LTP] [PATCH] clock_gettime04: print more info to help debugging
-In-Reply-To: <20210308111447.h3l2a5yep3n4n5qs@vireshk-i7>
-References: <20210308065329.25824-1-liwang@redhat.com>
- <20210308101732.lzkjql3t7aoscruk@vireshk-i7>
- <CAEemH2d45hFqhB-++xgswYoOh4HGFtFZxXCKGhLhDdt9oXFbfA@mail.gmail.com>
- <20210308111447.h3l2a5yep3n4n5qs@vireshk-i7>
-Message-ID: <CAEemH2eKkGokVY2ZBs=U9eqDrDZVB5qKBVUApULrdL65tfnmLQ@mail.gmail.com>
+From: Leo Liang <ycliang@andestech.com>
+Date: Mon, 8 Mar 2021 19:32:46 +0800
+Subject: [LTP] [PATCH 5/6] fzsync: Move yield check out of loop and add
+ yield to delay
+In-Reply-To: <20210305155123.18199-6-rpalethorpe@suse.com>
+References: <20210305155123.18199-1-rpalethorpe@suse.com>
+ <20210305155123.18199-6-rpalethorpe@suse.com>
+Message-ID: <20210308113246.GA622@andestech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Mar 8, 2021 at 7:14 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-
-> On 08-03-21, 18:59, Li Wang wrote:
-> > Yes, but that's not harmful.
+On Fri, Mar 05, 2021 at 11:51:22PM +0800, Richard Palethorpe wrote:
+> During my testing I found no difference between having the branch
+> inside the loop and outside. However looking at the generated
+> assembly, it definitely does perform the branch inside the loop. This
+> could have an effect on some platform with worse branch prediction. So
+> I have moved the branch outside of the loop.
+> 
+> Also I have added sched_yield to the delay loop. If we only have one
+> CPU then it is not delaying anything unless the other process can
+> progress.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  include/tst_fuzzy_sync.h | 72 ++++++++++++++++++++++++++++++----------
+>  1 file changed, 54 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+> index 5474f81e3..36a604e13 100644
+> --- a/include/tst_fuzzy_sync.h
+> +++ b/include/tst_fuzzy_sync.h
+> @@ -183,9 +183,9 @@ struct tst_fzsync_pair {
+>  	int exec_loop;
+>  	/** Internal; The second thread or 0 */
+>  	pthread_t thread_b;
+> -	/** 
+> -	 * Internal; The flag indicates single core machines or not
+> -	 * 
+> +	/**
+> +	 * The flag indicates single core machines or not
+> +	 *
+>  	 * If running on single core machines, it would take considerable
+>  	 * amount of time to run fuzzy sync library.
+>  	 * Thus call sched_yield to give up cpu to decrease the test time.
+> @@ -575,31 +575,53 @@ static inline void tst_fzsync_pair_wait(int *our_cntr,
+>  		 * line above before doing that. If we are in rear position
+>  		 * then our counter may already have been set to zero.
+>  		 */
+> -		while (tst_atomic_load(our_cntr) > 0
+> -		       && tst_atomic_load(our_cntr) < INT_MAX) {
+> -			if (spins)
+> -				(*spins)++;
+> -			if(yield_in_wait)
+> +		if (yield_in_wait) {
+> +			while (tst_atomic_load(our_cntr) > 0
+> +			       && tst_atomic_load(our_cntr) < INT_MAX) {
+> +				if (spins)
+> +					(*spins)++;
+> +
+>  				sched_yield();
+> +			}
+> +		} else {
+> +			while (tst_atomic_load(our_cntr) > 0
+> +			       && tst_atomic_load(our_cntr) < INT_MAX) {
+> +				if (spins)
+> +					(*spins)++;
+> +			}
+>  		}
+>  
+> +
+>  		tst_atomic_store(0, other_cntr);
+>  		/*
+>  		 * Once both counters have been set to zero the invariant
+>  		 * is restored and we can continue.
+>  		 */
+> -		while (tst_atomic_load(our_cntr) > 1)
+> -			;
+> +		if (yield_in_wait) {
+> +			while (tst_atomic_load(our_cntr) > 1)
+> +				sched_yield();
+> +		} else {
+> +			while (tst_atomic_load(our_cntr) > 1)
+> +				;
+> +		}
+>  	} else {
+>  		/*
+>  		 * If our counter is less than the other thread's we are ahead
+>  		 * of it and need to wait.
+>  		 */
+> -		while (tst_atomic_load(our_cntr) < tst_atomic_load(other_cntr)) {
+> -			if (spins)
+> -				(*spins)++;
+> -			if(yield_in_wait)
+> +		if (yield_in_wait) {
+> +			while (tst_atomic_load(our_cntr) <
+> +			       tst_atomic_load(other_cntr)) {
+> +				if (spins)
+> +					(*spins)++;
+>  				sched_yield();
+> +			}
+> +		} else {
+> +			while (tst_atomic_load(our_cntr) <
+> +			       tst_atomic_load(other_cntr)) {
+> +				if (spins)
+> +					(*spins)++;
+> +			}
+>  		}
+>  	}
+>  }
+> @@ -713,8 +735,15 @@ static inline void tst_fzsync_start_race_a(struct tst_fzsync_pair *pair)
+>  	tst_fzsync_wait_a(pair);
+>  
+>  	delay = pair->delay;
+> -	while (delay < 0)
+> -		delay++;
+> +	if (pair->yield_in_wait) {
+> +		while (delay < 0) {
+> +			sched_yield();
+> +			delay++;
+> +		}
+> +	} else {
+> +		while (delay < 0)
+> +			delay++;
+> +	}
+>  
+>  	tst_fzsync_time(&pair->a_start);
+>  }
+> @@ -744,8 +773,15 @@ static inline void tst_fzsync_start_race_b(struct tst_fzsync_pair *pair)
+>  	tst_fzsync_wait_b(pair);
+>  
+>  	delay = pair->delay;
+> -	while (delay > 0)
+> -		delay--;
+> +	if (pair->yield_in_wait) {
+> +		while (delay > 0) {
+> +			sched_yield();
+> +			delay--;
+> +		}
+> +	} else {
+> +		while (delay > 0)
+> +			delay--;
+> +	}
+>  
+>  	tst_fzsync_time(&pair->b_start);
+>  }
+> -- 
+> 2.30.1
 >
-> But is useless.
->
-> > If you remove all entries of varaints[] you can
-> > still get PASS from the test, that's something strange to us. So I just
-> add
-> > this check there.
->
-> Yes, that would happen because we will not run the inner loop in that
-> case and even the condition you are adding will not run at all.
->
-> This wasn't designed to run with empty variants list and so we don't
-> verify that variants structure is empty or not and so it passes.
->
 
-Indeed. I agree to remove 'tv->clock_gettime' check.
-
-
->
-> > No, that will only print the first entry instruct variants because you're
-> > using two iterations in the run(), the second loop 'j' is to traverse the
-> > variants[] actually.
->
-> Ahh, my bad. I didn't read the code properly. Sorry about that.
->
-> Now that I had a look again, with what you are adding here we will
-> start printing another line for each variant and it will be printed
-> just once at the beginning of the loop of 10000 iterations. Right ?
->
-
-Right.
-
-
-
->
-> I am not sure how that will help you get more info out, to me it is
-> still very much unreadable. Can you show the final output as well ?
->
-
-# ./clock_gettime04
-tst_test.c:1288: TINFO: Timeout per run is 0h 05m 00s
-clock_gettime04.c:84: TINFO: Running in a virtual machine, multiply the
-delta by 10.
-vdso_helpers.c:76: TINFO: Couldn't find vdso_gettime64()
-clock_gettime04.c:158: TPASS: CLOCK_REALTIME: Difference between successive
-readings is reasonable
-clock_gettime04.c:158: TPASS: CLOCK_REALTIME_COARSE: Difference between
-successive readings is reasonable
-clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC: Difference between
-successive readings is reasonable
-clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC_COARSE: Difference between
-successive readings is reasonable
-clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC_RAW: Difference between
-successive readings is reasonable
-clock_gettime04.c:158: TPASS: CLOCK_BOOTTIME: Difference between successive
-readings is reasonable
-
-
-After my patch:
-
-# ./clock_gettime04
-tst_test.c:1288: TINFO: Timeout per run is 0h 05m 00s
-clock_gettime04.c:84: TINFO: Running in a virtual machine, multiply the
-delta by 10.
-vdso_helpers.c:76: TINFO: Couldn't find vdso_gettime64()
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:112: TINFO: gettimeofday
-clock_gettime04.c:160: TPASS: CLOCK_REALTIME: Difference between successive
-readings is reasonable
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:160: TPASS: CLOCK_REALTIME_COARSE: Difference between
-successive readings is reasonable
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:160: TPASS: CLOCK_MONOTONIC: Difference between
-successive readings is reasonable
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:160: TPASS: CLOCK_MONOTONIC_COARSE: Difference between
-successive readings is reasonable
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:160: TPASS: CLOCK_MONOTONIC_RAW: Difference between
-successive readings is reasonable
-clock_gettime04.c:112: TINFO: vDSO or syscall with libc spec
-clock_gettime04.c:112: TINFO: syscall with old kernel spec
-clock_gettime04.c:112: TINFO: vDSO with old kernel spec
-clock_gettime04.c:160: TPASS: CLOCK_BOOTTIME: Difference between successive
-readings is reasonable
-
-
-
->
-> What about adding tv->desc to all the existing print messages instead
-> ? Or maybe just the TFAIL ones? So we print everything in a single
-> line only ?
->
-
-But that still not good enough.
-e.g
-In PASS status, we missing some details.
-
-
-
->
-> --
-> viresh
->
->
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210308/aae2314a/attachment.htm>
+Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
