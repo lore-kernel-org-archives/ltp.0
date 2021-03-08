@@ -1,39 +1,246 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Mon, 8 Mar 2021 09:07:15 +0100
-Subject: [LTP] [PATCH] memcg: memcg_subgroup_charge.sh: Fix the parent
- memory limit
-In-Reply-To: <20210305222714.257839-1-msys.mizuma@gmail.com>
-References: <20210305222714.257839-1-msys.mizuma@gmail.com>
-Message-ID: <a47ecbd7-ba4a-ff2c-ead9-e731040cb845@jv-coder.de>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 8 Mar 2021 16:37:26 +0800
+Subject: [LTP] [RFC PATCH v2 1/7] API: Add safe openat, printfat,
+ readat and unlinkat
+In-Reply-To: <20210302152510.15116-2-rpalethorpe@suse.com>
+References: <20210302152510.15116-1-rpalethorpe@suse.com>
+ <20210302152510.15116-2-rpalethorpe@suse.com>
+Message-ID: <CAEemH2euh6gV2C163izom9S=xHvRsRbydjdztQW=r-3cTdFGUQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Richard,
 
-On 3/5/2021 11:27 PM, Masayoshi Mizuma wrote:
-> From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
->
-> memcg_subgroup_charge.sh fails on v5.9 and later kernel.
-> That's because memory.limit_in_bytes isn't set the suitable value
-> so mem_process is killed by OOM accidentally.
->
-> The memory.limit_in_bytes is now wrong value because commit
-> 3e38e0aaca9e ("mm: memcg: charge memcg percpu memory to the parent cgroup")
-> changed the charging memory usage. The percpu memory, which is
-> needed to create the subgroup, is charged to the parent's usage.
->
-> Since we can get the amount of the percpu memory as memory.usage_in_bytes
-> after the subgroup is created, extend the limit to limit_in_bytes + usage_in_bytes.
-Sounds reasonable, I guess the test always fails on 5.9?
-But the problem is, this test also fails on older kernels sometimes. 
-When I looked at this the last time, I thought it was because sometimes 
-the kernel requires new pages for the page table and that is also taken 
-into account for the memory limit.
-I still don't know why the test even sets a limit for the parent group 
-and would vote for completely removing the memory setting on the parent.
+Richard Palethorpe <rpalethorpe@suse.com> wrote:
 
-J?rg
+...
+> +char *tst_decode_fd(int fd);
+> +
+> +int safe_openat(const char *file, const int lineno,
+> +               int dirfd, const char *path, int oflags, ...);
+> +
+> +ssize_t safe_file_readat(const char *file, const int lineno,
+> +                        int dirfd, const char *path, char *buf, size_t
+> nbyte);
+> +
+> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt,
+> va_list va);
+> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
+> +                       __attribute__ ((format (printf, 3, 4)));
+> +
+> +int safe_file_vprintfat(const char *file, const int lineno,
+> +                       int dirfd, const char *path,
+> +                       const char *fmt, va_list va);
+> +
+> +int safe_file_printfat(const char *file, const int lineno,
+> +                      int dirfd, const char *path, const char *fmt, ...)
+> +                       __attribute__ ((format (printf, 5, 6)));
+> +
+> +int safe_unlinkat(const char *file, const int lineno,
+> +                 int dirfd, const char *path, int flags);
+>
 
+I guess these prototypes should be moved to "safe_file_ops_fn.h"?
+(It seems the author did that on purpose to separate macros and function
+declaration)
+
+
+--- /dev/null
+> +++ b/lib/tst_safe_file_ops.c
+>
+
+Then we can achieve all the above functions in "lib/safe_file_ops.c"
+without creating a new file.
+
+
+
+> @@ -0,0 +1,171 @@
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include "lapi/fcntl.h"
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +
+> +char fd_path[PATH_MAX];
+> +
+> +char *tst_decode_fd(int fd)
+> +{
+> +       ssize_t ret;
+> +       char proc_path[32];
+> +
+> +       if (fd < 0)
+> +               return "!";
+> +
+> +       sprintf(proc_path, "/proc/self/fd/%d", fd);
+> +       ret = readlink(proc_path, fd_path, sizeof(fd_path));
+> +
+> +       if (ret < 0)
+> +               return "?";
+> +
+> +       fd_path[ret] = '\0';
+> +
+> +       return fd_path;
+> +}
+> +
+> +int safe_openat(const char *file, const int lineno,
+> +               int dirfd, const char *path, int oflags, ...)
+> +{
+> +       va_list ap;
+> +       int fd;
+> +       mode_t mode;
+> +
+> +       va_start(ap, oflags);
+> +       mode = va_arg(ap, int);
+> +       va_end(ap);
+> +
+> +       fd = openat(dirfd, path, oflags, mode);
+> +       if (fd > -1)
+> +               return fd;
+> +
+> +       tst_brk_(file, lineno, TBROK | TERRNO,
+> +                "openat(%d<%s>, '%s', %o, %o)",
+> +                dirfd, tst_decode_fd(dirfd), path, oflags, mode);
+> +
+> +       return fd;
+> +}
+> +
+> +ssize_t safe_file_readat(const char *file, const int lineno,
+> +                        int dirfd, const char *path, char *buf, size_t
+> nbyte)
+> +{
+> +       int fd = safe_openat(file, lineno, dirfd, path, O_RDONLY);
+> +       ssize_t rval;
+> +
+> +       if (fd < 0)
+> +               return -1;
+> +
+> +       rval = safe_read(file, lineno, NULL, 0, fd, buf, nbyte - 1);
+> +       if (rval < 0)
+> +               return -1;
+> +
+> +       close(fd);
+> +       buf[rval] = '\0';
+> +
+> +       if (rval >= (ssize_t)nbyte - 1) {
+> +               tst_brk_(file, lineno, TBROK,
+> +                       "Buffer length %zu too small to read %d<%s>/%s",
+> +                       nbyte, dirfd, tst_decode_fd(dirfd), path);
+> +       }
+> +
+> +       return rval;
+> +}
+> +
+> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt,
+> va_list va)
+> +{
+> +       int fd = openat(dirfd, path, O_WRONLY);
+> +
+> +       if (fd < 0)
+> +               return -1;
+> +
+> +       TEST(vdprintf(fd, fmt, va));
+> +       close(fd);
+> +
+> +       if (TST_RET < 0) {
+> +               errno = TST_ERR;
+> +               return -2;
+> +       }
+> +
+> +       return TST_RET;
+> +}
+> +
+> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
+> +{
+> +       va_list va;
+> +       int rval;
+> +
+> +       va_start(va, fmt);
+> +       rval = tst_file_vprintfat(dirfd, path, fmt, va);
+> +       va_end(va);
+> +
+> +       return rval;
+> +}
+> +
+> +int safe_file_vprintfat(const char *file, const int lineno,
+> +                       int dirfd, const char *path,
+> +                       const char *fmt, va_list va)
+> +{
+> +       char buf[16];
+> +       va_list vac;
+> +       int rval;
+> +
+> +       va_copy(vac, va);
+> +
+> +       TEST(tst_file_vprintfat(dirfd, path, fmt, va));
+> +
+> +       if (TST_RET == -2) {
+> +               rval = vsnprintf(buf, sizeof(buf), fmt, vac);
+> +               va_end(vac);
+> +
+> +               if (rval >= (ssize_t)sizeof(buf))
+> +                       strcpy(buf + sizeof(buf) - 5, "...");
+> +
+> +               tst_brk_(file, lineno, TBROK | TTERRNO,
+> +                        "vdprintf(%d<%s>, '%s', '%s'<%s>)",
+> +                        dirfd, tst_decode_fd(dirfd), path, fmt,
+> +                        rval > 0 ? buf : "???");
+> +               return -1;
+> +       }
+> +
+> +       va_end(vac);
+> +
+> +       if (TST_RET == -1) {
+> +               tst_brk_(file, lineno, TBROK | TTERRNO,
+> +                       "openat(%d<%s>, '%s', O_WRONLY)",
+> +                       dirfd, tst_decode_fd(dirfd), path);
+> +       }
+> +
+> +       return TST_RET;
+> +}
+> +
+> +int safe_file_printfat(const char *file, const int lineno,
+> +                      int dirfd, const char *path,
+> +                      const char *fmt, ...)
+> +{
+> +       va_list va;
+> +       int rval;
+> +
+> +       va_start(va, fmt);
+> +       rval = safe_file_vprintfat(file, lineno, dirfd, path, fmt, va);
+> +       va_end(va);
+> +
+> +       return rval;
+> +}
+> +
+> +int safe_unlinkat(const char *file, const int lineno,
+> +                 int dirfd, const char *path, int flags)
+> +{
+> +       int rval = unlinkat(dirfd, path, flags);
+> +
+> +       if (rval > -1)
+> +               return rval;
+> +
+> +       tst_brk_(file, lineno, TBROK | TERRNO,
+> +                "unlinkat(%d<%s>, '%s', %s)", dirfd,
+> tst_decode_fd(dirfd), path,
+> +                flags == AT_REMOVEDIR ? "AT_REMOVEDIR" : (flags ? "?" :
+> "0"));
+> +
+> +       return rval;
+> +}
+> --
+> 2.30.0
+>
+>
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210308/2850f86f/attachment-0001.htm>
