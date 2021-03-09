@@ -1,104 +1,53 @@
 From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Tue, 9 Mar 2021 13:08:27 +0000
-Subject: [LTP] [PATCH] lib/tst_supported_fs_types.c: Add tmpfs to
- filesystem whitelist
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038900D9@dggeml511-mbs.china.huawei.com>
+Date: Tue, 9 Mar 2021 13:17:12 +0000
+Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038900ED@dggeml511-mbs.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi petr,
 
-I have resubmit the patch according to your review.
+> 
+> Hi,
+> 
+> > When CommitLimit - Committed_AS < 128, there is no post processing,
+> > and the test will report "TBROK: Test haven't reported results".
+> 
+> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> > ---
+> >  testcases/kernel/mem/tunable/max_map_count.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> > diff --git a/testcases/kernel/mem/tunable/max_map_count.c
+> > b/testcases/kernel/mem/tunable/max_map_count.c
+> > index aa70fde59..ffc53cbb5 100644
+> > --- a/testcases/kernel/mem/tunable/max_map_count.c
+> > +++ b/testcases/kernel/mem/tunable/max_map_count.c
+> > @@ -162,6 +162,8 @@ static void max_map_count_test(void)
+> >  	max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
+> >  	if (max_iters > MAX_MAP_COUNT)
+> >  		max_iters = MAX_MAP_COUNT;
+> > +	if (max_iters < 0)
+> > +		tst_brk(TCONF, "Test nees max_iters > 0, test skipped");
+> typo: nees => needs (no need to repost, can be changed during merge).
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> You seems to exploring limits. Out of curiosity, which system / hw do you
+> test?
 
-Thanks so much!
+We are testing linux on some different embedded systems whose hw resource is limited. 
+
+Thanks for your review!
 
 Best Regards,
 Gongyi
 
------------------------------------------------------------------------------------------
+> Kind regards,
+> Petr
 > 
-> Hi!
-> > @@ -34,6 +35,10 @@ static int has_mkfs(const char *fs_type)
-> >
-> >  	sprintf(buf, "mkfs.%s >/dev/null 2>&1", fs_type);
-> >
-> > +	if (strstr(buf, "mkfs.tmpfs")) {
-> > +		return 1;
-> > +	}
-> 
-> The curly braces around single line statement are useless here.
-> 
-> Also it would be cleaner if we checked before the sprintf and against the
-> fs_type instead with if (!strcmp(fs_type, "tmpfs")).
-> 
-> We may also print a TINFO message something along the lines:
-> 
-> 	tst_res(TINFO, "mkfs is not needed for tmpfs");
-> 
-> >  	ret = tst_system(buf);
-> >
-> >  	if (WEXITSTATUS(ret) == 127) {
-> > @@ -50,17 +55,30 @@ static int has_kernel_support(const char
-> *fs_type, int flags)
-> >  	static int fuse_supported = -1;
-> >  	const char *tmpdir = getenv("TMPDIR");
-> >  	char buf[128];
-> > +	char template[PATH_MAX];
-> >  	int ret;
-> >
-> >  	if (!tmpdir)
-> >  		tmpdir = "/tmp";
-> >
-> > -	mount("/dev/zero", tmpdir, fs_type, 0, NULL);
-> > -	if (errno != ENODEV) {
-> > +	sprintf(template, "%s/mountXXXXXX", tmpdir);
-> 
-> We should at least use snprintf() with sizeof(template) in order not to
-> overrun the buffer. Or we can use asprintf() instead and free the buffer
-> later on.
-> 
-> > +	if (mkdtemp(template) == NULL) {
-> > +		tst_res(TWARN | TERRNO , "%s: mkdtemp(%s) failed", __func__,
-> template);
-> > +	}
-> 
-> I guess that we can tst_brk(TBROK, ""); here if mkdtemp() failed,
-> continuing here we would pass non-existing directory thte mount() syscall
-> below.
-> 
-> Also please do not include the __func__ in the message here.
-> 
-> > +	ret = mount("/dev/zero", template, fs_type, 0, NULL);
-> > +	if ((ret && errno != ENODEV) || !ret) {
-> > +		if (!ret)
-> > +			tst_umount(template);
-> >  		tst_res(TINFO, "Kernel supports %s", fs_type);
-> > +		if (rmdir(template) == -1)
-> > +			tst_res(TWARN | TERRNO, "rmdir %s failed", template);
-> 
-> We do have SAFE_RMDIR() please use that.
-> 
-> >  		return 1;
-> >  	}
-> >
-> > +	if (rmdir(template) == -1)
-> > +		tst_res(TWARN | TERRNO, "rmdir %s failed", template);
-> 
-> Here as well.
-> 
-> >  	/* Is FUSE supported by kernel? */
-> >  	if (fuse_supported == -1) {
-> >  		ret = open("/dev/fuse", O_RDWR);
-> > --
-> > 2.17.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+> >  	max_maps = MAP_COUNT_DEFAULT;
+> >  	while (max_maps <= max_iters) {
