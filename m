@@ -1,35 +1,48 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Tue, 9 Mar 2021 12:00:15 +0800
-Subject: [LTP] [PATCH] setns01.c: Change TINFO to TCONF since TINFO will not
- update test results
-Message-ID: <20210309040015.21891-1-zhaogongyi@huawei.com>
+From: Matthew Wilcox <willy@infradead.org>
+Date: Tue, 9 Mar 2021 04:01:44 +0000
+Subject: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
+In-Reply-To: <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
+References: <20210308072510.GA902@xsang-OptiPlex-9020> <87h7llhnfe.fsf@suse.de>
+ <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
+Message-ID: <20210309040144.GH3479805@casper.infradead.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When ns_total < 2 in testcase[3], we need to use TCONF since TINFO will not
-update test results, and test will be broken.
+On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
+> Hi Richard,
+> 
+> On 2021/3/8 19:53, Richard Palethorpe wrote:
+> > Hello,
+> > 
+> > > kern  :err   : [  187.461914] F2FS-fs (sda1): Swapfile does not align to section
+> > > commit 02eb84b96bc1b382dd138bf60724edbefe77b025
+> > > Author: huangjianan@oppo.com <huangjianan@oppo.com>
+> > > Date:   Mon Mar 1 12:58:44 2021 +0800
+> > >      f2fs: check if swapfile is section-alligned
+> > >      If the swapfile isn't created by pin and fallocate, it can't be
+> > >      guaranteed section-aligned, so it may be selected by f2fs gc. When
+> > >      gc_pin_file_threshold is reached, the address of swapfile may change,
+> > >      but won't be synchronized to swap_extent, so swap will write to wrong
+> > >      address, which will cause data corruption.
+> > >      Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> > >      Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> > >      Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> > >      Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > The test uses fallocate to preallocate the swap file and writes zeros to
+> > it. I'm not sure what pin refers to?
+> 
+> 'pin' refers to pinned file feature in F2FS, the LBA(Logical Block Address)
+> of a file is fixed after pinned. Without this operation before fallocate,
+> the LBA may not align with section(F2FS GC unit), some LBA of the file may
+> be changed by F2FS GC in some extreme cases.
+> 
+> For this test case, how about pin the swap file before fallocate for F2FS as
+> following:
+> 
+> ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/setns/setns01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/setns/setns01.c b/testcases/kernel/syscalls/setns/setns01.c
-index b07044060..4578871f6 100644
---- a/testcases/kernel/syscalls/setns/setns01.c
-+++ b/testcases/kernel/syscalls/setns/setns01.c
-@@ -117,7 +117,7 @@ static void test_setns(unsigned int testno)
- 			t->setup(t, i);
-
- 		if (t->skip) {
--			tst_res(TINFO, "skip %s", t->msg);
-+			tst_res(TCONF, "skip %s", t->msg);
- 			continue;
- 		}
-
---
-2.17.1
-
+No special ioctl should be needed.  f2fs_swap_activate() should pin the
+file, just like it converts inline inodes and disables compression.
