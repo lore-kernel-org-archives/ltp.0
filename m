@@ -1,48 +1,51 @@
-From: Matthew Wilcox <willy@infradead.org>
-Date: Tue, 9 Mar 2021 04:01:44 +0000
-Subject: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
-In-Reply-To: <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
-References: <20210308072510.GA902@xsang-OptiPlex-9020> <87h7llhnfe.fsf@suse.de>
- <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
-Message-ID: <20210309040144.GH3479805@casper.infradead.org>
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Tue, 9 Mar 2021 09:35:51 +0530
+Subject: [LTP] [PATCH] clock_gettime04: print more info to help debugging
+In-Reply-To: <CAEemH2cKX4Gh1tO2WL27WrnF7KLFu33rksFf+LWRZz6ZNExAOQ@mail.gmail.com>
+References: <20210308065329.25824-1-liwang@redhat.com>
+ <20210308101732.lzkjql3t7aoscruk@vireshk-i7>
+ <CAEemH2d45hFqhB-++xgswYoOh4HGFtFZxXCKGhLhDdt9oXFbfA@mail.gmail.com>
+ <20210308111447.h3l2a5yep3n4n5qs@vireshk-i7>
+ <CAEemH2eKkGokVY2ZBs=U9eqDrDZVB5qKBVUApULrdL65tfnmLQ@mail.gmail.com>
+ <20210308114859.tskerybpt6xtyffa@vireshk-i7>
+ <CAEemH2cKX4Gh1tO2WL27WrnF7KLFu33rksFf+LWRZz6ZNExAOQ@mail.gmail.com>
+Message-ID: <20210309040551.l72n5zmvvmnw44no@vireshk-i7>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
-> Hi Richard,
+On 08-03-21, 20:45, Li Wang wrote:
+> Viresh Kumar <viresh.kumar@linaro.org> wrote:
 > 
-> On 2021/3/8 19:53, Richard Palethorpe wrote:
-> > Hello,
-> > 
-> > > kern  :err   : [  187.461914] F2FS-fs (sda1): Swapfile does not align to section
-> > > commit 02eb84b96bc1b382dd138bf60724edbefe77b025
-> > > Author: huangjianan@oppo.com <huangjianan@oppo.com>
-> > > Date:   Mon Mar 1 12:58:44 2021 +0800
-> > >      f2fs: check if swapfile is section-alligned
-> > >      If the swapfile isn't created by pin and fallocate, it can't be
-> > >      guaranteed section-aligned, so it may be selected by f2fs gc. When
-> > >      gc_pin_file_threshold is reached, the address of swapfile may change,
-> > >      but won't be synchronized to swap_extent, so swap will write to wrong
-> > >      address, which will cause data corruption.
-> > >      Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > >      Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > >      Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> > >      Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > The test uses fallocate to preallocate the swap file and writes zeros to
-> > it. I'm not sure what pin refers to?
+> ...
+> >
+> > Option 3: Same as option 2 but different formatting
+> >
+> > clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC: Difference between
+> > successive readings is reasonable for following variants:
+> >         - vDSO or syscall with libc spec
+> >         - syscall with old kernel spec
+> >         - vDSO with old kernel spec
+> >         - gettimeofday
 > 
-> 'pin' refers to pinned file feature in F2FS, the LBA(Logical Block Address)
-> of a file is fixed after pinned. Without this operation before fallocate,
-> the LBA may not align with section(F2FS GC unit), some LBA of the file may
-> be changed by F2FS GC in some extreme cases.
+> Any other option here ?
+> >
 > 
-> For this test case, how about pin the swap file before fallocate for F2FS as
-> following:
+> I think no.
 > 
-> ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
+> >
+> > For the FAIL messages, I think just adding tv->desc is good enough.
+> >
+> 
+> +1, I prefer to go with Option3 + 'tv->desc for FAIL'.
+> 
+> Would you mind formatting a patch, or I can do that?
 
-No special ioctl should be needed.  f2fs_swap_activate() should pin the
-file, just like it converts inline inodes and disables compression.
+Since you started it, I will let you finish it as well :)
+
+Thanks.
+
+-- 
+viresh
