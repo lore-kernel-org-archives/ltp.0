@@ -1,85 +1,22 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 9 Mar 2021 10:51:19 +0100
-Subject: [LTP] [PATCH] IMA: Allow only ima-buf template for key
- measurement
-In-Reply-To: <33ba6274-e7ef-27de-b481-5a702136c0df@linux.microsoft.com>
-References: <20210303203254.12856-1-nramas@linux.microsoft.com>
- <YEJZIQqa1arYKwK+@pevik>
- <33ba6274-e7ef-27de-b481-5a702136c0df@linux.microsoft.com>
-Message-ID: <YEdFF2g6Z1KJiJ5b@pevik>
+Date: Tue, 9 Mar 2021 12:15:07 +0100
+Subject: [LTP] [PATCH] setns01.c: Change TINFO to TCONF since TINFO will
+ not update test results
+In-Reply-To: <20210309040015.21891-1-zhaogongyi@huawei.com>
+References: <20210309040015.21891-1-zhaogongyi@huawei.com>
+Message-ID: <YEdYuzZQVtjMS91b@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lakshmi,
+Hi,
 
-> On 3/5/21 8:15 AM, Petr Vorel wrote:
+> When ns_total < 2 in testcase[3], we need to use TCONF since TINFO will not
+> update test results, and test will be broken.
 
-> Hi Petr,
-
-> A small change is needed:
-
-> In the while loop, for each line of the KEY_CHECK policy, we need to check
-> if a "template" is specified, and if it is then verify if it is "ima-buf".
-
-> > You need to do:
-> > while read line; do
-> > 	if ! echo $line | grep -q $template; then
-> > 		tst_res TCONF "only $template can be specified for $func"
-> > 		return 1
-> > 	fi
-> > done < $TST_TMPDIR/policy.txt
-> > return 0
-
-> Please see the change below:
-
-> while read line; do
-> 	if echo $line | grep -q 'template=' && ! echo $line | grep -q $template ;
-> then
-> 		tst_res TCONF "only $template can be specified for $func"
-> 		return 1
-> 	fi
-> done < $TST_TMPDIR/policy.txt
-> return 0
-Good catch!
-
-> With check_policy_template() moved from ima_setup.sh to ima_keys.sh, the
-> test works fine
-
-> When the policy contains the following
->    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
->    measure func=KEY_CHECK keyrings=.builtin_trusted_keys
-
-I guess we should update datafiles/ima_keys/keycheck.policy to contain both
-lines.
-
-> the test passes:
-
-> ima_keys 1 TINFO: verify key measurement for keyrings and templates
-> specified in IMA policy
-> ima_keys 1 TINFO: keyrings: 'key_import_test|\.builtin_trusted_keys'
-> ima_keys 1 TINFO: templates: 'ima-buf'
-> ima_keys 1 TPASS: specified keyrings were measured correctly
-
-
-> But if the policy is changed to below:
->    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
->    measure func=KEY_CHECK keyrings=.builtin_trusted_keys template=ima-sig
-
-> the test fails as expected.
-
-> ima_keys 1 TINFO: verify key measurement for keyrings and templates
-> specified in IMA policy
-> ima_keys 1 TCONF: only template=ima-buf can be specified for func=KEY_CHECK
-
-> I'll post the updated patch shortly.
-
-Thanks a lot!
-
-> thanks,
->  -lakshmi
+Good catch, thanks! Pushed.
 
 Kind regards,
 Petr
