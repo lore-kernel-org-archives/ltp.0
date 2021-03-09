@@ -1,53 +1,44 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Tue, 9 Mar 2021 13:17:12 +0000
-Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038900ED@dggeml511-mbs.china.huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 9 Mar 2021 14:45:20 +0100
+Subject: [LTP] [PATCH 0/6] Fuzzy Sync yielding and validation test
+In-Reply-To: <20210305155123.18199-1-rpalethorpe@suse.com>
+References: <20210305155123.18199-1-rpalethorpe@suse.com>
+Message-ID: <YEd78LRleAgWNeN3@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi petr,
+Hi Richie,
 
-> 
-> Hi,
-> 
-> > When CommitLimit - Committed_AS < 128, there is no post processing,
-> > and the test will report "TBROK: Test haven't reported results".
-> 
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  testcases/kernel/mem/tunable/max_map_count.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> 
-> > diff --git a/testcases/kernel/mem/tunable/max_map_count.c
-> > b/testcases/kernel/mem/tunable/max_map_count.c
-> > index aa70fde59..ffc53cbb5 100644
-> > --- a/testcases/kernel/mem/tunable/max_map_count.c
-> > +++ b/testcases/kernel/mem/tunable/max_map_count.c
-> > @@ -162,6 +162,8 @@ static void max_map_count_test(void)
-> >  	max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
-> >  	if (max_iters > MAX_MAP_COUNT)
-> >  		max_iters = MAX_MAP_COUNT;
-> > +	if (max_iters < 0)
-> > +		tst_brk(TCONF, "Test nees max_iters > 0, test skipped");
-> typo: nees => needs (no need to repost, can be changed during merge).
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> You seems to exploring limits. Out of curiosity, which system / hw do you
-> test?
+1st patch has error:
+tst_fuzzy_sync01.c: In function ?delay?:
+tst_fuzzy_sync01.c:107:10: error: ?struct tst_fzsync_pair? has no member named ?yield_in_wait?
+  107 |  if (pair.yield_in_wait)
+      |          ^
+tst_fuzzy_sync01.c:113:12: error: ?struct tst_fzsync_pair? has no member named ?yield_in_wait?
+  113 |    if (pair.yield_in_wait)
+      |            ^
+make[1]: *** [../../include/mk/rules.mk:37: tst_fuzzy_sync01] Error 1
 
-We are testing linux on some different embedded systems whose hw resource is limited. 
+4th patch (Leo Yu-Chi Liang's) patch has warnings:
+In file included from tst_fuzzy_sync01.c:8:
+../../include/tst_fuzzy_sync.h: In function ?tst_fzsync_pair_init?:
+../../include/tst_fuzzy_sync.h:199:18: warning: comparison of constant ?0? with boolean expression is always false [-Wbool-compare]
+  199 |  if (pair->param < low)            \
+      |                  ^
+../../include/tst_fuzzy_sync.h:221:2: note: in expansion of macro ?CHK?
+  221 |  CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
+      |  ^~~
+../../include/tst_fuzzy_sync.h:201:18: warning: comparison of constant ?1? with boolean expression is always false [-Wbool-compare]
+  201 |  if (pair->param > hi)            \
+      |                  ^
+../../include/tst_fuzzy_sync.h:221:2: note: in expansion of macro ?CHK?
+  221 |  CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
 
-Thanks for your review!
 
-Best Regards,
-Gongyi
+Apart from that whole patchset LGTM, agree with Cyril's suggestions.
 
-> Kind regards,
-> Petr
-> 
-> >  	max_maps = MAP_COUNT_DEFAULT;
-> >  	while (max_maps <= max_iters) {
+Kind regards,
+Petr
