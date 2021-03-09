@@ -1,7 +1,10 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue,  9 Mar 2021 18:11:03 +0100
-Subject: [LTP] [PATCH 1/2] Add FS quota availability check functions
-Message-ID: <20210309171104.30821-1-mdoucha@suse.cz>
+Date: Tue,  9 Mar 2021 18:11:04 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/quotactl: Skip tests if FS quota is not
+ supported
+In-Reply-To: <20210309171104.30821-1-mdoucha@suse.cz>
+References: <20210309171104.30821-1-mdoucha@suse.cz>
+Message-ID: <20210309171104.30821-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,84 +13,88 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- include/tst_fs.h             | 16 ++++++++++++++++
- lib/tst_supported_fs_types.c | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+ .../kernel/syscalls/quotactl/quotactl01.c     |  2 ++
+ .../kernel/syscalls/quotactl/quotactl04.c     | 26 +++++++++++++++++--
+ .../kernel/syscalls/quotactl/quotactl06.c     |  2 ++
+ 3 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 4f7dd68d2..acf31d0e1 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -180,6 +180,22 @@ int tst_fs_is_supported(const char *fs_type, int flags);
-  */
- const char **tst_get_supported_fs_types(int flags);
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+index 7b3649fa5..e5fa02acb 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -172,6 +172,8 @@ static void setup(void)
+ 	if (access(GRPPATH, F_OK) == -1)
+ 		tst_brk(TFAIL | TERRNO, "group quotafile didn't exist");
  
-+/*
-+ * Check whether device supports FS quotas. Negative return value means that
-+ * quotas appear to be broken.
-+ */
-+int tst_check_quota_support(const char *device, int format,
-+	const char *quotafile);
++	tst_require_quota_support(tst_device->dev, fmt_id, USRPATH);
 +
-+/*
-+ * Check for quota support and terminate the test with appropriate exit status
-+ * if quotas are not supported or broken.
-+ */
-+#define tst_require_quota_support(dev, fmt, qfile) \
-+	tst_require_quota_support_(__FILE__, __LINE__, (dev), (fmt), (qfile))
-+void tst_require_quota_support_(const char *file, const int lineno,
-+	const char *device, int format, const char *quotafile);
-+
- /*
-  * Creates and writes to files on given path until write fails with ENOSPC
-  */
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index 00ede549d..d9d310fd7 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -8,6 +8,7 @@
- #include <stdlib.h>
- #include <sys/mount.h>
- #include <sys/wait.h>
-+#include <sys/quota.h>
+ 	TEST(quotactl(QCMD(Q_GETNEXTQUOTA, USRQUOTA), tst_device->dev,
+ 		test_id, (void *) &res_ndq));
+ 	if (TST_ERR == EINVAL || TST_ERR == ENOSYS)
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
+index c8fa916b2..fd3afc888 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl04.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
+@@ -28,6 +28,7 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
++#include <sys/mount.h>
+ #include "config.h"
+ #include "lapi/quotactl.h"
+ #include "tst_safe_stdio.h"
+@@ -103,6 +104,28 @@ static struct tcase {
  
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
-@@ -109,3 +110,34 @@ const char **tst_get_supported_fs_types(int flags)
+ };
  
- 	return fs_types;
- }
-+
-+int tst_check_quota_support(const char *device, int format,
-+	const char *quotafile)
++static void do_mount(const char *source, const char *target,
++	const char *filesystemtype, unsigned long mountflags,
++	const void *data)
 +{
-+	TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
++	TEST(mount(source, target, filesystemtype, mountflags, data));
 +
-+	/* Not supported */
 +	if (TST_RET == -1 && TST_ERR == ESRCH)
-+		return 0;
++		tst_brk(TCONF, "Kernel or device does not support FS quotas");
 +
-+	/* Broken */
-+	if (TST_RET)
-+		return -1;
-+
-+	quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), device, 0, 0);
-+	return 1;
-+}
-+
-+void tst_require_quota_support_(const char *file, const int lineno,
-+	const char *device, int format, const char *quotafile)
-+{
-+	int status = tst_check_quota_support(device, format, quotafile);
-+
-+	if (!status) {
-+		tst_brk_(file, lineno, TCONF,
-+			"Kernel or device does not support FS quotas");
++	if (TST_RET == -1) {
++		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
++			source, target, filesystemtype, mountflags, data);
 +	}
 +
-+	if (status < 0)
-+		tst_brk_(file, lineno, TBROK|TTERRNO, "FS quotas are broken");
++	if (TST_RET) {
++		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
++			source, target, filesystemtype, mountflags, data);
++	}
++
++	mount_flag = 1;
 +}
++
+ static void setup(void)
+ {
+ 	FILE *f;
+@@ -118,8 +141,7 @@ static void setup(void)
+ 		tst_brk(TCONF, "Test needs mkfs.ext4 >= 1.43 for quota,project option, test skipped");
+ 	pclose(f);
+ 	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
+-	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
+-	mount_flag = 1;
++	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
+index 2818a4dc4..6288f5fa2 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl06.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
+@@ -153,6 +153,8 @@ static void setup(void)
+ 	if (access(USRPATH, F_OK) == -1)
+ 		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
+ 
++	tst_require_quota_support(tst_device->dev, fmt_id, USRPATH);
++
+ 	SAFE_MKDIR(TESTDIR1, 0666);
+ 	test_id = geteuid();
+ 	test_invalid = test_id + 1;
 -- 
 2.30.0
 
