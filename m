@@ -1,43 +1,139 @@
 From: Richard Purdie <richard.purdie@linuxfoundation.org>
-Date: Tue,  9 Mar 2021 15:56:21 +0000
-Subject: [LTP] [PATCH 1/3] open_posix_testsuite/generate-makefiles.sh: Avoid
- inconsistencies with make version
-Message-ID: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
+Date: Tue,  9 Mar 2021 15:56:23 +0000
+Subject: [LTP] [PATCH 3/3] syscalls/swapon/swapoff: Move common library to
+ libs/
+In-Reply-To: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
+References: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
+Message-ID: <20210309155623.2457857-3-richard.purdie@linuxfoundation.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-With make 4.1, INSTALL_TARGETS+=<tab> will add a space to the variable whereas
-with make 4.3, it will not. This leads to differing run.sh files in installed
-in packages which is undesireable. If tests is empty we don't have to add
-the line to the makefiles at all which seems like the easiest way to
-avoid the differences in make behaviour.
+There is a race/determinism issue with libswapon currently as depending on
+which makefile path builds it, the debug paths may be "../swapon/libswapon.c"
+or "libswapon.c". To avoid the determinism issue, move libswapon to libs/
+and use it from the shared location.
+
+The header is moved to the common includes directory to match and
+the Makefile.inc fragment can be dropped.
 
 Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
 ---
- .../open_posix_testsuite/scripts/generate-makefiles.sh      | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ .../kernel/syscalls/swapon => include}/libswapon.h   |  0
+ libs/libltpswapon/Makefile                           | 12 ++++++++++++
+ .../swapon => libs/libltpswapon}/libswapon.c         |  0
+ testcases/kernel/syscalls/swapoff/Makefile           |  7 +++++--
+ testcases/kernel/syscalls/swapoff/Makefile.inc       |  6 ------
+ testcases/kernel/syscalls/swapoff/swapoff01.c        |  2 +-
+ testcases/kernel/syscalls/swapoff/swapoff02.c        |  2 +-
+ testcases/kernel/syscalls/swapon/Makefile            |  6 +++---
+ 8 files changed, 22 insertions(+), 13 deletions(-)
+ rename {testcases/kernel/syscalls/swapon => include}/libswapon.h (100%)
+ create mode 100644 libs/libltpswapon/Makefile
+ rename {testcases/kernel/syscalls/swapon => libs/libltpswapon}/libswapon.c (100%)
+ delete mode 100644 testcases/kernel/syscalls/swapoff/Makefile.inc
 
-diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-index 200a631db..4b3aaa4a0 100755
---- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-+++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-@@ -148,8 +148,12 @@ EOF
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/include/libswapon.h
+similarity index 100%
+rename from testcases/kernel/syscalls/swapon/libswapon.h
+rename to include/libswapon.h
+diff --git a/libs/libltpswapon/Makefile b/libs/libltpswapon/Makefile
+new file mode 100644
+index 000000000..8f738338b
+--- /dev/null
++++ b/libs/libltpswapon/Makefile
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++#
++# Copyright (C) Richard Purdie <richard.purdie@linuxfoundation.org>
++
++top_srcdir		?= ../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INTERNAL_LIB		:= libltpswapon.a
++
++include $(top_srcdir)/include/mk/lib.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/libs/libltpswapon/libswapon.c
+similarity index 100%
+rename from testcases/kernel/syscalls/swapon/libswapon.c
+rename to libs/libltpswapon/libswapon.c
+diff --git a/testcases/kernel/syscalls/swapoff/Makefile b/testcases/kernel/syscalls/swapoff/Makefile
+index fbfbe0441..a74374605 100644
+--- a/testcases/kernel/syscalls/swapoff/Makefile
++++ b/testcases/kernel/syscalls/swapoff/Makefile
+@@ -3,7 +3,10 @@
  
- 	fi
+ top_srcdir		?= ../../../..
  
--	cat >> "$makefile.2" <<EOF
-+	if [ ! -z "${tests}" ]; then
-+		cat >> "$makefile.2" <<EOF
- INSTALL_TARGETS+=	${tests}
-+EOF
-+	fi
-+	cat >> "$makefile.2" <<EOF
- MAKE_TARGETS+=		${targets}
++LTPLIBS = ltpswapon
++
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/./Makefile.inc
++
++LTPLDLIBS  = -lltpswapon
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-$(MAKE_TARGETS): %: ../swapon/libswapon.o
+diff --git a/testcases/kernel/syscalls/swapoff/Makefile.inc b/testcases/kernel/syscalls/swapoff/Makefile.inc
+deleted file mode 100644
+index 65350cbeb..000000000
+--- a/testcases/kernel/syscalls/swapoff/Makefile.inc
++++ /dev/null
+@@ -1,6 +0,0 @@
+-LIBDIR			+= ../swapon/
+-LIBSWAPON		:= $(LIBDIR)/libswapon.o
+-$(LIBSWAPON):
+-	$(MAKE) -C $(LIBDIR)
+-CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
+-LDFLAGS			+= -L$(abs_builddir)/$(LIBDIR)
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
+index e115269c0..87a217a89 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff01.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+@@ -25,7 +25,7 @@
+ #include <stdlib.h>
+ #include "config.h"
+ #include "lapi/syscalls.h"
+-#include "../swapon/libswapon.h"
++#include "libswapon.h"
  
- EOF
+ static void setup(void);
+ static void cleanup(void);
+diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
+index 8954f975f..60cd66c26 100644
+--- a/testcases/kernel/syscalls/swapoff/swapoff02.c
++++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
+@@ -33,7 +33,7 @@
+ #include "test.h"
+ #include "lapi/syscalls.h"
+ #include "safe_macros.h"
+-#include "../swapon/libswapon.h"
++#include "libswapon.h"
+ 
+ static void setup(void);
+ static void cleanup(void);
+diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
+index 97113a447..57ec45d48 100644
+--- a/testcases/kernel/syscalls/swapon/Makefile
++++ b/testcases/kernel/syscalls/swapon/Makefile
+@@ -8,10 +8,10 @@ endif
+ 
+ top_srcdir		?= ../../../..
+ 
++LTPLIBS = ltpswapon
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-FILTER_OUT_MAKE_TARGETS         := libswapon
++LTPLDLIBS  = -lltpswapon
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-
+-$(MAKE_TARGETS): %: libswapon.o
 -- 
 2.27.0
 
