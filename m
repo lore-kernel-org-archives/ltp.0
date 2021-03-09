@@ -1,67 +1,85 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 9 Mar 2021 15:15:25 +0530
-Subject: [LTP] [PATCh v2] clock_gettime04: print more info to help
- debugging
-In-Reply-To: <20210309080028.16284-1-liwang@redhat.com>
-References: <20210309080028.16284-1-liwang@redhat.com>
-Message-ID: <20210309094525.4ggmppfpvavsvjzl@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 9 Mar 2021 10:51:19 +0100
+Subject: [LTP] [PATCH] IMA: Allow only ima-buf template for key
+ measurement
+In-Reply-To: <33ba6274-e7ef-27de-b481-5a702136c0df@linux.microsoft.com>
+References: <20210303203254.12856-1-nramas@linux.microsoft.com>
+ <YEJZIQqa1arYKwK+@pevik>
+ <33ba6274-e7ef-27de-b481-5a702136c0df@linux.microsoft.com>
+Message-ID: <YEdFF2g6Z1KJiJ5b@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 09-03-21, 08:00, Li Wang wrote:
-> We catch some sporadically failures[1] like below, but we don't know which
-> test loop it comes from. So adding more prints to help locate issue.
-> 
->   tst_test.c:1286: TINFO: Timeout per run is 0h 05m 00s
->   vdso_helpers.c:76: TINFO: Couldn't find vdso_gettime64()
->   clock_gettime04.c:157: TPASS: CLOCK_REALTIME: Difference between successive readings is reasonable
->   clock_gettime04.c:150: TFAIL: CLOCK_REALTIME_COARSE: Difference between successive readings greater than 5 ms (1): 8
->   clock_gettime04.c:157: TPASS: CLOCK_MONOTONIC: Difference between successive readings is reasonable
->   clock_gettime04.c:150: TFAIL: CLOCK_MONOTONIC_COARSE: Difference between successive readings greater than 5 ms (0): 5
->   clock_gettime04.c:157: TPASS: CLOCK_MONOTONIC_RAW: Difference between successive readings is reasonable
->   clock_gettime04.c:157: TPASS: CLOCK_BOOTTIME: Difference between successive readings is reasonable
-> 
-> After patching, it will show more details about the iteration:
-> 
->   tst_test.c:1288: TINFO: Timeout per run is 0h 05m 00s
->   vdso_helpers.c:76: TINFO: Couldn't find vdso_gettime64()
->   clock_gettime04.c:158: TPASS: CLOCK_REALTIME: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
->   clock_gettime04.c:162: TINFO:   - gettimeofday
->   clock_gettime04.c:158: TPASS: CLOCK_REALTIME_COARSE: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
->   clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
->   clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC_COARSE: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
->   clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC_RAW: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
->   clock_gettime04.c:158: TPASS: CLOCK_BOOTTIME: Difference between successive readings is reasonable for following variants:
->   clock_gettime04.c:162: TINFO:   - vDSO or syscall with libc spec
->   clock_gettime04.c:162: TINFO:   - syscall with old kernel spec
->   clock_gettime04.c:162: TINFO:   - vDSO with old kernel spec
-> 
-> [1] it occurs on a x86_64 (not virtualized) with kernel 5.11.0.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  .../kernel/syscalls/clock_gettime/clock_gettime04.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+Hi Lakshmi,
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> On 3/5/21 8:15 AM, Petr Vorel wrote:
 
--- 
-viresh
+> Hi Petr,
+
+> A small change is needed:
+
+> In the while loop, for each line of the KEY_CHECK policy, we need to check
+> if a "template" is specified, and if it is then verify if it is "ima-buf".
+
+> > You need to do:
+> > while read line; do
+> > 	if ! echo $line | grep -q $template; then
+> > 		tst_res TCONF "only $template can be specified for $func"
+> > 		return 1
+> > 	fi
+> > done < $TST_TMPDIR/policy.txt
+> > return 0
+
+> Please see the change below:
+
+> while read line; do
+> 	if echo $line | grep -q 'template=' && ! echo $line | grep -q $template ;
+> then
+> 		tst_res TCONF "only $template can be specified for $func"
+> 		return 1
+> 	fi
+> done < $TST_TMPDIR/policy.txt
+> return 0
+Good catch!
+
+> With check_policy_template() moved from ima_setup.sh to ima_keys.sh, the
+> test works fine
+
+> When the policy contains the following
+>    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
+>    measure func=KEY_CHECK keyrings=.builtin_trusted_keys
+
+I guess we should update datafiles/ima_keys/keycheck.policy to contain both
+lines.
+
+> the test passes:
+
+> ima_keys 1 TINFO: verify key measurement for keyrings and templates
+> specified in IMA policy
+> ima_keys 1 TINFO: keyrings: 'key_import_test|\.builtin_trusted_keys'
+> ima_keys 1 TINFO: templates: 'ima-buf'
+> ima_keys 1 TPASS: specified keyrings were measured correctly
+
+
+> But if the policy is changed to below:
+>    measure func=KEY_CHECK keyrings=key_import_test template=ima-buf
+>    measure func=KEY_CHECK keyrings=.builtin_trusted_keys template=ima-sig
+
+> the test fails as expected.
+
+> ima_keys 1 TINFO: verify key measurement for keyrings and templates
+> specified in IMA policy
+> ima_keys 1 TCONF: only template=ima-buf can be specified for func=KEY_CHECK
+
+> I'll post the updated patch shortly.
+
+Thanks a lot!
+
+> thanks,
+>  -lakshmi
+
+Kind regards,
+Petr
