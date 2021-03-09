@@ -1,139 +1,315 @@
 From: Richard Purdie <richard.purdie@linuxfoundation.org>
-Date: Tue,  9 Mar 2021 15:56:23 +0000
-Subject: [LTP] [PATCH 3/3] syscalls/swapon/swapoff: Move common library to
- libs/
+Date: Tue,  9 Mar 2021 15:56:22 +0000
+Subject: [LTP] [PATCH 2/3] Makefile: Avoid wildcard determinism issues
 In-Reply-To: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
 References: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
-Message-ID: <20210309155623.2457857-3-richard.purdie@linuxfoundation.org>
+Message-ID: <20210309155623.2457857-2-richard.purdie@linuxfoundation.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There is a race/determinism issue with libswapon currently as depending on
-which makefile path builds it, the debug paths may be "../swapon/libswapon.c"
-or "libswapon.c". To avoid the determinism issue, move libswapon to libs/
-and use it from the shared location.
+wildcard used in Makefiles preserves the order of the files on disk
+which leads to differences in the order the binaries are linked.
 
-The header is moved to the common includes directory to match and
-the Makefile.inc fragment can be dropped.
+This patch tweaks the usage of wildcard to also have a sort, making
+the binaries reproducible. A previous patch massively improved
+the situation but wider testing showed that these other changes can
+have an effect on some binaries, this patch avoids those issues as
+exposed by our wider testing.
 
 Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
 ---
- .../kernel/syscalls/swapon => include}/libswapon.h   |  0
- libs/libltpswapon/Makefile                           | 12 ++++++++++++
- .../swapon => libs/libltpswapon}/libswapon.c         |  0
- testcases/kernel/syscalls/swapoff/Makefile           |  7 +++++--
- testcases/kernel/syscalls/swapoff/Makefile.inc       |  6 ------
- testcases/kernel/syscalls/swapoff/swapoff01.c        |  2 +-
- testcases/kernel/syscalls/swapoff/swapoff02.c        |  2 +-
- testcases/kernel/syscalls/swapon/Makefile            |  6 +++---
- 8 files changed, 22 insertions(+), 13 deletions(-)
- rename {testcases/kernel/syscalls/swapon => include}/libswapon.h (100%)
- create mode 100644 libs/libltpswapon/Makefile
- rename {testcases/kernel/syscalls/swapon => libs/libltpswapon}/libswapon.c (100%)
- delete mode 100644 testcases/kernel/syscalls/swapoff/Makefile.inc
+ include/mk/env_post.mk                                     | 2 +-
+ include/mk/module.mk                                       | 2 +-
+ runtest/Makefile                                           | 2 +-
+ scenario_groups/Makefile                                   | 2 +-
+ testcases/commands/ldd/datafiles/Makefile                  | 2 +-
+ testcases/kernel/hotplug/memory_hotplug/Makefile           | 3 ++-
+ testcases/kernel/io/disktest/Makefile                      | 2 +-
+ testcases/kernel/io/disktest/Makefile.linux                | 4 ++--
+ testcases/kernel/sched/hyperthreading/ht_affinity/Makefile | 2 +-
+ testcases/kernel/sched/hyperthreading/ht_enabled/Makefile  | 2 +-
+ testcases/kernel/sched/sched_stress/Makefile               | 2 +-
+ testcases/kernel/syscalls/lchown/Makefile                  | 2 +-
+ testcases/kernel/syscalls/migrate_pages/Makefile           | 2 +-
+ testcases/kernel/syscalls/move_pages/Makefile              | 2 +-
+ testcases/kernel/syscalls/utils/compat_16.mk               | 2 +-
+ testcases/kernel/syscalls/utils/newer_64.mk                | 2 +-
+ testcases/misc/math/float/Makefile                         | 2 +-
+ testcases/network/nfs/nfs_stress/nfs05_make_tree.c         | 4 ++--
+ testcases/network/nfsv4/locks/Makefile                     | 2 +-
+ utils/sctp/func_tests/Makefile                             | 2 +-
+ 20 files changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.h b/include/libswapon.h
-similarity index 100%
-rename from testcases/kernel/syscalls/swapon/libswapon.h
-rename to include/libswapon.h
-diff --git a/libs/libltpswapon/Makefile b/libs/libltpswapon/Makefile
-new file mode 100644
-index 000000000..8f738338b
---- /dev/null
-+++ b/libs/libltpswapon/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (C) Richard Purdie <richard.purdie@linuxfoundation.org>
-+
-+top_srcdir		?= ../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INTERNAL_LIB		:= libltpswapon.a
-+
-+include $(top_srcdir)/include/mk/lib.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/swapon/libswapon.c b/libs/libltpswapon/libswapon.c
-similarity index 100%
-rename from testcases/kernel/syscalls/swapon/libswapon.c
-rename to libs/libltpswapon/libswapon.c
-diff --git a/testcases/kernel/syscalls/swapoff/Makefile b/testcases/kernel/syscalls/swapoff/Makefile
-index fbfbe0441..a74374605 100644
---- a/testcases/kernel/syscalls/swapoff/Makefile
-+++ b/testcases/kernel/syscalls/swapoff/Makefile
-@@ -3,7 +3,10 @@
+diff --git a/include/mk/env_post.mk b/include/mk/env_post.mk
+index d52ad9f0b..1d22f9c53 100644
+--- a/include/mk/env_post.mk
++++ b/include/mk/env_post.mk
+@@ -47,7 +47,7 @@ LDFLAGS				+= -L$(top_builddir)/lib/android_libpthread
+ LDFLAGS				+= -L$(top_builddir)/lib/android_librt
+ endif
  
- top_srcdir		?= ../../../..
+-MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(wildcard $(abs_srcdir)/*.c)))
++MAKE_TARGETS			?= $(notdir $(patsubst %.c,%,$(sort $(wildcard $(abs_srcdir)/*.c))))
+ MAKE_TARGETS			:= $(filter-out $(FILTER_OUT_MAKE_TARGETS),$(MAKE_TARGETS))
  
-+LTPLIBS = ltpswapon
+ # with only *.dwo, .[0-9]+.dwo can not be cleaned
+diff --git a/include/mk/module.mk b/include/mk/module.mk
+index 95fb8336a..6c8814b96 100644
+--- a/include/mk/module.mk
++++ b/include/mk/module.mk
+@@ -42,7 +42,7 @@ endif
+ 
+ ifneq ($(filter install clean,$(MAKECMDGOALS)),)
+ MAKE_TARGETS := $(filter-out %.ko, $(MAKE_TARGETS))
+-MAKE_TARGETS += $(wildcard *.ko)
++MAKE_TARGETS += $(sort $(wildcard *.ko))
+ endif
+ 
+ CLEAN_TARGETS += .dep_modules *.mod built-in.a
+diff --git a/runtest/Makefile b/runtest/Makefile
+index b7caaee06..6a1565b6a 100644
+--- a/runtest/Makefile
++++ b/runtest/Makefile
+@@ -36,7 +36,7 @@ ifneq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
+ UNWANTED_FILES		+= power_management_tests
+ endif
+ 
+-INSTALL_TARGETS		:= $(filter-out $(UNWANTED_FILES),$(notdir $(patsubst $(abs_srcdir)/%,%,$(wildcard $(abs_srcdir)/*))))
++INSTALL_TARGETS		:= $(filter-out $(UNWANTED_FILES),$(notdir $(patsubst $(abs_srcdir)/%,%,$(sort $(wildcard $(abs_srcdir)/*)))))
+ 
+ MAKE_TARGETS		:=
+ 
+diff --git a/scenario_groups/Makefile b/scenario_groups/Makefile
+index 2978675d9..fcbc92708 100644
+--- a/scenario_groups/Makefile
++++ b/scenario_groups/Makefile
+@@ -31,7 +31,7 @@ UNWANTED_FILES		:= Makefile
+ 
+ INSTALL_MODE		:= 00644
+ 
+-INSTALL_TARGETS		:= $(filter-out $(UNWANTED_FILES),$(notdir $(patsubst $(abs_srcdir)/%,%,$(wildcard $(abs_srcdir)/*))))
++INSTALL_TARGETS		:= $(filter-out $(UNWANTED_FILES),$(notdir $(patsubst $(abs_srcdir)/%,%,$(sort $(wildcard $(abs_srcdir)/*)))))
+ 
+ MAKE_TARGETS		:=
+ 
+diff --git a/testcases/commands/ldd/datafiles/Makefile b/testcases/commands/ldd/datafiles/Makefile
+index d8bcf5c06..01c352052 100644
+--- a/testcases/commands/ldd/datafiles/Makefile
++++ b/testcases/commands/ldd/datafiles/Makefile
+@@ -21,7 +21,7 @@ CPPFLAGS		+= -fpic
+ 
+ INSTALL_TARGETS		:= ldd*.so lddfile.out
+ 
+-LDD_C_FILES		:= $(wildcard $(abs_srcdir)/lddfile*.c)
++LDD_C_FILES		:= $(sort $(wildcard $(abs_srcdir)/lddfile*.c))
+ LDD_SO_FILES		:= $(patsubst $(abs_srcdir)/%.c,%.obj.so,$(LDD_C_FILES))
+ MAKE_TARGETS		:= lddfile.out
+ CLEAN_TARGETS		+= *.obj $(LDD_SO_FILES)
+diff --git a/testcases/kernel/hotplug/memory_hotplug/Makefile b/testcases/kernel/hotplug/memory_hotplug/Makefile
+index d1ba65e65..38a77a2ba 100644
+--- a/testcases/kernel/hotplug/memory_hotplug/Makefile
++++ b/testcases/kernel/hotplug/memory_hotplug/Makefile
+@@ -31,6 +31,7 @@ LDLIBS		:= $(filter-out -lltp,$(LDLIBS))
+ 
+ MAKE_TARGETS	:= memtoy
+ 
+-memtoy: $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++memtoy: $(patsubst $(abs_srcdir)/%.c,%.o,$(sort $(wildcard $(abs_srcdir)/*.c)))
 +
- include $(top_srcdir)/include/mk/testcases.mk
--include $(abs_srcdir)/./Makefile.inc
-+
-+LTPLDLIBS  = -lltpswapon
-+
+ 
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
--$(MAKE_TARGETS): %: ../swapon/libswapon.o
-diff --git a/testcases/kernel/syscalls/swapoff/Makefile.inc b/testcases/kernel/syscalls/swapoff/Makefile.inc
-deleted file mode 100644
-index 65350cbeb..000000000
---- a/testcases/kernel/syscalls/swapoff/Makefile.inc
-+++ /dev/null
-@@ -1,6 +0,0 @@
--LIBDIR			+= ../swapon/
--LIBSWAPON		:= $(LIBDIR)/libswapon.o
--$(LIBSWAPON):
--	$(MAKE) -C $(LIBDIR)
--CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
--LDFLAGS			+= -L$(abs_builddir)/$(LIBDIR)
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff01.c b/testcases/kernel/syscalls/swapoff/swapoff01.c
-index e115269c0..87a217a89 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff01.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff01.c
+diff --git a/testcases/kernel/io/disktest/Makefile b/testcases/kernel/io/disktest/Makefile
+index d10d98434..3a3a9cbf0 100644
+--- a/testcases/kernel/io/disktest/Makefile
++++ b/testcases/kernel/io/disktest/Makefile
+@@ -209,7 +209,7 @@ LDLIBS		+= -lpthread
+ 
+ MAKE_TARGETS	:= disktest
+ 
+-OBJS		:= $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++OBJS		:= $(patsubst $(abs_srcdir)/%.c,%.o,$(sort $(wildcard $(abs_srcdir)/*.c)))
+ 
+ disktest-$(VER):
+ 	mkdir -p "$@"
+diff --git a/testcases/kernel/io/disktest/Makefile.linux b/testcases/kernel/io/disktest/Makefile.linux
+index ea45b5a57..0f3aab622 100644
+--- a/testcases/kernel/io/disktest/Makefile.linux
++++ b/testcases/kernel/io/disktest/Makefile.linux
+@@ -167,8 +167,8 @@ mandir=/usr/share/man
+ 
+ VER=`grep VER_STR main.h | awk -F\" '{print $$2}'`
+ GBLHDRS=main.h globals.h defs.h
+-ALLHDRS=$(wildcard *.h)
+-SRCS=$(wildcard *.c)
++ALLHDRS=$(sort $(wildcard *.h))
++SRCS=$(sort $(wildcard *.c))
+ OBJS=$(SRCS:.c=.o)
+ 
+ CFLAGS += -g -Wall -O -D"LINUX" -D"_THREAD_SAFE" -D"_GNU_SOURCE" -D"_LARGE_FILES" -D"_LARGEFILE64_SOURCE" -D"_FILE_OFFSET_BITS=64" $(RPM_OPT_FLAGS)
+diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/Makefile b/testcases/kernel/sched/hyperthreading/ht_affinity/Makefile
+index 10fec96dc..6b64bd261 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_affinity/Makefile
++++ b/testcases/kernel/sched/hyperthreading/ht_affinity/Makefile
+@@ -28,6 +28,6 @@ INSTALL_TARGETS		:= smt_smp_affinity.sh
+ 
+ MAKE_TARGETS		:= ht_affinity
+ 
+-$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(sort $(wildcard $(abs_srcdir)/*.c)))
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/Makefile b/testcases/kernel/sched/hyperthreading/ht_enabled/Makefile
+index 9c1e139d6..585ff1383 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_enabled/Makefile
++++ b/testcases/kernel/sched/hyperthreading/ht_enabled/Makefile
+@@ -28,6 +28,6 @@ INSTALL_TARGETS		:= smt_smp_enabled.sh
+ 
+ MAKE_TARGETS		:= ht_enabled
+ 
+-$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(sort $(wildcard $(abs_srcdir)/*.c)))
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sched/sched_stress/Makefile b/testcases/kernel/sched/sched_stress/Makefile
+index b76126c73..4dbbf3477 100644
+--- a/testcases/kernel/sched/sched_stress/Makefile
++++ b/testcases/kernel/sched/sched_stress/Makefile
+@@ -10,7 +10,7 @@ INSTALL_TARGETS		:= sched_stress.sh
+ 
+ LDLIBS			+= -lpthread
+ 
+-MAKE_TARGETS		:= $(filter-out sched,$(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*.c)))
++MAKE_TARGETS		:= $(filter-out sched,$(patsubst $(abs_srcdir)/%.c,%,$(sort $(wildcard $(abs_srcdir)/*.c))))
+ 
+ RM			+= -r
+ 
+diff --git a/testcases/kernel/syscalls/lchown/Makefile b/testcases/kernel/syscalls/lchown/Makefile
+index 13d39cb81..305fee281 100644
+--- a/testcases/kernel/syscalls/lchown/Makefile
++++ b/testcases/kernel/syscalls/lchown/Makefile
+@@ -5,7 +5,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-SRCS			:= $(wildcard $(abs_srcdir)/lchown*.c)
++SRCS			:= $(sort $(wildcard $(abs_srcdir)/lchown*.c))
+ 
+ include $(abs_srcdir)/../utils/compat_16.mk
+ 
+diff --git a/testcases/kernel/syscalls/migrate_pages/Makefile b/testcases/kernel/syscalls/migrate_pages/Makefile
+index 46912b025..9cf3ce526 100644
+--- a/testcases/kernel/syscalls/migrate_pages/Makefile
++++ b/testcases/kernel/syscalls/migrate_pages/Makefile
+@@ -5,7 +5,7 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
++MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(sort $(wildcard $(abs_srcdir)/*[0-9].c)))
+ $(MAKE_TARGETS): %: migrate_pages_common.o
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils/
+diff --git a/testcases/kernel/syscalls/move_pages/Makefile b/testcases/kernel/syscalls/move_pages/Makefile
+index cd7ff6349..4b22160ed 100644
+--- a/testcases/kernel/syscalls/move_pages/Makefile
++++ b/testcases/kernel/syscalls/move_pages/Makefile
+@@ -7,7 +7,7 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)/../utils
+ 
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*[0-9].c))
++MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%,$(sort $(wildcard $(abs_srcdir)/*[0-9].c)))
+ 
+ $(MAKE_TARGETS): %: move_pages_support.o
+ 
+diff --git a/testcases/kernel/syscalls/utils/compat_16.mk b/testcases/kernel/syscalls/utils/compat_16.mk
+index a0ff8f558..e81a00c40 100644
+--- a/testcases/kernel/syscalls/utils/compat_16.mk
++++ b/testcases/kernel/syscalls/utils/compat_16.mk
+@@ -50,7 +50,7 @@
+ 
+ CPPFLAGS		+= -I$(abs_srcdir) -I$(abs_srcdir)/../utils
+ 
+-SRCS			?= $(wildcard $(abs_srcdir)/*.c)
++SRCS			?= $(sort $(wildcard $(abs_srcdir)/*.c))
+ 
+ MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
+ MAKE_TARGETS_OBJS_WO_COMPAT_16	:= $(addsuffix .o,$(MAKE_TARGETS))
+diff --git a/testcases/kernel/syscalls/utils/newer_64.mk b/testcases/kernel/syscalls/utils/newer_64.mk
+index 8cd7e03c8..5e798057a 100644
+--- a/testcases/kernel/syscalls/utils/newer_64.mk
++++ b/testcases/kernel/syscalls/utils/newer_64.mk
 @@ -25,7 +25,7 @@
- #include <stdlib.h>
- #include "config.h"
- #include "lapi/syscalls.h"
--#include "../swapon/libswapon.h"
-+#include "libswapon.h"
  
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/swapoff/swapoff02.c b/testcases/kernel/syscalls/swapoff/swapoff02.c
-index 8954f975f..60cd66c26 100644
---- a/testcases/kernel/syscalls/swapoff/swapoff02.c
-+++ b/testcases/kernel/syscalls/swapoff/swapoff02.c
-@@ -33,7 +33,7 @@
- #include "test.h"
- #include "lapi/syscalls.h"
- #include "safe_macros.h"
--#include "../swapon/libswapon.h"
-+#include "libswapon.h"
+ CPPFLAGS		+= -I$(abs_srcdir) -I$(abs_srcdir)/../utils
  
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
-index 97113a447..57ec45d48 100644
---- a/testcases/kernel/syscalls/swapon/Makefile
-+++ b/testcases/kernel/syscalls/swapon/Makefile
-@@ -8,10 +8,10 @@ endif
+-SRCS			?= $(wildcard $(abs_srcdir)/*.c)
++SRCS			?= $(sort $(wildcard $(abs_srcdir)/*.c))
  
- top_srcdir		?= ../../../..
+ MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
  
-+LTPLIBS = ltpswapon
-+
- include $(top_srcdir)/include/mk/testcases.mk
+diff --git a/testcases/misc/math/float/Makefile b/testcases/misc/math/float/Makefile
+index 79dda35d6..5f4cb0f6c 100644
+--- a/testcases/misc/math/float/Makefile
++++ b/testcases/misc/math/float/Makefile
+@@ -27,6 +27,6 @@ include $(top_srcdir)/include/mk/testcases.mk
+ LDLIBS		+= -lpthread -lm
  
--FILTER_OUT_MAKE_TARGETS         := libswapon
-+LTPLDLIBS  = -lltpswapon
+ # main.c doesn't compile...
+-MAKE_TARGETS	:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/float*.c))
++MAKE_TARGETS	:= $(patsubst $(abs_srcdir)/%.c,%,$(sort $(wildcard $(abs_srcdir)/float*.c)))
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/network/nfs/nfs_stress/nfs05_make_tree.c b/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
+index 12c86799d..23c520d9d 100644
+--- a/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
++++ b/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
+@@ -104,7 +104,7 @@ static void *thread_fn(LTP_ATTRIBUTE_UNUSED void *args)
+ 				"\treturn 0;\n}\n";
+ 
+ 	const char make_buf_n[] = "CFLAGS := -O -w -g\n"
+-				  "SRCS=$(wildcard *.c)\n"
++				  "SRCS=$(sort $(wildcard *.c))\n"
+ 				  "TARGETS=$(SRCS:.c=)\n"
+ 				  "all: $(TARGETS)\n"
+ 				  "$(TARGETS): %: %.c\n"
+@@ -114,7 +114,7 @@ static void *thread_fn(LTP_ATTRIBUTE_UNUSED void *args)
+ 
+ 	const char make_buf[] = "CFLAGS := -O -w -g\n"
+ 				"SUBDIR = dir\n"
+-				"SRCS=$(wildcard *.c)\n"
++				"SRCS=$(sort $(wildcard *.c))\n"
+ 				"TARGETS=$(SRCS:.c=)\n"
+ 				"all: $(SUBDIR) $(TARGETS)\n"
+ 				"$(TARGETS): %: %.c\n"
+diff --git a/testcases/network/nfsv4/locks/Makefile b/testcases/network/nfsv4/locks/Makefile
+index 5812dea3a..05941c892 100644
+--- a/testcases/network/nfsv4/locks/Makefile
++++ b/testcases/network/nfsv4/locks/Makefile
+@@ -28,6 +28,6 @@ MAKE_TARGETS		:= locktests
+ 
+ LDLIBS			+= -lpthread
+ 
+-$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++$(MAKE_TARGETS): $(patsubst $(abs_srcdir)/%.c,%.o,$(sort $(wildcard $(abs_srcdir)/*.c)))
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
--
--$(MAKE_TARGETS): %: libswapon.o
+diff --git a/utils/sctp/func_tests/Makefile b/utils/sctp/func_tests/Makefile
+index d296c652a..a17107853 100644
+--- a/utils/sctp/func_tests/Makefile
++++ b/utils/sctp/func_tests/Makefile
+@@ -30,7 +30,7 @@ LDFLAGS		+= $(addprefix -L$(abs_builddir)/../,lib testlib)
+ 
+ LDLIBS		+= -lsctputil -lsctp -lpthread
+ 
+-V4_TARGETS	:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*.c))
++V4_TARGETS	:= $(patsubst $(abs_srcdir)/%.c,%,$(sort $(wildcard $(abs_srcdir)/*.c)))
+ 
+ V6_TARGETS	:= test_basic_v6 test_fragments_v6 test_getname_v6 \
+ 		   test_inaddr_any_v6 test_peeloff_v6 \
 -- 
 2.27.0
 
