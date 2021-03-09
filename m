@@ -1,61 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Mar 2021 15:54:33 +0100
-Subject: [LTP] [RFC PATCH v2 5/7] docs: Update CGroups API
-In-Reply-To: <20210302152510.15116-6-rpalethorpe@suse.com>
-References: <20210302152510.15116-1-rpalethorpe@suse.com>
- <20210302152510.15116-6-rpalethorpe@suse.com>
-Message-ID: <YEeMKc9HO9lFv+r7@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 9 Mar 2021 15:54:46 +0100
+Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
+In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038900ED@dggeml511-mbs.china.huawei.com>
+References: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038900ED@dggeml511-mbs.china.huawei.com>
+Message-ID: <YEeMNhvwrrfZA0rD@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void setup(void)
-> +{
-> +	tst_cgroup_require(TST_CGROUP_MEMORY, NULL);
-> +	cg = tst_cgroup_get_default();
-> +	SAFE_CGROUP_PRINTF(&cg->cgroup.procs, "%d", getpid());
-> +	SAFE_CGROUP_PRINTF(&cg->memory.max, "%lu", MEMSIZE);
+Hi Gongyi,
 
-I've been looking at the API for a while and I do not understand why we
-need to create the tst_cgroup_files for each supported controller and
-each node in the hierarchy. Why can't we make this more driver-like? All
-we need to know is the controller type, cgroup version and file we want
-to read/write.
+> > > When CommitLimit - Committed_AS < 128, there is no post processing,
+> > > and the test will report "TBROK: Test haven't reported results".
+Actually, I have problem for CommitLimit - Committed_AS < 5280
+(depends on actual system).
 
-If I were designing the API I would have made these so that they take a
-pointer to a cgroup node, controller type and filename, then the
-printf-like formatting.
+But that means that even check for max_iters < 0 is not enough,
+because while (max_maps <= max_iters) block should be run@least once
+to avoid TBROK: Test haven't reported results!
 
-So the end result would look like:
+max_maps is always 1024, thus how about this?
 
-	SAFE_CGROUP_PRINTF(cg, TST_CGROUP_MEMORY, "memory.max", "%lu", MEMSIZE);
+	max_maps = MAP_COUNT_DEFAULT;
++	if (max_iters < max_maps)
++		tst_brk(TCONF, "test requires more free memory");
 
-Which would be build on the top of:
 
-int tst_cgroup_open(struct tst_cgroup *cg, enum tst_cgroup_ctrl ctrl, const char *fname);
+> > You seems to exploring limits. Out of curiosity, which system / hw do you
+> > test?
 
-And instead of storing the file structures into the tst_cgroup structure
-we would translate the v2 to v1 on the fly. We would have to open and
-close the files on each printf/scanf but I do not think that it's
-unreasonable given the simplification of the interface.
+> We are testing linux on some different embedded systems whose hw resource is limited. 
+Thanks for info.
 
-We would end up with a simple translation tables for different
-controllers instead of the structures that are allocated for each node
-then, such as:
-
-static const struct cgroup_map cgroup_memory_map[] = {
-	{"memory.usage_in_bytes", "memory.current"},
-	{"memory.limit_in_bytes", "memory.max"},
-	{"memory.memsw.usage_in_bytes", "memory.swap.current"},
-	{"memory.memsw.limitin_bytes", "memory.swap.max"},
-	{}
-};
-
-Or is there a reason why this cannot be done so?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
