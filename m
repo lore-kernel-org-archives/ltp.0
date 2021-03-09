@@ -1,51 +1,55 @@
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Tue, 9 Mar 2021 09:35:51 +0530
-Subject: [LTP] [PATCH] clock_gettime04: print more info to help debugging
-In-Reply-To: <CAEemH2cKX4Gh1tO2WL27WrnF7KLFu33rksFf+LWRZz6ZNExAOQ@mail.gmail.com>
-References: <20210308065329.25824-1-liwang@redhat.com>
- <20210308101732.lzkjql3t7aoscruk@vireshk-i7>
- <CAEemH2d45hFqhB-++xgswYoOh4HGFtFZxXCKGhLhDdt9oXFbfA@mail.gmail.com>
- <20210308111447.h3l2a5yep3n4n5qs@vireshk-i7>
- <CAEemH2eKkGokVY2ZBs=U9eqDrDZVB5qKBVUApULrdL65tfnmLQ@mail.gmail.com>
- <20210308114859.tskerybpt6xtyffa@vireshk-i7>
- <CAEemH2cKX4Gh1tO2WL27WrnF7KLFu33rksFf+LWRZz6ZNExAOQ@mail.gmail.com>
-Message-ID: <20210309040551.l72n5zmvvmnw44no@vireshk-i7>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 9 Mar 2021 07:03:40 +0100
+Subject: [LTP] [PATCH] splice02: Generate input in C
+In-Reply-To: <YEZs/MTW0Pcyz6Ml@yuki.lan>
+References: <20210308154421.2002-1-pvorel@suse.cz> <YEZTd+CT/Gag1ejK@yuki.lan>
+ <YEZoCOqGeb4dVnpV@pevik> <YEZs/MTW0Pcyz6Ml@yuki.lan>
+Message-ID: <YEcPvIckAEbmMBi9@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08-03-21, 20:45, Li Wang wrote:
-> Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> 
-> ...
-> >
-> > Option 3: Same as option 2 but different formatting
-> >
-> > clock_gettime04.c:158: TPASS: CLOCK_MONOTONIC: Difference between
-> > successive readings is reasonable for following variants:
-> >         - vDSO or syscall with libc spec
-> >         - syscall with old kernel spec
-> >         - vDSO with old kernel spec
-> >         - gettimeofday
-> 
-> Any other option here ?
-> >
-> 
-> I think no.
-> 
-> >
-> > For the FAIL messages, I think just adding tv->desc is good enough.
-> >
-> 
-> +1, I prefer to go with Option3 + 'tv->desc for FAIL'.
-> 
-> Would you mind formatting a patch, or I can do that?
+Hi Cyril,
 
-Since you started it, I will let you finish it as well :)
+> Hi!
+> > > I do wonder if this should be replaced with something that includes a
+> > > shell pipe instead. It has been selected here to make sure we pass the
+> > > command line correctly to a shell interpreter.
 
-Thanks.
+> > > Maybe something as:
 
--- 
-viresh
+> > > shell_test01 echo "SUCCESS" | cat
+
+> > I guess you mean to add another test to cover shell pipe.
+> > Makes sense to me, but I'd wrap it to a test file, e.g. something like:
+
+> > cat shell01.sh
+> > #!/bin/sh
+> > TST_TESTFUNC=do_test
+> > TST_NEEDS_CMDS="cat"
+> > . tst_test.sh
+
+> > do_test()
+> > {
+> > 	EXPECT_PASS [ "$(echo 'SUCCESS' | cat)" = "SUCCESS" ]
+> > }
+
+> > tst_run
+
+> That would not work, the pipe is supposed to be in the runtest file.
+Do you want to test that runtest is working with pipe?
+I considered anything but shell script with getopt parameters a bit strange and
+thought it'd be removed in new shell runner. But obviously you want to keep it.
+
+But in case of failure script don't detect it. e.g.:
+
+echo "SUCCESS" | cat /asdf
+cat: /asdf: No such file or directory
+
+=> there is no TFAIL/TBROK/TCONF. Not sure if all users check exit status (which
+they should now, because that is the only common thing so far).
+
+Kind regards,
+Petr
