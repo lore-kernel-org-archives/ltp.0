@@ -1,34 +1,45 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Tue, 9 Mar 2021 20:09:14 +0800
-Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
-Message-ID: <20210309120914.711-1-zhaogongyi@huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 9 Mar 2021 13:26:10 +0100
+Subject: [LTP] [PATCH] splice02: Generate input in C
+In-Reply-To: <YEc+T9Vx838EF7q2@pevik>
+References: <20210308154421.2002-1-pvorel@suse.cz> <YEZTd+CT/Gag1ejK@yuki.lan>
+ <YEZoCOqGeb4dVnpV@pevik> <YEZs/MTW0Pcyz6Ml@yuki.lan>
+ <YEcPvIckAEbmMBi9@pevik> <YEcuh38X83GX1RPL@yuki.lan>
+ <YEc+T9Vx838EF7q2@pevik>
+Message-ID: <YEdpYimUgk2j+ICb@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When CommitLimit - Committed_AS < 128, there is no post processing,
-and the test will report "TBROK: Test haven't reported results".
+Hi!
+> > Well yes, I guess that we can do something as:
+> 
+> > echo "SUCCESS" | grep -q "SUCCESS"
+> 
+> > Which at least returns 1 if the grep fails.
+> Yep, that's better than using cat.
+> 
+> Although, IMHO it should be possible to do something like:
+> 
+> shell_test01 echo "SUCCESS" | shell_pipe01.sh
+> 
+> cat shell_pipe01.sh
+> ...
+> do_test()
+> {
+> 	tst_res TINFO "expecting SUCCESS string passed from stdin"
+> 
+> 	read line
+> 	EXPECT_PASS [ "$line" = "SUCCESS" ]
+> }
+> 
+> We'd use standard LTP interface with tst_test.sh. WDYT?
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/mem/tunable/max_map_count.c | 2 ++
- 1 file changed, 2 insertions(+)
+Well we have to figure out where to put the dummy test, but other than
+that no complaints. Also please put that change in a separate commit.
 
-diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-index aa70fde59..ffc53cbb5 100644
---- a/testcases/kernel/mem/tunable/max_map_count.c
-+++ b/testcases/kernel/mem/tunable/max_map_count.c
-@@ -162,6 +162,8 @@ static void max_map_count_test(void)
- 	max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
- 	if (max_iters > MAX_MAP_COUNT)
- 		max_iters = MAX_MAP_COUNT;
-+	if (max_iters < 0)
-+		tst_brk(TCONF, "Test nees max_iters > 0, test skipped");
-
- 	max_maps = MAP_COUNT_DEFAULT;
- 	while (max_maps <= max_iters) {
---
-2.17.1
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
