@@ -1,335 +1,169 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Mar 2021 13:26:23 +0100
-Subject: [LTP] [PATCH 1/3] lib: Add proper filesystem skiplist
+Date: Wed, 10 Mar 2021 13:26:25 +0100
+Subject: [LTP] [PATCH 3/3] lib: Apply the skip_filesystems to rest of test
+ as well
 In-Reply-To: <20210310122625.25425-1-chrubis@suse.cz>
 References: <20210310122625.25425-1-chrubis@suse.cz>
-Message-ID: <20210310122625.25425-2-chrubis@suse.cz>
+Message-ID: <20210310122625.25425-4-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The approach with flags we added for FUSE does not scale at all, we need
-a proper skiplist so that we can skip individual filesystems.
+There is no reason to use the newly introduced .skip_filesystems only
+for .all_filesystems tests.
 
-The motivation here is the addition of tmpfs to the supported
-filesystems check. One of the problems there is that sync() is no-op on
-tmpfs and hence the syncfs test fails. After this patchset we can simply
-skip syncfs test on tmpfs by setting the right skiplist.
-
-As a bonus point the list of unsupported filesystem gets nicely
-propagated to the metadata as well.
+So if .all_filesystems is not enabled and .skip_filesystems is set we
+check if test temporary directory filesystem type is in the list of
+supported filesystem types.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_fs.h                              | 19 +++++++---
- include/tst_test.h                            |  9 +++--
- lib/tst_supported_fs_types.c                  | 35 ++++++++++++++-----
- lib/tst_test.c                                |  2 +-
- .../kernel/syscalls/fsconfig/fsconfig01.c     |  2 +-
- testcases/kernel/syscalls/fsmount/fsmount01.c |  2 +-
- testcases/kernel/syscalls/fsmount/fsmount02.c |  2 +-
- testcases/kernel/syscalls/fsopen/fsopen01.c   |  2 +-
- testcases/kernel/syscalls/fspick/fspick01.c   |  2 +-
- testcases/kernel/syscalls/fspick/fspick02.c   |  2 +-
- .../kernel/syscalls/move_mount/move_mount01.c |  2 +-
- .../kernel/syscalls/move_mount/move_mount02.c |  2 +-
- .../kernel/syscalls/open_tree/open_tree01.c   |  2 +-
- .../kernel/syscalls/open_tree/open_tree02.c   |  2 +-
- .../sync_file_range/sync_file_range02.c       |  2 +-
- testcases/lib/tst_supported_fs.c              |  4 +--
- 16 files changed, 63 insertions(+), 28 deletions(-)
+ lib/tst_test.c                                | 10 ++++++++++
+ testcases/kernel/syscalls/fcntl/fcntl33.c     | 19 +++++++------------
+ .../kernel/syscalls/ioctl/ioctl_loop05.c      | 11 +++++------
+ .../kernel/syscalls/vmsplice/vmsplice01.c     |  9 ++++-----
+ .../kernel/syscalls/vmsplice/vmsplice02.c     |  9 ++++-----
+ 5 files changed, 30 insertions(+), 28 deletions(-)
 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 4f7dd68d2..0b2732a19 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -167,18 +167,29 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
-  */
- int tst_prealloc_file(const char *path, size_t bs, size_t bcount);
- 
--#define TST_FS_SKIP_FUSE 0x01
--
- /*
-  * Return 1 if a specified fiilsystem is supported
-  * Return 0 if a specified fiilsystem isn't supported
-+ *
-+ * @fs_type A filesystem type to check the support for.
-+ * @skiplist A NULL terminated array of filesystems to skip.
-  */
--int tst_fs_is_supported(const char *fs_type, int flags);
-+int tst_fs_is_supported(const char *fs_type, const char *const *skiplist);
- 
- /*
-  * Returns NULL-terminated array of kernel-supported filesystems.
-+ *
-+ * @skiplist A NULL terminated array of filesystems to skip.
-+ */
-+const char **tst_get_supported_fs_types(const char *const *skiplist);
-+
-+/*
-+ * Returns 1 if filesystem is in skiplist 0 otherwise.
-+ *
-+ * @fs_type A filesystem type to lookup.
-+ * @skiplist A NULL terminated array of fileystemsytems to skip.
-  */
--const char **tst_get_supported_fs_types(int flags);
-+int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist);
- 
- /*
-  * Creates and writes to files on given path until write fails with ENOSPC
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 1fbebe752..4eee6f897 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -159,6 +159,13 @@ struct tst_test {
- 	 */
- 	int all_filesystems:1;
- 
-+	/*
-+	 * The skip_filesystem is a NULL terminated list of filesystems the
-+	 * test does not support. It can also be used to disable whole class of
-+	 * filesystems with a special keyworks such as "fuse".
-+	 */
-+	const char *const *skip_filesystems;
-+
- 	/* Minimum number of online CPU required by the test */
- 	unsigned long min_cpus;
- 
-@@ -197,8 +204,6 @@ struct tst_test {
- 
- 	/* Device filesystem type override NULL == default */
- 	const char *dev_fs_type;
--	/* Flags to be passed to tst_get_supported_fs_types() */
--	int dev_fs_flags;
- 
- 	/* Options passed to SAFE_MKFS() when format_device is set */
- 	const char *const *dev_fs_opts;
-diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
-index 00ede549d..cd505f570 100644
---- a/lib/tst_supported_fs_types.c
-+++ b/lib/tst_supported_fs_types.c
-@@ -45,13 +45,34 @@ static int has_mkfs(const char *fs_type)
- 	return 1;
- }
- 
--static int has_kernel_support(const char *fs_type, int flags)
-+int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist)
-+{
-+	unsigned int i;
-+
-+	if (!skiplist)
-+		return 0;
-+
-+	for (i = 0; skiplist[i]; i++) {
-+		if (!strcmp(fs_type, skiplist[i])) {
-+			tst_res(TINFO,
-+			        "Skipping %s as requested by the test", fs_type);
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int has_kernel_support(const char *fs_type, const char *const *skiplist)
- {
- 	static int fuse_supported = -1;
- 	const char *tmpdir = getenv("TMPDIR");
- 	char buf[128];
- 	int ret;
- 
-+	if (tst_fs_in_skiplist(fs_type, skiplist))
-+		return 0;
-+
- 	if (!tmpdir)
- 		tmpdir = "/tmp";
- 
-@@ -84,26 +105,24 @@ static int has_kernel_support(const char *fs_type, int flags)
- 		return 0;
- 	}
- 
--	if (flags & TST_FS_SKIP_FUSE) {
--		tst_res(TINFO, "Skipping FUSE as requested by the test");
-+	if (tst_fs_in_skiplist("fuse", skiplist))
- 		return 0;
--	}
- 
- 	tst_res(TINFO, "FUSE does support %s", fs_type);
- 	return 1;
- }
- 
--int tst_fs_is_supported(const char *fs_type, int flags)
-+int tst_fs_is_supported(const char *fs_type, const char *const *skiplist)
- {
--	return has_kernel_support(fs_type, flags) && has_mkfs(fs_type);
-+	return has_kernel_support(fs_type, skiplist) && has_mkfs(fs_type);
- }
- 
--const char **tst_get_supported_fs_types(int flags)
-+const char **tst_get_supported_fs_types(const char *const *skiplist)
- {
- 	unsigned int i, j = 0;
- 
- 	for (i = 0; fs_type_whitelist[i]; i++) {
--		if (tst_fs_is_supported(fs_type_whitelist[i], flags))
-+		if (tst_fs_is_supported(fs_type_whitelist[i], skiplist))
- 			fs_types[j++] = fs_type_whitelist[i];
- 	}
- 
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 6bbee030b..d056a32c6 100644
+index d056a32c6..e756ef207 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -1344,7 +1344,7 @@ static int run_tcases_per_fs(void)
+@@ -1048,6 +1048,16 @@ static void do_test_setup(void)
  {
- 	int ret = 0;
- 	unsigned int i;
--	const char *const *filesystems = tst_get_supported_fs_types(tst_test->dev_fs_flags);
-+	const char *const *filesystems = tst_get_supported_fs_types(tst_test->skip_filesystems);
+ 	main_pid = getpid();
  
- 	if (!filesystems[0])
- 		tst_brk(TCONF, "There are no supported filesystems");
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig01.c b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-index 47941136d..a585daa6d 100644
---- a/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig01.c
-@@ -89,5 +89,5 @@ static struct tst_test test = {
- 	.format_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount01.c b/testcases/kernel/syscalls/fsmount/fsmount01.c
-index e81981871..5f755863f 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount01.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount01.c
-@@ -95,5 +95,5 @@ static struct tst_test test = {
- 	.mntpoint = MNTPOINT,
- 	.format_device = 1,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/fsmount/fsmount02.c b/testcases/kernel/syscalls/fsmount/fsmount02.c
-index effc86351..a4f42dc18 100644
---- a/testcases/kernel/syscalls/fsmount/fsmount02.c
-+++ b/testcases/kernel/syscalls/fsmount/fsmount02.c
-@@ -76,5 +76,5 @@ static struct tst_test test = {
- 	.mntpoint = MNTPOINT,
- 	.format_device = 1,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/fsopen/fsopen01.c b/testcases/kernel/syscalls/fsopen/fsopen01.c
-index 8dabd6814..c2c719c96 100644
---- a/testcases/kernel/syscalls/fsopen/fsopen01.c
-+++ b/testcases/kernel/syscalls/fsopen/fsopen01.c
-@@ -76,5 +76,5 @@ static struct tst_test test = {
- 	.format_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/fspick/fspick01.c b/testcases/kernel/syscalls/fspick/fspick01.c
-index 2f372f7f1..d3309a912 100644
---- a/testcases/kernel/syscalls/fspick/fspick01.c
-+++ b/testcases/kernel/syscalls/fspick/fspick01.c
-@@ -63,5 +63,5 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/fspick/fspick02.c b/testcases/kernel/syscalls/fspick/fspick02.c
-index b9d020226..f9a3697c1 100644
---- a/testcases/kernel/syscalls/fspick/fspick02.c
-+++ b/testcases/kernel/syscalls/fspick/fspick02.c
-@@ -50,5 +50,5 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount01.c b/testcases/kernel/syscalls/move_mount/move_mount01.c
-index fd785da02..445e6197e 100644
---- a/testcases/kernel/syscalls/move_mount/move_mount01.c
-+++ b/testcases/kernel/syscalls/move_mount/move_mount01.c
-@@ -79,5 +79,5 @@ static struct tst_test test = {
- 	.format_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/move_mount/move_mount02.c b/testcases/kernel/syscalls/move_mount/move_mount02.c
-index f75991a3f..45b1db4be 100644
---- a/testcases/kernel/syscalls/move_mount/move_mount02.c
-+++ b/testcases/kernel/syscalls/move_mount/move_mount02.c
-@@ -88,5 +88,5 @@ static struct tst_test test = {
- 	.format_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/open_tree/open_tree01.c b/testcases/kernel/syscalls/open_tree/open_tree01.c
-index f217866bb..808d25665 100644
---- a/testcases/kernel/syscalls/open_tree/open_tree01.c
-+++ b/testcases/kernel/syscalls/open_tree/open_tree01.c
-@@ -70,5 +70,5 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/open_tree/open_tree02.c b/testcases/kernel/syscalls/open_tree/open_tree02.c
-index 32ad1aefe..ddaa204f2 100644
---- a/testcases/kernel/syscalls/open_tree/open_tree02.c
-+++ b/testcases/kernel/syscalls/open_tree/open_tree02.c
-@@ -51,5 +51,5 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.mntpoint = MNTPOINT,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- };
-diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-index 64d069e93..f68f46233 100644
---- a/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-+++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-@@ -121,7 +121,7 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.mount_device = 1,
- 	.all_filesystems = 1,
--	.dev_fs_flags = TST_FS_SKIP_FUSE,
-+	.skip_filesystems = (const char *const []){"fuse", NULL},
- 	.mntpoint = MNTPOINT,
++	if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
++		long fs_type = tst_fs_type(".");
++		const char *fs_name = tst_fs_type_name(fs_type);
++
++		if (tst_fs_in_skiplist(fs_name, tst_test->skip_filesystems))
++			tst_brk(TCONF, "Skipping due to unsupported filesystem");
++		else
++			tst_res(TINFO, "%s is supported by the test", fs_name);
++	}
++
+ 	if (tst_test->caps)
+ 		tst_cap_setup(tst_test->caps, TST_CAP_REQ);
+ 
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
+index 70d5ec5ff..8d0d1a5a1 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl33.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
+@@ -81,17 +81,6 @@ static void setup(void)
+ 	SAFE_FILE_SCANF(PATH_LS_BRK_T, "%d", &ls_brk_t);
+ 	SAFE_FILE_PRINTF(PATH_LS_BRK_T, "%d", 45);
+ 
+-	switch ((type = tst_fs_type("."))) {
+-	case TST_NFS_MAGIC:
+-	case TST_RAMFS_MAGIC:
+-	case TST_TMPFS_MAGIC:
+-		tst_brk(TCONF,
+-			"Cannot do fcntl(F_SETLEASE, F_WRLCK) on %s filesystem",
+-			tst_fs_type_name(type));
+-	default:
+-		break;
+-	}
+-
+ 	SAFE_TOUCH("file", FILE_MODE, NULL);
+ 
+ 	sigemptyset(&newset);
+@@ -230,5 +219,11 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(test_cases),
  	.setup = setup,
- 	.test = run,
-diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
-index 022a61508..c7f0afe41 100644
---- a/testcases/lib/tst_supported_fs.c
-+++ b/testcases/lib/tst_supported_fs.c
-@@ -37,9 +37,9 @@ int main(int argc, char *argv[])
- 	}
+ 	.test = do_test,
+-	.cleanup = cleanup
++	.cleanup = cleanup,
++	.skip_filesystems = (const char *const []) {
++		"tmpfs",
++		"ramfs",
++		"nfs",
++		NULL
++	},
+ };
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+index f8fa413a9..58aa6f0d8 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+@@ -98,12 +98,6 @@ static void setup(void)
+ {
+ 	char bd_path[100];
  
- 	if (argv[1])
--		return !tst_fs_is_supported(argv[1], 0);
-+		return !tst_fs_is_supported(argv[1], NULL);
+-	if (tst_fs_type(".") == TST_TMPFS_MAGIC)
+-		tst_brk(TCONF, "tmpfd doesn't support O_DIRECT flag");
+-
+-	if (tst_fs_type(".") == TST_OVERLAYFS_MAGIC)
+-		tst_brk(TCONF, "device isn't properly detected in overlay fs");
+-
+ 	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
+ 	if (dev_num < 0)
+ 		tst_brk(TBROK, "Failed to find free loop device");
+@@ -151,6 +145,11 @@ static struct tst_test test = {
+ 	.test_all = verify_ioctl_loop,
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.skip_filesystems = (const char *const []) {
++		"tmpfs",
++		"overlayfs",
++		NULL
++	},
+ 	.needs_drivers = (const char *const []) {
+ 		"loop",
+ 		NULL
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice01.c b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+index 833af239f..1d1b66d12 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice01.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice01.c
+@@ -103,11 +103,6 @@ static void setup(void)
+ {
+ 	int i;
  
--	filesystems = tst_get_supported_fs_types(0);
-+	filesystems = tst_get_supported_fs_types(NULL);
- 	for (i = 0; filesystems[i]; i++)
- 		printf("%s\n", filesystems[i]);
+-	if (tst_fs_type(".") == TST_NFS_MAGIC) {
+-		tst_brk(TCONF, "Cannot do splice() "
+-			 "on a file located on an NFS filesystem");
+-	}
+-
+ 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
+ 		buffer[i] = i & 0xff;
+ }
+@@ -123,5 +118,9 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = vmsplice_test,
+ 	.needs_tmpdir = 1,
++	.skip_filesystems = (const char *const []) {
++		"nfs",
++		NULL
++	},
+ 	.min_kver = "2.6.17",
+ };
+diff --git a/testcases/kernel/syscalls/vmsplice/vmsplice02.c b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+index 978633d31..39c407cb8 100644
+--- a/testcases/kernel/syscalls/vmsplice/vmsplice02.c
++++ b/testcases/kernel/syscalls/vmsplice/vmsplice02.c
+@@ -52,11 +52,6 @@ static struct tcase {
  
+ static void setup(void)
+ {
+-	if (tst_fs_type(".") == TST_NFS_MAGIC) {
+-		tst_brk(TCONF, "Cannot do splice() "
+-			"on a file located on an NFS filesystem");
+-	}
+-
+ 	filefd = SAFE_OPEN(TESTFILE, O_WRONLY | O_CREAT, 0644);
+ 
+ 	SAFE_PIPE(pipes);
+@@ -106,5 +101,9 @@ static struct tst_test test = {
+ 	.test = vmsplice_verify,
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.needs_tmpdir = 1,
++	.skip_filesystems = (const char *const []) {
++		"nfs",
++		NULL
++	},
+ 	.min_kver = "2.6.17",
+ };
 -- 
 2.26.2
 
