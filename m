@@ -1,24 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Mar 2021 16:14:42 +0100
-Subject: [LTP] [PATCH 1/3] open_posix_testsuite/generate-makefiles.sh:
- Avoid inconsistencies with make version
-In-Reply-To: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
-References: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
-Message-ID: <YEjiYkuyGvs8QT8T@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 10 Mar 2021 16:39:25 +0100
+Subject: [LTP] [PATCH 1/3] lib: Add proper filesystem skiplist
+In-Reply-To: <YEjXn0FN25d6K0Lv@yuki.lan>
+References: <20210310122625.25425-1-chrubis@suse.cz>
+ <20210310122625.25425-2-chrubis@suse.cz> <YEjCfVLhoLPMDEgu@pevik>
+ <YEjXn0FN25d6K0Lv@yuki.lan>
+Message-ID: <YEjoLfDjJOWMmdqb@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Patchset pushed, thanks.
+Hi Cyril,
 
-Also it looks like the wildcard used to be sorted but they removed that
-in a few make versions and nobody knows why:
+..
+> > > +	for (i = 0; skiplist[i]; i++) {
+> > > +		if (!strcmp(fs_type, skiplist[i])) {
+> > > +			tst_res(TINFO,
+> > It'd be nice if skipping message could be TCONF to avoid:
+> > tst_supported_fs_types.c:57: TINFO: Skipping tmpfs as requested by the test
+> > tst_test.c:1056: TCONF: Skipping due to unsupported filesystem
 
-https://stackoverflow.com/questions/40558385/gnu-make-wildcard-no-longer-gives-sorted-output-is-there-any-control-switch
+> > but understand why - it'd make code more complicated (has_kernel_support() which
+> > is used in tst_fs_is_supported() should not emit TCONF).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> I can make a internal wrapper for the tst_fs_is_supported() that prints
+> the TINFO message and use that in the tst_supported_fs_types, which
+> would make it silent in the case it's called from the test library...
+
+Up to you, not really that important to bother with it.
+
+Kind regards,
+Petr
