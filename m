@@ -1,29 +1,38 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 10 Mar 2021 11:26:11 +0100
-Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
-In-Reply-To: <20210310020348.2077-1-zhaogongyi@huawei.com>
-References: <20210310020348.2077-1-zhaogongyi@huawei.com>
-Message-ID: <YEiew7jO9oduJU8K@pevik>
+Date: Wed, 10 Mar 2021 11:32:27 +0100
+Subject: [LTP] [PATCH] syscalls: Use anonymous .resource_files for
+ docparse
+In-Reply-To: <20210303023235.431238-1-yangx.jy@cn.fujitsu.com>
+References: <20210303023235.431238-1-yangx.jy@cn.fujitsu.com>
+Message-ID: <YEigO2gryF1Kp6Gq@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zhao,
+Hi,
 
-> When max_iters < max_maps, there is no post processing,
-> and the test will report "TBROK: Test haven't reported results".
-Thanks, merged!
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---------------
-> v1->v2: modify comparison span of the judgment.
-> ---------------
-FYI: about these 3 lines below Signed-off-by: text should go under ---
-and both --------------- are not needed. Not important, just in that way this
-info won't endup in the commit message (anything below --- is not going to be in
-the commit message).
+> -static const char *const resource_files[] = {
+> -	TEST_APP,
+> -	NULL,
+> -};
+> -
+>  static struct tst_test test = {
+>  	.test_all = verify_creat,
+>  	.needs_checkpoints = 1,
+>  	.forks_child = 1,
+> -	.resource_files = resource_files,
+> +	.resource_files = (const char *const []) {
+> +		TEST_APP,
+Don't we want to drop TEST_APP definition and use file directly?
+Having TEST_APP does not say much.
+Not sure how far we should go with moving everything into inline anonymous
+definitions (it'd be nice if docparse was able to just expand macros, but that
+would be way too slow).
 
 Kind regards,
 Petr
