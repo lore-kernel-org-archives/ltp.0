@@ -1,71 +1,48 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 10 Mar 2021 20:20:48 +0800
-Subject: [LTP] [PATCH] lib/tst_device.c: Add exception handling of
- function tst_find_free_loopdev
-In-Reply-To: <20210310081048.27993-1-zhaogongyi@huawei.com>
-References: <20210310081048.27993-1-zhaogongyi@huawei.com>
-Message-ID: <CAEemH2dpSfc=fgRG1zwbBm1aLgRkbX8qECH7VPz+avBVLjmnDg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 10 Mar 2021 13:26:22 +0100
+Subject: [LTP] [PATCH 0/3] Add proper filesystem skiplist
+Message-ID: <20210310122625.25425-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Gongyi,
+This adds a proper .skip_filesystems array to the tst_test structure and
+implements support for both test with .all_filesystems enabled and
+disabled.
 
-On Wed, Mar 10, 2021 at 4:11 PM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
+As a bonus point we get the list of filesystems that the test does not
+support exported to the metadata as well.
 
-> Because of race condition or abnormal env, set_dev_path may be
-> return 1. And when set_dev_path return 1 in tst_find_free_loopdev,
-> we should return Immediately.
->
+Cyril Hrubis (3):
+  lib: Add proper filesystem skiplist
+  lib: tst_fs_type change fs names to lowercase
+  lib: Apply the skip_filesystems to rest of test as well
 
-If there exists a race condition, I firstly think of the TST_RETRY_FUNC
-macro
-to try more times for the set_dev_path. That might help to get the function
-success
-in the follow-up tries.
-
-
-
->
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---
->  lib/tst_device.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index c096b418b..51cf1ba7e 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -83,8 +83,13 @@ int tst_find_free_loopdev(char *path, size_t path_len)
->                 rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
->                 close(ctl_fd);
->                 if (rc >= 0) {
-> -                       if (path)
-> -                               set_dev_path(rc, path, path_len);
-> +                       if (path)
-> +                               if (!set_dev_path(rc, path, path_len)) {
-> +                                       tst_resm(TINFO,
-> +                                               "loop device not exist");
-> +                                       return -1;
-> +                               }
-> +
->                         tst_resm(TINFO, "Found free device %d '%s'",
->                                 rc, path ?: "");
->                         return rc;
-> --
-> 2.17.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
+ include/tst_fs.h                              | 19 +++++++---
+ include/tst_test.h                            |  9 +++--
+ lib/tst_fs_type.c                             | 36 +++++++++----------
+ lib/tst_supported_fs_types.c                  | 35 +++++++++++++-----
+ lib/tst_test.c                                | 12 ++++++-
+ testcases/kernel/syscalls/fcntl/fcntl33.c     | 19 ++++------
+ .../kernel/syscalls/fsconfig/fsconfig01.c     |  2 +-
+ testcases/kernel/syscalls/fsmount/fsmount01.c |  2 +-
+ testcases/kernel/syscalls/fsmount/fsmount02.c |  2 +-
+ testcases/kernel/syscalls/fsopen/fsopen01.c   |  2 +-
+ testcases/kernel/syscalls/fspick/fspick01.c   |  2 +-
+ testcases/kernel/syscalls/fspick/fspick02.c   |  2 +-
+ .../kernel/syscalls/ioctl/ioctl_loop05.c      | 11 +++---
+ .../kernel/syscalls/move_mount/move_mount01.c |  2 +-
+ .../kernel/syscalls/move_mount/move_mount02.c |  2 +-
+ .../kernel/syscalls/open_tree/open_tree01.c   |  2 +-
+ .../kernel/syscalls/open_tree/open_tree02.c   |  2 +-
+ .../sync_file_range/sync_file_range02.c       |  2 +-
+ .../kernel/syscalls/vmsplice/vmsplice01.c     |  9 +++--
+ .../kernel/syscalls/vmsplice/vmsplice02.c     |  9 +++--
+ testcases/lib/tst_supported_fs.c              |  4 +--
+ 21 files changed, 111 insertions(+), 74 deletions(-)
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210310/d3a354e5/attachment.htm>
+2.26.2
+
