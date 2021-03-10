@@ -1,48 +1,43 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Wed, 10 Mar 2021 02:06:14 +0000
-Subject: [LTP] [PATCH] max_map_count: Add judgment of abnormal situation
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389041F@dggeml511-mbs.china.huawei.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Wed, 10 Mar 2021 16:10:48 +0800
+Subject: [LTP] [PATCH] lib/tst_device.c: Add exception handling of function
+ tst_find_free_loopdev
+Message-ID: <20210310081048.27993-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Because of race condition or abnormal env, set_dev_path may be
+return 1. And when set_dev_path return 1 in tst_find_free_loopdev,
+we should return Immediately.
 
-I have resubmit the patch as your review.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ lib/tst_device.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Thanks!
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index c096b418b..51cf1ba7e 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -83,8 +83,13 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 		rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
+ 		close(ctl_fd);
+ 		if (rc >= 0) {
+-			if (path)
+-				set_dev_path(rc, path, path_len);
++			if (path)
++				if (!set_dev_path(rc, path, path_len)) {
++					tst_resm(TINFO,
++						"loop device not exist");
++					return -1;
++				}
++
+ 			tst_resm(TINFO, "Found free device %d '%s'",
+ 				rc, path ?: "");
+ 			return rc;
+--
+2.17.1
 
-Best Regards,
-Gongyi
-
-> 
-> Hi Gongyi,
-> 
-> > > > When CommitLimit - Committed_AS < 128, there is no post
-> > > > processing, and the test will report "TBROK: Test haven't reported
-> results".
-> Actually, I have problem for CommitLimit - Committed_AS < 5280
-> (depends on actual system).
-> 
-> But that means that even check for max_iters < 0 is not enough, because
-> while (max_maps <= max_iters) block should be run@least once to avoid
-> TBROK: Test haven't reported results!
-> 
-> max_maps is always 1024, thus how about this?
-> 
-> 	max_maps = MAP_COUNT_DEFAULT;
-> +	if (max_iters < max_maps)
-> +		tst_brk(TCONF, "test requires more free memory");
-> 
-> 
-> > > You seems to exploring limits. Out of curiosity, which system / hw
-> > > do you test?
-> 
-> > We are testing linux on some different embedded systems whose hw
-> resource is limited.
-> Thanks for info.
-> 
-> Kind regards,
-> Petr
