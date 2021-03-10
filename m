@@ -1,39 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Mar 2021 15:28:47 +0100
-Subject: [LTP] [PATCH 1/3] lib: Add proper filesystem skiplist
-In-Reply-To: <YEjCfVLhoLPMDEgu@pevik>
-References: <20210310122625.25425-1-chrubis@suse.cz>
- <20210310122625.25425-2-chrubis@suse.cz> <YEjCfVLhoLPMDEgu@pevik>
-Message-ID: <YEjXn0FN25d6K0Lv@yuki.lan>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Wed, 10 Mar 2021 22:37:25 +0800
+Subject: [LTP] [PATCH 1/3] docparse/docparse.c: Make docparse check
+ implied flags recursively
+In-Reply-To: <YEii0cWus+XI8GkB@pevik>
+References: <20210303043014.484426-1-yangx.jy@cn.fujitsu.com>
+ <YEii0cWus+XI8GkB@pevik>
+Message-ID: <c13cb5b8-7aa6-e6bc-230a-767a5c134201@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > -static int has_kernel_support(const char *fs_type, int flags)
-> > +int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	if (!skiplist)
-> > +		return 0;
-> > +
-> > +	for (i = 0; skiplist[i]; i++) {
-> > +		if (!strcmp(fs_type, skiplist[i])) {
-> > +			tst_res(TINFO,
-> It'd be nice if skipping message could be TCONF to avoid:
-> tst_supported_fs_types.c:57: TINFO: Skipping tmpfs as requested by the test
-> tst_test.c:1056: TCONF: Skipping due to unsupported filesystem
-> 
-> but understand why - it'd make code more complicated (has_kernel_support() which
-> is used in tst_fs_is_supported() should not emit TCONF).
+Hi Petr,
 
-I can make a internal wrapper for the tst_fs_is_supported() that prints
-the TINFO message and use that in the tst_supported_fs_types, which
-would make it silent in the case it's called from the test library...
+Thanks for your review and pushed the patch set.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best Regards,
+
+Xiao Yang
+
+On 3/10/21 6:43 PM, Petr Vorel wrote:
+> Hi Yang,
+>
+>> Current docparse cannot check implied flags recursively.
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Thanks!
+>
+> Kind regards,
+> Petr
+>
+
