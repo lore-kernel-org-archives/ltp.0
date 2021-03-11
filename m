@@ -1,64 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 Mar 2021 14:49:02 +0100
-Subject: [LTP] [PATCH 6/7] tst_test.sh: Run cleanup also after test
- timeout
-In-Reply-To: <YD4RairzgAuyBn7S@pevik>
-References: <20210301220222.22705-1-pvorel@suse.cz>
- <20210301220222.22705-7-pvorel@suse.cz>
- <CAEemH2c2Bma-xXTcf+1M4CFVjM7ZQS36rV_6i9kJ6Es-19kghA@mail.gmail.com>
- <YD4RairzgAuyBn7S@pevik>
-Message-ID: <YEofzk8nrVepc78j@yuki.lan>
+From: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date: Thu, 11 Mar 2021 14:26:22 +0000
+Subject: [LTP] [PATCH 1/3] open_posix_testsuite/generate-makefiles.sh:
+ Avoid inconsistencies with make version
+In-Reply-To: <YEjiYkuyGvs8QT8T@rei.lan>
+References: <20210309155623.2457857-1-richard.purdie@linuxfoundation.org>
+ <YEjiYkuyGvs8QT8T@rei.lan>
+Message-ID: <ff5b641d8673eda9308b4176f0e52c4b2935c7ab.camel@linuxfoundation.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > >  _tst_cleanup_timer()
-> > >  {
-> > > @@ -442,6 +442,14 @@ _tst_multiply_timeout()
-> > >         return 0
-> > >  }
+On Wed, 2021-03-10 at 16:14 +0100, Cyril Hrubis wrote:
+> Hi!
+> Patchset pushed, thanks.
 > 
-> > > +_tst_run_timer()
+> Also it looks like the wildcard used to be sorted but they removed that
+> in a few make versions and nobody knows why:
 > 
-> 
-> > Hmm, this name is not good than before, or rename to _tst_kill_timer_pid(),
-> > _tst_stop_timer()?
-> 
-> Good point. I slightly prefer _tst_stop_timer, but no hard feeling about it.
+> https://stackoverflow.com/questions/40558385/gnu-make-wildcard-no-longer-gives-sorted-output-is-there-any-control-switch
 
-Or _tst_kill_test()?
+Thanks. That decision in make was unfortunate and I think we'll be living 
+with it for a while.
 
-> > > +{
-> > > +       tst_res TBROK "test killed, timeout! If you are running on slow
-> > > machine, try exporting LTP_TIMEOUT_MUL > 1"
-> > > +       kill -INT -$pid
-> > > +       sleep 5
-> > > +       kill -KILL -$pid
+The good news is I think with these changes we have ltp behaving consistently
+within Yocto Project :)
 
-Maybe we should change the messages to reflect what is happening and
-maybe we should check if the test is still running before sending
-SIGKILL with kill -0 $pid?
+Cheers,
 
-	tst_res TBROK "Test timeouted, sending SIGINT, ...."
-	kill -INT -$pid
+Richard
 
-	sleep 5
-
-	if kill -0 $pid 2>&1 > /dev/null; then
-		tst_res TBROK "Test still running, sending SIGKILL"
-		kill -KILL -$pid
-	fi
-
-We can also bussy loop wait for the process to terminate, e.g. loop 10
-times with sleep 1 in the body and break the loop if kill -0 $pid
-returns failure.
-
-> > > +}
-> > > +
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
