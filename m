@@ -1,55 +1,48 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 11 Mar 2021 12:34:20 +0100
-Subject: [LTP] [PATCH v2 4/4] doc: Update docs on filesystem detection
-In-Reply-To: <20210311105509.2701-5-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 11 Mar 2021 20:46:11 +0800
+Subject: [LTP] [PATCH v2 0/4] Add proper filesystem skiplist
+In-Reply-To: <20210311105509.2701-1-chrubis@suse.cz>
 References: <20210311105509.2701-1-chrubis@suse.cz>
- <20210311105509.2701-5-chrubis@suse.cz>
-Message-ID: <YEoAPF+1RUw2/wDD@pevik>
+Message-ID: <CAEemH2ed2nX6NotjzZZ+UQRsaEo-xCqx698vWODvh39dXr6A4A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+On Thu, Mar 11, 2021 at 6:53 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> -	/*
-> -	 * Unsupported on NFS, TMPFS and RAMFS
-> -	 */
-> -	long type;
-> +[source,c]
-> +-------------------------------------------------------------------------------
-> +#include "tst_test.h"
-> +
-> +static void run(void)
-> +{
-> +	...
+> This adds a proper .skip_filesystems array to the tst_test structure and
+> implements support for both test with .all_filesystems enabled and
+> disabled.
+>
+> As a bonus point we get the list of filesystems that the test does not
+> support exported to the metadata as well.
+>
+> Changes in v2:
+>
+> * Add docs (as Jan requested)
+>
+> * Move the skiplist detection from the is_supported_by_kernel()
+>   to tst_fs_is_supported()
+>   (as requested by Martin and Li)
+>   (which also fixed the double message reported by Peter)
+>
+> * Fixed typos in tst_fs.h header (as requested by Peter)
+>
+> Cyril Hrubis (4):
+>   lib: Add proper filesystem skiplist
+>   lib: tst_fs_type change fs names to lowercase
+>   lib: Apply the skip_filesystems to rest of test as well
+>   doc: Update docs on filesystem detection
+>
 
->  	switch ((type = tst_fs_type("."))) {
->  	case TST_NFS_MAGIC:
->  	case TST_TMPFS_MAGIC:
->  	case TST_RAMFS_MAGIC:
-> -		tst_brk(TCONF, "Test not supported on %s filesystem",
-> +		tst_brk(TCONF, "Subtest not supported on %s",
->  		        tst_fs_type_name(type));
-> +		return;
->  	break;
->  	}
-> +
-> +	...
-> +}
->  -------------------------------------------------------------------------------
+For series:
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-> +If test needs to adjust expectations based on filesystem type it's also
-> +possible to detect filesystem type at the runtime. This is preferably used
-> +when only subset of the test is not applicable for a given filesystem.
-
-Should be this paragraph above the previous code example and not below? As the
-example illustrates the case of this paragraph.
-
-Apart from that whole patchset LGTM, nice changes.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210311/2b2fbea7/attachment.htm>
