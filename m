@@ -1,214 +1,79 @@
-From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Date: Thu, 11 Mar 2021 16:06:48 +0800
-Subject: [LTP] [PATCH v3] syscalls/chdir04: Convert to the new API
-Message-ID: <20210311080648.311648-1-ruansy.fnst@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 11 Mar 2021 16:39:53 +0800
+Subject: [LTP] [PATCH 1/3] lib: Add proper filesystem skiplist
+In-Reply-To: <b3391506-259b-1376-2c51-4d2a1557a44a@suse.cz>
+References: <20210310122625.25425-1-chrubis@suse.cz>
+ <20210310122625.25425-2-chrubis@suse.cz>
+ <30fec758-5e18-fceb-ec23-646253ba0e46@suse.cz> <YEjyLBZQ+D1CHqnq@rei.lan>
+ <b3391506-259b-1376-2c51-4d2a1557a44a@suse.cz>
+Message-ID: <CAEemH2dzPtskPCJR+639u08k3LV3-XPB6AzNj4adDDvjY9Dydw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- testcases/kernel/syscalls/chdir/chdir04.c | 174 ++++------------------
- 1 file changed, 27 insertions(+), 147 deletions(-)
+Hi Cyril,
 
-diff --git a/testcases/kernel/syscalls/chdir/chdir04.c b/testcases/kernel/syscalls/chdir/chdir04.c
-index f0420e4c9..e6b128652 100644
---- a/testcases/kernel/syscalls/chdir/chdir04.c
-+++ b/testcases/kernel/syscalls/chdir/chdir04.c
-@@ -1,162 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-  */
- 
--/*
-- * NAME
-- * 	chdir04.c
-- *
-- * DESCRIPTION
-- *	Testcase to test whether chdir(2) sets errno correctly.
-- *
-- * ALGORITHM
-- *	1.	Test for ENAMETOOLONG:
-- *		Create a bad directory name with length more than
-- *
-- *		VFS_MAXNAMELEN (Linux kernel variable), and attempt to
-- *		chdir(2) to it.
-- *
-- *	2.	Test for ENOENT:
-- *		Attempt to chdir(2) on a non-existent directory
-- *
-- *	3.	Test for EFAULT:
-- *		Pass an address which lies outside the address space of the
-- *		process, and expect an EFAULT.
-+/*\
-+ * [DESCRIPTION]
-  *
-- * USAGE:  <for command-line>
-- * chdir04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	NONE
-+ * Testcase to test whether chdir(2) sets errno correctly.
-  */
- 
--#include <stdio.h>
- #include <errno.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--#include "test.h"
--
--char *TCID = "chdir04";
--
--char bad_dir[] =
--    "abcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
--
--char noexist_dir[] = "/tmp/noexistdir";
--
--struct test_case_t {
--	char *dname;
--	int error;
--} TC[] = {
--	/*
--	 * to test whether chdir() is setting ENAMETOOLONG if the
--	 * directory is more than VFS_MAXNAMELEN
--	 */
--	{
--	bad_dir, ENAMETOOLONG},
--	    /*
--	     * to test whether chdir() is setting ENOENT if the
--	     * directory is not existing.
--	     */
--	{
--	noexist_dir, ENOENT},
--	    /*
--	     * to test whether chdir() is setting EFAULT if the
--	     * directory is an invalid address.
--	     */
--	{
--	(void *)-1, EFAULT}
-+#include "tst_test.h"
-+
-+static char bad_dir[] = "abcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyzabcdefghijklmnopqrstmnopqrstuvwxyz";
-+static char noexist_dir[] = "/tmp/noexistdir";
-+
-+static struct tcase {
-+	char *dir;
-+	int exp_errno;
-+} tcases [] = {
-+	{bad_dir, ENAMETOOLONG},
-+	{noexist_dir, ENOENT},
-+	{0, EFAULT}, // bad_addr
- };
- 
--int TST_TOTAL = ARRAY_SIZE(TC);
--
--int flag;
--#define	FAILED	1
--
--void setup(void);
--void cleanup(void);
--
--char *bad_addr = 0;
--
--int main(int ac, char **av)
-+static void verify_chdir(unsigned int i)
- {
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(chdir(TC[i].dname));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error)
--				tst_resm(TPASS | TTERRNO, "failed as expected");
--			else {
--				tst_resm(TFAIL | TTERRNO,
--					 "didn't fail as expected (expected %d)",
--					 TC[i].error);
--			}
--		}
--	}
--	cleanup();
--
--	tst_exit();
--
-+	TST_EXP_FAIL(chdir(tcases[i].dir), tcases[i].exp_errno);
- }
- 
--void setup(void)
-+static void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--#ifdef UCLINUX
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap() failed");
--	TC[2].dname = bad_addr;
--#endif
-+	tcases[2].dir = tst_get_bad_addr(NULL);
- }
- 
--void cleanup(void)
--{
--	tst_rmdir();
--
--}
-+static struct tst_test test = {
-+	.needs_tmpdir = 1,
-+	.test = verify_chdir,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+};
+On Thu, Mar 11, 2021 at 12:34 AM Martin Doucha <mdoucha@suse.cz> wrote:
+
+> On 10. 03. 21 17:22, Cyril Hrubis wrote:
+> > Hi!
+> >>> +static int has_kernel_support(const char *fs_type, const char *const
+> *skiplist)
+> >>>  {
+> >>>     static int fuse_supported = -1;
+> >>>     const char *tmpdir = getenv("TMPDIR");
+> >>>     char buf[128];
+> >>>     int ret;
+> >>>
+> >>> +   if (tst_fs_in_skiplist(fs_type, skiplist))
+> >>> +           return 0;
+> >>> +
+> >>>     if (!tmpdir)
+> >>>             tmpdir = "/tmp";
+> >>>
+> >>> @@ -84,26 +105,24 @@ static int has_kernel_support(const char
+> *fs_type, int flags)
+> >>>             return 0;
+> >>>     }
+> >>>
+> >>> -   if (flags & TST_FS_SKIP_FUSE) {
+> >>> -           tst_res(TINFO, "Skipping FUSE as requested by the test");
+> >>> +   if (tst_fs_in_skiplist("fuse", skiplist))
+> >>>             return 0;
+> >>> -   }
+> >>>
+> >>>     tst_res(TINFO, "FUSE does support %s", fs_type);
+> >>>     return 1;
+> >>>  }
+> >>
+> >> I don't think that has_kernel_support() should look at the skiplist at
+> >> all. The entire skiplist logic should be handled in
+> >> tst_get_supported_fs_types(). But has_kernel_support() could return
+> >> different (non-zero) values for native support and for FUSE support.
+> >
+> > I do not agree, that would add more complexity to an internal function
+> > that is not exported outside the library.
+>
+> Your patchset adds complexity to tst_fs_is_supported() which is a public
+> wrapper of has_kernel_support(), even though it's only used indirectly
+> in shell tests. Some tests might use that function directly in the
+> future so let's make the interface cleaner, not hairier.
+>
+
++1
+
+I have the same view as Martin. Since only regarding the function name
+has_kernel_support() should only take care of the kernel supported
+filesystem
+but not include any blacklist from users. That will make people confused in
+code reading.
+
+
 -- 
-2.30.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210311/7d7d0a1a/attachment.htm>
