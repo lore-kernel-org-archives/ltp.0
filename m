@@ -1,91 +1,61 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 11 Mar 2021 11:55:07 +0100
-Subject: [LTP] [PATCH v2 2/4] lib: tst_fs_type change fs names to lowercase
-In-Reply-To: <20210311105509.2701-1-chrubis@suse.cz>
-References: <20210311105509.2701-1-chrubis@suse.cz>
-Message-ID: <20210311105509.2701-3-chrubis@suse.cz>
+Date: Thu, 11 Mar 2021 11:55:05 +0100
+Subject: [LTP] [PATCH v2 0/4] Add proper filesystem skiplist
+Message-ID: <20210311105509.2701-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-To make it consistent with the rest of the library.
+This adds a proper .skip_filesystems array to the tst_test structure and
+implements support for both test with .all_filesystems enabled and
+disabled.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_fs_type.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+As a bonus point we get the list of filesystems that the test does not
+support exported to the metadata as well.
 
-diff --git a/lib/tst_fs_type.c b/lib/tst_fs_type.c
-index d661d5b2a..8475f4c78 100644
---- a/lib/tst_fs_type.c
-+++ b/lib/tst_fs_type.c
-@@ -47,46 +47,46 @@ const char *tst_fs_type_name(long f_type)
- {
- 	switch (f_type) {
- 	case TST_TMPFS_MAGIC:
--		return "TMPFS";
-+		return "tmpfs";
- 	case TST_NFS_MAGIC:
--		return "NFS";
-+		return "nfs";
- 	case TST_V9FS_MAGIC:
--		return "9P";
-+		return "9p";
- 	case TST_RAMFS_MAGIC:
--		return "RAMFS";
-+		return "ramfs";
- 	case TST_BTRFS_MAGIC:
--		return "BTRFS";
-+		return "btrfs";
- 	case TST_XFS_MAGIC:
--		return "XFS";
-+		return "xfs";
- 	case TST_EXT2_OLD_MAGIC:
--		return "EXT2";
-+		return "ext2";
- 	case TST_EXT234_MAGIC:
--		return "EXT2/EXT3/EXT4";
-+		return "ext2/ext3/ext4";
- 	case TST_MINIX_MAGIC:
- 	case TST_MINIX_MAGIC2:
- 	case TST_MINIX2_MAGIC:
- 	case TST_MINIX2_MAGIC2:
- 	case TST_MINIX3_MAGIC:
--		return "MINIX";
-+		return "minix";
- 	case TST_UDF_MAGIC:
--		return "UDF";
-+		return "udf";
- 	case TST_SYSV2_MAGIC:
- 	case TST_SYSV4_MAGIC:
--		return "SYSV";
-+		return "sysv";
- 	case TST_UFS_MAGIC:
- 	case TST_UFS2_MAGIC:
--		return "UFS";
-+		return "ufs";
- 	case TST_F2FS_MAGIC:
--		return "F2FS";
-+		return "f2fs";
- 	case TST_NILFS_MAGIC:
--		return "NILFS";
-+		return "nilfs";
- 	case TST_EXOFS_MAGIC:
--		return "EXOFS";
-+		return "exofs";
- 	case TST_OVERLAYFS_MAGIC:
--		return "OVERLAYFS";
-+		return "overlayfs";
- 	case TST_FUSE_MAGIC:
--		return "FUSE";
-+		return "fuse";
- 	default:
--		return "Unknown";
-+		return "unknown";
- 	}
- }
+Changes in v2:
+
+* Add docs (as Jan requested)
+
+* Move the skiplist detection from the is_supported_by_kernel()
+  to tst_fs_is_supported()
+  (as requested by Martin and Li)
+  (which also fixed the double message reported by Peter)
+
+* Fixed typos in tst_fs.h header (as requested by Peter)
+
+Cyril Hrubis (4):
+  lib: Add proper filesystem skiplist
+  lib: tst_fs_type change fs names to lowercase
+  lib: Apply the skip_filesystems to rest of test as well
+  doc: Update docs on filesystem detection
+
+ doc/test-writing-guidelines.txt               | 47 +++++++++++++------
+ include/tst_fs.h                              | 23 ++++++---
+ include/tst_test.h                            |  9 +++-
+ lib/tst_fs_type.c                             | 36 +++++++-------
+ lib/tst_supported_fs_types.c                  | 37 ++++++++++++---
+ lib/tst_test.c                                | 14 +++++-
+ testcases/kernel/syscalls/fcntl/fcntl33.c     | 19 +++-----
+ .../kernel/syscalls/fsconfig/fsconfig01.c     |  2 +-
+ testcases/kernel/syscalls/fsmount/fsmount01.c |  2 +-
+ testcases/kernel/syscalls/fsmount/fsmount02.c |  2 +-
+ testcases/kernel/syscalls/fsopen/fsopen01.c   |  2 +-
+ testcases/kernel/syscalls/fspick/fspick01.c   |  2 +-
+ testcases/kernel/syscalls/fspick/fspick02.c   |  2 +-
+ .../kernel/syscalls/ioctl/ioctl_loop05.c      | 11 ++---
+ .../kernel/syscalls/move_mount/move_mount01.c |  2 +-
+ .../kernel/syscalls/move_mount/move_mount02.c |  2 +-
+ .../kernel/syscalls/open_tree/open_tree01.c   |  2 +-
+ .../kernel/syscalls/open_tree/open_tree02.c   |  2 +-
+ .../sync_file_range/sync_file_range02.c       |  2 +-
+ .../kernel/syscalls/vmsplice/vmsplice01.c     |  9 ++--
+ .../kernel/syscalls/vmsplice/vmsplice02.c     |  9 ++--
+ testcases/lib/tst_supported_fs.c              |  4 +-
+ 22 files changed, 152 insertions(+), 88 deletions(-)
+
 -- 
 2.26.2
 
