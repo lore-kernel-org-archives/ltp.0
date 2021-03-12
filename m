@@ -1,37 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Mar 2021 18:31:58 +0100
-Subject: [LTP] [PATCH 0/3] shell test timeout handling
-Message-ID: <20210312173201.27708-1-pvorel@suse.cz>
+Date: Fri, 12 Mar 2021 18:32:01 +0100
+Subject: [LTP] [PATCH 3/3] zram: Increase timeout according to used devices
+In-Reply-To: <20210312173201.27708-1-pvorel@suse.cz>
+References: <20210312173201.27708-1-pvorel@suse.cz>
+Message-ID: <20210312173201.27708-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+to avoid unexpected timeout, which occurred even on just 4 zram devices.
 
-changes before previous attempt [1]
-* _tst_kill_test() (Cyril)
-* added test timeout03.sh
-* update trap message (Joerg)
+On my system where run with ext{2,3,4}, xfs, btrfs, vfat, exfat, ntfs
+it run for 12 min, i.e. mean 90s. Multiply by security constant 5,
+expecting 450 sec for each filesystem.
 
-NOTE: we have no way to print summary from _tst_do_exit if cleanup get
-stuck, but IMHO there is no simple way how to solve it (we'd have to use
-mapped memory to increment counter also in shell API as Cyril suggested)
+Reviewed-by: Li Wang <liwang@redhat.com>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+The same as previous
+https://patchwork.ozlabs.org/project/ltp/patch/20210301220222.22705-8-pvorel@suse.cz/
 
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210301220222.22705-7-pvorel@suse.cz/
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Petr Vorel (3):
-  tst_test.sh: Run cleanup also after test timeout
-  test: Adding timeout03.sh for testing _tst_kill_test()
-  zram: Increase timeout according to used devices
-
- lib/newlib_tests/shell/timeout03.sh           | 47 +++++++++++++++++++
- .../kernel/device-drivers/zram/zram_lib.sh    |  2 +
- testcases/lib/tst_test.sh                     | 25 ++++++++--
- 3 files changed, 71 insertions(+), 3 deletions(-)
- create mode 100755 lib/newlib_tests/shell/timeout03.sh
-
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index 65e431e86..fe9c915c3 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -47,6 +47,8 @@ zram_load()
+ 		tst_brk TBROK "dev_num must be > 0"
+ 	fi
+ 
++	tst_set_timeout $((dev_num*450))
++
+ 	tst_res TINFO "create '$dev_num' zram device(s)"
+ 
+ 	modprobe zram num_devices=$dev_num || \
 -- 
 2.30.1
 
