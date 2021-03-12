@@ -1,44 +1,30 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Mar 2021 18:32:01 +0100
-Subject: [LTP] [PATCH 3/3] zram: Increase timeout according to used devices
-In-Reply-To: <20210312173201.27708-1-pvorel@suse.cz>
-References: <20210312173201.27708-1-pvorel@suse.cz>
-Message-ID: <20210312173201.27708-4-pvorel@suse.cz>
+Date: Fri, 12 Mar 2021 18:37:50 +0100
+Subject: [LTP] [PATCH 1/2] Add FS quota availability check functions
+In-Reply-To: <f775b926-6bd1-2f93-707a-fbbc7ebe6dc4@suse.cz>
+References: <20210309171104.30821-1-mdoucha@suse.cz> <YEtCWbqdGq5Yc99s@pevik>
+ <f775b926-6bd1-2f93-707a-fbbc7ebe6dc4@suse.cz>
+Message-ID: <YEum7l1mTHutae2a@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to avoid unexpected timeout, which occurred even on just 4 zram devices.
+Hi Martin,
 
-On my system where run with ext{2,3,4}, xfs, btrfs, vfat, exfat, ntfs
-it run for 12 min, i.e. mean 90s. Multiply by security constant 5,
-expecting 450 sec for each filesystem.
+> >> +	TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
+> > Actually, there is a warning:
+> > tst_supported_fs_types.c: In function ?tst_check_quota_support?:
+> > tst_supported_fs_types.c:117:59: warning: passing argument 4 of ?quotactl? discards ?const? qualifier from pointer target type [-Wdiscarded-qualifiers]
+> >   117 |  TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
 
-Reviewed-by: Li Wang <liwang@redhat.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-The same as previous
-https://patchwork.ozlabs.org/project/ltp/patch/20210301220222.22705-8-pvorel@suse.cz/
+> > Would you prefer to cast to char *, or just change function parameter to char *?
 
- testcases/kernel/device-drivers/zram/zram_lib.sh | 2 ++
- 1 file changed, 2 insertions(+)
+> Thanks for catching this. Passing string literals to the function
+> directly is technically wrong so I'll drop the const and fix the tests
+> to allocate a buffer for quotafile paths. I'll resubmit on Monday.
+Thanks a lot!
 
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index 65e431e86..fe9c915c3 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -47,6 +47,8 @@ zram_load()
- 		tst_brk TBROK "dev_num must be > 0"
- 	fi
- 
-+	tst_set_timeout $((dev_num*450))
-+
- 	tst_res TINFO "create '$dev_num' zram device(s)"
- 
- 	modprobe zram num_devices=$dev_num || \
--- 
-2.30.1
-
+Kind regards,
+Petr
