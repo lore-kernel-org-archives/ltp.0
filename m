@@ -1,21 +1,18 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Mar 2021 11:33:27 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/quotactl: Skip tests if FS quota is
- not supported
-In-Reply-To: <20210309171104.30821-2-mdoucha@suse.cz>
-References: <20210309171104.30821-1-mdoucha@suse.cz>
- <20210309171104.30821-2-mdoucha@suse.cz>
-Message-ID: <YEtDd699eqcyRPIJ@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 12 Mar 2021 11:41:12 +0100
+Subject: [LTP] [PATCH 1/2] docparse: Use C standard comment end
+In-Reply-To: <20210308160122.24522-1-pvorel@suse.cz>
+References: <20210308160122.24522-1-pvorel@suse.cz>
+Message-ID: <YEtFSB5Xk/YLRLX1@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Nice, thanks!
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
