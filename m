@@ -1,30 +1,85 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 12 Mar 2021 18:37:50 +0100
-Subject: [LTP] [PATCH 1/2] Add FS quota availability check functions
-In-Reply-To: <f775b926-6bd1-2f93-707a-fbbc7ebe6dc4@suse.cz>
-References: <20210309171104.30821-1-mdoucha@suse.cz> <YEtCWbqdGq5Yc99s@pevik>
- <f775b926-6bd1-2f93-707a-fbbc7ebe6dc4@suse.cz>
-Message-ID: <YEum7l1mTHutae2a@pevik>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Sun, 14 Mar 2021 16:36:46 -0700
+Subject: [LTP] [PATCH v2] IMA: Allow only ima-buf template for key
+ measurement
+Message-ID: <20210314233646.2925-1-nramas@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+ima-buf is the default IMA template used for all buffer measurements.
+Therefore, IMA policy rule for measuring keys need not specify
+an IMA template.  But if a template is specified for key measurement
+rule then it must be only ima-buf.
 
-> >> +	TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
-> > Actually, there is a warning:
-> > tst_supported_fs_types.c: In function ?tst_check_quota_support?:
-> > tst_supported_fs_types.c:117:59: warning: passing argument 4 of ?quotactl? discards ?const? qualifier from pointer target type [-Wdiscarded-qualifiers]
-> >   117 |  TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), device, format, quotafile));
+Update keys tests to not require a template to be specified for
+key measurement rule, but if a template is specified verify it is
+only ima-buf.
 
-> > Would you prefer to cast to char *, or just change function parameter to char *?
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ .../security/integrity/ima/tests/ima_keys.sh  | 20 ++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-> Thanks for catching this. Passing string literals to the function
-> directly is technically wrong so I'll drop the const and fix the tests
-> to allocate a buffer for quotafile paths. I'll resubmit on Monday.
-Thanks a lot!
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index c9eef4b68..b9bef4feb 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -15,8 +15,7 @@ TST_CLEANUP=cleanup
+ . ima_setup.sh
+ 
+ FUNC_KEYCHECK='func=KEY_CHECK'
+-TEMPLATE_BUF='template=ima-buf'
+-REQUIRED_POLICY="^measure.*($FUNC_KEYCHECK.*$TEMPLATE_BUF|$TEMPLATE_BUF.*$FUNC_KEYCHECK)"
++REQUIRED_POLICY="^measure.*$FUNC_KEYCHECK"
+ 
+ setup()
+ {
+@@ -28,12 +27,23 @@ cleanup()
+ 	tst_is_num $KEYRING_ID && keyctl clear $KEYRING_ID
+ }
+ 
++check_policy_template()
++{
++	while read line; do
++	if ( echo $line | grep -q 'template=') && ( ! echo $line | grep -q 'template=ima-buf' ); then
++		tst_res TCONF "only template=ima-buf can be specified for KEY_CHECK"
++		return 1
++	fi
++	done < $TST_TMPDIR/policy.txt
++	return 0
++}
++
+ check_keys_policy()
+ {
+ 	local pattern="$1"
+ 
+ 	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
+-		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK, $TEMPLATE_BUF"
++		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK"
+ 		return 1
+ 	fi
+ 	return 0
+@@ -49,6 +59,8 @@ test1()
+ 
+ 	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
+ 
++	check_policy_template || return
++
+ 	check_keys_policy "$pattern" > $tmp_file || return
+ 	keycheck_lines=$(cat $tmp_file)
+ 	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
+@@ -101,6 +113,8 @@ test2()
+ 
+ 	tst_res TINFO "verify measurement of certificate imported into a keyring"
+ 
++	check_policy_template || return
++
+ 	check_keys_policy "$pattern" >/dev/null || return
+ 
+ 	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
+-- 
+2.30.1
 
-Kind regards,
-Petr
