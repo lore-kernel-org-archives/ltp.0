@@ -1,41 +1,26 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Mon, 15 Mar 2021 11:42:42 +0800
-Subject: [LTP] [PATCH] SPDX-License-Identifier: Remove redundancy lines
-Message-ID: <20210315034242.27545-1-zhaogongyi@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 15 Mar 2021 11:46:04 +0800
+Subject: [LTP] [PATCH] log style: Remove redundancy '\n'
+In-Reply-To: <20210315032436.24360-1-zhaogongyi@huawei.com>
+References: <20210315032436.24360-1-zhaogongyi@huawei.com>
+Message-ID: <CAEemH2cjYGi-RAidPJim+-n_bh9oU3V9dPwEHHcy_UUZEyc+MQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Remove redundancy lines of "SPDX-License-Identifier".
+On Mon, Mar 15, 2021 at 11:25 AM Zhao Gongyi <zhaogongyi@huawei.com> wrote:
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/memfd_create/memfd_create03.c | 1 -
- testcases/kernel/syscalls/memfd_create/memfd_create04.c | 1 -
- 2 files changed, 2 deletions(-)
+> Remove redundancy '\n' to make the log style consistency since
+> the functions tst_* have added a '\n' at the end of the string.
+>
 
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-index 16d168525..ea846626a 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-@@ -1,5 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--// SPDX-License-Identifier: GPL-2.0-or-later
+Thank you for the cleanup, pushed.
 
- /*
-  *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create04.c b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
-index 659431cd9..52cc9b1ac 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create04.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create04.c
-@@ -1,5 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--// SPDX-License-Identifier: GPL-2.0-or-later
-
- /*
-  *  Copyright (c) Zilogic Systems Pvt. Ltd., 2018
---
-2.17.1
-
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210315/7db4baf7/attachment.htm>
