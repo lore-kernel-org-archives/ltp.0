@@ -1,104 +1,132 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 15 Mar 2021 16:41:53 +0100
-Subject: [LTP] [PATCH v2 3/3] syscalls/quotactl: Skip tests if FS quota is
- not supported
-In-Reply-To: <20210315154153.912-1-mdoucha@suse.cz>
-References: <20210315154153.912-1-mdoucha@suse.cz>
-Message-ID: <20210315154153.912-3-mdoucha@suse.cz>
+Date: Mon, 15 Mar 2021 16:41:51 +0100
+Subject: [LTP] [PATCH v2 1/3] syscalls/quotactl: Store addr string literals
+ in buffer
+Message-ID: <20210315154153.912-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+The addr parameter of quotactl() is read-write so it's technically wrong
+to pass string literals directly. Store them in a buffer and pass the buffer
+instead.
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1:
-- Change USRPATH string literal to the usrpath buffer introduced in patch 1
+Changes since v1: New patch
 
- .../kernel/syscalls/quotactl/quotactl01.c     |  2 ++
- .../kernel/syscalls/quotactl/quotactl04.c     | 26 +++++++++++++++++--
- .../kernel/syscalls/quotactl/quotactl06.c     |  2 ++
- 3 files changed, 28 insertions(+), 2 deletions(-)
+ .../kernel/syscalls/quotactl/quotactl01.c     | 10 +++++---
+ .../kernel/syscalls/quotactl/quotactl06.c     | 25 +++++++++++--------
+ 2 files changed, 21 insertions(+), 14 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
-index 23233cf0d..56146b595 100644
+index 7b3649fa5..23233cf0d 100644
 --- a/testcases/kernel/syscalls/quotactl/quotactl01.c
 +++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-@@ -174,6 +174,8 @@ static void setup(void)
- 	if (access(GRPPATH, F_OK) == -1)
- 		tst_brk(TFAIL | TERRNO, "group quotafile didn't exist");
+@@ -53,6 +53,8 @@
  
-+	tst_require_quota_support(tst_device->dev, fmt_id, usrpath);
-+
- 	TEST(quotactl(QCMD(Q_GETNEXTQUOTA, USRQUOTA), tst_device->dev,
- 		test_id, (void *) &res_ndq));
- 	if (TST_ERR == EINVAL || TST_ERR == ENOSYS)
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl04.c b/testcases/kernel/syscalls/quotactl/quotactl04.c
-index c8fa916b2..fd3afc888 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl04.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl04.c
-@@ -28,6 +28,7 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <sys/stat.h>
-+#include <sys/mount.h>
- #include "config.h"
- #include "lapi/quotactl.h"
- #include "tst_safe_stdio.h"
-@@ -103,6 +104,28 @@ static struct tcase {
+ static int32_t fmt_id = FMTID;
+ static int test_id;
++static char usrpath[] = USRPATH;
++static char grppath[] = GRPPATH;
+ static struct dqblk set_dq = {
+ 	.dqb_bsoftlimit = 100,
+ 	.dqb_valid = QIF_BLIMITS
+@@ -79,7 +81,7 @@ static struct tcase {
+ 	char *des;
+ 	char *tname;
+ } tcases[] = {
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH,
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, usrpath,
+ 	NULL, NULL, 0, "turn on quota for user",
+ 	"QCMD(Q_QUOTAON, USRQUOTA)"},
  
+@@ -115,11 +117,11 @@ static struct tcase {
+ 	"get next disk quota limit for user",
+ 	"QCMD(Q_GETNEXTQUOTA, USRQUOTA)"},
+ 
+-	{QCMD(Q_QUOTAOFF, USRQUOTA), &test_id, USRPATH,
++	{QCMD(Q_QUOTAOFF, USRQUOTA), &test_id, usrpath,
+ 	NULL, NULL, 0, "turn off quota for user",
+ 	"QCMD(Q_QUOTAOFF, USRQUOTA)"},
+ 
+-	{QCMD(Q_QUOTAON, GRPQUOTA), &fmt_id, GRPPATH,
++	{QCMD(Q_QUOTAON, GRPQUOTA), &fmt_id, grppath,
+ 	NULL, NULL, 0, "turn on quota for group",
+ 	"QCMD(Q_QUOTAON, GRPQUOTA)"},
+ 
+@@ -154,7 +156,7 @@ static struct tcase {
+ 	"get next disk quota limit for group",
+ 	"QCMD(Q_GETNEXTQUOTA, GRPQUOTA)"},
+ 
+-	{QCMD(Q_QUOTAOFF, GRPQUOTA), &test_id, GRPPATH,
++	{QCMD(Q_QUOTAOFF, GRPQUOTA), &test_id, grppath,
+ 	NULL, NULL, 0, "turn off quota for group",
+ 	"QCMD(Q_QUOTAOFF, GRPQUOTA)"},
  };
- 
-+static void do_mount(const char *source, const char *target,
-+	const char *filesystemtype, unsigned long mountflags,
-+	const void *data)
-+{
-+	TEST(mount(source, target, filesystemtype, mountflags, data));
-+
-+	if (TST_RET == -1 && TST_ERR == ESRCH)
-+		tst_brk(TCONF, "Kernel or device does not support FS quotas");
-+
-+	if (TST_RET == -1) {
-+		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
-+			source, target, filesystemtype, mountflags, data);
-+	}
-+
-+	if (TST_RET) {
-+		tst_brk(TBROK | TTERRNO, "mount(%s, %s, %s, %lu, %p) failed",
-+			source, target, filesystemtype, mountflags, data);
-+	}
-+
-+	mount_flag = 1;
-+}
-+
- static void setup(void)
- {
- 	FILE *f;
-@@ -118,8 +141,7 @@ static void setup(void)
- 		tst_brk(TCONF, "Test needs mkfs.ext4 >= 1.43 for quota,project option, test skipped");
- 	pclose(f);
- 	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
--	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
--	mount_flag = 1;
-+	do_mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, "quota");
- }
- 
- static void cleanup(void)
 diff --git a/testcases/kernel/syscalls/quotactl/quotactl06.c b/testcases/kernel/syscalls/quotactl/quotactl06.c
-index 8621af05b..a10d1ca07 100644
+index 2818a4dc4..8621af05b 100644
 --- a/testcases/kernel/syscalls/quotactl/quotactl06.c
 +++ b/testcases/kernel/syscalls/quotactl/quotactl06.c
-@@ -158,6 +158,8 @@ static void setup(void)
- 	if (access(USRPATH, F_OK) == -1)
- 		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
+@@ -40,6 +40,9 @@
+ #define TESTDIR1 MNTPOINT "/testdir1"
+ #define TESTDIR2 MNTPOINT "/testdir2"
  
-+	tst_require_quota_support(tst_device->dev, fmt_id, usrpath);
-+
- 	SAFE_MKDIR(TESTDIR1, 0666);
- 	test_id = geteuid();
- 	test_invalid = test_id + 1;
++static char usrpath[] = USRPATH;
++static char testdir1[] = TESTDIR1;
++static char testdir2[] = TESTDIR2;
+ static int32_t fmt_id = FMTID;
+ static int32_t fmt_invalid = 999;
+ static int test_invalid;
+@@ -76,17 +79,17 @@ static struct tcase {
+ 	int exp_err;
+ 	int on_flag;
+ } tcases[] = {
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, TESTDIR1, EACCES, 0},
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, TESTDIR2, ENOENT, 0},
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, EBUSY, 1},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, testdir1, EACCES, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, testdir2, ENOENT, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, usrpath, EBUSY, 1},
+ 	{QCMD(Q_SETQUOTA, USRQUOTA), &fmt_id, NULL, EFAULT, 1},
+-	{QCMD(OPTION_INVALID, USRQUOTA), &fmt_id, USRPATH, EINVAL, 0},
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, ENOTBLK, 0},
++	{QCMD(OPTION_INVALID, USRQUOTA), &fmt_id, usrpath, EINVAL, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, usrpath, ENOTBLK, 0},
+ 	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dq, ESRCH, 0},
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_invalid, USRPATH, ESRCH, 0},
+-	{QCMD(Q_GETNEXTQUOTA, USRQUOTA), &test_invalid, USRPATH, ESRCH, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_invalid, usrpath, ESRCH, 0},
++	{QCMD(Q_GETNEXTQUOTA, USRQUOTA), &test_invalid, usrpath, ESRCH, 0},
+ 	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dqmax, ERANGE, 1},
+-	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH, EPERM, 0},
++	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, usrpath, EPERM, 0},
+ };
+ 
+ static void verify_quotactl(unsigned int n)
+@@ -101,7 +104,8 @@ static void verify_quotactl(unsigned int n)
+ 	}
+ 
+ 	if (tc->on_flag) {
+-		TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), tst_device->dev, FMTID, USRPATH));
++		TEST(quotactl(QCMD(Q_QUOTAON, USRQUOTA), tst_device->dev,
++			FMTID, usrpath));
+ 		if (TST_RET == -1)
+ 			tst_brk(TBROK,
+ 				"quotactl with Q_QUOTAON returned %ld", TST_RET);
+@@ -130,7 +134,8 @@ static void verify_quotactl(unsigned int n)
+ 	}
+ 
+ 	if (quota_on) {
+-		TEST(quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), tst_device->dev, FMTID, USRPATH));
++		TEST(quotactl(QCMD(Q_QUOTAOFF, USRQUOTA), tst_device->dev,
++			FMTID, usrpath));
+ 		if (TST_RET == -1)
+ 			tst_brk(TBROK,
+ 				"quotactl with Q_QUOTAOFF returned %ld", TST_RET);
 -- 
 2.30.1
 
