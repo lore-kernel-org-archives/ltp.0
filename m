@@ -1,49 +1,94 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 16 Mar 2021 17:37:18 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
-In-Reply-To: <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
-References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
- <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
-Message-ID: <YFDevk/wNwd3epod@pevik>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Tue, 16 Mar 2021 09:37:56 -0700
+Subject: [LTP] [PATCH v3] IMA: Allow only ima-buf template for key
+ measurement
+Message-ID: <20210316163756.7634-1-nramas@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ruan,
+ima-buf is the default IMA template used for all buffer measurements.
+Therefore, IMA policy rule for measuring keys need not specify
+an IMA template.  But if a template is specified for key measurement
+rule then it must be only ima-buf.
 
-> The logic is same as syscalls/getpid02, which is to check whether
-> parent's pid equals child's ppid.
-...
+Update keys tests to not require a template to be specified for
+key measurement rule, but if a template is specified verify it is
+only ima-buf.
 
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		ppid = getpid();
-> -		pid = FORK_OR_VFORK();
-> -		if (pid == -1)
-> -			tst_brkm(TBROK, cleanup, "fork failed");
-> -
-> -		if (pid == 0) {
-> -			TEST(getppid());
-> -
-> -			if (TEST_RETURN != ppid)
-> -				errx(1, "getppid failed (%ld != %d)",
-> -				     TEST_RETURN, ppid);
-> -			else
-> -				printf("return value and parent's pid "
-> -				       "value match\n");
-> -			exit(0);
-> -		} else {
-> -			SAFE_WAIT(cleanup, &status);
-> -			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> -				tst_resm(TFAIL,
-> -					 "getppid functionality incorrect");
-> -		}
-Right, else part is safe to drop as it's being tested in fork_testrun(void).
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ .../ima/datafiles/ima_keys/keycheck.policy    |  3 ++-
+ .../security/integrity/ima/tests/ima_keys.sh  | 20 ++++++++++++++++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+diff --git a/testcases/kernel/security/integrity/ima/datafiles/ima_keys/keycheck.policy b/testcases/kernel/security/integrity/ima/datafiles/ima_keys/keycheck.policy
+index 623162002..b6fa7f45a 100644
+--- a/testcases/kernel/security/integrity/ima/datafiles/ima_keys/keycheck.policy
++++ b/testcases/kernel/security/integrity/ima/datafiles/ima_keys/keycheck.policy
+@@ -1 +1,2 @@
+-measure func=KEY_CHECK keyrings=.ima|.evm|.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf
++measure func=KEY_CHECK keyrings=.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf
++measure func=KEY_CHECK keyrings=.ima|.evm
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index c9eef4b68..b9bef4feb 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -15,8 +15,7 @@ TST_CLEANUP=cleanup
+ . ima_setup.sh
+ 
+ FUNC_KEYCHECK='func=KEY_CHECK'
+-TEMPLATE_BUF='template=ima-buf'
+-REQUIRED_POLICY="^measure.*($FUNC_KEYCHECK.*$TEMPLATE_BUF|$TEMPLATE_BUF.*$FUNC_KEYCHECK)"
++REQUIRED_POLICY="^measure.*$FUNC_KEYCHECK"
+ 
+ setup()
+ {
+@@ -28,12 +27,23 @@ cleanup()
+ 	tst_is_num $KEYRING_ID && keyctl clear $KEYRING_ID
+ }
+ 
++check_policy_template()
++{
++	while read line; do
++	if ( echo $line | grep -q 'template=') && ( ! echo $line | grep -q 'template=ima-buf' ); then
++		tst_res TCONF "only template=ima-buf can be specified for KEY_CHECK"
++		return 1
++	fi
++	done < $TST_TMPDIR/policy.txt
++	return 0
++}
++
+ check_keys_policy()
+ {
+ 	local pattern="$1"
+ 
+ 	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
+-		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK, $TEMPLATE_BUF"
++		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK"
+ 		return 1
+ 	fi
+ 	return 0
+@@ -49,6 +59,8 @@ test1()
+ 
+ 	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
+ 
++	check_policy_template || return
++
+ 	check_keys_policy "$pattern" > $tmp_file || return
+ 	keycheck_lines=$(cat $tmp_file)
+ 	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
+@@ -101,6 +113,8 @@ test2()
+ 
+ 	tst_res TINFO "verify measurement of certificate imported into a keyring"
+ 
++	check_policy_template || return
++
+ 	check_keys_policy "$pattern" >/dev/null || return
+ 
+ 	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
+-- 
+2.30.2
 
-Kind regards,
-Petr
