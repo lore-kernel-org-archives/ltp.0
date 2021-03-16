@@ -1,50 +1,43 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 16 Mar 2021 18:21:24 +0100
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Date: Tue, 16 Mar 2021 11:50:41 -0700
 Subject: [LTP] [PATCH v2] IMA: Allow only ima-buf template for key
  measurement
-In-Reply-To: <deeb4320-a064-fd0f-bc1e-8e52be079ff9@linux.microsoft.com>
+In-Reply-To: <YFDpFL3CSwMfZ6wo@pevik>
 References: <20210314233646.2925-1-nramas@linux.microsoft.com>
  <YFC7j4+wA8xorNgu@pevik>
  <deeb4320-a064-fd0f-bc1e-8e52be079ff9@linux.microsoft.com>
-Message-ID: <YFDpFL3CSwMfZ6wo@pevik>
+ <YFDpFL3CSwMfZ6wo@pevik>
+Message-ID: <5cbe66e7-aebf-e75a-cd9a-d0a69e8a1edd@linux.microsoft.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lakshmi,
+On 3/16/21 10:21 AM, Petr Vorel wrote:
+Hi Petr,
 
-> > Just a double check does it always work without template=ima-buf for all kernel versions?
-> > Or only for kernels with dea87d0889dd ("ima: select ima-buf template for buffer measurement")
-> > i.e. v5.11-rc1 or backport?
-> The above change is required. Prior to this change, template has to be
-> specified in the policy, otherwise the default template would be used.
-The default template is ima-ng, right?
-From what you write I understand that "measure func=KEY_CHECK
-keyrings=.ima|.evm" will work only on newer kernel, thus we should always use
-template=ima-buf as the policy example so that it's working also on that few
-kernels between <v5.6,v5.10> (which have IMA key functionality, but not
-dea87d0889dd), right?
+> 
+>>> Just a double check does it always work without template=ima-buf for all kernel versions?
+>>> Or only for kernels with dea87d0889dd ("ima: select ima-buf template for buffer measurement")
+>>> i.e. v5.11-rc1 or backport?
+>> The above change is required. Prior to this change, template has to be
+>> specified in the policy, otherwise the default template would be used.
+> The default template is ima-ng, right?
+Yes: ima-ng is the default template.
 
-But we should mention that in the README.md.
+>>From what you write I understand that "measure func=KEY_CHECK
+> keyrings=.ima|.evm" will work only on newer kernel, thus we should always use
+> template=ima-buf as the policy example so that it's working also on that few
+> kernels between <v5.6,v5.10> (which have IMA key functionality, but not
+> dea87d0889dd), right?
+Yes: In the kernels between v5.6 and v5.10, ima-buf template needs to be 
+specified in the policy for KEY_CHECK.
 
-Kind regards,
-Petr
+> 
+> But we should mention that in the README.md.
+> 
+Agreed - will update the README.md
 
-> > Also, don't we want to change also keycheck.policy?
-> > Currently it contains:
-> > measure func=KEY_CHECK keyrings=.ima|.evm|.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf
-> > Do we want to drop template=ima-buf to test the default value? Or have two rules
-> > (one with template=ima-buf, other w/a?)
-> Good point.
-
-> I will send you the v3 patch - with two rules: one with template=buf and
-> other without a template, like the following example:
-
-> measure func=KEY_CHECK
-> keyrings=.builtin_trusted_keys|.blacklist|key_import_test template=ima-buf
-
-> measure func=KEY_CHECK keyrings=.ima|.evm
-
->  -lakshmi
+thanks,
+  -lakshmi
