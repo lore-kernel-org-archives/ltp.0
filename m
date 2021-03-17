@@ -1,41 +1,30 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 10:16:20 +0100
-Subject: [LTP] [RFC PATCH 1/1] doc: Add Maintainer Patch Review Checklist
-In-Reply-To: <20210317083347.9791-1-pvorel@suse.cz>
-References: <20210317083347.9791-1-pvorel@suse.cz>
-Message-ID: <YFHI5KEAI7HpgPzm@pevik>
+Date: Wed, 17 Mar 2021 10:19:46 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
+In-Reply-To: <OSBPR01MB2920359890156471406C642EF46A9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
+ <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
+ <YFDfbrziEwXgxpOS@pevik>
+ <OSBPR01MB2920359890156471406C642EF46A9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+Message-ID: <YFHJsr1ORyl+k7dq@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> > > +/*\
+> > > + * [DESCRIPTION]
+> > >   *
+> > > + * Check that getppid() in child returns the same pid as getpid() in parent.
+> > > +\*/
+> > nit: this should be merged as */ only (drop leading \, see 96e964f97 ("docparse:
+> > Use C standard comment end").
 
-...
-> +++ b/doc/maintainer-patch-review-checklist.txt
-> @@ -0,0 +1,32 @@
-> +# Maintainer Patch Review Checklist
-> +
-> +Patchset should be tested locally and ideally also in maintainer's fork in
-> +https://travis-ci.org/[Travis CI].
-> +
-> +Commit messages should have
-> +
-> +* author's `Signed-off-by` tag
-> +* committer's `Reviewed-by` or `Signed-off-by` tag
-> +* check also mailing lists for other reviewers / testers
+> Hi Petr,
 
-Also add:
-Please update patchset status in https://patchwork.ozlabs.org/project/ltp/list/[LTP patchwork].
-
-> +
-> +## New tests
-> +New test should have
-> +
-> +* record in runtest file
-> +* test run with more iteration (`-i 100`)
-...
+> Do I need to send a v2 to fix this?
+No need, we fix it before merge.
 
 Kind regards,
 Petr
