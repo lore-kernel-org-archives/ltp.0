@@ -1,47 +1,29 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 14:02:15 +0100
-Subject: [LTP] ??????: [PATCH v2] cleanup: Unify the annotation style
- and remove Redundant code
-In-Reply-To: <32fcff9e-54d4-a4ed-0d4c-3b703921d035@163.com>
-References: <20210317100154.20389-1-zhaogongyi@huawei.com>
- <YFHghQWbAmjmKDx3@pevik>
- <OS0PR01MB6371A1E607BDFBC2421E6788836A9@OS0PR01MB6371.jpnprd01.prod.outlook.com>
- <YFHpSspnD52A8N0P@pevik> <YFHxcgN/3TG2Y9Mx@yuki.lan>
- <YFHyg8m3CmU8as2C@pevik>
- <32fcff9e-54d4-a4ed-0d4c-3b703921d035@163.com>
-Message-ID: <YFH910rpcVjzDuEI@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 17 Mar 2021 21:18:11 +0800
+Subject: [LTP] [PATCH] open_posix_testsuite: use PTS_ prefix instead of
+ LTP_
+In-Reply-To: <YFHopMB4tuZrVElY@pevik>
+References: <20210317105146.25427-1-liwang@redhat.com> <YFHopMB4tuZrVElY@pevik>
+Message-ID: <CAEemH2fyvwr1qCn=48zK_xk8rS4K39HsDd+th=7VzpcJh9EFLw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 3/17/21 8:13 PM, Petr Vorel wrote:
-> > Hi,
+On Wed, Mar 17, 2021 at 7:31 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> > > Hi!
-> > > > I'd keep both: this is for cleanup of old approach, conversion in testinfo.pl in
-> > > > case there is inconsistency in the future.
-> > > If we agree on a certain format I would vote for docparse to fail the
-> > > build if the format is wrong, that will force us to maintain the
-> > > metadata correctly.
-> +1
-> > Make sense. But being the one who often fixes docparse failures I'm not sure if
-> > I want to implement extra work for myself :).
+> Hi Li,
+>
+> > Also add GPLv2-or-later SPDX in tempfile.h
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
 
-> > (It'd help to implement https://github.com/linux-test-project/ltp/issues/599,
-> > but I don't have any server to run it).
+Patch applied, thanks for the review!
 
-> This issue is about docparse, I think we can merge the patch itself
-> directly.
-Agree, rebased and merged with updated commit message.
-
-Not sure when I update testinfo.pl to Cyril's suggestion,
-anyone feel free to implement it.
-
-Kind regards,
-Petr
-
-> Best Regards,
-
-> Xiao Yang
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210317/98ab4a2b/attachment.htm>
