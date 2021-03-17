@@ -1,30 +1,51 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 10:19:46 +0100
-Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
-In-Reply-To: <OSBPR01MB2920359890156471406C642EF46A9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
- <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
- <YFDfbrziEwXgxpOS@pevik>
- <OSBPR01MB2920359890156471406C642EF46A9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-Message-ID: <YFHJsr1ORyl+k7dq@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 17 Mar 2021 17:24:29 +0800
+Subject: [LTP] [RFC PATCH 1/1] doc: Add Maintainer Patch Review Checklist
+In-Reply-To: <YFHI5KEAI7HpgPzm@pevik>
+References: <20210317083347.9791-1-pvorel@suse.cz> <YFHI5KEAI7HpgPzm@pevik>
+Message-ID: <CAEemH2dp1AJBbOu9GS0Yt4VjqVpP7z+yH0QSZmZyaC=8nDKTSw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > > +/*\
-> > > + * [DESCRIPTION]
-> > >   *
-> > > + * Check that getppid() in child returns the same pid as getpid() in parent.
-> > > +\*/
-> > nit: this should be merged as */ only (drop leading \, see 96e964f97 ("docparse:
-> > Use C standard comment end").
+Hi Petr,
 
-> Hi Petr,
+On Wed, Mar 17, 2021 at 5:16 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> Do I need to send a v2 to fix this?
-No need, we fix it before merge.
+> Hi,
+>
+> ...
+> > +++ b/doc/maintainer-patch-review-checklist.txt
+> > @@ -0,0 +1,32 @@
+> > +# Maintainer Patch Review Checklist
+> > +
+> > +Patchset should be tested locally and ideally also in maintainer's fork
+> in
+> > +https://travis-ci.org/[Travis CI].
+> > +
+> > +Commit messages should have
+> > +
+> > +* author's `Signed-off-by` tag
+> > +* committer's `Reviewed-by` or `Signed-off-by` tag
+> > +* check also mailing lists for other reviewers / testers
+>
+> Also add:
+> Please update patchset status in
+> https://patchwork.ozlabs.org/project/ltp/list/[LTP patchwork].
+>
 
-Kind regards,
-Petr
+Also Add:
+
+Please update LTP WIKI if touch doc/*.txt.
+https://github.com/linux-test-project/ltp.wiki.git
+
+Otherwise, LGTM.
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210317/13b53ac9/attachment.htm>
