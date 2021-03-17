@@ -1,43 +1,51 @@
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Date: Tue, 16 Mar 2021 11:50:41 -0700
-Subject: [LTP] [PATCH v2] IMA: Allow only ima-buf template for key
- measurement
-In-Reply-To: <YFDpFL3CSwMfZ6wo@pevik>
-References: <20210314233646.2925-1-nramas@linux.microsoft.com>
- <YFC7j4+wA8xorNgu@pevik>
- <deeb4320-a064-fd0f-bc1e-8e52be079ff9@linux.microsoft.com>
- <YFDpFL3CSwMfZ6wo@pevik>
-Message-ID: <5cbe66e7-aebf-e75a-cd9a-d0a69e8a1edd@linux.microsoft.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Wed, 17 Mar 2021 12:03:23 +0800
+Subject: [LTP] [PATCH] cleanup: Unify the annotation style and remove
+ Redundant code
+Message-ID: <20210317040323.26899-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 3/16/21 10:21 AM, Petr Vorel wrote:
-Hi Petr,
+Change 'Description' to 'DESCRIPTION' and change 'Algorithm' to
+'ALGORITHM' and remove Redundant tst_reap_children since tst_reap_children
+has been called in the test skeleton.
 
-> 
->>> Just a double check does it always work without template=ima-buf for all kernel versions?
->>> Or only for kernels with dea87d0889dd ("ima: select ima-buf template for buffer measurement")
->>> i.e. v5.11-rc1 or backport?
->> The above change is required. Prior to this change, template has to be
->> specified in the policy, otherwise the default template would be used.
-> The default template is ima-ng, right?
-Yes: ima-ng is the default template.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/containers/pidns/pidns13.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
->>From what you write I understand that "measure func=KEY_CHECK
-> keyrings=.ima|.evm" will work only on newer kernel, thus we should always use
-> template=ima-buf as the policy example so that it's working also on that few
-> kernels between <v5.6,v5.10> (which have IMA key functionality, but not
-> dea87d0889dd), right?
-Yes: In the kernels between v5.6 and v5.10, ima-buf template needs to be 
-specified in the policy for KEY_CHECK.
+diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
+index 12aee917b..72aefa82b 100644
+--- a/testcases/kernel/containers/pidns/pidns13.c
++++ b/testcases/kernel/containers/pidns/pidns13.c
+@@ -9,12 +9,12 @@
+  */
 
-> 
-> But we should mention that in the README.md.
-> 
-Agreed - will update the README.md
+ /*\
+- * [Description]
++ * [DESCRIPTION]
+  *
+  * The pidns13.c testcase checks container init, for async I/O
+  * triggered by peer namespace process.
+  *
+- * [Algorithm]
++ * [ALGORITHM]
+  * * create a pipe in parent namespace
+  * * create two PID namespace containers(cinit1 and cinit2)
+  * * in cinit1, set pipe read end to send SIGUSR1 for asynchronous I/O
+@@ -116,8 +116,6 @@ static void run(void)
 
-thanks,
-  -lakshmi
+ 	SAFE_CLOSE(pipe_fd[0]);
+ 	SAFE_CLOSE(pipe_fd[1]);
+-
+-	tst_reap_children();
+ }
+
+ static struct tst_test test = {
+--
+2.17.1
+
