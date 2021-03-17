@@ -1,44 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 12:47:21 +0100
-Subject: [LTP] [PATCH 1/2] pec: Convert to the new API
-In-Reply-To: <87117f6f-58e7-8b68-38c3-be5b080e86b6@jv-coder.de>
-References: <20210315092844.991073-1-lkml@jv-coder.de> <YFHNDN1CEcBo6oMG@pevik>
- <87117f6f-58e7-8b68-38c3-be5b080e86b6@jv-coder.de>
-Message-ID: <YFHsSWLeaqwdAWzZ@pevik>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed, 17 Mar 2021 12:53:40 +0100
+Subject: [LTP] [PATCH v3 3/4] lib: Apply the skip_filesystems to rest of
+ test as well
+In-Reply-To: <20210317105318.32017-4-chrubis@suse.cz>
+References: <20210317105318.32017-1-chrubis@suse.cz>
+ <20210317105318.32017-4-chrubis@suse.cz>
+Message-ID: <b2d54281-2893-2dc1-e2a8-ff789dc1c1f2@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi J?rg,
+Hello,
+the whole patchset looks great, just a small nit below.
 
-> Hi Petr,
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-> On 3/17/2021 10:34 AM, Petr Vorel wrote:
-> > BTW: would it make sense to rename runtest/connectors to runtest/netlink
-> > and move code from testcases/kernel/connectors/ to testcases/kernel/netlink/?
-> Maybe kernel/netlink/connector/. Connector is an abstraction on top of
-+1
+On 17. 03. 21 11:53, Cyril Hrubis wrote:
+> There is no reason to use the newly introduced .skip_filesystems only
+> for .all_filesystems tests.
+> 
+> So if .all_filesystems is not enabled and .skip_filesystems is set we
+> check if test temporary directory filesystem type is in the list of
+> supported filesystem types.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  lib/tst_test.c                                | 12 ++++++++++++
+>  testcases/kernel/syscalls/fcntl/fcntl33.c     | 19 +++++++------------
+>  .../kernel/syscalls/ioctl/ioctl_loop05.c      | 11 +++++------
+>  .../kernel/syscalls/vmsplice/vmsplice01.c     |  9 ++++-----
+>  .../kernel/syscalls/vmsplice/vmsplice02.c     |  9 ++++-----
+>  5 files changed, 32 insertions(+), 28 deletions(-)
+> 
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 639e21727..2f728de28 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -1051,6 +1051,18 @@ static void do_test_setup(void)
+>  {
+>  	main_pid = getpid();
+>  
+> +	if (!tst_test->all_filesystems && tst_test->skip_filesystems) {
+> +		long fs_type = tst_fs_type(".");
+> +		const char *fs_name = tst_fs_type_name(fs_type);
+> +
+> +		if (tst_fs_in_skiplist(fs_name, tst_test->skip_filesystems)) {
+> +			tst_brk(TCONF, "Skipping %s as requested by the test",
+> +				fs_name);
 
-> netlink with a slightly
-> different interface than pure netlink (eg. cn_msg instead of nlmsghdr).
-> There are only very few other modules, that use this interface at the moment
-> (MS HyperV, MD,? uvesafb? and dallas' 1-wire).
-I'd still put it into netlink and try to put there more general netlink
-subsystem tests. My objection is that runtest/connectors has only single test
-and connectors is very generic name.
+This message might be a little confusing when the test didn't ask for
+all filesystems. I'd recommend something like "Test does not support %s
+workdir, skipping". The else clause below is probably unnecessary.
 
-> The question is: Is the interface the correct think to categorize by? If the
-> interface (i.e. netlink) is used for categorization, then some of the crypto
-> tests should also be in this netlink category.
-Thus maybe add some of relevant tests also into runtest/netlink? We shave some
-kind of duplicity (see runtest/cve, it contains some tests which are also in
-runtest/syscalls). That would also justify creating runtest/netlink (because
-having just single test for legacy connector interface in runtest/netlink does
-not sound good to me).
+But feel free to push as is if you disagree.
 
-Kind regards,
-Petr
+> +		} else {
+> +			tst_res(TINFO, "%s is supported by the test", fs_name);
+> +		}
+> +	}
+> +
+>  	if (tst_test->caps)
+>  		tst_cap_setup(tst_test->caps, TST_CAP_REQ);
+>  
 
-> J?rg
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
