@@ -1,51 +1,41 @@
 From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Wed, 17 Mar 2021 12:03:23 +0800
-Subject: [LTP] [PATCH] cleanup: Unify the annotation style and remove
- Redundant code
-Message-ID: <20210317040323.26899-1-zhaogongyi@huawei.com>
+Date: Wed, 17 Mar 2021 12:57:49 +0800
+Subject: [LTP] [PATCH v2] runtest/syscalls: Add testcases to test list
+Message-ID: <20210317045749.3335-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Change 'Description' to 'DESCRIPTION' and change 'Algorithm' to
-'ALGORITHM' and remove Redundant tst_reap_children since tst_reap_children
-has been called in the test skeleton.
+Add syscall test cases to test list.
 
 Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- testcases/kernel/containers/pidns/pidns13.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+v1->v2: remove mem03 and mmap10.
+ runtest/syscalls | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
-index 12aee917b..72aefa82b 100644
---- a/testcases/kernel/containers/pidns/pidns13.c
-+++ b/testcases/kernel/containers/pidns/pidns13.c
-@@ -9,12 +9,12 @@
-  */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index fe22ae5b6..9d4c57bb2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -44,6 +44,7 @@ bpf_prog03 bpf_prog03
+ bpf_prog04 bpf_prog04
 
- /*\
-- * [Description]
-+ * [DESCRIPTION]
-  *
-  * The pidns13.c testcase checks container init, for async I/O
-  * triggered by peer namespace process.
-  *
-- * [Algorithm]
-+ * [ALGORITHM]
-  * * create a pipe in parent namespace
-  * * create two PID namespace containers(cinit1 and cinit2)
-  * * in cinit1, set pipe read end to send SIGUSR1 for asynchronous I/O
-@@ -116,8 +116,6 @@ static void run(void)
+ brk01 brk01
++brk02 brk02
 
- 	SAFE_CLOSE(pipe_fd[0]);
- 	SAFE_CLOSE(pipe_fd[1]);
--
--	tst_reap_children();
- }
+ capget01 capget01
+ capget02 capget02
+@@ -492,6 +493,7 @@ getrlimit02 getrlimit02
+ getrlimit03 getrlimit03
 
- static struct tst_test test = {
+ get_mempolicy01 get_mempolicy01
++get_mempolicy02 get_mempolicy02
+ get_robust_list01 get_robust_list01
+
+ getrusage01 getrusage01
 --
 2.17.1
 
