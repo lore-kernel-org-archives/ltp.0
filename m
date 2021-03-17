@@ -1,23 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 09:35:46 +0100
-Subject: [LTP] [RFC PATCH 1/1] doc: Add Maintainer Patch Review Checklist
-In-Reply-To: <20210317083347.9791-1-pvorel@suse.cz>
-References: <20210317083347.9791-1-pvorel@suse.cz>
-Message-ID: <YFG/YiqkEnoBOXN9@pevik>
+From: ruansy.fnst@fujitsu.com <ruansy.fnst@fujitsu.com>
+Date: Wed, 17 Mar 2021 09:01:54 +0000
+Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
+In-Reply-To: <YFDfbrziEwXgxpOS@pevik>
+References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
+ <20210304021304.1126635-2-ruansy.fnst@fujitsu.com> <YFDfbrziEwXgxpOS@pevik>
+Message-ID: <OSBPR01MB2920359890156471406C642EF46A9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-> +## New tests
-> +New test should have
-> +
-> +* record in runtest file
-> +* test run with more iteration (`-i 100`)
-sorry, plural (iterations) should be used.
 
-Kind regards,
-Petr
+> -----Original Message-----
+> From: Petr Vorel <pvorel@suse.cz>
+> Subject: Re: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
+> 
+> Hi Ruan,
+> 
+> > +/*\
+> > + * [DESCRIPTION]
+> >   *
+> > + * Check that getppid() in child returns the same pid as getpid() in parent.
+> > +\*/
+> nit: this should be merged as */ only (drop leading \, see 96e964f97 ("docparse:
+> Use C standard comment end").
+> 
+
+Hi Petr,
+
+Do I need to send a v2 to fix this?
+
+
+--
+Thanks,
+Ruan Shiyang.
+
+> Kind regards,
+> Petr
