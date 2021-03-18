@@ -1,21 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 Mar 2021 09:57:17 +0100
-Subject: [LTP] DMCA from wipro
-Message-ID: <YFMV7f+l8lHdzyc7@yuki.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 Mar 2021 11:21:54 +0100
+Subject: [LTP] [PATCH v3 0/4] Add proper filesystem skiplist
+In-Reply-To: <20210317105318.32017-1-chrubis@suse.cz>
+References: <20210317105318.32017-1-chrubis@suse.cz>
+Message-ID: <YFMpwnXKmp06juk5@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Just FYI we got DMCA from wipro for some code that, as far as I can
-tell, was submitted to LTP under GPLv2 around year 2002 by their
-employees.
+Hi Cyril,
 
-I'm trying to resolve the situation but it may happen that our ltp git
-tree will be temporarily removed from github for a few days.
+I like using enum and other changes, thanks!
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+to whole patchset:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
