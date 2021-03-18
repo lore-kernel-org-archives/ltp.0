@@ -1,104 +1,46 @@
-From: Yang Xu <xuyang_jy_0410@163.com>
-Date: Thu, 18 Mar 2021 14:43:30 +0800
-Subject: [LTP] [PATCH] kernel/syscalls: Use SAFE_OPEN() instead of
- calling system API functions
-In-Reply-To: <20210318060834.151128-1-xieziyao@huawei.com>
-References: <20210318060834.151128-1-xieziyao@huawei.com>
-Message-ID: <893c8a78-7307-d03b-5191-58c9337ea041@163.com>
+From: xieziyao <xieziyao@huawei.com>
+Date: Thu, 18 Mar 2021 06:44:28 +0000
+Subject: [LTP] =?gb2312?b?tPC4tDogIFtQQVRDSF0ga2VybmVsL3N5c2NhbGxzOiBV?=
+ =?gb2312?b?c2UgU0FGRV9PUEVOKCkgaW5zdGVhZCBvZiBjYWxsaW5nIHN5c3RlbSBBUEkg?=
+ =?gb2312?b?ZnVuY3Rpb25z?=
+In-Reply-To: <TYCPR01MB654415A23C745F8AB49DEC15FD699@TYCPR01MB6544.jpnprd01.prod.outlook.com>
+References: <TYCPR01MB654415A23C745F8AB49DEC15FD699@TYCPR01MB6544.jpnprd01.prod.outlook.com>
+Message-ID: <11d89e3b750a4544aad4d75f0acd5f51@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+I'll send a new patch to fix it. Thanks!
+
+-----????-----
+???: xuyang2018.jy@fujitsu.com [mailto:xuyang2018.jy@fujitsu.com] 
+????: 2021?3?18? 14:35
+???: xieziyao <xieziyao@huawei.com>
+??: ltp@lists.linux.it
+??: RE: [LTP] [PATCH] kernel/syscalls: Use SAFE_OPEN() instead of calling system API functions
+
 Hi Xie
-> For those:
->    testcases/kernel/syscalls/fsconfig/fsconfig02.c
->    testcases/kernel/syscalls/inotify/inotify01.c
->    testcases/kernel/syscalls/memfd_create/memfd_create03.c
+>--- a/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+>+++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+>@@ -55,9 +55,7 @@ static void setup(void)
+> 	if (fd == -1)
+> 		tst_brk(TBROK | TTERRNO, "fsopen() failed");
 >
-> Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
-> ---
->   testcases/kernel/syscalls/fsconfig/fsconfig02.c        |  4 +---
->   testcases/kernel/syscalls/inotify/inotify01.c          | 10 ++--------
->   .../kernel/syscalls/memfd_create/memfd_create03.c      |  4 ++--
->   3 files changed, 5 insertions(+), 13 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig02.c b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> index 9ff41a7d7..6ff4380ef 100644
-> --- a/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
-> @@ -55,9 +55,7 @@ static void setup(void)
->   	if (fd == -1)
->   		tst_brk(TBROK | TTERRNO, "fsopen() failed");
->
-> -	temp_fd = open("testfile", O_RDWR | O_CREAT, 01444);
-> -	if (temp_fd == -1)
-> -		tst_brk(TBROK, "Can't obtain temp_fd, open() failed");
-> +	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 01444);
+>-	temp_fd = open("testfile", O_RDWR | O_CREAT, 01444);
+>-	if (temp_fd == -1)
+>-		tst_brk(TBROK, "Can't obtain temp_fd, open() failed");
+>+	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 01444);
+> }
 
-We should use temp_fd instead of fd.
-
+Here has a typo. We should use temp_fd instead of fd.
 Other than this, it looks good to me.
 
-Reviewed-by: Yang Xu <xuyang_jy_0410@163.com>
+Reviewed-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
 
->   }
->
->   static void cleanup(void)
-> diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
-> index 8f1547d46..2d82e5970 100644
-> --- a/testcases/kernel/syscalls/inotify/inotify01.c
-> +++ b/testcases/kernel/syscalls/inotify/inotify01.c
-> @@ -52,10 +52,7 @@ void verify_inotify(void)
->   	event_set[test_cnt] = IN_ATTRIB;
->   	test_cnt++;
->
-> -	if ((fd = open(fname, O_RDONLY)) == -1) {
-> -		tst_brk(TBROK | TERRNO,
-> -			"open(%s, O_RDWR|O_CREAT,0700) failed", fname);
-> -	}
-> +	fd = SAFE_OPEN(fname, O_RDONLY);
->   	event_set[test_cnt] = IN_OPEN;
->   	test_cnt++;
->
-> @@ -70,10 +67,7 @@ void verify_inotify(void)
->   	event_set[test_cnt] = IN_CLOSE_NOWRITE;
->   	test_cnt++;
->
-> -	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
-> -		tst_brk(TBROK,
-> -			"open(%s, O_RDWR|O_CREAT,0700) failed", fname);
-> -	}
-> +	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
->   	event_set[test_cnt] = IN_OPEN;
->   	test_cnt++;
->
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-> index ea846626a..036182f0a 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
-> @@ -207,7 +207,7 @@ static void setup(void)
->   	SAFE_FILE_LINES_SCANF(TOTAL_HP_PATH, "%ld", &og_total_pages);
->   	sprintf(buf, "%ld", og_total_pages + 1);
->
-> -	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
-> +	fd = SAFE_OPEN(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
->
->   	if (write(fd, buf, strlen(buf)) == -1)
->   		tst_brk(TCONF | TERRNO,
-> @@ -233,7 +233,7 @@ static void cleanup(void)
->
->   	sprintf(buf, "%ld", og_total_pages);
->
-> -	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
-> +	fd = SAFE_OPEN(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
->
->   	if (write(fd, buf, strlen(buf)) == -1)
->   		tst_brk(TCONF | TERRNO, "Clean-up failed: write() failed");
-> --
-> 2.17.1
->
->
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
 
