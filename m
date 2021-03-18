@@ -1,36 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 18 Mar 2021 19:30:16 +0100
-Subject: [LTP] [PATCH] syscalls/semctl09: Skip libc test if SEM_STAT_ANY
- not defined
-In-Reply-To: <20210318162409.9871-1-mdoucha@suse.cz>
-References: <20210318162409.9871-1-mdoucha@suse.cz>
-Message-ID: <YFOcOJP4innlbIk4@pevik>
+Date: Thu, 18 Mar 2021 22:16:53 +0100
+Subject: [LTP] [PATCH v2 1/7] fzsync: Add self tests
+In-Reply-To: <20210318130935.28528-2-rpalethorpe@suse.com>
+References: <20210318130935.28528-1-rpalethorpe@suse.com>
+ <20210318130935.28528-2-rpalethorpe@suse.com>
+Message-ID: <YFPDRciWeJrwDuVf@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+Hi Richie,
 
-> The libc test variant should run only if system headers define SEM_STAT_ANY.
-> Skip it if we're falling back to the LAPI definition.
+FYI this commit fails due
+/usr/bin/ld: /tmp/ccBD0Mxi.o: in function `tst_fzsync_pair_cleanup':
+/home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
+/usr/bin/ld: /home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
+/usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_create':
+/home/pevik/install/src/ltp.git/lib/safe_pthread.c:18: undefined reference to `pthread_create'
+/usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_join':
+/home/pevik/install/src/ltp.git/lib/safe_pthread.c:34: undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make[1]: *** [../../include/mk/rules.mk:37: tst_fuzzy_sync01] Error 1
+make: *** [../include/mk/generic_trunk_target.inc:105: all] Error 2
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Thanks!
-
-...
-> +#if !HAVE_DECL_SEM_STAT_ANY
-nit: I'd prefer
-#ifndef HAVE_DECL_SEM_STAT_ANY
-
-> +	if (tst_variant == 1)
-> +		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
-> +#endif
-Although I understand why you want to quit only tests with root
-(only these fail), it's a bit confusing to test with user nobody
-and then quit the same testing with root.
+lib/newlib_tests/Makefile needs to add:
+tst_fuzzy_sync01: CFLAGS+=-pthread
+tst_fuzzy_sync02: CFLAGS+=-pthread
 
 Kind regards,
 Petr
