@@ -1,57 +1,56 @@
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 18 Mar 2021 15:11:33 +0200
-Subject: [LTP] [PATCH 7/8] syscalls/fanotify: New test to validate
- unprivileged user permissions
+Date: Thu, 18 Mar 2021 15:11:34 +0200
+Subject: [LTP] [PATCH 8/8] syscalls/fanotify: New test to validate
+ unprivileged listener events
 In-Reply-To: <20210318131134.3562203-1-amir73il@gmail.com>
 References: <20210318131134.3562203-1-amir73il@gmail.com>
-Message-ID: <20210318131134.3562203-8-amir73il@gmail.com>
+Message-ID: <20210318131134.3562203-9-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Defined a set of new test cases to validate the fanotify interface.
-They are to ensure that the correct error values are returned upon
-requesting configurations forbidden for an unprivileged user.
+Defined test cases that are responsible for validating that the events
+returned to an unprivileged event listener contain the correct values.
 
 Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
  runtest/syscalls                              |   1 +
  testcases/kernel/syscalls/fanotify/.gitignore |   1 +
- .../kernel/syscalls/fanotify/fanotify18.c     | 198 ++++++++++++++++++
- 3 files changed, 200 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fanotify/fanotify18.c
+ .../kernel/syscalls/fanotify/fanotify19.c     | 253 ++++++++++++++++++
+ 3 files changed, 255 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify19.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 41f1279a2..9caa3cf7a 100644
+index 9caa3cf7a..2d1e7b648 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -591,6 +591,7 @@ fanotify14 fanotify14
- fanotify15 fanotify15
+@@ -592,6 +592,7 @@ fanotify15 fanotify15
  fanotify16 fanotify16
  fanotify17 fanotify17
-+fanotify18 fanotify18
+ fanotify18 fanotify18
++fanotify19 fanotify19
  
  ioperm01 ioperm01
  ioperm02 ioperm02
 diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
-index 20fcb3718..175e68ca3 100644
+index 175e68ca3..9554b16b1 100644
 --- a/testcases/kernel/syscalls/fanotify/.gitignore
 +++ b/testcases/kernel/syscalls/fanotify/.gitignore
-@@ -15,4 +15,5 @@
- /fanotify15
+@@ -16,4 +16,5 @@
  /fanotify16
  /fanotify17
-+/fanotify18
+ /fanotify18
++/fanotify19
  /fanotify_child
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify18.c b/testcases/kernel/syscalls/fanotify/fanotify18.c
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify19.c b/testcases/kernel/syscalls/fanotify/fanotify19.c
 new file mode 100644
-index 000000000..1acd23ce2
+index 000000000..83a9aaa98
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fanotify/fanotify18.c
-@@ -0,0 +1,198 @@
++++ b/testcases/kernel/syscalls/fanotify/fanotify19.c
+@@ -0,0 +1,253 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
@@ -60,9 +59,10 @@ index 000000000..1acd23ce2
 + *
 + * DESCRIPTION
 + *	This set of tests is to ensure that the unprivileged listener feature of
-+ *	fanotify is functioning as expected. The objective this test case file
-+ *	is to validate whether any forbidden flags that are passed by an
-+ *	unprivileged user return the correct error result.
++ *	fanotify is functioning as expected. The objective of this test file is
++ *	to generate a sequence of events and ensure that the returned events
++ *	contain the limited values that an unprivileged listener is expected
++ *	to receive.
 + */
 +#define _GNU_SOURCE
 +#include "config.h"
@@ -70,146 +70,207 @@ index 000000000..1acd23ce2
 +#include <pwd.h>
 +#include <stdio.h>
 +#include <errno.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++
 +#include "tst_test.h"
 +#include "fanotify.h"
 +
 +#if defined(HAVE_SYS_FANOTIFY_H)
 +#include <sys/fanotify.h>
 +
-+/*
-+ * This is a set of intialization flags that are not permitted to be used by an
-+ * unprivileged user. Thus, if supplied, either EPERM or EINVAL should be
-+ * returned to the calling process respectively.
-+ */
-+#define DISALLOWED_INIT_FLAGS	(FAN_UNLIMITED_QUEUE | FAN_UNLIMITED_MARKS | \
-+				 FAN_CLASS_CONTENT | FAN_CLASS_PRE_CONTENT | \
-+				 FAN_REPORT_TID)
++#define EVENT_MAX 1024
++#define EVENT_SIZE (sizeof (struct fanotify_event_metadata))
++#define EVENT_BUF_LEN (EVENT_MAX * EVENT_SIZE)
++#define EVENT_SET_MAX 48
 +
-+/*
-+ * This is a set of mark flags that are not permitted to be used with an
-+ * unprivileged listener.
-+ */
-+#define DISALLOWED_MARK_FLAGS	(FAN_MARK_MOUNT | FAN_MARK_FILESYSTEM)
++#define BUF_SIZE 256
 +
 +#define MOUNT_PATH	"fs_mnt"
 +#define TEST_FILE	MOUNT_PATH "/testfile"
 +
 +static int fd_notify;
++static char buf[BUF_SIZE];
++static struct fanotify_event_metadata event_buf[EVENT_BUF_LEN];
 +
 +static struct test_case_t {
 +	const char *name;
-+	unsigned long init_flags;
-+	unsigned long mark_flags;
-+	unsigned long long mark_mask;
++	unsigned int fork;
++	unsigned int event_count;
++	unsigned long long event_set[EVENT_SET_MAX];
 +} test_cases[] = {
 +	{
-+		"init_flags: missing FAN_REPORT_FID",
-+		FAN_CLASS_NOTIF,
-+		0, 0
++		"unprivileged listener - events by self",
++		0,
++		4,
++		{
++			FAN_OPEN,
++			FAN_ACCESS,
++			FAN_MODIFY,
++			FAN_CLOSE,
++		}
 +	},
 +	{
-+		"init_flags: FAN_CLASS_CONTENT",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_CLASS_CONTENT,
-+		0, 0
-+	},
-+	{
-+		"init_flags: FAN_CLASS_PRE_CONTENT",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_CLASS_PRE_CONTENT,
-+		0, 0
-+	},
-+	{
-+		"init_flags: FAN_UNLIMITED_QUEUE",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_UNLIMITED_QUEUE,
-+		0, 0
-+	},
-+	{
-+		"init_flags: FAN_UNLIMITED_MARKS",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_UNLIMITED_MARKS,
-+		0, 0
-+	},
-+	{
-+		"init_flags: FAN_REPORT_TID",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_REPORT_TID,
-+		0, 0
-+	},
-+	{
-+		"init_flags: FAN_CLASS_NOTIF, "
-+		"mark_flags: FAN_MARK_ADD | FAN_MARK_MOUNT",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_CLASS_NOTIF,
-+		FAN_MARK_ADD | FAN_MARK_MOUNT, FAN_ALL_EVENTS
-+	},
-+	{
-+		"init_flags: FAN_CLASS_NOTIF, "
-+		"mark_flags: FAN_MARK_ADD | FAN_MARK_FILESYSTEM",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_CLASS_NOTIF,
-+		FAN_MARK_ADD | FAN_MARK_FILESYSTEM, FAN_ALL_EVENTS
-+	},
-+	{
-+		"init_flags: FAN_CLASS_NOTIF, "
-+		"mark_flags: FAN_MARK_ADD, "
-+		"mark_mask: FAN_ALL_EVENTS",
-+		FANOTIFY_REQUIRED_USER_INIT_FLAGS | FAN_CLASS_NOTIF,
-+		FAN_MARK_ADD, FAN_ALL_EVENTS
++		"unprivileged lisneter - events by child",
++		1,
++		4,
++		{
++			FAN_OPEN,
++			FAN_ACCESS,
++			FAN_MODIFY,
++			FAN_CLOSE,
++		}
 +	}
 +};
 +
++static void generate_events(void)
++{
++	int fd;
++
++	/* FAN_OPEN */
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR);
++
++	/* FAN_ACCESS */
++	SAFE_READ(0, fd, buf, BUF_SIZE);
++
++	/* FAN_MODIFY */
++	SAFE_WRITE(1, fd, TEST_FILE, 1);
++
++	/* FAN_CLOSE */
++	SAFE_CLOSE(fd);
++}
++
++static void do_fork(void)
++{
++	int status;
++	pid_t child;
++
++	child = SAFE_FORK();
++
++	if (child == 0) {
++		SAFE_CLOSE(fd_notify);
++		generate_events();
++		exit(0);
++	}
++
++	SAFE_WAITPID(child, &status, 0);
++
++	if (WIFEXITED(child) && WEXITSTATUS(child) != 0)
++		tst_brk(TBROK, "Child process terminated incorrectly. Aborting");
++}
++
 +static void test_fanotify(unsigned int n)
 +{
++	int len = 0;
++	pid_t pid = getpid();
++	unsigned int test_number = 0;
++	struct fanotify_event_metadata *event;
 +	struct test_case_t *tc = &test_cases[n];
 +
 +	tst_res(TINFO, "Test #%d %s", n, tc->name);
 +
 +	/* Initialize fanotify */
-+	fd_notify = fanotify_init(tc->init_flags, O_RDONLY);
++	fd_notify = fanotify_init(FANOTIFY_REQUIRED_USER_INIT_FLAGS, O_RDONLY);
 +
 +	if (fd_notify < 0) {
-+		if (errno == EPERM &&
-+		    ((tc->init_flags & DISALLOWED_INIT_FLAGS) ||
-+		     (tc->init_flags & FANOTIFY_REQUIRED_USER_INIT_FLAGS) !=
-+		      FANOTIFY_REQUIRED_USER_INIT_FLAGS)) {
-+			tst_res(TPASS,
-+				"Received result EPERM, as expected");
++		if (errno == EPERM || errno == EINVAL) {
++			tst_res(TCONF,
++				"unprivileged fanotify not supported by kernel?");
 +			return;
 +		} else {
 +			tst_brk(TBROK | TERRNO,
-+				"fanotify_init(0x%lx, O_RDONLY) failed",
-+				tc->init_flags);
++				"fanotify_init(FAN_CLASS_NOTIF, O_RDONLY) failed");
 +		}
 +	}
 +
-+	/* Attempt to place mark on object */
-+	if (fanotify_mark(fd_notify, tc->mark_flags, tc->mark_mask, AT_FDCWD,
-+				TEST_FILE) < 0) {
-+		/*
-+		 * Unprivileged users are only allowed to mark inodes and not
-+		 * permitted to use access permissions
-+		 */
-+		if (errno == EPERM &&
-+			(tc->mark_flags & DISALLOWED_MARK_FLAGS ||
-+			 tc->mark_mask & FAN_ALL_PERM_EVENTS)) {
-+			tst_res(TPASS, "Received result EPERM, as expected");
-+			return;
-+		}
-+
++	/* Place mark on object */
++	if (fanotify_mark(fd_notify, FAN_MARK_ADD, FAN_ALL_EVENTS,
++				AT_FDCWD, TEST_FILE) < 0) {
 +		tst_brk(TBROK | TERRNO,
-+			"fanotify_mark(%d, %lx, %llx, AT_FDCWD, %s) "
-+			"failed",
++			"fanotify_mark(%d, FAN_MARK_ADD, %d, "
++			"AT_FDCWD, %s) failed",
 +			fd_notify,
-+			tc->mark_flags,
-+			tc->mark_mask,
++			FAN_ALL_EVENTS,
 +			TEST_FILE);
 +	}
 +
-+	tst_res(TPASS,
-+		"fanotify_init() and fanotify_mark() returned successfully, "
-+		"as expected");
++	/* Generate events in either child or listening process */
++	if (tc->fork)
++		do_fork();
++	else
++		generate_events();
++
++	/* Read events from queue */
++	len = SAFE_READ(0, fd_notify, event_buf + len, EVENT_BUF_LEN - len);
++
++	event = event_buf;
++
++	/* Iterate over and validate events against expected result set */
++	while (FAN_EVENT_OK(event, len) && test_number < tc->event_count) {
++		if (!(event->mask & tc->event_set[test_number])) {
++			tst_res(TFAIL,
++				"Received unexpected event mask: mask=%llx "
++				"pid=%u fd=%d",
++				(unsigned long long) event->mask,
++				(unsigned) event->pid,
++				event->fd);
++		} else if ((!tc->fork && event->pid != pid) ||
++			   (tc->fork && event->pid != 0)) {
++			tst_res(TFAIL,
++				"Received unexpected pid in event: "
++				"mask=%llx pid=%u (expected %u) fd=%d",
++				(unsigned long long) event->mask,
++				(unsigned) event->pid,
++				(tc->fork ? 0 : pid),
++				event->fd);
++		} else if (event->fd != FAN_NOFD) {
++			tst_res(TFAIL,
++				"Received unexpected file descriptor: "
++				"mask=%llx pid=%u fd=%d (expected %d)",
++				(unsigned long long) event->pid,
++				(unsigned) event->pid,
++				event->fd,
++				FAN_NOFD);
++			SAFE_CLOSE(event->fd);
++		} else {
++			tst_res(TPASS,
++				"Received event: mask=%llx, pid=%u fd=%d",
++				(unsigned long long) event->mask,
++				(unsigned) event->pid,
++				event->fd);
++		}
++
++		/* Non-permission events can be merged into a single event. */
++		event->mask &= ~tc->event_set[test_number];
++
++		if (event->mask == 0)
++			event = FAN_EVENT_NEXT(event, len);
++		test_number++;
++	}
++
++	/*
++	 * Determine whether there is still unprocessed events remaining in the
++	 * buffer. This is to cover the basis whereby the event processing loop
++	 * terminates prematurely. In that case, we need to ensure that any
++	 * event file descriptor that is open is closed so that the temporary
++	 * filesystem can be unmounted.
++	 */
++	if (FAN_EVENT_OK(event, len)) {
++		tst_res(TFAIL,
++			"Event processing loop exited prematurely. Did NOT "
++			"finish processing events in buffer. Cleaning up.");
++		while (FAN_EVENT_OK(event, len)) {
++			if (event->fd != FAN_NOFD)
++				SAFE_CLOSE(event->fd);
++			event = FAN_EVENT_NEXT(event, len);
++		}
++	}
 +}
 +
 +static void setup(void)
 +{
-+	int fd;
-+
-+	SAFE_TOUCH(TEST_FILE, 0666, NULL);
++	SAFE_FILE_PRINTF(TEST_FILE, "1");
++	SAFE_CHMOD(TEST_FILE, 0666);
 +
 +	/* Check for kernel fanotify support */
 +	REQUIRE_FANOTIFY_INIT_FLAGS_SUPPORTED_ON_FS(FAN_REPORT_FID, TEST_FILE);
@@ -217,18 +278,10 @@ index 000000000..1acd23ce2
 +	/* Relinquish privileged user */
 +	if (geteuid() == 0) {
 +		tst_res(TINFO,
-+			"Running as privileged user, revoking permissions.");
++			"Running as privileged user, revoking.");
 +		struct passwd *nobody = SAFE_GETPWNAM("nobody");
 +		SAFE_SETUID(nobody->pw_uid);
 +	}
-+
-+	/* Check for unprivileged fanotify support */
-+	fd = fanotify_init(FANOTIFY_REQUIRED_USER_INIT_FLAGS, O_RDONLY);
-+	if (fd < 0) {
-+		tst_brk(TCONF,
-+			"unprivileged fanotify not supported by kernel?");
-+	}
-+	SAFE_CLOSE(fd);
 +}
 +
 +static void cleanup(void)
@@ -242,6 +295,7 @@ index 000000000..1acd23ce2
 +	.tcnt = ARRAY_SIZE(test_cases),
 +	.setup = setup,
 +	.cleanup = cleanup,
++	.forks_child = 1,
 +	.needs_root = 1,
 +	.mount_device = 1,
 +	.mntpoint = MOUNT_PATH,
