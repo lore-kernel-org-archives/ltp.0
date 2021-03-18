@@ -1,48 +1,91 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 17 Mar 2021 21:37:27 +0100
-Subject: [LTP] [PATCH v2] IMA: Allow only ima-buf template for key
- measurement
-In-Reply-To: <5cbe66e7-aebf-e75a-cd9a-d0a69e8a1edd@linux.microsoft.com>
-References: <20210314233646.2925-1-nramas@linux.microsoft.com>
- <YFC7j4+wA8xorNgu@pevik>
- <deeb4320-a064-fd0f-bc1e-8e52be079ff9@linux.microsoft.com>
- <YFDpFL3CSwMfZ6wo@pevik>
- <5cbe66e7-aebf-e75a-cd9a-d0a69e8a1edd@linux.microsoft.com>
-Message-ID: <YFJoh++5vxSuwJiz@pevik>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Thu, 18 Mar 2021 14:08:34 +0800
+Subject: [LTP] [PATCH] kernel/syscalls: Use SAFE_OPEN() instead of calling
+ system API functions
+Message-ID: <20210318060834.151128-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Lakshmi,
+For those:
+  testcases/kernel/syscalls/fsconfig/fsconfig02.c
+  testcases/kernel/syscalls/inotify/inotify01.c
+  testcases/kernel/syscalls/memfd_create/memfd_create03.c
 
-> > > > Just a double check does it always work without template=ima-buf for all kernel versions?
-> > > > Or only for kernels with dea87d0889dd ("ima: select ima-buf template for buffer measurement")
-> > > > i.e. v5.11-rc1 or backport?
-> > > The above change is required. Prior to this change, template has to be
-> > > specified in the policy, otherwise the default template would be used.
-> > The default template is ima-ng, right?
-> Yes: ima-ng is the default template.
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+ testcases/kernel/syscalls/fsconfig/fsconfig02.c        |  4 +---
+ testcases/kernel/syscalls/inotify/inotify01.c          | 10 ++--------
+ .../kernel/syscalls/memfd_create/memfd_create03.c      |  4 ++--
+ 3 files changed, 5 insertions(+), 13 deletions(-)
 
-> > > From what you write I understand that "measure func=KEY_CHECK
-> > keyrings=.ima|.evm" will work only on newer kernel, thus we should always use
-> > template=ima-buf as the policy example so that it's working also on that few
-> > kernels between <v5.6,v5.10> (which have IMA key functionality, but not
-> > dea87d0889dd), right?
-> Yes: In the kernels between v5.6 and v5.10, ima-buf template needs to be
-> specified in the policy for KEY_CHECK.
+diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig02.c b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+index 9ff41a7d7..6ff4380ef 100644
+--- a/testcases/kernel/syscalls/fsconfig/fsconfig02.c
++++ b/testcases/kernel/syscalls/fsconfig/fsconfig02.c
+@@ -55,9 +55,7 @@ static void setup(void)
+ 	if (fd == -1)
+ 		tst_brk(TBROK | TTERRNO, "fsopen() failed");
 
-OK, thus your original version - i.e. don't require template=ima-buf,
-but keep it in policy example is the best approach.
+-	temp_fd = open("testfile", O_RDWR | O_CREAT, 01444);
+-	if (temp_fd == -1)
+-		tst_brk(TBROK, "Can't obtain temp_fd, open() failed");
++	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 01444);
+ }
 
-> > But we should mention that in the README.md.
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/inotify/inotify01.c b/testcases/kernel/syscalls/inotify/inotify01.c
+index 8f1547d46..2d82e5970 100644
+--- a/testcases/kernel/syscalls/inotify/inotify01.c
++++ b/testcases/kernel/syscalls/inotify/inotify01.c
+@@ -52,10 +52,7 @@ void verify_inotify(void)
+ 	event_set[test_cnt] = IN_ATTRIB;
+ 	test_cnt++;
 
-> Agreed - will update the README.md
-Thanks!
+-	if ((fd = open(fname, O_RDONLY)) == -1) {
+-		tst_brk(TBROK | TERRNO,
+-			"open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+-	}
++	fd = SAFE_OPEN(fname, O_RDONLY);
+ 	event_set[test_cnt] = IN_OPEN;
+ 	test_cnt++;
 
-Kind regards,
-Petr
+@@ -70,10 +67,7 @@ void verify_inotify(void)
+ 	event_set[test_cnt] = IN_CLOSE_NOWRITE;
+ 	test_cnt++;
 
-> thanks,
->  -lakshmi
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+-		tst_brk(TBROK,
+-			"open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+-	}
++	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
+ 	event_set[test_cnt] = IN_OPEN;
+ 	test_cnt++;
+
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create03.c b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
+index ea846626a..036182f0a 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create03.c
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create03.c
+@@ -207,7 +207,7 @@ static void setup(void)
+ 	SAFE_FILE_LINES_SCANF(TOTAL_HP_PATH, "%ld", &og_total_pages);
+ 	sprintf(buf, "%ld", og_total_pages + 1);
+
+-	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
++	fd = SAFE_OPEN(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
+
+ 	if (write(fd, buf, strlen(buf)) == -1)
+ 		tst_brk(TCONF | TERRNO,
+@@ -233,7 +233,7 @@ static void cleanup(void)
+
+ 	sprintf(buf, "%ld", og_total_pages);
+
+-	fd = open(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
++	fd = SAFE_OPEN(TOTAL_HP_PATH, O_RDWR | O_TRUNC);
+
+ 	if (write(fd, buf, strlen(buf)) == -1)
+ 		tst_brk(TCONF | TERRNO, "Clean-up failed: write() failed");
+--
+2.17.1
+
