@@ -1,73 +1,55 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 18 Mar 2021 13:09:34 +0000
-Subject: [LTP] [PATCH v2 6/7] API: Add tst_ncpus_available
-In-Reply-To: <20210318130935.28528-1-rpalethorpe@suse.com>
-References: <20210318130935.28528-1-rpalethorpe@suse.com>
-Message-ID: <20210318130935.28528-7-rpalethorpe@suse.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 18 Mar 2021 15:11:26 +0200
+Subject: [LTP] [PATCH 0/8] fanotify tests for v5.13
+Message-ID: <20210318131134.3562203-1-amir73il@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Same as tst_ncpus, but takes CPU affinity into account.
+Hi Petr,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_cpu.h |  1 +
- lib/tst_cpu.c     | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+Following tests were used for development of the two features
+queued for v5.13 (in linux-next):
+- Performance improvements for events merge [1]
+- Unprivileged fanotify listener [2]
 
-diff --git a/include/tst_cpu.h b/include/tst_cpu.h
-index 117e27087..b3a449bea 100644
---- a/include/tst_cpu.h
-+++ b/include/tst_cpu.h
-@@ -8,6 +8,7 @@
- long tst_ncpus(void);
- long tst_ncpus_conf(void);
- long tst_ncpus_max(void);
-+long tst_ncpus_available(void);
- 
- #define VIRT_ANY	0	/* catch-all argument for tst_is_virt() */
- #define VIRT_XEN	1	/* xen dom0/domU */
-diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
-index 033155e47..581215199 100644
---- a/lib/tst_cpu.c
-+++ b/lib/tst_cpu.c
-@@ -17,6 +17,8 @@
-  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
-+#include "lapi/cpuset.h"
-+
- #include <stdlib.h>
- #include <unistd.h>
- #include "test.h"
-@@ -71,3 +73,24 @@ long tst_ncpus_max(void)
- 	}
- 	return ncpus_max;
- }
-+
-+long tst_ncpus_available(void)
-+{
-+#ifdef CPU_COUNT
-+	long ncpus = tst_ncpus_max();
-+	size_t cpusz = CPU_ALLOC_SIZE(ncpus);
-+	cpu_set_t *cpus = CPU_ALLOC(ncpus);
-+
-+	if (sched_getaffinity(0, cpusz, cpus)) {
-+		tst_resm(TWARN | TERRNO, "sched_getaffinity(0, %zu, %zx)",
-+			cpusz, (size_t)cpus);
-+	} else {
-+		ncpus = CPU_COUNT(cpus);
-+	}
-+	free(cpus);
-+
-+	return ncpus;
-+#else
-+	return tst_ncpus();
-+#endif
-+}
+All test cases of fanotify05 pass on upstream, but their runtime
+on linux-next is reduced by more than half.
+
+Only the first test case of fanotify17 pass on upstream.
+The rest of the test cases as well as fanotify18 and fanotify19
+tests exit with TCONF on upstream. They all pass on linux-next.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/linux-fsdevel/20210304104826.3993892-1-amir73il@gmail.com/
+[2] https://lore.kernel.org/linux-fsdevel/20210304112921.3996419-1-amir73il@gmail.com/
+
+Amir Goldstein (8):
+  syscalls/fanotify05: Fix test output when not getting overflow
+  syscalls/fanotify05: Verify events are received by queue order
+  syscalls/fanotify05: Verify getting a single overflow event
+  syscalls/fanotify05: Add a test case for unlimited queue
+  syscalls/fanotify05: adjust test to tunable max_queued_events
+  syscalls/fanotify: New test for fanotify user limits
+  syscalls/fanotify: New test to validate unprivileged user permissions
+  syscalls/fanotify: New test to validate unprivileged listener events
+
+ runtest/syscalls                              |   3 +
+ testcases/kernel/syscalls/fanotify/.gitignore |   3 +
+ testcases/kernel/syscalls/fanotify/fanotify.h |   3 +
+ .../kernel/syscalls/fanotify/fanotify05.c     | 147 ++++++++--
+ .../kernel/syscalls/fanotify/fanotify17.c     | 266 ++++++++++++++++++
+ .../kernel/syscalls/fanotify/fanotify18.c     | 198 +++++++++++++
+ .../kernel/syscalls/fanotify/fanotify19.c     | 253 +++++++++++++++++
+ 7 files changed, 845 insertions(+), 28 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify17.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify18.c
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify19.c
+
 -- 
-2.30.1
+2.25.1
 
