@@ -1,51 +1,33 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 18 Mar 2021 17:24:09 +0100
-Subject: [LTP] [PATCH] syscalls/semctl09: Skip libc test if SEM_STAT_ANY not
- defined
-Message-ID: <20210318162409.9871-1-mdoucha@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 18 Mar 2021 19:16:39 +0100
+Subject: [LTP] [PATCH v2 0/2] doc: Add Maintainer Patch Review Checklist
+Message-ID: <20210318181641.2062-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The libc test variant should run only if system headers define SEM_STAT_ANY.
-Skip it if we're falling back to the LAPI definition.
+changes v1->v2:
+* doc: Document test tags (new commit)
+* mention patchwork, LTP wiki, Travis CI, test tags, put links to scripts
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- configure.ac                                    | 1 +
- testcases/kernel/syscalls/ipc/semctl/semctl09.c | 5 +++++
- 2 files changed, 6 insertions(+)
+output
+https://github.com/pevik/ltp/wiki/TEST#2238-test-tags
+https://github.com/pevik/ltp/wiki/Maintainer-Patch-Review-Checklist
 
-diff --git a/configure.ac b/configure.ac
-index 37bafb93d..136d82d09 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -38,6 +38,7 @@ AC_PREFIX_DEFAULT(/opt/ltp)
- AC_CHECK_DECLS([IFLA_NET_NS_PID],,,[#include <linux/if_link.h>])
- AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
- AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
-+AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
- 
- AC_CHECK_HEADERS_ONCE([ \
-     asm/ldt.h \
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-index a933cff0e..fb7d49f3d 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-@@ -186,6 +186,11 @@ static void setup(void)
- 	nobody_uid = ltpuser->pw_uid;
- 	root_uid = 0;
- 
-+#if !HAVE_DECL_SEM_STAT_ANY
-+	if (tst_variant == 1)
-+		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
-+#endif
-+
- 	sem_id = SAFE_SEMGET(IPC_PRIVATE, 2, IPC_CREAT | 0600);
- 	test_info();
- }
+Kind regards,
+Petr
+
+Petr Vorel (2):
+  doc: Document test tags
+  doc: Add Maintainer Patch Review Checklist
+
+ doc/maintainer-patch-review-checklist.txt | 53 +++++++++++++++++++
+ doc/test-writing-guidelines.txt           | 62 ++++++++++++++++++++---
+ 2 files changed, 109 insertions(+), 6 deletions(-)
+ create mode 100644 doc/maintainer-patch-review-checklist.txt
+
 -- 
 2.30.2
 
