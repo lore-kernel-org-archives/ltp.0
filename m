@@ -1,21 +1,28 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 19 Mar 2021 10:23:45 +0100
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Fri, 19 Mar 2021 09:25:55 +0000
 Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
 In-Reply-To: <20210318181641.2062-3-pvorel@suse.cz>
 References: <20210318181641.2062-1-pvorel@suse.cz>
  <20210318181641.2062-3-pvorel@suse.cz>
-Message-ID: <YFRtoRtRFVFYeXkn@yuki.lan>
+Message-ID: <60546E24.9010601@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Hi Petr
+Should we add license or copyright check in this checklist? It maybe
+removed when converting old case into new api.
+
+Best Regards
+Yang Xu
+
+> Signed-off-by: Petr Vorel<pvorel@suse.cz>
 > ---
->  doc/maintainer-patch-review-checklist.txt | 53 +++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 doc/maintainer-patch-review-checklist.txt
+>   doc/maintainer-patch-review-checklist.txt | 53 +++++++++++++++++++++++
+>   1 file changed, 53 insertions(+)
+>   create mode 100644 doc/maintainer-patch-review-checklist.txt
 > 
 > diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
 > new file mode 100644
@@ -40,21 +47,8 @@ Hi!
 > +* Committer's `Reviewed-by` or `Signed-off-by` tag
 > +* Check also mailing lists for other reviewers / testers
 > +* `Fixes: hash` if it fixes particular commit
-                                         ^
-					 LTP
-
-Let's add this here so that is clear what we mean.
-
 > +* `Fixes: #N` if it fixes N github issue, so it's automatically closed
-                              ^
-			 This wording is not clear it should be:
-
-	... if it fixes github issue number N ...
-
-Or just:
-
-	.. if it fixed github issue N ...
-
+> +
 > +After patch is accepted or rejected, set correct state and archive in
 > +https://patchwork.ozlabs.org/project/ltp/list/[LTP patchwork instance].
 > +
@@ -72,9 +66,6 @@ Or just:
 > +### C tests
 > +* Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
 > +* Test files are added into corresponding '.gitignore' files
-          ^
-	  binaries?
-
 > +* Check coding style with
 > +  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
 > +  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
@@ -92,9 +83,3 @@ Or just:
 > +## LTP library
 > +For patchset touching library please check also
 > +https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
-
-Other than these minor comments it looks great.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
