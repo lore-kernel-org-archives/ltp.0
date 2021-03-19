@@ -1,140 +1,157 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Fri, 19 Mar 2021 21:05:01 +0800
+From: Fuli QI <fukuri.sai@gmail.com>
+Date: Fri, 19 Mar 2021 22:14:57 +0900
 Subject: [LTP] [PATCH] syscalls/swapon/swapon0{1..3}: remove checking if
  fs type is BTRFS
-In-Reply-To: <20210319115934.1801692-1-qi.fuli@fujitsu.com>
+In-Reply-To: <05259ae9-4687-028d-48f0-929a43c2feec@163.com>
 References: <20210319115934.1801692-1-qi.fuli@fujitsu.com>
-Message-ID: <05259ae9-4687-028d-48f0-929a43c2feec@163.com>
+ <05259ae9-4687-028d-48f0-929a43c2feec@163.com>
+Message-ID: <DE272918-850F-4087-AC08-FCD8699A58E4@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Qi,
+Hi,
 
-Can we rename subject to 'Remove the check for BTRFS'?
+> On Mar 19, 2021, at 22:05, Xiao Yang <ice_yangxiao@163.com> wrote:
+> 
+> Hi Qi,
+> 
+> Can we rename subject to 'Remove the check for BTRFS'?
 
-On 3/19/21 7:59 PM, QI Fuli wrote:
-> remove redundant tasks as BTRFS is checked in is_swap_supported()
-> Fixes: caf453532("syscalls/swapon/swapon0{1..3}: use helpers to check
-> 	support status")
->
-> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
-> ---
->   testcases/kernel/syscalls/swapon/swapon01.c |  7 -------
->   testcases/kernel/syscalls/swapon/swapon02.c |  5 -----
->   testcases/kernel/syscalls/swapon/swapon03.c | 15 +--------------
->   3 files changed, 1 insertion(+), 26 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-> index f95ce0ab2..aff842e4c 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon01.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
-> @@ -32,18 +32,11 @@ static void cleanup(void);
->   char *TCID = "swapon01";
->   int TST_TOTAL = 1;
->
-> -static long fs_type;
-> -
->   static void verify_swapon(void)
->   {
->   	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
->
->   	if (TEST_RETURN == -1) {
-> -		if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> -			tst_brkm(TCONF, cleanup,
-> -			         "Swapfile on BTRFS not implemeted");
-> -			return;
-> -		}
->   		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
->   	} else {
->   		tst_resm(TPASS, "Succeeded to turn on swapfile");
-> diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-> index 3d49d0c6b..653b1f33e 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon02.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon02.c
-> @@ -81,11 +81,6 @@ static void verify_swapon(struct test_case_t *test)
->   		return;
->   	}
->
-> -	if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
-> -		tst_resm(TCONF, "Swapfile on BTRFS not implemeted");
-> -			return;
-> -	}
-> -
+Yes.
 
-Hi Qi,
+> 
+> On 3/19/21 7:59 PM, QI Fuli wrote:
+>> remove redundant tasks as BTRFS is checked in is_swap_supported()
+>> Fixes: caf453532("syscalls/swapon/swapon0{1..3}: use helpers to check
+>> 	support status")
+>> 
+>> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
+>> ---
+>>  testcases/kernel/syscalls/swapon/swapon01.c |  7 -------
+>>  testcases/kernel/syscalls/swapon/swapon02.c |  5 -----
+>>  testcases/kernel/syscalls/swapon/swapon03.c | 15 +--------------
+>>  3 files changed, 1 insertion(+), 26 deletions(-)
+>> 
+>> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+>> index f95ce0ab2..aff842e4c 100644
+>> --- a/testcases/kernel/syscalls/swapon/swapon01.c
+>> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+>> @@ -32,18 +32,11 @@ static void cleanup(void);
+>>  char *TCID = "swapon01";
+>>  int TST_TOTAL = 1;
+>> 
+>> -static long fs_type;
+>> -
+>>  static void verify_swapon(void)
+>>  {
+>>  	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
+>> 
+>>  	if (TEST_RETURN == -1) {
+>> -		if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+>> -			tst_brkm(TCONF, cleanup,
+>> -			         "Swapfile on BTRFS not implemeted");
+>> -			return;
+>> -		}
+>>  		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
+>>  	} else {
+>>  		tst_resm(TPASS, "Succeeded to turn on swapfile");
+>> diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+>> index 3d49d0c6b..653b1f33e 100644
+>> --- a/testcases/kernel/syscalls/swapon/swapon02.c
+>> +++ b/testcases/kernel/syscalls/swapon/swapon02.c
+>> @@ -81,11 +81,6 @@ static void verify_swapon(struct test_case_t *test)
+>>  		return;
+>>  	}
+>> 
+>> -	if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+>> -		tst_resm(TCONF, "Swapfile on BTRFS not implemeted");
+>> -			return;
+>> -	}
+>> -
+> 
+> Hi Qi,
+> 
+> The following check for btrfs can be removed as well:
+> 
+> -------------------------------------------------------------
+> 
+> static void setup(void)
+> {
+> ...
+>         if (ltp_syscall(__NR_swapon, "alreadyused", 0)) {
+>                 if (fs_type != TST_BTRFS_MAGIC || errno != EINVAL)
+>                         tst_resm(TWARN | TERRNO, "swapon(alreadyused) failed");
+> ...
+> 
+> -------------------------------------------------------------
+> 
+> Note: also remove fs_type variable.
+> 
+> Other than these, it looks good to me.
+> 
+> Best Regards,
+> 
+> Xiao Yang
 
-The following check for btrfs can be removed as well:
+Ok, I got it.
+I will send a v2 patch.
 
--------------------------------------------------------------
+Thank you very much.
 
-static void setup(void)
-{
-...
- ??????? if (ltp_syscall(__NR_swapon, "alreadyused", 0)) {
- ??????????????? if (fs_type != TST_BTRFS_MAGIC || errno != EINVAL)
- ??????????????????????? tst_resm(TWARN | TERRNO, "swapon(alreadyused) 
-failed");
-...
+QI
 
--------------------------------------------------------------
 
-Note: also remove fs_type variable.
+> 
+>>  	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
+>>  	         " %d, errno: %s and got %d.", test->exp_errno,
+>>  	         test->exp_errval, TEST_ERRNO);
+>> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+>> index cef57150c..19455bfe6 100644
+>> --- a/testcases/kernel/syscalls/swapon/swapon03.c
+>> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
+>> @@ -52,8 +52,6 @@ int TST_TOTAL = 1;
+>> 
+>>  static int swapfiles;
+>> 
+>> -static long fs_type;
+>> -
+>>  int testfiles = 3;
+>>  static struct swap_testfile_t {
+>>  	char *filename;
+>> @@ -215,9 +213,6 @@ static int setup_swap(void)
+>>  			/* turn on the swap file */
+>>  			res = ltp_syscall(__NR_swapon, filename, 0);
+>>  			if (res != 0) {
+>> -				if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL)
+>> -					exit(2);
+>> -
+>>  				if (errno == EPERM) {
+>>  					printf("Successfully created %d "
+>>  					       "swapfiles\n", j);
+>> @@ -233,16 +228,8 @@ static int setup_swap(void)
+>>  	} else
+>>  		waitpid(pid, &status, 0);
+>> 
+>> -	switch (WEXITSTATUS(status)) {
+>> -	case 0:
+>> -	break;
+>> -	case 2:
+>> -		tst_brkm(TCONF, cleanup, "Swapfile on BTRFS not implemeted");
+>> -	break;
+>> -	default:
+>> +	if (WEXITSTATUS(status) == 1)
+>>  		tst_brkm(TFAIL, cleanup, "Failed to setup swaps");
+>> -	break;
+>> -	}
+>> 
+>>  	/* Create all needed extra swapfiles for testing */
+>>  	for (j = 0; j < testfiles; j++)
+>> --
+>> 2.29.2
 
-Other than these, it looks good to me.
-
-Best Regards,
-
-Xiao Yang
-
->   	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
->   	         " %d, errno: %s and got %d.", test->exp_errno,
->   	         test->exp_errval, TEST_ERRNO);
-> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
-> index cef57150c..19455bfe6 100644
-> --- a/testcases/kernel/syscalls/swapon/swapon03.c
-> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
-> @@ -52,8 +52,6 @@ int TST_TOTAL = 1;
->
->   static int swapfiles;
->
-> -static long fs_type;
-> -
->   int testfiles = 3;
->   static struct swap_testfile_t {
->   	char *filename;
-> @@ -215,9 +213,6 @@ static int setup_swap(void)
->   			/* turn on the swap file */
->   			res = ltp_syscall(__NR_swapon, filename, 0);
->   			if (res != 0) {
-> -				if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL)
-> -					exit(2);
-> -
->   				if (errno == EPERM) {
->   					printf("Successfully created %d "
->   					       "swapfiles\n", j);
-> @@ -233,16 +228,8 @@ static int setup_swap(void)
->   	} else
->   		waitpid(pid, &status, 0);
->
-> -	switch (WEXITSTATUS(status)) {
-> -	case 0:
-> -	break;
-> -	case 2:
-> -		tst_brkm(TCONF, cleanup, "Swapfile on BTRFS not implemeted");
-> -	break;
-> -	default:
-> +	if (WEXITSTATUS(status) == 1)
->   		tst_brkm(TFAIL, cleanup, "Failed to setup swaps");
-> -	break;
-> -	}
->
->   	/* Create all needed extra swapfiles for testing */
->   	for (j = 0; j < testfiles; j++)
-> --
-> 2.29.2
->
->
-
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210319/bcdbee12/attachment-0001.htm>
