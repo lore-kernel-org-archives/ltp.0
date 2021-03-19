@@ -1,52 +1,62 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Mar 2021 10:04:26 +0100
-Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
-In-Reply-To: <CAEemH2dRU-3Q-qjE+t_O6Zh8MKDg4C+1vPAnUR+Js9_fHvFykA@mail.gmail.com>
-References: <20210318181641.2062-1-pvorel@suse.cz>
- <20210318181641.2062-3-pvorel@suse.cz>
- <CAEemH2fUGFY6YH=m4SfGpJ_nbYWJmUK1_-mLK8n74zM_WNFLng@mail.gmail.com>
- <CAEemH2dRU-3Q-qjE+t_O6Zh8MKDg4C+1vPAnUR+Js9_fHvFykA@mail.gmail.com>
-Message-ID: <YFRpGgpEKp+1c9uZ@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 19 Mar 2021 09:18:30 +0000
+Subject: [LTP] [PATCH v3 0/7] Fuzzy Sync single core support and tests
+Message-ID: <20210319091837.27319-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Li Wang <liwang@redhat.com> wrote:
+Hello,
 
+V3:
+* Add -pthread to test CFLAGS
+* Substitute CPU_COUNT for CPU_COUNT_S and check for alloc failure
 
-> > +Commit messages should have
-> >> +
-> >> +* Author's `Signed-off-by` tag
-> >> +* Committer's `Reviewed-by` or `Signed-off-by` tag
+V2:
+* Add tst_ncpus_available() to API
+* Don't use CHK macro for yield_in_wait to prevent compiler warnings
+* Simplify and split the test in two
 
+I'm reasonably confident of the first tests correctness. The second is
+maybe not complete and more formal analyses is needed IMO. I suspect
+also that we can remove add_delay_bias and implement randomised
+probing instead. The more I think about it the more clear it becomes,
+but it may require some bigger changes to how we calculate and
+introduce the delays.
 
-> > Or adding `Acked-by:` also acceptable?
+Occasionally some tests may not reach the lower threshold and fail. It
+may be caused by changes in the environment between the measuring and
+delay implementation phases. This is also something which could be
+investigated.
 
-> > I'm not sure what's the difference between Acked-by and Reviewed-by,
-> > but personally feel the Acked-by has more confidence in the reviewing.
+Anyway this is all still very time consuming and making it perform
+well on single core is most important right now.
 
-> > In my mind,
+Leo Yu-Chi Liang (1):
+  fzsync: Add sched_yield for single core machine
 
-> > `Acked-by` means:
-> > code review OK, compiled OK, executed OK, has confidence it OK for all
-> > arches
+Richard Palethorpe (6):
+  fzsync: Add self tests
+  fzsync: Reset delay bias
+  fzsync: Correctly print positive lower delay range bound
+  fzsync: Move yield check out of loop and add yield to delay
+  API: Add tst_ncpus_available
+  fzsync: Check processor affinity
 
-> > `Reviewed-by` means:
-> > code review OK, compiled and executed OK just locally or optional, still room
-> > for improvement/discussion
+ include/tst_cpu.h                   |   1 +
+ include/tst_fuzzy_sync.h            | 106 ++++++++++---
+ lib/newlib_tests/.gitignore         |   2 +
+ lib/newlib_tests/Makefile           |   2 +
+ lib/newlib_tests/test16.c           |   2 +
+ lib/newlib_tests/tst_fuzzy_sync01.c | 232 ++++++++++++++++++++++++++++
+ lib/newlib_tests/tst_fuzzy_sync02.c | 179 +++++++++++++++++++++
+ lib/tst_cpu.c                       |  26 ++++
+ 8 files changed, 526 insertions(+), 24 deletions(-)
+ create mode 100644 lib/newlib_tests/tst_fuzzy_sync01.c
+ create mode 100644 lib/newlib_tests/tst_fuzzy_sync02.c
 
+-- 
+2.30.1
 
-> Plz ignore my rough understanding, I find a precise description at kernel
-> process/submitting-patches.rst.
-
-> https://github.com/torvalds/linux/blob/master/Documentation/process/submitting-patches.rst#when-to-use-acked-by-cc-and-co-developed-by
-
-But you were right, I omit "tags". Maybe this?
-
-- Check also mailing lists for other reviewers / testers
-+ Check also mailing lists for other reviewers / testers tags, notes and failure reports
-
-Kind regards,
-Petr
