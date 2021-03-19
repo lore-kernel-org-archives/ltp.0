@@ -1,50 +1,61 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 Mar 2021 12:56:59 +0800
-Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
-In-Reply-To: <CAEemH2fUGFY6YH=m4SfGpJ_nbYWJmUK1_-mLK8n74zM_WNFLng@mail.gmail.com>
-References: <20210318181641.2062-1-pvorel@suse.cz>
- <20210318181641.2062-3-pvorel@suse.cz>
- <CAEemH2fUGFY6YH=m4SfGpJ_nbYWJmUK1_-mLK8n74zM_WNFLng@mail.gmail.com>
-Message-ID: <CAEemH2dRU-3Q-qjE+t_O6Zh8MKDg4C+1vPAnUR+Js9_fHvFykA@mail.gmail.com>
+Date: Fri, 19 Mar 2021 13:41:14 +0800
+Subject: [LTP] [PATCH] cleanup: Replace libc functions with safe_macros
+In-Reply-To: <20210318084117.5663-1-zhaogongyi@huawei.com>
+References: <20210318084117.5663-1-zhaogongyi@huawei.com>
+Message-ID: <CAEemH2evz-Y+vMYOkTU8hFF0qaM88BE-s2UzjV2Fuo8v683=_A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Li Wang <liwang@redhat.com> wrote:
+Hi Gongyi,
+
+Zhao Gongyi <zhaogongyi@huawei.com> wrote:
 
 
-> +Commit messages should have
->> +
->> +* Author's `Signed-off-by` tag
->> +* Committer's `Reviewed-by` or `Signed-off-by` tag
->>
+> --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+> @@ -128,17 +128,13 @@ static void generate_events(void)
+>         /*
+>          * Generate sequence of events
+>          */
+> -       if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+> -               exit(1);
+> -       if (write(fd, fname, 1) == -1)
+> -               exit(2);
+> +       fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
 >
-> Or adding `Acked-by:` also acceptable?
->
-> I'm not sure what's the difference between Acked-by and Reviewed-by,
-> but personally feel the Acked-by has more confidence in the reviewing.
->
-> In my mind,
->
-> `Acked-by` means:
-> code review OK, compiled OK, executed OK, has confidence it OK for all
-> arches
->
-> `Reviewed-by` means:
-> code review OK, compiled and executed OK just locally or optional, still room
-> for improvement/discussion
+> -       lseek(fd, 0, SEEK_SET);
+> -       if (read(fd, buf, BUF_SIZE) != -1)
+> -               exit(3);
+> +       SAFE_WRITE(fd, fname, 1);
 >
 
-Plz ignore my rough understanding, I find a precise description at kernel
-process/submitting-patches.rst.
+SAFE_READ/SAFE_WRITE requires 4 arguments, but only 3 given,
+it even builds fails after applying this patch. So it'd be better to compile
+PASS at least locally before sending it to ML.
 
-https://github.com/torvalds/linux/blob/master/Documentation/process/submitting-patches.rst#when-to-use-acked-by-cc-and-co-developed-by
+
+
+> --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
+> @@ -53,14 +53,12 @@ static void generate_events(void)
+>         /*
+>          * generate sequence of events
+>          */
+> -       if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
+> -               exit(1);
+> +       fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0700);
+>
+
+FNAME --> fname
+
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210319/933026c4/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210319/b6457145/attachment.htm>
