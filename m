@@ -1,55 +1,61 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Fri, 19 Mar 2021 10:49:22 +0100
-Subject: [LTP] [PATCH] syscalls/semctl09: Skip libc test if SEM_STAT_ANY
- not defined
-In-Reply-To: <YFOcOJP4innlbIk4@pevik>
-References: <20210318162409.9871-1-mdoucha@suse.cz> <YFOcOJP4innlbIk4@pevik>
-Message-ID: <78ca788f-f24e-61f5-b0c6-a0742b6af176@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Mar 2021 11:05:23 +0100
+Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
+In-Reply-To: <YFRtoRtRFVFYeXkn@yuki.lan>
+References: <20210318181641.2062-1-pvorel@suse.cz>
+ <20210318181641.2062-3-pvorel@suse.cz> <YFRtoRtRFVFYeXkn@yuki.lan>
+Message-ID: <YFR3Y2yln5y8EDKc@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 18. 03. 21 19:30, Petr Vorel wrote:
-> Hi Martin,
-> 
->> The libc test variant should run only if system headers define SEM_STAT_ANY.
->> Skip it if we're falling back to the LAPI definition.
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Thanks!
-> 
-> ...
->> +#if !HAVE_DECL_SEM_STAT_ANY
-> nit: I'd prefer
-> #ifndef HAVE_DECL_SEM_STAT_ANY
+Hi Cyril,
 
-That will not work. AC_CHECK_DECLS() will always define
-HAVE_DECL_SEM_STAT_ANY, either with the value of 0 (macro not defined)
-or 1 (defined).
+> > +* Author's `Signed-off-by` tag
+> > +* Committer's `Reviewed-by` or `Signed-off-by` tag
+> > +* Check also mailing lists for other reviewers / testers
+> > +* `Fixes: hash` if it fixes particular commit
+>                                          ^
+> 					 LTP
 
->> +	if (tst_variant == 1)
->> +		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
->> +#endif
-> Although I understand why you want to quit only tests with root
-> (only these fail), it's a bit confusing to test with user nobody
-> and then quit the same testing with root.
+> Let's add this here so that is clear what we mean.
 
-tst_variant has nothing to do with UID.
-tst_variant == 0 => run the test using tst_syscall(__NR_semctl)
-tst_variant == 1 => run the test again using libc semctl()
+> > +* `Fixes: #N` if it fixes N github issue, so it's automatically closed
+>                               ^
+> 			 This wording is not clear it should be:
 
-But if you want to make the test output a little more clear, I could
-move the test_info() call at the end of setup() a few lines up before
-the new #if.
+> 	... if it fixes github issue number N ...
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> Or just:
+
+> 	.. if it fixed github issue N ...
+
++1
+
+> > +After patch is accepted or rejected, set correct state and archive in
+> > +https://patchwork.ozlabs.org/project/ltp/list/[LTP patchwork instance].
+> > +
+> > +Also update LTP WIKI (git URL https://github.com/linux-test-project/ltp.wiki.git)
+> > +if touch 'doc/*.txt'.
+> > +
+> > +## New tests
+> > +New test should
+> > +
+> > +* Have a record in runtest file
+> > +* Test should work fine with more than one iteration
+> > +  (e.g. run with `-i 100`)
+> > +* Have a brief description
+> > +
+> > +### C tests
+> > +* Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+> > +* Test files are added into corresponding '.gitignore' files
+>           ^
+> 	  binaries?
+
++1 (copy pasted from Test Writing Guidelines, thus fixed it also there as you
+suggest in next mail).
+
+Kind regards,
+Petr
