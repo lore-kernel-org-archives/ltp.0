@@ -1,176 +1,140 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Mar 2021 14:04:07 +0100
-Subject: [LTP] [PATCH 0/8] fanotify tests for v5.13
-In-Reply-To: <20210318131134.3562203-1-amir73il@gmail.com>
-References: <20210318131134.3562203-1-amir73il@gmail.com>
-Message-ID: <YFShR2Qd7Ubve1wi@pevik>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Fri, 19 Mar 2021 21:05:01 +0800
+Subject: [LTP] [PATCH] syscalls/swapon/swapon0{1..3}: remove checking if
+ fs type is BTRFS
+In-Reply-To: <20210319115934.1801692-1-qi.fuli@fujitsu.com>
+References: <20210319115934.1801692-1-qi.fuli@fujitsu.com>
+Message-ID: <05259ae9-4687-028d-48f0-929a43c2feec@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Amir,
+Hi Qi,
 
-> Hi Petr,
+Can we rename subject to 'Remove the check for BTRFS'?
 
-> Following tests were used for development of the two features
-> queued for v5.13 (in linux-next):
-> - Performance improvements for events merge [1]
-> - Unprivileged fanotify listener [2]
+On 3/19/21 7:59 PM, QI Fuli wrote:
+> remove redundant tasks as BTRFS is checked in is_swap_supported()
+> Fixes: caf453532("syscalls/swapon/swapon0{1..3}: use helpers to check
+> 	support status")
+>
+> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
+> ---
+>   testcases/kernel/syscalls/swapon/swapon01.c |  7 -------
+>   testcases/kernel/syscalls/swapon/swapon02.c |  5 -----
+>   testcases/kernel/syscalls/swapon/swapon03.c | 15 +--------------
+>   3 files changed, 1 insertion(+), 26 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+> index f95ce0ab2..aff842e4c 100644
+> --- a/testcases/kernel/syscalls/swapon/swapon01.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
+> @@ -32,18 +32,11 @@ static void cleanup(void);
+>   char *TCID = "swapon01";
+>   int TST_TOTAL = 1;
+>
+> -static long fs_type;
+> -
+>   static void verify_swapon(void)
+>   {
+>   	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
+>
+>   	if (TEST_RETURN == -1) {
+> -		if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> -			tst_brkm(TCONF, cleanup,
+> -			         "Swapfile on BTRFS not implemeted");
+> -			return;
+> -		}
+>   		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
+>   	} else {
+>   		tst_resm(TPASS, "Succeeded to turn on swapfile");
+> diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+> index 3d49d0c6b..653b1f33e 100644
+> --- a/testcases/kernel/syscalls/swapon/swapon02.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon02.c
+> @@ -81,11 +81,6 @@ static void verify_swapon(struct test_case_t *test)
+>   		return;
+>   	}
+>
+> -	if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
+> -		tst_resm(TCONF, "Swapfile on BTRFS not implemeted");
+> -			return;
+> -	}
+> -
 
-As these are features not fixes, I suppose nothing from these already merged 2
-patchsets in next tree can be added with struct tst_tag to document it.
-I wonder if any of these are could be at least noted in the tests / commit
-messages.
+Hi Qi,
 
-> All test cases of fanotify05 pass on upstream, but their runtime
-> on linux-next is reduced by more than half.
+The following check for btrfs can be removed as well:
 
-> Only the first test case of fanotify17 pass on upstream.
-> The rest of the test cases as well as fanotify18 and fanotify19
-> tests exit with TCONF on upstream. They all pass on linux-next.
+-------------------------------------------------------------
 
-Thanks! LGTM, thanks for testing them on both mainline and next tree.
+static void setup(void)
+{
+...
+ ??????? if (ltp_syscall(__NR_swapon, "alreadyused", 0)) {
+ ??????????????? if (fs_type != TST_BTRFS_MAGIC || errno != EINVAL)
+ ??????????????????????? tst_resm(TWARN | TERRNO, "swapon(alreadyused) 
+failed");
+...
 
-To whole patchset:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+-------------------------------------------------------------
 
-I'll apply it with following tiny fixes to fix compilation on very old kernels
-(2.6.x) and to use our documentation format [3] [4].
-(+ later I'll fix documentation format for the rest of the tests)
+Note: also remove fs_type variable.
 
-Kind regards,
-Petr
+Other than these, it looks good to me.
 
-> Thanks,
-> Amir.
+Best Regards,
 
-> [1] https://lore.kernel.org/linux-fsdevel/20210304104826.3993892-1-amir73il@gmail.com/
-> [2] https://lore.kernel.org/linux-fsdevel/20210304112921.3996419-1-amir73il@gmail.com/
+Xiao Yang
 
-[3] https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.pdf
-[4] https://github.com/linux-test-project/ltp/releases/download/20210121/metadata.20210121.html
+>   	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
+>   	         " %d, errno: %s and got %d.", test->exp_errno,
+>   	         test->exp_errval, TEST_ERRNO);
+> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
+> index cef57150c..19455bfe6 100644
+> --- a/testcases/kernel/syscalls/swapon/swapon03.c
+> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
+> @@ -52,8 +52,6 @@ int TST_TOTAL = 1;
+>
+>   static int swapfiles;
+>
+> -static long fs_type;
+> -
+>   int testfiles = 3;
+>   static struct swap_testfile_t {
+>   	char *filename;
+> @@ -215,9 +213,6 @@ static int setup_swap(void)
+>   			/* turn on the swap file */
+>   			res = ltp_syscall(__NR_swapon, filename, 0);
+>   			if (res != 0) {
+> -				if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL)
+> -					exit(2);
+> -
+>   				if (errno == EPERM) {
+>   					printf("Successfully created %d "
+>   					       "swapfiles\n", j);
+> @@ -233,16 +228,8 @@ static int setup_swap(void)
+>   	} else
+>   		waitpid(pid, &status, 0);
+>
+> -	switch (WEXITSTATUS(status)) {
+> -	case 0:
+> -	break;
+> -	case 2:
+> -		tst_brkm(TCONF, cleanup, "Swapfile on BTRFS not implemeted");
+> -	break;
+> -	default:
+> +	if (WEXITSTATUS(status) == 1)
+>   		tst_brkm(TFAIL, cleanup, "Failed to setup swaps");
+> -	break;
+> -	}
+>
+>   	/* Create all needed extra swapfiles for testing */
+>   	for (j = 0; j < testfiles; j++)
+> --
+> 2.29.2
+>
+>
 
-diff --git testcases/kernel/syscalls/fanotify/fanotify17.c testcases/kernel/syscalls/fanotify/fanotify17.c
-index ee242a441..98355a7b4 100644
---- testcases/kernel/syscalls/fanotify/fanotify17.c
-+++ testcases/kernel/syscalls/fanotify/fanotify17.c
-@@ -7,13 +7,15 @@
-  * Forked from getxattr05.c by Amir Goldstein <amir73il@gmail.com>
-  */
- 
--/*
-- * DESCRIPTION
-- *     Check that fanotify groups and marks limits are enforced correctly.
-- *     If user ns is supported, verify that global limit and per user ns
-- *     limits are both enforced.
-- *     Otherwise, we only check that global groups limit is enforced.
-+/*\
-+ * [Description]
-+ *
-+ * Check that fanotify groups and marks limits are enforced correctly.
-+ * If user ns is supported, verify that global limit and per user ns
-+ * limits are both enforced.
-+ * Otherwise, we only check that global groups limit is enforced.
-  */
-+
- #define _GNU_SOURCE
- #include "config.h"
- #include <errno.h>
-diff --git testcases/kernel/syscalls/fanotify/fanotify18.c testcases/kernel/syscalls/fanotify/fanotify18.c
-index 1acd23ce2..318245efc 100644
---- testcases/kernel/syscalls/fanotify/fanotify18.c
-+++ testcases/kernel/syscalls/fanotify/fanotify18.c
-@@ -3,13 +3,17 @@
-  * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
-  *
-  * Started by Matthew Bobrowski <mbobrowski@mbobrowski.org>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * DESCRIPTION
-- *	This set of tests is to ensure that the unprivileged listener feature of
-- *	fanotify is functioning as expected. The objective this test case file
-- *	is to validate whether any forbidden flags that are passed by an
-- *	unprivileged user return the correct error result.
-+ * This set of tests is to ensure that the unprivileged listener feature of
-+ * fanotify is functioning as expected. The objective this test case file
-+ * is to validate whether any forbidden flags that are passed by an
-+ * unprivileged user return the correct error result.
-  */
-+
- #define _GNU_SOURCE
- #include "config.h"
- 
-@@ -17,10 +21,9 @@
- #include <stdio.h>
- #include <errno.h>
- #include "tst_test.h"
--#include "fanotify.h"
- 
--#if defined(HAVE_SYS_FANOTIFY_H)
--#include <sys/fanotify.h>
-+#ifdef HAVE_SYS_FANOTIFY_H
-+#include "fanotify.h"
- 
- /*
-  * This is a set of intialization flags that are not permitted to be used by an
-@@ -194,5 +197,5 @@ static struct tst_test test = {
- };
- 
- #else
--	TST_TEST_CONF("System does not have required fanotify support");
-+	TST_TEST_TCONF("system doesn't have required fanotify support");
- #endif
-diff --git testcases/kernel/syscalls/fanotify/fanotify19.c testcases/kernel/syscalls/fanotify/fanotify19.c
-index 83a9aaa98..92ed45e49 100644
---- testcases/kernel/syscalls/fanotify/fanotify19.c
-+++ testcases/kernel/syscalls/fanotify/fanotify19.c
-@@ -3,14 +3,18 @@
-  * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
-  *
-  * Started by Matthew Bobrowski <mbobrowski@mbobrowski.org>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * DESCRIPTION
-- *	This set of tests is to ensure that the unprivileged listener feature of
-- *	fanotify is functioning as expected. The objective of this test file is
-- *	to generate a sequence of events and ensure that the returned events
-- *	contain the limited values that an unprivileged listener is expected
-- *	to receive.
-+ * This set of tests is to ensure that the unprivileged listener feature of
-+ * fanotify is functioning as expected. The objective of this test file is
-+ * to generate a sequence of events and ensure that the returned events
-+ * contain the limited values that an unprivileged listener is expected
-+ * to receive.
-  */
-+
- #define _GNU_SOURCE
- #include "config.h"
- 
-@@ -21,10 +25,9 @@
- #include <sys/wait.h>
- 
- #include "tst_test.h"
--#include "fanotify.h"
- 
--#if defined(HAVE_SYS_FANOTIFY_H)
--#include <sys/fanotify.h>
-+#ifdef HAVE_SYS_FANOTIFY_H
-+#include "fanotify.h"
- 
- #define EVENT_MAX 1024
- #define EVENT_SIZE (sizeof (struct fanotify_event_metadata))
-@@ -249,5 +252,5 @@ static struct tst_test test = {
- };
- 
- #else
--	TST_TEST_CONF("System does not have required fanotify support");
-+	TST_TEST_TCONF("system doesn't have required fanotify support");
- #endif
