@@ -1,44 +1,59 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 19 Mar 2021 12:22:44 +0100
-Subject: [LTP] [PATCH] syscalls/semctl09: Skip libc test if SEM_STAT_ANY
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 19 Mar 2021 12:43:49 +0100
+Subject: [LTP] [PATCH v2] syscalls/semctl09: Skip libc test if SEM_STAT_ANY
  not defined
-In-Reply-To: <78ca788f-f24e-61f5-b0c6-a0742b6af176@suse.cz>
-References: <20210318162409.9871-1-mdoucha@suse.cz> <YFOcOJP4innlbIk4@pevik>
- <78ca788f-f24e-61f5-b0c6-a0742b6af176@suse.cz>
-Message-ID: <YFSJhNjl17uZUtPt@pevik>
+Message-ID: <20210319114349.22696-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+The libc test variant should run only if system headers define SEM_STAT_ANY.
+Skip it if we're falling back to the LAPI definition.
 
-> >> +#if !HAVE_DECL_SEM_STAT_ANY
-> > nit: I'd prefer
-> > #ifndef HAVE_DECL_SEM_STAT_ANY
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> That will not work. AC_CHECK_DECLS() will always define
-> HAVE_DECL_SEM_STAT_ANY, either with the value of 0 (macro not defined)
-> or 1 (defined).
-Correct, I'm sorry, thanks for catching my error.
+Changes since v2:
+- move test_info() call before #if to make test output more clear
 
-> >> +	if (tst_variant == 1)
-> >> +		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
-> >> +#endif
-> > Although I understand why you want to quit only tests with root
-> > (only these fail), it's a bit confusing to test with user nobody
-> > and then quit the same testing with root.
+ configure.ac                                    | 1 +
+ testcases/kernel/syscalls/ipc/semctl/semctl09.c | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-> tst_variant has nothing to do with UID.
-> tst_variant == 0 => run the test using tst_syscall(__NR_semctl)
-> tst_variant == 1 => run the test again using libc semctl()
-Again, correct, sorry for wrong report.
+diff --git a/configure.ac b/configure.ac
+index 37bafb93d..136d82d09 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -38,6 +38,7 @@ AC_PREFIX_DEFAULT(/opt/ltp)
+ AC_CHECK_DECLS([IFLA_NET_NS_PID],,,[#include <linux/if_link.h>])
+ AC_CHECK_DECLS([MADV_MERGEABLE],,,[#include <sys/mman.h>])
+ AC_CHECK_DECLS([PR_CAPBSET_DROP, PR_CAPBSET_READ],,,[#include <sys/prctl.h>])
++AC_CHECK_DECLS([SEM_STAT_ANY],,,[#include <sys/sem.h>])
+ 
+ AC_CHECK_HEADERS_ONCE([ \
+     asm/ldt.h \
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+index a933cff0e..5a81f778c 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
+@@ -185,9 +185,14 @@ static void setup(void)
+ 
+ 	nobody_uid = ltpuser->pw_uid;
+ 	root_uid = 0;
++	test_info();
++
++#if !HAVE_DECL_SEM_STAT_ANY
++	if (tst_variant == 1)
++		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
++#endif
+ 
+ 	sem_id = SAFE_SEMGET(IPC_PRIVATE, 2, IPC_CREAT | 0600);
+-	test_info();
+ }
+ 
+ static void cleanup(void)
+-- 
+2.30.2
 
-> But if you want to make the test output a little more clear, I could
-> move the test_info() call at the end of setup() a few lines up before
-> the new #if.
-+1
-
-Kind regards,
-Petr
