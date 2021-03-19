@@ -1,59 +1,100 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 19 Mar 2021 09:18:37 +0000
-Subject: [LTP] [PATCH v3 7/7] fzsync: Check processor affinity
-In-Reply-To: <20210319091837.27319-1-rpalethorpe@suse.com>
-References: <20210319091837.27319-1-rpalethorpe@suse.com>
-Message-ID: <20210319091837.27319-8-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 19 Mar 2021 10:23:45 +0100
+Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
+In-Reply-To: <20210318181641.2062-3-pvorel@suse.cz>
+References: <20210318181641.2062-1-pvorel@suse.cz>
+ <20210318181641.2062-3-pvorel@suse.cz>
+Message-ID: <YFRtoRtRFVFYeXkn@yuki.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It is useful for testing Fuzzy Sync itself to set the CPU affinity to
-a single core. The current processes affinity does not effect
-tst_ncpus(), but we can get the affinity separately.
+Hi!
+> ---
+>  doc/maintainer-patch-review-checklist.txt | 53 +++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 doc/maintainer-patch-review-checklist.txt
+> 
+> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> new file mode 100644
+> index 000000000..2587287aa
+> --- /dev/null
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -0,0 +1,53 @@
+> +# Maintainer Patch Review Checklist
+> +
+> +Patchset should be tested locally and ideally also in maintainer's fork in
+> +https://travis-ci.org/[Travis CI].
+> +
+> +NOTE: Travis does only build testing, passing the CI means only that the
+> +      test compiles fine on variety of different distributions and
+> +      releases.
+> +
+> +The test should be executed at least once locally and should PASS as well.
+> +
+> +Commit messages should have
+> +
+> +* Author's `Signed-off-by` tag
+> +* Committer's `Reviewed-by` or `Signed-off-by` tag
+> +* Check also mailing lists for other reviewers / testers
+> +* `Fixes: hash` if it fixes particular commit
+                                         ^
+					 LTP
 
-Note that checking this still does not guarantee we will use yield
-when restricted to only one core. We would have to periodically probe
-which CPUs threads are running on until we detect more than one CPU.
+Let's add this here so that is clear what we mean.
 
-Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_fuzzy_sync.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> +* `Fixes: #N` if it fixes N github issue, so it's automatically closed
+                              ^
+			 This wording is not clear it should be:
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
-index 36a604e13..e38b56e5e 100644
---- a/include/tst_fuzzy_sync.h
-+++ b/include/tst_fuzzy_sync.h
-@@ -61,7 +61,6 @@
- 
- #include <math.h>
- #include <pthread.h>
--#include <sched.h>
- #include <stdbool.h>
- #include <stdlib.h>
- #include <sys/time.h>
-@@ -213,12 +212,16 @@ struct tst_fzsync_pair {
-  */
- static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
- {
-+	long ncpus = tst_ncpus_available();
-+
- 	CHK(avg_alpha, 0, 1, 0.25);
- 	CHK(min_samples, 20, INT_MAX, 1024);
- 	CHK(max_dev_ratio, 0, 1, 0.1);
- 	CHK(exec_time_p, 0, 1, 0.5);
- 	CHK(exec_loops, 20, INT_MAX, 3000000);
--	CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
-+
-+	if (ncpus <= 1)
-+		pair->yield_in_wait = 1;
- }
- #undef CHK
- 
+	... if it fixes github issue number N ...
+
+Or just:
+
+	.. if it fixed github issue N ...
+
+> +After patch is accepted or rejected, set correct state and archive in
+> +https://patchwork.ozlabs.org/project/ltp/list/[LTP patchwork instance].
+> +
+> +Also update LTP WIKI (git URL https://github.com/linux-test-project/ltp.wiki.git)
+> +if touch 'doc/*.txt'.
+> +
+> +## New tests
+> +New test should
+> +
+> +* Have a record in runtest file
+> +* Test should work fine with more than one iteration
+> +  (e.g. run with `-i 100`)
+> +* Have a brief description
+> +
+> +### C tests
+> +* Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#22-writing-a-test-in-c[C API]
+> +* Test files are added into corresponding '.gitignore' files
+          ^
+	  binaries?
+
+> +* Check coding style with
+> +  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/checkpatch.pl[checkpatch.pl]
+> +  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#131-c-coding-style[C coding style])
+> +* Docparse documentation
+> +* If a test is a regression test it should include tags
+> +  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2238-test-tags[Test tags])
+> +
+> +### Shell tests
+> +* Use new https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#23-writing-a-testcase-in-shell[shell API]
+> +* Check coding style with
+> +  https://salsa.debian.org/debian/devscripts/raw/master/scripts/checkbashisms.pl[checkbashism.pl]
+> +  (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style[Shell coding style])
+> +* If a test is a regression test it should include related kernel or glibc commits as a comment
+> +
+> +## LTP library
+> +For patchset touching library please check also
+> +https://github.com/linux-test-project/ltp/wiki/LTP-Library-API-Writing-Guidelines[LTP Library API Writing Guidelines].
+
+Other than these minor comments it looks great.
+
 -- 
-2.30.1
-
+Cyril Hrubis
+chrubis@suse.cz
