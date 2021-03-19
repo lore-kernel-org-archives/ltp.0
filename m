@@ -1,61 +1,44 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 19 Mar 2021 13:41:14 +0800
-Subject: [LTP] [PATCH] cleanup: Replace libc functions with safe_macros
-In-Reply-To: <20210318084117.5663-1-zhaogongyi@huawei.com>
-References: <20210318084117.5663-1-zhaogongyi@huawei.com>
-Message-ID: <CAEemH2evz-Y+vMYOkTU8hFF0qaM88BE-s2UzjV2Fuo8v683=_A@mail.gmail.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Fri, 19 Mar 2021 07:57:33 +0000
+Subject: [LTP] [PATCH v2 1/7] fzsync: Add self tests
+In-Reply-To: <YFPDRciWeJrwDuVf@pevik>
+References: <20210318130935.28528-1-rpalethorpe@suse.com>
+ <20210318130935.28528-2-rpalethorpe@suse.com> <YFPDRciWeJrwDuVf@pevik>
+Message-ID: <87k0q3d18y.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Gongyi,
+Hello,
 
-Zhao Gongyi <zhaogongyi@huawei.com> wrote:
+Petr Vorel <pvorel@suse.cz> writes:
 
-
-> --- a/testcases/kernel/syscalls/fanotify/fanotify03.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
-> @@ -128,17 +128,13 @@ static void generate_events(void)
->         /*
->          * Generate sequence of events
->          */
-> -       if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
-> -               exit(1);
-> -       if (write(fd, fname, 1) == -1)
-> -               exit(2);
-> +       fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
+> Hi Richie,
 >
-> -       lseek(fd, 0, SEEK_SET);
-> -       if (read(fd, buf, BUF_SIZE) != -1)
-> -               exit(3);
-> +       SAFE_WRITE(fd, fname, 1);
+> FYI this commit fails due
+> /usr/bin/ld: /tmp/ccBD0Mxi.o: in function `tst_fzsync_pair_cleanup':
+> /home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
+> /usr/bin/ld: /home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
+> /usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_create':
+> /home/pevik/install/src/ltp.git/lib/safe_pthread.c:18: undefined reference to `pthread_create'
+> /usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_join':
+> /home/pevik/install/src/ltp.git/lib/safe_pthread.c:34: undefined reference to `pthread_join'
+> collect2: error: ld returned 1 exit status
+> make[1]: *** [../../include/mk/rules.mk:37: tst_fuzzy_sync01] Error 1
+> make: *** [../include/mk/generic_trunk_target.inc:105: all] Error 2
 >
-
-SAFE_READ/SAFE_WRITE requires 4 arguments, but only 3 given,
-it even builds fails after applying this patch. So it'd be better to compile
-PASS at least locally before sending it to ML.
-
-
-
-> --- a/testcases/kernel/syscalls/fanotify/fanotify07.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify07.c
-> @@ -53,14 +53,12 @@ static void generate_events(void)
->         /*
->          * generate sequence of events
->          */
-> -       if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
-> -               exit(1);
-> +       fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0700);
+> lib/newlib_tests/Makefile needs to add:
+> tst_fuzzy_sync01: CFLAGS+=-pthread
+> tst_fuzzy_sync02: CFLAGS+=-pthread
 >
+> Kind regards,
+> Petr
 
-FNAME --> fname
+Ah, I really should compile with GCC as well as Clang!
 
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210319/b6457145/attachment.htm>
+Thank you,
+Richard.
