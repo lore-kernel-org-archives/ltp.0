@@ -1,44 +1,53 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 19 Mar 2021 07:57:33 +0000
-Subject: [LTP] [PATCH v2 1/7] fzsync: Add self tests
-In-Reply-To: <YFPDRciWeJrwDuVf@pevik>
-References: <20210318130935.28528-1-rpalethorpe@suse.com>
- <20210318130935.28528-2-rpalethorpe@suse.com> <YFPDRciWeJrwDuVf@pevik>
-Message-ID: <87k0q3d18y.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 19 Mar 2021 09:29:01 +0100
+Subject: [LTP] [PATCH] syscalls/semctl09: Skip libc test if SEM_STAT_ANY
+ not defined
+In-Reply-To: <920d81b2-567a-4e28-58f7-b27151b1cad7@163.com>
+References: <20210318162409.9871-1-mdoucha@suse.cz> <YFOcOJP4innlbIk4@pevik>
+ <920d81b2-567a-4e28-58f7-b27151b1cad7@163.com>
+Message-ID: <YFRgzbKPtVBK/l5d@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Xu,
 
-Petr Vorel <pvorel@suse.cz> writes:
+> > > +	if (tst_variant == 1)
+> > > +		tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
+> > > +#endif
+> > Although I understand why you want to quit only tests with root
+> > (only these fail), it's a bit confusing to test with user nobody
+> > and then quit the same testing with root.
 
-> Hi Richie,
->
-> FYI this commit fails due
-> /usr/bin/ld: /tmp/ccBD0Mxi.o: in function `tst_fzsync_pair_cleanup':
-> /home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
-> /usr/bin/ld: /home/pevik/install/src/ltp.git/lib/newlib_tests/../../include/tst_fuzzy_sync.h:226: undefined reference to `pthread_cancel'
-> /usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_create':
-> /home/pevik/install/src/ltp.git/lib/safe_pthread.c:18: undefined reference to `pthread_create'
-> /usr/bin/ld: ../../lib/libltp.a(safe_pthread.o): in function `safe_pthread_join':
-> /home/pevik/install/src/ltp.git/lib/safe_pthread.c:34: undefined reference to `pthread_join'
-> collect2: error: ld returned 1 exit status
-> make[1]: *** [../../include/mk/rules.mk:37: tst_fuzzy_sync01] Error 1
-> make: *** [../include/mk/generic_trunk_target.inc:105: all] Error 2
->
-> lib/newlib_tests/Makefile needs to add:
-> tst_fuzzy_sync01: CFLAGS+=-pthread
-> tst_fuzzy_sync02: CFLAGS+=-pthread
->
-> Kind regards,
-> Petr
+> I don't get this.? Martin only wants to skip libc test when undefined and it
+> doesn't matter which user we use.
 
-Ah, I really should compile with GCC as well as Clang!
+if (tst_variant == 1)
+	tst_brk(TCONF, "libc does not support semctl(SEM_STAT_ANY)");
 
+means:
 
--- 
-Thank you,
-Richard.
+# /semctl09
+tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
+semctl09.c:76: TINFO: Test SYS_semctl syscall
+semctl09.c:141: TINFO: Test SEM_STAT_ANY with nobody user
+semctl09.c:163: TPASS: SEM_INFO returned valid index 19 to semid 19
+semctl09.c:173: TPASS: Counted used = 1
+semctl09.c:121: TPASS: semset_cnt = 1
+semctl09.c:128: TPASS: sen_cnt = 2
+semctl09.c:141: TINFO: Test SEM_STAT_ANY with root user
+semctl09.c:163: TPASS: SEM_INFO returned valid index 19 to semid 19
+semctl09.c:173: TPASS: Counted used = 1
+semctl09.c:121: TPASS: semset_cnt = 1
+semctl09.c:128: TPASS: sen_cnt = 2
+tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
+semctl09.c:191: TCONF: libc does not support semctl(SEM_STAT_ANY)
+
+i.e. run first test with user nobody and skip the second.
+It's a bit confusing to test anything with SEM_STAT_ANY and then state
+TCONF: libc does not support semctl(SEM_STAT_ANY) :)
+
+Kind regards,
+Petr
