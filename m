@@ -1,10 +1,10 @@
 From: Xiao Yang <ice_yangxiao@163.com>
-Date: Fri, 19 Mar 2021 22:41:45 +0800
+Date: Sat, 20 Mar 2021 16:55:04 +0800
 Subject: [LTP] [PATCH v2] syscalls/swapon/swapon0{1..3}: Remove the
  check for BTRFS
 In-Reply-To: <20210319134511.1844348-1-qi.fuli@fujitsu.com>
 References: <20210319134511.1844348-1-qi.fuli@fujitsu.com>
-Message-ID: <f8ee64cb-40ba-441c-1fbf-bb1de6583b28@163.com>
+Message-ID: <08251b70-1fdc-02d3-c94c-80330942da52@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,9 +13,11 @@ To: ltp@lists.linux.it
 
 Hi Qi,
 
-LGTM.
+Pushed with a minor change:
 
-Reviewed-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+s/WEXITSTATUS(status) == 1/WEXITSTATUS(status)/
+
+Thanks for your patch.
 
 Best Regards,
 
