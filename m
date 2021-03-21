@@ -1,157 +1,33 @@
-From: QI Fuli <fukuri.sai@gmail.com>
-Date: Sun, 21 Mar 2021 13:40:58 +0900
-Subject: [LTP] [PATCH v2] syscalls/swapon/swapon0{1..3}: Remove the
- check for BTRFS
-In-Reply-To: <08251b70-1fdc-02d3-c94c-80330942da52@163.com>
-References: <20210319134511.1844348-1-qi.fuli@fujitsu.com>
- <08251b70-1fdc-02d3-c94c-80330942da52@163.com>
-Message-ID: <0F9C5DDE-7954-4428-82B0-83EBEE5E5959@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Sun, 21 Mar 2021 21:13:34 +0100
+Subject: [LTP] [PATCH 0/8] fanotify tests for v5.13
+In-Reply-To: <CAOQ4uxhLOqfarhXa-mnPnUtSXVUr1cpz79bm3TE6c5=4oo-Eeg@mail.gmail.com>
+References: <20210318131134.3562203-1-amir73il@gmail.com>
+ <YFShR2Qd7Ubve1wi@pevik>
+ <CAOQ4uxhLOqfarhXa-mnPnUtSXVUr1cpz79bm3TE6c5=4oo-Eeg@mail.gmail.com>
+Message-ID: <YFeo7vI58VMA6W7a@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Amir,
 
+> Whatever you think is best for your project users.
+> If you want to document the commits that added the features, I suggest
+> that you wait until those commits hit master (next cycle).
+> These are the relevant commit subjects:
 
-> On Mar 20, 2021, at 17:55, Xiao Yang <ice_yangxiao@163.com> wrote:
-> 
-> Hi Qi,
-> 
-> Pushed with a minor change:
-> 
-> s/WEXITSTATUS(status) == 1/WEXITSTATUS(status)/
-> 
-> Thanks for your patch.
-> 
-> Best Regards,
-> 
-> Xiao Yang
+>    fanotify: configurable limits via sysfs
+>    fanotify: support limited functionality for unprivileged users
 
-Thank you very much.
+Thanks a lot!
+IMHO being in next tree should be ok (commits hashes should be kept).
 
-QI
+FYI next week I'm busy due hackweek, thus I'll probably merge this after.
 
-> 
-> On 3/19/21 9:45 PM, QI Fuli wrote:
->> remove redundant tasks as BTRFS is checked in is_swap_supported()
->> Fixes: caf453532("syscalls/swapon/swapon0{1..3}: use helpers to check
->> 	support status")
->> 
->> Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
->> ---
->>  testcases/kernel/syscalls/swapon/swapon01.c |  7 -------
->>  testcases/kernel/syscalls/swapon/swapon02.c | 14 +++-----------
->>  testcases/kernel/syscalls/swapon/swapon03.c | 15 +--------------
->>  3 files changed, 4 insertions(+), 32 deletions(-)
->> 
->> diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
->> index f95ce0ab2..aff842e4c 100644
->> --- a/testcases/kernel/syscalls/swapon/swapon01.c
->> +++ b/testcases/kernel/syscalls/swapon/swapon01.c
->> @@ -32,18 +32,11 @@ static void cleanup(void);
->>  char *TCID = "swapon01";
->>  int TST_TOTAL = 1;
->> 
->> -static long fs_type;
->> -
->>  static void verify_swapon(void)
->>  {
->>  	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
->> 
->>  	if (TEST_RETURN == -1) {
->> -		if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
->> -			tst_brkm(TCONF, cleanup,
->> -			         "Swapfile on BTRFS not implemeted");
->> -			return;
->> -		}
->>  		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
->>  	} else {
->>  		tst_resm(TPASS, "Succeeded to turn on swapfile");
->> diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
->> index 3d49d0c6b..f0f99619d 100644
->> --- a/testcases/kernel/syscalls/swapon/swapon02.c
->> +++ b/testcases/kernel/syscalls/swapon/swapon02.c
->> @@ -47,7 +47,6 @@ int TST_TOTAL = 4;
->> 
->>  static uid_t nobody_uid;
->>  static int do_swapoff;
->> -static long fs_type;
->> 
->>  static struct test_case_t {
->>  	char *err_desc;
->> @@ -81,11 +80,6 @@ static void verify_swapon(struct test_case_t *test)
->>  		return;
->>  	}
->> 
->> -	if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL) {
->> -		tst_resm(TCONF, "Swapfile on BTRFS not implemeted");
->> -			return;
->> -	}
->> -
->>  	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
->>  	         " %d, errno: %s and got %d.", test->exp_errno,
->>  	         test->exp_errval, TEST_ERRNO);
->> @@ -138,12 +132,10 @@ static void setup(void)
->>  	make_swapfile(cleanup, "swapfile01", 0);
->>  	make_swapfile(cleanup, "alreadyused", 0);
->> 
->> -	if (ltp_syscall(__NR_swapon, "alreadyused", 0)) {
->> -		if (fs_type != TST_BTRFS_MAGIC || errno != EINVAL)
->> -			tst_resm(TWARN | TERRNO, "swapon(alreadyused) failed");
->> -	} else {
->> +	if (ltp_syscall(__NR_swapon, "alreadyused", 0))
->> +		tst_resm(TWARN | TERRNO, "swapon(alreadyused) failed");
->> +	else
->>  		do_swapoff = 1;
->> -	}
->> 
->>  	TEST_PAUSE;
->>  }
->> diff --git a/testcases/kernel/syscalls/swapon/swapon03.c b/testcases/kernel/syscalls/swapon/swapon03.c
->> index cef57150c..19455bfe6 100644
->> --- a/testcases/kernel/syscalls/swapon/swapon03.c
->> +++ b/testcases/kernel/syscalls/swapon/swapon03.c
->> @@ -52,8 +52,6 @@ int TST_TOTAL = 1;
->> 
->>  static int swapfiles;
->> 
->> -static long fs_type;
->> -
->>  int testfiles = 3;
->>  static struct swap_testfile_t {
->>  	char *filename;
->> @@ -215,9 +213,6 @@ static int setup_swap(void)
->>  			/* turn on the swap file */
->>  			res = ltp_syscall(__NR_swapon, filename, 0);
->>  			if (res != 0) {
->> -				if (fs_type == TST_BTRFS_MAGIC && errno == EINVAL)
->> -					exit(2);
->> -
->>  				if (errno == EPERM) {
->>  					printf("Successfully created %d "
->>  					       "swapfiles\n", j);
->> @@ -233,16 +228,8 @@ static int setup_swap(void)
->>  	} else
->>  		waitpid(pid, &status, 0);
->> 
->> -	switch (WEXITSTATUS(status)) {
->> -	case 0:
->> -	break;
->> -	case 2:
->> -		tst_brkm(TCONF, cleanup, "Swapfile on BTRFS not implemeted");
->> -	break;
->> -	default:
->> +	if (WEXITSTATUS(status) == 1)
->>  		tst_brkm(TFAIL, cleanup, "Failed to setup swaps");
->> -	break;
->> -	}
->> 
->>  	/* Create all needed extra swapfiles for testing */
->>  	for (j = 0; j < testfiles; j++)
->> --
->> 2.29.2
->> 
->> 
-> 
+Kind regards,
+Petr
 
+[1] http://lists.linux.it/pipermail/ltp/2021-March/021637.html
