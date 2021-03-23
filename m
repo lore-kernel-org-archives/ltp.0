@@ -1,7 +1,9 @@
 From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-Date: Tue, 23 Mar 2021 18:57:15 +0800
-Subject: [LTP] [PATCH 1/3] tst_safe_sysv_ipc.c: Add SAFE_SEMOP macro
-Message-ID: <1616497037-19158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Date: Tue, 23 Mar 2021 18:57:16 +0800
+Subject: [LTP] [PATCH 2/3] tst_safe_sysv_ipc.c: Fix wrong ret_check
+In-Reply-To: <1616497037-19158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+References: <1616497037-19158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+Message-ID: <1616497037-19158-2-git-send-email-xuyang2018.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,51 +12,118 @@ To: ltp@lists.linux.it
 
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 
+Since commit e9e508aad1("lib/tst_safe_sysv_ipc.c: add other cmds in ret_check"),
+we added these cmds(SHM_LOCK, SHM_UNLOCK,SETALL,SETVAL) commands into this check.
+
+It is wrong because these flags are defined in different system headers, the same value
+can represent different meaning in differnent headers. ie. SHM_LOCK is 11, GETPID is
+also 11. SHM_LOCK only returns 0 and -1 but GETPID returns -1 and postive num. ret_check will
+idenity it fail even we call semctl with GETPID successfully.
+
+Fix this regression by using different ret check for msg/shm/sem.
+
+Fixes: e9e508aad1("lib/tst_safe_sysv_ipc.c: add other cmds in ret_check")
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/tst_safe_sysv_ipc.h |  4 ++++
- lib/tst_safe_sysv_ipc.c     | 18 ++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ lib/tst_safe_sysv_ipc.c | 52 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 13 deletions(-)
 
-diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-index bb6532662..7804ce192 100644
---- a/include/tst_safe_sysv_ipc.h
-+++ b/include/tst_safe_sysv_ipc.h
-@@ -65,4 +65,8 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
- 	(semid) = ((cmd) == IPC_RMID ? -1 : (semid)); \
- 	tst_ret_; })
- 
-+int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
-+		size_t nsops);
-+#define SAFE_SEMOP(semid, sops, nsops) \
-+	safe_semop(__FILE__, __LINE__, (semid), (sops), (nsops))
- #endif /* TST_SAFE_SYSV_IPC_H__ */
 diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index e72985d61..012f5ba38 100644
+index 012f5ba38..7a3c515e6 100644
 --- a/lib/tst_safe_sysv_ipc.c
 +++ b/lib/tst_safe_sysv_ipc.c
-@@ -227,3 +227,21 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+@@ -13,28 +13,54 @@
+ #include "lapi/sem.h"
  
- 	return rval;
+ /*
+- * The IPC_STAT, IPC_SET, IPC_RMID, SHM_LOCK, SHM_UNLOCK, SETALL and SETVAL
+- * can return either 0 or -1.
+- *
+- * Linux specific cmds either returns -1 on failure or positive integer
+- * either index into an kernel array or shared primitive indentifier.
++ * The IPC_STAT, IPC_SET, IPC_RMID can return either 0 or -1.
+  */
+-static int ret_check(int cmd, int ret)
++static int msg_ret_check(int cmd, int ret)
+ {
+ 	switch (cmd) {
+ 	case IPC_STAT:
+ 	case IPC_SET:
+ 	case IPC_RMID:
+-	case SHM_LOCK:
+-	case SHM_UNLOCK:
+-	case SETALL:
+-	case SETVAL:
+ 		return ret != 0;
+ 	default:
+ 		return ret < 0;
+ 	}
  }
-+
-+int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
-+		size_t nsops)
+ 
++/*
++ * The IPC_STAT, IPC_SET, IPC_RMID, SHM_LOCK, SHM_UNLOCK can return either 0 or -1.
++ */
++static int shm_ret_check(int cmd, int ret)
 +{
-+	int rval;
-+
-+	rval = semop(semid, sops, nsops);
-+	if (rval == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"semop(%d, %p, %zu) failed", semid, sops, nsops);
-+	} else if (rval < 0) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"Invalid semop(%d, %p, %zu) return value %d",
-+			semid, sops, nsops, rval);
++	switch (cmd) {
++	case IPC_STAT:
++	case IPC_SET:
++	case IPC_RMID:
++	case SHM_LOCK:
++	case SHM_UNLOCK:
++		return ret != 0;
++	default:
++		return ret < 0;
 +	}
-+
-+	return rval;
 +}
++
++/*
++ * The IPC_STAT, IPC_SET, IPC_RMID, SETALL, SETVAL can return either 0 or -1.
++ */
++static int sem_ret_check(int cmd, int ret)
++{
++	switch (cmd) {
++	case IPC_STAT:
++	case IPC_SET:
++	case IPC_RMID:
++	case SETALL:
++	case SETVAL:
++		return ret != 0;
++	default:
++		return ret < 0;
++	}
++}
++
+ int safe_msgget(const char *file, const int lineno, key_t key, int msgflg)
+ {
+ 	int rval;
+@@ -103,7 +129,7 @@ int safe_msgctl(const char *file, const int lineno, int msqid, int cmd,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"msgctl(%i, %i, %p) failed", msqid, cmd, buf);
+-	} else if (ret_check(cmd, rval)) {
++	} else if (msg_ret_check(cmd, rval)) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid msgctl(%i, %i, %p) return value %d", msqid,
+ 			cmd, buf, rval);
+@@ -173,7 +199,7 @@ int safe_shmctl(const char *file, const int lineno, int shmid, int cmd,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"shmctl(%i, %i, %p) failed", shmid, cmd, buf);
+-	} else if (ret_check(cmd, rval)) {
++	} else if (shm_ret_check(cmd, rval)) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid shmctl(%i, %i, %p) return value %d", shmid,
+ 			cmd, buf, rval);
+@@ -219,7 +245,7 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+ 	if (rval == -1) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 		"semctl(%i, %i, %i,...) failed", semid, semnum, cmd);
+-	} else if (ret_check(cmd, rval)) {
++	} else if (sem_ret_check(cmd, rval)) {
+ 		tst_brk_(file, lineno, TBROK | TERRNO,
+ 			"Invalid semctl(%i, %i, %i,...) return value %d", semid,
+ 			semnum, cmd, rval);
 -- 
 2.23.0
 
