@@ -1,75 +1,97 @@
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Mon, 22 Mar 2021 07:32:56 -0700
-Subject: [LTP] [net] 5478fcd0f4:
- BUG:sleeping_function_called_from_invalid_context_at_include/linux/sched/mm.h
-In-Reply-To: <161640517096.3021.7957377947074787708@kwain.local>
-References: <20210322083553.GI32426@xsang-OptiPlex-9020>
- <161640335063.3537.6668586361113979688@kwain.local>
- <20210322090536.GK1719932@casper.infradead.org>
- <161640517096.3021.7957377947074787708@kwain.local>
-Message-ID: <CAKgT0UdKtBU22dwnZmkP8+kjDBRhOZHc9-V3PhfsR+4Tt-N3nA@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 23 Mar 2021 14:21:52 +0800
+Subject: [LTP] [s390x vDSO Bug?] clock_gettime(CLOCK_MONOTONIC_RAW,
+ ...) gets abnormal ts value
+Message-ID: <CAEemH2cELFSMzEYM-Gd1LxNuFzVE2PcG1chzyaVhW2YCJjjzdw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Mar 22, 2021 at 2:26 AM Antoine Tenart <atenart@kernel.org> wrote:
->
-> Quoting Matthew Wilcox (2021-03-22 10:05:36)
-> > On Mon, Mar 22, 2021 at 09:55:50AM +0100, Antoine Tenart wrote:
-> > > I only had a quick look at this, but I think the issue should be fixed
-> > > with:
-> > >
-> > > diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-> > > index e16d54aabd4c..3ae3c20eb64c 100644
-> > > --- a/net/core/net-sysfs.c
-> > > +++ b/net/core/net-sysfs.c
-> > > @@ -1378,7 +1378,7 @@ static ssize_t xps_queue_show(struct net_device *dev, unsigned int index,
-> > >         nr_ids = dev_maps ? dev_maps->nr_ids :
-> > >                  (type == XPS_CPUS ? nr_cpu_ids : dev->num_rx_queues);
-> > >
-> > > -       mask = bitmap_zalloc(nr_ids, GFP_KERNEL);
-> > > +       mask = bitmap_zalloc(nr_ids, GFP_ATOMIC);
-> > >         if (!mask) {
-> > >                 rcu_read_unlock();
-> > >                 return -ENOMEM;
-> >
-> > sysfs isn't a good reason to use GFP_ATOMIC.
-> >
-> > try something like this:
-> >
-> > -       mask = bitmap_zalloc(nr_ids, GFP_KERNEL);
-> > +       mask = bitmap_zalloc(nr_ids, GFP_NOWAIT);
-> >         if (!mask) {
-> > +               int new_nr_ids;
-> > +
-> >                 rcu_read_unlock();
-> > -               return -ENOMEM;
-> > +               mask = bitmap_zalloc(nr_ids, GFP_KERNEL);
-> > +               if (!mask)
-> > +                       return -ENOMEM;
-> > +               rcu_read_lock();
-> > +               dev_maps = rcu_dereference(dev->xps_maps[type]);
-> > +               /* if nr_ids shrank while we slept, do not overrun array.
-> > +                * if it increased, we just won't show the new ones
-> > +                */
-> > +               new_nr_ids = dev_maps ? dev_maps->nr_ids :
-> > +                       (type == XPS_CPUS ? nr_cpu_ids : dev->num_rx_queues);
-> > +               if (new_nr_ids < nr_ids)
-> > +                       nr_ids = new_nr_ids;
->
-> Thanks for the suggestion, I'll look into that. We could also just
-> return -ENOMEM if the first allocation fails, retrying adds a lot of
-> complexity.
->
-> Antoine
+Hi linux-s390 experts,
 
-I agree that the retry logic is probably unneeded. In addition we
-probably don't need GFP_ATOMIC as GFP_NOWAIT will probably be good
-enough as the allocation can fail and just return an -ENOMEM in the
-case of low memory.
+We observed that LTP/clock_gettime04 always FAIL on s390x with
+kernel-v5.12-rc3.
+To simply show the problem, I rewrite the LTP reproducer as a simple C
+below.
+Maybe it's a new bug introduced from the kernel-5.12 series branch?
 
-Thanks.
+PASS:
+------------
+# uname -r
+5.11.0-*.s390x
 
-- Alex
+# grep TIME_NS /boot/config-5.11.0-*.s390x
+no TIME_NS enabled
+
+## ./test-timer
+vdso_ts_nsec = 898169901815, vdso_ts.tv_sec = 898, vdso_ts.tv_nsec =
+169901815
+sys_ts_nsec  = 898169904269, sys_ts.tv_sec  = 898, sys_ts.tv_nsec  =
+169904269
+===> PASS
+
+FAIL:
+----------
+# uname -r
+5.12.0-0.rc3.*.s390x
+
+# grep TIME_NS /boot/config-5.12.0-0.rc3.s390x
+CONFIG_TIME_NS=y
+CONFIG_GENERIC_VDSO_TIME_NS=y
+
+# ./test-timer
+vdso_ts_nsec = 4484351380985507, vdso_ts.tv_sec = 4484351, vdso_ts.tv_nsec
+= 380985507
+sys_ts_nsec  = 1446923235377, sys_ts.tv_sec  = 1446, sys_ts.tv_nsec  =
+923235377
+===> FAIL
+
+
+# cat test-timer.c
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <time.h>
+#include <sys/time.h>
+#include <asm/unistd_64.h>
+
+long long ts_to_ns(struct timespec ts)
+{
+        return (ts.tv_sec * 1000000000 + ts.tv_nsec);
+}
+
+int main(void)
+{
+        long long vdso_ts_nsec, sys_ts_nsec;
+
+        struct timespec vdso_ts, sys_ts;
+
+        clock_gettime(CLOCK_MONOTONIC_RAW, &vdso_ts); //vdso way
+        syscall(__NR_clock_gettime, CLOCK_MONOTONIC_RAW, &sys_ts);
+
+        vdso_ts_nsec = ts_to_ns(vdso_ts);
+        sys_ts_nsec  = ts_to_ns(sys_ts);
+
+
+        printf("vdso_ts_nsec = %lld, vdso_ts.tv_sec = %ld, vdso_ts.tv_nsec
+= %ld\n", vdso_ts_nsec, vdso_ts.tv_sec, vdso_ts.tv_nsec);
+        printf("sys_ts_nsec  = %lld, sys_ts.tv_sec  = %ld, sys_ts.tv_nsec
+ = %ld\n", sys_ts_nsec, sys_ts.tv_sec, sys_ts.tv_nsec);
+
+        if ((vdso_ts_nsec - sys_ts_nsec) > 1000000)
+                printf("===> FAIL\n");
+        else
+                printf("===> PASS\n");
+
+        return 0;
+}
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210323/05629b65/attachment.htm>
