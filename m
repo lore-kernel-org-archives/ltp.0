@@ -1,78 +1,51 @@
 From: Heiko Carstens <hca@linux.ibm.com>
-Date: Tue, 23 Mar 2021 22:58:19 +0100
-Subject: [LTP] [PATCH 3/3] lib/vdso: remove struct arch_vdso_data from vdso
- data struct
+Date: Tue, 23 Mar 2021 22:58:17 +0100
+Subject: [LTP] [PATCH 1/3] s390/vdso: fix tod clock steering
 In-Reply-To: <20210323215819.4161164-1-hca@linux.ibm.com>
 References: <YFmUrVOyX4q+8Dy9@osiris>
  <20210323215819.4161164-1-hca@linux.ibm.com>
-Message-ID: <20210323215819.4161164-4-hca@linux.ibm.com>
+Message-ID: <20210323215819.4161164-2-hca@linux.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since commit d60d7de3e16d ("lib/vdso: Allow to add architecture-specific
-vdso data") it is possible to provide arch specific VDSO data.
+The s390 specific vdso function __arch_get_hw_counter() is supposed to
+consider tod clock steering.
 
-This was only added for s390, which doesn't make use this anymore.
-Therefore remove it again.
+If a tod clock steering event happens and the tod clock is set to a
+new value __arch_get_hw_counter() will not return the real tod clock
+value but slowly drift it from the old delta until the returned value
+finally matches the real tod clock value again.
 
+When converting the assembler code to C it was forgotten to tell user
+space in which direction the clock has to be adjusted.
+
+Worst case is now that instead of drifting the clock slowly it will
+jump into the opposite direction by a factor of two.
+
+Fix this by simply providing the missing value to user space.
+
+Fixes: 4bff8cb54502 ("s390: convert to GENERIC_VDSO")
+Cc: <stable@vger.kernel.org> # 5.10
 Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- arch/Kconfig            |  3 ---
- include/vdso/datapage.h | 10 ----------
- 2 files changed, 13 deletions(-)
+ arch/s390/kernel/time.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index ecfd3520b676..35c7114f7ea3 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1147,9 +1147,6 @@ config HAVE_SPARSE_SYSCALL_NR
- 	  entries at 4000, 5000 and 6000 locations. This option turns on syscall
- 	  related optimizations for a given architecture.
+diff --git a/arch/s390/kernel/time.c b/arch/s390/kernel/time.c
+index 165da961f901..e37285a5101b 100644
+--- a/arch/s390/kernel/time.c
++++ b/arch/s390/kernel/time.c
+@@ -382,6 +382,7 @@ static void clock_sync_global(unsigned long delta)
+ 		      tod_steering_delta);
+ 	tod_steering_end = now + (abs(tod_steering_delta) << 15);
+ 	vdso_data->arch_data.tod_steering_end = tod_steering_end;
++	vdso_data->arch_data.tod_steering_delta = tod_steering_delta;
  
--config ARCH_HAS_VDSO_DATA
--	bool
--
- config HAVE_STATIC_CALL
- 	bool
- 
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 73eb622e7663..ee810cae4e1e 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -19,12 +19,6 @@
- #include <vdso/time32.h>
- #include <vdso/time64.h>
- 
--#ifdef CONFIG_ARCH_HAS_VDSO_DATA
--#include <asm/vdso/data.h>
--#else
--struct arch_vdso_data {};
--#endif
--
- #define VDSO_BASES	(CLOCK_TAI + 1)
- #define VDSO_HRES	(BIT(CLOCK_REALTIME)		| \
- 			 BIT(CLOCK_MONOTONIC)		| \
-@@ -70,8 +64,6 @@ struct vdso_timestamp {
-  * @tz_dsttime:		type of DST correction
-  * @hrtimer_res:	hrtimer resolution
-  * @__unused:		unused
-- * @arch_data:		architecture specific data (optional, defaults
-- *			to an empty struct)
-  *
-  * vdso_data will be accessed by 64 bit and compat code at the same time
-  * so we should be careful before modifying this structure.
-@@ -105,8 +97,6 @@ struct vdso_data {
- 	s32			tz_dsttime;
- 	u32			hrtimer_res;
- 	u32			__unused;
--
--	struct arch_vdso_data	arch_data;
- };
- 
- /*
+ 	/* Update LPAR offset. */
+ 	if (ptff_query(PTFF_QTO) && ptff(&qto, sizeof(qto), PTFF_QTO) == 0)
 -- 
 2.25.1
 
