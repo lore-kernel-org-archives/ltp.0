@@ -1,54 +1,42 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Wed, 24 Mar 2021 17:20:59 +0800
-Subject: [LTP] [PATCH] syscalls/bind: Use safe_macros to check the return
- value of the close() & bind().
-Message-ID: <20210324092059.8503-1-xieziyao@huawei.com>
+From: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Wed, 24 Mar 2021 09:26:53 +0000
+Subject: [LTP] kdump failure on x86
+In-Reply-To: <cbc294d7-830c-9491-13b1-836be7da043f@jv-coder.de>
+References: <BMXPR01MB2870D7110A3D2AD3DF1B495AEE649@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>,
+ <cbc294d7-830c-9491-13b1-836be7da043f@jv-coder.de>
+Message-ID: <BMXPR01MB28704FBCBB43FA5BE924AF12EE639@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For those:
-  testcases/kernel/syscalls/bind/bind03.c
-  testcases/kernel/syscalls/bind/bind06.c
+Got it, thanks!
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/bind/bind03.c | 4 ++--
- testcases/kernel/syscalls/bind/bind06.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+________________________________
+From: Joerg Vehlow <lkml@jv-coder.de>
+Sent: Wednesday, March 24, 2021 1:57 PM
+To: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>; ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] kdump failure on x86
 
-diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
-index c39e8f197..ebde19591 100644
---- a/testcases/kernel/syscalls/bind/bind03.c
-+++ b/testcases/kernel/syscalls/bind/bind03.c
-@@ -66,8 +66,8 @@ void run(void)
+Hi,
 
- static void cleanup(void)
- {
--	close(sock1);
--	close(sock2);
-+	SAFE_CLOSE(sock1);
-+	SAFE_CLOSE(sock2);
- }
+On 3/23/2021 3:27 PM, Pankaj Vinodrao Joshi wrote:
+> Hi,
+> i am trying to run kdump on x86 with 5.5.6 kernel but i am getting
+> following errors, can someone please tell whats going wrong here. I
+> have lkdtm config in the kernel and installed kexec-tools as well what
+> could be the cause of issue ???
+It looks like the testcase is hopelessly outdated... The jprobe
+interface was removed in linux 4.15 back in 2017 [1]
+The tests needs a major rewrite, to work on kernels newer than 4.15.
 
- static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/bind/bind06.c b/testcases/kernel/syscalls/bind/bind06.c
-index e971a8940..017e0fc89 100644
---- a/testcases/kernel/syscalls/bind/bind06.c
-+++ b/testcases/kernel/syscalls/bind/bind06.c
-@@ -60,8 +60,8 @@ static void cleanup(void)
+J?rg
 
- static void do_bind(void)
- {
--	bind(fd, (struct sockaddr *)&addr1, sizeof(addr1));
--	bind(fd, (struct sockaddr *)&addr2, sizeof(addr2));
-+	SAFE_BIND(fd, (struct sockaddr *)&addr1, sizeof(addr1));
-+	SAFE_BIND(fd, (struct sockaddr *)&addr2, sizeof(addr2));
- }
 
- static void *thread_run(void *arg)
---
-2.17.1
-
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=590c845930457d25d27dc1fdd964a1ce18ef2d7d
+[EXT]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210324/96084398/attachment-0001.htm>
