@@ -1,29 +1,54 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 24 Mar 2021 09:27:54 +0100
-Subject: [LTP] kdump failure on x86
-In-Reply-To: <BMXPR01MB2870D7110A3D2AD3DF1B495AEE649@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB2870D7110A3D2AD3DF1B495AEE649@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <cbc294d7-830c-9491-13b1-836be7da043f@jv-coder.de>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Wed, 24 Mar 2021 17:20:59 +0800
+Subject: [LTP] [PATCH] syscalls/bind: Use safe_macros to check the return
+ value of the close() & bind().
+Message-ID: <20210324092059.8503-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+For those:
+  testcases/kernel/syscalls/bind/bind03.c
+  testcases/kernel/syscalls/bind/bind06.c
 
-On 3/23/2021 3:27 PM, Pankaj Vinodrao Joshi wrote:
-> Hi,
-> i am trying to run kdump on x86 with 5.5.6 kernel but i am getting 
-> following errors, can someone please tell whats going wrong here. I 
-> have lkdtm config in the kernel and installed kexec-tools as well what 
-> could be the cause of issue ???
-It looks like the testcase is hopelessly outdated... The jprobe 
-interface was removed in linux 4.15 back in 2017 [1]
-The tests needs a major rewrite, to work on kernels newer than 4.15.
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+ testcases/kernel/syscalls/bind/bind03.c | 4 ++--
+ testcases/kernel/syscalls/bind/bind06.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-J?rg
+diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
+index c39e8f197..ebde19591 100644
+--- a/testcases/kernel/syscalls/bind/bind03.c
++++ b/testcases/kernel/syscalls/bind/bind03.c
+@@ -66,8 +66,8 @@ void run(void)
 
+ static void cleanup(void)
+ {
+-	close(sock1);
+-	close(sock2);
++	SAFE_CLOSE(sock1);
++	SAFE_CLOSE(sock2);
+ }
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=590c845930457d25d27dc1fdd964a1ce18ef2d7d
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/bind/bind06.c b/testcases/kernel/syscalls/bind/bind06.c
+index e971a8940..017e0fc89 100644
+--- a/testcases/kernel/syscalls/bind/bind06.c
++++ b/testcases/kernel/syscalls/bind/bind06.c
+@@ -60,8 +60,8 @@ static void cleanup(void)
+
+ static void do_bind(void)
+ {
+-	bind(fd, (struct sockaddr *)&addr1, sizeof(addr1));
+-	bind(fd, (struct sockaddr *)&addr2, sizeof(addr2));
++	SAFE_BIND(fd, (struct sockaddr *)&addr1, sizeof(addr1));
++	SAFE_BIND(fd, (struct sockaddr *)&addr2, sizeof(addr2));
+ }
+
+ static void *thread_run(void *arg)
+--
+2.17.1
+
