@@ -1,80 +1,65 @@
-From: liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn>
-Date: Wed, 24 Mar 2021 17:26:59 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01
- invoked oom-killer
-References: <1611570288-23040-1-git-send-email-liuxp11@chinatelecom.cn>, 
- <YBE03REJywKIlM0X@yuki.lan>, 
- <2021012718043566596022@chinatelecom.cn>, 
- <CAEemH2dA0T1F3wsdwtG2hsfDUUJsY8gFeTLTHyGz+pu034gH4g@mail.gmail.com>, 
- <202103051352110688245@chinatelecom.cn>, 
- <CAEemH2cW9djj3sN8j9Xj_A5iNB9DLhYYkK=nu8ypaOtiYMnLyw@mail.gmail.com>
-Message-ID: <202103241726592002447@chinatelecom.cn>
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Wed, 24 Mar 2021 10:50:11 +0100
+Subject: [LTP] [PATCH 1/3] s390/vdso: fix tod clock steering
+In-Reply-To: <20210323215819.4161164-2-hca@linux.ibm.com>
+References: <YFmUrVOyX4q+8Dy9@osiris>
+ <20210323215819.4161164-1-hca@linux.ibm.com>
+ <20210323215819.4161164-2-hca@linux.ibm.com>
+Message-ID: <YFsLU2k/h3WPDrJz@osiris>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li Wang,
-I think your patch is good.
-1.CommitLimit is the memory that can be allocated by application.
-2.ioctl_sg01 in serveral machines with your patch,the result is passed.
+On Tue, Mar 23, 2021 at 10:58:17PM +0100, Heiko Carstens wrote:
+> The s390 specific vdso function __arch_get_hw_counter() is supposed to
+> consider tod clock steering.
+> 
+> If a tod clock steering event happens and the tod clock is set to a
+> new value __arch_get_hw_counter() will not return the real tod clock
+> value but slowly drift it from the old delta until the returned value
+> finally matches the real tod clock value again.
+> 
+> When converting the assembler code to C it was forgotten to tell user
+> space in which direction the clock has to be adjusted.
+> 
+> Worst case is now that instead of drifting the clock slowly it will
+> jump into the opposite direction by a factor of two.
+> 
+> Fix this by simply providing the missing value to user space.
+> 
+> Fixes: 4bff8cb54502 ("s390: convert to GENERIC_VDSO")
+> Cc: <stable@vger.kernel.org> # 5.10
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> ---
+>  arch/s390/kernel/time.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/s390/kernel/time.c b/arch/s390/kernel/time.c
+> index 165da961f901..e37285a5101b 100644
+> --- a/arch/s390/kernel/time.c
+> +++ b/arch/s390/kernel/time.c
+> @@ -382,6 +382,7 @@ static void clock_sync_global(unsigned long delta)
+>  		      tod_steering_delta);
+>  	tod_steering_end = now + (abs(tod_steering_delta) << 15);
+>  	vdso_data->arch_data.tod_steering_end = tod_steering_end;
+> +	vdso_data->arch_data.tod_steering_delta = tod_steering_delta;
 
-Thanks!
-    
-From: Li Wang
-Date: 2021-03-05 17:02
-To: liuxp11@chinatelecom.cn
-CC: Cyril Hrubis; ltp; mdoucha
-Subject: Re: Re: [LTP] [PATCH 1/2] syscalls/ioctl: ioctl_sg01.c: ioctl_sg01 invoked oom-killer
-Hi Xinpeng,
+..and yet another bug: __arch_get_hw_counter() tests if
+tod_steering_delta is negative.
+It makes sense to give tod_steering_delta the correct type:
 
-On Fri, Mar 5, 2021 at 1:52 PM liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn> wrote:
---- a/lib/tst_memutils.c
-+++ b/lib/tst_memutils.c
-@@ -36,6 +36,13 @@ void tst_pollute_memory(size_t maxsize, int fillchar)
-        if (info.freeram - safety < maxsize / info.mem_unit)
-                maxsize = (info.freeram - safety) * info.mem_unit;
-
- ==>Thanks,but the maxsize original code need to be deleted,Right?
-
-No, the maxsize code is also useful, it needs to define the value in
-most common situations(i.e. CommitLimit > MemAvailable).
-
-But I'm still hesitating to use ComitLimit as the threshold for 'maxsize'.
-Because according to the Linux document, it says that only take effort
-when overcommit_memory is setting to 2. But our test system all set 0
-by default.
-
-   "This limit is only adhered to if strict overcommit accounting is enabled
-    (mode 2 in 'vm.overcommit_memory')."
-    see: https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.rst
-
-Seems to use CommitLimit looks a bit strict and strange to test.
-
-And I even think the way to use MemAvailable is acceptable if
-MemFree > MemAvailable, just like what you did in your last patch.
-
-I'm still not very sure so far~
-(But one thing I can confirm that MemAvailable < MemFree is correct behavior sometimes)
-
+diff --git a/arch/s390/include/asm/vdso/data.h b/arch/s390/include/asm/vdso/data.h
+index 7b3cdb4a5f48..73ee89142666 100644
+--- a/arch/s390/include/asm/vdso/data.h
++++ b/arch/s390/include/asm/vdso/data.h
+@@ -6,7 +6,7 @@
+ #include <vdso/datapage.h>
  
-
-+       /*
-+        * To respect CommitLimit to prevent test invoking OOM killer,
-+        * this may appear on system with a smaller swap-disk (or disabled).
-+        */
-+       if (SAFE_READ_MEMINFO("CommitLimit:") < SAFE_READ_MEMINFO("MemAvailable:"))
-+               maxsize = SAFE_READ_MEMINFO("CommitLimit:") * 1024 - (safety * info.mem_unit);
-+
-        blocksize = MIN(maxsize, blocksize);
-        map_count = maxsize / blocksize;
-        map_blocks = SAFE_MALLOC(map_count * sizeof(void *));
+ struct arch_vdso_data {
+-	__u64 tod_steering_delta;
++	__s64 tod_steering_delta;
+ 	__u64 tod_steering_end;
+ };
  
-
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210324/39164c88/attachment.htm>
