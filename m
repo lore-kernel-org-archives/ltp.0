@@ -1,48 +1,39 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 25 Mar 2021 16:56:18 +0800
-Subject: [LTP] [PATCH 0/3] s390 vdso fixes
-In-Reply-To: <20210323215819.4161164-1-hca@linux.ibm.com>
-References: <YFmUrVOyX4q+8Dy9@osiris>
- <20210323215819.4161164-1-hca@linux.ibm.com>
-Message-ID: <CAEemH2cSk=doHL51uD5Qu6uCRRTCgYd0EN0iij=X+538J53XsQ@mail.gmail.com>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Thu, 25 Mar 2021 17:01:18 +0800
+Subject: [LTP] [PATCH] syscalls/capset: modify incorrect use of TTERRNO for
+ capset/capset01.c
+Message-ID: <20210325090118.143355-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Heiko,
+Use TEST() to check the return value of the tst_syscall.
 
-On Wed, Mar 24, 2021 at 5:58 AM Heiko Carstens <hca@linux.ibm.com> wrote:
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+ testcases/kernel/syscalls/capset/capset01.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> Li Wang reported that clock_gettime(CLOCK_MONOTONIC_RAW, ...) does not
-> work correctly on s390 via vdso. Debugging this also revealed an
-> unrelated bug (first patch).
->
-> The second patch fixes the problem: the tod clock steering parameters
-> required by __arch_get_hw_counter() are only present within the first
-> element of the _vdso_data array and not at all within the _timens_data
-> array.
->
-> Instead of working around this simply provide an s390 specific vdso
-> data page which contains the tod clock steering parameters.
->
-> This allows also to remove ARCH_HAS_VDSO_DATA again.
->
-> Heiko Carstens (3):
->   s390/vdso: fix tod clock steering
->   s390/vdso: fix arch_data access for __arch_get_hw_counter()
->   lib/vdso: remove struct arch_vdso_data from vdso data struct
->
+diff --git a/testcases/kernel/syscalls/capset/capset01.c b/testcases/kernel/syscalls/capset/capset01.c
+index 6b064517a..a323fc5be 100644
+--- a/testcases/kernel/syscalls/capset/capset01.c
++++ b/testcases/kernel/syscalls/capset/capset01.c
+@@ -32,10 +32,9 @@ static void verify_capset(unsigned int n)
+ 	header->version = tc->version;
+ 	header->pid = pid;
 
-Thanks for the quick fix! I confirmed these patches work for me.
-(tested with latest mainline kernel v5.12-rc4)
+-	if (tst_syscall(__NR_capget, header, data) == -1) {
+-		tst_res(TFAIL | TTERRNO, "capget() failed");
+-		return;
+-	}
++	TEST(tst_syscall(__NR_capget, header, data));
++	if (TST_RET == -1)
++	      tst_brk(TFAIL | TTERRNO, "capget() failed");
 
-Tested-by: Li Wang <liwang@redhat.com>
+ 	TST_EXP_PASS(tst_syscall(__NR_capset, header, data),
+ 	             "capset() with %s", tc->message);
+--
+2.17.1
 
--- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210325/ef168269/attachment-0001.htm>
