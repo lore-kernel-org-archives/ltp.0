@@ -1,136 +1,48 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 25 Mar 2021 16:37:01 +0800
-Subject: [LTP] [PATCH v2 1/1] brk02: Add test for removing more than one
- VMA
-In-Reply-To: <20210323162714.t5dm5vbo35vl4t2l@revolver>
-References: <20210224213114.2976705-1-Liam.Howlett@Oracle.com>
- <20210224213114.2976705-2-Liam.Howlett@Oracle.com>
- <CAEemH2cKR98HvHZ6OYJpLpaX9-5hfhTak650=DtU-q2Yoo6kbA@mail.gmail.com>
- <20210323162714.t5dm5vbo35vl4t2l@revolver>
-Message-ID: <CAEemH2fnyB_dGzQWUb7SBi9S01vYGXaZBczj2ZwaYF-Rqv9UsA@mail.gmail.com>
+Date: Thu, 25 Mar 2021 16:56:18 +0800
+Subject: [LTP] [PATCH 0/3] s390 vdso fixes
+In-Reply-To: <20210323215819.4161164-1-hca@linux.ibm.com>
+References: <YFmUrVOyX4q+8Dy9@osiris>
+ <20210323215819.4161164-1-hca@linux.ibm.com>
+Message-ID: <CAEemH2cSk=doHL51uD5Qu6uCRRTCgYd0EN0iij=X+538J53XsQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Liam,
+Hi Heiko,
 
-On Wed, Mar 24, 2021 at 12:27 AM Liam Howlett <liam.howlett@oracle.com>
-wrote:
+On Wed, Mar 24, 2021 at 5:58 AM Heiko Carstens <hca@linux.ibm.com> wrote:
 
-> Hello Li,
+> Li Wang reported that clock_gettime(CLOCK_MONOTONIC_RAW, ...) does not
+> work correctly on s390 via vdso. Debugging this also revealed an
+> unrelated bug (first patch).
 >
-> Thank you for looking at this testcase.
+> The second patch fixes the problem: the tod clock steering parameters
+> required by __arch_get_hw_counter() are only present within the first
+> element of the _vdso_data array and not at all within the _timens_data
+> array.
 >
-> * Li Wang <liwang@redhat.com> [210317 07:08]:
-> > Hi Liam, Petr,
-> >
-> > Liam Howlett <liam.howlett@oracle.com> wrote:
-> >
-> >
-> > > ...
-> > > +       if (mprotect(addr - page_size, page_size,
-> > > +                    PROT_READ|PROT_WRITE|PROT_EXEC)) {
-> > > +               tst_res(TFAIL, "Cannot mprotect new VMA.");
-> > > +               return;
-> > > +       }
-> > >
-> >
-> > We got permission denied here while performing the brk02 on
-> > x86_64/s390x(kernel-4.18~). After looking at the manual page of
-> > mprotect(), seems the access issue caused by PROT_EXEC.
-> >
-> > "
-> > POSIX says that the behavior of mprotect() is unspecified if it is
-> applied
-> > to a region of memory that was not obtained via mmap(2).
-> > ...
-> > Whether  PROT_EXEC has any effect different from PROT_READ
-> > depends on processor architecture, kernel version, and process state.
-> > If READ_IMPLIES_EXEC is set in the process's personality flags
-> > (see personality(2)), specifying PROT_READ will implicitly add PROT_EXEC.
-> > "
+> Instead of working around this simply provide an s390 specific vdso
+> data page which contains the tod clock steering parameters.
 >
+> This allows also to remove ARCH_HAS_VDSO_DATA again.
 >
-> Unforntunately, dropping the PROT_EXEC causes the VMA behaviour to
-> change and does not test what this testcase is intended to test.
+> Heiko Carstens (3):
+>   s390/vdso: fix tod clock steering
+>   s390/vdso: fix arch_data access for __arch_get_hw_counter()
+>   lib/vdso: remove struct arch_vdso_data from vdso data struct
 >
 
-Yes, I agree with this. But am not sure if Linux take some action on
-security
-side to prevent setting PROT_EXEC permission arbitrary.
+Thanks for the quick fix! I confirmed these patches work for me.
+(tested with latest mainline kernel v5.12-rc4)
 
-
->
-> Removing the PROT_EXEC and the PROT_WRITE does test what is supposed to
-> be tested.  Can you verify that this works on the s390x?
->
-
-Actually just removing the PROT_EXEC then the brk02 can be passed on all my
-platforms.
-
-
->
-> Are you using real hardware to test this or can I use some sort of
-> emulation to test on my side?
->
-
-It looks like easily to reproduce.
-
-I get failed with both virtual system and bare metal, e.g. the first one
-is on my Fedora33-workstation. But the worth to say, brk02 passed
-with raspberry pi3 and pi4.
-
-x86_64
--------------
-# virt-what
-# echo $?
-0
-# uname -r
-5.10.22-200.fc33.x86_64
-# ./brk02
-tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
-brk02.c:41: TFAIL: Cannot mprotect new VMA
-
-x86_64
--------------
-# virt-what
-kvm
-# ./brk02
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-brk02.c:41: TFAIL: Cannot mprotect new VMA
-
-s390x
--------------
-# uname -r
-5.12.0-rc4.vdso+
-# virt-what
-ibm_systemz
-ibm_systemz-zvm
-# ./brk02
-tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
-brk02.c:41: TFAIL: Cannot mprotect new VMA
-
-
-armv7l -- raspberry-pi3
------------------------------
-# uname  -r
-5.4.96-v7.1.el7
-# ./brk02
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-brk02.c:56: TPASS: munmap at least two VMAs of brk() passed
-armv7l -- raspberry-pi4
------------------------------
-# uname  -rm
-5.10.17-v7l+ armv7l
-# ./brk02
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-brk02.c:56: TPASS: munmap at least two VMAs of brk() passed
+Tested-by: Li Wang <liwang@redhat.com>
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210325/5fe42f80/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210325/ef168269/attachment-0001.htm>
