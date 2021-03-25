@@ -1,38 +1,136 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Thu, 25 Mar 2021 02:41:32 +0000
-Subject: [LTP] [PATCH] syscalls/setns: Replace libc function with
- safe_macros
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389C8AA@dggeml531-mbx.china.huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 25 Mar 2021 16:37:01 +0800
+Subject: [LTP] [PATCH v2 1/1] brk02: Add test for removing more than one
+ VMA
+In-Reply-To: <20210323162714.t5dm5vbo35vl4t2l@revolver>
+References: <20210224213114.2976705-1-Liam.Howlett@Oracle.com>
+ <20210224213114.2976705-2-Liam.Howlett@Oracle.com>
+ <CAEemH2cKR98HvHZ6OYJpLpaX9-5hfhTak650=DtU-q2Yoo6kbA@mail.gmail.com>
+ <20210323162714.t5dm5vbo35vl4t2l@revolver>
+Message-ID: <CAEemH2fnyB_dGzQWUb7SBi9S01vYGXaZBczj2ZwaYF-Rqv9UsA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi Liam,
 
-I'm sorry! Its my fault, thanks for your review!
+On Wed, Mar 24, 2021 at 12:27 AM Liam Howlett <liam.howlett@oracle.com>
+wrote:
 
-I have resubmit the patch.
+> Hello Li,
+>
+> Thank you for looking at this testcase.
+>
+> * Li Wang <liwang@redhat.com> [210317 07:08]:
+> > Hi Liam, Petr,
+> >
+> > Liam Howlett <liam.howlett@oracle.com> wrote:
+> >
+> >
+> > > ...
+> > > +       if (mprotect(addr - page_size, page_size,
+> > > +                    PROT_READ|PROT_WRITE|PROT_EXEC)) {
+> > > +               tst_res(TFAIL, "Cannot mprotect new VMA.");
+> > > +               return;
+> > > +       }
+> > >
+> >
+> > We got permission denied here while performing the brk02 on
+> > x86_64/s390x(kernel-4.18~). After looking at the manual page of
+> > mprotect(), seems the access issue caused by PROT_EXEC.
+> >
+> > "
+> > POSIX says that the behavior of mprotect() is unspecified if it is
+> applied
+> > to a region of memory that was not obtained via mmap(2).
+> > ...
+> > Whether  PROT_EXEC has any effect different from PROT_READ
+> > depends on processor architecture, kernel version, and process state.
+> > If READ_IMPLIES_EXEC is set in the process's personality flags
+> > (see personality(2)), specifying PROT_READ will implicitly add PROT_EXEC.
+> > "
+>
+>
+> Unforntunately, dropping the PROT_EXEC causes the VMA behaviour to
+> change and does not test what this testcase is intended to test.
+>
 
-Best Regards,
-Gongyi
+Yes, I agree with this. But am not sure if Linux take some action on
+security
+side to prevent setting PROT_EXEC permission arbitrary.
 
-> 
-> Hi Gongyi,
-> 
-> thanks for your patchset. While it looks correct, some of changes break
-> both tests:
-> 
-> ./setns01 -i 5
-> tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
-> setns01.c:153: TCONF: no ns types/proc entries
-> 
-> ./setns02 -i 5
-> tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
-> setns02.c:160: TCONF: your kernel has CONFIG_IPC_NS, CONFIG_UTS_NS
-> or CONFIG_PROC disabled
-> setns02.c:175: TWARN: shmctl(0, 0, (nil)) failed: EINVAL (22)
-> 
-> Kind regards,
-> Petr
+
+>
+> Removing the PROT_EXEC and the PROT_WRITE does test what is supposed to
+> be tested.  Can you verify that this works on the s390x?
+>
+
+Actually just removing the PROT_EXEC then the brk02 can be passed on all my
+platforms.
+
+
+>
+> Are you using real hardware to test this or can I use some sort of
+> emulation to test on my side?
+>
+
+It looks like easily to reproduce.
+
+I get failed with both virtual system and bare metal, e.g. the first one
+is on my Fedora33-workstation. But the worth to say, brk02 passed
+with raspberry pi3 and pi4.
+
+x86_64
+-------------
+# virt-what
+# echo $?
+0
+# uname -r
+5.10.22-200.fc33.x86_64
+# ./brk02
+tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
+brk02.c:41: TFAIL: Cannot mprotect new VMA
+
+x86_64
+-------------
+# virt-what
+kvm
+# ./brk02
+tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
+brk02.c:41: TFAIL: Cannot mprotect new VMA
+
+s390x
+-------------
+# uname -r
+5.12.0-rc4.vdso+
+# virt-what
+ibm_systemz
+ibm_systemz-zvm
+# ./brk02
+tst_test.c:1289: TINFO: Timeout per run is 0h 05m 00s
+brk02.c:41: TFAIL: Cannot mprotect new VMA
+
+
+armv7l -- raspberry-pi3
+-----------------------------
+# uname  -r
+5.4.96-v7.1.el7
+# ./brk02
+tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
+brk02.c:56: TPASS: munmap at least two VMAs of brk() passed
+armv7l -- raspberry-pi4
+-----------------------------
+# uname  -rm
+5.10.17-v7l+ armv7l
+# ./brk02
+tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
+brk02.c:56: TPASS: munmap at least two VMAs of brk() passed
+
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210325/5fe42f80/attachment.htm>
