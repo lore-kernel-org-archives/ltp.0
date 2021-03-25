@@ -1,49 +1,54 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri, 26 Mar 2021 09:41:37 +0800
-Subject: [LTP] [PATCH] fs/iso9660: bugfix for iso9660/isofs.sh
-Message-ID: <20210326014137.15718-1-zhanglianjie@uniontech.com>
+From: Sharan Turlapati <sturlapati@vmware.com>
+Date: Thu, 25 Mar 2021 11:21:25 -0700
+Subject: [LTP] [PATCH] realtime/scripts: Fix indentation error in parser.py
+Message-ID: <20210325182125.2646-1-sturlapati@vmware.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Debian uses genisoimage to replace mkisofs, the prompt of genisoimage
-is the same as that of mkisofs.
+An indentation error in parser.py causes certain blocks
+of code to run even before dependent variables are
+initialized when the code in this file is imported
+by parse-testpi1.py or parse-testpi2.py.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Post running tests like testpi-2 or testpi-4, the
+results of these tests are parsed and added to the
+logs/ directory. This bug prevents the results of such
+tests from being parsed and thus masks the results of
+these tests.
+
+Signed-off-by: Sharan Turlapati <sturlapati@vmware.com>
 ---
- testcases/kernel/fs/iso9660/isofs.sh | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ testcases/realtime/scripts/parser.py | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index 9de3f7cdc..69ab6e357 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -12,6 +12,12 @@
- TST_NEEDS_CMDS="mkisofs"
- TST_NEEDS_TMPDIR=1
- TST_TESTFUNC=do_test
-+which mkisofs >/dev/null 2>&1
-+if [ $? -ne 0 ]; then
-+       TST_NEEDS_CMDS="genisoimage"
-+fi
-+MKISOFS_CMD=$TST_NEEDS_CMDS
-+
- . tst_test.sh
-
- MAX_DEPTH=3
-@@ -56,7 +62,7 @@ do_test() {
- 		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
- 	do
- 		rm -f isofs.iso
--		EXPECT_PASS mkisofs -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-+		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
- 			|| continue
-
- 		for mount_opt in \
---
-2.20.1
-
-
+diff --git a/testcases/realtime/scripts/parser.py b/testcases/realtime/scripts/parser.py
+index 85226deb6..2acbe7d67 100644
+--- a/testcases/realtime/scripts/parser.py
++++ b/testcases/realtime/scripts/parser.py
+@@ -33,15 +33,15 @@ class Log:
+ 	def __init__(self,filename):
+ 		if filename:
+ 			log_file=filename
+-	try:
+-		self.__log_file = open(log_file, "r")
+-	except IOError as errmsg:
+-		sys.exit(errmsg)
++		try:
++			self.__log_file = open(log_file, "r")
++		except IOError as errmsg:
++			sys.exit(errmsg)
+ 
+ 	def read(self):
+ 		for line in self.__log_file.read().split("\n"):
+ 			yield line
+-	self.__log_file.close()
++		self.__log_file.close()
+ 
+ 	def eval(self):
+ 		pass
+-- 
+2.28.0
 
