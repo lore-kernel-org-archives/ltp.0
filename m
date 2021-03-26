@@ -1,15 +1,22 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Fri, 26 Mar 2021 03:03:39 +0000
+From: liuxp11@chinatelecom.cn <liuxp11@chinatelecom.cn>
+Date: Fri, 26 Mar 2021 11:08:26 +0800
 Subject: [LTP] [PATCH] syscalls/mallopt:fix compiling error
-In-Reply-To: <1616726772-29562-1-git-send-email-liuxp11@chinatelecom.cn>
-References: <1616726772-29562-1-git-send-email-liuxp11@chinatelecom.cn>
-Message-ID: <605D4F1F.3020301@fujitsu.com>
+References: <1616726772-29562-1-git-send-email-liuxp11@chinatelecom.cn>, 
+ <605D4F1F.3020301@fujitsu.com>
+Message-ID: <202103261108256329041@chinatelecom.cn>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Thanks,please ignore this patch.
+ 
+From: xuyang2018.jy@fujitsu.com
+Date: 2021-03-26 11:03
+To: Xinpeng Liu
+CC: ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH] syscalls/mallopt:fix compiling error
 Hi Liu
 > mallopt01.c:33:3: warning: implicit declaration of function ?print_mallinfo?
 > [-Wimplicit-function-declaration]
@@ -48,6 +55,9 @@ directly.
 >   #include "../mallinfo/mallinfo_common.h"
 >   #include "tst_safe_macros.h"
 >
-
+ 
 Best Regards
 Yang Xu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210326/3fc13610/attachment-0001.htm>
