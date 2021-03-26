@@ -1,35 +1,78 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 26 Mar 2021 17:43:01 +0800
-Subject: [LTP] [PATCH] syscalls/clock_adjtime: fix some mistakes for
- commit 135affca95dca84bc9ce6b1e2238e6db6e6b0f56
-In-Reply-To: <20210326080530.11211-1-xieziyao@huawei.com>
-References: <20210326080530.11211-1-xieziyao@huawei.com>
-Message-ID: <CAEemH2ck0c+UAzw7-midEc0q=GS9EsBYSOo48Lwd_MF5tuJpeg@mail.gmail.com>
+From: QI Fuli <fukuri.sai@gmail.com>
+Date: Fri, 26 Mar 2021 18:54:54 +0900
+Subject: [LTP] [PATCH 0/4] Convert swapon/swapon0{1..3} to the new API
+In-Reply-To: <CAEemH2fFciCEAdVFETCEuoWegiVrYL6pp9Vv_t3atXivPzhEDg@mail.gmail.com>
+References: <20210325181906.40688-1-qi.fuli@fujitsu.com>
+ <CAEemH2fFciCEAdVFETCEuoWegiVrYL6pp9Vv_t3atXivPzhEDg@mail.gmail.com>
+Message-ID: <234CFF0B-4141-4F80-9977-E91085DABCB6@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ziyao,
+Hi Li Wang,
 
-On Fri, Mar 26, 2021 at 4:06 PM Xie Ziyao <xieziyao@huawei.com> wrote:
+> On Mar 26, 2021, at 18:01, Li Wang <liwang@redhat.com> wrote:
+> 
+> Hi Fuli,
+> 
+> 
+> On Fri, Mar 26, 2021 at 2:20 AM QI Fuli <fukuri.sai@gmail.com <mailto:fukuri.sai@gmail.com>> wrote:
+> From: QI Fuli <qi.fuli@fujitsu.com <mailto:qi.fuli@fujitsu.com>>
+> 
+> Convert syscalls/swapon/swapon0{1..3} to the new API
+> 
+> QI Fuli (4):
+>   libs/libltpswap: Rename and Convert libs/libltpswapon to the new API
+> 
+> I appreciate your help to convert the libltpswapon to the new API, but at
+> the first sight of your patchset, I was quite curious why not complete the
+> leftover two test swapoff/ to new then we can remove the old API totally.
+> 
+> So in other words, it probably makes people confusing that there exist 
+> libltpswap/ and libltpswapon/ at the same time. 
+> 
+> Could you help finish the rest work? :)
 
-> - change TTERRNO to TERRNO after the safe_macros interface is not used;
-> - delete the unnecessary tst_res(TFAIL | TTERRNO, ...), which has been
->   determined in the previous logic.
->
-> Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
->
+Thanks for your comments.
 
-As a convention, we add "Fixes: xxxxxxxxxx" here to track the commit id.
+Yes, I will make a patchset to convert the swapoff/ and to remove the libltpswapon/.
 
-Anyway, I help to modified some format issues and pushed it, thanks!
+Best,
+QI
 
+> 
+>  
+>   syscalls/swapon/swapon01: Convert swapon01 to the new API
+>   syscalls/swapon/swapon02: Convert swapon02 to the new API
+>   syscalls/swapon/swapon03: Convert swapon03 to the new API
+> 
+>  include/libswap.h                           |  24 +++
+>  libs/libltpswap/Makefile                    |  12 ++
+>  libs/libltpswap/libswap.c                   |  63 ++++++
+>  testcases/kernel/syscalls/swapon/Makefile   |   4 +-
+>  testcases/kernel/syscalls/swapon/swapon01.c |  83 ++-----
+>  testcases/kernel/syscalls/swapon/swapon02.c | 145 +++++--------
+>  testcases/kernel/syscalls/swapon/swapon03.c | 227 ++++++++------------
+>  7 files changed, 258 insertions(+), 300 deletions(-)
+>  create mode 100644 include/libswap.h
+>  create mode 100644 libs/libltpswap/Makefile
+>  create mode 100644 libs/libltpswap/libswap.c
+> 
+> --
+> 2.30.2
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp <https://lists.linux.it/listinfo/ltp>
+> 
+> 
+> 
+> -- 
+> Regards,
+> Li Wang
 
--- 
-Regards,
-Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210326/3d7388e1/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210326/82751f0a/attachment.htm>
