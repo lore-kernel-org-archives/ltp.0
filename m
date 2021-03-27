@@ -1,10 +1,10 @@
 From: QI Fuli <fukuri.sai@gmail.com>
-Date: Sat, 27 Mar 2021 19:32:22 +0900
-Subject: [LTP] [PATCH 2/6] syscalls/swapon/swapon01: Convert swapon01 to the
+Date: Sat, 27 Mar 2021 19:32:23 +0900
+Subject: [LTP] [PATCH 3/6] syscalls/swapon/swapon02: Convert swapon02 to the
  new API
 In-Reply-To: <20210327103226.99073-1-qi.fuli@fujitsu.com>
 References: <20210327103226.99073-1-qi.fuli@fujitsu.com>
-Message-ID: <20210327103226.99073-3-qi.fuli@fujitsu.com>
+Message-ID: <20210327103226.99073-4-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,35 +15,15 @@ From: QI Fuli <qi.fuli@fujitsu.com>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- testcases/kernel/syscalls/swapon/Makefile   |  4 +-
- testcases/kernel/syscalls/swapon/swapon01.c | 83 +++++----------------
- 2 files changed, 22 insertions(+), 65 deletions(-)
+ testcases/kernel/syscalls/swapon/swapon02.c | 145 +++++++-------------
+ 1 file changed, 52 insertions(+), 93 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
-index 57ec45d48..53c795090 100644
---- a/testcases/kernel/syscalls/swapon/Makefile
-+++ b/testcases/kernel/syscalls/swapon/Makefile
-@@ -8,10 +8,10 @@ endif
- 
- top_srcdir		?= ../../../..
- 
--LTPLIBS = ltpswapon
-+LTPLIBS = ltpswap
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LTPLDLIBS  = -lltpswapon
-+LTPLDLIBS  = -lltpswap
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
-index aff842e4c..332e139b3 100644
---- a/testcases/kernel/syscalls/swapon/swapon01.c
-+++ b/testcases/kernel/syscalls/swapon/swapon01.c
-@@ -1,88 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
+index f0f99619d..070bc648b 100644
+--- a/testcases/kernel/syscalls/swapon/swapon02.c
++++ b/testcases/kernel/syscalls/swapon/swapon02.c
+@@ -1,18 +1,9 @@
+-/* Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
 - *
 - * This program is free software; you can redistribute it and/or modify it
 - * under the terms of version 2 of the GNU General Public License as
@@ -57,58 +37,91 @@ index aff842e4c..332e139b3 100644
 - * with this program; if not, write the Free Software Foundation, Inc.,
 - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 - *
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  */
++
+ /*
+  * This test case checks whether swapon(2) system call  returns
+  *  1. ENOENT when the path does not exist
+@@ -21,41 +12,27 @@
+  *  4. EBUSY when the specified path is already being used as a swap area
   */
  
-- /*
--  * Checks that swapon() succeds with swapfile.
--  */
-+/*
-+ * Checks that swapon() succeds with swapfile.
-+ */
- 
- #include <unistd.h>
+-#include <unistd.h>
  #include <errno.h>
- #include <stdlib.h>
+-#include <stdlib.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+ #include <pwd.h>
+-#include <string.h>
+-#include <sys/utsname.h>
+-#include <signal.h>
 -#include "test.h"
--#include "lapi/syscalls.h"
++
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
+-#include "safe_macros.h"
 -#include "libswapon.h"
++#include "libswap.h"
  
 -static void setup(void);
 -static void cleanup(void);
+ static void setup01(void);
+ static void cleanup01(void);
+ 
+-char *TCID = "swapon02";
+-int TST_TOTAL = 4;
 -
--char *TCID = "swapon01";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "libswap.h"
+ static uid_t nobody_uid;
+ static int do_swapoff;
  
- static void verify_swapon(void)
- {
--	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
-+	TEST(tst_syscall(__NR_swapon, "./swapfile01", 0));
+-static struct test_case_t {
++static struct tcase {
+ 	char *err_desc;
+ 	int exp_errno;
+ 	char *exp_errval;
+ 	char *path;
+ 	void (*setup)(void);
+ 	void (*cleanup)(void);
+-} testcases[] = {
++} tcases[] = {
+ 	{"Path does not exist", ENOENT, "ENOENT", "./doesnotexist", NULL, NULL},
+ 	{"Invalid path", EINVAL, "EINVAL", "./notswap", NULL, NULL},
+ 	{"Permission denied", EPERM, "EPERM", "./swapfile01",
+@@ -63,87 +40,69 @@ static struct test_case_t {
+ 	{"File already used", EBUSY, "EBUSY", "./alreadyused", NULL, NULL},
+ };
  
--	if (TEST_RETURN == -1) {
--		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TTERRNO, "Failed to turn on swapfile");
- 	} else {
--		tst_resm(TPASS, "Succeeded to turn on swapfile");
-+		tst_res(TPASS, "Succeeded to turn on swapfile");
- 		/*we need to turn this swap file off for -i option */
--		if (ltp_syscall(__NR_swapoff, "./swapfile01") != 0) {
--			tst_brkm(TBROK, cleanup, "Failed to turn off swapfile,"
-+		if (tst_syscall(__NR_swapoff, "./swapfile01") != 0) {
-+			tst_brk(TBROK, "Failed to turn off swapfile,"
- 			         " system reboot after execution of LTP "
- 				 "test suite is recommended.");
- 		}
- 	}
- }
- 
+-static void verify_swapon(struct test_case_t *test)
+-{
+-	if (test->setup)
+-		test->setup();
+-
+-	TEST(ltp_syscall(__NR_swapon, test->path, 0));
+-
+-	if (test->cleanup)
+-		test->cleanup();
+-
+-	if (TEST_RETURN == -1 && TEST_ERRNO == test->exp_errno) {
+-		tst_resm(TPASS, "swapon(2) expected failure;"
+-			 " Got errno - %s : %s",
+-			 test->exp_errval, test->err_desc);
+-		return;
+-	}
+-
+-	tst_resm(TFAIL, "swapon(2) failed to produce expected error:"
+-	         " %d, errno: %s and got %d.", test->exp_errno,
+-	         test->exp_errval, TEST_ERRNO);
+-}
+-
 -int main(int ac, char **av)
 -{
--
--	int lc;
+-	int lc, i;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -116,38 +129,99 @@ index aff842e4c..332e139b3 100644
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
--		verify_swapon();
+-		for (i = 0; i < TST_TOTAL; i++)
+-			verify_swapon(testcases + i);
 -	}
 -
 -	cleanup();
 -	tst_exit();
 -}
 -
+ static void setup01(void)
+ {
+-	SAFE_SETEUID(cleanup, nobody_uid);
++	SAFE_SETEUID(nobody_uid);
+ }
+ 
+ static void cleanup01(void)
+ {
+-	SAFE_SETEUID(cleanup, 0);
++	SAFE_SETEUID(0);
+ }
+ 
  static void setup(void)
  {
+ 	struct passwd *nobody;
+ 
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	tst_require_root();
 -
--	TEST_PAUSE;
--
+-	nobody = SAFE_GETPWNAM(cleanup, "nobody");
++	nobody = SAFE_GETPWNAM("nobody");
+ 	nobody_uid = nobody->pw_uid;
+ 
 -	tst_tmpdir();
 -
 -	is_swap_supported(cleanup, "./tstswap");
--
--	make_swapfile(cleanup, "swapfile01", 0);
 +	is_swap_supported("./tstswap");
+ 
+-	SAFE_TOUCH(cleanup, "notswap", 0777, NULL);
+-	make_swapfile(cleanup, "swapfile01", 0);
+-	make_swapfile(cleanup, "alreadyused", 0);
++	SAFE_TOUCH("notswap", 0777, NULL);
 +	make_swapfile("swapfile01", 0);
++	make_swapfile("alreadyused", 0);
+ 
+-	if (ltp_syscall(__NR_swapon, "alreadyused", 0))
+-		tst_resm(TWARN | TERRNO, "swapon(alreadyused) failed");
++	if (tst_syscall(__NR_swapon, "alreadyused", 0))
++		tst_res(TWARN | TERRNO, "swapon(alreadyused) failed");
+ 	else
+ 		do_swapoff = 1;
+-
+-	TEST_PAUSE;
  }
  
--static void cleanup(void)
--{
+ void cleanup(void)
+ {
+-	if (do_swapoff && ltp_syscall(__NR_swapoff, "alreadyused"))
+-		tst_resm(TWARN | TERRNO, "swapoff(alreadyused) failed");
++	if (do_swapoff && tst_syscall(__NR_swapoff, "alreadyused"))
++		tst_res(TWARN | TERRNO, "swapoff(alreadyused) failed");
++}
+ 
 -	tst_rmdir();
--}
++static void verify_swapon(unsigned int i)
++{
++	struct tcase *tc = tcases + i;
++	if (tc->setup)
++		tc->setup();
++
++	TEST(tst_syscall(__NR_swapon, tc->path, 0));
++
++	if (tc->cleanup)
++		tc->cleanup();
++
++	if (TST_RET == -1 && TST_ERR == tc->exp_errno) {
++		tst_res(TPASS, "swapon(2) expected failure;"
++			 " Got errno - %s : %s",
++			 tc->exp_errval, tc->err_desc);
++		return;
++	}
++
++	tst_res(TFAIL, "swapon(2) failed to produce expected error:"
++	         " %d, errno: %s and got %d.", tc->exp_errno,
++	         tc->exp_errval, TST_ERR);
+ }
++
 +static struct tst_test test = {
++	.needs_root = 1,
 +	.needs_tmpdir = 1,
-+	.test_all = verify_swapon,
-+	.setup = setup
++	.test = verify_swapon,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup
 +};
 -- 
 2.30.2
