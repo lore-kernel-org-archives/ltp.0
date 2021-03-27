@@ -1,10 +1,10 @@
 From: QI Fuli <fukuri.sai@gmail.com>
-Date: Sat, 27 Mar 2021 19:32:21 +0900
-Subject: [LTP] [PATCH 1/6] libs/libltpswap: Add libs/libltpswap by using the
+Date: Sat, 27 Mar 2021 19:32:22 +0900
+Subject: [LTP] [PATCH 2/6] syscalls/swapon/swapon01: Convert swapon01 to the
  new API
 In-Reply-To: <20210327103226.99073-1-qi.fuli@fujitsu.com>
 References: <20210327103226.99073-1-qi.fuli@fujitsu.com>
-Message-ID: <20210327103226.99073-2-qi.fuli@fujitsu.com>
+Message-ID: <20210327103226.99073-3-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,131 +15,140 @@ From: QI Fuli <qi.fuli@fujitsu.com>
 
 Signed-off-by: QI Fuli <qi.fuli@fujitsu.com>
 ---
- include/libswap.h         | 24 +++++++++++++++
- libs/libltpswap/Makefile  | 12 ++++++++
- libs/libltpswap/libswap.c | 63 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
- create mode 100644 include/libswap.h
- create mode 100644 libs/libltpswap/Makefile
- create mode 100644 libs/libltpswap/libswap.c
+ testcases/kernel/syscalls/swapon/Makefile   |  4 +-
+ testcases/kernel/syscalls/swapon/swapon01.c | 83 +++++----------------
+ 2 files changed, 22 insertions(+), 65 deletions(-)
 
-diff --git a/include/libswap.h b/include/libswap.h
-new file mode 100644
-index 000000000..d4b5301a5
---- /dev/null
-+++ b/include/libswap.h
-@@ -0,0 +1,24 @@
+diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
+index 57ec45d48..53c795090 100644
+--- a/testcases/kernel/syscalls/swapon/Makefile
++++ b/testcases/kernel/syscalls/swapon/Makefile
+@@ -8,10 +8,10 @@ endif
+ 
+ top_srcdir		?= ../../../..
+ 
+-LTPLIBS = ltpswapon
++LTPLIBS = ltpswap
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-LTPLDLIBS  = -lltpswapon
++LTPLDLIBS  = -lltpswap
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/swapon/swapon01.c b/testcases/kernel/syscalls/swapon/swapon01.c
+index aff842e4c..332e139b3 100644
+--- a/testcases/kernel/syscalls/swapon/swapon01.c
++++ b/testcases/kernel/syscalls/swapon/swapon01.c
+@@ -1,88 +1,45 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+  */
+ 
+- /*
+-  * Checks that swapon() succeds with swapfile.
+-  */
 +/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
++ * Checks that swapon() succeds with swapfile.
 + */
-+
-+/*
-+ * Contains common content for all swapon/swapoff tests
-+ */
-+
-+#ifndef __LIBSWAP_H__
-+#define __LIBSWAP_H__
-+
-+/*
-+ * Make a swap file
-+ */
-+int make_swapfile(const char *swapfile, int safe);
-+
-+/*
-+ * Check swapon/swapoff support status of filesystems or files
-+ * we are testing on.
-+ */
-+void is_swap_supported(const char *filename);
-+#endif /* __LIBSWAP_H__ */
-diff --git a/libs/libltpswap/Makefile b/libs/libltpswap/Makefile
-new file mode 100644
-index 000000000..d8e692d17
---- /dev/null
-+++ b/libs/libltpswap/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (C) Richard Purdie <richard.purdie@linuxfoundation.org>
-+
-+top_srcdir		?= ../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INTERNAL_LIB		:= libltpswap.a
-+
-+include $(top_srcdir)/include/mk/lib.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
-new file mode 100644
-index 000000000..658960c67
---- /dev/null
-+++ b/libs/libltpswap/libswap.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ * Author: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-+ */
-+
-+#include <errno.h>
-+#include "lapi/syscalls.h"
-+#define TST_NO_DEFAULT_MAIN
+ 
+ #include <unistd.h>
+ #include <errno.h>
+ #include <stdlib.h>
+-#include "test.h"
+-#include "lapi/syscalls.h"
+-#include "libswapon.h"
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+-char *TCID = "swapon01";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
++#include "lapi/syscalls.h"
 +#include "libswap.h"
-+
-+/*
-+ * Make a swap file
-+ */
-+int make_swapfile(const char *swapfile, int safe)
-+{
-+	if (!tst_fs_has_free(".", sysconf(_SC_PAGESIZE) * 10, TST_BYTES))
-+		tst_brk(TBROK, "Insufficient disk space to create swap file");
-+
-+	/* create file */
-+	if (tst_fill_file(swapfile, 0, sysconf(_SC_PAGESIZE), 10) != 0)
-+		tst_brk(TBROK, "Failed to create swapfile");
-+
-+	/* make the file swapfile */
-+	const char *argv[2 + 1];
-+	argv[0] = "mkswap";
-+	argv[1] = swapfile;
-+	argv[2] = NULL;
-+
-+	return tst_cmd(argv, "/dev/null", "/dev/null", safe);
-+}
-+
-+/*
-+ * Check swapon/swapoff support status of filesystems or files
-+ * we are testing on.
-+ */
-+void is_swap_supported(const char *filename)
-+{
-+	int fibmap = tst_fibmap(filename);
-+	long fs_type = tst_fs_type(filename);
-+	const char *fstype = tst_fs_type_name(fs_type);
-+
-+	int ret = make_swapfile(filename, 1);
-+	if (ret != 0) {
-+		if (fibmap == 1)
-+			tst_brk(TCONF, "mkswap on %s not supported", fstype);
-+		else
-+			tst_brk(TFAIL, "mkswap on %s failed", fstype);
-+	}
-+
-+	TEST(tst_syscall(__NR_swapon, filename, 0));
+ 
+ static void verify_swapon(void)
+ {
+-	TEST(ltp_syscall(__NR_swapon, "./swapfile01", 0));
++	TEST(tst_syscall(__NR_swapon, "./swapfile01", 0));
+ 
+-	if (TEST_RETURN == -1) {
+-		tst_resm(TFAIL | TTERRNO, "Failed to turn on swapfile");
 +	if (TST_RET == -1) {
-+		if (fibmap == 1 && errno == EINVAL)
-+			tst_brk(TCONF, "Swapfile on %s not implemented", fstype);
-+		else
-+			tst_brk(TFAIL | TERRNO, "swapon on %s failed", fstype);
-+	}
-+
-+	TEST(tst_syscall(__NR_swapoff, filename, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TTERRNO, "swapoff on %s failed", fstype);
-+}
++		tst_res(TFAIL | TTERRNO, "Failed to turn on swapfile");
+ 	} else {
+-		tst_resm(TPASS, "Succeeded to turn on swapfile");
++		tst_res(TPASS, "Succeeded to turn on swapfile");
+ 		/*we need to turn this swap file off for -i option */
+-		if (ltp_syscall(__NR_swapoff, "./swapfile01") != 0) {
+-			tst_brkm(TBROK, cleanup, "Failed to turn off swapfile,"
++		if (tst_syscall(__NR_swapoff, "./swapfile01") != 0) {
++			tst_brk(TBROK, "Failed to turn off swapfile,"
+ 			         " system reboot after execution of LTP "
+ 				 "test suite is recommended.");
+ 		}
+ 	}
+ }
+ 
+-int main(int ac, char **av)
+-{
+-
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		verify_swapon();
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+ static void setup(void)
+ {
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	tst_require_root();
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	is_swap_supported(cleanup, "./tstswap");
+-
+-	make_swapfile(cleanup, "swapfile01", 0);
++	is_swap_supported("./tstswap");
++	make_swapfile("swapfile01", 0);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test_all = verify_swapon,
++	.setup = setup
++};
 -- 
 2.30.2
 
