@@ -1,34 +1,45 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Sat, 27 Mar 2021 18:23:44 +0800
-Subject: [LTP] [PATCH] syscalls/shmctl: Using TERRNO to macth errno
-Message-ID: <20210327102344.1620-1-zhaogongyi@huawei.com>
+From: QI Fuli <fukuri.sai@gmail.com>
+Date: Sat, 27 Mar 2021 19:32:20 +0900
+Subject: [LTP] [PATCH 0/6] Convert syscalls/swap{on,off}/ to the new API
+Message-ID: <20210327103226.99073-1-qi.fuli@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When "shmid == -1", we need print the errno with TERRNO. It must have no error in
-TEST, otherwise it has return early.
+From: QI Fuli <qi.fuli@fujitsu.com>
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/ipc/shmctl/shmctl04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Rename libs/libltpswapon libs/libltpswap and Convert it to the new API
+Convert syscalls/swap{on,off}/ to the new API
 
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-index c70a76fb2..9e8ec4199 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-@@ -130,7 +130,7 @@ static void verify_shminfo(unsigned int n)
- 	shmid = shmctl(TST_RET, SHM_STAT_ANY, &ds);
+QI Fuli (6):
+  libs/libltpswap: Add libs/libltpswap by using the new API
+  syscalls/swapon/swapon01: Convert swapon01 to the new API
+  syscalls/swapon/swapon02: Convert swapon02 to the new API
+  syscalls/swapon/swapon03: Convert swapon03 to the new API
+  syscalls/swapoff/swapoff01: Convert swapoff01 to the new API
+  syscalls/swapoff/swapoff02: Convert swapoff02 to the new API
 
- 	if (shmid == -1) {
--		tst_res(TFAIL | TTERRNO, "SHM_INFO haven't returned a valid index");
-+		tst_res(TFAIL | TERRNO, "SHM_INFO haven't returned a valid index");
- 	} else {
- 		tst_res(TPASS,
- 			"SHM_INFO returned valid index %li maps to shmid %i",
---
-2.17.1
+ include/libswap.h                             |  24 ++
+ include/libswapon.h                           |  39 ---
+ libs/{libltpswapon => libltpswap}/Makefile    |   2 +-
+ libs/libltpswap/libswap.c                     |  63 +++++
+ libs/libltpswapon/libswapon.c                 |  90 -------
+ testcases/kernel/syscalls/swapoff/Makefile    |   4 +-
+ testcases/kernel/syscalls/swapoff/swapoff01.c |  94 ++------
+ testcases/kernel/syscalls/swapoff/swapoff02.c | 142 ++++-------
+ testcases/kernel/syscalls/swapon/Makefile     |   4 +-
+ testcases/kernel/syscalls/swapon/swapon01.c   |  83 ++-----
+ testcases/kernel/syscalls/swapon/swapon02.c   | 145 ++++-------
+ testcases/kernel/syscalls/swapon/swapon03.c   | 227 +++++++-----------
+ 12 files changed, 317 insertions(+), 600 deletions(-)
+ create mode 100644 include/libswap.h
+ delete mode 100644 include/libswapon.h
+ rename libs/{libltpswapon => libltpswap}/Makefile (89%)
+ create mode 100644 libs/libltpswap/libswap.c
+ delete mode 100644 libs/libltpswapon/libswapon.c
+
+-- 
+2.30.2
 
