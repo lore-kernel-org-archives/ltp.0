@@ -1,306 +1,379 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 29 Mar 2021 20:47:05 +0800
-Subject: [LTP] [PATCH 1/3] syscalls/chown: rewrite chown/chown04.c with the
+Date: Mon, 29 Mar 2021 20:47:06 +0800
+Subject: [LTP] [PATCH 2/3] syscalls/chown: rewrite chown/chown02.c with the
  new api
 In-Reply-To: <20210329124707.117102-1-xieziyao@huawei.com>
 References: <20210329124707.117102-1-xieziyao@huawei.com>
-Message-ID: <20210329124707.117102-2-xieziyao@huawei.com>
+Message-ID: <20210329124707.117102-3-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-- rewrite chown/chown04.c with the new api;
-- add MAP_PRIVATE_EXCEPT_UCLINUX to SAFE_MMAP() for uClinux systems:
-  mmap() doesn't support MAP_PRIVATE on uClinux systems, so use
-  MAP_PRIVATE_EXCEPT_UCLINUX instead, which will skip the option on uClinux.
-  If MAP_PRIVATE really is required, the test can not be run on uClinux.
+rewrite chown/chown02.c with the new api
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- include/tst_safe_macros.h                 |  12 ++
- testcases/kernel/syscalls/chown/chown04.c | 207 ++++++++--------------
- 2 files changed, 85 insertions(+), 134 deletions(-)
+ testcases/kernel/syscalls/chown/chown02.c | 297 ++++++----------------
+ 1 file changed, 73 insertions(+), 224 deletions(-)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 2a2b0088a..84849f62a 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -240,6 +240,18 @@ static inline void *safe_mmap(const char *file, const int lineno,
-
- 	return rval;
- }
-+
-+/*
-+ * mmap() doesn't support MAP_PRIVATE on uClinux systems, so use
-+ * MAP_PRIVATE_EXCEPT_UCLINUX instead, which will skip the option on uClinux.
-+ * If MAP_PRIVATE really is required, the test can not be run on uClinux.
-+ */
-+#ifdef UCLINUX
-+# define MAP_PRIVATE_EXCEPT_UCLINUX	0
-+#else
-+# define MAP_PRIVATE_EXCEPT_UCLINUX	MAP_PRIVATE
-+#endif
-+
- #define SAFE_MMAP(addr, length, prot, flags, fd, offset) \
- 	safe_mmap(__FILE__, __LINE__, (addr), (length), (prot), \
- 	(flags), (fd), (offset))
-diff --git a/testcases/kernel/syscalls/chown/chown04.c b/testcases/kernel/syscalls/chown/chown04.c
-index 1f3ed412b..a1a7f269a 100644
---- a/testcases/kernel/syscalls/chown/chown04.c
-+++ b/testcases/kernel/syscalls/chown/chown04.c
-@@ -1,41 +1,27 @@
+diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
+index a459f092b..2bcb1816f 100644
+--- a/testcases/kernel/syscalls/chown/chown02.c
++++ b/testcases/kernel/syscalls/chown/chown02.c
+@@ -1,72 +1,17 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *  07/2001 Ported by Wayne Boyer
-+ *   07/2001 Ported by Wayne Boyer
-  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
 - *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
+- *   Copyright (c) International Business Machines  Corp., 2001
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 - *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software Foundation,
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * 07/2001 Ported by Wayne Boyer
   */
 
 -/*
-- * Test Name: chown04
+- * Test Name: chown02
 +/*\
 + * [Description]
   *
 - * Test Description:
-- *   Verify that,
-- *   1) chown(2) returns -1 and sets errno to EPERM if the effective user id
-- *		 of process does not match the owner of the file and the process
-- *		 is not super user.
-- *   2) chown(2) returns -1 and sets errno to EACCES if search permission is
-- *		 denied on a component of the path prefix.
-- *   3) chown(2) returns -1 and sets errno to EFAULT if pathname points
-- *		 outside user's accessible address space.
-- *   4) chown(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
-- *		 component is too long.
-- *   5) chown(2) returns -1 and sets errno to ENOTDIR if the directory
-- *		 component in pathname is not a directory.
-- *   6) chown(2) returns -1 and sets errno to ENOENT if the specified file
-- *		 does not exists.
-+ * Verify that,
-+ * 1) chown(2) returns -1 and sets errno to EPERM if the effective user id
-+ *    of process does not match the owner of the file and the process is not
-+ *    super user.
-+ * 2) chown(2) returns -1 and sets errno to EACCES if search permission is
-+ *    denied on a component of the path prefix.
-+ * 3) chown(2) returns -1 and sets errno to EFAULT if pathname points outside
-+ *    user's accessible address space.
-+ * 4) chown(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
-+ *    component is too long.
-+ * 5) chown(2) returns -1 and sets errno to ENOTDIR if the directory component
-+ *    in pathname is not a directory.
-+ * 6) chown(2) returns -1 and sets errno to ENOENT if the specified file does
-+ *    not exists.
+  *  Verify that, when chown(2) invoked by super-user to change the owner and
+  *  group of a file specified by path to any numeric owner(uid)/group(gid)
+  *  values,
+- *	- clears setuid and setgid bits set on an executable file.
+- *	- preserves setgid bit set on a non-group-executable file.
+- *
+- * Expected Result:
+- *  chown(2) should return 0 and the ownership set on the file should match
+- *  the numeric values contained in owner and group respectively.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
+- *
+- * Usage:  <for command-line>
+- *  chown02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS:
+- *  This test should be run by 'super-user' (root) only.
+- *
++ *  - clears setuid and setgid bits set on an executable file.
++ *  - preserves setgid bit set on a non-group-executable file.
   */
 
  #include <stdio.h>
-@@ -52,24 +38,24 @@
- #include <sys/mman.h>
- #include <sys/mount.h>
+@@ -77,9 +22,9 @@
+ #include <string.h>
+ #include <signal.h>
 
 -#include "test.h"
 -#include "safe_macros.h"
 -#include "compat_16.h"
--
--#define MODE_RWX		 (S_IRWXU|S_IRWXG|S_IRWXO)
--#define FILE_MODE		 (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
--#define DIR_MODE		 (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
--				 S_IXGRP|S_IROTH|S_IXOTH)
--#define DIR_TEMP		 "testdir_1"
--#define TEST_FILE1		 "tfile_1"
--#define TEST_FILE2		 (DIR_TEMP "/tfile_2")
--#define TEST_FILE3		 "t_file/tfile_3"
--#define TEST_FILE4		 "test_eloop1"
--#define TEST_FILE5		 "mntpoint"
--
--static char long_path[PATH_MAX + 2];
--static const char *device;
--static int mount_flag;
 +#include "tst_test.h"
 +#include "compat_tst_16.h"
 +#include "tst_safe_macros.h"
-+
-+#define MNT_POINT "mntpoint"
-+#define MODE_RWX		(S_IRWXU|S_IRWXG|S_IRWXO)
-+#define FILE_MODE		(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-+#define DIR_MODE		(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
-+				S_IXGRP|S_IROTH|S_IXOTH)
-+
-+#define DIR_TEMP		"testdir_1"
-+#define TEST_FILE1		"tfile_1"
-+#define TEST_FILE2		(DIR_TEMP "/tfile_2")
-+#define TEST_FILE3		"t_file/tfile_3"
-+#define TEST_FILE4		"test_eloop1"
-+#define TEST_FILE5		"mntpoint"
-+
-+static char long_path[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
 
- static struct test_case_t {
- 	char *pathname;
-@@ -85,111 +71,64 @@ static struct test_case_t {
- 	{TEST_FILE5, EROFS}
- };
+ #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
+@@ -88,196 +33,100 @@
+ #define TESTFILE1	"testfile1"
+ #define TESTFILE2	"testfile2"
 
--TCID_DEFINE(chown04);
--int TST_TOTAL = ARRAY_SIZE(tc);
+-TCID_DEFINE(chown02);
 -
- static char *bad_addr;
+-int setup1();			/* Test specific setup functions */
+-int setup2();
++static void setup1();
++static void setup2();
 
--static void setup(void);
--static void cleanup(void);
+ struct test_case_t {
+ 	char *pathname;
+ 	uid_t user_id;
+ 	gid_t group_id;
+ 	int test_flag;
+-	int (*setupfunc) ();
+-} test_cases[] = {
+-	/* setuid/setgid bits cleared */
+-	{
+-	TESTFILE1, 700, 701, 1, setup1},
+-	    /* setgid bit not cleared */
+-	{
+-TESTFILE2, 700, 701, 2, setup2},};
+-
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
++	void (*setupfunc) ();
++} tc[] = {
++	{TESTFILE1, 700, 701, 1, setup1},	/* setuid/setgid bits cleared */
++	{TESTFILE2, 700, 701, 2, setup2},	/* setgid bit not cleared */
++};
+
+-void setup();			/* setup function for the test */
+-void cleanup();			/* cleanup function for the test */
 -
 -int main(int ac, char **av)
 +static void run(unsigned int i)
  {
+ 	struct stat stat_buf;	/* stat(2) struct contents */
 -	int lc;
 -	int i;
- 	uid_t user_id;
- 	gid_t group_id;
++
+ 	uid_t user_id;		/* user id of the user set for testfile */
+ 	gid_t group_id;		/* group id of the user set for testfile */
+ 	int test_flag;		/* test condition specific flag variable */
+ 	char *file_name;	/* ptr. for test file name */
 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	UID16_CHECK((user_id = geteuid()), "chown", cleanup)
--	GID16_CHECK((group_id = getegid()), "chown", cleanup)
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
 -		tst_count = 0;
 -
 -		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(CHOWN(cleanup, tc[i].pathname, user_id, group_id));
-+	UID16_CHECK((user_id = geteuid()), "chown");
-+	GID16_CHECK((group_id = getegid()), "chown");
-
--			if (TEST_RETURN == 0) {
--				tst_resm(TFAIL, "chown succeeded unexpectedly");
+-
+-			file_name = test_cases[i].pathname;
+-			user_id = test_cases[i].user_id;
+-			group_id = test_cases[i].group_id;
+-			test_flag = test_cases[i].test_flag;
+-
+-			/*
+-			 * Call chown(2) with different user id and
+-			 * group id (numeric values) to set it on testfile.
+-			 */
+-			TEST(CHOWN(cleanup, file_name, user_id, group_id));
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "chown(%s, ..) failed", file_name);
 -				continue;
 -			}
-+	TEST(CHOWN(tc[i].pathname, user_id, group_id));
-+	if (TST_RET == 0)
-+		tst_res(TFAIL, "chown succeeded unexpectedly");
-
--			if (TEST_ERRNO == tc[i].exp_errno) {
--				tst_resm(TPASS | TTERRNO, "chown failed");
+-
+-			/*
+-			 * Get the testfile information using stat(2).
+-			 */
+-			if (stat(file_name, &stat_buf) < 0) {
+-				tst_brkm(TFAIL, cleanup, "stat(2) of "
+-					 "%s failed, errno:%d",
+-					 file_name, TEST_ERRNO);
+-			}
+-
+-			/*
+-			 * Check for expected Ownership ids
+-			 * set on testfile.
+-			 */
+-			if (stat_buf.st_uid != user_id ||
+-			    stat_buf.st_gid != group_id) {
+-				tst_brkm(TFAIL, cleanup, "%s: incorrect"
+-					 " ownership set, Expected %d "
+-					 "%d", file_name,
+-					 user_id, group_id);
+-			}
+-
+-			/*
+-			 * Verify that S_ISUID/S_ISGID bits set on the
+-			 * testfile(s) in setup()s are cleared by
+-			 * chown().
+-			 */
+-			if (test_flag == 1 &&
+-			    (stat_buf.st_mode & (S_ISUID | S_ISGID)) != 0) {
+-				tst_resm(TFAIL,
+-					 "%s: incorrect mode "
+-					 "permissions %#o, Expected "
+-					 "%#o", file_name, NEW_PERMS1,
+-					 EXP_PERMS);
+-			} else if (test_flag == 2
+-				 && (stat_buf.st_mode & S_ISGID) == 0) {
+-				tst_resm(TFAIL,
+-					 "%s: Incorrect mode "
+-					 "permissions %#o, Expected "
+-					 "%#o", file_name,
+-					 stat_buf.st_mode, NEW_PERMS2);
 -			} else {
--				tst_resm(TFAIL | TTERRNO,
--					 "chown failed; expected: %d - %s",
--					 tc[i].exp_errno,
--					 tst_strerrno(tc[i].exp_errno));
+-				tst_resm(TPASS,
+-					 "chown(%s, ..) succeeded",
+-					 file_name);
 -			}
 -		}
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	if (TST_ERR == tc[i].exp_errno)
-+		tst_res(TPASS | TTERRNO, "chown failed");
++	file_name = tc[i].pathname;
++	user_id = tc[i].user_id;
++	group_id = tc[i].group_id;
++	test_flag = tc[i].test_flag;
++
++	/*
++	 * Call chown(2) with different user id and
++	 * group id (numeric values) to set it on testfile.
++	 */
++	TEST(CHOWN(file_name, user_id, group_id));
++	if (TST_RET == -1)
++		tst_res(TFAIL | TTERRNO, "chown(%s, ..) failed", file_name);
++
++	SAFE_STAT(file_name, &stat_buf);
++	if (stat_buf.st_uid != user_id ||
++	    stat_buf.st_gid != group_id)
++		tst_brk(TFAIL, "%s: incorrect ownership set, Expected %d %d",
++			file_name, user_id, group_id);
++
++	/*
++	 * Verify that S_ISUID/S_ISGID bits set on the
++	 * testfile(s) in setup()s are cleared by chown().
++	*/
++	if (test_flag == 1 && (stat_buf.st_mode & (S_ISUID | S_ISGID)) != 0)
++		tst_res(TFAIL, "%s: incorrect mode permissions %#o, Expected %#o",
++			file_name, NEW_PERMS1, EXP_PERMS);
++	else if (test_flag == 2 && (stat_buf.st_mode & S_ISGID) == 0)
++		tst_res(TFAIL, "%s: Incorrect mode permissions %#o, Expected %#o",
++			file_name, stat_buf.st_mode, NEW_PERMS2);
 +	else
-+		tst_res(TFAIL | TTERRNO,
-+			"chown failed; expected: %d - %s",
-+			tc[i].exp_errno,
-+			tst_strerrno(tc[i].exp_errno));
++		tst_res(TPASS, "chown(%s, ..) succeeded", file_name);
  }
 
- static void setup(void)
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *  Create a temporary directory and change directory to it.
+- *  Create a test file under temporary directory and close it
+- */
+-void setup(void)
++static void setup(void)
  {
- 	struct passwd *ltpuser;
--	const char *fs_type;
+-	int i;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	tst_require_root();
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
--
--	tst_tmpdir();
--
--	fs_type = tst_dev_fs_type();
--	device = tst_acquire_device(cleanup);
--	if (!device)
--		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
--
--	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
 -
 -	TEST_PAUSE;
-+	ltpuser = SAFE_GETPWNAM("nobody");
-
--	memset(long_path, 'a', PATH_MAX - 1);
 -
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
-+	bad_addr = SAFE_MMAP(0, 1, PROT_NONE,
-+			     MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS,
-+			     0, 0);
+-	tst_tmpdir();
++	unsigned int i;
 
- 	tc[2].pathname = bad_addr;
-
--	SAFE_SYMLINK(cleanup, "test_eloop1", "test_eloop2");
--	SAFE_SYMLINK(cleanup, "test_eloop2", "test_eloop1");
--
--	SAFE_SETEUID(cleanup, 0);
--	SAFE_TOUCH(cleanup, "t_file", MODE_RWX, NULL);
--	SAFE_TOUCH(cleanup, TEST_FILE1, 0666, NULL);
--	SAFE_MKDIR(cleanup, DIR_TEMP, S_IRWXU);
--	SAFE_TOUCH(cleanup, TEST_FILE2, 0666, NULL);
-+	SAFE_SYMLINK("test_eloop1", "test_eloop2");
-+	SAFE_SYMLINK("test_eloop2", "test_eloop1");
-
--	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
--	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type, MS_RDONLY, NULL);
--	mount_flag = 1;
-+	SAFE_SETEUID(0);
-+	SAFE_TOUCH("t_file", MODE_RWX, NULL);
-+	SAFE_TOUCH(TEST_FILE1, 0666, NULL);
-+	SAFE_MKDIR(DIR_TEMP, S_IRWXU);
-+	SAFE_TOUCH(TEST_FILE2, 0666, NULL);
-
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+	SAFE_SETEUID(ltpuser->pw_uid);
+-	/* call iividual setup functions */
+-	for (i = 0; i < TST_TOTAL; i++)
+-		test_cases[i].setupfunc();
++	/* call individual setup functions */
++	for (i = 0; i < ARRAY_SIZE(tc); i++)
++		tc[i].setupfunc();
  }
 
--void cleanup(void)
-+static void cleanup(void)
+-/*
+- * int
+- * setup1() - Setup function for chown(2) to verify setuid/setgid bits
+- *	      set on an executable file will not be cleared.
+- *  Creat a testfile and set setuid/setgid bits on the mode of file.$
+- */
+-int setup1(void)
++static void setup1(void)
  {
--	if (seteuid(0) == -1)
--		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
--
--	if (mount_flag && tst_umount("mntpoint") < 0) {
--		tst_brkm(TBROK | TERRNO, NULL,
--			 "umount device:%s failed", device);
--	}
-+    SAFE_SETEUID(0);
-+}
+-	int fd;			/* File descriptor for testfile1 */
++	int fd;
 
--	if (device)
--		tst_release_device(device);
+ 	/* Creat a testfile and close it */
+-	if ((fd = open(TESTFILE1, O_RDWR | O_CREAT, FILE_MODE)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %o) failed",
+-			 TESTFILE1, FILE_MODE);
+-	SAFE_CLOSE(cleanup, fd);
++	fd = SAFE_OPEN(TESTFILE1, O_RDWR | O_CREAT, FILE_MODE);
++	SAFE_CLOSE(fd);
+
+ 	/* Set setuid/setgid bits on the test file created */
+-	SAFE_CHMOD(cleanup, TESTFILE1, NEW_PERMS1);
+-	return 0;
++	SAFE_CHMOD(TESTFILE1, NEW_PERMS1);
+ }
+
+-/*
+- * int
+- * setup2() - Setup function for chown(2) to verify setgid bit set
+- *	      set on non-group executable file will not be cleared.
+- *  Creat a testfile and set setgid bit on the mode of file.
+- */
+-int setup2(void)
++static void setup2(void)
+ {
+-	int fd;			/* File descriptor for testfile2 */
++	int fd;
+
+ 	/* Creat a testfile and close it */
+-	if ((fd = open(TESTFILE2, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT, %o) failed",
+-			 TESTFILE2, FILE_MODE);
+-	}
++	fd = SAFE_OPEN(TESTFILE2, O_RDWR | O_CREAT, FILE_MODE);
++
+ 	/* Set setgid bit on the test file created */
+-	if (fchmod(fd, NEW_PERMS2) != 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fchmod failed");
+-	SAFE_CLOSE(cleanup, fd);
+-	return 0;
++	SAFE_FCHMOD(fd, NEW_PERMS2);
++	SAFE_CLOSE(fd);
+ }
+
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *	       completion or premature exit.
+- *  Remove the test directory and testfile created in the setup.
+- */
+-void cleanup(void)
+-{
 +static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tc),
-+	.test = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
 +	.needs_root = 1,
-+	.needs_rofs = 1,
-+	.mntpoint = MNT_POINT,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test = run,
 +};
 
 -	tst_rmdir();
+-
 -}
 --
 2.17.1
