@@ -1,58 +1,55 @@
-From: QI Fuli <fukuri.sai@gmail.com>
-Date: Mon, 29 Mar 2021 23:08:23 +0900
-Subject: [LTP] [PATCH 0/6] Convert syscalls/swap{on, off}/ to the new API
-In-Reply-To: <CAEemH2dQPS+zhp0gEcTjPswjwX+csN72xbCuHzwW=ExcgUPKNQ@mail.gmail.com>
-References: <20210327103226.99073-1-qi.fuli@fujitsu.com>
- <CAEemH2dQPS+zhp0gEcTjPswjwX+csN72xbCuHzwW=ExcgUPKNQ@mail.gmail.com>
-Message-ID: <A54D5F52-9E92-4372-A4C8-C6795F1B3AE6@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 29 Mar 2021 16:57:38 +0200
+Subject: [LTP] [PATCH 1/1] tst_mkfs: Add -I option to mkfs.vfat
+Message-ID: <20210329145738.986-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li Wang,
+to workaround occasional error on tests with .all_filesystems flag:
 
-> On Mar 29, 2021, at 14:33, Li Wang <liwang@redhat.com> wrote:
-> 
-> Hi Fuli,
-> 
-> QI Fuli <fukuri.sai@gmail.com <mailto:fukuri.sai@gmail.com>> wrote:
-> 
-> From: QI Fuli <qi.fuli@fujitsu.com <mailto:qi.fuli@fujitsu.com>>
-> 
-> Rename libs/libltpswapon libs/libltpswap and Convert it to the new API
-> Convert syscalls/swap{on,off}/ to the new API
-> 
-> QI Fuli (6):
->   libs/libltpswap: Add libs/libltpswap by using the new API
->   syscalls/swapon/swapon01: Convert swapon01 to the new API
->   syscalls/swapon/swapon02: Convert swapon02 to the new API
->   syscalls/swapon/swapon03: Convert swapon03 to the new API
->   syscalls/swapoff/swapoff01: Convert swapoff01 to the new API
->   syscalls/swapoff/swapoff02: Convert swapoff02 to the new API
-> 
-> I made some changes based on your patchset and pushed it.
-> 
-> * remove the libs/libltpswapon from patch 1/6
-> * add [Description] in the comment to make ltp/docparse happy
-> * fix some TTERRNO/TERRNO usage issues
-> * code indent issue e.g. add brackets while more than two lines in if...else sentence
-> 
-> Btw, next time you can add '-v2' parameter when generating the second patch version.
-> 
-> `git format-patch -v2 -6 ...`
+tst_test.c:888: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0',
+ not making filesystem (use -I to override)
+tst_test.c:888: TBROK: mkfs.vfat failed with exit code 1
 
-Thank you very much for the help.
+Tested also on BusyBox v1.33.0, which accept but ignores -I since
+beginning (1.14.0).
 
-Best,
-QI 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Richard also suggested to wipe the device, but not sure how to do it
+quickly and don't bring any more dependency.
 
-> 
-> -- 
-> Regards,
-> Li Wang
+Kind regards,
+Petr
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210329/c79f51b0/attachment-0001.htm>
+ lib/tst_mkfs.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 736324f04..2d335a3ad 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -52,6 +52,16 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
+ 
++	/*
++	 * Workaround a problem:
++	 * mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0', not
++	 * making filesystem (use -I to override)
++	 */
++	if (!strcmp(fs_type, "vfat")) {
++		argv[pos] = "-I";
++		strcat(fs_opts_str, argv[pos++]);
++	}
++
+ 	if (fs_opts) {
+ 		for (i = 0; fs_opts[i]; i++) {
+ 			argv[pos++] = fs_opts[i];
+-- 
+2.30.2
+
