@@ -1,15 +1,26 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Mon, 29 Mar 2021 09:26:44 +0000
+From: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Mon, 29 Mar 2021 12:40:11 +0000
 Subject: [LTP] msgstress03,
  msgstress04 failure on linux 5.10.19 and 5.10.22
-In-Reply-To: <BMXPR01MB287023E7E5B34F6D27B63564EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
-References: <BMXPR01MB287023E7E5B34F6D27B63564EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <60619D5B.6090507@fujitsu.com>
+In-Reply-To: <60619D5B.6090507@fujitsu.com>
+References: <BMXPR01MB287023E7E5B34F6D27B63564EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>,
+ <60619D5B.6090507@fujitsu.com>
+Message-ID: <BMXPR01MB2870D0447A89D1BEE08EDCA7EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+ok..thanks..
+
+What do you think about msgstress03, what could have went wrong ??
+________________________________
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Sent: Monday, March 29, 2021 2:56 PM
+To: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] msgstress03, msgstress04 failure on linux 5.10.19 and 5.10.22
 
 Hi
 Hi,
@@ -82,6 +93,8 @@ Thanks
 
 
 
+
+[EXT]
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210329/09f81b28/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210329/92924d49/attachment.htm>
