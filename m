@@ -1,22 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 29 Mar 2021 20:08:01 +0200
-Subject: [LTP] [PATCH 2/2] pec: Fix multiple event test
-In-Reply-To: <20210315092844.991073-2-lkml@jv-coder.de>
-References: <20210315092844.991073-1-lkml@jv-coder.de>
- <20210315092844.991073-2-lkml@jv-coder.de>
-Message-ID: <YGIXgYVBSs5V3Stk@pevik>
+From: Sharan Turlapati <sturlapati@vmware.com>
+Date: Mon, 29 Mar 2021 11:17:59 -0700
+Subject: [LTP] [PATCH] realtime/scripts: Fix indentation error in parser.py
+Message-ID: <20210329181759.4466-1-sturlapati@vmware.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+An indentation error in parser.py causes certain blocks
+of code to run even before dependent variables are
+initialized when the code in this file is imported
+by parse-testpi1.py or parse-testpi2.py.
 
-Test is defined as #!/bin/bash which is not acceptable [1], I'm going to change
-it as #!/bin/sh. Also note a need to check with checkbashism.
+Post running tests like testpi-2 or testpi-4, the
+results of these tests are parsed and added to the
+logs/ directory. This bug prevents the results of such
+tests from being parsed and thus masks the results of
+these tests.
 
-Kind regards,
-Petr
+Signed-off-by: Sharan Turlapati <sturlapati@vmware.com>
+---
+ testcases/realtime/scripts/parser.py | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-[1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
+diff --git a/testcases/realtime/scripts/parser.py b/testcases/realtime/scripts/parser.py
+index 85226deb6..2acbe7d67 100644
+--- a/testcases/realtime/scripts/parser.py
++++ b/testcases/realtime/scripts/parser.py
+@@ -33,15 +33,15 @@ class Log:
+ 	def __init__(self,filename):
+ 		if filename:
+ 			log_file=filename
+-	try:
+-		self.__log_file = open(log_file, "r")
+-	except IOError as errmsg:
+-		sys.exit(errmsg)
++		try:
++			self.__log_file = open(log_file, "r")
++		except IOError as errmsg:
++			sys.exit(errmsg)
+ 
+ 	def read(self):
+ 		for line in self.__log_file.read().split("\n"):
+ 			yield line
+-	self.__log_file.close()
++		self.__log_file.close()
+ 
+ 	def eval(self):
+ 		pass
+-- 
+2.28.0
+
