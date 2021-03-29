@@ -1,98 +1,58 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Mon, 29 Mar 2021 13:55:00 +0000
-Subject: [LTP] [PATCH] syscalls/shmctl: Using TERRNO to macth errno
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389DFE1@dggeml531-mbx.china.huawei.com>
+From: QI Fuli <fukuri.sai@gmail.com>
+Date: Mon, 29 Mar 2021 23:08:23 +0900
+Subject: [LTP] [PATCH 0/6] Convert syscalls/swap{on, off}/ to the new API
+In-Reply-To: <CAEemH2dQPS+zhp0gEcTjPswjwX+csN72xbCuHzwW=ExcgUPKNQ@mail.gmail.com>
+References: <20210327103226.99073-1-qi.fuli@fujitsu.com>
+ <CAEemH2dQPS+zhp0gEcTjPswjwX+csN72xbCuHzwW=ExcgUPKNQ@mail.gmail.com>
+Message-ID: <A54D5F52-9E92-4372-A4C8-C6795F1B3AE6@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Xu, Li,
+Hi Li Wang,
 
-I have checked the shmctl's failure whose root cause is that SHM_STAT_ANY not supported in v4.4,
+> On Mar 29, 2021, at 14:33, Li Wang <liwang@redhat.com> wrote:
+> 
+> Hi Fuli,
+> 
+> QI Fuli <fukuri.sai@gmail.com <mailto:fukuri.sai@gmail.com>> wrote:
+> 
+> From: QI Fuli <qi.fuli@fujitsu.com <mailto:qi.fuli@fujitsu.com>>
+> 
+> Rename libs/libltpswapon libs/libltpswap and Convert it to the new API
+> Convert syscalls/swap{on,off}/ to the new API
+> 
+> QI Fuli (6):
+>   libs/libltpswap: Add libs/libltpswap by using the new API
+>   syscalls/swapon/swapon01: Convert swapon01 to the new API
+>   syscalls/swapon/swapon02: Convert swapon02 to the new API
+>   syscalls/swapon/swapon03: Convert swapon03 to the new API
+>   syscalls/swapoff/swapoff01: Convert swapoff01 to the new API
+>   syscalls/swapoff/swapoff02: Convert swapoff02 to the new API
+> 
+> I made some changes based on your patchset and pushed it.
+> 
+> * remove the libs/libltpswapon from patch 1/6
+> * add [Description] in the comment to make ltp/docparse happy
+> * fix some TTERRNO/TERRNO usage issues
+> * code indent issue e.g. add brackets while more than two lines in if...else sentence
+> 
+> Btw, next time you can add '-v2' parameter when generating the second patch version.
+> 
+> `git format-patch -v2 -6 ...`
 
-so I have submit a patch to fix it.
+Thank you very much for the help.
 
-Thanks!
-
-Best Regards,
-Gongyi
-
+Best,
+QI 
 
 > 
-> Hi Gongyi
-> 
-> > Hi Xu, Li,
-> >
-> > On the other hand, we have created a shm in setup, why we query with
-> SHM_INFO and return 0?
-> Because SHM_INFO ignores shm_id parameter like IPC_INFO in kernel. We
-> created a shm in setup just to make sure that there is at least one during
-> the testrun.
-> 
-> >
-> > Best Regards,
-> > Gongyi
-> >
-> >> Hi Gongyi
-> >>
-> >> The SHM_STAT_ANY cmd was introduced since kernel 4.17. I guess we
-> >> should add check for it.
-> >>> Hi Li,
-> >>>
-> >>> Yes, I find the problem in my testing of qemu with kernel version 4.4
-> >>> and the config is vexpress_defconfig.
-> >>>
-> >>> Specifically as follow:
-> >>>
-> >>> tst_test.c:1294: TINFO: Timeout per run is 0h 05m 00s
-> >>>
-> >>> shmctl04.c:119: TINFO: Test SHM_STAT_ANY with nobody user
-> >>>
-> >>> TST_RET: 0 SHM_STAT_ANY: 15
-> >>>
-> >>> shmctl04.c:134: TFAIL: SHM_INFO haven't returned a valid index:
-> EINVAL
-> >>> (22)
-> >>>
-> >>> shmctl04.c:150: TFAIL: Counted used = 0, used_ids = 1
-> >>>
-> >>> shmctl04.c:85: TPASS: used_ids = 1
-> >>>
-> >>> shmctl04.c:92: TPASS: shm_rss = 0
-> >>>
-> >>> shmctl04.c:99: TPASS: shm_swp = 0
-> >>>
-> >>> shmctl04.c:106: TPASS: shm_tot = 1
-> >>>
-> >>> shmctl04.c:119: TINFO: Test SHM_STAT_ANY with root user
-> >>>
-> >>> TST_RET: 0 SHM_STAT_ANY: 15
-> >>>
-> >>> shmctl04.c:134: TFAIL: SHM_INFO haven't returned a valid index:
-> EINVAL
-> >>> (22)
-> >>>
-> >>> shmctl04.c:150: TFAIL: Counted used = 0, used_ids = 1
-> >>>
-> >>> shmctl04.c:85: TPASS: used_ids = 1
-> >>>
-> >>> shmctl04.c:92: TPASS: shm_rss = 0
-> >>>
-> >>> shmctl04.c:99: TPASS: shm_swp = 0
-> >>>
-> >>> shmctl04.c:106: TPASS: shm_tot = 1
-> >>>
-> >>> Summary:
-> >>>
-> >>> passed   8
-> >>>
-> >>> failed   4
-> >>>
-> >>> broken   0
-> >>>
-> >>> skipped  0
-> >>>
-> >>> warnings 0
-> >>>
+> -- 
+> Regards,
+> Li Wang
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210329/c79f51b0/attachment-0001.htm>
