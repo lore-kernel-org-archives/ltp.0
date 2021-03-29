@@ -1,28 +1,28 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 29 Mar 2021 20:47:06 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/chown: rewrite chown/chown02.c with the
+Date: Mon, 29 Mar 2021 20:47:07 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/chown: rewrite chown/chown05.c with the
  new api
 In-Reply-To: <20210329124707.117102-1-xieziyao@huawei.com>
 References: <20210329124707.117102-1-xieziyao@huawei.com>
-Message-ID: <20210329124707.117102-3-xieziyao@huawei.com>
+Message-ID: <20210329124707.117102-4-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-rewrite chown/chown02.c with the new api
+rewrite chown/chown05.c with the new api
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- testcases/kernel/syscalls/chown/chown02.c | 297 ++++++----------------
- 1 file changed, 73 insertions(+), 224 deletions(-)
+ testcases/kernel/syscalls/chown/chown05.c | 201 +++++++---------------
+ 1 file changed, 62 insertions(+), 139 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
-index a459f092b..2bcb1816f 100644
---- a/testcases/kernel/syscalls/chown/chown02.c
-+++ b/testcases/kernel/syscalls/chown/chown02.c
-@@ -1,72 +1,17 @@
+diff --git a/testcases/kernel/syscalls/chown/chown05.c b/testcases/kernel/syscalls/chown/chown05.c
+index 47510ee9a..29e540558 100644
+--- a/testcases/kernel/syscalls/chown/chown05.c
++++ b/testcases/kernel/syscalls/chown/chown05.c
+@@ -1,70 +1,27 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -46,16 +46,12 @@ index a459f092b..2bcb1816f 100644
   */
 
 -/*
-- * Test Name: chown02
-+/*\
-+ * [Description]
-  *
+- * Test Name: chown05
+- *
 - * Test Description:
-  *  Verify that, when chown(2) invoked by super-user to change the owner and
-  *  group of a file specified by path to any numeric owner(uid)/group(gid)
-  *  values,
-- *	- clears setuid and setgid bits set on an executable file.
-- *	- preserves setgid bit set on a non-group-executable file.
+- *  Verify that, chown(2) succeeds to change the owner and group of a file
+- *  specified by path to any numeric owner(uid)/group(gid) values when invoked
+- *  by super-user.
 - *
 - * Expected Result:
 - *  chown(2) should return 0 and the ownership set on the file should match
@@ -66,7 +62,9 @@ index a459f092b..2bcb1816f 100644
 - *   Setup signal handling.
 - *   Create temporary directory.
 - *   Pause for SIGUSR1 if option specified.
-- *
++/*\
++ * [Description]
+  *
 - *  Test:
 - *   Loop if the proper options are given.
 - *   Execute system call
@@ -81,28 +79,39 @@ index a459f092b..2bcb1816f 100644
 - *  Cleanup:
 - *   Print errno log and/or timing stats if options given
 - *   Delete the temporary directory created.
-- *
++ * Verify that, chown(2) succeeds to change the owner and group of a file
++ * specified by path to any numeric owner(uid)/group(gid) values when invoked
++ * by super-user.
+  *
 - * Usage:  <for command-line>
-- *  chown02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  chown05 [-c n] [-e] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
 - *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
 - *	       -t   : Turn on syscall timing.
-- *
++ * [Algorithm]
+  *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS:
 - *  This test should be run by 'super-user' (root) only.
-- *
-+ *  - clears setuid and setgid bits set on an executable file.
-+ *  - preserves setgid bit set on a non-group-executable file.
++ * - Execute system call
++ * - Check return code, if system call failed (return=-1)
++ * -   Log the errno and Issue a FAIL message
++ * - Otherwise
++ * - Verify the Functionality of system call
++ * -   if successful
++ * -     Issue Functionality-Pass message
++ * -   Otherwise
++ * -     Issue Functionality-Fail message
   */
 
  #include <stdio.h>
-@@ -77,9 +22,9 @@
+@@ -75,99 +32,65 @@
  #include <string.h>
  #include <signal.h>
 
@@ -114,43 +123,35 @@ index a459f092b..2bcb1816f 100644
 +#include "tst_safe_macros.h"
 
  #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
-@@ -88,196 +33,100 @@
- #define TESTFILE1	"testfile1"
- #define TESTFILE2	"testfile2"
+ #define TESTFILE	"testfile"
 
--TCID_DEFINE(chown02);
+-TCID_DEFINE(chown05);
 -
--int setup1();			/* Test specific setup functions */
--int setup2();
-+static void setup1();
-+static void setup2();
-
  struct test_case_t {
- 	char *pathname;
  	uid_t user_id;
  	gid_t group_id;
- 	int test_flag;
--	int (*setupfunc) ();
 -} test_cases[] = {
--	/* setuid/setgid bits cleared */
 -	{
--	TESTFILE1, 700, 701, 1, setup1},
--	    /* setgid bit not cleared */
--	{
--TESTFILE2, 700, 701, 2, setup2},};
+-	700, 701}, {
+-	702, -1}, {
+-	703, 701}, {
+-	-1, 704}, {
+-703, 705},};
 -
 -int TST_TOTAL = ARRAY_SIZE(test_cases);
-+	void (*setupfunc) ();
-+} tc[] = {
-+	{TESTFILE1, 700, 701, 1, setup1},	/* setuid/setgid bits cleared */
-+	{TESTFILE2, 700, 701, 2, setup2},	/* setgid bit not cleared */
-+};
-
+-
 -void setup();			/* setup function for the test */
 -void cleanup();			/* cleanup function for the test */
 -
 -int main(int ac, char **av)
++} tc[] = {
++	{700, 701},
++	{702, -1},
++	{703, 701},
++	{-1, 704},
++	{703, 705},
++};
++
 +static void run(unsigned int i)
  {
  	struct stat stat_buf;	/* stat(2) struct contents */
@@ -159,8 +160,6 @@ index a459f092b..2bcb1816f 100644
 +
  	uid_t user_id;		/* user id of the user set for testfile */
  	gid_t group_id;		/* group id of the user set for testfile */
- 	int test_flag;		/* test condition specific flag variable */
- 	char *file_name;	/* ptr. for test file name */
 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -171,117 +170,61 @@ index a459f092b..2bcb1816f 100644
 -		tst_count = 0;
 -
 -		for (i = 0; i < TST_TOTAL; i++) {
--
--			file_name = test_cases[i].pathname;
 -			user_id = test_cases[i].user_id;
 -			group_id = test_cases[i].group_id;
--			test_flag = test_cases[i].test_flag;
 -
--			/*
--			 * Call chown(2) with different user id and
--			 * group id (numeric values) to set it on testfile.
--			 */
--			TEST(CHOWN(cleanup, file_name, user_id, group_id));
+-			TEST(CHOWN(cleanup, TESTFILE, user_id, group_id));
 -
 -			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL | TTERRNO,
--					 "chown(%s, ..) failed", file_name);
+-				tst_resm(TFAIL | TTERRNO, "chown failed");
 -				continue;
 -			}
+-			if (stat(TESTFILE, &stat_buf) == -1)
+-				tst_brkm(TFAIL, cleanup, "stat failed");
+-			if ((int)user_id == -1)
+-				user_id = test_cases[i - 1].user_id;
+-			if ((int)group_id == -1)
+-				group_id = test_cases[i - 1].group_id;
 -
--			/*
--			 * Get the testfile information using stat(2).
--			 */
--			if (stat(file_name, &stat_buf) < 0) {
--				tst_brkm(TFAIL, cleanup, "stat(2) of "
--					 "%s failed, errno:%d",
--					 file_name, TEST_ERRNO);
--			}
--
--			/*
--			 * Check for expected Ownership ids
--			 * set on testfile.
--			 */
 -			if (stat_buf.st_uid != user_id ||
--			    stat_buf.st_gid != group_id) {
--				tst_brkm(TFAIL, cleanup, "%s: incorrect"
--					 " ownership set, Expected %d "
--					 "%d", file_name,
--					 user_id, group_id);
--			}
--
--			/*
--			 * Verify that S_ISUID/S_ISGID bits set on the
--			 * testfile(s) in setup()s are cleared by
--			 * chown().
--			 */
--			if (test_flag == 1 &&
--			    (stat_buf.st_mode & (S_ISUID | S_ISGID)) != 0) {
--				tst_resm(TFAIL,
--					 "%s: incorrect mode "
--					 "permissions %#o, Expected "
--					 "%#o", file_name, NEW_PERMS1,
--					 EXP_PERMS);
--			} else if (test_flag == 2
--				 && (stat_buf.st_mode & S_ISGID) == 0) {
--				tst_resm(TFAIL,
--					 "%s: Incorrect mode "
--					 "permissions %#o, Expected "
--					 "%#o", file_name,
--					 stat_buf.st_mode, NEW_PERMS2);
--			} else {
--				tst_resm(TPASS,
--					 "chown(%s, ..) succeeded",
--					 file_name);
--			}
+-			    stat_buf.st_gid != group_id)
+-				tst_resm(TFAIL, "%s: incorrect "
+-					 "ownership set, Expected %d "
+-					 "%d", TESTFILE, user_id,
+-					 group_id);
+-			else
+-				tst_resm(TPASS, "chown succeeded");
 -		}
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	file_name = tc[i].pathname;
 +	user_id = tc[i].user_id;
 +	group_id = tc[i].group_id;
-+	test_flag = tc[i].test_flag;
++	TEST(CHOWN(TESTFILE, user_id, group_id));
 +
-+	/*
-+	 * Call chown(2) with different user id and
-+	 * group id (numeric values) to set it on testfile.
-+	 */
-+	TEST(CHOWN(file_name, user_id, group_id));
 +	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "chown(%s, ..) failed", file_name);
++		tst_res(TFAIL | TTERRNO, "chown failed");
 +
-+	SAFE_STAT(file_name, &stat_buf);
++	if ((int)user_id == -1)
++		user_id = tc[i - 1].user_id;
++	if ((int)group_id == -1)
++		group_id = tc[i - 1].group_id;
++
++	SAFE_STAT(TESTFILE, &stat_buf);
 +	if (stat_buf.st_uid != user_id ||
 +	    stat_buf.st_gid != group_id)
-+		tst_brk(TFAIL, "%s: incorrect ownership set, Expected %d %d",
-+			file_name, user_id, group_id);
-+
-+	/*
-+	 * Verify that S_ISUID/S_ISGID bits set on the
-+	 * testfile(s) in setup()s are cleared by chown().
-+	*/
-+	if (test_flag == 1 && (stat_buf.st_mode & (S_ISUID | S_ISGID)) != 0)
-+		tst_res(TFAIL, "%s: incorrect mode permissions %#o, Expected %#o",
-+			file_name, NEW_PERMS1, EXP_PERMS);
-+	else if (test_flag == 2 && (stat_buf.st_mode & S_ISGID) == 0)
-+		tst_res(TFAIL, "%s: Incorrect mode permissions %#o, Expected %#o",
-+			file_name, stat_buf.st_mode, NEW_PERMS2);
++		tst_res(TFAIL, "%s: incorrect ownership set, "
++			       "Expected %d %d",
++			TESTFILE, user_id, group_id);
 +	else
-+		tst_res(TPASS, "chown(%s, ..) succeeded", file_name);
++		tst_res(TPASS, "chown succeeded");
  }
 
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- *  Create a test file under temporary directory and close it
-- */
 -void setup(void)
 +static void setup(void)
  {
--	int i;
+ 	int fd;
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
@@ -290,80 +233,20 @@ index a459f092b..2bcb1816f 100644
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
-+	unsigned int i;
-
--	/* call iividual setup functions */
--	for (i = 0; i < TST_TOTAL; i++)
--		test_cases[i].setupfunc();
-+	/* call individual setup functions */
-+	for (i = 0; i < ARRAY_SIZE(tc); i++)
-+		tc[i].setupfunc();
- }
-
--/*
-- * int
-- * setup1() - Setup function for chown(2) to verify setuid/setgid bits
-- *	      set on an executable file will not be cleared.
-- *  Creat a testfile and set setuid/setgid bits on the mode of file.$
-- */
--int setup1(void)
-+static void setup1(void)
- {
--	int fd;			/* File descriptor for testfile1 */
-+	int fd;
-
- 	/* Creat a testfile and close it */
--	if ((fd = open(TESTFILE1, O_RDWR | O_CREAT, FILE_MODE)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %o) failed",
--			 TESTFILE1, FILE_MODE);
+-
+-	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "opening %s failed",
+-			 TESTFILE);
 -	SAFE_CLOSE(cleanup, fd);
-+	fd = SAFE_OPEN(TESTFILE1, O_RDWR | O_CREAT, FILE_MODE);
-+	SAFE_CLOSE(fd);
-
- 	/* Set setuid/setgid bits on the test file created */
--	SAFE_CHMOD(cleanup, TESTFILE1, NEW_PERMS1);
--	return 0;
-+	SAFE_CHMOD(TESTFILE1, NEW_PERMS1);
- }
-
--/*
-- * int
-- * setup2() - Setup function for chown(2) to verify setgid bit set
-- *	      set on non-group executable file will not be cleared.
-- *  Creat a testfile and set setgid bit on the mode of file.
-- */
--int setup2(void)
-+static void setup2(void)
- {
--	int fd;			/* File descriptor for testfile2 */
-+	int fd;
-
- 	/* Creat a testfile and close it */
--	if ((fd = open(TESTFILE2, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %o) failed",
--			 TESTFILE2, FILE_MODE);
--	}
-+	fd = SAFE_OPEN(TESTFILE2, O_RDWR | O_CREAT, FILE_MODE);
-+
- 	/* Set setgid bit on the test file created */
--	if (fchmod(fd, NEW_PERMS2) != 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "fchmod failed");
--	SAFE_CLOSE(cleanup, fd);
--	return 0;
-+	SAFE_FCHMOD(fd, NEW_PERMS2);
+-
++	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, FILE_MODE);
 +	SAFE_CLOSE(fd);
  }
 
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- *  Remove the test directory and testfile created in the setup.
-- */
 -void cleanup(void)
 -{
+-	tst_rmdir();
+-}
 +static struct tst_test test = {
 +	.tcnt = ARRAY_SIZE(tc),
 +	.needs_root = 1,
@@ -371,10 +254,7 @@ index a459f092b..2bcb1816f 100644
 +	.setup = setup,
 +	.test = run,
 +};
-
--	tst_rmdir();
--
--}
++
 --
 2.17.1
 
