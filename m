@@ -1,84 +1,37 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Tue, 30 Mar 2021 02:05:48 +0000
-Subject: [LTP] [PATCH] syscalls/shmctl04: Add kernel version requestions
-In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389E550@dggeml531-mbx.china.huawei.com>
-References: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389E550@dggeml531-mbx.china.huawei.com>
-Message-ID: <60628785.7050102@fujitsu.com>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Tue, 30 Mar 2021 10:18:30 +0800
+Subject: [LTP] [PATCH] bugfix for ssetmask01.c
+Message-ID: <20210330021830.17402-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Gongyi
-> Hi Xu,
->
-> It looks good to me.
->
-> On the other hand, msgctl06.c, semctl09.c have the same problem for MSG_STAT_ANY and SEM_STAT_ANY,  we can also fix them similarly?
-Yes. We can fix them similarly.
->
-> Thanks!
->
-> Best Regards,
-> Gongyi
->
->>
->> Hi Gongyi
->>> SHM_STAT_ANY is imported to linux in v4.17.
->>>
->>> Signed-off-by: Zhao Gongyi<zhaogongyi@huawei.com>
->>> ---
->>>    testcases/kernel/syscalls/ipc/shmctl/shmctl04.c | 1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->>> b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->>> index 9e8ec4199..18ac8ba0a 100644
->>> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->>> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->>> @@ -168,6 +168,7 @@ static void cleanup(void)
->>>    }
->>>
->>>    static struct tst_test test = {
->>> +	.min_kver = "4.17",
->> Some linux distribution such as centos7.8 has backported this feature, so
->> we should call SHM_STAT_ANY directly to detect whether kernel supports
->> SHM_STAT_ANY instead of using min_kver.
->>
->> code as below:
->> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
->> @@ -155,10 +155,19 @@ static void verify_shminfo(unsigned int n)
->>    static void setup(void)
->>    {
->>           struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
->> +       struct shmid_ds temp_ds;
->>           nobody_uid = ltpuser->pw_uid;
->>           root_uid = 0;
->>
->>           shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT |
->> SHM_RW);
->> +       TEST(shmctl(shm_id, SHM_STAT_ANY,&temp_ds));
->> +       if (TST_RET == -1) {
->> +               if (TST_ERR == EINVAL)
->> +                       tst_brk(TCONF, "kernel doesn't support
->> SHM_STAT_ANY");
->> +               else
->> +                       tst_brk(TBROK | TTERRNO,
->> +                               "Current environment doesn't permit
->> SHM_STAT_ANY");
->> +       }
->>    }
->>
->>
->> Also, On your environment, does semctl09.c/msgctl06.c have the same
->> problem?
->>
->>>    	.setup = setup,
->>>    	.cleanup = cleanup,
->>>    	.test = verify_shminfo,
->>> --
->>> 2.17.1
->>>
->>>
+mips architecture syscall(69) __NR_ssetmask not supported on your arch.
+
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+---
+ include/lapi/syscalls/mips_o32.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
+index c71a62a35..c2d43b984 100644
+--- a/include/lapi/syscalls/mips_o32.in
++++ b/include/lapi/syscalls/mips_o32.in
+@@ -66,8 +66,8 @@ getppid 64
+ getpgrp 65
+ setsid 66
+ sigaction 67
+-sgetmask 68
+-ssetmask 69
++sgetmask 4068
++ssetmask 4069
+ setreuid 70
+ setregid 71
+ sigsuspend 72
+--
+2.20.1
+
+
+
