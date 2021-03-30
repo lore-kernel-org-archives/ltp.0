@@ -1,35 +1,28 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Tue, 30 Mar 2021 21:01:15 +0800
-Subject: [LTP] [PATCH] bugfix for cpio/cpio_tests.sh
-Message-ID: <20210330130115.26575-1-sujiaxun@uniontech.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 30 Mar 2021 15:04:37 +0200
+Subject: [LTP] [PATCH] syscalls/chdir: bugfix for
+ syscalls/chdir/chdir01.c
+In-Reply-To: <20210322091512.103266-1-xieziyao@huawei.com>
+References: <20210322091512.103266-1-xieziyao@huawei.com>
+Message-ID: <YGMh5b/wj8XjeTqK@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In cpio version 2.12 and 2.13,'cpio --help' create is lowercase
+Hi,
 
-Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
----
- testcases/commands/cpio/cpio_tests.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+NOTE, there was already another solution posted before [1].
 
-diff --git a/testcases/commands/cpio/cpio_tests.sh b/testcases/commands/cpio/cpio_tests.sh
-index a98b7eca7..5f3a13e85 100755
---- a/testcases/commands/cpio/cpio_tests.sh
-+++ b/testcases/commands/cpio/cpio_tests.sh
-@@ -13,7 +13,7 @@ TST_SETUP="setup"
+I slightly prefer this one as it reverts back previous setup, which is a good
+habit, but no hard feeling because it's probably not needed in this case.
 
- setup()
- {
--	if ! cpio --help 2>&1 | grep -q -- '-o.*Create'; then
-+	if ! cpio --help 2>&1 | grep -qi -- '-o.*Create'; then
- 		tst_brk TCONF "-o flag not supported"
- 	fi
+I wonder what I'm missing, because although I set system umask 222 (in
+/etc/pam.d/common-session and verified it's working) I was not able to trigger
+any problem.
 
---
-2.20.1
+Kind regards,
+Petr
 
-
-
+[1] https://patchwork.ozlabs.org/project/ltp/patch/20210317072652.26974-1-zhaogongyi@huawei.com/
