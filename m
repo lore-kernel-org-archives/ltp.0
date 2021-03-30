@@ -1,56 +1,34 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Tue, 30 Mar 2021 18:46:13 +0800
-Subject: [LTP] [PATCH] Modify the test logic of mincore.
-Message-ID: <20210330104613.1059-1-zhanglianjie@uniontech.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Tue, 30 Mar 2021 20:20:41 +0800
+Subject: [LTP] [PATCH] syscalls/getdtablesize01: Add abnormal handling
+Message-ID: <20210330122041.19700-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Currently mincore has a vulnerability and is easy to be attacked.
-CVE has fixed the vulnerability.
-Please see https://www.linuxkernelcves.com/cves/CVE-2019-5489
+When /etc/hosts is not exist, test would fail, actually, we chould skip the
+the problem to improve maintainability.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- testcases/kernel/syscalls/mincore/mincore04.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/getdtablesize/getdtablesize01.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/mincore/mincore04.c b/testcases/kernel/syscalls/mincore/mincore04.c
-index ed0ab7dfa..345dedd9a 100644
---- a/testcases/kernel/syscalls/mincore/mincore04.c
-+++ b/testcases/kernel/syscalls/mincore/mincore04.c
-@@ -95,12 +95,12 @@ static void test_mincore(void)
- 	locked_pages = count_pages_in_cache();
- 	tst_reap_children();
+diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+index d25cac261..25d10d5fb 100644
+--- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
++++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+@@ -100,6 +100,8 @@ int main(void)
+ 		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
+ 	else if (fd < 0 && errno == ENFILE)
+ 		tst_brkm(TCONF, cleanup, "Reached maximum number of open files for the system");
++	else if (fd == 0)
++		tst_brkm(TCONF, cleanup, "Maybe /etc/hosts is not exist");
+ 	else
+ 		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
 
--	if (locked_pages == NUM_PAGES)
--		tst_res(TPASS, "mincore reports all %d pages locked by child process "
--			"are resident", locked_pages);
--	else
--		tst_res(TFAIL, "mincore reports %d pages resident but %d pages "
-+	if (locked_pages == 0)
-+		tst_res(TPASS, "mincore reports %d pages resident but %d pages "
- 			"locked by child process", locked_pages, NUM_PAGES);
-+	else
-+		tst_res(TFAIL, "mincore reports all %d pages locked by child process "
-+			"are resident", locked_pages);
- }
-
- static struct tst_test test = {
-@@ -109,4 +109,9 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.test_all = test_mincore,
- 	.needs_checkpoints = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "574823bfab82"},
-+		{"CVE", "2019-5489"},
-+		{}
-+	}
- };
 --
-2.20.1
-
-
+2.17.1
 
