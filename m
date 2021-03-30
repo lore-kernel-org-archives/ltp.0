@@ -1,60 +1,67 @@
-From: Eric Biggers <ebiggers@kernel.org>
-Date: Mon, 29 Mar 2021 11:53:07 -0700
-Subject: [LTP] [PATCH] crypto_user02: Find a valid template
-In-Reply-To: <20210315130349.1155389-1-lkml@jv-coder.de>
-References: <20210315130349.1155389-1-lkml@jv-coder.de>
-Message-ID: <YGIiE5/DnjXrcHzK@gmail.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Tue, 30 Mar 2021 01:51:14 +0000
+Subject: [LTP] [PATCH] syscalls/shmctl04: Add kernel version requestions
+In-Reply-To: <20210329134647.27740-1-zhaogongyi@huawei.com>
+References: <20210329134647.27740-1-zhaogongyi@huawei.com>
+Message-ID: <6062841B.6030302@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Mar 15, 2021 at 02:03:49PM +0100, Joerg Vehlow wrote:
-> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
-> 
-> The test requires a crypto template, that is not in use by someone else,
-> otherwise deleting it is not possible.
-> This adds a list of templates, that are tested in order, until one is found,
-> that can be used for the test, otherwise TCONF is returned.
-> 
-> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Hi Gongyi
+> SHM_STAT_ANY is imported to linux in v4.17.
+>
+> Signed-off-by: Zhao Gongyi<zhaogongyi@huawei.com>
+> ---
+>   testcases/kernel/syscalls/ipc/shmctl/shmctl04.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+> index 9e8ec4199..18ac8ba0a 100644
+> --- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+> +++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+> @@ -168,6 +168,7 @@ static void cleanup(void)
+>   }
+>
+>   static struct tst_test test = {
+> +	.min_kver = "4.17",
+Some linux distribution such as centos7.8 has backported this feature, 
+so we should call SHM_STAT_ANY directly to detect whether kernel 
+supports SHM_STAT_ANY instead of using min_kver.
 
-Generally looks good.  A few nits below.
+code as below:
+--- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
++++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
+@@ -155,10 +155,19 @@ static void verify_shminfo(unsigned int n)
+  static void setup(void)
+  {
+         struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
++       struct shmid_ds temp_ds;
+         nobody_uid = ltpuser->pw_uid;
+         root_uid = 0;
 
-> +/*
-> + * List of possible templates to use try (not exhaustive).
-> + * The template has to be valid (i.e. the drivers must exists
-> + * and be a valid combination) and it has to be deleteable.
-> + * To be deletable it cannot be used by someone else.
-> + * The first algorithm, that fullfils the criteria is used for the test.
-> + */
-> +static const char* TEMPLATE_CANDIDATES[] = {
-> +	"hmac(sha1-generic)",
-> +	"hmac(sha224-generic)",
-> +	"hmac(sha256-generic)",
-> +	"hmac(sha384-generic)",
-> +	"hmac(md5-generic)"
-> +};
+         shm_id = SAFE_SHMGET(IPC_PRIVATE, SHM_SIZE, IPC_CREAT | SHM_RW);
++       TEST(shmctl(shm_id, SHM_STAT_ANY, &temp_ds));
++       if (TST_RET == -1) {
++               if (TST_ERR == EINVAL)
++                       tst_brk(TCONF, "kernel doesn't support 
+SHM_STAT_ANY");
++               else
++                       tst_brk(TBROK | TTERRNO,
++                               "Current environment doesn't permit 
+SHM_STAT_ANY");
++       }
+  }
 
-"template" means something like "hmac" by itself.  This probably should be
-called something like ALGORITHM_CANDIDATES, and similarly template => algorithm
-in a couple places below.
 
-Also it should be 'const char * const', not just 'const char *'.
+Also, On your environment, does semctl09.c/msgctl06.c have the same problem?
 
->  static void setup(void)
->  {
-> +	int rc;
-> +	unsigned i;
-> +	struct crypto_user_alg alg, alg_out;
-
-alg_out is unused.
-
-> +	if (!template) {
-> +		tst_brk(TCONF, "No viable template found");
-> +	}
-
-Single-line statements shouldn't have braces like this.
-
-- Eric
+>   	.setup = setup,
+>   	.cleanup = cleanup,
+>   	.test = verify_shminfo,
+> --
+> 2.17.1
+>
+>
