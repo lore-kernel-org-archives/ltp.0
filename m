@@ -1,28 +1,26 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 30 Mar 2021 15:04:37 +0200
-Subject: [LTP] [PATCH] syscalls/chdir: bugfix for
- syscalls/chdir/chdir01.c
-In-Reply-To: <20210322091512.103266-1-xieziyao@huawei.com>
-References: <20210322091512.103266-1-xieziyao@huawei.com>
-Message-ID: <YGMh5b/wj8XjeTqK@pevik>
+Date: Tue, 30 Mar 2021 15:06:39 +0200
+Subject: [LTP] [PATCH] syscalls/chdir01: Add umask before mkdir
+In-Reply-To: <20210317072652.26974-1-zhaogongyi@huawei.com>
+References: <20210317072652.26974-1-zhaogongyi@huawei.com>
+Message-ID: <YGMiX2+NklFVNeIX@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> When uid is nobody, umask is not 022, the test process might
+Not sure if I understand "When uid is nobody, umask is not 022",
+umask setup depends usually on the system. I wonder which system has different
+setup for nobody.
 
-NOTE, there was already another solution posted before [1].
-
-I slightly prefer this one as it reverts back previous setup, which is a good
-habit, but no hard feeling because it's probably not needed in this case.
-
-I wonder what I'm missing, because although I set system umask 222 (in
-/etc/pam.d/common-session and verified it's working) I was not able to trigger
-any problem.
+BTW later was posted another solution, see my comments there.
 
 Kind regards,
 Petr
 
-[1] https://patchwork.ozlabs.org/project/ltp/patch/20210317072652.26974-1-zhaogongyi@huawei.com/
+[2] https://patchwork.ozlabs.org/project/ltp/patch/20210322091512.103266-1-xieziyao@huawei.com/
+
+> has not permmission to access the file which created by SAFE_MKDIR
+> with mode 0755.
