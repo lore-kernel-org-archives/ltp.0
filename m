@@ -1,174 +1,72 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Tue, 30 Mar 2021 09:31:42 +0000
-Subject: [LTP] [PATCH] min_kver: Add kernel version requestions
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB40389E79C@dggeml531-mbx.china.huawei.com>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 30 Mar 2021 11:00:12 +0100
+Subject: [LTP] [PATCH 1/1] tst_mkfs: Add -I option to mkfs.vfat
+In-Reply-To: <20210329145738.986-1-pvorel@suse.cz>
+References: <20210329145738.986-1-pvorel@suse.cz>
+Message-ID: <87czvhneqb.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hello,
 
-> > I have seen the function definition in lapi/preadv2.h or lapi/pwritev2.h,
-> but it seems not enough.
-> Hi Zhongyi,
-> 
-> It is enough to indicate that preadv2() and pwritev2() are supported on
-> your enviroment.
+Petr Vorel <pvorel@suse.cz> writes:
+
+> to workaround occasional error on tests with .all_filesystems flag:
 >
------ I mean that in this testcase, it should call preadv2/pwritev2 in libc since its kernel version < 4.6. So I think this testcase need to be skipped on this system?or it would fail for EINVALID even though
-	I don?t known the root cause of it. Maybe it is the dismatch of libc with kernel.
+> tst_test.c:888: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+> mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0',
+>  not making filesystem (use -I to override)
+> tst_test.c:888: TBROK: mkfs.vfat failed with exit code 1
+>
+> Tested also on BusyBox v1.33.0, which accept but ignores -I since
+> beginning (1.14.0).
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Richard also suggested to wipe the device, but not sure how to do it
+> quickly and don't bring any more dependency.
 
-Thanks!
+I guess that you only need to wipe the headers by writing zeros to the
+device. That is unless this is actually refering to a mapping in
+/dev/mapper?
 
-Best Regards,
-Gongyi
+>
+> Kind regards,
+> Petr
+>
+>  lib/tst_mkfs.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+> index 736324f04..2d335a3ad 100644
+> --- a/lib/tst_mkfs.c
+> +++ b/lib/tst_mkfs.c
+> @@ -52,6 +52,16 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+>  
+>  	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", fs_type);
+>  
+> +	/*
+> +	 * Workaround a problem:
+> +	 * mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0', not
+> +	 * making filesystem (use -I to override)
+> +	 */
+> +	if (!strcmp(fs_type, "vfat")) {
+> +		argv[pos] = "-I";
+> +		strcat(fs_opts_str, argv[pos++]);
+
+Doesn't it need a space after -I? Might be better to put this after
+fs_opts and then you can check i > 0.
+
+> +	}
+> +
+>  	if (fs_opts) {
+>  		for (i = 0; fs_opts[i]; i++) {
+>  			argv[pos++] = fs_opts[i];
 
 
-
-> On 2021/3/30 16:18, zhaogongyi wrote:
-> > Hi Yang,
-> >
-> > I have seen the function definition in lapi/preadv2.h or lapi/pwritev2.h,
-> but it seems not enough.
-> Hi Zhongyi,
-> 
-> It is enough to indicate that preadv2() and pwritev2() are supported on
-> your enviroment.
-> 
-> > I run the testcases preadv201 and pwritev201 on my qemu, kernel
-> version 4.4, arch is armeb, and report as follows:
-> >
-> > # ./preadv201
-> > tst_test.c:1294: TINFO: Timeout per run is 0h 05m 00s
-> > preadv201.c:91: TPASS: preadv2() read 64 bytes with content 'a'
-> > expectedly
-> > preadv201.c:91: TPASS: preadv2() read 64 bytes with content 'a'
-> > expectedly
-> > preadv201.c:91: TPASS: preadv2() read 32 bytes with content 'b'
-> > expectedly
-> > preadv201.c:64: TFAIL: preadv2() failed: EINVAL (22)
-> > preadv201.c:64: TFAIL: preadv2() failed: EINVAL (22)
-> > preadv201.c:64: TFAIL: preadv2() failed: EINVAL (22)
-> >
-> > Summary:
-> > passed   3
-> > failed   3
-> > broken   0
-> > skipped  0
-> > warnings 0
-> >
-> >
-> > # ./pwritev201
-> > tst_test.c:1294: TINFO: Timeout per run is 0h 05m 00s
-> > pwritev201.c:96: TPASS: pwritev2() wrote 64 bytes successfully with
-> > content 'a' expectedly
-> > pwritev201.c:96: TPASS: pwritev2() wrote 64 bytes successfully with
-> > content 'a' expectedly
-> > pwritev201.c:96: TPASS: pwritev2() wrote 64 bytes successfully with
-> > content 'a' expectedly
-> > pwritev201.c:62: TFAIL: pwritev2() failed: EINVAL (22)
-> > pwritev201.c:62: TFAIL: pwritev2() failed: EINVAL (22)
-> > pwritev201.c:62: TFAIL: pwritev2() failed: EINVAL (22)
-> >
-> > Summary:
-> > passed   3
-> > failed   3
-> > broken   0
-> > skipped  0
-> > warnings 0
-> >
-> 
-> It seems that preadv2() and pwritev2() cannot accept the offset argument
-> which is set to -1.
-> You should find why preadv2() and pwritev2() cannot accept the offset ==
-> -1.
-> 1) If LTP introduces the issue, you should send a patch to fix it(not add
-> kernel version check).
-> 2) If kernel introduces the issue, you should keep the test becasue it
-> exposes the kernel bug as expected.
->       Of course, you can also try to find which kernel commit fixes the
-> issue if you want.
-> 
-> > See man 2, we known preadv2() and pwritev2() first appeared in Linux
-> 4.6, so I think we need to check kernel version in testcases.
-> 
-> 1) It is wrong to work around the issue about preadv2()/pwritev2() by
-> kernel version check.
-> 2) As Xu metioned on your patch(syscalls/shmctl04: Add kernel version
-> requestions), kernel version check is not the best way to indicate if
-> preadv2()/pwritev2() is supported.
-> 
-> Best Regards,
-> Xiao Yang
-> > Thanks!
-> >
-> > Best Regards,
-> > Gongyi
-> >
-> >
-> >> Hi Zhongyi,
-> >>
-> >> Do you get any issue here?
-> >>
-> >> It is unncessary to add version check because LTP has check the
-> >> support of
-> >> preadv2/pwritev2:
-> >> 1) Call preadv2/pwritev2 directly if glibc provides it.
-> >> 2) Call syscall(__NR_preadv2/__NR_pwritev2) if glibc doesn't provides
-> >> preadv2/pwritev.
-> >> 3) Report TCONF if kernel doesn't support
-> __NR_preadv2/__NR_pwritev2.
-> >>
-> >> Please reference "include/lapi/preadv2.h"
-> >>
-> >> Best Regards,
-> >> Xiao Yang
-> >> On 2021/3/30 15:44, Zhao Gongyi wrote:
-> >>> We need add kernel version requestions sinc preadv2() and
-> pwritev2()
-> >>> first appeared in Linux 4.6.
-> >>>
-> >>> For those:
-> >>> 	testcases/kernel/syscalls/preadv2/preadv201.c
-> >>> 	testcases/kernel/syscalls/pwritev2/pwritev201.c
-> >>>
-> >>> Signed-off-by: Zhao Gongyi<zhaogongyi@huawei.com>
-> >>> ---
-> >>>    testcases/kernel/syscalls/preadv2/preadv201.c   | 1 +
-> >>>    testcases/kernel/syscalls/pwritev2/pwritev201.c | 1 +
-> >>>    2 files changed, 2 insertions(+)
-> >>>
-> >>> diff --git a/testcases/kernel/syscalls/preadv2/preadv201.c
-> >>> b/testcases/kernel/syscalls/preadv2/preadv201.c
-> >>> index 91e2b9889..e8220f94c 100644
-> >>> --- a/testcases/kernel/syscalls/preadv2/preadv201.c
-> >>> +++ b/testcases/kernel/syscalls/preadv2/preadv201.c
-> >>> @@ -111,6 +111,7 @@ static void cleanup(void)
-> >>>    }
-> >>>
-> >>>    static struct tst_test test = {
-> >>> +	.min_kver = "4.6",
-> >>>    	.tcnt = ARRAY_SIZE(tcases),
-> >>>    	.setup = setup,
-> >>>    	.cleanup = cleanup,
-> >>> diff --git a/testcases/kernel/syscalls/pwritev2/pwritev201.c
-> >>> b/testcases/kernel/syscalls/pwritev2/pwritev201.c
-> >>> index eba45b7d3..a8273e59d 100644
-> >>> --- a/testcases/kernel/syscalls/pwritev2/pwritev201.c
-> >>> +++ b/testcases/kernel/syscalls/pwritev2/pwritev201.c
-> >>> @@ -111,6 +111,7 @@ static void cleanup(void)
-> >>>    }
-> >>>
-> >>>    static struct tst_test test = {
-> >>> +	.min_kver = "4.6",
-> >>>    	.tcnt = ARRAY_SIZE(tcases),
-> >>>    	.setup = setup,
-> >>>    	.cleanup = cleanup,
-> >>> --
-> >>> 2.17.1
-> >>>
-> >>>
-> > .
-> >
+-- 
+Thank you,
+Richard.
