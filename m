@@ -1,34 +1,68 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Tue, 30 Mar 2021 20:20:41 +0800
-Subject: [LTP] [PATCH] syscalls/getdtablesize01: Add abnormal handling
-Message-ID: <20210330122041.19700-1-zhaogongyi@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 30 Mar 2021 14:25:09 +0200
+Subject: [LTP] [PATCH 1/1] tst_mkfs: Add -I option to mkfs.vfat
+In-Reply-To: <87czvhneqb.fsf@suse.de>
+References: <20210329145738.986-1-pvorel@suse.cz>
+ <87czvhneqb.fsf@suse.de>
+Message-ID: <YGMYpaeR7Mp7rATD@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When /etc/hosts is not exist, test would fail, actually, we chould skip the
-the problem to improve maintainability.
+Hi,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/getdtablesize/getdtablesize01.c | 2 ++
- 1 file changed, 2 insertions(+)
+...
+> > +	/*
+> > +	 * Workaround a problem:
+> > +	 * mkfs.vfat: Partitions or virtual mappings on device '/dev/loop0', not
+> > +	 * making filesystem (use -I to override)
+> > +	 */
+> > +	if (!strcmp(fs_type, "vfat")) {
+> > +		argv[pos] = "-I";
+> > +		strcat(fs_opts_str, argv[pos++]);
 
-diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-index d25cac261..25d10d5fb 100644
---- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-+++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
-@@ -100,6 +100,8 @@ int main(void)
- 		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
- 	else if (fd < 0 && errno == ENFILE)
- 		tst_brkm(TCONF, cleanup, "Reached maximum number of open files for the system");
-+	else if (fd == 0)
-+		tst_brkm(TCONF, cleanup, "Maybe /etc/hosts is not exist");
- 	else
- 		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
+> Doesn't it need a space after -I?
+No, it's char *const argv[] passed to execvp() in tst_cmd_fds_(), which does the
+separation. Adding spaces on the contrary causes failure (equivalent of
+mkfs.vfat " -I " ...).
 
---
-2.17.1
+> Might be better to put this after fs_opts and then you can check i > 0.
+Have I overlooked introduced regression? It works, only it needs to add " "
+space for formatting output, but functionality works, adding tested file.
 
+Kind regards,
+Petr
+
+Testing file:
+
+#include "tst_test.h"
+#define MOUNT_POINT "mount_ext"
+
+static void do_test(void)
+{
+	tst_res(TPASS, "here");
+}
+
+static struct tst_test test = {
+	.test_all = do_test,
+	.mount_device = 1,
+	.mntpoint = MOUNT_POINT,
+	.needs_root = 1,
+	.dev_fs_type = "vfat",
+	.dev_fs_opts = (const char *const []){"-v", NULL},
+};
+
+Needed fix:
+
+--- lib/tst_mkfs.c
++++ lib/tst_mkfs.c
+@@ -60,6 +60,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	if (!strcmp(fs_type, "vfat")) {
+ 		argv[pos] = "-I";
+ 		strcat(fs_opts_str, argv[pos++]);
++		strcat(fs_opts_str, " ");
+ 	}
+ 
+ 	if (fs_opts) {
