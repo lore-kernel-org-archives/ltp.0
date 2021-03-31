@@ -1,67 +1,68 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 31 Mar 2021 09:58:33 +0200
-Subject: [LTP] [PATCH 1/1] tst_mkfs: Add -I option to mkfs.vfat
-In-Reply-To: <87a6qkom1p.fsf@suse.de>
-References: <20210329145738.986-1-pvorel@suse.cz> <87czvhneqb.fsf@suse.de>
- <YGMYpaeR7Mp7rATD@pevik> <87a6qkom1p.fsf@suse.de>
-Message-ID: <YGQrqdryrb+4f5UO@pevik>
+Date: Wed, 31 Mar 2021 12:03:40 +0200
+Subject: [LTP] [PATCH 1/1] chdir01: Skip nobody when problems on umask 0070
+Message-ID: <20210331100340.28034-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+FAT and exFAT from Samsung have EACCES for nobody on umask 0070.
 
-instead of using -I I tried Martin Doucha's suggestion to rescan partition table
-with ioctl BLKRRPART. But I get EINVAL. Not sure if O_RDONLY is a proper flag,
-but I also tried to open with args used for manipulating loop (open(path,
-O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) and a same issue. Happens on recent
-kernel and very old kernel 3.16.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/chdir/chdir01.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-I wonder if I have wrong flags or BLKRRPART is just not supported on loop
-devices. Looking into kernel sources it's this part blkdev_reread_part():
-
-	if (!disk_part_scan_enabled(bdev->bd_disk) || bdev_is_partition(bdev))
-		return -EINVAL;
-Kind regards,
-Petr
-
-diff --git lib/tst_mkfs.c lib/tst_mkfs.c
-index 736324f04..06fafcd18 100644
---- lib/tst_mkfs.c
-+++ lib/tst_mkfs.c
-@@ -15,6 +15,10 @@
-  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-  */
+diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
+index 23cd455d6..57b92f3f8 100644
+--- a/testcases/kernel/syscalls/chdir/chdir01.c
++++ b/testcases/kernel/syscalls/chdir/chdir01.c
+@@ -27,7 +27,7 @@
+ #define LINK_NAME2 "symloop2"
  
-+#include <sys/ioctl.h>
-+#include <sys/mount.h>
-+#include <fcntl.h>
+ static char *workdir;
+-static int skip_symlinks, skip_blocked;
++static int skip_symlinks, skip_blocked, skip_umask;
+ static struct passwd *ltpuser;
+ 
+ static struct test_case {
+@@ -57,6 +57,11 @@ static void setup(void)
+ 	SAFE_CHDIR(workdir);
+ 
+ 	mode_t sys_umask = umask(0);
 +
- #include "test.h"
- #include "ltp_priv.h"
- #include "tst_mkfs.h"
-@@ -26,7 +30,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 	       const char *dev, const char *fs_type,
- 	       const char *const fs_opts[], const char *const extra_opts[])
- {
--	int i, pos = 1, ret;
-+	int fd, i, pos = 1, ret;
- 	char mkfs[64];
- 	const char *argv[OPTS_MAX] = {mkfs};
- 	char fs_opts_str[1024] = "";
-@@ -93,6 +97,13 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
- 			"tst_clear_device() failed");
++	/* FAT and exFAT from Samsung have EACCES for nobody on umask 0070 */
++	if (sys_umask & S_IRWXG)
++		skip_umask = 1;
++
+ 	SAFE_MKDIR(DIR_NAME, 0755);
+ 	SAFE_MKDIR(BLOCKED_NAME, 0644);
+ 	umask(sys_umask);
+@@ -118,8 +123,7 @@ static void run(unsigned int n)
+ 	check_result("root", tc->name, tc->root_ret, tc->root_err);
+ 
+ 	if (tc->nobody_err == EACCES && skip_blocked) {
+-		tst_res(TCONF, "Skipping unprivileged permission test, "
+-			"FS mangles dir mode");
++		tst_res(TCONF, "Skipping unprivileged permission test, FS mangles dir mode");
+ 		return;
  	}
  
-+	/* force kernel to reread partition table */
-+	fd = open(dev, O_RDONLY);
-+	tst_resm_(file, lineno, TINFO, "dev: %s, fd: %d", dev, fd);
-+	ret = ioctl(fd, BLKRRPART);
-+	tst_resm_(file, lineno, TINFO, "rc: %d", ret);
-+	close(fd);
+@@ -127,6 +131,12 @@ static void run(unsigned int n)
+ 	SAFE_SETEUID(ltpuser->pw_uid);
+ 	TEST(chdir(tc->name));
+ 	SAFE_SETEUID(0);
 +
- 	tst_resm_(file, lineno, TINFO,
- 		"Formatting %s with %s opts='%s' extra opts='%s'",
- 		dev, fs_type, fs_opts_str, extra_opts_str);
++	if (skip_blocked && skip_umask && TST_ERR == EACCES) {
++		tst_res(TCONF, "Skipping unprivileged permission test, FS mangles dir mode on umask");
++		return;
++	}
++
+ 	check_result("nobody", tc->name, tc->nobody_ret, tc->nobody_err);
+ }
+ 
+-- 
+2.30.2
+
