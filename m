@@ -1,68 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 31 Mar 2021 12:03:40 +0200
-Subject: [LTP] [PATCH 1/1] chdir01: Skip nobody when problems on umask 0070
-Message-ID: <20210331100340.28034-1-pvorel@suse.cz>
+Date: Wed, 31 Mar 2021 12:31:00 +0200
+Subject: [LTP] [PATCH] bugfix for cpio/cpio_tests.sh
+In-Reply-To: <20210330130115.26575-1-sujiaxun@uniontech.com>
+References: <20210330130115.26575-1-sujiaxun@uniontech.com>
+Message-ID: <YGRPZF+DJy/jAZRN@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-FAT and exFAT from Samsung have EACCES for nobody on umask 0070.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/chdir/chdir01.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+> In cpio version 2.12 and 2.13,'cpio --help' create is lowercase
 
-diff --git a/testcases/kernel/syscalls/chdir/chdir01.c b/testcases/kernel/syscalls/chdir/chdir01.c
-index 23cd455d6..57b92f3f8 100644
---- a/testcases/kernel/syscalls/chdir/chdir01.c
-+++ b/testcases/kernel/syscalls/chdir/chdir01.c
-@@ -27,7 +27,7 @@
- #define LINK_NAME2 "symloop2"
- 
- static char *workdir;
--static int skip_symlinks, skip_blocked;
-+static int skip_symlinks, skip_blocked, skip_umask;
- static struct passwd *ltpuser;
- 
- static struct test_case {
-@@ -57,6 +57,11 @@ static void setup(void)
- 	SAFE_CHDIR(workdir);
- 
- 	mode_t sys_umask = umask(0);
-+
-+	/* FAT and exFAT from Samsung have EACCES for nobody on umask 0070 */
-+	if (sys_umask & S_IRWXG)
-+		skip_umask = 1;
-+
- 	SAFE_MKDIR(DIR_NAME, 0755);
- 	SAFE_MKDIR(BLOCKED_NAME, 0644);
- 	umask(sys_umask);
-@@ -118,8 +123,7 @@ static void run(unsigned int n)
- 	check_result("root", tc->name, tc->root_ret, tc->root_err);
- 
- 	if (tc->nobody_err == EACCES && skip_blocked) {
--		tst_res(TCONF, "Skipping unprivileged permission test, "
--			"FS mangles dir mode");
-+		tst_res(TCONF, "Skipping unprivileged permission test, FS mangles dir mode");
- 		return;
- 	}
- 
-@@ -127,6 +131,12 @@ static void run(unsigned int n)
- 	SAFE_SETEUID(ltpuser->pw_uid);
- 	TEST(chdir(tc->name));
- 	SAFE_SETEUID(0);
-+
-+	if (skip_blocked && skip_umask && TST_ERR == EACCES) {
-+		tst_res(TCONF, "Skipping unprivileged permission test, FS mangles dir mode on umask");
-+		return;
-+	}
-+
- 	check_result("nobody", tc->name, tc->nobody_ret, tc->nobody_err);
- }
- 
--- 
-2.30.2
+> -	if ! cpio --help 2>&1 | grep -q -- '-o.*Create'; then
+> +	if ! cpio --help 2>&1 | grep -qi -- '-o.*Create'; then
 
+First, are you talking about cpio implementation [1]
+or busybox implementation [2] ?
+
+I suppose cpio, but also busybox had in the past 2.12 and 2.13.
+There is no lower case in cpio 2.12 [3] neither in 2.13 [4].
+
+Looking at busybox, I'm not sure how help was printed ([5] [6]), as I'm not able
+to install this version (1_13_4 tag is from 2009 - I guess you're not talking about it).
+
+Kind regards,
+Petr
+
+[1] https://git.savannah.gnu.org/cgit/cpio.git
+[2] https://git.busybox.net/busybox/
+[3] https://git.savannah.gnu.org/cgit/cpio.git/tree/src/main.c?h=release_2_12#n101
+[4] https://git.savannah.gnu.org/cgit/cpio.git/tree/src/main.c?h=release_2_13#n100
+[5] https://git.busybox.net/busybox/tree/archival/cpio.c?h=1_12_stable#n185
+[6] https://git.busybox.net/busybox/tree/archival/cpio.c?h=1_13_stable
