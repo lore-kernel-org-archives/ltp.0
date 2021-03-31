@@ -1,9 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 31 Mar 2021 12:31:00 +0200
+Date: Wed, 31 Mar 2021 15:18:01 +0200
 Subject: [LTP] [PATCH] bugfix for cpio/cpio_tests.sh
-In-Reply-To: <20210330130115.26575-1-sujiaxun@uniontech.com>
+In-Reply-To: <762779324.75038.1617189402948.JavaMail.xmail@bj-wm-cp-5>
 References: <20210330130115.26575-1-sujiaxun@uniontech.com>
-Message-ID: <YGRPZF+DJy/jAZRN@pevik>
+ <YGRPZF+DJy/jAZRN@pevik>
+ <762779324.75038.1617189402948.JavaMail.xmail@bj-wm-cp-5>
+Message-ID: <YGR2iTMUNUTuhbMw@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,26 +14,26 @@ To: ltp@lists.linux.it
 
 Hi,
 
-> In cpio version 2.12 and 2.13,'cpio --help' create is lowercase
+> > In cpio version 2.12 and 2.13,'cpio --help' create is lowercase ?
+> ?
+> > - if ! cpio --help 2>&1 | grep -q -- '-o.*Create'; then ?
+> > + if ! cpio --help 2>&1 | grep -qi -- '-o.*Create'; then ?
 
-> -	if ! cpio --help 2>&1 | grep -q -- '-o.*Create'; then
-> +	if ! cpio --help 2>&1 | grep -qi -- '-o.*Create'; then
+> Sorry, I thought the search was ?--create? after ?-o?. In the English
+> environment, there is indeed ?Create? in the description.
 
-First, are you talking about cpio implementation [1]
-or busybox implementation [2] ?
+> ??-i,?--extract??????????????Extract?files?from?an?archive
+> ??-o,?--create? ? ? ? ? ? ? Create?the?archive
 
-I suppose cpio, but also busybox had in the past 2.12 and 2.13.
-There is no lower case in cpio 2.12 [3] neither in 2.13 [4].
+Thanks for clarification.  No, long option --create does not exist in busybox
+implementation, there is only short option -o. I mean it wouldn't harm to have
+'grep -i', but until needed, I prefer to not adding it.
 
-Looking at busybox, I'm not sure how help was printed ([5] [6]), as I'm not able
-to install this version (1_13_4 tag is from 2009 - I guess you're not talking about it).
+cpio implementation:
+  -o, --create               Create the archive (run in copy-out mode)
+
+busybox implementation:
+	-o	Create (requires -H newc)
 
 Kind regards,
 Petr
-
-[1] https://git.savannah.gnu.org/cgit/cpio.git
-[2] https://git.busybox.net/busybox/
-[3] https://git.savannah.gnu.org/cgit/cpio.git/tree/src/main.c?h=release_2_12#n101
-[4] https://git.savannah.gnu.org/cgit/cpio.git/tree/src/main.c?h=release_2_13#n100
-[5] https://git.busybox.net/busybox/tree/archival/cpio.c?h=1_12_stable#n185
-[6] https://git.busybox.net/busybox/tree/archival/cpio.c?h=1_13_stable
