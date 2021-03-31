@@ -1,233 +1,67 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Wed, 31 Mar 2021 15:09:14 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/close: Convert close08 to the new API
-In-Reply-To: <20210331070914.4401-1-xieziyao@huawei.com>
-References: <20210331070914.4401-1-xieziyao@huawei.com>
-Message-ID: <20210331070914.4401-4-xieziyao@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 31 Mar 2021 09:58:33 +0200
+Subject: [LTP] [PATCH 1/1] tst_mkfs: Add -I option to mkfs.vfat
+In-Reply-To: <87a6qkom1p.fsf@suse.de>
+References: <20210329145738.986-1-pvorel@suse.cz> <87czvhneqb.fsf@suse.de>
+ <YGMYpaeR7Mp7rATD@pevik> <87a6qkom1p.fsf@suse.de>
+Message-ID: <YGQrqdryrb+4f5UO@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-convert close08 to the new API
+Hi,
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/close/close08.c | 178 ++++------------------
- 1 file changed, 29 insertions(+), 149 deletions(-)
+instead of using -I I tried Martin Doucha's suggestion to rescan partition table
+with ioctl BLKRRPART. But I get EINVAL. Not sure if O_RDONLY is a proper flag,
+but I also tried to open with args used for manipulating loop (open(path,
+O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) and a same issue. Happens on recent
+kernel and very old kernel 3.16.
 
-diff --git a/testcases/kernel/syscalls/close/close08.c b/testcases/kernel/syscalls/close/close08.c
-index ccdefa173..5d0e704ce 100644
---- a/testcases/kernel/syscalls/close/close08.c
-+++ b/testcases/kernel/syscalls/close/close08.c
-@@ -1,177 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-+ *  AUTHOR: William Roske
-+ *  CO-PILOT: Dave Fenner
+I wonder if I have wrong flags or BLKRRPART is just not supported on loop
+devices. Looking into kernel sources it's this part blkdev_reread_part():
+
+	if (!disk_part_scan_enabled(bdev->bd_disk) || bdev_is_partition(bdev))
+		return -EINVAL;
+Kind regards,
+Petr
+
+diff --git lib/tst_mkfs.c lib/tst_mkfs.c
+index 736324f04..06fafcd18 100644
+--- lib/tst_mkfs.c
++++ lib/tst_mkfs.c
+@@ -15,6 +15,10 @@
+  * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
--/* $Id: close08.c,v 1.6 2009/10/13 14:00:46 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: close08
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for close(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) close(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the close(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	close(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
+ 
++#include <sys/ioctl.h>
++#include <sys/mount.h>
++#include <fcntl.h>
 +
-+/*\
-+ * [Description]
-+ * Basic test for close(2)
-  *
-+ * [Algorithm]
-  *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
-+ * - Execute system call
-+ * - Check return code, if system call failed (return=-1)
-+ * -   Log the errno and Issue a FAIL message.
-+ * - Otherwise
-+ * -   Issue a PASS message.
-+ */
-
-+#include <stdio.h>
- #include <sys/types.h>
- #include <fcntl.h>
- #include <errno.h>
- #include <string.h>
- #include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
-
--void setup();
--void cleanup();
--
--char *TCID = "close08";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-
- char fname[255];
- int fd;
-
--int main(int ac, char **av)
-+static void run(void)
+ #include "test.h"
+ #include "ltp_priv.h"
+ #include "tst_mkfs.h"
+@@ -26,7 +30,7 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 	       const char *dev, const char *fs_type,
+ 	       const char *const fs_opts[], const char *const extra_opts[])
  {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
--			tst_brkm(TBROK | TTERRNO, cleanup,
--				 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
--		}
--		TEST(close(fd));
-+	SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
-
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "close(%s) failed", fname);
--		} else {
--			tst_resm(TPASS, "close(%s) returned %ld", fname,
--				 TEST_RETURN);
--		}
-+	TEST(close(fd));
-
--		SAFE_UNLINK(cleanup, fname);
--	}
-+	if (TST_RET == -1)
-+		tst_res(TFAIL | TTERRNO, "close(%s) failed", fname);
-+	else
-+		tst_res(TPASS, "close(%s) returned %ld", fname, TST_RET);
-
--	cleanup();
--	tst_exit();
-+	SAFE_UNLINK(fname);
- }
-
- void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
- 	sprintf(fname, "tfile_%d", getpid());
- }
-
--void cleanup(void)
--{
--	tst_rmdir();
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+};
-
--}
---
-2.17.1
-
+-	int i, pos = 1, ret;
++	int fd, i, pos = 1, ret;
+ 	char mkfs[64];
+ 	const char *argv[OPTS_MAX] = {mkfs};
+ 	char fs_opts_str[1024] = "";
+@@ -93,6 +97,13 @@ void tst_mkfs_(const char *file, const int lineno, void (cleanup_fn)(void),
+ 			"tst_clear_device() failed");
+ 	}
+ 
++	/* force kernel to reread partition table */
++	fd = open(dev, O_RDONLY);
++	tst_resm_(file, lineno, TINFO, "dev: %s, fd: %d", dev, fd);
++	ret = ioctl(fd, BLKRRPART);
++	tst_resm_(file, lineno, TINFO, "rc: %d", ret);
++	close(fd);
++
+ 	tst_resm_(file, lineno, TINFO,
+ 		"Formatting %s with %s opts='%s' extra opts='%s'",
+ 		dev, fs_type, fs_opts_str, extra_opts_str);
