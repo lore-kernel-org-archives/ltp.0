@@ -1,12 +1,26 @@
-From: =?unknown-8bit?b?6a2P5Lic?= <weidong@uniontech.com>
-Date: Wed, 31 Mar 2021 10:22:58 +0800 (CST)
-Subject: [LTP] =?utf-8?q?runltp-test_exited_abnormally?=
-Message-ID: <1581046267.325688.1617157378318.JavaMail.xmail@bj-wm-cp-9>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Wed, 31 Mar 2021 15:09:11 +0800
+Subject: [LTP] [PATCH 0/3] syscalls/close: Convert close{01, 02,
+ 08} to the new API
+Message-ID: <20210331070914.4401-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210331/fe67aa61/attachment-0001.htm>
+convert syscalls/close/close{01, 02, 08} to the new API
+
+Xie Ziyao (3):
+  Convert close01 to the new API
+  Convert close02 to the new API
+  Convert close08 to the new API
+
+ testcases/kernel/syscalls/close/close01.c | 122 +++++----------
+ testcases/kernel/syscalls/close/close02.c | 136 +++++------------
+ testcases/kernel/syscalls/close/close08.c | 178 ++++------------------
+ 3 files changed, 101 insertions(+), 335 deletions(-)
+
+--
+2.17.1
+
