@@ -1,41 +1,43 @@
-From: Wang Xin <wangxin410@huawei.com>
-Date: Thu, 1 Apr 2021 12:51:27 +0000
-Subject: [LTP] [PATCH] ltp_tpci.c: Add release operation before allocation
-Message-ID: <20210401125127.45600-1-wangxin410@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  1 Apr 2021 14:47:24 +0200
+Subject: [LTP] [PATCH 1/1] df01.sh: Fix DF_FS_TYPE assignment on bind mount
+Message-ID: <20210401124724.25394-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we run the test case, the following results will be obtained:
-test_pci  283  TPASS  :  PCI bus 7d slot 00 : Test-case '11'
-test_pci  284  TFAIL  :  tpci.c:74: PCI bus 7d slot 00 : Test-case '12'
-...
-test_pci  300  TFAIL  :  tpci.c:74: PCI bus 7d slot 01 : Test-case '12'
-test_pci  301  TPASS  :  PCI bus 7d slot 01 : Test-case '13'
+In case of bind mount of testing directory, grep will assign filesystem
+twice, with new line:
 
-The analysis is that the space allocated by the bios is insufficient.
-The solution to this problem can be in add pci_release_resource(dev, i)
-before system resources are reallocated.Because the resources have been
-allocated when the system is initialized.If it is redistributed, it
-should be released and then allocated.
+$ echo "DF_FS_TYPE: '$DF_FS_TYPE'"
+DF_FS_TYPE: 'ext2
+ext2'
 
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
+Limiting only first line to avoid failure with confusing message:
+
+df01 5 TFAIL: 'df' failed.
+df: ext2: No such file or directory
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/commands/df/df01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-index e29821dda..5b0896093 100644
---- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-@@ -439,6 +439,7 @@ static int test_assign_resources(void)
- 		if (r->flags & IORESOURCE_MEM &&
- 			r->flags & IORESOURCE_PREFETCH) {
-+			pci_release_resource(dev, i);
- 			ret = pci_assign_resource(dev, i);
- 			prk_info("assign resource to '%d', ret '%d'", i, ret);
- 			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
-2.17.1
+diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
+index 0e73a16af..f59676bfa 100755
+--- a/testcases/commands/df/df01.sh
++++ b/testcases/commands/df/df01.sh
+@@ -39,7 +39,7 @@ setup()
+ {
+ 	tst_mkfs
+ 	tst_mount
+-	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk '{print $5}')
++	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk 'NR==1{print $5}')
+ }
+ 
+ df_test()
+-- 
+2.30.2
 
