@@ -1,30 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 1 Apr 2021 12:30:36 +0200
-Subject: [LTP] [PATCH v2 2/2] doc: Add Maintainer Patch Review Checklist
-In-Reply-To: <CAEemH2cz20Xd_c-3WZW2sNY5fXXhXMg8XQjVee=nVUi5-hw4kg@mail.gmail.com>
-References: <20210318181641.2062-1-pvorel@suse.cz>
- <20210318181641.2062-3-pvorel@suse.cz>
- <60546E24.9010601@fujitsu.com> <YFRvZ89AykS5ldJj@yuki.lan>
- <YFSGZ9YKo/JUHMtm@pevik> <YFSVbmQ7T0kPnlXs@yuki.lan>
- <CAEemH2cz20Xd_c-3WZW2sNY5fXXhXMg8XQjVee=nVUi5-hw4kg@mail.gmail.com>
-Message-ID: <YGWgzMUqFZ4fgVbl@pevik>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu,  1 Apr 2021 12:56:17 +0200
+Subject: [LTP] [PATCH] fallocat06: Add git tag for Btrfs noCoW ENOSPC bug
+Message-ID: <20210401105617.9320-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/kernel/syscalls/fallocate/fallocate06.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> +Cc Alice Wang, who is a volunteer of the GNU lawyer team. I met her
-> several years ago in Beijing, not sure if I remember the email-address
-> correctly, so I just CC her in case she can read this and maybe help some
-> side.
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
+index 409fd1321..ea21bd090 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate06.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
+@@ -19,6 +19,8 @@
+  *
+  * This is also regression test for:
+  * e093c4be760e ("xfs: Fix tail rounding in xfs_alloc_file_space()")
++ * 6d4572a9d71d ("Allow btrfs_truncate_block() to fallback to nocow for data
++ *              space reservation")
+  */
+ 
+ #define _GNU_SOURCE
+@@ -259,6 +261,7 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "e093c4be760e"},
++		{"linux-git", "6d4572a9d71d"},
+ 		{}
+ 	}
+ };
+-- 
+2.30.2
 
-Alice haven't responded, thus I pushed patchset with other fixes and created
-page [1]. It'd be great to get info from other lawyer.
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist
