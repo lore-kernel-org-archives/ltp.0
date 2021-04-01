@@ -1,81 +1,37 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 1 Apr 2021 05:00:08 +0000
-Subject: [LTP] [PATCH v3] syscalls/ipc: Check that whether if kernel
- supports *_STAT_ANY
-In-Reply-To: <20210330063200.23654-1-zhaogongyi@huawei.com>
-References: <20210330063200.23654-1-zhaogongyi@huawei.com>
-Message-ID: <60655364.3080900@fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 1 Apr 2021 08:12:27 +0200
+Subject: [LTP] [PATCH] bugfix for ssetmask01.c
+In-Reply-To: <20210330021830.17402-1-zhanglianjie@uniontech.com>
+References: <20210330021830.17402-1-zhanglianjie@uniontech.com>
+Message-ID: <YGVkS23e+/eytuEn@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Gongyi
+Hi,
 
-Merged with following changes, thanks!
+> mips architecture syscall(69) __NR_ssetmask not supported on your arch.
 
-diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-index badbaaede..6f5476383 100644
---- a/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-+++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl06.c
-@@ -152,10 +152,8 @@ static void setup(void)
-  			tst_brk(TCONF, "kernel doesn't support MSG_STAT_ANY");
-  		else
-  			tst_brk(TBROK | TTERRNO,
--					"Current environment doesn't permit "
--					"MSG_STAT_ANY");
-+				"Current environment doesn't permit MSG_STAT_ANY");
-  	}
--
-  }
+nit: "mips_o32: Fix __NR_s{g,s}etmask" for bug title would be more descriptive
+than "bugfix for ssetmask01.c". And then in text mention ssetmask01.c.
 
-  static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl09.c b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-index b40f5ba8b..efbc67f33 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl09.c
-@@ -196,18 +196,15 @@ static void setup(void)
+> +++ b/include/lapi/syscalls/mips_o32.in
+> @@ -66,8 +66,8 @@ getppid 64
+>  getpgrp 65
+>  setsid 66
+>  sigaction 67
+> -sgetmask 68
+> -ssetmask 69
+> +sgetmask 4068
+> +ssetmask 4069
 
-  	TEST(do_semctl(sem_id, 0, SEM_STAT_ANY));
-  	if (TST_RET == -1) {
--		if (errno == EFAULT)
--			tst_brk(TFAIL, "SEM_STAT_ANY doesn't pass the buffer "
--					"specified by the caller to kernel");
-+		if (TST_ERR == EFAULT)
-+			tst_brk(TFAIL,
-+				"SEM_STAT_ANY doesn't pass the buffer specified by the caller to kernel");
-  		if (TST_ERR == EINVAL)
--			tst_brk(TCONF, "kernel doesn't support "
--					"SEM_STAT_ANY");
-+			tst_brk(TCONF, "kernel doesn't support SEM_STAT_ANY");
-  		else
-  			tst_brk(TBROK | TTERRNO,
--					"Current environment doesn't permit "
--					"SEM_STAT_ANY");
-+				"Current environment doesn't permit SEM_STAT_ANY");
-  	}
--
-  }
+But more important: I guess you're right because we don't add any offset to the
+numbers. But IMHO all numbers are wrong, all mips files should contain offset
+(01e4dc222 was wrong). mips_o32.in should be offset 4000, mips_n32.in 6000 and
+mips_n64.in 5000 (comparing scall32-o32.S, scall64-64.S, scall64-n32.S in
+arch/mips/kernel in kernel and mips{,n32,64}/bits/syscall.h.in in musl).
 
-  static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-index 9a60c5170..724610ef0 100644
---- a/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-+++ b/testcases/kernel/syscalls/ipc/shmctl/shmctl04.c
-@@ -164,12 +164,10 @@ static void setup(void)
-  	TEST(shmctl(shm_id, SHM_STAT_ANY,&temp_ds));
-  	if (TST_RET == -1) {
-  		if (TST_ERR == EINVAL)
--			tst_brk(TCONF, "kernel doesn't support "
--					"SHM_STAT_ANY");
-+			tst_brk(TCONF, "kernel doesn't support SHM_STAT_ANY");
-  		else
-  			tst_brk(TBROK | TTERRNO,
--					"Current environment doesn't permit "
--					"SHM_STAT_ANY");
-+				"Current environment doesn't permit SHM_STAT_ANY");
-  	}
-  }
-
-
+Kind regards,
+Petr
