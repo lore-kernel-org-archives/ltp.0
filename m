@@ -1,37 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 1 Apr 2021 08:12:27 +0200
-Subject: [LTP] [PATCH] bugfix for ssetmask01.c
-In-Reply-To: <20210330021830.17402-1-zhanglianjie@uniontech.com>
-References: <20210330021830.17402-1-zhanglianjie@uniontech.com>
-Message-ID: <YGVkS23e+/eytuEn@pevik>
+Date: Thu, 1 Apr 2021 08:35:26 +0200
+Subject: [LTP] [PATCH] realtime/scripts: Fix indentation error in
+ parser.py
+In-Reply-To: <20210329181759.4466-1-sturlapati@vmware.com>
+References: <20210329181759.4466-1-sturlapati@vmware.com>
+Message-ID: <YGVprik5olSjhY+n@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Sharan,
 
-> mips architecture syscall(69) __NR_ssetmask not supported on your arch.
+> An indentation error in parser.py causes certain blocks
+> of code to run even before dependent variables are
+> initialized when the code in this file is imported
+> by parse-testpi1.py or parse-testpi2.py.
 
-nit: "mips_o32: Fix __NR_s{g,s}etmask" for bug title would be more descriptive
-than "bugfix for ssetmask01.c". And then in text mention ssetmask01.c.
+> Post running tests like testpi-2 or testpi-4, the
+> results of these tests are parsed and added to the
+> logs/ directory. This bug prevents the results of such
+> tests from being parsed and thus masks the results of
+> these tests.
 
-> +++ b/include/lapi/syscalls/mips_o32.in
-> @@ -66,8 +66,8 @@ getppid 64
->  getpgrp 65
->  setsid 66
->  sigaction 67
-> -sgetmask 68
-> -ssetmask 69
-> +sgetmask 4068
-> +ssetmask 4069
+Thanks for your fix, merged!
 
-But more important: I guess you're right because we don't add any offset to the
-numbers. But IMHO all numbers are wrong, all mips files should contain offset
-(01e4dc222 was wrong). mips_o32.in should be offset 4000, mips_n32.in 6000 and
-mips_n64.in 5000 (comparing scall32-o32.S, scall64-64.S, scall64-n32.S in
-arch/mips/kernel in kernel and mips{,n32,64}/bits/syscall.h.in in musl).
+It looks to me that 5a8408bc3 changed also whitespace in other files (it was
+done by 2to3 script), but these are IMHO correct.
+
+BTW looking into realtime sources, the code is terrible. Not sure how relevant
+it is now.
 
 Kind regards,
 Petr
