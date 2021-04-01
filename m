@@ -1,39 +1,53 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu,  1 Apr 2021 12:56:17 +0200
-Subject: [LTP] [PATCH] fallocat06: Add git tag for Btrfs noCoW ENOSPC bug
-Message-ID: <20210401105617.9320-1-mdoucha@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 1 Apr 2021 13:15:00 +0200
+Subject: [LTP] [PATCH] fs/iso9660: bugfix for iso9660/isofs.sh
+In-Reply-To: <20210326014137.15718-1-zhanglianjie@uniontech.com>
+References: <20210326014137.15718-1-zhanglianjie@uniontech.com>
+Message-ID: <YGWrNBxxmVUgT72/@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
- testcases/kernel/syscalls/fallocate/fallocate06.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi,
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate06.c b/testcases/kernel/syscalls/fallocate/fallocate06.c
-index 409fd1321..ea21bd090 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate06.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate06.c
-@@ -19,6 +19,8 @@
-  *
-  * This is also regression test for:
-  * e093c4be760e ("xfs: Fix tail rounding in xfs_alloc_file_space()")
-+ * 6d4572a9d71d ("Allow btrfs_truncate_block() to fallback to nocow for data
-+ *              space reservation")
-  */
- 
- #define _GNU_SOURCE
-@@ -259,6 +261,7 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "e093c4be760e"},
-+		{"linux-git", "6d4572a9d71d"},
- 		{}
- 	}
- };
--- 
-2.30.2
+> Debian uses genisoimage to replace mkisofs, the prompt of genisoimage
+> is the same as that of mkisofs.
 
+...
+> +++ b/testcases/kernel/fs/iso9660/isofs.sh
+> @@ -12,6 +12,12 @@
+>  TST_NEEDS_CMDS="mkisofs"
+>  TST_NEEDS_TMPDIR=1
+>  TST_TESTFUNC=do_test
+> +which mkisofs >/dev/null 2>&1
+> +if [ $? -ne 0 ]; then
+> +       TST_NEEDS_CMDS="genisoimage"
+> +fi
+
+You can omit whole $? check:
+
+if ! which mkisofs >/dev/null 2>&1; then
+	TST_NEEDS_CMDS="genisoimage"
+fi
+
+Also IMHO mkisofs is not dead [1], it just moved to schilytools [2] and some
+distros use it (at least openSUSE [3]).
+Thus asking for genisoimage (from cdrkit) can be a bit misleading.
+
+But, is it really needed? Both Debian [4] and Fedora [5] creates
+mkisofs symlink to genisoimage, Debian installs automatically genisoimage when
+installing mkisofs.
+
+Kind regards,
+Petr
+
+[1] https://wiki.osdev.org/Mkisofs
+[2] http://sf.net/projects/schilytools/files/
+[3] https://build.opensuse.org/package/show/utilities/schily
+[4] https://tracker.debian.org/media/packages/c/cdrkit/changelog-91.1.11-3.2
+[5] https://src.fedoraproject.org/rpms/cdrkit/blob/rawhide/f/cdrkit.spec
+
+> +MKISOFS_CMD=$TST_NEEDS_CMDS
+...
