@@ -1,93 +1,45 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Fri,  2 Apr 2021 11:19:34 +0800
-Subject: [LTP] [PATCH] fs/iso9660: bugfix for iso9660/isofs.sh
-Message-ID: <20210402031934.14615-1-zhanglianjie@uniontech.com>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Fri, 2 Apr 2021 11:46:10 +0800
+Subject: [LTP] [PATCH 0/2] cleanup: Modify incorrect use of test macros and
+ annotation style
+Message-ID: <20210402034612.127912-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
->Hi,
->
->> Debian uses genisoimage to replace mkisofs, the prompt of genisoimage
->> is the same as that of mkisofs.
->
->...
->> +++ b/testcases/kernel/fs/iso9660/isofs.sh
->> @@ -12,6 +12,12 @@
->> TST_NEEDS_CMDS="mkisofs"
->> TST_NEEDS_TMPDIR=1
->> TST_TESTFUNC=do_test
->> +which mkisofs >/dev/null 2>&1
->> +if [ $? -ne 0 ]; then
->> + TST_NEEDS_CMDS="genisoimage"
->> +fi
->
->You can omit whole $? check:
->
->if ! which mkisofs >/dev/null 2>&1; then
->TST_NEEDS_CMDS="genisoimage"
->fi
->
->Also IMHO mkisofs is not dead [1], it just moved to schilytools [2] and some
->distros use it (at least openSUSE [3]).
->Thus asking for genisoimage (from cdrkit) can be a bit misleading.
->
->But, is it really needed? Both Debian [4] and Fedora [5] creates
->mkisofs symlink to genisoimage, Debian installs automatically genisoimage when
->installing mkisofs.
->
->Kind regards,
->Petr
->
->[1] https://wiki.osdev.org/Mkisofs
->[2] http://sf.net/projects/schilytools/files/
->[3] https://build.opensuse.org/package/show/utilities/schily
->[4] https://tracker.debian.org/media/packages/c/cdrkit/changelog-91.1.11-3.2
->[5] https://src.fedoraproject.org/rpms/cdrkit/blob/rawhide/f/cdrkit.spec
->
->> +MKISOFS_CMD=$TST_NEEDS_CMDS
+- modify incorrect use of test macros;
+- unify the annotation style and remove Redundant code.
 
+Xie Ziyao (2):
+  Modify incorrect use of TERRNO and replace functions with safe_macros
+  Unify the annotation style and remove Redundant code
 
-Currently in Debian, only the package genisoimage in sid and bullseye contains mkisofs,
-and there is no deb package of mkisofs in architectures such as mips. In addition, 
-this patch increases compatibility and is better than the previous one. 
-It is necessary to modify it.
-Reference: https://packages.debian.org/search?suite=sid&searchon=contents&keywords=mkisofs 
+ testcases/kernel/syscalls/bpf/bpf_map01.c     |  2 +-
+ .../syscalls/clock_gettime/clock_gettime03.c  | 20 +++++++------------
+ .../clock_nanosleep/clock_nanosleep01.c       |  2 +-
+ .../clock_nanosleep/clock_nanosleep03.c       | 18 +++++++----------
+ testcases/kernel/syscalls/clone3/clone301.c   |  5 +++++
+ testcases/kernel/syscalls/clone3/clone302.c   |  5 +++++
+ .../copy_file_range/copy_file_range02.c       |  2 +-
+ .../copy_file_range/copy_file_range03.c       |  2 +-
+ testcases/kernel/syscalls/dup/dup03.c         |  4 ++--
+ testcases/kernel/syscalls/execle/Makefile     | 19 +++---------------
+ testcases/kernel/syscalls/execlp/Makefile     | 19 +++---------------
+ testcases/kernel/syscalls/execve/execve02.c   |  4 ++--
+ testcases/kernel/syscalls/execvp/Makefile     | 20 +++----------------
+ .../kernel/syscalls/fallocate/fallocate04.c   |  2 +-
+ testcases/kernel/syscalls/getcwd/getcwd01.c   |  4 ++--
+ testcases/kernel/syscalls/getcwd/getcwd02.c   |  2 +-
+ .../syscalls/init_module/init_module01.c      |  2 +-
+ .../syscalls/init_module/init_module02.c      |  2 +-
+ .../kernel/syscalls/io_uring/io_uring02.c     | 10 +++++-----
+ testcases/kernel/syscalls/ioctl/ioctl04.c     |  4 ++--
+ testcases/kernel/syscalls/ioperm/ioperm01.c   |  2 +-
+ testcases/kernel/syscalls/lgetxattr/Makefile  | 16 +--------------
+ 22 files changed, 56 insertions(+), 110 deletions(-)
 
-According to your suggestion, the revised patch:
----
- testcases/kernel/fs/iso9660/isofs.sh | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index 9de3f7cdc..1da3a398f 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -12,6 +12,11 @@
- TST_NEEDS_CMDS="mkisofs"
- TST_NEEDS_TMPDIR=1
- TST_TESTFUNC=do_test
-+if ! which mkisofs >/dev/null 2>&1; then
-+       TST_NEEDS_CMDS="genisoimage"
-+fi
-+MKISOFS_CMD=$TST_NEEDS_CMDS
-+
- . tst_test.sh
-
- MAX_DEPTH=3
-@@ -56,7 +61,7 @@ do_test() {
- 		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
- 	do
- 		rm -f isofs.iso
--		EXPECT_PASS mkisofs -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-+		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
- 			|| continue
-
- 		for mount_opt in \
 --
-2.20.1
-
+2.17.1
 
