@@ -1,42 +1,53 @@
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 6 Apr 2021 09:09:32 +0200
-Subject: [LTP] [tcp] 4ecc1baf36: ltp.proc01.fail
-In-Reply-To: <20210406063924.GC7352@xsang-OptiPlex-9020>
-References: <20210406063924.GC7352@xsang-OptiPlex-9020>
-Message-ID: <CANn89iL+Df9hDAkt7fPH3Dc-2CDvuLWdUAOuZB77QMNWYu_yMw@mail.gmail.com>
+From: Vinay Kumar <vinay.m.engg@gmail.com>
+Date: Fri, 2 Apr 2021 07:16:14 +0530
+Subject: [LTP] "TBROK: Test killed by SIGSEGV" with adjtimex02.cv
+Message-ID: <CANUMPcWbZ6dHNvFS4z=TOPqYfi_qscw8V_Bvti_Aam7iVcDfPQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 6, 2021 at 8:41 AM kernel test robot <oliver.sang@intel.com> wrote:
->
->
->
-> Greeting,
->
-> FYI, we noticed the following commit (built with gcc-9):
->
-> commit: 4ecc1baf362c5df2dcabe242511e38ee28486545 ("tcp: convert elligible sysctls to u8")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->
+Hi Team,
 
-I think this has been fixed with commit
-d24f511b04b8b159b705ec32a3b8782667d1b06a ("tcp: fix tcp_min_tso_segs sysctl")
+Below list of tests are failing with error message "BROK: Test killed by
+SIGSEGV"
 
-Thanks
 
->
-> proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
-> proc01      1  TFAIL  :  proc01.c:402: read failed: /proc/sys/net/ipv4/tcp_min_tso_segs: errno=EINVAL(22): Invalid argument
+   1. adjtimex02
+   2. getitimer02
+   3. getrusage02
+   4. msgctl04
+   5. setitimer02
+   6. shmctl02
 
-...
 
-> proc01      2  TFAIL  :  proc01.c:471: readproc() failed with 1 errors.
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=2 termination_type=exited termination_id=1 corefile=no
-> cutime=13 cstime=233
-> Oliver Sang
->
+Further analysis found that the root cause of failures are due to
+"Cannot access memory at address 0xffffffff".
+
+$cat getitimer02.c
+/* call with a bad address */
+TEST(getitimer(ITIMER_REAL, (struct itimerval *)-1));
+
+#Debugging on image gives
+
+Breakpoint 2, __getitimer (which=ITIMER_REAL, curr_value=0xffffffff) at
+../sysdeps/unix/sysv/linux/getitimer.c:33
+33 ../sysdeps/unix/sysv/linux/getitimer.c: No such file or directory.
+(gdb) n
+50 in ../sysdeps/unix/sysv/linux/getitimer.c
+(gdb) p curr_value
+$3 = (struct itimerval *) 0xffffffff
+(gdb) p *curr_value
+Cannot access memory at address 0xffffffff
+
+Please let us know whether we need to handle SIGSEGV in above listed
+testcases or we need to work on glibc for the fix.
+
+This behavior is observed with glibc-2.32 version and above.
+
+Regards,
+Vinay
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210402/f4a38c5f/attachment.htm>
