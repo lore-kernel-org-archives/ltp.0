@@ -1,52 +1,34 @@
-From: Vinay Kumar <vinay.m.engg@gmail.com>
-Date: Sat, 3 Apr 2021 12:24:08 +0530
-Subject: [LTP] TBROK: Test killed by SIGSEGV" with adjtimex02.c
-Message-ID: <CANUMPcW1RN-xVSmJ-uyg5dLgMcmFaSMVSYuO7tptQ+Ka6cT_jA@mail.gmail.com>
+From: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+Date: Mon,  5 Apr 2021 15:23:22 +0300
+Subject: [LTP] [PATCH v1] openposix/mmap/1-4: correct a typo
+Message-ID: <20210405122322.23134-1-bogdan.lezhepekov@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Team,
+A typo in the name of the temporary file:
+     pts_mmap_11_5 -> pts_mmap_11_4
 
-(Resending as the previous post was not in plaintext)
+Signed-off-by: Bogdan Lezhepekov <bogdan.lezhepekov@suse.com>
+---
+ .../open_posix_testsuite/conformance/interfaces/mmap/11-4.c     | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Below list of tests are failing with error message "BROK: Test killed
-by SIGSEGV"
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-4.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-4.c
+index cb238b40e..45dc746f3 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-4.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-4.c
+@@ -66,7 +66,7 @@ int main(void)
+ 	/* mmap will create a partial page */
+ 	len = page_size / 2;
+ 
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_5");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_4");
+ #ifdef	__linux__
+ 	struct statfs buf;
+ 
+-- 
+2.30.2
 
-    adjtimex02
-    getitimer02
-    getrusage02
-    msgctl04
-    setitimer02
-    shmctl02
-
-
-Further analysis found that the root cause of failures are due to
-"Cannot access memory at address 0xffffffff".
-
-$cat getitimer02.c
-/* call with a bad address */
-TEST(getitimer(ITIMER_REAL, (struct itimerval *)-1));
-
-#Debugging on image gives
-
-Breakpoint 2, __getitimer (which=ITIMER_REAL, curr_value=0xffffffff)
-at ../sysdeps/unix/sysv/linux/getitimer.c:33
-33 ../sysdeps/unix/sysv/linux/getitimer.c: No such file or directory.
-(gdb) n
-50 in ../sysdeps/unix/sysv/linux/getitimer.c
-(gdb) p curr_value
-$3 = (struct itimerval *) 0xffffffff
-(gdb) p *curr_value
-Cannot access memory at address 0xffffffff
-
-Please let us know whether we need to handle SIGSEGV in above listed
-testcases or we need to work on glibc for the fix.
-
-This behavior is observed with glibc-2.32 version and above. And
-tested on target ARM 32bit .
-
-Regards,
-Vinay
