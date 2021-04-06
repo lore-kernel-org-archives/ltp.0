@@ -1,67 +1,45 @@
-From: Zou Wei <zou_wei@huawei.com>
-Date: Tue, 6 Apr 2021 19:15:17 +0800
-Subject: [LTP] [PATCH] cpuset/cpuset_memory_pressure_test: Check whether the
- swap partition is configured
-Message-ID: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 6 Apr 2021 15:30:57 +0200
+Subject: [LTP] [PATCH] syscalls/getdtablesize01: Add abnormal handling
+In-Reply-To: <20210330122041.19700-1-zhaogongyi@huawei.com>
+References: <20210330122041.19700-1-zhaogongyi@huawei.com>
+Message-ID: <YGxikZJsqr7Knlc8@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
---------------------------
+Hi,
 
-1. Fixed a bug where a null value is obtained because swap is not in
-   the fourth line of the free result
-free -m
-        total        used        free      shared  buff/cache   available
-Mem:   128135        3857      120633         158        3644      123219
-Swap:    8191          82        8109
+> When /etc/hosts is not exist, test would fail, actually, we chould skip the
+> the problem to improve maintainability.
 
-free -m
-        total       used       free     shared    buffers     cached
-Mem:   419694       9464     410230        234        435       6005
--/+ buffers/cache:       3022     416671
-Swap:    2053          0       2053
+...
+> +++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+> @@ -100,6 +100,8 @@ int main(void)
+>  		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
+>  	else if (fd < 0 && errno == ENFILE)
+>  		tst_brkm(TCONF, cleanup, "Reached maximum number of open files for the system");
+> +	else if (fd == 0)
+> +		tst_brkm(TCONF, cleanup, "Maybe /etc/hosts is not exist");
+>  	else
+>  		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
 
-2. If no swap partition is configured in the test environment,
-   the testcase will be failed:
+Why not to test for existence of the file in main(), where is file being opened?
 
-cpuset_memory_pressure 7 TFAIL: sub group's memory_pressure
-didn't have memory pressure rate.
-cpuset_memory_pressure 9 TFAIL: root group's memory_pressure
-didn't have memory pressure rate.
-cpuset_memory_pressure 11 TFAIL: root group's memory_pressure
-didn't have memory pressure rate.
+	fd = open("/etc/hosts", O_RDONLY);
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- .../cpuset_memory_pressure_testset.sh                        | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Also current patch does not work when I test on system without /etc/hosts:
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-index eddd7f6..2a2d2a1 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-@@ -35,8 +35,16 @@ exit_status=0
- # usable physical memory
- py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
- 
--# free swap space
--sw_mem=$(free -m | awk '{if(NR==4) print $4}')
-+# total swap space
-+sw_mem=$(free -m | awk '{if(NR==4) print $2}')
-+if [ -z $sw_mem ]; then
-+	sw_mem=$(free -m | awk '{if(NR==3) print $2}')
-+fi
-+
-+if [ $sw_mem -eq 0 ]; then
-+	tst_resm TCONF "The size of the swap partition is zero."
-+	exit 32
-+fi
- 
- # the memory which is going to be used
- usemem=$((py_mem - 20))
--- 
-2.6.2
+./getdtablesize01
+getdtablesize01    0  TINFO  :  Maximum number of files a process can have opened is 1024
+getdtablesize01    0  TINFO  :  Checking with the value returned by getrlimit...RLIMIT_NOFILE
+getdtablesize01    1  TPASS  :  got correct dtablesize, value is 1024
+getdtablesize01    0  TINFO  :  Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1
+getdtablesize01    2  TFAIL  :  getdtablesize01.c:106: 0 != 1023
 
+Besides, it'd help to also rewrite the test to the new API.
+
+Kind regards,
+Petr
