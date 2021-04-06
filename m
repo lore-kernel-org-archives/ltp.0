@@ -1,68 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 6 Apr 2021 12:35:54 +0200
-Subject: [LTP] [PATCH] fs/iso9660: bugfix for iso9660/isofs.sh
-In-Reply-To: <20210402031934.14615-1-zhanglianjie@uniontech.com>
-References: <20210402031934.14615-1-zhanglianjie@uniontech.com>
-Message-ID: <YGw5inZ09uZY2uRs@pevik>
+From: Zou Wei <zou_wei@huawei.com>
+Date: Tue, 6 Apr 2021 19:15:17 +0800
+Subject: [LTP] [PATCH] cpuset/cpuset_memory_pressure_test: Check whether the
+ swap partition is configured
+Message-ID: <1617707717-63693-1-git-send-email-zou_wei@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+--------------------------
 
-...
-> Currently in Debian, only the package genisoimage in sid and bullseye contains mkisofs,
-> and there is no deb package of mkisofs in architectures such as mips. In addition, 
-> this patch increases compatibility and is better than the previous one. 
+1. Fixed a bug where a null value is obtained because swap is not in
+   the fourth line of the free result
+free -m
+        total        used        free      shared  buff/cache   available
+Mem:   128135        3857      120633         158        3644      123219
+Swap:    8191          82        8109
 
-Well, bullseye is stable. But ok, some people might care about oldstable (we
-test it built LTP in Travis) and even oldoldstable.
+free -m
+        total       used       free     shared    buffers     cached
+Mem:   419694       9464     410230        234        435       6005
+-/+ buffers/cache:       3022     416671
+Swap:    2053          0       2053
 
-> It is necessary to modify it.
-> Reference: https://packages.debian.org/search?suite=sid&searchon=contents&keywords=mkisofs 
+2. If no swap partition is configured in the test environment,
+   the testcase will be failed:
 
-> According to your suggestion, the revised patch:
-> ---
->  testcases/kernel/fs/iso9660/isofs.sh | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+cpuset_memory_pressure 7 TFAIL: sub group's memory_pressure
+didn't have memory pressure rate.
+cpuset_memory_pressure 9 TFAIL: root group's memory_pressure
+didn't have memory pressure rate.
+cpuset_memory_pressure 11 TFAIL: root group's memory_pressure
+didn't have memory pressure rate.
 
-> diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-> index 9de3f7cdc..1da3a398f 100755
-> --- a/testcases/kernel/fs/iso9660/isofs.sh
-> +++ b/testcases/kernel/fs/iso9660/isofs.sh
-> @@ -12,6 +12,11 @@
->  TST_NEEDS_CMDS="mkisofs"
->  TST_NEEDS_TMPDIR=1
->  TST_TESTFUNC=do_test
-> +if ! which mkisofs >/dev/null 2>&1; then
-> +       TST_NEEDS_CMDS="genisoimage"
-> +fi
-> +MKISOFS_CMD=$TST_NEEDS_CMDS
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ .../cpuset_memory_pressure_testset.sh                        | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Actually, this depends on which (take look on tst_cmd_available(), it also uses
-command and trying to use which only if missing). And also it's misleading to
-suggest to use only genisoimage.
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+index eddd7f6..2a2d2a1 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+@@ -35,8 +35,16 @@ exit_status=0
+ # usable physical memory
+ py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
+ 
+-# free swap space
+-sw_mem=$(free -m | awk '{if(NR==4) print $4}')
++# total swap space
++sw_mem=$(free -m | awk '{if(NR==4) print $2}')
++if [ -z $sw_mem ]; then
++	sw_mem=$(free -m | awk '{if(NR==3) print $2}')
++fi
++
++if [ $sw_mem -eq 0 ]; then
++	tst_resm TCONF "The size of the swap partition is zero."
++	exit 32
++fi
+ 
+ # the memory which is going to be used
+ usemem=$((py_mem - 20))
+-- 
+2.6.2
 
-Although for our documentation ("docparse"), it'd be better to use
-TST_NEEDS_CMDS, until (if ever) shell API supports logical OR (e.g.
-TST_NEEDS_CMDS="mkisofs|genisoimage") it'd be better to avoid TST_NEEDS_CMDS and
-decide in the setup. Thus if you don't mind I'll merge this fix with you as an author:
-
-setup()
-{
-	if ! tst_cmd_available mkisofs && ! tst_cmd_available genisoimage; then
-		tst_brk TCONF "please install mkisofs or genisoimage"
-	fi
-}
-
-> @@ -56,7 +61,7 @@ do_test() {
->  		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
->  	do
->  		rm -f isofs.iso
-> -		EXPECT_PASS mkisofs -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-> +		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-
-Kind regards,
-Petr
