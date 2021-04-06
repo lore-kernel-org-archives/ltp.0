@@ -1,41 +1,42 @@
-From: Akshay Mhaske <amhaske01@gmail.com>
-Date: Sun, 4 Apr 2021 17:28:51 +0530
-Subject: [LTP] cve-2015-3290
-Message-ID: <CAEQtK3eWPsFFqBmQ9RpiOaWo5QhUSy_=-PNQCjNDJNiTOZNqKg@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 6 Apr 2021 09:09:32 +0200
+Subject: [LTP] [tcp] 4ecc1baf36: ltp.proc01.fail
+In-Reply-To: <20210406063924.GC7352@xsang-OptiPlex-9020>
+References: <20210406063924.GC7352@xsang-OptiPlex-9020>
+Message-ID: <CANn89iL+Df9hDAkt7fPH3Dc-2CDvuLWdUAOuZB77QMNWYu_yMw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi ,
+On Tue, Apr 6, 2021 at 8:41 AM kernel test robot <oliver.sang@intel.com> wrote:
+>
+>
+>
+> Greeting,
+>
+> FYI, we noticed the following commit (built with gcc-9):
+>
+> commit: 4ecc1baf362c5df2dcabe242511e38ee28486545 ("tcp: convert elligible sysctls to u8")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+>
 
-I am running kernel ltp test cases on android x86 platform,
-and cve-2015-3290 test case is failing only for 32bit and passed for 64bit.
+I think this has been fixed with commit
+d24f511b04b8b159b705ec32a3b8782667d1b06a ("tcp: fix tcp_min_tso_segs sysctl")
 
-I can see here, test case itself is broken with SIGBUS error and not giving
-any result
+Thanks
 
+>
+> proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
+> proc01      1  TFAIL  :  proc01.c:402: read failed: /proc/sys/net/ipv4/tcp_min_tso_segs: errno=EINVAL(22): Invalid argument
 
+...
 
-
-
-
-*pid: 5316, tid: 5324, name: cve-2015-3290  >>> cve-2015-3290 <<<04-03
-07:59:29.741  5327  5327 F DEBUG   : uid: 004-03 07:59:29.741  5327  5327 F
-DEBUG   : signal 7 (SIGBUS), code 128 (SI_KERNEL), fault addr 0x004-03
-07:59:29.742  5327  5327 F DEBUG   :     eax 00000007  ebx 652457bc  ecx
-00000000  edx 0000002304-03 07:59:29.742  5327  5327 F DEBUG   :     edi
-00000007  esi e7ac41c804-03 07:59:29.742  5327  5327 F DEBUG   :     ebp
-00000800  esp e7ac4110  eip 6523a800*
-
-I think assembly code is causing wrong memory address or some memory
-alignment is not proper and so we are getting SIGBUS error.
-
-Can you please help me on this.
-
-Thanks & Regards,
-Akshay Mhaske
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210404/ee85abef/attachment.htm>
+> proc01      2  TFAIL  :  proc01.c:471: readproc() failed with 1 errors.
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=2 termination_type=exited termination_id=1 corefile=no
+> cutime=13 cstime=233
+> Oliver Sang
+>
