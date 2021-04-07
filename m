@@ -1,186 +1,203 @@
-From: Wang Xin <wangxin410@huawei.com>
-Date: Wed, 7 Apr 2021 11:20:07 +0800
-Subject: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
-Message-ID: <1617765607-78263-1-git-send-email-wangxin410@huawei.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Wed, 7 Apr 2021 14:12:31 +0800
+Subject: [LTP] [PATCH] Makefile: Use M to build extern kernel module instead
+ of SUBDIRS
+Message-ID: <1617775951-3717-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Types in the name of the temporary files: For example, in aio_cancel/8-1.c file,
-pts_aio_cancel_1_1 -> pts_aio_cancel_8_1.
-Others like this have been modified.
+Since 5.3 kernel commit 7e35b42591c0 ("kbuild: remove SUBDIRS support"),
+SUBDIRS has been removed. We can only use make M=dir or set the environment
+variable KBUILD_EXTMOD to specify the directory of external module to build.
 
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c    | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c   | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c       | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c       | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c        | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c      | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c      | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c      | 2 +-
- 13 files changed, 13 insertions(+), 13 deletions(-)
+ .../kernel/device-drivers/agp/kernel_space/Makefile    |  4 ++--
+ testcases/kernel/device-drivers/base/tbase/Makefile    |  4 ++--
+ .../kernel/device-drivers/drm/kernel_space/Makefile    |  2 +-
+ testcases/kernel/device-drivers/include/Makefile       |  4 ++--
+ .../misc_modules/per_cpu_allocator_module/Makefile     |  8 ++++----
+ testcases/kernel/device-drivers/nls/Makefile           |  6 +++---
+ testcases/kernel/device-drivers/usb/tusb/Makefile      | 10 +++++-----
+ .../kernel/device-drivers/v4l/kernel_space/Makefile    |  8 ++++----
+ testcases/kernel/fs/scsi/ltpfs/Makefile                |  4 ++--
+ 9 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-index 139e9b5..f11e067 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-@@ -50,7 +50,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_8_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-index 5b980be..e1ae59e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	    || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_read_9_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-index f380531..a243b3e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-@@ -50,7 +50,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_2_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_4_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-index ed8173e..615b97d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-@@ -53,7 +53,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_2_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_3_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-index 5311a4a..277573a 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	    || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_7_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-index e445773..7eb6448 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		exit(PTS_UNSUPPORTED);
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_5_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-index 444555e..4e8afb6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-@@ -73,7 +73,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		exit(PTS_UNSUPPORTED);
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_7_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-index 2aea927..d1f8991 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-@@ -59,7 +59,7 @@ int main(void)
- 	/* mmap will create a partial page */
- 	len = page_size / 2;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_5");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_6");
- 	child = fork();
- 	switch (child) {
- 	case 0:
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-index bb3ab74..d58fc8c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-@@ -31,7 +31,7 @@ int main(void)
- 	void *pa;
- 	int fd;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_31_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_32_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-index b38833b..9aef16c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-@@ -53,7 +53,7 @@ int main(void)
- 	int status;
- 	int sig_num;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_2");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_3");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-index 9d0f918..31f2109 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-@@ -73,7 +73,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_2");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-index 53e89de..1879719 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-@@ -54,7 +54,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_3_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-index 0280a0e..371e3b0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-@@ -49,7 +49,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_9_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-2.6.2
+diff --git a/testcases/kernel/device-drivers/agp/kernel_space/Makefile b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
+index 5357c135e..5a10064f0 100644
+--- a/testcases/kernel/device-drivers/agp/kernel_space/Makefile
++++ b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
+@@ -14,8 +14,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR)  SUBDIRS=$(PWD) modules
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ endif
+ 
+ clean:
+diff --git a/testcases/kernel/device-drivers/base/tbase/Makefile b/testcases/kernel/device-drivers/base/tbase/Makefile
+index 6f7e5e2c1..5e5a40e61 100644
+--- a/testcases/kernel/device-drivers/base/tbase/Makefile
++++ b/testcases/kernel/device-drivers/base/tbase/Makefile
+@@ -13,8 +13,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ endif
+ 
+ clean:
+diff --git a/testcases/kernel/device-drivers/drm/kernel_space/Makefile b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
+index 11e54d9be..24b768d76 100644
+--- a/testcases/kernel/device-drivers/drm/kernel_space/Makefile
++++ b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
+@@ -11,7 +11,7 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD)  modules
++	$(MAKE) -C $(KDIR) M=$(PWD)  modules
+ endif
+ 
+ clean:
+diff --git a/testcases/kernel/device-drivers/include/Makefile b/testcases/kernel/device-drivers/include/Makefile
+index c9810ba5e..72d7293c2 100644
+--- a/testcases/kernel/device-drivers/include/Makefile
++++ b/testcases/kernel/device-drivers/include/Makefile
+@@ -13,9 +13,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
+ 	${CC} -Wall -o userBlockInclude userBlockInclude.c
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ endif
+ 
+ clean:
+diff --git a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
+index 3bc274dad..ae802f77c 100644
+--- a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
++++ b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
+@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ modules:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
+ 
+ clean:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
++	$(MAKE) -C $(KDIR) M=$(PWD) clean
+ 	rm -f modules.order
+ 
+ help:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
++	$(MAKE) -C $(KDIR) M=$(PWD) help
+ 
+ modules_install:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
++	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+ 
+ endif
+diff --git a/testcases/kernel/device-drivers/nls/Makefile b/testcases/kernel/device-drivers/nls/Makefile
+index 172510fe8..a1fab20f8 100644
+--- a/testcases/kernel/device-drivers/nls/Makefile
++++ b/testcases/kernel/device-drivers/nls/Makefile
+@@ -12,12 +12,12 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
+ 	${CC} $(EXTRA_CFLAGS) -o userBlockNLS userBlockNLS.c
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ 
+ clean:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
++	$(MAKE) -C $(KDIR) M=$(PWD) clean
+ 	rm -f modules.order
+ 	rm -f userBlockNLS
+ 
+diff --git a/testcases/kernel/device-drivers/usb/tusb/Makefile b/testcases/kernel/device-drivers/usb/tusb/Makefile
+index 9488cd563..4dcbca36c 100644
+--- a/testcases/kernel/device-drivers/usb/tusb/Makefile
++++ b/testcases/kernel/device-drivers/usb/tusb/Makefile
+@@ -13,17 +13,17 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ 
+ clean:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
++	$(MAKE) -C $(KDIR) M=$(PWD) clean
+ 	rm -f modules.order
+ 
+ help:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
++	$(MAKE) -C $(KDIR) M=$(PWD) help
+ 
+ modules_install:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
++	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+ 
+ endif
+diff --git a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
+index 56e255b04..549c37d5c 100644
+--- a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
++++ b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
+@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ modules:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
+ 
+ clean:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
++	$(MAKE) -C $(KDIR) M=$(PWD) clean
+ 	rm -f modules.order
+ 
+ help:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
++	$(MAKE) -C $(KDIR) M=$(PWD) help
+ 
+ modules_install:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
++	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+ 
+ endif
+diff --git a/testcases/kernel/fs/scsi/ltpfs/Makefile b/testcases/kernel/fs/scsi/ltpfs/Makefile
+index 7c46a4c4d..5f4030661 100644
+--- a/testcases/kernel/fs/scsi/ltpfs/Makefile
++++ b/testcases/kernel/fs/scsi/ltpfs/Makefile
+@@ -14,9 +14,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+ PWD	:= $(shell pwd)
+ 
+ default:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
+ 	${CC}  $(CFLAGS) -o ltpfstest -lm  main.c
+-#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
++#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+ endif
+ 
+ clean:
+-- 
+2.30.1
 
