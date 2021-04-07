@@ -1,42 +1,232 @@
-From: Wang Xin <wangxin410@huawei.com>
-Date: Wed, 7 Apr 2021 15:50:08 +0800
-Subject: [LTP] [PATCH] controllers/cpuset: Fix bug for type of variable c in
- checkopt
-Message-ID: <1617781808-82555-1-git-send-email-wangxin410@huawei.com>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Wed, 7 Apr 2021 07:55:01 +0000
+Subject: [LTP] [PATCH] Makefile: Use M to build extern kernel module
+ instead of SUBDIRS
+In-Reply-To: <606D5E48.1060307@fujitsu.com>
+References: <1617775951-3717-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <606D5E48.1060307@fujitsu.com>
+Message-ID: <606D736F.6000605@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This is the result of running the cpuset_load_balance test case on the ARM64 physical machine:
-cpuset_load_balance 1 TFAIL: There is something wrong with test tasks
-...
-cpuset_load_balance 3 TFAIL: There is something wrong with test tasks
-...
-cpuset_load_balance 5 TFAIL: There is something wrong with test tasks
-...
-The analysis shows that on the ARM64-based machine, the getopt performs a while operation.
-In addition, the value of char is 0 instead of 1 when it is extended to the left during comparison with the integer type,
-resulting in a failure at while ((c = getopt(argc, argv, "p:h")) != -1).
-Change the type of variable c to int to fix the problem.
+Hi Xiao
+> On 2021/4/7 14:12, Yang Xu wrote:
+>> Since 5.3 kernel commit 7e35b42591c0 ("kbuild: remove SUBDIRS support"),
+>> SUBDIRS has been removed. We can only use make M=dir or set the environment
+>> variable KBUILD_EXTMOD to specify the directory of external module to build.
+> Hi Xu,
+> 
+> One missing Makefile:
+> testcases/kernel/device-drivers/dev_sim_framework/kernel_space/Makefile
+Thanks for catching this. I will send a v2.
+> 
+>> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
+>> ---
+>>    .../kernel/device-drivers/agp/kernel_space/Makefile    |  4 ++--
+>>    testcases/kernel/device-drivers/base/tbase/Makefile    |  4 ++--
+>>    .../kernel/device-drivers/drm/kernel_space/Makefile    |  2 +-
+>>    testcases/kernel/device-drivers/include/Makefile       |  4 ++--
+>>    .../misc_modules/per_cpu_allocator_module/Makefile     |  8 ++++----
+>>    testcases/kernel/device-drivers/nls/Makefile           |  6 +++---
+>>    testcases/kernel/device-drivers/usb/tusb/Makefile      | 10 +++++-----
+>>    .../kernel/device-drivers/v4l/kernel_space/Makefile    |  8 ++++----
+>>    testcases/kernel/fs/scsi/ltpfs/Makefile                |  4 ++--
+>>    9 files changed, 25 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/testcases/kernel/device-drivers/agp/kernel_space/Makefile b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
+>> index 5357c135e..5a10064f0 100644
+>> --- a/testcases/kernel/device-drivers/agp/kernel_space/Makefile
+>> +++ b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
+>> @@ -14,8 +14,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR)  SUBDIRS=$(PWD) modules
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+> 
+> Is it necessary to update these comments? In other words, could we
+> remove these comments directly?
+These makefiles all have the following comment:
+#
+# Makefile for GCOV profiling kernel module
+#
 
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
----
- .../kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#KERNELDIR := /usr/src/linux-2.5.64-gcov
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-index 8a6ec26..125ebd1 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/cpuset_cpu_hog.c
-@@ -111,7 +111,7 @@ void usage(char *prog_name, int status)
- void checkopt(int argc, char **argv)
- {
--	char c = '\0';
-+	int c = '\0';
- 	char *endptr = NULL;
- 	long nr_cpus = 0;
- 	long opt_value = 0;
-2.6.2
+It maybe used to test kernel module coverage. I am not sure.
+I guess we can remove them in a separate patch if they are useless after
+discussion.
 
+@cyril,petr,Li  Do you have some advise for these comments?
+
+Best Regards
+Yang Xu
+
+> 
+> Best Regards,
+> Xiao Yang
+>>    endif
+>>
+>>    clean:
+>> diff --git a/testcases/kernel/device-drivers/base/tbase/Makefile b/testcases/kernel/device-drivers/base/tbase/Makefile
+>> index 6f7e5e2c1..5e5a40e61 100644
+>> --- a/testcases/kernel/device-drivers/base/tbase/Makefile
+>> +++ b/testcases/kernel/device-drivers/base/tbase/Makefile
+>> @@ -13,8 +13,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+>>    endif
+>>
+>>    clean:
+>> diff --git a/testcases/kernel/device-drivers/drm/kernel_space/Makefile b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
+>> index 11e54d9be..24b768d76 100644
+>> --- a/testcases/kernel/device-drivers/drm/kernel_space/Makefile
+>> +++ b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
+>> @@ -11,7 +11,7 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD)  modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD)  modules
+>>    endif
+>>
+>>    clean:
+>> diff --git a/testcases/kernel/device-drivers/include/Makefile b/testcases/kernel/device-drivers/include/Makefile
+>> index c9810ba5e..72d7293c2 100644
+>> --- a/testcases/kernel/device-drivers/include/Makefile
+>> +++ b/testcases/kernel/device-drivers/include/Makefile
+>> @@ -13,9 +13,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>>    	${CC} -Wall -o userBlockInclude userBlockInclude.c
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+>>    endif
+>>
+>>    clean:
+>> diff --git a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
+>> index 3bc274dad..ae802f77c 100644
+>> --- a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
+>> +++ b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
+>> @@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    modules:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>>
+>>    clean:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) clean
+>>    	rm -f modules.order
+>>
+>>    help:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) help
+>>
+>>    modules_install:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+>>
+>>    endif
+>> diff --git a/testcases/kernel/device-drivers/nls/Makefile b/testcases/kernel/device-drivers/nls/Makefile
+>> index 172510fe8..a1fab20f8 100644
+>> --- a/testcases/kernel/device-drivers/nls/Makefile
+>> +++ b/testcases/kernel/device-drivers/nls/Makefile
+>> @@ -12,12 +12,12 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>>    	${CC} $(EXTRA_CFLAGS) -o userBlockNLS userBlockNLS.c
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+>>
+>>    clean:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) clean
+>>    	rm -f modules.order
+>>    	rm -f userBlockNLS
+>>
+>> diff --git a/testcases/kernel/device-drivers/usb/tusb/Makefile b/testcases/kernel/device-drivers/usb/tusb/Makefile
+>> index 9488cd563..4dcbca36c 100644
+>> --- a/testcases/kernel/device-drivers/usb/tusb/Makefile
+>> +++ b/testcases/kernel/device-drivers/usb/tusb/Makefile
+>> @@ -13,17 +13,17 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+>>
+>>    clean:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) clean
+>>    	rm -f modules.order
+>>
+>>    help:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) help
+>>
+>>    modules_install:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+>>
+>>    endif
+>> diff --git a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
+>> index 56e255b04..549c37d5c 100644
+>> --- a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
+>> +++ b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
+>> @@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    modules:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>>
+>>    clean:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) clean
+>>    	rm -f modules.order
+>>
+>>    help:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) help
+>>
+>>    modules_install:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
+>>
+>>    endif
+>> diff --git a/testcases/kernel/fs/scsi/ltpfs/Makefile b/testcases/kernel/fs/scsi/ltpfs/Makefile
+>> index 7c46a4c4d..5f4030661 100644
+>> --- a/testcases/kernel/fs/scsi/ltpfs/Makefile
+>> +++ b/testcases/kernel/fs/scsi/ltpfs/Makefile
+>> @@ -14,9 +14,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
+>>    PWD	:= $(shell pwd)
+>>
+>>    default:
+>> -	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+>> +	$(MAKE) -C $(KDIR) M=$(PWD) modules
+>>    	${CC}  $(CFLAGS) -o ltpfstest -lm  main.c
+>> -#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
+>> +#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+>>    endif
+>>
+>>    clean:
