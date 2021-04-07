@@ -1,203 +1,83 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Wed, 7 Apr 2021 14:12:31 +0800
-Subject: [LTP] [PATCH] Makefile: Use M to build extern kernel module instead
- of SUBDIRS
-Message-ID: <1617775951-3717-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Wed,  7 Apr 2021 13:24:24 +0800
+Subject: [LTP] [PATCH] bugfix for iso9660/isofs.sh
+Message-ID: <20210407052424.5795-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since 5.3 kernel commit 7e35b42591c0 ("kbuild: remove SUBDIRS support"),
-SUBDIRS has been removed. We can only use make M=dir or set the environment
-variable KBUILD_EXTMOD to specify the directory of external module to build.
+Hi,
+...
+>Well, bullseye is stable. But ok, some people might care about oldstable (we
+>test it built LTP in Travis) and even oldoldstable.
+>
+>Actually, this depends on which (take look on tst_cmd_available(), it also uses
+>command and trying to use which only if missing). And also it's misleading to
+>suggest to use only genisoimage.
+>
+>Although for our documentation ("docparse"), it'd be better to use
+>TST_NEEDS_CMDS, until (if ever) shell API supports logical OR (e.g.
+>TST_NEEDS_CMDS="mkisofs|genisoimage") it'd be better to avoid TST_NEEDS_CMDS and
+>decide in the setup. Thus if you don't mind I'll merge this fix with you as an author:
+>
+>setup()
+>{
+>if ! tst_cmd_available mkisofs && ! tst_cmd_available genisoimage; then
+>tst_brk TCONF "please install mkisofs or genisoimage"
+>fi
+>}
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Thank you very much for your guidance, but I want to submit it myself. 
+Because this is the first time I submit a patch in the community.
+
 ---
- .../kernel/device-drivers/agp/kernel_space/Makefile    |  4 ++--
- testcases/kernel/device-drivers/base/tbase/Makefile    |  4 ++--
- .../kernel/device-drivers/drm/kernel_space/Makefile    |  2 +-
- testcases/kernel/device-drivers/include/Makefile       |  4 ++--
- .../misc_modules/per_cpu_allocator_module/Makefile     |  8 ++++----
- testcases/kernel/device-drivers/nls/Makefile           |  6 +++---
- testcases/kernel/device-drivers/usb/tusb/Makefile      | 10 +++++-----
- .../kernel/device-drivers/v4l/kernel_space/Makefile    |  8 ++++----
- testcases/kernel/fs/scsi/ltpfs/Makefile                |  4 ++--
- 9 files changed, 25 insertions(+), 25 deletions(-)
+ testcases/kernel/fs/iso9660/isofs.sh | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/agp/kernel_space/Makefile b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-index 5357c135e..5a10064f0 100644
---- a/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-@@ -14,8 +14,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR)  SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/base/tbase/Makefile b/testcases/kernel/device-drivers/base/tbase/Makefile
-index 6f7e5e2c1..5e5a40e61 100644
---- a/testcases/kernel/device-drivers/base/tbase/Makefile
-+++ b/testcases/kernel/device-drivers/base/tbase/Makefile
-@@ -13,8 +13,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/drm/kernel_space/Makefile b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-index 11e54d9be..24b768d76 100644
---- a/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-@@ -11,7 +11,7 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD)  modules
-+	$(MAKE) -C $(KDIR) M=$(PWD)  modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/include/Makefile b/testcases/kernel/device-drivers/include/Makefile
-index c9810ba5e..72d7293c2 100644
---- a/testcases/kernel/device-drivers/include/Makefile
-+++ b/testcases/kernel/device-drivers/include/Makefile
-@@ -13,9 +13,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC} -Wall -o userBlockInclude userBlockInclude.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-index 3bc274dad..ae802f77c 100644
---- a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-+++ b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- modules:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/device-drivers/nls/Makefile b/testcases/kernel/device-drivers/nls/Makefile
-index 172510fe8..a1fab20f8 100644
---- a/testcases/kernel/device-drivers/nls/Makefile
-+++ b/testcases/kernel/device-drivers/nls/Makefile
-@@ -12,12 +12,12 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC} $(EXTRA_CFLAGS) -o userBlockNLS userBlockNLS.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 	rm -f userBlockNLS
- 
-diff --git a/testcases/kernel/device-drivers/usb/tusb/Makefile b/testcases/kernel/device-drivers/usb/tusb/Makefile
-index 9488cd563..4dcbca36c 100644
---- a/testcases/kernel/device-drivers/usb/tusb/Makefile
-+++ b/testcases/kernel/device-drivers/usb/tusb/Makefile
-@@ -13,17 +13,17 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-index 56e255b04..549c37d5c 100644
---- a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- modules:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/fs/scsi/ltpfs/Makefile b/testcases/kernel/fs/scsi/ltpfs/Makefile
-index 7c46a4c4d..5f4030661 100644
---- a/testcases/kernel/fs/scsi/ltpfs/Makefile
-+++ b/testcases/kernel/fs/scsi/ltpfs/Makefile
-@@ -14,9 +14,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC}  $(CFLAGS) -o ltpfstest -lm  main.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
--- 
-2.30.1
+diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
+index 9de3f7cdc..c0e2d1ff8 100755
+--- a/testcases/kernel/fs/iso9660/isofs.sh
++++ b/testcases/kernel/fs/iso9660/isofs.sh
+@@ -9,14 +9,26 @@
+ # It makes ISO9660 file system with different options and also
+ # mounts ISO9660 file system with different mount options.
+
+-TST_NEEDS_CMDS="mkisofs"
+ TST_NEEDS_TMPDIR=1
+ TST_TESTFUNC=do_test
++TST_SETUP=setup
++
+ . tst_test.sh
+
+ MAX_DEPTH=3
+ MAX_DIRS=4
+
++setup()
++{
++	if tst_cmd_available mkisofs; then
++		MKISOFS_CMD="mkisofs"
++	elif tst_cmd_available genisoimage; then
++		MKISOFS_CMD="genisoimage"
++	else
++		tst_brk TCONF "please install mkisofs or genisoimage"
++	fi
++}
++
+ gen_fs_tree()
+ {
+ 	local cur_path="$1"
+@@ -56,7 +68,7 @@ do_test() {
+ 		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
+ 	do
+ 		rm -f isofs.iso
+-		EXPECT_PASS mkisofs -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
++		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
+ 			|| continue
+
+ 		for mount_opt in \
+--
+2.20.1
+
 
