@@ -1,223 +1,219 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Wed, 7 Apr 2021 17:04:17 +0800
-Subject: [LTP] [PATCH v2] Makefile: Use M to build extern kernel module
- instead of SUBDIRS
-In-Reply-To: <606D5E48.1060307@fujitsu.com>
-References: <606D5E48.1060307@fujitsu.com>
-Message-ID: <1617786257-6032-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Wed, 7 Apr 2021 16:14:15 +0800
+Subject: [LTP] [PATCH] syscalls/getdtablesize: Update to the new api
+Message-ID: <20210407081415.8353-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Since 5.3 kernel commit 7e35b42591c0 ("kbuild: remove SUBDIRS support"),
-SUBDIRS has been removed. We can only use make M=dir or set the environment
-variable KBUILD_EXTMOD to specify the directory of external module to build.
+1)use some safe macros
+2)open a temporary file instead of /etc/hosts since it might be not exist
+3)cleanup all of the opened fd
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
-v1->v2:
-add mssing .../dev_sim_framework/kernel_space/Makefile
- .../kernel/device-drivers/agp/kernel_space/Makefile    |  4 ++--
- testcases/kernel/device-drivers/base/tbase/Makefile    |  4 ++--
- .../dev_sim_framework/kernel_space/Makefile            |  4 ++--
- .../kernel/device-drivers/drm/kernel_space/Makefile    |  2 +-
- testcases/kernel/device-drivers/include/Makefile       |  4 ++--
- .../misc_modules/per_cpu_allocator_module/Makefile     |  8 ++++----
- testcases/kernel/device-drivers/nls/Makefile           |  6 +++---
- testcases/kernel/device-drivers/usb/tusb/Makefile      | 10 +++++-----
- .../kernel/device-drivers/v4l/kernel_space/Makefile    |  8 ++++----
- testcases/kernel/fs/scsi/ltpfs/Makefile                |  4 ++--
- 10 files changed, 27 insertions(+), 27 deletions(-)
+ .../syscalls/getdtablesize/getdtablesize01.c  | 161 ++++++++----------
+ 1 file changed, 73 insertions(+), 88 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/agp/kernel_space/Makefile b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-index 5357c135e..5a10064f0 100644
---- a/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/agp/kernel_space/Makefile
-@@ -14,8 +14,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR)  SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/base/tbase/Makefile b/testcases/kernel/device-drivers/base/tbase/Makefile
-index 6f7e5e2c1..5e5a40e61 100644
---- a/testcases/kernel/device-drivers/base/tbase/Makefile
-+++ b/testcases/kernel/device-drivers/base/tbase/Makefile
-@@ -13,8 +13,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/dev_sim_framework/kernel_space/Makefile b/testcases/kernel/device-drivers/dev_sim_framework/kernel_space/Makefile
-index e7e7be607..ccaf3f9ac 100644
---- a/testcases/kernel/device-drivers/dev_sim_framework/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/dev_sim_framework/kernel_space/Makefile
-@@ -13,8 +13,8 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/drm/kernel_space/Makefile b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-index 11e54d9be..24b768d76 100644
---- a/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/drm/kernel_space/Makefile
-@@ -11,7 +11,7 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD)  modules
-+	$(MAKE) -C $(KDIR) M=$(PWD)  modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/include/Makefile b/testcases/kernel/device-drivers/include/Makefile
-index c9810ba5e..72d7293c2 100644
---- a/testcases/kernel/device-drivers/include/Makefile
-+++ b/testcases/kernel/device-drivers/include/Makefile
-@@ -13,9 +13,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC} -Wall -o userBlockInclude userBlockInclude.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
-diff --git a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-index 3bc274dad..ae802f77c 100644
---- a/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-+++ b/testcases/kernel/device-drivers/misc_modules/per_cpu_allocator_module/Makefile
-@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- modules:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/device-drivers/nls/Makefile b/testcases/kernel/device-drivers/nls/Makefile
-index 172510fe8..a1fab20f8 100644
---- a/testcases/kernel/device-drivers/nls/Makefile
-+++ b/testcases/kernel/device-drivers/nls/Makefile
-@@ -12,12 +12,12 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC} $(EXTRA_CFLAGS) -o userBlockNLS userBlockNLS.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 	rm -f userBlockNLS
- 
-diff --git a/testcases/kernel/device-drivers/usb/tusb/Makefile b/testcases/kernel/device-drivers/usb/tusb/Makefile
-index 9488cd563..4dcbca36c 100644
---- a/testcases/kernel/device-drivers/usb/tusb/Makefile
-+++ b/testcases/kernel/device-drivers/usb/tusb/Makefile
-@@ -13,17 +13,17 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-index 56e255b04..549c37d5c 100644
---- a/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-+++ b/testcases/kernel/device-drivers/v4l/kernel_space/Makefile
-@@ -9,16 +9,16 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- modules:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 
- clean:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
-+	$(MAKE) -C $(KDIR) M=$(PWD) clean
- 	rm -f modules.order
- 
- help:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) help
-+	$(MAKE) -C $(KDIR) M=$(PWD) help
- 
- modules_install:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules_install
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
- 
- endif
-diff --git a/testcases/kernel/fs/scsi/ltpfs/Makefile b/testcases/kernel/fs/scsi/ltpfs/Makefile
-index 7c46a4c4d..5f4030661 100644
---- a/testcases/kernel/fs/scsi/ltpfs/Makefile
-+++ b/testcases/kernel/fs/scsi/ltpfs/Makefile
-@@ -14,9 +14,9 @@ KDIR	:= /lib/modules/$(shell uname -r)/build
- PWD	:= $(shell pwd)
- 
- default:
--	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
-+	$(MAKE) -C $(KDIR) M=$(PWD) modules
- 	${CC}  $(CFLAGS) -o ltpfstest -lm  main.c
--#	$(MAKE) -C $(KERNELDIR) SUBDIRS=$(PWD) modules
-+#	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
- endif
- 
- clean:
--- 
-2.23.0
+diff --git a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+index d25cac261..f16c54a68 100644
+--- a/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
++++ b/testcases/kernel/syscalls/getdtablesize/getdtablesize01.c
+@@ -1,119 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2005
+  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
++ *	   Robbie Williamson <robbiew@us.ibm.com>
+  */
+-/**********************************************************
+- *
+- *    TEST IDENTIFIER   : getdtablesize01
+- *
+- *    EXECUTED BY       : root / superuser
+- *
+- *    TEST TITLE        : Basic tests for getdtablesize01(2)
+- *
+- *    TEST CASE TOTAL   : 1
+- *
+- *    AUTHOR            : Prashant P Yendigeri
+- *                        <prashant.yendigeri@wipro.com>
+- *                        Robbie Williamson
+- *                        <robbiew@us.ibm.com>
+- *
+- *    DESCRIPTION
+- *      This is a Phase I test for the getdtablesize01(2) system call.
+- *      It is intended to provide a limited exposure of the system call.
++
++/*\
++ * [Description]
++ * Test getdtablesize() returns the maximum number of files a process can
++ * have open, one more than the largest possible value for a file descriptor.
+  *
+- **********************************************************/
++ * [Algorithm]
++ * 1. Check the return value of getdtablesize() is equal to _SC_OPEN_MAX or
++ * the current limit on the number of open files per process.
++ * 2. Open the maximum allowed number of file descriptors and then check if
++ * it is equal to the return value of getdtablesize() - 1.
++ */
+
+-#include <stdio.h>
+-#include <errno.h>
+-#include <sys/types.h>
++#include <stdlib.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <sys/time.h>
+ #include <sys/resource.h>
+ #include <unistd.h>
+-#include "test.h"
++#include "tst_test.h"
+
+-void setup();
+-void cleanup();
++#define TESTFILE "getdtablesize01_testfile"
++#define FILE_OPEN_MAX SAFE_SYSCONF(_SC_OPEN_MAX)
+
+-char *TCID = "getdtablesize01";
+-int TST_TOTAL = 1;
++static int *fd, count;
+
+-int main(void)
++static void run(void)
+ {
+-	int table_size, fd = 0, count = 0;
++	int temp_fd;
+ 	int max_val_opfiles;
+ 	struct rlimit rlp;
+
+-	setup();
+-	table_size = getdtablesize();
+-	getrlimit(RLIMIT_NOFILE, &rlp);
+-	max_val_opfiles = (rlim_t) rlp.rlim_cur;
+-
+-	tst_resm(TINFO,
+-		 "Maximum number of files a process can have opened is %d",
+-		 table_size);
+-	tst_resm(TINFO,
+-		 "Checking with the value returned by getrlimit...RLIMIT_NOFILE");
+-
+-	if (table_size == max_val_opfiles)
+-		tst_resm(TPASS, "got correct dtablesize, value is %d",
+-			 max_val_opfiles);
+-	else {
+-		tst_resm(TFAIL, "got incorrect table size, value is %d",
+-			 max_val_opfiles);
+-		cleanup();
+-	}
++	TEST(getdtablesize());
++	tst_res(TINFO,
++		"Maximum number of files a process can have opened is %d",
++		TST_RET);
+
+-	tst_resm(TINFO,
+-		 "Checking Max num of files that can be opened by a process.Should be: RLIMIT_NOFILE - 1");
+-	for (;;) {
+-		fd = open("/etc/hosts", O_RDONLY);
++	tst_res(TINFO, "Checking with the value returned by getrlimit");
+
+-		if (fd == -1)
+-			break;
+-		count = fd;
++	if (getrlimit(RLIMIT_NOFILE, &rlp))
++		max_val_opfiles = FILE_OPEN_MAX;
++	else
++		max_val_opfiles = (rlim_t)rlp.rlim_cur;
+
+-#ifdef DEBUG
+-		printf("Opened file num %d\n", fd);
+-#endif
+-	}
++	if (TST_RET == max_val_opfiles)
++		tst_res(TPASS, "got correct dtablesize, value is %d "
++			"max_val_opfiles value is %d",
++			TST_RET, max_val_opfiles);
++	else
++		tst_res(TFAIL, "got incorrect dtablesize, value is %d"
++			 "max_val_opfiles value is %d",
++			 TST_RET, max_val_opfiles);
+
+-//Now the max files opened should be RLIMIT_NOFILE - 1 , why ? read getdtablesize man page
++	tst_res(TINFO,
++		"Checking Max num of files that can be opened by a process."
++		"Should be: RLIMIT_NOFILE - 1");
+
+-	if (count > 0)
+-		close(count);
+-	if (count == (max_val_opfiles - 1))
+-		tst_resm(TPASS, "%d = %d", count, (max_val_opfiles - 1));
+-	else if (fd < 0 && errno == ENFILE)
+-		tst_brkm(TCONF, cleanup, "Reached maximum number of open files for the system");
+-	else
+-		tst_resm(TFAIL, "%d != %d", count, (max_val_opfiles - 1));
++	while (1) {
++		temp_fd = open(TESTFILE, O_CREAT | O_RDONLY, 0755);
++		if (temp_fd == -1)
++			break;
++		fd[count++] = temp_fd;
++	}
+
+-	cleanup();
+-	tst_exit();
++	if (fd[count - 1] == (max_val_opfiles - 1))
++		tst_res(TPASS,
++			"max open file fd is correct, %d = %d",
++			fd[count - 1], (max_val_opfiles - 1));
++	else if (temp_fd < 0 && errno == ENFILE)
++		tst_brk(TCONF,
++			"Reached maximum number of open files for the system");
++	else
++		tst_res(TFAIL | TERRNO, "%d != %d", fd[count - 1], (max_val_opfiles - 1));
+ }
+
+-void setup(void)
++static void setup(void)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	fd = SAFE_MALLOC(FILE_OPEN_MAX * sizeof(int));
+ }
+
+-void cleanup(void)
++static void cleanup(void)
+ {
++	int i;
++	for (i = 0; i < count; i++)
++		SAFE_CLOSE(fd[i]);
++
++	free(fd);
++	fd = NULL;
+ }
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++};
++
+--
+2.17.1
 
