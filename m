@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 8 Apr 2021 12:37:24 +0200
-Subject: [LTP] kdump failure on x86
-In-Reply-To: <cbc294d7-830c-9491-13b1-836be7da043f@jv-coder.de>
-References: <BMXPR01MB2870D7110A3D2AD3DF1B495AEE649@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
- <cbc294d7-830c-9491-13b1-836be7da043f@jv-coder.de>
-Message-ID: <YG7c5EIgBPyXHy20@yuki>
+Date: Thu, 8 Apr 2021 14:45:11 +0200
+Subject: [LTP] [PATCH v3 5/7] fzsync: Move yield check out of loop and
+ add yield to delay
+In-Reply-To: <20210319091837.27319-6-rpalethorpe@suse.com>
+References: <20210319091837.27319-1-rpalethorpe@suse.com>
+ <20210319091837.27319-6-rpalethorpe@suse.com>
+Message-ID: <YG7618K/Iy4KgDRw@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,16 +13,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > i am trying to run kdump on x86 with 5.5.6 kernel but i am getting 
-> > following errors, can someone please tell whats going wrong here. I 
-> > have lkdtm config in the kernel and installed kexec-tools as well what 
-> > could be the cause of issue ???
-> It looks like the testcase is hopelessly outdated... The jprobe 
-> interface was removed in linux 4.15 back in 2017 [1]
-> The tests needs a major rewrite, to work on kernels newer than 4.15.
+The two patches that add the yield_in_wait() looks good.
 
-I unless anybody wants to invest time into the rewrite we can remove
-these as well.
+The first one has some style issues, but that is fixed with the second
+one. Also I guess that we can merge these two and add both
+signed-off-by, but I do not care that much about this.
+
+Anyways Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
