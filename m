@@ -1,75 +1,63 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 8 Apr 2021 02:02:53 +0000
-Subject: [LTP] [PATCH 3/3] syscalls/semctl01: Convert into new api
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 8 Apr 2021 11:29:29 +0800
+Subject: [LTP] [PATCH v2 1/3] tst_safe_sysv_ipc.c: Add SAFE_SEMOP macro
 In-Reply-To: <46e7a46a-f3d2-078d-1126-5a8679cea7be@oracle.com>
-References: <1616497037-19158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <1616497037-19158-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <46e7a46a-f3d2-078d-1126-5a8679cea7be@oracle.com>
-Message-ID: <606E7268.8000603@fujitsu.com>
+References: <46e7a46a-f3d2-078d-1126-5a8679cea7be@oracle.com>
+Message-ID: <1617852571-20874-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey
-> On 23.03.2021 13:57, Yang Xu wrote:
->> From: Yang Xu<xuyang2018.jy@fujitsu.com>
->>   /*
->>    * These are the various setup and check functions for the 10 different
->>    * commands that are available for the semctl() call.
->> @@ -67,363 +29,171 @@ static void func_gval(int);
->>   static void sall_setup(void), func_sall(void);
->>   static void func_sval(void);
->>   static void func_rmid(void);
->> -static void child_cnt(void);
->> -static void child_pid(void);
->>   static void func_iinfo(int);
->>   static void func_sinfo(void);
->>   static void func_sstat(int);
->>
->
-> We could drop all these declarations by moving tcases struct
-> just before verify_semctl().
-Yes. Thanks for catching this.
+From: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
 
->> +
->> +static struct tst_test test = {
->> +	.setup = setup,
->> +	.cleanup = cleanup,
->> +	.test = verify_semctl,
->> +	.tcnt = ARRAY_SIZE(tests),
->> +	.needs_root = 1,
->
-> Does it really require root?
-See ftok(3) manpage, it said "The  ftok()  function uses the identity of 
-the file named by the given pathname (which must refer to an existing, 
-accessible file)".
-ftok source code
-key_t
-ftok (const char *pathname, int proj_id)
-{
-   struct stat64 st;
-   key_t key;
+Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ include/tst_safe_sysv_ipc.h |  4 ++++
+ lib/tst_safe_sysv_ipc.c     | 18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-   if (__stat64 (pathname, &st) < 0)
-     return (key_t) -1;
+diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
+index bb6532662..7804ce192 100644
+--- a/include/tst_safe_sysv_ipc.h
++++ b/include/tst_safe_sysv_ipc.h
+@@ -65,4 +65,8 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+ 	(semid) = ((cmd) == IPC_RMID ? -1 : (semid)); \
+ 	tst_ret_; })
+ 
++int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
++		size_t nsops);
++#define SAFE_SEMOP(semid, sops, nsops) \
++	safe_semop(__FILE__, __LINE__, (semid), (sops), (nsops))
+ #endif /* TST_SAFE_SYSV_IPC_H__ */
+diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
+index e72985d61..012f5ba38 100644
+--- a/lib/tst_safe_sysv_ipc.c
++++ b/lib/tst_safe_sysv_ipc.c
+@@ -227,3 +227,21 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+ 
+ 	return rval;
+ }
++
++int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
++		size_t nsops)
++{
++	int rval;
++
++	rval = semop(semid, sops, nsops);
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"semop(%d, %p, %zu) failed", semid, sops, nsops);
++	} else if (rval < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid semop(%d, %p, %zu) return value %d",
++			semid, sops, nsops, rval);
++	}
++
++	return rval;
++}
+-- 
+2.23.0
 
-   key = ((st.st_ino & 0xffff) | ((st.st_dev & 0xff) << 16)
-          | ((proj_id & 0xff) << 24));
-
-   return key;
-}
-
-To ensure ftok succeed, we must require root. Or, modify GETIPCKEY api, 
-we can use tmp directory. Anyhow, I will send a v2 to remove useless 
-funtion declartion firstly.
-
-Best Regards
-Yang Xu
->
->> +	.forks_child = 1,
->> +};
->>
->
->
