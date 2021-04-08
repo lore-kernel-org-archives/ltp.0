@@ -1,28 +1,75 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 7 Apr 2021 19:57:16 +0200
-Subject: [LTP] [PATCH 2/3] test: Adding timeout03.sh for testing
- _tst_kill_test()
-In-Reply-To: <YG2lzCHAcDvPMbpN@yuki>
-References: <20210312173201.27708-1-pvorel@suse.cz>
- <20210312173201.27708-3-pvorel@suse.cz> <YG2lzCHAcDvPMbpN@yuki>
-Message-ID: <YG3yfG/mey31X16i@pevik>
+From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
+Date: Thu, 8 Apr 2021 02:02:53 +0000
+Subject: [LTP] [PATCH 3/3] syscalls/semctl01: Convert into new api
+In-Reply-To: <46e7a46a-f3d2-078d-1126-5a8679cea7be@oracle.com>
+References: <1616497037-19158-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <1616497037-19158-3-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <46e7a46a-f3d2-078d-1126-5a8679cea7be@oracle.com>
+Message-ID: <606E7268.8000603@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Li,
+Hi Alexey
+> On 23.03.2021 13:57, Yang Xu wrote:
+>> From: Yang Xu<xuyang2018.jy@fujitsu.com>
+>>   /*
+>>    * These are the various setup and check functions for the 10 different
+>>    * commands that are available for the semctl() call.
+>> @@ -67,363 +29,171 @@ static void func_gval(int);
+>>   static void sall_setup(void), func_sall(void);
+>>   static void func_sval(void);
+>>   static void func_rmid(void);
+>> -static void child_cnt(void);
+>> -static void child_pid(void);
+>>   static void func_iinfo(int);
+>>   static void func_sinfo(void);
+>>   static void func_sstat(int);
+>>
+>
+> We could drop all these declarations by moving tcases struct
+> just before verify_semctl().
+Yes. Thanks for catching this.
 
-> Hi!
-> Looks obviously fine, but we have to update the expected output if we
-> are going to change the SIGTERM to SIGINT in the library.
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test = verify_semctl,
+>> +	.tcnt = ARRAY_SIZE(tests),
+>> +	.needs_root = 1,
+>
+> Does it really require root?
+See ftok(3) manpage, it said "The  ftok()  function uses the identity of 
+the file named by the given pathname (which must refer to an existing, 
+accessible file)".
+ftok source code
+key_t
+ftok (const char *pathname, int proj_id)
+{
+   struct stat64 st;
+   key_t key;
 
-> Apart from that Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+   if (__stat64 (pathname, &st) < 0)
+     return (key_t) -1;
 
-Both errors fixed and patchset merged.
+   key = ((st.st_ino & 0xffff) | ((st.st_dev & 0xff) << 16)
+          | ((proj_id & 0xff) << 24));
 
-Thanks a lot both for your review!
+   return key;
+}
 
-Kind regards,
-Petr
+To ensure ftok succeed, we must require root. Or, modify GETIPCKEY api, 
+we can use tmp directory. Anyhow, I will send a v2 to remove useless 
+funtion declartion firstly.
+
+Best Regards
+Yang Xu
+>
+>> +	.forks_child = 1,
+>> +};
+>>
+>
+>
