@@ -1,18 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 8 Apr 2021 11:27:09 +0200
+From: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Thu, 8 Apr 2021 09:38:11 +0000
 Subject: [LTP] LTP msgstress03,
  msgstress04 failure on linux 5.10.19 and 5.10.22
-In-Reply-To: <BM1PR01MB2868C0458678E57C87BBC708EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>
+In-Reply-To: <YG7Mbc/ZTnD85SAh@yuki>
 References: <BMXPR01MB287023E7E5B34F6D27B63564EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
  <60619D5B.6090507@fujitsu.com>
  <BMXPR01MB2870D0447A89D1BEE08EDCA7EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
- <BM1PR01MB2868C0458678E57C87BBC708EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>
-Message-ID: <YG7Mbc/ZTnD85SAh@yuki>
+ <BM1PR01MB2868C0458678E57C87BBC708EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>,
+ <YG7Mbc/ZTnD85SAh@yuki>
+Message-ID: <BM1PR01MB28686329F64867227F9F9279EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+sorry, i forgot to attach log file.The LTP version i am using is  LTP Version:  20200515 and even i have tried with latest master sources as well
+
+
+Thanks
+________________________________
+From: Cyril Hrubis <chrubis@suse.cz>
+Sent: Thursday, April 8, 2021 2:57 PM
+To: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] LTP msgstress03, msgstress04 failure on linux 5.10.19 and 5.10.22
 
 Hi!
 > I am running msgstress03,msgstress04 with 5.10.19 and 5.10.22 custom
@@ -25,7 +37,7 @@ What about the LTP version? Can you please include that information
 every time you ask abou test failures?
 
 > Pasting few error messages and attaching detailed logs of failures
-> 
+>
 > msgstress03:-
 > msgsnd() error in child 9458, write # = 10000, key = 65e2d9c4: Interrupted system call
 > msgstress03    1  TBROK  :  tst_sig.c:232: unexpected signal SIGINT(2) received (pid = 43902).
@@ -52,6 +64,17 @@ every time you ask abou test failures?
 This looks like fallout from the test doing unclean exit, the root cause
 for the failure should be somewhere at the beginning of the log.
 
--- 
+--
 Cyril Hrubis
 chrubis@suse.cz
+[EXT]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210408/68863712/attachment-0001.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msgstress03
+Type: application/octet-stream
+Size: 56955 bytes
+Desc: msgstress03
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210408/68863712/attachment-0001.obj>
