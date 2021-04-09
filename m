@@ -1,77 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu,  8 Apr 2021 20:45:03 +0200
-Subject: [LTP] [PATCH 2/2] commands: Add shell pipe test
-In-Reply-To: <20210408184503.28414-1-pvorel@suse.cz>
-References: <20210408184503.28414-1-pvorel@suse.cz>
-Message-ID: <20210408184503.28414-2-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 9 Apr 2021 15:18:15 +0800
+Subject: [LTP] [PATCH v3 7/7] fzsync: Check processor affinity
+In-Reply-To: <20210319091837.27319-8-rpalethorpe@suse.com>
+References: <20210319091837.27319-1-rpalethorpe@suse.com>
+ <20210319091837.27319-8-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dgC4qTYMTXfvf7vKXJKG539BgvhM1-V4u0q8JDvmeKXA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds basic shell pipe testing, which was removed from splice02
-in 85cebe238 ("splice02: Generate input in C").
+ static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
+>  {
+> +       long ncpus = tst_ncpus_available();
+> +
+>         CHK(avg_alpha, 0, 1, 0.25);
+>         CHK(min_samples, 20, INT_MAX, 1024);
+>         CHK(max_dev_ratio, 0, 1, 0.1);
+>         CHK(exec_time_p, 0, 1, 0.5);
+>         CHK(exec_loops, 20, INT_MAX, 3000000);
+> -       CHK(yield_in_wait, 0, 1, (tst_ncpus() <= 1));
+> +
+> +       if (ncpus <= 1)
+> +               pair->yield_in_wait = 1;
+>
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-New in v2.
-Maybe there should be new runtest runtest/shell and test added into new
-directory testcases/shell/ or testcases/misc/shell/.
-But I didn't want to create new directory for single simple test
-and certainly not new runtest file for a single test.
+I'm wondering here why not using the CHK macro as before but additionally
+involved a variable 'ncpus'.
 
-Kind regards,
-Petr
+Isn't that CHK(yield_in_wait, 0, 1, (tst_ncpus_available() <= 1)) better?
 
- runtest/commands                         |  1 +
- runtest/smoketest                        |  1 +
- testcases/commands/shell/shell_pipe01.sh | 17 +++++++++++++++++
- 3 files changed, 19 insertions(+)
- create mode 100755 testcases/commands/shell/shell_pipe01.sh
-
-diff --git a/runtest/commands b/runtest/commands
-index 058266b54..8cfad0449 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,3 +41,4 @@ gdb01_sh gdb01.sh
- unshare01_sh unshare01.sh
- sysctl01_sh sysctl01.sh
- sysctl02_sh sysctl02.sh
-+shell_test01 echo "SUCCESS" | shell_pipe01.sh
-diff --git a/runtest/smoketest b/runtest/smoketest
-index ec0c088cb..85f377192 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -13,3 +13,4 @@ utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
- splice02 splice02 -n 20
- route4-change-dst route-change-dst.sh
-+shell_test01 echo "SUCCESS" | shell_pipe01.sh
-diff --git a/testcases/commands/shell/shell_pipe01.sh b/testcases/commands/shell/shell_pipe01.sh
-new file mode 100755
-index 000000000..3c8ef49fb
---- /dev/null
-+++ b/testcases/commands/shell/shell_pipe01.sh
-@@ -0,0 +1,17 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+
-+TST_TESTFUNC=do_test
-+
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TINFO "expecting SUCCESS string passed from stdin"
-+
-+	read line
-+	EXPECT_PASS [ "$line" = "SUCCESS" ]
-+}
-+
-+tst_run
 -- 
-2.30.2
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210409/2ed79358/attachment.htm>
