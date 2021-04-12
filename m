@@ -1,145 +1,60 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Mon, 12 Apr 2021 16:44:12 +0800
-Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
- kmem_limit_in_bytes of memory cgroup
-Message-ID: <20210412084412.28762-1-zhaogongyi@huawei.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Mon, 12 Apr 2021 19:41:50 +0800
+Subject: [LTP] [COMMITTED] syscalls/sched_rr_get_interval: Fix wrong TTERRNO
+ usage
+Message-ID: <1618227710-27541-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add memory cgroup testcase for checking that kmem overflow is controlled
-by kmem.limit_in_bytes.
-
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
-v1->v2:
-	1) add testcase to runtest/controllers
-	2) add testcase to testcases/kernel/controllers/memcg/.gitignore
----
- runtest/controllers                           |  1 +
- testcases/kernel/controllers/memcg/.gitignore |  1 +
- .../functional/memcg_kmem_limit_in_bytes.c    | 87 +++++++++++++++++++
- 3 files changed, 89 insertions(+)
- create mode 100644 testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval01.c    | 2 +-
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval02.c    | 2 +-
+ .../syscalls/sched_rr_get_interval/sched_rr_get_interval03.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/controllers b/runtest/controllers
-index e3d0243f1..f13a112c7 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -15,6 +15,7 @@ memcg_use_hierarchy	memcg_use_hierarchy_test.sh
- memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
- memcg_stress		memcg_stress_test.sh
- memcg_control		memcg_control_test.sh
-+memcg_kmem_limit_in_bytes memcg_kmem_limit_in_bytes
-
- cgroup_fj_function_debug cgroup_fj_function.sh debug
- cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
-diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-index c0b6d0714..dce8412de 100644
---- a/testcases/kernel/controllers/memcg/.gitignore
-+++ b/testcases/kernel/controllers/memcg/.gitignore
-@@ -1,5 +1,6 @@
- /control/mem_process
- /functional/memcg_process
-+/functional/memcg_kmem_limit_in_bytes
- /regression/memcg_test_1
- /regression/memcg_test_2
- /regression/memcg_test_3
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
-new file mode 100644
-index 000000000..61f3f6fd5
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 HUAWEI LIMITED
-+ * Author: Zhao Gongyi <zhaogongyi@huawei.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ * Check that kmem overflow is controlled by kmem.limit_in_bytes.
-+ *
-+ * [Algorithm]
-+ * 1) mount memory cgroup
-+ * 2) set 0 to memory.kmem.limit_in_bytes
-+ * 3) set test process group to cgroup.procs
-+ * 4) fork in test process group to trig kmem overflow
-+ */
-+
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+
-+#define MNT_POINT "memcg"
-+#define TESTDIR "memcg/ltpmemcg"
-+#define CGROUP_PROCS "memcg/ltpmemcg/cgroup.procs"
-+#define KMEM_LIMIT_IN_BYTES "memcg/ltpmemcg/memory.kmem.limit_in_bytes"
-+
-+static void cleanup(void)
-+{
-+	SAFE_RMDIR(TESTDIR);
-+	SAFE_UMOUNT(MNT_POINT);
-+	SAFE_RMDIR(MNT_POINT);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(MNT_POINT, 0755);
-+	SAFE_MOUNT("memcg", MNT_POINT, "cgroup", 0, "memory");
-+	SAFE_MKDIR(TESTDIR, 0755);
-+}
-+
-+static void run(void)
-+{
-+	pid_t pid;
-+	int st;
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		SAFE_SETPGID(0, 0);
-+
-+		SAFE_FILE_PRINTF(KMEM_LIMIT_IN_BYTES, "%d", 0);
-+
-+		SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid()));
-+
-+		TEST(fork());
-+		if (TST_RET == -1) {
-+			if (TST_ERR == ENOMEM)
-+				tst_res(TPASS, "fork fail as expected");
-+			else
-+				tst_brk(TFAIL | TTERRNO,
-+					"fork fail as unexpected");
-+		} else if (TST_RET == 0) {
-+			tst_brk(TFAIL, "fork success as unexpected");
-+		} else {
-+			SAFE_WAIT(NULL);
-+			tst_brk(TFAIL, "fork success as unexpected");
-+		}
-+	} else {
-+		SAFE_WAIT(&st);
-+		if (WIFEXITED(st))
-+			if (!WEXITSTATUS(st)) {
-+				tst_res(TPASS, "kmem alloc is controled "
-+					"by memory.kmem.limit_in_bytes");
-+				return;
-+			}
-+
-+		tst_res(TFAIL,"kmem alloc is not controled "
-+			"by memory.kmem.limit_in_bytes");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup,
-+};
---
-2.17.1
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index 9d9ddf32e..5da5fe51d 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -42,7 +42,7 @@ static void setup(void)
+ 	tp.type = tv->ts_type;
+ 
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1)
+-		tst_res(TFAIL | TTERRNO, "sched_setscheduler() failed");
++		tst_res(TFAIL | TERRNO, "sched_setscheduler() failed");
+ 
+ 	proc_flag = !access(PROC_SCHED_RR_TIMESLICE_MS, F_OK);
+ }
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+index 0e98fec56..9a0b8673d 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval02.c
+@@ -36,7 +36,7 @@ static void setup(void)
+ 	tp.type = tv->ts_type;
+ 
+ 	if ((sched_setscheduler(0, SCHED_FIFO, &p)) == -1)
+-		tst_res(TFAIL | TTERRNO, "sched_setscheduler() failed");
++		tst_res(TFAIL | TERRNO, "sched_setscheduler() failed");
+ }
+ 
+ static void run(void)
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+index 6a64ca2c6..67ad17793 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval03.c
+@@ -56,7 +56,7 @@ static void setup(void)
+ 	tp.type = tv->ts_type;
+ 
+ 	if ((sched_setscheduler(0, SCHED_RR, &p)) == -1)
+-		tst_res(TFAIL | TTERRNO, "sched_setscheduler() failed");
++		tst_res(TFAIL | TERRNO, "sched_setscheduler() failed");
+ 
+ 	unused_pid = tst_get_unused_pid();
+ }
+-- 
+2.23.0
 
