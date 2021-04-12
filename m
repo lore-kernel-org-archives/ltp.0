@@ -1,58 +1,255 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Apr 2021 16:41:40 +0200
-Subject: [LTP] [PATCH] Modify the test logic of mincore.
-In-Reply-To: <20210330104613.1059-1-zhanglianjie@uniontech.com>
-References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
-Message-ID: <YHRcJOUer87SUn6v@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 12 Apr 2021 15:55:00 +0100
+Subject: [LTP] [PATCH v3 1/7] API: Add safe openat, printfat,
+ readat and unlinkat
+In-Reply-To: <20210412145506.26894-1-rpalethorpe@suse.com>
+References: <20210412145506.26894-1-rpalethorpe@suse.com>
+Message-ID: <20210412145506.26894-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Currently mincore has a vulnerability and is easy to be attacked.
-> CVE has fixed the vulnerability.
-> Please see https://www.linuxkernelcves.com/cves/CVE-2019-5489
-> 
-> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
-> ---
->  testcases/kernel/syscalls/mincore/mincore04.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mincore/mincore04.c b/testcases/kernel/syscalls/mincore/mincore04.c
-> index ed0ab7dfa..345dedd9a 100644
-> --- a/testcases/kernel/syscalls/mincore/mincore04.c
-> +++ b/testcases/kernel/syscalls/mincore/mincore04.c
-> @@ -95,12 +95,12 @@ static void test_mincore(void)
->  	locked_pages = count_pages_in_cache();
->  	tst_reap_children();
-> 
-> -	if (locked_pages == NUM_PAGES)
-> -		tst_res(TPASS, "mincore reports all %d pages locked by child process "
-> -			"are resident", locked_pages);
-> -	else
-> -		tst_res(TFAIL, "mincore reports %d pages resident but %d pages "
-> +	if (locked_pages == 0)
-> +		tst_res(TPASS, "mincore reports %d pages resident but %d pages "
->  			"locked by child process", locked_pages, NUM_PAGES);
-> +	else
-> +		tst_res(TFAIL, "mincore reports all %d pages locked by child process "
-> +			"are resident", locked_pages);
->  }
+Add 'at' variants for a number of system calls and LTP SAFE API
+functions. This avoids using sprintf everywhere to build paths.
 
-This does not make any sense, the kernel commit explicitly states that
-all mapped pages are reported as in core. We do call mlock() in the
-child, which will fault all the pages and lock them in memory. So the
-test should work both before and after the fix as well.
+Also adds tst_decode_fd which allows us to retrieve the path for an FD
+for debugging purposes without having to store it ourselves. However
+the proc symlink may not be available on some systems.
 
-The kernel commit in question weakened mincore() in a sense that it's
-more likely to report pages in core than it previously was. Now all that
-is needed is to fault the pages by reading some bytes from them to make
-sure they are reported as in core.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_safe_file_ops.h |  39 ++++++++
+ lib/tst_safe_file_ops.c     | 171 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 210 insertions(+)
+ create mode 100644 lib/tst_safe_file_ops.c
 
-If the test fails for you, something is probably broken at your end.
-
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 223eddd1f..dff6a793c 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -57,4 +57,43 @@
+ #define TST_MOUNT_OVERLAY() \
+ 	(mount_overlay(__FILE__, __LINE__, 0) == 0)
+ 
++#define SAFE_OPENAT(dirfd, path, oflags, ...)			\
++	safe_openat(__FILE__, __LINE__,				\
++		    (dirfd), (path), (oflags), ## __VA_ARGS__)
++
++#define SAFE_FILE_READAT(dirfd, path, buf, nbyte)			\
++	safe_file_readat(__FILE__, __LINE__,				\
++			 (dirfd), (path), (buf), (nbyte))
++
++
++#define SAFE_FILE_PRINTFAT(dirfd, path, fmt, ...)			\
++	safe_file_printfat(__FILE__, __LINE__,				\
++			   (dirfd), (path), (fmt), __VA_ARGS__)
++
++#define SAFE_UNLINKAT(dirfd, path, flags)				\
++	safe_unlinkat(__FILE__, __LINE__, (dirfd), (path), (flags))
++
++char *tst_decode_fd(int fd);
++
++int safe_openat(const char *file, const int lineno,
++		int dirfd, const char *path, int oflags, ...);
++
++ssize_t safe_file_readat(const char *file, const int lineno,
++			 int dirfd, const char *path, char *buf, size_t nbyte);
++
++int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va);
++int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
++			__attribute__ ((format (printf, 3, 4)));
++
++int safe_file_vprintfat(const char *file, const int lineno,
++			int dirfd, const char *path,
++			const char *fmt, va_list va);
++
++int safe_file_printfat(const char *file, const int lineno,
++		       int dirfd, const char *path, const char *fmt, ...)
++			__attribute__ ((format (printf, 5, 6)));
++
++int safe_unlinkat(const char *file, const int lineno,
++		  int dirfd, const char *path, int flags);
++
+ #endif /* TST_SAFE_FILE_OPS */
+diff --git a/lib/tst_safe_file_ops.c b/lib/tst_safe_file_ops.c
+new file mode 100644
+index 000000000..af4157476
+--- /dev/null
++++ b/lib/tst_safe_file_ops.c
+@@ -0,0 +1,171 @@
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include "lapi/fcntl.h"
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++char fd_path[PATH_MAX];
++
++char *tst_decode_fd(int fd)
++{
++	ssize_t ret;
++	char proc_path[32];
++
++	if (fd < 0)
++		return "!";
++
++	sprintf(proc_path, "/proc/self/fd/%d", fd);
++	ret = readlink(proc_path, fd_path, sizeof(fd_path));
++
++	if (ret < 0)
++		return "?";
++
++	fd_path[ret] = '\0';
++
++	return fd_path;
++}
++
++int safe_openat(const char *file, const int lineno,
++		int dirfd, const char *path, int oflags, ...)
++{
++	va_list ap;
++	int fd;
++	mode_t mode;
++
++	va_start(ap, oflags);
++	mode = va_arg(ap, int);
++	va_end(ap);
++
++	fd = openat(dirfd, path, oflags, mode);
++	if (fd > -1)
++		return fd;
++
++	tst_brk_(file, lineno, TBROK | TERRNO,
++		 "openat(%d<%s>, '%s', %o, %o)",
++		 dirfd, tst_decode_fd(dirfd), path, oflags, mode);
++
++	return fd;
++}
++
++ssize_t safe_file_readat(const char *file, const int lineno,
++			 int dirfd, const char *path, char *buf, size_t nbyte)
++{
++	int fd = safe_openat(file, lineno, dirfd, path, O_RDONLY);
++	ssize_t rval;
++
++	if (fd < 0)
++		return -1;
++
++	rval = safe_read(file, lineno, NULL, 0, fd, buf, nbyte - 1);
++	if (rval < 0)
++		return -1;
++
++	close(fd);
++	buf[rval] = '\0';
++
++	if (rval >= (ssize_t)nbyte - 1) {
++		tst_brk_(file, lineno, TBROK,
++			"Buffer length %zu too small to read %d<%s>/%s",
++			nbyte, dirfd, tst_decode_fd(dirfd), path);
++	}
++
++	return rval;
++}
++
++int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va)
++{
++	int fd = openat(dirfd, path, O_WRONLY);
++
++	if (fd < 0)
++		return -1;
++
++	TEST(vdprintf(fd, fmt, va));
++	close(fd);
++
++	if (TST_RET < 0) {
++		errno = TST_ERR;
++		return -2;
++	}
++
++	return TST_RET;
++}
++
++int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
++{
++	va_list va;
++	int rval;
++
++	va_start(va, fmt);
++	rval = tst_file_vprintfat(dirfd, path, fmt, va);
++	va_end(va);
++
++	return rval;
++}
++
++int safe_file_vprintfat(const char *file, const int lineno,
++			int dirfd, const char *path,
++			const char *fmt, va_list va)
++{
++	char buf[16];
++	va_list vac;
++	int rval;
++
++	va_copy(vac, va);
++
++	TEST(tst_file_vprintfat(dirfd, path, fmt, va));
++
++	if (TST_RET == -2) {
++		rval = vsnprintf(buf, sizeof(buf), fmt, vac);
++		va_end(vac);
++
++		if (rval >= (ssize_t)sizeof(buf))
++			strcpy(buf + sizeof(buf) - 5, "...");
++
++		tst_brk_(file, lineno, TBROK | TTERRNO,
++			 "vdprintf(%d<%s>, '%s', '%s'<%s>)",
++			 dirfd, tst_decode_fd(dirfd), path, fmt,
++			 rval > 0 ? buf : "???");
++		return -1;
++	}
++
++	va_end(vac);
++
++	if (TST_RET == -1) {
++		tst_brk_(file, lineno, TBROK | TTERRNO,
++			"openat(%d<%s>, '%s', O_WRONLY)",
++			dirfd, tst_decode_fd(dirfd), path);
++	}
++
++	return TST_RET;
++}
++
++int safe_file_printfat(const char *file, const int lineno,
++		       int dirfd, const char *path,
++		       const char *fmt, ...)
++{
++	va_list va;
++	int rval;
++
++	va_start(va, fmt);
++	rval = safe_file_vprintfat(file, lineno, dirfd, path, fmt, va);
++	va_end(va);
++
++	return rval;
++}
++
++int safe_unlinkat(const char *file, const int lineno,
++		  int dirfd, const char *path, int flags)
++{
++	int rval = unlinkat(dirfd, path, flags);
++
++	if (rval > -1)
++		return rval;
++
++	tst_brk_(file, lineno, TBROK | TERRNO,
++		 "unlinkat(%d<%s>, '%s', %s)", dirfd, tst_decode_fd(dirfd), path,
++		 flags == AT_REMOVEDIR ? "AT_REMOVEDIR" : (flags ? "?" : "0"));
++
++	return rval;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.30.2
+
