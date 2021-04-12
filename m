@@ -1,68 +1,61 @@
-From: aoyunsoftware <aoyunsoftware@126.com>
-Date: Mon, 12 Apr 2021 14:12:23 +0800 (CST)
-Subject: [LTP] Welcome to the "ltp" mailing list (Digest mode)
-In-Reply-To: <mailman.0.1618206826.17622.ltp@lists.linux.it>
-References: <mailman.0.1618206826.17622.ltp@lists.linux.it>
-Message-ID: <6c78166c.35e7.178c4b5ace0.Coremail.aoyunsoftware@126.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Mon, 12 Apr 2021 16:20:12 +0800
+Subject: [LTP] [PATCH v4 1/3] tst_safe_sysv_ipc.c: Add SAFE_SEMOP macro
+In-Reply-To: <d1c91207-35eb-402f-566c-1289ba2c786a@oracle.com>
+References: <d1c91207-35eb-402f-566c-1289ba2c786a@oracle.com>
+Message-ID: <1618215614-24840-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Reviewed-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ include/tst_safe_sysv_ipc.h |  4 ++++
+ lib/tst_safe_sysv_ipc.c     | 18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
+diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
+index bb6532662..7804ce192 100644
+--- a/include/tst_safe_sysv_ipc.h
++++ b/include/tst_safe_sysv_ipc.h
+@@ -65,4 +65,8 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+ 	(semid) = ((cmd) == IPC_RMID ? -1 : (semid)); \
+ 	tst_ret_; })
+ 
++int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
++		size_t nsops);
++#define SAFE_SEMOP(semid, sops, nsops) \
++	safe_semop(__FILE__, __LINE__, (semid), (sops), (nsops))
+ #endif /* TST_SAFE_SYSV_IPC_H__ */
+diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
+index e72985d61..012f5ba38 100644
+--- a/lib/tst_safe_sysv_ipc.c
++++ b/lib/tst_safe_sysv_ipc.c
+@@ -227,3 +227,21 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+ 
+ 	return rval;
+ }
++
++int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
++		size_t nsops)
++{
++	int rval;
++
++	rval = semop(semid, sops, nsops);
++	if (rval == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"semop(%d, %p, %zu) failed", semid, sops, nsops);
++	} else if (rval < 0) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"Invalid semop(%d, %p, %zu) return value %d",
++			semid, sops, nsops, rval);
++	}
++
++	return rval;
++}
+-- 
+2.23.0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-? 2021-04-12 13:53:46?ltp-request@lists.linux.it ???
->Welcome to the ltp@lists.linux.it mailing list!
->
->To post to this list, send your message to:
->
->  ltp@lists.linux.it
->
->General information about the mailing list is at:
->
->  https://lists.linux.it/listinfo/ltp
->
->If you ever want to unsubscribe or change your options (eg, switch to
->or from digest mode, change your password, etc.), visit your
->subscription page at:
->
->  https://lists.linux.it/options/ltp/aoyunsoftware%40126.com
->
->You can also make such adjustments via email by sending a message to:
->
->  ltp-request@lists.linux.it
->
->with the word `help' in the subject or body (don't include the
->quotes), and you will get back a message with instructions.
->
->You must know your password to change your options (including changing
->the password, itself) or to unsubscribe without confirmation.  It is:
->
->  1qaz2wsx
->
->Normally, Mailman will remind you of your lists.linux.it mailing list
->passwords once every month, although you can disable this if you
->prefer.  This reminder will also include instructions on how to
->unsubscribe or change your account options.  There is also a button on
->your options page that will email your current password to you.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210412/723a70f9/attachment.htm>
