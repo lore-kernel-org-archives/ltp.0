@@ -1,60 +1,170 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Apr 2021 17:10:11 +0200
-Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
-In-Reply-To: <20210323135604.24504-1-zhaogongyi@huawei.com>
-References: <20210323135604.24504-1-zhaogongyi@huawei.com>
-Message-ID: <YHRi0457Zo5s7sUx@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Mon, 12 Apr 2021 17:01:40 +0100
+Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
+ kmem_limit_in_bytes of memory cgroup
+In-Reply-To: <20210412084412.28762-1-zhaogongyi@huawei.com>
+References: <20210412084412.28762-1-zhaogongyi@huawei.com>
+Message-ID: <87r1jf3317.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> When main process has been killed, its son process will be reaped by
-> init, and son process will send SIGUSR1 to the init process.
-> 
-> In busybox, send SIGUSR1 to the init process will trigger shutdown.
-> 
+Hello,
+
+Zhao Gongyi <zhaogongyi@huawei.com> writes:
+
+> Add memory cgroup testcase for checking that kmem overflow is controlled
+> by kmem.limit_in_bytes.
+
+I am currently working on a new LTP CGroups API, please see:
+https://patchwork.ozlabs.org/project/ltp/list/?series=238773
+
+If the new API is merged quickly, then this test will need to be
+converted to it. Also please see comments below.
+
+>
 > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 > ---
->  lib/tst_test.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 45753d1ca..91dfc6bf9 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1156,7 +1156,15 @@ static void heartbeat(void)
->  	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
->  		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-> 
-> -	kill(getppid(), SIGUSR1);
-> +	if (getppid() == 1) {
-> +		tst_res(TFAIL, "Main test process might have exit!");
-                         ^
-			 This should be TBROK I guess.
-> +		/*
-> +		 * We need kill the task group immediately since the
-> +		 * main process has exit.
-> +		 */
-> +		kill(0, SIGKILL);
+> v1->v2:
+> 	1) add testcase to runtest/controllers
+> 	2) add testcase to testcases/kernel/controllers/memcg/.gitignore
+> ---
+>  runtest/controllers                           |  1 +
+>  testcases/kernel/controllers/memcg/.gitignore |  1 +
+>  .../functional/memcg_kmem_limit_in_bytes.c    | 87 +++++++++++++++++++
+>  3 files changed, 89 insertions(+)
+>  create mode 100644 testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
+>
+> diff --git a/runtest/controllers b/runtest/controllers
+> index e3d0243f1..f13a112c7 100644
+> --- a/runtest/controllers
+> +++ b/runtest/controllers
+> @@ -15,6 +15,7 @@ memcg_use_hierarchy	memcg_use_hierarchy_test.sh
+>  memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
+>  memcg_stress		memcg_stress_test.sh
+>  memcg_control		memcg_control_test.sh
+> +memcg_kmem_limit_in_bytes memcg_kmem_limit_in_bytes
+>
+>  cgroup_fj_function_debug cgroup_fj_function.sh debug
+>  cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
+> diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
+> index c0b6d0714..dce8412de 100644
+> --- a/testcases/kernel/controllers/memcg/.gitignore
+> +++ b/testcases/kernel/controllers/memcg/.gitignore
+> @@ -1,5 +1,6 @@
+>  /control/mem_process
+>  /functional/memcg_process
+> +/functional/memcg_kmem_limit_in_bytes
+>  /regression/memcg_test_1
+>  /regression/memcg_test_2
+>  /regression/memcg_test_3
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
+> new file mode 100644
+> index 000000000..61f3f6fd5
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 HUAWEI LIMITED
+> + * Author: Zhao Gongyi <zhaogongyi@huawei.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + * Check that kmem overflow is controlled by kmem.limit_in_bytes.
+> + *
+> + * [Algorithm]
+> + * 1) mount memory cgroup
+> + * 2) set 0 to memory.kmem.limit_in_bytes
+> + * 3) set test process group to cgroup.procs
+> + * 4) fork in test process group to trig kmem overflow
+> + */
+> +
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +
+> +#define MNT_POINT "memcg"
+> +#define TESTDIR "memcg/ltpmemcg"
+> +#define CGROUP_PROCS "memcg/ltpmemcg/cgroup.procs"
+> +#define KMEM_LIMIT_IN_BYTES "memcg/ltpmemcg/memory.kmem.limit_in_bytes"
+> +
+> +static void cleanup(void)
+> +{
+> +	SAFE_RMDIR(TESTDIR);
+> +	SAFE_UMOUNT(MNT_POINT);
+> +	SAFE_RMDIR(MNT_POINT);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_MKDIR(MNT_POINT, 0755);
+> +	SAFE_MOUNT("memcg", MNT_POINT, "cgroup", 0, "memory");
+> +	SAFE_MKDIR(TESTDIR, 0755);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	pid_t pid;
+> +	int st;
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		SAFE_SETPGID(0, 0);
+> +
+> +		SAFE_FILE_PRINTF(KMEM_LIMIT_IN_BYTES, "%d", 0);
+> +
+> +		SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid()));
 
-Shouldn't we call exit here? There is no point in continuing once we
-reached this point.
+After setting this we should avoid doing any work in this process except
+calling fork. AFAIK there is no guarantee that some other syscall or
+tasklet etc. Won't try to allocate memory and also fail.
 
-> +	} else
-> +		kill(getppid(), SIGUSR1);
->  }
-> 
->  static void testrun(void)
+> +
+> +		TEST(fork());
+> +		if (TST_RET == -1) {
+> +			if (TST_ERR == ENOMEM)
+> +				tst_res(TPASS, "fork fail as expected");
+> +			else
+> +				tst_brk(TFAIL | TTERRNO,
+> +					"fork fail as unexpected");
+
+This should be "fork failed with unexpected error".
+
+> +		} else if (TST_RET == 0) {
+> +			tst_brk(TFAIL, "fork success as unexpected");
+> +		} else {
+> +			SAFE_WAIT(NULL);
+> +			tst_brk(TFAIL, "fork success as unexpected");
+> +		}
+> +	} else {
+> +		SAFE_WAIT(&st);
+> +		if (WIFEXITED(st))
+> +			if (!WEXITSTATUS(st)) {
+> +				tst_res(TPASS, "kmem alloc is controled "
+> +					"by memory.kmem.limit_in_bytes");
+> +				return;
+> +			}
+> +
+> +		tst_res(TFAIL,"kmem alloc is not controled "
+> +			"by memory.kmem.limit_in_bytes");
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.test_all = run,
+> +	.cleanup = cleanup,
+> +};
 > --
 > 2.17.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
