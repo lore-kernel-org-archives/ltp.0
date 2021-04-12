@@ -1,8 +1,8 @@
 From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Mon, 12 Apr 2021 16:28:36 +0800
-Subject: [LTP] [PATCH] controllers/memcg: Add testcase for
+Date: Mon, 12 Apr 2021 16:44:12 +0800
+Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
  kmem_limit_in_bytes of memory cgroup
-Message-ID: <20210412082836.27415-1-zhaogongyi@huawei.com>
+Message-ID: <20210412084412.28762-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,16 +14,45 @@ by kmem.limit_in_bytes.
 
 Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- .../functional/memcg_kmem_limit_in_bytes.c    | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
+v1->v2:
+	1) add testcase to runtest/controllers
+	2) add testcase to testcases/kernel/controllers/memcg/.gitignore
+---
+ runtest/controllers                           |  1 +
+ testcases/kernel/controllers/memcg/.gitignore |  1 +
+ .../functional/memcg_kmem_limit_in_bytes.c    | 87 +++++++++++++++++++
+ 3 files changed, 89 insertions(+)
  create mode 100644 testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
 
+diff --git a/runtest/controllers b/runtest/controllers
+index e3d0243f1..f13a112c7 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -15,6 +15,7 @@ memcg_use_hierarchy	memcg_use_hierarchy_test.sh
+ memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
+ memcg_stress		memcg_stress_test.sh
+ memcg_control		memcg_control_test.sh
++memcg_kmem_limit_in_bytes memcg_kmem_limit_in_bytes
+
+ cgroup_fj_function_debug cgroup_fj_function.sh debug
+ cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
+diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
+index c0b6d0714..dce8412de 100644
+--- a/testcases/kernel/controllers/memcg/.gitignore
++++ b/testcases/kernel/controllers/memcg/.gitignore
+@@ -1,5 +1,6 @@
+ /control/mem_process
+ /functional/memcg_process
++/functional/memcg_kmem_limit_in_bytes
+ /regression/memcg_test_1
+ /regression/memcg_test_2
+ /regression/memcg_test_3
 diff --git a/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
 new file mode 100644
-index 000000000..d01403fdd
+index 000000000..61f3f6fd5
 --- /dev/null
 +++ b/testcases/kernel/controllers/memcg/functional/memcg_kmem_limit_in_bytes.c
-@@ -0,0 +1,89 @@
+@@ -0,0 +1,87 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2021 HUAWEI LIMITED
@@ -67,8 +96,6 @@ index 000000000..d01403fdd
 +{
 +	pid_t pid;
 +	int st;
-+	int fd;
-+	char buf[128] = {0};
 +
 +	pid = SAFE_FORK();
 +	if (!pid) {
