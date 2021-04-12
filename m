@@ -1,45 +1,58 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 12 Apr 2021 21:57:03 +0800
-Subject: [LTP] [PATCH v3 1/7] fzsync: Add self tests
-In-Reply-To: <20210319091837.27319-2-rpalethorpe@suse.com>
-References: <20210319091837.27319-1-rpalethorpe@suse.com>
- <20210319091837.27319-2-rpalethorpe@suse.com>
-Message-ID: <CAEemH2f1OtzmP+Vh+afVHuZvHNZSq0kwG0HrK79z7THEu1smmQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Apr 2021 16:41:40 +0200
+Subject: [LTP] [PATCH] Modify the test logic of mincore.
+In-Reply-To: <20210330104613.1059-1-zhanglianjie@uniontech.com>
+References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
+Message-ID: <YHRcJOUer87SUn6v@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> +/* The time signatures of threads A and B */
-> +struct race {
-> +       const struct window a;
-> +       const struct window b;
-> +};
-> +
-> +static int c;
->
+Hi!
+> Currently mincore has a vulnerability and is easy to be attacked.
+> CVE has fixed the vulnerability.
+> Please see https://www.linuxkernelcves.com/cves/CVE-2019-5489
+> 
+> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+> ---
+>  testcases/kernel/syscalls/mincore/mincore04.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mincore/mincore04.c b/testcases/kernel/syscalls/mincore/mincore04.c
+> index ed0ab7dfa..345dedd9a 100644
+> --- a/testcases/kernel/syscalls/mincore/mincore04.c
+> +++ b/testcases/kernel/syscalls/mincore/mincore04.c
+> @@ -95,12 +95,12 @@ static void test_mincore(void)
+>  	locked_pages = count_pages_in_cache();
+>  	tst_reap_children();
+> 
+> -	if (locked_pages == NUM_PAGES)
+> -		tst_res(TPASS, "mincore reports all %d pages locked by child process "
+> -			"are resident", locked_pages);
+> -	else
+> -		tst_res(TFAIL, "mincore reports %d pages resident but %d pages "
+> +	if (locked_pages == 0)
+> +		tst_res(TPASS, "mincore reports %d pages resident but %d pages "
+>  			"locked by child process", locked_pages, NUM_PAGES);
+> +	else
+> +		tst_res(TFAIL, "mincore reports all %d pages locked by child process "
+> +			"are resident", locked_pages);
+>  }
 
-Maybe define a volatile 'c' here will be better?
+This does not make any sense, the kernel commit explicitly states that
+all mapped pages are reported as in core. We do call mlock() in the
+child, which will fault all the pages and lock them in memory. So the
+test should work both before and after the fix as well.
 
+The kernel commit in question weakened mincore() in a sense that it's
+more likely to report pages in core than it previously was. Now all that
+is needed is to fault the pages by reading some bytes from them to make
+sure they are reported as in core.
 
-
-> +
-> +       tst_res(critical > 50 ? TPASS : TFAIL,
-> +               "cs:%-2d ct:%-2d rt:%-2d | =:%-4d -:%-4d +:%-4d",
-> +               a.critical_s, a.critical_t, a.return_t,
->
-
-A tiny issue on output is, 'a.critical_s' abbreviate to 'cs' which
-has duplicated name with above variable, a bit confused for me
-a while:).
-
-Anyway, the patches look quite good to me.
-Reviewed-by: Li Wang <liwang@redhat.com>
+If the test fails for you, something is probably broken at your end.
 
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210412/6d91fb31/attachment.htm>
+Cyril Hrubis
+chrubis@suse.cz
