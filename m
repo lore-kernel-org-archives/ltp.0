@@ -1,53 +1,87 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 13 Apr 2021 07:42:59 +0100
-Subject: [LTP] [PATCH v3 1/7] fzsync: Add self tests
-In-Reply-To: <CAEemH2f1OtzmP+Vh+afVHuZvHNZSq0kwG0HrK79z7THEu1smmQ@mail.gmail.com>
-References: <20210319091837.27319-1-rpalethorpe@suse.com>
- <20210319091837.27319-2-rpalethorpe@suse.com>
- <CAEemH2f1OtzmP+Vh+afVHuZvHNZSq0kwG0HrK79z7THEu1smmQ@mail.gmail.com>
-Message-ID: <87o8ei3css.fsf@suse.de>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Tue, 13 Apr 2021 06:42:52 +0000
+Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B3761@dggeml531-mbx.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Cyril,
 
-Li Wang <liwang@redhat.com> writes:
+Thanks for your review!
 
->> +/* The time signatures of threads A and B */
->> +struct race {
->> +       const struct window a;
->> +       const struct window b;
->> +};
->> +
->> +static int c;
->>
+> > -	kill(getppid(), SIGUSR1);
+> > +	if (getppid() == 1) {
+> > +		tst_res(TFAIL, "Main test process might have exit!");
+>                          ^
+> 			 This should be TBROK I guess.
+> > +		/*
+> > +		 * We need kill the task group immediately since the
+> > +		 * main process has exit.
+> > +		 */
+> > +		kill(0, SIGKILL);
+> 
+> Shouldn't we call exit here? There is no point in continuing once we
+> reached this point.
 >
-> Maybe define a volatile 'c' here will be better?
 
-We always access it with the atomic functions so it is not necessary.
+Yes, There is no point in continuing once we reached this point. Considering the test might have created sub processes with system, posix_spawn and so on,
 
->
->
->
->> +
->> +       tst_res(critical > 50 ? TPASS : TFAIL,
->> +               "cs:%-2d ct:%-2d rt:%-2d | =:%-4d -:%-4d +:%-4d",
->> +               a.critical_s, a.critical_t, a.return_t,
->>
->
-> A tiny issue on output is, 'a.critical_s' abbreviate to 'cs' which
-> has duplicated name with above variable, a bit confused for me
-> a while:).
->
-> Anyway, the patches look quite good to me.
-> Reviewed-by: Li Wang <liwang@redhat.com>
-
-Thanks for the review! I will modify the printed variable name.
+do we need to kill the task group?
 
 
--- 
-Thank you,
-Richard.
+Best Regards,
+Gongyi
+
+
+> 
+> Hi!
+> > When main process has been killed, its son process will be reaped by
+> > init, and son process will send SIGUSR1 to the init process.
+> >
+> > In busybox, send SIGUSR1 to the init process will trigger shutdown.
+> >
+> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> > ---
+> >  lib/tst_test.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/lib/tst_test.c b/lib/tst_test.c index
+> > 45753d1ca..91dfc6bf9 100644
+> > --- a/lib/tst_test.c
+> > +++ b/lib/tst_test.c
+> > @@ -1156,7 +1156,15 @@ static void heartbeat(void)
+> >  	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
+> >  		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+> >
+> > -	kill(getppid(), SIGUSR1);
+> > +	if (getppid() == 1) {
+> > +		tst_res(TFAIL, "Main test process might have exit!");
+>                          ^
+> 			 This should be TBROK I guess.
+> > +		/*
+> > +		 * We need kill the task group immediately since the
+> > +		 * main process has exit.
+> > +		 */
+> > +		kill(0, SIGKILL);
+> 
+> Shouldn't we call exit here? There is no point in continuing once we
+> reached this point.
+> 
+> > +	} else
+> > +		kill(getppid(), SIGUSR1);
+> >  }
+> >
+> >  static void testrun(void)
+> > --
+> > 2.17.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
