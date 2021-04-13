@@ -1,39 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Apr 2021 13:32:52 +0200
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Tue, 13 Apr 2021 19:54:22 +0800
 Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
-In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B4974@dggeml531-mbx.china.huawei.com>
-References: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B4974@dggeml531-mbx.china.huawei.com>
-Message-ID: <YHWBZLHgDx1q9kIb@yuki>
+Message-ID: <20210413115422.4087-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Thanks for your review!
-> 
-> > > +       } else
-> > > +               kill(getppid(), SIGUSR1);
-> > 
-> > No need for the else branch here now that we do exit() a the end of the if
-> > () block.
-> >
-> 
-> Generally speaking, It seems that we also need the else branch since we need to send heart beat to the main process.
+When main process has been killed, its son process will be reaped by
+init, and son process will send SIGUSR1 to the init process.
 
-What I meant was that the code could be structured as:
+In busybox, send SIGUSR1 to the init process will trig shutdown.
 
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+v1->v2: add exit(TBROK) after kill
+---
+ lib/tst_test.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-	if (getppid() == 1) {
-		...
-		exit(TBROK);
-	}
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 45753d1ca..446887c31 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1156,6 +1156,16 @@ static void heartbeat(void)
+ 	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
+ 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
 
-	kill(getppid(), SIGUSR1);
++	if (getppid() == 1) {
++		tst_res(TFAIL, "Main test process might have exit!");
++		/*
++		 * We need kill the task group immediately since the
++		 * main process has exit.
++		 */
++		kill(0, SIGKILL);
++		exit(TBROK);
++	}
++
+ 	kill(getppid(), SIGUSR1);
+ }
 
-Hence there is no need for the else branch.
+--
+2.17.1
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
