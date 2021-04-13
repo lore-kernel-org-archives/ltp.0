@@ -1,79 +1,33 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue, 13 Apr 2021 08:07:52 +0100
-Subject: [LTP] [PATCH v4 6/7] API: Add tst_ncpus_available
-In-Reply-To: <20210413070753.1691-1-rpalethorpe@suse.com>
-References: <20210413070753.1691-1-rpalethorpe@suse.com>
-Message-ID: <20210413070753.1691-7-rpalethorpe@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Apr 2021 09:42:28 +0200
+Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
+In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B3761@dggeml531-mbx.china.huawei.com>
+References: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B3761@dggeml531-mbx.china.huawei.com>
+Message-ID: <YHVLZOKAfNMbU/UP@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Same as tst_ncpus, but takes CPU affinity into account.
+Hi!
+> > > +		/*
+> > > +		 * We need kill the task group immediately since the
+> > > +		 * main process has exit.
+> > > +		 */
+> > > +		kill(0, SIGKILL);
+> > 
+> > Shouldn't we call exit here? There is no point in continuing once we
+> > reached this point.
+> >
+> 
+> Yes, There is no point in continuing once we reached this point. Considering the test might have created sub processes with system, posix_spawn and so on,
+> 
+> do we need to kill the task group?
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Li Wang <liwang@redhat.com>
----
- include/tst_cpu.h |  1 +
- lib/tst_cpu.c     | 26 ++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+Yes, I think this is the right course of action, we do the same if the
+test timeouts as well.
 
-diff --git a/include/tst_cpu.h b/include/tst_cpu.h
-index 117e27087..b3a449bea 100644
---- a/include/tst_cpu.h
-+++ b/include/tst_cpu.h
-@@ -8,6 +8,7 @@
- long tst_ncpus(void);
- long tst_ncpus_conf(void);
- long tst_ncpus_max(void);
-+long tst_ncpus_available(void);
- 
- #define VIRT_ANY	0	/* catch-all argument for tst_is_virt() */
- #define VIRT_XEN	1	/* xen dom0/domU */
-diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
-index 033155e47..b4c7c2f81 100644
---- a/lib/tst_cpu.c
-+++ b/lib/tst_cpu.c
-@@ -17,6 +17,8 @@
-  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
-+#include "lapi/cpuset.h"
-+
- #include <stdlib.h>
- #include <unistd.h>
- #include "test.h"
-@@ -71,3 +73,27 @@ long tst_ncpus_max(void)
- 	}
- 	return ncpus_max;
- }
-+
-+long tst_ncpus_available(void)
-+{
-+#ifdef CPU_COUNT_S
-+	long ncpus = tst_ncpus_max();
-+	size_t cpusz = CPU_ALLOC_SIZE(ncpus);
-+	cpu_set_t *cpus = CPU_ALLOC(ncpus);
-+
-+	if (!cpus)
-+		tst_brkm(TBROK | TERRNO, NULL, "CPU_ALLOC(%zu)", cpusz);
-+
-+	if (sched_getaffinity(0, cpusz, cpus)) {
-+		tst_resm(TWARN | TERRNO, "sched_getaffinity(0, %zu, %zx)",
-+			cpusz, (size_t)cpus);
-+	} else {
-+		ncpus = CPU_COUNT_S(cpusz, cpus);
-+	}
-+	CPU_FREE(cpus);
-+
-+	return ncpus;
-+#else
-+	return tst_ncpus();
-+#endif
-+}
 -- 
-2.30.2
-
+Cyril Hrubis
+chrubis@suse.cz
