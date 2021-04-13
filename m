@@ -1,65 +1,35 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Tue, 13 Apr 2021 08:19:02 +0000
-Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B47B3@dggeml531-mbx.china.huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Apr 2021 10:34:47 +0200
+Subject: [LTP] [PATCH v4 1/7] fzsync: Add self tests
+In-Reply-To: <20210413070753.1691-2-rpalethorpe@suse.com>
+References: <20210413070753.1691-1-rpalethorpe@suse.com>
+ <20210413070753.1691-2-rpalethorpe@suse.com>
+Message-ID: <YHVXpxfK1uU5co9p@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> diff --git a/lib/newlib_tests/test16.c b/lib/newlib_tests/test16.c
+> index 0d74e1eae..7a9b5f20e 100644
+> --- a/lib/newlib_tests/test16.c
+> +++ b/lib/newlib_tests/test16.c
+> @@ -9,6 +9,8 @@
+>   * which they should take it in turns to update.
+>   */
+>  
+> +#define _GNU_SOURCE
+> +
+>  #include <stdlib.h>
+>  #include "tst_test.h"
+>  #include "tst_safe_pthread.h"
 
-According to your review, is there any problems in the patch as follows:
+I've removed this forgotten _GNU_SOURCE defition and pushed.
 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 45753d1ca..0a096d666 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1156,7 +1156,16 @@ static void heartbeat(void)
-        if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
-                tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
+Thanks a lot for the fixes.
 
--       kill(getppid(), SIGUSR1);
-+       if (getppid() == 1) {
-+               tst_res(TFAIL, "Main test process might have exit!");
-+               /*
-+                * We need kill the task group immediately since the
-+                * main process has exit.
-+                */
-+               kill(0, SIGKILL);
-+               exit(-1);
-+       } else
-+               kill(getppid(), SIGUSR1);
- }
-
-Thanks so much!
-
-Best Regards,
-Gongyi
-
-
-> 
-> Hi!
-> > > > +		/*
-> > > > +		 * We need kill the task group immediately since the
-> > > > +		 * main process has exit.
-> > > > +		 */
-> > > > +		kill(0, SIGKILL);
-> > >
-> > > Shouldn't we call exit here? There is no point in continuing once we
-> > > reached this point.
-> > >
-> >
-> > Yes, There is no point in continuing once we reached this point.
-> > Considering the test might have created sub processes with system,
-> > posix_spawn and so on,
-> >
-> > do we need to kill the task group?
-> 
-> Yes, I think this is the right course of action, we do the same if the test
-> timeouts as well.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+-- 
+Cyril Hrubis
+chrubis@suse.cz
