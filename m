@@ -1,87 +1,68 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Tue, 13 Apr 2021 06:42:52 +0000
-Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B3761@dggeml531-mbx.china.huawei.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 13 Apr 2021 08:07:46 +0100
+Subject: [LTP] [PATCH v4 0/7] Fuzzy Sync single core support and tests
+Message-ID: <20210413070753.1691-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hello,
 
-Thanks for your review!
+V4: (no change in logic)
+* Remove useless variable in pair_init
+* Explain TIME_SCALE
+* Differentiate between "cs" variables when printing
+* Add reviewed by trailers
 
-> > -	kill(getppid(), SIGUSR1);
-> > +	if (getppid() == 1) {
-> > +		tst_res(TFAIL, "Main test process might have exit!");
->                          ^
-> 			 This should be TBROK I guess.
-> > +		/*
-> > +		 * We need kill the task group immediately since the
-> > +		 * main process has exit.
-> > +		 */
-> > +		kill(0, SIGKILL);
-> 
-> Shouldn't we call exit here? There is no point in continuing once we
-> reached this point.
->
+V3:
+* Add -pthread to test CFLAGS
+* Substitute CPU_COUNT for CPU_COUNT_S and check for alloc failure
 
-Yes, There is no point in continuing once we reached this point. Considering the test might have created sub processes with system, posix_spawn and so on,
+V2:
+* Add tst_ncpus_available() to API
+* Don't use CHK macro for yield_in_wait to prevent compiler warnings
+* Simplify and split the test in two
 
-do we need to kill the task group?
+I'm reasonably confident of the first tests correctness. The second is
+maybe not complete and more formal analyses is needed IMO. I suspect
+also that we can remove add_delay_bias and implement randomised
+probing instead. The more I think about it the more clear it becomes,
+but it may require some bigger changes to how we calculate and
+introduce the delays.
 
+Occasionally some tests may not reach the lower threshold and fail. It
+may be caused by changes in the environment between the measuring and
+delay implementation phases. This is also something which could be
+investigated.
 
-Best Regards,
-Gongyi
+Anyway this is all still very time consuming and making it perform
+well on single core is most important right now.
 
+Leo Yu-Chi Liang (1):
+  fzsync: Add sched_yield for single core machine
 
-> 
-> Hi!
-> > When main process has been killed, its son process will be reaped by
-> > init, and son process will send SIGUSR1 to the init process.
-> >
-> > In busybox, send SIGUSR1 to the init process will trigger shutdown.
-> >
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  lib/tst_test.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c index
-> > 45753d1ca..91dfc6bf9 100644
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -1156,7 +1156,15 @@ static void heartbeat(void)
-> >  	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
-> >  		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-> >
-> > -	kill(getppid(), SIGUSR1);
-> > +	if (getppid() == 1) {
-> > +		tst_res(TFAIL, "Main test process might have exit!");
->                          ^
-> 			 This should be TBROK I guess.
-> > +		/*
-> > +		 * We need kill the task group immediately since the
-> > +		 * main process has exit.
-> > +		 */
-> > +		kill(0, SIGKILL);
-> 
-> Shouldn't we call exit here? There is no point in continuing once we
-> reached this point.
-> 
-> > +	} else
-> > +		kill(getppid(), SIGUSR1);
-> >  }
-> >
-> >  static void testrun(void)
-> > --
-> > 2.17.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+Richard Palethorpe (6):
+  fzsync: Add self tests
+  fzsync: Reset delay bias
+  fzsync: Correctly print positive lower delay range bound
+  fzsync: Move yield check out of loop and add yield to delay
+  API: Add tst_ncpus_available
+  fzsync: Check processor affinity
+
+ include/tst_cpu.h                   |   1 +
+ include/tst_fuzzy_sync.h            | 104 +++++++++---
+ lib/newlib_tests/.gitignore         |   2 +
+ lib/newlib_tests/Makefile           |   2 +
+ lib/newlib_tests/test16.c           |   2 +
+ lib/newlib_tests/tst_fuzzy_sync01.c | 235 ++++++++++++++++++++++++++++
+ lib/newlib_tests/tst_fuzzy_sync02.c | 177 +++++++++++++++++++++
+ lib/tst_cpu.c                       |  26 +++
+ 8 files changed, 525 insertions(+), 24 deletions(-)
+ create mode 100644 lib/newlib_tests/tst_fuzzy_sync01.c
+ create mode 100644 lib/newlib_tests/tst_fuzzy_sync02.c
+
+-- 
+2.30.2
+
