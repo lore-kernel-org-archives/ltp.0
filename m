@@ -1,71 +1,53 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Apr 2021 06:38:44 +0200
-Subject: [LTP] [PATCH v3 2/2] commands: Add shell pipe test
-In-Reply-To: <20210413043844.5612-1-pvorel@suse.cz>
-References: <20210413043844.5612-1-pvorel@suse.cz>
-Message-ID: <20210413043844.5612-2-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Tue, 13 Apr 2021 07:42:59 +0100
+Subject: [LTP] [PATCH v3 1/7] fzsync: Add self tests
+In-Reply-To: <CAEemH2f1OtzmP+Vh+afVHuZvHNZSq0kwG0HrK79z7THEu1smmQ@mail.gmail.com>
+References: <20210319091837.27319-1-rpalethorpe@suse.com>
+ <20210319091837.27319-2-rpalethorpe@suse.com>
+ <CAEemH2f1OtzmP+Vh+afVHuZvHNZSq0kwG0HrK79z7THEu1smmQ@mail.gmail.com>
+Message-ID: <87o8ei3css.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This adds basic shell pipe testing, which was removed from splice02
-in 85cebe238 ("splice02: Generate input in C").
+Hello,
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-The same as v2.
+Li Wang <liwang@redhat.com> writes:
 
- runtest/commands                         |  1 +
- runtest/smoketest                        |  1 +
- testcases/commands/shell/shell_pipe01.sh | 17 +++++++++++++++++
- 3 files changed, 19 insertions(+)
- create mode 100755 testcases/commands/shell/shell_pipe01.sh
+>> +/* The time signatures of threads A and B */
+>> +struct race {
+>> +       const struct window a;
+>> +       const struct window b;
+>> +};
+>> +
+>> +static int c;
+>>
+>
+> Maybe define a volatile 'c' here will be better?
 
-diff --git a/runtest/commands b/runtest/commands
-index 058266b54..8cfad0449 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,3 +41,4 @@ gdb01_sh gdb01.sh
- unshare01_sh unshare01.sh
- sysctl01_sh sysctl01.sh
- sysctl02_sh sysctl02.sh
-+shell_test01 echo "SUCCESS" | shell_pipe01.sh
-diff --git a/runtest/smoketest b/runtest/smoketest
-index ec0c088cb..85f377192 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -13,3 +13,4 @@ utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
- splice02 splice02 -n 20
- route4-change-dst route-change-dst.sh
-+shell_test01 echo "SUCCESS" | shell_pipe01.sh
-diff --git a/testcases/commands/shell/shell_pipe01.sh b/testcases/commands/shell/shell_pipe01.sh
-new file mode 100755
-index 000000000..3c8ef49fb
---- /dev/null
-+++ b/testcases/commands/shell/shell_pipe01.sh
-@@ -0,0 +1,17 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
-+
-+TST_TESTFUNC=do_test
-+
-+. tst_test.sh
-+
-+do_test()
-+{
-+	tst_res TINFO "expecting SUCCESS string passed from stdin"
-+
-+	read line
-+	EXPECT_PASS [ "$line" = "SUCCESS" ]
-+}
-+
-+tst_run
+We always access it with the atomic functions so it is not necessary.
+
+>
+>
+>
+>> +
+>> +       tst_res(critical > 50 ? TPASS : TFAIL,
+>> +               "cs:%-2d ct:%-2d rt:%-2d | =:%-4d -:%-4d +:%-4d",
+>> +               a.critical_s, a.critical_t, a.return_t,
+>>
+>
+> A tiny issue on output is, 'a.critical_s' abbreviate to 'cs' which
+> has duplicated name with above variable, a bit confused for me
+> a while:).
+>
+> Anyway, the patches look quite good to me.
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+Thanks for the review! I will modify the printed variable name.
+
+
 -- 
-2.31.1
-
+Thank you,
+Richard.
