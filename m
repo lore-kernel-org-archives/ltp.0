@@ -1,29 +1,254 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 14 Apr 2021 15:32:08 +0200
-Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
- kmem_limit_in_bytes of memory cgroup
-In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B5467@dggeml531-mbx.china.huawei.com>
-References: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B5467@dggeml531-mbx.china.huawei.com>
-Message-ID: <YHbu2LpnYB2J2Ey7@yuki>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 14 Apr 2021 17:11:58 +0300
+Subject: [LTP] [PATCH 1/2] syscalls/chown: rewrite chown/chown01.c with
+ the new api
+In-Reply-To: <20210326031254.202606-1-xieziyao@huawei.com>
+References: <20210326031254.202606-1-xieziyao@huawei.com>
+Message-ID: <67a24192-90b2-c6bd-bca6-3cc9a9a8bc6e@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> BTW I find that the testcase run passed on my local system, it seems
-> that tst_* will not trig memory allocation:
+On 26.03.2021 06:12, Xie Ziyao wrote:
+> For this:
+>   testcases/kernel/syscalls/chown/chown01.c
+> 
+> Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+> ---
+>  testcases/kernel/syscalls/chown/chown01.c | 189 +++++-----------------
+>  1 file changed, 36 insertions(+), 153 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
+> index 2e42153d6..a263db1bc 100644
+> --- a/testcases/kernel/syscalls/chown/chown01.c
+> +++ b/testcases/kernel/syscalls/chown/chown01.c
+> @@ -1,179 +1,62 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it is
+> - * free of the rightful claim of any third person regarding infringement
+> - * or the like.  Any license provided herein, whether implied or
+> - * otherwise, applies only to this software file.  Patent licenses, if
+> - * any, provided herein do not apply to combinations of this program with
+> - * other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+> - * Mountain View, CA  94043, or:
+> - *
+> - * https://urldefense.com/v3/__http://www.sgi.com__;!!GqivPVa7Brio!K38BOnObiPoxRPvXRHJYzDyzV8BKNGdZqVCqrhJBHAsp630RZ__NSCORk-tOnZMBX6-b$ 
+> - *
+> - * For further information regarding this notice, see:
+> - *
+> - * https://urldefense.com/v3/__http://oss.sgi.com/projects/GenInfo/NoticeExplan/__;!!GqivPVa7Brio!K38BOnObiPoxRPvXRHJYzDyzV8BKNGdZqVCqrhJBHAsp630RZ__NSCORk-tOnfjKGQhh$ 
+> - *
+> + * AUTHOR: William Roske
+> + * CO-PILOT: Dave Fenner
+>   */
+> -/* $Id: chown01.c,v 1.6 2009/08/28 11:59:17 vapier Exp $ */
+> -/**********************************************************
+> - *
+> - *    OS Test - Silicon Graphics, Inc.
+> - *
+> - *    TEST IDENTIFIER	: chown01
+> - *
+> - *    EXECUTED BY	: anyone
+> - *
+> - *    TEST TITLE	: Basic test for chown(2)
+> - *
+> - *    PARENT DOCUMENT	: usctpl01
+> - *
+> - *    TEST CASE TOTAL	: 1
+> - *
+> - *    WALL CLOCK TIME	: 1
+> - *
+> - *    CPU TYPES		: ALL
+> - *
+> - *    AUTHOR		: William Roske
+> - *
+> - *    CO-PILOT		: Dave Fenner
+> - *
+> - *    DATE STARTED	: 03/30/92
+> - *
+> - *    INITIAL RELEASE	: UNICOS 7.0
+> - *
+> - *    TEST CASES
+> - *
+> - * 	1.) chown(2) returns...(See Description)
+> - *
+> - *    INPUT SPECIFICATIONS
+> - * 	The standard options for system call tests are accepted.
+> - *	(See the parse_opts(3) man page).
+> - *
+> - *    OUTPUT SPECIFICATIONS
+> - *$
+> - *    DURATION
+> - * 	Terminates - with frequency and infinite modes.
+> - *
+> - *    SIGNALS
+> - * 	Uses SIGUSR1 to pause before test if option set.
+> - * 	(See the parse_opts(3) man page).
+> - *
+> - *    RESOURCES
+> - * 	None
+> - *
+> - *    ENVIRONMENTAL NEEDS
+> - *      No run-time environmental needs.
+> - *
+> - *    SPECIAL PROCEDURAL REQUIREMENTS
+> - * 	None
+> - *
+> - *    INTERCASE DEPENDENCIES
+> - * 	None
+> - *
+> - *    DETAILED DESCRIPTION
+> - *	This is a Phase I test for the chown(2) system call.  It is intended
+> - *	to provide a limited exposure of the system call, for now.  It
+> - *	should/will be extended when full functional tests are written for
+> - *	chown(2).
+> - *
+> - * 	Setup:
+> - * 	  Setup signal handling.
+> - *	  Pause for SIGUSR1 if option specified.
+> - *
+> - * 	Test:
+> - *	 Loop if the proper options are given.
+> - * 	  Execute system call
+> - *	  Check return code, if system call failed (return=-1)
+> - *		Log the errno and Issue a FAIL message.
+> - *	  Otherwise, Issue a PASS message.
+> +
+> +/*\
+> + * [Description]
+>   *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> + * This is a Phase I test for the chown(2) system call. It is intended
+> + * to provide a limited exposure of the system call, for now. It
+> + * should/will be extended when full functional tests are written for
+> + * chown(2).
+>   *
+> + * [Algorithm]
+>   *
+> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+> + * - Execute system call
+> + * - Check return code, if system call failed (return=-1)
+> + * -   Log the errno and Issue a FAIL message
+> + * - Otherwise, Issue a PASS message
+> + */
+> 
+> +#include <stdio.h>
+>  #include <sys/types.h>
+>  #include <fcntl.h>
+>  #include <errno.h>
+>  #include <string.h>
+>  #include <signal.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "compat_16.h"
+> 
+> -TCID_DEFINE(chown01);
+> -int TST_TOTAL = 1;
+> +#include "tst_test.h"
+> +#include "compat_tst_16.h"
+> 
+>  char fname[255];
+>  int uid, gid;
+> 
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -int main(int ac, char **av)
+> +static void run(void)
+>  {
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		TEST(CHOWN(cleanup, fname, uid, gid));
+> -
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL | TTERRNO, "chown(%s, %d,%d) failed",
+> -				 fname, uid, gid);
+> -		} else {
+> -			tst_resm(TPASS, "chown(%s, %d,%d) returned %ld",
+> -				 fname, uid, gid, TEST_RETURN);
+> -		}
+> -
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	TEST(CHOWN(fname, uid, gid));
+> +
+> +	if (TST_RET == -1)
+> +		tst_res(TFAIL | TTERRNO, "chown(%s, %d,%d) failed",
+> +			fname, uid, gid);
+> +	else
+> +		tst_res(TPASS, "chown(%s, %d,%d) returned %ld",
+> +			fname, uid, gid, TST_RET);
 
-This is not, by any means, a proof that the test is correct.
+Instead of TEST() and return value checks we could write:
+TST_EXP_PASS(CHOWN(fname, uid, gid), "chown(%s,%d,%d)", ...);
 
-"Passed on my machine" is nothing but poor excuse.
+>  }
+> 
+>  static void setup(void)
+>  {
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	UID16_CHECK((uid = geteuid()), "chown", cleanup)
+> -	GID16_CHECK((gid = getegid()), "chown", cleanup)
+> -
+> +	UID16_CHECK((uid = geteuid()), "chown");
+> +	GID16_CHECK((gid = getegid()), "chown");
+>  	sprintf(fname, "t_%d", getpid());
 
-I can easily write utterly broken code that will work fine on a single
-machine and fail on anything else. Correctly written test depends on
-valid assumptions we can make about the operation system the test is
-supposed to run on.
+What about using some constant for the file name?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> -
+> -	SAFE_FILE_PRINTF(cleanup, fname, "davef");
+> +	SAFE_FILE_PRINTF(fname, "davef");
+>  }
+> 
+> -static void cleanup(void)
+> -{
+> -	tst_rmdir();
+> +static struct tst_test test = {
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.test_all = run,
+> +};
+> 
+> -}
+> --
+> 2.17.1
+> 
+> 
+
