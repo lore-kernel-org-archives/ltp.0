@@ -1,49 +1,49 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Wed, 14 Apr 2021 17:37:10 +0800
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 14 Apr 2021 17:47:24 +0800
 Subject: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
-Message-ID: <20210414093710.6365-1-zhaogongyi@huawei.com>
+In-Reply-To: <1e332d4428ea42aeb59e1173b654ce30@huawei.com>
+References: <1617765607-78263-1-git-send-email-wangxin410@huawei.com>
+ <CAEemH2ctSMR5OF=0TQX1eNmTE7PcdEdMbjoYXc3RxiBsyfzcuw@mail.gmail.com>
+ <91a235700b494bdf9a9a7dd1901aa947@huawei.com>
+ <CAEemH2dU2r8gFS5r3os7UwXFUEmmPqR9CnAizXbP_FHP+Evd+A@mail.gmail.com>
+ <1e332d4428ea42aeb59e1173b654ce30@huawei.com>
+Message-ID: <CAEemH2ePd0td_fiK9MF66Mu9_XOzi7pa2pZLQj2t1qGwu0LxcQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Typos in the name of the temporary files:
-mmap/24-1.c: pts_mmap_24_1_* -> pts_mmap_25_1_*
-sem_unlink/2-2.c: sem_unlink_9_1 -> sem_unlink_2_2
+Hi Xin,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- .../open_posix_testsuite/conformance/interfaces/mmap/24-1.c     | 2 +-
- .../conformance/interfaces/sem_unlink/2-2.c                     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I'm sorry I don't know how did you do make a new patch, I still can NOT
+merge it to my local branch.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-index 3d9e4b180..6cc8349e1 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/24-1.c
-@@ -43,7 +43,7 @@ int main(void)
+Btw, the one(about cpuset) I also solved the conflict by manual and
+then applied, I guess you proably need to check your git, or did you
+really make a patch via `git format-patch`?
 
- 	size_t mapped_size = 0;
+After checking with scripts/checkpatch.pl, it repor errors like:
 
--	snprintf(tmpfname, sizeof(tmpfname), "pts_mmap_25_1_%d", getpid());
-+	snprintf(tmpfname, sizeof(tmpfname), "pts_mmap_24_1_%d", getpid());
+$ ./scripts/checkpatch.pl
+~/v2-openposix-conformance-interfaces-Correct-typos.patch
+WARNING: Possible unwrapped commit description (prefer a maximum 75 chars
+per line)
+#73:
+Types in the name of the temporary files: For example, in aio_cancel/8-1.c
+file,
 
- 	/* Create shared object */
- 	shm_unlink(tmpfname);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/2-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/2-2.c
-index dae871d89..1e9096b23 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/2-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_unlink/2-2.c
-@@ -76,7 +76,7 @@
- #define VERBOSE 1
- #endif
+ERROR: patch seems to be corrupt (line wrapped?)
+#109: FILE:
+testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c:55:
+index 5b980be..e1ae59e 100644
 
--#define SEM_NAME  "/sem_unlink_9_1"
-+#define SEM_NAME  "/sem_unlink_2_2"
+total: 1 errors, 1 warnings, 113 lines checked
 
- /******************************************************************************/
- /***************************    Test case   ***********************************/
---
-2.17.1
 
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210414/c32b1759/attachment.htm>
