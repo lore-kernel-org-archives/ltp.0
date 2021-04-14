@@ -1,98 +1,44 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Wed, 14 Apr 2021 08:19:23 +0000
-Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
- kmem_limit_in_bytes of memory cgroup
-Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B50C0@dggeml531-mbx.china.huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 14 Apr 2021 16:26:58 +0800
+Subject: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
+In-Reply-To: <91a235700b494bdf9a9a7dd1901aa947@huawei.com>
+References: <1617765607-78263-1-git-send-email-wangxin410@huawei.com>
+ <CAEemH2ctSMR5OF=0TQX1eNmTE7PcdEdMbjoYXc3RxiBsyfzcuw@mail.gmail.com>
+ <91a235700b494bdf9a9a7dd1901aa947@huawei.com>
+Message-ID: <CAEemH2dU2r8gFS5r3os7UwXFUEmmPqR9CnAizXbP_FHP+Evd+A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richard,
+Hi Xin,
 
-Calling setpgid in this testcase is aim to make the task group be controlled by memory.kmem.limit_in_bytes since we have set the pgid to cgroup.procs.
+On Wed, Apr 14, 2021 at 4:16 PM wangxin (CQ) <wangxin410@huawei.com> wrote:
 
-In this testcase, memory cgroup is just effective for the task group of cgroup.procs. it is no affection for the parent process as expect.
+> Hi Wang,
+>
+>
+>
+> Thanks so much for your review!
+>
+>
+>
+> I just re-checked the latest code and found that the code needed to be
+> modified was not the same as the last time.
+>
+> Therefore, do you want to incorporate the patch submitted last time?
+>
+> If there is a conflict, I can modify the patch submitted last time.
+>
 
-So if fork success, we can use tst_* and would not be failed, otherwise, we can use tst_* since it is in parent process.
+Feel free to make a new patch as you want, I don't insist on the
+previous version.
+Just guarantee to rebase on the latest LTP is fine.
 
-I don't know if I express it clearly.
-
-
-Thanks very much!
-
-Best Regards,
-Gongyi
-
-> 
-> Hello,
-> 
-> zhaogongyi <zhaogongyi@huawei.com> writes:
-> 
-> > Hi Richard,
-> >
-> > Thanks so much for your review!
-> >
-> >> >> > +	pid = SAFE_FORK();
-> >> >> > +	if (!pid) {
-> >> >> > +		SAFE_SETPGID(0, 0);
-> >> >> > +
-> >> >> > +		SAFE_FILE_PRINTF(KMEM_LIMIT_IN_BYTES, "%d", 0);
-> >> >> > +
-> >> >> > +		SAFE_FILE_PRINTF(CGROUP_PROCS, "%d",
-> getpgid(getpid()));
-> >> >>
-> >> >> After setting this we should avoid doing any work in this process
-> >> >> except calling fork. AFAIK there is no guarantee that some other
-> >> >> syscall or tasklet etc. Won't try to allocate memory and also fail.
-> >> >>
-> >> >
-> >> > It seems that we would not be afraid since there is no asynchronous
-> >> > operation in the test process.
-> >>
-> >> IIRC one of the problems with tasklets is they can run in any
-> >> process. Also, in theory stdout can point to anything. So write() might
-> allocate memory.
-> >>
-> >> Why not do something like:
-> >>
-> >> SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid())); errno = 0;
-> >> fork(); exit(errno);
-> >>
-> >> Then check that errno == ENOMEM, in the parent process?
-> >>
-> >>
-> >>> > +		TEST(fork());
-> >>> > +		if (TST_RET == -1) {
-> >>> > +			if (TST_ERR == ENOMEM)
-> >>> > +				tst_res(TPASS, "fork fail as expected");
-> >>> > +			else
-> >>> > +				tst_brk(TFAIL | TTERRNO,
-> >>> > +					"fork fail as unexpected");
-> >
-> > As far as my personal understanding, after setpgid, the controlled
-> > process is the sub process whose process id is pid, excluded from the
-> parent process, and the functions tst_res or tst_brk Is executed in its
-> parent process.
-> 
-> setpgid(0, 0) sets the process group id (pgid) to be the same as the (pid),
-> which creates a new process group. This probably has the effect that the
-> calling process will not recieve signals from the terminal. Also it should
-> receive SIGTTOU when calling tst_res and tst_brk, if stdout/stderr point to
-> a terminal with the right configuration.
-> 
-> AFAICT process groups are for shells and affect where signals are sent.
-> Nothing else.
-> 
-> >
-> > In this case, is it no affection to this test?
-> >
-> >
-> > Best Regards,
-> > Gongyi
-> 
-> 
-> --
-> Thank you,
-> Richard.
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210414/2bf314a2/attachment.htm>
