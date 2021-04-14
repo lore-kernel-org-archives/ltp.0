@@ -1,80 +1,53 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Wed, 14 Apr 2021 09:04:19 +0100
-Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
- kmem_limit_in_bytes of memory cgroup
-In-Reply-To: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B507A@dggeml531-mbx.china.huawei.com>
-References: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B507A@dggeml531-mbx.china.huawei.com>
-Message-ID: <87im4p2sxo.fsf@suse.de>
+From: wangxin (CQ) <wangxin410@huawei.com>
+Date: Wed, 14 Apr 2021 08:15:58 +0000
+Subject: [LTP] =?utf-8?b?562U5aSNOiAgW1BBVENIXSBvcGVucG9zaXgvY29uZm9ybWFu?=
+ =?utf-8?q?ce/interfaces=3A_Correct_typos?=
+In-Reply-To: <CAEemH2ctSMR5OF=0TQX1eNmTE7PcdEdMbjoYXc3RxiBsyfzcuw@mail.gmail.com>
+References: <1617765607-78263-1-git-send-email-wangxin410@huawei.com>
+ <CAEemH2ctSMR5OF=0TQX1eNmTE7PcdEdMbjoYXc3RxiBsyfzcuw@mail.gmail.com>
+Message-ID: <91a235700b494bdf9a9a7dd1901aa947@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Wang,
 
-zhaogongyi <zhaogongyi@huawei.com> writes:
+Thanks so much for your review!
 
-> Hi Richard,
->
-> Thanks so much for your review!
->
->> >> > +	pid = SAFE_FORK();
->> >> > +	if (!pid) {
->> >> > +		SAFE_SETPGID(0, 0);
->> >> > +
->> >> > +		SAFE_FILE_PRINTF(KMEM_LIMIT_IN_BYTES, "%d", 0);
->> >> > +
->> >> > +		SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid()));
->> >>
->> >> After setting this we should avoid doing any work in this process
->> >> except calling fork. AFAIK there is no guarantee that some other
->> >> syscall or tasklet etc. Won't try to allocate memory and also fail.
->> >>
->> >
->> > It seems that we would not be afraid since there is no asynchronous
->> > operation in the test process.
->> 
->> IIRC one of the problems with tasklets is they can run in any process. Also,
->> in theory stdout can point to anything. So write() might allocate memory.
->> 
->> Why not do something like:
->> 
->> SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid())); errno = 0;
->> fork(); exit(errno);
->> 
->> Then check that errno == ENOMEM, in the parent process?
->>
->>
->>> > +		TEST(fork());
->>> > +		if (TST_RET == -1) {
->>> > +			if (TST_ERR == ENOMEM)
->>> > +				tst_res(TPASS, "fork fail as expected");
->>> > +			else
->>> > +				tst_brk(TFAIL | TTERRNO,
->>> > +					"fork fail as unexpected");
->
-> As far as my personal understanding, after setpgid, the controlled process is the sub process whose process id is pid, excluded from the parent process, and the functions tst_res or tst_brk
-> Is executed in its parent process.
+I just re-checked the latest code and found that the code needed to be modified was not the same as the last time.
+Therefore, do you want to incorporate the patch submitted last time?
+If there is a conflict, I can modify the patch submitted last time.
 
-setpgid(0, 0) sets the process group id (pgid) to be the same as the
-(pid), which creates a new process group. This probably has the effect
-that the calling process will not recieve signals from the
-terminal. Also it should receive SIGTTOU when calling tst_res and
-tst_brk, if stdout/stderr point to a terminal with the right
-configuration.
+--
+Regards,
+Wang Xin
 
-AFAICT process groups are for shells and affect where signals are
-sent. Nothing else.
+???: Li Wang [mailto:liwang@redhat.com]
+????: 2021?4?14? 14:58
+???: wangxin (CQ) <wangxin410@huawei.com>
+??: LTP List <ltp@lists.linux.it>
+??: Re: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
 
->
-> In this case, is it no affection to this test?
->
->
-> Best Regards,
-> Gongyi
+Hi Xin,
 
+Sorry for the late reply.
 
--- 
-Thank you,
-Richard.
+On Wed, Apr 7, 2021 at 11:03 AM Wang Xin <wangxin410@huawei.com<mailto:wangxin410@huawei.com>> wrote:
+Types in the name of the temporary files: For example, in aio_cancel/8-1.c file,
+pts_aio_cancel_1_1 -> pts_aio_cancel_8_1.
+Others like this have been modified.
+
+Good catch!
+
+Since there are many changes before this patch, could you
+rebase this patch on the latest main branch and resend?
+(in order to get rid of the patch conflict :)
+
+--
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210414/b702708b/attachment-0001.htm>
