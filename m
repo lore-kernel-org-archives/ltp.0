@@ -1,72 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 13 Apr 2021 22:27:41 +0200
-Subject: [LTP] [PATCH] bugfix for iso9660/isofs.sh
-In-Reply-To: <20210407052424.5795-1-zhanglianjie@uniontech.com>
-References: <20210407052424.5795-1-zhanglianjie@uniontech.com>
-Message-ID: <YHX+vS+SnHJt7mDi@pevik>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Wed, 14 Apr 2021 06:40:53 +0000
+Subject: [LTP] [PATCH v2] controllers/memcg: Add testcase for
+ kmem_limit_in_bytes of memory cgroup
+Message-ID: <F3D3F6AC3820BB4C9FCA340DB5C32CB4038B507A@dggeml531-mbx.china.huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Richard,
 
-...
-> Thank you very much for your guidance, but I want to submit it myself. 
-> Because this is the first time I submit a patch in the community.
+Thanks so much for your review!
 
-I added this as your commit and merged. But please next time send a proper patch
-(it's easier to use proper patch via LTP patchwork [1]).
-And I added additional cleanup patch.
+> >> > +	pid = SAFE_FORK();
+> >> > +	if (!pid) {
+> >> > +		SAFE_SETPGID(0, 0);
+> >> > +
+> >> > +		SAFE_FILE_PRINTF(KMEM_LIMIT_IN_BYTES, "%d", 0);
+> >> > +
+> >> > +		SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid()));
+> >>
+> >> After setting this we should avoid doing any work in this process
+> >> except calling fork. AFAIK there is no guarantee that some other
+> >> syscall or tasklet etc. Won't try to allocate memory and also fail.
+> >>
+> >
+> > It seems that we would not be afraid since there is no asynchronous
+> > operation in the test process.
+> 
+> IIRC one of the problems with tasklets is they can run in any process. Also,
+> in theory stdout can point to anything. So write() might allocate memory.
+> 
+> Why not do something like:
+> 
+> SAFE_FILE_PRINTF(CGROUP_PROCS, "%d", getpgid(getpid())); errno = 0;
+> fork(); exit(errno);
+> 
+> Then check that errno == ENOMEM, in the parent process?
+>
+>
+>> > +		TEST(fork());
+>> > +		if (TST_RET == -1) {
+>> > +			if (TST_ERR == ENOMEM)
+>> > +				tst_res(TPASS, "fork fail as expected");
+>> > +			else
+>> > +				tst_brk(TFAIL | TTERRNO,
+>> > +					"fork fail as unexpected");
 
-Kind regards,
-Petr
+As far as my personal understanding, after setpgid, the controlled process is the sub process whose process id is pid, excluded from the parent process, and the functions tst_res or tst_brk
+Is executed in its parent process.
 
-[1] https://patchwork.ozlabs.org/project/ltp/list/
+In this case, is it no affection to this test?
 
-> ---
->  testcases/kernel/fs/iso9660/isofs.sh | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
 
-> diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-> index 9de3f7cdc..c0e2d1ff8 100755
-> --- a/testcases/kernel/fs/iso9660/isofs.sh
-> +++ b/testcases/kernel/fs/iso9660/isofs.sh
-> @@ -9,14 +9,26 @@
->  # It makes ISO9660 file system with different options and also
->  # mounts ISO9660 file system with different mount options.
-
-> -TST_NEEDS_CMDS="mkisofs"
->  TST_NEEDS_TMPDIR=1
->  TST_TESTFUNC=do_test
-> +TST_SETUP=setup
-> +
->  . tst_test.sh
-
->  MAX_DEPTH=3
->  MAX_DIRS=4
-
-> +setup()
-> +{
-> +	if tst_cmd_available mkisofs; then
-> +		MKISOFS_CMD="mkisofs"
-> +	elif tst_cmd_available genisoimage; then
-> +		MKISOFS_CMD="genisoimage"
-> +	else
-> +		tst_brk TCONF "please install mkisofs or genisoimage"
-> +	fi
-> +}
-> +
->  gen_fs_tree()
->  {
->  	local cur_path="$1"
-> @@ -56,7 +68,7 @@ do_test() {
->  		"-allow-lowercase -allow-multidot -iso-level 3 -f -l -D -J -allow-leading-dots -R"
->  	do
->  		rm -f isofs.iso
-> -		EXPECT_PASS mkisofs -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
-> +		EXPECT_PASS $MKISOFS_CMD -o isofs.iso -quiet $mkisofs_opt $make_file_sys_dir 2\> /dev/null \
->  			|| continue
-
->  		for mount_opt in \
+Best Regards,
+Gongyi
