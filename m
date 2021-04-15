@@ -1,83 +1,274 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu, 15 Apr 2021 11:06:49 +0200
-Subject: [LTP] [PATCH 2/2] pec: Fix multiple event test
-In-Reply-To: <YGIf3JSsFHn/gwKJ@pevik>
-References: <20210315092844.991073-1-lkml@jv-coder.de>
- <20210315092844.991073-2-lkml@jv-coder.de> <YGIf3JSsFHn/gwKJ@pevik>
-Message-ID: <8f7b161a-486a-edc2-11de-32d5d6fac825@jv-coder.de>
+Date: Thu, 15 Apr 2021 11:05:42 +0200
+Subject: [LTP] [PATCH v2] pec: Fix multiple event test
+Message-ID: <20210415090542.960158-1-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-I will send a v2, but want to comment on some of your remarks first:
+The test case for NUM_EVENTS != 1 was not correct at all.
+Now the test looks for each event recorded by the generator
+in the correct order in the listener's log.
 
-On 3/29/2021 8:43 PM, Petr Vorel wrote:
->> +	while read -r exp; do
->> +		local found=0
->> +		act_nevents=$((act_nevents + 1))
->> +		while read -r <&${fd_act} act; do
-> <& is a bashism. Isn't it using just stdin enough?
-Actually no, and I don't even think this is a bashism. I guess it is a 
-bug in the checkbashisms script.
-[n]<&m means copy file descriptor m to n when executing the command. See 
-[1].
-My theory of a bug is even more supported by the fact, that 
-checkbashisms suggests to replace
-"<&$var" with ">word 2>&1". so "<&$var" obviously triggered the 
-"&>word"-rule.
+Additionally the test is parameterized, to the the number of generated events
+and the default is now set to 10.
 
-This is required here, because $fd_act is a file handle to the actual 
-received events, that is supposed
-to be iterated only once, while the expected events are iterated over in 
-the outer loop.
-This construct allows "actual" to contain more events, than expected. 
-But all expected events must be
-in the correct order in actual.
+Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+---
+ testcases/kernel/connectors/pec/cn_pec.sh     | 100 +++++++++++++++---
+ .../kernel/connectors/pec/event_generator.c   |  54 +++++-----
+ 2 files changed, 116 insertions(+), 38 deletions(-)
 
-In v2 I reordered the code a bit (while read....; do ....; done <&$fd). 
-This still triggers checkbashims, but
-it this works@least in bash, ash, dash, and busybox sh.
+diff --git a/testcases/kernel/connectors/pec/cn_pec.sh b/testcases/kernel/connectors/pec/cn_pec.sh
+index 4ab84b4fa..0acb7271d 100755
+--- a/testcases/kernel/connectors/pec/cn_pec.sh
++++ b/testcases/kernel/connectors/pec/cn_pec.sh
+@@ -9,16 +9,52 @@
+ # Process event connector is a netlink connector that reports process events
+ # to userspace. It sends events such as fork, exec, id change and exit.
+ 
++TST_OPTS="n:"
+ TST_SETUP=setup
+ TST_TESTFUNC=test
++TST_PARSE_ARGS=parse_args
++TST_USAGE=usage
+ TST_NEEDS_ROOT=1
+ TST_NEEDS_TMPDIR=1
+ TST_TEST_DATA="fork exec exit uid gid"
+ 
+-NUM_EVENTS=1
+-
+ . tst_test.sh
+ 
++num_events=10
++
++usage()
++{
++	cat << EOF
++usage: $0 [-n <nevents>]
++
++OPTIONS
++-n      The number of evetns to generate per test (default 10)
++EOF
++}
++
++parse_args()
++{
++	case $1 in
++	n) num_events=$2;;
++	esac
++}
++
++# Find a free file handle
++free_fd()
++{
++	local fd
++
++	for fd in $(seq 200); do
++		# Sapwn a new sh, because redirecting to a non existing file handle
++		# will trigger a syntax error.
++		/bin/sh -c ": 2>/dev/null >&$fd || : 2>/dev/null <&$fd" 2>/dev/null
++		if [ $? -eq 2 ]; then
++			echo $fd
++			return
++		fi
++	done
++}
++
+ setup()
+ {
+ 	if ! grep -q cn_proc /proc/net/connector; then
+@@ -31,7 +67,9 @@ setup()
+ test()
+ {
+ 	local event=$2
+-	local expected_events lis_rc pid
++	local expected_events lis_rc pid fd_act failed act_nevents exp act
++
++	tst_res TINFO "Testing $2 event (nevents=$num_events)"
+ 
+ 	pec_listener >lis_$event.log 2>lis_$event.err &
+ 	pid=$!
+@@ -39,28 +77,66 @@ test()
+ 	tst_sleep 100ms
+ 
+ 	# generator must be in PATH
+-	ROD event_generator -n $NUM_EVENTS -e $event \>gen_$event.log 2\>gen_$event.err
++	ROD event_generator -n $num_events -e $event \>gen_$event.log 2\>gen_$event.err
+ 
+-	# sleep until pec_listener has seen and handled all of the generated events
+-	tst_sleep 100ms
+ 	kill -s INT $pid 2> /dev/null
+ 	wait $pid
+ 	lis_rc=$?
+ 
+ 	if [ ! -s gen_$event.log ]; then
+-		tst_brk TBROK "failed to generate process events"
++		tst_brk TBROK "failed to generate process events: $(cat gen_$event.err)"
+ 	fi
+ 
+ 	if [ $lis_rc -ne 0 ]; then
+ 		tst_brk TBROK "failed to execute the listener: $(cat lis_$event.err)"
+ 	fi
+ 
+-	expected_events="$(cat gen_$event.log)"
+-	if grep -q "$expected_events" lis_$event.log; then
+-		tst_res TPASS "$event detected by listener"
++	# The listener writes the same messages as the generator, but it can
++	# also see more events (e.g. for testing exit, a fork is generated).
++	# So: The events generated by the generator have to be in the same order
++	# as the events printed by the listener, but my interleaved with other
++	# messages. To correctly compare them, we have to open both logs
++	# and iterate over both of them at the same time, skipping messages
++	# in the listener log, that are not of interest.
++	# Because some messages may be multiple times in the listener log,
++	# we have to open it only once!
++	# This however does not check, if the listener sees more messages,
++	# than expected.
++
++	fd_act=$(free_fd)
++	[ -z "$fd_act" ] && tst_brk TBROK "No free filehandle found"
++	eval "exec ${fd_act}<lis_$event.log"
++
++	failed=0
++	act_nevents=0
++	while read -r exp; do
++		local found=0
++		act_nevents=$((act_nevents + 1))
++		while read -r act; do
++			if [ "$exp" = "$act" ]; then
++				found=1
++				break
++			fi
++		done <&${fd_act}
++		if [ $found -ne 1 ]; then
++			failed=1
++			tst_res TFAIL "Event was not detected by the event listener: $exp"
++			break
++		fi
++	done <gen_$event.log
++
++	eval "exec ${fd_act}<&-"
++
++	if [ $failed -eq 0 ]; then
++		if [ $act_nevents -ne $num_events ]; then
++			tst_res TBROK "Expected $num_events, but $act_nevents generated"
++		else
++			tst_res TPASS "All events detected"
++		fi
+ 	else
+-		tst_res TFAIL "$event not detected by listener"
+-	fi
++		# TFAIL message is already printed in the loop above
++		cat lis_$event.log
++ 	fi
+ }
+ 
+ tst_run
+diff --git a/testcases/kernel/connectors/pec/event_generator.c b/testcases/kernel/connectors/pec/event_generator.c
+index 0a90b91c4..62e341268 100644
+--- a/testcases/kernel/connectors/pec/event_generator.c
++++ b/testcases/kernel/connectors/pec/event_generator.c
+@@ -93,16 +93,8 @@ static void gen_exec(void)
+  */
+ static inline void gen_fork(void)
+ {
+-	pid_t pid;
+-	int status;
+-
+-	pid = SAFE_FORK();
+-	if (pid == 0) {
+-		printf("fork parent: %d, child: %d\n", getppid(), getpid());
+-		exit(0);
+-	} else {		/* Parent should wait for the child */
+-		wait(&status);
+-	}
++	/* The actual fork is already done in main */
++	printf("fork parent: %d, child: %d\n", getppid(), getpid());
+ }
+ 
+ /**
+@@ -110,16 +102,10 @@ static inline void gen_fork(void)
+  */
+ static inline void gen_exit(void)
+ {
+-	pid_t pid;
+-	int status;
+-
+-	pid = SAFE_FORK();
+-	if (pid == 0) {
+-		printf("exit pid: %d exit_code: %d\n", getpid(), 0);
+-		exit(0);
+-	} else {
+-		wait(&status);
+-	}
++	/* exit_signal will always be SIGCHLD, if the process terminates cleanly */
++	printf("exit pid: %d exit_code: %d exit_signal: %d\n",
++	       getpid(), 0, SIGCHLD);
++	/* exit is called by main already */
+ }
+ 
+ /*
+@@ -128,7 +114,7 @@ static inline void gen_exit(void)
+ static inline void gen_uid(void)
+ {
+ 	SAFE_SETUID(ltp_uid);
+-	printf("uid pid: %d euid: %d\n", getpid(), ltp_uid);
++	printf("uid pid: %d euid: %d ruid: %d\n", getpid(), ltp_uid, ltp_uid);
+ }
+ 
+ /*
+@@ -137,7 +123,7 @@ static inline void gen_uid(void)
+ static inline void gen_gid(void)
+ {
+ 	SAFE_SETGID(ltp_gid);
+-	printf("gid pid: %d egid: %d\n", getpid(), ltp_gid);
++	printf("gid pid: %d egid: %d rgid: %u\n", getpid(), ltp_gid, ltp_gid);
+ }
+ 
+ /*
+@@ -210,8 +196,6 @@ int main(int argc, char **argv)
+ 	ltp_uid = ent->pw_uid;
+ 	ltp_gid = ent->pw_gid;
+ 
+-	signal(SIGCHLD, SIG_IGN);
+-
+ 	/* special processing for gen_exec, see comments above gen_exec() */
+ 	if (gen_event == gen_exec) {
+ 		exec_argv = argv;
+@@ -223,8 +207,26 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	/* other events */
+-	for (i = 0; i < nr_event; i++)
+-		gen_event();
++	for (i = 0; i < nr_event; i++) {
++		pid_t pid;
++		int status;
++
++		pid = SAFE_FORK();
++		if (pid == 0) {
++			gen_event();
++			exit(0);
++		} else {
++			if (pid != SAFE_WAITPID(pid, &status, 0)) {
++				fprintf(stderr,
++				        "Child process did not terminate as expected\n");
++				return 1;
++			}
++			if (WEXITSTATUS(status) != 0) {
++				fprintf(stderr, "Child process did not terminate with 0\n");
++				return 1;
++			}
++		}
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-> 		while read -r < $fd_act act; do
->> +			if [ "$exp" = "$act" ]; then
->> +				found=1
->> +				break
->> +			fi
->> +		done
->> +		if [ $found -ne 1 ]; then
->> +			failed=1
->> +			tst_res TFAIL "Event was not detected by the event listener: $exp"
->> +			break
->> +		fi
->> +	done <gen_$event.log
->> +
->> +	eval "exec ${fd_act}<&-"
->> +
->> +	if [ $failed -eq 0 ]; then
->> +		if [ $act_nevents -ne $num_events ]; then
->> +			tst_res TBROK "Expected $num_events, but $act_nevents generated"
->> +		else
->> +			tst_res TPASS "All events detected"
->> +		fi
->>   	else
->> -		tst_res TFAIL "$event not detected by listener"
->> +		cat lis_$event.log
-> Why removing tst_res TFAIL?
-> If "cat lis_$event.log" needed, why not having it in previous commit?
-I moved this up into the loop, to be able to output the expected event, 
-that was not detected.
-The output of the actual events is for debugging. It is not strictly 
-required,
-but could simplify identifying why an event is missing. Feel free to 
-remove this in v2 ;)
-
-I hope I fixed everything else.
-
-J?rg
-
-[1] 
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_07_05
