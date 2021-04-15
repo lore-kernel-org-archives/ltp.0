@@ -1,20 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 15 Apr 2021 13:44:56 +0200
-Subject: [LTP] [PATCH] read_all: limit per cpu nodes to first ten cpus
-In-Reply-To: <f776dd1a02dc16efa8aa80bbe6f9b55186dc82cd.1618321799.git.jstancek@redhat.com>
-References: <f776dd1a02dc16efa8aa80bbe6f9b55186dc82cd.1618321799.git.jstancek@redhat.com>
-Message-ID: <YHgnOAF73wRFFrAi@yuki>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Thu, 15 Apr 2021 12:11:17 +0000
+Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
+Message-ID: <377e1a36e883400eaff3812a6bc54f50@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Sounds reasonable to me as well.
+Hi Cyril,
 
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+I am sorry for my fault, I will make sure that it is right before sending out.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks so much!
+
+Best Regards,
+Gongyi
+
+> 
+> Hi!
+> This should have had v2 in the email subject, please do not forget to add
+> the -v flag when generating/sending patches to git.
+> 
+> Otherwise this looks fine, but let's give peter chance to look at it.
+> 
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
