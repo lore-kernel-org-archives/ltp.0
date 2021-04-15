@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 15 Apr 2021 13:32:41 +0200
-Subject: [LTP] [PATCH] lib/tst_test.c: Bugfix for heartbeat
-In-Reply-To: <20210413115422.4087-1-zhaogongyi@huawei.com>
-References: <20210413115422.4087-1-zhaogongyi@huawei.com>
-Message-ID: <YHgkWRyR+UJnRVN1@yuki>
+Date: Thu, 15 Apr 2021 13:44:56 +0200
+Subject: [LTP] [PATCH] read_all: limit per cpu nodes to first ten cpus
+In-Reply-To: <f776dd1a02dc16efa8aa80bbe6f9b55186dc82cd.1618321799.git.jstancek@redhat.com>
+References: <f776dd1a02dc16efa8aa80bbe6f9b55186dc82cd.1618321799.git.jstancek@redhat.com>
+Message-ID: <YHgnOAF73wRFFrAi@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,12 +11,9 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-This should have had v2 in the email subject, please do not forget to
-add the -v flag when generating/sending patches to git.
+Sounds reasonable to me as well.
 
-Otherwise this looks fine, but let's give peter chance to look at it.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
