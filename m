@@ -1,10 +1,10 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Thu, 15 Apr 2021 14:35:18 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/chown: rewrite chown/chown03.c with
+Date: Thu, 15 Apr 2021 14:35:17 +0800
+Subject: [LTP] [PATCH v2 1/2] syscalls/chown: rewrite chown/chown01.c with
  the new api
 In-Reply-To: <20210415063518.174631-1-xieziyao@huawei.com>
 References: <20210415063518.174631-1-xieziyao@huawei.com>
-Message-ID: <20210415063518.174631-3-xieziyao@huawei.com>
+Message-ID: <20210415063518.174631-2-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,146 +12,178 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 For this:
-  testcases/kernel/syscalls/chown/chown03.c
+  testcases/kernel/syscalls/chown/chown01.c
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
 
 v1->v2:
-1. Remove some unnecessary comments and judgment statements;
-2. Replace TEST() and return value checks with TST_EXP_PASS() macro (+ TPASS message below).
+1. Use TST_EXP_PASS(CHOWN(fname, uid, gid), "chown(%s,%d,%d)", ...)
+instead of TEST() and return value checks;
+2. Use the FILENAME constant for the name of the temporary file.
 
- testcases/kernel/syscalls/chown/chown03.c | 240 +++++++---------------
- 1 file changed, 74 insertions(+), 166 deletions(-)
+ testcases/kernel/syscalls/chown/chown01.c | 187 ++++------------------
+ 1 file changed, 32 insertions(+), 155 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
-index 2c7bcfe7d..ec1da2e20 100644
---- a/testcases/kernel/syscalls/chown/chown03.c
-+++ b/testcases/kernel/syscalls/chown/chown03.c
-@@ -1,72 +1,31 @@
+diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
+index 2e42153d6..c4898c53a 100644
+--- a/testcases/kernel/syscalls/chown/chown01.c
++++ b/testcases/kernel/syscalls/chown/chown01.c
+@@ -1,179 +1,56 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * 07/2001 Ported by Wayne Boyer
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * AUTHOR: William Roske
++ * CO-PILOT: Dave Fenner
   */
-
--/*
-- * Test Name: chown03
+-/* $Id: chown01.c,v 1.6 2009/08/28 11:59:17 vapier Exp $ */
+-/**********************************************************
 - *
-- * Test Description:
-- *  Verify that, chown(2) succeeds to change the group of a file specified
-- *  by path when called by non-root user with the following constraints,
-- *	- euid of the process is equal to the owner of the file.
-- *	- the intended gid is either egid, or one of the supplementary gids
-- *	  of the process.
-- *  Also, verify that chown() clears the setuid/setgid bits set on the file.
+- *    OS Test - Silicon Graphics, Inc.
 - *
-- * Expected Result:
-- *  chown(2) should return 0 and the ownership set on the file should match
-- *  the numeric values contained in owner and group respectively.
+- *    TEST IDENTIFIER	: chown01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for chown(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) chown(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the chown(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	chown(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
++
 +/*\
 + * [Description]
   *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-+ * Verify that, chown(2) succeeds to change the group of a file specified
-+ * by path when called by non-root user with the following constraints,
-+ * - euid of the process is equal to the owner of the file.
-+ * - the intended gid is either egid, or one of the supplementary gids
-+ *   of the process.
-+ * Also, verify that chown() clears the setuid/setgid bits set on the file.
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
++ * This is a Phase I test for the chown(2) system call. It is intended
++ * to provide a limited exposure of the system call, for now. It
++ * should/will be extended when full functional tests are written for
++ * chown(2).
   *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *	Verify the Functionality of system call
-- *      if successful,
-- *		Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  chown03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS:
 + * [Algorithm]
   *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
 + * - Execute system call
 + * - Check return code, if system call failed (return=-1)
 + * -   Log the errno and Issue a FAIL message
-+ * - Otherwise
-+ * -   Verify the Functionality of system call
-+ * -   if successful
-+ * -     Issue Functionality-Pass message
-+ * -   Otherwise
-+ * -     Issue Functionality-Fail message
-  */
++ * - Otherwise, Issue a PASS message
++ */
 
- #include <stdio.h>
-@@ -80,123 +39,72 @@
- #include <grp.h>
- #include <pwd.h>
-
++#include <stdio.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <signal.h>
 -#include "test.h"
 -#include "safe_macros.h"
 -#include "compat_16.h"
+
+-TCID_DEFINE(chown01);
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
 +#include "compat_tst_16.h"
 
- #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define NEW_PERMS	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
--#define TESTFILE	"testfile"
-+#define FILENAME "chown03_testfile"
+-char fname[255];
+-int uid, gid;
++#define FILENAME "chown01_testfile"
 
--TCID_DEFINE(chown03);
--int TST_TOTAL = 1;		/* Total number of test conditions */
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
--
--void setup();			/* setup function for the test */
--void cleanup();			/* cleanup function for the test */
--
+-static void setup(void);
+-static void cleanup(void);
++int uid, gid;
+
 -int main(int ac, char **av)
 +static void run(void)
  {
--	struct stat stat_buf;	/* stat(2) struct contents */
 -	int lc;
--	uid_t user_id;		/* Owner id of the test file. */
--	gid_t group_id;		/* Group id of the test file. */
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -161,140 +193,50 @@ index 2c7bcfe7d..ec1da2e20 100644
 -
 -		tst_count = 0;
 -
--		UID16_CHECK((user_id = geteuid()), "chown", cleanup)
--		GID16_CHECK((group_id = getegid()), "chown", cleanup)
--
--		TEST(CHOWN(cleanup, TESTFILE, -1, group_id));
+-		TEST(CHOWN(cleanup, fname, uid, gid));
 -
 -		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "chown(%s, ..) failed",
--				 TESTFILE);
--			continue;
+-			tst_resm(TFAIL | TTERRNO, "chown(%s, %d,%d) failed",
+-				 fname, uid, gid);
+-		} else {
+-			tst_resm(TPASS, "chown(%s, %d,%d) returned %ld",
+-				 fname, uid, gid, TEST_RETURN);
 -		}
 -
--		if (stat(TESTFILE, &stat_buf) == -1)
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "stat failed");
--
--		if (stat_buf.st_uid != user_id ||
--		    stat_buf.st_gid != group_id)
--			tst_resm(TFAIL, "%s: Incorrect ownership"
--				 "set to %d %d, Expected %d %d",
--				 TESTFILE, stat_buf.st_uid,
--				 stat_buf.st_gid, user_id, group_id);
--
--		if (stat_buf.st_mode !=
--		    (NEW_PERMS & ~(S_ISUID | S_ISGID)))
--			tst_resm(TFAIL, "%s: incorrect mode permissions"
--				 " %#o, Expected %#o", TESTFILE,
--				 stat_buf.st_mode,
--				 NEW_PERMS & ~(S_ISUID | S_ISGID));
--		else
--			tst_resm(TPASS, "chown(%s, ..) was successful",
--				 TESTFILE);
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	struct stat stat_buf;
-+	uid_t uid;
-+	gid_t gid;
-+
-+	UID16_CHECK((uid = geteuid()), "chown");
-+	GID16_CHECK((gid = getegid()), "chown");
-+
-+	TST_EXP_PASS(CHOWN(FILENAME, -1, gid), "chown(%s,%d,%d)",
++	TST_EXP_PASS(CHOWN(FILENAME, uid, gid), "chown(%s,%d,%d)",
 +		     FILENAME, uid, gid);
-+
-+	SAFE_STAT(FILENAME, &stat_buf);
-+
-+	if (stat_buf.st_uid != uid || stat_buf.st_gid != gid)
-+		tst_res(TFAIL, "%s: Incorrect ownership"
-+			       "set to %d %d, Expected %d %d",
-+			FILENAME, stat_buf.st_uid,
-+			stat_buf.st_gid, uid, gid);
-+
-+	if (stat_buf.st_mode != (NEW_PERMS & ~(S_ISUID | S_ISGID)))
-+		tst_res(TFAIL, "%s: incorrect mode permissions"
-+			       " %#o, Expected %#o", FILENAME,
-+			stat_buf.st_mode,
-+			NEW_PERMS & ~(S_ISUID | S_ISGID));
-+	else
-+		tst_res(TPASS, "chown(%s, ..) was successful",
-+			FILENAME);
  }
 
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- *  Create a test file under temporary directory and close it
-- *  Change the group ownership on testfile.
-- */
--void setup(void)
-+static void setup(void)
+ static void setup(void)
  {
--	int fd;			/* file handler for testfile */
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
 -	tst_tmpdir();
 -
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "getpwnam(\"nobody\") failed");
--	SAFE_SETEGID(NULL, ltpuser->pw_gid);
--	SAFE_SETEUID(NULL, ltpuser->pw_uid);
-+	int fd;
-+	struct passwd *ltpuser;
-
--	/* Create a test file under temporary directory */
--	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %o) failed", TESTFILE,
--			 FILE_MODE);
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	SAFE_SETEGID(ltpuser->pw_gid);
-+	SAFE_SETEUID(ltpuser->pw_uid);
-
--	SAFE_SETEUID(cleanup, 0);
-+	fd = SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, FILE_MODE);
-
--	SAFE_FCHOWN(cleanup, fd, -1, 0);
+-	UID16_CHECK((uid = geteuid()), "chown", cleanup)
+-	GID16_CHECK((gid = getegid()), "chown", cleanup)
 -
--	SAFE_FCHMOD(cleanup, fd, NEW_PERMS);
+-	sprintf(fname, "t_%d", getpid());
 -
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
--
--	SAFE_CLOSE(cleanup, fd);
-+	SAFE_SETEUID(0);
-+	SAFE_FCHOWN(fd, -1, 0);
-+	SAFE_FCHMOD(fd, NEW_PERMS);
-+	SAFE_SETEUID(ltpuser->pw_uid);
-+	SAFE_CLOSE(fd);
+-	SAFE_FILE_PRINTF(cleanup, fname, "davef");
++	UID16_CHECK((uid = geteuid()), "chown");
++	GID16_CHECK((gid = getegid()), "chown");
++	SAFE_FILE_PRINTF(FILENAME, "davef");
  }
 
--void cleanup(void)
-+static void cleanup(void)
- {
--	if (setegid(0) == -1)
--		tst_resm(TWARN | TERRNO, "setegid(0) failed");
--	if (seteuid(0) == -1)
--		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
-+	SAFE_SETEGID(0);
-+	SAFE_SETEUID(0);
-+}
-
+-static void cleanup(void)
+-{
 -	tst_rmdir();
 +static struct tst_test test = {
-+	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.test_all = run,
 +};
 
