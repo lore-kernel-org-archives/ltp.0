@@ -1,47 +1,61 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 16 Apr 2021 10:46:34 +0200
-Subject: [LTP] [PATCH] commands/ld01: relax check for missing files
-Message-ID: <720dd61b04bf13974f9e3d69bfec5dc9a02a9e8d.1618562750.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 16 Apr 2021 11:19:36 +0200
+Subject: [LTP] [PATCH v2 1/2] syscalls/chown: rewrite chown/chown01.c
+ with the new api
+In-Reply-To: <20210415063518.174631-2-xieziyao@huawei.com>
+References: <20210415063518.174631-1-xieziyao@huawei.com>
+ <20210415063518.174631-2-xieziyao@huawei.com>
+Message-ID: <YHlWqG3x4Ea0EGfH@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Older gcc versions used to report:
-  gcc: cannot find x.o: No such file or directory
-newer ones now report:
-  ld: cannot find x.o: No such file or directory
+Hi!
+Pushed with two changes, thanks.
 
-This is a sanity test and exact message is not important. Relax the check.
+> diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
+> index 2e42153d6..c4898c53a 100644
+> --- a/testcases/kernel/syscalls/chown/chown01.c
+> +++ b/testcases/kernel/syscalls/chown/chown01.c
+> @@ -1,179 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/commands/ld/ld01.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Notice that the original code have been under GPL-2.0, we can't change
+it to GPL-2.0-or-later unless we completely delete the test and write a
+new one. So I've changed the SPDX to GPL-2.0.
 
-diff --git a/testcases/commands/ld/ld01.sh b/testcases/commands/ld/ld01.sh
-index a05627f9d9f8..0a598ec3a768 100755
---- a/testcases/commands/ld/ld01.sh
-+++ b/testcases/commands/ld/ld01.sh
-@@ -27,7 +27,7 @@ test1()
- {
- 	EXPECT_FAIL $LD x.o y.o 2\> ld.out
- 
--	if grep -q "$LD:.*[xy]\.o.*No such file or directory" ld.out; then
-+	if grep -q "[xy]\.o.*No such file or directory" ld.out; then
- 		tst_res TPASS "Missing files were reported"
- 	else
- 		tst_res TFAIL "Missing files were not reported"
-@@ -39,7 +39,7 @@ test2()
- {
- 	EXPECT_FAIL $CC x.o y.o 2\> cc.out
- 
--	if grep -q "$CC:.*[xy]\.o.*No such file or directory" cc.out; then
-+	if grep -q "[xy]\.o.*No such file or directory" cc.out; then
- 		tst_res TPASS "Missing files were reported"
- 	else
- 		tst_res TFAIL "Missing files were not reported"
+> +/*\
+> + * [Description]
+>   *
+> - * 	Cleanup:
+> - * 	  Print errno log and/or timing stats if options given
+> + * This is a Phase I test for the chown(2) system call. It is intended
+> + * to provide a limited exposure of the system call, for now. It
+> + * should/will be extended when full functional tests are written for
+> + * chown(2).
+>   *
+> + * [Algorithm]
+>   *
+> - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+> + * - Execute system call
+> + * - Check return code, if system call failed (return=-1)
+> + * -   Log the errno and Issue a FAIL message
+> + * - Otherwise, Issue a PASS message
+> + */
+
+The description was way to verbose and the [Algorithm] was completely
+useless and described the obvious. So I've shortened the description
+before pushing.
+
+
 -- 
-2.18.1
-
+Cyril Hrubis
+chrubis@suse.cz
