@@ -1,122 +1,55 @@
-From: Zenghui Gao <gaozh.jy@fujitsu.com>
-Date: Thu, 15 Apr 2021 10:05:51 -0400
-Subject: [LTP] [PATCH 1/2] syscalls/wait01.c: Convert to new API
-Message-ID: <20210415140552.15762-1-gaozh.jy@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 16 Apr 2021 16:11:33 +0800
+Subject: [LTP] [PATCH v3 5/7] docs: Update CGroups API
+In-Reply-To: <20210412145506.26894-6-rpalethorpe@suse.com>
+References: <20210412145506.26894-1-rpalethorpe@suse.com>
+ <20210412145506.26894-6-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dkbD_-gRQeKKAh+H6vo8gb+s0dWCa1-mJ_1-eg0eLeAA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Take use of macros and clean up.
+> +static void run(void)
+> +{
+> +       char buf[BUFSIZ];
+> +       size_t mem = 0;
+> +
+> +       cg_child = tst_cgroup_mk(cg, "child");
+> +       SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
+> +
+> +       if (SAFE_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
+> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
+> +       if (SAFE_CGROUP_VER(cg, "cpuset") != TST_CGROUP_V1)
+> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+cpuset");
+>
 
-Signed-off-by: Zenghui Gao <gaozh.jy@fujitsu.com>
-Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
----
- testcases/kernel/syscalls/wait/wait01.c | 82 ++++---------------------
- 1 file changed, 13 insertions(+), 69 deletions(-)
+Kind reminder:
 
-diff --git a/testcases/kernel/syscalls/wait/wait01.c b/testcases/kernel/syscalls/wait/wait01.c
-index bd22c1191..3af95cf9b 100644
---- a/testcases/kernel/syscalls/wait/wait01.c
-+++ b/testcases/kernel/syscalls/wait/wait01.c
-@@ -1,81 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  */
--/*
-- * Test Description:
-- *  Verify that,
-- *	The calling process does not have any unwaited-for children,
-- *	ECHILD would return.
-+/*\
-+ * [Description]
-+ *
-+ * The calling process does not have any unwaited-for children,
-+ * ECHILD would return.
-  */
- 
- #include <errno.h>
--#include <sys/types.h>
- #include <sys/wait.h>
-+#include <sys/types.h>
-+#include "tst_test.h"
- 
--#include "test.h"
--
--char *TCID = "wait01";
--int TST_TOTAL = 1;
--static void setup(void);
--static void wait_verify(void);
--static void cleanup(void);
--
--int main(int argc, char **argv)
--{
--	int lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		wait_verify();
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--static void wait_verify(void)
-+static void verify_wait(void)
- {
--	TEST(wait(NULL));
--
--	if (TEST_RETURN != -1) {
--		tst_resm(TFAIL | TTERRNO, "wait failed unexpectedly: %ld",
--			TEST_RETURN);
--		return;
--	}
--
--	if (TEST_ERRNO == ECHILD) {
--		tst_resm(TPASS | TTERRNO, "wait failed as expected");
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--			 "wait failed unexpectedly; expected: %d - %s",
--			 ECHILD, strerror(ECHILD));
--	}
-+	TST_EXP_FAIL(wait(NULL), ECHILD);
- }
- 
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = verify_wait,
-+};
+If you decide to add controllers automatically (as I suggested in patch3/7)
+in
+tst_cgroup_mk(), then these lines should be removed.
+
+
+> +Another example of an edge case is the following.
+> +
+> +[source,c]
+>
+> +-------------------------------------------------------------------------------
+> +       if (tst_cgroup_ver(cg, "memory") == TST_CGROUP_V1)
+> +               SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
+> +       else
+> +               SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
+>
+
+typo PRINT --> PRINTF ^.
+
+Btw, these documented works are quite awesome!
+
 -- 
-2.18.1
-
-
-
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210416/6b4c0b42/attachment.htm>
