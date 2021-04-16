@@ -1,90 +1,114 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Apr 2021 14:57:33 +0800
-Subject: [LTP] [PATCH v3 3/7] Add new CGroups APIs
-In-Reply-To: <20210412145506.26894-4-rpalethorpe@suse.com>
+Date: Fri, 16 Apr 2021 14:59:59 +0800
+Subject: [LTP] [PATCH v3 1/7] API: Add safe openat, printfat,
+ readat and unlinkat
+In-Reply-To: <20210412145506.26894-2-rpalethorpe@suse.com>
 References: <20210412145506.26894-1-rpalethorpe@suse.com>
- <20210412145506.26894-4-rpalethorpe@suse.com>
-Message-ID: <CAEemH2fmw0_HuetkiFTnyQGsa0HiD3vsUH-oD9XTTMsynOzn+g@mail.gmail.com>
+ <20210412145506.26894-2-rpalethorpe@suse.com>
+Message-ID: <CAEemH2dqcf+GRL3P5SZKmOxvdvzFN1O1Y6NXoxG_DJ7GGpQmOg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
- Hi Richard,
+Hi Richard,
 
-Thanks for your work, the whole design looks good.
+On Mon, Apr 12, 2021 at 10:55 PM Richard Palethorpe <rpalethorpe@suse.com>
+wrote:
 
-Minor suggestions as below:
-
-
-> +static const char *ltp_cgroup_dir = "ltp";
-> +static const char *ltp_cgroup_drain_dir = "drain";
-> +static char test_cgroup_dir[PATH_MAX/4];
-> +static const char *ltp_mount_prefix = "/tmp/cgroup_";
-> +static const char *ltp_v2_mount = "unified";
+> Add 'at' variants for a number of system calls and LTP SAFE API
+> functions. This avoids using sprintf everywhere to build paths.
+>
+> Also adds tst_decode_fd which allows us to retrieve the path for an FD
+> for debugging purposes without having to store it ourselves. However
+> the proc symlink may not be available on some systems.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  include/tst_safe_file_ops.h |  39 ++++++++
+>  lib/tst_safe_file_ops.c     | 171 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 210 insertions(+)
+>  create mode 100644 lib/tst_safe_file_ops.c
+>
+> diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+> index 223eddd1f..dff6a793c 100644
+> --- a/include/tst_safe_file_ops.h
+> +++ b/include/tst_safe_file_ops.h
+> @@ -57,4 +57,43 @@
+>  #define TST_MOUNT_OVERLAY() \
+>         (mount_overlay(__FILE__, __LINE__, 0) == 0)
+>
+> +#define SAFE_OPENAT(dirfd, path, oflags, ...)                  \
+> +       safe_openat(__FILE__, __LINE__,                         \
+> +                   (dirfd), (path), (oflags), ## __VA_ARGS__)
 > +
-> +#define first_root                             \
-> +       (roots[0].ver ? roots : roots + 1)
-> +#define for_each_root(r)                       \
-> +       for ((r) = first_root; (r)->ver; (r)++)
-> +#define for_each_v1_root(r)                    \
-> +       for ((r) = roots + 1; (r)->ver; (r)++)
->
-
-If you go through the whole files you will find, there are some places use
-'r' to represent the root but other uses 't', even in functions that
-include ?t?
-to represent a tree.
-
-That probably a minor issue to make people get lost:).
-
-So I'd suggest a unified abbreviation in all:
-
-r  --> root
-t  --> tree
-
-if a function has root and tree, plz avoid using abbreviations, just use
-itself.
-
-
-
-> +#define for_each_css(css)                      \
-> +       for ((css) = items + 1; (css)->name; (css)++)
+> +#define SAFE_FILE_READAT(dirfd, path, buf, nbyte)                      \
+> +       safe_file_readat(__FILE__, __LINE__,                            \
+> +                        (dirfd), (path), (buf), (nbyte))
 > +
-> +/* Controller items may only be in a single tree. So when (ss) > 0
-> + * we only loop once.
-> + */
-> +#define for_each_tree(cg, css, t)                                      \
-> +       for ((t) = (css) ? (cg)->trees_by_css + (css) : (cg)->trees;    \
-> +            *(t);                                                      \
-> +            (t) = (css) ? (cg)->trees + TST_CGROUP_MAX_TREES : (t) + 1)
 > +
-> +static int has_css(uint32_t css_field, enum tst_cgroup_css type)
-> +{
-> +       return !!(css_field & (1 << type));
->  }
->
->
-
-
-> +struct tst_cgroup *tst_cgroup_mk(const struct tst_cgroup *parent,
-> +                                const char *name)
->  {
+> +#define SAFE_FILE_PRINTFAT(dirfd, path, fmt, ...)                      \
+> +       safe_file_printfat(__FILE__, __LINE__,                          \
+> +                          (dirfd), (path), (fmt), __VA_ARGS__)
+> +
+> +#define SAFE_UNLINKAT(dirfd, path, flags)                              \
+> +       safe_unlinkat(__FILE__, __LINE__, (dirfd), (path), (flags))
+> +
 >
 
-Since we have already got the parent tst_cgroup, it means we know which
-controllers/type has been mounted.
+The above macros are suggested to leave in this "tst_safe_file_ops.h" file.
 
-Can we add the required controllers (e.g. "+memory")  to subtree_control
-automatically at here, rather than doing it manually before creating
-children?
-(then we can remove the line#27~30 in tst_cgroup02.c)
+But, the function prototypes below should be moved to "safe_file_ops_fn.h",
+because that purposely to separate macros and function in different places.
+(I remember I had commented this in V2, probably you were missing it:)
 
+
+
+> +char *tst_decode_fd(int fd);
+> +
+> +int safe_openat(const char *file, const int lineno,
+> +               int dirfd, const char *path, int oflags, ...);
+> +
+> +ssize_t safe_file_readat(const char *file, const int lineno,
+> +                        int dirfd, const char *path, char *buf, size_t
+> nbyte);
+> +
+> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt,
+> va_list va);
+> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
+> +                       __attribute__ ((format (printf, 3, 4)));
+> +
+> +int safe_file_vprintfat(const char *file, const int lineno,
+> +                       int dirfd, const char *path,
+> +                       const char *fmt, va_list va);
+> +
+> +int safe_file_printfat(const char *file, const int lineno,
+> +                      int dirfd, const char *path, const char *fmt, ...)
+> +                       __attribute__ ((format (printf, 5, 6)));
+> +
+> +int safe_unlinkat(const char *file, const int lineno,
+> +                 int dirfd, const char *path, int flags);
+
++
+>  #endif /* TST_SAFE_FILE_OPS */
+>
+
+
+
+> diff --git a/lib/tst_safe_file_ops.c b/lib/tst_safe_file_ops.c
+> new file mode 100644
+> index 000000000..af4157476
+> --- /dev/null
+> +++ b/lib/tst_safe_file_ops.c
+>
+
+And, we'd better achieve all the functions in "lib/safe_file_ops.c"
+but not create a separate new C file.
 
 -- 
 Regards,
 Li Wang
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210416/bbe7cbfd/attachment.htm>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210416/8b6ad04b/attachment.htm>
