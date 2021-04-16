@@ -1,55 +1,47 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Apr 2021 16:11:33 +0800
-Subject: [LTP] [PATCH v3 5/7] docs: Update CGroups API
-In-Reply-To: <20210412145506.26894-6-rpalethorpe@suse.com>
-References: <20210412145506.26894-1-rpalethorpe@suse.com>
- <20210412145506.26894-6-rpalethorpe@suse.com>
-Message-ID: <CAEemH2dkbD_-gRQeKKAh+H6vo8gb+s0dWCa1-mJ_1-eg0eLeAA@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 16 Apr 2021 10:46:34 +0200
+Subject: [LTP] [PATCH] commands/ld01: relax check for missing files
+Message-ID: <720dd61b04bf13974f9e3d69bfec5dc9a02a9e8d.1618562750.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> +static void run(void)
-> +{
-> +       char buf[BUFSIZ];
-> +       size_t mem = 0;
-> +
-> +       cg_child = tst_cgroup_mk(cg, "child");
-> +       SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-> +
-> +       if (SAFE_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
-> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
-> +       if (SAFE_CGROUP_VER(cg, "cpuset") != TST_CGROUP_V1)
-> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+cpuset");
->
+Older gcc versions used to report:
+  gcc: cannot find x.o: No such file or directory
+newer ones now report:
+  ld: cannot find x.o: No such file or directory
 
-Kind reminder:
+This is a sanity test and exact message is not important. Relax the check.
 
-If you decide to add controllers automatically (as I suggested in patch3/7)
-in
-tst_cgroup_mk(), then these lines should be removed.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/commands/ld/ld01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-> +Another example of an edge case is the following.
-> +
-> +[source,c]
->
-> +-------------------------------------------------------------------------------
-> +       if (tst_cgroup_ver(cg, "memory") == TST_CGROUP_V1)
-> +               SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
-> +       else
-> +               SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
->
-
-typo PRINT --> PRINTF ^.
-
-Btw, these documented works are quite awesome!
-
+diff --git a/testcases/commands/ld/ld01.sh b/testcases/commands/ld/ld01.sh
+index a05627f9d9f8..0a598ec3a768 100755
+--- a/testcases/commands/ld/ld01.sh
++++ b/testcases/commands/ld/ld01.sh
+@@ -27,7 +27,7 @@ test1()
+ {
+ 	EXPECT_FAIL $LD x.o y.o 2\> ld.out
+ 
+-	if grep -q "$LD:.*[xy]\.o.*No such file or directory" ld.out; then
++	if grep -q "[xy]\.o.*No such file or directory" ld.out; then
+ 		tst_res TPASS "Missing files were reported"
+ 	else
+ 		tst_res TFAIL "Missing files were not reported"
+@@ -39,7 +39,7 @@ test2()
+ {
+ 	EXPECT_FAIL $CC x.o y.o 2\> cc.out
+ 
+-	if grep -q "$CC:.*[xy]\.o.*No such file or directory" cc.out; then
++	if grep -q "[xy]\.o.*No such file or directory" cc.out; then
+ 		tst_res TPASS "Missing files were reported"
+ 	else
+ 		tst_res TFAIL "Missing files were not reported"
 -- 
-Regards,
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210416/6b4c0b42/attachment.htm>
+2.18.1
+
