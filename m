@@ -1,40 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 16 Apr 2021 19:22:25 +0200
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Use 'command -v' instead of 'which'
-Message-ID: <20210416172225.14524-1-pvorel@suse.cz>
+Date: Fri, 16 Apr 2021 19:38:52 +0200
+Subject: [LTP] [PATCH v2] pec: Fix multiple event test
+In-Reply-To: <20210415090542.960158-1-lkml@jv-coder.de>
+References: <20210415090542.960158-1-lkml@jv-coder.de>
+Message-ID: <YHnLrGS1lXy5Awvk@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-to avoid unnecessary dependency.
+Hi Joerg,
 
-'which' is a binary file, which might not be installed (common on
-containers). 'command' is a shell builtin, available everywhere, we
-already use non-standard -v option commonly supported (bash, dash,
-busybox ash).
+...
+> +# Find a free file handle
+> +free_fd()
+> +{
+> +	local fd
+> +
+> +	for fd in $(seq 200); do
+> +		# Sapwn a new sh, because redirecting to a non existing file handle
+> +		# will trigger a syntax error.
+> +		/bin/sh -c ": 2>/dev/null >&$fd || : 2>/dev/null <&$fd" 2>/dev/null
+Probably better to use sh -c "..."
 
-Fixes: 7783ac3a0 ("lib/tst_test.sh: Add new shell library")
+> +		if [ $? -eq 2 ]; then
+> +			echo $fd
+> +			return
+> +		fi
+> +	done
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+maybe I do something wrong, but this version fails for me
+(and I'm still testing it only on bash):
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 7f98e06bf..95ece42f6 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -685,7 +685,7 @@ else
- fi
- 
- if [ -z "$TST_NO_DEFAULT_RUN" ]; then
--	if TST_TEST_PATH=$(which $0) 2>/dev/null; then
-+	if TST_TEST_PATH=$(command -v $0) 2>/dev/null; then
- 		if ! grep -q tst_run "$TST_TEST_PATH"; then
- 			tst_brk TBROK "Test $0 must call tst_run!"
- 		fi
--- 
-2.31.1
+cn_pec 1 TINFO: timeout per run is 0h 5m 0s
+cn_pec 1 TINFO: Test process events connector
+cn_pec 1 TINFO: Testing fork event (nevents=10)
+cn_pec 1 TBROK: No free filehandle found
 
+I guess there is something wrong free_fd().
+
+Kind regards,
+Petr
