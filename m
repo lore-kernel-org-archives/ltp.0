@@ -1,65 +1,268 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Mon, 19 Apr 2021 01:42:51 +0000
-Subject: [LTP] [PATCH v4 1/3] tst_safe_sysv_ipc.c: Add SAFE_SEMOP macro
-In-Reply-To: <1618215614-24840-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <d1c91207-35eb-402f-566c-1289ba2c786a@oracle.com>
- <1618215614-24840-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <607CEE48.80408@fujitsu.com>
+From: xieziyao <xieziyao@huawei.com>
+Date: Mon, 19 Apr 2021 01:45:43 +0000
+Subject: [LTP] [PATCH v2 2/2] syscalls/chown: rewrite chown/chown03.c
+ with the new api
+In-Reply-To: <YHlZGRf5KnpEg8F/@yuki>
+References: <20210415063518.174631-1-xieziyao@huawei.com>
+ <20210415063518.174631-3-xieziyao@huawei.com> <YHlZGRf5KnpEg8F/@yuki>
+Message-ID: <8b4fd5e4de0e4d3eaf305b0f0db79626@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey
+Hi,
 
-Thanks for your review. I have merged this patchset.
+Thanks so much for your review!
 
-Best Regards
-Yang Xu
-> Reviewed-by: Alexey Kodanev<alexey.kodanev@oracle.com>
-> Signed-off-by: Yang Xu<xuyang2018.jy@fujitsu.com>
-> ---
->   include/tst_safe_sysv_ipc.h |  4 ++++
->   lib/tst_safe_sysv_ipc.c     | 18 ++++++++++++++++++
->   2 files changed, 22 insertions(+)
+I just re-checked the latest code and submit the v3 version based on your suggestions:
+1. Remove some unnecessary comments and incorrect output prints;
+2. Moved some prerequisite codes from the setup() function to the run() function and add code logic for checking whether the setting is successful.
+
+Please see: https://patchwork.ozlabs.org/project/ltp/patch/20210419013427.247615-1-xieziyao@huawei.com/
+
+Thanks very much!
+
+Best Regards,
+Ziyao
+
+-----Original Message-----
+From: Cyril Hrubis [mailto:chrubis@suse.cz] 
+Sent: Friday, April 16, 2021 5:30 PM
+To: xieziyao <xieziyao@huawei.com>
+Cc: ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/chown: rewrite chown/chown03.c with the new api
+
+Hi!
+> + * [Algorithm]
+>   *
+> + * - Execute system call
+> + * - Check return code, if system call failed (return=-1)
+> + * -   Log the errno and Issue a FAIL message
+> + * - Otherwise
+> + * -   Verify the Functionality of system call
+> + * -   if successful
+> + * -     Issue Functionality-Pass message
+> + * -   Otherwise
+> + * -     Issue Functionality-Fail message
+>   */
+
+Here as well, the [Algorithm] part is completely useless.
+
+>  #include <stdio.h>
+> @@ -80,123 +39,72 @@
+>  #include <grp.h>
+>  #include <pwd.h>
 > 
-> diff --git a/include/tst_safe_sysv_ipc.h b/include/tst_safe_sysv_ipc.h
-> index bb6532662..7804ce192 100644
-> --- a/include/tst_safe_sysv_ipc.h
-> +++ b/include/tst_safe_sysv_ipc.h
-> @@ -65,4 +65,8 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
->   	(semid) = ((cmd) == IPC_RMID ? -1 : (semid)); \
->   	tst_ret_; })
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "compat_16.h"
+> +#include "tst_test.h"
+> +#include "compat_tst_16.h"
 > 
-> +int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
-> +		size_t nsops);
-> +#define SAFE_SEMOP(semid, sops, nsops) \
-> +	safe_semop(__FILE__, __LINE__, (semid), (sops), (nsops))
->   #endif /* TST_SAFE_SYSV_IPC_H__ */
-> diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-> index e72985d61..012f5ba38 100644
-> --- a/lib/tst_safe_sysv_ipc.c
-> +++ b/lib/tst_safe_sysv_ipc.c
-> @@ -227,3 +227,21 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
+>  #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+>  #define NEW_PERMS	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
+> -#define TESTFILE	"testfile"
+> +#define FILENAME "chown03_testfile"
 > 
->   	return rval;
->   }
+> -TCID_DEFINE(chown03);
+> -int TST_TOTAL = 1;		/* Total number of test conditions */
+> -char nobody_uid[] = "nobody";
+> -struct passwd *ltpuser;
+> -
+> -void setup();			/* setup function for the test */
+> -void cleanup();			/* cleanup function for the test */
+> -
+> -int main(int ac, char **av)
+> +static void run(void)
+>  {
+> -	struct stat stat_buf;	/* stat(2) struct contents */
+> -	int lc;
+> -	uid_t user_id;		/* Owner id of the test file. */
+> -	gid_t group_id;		/* Group id of the test file. */
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		UID16_CHECK((user_id = geteuid()), "chown", cleanup)
+> -		GID16_CHECK((group_id = getegid()), "chown", cleanup)
+> -
+> -		TEST(CHOWN(cleanup, TESTFILE, -1, group_id));
+> -
+> -		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL | TTERRNO, "chown(%s, ..) failed",
+> -				 TESTFILE);
+> -			continue;
+> -		}
+> -
+> -		if (stat(TESTFILE, &stat_buf) == -1)
+> -			tst_brkm(TFAIL | TERRNO, cleanup,
+> -				 "stat failed");
+> -
+> -		if (stat_buf.st_uid != user_id ||
+> -		    stat_buf.st_gid != group_id)
+> -			tst_resm(TFAIL, "%s: Incorrect ownership"
+> -				 "set to %d %d, Expected %d %d",
+> -				 TESTFILE, stat_buf.st_uid,
+> -				 stat_buf.st_gid, user_id, group_id);
+> -
+> -		if (stat_buf.st_mode !=
+> -		    (NEW_PERMS & ~(S_ISUID | S_ISGID)))
+> -			tst_resm(TFAIL, "%s: incorrect mode permissions"
+> -				 " %#o, Expected %#o", TESTFILE,
+> -				 stat_buf.st_mode,
+> -				 NEW_PERMS & ~(S_ISUID | S_ISGID));
+> -		else
+> -			tst_resm(TPASS, "chown(%s, ..) was successful",
+> -				 TESTFILE);
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	struct stat stat_buf;
+> +	uid_t uid;
+> +	gid_t gid;
 > +
-> +int safe_semop(const char *file, const int lineno, int semid, struct sembuf *sops,
-> +		size_t nsops)
-> +{
-> +	int rval;
+> +	UID16_CHECK((uid = geteuid()), "chown");
+> +	GID16_CHECK((gid = getegid()), "chown");
 > +
-> +	rval = semop(semid, sops, nsops);
-> +	if (rval == -1) {
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
-> +			"semop(%d, %p, %zu) failed", semid, sops, nsops);
-> +	} else if (rval<  0) {
-> +		tst_brk_(file, lineno, TBROK | TERRNO,
-> +			"Invalid semop(%d, %p, %zu) return value %d",
-> +			semid, sops, nsops, rval);
-> +	}
+> +	TST_EXP_PASS(CHOWN(FILENAME, -1, gid), "chown(%s,%d,%d)",
+> +		     FILENAME, uid, gid);
+                                ^
+				This should be -1
+
+> +	SAFE_STAT(FILENAME, &stat_buf);
 > +
-> +	return rval;
+> +	if (stat_buf.st_uid != uid || stat_buf.st_gid != gid)
+> +		tst_res(TFAIL, "%s: Incorrect ownership"
+> +			       "set to %d %d, Expected %d %d",
+> +			FILENAME, stat_buf.st_uid,
+> +			stat_buf.st_gid, uid, gid);
+> +
+> +	if (stat_buf.st_mode != (NEW_PERMS & ~(S_ISUID | S_ISGID)))
+> +		tst_res(TFAIL, "%s: incorrect mode permissions"
+> +			       " %#o, Expected %#o", FILENAME,
+> +			stat_buf.st_mode,
+> +			NEW_PERMS & ~(S_ISUID | S_ISGID));
+> +	else
+> +		tst_res(TPASS, "chown(%s, ..) was successful",
+                                               ^
+					       No need to add was
+					       succcessfull here the
+					       library will print PASSED
+					       since the tst_res() has
+					       the TPASS parameter.
+> +			FILENAME);
+>  }
+> 
+> -/*
+> - * void
+> - * setup() - performs all ONE TIME setup for this test.
+> - *  Create a temporary directory and change directory to it.
+> - *  Create a test file under temporary directory and close it
+> - *  Change the group ownership on testfile.
+> - */
+> -void setup(void)
+> +static void setup(void)
+>  {
+> -	int fd;			/* file handler for testfile */
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_require_root();
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -
+> -	tst_tmpdir();
+> -
+> -	ltpuser = getpwnam(nobody_uid);
+> -	if (ltpuser == NULL)
+> -		tst_brkm(TBROK | TERRNO, NULL, "getpwnam(\"nobody\") failed");
+> -	SAFE_SETEGID(NULL, ltpuser->pw_gid);
+> -	SAFE_SETEUID(NULL, ltpuser->pw_uid);
+> +	int fd;
+> +	struct passwd *ltpuser;
+> 
+> -	/* Create a test file under temporary directory */
+> -	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1)
+> -		tst_brkm(TBROK | TERRNO, cleanup,
+> -			 "open(%s, O_RDWR|O_CREAT, %o) failed", TESTFILE,
+> -			 FILE_MODE);
+> +	ltpuser = SAFE_GETPWNAM("nobody");
+> +	SAFE_SETEGID(ltpuser->pw_gid);
+> +	SAFE_SETEUID(ltpuser->pw_uid);
+> 
+> -	SAFE_SETEUID(cleanup, 0);
+> +	fd = SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, FILE_MODE);
+> 
+> -	SAFE_FCHOWN(cleanup, fd, -1, 0);
+> -
+> -	SAFE_FCHMOD(cleanup, fd, NEW_PERMS);
+> -
+> -	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+> -
+> -	SAFE_CLOSE(cleanup, fd);
+> +	SAFE_SETEUID(0);
+> +	SAFE_FCHOWN(fd, -1, 0);
+> +	SAFE_FCHMOD(fd, NEW_PERMS);
+> +	SAFE_SETEUID(ltpuser->pw_uid);
+> +	SAFE_CLOSE(fd);
+
+There are a couple of problems here:
+
+- we set the gid and suid/sgid only once (the test does not check
+  this assertion in subsequent runs when executed with -i 10)
+
+- we do not check that they were set correctly either
+
+So I think that it would be better if we moved this part to the run() function.
+
+we should probably do something as:
+
+void run(void)
+{
+	SAFE_SETUID(0);
+	SAFE_CHOWN(FILENAME, -1, 0);
+	SAFE_CHMOD(FILENAME, NEW_PERMS);
+	SAFE_SETUID(ltpuser->pw_uid);
+
+	SAFE_STAT(FILENAME, &stbuf);
+
+	//check that gid and suid/sgid are set correctly
+
+	GID16_CHECK((gid = getegid()), "chown");
+
+	TST_EXP_PASS(CHOWN(FILENAME, -1, gid), "chown(%s,%d,%d)",
++		     FILENAME, -1, gid);
+
+>  }
+> 
+> -void cleanup(void)
+> +static void cleanup(void)
+>  {
+> -	if (setegid(0) == -1)
+> -		tst_resm(TWARN | TERRNO, "setegid(0) failed");
+> -	if (seteuid(0) == -1)
+> -		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
+> +	SAFE_SETEGID(0);
+> +	SAFE_SETEUID(0);
 > +}
+> 
+> -	tst_rmdir();
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +};
+
+--
+Cyril Hrubis
+chrubis@suse.cz
