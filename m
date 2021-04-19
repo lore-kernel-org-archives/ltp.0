@@ -1,38 +1,55 @@
-From: zhanglianjie <zhanglianjie@uniontech.com>
-Date: Mon, 19 Apr 2021 14:44:21 +0800
-Subject: [LTP] [PATCH] Modify the test logic of mincore.
-In-Reply-To: <YHgd/NDLJzz68uDl@yuki>
-References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
- <YHRcJOUer87SUn6v@yuki> <cded02a5-6668-8524-d588-b965ed1a7086@uniontech.com>
- <YHgd/NDLJzz68uDl@yuki>
-Message-ID: <e3eabee4-6616-84dc-cc8d-bc4f23228637@uniontech.com>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Mon, 19 Apr 2021 09:34:34 +0200
+Subject: [LTP] [PATCH v2] pec: Fix multiple event test
+In-Reply-To: <YHnLrGS1lXy5Awvk@pevik>
+References: <20210415090542.960158-1-lkml@jv-coder.de> <YHnLrGS1lXy5Awvk@pevik>
+Message-ID: <1672a8d4-e278-801b-a2f6-babdc473f42e@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->>> This does not make any sense, the kernel commit explicitly states that
->>> all mapped pages are reported as in core. We do call mlock() in the
->>> child, which will fault all the pages and lock them in memory. So the
->>> test should work both before and after the fix as well.
->>>
->>> The kernel commit in question weakened mincore() in a sense that it's
->>> more likely to report pages in core than it previously was. Now all that
->>> is needed is to fault the pages by reading some bytes from them to make
->>> sure they are reported as in core.
->>>
->>> If the test fails for you, something is probably broken at your end.
->>>
->>
->> Using the CVE patch on mips, the test will fail because the child
->> process mlocks all pages, but the parent process cannot obtain these
->> pages through mincore and is locked.
-> 
-> Sounds like a kernel bug.
-> 
-CVE list has provided repair patches, The patch I submitted this time is 
-to modify the logic of the test results, do you plan to incorporate it?
+Hi,
 
+On 4/16/2021 7:38 PM, Petr Vorel wrote:
+> Hi Joerg,
+>
+> ...
+>> +# Find a free file handle
+>> +free_fd()
+>> +{
+>> +	local fd
+>> +
+>> +	for fd in $(seq 200); do
+>> +		# Sapwn a new sh, because redirecting to a non existing file handle
+>> +		# will trigger a syntax error.
+>> +		/bin/sh -c ": 2>/dev/null >&$fd || : 2>/dev/null <&$fd" 2>/dev/null
+> Probably better to use sh -c "..."
+I used? /bin/sh, because that is the same interpreter specified in the 
+shebang. Just using sh could theoretically fail or spawn a different shell.
+Maybe $SHELL would be better, but I don't know how widely this is 
+supported...
 
+>
+>> +		if [ $? -eq 2 ]; then
+>> +			echo $fd
+>> +			return
+>> +		fi
+>> +	done
+> maybe I do something wrong, but this version fails for me
+> (and I'm still testing it only on bash):
+>
+> cn_pec 1 TINFO: timeout per run is 0h 5m 0s
+> cn_pec 1 TINFO: Test process events connector
+> cn_pec 1 TINFO: Testing fork event (nevents=10)
+> cn_pec 1 TBROK: No free filehandle found
+>
+> I guess there is something wrong free_fd().
+
+Damn shells... I just realized /bin/sh on my system was dash's sh 
+emulation and it does not emulate sh the same way bash does...
+The return value in bash is 1, not two... Can you please check the patch 
+with [ $? -ne 0 ]? That should work for all shells.
+
+J?rg
