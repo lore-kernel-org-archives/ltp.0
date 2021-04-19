@@ -1,89 +1,52 @@
-From: ice_yangxiao@163.com <ice_yangxiao@163.com>
-Date: Mon, 19 Apr 2021 12:41:12 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/{wait401.c,
- waitpid01.c}: Take use of TST_EXP_PID_SILENT()
-In-Reply-To: <20210419044112.31443-1-ice_yangxiao@163.com>
-References: <20210419044112.31443-1-ice_yangxiao@163.com>
-Message-ID: <20210419044112.31443-2-ice_yangxiao@163.com>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Mon, 19 Apr 2021 12:43:31 +0800
+Subject: [LTP] [PATCH 1/2] include/tst_test_macros.h: Add TST_EXP_PID
+ and TST_EXP_PID_SILENT macros
+In-Reply-To: <20210419023845.19140-1-ice_yangxiao@163.com>
+References: <20210419023845.19140-1-ice_yangxiao@163.com>
+Message-ID: <41bf272d-9821-76c8-abb5-e2d17e122c36@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+Hi
 
-Also correct the name(waitpid=>wait4) in the output of wait401.
+Please ignore the patchset and see the latest v2.
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
----
+Thanks,
 
-V1->V2:
-Return immediately if TST_PASS == 0
+Xiao Yang
 
- testcases/kernel/syscalls/wait4/wait401.c     | 10 ++++------
- testcases/kernel/syscalls/waitpid/waitpid01.c | 14 +++++++-------
- 2 files changed, 11 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/wait4/wait401.c b/testcases/kernel/syscalls/wait4/wait401.c
-index 07fb864f3..ab99891be 100644
---- a/testcases/kernel/syscalls/wait4/wait401.c
-+++ b/testcases/kernel/syscalls/wait4/wait401.c
-@@ -29,17 +29,15 @@ static void run(void)
- 		exit(0);
- 	}
- 
--	TEST(wait4(pid, &status, 0, &rusage));
--	if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "wait4() failed");
-+	TST_EXP_PID_SILENT(wait4(pid, &status, 0, &rusage), "wait4()");
-+	if (!TST_PASS)
- 		return;
--	}
- 
- 	if (TST_RET != pid) {
--		tst_res(TFAIL, "waitpid() returned wrong pid %li, expected %i",
-+		tst_res(TFAIL, "wait4() returned wrong pid %li, expected %i",
- 			TST_RET, pid);
- 	} else {
--		tst_res(TPASS, "waitpid() returned correct pid %i", pid);
-+		tst_res(TPASS, "wait4() returned correct pid %i", pid);
- 	}
- 
- 	if (!WIFEXITED(status)) {
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid01.c b/testcases/kernel/syscalls/waitpid/waitpid01.c
-index 6e03acef6..5a39a1107 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid01.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid01.c
-@@ -18,7 +18,7 @@
- 
- static void run(void)
- {
--	pid_t pid, rpid;
-+	pid_t pid;
- 	int status;
- 
- 	pid = SAFE_FORK();
-@@ -27,13 +27,13 @@ static void run(void)
- 		exit(0);
- 	}
- 
--	rpid = waitpid(pid, &status, 0);
--	if (rpid < 0)
--		tst_brk(TBROK | TERRNO, "waitpid() failed");
-+	TST_EXP_PID_SILENT(waitpid(pid, &status, 0));
-+	if (!TST_PASS)
-+		return;
- 
--	if (rpid != pid) {
--		tst_res(TFAIL, "waitpid() returned wrong pid %i, expected %i",
--		        rpid, pid);
-+	if (TST_RET != pid) {
-+		tst_res(TFAIL, "waitpid() returned wrong pid %li, expected %i",
-+			TST_RET, pid);
- 	} else {
- 		tst_res(TPASS, "waitpid() returned correct pid %i", pid);
- 	}
--- 
-2.26.2
+On 4/19/21 10:38 AM, ice_yangxiao@163.com wrote:
+> From: Xiao Yang <yangx.jy@fujitsu.com>
+>
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
+>   include/tst_test_macros.h | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+>
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 189891507..101ac2c87 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -77,6 +77,17 @@ extern void *TST_RET_PTR;
+>   				#SCALL, ##__VA_ARGS__);                        \
+>   	} while (0)
+>   
+> +#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_FD_SILENT(SCALL, __VA_ARGS__)
+> +
+> +#define TST_EXP_PID(SCALL, ...)                                                \
+> +	do {                                                                   \
+> +		TST_EXP_PID_SILENT(SCALL, __VA_ARGS__);                        \
+> +									       \
+> +		if (TST_PASS)                                                  \
+> +			TST_MSGP_(TPASS, " returned pid %ld", TST_RET,         \
+> +				#SCALL, ##__VA_ARGS__);                        \
+> +	} while (0)
+> +
+>   #define TST_EXP_PASS_SILENT(SCALL, ...)                                        \
+>   	do {                                                                   \
+>   		TEST(SCALL);                                                   \
 
