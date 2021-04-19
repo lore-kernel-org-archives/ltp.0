@@ -1,52 +1,38 @@
-From: Xiao Yang <ice_yangxiao@163.com>
-Date: Mon, 19 Apr 2021 12:43:31 +0800
-Subject: [LTP] [PATCH 1/2] include/tst_test_macros.h: Add TST_EXP_PID
- and TST_EXP_PID_SILENT macros
-In-Reply-To: <20210419023845.19140-1-ice_yangxiao@163.com>
-References: <20210419023845.19140-1-ice_yangxiao@163.com>
-Message-ID: <41bf272d-9821-76c8-abb5-e2d17e122c36@163.com>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Mon, 19 Apr 2021 14:44:21 +0800
+Subject: [LTP] [PATCH] Modify the test logic of mincore.
+In-Reply-To: <YHgd/NDLJzz68uDl@yuki>
+References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
+ <YHRcJOUer87SUn6v@yuki> <cded02a5-6668-8524-d588-b965ed1a7086@uniontech.com>
+ <YHgd/NDLJzz68uDl@yuki>
+Message-ID: <e3eabee4-6616-84dc-cc8d-bc4f23228637@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+Hi!
+>>> This does not make any sense, the kernel commit explicitly states that
+>>> all mapped pages are reported as in core. We do call mlock() in the
+>>> child, which will fault all the pages and lock them in memory. So the
+>>> test should work both before and after the fix as well.
+>>>
+>>> The kernel commit in question weakened mincore() in a sense that it's
+>>> more likely to report pages in core than it previously was. Now all that
+>>> is needed is to fault the pages by reading some bytes from them to make
+>>> sure they are reported as in core.
+>>>
+>>> If the test fails for you, something is probably broken at your end.
+>>>
+>>
+>> Using the CVE patch on mips, the test will fail because the child
+>> process mlocks all pages, but the parent process cannot obtain these
+>> pages through mincore and is locked.
+> 
+> Sounds like a kernel bug.
+> 
+CVE list has provided repair patches, The patch I submitted this time is 
+to modify the logic of the test results, do you plan to incorporate it?
 
-Please ignore the patchset and see the latest v2.
-
-Thanks,
-
-Xiao Yang
-
-On 4/19/21 10:38 AM, ice_yangxiao@163.com wrote:
-> From: Xiao Yang <yangx.jy@fujitsu.com>
->
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-> ---
->   include/tst_test_macros.h | 11 +++++++++++
->   1 file changed, 11 insertions(+)
->
-> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-> index 189891507..101ac2c87 100644
-> --- a/include/tst_test_macros.h
-> +++ b/include/tst_test_macros.h
-> @@ -77,6 +77,17 @@ extern void *TST_RET_PTR;
->   				#SCALL, ##__VA_ARGS__);                        \
->   	} while (0)
->   
-> +#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_FD_SILENT(SCALL, __VA_ARGS__)
-> +
-> +#define TST_EXP_PID(SCALL, ...)                                                \
-> +	do {                                                                   \
-> +		TST_EXP_PID_SILENT(SCALL, __VA_ARGS__);                        \
-> +									       \
-> +		if (TST_PASS)                                                  \
-> +			TST_MSGP_(TPASS, " returned pid %ld", TST_RET,         \
-> +				#SCALL, ##__VA_ARGS__);                        \
-> +	} while (0)
-> +
->   #define TST_EXP_PASS_SILENT(SCALL, ...)                                        \
->   	do {                                                                   \
->   		TEST(SCALL);                                                   \
 
