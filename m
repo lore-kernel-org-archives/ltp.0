@@ -1,240 +1,161 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 20 Apr 2021 10:44:09 +0200
-Subject: [LTP] [PATCH v5 1/2] splice02: Generate input in C
-Message-ID: <20210420084410.16179-1-pvorel@suse.cz>
+From: Zenghui Gao <gaozh.jy@fujitsu.com>
+Date: Mon, 19 Apr 2021 05:44:31 -0400
+Subject: [LTP] [PATCH v2] syscalls/wait02.c: Convert to new API
+Message-ID: <20210419094431.2418-1-gaozh.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-instead relying on shell piping data into it.
+Take use of macros and clean up.
 
-Check resulted file size and content.
-Also add metadata docs.
-
-Problem found on SLES JeOS (https://progress.opensuse.org/issues/77260).
-
-Reported-by: Martin Loviska <mloviska@suse.com>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-[ chrubis: while loop simplification ]
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Zenghui Gao <gaozh.jy@fujitsu.com>
+Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
 ---
-Changes v4->v5:
-* fix: use offset in SAFE_MMAP() to fix file checking (reported by Cyril)
-Offset is required to be page size aligned.
-* fix: error message wording (reported by Cyril)
-* Change content to write: remove randomizing the letter and instead
-write alphabet sequence 512*'a', 512*'b' ... This way error during check
-due wrong offset is detected.
+ testcases/kernel/syscalls/wait/wait02.c | 112 +++++++-----------------
+ 1 file changed, 30 insertions(+), 82 deletions(-)
 
- runtest/smoketest                           |   2 +-
- runtest/syscalls                            |   2 +-
- testcases/kernel/syscalls/splice/splice02.c | 143 ++++++++++++++++++--
- 3 files changed, 134 insertions(+), 13 deletions(-)
-
-diff --git a/runtest/smoketest b/runtest/smoketest
-index 0c24fc1fa..2224d8f74 100644
---- a/runtest/smoketest
-+++ b/runtest/smoketest
-@@ -11,5 +11,5 @@ symlink01 symlink01
- stat04 symlink01 -T stat04
- utime01A symlink01 -T utime01
- rename01A symlink01 -T rename01
--splice02 seq 1 20 | splice02
-+splice02 splice02 -s 20
- route4-change-dst route-change-dst.sh
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2d1e7b648..b89c545f0 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1451,7 +1451,7 @@ socketpair02 socketpair02
- sockioctl01 sockioctl01
- 
- splice01 splice01
--splice02 seq 1 20000 | splice02
-+splice02 splice02
- splice03 splice03
- splice04 splice04
- splice05 splice05
-diff --git a/testcases/kernel/syscalls/splice/splice02.c b/testcases/kernel/syscalls/splice/splice02.c
-index b579667b9..cd7dfa836 100644
---- a/testcases/kernel/syscalls/splice/splice02.c
-+++ b/testcases/kernel/syscalls/splice/splice02.c
-@@ -1,40 +1,161 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/wait/wait02.c b/testcases/kernel/syscalls/wait/wait02.c
+index 5695c071c..0217099ca 100644
+--- a/testcases/kernel/syscalls/wait/wait02.c
++++ b/testcases/kernel/syscalls/wait/wait02.c
+@@ -1,103 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
-  * Copyright (c) Jens Axboe <axboe@kernel.dk>, 2009
-+ * Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+  *    AUTHOR		: William Roske
+  *    CO-PILOT		: Dave Fenner
 + */
-+
 +/*\
-+ * [DESCRIPTION]
-+ * Original reproducer for kernel fix
-+ * bf40d3435caf NFS: add support for splice writes
-+ * from v2.6.31-rc1.
-+ *
-  * http://lkml.org/lkml/2009/4/2/55
-+ *
-+ * [ALGORITHM]
-+ * - create pipe
-+ * - fork(), child replace stdin with pipe
-+ * - parent write to pipe
-+ * - child slice from pipe
-+ * - check resulted file size and content
++ * [Description]
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * For a terminated child, test whether wait(2) can get its pid
++ * and exit status correctly.
   */
  
- #define _GNU_SOURCE
+ #include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-#include "test.h"
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-char *TCID = "wait02";
+-int TST_TOTAL = 1;
+-
+-static void wait_verify(void);
++#include <stdlib.h>
++#include "tst_test.h"
  
-+#include <fcntl.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <sys/stat.h>
- #include <unistd.h>
--#include <fcntl.h>
- 
- #include "tst_test.h"
-+#include "lapi/mmap.h"
- #include "lapi/splice.h"
- 
--#define SPLICE_SIZE (64*1024)
-+#define BUFSIZE 512
-+#define SPLICE_SIZE 1024
-+
-+#define TEST_FILENAME "splice02-temp"
- 
--static void splice_test(void)
-+static char *sarg;
-+static int file_size;
-+static int pipe_fd[2];
-+
-+static void setup(void)
-+{
-+	if (tst_parse_int(sarg, &file_size, 1, INT_MAX))
-+		tst_brk(TBROK, "invalid number of writes '%s', use <1,%d>", sarg, INT_MAX);
-+}
-+
-+static inline int get_letter(int n)
-+{
-+	return n % ('z' - 'a' + 1) + 'a';
-+}
-+
-+static void do_child(void)
+-int main(int ac, char **av)
++static void verify_wait(void)
  {
- 	int fd;
-+	size_t size, psize, to_check, i, fail = 0;
-+	struct stat st;
-+	char *map;
-+
-+	SAFE_CLOSE(pipe_fd[1]);
-+	SAFE_DUP2(pipe_fd[0], STDIN_FILENO);
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
++	int status, exit_child = 1;
++	pid_t fpid;
  
--	fd = SAFE_OPEN("splice02-temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	fd = SAFE_OPEN(TEST_FILENAME, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		wait_verify();
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	fpid = SAFE_FORK();
++	if (fpid == 0)
++		exit(exit_child);
  
--	TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
--	if (TST_RET < 0) {
--		tst_res(TFAIL, "splice failed - errno = %d : %s",
--			TST_ERR, strerror(TST_ERR));
--	} else {
--		tst_res(TPASS, "splice() system call Passed");
-+	do {
-+		TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-+		if (TST_RET < 0) {
-+			tst_res(TFAIL | TTERRNO, "splice failed");
-+			goto cleanup;
-+		}
-+	} while (TST_RET > 0);
-+
-+	stat(TEST_FILENAME, &st);
-+	if (st.st_size != file_size) {
-+		tst_res(TFAIL, "file size is different from expected: %ld (%d)",
-+				st.st_size, file_size);
+-	TEST_PAUSE;
+-}
++	TST_EXP_PID_SILENT(wait(&status));
+ 
+-static void wait_verify(void)
+-{
+-	int fork_pid, status, exit_child = 1;
++	if (!TST_PASS)
++		return;
+ 
+-	fork_pid = FORK_OR_VFORK();
+-	if (fork_pid == -1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork() Failure");
+-	} else if (fork_pid == 0) {
+-		sleep(1);
+-		exit(exit_child);
++	if (fpid != TST_RET) {
++		tst_res(TFAIL, "wait(&status) returned wrong pid %ld, expected %d",
++			TST_RET, fpid);
 +		return;
  	}
  
- 	SAFE_CLOSE(fd);
-+	fd = SAFE_OPEN(TEST_FILENAME, O_RDONLY);
-+	to_check = st.st_size;
-+
-+	psize = sysconf(_SC_PAGESIZE);
-+
-+	tst_res(TINFO, "checking file content");
-+	do {
-+		i = 0;
-+		size = to_check > psize ? psize : to_check;
-+
-+		map = SAFE_MMAP(NULL, size, PROT_READ, MAP_PRIVATE, fd,
-+				st.st_size - to_check);
-+
-+		while (i < size) {
-+			if (map[i] != get_letter(to_check - (i / BUFSIZE * BUFSIZE)))
-+				fail++;
-+			i++;
-+		}
-+		SAFE_MUNMAP(map, size);
-+		to_check -= size;
-+	} while (to_check > 0);
-+
-+	if (fail) {
-+		tst_res(TFAIL, "%ld unexpected bytes found", fail);
+-	TEST(wait(&status));
+-
+-	if (TEST_RETURN == -1) {
+-		tst_resm(TFAIL | TTERRNO, "wait(1) Failed");
+-	} else if (WIFEXITED(status) && WEXITSTATUS(status) == exit_child) {
+-		tst_resm(TPASS, "wait(&status) returned %ld", TEST_RETURN);
+-	} else {
+-		tst_resm(TFAIL,
+-			 "wait(1) Failed, exit_child - 0x%x, status - 0x%x",
+-			 exit_child, status);
++	if (WIFEXITED(status) && WEXITSTATUS(status) == exit_child) {
++		tst_res(TPASS, "wait(&status) succeeded");
 +		return;
-+	}
-+
-+	tst_res(TPASS, "splice() system call passed");
-+
-+cleanup:
-+	SAFE_CLOSE(fd);
-+	exit(0);
-+}
-+
-+static void run(void)
-+{
-+	size_t size, written, max_pipe_size, to_write;
-+	char buf[BUFSIZE];
-+
-+	SAFE_PIPE(pipe_fd);
-+
-+	if (!file_size) {
-+		max_pipe_size = SAFE_FCNTL(pipe_fd[1], F_GETPIPE_SZ);
-+		file_size = max_pipe_size << 4;
-+	}
-+
-+	to_write = file_size;
-+
-+	if (!SAFE_FORK())
-+		do_child();
-+
-+	tst_res(TINFO, "writting %d bytes", file_size);
-+
-+	while (to_write > 0) {
-+		memset(buf, get_letter(to_write), BUFSIZE);
-+
-+		size = to_write > BUFSIZE ? BUFSIZE : to_write;
-+		written = SAFE_WRITE(1, pipe_fd[1], &buf, size);
-+		to_write -= written;
-+	}
-+
-+	SAFE_CLOSE(pipe_fd[0]);
-+	SAFE_CLOSE(pipe_fd[1]);
-+
-+	tst_reap_children();
- }
+ 	}
+-}
  
- static struct tst_test test = {
--	.test_all = splice_test,
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_checkpoints = 1,
- 	.needs_tmpdir = 1,
+-static void cleanup(void)
+-{
++	tst_res(TFAIL, "wait(&status) got wrong exit status 0x%x", status);
+ }
++
++static struct tst_test test = {
++	.test_all = verify_wait,
 +	.forks_child = 1,
- 	.min_kver = "2.6.17",
-+	.options = (struct tst_option[]) {
-+		{"s:", &sarg, "-s x     Size of output file in bytes (default: 16x max pipe size, i.e. 1M on intel)"},
-+		{}
-+	},
- };
++};
 -- 
-2.31.1
+2.18.1
+
+
 
