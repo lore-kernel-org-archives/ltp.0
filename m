@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Apr 2021 10:19:22 +0200
-Subject: [LTP] [PATCH v4 1/2] splice02: Generate input in C
-In-Reply-To: <20210416165355.5160-1-pvorel@suse.cz>
-References: <20210416165355.5160-1-pvorel@suse.cz>
-Message-ID: <YH09Ckqng/puMxSa@yuki>
+Date: Mon, 19 Apr 2021 10:49:43 +0200
+Subject: [LTP] [PATCH v2 1/2] include/tst_test_macros.h: Add TST_EXP_PID
+ and TST_EXP_PID_SILENT macros
+In-Reply-To: <20210419044112.31443-1-ice_yangxiao@163.com>
+References: <20210419044112.31443-1-ice_yangxiao@163.com>
+Message-ID: <YH1EJ8BmbYTBOvdk@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,106 +12,43 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> -	fd = SAFE_OPEN("splice02-temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-> +	tst_res(TINFO, "checking file content");
-> +	do {
-> +		i = 0;
-> +		size = to_check > SPLICE_SIZE ? SPLICE_SIZE : to_check;
-> +		map = SAFE_MMAP(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
-                                                                        ^
-									This offset
-									should
-									increase
-									by
-									size
-									on
-									each
-									iteration.
-
-
-As it is we check only the first few pages of the file again and again.
-
-> +		while (map[i] && i < size) {
-                          ^
-		Why map[i]? The i < size should be enough to make sure
-		we newer get bytes after end of the file.
-
-> +			if (map[i] != letter)
-> +				fail++;
-> +			i++;
-> +		}
-> +		SAFE_MUNMAP(map, size);
-> +		to_check -= size;
-> +	} while (to_check > 0);
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
+>  include/tst_test_macros.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index 189891507..101ac2c87 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -77,6 +77,17 @@ extern void *TST_RET_PTR;
+>  				#SCALL, ##__VA_ARGS__);                        \
+>  	} while (0)
 >  
-> -	TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> -	if (TST_RET < 0) {
-> -		tst_res(TFAIL, "splice failed - errno = %d : %s",
-> -			TST_ERR, strerror(TST_ERR));
-> -	} else {
-> -		tst_res(TPASS, "splice() system call Passed");
-> +	if (fail) {
-> +		tst_res(TFAIL, "%ld failed bytes found", fail);
-                                      ^
-				      Wrong? Unexpected?
-> +		return;
->  	}
->  
-> +	tst_res(TPASS, "splice() system call passed");
+> +#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_FD_SILENT(SCALL, __VA_ARGS__)
+
+Maybe we should rename the TST_EXP_FD_SILENT() to TST_EXP_POSITIVE() and
+then define both TST_EXP_PID_SILENT() and TST_EXP_FD_SILENT() based on
+TST_EXP_POSITIVE(), but that's very minor.
+
+Looks good to me:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+> +#define TST_EXP_PID(SCALL, ...)                                                \
+> +	do {                                                                   \
+> +		TST_EXP_PID_SILENT(SCALL, __VA_ARGS__);                        \
+> +									       \
+> +		if (TST_PASS)                                                  \
+> +			TST_MSGP_(TPASS, " returned pid %ld", TST_RET,         \
+> +				#SCALL, ##__VA_ARGS__);                        \
+> +	} while (0)
 > +
-> +cleanup:
->  	SAFE_CLOSE(fd);
-> +	exit(0);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	size_t size, written, max_pipe_size, to_write;
-> +	char buf[BUFSIZE];
-> +
-> +	SAFE_PIPE(pipe_fd);
-> +
-> +	memset(buf, letter, BUFSIZE);
-> +
-> +	if (!file_size) {
-> +		max_pipe_size = SAFE_FCNTL(pipe_fd[1], F_GETPIPE_SZ);
-> +		file_size = max_pipe_size << 4;
-> +	}
-> +
-> +	to_write = file_size;
-> +
-> +	if (!SAFE_FORK())
-> +		do_child();
-> +
-> +	tst_res(TINFO, "writting %d bytes", file_size);
-> +
-> +	while (to_write > 0) {
-> +		size = to_write > BUFSIZE ? BUFSIZE : to_write;
-> +		written = SAFE_WRITE(1, pipe_fd[1], &buf, size);
-> +		to_write -= written;
-> +	}
-> +
-> +	SAFE_CLOSE(pipe_fd[0]);
-> +	SAFE_CLOSE(pipe_fd[1]);
-> +
-> +	tst_reap_children();
->  }
->  
->  static struct tst_test test = {
-> -	.test_all = splice_test,
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.needs_checkpoints = 1,
->  	.needs_tmpdir = 1,
-> +	.forks_child = 1,
->  	.min_kver = "2.6.17",
-> +	.options = (struct tst_option[]) {
-> +		{"s:", &sarg, "-s x     Size of output file in bytes (default: 16x max pipe size, i.e. 1M on intel)"},
-> +		{}
-> +	},
->  };
+>  #define TST_EXP_PASS_SILENT(SCALL, ...)                                        \
+>  	do {                                                                   \
+>  		TEST(SCALL);                                                   \
 > -- 
-> 2.31.1
+> 2.26.2
 > 
 
 -- 
