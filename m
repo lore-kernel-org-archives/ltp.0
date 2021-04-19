@@ -1,40 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Apr 2021 11:05:38 +0200
-Subject: [LTP] [PATCH] Modify the test logic of mincore.
-In-Reply-To: <e3eabee4-6616-84dc-cc8d-bc4f23228637@uniontech.com>
-References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
- <YHRcJOUer87SUn6v@yuki>
- <cded02a5-6668-8524-d588-b965ed1a7086@uniontech.com>
- <YHgd/NDLJzz68uDl@yuki>
- <e3eabee4-6616-84dc-cc8d-bc4f23228637@uniontech.com>
-Message-ID: <YH1H4qZwqSNom4RO@yuki>
+From: Xiao Yang <ice_yangxiao@163.com>
+Date: Mon, 19 Apr 2021 18:17:06 +0800
+Subject: [LTP] [PATCH v2 1/2] include/tst_test_macros.h: Add TST_EXP_PID
+ and TST_EXP_PID_SILENT macros
+In-Reply-To: <YH1EJ8BmbYTBOvdk@yuki>
+References: <20210419044112.31443-1-ice_yangxiao@163.com>
+ <YH1EJ8BmbYTBOvdk@yuki>
+Message-ID: <70c0c22a-97ba-a647-9ae8-998e2469927e@163.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> Using the CVE patch on mips, the test will fail because the child
-> >> process mlocks all pages, but the parent process cannot obtain these
-> >> pages through mincore and is locked.
-> > 
-> > Sounds like a kernel bug.
-> > 
-> CVE list has provided repair patches, The patch I submitted this time is 
-> to modify the logic of the test results, do you plan to incorporate it?
+Hi Cyril,
 
-Let me try to explain it once again.
+Thanks, pushed with your suggestion(use TST_EXP_POSITIVE).
 
-As far as I can tell the CVE kernel patch you pointed out has NO effect
-on the testcase and there is NO need to modify the test at all. The test
-works fine both before and after the kernel patch.
+Best Regards,
 
-If the test fails for you YOUR kernel is broken.
+Xiao Yang
 
-That is unless you prove that the test is actually wrong, which you
-haven't and I do not think that you actually can.
+On 4/19/21 4:49 PM, Cyril Hrubis wrote:
+> Maybe we should rename the TST_EXP_FD_SILENT() to TST_EXP_POSITIVE() and
+> then define both TST_EXP_PID_SILENT() and TST_EXP_FD_SILENT() based on
+> TST_EXP_POSITIVE(), but that's very minor.
+>
+> Looks good to me:
+>
+> Reviewed-by: Cyril Hrubis<chrubis@suse.cz>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
