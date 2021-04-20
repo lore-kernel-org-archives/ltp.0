@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Apr 2021 11:21:01 +0200
-Subject: [LTP] [PATCH v5 1/2] splice02: Generate input in C
-In-Reply-To: <20210420084410.16179-1-pvorel@suse.cz>
-References: <20210420084410.16179-1-pvorel@suse.cz>
-Message-ID: <YH6c/cm9uY0QRrbu@yuki>
+Date: Tue, 20 Apr 2021 11:36:22 +0200
+Subject: [LTP] [PATCH v2] syscalls/unshare: Convert unshare02 to the new
+ API
+In-Reply-To: <20210420072939.202584-1-xieziyao@huawei.com>
+References: <20210419122246.7706-3-xieziyao@huawei.com>
+ <20210420072939.202584-1-xieziyao@huawei.com>
+Message-ID: <YH6glgTigiFAw6LB@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,41 +13,22 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  	SAFE_CLOSE(fd);
-> +	fd = SAFE_OPEN(TEST_FILENAME, O_RDONLY);
-> +	to_check = st.st_size;
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) Crackerjack Project., 2007
+> + * Ported from Crackerjack to LTP by Manas Kumar Nayak maknayak@in.ibm.com>
+> + */
 > +
-> +	psize = sysconf(_SC_PAGESIZE);
-> +
-> +	tst_res(TINFO, "checking file content");
-> +	do {
-> +		i = 0;
-> +		size = to_check > psize ? psize : to_check;
-> +
-> +		map = SAFE_MMAP(NULL, size, PROT_READ, MAP_PRIVATE, fd,
-> +				st.st_size - to_check);
+> +/*
+> + * [Description]
+> + *
+> + * Basic tests for the unshare error() syscall.
+> + */
 
-Huh, why do we loop backward over the file?
+Pushed with slight modification to the description, thanks.
 
-Maybe we can just do simple loop here that would be easier to
-understand:
-
-	blocks = LTP_ALIGN(st.st_size, page_size) / page_size;
-
-	for (block = 0; block < blocks; block++) {
-		map = SAFE_MMAP(NULL, pagesize, PROT_READ, MAP_PRIVATE, fd, block * pagesize);
-
-		to_check = (block+1) * page_size < st.st_size ? page_size : st.st_size % page_size;
-
-		for (i = 0; i < to_check; i++) {
-			if (map[i] != get_letter(block * page_size + i))
-				fail++;
-		}
-
-		SAFE_MUNMAP(map, size);
-	}
-
-[Beware I haven't tested the code :-)]
+Also please note that the special description comment has to start with
+/*\ instead of just /* in order to be picked up by docparser.
 
 -- 
 Cyril Hrubis
