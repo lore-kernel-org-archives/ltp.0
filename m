@@ -1,30 +1,89 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 20 Apr 2021 16:39:42 +0800
-Subject: [LTP] [PATCH] mkfs: print more info for debugging
-In-Reply-To: <YH6PT2HKt6t1xZxR@pevik>
-References: <20210420075351.16059-1-liwang@redhat.com> <YH6PT2HKt6t1xZxR@pevik>
-Message-ID: <CAEemH2eaPx86DWfoMPcvrzLrNz8+Aw3cOhBvPxiZ2J6LxEQQEg@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 20 Apr 2021 10:44:10 +0200
+Subject: [LTP] [PATCH v5 2/2] commands: Add shell pipe test
+In-Reply-To: <20210420084410.16179-1-pvorel@suse.cz>
+References: <20210420084410.16179-1-pvorel@suse.cz>
+Message-ID: <20210420084410.16179-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> > --- a/testcases/commands/mkfs/mkfs01.sh
-> > +++ b/testcases/commands/mkfs/mkfs01.sh
-> > @@ -128,7 +128,8 @@ mkfs_test()
-> >       if [ -n "$device" ]; then
-> >               mkfs_verify_type "$fs_type" "$device"
-> >               if [ $? -ne 0 ]; then
-> > -                     tst_res TFAIL "'${mkfs_cmd}' failed, not expected."
-> > +                     tst_res TFAIL "'${mkfs_cmd}' failed, not expected type."
-> Maybe "unexpected type"?
->
-> I'd also change ${mkfs_cmd} to $mkfs_cmd (more readable).
+This adds basic shell pipe testing, which was removed from splice02
+in 85cebe238 ("splice02: Generate input in C").
 
-Sounds good, I modified it with your suggestions and pushed it.
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+The same as v4.
 
+ runtest/commands                         |  1 +
+ runtest/smoketest                        |  1 +
+ testcases/commands/shell/Makefile        | 10 ++++++++++
+ testcases/commands/shell/shell_pipe01.sh | 17 +++++++++++++++++
+ 4 files changed, 29 insertions(+)
+ create mode 100644 testcases/commands/shell/Makefile
+ create mode 100755 testcases/commands/shell/shell_pipe01.sh
+
+diff --git a/runtest/commands b/runtest/commands
+index 058266b54..8cfad0449 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -41,3 +41,4 @@ gdb01_sh gdb01.sh
+ unshare01_sh unshare01.sh
+ sysctl01_sh sysctl01.sh
+ sysctl02_sh sysctl02.sh
++shell_test01 echo "SUCCESS" | shell_pipe01.sh
+diff --git a/runtest/smoketest b/runtest/smoketest
+index 2224d8f74..7f395936e 100644
+--- a/runtest/smoketest
++++ b/runtest/smoketest
+@@ -13,3 +13,4 @@ utime01A symlink01 -T utime01
+ rename01A symlink01 -T rename01
+ splice02 splice02 -s 20
+ route4-change-dst route-change-dst.sh
++shell_test01 echo "SUCCESS" | shell_pipe01.sh
+diff --git a/testcases/commands/shell/Makefile b/testcases/commands/shell/Makefile
+new file mode 100644
+index 000000000..c696ec35a
+--- /dev/null
++++ b/testcases/commands/shell/Makefile
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) Linux Test Project, 2021
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/shell/shell_pipe01.sh b/testcases/commands/shell/shell_pipe01.sh
+new file mode 100755
+index 000000000..3c8ef49fb
+--- /dev/null
++++ b/testcases/commands/shell/shell_pipe01.sh
+@@ -0,0 +1,17 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2021 Petr Vorel <pvorel@suse.cz>
++
++TST_TESTFUNC=do_test
++
++. tst_test.sh
++
++do_test()
++{
++	tst_res TINFO "expecting SUCCESS string passed from stdin"
++
++	read line
++	EXPECT_PASS [ "$line" = "SUCCESS" ]
++}
++
++tst_run
 -- 
-Regards,
-Li Wang
+2.31.1
 
