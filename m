@@ -1,61 +1,65 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 20 Apr 2021 18:57:18 +0200
-Subject: [LTP] [PATCH v5 1/2] splice02: Generate input in C
-In-Reply-To: <YH6c/cm9uY0QRrbu@yuki>
-References: <20210420084410.16179-1-pvorel@suse.cz>
- <YH6c/cm9uY0QRrbu@yuki>
-Message-ID: <YH8H7gnu9FYziyGG@pevik>
+From: Tim.Bird@sony.com <Tim.Bird@sony.com>
+Date: Tue, 20 Apr 2021 17:21:38 +0000
+Subject: [LTP] runltp-ng and possible ltp-pan deprecation
+In-Reply-To: <YH7Z8nOX90qjsMpa@yuki>
+References: <YH7Z8nOX90qjsMpa@yuki>
+Message-ID: <BN7PR13MB249975B793E09DE0D217775DFD489@BN7PR13MB2499.namprd13.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
+
+> -----Original Message-----
+> From: ltp <ltp-bounces+tim.bird=sony.com@lists.linux.it> On Behalf Of Cyril Hrubis
+> 
 > Hi!
-> >  	SAFE_CLOSE(fd);
-> > +	fd = SAFE_OPEN(TEST_FILENAME, O_RDONLY);
-> > +	to_check = st.st_size;
-> > +
-> > +	psize = sysconf(_SC_PAGESIZE);
-> > +
-> > +	tst_res(TINFO, "checking file content");
-> > +	do {
-> > +		i = 0;
-> > +		size = to_check > psize ? psize : to_check;
-> > +
-> > +		map = SAFE_MMAP(NULL, size, PROT_READ, MAP_PRIVATE, fd,
-> > +				st.st_size - to_check);
+> As you may have know some time ago I have started to work on runltp-ng a
+> script to replace runltp and ltp-pan.
+> 
+> The new executor is different in several key aspects, for example:
+> 
+> - it can and is supposed to run on a different machine from the system
+>   under test (although it still supports running on the same machine)
+> 
+> - there are different backends, it can run tests locally, over ssh, or
+>   start a VM with qemu
+> 
+> - produces different output formats currently html or json
+> 
+> We have been using runltp-ng in SUSE for a while and it works for us
+> quite well and I think that we need a larger user base now to iron out
+> all the quirks. So unless someone strongly disagrees I think that it's
+> time to make it officialy supported test executor for LTP.
+> 
+> I would like to eventually get rid of runltp and ltp-pan, but if that
+> happens it should be done once everyone switched over to a different
+> solution and it's probably still at least a year or two from now.
+> 
+> To remind you the code still lives in my private repository at:
+> 
+> https://github.com/metan-ucw/runltp-ng
+> 
+> For a start I would like to move the code somewhere to the
+> linux-test-project github just to make it more visible. Does everyone
+> agree to that?
 
-> Huh, why do we loop backward over the file?
+Sounds great to me!  I'm very interested in the new functionality.
 
-> Maybe we can just do simple loop here that would be easier to
-> understand:
+It sounds like I might be interested in adding a backend for running
+tests over a Fuego transport.  Fuego mostly ends up using
+ssh, but it provides other transports as well, so I'll be
+interested to see what your backend API for test-running looks like.
 
-> 	blocks = LTP_ALIGN(st.st_size, page_size) / page_size;
+> 
+> Also there are two different options how to do that. Either we put it
+> into runltp-ng directory to the LTP git root or we may as well create a
+> separate repository under the linux-test-project and make it a ltp git
+> submodule. Any preferencies to that?
 
-> 	for (block = 0; block < blocks; block++) {
-> 		map = SAFE_MMAP(NULL, pagesize, PROT_READ, MAP_PRIVATE, fd, block * pagesize);
+If this is intended to be run with LTP only, then my preference would be to
+put it into the LTP repository.
+ -- Tim
 
-> 		to_check = (block+1) * page_size < st.st_size ? page_size : st.st_size % page_size;
-
-> 		for (i = 0; i < to_check; i++) {
-> 			if (map[i] != get_letter(block * page_size + i))
-> 				fail++;
-> 		}
-
-> 		SAFE_MUNMAP(map, size);
-> 	}
-
-> [Beware I haven't tested the code :-)]
-Yep. In your code you expect that written letter change each time.
-But original code writes the same letter for whole buffer (using memset()).
-
-I guess it does not matter whether I keep writing with memset() as is
-and adapt the checking code (code you proposed) or if I use your code for
-checking and adapt writing code: create buffer 494 (19x 26 letters), memset() it
-only once. Or do you have any preference of these?
-
-Also I have to replace 2x return with goto cleanup (to close fd and exit the child).
-
-Kind regards,
-Petr
