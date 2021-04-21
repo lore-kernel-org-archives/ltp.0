@@ -1,41 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 21 Apr 2021 12:04:30 +0200
-Subject: [LTP] [PATCH v5 1/2] splice02: Generate input in C
-In-Reply-To: <YH/y9JMUfbpSX8ev@yuki>
-References: <20210420084410.16179-1-pvorel@suse.cz> <YH6c/cm9uY0QRrbu@yuki>
- <YH8H7gnu9FYziyGG@pevik> <YH/y9JMUfbpSX8ev@yuki>
-Message-ID: <YH/4rmSu6Ie04hkI@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 21 Apr 2021 06:46:41 -0400 (EDT)
+Subject: [LTP] [PATCH] mkfs: print more info for debugging
+In-Reply-To: <CAEemH2fcEjre5xd1KuXsAkYzZG6tGaCttE8x3zbjxamVHfUUng@mail.gmail.com>
+References: <20210420075351.16059-1-liwang@redhat.com>
+ <728318760.8908748.1618921049585.JavaMail.zimbra@redhat.com>
+ <CAEemH2fcEjre5xd1KuXsAkYzZG6tGaCttE8x3zbjxamVHfUUng@mail.gmail.com>
+Message-ID: <356706743.9191478.1619002001499.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
 
-> Hi!
-> > Yep. In your code you expect that written letter change each time.
-> > But original code writes the same letter for whole buffer (using memset()).
 
-> Ah, right, the mapping in the original code maps the remaning size to be
-> written to a letter and uses it for whole block.
+----- Original Message -----
+> On Tue, Apr 20, 2021 at 8:17 PM Jan Stancek <jstancek@redhat.com> wrote:
+> >
+> >
+> >
+> > ----- Original Message -----
+> > > We can NOT reproduce the problem by manual with both ppc64le and s390x,
+> > > so let's print more useful info from test when getting fail.
+> >
+> > It's mkfs_verify_size, test expects to find 90% blocks (of device size),
+> > but lately we miss that by ~1-2%:
+> >
+> > # mkfs.ext3 /dev/loop0 16000
+> > mke2fs 1.46.2 (28-Feb-2021)
+> 
+> Thanks for the info.
+> 
+> How reproducible of this issue, and which arch/platform you used?
+> Or, can you reproduce it with a downgrade e2fsprogs version?
 
-> I guess that it may be easier to understand if the letter was defined as
-> an function of a position in the file like I have expected in my
-> snippet. That way we can also produce different patterns without
-> changing the test code (and we can later on introduce a library
-> functions to fill buffer and check buffer as well, these would generally
-> take a pointer to a buffer, size and an offset).
-Make sense.
+It starts with this commit:
+  https://github.com/tytso/e2fsprogs/commit/59037c5357d39c6d0f14a0aff70e67dc13eafc84
 
-> That would mean that we will have to fill the buffer in a for loop
-> instead of memset, but as long as the get_letter() function is inlined
-> it should be fast enough.
-Right. I guess trying to "align" buffer with alphabet size (e.g. multiple of 26)
-to avoid filling the buffer is not worth. Thus I keep buffer size 512 and fill
-it each time.
-
-Thanks for your suggestions and time.
-
-Kind regards,
-Petr
