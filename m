@@ -1,37 +1,65 @@
-From: xieziyao <xieziyao@huawei.com>
-Date: Thu, 22 Apr 2021 07:13:07 +0000
-Subject: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic
- in do_child()
-In-Reply-To: <YIAcC1DaWciwSypB@yuki>
-References: <20210420133839.145408-1-xieziyao@huawei.com>
- <YIAcC1DaWciwSypB@yuki>
-Message-ID: <6a0e879465f943fb8f2f09af3326adfc@huawei.com>
+From: sujiaxun <sujiaxun@uniontech.com>
+Date: Thu, 22 Apr 2021 15:26:09 +0800
+Subject: [LTP] [PATCH] Fix the 64-bit macro definition of mips architecture
+Message-ID: <20210422072609.9938-1-sujiaxun@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Of course, I'm interested in modifying the testcases that way, and I'll submit another version to fix the problem.
+https://github.com/torvalds/linux/blob/master/arch/mips/include/uapi/asm/shmbuf.h
+The mips 64-bit macro definition in the kernel is "__mips64",
+ and the mips 64-bit macro definition in the ltp is "__arch64__".
 
-Thanks for your review, Cyril.
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+---
+ include/lapi/msgbuf.h | 2 +-
+ include/lapi/sembuf.h | 2 +-
+ include/lapi/shmbuf.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Best Regards,
-Ziyao
+diff --git a/include/lapi/msgbuf.h b/include/lapi/msgbuf.h
+index f3277270d..f010695f1 100644
+--- a/include/lapi/msgbuf.h
++++ b/include/lapi/msgbuf.h
+@@ -17,7 +17,7 @@
+ #if defined(__mips__)
+ #define HAVE_MSQID64_DS
 
------Original Message-----
-From: Cyril Hrubis [mailto:chrubis@suse.cz] 
-Sent: Wednesday, April 21, 2021 8:35 PM
-To: xieziyao <xieziyao@huawei.com>
-Cc: ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic in do_child()
+-#if defined(__arch64__)
++#if defined(__mips64)
+ /*
+  * The msqid64_ds structure for the MIPS architecture.
+  * Note extra padding because this structure is passed back and forth
+diff --git a/include/lapi/sembuf.h b/include/lapi/sembuf.h
+index 4ef0483a0..58ad9dff5 100644
+--- a/include/lapi/sembuf.h
++++ b/include/lapi/sembuf.h
+@@ -24,7 +24,7 @@
+  * Pad space is left for 2 miscellaneous 64-bit values on mips64,
+  * but used for the upper 32 bit of the time values on mips32.
+  */
+-#if defined(__arch64__)
++#if defined(__mips64)
+ struct semid64_ds {
+ 	struct ipc64_perm sem_perm;		/* permissions .. see ipc.h */
+ 	long		 sem_otime;		/* last semop time */
+diff --git a/include/lapi/shmbuf.h b/include/lapi/shmbuf.h
+index 28ee33620..fe405ffe8 100644
+--- a/include/lapi/shmbuf.h
++++ b/include/lapi/shmbuf.h
+@@ -27,7 +27,7 @@
+  * data structure when moving to 64-bit time_t.
+  */
 
-Hi!
-Looking at the code the sendfile04 and sendfile05 does not need 99% of the code in the tests, as a matter of fact it even breaks the tests with sufficiently large -i parameter.
-
-Can we please instead remove all the server and socket code from
-sendfile04 and sendfile05? We can just easily pass in_fd and out_fd pointing to a regular files to the sendfile() syscall instead.
-
+-#if defined(__arch64__)
++#if defined(__mips64)
+ struct shmid64_ds {
+ 	struct ipc64_perm	shm_perm;	/* operation perms */
+ 	size_t			shm_segsz;	/* size of segment (bytes) */
 --
-Cyril Hrubis
-chrubis@suse.cz
+2.20.1
+
+
+
