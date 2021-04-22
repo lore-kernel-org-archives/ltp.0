@@ -1,50 +1,24 @@
-From: Wang Xin <wangxin410@huawei.com>
-Date: Thu, 22 Apr 2021 16:20:41 +0800
-Subject: [LTP] [PATCH] controllers/cpuset: Restore the value of
- cpuset.sched_load_balance
-Message-ID: <1619079641-30553-1-git-send-email-wangxin410@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 22 Apr 2021 10:30:24 +0200
+Subject: [LTP] runltp-ng and possible ltp-pan deprecation
+In-Reply-To: <YH7Z8nOX90qjsMpa@yuki>
+References: <YH7Z8nOX90qjsMpa@yuki>
+Message-ID: <YIE0INnCJOMGYQQR@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we run the cpuhotplug03 test case on the arm64 machine,
-we conclude that no error occurs when the cpuhotplug03 case is executed alone,
-but once the cpuset_sched_domains case is executed first,
-After cpuhotplug03 is executed, the error "cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on" occurs.
-The cpuset_sched_domains test case changes the value of cpuset.sched_load_balance in the cpuset cgroup subsystem,
-but does not restore the value at the end of the test.
-Modify the cpuset_funcs.sh file. The test result shows that the problem is solved successfully.
+Hi Cyril,
 
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
----
- testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+Thank you for bringing the discussion to upstream runltp-ng.
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index 00aad0e..820de33 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -59,6 +59,8 @@ CPUSET="/dev/cpuset"
- CPUSET_TMP="/tmp/cpuset_tmp"
- CLONE_CHILDREN="/dev/cpuset/cgroup.clone_children"
- CHILDREN_VALUE="0"
-+SCHED_LB="/dev/cpuset/cpuset.sched_load_balance"
-+SCHED_LB_VALUE="0"
- HOTPLUG_CPU="1"
- cpuset_log()
-@@ -169,6 +171,7 @@ setup()
- 	fi
- 	CHILDREN_VALUE="`cat $CLONE_CHILDREN`"
-+	SCHED_LB_VALUE="`cat $SCHED_LB`"
- }
- # Write the cleanup function
-@@ -180,6 +183,7 @@ cleanup()
- 	}
- 	echo $CHILDREN_VALUE > $CLONE_CHILDREN
-+	echo $SCHED_LB_VALUE > $SCHED_LB
- 	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir
-	do
-2.6.2
+I'd prefer to add the project to ltp git, in runltp-ng/ in root directory.
+And add either a symlink runltp-ng/runltp-ng to the root directory or have a
+shell script which runs it:
+perl -I$(readlink -f $0)/runltp-ng $(readlink -f $0)/runltp-ng/runltp-ng $@
+
+Kind regards,
+Petr
 
