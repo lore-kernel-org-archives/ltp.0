@@ -1,65 +1,50 @@
-From: sujiaxun <sujiaxun@uniontech.com>
-Date: Thu, 22 Apr 2021 15:26:09 +0800
-Subject: [LTP] [PATCH] Fix the 64-bit macro definition of mips architecture
-Message-ID: <20210422072609.9938-1-sujiaxun@uniontech.com>
+From: Wang Xin <wangxin410@huawei.com>
+Date: Thu, 22 Apr 2021 16:20:41 +0800
+Subject: [LTP] [PATCH] controllers/cpuset: Restore the value of
+ cpuset.sched_load_balance
+Message-ID: <1619079641-30553-1-git-send-email-wangxin410@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-https://github.com/torvalds/linux/blob/master/arch/mips/include/uapi/asm/shmbuf.h
-The mips 64-bit macro definition in the kernel is "__mips64",
- and the mips 64-bit macro definition in the ltp is "__arch64__".
+When we run the cpuhotplug03 test case on the arm64 machine,
+we conclude that no error occurs when the cpuhotplug03 case is executed alone,
+but once the cpuset_sched_domains case is executed first,
+After cpuhotplug03 is executed, the error "cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on" occurs.
+The cpuset_sched_domains test case changes the value of cpuset.sched_load_balance in the cpuset cgroup subsystem,
+but does not restore the value at the end of the test.
+Modify the cpuset_funcs.sh file. The test result shows that the problem is solved successfully.
 
-Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+Signed-off-by: Wang Xin <wangxin410@huawei.com>
 ---
- include/lapi/msgbuf.h | 2 +-
- include/lapi/sembuf.h | 2 +-
- include/lapi/shmbuf.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/lapi/msgbuf.h b/include/lapi/msgbuf.h
-index f3277270d..f010695f1 100644
---- a/include/lapi/msgbuf.h
-+++ b/include/lapi/msgbuf.h
-@@ -17,7 +17,7 @@
- #if defined(__mips__)
- #define HAVE_MSQID64_DS
-
--#if defined(__arch64__)
-+#if defined(__mips64)
- /*
-  * The msqid64_ds structure for the MIPS architecture.
-  * Note extra padding because this structure is passed back and forth
-diff --git a/include/lapi/sembuf.h b/include/lapi/sembuf.h
-index 4ef0483a0..58ad9dff5 100644
---- a/include/lapi/sembuf.h
-+++ b/include/lapi/sembuf.h
-@@ -24,7 +24,7 @@
-  * Pad space is left for 2 miscellaneous 64-bit values on mips64,
-  * but used for the upper 32 bit of the time values on mips32.
-  */
--#if defined(__arch64__)
-+#if defined(__mips64)
- struct semid64_ds {
- 	struct ipc64_perm sem_perm;		/* permissions .. see ipc.h */
- 	long		 sem_otime;		/* last semop time */
-diff --git a/include/lapi/shmbuf.h b/include/lapi/shmbuf.h
-index 28ee33620..fe405ffe8 100644
---- a/include/lapi/shmbuf.h
-+++ b/include/lapi/shmbuf.h
-@@ -27,7 +27,7 @@
-  * data structure when moving to 64-bit time_t.
-  */
-
--#if defined(__arch64__)
-+#if defined(__mips64)
- struct shmid64_ds {
- 	struct ipc64_perm	shm_perm;	/* operation perms */
- 	size_t			shm_segsz;	/* size of segment (bytes) */
---
-2.20.1
-
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index 00aad0e..820de33 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -59,6 +59,8 @@ CPUSET="/dev/cpuset"
+ CPUSET_TMP="/tmp/cpuset_tmp"
+ CLONE_CHILDREN="/dev/cpuset/cgroup.clone_children"
+ CHILDREN_VALUE="0"
++SCHED_LB="/dev/cpuset/cpuset.sched_load_balance"
++SCHED_LB_VALUE="0"
+ HOTPLUG_CPU="1"
+ cpuset_log()
+@@ -169,6 +171,7 @@ setup()
+ 	fi
+ 	CHILDREN_VALUE="`cat $CLONE_CHILDREN`"
++	SCHED_LB_VALUE="`cat $SCHED_LB`"
+ }
+ # Write the cleanup function
+@@ -180,6 +183,7 @@ cleanup()
+ 	}
+ 	echo $CHILDREN_VALUE > $CLONE_CHILDREN
++	echo $SCHED_LB_VALUE > $SCHED_LB
+ 	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir
+	do
+2.6.2
 
