@@ -1,56 +1,50 @@
-From: xieziyao <xieziyao@huawei.com>
-Date: Fri, 23 Apr 2021 10:14:38 +0000
-Subject: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic
- in do_child()
-References: <20210420133839.145408-1-xieziyao@huawei.com>
- <YIAcC1DaWciwSypB@yuki> 
-Message-ID: <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 23 Apr 2021 13:16:12 +0200
+Subject: [LTP] [PATCH] mkfs: relax size check
+Message-ID: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Cyril,
+Number of total data blocks in filesystem reported by statfs
+may be less than current formula of 90%. For example ext4 will
+subtract "s_first_data_block plus internal journal blocks".
 
-I just made changes to sendfile04 and sendfile05 on your suggestions:
-1. Convert sendfile04 to the new API;
-2. Remove the socket code of server/client and use SAFE_SOCKETPAIR() instead, which can simplify the code logic.
+With recent change to e2fsprogs, overhead calculated in user-space
+increased slightly and LTP test started failing:
+  https://github.com/tytso/e2fsprogs/commit/59037c5357d39c6d0f14a0aff70e67dc13eafc84
 
-And I think the other testcases of the sendfile testsuite have the same problem. Can we please modify other testcases in the same way?
+Since there's no strict rule how much the overhead will be,
+as rule of thumb relax the condition to 80%.
 
-Please see: https://patchwork.ozlabs.org/project/ltp/list/?series=240489
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+I haven't found better way to set the test expectation,
+so to address immediate failures I propose to relax the check.
 
-Best Regards,
-Ziyao
+ testcases/commands/mkfs/mkfs01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
------Original Message-----
-From: xieziyao 
-Sent: Thursday, April 22, 2021 3:13 PM
-To: 'Cyril Hrubis' <chrubis@suse.cz>
-Cc: ltp@lists.linux.it
-Subject: RE: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic in do_child()
+diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
+index 13491c9685ae..3e3e56719cf3 100755
+--- a/testcases/commands/mkfs/mkfs01.sh
++++ b/testcases/commands/mkfs/mkfs01.sh
+@@ -69,11 +69,11 @@ mkfs_verify_size()
+ 	# 1k-block size should be devided by this argument for ntfs verification.
+ 	if [ "$1" = "ntfs" ]; then
+ 		local rate=1024/512
+-		if [ $blocknum -lt "$(($2/$rate*9/10))" ]; then
++		if [ $blocknum -lt "$(($2/$rate*8/10))" ]; then
+ 			return 1
+ 		fi
+ 	else
+-		if [ $blocknum -lt "$(($2*9/10))" ]; then
++		if [ $blocknum -lt "$(($2*8/10))" ]; then
+ 			return 1
+ 		fi
+ 	fi
+-- 
+2.18.1
 
-Of course, I'm interested in modifying the testcases that way, and I'll submit another version to fix the problem.
-
-Thanks for your review, Cyril.
-
-Best Regards,
-Ziyao
-
------Original Message-----
-From: Cyril Hrubis [mailto:chrubis@suse.cz] 
-Sent: Wednesday, April 21, 2021 8:35 PM
-To: xieziyao <xieziyao@huawei.com>
-Cc: ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic in do_child()
-
-Hi!
-Looking at the code the sendfile04 and sendfile05 does not need 99% of the code in the tests, as a matter of fact it even breaks the tests with sufficiently large -i parameter.
-
-Can we please instead remove all the server and socket code from
-sendfile04 and sendfile05? We can just easily pass in_fd and out_fd pointing to a regular files to the sendfile() syscall instead.
-
---
-Cyril Hrubis
-chrubis@suse.cz
