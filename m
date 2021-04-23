@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 23 Apr 2021 15:28:06 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/sendfile: Convert sendfile04 to the
- new API
-In-Reply-To: <20210423095944.118255-2-xieziyao@huawei.com>
-References: <20210423095944.118255-1-xieziyao@huawei.com>
- <20210423095944.118255-2-xieziyao@huawei.com>
-Message-ID: <YILLZg3xEg6GTItf@yuki>
+Date: Fri, 23 Apr 2021 15:32:14 +0200
+Subject: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic
+ in do_child()
+In-Reply-To: <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
+References: <20210420133839.145408-1-xieziyao@huawei.com>
+ <YIAcC1DaWciwSypB@yuki>
+ <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
+Message-ID: <YILMXkSAGkWvgocy@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,8 +14,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-FYI: I've fixed a minor mistake in the in_fd initializatin and pushed
-the fix, sorry for the breakage.
+> And I think the other testcases of the sendfile testsuite have the
+> same problem. Can we please modify other testcases in the same way?
+
+Yes please, at least sendfile03, sendfile07 should be cleand up the same
+way as the sendfile04 and sendfile05 were.
+
+The rest of the tests seems to actually transfer data, but the code is
+really messy so they should be cleaned up and converted to new library
+as well.
 
 -- 
 Cyril Hrubis
