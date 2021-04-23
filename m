@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 23 Apr 2021 15:32:14 +0200
-Subject: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic
- in do_child()
-In-Reply-To: <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
-References: <20210420133839.145408-1-xieziyao@huawei.com>
- <YIAcC1DaWciwSypB@yuki>
- <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
-Message-ID: <YILMXkSAGkWvgocy@yuki>
+Date: Fri, 23 Apr 2021 15:43:28 +0200
+Subject: [LTP] [PATCH] syscalls/getdents01: Add close() and open() at
+ the end of run()
+In-Reply-To: <20210423095929.5280-1-zhaogongyi@huawei.com>
+References: <20210423095929.5280-1-zhaogongyi@huawei.com>
+Message-ID: <YILPAKuBw2B8Z52d@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +12,25 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> And I think the other testcases of the sendfile testsuite have the
-> same problem. Can we please modify other testcases in the same way?
+>  testcases/kernel/syscalls/getdents/getdents01.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/getdents/getdents01.c b/testcases/kernel/syscalls/getdents/getdents01.c
+> index ef8f4e864..7982691a6 100644
+> --- a/testcases/kernel/syscalls/getdents/getdents01.c
+> +++ b/testcases/kernel/syscalls/getdents/getdents01.c
+> @@ -92,6 +92,9 @@ static void run(void)
+>  	} while (rval > 0);
+> 
+>  	check_flags();
+> +
+> +	SAFE_CLOSE(fd);
+> +	fd = SAFE_OPEN(".", O_RDONLY|O_DIRECTORY);
+>  }
 
-Yes please, at least sendfile03, sendfile07 should be cleand up the same
-way as the sendfile04 and sendfile05 were.
-
-The rest of the tests seems to actually transfer data, but the code is
-really messy so they should be cleaned up and converted to new library
-as well.
+Good catch but I guess that it would be a bit cleaner if we opened the
+fd at the start of the run() and closed it at the end instead of opening
+it in setup() and reopening it for each iteration.
 
 -- 
 Cyril Hrubis
