@@ -1,76 +1,56 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Fri, 23 Apr 2021 17:59:29 +0800
-Subject: [LTP] [PATCH] syscalls/getdents01: Add close() and open() at the
- end of run()
-Message-ID: <20210423095929.5280-1-zhaogongyi@huawei.com>
+From: xieziyao <xieziyao@huawei.com>
+Date: Fri, 23 Apr 2021 10:14:38 +0000
+Subject: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic
+ in do_child()
+References: <20210420133839.145408-1-xieziyao@huawei.com>
+ <YIAcC1DaWciwSypB@yuki> 
+Message-ID: <6ff9d783d70a4c4f91fe3dca0a948833@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When the test run with the option of '-i', we need call close
-and open at the end of run(), otherwist the test will fail,as follows:
+Hi, Cyril,
 
-$ getdents01 -i 2
+I just made changes to sendfile04 and sendfile05 on your suggestions:
+1. Convert sendfile04 to the new API;
+2. Remove the socket code of server/client and use SAFE_SOCKETPAIR() instead, which can simplify the code logic.
 
-tst_buffers.c:55: TINFO: Test is using guarded buffers
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-getdents.h:148: TINFO: Testing the SYS_getdents syscall
-getdents01.c:109: TINFO: Found '.'
-getdents01.c:109: TINFO: Found '..'
-getdents01.c:109: TINFO: Found 'symlink'
-getdents01.c:109: TINFO: Found 'file'
-getdents01.c:109: TINFO: Found 'dir'
-getdents01.c:149: TPASS: All entries found
-getdents01.c:97: TFAIL: getdents failed - returned end of directory
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-getdents.h:151: TINFO: Testing the SYS_getdents64 syscall
-getdents01.c:109: TINFO: Found '.'
-getdents01.c:109: TINFO: Found '..'
-getdents01.c:109: TINFO: Found 'dir'
-getdents01.c:109: TINFO: Found 'symlink'
-getdents01.c:109: TINFO: Found 'file'
-getdents01.c:149: TPASS: All entries found
-getdents01.c:97: TFAIL: getdents failed - returned end of directory
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-getdents.h:157: TCONF: libc getdents() is not implemented
-tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
-getdents.h:162: TINFO: Testing libc getdents64()
-getdents01.c:109: TINFO: Found '.'
-getdents01.c:109: TINFO: Found '..'
-getdents01.c:109: TINFO: Found 'dir'
-getdents01.c:109: TINFO: Found 'symlink'
-getdents01.c:109: TINFO: Found 'file'
-getdents01.c:149: TPASS: All entries found
-getdents01.c:97: TFAIL: getdents failed - returned end of directory
+And I think the other testcases of the sendfile testsuite have the same problem. Can we please modify other testcases in the same way?
 
-Summary:
-passed   3
-failed   3
-broken   0
-skipped  1
-warnings 0
+Please see: https://patchwork.ozlabs.org/project/ltp/list/?series=240489
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- testcases/kernel/syscalls/getdents/getdents01.c | 3 +++
- 1 file changed, 3 insertions(+)
+Best Regards,
+Ziyao
 
-diff --git a/testcases/kernel/syscalls/getdents/getdents01.c b/testcases/kernel/syscalls/getdents/getdents01.c
-index ef8f4e864..7982691a6 100644
---- a/testcases/kernel/syscalls/getdents/getdents01.c
-+++ b/testcases/kernel/syscalls/getdents/getdents01.c
-@@ -92,6 +92,9 @@ static void run(void)
- 	} while (rval > 0);
+-----Original Message-----
+From: xieziyao 
+Sent: Thursday, April 22, 2021 3:13 PM
+To: 'Cyril Hrubis' <chrubis@suse.cz>
+Cc: ltp@lists.linux.it
+Subject: RE: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic in do_child()
 
- 	check_flags();
-+
-+	SAFE_CLOSE(fd);
-+	fd = SAFE_OPEN(".", O_RDONLY|O_DIRECTORY);
- }
+Of course, I'm interested in modifying the testcases that way, and I'll submit another version to fix the problem.
 
- static void reset_flags(void)
+Thanks for your review, Cyril.
+
+Best Regards,
+Ziyao
+
+-----Original Message-----
+From: Cyril Hrubis [mailto:chrubis@suse.cz] 
+Sent: Wednesday, April 21, 2021 8:35 PM
+To: xieziyao <xieziyao@huawei.com>
+Cc: ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH] syscalls/sendfile: Delete unnecessary loop logic in do_child()
+
+Hi!
+Looking at the code the sendfile04 and sendfile05 does not need 99% of the code in the tests, as a matter of fact it even breaks the tests with sufficiently large -i parameter.
+
+Can we please instead remove all the server and socket code from
+sendfile04 and sendfile05? We can just easily pass in_fd and out_fd pointing to a regular files to the sendfile() syscall instead.
+
 --
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
