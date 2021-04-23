@@ -1,19 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 23 Apr 2021 16:43:32 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/getppid02: Convert to the new API
-In-Reply-To: <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
-References: <20210304021304.1126635-1-ruansy.fnst@fujitsu.com>
- <20210304021304.1126635-2-ruansy.fnst@fujitsu.com>
-Message-ID: <YILdFPYtqxYnsvn9@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 23 Apr 2021 17:06:48 +0200
+Subject: [LTP] [PATCH] mkfs: relax size check
+In-Reply-To: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
+References: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
+Message-ID: <YILiiDe5gv4d2Gg5@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Here as well, pushed with minor adjustenments, thanks.
+Hi Jan,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Yes, I also noticed mkfs01_ext3_sh and mkfs01_ext4_sh on mainline, this could
+help. Thanks!
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
