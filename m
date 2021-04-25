@@ -1,46 +1,39 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Sun, 25 Apr 2021 03:28:08 +0000
-Subject: [LTP] [PATCH] syscalls/getdents01: Add close() and open() at
- the end of run()
-Message-ID: <808aa8a561fa469b9eedda4f29196c6a@huawei.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Sun, 25 Apr 2021 17:19:59 +0800
+Subject: [LTP] [PATCH] syscalls/open05: Move cleanup() to the end of test
+Message-ID: <20210425091959.13609-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+When the test run with the option of '-i', we need to move
+cleanup() to the end of test, otherwist the test will fail,
+and report: "TFAIL  :  open05.c:85: Expected EACCES got 2".
 
-I have re-submitted the patch according you review, please see: https://patchwork.ozlabs.org/project/ltp/patch/20210425012240.6328-1-zhaogongyi@huawei.com/
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/syscalls/open/open05.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks so much!
+diff --git a/testcases/kernel/syscalls/open/open05.c b/testcases/kernel/syscalls/open/open05.c
+index 051aec3b3..f5098be2d 100644
+--- a/testcases/kernel/syscalls/open/open05.c
++++ b/testcases/kernel/syscalls/open/open05.c
+@@ -103,11 +103,10 @@ int main(int ac, char **av)
+ 				tst_resm(TFAIL, "Failures reported above");
 
-Best Regards,
-Gongyi
+ 			close(fd);
+-			cleanup();
+-
+ 		}
+ 	}
 
-> 
-> Hi!
-> >  testcases/kernel/syscalls/getdents/getdents01.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/testcases/kernel/syscalls/getdents/getdents01.c
-> > b/testcases/kernel/syscalls/getdents/getdents01.c
-> > index ef8f4e864..7982691a6 100644
-> > --- a/testcases/kernel/syscalls/getdents/getdents01.c
-> > +++ b/testcases/kernel/syscalls/getdents/getdents01.c
-> > @@ -92,6 +92,9 @@ static void run(void)
-> >  	} while (rval > 0);
-> >
-> >  	check_flags();
-> > +
-> > +	SAFE_CLOSE(fd);
-> > +	fd = SAFE_OPEN(".", O_RDONLY|O_DIRECTORY);
-> >  }
-> 
-> Good catch but I guess that it would be a bit cleaner if we opened the fd at
-> the start of the run() and closed it at the end instead of opening it in setup()
-> and reopening it for each iteration.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
++	cleanup();
+ 	tst_exit();
+ }
+
+--
+2.17.1
+
