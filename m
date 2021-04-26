@@ -1,53 +1,27 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 26 Apr 2021 16:15:51 +0100
-Subject: [LTP] [PATCH v3 2/7] API: Add macro for the container_of trick
-In-Reply-To: <CAEemH2ejA9kY2P4HsYEds3g9AjzFQ4mDRuWiF2176istdOMtaA@mail.gmail.com>
-References: <20210412145506.26894-1-rpalethorpe@suse.com>
- <20210412145506.26894-3-rpalethorpe@suse.com>
- <CAEemH2ejA9kY2P4HsYEds3g9AjzFQ4mDRuWiF2176istdOMtaA@mail.gmail.com>
-Message-ID: <87o8e1m5zs.fsf@suse.de>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 26 Apr 2021 18:27:58 +0300
+Subject: [LTP] [PATCH 0/3] network/virt: new FOU and GUE tests
+In-Reply-To: <YIaxyECJfyzuv4eS@pevik>
+References: <20210422131630.28565-1-alexey.kodanev@oracle.com>
+ <YIZbfLBS7C5hUu++@pevik> <d7f5805b-318f-d1f2-84ed-c2fe0769b854@oracle.com>
+ <YIaxyECJfyzuv4eS@pevik>
+Message-ID: <6257020e-faaa-cdd5-0e6f-498ad5c840cf@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 26.04.2021 15:27, Petr Vorel wrote:
+> Hi Alexey,
+> 
+>> Hi Petr,
+> 
+>> Thanks for the review! I think with test args we could reduce
+>> duplication without complicating too much... what about these
+>> diffs below (gue01.sh removed)?
+> 
+> Good idea, thanks for addressing it, LGTM!
+> 
 
-Li Wang <liwang@redhat.com> writes:
-
-> Richard Palethorpe <rpalethorpe@suse.com> wrote:
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->>
-> Reviewed-by: Li Wang <liwang@redhat.com>
->
->
->> ---
->>  include/tst_common.h | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/include/tst_common.h b/include/tst_common.h
->> index fd7a900d4..317925d1d 100644
->> --- a/include/tst_common.h
->> +++ b/include/tst_common.h
->> @@ -83,4 +83,9 @@
->>  #define TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(condition) \
->>         TST_BUILD_BUG_ON(condition)
->>
->> +#define tst_container_of(ptr, type, member) ({              \
->> +       const typeof( ((type *)0)->member ) *__mptr = (ptr); \
->> +       (type *)( (char *)__mptr - offsetof(type,member) );  \
->> +})
->>
->
-> I'd suggest defining it as uppercase 'TST_CONTAINER_OF(...)' to respect
-> other macro's naming policy in tst_common.h.
-
-I don't mind either way. I suspect it is lower case to match offsetof
-and maybe it is expected to become a compiler intrinsic. Perhaps we
-should remove the tst_. WDYT Cyril??
-
--- 
-Thank you,
-Richard.
+Applied, thanks Petr!
