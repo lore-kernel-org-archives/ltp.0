@@ -1,10 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Apr 2021 20:59:05 +0200
-Subject: [LTP] [PATCH 1/1] df01.sh: Fix DF_FS_TYPE assignment on bind
- mount
-In-Reply-To: <20210401124724.25394-1-pvorel@suse.cz>
-References: <20210401124724.25394-1-pvorel@suse.cz>
-Message-ID: <YIcNeV0wbuK9wmPu@pevik>
+Date: Mon, 26 Apr 2021 21:25:44 +0200
+Subject: [LTP] [PATCH] Ignore ntfs file system
+In-Reply-To: <20210425030440.12762-1-zhanglianjie@uniontech.com>
+References: <20210425030440.12762-1-zhanglianjie@uniontech.com>
+Message-ID: <YIcTuE34yq8KISC5@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,30 +12,41 @@ To: ltp@lists.linux.it
 
 Hi,
 
-Merged this one.
+> If the fuse file system is ignored and the kernel enable CONFIG_NTFS_FS,
+> then the mount.ntfs of fuse is used when mounting ntfs,
+> which is equivalent to not ignoring the fuse file system.
+
+...
+> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
+> @@ -123,6 +123,7 @@ static struct tst_test test = {
+>  	.all_filesystems = 1,
+>  	.skip_filesystems = (const char *const []){
+>  		"fuse",
+> +		"ntfs",
+
+Shouldn't "ntfs" *replace* "fuse"?
+
+Testing on SLES kernel 5.3 (heavily patched) which is without CONFIG_NTFS_FS:
+...
+tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
+...
+Summary:
+passed   21
+failed   0
+broken   0
+skipped  0
+warnings 0
+
+Testing Debian kernel 4.9.0-11-amd64 which is with CONFIG_NTFS_FS:
+tst_supported_fs_types.c:148: TINFO: Skipping ntfs as requested by the test
+...
+Summary:
+passed   15
+failed   0
+broken   0
+skipped  0
+warnings 0
+
 
 Kind regards,
 Petr
-
-> In case of bind mount of testing directory, grep will assign filesystem
-> twice, with new line:
-
-> $ echo "DF_FS_TYPE: '$DF_FS_TYPE'"
-> DF_FS_TYPE: 'ext2
-> ext2'
-
-> Limiting only first line to avoid failure with confusing message:
-
-> df01 5 TFAIL: 'df' failed.
-> df: ext2: No such file or directory
-
-> +++ b/testcases/commands/df/df01.sh
-> @@ -39,7 +39,7 @@ setup()
->  {
->  	tst_mkfs
->  	tst_mount
-> -	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk '{print $5}')
-> +	DF_FS_TYPE=$(mount | grep "$TST_DEVICE" | awk 'NR==1{print $5}')
->  }
-
->  df_test()
