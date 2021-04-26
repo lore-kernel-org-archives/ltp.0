@@ -1,216 +1,61 @@
 From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 26 Apr 2021 17:39:51 +0100
-Subject: [LTP] [PATCH v3 3/7] Add new CGroups APIs
-In-Reply-To: <CAEemH2fWB7KcXbT-4OVE7WfCfkVA2_k9-dW+CXTKgh5aTtETFQ@mail.gmail.com>
+Date: Mon, 26 Apr 2021 17:44:44 +0100
+Subject: [LTP] [PATCH v3 5/7] docs: Update CGroups API
+In-Reply-To: <CAEemH2dkbD_-gRQeKKAh+H6vo8gb+s0dWCa1-mJ_1-eg0eLeAA@mail.gmail.com>
 References: <20210412145506.26894-1-rpalethorpe@suse.com>
- <20210412145506.26894-4-rpalethorpe@suse.com> <YHcMnBaznFaBPj2U@yuki>
- <875z0n3d93.fsf@suse.de>
- <CAEemH2fWB7KcXbT-4OVE7WfCfkVA2_k9-dW+CXTKgh5aTtETFQ@mail.gmail.com>
-Message-ID: <87im49m23s.fsf@suse.de>
+ <20210412145506.26894-6-rpalethorpe@suse.com>
+ <CAEemH2dkbD_-gRQeKKAh+H6vo8gb+s0dWCa1-mJ_1-eg0eLeAA@mail.gmail.com>
+Message-ID: <87fszdm1vn.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hello,
 
 Li Wang <liwang@redhat.com> writes:
 
-> Hi,
->
->>> -enum tst_cgroup_ctrl {
->> >> -    TST_CGROUP_MEMCG = 1,
->> >> +/* Controller sub-systems */
->> >> +enum tst_cgroup_css {
->> >> +    TST_CGROUP_MEMORY = 1,
->> >>      TST_CGROUP_CPUSET = 2,
->> >> -    /* add cgroup controller */
->> >>  };
->> >
->> > I spend a bit of time figuring out what css means, can't we just use
->> > controler in the code instead? It's a bit longer but more obvious.
->> >
->> > Or is this consitent with kernel naming?
+>> +static void run(void)
+>> +{
+>> +       char buf[BUFSIZ];
+>> +       size_t mem = 0;
+>> +
+>> +       cg_child = tst_cgroup_mk(cg, "child");
+>> +       SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
+>> +
+>> +       if (SAFE_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
+>> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
+>> +       if (SAFE_CGROUP_VER(cg, "cpuset") != TST_CGROUP_V1)
+>> +               SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+cpuset");
 >>
->> The kernel seems to refer to controllers as subsystems and css appears
->> to mean "CGroup subsystem". I'm not sure if subsystems are necessarily
->> controllers, but it seems that way. Also "controller" has too many
->> letters in it. Indeed it makes some function names very long and I found
->> that harder to read.
+>
+> Kind reminder:
+>
+> If you decide to add controllers automatically (as I suggested in patch3/7)
+> in
+> tst_cgroup_mk(), then these lines should be removed.
 >
 >
-> I also feel css looks oddly, if "controller" is too long we can go back
-> with "ctrl",
-> then we might need a one-line comment for the name abbreviation.
+>> +Another example of an edge case is the following.
+>> +
+>> +[source,c]
+>>
+>> +-------------------------------------------------------------------------------
+>> +       if (tst_cgroup_ver(cg, "memory") == TST_CGROUP_V1)
+>> +               SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
+>> +       else
+>> +               SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
+>>
 >
-> e.g.  previous "/* add cgroup controller */" is make no sense but a hint
-> for people
-> to know this is cgroup controller and could be extended in the future.
+> typo PRINT --> PRINTF ^.
 
-OK ctrl it is and I will create a note about internal kernel naming.
-
->
->
->> I suppose to be totally consistent with the kernel we should randomly
->> name some things css and others subsys. :-p
->>
->
-> Not very necessary, this test API is facing for userland,
-> understanding easily
-> for users is more important I think.
->
->
->>> +struct tst_cgroup_opts {
->> >> +    /* Only try to mount V1 CGroup controllers. This will not
->> >> +     * prevent V2 from being used if it is already mounted, it
->> >> +     * only indicates that we should mount V1 controllers if
->> >> +     * nothing is present. By default we try to mount V2 first. */
->> >> +    int only_mount_v1:1;
->> >> +};
->> >
->> > Do we need to pass the flags in a structure?
->> >
->> > This is not an API that has to be future proof, when we find out we need
->> > more than a few bitflags we can always change it.
->>
->> We may need to add xattr to this and there are many other
->> options. However most tests will just have NULL or 0, 0... So we could
->> move it into a vararg or have a tst_require2?
->>
->
-> My 2cent:
->
-> I slightly think tst_cgroup_opts is good stuff, it gives a possibility
-> to let users hook the cgoup mount way or, more options they
-> needed (maybe for customized users). And, in most situations
-> that test just has NULL, that's fine.
-
-+1
+This function actually exists :-p
 
 >
-> @Richard,
-> do you want to reserve the ?no_cleanup? in this structure as well?
-> I noticed you leave it in tst_cgroup02 test.
+> Btw, these documented works are quite awesome!
 
-I think this is only necessary if we add a new flag to all tests in
-tst_test to prevent CGroup cleanup. It should be easy to add this in a
-later patch.
-
->
->
->
->> >> +    struct tst_cgroup_tree *trees[TST_CGROUP_MAX_TREES + 1];
->> >> +};
->> >
->> > So this is an array of directories in different trees, can we please
->> > name the strucuture better. What about tst_cgroup_nodes or
->> > tst_cgroup_dirs?
->>
->> I guess tst_cgroup_tree always represents a directory. So I would go
->> with tst_cgroup_dir.
->>
->
-> +1
->
->>> +struct tst_cgroup_tree {
->> >
->> > Why isn't this called node or dir? Either of these would be more
->> > fitting.
->> >
->> > Also the tst_cgroup structure could use a better name, the tst_cgroup is
->> > actually an array of pointers to directories.
->>
->> As far as the test author is concerned it represents an actual "Control
->> Group". We keep arrays of directories to join together multiple V1
->> controllers on different hierarchies, but that is an implementation
->> detail.
->>
->> If anything it should be called tst_cgroup_group, but I don't like the
->> repetition. :-p
->>
->
-> Personally, I think tst_cgroup_node may be better since we have described
-> a tree for cgroup.  root, node, and leaves(files) should be more vivid.
->
-
-OK
-
->
->
->>> +
->> >> +    /* In general we avoid having sprintfs everywhere and use
->> >> +     * openat, linkat, etc.
->> >> +     */
->> >> +    int dir;
->> >
->> > Can we name this dir_fd so it's obvious what it is?
->>
->
-> +1
-> I stand by Cyril at this point.
->
->
->>> +/* Lookup tree for item names. */
->> >> +typedef struct cgroup_item items_t[];
->> >> +static items_t items = {
->> >> +    [0] = { "cgroup", .inner = (items_t){
->> >> +                    { "cgroup.procs", "tasks" },
->> >> +                    { "cgroup.subtree_control" },
->> >> +                    { "cgroup.clone_children", "clone_children" },
->> >> +                    { NULL }
->> >>              }
->> >> -    }
->> >> -    SAFE_FCLOSE(file);
->> >> +    },
->> >> +    [TST_CGROUP_MEMORY] = { "memory", .inner = (items_t){
->> >> +                    { "memory.current", "memory.usage_in_bytes" },
->> >> +                    { "memory.max", "memory.limit_in_bytes" },
->> >> +                    { "memory.swappiness", "memory.swappiness" },
->> >> +                    { "memory.swap.current",
->> "memory.memsw.usage_in_bytes" },
->> >> +                    { "memory.swap.max", "memory.memsw.limit_in_bytes"
->> },
->> >> +                    { "memory.kmem.usage_in_bytes",
->> "memory.kmem.usage_in_bytes" },
->> >> +                    { "memory.kmem.limit_in_bytes",
->> "memory.kmem.usage_in_bytes" },
->> >> +                    { NULL }
->> >> +            },
->> >> +      .css_indx = TST_CGROUP_MEMORY
->> >> +    },
->> >> +    [TST_CGROUP_CPUSET] = { "cpuset", .inner = (items_t){
->> >> +                    { "cpuset.cpus", "cpuset.cpus" },
->> >> +                    { "cpuset.mems", "cpuset.mems" },
->> >> +                    { "cpuset.memory_migrate", "cpuset.memory_migrate"
->> },
->> >> +                    { NULL }
->> >> +            },
->> >> +      .css_indx = TST_CGROUP_CPUSET
->> >> +    },
->> >> +    { NULL }
->> >> +};
->> >
->> > Item is a very generic word, this is a list of known knobs and map
->> > between v1 and v2. So maybe cgroup_knob_map or just cgroup_knobs ?
->>
->> I suppose that cgroup_item can be seperated into just two structs now
->> that I removed controller sub items like "memory.swap". This might help
->> solve the missing initializer warnings as well.
->
->
-> To separate into two structs sounds good, the 'cgroup_item' contains both
-> trunk node and controller files make things mess up.
->
->
->> I would not describe "memory.current" as a knob. It is a read only file
->> and I think of knobs as something you can write to. So I would prefer
->> cgroup_file and cgroup_subsys.
->
->
-> +1
-> cgroup_file and cgroup_subsys(or cgroup_controller) all very nice.
-
-I will try cgroup_file and cgroup_ctrl.
+Thanks!
 
 -- 
 Thank you,
