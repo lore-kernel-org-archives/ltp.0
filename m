@@ -1,121 +1,52 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Apr 2021 12:31:58 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
-In-Reply-To: <20210422065732.61222-2-xieziyao@huawei.com>
-References: <20210422065732.61222-1-xieziyao@huawei.com>
- <20210422065732.61222-2-xieziyao@huawei.com>
-Message-ID: <YIaWnt5ksxVyBvxk@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 26 Apr 2021 19:03:02 +0800
+Subject: [LTP] runltp-ng and possible ltp-pan deprecation
+In-Reply-To: <YH7Z8nOX90qjsMpa@yuki>
+References: <YH7Z8nOX90qjsMpa@yuki>
+Message-ID: <CAEemH2cWeKBGcntjHQco39sZd0qXNxmgheunj__Y1kqxhfmyNA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
-> 1. Convert tkill01 to the new API;
-> 2. Capture signals to verify success, while the previous code
-> didn't make it work.
+Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Generally LGTM, with comments below.
+>
+> Hi!
+> As you may have know some time ago I have started to work on runltp-ng a
+> script to replace runltp and ltp-pan.
+>
+> The new executor is different in several key aspects, for example:
+>
+> - it can and is supposed to run on a different machine from the system
+>   under test (although it still supports running on the same machine)
+>
+> - there are different backends, it can run tests locally, over ssh, or
+>   start a VM with qemu
+>
+> - produces different output formats currently html or json
+>
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Very nice features. Thanks!
 
->  #include <stdio.h>
->  #include <stdlib.h>
-> @@ -48,59 +24,37 @@
->  #include <linux/unistd.h>
->  #include <sys/types.h>
-I removed these as not needed. The only one which is still relevant is <signal.h>
-(I kept it although it's not needed to be included, as it's included in
-tst_safe_macros.h which are included in tst_test.h).
+>
+> Also there are two different options how to do that. Either we put it
+> into runltp-ng directory to the LTP git root or we may as well create a
+> separate repository under the linux-test-project and make it a ltp git
+> submodule. Any preferencies to that?
+>
 
-> -#include "test.h"
->  #include "lapi/syscalls.h"
-> +#include "tst_test.h"
+I prefer the LTP git root as well.
 
-> +int sig_flag = 0;
+Btw, I opened a PR for some tiny issues fixing, plz help review.
+https://github.com/metan-ucw/runltp-ng/pull/28
 
-It should be
-static int sig_flag;
-
-...
-> +static void run(void)
-...
-> +	SAFE_SIGNAL(SIGUSR1, sighandler);
-> +	TEST(tid = tst_syscall(__NR_gettid));
-> +	if (TST_RET == -1)
-> +		tst_res(TFAIL | TTERRNO, "tst_syscall(__NR_gettid) failed");
-gettid() manpage says "ERRORS: This call is alway successful". I suppose this is
-true also for raw syscall. And it's certainly true for tst_syscall(__NR_gettid).
-
-BTW if it really needed to be checked, tst_brk() or tst_res() with return would
-need to be used.
-> +
-> +	TEST(tst_syscall(__NR_tkill, tid, SIGUSR1));
-> +	if (TST_RET == 0) {
-> +		while (!sig_flag);
-Not sure why you required this.
-> +		tst_res(TPASS, "tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
->  	}
-> -	cleanup();
-> -	tst_exit();
->  }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.test_all = run,
-> +};
-In the end going to merge code below.
-
-Kind regards,
-Petr
-
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * Copyright (c) Linux Test Project, 2009-2021
- * Copyright (c) Crackerjack Project., 2007
- * Ported from Crackerjack to LTP by Manas Kumar Nayak maknayak@in.ibm.com>
- */
-
-/*\
- * [Description]
- *
- * Basic tests for the tkill syscall.
- *
- * [Algorithm]
- *
- * Calls tkill and capture signals to verify success.
- */
-
-#include <signal.h>
-
-#include "lapi/syscalls.h"
-#include "tst_test.h"
-
-static int sig_flag;
-
-static void sighandler(int sig)
-{
-	if (sig == SIGUSR1)
-		sig_flag = 1;
-}
-
-static void run(void)
-{
-	int tid;
-
-	SAFE_SIGNAL(SIGUSR1, sighandler);
-
-	tid = tst_syscall(__NR_gettid);
-
-	TST_EXP_PASS(tst_syscall(__NR_tkill, tid, SIGUSR1));
-}
-
-static struct tst_test test = {
-	.needs_tmpdir = 1,
-	.test_all = run,
-};
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210426/57080db9/attachment.htm>
