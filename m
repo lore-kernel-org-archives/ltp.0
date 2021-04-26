@@ -1,42 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 26 Apr 2021 14:50:21 +0200
-Subject: [LTP] [PATCH] Modify the test logic of mincore.
-In-Reply-To: <f73913c8-f6ca-d8ea-60c8-e4002ac16dba@uniontech.com>
-References: <20210330104613.1059-1-zhanglianjie@uniontech.com>
- <YHRcJOUer87SUn6v@yuki>
- <cded02a5-6668-8524-d588-b965ed1a7086@uniontech.com>
- <YHgd/NDLJzz68uDl@yuki>
- <e3eabee4-6616-84dc-cc8d-bc4f23228637@uniontech.com>
- <YH1H4qZwqSNom4RO@yuki>
- <f73913c8-f6ca-d8ea-60c8-e4002ac16dba@uniontech.com>
-Message-ID: <YIa3Dbsl7FY6IC8f@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 26 Apr 2021 15:09:21 +0200
+Subject: [LTP] [PATCH] Fix the 64-bit macro definition of mips
+ architecture
+In-Reply-To: <20210426070320.iow3avu2pq22qled@vireshk-i7>
+References: <20210422072609.9938-1-sujiaxun@uniontech.com>
+ <YIZSzNd9uK8kItYb@pevik>
+ <20210426055556.dmcogdykez2ddxn3@vireshk-i7>
+ <YIZa4Ph81LmkEkLZ@pevik>
+ <20210426062357.i72js3urkoofvzcj@vireshk-i7>
+ <f06db611-5024-78d6-07e9-36115889b7a7@uniontech.com>
+ <20210426070320.iow3avu2pq22qled@vireshk-i7>
+Message-ID: <YIa7gZn/5i9pBqXf@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The test was passed before the cve patch was applied, and the test
-> failed after the patch was applied, and the test results were the same
-> on both the x86 and mips architectures.
->
-> This cve patch changes mincore() to count "mapped" pages instead of 
-> "cached" pages.
+> On 26-04-21, 15:00, sujiaxun wrote:
+> > uos@uos-PC:~$ echo |gcc -dM -E - | grep -i arch
+> > #define _MIPS_ARCH "mips64r2"
+> > #define _MIPS_ARCH_MIPS64R2 1
+> > uos@uos-PC:~$ echo |gcc -dM -E - | grep -i mips64
+> > #define _MIPS_ISA _MIPS_ISA_MIPS64
+> > #define _MIPS_TUNE "mips64r2"
+> > #define _MIPS_TUNE_MIPS64R2 1
+> > #define _MIPS_ARCH "mips64r2"
+> > #define _MIPS_ARCH_MIPS64R2 1
+> > #define __mips64 1
+> > uos@uos-PC:~$ uname  -m
+> > mips64
+Thanks for verification!
 
-I've looked at at the mincore code and found what is your problem. The
-initiall patch that fixed the CVE was wrong and later reverted and
-replaced with a different fix:
+> > The mips architecture gcc has no built-in __arch64__, only __mips64
+> > definitions. Of course, "__BITS_PER_LONG == 64" can also be used, but I
+> > think it is better to use __mips64 in the mips architecture.
 
-commit 134fca9063ad4851de767d1768180e5dede9a881
-Author: Jiri Kosina <jkosina@suse.cz>
-Date:   Tue May 14 15:41:38 2019 -0700
+> Hmm, I will rather try to do what the kernel source code does, i.e.
+> use __BITS_PER_LONG here instead.
++1
 
-    mm/mincore.c: make mincore() more conservative
-
-
-So it's your kernel that is broken and the test is fine.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
