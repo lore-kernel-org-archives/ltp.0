@@ -1,40 +1,26 @@
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Mon, 26 Apr 2021 14:17:50 +0200
-Subject: [LTP] runltp-ng and possible ltp-pan deprecation
-In-Reply-To: <YIE0INnCJOMGYQQR@pevik>
-References: <YH7Z8nOX90qjsMpa@yuki> <YIE0INnCJOMGYQQR@pevik>
-Message-ID: <CADYN=9L9ic-q44dNPvDmDo1T+-=U+gDqUrKWGX_L2tUkpamYPA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 26 Apr 2021 14:27:52 +0200
+Subject: [LTP] [PATCH 0/3] network/virt: new FOU and GUE tests
+In-Reply-To: <d7f5805b-318f-d1f2-84ed-c2fe0769b854@oracle.com>
+References: <20210422131630.28565-1-alexey.kodanev@oracle.com>
+ <YIZbfLBS7C5hUu++@pevik>
+ <d7f5805b-318f-d1f2-84ed-c2fe0769b854@oracle.com>
+Message-ID: <YIaxyECJfyzuv4eS@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 22 Apr 2021 at 10:30, Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi Cyril,
->
-> Thank you for bringing the discussion to upstream runltp-ng.
->
-> I'd prefer to add the project to ltp git
+Hi Alexey,
 
-I agree with that too.
-Also if we can seamlessly move from runltp to runltp-ng, since we
-don't want the behavior to change.
-Or we need to support both for a release or two and then remove runltp.
+> Hi Petr,
 
+> Thanks for the review! I think with test args we could reduce
+> duplication without complicating too much... what about these
+> diffs below (gue01.sh removed)?
 
-Cheers,
-Anders
+Good idea, thanks for addressing it, LGTM!
 
->, in runltp-ng/ in root directory.
-> And add either a symlink runltp-ng/runltp-ng to the root directory or have a
-> shell script which runs it:
-> perl -I$(readlink -f $0)/runltp-ng $(readlink -f $0)/runltp-ng/runltp-ng $@
->
-> Kind regards,
-> Petr
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Kind regards,
+Petr
