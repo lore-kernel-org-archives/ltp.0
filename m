@@ -1,115 +1,171 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 26 Apr 2021 20:52:22 +0800
-Subject: [LTP] [PATCH 1/3 v2] syscalls/close: Convert close01 to the new API
+Date: Mon, 26 Apr 2021 20:52:24 +0800
+Subject: [LTP] [PATCH 3/3 v2] syscalls/close: Convert close08 to the new API
 In-Reply-To: <20210426125224.150268-1-xieziyao@huawei.com>
 References: <20210426125224.150268-1-xieziyao@huawei.com>
-Message-ID: <20210426125224.150268-2-xieziyao@huawei.com>
+Message-ID: <20210426125224.150268-4-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Cleanup and convert close01 to the new API;
-2. Add SAFE_CLOSE() to the file descriptor.
+Cleanup and syscalls/close: Convert close08 to the new API.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
 v1->v2:
-1. Cleanup with TST_EXP_PASS();
-2. Add SAFE_CLOSE() to the file descriptor for a pipe.
+Cleanup with TST_EXP_PASS() and remove setup() function.
 
- testcases/kernel/syscalls/close/close01.c | 134 +++++++---------------
- 1 file changed, 40 insertions(+), 94 deletions(-)
+ testcases/kernel/syscalls/close/close08.c | 186 +++-------------------
+ 1 file changed, 21 insertions(+), 165 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/close/close01.c b/testcases/kernel/syscalls/close/close01.c
-index c734ff7d2..759c43af0 100644
---- a/testcases/kernel/syscalls/close/close01.c
-+++ b/testcases/kernel/syscalls/close/close01.c
-@@ -1,124 +1,70 @@
+diff --git a/testcases/kernel/syscalls/close/close08.c b/testcases/kernel/syscalls/close/close08.c
+index ccdefa173..c4ee52060 100644
+--- a/testcases/kernel/syscalls/close/close08.c
++++ b/testcases/kernel/syscalls/close/close08.c
+@@ -1,177 +1,33 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *  07/2001 Ported by Wayne Boyer
-+ * 07/2001 Ported by Wayne Boyer
-+ */
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * AUTHOR: William Roske
++ * CO-PILOT: Dave Fenner
+  */
+-/* $Id: close08.c,v 1.6 2009/10/13 14:00:46 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: close08
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for close(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) close(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the close(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	close(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
 +
 +/*\
 + * [Description]
-  *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
 + * Basic test for the close() syscall.
   *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-+ * [Description]
++ * [Algorithm]
   *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software Foundation,
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * DESCRIPTION
-- *	Test that closing a regular file and a pipe works correctly
-+ * Test that closing a regular file and a pipe works correctly.
-  */
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
++ * Call close() and expects it to succeed.
++ */
 
- #include <stdio.h>
- #include <errno.h>
+-#include <sys/types.h>
++#include <stdio.h>
  #include <fcntl.h>
- #include <sys/stat.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
 -#include "test.h"
 -#include "safe_macros.h"
-+#include "tst_test.h"
-
--void cleanup(void);
--void setup(void);
-+#define FILENAME "close01_testfile"
-
--char *TCID = "close01";
--int TST_TOTAL = 2;
-+int fild, newfd, pipefildes[2];
-
--char fname[40] = "";
-+static void setup_file(void)
-+{
-+	newfd = SAFE_DUP(fild);
-+}
-
--int fild, newfd, pipefildes[2];
-+static void setup_pipe(void)
-+{
-+	SAFE_PIPE(pipefildes);
-+	SAFE_CLOSE(pipefildes[1]);
-+}
-
- struct test_case_t {
- 	int *fd;
- 	char *type;
--} TC[] = {
--	/* file descriptor for a regular file */
--	{
--	&newfd, "file"},
--	    /* file descriptor for a pipe */
--	{
--	&pipefildes[0], "pipe"}
-+	void (*setupfunc) ();
-+} tc[] = {
-+	{&newfd, "file", setup_file},
-+	{&pipefildes[0], "pipe", setup_pipe}
- };
-
--int main(int ac, char **av)
-+static void run(unsigned int i)
- {
 -
--	int i;
+-void setup();
+-void cleanup();
+-
+-char *TCID = "close08";
+-int TST_TOTAL = 1;
+-
+-char fname[255];
+-int fd;
+-
+-int main(int ac, char **av)
+-{
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
@@ -120,76 +176,52 @@ index c734ff7d2..759c43af0 100644
 -
 -		tst_count = 0;
 -
--		if ((fild = creat(fname, 0777)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "can't open file %s",
--				 fname);
+-		if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+-			tst_brkm(TBROK | TTERRNO, cleanup,
+-				 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
+-		}
+-		TEST(close(fd));
 -
--		if ((newfd = dup(fild)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "can't dup the file des");
--
--		SAFE_PIPE(cleanup, pipefildes);
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(close(*TC[i].fd));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL, "call failed unexpectedly");
--				continue;
--			}
--
--			if (close(*TC[i].fd) == -1) {
--				tst_resm(TPASS, "%s appears closed",
--					 TC[i].type);
--			} else {
--				tst_resm(TFAIL, "%s close succeeded on"
--					 "second attempt", TC[i].type);
--			}
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "close(%s) failed", fname);
+-		} else {
+-			tst_resm(TPASS, "close(%s) returned %ld", fname,
+-				 TEST_RETURN);
 -		}
 -
+-		SAFE_UNLINK(cleanup, fname);
 -	}
--
++#include <sys/types.h>
++#include "tst_test.h"
+
 -	cleanup();
 -	tst_exit();
-+	tc[i].setupfunc();
-+	TST_EXP_PASS(close(*tc[i].fd), "close a %s", tc[i].type);
- }
+-}
++#define FILENAME "close08_testfile"
 
 -void setup(void)
-+static void setup(void)
++static void run(void)
  {
--	int mypid;
 -
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
- 	umask(0);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
 -
--	mypid = getpid();
--	sprintf(fname, "fname.%d", mypid);
-+	fild = SAFE_CREAT(FILENAME, 0777);
+-	sprintf(fname, "tfile_%d", getpid());
++    int fd = SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, 0700);
++    TST_EXP_PASS(close(fd));
  }
 
 -void cleanup(void)
-+static void cleanup(void)
- {
--	close(fild);
--
+-{
 -	tst_rmdir();
 -
-+	SAFE_CLOSE(fild);
- }
-+
+-}
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
++        .needs_tmpdir = 1,
++        .test_all = run,
 +};
 --
 2.17.1
