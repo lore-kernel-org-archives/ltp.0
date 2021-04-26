@@ -1,34 +1,25 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 26 Apr 2021 21:11:06 +0800
-Subject: [LTP] [PATCH] mkfs: relax size check
-In-Reply-To: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
-References: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
-Message-ID: <CAEemH2eieMfag5MDeayoeFTjn+JBuKKk8JB-bLVn6uY_SxUWhg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 26 Apr 2021 15:31:35 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/sendfile: Convert sendfile07 to the
+ new API
+In-Reply-To: <20210426084215.259071-3-xieziyao@huawei.com>
+References: <20210426084215.259071-1-xieziyao@huawei.com>
+ <20210426084215.259071-3-xieziyao@huawei.com>
+Message-ID: <YIbAtwDn4YGukFGE@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Apr 23, 2021 at 7:16 PM Jan Stancek <jstancek@redhat.com> wrote:
->
-> Number of total data blocks in filesystem reported by statfs
-> may be less than current formula of 90%. For example ext4 will
-> subtract "s_first_data_block plus internal journal blocks".
->
-> With recent change to e2fsprogs, overhead calculated in user-space
-> increased slightly and LTP test started failing:
->   https://github.com/tytso/e2fsprogs/commit/59037c5357d39c6d0f14a0aff70e67dc13eafc84
->
-> Since there's no strict rule how much the overhead will be,
-> as rule of thumb relax the condition to 80%.
->
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+I've simplified the code a bit and pushed, thanks.
 
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+* The socketpair() can be opened with SOCKET_NONBLOCK
+* Made use of tst_fill_file()
+* Moved tst_brk() out of the for() loop
+* Fixed some typos and simplified the doc comment
 
 -- 
-Regards,
-Li Wang
-
+Cyril Hrubis
+chrubis@suse.cz
