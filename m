@@ -1,165 +1,195 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 26 Apr 2021 20:52:23 +0800
-Subject: [LTP] [PATCH 2/3 v2] syscalls/close: Convert close02 to the new API
+Date: Mon, 26 Apr 2021 20:52:22 +0800
+Subject: [LTP] [PATCH 1/3 v2] syscalls/close: Convert close01 to the new API
 In-Reply-To: <20210426125224.150268-1-xieziyao@huawei.com>
 References: <20210426125224.150268-1-xieziyao@huawei.com>
-Message-ID: <20210426125224.150268-3-xieziyao@huawei.com>
+Message-ID: <20210426125224.150268-2-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cleanup and convert close02 to the new API.
+1. Cleanup and convert close01 to the new API;
+2. Add SAFE_CLOSE() to the file descriptor.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
 v1->v2:
-Cleanup with TST_EXP_FAIL() and remove setup() function.
+1. Cleanup with TST_EXP_PASS();
+2. Add SAFE_CLOSE() to the file descriptor for a pipe.
 
- testcases/kernel/syscalls/close/close02.c | 122 +++-------------------
- 1 file changed, 15 insertions(+), 107 deletions(-)
+ testcases/kernel/syscalls/close/close01.c | 134 +++++++---------------
+ 1 file changed, 40 insertions(+), 94 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/close/close02.c b/testcases/kernel/syscalls/close/close02.c
-index ddda5d9ec..50ca8006f 100644
---- a/testcases/kernel/syscalls/close/close02.c
-+++ b/testcases/kernel/syscalls/close/close02.c
-@@ -1,121 +1,29 @@
+diff --git a/testcases/kernel/syscalls/close/close01.c b/testcases/kernel/syscalls/close/close01.c
+index c734ff7d2..759c43af0 100644
+--- a/testcases/kernel/syscalls/close/close01.c
++++ b/testcases/kernel/syscalls/close/close01.c
+@@ -1,124 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
+  * Copyright (c) International Business Machines  Corp., 2001
+- *  07/2001 Ported by Wayne Boyer
 + * 07/2001 Ported by Wayne Boyer
-  */
-
--/*
-- * NAME
-- * 	close02.c
-- *
-- * DESCRIPTION
-- * 	Check that an invalid file descriptor returns EBADF
-- *
-- * ALGORITHM
-- *	loop if that option is specified
-- * 	   call close using the TEST macro and passing in an invalid fd
-- *	   if the call succeedes
-- *	      issue a FAIL message
-- *	   else
-- *	      log the errno
-- *	      if the errno == EBADF
-- *	         issue a PASS message
-- *	      else
-- *	         issue a FAIL message
-- *	cleanup
-- *
-- * USAGE:  <for command-line>
-- *  close02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
++ */
++
 +/*\
 + * [Description]
-+ *
+  *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
 + * Basic test for the close() syscall.
   *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * [Algorithm]
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
++ * [Description]
   *
-- * RESTRICTIONS
-- * 	None
-+ * Call close(-1) and expects it to return EBADF.
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * DESCRIPTION
+- *	Test that closing a regular file and a pipe works correctly
++ * Test that closing a regular file and a pipe works correctly.
   */
 
  #include <stdio.h>
  #include <errno.h>
+ #include <fcntl.h>
  #include <sys/stat.h>
 -#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
 
 -void cleanup(void);
 -void setup(void);
--
--char *TCID = "close02";
--int TST_TOTAL = 1;
--
++#define FILENAME "close01_testfile"
+
+-char *TCID = "close01";
+-int TST_TOTAL = 2;
++int fild, newfd, pipefildes[2];
+
+-char fname[40] = "";
++static void setup_file(void)
++{
++	newfd = SAFE_DUP(fild);
++}
+
+-int fild, newfd, pipefildes[2];
++static void setup_pipe(void)
++{
++	SAFE_PIPE(pipefildes);
++	SAFE_CLOSE(pipefildes[1]);
++}
+
+ struct test_case_t {
+ 	int *fd;
+ 	char *type;
+-} TC[] = {
+-	/* file descriptor for a regular file */
+-	{
+-	&newfd, "file"},
+-	    /* file descriptor for a pipe */
+-	{
+-	&pipefildes[0], "pipe"}
++	void (*setupfunc) ();
++} tc[] = {
++	{&newfd, "file", setup_file},
++	{&pipefildes[0], "pipe", setup_pipe}
+ };
+
 -int main(int ac, char **av)
-+static void run(void)
++static void run(unsigned int i)
  {
+-
+-	int i;
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
--	/* The following loop checks looping state if -i option given */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
--		/* reset tst_count in case we are looping */
 -		tst_count = 0;
 -
--		TEST(close(-1));
+-		if ((fild = creat(fname, 0777)) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "can't open file %s",
+-				 fname);
 -
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "Closed a non existent fildes");
--		} else {
--			if (TEST_ERRNO != EBADF) {
--				tst_resm(TFAIL, "close() FAILED to set errno "
--					 "to EBADF on an invalid fd, got %d",
--					 errno);
+-		if ((newfd = dup(fild)) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "can't dup the file des");
+-
+-		SAFE_PIPE(cleanup, pipefildes);
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			TEST(close(*TC[i].fd));
+-
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL, "call failed unexpectedly");
+-				continue;
+-			}
+-
+-			if (close(*TC[i].fd) == -1) {
+-				tst_resm(TPASS, "%s appears closed",
+-					 TC[i].type);
 -			} else {
--				tst_resm(TPASS, "call returned EBADF");
+-				tst_resm(TFAIL, "%s close succeeded on"
+-					 "second attempt", TC[i].type);
 -			}
 -		}
+-
 -	}
+-
 -	cleanup();
--
 -	tst_exit();
--
-+	TST_EXP_FAIL(close(-1), EBADF);
++	tc[i].setupfunc();
++	TST_EXP_PASS(close(*tc[i].fd), "close a %s", tc[i].type);
  }
 
--/*
-- * setup() - performs all ONE TIME setup for this test
-- */
 -void setup(void)
--{
++static void setup(void)
+ {
+-	int mypid;
 -
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
--	umask(0);
+ 	umask(0);
 -
 -	TEST_PAUSE;
--}
 -
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * or premature exit.
-- */
+-	tst_tmpdir();
+-
+-	mypid = getpid();
+-	sprintf(fname, "fname.%d", mypid);
++	fild = SAFE_CREAT(FILENAME, 0777);
+ }
+
 -void cleanup(void)
--{
++static void cleanup(void)
+ {
+-	close(fild);
 -
--}
+-	tst_rmdir();
+-
++	SAFE_CLOSE(fild);
+ }
++
 +static struct tst_test test = {
-+	.test_all = run,
++	.tcnt = ARRAY_SIZE(tc),
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = run,
 +};
 --
 2.17.1
