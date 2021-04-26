@@ -1,52 +1,36 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Apr 2021 21:25:44 +0200
-Subject: [LTP] [PATCH] Ignore ntfs file system
-In-Reply-To: <20210425030440.12762-1-zhanglianjie@uniontech.com>
-References: <20210425030440.12762-1-zhanglianjie@uniontech.com>
-Message-ID: <YIcTuE34yq8KISC5@pevik>
+Date: Mon, 26 Apr 2021 21:28:33 +0200
+Subject: [LTP] [PATCH] mkfs: relax size check
+In-Reply-To: <CAEemH2eieMfag5MDeayoeFTjn+JBuKKk8JB-bLVn6uY_SxUWhg@mail.gmail.com>
+References: <f224defc029816a74c518c54af2fbf2b90a90da6.1619176445.git.jstancek@redhat.com>
+ <CAEemH2eieMfag5MDeayoeFTjn+JBuKKk8JB-bLVn6uY_SxUWhg@mail.gmail.com>
+Message-ID: <YIcUYThenEVjYZJa@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Jan, Li,
 
-> If the fuse file system is ignored and the kernel enable CONFIG_NTFS_FS,
-> then the mount.ntfs of fuse is used when mounting ntfs,
-> which is equivalent to not ignoring the fuse file system.
+> On Fri, Apr 23, 2021 at 7:16 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-...
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range02.c
-> @@ -123,6 +123,7 @@ static struct tst_test test = {
->  	.all_filesystems = 1,
->  	.skip_filesystems = (const char *const []){
->  		"fuse",
-> +		"ntfs",
+> > Number of total data blocks in filesystem reported by statfs
+> > may be less than current formula of 90%. For example ext4 will
+> > subtract "s_first_data_block plus internal journal blocks".
 
-Shouldn't "ntfs" *replace* "fuse"?
+> > With recent change to e2fsprogs, overhead calculated in user-space
+> > increased slightly and LTP test started failing:
+> >   https://github.com/tytso/e2fsprogs/commit/59037c5357d39c6d0f14a0aff70e67dc13eafc84
 
-Testing on SLES kernel 5.3 (heavily patched) which is without CONFIG_NTFS_FS:
-...
-tst_supported_fs_types.c:51: TINFO: mkfs.vfat does exist
-...
-Summary:
-passed   21
-failed   0
-broken   0
-skipped  0
-warnings 0
+> > Since there's no strict rule how much the overhead will be,
+> > as rule of thumb relax the condition to 80%.
 
-Testing Debian kernel 4.9.0-11-amd64 which is with CONFIG_NTFS_FS:
-tst_supported_fs_types.c:148: TINFO: Skipping ntfs as requested by the test
-...
-Summary:
-passed   15
-failed   0
-broken   0
-skipped  0
-warnings 0
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+I dared to merge your fix. Thanks!
 
 Kind regards,
 Petr
