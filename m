@@ -1,146 +1,146 @@
 From: xieziyao <xieziyao@huawei.com>
-Date: Mon, 26 Apr 2021 11:24:08 +0000
-Subject: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
-In-Reply-To: <YIaWnt5ksxVyBvxk@pevik>
+Date: Mon, 26 Apr 2021 11:35:55 +0000
+Subject: [LTP] [PATCH 2/2] syscalls/tkill: Convert tkill02 to the new API
+In-Reply-To: <YIagGNrM6az0oMk6@pevik>
 References: <20210422065732.61222-1-xieziyao@huawei.com>
- <20210422065732.61222-2-xieziyao@huawei.com> <YIaWnt5ksxVyBvxk@pevik>
-Message-ID: <ae16017b01474cbb9d4d0e74e473a7c4@huawei.com>
+ <20210422065732.61222-3-xieziyao@huawei.com> <YIagGNrM6az0oMk6@pevik>
+Message-ID: <eadd5bf5cfc34977b9fc4ccf7cf053fb@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi, Petr,
 
-Thanks for your review, Petr.
-
-> +	TEST(tst_syscall(__NR_tkill, tid, SIGUSR1));
-> +	if (TST_RET == 0) {
-> +		while (!sig_flag);
-
-This while loop is written to check whether the sighandler function captures the SIGUSR1 signal and set sig_flag to 1.
-
-> +		tst_res(TPASS, "tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
->  	}
-> -	cleanup();
-> -	tst_exit();
->  }
-
-Other comments are fine to me.
+LGTM, thanks for your review.
 
 Best Regards,
 Ziyao
 
 -----Original Message-----
 From: Petr Vorel [mailto:pvorel@suse.cz] 
-Sent: Monday, April 26, 2021 6:32 PM
+Sent: Monday, April 26, 2021 7:12 PM
 To: xieziyao <xieziyao@huawei.com>
 Cc: ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
+Subject: Re: [LTP] [PATCH 2/2] syscalls/tkill: Convert tkill02 to the new API
 
 Hi,
 
-> 1. Convert tkill01 to the new API;
-> 2. Capture signals to verify success, while the previous code didn't 
-> make it work.
-
-Generally LGTM, with comments below.
+LGTM with very minor changes.
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
->  #include <stdio.h>
->  #include <stdlib.h>
-> @@ -48,59 +24,37 @@
->  #include <linux/unistd.h>
->  #include <sys/types.h>
-I removed these as not needed. The only one which is still relevant is <signal.h> (I kept it although it's not needed to be included, as it's included in tst_safe_macros.h which are included in tst_test.h).
+> +static pid_t expired_pid;
+>  static pid_t inval_tid = -1;
+> -static pid_t unused_tid;
 
-> -#include "test.h"
->  #include "lapi/syscalls.h"
-> +#include "tst_test.h"
+IMHO unused_tid is better describe what the variable holds.
 
-> +int sig_flag = 0;
+> -
+> -void cleanup(void)
+> -{
+> -	tst_rmdir();
+> -}
+> -
+> -void setup(void)
+> -{
+> -	TEST_PAUSE;
+> -	tst_tmpdir();
+> -
+> -	unused_tid = tst_get_unused_pid(cleanup);
+> -}
 
-It should be
-static int sig_flag;
+>  struct test_case_t {
+>  	int *tid;
+>  	int exp_errno;
+> -} test_cases[] = {
+> -	{&inval_tid, EINVAL},
+> -	{&unused_tid, ESRCH}
+> +	const char *desc;
+> +} tc[] = {
+> +	{&inval_tid, EINVAL, "inval_tid"},
+> +	{&expired_pid, ESRCH, "expired_pid"}
+Well, there is no point to print variable name.  Better would be "invalid TID"
+and "unused TID". But IMHO just writing what we expect is enough.
+
+It could be:
+#define ERRNO_DESC(x) .exp_errno = x, .desc = "exp" #x ...
+
+	{&inval_tid, ERRNO_DESC(EINVAL},
+	{&expired_pid, ERRNO_DESC(ESRCH}
+
+But we have tst_strerrno(), thus just:
+
+struct test_case_t {
+	int *tid;
+	int exp_errno;
+} tc[] = {
+	{&inval_tid, EINVAL},
+	{&unused_tid, ESRCH}
+};
 
 ...
-> +static void run(void)
-...
-> +	SAFE_SIGNAL(SIGUSR1, sighandler);
-> +	TEST(tid = tst_syscall(__NR_gettid));
-> +	if (TST_RET == -1)
-> +		tst_res(TFAIL | TTERRNO, "tst_syscall(__NR_gettid) failed");
-gettid() manpage says "ERRORS: This call is alway successful". I suppose this is true also for raw syscall. And it's certainly true for tst_syscall(__NR_gettid).
+	TST_EXP_FAIL(tst_syscall(__NR_tkill, *(tc[i].tid), SIGUSR1),
+		     tc[i].exp_errno, "tst_syscall(__NR_tkill) expecting %s",
+			 tst_strerrno(tc[i].exp_errno));
 
-BTW if it really needed to be checked, tst_brk() or tst_res() with return would need to be used.
-> +
-> +	TEST(tst_syscall(__NR_tkill, tid, SIGUSR1));
-> +	if (TST_RET == 0) {
-> +		while (!sig_flag);
-Not sure why you required this.
-> +		tst_res(TPASS, "tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"tst_syscall(__NR_tkill, %d, SIGUSR1)", tid);
->  	}
-> -	cleanup();
-> -	tst_exit();
->  }
-> +
-> +static struct tst_test test = {
-> +	.needs_tmpdir = 1,
-> +	.test_all = run,
-> +};
-In the end going to merge code below.
+I'll merge code below.
 
 Kind regards,
 Petr
 
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Copyright (c) Linux Test Project, 2009-2021
  * Copyright (c) Crackerjack Project., 2007
  * Ported from Crackerjack to LTP by Manas Kumar Nayak maknayak@in.ibm.com>  */
 
 /*\
  * [Description]
  *
- * Basic tests for the tkill syscall.
+ * Basic tests for the tkill() errors.
  *
  * [Algorithm]
  *
- * Calls tkill and capture signals to verify success.
- */
+ * - EINVAL on an invalid thread ID
+ * - ESRCH when no process with the specified thread ID exists  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
 #include <signal.h>
+#include <sys/syscall.h>
 
 #include "lapi/syscalls.h"
 #include "tst_test.h"
 
-static int sig_flag;
+static pid_t unused_tid;
+static pid_t inval_tid = -1;
 
-static void sighandler(int sig)
+struct test_case_t {
+	int *tid;
+	int exp_errno;
+} tc[] = {
+	{&inval_tid, EINVAL},
+	{&unused_tid, ESRCH}
+};
+
+static void setup(void)
 {
-	if (sig == SIGUSR1)
-		sig_flag = 1;
+	unused_tid = tst_get_unused_pid();
 }
 
-static void run(void)
+static void run(unsigned int i)
 {
-	int tid;
-
-	SAFE_SIGNAL(SIGUSR1, sighandler);
-
-	tid = tst_syscall(__NR_gettid);
-
-	TST_EXP_PASS(tst_syscall(__NR_tkill, tid, SIGUSR1)); }
+	TST_EXP_FAIL(tst_syscall(__NR_tkill, *(tc[i].tid), SIGUSR1),
+		     tc[i].exp_errno, "tst_syscall(__NR_tkill) expecting %s",
+			 tst_strerrno(tc[i].exp_errno));
+}
 
 static struct tst_test test = {
+	.tcnt = ARRAY_SIZE(tc),
 	.needs_tmpdir = 1,
-	.test_all = run,
+	.setup = setup,
+	.test = run,
 };
