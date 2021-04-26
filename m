@@ -1,24 +1,24 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 26 Apr 2021 14:25:14 +0200
-Subject: [LTP] runltp-ng and possible ltp-pan deprecation
-In-Reply-To: <CADYN=9L9ic-q44dNPvDmDo1T+-=U+gDqUrKWGX_L2tUkpamYPA@mail.gmail.com>
-References: <YH7Z8nOX90qjsMpa@yuki> <YIE0INnCJOMGYQQR@pevik>
- <CADYN=9L9ic-q44dNPvDmDo1T+-=U+gDqUrKWGX_L2tUkpamYPA@mail.gmail.com>
-Message-ID: <YIaxKhtKoHcdWZyM@yuki>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Mon, 26 Apr 2021 20:52:21 +0800
+Subject: [LTP] [PATCH 0/3 v2] syscalls/close: Convert close{01, 02,
+ 08} to the new API
+Message-ID: <20210426125224.150268-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Also if we can seamlessly move from runltp to runltp-ng, since we
-> don't want the behavior to change.
-> Or we need to support both for a release or two and then remove runltp.
+Xie Ziyao (3):
+  syscalls/close: Convert close01 to the new API
+  syscalls/close: Convert close02 to the new API
+  syscalls/close: Convert close08 to the new API
 
-Do not worry, I do plan to carry both for more than one release in order
-to give everyone enough time for the transition.
+ testcases/kernel/syscalls/close/close01.c | 134 +++++-----------
+ testcases/kernel/syscalls/close/close02.c | 122 ++------------
+ testcases/kernel/syscalls/close/close08.c | 186 +++-------------------
+ 3 files changed, 76 insertions(+), 366 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--
+2.17.1
+
