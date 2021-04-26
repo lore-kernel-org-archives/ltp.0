@@ -1,33 +1,33 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 26 Apr 2021 16:42:14 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/sendfile: Convert sendfile03 to the new
+Date: Mon, 26 Apr 2021 16:42:15 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/sendfile: Convert sendfile07 to the new
  API
 In-Reply-To: <20210426084215.259071-1-xieziyao@huawei.com>
 References: <20210426084215.259071-1-xieziyao@huawei.com>
-Message-ID: <20210426084215.259071-2-xieziyao@huawei.com>
+Message-ID: <20210426084215.259071-3-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Convert sendfile04 to the new API;
-2. Remove the useless testcase in which out_fd = -1 and in_fd = -1.
+Cleanup and convert sendfile07 to the new API.
 
 Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- .../kernel/syscalls/sendfile/sendfile03.c     | 190 ++++--------------
- 1 file changed, 37 insertions(+), 153 deletions(-)
+ .../kernel/syscalls/sendfile/sendfile07.c     | 221 +++++-------------
+ 1 file changed, 56 insertions(+), 165 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sendfile/sendfile03.c b/testcases/kernel/syscalls/sendfile/sendfile03.c
-index cd790ccde..72dce40b9 100644
---- a/testcases/kernel/syscalls/sendfile/sendfile03.c
-+++ b/testcases/kernel/syscalls/sendfile/sendfile03.c
-@@ -1,179 +1,63 @@
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile07.c b/testcases/kernel/syscalls/sendfile/sendfile07.c
+index c93363bad..847b26614 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile07.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile07.c
+@@ -1,194 +1,85 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
 - *   Copyright (c) International Business Machines  Corp., 2001
+- *   Copyright (c) Red Hat Inc., 2007
 - *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
@@ -43,28 +43,30 @@ index cd790ccde..72dce40b9 100644
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 + * Copyright (c) International Business Machines  Corp., 2001
-+ * 07/2001 Ported by Wayne Boyer
++ * Copyright (c) Red Hat Inc., 2007
++ * 12/2007 Copyed from sendfile03.c by Masatake YAMATO
   */
 
 -/*
 - * NAME
-- *	sendfile03.c
+- *	sendfile07.c
 - *
 - * DESCRIPTION
-- *	Testcase to test that sendfile(2) system call returns appropriete
-- *	errnos on error.
+- *	Testcase to test that sendfile(2) system call returns EAGAIN
+- *	when passing blocked out_fd. Here out_fd is opend with O_NONBLOCK.
 +/*\
 + * [Description]
   *
 - * ALGORITHM
-- *	1. Call sendfile(2) with out_fd = -1, and expect EBADF to be returned.
-- *	2. Call sendfile(2) with in_fd = -1, and expect EBADF to be returned.
-- *	3. Call sendfile(2) with in_fd = out_fd = -1, and expect EBADF.
-+ * Testcase to test that sendfile(2) system call returns EBADF when passing
-+ * negative out_fd or in_fd.
+- *      1. Make sockets with socketpair(&p). Use p[1] as out_fd.
+- *      2. Set O_NONBLOCK flag of out_fd on.
+- *      3. Write much datum to out_fd till write() returns EAGAIN.
+- *      4. Call sendfile with out_fd, and expect EAGAIN.
++ * Testcase to test that sendfile(2) system call returns EAGAIN
++ * when passing blocked out_fd. Here out_fd is opend with O_NONBLOCK.
   *
 - * USAGE:  <for command-line>
-- *  sendfile03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  sendfile07 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -e   : Turn on errno logging.
 - *             -i n : Execute test n times.
@@ -74,115 +76,98 @@ index cd790ccde..72dce40b9 100644
 + * [Algorithm]
   *
 - * HISTORY
-- *	07/2001 Ported by Wayne Boyer
+- *	12/2007 Copyed from sendfile03.c by Masatake YAMATO
 - *
 - * RESTRICTIONS
 - *	NONE
-+ * - call sendfile(2) with out_fd = -1, and expect EBADF to be returned
-+ * - call sendfile(2) with in_fd = -1, and expect EBADF to be returned
++ * 1. Set O_NONBLOCK flag of out_fd on;
++ * 2. Write much datum to out_fd till write() returns EAGAIN;
++ * 3. Call sendfile with out_fd, and expect EAGAIN.
   */
 
  #include <stdio.h>
  #include <errno.h>
  #include <fcntl.h>
++#include <sys/stat.h>
  #include <sys/sendfile.h>
++#include <sys/types.h>
+ #include <sys/socket.h>
 -#include "test.h"
 -
--#define FAILED 1
-
 -#ifndef OFF_T
 -#define OFF_T off_t
 -#endif /* Not def: OFF_T */
+-
+-TCID_DEFINE(sendfile07);
+-int TST_TOTAL = 1;
++#include <sys/mman.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
+
+-int in_fd, out_fd = 0, ignored_fd = 0;
+-char in_file[100];
 +#include "tst_test.h"
 
--TCID_DEFINE(sendfile03);
--int TST_TOTAL = 3;
--
--int in_fd, out_fd;
--char in_file[100], out_file[100];
--
+-/* To make out_fd overflow, write much chars
+- to out_fd. MAX_FILL_DATA_LENGTH defines the `much'. */
+ #define MAX_FILL_DATA_LENGTH 0xFFFFFFF
+
 -void cleanup(void);
 -void setup(void);
--void setup_func1(void);
++int p[2];
 +static int in_fd;
 +static int out_fd;
-+static int negative_fd = -1;
-
- struct test_case_t {
--	char *desc;
--	void (*setupfunc) ();
--	int out_fd;
--	int in_fd;
--	OFF_T *offset;
--	int count;
--	int exp_errno;
--} testcases[] = {
--	{
--	"Test for EBADF, in_fd = -1", NULL, 8, -1, NULL, 0, EBADF}, {
--	"Test for EBADF, out_fd = -1", NULL, -1, 7, NULL, 0, EBADF}, {
--	"Test for EBADF, in_fd = out_fd = -1", NULL, -1, -1, NULL,
--		    0, EBADF}
-+	int *in_fd;
-+	int *out_fd;
-+	const char *desc;
-+} tc[] = {
-+	{&in_fd, &negative_fd, "out_fd=-1"},
-+	{&negative_fd, &out_fd, "in_fd=-1"},
- };
++static char buf[] = "abcdefghijklmnopqrstuvwxyz";
 
 -int main(int ac, char **av)
 +static void setup(void)
  {
--	int i;
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
--
++	in_fd = SAFE_CREAT("in_file", 00700);
++	SAFE_WRITE(1, in_fd, buf, strlen(buf));
++	SAFE_CLOSE(in_fd);
++	in_fd = SAFE_OPEN("in_file", O_RDONLY);
+
 -	/*
 -	 * The following loop checks looping state if -c option given
 -	 */
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; ++i) {
--			if (testcases[i].setupfunc != NULL) {
--				testcases[i].setupfunc();
--			}
+-		TEST(sendfile(out_fd, in_fd, NULL, 1));
 -
--			TEST(sendfile(testcases[i].out_fd, testcases[i].in_fd,
--				      testcases[i].offset, testcases[i].count));
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "call succeeded unexpectedly");
+-			continue;
+-		}
 -
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO != testcases[i].exp_errno) {
--				tst_resm(TFAIL, "sendfile returned unexpected "
--					 "errno, expected: %d, got: %d",
--					 testcases[i].exp_errno, TEST_ERRNO);
--			} else {
--				tst_resm(TPASS, "sendfile() returned %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--			}
+-		if (TEST_ERRNO != EAGAIN) {
+-			tst_resm(TFAIL, "sendfile returned unexpected "
+-				 "errno, expected: %d, got: %d",
+-				 EAGAIN, TEST_ERRNO);
+-		} else {
+-			tst_resm(TPASS, "sendfile() returned %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
 -		}
 -	}
--	cleanup();
 -
+-	cleanup();
 -	tst_exit();
-+	in_fd = SAFE_OPEN("in_file", O_CREAT | O_RDWR, 0600);
-+	out_fd = SAFE_CREAT("out_file", 0600);
- }
-
+-
+-}
+-
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - */
 -void setup(void)
-+static void cleanup(void)
- {
+-{
 -	char buf[100];
+-	int p[2];
+-	int i, r;
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
@@ -204,12 +189,50 @@ index cd790ccde..72dce40b9 100644
 -	if ((in_fd = open(in_file, O_RDONLY)) < 0) {
 -		tst_brkm(TBROK, cleanup, "open failed, errno: %d", errno);
 -	}
--	sprintf(out_file, "out.%d", getpid());
--	if ((out_fd = open(out_file, O_TRUNC | O_CREAT | O_RDWR, 0777)) < 0) {
--		tst_brkm(TBROK, cleanup, "open failed, errno: %d", errno);
+-
+-	/* Make fulfilled out_fd. */
+-	if (socketpair(PF_UNIX, SOCK_DGRAM, 0, p) < 0) {
+-		tst_brkm(TBROK, cleanup, "socketpair failed, errno: %d", errno);
 -	}
-+	SAFE_CLOSE(in_fd);
-+	SAFE_CLOSE(out_fd);
+-
+-	/* Don't close.
+-	   You cannot write nothing on out_fd if ignored_fd is closed. */
+-	ignored_fd = p[0];
++	SAFE_SOCKETPAIR(PF_UNIX, SOCK_DGRAM, 0, p);
+ 	out_fd = p[1];
+-	if (fcntl(out_fd, F_SETFL, O_WRONLY | O_NONBLOCK) < 0) {
+-		tst_brkm(TBROK, cleanup, "fcntl failed, errno: %d", errno);
+-	}
+-
+-	i = MAX_FILL_DATA_LENGTH;
+-	while (i > 0) {
+-		r = write(out_fd, buf, 1);
+-		if (r < 0) {
+-			if (errno == EAGAIN) {
++	SAFE_FCNTL(out_fd, F_SETFL, O_WRONLY | O_NONBLOCK);
++	for (int i = 0; i < MAX_FILL_DATA_LENGTH; ++i) {
++		TEST(write(out_fd, buf, 1));
++		if (TST_RET < 0) {
++			if (TST_ERR == EAGAIN)
+ 				break;
+-			} else {
+-				tst_brkm(TBROK, cleanup,
+-					 "write failed to fill out_fd, errno: %d",
+-					 errno);
+-			}
++			else
++				tst_brk(TBROK | TTERRNO, "write(out_fd, buf, 1)");
+ 		}
+-		i--;
+-	}
+-	if (i == 0) {
+-		tst_brkm(TBROK, cleanup,
+-			 "fail to fill out_fd, write %d bytes but EAGAIN it not returned.",
+-			 MAX_FILL_DATA_LENGTH);
++	if (i == MAX_FILL_DATA_LENGTH - 1)
++		tst_brk(TBROK, "fail to fill out_fd, write %d bytes but EAGAIN "
++			       "it not returned.", MAX_FILL_DATA_LENGTH);
+ 	}
  }
 
 -/*
@@ -217,28 +240,38 @@ index cd790ccde..72dce40b9 100644
 - *	       completion or premature exit.
 - */
 -void cleanup(void)
-+static void run(unsigned int i)
++static void cleanup(void)
  {
 -	/*
 -	 * print timing stats if that option was specified.
 -	 * print errno log if that option was specified.
 -	 */
--	close(out_fd);
+-	if (out_fd)
+-		close(out_fd);
+-	if (ignored_fd)
+-		close(ignored_fd);
 -	close(in_fd);
 -
 -	/* delete the test directory created in setup() */
 -	tst_rmdir();
--
-+	TST_EXP_FAIL(sendfile(*(tc[i].out_fd), *(tc[i].in_fd), NULL, 1),
-+		     EBADF, "sendfile(..) with %s", tc[i].desc);
++	if (p[0])
++		SAFE_CLOSE(p[0]);
++	if (p[1])
++		SAFE_CLOSE(p[1]);
++	SAFE_CLOSE(in_fd);
++}
+
++static void run(void)
++{
++	TST_EXP_FAIL(sendfile(out_fd, in_fd, NULL, 1), EAGAIN,
++		     "sendfile(out_fd, in_fd, NULL, 1) with blocked out_fd");
  }
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
 +	.needs_tmpdir = 1,
 +	.cleanup = cleanup,
 +	.setup = setup,
-+	.test = run,
++	.test_all = run,
 +};
 --
 2.17.1
