@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Apr 2021 14:20:14 +0200
-Subject: [LTP] [PATCH 2/3 v2] syscalls/close: Convert close02 to the new
+Date: Tue, 27 Apr 2021 14:23:33 +0200
+Subject: [LTP] [PATCH 3/3 v2] syscalls/close: Convert close08 to the new
  API
-In-Reply-To: <20210426125224.150268-3-xieziyao@huawei.com>
+In-Reply-To: <20210426125224.150268-4-xieziyao@huawei.com>
 References: <20210426125224.150268-1-xieziyao@huawei.com>
- <20210426125224.150268-3-xieziyao@huawei.com>
-Message-ID: <YIgBftUgy0sUy3BS@yuki>
+ <20210426125224.150268-4-xieziyao@huawei.com>
+Message-ID: <YIgCRbFZ81vX4KfA@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,15 +13,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with a minor change, thanks.
+Isn't this test just the same as close01.c?
 
-> +/*\
-> + * [Description]
-> + *
-> + * Basic test for the close() syscall.
+I think that we can just remove close08.c since it does not add any more
+coverage over close01.
 
-This sentence does not add any more information, so I've removed it and
-kept the second sentence below as a description instead.
+Also we can add all kind of other file descriptor to the close01.c test
+as well. We should add at least a few different socket fds there as well.
 
 -- 
 Cyril Hrubis
