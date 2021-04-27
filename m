@@ -1,39 +1,23 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 27 Apr 2021 21:14:59 +0200
-Subject: [LTP] [PATCH] Ignore ntfs file system
-In-Reply-To: <53b80b9e-42f6-90f7-1199-3592b4e5fcaa@uniontech.com>
-References: <20210425030440.12762-1-zhanglianjie@uniontech.com>
- <YIcTuE34yq8KISC5@pevik>
- <726f49eb-a185-6637-44e3-232d5e9b6fab@uniontech.com>
- <YIgRWZFymSmCKFyS@pevik>
- <53b80b9e-42f6-90f7-1199-3592b4e5fcaa@uniontech.com>
-Message-ID: <YIhis6EzwnuBEKO5@pevik>
+Date: Tue, 27 Apr 2021 21:20:38 +0200
+Subject: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
+In-Reply-To: <1619491883-69694-1-git-send-email-wangxin410@huawei.com>
+References: <1619491883-69694-1-git-send-email-wangxin410@huawei.com>
+Message-ID: <YIhkBsRClMPkyM4Y@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Xin,
 
-> > > > Shouldn't "ntfs" *replace* "fuse"?
-> > > Can't replace fuse.
-> > Not sure if we understand each other: I mean add "ntfs" and *remove* "fuse",
-> > as "fuse" is now redundant when we whitelist ntfs (see
-> > tst_get_supported_fs_types()), unless there is problem with other fuse
-> > filesystems. I tested with CONFIG_FUSE_FS=m CONFIG_EXFAT_FS=m.
+> Types in the name of the temporary files: For example, in aio_cancel/8-1.c file,
+> pts_aio_cancel_1_1 -> pts_aio_cancel_8_1.
+> Others like this have been modified.
 
-> > But maybe removing "fuse" should be a separate step.
-
-> I can understand what you mean, but I can't remove the fuse. If the fuse is
-> removed and the kernel is not configured with CONFIG_EXFAT_FS=m, it will
-> cause the test exfat to fail.
-
-You're right, I didn't notice I tested it without mount.exfat. Sorry for being
-slow. Interesting that while NTFS kernel module does not work on the test, exfat
-from Samsung does.
-
-Anyway merged. Thanks!
+This patch is also not applicable with git am. Not sure what you do wrong,
+but simple 'git format-patch origin/master' should work.
 
 Kind regards,
 Petr
