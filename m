@@ -1,188 +1,87 @@
-From: Wang Xin <wangxin410@huawei.com>
-Date: Tue, 27 Apr 2021 10:51:23 +0800
-Subject: [LTP] [PATCH] openposix/conformance/interfaces: Correct typos
-Message-ID: <1619491883-69694-1-git-send-email-wangxin410@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 27 Apr 2021 11:30:17 +0200
+Subject: [LTP] [PATCH 2/2] bpf: Check truncation on 32bit div/mod by zero
+In-Reply-To: <20210426120107.6632-2-rpalethorpe@suse.com>
+References: <20210426120107.6632-1-rpalethorpe@suse.com>
+ <20210426120107.6632-2-rpalethorpe@suse.com>
+Message-ID: <YIfZqZ29H2AN1vqh@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Types in the name of the temporary files: For example, in aio_cancel/8-1.c file,
-pts_aio_cancel_1_1 -> pts_aio_cancel_8_1.
-Others like this have been modified.
+Hi Richard,
 
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
----
- v4 -> v3: rebase and resent this patch on the latest main branch.
+> Add a test which checks for a number of issues surrounding division by
+> zero.
 
- testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c    | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c   | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c  | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c       | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c       | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c        | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c      | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c      | 2 +-
- testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c      | 2 +-
- 13 files changed, 13 insertions(+), 13 deletions(-)
+> +++ b/testcases/kernel/syscalls/bpf/bpf_prog05.c
+...
+> +/*\
+> + * [Description]
+> + *
+> + * Compare the effects of 32-bit div/mod by zero with the "expected"
+FYI this causes docparser error:
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-index 139e9b5..f11e067 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
-@@ -50,7 +50,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_8_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-index 5b980be..e1ae59e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	    || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_read_9_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-index f380531..a243b3e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
-@@ -50,7 +50,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_2_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_4_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-index ed8173e..615b97d 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-@@ -53,7 +53,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_2_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_3_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-index 5311a4a..277573a 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	    || sysconf(_SC_AIO_MAX) == -1)
- 		return PTS_UNSUPPORTED;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_7_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-index e445773..7eb6448 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
-@@ -55,7 +55,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		exit(PTS_UNSUPPORTED);
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_5_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-index 444555e..4e8afb6 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
-@@ -73,7 +73,7 @@ int main(void)
- 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
- 		exit(PTS_UNSUPPORTED);
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_7_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-index 2aea927..d1f8991 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
-@@ -59,7 +59,7 @@ int main(void)
- 	/* mmap will create a partial page */
- 	len = page_size / 2;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_5");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_6");
- 	child = fork();
- 	switch (child) {
- 	case 0:
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-index bb3ab74..d58fc8c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
-@@ -31,7 +31,7 @@ int main(void)
- 	void *pa;
- 	int fd;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_31_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_32_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-index b38833b..9aef16c 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
-@@ -53,7 +53,7 @@ int main(void)
- 	int status;
- 	int sig_num;
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_2");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_3");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-index 9d0f918..31f2109 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
-@@ -73,7 +73,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_2");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-index 53e89de..1879719 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
-@@ -54,7 +54,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_3_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-index 0280a0e..371e3b0 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
-@@ -49,7 +49,7 @@ int main(void)
- 	len = page_size + 1;
- 	/* Create tmp file */
--	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
-+	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_9_1");
- 	unlink(tmpfname);
- 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
- 	if (fd == -1) {
-2.6.2
+/usr/src/ltp/docparse/testinfo.pl metadata.json
+, or ] expected while parsing array, at character offset 70801 (before "expected"",\n     "b...") at /usr/src/ltp/docparse/testinfo.pl line 423
 
+Because we don't escap double quotes (among other issues previously reported,
+e.g. tabs), it produces invalid json:
+
+   "doc": [
+     "[Description]",
+     "",
+     "Compare the effects of 32-bit div/mod by zero with the "expected"",
+     "behaviour.",
+     "",
+
+But I tested it on various OS and the code compiles and runs ok.
+
+I also looked at the code (very interesting), but with my minimal bpf knowledge
+I'm not the one who should review it.
+
+> + * behaviour.
+> + *
+> + * The commit "bpf: fix subprog verifier bypass by div/mod by 0
+> + * exception", changed div/mod by zero from exiting the current
+> + * program to setting the destination register to zero (div) or
+> + * leaving it untouched (mod).
+> + *
+> + * This solved one verfier bug which allowed dodgy pointer values, but
+                      ^
+                      verifier
+
+> + * it turned out that the source register was being 32-bit truncated
+> + * when it should not be. Also the destination register for mod was
+> + * not being truncated when it should be.
+> + *
+> + * So then we have the following two fixes:
+> + * "bpf: Fix 32 bit src register truncation on div/mod"
+> + * "bpf: Fix truncation handling for mod32 dst reg wrt zero"
+- * "bpf: Fix 32 bit src register truncation on div/mod"
+- * "bpf: Fix truncation handling for mod32 dst reg wrt zero"
+(making it list)
+
+> + *
+> + * Testing for all of these issues is a problem. Not least because
+> + * division by zero is undefined, so in theory any result is
+> + * acceptable so long as the verifier and runtime behaviour
+> + * match.
+> + *
+> + * However to keep things simple we just check if the source and
+> + * destination register runtime values match the current upstream
+> + * behaviour at the time of writing.
+> + *
+> + * If the test fails you may have one or more of the above patches
+> + * missing. In this case it is possible that you are not vulnerable
+> + * depending on what other backports and fixes have been applied. If
+> + * upstream changes the behaviour of division by zero, then the test
+> + * will need updating.
+> +\*/
+@metan: remove this before merge.
+
+
+Kind regards,
+Petr
