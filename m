@@ -1,60 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 28 Apr 2021 14:11:45 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
-In-Reply-To: <YIaWnt5ksxVyBvxk@pevik>
-References: <20210422065732.61222-1-xieziyao@huawei.com>
- <20210422065732.61222-2-xieziyao@huawei.com>
- <YIaWnt5ksxVyBvxk@pevik>
-Message-ID: <YIlRAanTIk9uKVEP@yuki>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Wed, 28 Apr 2021 20:49:39 +0800
+Subject: [LTP] [PATCH] syscalls/setfsgid02: Bugfix for running as root
+Message-ID: <20210428124939.23546-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > -#include "test.h"
-> >  #include "lapi/syscalls.h"
-> > +#include "tst_test.h"
-> 
-> > +int sig_flag = 0;
-> 
-> It should be
-> static int sig_flag;
+When we run the test as root id, and with the option "-i 2",
+test will fail.
 
-It has to be volatile as well, if we are waiting in a bussy loop on it
-and it's changed ansynchronously from a signal handler, otherwise
-compiler may misoptimize the code.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/syscalls/setfsgid/setfsgid02.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Generally the code that waits for a signal should look like:
+diff --git a/testcases/kernel/syscalls/setfsgid/setfsgid02.c b/testcases/kernel/syscalls/setfsgid/setfsgid02.c
+index 4788957e2..a5485294e 100644
+--- a/testcases/kernel/syscalls/setfsgid/setfsgid02.c
++++ b/testcases/kernel/syscalls/setfsgid/setfsgid02.c
+@@ -49,10 +49,11 @@ int main(int ac, char **av)
 
-static volatile sig_atomic_t sig_flag;
+ 	setup();
 
-static void setup(void)
-{
-	SAFE_SIGNAL(SIGUSR1, sighandler);
-}
++	gid = 1;
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
 
-static void run(void)
-{
-	int timeout_ms = 1000;
-	sig_flag = 0;
+-		gid = 1;
+ 		while (getgrgid(gid))
+ 			gid++;
 
-	TST_EXP_PASS(tst_syscall(__NR_tkill, tid, SIGUSR1));
+@@ -73,6 +74,8 @@ int main(int ac, char **av)
+ 			tst_resm(TPASS, "setfsgid() returned expected value : "
+ 				 "%ld", TEST_RETURN);
+ 		}
++
++		gid++;
+ 	}
 
-	while (timeout_ms--) {
-		if (sig_flag)
-			break;
+ 	cleanup();
+--
+2.17.1
 
-		usleep(1000);
-	}
-
-	if (sig_flag)
-		tst_res(TPASS, ...);
-	else
-		tst_res(TFAIL, ...);
-}
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
