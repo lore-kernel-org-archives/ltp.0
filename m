@@ -1,29 +1,39 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 28 Apr 2021 15:42:42 +0200
-Subject: [LTP] [PATCH 4/4] RFC: Add helper functions for managing
- network interfaces
-In-Reply-To: <YIk4qL+lBIKt+4tX@yuki>
-References: <20210426111918.4304-1-mdoucha@suse.cz>
- <20210426111918.4304-5-mdoucha@suse.cz> <YIk4qL+lBIKt+4tX@yuki>
-Message-ID: <81575a8a-5fa2-78ce-e1b1-e43b4ba45527@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 28 Apr 2021 15:56:02 +0200
+Subject: [LTP] [PATCH] syscalls/setfsgid02: Bugfix for running as root
+In-Reply-To: <20210428124939.23546-1-zhaogongyi@huawei.com>
+References: <20210428124939.23546-1-zhaogongyi@huawei.com>
+Message-ID: <YIlpcvO2UdSBxdXI@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 28. 04. 21 12:27, Cyril Hrubis wrote:
-> Hi!
-> ...
+Hi!
+> When we run the test as root id, and with the option "-i 2",
+> test will fail.
 
-Thanks, I'll apply the fixes and suggestions before I resubmit. Do you
-have any comments on the header files from API user's perspective?
+Looking at the test there is much more to fix.
+
+- the description does not match what the test is doing
+- the pass/fail condition and TFAIL message does not make any sense
+
+And its the same for the rest of the setfsgid tests.
+
+Looking at the manual pages for this oddball syscall we should check if:
+
+- unpriviledged process cannot change the value i.e. value that is
+  different from return from ret=setfsgid(-1) is passed as
+  setfsgid(ret+1) followed by setfsgid(-1) and all of these returns the
+  same value and the value also matches process effective group ID
+
+- priviledged process can change the value i.e. the same as
+  unpriviledged but we expect the last setfsgid(-1) return
+  the new value. We either have to reset the setfsgid() at the end of
+  the test or run it in a fork()-ed process so that we start with a
+  clean plate for each iteration
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
