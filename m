@@ -1,9 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 28 Apr 2021 21:03:18 +0200
-Subject: [LTP] [PATCH] Set exfat file system to skip symlink
-In-Reply-To: <20210428025039.14351-1-zhanglianjie@uniontech.com>
-References: <20210428025039.14351-1-zhanglianjie@uniontech.com>
-Message-ID: <YImxdsv0lrwGJ50B@pevik>
+Date: Wed, 28 Apr 2021 21:24:28 +0200
+Subject: [LTP] [PATCH v2] tst_res: Replace tst_res with tst_brk for
+ shell testcases
+In-Reply-To: <20210413113549.3604-1-zhaogongyi@huawei.com>
+References: <20210413113549.3604-1-zhaogongyi@huawei.com>
+Message-ID: <YIm2bO3wkGf5jYD1@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,18 +13,14 @@ To: ltp@lists.linux.it
 
 Hi,
 
-good catch!
+> We need replace tst_res with tst_brk to terminate the test immediately since
+> there is no sence to go on.
 
-> If the kernel configuration CONF_EXFAT_FS=m, then the exfat test
-you mean CONFIG_EXFAT_FS.
-
-> result is TCONF. If the kernel is not configured with CONF_EXFAT_FS=m,
-> then the exfat test result will be TBROK (TBROK makes subsequent tests
-> impossible). Because the exfat file system does not support symlink,
-> the test should skip calling symlink.
-
-I reword the commit message and merged.
-Thanks!
+> For those:
+> 	testcases/commands/lsmod/lsmod01.sh
+>         testcases/network/virt/sit01.sh
+Good catch. I'd split it into separate commits.
+For testcases/network please Cc also Alexey Kodanev.
 
 Kind regards,
 Petr
