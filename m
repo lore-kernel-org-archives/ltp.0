@@ -1,28 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 28 Apr 2021 16:34:03 +0200
-Subject: [LTP] [PATCH 4/4] RFC: Add helper functions for managing
- network interfaces
-In-Reply-To: <81575a8a-5fa2-78ce-e1b1-e43b4ba45527@suse.cz>
-References: <20210426111918.4304-1-mdoucha@suse.cz>
- <20210426111918.4304-5-mdoucha@suse.cz> <YIk4qL+lBIKt+4tX@yuki>
- <81575a8a-5fa2-78ce-e1b1-e43b4ba45527@suse.cz>
-Message-ID: <YIlyW4eg417gH2C9@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 28 Apr 2021 19:48:23 +0200
+Subject: [LTP] [PATCH v4 1/6] API: Add safe openat, printfat,
+ readat and unlinkat
+In-Reply-To: <20210428142719.8065-2-rpalethorpe@suse.com>
+References: <20210428142719.8065-1-rpalethorpe@suse.com>
+ <20210428142719.8065-2-rpalethorpe@suse.com>
+Message-ID: <YImf5zpy71k1sKqM@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Thanks, I'll apply the fixes and suggestions before I resubmit. Do you
-> have any comments on the header files from API user's perspective?
+Hi Richie,
 
-The API looks reasonable, apart from the minor name changes I've pointed
-out and shortening netdevice to just netdev.
+> Add 'at' variants for a number of system calls and LTP SAFE API
+> functions. This avoids using sprintf everywhere to build paths.
 
-Actually having a second look it may make sense to put the netlink
-into a separate library probably to libs/libltpnl/
+> diff --git a/lib/tst_safe_file_at.c b/lib/tst_safe_file_at.c
+> new file mode 100644
+> index 000000000..a92a48fb2
+> --- /dev/null
+> +++ b/lib/tst_safe_file_at.c
+> @@ -0,0 +1,170 @@
+> +#define _GNU_SOURCE
+> +#include "lapi/fcntl.h"
+> +#include "tst_safe_file_at.h"
+This requires <stdio.h> (sprintf).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Also file should have SPDX license + copyright.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +
+> +char fd_path[PATH_MAX];
+> +
+> +char *tst_decode_fd(int fd)
+> +{
+> +	ssize_t ret;
+> +	char proc_path[32];
+> +
+> +	if (fd < 0)
+> +		return "!";
+> +
+> +	sprintf(proc_path, "/proc/self/fd/%d", fd);
+> +	ret = readlink(proc_path, fd_path, sizeof(fd_path));
+...
