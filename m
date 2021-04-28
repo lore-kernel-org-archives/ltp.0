@@ -1,9 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 28 Apr 2021 15:27:17 +0100
-Subject: [LTP] [PATCH v4 4/6] docs: Update CGroups API
+Date: Wed, 28 Apr 2021 15:27:19 +0100
+Subject: [LTP] [PATCH v4 6/6] madvise06: Convert to new CGroups API
 In-Reply-To: <20210428142719.8065-1-rpalethorpe@suse.com>
 References: <20210428142719.8065-1-rpalethorpe@suse.com>
-Message-ID: <20210428142719.8065-5-rpalethorpe@suse.com>
+Message-ID: <20210428142719.8065-7-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,224 +12,165 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- doc/test-writing-guidelines.txt | 175 +++++++++++++++++++++++++++++---
- 1 file changed, 162 insertions(+), 13 deletions(-)
+ testcases/kernel/syscalls/madvise/madvise06.c | 82 +++++++++----------
+ 1 file changed, 37 insertions(+), 45 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a77c114c1..c268b8804 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2186,48 +2186,197 @@ the field value of file.
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 56e0700d6..734dc69b0 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -3,8 +3,8 @@
+  * Copyright (c) 2016 Red Hat, Inc.
+  */
  
- 2.2.36 Using Control Group
- ^^^^^^^^^^^^^^^^^^^^^^^^^^
--Some of LTP tests need Control Group in their configuration, tst_cgroup.h provides
--APIs to make cgroup unified mounting at setup phase to be possible. The method?is
--extracted from mem.h with the purpose of?extendible for further developing, and
--trying to compatible the current two versions of cgroup.
+-/*
+- * DESCRIPTION
++/*\
++ * [DESCRIPTION]
+  *
+  *   Page fault occurs in spite that madvise(WILLNEED) system call is called
+  *   to prefetch the page. This issue is reproduced by running a program
+@@ -36,13 +36,14 @@
+  *   else unexpected, but irrelevant procedure, registers a fault to
+  *   our process.
+  *
+- */
++\*/
  
--Considering there are many differences between cgroup v1 and v2, here we capsulate
--the detail of cgroup mounting in high-level functions, which will be easier to use
--cgroup without caring about too much technical thing.? ?
-+Some LTP tests need specific Control Group configurations. tst_cgroup.h provides
-+APIs to discover and use CGroups. There are many differences between CGroups API
-+V1 and V2. We encapsulate the details of configuring CGroups in high-level
-+functions which follow the V2 kernel API. Allowing one to use CGroups without
-+caring too much about the current system's configuration.
- 
--Also, we do cgroup mount/umount work for the different hierarchy automatically.
-+Also, the LTP library will automatically mount/umount and configure the CGroup
-+hierarchies if that is required (e.g. if you run the tests from init with no
-+system manager).
- 
- [source,c]
- -------------------------------------------------------------------------------
+ #include <errno.h>
+ #include <stdio.h>
+ #include <sys/mount.h>
+ #include <sys/sysinfo.h>
  #include "tst_test.h"
 +#include "tst_cgroup.h"
-+
+ 
+ #define CHUNK_SZ (400*1024*1024L)
+ #define MEM_LIMIT (CHUNK_SZ / 2)
+@@ -50,8 +51,7 @@
+ #define PASS_THRESHOLD (CHUNK_SZ / 4)
+ #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
+ 
+-#define MNT_NAME "memory"
+-#define GROUP_NAME "madvise06"
 +static const struct tst_cgroup_group *cg;
  
- static void run(void)
+ static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
+ static int pg_sz, stat_refresh_sup;
+@@ -64,17 +64,19 @@ static void check_path(const char *path)
+ 		tst_brk(TCONF, "file needed: %s", path);
+ }
+ 
+-#define READ_CGMEM(item)						\
+-	({long tst_rval = 0;						\
+-	  const char *cgpath = MNT_NAME"/"GROUP_NAME"/memory."item;	\
+-	  if (!access(cgpath, R_OK))					\
+-		  SAFE_FILE_LINES_SCANF(cgpath, "%ld", &tst_rval);	\
+-	  tst_rval;})
++static void print_cgmem(const char *name)
++{
++	long ret;
++
++	if (!SAFE_CGROUP_HAS(cg, name))
++		return;
++
++	SAFE_CGROUP_SCANF(cg, name, "%ld", &ret);
++	tst_res(TINFO, "\t%s: %ld Kb", name, ret / 1024);
++}
+ 
+ static void meminfo_diag(const char *point)
  {
- 	...
-+	// do test under cgroup
-+	...
-+}
-+
-+static void setup(void)
-+{
-+	tst_cgroup_require("memory", NULL);
-+	cg = tst_cgroup_get_test_group();
-+	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
-+	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", MEMSIZE);
-+	if (SAFE_CGROUP_HAS(cg, "memory.swap.max"))
-+		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%zu", memsw);
-+}
+-	long rval;
+-
+ 	if (stat_refresh_sup)
+ 		SAFE_FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
  
--	tst_cgroup_move_current(PATH_TMP_CG_MEM);
--	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, MEMSIZE);
-+static void cleanup(void)
-+{
-+	tst_cgroup_cleanup();
-+}
+@@ -85,16 +87,10 @@ static void meminfo_diag(const char *point)
+ 		SAFE_READ_MEMINFO("SwapCached:") - init_swap_cached);
+ 	tst_res(TINFO, "\tCached: %ld Kb",
+ 		SAFE_READ_MEMINFO("Cached:") - init_cached);
+-	tst_res(TINFO, "\tcgmem.usage_in_bytes: %ld Kb",
+-		READ_CGMEM("usage_in_bytes") / 1024);
+-
+-	rval = READ_CGMEM("memsw.usage_in_bytes") / 1024;
+-	if (rval)
+-		tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb", rval);
  
--	// do test under cgroup
-+struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup,
- 	...
-+};
-+-------------------------------------------------------------------------------
-+
-+Above, we first ensure the memory controller is available on the
-+test's CGroup with 'tst_cgroup_require'. We then get a structure,
-+'cg', which represents the test's CGroup. Note that
-+'tst_cgroup_get_test_group' should not be called many times, as it is
-+allocated in a guarded buffer (See section 2.2.31). Therefor it is
-+best to call it once in 'setup' and not 'run' because 'run' may be
-+repeated with the '-i' option.
-+
-+We then write the current processes PID into 'cgroup.procs', which
-+moves the current process into the test's CGroup. After which we set
-+the maximum memory size by writing to 'memory.max'. If the memory
-+controller is mounted on CGroups V1 then the library will actually
-+write to 'memory.limit_in_bytes'. As a general rule, if a file exists
-+on both CGroup versions, then we use the V2 naming.
-+
-+Some controller features, such as 'memory.swap', can be
-+disabled. Therefor we need to check if they exist before accessing
-+them. This can be done with 'SAFE_CGROUP_HAS' which can be called on
-+any control file or feature.
-+
-+Most tests only require setting a few limits similar to the above. In
-+such cases the differences between V1 and V2 are hidden. Setup and
-+cleanup is also mostly hidden. However things can get much worse.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+static const struct tst_cgroup_group *cg;
-+static const struct tst_cgroup_group *cg_drain;
-+static struct tst_cgroup_group *cg_child;
-+
-+static void run(void)
-+{
-+	char buf[BUFSIZ];
-+	size_t mem = 0;
-+
-+	cg_child = tst_cgroup_group_mk(cg, "child");
-+	SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-+
-+	if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
-+	if (TST_CGROUP_VER(cg, "cpuset") != TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+cpuset");
-+
-+	if (!SAFE_FORK()) {
-+		SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-+
-+		if (SAFE_CGROUP_HAS(cg_child, "memory.swap"))
-+			SAFE_CGROUP_SCANF(cg_child, "memory.swap.current", "%zu", &mem);
-+		SAFE_CGROUP_READ(cg_child, "cpuset.mems", buf, sizeof(buf));
-+
-+		// Do something with cpuset.mems and memory.current values
-+		...
-+
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
-+	cg_child = tst_cgroup_group_rm(cg_child);
+-	rval = READ_CGMEM("kmem.usage_in_bytes") / 1024;
+-	if (rval)
+-		tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb", rval);
++	print_cgmem("memory.current");
++	print_cgmem("memory.swap.current");
++	print_cgmem("memory.kmem.usage_in_bytes");
  }
  
  static void setup(void)
- {
--	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+@@ -117,28 +113,24 @@ static void setup(void)
+ 			2 * CHUNK_SZ);
+ 	}
+ 
+-	SAFE_MKDIR(MNT_NAME, 0700);
+-	if (mount("memory", MNT_NAME, "cgroup", 0, "memory") == -1) {
+-		if (errno == ENODEV || errno == ENOENT)
+-			tst_brk(TCONF, "memory cgroup needed");
+-	}
+-	SAFE_MKDIR(MNT_NAME"/"GROUP_NAME, 0700);
+-
+ 	check_path("/proc/self/oom_score_adj");
+-	check_path(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes");
+-	check_path(MNT_NAME"/"GROUP_NAME"/memory.swappiness");
+-	check_path(MNT_NAME"/"GROUP_NAME"/tasks");
+-
+ 	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
+-	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes", "%ld\n",
+-			 MEM_LIMIT);
+ 
+-	if (!access(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes", W_OK)) {
+-		SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes",
+-				 "%ld\n", MEMSW_LIMIT);
 +	tst_cgroup_require("memory", NULL);
-+	tst_cgroup_require("cpuset", NULL);
-+
 +	cg = tst_cgroup_get_test_group();
-+	cg_drain = tst_cgroup_get_drain_group();
- }
++
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%ld", MEM_LIMIT);
++	if (SAFE_CGROUP_HAS(cg, "memory.swap.max"))
++		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
++
++	if (SAFE_CGROUP_HAS(cg, "memory.swappiness")) {
++		SAFE_CGROUP_PRINT(cg, "memory.swappiness", "60");
++	} else {
++		check_path("/proc/sys/vm/swappiness");
++		SAFE_FILE_PRINTF("/proc/sys/vm/swappiness", "%d", 60);
+ 	}
+-	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.swappiness", "60");
+-	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/tasks", "%d\n", getpid());
++
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ 
+ 	meminfo_diag("Initial meminfo, later values are relative to this (except memcg)");
+ 	init_swap = SAFE_READ_MEMINFO("SwapTotal:") - SAFE_READ_MEMINFO("SwapFree:");
+@@ -154,11 +146,7 @@ static void setup(void)
  
  static void cleanup(void)
  {
--	tst_cgroup_umount(PATH_TMP_CG_MEM);
-+	if (cg_child) {
-+		SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
-+		cg_child = tst_cgroup_group_rm(cg_child);
-+	}
-+
+-	if (!access(MNT_NAME"/tasks", F_OK)) {
+-		SAFE_FILE_PRINTF(MNT_NAME"/tasks", "%d\n", getpid());
+-		SAFE_RMDIR(MNT_NAME"/"GROUP_NAME);
+-		SAFE_UMOUNT(MNT_NAME);
+-	}
 +	tst_cgroup_cleanup();
  }
  
- struct tst_test test = {
-+	.setup = setup,
- 	.test_all = run,
-+	.cleanup = cleanup,
- 	...
- };
- -------------------------------------------------------------------------------
- 
-+Starting with setup; we can see here that we also fetch the 'drain'
-+CGroup. This is a shared group (between parallel tests) which may
-+contain processes from other tests. It should have default settings and
-+these should not be changed by the test. It can be used to remove
-+processes from other CGroups incase the hierarchy root is not
-+accessible.
-+
-+In 'run', we first create a child CGroup with 'tst_cgroup_mk'. As we
-+create this CGroup in 'run' we should also remove it at the end of
-+run. We also need to check if it exists and remove it in cleanup as
-+well. Because there are 'SAFE_' functions which may jump to cleanup.
-+
-+We then move the main test process into the child CGroup. This is
-+important as it means that before we destroy the child CGroup we have
-+to move the main test process elsewhere. For that we use the 'drain'
-+group.
-+
-+Next we enable the memory and cpuset controller configuration on the
-+test CGroup's descendants (i.e. 'cg_child'). This allows each child to
-+have its own settings. The file 'cgroup.subtree_control' does not
-+exist on V1. Because it is possible to have both V1 and V2 active at
-+the same time. We can not simply check if 'subtree_control' exists
-+before writing to it. We have to check if a particular controller is
-+on V2 before trying to add it to 'subtree_control'. Trying to add a V1
-+controller will result in 'ENOENT'.
-+
-+We then fork a child process and add this to the child CGroup. Within
-+the child process we try to read 'memory.swap.current'. It is possible
-+that the memory controller was compiled without swap support, so it is
-+necessary to check if 'memory.swap' is enabled. That is unless the
-+test will never reach the point where 'memory.swap.*' are used without
-+swap support.
-+
-+The parent process waits for the child process to be reaped before
-+destroying the child CGroup. So there is no need to transfer the child
-+to drain. However the parent process must be moved otherwise we will
-+get 'EBUSY' when trying to remove the child CGroup.
-+
-+Another example of an edge case is the following.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+	if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
-+	else
-+		SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
-+-------------------------------------------------------------------------------
-+
-+CGroups V2 introduced a feature where 'memory[.swap].max' could be set to
-+"max". This does not appear to work on V1 'limit_in_bytes' however. For most
-+tests, simply using a large number is sufficient and there is no need to use
-+"max". Importantly though, one should be careful to read both the V1 and V2
-+kernel docs. The LTP library can not handle all edge cases. It does the minimal
-+amount of work to make testing on both V1 and V2 feasible.
-+
- 2.2.37 Require minimum numbers of CPU for a testcase
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
+ static void dirty_pages(char *ptr, long size)
+@@ -248,6 +236,10 @@ static struct tst_test test = {
+ 	.min_kver = "3.10.0",
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
++	.save_restore = (const char * const[]) {
++		"?/proc/sys/vm/swappiness",
++		NULL
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "55231e5c898c"},
+ 		{"linux-git", "8de15e920dc8"},
 -- 
 2.31.1
 
