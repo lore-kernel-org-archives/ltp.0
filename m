@@ -1,203 +1,205 @@
-From: xieziyao <xieziyao@huawei.com>
-Date: Wed, 28 Apr 2021 03:11:46 +0000
-Subject: [LTP] [PATCH 1/3 v2] syscalls/close: Convert close01 to the new
- API
-In-Reply-To: <YIgAV1EANJWd/ayh@yuki>
-References: <20210426125224.150268-1-xieziyao@huawei.com>
- <20210426125224.150268-2-xieziyao@huawei.com> <YIgAV1EANJWd/ayh@yuki>
-Message-ID: <8030eb0e39fb474baf1f98211238b80b@huawei.com>
+From: Wang Xin <wangxin410@huawei.com>
+Date: Wed, 28 Apr 2021 11:34:08 +0800
+Subject: [LTP] [PATCH v5] openposix/conformance/interfaces: Correct typos
+Message-ID: <1619580848-99507-1-git-send-email-wangxin410@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Cyril,
+Types in the name of the temporary files: For example, in aio_cancel/8-1.c file,
+pts_aio_cancel_1_1 -> pts_aio_cancel_8_1.
+Others like this have been modified.
 
-I will modify it based on your comments. In addition, changes for close08 will be incorporated into this case.
+Signed-off-by: Wang Xin <wangxin410@huawei.com>
+---
+ v5 -> v4: resubmit again in the latest branch of code.
 
-Thanks for your review.
+ testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c  | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c    | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c  | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c   | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c  | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c  | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c       | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c       | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c        | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c      | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c      | 2 +-
+ testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c      | 2 +-
+ 13 files changed, 13 insertions(+), 13 deletions(-)
 
-Best Regards,
-Ziyao
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
+index 139e9b5..f11e067 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/8-1.c
+@@ -50,7 +50,7 @@ int main(void)
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
 
------Original Message-----
-From: Cyril Hrubis [mailto:chrubis@suse.cz] 
-Sent: Tuesday, April 27, 2021 8:15 PM
-To: xieziyao <xieziyao@huawei.com>
-Cc: ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH 1/3 v2] syscalls/close: Convert close01 to the new API
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_1_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_cancel_8_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
+index 5b980be..e1ae59e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_read/9-1.c
+@@ -55,7 +55,7 @@ int main(void)
+ 	    || sysconf(_SC_AIO_MAX) == -1)
+ 		return PTS_UNSUPPORTED;
 
-Hi!
-> 1. Cleanup and convert close01 to the new API; 2. Add SAFE_CLOSE() to 
-> the file descriptor.
-> 
-> Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
-> ---
-> v1->v2:
-> 1. Cleanup with TST_EXP_PASS();
-> 2. Add SAFE_CLOSE() to the file descriptor for a pipe.
-> 
->  testcases/kernel/syscalls/close/close01.c | 134 
-> +++++++---------------
->  1 file changed, 40 insertions(+), 94 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/close/close01.c 
-> b/testcases/kernel/syscalls/close/close01.c
-> index c734ff7d2..759c43af0 100644
-> --- a/testcases/kernel/syscalls/close/close01.c
-> +++ b/testcases/kernel/syscalls/close/close01.c
-> @@ -1,124 +1,70 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) International Business Machines  Corp., 2001
-> - *  07/2001 Ported by Wayne Boyer
-> + * 07/2001 Ported by Wayne Boyer
-> + */
-> +
-> +/*\
-> + * [Description]
->   *
-> - * This program is free software;  you can redistribute it and/or 
-> modify
-> - * it under the terms of the GNU General Public License as published 
-> by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> + * Basic test for the close() syscall.
->   *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - * the GNU General Public License for more details.
-> + * [Description]
->   *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program;  if not, write to the Free Software 
-> Foundation,
-> - * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> - */
-> -
-> -/*
-> - * DESCRIPTION
-> - *	Test that closing a regular file and a pipe works correctly
-> + * Test that closing a regular file and a pipe works correctly.
->   */
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_read_9_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+index f380531..a243b3e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+@@ -50,7 +50,7 @@ int main(void)
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
 
-We ended up with two [Description] sections here, I guess that we should remove the second occurence of '[Description]' here.
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_2_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_return_4_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
 
->  #include <stdio.h>
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <sys/stat.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> +#include "tst_test.h"
-> 
-> -void cleanup(void);
-> -void setup(void);
-> +#define FILENAME "close01_testfile"
-> 
-> -char *TCID = "close01";
-> -int TST_TOTAL = 2;
-> +int fild, newfd, pipefildes[2];
-> 
-> -char fname[40] = "";
-> +static void setup_file(void)
-> +{
-> +	newfd = SAFE_DUP(fild);
-> +}
-> 
-> -int fild, newfd, pipefildes[2];
-> +static void setup_pipe(void)
-> +{
-> +	SAFE_PIPE(pipefildes);
-> +	SAFE_CLOSE(pipefildes[1]);
-> +}
-> 
->  struct test_case_t {
->  	int *fd;
->  	char *type;
-> -} TC[] = {
-> -	/* file descriptor for a regular file */
-> -	{
-> -	&newfd, "file"},
-> -	    /* file descriptor for a pipe */
-> -	{
-> -	&pipefildes[0], "pipe"}
-> +	void (*setupfunc) ();
-> +} tc[] = {
-> +	{&newfd, "file", setup_file},
-> +	{&pipefildes[0], "pipe", setup_pipe}
->  };
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
+index ed8173e..615b97d 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
+@@ -53,7 +53,7 @@ int main(void)
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		return PTS_UNSUPPORTED;
 
-Why don't we change the code so that the setup function returns the filedescriptor? That would make the code much more straightforward.
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_2_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_suspend_3_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
+index 5311a4a..277573a 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/7-1.c
+@@ -55,7 +55,7 @@ int main(void)
+ 	    || sysconf(_SC_AIO_MAX) == -1)
+ 		return PTS_UNSUPPORTED;
 
-> -int main(int ac, char **av)
-> +static void run(unsigned int i)
->  {
-> -
-> -	int i;
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		if ((fild = creat(fname, 0777)) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "can't open file %s",
-> -				 fname);
-> -
-> -		if ((newfd = dup(fild)) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup,
-> -				 "can't dup the file des");
-> -
-> -		SAFE_PIPE(cleanup, pipefildes);
-> -
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -
-> -			TEST(close(*TC[i].fd));
-> -
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL, "call failed unexpectedly");
-> -				continue;
-> -			}
-> -
-> -			if (close(*TC[i].fd) == -1) {
-> -				tst_resm(TPASS, "%s appears closed",
-> -					 TC[i].type);
-> -			} else {
-> -				tst_resm(TFAIL, "%s close succeeded on"
-> -					 "second attempt", TC[i].type);
-> -			}
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> +	tc[i].setupfunc();
-> +	TST_EXP_PASS(close(*tc[i].fd), "close a %s", tc[i].type);
->  }
-> 
-> -void setup(void)
-> +static void setup(void)
->  {
-> -	int mypid;
-> -
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
->  	umask(0);
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_4_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_aio_write_7_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
+index e445773..7eb6448 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/5-1.c
+@@ -55,7 +55,7 @@ int main(void)
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		exit(PTS_UNSUPPORTED);
 
-I'm pretty sure the umask() here is useless.
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_5_1");
+ 	unlink(tmpfname);
 
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
+index 444555e..4e8afb6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/lio_listio/7-1.c
+@@ -73,7 +73,7 @@ int main(void)
+ 	if (sysconf(_SC_ASYNCHRONOUS_IO) < 200112L)
+ 		exit(PTS_UNSUPPORTED);
 
-Otherwise it looks good.
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_4_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_lio_listio_7_1");
+ 	unlink(tmpfname);
 
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
+index 2aea927..d1f8991 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/11-6.c
+@@ -59,7 +59,7 @@ int main(void)
+ 	/* mmap will create a partial page */
+ 	len = page_size / 2;
+
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_5");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_11_6");
+ 	child = fork();
+ 	switch (child) {
+ 	case 0:
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
+index bb3ab74..d58fc8c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/32-1.c
+@@ -31,7 +31,7 @@ int main(void)
+ 	void *pa;
+ 	int fd;
+
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_31_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_32_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
+index b38833b..9aef16c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mmap/6-3.c
+@@ -53,7 +53,7 @@ int main(void)
+ 	int status;
+ 	int sig_num;
+
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_2");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_mmap_6_3");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
+index 9d0f918..31f2109 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/1-2.c
+@@ -73,7 +73,7 @@ int main(void)
+ 	len = page_size + 1;
+
+ 	/* Create tmp file */
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_2");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
+index 53e89de..1879719 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/3-1.c
+@@ -54,7 +54,7 @@ int main(void)
+ 	len = page_size + 1;
+
+ 	/* Create tmp file */
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_3_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
+index 0280a0e..371e3b0 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/munmap/9-1.c
+@@ -49,7 +49,7 @@ int main(void)
+ 	len = page_size + 1;
+
+ 	/* Create tmp file */
+-	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_1_1");
++	PTS_GET_TMP_FILENAME(tmpfname, "pts_munmap_9_1");
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR);
+ 	if (fd == -1) {
 --
-Cyril Hrubis
-chrubis@suse.cz
+2.6.2
+
