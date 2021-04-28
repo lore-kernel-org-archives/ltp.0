@@ -1,9 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 28 Apr 2021 15:27:19 +0100
-Subject: [LTP] [PATCH v4 6/6] madvise06: Convert to new CGroups API
+Date: Wed, 28 Apr 2021 15:27:18 +0100
+Subject: [LTP] [PATCH v4 5/6] mem: Convert tests to new CGroups API
 In-Reply-To: <20210428142719.8065-1-rpalethorpe@suse.com>
 References: <20210428142719.8065-1-rpalethorpe@suse.com>
-Message-ID: <20210428142719.8065-7-rpalethorpe@suse.com>
+Message-ID: <20210428142719.8065-6-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,165 +12,482 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/kernel/syscalls/madvise/madvise06.c | 82 +++++++++----------
- 1 file changed, 37 insertions(+), 45 deletions(-)
+ testcases/kernel/mem/cpuset/cpuset01.c | 34 ++++++++++++--------------
+ testcases/kernel/mem/include/mem.h     |  2 +-
+ testcases/kernel/mem/ksm/ksm02.c       | 13 +++++++---
+ testcases/kernel/mem/ksm/ksm03.c       | 12 ++++++---
+ testcases/kernel/mem/ksm/ksm04.c       | 17 +++++++------
+ testcases/kernel/mem/lib/mem.c         | 10 +++-----
+ testcases/kernel/mem/oom/oom03.c       | 18 ++++++++------
+ testcases/kernel/mem/oom/oom04.c       | 19 ++++++++------
+ testcases/kernel/mem/oom/oom05.c       | 32 ++++++++++++++----------
+ 9 files changed, 87 insertions(+), 70 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-index 56e0700d6..734dc69b0 100644
---- a/testcases/kernel/syscalls/madvise/madvise06.c
-+++ b/testcases/kernel/syscalls/madvise/madvise06.c
-@@ -3,8 +3,8 @@
-  * Copyright (c) 2016 Red Hat, Inc.
-  */
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index 528c3eddd..66c18f6ab 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -35,6 +35,8 @@
  
--/*
-- * DESCRIPTION
-+/*\
-+ * [DESCRIPTION]
-  *
-  *   Page fault occurs in spite that madvise(WILLNEED) system call is called
-  *   to prefetch the page. This issue is reproduced by running a program
-@@ -36,13 +36,14 @@
-  *   else unexpected, but irrelevant procedure, registers a fault to
-  *   our process.
-  *
-- */
-+\*/
+ #ifdef HAVE_NUMA_V2
  
- #include <errno.h>
- #include <stdio.h>
- #include <sys/mount.h>
- #include <sys/sysinfo.h>
- #include "tst_test.h"
-+#include "tst_cgroup.h"
- 
- #define CHUNK_SZ (400*1024*1024L)
- #define MEM_LIMIT (CHUNK_SZ / 2)
-@@ -50,8 +51,7 @@
- #define PASS_THRESHOLD (CHUNK_SZ / 4)
- #define PASS_THRESHOLD_KB (PASS_THRESHOLD / 1024)
- 
--#define MNT_NAME "memory"
--#define GROUP_NAME "madvise06"
 +static const struct tst_cgroup_group *cg;
- 
- static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
- static int pg_sz, stat_refresh_sup;
-@@ -64,17 +64,19 @@ static void check_path(const char *path)
- 		tst_brk(TCONF, "file needed: %s", path);
- }
- 
--#define READ_CGMEM(item)						\
--	({long tst_rval = 0;						\
--	  const char *cgpath = MNT_NAME"/"GROUP_NAME"/memory."item;	\
--	  if (!access(cgpath, R_OK))					\
--		  SAFE_FILE_LINES_SCANF(cgpath, "%ld", &tst_rval);	\
--	  tst_rval;})
-+static void print_cgmem(const char *name)
-+{
-+	long ret;
 +
-+	if (!SAFE_CGROUP_HAS(cg, name))
-+		return;
-+
-+	SAFE_CGROUP_SCANF(cg, name, "%ld", &ret);
-+	tst_res(TINFO, "\t%s: %ld Kb", name, ret / 1024);
-+}
+ volatile int end;
+ static int *nodes;
+ static int nnodes;
+@@ -47,15 +49,14 @@ static long count_cpu(void);
  
- static void meminfo_diag(const char *point)
+ static void test_cpuset(void)
  {
--	long rval;
--
- 	if (stat_refresh_sup)
- 		SAFE_FILE_PRINTF("/proc/sys/vm/stat_refresh", "1");
+-	int child, i, status;
++	int child, i;
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+-	char mems[BUFSIZ], buf[BUFSIZ];
++	char buf[BUFSIZ];
  
-@@ -85,16 +87,10 @@ static void meminfo_diag(const char *point)
- 		SAFE_READ_MEMINFO("SwapCached:") - init_swap_cached);
- 	tst_res(TINFO, "\tCached: %ld Kb",
- 		SAFE_READ_MEMINFO("Cached:") - init_cached);
--	tst_res(TINFO, "\tcgmem.usage_in_bytes: %ld Kb",
--		READ_CGMEM("usage_in_bytes") / 1024);
--
--	rval = READ_CGMEM("memsw.usage_in_bytes") / 1024;
--	if (rval)
--		tst_res(TINFO, "\tcgmem.memsw.usage_in_bytes: %ld Kb", rval);
+-	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf, BUFSIZ);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "cpus", buf);
+-	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems, BUFSIZ);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", mems);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	SAFE_CGROUP_READ(cg, "cpuset.cpus", buf, sizeof(buf));
++	SAFE_CGROUP_PRINT(cg, "cpuset.cpus", buf);
++	SAFE_CGROUP_READ(cg, "cpuset.mems", buf, sizeof(buf));
++	SAFE_CGROUP_PRINT(cg, "cpuset.mems", buf);
  
--	rval = READ_CGMEM("kmem.usage_in_bytes") / 1024;
--	if (rval)
--		tst_res(TINFO, "\tcgmem.kmem.usage_in_bytes: %ld Kb", rval);
-+	print_cgmem("memory.current");
-+	print_cgmem("memory.swap.current");
-+	print_cgmem("memory.kmem.usage_in_bytes");
+ 	child = SAFE_FORK();
+ 	if (child == 0) {
+@@ -69,33 +70,30 @@ static void test_cpuset(void)
+ 		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
+ 	}
+ 
+-	snprintf(buf, BUFSIZ, "%d", nodes[0]);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", buf);
+-	snprintf(buf, BUFSIZ, "%d", nodes[1]);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", buf);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%d", nodes[0]);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%d", nodes[1]);
+ 
+-	SAFE_WAITPID(child, &status, WUNTRACED | WCONTINUED);
+-	if (WEXITSTATUS(status) != 0) {
+-		tst_res(TFAIL, "child exit status is %d", WEXITSTATUS(status));
+-		return;
+-	}
++	tst_reap_children();
+ 
+ 	tst_res(TPASS, "cpuset test pass");
  }
  
  static void setup(void)
-@@ -117,28 +113,24 @@ static void setup(void)
- 			2 * CHUNK_SZ);
- 	}
- 
--	SAFE_MKDIR(MNT_NAME, 0700);
--	if (mount("memory", MNT_NAME, "cgroup", 0, "memory") == -1) {
--		if (errno == ENODEV || errno == ENOENT)
--			tst_brk(TCONF, "memory cgroup needed");
--	}
--	SAFE_MKDIR(MNT_NAME"/"GROUP_NAME, 0700);
--
- 	check_path("/proc/self/oom_score_adj");
--	check_path(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes");
--	check_path(MNT_NAME"/"GROUP_NAME"/memory.swappiness");
--	check_path(MNT_NAME"/"GROUP_NAME"/tasks");
--
- 	SAFE_FILE_PRINTF("/proc/self/oom_score_adj", "%d", -1000);
--	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.limit_in_bytes", "%ld\n",
--			 MEM_LIMIT);
- 
--	if (!access(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes", W_OK)) {
--		SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.memsw.limit_in_bytes",
--				 "%ld\n", MEMSW_LIMIT);
-+	tst_cgroup_require("memory", NULL);
+ {
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("cpuset", NULL);
+ 	ncpus = count_cpu();
+ 	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
+ 		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
+ 	if (nnodes <= 1)
+ 		tst_brk(TCONF, "requires a NUMA system.");
++
 +	cg = tst_cgroup_get_test_group();
-+
-+	SAFE_CGROUP_PRINTF(cg, "memory.max", "%ld", MEM_LIMIT);
-+	if (SAFE_CGROUP_HAS(cg, "memory.swap.max"))
-+		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%ld", MEMSW_LIMIT);
-+
-+	if (SAFE_CGROUP_HAS(cg, "memory.swappiness")) {
-+		SAFE_CGROUP_PRINT(cg, "memory.swappiness", "60");
-+	} else {
-+		check_path("/proc/sys/vm/swappiness");
-+		SAFE_FILE_PRINTF("/proc/sys/vm/swappiness", "%d", 60);
- 	}
--	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/memory.swappiness", "60");
--	SAFE_FILE_PRINTF(MNT_NAME"/"GROUP_NAME"/tasks", "%d\n", getpid());
-+
 +	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
- 
- 	meminfo_diag("Initial meminfo, later values are relative to this (except memcg)");
- 	init_swap = SAFE_READ_MEMINFO("SwapTotal:") - SAFE_READ_MEMINFO("SwapFree:");
-@@ -154,11 +146,7 @@ static void setup(void)
+ }
  
  static void cleanup(void)
  {
--	if (!access(MNT_NAME"/tasks", F_OK)) {
--		SAFE_FILE_PRINTF(MNT_NAME"/tasks", "%d\n", getpid());
--		SAFE_RMDIR(MNT_NAME"/"GROUP_NAME);
--		SAFE_UMOUNT(MNT_NAME);
--	}
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
 +	tst_cgroup_cleanup();
  }
  
- static void dirty_pages(char *ptr, long size)
-@@ -248,6 +236,10 @@ static struct tst_test test = {
- 	.min_kver = "3.10.0",
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
-+	.save_restore = (const char * const[]) {
-+		"?/proc/sys/vm/swappiness",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "55231e5c898c"},
- 		{"linux-git", "8de15e920dc8"},
+ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 42b12a230..10712cf0c 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -61,7 +61,7 @@ void check_hugepage(void);
+ void write_memcg(void);
+ 
+ /* cpuset/memcg - include/tst_cgroup.h */
+-void write_cpusets(const char *cgroup_dir, long nd);
++void write_cpusets(const struct tst_cgroup_group *cg, long nd);
+ 
+ /* shared */
+ unsigned int get_a_numa_node(void);
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index 51f5d4cca..e6de61ece 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -59,6 +59,9 @@
+ #ifdef HAVE_NUMA_V2
+ #include <numaif.h>
+ 
++static const struct tst_cgroup_group *cg;
++static const struct tst_cgroup_group *cg_drain;
++
+ static void verify_ksm(void)
+ {
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+@@ -76,9 +79,10 @@ static void verify_ksm(void)
+ 	}
+ 	create_same_memory(size, num, unit);
+ 
+-	write_cpusets(PATH_TMP_CG_CST, node);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	write_cpusets(cg, node);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ 	create_same_memory(size, num, unit);
++	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static void cleanup(void)
+@@ -87,7 +91,7 @@ static void cleanup(void)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+ 
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static void setup(void)
+@@ -103,7 +107,8 @@ static void setup(void)
+ 		SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+ 	}
+ 
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+index e9949280e..83b821c81 100644
+--- a/testcases/kernel/mem/ksm/ksm03.c
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -59,10 +59,10 @@
+ #include "mem.h"
+ #include "ksm_common.h"
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_ksm(void)
+ {
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+ 	create_same_memory(size, num, unit);
+ }
+ 
+@@ -78,7 +78,11 @@ static void setup(void)
+ 	}
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
++
++	tst_cgroup_require("memory", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ static void cleanup(void)
+@@ -86,7 +90,7 @@ static void cleanup(void)
+ 	if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index b4ad41831..65f7e6510 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -59,6 +59,8 @@
+ #ifdef HAVE_NUMA_V2
+ #include <numaif.h>
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_ksm(void)
+ {
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+@@ -67,8 +69,7 @@ static void verify_ksm(void)
+ 	node = get_a_numa_node();
+ 	set_node(nmask, node);
+ 
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ 
+ 	if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+ 		if (errno != ENOSYS)
+@@ -79,8 +80,7 @@ static void verify_ksm(void)
+ 	}
+ 	create_same_memory(size, num, unit);
+ 
+-	write_cpusets(PATH_TMP_CG_CST, node);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	write_cpusets(cg, node);
+ 	create_same_memory(size, num, unit);
+ }
+ 
+@@ -90,8 +90,7 @@ static void cleanup(void)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+ 
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static void setup(void)
+@@ -107,8 +106,10 @@ static void setup(void)
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+ 
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("memory", NULL);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 2de3f83a6..9f946b5c9 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -629,13 +629,11 @@ static void gather_node_cpus(char *cpus, long nd)
+ 	cpus[strlen(cpus) - 1] = '\0';
+ }
+ 
+-void write_cpusets(const char *cgroup_dir, long nd)
++void write_cpusets(const struct tst_cgroup_group *cg, long nd)
+ {
+-	char buf[BUFSIZ];
+ 	char cpus[BUFSIZ] = "";
+ 
+-	snprintf(buf, BUFSIZ, "%ld", nd);
+-	tst_cgroup_cpuset_write_files(cgroup_dir, "mems", buf);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%ld", nd);
+ 
+ 	gather_node_cpus(cpus, nd);
+ 	/*
+@@ -644,11 +642,11 @@ void write_cpusets(const char *cgroup_dir, long nd)
+ 	 * the value of cpuset.cpus.
+ 	 */
+ 	if (strlen(cpus) != 0) {
+-		tst_cgroup_cpuset_write_files(cgroup_dir, "cpus", cpus);
++		SAFE_CGROUP_PRINT(cg, "cpuset.cpus", cpus);
+ 	} else {
+ 		tst_res(TINFO, "No CPUs in the node%ld; "
+ 				"using only CPU0", nd);
+-		tst_cgroup_cpuset_write_files(cgroup_dir, "cpus", "0");
++		SAFE_CGROUP_PRINT(cg, "cpuset.cpus", "0");
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index fc860c660..939413744 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -36,19 +36,17 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+ 	tst_brk(TCONF, "test is not designed for 32-bit system.");
+ #endif
+-
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+-
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+-	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
++	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
++		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+ 		testoom(0, 1, ENOMEM, 1);
+ 	}
+ 
+@@ -65,14 +63,18 @@ static void setup(void)
+ {
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
++
++	tst_cgroup_require("memory", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 582663275..f84328f5b 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -36,24 +36,25 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+ 	tst_brk(TCONF, "test is not designed for 32-bit system.");
+ #endif
+-
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
+-
+ 	tst_res(TINFO, "OOM on CPUSET...");
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+-	if (is_numa(NULL, NH_MEMS, 2)) {
++	if (is_numa(NULL, NH_MEMS, 2) &&
++	    SAFE_CGROUP_HAS(cg, "cpuset.memory_migrate")) {
+ 		/*
+ 		 * Under NUMA system, the migration of cpuset's memory
+ 		 * is in charge of cpuset.memory_migrate, we can write
+ 		 * 1 to cpuset.memory_migrate to enable the migration.
+ 		 */
+-		tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "memory_migrate", "1");
++		SAFE_CGROUP_PRINT(cg, "cpuset.memory_migrate", "1");
++
+ 		tst_res(TINFO, "OOM on CPUSET with mem migrate:");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+@@ -69,7 +70,8 @@ static void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
+ 
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+@@ -81,14 +83,15 @@ static void setup(void)
+ 	if (ret < 0)
+ 		tst_brk(TBROK, "Failed to get a memory node "
+ 			      "using get_allowed_nodes()");
+-	write_cpusets(PATH_TMP_CG_CST, memnode);
++	write_cpusets(cg, memnode);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 871f302e3..9c9bba7f6 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -36,6 +36,8 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+@@ -43,9 +45,6 @@ static void verify_oom(void)
+ #endif
+ 
+ 	tst_res(TINFO, "OOM on CPUSET & MEMCG...");
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+ 	/*
+@@ -53,22 +52,26 @@ static void verify_oom(void)
+ 	 * is in charge of cpuset.memory_migrate, we can write
+ 	 * 1 to cpuset.memory_migrate to enable the migration.
+ 	 */
+-	if (is_numa(NULL, NH_MEMS, 2)) {
+-		tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "memory_migrate", "1");
++	if (is_numa(NULL, NH_MEMS, 2) &&
++	    SAFE_CGROUP_HAS(cg, "cpuset.memory_migrate")) {
++		SAFE_CGROUP_PRINT(cg, "cpuset.memory_migrate", "1");
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"cpuset.memory_migrate=1");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+ 
+-	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
++	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"special memswap limitation:");
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
++		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+ 		testoom(0, 0, ENOMEM, 1);
+ 
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"disabled memswap limitation:");
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, -1);
++		if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
++			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
++		else
++			SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+ }
+@@ -83,8 +86,9 @@ void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("memory", NULL);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
+ 
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+@@ -96,15 +100,17 @@ void setup(void)
+ 	if (ret < 0)
+ 		tst_brk(TBROK, "Failed to get a memory node "
+ 			      "using get_allowed_nodes()");
+-	write_cpusets(PATH_TMP_CG_CST, memnode);
++
++	write_cpusets(cg, memnode);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
 -- 
 2.31.1
 
