@@ -1,53 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 28 Apr 2021 19:48:23 +0200
-Subject: [LTP] [PATCH v4 1/6] API: Add safe openat, printfat,
- readat and unlinkat
-In-Reply-To: <20210428142719.8065-2-rpalethorpe@suse.com>
-References: <20210428142719.8065-1-rpalethorpe@suse.com>
- <20210428142719.8065-2-rpalethorpe@suse.com>
-Message-ID: <YImf5zpy71k1sKqM@pevik>
+Date: Wed, 28 Apr 2021 20:04:35 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
+In-Reply-To: <YIlRAanTIk9uKVEP@yuki>
+References: <20210422065732.61222-1-xieziyao@huawei.com>
+ <20210422065732.61222-2-xieziyao@huawei.com>
+ <YIaWnt5ksxVyBvxk@pevik> <YIlRAanTIk9uKVEP@yuki>
+Message-ID: <YImjs5KVqFFjDqw/@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi Cyril, Xie,
 
-> Add 'at' variants for a number of system calls and LTP SAFE API
-> functions. This avoids using sprintf everywhere to build paths.
+> > > +int sig_flag = 0;
 
-> diff --git a/lib/tst_safe_file_at.c b/lib/tst_safe_file_at.c
-> new file mode 100644
-> index 000000000..a92a48fb2
-> --- /dev/null
-> +++ b/lib/tst_safe_file_at.c
-> @@ -0,0 +1,170 @@
-> +#define _GNU_SOURCE
-> +#include "lapi/fcntl.h"
-> +#include "tst_safe_file_at.h"
-This requires <stdio.h> (sprintf).
+> > It should be
+> > static int sig_flag;
 
-Also file should have SPDX license + copyright.
+> It has to be volatile as well, if we are waiting in a bussy loop on it
+> and it's changed ansynchronously from a signal handler, otherwise
+> compiler may misoptimize the code.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Generally the code that waits for a signal should look like:
+
+> static volatile sig_atomic_t sig_flag;
+
+Oh, yes, volatile. Thanks for other hints, code adjusted and whole patchset
+merged.
 
 Kind regards,
 Petr
-
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-> +
-> +char fd_path[PATH_MAX];
-> +
-> +char *tst_decode_fd(int fd)
-> +{
-> +	ssize_t ret;
-> +	char proc_path[32];
-> +
-> +	if (fd < 0)
-> +		return "!";
-> +
-> +	sprintf(proc_path, "/proc/self/fd/%d", fd);
-> +	ret = readlink(proc_path, fd_path, sizeof(fd_path));
-...
