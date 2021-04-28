@@ -1,39 +1,123 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 28 Apr 2021 15:56:02 +0200
-Subject: [LTP] [PATCH] syscalls/setfsgid02: Bugfix for running as root
-In-Reply-To: <20210428124939.23546-1-zhaogongyi@huawei.com>
-References: <20210428124939.23546-1-zhaogongyi@huawei.com>
-Message-ID: <YIlpcvO2UdSBxdXI@yuki>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 28 Apr 2021 15:27:13 +0100
+Subject: [LTP] [PATCH v4 0/6] CGroup API rewrite
+Message-ID: <20210428142719.8065-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> When we run the test as root id, and with the option "-i 2",
-> test will fail.
+Hello,
 
-Looking at the test there is much more to fix.
+This is a complete rewrite of the CGroups API. To understand why this
+is so complicated, please see the commments in tst_cgroup.h and
+tst_cgroup.c.
 
-- the description does not match what the test is doing
-- the pass/fail condition and TFAIL message does not make any sense
+V4:
 
-And its the same for the rest of the setfsgid tests.
+* Move openat based helpers to tst_safe_file_at.h.
 
-Looking at the manual pages for this oddball syscall we should check if:
+* Switch to userland naming of controllers (ctrl for short) instead of
+  kernel's css (CGroup subsystem).
 
-- unpriviledged process cannot change the value i.e. value that is
-  different from return from ret=setfsgid(-1) is passed as
-  setfsgid(ret+1) followed by setfsgid(-1) and all of these returns the
-  same value and the value also matches process effective group ID
+* Use more descriptive names such as dir_fd and tst_cgroup_group. Note
+  that we discussed calling it tst_cgroup_node. However in the end I
+  thought this was too generic and instead went with repetition.
 
-- priviledged process can change the value i.e. the same as
-  unpriviledged but we expect the last setfsgid(-1) return
-  the new value. We either have to reset the setfsgid() at the end of
-  the test or run it in a fork()-ed process so that we start with a
-  clean plate for each iteration
+* Split cgroup_item into cgroup_file and cgroup_ctrl. Also make the
+  lookup tree definition more verbose to avoid the missing field
+  warnings and setting the ctrl index at runtime.
+
+* make enum tst_cgroup_ctrl private; use controller name in
+  tst_cgroup_require.
+
+* make struct tst_cgroup_dir private.
+
+* Eliminate use of cgroup_get_ctrl and pass the ctrl struct around
+  instead of the indx.
+
+* Deleted test21 as it is superseded by tst_cgroup02.c.
+
+* Remove container_of macro as it is no longer used by this patch set.
+
+* Fix tst_cgroup_{scan,require,mount} in unlikely case it is run
+  inside cleanup or some other context where tst_brk may return.
+
+* Fix potential null-ptr-deref in cgroup_file_alias.
+
+* Include sys/types.h in header due to use of (s)size_t.
+
+V3:
+
+* Replaced the object API with a string based lookup.
+
+* Replaced tst_cgroup_css struct and name mapping functions with an
+  item info tree.
+
+* Merged the header files again as there is no longer much seperation
+  between the core and item parts of the library.
+
+* Rename some variables and functions to make them more consistent.
+
+V2:
+
+* Created an object (Item) API which looks a bit like the unified V2
+  hierarchy. The implementation is quite verbose, but not complicated
+  IMO.
+
+* Add the ability to extend the LTP CGroup hierarchy with child
+  groups. We already have a reproducer that requires such a hierarchy,
+  but I have not had chance to turn it into a test case yet.
+
+* Add documentation for the new API in test-writing-guidelines.txt.
+
+* Convert madvise06 to the CGroups API
+
+* Better error reporting for the *at functions. Add tst_decode_fd
+  which tries to print the path an FD was opened with.
+
+TODO/NOTES:
+
+* There are other tests which mount CGroups in an ad-hoc way and need
+  to be converted to the new API. This at least includes memcg_test_3
+  and maybe cgroup_xattr
+
+Richard Palethorpe (6):
+  API: Add safe openat, printfat, readat and unlinkat
+  Add new CGroups APIs
+  Add new CGroups API library tests
+  docs: Update CGroups API
+  mem: Convert tests to new CGroups API
+  madvise06: Convert to new CGroups API
+
+ doc/test-writing-guidelines.txt               |  175 ++-
+ include/tst_cgroup.h                          |  179 ++-
+ include/tst_safe_file_at.h                    |   51 +
+ include/tst_test.h                            |    1 -
+ lib/newlib_tests/.gitignore                   |    3 +-
+ lib/newlib_tests/test21.c                     |   66 -
+ lib/newlib_tests/tst_cgroup01.c               |   51 +
+ lib/newlib_tests/tst_cgroup02.c               |   90 ++
+ lib/tst_cgroup.c                              | 1266 ++++++++++++-----
+ lib/tst_safe_file_at.c                        |  170 +++
+ testcases/kernel/mem/cpuset/cpuset01.c        |   34 +-
+ testcases/kernel/mem/include/mem.h            |    2 +-
+ testcases/kernel/mem/ksm/ksm02.c              |   13 +-
+ testcases/kernel/mem/ksm/ksm03.c              |   12 +-
+ testcases/kernel/mem/ksm/ksm04.c              |   17 +-
+ testcases/kernel/mem/lib/mem.c                |   10 +-
+ testcases/kernel/mem/oom/oom03.c              |   18 +-
+ testcases/kernel/mem/oom/oom04.c              |   19 +-
+ testcases/kernel/mem/oom/oom05.c              |   32 +-
+ testcases/kernel/syscalls/madvise/madvise06.c |   82 +-
+ 20 files changed, 1753 insertions(+), 538 deletions(-)
+ create mode 100644 include/tst_safe_file_at.h
+ delete mode 100644 lib/newlib_tests/test21.c
+ create mode 100644 lib/newlib_tests/tst_cgroup01.c
+ create mode 100644 lib/newlib_tests/tst_cgroup02.c
+ create mode 100644 lib/tst_safe_file_at.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
