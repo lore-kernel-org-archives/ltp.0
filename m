@@ -1,377 +1,724 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Wed, 28 Apr 2021 17:20:06 +0800
-Subject: [LTP] [PATCH v3] syscalls/close: Delete close08 and convert close01
- to the new API
-Message-ID: <20210428092006.80460-1-xieziyao@huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 28 Apr 2021 12:27:52 +0200
+Subject: [LTP] [PATCH 4/4] RFC: Add helper functions for managing
+ network interfaces
+In-Reply-To: <20210426111918.4304-5-mdoucha@suse.cz>
+References: <20210426111918.4304-1-mdoucha@suse.cz>
+ <20210426111918.4304-5-mdoucha@suse.cz>
+Message-ID: <YIk4qL+lBIKt+4tX@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1. Cleanup and convert close01 to the new API;
-2. Add a testcase for closing a socket fd;
-3. Delete close08 since it does not add any more coverage over close01.
+Hi!
+> The library currently supports:
+> - creating a virtual ethernet device pair
+> - removing network interfaces
+> - enabling or disabling a network interface
+> - managing interface addresses
+> - managing routing table entries
+> - moving network interfaces between network namespaces
+> 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  include/tst_netdevice.h | 120 ++++++++++
+>  lib/tst_netdevice.c     | 506 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 626 insertions(+)
+>  create mode 100644 include/tst_netdevice.h
+>  create mode 100644 lib/tst_netdevice.c
+> 
+> diff --git a/include/tst_netdevice.h b/include/tst_netdevice.h
+> new file mode 100644
+> index 000000000..69f559fdd
+> --- /dev/null
+> +++ b/include/tst_netdevice.h
+> @@ -0,0 +1,120 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later
+> + * Copyright (c) 2021 Linux Test Project
+> + */
+> +
+> +#ifndef TST_NETDEVICE_H
+> +#define TST_NETDEVICE_H
+> +
+> +/* Find device index for given network interface name. */
+> +int tst_netdevice_index(const char *file, const int lineno, const char *ifname);
+> +#define NETDEVICE_INDEX(ifname) \
+> +	tst_netdevice_index(__FILE__, __LINE__, (ifname))
+> +
+> +/* Activate or deactivate network interface */
+> +int tst_netdevice_activate(const char *file, const int lineno,
+> +	const char *ifname, int up);
+> +#define NETDEVICE_ACTIVATE(ifname, up) \
+> +	tst_netdevice_activate(__FILE__, __LINE__, (ifname), (up))
+> +
+> +/* Create a connected pair of virtual network devices */
+> +int tst_create_veth_pair(const char *file, const int lineno,
+> +	const char *ifname1, const char *ifname2);
+> +#define CREATE_VETH_PAIR(ifname1, ifname2) \
+> +	tst_create_veth_pair(__FILE__, __LINE__, (ifname1), (ifname2))
+> +
+> +int tst_remove_netdevice(const char *file, const int lineno,
+> +	const char *ifname);
+> +#define REMOVE_NETDEVICE(ifname) \
+> +	tst_remove_netdevice(__FILE__, __LINE__, (ifname))
+> +
+> +int tst_netdevice_add_address(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *address,
+> +	unsigned int prefix, size_t addrlen, unsigned int flags);
+> +#define NETDEVICE_ADD_ADDRESS(ifname, family, address, prefix, addrlen, flags) \
+> +	tst_netdevice_add_address(__FILE__, __LINE__, (ifname), (family), \
+> +		(address), (prefix), (addrlen), (flags))
+> +
+> +int tst_netdevice_add_address_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t address, unsigned int prefix,
+> +	unsigned int flags);
+> +#define NETDEVICE_ADD_ADDRESS_INET(ifname, address, prefix, flags) \
+> +	tst_netdevice_add_address_inet(__FILE__, __LINE__, (ifname), \
+> +		(address), (prefix), (flags))
+> +
+> +int tst_netdevice_remove_address(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *address,
+> +	size_t addrlen);
+> +#define NETDEVICE_REMOVE_ADDRESS(ifname, family, address, addrlen) \
+> +	tst_netdevice_remove_address(__FILE__, __LINE__, (ifname), (family), \
+> +		(address), (addrlen))
+> +
+> +int tst_netdevice_remove_address_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t address);
+> +#define NETDEVICE_REMOVE_ADDRESS_INET(ifname, address) \
+> +	tst_netdevice_remove_address_inet(__FILE__, __LINE__, (ifname), \
+> +		(address))
+> +
+> +int tst_netdevice_change_ns_fd(const char *file, const int lineno,
+> +	const char *ifname, int nsfd);
+> +#define NETDEVICE_CHANGE_NS_FD(ifname, nsfd) \
+> +	tst_netdevice_change_ns_fd(__FILE__, __LINE__, (ifname), (nsfd))
+> +
+> +int tst_netdevice_change_ns_pid(const char *file, const int lineno,
+> +	const char *ifname, pid_t nspid);
+> +#define NETDEVICE_CHANGE_NS_PID(ifname, nspid) \
+> +	tst_netdevice_change_ns_pid(__FILE__, __LINE__, (ifname), (nspid))
+> +
+> +/*
+> + * Add new static entry to main routing table. If you specify gateway address,
+> + * the interface name is optional.
+> + */
+> +int tst_netdevice_add_route(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *srcaddr,
+> +	unsigned int srcprefix, size_t srclen, const void *dstaddr,
+> +	unsigned int dstprefix, size_t dstlen, const void *gateway,
+> +	size_t gatewaylen);
+> +#define NETDEVICE_ADD_ROUTE(ifname, family, srcaddr, srcprefix, srclen, \
+> +	dstaddr, dstprefix, dstlen, gateway, gatewaylen) \
+> +	tst_netdevice_add_route(__FILE__, __LINE__, (ifname), (family), \
+> +		(srcaddr), (srcprefix), (srclen), (dstaddr), (dstprefix), \
+> +		(dstlen), (gateway), (gatewaylen))
+> +
+> +/*
+> + * Simplified function for adding IPv4 static route. If you set srcprefix
+> + * or dstprefix to 0, the corresponding address will be ignored. Interface
+> + * name is optional if gateway address is non-zero.
+> + */
+> +int tst_netdevice_add_route_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t srcaddr, unsigned int srcprefix,
+> +	in_addr_t dstaddr, unsigned int dstprefix, in_addr_t gateway);
+> +#define NETDEVICE_ADD_ROUTE_INET(ifname, srcaddr, srcprefix, dstaddr, \
+> +	dstprefix, gateway) \
+> +	tst_netdevice_add_route_inet(__FILE__, __LINE__, (ifname), (srcaddr), \
+> +		(srcprefix), (dstaddr), (dstprefix), (gateway))
+> +
+> +/*
+> + * Remove static entry from main routing table.
+> + */
+> +int tst_netdevice_remove_route(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *srcaddr,
+> +	unsigned int srcprefix, size_t srclen, const void *dstaddr,
+> +	unsigned int dstprefix, size_t dstlen, const void *gateway,
+> +	size_t gatewaylen);
+> +#define NETDEVICE_REMOVE_ROUTE(ifname, family, srcaddr, srcprefix, srclen, \
+> +	dstaddr, dstprefix, dstlen, gateway, gatewaylen) \
+> +	tst_netdevice_remove_route(__FILE__, __LINE__, (ifname), (family), \
+> +		(srcaddr), (srcprefix), (srclen), (dstaddr), (dstprefix), \
+> +		(dstlen), (gateway), (gatewaylen))
+> +
+> +/*
+> + * Simplified function for removing IPv4 static route.
+> + */
+> +int tst_netdevice_remove_route_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t srcaddr, unsigned int srcprefix,
+> +	in_addr_t dstaddr, unsigned int dstprefix, in_addr_t gateway);
+> +#define NETDEVICE_REMOVE_ROUTE_INET(ifname, srcaddr, srcprefix, dstaddr, \
+> +	dstprefix, gateway) \
+> +	tst_netdevice_remove_route_inet(__FILE__, __LINE__, (ifname), \
+> +		(srcaddr), (srcprefix), (dstaddr), (dstprefix), (gateway))
+> +
+> +#endif /* TST_NETDEVICE_H */
+> diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+> new file mode 100644
+> index 000000000..541541b11
+> --- /dev/null
+> +++ b/lib/tst_netdevice.c
+> @@ -0,0 +1,506 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 Linux Test Project
+> + */
+> +
+> +#include <asm/types.h>
+> +#include <linux/netlink.h>
+> +#include <linux/rtnetlink.h>
+> +#include <linux/veth.h>
+> +#include <sys/socket.h>
+> +#include <net/if.h>
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +#include "tst_rtnetlink.h"
+> +#include "tst_netdevice.h"
+> +
+> +static struct tst_rtnl_context *create_request(const char *file,
+> +	const int lineno, unsigned int type, unsigned int flags,
+> +	const void *payload, size_t psize)
+> +{
+> +	struct nlmsghdr header = {0};
+> +	struct tst_rtnl_context *ctx;
+> +
+> +	ctx = tst_rtnl_create_context(file, lineno);
+> +
+> +	if (!ctx)
+> +		return NULL;
+> +
+> +	header.nlmsg_type = type;
+> +	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK | flags;
+> +
+> +	if (!tst_rtnl_add_message(file, lineno, ctx, &header, payload, psize)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return NULL;
+> +	}
+> +
+> +	return ctx;
+> +}
+> +
+> +int tst_netdevice_index(const char *file, const int lineno, const char *ifname)
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
-v2->v3:
-1. Modify some issues to make the code more straightforward;
-2. Add a testcase for closing a socket fd;
-3. Delete close08 since it does not add any more coverage over close01.
+The function name could be a bit more descriptive, what about
+tst_netdev_idx_by_name() ?
 
- testcases/kernel/syscalls/close/close01.c | 137 +++++------------
- testcases/kernel/syscalls/close/close08.c | 177 ----------------------
- 2 files changed, 35 insertions(+), 279 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/close/close08.c
+> +{
+> +	struct ifreq ifr;
+> +	int sock;
+> +
+> +	if (strlen(ifname) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname);
+                                              ^
+					      I usually use single
+					      quotes inside C strings
+					      but that is matter of
+					      taste
+> +		return -1;
+> +	}
+> +
+> +	sock = safe_socket(file, lineno, NULL, AF_INET, SOCK_DGRAM, 0);
+> +
+> +	if (sock < 0)
+> +		return -1;
+> +
+> +	strcpy(ifr.ifr_name, ifname);
+> +	TEST(ioctl(sock, SIOCGIFINDEX, &ifr));
+> +
+> +	safe_close(file, lineno, NULL, sock);
+> +
+> +	if (TST_RET < 0) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"ioctl(SIOCGIFINDEX) failed");
+> +	} else if (TST_RET) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Invalid ioctl(SIOCGIFINDEX) return value %ld",
+> +			TST_RET);
+> +	}
 
-diff --git a/testcases/kernel/syscalls/close/close01.c b/testcases/kernel/syscalls/close/close01.c
-index c734ff7d2..f2d30a693 100644
---- a/testcases/kernel/syscalls/close/close01.c
-+++ b/testcases/kernel/syscalls/close/close01.c
-@@ -1,124 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *  07/2001 Ported by Wayne Boyer
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software Foundation,
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * 07/2001 Ported by Wayne Boyer
-  */
+Using SAFE_IOCTL() would save us some lines here, but we would have to
+add a few more variants to the safe macros header.
 
--/*
-- * DESCRIPTION
-- *	Test that closing a regular file and a pipe works correctly
-+/*\
-+ * [Description]
-+ *
-+ * Test that closing a file/pipe/socket works correctly.
-  */
+> +	return TST_RET ? -1 : ifr.ifr_ifindex;
+> +}
+> +
+> +int tst_netdevice_activate(const char *file, const int lineno,
+> +	const char *ifname, int up)
 
- #include <stdio.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <sys/stat.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
+Naming this function activate is a bit confusing since it sets the
+interface up or down depending on the up flag. What about
+tst_netdev_state_set() ?
 
--void cleanup(void);
--void setup(void);
-+#define FILENAME "close01_testfile"
+> +{
+> +	struct ifreq ifr;
+> +	int sock;
+> +
+> +	if (strlen(ifname) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname);
+> +		return -1;
+> +	}
+> +
+> +	sock = safe_socket(file, lineno, NULL, AF_INET, SOCK_DGRAM, 0);
+> +
+> +	if (sock < 0)
+> +		return -1;
+> +
+> +	strcpy(ifr.ifr_name, ifname);
+> +	TEST(ioctl(sock, SIOCGIFFLAGS, &ifr));
+> +
+> +	if (TST_RET < 0) {
+> +		safe_close(file, lineno, NULL, sock);
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"ioctl(SIOCGIFFLAGS) failed");
+> +		return TST_RET;
+> +	}
+> +
+> +	if (TST_RET) {
+> +		safe_close(file, lineno, NULL, sock);
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Invalid ioctl(SIOCGIFFLAGS) return value %ld",
+> +			TST_RET);
+> +		return TST_RET;
+> +	}
+> +
+> +	if (up)
+> +		ifr.ifr_flags |= IFF_UP;
+> +	else
+> +		ifr.ifr_flags &= ~IFF_UP;
+> +
+> +	TEST(ioctl(sock, SIOCSIFFLAGS, &ifr));
+> +	safe_close(file, lineno, NULL, sock);
+> +
+> +	if (TST_RET < 0) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"ioctl(SIOCSIFFLAGS) failed");
+> +	} else if (TST_RET) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Invalid ioctl(SIOCSIFFLAGS) return value %ld",
+> +			TST_RET);
+> +	}
+> +
+> +	return TST_RET;
+> +}
+> +
+> +int tst_create_veth_pair(const char *file, const int lineno,
+> +	const char *ifname1, const char *ifname2)
+> +{
+> +	int ret;
+> +	struct ifinfomsg info = {0};
+> +	struct tst_rtnl_context *ctx;
+> +	struct tst_rtnl_attr_list peerinfo[] = {
+> +		{IFLA_IFNAME, ifname2, strlen(ifname2) + 1, NULL},
+> +		{0, NULL, -1, NULL}
+> +	};
+> +	struct tst_rtnl_attr_list peerdata[] = {
+> +		{VETH_INFO_PEER, &info, sizeof(info), peerinfo},
+> +		{0, NULL, -1, NULL}
+> +	};
+> +	struct tst_rtnl_attr_list attrs[] = {
+> +		{IFLA_IFNAME, ifname1, strlen(ifname1) + 1, NULL},
+> +		{IFLA_LINKINFO, NULL, 0, (const struct tst_rtnl_attr_list[]){
+> +			{IFLA_INFO_KIND, "veth", 4, NULL},
+> +			{IFLA_INFO_DATA, NULL, 0, peerdata},
+> +			{0, NULL, -1, NULL}
+> +		}},
+> +		{0, NULL, -1, NULL}
+> +	};
+> +
+> +	if (strlen(ifname1) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname1);
+> +		return 0;
+> +	}
+> +
+> +	if (strlen(ifname2) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname2);
+> +		return 0;
+> +	}
+> +
+> +	info.ifi_family = AF_UNSPEC;
 
--char *TCID = "close01";
--int TST_TOTAL = 2;
--
--char fname[40] = "";
--
--int fild, newfd, pipefildes[2];
--
--struct test_case_t {
--	int *fd;
--	char *type;
--} TC[] = {
--	/* file descriptor for a regular file */
--	{
--	&newfd, "file"},
--	    /* file descriptor for a pipe */
--	{
--	&pipefildes[0], "pipe"}
--};
--
--int main(int ac, char **av)
-+static int get_fd_file(void)
- {
--
--	int i;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		if ((fild = creat(fname, 0777)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "can't open file %s",
--				 fname);
--
--		if ((newfd = dup(fild)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "can't dup the file des");
--
--		SAFE_PIPE(cleanup, pipefildes);
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(close(*TC[i].fd));
--
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL, "call failed unexpectedly");
--				continue;
--			}
--
--			if (close(*TC[i].fd) == -1) {
--				tst_resm(TPASS, "%s appears closed",
--					 TC[i].type);
--			} else {
--				tst_resm(TFAIL, "%s close succeeded on"
--					 "second attempt", TC[i].type);
--			}
--		}
--
--	}
--
--	cleanup();
--	tst_exit();
-+	return SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, 0700);
- }
+We can just initialize this inline like the rest, rigth?
 
--void setup(void)
-+static int get_fd_pipe(void)
- {
--	int mypid;
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	umask(0);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	mypid = getpid();
--	sprintf(fname, "fname.%d", mypid);
-+	int pipefildes[2];
-+	SAFE_PIPE(pipefildes);
-+	SAFE_CLOSE(pipefildes[1]);
-+	return pipefildes[0];
- }
+> +	ctx = create_request(file, lineno, RTM_NEWLINK,
+> +		NLM_F_CREATE | NLM_F_EXCL, &info, sizeof(info));
+> +
+> +	if (!ctx)
+> +		return 0;
+> +
+> +	if (tst_rtnl_add_attr_list(file, lineno, ctx, attrs) != 2) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
+> +	tst_rtnl_free_context(file, lineno, ctx);
+> +
+> +	if (!ret) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Failed to create veth interfaces %s+%s", ifname1,
+> +			ifname2);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int tst_remove_netdevice(const char *file, const int lineno, const char *ifname)
+> +{
+> +	struct ifinfomsg info = {0};
+> +	struct tst_rtnl_context *ctx;
+> +	int ret;
+> +
+> +	if (strlen(ifname) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname);
+> +		return 0;
+> +	}
+> +
+> +	info.ifi_family = AF_UNSPEC;
 
--void cleanup(void)
-+static int get_fd_socket(void)
- {
--	close(fild);
-+	return SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+}
+Here as well, inline initialization?
 
--	tst_rmdir();
-+struct test_case_t {
-+	int (*get_fd) ();
-+	char *type;
-+} tc[] = {
-+	{get_fd_file, "file"},
-+	{get_fd_pipe, "pipe"},
-+	{get_fd_socket, "socket"}
-+};
+> +	ctx = create_request(file, lineno, RTM_DELLINK, 0, &info, sizeof(info));
+> +
+> +	if (!ctx)
+> +		return 0;
+> +
+> +	if (!tst_rtnl_add_attr_string(file, lineno, ctx, IFLA_IFNAME, ifname)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
+> +	tst_rtnl_free_context(file, lineno, ctx);
+> +
+> +	if (!ret) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Failed to remove netdevice %s", ifname);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int modify_address(const char *file, const int lineno,
+> +	unsigned int action, unsigned int nl_flags, const char *ifname,
+> +	unsigned int family, const void *address, unsigned int prefix,
+> +	size_t addrlen, uint32_t addr_flags)
+> +{
+> +	struct ifaddrmsg info = {0};
+> +	struct tst_rtnl_context *ctx;
+> +	int index, ret;
+> +
+> +	index = tst_netdevice_index(file, lineno, ifname);
+> +
+> +	if (index < 0) {
+> +		tst_brk_(file, lineno, TBROK, "Interface %s not found", ifname);
+> +		return 0;
+> +	}
+> +
+> +	info.ifa_family = family;
+> +	info.ifa_prefixlen = prefix;
+> +	info.ifa_index = index;
 
-+static void run(unsigned int i)
-+{
-+	TST_EXP_PASS(close(tc[i].get_fd()), "close a %s fd", tc[i].type);
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tc),
-+	.needs_tmpdir = 1,
-+	.test = run,
-+};
-diff --git a/testcases/kernel/syscalls/close/close08.c b/testcases/kernel/syscalls/close/close08.c
-deleted file mode 100644
-index ccdefa173..000000000
---- a/testcases/kernel/syscalls/close/close08.c
-+++ /dev/null
-@@ -1,177 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: close08.c,v 1.6 2009/10/13 14:00:46 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: close08
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for close(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) close(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the close(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	close(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
--
--#include <sys/types.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "close08";
--int TST_TOTAL = 1;
--
--char fname[255];
--int fd;
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
--			tst_brkm(TBROK | TTERRNO, cleanup,
--				 "open(%s, O_RDWR|O_CREAT,0700) failed", fname);
--		}
--		TEST(close(fd));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "close(%s) failed", fname);
--		} else {
--			tst_resm(TPASS, "close(%s) returned %ld", fname,
--				 TEST_RETURN);
--		}
--
--		SAFE_UNLINK(cleanup, fname);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	sprintf(fname, "tfile_%d", getpid());
--}
--
--void cleanup(void)
--{
--	tst_rmdir();
--
--}
---
-2.17.1
+Here as well, inline initialization?
 
+We can define the structure here and even include the index in the
+initialization as well...
+
+> +	ctx = create_request(file, lineno, action, nl_flags, &info,
+> +		sizeof(info));
+> +
+> +	if (!ctx)
+> +		return 0;
+> +
+> +
+> +	if (!tst_rtnl_add_attr(file, lineno, ctx, IFA_FLAGS, &addr_flags,
+> +		sizeof(uint32_t))) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	if (!tst_rtnl_add_attr(file, lineno, ctx, IFA_LOCAL, address,
+> +		addrlen)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
+> +	tst_rtnl_free_context(file, lineno, ctx);
+> +
+> +	if (!ret) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Failed to modify %s network address", ifname);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int tst_netdevice_add_address(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *address,
+> +	unsigned int prefix, size_t addrlen, unsigned int flags)
+> +{
+> +	return modify_address(file, lineno, RTM_NEWADDR,
+> +		NLM_F_CREATE | NLM_F_EXCL, ifname, family, address, prefix,
+> +		addrlen, flags);
+> +}
+> +
+> +int tst_netdevice_add_address_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t address, unsigned int prefix,
+> +	unsigned int flags)
+> +{
+> +	return tst_netdevice_add_address(file, lineno, ifname, AF_INET,
+> +		&address, prefix, sizeof(address), flags);
+> +}
+> +
+> +int tst_netdevice_remove_address(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *address,
+> +	size_t addrlen)
+> +{
+> +	return modify_address(file, lineno, RTM_DELADDR, 0, ifname, family,
+> +		address, 0, addrlen, 0);
+> +}
+> +
+> +int tst_netdevice_remove_address_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t address)
+> +{
+> +	return tst_netdevice_remove_address(file, lineno, ifname, AF_INET,
+> +		&address, sizeof(address));
+> +}
+
+I would consider adding the _inet one-liners as a static inline functions to
+the header instead.
+
+> +static int change_ns(const char *file, const int lineno, const char *ifname,
+> +	unsigned short attr, uint32_t value)
+> +{
+> +	struct ifinfomsg info = {0};
+> +	struct tst_rtnl_context *ctx;
+> +	int ret;
+> +
+> +	if (strlen(ifname) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname);
+> +		return 0;
+> +	}
+> +
+> +	info.ifi_family = AF_UNSPEC;
+> +	ctx = create_request(file, lineno, RTM_NEWLINK, 0, &info, sizeof(info));
+> +
+> +	if (!tst_rtnl_add_attr_string(file, lineno, ctx, IFLA_IFNAME, ifname)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	if (!tst_rtnl_add_attr(file, lineno, ctx, attr, &value,
+> +		sizeof(uint32_t))) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
+> +	tst_rtnl_free_context(file, lineno, ctx);
+> +
+> +	if (!ret) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Failed to move %s to another namespace", ifname);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int tst_netdevice_change_ns_fd(const char *file, const int lineno,
+> +	const char *ifname, int nsfd)
+> +{
+> +	return change_ns(file, lineno, ifname, IFLA_NET_NS_FD, nsfd);
+> +}
+> +
+> +int tst_netdevice_change_ns_pid(const char *file, const int lineno,
+> +	const char *ifname, pid_t nspid)
+> +{
+> +	return change_ns(file, lineno, ifname, IFLA_NET_NS_PID, nspid);
+> +}
+> +
+> +static int modify_route(const char *file, const int lineno, unsigned int action,
+> +	unsigned int flags, const char *ifname, unsigned int family,
+> +	const void *srcaddr, unsigned int srcprefix, size_t srclen,
+> +	const void *dstaddr, unsigned int dstprefix, size_t dstlen,
+> +	const void *gateway, size_t gatewaylen)
+> +{
+> +	struct rtmsg info = {0};
+> +	struct tst_rtnl_context *ctx;
+> +	int ret;
+> +	int32_t index;
+> +
+> +	if (!ifname && !gateway) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Interface name or gateway address required");
+> +		return 0;
+> +	}
+> +
+> +	if (ifname && strlen(ifname) >= IFNAMSIZ) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Network device name \"%s\" too long", ifname);
+> +		return 0;
+> +	}
+> +
+> +	if (ifname) {
+> +		index = tst_netdevice_index(file, lineno, ifname);
+> +
+> +		if (index < 0)
+> +			return 0;
+> +	}
+> +
+> +	info.rtm_family = family;
+> +	info.rtm_dst_len = dstprefix;
+> +	info.rtm_src_len = srcprefix;
+> +	info.rtm_table = RT_TABLE_MAIN;
+> +	info.rtm_protocol = RTPROT_STATIC;
+> +	info.rtm_type = RTN_UNICAST;
+
+Inline initialization as well?
+
+> +	if (action == RTM_DELROUTE) {
+> +		tst_res_(file, lineno, TINFO, "DELROUTE");
+> +		info.rtm_scope = RT_SCOPE_NOWHERE;
+> +	} else {
+> +		tst_res_(file, lineno, TINFO, "ADDROUTE");
+> +		info.rtm_scope = RT_SCOPE_UNIVERSE;
+> +	}
+> +
+> +	ctx = create_request(file, lineno, action, flags, &info, sizeof(info));
+> +
+> +	if (srcaddr && !tst_rtnl_add_attr(file, lineno, ctx, RTA_SRC, srcaddr,
+> +		srclen)) {
+
+Maybe it would be a bit more readable if we put the whole
+tst_rtnl_add_attr() on a separate line as:
+
+	if (srcaddr &&
+	    !tst_rtnl_add_attr(file, lineno, ctx, RTA_SRC, srcaddr, srclen)) {
+
+
+	}
+
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	if (dstaddr && !tst_rtnl_add_attr(file, lineno, ctx, RTA_DST, dstaddr,
+> +		dstlen)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	if (gateway && !tst_rtnl_add_attr(file, lineno, ctx, RTA_GATEWAY,
+> +		gateway, gatewaylen)) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	if (ifname && !tst_rtnl_add_attr(file, lineno, ctx, RTA_OIF, &index,
+> +		sizeof(index))) {
+> +		tst_rtnl_free_context(file, lineno, ctx);
+> +		return 0;
+> +	}
+> +
+> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
+> +	tst_rtnl_free_context(file, lineno, ctx);
+> +
+> +	if (!ret) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"Failed to modify network route");
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int tst_netdevice_add_route(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *srcaddr,
+> +	unsigned int srcprefix, size_t srclen, const void *dstaddr,
+> +	unsigned int dstprefix, size_t dstlen, const void *gateway,
+> +	size_t gatewaylen)
+> +{
+> +	return modify_route(file, lineno, RTM_NEWROUTE,
+> +		NLM_F_CREATE | NLM_F_EXCL, ifname, family, srcaddr, srcprefix,
+> +		srclen, dstaddr, dstprefix, dstlen, gateway, gatewaylen);
+> +}
+> +
+> +int tst_netdevice_add_route_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t srcaddr, unsigned int srcprefix,
+> +	in_addr_t dstaddr, unsigned int dstprefix, in_addr_t gateway)
+> +{
+> +	void *src = NULL, *dst = NULL, *gw = NULL;
+> +	size_t srclen = 0, dstlen = 0, gwlen = 0;
+> +
+> +	if (srcprefix) {
+> +		src = &srcaddr;
+> +		srclen = sizeof(srcaddr);
+> +	}
+> +
+> +	if (dstprefix) {
+> +		dst = &dstaddr;
+> +		dstlen = sizeof(dstaddr);
+> +	}
+> +
+> +	if (gateway) {
+> +		gw = &gateway;
+> +		gwlen = sizeof(gateway);
+> +	}
+> +
+> +	return tst_netdevice_add_route(file, lineno, ifname, AF_INET, src,
+> +		srcprefix, srclen, dst, dstprefix, dstlen, gw, gwlen);
+> +}
+> +
+> +int tst_netdevice_remove_route(const char *file, const int lineno,
+> +	const char *ifname, unsigned int family, const void *srcaddr,
+> +	unsigned int srcprefix, size_t srclen, const void *dstaddr,
+> +	unsigned int dstprefix, size_t dstlen, const void *gateway,
+> +	size_t gatewaylen)
+> +{
+> +	return modify_route(file, lineno, RTM_DELROUTE, 0, ifname, family,
+> +		srcaddr, srcprefix, srclen, dstaddr, dstprefix, dstlen,
+> +		gateway, gatewaylen);
+> +}
+> +
+> +int tst_netdevice_remove_route_inet(const char *file, const int lineno,
+> +	const char *ifname, in_addr_t srcaddr, unsigned int srcprefix,
+> +	in_addr_t dstaddr, unsigned int dstprefix, in_addr_t gateway)
+> +{
+> +	void *src = NULL, *dst = NULL, *gw = NULL;
+> +	size_t srclen = 0, dstlen = 0, gwlen = 0;
+> +
+> +	if (srcprefix) {
+> +		src = &srcaddr;
+> +		srclen = sizeof(srcaddr);
+> +	}
+> +
+> +	if (dstprefix) {
+> +		dst = &dstaddr;
+> +		dstlen = sizeof(dstaddr);
+> +	}
+> +
+> +	if (gateway) {
+> +		gw = &gateway;
+> +		gwlen = sizeof(gateway);
+> +	}
+> +
+> +	return tst_netdevice_remove_route(file, lineno, ifname, AF_INET, src,
+> +		srcprefix, srclen, dst, dstprefix, dstlen, gw, gwlen);
+> +}
+
+This is nearly the same as add_route, maybe it would be easier if we had
+modify_route_inet() that would fill in the parameters...
+
+
+Overall the code looks good to me.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
