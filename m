@@ -1,35 +1,39 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Thu, 29 Apr 2021 10:28:39 +0800
-Subject: [LTP] [PATCH v3] network/sit01.sh: Replace tst_res with tst_brk
-Message-ID: <20210429022839.24503-1-zhaogongyi@huawei.com>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Thu, 29 Apr 2021 02:32:38 +0000
+Subject: [LTP] [PATCH v2] tst_res: Replace tst_res with tst_brk for
+ shell testcases
+Message-ID: <bc169b9bef2249deba32f5683b9fbc3b@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We need replace tst_res with tst_brk to terminate the test
-immediately since there is no sence to go on.
+Hi Petr,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
-v2->v3: split into two separate commits
- testcases/network/virt/sit01.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for your review!
 
-diff --git a/testcases/network/virt/sit01.sh b/testcases/network/virt/sit01.sh
-index 4ecc1f8c0..27fa0ee77 100755
---- a/testcases/network/virt/sit01.sh
-+++ b/testcases/network/virt/sit01.sh
-@@ -11,7 +11,7 @@ virt_type="sit"
+I have split the patch into two sparate commits, and Cc Alexey Kodanev.
 
- do_setup()
- {
--	[ -n "$TST_IPV6" ] && tst_res TBROK "invalid option '-6' for sit tunnel"
-+	[ -n "$TST_IPV6" ] && tst_brk TBROK "invalid option '-6' for sit tunnel"
+Please see:
+https://patchwork.ozlabs.org/project/ltp/patch/20210429022839.24503-1-zhaogongyi@huawei.com/
+https://patchwork.ozlabs.org/project/ltp/patch/20210429020922.24085-1-zhaogongyi@huawei.com/
 
- 	virt_lib_setup
 
---
-2.17.1
+Best Regards,
+Gongyi
 
+> 
+> Hi,
+> 
+> > We need replace tst_res with tst_brk to terminate the test immediately
+> > since there is no sence to go on.
+> 
+> > For those:
+> > 	testcases/commands/lsmod/lsmod01.sh
+> >         testcases/network/virt/sit01.sh
+> Good catch. I'd split it into separate commits.
+> For testcases/network please Cc also Alexey Kodanev.
+> 
+> Kind regards,
+> Petr
