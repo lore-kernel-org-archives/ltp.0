@@ -1,39 +1,44 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Thu, 29 Apr 2021 02:32:38 +0000
-Subject: [LTP] [PATCH v2] tst_res: Replace tst_res with tst_brk for
- shell testcases
-Message-ID: <bc169b9bef2249deba32f5683b9fbc3b@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 29 Apr 2021 08:52:49 +0200
+Subject: [LTP] [PATCH v3] commands/lsmod01.sh: Replace tst_res with
+ tst_brk
+In-Reply-To: <20210429020922.24085-1-zhaogongyi@huawei.com>
+References: <20210429020922.24085-1-zhaogongyi@huawei.com>
+Message-ID: <YIpXwaKFw2e/vARq@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Hi,
 
-Thanks for your review!
+> We need replace tst_res with tst_brk to terminate the test immediately since
+> there is no sence to go on.
 
-I have split the patch into two sparate commits, and Cc Alexey Kodanev.
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+> v2->v3: split into two separate commits
+>  testcases/commands/lsmod/lsmod01.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please see:
-https://patchwork.ozlabs.org/project/ltp/patch/20210429022839.24503-1-zhaogongyi@huawei.com/
-https://patchwork.ozlabs.org/project/ltp/patch/20210429020922.24085-1-zhaogongyi@huawei.com/
+> diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
+> index 2e044c718..4ed91eca5 100755
+> --- a/testcases/commands/lsmod/lsmod01.sh
+> +++ b/testcases/commands/lsmod/lsmod01.sh
+> @@ -23,7 +23,7 @@ setup()
+>  		tst_require_cmds insmod
+>  		insmod "$TST_MODPATH"
+>  		if [ $? -ne 0 ]; then
+> -			tst_res TBROK "insmod failed"
+> +			tst_brk TBROK "insmod failed"
+>  			return
+There does not need to be return (in cleanup function tst_brk just prints
+warning and continues, but elsewhere it just quits).
 
+I'll fix that during merge.
 
-Best Regards,
-Gongyi
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> 
-> Hi,
-> 
-> > We need replace tst_res with tst_brk to terminate the test immediately
-> > since there is no sence to go on.
-> 
-> > For those:
-> > 	testcases/commands/lsmod/lsmod01.sh
-> >         testcases/network/virt/sit01.sh
-> Good catch. I'd split it into separate commits.
-> For testcases/network please Cc also Alexey Kodanev.
-> 
-> Kind regards,
-> Petr
+Kind regards,
+Petr
