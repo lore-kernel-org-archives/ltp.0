@@ -1,66 +1,67 @@
-From: wangxin (CQ) <wangxin410@huawei.com>
-Date: Thu, 29 Apr 2021 08:32:15 +0000
-Subject: [LTP] =?gb2312?b?tPC4tDogW1BBVENIXSBjb250cm9sbGVycy9jcHVzZXQ6?=
- =?gb2312?b?IFJlc3RvcmUgdGhlIHZhbHVlIG9mIGNwdXNldC5zY2hlZF9sb2FkX2JhbGFu?=
- =?gb2312?b?Y2U=?=
-In-Reply-To: <1619079641-30553-1-git-send-email-wangxin410@huawei.com>
-References: <1619079641-30553-1-git-send-email-wangxin410@huawei.com>
-Message-ID: <c6f0d000f05943a1bb1cac3c1bbd8867@huawei.com>
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Thu, 29 Apr 2021 17:21:46 +0800
+Subject: [LTP] [PATCH] openposix/mlock_8-1,
+ munlock_10-1: document the introduced patch
+Message-ID: <1619688106-2179-1-git-send-email-xuyang2018.jy@fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+The previous patch f52839ba25 ("openposix/mlock_8-1,munlock_10-1: document known aarch64 issue")
+has documented the fix patch, I have verified the introdueced patch is 057d3389108ed
+("mm: untag user pointers passed to memory syscalls"). So add it in comment and make testers known
+ whether it is a regression test or a new bug when hitting the EINVAL error.
 
-	Please ignore this patch. When I was making this patch,
-	I used an incorrect method to fix my formatting problem. 
-	Now I've remade a new patch, please check out the v2 version.
+Also modify the kernel version scope of the problem.
 
-Kind regards,
-Wang Xin
-
-
------????-----
-???: wangxin (CQ) 
-????: 2021?4?22? 16:21
-???: ltp@lists.linux.it
-??: wangxin (CQ) <wangxin410@huawei.com>
-??: [PATCH] controllers/cpuset: Restore the value of cpuset.sched_load_balance
-
-When we run the cpuhotplug03 test case on the arm64 machine, we conclude that no error occurs when the cpuhotplug03 case is executed alone, but once the cpuset_sched_domains case is executed first, After cpuhotplug03 is executed, the error "cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on" occurs.
-The cpuset_sched_domains test case changes the value of cpuset.sched_load_balance in the cpuset cgroup subsystem, but does not restore the value at the end of the test.
-Modify the cpuset_funcs.sh file. The test result shows that the problem is solved successfully.
-
-Signed-off-by: Wang Xin <wangxin410@huawei.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../conformance/interfaces/mlock/8-1.c                     | 7 +++++--
+ .../conformance/interfaces/munlock/10-1.c                  | 7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index 00aad0e..820de33 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -59,6 +59,8 @@ CPUSET="/dev/cpuset"
- CPUSET_TMP="/tmp/cpuset_tmp"
- CLONE_CHILDREN="/dev/cpuset/cgroup.clone_children"
- CHILDREN_VALUE="0"
-+SCHED_LB="/dev/cpuset/cpuset.sched_load_balance"
-+SCHED_LB_VALUE="0"
- HOTPLUG_CPU="1"
- cpuset_log()
-@@ -169,6 +171,7 @@ setup()
- 	fi
- 	CHILDREN_VALUE="`cat $CLONE_CHILDREN`"
-+	SCHED_LB_VALUE="`cat $SCHED_LB`"
- }
- # Write the cleanup function
-@@ -180,6 +183,7 @@ cleanup()
- 	}
- 	echo $CHILDREN_VALUE > $CLONE_CHILDREN
-+	echo $SCHED_LB_VALUE > $SCHED_LB
- 	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir
-	do
-2.6.2
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c b/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
+index b2cd21c95..d8722c7f6 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/8-1.c
+@@ -13,10 +13,13 @@
+  *
+  * Assume that the value LONG_MAX is an invalid pointer.
+  *
+- * aarch64 linux versions v5.3 up to v5.6-rc1 may incorrectly report
+- * EINVAL instead of ENOMEM, see:
++ * aarch64 linux versions v5.4-rc1 up to v5.6-rc3 may incorrectly report
++ * EINVAL instead of ENOMEM, the fix patch see:
+  *   597399d0cb91 ("arm64: tags: Preserve tags for addresses translated via TTBR1")
+  *   d0022c0ef29b ("arm64: memory: Add missing brackets to untagged_addr() macro")
++ *
++ * this bug was introduced because of the following commit, see:
++ *   057d3389108e ("mm: untag user pointers passed to memory syscalls")
+  */
+ 
+ #include <sys/mman.h>
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
+index 93414df46..e1c13d5fc 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/munlock/10-1.c
+@@ -13,10 +13,13 @@
+  *
+  * Assume that the value LONG_MAX is an invalid pointer.
+  *
+- * aarch64 linux versions v5.3 up to v5.6-rc1 may incorrectly report
+- * EINVAL instead of ENOMEM, see:
++ * aarch64 linux versions v5.4-rc1 up to v5.6-rc3 may incorrectly report
++ * EINVAL instead of ENOMEM, the fix patch see:
+  *   597399d0cb91 ("arm64: tags: Preserve tags for addresses translated via TTBR1")
+  *   d0022c0ef29b ("arm64: memory: Add missing brackets to untagged_addr() macro")
++ *
++ * this bug was introduced because of the following commit, see:
++ *   057d3389108e ("mm: untag user pointers passed to memory syscalls")
+  */
+ 
+ #include <sys/mman.h>
+-- 
+2.23.0
 
