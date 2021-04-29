@@ -1,47 +1,35 @@
-From: xieziyao <xieziyao@huawei.com>
-Date: Thu, 29 Apr 2021 02:02:36 +0000
-Subject: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
-In-Reply-To: <YImjs5KVqFFjDqw/@pevik>
-References: <20210422065732.61222-1-xieziyao@huawei.com>
- <20210422065732.61222-2-xieziyao@huawei.com> <YIaWnt5ksxVyBvxk@pevik>
- <YIlRAanTIk9uKVEP@yuki> <YImjs5KVqFFjDqw/@pevik>
-Message-ID: <23fa24747c7a410b9f52f0c34dfc0628@huawei.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Thu, 29 Apr 2021 10:09:22 +0800
+Subject: [LTP] [PATCH v3] commands/lsmod01.sh: Replace tst_res with tst_brk
+Message-ID: <20210429020922.24085-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Petr, Cyril,
+We need replace tst_res with tst_brk to terminate the test immediately since
+there is no sence to go on.
 
-Learned a lot. Thanks for your review and modifications to the code.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+v2->v3: split into two separate commits
+ testcases/commands/lsmod/lsmod01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kind regards,
-Ziyao
+diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
+index 2e044c718..4ed91eca5 100755
+--- a/testcases/commands/lsmod/lsmod01.sh
++++ b/testcases/commands/lsmod/lsmod01.sh
+@@ -23,7 +23,7 @@ setup()
+ 		tst_require_cmds insmod
+ 		insmod "$TST_MODPATH"
+ 		if [ $? -ne 0 ]; then
+-			tst_res TBROK "insmod failed"
++			tst_brk TBROK "insmod failed"
+ 			return
+ 		fi
 
------Original Message-----
-From: Petr Vorel [mailto:pvorel@suse.cz] 
-Sent: Thursday, April 29, 2021 2:05 AM
-To: Cyril Hrubis <chrubis@suse.cz>
-Cc: xieziyao <xieziyao@huawei.com>; ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH 1/2] syscalls/tkill: Convert tkill01 to the new API
+--
+2.17.1
 
-Hi Cyril, Xie,
-
-> > > +int sig_flag = 0;
-
-> > It should be
-> > static int sig_flag;
-
-> It has to be volatile as well, if we are waiting in a bussy loop on it 
-> and it's changed ansynchronously from a signal handler, otherwise 
-> compiler may misoptimize the code.
-
-> Generally the code that waits for a signal should look like:
-
-> static volatile sig_atomic_t sig_flag;
-
-Oh, yes, volatile. Thanks for other hints, code adjusted and whole patchset merged.
-
-Kind regards,
-Petr
