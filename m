@@ -1,35 +1,47 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Thu, 29 Apr 2021 22:22:32 +0800
-Subject: [LTP] [PATCH] lib/tst_checkpoint.c: Replace SAFE_CLOSE with
- SAFE_UNLINK
-Message-ID: <20210429142232.29596-1-zhaogongyi@huawei.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 29 Apr 2021 16:05:05 +0100
+Subject: [LTP] [PATCH v2 0/5] BPF refactor and add bpf_prog05
+Message-ID: <20210429150510.21585-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When we call tst_checkpoint_init and set the cleanup_fn to NULL, the file
-checkpoint_futex_base_file might be left over.
+Hello,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- lib/tst_checkpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V2:
 
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 9e9dcf9e6..3360ab07b 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -78,7 +78,7 @@ void tst_checkpoint_init(const char *file, const int lineno,
+* Added a number of helper functions to bpf_common and used them on
+  all tests.
 
- 	tst_max_futexes = page_size / sizeof(uint32_t);
+* Added some instruction concatenation helpers, but only used these on
+  bpf_prog05 as they don't seem to make the other tests better to
+  read.
 
--	SAFE_CLOSE(cleanup_fn, fd);
-+	SAFE_UNLINK(cleanup_fn, "checkpoint_futex_base_file");
- }
+* Further shorten bpf_prog05 by using a generic expect function
 
- int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
---
-2.17.1
+Richard Palethorpe (5):
+  lapi/bpf: Add /=, %= and BPF_MAXINSNS
+  bpf: Add map_array helper functions
+  bpf: Add helper to run socket programs
+  bpf: Add bpf_insn_buf, map and instruction concatenation helpers
+  bpf: Check truncation on 32bit div/mod by zero
+
+ include/lapi/bpf.h                         |   6 +
+ runtest/cve                                |   1 +
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/bpf/.gitignore   |   1 +
+ testcases/kernel/syscalls/bpf/bpf_common.c |  89 +++++++++++
+ testcases/kernel/syscalls/bpf/bpf_common.h |  26 ++-
+ testcases/kernel/syscalls/bpf/bpf_prog01.c |  32 +---
+ testcases/kernel/syscalls/bpf/bpf_prog02.c |  54 ++-----
+ testcases/kernel/syscalls/bpf/bpf_prog03.c |  32 +---
+ testcases/kernel/syscalls/bpf/bpf_prog04.c |  17 +-
+ testcases/kernel/syscalls/bpf/bpf_prog05.c | 175 +++++++++++++++++++++
+ 11 files changed, 320 insertions(+), 114 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog05.c
+
+-- 
+2.31.1
 
