@@ -1,170 +1,114 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 29 Apr 2021 16:05:08 +0100
-Subject: [LTP] [PATCH v2 3/5] bpf: Add helper to run socket programs
+Date: Thu, 29 Apr 2021 16:05:09 +0100
+Subject: [LTP] [PATCH v2 4/5] bpf: Add bpf_insn_buf,
+ map and instruction concatenation helpers
 In-Reply-To: <20210429150510.21585-1-rpalethorpe@suse.com>
 References: <20210429150510.21585-1-rpalethorpe@suse.com>
-Message-ID: <20210429150510.21585-4-rpalethorpe@suse.com>
+Message-ID: <20210429150510.21585-5-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-So far we always trigger the BPF programs the same way.
+Add helpers for building up programs. Tests before bpf_prog05 have not
+been updated to use this for two reasons.
+
+1. Some apply offsets to the map pointer returned or jump to the end
+   of the program instead of just over an immediate exit
+   instruction. Either way modifying them would require testing they
+   still reproduce the bug.
+
+2. Some have a lot of comments describing the program which is useful
+   to learn from. These would need to be moved.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/kernel/syscalls/bpf/bpf_common.c | 15 +++++++++++++++
- testcases/kernel/syscalls/bpf/bpf_common.h |  2 ++
- testcases/kernel/syscalls/bpf/bpf_prog01.c | 11 +----------
- testcases/kernel/syscalls/bpf/bpf_prog02.c | 11 +----------
- testcases/kernel/syscalls/bpf/bpf_prog03.c |  9 +--------
- testcases/kernel/syscalls/bpf/bpf_prog04.c |  9 +--------
- 6 files changed, 21 insertions(+), 36 deletions(-)
+ testcases/kernel/syscalls/bpf/bpf_common.c | 40 ++++++++++++++++++++++
+ testcases/kernel/syscalls/bpf/bpf_common.h | 12 +++++++
+ 2 files changed, 52 insertions(+)
 
 diff --git a/testcases/kernel/syscalls/bpf/bpf_common.c b/testcases/kernel/syscalls/bpf/bpf_common.c
-index 90772815b..b5337c22a 100644
+index b5337c22a..d80ed91bb 100644
 --- a/testcases/kernel/syscalls/bpf/bpf_common.c
 +++ b/testcases/kernel/syscalls/bpf/bpf_common.c
-@@ -127,3 +127,18 @@ int bpf_load_prog(union bpf_attr *attr, const char *log)
- 	tst_brk(TBROK | TERRNO, "Failed to load program");
- 	return ret;
+@@ -82,6 +82,46 @@ long bpf_map_array_get(const int map_fd,
+ 	return TST_RET;
  }
-+
-+void bpf_run_prog(const int prog_fd,
-+		  const char *const msg, const size_t msg_len)
+ 
++void bpf_insn_buf_cat(struct bpf_insn_buf *const self,
++		      const struct bpf_insn *const insn_to_cat,
++		      const size_t insn_to_cat_len)
 +{
-+	int sk[2];
-+
-+	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
-+	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
-+			&prog_fd, sizeof(prog_fd));
-+
-+	SAFE_WRITE(1, sk[0], msg, msg_len);
-+
-+	SAFE_CLOSE(sk[0]);
-+	SAFE_CLOSE(sk[1]);
++	memcpy(((char *)self->insn) + self->byte_len,
++	       insn_to_cat, insn_to_cat_len);
++	self->byte_len += insn_to_cat_len;
 +}
++
++/* map[array_indx] = reg_to_save
++ *
++ * Inserts the following into insn_out.
++ *
++ * r1 = map_fd
++ * r2 = fp
++ * r2 = r2 - 4
++ * r2 = array_indx
++ * call map_lookup_elem(r1, r2)
++ * if r0 != 0 goto pc+1
++ * exit
++ * *r0 = reg_to_save
++ *
++ */
++ void bpf_insn_buf_array_set(struct bpf_insn_buf *const self, const int map_fd,
++			     const uint32_t array_indx, const uint8_t reg_to_save)
++{
++	const struct bpf_insn map_insn[] = {
++		BPF_LD_MAP_FD(BPF_REG_1, map_fd),
++		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
++		BPF_ST_MEM(BPF_W, BPF_REG_2, 0, array_indx),
++		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
++		BPF_EXIT_INSN(),
++		BPF_STX_MEM(BPF_DW, BPF_REG_0, reg_to_save, 0),
++	};
++
++	bpf_insn_buf_cat(self, map_insn, sizeof(map_insn));
++}
++
+ void bpf_init_prog_attr(union bpf_attr *attr, const struct bpf_insn *prog,
+ 	size_t prog_size, char *log_buf, size_t log_size)
+ {
 diff --git a/testcases/kernel/syscalls/bpf/bpf_common.h b/testcases/kernel/syscalls/bpf/bpf_common.h
-index fb5731c3d..9e9935c2c 100644
+index 9e9935c2c..10b1eee86 100644
 --- a/testcases/kernel/syscalls/bpf/bpf_common.h
 +++ b/testcases/kernel/syscalls/bpf/bpf_common.h
-@@ -23,5 +23,7 @@ long bpf_map_array_get(const int map_fd,
+@@ -13,6 +13,11 @@
+ 
+ #define BPF_MEMLOCK_ADD (2*1024*1024)
+ 
++struct bpf_insn_buf {
++	size_t byte_len;
++	struct bpf_insn insn[BPF_MAXINSNS];
++};
++
+ void rlimit_bump_memlock(void);
+ int bpf_map_create(union bpf_attr *attr);
+ int bpf_map_array_create(uint32_t max_entries);
+@@ -20,6 +25,13 @@ long bpf_map_array_get(const int map_fd,
+ 		       const uint32_t *const array_indx,
+ 		       uint64_t *const array_val);
+ 
++void bpf_insn_buf_cat(struct bpf_insn_buf *const self,
++		      const struct bpf_insn *const insn_to_cat,
++		      const size_t insn_to_cat_len);
++void bpf_insn_buf_array_set(struct bpf_insn_buf *const self,
++			    const int map_fd,
++			    const uint32_t array_indx, const uint8_t reg_to_save);
++
  void bpf_init_prog_attr(union bpf_attr *attr, const struct bpf_insn *prog,
  			size_t prog_size, char *log_buf, size_t log_size);
  int bpf_load_prog(union bpf_attr *attr, const char *log);
-+void bpf_run_prog(const int prog_fd,
-+		  const char *const msg, const size_t msg_len);
- 
- #endif
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog01.c b/testcases/kernel/syscalls/bpf/bpf_prog01.c
-index ac57b24b5..1d5d04556 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog01.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog01.c
-@@ -79,22 +79,13 @@ void setup(void)
- void run(void)
- {
- 	int map_fd, prog_fd;
--	int sk[2];
- 	uint32_t key = 0;
- 	uint64_t val;
- 
- 	map_fd = bpf_map_array_create(1);
- 	prog_fd = load_prog(map_fd);
--
--	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
--	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
--			&prog_fd, sizeof(prog_fd));
--
--	SAFE_WRITE(1, sk[0], msg, sizeof(MSG));
--
-+	bpf_run_prog(prog_fd, msg, sizeof(MSG));
- 	SAFE_CLOSE(prog_fd);
--	SAFE_CLOSE(sk[0]);
--	SAFE_CLOSE(sk[1]);
- 
-         bpf_map_array_get(map_fd, &key, &val);
- 	if (val != 1) {
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog02.c b/testcases/kernel/syscalls/bpf/bpf_prog02.c
-index 4558153ea..9f6acca60 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog02.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog02.c
-@@ -79,20 +79,11 @@ static void setup(void)
- static void run(void)
- {
- 	int map_fd, prog_fd;
--	int sk[2];
- 
- 	map_fd = bpf_map_array_create(2);
- 	prog_fd = load_prog(map_fd);
--
--	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
--	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
--			&prog_fd, sizeof(prog_fd));
--
--	SAFE_WRITE(1, sk[0], msg, sizeof(MSG));
--
-+	bpf_run_prog(prog_fd, msg, sizeof(MSG));
- 	SAFE_CLOSE(prog_fd);
--	SAFE_CLOSE(sk[0]);
--	SAFE_CLOSE(sk[1]);
- 
-         *key = 0;
- 	bpf_map_array_get(map_fd, key, val);
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog03.c b/testcases/kernel/syscalls/bpf/bpf_prog03.c
-index 1195ddc2c..9a7af7f4c 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog03.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog03.c
-@@ -117,7 +117,6 @@ static void setup(void)
- static void run(void)
- {
- 	int map_fd, prog_fd;
--	int sk[2];
- 
- 	map_fd = bpf_map_array_create(32);
- 
-@@ -137,13 +136,7 @@ static void run(void)
- 
- 	tst_res(TFAIL, "Loaded bad eBPF, now we will run it and maybe crash");
- 
--	SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
--	SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF,
--			&prog_fd, sizeof(prog_fd));
--
--	SAFE_WRITE(1, sk[0], msg, sizeof(MSG));
--	SAFE_CLOSE(sk[0]);
--	SAFE_CLOSE(sk[1]);
-+	bpf_run_prog(prog_fd, msg, sizeof(MSG));
- 	SAFE_CLOSE(prog_fd);
- 
- 	*key = 0;
-diff --git a/testcases/kernel/syscalls/bpf/bpf_prog04.c b/testcases/kernel/syscalls/bpf/bpf_prog04.c
-index 1a1ee0f04..09d0cc468 100644
---- a/testcases/kernel/syscalls/bpf/bpf_prog04.c
-+++ b/testcases/kernel/syscalls/bpf/bpf_prog04.c
-@@ -92,7 +92,6 @@ static void setup(void)
- static void run(void)
- {
- 	int map_fd, prog_fd;
--	int sk[2];
- 
- 	map_fd = bpf_map_array_create(1);
- 	prog_fd = load_prog(map_fd);
-@@ -100,13 +99,7 @@ static void run(void)
- 	if (prog_fd >= 0) {
- 		tst_res(TFAIL, "Malicious eBPF code passed verification. "
- 			"Now let's try crashing the kernel.");
--		SAFE_SOCKETPAIR(AF_UNIX, SOCK_DGRAM, 0, sk);
--		SAFE_SETSOCKOPT(sk[1], SOL_SOCKET, SO_ATTACH_BPF, &prog_fd,
--			sizeof(prog_fd));
--
--		SAFE_WRITE(1, sk[0], msg, sizeof(MSG));
--		SAFE_CLOSE(sk[0]);
--		SAFE_CLOSE(sk[1]);
-+		bpf_run_prog(prog_fd, msg, sizeof(MSG));
- 	}
- 
- 	if (prog_fd >= 0)
 -- 
 2.31.1
 
