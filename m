@@ -1,32 +1,35 @@
-From: xieziyao <xieziyao@huawei.com>
-Date: Thu, 29 Apr 2021 02:21:55 +0000
-Subject: [LTP] [PATCH v3] syscalls/close: Delete close08 and convert
- close01 to the new API
-In-Reply-To: <YIlWZc3j8esnndJP@yuki>
-References: <20210428092006.80460-1-xieziyao@huawei.com>
- <YIlWZc3j8esnndJP@yuki>
-Message-ID: <cf03bcebc3cc47708ca7aca0c4ff7294@huawei.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Thu, 29 Apr 2021 10:28:39 +0800
+Subject: [LTP] [PATCH v3] network/sit01.sh: Replace tst_res with tst_brk
+Message-ID: <20210429022839.24503-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Thank you, Cyril. I'll pay attention to that next time.
+We need replace tst_res with tst_brk to terminate the test
+immediately since there is no sence to go on.
 
-Kind regards,
-Ziyao
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+v2->v3: split into two separate commits
+ testcases/network/virt/sit01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------Original Message-----
-From: Cyril Hrubis [mailto:chrubis@suse.cz] 
-Sent: Wednesday, April 28, 2021 8:35 PM
-To: 20210426125224.150268-2-xieziyao@huawei.com
-Cc: ltp@lists.linux.it; xieziyao <xieziyao@huawei.com>
-Subject: Re: [LTP][PATCH v3] syscalls/close: Delete close08 and convert close01 to the new API
+diff --git a/testcases/network/virt/sit01.sh b/testcases/network/virt/sit01.sh
+index 4ecc1f8c0..27fa0ee77 100755
+--- a/testcases/network/virt/sit01.sh
++++ b/testcases/network/virt/sit01.sh
+@@ -11,7 +11,7 @@ virt_type="sit"
 
-Hi!
-I've updated the .gitignore file and runtest/syscalls file as well and pushed, thanks.
+ do_setup()
+ {
+-	[ -n "$TST_IPV6" ] && tst_res TBROK "invalid option '-6' for sit tunnel"
++	[ -n "$TST_IPV6" ] && tst_brk TBROK "invalid option '-6' for sit tunnel"
+
+ 	virt_lib_setup
 
 --
-Cyril Hrubis
-chrubis@suse.cz
+2.17.1
+
