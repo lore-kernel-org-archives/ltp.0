@@ -1,194 +1,270 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Thu, 29 Apr 2021 19:50:21 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/io_submit: Convert libaio wrapper
- function to kernel syscall
-In-Reply-To: <20210429115021.24128-1-xieziyao@huawei.com>
-References: <20210429115021.24128-1-xieziyao@huawei.com>
-Message-ID: <20210429115021.24128-4-xieziyao@huawei.com>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Thu, 29 Apr 2021 20:52:20 +0800
+Subject: [LTP] [PATCH 4/4] syscalls/fcntl: Replace TINFO with TPASS or TFAIL
+Message-ID: <20210429125220.31412-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Instead of using the libaio wrapper function, the system call is changed to be invoked via syscall(2).
+1)remove redundant variable
+2)remove redundant log
+3)replace TINFO with TPASS or TFAIL
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+For those:
+	testcases/kernel/syscalls/fcntl/fcntl16.c
+	testcases/kernel/syscalls/fcntl/fcntl18.c
+
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 ---
- .../kernel/syscalls/io_submit/io_submit01.c   | 110 ++++++++----------
- 1 file changed, 48 insertions(+), 62 deletions(-)
+ testcases/kernel/syscalls/fcntl/fcntl16.c | 70 +++++++----------------
+ testcases/kernel/syscalls/fcntl/fcntl18.c | 40 ++-----------
+ 2 files changed, 27 insertions(+), 83 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/io_submit/io_submit01.c b/testcases/kernel/syscalls/io_submit/io_submit01.c
-index bbbbc9101..702a7721b 100644
---- a/testcases/kernel/syscalls/io_submit/io_submit01.c
-+++ b/testcases/kernel/syscalls/io_submit/io_submit01.c
-@@ -1,24 +1,29 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Crackerjack Project., 2007
-+ * Ported from Crackerjack to LTP by Masatake YAMATO <yamato@redhat.com>
-  * Copyright (c) 2011-2017 Cyril Hrubis <chrubis@suse.cz>
-  */
-
--/* Porting from Crackerjack to LTP is done
--   by Masatake YAMATO <yamato@redhat.com> */
-+/*\
-+ * [Description]
-+ *
-+ * - io_submit(2) fails and returns EINVAL if ctx is invalid;
-+ * - io_submit(2) fails and returns EINVAL if nr is invalid;
-+ * - io_submit(2) fails and returns EFAULT if iocbpp pointer is invalid;
-+ * - io_submit(2) fails and returns EBADF if fd is invalid;
-+ * - io_submit(2) should work fine if no-op;
-+ */
-
--#include <errno.h>
--#include <string.h>
--#include <fcntl.h>
-+#include <linux/aio_abi.h>
-
- #include "config.h"
- #include "tst_test.h"
-+#include "lapi/syscalls.h"
-
--#ifdef HAVE_LIBAIO
--#include <libaio.h>
--
--static io_context_t ctx;
--static io_context_t invalid_ctx;
-+static aio_context_t ctx;
-+static aio_context_t invalid_ctx;
-+static char buf[100];
-
- static struct iocb iocb;
- static struct iocb *iocbs[] = {&iocb};
-@@ -39,93 +44,74 @@ static struct iocb *zero_buf_iocbs[] = {&zero_buf_iocb};
-
- static struct iocb *zero_iocbs[1];
-
--static char buf[100];
--
- static struct tcase {
--	io_context_t *ctx;
-+	aio_context_t *ctx;
- 	long nr;
- 	struct iocb **iocbs;
- 	int exp_errno;
- 	const char *desc;
--} tcases[] = {
-+} tc[] = {
- 	/* Invalid ctx */
--	{&invalid_ctx, 1, iocbs, -EINVAL, "invalid ctx"},
-+	{&invalid_ctx, 1, iocbs, EINVAL, "invalid ctx"},
- 	/* Invalid nr */
--	{&ctx, -1, iocbs, -EINVAL, "invalid nr"},
-+	{&ctx, -1, iocbs, EINVAL, "invalid nr"},
- 	/* Invalid pointer */
--	{&ctx, 1, (void*)-1, -EFAULT, "invalid iocbpp pointer"},
--	{&ctx, 1, zero_iocbs, -EFAULT, "NULL iocb pointers"},
-+	{&ctx, 1, (void*)-1, EFAULT, "invalid iocbpp pointer"},
-+	{&ctx, 1, zero_iocbs, EFAULT, "NULL iocb pointers"},
- 	/* Invalid fd */
--	{&ctx, 1, inv_fd_iocbs, -EBADF, "invalid fd"},
--	{&ctx, 1, rdonly_fd_iocbs, -EBADF, "readonly fd for write"},
--	{&ctx, 1, wronly_fd_iocbs, -EBADF, "writeonly fd for read"},
-+	{&ctx, 1, inv_fd_iocbs, EBADF, "invalid fd"},
-+	{&ctx, 1, rdonly_fd_iocbs, EBADF, "readonly fd for write"},
-+	{&ctx, 1, wronly_fd_iocbs, EBADF, "writeonly fd for read"},
- 	/* No-op but should work fine */
--	{&ctx, 1, zero_buf_iocbs, 1, "zero buf size"},
-+	{&ctx, 1, zero_buf_iocbs, 0, "zero buf size"},
- 	{&ctx, 0, NULL, 0, "zero nr"},
- };
-
--static void setup(void)
-+static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
-+			size_t count, long long offset, unsigned opcode)
- {
--	TEST(io_setup(1, &ctx));
--	if (TST_RET == -ENOSYS)
--		tst_brk(TCONF | TRERRNO, "io_setup(): AIO not supported by kernel");
--	else if (TST_RET)
--		tst_brk(TBROK | TRERRNO, "io_setup() failed");
-+	memset(cb, 0, sizeof(*cb));
-+	cb->aio_fildes = fd;
-+	cb->aio_lio_opcode = opcode;
-+	cb->aio_buf = (uint64_t)buf;
-+	cb->aio_offset = offset;
-+	cb->aio_nbytes = count;
-+}
-
--	io_prep_pread(&inv_fd_iocb, -1, buf, sizeof(buf), 0);
-+static void setup(void)
-+{
-+	TST_EXP_PASS(tst_syscall(__NR_io_setup, 1, &ctx));
-+	io_prep_option(&inv_fd_iocb, -1, buf, sizeof(buf), 0, IOCB_CMD_PREAD);
-
- 	rdonly_fd = SAFE_OPEN("rdonly_file", O_RDONLY | O_CREAT, 0777);
--	io_prep_pwrite(&rdonly_fd_iocb, rdonly_fd, buf, sizeof(buf), 0);
-+	io_prep_option(&rdonly_fd_iocb, rdonly_fd, buf, sizeof(buf), 0, IOCB_CMD_PWRITE);
-
--	io_prep_pread(&zero_buf_iocb, rdonly_fd, buf, 0, 0);
-+	io_prep_option(&zero_buf_iocb, rdonly_fd, buf, 0, 0, IOCB_CMD_PREAD);
-
- 	wronly_fd = SAFE_OPEN("wronly_file", O_WRONLY | O_CREAT, 0777);
--	io_prep_pread(&wronly_fd_iocb, wronly_fd, buf, sizeof(buf), 0);
-+	io_prep_option(&wronly_fd_iocb, wronly_fd, buf, sizeof(buf), 0, IOCB_CMD_PREAD);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+index a77a81298..04d86202c 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl16.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+@@ -441,7 +441,7 @@ void setup(void)
+ 	sigaction(SIGALRM, &sact, NULL);
  }
 
- static void cleanup(void)
+-int run_test(int file_flag, int file_mode, int start, int end)
++static void run_test(int file_flag, int file_mode, int start, int end)
  {
- 	if (rdonly_fd > 0)
- 		SAFE_CLOSE(rdonly_fd);
--
- 	if (wronly_fd > 0)
- 		SAFE_CLOSE(wronly_fd);
+ 	int child_count;
+ 	int child;
+@@ -468,7 +468,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 				 errno);
+ 			close(fd);
+ 			unlink(tmpname);
+-			return 1;
++			goto err;
+ 		}
+
+ 		/* Initialize second parent lock structure */
+@@ -482,7 +482,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 					 test + 1, errno);
+ 				close(fd);
+ 				unlink(tmpname);
+-				return 1;
++				goto err;
+ 			}
+ 		}
+
+@@ -502,7 +502,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 					if (self_exec(argv0, "ddddd", i, parent,
+ 						      test, thislock, fd) < 0) {
+ 						perror("self_exec failed");
+-						return 1;
++						goto err;
+					}
+ #else
+ 					dochild(i);
+@@ -510,7 +510,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 				}
+ 				if (child < 0) {
+ 					perror("Fork failed");
+-					return 1;
++					goto err;
+ 				}
+ 				child_count++;
+ 				child_pid[i] = child;
+@@ -553,7 +553,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 				 test + 1, errno);
+ 			close(fd);
+ 			unlink(tmpname);
+-			return 1;
++			goto err;
+ 		}
+
+ 		/* Initialize fourth parent lock structure */
+@@ -567,7 +567,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 					 test + 1, errno);
+ 				close(fd);
+ 				unlink(tmpname);
+-				return 1;
++				goto err;
+ 			}
+ 		}
+
+@@ -640,12 +640,16 @@ int run_test(int file_flag, int file_mode, int start, int end)
+ 		close(fd);
+ 	}
+ 	unlink(tmpname);
+-	if (fail) {
+-		return 1;
+-	} else {
+-		return 0;
++
++	if (!fail) {
++		tst_resm(TPASS, "locking test successed");
++		return;
+ 	}
+-	return 0;
++err:
++	if (file_mode & S_ISGID && !NO_NFS)
++		tst_resm(TCONF, "NFS does not support mandatory locking");
++	else
++		tst_resm(TFAIL, "locking test failed");
  }
 
--static const char *errno_name(int err)
-+static void run(unsigned int i)
- {
--	if (err <= 0)
--		return tst_strerrno(-err);
--
--	return "SUCCESS";
--}
--
--static void verify_io_submit(unsigned int n)
--{
--	struct tcase *t = &tcases[n];
--	int ret;
--
--	ret = io_submit(*t->ctx, t->nr, t->iocbs);
--
--	if (ret == t->exp_errno) {
--		tst_res(TPASS, "io_submit() with %s failed with %s",
--			t->desc, errno_name(t->exp_errno));
--		return;
+ int main(int ac, char **av)
+@@ -671,55 +675,23 @@ int main(int ac, char **av)
+ 		 * Check file locks on an ordinary file without
+ 		 * mandatory locking
+ 		 */
+-		tst_resm(TINFO, "Entering block 1");
+-		if (run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 0, 11)) {
+-			tst_resm(TINFO, "Test case 1: without mandatory "
+-				 "locking FAILED");
+-		} else {
+-			tst_resm(TINFO, "Test case 1: without manadatory "
+-				 "locking PASSED");
+-		}
+-		tst_resm(TINFO, "Exiting block 1");
++		run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 0, 11);
+
+ /* //block2: */
+ 		/*
+ 		 * Check the file locks on a file with mandatory record
+ 		 * locking
+ 		 */
+-		tst_resm(TINFO, "Entering block 2");
+-		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
+-			     S_IRUSR | S_IWUSR, 0, 11)) {
+-			tst_resm(TINFO, "Test case 2: with mandatory record "
+-				 "locking FAILED");
+-		} else {
+-			if (NO_NFS)
+-				tst_resm(TINFO, "Test case 2: with mandatory"
+-					 " record locking PASSED");
+-			else
+-				tst_resm(TCONF, "Test case 2: NFS does not"
+-					 " support mandatory locking");
+-		}
+-		tst_resm(TINFO, "Exiting block 2");
++		run_test(O_CREAT | O_RDWR | O_TRUNC,
++			S_ISGID | S_IRUSR | S_IWUSR, 0, 11);
+
+ /* //block3: */
+ 		/*
+ 		 * Check file locks on a file with mandatory record locking
+ 		 * and no delay
+ 		 */
+-		tst_resm(TINFO, "Entering block 3");
+-		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
+-			     S_ISGID | S_IRUSR | S_IWUSR, 0, 11)) {
+-			tst_resm(TINFO, "Test case 3: mandatory locking with "
+-				 "NODELAY FAILED");
+-		} else {
+-			if (NO_NFS)
+-				tst_resm(TINFO, "Test case 3: mandatory"
+-					 " locking with NODELAY PASSED");
+-			else
+-				tst_resm(TCONF, "Test case 3: NFS does not"
+-					 " support mandatory locking");
+-		}
+-		tst_resm(TINFO, "Exiting block 3");
++		run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
++			S_ISGID | S_IRUSR | S_IWUSR, 0, 11);
+ 	}
+ 	cleanup();
+ 	tst_exit();
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl18.c b/testcases/kernel/syscalls/fcntl/fcntl18.c
+index 5eefbd128..7a6c545c0 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl18.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl18.c
+@@ -72,11 +72,8 @@ int main(int ac, char **av)
+ /* //block1: */
+ #ifndef UCLINUX
+ 	/* Skip since uClinux does not implement memory protection */
+-	tst_resm(TINFO, "Enter block 1");
+-	fail = 0;
+ 	if ((fd = open("temp.dat", O_CREAT | O_RDWR, 0777)) < 0) {	//mode must be specified when O_CREATE is in the flag
+ 		tst_resm(TFAIL, "file opening error");
+-		fail = 1;
+ 	}
+
+ 	/* Error condition if address is bad */
+@@ -84,15 +81,8 @@ int main(int ac, char **av)
+ 	if (errno == EFAULT) {
+ 		tst_resm(TPASS, "Test F_GETLK: for errno EFAULT PASSED");
+ 	} else {
+-		tst_resm(TFAIL, "Test F_GETLK: for errno EFAULT FAILED");
+-		fail = 1;
++		tst_resm(TFAIL | TERRNO, "Test F_GETLK: for errno EFAULT FAILED");
+ 	}
+-	if (fail) {
+-		tst_resm(TINFO, "Block 1 FAILED");
+-	} else {
+-		tst_resm(TINFO, "Block 1 PASSED");
 -	}
--
--	tst_res(TFAIL, "io_submit() returned %i(%s), expected %s(%i)",
--		ret, ret < 0 ? tst_strerrno(-ret) : "SUCCESS",
--		errno_name(t->exp_errno), t->exp_errno);
-+	TEST(tst_syscall(__NR_io_submit, *tc[i].ctx, tc[i].nr, tc[i].iocbs));
-+	tst_res(TST_ERR == tc[i].exp_errno ? TPASS : TFAIL,
-+		"io_submit(2) with %s returns %s, expected %s",
-+		tc[i].desc, tst_strerrno(TST_ERR), tst_strerrno(tc[i].exp_errno));
- }
+-	tst_resm(TINFO, "Exit block 1");
+ #else
+ 	tst_resm(TINFO, "Skip block 1 on uClinux");
+ #endif
+@@ -100,29 +90,18 @@ int main(int ac, char **av)
+ /* //block2: */
+ #ifndef UCLINUX
+ 	/* Skip since uClinux does not implement memory protection */
+-	tst_resm(TINFO, "Enter block 2");
+-	fail = 0;
+ 	/* Error condition if address is bad */
+ 	retval = fcntl(fd, F_GETLK64, (struct flock *)INVAL_FLAG);
+ 	if (errno == EFAULT) {
+ 		tst_resm(TPASS, "Test F_GETLK64: for errno EFAULT PASSED");
+ 	} else {
+-		tst_resm(TFAIL, "Test F_GETLK64: for errno EFAULT FAILED");
+-		fail = 1;
+-	}
+-	if (fail) {
+-		tst_resm(TINFO, "Block 2 FAILED");
+-	} else {
+-		tst_resm(TINFO, "Block 2 PASSED");
++		tst_resm(TFAIL | TERRNO, "Test F_GETLK64: for errno EFAULT FAILED");
+ 	}
+-	tst_resm(TINFO, "Exit block 2");
+ #else
+ 	tst_resm(TINFO, "Skip block 2 on uClinux");
+ #endif
 
- static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
--	.test = verify_io_submit,
--	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tc),
- 	.needs_tmpdir = 1,
- };
--
--#else
--	TST_TEST_TCONF("test requires libaio and it's development packages");
--#endif
+ /* //block3: */
+-	tst_resm(TINFO, "Enter block 3");
+-	fail = 0;
+ 	if ((pid = FORK_OR_VFORK()) == 0) {	/* child */
+ 		fail = 0;
+ 		pass = getpwnam("nobody");
+@@ -138,24 +117,17 @@ int main(int ac, char **av)
+ 		if (errno == EINVAL) {
+ 			tst_resm(TPASS, "Test for errno EINVAL PASSED");
+ 		} else {
+-			tst_resm(TFAIL, "Test for errno EINVAL FAILED, "
+-				 "got: %d", errno);
++			tst_resm(TFAIL | TERRNO, "Test for errno EINVAL FAILED");
+ 			fail = 1;
+ 		}
+ 		exit(fail);
+ 	} else {		/* parent */
+ 		waitpid(pid, &status, 0);
+-		if (WEXITSTATUS(status) != 0) {
++		if (WEXITSTATUS(status) != 0)
+ 			tst_resm(TFAIL, "child returned bad exit status");
+-			fail = 1;
+-		}
+-		if (fail) {
+-			tst_resm(TINFO, "Block 3 FAILED");
+-		} else {
+-			tst_resm(TINFO, "Block 3 PASSED");
+-		}
++		else
++			tst_resm(TPASS, "child returned as expected");
+ 	}
+-	tst_resm(TINFO, "Exit block 3");
+
+ 	cleanup();
+ 	tst_exit();
 --
 2.17.1
 
