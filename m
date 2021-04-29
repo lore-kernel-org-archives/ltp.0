@@ -1,27 +1,40 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 29 Apr 2021 08:56:28 +0200
-Subject: [LTP] [PATCH v3] network/sit01.sh: Replace tst_res with tst_brk
-In-Reply-To: <20210429022839.24503-1-zhaogongyi@huawei.com>
-References: <20210429022839.24503-1-zhaogongyi@huawei.com>
-Message-ID: <YIpYnDpL6uv3ejHb@pevik>
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Date: Thu, 29 Apr 2021 15:03:12 +0800
+Subject: [LTP] [PATCH] proc01: Close the opened file
+Message-ID: <20210429070312.16404-1-zhanglianjie@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+---
+ testcases/kernel/fs/proc/proc01.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> We need replace tst_res with tst_brk to terminate the test
-> immediately since there is no sence to go on.
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index 96441d153..0fae6754f 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -368,6 +368,7 @@ static long readproc(const char *obj)
+ 		if ((statbuf.st_mode & S_IRUSR) == 0 &&
+ 		    (statbuf.st_mode & S_IWUSR) != 0) {
+ 			tst_resm(TINFO, "%s: is write-only.", obj);
++			(void)close(fd);
+ 			return 0;
+ 		}
 
-> +++ b/testcases/network/virt/sit01.sh
->  do_setup()
->  {
-> -	[ -n "$TST_IPV6" ] && tst_res TBROK "invalid option '-6' for sit tunnel"
-> +	[ -n "$TST_IPV6" ] && tst_brk TBROK "invalid option '-6' for sit tunnel"
+@@ -376,6 +377,7 @@ static long readproc(const char *obj)
+ 			if (!strcmp(obj, error_nonblock[i])) {
+ 				tst_resm(TINFO, "%s: does not honor "
+ 					 "O_NONBLOCK", obj);
++				(void)close(fd);
+ 				return 0;
+ 			}
+ 		}
+--
+2.20.1
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Kind regards,
-Petr
+
