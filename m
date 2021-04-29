@@ -1,35 +1,32 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Thu, 29 Apr 2021 10:09:22 +0800
-Subject: [LTP] [PATCH v3] commands/lsmod01.sh: Replace tst_res with tst_brk
-Message-ID: <20210429020922.24085-1-zhaogongyi@huawei.com>
+From: xieziyao <xieziyao@huawei.com>
+Date: Thu, 29 Apr 2021 02:21:55 +0000
+Subject: [LTP] [PATCH v3] syscalls/close: Delete close08 and convert
+ close01 to the new API
+In-Reply-To: <YIlWZc3j8esnndJP@yuki>
+References: <20210428092006.80460-1-xieziyao@huawei.com>
+ <YIlWZc3j8esnndJP@yuki>
+Message-ID: <cf03bcebc3cc47708ca7aca0c4ff7294@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We need replace tst_res with tst_brk to terminate the test immediately since
-there is no sence to go on.
+Thank you, Cyril. I'll pay attention to that next time.
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
-v2->v3: split into two separate commits
- testcases/commands/lsmod/lsmod01.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Kind regards,
+Ziyao
 
-diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
-index 2e044c718..4ed91eca5 100755
---- a/testcases/commands/lsmod/lsmod01.sh
-+++ b/testcases/commands/lsmod/lsmod01.sh
-@@ -23,7 +23,7 @@ setup()
- 		tst_require_cmds insmod
- 		insmod "$TST_MODPATH"
- 		if [ $? -ne 0 ]; then
--			tst_res TBROK "insmod failed"
-+			tst_brk TBROK "insmod failed"
- 			return
- 		fi
+-----Original Message-----
+From: Cyril Hrubis [mailto:chrubis@suse.cz] 
+Sent: Wednesday, April 28, 2021 8:35 PM
+To: 20210426125224.150268-2-xieziyao@huawei.com
+Cc: ltp@lists.linux.it; xieziyao <xieziyao@huawei.com>
+Subject: Re: [LTP][PATCH v3] syscalls/close: Delete close08 and convert close01 to the new API
+
+Hi!
+I've updated the .gitignore file and runtest/syscalls file as well and pushed, thanks.
 
 --
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
