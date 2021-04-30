@@ -1,22 +1,25 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 29 Apr 2021 19:12:56 +0200
-Subject: [LTP] [PATCH v3] network/sit01.sh: Replace tst_res with tst_brk
-In-Reply-To: <20210429022839.24503-1-zhaogongyi@huawei.com>
-References: <20210429022839.24503-1-zhaogongyi@huawei.com>
-Message-ID: <YIrpGNOpGAOZGV2V@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 30 Apr 2021 10:31:17 +0200
+Subject: [LTP] [PATCH v2 2/5] bpf: Add map_array helper functions
+In-Reply-To: <20210429150510.21585-3-rpalethorpe@suse.com>
+References: <20210429150510.21585-1-rpalethorpe@suse.com>
+ <20210429150510.21585-3-rpalethorpe@suse.com>
+Message-ID: <YIvAVaPNyunDHxaF@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> +long bpf_map_array_get(const int map_fd,
+> +		       const uint32_t *const array_indx,
+> +		       uint64_t *const array_val)
 
-> +++ b/testcases/network/virt/sit01.sh
-> -	[ -n "$TST_IPV6" ] && tst_res TBROK "invalid option '-6' for sit tunnel"
-> +	[ -n "$TST_IPV6" ] && tst_brk TBROK "invalid option '-6' for sit tunnel"
+Wouldn't the API be nicer if we passed just index value and returned the
+map value? We do TBROK if something goes wrong anyways, so there is no
+point in passing the return value from the bpf() syscall.
 
-Merged, thanks!
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
