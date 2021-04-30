@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 30 Apr 2021 13:21:54 +0200
-Subject: [LTP] [PATCH] proc01: Close the opened file
-In-Reply-To: <20210429070312.16404-1-zhanglianjie@uniontech.com>
-References: <20210429070312.16404-1-zhanglianjie@uniontech.com>
-Message-ID: <YIvoUsr8/QBfn/OF@yuki>
+Date: Fri, 30 Apr 2021 14:35:26 +0200
+Subject: [LTP] [PATCH 4/4] syscalls/fcntl: Replace TINFO with TPASS or
+ TFAIL
+In-Reply-To: <20210429125220.31412-1-zhaogongyi@huawei.com>
+References: <20210429125220.31412-1-zhaogongyi@huawei.com>
+Message-ID: <YIv5jiM9oNgNyd+g@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +12,121 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Applied, thanks.
+> 1)remove redundant variable
+> 2)remove redundant log
+> 3)replace TINFO with TPASS or TFAIL
+> 
+> For those:
+> 	testcases/kernel/syscalls/fcntl/fcntl16.c
+> 	testcases/kernel/syscalls/fcntl/fcntl18.c
+
+First of all it looks like the patch got corrupted, possibly by your
+email client, there is a missing space somewhere in the middle of the
+patch which prevents it from being applied.
+
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+>  testcases/kernel/syscalls/fcntl/fcntl16.c | 70 +++++++----------------
+>  testcases/kernel/syscalls/fcntl/fcntl18.c | 40 ++-----------
+>  2 files changed, 27 insertions(+), 83 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+> index a77a81298..04d86202c 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+> @@ -441,7 +441,7 @@ void setup(void)
+>  	sigaction(SIGALRM, &sact, NULL);
+>  }
+> 
+> -int run_test(int file_flag, int file_mode, int start, int end)
+> +static void run_test(int file_flag, int file_mode, int start, int end)
+>  {
+>  	int child_count;
+>  	int child;
+> @@ -468,7 +468,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  				 errno);
+>  			close(fd);
+>  			unlink(tmpname);
+> -			return 1;
+> +			goto err;
+>  		}
+> 
+>  		/* Initialize second parent lock structure */
+> @@ -482,7 +482,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  					 test + 1, errno);
+>  				close(fd);
+>  				unlink(tmpname);
+> -				return 1;
+> +				goto err;
+>  			}
+>  		}
+> 
+> @@ -502,7 +502,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  					if (self_exec(argv0, "ddddd", i, parent,
+>  						      test, thislock, fd) < 0) {
+>  						perror("self_exec failed");
+> -						return 1;
+> +						goto err;
+> 					}
+>  #else
+>  					dochild(i);
+> @@ -510,7 +510,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  				}
+>  				if (child < 0) {
+>  					perror("Fork failed");
+> -					return 1;
+> +					goto err;
+>  				}
+>  				child_count++;
+>  				child_pid[i] = child;
+> @@ -553,7 +553,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  				 test + 1, errno);
+>  			close(fd);
+>  			unlink(tmpname);
+> -			return 1;
+> +			goto err;
+>  		}
+> 
+>  		/* Initialize fourth parent lock structure */
+> @@ -567,7 +567,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  					 test + 1, errno);
+>  				close(fd);
+>  				unlink(tmpname);
+> -				return 1;
+> +				goto err;
+>  			}
+>  		}
+> 
+> @@ -640,12 +640,16 @@ int run_test(int file_flag, int file_mode, int start, int end)
+>  		close(fd);
+>  	}
+>  	unlink(tmpname);
+> -	if (fail) {
+> -		return 1;
+> -	} else {
+> -		return 0;
+> +
+> +	if (!fail) {
+> +		tst_resm(TPASS, "locking test successed");
+> +		return;
+>  	}
+> -	return 0;
+> +err:
+> +	if (file_mode & S_ISGID && !NO_NFS)
+> +		tst_resm(TCONF, "NFS does not support mandatory locking");
+> +	else
+> +		tst_resm(TFAIL, "locking test failed");
+
+This does not help at all, we print TFAIL messages before we do goto
+err, so this would be still a failed test.
+
+Looking at the code we should rather skip the test in the main instead
+as it was done in the original code as:
+
+	if (NO_NFS)
+		run_test(...);
+	else
+		tst_resm(TCONF, "Skipping mandatory locking on NFS");
 
 -- 
 Cyril Hrubis
