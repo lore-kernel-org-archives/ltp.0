@@ -1,97 +1,301 @@
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Fri, 30 Apr 2021 15:35:05 +0100
-Subject: [LTP] [PATCH] mtest05/mmstress: fix writes operation logic
-Message-ID: <20210430143505.3267-1-cristian.marussi@arm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 30 Apr 2021 16:22:53 +0200
+Subject: [LTP] [PATCH v5 1/7] API: Add safe openat, printfat,
+ readat and unlinkat
+In-Reply-To: <20210430112649.16302-2-rpalethorpe@suse.com>
+References: <20210430112649.16302-1-rpalethorpe@suse.com>
+ <20210430112649.16302-2-rpalethorpe@suse.com>
+Message-ID: <YIwSvc/KY0AX9Yeb@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-While generating tmpfiles, the map_and_thread() function does not handle
-properly incomplete writes that happen to return having written fewer
-bytes than requested and instead considers such condition an error straight
-away: this behavior hides real errors on writes and results in far from
-friendly error reports like these:
+Hi!
+> Add 'at' variants for a number of system calls and LTP SAFE API
+> functions. This avoids using sprintf everywhere to build paths.
+> 
+> Also adds tst_decode_fd which allows us to retrieve the path for an FD
+> for debugging purposes without having to store it ourselves. However
+> the proc symlink may not be available on some systems.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  include/tst_safe_file_at.h |  51 +++++++++++
+>  lib/tst_safe_file_at.c     | 176 +++++++++++++++++++++++++++++++++++++
+>  2 files changed, 227 insertions(+)
+>  create mode 100644 include/tst_safe_file_at.h
+>  create mode 100644 lib/tst_safe_file_at.c
+> 
+> diff --git a/include/tst_safe_file_at.h b/include/tst_safe_file_at.h
+> new file mode 100644
+> index 000000000..fbb63b4a8
+> --- /dev/null
+> +++ b/include/tst_safe_file_at.h
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+> + */
+> +
+> +#ifndef TST_SAFE_FILE_AT_H
+> +#define TST_SAFE_FILE_AT_H
+> +
+> +#include <sys/types.h>
+> +#include <stdarg.h>
+> +
+> +#define SAFE_OPENAT(dirfd, path, oflags, ...)			\
+> +	safe_openat(__FILE__, __LINE__,				\
+> +		    (dirfd), (path), (oflags), ## __VA_ARGS__)
+> +
+> +#define SAFE_FILE_READAT(dirfd, path, buf, nbyte)			\
+> +	safe_file_readat(__FILE__, __LINE__,				\
+> +			 (dirfd), (path), (buf), (nbyte))
+> +
+> +
+> +#define SAFE_FILE_PRINTFAT(dirfd, path, fmt, ...)			\
+> +	safe_file_printfat(__FILE__, __LINE__,				\
+> +			   (dirfd), (path), (fmt), __VA_ARGS__)
+> +
+> +#define SAFE_UNLINKAT(dirfd, path, flags)				\
+> +	safe_unlinkat(__FILE__, __LINE__, (dirfd), (path), (flags))
+> +
+> +char *tst_decode_fd(int fd);
+> +
+> +int safe_openat(const char *file, const int lineno,
+> +		int dirfd, const char *path, int oflags, ...);
+> +
+> +ssize_t safe_file_readat(const char *file, const int lineno,
+> +			 int dirfd, const char *path, char *buf, size_t nbyte);
+> +
+> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va);
+> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
+> +			__attribute__ ((format (printf, 3, 4)));
+> +
+> +int safe_file_vprintfat(const char *file, const int lineno,
+> +			int dirfd, const char *path,
+> +			const char *fmt, va_list va);
+> +
+> +int safe_file_printfat(const char *file, const int lineno,
+> +		       int dirfd, const char *path, const char *fmt, ...)
+> +			__attribute__ ((format (printf, 5, 6)));
+> +
+> +int safe_unlinkat(const char *file, const int lineno,
+> +		  int dirfd, const char *path, int flags);
+> +
+> +#endif
+> diff --git a/lib/tst_safe_file_at.c b/lib/tst_safe_file_at.c
+> new file mode 100644
+> index 000000000..43372998e
+> --- /dev/null
+> +++ b/lib/tst_safe_file_at.c
+> @@ -0,0 +1,176 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2021 SUSE LLC <rpalethorpe@suse.com>
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include "lapi/fcntl.h"
+> +#include "tst_safe_file_at.h"
+> +
+> +#define TST_NO_DEFAULT_MAIN
+> +#include "tst_test.h"
+> +
+> +char fd_path[PATH_MAX];
 
-mmstress    0  TINFO  :  test1: Test case tests the race condition...
-map_and_thread(): write(): Success
-mmstress    1  TFAIL  :  mmstress.c:625: TEST 1 Failed
+^
+static otherwise the symbol will end up exported in the object file
 
-Fix the logic around such write() to allow for incomplete writes to be
-properly retried till a real error condition is returned so that a more
-meaningful report can be generated:
+> +char *tst_decode_fd(int fd)
+> +{
+> +	ssize_t ret;
+> +	char proc_path[32];
+> +
+> +	if (fd < 0)
+> +		return "!";
+> +
+> +	sprintf(proc_path, "/proc/self/fd/%d", fd);
+> +	ret = readlink(proc_path, fd_path, sizeof(fd_path));
+> +
+> +	if (ret < 0)
+> +		return "?";
+> +
+> +	fd_path[ret] = '\0';
+> +
+> +	return fd_path;
+> +}
+> +
+> +int safe_openat(const char *file, const int lineno,
+> +		int dirfd, const char *path, int oflags, ...)
+> +{
+> +	va_list ap;
+> +	int fd;
+> +	mode_t mode;
+> +
+> +	va_start(ap, oflags);
+> +	mode = va_arg(ap, int);
+> +	va_end(ap);
+> +
+> +	fd = openat(dirfd, path, oflags, mode);
+> +	if (fd > -1)
+> +		return fd;
+> +
+> +	tst_brk_(file, lineno, TBROK | TERRNO,
+> +		 "openat(%d<%s>, '%s', %o, %o)",
+> +		 dirfd, tst_decode_fd(dirfd), path, oflags, mode);
+> +
+> +	return fd;
+> +}
+> +
+> +ssize_t safe_file_readat(const char *file, const int lineno,
+> +			 int dirfd, const char *path, char *buf, size_t nbyte)
+> +{
+> +	int fd = safe_openat(file, lineno, dirfd, path, O_RDONLY);
+> +	ssize_t rval;
+> +
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	rval = safe_read(file, lineno, NULL, 0, fd, buf, nbyte - 1);
+> +	if (rval < 0)
+> +		return -1;
+> +
+> +	close(fd);
+> +	buf[rval] = '\0';
+> +
+> +	if (rval >= (ssize_t)nbyte - 1) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			"Buffer length %zu too small to read %d<%s>/%s",
+> +			nbyte, dirfd, tst_decode_fd(dirfd), path);
+> +	}
+> +
+> +	return rval;
+> +}
+> +
+> +int tst_file_vprintfat(int dirfd, const char *path, const char *fmt, va_list va)
+> +{
+> +	int fd = openat(dirfd, path, O_WRONLY);
+> +
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	TEST(vdprintf(fd, fmt, va));
 
-mmstress    0  TINFO  :  test1: Test case tests the race condition...
-map_and_thread(): write(): No space left on device
-mmstress    1  TFAIL  :  mmstress.c:625: TEST 1 Failed
+Can we please avoid using the TEST() macro in the test library?
 
-While doing that, fix also a couple of minor unrelated issues in the same
-map_and_thread() function (malloc retval check and redundant close())
+The value of TST_RET is supposed not to change unless actuall test code
+does that.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- testcases/kernel/mem/mtest05/mmstress.c | 30 ++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 6 deletions(-)
+> +	close(fd);
+> +
+> +	if (TST_RET < 0) {
+> +		errno = TST_ERR;
+> +		return -2;
+> +	}
+> +
+> +	return TST_RET;
+> +}
+> +
+> +int tst_file_printfat(int dirfd, const char *path, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +	int rval;
+> +
+> +	va_start(va, fmt);
+> +	rval = tst_file_vprintfat(dirfd, path, fmt, va);
+> +	va_end(va);
+> +
+> +	return rval;
+> +}
+> +
+> +int safe_file_vprintfat(const char *file, const int lineno,
+> +			int dirfd, const char *path,
+> +			const char *fmt, va_list va)
+> +{
+> +	char buf[16];
+> +	va_list vac;
+> +	int rval;
+> +
+> +	va_copy(vac, va);
+> +
+> +	TEST(tst_file_vprintfat(dirfd, path, fmt, va));
 
-diff --git a/testcases/kernel/mem/mtest05/mmstress.c b/testcases/kernel/mem/mtest05/mmstress.c
-index e5d0ce867..c08d6c930 100644
---- a/testcases/kernel/mem/mtest05/mmstress.c
-+++ b/testcases/kernel/mem/mtest05/mmstress.c
-@@ -289,6 +289,8 @@ int map_and_thread(char *tmpfile,
- 	static pthread_t pthread_ids[NUMTHREAD];
- 	/* contains ids of the threads created       */
- 	void * map_addr = NULL;	/* address where the file is mapped          */
-+	size_t written = 0;
-+	ssize_t bytes;
- 
- 	/* Create a file with permissions 0666, and open it with RDRW perms       */
- 	/* if the name is not a NULL                                              */
-@@ -299,22 +301,38 @@ int map_and_thread(char *tmpfile,
- 			  S_IRWXO | S_IRWXU | S_IRWXG))
- 		    == -1) {
- 			perror("map_and_thread(): open()");
--			close(fd);
- 			fflush(NULL);
- 			return FAILED;
- 		}
- 
- 		/* Write pagesize * pages_num bytes to the file */
- 		empty_buf = malloc(pagesize * pages_num);
--		if (write(fd, empty_buf, pagesize * pages_num) !=
--		    (pagesize * pages_num)) {
--			perror("map_and_thread(): write()");
--			free(empty_buf);
--			fflush(NULL);
-+		if (!empty_buf) {
-+			perror("map_and_thread(): malloc()");
- 			remove_files(tmpfile, NULL);
- 			close(fd);
-+			fflush(NULL);
- 			return FAILED;
- 		}
-+
-+		/* Writing fewer bytes than required is not an error so retry if
-+		 * fewer were written; if that happened due to some permanent
-+		 * error like ENOSPC the following retry will fail and a proper
-+		 * errno will be reported.
-+		 */
-+		do {
-+			bytes = write(fd, empty_buf + written,
-+				      pagesize * pages_num - written);
-+			if (bytes < 0) {
-+				perror("map_and_thread(): write()");
-+				free(empty_buf);
-+				fflush(NULL);
-+				close(fd);
-+				remove_files(tmpfile, NULL);
-+				return FAILED;
-+			}
-+			written += bytes;
-+		} while (written < pagesize * pages_num);
- 		map_type = (fault_type == COW_FAULT) ? MAP_PRIVATE : MAP_SHARED;
- 
- 		/* Map the file, if the required fault type is COW_FAULT map the file */
+Here as well.
+
+> +	if (TST_RET == -2) {
+> +		rval = vsnprintf(buf, sizeof(buf), fmt, vac);
+> +		va_end(vac);
+> +
+> +		if (rval >= (ssize_t)sizeof(buf))
+> +			strcpy(buf + sizeof(buf) - 5, "...");
+> +
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			 "vdprintf(%d<%s>, '%s', '%s'<%s>)",
+> +			 dirfd, tst_decode_fd(dirfd), path, fmt,
+> +			 rval > 0 ? buf : "???");
+
+I do not think that vsnprintf() can even return < 0 and the only way how
+to make it return 0 is possibly with an empty fmt string. So I would
+just skip this check.
+
+> +		return -1;
+> +	}
+> +
+> +	va_end(vac);
+> +
+> +	if (TST_RET == -1) {
+> +		tst_brk_(file, lineno, TBROK | TTERRNO,
+> +			"openat(%d<%s>, '%s', O_WRONLY)",
+> +			dirfd, tst_decode_fd(dirfd), path);
+> +	}
+> +
+> +	return TST_RET;
+> +}
+> +
+> +int safe_file_printfat(const char *file, const int lineno,
+> +		       int dirfd, const char *path,
+> +		       const char *fmt, ...)
+> +{
+> +	va_list va;
+> +	int rval;
+> +
+> +	va_start(va, fmt);
+> +	rval = safe_file_vprintfat(file, lineno, dirfd, path, fmt, va);
+> +	va_end(va);
+> +
+> +	return rval;
+> +}
+> +
+> +int safe_unlinkat(const char *file, const int lineno,
+> +		  int dirfd, const char *path, int flags)
+> +{
+> +	int rval = unlinkat(dirfd, path, flags);
+> +
+> +	if (rval > -1)
+> +		return rval;
+
+	if (!rval)
+		return 0;
+
+Anything else than 0 is either error or invalid.
+
+> +	tst_brk_(file, lineno, TBROK | TERRNO,
+> +		 "unlinkat(%d<%s>, '%s', %s)", dirfd, tst_decode_fd(dirfd), path,
+> +		 flags == AT_REMOVEDIR ? "AT_REMOVEDIR" : (flags ? "?" : "0"));
+> +
+> +	return rval;
+> +}
+
+The rest looks good.
+
+With issues I pointed you can add:
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 -- 
-2.17.1
-
+Cyril Hrubis
+chrubis@suse.cz
