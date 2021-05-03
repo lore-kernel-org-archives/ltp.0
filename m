@@ -1,99 +1,48 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon,  3 May 2021 15:30:25 +0200
-Subject: [LTP] [PATCH v2 1/1] docparse: Escape backslash,
- tab and double quote in JSON
-Message-ID: <20210503133025.2557-1-pvorel@suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 3 May 2021 15:28:46 +0200
+Subject: [LTP] [PATCH v5 7/7] madvise06: Convert to new CGroups API
+In-Reply-To: <20210430112649.16302-8-rpalethorpe@suse.com>
+References: <20210430112649.16302-1-rpalethorpe@suse.com>
+ <20210430112649.16302-8-rpalethorpe@suse.com>
+Message-ID: <YI/6jqaKEI4lTTqC@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Cyril Hrubis <chrubis@suse.cz>
+Hi!
+> -/*
+> - * DESCRIPTION
+> +/*\
+> + * [DESCRIPTION]
 
-Avoid quoting new line as it's usually expected formatting,
-e.g. in .options field.
+This should be [Description] now.
 
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-[ pvorel: keep \n ]
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+>   *
+>   *   Page fault occurs in spite that madvise(WILLNEED) system call is called
+>   *   to prefetch the page. This issue is reproduced by running a program
+> @@ -36,13 +36,14 @@
+>   *   else unexpected, but irrelevant procedure, registers a fault to
+>   *   our process.
+>   *
+> - */
+> +\*/
 
-I kept \n, it's usually expected formatting in .options:
+And this should be just */.
 
-* \n kept:
-p: p_opt -p port Rhost port (mandatory)
+Also there are spaces prepended to the description which I guess may end
+up as a <pre> block markup. Can we please fix that as well?
 
-r: r_opt -r x Rhost IP (mandatory)
+Also if we are pedantic this go in as a separate patch.
 
--g, -r IP parameter can contain more IP, separated by CHR2STR ( IP_ADDR_DELIM )
 
-* \n replaced:
-p: p_opt -p port Rhost port (mandatory)
+The actuall changes to the code looks good to me, nice cleanup.
 
-r: r_opt -r x Rhost IP (mandatory)\n\n-g, -r IP parameter can contain more IP, separated by CHR2STR ( IP_ADDR_DELIM )
+With the description comment sorted out:
 
-Kind regards,
-Petr
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
- docparse/data_storage.h | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/docparse/data_storage.h b/docparse/data_storage.h
-index ef420c08f..5afeba42c 100644
---- a/docparse/data_storage.h
-+++ b/docparse/data_storage.h
-@@ -256,6 +256,39 @@ static inline void data_fprintf(FILE *f, unsigned int padd, const char *fmt, ...
- 	va_end(va);
- }
- 
-+
-+static inline void data_fprintf_esc(FILE *f, unsigned int padd, const char *str)
-+{
-+	while (padd-- > 0)
-+		fputc(' ', f);
-+
-+	fputc('"', f);
-+
-+	while (*str) {
-+		switch (*str) {
-+		case '\\':
-+			/* keep \n, it's usually expected formatting in .options */
-+			if (*(str+1) == 'n')
-+				putc(*str, f);
-+			else
-+				fputs("\\\\", f);
-+			break;
-+		case '"':
-+			fputs("\\\"", f);
-+			break;
-+		case '\t':
-+			fputs("\\t", f);
-+			break;
-+		default:
-+			putc(*str, f);
-+			break;
-+		}
-+		str++;
-+	}
-+
-+	fputc('"', f);
-+}
-+
- static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int padd, int do_padd)
- {
- 	unsigned int i;
-@@ -263,7 +296,7 @@ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int p
- 	switch (self->type) {
- 	case DATA_STRING:
- 		padd = do_padd ? padd : 0;
--		data_fprintf(f, padd, "\"%s\"", self->string.val);
-+		data_fprintf_esc(f, padd, self->string.val);
- 	break;
- 	case DATA_HASH:
- 		for (i = 0; i < self->hash.elems_used; i++) {
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
