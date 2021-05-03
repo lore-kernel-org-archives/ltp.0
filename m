@@ -1,32 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 30 Apr 2021 17:57:59 +0200
-Subject: [LTP] [PATCH v5 4/7] Add new CGroups API library tests
-In-Reply-To: <20210430112649.16302-5-rpalethorpe@suse.com>
-References: <20210430112649.16302-1-rpalethorpe@suse.com>
- <20210430112649.16302-5-rpalethorpe@suse.com>
-Message-ID: <YIwpB45c8K8QpR2N@yuki>
+From: Ankit Jain <ankitja@vmware.com>
+Date: Mon, 3 May 2021 13:37:19 +0530
+Subject: [LTP] [PATCH] realtime/func/pi-tests: testpi-2 parser indentation
+ fix
+Message-ID: <1620029239-31643-1-git-send-email-ankitja@vmware.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	SAFE_CGROUP_PRINTF(cg, "memory.max", "%zu", (1UL << 24) - 1);
-> +	SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-> +	SAFE_CGROUP_SCANF(cg, "memory.current", "%zu", &mem);
-> +	tst_res(TPASS, "memory.current = %zu", mem);
-> +
-> +	tst_reap_children();
-> +	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
-> +	cg_child = tst_cgroup_group_rm(cg_child);
+There is an indentation issue in parser for testpi-2
+which causes incorect parsing of the logs.
 
-I'm not sure that we want to cleanup the pointer like this, the more
-usuall way would be passing &cg_child to the function, but this is very
-minor.
+Signed-off-by: Ankit Jain <ankitja@vmware.com>
+---
+ testcases/realtime/func/pi-tests/parse-testpi2.py | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+diff --git a/testcases/realtime/func/pi-tests/parse-testpi2.py b/testcases/realtime/func/pi-tests/parse-testpi2.py
+index 69b2748..a455843 100644
+--- a/testcases/realtime/func/pi-tests/parse-testpi2.py
++++ b/testcases/realtime/func/pi-tests/parse-testpi2.py
+@@ -49,10 +49,8 @@ class TestPi2(Log):
+					flag=True
+				elif count == 0:
+					return False
++			prev_line=line
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+-
+-
+-		prev_line=line
+		if count>=2:
+			return True
+		else:
+--
+2.7.4
