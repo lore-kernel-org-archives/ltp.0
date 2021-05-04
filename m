@@ -1,41 +1,40 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 4 May 2021 12:35:48 +0200
-Subject: [LTP] [RFC] Shell API timeout sleep orphan processes
-In-Reply-To: <YJEKFLmcKvnHvlIV@pevik>
-References: <f781c0d8-6707-56ba-fa14-e0dbc1b645a1@jv-coder.de>
- <YJDvIcgdl8ae58YB@pevik> <5fdefbf3-2b4e-f44b-6cb2-c133ecf36975@jv-coder.de>
- <YJEKFLmcKvnHvlIV@pevik>
-Message-ID: <651cb158-c640-e0b5-a2f2-4b77efcfa288@jv-coder.de>
+From: Ankit Jain <ankitja@vmware.com>
+Date: Tue, 4 May 2021 10:44:50 +0000
+Subject: [LTP] [PATCH] realtime/func/pi-tests: testpi-2 parser
+ indentation fix
+In-Reply-To: <YI/gQjOJK3dtjiPr@pevik>
+References: <1620029239-31643-1-git-send-email-ankitja@vmware.com>,
+ <YI/gQjOJK3dtjiPr@pevik>
+Message-ID: <SA1PR05MB8311C13BCB37A122FBB66337DD5A9@SA1PR05MB8311.namprd05.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+> Hi Ankit,
+>
+> > There is an indentation issue in parser for testpi-2
+> > which causes incorect parsing of the logs.
+>
+> Thanks for your fix, merged!
+>
+> FYI the patch didn't apply, not sure why, I had to use patch to apply it
+> (instead of git am). I guess it was wrongly generated, please make sure
+> you use git format-patch properly.
 
->>>> The only way to fix this really portable I can think of is moving the
->>>> timeout code (including the logic in _tst_kill_test) into c code. This way
->>>> there would only be one binary, that can be killed flawlessly.
->>> Maybe set -m would be enough. But sure, rewriting C is usually the best approach
->>> for shell problems, we use quite a lot of C helpers for shell already.
->> I will send the patch, if this introduces any new issues, we can still
->> switch to a c based implementation.
-> Thank you!
+Thanks Petr for merging the patch.
+Sorry, you had to apply it through patch instead of git am.
+I will take care of it from next time.
 
-I guess I will not submit the fix with set -m...
-My colleague working testing on a new target just ran into a problem 
-with out fix using set -m.
-For busybox sh, it only works, if a tty is allocated, otherwise it 
-refuses to enable job monitor mode and the whole construct fails...
+> If pi-tests are really working and worth to keep (one of my colleagues
+> realtime expert in the past didn't see much value in them), it'd be good
+> to rewrite these parsers to shell (to avoid unnecessary python3 dependency).
 
-Since using the monitor mode only exploits the side effect, that it 
-creates a process group and we already found a first issue, I think the 
-only solution is switching to a c-based solution for the timeout stuff.
-Personally I like that it is written in shell script, but I see no other 
-option to do it in pure shell. There is no builtin way, to create a 
-process group and just redirecting the output of sleep to null does not 
-seem to be a very good solution to me, because there would still be a 
-lot of orphans around.
+Is there any other test suite or project which supersede or replaces the pi-tests in LTP?
 
-J?rg
+- Ankit
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210504/794de4d1/attachment.htm>
