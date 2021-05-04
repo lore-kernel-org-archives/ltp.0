@@ -1,51 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 4 May 2021 17:07:16 +0200
-Subject: [LTP] [RFC] Shell API timeout sleep orphan processes
-In-Reply-To: <651cb158-c640-e0b5-a2f2-4b77efcfa288@jv-coder.de>
-References: <f781c0d8-6707-56ba-fa14-e0dbc1b645a1@jv-coder.de>
- <YJDvIcgdl8ae58YB@pevik>
- <5fdefbf3-2b4e-f44b-6cb2-c133ecf36975@jv-coder.de>
- <YJEKFLmcKvnHvlIV@pevik>
- <651cb158-c640-e0b5-a2f2-4b77efcfa288@jv-coder.de>
-Message-ID: <YJFjJGTpxUNAMroo@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 4 May 2021 16:57:41 +0200
+Subject: [LTP] [PATCH v3 1/1] docparse: Escape backslash,
+ tab and double quote in JSON
+In-Reply-To: <YJFd6x+P7lFhLfXm@pevik>
+References: <20210504125729.18781-1-pvorel@suse.cz> <YJFH4vLeaXnc8mzN@yuki>
+ <YJFd6x+P7lFhLfXm@pevik>
+Message-ID: <YJFg5eIaVhUKO4ax@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Joerg,
+Hi!
+> > Also does this even escape newlines? If you write "\n" in C it's stored
+> > in memory as [0x0a, 0x00], no actual \ are stored in the string. What
+> > the '\\' case does it to escape literal backslash i.e. "\\" which is
+> > stored as [0x5c, 0x00].
+> Well, due first handling '\\' any text written as \n will be kept as \n
+> (obviously anything starting with \ will be handled the same, e.g. \t, \r, \b, \f).
+> We'd like to interpret \n at least for .options (unless we transform them
+> to array of arrays as you suggested). But I'm not sure if we want to do
+> everywhere, e.g. in doc there might be \n which we want to keep, thus I'd prefer
+> to interpret only tabs ('\t' => "\\t") and the rest escape via escaping '\\'
+> (already in the patch).
+>
+> I don't think there is real new line character in our JSON (unlike tab, which
+> was put there into CAN tests and needed to be reverted). If yes, I think we'd
+> prefer to interpret it instead escaping it (as well as form feed and carriage return).
+> Unless any of these is ascii before 0x20 (which will be handled by last change
+> you're suggested.
 
-> Hi Petr,
+Ah, I got confused here as well, we parse the C code and we do not
+replace the \n with the actual ascii value in the docparse code so it
+ends up verbatim in the strings in memory and then it's translated into
+the JSON files.
 
-> > > > > The only way to fix this really portable I can think of is moving the
-> > > > > timeout code (including the logic in _tst_kill_test) into c code. This way
-> > > > > there would only be one binary, that can be killed flawlessly.
-> > > > Maybe set -m would be enough. But sure, rewriting C is usually the best approach
-> > > > for shell problems, we use quite a lot of C helpers for shell already.
-> > > I will send the patch, if this introduces any new issues, we can still
-> > > switch to a c based implementation.
-> > Thank you!
+This is even more complicated than I originally thought since there are
+several types of strings from a different parts of the C code, i.e. the
+expected values depens on context.
 
-> I guess I will not submit the fix with set -m...
-> My colleague working testing on a new target just ran into a problem with
-> out fix using set -m.
-> For busybox sh, it only works, if a tty is allocated, otherwise it refuses
-> to enable job monitor mode and the whole construct fails...
-OK, C will be needed (unless anybody has an idea how to safely implement it in
-shell).
+If we parse a C comment '"' is a valid character and does not need to be escaped,
+while in the middle of C string it has to be encoded as "\"".
 
-> Since using the monitor mode only exploits the side effect, that it creates
-> a process group and we already found a first issue, I think the only
-> solution is switching to a c-based solution for the timeout stuff.
-> Personally I like that it is written in shell script, but I see no other
-> option to do it in pure shell. There is no builtin way, to create a process
-> group and just redirecting the output of sleep to null does not seem to be a
-> very good solution to me, because there would still be a lot of orphans
-> around.
+We have to think of all different cases here, I will have a closer look tomorrow.
 
-There will be git freeze in very soon, so I guess the fix won't make it to the
-release (unless you have time to work on it next week).
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
