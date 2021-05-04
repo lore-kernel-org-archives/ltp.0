@@ -1,8 +1,9 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Tue,  4 May 2021 17:48:30 +0200
-Subject: [LTP] [PATCH v2 1/6] Add SAFE_REALLOC() helper function to LTP
- library
-Message-ID: <20210504154835.24881-1-mdoucha@suse.cz>
+Date: Tue,  4 May 2021 17:48:31 +0200
+Subject: [LTP] [PATCH v2 2/6] Add SAFE_RECV() helper function to LTP library
+In-Reply-To: <20210504154835.24881-1-mdoucha@suse.cz>
+References: <20210504154835.24881-1-mdoucha@suse.cz>
+Message-ID: <20210504154835.24881-2-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,58 +16,74 @@ Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 Changes since v1: None
 
- include/tst_safe_macros.h |  5 +++++
- lib/tst_safe_macros.c     | 15 +++++++++++++++
- 2 files changed, 20 insertions(+)
+ include/safe_net_fn.h  |  3 +++
+ include/tst_safe_net.h |  3 +++
+ lib/safe_net.c         | 25 +++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index b9d9baa1a..d6f32ef4c 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -67,6 +67,11 @@ int safe_dup2(const char *file, const int lineno, int oldfd, int newfd);
- #define SAFE_MALLOC(size) \
- 	safe_malloc(__FILE__, __LINE__, NULL, (size))
+diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+index 2fda11fab..ff81b1337 100644
+--- a/include/safe_net_fn.h
++++ b/include/safe_net_fn.h
+@@ -47,6 +47,9 @@ ssize_t safe_sendto(const char *file, const int lineno, char len_strict,
+ ssize_t safe_sendmsg(const char *file, const int lineno, size_t msg_len,
+ 		  int sockfd, const struct msghdr *msg, int flags);
  
-+void *safe_realloc(const char *file, const int lineno, void *ptr, size_t size);
++ssize_t safe_recv(const char *file, const int lineno, size_t len,
++	int sockfd, void *buf, size_t size, int flags);
 +
-+#define SAFE_REALLOC(ptr, size) \
-+	safe_realloc(__FILE__, __LINE__, (ptr), (size))
+ ssize_t safe_recvmsg(const char *file, const int lineno, size_t msg_len,
+ 		  int sockfd, struct msghdr *msg, int flags);
+ 
+diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+index 78a488a18..e85b79a3e 100644
+--- a/include/tst_safe_net.h
++++ b/include/tst_safe_net.h
+@@ -42,6 +42,9 @@
+ #define SAFE_SENDMSG(msg_len, fd, msg, flags) \
+ 	safe_sendmsg(__FILE__, __LINE__, msg_len, fd, msg, flags)
+ 
++#define SAFE_RECV(msg_len, fd, buf, size, flags)		\
++	safe_recv(__FILE__, __LINE__, (msg_len), (fd), (buf), (size), (flags))
 +
- #define SAFE_MKDIR(pathname, mode) \
- 	safe_mkdir(__FILE__, __LINE__, NULL, (pathname), (mode))
+ #define SAFE_RECVMSG(msg_len, fd, msg, flags)		\
+ 	safe_recvmsg(__FILE__, __LINE__, msg_len, fd, msg, flags)
  
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index 182b690bb..fd5f1704b 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -5,6 +5,7 @@
- 
- #define _GNU_SOURCE
- #include <unistd.h>
-+#include <stdlib.h>
- #include <errno.h>
- #include <sched.h>
- #include <sys/ptrace.h>
-@@ -433,6 +434,20 @@ int safe_dup2(const char *file, const int lineno, int oldfd, int newfd)
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index f9ebea610..211fd9b67 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -273,6 +273,31 @@ ssize_t safe_sendmsg(const char *file, const int lineno, size_t len,
  	return rval;
  }
  
-+void *safe_realloc(const char *file, const int lineno, void *ptr, size_t size)
++ssize_t safe_recv(const char *file, const int lineno, size_t len,
++	int sockfd, void *buf, size_t size, int flags)
 +{
-+	void *ret;
++	ssize_t rval;
 +
-+	ret = realloc(ptr, size);
++	rval = recv(sockfd, buf, size, flags);
 +
-+	if (!ret) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			"realloc(%p, %zu) failed", ptr, size);
++	if (rval == -1) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"recv(%d, %p, %zu, %d) failed", sockfd, buf, size,
++			flags);
++	} else if (rval < 0) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"Invalid recv(%d, %p, %zu, %d) return value %zd",
++			sockfd, buf, size, flags, rval);
++	} else if (len && (size_t)rval != len) {
++		tst_brkm_(file, lineno, TBROK, NULL,
++			"recv(%d, %p, %zu, %d) ret(%zd) != len(%zu)",
++			sockfd, buf, size, flags, rval, len);
 +	}
 +
-+	return ret;
++	return rval;
++
 +}
 +
- sighandler_t safe_signal(const char *file, const int lineno,
- 	int signum, sighandler_t handler)
+ ssize_t safe_recvmsg(const char *file, const int lineno, size_t len,
+ 		     int sockfd, struct msghdr *msg, int flags)
  {
 -- 
 2.31.1
