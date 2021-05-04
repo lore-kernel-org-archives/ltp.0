@@ -1,29 +1,39 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 4 May 2021 13:00:53 +0200
-Subject: [LTP] [PATCH] realtime/func/pi-tests: testpi-2 parser
- indentation fix
-In-Reply-To: <SA1PR05MB8311C13BCB37A122FBB66337DD5A9@SA1PR05MB8311.namprd05.prod.outlook.com>
-References: <1620029239-31643-1-git-send-email-ankitja@vmware.com>
- <YI/gQjOJK3dtjiPr@pevik>
- <SA1PR05MB8311C13BCB37A122FBB66337DD5A9@SA1PR05MB8311.namprd05.prod.outlook.com>
-Message-ID: <YJEpZfkvI7FuQyOT@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 4 May 2021 13:42:50 +0200
+Subject: [LTP] [PATCH v2 1/1] docparse: Escape backslash,
+ tab and double quote in JSON
+In-Reply-To: <20210503133025.2557-1-pvorel@suse.cz>
+References: <20210503133025.2557-1-pvorel@suse.cz>
+Message-ID: <YJEzOoUQOP5RhdPU@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ankit,
+Hi!
+> Avoid quoting new line as it's usually expected formatting,
+> e.g. in .options field.
 
-> > If pi-tests are really working and worth to keep (one of my colleagues
-> > realtime expert in the past didn't see much value in them), it'd be good
-> > to rewrite these parsers to shell (to avoid unnecessary python3 dependency).
+Hmm, looking at the cases that have \n in option strings it looks like a
+messy hack rather than anything else...
 
-> Is there any other test suite or project which supersede or replaces the pi-tests in LTP?
-No idea, maybe ask at appropriate ML (linux-rt-users@vger.kernel.org ?)
+I guess that a proper fix would be an ability to group the options, i.e.
+make the .options an array of arrays so that the structures would look like:
 
-Kind regards,
-Petr
 
-> - Ankit
+	.options = (struct tst_option_group[]) {
+		{.title = "Server", .options = (struct tst_option) {
+			{"l", &foo, "Foo option help"},
+			{}
+		},
+		...
+		{}
+	}
 
+
+But that is something that is completely out of scope for this patch...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
