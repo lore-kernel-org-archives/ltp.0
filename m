@@ -1,47 +1,86 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  4 May 2021 14:50:46 +0200
-Subject: [LTP] [PATCH 1/1] dhcp: TCONF for wicked on IPv6
-Message-ID: <20210504125046.12621-1-pvorel@suse.cz>
+Date: Tue,  4 May 2021 14:57:29 +0200
+Subject: [LTP] [PATCH v3 1/1] docparse: Escape backslash,
+ tab and double quote in JSON
+Message-ID: <20210504125729.18781-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-wicked requires proper radvd setup. which is beyond DHCP tests.
+From: Cyril Hrubis <chrubis@suse.cz>
 
+NOTE: quoting new line require to transform .options from array to
+array of arrays.
+
+Tested-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/dhcp/dhcp_lib.sh | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
-index 634d6ab43..730bdad87 100755
---- a/testcases/network/dhcp/dhcp_lib.sh
-+++ b/testcases/network/dhcp/dhcp_lib.sh
-@@ -37,6 +37,12 @@ stop_dhcp()
+changes v2-v3:
+* remove *not* quoting new line (asked by Cyril
+
+Patch is now exactly the same Cyril suggested on ML.
+Changing .options is my TODO.
+
+Kind regards,
+Petr
+
+ docparse/data_storage.h | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/docparse/data_storage.h b/docparse/data_storage.h
+index ef420c08f..24381334b 100644
+--- a/docparse/data_storage.h
++++ b/docparse/data_storage.h
+@@ -256,6 +256,35 @@ static inline void data_fprintf(FILE *f, unsigned int padd, const char *fmt, ...
+ 	va_end(va);
+ }
  
- dhcp_lib_setup()
- {
-+	if [ $HAVE_SYSTEMCTL -eq 1 ] && \
-+		systemctl --no-pager -p Id show network.service | grep -q Id=wicked.service; then
-+		[ $TST_IPV6 ] && tst_brk TCONF "wicked not supported on IPv6"
-+		is_wicked=1
-+	fi
 +
- 	[ -z "$log" ] && log="$PWD/$(basename $0 '.sh').log"
- 
- 	if [ $TST_IPV6 ]; then
-@@ -129,8 +135,7 @@ test01()
- 		tst_brk TBROK "Failed to start $dhcp_name"
- 	fi
- 
--	if [ $HAVE_SYSTEMCTL -eq 1 ] && \
--		systemctl --no-pager -p Id show network.service | grep -q Id=wicked.service; then
-+	if [ "$is_wicked" ]; then
- 		tst_res TINFO "wicked is running, don't start dhclient"
- 		if [ ! -f "$wicked_cfg" ]; then
- 			cat <<EOF > $wicked_cfg
++static inline void data_fprintf_esc(FILE *f, unsigned int padd, const char *str)
++{
++	while (padd-- > 0)
++		fputc(' ', f);
++
++	fputc('"', f);
++
++	while (*str) {
++		switch (*str) {
++		case '\\':
++			fputs("\\\\", f);
++			break;
++		case '"':
++			fputs("\\\"", f);
++			break;
++		case '\t':
++			fputs("\\t", f);
++			break;
++		default:
++			putc(*str, f);
++			break;
++		}
++		str++;
++	}
++
++	fputc('"', f);
++}
++
+ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int padd, int do_padd)
+ {
+ 	unsigned int i;
+@@ -263,7 +292,7 @@ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int p
+ 	switch (self->type) {
+ 	case DATA_STRING:
+ 		padd = do_padd ? padd : 0;
+-		data_fprintf(f, padd, "\"%s\"", self->string.val);
++		data_fprintf_esc(f, padd, self->string.val);
+ 	break;
+ 	case DATA_HASH:
+ 		for (i = 0; i < self->hash.elems_used; i++) {
 -- 
 2.31.1
 
