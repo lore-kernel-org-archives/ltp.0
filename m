@@ -1,76 +1,41 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 04 May 2021 10:03:22 +0100
-Subject: [LTP] [PATCH v5 6/7] mem: Convert tests to new CGroups API
-In-Reply-To: <YI/clrb4houmTsY7@yuki>
-References: <20210430112649.16302-1-rpalethorpe@suse.com>
- <20210430112649.16302-7-rpalethorpe@suse.com> <YI/clrb4houmTsY7@yuki>
-Message-ID: <87zgxalvl1.fsf@suse.de>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 4 May 2021 12:35:48 +0200
+Subject: [LTP] [RFC] Shell API timeout sleep orphan processes
+In-Reply-To: <YJEKFLmcKvnHvlIV@pevik>
+References: <f781c0d8-6707-56ba-fa14-e0dbc1b645a1@jv-coder.de>
+ <YJDvIcgdl8ae58YB@pevik> <5fdefbf3-2b4e-f44b-6cb2-c133ecf36975@jv-coder.de>
+ <YJEKFLmcKvnHvlIV@pevik>
+Message-ID: <651cb158-c640-e0b5-a2f2-4b77efcfa288@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi Petr,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+>>>> The only way to fix this really portable I can think of is moving the
+>>>> timeout code (including the logic in _tst_kill_test) into c code. This way
+>>>> there would only be one binary, that can be killed flawlessly.
+>>> Maybe set -m would be enough. But sure, rewriting C is usually the best approach
+>>> for shell problems, we use quite a lot of C helpers for shell already.
+>> I will send the patch, if this introduces any new issues, we can still
+>> switch to a c based implementation.
+> Thank you!
 
-> Hi!
->> diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
->> index 51f5d4cca..e6de61ece 100644
->> --- a/testcases/kernel/mem/ksm/ksm02.c
->> +++ b/testcases/kernel/mem/ksm/ksm02.c
->> @@ -59,6 +59,9 @@
->>  #ifdef HAVE_NUMA_V2
->>  #include <numaif.h>
->>  
->> +static const struct tst_cgroup_group *cg;
->> +static const struct tst_cgroup_group *cg_drain;
->> +
->>  static void verify_ksm(void)
->>  {
->>  	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
->> @@ -76,9 +79,10 @@ static void verify_ksm(void)
->>  	}
->>  	create_same_memory(size, num, unit);
->>  
->> -	write_cpusets(PATH_TMP_CG_CST, node);
->> -	tst_cgroup_move_current(PATH_TMP_CG_CST);
->> +	write_cpusets(cg, node);
->> +	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
->>  	create_same_memory(size, num, unit);
->> +	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
->>  }
->>  
->>  static void cleanup(void)
->> @@ -87,7 +91,7 @@ static void cleanup(void)
->>  		FILE_PRINTF(PATH_KSM "merge_across_nodes",
->>  				 "%d", merge_across_nodes);
->>  
->> -	tst_cgroup_umount(PATH_TMP_CG_CST);
->> +	tst_cgroup_cleanup();
->>  }
->>  
->>  static void setup(void)
->> @@ -103,7 +107,8 @@ static void setup(void)
->>  		SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
->>  	}
->>  
->> -	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
->> +	tst_cgroup_require("cpuset", NULL);
->> +	cg = tst_cgroup_get_test_group();
->
-> Forgotten cg_drain = tst_cgroup_get_drain_group() ?
+I guess I will not submit the fix with set -m...
+My colleague working testing on a new target just ran into a problem 
+with out fix using set -m.
+For busybox sh, it only works, if a tty is allocated, otherwise it 
+refuses to enable job monitor mode and the whole construct fails...
 
-+1
+Since using the monitor mode only exploits the side effect, that it 
+creates a process group and we already found a first issue, I think the 
+only solution is switching to a c-based solution for the timeout stuff.
+Personally I like that it is written in shell script, but I see no other 
+option to do it in pure shell. There is no builtin way, to create a 
+process group and just redirecting the output of sleep to null does not 
+seem to be a very good solution to me, because there would still be a 
+lot of orphans around.
 
->
-> Other than that the rest is pretty much straightforward, so with the
-> above fixed:
->
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-
--- 
-Thank you,
-Richard.
+J?rg
