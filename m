@@ -1,9 +1,9 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue,  4 May 2021 14:40:58 +0100
-Subject: [LTP] [PATCH v6 5/7] docs: Update CGroups API
+Date: Tue,  4 May 2021 14:40:59 +0100
+Subject: [LTP] [PATCH v6 6/7] mem: Convert tests to new CGroups API
 In-Reply-To: <20210504134100.20666-1-rpalethorpe@suse.com>
 References: <20210504134100.20666-1-rpalethorpe@suse.com>
-Message-ID: <20210504134100.20666-6-rpalethorpe@suse.com>
+Message-ID: <20210504134100.20666-7-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,224 +13,483 @@ To: ltp@lists.linux.it
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- doc/test-writing-guidelines.txt | 175 +++++++++++++++++++++++++++++---
- 1 file changed, 162 insertions(+), 13 deletions(-)
+ testcases/kernel/mem/cpuset/cpuset01.c | 34 ++++++++++++--------------
+ testcases/kernel/mem/include/mem.h     |  2 +-
+ testcases/kernel/mem/ksm/ksm02.c       | 14 ++++++++---
+ testcases/kernel/mem/ksm/ksm03.c       | 12 ++++++---
+ testcases/kernel/mem/ksm/ksm04.c       | 17 +++++++------
+ testcases/kernel/mem/lib/mem.c         | 10 +++-----
+ testcases/kernel/mem/oom/oom03.c       | 18 ++++++++------
+ testcases/kernel/mem/oom/oom04.c       | 19 ++++++++------
+ testcases/kernel/mem/oom/oom05.c       | 32 ++++++++++++++----------
+ 9 files changed, 88 insertions(+), 70 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a77c114c1..c268b8804 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -2186,48 +2186,197 @@ the field value of file.
+diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
+index 528c3eddd..66c18f6ab 100644
+--- a/testcases/kernel/mem/cpuset/cpuset01.c
++++ b/testcases/kernel/mem/cpuset/cpuset01.c
+@@ -35,6 +35,8 @@
  
- 2.2.36 Using Control Group
- ^^^^^^^^^^^^^^^^^^^^^^^^^^
--Some of LTP tests need Control Group in their configuration, tst_cgroup.h provides
--APIs to make cgroup unified mounting at setup phase to be possible. The method?is
--extracted from mem.h with the purpose of?extendible for further developing, and
--trying to compatible the current two versions of cgroup.
+ #ifdef HAVE_NUMA_V2
  
--Considering there are many differences between cgroup v1 and v2, here we capsulate
--the detail of cgroup mounting in high-level functions, which will be easier to use
--cgroup without caring about too much technical thing.? ?
-+Some LTP tests need specific Control Group configurations. tst_cgroup.h provides
-+APIs to discover and use CGroups. There are many differences between CGroups API
-+V1 and V2. We encapsulate the details of configuring CGroups in high-level
-+functions which follow the V2 kernel API. Allowing one to use CGroups without
-+caring too much about the current system's configuration.
- 
--Also, we do cgroup mount/umount work for the different hierarchy automatically.
-+Also, the LTP library will automatically mount/umount and configure the CGroup
-+hierarchies if that is required (e.g. if you run the tests from init with no
-+system manager).
- 
- [source,c]
- -------------------------------------------------------------------------------
- #include "tst_test.h"
-+#include "tst_cgroup.h"
-+
 +static const struct tst_cgroup_group *cg;
++
+ volatile int end;
+ static int *nodes;
+ static int nnodes;
+@@ -47,15 +49,14 @@ static long count_cpu(void);
  
- static void run(void)
+ static void test_cpuset(void)
  {
- 	...
-+	// do test under cgroup
-+	...
-+}
-+
-+static void setup(void)
-+{
-+	tst_cgroup_require("memory", NULL);
-+	cg = tst_cgroup_get_test_group();
-+	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
-+	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", MEMSIZE);
-+	if (SAFE_CGROUP_HAS(cg, "memory.swap.max"))
-+		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%zu", memsw);
-+}
- 
--	tst_cgroup_move_current(PATH_TMP_CG_MEM);
--	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, MEMSIZE);
-+static void cleanup(void)
-+{
-+	tst_cgroup_cleanup();
-+}
- 
--	// do test under cgroup
-+struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup,
- 	...
-+};
-+-------------------------------------------------------------------------------
-+
-+Above, we first ensure the memory controller is available on the
-+test's CGroup with 'tst_cgroup_require'. We then get a structure,
-+'cg', which represents the test's CGroup. Note that
-+'tst_cgroup_get_test_group' should not be called many times, as it is
-+allocated in a guarded buffer (See section 2.2.31). Therefor it is
-+best to call it once in 'setup' and not 'run' because 'run' may be
-+repeated with the '-i' option.
-+
-+We then write the current processes PID into 'cgroup.procs', which
-+moves the current process into the test's CGroup. After which we set
-+the maximum memory size by writing to 'memory.max'. If the memory
-+controller is mounted on CGroups V1 then the library will actually
-+write to 'memory.limit_in_bytes'. As a general rule, if a file exists
-+on both CGroup versions, then we use the V2 naming.
-+
-+Some controller features, such as 'memory.swap', can be
-+disabled. Therefor we need to check if they exist before accessing
-+them. This can be done with 'SAFE_CGROUP_HAS' which can be called on
-+any control file or feature.
-+
-+Most tests only require setting a few limits similar to the above. In
-+such cases the differences between V1 and V2 are hidden. Setup and
-+cleanup is also mostly hidden. However things can get much worse.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+static const struct tst_cgroup_group *cg;
-+static const struct tst_cgroup_group *cg_drain;
-+static struct tst_cgroup_group *cg_child;
-+
-+static void run(void)
-+{
+-	int child, i, status;
++	int child, i;
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+-	char mems[BUFSIZ], buf[BUFSIZ];
 +	char buf[BUFSIZ];
-+	size_t mem = 0;
-+
-+	cg_child = tst_cgroup_group_mk(cg, "child");
-+	SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-+
-+	if (TST_CGROUP_VER(cg, "memory") != TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+memory");
-+	if (TST_CGROUP_VER(cg, "cpuset") != TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINT(cg, "cgroup.subtree_control", "+cpuset");
-+
-+	if (!SAFE_FORK()) {
-+		SAFE_CGROUP_PRINTF(cg_child, "cgroup.procs", "%d", getpid());
-+
-+		if (SAFE_CGROUP_HAS(cg_child, "memory.swap"))
-+			SAFE_CGROUP_SCANF(cg_child, "memory.swap.current", "%zu", &mem);
-+		SAFE_CGROUP_READ(cg_child, "cpuset.mems", buf, sizeof(buf));
-+
-+		// Do something with cpuset.mems and memory.current values
-+		...
-+
-+		exit(0);
-+	}
-+
+ 
+-	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "cpus", buf, BUFSIZ);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "cpus", buf);
+-	tst_cgroup_cpuset_read_files(PATH_TMP_CG_CST, "mems", mems, BUFSIZ);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", mems);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	SAFE_CGROUP_READ(cg, "cpuset.cpus", buf, sizeof(buf));
++	SAFE_CGROUP_PRINT(cg, "cpuset.cpus", buf);
++	SAFE_CGROUP_READ(cg, "cpuset.mems", buf, sizeof(buf));
++	SAFE_CGROUP_PRINT(cg, "cpuset.mems", buf);
+ 
+ 	child = SAFE_FORK();
+ 	if (child == 0) {
+@@ -69,33 +70,30 @@ static void test_cpuset(void)
+ 		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
+ 	}
+ 
+-	snprintf(buf, BUFSIZ, "%d", nodes[0]);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", buf);
+-	snprintf(buf, BUFSIZ, "%d", nodes[1]);
+-	tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "mems", buf);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%d", nodes[0]);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%d", nodes[1]);
+ 
+-	SAFE_WAITPID(child, &status, WUNTRACED | WCONTINUED);
+-	if (WEXITSTATUS(status) != 0) {
+-		tst_res(TFAIL, "child exit status is %d", WEXITSTATUS(status));
+-		return;
+-	}
 +	tst_reap_children();
-+	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
-+	cg_child = tst_cgroup_group_rm(cg_child);
+ 
+ 	tst_res(TPASS, "cpuset test pass");
  }
  
  static void setup(void)
  {
--	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
-+	tst_cgroup_require("memory", NULL);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
 +	tst_cgroup_require("cpuset", NULL);
+ 	ncpus = count_cpu();
+ 	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
+ 		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
+ 	if (nnodes <= 1)
+ 		tst_brk(TCONF, "requires a NUMA system.");
 +
 +	cg = tst_cgroup_get_test_group();
-+	cg_drain = tst_cgroup_get_drain_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
  }
  
  static void cleanup(void)
  {
--	tst_cgroup_umount(PATH_TMP_CG_MEM);
-+	if (cg_child) {
-+		SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
-+		cg_child = tst_cgroup_group_rm(cg_child);
-+	}
-+
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
 +	tst_cgroup_cleanup();
  }
  
- struct tst_test test = {
-+	.setup = setup,
- 	.test_all = run,
-+	.cleanup = cleanup,
- 	...
- };
- -------------------------------------------------------------------------------
+ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 42b12a230..10712cf0c 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -61,7 +61,7 @@ void check_hugepage(void);
+ void write_memcg(void);
  
-+Starting with setup; we can see here that we also fetch the 'drain'
-+CGroup. This is a shared group (between parallel tests) which may
-+contain processes from other tests. It should have default settings and
-+these should not be changed by the test. It can be used to remove
-+processes from other CGroups incase the hierarchy root is not
-+accessible.
-+
-+In 'run', we first create a child CGroup with 'tst_cgroup_mk'. As we
-+create this CGroup in 'run' we should also remove it at the end of
-+run. We also need to check if it exists and remove it in cleanup as
-+well. Because there are 'SAFE_' functions which may jump to cleanup.
-+
-+We then move the main test process into the child CGroup. This is
-+important as it means that before we destroy the child CGroup we have
-+to move the main test process elsewhere. For that we use the 'drain'
-+group.
-+
-+Next we enable the memory and cpuset controller configuration on the
-+test CGroup's descendants (i.e. 'cg_child'). This allows each child to
-+have its own settings. The file 'cgroup.subtree_control' does not
-+exist on V1. Because it is possible to have both V1 and V2 active at
-+the same time. We can not simply check if 'subtree_control' exists
-+before writing to it. We have to check if a particular controller is
-+on V2 before trying to add it to 'subtree_control'. Trying to add a V1
-+controller will result in 'ENOENT'.
-+
-+We then fork a child process and add this to the child CGroup. Within
-+the child process we try to read 'memory.swap.current'. It is possible
-+that the memory controller was compiled without swap support, so it is
-+necessary to check if 'memory.swap' is enabled. That is unless the
-+test will never reach the point where 'memory.swap.*' are used without
-+swap support.
-+
-+The parent process waits for the child process to be reaped before
-+destroying the child CGroup. So there is no need to transfer the child
-+to drain. However the parent process must be moved otherwise we will
-+get 'EBUSY' when trying to remove the child CGroup.
-+
-+Another example of an edge case is the following.
-+
-+[source,c]
-+-------------------------------------------------------------------------------
-+	if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
-+		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
-+	else
-+		SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
-+-------------------------------------------------------------------------------
-+
-+CGroups V2 introduced a feature where 'memory[.swap].max' could be set to
-+"max". This does not appear to work on V1 'limit_in_bytes' however. For most
-+tests, simply using a large number is sufficient and there is no need to use
-+"max". Importantly though, one should be careful to read both the V1 and V2
-+kernel docs. The LTP library can not handle all edge cases. It does the minimal
-+amount of work to make testing on both V1 and V2 feasible.
-+
- 2.2.37 Require minimum numbers of CPU for a testcase
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ /* cpuset/memcg - include/tst_cgroup.h */
+-void write_cpusets(const char *cgroup_dir, long nd);
++void write_cpusets(const struct tst_cgroup_group *cg, long nd);
  
+ /* shared */
+ unsigned int get_a_numa_node(void);
+diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+index 51f5d4cca..80017df66 100644
+--- a/testcases/kernel/mem/ksm/ksm02.c
++++ b/testcases/kernel/mem/ksm/ksm02.c
+@@ -59,6 +59,9 @@
+ #ifdef HAVE_NUMA_V2
+ #include <numaif.h>
+ 
++static const struct tst_cgroup_group *cg;
++static const struct tst_cgroup_group *cg_drain;
++
+ static void verify_ksm(void)
+ {
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+@@ -76,9 +79,10 @@ static void verify_ksm(void)
+ 	}
+ 	create_same_memory(size, num, unit);
+ 
+-	write_cpusets(PATH_TMP_CG_CST, node);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	write_cpusets(cg, node);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ 	create_same_memory(size, num, unit);
++	SAFE_CGROUP_PRINTF(cg_drain, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static void cleanup(void)
+@@ -87,7 +91,7 @@ static void cleanup(void)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+ 
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static void setup(void)
+@@ -103,7 +107,9 @@ static void setup(void)
+ 		SAFE_FILE_PRINTF(PATH_KSM "merge_across_nodes", "1");
+ 	}
+ 
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
++	cg_drain = tst_cgroup_get_drain_group();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/ksm/ksm03.c b/testcases/kernel/mem/ksm/ksm03.c
+index e9949280e..83b821c81 100644
+--- a/testcases/kernel/mem/ksm/ksm03.c
++++ b/testcases/kernel/mem/ksm/ksm03.c
+@@ -59,10 +59,10 @@
+ #include "mem.h"
+ #include "ksm_common.h"
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_ksm(void)
+ {
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+ 	create_same_memory(size, num, unit);
+ }
+ 
+@@ -78,7 +78,11 @@ static void setup(void)
+ 	}
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
++
++	tst_cgroup_require("memory", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ static void cleanup(void)
+@@ -86,7 +90,7 @@ static void cleanup(void)
+ 	if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+index b4ad41831..65f7e6510 100644
+--- a/testcases/kernel/mem/ksm/ksm04.c
++++ b/testcases/kernel/mem/ksm/ksm04.c
+@@ -59,6 +59,8 @@
+ #ifdef HAVE_NUMA_V2
+ #include <numaif.h>
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_ksm(void)
+ {
+ 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
+@@ -67,8 +69,7 @@ static void verify_ksm(void)
+ 	node = get_a_numa_node();
+ 	set_node(nmask, node);
+ 
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ 
+ 	if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1) {
+ 		if (errno != ENOSYS)
+@@ -79,8 +80,7 @@ static void verify_ksm(void)
+ 	}
+ 	create_same_memory(size, num, unit);
+ 
+-	write_cpusets(PATH_TMP_CG_CST, node);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
++	write_cpusets(cg, node);
+ 	create_same_memory(size, num, unit);
+ }
+ 
+@@ -90,8 +90,7 @@ static void cleanup(void)
+ 		FILE_PRINTF(PATH_KSM "merge_across_nodes",
+ 				 "%d", merge_across_nodes);
+ 
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static void setup(void)
+@@ -107,8 +106,10 @@ static void setup(void)
+ 
+ 	parse_ksm_options(opt_sizestr, &size, opt_numstr, &num, opt_unitstr, &unit);
+ 
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("memory", NULL);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 2de3f83a6..9f946b5c9 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -629,13 +629,11 @@ static void gather_node_cpus(char *cpus, long nd)
+ 	cpus[strlen(cpus) - 1] = '\0';
+ }
+ 
+-void write_cpusets(const char *cgroup_dir, long nd)
++void write_cpusets(const struct tst_cgroup_group *cg, long nd)
+ {
+-	char buf[BUFSIZ];
+ 	char cpus[BUFSIZ] = "";
+ 
+-	snprintf(buf, BUFSIZ, "%ld", nd);
+-	tst_cgroup_cpuset_write_files(cgroup_dir, "mems", buf);
++	SAFE_CGROUP_PRINTF(cg, "cpuset.mems", "%ld", nd);
+ 
+ 	gather_node_cpus(cpus, nd);
+ 	/*
+@@ -644,11 +642,11 @@ void write_cpusets(const char *cgroup_dir, long nd)
+ 	 * the value of cpuset.cpus.
+ 	 */
+ 	if (strlen(cpus) != 0) {
+-		tst_cgroup_cpuset_write_files(cgroup_dir, "cpus", cpus);
++		SAFE_CGROUP_PRINT(cg, "cpuset.cpus", cpus);
+ 	} else {
+ 		tst_res(TINFO, "No CPUs in the node%ld; "
+ 				"using only CPU0", nd);
+-		tst_cgroup_cpuset_write_files(cgroup_dir, "cpus", "0");
++		SAFE_CGROUP_PRINT(cg, "cpuset.cpus", "0");
+ 	}
+ }
+ 
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index fc860c660..939413744 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -36,19 +36,17 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+ 	tst_brk(TCONF, "test is not designed for 32-bit system.");
+ #endif
+-
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+-
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+-	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
++	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
++		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+ 		testoom(0, 1, ENOMEM, 1);
+ 	}
+ 
+@@ -65,14 +63,18 @@ static void setup(void)
+ {
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
++
++	tst_cgroup_require("memory", NULL);
++	cg = tst_cgroup_get_test_group();
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index 582663275..f84328f5b 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -36,24 +36,25 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+ 	tst_brk(TCONF, "test is not designed for 32-bit system.");
+ #endif
+-
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
+-
+ 	tst_res(TINFO, "OOM on CPUSET...");
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+-	if (is_numa(NULL, NH_MEMS, 2)) {
++	if (is_numa(NULL, NH_MEMS, 2) &&
++	    SAFE_CGROUP_HAS(cg, "cpuset.memory_migrate")) {
+ 		/*
+ 		 * Under NUMA system, the migration of cpuset's memory
+ 		 * is in charge of cpuset.memory_migrate, we can write
+ 		 * 1 to cpuset.memory_migrate to enable the migration.
+ 		 */
+-		tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "memory_migrate", "1");
++		SAFE_CGROUP_PRINT(cg, "cpuset.memory_migrate", "1");
++
+ 		tst_res(TINFO, "OOM on CPUSET with mem migrate:");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+@@ -69,7 +70,8 @@ static void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
+ 
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+@@ -81,14 +83,15 @@ static void setup(void)
+ 	if (ret < 0)
+ 		tst_brk(TBROK, "Failed to get a memory node "
+ 			      "using get_allowed_nodes()");
+-	write_cpusets(PATH_TMP_CG_CST, memnode);
++	write_cpusets(cg, memnode);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index 871f302e3..9c9bba7f6 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -36,6 +36,8 @@
+ 
+ #ifdef HAVE_NUMA_V2
+ 
++static const struct tst_cgroup_group *cg;
++
+ static void verify_oom(void)
+ {
+ #ifdef TST_ABI32
+@@ -43,9 +45,6 @@ static void verify_oom(void)
+ #endif
+ 
+ 	tst_res(TINFO, "OOM on CPUSET & MEMCG...");
+-	tst_cgroup_move_current(PATH_TMP_CG_MEM);
+-	tst_cgroup_move_current(PATH_TMP_CG_CST);
+-	tst_cgroup_mem_set_maxbytes(PATH_TMP_CG_MEM, TESTMEM);
+ 	testoom(0, 0, ENOMEM, 1);
+ 
+ 	/*
+@@ -53,22 +52,26 @@ static void verify_oom(void)
+ 	 * is in charge of cpuset.memory_migrate, we can write
+ 	 * 1 to cpuset.memory_migrate to enable the migration.
+ 	 */
+-	if (is_numa(NULL, NH_MEMS, 2)) {
+-		tst_cgroup_cpuset_write_files(PATH_TMP_CG_CST, "memory_migrate", "1");
++	if (is_numa(NULL, NH_MEMS, 2) &&
++	    SAFE_CGROUP_HAS(cg, "cpuset.memory_migrate")) {
++		SAFE_CGROUP_PRINT(cg, "cpuset.memory_migrate", "1");
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"cpuset.memory_migrate=1");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+ 
+-	if (tst_cgroup_mem_swapacct_enabled(PATH_TMP_CG_MEM)) {
++	if (SAFE_CGROUP_HAS(cg, "memory.swap.max")) {
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"special memswap limitation:");
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, TESTMEM);
++		SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", TESTMEM);
+ 		testoom(0, 0, ENOMEM, 1);
+ 
+ 		tst_res(TINFO, "OOM on CPUSET & MEMCG with "
+ 				"disabled memswap limitation:");
+-		tst_cgroup_mem_set_maxswap(PATH_TMP_CG_MEM, -1);
++		if (TST_CGROUP_VER(cg, "memory") == TST_CGROUP_V1)
++			SAFE_CGROUP_PRINTF(cg, "memory.swap.max", "%lu", ~0UL);
++		else
++			SAFE_CGROUP_PRINT(cg, "memory.swap.max", "max");
+ 		testoom(0, 0, ENOMEM, 1);
+ 	}
+ }
+@@ -83,8 +86,9 @@ void setup(void)
+ 	overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 1, 1);
+ 
+-	tst_cgroup_mount(TST_CGROUP_MEMCG, PATH_TMP_CG_MEM);
+-	tst_cgroup_mount(TST_CGROUP_CPUSET, PATH_TMP_CG_CST);
++	tst_cgroup_require("memory", NULL);
++	tst_cgroup_require("cpuset", NULL);
++	cg = tst_cgroup_get_test_group();
+ 
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+@@ -96,15 +100,17 @@ void setup(void)
+ 	if (ret < 0)
+ 		tst_brk(TBROK, "Failed to get a memory node "
+ 			      "using get_allowed_nodes()");
+-	write_cpusets(PATH_TMP_CG_CST, memnode);
++
++	write_cpusets(cg, memnode);
++	SAFE_CGROUP_PRINTF(cg, "cgroup.procs", "%d", getpid());
++	SAFE_CGROUP_PRINTF(cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+ void cleanup(void)
+ {
+ 	if (overcommit != -1)
+ 		set_sys_tune("overcommit_memory", overcommit, 0);
+-	tst_cgroup_umount(PATH_TMP_CG_MEM);
+-	tst_cgroup_umount(PATH_TMP_CG_CST);
++	tst_cgroup_cleanup();
+ }
+ 
+ static struct tst_test test = {
 -- 
 2.31.1
 
