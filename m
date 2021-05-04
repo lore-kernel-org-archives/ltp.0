@@ -1,86 +1,44 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  4 May 2021 14:57:29 +0200
-Subject: [LTP] [PATCH v3 1/1] docparse: Escape backslash,
- tab and double quote in JSON
-Message-ID: <20210504125729.18781-1-pvorel@suse.cz>
+Date: Tue, 4 May 2021 15:08:59 +0200
+Subject: [LTP] [PATCH 1/1] docparse: Make tags in table clickable
+In-Reply-To: <YJE4J0gMjhTfsNCO@yuki>
+References: <20210503150415.18835-1-pvorel@suse.cz>
+ <YJE4J0gMjhTfsNCO@yuki>
+Message-ID: <YJFHa4o/aXGvmZE0@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Cyril Hrubis <chrubis@suse.cz>
+Hi Cyril,
 
-NOTE: quoting new line require to transform .options from array to
-array of arrays.
+> Hi!
+> > linked to the section.
 
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
+> Looks good, acked.
 
-changes v2-v3:
-* remove *not* quoting new line (asked by Cyril
 
-Patch is now exactly the same Cyril suggested on ML.
-Changing .options is my TODO.
+> Btw, when I was looking at the page today I noticed that in the tags
+> table the tag points to the git/CVE page and not the actuall hash or ID.
+> I would expect that linux-git would be normal text and the commit id
+> would link to the kernel.org repo, and same for the CVE...
+
+Well, no problem, but I'd prefer for commits to move the hash to the text, e.g.
+
+from:
+|linux-git-fbe0e839d1e2 | futex: Prevent overflow by strengthen input validation|
+to:
+|linux-git | fbe0e839d1e2 ("futex: Prevent overflow by strengthen input validation")|
+
+I'll send v2 where I'll implement it and as a second commit I'll change "CVE"
+and "linux-git" (and others) pointing to tags metadata.html#tags.
+
+And as TODO I should divide .tags into subsections containing list of actual tag
+values (e.g. list of CVE, linux-git (and others)) and point these links to these
+sections.
+
+Thanks for your time!
 
 Kind regards,
 Petr
-
- docparse/data_storage.h | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/docparse/data_storage.h b/docparse/data_storage.h
-index ef420c08f..24381334b 100644
---- a/docparse/data_storage.h
-+++ b/docparse/data_storage.h
-@@ -256,6 +256,35 @@ static inline void data_fprintf(FILE *f, unsigned int padd, const char *fmt, ...
- 	va_end(va);
- }
- 
-+
-+static inline void data_fprintf_esc(FILE *f, unsigned int padd, const char *str)
-+{
-+	while (padd-- > 0)
-+		fputc(' ', f);
-+
-+	fputc('"', f);
-+
-+	while (*str) {
-+		switch (*str) {
-+		case '\\':
-+			fputs("\\\\", f);
-+			break;
-+		case '"':
-+			fputs("\\\"", f);
-+			break;
-+		case '\t':
-+			fputs("\\t", f);
-+			break;
-+		default:
-+			putc(*str, f);
-+			break;
-+		}
-+		str++;
-+	}
-+
-+	fputc('"', f);
-+}
-+
- static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int padd, int do_padd)
- {
- 	unsigned int i;
-@@ -263,7 +292,7 @@ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int p
- 	switch (self->type) {
- 	case DATA_STRING:
- 		padd = do_padd ? padd : 0;
--		data_fprintf(f, padd, "\"%s\"", self->string.val);
-+		data_fprintf_esc(f, padd, self->string.val);
- 	break;
- 	case DATA_HASH:
- 		for (i = 0; i < self->hash.elems_used; i++) {
--- 
-2.31.1
-
