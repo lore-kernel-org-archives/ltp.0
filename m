@@ -1,32 +1,34 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 5 May 2021 13:13:46 +0200
-Subject: [LTP] [PATCH v3 6/6] Add test for CVE 2020-25705
-In-Reply-To: <4ea9d02a-2867-1977-cfd3-bd591d211733@suse.cz>
+Date: Wed, 5 May 2021 13:24:49 +0200
+Subject: [LTP] [PATCH v3 4/6] Add rtnetlink helper library
+In-Reply-To: <aa553d92-661d-d792-2d10-c654a4edbc35@suse.cz>
 References: <20210505081845.7024-1-mdoucha@suse.cz>
- <20210505081845.7024-6-mdoucha@suse.cz> <YJJtpXWM4BxH2ffu@pevik>
- <4ea9d02a-2867-1977-cfd3-bd591d211733@suse.cz>
-Message-ID: <YJJ96mpakcatiQ4z@pevik>
+ <20210505081845.7024-4-mdoucha@suse.cz> <YJJwr+RdyOvKhrxs@pevik>
+ <aa553d92-661d-d792-2d10-c654a4edbc35@suse.cz>
+Message-ID: <YJKAgdpuAsRVmSse@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin,
+> On 05. 05. 21 12:17, Petr Vorel wrote:
+> > Hi Martin,
 
-> Yes, I should fix this and the <time.h> issue. Please push everything up
-> to patch 5 and then I'll resubmit v4 just for this patch.
-NOTE: <time.h> must be included *before* <linux/errqueue.h>
-(maybe bug in musl headers).
-I suppose Cyril will merge these 4 patches soon.
+> > it'd be great if you (later) add docs from v1 cover letter [1] into
+> > doc/test-writing-guidelines.txt.
 
-> > FYI I tested the test on several VM. Very old kernel detects problem only on
-> > more runs. But given it's 3.16 (and b38e7819cae9 is a fix for 4cdf507d5452 from
-> > v3.18-rc1 we can ignore this).
+> > [1] https://patchwork.ozlabs.org/project/ltp/cover/20210426111918.4304-1-mdoucha@suse.cz/
 
-> Pass is expected here. Vanilla v3.16 AFAIK does not have the global ICMP
-> rate limiter which introduced the real vulnerability in the first place.
-Sure. I was just surprised to get different result on -i1 and on -i >= 2.
+> I think we should discuss the documentation structure first.
+> test-writing-guidelines.txt is already too long and unreadable.
+Agree. I was thinking this week to at least split C and shell API, that would
+help a bit.
+
+> We should probably split it by topic and put the network management docs
+> into a separate file from the outset since I'm planning to build an
+> entire packetdrill-like userspace TCP stack on top of it in the future.
+Thanks a lot!
 
 Kind regards,
 Petr
