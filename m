@@ -1,84 +1,79 @@
 From: Jan Kara <jack@suse.cz>
-Date: Wed, 5 May 2021 18:47:57 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/inotify06: Raise inotify instance
- limit in /proc
-In-Reply-To: <20210505153847.6106-2-mdoucha@suse.cz>
+Date: Wed, 5 May 2021 18:48:57 +0200
+Subject: [LTP] [PATCH 1/2] syscalls/inotify06: Terminate child process
+ on test error
+In-Reply-To: <20210505153847.6106-1-mdoucha@suse.cz>
 References: <20210505153847.6106-1-mdoucha@suse.cz>
- <20210505153847.6106-2-mdoucha@suse.cz>
-Message-ID: <20210505164757.GC9615@quack2.suse.cz>
+Message-ID: <20210505164857.GD9615@quack2.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed 05-05-21 17:38:47, Martin Doucha wrote:
-> inotify_init() sometimes fails with EMFILE because there are too many
-> partially closed instances waiting for garbage collection. Bump the limit
-> in /proc/sys/fs/inotify/max_user_instances for the duration of the test.
+On Wed 05-05-21 17:38:46, Martin Doucha wrote:
+> If the main test process exits early, the child would keep running and
+> interfere with tmpdir cleanup.
 > 
 > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 > ---
-> 
-> I thought about only reading the procfile and calling yield() after every
-> proc_limit/2 iterations to wait for garbage collection but I'm afraid that
-> it might reduce the likelihood of triggering the bug. Since I currently have
-> no system where I could reproduce the race, I've decided to play it safe and
-> bump the /proc limit.
+>  testcases/kernel/syscalls/inotify/inotify06.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 
-So waiting would be fine as well. One process simply creates & deletes
-files in a loop until the other performs TEARDOWNS teardowns. It doesn't
-really matter how fast teardowns happen for the race to trigger. But I have
-no problem with this solution either.
+Thanks for the patch. It looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > 
->  testcases/kernel/syscalls/inotify/inotify06.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
 > diff --git a/testcases/kernel/syscalls/inotify/inotify06.c b/testcases/kernel/syscalls/inotify/inotify06.c
-> index f39ab46a1..68813769b 100644
+> index 96189b082..f39ab46a1 100644
 > --- a/testcases/kernel/syscalls/inotify/inotify06.c
 > +++ b/testcases/kernel/syscalls/inotify/inotify06.c
-> @@ -38,8 +38,11 @@
+> @@ -38,7 +38,8 @@
 >  /* Number of files to test (must be > 1) */
 >  #define FILES 5
 >  
-> +#define PROCFILE "/proc/sys/fs/inotify/max_user_instances"
-> +
->  static char names[FILES][PATH_MAX];
->  static pid_t pid;
-> +static int old_proc_limit;
+> -char names[FILES][PATH_MAX];
+> +static char names[FILES][PATH_MAX];
+> +static pid_t pid;
 >  
 >  static void setup(void)
 >  {
-> @@ -47,6 +50,11 @@ static void setup(void)
->  
->  	for (i = 0; i < FILES; i++)
->  		sprintf(names[i], "fname_%d", i);
-> +
-> +	SAFE_FILE_SCANF(PROCFILE, "%d", &old_proc_limit);
-> +
-> +	if (old_proc_limit >= 0 && old_proc_limit < TEARDOWNS)
-> +		SAFE_FILE_PRINTF(PROCFILE, "%d", TEARDOWNS + 128);
->  }
->  
+> @@ -51,7 +52,6 @@ static void setup(void)
 >  static void verify_inotify(void)
-> @@ -95,10 +103,13 @@ static void cleanup(void)
->  		SAFE_KILL(pid, SIGKILL);
->  		SAFE_WAIT(NULL);
->  	}
-> +
-> +	SAFE_FILE_PRINTF(PROCFILE, "%d", old_proc_limit);
+>  {
+>  	int inotify_fd, fd;
+> -	pid_t pid;
+>  	int i, tests;
+>  
+>  	pid = SAFE_FORK();
+> @@ -85,14 +85,24 @@ static void verify_inotify(void)
+>  
+>  	/* Kill the child creating / deleting files and wait for it */
+>  	SAFE_KILL(pid, SIGKILL);
+> +	pid = 0;
+>  	SAFE_WAIT(NULL);
 >  }
 >  
+> +static void cleanup(void)
+> +{
+> +	if (pid) {
+> +		SAFE_KILL(pid, SIGKILL);
+> +		SAFE_WAIT(NULL);
+> +	}
+> +}
+> +
 >  static struct tst_test test = {
 >  	.timeout = 600,
-> +	.needs_root = 1,
 >  	.needs_tmpdir = 1,
 >  	.forks_child = 1,
 >  	.setup = setup,
+> +	.cleanup = cleanup,
+>  	.test_all = verify_inotify,
+>  };
+>  
 > -- 
 > 2.31.1
 > 
