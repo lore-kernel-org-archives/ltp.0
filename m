@@ -1,37 +1,53 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed,  5 May 2021 10:16:20 +0100
-Subject: [LTP] [PATCH v3 1/4] lapi/bpf: Add /= and %=
-In-Reply-To: <20210505091623.29121-1-rpalethorpe@suse.com>
-References: <20210505091623.29121-1-rpalethorpe@suse.com>
-Message-ID: <20210505091623.29121-2-rpalethorpe@suse.com>
+Date: Wed,  5 May 2021 10:16:19 +0100
+Subject: [LTP] [PATCH v3 0/4] BPF refactor and add bpf_prog05
+Message-ID: <20210505091623.29121-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add div and mod instructions.
+Hello,
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/lapi/bpf.h | 2 ++
- 1 file changed, 2 insertions(+)
+V3:
 
-diff --git a/include/lapi/bpf.h b/include/lapi/bpf.h
-index f27a92146..5ae25293b 100644
---- a/include/lapi/bpf.h
-+++ b/include/lapi/bpf.h
-@@ -37,8 +37,10 @@
- #define BPF_OP(code)    ((code) & 0xf0)
- #define		BPF_ADD		0x00
- #define		BPF_SUB		0x10
-+#define		BPF_DIV		0x30
- #define		BPF_LSH		0x60
- #define		BPF_RSH		0x70
-+#define		BPF_MOD		0x90
- 
- #define		BPF_JEQ		0x10
- 
+* constify and add attributes
+
+* replace insn builder with BPF_MAP_ARRAY_STX macro to insert multiple
+  instructions.
+
+V2:
+
+* Added a number of helper functions to bpf_common and used them on
+  all tests.
+
+* Added some instruction concatenation helpers, but only used these on
+  bpf_prog05 as they don't seem to make the other tests better to
+  read.
+
+* Further shorten bpf_prog05 by using a generic expect function
+
+Richard Palethorpe (4):
+  lapi/bpf: Add /= and %=
+  bpf: Add map_array helper functions/macro and constify
+  bpf: Add helper to run socket programs
+  bpf: Check truncation on 32bit div/mod by zero
+
+ include/lapi/bpf.h                         |   2 +
+ runtest/cve                                |   1 +
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/bpf/.gitignore   |   1 +
+ testcases/kernel/syscalls/bpf/bpf_common.c |  64 ++++++--
+ testcases/kernel/syscalls/bpf/bpf_common.h |  53 +++++-
+ testcases/kernel/syscalls/bpf/bpf_prog01.c |  32 +---
+ testcases/kernel/syscalls/bpf/bpf_prog02.c |  54 ++-----
+ testcases/kernel/syscalls/bpf/bpf_prog03.c |  32 +---
+ testcases/kernel/syscalls/bpf/bpf_prog04.c |  17 +-
+ testcases/kernel/syscalls/bpf/bpf_prog05.c | 177 +++++++++++++++++++++
+ 11 files changed, 308 insertions(+), 126 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/bpf/bpf_prog05.c
+
 -- 
 2.31.1
 
