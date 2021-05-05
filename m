@@ -1,35 +1,33 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 5 May 2021 12:25:51 +0200
-Subject: [LTP] [PATCH v3 4/6] Add rtnetlink helper library
-In-Reply-To: <YJJwr+RdyOvKhrxs@pevik>
-References: <20210505081845.7024-1-mdoucha@suse.cz>
- <20210505081845.7024-4-mdoucha@suse.cz> <YJJwr+RdyOvKhrxs@pevik>
-Message-ID: <aa553d92-661d-d792-2d10-c654a4edbc35@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Wed, 05 May 2021 11:27:34 +0100
+Subject: [LTP] [PATCH v2 2/5] bpf: Add map_array helper functions
+In-Reply-To: <YIvAVaPNyunDHxaF@yuki>
+References: <20210429150510.21585-1-rpalethorpe@suse.com>
+ <20210429150510.21585-3-rpalethorpe@suse.com> <YIvAVaPNyunDHxaF@yuki>
+Message-ID: <87wnsdlbl5.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05. 05. 21 12:17, Petr Vorel wrote:
-> Hi Martin,
-> 
-> it'd be great if you (later) add docs from v1 cover letter [1] into
-> doc/test-writing-guidelines.txt.
-> 
-> [1] https://patchwork.ozlabs.org/project/ltp/cover/20210426111918.4304-1-mdoucha@suse.cz/
+Hello,
 
-I think we should discuss the documentation structure first.
-test-writing-guidelines.txt is already too long and unreadable. We
-should probably split it by topic and put the network management docs
-into a separate file from the outset since I'm planning to build an
-entire packetdrill-like userspace TCP stack on top of it in the future.
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> Hi!
+>> +long bpf_map_array_get(const int map_fd,
+>> +		       const uint32_t *const array_indx,
+>> +		       uint64_t *const array_val)
+>
+> Wouldn't the API be nicer if we passed just index value and returned the
+> map value? We do TBROK if something goes wrong anyways, so there is no
+> point in passing the return value from the bpf() syscall.
+
+It would be nicer, but the existing tests put the key and value in
+guarded buffers. I guess there are other types of memory we might want
+to pass a pointer to as well.
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Thank you,
+Richard.
