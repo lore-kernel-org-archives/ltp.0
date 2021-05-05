@@ -1,50 +1,76 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed,  5 May 2021 10:18:42 +0200
-Subject: [LTP] [PATCH v3 3/6] Add SAFE_IOCTL() variant for library code
-In-Reply-To: <20210505081845.7024-1-mdoucha@suse.cz>
-References: <20210505081845.7024-1-mdoucha@suse.cz>
-Message-ID: <20210505081845.7024-3-mdoucha@suse.cz>
+Date: Wed,  5 May 2021 10:18:40 +0200
+Subject: [LTP] [PATCH v3 1/6] Add SAFE_REALLOC() helper function to LTP
+ library
+Message-ID: <20210505081845.7024-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-SAFE_IOCTL() cannot be implemented as a function due to the variadic argument
-but the macro still needs a variant which accepts arbitrary file:line position
-for error messages as arguments.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 ---
 
-Changes since v1: New patch
+Sorry for resubmitting so soon, I forgot to include the gitignore/runfile
+paperwork for the new test. Fixed in patch 6.
 
- include/tst_safe_macros.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Changes since v1: None
+
+ include/tst_safe_macros.h |  5 +++++
+ lib/tst_safe_macros.c     | 15 +++++++++++++++
+ 2 files changed, 20 insertions(+)
 
 diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index d6f32ef4c..dcef58bda 100644
+index b9d9baa1a..d6f32ef4c 100644
 --- a/include/tst_safe_macros.h
 +++ b/include/tst_safe_macros.h
-@@ -211,13 +211,16 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
- #define SAFE_READDIR(dirp) \
- 	safe_readdir(__FILE__, __LINE__, NULL, (dirp))
+@@ -67,6 +67,11 @@ int safe_dup2(const char *file, const int lineno, int oldfd, int newfd);
+ #define SAFE_MALLOC(size) \
+ 	safe_malloc(__FILE__, __LINE__, NULL, (size))
  
--#define SAFE_IOCTL(fd, request, ...)                         \
-+#define SAFE_IOCTL_(file, lineno, fd, request, ...)          \
- 	({int tst_ret_ = ioctl(fd, request, ##__VA_ARGS__);  \
- 	  tst_ret_ < 0 ?                                     \
--	   tst_brk(TBROK | TERRNO,                           \
-+	   tst_brk_((file), (lineno), TBROK | TERRNO,        \
- 	            "ioctl(%i,%s,...) failed", fd, #request), 0 \
- 	 : tst_ret_;})
- 
-+#define SAFE_IOCTL(fd, request, ...) \
-+	SAFE_IOCTL_(__FILE__, __LINE__, (fd), (request), ##__VA_ARGS__)
++void *safe_realloc(const char *file, const int lineno, void *ptr, size_t size);
 +
- #define SAFE_FCNTL(fd, cmd, ...)                            \
- 	({int tst_ret_ = fcntl(fd, cmd, ##__VA_ARGS__);     \
- 	  tst_ret_ == -1 ?                                  \
++#define SAFE_REALLOC(ptr, size) \
++	safe_realloc(__FILE__, __LINE__, (ptr), (size))
++
+ #define SAFE_MKDIR(pathname, mode) \
+ 	safe_mkdir(__FILE__, __LINE__, NULL, (pathname), (mode))
+ 
+diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+index 182b690bb..fd5f1704b 100644
+--- a/lib/tst_safe_macros.c
++++ b/lib/tst_safe_macros.c
+@@ -5,6 +5,7 @@
+ 
+ #define _GNU_SOURCE
+ #include <unistd.h>
++#include <stdlib.h>
+ #include <errno.h>
+ #include <sched.h>
+ #include <sys/ptrace.h>
+@@ -433,6 +434,20 @@ int safe_dup2(const char *file, const int lineno, int oldfd, int newfd)
+ 	return rval;
+ }
+ 
++void *safe_realloc(const char *file, const int lineno, void *ptr, size_t size)
++{
++	void *ret;
++
++	ret = realloc(ptr, size);
++
++	if (!ret) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"realloc(%p, %zu) failed", ptr, size);
++	}
++
++	return ret;
++}
++
+ sighandler_t safe_signal(const char *file, const int lineno,
+ 	int signum, sighandler_t handler)
+ {
 -- 
 2.31.1
 
