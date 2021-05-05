@@ -1,317 +1,560 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed,  5 May 2021 10:18:45 +0200
-Subject: [LTP] [PATCH v3 6/6] Add test for CVE 2020-25705
+Date: Wed,  5 May 2021 10:18:43 +0200
+Subject: [LTP] [PATCH v3 4/6] Add rtnetlink helper library
 In-Reply-To: <20210505081845.7024-1-mdoucha@suse.cz>
 References: <20210505081845.7024-1-mdoucha@suse.cz>
-Message-ID: <20210505081845.7024-6-mdoucha@suse.cz>
+Message-ID: <20210505081845.7024-4-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes #742
+This library provides simple interface for creating arbitrary rtnetlink
+messages with complex attributes, sending requests and receiving results.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1: New patch
+Changes since v1:
+- fixed error handling in tst_rtnl_create_context()
+- renamed tst_rtnl_free_context() to tst_rtnl_destroy_context()
+- switched from select() to poll() in tst_rtnl_wait()
+- use tst_rtnl_add_message() for adding NLMSG_DONE
+- receive all pending messages in tst_rtnl_recv(), not just one
+- use inline struct initialization where possible
 
-Changes since v2: Added missing gitignore and runfile entry for the new test
+ include/tst_rtnetlink.h | 106 +++++++++++
+ lib/tst_rtnetlink.c     | 407 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 513 insertions(+)
+ create mode 100644 include/tst_rtnetlink.h
+ create mode 100644 lib/tst_rtnetlink.c
 
- runtest/cve                    |   1 +
- testcases/cve/.gitignore       |   1 +
- testcases/cve/cve-2020-25705.c | 262 +++++++++++++++++++++++++++++++++
- 3 files changed, 264 insertions(+)
- create mode 100644 testcases/cve/cve-2020-25705.c
-
-diff --git a/runtest/cve b/runtest/cve
-index f650854f9..eea951576 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -60,4 +60,5 @@ cve-2019-8912 af_alg07
- cve-2020-11494 pty04
- cve-2020-14386 sendto03
- cve-2020-14416 pty03
-+cve-2020-25705 cve-2020-25705
- cve-2020-29373 io_uring02
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 01a3e4c8f..7078d1ac3 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -10,3 +10,4 @@ stack_clash
- cve-2017-17052
- cve-2017-16939
- cve-2017-17053
-+cve-2020-25705
-diff --git a/testcases/cve/cve-2020-25705.c b/testcases/cve/cve-2020-25705.c
+diff --git a/include/tst_rtnetlink.h b/include/tst_rtnetlink.h
 new file mode 100644
-index 000000000..7d6bbafa8
+index 000000000..12ec258f2
 --- /dev/null
-+++ b/testcases/cve/cve-2020-25705.c
-@@ -0,0 +1,262 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2020 SUSE LLC
-+ * Author: Nicolai Stange <nstange@suse.de>
-+ * LTP port: Martin Doucha <mdoucha@suse.cz>
-+ *
-+ * CVE-2020-25705
-+ *
-+ * Test of ICMP rate limiting behavior that may be abused for DNS cache
-+ * poisoning attack. Send a few batches of 100 packets to a closed UDP port
-+ * and count the ICMP errors. If the number of errors is always the same
-+ * for each batch (not randomized), the system is vulnerable. Send packets
-+ * from multiple IP addresses to bypass per-address ICMP throttling.
-+ *
-+ * Fixed in:
-+ *
-+ *  commit b38e7819cae946e2edf869e604af1e65a5d241c5
-+ *  Author: Eric Dumazet <edumazet@google.com>
-+ *  Date:   Thu Oct 15 11:42:00 2020 -0700
-+ *
-+ *  icmp: randomize the global rate limiter
++++ b/include/tst_rtnetlink.h
+@@ -0,0 +1,106 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * Copyright (c) 2021 Linux Test Project
 + */
 +
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <arpa/inet.h>
-+#include <linux/if_addr.h>
-+#include <linux/errqueue.h>
++#ifndef TST_RTNETLINK_H
++#define TST_RTNETLINK_H
 +
-+#include <sched.h>
-+#include <limits.h>
-+#include "tst_test.h"
-+#include "tst_netdevice.h"
++struct tst_rtnl_context;
 +
-+#define DSTADDR 0xfa444e02 /* 250.68.78.2 */
-+#define SRCADDR_BASE 0xfa444e41 /* 250.68.78.65 */
-+#define SRCADDR_COUNT 50
-+#define BATCH_COUNT 8
-+#define BUFSIZE 1024
-+
-+static int parentns = -1, childns = -1;
-+static int fds[SRCADDR_COUNT];
-+
-+static void setup(void)
-+{
-+	struct sockaddr_in ipaddr = { .sin_family = AF_INET };
-+	uint32_t addr;
-+	int i;
-+	int real_uid = getuid();
-+	int real_gid = getgid();
-+
-+	for (i = 0; i < SRCADDR_COUNT; i++)
-+		fds[i] = -1;
-+
-+	SAFE_UNSHARE(CLONE_NEWUSER);
-+	SAFE_UNSHARE(CLONE_NEWNET);
-+	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
-+	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
-+	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
-+
-+	/*
-+	 * Create network namespace to hide the destination interface from
-+	 * the test process.
-+	 */
-+	parentns = SAFE_OPEN("/proc/self/ns/net", O_RDONLY);
-+	SAFE_UNSHARE(CLONE_NEWNET);
-+
-+	/* Do NOT close this FD, or both interfaces will be destroyed */
-+	childns = SAFE_OPEN("/proc/self/ns/net", O_RDONLY);
-+
-+	/* Configure child namespace */
-+	CREATE_VETH_PAIR("ltp_veth1", "ltp_veth2");
-+	addr = DSTADDR;
-+	NETDEV_ADD_ADDRESS_INET("ltp_veth2", htonl(addr), 26,
-+		IFA_F_NOPREFIXROUTE);
-+	NETDEV_SET_STATE("ltp_veth2", 1);
-+	NETDEV_ADD_ROUTE_INET("ltp_veth2", 0, 0, htonl(0xfa444e40), 26,
-+		0);
-+
-+	/* Configure parent namespace */
-+	NETDEV_CHANGE_NS_FD("ltp_veth1", parentns);
-+	SAFE_SETNS(parentns, CLONE_NEWNET);
-+	addr = SRCADDR_BASE; /* 250.68.78.65 */
-+
-+	for (i = 0; i < SRCADDR_COUNT; i++, addr++) {
-+		NETDEV_ADD_ADDRESS_INET("ltp_veth1", htonl(addr), 26,
-+			IFA_F_NOPREFIXROUTE);
-+	}
-+
-+	NETDEV_SET_STATE("ltp_veth1", 1);
-+	NETDEV_ADD_ROUTE_INET("ltp_veth1", 0, 0, htonl(0xfa444e00), 26, 0);
-+	SAFE_FILE_PRINTF("/proc/sys/net/ipv4/conf/ltp_veth1/forwarding", "1");
-+
-+	/* Open test sockets */
-+	for (i = 0; i < SRCADDR_COUNT; i++) {
-+		ipaddr.sin_addr.s_addr = htonl(SRCADDR_BASE + i);
-+		fds[i] = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+		SAFE_SETSOCKOPT_INT(fds[i], IPPROTO_IP, IP_RECVERR, 1);
-+		SAFE_BIND(fds[i], (struct sockaddr *)&ipaddr, sizeof(ipaddr));
-+	}
-+}
-+
-+static int count_icmp_errors(int fd)
-+{
-+	int error_count = 0;
++struct tst_rtnl_attr_list {
++	unsigned short type;
++	const void *data;
 +	ssize_t len;
-+	char msgbuf[BUFSIZE], errbuf[BUFSIZE];
-+	struct sockaddr_in addr;
-+	struct cmsghdr *cmsg;
-+	struct sock_extended_err exterr;
-+	struct iovec iov = {
-+		.iov_base = msgbuf,
-+		.iov_len = BUFSIZE
-+	};
-+
-+	while (1) {
-+		struct msghdr msg = {
-+			.msg_name = (struct sockaddr *)&addr,
-+			.msg_namelen = sizeof(addr),
-+			.msg_iov = &iov,
-+			.msg_iovlen = 1,
-+			.msg_flags = 0,
-+			.msg_control = errbuf,
-+			.msg_controllen = BUFSIZE
-+		};
-+
-+		memset(errbuf, 0, BUFSIZE);
-+		errno = 0;
-+		len = recvmsg(fd, &msg, MSG_ERRQUEUE);
-+
-+		if (len == -1) {
-+			if (errno == EWOULDBLOCK || errno == EAGAIN)
-+				break;
-+
-+			tst_brk(TBROK | TERRNO, "recvmsg() failed");
-+		}
-+
-+		if (len < 0) {
-+			tst_brk(TBROK | TERRNO,
-+				"Invalid recvmsg() return value %zd", len);
-+		}
-+
-+		for (cmsg = CMSG_FIRSTHDR(&msg); cmsg;
-+			cmsg = CMSG_NXTHDR(&msg, cmsg)) {
-+			if (cmsg->cmsg_level != SOL_IP)
-+				continue;
-+
-+			if (cmsg->cmsg_type != IP_RECVERR)
-+				continue;
-+
-+			memcpy(&exterr, CMSG_DATA(cmsg), sizeof(exterr));
-+
-+			if (exterr.ee_origin != SO_EE_ORIGIN_ICMP)
-+				tst_brk(TBROK, "Unexpected non-ICMP error");
-+
-+			if (exterr.ee_errno != ECONNREFUSED) {
-+				TST_ERR = exterr.ee_errno;
-+				tst_brk(TBROK | TTERRNO,
-+					"Unexpected ICMP error");
-+			}
-+
-+			error_count++;
-+		}
-+	}
-+
-+	return error_count;
-+}
-+
-+static int packet_batch(const struct sockaddr *addr, socklen_t addrsize)
-+{
-+	int i, j, error_count = 0;
-+	char data = 0;
-+
-+	for (i = 0; i < SRCADDR_COUNT; i++) {
-+		for (j = 0; j < 2; j++) {
-+			error_count += count_icmp_errors(fds[i]);
-+			TEST(sendto(fds[i], &data, sizeof(data), 0, addr,
-+				addrsize));
-+
-+			if (TST_RET == -1) {
-+				if (TST_ERR == ECONNREFUSED) {
-+					j--; /* flush ICMP errors and retry */
-+					continue;
-+				}
-+
-+				tst_brk(TBROK | TTERRNO, "sento() failed");
-+			}
-+
-+			if (TST_RET < 0) {
-+				tst_brk(TBROK | TTERRNO,
-+					"Invalid sento() return value %ld",
-+					TST_RET);
-+			}
-+		}
-+	}
-+
-+	/* Wait and collect pending ICMP errors */
-+	sleep(2);
-+
-+	for (i = 0; i < SRCADDR_COUNT; i++)
-+		error_count += count_icmp_errors(fds[i]);
-+
-+	return error_count;
-+}
-+
-+static void run(void)
-+{
-+	int i, errors_baseline, errors;
-+	struct sockaddr_in addr = {
-+		.sin_family = AF_INET,
-+		.sin_port = TST_GET_UNUSED_PORT(AF_INET, SOCK_DGRAM),
-+		.sin_addr = { htonl(DSTADDR) }
-+	};
-+
-+	errors_baseline = packet_batch((struct sockaddr *)&addr, sizeof(addr));
-+	errors = errors_baseline;
-+	tst_res(TINFO, "Batch 0: Got %d ICMP errors", errors);
-+
-+	for (i = 1; i < BATCH_COUNT && errors == errors_baseline; i++) {
-+		errors = packet_batch((struct sockaddr *)&addr, sizeof(addr));
-+		tst_res(TINFO, "Batch %d: Got %d ICMP errors", i, errors);
-+	}
-+
-+	if (errors == errors_baseline) {
-+		tst_res(TFAIL,
-+			"ICMP rate limit not randomized, system is vulnerable");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "ICMP rate limit is randomized");
-+}
-+
-+static void cleanup(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < SRCADDR_COUNT; i++)
-+		if (fds[i] >= 0)
-+			SAFE_CLOSE(fds[i]);
-+
-+	if (childns >= 0)
-+		SAFE_CLOSE(childns);
-+
-+	if (parentns >= 0)
-+		SAFE_CLOSE(parentns);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USER_NS=y",
-+		"CONFIG_NET_NS=y",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "b38e7819cae9"},
-+		{"CVE", "2020-25705"},
-+		{}
-+	}
++	const struct tst_rtnl_attr_list *sublist;
 +};
++
++struct tst_rtnl_message {
++	struct nlmsghdr *header;
++	struct nlmsgerr *err;
++	void *payload;
++	size_t payload_size;
++};
++
++/* Open a netlink socket */
++struct tst_rtnl_context *tst_rtnl_create_context(const char *file,
++	const int lineno);
++#define RTNL_CREATE_CONTEXT() tst_rtnl_create_context(__FILE__, __LINE__)
++
++/* Free a tst_rtnl_message array returned by tst_rtnl_recv() */
++void tst_rtnl_free_message(struct tst_rtnl_message *msg);
++#define RTNL_FREE_MESSAGE tst_rtnl_free_message
++
++/* Close netlink socket */
++void tst_rtnl_destroy_context(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx);
++#define RTNL_DESTROY_CONTEXT(ctx) \
++	tst_rtnl_destroy_context(__FILE__, __LINE__, (ctx))
++
++/* Send all messages in given buffer */
++int tst_rtnl_send(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx);
++#define RTNL_SEND(ctx) tst_rtnl_send(__FILE__, __LINE__, (ctx))
++
++/* Send all messages in given buffer and validate kernel response */
++int tst_rtnl_send_validate(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx);
++#define RTNL_SEND_VALIDATE(ctx) \
++	tst_rtnl_send_validate(__FILE__, __LINE__, (ctx))
++
++/* Wait until data is available for reading from the netlink socket */
++int tst_rtnl_wait(struct tst_rtnl_context *ctx);
++#define RTNL_WAIT tst_rtnl_wait
++
++/*
++ * Read from netlink socket and return an array of partially parsed messages.
++ * header == NULL indicates end of array.
++ */
++struct tst_rtnl_message *tst_rtnl_recv(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx);
++#define RTNL_RECV(ctx) tst_rtnl_recv(__FILE__, __LINE__, (ctx))
++
++/* Add new message to buffer */
++int tst_rtnl_add_message(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, const struct nlmsghdr *header,
++	const void *payload, size_t payload_size);
++#define RTNL_ADD_MESSAGE(ctx, header, payload, psize) \
++	tst_rtnl_add_message(__FILE__, __LINE__, (ctx), (header), (payload), \
++		(psize))
++
++/* Add arbitrary attribute to last message */
++int tst_rtnl_add_attr(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, unsigned short type, const void *data,
++	unsigned short len);
++#define RTNL_ADD_ATTR(ctx, type, data, len) \
++	tst_rtnl_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
++
++/* Add string attribute to last message */
++int tst_rtnl_add_attr_string(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, unsigned short type, const char *data);
++#define RTNL_ADD_ATTR_STRING(ctx, type, data) \
++	tst_rtnl_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
++
++/*
++ * Add list of arbitrary attributes to last message. The list is terminated
++ * by attribute with negative length. Nested sublists are supported.
++ */
++int tst_rtnl_add_attr_list(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, const struct tst_rtnl_attr_list *list);
++#define RTNL_ADD_ATTR_LIST(ctx, list) \
++	tst_rtnl_add_attr_list(__FILE__, __LINE__, (ctx), (list))
++
++/* Check that all sent messages with NLM_F_ACK flag have been acked without
++ * error. Usage:
++ *
++ * tst_rtnl_send(ctx);
++ * tst_rtnl_wait(ctx);
++ * response = tst_rtnl_recv(ctx);
++ * if (!tst_rtnl_check_acks(ctx, response)) { ... }
++ * tst_rtnl_free_message(response);
++ */
++int tst_rtnl_check_acks(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, struct tst_rtnl_message *response);
++#define RTNL_CHECK_ACKS(ctx, response) \
++	tst_rtnl_context(__FILE__, __LINE__, (ctx), (response))
++
++#endif /* TST_RTNETLINK_H */
+diff --git a/lib/tst_rtnetlink.c b/lib/tst_rtnetlink.c
+new file mode 100644
+index 000000000..cd5013064
+--- /dev/null
++++ b/lib/tst_rtnetlink.c
+@@ -0,0 +1,407 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 Linux Test Project
++ */
++
++#include <stdlib.h>
++#include <limits.h>
++#include <asm/types.h>
++#include <linux/netlink.h>
++#include <linux/rtnetlink.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/poll.h>
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++#include "tst_rtnetlink.h"
++
++struct tst_rtnl_context {
++	int socket;
++	pid_t pid;
++	uint32_t seq;
++	size_t bufsize, datalen;
++	char *buffer;
++	struct nlmsghdr *curmsg;
++};
++
++static int tst_rtnl_grow_buffer(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, size_t size)
++{
++	size_t needed, offset, curlen = NLMSG_ALIGN(ctx->datalen);
++	char *buf;
++
++	if (ctx->bufsize - curlen >= size)
++		return 1;
++
++	needed = size - (ctx->bufsize - curlen);
++	size = ctx->bufsize + (ctx->bufsize > needed ? ctx->bufsize : needed);
++	size = NLMSG_ALIGN(size);
++	buf = safe_realloc(file, lineno, ctx->buffer, size);
++
++	if (!buf)
++		return 0;
++
++	memset(buf + ctx->bufsize, 0, size - ctx->bufsize);
++	offset = ((char *)ctx->curmsg) - ctx->buffer;
++	ctx->buffer = buf;
++	ctx->curmsg = (struct nlmsghdr *)(buf + offset);
++	ctx->bufsize = size;
++	return 1;
++}
++
++void tst_rtnl_destroy_context(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx)
++{
++	safe_close(file, lineno, NULL, ctx->socket);
++	free(ctx->buffer);
++	free(ctx);
++}
++
++struct tst_rtnl_context *tst_rtnl_create_context(const char *file,
++	const int lineno)
++{
++	struct tst_rtnl_context *ctx;
++	struct sockaddr_nl addr = { .nl_family = AF_NETLINK };
++
++	ctx = safe_malloc(file, lineno, NULL, sizeof(struct tst_rtnl_context));
++
++	if (!ctx)
++		return NULL;
++
++	ctx->pid = 0;
++	ctx->seq = 0;
++	ctx->buffer = NULL;
++	ctx->bufsize = 1024;
++	ctx->datalen = 0;
++	ctx->curmsg = NULL;
++	ctx->socket = safe_socket(file, lineno, NULL, AF_NETLINK,
++		SOCK_DGRAM | SOCK_CLOEXEC, NETLINK_ROUTE);
++
++	if (ctx->socket < 0) {
++		free(ctx);
++		return NULL;
++	}
++
++	if (safe_bind(file, lineno, NULL, ctx->socket, (struct sockaddr *)&addr,
++		sizeof(addr))) {
++		tst_rtnl_destroy_context(file, lineno, ctx);
++		return NULL;
++	}
++
++	ctx->buffer = safe_malloc(file, lineno, NULL, ctx->bufsize);
++
++	if (!ctx->buffer) {
++		tst_rtnl_destroy_context(file, lineno, ctx);
++		return NULL;
++	}
++
++	memset(ctx->buffer, 0, ctx->bufsize);
++	return ctx;
++}
++
++void tst_rtnl_free_message(struct tst_rtnl_message *msg)
++{
++	if (!msg)
++		return;
++
++	// all ptr->header and ptr->info pointers point to the same buffer
++	// msg->header is the start of the buffer
++	free(msg->header);
++	free(msg);
++}
++
++int tst_rtnl_send(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx)
++{
++	int ret;
++	struct sockaddr_nl addr = { .nl_family = AF_NETLINK };
++	struct iovec iov;
++	struct msghdr msg = {
++		.msg_name = &addr,
++		.msg_namelen = sizeof(addr),
++		.msg_iov = &iov,
++		.msg_iovlen = 1
++	};
++
++	if (!ctx->curmsg) {
++		tst_brk_(file, lineno, TBROK, "%s(): No message to send",
++			__func__);
++		return 0;
++	}
++
++	if (ctx->curmsg->nlmsg_flags & NLM_F_MULTI) {
++		struct nlmsghdr eom = { .nlmsg_type = NLMSG_DONE };
++
++		if (!tst_rtnl_add_message(file, lineno, ctx, &eom, NULL, 0))
++			return 0;
++
++		/* NLMSG_DONE message must not have NLM_F_MULTI flag */
++		ctx->curmsg->nlmsg_flags = 0;
++	}
++
++	iov.iov_base = ctx->buffer;
++	iov.iov_len = ctx->datalen;
++	ret = safe_sendmsg(file, lineno, ctx->datalen, ctx->socket, &msg, 0);
++
++	if (ret > 0)
++		ctx->curmsg = NULL;
++
++	return ret;
++}
++
++int tst_rtnl_wait(struct tst_rtnl_context *ctx)
++{
++	struct pollfd fdinfo = {
++		.fd = ctx->socket,
++		.events = POLLIN
++	};
++
++	return poll(&fdinfo, 1, 1000);
++}
++
++struct tst_rtnl_message *tst_rtnl_recv(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx)
++{
++	char tmp, *tmpbuf, *buffer = NULL;
++	struct tst_rtnl_message *ret;
++	struct nlmsghdr *ptr;
++	size_t retsize, bufsize = 0;
++	ssize_t size;
++	int i, size_left, msgcount;
++
++	/* Each recv() call returns one message, read all pending messages */
++	while (1) {
++		errno = 0;
++		size = recv(ctx->socket, &tmp, 1,
++			MSG_DONTWAIT | MSG_PEEK | MSG_TRUNC);
++
++		if (size < 0) {
++			if (errno != EAGAIN) {
++				tst_brk_(file, lineno, TBROK | TERRNO,
++					"recv() failed");
++			}
++
++			break;
++		}
++
++		tmpbuf = safe_realloc(file, lineno, buffer, bufsize + size);
++
++		if (!tmpbuf)
++			break;
++
++		buffer = tmpbuf;
++		size = safe_recv(file, lineno, size, ctx->socket,
++			buffer + bufsize, size, 0);
++
++		if (size < 0)
++			break;
++
++		bufsize += size;
++	}
++
++	if (!bufsize) {
++		free(buffer);
++		return NULL;
++	}
++
++	ptr = (struct nlmsghdr *)buffer;
++	size_left = bufsize;
++	msgcount = 0;
++
++	for (; size_left > 0 && NLMSG_OK(ptr, size_left); msgcount++)
++		ptr = NLMSG_NEXT(ptr, size_left);
++
++	retsize = (msgcount + 1) * sizeof(struct tst_rtnl_message);
++	ret = safe_malloc(file, lineno, NULL, retsize);
++
++	if (!ret) {
++		free(buffer);
++		return NULL;
++	}
++
++	memset(ret, 0, retsize);
++	ptr = (struct nlmsghdr *)buffer;
++	size_left = bufsize;
++
++	for (i = 0; i < msgcount; i++, ptr = NLMSG_NEXT(ptr, size_left)) {
++		ret[i].header = ptr;
++		ret[i].payload = NLMSG_DATA(ptr);
++		ret[i].payload_size = NLMSG_PAYLOAD(ptr, 0);
++
++		if (ptr->nlmsg_type == NLMSG_ERROR)
++			ret[i].err = NLMSG_DATA(ptr);
++	}
++
++	return ret;
++}
++
++int tst_rtnl_add_message(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, const struct nlmsghdr *header,
++	const void *payload, size_t payload_size)
++{
++	size_t size;
++	unsigned int extra_flags = 0;
++
++	if (!tst_rtnl_grow_buffer(file, lineno, ctx, NLMSG_SPACE(payload_size)))
++		return 0;
++
++	if (!ctx->curmsg) {
++		/*
++		 * datalen may hold the size of last sent message for ACK
++		 * checking, reset it back to 0 here
++		 */
++		ctx->datalen = 0;
++		ctx->curmsg = (struct nlmsghdr *)ctx->buffer;
++	} else {
++		size = NLMSG_ALIGN(ctx->curmsg->nlmsg_len);
++
++		extra_flags = NLM_F_MULTI;
++		ctx->curmsg->nlmsg_flags |= extra_flags;
++		ctx->curmsg = NLMSG_NEXT(ctx->curmsg, size);
++		ctx->datalen = NLMSG_ALIGN(ctx->datalen);
++	}
++
++	*ctx->curmsg = *header;
++	ctx->curmsg->nlmsg_len = NLMSG_LENGTH(payload_size);
++	ctx->curmsg->nlmsg_flags |= extra_flags;
++	ctx->curmsg->nlmsg_seq = ctx->seq++;
++	ctx->curmsg->nlmsg_pid = ctx->pid;
++
++	if (payload_size)
++		memcpy(NLMSG_DATA(ctx->curmsg), payload, payload_size);
++
++	ctx->datalen += ctx->curmsg->nlmsg_len;
++	return 1;
++}
++
++int tst_rtnl_add_attr(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, unsigned short type,
++	const void *data, unsigned short len)
++{
++	size_t size;
++	struct rtattr *attr;
++
++	if (!ctx->curmsg) {
++		tst_brk_(file, lineno, TBROK,
++			"%s(): No message to add attributes to", __func__);
++		return 0;
++	}
++
++	if (!tst_rtnl_grow_buffer(file, lineno, ctx, RTA_SPACE(len)))
++		return 0;
++
++	size = NLMSG_ALIGN(ctx->curmsg->nlmsg_len);
++	attr = (struct rtattr *)(((char *)ctx->curmsg) + size);
++	attr->rta_type = type;
++	attr->rta_len = RTA_LENGTH(len);
++	memcpy(RTA_DATA(attr), data, len);
++	ctx->curmsg->nlmsg_len = size + attr->rta_len;
++	ctx->datalen = NLMSG_ALIGN(ctx->datalen) + attr->rta_len;
++	return 1;
++}
++
++int tst_rtnl_add_attr_string(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, unsigned short type,
++	const char *data)
++{
++	return tst_rtnl_add_attr(file, lineno, ctx, type, data,
++		strlen(data) + 1);
++}
++
++int tst_rtnl_add_attr_list(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx,
++	const struct tst_rtnl_attr_list *list)
++{
++	int i, ret;
++	size_t offset;
++
++	for (i = 0; list[i].len >= 0; i++) {
++		if (list[i].len > USHRT_MAX) {
++			tst_brk_(file, lineno, TBROK,
++				"%s(): Attribute value too long", __func__);
++			return -1;
++		}
++
++		offset = NLMSG_ALIGN(ctx->datalen);
++		ret = tst_rtnl_add_attr(file, lineno, ctx, list[i].type,
++			list[i].data, list[i].len);
++
++		if (!ret)
++			return -1;
++
++		if (list[i].sublist) {
++			struct rtattr *attr;
++
++			ret = tst_rtnl_add_attr_list(file, lineno, ctx,
++				list[i].sublist);
++
++			if (ret < 0)
++				return ret;
++
++			attr = (struct rtattr *)(ctx->buffer + offset);
++
++			if (ctx->datalen - offset > USHRT_MAX) {
++				tst_brk_(file, lineno, TBROK,
++					"%s(): Sublist too long", __func__);
++				return -1;
++			}
++
++			attr->rta_len = ctx->datalen - offset;
++		}
++	}
++
++	return i;
++}
++
++int tst_rtnl_check_acks(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx, struct tst_rtnl_message *res)
++{
++	struct nlmsghdr *msg = (struct nlmsghdr *)ctx->buffer;
++	int size_left = ctx->datalen;
++
++	for (; size_left > 0 && NLMSG_OK(msg, size_left);
++		msg = NLMSG_NEXT(msg, size_left)) {
++
++		if (!(msg->nlmsg_flags & NLM_F_ACK))
++			continue;
++
++		while (res->header && res->header->nlmsg_seq != msg->nlmsg_seq)
++			res++;
++
++		if (!res->err || res->header->nlmsg_seq != msg->nlmsg_seq) {
++			tst_brk_(file, lineno, TBROK,
++				"No ACK found for Netlink message %u",
++				msg->nlmsg_seq);
++			return 0;
++		}
++
++		if (res->err->error) {
++			TST_ERR = -res->err->error;
++			return 0;
++		}
++	}
++
++	return 1;
++}
++
++int tst_rtnl_send_validate(const char *file, const int lineno,
++	struct tst_rtnl_context *ctx)
++{
++	struct tst_rtnl_message *response;
++	int ret;
++
++	TST_ERR = 0;
++
++	if (tst_rtnl_send(file, lineno, ctx) <= 0)
++		return 0;
++
++	tst_rtnl_wait(ctx);
++	response = tst_rtnl_recv(file, lineno, ctx);
++
++	if (!response)
++		return 0;
++
++	ret = tst_rtnl_check_acks(file, lineno, ctx, response);
++	tst_rtnl_free_message(response);
++	return ret;
++}
 -- 
 2.31.1
 
