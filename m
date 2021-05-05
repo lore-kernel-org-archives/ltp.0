@@ -1,57 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  4 May 2021 21:02:36 +0200
-Subject: [LTP] [PATCH v2 1/5] docparse: Move CVE and git link into Info
- column
-In-Reply-To: <20210504190240.24250-1-pvorel@suse.cz>
-References: <20210504190240.24250-1-pvorel@suse.cz>
-Message-ID: <20210504190240.24250-2-pvorel@suse.cz>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Wed,  5 May 2021 10:18:42 +0200
+Subject: [LTP] [PATCH v3 3/6] Add SAFE_IOCTL() variant for library code
+In-Reply-To: <20210505081845.7024-1-mdoucha@suse.cz>
+References: <20210505081845.7024-1-mdoucha@suse.cz>
+Message-ID: <20210505081845.7024-3-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Previously it was in Tags column (1st row), which is a bit confusing.
+SAFE_IOCTL() cannot be implemented as a function due to the variadic argument
+but the macro still needs a variant which accepts arbitrary file:line position
+for error messages as arguments.
 
-Also texts in 1st column will be made clickable too, pointing to the
-section with tests with this key/tag.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- docparse/testinfo.pl | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
-index ccce67be4..7c74009d7 100755
---- a/docparse/testinfo.pl
-+++ b/docparse/testinfo.pl
-@@ -391,22 +391,19 @@ sub content_all_tests
- 			}
- 			my $k = @$tag[0];
- 			my $v = @$tag[1];
--			my $text = $k;
+Changes since v1: New patch
+
+ include/tst_safe_macros.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index d6f32ef4c..dcef58bda 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -211,13 +211,16 @@ pid_t safe_getpgid(const char *file, const int lineno, pid_t pid);
+ #define SAFE_READDIR(dirp) \
+ 	safe_readdir(__FILE__, __LINE__, NULL, (dirp))
  
- 			if (defined($$git_url{$k})) {
--				$text .= "-$v";
--
- 				$commits{$k} = () unless (defined($commits{$k}));
- 				unless (defined($commits{$k}{$v})) {
- 					chdir($$git_url{$k});
- 					$commits{$k}{$v} = `git log --pretty=format:'%s' -1 $v`;
- 					chdir(OUTDIR);
- 				}
--				$v = $commits{$k}{$v};
-+				$v .= ' ("' . $commits{$k}{$v} . '")';
- 			}
+-#define SAFE_IOCTL(fd, request, ...)                         \
++#define SAFE_IOCTL_(file, lineno, fd, request, ...)          \
+ 	({int tst_ret_ = ioctl(fd, request, ##__VA_ARGS__);  \
+ 	  tst_ret_ < 0 ?                                     \
+-	   tst_brk(TBROK | TERRNO,                           \
++	   tst_brk_((file), (lineno), TBROK | TERRNO,        \
+ 	            "ioctl(%i,%s,...) failed", fd, #request), 0 \
+ 	 : tst_ret_;})
  
--			my $a = html_a(tag_url($k, @$tag[1]), $text);
--			$content .= "\n|$a\n|$v\n";
-+			$v = html_a(tag_url($k, @$tag[1]), $v);
-+			$content .= "\n|$k\n|$v\n";
- 			$tmp2 = 1;
- 		}
- 		if (defined($tmp2)) {
++#define SAFE_IOCTL(fd, request, ...) \
++	SAFE_IOCTL_(__FILE__, __LINE__, (fd), (request), ##__VA_ARGS__)
++
+ #define SAFE_FCNTL(fd, cmd, ...)                            \
+ 	({int tst_ret_ = fcntl(fd, cmd, ##__VA_ARGS__);     \
+ 	  tst_ret_ == -1 ?                                  \
 -- 
 2.31.1
 
