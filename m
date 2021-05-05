@@ -1,61 +1,326 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 5 May 2021 15:15:16 +0200
-Subject: [LTP] [PATCH v3 4/6] Add rtnetlink helper library
-In-Reply-To: <YJKA9LQsiFDeuPUT@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 5 May 2021 15:06:02 +0200
+Subject: [LTP] [PATCH v3 6/6] Add test for CVE 2020-25705
+In-Reply-To: <20210505081845.7024-6-mdoucha@suse.cz>
 References: <20210505081845.7024-1-mdoucha@suse.cz>
- <20210505081845.7024-4-mdoucha@suse.cz> <YJKA9LQsiFDeuPUT@pevik>
-Message-ID: <3042e4a5-453a-80aa-be65-f606a7c4ed45@suse.cz>
+ <20210505081845.7024-6-mdoucha@suse.cz>
+Message-ID: <YJKYOrUxSfr2IBeD@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05. 05. 21 13:26, Petr Vorel wrote:
->> diff --git a/include/tst_rtnetlink.h b/include/tst_rtnetlink.h
->> new file mode 100644
->> index 000000000..12ec258f2
->> --- /dev/null
->> +++ b/include/tst_rtnetlink.h
->> @@ -0,0 +1,106 @@
->> +/* SPDX-License-Identifier: GPL-2.0-or-later
->> + * Copyright (c) 2021 Linux Test Project
->> + */
->> +
->> +#ifndef TST_RTNETLINK_H
->> +#define TST_RTNETLINK_H
+Hi!
+> diff --git a/testcases/cve/cve-2020-25705.c b/testcases/cve/cve-2020-25705.c
+
+Can we please name the file icmp_rate_limit01.c or something more human
+readable than the cve-2020-25705?
+
+> new file mode 100644
+> index 000000000..7d6bbafa8
+> --- /dev/null
+> +++ b/testcases/cve/cve-2020-25705.c
+> @@ -0,0 +1,262 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2020 SUSE LLC
+> + * Author: Nicolai Stange <nstange@suse.de>
+> + * LTP port: Martin Doucha <mdoucha@suse.cz>
+> + *
+> + * CVE-2020-25705
+> + *
+> + * Test of ICMP rate limiting behavior that may be abused for DNS cache
+> + * poisoning attack. Send a few batches of 100 packets to a closed UDP port
+> + * and count the ICMP errors. If the number of errors is always the same
+> + * for each batch (not randomized), the system is vulnerable. Send packets
+> + * from multiple IP addresses to bypass per-address ICMP throttling.
+> + *
+> + * Fixed in:
+> + *
+> + *  commit b38e7819cae946e2edf869e604af1e65a5d241c5
+> + *  Author: Eric Dumazet <edumazet@google.com>
+> + *  Date:   Thu Oct 15 11:42:00 2020 -0700
+> + *
+> + *  icmp: randomize the global rate limiter
+> + */
+> +
+> +#include <sys/socket.h>
+> +#include <netinet/in.h>
+> +#include <arpa/inet.h>
+> +#include <linux/if_addr.h>
+> +#include <linux/errqueue.h>
+> +
+> +#include <sched.h>
+> +#include <limits.h>
+> +#include "tst_test.h"
+> +#include "tst_netdevice.h"
+> +
+> +#define DSTADDR 0xfa444e02 /* 250.68.78.2 */
+> +#define SRCADDR_BASE 0xfa444e41 /* 250.68.78.65 */
+> +#define SRCADDR_COUNT 50
+> +#define BATCH_COUNT 8
+> +#define BUFSIZE 1024
+> +
+> +static int parentns = -1, childns = -1;
+> +static int fds[SRCADDR_COUNT];
+> +
+> +static void setup(void)
+> +{
+> +	struct sockaddr_in ipaddr = { .sin_family = AF_INET };
+> +	uint32_t addr;
+> +	int i;
+> +	int real_uid = getuid();
+> +	int real_gid = getgid();
+> +
+> +	for (i = 0; i < SRCADDR_COUNT; i++)
+> +		fds[i] = -1;
+> +
+> +	SAFE_UNSHARE(CLONE_NEWUSER);
+> +	SAFE_UNSHARE(CLONE_NEWNET);
+> +	SAFE_FILE_PRINTF("/proc/self/setgroups", "deny");
+> +	SAFE_FILE_PRINTF("/proc/self/uid_map", "0 %d 1\n", real_uid);
+> +	SAFE_FILE_PRINTF("/proc/self/gid_map", "0 %d 1\n", real_gid);
+> +
+> +	/*
+> +	 * Create network namespace to hide the destination interface from
+> +	 * the test process.
+> +	 */
+> +	parentns = SAFE_OPEN("/proc/self/ns/net", O_RDONLY);
+> +	SAFE_UNSHARE(CLONE_NEWNET);
+> +
+> +	/* Do NOT close this FD, or both interfaces will be destroyed */
+> +	childns = SAFE_OPEN("/proc/self/ns/net", O_RDONLY);
+> +
+> +	/* Configure child namespace */
+> +	CREATE_VETH_PAIR("ltp_veth1", "ltp_veth2");
+> +	addr = DSTADDR;
+> +	NETDEV_ADD_ADDRESS_INET("ltp_veth2", htonl(addr), 26,
+> +		IFA_F_NOPREFIXROUTE);
+> +	NETDEV_SET_STATE("ltp_veth2", 1);
+> +	NETDEV_ADD_ROUTE_INET("ltp_veth2", 0, 0, htonl(0xfa444e40), 26,
+> +		0);
+> +
+> +	/* Configure parent namespace */
+> +	NETDEV_CHANGE_NS_FD("ltp_veth1", parentns);
+> +	SAFE_SETNS(parentns, CLONE_NEWNET);
+> +	addr = SRCADDR_BASE; /* 250.68.78.65 */
+> +
+> +	for (i = 0; i < SRCADDR_COUNT; i++, addr++) {
+> +		NETDEV_ADD_ADDRESS_INET("ltp_veth1", htonl(addr), 26,
+> +			IFA_F_NOPREFIXROUTE);
+> +	}
+> +
+> +	NETDEV_SET_STATE("ltp_veth1", 1);
+> +	NETDEV_ADD_ROUTE_INET("ltp_veth1", 0, 0, htonl(0xfa444e00), 26, 0);
+> +	SAFE_FILE_PRINTF("/proc/sys/net/ipv4/conf/ltp_veth1/forwarding", "1");
+> +
+> +	/* Open test sockets */
+> +	for (i = 0; i < SRCADDR_COUNT; i++) {
+> +		ipaddr.sin_addr.s_addr = htonl(SRCADDR_BASE + i);
+> +		fds[i] = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
+> +		SAFE_SETSOCKOPT_INT(fds[i], IPPROTO_IP, IP_RECVERR, 1);
+> +		SAFE_BIND(fds[i], (struct sockaddr *)&ipaddr, sizeof(ipaddr));
+> +	}
+> +}
+> +
+> +static int count_icmp_errors(int fd)
+> +{
+> +	int error_count = 0;
+> +	ssize_t len;
+> +	char msgbuf[BUFSIZE], errbuf[BUFSIZE];
+> +	struct sockaddr_in addr;
+> +	struct cmsghdr *cmsg;
+> +	struct sock_extended_err exterr;
+> +	struct iovec iov = {
+> +		.iov_base = msgbuf,
+> +		.iov_len = BUFSIZE
+> +	};
+> +
+> +	while (1) {
+> +		struct msghdr msg = {
+> +			.msg_name = (struct sockaddr *)&addr,
+> +			.msg_namelen = sizeof(addr),
+> +			.msg_iov = &iov,
+> +			.msg_iovlen = 1,
+> +			.msg_flags = 0,
+> +			.msg_control = errbuf,
+> +			.msg_controllen = BUFSIZE
+> +		};
+> +
+> +		memset(errbuf, 0, BUFSIZE);
+> +		errno = 0;
+> +		len = recvmsg(fd, &msg, MSG_ERRQUEUE);
+> +
+> +		if (len == -1) {
+> +			if (errno == EWOULDBLOCK || errno == EAGAIN)
+> +				break;
+> +
+> +			tst_brk(TBROK | TERRNO, "recvmsg() failed");
+> +		}
+> +
+> +		if (len < 0) {
+> +			tst_brk(TBROK | TERRNO,
+> +				"Invalid recvmsg() return value %zd", len);
+> +		}
+> +
+> +		for (cmsg = CMSG_FIRSTHDR(&msg); cmsg;
+> +			cmsg = CMSG_NXTHDR(&msg, cmsg)) {
+> +			if (cmsg->cmsg_level != SOL_IP)
+> +				continue;
+> +
+> +			if (cmsg->cmsg_type != IP_RECVERR)
+> +				continue;
+> +
+> +			memcpy(&exterr, CMSG_DATA(cmsg), sizeof(exterr));
+> +
+> +			if (exterr.ee_origin != SO_EE_ORIGIN_ICMP)
+> +				tst_brk(TBROK, "Unexpected non-ICMP error");
+> +
+> +			if (exterr.ee_errno != ECONNREFUSED) {
+> +				TST_ERR = exterr.ee_errno;
+> +				tst_brk(TBROK | TTERRNO,
+> +					"Unexpected ICMP error");
+> +			}
+> +
+> +			error_count++;
+> +		}
+> +	}
+> +
+> +	return error_count;
+> +}
+> +
+> +static int packet_batch(const struct sockaddr *addr, socklen_t addrsize)
+> +{
+> +	int i, j, error_count = 0;
+> +	char data = 0;
+> +
+> +	for (i = 0; i < SRCADDR_COUNT; i++) {
+> +		for (j = 0; j < 2; j++) {
+> +			error_count += count_icmp_errors(fds[i]);
+> +			TEST(sendto(fds[i], &data, sizeof(data), 0, addr,
+> +				addrsize));
+> +
+> +			if (TST_RET == -1) {
+> +				if (TST_ERR == ECONNREFUSED) {
+> +					j--; /* flush ICMP errors and retry */
+> +					continue;
+> +				}
+> +
+> +				tst_brk(TBROK | TTERRNO, "sento() failed");
+> +			}
+> +
+> +			if (TST_RET < 0) {
+> +				tst_brk(TBROK | TTERRNO,
+> +					"Invalid sento() return value %ld",
+> +					TST_RET);
+> +			}
+> +		}
+> +	}
+> +
+> +	/* Wait and collect pending ICMP errors */
+> +	sleep(2);
+
+Can we do something better than sleep() here?
+
+Maybe just loop over the loop that reads errors with some short sleep
+and exit if we haven't got any new errors for a while?
+
+Something as:
+
+	unsigned int timeout_ms = 2000;
+	unsigned int no_changes_ms = 0;
+
+	while (timeout_ms) {
+		int last_err_cnt = error_count;
+
+		for (i = 0; i < SRCADDR_COUNT; i++)
+			error_count += count_icmp_errors(fds[i]);
+
+		if (last_err_cnt == error_count)
+			no_changes_ms++;
+		else
+			no_changes_ms = 0;
+
+
+		if (no_changes_ms > 500)
+			break;
+
+		usleep(1000);
+		timeout_ms--;
+	}
+
+
+> +	for (i = 0; i < SRCADDR_COUNT; i++)
+> +		error_count += count_icmp_errors(fds[i]);
+> +
+> +	return error_count;
+> +}
+> +
+> +static void run(void)
+> +{
+> +	int i, errors_baseline, errors;
+> +	struct sockaddr_in addr = {
+> +		.sin_family = AF_INET,
+> +		.sin_port = TST_GET_UNUSED_PORT(AF_INET, SOCK_DGRAM),
+> +		.sin_addr = { htonl(DSTADDR) }
+> +	};
+> +
+> +	errors_baseline = packet_batch((struct sockaddr *)&addr, sizeof(addr));
+> +	errors = errors_baseline;
+> +	tst_res(TINFO, "Batch 0: Got %d ICMP errors", errors);
+> +
+> +	for (i = 1; i < BATCH_COUNT && errors == errors_baseline; i++) {
+> +		errors = packet_batch((struct sockaddr *)&addr, sizeof(addr));
+> +		tst_res(TINFO, "Batch %d: Got %d ICMP errors", i, errors);
+> +	}
+> +
+> +	if (errors == errors_baseline) {
+> +		tst_res(TFAIL,
+> +			"ICMP rate limit not randomized, system is vulnerable");
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS, "ICMP rate limit is randomized");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < SRCADDR_COUNT; i++)
+> +		if (fds[i] >= 0)
+> +			SAFE_CLOSE(fds[i]);
+> +
+> +	if (childns >= 0)
+> +		SAFE_CLOSE(childns);
+> +
+> +	if (parentns >= 0)
+> +		SAFE_CLOSE(parentns);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_kconfigs = (const char *[]) {
+> +		"CONFIG_USER_NS=y",
+> +		"CONFIG_NET_NS=y",
+> +		NULL
+> +	},
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "b38e7819cae9"},
+> +		{"CVE", "2020-25705"},
+> +		{}
+> +	}
+> +};
+> -- 
+> 2.31.1
 > 
-> I guess this header will always be internal, right?  (only tst_netdevice.h is
-> going to be used in tests) Otherwise it might need to include headers
-> (<linux/netlink.h>, and also <unistd.h> or <sys/types.h> for ssize_t which are
-> now only in C library sources).
-
-No, I expect that someone will use it for rtnetlink tests sooner or
-later. But I don't think those extra #includes matter all that much. If
-they get #included in the test itself in the right order, it'll work
-just fine.
-
-> ...
->> +int tst_rtnl_add_message(const char *file, const int lineno,
->> +	struct tst_rtnl_context *ctx, const struct nlmsghdr *header,
->> +	const void *payload, size_t payload_size)
->> +{
->> +	size_t size;
->> +	unsigned int extra_flags = 0;
->> +
->> +	if (!tst_rtnl_grow_buffer(file, lineno, ctx, NLMSG_SPACE(payload_size)))
-> Shouldn't there be an error message?
-> Or maybe at tst_rtnl_grow_buffer() on if (!buf)
-
-As Cyril already pointed out, the only way this call can fail is when
-safe_realloc() fails and prints a TWARN because we're in cleanup().
-There's no need to print a second error message.
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Cyril Hrubis
+chrubis@suse.cz
