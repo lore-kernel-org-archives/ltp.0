@@ -1,33 +1,28 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Thu, 6 May 2021 15:12:16 +0800
-Subject: [LTP] [PATCH 1/3 v2] syscalls/chown: Rewrite chown/chown02.c
- with the new api
-In-Reply-To: <YJAFldREJ1aQBDdh@yuki>
-References: <20210430094513.162499-1-xieziyao@huawei.com>
- <20210430094513.162499-2-xieziyao@huawei.com> <YJAFldREJ1aQBDdh@yuki>
-Message-ID: <31bca9c3-acd8-7d7d-7c41-152571e8f605@huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 6 May 2021 09:19:29 +0200
+Subject: [LTP] LTP Release
+Message-ID: <YJOYgZNL7/qp5YCN@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+It's about time for another LTP release. So as usuall let's start with
+the list of patches that should go in before the release.
 
-Thanks for the modification, Cyril. BTW, the macro definition of 
-FILE_MODE is useless and I suggest deleting it.
+First of all I will have to fix the docparser JSON string escape patch,
+I will do so ASAP.
 
-Please see: 
-https://patchwork.ozlabs.org/project/ltp/patch/20210506071118.140135-1-xieziyao@huawei.com/
+Also I would like to get the CGroup API rewrite in, since that fixes
+real problems and is, as far as I can tell, ready to go.
 
-Kind regards,
-Ziyao
+The rtnetlink patchset from Martin is nearly ready as well. I would
+apply it as well if we manage to get to final version soon enough.
 
-On 2021/5/3 22:15, Cyril Hrubis wrote:
-> Hi!
-> Pushed with minor changes, thanks.
-> 
-> * I've updated the documentation comment a bit
-> * Moved the chmod() to the run() function so that the test
->    changes back the modified permissions with -i parameter
-> 
+That is all for me, if there is anything else please reply ASAP.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
