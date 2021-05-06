@@ -1,7 +1,9 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Thu,  6 May 2021 13:14:46 +0200
-Subject: [LTP] [PATCH 1/2] shell: Extend timeout tests
-Message-ID: <20210506111447.211104-1-lkml@jv-coder.de>
+Date: Thu,  6 May 2021 13:14:47 +0200
+Subject: [LTP] [PATCH 2/2] shell: Implement timeout handling in c
+In-Reply-To: <20210506111447.211104-1-lkml@jv-coder.de>
+References: <20210506111447.211104-1-lkml@jv-coder.de>
+Message-ID: <20210506111447.211104-2-lkml@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,250 +12,255 @@ To: ltp@lists.linux.it
 
 From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 
-- Add test, that verifies, that the timeout is working as expected.
-- Add test case to check if there are processes left,
-  after a test finished without running into a timeout.
-- Add execution of timeout03.sh and verification of return code.
+The shell implementation of the timeout handling failed to terminate the
+sleep process, because the command "sleep $sec && _tst_kill_test &" spawns
+two processes: A shell, that is used to execute the sleep and
+after sleep terminates it executes _tst_kill_test. The pid stored in $! is the
+pid of the shell process.
+When the test finished, the timeout process is supposed to be killed, but
+only the shell process is killed, not the sleep. If the output of the test
+is piped somewhere else, the pipe stays open, until the sleep finished,
+because it still has stdout open.
+Additionally, if a lot of short tests with high timeouts are executed,
+a lot of sleep processes will linger around.
+
+The c implementation fixes these issues. It spawns only a single process
+for handling the timeout and works otherwise the same:
+It sends SIGINT to the process group after the timeout and if
+the process is still there after 10 seconds, it sends SIGKILL.
+The only changes are the messages printed by the c implementation:
+1. The message format is a bit different (It prints the file and line as prefix)
+2. TBROK messages are converted to TWARN, because TBROK is not allowed
+    to be used in tst_res.
+(See changes in timeout03.sh)
 
 Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
 ---
- lib/newlib_tests/shell/test_timeout.sh | 178 ++++++++++++++++++++++---
- lib/newlib_tests/shell/timeout04.sh    |  22 +++
- 2 files changed, 179 insertions(+), 21 deletions(-)
- create mode 100755 lib/newlib_tests/shell/timeout04.sh
+ lib/newlib_tests/shell/timeout03.sh |  34 ++++-----
+ testcases/lib/.gitignore            |   1 +
+ testcases/lib/Makefile              |   2 +-
+ testcases/lib/tst_test.sh           |  22 +-----
+ testcases/lib/tst_timeout_kill.c    | 105 ++++++++++++++++++++++++++++
+ 5 files changed, 125 insertions(+), 39 deletions(-)
+ create mode 100644 testcases/lib/tst_timeout_kill.c
 
-diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
-index 26477d6f2..06f3acf88 100755
---- a/lib/newlib_tests/shell/test_timeout.sh
-+++ b/lib/newlib_tests/shell/test_timeout.sh
-@@ -1,42 +1,178 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
+diff --git a/lib/newlib_tests/shell/timeout03.sh b/lib/newlib_tests/shell/timeout03.sh
+index 30aa0a149..20733ad27 100755
+--- a/lib/newlib_tests/shell/timeout03.sh
++++ b/lib/newlib_tests/shell/timeout03.sh
+@@ -4,23 +4,23 @@
  
- PATH="$(dirname $0):$(dirname $0)/../../../testcases/lib/:$PATH"
+ # testing shell timeout handling in _tst_kill_test()
+ # expected output:
+-# timeout03 1 TINFO: timeout per run is 0h 0m 1s
+-# timeout03 1 TINFO: testing killing test after TST_TIMEOUT
+-# timeout03 1 TBROK: Test timeouted, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+-# timeout03 1 TBROK: test interrupted or timed out
+-# timeout03 1 TPASS: test run cleanup after timeout
+-# timeout03 1 TINFO: Test is still running, waiting 10s
+-# timeout03 1 TINFO: Test is still running, waiting 9s
+-# timeout03 1 TINFO: Test is still running, waiting 8s
+-# timeout03 1 TINFO: Test is still running, waiting 7s
+-# timeout03 1 TINFO: Test is still running, waiting 6s
+-# timeout03 1 TINFO: Test is still running, waiting 5s
+-# timeout03 1 TINFO: Test is still running, waiting 4s
+-# timeout03 1 TINFO: Test is still running, waiting 3s
+-# timeout03 1 TINFO: Test is still running, waiting 2s
+-# timeout03 1 TINFO: Test is still running, waiting 1s
+-# timeout03 1 TBROK: Test still running, sending SIGKILL
+-# Killed
++timeout03 1 TINFO: timeout per run is 0h 0m 1s
++timeout03 1 TINFO: testing killing test after TST_TIMEOUT
++tst_timeout_kill.c:42: TWARN: Test timed out, sending SIGINT!If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
++timeout03 1 TBROK: test interrupted or timed out
++timeout03 1 TPASS: test run cleanup after timeout
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 10s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 9s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 8s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 7s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 6s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 5s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 4s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 3s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 2s
++tst_timeout_kill.c:52: TWARN: Test is still running, waiting 1s
++tst_timeout_kill.c:56: TWARN: Test still running, sending SIGKILL
++Killed
  
-+# Test cases are separated by newlines.
-+# Every test has the following fields in this order:
-+# file
-+# timeout_mul
-+# use_cat
-+# max_runtime
-+# expected_exit_code
-+# expected passes
-+# expected failed
-+# expected broken
-+# description
-+# Whole lines can be commented out using "#"
- DATA="
--timeout01.sh||0
--timeout02.sh||0
--timeout02.sh|foo|2
--timeout02.sh|2|0
--timeout01.sh|2|0
--timeout02.sh|1.1|0
--timeout02.sh|-10|2
--timeout02.sh|-0.1|0
--timeout02.sh|-1.1|2
--timeout02.sh|-10.1|2
-+timeout01.sh|     |0|  |0
-+timeout02.sh|     |0|  |0
-+timeout02.sh|  foo|0|  |2
-+timeout02.sh|    2|0|  |0
-+timeout01.sh|    2|0|  |0
-+timeout02.sh|  1.1|0|  |0
-+timeout02.sh|  -10|0|  |2
-+timeout02.sh| -0.1|0|  |0
-+timeout02.sh| -1.1|0|  |2
-+timeout02.sh|-10.1|0|  |2
-+timeout03.sh|     |0|12|137| | | |Test kill if test does not terminate by SIGINT
-+timeout04.sh|     |0|  |  2|0|0|1|Verify that timeout is enforced
-+timeout02.sh|    2|1| 2|   |1|0|0|Test termination of timeout process
- "
+ TST_TESTFUNC=do_test
+ TST_CLEANUP=cleanup
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index bc299b6ee..33f40b003 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -12,3 +12,4 @@
+ /tst_rod
+ /tst_sleep
+ /tst_supported_fs
++/tst_timeout_kill
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index f77da0d56..6ae987f8c 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -29,6 +29,6 @@ INSTALL_TARGETS		:= *.sh
+ MAKE_TARGETS		:= tst_sleep tst_random tst_checkpoint tst_rod tst_kvcmp\
+ 			   tst_device tst_net_iface_prefix tst_net_ip_prefix tst_net_vars\
+ 			   tst_getconf tst_supported_fs tst_check_drivers tst_get_unused_port\
+-			   tst_get_median
++			   tst_get_median tst_timeout_kill
  
-+# Executes a test
-+# Parameter:
-+#  - test:    The test to execute
-+#  - timeout: The timeout multiplicator (optional)
-+#  - use_cat: Pipe the output of the command through cat (optional)
-+#             If this is used, the exit code is NOT returned!
-+#
-+# The function returns the following global variables:
-+# - test_exit:     The exit code of the test
-+# - test_duration: The duration of the test in seconds
-+# - test_output:   The full output of the test
-+# - test_passed:   The number of passed tests parsed from the summary
-+# - test_failed:   The number of failed tests parsed from the summary
-+# - test_broken:   The number of broken tests parsed from the summary
-+run_test()
-+{
-+	local test=$1
-+	local timeout=$2
-+	local use_cat=$3
-+	local tmpfile start end;
-+
-+	tmpfile=$(mktemp -t ltp_timeout_XXXXXXXX)
-+	start=$(date +%s)
-+	# We have to use set monitor mode (set -m) here.
-+	# In most shells in most cases this creates a
-+	# new process group for the next command.
-+	# A process group is required for the timeout functionality,
-+	# because it sends signals to the whole process group.
-+	set -m
-+	# The use_cat is for testing if any programm using stdout
-+	# is still running, after the test finished.
-+	# cat will wait for its stdin to be closed.
-+	#
-+	# In the pure shell implementation of the timeout handling,
-+	# the sleep process was never killed, when a test finished
-+	# before the timeout.
-+	if [ "$use_cat" = "1" ]; then
-+		LTP_TIMEOUT_MUL=$timeout $test 2>&1 | cat >$tmpfile
-+	else
-+		LTP_TIMEOUT_MUL=$timeout $test 1>$tmpfile 2>&1
-+	fi
-+	test_exit=$?
-+	set +m
-+	end=$(date +%s)
-+
-+	test_duration=$((end - start))
-+	test_output=$(cat $tmpfile)
-+	rm $tmpfile
-+
-+	eval $(echo "$test_output" | awk '
-+		BEGIN {sum=0} 
-+		$1 == "Summary:" {
-+			sum=1;
-+		}
-+		sum && ( \
-+			   $1 == "passed" \
-+			|| $1 == "failed" \
-+			|| $1 == "broken") {
-+			print "test_" $1 "=" $2
-+		}
-+	')
-+}
-+
- echo "Testing timeout in shell API"
- echo
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 951518785..d4904fa61 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -443,25 +443,6 @@ _tst_multiply_timeout()
+ 	return 0
+ }
  
- failed=0
--for i in $DATA; do
--	file=$(echo $i | cut -d'|' -f1)
--	timeout=$(echo $i | cut -d'|' -f2)
--	exp_exit=$(echo $i | cut -d'|' -f3)
+-_tst_kill_test()
+-{
+-	local i=10
 -
--	echo "=== $file (LTP_TIMEOUT_MUL='$timeout') ==="
--	LTP_TIMEOUT_MUL=$timeout $file
--	ret=$?
--	if [ $ret -ne $exp_exit ]; then
--		echo "FAILED (exit code: $ret, expected $exp_exit)"
--		failed=$((failed+1))
-+test_nr=0
-+
-+old_ifs="$IFS"
-+IFS=$(printf "\n\b")
-+
-+# Remove comments and empty lines
-+CLEANED_DATA=$(echo "$DATA" | sed '/^\s*#/d;/^\s*$/d')
-+test_max=$(echo "$CLEANED_DATA" | wc -l)
-+for d in $CLEANED_DATA; do
-+	IFS="$old_ifs"
-+
-+	file=$(echo $d | cut -d'|' -f1 | xargs)
-+	timeout=$(echo $d | cut -d'|' -f2 | xargs)
-+	use_cat=$(echo $d | cut -d'|' -f3 | xargs)
-+	max_runtime=$(echo $d | cut -d'|' -f4 | xargs)
-+	max_runtime=${max_runtime:--1}
-+	exp_exit=$(echo $d | cut -d'|' -f5 | xargs)
-+	exp_exit=${exp_exit:--1}
-+	exp_passed=$(echo $d | cut -d'|' -f6 | xargs)
-+	exp_passed=${exp_passed:--1}
-+	exp_failed=$(echo $d | cut -d'|' -f7 | xargs)
-+	exp_failed=${exp_failed:--1}
-+	exp_broken=$(echo $d | cut -d'|' -f8 | xargs)
-+	exp_broken=${exp_broken:--1}
-+	description=$(echo $d | cut -d'|' -f9)
-+
-+	test_nr=$(($test_nr + 1))
-+
-+	cur_fails=0
-+
-+	if [ -z "$description" ]; then
-+		description="$file (LTP_TIMEOUT_MUL='$timeout')"
-+	fi
-+
-+	echo "=== $test_nr/$test_max $description ==="
-+	run_test "$file" "$timeout" "$use_cat"
-+
-+	if [ $max_runtime -ne -1 ] && [ $test_duration -gt $max_runtime ]; then
-+		echo "FAILED (runtime: $test_duration, expected less than $max_runtime)"
-+		cur_fails=$((cur_fails + 1))
-+	fi
-+
-+	if [ $exp_passed -ne -1 ] && [ $exp_passed -ne $test_passed ]; then
-+		echo "FAILED (passes: $test_passed, expected $exp_passed)"
-+		cur_fails=$((cur_fails + 1))
-+	fi
-+
-+	if [ $exp_failed -ne -1 ] && [ $exp_failed -ne $test_failed ]; then
-+		echo "FAILED (failed: $test_failed, expected $exp_failed)"
-+		cur_fails=$((cur_fails + 1))
-+	fi
-+
-+	if [ $exp_broken -ne -1 ] && [ $exp_broken -ne $test_broken ]; then
-+		echo "FAILED (broken: $test_broken, expected $exp_broken)"
-+		cur_fails=$((cur_fails + 1))
-+	fi
-+
-+	if [ $exp_exit -ne -1 ] && [ $test_exit -ne $exp_exit ]; then
-+		echo "FAILED (exit code: $test_exit, expected $exp_exit)"
-+		cur_fails=$((cur_fails + 1))
-+	fi
-+
-+	if [ $cur_fails -gt 0 ]; then
-+		failed=$((failed + 1))
-+		echo "--------"
-+		echo "$test_output"
-+		echo "--------"
- 	else
- 		echo "PASSED"
- 	fi
- 	echo
- done
-+IFS="$old_ifs"
+-	tst_res TBROK "Test timeouted, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+-	kill -INT -$pid
+-	tst_sleep 100ms
+-
+-	while kill -0 $pid 2>&1 > /dev/null && [ $i -gt 0 ]; do
+-		tst_res TINFO "Test is still running, waiting ${i}s"
+-		sleep 1
+-		i=$((i-1))
+-	done
+-
+-	if kill -0 $pid 2>&1 > /dev/null; then
+-		tst_res TBROK "Test still running, sending SIGKILL"
+-		kill -KILL -$pid
+-	fi
+-}
  
- echo "Failed tests: $failed"
- exit $failed
-diff --git a/lib/newlib_tests/shell/timeout04.sh b/lib/newlib_tests/shell/timeout04.sh
-new file mode 100755
-index 000000000..0a6ba053c
+ _tst_setup_timer()
+ {
+@@ -486,8 +467,7 @@ _tst_setup_timer()
+ 	tst_res TINFO "timeout per run is ${h}h ${m}m ${s}s"
+ 
+ 	_tst_cleanup_timer
+-	sleep $sec && _tst_kill_test &
+-
++	tst_timeout_kill $sec $pid &
+ 	_tst_setup_timer_pid=$!
+ }
+ 
+diff --git a/testcases/lib/tst_timeout_kill.c b/testcases/lib/tst_timeout_kill.c
+new file mode 100644
+index 000000000..acaed2473
 --- /dev/null
-+++ b/lib/newlib_tests/shell/timeout04.sh
-@@ -0,0 +1,22 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
++++ b/testcases/lib/tst_timeout_kill.c
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2021 Joerg Vehlow <joerg.vehlow@aox-tech.de>
++ */
 +
-+TST_TESTFUNC=do_test
++#include <stdio.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++#include <signal.h>
++#include <errno.h>
 +
-+TST_TIMEOUT=1
-+. tst_test.sh
++#define TST_NO_DEFAULT_MAIN
 +
-+do_test()
++#include "tst_test.h"
++
++static void print_help(void)
 +{
-+	tst_res TINFO "Start"
-+    sleep 5
-+    tst_res TFAIL "End"
++	printf("Usage: tst_timeout_kill interval pid\n\n");
++	printf("       Terminates process group pid after interval seconds\n");
 +}
 +
-+do_cleanup()
-+{
-+    tst_res TINFO "cleanup"
++static int kill_safe(__pid_t pid, int signal) {
++	int rc;
++
++	rc = kill(pid, signal);
++	if (rc == -1) {
++		/* The process terminated already */
++		if (errno == ESRCH)
++			return ESRCH;
++		tst_brk(TBROK, "Unable to send signals to process '%d'\n", pid);
++	}
++	return 0;
 +}
 +
-+tst_run
++static int do_timeout(int interval, __pid_t pid)
++{
++	int i;
++
++	sleep(interval);
++
++	tst_res(TWARN, "Test timed out, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1");
++
++	if (kill_safe(-pid, SIGINT) == ESRCH)
++		return 0;
++
++	usleep(100000);
++
++	for (i = 0; i < 10; ++i) {
++		if (kill_safe(pid, 0) == ESRCH)
++			return 0;
++		tst_res(TWARN, "Test is still running, waiting %ds", 10 - i);
++		sleep(1);
++	}
++
++	tst_res(TWARN, "Test still running, sending SIGKILL");
++	kill(-pid, SIGKILL);
++	return 0;
++}
++
++int main(int argc, char *argv[])
++{
++	int opt;
++	unsigned long interval, pid;
++	char *end;
++
++	while ((opt = getopt(argc, argv, ":h")) != -1) {
++		switch (opt) {
++		case 'h':
++			print_help();
++			return 0;
++		default:
++			print_help();
++			return 1;
++		}
++	}
++
++	if (optind >= argc - 1) {
++		fprintf(stderr, "ERROR: Expected interval and pid argument\n\n");
++		print_help();
++		return 1;
++	}
++
++	interval = strtoul(argv[optind], &end, 10);
++	if (end != argv[optind] + strlen(argv[optind])) {
++		fprintf(stderr, "ERROR: Invalid interval '%s'\n\n", argv[optind]);
++		print_help();
++		return 1;
++	}
++	optind++;
++
++	pid = strtol(argv[optind], &end, 10);
++	if (end != argv[optind] + strlen(argv[optind])) {
++		fprintf(stderr, "ERROR: Invalid pid '%s'\n\n", argv[optind]);
++		print_help();
++		return 1;
++	}
++
++	if (kill_safe(pid, 0) == ESRCH) {
++		fprintf(stderr, "ERROR: Process with pid '%ld' does not exist\n", pid);
++		return 1;
++	}
++
++	return do_timeout(interval, pid);
++}
 -- 
 2.25.1
 
