@@ -1,24 +1,74 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 6 May 2021 15:02:24 +0200
-Subject: [LTP] LTP Release
-In-Reply-To: <YJOYgZNL7/qp5YCN@yuki>
-References: <YJOYgZNL7/qp5YCN@yuki>
-Message-ID: <YJPo4L0QnXHU7xks@pevik>
+From: zhaogongyi <zhaogongyi@huawei.com>
+Date: Thu, 6 May 2021 13:04:12 +0000
+Subject: [LTP] [COMMITTED] [PATCH] syscalls: modify_ldt02: Fix failure
+Message-ID: <d133afe6b6be43b089a68e0a72b15960@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Cyril, Petr,
 
-also solving Shell API timeout sleep orphan processes would be good [1]
-There is already C patch [2] + Li suggested to fix the shell implementation
-using trap in subshell [3].
+I am sorry, It's my fault. It seems that restore to origin code is more better since it might create a core file.
 
-Kind regards,
-Petr
+Best Regards,
+Gongyi
 
-[1] https://lists.linux.it/pipermail/ltp/2021-May/022350.html
-[2] https://patchwork.ozlabs.org/project/ltp/list/?series=242439
-[3] https://lists.linux.it/pipermail/ltp/2021-May/022453.html
+
+> 
+> The test was wrong to begin with, if we want to get SEGFAULT from the
+> waitpid() we cannot setup a handler that catches it and exits with 0.
+> 
+> Fixes: f5e8e6b11ce8 ("syscalls/modify_ldt: Replace TINFO with TPASS or
+> TFAIL")
+> Reported-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  .../kernel/syscalls/modify_ldt/modify_ldt02.c     | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+> b/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+> index e34d3d54d..f911aa5fd 100644
+> --- a/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+> +++ b/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+> @@ -120,6 +120,7 @@ int main(int ac, char **av)
+> 
+>  		tst_old_flush();
+>  		if ((pid = FORK_OR_VFORK()) == 0) {
+> +			signal(SIGSEGV, SIG_DFL);
+>  			val = read_segment(0);
+>  			exit(1);
+>  		}
+> @@ -168,24 +169,10 @@ int read_segment(unsigned int index)
+>  	return res;
+>  }
+> 
+> -void sigsegv_handler(int sig)
+> -{
+> -	tst_resm(TINFO, "received signal: %d", sig);
+> -	exit(0);
+> -}
+> -
+>  void setup(void)
+>  {
+> -	struct sigaction act;
+> -
+> -	memset(&act, 0, sizeof(act));
+> -	sigemptyset(&act.sa_mask);
+> -
+>  	tst_sig(FORK, DEF_HANDLER, cleanup);
+> 
+> -	act.sa_handler = sigsegv_handler;
+> -	(void)sigaction(SIGSEGV, &act, NULL);
+> -
+>  	TEST_PAUSE;
+>  }
+> 
+> --
+> 2.26.3
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
