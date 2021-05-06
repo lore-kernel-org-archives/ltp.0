@@ -1,9 +1,14 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 May 2021 15:35:48 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls: modify_ldt02: Fix failure
-In-Reply-To: <d133afe6b6be43b089a68e0a72b15960@huawei.com>
-References: <d133afe6b6be43b089a68e0a72b15960@huawei.com>
-Message-ID: <YJPwtLIVaudLO6vy@yuki>
+Date: Thu, 6 May 2021 15:58:56 +0200
+Subject: [LTP] [PATCH 3/3] syscalls/io_submit: Convert libaio wrapper
+ function to kernel syscall
+In-Reply-To: <YJPnpfByh/C5kXbr@pevik>
+References: <20210429115021.24128-1-xieziyao@huawei.com>
+ <20210429115021.24128-4-xieziyao@huawei.com>
+ <YJE5bkB8+PFBMWwD@yuki>
+ <f47c4ec5-2d4a-76c8-5ef4-f8cfb12961e9@huawei.com>
+ <YJPnpfByh/C5kXbr@pevik>
+Message-ID: <YJP2IDZIEOltnTiq@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,17 +16,22 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I am sorry, It's my fault. It seems that restore to origin code is
-> more better since it might create a core file.
+> > If we should test _both_ syscall() and the library, I would prefer to split
+> > libaio and native aio into two testcases in this testsuite, since <libaio.h>
+> > conflicts with <linux/aio_abi.h> during actual modification.
+> 
+> > Excuse me, is there any other good way to solve this problem?
+> NOTE: if most of the test the same, with little help of #ifdef and maybe 1-2
+> macros we can have single source for both variants (compiling 2 binaries).
+> See setdomainname and sethostname tests (setdomainname.h).
 
-No this is not solution either, since the original code was broken to
-begin with.
+Not sure that it's that easy here, since we cannot include libaio.h and
+aio_abi.h in a single file without getting conflicts, they define
+structures with the same name with possibly different layout, which
+makes this very tricky.
 
-We do have tst_no_corefile() in the test library, which should be called
-by tests that cause SEGFAULT on purpose in order to avoid dumping a
-core, but it looks like it's available only for new library tests. We
-would have to convert the test to new library first if we wanted to
-that.
+I guess that having separate tests for different interface would
+probably be easiest solution in this case.
 
 -- 
 Cyril Hrubis
