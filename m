@@ -1,32 +1,33 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Thu, 6 May 2021 15:11:18 +0800
-Subject: [LTP] [PATCH] syscalls/chown: Delete unused macro definition
-Message-ID: <20210506071118.140135-1-xieziyao@huawei.com>
+Date: Thu, 6 May 2021 15:12:16 +0800
+Subject: [LTP] [PATCH 1/3 v2] syscalls/chown: Rewrite chown/chown02.c
+ with the new api
+In-Reply-To: <YJAFldREJ1aQBDdh@yuki>
+References: <20210430094513.162499-1-xieziyao@huawei.com>
+ <20210430094513.162499-2-xieziyao@huawei.com> <YJAFldREJ1aQBDdh@yuki>
+Message-ID: <31bca9c3-acd8-7d7d-7c41-152571e8f605@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Delete unused macro definition for chown02.
+Hi,
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/chown/chown02.c | 1 -
- 1 file changed, 1 deletion(-)
+Thanks for the modification, Cyril. BTW, the macro definition of 
+FILE_MODE is useless and I suggest deleting it.
 
-diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
-index cd2c80dbd..a92a1fd2d 100644
---- a/testcases/kernel/syscalls/chown/chown02.c
-+++ b/testcases/kernel/syscalls/chown/chown02.c
-@@ -21,7 +21,6 @@
- #include "compat_tst_16.h"
- #include "tst_safe_macros.h"
+Please see: 
+https://patchwork.ozlabs.org/project/ltp/patch/20210506071118.140135-1-xieziyao@huawei.com/
 
--#define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
- #define NEW_PERMS2	(S_IFREG|S_IRWXU|S_ISGID)
- #define EXP_PERMS	(S_IFREG|S_IRWXU|S_IRWXG)
---
-2.17.1
+Kind regards,
+Ziyao
 
+On 2021/5/3 22:15, Cyril Hrubis wrote:
+> Hi!
+> Pushed with minor changes, thanks.
+> 
+> * I've updated the documentation comment a bit
+> * Moved the chmod() to the run() function so that the test
+>    changes back the modified permissions with -i parameter
+> 
