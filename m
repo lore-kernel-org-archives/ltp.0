@@ -1,40 +1,37 @@
 From: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 6 May 2021 17:27:28 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/inotify06: Raise inotify instance
- limit in /proc
-In-Reply-To: <20210505164757.GC9615@quack2.suse.cz>
-References: <20210505153847.6106-1-mdoucha@suse.cz>
- <20210505153847.6106-2-mdoucha@suse.cz>
- <20210505164757.GC9615@quack2.suse.cz>
-Message-ID: <32425668-9713-c216-38b1-46b57fce2197@suse.cz>
+Date: Thu, 6 May 2021 17:35:01 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <YJOYgZNL7/qp5YCN@yuki>
+References: <YJOYgZNL7/qp5YCN@yuki>
+Message-ID: <5b2dca3e-7b3e-678e-1726-9849c76d766a@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 05. 05. 21 18:47, Jan Kara wrote:
-> On Wed 05-05-21 17:38:47, Martin Doucha wrote:
->> inotify_init() sometimes fails with EMFILE because there are too many
->> partially closed instances waiting for garbage collection. Bump the limit
->> in /proc/sys/fs/inotify/max_user_instances for the duration of the test.
->>
->> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
->> ---
->>
->> I thought about only reading the procfile and calling yield() after every
->> proc_limit/2 iterations to wait for garbage collection but I'm afraid that
->> it might reduce the likelihood of triggering the bug. Since I currently have
->> no system where I could reproduce the race, I've decided to play it safe and
->> bump the /proc limit.
+On 06. 05. 21 9:19, Cyril Hrubis wrote:
+> Hi!
+> It's about time for another LTP release. So as usuall let's start with
+> the list of patches that should go in before the release.
 > 
-> So waiting would be fine as well. One process simply creates & deletes
-> files in a loop until the other performs TEARDOWNS teardowns. It doesn't
-> really matter how fast teardowns happen for the race to trigger. But I have
-> no problem with this solution either.
+> First of all I will have to fix the docparser JSON string escape patch,
+> I will do so ASAP.
+> 
+> Also I would like to get the CGroup API rewrite in, since that fixes
+> real problems and is, as far as I can tell, ready to go.
+> 
+> The rtnetlink patchset from Martin is nearly ready as well. I would
+> apply it as well if we manage to get to final version soon enough.
+> 
+> That is all for me, if there is anything else please reply ASAP.
 
-Let's go with the patch as is then. Like I said, when I don't have a
-system where the issue is reproducible, I prefer to play it safe.
+Well, I don't really mind if the rtnetlink patches get delayed until
+after the release. But just a reminder that I'm planning to resubmit
+patch 6 only after the library changes get merged.
+
+On the other hand, I'd like to get the inotify06 fixes into the next
+release.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
