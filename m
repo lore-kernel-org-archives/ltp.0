@@ -1,33 +1,32 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 6 May 2021 08:56:52 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/inotify06: Terminate child process
- on test error
-In-Reply-To: <20210505164857.GD9615@quack2.suse.cz>
-References: <20210505153847.6106-1-mdoucha@suse.cz>
- <20210505164857.GD9615@quack2.suse.cz>
-Message-ID: <YJOTNL5MXvibBbBN@pevik>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Thu, 6 May 2021 15:11:18 +0800
+Subject: [LTP] [PATCH] syscalls/chown: Delete unused macro definition
+Message-ID: <20210506071118.140135-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin, Jan,
+Delete unused macro definition for chown02.
 
-> On Wed 05-05-21 17:38:46, Martin Doucha wrote:
-> > If the main test process exits early, the child would keep running and
-> > interfere with tmpdir cleanup.
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+ testcases/kernel/syscalls/chown/chown02.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> > ---
-> >  testcases/kernel/syscalls/inotify/inotify06.c | 14 ++++++++++++--
-> >  1 file changed, 12 insertions(+), 2 deletions(-)
+diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
+index cd2c80dbd..a92a1fd2d 100644
+--- a/testcases/kernel/syscalls/chown/chown02.c
++++ b/testcases/kernel/syscalls/chown/chown02.c
+@@ -21,7 +21,6 @@
+ #include "compat_tst_16.h"
+ #include "tst_safe_macros.h"
 
-> Thanks for the patch. It looks good to me. You can add:
+-#define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
+ #define NEW_PERMS2	(S_IFREG|S_IRWXU|S_ISGID)
+ #define EXP_PERMS	(S_IFREG|S_IRWXU|S_IRWXG)
+--
+2.17.1
 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-
-Merged, thanks!
-
-Kind regards,
-Petr
