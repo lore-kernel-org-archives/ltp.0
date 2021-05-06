@@ -1,126 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 May 2021 16:44:10 +0200
-Subject: [LTP] [PATCH v4 1/1] docparse: Handle special characters in JSON
-In-Reply-To: <20210506132745.16973-1-pvorel@suse.cz>
-References: <20210506132745.16973-1-pvorel@suse.cz>
-Message-ID: <YJQAukLCEqSX1X/9@yuki>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 6 May 2021 17:27:28 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/inotify06: Raise inotify instance
+ limit in /proc
+In-Reply-To: <20210505164757.GC9615@quack2.suse.cz>
+References: <20210505153847.6106-1-mdoucha@suse.cz>
+ <20210505153847.6106-2-mdoucha@suse.cz>
+ <20210505164757.GC9615@quack2.suse.cz>
+Message-ID: <32425668-9713-c216-38b1-46b57fce2197@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> * escape backslash (/) and double quote (")
-                      ^
-		      \
->   escaping backslash effectively escapes other C escaped strings (\t,
->   \n, ...), which we sometimes want (in the comment) but sometimes not
->   (in .option we want to have them interpreted)
-> * replace tab with 8x space
-> * skip and TWARN invalid chars (< 0x20, i.e. anything before space)
-             ^
-	     warn on? We are not actually using TWARN o here right?
->   defined by RFC 8259 (https://tools.ietf.org/html/rfc8259#page-9)
+On 05. 05. 21 18:47, Jan Kara wrote:
+> On Wed 05-05-21 17:38:47, Martin Doucha wrote:
+>> inotify_init() sometimes fails with EMFILE because there are too many
+>> partially closed instances waiting for garbage collection. Bump the limit
+>> in /proc/sys/fs/inotify/max_user_instances for the duration of the test.
+>>
+>> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+>> ---
+>>
+>> I thought about only reading the procfile and calling yield() after every
+>> proc_limit/2 iterations to wait for garbage collection but I'm afraid that
+>> it might reduce the likelihood of triggering the bug. Since I currently have
+>> no system where I could reproduce the race, I've decided to play it safe and
+>> bump the /proc limit.
 > 
-> NOTE: atm fix is required only for ", but tab was problematic in the past.
-> 
-> TODO: This is just a "hot fix" solution before release. Proper solution
-> would be to check if chars needed to be escaped (", \, /) aren't already
-> escaped.
-> 
-> Also for correct decision whether \n, \t should be escaped or interpreted
-> we should decide in the parser which has the context. C string should be
-> probably interpreted (thus nothing needed to be done as it escapes in
-> a compatible way with JSON), but comments probably should display \n, \t
-> thus add extra \.
->
-> Fixes: c39b29f0a ("bpf: Check truncation on 32bit div/mod by zero")
-> 
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Co-developed-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  docparse/data_storage.h | 36 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 35 insertions(+), 1 deletion(-)
-> 
-> diff --git a/docparse/data_storage.h b/docparse/data_storage.h
-> index ef420c08f..9f36dd6f0 100644
-> --- a/docparse/data_storage.h
-> +++ b/docparse/data_storage.h
-> @@ -256,6 +256,40 @@ static inline void data_fprintf(FILE *f, unsigned int padd, const char *fmt, ...
->  	va_end(va);
->  }
->  
-> +
-> +static inline void data_fprintf_esc(FILE *f, unsigned int padd, const char *str)
-> +{
-> +	while (padd-- > 0)
-> +		fputc(' ', f);
-> +
-> +	fputc('"', f);
+> So waiting would be fine as well. One process simply creates & deletes
+> files in a loop until the other performs TEARDOWNS teardowns. It doesn't
+> really matter how fast teardowns happen for the race to trigger. But I have
+> no problem with this solution either.
 
-	int was_backslash = 0;
-
-> +	while (*str) {
-> +		switch (*str) {
-> +		case '\\':
-> +		break;
-> +		case '"':
-> +			fputs("\\\"", f);
-			was_backslash = 0;
-> +			break;
-> +		case '\t':
-> +			fputs("        ", f);
-> +			break;
-> +		default:
-> +			/* RFC 8259 specify  chars before 0x20 as invalid */
-> +			if (*str >= 0x20)
-> +				putc(*str, f);
-> +			else
-> +				fprintf(stderr, "%s:%d %s(): invalid character for JSON: %x\n",
-> +						__FILE__, __LINE__, __func__, *str);
-> +			break;
-> +		}
-
-		if (was_backslash)
-			fputs("\\\\", f);
-
-		was_backslash = (*str == '\\');
-> +		str++;
-> +	}
-> +
-> +	fputc('"', f);
-> +}
-
-This should avoid "unescaping" an escaped double quote. We deffer
-printing the backslash until we know the character after it and we make
-sure that we do not excape backslash before ".
-
-Consider what would happen if someone did put a "\"text\"" into options
-strings, the original code would escape the backslashes and we would end
-up with "\\"text"\\" which would break parser again.
-
-This way we can at least avoid parsing errors until we fix the problem
-one level down in the parser where we have the context required for a
-proper fix.
-
->  static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int padd, int do_padd)
->  {
->  	unsigned int i;
-> @@ -263,7 +297,7 @@ static inline void data_to_json_(struct data_node *self, FILE *f, unsigned int p
->  	switch (self->type) {
->  	case DATA_STRING:
->  		padd = do_padd ? padd : 0;
-> -		data_fprintf(f, padd, "\"%s\"", self->string.val);
-> +		data_fprintf_esc(f, padd, self->string.val);
->  	break;
->  	case DATA_HASH:
->  		for (i = 0; i < self->hash.elems_used; i++) {
-> -- 
-> 2.31.1
-> 
+Let's go with the patch as is then. Like I said, when I don't have a
+system where the issue is reproducible, I prefer to play it safe.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
