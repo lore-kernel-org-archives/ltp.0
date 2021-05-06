@@ -1,34 +1,60 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 May 2021 13:47:05 +0200
-Subject: [LTP] [PATCH 2/4] syscalls/modify_ldt: Replace TINFO with TPASS
- or TFAIL
-In-Reply-To: <YJPbxQikXPap5DHW@pevik>
-References: <20210429125255.31510-1-zhaogongyi@huawei.com>
- <YJPImeHT9rVsVtON@pevik> <YJPNgGwlZBLMaJOd@yuki>
- <YJPbxQikXPap5DHW@pevik>
-Message-ID: <YJPXOY8/Nl/XzPO/@yuki>
+Date: Thu,  6 May 2021 13:51:08 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls: modify_ldt02: Fix failure
+Message-ID: <20210506115108.16751-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> $ ./modify_ldt02
-> modify_ldt02    1  TPASS  :  value read as expected
-> modify_ldt02    0  TINFO  :  received signal: 11
-> modify_ldt02    2  TFAIL  :  modify_ldt02.c:136: Did not generate SEGV
-> 
-> (I wrote my report below affected line)
-> 
-> 11 is SIGSEGV, thus there must be a bug in a test, which probably has been there
-> before (test just didn't check). It's strange that WTERMSIG(status) returns 0
-> instead of 11.
+The test was wrong to begin with, if we want to get SEGFAULT from the
+waitpid() we cannot setup a handler that catches it and exits with 0.
 
-Looking at the code the bug is obvious, we setup a handler for SIGSEGV
-that does exit(0). And since this is old API test we have to reset the
-signal handler in the child as well. I will push a fix ASAP.
+Fixes: f5e8e6b11ce8 ("syscalls/modify_ldt: Replace TINFO with TPASS or TFAIL")
+Reported-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ .../kernel/syscalls/modify_ldt/modify_ldt02.c     | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c b/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+index e34d3d54d..f911aa5fd 100644
+--- a/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
++++ b/testcases/kernel/syscalls/modify_ldt/modify_ldt02.c
+@@ -120,6 +120,7 @@ int main(int ac, char **av)
+ 
+ 		tst_old_flush();
+ 		if ((pid = FORK_OR_VFORK()) == 0) {
++			signal(SIGSEGV, SIG_DFL);
+ 			val = read_segment(0);
+ 			exit(1);
+ 		}
+@@ -168,24 +169,10 @@ int read_segment(unsigned int index)
+ 	return res;
+ }
+ 
+-void sigsegv_handler(int sig)
+-{
+-	tst_resm(TINFO, "received signal: %d", sig);
+-	exit(0);
+-}
+-
+ void setup(void)
+ {
+-	struct sigaction act;
+-
+-	memset(&act, 0, sizeof(act));
+-	sigemptyset(&act.sa_mask);
+-
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+-	act.sa_handler = sigsegv_handler;
+-	(void)sigaction(SIGSEGV, &act, NULL);
+-
+ 	TEST_PAUSE;
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.3
+
