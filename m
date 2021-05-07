@@ -1,109 +1,32 @@
 From: Xie Ziyao <xieziyao@huawei.com>
-Date: Fri, 7 May 2021 16:33:20 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/io_setup: Add io_setup02 test for native
- AIO
-In-Reply-To: <20210507083321.167998-1-xieziyao@huawei.com>
-References: <20210507083321.167998-1-xieziyao@huawei.com>
-Message-ID: <20210507083321.167998-3-xieziyao@huawei.com>
+Date: Fri, 7 May 2021 16:33:18 +0800
+Subject: [LTP] [PATCH 0/3] syscalls/aio: Add testcases for native AIO
+Message-ID: <20210507083321.167998-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test io_setup invoked via syscall(2):
-- io_setup fails and returns -EFAULT if ctxp is NULL;
-- io_setup fails and returns -EINVAL if ctxp is not initialized to 0;
-- io_setup fails and returns -EINVAL if nr_events is -1;
-- io_setup fails and returns -EAGAIN if nr_events exceeds the limit
-  of available events;
-- io_setup succeeds if both nr_events and ctxp are valid.
+Test io_destroy, io_setup, io_submit invoked via syscall(2).
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/io_setup/.gitignore |  1 +
- .../kernel/syscalls/io_setup/io_setup02.c     | 52 +++++++++++++++++++
- 3 files changed, 54 insertions(+)
+Xie Ziyao (3):
+  syscalls/io_destroy: Add io_destroy02 test for native AIO
+  syscalls/io_setup: Add io_setup02 test for native AIO
+  syscalls/io_submit: Add io_submit02 test for native AIO
+
+ runtest/syscalls                              |   3 +
+ .../kernel/syscalls/io_destroy/.gitignore     |   1 +
+ .../kernel/syscalls/io_destroy/io_destroy02.c |  32 +++++
+ testcases/kernel/syscalls/io_setup/.gitignore |   1 +
+ .../kernel/syscalls/io_setup/io_setup02.c     |  52 ++++++++
+ .../kernel/syscalls/io_submit/.gitignore      |   1 +
+ .../kernel/syscalls/io_submit/io_submit02.c   | 119 ++++++++++++++++++
+ 7 files changed, 209 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_destroy/io_destroy02.c
  create mode 100644 testcases/kernel/syscalls/io_setup/io_setup02.c
+ create mode 100644 testcases/kernel/syscalls/io_submit/io_submit02.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index bd6ec6a2e..b8f195891 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -614,6 +614,7 @@ io_pgetevents01 io_pgetevents01
- io_pgetevents02 io_pgetevents02
-
- io_setup01 io_setup01
-+io_setup02 io_setup02
- io_submit01 io_submit01
-
- keyctl01 keyctl01
-diff --git a/testcases/kernel/syscalls/io_setup/.gitignore b/testcases/kernel/syscalls/io_setup/.gitignore
-index 4fd03960c..37a4b8321 100644
---- a/testcases/kernel/syscalls/io_setup/.gitignore
-+++ b/testcases/kernel/syscalls/io_setup/.gitignore
-@@ -1 +1,2 @@
- /io_setup01
-+/io_setup02
-diff --git a/testcases/kernel/syscalls/io_setup/io_setup02.c b/testcases/kernel/syscalls/io_setup/io_setup02.c
-new file mode 100644
-index 000000000..1d657e14a
---- /dev/null
-+++ b/testcases/kernel/syscalls/io_setup/io_setup02.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Ported from Crackerjack to LTP by Masatake YAMATO <yamato@redhat.com>
-+ * Copyright (c) 2011 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (c) 2017 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ * Copyright (c) 2021 Xie Ziyao <xieziyao@huawei.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test io_setup invoked via syscall(2):
-+ * - io_setup fails and returns -EFAULT if ctxp is NULL;
-+ * - io_setup fails and returns -EINVAL if ctxp is not initialized to 0;
-+ * - io_setup fails and returns -EINVAL if nr_events is -1;
-+ * - io_setup fails and returns -EAGAIN if nr_events exceeds the limit
-+ *   of available events;
-+ * - io_setup succeeds if both nr_events and ctxp are valid.
-+ */
-+
-+#include <linux/aio_abi.h>
-+
-+#include "config.h"
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+static void verify_io_setup(void)
-+{
-+	aio_context_t ctx;
-+	TST_EXP_FAIL(tst_syscall(__NR_io_setup, 1, NULL), EFAULT);
-+
-+	memset(&ctx, 1, sizeof(ctx));
-+	TST_EXP_FAIL(tst_syscall(__NR_io_setup, 1, &ctx), EINVAL);
-+	memset(&ctx, 0, sizeof(ctx));
-+	TST_EXP_FAIL(tst_syscall(__NR_io_setup, -1, &ctx), EINVAL);
-+
-+	unsigned aio_max = 0;
-+	if (!access("/proc/sys/fs/aio-max-nr", F_OK)) {
-+		SAFE_FILE_SCANF("/proc/sys/fs/aio-max-nr", "%u", &aio_max);
-+		TST_EXP_FAIL(tst_syscall(__NR_io_setup, aio_max + 1, &ctx), EAGAIN);
-+	} else {
-+		tst_res(TCONF, "the aio-max-nr file did not exist");
-+	}
-+
-+	TST_EXP_PASS(tst_syscall(__NR_io_setup, 1, &ctx));
-+	TST_EXP_PASS(tst_syscall(__NR_io_destroy, ctx));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_io_setup,
-+};
 --
 2.17.1
 
