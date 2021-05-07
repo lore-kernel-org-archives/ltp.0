@@ -1,45 +1,24 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 7 May 2021 17:02:39 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/inotify06: Raise inotify instance
- limit in /proc
-In-Reply-To: <32425668-9713-c216-38b1-46b57fce2197@suse.cz>
-References: <20210505153847.6106-1-mdoucha@suse.cz>
- <20210505153847.6106-2-mdoucha@suse.cz>
- <20210505164757.GC9615@quack2.suse.cz>
- <32425668-9713-c216-38b1-46b57fce2197@suse.cz>
-Message-ID: <YJVWj39Fx/nVa31a@pevik>
+Date: Fri, 7 May 2021 17:11:39 +0200
+Subject: [LTP] [PATCH] syscalls/mlockall03: Bugfix for running with
+ option "-i"
+In-Reply-To: <20210507020416.29792-1-zhaogongyi@huawei.com>
+References: <20210507020416.29792-1-zhaogongyi@huawei.com>
+Message-ID: <YJVYqywnA8GuMMN8@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Martin, Jan,
+Hi Zhao,
 
-> On 05. 05. 21 18:47, Jan Kara wrote:
-> > On Wed 05-05-21 17:38:47, Martin Doucha wrote:
-> >> inotify_init() sometimes fails with EMFILE because there are too many
-> >> partially closed instances waiting for garbage collection. Bump the limit
-> >> in /proc/sys/fs/inotify/max_user_instances for the duration of the test.
+> When run the test with option "-i 2", test will fail and
+> report "mlockall03.c:144: mlockall() Failed while setup
+> for checking error tried to lock more memory than the
+> limit permitted"
 
-> >> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> >> ---
-
-> >> I thought about only reading the procfile and calling yield() after every
-> >> proc_limit/2 iterations to wait for garbage collection but I'm afraid that
-> >> it might reduce the likelihood of triggering the bug. Since I currently have
-> >> no system where I could reproduce the race, I've decided to play it safe and
-> >> bump the /proc limit.
-
-> > So waiting would be fine as well. One process simply creates & deletes
-> > files in a loop until the other performs TEARDOWNS teardowns. It doesn't
-> > really matter how fast teardowns happen for the race to trigger. But I have
-> > no problem with this solution either.
-
-> Let's go with the patch as is then. Like I said, when I don't have a
-> system where the issue is reproducible, I prefer to play it safe.
-
-Make sense, merged. Thank you both for fixing and review!
+Good catch, merged!
 
 Kind regards,
 Petr
