@@ -1,71 +1,245 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 7 May 2021 19:26:10 +0200
-Subject: [LTP] [PATCH 4/4 v2] syscalls/fcntl: Replace TINFO with TPASS
- or TFAIL
-In-Reply-To: <20210506050047.935-1-zhaogongyi@huawei.com>
-References: <20210506050047.935-1-zhaogongyi@huawei.com>
-Message-ID: <YJV4MtK/5NvpIXbU@pevik>
+Date: Fri,  7 May 2021 21:14:13 +0200
+Subject: [LTP] [PATCH v4 2/3] IMA: Generalize key measurement tests
+In-Reply-To: <20210507191414.14795-1-pvorel@suse.cz>
+References: <20210507191414.14795-1-pvorel@suse.cz>
+Message-ID: <20210507191414.14795-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zhao,
+Based on previous Tushar's work.
 
-> 1)remove redundant variable
-> 2)remove redundant log
-> 3)replace TINFO with TPASS or TFAIL
+Co-developed-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Rewritten
 
-> For those:
-> 	testcases/kernel/syscalls/fcntl/fcntl16.c
-> 	testcases/kernel/syscalls/fcntl/fcntl18.c
-nit: we have git log to see what files has been changed.
-IMHO it's better to add fcntl18{16,18}: to the first line.
+ .../security/integrity/ima/tests/ima_keys.sh  | 78 +++----------------
+ .../security/integrity/ima/tests/ima_setup.sh | 76 +++++++++++++++++-
+ 2 files changed, 87 insertions(+), 67 deletions(-)
 
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---
-> v1->v2:
-> 	1)correct the patch's format error
-> 	2)remove the useless//block1: comments
->  testcases/kernel/syscalls/fcntl/fcntl16.c | 73 +++++++----------------
->  testcases/kernel/syscalls/fcntl/fcntl18.c | 43 ++-----------
->  2 files changed, 27 insertions(+), 89 deletions(-)
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+index 3476b8007..571f72d2d 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
+@@ -6,7 +6,7 @@
+ #
+ # Verify that keys are measured correctly based on policy.
+ 
+-TST_NEEDS_CMDS="cmp cut grep sed xxd"
++TST_NEEDS_CMDS="cmp cut grep xxd"
+ TST_CNT=2
+ TST_NEEDS_DEVICE=1
+ TST_SETUP=setup
+@@ -14,13 +14,14 @@ TST_CLEANUP=cleanup
+ 
+ . ima_setup.sh
+ 
+-FUNC_KEYCHECK='func=KEY_CHECK'
+-REQUIRED_POLICY="^measure.*$FUNC_KEYCHECK"
++POLICY_FUNC='func=KEY_CHECK'
++REQUIRED_POLICY="^measure.*$POLICY_FUNC"
++POLICY_FILE="$TST_TMPDIR/policy.txt"
+ 
+ setup()
+ {
+-	require_ima_policy_content "$REQUIRED_POLICY" '-E' > $TST_TMPDIR/policy.txt
+-	require_valid_policy_template
++	require_ima_policy_content "$REQUIRED_POLICY" '-E' > $POLICY_FILE
++	require_valid_policy_template $FUNC $POLICY_FILE
+ }
+ 
+ cleanup()
+@@ -28,74 +29,19 @@ cleanup()
+ 	tst_is_num $KEYRING_ID && keyctl clear $KEYRING_ID
+ }
+ 
+-
+-require_valid_policy_template()
+-{
+-	while read line; do
+-	if echo $line | grep -q 'template=' && ! echo $line | grep -q 'template=ima-buf'; then
+-		tst_brk TCONF "only template=ima-buf can be specified for KEY_CHECK"
+-	fi
+-	done < $TST_TMPDIR/policy.txt
+-}
+-
+-check_keys_policy()
+-{
+-	local pattern="$1"
+-
+-	if ! grep -E "$pattern" $TST_TMPDIR/policy.txt; then
+-		tst_res TCONF "IMA policy must specify $pattern, $FUNC_KEYCHECK"
+-		return 1
+-	fi
+-	return 0
+-}
+-
+ # Based on https://lkml.org/lkml/2019/12/13/564.
+ # (450d0fd51564 - "IMA: Call workqueue functions to measure queued keys")
+ test1()
+ {
+ 	local keycheck_lines i keyrings templates
+ 	local pattern='keyrings=[^[:space:]]+'
+-	local test_file="file.txt" tmp_file="file2.txt"
++	local policy="keyrings"
++	local tmp_file="$TST_TMPDIR/keycheck_tmp_file.txt"
+ 
+ 	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
+ 
+-	check_keys_policy "$pattern" > $tmp_file || return
+-	keycheck_lines=$(cat $tmp_file)
+-	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
+-		sed "s/\./\\\./g" | cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
+-	if [ -z "$keyrings" ]; then
+-		tst_res TCONF "IMA policy has a keyring key-value specifier, but no specified keyrings"
+-		return
+-	fi
+-
+-	templates=$(for i in $keycheck_lines; do echo "$i" | grep "template" | \
+-		cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
+-
+-	tst_res TINFO "keyrings: '$keyrings'"
+-	tst_res TINFO "templates: '$templates'"
+-
+-	grep -E "($templates).*($keyrings)" $ASCII_MEASUREMENTS | while read line
+-	do
+-		local digest expected_digest algorithm
+-
+-		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
+-		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
+-		keyring=$(echo "$line" | cut -d' ' -f5)
+-
+-		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
+-
+-		if ! expected_digest="$(compute_digest $algorithm $test_file)"; then
+-			tst_res TCONF "cannot compute digest for $algorithm"
+-			return
+-		fi
+-
+-		if [ "$digest" != "$expected_digest" ]; then
+-			tst_res TFAIL "incorrect digest was found for $keyring keyring"
+-			return
+-		fi
+-	done
+-
+-	tst_res TPASS "specified keyrings were measured correctly"
++	check_policy_pattern "$pattern" $POLICY_FUNC $POLICY_FILE > $tmp_file || return
++	test_policy_measurement $policy $temp_file
+ }
+ 
+ # Create a new keyring, import a certificate into it, and verify
+@@ -109,11 +55,11 @@ test2()
+ 	local cert_file="$TST_DATAROOT/x509_ima.der"
+ 	local keyring_name="key_import_test"
+ 	local pattern="keyrings=[^[:space:]]*$keyring_name"
+-	local temp_file="file.txt"
++	local temp_file="$TST_TMPDIR/key_import_test_file.txt"
+ 
+ 	tst_res TINFO "verify measurement of certificate imported into a keyring"
+ 
+-	check_keys_policy "$pattern" >/dev/null || return
++	check_policy_pattern "$pattern" $POLICY_FUNC $POLICY_FILE >/dev/null || return
+ 
+ 	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
+ 		tst_brk TBROK "unable to create a new keyring"
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 565f0bc3e..b442d49be 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2009 IBM Corporation
+-# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2018-2021 Petr Vorel <pvorel@suse.cz>
+ # Author: Mimi Zohar <zohar@linux.ibm.com>
+ 
+ TST_TESTFUNC="test"
+@@ -54,6 +54,80 @@ compute_digest()
+ 	return 1
+ }
+ 
++require_valid_policy_template()
++{
++	local func="$1"
++	local policy_file="$2"
++
++	while read line; do
++	if echo $line | grep -q 'template=' && ! echo $line | grep -q 'template=ima-buf'; then
++		tst_brk TCONF "only template=ima-buf can be specified for $func"
++	fi
++	done < $policy_file
++}
++
++check_policy_pattern()
++{
++	local pattern="$1"
++	local func="$2"
++	local policy_file="$3"
++
++	if ! grep -E "$pattern" $policy_file; then
++		tst_res TCONF "IMA policy must specify $pattern, $func"
++		return 1
++	fi
++	return 0
++}
++
++test_policy_measurement()
++{
++	local policy_option="$1"
++	local lines="$(cat $2)"
++	local input_digest="$3"
++	local test_file="$TST_TMPDIR/test.txt"
++	local grep_file="$TST_TMPDIR/grep.txt"
++	local i sources templates
++
++	tst_require_cmds cut sed xxd
++
++	sources=$(for i in $lines; do echo "$i" | grep "$policy_option" | \
++		sed "s/\./\\\./g" | cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
++	if [ -z "$sources" ]; then
++		tst_res TCONF "IMA policy $policy_option is a key-value specifier, but no values specified"
++		return
++	fi
++
++	templates=$(for i in $lines; do echo "$i" | grep "template" | \
++		cut -d'=' -f2; done | sed ':a;N;$!ba;s/\n/|/g')
++
++	tst_res TINFO "policy sources: '$sources'"
++	tst_res TINFO "templates: '$templates'"
++
++	grep -E "($templates).*($sources)" $ASCII_MEASUREMENTS > $grep_file
++
++	while read line; do
++		local algorithm digest expected_digest src_line
++
++		digest=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f2)
++		algorithm=$(echo "$line" | cut -d' ' -f4 | cut -d':' -f1)
++		src_line=$(echo "$line" | cut -d' ' -f5)
++
++		echo "$line" | cut -d' ' -f6 | xxd -r -p > $test_file
++
++		if ! expected_digest="$(compute_digest $algorithm $test_file)"; then
++			tst_res TCONF "cannot compute digest for $algorithm"
++			return
++		fi
++
++		if [ "$digest" != "$expected_digest" ]; then
++			tst_res TFAIL "incorrect digest was found for $src_line $policy_option"
++			return
++		fi
++	done < $grep_file
++
++	tst_res TPASS "$policy_option measured correctly"
++}
++
+ check_policy_readable()
+ {
+ 	if [ ! -f $IMA_POLICY ]; then
+-- 
+2.31.1
 
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> index a77a81298..c5c49284a 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
-> @@ -441,7 +441,7 @@ void setup(void)
->  	sigaction(SIGALRM, &sact, NULL);
->  }
-
-> -int run_test(int file_flag, int file_mode, int start, int end)
-> +static void run_test(int file_flag, int file_mode, int start, int end)
->  {
->  	int child_count;
->  	int child;
-> @@ -468,7 +468,7 @@ int run_test(int file_flag, int file_mode, int start, int end)
->  				 errno);
->  			close(fd);
->  			unlink(tmpname);
-> -			return 1;
-> +			goto err;
-not sure if change to use goto satisfied Cyril's requirement:
-
-we should rather skip the test in the main instead
-as it was done in the original code as:
-
-	if (NO_NFS)
-		run_test(...);
-	else
-		tst_resm(TCONF, "Skipping mandatory locking on NFS");
-
-other than that LGTM
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Also test ignores -i N parameter, because it does not use TEST_LOOPING().
-But that's another issue which should be fixed by rewriting the test to new API.
-
-Kind regards,
-Petr
