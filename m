@@ -1,40 +1,47 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 7 May 2021 16:31:27 +0200
-Subject: [LTP] LTP Release
-In-Reply-To: <YJPo4L0QnXHU7xks@pevik>
-References: <YJOYgZNL7/qp5YCN@yuki>
- <YJPo4L0QnXHU7xks@pevik>
-Message-ID: <YJVPP64LuDK7O564@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 7 May 2021 22:31:56 +0800
+Subject: [LTP] [PATCH v2 2/2] shell: Prevent orphan timeout sleep
+ processes
+In-Reply-To: <YJVNKebKn6jTvyG/@pevik>
+References: <20210507103258.232174-1-lkml@jv-coder.de>
+ <20210507103258.232174-3-lkml@jv-coder.de>
+ <CAEemH2fucJPyeTL-HZJD92ves7GLMaMHcaPzi8kS_qWL+x=Hcg@mail.gmail.com>
+ <YJVNKebKn6jTvyG/@pevik>
+Message-ID: <CAEemH2fgcFm4tsJdtj+J=sqvOy24w54QR+7M=Bhk2E7NDE68Gg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+> > ================
+> > (This below is not related to your patches)
+>
+> > But there is another issue I found that the timeout03 can NOT
+> > be killed after timed out in calling cleanup(), the reason is
+> > tst_brk stop the _tst_kill_test running in the background so that
+> > it does not output as what we expected:
+> Good catch, I'll try to have a look as well.
 
-> Hi Cyril,
+The simplest way I can think of is to let _tst_kill_test ignores
+the TERM and INT signals. If you agree to this, we can fix it in
+a separate patch:).
 
-> also solving Shell API timeout sleep orphan processes would be good [1]
-> There is already C patch [2] + Li suggested to fix the shell implementation
-> using trap in subshell [3].
-OK there is shell implementation to fix orphan processes [4] from Joerg, which
-would be worth do fix it, Li already did a review, I'll look into it today.
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -439,6 +439,8 @@ _tst_kill_test()
+ {
+        local i=10
 
-I'd like to rebase and send to ML IMA dm-crypt test for testing. If Mimi, Tushar
-or Lakshmi find time to test it, I'd like to have it in the release.
++       trap " " TERM INT
++
+        tst_res TBROK "Test timeouted, sending SIGINT! If you are
+running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+        kill -INT -$pid
+        tst_sleep 100ms
 
-I try to have a look on few cleanup patches today from Martin [6], Xie and Zhao.
 
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
 
-> Kind regards,
-> Petr
-
-> [1] https://lists.linux.it/pipermail/ltp/2021-May/022350.html
-> [2] https://patchwork.ozlabs.org/project/ltp/list/?series=242439
-> [3] https://lists.linux.it/pipermail/ltp/2021-May/022453.html
-[4] https://patchwork.ozlabs.org/project/ltp/list/?series=242665
-[5] https://patchwork.ozlabs.org/project/ltp/list/?series=230766
-[6] https://patchwork.ozlabs.org/project/ltp/patch/20210505153847.6106-2-mdoucha@suse.cz/
