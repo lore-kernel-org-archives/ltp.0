@@ -1,46 +1,45 @@
-From: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Sat, 8 May 2021 10:14:48 +0800
-Subject: [LTP] [PATCH v2] syscalls/bind03: Bugfix for running with option
- "-i"
-Message-ID: <20210508021448.7390-1-zhaogongyi@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 8 May 2021 11:57:00 +0800
+Subject: [LTP] [PATCH v2 2/2] shell: Prevent orphan timeout sleep
+ processes
+In-Reply-To: <YJVfQanq/HPXnfi1@pevik>
+References: <20210507103258.232174-1-lkml@jv-coder.de>
+ <20210507103258.232174-3-lkml@jv-coder.de>
+ <CAEemH2fucJPyeTL-HZJD92ves7GLMaMHcaPzi8kS_qWL+x=Hcg@mail.gmail.com>
+ <YJVNKebKn6jTvyG/@pevik>
+ <CAEemH2fgcFm4tsJdtj+J=sqvOy24w54QR+7M=Bhk2E7NDE68Gg@mail.gmail.com>
+ <YJVfQanq/HPXnfi1@pevik>
+Message-ID: <CAEemH2cjDZVq0iJ28R-x8VPzJT71EZnUY-wuKjDLOz_+Uhsa5A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When run the test with option "-i 2", test will fail and
-report EADDRINUSE.
+> > --- a/testcases/lib/tst_test.sh
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -439,6 +439,8 @@ _tst_kill_test()
+> >  {
+> >         local i=10
+>
+> > +       trap " " TERM INT
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
-v1->v2:replace unlink() with SAFE_UNLINK()
- testcases/kernel/syscalls/bind/bind03.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Seems no need to ignore the SIGTERM, because it only sends in
+the early (before timeout) phase, the _tst_kill_test has no chance
+to catch a SIGTERM.
 
-diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
-index ebde19591..879ce1bc6 100644
---- a/testcases/kernel/syscalls/bind/bind03.c
-+++ b/testcases/kernel/syscalls/bind/bind03.c
-@@ -62,16 +62,14 @@ void run(void)
- 	 */
- 	TST_EXP_FAIL(bind(sock2, (struct sockaddr *)&sun1, sizeof(sun1)),
- 	             EADDRINUSE, "bind() with bound pathname");
--}
+> Acked-by: Petr Vorel <pvorel@suse.cz>
 
--static void cleanup(void)
--{
-+	SAFE_UNLINK(sun1.sun_path);
-+	SAFE_UNLINK(sun2.sun_path);
- 	SAFE_CLOSE(sock1);
- 	SAFE_CLOSE(sock2);
- }
+Thanks for the review! I will send a patch for it.
 
- static struct tst_test test = {
--	.cleanup = cleanup,
- 	.test_all = run,
- 	.needs_tmpdir = 1,
- };
---
-2.17.1
+>
+> Thanks!
+>
+> BTW I'm surprised " " works, I'd expect : would have to be used.
+
+" " or '' define none string makes it ignore signals.
+
+-- 
+Regards,
+Li Wang
 
