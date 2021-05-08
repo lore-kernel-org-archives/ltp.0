@@ -1,90 +1,93 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 11 May 2021 15:58:05 +0300
-Subject: [LTP] [PATCH] bugfix for network/lib6/getaddrinfo_01.c
-In-Reply-To: <YJp2u+lUy9VMq9Wb@pevik>
-References: <20210511091630.23257-1-dongshijiang@inspur.com>
- <YJp2u+lUy9VMq9Wb@pevik>
-Message-ID: <d1dc697b-f73a-3be4-c5df-151aae021265@oracle.com>
+From: Cao jin <caojin@uniontech.com>
+Date: Sat,  8 May 2021 14:15:54 +0800
+Subject: [LTP] [PATCH] runltp: Miscellaneous cleanups
+Message-ID: <20210508061554.30645-1-caojin@uniontech.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11.05.2021 15:21, Petr Vorel wrote:
-> Hi,
-> 
-> [ Cc: Alexey, Martin and Cyril ]
-> 
->> For test cases (test2 ,IPV4 canonical name) and (test13 ,IPV6 canonical name)
-> 
->> The gethostname() API returns the official name of host, not the canonical name of host.
->> The canonical name of host needs to be obtained through the gethostbyname() API;
-> 
-> Yes, test 2 and 13 fails systems which don't use FQDN as hostname and have DNS records
-> due mismatch short name and FQDN, e.g.:
-> getaddrinfo_01    2  TFAIL  :  getaddrinfo_01.c:140: getaddrinfo IPv4 canonical name ("foo.suse.cz") doesn't match hostname ("foo")
-> 
-> It's a bit strange to use deprecated gethostbyname() in getaddrinfo() tests :).
+1. typofix: then --> than
+2. Drop useless HTML file name creating code, as g: mandatorily requires
+   argument.
+3. Make direcotry create symmetrical. There is no need to always see:
 
-Yeah, gethostbyname() is obsolete, we shouldn't compare both here,
-i.e. getaddrinfo() vs gethostbyname()...
+        INFO: creating $LTPROOT/results directory
 
-> Yes, it's the easiest way to get FQDN instead of just "short" hostname. But
-> Maybe simple check if we have FQDN with strchr for dot and TCONF it's just short
-> name would be better.
+   except the real creation of it. Also indent the code.
 
-+1, and instead of TCONF we could check the "shortname" that
-we pass to getaddrinfo():
+4. fix a variable misnomer
 
->>  	shortname[MAXHOSTNAMELEN] = '\0';
->>  	p = strchr(shortname, '.');
->>  	if (p)
+Signed-off-by: Cao jin <caojin@uniontech.com>
+---
+ runltp | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-...
-> 
-> FYI Workaround on systems which do not have DNS record is to use /etc/fstab.
-> We should document in testcases/network/README.md that when using /etc/fstab,
+diff --git a/runltp b/runltp
+index 7cd0c159f..29779b853 100755
+--- a/runltp
++++ b/runltp
+@@ -300,7 +300,7 @@ main()
+             version_of_ltp
+ 	    ;;
+         f)  # Execute user defined set of testcases.
+-            # Can be more then one file, just separate it with ',', like:
++            # Can be more than one file, just separate it with ',', like:
+             # -f nfs,commands,/tmp/testfile
+             CMDFILES=$OPTARG;;
+ 	F)	INJECT_KERNEL_FAULT=1
+@@ -502,10 +502,6 @@ main()
+           OUTPUTFILE_NAME="$DEFAULT_FILE_NAME_GENERATION_TIME"
+           OUTPUTFILE="-o $LTPROOT/output/LTP_RUN_ON-$OUTPUTFILE_NAME.output"
+           ALT_DIR_OUT=1
+-          if [ ! "$HTMLFILE" ] ; then                        ## User has not mentioned HTML File name, We need to create one
+-             HTMLFILE_NAME=`basename $OUTPUTFILE_NAME`
+-             HTMLFILE="$LTPROOT/output/$HTMLFILE_NAME.html"
+-          fi
+        fi
+     fi
+ 
+@@ -522,16 +518,17 @@ main()
+             }
+         }
+     }
++
+     # If we need, create the results directory
+     [ "$ALT_DIR_RES" -eq 1 ] && \
+     {
+-        echo "INFO: creating $LTPROOT/results directory"
+         [ ! -d $LTPROOT/results ] && \
+         {
+-           mkdir -p $LTPROOT/results || \
+-           {
+-               echo "ERROR: failed to create $LTPROOT/results"
+-               exit 1
++            echo "INFO: creating $LTPROOT/results directory"
++            mkdir -p $LTPROOT/results || \
++            {
++                echo "ERROR: failed to create $LTPROOT/results"
++                exit 1
+             }
+         }
+     }
+@@ -840,12 +837,12 @@ EOF
+        export LTP_VERSION=$version_date
+        export TEST_START_TIME="$test_start_time"
+        export TEST_END_TIME="$(date)"
+-       OUTPUT_DIRECTORY=`echo $OUTPUTFILE | cut -c4-`
++       OUTPUT_FILE=`echo $OUTPUTFILE | cut -c4-`
+        LOGS_DIRECTORY="$LTPROOT/results"
+        export TEST_OUTPUT_DIRECTORY="$LTPROOT/output"
+        export TEST_LOGS_DIRECTORY=$LOGS_DIRECTORY
+        echo "Generating HTML Output.....!!"
+-       ( perl $LTPROOT/bin/genhtml.pl $LTPROOT/bin/html_report_header.txt test_start test_end test_output execution_status $OUTPUT_DIRECTORY  > $HTMLFILE; )
++       ( perl $LTPROOT/bin/genhtml.pl $LTPROOT/bin/html_report_header.txt test_start test_end test_output execution_status $OUTPUT_FILE  > $HTMLFILE; )
+        echo "Generated HTML Output.....!!"
+        echo "Location: $HTMLFILE";
+ 
+-- 
+2.20.1
 
-/etc/hosts
 
-> well recommended order FQDN and *then* short name is required, e.g.:
-> ::1 foo.suse.cz foo
-> 
-> Other setup fails, e.g.:
-> ::1 foo
-> ::1 foo foo.suse.cz
-> 
-> leads to error:
-> getaddrinfo_01   13  TFAIL  :  getaddrinfo_01.c:611: getaddrinfo IPv6 canonical name ("foo") doesn't match hostname ("foo.suse.cz")
-> 
-> and setup:
-> ::1 foo.suse.cz
-> 
-> leads to
-> getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:594: getaddrinfo IPv6 basic lookup ("foo") returns -5 ("No address associated with hostname")
-> 
-> The best would be if the test checked the correct setup itself
-> but not sure how do it to not complicate this test too much.
-> I guess during rewrite of this test we might decide to split it.
-> 
-> Other TODO (not related to this patch:
-> e.g.: it fails when there no DNS record nor records in /etc/hosts:
-> 
-> getaddrinfo_01    1  TFAIL  :  getaddrinfo_01.c:117: getaddrinfo IPv4 basic lookup ("myhost") returns -2 ("Name or service not known")
-> ...
-> getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:599: getaddrinfo IPv6 basic lookup ("myhost") returns -2 ("Name or service not known")
-> 
-> Any distro installer should add them, but I guess we should TCONF in this case.
-> 
-> or when there is DNS A record, but not AAAA: 
-> getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:596: getaddrinfo IPv6 basic lookup ("myhost.suse.cz") returns -5 ("No address associated with hostname")
-> 
-> During rewriting to new API test would deserve cleanup, e.g.
-> remove duplicity in gaiv4() and gaiv6() (getaddrinfo() can deal with IPv4
-> and IPv6 in a nice way through hints, see safe_getaddrinfo()).
-> 
-> Kind regards,
-> Petr
-> 
 
