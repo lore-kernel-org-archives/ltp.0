@@ -1,47 +1,44 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  7 May 2021 21:14:11 +0200
-Subject: [LTP] [PATCH v4 0/3] IMA: Add test for dm-crypt measurement
-Message-ID: <20210507191414.14795-1-pvorel@suse.cz>
+From: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Sat, 8 May 2021 10:10:00 +0800
+Subject: [LTP] [PATCH] syscalls/bind03: Bugfix for running with option "-i"
+Message-ID: <20210508021000.7032-1-zhaogongyi@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Mimi, Lakshmi, Tushar,
+When run the test with option "-i 2", test will fail and
+report EADDRINUSE.
 
-rebased v3 [1], hope everything correct.
-Could you please review and test it?
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/syscalls/bind/bind03.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-v3->v4:
-* rewritten "IMA: Generalize key measurement tests"
-* new commit "ima_keys.sh: Check policy only once"
+diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
+index ebde19591..9013bae3e 100644
+--- a/testcases/kernel/syscalls/bind/bind03.c
++++ b/testcases/kernel/syscalls/bind/bind03.c
+@@ -62,16 +62,14 @@ void run(void)
+ 	 */
+ 	TST_EXP_FAIL(bind(sock2, (struct sockaddr *)&sun1, sizeof(sun1)),
+ 	             EADDRINUSE, "bind() with bound pathname");
+-}
 
+-static void cleanup(void)
+-{
++	unlink(sun1.sun_path);
++	unlink(sun2.sun_path);
+ 	SAFE_CLOSE(sock1);
+ 	SAFE_CLOSE(sock2);
+ }
 
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=230766&state=*
-
-Petr Vorel (2):
-  ima_keys.sh: Check policy only once
-  IMA: Generalize key measurement tests
-
-Tushar Sugandhi (1):
-  IMA: Add test for dm-crypt measurement
-
- .../kernel/security/integrity/ima/README.md   | 20 +++++
- .../security/integrity/ima/datafiles/Makefile |  2 +-
- .../ima/datafiles/ima_dm_crypt/Makefile       | 11 +++
- .../ima_dm_crypt/ima_dm_crypt.policy          |  1 +
- .../integrity/ima/tests/ima_dm_crypt.sh       | 47 +++++++++++
- .../security/integrity/ima/tests/ima_keys.sh  | 84 +++----------------
- .../security/integrity/ima/tests/ima_setup.sh | 76 ++++++++++++++++-
- 7 files changed, 168 insertions(+), 73 deletions(-)
- create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_dm_crypt/Makefile
- create mode 100644 testcases/kernel/security/integrity/ima/datafiles/ima_dm_crypt/ima_dm_crypt.policy
- create mode 100755 testcases/kernel/security/integrity/ima/tests/ima_dm_crypt.sh
-
--- 
-2.31.1
+ static struct tst_test test = {
+-	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_tmpdir = 1,
+ };
+--
+2.17.1
 
