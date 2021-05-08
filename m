@@ -1,52 +1,36 @@
-From: zhaogongyi <zhaogongyi@huawei.com>
-Date: Sat, 8 May 2021 06:48:29 +0000
-Subject: [LTP] [PATCH] syscalls/setfsgid02: Bugfix for running as root
-Message-ID: <4aa96ba2e4da40cca03556cb7f0e331f@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 8 May 2021 15:08:22 +0800
+Subject: [LTP] [PATCH v2] controllers/cpuset: Restore the value of
+ cpuset.sched_load_balance
+In-Reply-To: <1619684694-116827-1-git-send-email-wangxin410@huawei.com>
+References: <1619684694-116827-1-git-send-email-wangxin410@huawei.com>
+Message-ID: <CAEemH2ddDeXCix9EPeeydWSHTA6d--TPW+ZV9nG9xOCtns_3sQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Petr,
 
-Thanks for your review!
+On Thu, Apr 29, 2021 at 4:08 PM Wang Xin <wangxin410@huawei.com> wrote:
+>
+> When we run the cpuhotplug03 test case on the arm64 machine,
+> we conclude that no error occurs when the cpuhotplug03 case is executed alone,
+> but once the cpuset_sched_domains case is executed first,
+> After cpuhotplug03 is executed, the error "cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on" occurs.
+> The cpuset_sched_domains test case changes the value of cpuset.sched_load_balance in the cpuset cgroup subsystem,
+> but does not restore the value at the end of the test.
+> Modify the cpuset_funcs.sh file. The test result shows that the problem is solved successfully.
+>
+> Signed-off-by: Wang Xin <wangxin410@huawei.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-I have resubmitted the patch and rewrite setfsgid02.c,
+This just does saves/restore action in setup/cleanup phase, looks no
+harmful to merge in this release.
 
-please see: https://patchwork.ozlabs.org/project/ltp/patch/20210508064351.10737-1-zhaogongyi@huawei.com/
 
+--
+Regards,
+Li Wang
 
-Thanks so much!
-
-Best Regards,
-Gongyi
-
-> 
-> Hi!
-> > When we run the test as root id, and with the option "-i 2", test will
-> > fail.
-> 
-> Looking at the test there is much more to fix.
-> 
-> - the description does not match what the test is doing
-> - the pass/fail condition and TFAIL message does not make any sense
-> 
-> And its the same for the rest of the setfsgid tests.
-> 
-> Looking at the manual pages for this oddball syscall we should check if:
-> 
-> - unpriviledged process cannot change the value i.e. value that is
->   different from return from ret=setfsgid(-1) is passed as
->   setfsgid(ret+1) followed by setfsgid(-1) and all of these returns the
->   same value and the value also matches process effective group ID
-> 
-> - priviledged process can change the value i.e. the same as
->   unpriviledged but we expect the last setfsgid(-1) return
->   the new value. We either have to reset the setfsgid() at the end of
->   the test or run it in a fork()-ed process so that we start with a
->   clean plate for each iteration
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
