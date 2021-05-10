@@ -1,31 +1,19 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Mon, 10 May 2021 08:17:03 +0100
-Subject: [LTP] LTP Release
-In-Reply-To: <YJVxVSSoNkraaVz7@pevik>
-References: <YJOYgZNL7/qp5YCN@yuki> <YJVxVSSoNkraaVz7@pevik>
-Message-ID: <87r1ifkqhc.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 May 2021 09:42:02 +0200
+Subject: [LTP] [PATCH v3 1/6] Add SAFE_REALLOC() helper function to LTP
+ library
+In-Reply-To: <20210505081845.7024-1-mdoucha@suse.cz>
+References: <20210505081845.7024-1-mdoucha@suse.cz>
+Message-ID: <YJjjyhSLCMlBWaZM@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Hi,
 
-Petr Vorel <pvorel@suse.cz> writes:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Hi,
->
-> Can anybody have look on "[v2] controllers/cpuset: Restore the value of
-> cpuset.sched_load_balance" patch [1]?
->
-> Kind regards,
-> Petr
->
-> [1] https://patchwork.ozlabs.org/project/ltp/patch/1619684694-116827-1-git-send-email-wangxin410@huawei.com/
-
-Looks fine except for existing issues with those tests.
-
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
