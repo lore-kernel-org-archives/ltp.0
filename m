@@ -1,26 +1,27 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 10 May 2021 18:52:41 +0200
-Subject: [LTP] [PATCH] bugfix for block_dev_kernel/ltp_block_dev.c
-In-Reply-To: <20210510095609.20128-1-dongshijiang@inspur.com>
-References: <20210510095609.20128-1-dongshijiang@inspur.com>
-Message-ID: <YJlk2UtqenFH+bYk@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 10 May 2021 18:37:22 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <YJlkD2QjJfn9b3YG@pevik>
+References: <YJOYgZNL7/qp5YCN@yuki> <YJPo4L0QnXHU7xks@pevik>
+ <YJVPP64LuDK7O564@pevik> <YJj4wftakLE7PECd@yuki>
+ <YJlHfa/E+eNchQQE@pevik> <YJlJ+ZV6zxqPO8Ed@yuki>
+ <205dc258-12fa-ba43-8a77-15fe0a08a430@suse.cz>
+ <YJlkD2QjJfn9b3YG@pevik>
+Message-ID: <YJlhQpwgjLFlt2gJ@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> > That question only applies to patch 6. You don't need to wait with
+> > merging patches 1-5. It won't break any tests since the new code will be
+> > unused anyway.
+> Yep, I'd vote for merging 1-5.
 
-> Add genhd.h and blkdev.h to ltp_block_dev.c.
+Then go ahead and apply these.
 
-> Failed at compile time on kernel 5.12 due to change of register_blkdev function definition from linux/fs.h to linux/genhd.h and failure of test case tc05,The reason is that the BLKDEV_MAJOR_MAX definition was changed from fs.h to blkdev.h
-
-Good catch, merged with slightly changed commit message.
-Thanks!
-
-Maybe we should not ignore build error for kernel module to catch these API
-changes earlier.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
