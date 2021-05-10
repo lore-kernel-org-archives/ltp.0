@@ -1,48 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 10 May 2021 16:47:25 +0200
-Subject: [LTP] LTP Release
-In-Reply-To: <YJj4wftakLE7PECd@yuki>
-References: <YJOYgZNL7/qp5YCN@yuki> <YJPo4L0QnXHU7xks@pevik>
- <YJVPP64LuDK7O564@pevik> <YJj4wftakLE7PECd@yuki>
-Message-ID: <YJlHfa/E+eNchQQE@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 10 May 2021 16:54:45 +0200
+Subject: [LTP] [PATCH v2] syscalls/bind03: Bugfix for running with
+ option "-i"
+In-Reply-To: <20210508021448.7390-1-zhaogongyi@huawei.com>
+References: <20210508021448.7390-1-zhaogongyi@huawei.com>
+Message-ID: <YJlJNdi039jziyCp@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > > also solving Shell API timeout sleep orphan processes would be good [1]
-> > > There is already C patch [2] + Li suggested to fix the shell implementation
-> > > using trap in subshell [3].
-> > OK there is shell implementation to fix orphan processes [4] from Joerg, which
-> > would be worth do fix it, Li already did a review, I'll look into it today.
+Hi!
+I was looking at the test wondering why do you try to unlink socket that
+wasn't bind properly and it looks like kernel creates the socket even in
+a case that the bind fails, which is strange and I would call it a bug.
 
-> I would like to get to a git freeze soon. I will have a look as well but
-> if it's not ready in the first half of this week I would just postpone
-> it rather than rush it.
+Looking at the kernel code it indeed does mknod before it takes locks
+and checks the socket. Even more it turns out that there is in-flight
+patchset that is fixing this:
 
-> > I'd like to rebase and send to ML IMA dm-crypt test for testing. If Mimi, Tushar
-> > or Lakshmi find time to test it, I'd like to have it in the release.
+https://lore.kernel.org/netdev/YDQAmH9zSsaqf+Dg@zeniv-ca.linux.org.uk/
 
-> Here as well, if things are tested and ready soon enough then go ahead
-> and apply it.
-I was wrong, the last bit has not been upstreamed, thus only first commit can be
-merged.
+Anyways for now moved the code initializing the sockets into a setup()
+function and the only call that had to stay in the run() function is the
+unlink(SNAME_B); with a comment that kernel is buggy.
 
-> I would like to freeze the git and start pre release testing, if
-> possible, in the second half of this week. If there is anything else
-> that should be fixed please speak up now.
-Good to know.
+And we will have to write a regression test for this bug once upstream
+kernel is fixed.
 
-I suppose you're going to merge Martin's (rt)netlink patchset [1]
-(I'd prefer to get it merged).
+Also note that I use unlink() here since the test will fail otherwise
+once kernel is fixed and there is no socket to be unlinked.
 
-My netns_netlink rewrite + fix for recent ip [2] would be nice to get merged.
-In the future I'll add a check for that prehistoric iproute 100519.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=242146
-[2] https://patchwork.ozlabs.org/project/ltp/patch/20210401141210.9536-1-pvorel@suse.cz/
+-- 
+Cyril Hrubis
+chrubis@suse.cz
