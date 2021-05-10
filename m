@@ -1,23 +1,26 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 May 2021 10:28:55 +0800
-Subject: [LTP] [PATCH] syscall: remove PROT_WRITE|PROT_EXEC from brk02
-In-Reply-To: <20210510011134.cegvehhbuyc5us24@revolver>
-References: <20210508061252.18337-1-liwang@redhat.com>
- <20210510011134.cegvehhbuyc5us24@revolver>
-Message-ID: <CAEemH2eUN+9PtHdyqR8L0_wV__iDrdHXCagt3upwToSyubc_zw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 May 2021 06:42:00 +0200
+Subject: [LTP] [PATCH v2] controllers/cpuset: Restore the value of
+ cpuset.sched_load_balance
+In-Reply-To: <CAEemH2ddDeXCix9EPeeydWSHTA6d--TPW+ZV9nG9xOCtns_3sQ@mail.gmail.com>
+References: <1619684694-116827-1-git-send-email-wangxin410@huawei.com>
+ <CAEemH2ddDeXCix9EPeeydWSHTA6d--TPW+ZV9nG9xOCtns_3sQ@mail.gmail.com>
+Message-ID: <YJi5mN85eZTxzd52@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Liam Howlett <liam.howlett@oracle.com> wrote:
+Hi Li,
 
-> Reviewed-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> Reviewed-by: Li Wang <liwang@redhat.com>
 
-Thanks for the review! Patch applied.
+> This just does saves/restore action in setup/cleanup phase, looks no
+> harmful to merge in this release.
 
--- 
-Regards,
-Li Wang
+You right, merged!
+Thank you both.
 
+Kind regards,
+Petr
