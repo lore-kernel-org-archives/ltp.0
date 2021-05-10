@@ -1,87 +1,48 @@
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Date: Mon, 10 May 2021 07:47:11 -0700
-Subject: [LTP] [PATCH v4 1/3] ima_keys.sh: Check policy only once
-In-Reply-To: <20210507191414.14795-2-pvorel@suse.cz>
-References: <20210507191414.14795-1-pvorel@suse.cz>
- <20210507191414.14795-2-pvorel@suse.cz>
-Message-ID: <f22e507d-1983-b7a0-b5e0-15e1519ca038@linux.microsoft.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 10 May 2021 16:47:25 +0200
+Subject: [LTP] LTP Release
+In-Reply-To: <YJj4wftakLE7PECd@yuki>
+References: <YJOYgZNL7/qp5YCN@yuki> <YJPo4L0QnXHU7xks@pevik>
+ <YJVPP64LuDK7O564@pevik> <YJj4wftakLE7PECd@yuki>
+Message-ID: <YJlHfa/E+eNchQQE@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 5/7/21 12:14 PM, Petr Vorel wrote:
-> Not needed to check the same policy twice.
-> Rename to contain 'require' as we use tst_brk.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> new in v4
-> 
->   .../security/integrity/ima/tests/ima_keys.sh       | 14 +++++---------
->   1 file changed, 5 insertions(+), 9 deletions(-)
+> Hi!
+> > > also solving Shell API timeout sleep orphan processes would be good [1]
+> > > There is already C patch [2] + Li suggested to fix the shell implementation
+> > > using trap in subshell [3].
+> > OK there is shell implementation to fix orphan processes [4] from Joerg, which
+> > would be worth do fix it, Li already did a review, I'll look into it today.
 
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> I would like to get to a git freeze soon. I will have a look as well but
+> if it's not ready in the first half of this week I would just postpone
+> it rather than rush it.
 
-> 
-> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> index 9951ab999..3476b8007 100755
-> --- a/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> +++ b/testcases/kernel/security/integrity/ima/tests/ima_keys.sh
-> @@ -1,7 +1,7 @@
->   #!/bin/sh
->   # SPDX-License-Identifier: GPL-2.0-or-later
->   # Copyright (c) 2020 Microsoft Corporation
-> -# Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
-> +# Copyright (c) 2020-2021 Petr Vorel <pvorel@suse.cz>
->   # Author: Lachlan Sneff <t-josne@linux.microsoft.com>
->   #
->   # Verify that keys are measured correctly based on policy.
-> @@ -20,6 +20,7 @@ REQUIRED_POLICY="^measure.*$FUNC_KEYCHECK"
->   setup()
->   {
->   	require_ima_policy_content "$REQUIRED_POLICY" '-E' > $TST_TMPDIR/policy.txt
-> +	require_valid_policy_template
->   }
->   
->   cleanup()
-> @@ -27,15 +28,14 @@ cleanup()
->   	tst_is_num $KEYRING_ID && keyctl clear $KEYRING_ID
->   }
->   
-> -check_policy_template()
-> +
-> +require_valid_policy_template()
->   {
->   	while read line; do
->   	if echo $line | grep -q 'template=' && ! echo $line | grep -q 'template=ima-buf'; then
-> -		tst_res TCONF "only template=ima-buf can be specified for KEY_CHECK"
-> -		return 1
-> +		tst_brk TCONF "only template=ima-buf can be specified for KEY_CHECK"
->   	fi
->   	done < $TST_TMPDIR/policy.txt
-> -	return 0
->   }
->   
->   check_keys_policy()
-> @@ -59,8 +59,6 @@ test1()
->   
->   	tst_res TINFO "verify key measurement for keyrings and templates specified in IMA policy"
->   
-> -	check_policy_template || return
-> -
->   	check_keys_policy "$pattern" > $tmp_file || return
->   	keycheck_lines=$(cat $tmp_file)
->   	keyrings=$(for i in $keycheck_lines; do echo "$i" | grep "keyrings" | \
-> @@ -115,8 +113,6 @@ test2()
->   
->   	tst_res TINFO "verify measurement of certificate imported into a keyring"
->   
-> -	check_policy_template || return
-> -
->   	check_keys_policy "$pattern" >/dev/null || return
->   
->   	KEYRING_ID=$(keyctl newring $keyring_name @s) || \
-> 
+> > I'd like to rebase and send to ML IMA dm-crypt test for testing. If Mimi, Tushar
+> > or Lakshmi find time to test it, I'd like to have it in the release.
 
+> Here as well, if things are tested and ready soon enough then go ahead
+> and apply it.
+I was wrong, the last bit has not been upstreamed, thus only first commit can be
+merged.
+
+> I would like to freeze the git and start pre release testing, if
+> possible, in the second half of this week. If there is anything else
+> that should be fixed please speak up now.
+Good to know.
+
+I suppose you're going to merge Martin's (rt)netlink patchset [1]
+(I'd prefer to get it merged).
+
+My netns_netlink rewrite + fix for recent ip [2] would be nice to get merged.
+In the future I'll add a check for that prehistoric iproute 100519.
+
+Kind regards,
+Petr
+
+[1] https://patchwork.ozlabs.org/project/ltp/list/?series=242146
+[2] https://patchwork.ozlabs.org/project/ltp/patch/20210401141210.9536-1-pvorel@suse.cz/
