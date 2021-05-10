@@ -1,40 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 10 May 2021 16:58:01 +0200
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 10 May 2021 17:30:51 +0200
 Subject: [LTP] LTP Release
-In-Reply-To: <YJlHfa/E+eNchQQE@pevik>
+In-Reply-To: <YJlJ+ZV6zxqPO8Ed@yuki>
 References: <YJOYgZNL7/qp5YCN@yuki> <YJPo4L0QnXHU7xks@pevik>
- <YJVPP64LuDK7O564@pevik> <YJj4wftakLE7PECd@yuki>
- <YJlHfa/E+eNchQQE@pevik>
-Message-ID: <YJlJ+ZV6zxqPO8Ed@yuki>
+ <YJVPP64LuDK7O564@pevik> <YJj4wftakLE7PECd@yuki> <YJlHfa/E+eNchQQE@pevik>
+ <YJlJ+ZV6zxqPO8Ed@yuki>
+Message-ID: <205dc258-12fa-ba43-8a77-15fe0a08a430@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Here as well, if things are tested and ready soon enough then go ahead
-> > and apply it.
-> I was wrong, the last bit has not been upstreamed, thus only first commit can be
-> merged.
+On 10. 05. 21 16:58, Cyril Hrubis wrote:
+>> I suppose you're going to merge Martin's (rt)netlink patchset [1]
+>> (I'd prefer to get it merged).
 > 
-> > I would like to freeze the git and start pre release testing, if
-> > possible, in the second half of this week. If there is anything else
-> > that should be fixed please speak up now.
-> Good to know.
-> 
-> I suppose you're going to merge Martin's (rt)netlink patchset [1]
-> (I'd prefer to get it merged).
+> That one is stalled by my question if we can do more active polling
+> instead of the sleep and unless we get a reply soon it's not going to
+> get in...
 
-That one is stalled by my question if we can do more active polling
-instead of the sleep and unless we get a reply soon it's not going to
-get in...
-
-> My netns_netlink rewrite + fix for recent ip [2] would be nice to get merged.
-> In the future I'll add a check for that prehistoric iproute 100519.
-
-I will have a look.
+That question only applies to patch 6. You don't need to wait with
+merging patches 1-5. It won't break any tests since the new code will be
+unused anyway.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
