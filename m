@@ -1,36 +1,58 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 8 May 2021 15:08:22 +0800
-Subject: [LTP] [PATCH v2] controllers/cpuset: Restore the value of
- cpuset.sched_load_balance
-In-Reply-To: <1619684694-116827-1-git-send-email-wangxin410@huawei.com>
-References: <1619684694-116827-1-git-send-email-wangxin410@huawei.com>
-Message-ID: <CAEemH2ddDeXCix9EPeeydWSHTA6d--TPW+ZV9nG9xOCtns_3sQ@mail.gmail.com>
+From: Liam Howlett <liam.howlett@oracle.com>
+Date: Mon, 10 May 2021 01:15:49 +0000
+Subject: [LTP] [PATCH] syscall: remove PROT_WRITE|PROT_EXEC from brk02
+In-Reply-To: <20210508061252.18337-1-liwang@redhat.com>
+References: <20210508061252.18337-1-liwang@redhat.com>
+Message-ID: <20210510011134.cegvehhbuyc5us24@revolver>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Petr,
+Reviewed-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 
-On Thu, Apr 29, 2021 at 4:08 PM Wang Xin <wangxin410@huawei.com> wrote:
->
-> When we run the cpuhotplug03 test case on the arm64 machine,
-> we conclude that no error occurs when the cpuhotplug03 case is executed alone,
-> but once the cpuset_sched_domains case is executed first,
-> After cpuhotplug03 is executed, the error "cpuhotplug03 1 TFAIL: No cpuhotplug_do_spin_loop processes found on" occurs.
-> The cpuset_sched_domains test case changes the value of cpuset.sched_load_balance in the cpuset cgroup subsystem,
-> but does not restore the value at the end of the test.
-> Modify the cpuset_funcs.sh file. The test result shows that the problem is solved successfully.
->
-> Signed-off-by: Wang Xin <wangxin410@huawei.com>
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-This just does saves/restore action in setup/cleanup phase, looks no
-harmful to merge in this release.
-
-
---
-Regards,
-Li Wang
-
+* Li Wang <liwang@redhat.com> [210508 02:13]:
+> We got permission denied while performing the brk02 on x86_64/s390x
+> (kernel-4.18). After looking at the manual page of mprotect(), seems
+> the access issue caused by PROT_EXEC.
+> 
+>  " POSIX says that the behavior of mprotect() is unspecified if it is
+>  applied to a region of memory that was not obtained via mmap(2). "
+> 
+>  # ./brk02
+>  tst_test.c:1291: TINFO: Timeout per run is 0h 05m 00s
+>  brk02.c:41: TFAIL: Cannot mprotect new VMA
+> 
+> From Liam Howlett:
+>  Just removing the PROT_EXEC invalidates the test. However, if both
+>  PROT_EXEC and PROT_WRITE are removed, then the test still does what
+>  is intended.
+> 
+> So let's remove 'PROT_WRITE|PROT_EXEC' to make brk02 PASS with
+> all platforms.
+> 
+> Suggested-by: Liam Howlett <liam.howlett@oracle.com>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/kernel/syscalls/brk/brk02.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/brk/brk02.c b/testcases/kernel/syscalls/brk/brk02.c
+> index 4a272bac3..11e803cb4 100644
+> --- a/testcases/kernel/syscalls/brk/brk02.c
+> +++ b/testcases/kernel/syscalls/brk/brk02.c
+> @@ -36,8 +36,7 @@ void brk_down_vmas(void)
+>  		return;
+>  	}
+>  
+> -	if (mprotect(addr - page_size, page_size,
+> -		     PROT_READ|PROT_WRITE|PROT_EXEC)) {
+> +	if (mprotect(addr - page_size, page_size, PROT_READ)) {
+>  		tst_res(TFAIL | TERRNO, "Cannot mprotect new VMA");
+>  		return;
+>  	}
+> -- 
+> 2.30.2
+> 
