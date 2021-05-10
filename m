@@ -1,29 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 10 May 2021 19:28:12 +0200
-Subject: [LTP] [PATCH v4 1/3] ima_keys.sh: Check policy only once
-In-Reply-To: <f22e507d-1983-b7a0-b5e0-15e1519ca038@linux.microsoft.com>
-References: <20210507191414.14795-1-pvorel@suse.cz>
- <20210507191414.14795-2-pvorel@suse.cz>
- <f22e507d-1983-b7a0-b5e0-15e1519ca038@linux.microsoft.com>
-Message-ID: <YJltLKrpw0O4MtCU@pevik>
+Date: Mon, 10 May 2021 19:38:09 +0200
+Subject: [LTP] [PATCH v2 0/5] docparser formatting improvements
+In-Reply-To: <20210504190240.24250-1-pvorel@suse.cz>
+References: <20210504190240.24250-1-pvorel@suse.cz>
+Message-ID: <YJlvgWqtQWo98j4J@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi,
 
-> On 5/7/21 12:14 PM, Petr Vorel wrote:
-> > Not needed to check the same policy twice.
-> > Rename to contain 'require' as we use tst_brk.
+> originally there was only commit "docparse: Make tags in table
+> clickable".
+> I added few more formatting changes. Most important is to filter by
+> .tags keys.
 
-> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Kind regards,
+> Petr
 
-Thanks Lakshmi, merged this one.
+> Petr Vorel (5):
+>   docparse: Move CVE and git link into Info column
+>   docparse: Filter .tags by key
+>   docparse: Make tags in table clickable
+>   docparse: Sort alphabetically tags in table
+>   docparse: Fix headers
 
-And waiting for the other two till Tushar manage to get
-the dm-crypt related code to mainline. Good luck!
+>  docparse/testinfo.pl | 92 +++++++++++++++++++++++++++++---------------
+>  1 file changed, 62 insertions(+), 30 deletions(-)
+
+given it should not affected tests I didn't wait for review of the last two and
+I merged whole patchset. Thanks for your time to review the first three.
 
 Kind regards,
 Petr
