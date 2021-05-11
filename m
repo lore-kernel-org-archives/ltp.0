@@ -1,156 +1,118 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 May 2021 10:23:01 +0200
-Subject: [LTP] [PATCH v2] syscalls/setfsgid02: Rewrite setfsgid02
-In-Reply-To: <20210508064351.10737-1-zhaogongyi@huawei.com>
-References: <20210508064351.10737-1-zhaogongyi@huawei.com>
-Message-ID: <YJo+5e59dSQm2vjP@pevik>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Tue, 11 May 2021 16:26:44 +0800
+Subject: [LTP] [PATCH v2] kernel/syscalls: Modify incorrect use of
+ TERRNO/TTERRNO
+Message-ID: <20210511082644.110124-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zhao,
+modify some incorrect use of TERRNO/TTERRNO in kernel/syscalls;
 
-Thank you for rewriting the test.
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+---
+v1->v2:
+1. Remove the modification of safe_macros, as these two would be better to put 2 commits.
 
-> 1)update to new API
-> 2)rewrite setfsgid02 according man 2
-I'd actually specify, what exactly you changed.
+ testcases/kernel/syscalls/bpf/bpf_map01.c                     | 2 +-
+ testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c | 2 +-
+ testcases/kernel/syscalls/dup/dup03.c                         | 4 ++--
+ testcases/kernel/syscalls/execve/execve02.c                   | 4 ++--
+ testcases/kernel/syscalls/ioctl/ioctl04.c                     | 4 ++--
+ testcases/kernel/syscalls/ioperm/ioperm01.c                   | 2 +-
+ 6 files changed, 9 insertions(+), 9 deletions(-)
 
-Cyril asked for:
-- unprivileged process cannot change the value i.e. value that is
-  different from return from ret=setfsgid(-1) is passed as
-  setfsgid(ret+1) followed by setfsgid(-1) and all of these returns the
-  same value and the value also matches process effective group ID
+diff --git a/testcases/kernel/syscalls/bpf/bpf_map01.c b/testcases/kernel/syscalls/bpf/bpf_map01.c
+index 122b18f25..94f9b7873 100644
+--- a/testcases/kernel/syscalls/bpf/bpf_map01.c
++++ b/testcases/kernel/syscalls/bpf/bpf_map01.c
+@@ -82,7 +82,7 @@ void run(unsigned int n)
+ 			if (i < VAL_SZ)
+ 				tst_res(TPASS, "Preallocated array map lookup");
+ 		} else {
+-			tst_res(TFAIL | TERRNO, "Prellocated array map lookup");
++			tst_res(TFAIL | TTERRNO, "Prellocated array map lookup");
+ 		}
+ 	break;
+ 	}
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+index 516ab50f1..382497918 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+@@ -208,7 +208,7 @@ static void do_test(unsigned int i)
+ 		return;
+ 	}
 
-- privileged process can change the value i.e. the same as
-  unprivileged but we expect the last setfsgid(-1) return
-  the new value. We either have to reset the setfsgid() at the end of
-  the test or run it in a fork()-ed process so that we start with a
-  clean plate for each iteration
+-	tst_res(TPASS | TERRNO, "clock_nanosleep() failed with");
++	tst_res(TPASS | TTERRNO, "clock_nanosleep() failed with");
+ }
 
-Your code expects root has euid 0 and nobody does not have euid 1,
-which of course works, but wouldn't be better to run setfsgid(-1) before testing
-to verify it, as Cyril suggests?
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/dup/dup03.c b/testcases/kernel/syscalls/dup/dup03.c
+index caef078b2..0e99813f4 100644
+--- a/testcases/kernel/syscalls/dup/dup03.c
++++ b/testcases/kernel/syscalls/dup/dup03.c
+@@ -30,9 +30,9 @@ static void run(void)
 
-...
-> diff --git a/testcases/kernel/syscalls/setfsgid/setfsgid02.c b/testcases/kernel/syscalls/setfsgid/setfsgid02.c
+ 	if (TST_RET == -1) {
+ 		if (TST_ERR == EMFILE)
+-			tst_res(TPASS | TERRNO, "dup() failed as expected");
++			tst_res(TPASS | TTERRNO, "dup() failed as expected");
+ 		else
+-			tst_res(TFAIL | TERRNO, "dup() failed unexpectedly");
++			tst_res(TFAIL | TTERRNO, "dup() failed unexpectedly");
+ 		return;
+ 	}
 
-> -/*
-> - *     Testcase to check the basic functionality of setfsgid(2) system
-> - *     call failures.
-> +/*\
-> + * [Description]
-> + * Testcase to check the basic functionality of setfsgid(2) system
-> + * call failures with priviledged or unpriviledged user.
-typo: (un)priviledged => (un)privileged
+diff --git a/testcases/kernel/syscalls/execve/execve02.c b/testcases/kernel/syscalls/execve/execve02.c
+index d9fb5b919..0574f5c8b 100644
+--- a/testcases/kernel/syscalls/execve/execve02.c
++++ b/testcases/kernel/syscalls/execve/execve02.c
+@@ -49,9 +49,9 @@ static void do_child(void)
+ 		tst_brk(TFAIL, "execve() passed unexpectedly");
 
-And here be more verbose as well (IMHO "basic functionality" does not say much),
-e.g. something like (in case you update the code):
-* Testcase for setfsgid() syscall to check that
-* - privileged user can change a filesystem group ID different from saved
-*  value of previous setfsgid() call
-* - unprivileged user cannot change it
->   */
+ 	if (TST_ERR != EACCES)
+-		tst_brk(TFAIL | TERRNO, "execve() failed unexpectedly");
++		tst_brk(TFAIL | TTERRNO, "execve() failed unexpectedly");
 
-> -#include <stdio.h>
-> -#include <unistd.h>
-> -#include <grp.h>
->  #include <pwd.h>
-> -#include <sys/types.h>
-> -#include <errno.h>
-> -
-> -#include "test.h"
-> -#include "compat_16.h"
-> +#include "tst_test.h"
-> +#include "compat_tst_16.h"
+-	tst_res(TPASS | TERRNO, "execve() failed expectedly");
++	tst_res(TPASS | TTERRNO, "execve() failed expectedly");
 
-> -TCID_DEFINE(setfsgid02);
-> -int TST_TOTAL = 1;
-> +static gid_t gid;
-> +static gid_t pre_gid;
-> +static const char nobody_uid[] = "nobody";
-> +static struct passwd *ltpuser;
+ 	exit(0);
+ }
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl04.c b/testcases/kernel/syscalls/ioctl/ioctl04.c
+index 353114cc0..d9ddb8e59 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl04.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl04.c
+@@ -47,11 +47,11 @@ static void verify_ioctl(void)
+ 	}
 
-> -static void setup(void);
-> -static void cleanup(void);
-> -
-> -int main(int ac, char **av)
-> +static void run(unsigned int i)
->  {
-> -	int lc;
-> -
-> -	gid_t gid;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		gid = 1;
-> -		while (getgrgid(gid))
-> -			gid++;
-> +	int cnt;
+ 	if (TST_ERR == EACCES) {
+-		tst_res(TPASS | TERRNO, "Mounting RO device RW failed");
++		tst_res(TPASS | TTERRNO, "Mounting RO device RW failed");
+ 		goto next;
+ 	}
 
-> -		GID16_CHECK(gid, setfsgid, cleanup);
-> +	GID16_CHECK(gid, setfsgid);
+-	tst_res(TFAIL | TERRNO,
++	tst_res(TFAIL | TTERRNO,
+ 		"Mounting RO device RW failed unexpectedly expected EACCES");
 
-> -		TEST(SETFSGID(cleanup, gid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL | TTERRNO,
-> -				"setfsgid() failed unexpectedly");
-> -			continue;
-> -		}
-> +	if (i == 0) {
-> +		ltpuser = SAFE_GETPWNAM(nobody_uid);
-> +		SAFE_SETEUID(ltpuser->pw_uid);
-> +	}
+ next:
+diff --git a/testcases/kernel/syscalls/ioperm/ioperm01.c b/testcases/kernel/syscalls/ioperm/ioperm01.c
+index fc5754be9..6c50a0b75 100644
+--- a/testcases/kernel/syscalls/ioperm/ioperm01.c
++++ b/testcases/kernel/syscalls/ioperm/ioperm01.c
+@@ -64,7 +64,7 @@ static void cleanup(void)
+ 	 * Reset I/O privileges for the specified port.
+ 	 */
+ 	if ((ioperm(io_addr, NUM_BYTES, 0)) == -1)
+-		tst_brk(TBROK | TTERRNO, "ioperm() cleanup failed");
++		tst_brk(TBROK | TERRNO, "ioperm() cleanup failed");
+ }
 
-> -		if (TEST_RETURN == gid) {
-> -			tst_resm(TFAIL, "setfsgid() returned %ld, expected %d",
-> -				 TEST_RETURN, gid);
-> -		} else {
-> -			tst_resm(TPASS, "setfsgid() returned expected value : "
-> -				 "%ld", TEST_RETURN);
-> +	/*
-> +	 * Run SETFSGID() twice to check the second running have changed
-> +	 * the gid for priviledged user, and have not changed the gid
-> +	 * for unpriviledged user.
-And here typos.
+ static struct tst_test test = {
+--
+2.17.1
 
-> +	 */
-> +	for (cnt = 0; cnt < 2; cnt++) {
-> +		TEST(SETFSGID(gid));
-> +		if (TST_RET != pre_gid)
-Cast to long is needed to prevent introducing warnings for 32bit compilation:
-if ((long)pre_gid != TST_RET).
-And move pre_gid to be first (WARNING: Comparisons should place the constant on
-the right side of the test).
-
-> +			tst_res(TFAIL, "setfsgid() returned %ld", TST_RET);
-> +		else {
-> +			tst_res(TPASS,
-> +				"setfsgid() returned expected value : %ld",
-> +				TST_RET);
-> +			if (i == 1) {
-> +				pre_gid = gid;
-> +				gid++;
-> +			}
->  		}
->  	}
-
-> +	if (i == 0) {
-> +		SAFE_SETEUID(0);
-> +	}
-nit: no brackets needed here.
-scripts/checkpatch.pl from kernel is your friend
->  }
-
-IMHO improvements are good enough for test to be merged before release.
-
-Kind regards,
-Petr
