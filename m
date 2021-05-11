@@ -1,140 +1,137 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 May 2021 14:21:15 +0200
-Subject: [LTP] [PATCH] bugfix for network/lib6/getaddrinfo_01.c
-In-Reply-To: <20210511091630.23257-1-dongshijiang@inspur.com>
-References: <20210511091630.23257-1-dongshijiang@inspur.com>
-Message-ID: <YJp2u+lUy9VMq9Wb@pevik>
+Date: Tue, 11 May 2021 14:40:12 +0200
+Subject: [LTP] [RFC PATCH v2 1/1] netns_netlink: Rewrite into new API
+In-Reply-To: <YJpF5mq0oftICi+u@yuki>
+References: <20210401141210.9536-1-pvorel@suse.cz>
+ <YJpF5mq0oftICi+u@yuki>
+Message-ID: <YJp7LBc0IxKuwNh2@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+> Hi!
+> > Remove check for iproute 100519 (v2.6.34 => old enough to drop this check).
 
-[ Cc: Alexey, Martin and Cyril ]
+> I guess that this is fine, it seems to be more than 10 years old now.
 
-> For test cases (test2 ,IPV4 canonical name) and (test13 ,IPV6 canonical name)
+> > Remove check for unshare() CLONE_NEWNET support (since 2.6.24, old enough).
 
-> The gethostname() API returns the official name of host, not the canonical name of host.
-> The canonical name of host needs to be obtained through the gethostbyname() API;
+> Actually there are CONFIG_FOO_NS variables in kernel .config and
+> individual namespaces can be turned on/off. So we have to check if
+> network namespaces have been compiled into kernel or not. I guess that
+> simplest solution here would be adding .needs_kconfig field with
+> "CONFIG_NET_NS=y".
+Oh yes, there are other tests which use CONFIG_NET_NS=y.
 
-Yes, test 2 and 13 fails systems which don't use FQDN as hostname and have DNS records
-due mismatch short name and FQDN, e.g.:
-getaddrinfo_01    2  TFAIL  :  getaddrinfo_01.c:140: getaddrinfo IPv4 canonical name ("foo.suse.cz") doesn't match hostname ("foo")
+BTW I guess sooner or later we should introduce variable to print only info that
+config file is not available (for these embedded platforms and old android).
 
-It's a bit strange to use deprecated gethostbyname() in getaddrinfo() tests :).
-Yes, it's the easiest way to get FQDN instead of just "short" hostname. But
-Maybe simple check if we have FQDN with strchr for dot and TCONF it's just short
-name would be better.
-
-> Signed-off-by: dongshijiang <dongshijiang@inspur.com>
-> ---
->  testcases/network/lib6/getaddrinfo_01.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-
-> diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
-> index db252a998..bf5af7b4a 100644
-> --- a/testcases/network/lib6/getaddrinfo_01.c
-> +++ b/testcases/network/lib6/getaddrinfo_01.c
-> @@ -75,6 +75,14 @@ static void gaiv4(void)
->  	if (gethostname(hostname, sizeof(hostname)) < 0)
->  		tst_brkm(TBROK | TERRNO, NULL, "gethostname failed");
->  	strncpy(shortname, hostname, MAXHOSTNAMELEN);
-> +
-> +	//get official name of host
-Useless comment.
-
-> +	struct hostent *phostent = NULL;
-This should go below other struct definitions, IMHO can be without NULL.
-> +
-> +	phostent = gethostbyname(hostname);
-> +	if (phostent == NULL)
-> +		tst_brkm(TBROK | TERRNO, NULL, "gethostbyname failed");
-> +
->  	shortname[MAXHOSTNAMELEN] = '\0';
->  	p = strchr(shortname, '.');
->  	if (p)
-> @@ -134,10 +142,10 @@ static void gaiv4(void)
->  				 "entries with canonical name set");
->  			freeaddrinfo(aires);
->  			return;
-> -		} else if (strcasecmp(hostname, pai->ai_canonname)) {
-> +		} else if (strcasecmp(phostent->h_name, pai->ai_canonname)) {
->  			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name "
->  				 "(\"%s\") doesn't match hostname (\"%s\")",
-> -				 pai->ai_canonname, hostname);
-> +				 pai->ai_canonname, phostent->h_name);
->  			freeaddrinfo(aires);
->  			return;
->  		}
-> @@ -533,6 +541,14 @@ static void gaiv6(void)
->  	if (gethostname(hostname, sizeof(hostname)) < 0)
->  		tst_brkm(TBROK, NULL, "gethostname failed - %s",
->  			 strerror(errno));
-> +
-> +	//get official name of host
-> +	struct hostent *phostent = NULL;
-The same here.
-> +
-> +	phostent = gethostbyname(hostname);
-> +	if (phostent == NULL)
-> +		tst_brkm(TBROK | TERRNO, NULL, "gethostbyname failed");
-> +
->  	strncpy(shortname, hostname, MAXHOSTNAMELEN);
->  	shortname[MAXHOSTNAMELEN] = '\0';
->  	p = strchr(shortname, '.');
-> @@ -593,10 +609,10 @@ static void gaiv6(void)
->  				 "entries with canonical name set");
->  			freeaddrinfo(aires);
->  			return;
-> -		} else if (strcasecmp(hostname, pai->ai_canonname)) {
-> +		} else if (strcasecmp(phostent->h_name, pai->ai_canonname)) {
->  			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name "
->  				 "(\"%s\") doesn't match hostname (\"%s\")",
-> -				 pai->ai_canonname, hostname);
-> +				 pai->ai_canonname, phostent->h_name);
->  			freeaddrinfo(aires);
->  			return;
->  		}
-
-FYI Workaround on systems which do not have DNS record is to use /etc/fstab.
-We should document in testcases/network/README.md that when using /etc/fstab,
-well recommended order FQDN and *then* short name is required, e.g.:
-::1 foo.suse.cz foo
-
-Other setup fails, e.g.:
-::1 foo
-::1 foo foo.suse.cz
-
-leads to error:
-getaddrinfo_01   13  TFAIL  :  getaddrinfo_01.c:611: getaddrinfo IPv6 canonical name ("foo") doesn't match hostname ("foo.suse.cz")
-
-and setup:
-::1 foo.suse.cz
-
-leads to
-getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:594: getaddrinfo IPv6 basic lookup ("foo") returns -5 ("No address associated with hostname")
-
-The best would be if the test checked the correct setup itself
-but not sure how do it to not complicate this test too much.
-I guess during rewrite of this test we might decide to split it.
-
-Other TODO (not related to this patch:
-e.g.: it fails when there no DNS record nor records in /etc/hosts:
-
-getaddrinfo_01    1  TFAIL  :  getaddrinfo_01.c:117: getaddrinfo IPv4 basic lookup ("myhost") returns -2 ("Name or service not known")
 ...
-getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:599: getaddrinfo IPv6 basic lookup ("myhost") returns -2 ("Name or service not known")
+> >  int child_func(void)
 
-Any distro installer should add them, but I guess we should TCONF in this case.
+> static int child_func(void)
++1
 
-or when there is DNS A record, but not AAAA: 
-getaddrinfo_01   12  TFAIL  :  getaddrinfo_01.c:596: getaddrinfo IPv6 basic lookup ("myhost.suse.cz") returns -5 ("No address associated with hostname")
+> >  {
+> > @@ -71,8 +48,7 @@ int child_func(void)
+> >  	char buffer[4096];
+> >  	struct nlmsghdr *nlh;
 
-During rewriting to new API test would deserve cleanup, e.g.
-remove duplicity in gaiv4() and gaiv6() (getaddrinfo() can deal with IPv4
-and IPv6 in a nice way through hints, see safe_getaddrinfo()).
+> > -	/* child will listen to a network interface create/delete/up/down
+> > -	 * events */
+> > +	/* child will listen to a network interface create/delete/up/down events */
+> >  	memset(&sa, 0, sizeof(sa));
+> >  	sa.nl_family = AF_NETLINK;
+> >  	sa.nl_groups = RTMGRP_LINK;
+> > @@ -89,7 +65,7 @@ int child_func(void)
+> >  	}
+
+> >  	/* waits for parent to create an interface */
+> > -	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+> > +	TST_CHECKPOINT_WAIT(0);
+
+> >  	/* To get rid of "resource temporarily unavailable" errors
+> >  	 * when testing with -i option */
+> > @@ -121,60 +97,49 @@ int child_func(void)
+> >  	return 0;
+> >  }
+
+
+> We can simplify the code here by using SAFE_MACROS() which is allowed in
+> new library.
+
+> > -static void test(void)
+> > +static void test_netns_netlink(void)
+> >  {
+> >  	pid_t pid;
+> >  	int status;
+
+> >  	/* unshares the network namespace */
+> > -	if (unshare(CLONE_NEWNET) == -1)
+> > -		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
+> > +	SAFE_UNSHARE(CLONE_NEWNET);
+
+> > -	pid = tst_fork();
+> > -	if (pid < 0) {
+> > -		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+> > -	}
+> > +	pid = SAFE_FORK();
+> >  	if (pid == 0) {
+> >  		_exit(child_func());
+
+> No need for _exit() here, _exit() is to be used from signal handlers.
++1
+
+> >  	}
+
+> >  	/* creates TAP network interface dummy0 */
+> >  	if (WEXITSTATUS(system("ip tuntap add dev dummy0 mode tap")))
+> > -		tst_brkm(TBROK, cleanup, "system() failed");
+> > +		tst_brk(TBROK, "system() failed");
+
+> >  	/* removes previously created dummy0 device */
+> >  	if (WEXITSTATUS(system("ip tuntap del mode tap dummy0")))
+> > -		tst_brkm(TBROK, cleanup, "system() failed");
+> > +		tst_brk(TBROK, "system() failed");
+
+> >  	/* allow child to continue */
+> > -	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> > -
+> > +	TST_CHECKPOINT_WAKE(0);
+
+> > -	SAFE_WAITPID(cleanup, pid, &status, 0);
+> > +	SAFE_WAITPID(pid, &status, 0);
+> >  	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+> > -		tst_resm(TFAIL, "netlink interface fail");
+> > +		tst_res(TFAIL, "netlink interface fail");
+> >  		return;
+> >  	}
+
+> We can also get rid of this result propagation as we can:
+
+> - use SAFE_MACROS in child
+> - use tst_res() in child as:
+
+> static void child_func(void)
+> {
+> 	...
+
+> 	if (event_found)
+> 		tst_res(TPASS, "...");
+> 	else
+> 		tst_res(TFAIL, "...");
+
+> 	exit(0);
+> }
+
+> And with that all we have to do is a call to tst_reap_children()
+
+Oh yes, that makes sense. Sorry for not catching obvious error not using safe
+macros.
+
+Sending v3 now.
 
 Kind regards,
 Petr
