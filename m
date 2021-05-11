@@ -1,21 +1,24 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 May 2021 15:09:57 +0200
-Subject: [LTP] [PATCH v2] kernel/syscalls: Modify incorrect use of
- TERRNO/TTERRNO
-In-Reply-To: <20210511082644.110124-1-xieziyao@huawei.com>
-References: <20210511082644.110124-1-xieziyao@huawei.com>
-Message-ID: <YJqCJZWGrBWSb/dS@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 11 May 2021 14:52:12 +0200
+Subject: [LTP] [PATCH v3 1/1] netns_netlink: Rewrite into new API
+In-Reply-To: <20210511125606.20425-1-pvorel@suse.cz>
+References: <20210511125606.20425-1-pvorel@suse.cz>
+Message-ID: <YJp9/JHow8g5Xt/K@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ziyao,
+Hi!
+Looks good: Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> modify some incorrect use of TERRNO/TTERRNO in kernel/syscalls;
+Also this is a bugfix for new iproute, right? If so this should get in
+before the release.
 
-Thanks a lot, merged.
+And we should probably make use of the netlink library from Martin later
+on, but that can wait after the release.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
