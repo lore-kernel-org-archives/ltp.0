@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 May 2021 15:54:21 +0200
-Subject: [LTP] [PATCH 1/2] libclone: Move test.h include to C file
-In-Reply-To: <YJo+ZFMqcOZ0KXvD@yuki>
-References: <20210219144704.20433-1-pvorel@suse.cz>
- <20210219144704.20433-2-pvorel@suse.cz> <YJo+ZFMqcOZ0KXvD@yuki>
-Message-ID: <YJqMjdXEbbuD0t5e@pevik>
+Date: Tue, 11 May 2021 16:05:01 +0200
+Subject: [LTP] [PATCH v3 1/1] netns_netlink: Rewrite into new API
+In-Reply-To: <YJp9/JHow8g5Xt/K@yuki>
+References: <20210511125606.20425-1-pvorel@suse.cz>
+ <YJp9/JHow8g5Xt/K@yuki>
+Message-ID: <YJqPDb5WGhNTtLfB@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,15 +14,23 @@ To: ltp@lists.linux.it
 Hi Cyril,
 
 > Hi!
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Looks good: Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Thanks!
 
-> This looks obviously OK.
+> Also this is a bugfix for new iproute, right? If so this should get in
+> before the release.
+Yes, thus pushed.
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> And we should probably make use of the netlink library from Martin later
+> on, but that can wait after the release.
++1, put into my TODO list.
 
-FYI libclone.h is no longer needed for netns_netlink.c, thus no need to merge it
-now. I suppose libclone will not be migrated to new API (mqns_helper.h will use
-SAFE_CLONE() or something else else if needed to be kept), thus not merging.
+Also how about keeping libmnl vs. using Martin's library for
+route-change-netlink.c? Which one is better to use?
+(already asked in [1]: it'd be nice to get rid of libmnl dependency,
+but on the other hand using it means also testing it).
 
 Kind regards,
 Petr
+
+[1] https://lists.linux.it/pipermail/ltp/2021-May/022529.html
