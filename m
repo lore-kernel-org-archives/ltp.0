@@ -1,36 +1,56 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 11 May 2021 16:05:01 +0200
-Subject: [LTP] [PATCH v3 1/1] netns_netlink: Rewrite into new API
-In-Reply-To: <YJp9/JHow8g5Xt/K@yuki>
-References: <20210511125606.20425-1-pvorel@suse.cz>
- <YJp9/JHow8g5Xt/K@yuki>
-Message-ID: <YJqPDb5WGhNTtLfB@pevik>
+Date: Tue, 11 May 2021 16:19:19 +0200
+Subject: [LTP] [PATCH] mkfs: force block size to 1024 for ext3 and ext4
+In-Reply-To: <20210511103622.GC12149@mussarela>
+References: <20210510134739.37512-1-cascardo@canonical.com>
+ <YJoh1f4EWtQWlroC@pevik> <20210511103622.GC12149@mussarela>
+Message-ID: <YJqSZ56ua/Ky0BmY@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi,
 
-> Hi!
-> Looks good: Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Thanks!
+> On Tue, May 11, 2021 at 08:19:01AM +0200, Petr Vorel wrote:
+> > Hi,
 
-> Also this is a bugfix for new iproute, right? If so this should get in
-> before the release.
-Yes, thus pushed.
+> > > ext3 and ext4 filesystems will reserve at least 1024 blocks for the
+> > > journal.  With a blocksize of 4096, this will be 25% of the filesystem size
+> > > without accounting for any other overhead.
+> > Is that any actual problem?
 
-> And we should probably make use of the netlink library from Martin later
-> on, but that can wait after the release.
-+1, put into my TODO list.
+> It causes the test to fail.
+>      mkfs01 2 TFAIL: 'mkfs -t ext4  /dev/loop0 16000' failed, unexpected size.
 
-Also how about keeping libmnl vs. using Martin's library for
-route-change-netlink.c? Which one is better to use?
-(already asked in [1]: it'd be nice to get rid of libmnl dependency,
-but on the other hand using it means also testing it).
+> The filesystem size is very small, 16K 1k blocks, and we test that there are at
+> least 80% of that available. As I said, the journal takes at least 1024 blocks,
+> and with 4k blocks, that is too much overhead.
+
+Have you checked if d44387457 ("mkfs: relax size check") fixes the issue?
+
+https://github.com/linux-test-project/ltp/commit/d4438745751dc4b0faa50063f9a0d9542f0ceaac
 
 Kind regards,
 Petr
 
-[1] https://lists.linux.it/pipermail/ltp/2021-May/022529.html
+> > > /etc/mke2fs.conf will use 1024 block size for small filesystems, which are
+> > > between 3M and 512M. However, on recent versions of Ubuntu, this
+> > > configuration has changed and thet default blocksize is 4096 even for small
+> > > filesystems.
+
+> > > Force the blocksize to 1024 on ext3 and ext4 filesystems, which will lead
+> > > to the expected results, as journals will take only 1M.
+
+> > IMHO it'd be better to keep the default, because that covers what end users
+> > actually use.
+
+> One alternative to forcing the block size is accouting for the journal blocks,
+> but, then, that needs to consider the block size. I think my approach is more
+> simple. We could restrict it to the smaller 16M filesystem, though.
+
+> What do you think?
+
+> Thanks.
+> Cascardo.
