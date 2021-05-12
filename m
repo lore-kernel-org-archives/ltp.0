@@ -1,132 +1,289 @@
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Wed, 12 May 2021 16:52:20 +0800
-Subject: [LTP] [PATCH v1 3/4] syscalls/shmget05: Add test for
- /proc/sys/kernel/shm_next_id
-In-Reply-To: <1620809541-6891-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1620809541-6891-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <1620809541-6891-3-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Xie Ziyao <xieziyao@huawei.com>
+Date: Wed, 12 May 2021 17:16:08 +0800
+Subject: [LTP] [PATCH v4] syscalls/chown: Rewrite chown/chown04.c with the
+ new api
+Message-ID: <20210512091608.53997-1-xieziyao@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This case is similar to msgget04.c.
+Rewrite chown/chown04.c with the new api.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 ---
- runtest/syscalls                              |  1 +
- runtest/syscalls-ipc                          |  1 +
- .../kernel/syscalls/ipc/shmget/.gitignore     |  1 +
- .../kernel/syscalls/ipc/shmget/shmget05.c     | 69 +++++++++++++++++++
- 4 files changed, 72 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ipc/shmget/shmget05.c
+v3->v4:
+1. Modification for proper docparse formatting.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2dff25984..63d821e53 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1402,6 +1402,7 @@ shmdt02 shmdt02
- shmget02 shmget02
- shmget03 shmget03
- shmget04 shmget04
-+shmget05 shmget05
- 
- sigaction01 sigaction01
- sigaction02 sigaction02
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index b3bd37923..ff0364704 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -67,3 +67,4 @@ shmdt02 shmdt02
- shmget02 shmget02
- shmget03 shmget03
- shmget04 shmget04
-+shmget05 shmget05
-diff --git a/testcases/kernel/syscalls/ipc/shmget/.gitignore b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-index c57df68f5..6f08529f8 100644
---- a/testcases/kernel/syscalls/ipc/shmget/.gitignore
-+++ b/testcases/kernel/syscalls/ipc/shmget/.gitignore
-@@ -1,3 +1,4 @@
- /shmget02
- /shmget03
- /shmget04
-+/shmget05
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget05.c b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
-new file mode 100644
-index 000000000..601609648
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget05.c
-@@ -0,0 +1,69 @@
+ testcases/kernel/syscalls/chown/chown04.c | 229 +++++++---------------
+ 1 file changed, 73 insertions(+), 156 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/chown/chown04.c b/testcases/kernel/syscalls/chown/chown04.c
+index 1f3ed412b..65451516b 100644
+--- a/testcases/kernel/syscalls/chown/chown04.c
++++ b/testcases/kernel/syscalls/chown/chown04.c
+@@ -1,75 +1,55 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2021 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+- *  07/2001 Ported by Wayne Boyer
++ * 07/2001 Ported by Wayne Boyer
+  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software Foundation,
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+
+-/*
+- * Test Name: chown04
 +/*\
 + * [Description]
+  *
+- * Test Description:
+- *   Verify that,
+- *   1) chown(2) returns -1 and sets errno to EPERM if the effective user id
+- *		 of process does not match the owner of the file and the process
+- *		 is not super user.
+- *   2) chown(2) returns -1 and sets errno to EACCES if search permission is
+- *		 denied on a component of the path prefix.
+- *   3) chown(2) returns -1 and sets errno to EFAULT if pathname points
+- *		 outside user's accessible address space.
+- *   4) chown(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
+- *		 component is too long.
+- *   5) chown(2) returns -1 and sets errno to ENOTDIR if the directory
+- *		 component in pathname is not a directory.
+- *   6) chown(2) returns -1 and sets errno to ENOENT if the specified file
+- *		 does not exists.
++ * Verify that:
 + *
-+ * It is a basic test about shm_next_id.
-+ *
-+ * shm_next_id specifies desired id for next allocated IPC shared memory. By
-+ * default they are equal to -1, which means generic allocation logic.
-+ * Possible values to set are in range {0..INT_MAX}.
-+ * Toggle with non-default value will be set back to -1 by kernel after
-+ * successful IPC object allocation.
-+ */
++ * 1. chown(2) returns -1 and sets errno to EPERM if the effective user id
++ *    of process does not match the owner of the file and the process is not
++ *    super user;
++ * 2. chown(2) returns -1 and sets errno to EACCES if search permission is
++ *    denied on a component of the path prefix;
++ * 3. chown(2) returns -1 and sets errno to EFAULT if pathname points outside
++ *    user's accessible address space;
++ * 4. chown(2) returns -1 and sets errno to ENAMETOOLONG if the pathname
++ *    component is too long;
++ * 5. chown(2) returns -1 and sets errno to ENOENT if the specified file does
++ *    not exists;
++ * 6. chown(2) returns -1 and sets errno to ENOTDIR if the directory component
++ *    in pathname is not a directory;
++ * 7. chown(2) returns -1 and sets errno to ELOOP if too many symbolic links
++ *    were encountered in resolving pathname;
++ * 8. chown(2) returns -1 and sets errno to EROFS if the named file resides on
++ *    a read-only filesystem.
+  */
+
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <grp.h>
+ #include <pwd.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/mman.h>
+-#include <sys/mount.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "compat_16.h"
+-
+-#define MODE_RWX		 (S_IRWXU|S_IRWXG|S_IRWXO)
+-#define FILE_MODE		 (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+-#define DIR_MODE		 (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+-				 S_IXGRP|S_IROTH|S_IXOTH)
+-#define DIR_TEMP		 "testdir_1"
+-#define TEST_FILE1		 "tfile_1"
+-#define TEST_FILE2		 (DIR_TEMP "/tfile_2")
+-#define TEST_FILE3		 "t_file/tfile_3"
+-#define TEST_FILE4		 "test_eloop1"
+-#define TEST_FILE5		 "mntpoint"
+-
+-static char long_path[PATH_MAX + 2];
+-static const char *device;
+-static int mount_flag;
 +
-+#include <errno.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
 +#include "tst_test.h"
-+#include "tst_safe_sysv_ipc.h"
-+#include "libnewipc.h"
++#include "compat_tst_16.h"
++#include "tst_safe_macros.h"
 +
-+#define NEXT_ID_PATH "/proc/sys/kernel/shm_next_id"
-+static int shm_id, pid;
-+static key_t shmkey;
++#define MODE 0666
 +
-+static void verify_shmget(void)
++#define MNT_POINT	"mntpoint"
++#define MODE_RWX	(S_IRWXU|S_IRWXG|S_IRWXO)
++#define FILE_MODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
++#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
++
++#define DIR_TEMP	"testdir_1"
++#define TEST_FILE1	"tfile_1"
++#define TEST_FILE2	"testdir_1/tfile_2"
++#define TEST_FILE3	"t_file/tfile_3"
++#define TEST_FILE4	"test_eloop1"
++#define TEST_FILE5	"mntpoint"
++
++static char long_path[PATH_MAX + 2] = {[0 ... PATH_MAX + 1] = 'a'};
+
+ static struct test_case_t {
+ 	char *pathname;
+@@ -85,111 +65,48 @@ static struct test_case_t {
+ 	{TEST_FILE5, EROFS}
+ };
+
+-TCID_DEFINE(chown04);
+-int TST_TOTAL = ARRAY_SIZE(tc);
+-
+-static char *bad_addr;
++static void run(unsigned int i)
 +{
-+	SAFE_FILE_PRINTF(NEXT_ID_PATH, "%d", pid);
-+
-+	shm_id = SAFE_SHMGET(shmkey, SHM_SIZE, SHM_RW | IPC_CREAT);
-+	if (shm_id == pid)
-+		tst_res(TPASS, "shm_next_id succeeded, shm id %d", pid);
-+	else
-+		tst_res(TFAIL, "shm_next_id failed, expected id %d, but got %d", pid, shm_id);
-+
-+	TST_ASSERT_INT(NEXT_ID_PATH, -1);
-+	SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
-+	pid++;
-+}
-+
-+static void setup(void)
-+{
-+	shmkey = GETIPCKEY();
-+	pid = getpid();
-+}
-+
++	uid_t uid;
++	gid_t gid;
+
+-static void setup(void);
+-static void cleanup(void);
++	UID16_CHECK((uid = geteuid()), "chown");
++	GID16_CHECK((gid = getegid()), "chown");
+
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-	uid_t user_id;
+-	gid_t group_id;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	UID16_CHECK((user_id = geteuid()), "chown", cleanup)
+-	GID16_CHECK((group_id = getegid()), "chown", cleanup)
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(CHOWN(cleanup, tc[i].pathname, user_id, group_id));
+-
+-			if (TEST_RETURN == 0) {
+-				tst_resm(TFAIL, "chown succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == tc[i].exp_errno) {
+-				tst_resm(TPASS | TTERRNO, "chown failed");
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "chown failed; expected: %d - %s",
+-					 tc[i].exp_errno,
+-					 tst_strerrno(tc[i].exp_errno));
+-			}
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	TST_EXP_FAIL(CHOWN(tc[i].pathname, uid, gid), tc[i].exp_errno);
+ }
+
+ static void setup(void)
+ {
+ 	struct passwd *ltpuser;
+-	const char *fs_type;
++	ltpuser = SAFE_GETPWNAM("nobody");
+
+-	tst_require_root();
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
++	tc[2].pathname = SAFE_MMAP(0, 1, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS,
++				   0, 0);
+
+-	tst_tmpdir();
++	SAFE_SYMLINK("test_eloop1", "test_eloop2");
++	SAFE_SYMLINK("test_eloop2", "test_eloop1");
+
+-	fs_type = tst_dev_fs_type();
+-	device = tst_acquire_device(cleanup);
+-	if (!device)
+-		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
++	SAFE_SETEUID(0);
++	SAFE_TOUCH("t_file", MODE_RWX, NULL);
++	SAFE_TOUCH(TEST_FILE1, MODE, NULL);
++	SAFE_MKDIR(DIR_TEMP, S_IRWXU);
++	SAFE_TOUCH(TEST_FILE2, MODE, NULL);
+
+-	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
+-
+-	TEST_PAUSE;
+-
+-	memset(long_path, 'a', PATH_MAX - 1);
+-
+-	bad_addr = mmap(0, 1, PROT_NONE,
+-			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+-	if (bad_addr == MAP_FAILED)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
+-
+-	tc[2].pathname = bad_addr;
+-
+-	SAFE_SYMLINK(cleanup, "test_eloop1", "test_eloop2");
+-	SAFE_SYMLINK(cleanup, "test_eloop2", "test_eloop1");
+-
+-	SAFE_SETEUID(cleanup, 0);
+-	SAFE_TOUCH(cleanup, "t_file", MODE_RWX, NULL);
+-	SAFE_TOUCH(cleanup, TEST_FILE1, 0666, NULL);
+-	SAFE_MKDIR(cleanup, DIR_TEMP, S_IRWXU);
+-	SAFE_TOUCH(cleanup, TEST_FILE2, 0666, NULL);
+-
+-	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
+-	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type, MS_RDONLY, NULL);
+-	mount_flag = 1;
+-
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
++	SAFE_SETEUID(ltpuser->pw_uid);
+ }
+
+-void cleanup(void)
 +static void cleanup(void)
-+{
-+	if (shm_id != -1)
-+		SAFE_SHMCTL(shm_id, IPC_RMID, NULL);
-+}
+ {
+-	if (seteuid(0) == -1)
+-		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
+-
+-	if (mount_flag && tst_umount("mntpoint") < 0) {
+-		tst_brkm(TBROK | TERRNO, NULL,
+-			 "umount device:%s failed", device);
+-	}
+-
+-	if (device)
+-		tst_release_device(device);
+-
+-	tst_rmdir();
++	SAFE_SETEUID(0);
+ }
 +
 +static struct tst_test test = {
-+	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.needs_rofs = 1,
++	.mntpoint = MNT_POINT,
++	.tcnt = ARRAY_SIZE(tc),
++	.test = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = verify_shmget,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_CHECKPOINT_RESTORE=y",
-+		NULL
-+	},
-+	.needs_root = 1,
 +};
--- 
-2.23.0
+--
+2.17.1
 
