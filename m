@@ -1,103 +1,43 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 12 May 2021 15:52:00 +0200
-Subject: [LTP] [PATCH] Makefile: Use SPDX in Makefile
-In-Reply-To: <20210512084904.35159-1-xieziyao@huawei.com>
-References: <20210512084904.35159-1-xieziyao@huawei.com>
-Message-ID: <YJvdgJCg2ZWq8lWM@pevik>
+Date: Wed, 12 May 2021 15:55:45 +0200
+Subject: [LTP] [PATCH] mkfs: force block size to 1024 for ext3 and ext4
+In-Reply-To: <YJvVeOpV2Zt6B31X@yuki>
+References: <20210510134739.37512-1-cascardo@canonical.com>
+ <YJoh1f4EWtQWlroC@pevik> <20210511103622.GC12149@mussarela>
+ <YJvVeOpV2Zt6B31X@yuki>
+Message-ID: <YJveYWhSPvzd9Ehj@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Ziyao,
+Hi,
 
-> For the testsuite that has used SPDX, also modify its Makefile to use SPDX.
-Nice cleanup. Good, you included only GPLv2+ Makefiles.
+[Cc Jan]
 
-Unfortunately patch cannot be applied with 'git am' and even with patch:
+> Hi!
+> > > > /etc/mke2fs.conf will use 1024 block size for small filesystems, which are
+> > > > between 3M and 512M. However, on recent versions of Ubuntu, this
+> > > > configuration has changed and thet default blocksize is 4096 even for small
+> > > > filesystems.
 
-$ patch -p1 <Makefile-Use-SPDX-in-Makefile.patch
-patching file doc/Makefile
-patch: **** malformed patch@line 244: diff --git a/include/Makefile b/include/Makefile
+> > > > Force the blocksize to 1024 on ext3 and ext4 filesystems, which will lead
+> > > > to the expected results, as journals will take only 1M.
 
-Line 244 is top_srcdir:
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2009, Cisco Systems Inc.
- # Ngie Cooper, July 2009
--#
- top_srcdir			?= ..
+> > > IMHO it'd be better to keep the default, because that covers what end users
+> > > actually use.
 
-I suppose you generate patch correctly with 'git format-patch' and send with
-'git send-email'. I wonder if your mailserver breaks the patch. Could you check
-it and optionally use different mailserver? (you can send mail to ML from e.g.
-gmail and still have Signed-off-by: with huawei.com mail address).
+> > One alternative to forcing the block size is accouting for the journal blocks,
+> > but, then, that needs to consider the block size. I think my approach is more
+> > simple. We could restrict it to the smaller 16M filesystem, though.
 
-...
-> +++ b/testcases/open_posix_testsuite/Makefile
-> @@ -1,35 +1,23 @@
-> -#
-> -# Read COPYING for licensing details.
-> -#
-> +# SPDX-License-Identifier: GPL-2.0-or-later
->  # Ngie Cooper, June 2010
-> -#
->  # Makefiles that are considered critical to execution; if they don't exist
->  # all of the Makefiles will be rebuilt by default.
->  CRITICAL_MAKEFILE=	conformance/interfaces/timer_settime/Makefile
-> -
->  # The default logfile for the tests.
->  LOGFILE?=		logfile
->  # Subdirectories to traverse down.
->  SUBDIRS=		conformance functional stress
-> -
->  MAKE_ENV=		LOGFILE=`if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -
->  BUILD_MAKE_ENV=		"CFLAGS=$(CFLAGS)" "LDFLAGS=$(LDFLAGS)"
->  BUILD_MAKE_ENV+=	"LDLIBS=$(LDLIBS)" $(MAKE_ENV)
-> -
->  TEST_MAKE_ENV=		$(MAKE_ENV)
-> -
->  BUILD_MAKE=		env $(BUILD_MAKE_ENV) $(MAKE)
-> -
->  TEST_MAKE=		env $(TEST_MAKE_ENV) $(MAKE) -k
->  top_srcdir?=		.
-> -
->  prefix?=		`$(top_srcdir)/scripts/print_prefix.sh`
-> -
->  datadir?=		$(prefix)/share
-> -
->  exec_prefix?=		$(prefix)
->  all: conformance-all functional-all stress-all tools-all
-> @@ -41,7 +29,7 @@ endif
->  clean: $(CRITICAL_MAKEFILE)
->  	@rm -f $(LOGFILE)*
->  	@for dir in $(SUBDIRS) tools; do \
-> -	    $(MAKE) -C $$dir clean >/dev/null; \
-> +		$(MAKE) -C $$dir clean >/dev/null; \
->  	done
->  distclean: distclean-makefiles
-> @@ -54,7 +42,7 @@ distclean-makefiles:
->  generate-makefiles: distclean-makefiles
->  	@env top_srcdir=$(top_srcdir) \
-> -	    $(top_srcdir)/scripts/generate-makefiles.sh
-> +		$(top_srcdir)/scripts/generate-makefiles.sh
->  install: bin-install conformance-install functional-install stress-install
-> @@ -102,8 +90,8 @@ tools-all:
->  	@$(MAKE) -C tools all
->  $(CRITICAL_MAKEFILE): \
-> -    $(top_srcdir)/scripts/generate-makefiles.sh	\
-> -    $(top_srcdir)/CFLAGS			\
-> -    $(top_srcdir)/LDFLAGS			\
-> -    $(top_srcdir)/LDLIBS
-> +	$(top_srcdir)/scripts/generate-makefiles.sh	\
-> +	$(top_srcdir)/CFLAGS			\
-> +	$(top_srcdir)/LDFLAGS			\
-> +	$(top_srcdir)/LDLIBS
->  	@$(MAKE) generate-makefiles
+> > What do you think?
 
-Unrelated change: you fix also indent here. It'd be better to add it into
-separate patch.
+> I guess that we should merge your fix in order to have the test working
+> for the upcomming release. Then we can discuss if this should be fixed
+> differently or not.
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
