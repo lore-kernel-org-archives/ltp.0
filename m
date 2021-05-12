@@ -1,65 +1,58 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Wed, 12 May 2021 10:44:09 +0000
-Subject: [LTP] [PATCH v1 2/4] syscalls/shmget*: Convert into new api
-In-Reply-To: <1620809541-6891-2-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1620809541-6891-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1620809541-6891-2-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <609BB199.5040409@fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 12 May 2021 13:42:39 +0200
+Subject: [LTP] [PATCH 1/1] netns_helper.sh: Fix parsing recent iproute2
+ versions
+In-Reply-To: <20210512103052.9646-1-pvorel@suse.cz>
+References: <20210512103052.9646-1-pvorel@suse.cz>
+Message-ID: <YJu/L3HssZY14vQa@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi ALL
-> 1) merge shmget05.c into shmget02.c
-> 2) Use SHMMIN -1 and SHMMAX + 1 to trigger EINVAL error
-> 3) Use SHM_RD, SHM_WR, SHM_RW to trigger EACCES error under unpriviledged user
+Hi!
+> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+> index a5b77a0aa..4dac0e306 100755
+> --- a/testcases/kernel/containers/netns/netns_helper.sh
+> +++ b/testcases/kernel/containers/netns/netns_helper.sh
+> @@ -47,16 +47,21 @@ IFCONF_IN6_ARG=
+>  
+>  tst_check_iproute()
+>  {
+> -	local cur_ipver="$(ip -V)"
+> -	local spe_ipver="$1"
+> +	local current_ver="$(ip -V)"
+> +	local expected_ver="111010"
 
-Sorry for missing EPERM error in shmget02.c(I will add it in v2 when you
-have comment on rest patches)
+So if I'm reading this right, this is 2010 again. I wonder if we can
+just remove this check as well.
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index a57904ce9..319d1e972 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -17,6 +17,9 @@
-  * greater than SHMMAX. Or a segment for the given key exists, but size is
-  * greater than the size of that segment.
-  * EACCES - The user does not have permission to access the shared
-memory segment.
-+ * EPERM - The SHM_HUGETLB flag was specified, but the caller was not
-privileged
-+ * (did not have the CAP_IPC_LOCK capability). Also the caller's group
-id should
-+ * be not in hugetlb_shm_group proc file.
-  */
- #include <errno.h>
- #include <sys/types.h>
-@@ -47,6 +50,7 @@ static struct tcase {
-        {&shmkey1, SHMMAX + 1, IPC_CREAT | IPC_EXCL, 0, EINVAL},
-        {&shmkey, SHM_SIZE * 2, IPC_EXCL, 0, EINVAL},
-        {&shmkey, SHM_SIZE, SHM_RD, 1, EACCES},
-+       {&shmkey1, SHM_SIZE, IPC_CREAT | SHM_HUGETLB, 1, EPERM}
- };
+I guess that the most safe variant at the moment would be pushing this
+patch, then dropping the check completely after the release.
 
- static void verify_shmget(struct tcase *tc)
-@@ -91,6 +95,7 @@ static void setup(void)
-        shmkey = GETIPCKEY();
-        shmkey1 = GETIPCKEY();
+> -	cur_ipver=${cur_ipver##*s}
+> +	current_ver=${current_ver##*s}
+>  
+> -	if [ -z "$cur_ipver" -o -z "$spe_ipver" ]; then
+> +	if [ -z "$current_ver" ]; then
+>  		tst_brk TBROK "failed to obtain valid iproute version"
+>  	fi
+>  
+> -	if [ $cur_ipver -lt $spe_ipver ]; then
+> +	# new version scheme since v5.7.0-77-gb687d1067169
+> +	if echo "$current_ver" | grep -q 'iproute2-v\?[0-9]\+\.'; then
+> +		return
+> +	fi
+> +
+> +	if [ $current_ver -lt $expected_ver ]; then
+>  		tst_brk TCONF "too old iproute version"
+>  	fi
+>  }
+> -- 
+> 2.31.1
+> 
 
-+       SAFE_FILE_PRINTF("/proc/sys/vm/hugetlb_shm_group", "1");
-        shm_id = SAFE_SHMGET(shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL);
-        pw = SAFE_GETPWNAM("nobody");
-        tst_res(TINFO, "%d %d", shmkey, shmkey1);
-@@ -110,4 +115,8 @@ static struct tst_test test = {
-        .cleanup = cleanup,
-        .test = do_test,
-        .tcnt = ARRAY_SIZE(tcases),
-+       .save_restore = (const char * const[]) {
-+                "?/proc/sys/vm/hugetlb_shm_group",
-+               NULL,
-+       }
- };
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
