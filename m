@@ -1,73 +1,25 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 May 2021 15:54:58 +0200
-Subject: [LTP] [COMMITTED] [PATCH] Revert "docparse: Fix heading levels"
-Message-ID: <20210512135458.12444-1-chrubis@suse.cz>
+Date: Wed, 12 May 2021 15:58:03 +0200
+Subject: [LTP] [PATCH] API: Give user hint when checkpoints were not
+ initialised
+In-Reply-To: <YJvbKL2zrEWof6+m@pevik>
+References: <20210512101738.31118-1-rpalethorpe@suse.com>
+ <YJvbKL2zrEWof6+m@pevik>
+Message-ID: <YJve64fqcEBm/fvN@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This reverts commit 04a7608fe4f7fe2c267216d8b90acf019bdea824.
+Hi!
+> > Currently the user gets an error about EOVERFLOW. This will hopefully
+> > save some searching.
+> 
+> Nice! I'm for merging it before release (with that fixed whitespace).
 
-Fixes build with asciidoc that otherwise failed with:
+Looks safe enough, I will fix the whitespaces and apply.
 
-...
-asciidoc: ERROR: filters.txt: line 4: only book doctypes can contain level 0 sections
-...
-asciidoc: ERROR: all-tests.txt: line 4: only book doctypes can contain level 0 sections
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Petr Vorel <pvorel@suse.cz>
----
- docparse/testinfo.pl | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
-index 8bc4623b6..857278ac8 100755
---- a/docparse/testinfo.pl
-+++ b/docparse/testinfo.pl
-@@ -87,6 +87,11 @@ sub code
- 	return "+$_[0]+";
- }
- 
-+sub hr
-+{
-+	return "\n\n'''\n\n";
-+}
-+
- sub html_a
- {
- 	my ($url, $text) = @_;
-@@ -99,17 +104,17 @@ sub html_a
- 
- sub h1
- {
--	return "= $_[0]\n";
-+	return "== $_[0]\n";
- }
- 
- sub h2
- {
--	return "== $_[0]\n";
-+	return "=== $_[0]\n";
- }
- 
- sub h3
- {
--	return "=== $_[0]\n";
-+	return "==== $_[0]\n";
- }
- 
- sub label
-@@ -350,6 +355,7 @@ sub content_all_tests
- 			$printed = $letter;
- 		}
- 
-+		$content .= hr() if (defined($tmp));
- 		$content .= label($name);
- 		$content .= h3($name);
- 		$content .= $letters;
 -- 
-2.26.3
-
+Cyril Hrubis
+chrubis@suse.cz
