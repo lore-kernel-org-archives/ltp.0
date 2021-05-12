@@ -1,67 +1,48 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 12 May 2021 12:07:46 +0200
-Subject: [LTP] [PATCH 1/1] netns_netlink: Check ip tuntap support
-Message-ID: <20210512100746.5907-1-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 12 May 2021 11:17:38 +0100
+Subject: [LTP] [PATCH] API: Give user hint when checkpoints were not
+ initialised
+Message-ID: <20210512101738.31118-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-11b1fea9d removed ip version check. Although check shouldn't be needed
-because version 100519 (v2.6.34) is old enough, add check.
+Currently the user gets an error about EOVERFLOW. This will hopefully
+save some searching.
 
-Instead of parsing ip version just try run 'ip tuntap'.
-
-Fixes: ("netns_netlink: Rewrite into new API")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
-Hi Cyril,
+ lib/tst_checkpoint.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-feel free to reject this as most of the distros having that old kernel
-will also have too old toolchain to compile recent LTP
-(tst_netdevice.c:218:44: error: use of undeclared identifier
-'IFA_FLAGS').
-
-Kind regards,
-Petr
-
- testcases/kernel/containers/netns/netns_netlink.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/kernel/containers/netns/netns_netlink.c
-index 1e8e78fc5..ab56afb99 100644
---- a/testcases/kernel/containers/netns/netns_netlink.c
-+++ b/testcases/kernel/containers/netns/netns_netlink.c
-@@ -36,11 +36,19 @@
- #include <sched.h>
+diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+index 9e9dcf9e6..13d86c73b 100644
+--- a/lib/tst_checkpoint.c
++++ b/lib/tst_checkpoint.c
+@@ -86,6 +86,9 @@ int tst_checkpoint_wait(unsigned int id, unsigned int msec_timeout)
+ 	struct timespec timeout;
+ 	int ret;
  
- #include "tst_test.h"
-+#include "tst_cmd.h"
- #include "tst_safe_macros.h"
- #include "lapi/namespaces_constants.h"
- 
- #define MAX_TRIES 1000
- 
-+static void setup(void)
-+{
-+	if (tst_cmd((const char *const []){"ip", "tuntap", NULL}, "/dev/null",
-+		      NULL, TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING))
-+		tst_brk(TCONF, "ip missing tuntap support");
-+}
++	if (!tst_max_futexes)
++		tst_brkm(TBROK, NULL, "Set test.needs_checkpoints = 1");
 +
- static void child_func(void)
+ 	if (id >= tst_max_futexes) {
+ 		errno = EOVERFLOW;
+ 		return -1;
+@@ -107,7 +110,10 @@ int tst_checkpoint_wake(unsigned int id, unsigned int nr_wake,
  {
- 	int fd, len, event_found, tries;
-@@ -114,6 +122,7 @@ static void test_netns_netlink(void)
+ 	unsigned int msecs = 0, waked = 0;
  
- 
- static struct tst_test test = {
-+	.setup = setup,
- 	.test_all = test_netns_netlink,
- 	.needs_checkpoints = 1,
- 	.needs_tmpdir = 1,
+-	if (id >= tst_max_futexes) {
++	if (!tst_max_futexes)
++		tst_brkm(TBROK, NULL, "Set test.needs_checkpoints = 1");
++
++        if (id >= tst_max_futexes) {
+ 		errno = EOVERFLOW;
+ 		return -1;
+ 	}
 -- 
 2.31.1
 
