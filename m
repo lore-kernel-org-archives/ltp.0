@@ -1,69 +1,79 @@
-From: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 12 May 2021 16:17:11 +0200
-Subject: [LTP] syscalls/mallinfo01 test is broken
-Message-ID: <9d5d4dc9-ab51-7218-23f3-2ec835210fcf@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 12 May 2021 16:20:05 +0200
+Subject: [LTP] [PATCH v3 3/4] lib: ignore SIGINT in _tst_kill_test
+In-Reply-To: <CAEemH2et8_SXWJTsofdt7gc0NRV=91rPe0RtAMt1BX=SbAzhig@mail.gmail.com>
+References: <20210508055109.16914-4-liwang@redhat.com>
+ <dfdd8e9a-90ca-642d-1c21-da169ca3878f@jv-coder.de>
+ <CAEemH2et8_SXWJTsofdt7gc0NRV=91rPe0RtAMt1BX=SbAzhig@mail.gmail.com>
+Message-ID: <YJvkFTUWS2iuZ00H@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
-the mallinfo01 test is failing on some of our test machines because it
-makes wrong assumptions about how malloc() and free() will change the
-number of free chunks (ordblks). I recommend we remove the test from
-runfiles before the upcoming release and fix it later because part of
-the test scenario needs major redesign.
+Hi all,
 
-> tst_test.c:1313: TINFO: Timeout per run is 0h 18m 00s
-> mallinfo_common.h:16: TINFO: Start...
-> mallinfo_common.h:18: TINFO: arena: 135168
-> mallinfo_common.h:19: TINFO: ordblks: 1
-> mallinfo_common.h:20: TINFO: smblks: 1
-> mallinfo_common.h:21: TINFO: hblks: 0
-> mallinfo_common.h:22: TINFO: hblkhd: 0
-> mallinfo_common.h:23: TINFO: usmblks: 0
-> mallinfo_common.h:24: TINFO: fsmblks: 64
-> mallinfo_common.h:25: TINFO: uordblks: 128
-> mallinfo_common.h:26: TINFO: fordblks: 135040
-> mallinfo_common.h:27: TINFO: keepcost: 134976
-> mallinfo_common.h:16: TINFO: Test uordblks...
-> mallinfo_common.h:18: TINFO: arena: 135168
-> mallinfo_common.h:19: TINFO: ordblks: 2
-> mallinfo_common.h:20: TINFO: smblks: 0
-> mallinfo_common.h:21: TINFO: hblks: 0
-> mallinfo_common.h:22: TINFO: hblkhd: 0
-> mallinfo_common.h:23: TINFO: usmblks: 0
-> mallinfo_common.h:24: TINFO: fsmblks: 0
-> mallinfo_common.h:25: TINFO: uordblks: 34048
-> mallinfo_common.h:26: TINFO: fordblks: 101120
-> mallinfo_common.h:27: TINFO: keepcost: 101056
-> mallinfo01.c:46: TPASS: mallinfo() uordblks passed
-> mallinfo_common.h:16: TINFO: Test ordblks...
-> mallinfo_common.h:18: TINFO: arena: 135168
-> mallinfo_common.h:19: TINFO: ordblks: 3
-> mallinfo_common.h:20: TINFO: smblks: 0
-> mallinfo_common.h:21: TINFO: hblks: 0
-> mallinfo_common.h:22: TINFO: hblkhd: 0
-> mallinfo_common.h:23: TINFO: usmblks: 0
-> mallinfo_common.h:24: TINFO: fsmblks: 0
-> mallinfo_common.h:25: TINFO: uordblks: 32432
-> mallinfo_common.h:26: TINFO: fordblks: 102736
-> mallinfo_common.h:27: TINFO: keepcost: 101056
-> mallinfo01.c:58: TFAIL: mallinfo() ordblks failed
-> 
-> Summary:
-> passed   1
-> failed   1
-> broken   0
-> skipped  0
-> warnings 0
+...
+> > To conclude:
+> > - bash does not seem to care about SIGINT delivery to background
+> > processes, but can be blocked using trap
+> > - zsh ignores SIGINT for background processes by default, but can be
+> > allowed using trap
+> > - dash and busybox sh ignore the signal to background processes, and
+> > this cannot be changed with trap
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> > I tried with the following snippets:
+> > <SHELL> -c 'trap "echo trap;" INT; (sleep 2; echo end sub) & sleep 1;
+> > kill -INT -$$; echo end main'
+> > <SHELL> -c 'trap "echo trap;" INT; (trap - SIGINT sleep 2; echo end sub)
+> > & sleep 1; kill -INT -$$; echo end main'
+> > <SHELL> -c 'trap "echo trap;" INT; (trap "exit" SIGINT sleep 2; echo end
+> > sub) & sleep 1; kill -INT -$$; echo end main'
+FYI (you probably know it) SIGINT is a bashism, INT needs to be used.
+$ kill -s SIGINT $$
+dash: 2: kill: invalid signal number or name: SIGINT
+
+> Thanks for the demos above, it shows the difference clearly.
+
+> > SIGINT handling for child processes is strange. This might have some
+> > implication for the shell tests,
+> > because it is possible, that SIGINT is not delivered to all processes
+> > and some may reside as orphans.
+> > Since this can happen only in case of timeouts, I guess there is no real
+> > Problem.
+
+> Yes.
+
+> Looks like the behaviors on signal 'SIGINT' are not unify in background
+> processes handling for different SHELL. So as you said that using SIGINT
+> seems NOT a good idea to stop the process in timeout.
+
+Yes, trap looks to be having some portability issues [1] [2]
+
+> > A possible fix could be using SIGTERM instead of SIGINT. This signal
+> > does not seem to have some "intelligent" handling for background processes.
+
+> I agree. Can you make a patch to replace that INT?
+
+> (and this is only a timeout issue, so patch merging may be delayed due
+> to LTP new release)
+
+> > I do not know why LTP used SIGINT in the first place. My first thought
+> > would have been to use SIGTERM.  It is the way to "politely ask
+> > processes to terminate"
+
+> Yes, but that not strange to me, the possible reason is just to
+> stop(ctrl ^c) the LTP test manually for debugging, so we went
+> too far for using SIGINT but forget the original purpose :).
+I'm not the author, but yes, SIGINT was used for stopping with ctrl^c during
+debugging.
+
+FYI I tried to use both SIGINT and SIGTERM, but there was some problem.
+But I guess it was my error. Please *add* SIGTERM (keep SIGINT).
+
+Kind regards,
+Petr
+
+[1] https://unix.stackexchange.com/questions/240723/exit-trap-in-dash-vs-ksh-and-bash/240736#240736
+[2] https://stackoverflow.com/questions/27012762/is-trap-exit-required-to-execute-in-case-of-sigint-or-sigterm-received
