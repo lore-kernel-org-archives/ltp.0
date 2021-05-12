@@ -1,32 +1,24 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 12 May 2021 15:26:12 +0200
-Subject: [LTP] [PATCH 1/1] netns_netlink: Check ip tuntap support
-In-Reply-To: <YJumsgxSkiiCnw4R@yuki>
-References: <20210512100746.5907-1-pvorel@suse.cz>
- <YJumsgxSkiiCnw4R@yuki>
-Message-ID: <YJvXdLQFN8oADt6A@pevik>
+Date: Wed, 12 May 2021 15:42:00 +0200
+Subject: [LTP] [PATCH] API: Give user hint when checkpoints were not
+ initialised
+In-Reply-To: <20210512101738.31118-1-rpalethorpe@suse.com>
+References: <20210512101738.31118-1-rpalethorpe@suse.com>
+Message-ID: <YJvbKL2zrEWof6+m@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi Richie,
 
-> Hi!
-> > 11b1fea9d removed ip version check. Although check shouldn't be needed
-> > because version 100519 (v2.6.34) is old enough, add check.
+> Currently the user gets an error about EOVERFLOW. This will hopefully
+> save some searching.
 
-> > Instead of parsing ip version just try run 'ip tuntap'.
+Nice! I'm for merging it before release (with that fixed whitespace).
 
-> What is the exact problem here? Missing tuntap support in ip before
-> v2.6.34?
-Yes.
-
-> The v2.6.34 was released in 2010 and v2.6.32 in 2009, so unless someone
-> reports breakage during pre-release testing I wouldn't bother.
-
-Sure, let's keep it as a backup if anybody complains. I suppose nobody bothers.
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
