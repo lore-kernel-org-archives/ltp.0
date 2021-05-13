@@ -1,31 +1,42 @@
-From: Konstantin Aladyshev <aladyshev22@gmail.com>
-Date: Thu, 13 May 2021 15:23:44 +0300
-Subject: [LTP] [PATCH] syscalls/clock_gettime: Fix typo
-Message-ID: <20210513122344.1432-1-aladyshev22@gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 13 May 2021 15:49:41 +0200
+Subject: [LTP] [PATCH] Skip tmpfs in all-filesystem shell tests
+Message-ID: <20210513134941.27656-1-mdoucha@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
----
- testcases/kernel/syscalls/clock_gettime/clock_gettime02.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All-filesystem shell tests like LVM currently don't support tmpfs. Remove it
+from tst_supported_fs helper output for now.
 
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-index b0a9e9067..1159dbd13 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime02.c
-@@ -120,7 +120,7 @@ static void verify_clock_gettime(unsigned int i)
- 	TEST(tv->clock_gettime(tc[i].clktype, ts));
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/lib/tst_supported_fs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+index 154b12ece..43eac194f 100644
+--- a/testcases/lib/tst_supported_fs.c
++++ b/testcases/lib/tst_supported_fs.c
+@@ -22,6 +22,7 @@ static void usage(void)
  
- 	if (TST_RET != -1) {
--		tst_res(TFAIL, "clock_gettime(2): clock %s passed unexcpectedly",
-+		tst_res(TFAIL, "clock_gettime(2): clock %s passed unexpectedly",
- 			tst_clock_name(tc[i].clktype));
- 		return;
- 	}
+ int main(int argc, char *argv[])
+ {
++	const char *skiplist[] = {"tmpfs", NULL};
+ 	const char *const *filesystems;
+ 	int i;
+ 
+@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
+ 	if (argv[1])
+ 		return !tst_fs_is_supported(argv[1]);
+ 
+-	filesystems = tst_get_supported_fs_types(NULL);
++	filesystems = tst_get_supported_fs_types(skiplist);
+ 	for (i = 0; filesystems[i]; i++)
+ 		printf("%s\n", filesystems[i]);
+ 
 -- 
-2.25.1
+2.31.1
 
