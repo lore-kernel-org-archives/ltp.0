@@ -1,34 +1,81 @@
-From: xuyang2018.jy@fujitsu.com <xuyang2018.jy@fujitsu.com>
-Date: Thu, 13 May 2021 02:27:40 +0000
-Subject: [LTP] syscalls/mallinfo01 test is broken
-In-Reply-To: <YJvftrFCueG3TXPf@yuki>
-References: <9d5d4dc9-ab51-7218-23f3-2ec835210fcf@suse.cz>
- <YJvftrFCueG3TXPf@yuki>
-Message-ID: <609C8EBC.80409@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 13 May 2021 13:08:40 +0800
+Subject: [LTP] [PATCH v3 3/4] lib: ignore SIGINT in _tst_kill_test
+In-Reply-To: <YJvkFTUWS2iuZ00H@pevik>
+References: <20210508055109.16914-4-liwang@redhat.com>
+ <dfdd8e9a-90ca-642d-1c21-da169ca3878f@jv-coder.de>
+ <CAEemH2et8_SXWJTsofdt7gc0NRV=91rPe0RtAMt1BX=SbAzhig@mail.gmail.com>
+ <YJvkFTUWS2iuZ00H@pevik>
+Message-ID: <CAEemH2fRLqipQWTxVsakYNGsmQT+2X8_xzgepCiAY1O8YWtKFA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril, Martin
-> Hi!
->> the mallinfo01 test is failing on some of our test machines because it
->> makes wrong assumptions about how malloc() and free() will change the
->> number of free chunks (ordblks). I recommend we remove the test from
->> runfiles before the upcoming release and fix it later because part of
->> the test scenario needs major redesign.
->
-> I've started some pre-release testruns and I've seen some failures as
-> well. I guess that removing it from runtest file and fixing it after
-> release sounds sane at this point.
-This case fails because malloc uses fastbin blocks.
-So the fix has two ways
-1) disable fastbin by using mallopt(M_MXFAST, 0)
-2) use another mallinfo struct info3 to get free chunks, so compare 
-info3 and info2 ordblks member.
+> FYI I tried to use both SIGINT and SIGTERM, but there was some problem.
+> But I guess it was my error. Please *add* SIGTERM (keep SIGINT).
 
-Best Regards
-Yang Xu
+Yes, we'd better keep SIGINT for ctrl^c action and use SIGTERM
+additionally for process terminating.
 
->
+Does this below (rough solution in my mind) work for you?
+
+diff --git a/lib/newlib_tests/shell/timeout03.sh
+b/lib/newlib_tests/shell/timeout03.sh
+index cd548d9a2..f39f5712a 100755
+--- a/lib/newlib_tests/shell/timeout03.sh
++++ b/lib/newlib_tests/shell/timeout03.sh
+@@ -30,6 +30,7 @@ TST_TIMEOUT=1
+
+ do_test()
+ {
++       trap "echo 'Sorry, timeout03 is still alive'" TERM
+        tst_res TINFO "testing killing test after TST_TIMEOUT"
+
+        sleep 2
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 28c2052d6..d7c9791e9 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -21,7 +21,7 @@ export TST_LIB_LOADED=1
+ . tst_security.sh
+
+ # default trap function
+-trap "tst_brk TBROK 'test interrupted or timed out'" INT
++trap "tst_brk TBROK 'test interrupted'" INT
+
+ _tst_do_exit()
+ {
+@@ -439,18 +439,18 @@ _tst_kill_test()
+ {
+        local i=10
+
+-       trap '' INT
+-       tst_res TBROK "Test timeouted, sending SIGINT! If you are
+running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+-       kill -INT -$pid
++       trap '' TERM
++       tst_res TBROK "Test timeouted, sending SIGTERM! If you are
+running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
++       kill -TERM -$pid
+        tst_sleep 100ms
+
+-       while kill -0 $pid 2>&1 > /dev/null && [ $i -gt 0 ]; do
++       while kill -0 $pid &>/dev/null && [ $i -gt 0 ]; do
+                tst_res TINFO "Test is still running, waiting ${i}s"
+                sleep 1
+                i=$((i-1))
+        done
+
+-       if kill -0 $pid 2>&1 > /dev/null; then
++       if kill -0 $pid &>/dev/null; then
+                tst_res TBROK "Test still running, sending SIGKILL"
+                kill -KILL -$pid
+        fi
+
+
+-- 
+Regards,
+Li Wang
+
