@@ -1,33 +1,27 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Thu, 13 May 2021 08:08:09 +0100
-Subject: [LTP] [PATCH] API: Give user hint when checkpoints were not
- initialised
-In-Reply-To: <YJve64fqcEBm/fvN@yuki>
-References: <20210512101738.31118-1-rpalethorpe@suse.com>
- <YJvbKL2zrEWof6+m@pevik> <YJve64fqcEBm/fvN@yuki>
-Message-ID: <87o8dfkt5y.fsf@suse.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 13 May 2021 09:23:06 +0200
+Subject: [LTP] [PATCH 0/2 v2] Add SPDX in Makefile and use tabs instead
+ of spaces
+In-Reply-To: <20210513062341.83852-1-xieziyao@huawei.com>
+References: <20210513062341.83852-1-xieziyao@huawei.com>
+Message-ID: <YJzT2n0T12bPRdEG@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Ziyao,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+> v1->v2:
+> 1. Fix errors in patch application;
+> 2. Add unrelated changes in replacing spaces with tabs into a separate patch.
 
-> Hi!
->> > Currently the user gets an error about EOVERFLOW. This will hopefully
->> > save some searching.
->> 
->> Nice! I'm for merging it before release (with that fixed whitespace).
->
-> Looks safe enough, I will fix the whitespaces and apply.
+> Xie Ziyao (2):
+>   Makefile: Use SPDX in Makefile
+>   open_posix_testsuite/Makefile: Use tabs instead of spaces
+FYI although safe to merge, we postpone merging after the release.
+Thanks!
 
-Thanks, but I would not put this in the release. There is no advantage
-to the end user, only test authors. It can only break the tests from an
-end user POV.
-
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
