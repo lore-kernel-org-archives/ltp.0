@@ -1,29 +1,23 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 13 May 2021 13:02:19 +0200
-Subject: [LTP] [Automated-testing] LTP pre-release git freeze and call
- for testing
-In-Reply-To: <YJz4A3mR3jHciihe@yuki>
-References: <YJOYgZNL7/qp5YCN@yuki> <YJpq26w8NBvBzUSc@yuki>
- <YJz4A3mR3jHciihe@yuki>
-Message-ID: <YJ0HO1xaM2x+o9cW@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 13 May 2021 12:44:52 +0200
+Subject: [LTP] RFC remove README.kernel_config
+In-Reply-To: <YJ0GuNYDmpNlgcoP@pevik>
+References: <YJv12RslhxorXEf2@pevik> <YJzegWYGhPYfS0Wq@yuki>
+ <YJ0GuNYDmpNlgcoP@pevik>
+Message-ID: <YJ0DJB/aFqxRqRIB@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> As previously planned LTP git is now frozen for anything but imporatnt
-> fixes and the (ideally) week of pre-release testing starts now.
-As release fixes, I'd like to merge these netlink detection support fixes for
-old kernels and fix and tonight send also add lapi/if_addr.h with IFA_FLAGS
-(to fix compilation on some old kernels).
+Hi!
+> > Acked by me as well. I do not think that the file is either up-to-day or
+> > important enough for us to maintain it.
+> OK, I'll remove it today, before the release.
 
-Last thing which I'd like is to state which version we support in this release
-(as document to doc/ and wiki). After release we can discuss which support we
-can drop.
+I wouldn't rush so much, it has been rotting in the tree for years...
 
-Kind regards,
-Petr
-
-> If you haven't tested latest LTP git please do so now.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
