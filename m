@@ -1,37 +1,54 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 13 May 2021 16:21:19 +0100
-Subject: [LTP] [PATCH 0/6] cfs_bandwidth01 and CGroup API
-Message-ID: <20210513152125.25766-1-rpalethorpe@suse.com>
+Date: Thu, 13 May 2021 16:21:20 +0100
+Subject: [LTP] [PATCH 1/6] API/cgroups: Allow fetching of CGroup name
+In-Reply-To: <20210513152125.25766-1-rpalethorpe@suse.com>
+References: <20210513152125.25766-1-rpalethorpe@suse.com>
+Message-ID: <20210513152125.25766-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Lets the test author get the name of a CGroup.
 
-This adds a test scheduler test which uses the cpu controller.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_cgroup.h | 4 ++++
+ lib/tst_cgroup.c     | 5 +++++
+ 2 files changed, 9 insertions(+)
 
-Also included are some additions and fixes to the CGroup API related
-to the test.
-
-Richard Palethorpe (6):
-  API/cgroups: Allow fetching of CGroup name
-  API/cgroups: Remove obsolete function in API
-  API/cgroups: Check for unknown controller name
-  API/cgroups: Add cpu controller
-  API/cgroups: Auto add controllers to subtree_control in new subgroup
-  sched/cgroup: Add cfs_bandwidth01
-
- include/tst_cgroup.h                          |   4 +
- lib/tst_cgroup.c                              |  94 ++++++----
- runtest/sched                                 |   1 +
- .../kernel/sched/cfs-scheduler/.gitignore     |   1 +
- testcases/kernel/sched/cfs-scheduler/Makefile |   4 +-
- .../sched/cfs-scheduler/cfs_bandwidth01.c     | 175 ++++++++++++++++++
- 6 files changed, 245 insertions(+), 34 deletions(-)
- create mode 100644 testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index bcf465a91..0df989bfd 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -133,6 +133,10 @@ struct tst_cgroup_group *
+ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
+ 		    const char *const group_name)
+ 		    __attribute__ ((nonnull, warn_unused_result));
++const char *
++tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
++		      __attribute__ ((nonnull, warn_unused_result));
++
+ /* Remove a descendant CGroup */
+ struct tst_cgroup_group *
+ tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 9b1270331..d3f1a8ba4 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -855,6 +855,11 @@ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
+ 	return cg;
+ }
+ 
++const char *tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
++{
++	return cg->group_name;
++}
++
+ struct tst_cgroup_group *tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
+ {
+ 	struct cgroup_dir **dir;
 -- 
 2.31.1
 
