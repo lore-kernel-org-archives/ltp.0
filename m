@@ -1,83 +1,73 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 14 May 2021 09:45:53 +0200
-Subject: [LTP] [PATCH v2 1/1] lapi: Add missing IFA_FLAGS
-In-Reply-To: <20210514080630.11273-1-pvorel@suse.cz>
-References: <20210514080630.11273-1-pvorel@suse.cz>
-Message-ID: <YJ4qsVYYYfW3lldj@yuki>
+Date: Fri, 14 May 2021 10:07:08 +0200
+Subject: [LTP] [PATCH] syscalls/unshare02: Fix failures on Debian
+Message-ID: <20210514080708.20036-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  configure.ac             |  1 +
->  include/lapi/rtnetlink.h | 17 +++++++++++++++++
->  lib/tst_netdevice.c      |  3 ++-
->  3 files changed, 20 insertions(+), 1 deletion(-)
->  create mode 100644 include/lapi/rtnetlink.h
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 136d82d09..95c6d2e72 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -59,6 +59,7 @@ AC_CHECK_HEADERS_ONCE([ \
->      linux/mempolicy.h \
->      linux/module.h \
->      linux/netlink.h \
-> +    linux/rtnetlink.h \
+The order of checks in kernel is not defined and on Debian we end up
+getting eperm even before the flags are checked which fails the invalid
+flags testcase.
 
-I wonder if this is really needed, if that header is not present we will
-have to add much more stuff to lapi/rtnetlink.h, so I would just avoid
-configure check here.
+The fix is simple, we change the test to setuid() only for the EPERM
+test.
 
->      linux/seccomp.h \
->      linux/securebits.h \
->      linux/tty.h \
-> diff --git a/include/lapi/rtnetlink.h b/include/lapi/rtnetlink.h
-> new file mode 100644
-> index 000000000..d1dc53df8
-> --- /dev/null
-> +++ b/include/lapi/rtnetlink.h
-> @@ -0,0 +1,17 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* Copyright (c) 2021 Petr Vorel <petr.vorel@gmail.com> */
-> +
-> +#ifndef LAPI_IF_ADDR_H__
-> +# define LAPI_IF_ADDR_H__
-> +
-> +#include "config.h"
-> +
-> +#ifdef HAVE_LINUX_RTNETLINK_H
-> +# include <linux/rtnetlink.h>
-> +#endif
-> +
-> +#ifndef IFA_FLAGS
-> +# define IFA_FLAGS 8
-> +#endif
-> +
-> +#endif	/* LAPI_IF_ADDR_H__ */
-> diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-> index 5ca523759..d098173d5 100644
-> --- a/lib/tst_netdevice.c
-> +++ b/lib/tst_netdevice.c
-> @@ -5,10 +5,11 @@
->  
->  #include <asm/types.h>
->  #include <linux/netlink.h>
-> -#include <linux/rtnetlink.h>
->  #include <linux/veth.h>
->  #include <sys/socket.h>
->  #include <net/if.h>
-> +#include "lapi/rtnetlink.h"
-> +
->  #define TST_NO_DEFAULT_MAIN
->  #include "tst_test.h"
->  #include "tst_rtnetlink.h"
-> -- 
-> 2.31.1
-> 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/unshare/unshare02.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/unshare/unshare02.c b/testcases/kernel/syscalls/unshare/unshare02.c
+index e9bd9ed2c..9b222fae2 100644
+--- a/testcases/kernel/syscalls/unshare/unshare02.c
++++ b/testcases/kernel/syscalls/unshare/unshare02.c
+@@ -30,6 +30,8 @@
+ 
+ #ifdef HAVE_UNSHARE
+ 
++static uid_t nobody_uid;
++
+ static struct test_case_t {
+ 	int mode;
+ 	int expected_error;
+@@ -42,20 +44,19 @@ static struct test_case_t {
+ static void run(unsigned int i)
+ {
+ 	pid_t pid = SAFE_FORK();
+-	if (pid == 0)
++	if (pid == 0) {
++		if (tc[i].expected_error == EPERM)
++			SAFE_SETUID(nobody_uid);
++
+ 		TST_EXP_FAIL(unshare(tc[i].mode), tc[i].expected_error,
+ 			     "unshare(%s)", tc[i].desc);
++	}
+ }
+ 
+ static void setup(void)
+ {
+ 	struct passwd *ltpuser = SAFE_GETPWNAM("nobody");
+-	SAFE_SETEUID(ltpuser->pw_uid);
+-}
+-
+-static void cleanup(void)
+-{
+-	SAFE_SETEUID(0);
++	nobody_uid = ltpuser->pw_uid;
+ }
+ 
+ static struct tst_test test = {
+@@ -63,7 +64,6 @@ static struct tst_test test = {
+ 	.forks_child = 1,
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+-	.cleanup = cleanup,
+ 	.setup = setup,
+ 	.test = run,
+ };
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.26.3
+
