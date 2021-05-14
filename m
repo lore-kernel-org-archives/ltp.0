@@ -1,73 +1,67 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 May 2021 10:56:33 +0200
-Subject: [LTP] [PATCH v3 1/1] lapi: Add missing IFA_FLAGS
-Message-ID: <20210514085633.1319-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 14 May 2021 17:10:27 +0800
+Subject: [LTP] [PATCH v3 3/4] lib: ignore SIGINT in _tst_kill_test
+In-Reply-To: <YJ4sh7zBOZxQy1S0@pevik>
+References: <20210508055109.16914-4-liwang@redhat.com>
+ <dfdd8e9a-90ca-642d-1c21-da169ca3878f@jv-coder.de>
+ <CAEemH2et8_SXWJTsofdt7gc0NRV=91rPe0RtAMt1BX=SbAzhig@mail.gmail.com>
+ <YJvkFTUWS2iuZ00H@pevik>
+ <CAEemH2fRLqipQWTxVsakYNGsmQT+2X8_xzgepCiAY1O8YWtKFA@mail.gmail.com>
+ <YJ4sh7zBOZxQy1S0@pevik>
+Message-ID: <CAEemH2dOg0JN6XrptGZ6WN3C1SOYpWKgSTdXtpcjSZzBjsnOMQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Petr Vorel <petr.vorel@gmail.com>
+Petr Vorel <pvorel@suse.cz> wrote:
 
-and use them in tst_netdevice.c. This fixes on older toolchains
-(e.g. sourcery-arm from Buildroot):
+> > Does this below (rough solution in my mind) work for you?
+> LGTM, but Joerg, Metan, could you please have a look?
 
-tst_netdevice.c: In function 'modify_address':
-tst_netdevice.c:218:44: error: 'IFA_FLAGS' undeclared (first use in this function)
-  if (!tst_rtnl_add_attr(file, lineno, ctx, IFA_FLAGS, &addr_flags,
+Thanks, I wouldn't send a patch until Joerg/Cyril has a review.
+(Maybe Joerg will have another better solution:)
 
-Fixes: bc2151a65 ("lib: Add helper functions for managing network interfaces")
+> > diff --git a/lib/newlib_tests/shell/timeout03.sh
+> > b/lib/newlib_tests/shell/timeout03.sh
+> > index cd548d9a2..f39f5712a 100755
+> > --- a/lib/newlib_tests/shell/timeout03.sh
+> > +++ b/lib/newlib_tests/shell/timeout03.sh
+> > @@ -30,6 +30,7 @@ TST_TIMEOUT=1
+>
+> >  do_test()
+> >  {
+> > +       trap "echo 'Sorry, timeout03 is still alive'" TERM
+> Any reason why not use tst_res TINFO? (working on bash).
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Changes v2->v3:
-* drop autotools check (Cyril)
++1
+I just use echo for a quick test, but surely we can replace it with tst_res.
 
-Kind regards,
-Petr
 
- include/lapi/rtnetlink.h | 13 +++++++++++++
- lib/tst_netdevice.c      |  3 ++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
- create mode 100644 include/lapi/rtnetlink.h
+> > -       while kill -0 $pid 2>&1 > /dev/null && [ $i -gt 0 ]; do
+> > +       while kill -0 $pid &>/dev/null && [ $i -gt 0 ]; do
+> FYI: &> is a bashism (we need to keep the original).
 
-diff --git a/include/lapi/rtnetlink.h b/include/lapi/rtnetlink.h
-new file mode 100644
-index 000000000..8a1b5385b
---- /dev/null
-+++ b/include/lapi/rtnetlink.h
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (c) 2021 Petr Vorel <petr.vorel@gmail.com> */
-+
-+#ifndef LAPI_IF_ADDR_H__
-+# define LAPI_IF_ADDR_H__
-+
-+#include <linux/rtnetlink.h>
-+
-+#ifndef IFA_FLAGS
-+# define IFA_FLAGS 8
-+#endif
-+
-+#endif	/* LAPI_IF_ADDR_H__ */
-diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-index 5ca523759..d098173d5 100644
---- a/lib/tst_netdevice.c
-+++ b/lib/tst_netdevice.c
-@@ -5,10 +5,11 @@
- 
- #include <asm/types.h>
- #include <linux/netlink.h>
--#include <linux/rtnetlink.h>
- #include <linux/veth.h>
- #include <sys/socket.h>
- #include <net/if.h>
-+#include "lapi/rtnetlink.h"
-+
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_rtnetlink.h"
+I just want the error does not to redirect to standard output.
+Because with SIGTERM sending, it seems easier to kill all
+processes, so 'kill -0 $pid' returns "No such process" errors often.
+
+Mayby I should go with: kill -0 $pid >/dev/null 2>&1
+
+e.g.
+
+# ./timeout04.sh
+timeout04 1 TINFO: timeout per run is 0h 0m 1s
+timeout04 1 TINFO: Start
+timeout04 1 TBROK: Test timeouted, sending SIGTERM! If you are running
+on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+Terminated
+./../../../testcases/lib/tst_test.sh: line 448: kill: (74911) - No such process
+./../../../testcases/lib/tst_test.sh: line 454: kill: (74911) - No such process
+
+
 -- 
-2.31.1
+Regards,
+Li Wang
 
