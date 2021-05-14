@@ -1,19 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 14 May 2021 09:42:39 +0200
-Subject: [LTP] [PATCH 1/2] build.sh: Support passing configure options
-In-Reply-To: <20210512165702.22883-1-pvorel@suse.cz>
-References: <20210512165702.22883-1-pvorel@suse.cz>
-Message-ID: <YJ4p7636z0iYSsy0@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 14 May 2021 10:10:47 +0200
+Subject: [LTP] [PATCH 1/1] testinfo.pl: Fix array sort on old perl
+In-Reply-To: <YJ4mCArwTXMfMXtZ@yuki>
+References: <20210513182055.31700-1-pvorel@suse.cz>
+ <YJ4mCArwTXMfMXtZ@yuki>
+Message-ID: <YJ4wh1jhUMUEmYjD@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Looks good, but is it even used for the second patch? We just pass extra
-options there, right?
+Hi Cyril,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Hi!
+> Looks good, acked.
+Thanks a lot, merged!
+
+Kind regards,
+Petr
