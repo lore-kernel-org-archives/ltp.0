@@ -1,21 +1,22 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 May 2021 10:10:47 +0200
-Subject: [LTP] [PATCH 1/1] testinfo.pl: Fix array sort on old perl
-In-Reply-To: <YJ4mCArwTXMfMXtZ@yuki>
-References: <20210513182055.31700-1-pvorel@suse.cz>
- <YJ4mCArwTXMfMXtZ@yuki>
-Message-ID: <YJ4wh1jhUMUEmYjD@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 14 May 2021 09:44:42 +0200
+Subject: [LTP] [PATCH 2/2] travis: Enhance docparse testing
+In-Reply-To: <20210512165702.22883-2-pvorel@suse.cz>
+References: <20210512165702.22883-1-pvorel@suse.cz>
+ <20210512165702.22883-2-pvorel@suse.cz>
+Message-ID: <YJ4qakUgJSkeA/kV@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+Looks good.
 
-> Hi!
-> Looks good, acked.
-Thanks a lot, merged!
+Is this making the build significantly slower? If not let's get this in
+now so that we have metadata covered by travis as well.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
