@@ -1,90 +1,90 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 14 May 2021 09:56:56 +0200
-Subject: [LTP] [PATCH 1/1] lapi: Add missing IFA_FLAGS
-In-Reply-To: <YJ4lYU5PC4d9Yc+0@yuki>
-References: <20210513182638.5514-1-pvorel@suse.cz>
- <YJ4lYU5PC4d9Yc+0@yuki>
-Message-ID: <YJ4tSLCwmRfItDgS@pevik>
+Date: Fri, 14 May 2021 10:06:30 +0200
+Subject: [LTP] [PATCH v2 1/1] lapi: Add missing IFA_FLAGS
+Message-ID: <20210514080630.11273-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > and use them in tst_netdevice.c. This fixes on older toolchains
-> > (e.g. sourcery-arm from Buildroot):
+From: Petr Vorel <petr.vorel@gmail.com>
 
-> > tst_netdevice.c: In function 'modify_address':
-> > tst_netdevice.c:218:44: error: 'IFA_FLAGS' undeclared (first use in this function)
-> >   if (!tst_rtnl_add_attr(file, lineno, ctx, IFA_FLAGS, &addr_flags,
+and use them in tst_netdevice.c. This fixes on older toolchains
+(e.g. sourcery-arm from Buildroot):
 
-> > Fixes: bc2151a65 ("lib: Add helper functions for managing network interfaces")
+tst_netdevice.c: In function 'modify_address':
+tst_netdevice.c:218:44: error: 'IFA_FLAGS' undeclared (first use in this function)
+  if (!tst_rtnl_add_attr(file, lineno, ctx, IFA_FLAGS, &addr_flags,
 
-> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > ---
-> >  configure.ac           |  1 +
-> >  include/lapi/if_addr.h | 15 +++++++++++++++
-> >  lib/tst_netdevice.c    |  2 ++
-> >  3 files changed, 18 insertions(+)
-> >  create mode 100644 include/lapi/if_addr.h
+Fixes: bc2151a65 ("lib: Add helper functions for managing network interfaces")
 
-> > diff --git a/configure.ac b/configure.ac
-> > index 136d82d09..08a56f9ef 100644
-> > --- a/configure.ac
-> > +++ b/configure.ac
-> > @@ -51,6 +51,7 @@ AC_CHECK_HEADERS_ONCE([ \
-> >      linux/dccp.h \
-> >      linux/fs.h \
-> >      linux/genetlink.h \
-> > +    linux/if_addr.h \
-> >      linux/if_alg.h \
-> >      linux/if_ether.h \
-> >      linux/if_packet.h \
-> > diff --git a/include/lapi/if_addr.h b/include/lapi/if_addr.h
-> > new file mode 100644
-> > index 000000000..c1acfe4fb
-> > --- /dev/null
-> > +++ b/include/lapi/if_addr.h
-> > @@ -0,0 +1,15 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/* Copyright (c) 2021 Petr Vorel <petr.vorel@gmail.com> */
-> > +
-> > +#ifndef LAPI_IF_ADDR_H__
-> > +# define LAPI_IF_ADDR_H__
-> > +
-> > +# ifdef HAVE_LINUX_IF_ADDR_H
-> > +#  include <linux/if_addr.h>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+Changes v1->v2:
 
-> This file is usually included from the rtnetlink.h, shouldn't we rather
-> add lapi/rtnetlink.h that would include linux/rtnetlink.h and simply
-> adds the IFA_FLAGS definition if it's missing?
+* add missing #include "config.h"
+* rename: lapi/if_addr.h => lapi/rtnetlink.h (Cyril)
+* include <linux/rtnetlink.h> instead of <linux/if_addr.h> (Cyril)
 
-I was thinking about it as well. Yep, that's probably better.
-I'll send v2 as it's git freeze.
+ configure.ac             |  1 +
+ include/lapi/rtnetlink.h | 17 +++++++++++++++++
+ lib/tst_netdevice.c      |  3 ++-
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+ create mode 100644 include/lapi/rtnetlink.h
 
-Kind regards,
-Petr
+diff --git a/configure.ac b/configure.ac
+index 136d82d09..95c6d2e72 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -59,6 +59,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     linux/mempolicy.h \
+     linux/module.h \
+     linux/netlink.h \
++    linux/rtnetlink.h \
+     linux/seccomp.h \
+     linux/securebits.h \
+     linux/tty.h \
+diff --git a/include/lapi/rtnetlink.h b/include/lapi/rtnetlink.h
+new file mode 100644
+index 000000000..d1dc53df8
+--- /dev/null
++++ b/include/lapi/rtnetlink.h
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (c) 2021 Petr Vorel <petr.vorel@gmail.com> */
++
++#ifndef LAPI_IF_ADDR_H__
++# define LAPI_IF_ADDR_H__
++
++#include "config.h"
++
++#ifdef HAVE_LINUX_RTNETLINK_H
++# include <linux/rtnetlink.h>
++#endif
++
++#ifndef IFA_FLAGS
++# define IFA_FLAGS 8
++#endif
++
++#endif	/* LAPI_IF_ADDR_H__ */
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index 5ca523759..d098173d5 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -5,10 +5,11 @@
+ 
+ #include <asm/types.h>
+ #include <linux/netlink.h>
+-#include <linux/rtnetlink.h>
+ #include <linux/veth.h>
+ #include <sys/socket.h>
+ #include <net/if.h>
++#include "lapi/rtnetlink.h"
++
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+ #include "tst_rtnetlink.h"
+-- 
+2.31.1
 
-> > +# endif
-> > +
-> > +#ifndef IFA_FLAGS
-> > +# define IFA_FLAGS 8
-> > +#endif
-> > +
-> > +#endif	/* LAPI_IF_ADDR_H__ */
-> > diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-> > index 5ca523759..a95f19d35 100644
-> > --- a/lib/tst_netdevice.c
-> > +++ b/lib/tst_netdevice.c
-> > @@ -9,6 +9,8 @@
-> >  #include <linux/veth.h>
-> >  #include <sys/socket.h>
-> >  #include <net/if.h>
-> > +#include "lapi/if_addr.h"
-> > +
-> >  #define TST_NO_DEFAULT_MAIN
-> >  #include "tst_test.h"
-> >  #include "tst_rtnetlink.h"
-> > -- 
-> > 2.31.1
