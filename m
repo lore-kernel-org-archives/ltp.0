@@ -1,27 +1,41 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 14 May 2021 10:12:36 +0200
-Subject: [LTP] [PATCH] Skip tmpfs in all-filesystem shell tests
-In-Reply-To: <YJ1NICB0Y9gdnpQw@pevik>
-References: <20210513134941.27656-1-mdoucha@suse.cz> <YJ0uo6YRyTsaNj0f@yuki>
- <YJ1NICB0Y9gdnpQw@pevik>
-Message-ID: <YJ4w9JHPC8W7Xe3Y@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 14 May 2021 10:55:02 +0200
+Subject: [LTP] [PATCH v2 1/1] lapi: Add missing IFA_FLAGS
+In-Reply-To: <YJ4qsVYYYfW3lldj@yuki>
+References: <20210514080630.11273-1-pvorel@suse.cz>
+ <YJ4qsVYYYfW3lldj@yuki>
+Message-ID: <YJ465pWpCSdaYCvZ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Good point, thanks! I also think it's good for a release. But in the future I'd
-> like to take single NFS test and run it in all filesystems. Currently there is
-> ongoing work to fix tmpfs on NFS. So we might need to move this skip in the
-> future to respected tests (zram01.sh and *_lvm.sh). And for that we will have
-> to implement skip filesystem for shell (or just skip it "manually").
+Hi Cyril,
 
-Sure, we should implement a proper skiplist later on once it's needed.
+> Hi!
+> >  configure.ac             |  1 +
+> >  include/lapi/rtnetlink.h | 17 +++++++++++++++++
+> >  lib/tst_netdevice.c      |  3 ++-
+> >  3 files changed, 20 insertions(+), 1 deletion(-)
+> >  create mode 100644 include/lapi/rtnetlink.h
 
-Pushed, thanks.
+> > diff --git a/configure.ac b/configure.ac
+> > index 136d82d09..95c6d2e72 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -59,6 +59,7 @@ AC_CHECK_HEADERS_ONCE([ \
+> >      linux/mempolicy.h \
+> >      linux/module.h \
+> >      linux/netlink.h \
+> > +    linux/rtnetlink.h \
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> I wonder if this is really needed, if that header is not present we will
+> have to add much more stuff to lapi/rtnetlink.h, so I would just avoid
+> configure check here.
+Sure, we save some time during configure.
+
+Sending v3 (being conservative as there is a git freeze).
+
+Kind regards,
+Petr
