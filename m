@@ -1,37 +1,102 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 May 2021 08:42:54 +0200
+Date: Mon, 17 May 2021 08:50:54 +0200
 Subject: [LTP] [RFC PATCH 1/1] doc: Add supported kernel, libc versions
-In-Reply-To: <CAASaF6ytbCjwOSOywR4JUToJb_u9fOe2a2y4zE7_n99cgre5TQ@mail.gmail.com>
-References: <20210514132639.4181-1-pvorel@suse.cz> <YJ6A0gcR9L+P9IXm@yuki>
- <CAASaF6ytbCjwOSOywR4JUToJb_u9fOe2a2y4zE7_n99cgre5TQ@mail.gmail.com>
-Message-ID: <YKIQbr8nI0VhFmUg@pevik>
+In-Reply-To: <60A2040A.4080002@fujitsu.com>
+References: <20210514132639.4181-1-pvorel@suse.cz>
+ <60A2040A.4080002@fujitsu.com>
+Message-ID: <YKISTkJGjp4blNH+@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi all,
 
-...
-> > Older distributions are not officially supported, which means that it
-> > may or may not work. It all depends on your luck. It should be possible
-> > to compile latest LTP even on slightly older distributions than we
-> > support with a few manual tweaks, e.g. disabling manually tests for
-> > newly added syscalls manually, etc.
+> Hi Petr
+> > Signed-off-by: Petr Vorel<pvorel@suse.cz>
+> > ---
+> >   doc/supported-kernel-libc-versions.txt | 57 ++++++++++++++++++++++++++
+> >   1 file changed, 57 insertions(+)
+> >   create mode 100644 doc/supported-kernel-libc-versions.txt
 
-> > If latest LTP cannot be compiled even with some amount of workarounds,
-> > you may result to older LTP releases, however these are _not_ supported
-> > in any way. Also if you are trying to run LTP on more than 10 years old
-> > distribution you may as well reconsider you life choices.
+> > diff --git a/doc/supported-kernel-libc-versions.txt b/doc/supported-kernel-libc-versions.txt
+> > new file mode 100644
+> > index 000000000..b7ae01f11
+> > --- /dev/null
+> > +++ b/doc/supported-kernel-libc-versions.txt
+> > @@ -0,0 +1,57 @@
+> > +Supported kernel, libc, toolchain versions
+> > +==========================================
+> > +
+> > +1. Build testing with Travis CI
+> > +-------------------------------
+> > +
+> > +We test master branch in https://travis-ci.org/github/linux-test-project/ltp/builds[travis CI]
+> > +to ensure LTP builds on various distributions including old, current and bleeding edge.
+> > +We test both gcc and clang toolchains, various arch with cross-compilation.
+> > +
+> > +For list of tested distros see
+> > +https://github.com/linux-test-project/ltp/blob/master/.travis.yml[.travis.yml].
+> > +
+> > +
+> > +NOTE: Travis does only build testing, passing the CI means only that the
+> > +      test compiles fine on variety of different distributions and releases.
+> AFAIK, travis uses lastest distribution image to build. So it may exist 
+> the situation that it build pass on lastest centos7 and build failed on 
+> older centos7. I think we should add a note in here.
++1
 
-> Should we also give some hint about accepting patches/wokrarounds for
-> very old distros?
-> For example: "Trivial fixes/workarounds may be accepted, but users are
-> encouraged to move to newer distro."
+> > +
+> > +1.1 Oldest tested distributions
+> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +[align="center",options="header"]
+> > +|==============================================================
+> > +| Distro                       | kernel | glibc | gcc   | clang
+> > +| CentOS 7                     | 3.10   | 2.17  | 4.8.5 | -
+> > +| Ubuntu 16.04 LTS xenial      | 4.4    | 2.23  | 5.3.1 | -
+> > +| Debian 9 stretch (oldstable) | 4.9.30 | 2.24  | 6.3.0 | 3.8
+> > +|==============================================================
+This means we need to update time to time, at least for CentOS and Debian.
 
-+1. I'd add it at the end of first paragraph. Or anyone feel free to express it
-differently.
+Debian moves to another release after current testing gets released.
+We might want to use names (e.g. stretch) instead of "oldstable", "stable".
+(I slightly prefer current approach, but not having a strong opinion)
+
+> > +
+> > +For older versions please use https://github.com/linux-test-project/ltp/releases[older LTP releases].
+> > +
+> > +1.2 Supported architectures
+> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +[align="center",options="header"]
+> > +|==================================
+> > +| arch          | build
+> > +| x86_64        | native
+> > +| x86 emulation | native
+> > +| aarch64       | cross compilation
+> > +| ppc64le       | cross compilation
+> > +| s390x         | cross compilation
+> > +|==================================
+nit: not sure if having this as a table and supported libc (next section) just
+paragraphs.
+
+> > +
+> > +1.3 Supported libc
+> > +~~~~~~~~~~~~~~~~~~
+> > +
+> > +Targeted libc is https://www.gnu.org/software/libc/[GNU C Library (glibc)].
+> > +
+> > +https://uclibc-ng.org/[uClibc-ng] is not being tested should work as well as it
+> > +attempt to maintain a glibc compatible interface
+> > +(older https://www.uclibc.org/[uClibc] might have problems).
+> > +
+> > +https://musl.libc.org/[musl] is not yet supported
+> > +(see https://github.com/linux-test-project/ltp/blob/master/travis/alpine.sh[travis script]
+> > +for list of files which need to be deleted in order to compile under musl).
+> > +
+> > +For bionic libc please (Android) use https://android.googlesource.com/platform/external/ltp/[AOSP fork].
 
 Kind regards,
 Petr
