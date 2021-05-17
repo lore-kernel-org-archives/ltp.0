@@ -1,163 +1,169 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 17 May 2021 17:30:24 +0100
-Subject: [LTP] [RFC PATCH 1/6] API: Make some internal symbols static
+Date: Mon, 17 May 2021 17:30:25 +0100
+Subject: [LTP] [RFC PATCH 2/6] API: Add tst_ to create_sig_proc
 In-Reply-To: <20210517163029.22974-1-rpalethorpe@suse.com>
 References: <20210517163029.22974-1-rpalethorpe@suse.com>
-Message-ID: <20210517163029.22974-2-rpalethorpe@suse.com>
+Message-ID: <20210517163029.22974-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These do not appear to be referenced anywhere outside the library.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/old/test.h      | 1 -
- lib/tst_clocks.c        | 2 +-
- lib/tst_device.c        | 2 +-
- lib/tst_fs_link_count.c | 2 +-
- lib/tst_fs_setup.c      | 2 +-
- lib/tst_res.c           | 2 +-
- lib/tst_status.c        | 6 +++---
- lib/tst_test.c          | 2 +-
- lib/tst_timer_test.c    | 2 +-
- 9 files changed, 10 insertions(+), 11 deletions(-)
+ include/tst_sig_proc.h                         |  2 +-
+ lib/tst_sig_proc.c                             |  2 +-
+ libs/libltpsigwait/sigwait.c                   | 18 +++++++++---------
+ .../clock_nanosleep/clock_nanosleep01.c        |  2 +-
+ testcases/kernel/syscalls/ppoll/ppoll01.c      |  4 ++--
+ testcases/kernel/syscalls/utils/mq_timed.h     |  2 +-
+ 6 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/include/old/test.h b/include/old/test.h
-index 2ae7dba71..a8994c08e 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -113,7 +113,6 @@ void tst_parse_opts(int argc, char *argv[], const option_t *user_optarg,
-                     void (*user_help)(void));
+diff --git a/include/tst_sig_proc.h b/include/tst_sig_proc.h
+index b85981e77..39a201037 100644
+--- a/include/tst_sig_proc.h
++++ b/include/tst_sig_proc.h
+@@ -7,6 +7,6 @@
  
- /* lib/tst_res.c */
--const char *strttype(int ttype);
+ #include <sys/types.h>
  
- void tst_resm_(const char *file, const int lineno, int ttype,
- 	const char *arg_fmt, ...)
-diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
-index cdcb9fc4f..9af4d2993 100644
---- a/lib/tst_clocks.c
-+++ b/lib/tst_clocks.c
-@@ -14,7 +14,7 @@
+-pid_t create_sig_proc(int sig, int count, unsigned int usec);
++pid_t tst_create_sig_proc(int sig, int count, unsigned int usec);
  
- typedef int (*mysyscall)(clockid_t clk_id, void *ts);
- 
--int syscall_supported_by_kernel(long sysnr)
-+static int syscall_supported_by_kernel(long sysnr)
- {
- 	int ret;
- 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index c096b418b..079173b87 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -446,7 +446,7 @@ int tst_is_mounted_at_tmpdir(const char *path)
- 	return tst_is_mounted(mpath);
- }
- 
--int find_stat_file(const char *dev, char *path, size_t path_len)
-+static int find_stat_file(const char *dev, char *path, size_t path_len)
- {
- 	const char *devname = strrchr(dev, '/') + 1;
- 
-diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
-index 860510d75..c4e20bebf 100644
---- a/lib/tst_fs_link_count.c
-+++ b/lib/tst_fs_link_count.c
-@@ -32,7 +32,7 @@
-  * XXX: we cannot filter ext4 out, because ext2/ext3/ext4 have the
-  * same magic number
-  */
--const long subdir_limit_whitelist[] = {
-+static const long subdir_limit_whitelist[] = {
- 	TST_EXT2_OLD_MAGIC, TST_EXT234_MAGIC, TST_MINIX_MAGIC,
- 	TST_MINIX_MAGIC2,   TST_MINIX2_MAGIC, TST_MINIX2_MAGIC2,
- 	TST_MINIX3_MAGIC,   TST_UDF_MAGIC,    TST_SYSV2_MAGIC,
-diff --git a/lib/tst_fs_setup.c b/lib/tst_fs_setup.c
-index 6b93483de..b20fd06f2 100644
---- a/lib/tst_fs_setup.c
-+++ b/lib/tst_fs_setup.c
+ #endif	/* TST_SIG_PROC_H__ */
+diff --git a/lib/tst_sig_proc.c b/lib/tst_sig_proc.c
+index 509418af4..4826f9679 100644
+--- a/lib/tst_sig_proc.c
++++ b/lib/tst_sig_proc.c
 @@ -11,7 +11,7 @@
- #define TST_FS_SETUP_OVERLAYFS_MSG "overlayfs is not configured in this kernel"
- #define TST_FS_SETUP_OVERLAYFS_CONFIG "lowerdir="OVL_LOWER",upperdir="OVL_UPPER",workdir="OVL_WORK
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
  
--void create_overlay_dirs(void)
-+static void create_overlay_dirs(void)
+-pid_t create_sig_proc(int sig, int count, unsigned int usec)
++pid_t tst_create_sig_proc(int sig, int count, unsigned int usec)
  {
- 	DIR *dir = opendir(OVL_LOWER);
- 	if (dir == NULL) {
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 8d86b48a4..c82e78a9a 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -139,7 +139,7 @@ struct pair {
- 	return pair_arr[idx].name;                            \
- } while (0)
+ 	pid_t pid, cpid;
  
--const char *strttype(int ttype)
-+static const char *strttype(int ttype)
- {
- 	static const struct pair ttype_pairs[] = {
- 		PAIR(TPASS)
-diff --git a/lib/tst_status.c b/lib/tst_status.c
-index 9124faaa3..12dee103f 100644
---- a/lib/tst_status.c
-+++ b/lib/tst_status.c
-@@ -11,14 +11,14 @@
+diff --git a/libs/libltpsigwait/sigwait.c b/libs/libltpsigwait/sigwait.c
+index 2be949929..aa8ef226d 100644
+--- a/libs/libltpsigwait/sigwait.c
++++ b/libs/libltpsigwait/sigwait.c
+@@ -19,7 +19,7 @@ void test_empty_set(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGEMPTYSET(&sigs);
  
- static char buf[32];
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, INT_MAX, 100000);
++	child = tst_create_sig_proc(signo, INT_MAX, 100000);
  
--const char *exited(int status)
-+static const char *exited(int status)
- {
- 	snprintf(buf, sizeof(buf), "exited with %i", WEXITSTATUS(status));
+ 	TEST(sigwaitinfo(&sigs, &si, NULL));
+ 	if (TST_RET == -1) {
+@@ -49,7 +49,7 @@ void test_timeout(swi_func sigwaitinfo, int signo, enum tst_ts_type type)
+ 	SAFE_SIGEMPTYSET(&sigs);
  
- 	return buf;
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, INT_MAX, 100000);
++	child = tst_create_sig_proc(signo, INT_MAX, 100000);
+ 
+ 	TEST(sigwaitinfo(&sigs, &si, tst_ts_get(&ts)));
+ 	if (TST_RET == -1) {
+@@ -79,7 +79,7 @@ void test_unmasked_matching(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGADDSET(&sigs, signo);
+ 
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, INT_MAX, 100000);
++	child = tst_create_sig_proc(signo, INT_MAX, 100000);
+ 
+ 	TEST(sigwaitinfo(&sigs, &si, NULL));
+ 	if (TST_RET == signo) {
+@@ -106,7 +106,7 @@ void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGADDSET(&sigs, signo);
+ 
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, INT_MAX, 100000);
++	child = tst_create_sig_proc(signo, INT_MAX, 100000);
+ 
+ 	TEST(sigwaitinfo(&sigs, NULL, NULL));
+ 	if (TST_RET == signo)
+@@ -139,7 +139,7 @@ void test_masked_matching(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGDELSET(&sigs, SIGCHLD);
+ 
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, 1, 0);
++	child = tst_create_sig_proc(signo, 1, 0);
+ 
+ 	TEST(sigwaitinfo(&sigs, &si, NULL));
+ 	if (TST_RET == signo) {
+@@ -191,8 +191,8 @@ void test_masked_matching_rt(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGDELSET(&sigs, SIGCHLD);
+ 
+ 	/* Run a child that will wake us up */
+-	child[0] = create_sig_proc(signo, 1, 0);
+-	child[1] = create_sig_proc(signo + 1, 1, 0);
++	child[0] = tst_create_sig_proc(signo, 1, 0);
++	child[1] = tst_create_sig_proc(signo + 1, 1, 0);
+ 
+ 	/* Ensure that the signals have been sent */
+ 	SAFE_WAITPID(child[0], &status, 0);
+@@ -252,7 +252,7 @@ void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGDELSET(&sigs, SIGCHLD);
+ 
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, 1, 0);
++	child = tst_create_sig_proc(signo, 1, 0);
+ 
+ 	TEST(sigwaitinfo(&sigs, NULL, NULL));
+ 	if (TST_RET == signo)
+@@ -294,7 +294,7 @@ void test_bad_address(swi_func sigwaitinfo, int signo,
+ 	SAFE_SIGDELSET(&sigs, SIGCHLD);
+ 
+ 	/* Run a child that will wake us up */
+-	child = create_sig_proc(signo, 1, 0);
++	child = tst_create_sig_proc(signo, 1, 0);
+ 
+ 	TEST(sigwaitinfo(&sigs, (void *)1, NULL));
+ 	if (TST_RET == -1) {
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+index 382497918..983dfe1ad 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+@@ -139,7 +139,7 @@ static void do_test(unsigned int i)
+ 	tst_res(TINFO, "case %s", tc->desc);
+ 
+ 	if (tc->ttype == SEND_SIGINT || tc->ttype == BAD_TS_ADDR_REM)
+-		pid = create_sig_proc(SIGINT, 40, 500000);
++		pid = tst_create_sig_proc(SIGINT, 40, 500000);
+ 
+ 	tst_ts_set_sec(rq, tc->tv_sec);
+ 	tst_ts_set_nsec(rq, tc->tv_nsec);
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index 3d2f92f2a..3ea155445 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -251,8 +251,8 @@ static void do_test(unsigned int i)
+ 			tst_brk(TBROK, "sigprocmask");
+ 	}
+ 	if (tc->sigint_count > 0) {
+-		pid = create_sig_proc(SIGINT, tc->sigint_count,
+-			tc->sigint_delay);
++		pid = tst_create_sig_proc(SIGINT, tc->sigint_count,
++					  tc->sigint_delay);
+ 	}
+ 
+ 	/* test */
+diff --git a/testcases/kernel/syscalls/utils/mq_timed.h b/testcases/kernel/syscalls/utils/mq_timed.h
+index adf46034b..84831b548 100644
+--- a/testcases/kernel/syscalls/utils/mq_timed.h
++++ b/testcases/kernel/syscalls/utils/mq_timed.h
+@@ -45,7 +45,7 @@ static pid_t set_sig(struct tst_ts *ts,
+ 	gettime(CLOCK_REALTIME, tst_ts_get(ts));
+ 	*ts = tst_ts_add_us(*ts, 3000000);
+ 
+-	return create_sig_proc(SIGINT, 40, 50000);
++	return tst_create_sig_proc(SIGINT, 40, 50000);
  }
  
--const char *signaled(int status)
-+static const char *signaled(int status)
- {
- 	snprintf(buf, sizeof(buf), "killed by %s",
- 		tst_strsig(WTERMSIG(status)));
-@@ -26,7 +26,7 @@ const char *signaled(int status)
- 	return buf;
- }
- 
--const char *invalid(int status)
-+static const char *invalid(int status)
- {
- 	snprintf(buf, sizeof(buf), "invalid status 0x%x", status);
- 
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 36a4809c7..4899ea70b 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -747,7 +747,7 @@ static void do_exit(int ret)
- 	exit(ret);
- }
- 
--void check_kver(void)
-+static void check_kver(void)
- {
- 	int v1, v2, v3;
- 
-diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-index 3cd52fc9d..e77b911dd 100644
---- a/lib/tst_timer_test.c
-+++ b/lib/tst_timer_test.c
-@@ -251,7 +251,7 @@ static void write_to_file(void)
-  *   - then we compute truncated mean and compare that with the requested sleep
-  *     time increased by a threshold
-  */
--void do_timer_test(long long usec, unsigned int nsamples)
-+static void do_timer_test(long long usec, unsigned int nsamples)
- {
- 	long long trunc_mean, median;
- 	unsigned int discard = compute_discard(nsamples);
+ static void set_timeout(struct tst_ts *ts,
 -- 
 2.31.1
 
