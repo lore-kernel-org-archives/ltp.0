@@ -1,102 +1,52 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 May 2021 08:50:54 +0200
-Subject: [LTP] [RFC PATCH 1/1] doc: Add supported kernel, libc versions
-In-Reply-To: <60A2040A.4080002@fujitsu.com>
-References: <20210514132639.4181-1-pvorel@suse.cz>
- <60A2040A.4080002@fujitsu.com>
-Message-ID: <YKISTkJGjp4blNH+@pevik>
+From: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Date: Mon, 17 May 2021 07:41:20 +0000
+Subject: [LTP] LTP msgstress03,
+ msgstress04 failure on linux 5.10.19 and 5.10.22
+In-Reply-To: <YHQu6l0xp8VmG+ry@yuki>
+References: <BMXPR01MB287023E7E5B34F6D27B63564EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
+ <60619D5B.6090507@fujitsu.com>
+ <BMXPR01MB2870D0447A89D1BEE08EDCA7EE7E9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
+ <BM1PR01MB2868C0458678E57C87BBC708EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>
+ <YG7Mbc/ZTnD85SAh@yuki>
+ <BM1PR01MB28686329F64867227F9F9279EE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>
+ <YG7asu6B4EEa1HUD@yuki>
+ <BM1PR01MB2868EDABC10031EC53337C1FEE749@BM1PR01MB2868.INDPRD01.PROD.OUTLOOK.COM>,
+ <YHQu6l0xp8VmG+ry@yuki>
+Message-ID: <BMXPR01MB2870B48DB06939CF5F7FF3FCEE2D9@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Hi Cyril,
 
-> Hi Petr
-> > Signed-off-by: Petr Vorel<pvorel@suse.cz>
-> > ---
-> >   doc/supported-kernel-libc-versions.txt | 57 ++++++++++++++++++++++++++
-> >   1 file changed, 57 insertions(+)
-> >   create mode 100644 doc/supported-kernel-libc-versions.txt
+With value of msgmni 8000 it worked well for me but i want to understand which part from the log (produced by strace or some other method) i should be focused on to get to know ohkk it is failure because of value of msgmni is more.
+How you analyzed and helped me to fix ,what approach you have followed ?
 
-> > diff --git a/doc/supported-kernel-libc-versions.txt b/doc/supported-kernel-libc-versions.txt
-> > new file mode 100644
-> > index 000000000..b7ae01f11
-> > --- /dev/null
-> > +++ b/doc/supported-kernel-libc-versions.txt
-> > @@ -0,0 +1,57 @@
-> > +Supported kernel, libc, toolchain versions
-> > +==========================================
-> > +
-> > +1. Build testing with Travis CI
-> > +-------------------------------
-> > +
-> > +We test master branch in https://travis-ci.org/github/linux-test-project/ltp/builds[travis CI]
-> > +to ensure LTP builds on various distributions including old, current and bleeding edge.
-> > +We test both gcc and clang toolchains, various arch with cross-compilation.
-> > +
-> > +For list of tested distros see
-> > +https://github.com/linux-test-project/ltp/blob/master/.travis.yml[.travis.yml].
-> > +
-> > +
-> > +NOTE: Travis does only build testing, passing the CI means only that the
-> > +      test compiles fine on variety of different distributions and releases.
-> AFAIK, travis uses lastest distribution image to build. So it may exist 
-> the situation that it build pass on lastest centos7 and build failed on 
-> older centos7. I think we should add a note in here.
-+1
+Thanks
+________________________________
+From: Cyril Hrubis <chrubis@suse.cz>
+Sent: Monday, April 12, 2021 4:58 PM
+To: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
+Cc: ltp@lists.linux.it <ltp@lists.linux.it>
+Subject: Re: [LTP] LTP msgstress03, msgstress04 failure on linux 5.10.19 and 5.10.22
 
-> > +
-> > +1.1 Oldest tested distributions
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +[align="center",options="header"]
-> > +|==============================================================
-> > +| Distro                       | kernel | glibc | gcc   | clang
-> > +| CentOS 7                     | 3.10   | 2.17  | 4.8.5 | -
-> > +| Ubuntu 16.04 LTS xenial      | 4.4    | 2.23  | 5.3.1 | -
-> > +| Debian 9 stretch (oldstable) | 4.9.30 | 2.24  | 6.3.0 | 3.8
-> > +|==============================================================
-This means we need to update time to time, at least for CentOS and Debian.
+Hi!
+> Thanks for your response and help for understanding the reason of testcase failure
+> I too running the test on the machine with 8GB of RAM and the value for the msgmmni is 32000 by default and i have changed 16000 then also i am not able to see any diff in output.
+>
+> Anything else that i can try ??
 
-Debian moves to another release after current testing gets released.
-We might want to use names (e.g. stretch) instead of "oldstable", "stable".
-(I slightly prefer current approach, but not having a strong opinion)
+Try with less, I suppose 8000 should work fine.
 
-> > +
-> > +For older versions please use https://github.com/linux-test-project/ltp/releases[older LTP releases].
-> > +
-> > +1.2 Supported architectures
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +[align="center",options="header"]
-> > +|==================================
-> > +| arch          | build
-> > +| x86_64        | native
-> > +| x86 emulation | native
-> > +| aarch64       | cross compilation
-> > +| ppc64le       | cross compilation
-> > +| s390x         | cross compilation
-> > +|==================================
-nit: not sure if having this as a table and supported libc (next section) just
-paragraphs.
+If estimating how many processes we can run was easy the test would have
+been fixed a long time ago.
 
-> > +
-> > +1.3 Supported libc
-> > +~~~~~~~~~~~~~~~~~~
-> > +
-> > +Targeted libc is https://www.gnu.org/software/libc/[GNU C Library (glibc)].
-> > +
-> > +https://uclibc-ng.org/[uClibc-ng] is not being tested should work as well as it
-> > +attempt to maintain a glibc compatible interface
-> > +(older https://www.uclibc.org/[uClibc] might have problems).
-> > +
-> > +https://musl.libc.org/[musl] is not yet supported
-> > +(see https://github.com/linux-test-project/ltp/blob/master/travis/alpine.sh[travis script]
-> > +for list of files which need to be deleted in order to compile under musl).
-> > +
-> > +For bionic libc please (Android) use https://android.googlesource.com/platform/external/ltp/[AOSP fork].
-
-Kind regards,
-Petr
+--
+Cyril Hrubis
+chrubis@suse.cz
+[EXT]
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210517/625be27b/attachment.htm>
