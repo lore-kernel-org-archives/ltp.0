@@ -1,79 +1,129 @@
-From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Tue, 18 May 2021 06:57:15 +0200
-Subject: [LTP] [PATCH v3 3/4] lib: ignore SIGINT in _tst_kill_test
-In-Reply-To: <CAEemH2fRLqipQWTxVsakYNGsmQT+2X8_xzgepCiAY1O8YWtKFA@mail.gmail.com>
-References: <20210508055109.16914-4-liwang@redhat.com>
- <dfdd8e9a-90ca-642d-1c21-da169ca3878f@jv-coder.de>
- <CAEemH2et8_SXWJTsofdt7gc0NRV=91rPe0RtAMt1BX=SbAzhig@mail.gmail.com>
- <YJvkFTUWS2iuZ00H@pevik>
- <CAEemH2fRLqipQWTxVsakYNGsmQT+2X8_xzgepCiAY1O8YWtKFA@mail.gmail.com>
-Message-ID: <a4154e09-8ae3-beb3-13d5-c92126177ed5@jv-coder.de>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 18 May 2021 08:02:56 +0200
+Subject: [LTP] [PATCH] network/lib6/getaddrinfo01: rewrite with the new
+ API + use static hostnames
+In-Reply-To: <20210517085637.16866-1-aleksei.kodanev@bell-sw.com>
+References: <20210517085637.16866-1-aleksei.kodanev@bell-sw.com>
+Message-ID: <YKNYkNOqsmhv9kSJ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Li,
+Hi Alexey,
 
-On 5/13/2021 7:08 AM, Li Wang wrote:
->> FYI I tried to use both SIGINT and SIGTERM, but there was some problem.
->> But I guess it was my error. Please *add* SIGTERM (keep SIGINT).
-> Yes, we'd better keep SIGINT for ctrl^c action and use SIGTERM
-> additionally for process terminating.
->
-> Does this below (rough solution in my mind) work for you?
->
-> diff --git a/lib/newlib_tests/shell/timeout03.sh
-> b/lib/newlib_tests/shell/timeout03.sh
-> index cd548d9a2..f39f5712a 100755
-> --- a/lib/newlib_tests/shell/timeout03.sh
-> +++ b/lib/newlib_tests/shell/timeout03.sh
-> @@ -30,6 +30,7 @@ TST_TIMEOUT=1
->
->   do_test()
->   {
-> +       trap "echo 'Sorry, timeout03 is still alive'" TERM
->          tst_res TINFO "testing killing test after TST_TIMEOUT"
->
->          sleep 2
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index 28c2052d6..d7c9791e9 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -21,7 +21,7 @@ export TST_LIB_LOADED=1
->   . tst_security.sh
->
->   # default trap function
-> -trap "tst_brk TBROK 'test interrupted or timed out'" INT
-> +trap "tst_brk TBROK 'test interrupted'" INT
-This would require something like
-trap "tst_brk TBROK 'test terminated'" TERM
-or
-trap "_tst_do_exit" TERM
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Otherwise the test is terminated very roughly, without executing 
-cleanup, which is probably not a good idea.
+Moving everything to /etc/hosts based setup is a great idea
+as we get rid of network setup related failures.
 
-But that introduces the next problem: A short deadlock between 
-_tst_kill_test and _tst_cleanup_timer,
-because _tst_cleanup_timer waits for the termination of the timeout 
-process and vice versa.
-Another problem is, that a SIGTERM originating from some other location 
-could look like a timeout.
+Do we lost any getaddrinfo() test coverage for bypassing DNS?
 
-I am currently thinking about the following solution, to mitigate most 
-problems:
-The timeout process sends SIGUSR1 (or maybe SIGALRM?) only to the main 
-test process and blocks TERM.
-The main process can print, that it ran into a timeout, send a sigterm 
-to its processs group (while ignoring TERM itself).
-Then it can unset $_tst_setup_timer_pid safely, because it knows it was 
-triggered by the timeout process and execute _tst_do_exit.
+Just a few unimportant nits below (feel free to ignore them).
+Again, I'd be for merging this before release.
 
-If the timeout process does not see the termination of the main process, 
-it can still send SIGKILL to the whole process group.
+> The test is now independent of various machine settings
+> regarding the test host name as it adds predefined names
+> and aliases to /etc/hosts file and restores it to its
+> original state after completing the test.
 
-J?rg
+> This should fix the following failures:
+> * when gethostname() returns an alias name that doesn't
+>   match canonical name;
+> * No AAAA record for the returned name from gethostname().
 
+> Addresses and names added to /etc/hosts are more or less
+> unique, so that there are no conflicts with the existing
+> configuration.
+We might want to put this into docparse documentation, e.g:
 
+/*\
+ * [Description]
+ *
+ * Basic getaddrinfo() tests.
+ *
+ * Test use LTP specific addresses and names added to /etc/hosts to avoid
+ * problems with DNS and hostname setup or conflicts with existing
+ * configuration.
+ */
+
+> Also most of the duplicate code is now gone.
+
+> Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+> ---
+>  testcases/network/lib6/getaddrinfo_01.c | 1140 +++++------------------
+>  1 file changed, 235 insertions(+), 905 deletions(-)
+
+> diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
+> index db252a998..23a279ed1 100644
+
+...
+> +static void gaiv(void)
+> +{
+> +	check_addrinfo(1, "basic lookup", hostname, 0, NULL, 0, 0, 0, NULL);
+> +	check_addrinfo_name("canonical name");
+
+...
+> +	check_addrinfo(1, "host+service", hostname, 7, "echo", 0, 0, 0, NULL);
+> +
+> +	check_addrinfo(1, "host+service, AI_PASSIVE", hostname, 9462, "9462",
+> +		       AI_PASSIVE, SOCK_STREAM, 0, test_passive);
+> +
+> +	check_addrinfo(0, "host+service, AI_NUMERICHOST", hostname, 7, "echo",
+> +		       AI_NUMERICHOST, SOCK_STREAM, 0, NULL);
+> +	if (TST_RET != EAI_NONAME)
+> +		tst_brk(TFAIL, "AI_NUMERICHOST: ret %ld exp %d (EAI_NONAME)",
+> +			TST_RET, EAI_NONAME);
+> +	tst_res(TPASS, "AI_NUMERICHOST: exp %ld (EAI_NONAME)", TST_RET);
+> +
+> +	check_addrinfo(1, "0+service, AI_PASSIVE", NULL, 9462, "9462",
+> +		       AI_PASSIVE, SOCK_STREAM, 0, test_passive_no_host);
+> +
+> +	check_addrinfo(0, "0+service", NULL, 9462, "9462",
+> +		       0, SOCK_STREAM, 0, test_loopback);
+> +	if (TST_RET == EAI_BADFLAGS) {
+> +		tst_res(TPASS, "0+service ('', '9462') returns %ld '%s'",
+> +			TST_RET, gai_strerror(TST_RET));
+> +	} else if (TST_RET) {
+> +		tst_brk(TFAIL, "0+service ('', '9462') returns %ld '%s'",
+> +			TST_RET, gai_strerror(TST_RET));
+>  	}
+nit: Maybe having check_addrinfo_badflags() which would do the verification
+would safe few lines of code duplicity.
+
+...
+> -	/* test 16, IPv6 host+service w/ AI_NUMERICHOST */
+> -	memset(&hints, 0, sizeof(hints));
+> -	strcpy(service, "echo");
+> -	servnum = 7;
+> -	hints.ai_family = AF_INET6;
+> -	hints.ai_flags = AI_NUMERICHOST;
+> -	TEST(getaddrinfo(hostname, service, &hints, &aires));
+> -	if (TEST_RETURN != EAI_NONAME) {
+> -		tst_resm(TFAIL, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname: "
+> -			 "returns %ld expected %d (EAI_NONAME)",
+> -			 TEST_RETURN, EAI_NONAME);
+> -		if (!TEST_RETURN)
+> -			freeaddrinfo(aires);
+> -		return;
+> +	check_addrinfo(0, "SOCK_STREAM/IPPROTO_UDP", NULL, 0, NULL, 0,
+> +		       SOCK_STREAM, IPPROTO_UDP, NULL);
+> +	if (!TST_RET)
+> +		tst_brk(TFAIL, "SOCK_STREAM/IPPROTO_UDP: unexpected pass");
+> +	tst_res(TPASS, "SOCK_STREAM/IPPROTO_UDP: failed as expected");
+> +
+> +	check_addrinfo(0, "socktype 0, 513", NULL, 513, "513", 0, 0, 0, NULL);
+And here also check_addrinfo_badflags() (if implemented)
+and nit: "socktype 0,513" (remove space)
+
+> +	if (TST_RET == EAI_BADFLAGS) {
+> +		tst_res(TPASS, "socktype 0,513 returns %ld '%s'",
+> +			TST_RET, gai_strerror(TST_RET));
+> +	} else if (TST_RET) {
+> +		tst_brk(TFAIL, "socktype 0,513 returns %ld '%s'",
+> +			TST_RET, gai_strerror(TST_RET));
+>  	}
+
+Kind regards,
+Petr
