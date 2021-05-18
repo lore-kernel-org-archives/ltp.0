@@ -1,26 +1,23 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 May 2021 17:23:58 +0800
-Subject: [LTP] [RFC PATCH 3/6] API: Add tst_ to file_* functions
-In-Reply-To: <20210517163029.22974-4-rpalethorpe@suse.com>
-References: <20210517163029.22974-1-rpalethorpe@suse.com>
- <20210517163029.22974-4-rpalethorpe@suse.com>
-Message-ID: <CAEemH2e2wdr01dt9zceWSOOmY25fCLsmLfn=Qg7mYMgi3JumCA@mail.gmail.com>
+Date: Tue, 18 May 2021 17:27:22 +0800
+Subject: [LTP] [PATCH] typo: Add necessary spaces in the outputs
+In-Reply-To: <20210518064506.203781-1-xieziyao@huawei.com>
+References: <20210518064506.203781-1-xieziyao@huawei.com>
+Message-ID: <CAEemH2en6C3dUzspuVwNVmRiUeBQWK38bLPT7+ZwErVFQG+i-w@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, May 18, 2021 at 12:31 AM Richard Palethorpe via ltp
-<ltp@lists.linux.it> wrote:
+On Tue, May 18, 2021 at 2:45 PM Xie Ziyao <xieziyao@huawei.com> wrote:
 >
-> Usually LTP library functions are prepended with tst_ if not with
-> safe_.
+> Add necessary spaces in the outputs.
+>
+> Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 
-I'm not very sure if FILE_PRINTF should be added with TST_ prefix, but
-it seems no harm to do that.
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-So I just hold a neutral view on this patch:).
 
 -- 
 Regards,
