@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 May 2021 09:57:35 +0200
-Subject: [LTP] [RFC PATCH 1/6] API: Make some internal symbols static
-In-Reply-To: <20210517163029.22974-2-rpalethorpe@suse.com>
+Date: Tue, 18 May 2021 10:18:17 +0200
+Subject: [LTP] [RFC PATCH 6/6] API: Check exported symbols
+In-Reply-To: <20210517163029.22974-7-rpalethorpe@suse.com>
 References: <20210517163029.22974-1-rpalethorpe@suse.com>
- <20210517163029.22974-2-rpalethorpe@suse.com>
-Message-ID: <YKNzbz36pAadTD9M@pevik>
+ <20210517163029.22974-7-rpalethorpe@suse.com>
+Message-ID: <YKN4SZcHP9GAGRH4@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,21 +13,18 @@ To: ltp@lists.linux.it
 
 Hi Richie,
 
-> These do not appear to be referenced anywhere outside the library.
+> Abort the build process if a new symbol is exported from the library
+> without tst_ or safe_ prepended.
 
-> diff --git a/include/old/test.h b/include/old/test.h
-> index 2ae7dba71..a8994c08e 100644
-> --- a/include/old/test.h
-> +++ b/include/old/test.h
-> @@ -113,7 +113,6 @@ void tst_parse_opts(int argc, char *argv[], const option_t *user_optarg,
->                      void (*user_help)(void));
+The PR does not work few on old toolchains [1], it fails on [2]:
 
->  /* lib/tst_res.c */
-> -const char *strttype(int ttype);
+awk: line 1: regular expression /parse_opts ... exceeds implementation size limit
 
-I would not touch legacy API, but this looks to be safe.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+It's one of the 2 awk calls in check_export_syms.sh, I suppose the other one.
+Maybe put non_prefix_syms into temporary file and then run awk on it?
 
 Kind regards,
 Petr
+
+[1] https://travis-ci.org/github/pevik/ltp/builds/771465129
+[2] https://travis-ci.org/github/pevik/ltp/jobs/771465135#L3115
