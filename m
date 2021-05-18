@@ -1,49 +1,49 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 18 May 2021 16:57:06 +0200
-Subject: [LTP] [RFC PATCH 6/6] API: Check exported symbols
-In-Reply-To: <87im3gl5yx.fsf@suse.de>
-References: <20210517163029.22974-1-rpalethorpe@suse.com>
- <20210517163029.22974-7-rpalethorpe@suse.com>
- <YKN4SZcHP9GAGRH4@pevik> <87im3gl5yx.fsf@suse.de>
-Message-ID: <YKPVwoRiJKLqneN3@pevik>
+Date: Tue, 18 May 2021 17:20:29 +0200
+Subject: [LTP] [PATCH v2] network/lib6/getaddrinfo01: rewrite with the
+ new API + use static hostnames
+In-Reply-To: <f584f853-c13c-cc16-8e75-085af0b82418@bell-sw.com>
+References: <20210518091422.41857-1-aleksei.kodanev@bell-sw.com>
+ <f584f853-c13c-cc16-8e75-085af0b82418@bell-sw.com>
+Message-ID: <YKPbPXy113n/5IFo@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Richie,
+Hi Alexey,
 
-> Hello Petr,
+> On 18.05.2021 12:14, Alexey Kodanev wrote:
+> > The test is now independent of various machine settings
+> > regarding the test host name as it adds predefined names
+> > and aliases to /etc/hosts file and restores it to its
+> > original state after completing the test.
 
-> Petr Vorel <pvorel@suse.cz> writes:
+> > This should fix the following failures:
+> > * when gethostname() returns an alias name that doesn't
+> >   match canonical name;
+> > * No AAAA record for the returned name from gethostname().
 
-> > Hi Richie,
+> > Addresses and names added to /etc/hosts are more or less
+> > unique, so that there are no conflicts with the existing
+> > configuration.
 
-> >> Abort the build process if a new symbol is exported from the library
-> >> without tst_ or safe_ prepended.
+> > Also most of the duplicate code is now gone.
 
-> > The PR does not work few on old toolchains [1], it fails on [2]:
+> > Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > ---
 
-> > awk: line 1: regular expression /parse_opts ... exceeds implementation size limit
+> Adding missing v2 update suggested by Petr:
+> * description tag
+> * new check_addrinfo_badflags(const char *) to remove even more code
+> duplication.
+Nice, thanks!
 
-> > It's one of the 2 awk calls in check_export_syms.sh, I suppose the other one.
-> > Maybe put non_prefix_syms into temporary file and then run awk on it?
-
-> I doubt it will help, it seems the ignore regex is too long. I'm not
-> sure we need the script to run on old toolchains though.
-
-> Maybe we need a development mode configure flag?
-
-I'll have a look into it, as I'd prefer to be fixed
-(than repeat people on mailing list that this does not work on older distros).
-It's actually only on Debian stable or older.
+I've tested it in various distros running and compiling (+ it actually fixes
+configuration bug, ...) but understand Cyril's concern about breakage last
+minute before release. So we should probably merge after the release.
 
 Kind regards,
 Petr
-
-> > Kind regards,
-> > Petr
-
-> > [1] https://travis-ci.org/github/pevik/ltp/builds/771465129
-> > [2] https://travis-ci.org/github/pevik/ltp/jobs/771465135#L3115
