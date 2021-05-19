@@ -1,333 +1,95 @@
 From: Joerg Vehlow <lkml@jv-coder.de>
-Date: Wed, 19 May 2021 08:31:09 +0200
-Subject: [LTP] [PATCH 2/2] shell: Extend timeout tests,
- to run on multiple shells
-In-Reply-To: <20210519063109.224352-1-lkml@jv-coder.de>
-References: <20210519063109.224352-1-lkml@jv-coder.de>
-Message-ID: <20210519063109.224352-2-lkml@jv-coder.de>
+Date: Wed, 19 May 2021 08:46:05 +0200
+Subject: [LTP] [PATCH 2/2] tst_test: using SIGTERM to terminate process
+In-Reply-To: <20210518122610.17171-2-liwang@redhat.com>
+References: <20210518122610.17171-1-liwang@redhat.com>
+ <20210518122610.17171-2-liwang@redhat.com>
+Message-ID: <d70f9e5f-0008-02aa-e099-2a8243c4b3fa@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Hi Li,
 
-There are some differences especially in signal handling
-between the shells, so execute the tests on as many
-shells as possible.
 
-Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
----
- lib/newlib_tests/shell/test_timeout.sh | 242 +++++++++++++++++--------
- 1 file changed, 169 insertions(+), 73 deletions(-)
+On 5/18/2021 2:26 PM, Li Wang wrote:
 
-diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
-index b05680cb1..152f51c32 100755
---- a/lib/newlib_tests/shell/test_timeout.sh
-+++ b/lib/newlib_tests/shell/test_timeout.sh
-@@ -5,6 +5,15 @@
- 
- PATH="$(dirname $0):$(dirname $0)/../../../testcases/lib/:$PATH"
- 
-+SHELLS="
-+bash
-+dash
-+busybox sh
-+zsh
-+ash
-+ksh
-+"
-+
- # Test cases are separated by newlines.
- # Every test has the following fields in this order:
- # file
-@@ -33,12 +42,23 @@ timeout04.sh|     |0|  |  2|0|0|1|Verify that timeout is enforced
- timeout02.sh|    2|1| 2|   |1|0|0|Test termination of timeout process
- "
- 
-+run_shell()
-+{
-+	local shell=$1
-+	shift
-+
-+	eval $shell "$@"
-+	return $?
-+}
-+
- # Executes a test
- # Parameter:
--#  - test:    The test to execute
--#  - timeout: The timeout multiplicator (optional)
--#  - use_cat: Pipe the output of the command through cat (optional)
--#             If this is used, the exit code is NOT returned!
-+#  - shell:    The shell to be used while executing the test
-+#  - shellarg: First parameter of shell (e.g. for busybox sh)
-+#  - test:     The test to execute
-+#  - timeout:  The timeout multiplicator (optional)
-+#  - use_cat:  Pipe the output of the command through cat (optional)
-+#              If this is used, the exit code is NOT returned!
- #
- # The function returns the following global variables:
- # - test_exit:     The exit code of the test
-@@ -47,11 +67,13 @@ timeout02.sh|    2|1| 2|   |1|0|0|Test termination of timeout process
- # - test_passed:   The number of passed tests parsed from the summary
- # - test_failed:   The number of failed tests parsed from the summary
- # - test_broken:   The number of broken tests parsed from the summary
--run_test()
-+exec_test()
- {
--	local test=$1
--	local timeout=$2
--	local use_cat=$3
-+	local shell=$1
-+	local shellarg=$2
-+	local test=$3
-+	local timeout=$4
-+	local use_cat=$5
- 	local tmpfile start end;
- 
- 	tmpfile=$(mktemp -t ltp_timeout_XXXXXXXX)
-@@ -70,9 +92,9 @@ run_test()
- 	# the sleep process was never killed, when a test finished
- 	# before the timeout.
- 	if [ "$use_cat" = "1" ]; then
--		LTP_TIMEOUT_MUL=$timeout $test 2>&1 | cat >$tmpfile
-+		LTP_TIMEOUT_MUL=$timeout $shell $shellarg $test 2>&1 | cat >$tmpfile
- 	else
--		LTP_TIMEOUT_MUL=$timeout $test 1>$tmpfile 2>&1
-+		LTP_TIMEOUT_MUL=$timeout $shell $shellarg $test 1>$tmpfile 2>&1
- 	fi
- 	test_exit=$?
- 	set +m
-@@ -82,6 +104,9 @@ run_test()
- 	test_output=$(cat $tmpfile)
- 	rm $tmpfile
- 
-+	test_passed=-1
-+	test_failed=-1
-+	test_broken=-1
- 	eval $(echo "$test_output" | awk '
- 		BEGIN {sum=0}
- 		$1 == "Summary:" {
-@@ -96,83 +121,154 @@ run_test()
- 	')
- }
- 
--echo "Testing timeout in shell API"
--echo
-+do_test()
-+{
-+	local failed test_nr old_ifs shell CLEANED_DATA test_max
-+	local file cur_fails timeout use_cat max_runtime exp_exit
-+	local exp_passed exp_failed exp_broken description
-+	
-+	shell="$1"
-+	shellarg="$2"
- 
--failed=0
--test_nr=0
-+	failed=0
-+	test_nr=0
- 
--old_ifs="$IFS"
--IFS=$(printf "\n\b")
-+	old_ifs="$IFS"
-+	IFS=$(printf "\n\b")
- 
--# Remove comments and empty lines
--CLEANED_DATA=$(echo "$DATA" | sed '/^\s*#/d;/^\s*$/d')
--test_max=$(echo "$CLEANED_DATA" | wc -l)
--for d in $CLEANED_DATA; do
-+	# Remove comments and empty lines
-+	CLEANED_DATA=$(echo "$DATA" | sed '/^\s*#/d;/^\s*$/d')
-+	test_max=$(echo "$CLEANED_DATA" | wc -l)
-+	for d in $CLEANED_DATA; do
-+		IFS="$old_ifs"
-+
-+		file=$(echo $d | cut -d'|' -f1 | xargs)
-+		timeout=$(echo $d | cut -d'|' -f2 | xargs)
-+		use_cat=$(echo $d | cut -d'|' -f3 | xargs)
-+		max_runtime=$(echo $d | cut -d'|' -f4 | xargs)
-+		max_runtime=${max_runtime:--1}
-+		exp_exit=$(echo $d | cut -d'|' -f5 | xargs)
-+		exp_exit=${exp_exit:--1}
-+		exp_passed=$(echo $d | cut -d'|' -f6 | xargs)
-+		exp_passed=${exp_passed:--1}
-+		exp_failed=$(echo $d | cut -d'|' -f7 | xargs)
-+		exp_failed=${exp_failed:--1}
-+		exp_broken=$(echo $d | cut -d'|' -f8 | xargs)
-+		exp_broken=${exp_broken:--1}
-+		description=$(echo $d | cut -d'|' -f9)
-+
-+		test_nr=$(($test_nr + 1))
-+
-+		cur_fails=0
-+
-+		if [ -z "$description" ]; then
-+			description="$file (LTP_TIMEOUT_MUL='$timeout')"
-+		fi
-+
-+		echo "=== $test_nr/$test_max $description ==="
-+		exec_test "$shell" "$shellarg" "$file" "$timeout" "$use_cat"
-+
-+		if [ $max_runtime -ne -1 ] && [ $test_duration -gt $max_runtime ]; then
-+			echo "FAILED (runtime: $test_duration, expected less than $max_runtime)"
-+			cur_fails=$((cur_fails + 1))
-+		fi
-+
-+		if [ $exp_passed -ne -1 ] && [ $exp_passed -ne $test_passed ]; then
-+			echo "FAILED (passes: $test_passed, expected $exp_passed)"
-+			cur_fails=$((cur_fails + 1))
-+		fi
-+
-+		if [ $exp_failed -ne -1 ] && [ $exp_failed -ne $test_failed ]; then
-+			echo "FAILED (failed: $test_failed, expected $exp_failed)"
-+			cur_fails=$((cur_fails + 1))
-+		fi
-+
-+		if [ $exp_broken -ne -1 ] && [ $exp_broken -ne $test_broken ]; then
-+			echo "FAILED (broken: $test_broken, expected $exp_broken)"
-+			cur_fails=$((cur_fails + 1))
-+		fi
-+
-+		if [ $exp_exit -ne -1 ] && [ $test_exit -ne $exp_exit ]; then
-+			echo "FAILED (exit code: $test_exit, expected $exp_exit)"
-+			cur_fails=$((cur_fails + 1))
-+		fi
-+
-+		if [ $cur_fails -gt 0 ]; then
-+			failed=$((failed + 1))
-+			echo "--------"
-+			echo "$test_output"
-+			echo "--------"
-+		else
-+			echo "PASSED"
-+		fi
-+		echo
-+	done
- 	IFS="$old_ifs"
- 
--	file=$(echo $d | cut -d'|' -f1 | xargs)
--	timeout=$(echo $d | cut -d'|' -f2 | xargs)
--	use_cat=$(echo $d | cut -d'|' -f3 | xargs)
--	max_runtime=$(echo $d | cut -d'|' -f4 | xargs)
--	max_runtime=${max_runtime:--1}
--	exp_exit=$(echo $d | cut -d'|' -f5 | xargs)
--	exp_exit=${exp_exit:--1}
--	exp_passed=$(echo $d | cut -d'|' -f6 | xargs)
--	exp_passed=${exp_passed:--1}
--	exp_failed=$(echo $d | cut -d'|' -f7 | xargs)
--	exp_failed=${exp_failed:--1}
--	exp_broken=$(echo $d | cut -d'|' -f8 | xargs)
--	exp_broken=${exp_broken:--1}
--	description=$(echo $d | cut -d'|' -f9)
--
--	test_nr=$(($test_nr + 1))
--
--	cur_fails=0
--
--	if [ -z "$description" ]; then
--		description="$file (LTP_TIMEOUT_MUL='$timeout')"
--	fi
-+	echo "Failed tests: $failed"
-+	return $failed
-+}
- 
--	echo "=== $test_nr/$test_max $description ==="
--	run_test "$file" "$timeout" "$use_cat"
- 
--	if [ $max_runtime -ne -1 ] && [ $test_duration -gt $max_runtime ]; then
--		echo "FAILED (runtime: $test_duration, expected less than $max_runtime)"
--		cur_fails=$((cur_fails + 1))
-+print_results()
-+{
-+	echo
-+	if [ -n "$raw_shell" ]; then
-+		result=$(printf "%s\n%-15s %s" "$result" "$raw_shell" "INTERRUPTED")
-+		failed_shells=$((failed_shells + 1))
- 	fi
--
--	if [ $exp_passed -ne -1 ] && [ $exp_passed -ne $test_passed ]; then
--		echo "FAILED (passes: $test_passed, expected $exp_passed)"
--		cur_fails=$((cur_fails + 1))
-+	echo
-+	echo "----------------------------------------"
-+	echo
-+	echo "Summary:"
-+	echo "$result"
-+	echo
-+	if [ $failed_shells -ne 0 ]; then
-+		echo "A total number of $total_fails failed for $failed_shells shells"
-+	else
-+		echo "All tests passed"
- 	fi
-+}
- 
--	if [ $exp_failed -ne -1 ] && [ $exp_failed -ne $test_failed ]; then
--		echo "FAILED (failed: $test_failed, expected $exp_failed)"
--		cur_fails=$((cur_fails + 1))
--	fi
-+# For some reason at least in zsh, it can happen, that the whole
-+# testrunner is killed, when the test result is piped through cat.
-+# If the test was aborted using CTRL^C or kill, the output can be ignored,
-+# otherwise these messages should never be visible.
-+trap 'echo; echo "Test unexpectedly killed by SIGINT."; print_results; exit 1' INT
-+trap 'echo; echo "Test unexpectedly killed by SIGTERM."; print_results; exit 1' TERM
- 
--	if [ $exp_broken -ne -1 ] && [ $exp_broken -ne $test_broken ]; then
--		echo "FAILED (broken: $test_broken, expected $exp_broken)"
--		cur_fails=$((cur_fails + 1))
--	fi
-+old_ifs="$IFS"
-+IFS=$(printf "\n\b")
- 
--	if [ $exp_exit -ne -1 ] && [ $test_exit -ne $exp_exit ]; then
--		echo "FAILED (exit code: $test_exit, expected $exp_exit)"
--		cur_fails=$((cur_fails + 1))
--	fi
-+failed_shells=0
-+total_fails=0
- 
--	if [ $cur_fails -gt 0 ]; then
--		failed=$((failed + 1))
--		echo "--------"
--		echo "$test_output"
--		echo "--------"
-+# Remove comments and empty lines
-+CLEANED_SHELLS=$(echo "$SHELLS" | sed '/^\s*#/d;/^\s*$/d')
-+shell_max=$(echo "$CLEANED_SHELLS" | wc -l)
-+shell_nr=0
-+result=""
-+for raw_shell in $CLEANED_SHELLS; do
-+	shell_nr=$(( shell_nr + 1 ))
-+	echo "($shell_nr/$shell_max) Testing timeout in shell API with '$raw_shell'"
-+	shellarg=$(echo "$raw_shell" | cut -sd' ' -f2)
-+	shell=$(echo "$raw_shell" | cut -d' ' -f1)
-+	res="BROKEN"
-+	if ! $shell $shellarg -c true 2>/dev/null; then
-+		echo "SKIPED: Shell not found"
-+		res="SKIPED"
- 	else
--		echo "PASSED"
-+		res="PASSED"
-+		do_test "$shell" "$shellarg"
-+		if [ $? -ne 0 ]; then
-+			res="FAILED ($?)"
-+			total_fails=$((total_fails + $?))
-+			failed_shells=$((failed_shells + 1))
-+		fi
- 	fi
--	echo
-+	result=$(printf "%s\n%-15s %s" "$result" "$raw_shell" "$res")
- done
--IFS="$old_ifs"
-+raw_shell=""
- 
--echo "Failed tests: $failed"
--exit $failed
-+print_results
-+exit $failed_shells
--- 
-2.25.1
+> Co-authored-by: Joerg Vehlow <lkml@jv-coder.de>
+Please use Joerg Vehlow <joerg.vehlow@aox-tech.de> here, thanks.
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>   lib/newlib_tests/shell/test_timeout.sh | 2 +-
+>   lib/newlib_tests/shell/timeout03.sh    | 1 +
+>   testcases/lib/tst_test.sh              | 9 +++++----
+>   3 files changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/lib/newlib_tests/shell/test_timeout.sh b/lib/newlib_tests/shell/test_timeout.sh
+> index b05680cb1..9f31afa32 100755
+> --- a/lib/newlib_tests/shell/test_timeout.sh
+> +++ b/lib/newlib_tests/shell/test_timeout.sh
+> @@ -28,7 +28,7 @@ timeout02.sh|  -10|0|  |2
+>   timeout02.sh| -0.1|0|  |0
+>   timeout02.sh| -1.1|0|  |2
+>   timeout02.sh|-10.1|0|  |2
+> -timeout03.sh|     |0|12|137| | | |Test kill if test does not terminate by SIGINT
+> +timeout03.sh|     |0|12|137| | | |Test kill if test does not terminate by SIGTERM
+Whoa what did I write there, that's hard to read :)
+While you're at it, can you please change this to "Test is killed, if it 
+does not terminate after SIGTERM"
+>   timeout04.sh|     |0|  |  2|0|0|1|Verify that timeout is enforced
+>   timeout02.sh|    2|1| 2|   |1|0|0|Test termination of timeout process
+>   "
+> diff --git a/lib/newlib_tests/shell/timeout03.sh b/lib/newlib_tests/shell/timeout03.sh
+At the top of this file, there is a comment with the expected output, 
+that should be corrected
+> index cd548d9a2..124e96a84 100755
+> --- a/lib/newlib_tests/shell/timeout03.sh
+> +++ b/lib/newlib_tests/shell/timeout03.sh
+> @@ -30,6 +30,7 @@ TST_TIMEOUT=1
+>   
+>   do_test()
+>   {
+> +	trap "tst_res TINFO 'Sorry, timeout03 is still alive'" TERM
+We don't need this.
+>   	tst_res TINFO "testing killing test after TST_TIMEOUT"
+>   
+>   	sleep 2
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 3a5651c01..66ffde4eb 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -21,7 +21,8 @@ export TST_LIB_LOADED=1
+>   . tst_security.sh
+>   
+>   # default trap function
+> -trap "tst_brk TBROK 'test interrupted or timed out'" INT
+> +trap "tst_brk TBROK 'test interrupted'" INT
+> +trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+>   
+>   _tst_do_exit()
+>   {
+> @@ -439,9 +440,9 @@ _tst_kill_test()
+>   {
+>   	local i=10
+>   
+> -	trap '' INT
+> -	tst_res TBROK "Test timeouted, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+> -	kill -INT -$pid
+> +	trap '' TERM
+> +	tst_res TBROK "Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"
+> +	kill -TERM -$pid
+This works fine.
++Reviewed-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+after my remarks are resolved.
 
+But one more strange thing here.
+I wonder why this even works. $pid is used in _tst_kill_test and defined 
+in _tst_setup_timer as a local variable.
+It looks like it is inherited through the call chain and since it is 
+copied to the background process, it cannot be manipulated by the tests.
+Still I would vote for changing this at some point, because it is highly 
+confusing.
+
+J?rg
