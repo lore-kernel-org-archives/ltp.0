@@ -1,52 +1,28 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 19 May 2021 18:29:12 +0800
-Subject: [LTP] [PATCH 1/2] shell: Fix timeout process termination for zsh
-In-Reply-To: <8555aa72-3288-c1a9-d6f1-3998c15d630e@jv-coder.de>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 19 May 2021 12:28:34 +0200
+Subject: [LTP] [PATCH 2/2] shell: Extend timeout tests,
+ to run on multiple shells
+In-Reply-To: <20210519063109.224352-2-lkml@jv-coder.de>
 References: <20210519063109.224352-1-lkml@jv-coder.de>
- <CAEemH2fcuMtZgthknbsLKHdhqq7NrtB=nm6Oi9pvxG6MH0_jsQ@mail.gmail.com>
- <8555aa72-3288-c1a9-d6f1-3998c15d630e@jv-coder.de>
-Message-ID: <CAEemH2e5cdb4G=cpV3amf=-JaeVGBDpC7WX4YTubF7wzr3FNDg@mail.gmail.com>
+ <20210519063109.224352-2-lkml@jv-coder.de>
+Message-ID: <YKToUgBnK6ZQ5I0Q@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> I may have something to do with subshells again...
-> I just tweaked your reproducer, to be a bit more like our "real
-> scenario" and can reproduce it:
+Hi!
+> There are some differences especially in signal handling
+> between the shells, so execute the tests on as many
+> shells as possible.
 
-Yes, I can reproduce it now.
+I'm not sure that we want to support anything but bash, dash and
+busybox and even these three are enough trouble.
 
->
-> timeout()
-> {
->      sleep 100 &
->      sleep_pid=$!
->      trap "echo Received TERM; kill $sleep_pid; exit;" TERM
->      wait $sleep_pid
->      [ $? -eq 143 ] && echo "FAIL"
-> }
->
-> timeout &
-> pid=$!
-> sleep 1
-> kill $pid
->
->
-> $ bash test.sh
-> Received TERM
->
-> $ zsh test.sh
-> Received TERM
-> FAIL
->
-> J?rg
->
->
-
+One of my friends once told me that it's easier to write a portable
+shell than portable shell code and it looks like he was right...
 
 -- 
-Regards,
-Li Wang
-
+Cyril Hrubis
+chrubis@suse.cz
