@@ -1,96 +1,78 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 May 2021 11:37:30 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/sendfile: Convert sendfile09 to the
- new API
-In-Reply-To: <20210519084655.52780-3-xieziyao@huawei.com>
-References: <20210519084655.52780-1-xieziyao@huawei.com>
- <20210519084655.52780-3-xieziyao@huawei.com>
-Message-ID: <YKTcWhMGotujEYLK@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 19 May 2021 18:18:59 +0800
+Subject: [LTP] [PATCH 1/2] shell: Fix timeout process termination for zsh
+In-Reply-To: <20210519063109.224352-1-lkml@jv-coder.de>
+References: <20210519063109.224352-1-lkml@jv-coder.de>
+Message-ID: <CAEemH2fcuMtZgthknbsLKHdhqq7NrtB=nm6Oi9pvxG6MH0_jsQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +/*\
-> + * [Description]
->   *
-> - * DESCRIPTION
-> - *        Testcase copied from sendfile02.c to test the basic functionality of
-> - *        the sendfile(2) system call on large file. There is a kernel bug which
-> - *        introduced by commit 8f9c0119d7ba and fixed by commit 5d73320a96fcc.
-> + * Testcase copied from sendfile02.c to test the basic functionality of
-> + * the sendfile(2) system call on large file. There is a kernel bug which
-> + * introduced by commit 8f9c0119d7ba and fixed by commit 5d73320a96fcc.
-                            ^
-	Here as well the commit that introduced the bug should go to
-	.tags.
->   *
-> - * ALGORITHM
-> - *        1. call sendfile(2) with offset at 0
-> - *        2. call sendfile(2) with offset at 3GB
-> + * [Algorithm]
->   *
-> - * USAGE:  <for command-line>
-> - *  sendfile09 [-c n] [-i n] [-I x] [-P x] [-t]
-> - *     where,
-> - *             -i n : Execute test n times.
-> - *             -I x : Execute test for x seconds.
-> - *             -P x : Pause for x seconds between iterations.
-> - *             -t   : Turn on syscall timing.
-> + * 1. Call sendfile(2) with offset at 0;
-> + * 2. Call sendfile(2) with offset at 3GB.
->   *
-> + * [Restrictions]
+On Wed, May 19, 2021 at 2:31 PM Joerg Vehlow <lkml@jv-coder.de> wrote:
+>
+> From: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+>
+> NOTE: This fix should be part of the release,
+> because it fixes something broken in this release only!
+>
+> On zsh an exit in the trap for SIGTERM is ignored,
 
-So far we had only [Description] and [Algorithm] but adding
-[Restrictions] sounds reasonable.
+I'm wondering if this is zsh feature or a bug on a specific version?
+if the latter, we probably have no need to fix it in LTP.
+Btw, which zsh version do you use?
 
->   *
-> - * RESTRICTIONS
-> - *        Only supports 64bit systems and kernel 2.6.33 or above
-> + * Only supports 64bit systems and kernel 2.6.33 or above.
+Odd, I tried on my laptop(Fedora34) with zsh-5.5.1-6.el8_1.2.x86_64,
+but could NOT reproduce it.
 
-I guess that there is no point in mentioning the kernel version here, we
-have it in the tst_test structure and it's exported from that structure
-into the metadata as well.
+my reproducer:
+-----------------
 
->   */
-> -#include <stdio.h>
-> -#include <errno.h>
-> +
->  #include <fcntl.h>
->  #include <sys/stat.h>
->  #include <sys/sendfile.h>
->  #include <sys/types.h>
->  #include <unistd.h>
->  #include <inttypes.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -#include "lapi/abisize.h"
-> 
-> -#ifndef OFF_T
-> -#define OFF_T off_t
-> -#endif /* Not def: OFF_T */
-> +#include "tst_test.h"
-> 
-> -TCID_DEFINE(sendfile09);
-> -
-> -static char *in_file = "in";
-> -static char *out_file = "out";
-> -static int fd;
-> -static int in_fd;
-> -static int out_fd;
-> +#ifdef TST_ABI32
-> +tst_brkm(TCONF, "This test is only for 64bit");
-> +#endif
+# cat test.sh
 
-Does this even compile on 32bit?
+echo "pid is $$" # send TERM to pid in another terminal
 
-HINT: You can compile LTP for 32bit with ./configure CFLAGS=-m32 LDFLAGS=-m32
+sleep 100 &
+sleep_pid=$!
+
+trap "kill $sleep_pid; exit;" TERM
+
+wait $sleep_pid
+[ $? -eq 143 ] && echo "FAIL"
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+> but wait returns with TERM exit status (143).
+> This can only improve the situation for other processe,
+> e.g. if the wait is killed by the SIGTERM from the main process,
+> it will still terminate the timeout process now.
+>
+> Fixes: a30410f6ad77 ("shell: Prevent orphan timeout sleep processes")
+>
+> Signed-off-by: Joerg Vehlow <joerg.vehlow@aox-tech.de>
+> ---
+>  testcases/lib/tst_test.sh | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index 3a5651c01..1b25f4c44 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -472,6 +472,7 @@ _tst_timeout_process()
+>         sleep_pid=$!
+>         trap "kill $sleep_pid; exit" TERM
+>         wait $sleep_pid
+> +       [ $? -eq 143 ] && exit
+>         trap - TERM
+>         _tst_kill_test
+>  }
+> --
+> 2.25.1
+>
+
+
+--
+Regards,
+Li Wang
+
