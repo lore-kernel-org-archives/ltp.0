@@ -1,10 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 19 May 2021 17:12:22 +0200
-Subject: [LTP] [RFC PATCH 4/6] API: add tst_ to mount_overlay
-In-Reply-To: <20210517163029.22974-5-rpalethorpe@suse.com>
+Date: Wed, 19 May 2021 17:13:04 +0200
+Subject: [LTP] [RFC PATCH 2/6] API: Add tst_ to create_sig_proc
+In-Reply-To: <20210517163029.22974-3-rpalethorpe@suse.com>
 References: <20210517163029.22974-1-rpalethorpe@suse.com>
- <20210517163029.22974-5-rpalethorpe@suse.com>
-Message-ID: <YKUq1mVoZnAVMUAm@pevik>
+ <20210517163029.22974-3-rpalethorpe@suse.com>
+Message-ID: <YKUrAAFTkhpMxEil@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,6 +13,7 @@ To: ltp@lists.linux.it
 
 Hi Richie,
 
+also this one is obviously ok, thanks!
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
