@@ -1,34 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 May 2021 10:52:39 +0200
-Subject: [LTP] [Automated-testing] [PATCH v2 1/1] doc: Add supported
- distros (kernel, libc, toolchain)
-In-Reply-To: <YKQRyk/6SNiqUryH@pevik>
-References: <20210518173039.4657-1-pvorel@suse.cz> <YKP+KakyxIuGc/fo@yuki>
- <YKQRyk/6SNiqUryH@pevik>
-Message-ID: <YKTR12JzOJiFOaPv@yuki>
+From: Joerg Vehlow <lkml@jv-coder.de>
+Date: Wed, 19 May 2021 11:21:13 +0200
+Subject: [LTP] [PATCH v2] tst_test: using SIGTERM to terminate process
+In-Reply-To: <20210519085812.27263-1-liwang@redhat.com>
+References: <20210519085812.27263-1-liwang@redhat.com>
+Message-ID: <78d1900a-cdc7-77c6-8f01-73ce4236a162@jv-coder.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > +but users are encouraged to move to a newer distro.
-> > > +
-> > > +If latest LTP cannot be compiled even with some amount of workarounds,
-> > > +you may result to older LTP releases, however these are _not_ supported
-> > > +in any way. Also if you are trying to run LTP on more than 10 years old
-> > > +distribution you may as well reconsider you life choices.
-> 
-> > So in the end you haven't changed this for the nicer version I've
-> > proposed?
-> I decided to keep it. We're saying similar thing in previous paragraph
-> ("but users are encouraged to move to a newer distro") and it's actually the
-> truth (life choice to maintain ancient version). But feel free to suggest
-> further improvements over these 2 paragraphs.
+Hi,
 
-Nah, looks good enough, Acked with the typos and grammar fixes.
+On 5/19/2021 10:58 AM, Li Wang wrote:
+> diff --git a/lib/newlib_tests/shell/timeout03.sh b/lib/newlib_tests/shell/timeout03.sh
+> index cd548d9a2..dabef32a2 100755
+> --- a/lib/newlib_tests/shell/timeout03.sh
+> +++ b/lib/newlib_tests/shell/timeout03.sh
+> @@ -6,8 +6,9 @@
+>   # expected output:
+>   # timeout03 1 TINFO: timeout per run is 0h 0m 1s
+>   # timeout03 1 TINFO: testing killing test after TST_TIMEOUT
+> -# timeout03 1 TBROK: Test timeouted, sending SIGINT! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+> -# timeout03 1 TBROK: test interrupted or timed out
+> +# timeout03 1 TBROK: Test timed out, sending SIGTERM! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+> +# Terminated
+Nit: This Message seems to be only there for bash... I tried to find why 
+and if it can be suppressed, but found nothing. I guess it comes from 
+the terminated sleep process.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+J?rg
