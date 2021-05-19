@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 19 May 2021 13:15:40 +0200
-Subject: [LTP] [PATCH 2/6] API/cgroups: Remove obsolete function in API
-In-Reply-To: <20210513152125.25766-3-rpalethorpe@suse.com>
+Date: Wed, 19 May 2021 13:20:34 +0200
+Subject: [LTP] [PATCH 3/6] API/cgroups: Check for unknown controller name
+In-Reply-To: <20210513152125.25766-4-rpalethorpe@suse.com>
 References: <20210513152125.25766-1-rpalethorpe@suse.com>
- <20210513152125.25766-3-rpalethorpe@suse.com>
-Message-ID: <YKTzXGRE4QfLUwyO@yuki>
+ <20210513152125.25766-4-rpalethorpe@suse.com>
+Message-ID: <YKT0gqiSkeGdRt8w@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,11 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+So as far as I can tell this only shuffles code around but the
+functionality is the same since we moved the controller check from the
+tst_cgroup_ver() and tst_cgroup_require() to a common function.
+
+I'm not sure that this is worth the trouble.
 
 -- 
 Cyril Hrubis
