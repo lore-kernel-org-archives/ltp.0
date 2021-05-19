@@ -1,57 +1,53 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 19 May 2021 14:57:51 +0200
-Subject: [LTP] [PATCH 2/2] shell: Extend timeout tests,
- to run on multiple shells
-In-Reply-To: <2f8e652b-aaa8-5f98-4f9d-5b7c138c17fa@jv-coder.de>
-References: <20210519063109.224352-1-lkml@jv-coder.de>
- <20210519063109.224352-2-lkml@jv-coder.de> <YKToUgBnK6ZQ5I0Q@yuki>
- <2f8e652b-aaa8-5f98-4f9d-5b7c138c17fa@jv-coder.de>
-Message-ID: <YKULT1tIBFIR+U70@pevik>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Date: Wed, 19 May 2021 10:19:16 -0300
+Subject: [LTP] [PATCH] mtest06/mmap1: Further limit distant mmap size
+Message-ID: <20210519131916.314184-1-cascardo@canonical.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> HI Cyril,
+Though on recent kernels (starting with 5.2, commit
+8c7829b04c523cdc732cb77f59f03320e09f3386 ("mm: fix false-positive
+OVERCOMMIT_GUESS failures"), overcommit accounting allows for allocating up
+to MemTotal memory, older kernels have a much more complicated overcommit
+guess accounting.
 
-> On 5/19/2021 12:28 PM, Cyril Hrubis wrote:
-> > Hi!
-> > > There are some differences especially in signal handling
-> > > between the shells, so execute the tests on as many
-> > > shells as possible.
-> > I'm not sure that we want to support anything but bash, dash and
-> > busybox and even these three are enough trouble.
+That leads to mmap failing on small enough systems:
 
-> > One of my friends once told me that it's easier to write a portable
-> > shell than portable shell code and it looks like he was right...
+mmap1.c:205: TBROK: mmap((nil),2088370176,3,34,-1,0) failed: ENOMEM (12)
 
-> In general I would say: YES
-> But if at some point in the future there are features used, that really only
-> work for one shell,
-> we can still reduce the tested shells for this script.
+Allocating only half of the total memory would generally work on test
+systems.
 
-> Btw: ksh is not really support, it complains about all local variables,
-> because it only allows them in "function <name>"-style functions.
-> But the timeout code still works even there.
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ testcases/kernel/mem/mtest06/mmap1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Although I generally agree that scrips should be portable to some extent
-(it's already hard trying to keep it POSIX), it should be for shells which are
-used on Linux distros as a default shell (/bin/sh). That's why besides the
-default bash on most of distros we also care about dash (Debian/Ubuntu by
-default) and busybox sh implementation (embedded distros and Alpine).
-I'm not aware of any distro using ksh, csh or zsh as a default.
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index 56588e1ebaff..10c47c35cb02 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -186,7 +186,7 @@ static void setup(void)
+ {
+ 	struct sigaction sigptr;
+ 	size_t distant_mmap_size;
+-	long mem_total;
++	size_t mem_total;
+ 
+ 	page_sz = getpagesize();
+ 	mem_total = SAFE_READ_MEMINFO("MemTotal:");
+@@ -195,7 +195,7 @@ static void setup(void)
+ #ifdef TST_ABI32
+ 	distant_mmap_size = 256*1024*1024;
+ #else
+-	distant_mmap_size = (mem_total > 2 * GIGABYTE) ? 2 * GIGABYTE : mem_total;
++	distant_mmap_size = (mem_total > 4 * GIGABYTE) ? 2 * GIGABYTE : mem_total / 2;
+ #endif
+ 	/*
+ 	 * Used as hint for mmap thread, so it doesn't interfere
+-- 
+2.30.2
 
-Trying to remember when I met ksh as a default, I guess it was on some old
-Solaris, more than decade ago :).
-
-We state this in shell shoding style chapter [1]. Maybe I should have added it
-into Supported kernel ... page [2], but not many people run shell tests anyway.
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#132-shell-coding-style
-[2] https://github.com/linux-test-project/ltp/wiki/Supported-kernel,-libc,-toolchain-versions
-
-> J?rg
