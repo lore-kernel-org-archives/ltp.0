@@ -1,53 +1,30 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Date: Wed, 19 May 2021 10:19:16 -0300
-Subject: [LTP] [PATCH] mtest06/mmap1: Further limit distant mmap size
-Message-ID: <20210519131916.314184-1-cascardo@canonical.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 19 May 2021 17:10:05 +0200
+Subject: [LTP] [RFC PATCH 6/6] API: Check exported symbols
+In-Reply-To: <YKT+XzCGrf4bxq7G@yuki>
+References: <20210517163029.22974-1-rpalethorpe@suse.com>
+ <20210517163029.22974-7-rpalethorpe@suse.com>
+ <YKN4SZcHP9GAGRH4@pevik> <87im3gl5yx.fsf@suse.de>
+ <YKPVwoRiJKLqneN3@pevik> <87cztnks0n.fsf@suse.de>
+ <YKT+XzCGrf4bxq7G@yuki>
+Message-ID: <YKUqTa2AFbdwjFSy@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Though on recent kernels (starting with 5.2, commit
-8c7829b04c523cdc732cb77f59f03320e09f3386 ("mm: fix false-positive
-OVERCOMMIT_GUESS failures"), overcommit accounting allows for allocating up
-to MemTotal memory, older kernels have a much more complicated overcommit
-guess accounting.
+Hi Cyril, Richie,
 
-That leads to mmap failing on small enough systems:
+> Hi!
+> > OK, I guess you can just shorten the regex by substituing "[lL]io_\w+"
+> > for all the lio stuff. Or filter by file instead.
 
-mmap1.c:205: TBROK: mmap((nil),2088370176,3,34,-1,0) failed: ENOMEM (12)
+> Another option would be moving the tlibio.c and random_range.c to
+> libs/libltpobsolete/ and adding LTPLIBS flags for the few tests that
+> actually use that code.
 
-Allocating only half of the total memory would generally work on test
-systems.
+Thank you both for tips, both ways would work for me.
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
----
- testcases/kernel/mem/mtest06/mmap1.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index 56588e1ebaff..10c47c35cb02 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -186,7 +186,7 @@ static void setup(void)
- {
- 	struct sigaction sigptr;
- 	size_t distant_mmap_size;
--	long mem_total;
-+	size_t mem_total;
- 
- 	page_sz = getpagesize();
- 	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-@@ -195,7 +195,7 @@ static void setup(void)
- #ifdef TST_ABI32
- 	distant_mmap_size = 256*1024*1024;
- #else
--	distant_mmap_size = (mem_total > 2 * GIGABYTE) ? 2 * GIGABYTE : mem_total;
-+	distant_mmap_size = (mem_total > 4 * GIGABYTE) ? 2 * GIGABYTE : mem_total / 2;
- #endif
- 	/*
- 	 * Used as hint for mmap thread, so it doesn't interfere
--- 
-2.30.2
-
+Kind regards,
+Petr
