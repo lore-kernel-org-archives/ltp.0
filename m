@@ -1,48 +1,33 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 May 2021 17:21:38 +0200
-Subject: [LTP] [PATCH 1/1] docparse: Fix parsing URL containing '|' in links
-Message-ID: <20210520152138.23772-1-pvorel@suse.cz>
+Date: Thu, 20 May 2021 17:49:53 +0200
+Subject: [LTP] [PATCH 1/1] docparse: s/Tags/Tag/
+Message-ID: <20210520154953.32623-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-That fixes formatting for commit in close_range01:
-fec8a6a69103 ("close_range: unshare all fds for CLOSE_RANGE_UNSHARE | CLOSE_RANGE_CLOEXEC")
+Because allother header cells are singular.
 
-Reported-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Hi,
-
-hope this is enough to be escaped.
-I tested various:
-== \|= # - ## -- ___
-
-Also one day I wrote docparser test :).
-
-Kind regards,
-Petr
-
- docparse/testinfo.pl | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ docparse/testinfo.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
-index 31148e3a4..6e05982e5 100755
+index 6e05982e5..c11064c05 100755
 --- a/docparse/testinfo.pl
 +++ b/docparse/testinfo.pl
-@@ -96,8 +96,8 @@ sub html_a
- {
- 	my ($url, $text) = @_;
+@@ -428,7 +428,7 @@ sub content_all_tests
  
--	# escape ]
--	$text =~ s/([]])/\\$1/g;
-+	# escape: ] |
-+	$text =~ s/([]|])/\\$1/g;
- 
- 	return "$url\[$text\]";
- }
+ 		for my $tag (@sorted_tags) {
+ 			if (!defined($tmp2)) {
+-				$content .= table . "|Tags|Info\n"
++				$content .= table . "|Tag|Info\n"
+ 			}
+ 			my $k = @$tag[0];
+ 			my $v = @$tag[1];
 -- 
 2.31.1
 
