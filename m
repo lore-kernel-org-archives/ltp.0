@@ -1,26 +1,48 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 May 2021 14:23:26 +0200
-Subject: [LTP] [Automated-testing] LTP pre-release git freeze and call
- for testing
-In-Reply-To: <167E994388192BE9.11782@lists.yoctoproject.org>
-References: <YJOYgZNL7/qp5YCN@yuki> <YJpq26w8NBvBzUSc@yuki>
- <167E994388192BE9.11782@lists.yoctoproject.org>
-Message-ID: <YKZUvg00MX+7wlSb@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 20 May 2021 17:21:38 +0200
+Subject: [LTP] [PATCH 1/1] docparse: Fix parsing URL containing '|' in links
+Message-ID: <20210520152138.23772-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> As previously planned LTP git is now frozen for anything but imporatnt
-> fixes and the (ideally) week of pre-release testing starts now.
-> 
-> If you haven't tested latest LTP git please do so now.
+That fixes formatting for commit in close_range01:
+fec8a6a69103 ("close_range: unshare all fds for CLOSE_RANGE_UNSHARE | CLOSE_RANGE_CLOEXEC")
 
-So far things looks calm enough, so I would like to proceed with the
-release on Monday 24.
+Reported-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
+hope this is enough to be escaped.
+I tested various:
+== \|= # - ## -- ___
+
+Also one day I wrote docparser test :).
+
+Kind regards,
+Petr
+
+ docparse/testinfo.pl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/docparse/testinfo.pl b/docparse/testinfo.pl
+index 31148e3a4..6e05982e5 100755
+--- a/docparse/testinfo.pl
++++ b/docparse/testinfo.pl
+@@ -96,8 +96,8 @@ sub html_a
+ {
+ 	my ($url, $text) = @_;
+ 
+-	# escape ]
+-	$text =~ s/([]])/\\$1/g;
++	# escape: ] |
++	$text =~ s/([]|])/\\$1/g;
+ 
+ 	return "$url\[$text\]";
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
