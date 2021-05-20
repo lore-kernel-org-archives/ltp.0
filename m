@@ -1,50 +1,37 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 19 May 2021 21:59:34 +0200
-Subject: [LTP] [PATCH] network/lib6/getaddrinfo01: rewrite with the new
- API + use static hostnames
-In-Reply-To: <b7744613-ee02-c4a5-e5ed-da3da60a6e7b@bell-sw.com>
-References: <20210518091422.41857-1-aleksei.kodanev@bell-sw.com>
- <YKQSTR1wkB/U81Em@pevik>
- <b7744613-ee02-c4a5-e5ed-da3da60a6e7b@bell-sw.com>
-Message-ID: <YKVuJksJkHh7uxbX@pevik>
+Date: Thu, 20 May 2021 07:03:57 +0200
+Subject: [LTP] [PATCH] typo: Add necessary spaces in the outputs
+In-Reply-To: <CAEemH2en6C3dUzspuVwNVmRiUeBQWK38bLPT7+ZwErVFQG+i-w@mail.gmail.com>
+References: <20210518064506.203781-1-xieziyao@huawei.com>
+ <CAEemH2en6C3dUzspuVwNVmRiUeBQWK38bLPT7+ZwErVFQG+i-w@mail.gmail.com>
+Message-ID: <YKXtvaeckoJ2HJzJ@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 18.05.2021 22:15, Petr Vorel wrote:
-> > Hi Alexey,
+Hi,
 
-> > ...
-> >> +static void setup(void)
-> >> +{
-> >> +	unsigned int i;
-> >> +	int fd;
-> > ...
-> >> +	SAFE_CP(host_file, "hosts");
-> > One more thing, could we check for /etc/hosts before?
+> On Tue, May 18, 2021 at 2:45 PM Xie Ziyao <xieziyao@huawei.com> wrote:
 
-> Hi Petr,
+> > Add necessary spaces in the outputs.
 
-> Yes, why not. I assume it can be read-only, but I hope we won't hide a
-> configuration bug with this...
+> > Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
 
-Hi Alexey,
+> Reviewed-by: Li Wang <liwang@redhat.com>
 
-hm, not sure if we can hide configuration bug. For a traditional distros
-probably yes, but not for embedded and other special distros.
-And good point, I'd TCONF also when file is read-only (which is more likely that
-file not presented). We can always think about different solution if anybody
-complains about this requirement.
+Actually, for some of these it'd be good to join the string:
+
+e.g.: testcases/kernel/fs/fsx-linux/fsx-linux.c
+warn("save_buffer: short write, 0x%x bytes instead "
+ 			     "of 0x%llx\n",
+
+The rule could be: anything <= 100 (instead of 80 which was common in the past).
+This is related to the change in checkpatch.pl (kernel) a year ago
+bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
+
+Feel free to ignore it.
 
 Kind regards,
 Petr
-
-> > Because we want to TCONF on systems without it not TBROK.
-> > And I guess there are embedded systems without it out there.
-
-> > Kind regards,
-> > Petr
-
-
