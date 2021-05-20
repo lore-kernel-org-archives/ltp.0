@@ -1,37 +1,34 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 May 2021 07:03:57 +0200
-Subject: [LTP] [PATCH] typo: Add necessary spaces in the outputs
-In-Reply-To: <CAEemH2en6C3dUzspuVwNVmRiUeBQWK38bLPT7+ZwErVFQG+i-w@mail.gmail.com>
-References: <20210518064506.203781-1-xieziyao@huawei.com>
- <CAEemH2en6C3dUzspuVwNVmRiUeBQWK38bLPT7+ZwErVFQG+i-w@mail.gmail.com>
-Message-ID: <YKXtvaeckoJ2HJzJ@pevik>
+From: Richard Palethorpe <rpalethorpe@suse.de>
+Date: Thu, 20 May 2021 09:13:56 +0100
+Subject: [LTP] [PATCH 3/6] API/cgroups: Check for unknown controller name
+In-Reply-To: <YKT0gqiSkeGdRt8w@yuki>
+References: <20210513152125.25766-1-rpalethorpe@suse.com>
+ <20210513152125.25766-4-rpalethorpe@suse.com> <YKT0gqiSkeGdRt8w@yuki>
+Message-ID: <87a6oplt4r.fsf@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+hello,
 
-> On Tue, May 18, 2021 at 2:45 PM Xie Ziyao <xieziyao@huawei.com> wrote:
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-> > Add necessary spaces in the outputs.
+> Hi!
+> So as far as I can tell this only shuffles code around but the
+> functionality is the same since we moved the controller check from the
+> tst_cgroup_ver() and tst_cgroup_require() to a common function.
+>
+> I'm not sure that this is worth the trouble.
 
-> > Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
+It causes tst_brk to be called when the controller name is not found
+instead of a null deref.
 
-> Reviewed-by: Li Wang <liwang@redhat.com>
+Although it may not be worth creating the function because tst_brk can
+return as far as the compiler is concerned (although tst_require should
+never be called from cleanup context). So I need to look at this again.
 
-Actually, for some of these it'd be good to join the string:
-
-e.g.: testcases/kernel/fs/fsx-linux/fsx-linux.c
-warn("save_buffer: short write, 0x%x bytes instead "
- 			     "of 0x%llx\n",
-
-The rule could be: anything <= 100 (instead of 80 which was common in the past).
-This is related to the change in checkpatch.pl (kernel) a year ago
-bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
-
-Feel free to ignore it.
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
