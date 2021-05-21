@@ -1,11 +1,7 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Fri, 21 May 2021 10:29:29 +0100
-Subject: [LTP] [PATCH 6/6] sched/cgroup: Add cfs_bandwidth01
-In-Reply-To: <871ra1lrf3.fsf@suse.de>
-References: <20210513152125.25766-1-rpalethorpe@suse.com>
- <20210513152125.25766-7-rpalethorpe@suse.com> <YKT7xfzaUD7nNPzX@yuki>
- <871ra1lrf3.fsf@suse.de>
-Message-ID: <87y2c8juyu.fsf@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 21 May 2021 11:25:22 +0100
+Subject: [LTP] [PATCH v2 0/6] cfs_bandwidth01 and CGroup API
+Message-ID: <20210521102528.21102-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,52 +10,35 @@ To: ltp@lists.linux.it
 
 Hello,
 
->>> +
->>> +static void cleanup(void)
->>> +{
->>> +	size_t i;
->>> +
->>> +	for (i = 0; i < ARRAY_SIZE(cg_workers); i++) {
->>> +		if (cg_workers[i])
->>> +			cg_workers[i] = tst_cgroup_group_rm(cg_workers[i]);
->>> +	}
->>> +
->>> +	if (cg_level3a)
->>> +		cg_level3a = tst_cgroup_group_rm(cg_level3a);
->>> +	if (cg_level3b)
->>> +		cg_level3b = tst_cgroup_group_rm(cg_level3b);
->>> +	if (cg_level2)
->>> +		cg_level2 = tst_cgroup_group_rm(cg_level2);
->>
->> Hmm, I wonder if we can move this part of the cleanup to the test
->> library as well. If we add all cgroups the user has created into a FIFO
->> linked list then this could be implemented as a single loop in the
->> tst_cgroup_clean().
->>
->> We would have to loop over the list in the tst_cgroup_group_rm() in
->> order to remove the about to be removed group from the list as well, but
->> I guess that this is still worth the trouble.
->
-> This sounds good. We probably need to check if the groups have processes
-> in them to print a nice error message. My main concern with automatic
-> cleanup is confusing errors from deep in the lib.
->
+This adds a test scheduler test which uses the cpu controller.
 
-I think maybe this API makes a fundamental mistake of mixing memory/object
-management with actual creation and deletion of CGroups. OTOH that is
-not really clear either.
+Also included are some additions and fixes to the CGroup API related
+to the test.
 
-But if a child process starts deleting CGroups, which might be a
-reasonable thing to do, then we will get a mismatch between child and
-parent. Then the cleanup will be wrong.
+V2:
+* Simpler check for unrecognised controller name
+* Dropped whitespace patch which was already merged
+* Moved subgroup creation to setup. Otherwise it leaks memory between iterations.
+  Although the test still worked because it doesn't error if the group already
+  exists.
 
-Also any kind of linked list or array implementation uses more lines of
-code than the cleanup function and more complex for sure... even if we
-have 10 test cases like this is it really work saving a few lines in
-each case?
+Richard Palethorpe (6):
+  API/cgroups: Allow fetching of CGroup name
+  API/cgroups: Remove obsolete function in API
+  API/cgroups: Add cpu controller
+  API/cgroups: Auto add controllers to subtree_control in new subgroup
+  API/cgroups: tst_require fail gracefully with unknown controller
+  sched/cgroup: Add cfs_bandwidth01
 
-I don't know. But I think we need to see a few more cases.
+ include/tst_cgroup.h                          |   4 +
+ lib/tst_cgroup.c                              |  58 ++++--
+ runtest/sched                                 |   1 +
+ .../kernel/sched/cfs-scheduler/.gitignore     |   1 +
+ testcases/kernel/sched/cfs-scheduler/Makefile |   4 +-
+ .../sched/cfs-scheduler/cfs_bandwidth01.c     | 175 ++++++++++++++++++
+ 6 files changed, 227 insertions(+), 16 deletions(-)
+ create mode 100644 testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
 
 -- 
-Thank you,
-Richard.
+2.31.1
+
