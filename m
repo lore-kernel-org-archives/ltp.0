@@ -1,48 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 May 2021 16:16:08 +0200
-Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
- test
-In-Reply-To: <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
-References: <20190911124714.GA21670@rei.lan>
- <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
- <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
-Message-ID: <YK0GqLg9AUrOxPdx@yuki>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 25 May 2021 16:56:08 +0200
+Subject: [LTP] [PATCH 1/3] syscalls/fchown: Convert fchown01 to the new
+ API
+In-Reply-To: <20210506130950.110267-2-xieziyao@huawei.com>
+References: <20210506130950.110267-1-xieziyao@huawei.com>
+ <20210506130950.110267-2-xieziyao@huawei.com>
+Message-ID: <YK0QCD3CTXDpPcN1@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > stx_attributes_mask shows what's supported in stx_attributes.
-> > Set supp_{append,compr,immutable,nodump} attributes only on filesystems
-> > which actually support it.
-> >
-> > Also merge duplicate code.
-> >
-> > ---------------
-> > v2->v3:
-> > 1.add kernel version check for stx_attributes_mask
-> > 2. use test_flag(int) instead of test_flagged and test_unflagged
-> > ---------------
-> >
-> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Reviewed-by: Li Wang <liwang@redhat.com>
-> 
-> This patch makes sense to me, I'm not sure if any blocker issue for
-> holding the apply process. If _no_ I would help to merge it:).
+Hi,
 
-See:
+merged with these changes, thanks!
 
-https://github.com/linux-test-project/ltp/issues/557
+Kind regards,
+Petr
 
-Basically this change hides a kernel bug. I've proposed to create a
-separate test for kernel that makes sure that all flags that are
-supposed to be enabled are enabled for new enough kernels, then we can
-apply this patch.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git testcases/kernel/syscalls/fchown/fchown01.c testcases/kernel/syscalls/fchown/fchown01.c
+index 32fc53d6c..77913ce32 100644
+--- testcases/kernel/syscalls/fchown/fchown01.c
++++ testcases/kernel/syscalls/fchown/fchown01.c
+@@ -1,8 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
++ * Copyright (c) Linux Test Project, 2006-2021
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- * AUTHOR: William Roske
+- * CO-PILOT: Dave Fenner
++ * Author: William Roske
++ * Ported to LTP: Dave Fenner
+  */
+ 
+ /*\
+@@ -22,7 +23,8 @@
+ #define MODE 0700
+ 
+ static int fd;
+-static int uid, gid;
++static uid_t uid;
++static gid_t gid;
+ 
+ static void run(void)
+ {
