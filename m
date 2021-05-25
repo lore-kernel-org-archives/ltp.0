@@ -1,43 +1,46 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 25 May 2021 21:18:22 +0800
-Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
- test
-In-Reply-To: <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-References: <20190911124714.GA21670@rei.lan>
- <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
-Message-ID: <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 25 May 2021 15:50:12 +0200
+Subject: [LTP] [PATCH 3/3] nfs_lib.sh: Print verbose mount info on error
+In-Reply-To: <20210525135012.877-1-pvorel@suse.cz>
+References: <20210525135012.877-1-pvorel@suse.cz>
+Message-ID: <20210525135012.877-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi all,
+Suggested-by: NeilBrown <neilb@suse.de>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/nfs/nfs_stress/nfs_lib.sh | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Yang Xu <xuyang2018.jy@cn.fujitsu.com> wrote:
-
->
-> stx_attributes_mask shows what's supported in stx_attributes.
-> Set supp_{append,compr,immutable,nodump} attributes only on filesystems
-> which actually support it.
->
-> Also merge duplicate code.
->
-> ---------------
-> v2->v3:
-> 1.add kernel version check for stx_attributes_mask
-> 2. use test_flag(int) instead of test_flagged and test_unflagged
-> ---------------
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-This patch makes sense to me, I'm not sure if any blocker issue for
-holding the apply process. If _no_ I would help to merge it:).
-
+diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+index 25fe67bda..fb0f10020 100644
+--- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
++++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+@@ -83,16 +83,17 @@ nfs_mount()
+ 		mount_dir="$(tst_ipaddr $host_type):$remote_dir"
+ 	fi
+ 
+-	local mnt_cmd="mount -t nfs $opts $mount_dir $local_dir"
++	local mnt_cmd="mount -v -t nfs $opts $mount_dir $local_dir"
+ 
+ 	tst_res TINFO "Mounting NFS: $mnt_cmd"
+ 	if [ -n "$LTP_NETNS" ] && [ -z "$LTP_NFS_NETNS_USE_LO" ]; then
+-		tst_rhost_run -c "$mnt_cmd"
++		tst_rhost_run -c "$mnt_cmd" > mount.log
+ 	else
+-		$mnt_cmd > /dev/null
++		$mnt_cmd > mount.log
+ 	fi
+ 
+ 	if [ $? -ne 0 ]; then
++		cat mount.log
+ 		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
+ 			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
+ 		fi
 -- 
-Regards,
-Li Wang
+2.31.1
 
