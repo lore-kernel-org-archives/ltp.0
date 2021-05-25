@@ -1,10 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 25 May 2021 15:47:50 +0200
-Subject: [LTP] [RFC PATCH 0/4] Auto review and Coccinelle
-In-Reply-To: <87sg2akj01.fsf@suse.de>
-References: <20210524144745.10887-1-rpalethorpe@suse.com>
- <YKzp0rxGfaxL1blw@yuki> <87sg2akj01.fsf@suse.de>
-Message-ID: <YK0ABlx8wyHPp0Xf@yuki>
+Date: Tue, 25 May 2021 16:16:08 +0200
+Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
+ test
+In-Reply-To: <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
+References: <20190911124714.GA21670@rei.lan>
+ <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
+Message-ID: <YK0GqLg9AUrOxPdx@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,45 +14,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > I guess that having it in travis as a post commit check would be better
-> > than nothing.
+> > stx_attributes_mask shows what's supported in stx_attributes.
+> > Set supp_{append,compr,immutable,nodump} attributes only on filesystems
+> > which actually support it.
 > >
-> > Pre commit hook would be ideal but requiring coccinelle installed for
-> > LTP development would increase the bar for contribution too much I
-> > guess.
+> > Also merge duplicate code.
+> >
+> > ---------------
+> > v2->v3:
+> > 1.add kernel version check for stx_attributes_mask
+> > 2. use test_flag(int) instead of test_flagged and test_unflagged
+> > ---------------
+> >
+> > Signed-off-by: Yang Xu <xuyang2018.jy@cn.fujitsu.com>
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
 > 
-> I fear this defeats my primary goal of giving very quick feedback
-> without involving patch submission. This makes me think of clang-tidy
-> (clang-tools?) again. It will probably be more difficult to write LTP
-> specific checks, but I guess every desktop Linux distro less than 10
-> years old has Clang?
+> Reviewed-by: Li Wang <liwang@redhat.com>
+> 
+> This patch makes sense to me, I'm not sure if any blocker issue for
+> holding the apply process. If _no_ I would help to merge it:).
 
-As far as I can tell clang is generally present on modern distributions
-while coccinelle tends to be problematic on some distributions. It's a
-great tool but it seems that there is a shortage of maintainers that can
-maintain ocaml packages.
+See:
 
-> I don't think there is much else I can do than try writing the same
-> check in clang as well. See how that goes...
+https://github.com/linux-test-project/ltp/issues/557
 
-If that works well enough I would vote to a switch to clang-tidy.
-
-> Anyway, we could copy the kernel to some extent. Make it so running
-> 
-> make coccicheck
-> 
-> or
-> 
-> make clang-tidy
-> 
-> or more generic
-> 
-> make check
-> 
-> Will recursively run the checks on the files under the current
-> directory?
-
-Sounds like a good plan.
+Basically this change hides a kernel bug. I've proposed to create a
+separate test for kernel that makes sure that all flags that are
+supposed to be enabled are enabled for new enough kernels, then we can
+apply this patch.
 
 -- 
 Cyril Hrubis
