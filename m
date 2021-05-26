@@ -1,11 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 26 May 2021 09:11:47 +0200
-Subject: [LTP] [PATCH 3/3] nfs_lib.sh: Print verbose mount info on error
-In-Reply-To: <ef263c10-d6f6-0ec7-aa4b-2e305f920d15@bell-sw.com>
+Date: Wed, 26 May 2021 09:18:35 +0200
+Subject: [LTP] [PATCH 2/3] nfs_lib.sh: Check running rpc.mountd,
+ rpcbind/portmap
+In-Reply-To: <20210525135012.877-2-pvorel@suse.cz>
 References: <20210525135012.877-1-pvorel@suse.cz>
- <20210525135012.877-3-pvorel@suse.cz>
- <ef263c10-d6f6-0ec7-aa4b-2e305f920d15@bell-sw.com>
-Message-ID: <YK30s96vF0kdxKRv@pevik>
+ <20210525135012.877-2-pvorel@suse.cz>
+Message-ID: <YK32S7sPQdxf3NO2@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,11 +14,46 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-> Thanks Petr! For the patch series:
+> Both are required to be running for NFS tests.
 
-> Reviewed-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+> This requires to add pgrep dependency, as we don't have custom LTP C
+> based tool for searching in processes.
 
-Thanks a lot! Merged this commit, more info at other commits.
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+
+> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> index 1bd057717..25fe67bda 100644
+> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -27,7 +27,7 @@ TST_PARSE_ARGS=nfs_parse_args
+>  TST_USAGE=nfs_usage
+>  TST_NEEDS_TMPDIR=1
+>  TST_NEEDS_ROOT=1
+> -TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount exportfs"
+> +TST_NEEDS_CMDS="$TST_NEEDS_CMDS exportfs mount pgrep"
+>  TST_SETUP="${TST_SETUP:-nfs_setup}"
+>  TST_CLEANUP="${TST_CLEANUP:-nfs_cleanup}"
+
+> @@ -107,6 +107,11 @@ nfs_setup()
+>  		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
+>  	fi
+
+> +	pgrep rpc.mountd > /dev/null || \
+> +		tst_brk TCONF "rpc.mountd not running"
+> +
+> +	check_portmap_rpcbind
+
+I found that at least some tests (e.g. nfs01) runs with stopped rpcbind.
+I suppose that's because nfs-server.service is able to restart it
+(it's activated via socket).
+
+Although rpc.mountd (nfs-mountd.service) is required, nfs-mountd.service is a
+nfs-server.service dependency (nfs-server.service:Requires=nfs-mountd.service).
+Thus it's probably enough to check that rpc.nfsd is running.
+=> sending v2 with just single commit.
 
 Kind regards,
 Petr
