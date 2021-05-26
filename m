@@ -1,59 +1,50 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 26 May 2021 09:18:35 +0200
-Subject: [LTP] [PATCH 2/3] nfs_lib.sh: Check running rpc.mountd,
- rpcbind/portmap
-In-Reply-To: <20210525135012.877-2-pvorel@suse.cz>
-References: <20210525135012.877-1-pvorel@suse.cz>
- <20210525135012.877-2-pvorel@suse.cz>
-Message-ID: <YK32S7sPQdxf3NO2@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 26 May 2021 16:31:00 +0800
+Subject: [LTP] [PATCH] syscalls/statx04: use stx_attributes_mask before
+ test
+In-Reply-To: <60ADC7EC.5080706@fujitsu.com>
+References: <20190911124714.GA21670@rei.lan>
+ <1571975625-6322-1-git-send-email-xuyang2018.jy@cn.fujitsu.com>
+ <CAEemH2dxhzBk+fbR8YnxAKqQSYhsb=HW2B2rov18yOjk9a+5Uw@mail.gmail.com>
+ <YK0GqLg9AUrOxPdx@yuki> <60ADC7EC.5080706@fujitsu.com>
+Message-ID: <CAEemH2eSmf+7kGcq3rZS4_RPZ7W58hSyLqdx=zrzJUsEMQf8og@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi all,
 
-> Both are required to be running for NFS tests.
+> >> This patch makes sense to me, I'm not sure if any blocker issue for
+> >> holding the apply process. If _no_ I would help to merge it:).
+> >
+> > See:
+> >
+> > https://github.com/linux-test-project/ltp/issues/557
+> >
+> > Basically this change hides a kernel bug.
+> I don't think it is a kernel bug and it is only an non-supported feature
+> before linux 5.1 when not using ext4 driver for ext2.
 
-> This requires to add pgrep dependency, as we don't have custom LTP C
-> based tool for searching in processes.
+Cyril hopes to have a reproducer to cover the bug [1] (though
+you think it a non-support problem), but that is responsible
+advice for FileSystem:).
+Actually, the worth to say, there already a separate test
+(xfstest/generic/424) for reproducing this problem[2].
+See: https://github.com/kdave/xfstests/blob/master/tests/generic/424
+I believe FS QE/Dev will run it for all filesystems regularly.
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+So maybe we can safely apply this patch in LTP without
+adding a duplicated test?
 
-> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index 1bd057717..25fe67bda 100644
-> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -27,7 +27,7 @@ TST_PARSE_ARGS=nfs_parse_args
->  TST_USAGE=nfs_usage
->  TST_NEEDS_TMPDIR=1
->  TST_NEEDS_ROOT=1
-> -TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount exportfs"
-> +TST_NEEDS_CMDS="$TST_NEEDS_CMDS exportfs mount pgrep"
->  TST_SETUP="${TST_SETUP:-nfs_setup}"
->  TST_CLEANUP="${TST_CLEANUP:-nfs_cleanup}"
+[1] https://bugs.linaro.org/show_bug.cgi?id=4012
+[2]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93bc420ed41df63
 
-> @@ -107,6 +107,11 @@ nfs_setup()
->  		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
->  	fi
-
-> +	pgrep rpc.mountd > /dev/null || \
-> +		tst_brk TCONF "rpc.mountd not running"
-> +
-> +	check_portmap_rpcbind
-
-I found that at least some tests (e.g. nfs01) runs with stopped rpcbind.
-I suppose that's because nfs-server.service is able to restart it
-(it's activated via socket).
-
-Although rpc.mountd (nfs-mountd.service) is required, nfs-mountd.service is a
-nfs-server.service dependency (nfs-server.service:Requires=nfs-mountd.service).
-Thus it's probably enough to check that rpc.nfsd is running.
-=> sending v2 with just single commit.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20210526/c12db3cf/attachment.htm>
