@@ -1,42 +1,22 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 26 May 2021 19:25:01 +0200
-Subject: [LTP] [LTP PATCH v2 1/3] nfs_lib.sh: Detect unsupported protocol
-Message-ID: <20210526172503.18621-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 27 May 2021 10:45:22 +0800
+Subject: [LTP] [PATCH 1/1] Remove README.kernel_config
+In-Reply-To: <20210526135900.19042-1-pvorel@suse.cz>
+References: <20210526135900.19042-1-pvorel@suse.cz>
+Message-ID: <CAEemH2evB4SZnuz-A0S73yGYCTpYAKevcJKGC8MPiSzhSue-OA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Caused by disabled CONFIG_NFSD_V[34] in kernel config.
+On Wed, May 26, 2021 at 9:59 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> It's not up-to-day nor important enough to maintain it.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-new in v2
+Merged, thanks!
 
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index 3fad8778a..b80ee0e18 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -94,9 +94,15 @@ nfs_mount()
- 
- 	if [ $? -ne 0 ]; then
- 		cat mount.log
-+
- 		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
- 			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
- 		fi
-+
-+		if grep -i "Protocol not supported" mount.log; then
-+			tst_brk TCONF "Protocol not supported"
-+		fi
-+
- 		tst_brk TBROK "mount command failed"
- 	fi
- }
 -- 
-2.31.1
+Regards,
+Li Wang
 
