@@ -1,77 +1,148 @@
-From: Pankaj Vinodrao Joshi <Pankaj.VJ@exaleapsemi.com>
-Date: Fri, 28 May 2021 14:09:52 +0000
-Subject: [LTP] Networking testcase failure
-Message-ID: <BMXPR01MB28709F3E93557EBD46666858EE229@BMXPR01MB2870.INDPRD01.PROD.OUTLOOK.COM>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 28 May 2021 20:25:49 +0200
+Subject: [LTP] [PATCH] doc: Modernize test-writing-guidelines
+Message-ID: <20210528182549.14347-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-i am running ltp on kernel 5.10.19 custom kernel with LTP version 20200515 but following networking tests are getting failed.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ doc/test-writing-guidelines.txt | 80 ++++++++++++++++++++++-----------
+ 1 file changed, 53 insertions(+), 27 deletions(-)
 
-I have enabled following kernel configs w.r.t. network tests
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 437239b97..e29ee4f6d 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1,9 +1,9 @@
+ LTP Test Writing Guidelines
+ ===========================
+ 
+-This document describes LTP guidelines and LTP test interface and is intended
+-for anybody who want to write or modify a LTP testcase. It's not a definitive
+-guide and it's not, by any means, a substitute for common sense.
++This document describes LTP guidelines and is intended for anybody who want to
++write or modify a LTP testcase. It's not a definitive guide and it's not, by
++any means, a substitute for common sense.
+ 
+ NOTE: See also
+       https://github.com/linux-test-project/ltp/wiki/C-Test-API[C Test API],
+@@ -105,14 +105,33 @@ were drifting slowly apart which yielded into API misuses and hard to find
+ bugs. Remember there is only one thing worse than no documentation, wrong
+ documentation.
+ 
+-Generally everybody should write code that is obvious (which unfortunately
+-isn't always possible). If there is a code that needs to be commented keep it
+-short and to the point. Never ever comment the obvious.
++Ideally everybody should write code that is obvious, which unfortunately
++isn't always possible. But here are some tips:
+ 
+-In case of LTP testcases it's customary to add a paragraph with highlevel test
+-description somewhere at the beginning of the file (usually right under the GPL
+-header). This helps other people to understand the overall goal of the test
+-before they dive into the technical details.
++* First of all I will repeat *Keep things simple*
++
++* Keep function and variable names short but descriptive, choosing a good name
++  for an API function is very difficuilt task; do not underestimate it
++
++* Keep functions reasonably short and focused on a single task
++
++* Be consistent
++
++* Avoid deep nesting
++
++* DRY
++
++If there is a code that requires to be commented keep it short and to the
++point. These comments should explain *why* and not *how* thigs are done.
++
++Never ever comment the obvious.
++
++In case of LTP testcases it's customary to add a comment with an asciidoc
++formatted paragraph with highlevel test description at the beginning of the
++file right under the GPL SPDX header. This helps other people to understand
++the overall goal of the test before they dive into the technical details. It's
++also exported into generated documentation hence it should mostly explain what
++is tested and why.
+ 
+ 1.5 Backwards compatibility
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -124,20 +143,27 @@ toolchain supplied by the manufacturer.
+ 
+ Therefore LTP test for more current features should be able to cope with older
+ systems. It should at least compile fine and if it's not appropriate for the
+-configuration it should return 'TCONF' (see test interface description below).
++configuration it should return 'TCONF'.
+ 
+ There are several types of checks we use:
+ 
+ The *configure script* is usually used to detect availability of a function
+-declarations in system headers. It's used to disable tests at compile time.
+-
+-We also have runtime kernel version detection that can be used to disable
+-tests at runtime.
++declarations in system headers. It's used to disable tests at compile time or
++to enable fallback definitions.
+ 
+ Checking the *errno* value is another type of runtime check. Most of the
+ syscalls returns either 'EINVAL' or 'ENOSYS' when syscall was not implemented
+ or was disabled upon kernel compilation.
+ 
++LTP has kernel version detection that can be used to disable tests at runtime,
++unfortunatelly kernel version does not always corresponds to a well defined
++feature set as distributions tend to backport hundreds of patches while the
++kernel version stays the same. Use with caution.
++
++Lately we added kernel '.config' parser, a test can define a boolean
++expression of kernel config variables that has to be satisfied in order for a
++test to run. This is mostly used for kernel namespaces at the moment.
++
+ Sometimes it also makes sense to define a few macros instead of creating
+ configure test. One example are Linux specific POSIX clock ids in
+ 'include/lapi/posix_clocks.h'.
+@@ -145,15 +171,14 @@ configure test. One example are Linux specific POSIX clock ids in
+ 1.6 Dealing with messed up legacy code
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-LTP contains a lot of old and messy code and we are cleaning it up as fast as
+-we can but despite the efforts there is still a lot. If you start modifying
+-old or a messed up testcase and your changes are more complicated than simple
+-typo fixes you should do a cleanup first (in a separate patch). It's easier to
+-review the changes if you separate the formatting fixes from the changes that
+-affects the test behavior.
++LTP still contains a lot of old and messy code and we are cleaning it up as
++fast as we can but despite the decade of efforts there is still a lot. If you
++start modifying old or a messy testcase and your changes are more complicated
++than simple typo fixes you should convert the test into a new library first.
+ 
+-The same goes for moving files. If you need a rename or move file do it in a
+-separate patch.
++It's also much easier to review the changes if you split them into a smaller
++logical groups. The same goes for moving files. If you need a rename or move
++file do it in a separate patch.
+ 
+ 1.7 License
+ ~~~~~~~~~~~
+@@ -176,10 +201,11 @@ stdout and reports overall success/failure via the exit value.
+ 
+ Tests are generally placed under the 'testcases/' directory. Everything that
+ is a syscall or (slightly confusingly) libc syscall wrapper goes under
+-'testcases/kernel/syscalls/'. Then there is 'testcases/open_posix_testsuite'
+-which is a well maintained fork of the upstream project that has been dead
+-since 2005 and also a number of directories with tests for more specific
+-features.
++'testcases/kernel/syscalls/'.
++
++Then there is 'testcases/open_posix_testsuite' which is a well maintained fork
++of the upstream project that has been dead since 2005 and also a number of
++directories with tests for more specific features.
+ 
+ 2.1.1 Runtest Files
+ ^^^^^^^^^^^^^^^^^^^
+-- 
+2.26.3
 
-CONFIG_VETH=y
-CONFIG_MACVLAN=y
-CONFIG_TUN=y
-CONFIG_TAP=y
-CONFIG_VETH=y
-
-1) netns_netlink
-
-proc/cmdline
-earlycon=sbi earlycon=sbi root=/dev/mmcblk0p3 rootwait console=ttySIF0 console=tty0
-
-Gnu C                  gcc (GCC) 10.2.0
-Clang
-Gnu make               4.3
-util-linux             2.36
-mount                  linux 2.36 (libmount 2.36.0: btrfs, namespaces, assert, debug)
-modutils               27
-Linux C Library        > libc.2.32
-Dynamic linker (ldd)   2.32
-Linux C++ Library      6.0.28
-Procps                 3.3.16
-iproute2               iproute2-v5.7.0-77-gb687d1067169
-iputils                'V'
-/opt/ltp/ver_linux: line 115: ethtool: command not found
-Sh-utils               8.32
-Modules Loaded         snd_timer snd sha1_generic hmac dummy veth overlay ntfs btrfs blake2b_generic xor zstd_compress lzo_compress zlib_deflate raid6_pq xfs libcrc32c ofpart cmdlinepart spi_nor drm fuse drm_panel_orientation_quirks
-
-free reports:
-              total        used        free      shared  buff/cache   available
-Mem:        8159408       84208     7874656       50964      200544     7944964
-Swap:             0           0           0
-
-
-
-netns_netlink    1 TCONF :  netns_helper.h:48: Failed while obtaining version for iproute check
-netns_netlink    2 TCONF  :  netns_helper.h:48: Remaining cases not appropriate for configuration
-
-
-2) netns_breakns_ip_ipv4_ioctl
-3) netns_breakns_ns_exec_ipv4_ioctl
-4) netns_breakns_ns_exec_ipv6_ioctl
-5) netns_comm_ip_ipv4_ioctl
-6) netns_comm_ip_ipv6_ioctl
-7) netns_comm_ns_exec_ipv4_ioctl
-8) netns_comm_ns_exec_ipv6_ioctl
-
-Failure log:-
-
-/opt/ltp/testcases/bin/netns_helper.sh: line 71: [: too many arguments
-/opt/ltp/testcases/bin/netns_helper.sh: line 75: [: too many arguments
-ifconfig: bad address '192.168.0.2/24'
-netns_breakns_ip_ipv4_ioctl 1 TBROK: adding address to veth0 failed
-<<<execution_status>>>
-
-Can someone help me what could be the reason behind failure of all ??
-
-
-Thanks
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20210528/551c9da3/attachment.htm>
