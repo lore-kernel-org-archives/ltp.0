@@ -1,46 +1,67 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 31 May 2021 16:54:22 +0200
-Subject: [LTP] [PATCH 1/1] doc: Drop uClinux support
-In-Reply-To: <YLSkz6OUbgwuB7my@yuki>
-References: <20210531032910.6739-1-pvorel@suse.cz>
- <YLSkz6OUbgwuB7my@yuki>
-Message-ID: <YLT4nktvY1CT4Um7@pevik>
+Date: Mon, 31 May 2021 18:50:49 +0200
+Subject: [LTP] [PATCH 0/3] CI: Move from Travis to GitHub Actions
+Message-ID: <20210531165052.8731-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> Hi!
-> > some shorter form could be added to 3. Test Contribution Checklist [1] as well.
+Hi,
 
-> > Kind regards,
-> > Petr
+Travis often false positive due "pull rate limit" issue [1],
+thus I decided to finally switch to GitHub Actions.
 
-> > [1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#3-test-contribution-checklist
+Also using GitHub native CI allows more advanced features
+(e.g. update wiki with doc/*.txt, nightly build docparser doc).
 
-> >  doc/maintainer-patch-review-checklist.txt | 3 +++
-> >  1 file changed, 3 insertions(+)
+Whole thing is tested [2].
 
-> > diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
-> > index 5420fa933..81ed61ddf 100644
-> > --- a/doc/maintainer-patch-review-checklist.txt
-> > +++ b/doc/maintainer-patch-review-checklist.txt
-> > @@ -44,6 +44,9 @@ New test should
-> >  * Docparse documentation
-> >  * If a test is a regression test it should include tags
-> >    (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2238-test-tags[Test tags])
-> > +* When rewritting old tests, https://en.wikipedia.org/wiki/%CE%9CClinux[uClinux
-> > +  (??Clinux)] support should be removed (project has been discontinued).
->       ^
->       I would just use u instead of \textmu
+I rewritten build.sh, added -r step.
+It's ugly, using commands in yaml would be more readable. But I'd prefer
+1) not writting shell in yaml 2) have build script for local use.
 
-> > +  E.g. `FORK_OR_VFORK()` should be replaced with simple `fork()` or `SAFE_FORK()`.
-
-> + and all #ifdef UCLINUX should be removed as well.
-Oh yes, ifdefs were the primary reason for me to document this.
-
-If nobody objects, I'll merge this tomorrow with your Reviewed-by: tag.
+Please comment, test.
 
 Kind regards,
 Petr
+
+[1] https://github.com/linux-test-project/ltp/issues/761
+[2] https://github.com/pevik/ltp/actions/runs/893331703
+
+Petr Vorel (3):
+  build.sh: Rewrite to allow running certain step
+  CI: Rename travis script directory
+  CI: Move from Travis to GitHub Actions
+
+ .github/workflows/ci.yml               | 154 +++++++++++++++++++
+ .travis.yml                            | 131 ----------------
+ build.sh                               | 198 ++++++++++++++-----------
+ {travis => ci}/alpine.sh               |   0
+ {travis => ci}/centos.sh               |   0
+ {travis => ci}/debian.cross-compile.sh |   0
+ {travis => ci}/debian.i386.sh          |   0
+ {travis => ci}/debian.minimal.sh       |   0
+ {travis => ci}/debian.sh               |   0
+ {travis => ci}/fedora.sh               |   0
+ {travis => ci}/opensuse.sh             |   0
+ {travis => ci}/tumbleweed.sh           |   0
+ {travis => ci}/ubuntu.sh               |   0
+ 13 files changed, 262 insertions(+), 221 deletions(-)
+ create mode 100644 .github/workflows/ci.yml
+ delete mode 100644 .travis.yml
+ rename {travis => ci}/alpine.sh (100%)
+ rename {travis => ci}/centos.sh (100%)
+ rename {travis => ci}/debian.cross-compile.sh (100%)
+ rename {travis => ci}/debian.i386.sh (100%)
+ rename {travis => ci}/debian.minimal.sh (100%)
+ rename {travis => ci}/debian.sh (100%)
+ rename {travis => ci}/fedora.sh (100%)
+ rename {travis => ci}/opensuse.sh (100%)
+ rename {travis => ci}/tumbleweed.sh (100%)
+ rename {travis => ci}/ubuntu.sh (100%)
+
+-- 
+2.31.1
+
