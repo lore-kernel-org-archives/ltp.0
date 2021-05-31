@@ -1,242 +1,117 @@
-From: Xie Ziyao <xieziyao@huawei.com>
-Date: Mon, 31 May 2021 19:25:21 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/fchown: Convert fchown04 to the new API
-In-Reply-To: <20210531112522.9082-1-xieziyao@huawei.com>
-References: <20210531112522.9082-1-xieziyao@huawei.com>
-Message-ID: <20210531112522.9082-2-xieziyao@huawei.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 31 May 2021 13:03:34 +0200
+Subject: [LTP] [PATCH] doc: Modernize test-writing-guidelines
+In-Reply-To: <YLKRtWlnuRV2cLbM@pevik>
+References: <20210528182549.14347-1-chrubis@suse.cz> <YLKRtWlnuRV2cLbM@pevik>
+Message-ID: <YLTChg9cpc91FVI9@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Cleanup and convert fchown04 to the new API.
+Hi!
+> > -In case of LTP testcases it's customary to add a paragraph with highlevel test
+> > -description somewhere at the beginning of the file (usually right under the GPL
+> > -header). This helps other people to understand the overall goal of the test
+> > -before they dive into the technical details.
+> > +* First of all I will repeat *Keep things simple*
+> > +
+> > +* Keep function and variable names short but descriptive, choosing a good name
+> > +  for an API function is very difficuilt task; do not underestimate it
+> typo: difficuilt => difficult
+> > +
+> > +* Keep functions reasonably short and focused on a single task
+> BTW we are in the section "1.4 Commenting code", shouldn't be in some section
+> for general coding rules (for both C and shell)? Maybe under "1.3 Coding style"
 
-Signed-off-by: Xie Ziyao <xieziyao@huawei.com>
----
- testcases/kernel/syscalls/fchown/fchown04.c | 179 +++++---------------
- 1 file changed, 47 insertions(+), 132 deletions(-)
+I guess so, maybe this part should be moved up and renamed to "General
+guide lines".
 
-diff --git a/testcases/kernel/syscalls/fchown/fchown04.c b/testcases/kernel/syscalls/fchown/fchown04.c
-index 12e332671..da14920d3 100644
---- a/testcases/kernel/syscalls/fchown/fchown04.c
-+++ b/testcases/kernel/syscalls/fchown/fchown04.c
-@@ -1,168 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *	07/2001 Ported by Wayne Boyer
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * 07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2021 Xie Ziyao <xieziyao@huawei.com>
-  */
+> > +
+> > +* Be consistent
+> > +
+> > +* Avoid deep nesting
+> > +
+> > +* DRY
+> maybe:
+> * https://en.wikipedia.org/wiki/Don%27t_repeat_yourself[DRY]
+> 
+> But DRY is the same as "1.2 Code duplication"
+> 
+> Also, I'd note for "Keep lines under 80 chars": for strings (log messages) we
+> prefer lines under 100 chars than splitting string.
 
--/*
-- * Test Description:
-- *   Verify that,
-- *   1) fchown(2) returns -1 and sets errno to EPERM if the effective user id
-- *	of process does not match the owner of the file and the process is
-- *	not super user.
-- *   2) fchown(2) returns -1 and sets errno to EBADF if the file descriptor
-- *	of the specified file is not valid.
-- *   3) fchown(2) returns -1 and sets errno to EROFS if the named file resides
-- *	on a read-only file system.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that:
-+ *
-+ * 1. fchown() returns -1 and sets errno to EPERM if the effective user id
-+ *    of process does not match the owner of the file and the process is
-+ *    not super user.
-+ * 2. fchown() returns -1 and sets errno to EBADF if the file descriptor
-+ *    of the specified file is not valid.
-+ * 3. fchown() returns -1 and sets errno to EROFS if the named file resides
-+ *    on a read-only file system.
-  */
+Sure.
 
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <grp.h>
- #include <pwd.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/mount.h>
+> > +If there is a code that requires to be commented keep it short and to the
+> > +point. These comments should explain *why* and not *how* thigs are done.
+> typo: thigs => things
+> > +
+> > +Never ever comment the obvious.
+> > +
+> > +In case of LTP testcases it's customary to add a comment with an asciidoc
+> > +formatted paragraph with highlevel test description at the beginning of the
+> > +file right under the GPL SPDX header. This helps other people to understand
+> > +the overall goal of the test before they dive into the technical details. It's
+> > +also exported into generated documentation hence it should mostly explain what
+> > +is tested and why.
+> 
+> >  1.5 Backwards compatibility
+> >  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > @@ -124,20 +143,27 @@ toolchain supplied by the manufacturer.
+> 
+> >  Therefore LTP test for more current features should be able to cope with older
+> >  systems. It should at least compile fine and if it's not appropriate for the
+> > -configuration it should return 'TCONF' (see test interface description below).
+> > +configuration it should return 'TCONF'.
+> 
+> >  There are several types of checks we use:
+> 
+> >  The *configure script* is usually used to detect availability of a function
+> > -declarations in system headers. It's used to disable tests at compile time.
+> > -
+> > -We also have runtime kernel version detection that can be used to disable
+> > -tests at runtime.
+> > +declarations in system headers. It's used to disable tests at compile time or
+> > +to enable fallback definitions.
+> >  Checking the *errno* value is another type of runtime check. Most of the
+> >  syscalls returns either 'EINVAL' or 'ENOSYS' when syscall was not implemented
+> >  or was disabled upon kernel compilation.
+> 
+> > +LTP has kernel version detection that can be used to disable tests at runtime,
+> > +unfortunatelly kernel version does not always corresponds to a well defined
+> typo: unfortunatelly => unfortunately
+> > +feature set as distributions tend to backport hundreds of patches while the
+> > +kernel version stays the same. Use with caution.
+> > +
+> > +Lately we added kernel '.config' parser, a test can define a boolean
+> > +expression of kernel config variables that has to be satisfied in order for a
+> > +test to run. This is mostly used for kernel namespaces at the moment.
+> ...
+> 
+> >  Tests are generally placed under the 'testcases/' directory. Everything that
+> >  is a syscall or (slightly confusingly) libc syscall wrapper goes under
+> > -'testcases/kernel/syscalls/'. Then there is 'testcases/open_posix_testsuite'
+> > -which is a well maintained fork of the upstream project that has been dead
+> > -since 2005 and also a number of directories with tests for more specific
+> > -features.
+> > +'testcases/kernel/syscalls/'.
+> 
+> Maybe also mention testcases/cve/ and why tests are duplicated?
 
--#include "test.h"
--#include "safe_macros.h"
--#include "compat_16.h"
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
-+#include "tst_safe_macros.h"
+Tests are not duplicated there, only in the runtest files...
 
--#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
--			 S_IXGRP|S_IROTH|S_IXOTH)
-+#define MNT_POINT	"mntpoint"
-+#define TEST_FILE	"tfile_1"
-+#define MODE		0666
-+#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
+> Not sure if it's worth to mention testcases/network/; also there are other
+> directories. But I suppose you don't want to be too verbose here atm.
+> Maybe one day (after we have done a cleanup of old unsupported things)
+> we should describe here or in testcases/README.md all subdirectories.
 
- static int fd1;
- static int fd2 = -1;
- static int fd3;
--static const char *device;
--static int mount_flag;
+Well the whole LTP structure is a bit random and there are no good rules
+on where things belong to...
 
- static struct test_case_t {
- 	int *fd;
- 	int exp_errno;
--} test_cases[] = {
-+} tc[] = {
- 	{&fd1, EPERM},
- 	{&fd2, EBADF},
- 	{&fd3, EROFS},
- };
+I will send a v2 later on.
 
--TCID_DEFINE(fchown04);
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--
--static void setup(void);
--static void fchown_verify(int);
--static void cleanup(void);
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			fchown_verify(i);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
- static void setup(void)
- {
- 	struct passwd *ltpuser;
--	const char *fs_type;
--
--	TEST_PAUSE;
--
--	tst_require_root();
--
--	tst_tmpdir();
--
--	fs_type = tst_dev_fs_type();
--	device = tst_acquire_device(cleanup);
--
--	if (!device)
--		tst_brkm(TCONF, cleanup, "Failed to acquire device");
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	fd1 = SAFE_OPEN(cleanup, "tfile_1", O_RDWR | O_CREAT, 0666);
-
--	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
--	SAFE_MKDIR(cleanup, "mntpoint", DIR_MODE);
--	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type, 0, NULL);
--	mount_flag = 1;
--	SAFE_TOUCH(cleanup, "mntpoint/tfile_3", 0644, NULL);
--	SAFE_MOUNT(cleanup, device, "mntpoint", fs_type,
--		   MS_REMOUNT | MS_RDONLY, NULL);
--	fd3 = SAFE_OPEN(cleanup, "mntpoint/tfile_3", O_RDONLY);
-+	fd1 = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, MODE);
-+	fd3 = SAFE_OPEN(MNT_POINT, O_RDONLY);
-
--	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	SAFE_SETEUID(ltpuser->pw_uid);
- }
-
--static void fchown_verify(int i)
-+static void run(unsigned int i)
- {
--	UID16_CHECK(geteuid(), "fchown", cleanup)
--	GID16_CHECK(getegid(), "fchown", cleanup)
-+	uid_t uid;
-+	gid_t gid;
-
--	TEST(FCHOWN(cleanup, *test_cases[i].fd, geteuid(), getegid()));
-+	UID16_CHECK((uid = geteuid()), "fchown");
-+	GID16_CHECK((gid = getegid()), "fchown");
-
--	if (TEST_RETURN == -1) {
--		if (TEST_ERRNO == test_cases[i].exp_errno) {
--			tst_resm(TPASS | TTERRNO, "fchown failed as expected");
--		} else {
--			tst_resm(TFAIL | TTERRNO,
--				 "fchown failed unexpectedly; expected %d - %s",
--				 test_cases[i].exp_errno,
--				 strerror(test_cases[i].exp_errno));
--		}
--	} else {
--		tst_resm(TFAIL, "fchown passed unexpectedly");
--	}
-+	TST_EXP_FAIL(FCHOWN(*tc[i].fd, uid, gid), tc[i].exp_errno);
- }
-
- static void cleanup(void)
- {
--	if (seteuid(0))
--		tst_resm(TWARN | TERRNO, "Failet to seteuid(0) before cleanup");
--
--	if (fd1 > 0 && close(fd1))
--		tst_resm(TWARN | TERRNO, "Failed to close fd1");
--
--	if (fd3 > 0 && close(fd3))
--		tst_resm(TWARN | TERRNO, "Failed to close fd3");
--
--	if (mount_flag && tst_umount("mntpoint") < 0)
--		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
--
--	if (device)
--		tst_release_device(device);
--
--	tst_rmdir();
-+	SAFE_SETEUID(0);
-+	SAFE_CLOSE(fd1);
-+	SAFE_CLOSE(fd3);
- }
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.needs_rofs = 1,
-+	.mntpoint = MNT_POINT,
-+	.tcnt = ARRAY_SIZE(tc),
-+	.test = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
---
-2.17.1
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
