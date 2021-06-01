@@ -1,17 +1,20 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 1 Jun 2021 11:20:51 +0200
-Subject: [LTP] [PATCH 1/1] CI/debian: Install dblatex
-In-Reply-To: <20210601091943.6300-1-pvorel@suse.cz>
-References: <20210601091943.6300-1-pvorel@suse.cz>
-Message-ID: <YLX783I4lkt2Zx/X@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 1 Jun 2021 11:10:13 +0200
+Subject: [LTP] [PATCH 1/3] build.sh: Rewrite to allow running certain
+ step
+In-Reply-To: <20210531165052.8731-2-pvorel@suse.cz>
+References: <20210531165052.8731-1-pvorel@suse.cz>
+ <20210531165052.8731-2-pvorel@suse.cz>
+Message-ID: <YLX5ddYuoA23tN6m@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tested:
-https://github.com/pevik/ltp/actions/runs/894944090
+Hi!
+Looks good acked.
 
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
