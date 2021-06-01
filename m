@@ -1,51 +1,54 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue,  1 Jun 2021 11:55:15 +0100
-Subject: [LTP] [PATCH v3 0/6] cfs_bandwidth01 and CGroup API
-Message-ID: <20210601105521.27459-1-rpalethorpe@suse.com>
+Date: Tue,  1 Jun 2021 11:55:16 +0100
+Subject: [LTP] [PATCH v3 1/6] API/cgroups: Allow fetching of CGroup name
+In-Reply-To: <20210601105521.27459-1-rpalethorpe@suse.com>
+References: <20210601105521.27459-1-rpalethorpe@suse.com>
+Message-ID: <20210601105521.27459-2-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello,
+Lets the test author get the name of a CGroup.
 
-This adds a test scheduler test which uses the cpu controller.
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ include/tst_cgroup.h | 4 ++++
+ lib/tst_cgroup.c     | 5 +++++
+ 2 files changed, 9 insertions(+)
 
-Also included are some additions and fixes to the CGroup API related
-to the test.
-
-V3:
-* Reverse order of writing cpu.cfs_period_us and cpu.cfs_quota_us to fix V1.
-* Add may_have_waiters to indicate we should try waking and cleaning up
-  children during cleanup. At worst this can result in timeout warnings if there
-  are less than 9 children waiting.
-  Which is probably better than failing to cleanup the CGroups.
-
-V2:
-* Simpler check for unrecognised controller name
-* Dropped whitespace patch which was already merged
-* Moved subgroup creation to setup. Otherwise it leaks memory between iterations.
-  Although the test still worked because it doesn't error if the group already
-  exists.
-
-Richard Palethorpe (6):
-  API/cgroups: Allow fetching of CGroup name
-  API/cgroups: Remove obsolete function in API
-  API/cgroups: Add cpu controller
-  API/cgroups: Auto add controllers to subtree_control in new subgroup
-  API/cgroups: tst_require fail gracefully with unknown controller
-  sched/cgroup: Add cfs_bandwidth01
-
- include/tst_cgroup.h                          |   4 +
- lib/tst_cgroup.c                              |  58 ++++--
- runtest/sched                                 |   1 +
- .../kernel/sched/cfs-scheduler/.gitignore     |   1 +
- testcases/kernel/sched/cfs-scheduler/Makefile |   4 +-
- .../sched/cfs-scheduler/cfs_bandwidth01.c     | 184 ++++++++++++++++++
- 6 files changed, 236 insertions(+), 16 deletions(-)
- create mode 100644 testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index d4c93db79..de72645bc 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -133,6 +133,10 @@ struct tst_cgroup_group *
+ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
+ 		    const char *const group_name)
+ 		    __attribute__ ((nonnull, warn_unused_result));
++const char *
++tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
++		      __attribute__ ((nonnull, warn_unused_result));
++
+ /* Remove a descendant CGroup */
+ struct tst_cgroup_group *
+ tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 1e036d3c3..793a712e1 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -855,6 +855,11 @@ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
+ 	return cg;
+ }
+ 
++const char *tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
++{
++	return cg->group_name;
++}
++
+ struct tst_cgroup_group *tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
+ {
+ 	struct cgroup_dir **dir;
 -- 
 2.31.1
 
