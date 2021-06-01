@@ -1,54 +1,37 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Tue,  1 Jun 2021 11:55:16 +0100
-Subject: [LTP] [PATCH v3 1/6] API/cgroups: Allow fetching of CGroup name
+Date: Tue,  1 Jun 2021 11:55:17 +0100
+Subject: [LTP] [PATCH v3 2/6] API/cgroups: Remove obsolete function in API
 In-Reply-To: <20210601105521.27459-1-rpalethorpe@suse.com>
 References: <20210601105521.27459-1-rpalethorpe@suse.com>
-Message-ID: <20210601105521.27459-2-rpalethorpe@suse.com>
+Message-ID: <20210601105521.27459-3-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Lets the test author get the name of a CGroup.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_cgroup.h | 4 ++++
- lib/tst_cgroup.c     | 5 +++++
- 2 files changed, 9 insertions(+)
+ lib/tst_cgroup.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-index d4c93db79..de72645bc 100644
---- a/include/tst_cgroup.h
-+++ b/include/tst_cgroup.h
-@@ -133,6 +133,10 @@ struct tst_cgroup_group *
- tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
- 		    const char *const group_name)
- 		    __attribute__ ((nonnull, warn_unused_result));
-+const char *
-+tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
-+		      __attribute__ ((nonnull, warn_unused_result));
-+
- /* Remove a descendant CGroup */
- struct tst_cgroup_group *
- tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
 diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 1e036d3c3..793a712e1 100644
+index 793a712e1..8fd5ab288 100644
 --- a/lib/tst_cgroup.c
 +++ b/lib/tst_cgroup.c
-@@ -855,6 +855,11 @@ tst_cgroup_group_mk(const struct tst_cgroup_group *const parent,
- 	return cg;
+@@ -225,12 +225,6 @@ static void add_ctrl(uint32_t *const ctrl_field,
+ 	*ctrl_field |= 1 << ctrl->ctrl_indx;
  }
  
-+const char *tst_cgroup_group_name(const struct tst_cgroup_group *const cg)
-+{
-+	return cg->group_name;
-+}
-+
- struct tst_cgroup_group *tst_cgroup_group_rm(struct tst_cgroup_group *const cg)
+-__attribute__ ((warn_unused_result))
+-struct cgroup_root *tst_cgroup_root_get(void)
+-{
+-	return roots[0].ver ? roots : roots + 1;
+-}
+-
+ static int cgroup_v2_mounted(void)
  {
- 	struct cgroup_dir **dir;
+ 	return !!roots[0].ver;
 -- 
 2.31.1
 
