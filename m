@@ -1,72 +1,51 @@
-From: Richard Palethorpe <rpalethorpe@suse.de>
-Date: Tue, 01 Jun 2021 11:42:48 +0100
-Subject: [LTP] [PATCH v2 6/6] sched/cgroup: Add cfs_bandwidth01
-In-Reply-To: <CAEemH2dTr7vDjdEJ3TsoPnQMM6TSk7-0dPX0yC2Emd1z+8vDFg@mail.gmail.com>
-References: <20210521102528.21102-1-rpalethorpe@suse.com>
- <20210521102528.21102-7-rpalethorpe@suse.com>
- <CAEemH2c2yTKbUyW5RQoyqOh2k0JFe3wNJwdcRfBkZD9w8SHG0w@mail.gmail.com>
- <87k0njjj11.fsf@suse.de>
- <CAEemH2fww4Zwqh6E_C+R9erUpXbebKUzS2eHe4JT9LXnsgLUGQ@mail.gmail.com>
- <CAEemH2dTr7vDjdEJ3TsoPnQMM6TSk7-0dPX0yC2Emd1z+8vDFg@mail.gmail.com>
-Message-ID: <87h7ihkgrb.fsf@suse.de>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue,  1 Jun 2021 11:55:15 +0100
+Subject: [LTP] [PATCH v3 0/6] cfs_bandwidth01 and CGroup API
+Message-ID: <20210601105521.27459-1-rpalethorpe@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li,
+Hello,
 
-Li Wang <liwang@redhat.com> writes:
+This adds a test scheduler test which uses the cpu controller.
 
->> > > [root@dhcp-66-83-181 cfs-scheduler]# ./cfs_bandwidth01
->> > > tst_test.c:1313: TINFO: Timeout per run is 0h 05m 00s
->> > > tst_buffers.c:55: TINFO: Test is using guarded buffers
->> > > cfs_bandwidth01.c:48: TINFO: Set 'worker1/cpu.max' = '3000 10000'
->> > > cfs_bandwidth01.c:48: TINFO: Set 'worker2/cpu.max' = '2000 10000'
->> > > cfs_bandwidth01.c:48: TINFO: Set 'worker3/cpu.max' = '3000 10000'
->> > > cfs_bandwidth01.c:111: TPASS: Scheduled bandwidth constrained workers
->> > > cfs_bandwidth01.c:42: TBROK:
->> > > vdprintf(10</sys/fs/cgroup/cpu,cpuacct/ltp/test-8450/level2>,
->> > > 'cpu.cfs_quota_us', '%u'<5000>): EINVAL (22)
->> >
->> > I wonder if your kernel disallows setting this on a trunk node after it
->> > has been set on leaf nodes (with or without procs in)?
->>
->> After looking a while, I think the CGrup V1 disallows the parent quota
->> less than the max value of its children.
->>
->> This means we should set in level2 at least '3000/10000', just like what
->> we did for level3.
->>
->>   cfs_bandwidth01.c:48: TINFO: Set 'worker1/cpu.max' = '3000 10000'
->>   cfs_bandwidth01.c:48: TINFO: Set 'worker2/cpu.max' = '2000 10000'
->>   cfs_bandwidth01.c:48: TINFO: Set 'worker3/cpu.max' = '3000 10000'
->>
->> But in the failure, it shows level2 only set to 5000/100000 (far less than
->> 3000/10000), that's because function set_cpu_quota changes the system
->> default value 'cpu.cfs_period_us' from 100000 to 10000.
->
-> Or, just reverse the code order to set cfs_period_us first, that also works.
->
-> --- a/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-> +++ b/testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
-> @@ -38,10 +38,10 @@ static void set_cpu_quota(const struct
-> tst_cgroup_group *const cg,
->                 SAFE_CGROUP_PRINTF(cg, "cpu.max",
->                                    "%u %u", quota_us, period_us);
->         } else {
-> -               SAFE_CGROUP_PRINTF(cg, "cpu.max",
-> -                                  "%u", quota_us);
->                 SAFE_CGROUP_PRINTF(cg, "cpu.cfs_period_us",
->                                   "%u", period_us);
-> +               SAFE_CGROUP_PRINTF(cg, "cpu.max",
-> +                                  "%u", quota_us);
->         }
+Also included are some additions and fixes to the CGroup API related
+to the test.
 
-Thanks, that is a nice fix.
+V3:
+* Reverse order of writing cpu.cfs_period_us and cpu.cfs_quota_us to fix V1.
+* Add may_have_waiters to indicate we should try waking and cleaning up
+  children during cleanup. At worst this can result in timeout warnings if there
+  are less than 9 children waiting.
+  Which is probably better than failing to cleanup the CGroups.
 
+V2:
+* Simpler check for unrecognised controller name
+* Dropped whitespace patch which was already merged
+* Moved subgroup creation to setup. Otherwise it leaks memory between iterations.
+  Although the test still worked because it doesn't error if the group already
+  exists.
+
+Richard Palethorpe (6):
+  API/cgroups: Allow fetching of CGroup name
+  API/cgroups: Remove obsolete function in API
+  API/cgroups: Add cpu controller
+  API/cgroups: Auto add controllers to subtree_control in new subgroup
+  API/cgroups: tst_require fail gracefully with unknown controller
+  sched/cgroup: Add cfs_bandwidth01
+
+ include/tst_cgroup.h                          |   4 +
+ lib/tst_cgroup.c                              |  58 ++++--
+ runtest/sched                                 |   1 +
+ .../kernel/sched/cfs-scheduler/.gitignore     |   1 +
+ testcases/kernel/sched/cfs-scheduler/Makefile |   4 +-
+ .../sched/cfs-scheduler/cfs_bandwidth01.c     | 184 ++++++++++++++++++
+ 6 files changed, 236 insertions(+), 16 deletions(-)
+ create mode 100644 testcases/kernel/sched/cfs-scheduler/cfs_bandwidth01.c
 
 -- 
-Thank you,
-Richard.
+2.31.1
+
