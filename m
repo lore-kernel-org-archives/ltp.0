@@ -1,46 +1,41 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 2 Jun 2021 13:51:12 +0200
-Subject: [LTP] [PATCH 1/1] sendfile0{2,9}: Remove OFF_T workaround
-In-Reply-To: <YLC/gApc5oJ9noMW@pevik>
-References: <20210526104633.29561-1-pvorel@suse.cz> <YLCddN29evt3O5jw@yuki>
- <YLC/gApc5oJ9noMW@pevik>
-Message-ID: <YLdwsHtUBjbmy7hW@pevik>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 2 Jun 2021 13:49:52 +0200
+Subject: [LTP] [PATCH] ltp-aiodio: help aiodio test work normally
+In-Reply-To: <20210601155427.996321-1-zlang@redhat.com>
+References: <20210601155427.996321-1-zlang@redhat.com>
+Message-ID: <YLdwYJ3Kw5qf64d2@yuki>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Hi!
+> ltp aiodio related cmdfiles (runtest/ltp-aio*.part*) can't be used,
+> due to they have unfixed path name. Before we run aiodio test, we
+> need to create some files (e.g. junkfile), and give it to the tests.
+> But current cmdfiles use too many $TMPDIR and aiodio.$$ things, e.g:
+> 
+>   AD022 time aiocp -b 1k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
+> 
+> TMPDIR is a directory created by `mktemp ${TMPBASE}/ltp-XXXXXXXXXX`,
+> it's not a fixed path. The aiodio.$$ is also can be sure before
+> running ltp. That cause we can't prepare files in the unfixed path.
+> Even the testscripts/ltp-aiodio.sh can't work well either, due to it
+> try to create files in $TMP/aiodio/..., the $TMP is $TMPBASE, not
+> $TMPDIR, and aiodio is not aiodio.$$.
+>
+> So this patch trys to help runtest/ltp-aio*.part* to use fixed path
+> name, and put all aiodio test related files in $TMPBASE/aiodio/, the
+> $TMPBASE is a fixed pathname comes from runltp -d <directory> option.
+> So after this fix, users will know where they should create files in,
+> no matter running ltp-aiodio.sh or runltp -f runtest/ltp-aio*.part*.
 
-> Hi Cyril,
+I do not like this solution. I think that we should instead fix the
+scripts. I think that the runltp should just export TMPDIR if it was
+passed on commandline and it should be the resposibility of the caller
+to set up a temporary directory somewhere in /tmp in that case.
 
-> > Hi!
-> > > Using OFF_T definition to off64_t for 64bit variants seems to be am old
-> > > workaround for buggy libc. Nowadays we can rely on off_t to have correct size
-> > > (i.e.: 32bit: 4 bytes; 64bit or 32bit with -D_FILE_OFFSET_BITS=64: 8 bytes)
-
-> > Looks good to me, Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-> > > Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > > NOTE: -DOFF_T=off64_t is also defined in testcases/kernel/io/disktest
-> > > and mentioned in {tst_,}safe_macros.h.
-
-> > We should remove the -DOFF_T=off64_t comment from the *safe_macros.h and
-> > keep only the _FILE_OFFSET_BITS there.
-
-> Good. OK, after I solve our CI (github actions) I'll merge this and send another
-> patch which removes it in testcases/kernel/io/disktest + the comment in
-> *safe_macros.h.
-
-Merged with your reviewed-by tag and going to implement above in separate patch.
-
-Kind regards,
-Petr
-
-> Thanks for review and hints!
-
-> Kind regards,
-> Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
