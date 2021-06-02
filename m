@@ -1,77 +1,46 @@
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 2 Jun 2021 11:08:35 +0300
-Subject: [LTP] [LTP PATCH v2 3/3] nfs_lib.sh: Check running rpc.mountd,
- rpc.statd
-In-Reply-To: <20210526172503.18621-3-pvorel@suse.cz>
-References: <20210526172503.18621-1-pvorel@suse.cz>
- <20210526172503.18621-3-pvorel@suse.cz>
-Message-ID: <02781c77-9fed-b111-c3ad-3043a6e0ca29@bell-sw.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 2 Jun 2021 13:51:12 +0200
+Subject: [LTP] [PATCH 1/1] sendfile0{2,9}: Remove OFF_T workaround
+In-Reply-To: <YLC/gApc5oJ9noMW@pevik>
+References: <20210526104633.29561-1-pvorel@suse.cz> <YLCddN29evt3O5jw@yuki>
+ <YLC/gApc5oJ9noMW@pevik>
+Message-ID: <YLdwsHtUBjbmy7hW@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 26.05.2021 20:25, Petr Vorel wrote:
-> NOTE: we're not checking rpcbind/portmap which is required for NFSv3,
-> as it's rpc.mountd dependency.
-> 
-> Deliberately not add pgrep as required dependency.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> changes v1->v2:
-> * check for rpc.mountd, rpc.statd
-> (previsously checked for rpc.mountd, rpcbind/portmap)
-> 
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index 26b670c35..9bef1b86a 100644
-> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -27,7 +27,7 @@ TST_PARSE_ARGS=nfs_parse_args
->  TST_USAGE=nfs_usage
->  TST_NEEDS_TMPDIR=1
->  TST_NEEDS_ROOT=1
-> -TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount exportfs"
-> +TST_NEEDS_CMDS="$TST_NEEDS_CMDS exportfs mount"
+Hi Cyril,
 
-Does it change anything?
+> Hi Cyril,
 
-The rest looks good.
+> > Hi!
+> > > Using OFF_T definition to off64_t for 64bit variants seems to be am old
+> > > workaround for buggy libc. Nowadays we can rely on off_t to have correct size
+> > > (i.e.: 32bit: 4 bytes; 64bit or 32bit with -D_FILE_OFFSET_BITS=64: 8 bytes)
 
->  TST_SETUP="${TST_SETUP:-nfs_setup}"
->  TST_CLEANUP="${TST_CLEANUP:-nfs_cleanup}"
->  TST_NEEDS_DRIVERS="nfsd"
-> @@ -110,11 +110,6 @@ nfs_mount()
->  
->  nfs_setup()
->  {
-> -	# Check if current filesystem is NFS
-> -	if [ "$(stat -f . | grep "Type: nfs")" ]; then
-> -		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
-> -	fi
-> -
->  	local i
->  	local type
->  	local n=0
-> @@ -123,6 +118,16 @@ nfs_setup()
->  	local remote_dir
->  	local mount_dir
->  
-> +	if [ "$(stat -f . | grep "Type: nfs")" ]; then
-> +		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
-> +	fi
-> +
-> +	if tst_cmd_available pgrep; then
-> +		for i in rpc.mountd rpc.statd; do
-> +			pgrep $i > /dev/null || tst_brk TCONF "$i not running"
-> +		done
-> +	fi
-> +
->  	for i in $VERSION; do
->  		type=$(get_socket_type $n)
->  		tst_res TINFO "setup NFSv$i, socket type $type"
-> 
+> > Looks good to me, Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+> > > Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > > NOTE: -DOFF_T=off64_t is also defined in testcases/kernel/io/disktest
+> > > and mentioned in {tst_,}safe_macros.h.
+
+> > We should remove the -DOFF_T=off64_t comment from the *safe_macros.h and
+> > keep only the _FILE_OFFSET_BITS there.
+
+> Good. OK, after I solve our CI (github actions) I'll merge this and send another
+> patch which removes it in testcases/kernel/io/disktest + the comment in
+> *safe_macros.h.
+
+Merged with your reviewed-by tag and going to implement above in separate patch.
+
+Kind regards,
+Petr
+
+> Thanks for review and hints!
+
+> Kind regards,
+> Petr
