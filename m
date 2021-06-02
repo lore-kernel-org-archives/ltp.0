@@ -1,9 +1,11 @@
 From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Date: Wed, 2 Jun 2021 10:44:38 +0300
-Subject: [LTP] [LTP PATCH v2 1/3] nfs_lib.sh: Detect unsupported protocol
-In-Reply-To: <20210526172503.18621-1-pvorel@suse.cz>
+Date: Wed, 2 Jun 2021 11:08:35 +0300
+Subject: [LTP] [LTP PATCH v2 3/3] nfs_lib.sh: Check running rpc.mountd,
+ rpc.statd
+In-Reply-To: <20210526172503.18621-3-pvorel@suse.cz>
 References: <20210526172503.18621-1-pvorel@suse.cz>
-Message-ID: <210e1e4f-23d8-6a8b-18cb-ea7a4e7f89c2@bell-sw.com>
+ <20210526172503.18621-3-pvorel@suse.cz>
+Message-ID: <02781c77-9fed-b111-c3ad-3043a6e0ca29@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,39 +13,65 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 On 26.05.2021 20:25, Petr Vorel wrote:
-> Caused by disabled CONFIG_NFSD_V[34] in kernel config.
+> NOTE: we're not checking rpcbind/portmap which is required for NFSv3,
+> as it's rpc.mountd dependency.
+> 
+> Deliberately not add pgrep as required dependency.
 > 
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
-> new in v2
+> changes v1->v2:
+> * check for rpc.mountd, rpc.statd
+> (previsously checked for rpc.mountd, rpcbind/portmap)
 > 
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 > 
 > diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index 3fad8778a..b80ee0e18 100644
+> index 26b670c35..9bef1b86a 100644
 > --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
 > +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -94,9 +94,15 @@ nfs_mount()
+> @@ -27,7 +27,7 @@ TST_PARSE_ARGS=nfs_parse_args
+>  TST_USAGE=nfs_usage
+>  TST_NEEDS_TMPDIR=1
+>  TST_NEEDS_ROOT=1
+> -TST_NEEDS_CMDS="$TST_NEEDS_CMDS mount exportfs"
+> +TST_NEEDS_CMDS="$TST_NEEDS_CMDS exportfs mount"
+
+Does it change anything?
+
+The rest looks good.
+
+>  TST_SETUP="${TST_SETUP:-nfs_setup}"
+>  TST_CLEANUP="${TST_CLEANUP:-nfs_cleanup}"
+>  TST_NEEDS_DRIVERS="nfsd"
+> @@ -110,11 +110,6 @@ nfs_mount()
 >  
->  	if [ $? -ne 0 ]; then
->  		cat mount.log
+>  nfs_setup()
+>  {
+> -	# Check if current filesystem is NFS
+> -	if [ "$(stat -f . | grep "Type: nfs")" ]; then
+> -		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
+> -	fi
+> -
+>  	local i
+>  	local type
+>  	local n=0
+> @@ -123,6 +118,16 @@ nfs_setup()
+>  	local remote_dir
+>  	local mount_dir
+>  
+> +	if [ "$(stat -f . | grep "Type: nfs")" ]; then
+> +		tst_brk TCONF "Cannot run nfs-stress test on mounted NFS"
+> +	fi
 > +
->  		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
->  			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
->  		fi
+> +	if tst_cmd_available pgrep; then
+> +		for i in rpc.mountd rpc.statd; do
+> +			pgrep $i > /dev/null || tst_brk TCONF "$i not running"
+> +		done
+> +	fi
 > +
-> +		if grep -i "Protocol not supported" mount.log; then
-
-Hi Petr,
-
-It's better to add '-q' flag to grep.
-
-> +			tst_brk TCONF "Protocol not supported"
-> +		fi
-> +
->  		tst_brk TBROK "mount command failed"
->  	fi
->  }
+>  	for i in $VERSION; do
+>  		type=$(get_socket_type $n)
+>  		tst_res TINFO "setup NFSv$i, socket type $type"
 > 
-
