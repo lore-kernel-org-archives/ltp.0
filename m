@@ -1,45 +1,47 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 2 Jun 2021 13:08:13 +0200
-Subject: [LTP] [LTP PATCH v2 1/3] nfs_lib.sh: Detect unsupported protocol
-In-Reply-To: <210e1e4f-23d8-6a8b-18cb-ea7a4e7f89c2@bell-sw.com>
-References: <20210526172503.18621-1-pvorel@suse.cz>
- <210e1e4f-23d8-6a8b-18cb-ea7a4e7f89c2@bell-sw.com>
-Message-ID: <YLdmnYAbxzADpqCU@pevik>
+Date: Wed, 2 Jun 2021 13:18:54 +0200
+Subject: [LTP] [PATCH 1/1] doc: Drop uClinux support
+In-Reply-To: <YLSkz6OUbgwuB7my@yuki>
+References: <20210531032910.6739-1-pvorel@suse.cz>
+ <YLSkz6OUbgwuB7my@yuki>
+Message-ID: <YLdpHqnNJhy7YUaf@pevik>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> On 26.05.2021 20:25, Petr Vorel wrote:
-> > Caused by disabled CONFIG_NFSD_V[34] in kernel config.
+> Hi!
+> > some shorter form could be added to 3. Test Contribution Checklist [1] as well.
 
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > new in v2
+> > Kind regards,
+> > Petr
 
-> >  testcases/network/nfs/nfs_stress/nfs_lib.sh | 6 ++++++
-> >  1 file changed, 6 insertions(+)
+> > [1] https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#3-test-contribution-checklist
 
-> > diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> > index 3fad8778a..b80ee0e18 100644
-> > --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> > +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> > @@ -94,9 +94,15 @@ nfs_mount()
+> >  doc/maintainer-patch-review-checklist.txt | 3 +++
+> >  1 file changed, 3 insertions(+)
 
-> >  	if [ $? -ne 0 ]; then
-> >  		cat mount.log
-> > +
-> >  		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
-> >  			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
-> >  		fi
-> > +
-> > +		if grep -i "Protocol not supported" mount.log; then
+> > diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> > index 5420fa933..81ed61ddf 100644
+> > --- a/doc/maintainer-patch-review-checklist.txt
+> > +++ b/doc/maintainer-patch-review-checklist.txt
+> > @@ -44,6 +44,9 @@ New test should
+> >  * Docparse documentation
+> >  * If a test is a regression test it should include tags
+> >    (more in https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#2238-test-tags[Test tags])
+> > +* When rewritting old tests, https://en.wikipedia.org/wiki/%CE%9CClinux[uClinux
+> > +  (??Clinux)] support should be removed (project has been discontinued).
+>       ^
+>       I would just use u instead of \textmu
 
-> Hi Petr,
+> > +  E.g. `FORK_OR_VFORK()` should be replaced with simple `fork()` or `SAFE_FORK()`.
 
-> It's better to add '-q' flag to grep.
-Good point, thanks!
+> + and all #ifdef UCLINUX should be removed as well.
+
+Fixed and merged.
+
+Thanks!
 
 Kind regards,
 Petr
