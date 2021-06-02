@@ -1,30 +1,49 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 2 Jun 2021 15:02:44 +0800
-Subject: [LTP] [PATCH v3 0/6] cfs_bandwidth01 and CGroup API
-In-Reply-To: <20210601105521.27459-1-rpalethorpe@suse.com>
-References: <20210601105521.27459-1-rpalethorpe@suse.com>
-Message-ID: <CAEemH2c2W1Z9W3dm2LoyMbtqJxtgZjEBHF8VDU3O1ZSJ2ZQmeA@mail.gmail.com>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Date: Wed, 2 Jun 2021 10:44:38 +0300
+Subject: [LTP] [LTP PATCH v2 1/3] nfs_lib.sh: Detect unsupported protocol
+In-Reply-To: <20210526172503.18621-1-pvorel@suse.cz>
+References: <20210526172503.18621-1-pvorel@suse.cz>
+Message-ID: <210e1e4f-23d8-6a8b-18cb-ea7a4e7f89c2@bell-sw.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> This adds a test scheduler test which uses the cpu controller.
->
-> Also included are some additions and fixes to the CGroup API related
-> to the test.
->
-> V3:
-> * Reverse order of writing cpu.cfs_period_us and cpu.cfs_quota_us to fix V1.
-> * Add may_have_waiters to indicate we should try waking and cleaning up
->   children during cleanup. At worst this can result in timeout warnings if there
->   are less than 9 children waiting.
->   Which is probably better than failing to cleanup the CGroups.
+On 26.05.2021 20:25, Petr Vorel wrote:
+> Caused by disabled CONFIG_NFSD_V[34] in kernel config.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> new in v2
+> 
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> index 3fad8778a..b80ee0e18 100644
+> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -94,9 +94,15 @@ nfs_mount()
+>  
+>  	if [ $? -ne 0 ]; then
+>  		cat mount.log
+> +
+>  		if [ "$type" = "udp" -o "$type" = "udp6" ] && tst_kvcmp -ge 5.6; then
+>  			tst_brk TCONF "UDP support disabled with the kernel config NFS_DISABLE_UDP_SUPPORT?"
+>  		fi
+> +
+> +		if grep -i "Protocol not supported" mount.log; then
 
-I helped to test the patchset and push. Thanks~
+Hi Petr,
 
--- 
-Regards,
-Li Wang
+It's better to add '-q' flag to grep.
+
+> +			tst_brk TCONF "Protocol not supported"
+> +		fi
+> +
+>  		tst_brk TBROK "mount command failed"
+>  	fi
+>  }
+> 
 
